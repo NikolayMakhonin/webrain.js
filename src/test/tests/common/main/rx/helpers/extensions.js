@@ -1,30 +1,9 @@
-import '../../../../../../main/common/rx/extensions/observable'
-import {Observable} from '../../../../../../main/common/rx/subject'
+import '../../../../../../main/common/rx/extensions/unsubscribeValue'
+import {TestSubject} from '../src/TestSubject'
 
 describe('common > main > rx > helpers > extensions', function () {
-	function deleteFromArray(array, item) {
-		const index = array.indexOf(item)
-		if (index > -1) {
-			array.splice(index, 1)
-		}
-	}
-
 	it('unsubscribeValue', function () {
-		const subscribers = []
-		const subject = new Observable({
-			subscribe(subscriber) {
-				subscribers.push(subscriber)
-				return () => {
-					deleteFromArray(subscribers, subscriber)
-				}
-			}
-		})
-
-		function emit(value) {
-			for (const subscriber of subscribers) {
-				subscriber(value)
-			}
-		}
+		const subject = new TestSubject()
 
 		const observable = subject.unsubscribeValue('unsubscribeValue')
 
@@ -42,14 +21,14 @@ describe('common > main > rx > helpers > extensions', function () {
 		assert.deepStrictEqual(results, ['unsubscribeValue'])
 		results = []
 
-		emit('1')
+		subject.emit('1')
 		assert.deepStrictEqual(results, [])
 
 		unsubscribe[0]()
 		unsubscribe[0]()
 		assert.deepStrictEqual(results, [])
 
-		emit('2')
+		subject.emit('2')
 		assert.deepStrictEqual(results, [])
 
 		unsubscribe[0] = observable.subscribe(testSubscriber)
@@ -57,7 +36,7 @@ describe('common > main > rx > helpers > extensions', function () {
 		unsubscribe[2] = observable.subscribe(testSubscriber)
 		assert.deepStrictEqual(results, [])
 
-		emit('3')
+		subject.emit('3')
 		assert.deepStrictEqual(results, ['3', '3', '3'])
 		results = []
 

@@ -1,11 +1,15 @@
-import {Subject} from './subject'
-import './extensions/observable'
+import {createSubjectClass, Subject} from './subjects/subject'
+import './extensions/unsubscribeValue'
 
 export class ObservableObject {
 
 }
 
 ObservableObject.prototype.__propertyChanged = new Subject()
+
+class PropertyChangedSubject extends (createSubjectClass(Subject, [hasSubscribers])) {
+
+}
 
 function propagatePropertyChanged(object, propertyName, value) {
 	if (!value) {

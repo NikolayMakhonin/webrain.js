@@ -1,4 +1,4 @@
-import {Observable} from '../subject'
+import {Observable} from '../subjects/observable'
 
 Observable.prototype.unsubscribeValue = function (unsubscribeValue) {
 	const base = this
