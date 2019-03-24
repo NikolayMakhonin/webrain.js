@@ -1,4 +1,4 @@
-import '../../../../../../main/common/rx/helpers/extensions'
+import '../../../../../../main/common/rx/extensions/observable'
 import {Observable} from '../../../../../../main/common/rx/subject'
 
 describe('common > main > rx > helpers > extensions', function () {
@@ -58,7 +58,7 @@ describe('common > main > rx > helpers > extensions', function () {
 		assert.deepStrictEqual(results, [])
 
 		emit('3')
-		assert.deepStrictEqual(results, ['3','3','3'])
+		assert.deepStrictEqual(results, ['3', '3', '3'])
 		results = []
 
 		unsubscribe[0]()

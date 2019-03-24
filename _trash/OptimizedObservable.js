@@ -1,4 +1,4 @@
-import {Observable} from './subject'
+import {Observable} from '../src/main/common/rx/subject'
 
 const MAX_EXECUTION_TIME = 100 // ms
 

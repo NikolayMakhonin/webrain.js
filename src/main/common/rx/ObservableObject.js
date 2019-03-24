@@ -1,5 +1,5 @@
 import {Subject} from './subject'
-import './helpers/extensions'
+import './extensions/observable'
 
 export class ObservableObject {
 
