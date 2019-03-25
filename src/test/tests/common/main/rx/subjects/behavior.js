@@ -1,9 +1,8 @@
 /* eslint-disable class-methods-use-this */
 import {TestSubject} from '../src/TestSubject'
 import {behavior} from '../../../../../../main/common/rx/subjects/behavior'
-import {Subject} from "../../../../../../main/common/rx/subjects/subject";
 
-describe('common > main > rx > behavior', function () {
+describe('common > main > rx > subjects > behavior', function () {
 	it('behavior', function () {
 		let subject = new (behavior(TestSubject))()
 

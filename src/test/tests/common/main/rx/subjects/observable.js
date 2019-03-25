@@ -1,6 +1,6 @@
 import {Observable} from '../../../../../../main/common/rx/subjects/observable'
 
-describe('common > main > rx > observable', function () {
+describe('common > main > rx > subjects > observable', function () {
 	it('Observable', function () {
 		const observable = new Observable()
 		let arg

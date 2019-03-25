@@ -1,8 +1,8 @@
 /* eslint-disable class-methods-use-this */
 import {TestSubject} from '../src/TestSubject'
-import {hasSubscribers as extendHasSubscribers} from '../../../../../../main/common/rx/subjects/hasSubscribers'
+import {hasSubscribers as toHasSubscribers} from '../../../../../../main/common/rx/subjects/hasSubscribers'
 
-describe('common > main > rx > hasSubscribers', function () {
+describe('common > main > rx > subjects > hasSubscribers', function () {
 	function deleteFromArray(array, item) {
 		const index = array.indexOf(item)
 		if (index > -1) {
@@ -12,7 +12,7 @@ describe('common > main > rx > hasSubscribers', function () {
 
 	it('hasSubscribers', function () {
 		const subscribers = []
-		const subject = new (extendHasSubscribers(TestSubject))()
+		const subject = new (toHasSubscribers(TestSubject))()
 
 		assert.strictEqual(subject.subscribe(null), null)
 		assert.strictEqual(subject.subscribe(false), null)
@@ -24,8 +24,8 @@ describe('common > main > rx > hasSubscribers', function () {
 			hasSubscribers.push(value)
 		}
 
-		const hasSubscribersUnsubscribe = [subject.hasSubscribersObservable.subscribe(hasSubscribersSubscriber)]
-		assert.strictEqual(typeof hasSubscribersUnsubscribe[0], 'function')
+		const hasSubscribersUnsubscribe = []
+		assert.strictEqual(typeof (hasSubscribersUnsubscribe[0] = subject.hasSubscribersObservable.subscribe(hasSubscribersSubscriber)), 'function')
 		assert.deepStrictEqual(hasSubscribers, [false])
 		hasSubscribers = []
 
@@ -39,6 +39,7 @@ describe('common > main > rx > hasSubscribers', function () {
 
 		const unsubscribe = []
 		assert.strictEqual(typeof (unsubscribe[0] = subject.subscribe(subscriber)), 'function')
+		assert.deepStrictEqual(results, [])
 		assert.deepStrictEqual(hasSubscribers, [true])
 		hasSubscribers = []
 

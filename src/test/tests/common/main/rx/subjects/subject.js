@@ -1,6 +1,6 @@
 import {Subject} from '../../../../../../main/common/rx/subjects/subject'
 
-describe('common > main > rx > subject', function () {
+describe('common > main > rx > subjects > subject', function () {
 	it('Subject', function () {
 		const subject = new Subject()
 
