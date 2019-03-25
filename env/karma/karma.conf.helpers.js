@@ -249,6 +249,21 @@ module.exports.configCommon = function (config) {
 				},
 				ENV_CMD: null
 			},
+			ChromeDev: {
+				base  : 'Custom',
+				parent: 'Chrome',
+				flags : [
+					'--incognito',
+					'--no-sandbox',
+					'--disable-web-security',
+					'--allow-cross-origin-auth-prompt',
+					'--disable-site-isolation-trials'
+				],
+				DEFAULT_CMD: {
+					win32: 'E:/Program Files (x86)/Google/Chrome Dev/Application/chrome.exe'
+				},
+				ENV_CMD: null
+			},
 		}
 	})
 }
