@@ -33,7 +33,7 @@ export class ObservableObjectBuilder {
 			return null
 		}
 
-		const propertyChanged = value._propertyChanged
+		const {propertyChanged} = value
 
 		if (!propertyChanged) {
 			return null
@@ -43,7 +43,7 @@ export class ObservableObjectBuilder {
 
 		const subscriber = event => {
 			object.propertyChanged.emit({
-				propertyName,
+				name: propertyName,
 				next: event
 			})
 		}
@@ -61,7 +61,7 @@ export class ObservableObjectBuilder {
 
 		Object.defineProperty(object, name, {
 			configurable: true,
-			enumerable: true,
+			enumerable  : true,
 			get() {
 				return value
 			},
@@ -103,7 +103,7 @@ export class ObservableObjectBuilder {
 
 		Object.defineProperty(object, name, {
 			configurable: true,
-			enumerable: true,
+			enumerable  : true,
 			get() {
 				return value
 			}
@@ -122,6 +122,29 @@ export class ObservableObjectBuilder {
 				name,
 				oldValue,
 				newValue: value
+			})
+		}
+
+		return this
+	}
+
+	delete(name) {
+		const {object} = this
+		const {unsubscribers, propertyChanged} = object.__meta
+
+		const unsubscribe = unsubscribers[name]
+		const oldValue = object[name]
+
+		delete object[name]
+
+		if (unsubscribe) {
+			unsubscribe()
+		}
+
+		if (typeof oldValue !== 'undefined') {
+			propertyChanged.emit({
+				name,
+				oldValue
 			})
 		}
 
