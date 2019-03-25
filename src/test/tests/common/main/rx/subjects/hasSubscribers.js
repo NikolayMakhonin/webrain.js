@@ -14,6 +14,11 @@ describe('common > main > rx > hasSubscribers', function () {
 		const subscribers = []
 		const subject = new (extendHasSubscribers(TestSubject))()
 
+		assert.strictEqual(subject.subscribe(null), null)
+		assert.strictEqual(subject.subscribe(false), null)
+		assert.strictEqual(subject.subscribe(''), null)
+		assert.strictEqual(subject.subscribe(0), null)
+
 		let hasSubscribers = []
 		const hasSubscribersSubscriber = value => {
 			hasSubscribers.push(value)
@@ -32,15 +37,15 @@ describe('common > main > rx > hasSubscribers', function () {
 			results.push(value)
 		}
 
-		const unsubscribe = [subject.subscribe(subscriber)]
+		const unsubscribe = []
+		assert.strictEqual(typeof (unsubscribe[0] = subject.subscribe(subscriber)), 'function')
 		assert.deepStrictEqual(hasSubscribers, [true])
 		hasSubscribers = []
 
 		assert.strictEqual(hasSubscribersUnsubscribe[0](), undefined)
-		assert.deepStrictEqual(hasSubscribers, [])
+		assert.deepStrictEqual(hasSubscribers, [null])
 		hasSubscribers = []
 
-		assert.strictEqual(typeof unsubscribe[0], 'function')
 		assert.deepStrictEqual(results, [])
 
 		assert.strictEqual(subject.emit('2'), subject)
@@ -83,7 +88,7 @@ describe('common > main > rx > hasSubscribers', function () {
 
 		assert.deepStrictEqual(hasSubscribers, [])
 		assert.strictEqual(hasSubscribersUnsubscribe[0](), undefined)
-		assert.deepStrictEqual(hasSubscribers, [])
+		assert.deepStrictEqual(hasSubscribers, [null])
 		hasSubscribers = []
 
 		assert.strictEqual(subject.emit('6'), subject)

@@ -1,12 +1,35 @@
 import {Subject} from './subject'
 
 export function behavior(base) {
-	// eslint-disable-next-line no-shadow
-	return class BehaviorSubject extends base {
+	return class Behavior extends base {
 		subscribe(subscriber) {
-			const result = super.subscribe(subscriber)
-			subscriber(this.value)
-			return result
+			if (!subscriber) {
+				return null
+			}
+
+			let unsubscribe = super.subscribe(subscriber)
+
+			const {value} = this
+			if (typeof value !== 'undefined') {
+				subscriber(value)
+			}
+
+			return () => {
+				if (!unsubscribe) {
+					return
+				}
+
+				try {
+					// eslint-disable-next-line no-shadow
+					const {value, unsubscribeValue} = this
+					if (typeof unsubscribeValue !== 'undefined' && unsubscribeValue !== value) {
+						subscriber(unsubscribeValue)
+					}
+				} finally {
+					unsubscribe()
+					unsubscribe = null
+				}
+			}
 		}
 
 		emit(value) {

@@ -8,6 +8,10 @@ export function subject(base) {
 		}
 
 		subscribe(subscriber) {
+			if (!subscriber) {
+				return null
+			}
+
 			let {_subscribers} = this
 			if (!_subscribers) {
 				this._subscribers = _subscribers = [subscriber]
@@ -15,21 +19,18 @@ export function subject(base) {
 				_subscribers[_subscribers.length] = subscriber
 			}
 
-			let unsubscribed
-
 			return () => {
-				if (unsubscribed) {
+				if (!subscriber) {
 					return
 				}
-				unsubscribed = true
 
-				// unsubscribe
-				// eslint-disable-next-line no-shadow
 				const index = _subscribers.indexOf(subscriber)
 
 				if (index >= 0) {
 					_subscribers.splice(index, 1)
 				}
+
+				subscriber = null
 			}
 		}
 

@@ -1,4 +1,4 @@
-import '../../../../../../main/common/rx/extensions/unsubscribeValue'
+import '../src/main/common/rx/extensions/unsubscribeValue'
 import {TestSubject} from '../src/TestSubject'
 
 describe('common > main > rx > helpers > extensions', function () {

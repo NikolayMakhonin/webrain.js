@@ -1,22 +1,27 @@
 import {BehaviorSubject} from './behavior'
+import {Subject} from './subject'
 
 // eslint-disable-next-line no-shadow
 function createHasSubscribersSubjectDefault(hasSubscribers) {
 	const subject = new BehaviorSubject()
 	subject.value = hasSubscribers
+	subject.unsubscribeValue = null
 	return subject
 }
 
 export function hasSubscribers(base, createHasSubscribersSubject = createHasSubscribersSubjectDefault) {
-	// eslint-disable-next-line no-shadow
-	class HasSubscribersSubject extends base {
+	return class HasSubscribers extends base {
 		subscribe(subscriber) {
+			if (!subscriber) {
+				return null
+			}
+
 			// eslint-disable-next-line no-shadow
 			const {hasSubscribers} = this
 
-			const result = super.subscribe(subscriber)
+			const unsubscribe = super.subscribe(subscriber)
 
-			if (!hasSubscribers && this._hasSubscribersSubject) {
+			if (!hasSubscribers && this._hasSubscribersSubject && this.hasSubscribers) {
 				this._hasSubscribersSubject.emit(true)
 			}
 
@@ -24,7 +29,7 @@ export function hasSubscribers(base, createHasSubscribersSubject = createHasSubs
 				// eslint-disable-next-line no-shadow
 				const {hasSubscribers} = this
 
-				result()
+				unsubscribe()
 
 				if (hasSubscribers && this._hasSubscribersSubject && !this.hasSubscribers) {
 					this._hasSubscribersSubject.emit(false)
@@ -41,7 +46,7 @@ export function hasSubscribers(base, createHasSubscribersSubject = createHasSubs
 			return _hasSubscribersSubject
 		}
 	}
-
-
-	return HasSubscribersSubject
 }
+
+export const HasSubscribersSubject = hasSubscribers(Subject)
+export const HasSubscribersBehaviorSubject = hasSubscribers(BehaviorSubject)

@@ -1,19 +1,53 @@
 /* eslint-disable class-methods-use-this */
 import {TestSubject} from '../src/TestSubject'
 import {behavior} from '../../../../../../main/common/rx/subjects/behavior'
+import {Subject} from "../../../../../../main/common/rx/subjects/subject";
 
 describe('common > main > rx > behavior', function () {
 	it('behavior', function () {
-		const subject = new (behavior(TestSubject))({value: '1'})
+		let subject = new (behavior(TestSubject))()
+
+		assert.strictEqual(subject.subscribe(null), null)
+		assert.strictEqual(subject.subscribe(false), null)
+		assert.strictEqual(subject.subscribe(''), null)
+		assert.strictEqual(subject.subscribe(0), null)
 
 		let results = []
 		const subscriber = value => {
 			results.push(value)
 		}
 
-		const unsubscribe = [subject.subscribe(subscriber)]
+		const unsubscribe = []
 
-		assert.strictEqual(typeof unsubscribe[0], 'function')
+		assert.strictEqual(typeof (unsubscribe[0] = subject.subscribe(subscriber)), 'function')
+		assert.deepStrictEqual(results, [])
+		assert.strictEqual(unsubscribe[0](), undefined)
+		assert.deepStrictEqual(results, [])
+
+		assert.strictEqual(subject.emit('1'), subject)
+		assert.strictEqual(typeof (unsubscribe[0] = subject.subscribe(subscriber)), 'function')
+		assert.deepStrictEqual(results, ['1'])
+		results = []
+		assert.strictEqual(unsubscribe[0](), undefined)
+		assert.deepStrictEqual(results, [])
+
+		assert.strictEqual(typeof (unsubscribe[0] = subject.subscribe(subscriber)), 'function')
+		assert.deepStrictEqual(results, ['1'])
+		results = []
+		assert.strictEqual(unsubscribe[0](), undefined)
+		assert.deepStrictEqual(results, [])
+
+		subject = new (behavior(TestSubject))({value: null})
+
+		assert.strictEqual(typeof (unsubscribe[0] = subject.subscribe(subscriber)), 'function')
+		assert.deepStrictEqual(results, [null])
+		results = []
+		assert.strictEqual(unsubscribe[0](), undefined)
+		assert.deepStrictEqual(results, [])
+
+		subject = new (behavior(TestSubject))({value: '1'})
+
+		assert.strictEqual(typeof (unsubscribe[0] = subject.subscribe(subscriber)), 'function')
 		assert.deepStrictEqual(results, ['1'])
 		results = []
 

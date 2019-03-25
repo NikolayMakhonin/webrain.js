@@ -1,74 +1,88 @@
-import {createSubjectClass, Subject} from './subjects/subject'
 import './extensions/unsubscribeValue'
+import {HasSubscribersSubject} from './subjects/hasSubscribers'
 
 export class ObservableObject {
+	get propertyChanged() {
+		let {_propertyChanged} = this
+		if (!_propertyChanged) {
+			this._propertyChanged = _propertyChanged = new HasSubscribersSubject()
+		}
 
+		return _propertyChanged
+	}
 }
 
-ObservableObject.prototype.__propertyChanged = new Subject()
 
-class PropertyChangedSubject extends (createSubjectClass(Subject, [hasSubscribers])) {
-
-}
-
-function propagatePropertyChanged(object, propertyName, value) {
-	if (!value) {
-		return null
+export class ObservableObjectBuilder {
+	constructor(object) {
+		this.object = object || new ObservableObject()
 	}
 
-	const propertyChanged = value.__propertyChanged
+	propagatePropertyChanged(propertyName, value) {
+		if (!value) {
+			return null
+		}
 
-	if (!propertyChanged) {
-		return null
-	}
+		const propertyChanged = value._propertyChanged
 
-	return object.__propertyChanged.hasObserversObservable
-		.unsubscribeValue(false)
-		.autoConnect(null, () => propertyChanged.subscribe(event => {
-			object.__propertyChanged.emit({
+		if (!propertyChanged) {
+			return null
+		}
+
+		const {object} = this
+
+		const subscriber = event => {
+			object.propertyChanged.emit({
 				propertyName,
 				next: event
 			})
-		}))
-}
-
-export function createWritableProperty(object, name, value) {
-	let unsubscribe = propagatePropertyChanged(object, name, value)
-
-	Object.defineProperty(object, name, {
-		get() {
-			return value
-		},
-		set(newValue) {
-			if (newValue === value) {
-				return
-			}
-
-			if (unsubscribe) {
-				unsubscribe()
-				unsubscribe = null
-			}
-
-			const oldValue = value
-			value = newValue
-
-			unsubscribe = propagatePropertyChanged(object, name, value)
-
-			object.__propertyChanged.emit({
-				name,
-				oldValue,
-				newValue: value
-			})
 		}
-	})
-}
 
-export function createReadOnlyProperty(object, name, value) {
-	propagatePropertyChanged(object, name, value)
+		return object.propertyChanged.hasSubscribersObservable
+			.autoConnect(null, () => propertyChanged.subscribe(subscriber))
+	}
 
-	Object.defineProperty(object, name, {
-		get() {
-			return value
-		}
-	})
+	writable(name, value) {
+		let unsubscribe = this.propagatePropertyChanged(name, value)
+
+		const {object} = this
+
+		Object.defineProperty(object, name, {
+			get() {
+				return value
+			},
+			set: newValue => {
+				if (newValue === value) {
+					return
+				}
+
+				if (unsubscribe) {
+					unsubscribe()
+				}
+
+				const oldValue = value
+				value = newValue
+
+				unsubscribe = this.propagatePropertyChanged(object, name, value)
+
+				object.propertyChanged.emit({
+					name,
+					oldValue,
+					newValue: value
+				})
+			}
+		})
+	}
+
+	readable(name, value) {
+		this.propagatePropertyChanged(name, value)
+
+		const {object} = this
+
+		Object.defineProperty(object, name, {
+			get() {
+				return value
+			}
+		})
+	}
 }
