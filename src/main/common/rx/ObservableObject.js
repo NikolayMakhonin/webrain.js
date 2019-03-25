@@ -88,7 +88,14 @@ export class ObservableObjectBuilder {
 		})
 
 		if (typeof initValue !== 'undefined') {
-			object[name] = initValue
+			if (initValue === value) {
+				if (unsubscribe) {
+					unsubscribe()
+				}
+				unsubscribers[name] = unsubscribe = this.propagatePropertyChanged(name, value)
+			} else {
+				object[name] = initValue
+			}
 		}
 
 		return this
@@ -111,18 +118,19 @@ export class ObservableObjectBuilder {
 
 		if (typeof value === 'undefined') {
 			value = oldValue
-		} else if (value !== oldValue) {
+		} else {
 			if (unsubscribe) {
 				unsubscribe()
 			}
-
 			unsubscribers[name] = this.propagatePropertyChanged(name, value)
 
-			propertyChanged.emit({
-				name,
-				oldValue,
-				newValue: value
-			})
+			if (value !== oldValue) {
+				propertyChanged.emit({
+					name,
+					oldValue,
+					newValue: value
+				})
+			}
 		}
 
 		return this
@@ -135,11 +143,12 @@ export class ObservableObjectBuilder {
 		const unsubscribe = unsubscribers[name]
 		const oldValue = object[name]
 
-		delete object[name]
-
 		if (unsubscribe) {
 			unsubscribe()
 		}
+
+		delete object[name]
+		delete unsubscribers[name]
 
 		if (typeof oldValue !== 'undefined') {
 			propertyChanged.emit({
