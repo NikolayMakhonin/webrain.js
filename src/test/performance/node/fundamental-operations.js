@@ -1,4 +1,4 @@
-/* eslint-disable no-new-func */
+/* eslint-disable no-new-func,no-array-constructor */
 
 import {calcPerformance} from 'rdtsc'
 

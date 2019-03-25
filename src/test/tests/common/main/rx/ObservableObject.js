@@ -1,3 +1,4 @@
+/* eslint-disable guard-for-in */
 import {ObservableObject, ObservableObjectBuilder} from '../../../../../main/common/rx/ObservableObject'
 
 describe('common > main > rx > ObservableObjectBuilder', function () {
