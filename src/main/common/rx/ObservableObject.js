@@ -3,13 +3,13 @@ import {HasSubscribersSubject} from './subjects/hasSubscribers'
 
 export class ObservableObject {
 	constructor() {
-		Object.defineProperty(this,'__meta', {
+		Object.defineProperty(this, '__meta', {
 			enumerable  : false,
 			writable    : false,
 			configurable: false,
 			value       : {
-				unsubscribers: {},
-				propertyChanged     : new HasSubscribersSubject()
+				unsubscribers  : {},
+				propertyChanged: new HasSubscribersSubject()
 			}
 		})
 	}
@@ -92,7 +92,7 @@ export class ObservableObjectBuilder {
 
 	readable(name, value) {
 		const {object} = this
-		const {unsubscribers} = object.__meta
+		const {unsubscribers, propertyChanged} = object.__meta
 
 		const unsubscribe = unsubscribers[name]
 		const oldValue = object[name]
@@ -110,7 +110,14 @@ export class ObservableObjectBuilder {
 			if (unsubscribe) {
 				unsubscribe()
 			}
+
 			unsubscribers[name] = this.propagatePropertyChanged(name, value)
+
+			propertyChanged.emit({
+				name,
+				oldValue,
+				newValue: value
+			})
 		}
 
 		return this
