@@ -4,21 +4,24 @@ import {HasSubscribersSubject} from './subjects/hasSubscribers'
 export class ObservableObject {
 	constructor() {
 		Object.defineProperty(this, '__meta', {
+			configurable: false,
 			enumerable  : false,
 			writable    : false,
-			configurable: false,
 			value       : {
 				unsubscribers  : {},
 				propertyChanged: new HasSubscribersSubject()
 			}
 		})
 	}
-
-	get propertyChanged() {
-		return this.__meta.propertyChanged
-	}
 }
 
+Object.defineProperty(ObservableObject.prototype, 'propertyChanged', {
+	configurable: true,
+	enumerable  : false,
+	get() {
+		return this.__meta.propertyChanged
+	}
+})
 
 export class ObservableObjectBuilder {
 	constructor(object) {
@@ -58,6 +61,7 @@ export class ObservableObjectBuilder {
 
 		Object.defineProperty(object, name, {
 			configurable: true,
+			enumerable: true,
 			get() {
 				return value
 			},
@@ -99,6 +103,7 @@ export class ObservableObjectBuilder {
 
 		Object.defineProperty(object, name, {
 			configurable: true,
+			enumerable: true,
 			get() {
 				return value
 			}

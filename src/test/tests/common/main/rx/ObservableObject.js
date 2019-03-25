@@ -1,6 +1,43 @@
 import {ObservableObject, ObservableObjectBuilder} from '../../../../../main/common/rx/ObservableObject'
 
 describe('common > main > rx > ObservableObjectBuilder', function () {
+	it('enumerate properties', function () {
+		const {object} = new ObservableObjectBuilder()
+			.writable('writable')
+			.readable('readable', '1')
+
+		assert.deepStrictEqual(Object.keys(object), ['writable', 'readable'])
+
+		for (const key in object) {
+			assert.ok(key === 'writable' || key === 'readable')
+		}
+
+		const {propertyChanged} = object
+		assert.ok(object.propertyChanged)
+
+		assert.throws(() => (object.propertyChanged = '1'), TypeError)
+
+		Object.defineProperty(object, 'propertyChanged', {
+			value: '2'
+		})
+
+		assert.strictEqual(object.propertyChanged, '2')
+	})
+
+	it('propertyChanged property', function () {
+		const {object} = new ObservableObjectBuilder()
+		const {propertyChanged} = object
+		assert.ok(object.propertyChanged)
+
+		assert.throws(() => (object.propertyChanged = '1'), TypeError)
+
+		Object.defineProperty(object, 'propertyChanged', {
+			value: '2'
+		})
+
+		assert.strictEqual(object.propertyChanged, '2')
+	})
+
 	it('readable simple', function () {
 		const {object} = new ObservableObjectBuilder()
 		assert.ok(object instanceof ObservableObject)
