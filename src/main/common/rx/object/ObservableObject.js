@@ -1,5 +1,5 @@
-import './extensions/autoConnect'
-import {HasSubscribersSubject} from './subjects/hasSubscribers'
+import '../extensions/autoConnect'
+import {HasSubscribersSubject} from '../subjects/hasSubscribers'
 
 export class ObservableObject {
 	constructor() {
@@ -13,15 +13,56 @@ export class ObservableObject {
 			}
 		})
 	}
-}
 
-Object.defineProperty(ObservableObject.prototype, 'propertyChanged', {
-	configurable: true,
-	enumerable  : false,
-	get() {
+	get propertyChanged() {
 		return this.__meta.propertyChanged
 	}
-})
+
+	onPropertyChanged(...propertyNames) {
+		if (propertyNames.length === 0) {
+			this.propertyChanged.emit({})
+		}
+
+		propertyNames = expandAndDistinct(propertyNames)
+
+		for (const propertyName of propertyNames) {
+			const value = this[propertyName]
+			this.propertyChanged.emit({
+				name    : propertyName,
+				oldValue: value,
+				newValue: value
+			})
+		}
+	}
+}
+
+// Object.defineProperty(ObservableObject.prototype, 'propertyChanged', {
+// 	configurable: true,
+// 	enumerable  : false,
+// 	get() {
+// 		return this.__meta.propertyChanged
+// 	}
+// })
+
+function expandAndDistinct(inputItems, output = [], map = {}) {
+	if (inputItems == null) {
+		return output
+	}
+
+	if (Array.isArray(inputItems)) {
+		for (const item of inputItems) {
+			expandAndDistinct(item, output, map)
+		}
+		return output
+	}
+
+	if (!map[inputItems]) {
+		map[inputItems] = true
+		output[output.length] = inputItems
+	}
+
+	return output
+}
 
 export class ObservableObjectBuilder {
 	constructor(object) {
@@ -52,9 +93,21 @@ export class ObservableObjectBuilder {
 			.autoConnect(null, () => propertyChanged.subscribe(subscriber))
 	}
 
-	writable(name, initValue) {
+	_set(name, field, options) {
+
+	}
+
+	writable(name, options) {
 		const {object} = this
 		const {unsubscribers, propertyChanged} = object.__meta
+		const {
+			value: initValue,
+			convertFunc,
+			equalsFunc,
+			fillFunc,
+			beforeChange,
+			afterChange
+		} = options || {}
 
 		let unsubscribe = unsubscribers[name]
 		let value = object[name]
@@ -66,8 +119,20 @@ export class ObservableObjectBuilder {
 				return value
 			},
 			set: newValue => {
-				if (newValue === value) {
+				if (convertFunc) {
+					newValue = convertFunc(newValue)
+				}
+
+				if (equalsFunc ? equalsFunc(value, newValue) : value === newValue) {
 					return
+				}
+
+				if (fillFunc && value != null && newValue != null && fillFunc(value, newValue)) {
+					return
+				}
+
+				if (beforeChange) {
+					beforeChange(value)
 				}
 
 				if (unsubscribe) {
@@ -78,6 +143,10 @@ export class ObservableObjectBuilder {
 				value = newValue
 
 				unsubscribers[name] = unsubscribe = this.propagatePropertyChanged(name, value)
+
+				if (afterChange) {
+					afterChange(newValue)
+				}
 
 				propertyChanged.emit({
 					name,
@@ -101,9 +170,10 @@ export class ObservableObjectBuilder {
 		return this
 	}
 
-	readable(name, value) {
+	readable(name, options) {
 		const {object} = this
 		const {unsubscribers, propertyChanged} = object.__meta
+		let {value} = options || {}
 
 		const unsubscribe = unsubscribers[name]
 		const oldValue = object[name]

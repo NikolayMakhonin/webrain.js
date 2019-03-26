@@ -1,11 +1,11 @@
 /* eslint-disable guard-for-in */
-import {ObservableObject, ObservableObjectBuilder} from '../../../../../main/common/rx/ObservableObject'
+import {ObservableObject, ObservableObjectBuilder} from '../../../../../../main/common/rx/object/ObservableObject'
 
 describe('common > main > rx > ObservableObjectBuilder', function () {
 	it('enumerate properties', function () {
 		const {object} = new ObservableObjectBuilder()
 			.writable('writable')
-			.readable('readable', '1')
+			.readable('readable', {value: '1'})
 
 		assert.deepStrictEqual(Object.keys(object), ['writable', 'readable'])
 
@@ -27,16 +27,101 @@ describe('common > main > rx > ObservableObjectBuilder', function () {
 
 	it('propertyChanged property', function () {
 		const {object} = new ObservableObjectBuilder()
-		// const {propertyChanged} = object
-		// assert.ok(object.propertyChanged)
+		assert.ok(object.propertyChanged)
 
-		// assert.throws(() => (object.propertyChanged = '1'), TypeError)
+		assert.throws(() => (object.propertyChanged = '1'), TypeError)
 
-		// Object.defineProperty(object, 'propertyChanged', {
-		// 	value: '2'
-		// })
-		//
-		// assert.strictEqual(object.propertyChanged, '2')
+		Object.defineProperty(object, 'propertyChanged', {
+			value: '2'
+		})
+
+		assert.strictEqual(object.propertyChanged, '2')
+	})
+
+	it('onPropertyChanged property', function () {
+		const {object} = new ObservableObjectBuilder()
+		assert.ok(object.onPropertyChanged)
+
+		object.onPropertyChanged = '2'
+
+		assert.strictEqual(object.onPropertyChanged, '2')
+	})
+
+	it('onPropertyChanged', function () {
+		const {object} = new ObservableObjectBuilder()
+
+		let results = []
+		const subscriber = value => {
+			results.push(value)
+		}
+
+		const unsubscribe = []
+		assert.strictEqual(typeof (unsubscribe[0] = object.propertyChanged.subscribe(subscriber)), 'function')
+		assert.deepStrictEqual(results, [])
+
+		object.onPropertyChanged()
+		assert.deepStrictEqual(results, [{}])
+		results = []
+
+		object.onPropertyChanged([])
+		assert.deepStrictEqual(results, [])
+
+		object.onPropertyChanged(null)
+		assert.deepStrictEqual(results, [])
+
+		object.onPropertyChanged('')
+		assert.deepStrictEqual(results, [
+			{
+				name    : '',
+				newValue: undefined,
+				oldValue: undefined
+			}
+		])
+		results = []
+
+		object.onPropertyChanged('', '', ['', '', ['']])
+		assert.deepStrictEqual(results, [
+			{
+				name    : '',
+				newValue: undefined,
+				oldValue: undefined
+			}
+		])
+		results = []
+
+		object[4] = null
+		object[1] = 11
+		object['z'] = 'zz'
+
+		object.onPropertyChanged([[2, 'z', ['a', '1', [4]]]])
+		assert.deepStrictEqual(results, [
+			{
+				name    : 2,
+				newValue: undefined,
+				oldValue: undefined
+			},
+			{
+				name    : 'z',
+				newValue: 'zz',
+				oldValue: 'zz'
+			},
+			{
+				name    : 'a',
+				newValue: undefined,
+				oldValue: undefined
+			},
+			{
+				name    : '1',
+				newValue: 11,
+				oldValue: 11
+			},
+			{
+				name    : 4,
+				newValue: null,
+				oldValue: null
+			}
+		])
+		results = []
 	})
 
 	it('readable simple', function () {
@@ -49,16 +134,16 @@ describe('common > main > rx > ObservableObjectBuilder', function () {
 		assert.strictEqual(builder.readable('prop'), builder)
 		assert.strictEqual(builder.object['prop'], undefined)
 
-		assert.strictEqual(builder.readable('prop', '1'), builder)
+		assert.strictEqual(builder.readable('prop', {value: '1'}), builder)
 		assert.strictEqual(builder.object['prop'], '1')
 
 		assert.strictEqual(builder.readable('prop'), builder)
 		assert.strictEqual(builder.object['prop'], '1')
 
-		assert.strictEqual(builder.readable('prop', undefined), builder)
+		assert.strictEqual(builder.readable('prop', {value: undefined}), builder)
 		assert.strictEqual(builder.object['prop'], '1')
 
-		assert.strictEqual(builder.readable('prop', null), builder)
+		assert.strictEqual(builder.readable('prop', {value: null}), builder)
 		assert.strictEqual(builder.object['prop'], null)
 
 		assert.throws(() => (builder.object['prop'] = '2'), TypeError)
@@ -77,16 +162,16 @@ describe('common > main > rx > ObservableObjectBuilder', function () {
 		assert.strictEqual(builder.writable('prop'), builder)
 		assert.strictEqual(builder.object['prop'], undefined)
 
-		assert.strictEqual(builder.writable('prop', '1'), builder)
+		assert.strictEqual(builder.writable('prop', {value: '1'}), builder)
 		assert.strictEqual(builder.object['prop'], '1')
 
 		assert.strictEqual(builder.readable('prop'), builder)
 		assert.strictEqual(builder.object['prop'], '1')
 
-		assert.strictEqual(builder.writable('prop', undefined), builder)
+		assert.strictEqual(builder.writable('prop', {value: undefined}), builder)
 		assert.strictEqual(builder.object['prop'], '1')
 
-		assert.strictEqual(builder.writable('prop', null), builder)
+		assert.strictEqual(builder.writable('prop', {value: null}), builder)
 		assert.strictEqual(builder.object['prop'], null)
 
 		builder.object['prop'] = '2'
@@ -125,12 +210,12 @@ describe('common > main > rx > ObservableObjectBuilder', function () {
 		assert.deepStrictEqual(results, [])
 		assert.strictEqual(object['prop'], undefined)
 
-		assert.strictEqual(builder.readable('prop', undefined), builder)
+		assert.strictEqual(builder.readable('prop', {value: undefined}), builder)
 		assert.deepStrictEqual(hasSubscribers, [])
 		assert.deepStrictEqual(results, [])
 		assert.strictEqual(object['prop'], undefined)
 
-		assert.strictEqual(builder.readable('prop', null), builder)
+		assert.strictEqual(builder.readable('prop', {value: null}), builder)
 		assert.deepStrictEqual(hasSubscribers, [])
 		assert.deepStrictEqual(results, [
 			{
@@ -142,7 +227,7 @@ describe('common > main > rx > ObservableObjectBuilder', function () {
 		results = []
 		assert.strictEqual(object['prop'], null)
 
-		assert.strictEqual(builder.readable('prop', '1'), builder)
+		assert.strictEqual(builder.readable('prop', {value: '1'}), builder)
 		assert.deepStrictEqual(hasSubscribers, [])
 		assert.deepStrictEqual(results, [
 			{
@@ -154,12 +239,12 @@ describe('common > main > rx > ObservableObjectBuilder', function () {
 		results = []
 		assert.strictEqual(object['prop'], '1')
 
-		assert.strictEqual(builder.readable('prop', '1'), builder)
+		assert.strictEqual(builder.readable('prop', {value: '1'}), builder)
 		assert.deepStrictEqual(hasSubscribers, [])
 		assert.deepStrictEqual(results, [])
 		assert.strictEqual(object['prop'], '1')
 
-		assert.strictEqual(builder.readable('prop', 1), builder)
+		assert.strictEqual(builder.readable('prop', {value: 1}), builder)
 		assert.deepStrictEqual(hasSubscribers, [])
 		assert.deepStrictEqual(results, [
 			{
@@ -214,12 +299,12 @@ describe('common > main > rx > ObservableObjectBuilder', function () {
 		assert.deepStrictEqual(results, [])
 		assert.strictEqual(object['prop'], undefined)
 
-		assert.strictEqual(builder.writable('prop', undefined), builder)
+		assert.strictEqual(builder.writable('prop', {value: undefined}), builder)
 		assert.deepStrictEqual(hasSubscribers, [])
 		assert.deepStrictEqual(results, [])
 		assert.strictEqual(object['prop'], undefined)
 
-		assert.strictEqual(builder.writable('prop', null), builder)
+		assert.strictEqual(builder.writable('prop', {value: null}), builder)
 		assert.deepStrictEqual(hasSubscribers, [])
 		assert.deepStrictEqual(results, [
 			{
@@ -231,7 +316,7 @@ describe('common > main > rx > ObservableObjectBuilder', function () {
 		results = []
 		assert.strictEqual(object['prop'], null)
 
-		assert.strictEqual(builder.writable('prop', '1'), builder)
+		assert.strictEqual(builder.writable('prop', {value: '1'}), builder)
 		assert.deepStrictEqual(hasSubscribers, [])
 		assert.deepStrictEqual(results, [
 			{
@@ -243,12 +328,12 @@ describe('common > main > rx > ObservableObjectBuilder', function () {
 		results = []
 		assert.strictEqual(object['prop'], '1')
 
-		assert.strictEqual(builder.writable('prop', '1'), builder)
+		assert.strictEqual(builder.writable('prop', {value: '1'}), builder)
 		assert.deepStrictEqual(hasSubscribers, [])
 		assert.deepStrictEqual(results, [])
 		assert.strictEqual(object['prop'], '1')
 
-		assert.strictEqual(builder.writable('prop', 1), builder)
+		assert.strictEqual(builder.writable('prop', {value: 1}), builder)
 		assert.deepStrictEqual(hasSubscribers, [])
 		assert.deepStrictEqual(results, [
 			{
@@ -318,7 +403,7 @@ describe('common > main > rx > ObservableObjectBuilder', function () {
 		assert.deepStrictEqual(hasSubscribers, [true])
 		hasSubscribers = []
 
-		assert.strictEqual(builder.readable('prop', objectNested), builder)
+		assert.strictEqual(builder.readable('prop', {value: objectNested}), builder)
 		assert.deepStrictEqual(hasSubscribers, [])
 		assert.deepStrictEqual(results, [
 			{
@@ -331,13 +416,13 @@ describe('common > main > rx > ObservableObjectBuilder', function () {
 		assert.strictEqual(object['prop'], objectNested)
 
 		objectNested['prop'] = '1'
-		assert.strictEqual(builderNested.readable('prop', '1'), builderNested)
+		assert.strictEqual(builderNested.readable('prop', {value: '1'}), builderNested)
 		assert.deepStrictEqual(hasSubscribers, [])
 		assert.deepStrictEqual(results, [])
 		assert.strictEqual(objectNested['prop'], '1')
 		assert.strictEqual(object['prop'], objectNested)
 
-		assert.strictEqual(builderNested.readable('prop', '2'), builderNested)
+		assert.strictEqual(builderNested.readable('prop', {value: '2'}), builderNested)
 		assert.deepStrictEqual(hasSubscribers, [])
 		assert.deepStrictEqual(results, [
 			{
@@ -361,7 +446,7 @@ describe('common > main > rx > ObservableObjectBuilder', function () {
 		assert.deepStrictEqual(hasSubscribers, [])
 		assert.deepStrictEqual(results, [])
 
-		assert.strictEqual(builderNested.readable('prop', '4'), builderNested)
+		assert.strictEqual(builderNested.readable('prop', {value: '4'}), builderNested)
 		assert.deepStrictEqual(hasSubscribers, [])
 		assert.deepStrictEqual(results, [
 			{
@@ -392,14 +477,14 @@ describe('common > main > rx > ObservableObjectBuilder', function () {
 		assert.deepStrictEqual(hasSubscribers, [])
 		assert.deepStrictEqual(results, [])
 
-		assert.strictEqual(builderNested.readable('prop', '4'), builderNested)
+		assert.strictEqual(builderNested.readable('prop', {value: '4'}), builderNested)
 		assert.deepStrictEqual(hasSubscribers, [])
 		assert.deepStrictEqual(results, [])
 
 		object['prop'] = objectNested
 		assert.strictEqual(object['prop'], objectNested)
 
-		assert.strictEqual(builder.readable('prop', objectNested), builder)
+		assert.strictEqual(builder.readable('prop', {value: objectNested}), builder)
 		assert.deepStrictEqual(hasSubscribers, [])
 		assert.deepStrictEqual(results, [])
 		assert.strictEqual(object['prop'], objectNested)
@@ -410,12 +495,12 @@ describe('common > main > rx > ObservableObjectBuilder', function () {
 		object['prop'] = objectNested
 		assert.strictEqual(object['prop'], objectNested)
 
-		assert.strictEqual(builder.readable('prop', objectNested), builder)
+		assert.strictEqual(builder.readable('prop', {value: objectNested}), builder)
 		assert.deepStrictEqual(hasSubscribers, [])
 		assert.deepStrictEqual(results, [])
 		assert.strictEqual(object['prop'], objectNested)
 
-		assert.strictEqual(builderNested.readable('prop', '5'), builderNested)
+		assert.strictEqual(builderNested.readable('prop', {value: '5'}), builderNested)
 		assert.deepStrictEqual(hasSubscribers, [])
 		assert.deepStrictEqual(results, [
 			{
@@ -457,7 +542,7 @@ describe('common > main > rx > ObservableObjectBuilder', function () {
 		assert.deepStrictEqual(hasSubscribers, [true])
 		hasSubscribers = []
 
-		assert.strictEqual(builder.writable('prop', objectNested), builder)
+		assert.strictEqual(builder.writable('prop', {value: objectNested}), builder)
 		assert.deepStrictEqual(hasSubscribers, [])
 		assert.deepStrictEqual(results, [
 			{
@@ -470,13 +555,13 @@ describe('common > main > rx > ObservableObjectBuilder', function () {
 		assert.strictEqual(object['prop'], objectNested)
 
 		objectNested['prop'] = '1'
-		assert.strictEqual(builderNested.writable('prop', '1'), builderNested)
+		assert.strictEqual(builderNested.writable('prop', {value: '1'}), builderNested)
 		assert.deepStrictEqual(hasSubscribers, [])
 		assert.deepStrictEqual(results, [])
 		assert.strictEqual(objectNested['prop'], '1')
 		assert.strictEqual(object['prop'], objectNested)
 
-		assert.strictEqual(builderNested.writable('prop', '2'), builderNested)
+		assert.strictEqual(builderNested.writable('prop', {value: '2'}), builderNested)
 		assert.deepStrictEqual(hasSubscribers, [])
 		assert.deepStrictEqual(results, [
 			{
@@ -559,7 +644,7 @@ describe('common > main > rx > ObservableObjectBuilder', function () {
 		object['prop'] = objectNested
 		assert.strictEqual(object['prop'], objectNested)
 
-		assert.strictEqual(builder.writable('prop', objectNested), builder)
+		assert.strictEqual(builder.writable('prop', {value: objectNested}), builder)
 		assert.deepStrictEqual(hasSubscribers, [])
 		assert.deepStrictEqual(results, [])
 		assert.strictEqual(object['prop'], objectNested)
@@ -570,7 +655,7 @@ describe('common > main > rx > ObservableObjectBuilder', function () {
 		object['prop'] = objectNested
 		assert.strictEqual(object['prop'], objectNested)
 
-		assert.strictEqual(builder.writable('prop', objectNested), builder)
+		assert.strictEqual(builder.writable('prop', {value: objectNested}), builder)
 		assert.deepStrictEqual(hasSubscribers, [])
 		assert.deepStrictEqual(results, [])
 		assert.strictEqual(object['prop'], objectNested)
