@@ -1,7 +1,7 @@
 /* eslint-disable guard-for-in */
 import {ObservableObject, ObservableObjectBuilder} from '../../../../../../main/common/rx/object/ObservableObject'
 
-describe('common > main > rx > ObservableObjectBuilder', function () {
+describe('common > main > rx > observable-object-builder', function () {
 	it('enumerate properties', function () {
 		const {object} = new ObservableObjectBuilder()
 			.writable('writable')

@@ -2,7 +2,7 @@ import '../extensions/autoConnect'
 import {HasSubscribersSubject} from '../subjects/hasSubscribers'
 
 export class ObservableObject {
-	constructor() {
+	constructor(fields) {
 		Object.defineProperty(this, '__meta', {
 			configurable: false,
 			enumerable  : false,
@@ -11,6 +11,13 @@ export class ObservableObject {
 				unsubscribers  : {},
 				propertyChanged: new HasSubscribersSubject()
 			}
+		})
+
+		Object.defineProperty(this, '__fields', {
+			configurable: false,
+			enumerable  : false,
+			writable    : false,
+			value       : fields || {}
 		})
 	}
 
@@ -35,8 +42,9 @@ export class ObservableObject {
 		}
 	}
 
-	_set(name, options, field, newValue) {
-		const {value: oldValue} = field
+	_set(name, newValue, options) {
+		const {__fields} = this
+		const oldValue =  __fields[name]
 
 		const {convertFunc} = options
 		if (convertFunc) {
@@ -45,12 +53,12 @@ export class ObservableObject {
 
 		const {equalsFunc} = options
 		if (equalsFunc ? equalsFunc(oldValue, newValue) : oldValue === newValue) {
-			return
+			return false
 		}
 
 		const {fillFunc} = options
 		if (fillFunc && oldValue != null && newValue != null && fillFunc(oldValue, newValue)) {
-			return
+			return false
 		}
 
 		const {beforeChange} = options
@@ -58,14 +66,14 @@ export class ObservableObject {
 			beforeChange(oldValue)
 		}
 
-		const {unsubscribers, propertyChanged} = this.__meta
+		const {propertyChanged, unsubscribers} = this.__meta
 
 		const unsubscribe = unsubscribers[name]
 		if (unsubscribe) {
 			unsubscribe()
 		}
 
-		field.value = newValue
+		__fields[name] = newValue
 
 		unsubscribers[name] = this._propagatePropertyChanged(name, newValue)
 
@@ -79,6 +87,8 @@ export class ObservableObject {
 			oldValue,
 			newValue
 		})
+
+		return true
 	}
 
 	_propagatePropertyChanged(propertyName, value) {
@@ -103,14 +113,6 @@ export class ObservableObject {
 			.autoConnect(null, () => propertyChanged.subscribe(subscriber))
 	}
 }
-
-// Object.defineProperty(ObservableObject.prototype, 'propertyChanged', {
-// 	configurable: true,
-// 	enumerable  : false,
-// 	get() {
-// 		return this.__meta.propertyChanged
-// 	}
-// })
 
 function expandAndDistinct(inputItems, output = [], map = {}) {
 	if (inputItems == null) {
@@ -144,30 +146,36 @@ export class ObservableObjectBuilder {
 
 		const {object} = this
 
-		const field = {value: object[name]}
+		const {__fields} = object
+
+		if (__fields) {
+			__fields[name] = object[name]
+		}
 
 		Object.defineProperty(object, name, {
 			configurable: true,
 			enumerable  : true,
 			get() {
-				return field.value
+				return this.__fields[name]
 			},
 			set(newValue) {
-				this._set(name, options, field, newValue)
+				this._set(name, newValue, options)
 			}
 		})
 
-		if (typeof initValue !== 'undefined') {
-			const {value} = field
-			if (initValue === value) {
-				const {unsubscribers} = object.__meta
-				const unsubscribe = unsubscribers[name]
-				if (unsubscribe) {
-					unsubscribe()
+		if (__fields) {
+			if (typeof initValue !== 'undefined') {
+				const value = __fields[name]
+				if (initValue === value) {
+					const {unsubscribers} = object.__meta
+					const unsubscribe = unsubscribers[name]
+					if (unsubscribe) {
+						unsubscribe()
+					}
+					unsubscribers[name] = object._propagatePropertyChanged(name, value)
+				} else {
+					object[name] = initValue
 				}
-				unsubscribers[name] = object._propagatePropertyChanged(name, value)
-			} else {
-				object[name] = initValue
 			}
 		}
 
@@ -176,33 +184,40 @@ export class ObservableObjectBuilder {
 
 	readable(name, options, value) {
 		const {object} = this
-		const oldValue = object[name]
+
+		const {__fields} = object
+
+		if (__fields) {
+			__fields[name] = object[name]
+		}
 
 		Object.defineProperty(object, name, {
 			configurable: true,
 			enumerable  : true,
 			get() {
-				return value
+				return this.__fields[name]
 			}
 		})
 
-		if (typeof value === 'undefined') {
-			value = oldValue
-		} else {
-			const {unsubscribers, propertyChanged} = object.__meta
-			const unsubscribe = unsubscribers[name]
+		if (__fields) {
+			if (typeof value !== 'undefined') {
+				const oldValue = __fields[name]
+				const {unsubscribers} = object.__meta
+				const unsubscribe = unsubscribers[name]
+				if (unsubscribe) {
+					unsubscribe()
+				}
+				unsubscribers[name] = object._propagatePropertyChanged(name, value)
 
-			if (unsubscribe) {
-				unsubscribe()
-			}
-			unsubscribers[name] = object._propagatePropertyChanged(name, value)
-
-			if (value !== oldValue) {
-				propertyChanged.emit({
-					name,
-					oldValue,
-					newValue: value
-				})
+				if (value !== oldValue) {
+					__fields[name] = value
+					const {propertyChanged} = object.__meta
+					propertyChanged.emit({
+						name,
+						oldValue,
+						newValue: value
+					})
+				}
 			}
 		}
 
@@ -211,23 +226,29 @@ export class ObservableObjectBuilder {
 
 	delete(name) {
 		const {object} = this
-		const {unsubscribers, propertyChanged} = object.__meta
-
-		const unsubscribe = unsubscribers[name]
 		const oldValue = object[name]
+		const {__fields, __meta} = object
 
-		if (unsubscribe) {
-			unsubscribe()
+		if (__meta) {
+			const {unsubscribers} = __meta
+			const unsubscribe = unsubscribers[name]
+
+			if (unsubscribe) {
+				unsubscribe()
+			}
 		}
 
 		delete object[name]
-		delete unsubscribers[name]
 
-		if (typeof oldValue !== 'undefined') {
-			propertyChanged.emit({
-				name,
-				oldValue
-			})
+		if (__meta) {
+			delete __fields[name]
+			if (typeof oldValue !== 'undefined') {
+				const {propertyChanged} = __meta
+				propertyChanged.emit({
+					name,
+					oldValue
+				})
+			}
 		}
 
 		return this
