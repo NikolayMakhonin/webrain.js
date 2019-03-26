@@ -34,6 +34,74 @@ export class ObservableObject {
 			})
 		}
 	}
+
+	_set(name, options, field, newValue) {
+		const {value: oldValue} = field
+
+		const {convertFunc} = options
+		if (convertFunc) {
+			newValue = convertFunc(newValue)
+		}
+
+		const {equalsFunc} = options
+		if (equalsFunc ? equalsFunc(oldValue, newValue) : oldValue === newValue) {
+			return
+		}
+
+		const {fillFunc} = options
+		if (fillFunc && oldValue != null && newValue != null && fillFunc(oldValue, newValue)) {
+			return
+		}
+
+		const {beforeChange} = options
+		if (beforeChange) {
+			beforeChange(oldValue)
+		}
+
+		const {unsubscribers, propertyChanged} = this.__meta
+
+		const unsubscribe = unsubscribers[name]
+		if (unsubscribe) {
+			unsubscribe()
+		}
+
+		field.value = newValue
+
+		unsubscribers[name] = this._propagatePropertyChanged(name, newValue)
+
+		const {afterChange} = options
+		if (afterChange) {
+			afterChange(newValue)
+		}
+
+		propertyChanged.emit({
+			name,
+			oldValue,
+			newValue
+		})
+	}
+
+	_propagatePropertyChanged(propertyName, value) {
+		if (!value) {
+			return null
+		}
+
+		const {propertyChanged} = value
+
+		if (!propertyChanged) {
+			return null
+		}
+
+		const subscriber = event => {
+			this.propertyChanged.emit({
+				name: propertyName,
+				next: event
+			})
+		}
+
+		return this.propertyChanged.hasSubscribersObservable
+			.autoConnect(null, () => propertyChanged.subscribe(subscriber))
+	}
 }
 
 // Object.defineProperty(ObservableObject.prototype, 'propertyChanged', {
@@ -69,99 +137,35 @@ export class ObservableObjectBuilder {
 		this.object = object || new ObservableObject()
 	}
 
-	propagatePropertyChanged(propertyName, value) {
-		if (!value) {
-			return null
-		}
-
-		const {propertyChanged} = value
-
-		if (!propertyChanged) {
-			return null
+	writable(name, options, initValue) {
+		if (!options) {
+			options = {}
 		}
 
 		const {object} = this
 
-		const subscriber = event => {
-			object.propertyChanged.emit({
-				name: propertyName,
-				next: event
-			})
-		}
-
-		return object.propertyChanged.hasSubscribersObservable
-			.autoConnect(null, () => propertyChanged.subscribe(subscriber))
-	}
-
-	_set(name, field, options) {
-
-	}
-
-	writable(name, options) {
-		const {object} = this
-		const {unsubscribers, propertyChanged} = object.__meta
-		const {
-			value: initValue,
-			convertFunc,
-			equalsFunc,
-			fillFunc,
-			beforeChange,
-			afterChange
-		} = options || {}
-
-		let unsubscribe = unsubscribers[name]
-		let value = object[name]
+		const field = {value: object[name]}
 
 		Object.defineProperty(object, name, {
 			configurable: true,
 			enumerable  : true,
 			get() {
-				return value
+				return field.value
 			},
-			set: newValue => {
-				if (convertFunc) {
-					newValue = convertFunc(newValue)
-				}
-
-				if (equalsFunc ? equalsFunc(value, newValue) : value === newValue) {
-					return
-				}
-
-				if (fillFunc && value != null && newValue != null && fillFunc(value, newValue)) {
-					return
-				}
-
-				if (beforeChange) {
-					beforeChange(value)
-				}
-
-				if (unsubscribe) {
-					unsubscribe()
-				}
-
-				const oldValue = value
-				value = newValue
-
-				unsubscribers[name] = unsubscribe = this.propagatePropertyChanged(name, value)
-
-				if (afterChange) {
-					afterChange(newValue)
-				}
-
-				propertyChanged.emit({
-					name,
-					oldValue,
-					newValue: value
-				})
+			set(newValue) {
+				this._set(name, options, field, newValue)
 			}
 		})
 
 		if (typeof initValue !== 'undefined') {
+			const {value} = field
 			if (initValue === value) {
+				const {unsubscribers} = object.__meta
+				const unsubscribe = unsubscribers[name]
 				if (unsubscribe) {
 					unsubscribe()
 				}
-				unsubscribers[name] = unsubscribe = this.propagatePropertyChanged(name, value)
+				unsubscribers[name] = object._propagatePropertyChanged(name, value)
 			} else {
 				object[name] = initValue
 			}
@@ -170,12 +174,8 @@ export class ObservableObjectBuilder {
 		return this
 	}
 
-	readable(name, options) {
+	readable(name, options, value) {
 		const {object} = this
-		const {unsubscribers, propertyChanged} = object.__meta
-		let {value} = options || {}
-
-		const unsubscribe = unsubscribers[name]
 		const oldValue = object[name]
 
 		Object.defineProperty(object, name, {
@@ -189,10 +189,13 @@ export class ObservableObjectBuilder {
 		if (typeof value === 'undefined') {
 			value = oldValue
 		} else {
+			const {unsubscribers, propertyChanged} = object.__meta
+			const unsubscribe = unsubscribers[name]
+
 			if (unsubscribe) {
 				unsubscribe()
 			}
-			unsubscribers[name] = this.propagatePropertyChanged(name, value)
+			unsubscribers[name] = object._propagatePropertyChanged(name, value)
 
 			if (value !== oldValue) {
 				propertyChanged.emit({
