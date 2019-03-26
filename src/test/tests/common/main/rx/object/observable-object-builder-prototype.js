@@ -177,5 +177,25 @@ describe('common > main > rx > observable-object-builder-prototype', function ()
 		assert.deepStrictEqual(baseObject2.baseProp2, '3')
 		assert.deepStrictEqual(object1.baseProp2, undefined)
 		assert.deepStrictEqual(object2.baseProp2, '6')
+
+
+		new ObservableObjectBuilder(object2)
+			.readable('baseProp1', null, '7')
+
+		assert.deepStrictEqual(baseResults1, [])
+		assert.deepStrictEqual(baseResults2, [])
+		assert.deepStrictEqual(results1, [])
+		assert.deepStrictEqual(results2, [
+			{
+				name    : 'baseProp1',
+				newValue: '7',
+				oldValue: '5'
+			}
+		])
+		results2 = []
+		assert.deepStrictEqual(baseObject1.baseProp1, '1')
+		assert.deepStrictEqual(baseObject2.baseProp1, '2')
+		assert.deepStrictEqual(object1.baseProp1, '4')
+		assert.deepStrictEqual(object2.baseProp1, '7')
 	})
 })

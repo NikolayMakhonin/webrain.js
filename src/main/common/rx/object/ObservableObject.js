@@ -2,7 +2,7 @@ import '../extensions/autoConnect'
 import {HasSubscribersSubject} from '../subjects/hasSubscribers'
 
 export class ObservableObject {
-	constructor(fields) {
+	constructor() {
 		Object.defineProperty(this, '__meta', {
 			configurable: false,
 			enumerable  : false,
@@ -17,7 +17,7 @@ export class ObservableObject {
 			configurable: false,
 			enumerable  : false,
 			writable    : false,
-			value       : fields || {}
+			value       : {}
 		})
 	}
 
