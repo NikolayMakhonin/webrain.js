@@ -127,6 +127,7 @@
     "tslint": "^5.14.0",
     "tslint-clean-code": "^0.2.9",
     "tslint-consistent-codestyle": "^1.15.1",
+    "tslint-eslint-rules": "^5.4.0",
     "tslint-sonarts": "^1.9.0",
     "typescript": "^3.3.4000",
     "zip-dir": "^1.0.2"

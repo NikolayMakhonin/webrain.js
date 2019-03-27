@@ -1,7 +1,7 @@
 import '../extensions/autoConnect'
 import {HasSubscribersSubject} from '../subjects/hasSubscribers'
 
-function expandAndDistinct(inputItems, output = [], map = {}) {
+function expandAndDistinct(inputItems: any, output = [], map: any = {}) {
 	if (inputItems == null) {
 		return output
 	}
@@ -21,28 +21,42 @@ function expandAndDistinct(inputItems, output = [], map = {}) {
 	return output
 }
 
+export interface IPropertyChangedEvent {
+	name: string,
+	oldValue: any,
+	newValue: any,
+}
+
 export class ObservableObject {
+	private __meta: {
+		unsubscribers: { any; },
+		propertyChanged?: HasSubscribersSubject,
+		deepPropertyChanged?: HasSubscribersSubject,
+	}
+
+	private __fields?: { any; }
+
 	constructor() {
 		Object.defineProperty(this, '__meta', {
 			configurable: false,
-			enumerable  : false,
-			writable    : false,
+			enumerable : false,
+			writable     : false,
 			value       : {
-				unsubscribers: {}
-			}
+				unsubscribers: {},
+			},
 		})
 
 		Object.defineProperty(this, '__fields', {
 			configurable: false,
 			enumerable  : false,
 			writable    : false,
-			value       : {}
+			value       : {},
 		})
 	}
 
 	// region propertyChanged
 
-	get propertyChanged() {
+	get propertyChanged(): HasSubscribersSubject {
 		let {propertyChanged} = this.__meta
 		if (!propertyChanged) {
 			this.__meta.propertyChanged = propertyChanged = new HasSubscribersSubject()
@@ -50,7 +64,7 @@ export class ObservableObject {
 		return propertyChanged
 	}
 
-	get deepPropertyChanged() {
+	get deepPropertyChanged(): HasSubscribersSubject {
 		let {deepPropertyChanged} = this.__meta
 		if (!deepPropertyChanged) {
 			this.__meta.deepPropertyChanged = deepPropertyChanged = new HasSubscribersSubject()
@@ -58,12 +72,12 @@ export class ObservableObject {
 		return deepPropertyChanged
 	}
 
-	_emitPropertyChanged(eventsOrPropertyNames, emitFunc) {
+	public _emitPropertyChanged(eventsOrPropertyNames: any, emitFunc: (event: IPropertyChangedEvent) => void) {
 		if (eventsOrPropertyNames === null) {
 			return
 		}
 
-		const toEvent = event => {
+		const toEvent = (event) => {
 			if (event == null) {
 				return {}
 			}
@@ -73,7 +87,7 @@ export class ObservableObject {
 				event = {
 					name    : event,
 					oldValue: value,
-					newValue: value
+					newValue: value,
 				}
 			}
 
@@ -91,14 +105,14 @@ export class ObservableObject {
 		}
 	}
 
-	onPropertyChanged(eventsOrPropertyNames) {
+	public onPropertyChanged(eventsOrPropertyNames) {
 		const {propertyChanged, deepPropertyChanged} = this.__meta
 
 		if (!propertyChanged && !deepPropertyChanged) {
 			return this
 		}
 
-		this._emitPropertyChanged(eventsOrPropertyNames, event => {
+		this._emitPropertyChanged(eventsOrPropertyNames, (event: IPropertyChangedEvent) => {
 			if (propertyChanged) {
 				propertyChanged.emit(event)
 			}
@@ -111,14 +125,14 @@ export class ObservableObject {
 		return this
 	}
 
-	onDeepPropertyChanged(eventsOrPropertyNames) {
+	public onDeepPropertyChanged(eventsOrPropertyNames) {
 		const {deepPropertyChanged} = this.__meta
 
 		if (!deepPropertyChanged) {
 			return this
 		}
 
-		this._emitPropertyChanged(eventsOrPropertyNames, event => {
+		this._emitPropertyChanged(eventsOrPropertyNames, (event) => {
 			deepPropertyChanged.emit(event)
 		})
 
@@ -127,7 +141,7 @@ export class ObservableObject {
 
 	// endregion
 
-	_set(name, newValue, options) {
+	public _set(name, newValue, options) {
 		const {__fields} = this
 		const oldValue =  __fields[name]
 
@@ -174,13 +188,13 @@ export class ObservableObject {
 		this.onPropertyChanged({
 			name,
 			oldValue,
-			newValue
+			newValue,
 		})
 
 		return true
 	}
 
-	_propagatePropertyChanged(propertyName, value) {
+	public _propagatePropertyChanged(propertyName, value) {
 		if (!value) {
 			return null
 		}
@@ -191,10 +205,10 @@ export class ObservableObject {
 			return null
 		}
 
-		const subscriber = event => {
+		const subscriber = (event) => {
 			this.deepPropertyChanged.emit({
 				name: propertyName,
-				next: event
+				next: event,
 			})
 		}
 
