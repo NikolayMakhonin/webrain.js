@@ -1,6 +1,6 @@
 {
     "include": [
-        "{src,dist/{js,mjs}}/{main,test/**/src}/**/*.js"
+        "{src,dist/{js,mjs}}/{main,test/**/src}/**/*{.es6,.es,.js,.mjs,.ts}"
     ],
     "reporter": [
         "json"

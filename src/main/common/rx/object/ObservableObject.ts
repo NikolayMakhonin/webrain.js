@@ -27,6 +27,14 @@ export type EventsOrPropertyNames = EventOrPropertyName | Array<EventOrPropertyN
 
 export type IAnyPropertyChangedEvent = IDeepPropertyChangedEvent | IPropertyChangedEvent
 
+export interface ISetOptions {
+	equalsFunc?: (oldValue, newValue) => boolean,
+	fillFunc?: (oldValue, newValue) => boolean,
+	convertFunc?: (newValue) => any,
+	beforeChange?: (oldValue) => void,
+	afterChange?: (newValue) => void,
+}
+
 export interface IPropertyChangedEvent {
 	name?: string | number,
 	oldValue?: any,
@@ -42,8 +50,18 @@ export interface IDeepPropertyChanged {
 	readonly deepPropertyChanged: IHasSubscribersSubject<IAnyPropertyChangedEvent>
 }
 
-export class ObservableObject {
-	private readonly __meta: {
+export interface IObservableObject {
+	readonly propertyChanged: IHasSubscribersSubject<IPropertyChangedEvent>
+	readonly deepPropertyChanged: IHasSubscribersSubject<IAnyPropertyChangedEvent>
+
+	onPropertyChanged(eventsOrPropertyNames: EventsOrPropertyNames): this
+
+	onDeepPropertyChanged(eventsOrPropertyNames: EventsOrPropertyNames): this
+}
+
+export class ObservableObject implements IObservableObject {
+	/** @internal */
+	public readonly __meta: {
 		unsubscribers: {
 			[key: string]: IUnsubscribe,
 			[key: number]: IUnsubscribe,
@@ -52,7 +70,8 @@ export class ObservableObject {
 		deepPropertyChanged?: IHasSubscribersSubject<IAnyPropertyChangedEvent>,
 	}
 
-	private readonly __fields?: {
+	/** @internal */
+	public readonly __fields?: {
 		[key: string]: any;
 		[key: number]: any;
 	}
@@ -165,13 +184,8 @@ export class ObservableObject {
 
 	// endregion
 
-	public _set(name: string | number, newValue, options: {
-		equalsFunc: (oldValue, newValue) => boolean,
-		fillFunc: (oldValue, newValue) => boolean,
-		convertFunc: (newValue) => any,
-		beforeChange: (oldValue) => void,
-		afterChange: (newValue) => void,
-	}) {
+	/** @internal */
+	public _set(name: string | number, newValue, options: ISetOptions) {
 		const {__fields} = this
 		const oldValue =  __fields[name]
 
@@ -224,6 +238,7 @@ export class ObservableObject {
 		return true
 	}
 
+	/** @internal */
 	public _propagatePropertyChanged(propertyName: string | number, value: IDeepPropertyChanged | any): IUnsubscribe {
 		if (!value) {
 			return null
