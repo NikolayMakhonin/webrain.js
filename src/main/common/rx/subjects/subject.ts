@@ -1,14 +1,15 @@
 import {IObservable, Observable} from './observable'
 
-export interface ISubject<T> extends IObservable<T> {
+export interface ISubject<T> {
 	readonly hasSubscribers: boolean
-	emit(value): this
+	subscribe(subscriber: ISubscriber<T>): IUnsubscribe
+	emit(value: T): this
 }
 
 export type IUnsubscribe = () => void
 export type ISubscriber<T> = (value: T) => void
 
-export function subject(base): new<T>() => ISubject<T> {
+export function subject(base): any {
 	// eslint-disable-next-line no-shadow
 	// tslint:disable-next-line:no-shadowed-variable
 	return class Subject<T> extends base implements ISubject<T> {
@@ -45,7 +46,7 @@ export function subject(base): new<T>() => ISubject<T> {
 			}
 		}
 
-		public emit(value): this {
+		public emit(value: T): this {
 			let {_subscribers} = this
 			if (!_subscribers) {
 				return this
@@ -62,7 +63,9 @@ export function subject(base): new<T>() => ISubject<T> {
 	}
 }
 
-export const Subject: new<T>() => ISubject<T> = subject(Observable)
+export const Subject:
+	new<T>() => IObservable<T> & ISubject<T>
+	= subject(Observable)
 
 // export function createSubjectClass(base, ...extensions) {
 // 	for (const extension of extensions) {

@@ -1,4 +1,4 @@
-import {ISubscriber, IUnsubscribe} from "./subject";
+import {ISubscriber, IUnsubscribe} from './subject'
 
 export interface IObservable<T> {
 	subscribe(subscriber: ISubscriber<T>): IUnsubscribe

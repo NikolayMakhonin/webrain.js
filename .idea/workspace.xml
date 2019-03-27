@@ -1,1 +1,1141 @@
-<?xml version="1.0" encoding="UTF-8"?><project version="4"><component name="ChangeListManager"><ignored path=".idea/"/><ignored path="$PROJECT_DIR$/node_modules/"/><ignored path="$PROJECT_DIR$/.tmp/"/><ignored path="$PROJECT_DIR$/temp/"/><ignored path="$PROJECT_DIR$/tmp/"/><option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true"/><option name="SHOW_DIALOG" value="false"/><option name="HIGHLIGHT_CONFLICTS" value="true"/><option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false"/><option name="LAST_RESOLUTION" value="IGNORE"/></component><component name="CoverageOptionsProvider"><option name="myAddOrReplace" value="0"/></component><component name="JsFlowSettings"><service-enabled>true</service-enabled><exe-path/><other-services-enabled>true</other-services-enabled><auto-save>true</auto-save></component><component name="ProjectLevelVcsManager"><ConfirmationsSetting value="2" id="Add"/></component><component name="PropertiesComponent"><property name="NewWatcherDialog.advanced.open" value="true"/><property name="WebServerToolWindowFactoryState" value="false"/><property name="auto.test.manager.delay" value="5000"/><property name="javascript.karma.karma_node_package_dir" value=""/><property name="last_opened_file_path" value="$PROJECT_DIR$/src"/><property name="node.js.detected.package.eslint" value="true"/><property name="node.js.detected.package.standard" value="true"/><property name="node.js.detected.package.tslint" value="true"/><property name="node.js.path.for.package.eslint" value="node"/><property name="node.js.path.for.package.standard" value="node"/><property name="node.js.path.for.package.tslint" value="project"/><property name="node.js.selected.package.eslint" value="L:\Work\_GIT\GitHub\NodeJs\templates\nodejs-templates\node_modules\eslint"/><property name="node.js.selected.package.standard" value="L:\Work\_GIT\GitHub\NodeJs\templates\nodejs-templates\node_modules\eslint"/><property name="node.js.selected.package.tslint" value="L:\Work\_GIT\GitHub\NodeJs\modules\tree-state-manager\node_modules\tslint"/><property name="nodejs.mocha.mocha_node_package_dir" value="$PROJECT_DIR$/node_modules/mocha"/><property name="nodejs_package_manager_path" value="npm"/><property name="restartRequiresConfirmation" value="false"/><property name="settings.editor.selected.configurable" value="watcher.settings"/><property name="ts.external.directory.path" value="L:\Program Files\JetBrains\WebStorm 2018.3\plugins\JavaScriptLanguage\jsLanguageServicesImpl\external"/></component><component name="RunManager" selected="Karma.Tests Karma"><configuration name="Tests Dev" type="JavaScriptTestRunnerKarma"><config-file value="$PROJECT_DIR$/env/karma/karma.conf.dev.js"/><karma-package-dir value="$PROJECT_DIR$/node_modules/karma"/><working-directory value="$PROJECT_DIR$"/><node-interpreter value="node"/><envs/><method v="2"/></configuration><configuration default="true" type="JavaScriptTestRunnerKarma"><config-file value="$PROJECT_DIR$/env/karma/karma.conf.tests.js"/><karma-package-dir value="$PROJECT_DIR$/node_modules/karma"/><node-interpreter value="node"/><envs/><method v="2"/></configuration><configuration name="common > env > modules.class" type="JavaScriptTestRunnerKarma" temporary="true" nameIsGenerated="true"><config-file value="$PROJECT_DIR$/env/karma/karma.conf.tests.js"/><karma-package-dir value="$PROJECT_DIR$/node_modules/karma"/><working-directory value="$PROJECT_DIR$"/><node-interpreter value="node"/><envs/><scope-kind value="TEST"/><test-names><test-name value="common > env > modules"/><test-name value="class"/></test-names><method v="2"/></configuration><configuration default="true" type="NodeJSConfigurationType" path-to-node="node" node-parameters="--max-old-space-size=4096" working-dir="$PROJECT_DIR$"><method v="2"/></configuration><configuration name="Intern Export with rebuild" type="mocha-javascript-test-runner"><node-interpreter>node</node-interpreter><node-options>--max-old-space-size=4096</node-options><mocha-package>$PROJECT_DIR$/node_modules/mocha</mocha-package><working-directory>$PROJECT_DIR$</working-directory><pass-parent-env>true</pass-parent-env><ui>bdd</ui><extra-mocha-options>--opts ./env/mocha/mocha.babel.opts</extra-mocha-options><test-kind>PATTERN</test-kind><test-pattern>./env/intern/mocha-export.js</test-pattern><method v="2"/></configuration><configuration name="Intern Export" type="mocha-javascript-test-runner"><node-interpreter>node</node-interpreter><node-options>--max-old-space-size=4096</node-options><mocha-package>$PROJECT_DIR$/node_modules/mocha</mocha-package><working-directory>$PROJECT_DIR$</working-directory><pass-parent-env>true</pass-parent-env><ui>bdd</ui><extra-mocha-options>--opts ./env/mocha/mocha.babel.opts</extra-mocha-options><test-kind>PATTERN</test-kind><test-pattern>./env/intern/mocha-export.js</test-pattern><method v="2"/></configuration><configuration name="Performance Mocha" type="mocha-javascript-test-runner"><node-interpreter>node</node-interpreter><node-options>--max-old-space-size=4096</node-options><mocha-package>$PROJECT_DIR$/node_modules/mocha</mocha-package><working-directory>$PROJECT_DIR$</working-directory><pass-parent-env>true</pass-parent-env><ui>bdd</ui><extra-mocha-options>--opts ./env/mocha/mocha.babel.opts</extra-mocha-options><test-kind>PATTERN</test-kind><test-pattern>./src/test/performance/node/**/*.*</test-pattern><method v="2"/></configuration><configuration default="true" type="mocha-javascript-test-runner"><node-interpreter>node</node-interpreter><node-options>--max-old-space-size=4096</node-options><mocha-package>$PROJECT_DIR$/node_modules/mocha</mocha-package><working-directory>$PROJECT_DIR$</working-directory><pass-parent-env>true</pass-parent-env><ui>bdd</ui><extra-mocha-options>--opts ./env/mocha/mocha.babel.opts --watch</extra-mocha-options><test-kind>PATTERN</test-kind><test-pattern>./src/test/tests/{common,node}/**/*.*</test-pattern><method v="2"/></configuration><configuration name="common > main > rx > ObservableObjectBuilder.readable nested changed" type="mocha-javascript-test-runner" temporary="true" nameIsGenerated="true"><node-interpreter>node</node-interpreter><node-options>--max-old-space-size=4096</node-options><mocha-package>$PROJECT_DIR$/node_modules/mocha</mocha-package><working-directory>$PROJECT_DIR$</working-directory><pass-parent-env>true</pass-parent-env><ui>bdd</ui><extra-mocha-options>--opts ./env/mocha/mocha.babel.opts</extra-mocha-options><test-kind>TEST</test-kind><test-file>$PROJECT_DIR$/src/test/tests/common/main/rx/ObservableObject.js</test-file><test-names><name value="common > main > rx > ObservableObjectBuilder"/><name value="readable nested changed"/></test-names><method v="2"/></configuration><configuration name="common > main > rx > ObservableObjectBuilder.writable nested changed" type="mocha-javascript-test-runner" temporary="true" nameIsGenerated="true"><node-interpreter>node</node-interpreter><node-options>--max-old-space-size=4096</node-options><mocha-package>$PROJECT_DIR$/node_modules/mocha</mocha-package><working-directory>$PROJECT_DIR$</working-directory><pass-parent-env>true</pass-parent-env><ui>bdd</ui><extra-mocha-options>--opts ./env/mocha/mocha.babel.opts</extra-mocha-options><test-kind>TEST</test-kind><test-file>$PROJECT_DIR$/src/test/tests/common/main/rx/ObservableObject.js</test-file><test-names><name value="common > main > rx > ObservableObjectBuilder"/><name value="writable nested changed"/></test-names><method v="2"/></configuration><configuration name="common > main > rx > subject" type="mocha-javascript-test-runner" temporary="true" nameIsGenerated="true"><node-interpreter>node</node-interpreter><node-options>--max-old-space-size=4096</node-options><mocha-package>$PROJECT_DIR$/node_modules/mocha</mocha-package><working-directory>$PROJECT_DIR$</working-directory><pass-parent-env>true</pass-parent-env><ui>bdd</ui><extra-mocha-options>--opts ./env/mocha/mocha.babel.opts</extra-mocha-options><test-kind>SUITE</test-kind><test-file>$PROJECT_DIR$/src/test/tests/common/main/rx/Subject.js</test-file><test-names><name value="common > main > rx > subject"/></test-names><method v="2"/></configuration><configuration name="fundamental-operations" type="mocha-javascript-test-runner" temporary="true" nameIsGenerated="true"><node-interpreter>node</node-interpreter><node-options>--max-old-space-size=4096</node-options><mocha-package>$PROJECT_DIR$/node_modules/mocha</mocha-package><working-directory>$PROJECT_DIR$</working-directory><pass-parent-env>true</pass-parent-env><ui>bdd</ui><extra-mocha-options>--opts ./env/mocha/mocha.babel.opts</extra-mocha-options><test-kind>SUITE</test-kind><test-file>$PROJECT_DIR$/src/test/performance/node/fundamental-operations.js</test-file><test-names><name value="fundamental-operations"/></test-names><method v="2"/></configuration><list><item itemvalue="Karma.CI Karma"/><item itemvalue="Karma.Coverage Karma"/><item itemvalue="Karma.Tests Karma"/><item itemvalue="Karma.Tests Dev"/><item itemvalue="Karma.Performance Karma"/><item itemvalue="Karma.common > env > modules.class"/><item itemvalue="Mocha.Coverage Mocha"/><item itemvalue="Mocha.Watch Mocha"/><item itemvalue="Mocha.Performance Mocha"/><item itemvalue="Mocha.Intern Export"/><item itemvalue="Mocha.Intern Export with rebuild"/><item itemvalue="Mocha.fundamental-operations"/><item itemvalue="Mocha.common > main > rx > subject"/><item itemvalue="Mocha.common > main > rx > ObservableObjectBuilder.writable nested changed"/><item itemvalue="Mocha.common > main > rx > ObservableObjectBuilder.readable nested changed"/></list><recent_temporary><list><item itemvalue="Karma.common > env > modules.class"/><item itemvalue="Mocha.common > main > rx > ObservableObjectBuilder.readable nested changed"/><item itemvalue="Mocha.common > main > rx > ObservableObjectBuilder.writable nested changed"/><item itemvalue="Mocha.common > main > rx > subject"/><item itemvalue="Mocha.fundamental-operations"/></list></recent_temporary></component><component name="VcsManagerConfiguration"><option name="CHECK_CODE_SMELLS_BEFORE_PROJECT_COMMIT" value="false"/><option name="CHECK_NEW_TODO" value="false"/><option name="LAST_COMMIT_MESSAGE" value="Configured TypeScript environment"/><MESSAGE value="Develop"/><MESSAGE value="Configured TypeScript environment"/></component><component name="masterDetails"><states><state key="ScopeChooserConfigurable.UI"><settings><splitter-proportions><option name="proportions"><list><option value="0.2"/></list></option></splitter-proportions></settings></state></states></component></project>
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="ChangeListManager">
+    <list default="true" id="db62915f-d1d8-4cbb-bdf8-0cfd8e00eb25" name="Default Changelist" comment="">
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/common/rx/subjects/behavior.js" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/common/rx/subjects/behavior.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/common/rx/subjects/hasSubscribers.js" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/common/rx/subjects/hasSubscribers.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/common/rx/subjects/observable.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/common/rx/subjects/observable.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/common/rx/subjects/subject.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/common/rx/subjects/subject.ts" afterDir="false" />
+    </list>
+    <ignored path=".idea/" />
+    <ignored path="$PROJECT_DIR$/node_modules/" />
+    <ignored path="$PROJECT_DIR$/.tmp/" />
+    <ignored path="$PROJECT_DIR$/temp/" />
+    <ignored path="$PROJECT_DIR$/tmp/" />
+    <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
+    <option name="SHOW_DIALOG" value="false" />
+    <option name="HIGHLIGHT_CONFLICTS" value="true" />
+    <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
+    <option name="LAST_RESOLUTION" value="IGNORE" />
+  </component>
+  <component name="CoverageDataManager">
+    <SUITE FILE_PATH="coverage/tree_state_manager$common___main___rx___ObservableObjectBuilder_readable_nested_changed.dat" NAME="common &gt; main &gt; rx &gt; ObservableObjectBuilder.readable nested changed Coverage Results" MODIFIED="1553508415613" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="MochaJavaScriptTestRunnerCoverage" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" />
+    <SUITE FILE_PATH="coverage/tree_state_manager$Coverage_Karma.dat" NAME="Coverage Karma Coverage Results" MODIFIED="1553699944959" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="KarmaJavaScriptTestRunnerCoverage" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" />
+    <SUITE FILE_PATH="coverage/tree_state_manager$common___main___rx___subject.dat" NAME="common &gt; main &gt; rx &gt; subject Coverage Results" MODIFIED="1553424357528" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="MochaJavaScriptTestRunnerCoverage" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" />
+    <SUITE FILE_PATH="coverage/tree_state_manager$Watch_Mocha.dat" NAME="Watch Mocha Coverage Results" MODIFIED="1553690963281" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="MochaJavaScriptTestRunnerCoverage" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" />
+    <SUITE FILE_PATH="coverage/tree_state_manager$Coverage_Mocha.dat" NAME="Coverage Mocha Coverage Results" MODIFIED="1553699969207" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="MochaJavaScriptTestRunnerCoverage" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" />
+  </component>
+  <component name="CoverageOptionsProvider">
+    <option name="myAddOrReplace" value="0" />
+  </component>
+  <component name="CoverageViewManager">
+    <option name="myElementSize" value="356" />
+  </component>
+  <component name="FileEditorManager">
+    <leaf SIDE_TABS_SIZE_LIMIT_KEY="375">
+      <file pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/src/test/tests/common/main/rx/object/observable-object-builder.js">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="81">
+              <caret line="3" selection-start-line="1" selection-end-line="3" />
+              <folding>
+                <element signature="e#34#148#0" expanded="true" />
+                <element signature="e#263#838#0" />
+                <element signature="e#889#1184#0" />
+                <element signature="e#1237#1427#0" />
+                <element signature="e#3029#3308#0" />
+                <element signature="e#3909#4087#0" />
+                <element signature="e#3020#3966#0" />
+                <element signature="e#4004#4915#0" />
+                <element signature="e#4961#7580#0" />
+                <element signature="e#7626#10452#0" />
+                <element signature="e#10498#14497#0" />
+              </folding>
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/src/test/tests/common/main/rx/object/observable-object-builder-prototype.js">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="81">
+              <caret line="3" selection-start-line="3" selection-end-line="3" />
+              <folding>
+                <element signature="e#34#123#0" expanded="true" />
+              </folding>
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/src/main/common/rx/object/ObservableObject.ts">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="27">
+              <caret line="1" column="55" selection-start-line="1" selection-start-column="55" selection-end-line="1" selection-end-column="55" />
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file pinned="false" current-in-tab="true">
+        <entry file="file://$PROJECT_DIR$/src/main/common/rx/subjects/hasSubscribers.ts">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="1701">
+              <caret line="63" column="13" selection-start-line="63" selection-start-column="13" selection-end-line="63" selection-end-column="13" />
+              <folding>
+                <element signature="e#0#42#0" expanded="true" />
+              </folding>
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/src/main/common/rx/subjects/subject.ts">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="65">
+              <caret line="66" column="4" selection-start-line="66" selection-start-column="4" selection-end-line="66" selection-end-column="4" />
+              <folding>
+                <element signature="e#391#817#0" />
+                <element signature="e#1059#1285#0" />
+              </folding>
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/src/main/common/rx/subjects/behavior.ts">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="263">
+              <caret line="55" column="4" selection-start-line="55" selection-start-column="4" selection-end-line="55" selection-end-column="4" />
+              <folding>
+                <element signature="e#0#40#0" expanded="true" />
+              </folding>
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/src/main/common/rx/subjects/observable.ts">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="-70">
+              <caret line="3" selection-start-line="3" selection-end-line="4" />
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/tslint.json">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="369">
+              <caret line="17" column="22" selection-start-line="17" selection-start-column="22" selection-end-line="17" selection-end-column="22" />
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/src/main/common/rx/object/ObservableObjectBuilder.js">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="81">
+              <caret line="3" column="36" selection-start-line="3" selection-start-column="13" selection-end-line="3" selection-end-column="36" />
+              <folding>
+                <element signature="e#0#34#0" expanded="true" />
+                <element signature="n#ObservableObjectBuilder#0" />
+              </folding>
+            </state>
+          </provider>
+        </entry>
+      </file>
+    </leaf>
+  </component>
+  <component name="FindInProjectRecents">
+    <findStrings>
+      <find>propertyChanged</find>
+      <find>__meta.propertyChanged</find>
+      <find>onPropertyChanged</find>
+      <find>[^p]propertyChanged</find>
+      <find>deepPropertyChanged</find>
+      <find>d</find>
+      <find>subscriber|results</find>
+      <find>has</find>
+      <find>unsubscribeValue</find>
+    </findStrings>
+    <replaceStrings>
+      <replace>propertyChanged</replace>
+    </replaceStrings>
+  </component>
+  <component name="Git.Settings">
+    <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
+  </component>
+  <component name="IdeDocumentHistory">
+    <option name="CHANGED_PATHS">
+      <list>
+        <option value="$PROJECT_DIR$/src/main/common/rx/object/properties/property.js" />
+        <option value="$PROJECT_DIR$/src/test/tests/common/main/lists/sorted-list.js" />
+        <option value="$PROJECT_DIR$/src/main/common/helpers/typescript.js" />
+        <option value="$PROJECT_DIR$/env/js-transform-watcher.js" />
+        <option value="$PROJECT_DIR$/src/main/common/helpers/typescript.ts" />
+        <option value="$PROJECT_DIR$/tmp/watch/src/main/common/helpers/typescript.ts" />
+        <option value="$PROJECT_DIR$/tmp/watch/src/main/common/lists/SortedList.ts" />
+        <option value="$PROJECT_DIR$/src/main/common/rx/object/properties/calc-sync.js" />
+        <option value="$PROJECT_DIR$/docs/Optimizations.txt" />
+        <option value="$PROJECT_DIR$/tmp/watch/src/main/common/rx/object/ObservableObject.js" />
+        <option value="$PROJECT_DIR$/src/test/tests/common/main/lists/SortedList.js" />
+        <option value="$PROJECT_DIR$/src/test/.eslintrc" />
+        <option value="$PROJECT_DIR$/src/test/performance/node/fundamental-operations.js" />
+        <option value="$PROJECT_DIR$/package.json" />
+        <option value="$PROJECT_DIR$/babelrc-mjs.js" />
+        <option value="$PROJECT_DIR$/babelrc-js.js" />
+        <option value="$PROJECT_DIR$/babelrc.js" />
+        <option value="$PROJECT_DIR$/.babelrc-mjs.js" />
+        <option value="$PROJECT_DIR$/.babelrc-js.js" />
+        <option value="$PROJECT_DIR$/.babelrc.js" />
+        <option value="$PROJECT_DIR$/env/karma/karma.conf.performance.js" />
+        <option value="$PROJECT_DIR$/env/karma/karma.conf.tests.js" />
+        <option value="$PROJECT_DIR$/env/karma/karma.conf.dev.js" />
+        <option value="$PROJECT_DIR$/env/karma/karma.conf.coverage.js" />
+        <option value="$PROJECT_DIR$/env/karma/karma.conf.ci.js" />
+        <option value="$PROJECT_DIR$/src/main/common/lists/SortedList.ts" />
+        <option value="$PROJECT_DIR$/tsconfig.json" />
+        <option value="$PROJECT_DIR$/tmp/karma/tests.js" />
+        <option value="$PROJECT_DIR$/env/rollup/plugins.js" />
+        <option value="$PROJECT_DIR$/src/main/common/rx/object/ObservableObjectBuilder.js" />
+        <option value="$PROJECT_DIR$/src/main/common/rx/object/ObservableObject.js" />
+        <option value="$PROJECT_DIR$/src/test/tests/common/main/rx/object/observable-object-builder.js" />
+        <option value="$PROJECT_DIR$/src/test/tests/common/main/rx/object/observable-object-builder-prototype.js" />
+        <option value="$PROJECT_DIR$/src/main/common/rx/object/ObservableObject.ts" />
+        <option value="$PROJECT_DIR$/src/main/common/rx/subjects/subject.js" />
+        <option value="$PROJECT_DIR$/tslint.json" />
+        <option value="$PROJECT_DIR$/src/main/common/rx/subjects/observable.ts" />
+        <option value="$PROJECT_DIR$/src/main/common/rx/subjects/behavior.js" />
+        <option value="$PROJECT_DIR$/src/main/common/rx/subjects/hasSubscribers.ts" />
+        <option value="$PROJECT_DIR$/src/main/common/rx/subjects/behavior.ts" />
+        <option value="$PROJECT_DIR$/src/main/common/rx/subjects/subject.ts" />
+      </list>
+    </option>
+  </component>
+  <component name="JsFlowSettings">
+    <service-enabled>true</service-enabled>
+    <exe-path />
+    <other-services-enabled>true</other-services-enabled>
+    <auto-save>true</auto-save>
+  </component>
+  <component name="ProjectLevelVcsManager">
+    <ConfirmationsSetting value="2" id="Add" />
+  </component>
+  <component name="ProjectView">
+    <navigator proportions="" version="1">
+      <foldersAlwaysOnTop value="true" />
+    </navigator>
+    <panes>
+      <pane id="ProjectPane">
+        <subPane>
+          <expand>
+            <path>
+              <item name="tree-state-manager" type="b2602c69:ProjectViewProjectNode" />
+              <item name="tree-state-manager" type="462c0819:PsiDirectoryNode" />
+            </path>
+            <path>
+              <item name="tree-state-manager" type="b2602c69:ProjectViewProjectNode" />
+              <item name="tree-state-manager" type="462c0819:PsiDirectoryNode" />
+              <item name="src" type="462c0819:PsiDirectoryNode" />
+            </path>
+            <path>
+              <item name="tree-state-manager" type="b2602c69:ProjectViewProjectNode" />
+              <item name="tree-state-manager" type="462c0819:PsiDirectoryNode" />
+              <item name="src" type="462c0819:PsiDirectoryNode" />
+              <item name="main" type="462c0819:PsiDirectoryNode" />
+            </path>
+            <path>
+              <item name="tree-state-manager" type="b2602c69:ProjectViewProjectNode" />
+              <item name="tree-state-manager" type="462c0819:PsiDirectoryNode" />
+              <item name="src" type="462c0819:PsiDirectoryNode" />
+              <item name="main" type="462c0819:PsiDirectoryNode" />
+              <item name="common" type="462c0819:PsiDirectoryNode" />
+            </path>
+            <path>
+              <item name="tree-state-manager" type="b2602c69:ProjectViewProjectNode" />
+              <item name="tree-state-manager" type="462c0819:PsiDirectoryNode" />
+              <item name="src" type="462c0819:PsiDirectoryNode" />
+              <item name="main" type="462c0819:PsiDirectoryNode" />
+              <item name="common" type="462c0819:PsiDirectoryNode" />
+              <item name="rx" type="462c0819:PsiDirectoryNode" />
+            </path>
+            <path>
+              <item name="tree-state-manager" type="b2602c69:ProjectViewProjectNode" />
+              <item name="tree-state-manager" type="462c0819:PsiDirectoryNode" />
+              <item name="src" type="462c0819:PsiDirectoryNode" />
+              <item name="main" type="462c0819:PsiDirectoryNode" />
+              <item name="common" type="462c0819:PsiDirectoryNode" />
+              <item name="rx" type="462c0819:PsiDirectoryNode" />
+              <item name="object" type="462c0819:PsiDirectoryNode" />
+            </path>
+            <path>
+              <item name="tree-state-manager" type="b2602c69:ProjectViewProjectNode" />
+              <item name="tree-state-manager" type="462c0819:PsiDirectoryNode" />
+              <item name="src" type="462c0819:PsiDirectoryNode" />
+              <item name="main" type="462c0819:PsiDirectoryNode" />
+              <item name="common" type="462c0819:PsiDirectoryNode" />
+              <item name="rx" type="462c0819:PsiDirectoryNode" />
+              <item name="subjects" type="462c0819:PsiDirectoryNode" />
+            </path>
+            <path>
+              <item name="tree-state-manager" type="b2602c69:ProjectViewProjectNode" />
+              <item name="tree-state-manager" type="462c0819:PsiDirectoryNode" />
+              <item name="src" type="462c0819:PsiDirectoryNode" />
+              <item name="test" type="462c0819:PsiDirectoryNode" />
+            </path>
+            <path>
+              <item name="tree-state-manager" type="b2602c69:ProjectViewProjectNode" />
+              <item name="tree-state-manager" type="462c0819:PsiDirectoryNode" />
+              <item name="src" type="462c0819:PsiDirectoryNode" />
+              <item name="test" type="462c0819:PsiDirectoryNode" />
+              <item name="tests" type="462c0819:PsiDirectoryNode" />
+            </path>
+            <path>
+              <item name="tree-state-manager" type="b2602c69:ProjectViewProjectNode" />
+              <item name="tree-state-manager" type="462c0819:PsiDirectoryNode" />
+              <item name="src" type="462c0819:PsiDirectoryNode" />
+              <item name="test" type="462c0819:PsiDirectoryNode" />
+              <item name="tests" type="462c0819:PsiDirectoryNode" />
+              <item name="common" type="462c0819:PsiDirectoryNode" />
+            </path>
+            <path>
+              <item name="tree-state-manager" type="b2602c69:ProjectViewProjectNode" />
+              <item name="tree-state-manager" type="462c0819:PsiDirectoryNode" />
+              <item name="src" type="462c0819:PsiDirectoryNode" />
+              <item name="test" type="462c0819:PsiDirectoryNode" />
+              <item name="tests" type="462c0819:PsiDirectoryNode" />
+              <item name="common" type="462c0819:PsiDirectoryNode" />
+              <item name="main" type="462c0819:PsiDirectoryNode" />
+            </path>
+            <path>
+              <item name="tree-state-manager" type="b2602c69:ProjectViewProjectNode" />
+              <item name="tree-state-manager" type="462c0819:PsiDirectoryNode" />
+              <item name="src" type="462c0819:PsiDirectoryNode" />
+              <item name="test" type="462c0819:PsiDirectoryNode" />
+              <item name="tests" type="462c0819:PsiDirectoryNode" />
+              <item name="common" type="462c0819:PsiDirectoryNode" />
+              <item name="main" type="462c0819:PsiDirectoryNode" />
+              <item name="rx" type="462c0819:PsiDirectoryNode" />
+            </path>
+            <path>
+              <item name="tree-state-manager" type="b2602c69:ProjectViewProjectNode" />
+              <item name="tree-state-manager" type="462c0819:PsiDirectoryNode" />
+              <item name="src" type="462c0819:PsiDirectoryNode" />
+              <item name="test" type="462c0819:PsiDirectoryNode" />
+              <item name="tests" type="462c0819:PsiDirectoryNode" />
+              <item name="common" type="462c0819:PsiDirectoryNode" />
+              <item name="main" type="462c0819:PsiDirectoryNode" />
+              <item name="rx" type="462c0819:PsiDirectoryNode" />
+              <item name="object" type="462c0819:PsiDirectoryNode" />
+            </path>
+          </expand>
+          <select />
+        </subPane>
+      </pane>
+      <pane id="Scope" />
+    </panes>
+  </component>
+  <component name="PropertiesComponent">
+    <property name="NewWatcherDialog.advanced.open" value="true" />
+    <property name="WebServerToolWindowFactoryState" value="false" />
+    <property name="auto.test.manager.delay" value="5000" />
+    <property name="javascript.karma.karma_node_package_dir" value="" />
+    <property name="last_opened_file_path" value="$PROJECT_DIR$/src" />
+    <property name="node.js.detected.package.eslint" value="true" />
+    <property name="node.js.detected.package.standard" value="true" />
+    <property name="node.js.detected.package.tslint" value="true" />
+    <property name="node.js.path.for.package.eslint" value="node" />
+    <property name="node.js.path.for.package.standard" value="node" />
+    <property name="node.js.path.for.package.tslint" value="project" />
+    <property name="node.js.selected.package.eslint" value="L:\Work\_GIT\GitHub\NodeJs\templates\nodejs-templates\node_modules\eslint" />
+    <property name="node.js.selected.package.standard" value="L:\Work\_GIT\GitHub\NodeJs\templates\nodejs-templates\node_modules\eslint" />
+    <property name="node.js.selected.package.tslint" value="L:\Work\_GIT\GitHub\NodeJs\modules\tree-state-manager\node_modules\tslint" />
+    <property name="nodejs.mocha.mocha_node_package_dir" value="$PROJECT_DIR$/node_modules/mocha" />
+    <property name="nodejs_package_manager_path" value="npm" />
+    <property name="restartRequiresConfirmation" value="false" />
+    <property name="settings.editor.selected.configurable" value="web-ide.project.structure" />
+    <property name="ts.external.directory.path" value="L:\Program Files\JetBrains\WebStorm 2018.3\plugins\JavaScriptLanguage\jsLanguageServicesImpl\external" />
+  </component>
+  <component name="RecentsManager">
+    <key name="CopyFile.RECENT_KEYS">
+      <recent name="L:\Work\_GIT\GitHub\NodeJs\modules\tree-state-manager\src\main\common\rx\object" />
+    </key>
+  </component>
+  <component name="RunDashboard">
+    <option name="ruleStates">
+      <list>
+        <RuleState>
+          <option name="name" value="ConfigurationTypeDashboardGroupingRule" />
+        </RuleState>
+        <RuleState>
+          <option name="name" value="StatusDashboardGroupingRule" />
+        </RuleState>
+      </list>
+    </option>
+  </component>
+  <component name="RunManager" selected="Mocha.Watch Mocha">
+    <configuration name="Tests Dev" type="JavaScriptTestRunnerKarma">
+      <config-file value="$PROJECT_DIR$/env/karma/karma.conf.dev.js" />
+      <karma-package-dir value="$PROJECT_DIR$/node_modules/karma" />
+      <working-directory value="$PROJECT_DIR$" />
+      <node-interpreter value="node" />
+      <envs />
+      <method v="2" />
+    </configuration>
+    <configuration default="true" type="JavaScriptTestRunnerKarma">
+      <config-file value="$PROJECT_DIR$/env/karma/karma.conf.tests.js" />
+      <karma-package-dir value="$PROJECT_DIR$/node_modules/karma" />
+      <node-interpreter value="node" />
+      <envs />
+      <method v="2" />
+    </configuration>
+    <configuration name="common &gt; env &gt; modules.class" type="JavaScriptTestRunnerKarma" temporary="true" nameIsGenerated="true">
+      <config-file value="$PROJECT_DIR$/env/karma/karma.conf.tests.js" />
+      <karma-package-dir value="$PROJECT_DIR$/node_modules/karma" />
+      <working-directory value="$PROJECT_DIR$" />
+      <node-interpreter value="node" />
+      <envs />
+      <scope-kind value="TEST" />
+      <test-names>
+        <test-name value="common &gt; env &gt; modules" />
+        <test-name value="class" />
+      </test-names>
+      <method v="2" />
+    </configuration>
+    <configuration default="true" type="NodeJSConfigurationType" path-to-node="node" node-parameters="--max-old-space-size=4096" working-dir="$PROJECT_DIR$">
+      <method v="2" />
+    </configuration>
+    <configuration name="Intern Export with rebuild" type="mocha-javascript-test-runner">
+      <node-interpreter>node</node-interpreter>
+      <node-options>--max-old-space-size=4096</node-options>
+      <mocha-package>$PROJECT_DIR$/node_modules/mocha</mocha-package>
+      <working-directory>$PROJECT_DIR$</working-directory>
+      <pass-parent-env>true</pass-parent-env>
+      <ui>bdd</ui>
+      <extra-mocha-options>--opts ./env/mocha/mocha.babel.opts</extra-mocha-options>
+      <test-kind>PATTERN</test-kind>
+      <test-pattern>./env/intern/mocha-export.js</test-pattern>
+      <method v="2" />
+    </configuration>
+    <configuration name="Intern Export" type="mocha-javascript-test-runner">
+      <node-interpreter>node</node-interpreter>
+      <node-options>--max-old-space-size=4096</node-options>
+      <mocha-package>$PROJECT_DIR$/node_modules/mocha</mocha-package>
+      <working-directory>$PROJECT_DIR$</working-directory>
+      <pass-parent-env>true</pass-parent-env>
+      <ui>bdd</ui>
+      <extra-mocha-options>--opts ./env/mocha/mocha.babel.opts</extra-mocha-options>
+      <test-kind>PATTERN</test-kind>
+      <test-pattern>./env/intern/mocha-export.js</test-pattern>
+      <method v="2" />
+    </configuration>
+    <configuration name="Performance Mocha" type="mocha-javascript-test-runner">
+      <node-interpreter>node</node-interpreter>
+      <node-options>--max-old-space-size=4096</node-options>
+      <mocha-package>$PROJECT_DIR$/node_modules/mocha</mocha-package>
+      <working-directory>$PROJECT_DIR$</working-directory>
+      <pass-parent-env>true</pass-parent-env>
+      <ui>bdd</ui>
+      <extra-mocha-options>--opts ./env/mocha/mocha.babel.opts</extra-mocha-options>
+      <test-kind>PATTERN</test-kind>
+      <test-pattern>./src/test/performance/node/**/*.*</test-pattern>
+      <method v="2" />
+    </configuration>
+    <configuration default="true" type="mocha-javascript-test-runner">
+      <node-interpreter>node</node-interpreter>
+      <node-options>--max-old-space-size=4096</node-options>
+      <mocha-package>$PROJECT_DIR$/node_modules/mocha</mocha-package>
+      <working-directory>$PROJECT_DIR$</working-directory>
+      <pass-parent-env>true</pass-parent-env>
+      <ui>bdd</ui>
+      <extra-mocha-options>--opts ./env/mocha/mocha.babel.opts --watch</extra-mocha-options>
+      <test-kind>PATTERN</test-kind>
+      <test-pattern>./src/test/tests/{common,node}/**/*.*</test-pattern>
+      <method v="2" />
+    </configuration>
+    <configuration name="common &gt; main &gt; rx &gt; ObservableObjectBuilder.readable nested changed" type="mocha-javascript-test-runner" temporary="true" nameIsGenerated="true">
+      <node-interpreter>node</node-interpreter>
+      <node-options>--max-old-space-size=4096</node-options>
+      <mocha-package>$PROJECT_DIR$/node_modules/mocha</mocha-package>
+      <working-directory>$PROJECT_DIR$</working-directory>
+      <pass-parent-env>true</pass-parent-env>
+      <ui>bdd</ui>
+      <extra-mocha-options>--opts ./env/mocha/mocha.babel.opts</extra-mocha-options>
+      <test-kind>TEST</test-kind>
+      <test-file>$PROJECT_DIR$/src/test/tests/common/main/rx/ObservableObject.js</test-file>
+      <test-names>
+        <name value="common &gt; main &gt; rx &gt; ObservableObjectBuilder" />
+        <name value="readable nested changed" />
+      </test-names>
+      <method v="2" />
+    </configuration>
+    <configuration name="common &gt; main &gt; rx &gt; ObservableObjectBuilder.writable nested changed" type="mocha-javascript-test-runner" temporary="true" nameIsGenerated="true">
+      <node-interpreter>node</node-interpreter>
+      <node-options>--max-old-space-size=4096</node-options>
+      <mocha-package>$PROJECT_DIR$/node_modules/mocha</mocha-package>
+      <working-directory>$PROJECT_DIR$</working-directory>
+      <pass-parent-env>true</pass-parent-env>
+      <ui>bdd</ui>
+      <extra-mocha-options>--opts ./env/mocha/mocha.babel.opts</extra-mocha-options>
+      <test-kind>TEST</test-kind>
+      <test-file>$PROJECT_DIR$/src/test/tests/common/main/rx/ObservableObject.js</test-file>
+      <test-names>
+        <name value="common &gt; main &gt; rx &gt; ObservableObjectBuilder" />
+        <name value="writable nested changed" />
+      </test-names>
+      <method v="2" />
+    </configuration>
+    <configuration name="common &gt; main &gt; rx &gt; subject" type="mocha-javascript-test-runner" temporary="true" nameIsGenerated="true">
+      <node-interpreter>node</node-interpreter>
+      <node-options>--max-old-space-size=4096</node-options>
+      <mocha-package>$PROJECT_DIR$/node_modules/mocha</mocha-package>
+      <working-directory>$PROJECT_DIR$</working-directory>
+      <pass-parent-env>true</pass-parent-env>
+      <ui>bdd</ui>
+      <extra-mocha-options>--opts ./env/mocha/mocha.babel.opts</extra-mocha-options>
+      <test-kind>SUITE</test-kind>
+      <test-file>$PROJECT_DIR$/src/test/tests/common/main/rx/Subject.js</test-file>
+      <test-names>
+        <name value="common &gt; main &gt; rx &gt; subject" />
+      </test-names>
+      <method v="2" />
+    </configuration>
+    <configuration name="fundamental-operations" type="mocha-javascript-test-runner" temporary="true" nameIsGenerated="true">
+      <node-interpreter>node</node-interpreter>
+      <node-options>--max-old-space-size=4096</node-options>
+      <mocha-package>$PROJECT_DIR$/node_modules/mocha</mocha-package>
+      <working-directory>$PROJECT_DIR$</working-directory>
+      <pass-parent-env>true</pass-parent-env>
+      <ui>bdd</ui>
+      <extra-mocha-options>--opts ./env/mocha/mocha.babel.opts</extra-mocha-options>
+      <test-kind>SUITE</test-kind>
+      <test-file>$PROJECT_DIR$/src/test/performance/node/fundamental-operations.js</test-file>
+      <test-names>
+        <name value="fundamental-operations" />
+      </test-names>
+      <method v="2" />
+    </configuration>
+    <list>
+      <item itemvalue="Karma.CI Karma" />
+      <item itemvalue="Karma.Coverage Karma" />
+      <item itemvalue="Karma.Tests Karma" />
+      <item itemvalue="Karma.Tests Dev" />
+      <item itemvalue="Karma.Performance Karma" />
+      <item itemvalue="Karma.common &gt; env &gt; modules.class" />
+      <item itemvalue="Mocha.Coverage Mocha" />
+      <item itemvalue="Mocha.Watch Mocha" />
+      <item itemvalue="Mocha.Performance Mocha" />
+      <item itemvalue="Mocha.Intern Export" />
+      <item itemvalue="Mocha.Intern Export with rebuild" />
+      <item itemvalue="Mocha.fundamental-operations" />
+      <item itemvalue="Mocha.common &gt; main &gt; rx &gt; subject" />
+      <item itemvalue="Mocha.common &gt; main &gt; rx &gt; ObservableObjectBuilder.writable nested changed" />
+      <item itemvalue="Mocha.common &gt; main &gt; rx &gt; ObservableObjectBuilder.readable nested changed" />
+    </list>
+    <recent_temporary>
+      <list>
+        <item itemvalue="Karma.common &gt; env &gt; modules.class" />
+        <item itemvalue="Mocha.common &gt; main &gt; rx &gt; ObservableObjectBuilder.readable nested changed" />
+        <item itemvalue="Mocha.common &gt; main &gt; rx &gt; ObservableObjectBuilder.writable nested changed" />
+        <item itemvalue="Mocha.common &gt; main &gt; rx &gt; subject" />
+        <item itemvalue="Mocha.fundamental-operations" />
+      </list>
+    </recent_temporary>
+  </component>
+  <component name="TaskManager">
+    <task active="true" id="Default" summary="Default task">
+      <changelist id="fb0557e3-616a-43df-a858-6ba101f2c9ca" name="Default Changelist" comment="" />
+      <created>1553314222905</created>
+      <option name="number" value="Default" />
+      <option name="presentableId" value="Default" />
+      <updated>1553314222905</updated>
+    </task>
+    <task id="LOCAL-00001" summary="Tests OK">
+      <created>1553697894936</created>
+      <option name="number" value="00001" />
+      <option name="presentableId" value="LOCAL-00001" />
+      <option name="project" value="LOCAL" />
+      <updated>1553697894936</updated>
+    </task>
+    <task id="LOCAL-00002" summary="Refactoring: ObservableObject">
+      <created>1553700156148</created>
+      <option name="number" value="00002" />
+      <option name="presentableId" value="LOCAL-00002" />
+      <option name="project" value="LOCAL" />
+      <updated>1553700156148</updated>
+    </task>
+    <task id="LOCAL-00003" summary="Migrating to TypeScript in process...">
+      <created>1553705907464</created>
+      <option name="number" value="00003" />
+      <option name="presentableId" value="LOCAL-00003" />
+      <option name="project" value="LOCAL" />
+      <updated>1553705907464</updated>
+    </task>
+    <task id="LOCAL-00004" summary="Develop">
+      <created>1553492611548</created>
+      <option name="number" value="00004" />
+      <option name="presentableId" value="LOCAL-00004" />
+      <option name="project" value="LOCAL" />
+      <updated>1553492611548</updated>
+    </task>
+    <task id="LOCAL-00005" summary="Develop">
+      <created>1553496543746</created>
+      <option name="number" value="00005" />
+      <option name="presentableId" value="LOCAL-00005" />
+      <option name="project" value="LOCAL" />
+      <updated>1553496543746</updated>
+    </task>
+    <task id="LOCAL-00006" summary="Develop">
+      <created>1553498276646</created>
+      <option name="number" value="00006" />
+      <option name="presentableId" value="LOCAL-00006" />
+      <option name="project" value="LOCAL" />
+      <updated>1553498276646</updated>
+    </task>
+    <task id="LOCAL-00007" summary="Develop">
+      <created>1553500058819</created>
+      <option name="number" value="00007" />
+      <option name="presentableId" value="LOCAL-00007" />
+      <option name="project" value="LOCAL" />
+      <updated>1553500058819</updated>
+    </task>
+    <task id="LOCAL-00008" summary="Develop">
+      <created>1553503558795</created>
+      <option name="number" value="00008" />
+      <option name="presentableId" value="LOCAL-00008" />
+      <option name="project" value="LOCAL" />
+      <updated>1553503558795</updated>
+    </task>
+    <task id="LOCAL-00009" summary="ObservableObjectBuilder completed">
+      <created>1553508905728</created>
+      <option name="number" value="00009" />
+      <option name="presentableId" value="LOCAL-00009" />
+      <option name="project" value="LOCAL" />
+      <updated>1553508905728</updated>
+    </task>
+    <task id="LOCAL-00010" summary="ObservableObjectBuilder completed">
+      <created>1553509342663</created>
+      <option name="number" value="00010" />
+      <option name="presentableId" value="LOCAL-00010" />
+      <option name="project" value="LOCAL" />
+      <updated>1553509342663</updated>
+    </task>
+    <task id="LOCAL-00011" summary="ObservableObjectBuilder completed and I still have babel error:&#10;https://github.com/babel/babel/issues/9764">
+      <created>1553516536017</created>
+      <option name="number" value="00011" />
+      <option name="presentableId" value="LOCAL-00011" />
+      <option name="project" value="LOCAL" />
+      <updated>1553516536017</updated>
+    </task>
+    <task id="LOCAL-00012" summary="Develop">
+      <created>1553573502559</created>
+      <option name="number" value="00012" />
+      <option name="presentableId" value="LOCAL-00012" />
+      <option name="project" value="LOCAL" />
+      <updated>1553573502560</updated>
+    </task>
+    <task id="LOCAL-00013" summary="Refactoring completed">
+      <created>1553575934413</created>
+      <option name="number" value="00013" />
+      <option name="presentableId" value="LOCAL-00013" />
+      <option name="project" value="LOCAL" />
+      <updated>1553575934413</updated>
+    </task>
+    <task id="LOCAL-00014" summary="Refactoring">
+      <created>1553586575168</created>
+      <option name="number" value="00014" />
+      <option name="presentableId" value="LOCAL-00014" />
+      <option name="project" value="LOCAL" />
+      <updated>1553586575168</updated>
+    </task>
+    <task id="LOCAL-00015" summary="Improved tests">
+      <created>1553586885047</created>
+      <option name="number" value="00015" />
+      <option name="presentableId" value="LOCAL-00015" />
+      <option name="project" value="LOCAL" />
+      <updated>1553586885047</updated>
+    </task>
+    <option name="localTasksCounter" value="4" />
+    <servers />
+  </component>
+  <component name="TestHistory">
+    <history-entry file="Watch_Mocha - 2019.03.27 at 17h 17m 51s.xml">
+      <configuration name="Watch Mocha" configurationId="mocha-javascript-test-runner" />
+    </history-entry>
+    <history-entry file="Watch_Mocha - 2019.03.27 at 17h 18m 43s.xml">
+      <configuration name="Watch Mocha" configurationId="mocha-javascript-test-runner" />
+    </history-entry>
+    <history-entry file="Coverage_Karma - 2019.03.27 at 17h 19m 09s.xml">
+      <configuration name="Coverage Karma" configurationId="JavaScriptTestRunnerKarma" />
+    </history-entry>
+    <history-entry file="Coverage_Mocha - 2019.03.27 at 17h 19m 28s.xml">
+      <configuration name="Coverage Mocha" configurationId="mocha-javascript-test-runner" />
+    </history-entry>
+    <history-entry file="Watch_Mocha - 2019.03.27 at 17h 21m 42s.xml">
+      <configuration name="Watch Mocha" configurationId="mocha-javascript-test-runner" />
+    </history-entry>
+    <history-entry file="Watch_Mocha - 2019.03.27 at 18h 20m 44s.xml">
+      <configuration name="Watch Mocha" configurationId="mocha-javascript-test-runner" />
+    </history-entry>
+    <history-entry file="Watch_Mocha - 2019.03.27 at 18h 22m 52s.xml">
+      <configuration name="Watch Mocha" configurationId="mocha-javascript-test-runner" />
+    </history-entry>
+    <history-entry file="Watch_Mocha - 2019.03.27 at 18h 25m 39s.xml">
+      <configuration name="Watch Mocha" configurationId="mocha-javascript-test-runner" />
+    </history-entry>
+    <history-entry file="Watch_Mocha - 2019.03.27 at 18h 57m 48s.xml">
+      <configuration name="Watch Mocha" configurationId="mocha-javascript-test-runner" />
+    </history-entry>
+    <history-entry file="Watch_Mocha - 2019.03.27 at 18h 57m 58s.xml">
+      <configuration name="Watch Mocha" configurationId="mocha-javascript-test-runner" />
+    </history-entry>
+  </component>
+  <component name="ToolWindowManager">
+    <frame x="-6" y="-6" width="1932" height="894" extended-state="6" />
+    <editor active="true" />
+    <layout>
+      <window_info active="true" content_ui="combo" id="Project" order="0" visible="true" weight="0.26745436" />
+      <window_info id="Structure" order="1" side_tool="true" weight="0.25" />
+      <window_info id="npm" order="2" side_tool="true" />
+      <window_info id="Favorites" order="3" side_tool="true" />
+      <window_info anchor="bottom" id="Message" order="0" />
+      <window_info anchor="bottom" id="Find" order="1" weight="0.3119891" />
+      <window_info anchor="bottom" id="Run" order="2" visible="true" weight="0.26839238" />
+      <window_info anchor="bottom" id="Debug" order="3" weight="0.32833788" />
+      <window_info anchor="bottom" id="Cvs" order="4" weight="0.25" />
+      <window_info anchor="bottom" id="Inspection" order="5" weight="0.4" />
+      <window_info anchor="bottom" id="TODO" order="6" />
+      <window_info anchor="bottom" id="Version Control" order="7" />
+      <window_info anchor="bottom" id="Terminal" order="8" weight="0.24795641" />
+      <window_info anchor="bottom" id="Event Log" order="9" side_tool="true" />
+      <window_info anchor="bottom" id="TypeScript" order="10" weight="0.32561308" />
+      <window_info anchor="right" id="Commander" internal_type="SLIDING" order="0" type="SLIDING" weight="0.4" />
+      <window_info anchor="right" id="Ant Build" order="1" weight="0.25" />
+      <window_info anchor="right" content_ui="combo" id="Hierarchy" order="2" weight="0.25" />
+      <window_info anchor="right" id="Coverage" order="3" side_tool="true" weight="0.27604726" />
+    </layout>
+  </component>
+  <component name="TypeScriptGeneratedFilesManager">
+    <option name="version" value="1" />
+  </component>
+  <component name="VcsManagerConfiguration">
+    <option name="CHECK_CODE_SMELLS_BEFORE_PROJECT_COMMIT" value="false" />
+    <option name="CHECK_NEW_TODO" value="false" />
+    <MESSAGE value="Develop" />
+    <MESSAGE value="Configured TypeScript environment" />
+    <MESSAGE value="Refactoring: ObservableObject" />
+    <MESSAGE value="Migrating to TypeScript in process..." />
+    <option name="LAST_COMMIT_MESSAGE" value="Migrating to TypeScript in process..." />
+  </component>
+  <component name="XDebuggerManager">
+    <breakpoint-manager>
+      <breakpoints>
+        <line-breakpoint enabled="true" type="javascript">
+          <url>file://$PROJECT_DIR$/src/test/tests/common/main/rx/object/observable-object-builder.js</url>
+          <line>652</line>
+          <option name="timeStamp" value="51" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" type="javascript">
+          <url>file://$PROJECT_DIR$/src/test/tests/common/main/rx/object/observable-object-builder.js</url>
+          <line>647</line>
+          <option name="timeStamp" value="52" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" type="javascript">
+          <url>file://$PROJECT_DIR$/src/test/tests/common/main/rx/object/observable-object-builder.js</url>
+          <line>757</line>
+          <properties lambdaOrdinal="-1" />
+          <option name="timeStamp" value="78" />
+        </line-breakpoint>
+      </breakpoints>
+    </breakpoint-manager>
+    <watches-manager>
+      <configuration name="mocha-javascript-test-runner">
+        <watch expression="unsubscribeValue.toString()" language="JavaScript" />
+      </configuration>
+    </watches-manager>
+  </component>
+  <component name="editorHistoryManager">
+    <entry file="file://$PROJECT_DIR$/src/main/common/rx/object/properties/property.js">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="891">
+          <caret line="33" column="13" selection-start-line="33" selection-start-column="13" selection-end-line="33" selection-end-column="13" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/env/rollup/helpers.js">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="-736" />
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/test/tests/common/env/class.js">
+      <provider selected="true" editor-type-id="text-editor">
+        <state>
+          <caret line="12" selection-start-line="12" selection-end-line="12" />
+          <folding>
+            <element signature="n#!!doc" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$APPLICATION_HOME_DIR$/plugins/JavaScriptLanguage/jsLanguageServicesImpl/external/lib.es5.d.ts">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="209">
+          <caret line="1187" column="22" selection-start-line="1187" selection-start-column="15" selection-end-line="1187" selection-end-column="22" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/node_modules/rollup/dist/rollup.js">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="108">
+          <caret line="3597" column="29" selection-start-line="3597" selection-start-column="29" selection-end-line="3597" selection-end-column="29" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/node_modules/rollup-plugin-commonjs/dist/rollup-plugin-commonjs.es.js">
+      <provider selected="true" editor-type-id="text-editor">
+        <state>
+          <folding>
+            <element signature="e#0#64#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/.eslintrc">
+      <provider selected="true" editor-type-id="text-editor" />
+    </entry>
+    <entry file="file://$PROJECT_DIR$/env/js-transform-watcher.js">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="135">
+          <caret line="47" column="39" selection-start-line="47" selection-start-column="39" selection-end-line="47" selection-end-column="39" />
+          <folding>
+            <element signature="n#!!doc" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/main/common/helpers/typescript.ts">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="243">
+          <caret line="9" column="66" selection-start-line="9" selection-start-column="66" selection-end-line="9" selection-end-column="66" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/tmp/watch/src/main/common/helpers/typescript.ts">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="189">
+          <caret line="7" selection-end-line="7" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/tmp/watch/src/main/common/lists/SortedList.ts">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="223">
+          <caret line="26" selection-start-line="25" selection-start-column="30" selection-end-line="26" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/docs/Optimizations.txt">
+      <provider selected="true" editor-type-id="text-editor">
+        <state>
+          <caret column="87" selection-start-column="87" selection-end-column="87" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/test/performance/node/isNode.js">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="54">
+          <caret line="2" column="3" selection-start-line="2" selection-start-column="3" selection-end-line="2" selection-end-column="3" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/test/tests/common/main/rx/subjects/behavior.js">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="378">
+          <caret line="15" column="4" selection-start-line="15" selection-start-column="4" selection-end-line="15" selection-end-column="4" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/tmp/watch/src/main/common/rx/object/ObservableObject.js">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="2262">
+          <caret line="119" column="20" selection-start-line="119" selection-start-column="20" selection-end-line="119" selection-end-column="20" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/test/.eslintrc">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="81">
+          <caret line="9" column="35" selection-start-line="9" selection-start-column="35" selection-end-line="9" selection-end-column="35" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/test/performance/node/fundamental-operations.js">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="163">
+          <caret line="93" column="37" selection-start-line="93" selection-start-column="37" selection-end-line="93" selection-end-column="37" />
+          <folding>
+            <element signature="n#!!doc" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/test/tests/common/main/lists/SortedList.js">
+      <provider selected="true" editor-type-id="text-editor" />
+    </entry>
+    <entry file="file://$PROJECT_DIR$/package.json">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="98">
+          <caret line="27" column="146" selection-start-line="27" selection-start-column="146" selection-end-line="27" selection-end-column="146" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/dist/mjs/main/common/lists/SortedList.js">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="-162">
+          <folding>
+            <element signature="e#0#68#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/dist/js/main/common/lists/SortedList.js">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="-162" />
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/.babelrc-mjs.js">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="158">
+          <caret line="16" selection-start-line="16" selection-end-line="16" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/.babelrc-js.js">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="320">
+          <caret line="23" column="51" selection-start-line="23" selection-start-column="51" selection-end-line="23" selection-end-column="51" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/env/karma/karma.conf.performance.js">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="81">
+          <caret line="36" selection-start-line="36" selection-end-line="37" />
+          <folding>
+            <element signature="n#!!doc" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/env/karma/karma.conf.helpers.js">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="-2025">
+          <folding>
+            <element signature="n#!!doc" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/env/karma/karma.conf.dev.js">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="248">
+          <caret line="50" selection-start-line="50" selection-end-line="50" />
+          <folding>
+            <element signature="n#!!doc" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/env/karma/karma.conf.coverage.js">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="189">
+          <caret line="40" selection-start-line="40" selection-end-line="40" />
+          <folding>
+            <element signature="n#!!doc" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/.babelrc.js">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="648">
+          <caret line="24" selection-start-line="24" selection-end-line="24" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/_trash/lists/CollectionChangedEventArgs.ts">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="54">
+          <caret line="3" column="19" selection-start-line="3" selection-start-column="19" selection-end-line="3" selection-end-column="19" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/main/common/lists/SortedList.ts">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="406">
+          <caret line="82" column="4" selection-start-line="82" selection-start-column="4" selection-end-line="82" selection-end-column="4" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/env/karma/karma.conf.ci.js">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="189">
+          <caret line="46" selection-start-line="46" selection-end-line="46" />
+          <folding>
+            <element signature="n#!!doc" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/tsconfig.json">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="135">
+          <caret line="5" column="34" selection-start-line="5" selection-start-column="34" selection-end-line="5" selection-end-column="34" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/tmp/karma/tests.js">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="324">
+          <caret line="12" selection-start-line="12" selection-end-line="12" />
+          <folding>
+            <element signature="e#0#58#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/env/karma/karma.conf.tests.js">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="157">
+          <caret line="41" selection-start-line="41" selection-end-line="41" />
+          <folding>
+            <element signature="n#!!doc" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/env/mocha/register-babel.js">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="189">
+          <caret line="7" column="55" selection-start-line="7" selection-start-column="4" selection-end-line="7" selection-end-column="55" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/env/rollup/plugins.js">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="945">
+          <caret line="56" column="37" selection-start-line="56" selection-start-column="37" selection-end-line="56" selection-end-column="37" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/main/common/rx/object/ObservableObjectBuilder.js">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="81">
+          <caret line="3" column="36" selection-start-line="3" selection-start-column="13" selection-end-line="3" selection-end-column="36" />
+          <folding>
+            <element signature="e#0#34#0" expanded="true" />
+            <element signature="n#ObservableObjectBuilder#0" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/test/tests/common/main/rx/object/observable-object-builder.js">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="81">
+          <caret line="3" selection-start-line="1" selection-end-line="3" />
+          <folding>
+            <element signature="e#34#148#0" expanded="true" />
+            <element signature="e#263#838#0" />
+            <element signature="e#889#1184#0" />
+            <element signature="e#1237#1427#0" />
+            <element signature="e#3029#3308#0" />
+            <element signature="e#3909#4087#0" />
+            <element signature="e#3020#3966#0" />
+            <element signature="e#4004#4915#0" />
+            <element signature="e#4961#7580#0" />
+            <element signature="e#7626#10452#0" />
+            <element signature="e#10498#14497#0" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/test/tests/common/main/rx/object/observable-object-builder-prototype.js">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="81">
+          <caret line="3" selection-start-line="3" selection-end-line="3" />
+          <folding>
+            <element signature="e#34#123#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/main/common/rx/object/ObservableObject.ts">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="27">
+          <caret line="1" column="55" selection-start-line="1" selection-start-column="55" selection-end-line="1" selection-end-column="55" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/tslint.json">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="369">
+          <caret line="17" column="22" selection-start-line="17" selection-start-column="22" selection-end-line="17" selection-end-column="22" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/main/common/rx/subjects/observable.ts">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="-70">
+          <caret line="3" selection-start-line="3" selection-end-line="4" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/main/common/rx/subjects/behavior.ts">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="263">
+          <caret line="55" column="4" selection-start-line="55" selection-start-column="4" selection-end-line="55" selection-end-column="4" />
+          <folding>
+            <element signature="e#0#40#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/main/common/rx/subjects/subject.ts">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="65">
+          <caret line="66" column="4" selection-start-line="66" selection-start-column="4" selection-end-line="66" selection-end-column="4" />
+          <folding>
+            <element signature="e#391#817#0" />
+            <element signature="e#1059#1285#0" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/main/common/rx/subjects/hasSubscribers.ts">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="1701">
+          <caret line="63" column="13" selection-start-line="63" selection-start-column="13" selection-end-line="63" selection-end-column="13" />
+          <folding>
+            <element signature="e#0#42#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+  </component>
+  <component name="masterDetails">
+    <states>
+      <state key="ScopeChooserConfigurable.UI">
+        <settings>
+          <splitter-proportions>
+            <option name="proportions">
+              <list>
+                <option value="0.2" />
+              </list>
+            </option>
+          </splitter-proportions>
+        </settings>
+      </state>
+    </states>
+  </component>
+</project>
