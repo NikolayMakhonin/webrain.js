@@ -6,10 +6,15 @@ module.exports = {
 					chrome: '30'
 				}
 			}
-		],
-		"@babel/preset-typescript"
+		]
 	],
 	"plugins": [
+		"@babel/plugin-transform-typescript",
+		[
+			"@babel/plugin-proposal-decorators", {
+				legacy: true
+			}
+		],
 		"@babel/plugin-syntax-dynamic-import",
 		[
 			'@babel/plugin-transform-runtime', {

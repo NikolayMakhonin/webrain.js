@@ -22,12 +22,12 @@ module.exports = function (config) {
 
 		// list of files / patterns to load in the browser
 		files: [
-			// helpers.servedPattern(require.resolve('chai/chai')),
-			// helpers.servedPattern(helpers.writeTextFile('tmp/karma/chai.js', '"use strict"; var assert = chai.assert, expect = chai.expect, should = chai.should;')),
+			helpers.servedPattern(require.resolve('chai/chai')),
+			helpers.servedPattern(helpers.writeTextFile('tmp/karma/chai.js', '"use strict"; var assert = chai.assert, expect = chai.expect, should = chai.should;')),
 			helpers.concatJsFiles(
 				'tmp/karma/tests.js',
-				// 'src/test/tests/{common,browser}/**/*.js',
-				'src/test/tests/common/env/class.js',
+				'src/test/tests/{common,browser}/**/*.js',
+				// 'src/test/tests/common/env/class.js',
 				'!*/**/src/**/*.js'
 			),
 			// ...helpers.watchPatterns(

@@ -1,3 +1,4 @@
+import {enumerable} from "../helpers/typescript"
 import {IIterable} from "./IIterable"
 import {IIterator} from "./IIterator"
 
@@ -12,29 +13,39 @@ export interface ISortedList<T> extends IList<T> {
 export type ICompare<T> = (a: T, b: T) => number
 
 export class SortedList<T> implements ISortedList<T> {
-	private readonly _list: T[] = []
-	private _compare: ICompare<T>
-	private _countSorted: number
-	private _autoSort: boolean
-	private _notAddIfExists: boolean
+	private _list: T[] = []
+	private _compare?: ICompare<T>
+	private _countSorted?: number
+	private _autoSort?: boolean
+	private _notAddIfExists?: boolean
 
-	constructor(options) {
+	constructor({
+		list,
+		compare,
+		autoSort,
+		notAddIfExists,
+	}: {
+		list?: T[],
+		compare?: ICompare<T>,
+		autoSort?: boolean,
+		notAddIfExists?: boolean,
+	} = {}) {
 		// Object.assign(this, options)
 
-		if (options.list) {
-			this.addAll(options.list)
+		if (list) {
+			this.addAll(list)
 		}
 
-		if (options.compare) {
-			this._compare = options.compare
+		if (compare) {
+			this._compare = compare
 		}
 
-		if (options.autoSort) {
-			this._autoSort = options.autoSort
+		if (autoSort) {
+			this._autoSort = autoSort
 		}
 
-		if (options.notAddIfExists) {
-			this._notAddIfExists = options.notAddIfExists
+		if (notAddIfExists) {
+			this._notAddIfExists = notAddIfExists
 		}
 	}
 

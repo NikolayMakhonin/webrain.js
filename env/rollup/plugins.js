@@ -10,6 +10,7 @@ const prettier = require('rollup-plugin-prettier')
 const postcss = require('rollup-plugin-postcss')
 const postcssImport = require('postcss-import')
 const autoprefixer = require('autoprefixer')
+const typescript = require('rollup-plugin-typescript')
 
 function postcssCommon(options = {}) {
 	return {
@@ -44,6 +45,9 @@ function postcssCommon(options = {}) {
 
 
 module.exports = {
+	typescript: (options = {}) => typescript({
+		...options
+	}),
 	postCss: (options = {}) => postcss(postcssCommon({
 		// sourceMap: false, // 'inline',
 		// extract  : 'static/styles.css',
