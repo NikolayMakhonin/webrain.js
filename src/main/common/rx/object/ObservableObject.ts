@@ -1,7 +1,8 @@
 import '../extensions/autoConnect'
-import {HasSubscribersSubject} from '../subjects/hasSubscribers'
+import {HasSubscribersSubject, IHasSubscribersSubject} from '../subjects/hasSubscribers'
+import {IUnsubscribe} from '../subjects/subject'
 
-function expandAndDistinct(inputItems: any, output = [], map: any = {}) {
+function expandAndDistinct(inputItems: any, output: string[] = [], map: any = {}): string[] {
 	if (inputItems == null) {
 		return output
 	}
@@ -21,26 +22,46 @@ function expandAndDistinct(inputItems: any, output = [], map: any = {}) {
 	return output
 }
 
+type EventOrPropertyName = string | number | IDeepPropertyChangedEvent | IPropertyChangedEvent
+export type EventsOrPropertyNames = EventOrPropertyName | Array<EventOrPropertyName | any>
+
+export type IAnyPropertyChangedEvent = IDeepPropertyChangedEvent | IPropertyChangedEvent
+
 export interface IPropertyChangedEvent {
-	name: string,
-	oldValue: any,
-	newValue: any,
+	name?: string | number,
+	oldValue?: any,
+	newValue?: any,
+}
+
+export interface IDeepPropertyChangedEvent {
+	name?: string | number,
+	next?: IAnyPropertyChangedEvent
+}
+
+export interface IDeepPropertyChanged {
+	readonly deepPropertyChanged: IHasSubscribersSubject<IAnyPropertyChangedEvent>
 }
 
 export class ObservableObject {
-	private __meta: {
-		unsubscribers: { any; },
-		propertyChanged?: HasSubscribersSubject,
-		deepPropertyChanged?: HasSubscribersSubject,
+	private readonly __meta: {
+		unsubscribers: {
+			[key: string]: IUnsubscribe,
+			[key: number]: IUnsubscribe,
+		},
+		propertyChanged?: IHasSubscribersSubject<IPropertyChangedEvent>,
+		deepPropertyChanged?: IHasSubscribersSubject<IAnyPropertyChangedEvent>,
 	}
 
-	private __fields?: { any; }
+	private readonly __fields?: {
+		[key: string]: any;
+		[key: number]: any;
+	}
 
 	constructor() {
 		Object.defineProperty(this, '__meta', {
 			configurable: false,
-			enumerable : false,
-			writable     : false,
+			enumerable  : false,
+			writable    : false,
 			value       : {
 				unsubscribers: {},
 			},
@@ -56,7 +77,7 @@ export class ObservableObject {
 
 	// region propertyChanged
 
-	get propertyChanged(): HasSubscribersSubject {
+	get propertyChanged(): IHasSubscribersSubject<IPropertyChangedEvent> {
 		let {propertyChanged} = this.__meta
 		if (!propertyChanged) {
 			this.__meta.propertyChanged = propertyChanged = new HasSubscribersSubject()
@@ -64,7 +85,7 @@ export class ObservableObject {
 		return propertyChanged
 	}
 
-	get deepPropertyChanged(): HasSubscribersSubject {
+	get deepPropertyChanged(): IHasSubscribersSubject<IAnyPropertyChangedEvent> {
 		let {deepPropertyChanged} = this.__meta
 		if (!deepPropertyChanged) {
 			this.__meta.deepPropertyChanged = deepPropertyChanged = new HasSubscribersSubject()
@@ -72,12 +93,15 @@ export class ObservableObject {
 		return deepPropertyChanged
 	}
 
-	public _emitPropertyChanged(eventsOrPropertyNames: any, emitFunc: (event: IPropertyChangedEvent) => void) {
+	public _emitPropertyChanged(
+		eventsOrPropertyNames: EventsOrPropertyNames,
+		emitFunc: (event: IAnyPropertyChangedEvent) => void,
+	) {
 		if (eventsOrPropertyNames === null) {
 			return
 		}
 
-		const toEvent = (event) => {
+		const toEvent = (event: EventOrPropertyName): IAnyPropertyChangedEvent => {
 			if (event == null) {
 				return {}
 			}
@@ -105,7 +129,7 @@ export class ObservableObject {
 		}
 	}
 
-	public onPropertyChanged(eventsOrPropertyNames) {
+	public onPropertyChanged(eventsOrPropertyNames: EventsOrPropertyNames): this {
 		const {propertyChanged, deepPropertyChanged} = this.__meta
 
 		if (!propertyChanged && !deepPropertyChanged) {
@@ -125,7 +149,7 @@ export class ObservableObject {
 		return this
 	}
 
-	public onDeepPropertyChanged(eventsOrPropertyNames) {
+	public onDeepPropertyChanged(eventsOrPropertyNames: EventsOrPropertyNames): this {
 		const {deepPropertyChanged} = this.__meta
 
 		if (!deepPropertyChanged) {
@@ -141,7 +165,13 @@ export class ObservableObject {
 
 	// endregion
 
-	public _set(name, newValue, options) {
+	public _set(name: string | number, newValue, options: {
+		equalsFunc: (oldValue, newValue) => boolean,
+		fillFunc: (oldValue, newValue) => boolean,
+		convertFunc: (newValue) => any,
+		beforeChange: (oldValue) => void,
+		afterChange: (newValue) => void,
+	}) {
 		const {__fields} = this
 		const oldValue =  __fields[name]
 
@@ -194,7 +224,7 @@ export class ObservableObject {
 		return true
 	}
 
-	public _propagatePropertyChanged(propertyName, value) {
+	public _propagatePropertyChanged(propertyName: string | number, value: IDeepPropertyChanged | any): IUnsubscribe {
 		if (!value) {
 			return null
 		}
@@ -205,7 +235,7 @@ export class ObservableObject {
 			return null
 		}
 
-		const subscriber = (event) => {
+		const subscriber = (event: IAnyPropertyChangedEvent) => {
 			this.deepPropertyChanged.emit({
 				name: propertyName,
 				next: event,

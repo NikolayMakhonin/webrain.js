@@ -5,7 +5,7 @@ export interface IBehavior<T> {
 	value: T
 	unsubscribeValue: T
 	subscribe(subscriber: ISubscriber<T>): IUnsubscribe
-	emit(value): this
+	emit(value: T): this
 }
 
 export function behavior<TBase>(base): any {
@@ -52,6 +52,10 @@ export function behavior<TBase>(base): any {
 	}
 }
 
+export interface IBehaviorSubject<T> extends ISubject<T>, IBehavior<T> {
+
+}
+
 export const BehaviorSubject:
-	new<T>() => IObservable<T> & ISubject<T> & IBehavior<T>
+	new<T>() => IBehaviorSubject<T>
 	= behavior(Subject)

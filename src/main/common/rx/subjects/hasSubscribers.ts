@@ -1,9 +1,9 @@
 import {BehaviorSubject, IBehavior} from './behavior'
-import {IObservable} from './observable'
+import {IObservable, Observable} from './observable'
 import {ISubject, ISubscriber, IUnsubscribe, Subject} from './subject'
 
 export interface IHasSubscribers<T> {
-	readonly hasSubscribersObservable: IObservable<boolean>
+	readonly hasSubscribersObservable: Observable<boolean>
 	subscribe(subscriber: ISubscriber<T>): IUnsubscribe
 }
 
@@ -57,10 +57,18 @@ export function hasSubscribers(base, createHasSubscribersSubject = createHasSubs
 	}
 }
 
+export interface IHasSubscribersSubject<T> extends ISubject<T>, IHasSubscribers<T> {
+
+}
+
 export const HasSubscribersSubject:
-	new<T>() => IObservable<T> & ISubject<T> & IHasSubscribers<T>
+	new<T>() => IHasSubscribersSubject<T>
 	= hasSubscribers(Subject)
 
+export interface IHasSubscribersBehaviorSubject<T> extends ISubject<T>, IBehavior<T>, IHasSubscribers<T> {
+
+}
+
 export const HasSubscribersBehaviorSubject:
-	new<T>() => IObservable<T> & ISubject<T> & IBehavior<T> & IHasSubscribers<T>
+	new<T>() => IHasSubscribersBehaviorSubject<T>
 	= hasSubscribers(BehaviorSubject)

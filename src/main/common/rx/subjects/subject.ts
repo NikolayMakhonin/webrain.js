@@ -1,8 +1,7 @@
 import {IObservable, Observable} from './observable'
 
-export interface ISubject<T> {
+export interface ISubject<T> extends IObservable<T> {
 	readonly hasSubscribers: boolean
-	subscribe(subscriber: ISubscriber<T>): IUnsubscribe
 	emit(value: T): this
 }
 
@@ -64,7 +63,7 @@ export function subject(base): any {
 }
 
 export const Subject:
-	new<T>() => IObservable<T> & ISubject<T>
+	new<T>() => ISubject<T>
 	= subject(Observable)
 
 // export function createSubjectClass(base, ...extensions) {
