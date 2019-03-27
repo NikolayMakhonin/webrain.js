@@ -1,0 +1,1 @@
+https://github.com/petkaantonov/bluebird/wiki/Optimization-killers#3-managing-arguments

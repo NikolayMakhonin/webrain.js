@@ -1,5 +1,6 @@
 /* eslint-disable guard-for-in */
-import {ObservableObject, ObservableObjectBuilder} from '../../../../../../main/common/rx/object/ObservableObject'
+import {ObservableObject} from '../../../../../../main/common/rx/object/ObservableObject'
+import {ObservableObjectBuilder} from '../../../../../../main/common/rx/object/ObservableObjectBuilder'
 
 describe('common > main > rx > observable-object-builder-prototype', function () {
 	it('base', function () {
