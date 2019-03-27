@@ -22,9 +22,10 @@ export class Property extends ObservableObject {
 		this.set(value)
 	}
 
-	set(setMode, source, options) {
-		const {fillFunc} = options
-		// const {valueFactory} = options
+	set(source, options) {
+		const {
+			fill, clone, fillFunc, valueFactory
+		} = options
 
 		return this._set(
 			'value',
@@ -36,8 +37,8 @@ export class Property extends ObservableObject {
 					: fillFunc,
 
 				convert(sourceValue) {
-					if (sourceValue != null && (setMode & SetMode.Clone) !== 0) {
-						return clone(sourceValue)
+					if (clone && sourceValue != null) {
+						return cloneValue(sourceValue)
 					}
 
 					return sourceValue
@@ -45,24 +46,24 @@ export class Property extends ObservableObject {
 			}
 		)
 
-		function clone(sourceValue) {
+		function cloneValue(sourceValue) {
 			if (fillFunc == null) {
 				throw new Error('Cannot clone value, because fillFunc == null')
 			}
 
-			// let value
-			// if (valueFactory != null) {
-			// 	value = valueFactory(sourceValue)
-			// 	if (value != null) {
-			// 		return value
-			// 	}
-			// }
-
-			const {valueFactory} = this
-			if (!valueFactory) {
-				throw new Error('Cannot clone value, because valueFactory == null')
+			let value
+			if (valueFactory != null) {
+				value = valueFactory(sourceValue)
+				if (value != null) {
+					return value
+				}
 			}
-			const value = valueFactory()
+
+			const {_valueFactory} = this
+			if (!_valueFactory) {
+				throw new Error('Cannot clone value, because this._valueFactory == null')
+			}
+			value = _valueFactory()
 
 			if (!fillFunc(value, sourceValue)) {
 				throw new Error('Cannot clone value, because fillFunc return false')

@@ -5,3 +5,4 @@ _trash
 __sapper__
 **/polyfills/**
 env/polyfill/bundle.js
+*.ts

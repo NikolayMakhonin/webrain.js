@@ -6,7 +6,8 @@ module.exports = {
 					chrome: '30'
 				}
 			}
-		]
+		],
+		"@babel/preset-typescript"
 	],
 	"plugins": [
 		"@babel/plugin-syntax-dynamic-import",

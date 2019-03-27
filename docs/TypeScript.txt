@@ -1,0 +1,2 @@
+https://typescript-play.js.org
+https://www.carlosag.net/tools/codetranslator/

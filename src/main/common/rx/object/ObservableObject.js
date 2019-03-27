@@ -46,11 +46,6 @@ export class ObservableObject {
 		const {__fields} = this
 		const oldValue =  __fields[name]
 
-		const {convertFunc} = options
-		if (convertFunc) {
-			newValue = convertFunc(newValue)
-		}
-
 		const {equalsFunc} = options
 		if (equalsFunc ? equalsFunc(oldValue, newValue) : oldValue === newValue) {
 			return false
@@ -58,6 +53,15 @@ export class ObservableObject {
 
 		const {fillFunc} = options
 		if (fillFunc && oldValue != null && newValue != null && fillFunc(oldValue, newValue)) {
+			return false
+		}
+
+		const {convertFunc} = options
+		if (convertFunc) {
+			newValue = convertFunc(newValue)
+		}
+
+		if (oldValue === newValue) {
 			return false
 		}
 

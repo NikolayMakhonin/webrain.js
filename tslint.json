@@ -1,0 +1,14 @@
+{
+  "extends": [
+	"tslint:recommended",
+	"tslint-sonarts",
+	"tslint-clean-code",
+	"tslint-consistent-codestyle"
+  ],
+  "rules": {
+	"semicolon": [ true, "never" ],
+	"indent": [true, "tabs", 4],
+	"variable-name": [false],
+	"no-trailing-whitespace": [true, "ignore-blank-lines"]
+  }
+}

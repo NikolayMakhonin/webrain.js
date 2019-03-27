@@ -7,7 +7,8 @@ module.exports = {
 					"node": "8.6.0"
 				}
 			}
-		]
+		],
+		"@babel/preset-typescript"
 	],
 	"plugins": [
 		"@babel/plugin-transform-runtime",

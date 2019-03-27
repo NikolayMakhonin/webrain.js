@@ -63,6 +63,7 @@
     "@babel/plugin-transform-regenerator": "^7.3.4",
     "@babel/plugin-transform-runtime": "^7.2.0",
     "@babel/preset-env": "^7.3.1",
+    "@babel/preset-typescript": "^7.3.3",
     "@babel/register": "^7.0.0",
     "@metahub/karma-rollup-preprocessor": "^4.1.0",
     "@theintern/leadfoot": "^2.2.6",
@@ -87,7 +88,7 @@
     "istanbul-combine": "^0.3.0",
     "json5": "^2.1.0",
     "karma": "^4.0.0",
-    "karma-browserstack-launcher": "^1.4.0",
+    "karma-browserstack-launcher": "^1.5.0",
     "karma-chrome-launcher": "^2.2.0",
     "karma-coverage": "^1.1.2",
     "karma-detect-browsers": "^2.3.3",
@@ -120,6 +121,10 @@
     "rollup-plugin-terser": "^4.0.4",
     "rollup-pluginutils": "^2.4.1",
     "shx": "^0.3.2",
+    "tslint": "^5.14.0",
+    "tslint-clean-code": "^0.2.9",
+    "tslint-consistent-codestyle": "^1.15.1",
+    "tslint-sonarts": "^1.9.0",
     "zip-dir": "^1.0.2"
   },
   "dependencies": {
