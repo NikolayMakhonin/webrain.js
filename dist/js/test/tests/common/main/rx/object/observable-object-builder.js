@@ -2,12 +2,14 @@
 
 var _ObservableObject = require("../../../../../../main/common/rx/object/ObservableObject");
 
+var _ObservableObjectBuilder = require("../../../../../../main/common/rx/object/ObservableObjectBuilder");
+
 /* eslint-disable guard-for-in */
 describe('common > main > rx > observable-object-builder', function () {
   it('enumerate properties', function () {
     const {
       object
-    } = new _ObservableObject.ObservableObjectBuilder().writable('writable').readable('readable', null, '1');
+    } = new _ObservableObjectBuilder.ObservableObjectBuilder().writable('writable').readable('readable', null, '1');
     assert.deepStrictEqual(Object.keys(object), ['writable', 'readable']);
 
     for (const key in object) {
@@ -27,7 +29,7 @@ describe('common > main > rx > observable-object-builder', function () {
   it('deepPropertyChanged property', function () {
     const {
       object
-    } = new _ObservableObject.ObservableObjectBuilder();
+    } = new _ObservableObjectBuilder.ObservableObjectBuilder();
     assert.ok(object.deepPropertyChanged);
     assert.throws(() => object.deepPropertyChanged = '1', TypeError);
     Object.defineProperty(object, 'deepPropertyChanged', {
@@ -38,7 +40,7 @@ describe('common > main > rx > observable-object-builder', function () {
   it('onDeepPropertyChanged property', function () {
     const {
       object
-    } = new _ObservableObject.ObservableObjectBuilder();
+    } = new _ObservableObjectBuilder.ObservableObjectBuilder();
     assert.ok(object.onDeepPropertyChanged);
     object.onDeepPropertyChanged = '2';
     assert.strictEqual(object.onDeepPropertyChanged, '2');
@@ -46,44 +48,62 @@ describe('common > main > rx > observable-object-builder', function () {
   it('onDeepPropertyChanged', function () {
     const {
       object
-    } = new _ObservableObject.ObservableObjectBuilder();
-    let results = [];
+    } = new _ObservableObjectBuilder.ObservableObjectBuilder();
+    const results = [];
 
     const subscriber = value => {
       results.push(value);
     };
 
+    let resultsDeep = [];
+
+    const subscriberDeep = value => {
+      resultsDeep.push(value);
+    };
+
+    assert.strictEqual(object.onDeepPropertyChanged(), object);
+    assert.strictEqual(object.onDeepPropertyChanged([]), object);
+    assert.strictEqual(object.onDeepPropertyChanged(['prop']), object);
     const unsubscribe = [];
-    assert.strictEqual(typeof (unsubscribe[0] = object.deepPropertyChanged.subscribe(subscriber)), 'function');
+    assert.strictEqual(typeof (unsubscribe[0] = object.propertyChanged.subscribe(subscriber)), 'function');
+    assert.strictEqual(typeof (unsubscribe[1] = object.deepPropertyChanged.subscribe(subscriberDeep)), 'function');
     assert.deepStrictEqual(results, []);
-    object.onDeepPropertyChanged();
-    assert.deepStrictEqual(results, [{}]);
-    results = [];
-    object.onDeepPropertyChanged([]);
+    assert.deepStrictEqual(resultsDeep, []);
+    assert.strictEqual(object.onDeepPropertyChanged(), object);
     assert.deepStrictEqual(results, []);
-    object.onDeepPropertyChanged(null);
+    assert.deepStrictEqual(resultsDeep, [{}]);
+    resultsDeep = [];
+    assert.strictEqual(object.onDeepPropertyChanged([]), object);
     assert.deepStrictEqual(results, []);
-    object.onDeepPropertyChanged([null]);
+    assert.deepStrictEqual(resultsDeep, []);
+    assert.strictEqual(object.onDeepPropertyChanged(null), object);
     assert.deepStrictEqual(results, []);
-    object.onDeepPropertyChanged('');
-    assert.deepStrictEqual(results, [{
+    assert.deepStrictEqual(resultsDeep, []);
+    assert.strictEqual(object.onDeepPropertyChanged([null]), object);
+    assert.deepStrictEqual(results, []);
+    assert.deepStrictEqual(resultsDeep, []);
+    assert.strictEqual(object.onDeepPropertyChanged(''), object);
+    assert.deepStrictEqual(results, []);
+    assert.deepStrictEqual(resultsDeep, [{
       name: '',
       newValue: undefined,
       oldValue: undefined
     }]);
-    results = [];
-    object.onDeepPropertyChanged('', '', ['', '', ['']]);
-    assert.deepStrictEqual(results, [{
+    resultsDeep = [];
+    assert.strictEqual(object.onDeepPropertyChanged('', '', ['', '', ['']]), object);
+    assert.deepStrictEqual(results, []);
+    assert.deepStrictEqual(resultsDeep, [{
       name: '',
       newValue: undefined,
       oldValue: undefined
     }]);
-    results = [];
+    resultsDeep = [];
     object[4] = null;
     object[1] = 11;
     object['z'] = 'zz';
-    object.onDeepPropertyChanged([[2, 'z', ['a', '1', [4]]]]);
-    assert.deepStrictEqual(results, [{
+    assert.strictEqual(object.onDeepPropertyChanged([[2, 'z', ['a', '1', [4]]]]), object);
+    assert.deepStrictEqual(results, []);
+    assert.deepStrictEqual(resultsDeep, [{
       name: 2,
       newValue: undefined,
       oldValue: undefined
@@ -104,14 +124,118 @@ describe('common > main > rx > observable-object-builder', function () {
       newValue: null,
       oldValue: null
     }]);
+    resultsDeep = [];
+  });
+  it('propertyChanged property', function () {
+    const {
+      object
+    } = new _ObservableObjectBuilder.ObservableObjectBuilder();
+    assert.ok(object.propertyChanged);
+    assert.throws(() => object.propertyChanged = '1', TypeError);
+    Object.defineProperty(object, 'propertyChanged', {
+      value: '2'
+    });
+    assert.strictEqual(object.propertyChanged, '2');
+  });
+  it('onPropertyChanged property', function () {
+    const {
+      object
+    } = new _ObservableObjectBuilder.ObservableObjectBuilder();
+    assert.ok(object.onPropertyChanged);
+    object.onPropertyChanged = '2';
+    assert.strictEqual(object.onPropertyChanged, '2');
+  });
+  it('onPropertyChanged', function () {
+    const {
+      object
+    } = new _ObservableObjectBuilder.ObservableObjectBuilder();
+    let results = [];
+
+    const subscriber = value => {
+      results.push(value);
+    };
+
+    let resultsDeep = [];
+
+    const subscriberDeep = value => {
+      resultsDeep.push(value);
+    };
+
+    assert.strictEqual(object.onPropertyChanged(), object);
+    assert.strictEqual(object.onPropertyChanged([]), object);
+    assert.strictEqual(object.onPropertyChanged(['prop']), object);
+    const unsubscribe = [];
+    assert.strictEqual(typeof (unsubscribe[0] = object.propertyChanged.subscribe(subscriber)), 'function');
+    assert.strictEqual(typeof (unsubscribe[1] = object.deepPropertyChanged.subscribe(subscriberDeep)), 'function');
+    assert.deepStrictEqual(results, []);
+    assert.deepStrictEqual(resultsDeep, []);
+    assert.strictEqual(object.onPropertyChanged(), object);
+    assert.deepStrictEqual(resultsDeep, [{}]);
+    assert.deepStrictEqual(results, resultsDeep);
     results = [];
+    resultsDeep = [];
+    assert.strictEqual(object.onPropertyChanged([]), object);
+    assert.deepStrictEqual(resultsDeep, []);
+    assert.deepStrictEqual(results, resultsDeep);
+    assert.strictEqual(object.onPropertyChanged(null), object);
+    assert.deepStrictEqual(resultsDeep, []);
+    assert.deepStrictEqual(results, resultsDeep);
+    assert.strictEqual(object.onPropertyChanged([null]), object);
+    assert.deepStrictEqual(resultsDeep, []);
+    assert.deepStrictEqual(results, resultsDeep);
+    assert.strictEqual(object.onPropertyChanged(''), object);
+    assert.deepStrictEqual(resultsDeep, [{
+      name: '',
+      newValue: undefined,
+      oldValue: undefined
+    }]);
+    assert.deepStrictEqual(results, resultsDeep);
+    results = [];
+    resultsDeep = [];
+    assert.strictEqual(object.onPropertyChanged('', '', ['', '', ['']]), object);
+    assert.deepStrictEqual(resultsDeep, [{
+      name: '',
+      newValue: undefined,
+      oldValue: undefined
+    }]);
+    assert.deepStrictEqual(results, resultsDeep);
+    results = [];
+    resultsDeep = [];
+    object[4] = null;
+    object[1] = 11;
+    object['z'] = 'zz';
+    assert.strictEqual(object.onPropertyChanged([[2, 'z', ['a', '1', [4]]]]), object);
+    assert.deepStrictEqual(resultsDeep, [{
+      name: 2,
+      newValue: undefined,
+      oldValue: undefined
+    }, {
+      name: 'z',
+      newValue: 'zz',
+      oldValue: 'zz'
+    }, {
+      name: 'a',
+      newValue: undefined,
+      oldValue: undefined
+    }, {
+      name: '1',
+      newValue: 11,
+      oldValue: 11
+    }, {
+      name: 4,
+      newValue: null,
+      oldValue: null
+    }]);
+    assert.deepStrictEqual(results, resultsDeep);
+    results = [];
+    resultsDeep = [];
   });
   it('readable simple', function () {
     const {
       object
-    } = new _ObservableObject.ObservableObjectBuilder();
+    } = new _ObservableObjectBuilder.ObservableObjectBuilder();
     assert.ok(object instanceof _ObservableObject.ObservableObject);
-    const builder = new _ObservableObject.ObservableObjectBuilder(object);
+    const builder = new _ObservableObjectBuilder.ObservableObjectBuilder(object);
     assert.strictEqual(builder.object, object);
     assert.strictEqual(builder.readable('prop'), builder);
     assert.strictEqual(builder.object['prop'], undefined);
@@ -130,9 +254,9 @@ describe('common > main > rx > observable-object-builder', function () {
   it('writable simple', function () {
     const {
       object
-    } = new _ObservableObject.ObservableObjectBuilder();
+    } = new _ObservableObjectBuilder.ObservableObjectBuilder();
     assert.ok(object instanceof _ObservableObject.ObservableObject);
-    const builder = new _ObservableObject.ObservableObjectBuilder(object);
+    const builder = new _ObservableObjectBuilder.ObservableObjectBuilder(object);
     assert.strictEqual(builder.object, object);
     assert.strictEqual(builder.writable('prop'), builder);
     assert.strictEqual(builder.object['prop'], undefined);
@@ -149,7 +273,7 @@ describe('common > main > rx > observable-object-builder', function () {
     assert.strictEqual(builder.object, object);
   });
   it('readable simple changed', function () {
-    const builder = new _ObservableObject.ObservableObjectBuilder();
+    const builder = new _ObservableObjectBuilder.ObservableObjectBuilder();
     const {
       object
     } = builder;
@@ -225,7 +349,7 @@ describe('common > main > rx > observable-object-builder', function () {
     assert.strictEqual(object['prop'], 1);
   });
   it('writable simple changed', function () {
-    const builder = new _ObservableObject.ObservableObjectBuilder();
+    const builder = new _ObservableObjectBuilder.ObservableObjectBuilder();
     const {
       object
     } = builder;
@@ -313,11 +437,11 @@ describe('common > main > rx > observable-object-builder', function () {
     assert.strictEqual(object['prop'], 2);
   });
   it('readable nested changed', function () {
-    const builder = new _ObservableObject.ObservableObjectBuilder();
+    const builder = new _ObservableObjectBuilder.ObservableObjectBuilder();
     const {
       object
     } = builder;
-    const builderNested = new _ObservableObject.ObservableObjectBuilder();
+    const builderNested = new _ObservableObjectBuilder.ObservableObjectBuilder();
     const {
       object: objectNested
     } = builderNested;
@@ -370,7 +494,7 @@ describe('common > main > rx > observable-object-builder', function () {
     results = [];
     assert.strictEqual(objectNested['prop'], '2');
     assert.strictEqual(object['prop'], objectNested);
-    assert.throws(() => object['prop'] = new _ObservableObject.ObservableObjectBuilder().object, TypeError);
+    assert.throws(() => object['prop'] = new _ObservableObjectBuilder.ObservableObjectBuilder().object, TypeError);
     assert.deepStrictEqual(hasSubscribers, []);
     assert.deepStrictEqual(results, []);
     assert.throws(() => objectNested['prop'] = '3', TypeError);
@@ -429,11 +553,11 @@ describe('common > main > rx > observable-object-builder', function () {
     }]);
   });
   it('writable nested changed', function () {
-    const builder = new _ObservableObject.ObservableObjectBuilder();
+    const builder = new _ObservableObjectBuilder.ObservableObjectBuilder();
     const {
       object
     } = builder;
-    const builderNested = new _ObservableObject.ObservableObjectBuilder();
+    const builderNested = new _ObservableObjectBuilder.ObservableObjectBuilder();
     const {
       object: objectNested
     } = builderNested;
@@ -449,33 +573,44 @@ describe('common > main > rx > observable-object-builder', function () {
       results.push(value);
     };
 
+    let resultsDeep = [];
+
+    const subscriberDeep = value => {
+      resultsDeep.push(value);
+    };
+
     const hasSubscribersUnsubscribe = [];
     assert.strictEqual(typeof (hasSubscribersUnsubscribe[0] = object.deepPropertyChanged.hasSubscribersObservable.subscribe(hasSubscribersSubscriber)), 'function');
     assert.deepStrictEqual(hasSubscribers, [false]);
     hasSubscribers = [];
     const unsubscribe = [];
-    assert.strictEqual(typeof (unsubscribe[0] = object.deepPropertyChanged.subscribe(subscriber)), 'function');
+    assert.strictEqual(typeof (unsubscribe[0] = object.propertyChanged.subscribe(subscriber)), 'function');
+    assert.strictEqual(typeof (unsubscribe[1] = object.deepPropertyChanged.subscribe(subscriberDeep)), 'function');
     assert.deepStrictEqual(results, []);
+    assert.deepStrictEqual(resultsDeep, []);
     assert.deepStrictEqual(hasSubscribers, [true]);
     hasSubscribers = [];
     assert.strictEqual(builder.writable('prop', null, objectNested), builder);
     assert.deepStrictEqual(hasSubscribers, []);
-    assert.deepStrictEqual(results, [{
+    assert.deepStrictEqual(resultsDeep, [{
       name: 'prop',
       newValue: objectNested,
       oldValue: undefined
     }]);
+    assert.deepStrictEqual(results, resultsDeep);
     results = [];
+    resultsDeep = [];
     assert.strictEqual(object['prop'], objectNested);
     objectNested['prop'] = '1';
     assert.strictEqual(builderNested.writable('prop', null, '1'), builderNested);
     assert.deepStrictEqual(hasSubscribers, []);
     assert.deepStrictEqual(results, []);
+    assert.deepStrictEqual(resultsDeep, []);
     assert.strictEqual(objectNested['prop'], '1');
     assert.strictEqual(object['prop'], objectNested);
     assert.strictEqual(builderNested.writable('prop', null, '2'), builderNested);
     assert.deepStrictEqual(hasSubscribers, []);
-    assert.deepStrictEqual(results, [{
+    assert.deepStrictEqual(resultsDeep, [{
       name: 'prop',
       next: {
         name: 'prop',
@@ -483,34 +618,40 @@ describe('common > main > rx > observable-object-builder', function () {
         oldValue: '1'
       }
     }]);
-    results = [];
+    assert.deepStrictEqual(results, []);
+    resultsDeep = [];
     assert.strictEqual(objectNested['prop'], '2');
     assert.strictEqual(object['prop'], objectNested);
-    object['prop'] = new _ObservableObject.ObservableObjectBuilder().object;
+    object['prop'] = new _ObservableObjectBuilder.ObservableObjectBuilder().object;
     assert.deepStrictEqual(hasSubscribers, []);
-    assert.deepStrictEqual(results, [{
+    assert.deepStrictEqual(resultsDeep, [{
       name: 'prop',
       newValue: {},
       oldValue: {
         prop: '2'
       }
     }]);
+    assert.deepStrictEqual(results, resultsDeep);
     results = [];
+    resultsDeep = [];
     objectNested['prop'] = '3';
     assert.deepStrictEqual(hasSubscribers, []);
     assert.deepStrictEqual(results, []);
+    assert.deepStrictEqual(resultsDeep, []);
     object['prop'] = objectNested;
-    assert.deepStrictEqual(results, [{
+    assert.deepStrictEqual(resultsDeep, [{
       name: 'prop',
       newValue: {
         prop: '3'
       },
       oldValue: {}
     }]);
+    assert.deepStrictEqual(results, resultsDeep);
     results = [];
+    resultsDeep = [];
     objectNested['prop'] = '4';
     assert.deepStrictEqual(hasSubscribers, []);
-    assert.deepStrictEqual(results, [{
+    assert.deepStrictEqual(resultsDeep, [{
       name: 'prop',
       next: {
         name: 'prop',
@@ -518,28 +659,34 @@ describe('common > main > rx > observable-object-builder', function () {
         oldValue: '3'
       }
     }]);
-    results = [];
+    assert.deepStrictEqual(results, []);
+    resultsDeep = [];
     assert.strictEqual(builder.delete('prop'), builder);
     assert.deepStrictEqual(hasSubscribers, []);
-    assert.deepStrictEqual(results, [{
+    assert.deepStrictEqual(resultsDeep, [{
       name: 'prop',
       oldValue: {
         prop: '4'
       }
     }]);
+    assert.deepStrictEqual(results, resultsDeep);
     results = [];
+    resultsDeep = [];
     assert.strictEqual(object['prop'], undefined);
     assert.strictEqual(builder.delete('prop'), builder);
     assert.deepStrictEqual(hasSubscribers, []);
     assert.deepStrictEqual(results, []);
+    assert.deepStrictEqual(resultsDeep, []);
     objectNested['prop'] = '4';
     assert.deepStrictEqual(hasSubscribers, []);
     assert.deepStrictEqual(results, []);
+    assert.deepStrictEqual(resultsDeep, []);
     object['prop'] = objectNested;
     assert.strictEqual(object['prop'], objectNested);
     assert.strictEqual(builder.writable('prop', null, objectNested), builder);
     assert.deepStrictEqual(hasSubscribers, []);
     assert.deepStrictEqual(results, []);
+    assert.deepStrictEqual(resultsDeep, []);
     assert.strictEqual(object['prop'], objectNested);
     delete object['prop'];
     assert.strictEqual(object['prop'], undefined);
@@ -548,10 +695,11 @@ describe('common > main > rx > observable-object-builder', function () {
     assert.strictEqual(builder.writable('prop', null, objectNested), builder);
     assert.deepStrictEqual(hasSubscribers, []);
     assert.deepStrictEqual(results, []);
+    assert.deepStrictEqual(resultsDeep, []);
     assert.strictEqual(object['prop'], objectNested);
     objectNested['prop'] = '5';
     assert.deepStrictEqual(hasSubscribers, []);
-    assert.deepStrictEqual(results, [{
+    assert.deepStrictEqual(resultsDeep, [{
       name: 'prop',
       next: {
         name: 'prop',
@@ -559,5 +707,7 @@ describe('common > main > rx > observable-object-builder', function () {
         oldValue: '4'
       }
     }]);
+    assert.deepStrictEqual(results, []);
+    resultsDeep = [];
   });
 });

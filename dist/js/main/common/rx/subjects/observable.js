@@ -4,7 +4,8 @@ Object.defineProperty(exports, "__esModule", {
   value: true
 });
 exports.Observable = void 0;
-const Observable = class {
+
+class Observable {
   constructor(fields) {
     Object.assign(this, fields);
   }
@@ -13,5 +14,6 @@ const Observable = class {
     return func(this);
   }
 
-};
+}
+
 exports.Observable = Observable;

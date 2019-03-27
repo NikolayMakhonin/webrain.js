@@ -51,7 +51,7 @@ describe('common > main > rx > observable-object-builder', function () {
 	it('onDeepPropertyChanged', function () {
 		const {object} = new ObservableObjectBuilder()
 
-		let results = []
+		const results = []
 		const subscriber = value => {
 			results.push(value)
 		}

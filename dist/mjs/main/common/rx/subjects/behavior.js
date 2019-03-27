@@ -41,6 +41,7 @@ export function behavior(base) {
 
             try {
               // eslint-disable-next-line no-shadow
+              // tslint:disable-next-line:no-shadowed-variable
               var _value = _this.value,
                   unsubscribeValue = _this.unsubscribeValue;
 

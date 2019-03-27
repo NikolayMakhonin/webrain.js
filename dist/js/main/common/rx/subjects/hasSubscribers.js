@@ -11,6 +11,7 @@ var _behavior = require("./behavior");
 var _subject = require("./subject");
 
 // eslint-disable-next-line no-shadow
+// tslint:disable-next-line:no-shadowed-variable
 function createHasSubscribersSubjectDefault(hasSubscribers) {
   const subject = new _behavior.BehaviorSubject();
   subject.value = hasSubscribers;
@@ -24,6 +25,7 @@ function hasSubscribers(base, createHasSubscribersSubject = createHasSubscribers
       if (!subscriber) {
         return null;
       } // eslint-disable-next-line no-shadow
+      // tslint:disable-next-line:no-shadowed-variable
 
 
       const {
@@ -37,6 +39,7 @@ function hasSubscribers(base, createHasSubscribersSubject = createHasSubscribers
 
       return () => {
         // eslint-disable-next-line no-shadow
+        // tslint:disable-next-line:no-shadowed-variable
         const {
           hasSubscribers
         } = this;

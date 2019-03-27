@@ -3,9 +3,57 @@ import _classCallCheck from "@babel/runtime/helpers/classCallCheck";
 import _createClass from "@babel/runtime/helpers/createClass";
 import '../extensions/autoConnect';
 import { HasSubscribersSubject } from '../subjects/hasSubscribers';
+
+function expandAndDistinct(inputItems) {
+  var output = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : [];
+  var map = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : {};
+
+  if (inputItems == null) {
+    return output;
+  }
+
+  if (Array.isArray(inputItems)) {
+    var _iteratorNormalCompletion = true;
+    var _didIteratorError = false;
+    var _iteratorError = undefined;
+
+    try {
+      for (var _iterator = inputItems[Symbol.iterator](), _step; !(_iteratorNormalCompletion = (_step = _iterator.next()).done); _iteratorNormalCompletion = true) {
+        var item = _step.value;
+        expandAndDistinct(item, output, map);
+      }
+    } catch (err) {
+      _didIteratorError = true;
+      _iteratorError = err;
+    } finally {
+      try {
+        if (!_iteratorNormalCompletion && _iterator.return != null) {
+          _iterator.return();
+        }
+      } finally {
+        if (_didIteratorError) {
+          throw _iteratorError;
+        }
+      }
+    }
+
+    return output;
+  }
+
+  if (!map[inputItems]) {
+    map[inputItems] = true;
+    output[output.length] = inputItems;
+  }
+
+  return output;
+}
+
 export var ObservableObject =
 /*#__PURE__*/
 function () {
+  /** @internal */
+
+  /** @internal */
   function ObservableObject() {
     _classCallCheck(this, ObservableObject);
 
@@ -101,6 +149,8 @@ function () {
       return this;
     } // endregion
 
+    /** @internal */
+
   }, {
     key: "_set",
     value: function _set(name, newValue, options) {
@@ -156,6 +206,8 @@ function () {
       });
       return true;
     }
+    /** @internal */
+
   }, {
     key: "_propagatePropertyChanged",
     value: function _propagatePropertyChanged(propertyName, value) {
@@ -207,183 +259,4 @@ function () {
   }]);
 
   return ObservableObject;
-}();
-
-function expandAndDistinct(inputItems) {
-  var output = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : [];
-  var map = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : {};
-
-  if (inputItems == null) {
-    return output;
-  }
-
-  if (Array.isArray(inputItems)) {
-    var _iteratorNormalCompletion = true;
-    var _didIteratorError = false;
-    var _iteratorError = undefined;
-
-    try {
-      for (var _iterator = inputItems[Symbol.iterator](), _step; !(_iteratorNormalCompletion = (_step = _iterator.next()).done); _iteratorNormalCompletion = true) {
-        var item = _step.value;
-        expandAndDistinct(item, output, map);
-      }
-    } catch (err) {
-      _didIteratorError = true;
-      _iteratorError = err;
-    } finally {
-      try {
-        if (!_iteratorNormalCompletion && _iterator.return != null) {
-          _iterator.return();
-        }
-      } finally {
-        if (_didIteratorError) {
-          throw _iteratorError;
-        }
-      }
-    }
-
-    return output;
-  }
-
-  if (!map[inputItems]) {
-    map[inputItems] = true;
-    output[output.length] = inputItems;
-  }
-
-  return output;
-}
-
-export var ObservableObjectBuilder =
-/*#__PURE__*/
-function () {
-  function ObservableObjectBuilder(object) {
-    _classCallCheck(this, ObservableObjectBuilder);
-
-    this.object = object || new ObservableObject();
-  }
-
-  _createClass(ObservableObjectBuilder, [{
-    key: "writable",
-    value: function writable(name, options, initValue) {
-      if (!options) {
-        options = {};
-      }
-
-      var object = this.object;
-      var __fields = object.__fields;
-
-      if (__fields) {
-        __fields[name] = object[name];
-      }
-
-      Object.defineProperty(object, name, {
-        configurable: true,
-        enumerable: true,
-        get: function get() {
-          return this.__fields[name];
-        },
-        set: function set(newValue) {
-          this._set(name, newValue, options);
-        }
-      });
-
-      if (__fields) {
-        if (typeof initValue !== 'undefined') {
-          var value = __fields[name];
-
-          if (initValue === value) {
-            var unsubscribers = object.__meta.unsubscribers;
-            var unsubscribe = unsubscribers[name];
-
-            if (unsubscribe) {
-              unsubscribe();
-            }
-
-            unsubscribers[name] = object._propagatePropertyChanged(name, value);
-          } else {
-            object[name] = initValue;
-          }
-        }
-      }
-
-      return this;
-    }
-  }, {
-    key: "readable",
-    value: function readable(name, options, value) {
-      var object = this.object;
-      var __fields = object.__fields;
-
-      if (__fields) {
-        __fields[name] = object[name];
-      }
-
-      Object.defineProperty(object, name, {
-        configurable: true,
-        enumerable: true,
-        get: function get() {
-          return this.__fields[name];
-        }
-      });
-
-      if (__fields) {
-        if (typeof value !== 'undefined') {
-          var oldValue = __fields[name];
-          var unsubscribers = object.__meta.unsubscribers;
-          var unsubscribe = unsubscribers[name];
-
-          if (unsubscribe) {
-            unsubscribe();
-          }
-
-          unsubscribers[name] = object._propagatePropertyChanged(name, value);
-
-          if (value !== oldValue) {
-            __fields[name] = value;
-            object.onPropertyChanged({
-              name: name,
-              oldValue: oldValue,
-              newValue: value
-            });
-          }
-        }
-      }
-
-      return this;
-    }
-  }, {
-    key: "delete",
-    value: function _delete(name) {
-      var object = this.object;
-      var oldValue = object[name];
-      var __fields = object.__fields,
-          __meta = object.__meta;
-
-      if (__meta) {
-        var unsubscribers = __meta.unsubscribers;
-        var unsubscribe = unsubscribers[name];
-
-        if (unsubscribe) {
-          unsubscribe();
-        }
-      }
-
-      delete object[name];
-
-      if (__fields) {
-        delete __fields[name];
-
-        if (typeof oldValue !== 'undefined') {
-          object.onPropertyChanged({
-            name: name,
-            oldValue: oldValue
-          });
-        }
-      }
-
-      return this;
-    }
-  }]);
-
-  return ObservableObjectBuilder;
 }();

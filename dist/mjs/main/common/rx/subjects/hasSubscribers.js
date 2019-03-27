@@ -5,8 +5,10 @@ import _getPrototypeOf from "@babel/runtime/helpers/getPrototypeOf";
 import _get from "@babel/runtime/helpers/get";
 import _inherits from "@babel/runtime/helpers/inherits";
 import { BehaviorSubject } from './behavior';
-import { Subject } from './subject'; // eslint-disable-next-line no-shadow
+import { Subject } from './subject';
 
+// eslint-disable-next-line no-shadow
+// tslint:disable-next-line:no-shadowed-variable
 function createHasSubscribersSubjectDefault(hasSubscribers) {
   var subject = new BehaviorSubject();
   subject.value = hasSubscribers;
@@ -35,6 +37,7 @@ export function hasSubscribers(base) {
           if (!subscriber) {
             return null;
           } // eslint-disable-next-line no-shadow
+          // tslint:disable-next-line:no-shadowed-variable
 
 
           var hasSubscribers = this.hasSubscribers;
@@ -47,6 +50,7 @@ export function hasSubscribers(base) {
 
           return function () {
             // eslint-disable-next-line no-shadow
+            // tslint:disable-next-line:no-shadowed-variable
             var hasSubscribers = _this.hasSubscribers;
             unsubscribe();
 

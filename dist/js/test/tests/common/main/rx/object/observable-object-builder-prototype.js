@@ -2,6 +2,8 @@
 
 var _ObservableObject = require("../../../../../../main/common/rx/object/ObservableObject");
 
+var _ObservableObjectBuilder = require("../../../../../../main/common/rx/object/ObservableObjectBuilder");
+
 /* eslint-disable guard-for-in */
 describe('common > main > rx > observable-object-builder-prototype', function () {
   it('base', function () {
@@ -13,10 +15,10 @@ describe('common > main > rx > observable-object-builder-prototype', function ()
 
     class Class2 extends BaseClass2 {}
 
-    const baseBuilder1 = new _ObservableObject.ObservableObjectBuilder(BaseClass1.prototype).writable('baseProp1');
-    const baseBuilder2 = new _ObservableObject.ObservableObjectBuilder(BaseClass2.prototype).writable('baseProp2');
-    const builder1 = new _ObservableObject.ObservableObjectBuilder(Class1.prototype).writable('prop1');
-    const builder2 = new _ObservableObject.ObservableObjectBuilder(Class2.prototype).writable('prop2');
+    const baseBuilder1 = new _ObservableObjectBuilder.ObservableObjectBuilder(BaseClass1.prototype).writable('baseProp1');
+    const baseBuilder2 = new _ObservableObjectBuilder.ObservableObjectBuilder(BaseClass2.prototype).writable('baseProp2');
+    const builder1 = new _ObservableObjectBuilder.ObservableObjectBuilder(Class1.prototype).writable('prop1');
+    const builder2 = new _ObservableObjectBuilder.ObservableObjectBuilder(Class2.prototype).writable('prop2');
     const baseObject1 = new BaseClass1();
     const baseObject2 = new BaseClass2();
     const object1 = new Class1();
@@ -141,7 +143,7 @@ describe('common > main > rx > observable-object-builder-prototype', function ()
     assert.deepStrictEqual(baseObject2.baseProp2, '3');
     assert.deepStrictEqual(object1.baseProp2, undefined);
     assert.deepStrictEqual(object2.baseProp2, '6');
-    new _ObservableObject.ObservableObjectBuilder(object2).readable('baseProp1', null, '7');
+    new _ObservableObjectBuilder.ObservableObjectBuilder(object2).readable('baseProp1', null, '7');
     assert.deepStrictEqual(baseResults1, []);
     assert.deepStrictEqual(baseResults2, []);
     assert.deepStrictEqual(results1, []);

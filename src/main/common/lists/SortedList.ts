@@ -1,6 +1,6 @@
-import {enumerable} from "../helpers/typescript"
-import {IIterable} from "./IIterable"
-import {IIterator} from "./IIterator"
+import {enumerable} from '../helpers/typescript'
+import {IIterable} from './IIterable'
+import {IIterator} from './IIterator'
 
 export interface IList<T> extends IIterable<T> {
 	addAll(iterable: IIterable<T>)

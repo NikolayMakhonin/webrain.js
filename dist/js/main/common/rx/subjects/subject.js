@@ -4,13 +4,13 @@ Object.defineProperty(exports, "__esModule", {
   value: true
 });
 exports.subject = subject;
-exports.createSubjectClass = createSubjectClass;
 exports.Subject = void 0;
 
 var _observable = require("./observable");
 
 function subject(base) {
   // eslint-disable-next-line no-shadow
+  // tslint:disable-next-line:no-shadowed-variable
   return class Subject extends base {
     get hasSubscribers() {
       return !!(this._subscribers && this._subscribers.length);
@@ -67,13 +67,12 @@ function subject(base) {
   };
 }
 
-const Subject = subject(_observable.Observable);
+const Subject = subject(_observable.Observable); // export function createSubjectClass(base, ...extensions) {
+// 	for (const extension of extensions) {
+// 		base = extension(base)
+// 	}
+//
+// 	return base
+// }
+
 exports.Subject = Subject;
-
-function createSubjectClass(base, ...extensions) {
-  for (const extension of extensions) {
-    base = extension(base);
-  }
-
-  return base;
-}

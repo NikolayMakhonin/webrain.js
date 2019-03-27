@@ -31,6 +31,7 @@ function behavior(base) {
 
         try {
           // eslint-disable-next-line no-shadow
+          // tslint:disable-next-line:no-shadowed-variable
           const {
             value,
             unsubscribeValue

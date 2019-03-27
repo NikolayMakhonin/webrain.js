@@ -6,6 +6,7 @@ import _inherits from "@babel/runtime/helpers/inherits";
 import { Observable } from './observable';
 export function subject(base) {
   // eslint-disable-next-line no-shadow
+  // tslint:disable-next-line:no-shadowed-variable
   return (
     /*#__PURE__*/
     function (_base) {
@@ -74,18 +75,10 @@ export function subject(base) {
     }(base)
   );
 }
-export var Subject = subject(Observable);
-export function createSubjectClass(base) {
-  for (var _len = arguments.length, extensions = new Array(_len > 1 ? _len - 1 : 0), _key = 1; _key < _len; _key++) {
-    extensions[_key - 1] = arguments[_key];
-  }
-
-  var _arr = extensions;
-
-  for (var _i = 0; _i < _arr.length; _i++) {
-    var extension = _arr[_i];
-    base = extension(base);
-  }
-
-  return base;
-}
+export var Subject = subject(Observable); // export function createSubjectClass(base, ...extensions) {
+// 	for (const extension of extensions) {
+// 		base = extension(base)
+// 	}
+//
+// 	return base
+// }
