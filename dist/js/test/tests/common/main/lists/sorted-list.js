@@ -5,3 +5,4 @@
 // 		assert.strictEqual(sortedList.test, 'test')
 // 	})
 // })
+"use strict";

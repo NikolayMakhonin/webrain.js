@@ -51,6 +51,7 @@ module.exports = {
 	})),
 	babel: (options = {}) => babel({
 		...require('../../.babelrc'),
+		exclude       : 'node_modules/@babel/runtime/**',
 		runtimeHelpers: true,
 		...options
 	}),
@@ -65,6 +66,7 @@ module.exports = {
 		// namedExports: {
 		// 	'node_modules/chai/index.js': ['assert', 'expect']
 		// }
+		include: 'node_modules/**',
 		...options
 	}),
 	terser: (options = {}) => terser({

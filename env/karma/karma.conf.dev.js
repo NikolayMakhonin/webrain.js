@@ -53,7 +53,7 @@ module.exports = function (config) {
 				// helpers.rollup.plugins.builtins(),
 				helpers.rollup.plugins.nodeResolve(),
 				helpers.rollup.plugins.commonjs(),
-				// helpers.rollup.plugins.babel(),
+				helpers.rollup.plugins.babel(),
 				// helpers.rollup.plugins.terser(),
 				// helpers.rollup.plugins.prettier()
 			],

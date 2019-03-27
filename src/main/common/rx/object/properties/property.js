@@ -32,9 +32,9 @@ export class Property extends ObservableObject {
 			this._valueField,
 			source,
 			{
-				fillFunc: (setMode & SetMode.Fill) === 0
-					? null
-					: fillFunc,
+				fillFunc: fill
+					? fillFunc
+					: null,
 
 				convert(sourceValue) {
 					if (clone && sourceValue != null) {

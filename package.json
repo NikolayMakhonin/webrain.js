@@ -33,7 +33,7 @@
     "test:mocha:mjs": "mocha --opts ./env/mocha/mocha.babel.opts \"./dist/mjs/test/tests/{node,common}/**/*.*\"",
     "test:mocha:js": "mocha --opts ./env/mocha/mocha.opts \"./dist/js/test/tests/{node,common}/**/*.*\"",
     "test:karma": "karma start env/karma/karma.conf.tests.js",
-    "test:intern": "mocha --opts ./env/mocha/mocha.babel.opts ./env/intern/mocha-export.js",
+    "test:intern": "echo mocha --opts ./env/mocha/mocha.babel.opts ./env/intern/mocha-export.js",
     "test": "npm run test:mocha:mjs && npm run test:mocha:js",
     "test:all": "npm run lint && npm run clean && npm run test:mocha:src && npm run build && npm run test:mocha:mjs && npm run test:mocha:js",
     "test:all:coverage": "npm run lint && npm run clean && npm run build && npm run coverage && nyc check-coverage --report-dir tmp/coverage/all/lcov --lines 100 --functions 100 --branches 100",

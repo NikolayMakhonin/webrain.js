@@ -3,15 +3,19 @@ import _getPrototypeOf from "@babel/runtime/helpers/getPrototypeOf";
 import _inherits from "@babel/runtime/helpers/inherits";
 import _classCallCheck from "@babel/runtime/helpers/classCallCheck";
 
-var x = function x() {
-  _classCallCheck(this, x);
-};
+/* eslint-disable no-new,new-cap */
+describe('common > env > modules', function () {
+  it('class', function () {
+    var x = function x() {
+      _classCallCheck(this, x);
+    };
 
-var y = function (base) {
-  return (
+    new x();
+
+    var y =
     /*#__PURE__*/
-    function (_base) {
-      _inherits(y, _base);
+    function (_x) {
+      _inherits(y, _x);
 
       function y() {
         _classCallCheck(this, y);
@@ -20,15 +24,14 @@ var y = function (base) {
       }
 
       return y;
-    }(base)
-  );
-}(x);
+    }(x);
 
-var z = function (base) {
-  return (
+    new y();
+
+    var z =
     /*#__PURE__*/
-    function (_base2) {
-      _inherits(z, _base2);
+    function (_y) {
+      _inherits(z, _y);
 
       function z() {
         _classCallCheck(this, z);
@@ -37,32 +40,8 @@ var z = function (base) {
       }
 
       return z;
-    }(base)
-  );
-}(y);
+    }(y);
 
-new z(); // describe('common > env > modules', function () {
-// 	it('class', function () {
-// 		class x {
-//
-// 		}
-//
-// 		assert.ok(new x())
-//
-// 		const y = (function (base) {
-// 			return class y extends base {
-//
-// 			}
-// 		})(x)
-//
-// 		assert.ok(new y())
-//
-// 		const z = (function (base) {
-// 			return class z extends base {
-//
-// 			}
-// 		})(y)
-//
-// 		assert.ok(new z())
-// 	})
-// })
+    new z();
+  });
+});

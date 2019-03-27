@@ -1,37 +1,18 @@
 "use strict";
 
-class x {}
+/* eslint-disable no-new,new-cap */
+describe('common > env > modules', function () {
+  it('class', function () {
+    class x {}
 
-const y = function (base) {
-  return class y extends base {};
-}(x);
+    new x();
 
-const z = function (base) {
-  return class z extends base {};
-}(y);
+    class y extends x {}
 
-new z(); // describe('common > env > modules', function () {
-// 	it('class', function () {
-// 		class x {
-//
-// 		}
-//
-// 		assert.ok(new x())
-//
-// 		const y = (function (base) {
-// 			return class y extends base {
-//
-// 			}
-// 		})(x)
-//
-// 		assert.ok(new y())
-//
-// 		const z = (function (base) {
-// 			return class z extends base {
-//
-// 			}
-// 		})(y)
-//
-// 		assert.ok(new z())
-// 	})
-// })
+    new y();
+
+    class z extends y {}
+
+    new z();
+  });
+});
