@@ -1,21 +1,27 @@
 module.exports = {
-	"presets": [
+	presets: [
 		[
-			"@babel/preset-env",
+			'@babel/preset-env',
 			{
-				"targets": {
-					"node": "8.6.0"
+				targets: {
+					node: '8.6.0'
 				}
 			}
-		],
-		"@babel/preset-typescript"
+		]
 	],
-	"plugins": [
-		"@babel/plugin-transform-runtime",
-		"@babel/plugin-syntax-dynamic-import",
-		"@babel/plugin-proposal-optional-chaining",
-		"@babel/plugin-proposal-throw-expressions",
+	plugins: [
+		'@babel/plugin-transform-typescript',
+		[
+			'@babel/plugin-proposal-decorators', {
+				legacy: true
+			}
+		],
 
-		["@babel/plugin-proposal-class-properties", { "loose": true }],
+		'@babel/plugin-syntax-dynamic-import',
+		'@babel/plugin-transform-runtime',
+
+		'@babel/plugin-proposal-optional-chaining',
+		'@babel/plugin-proposal-throw-expressions',
+		['@babel/plugin-proposal-class-properties', {loose: true}],
 	]
 }

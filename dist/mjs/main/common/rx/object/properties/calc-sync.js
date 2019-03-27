@@ -29,7 +29,7 @@ function (_ObservableObject) {
     value: function invalidate() {
       if (this.isCalculated) {
         this.isCalculated = false;
-        this.onPropertyChanged('value');
+        this.onDeepPropertyChanged('value');
       }
     }
   }, {

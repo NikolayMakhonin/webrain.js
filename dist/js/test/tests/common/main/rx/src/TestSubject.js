@@ -5,8 +5,6 @@ Object.defineProperty(exports, "__esModule", {
 });
 exports.TestSubject = void 0;
 
-var _behavior = require("../../../../../../main/common/rx/subjects/behavior");
-
 var _observable = require("../../../../../../main/common/rx/subjects/observable");
 
 function deleteFromArray(array, item) {

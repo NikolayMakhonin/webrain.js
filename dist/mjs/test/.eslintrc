@@ -5,7 +5,8 @@
 		"node": false
 	},
 	"rules": {
-		"no-unused-vars": ["off"],
+		"no-empty-function": ["off"],
+	  	"no-unused-vars": ["off"],
 		"no-new-wrappers": ["off"],
 		"no-sync": ["off"],
 		"no-undefined": ["off"],

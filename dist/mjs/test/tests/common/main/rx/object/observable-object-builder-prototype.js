@@ -104,10 +104,10 @@ describe('common > main > rx > observable-object-builder-prototype', function ()
     var baseUnsubscribe2 = [];
     var unsubscribe1 = [];
     var unsubscribe2 = [];
-    assert.strictEqual(_typeof(baseUnsubscribe1[0] = baseObject1.propertyChanged.subscribe(baseSubscriber1)), 'function');
-    assert.strictEqual(_typeof(baseUnsubscribe2[0] = baseObject2.propertyChanged.subscribe(baseSubscriber2)), 'function');
-    assert.strictEqual(_typeof(unsubscribe1[0] = object1.propertyChanged.subscribe(subscriber1)), 'function');
-    assert.strictEqual(_typeof(unsubscribe2[0] = object2.propertyChanged.subscribe(subscriber2)), 'function');
+    assert.strictEqual(_typeof(baseUnsubscribe1[0] = baseObject1.deepPropertyChanged.subscribe(baseSubscriber1)), 'function');
+    assert.strictEqual(_typeof(baseUnsubscribe2[0] = baseObject2.deepPropertyChanged.subscribe(baseSubscriber2)), 'function');
+    assert.strictEqual(_typeof(unsubscribe1[0] = object1.deepPropertyChanged.subscribe(subscriber1)), 'function');
+    assert.strictEqual(_typeof(unsubscribe2[0] = object2.deepPropertyChanged.subscribe(subscriber2)), 'function');
     baseObject1.baseProp1 = '1';
     assert.deepStrictEqual(baseResults1, [{
       name: 'baseProp1',

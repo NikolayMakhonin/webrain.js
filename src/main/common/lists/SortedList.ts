@@ -51,17 +51,44 @@ export class SortedList<T> implements ISortedList<T> {
 
 	// region Properties
 
-	get countSorted() {
+	// region countSorted
+
+	get countSorted(): number {
 		return this._countSorted
 	}
 
-	get autoSort() {
+	// endregion
+
+	// region countSorted
+
+	get compare(): ICompare<T> {
+		return this._compare
+	}
+
+	// endregion
+
+	// region countSorted
+
+	get autoSort(): boolean {
 		return this._autoSort
 	}
 
-	// set autoSort() {
-	//
-	// }
+	set autoSort(value: boolean) {
+		// tslint:disable-next-line:triple-equals
+		if (this._autoSort == value) {
+			this._autoSort = value
+			return
+		}
+
+		this._autoSort = value
+
+		// if (value && this._countSorted !== this._count && CollectionChangedExt != null)
+		// {
+		// 	OnCollectionChanged(new CollectionChangedEventArgs<T>(CollectionChangedType.Resorted, -1, -1, null, null));
+		// }
+	}
+
+	// endregion
 
 	// endregion
 

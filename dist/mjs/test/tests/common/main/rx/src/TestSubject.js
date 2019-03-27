@@ -3,7 +3,6 @@ import _createClass from "@babel/runtime/helpers/createClass";
 import _possibleConstructorReturn from "@babel/runtime/helpers/possibleConstructorReturn";
 import _getPrototypeOf from "@babel/runtime/helpers/getPrototypeOf";
 import _inherits from "@babel/runtime/helpers/inherits";
-import { behavior } from '../../../../../../main/common/rx/subjects/behavior';
 import { Observable } from '../../../../../../main/common/rx/subjects/observable';
 
 function deleteFromArray(array, item) {

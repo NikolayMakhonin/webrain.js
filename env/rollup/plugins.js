@@ -57,6 +57,7 @@ module.exports = {
 		...require('../../.babelrc'),
 		exclude       : 'node_modules/@babel/runtime/**',
 		runtimeHelpers: true,
+		extensions    : ['.es6', '.es', '.js', '.mjs', '.ts'],
 		...options
 	}),
 	istanbul: (options = {}) => istanbul({
@@ -70,7 +71,8 @@ module.exports = {
 		// namedExports: {
 		// 	'node_modules/chai/index.js': ['assert', 'expect']
 		// }
-		include: 'node_modules/**',
+		include   : 'node_modules/**',
+		extensions: ['.es6', '.es', '.js', '.mjs', '.ts'],
 		...options
 	}),
 	terser: (options = {}) => terser({

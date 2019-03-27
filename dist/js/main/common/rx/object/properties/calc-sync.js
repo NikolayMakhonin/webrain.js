@@ -33,7 +33,7 @@ class CalcSync extends _ObservableObject.ObservableObject {
   invalidate() {
     if (this.isCalculated) {
       this.isCalculated = false;
-      this.onPropertyChanged('value');
+      this.onDeepPropertyChanged('value');
     }
   }
 

@@ -1,3 +1,4 @@
+import _typeof from "@babel/runtime/helpers/typeof";
 import _classCallCheck from "@babel/runtime/helpers/classCallCheck";
 import _createClass from "@babel/runtime/helpers/createClass";
 import '../extensions/autoConnect';
@@ -13,8 +14,7 @@ function () {
       enumerable: false,
       writable: false,
       value: {
-        unsubscribers: {},
-        propertyChanged: new HasSubscribersSubject()
+        unsubscribers: {}
       }
     });
     Object.defineProperty(this, '__fields', {
@@ -23,49 +23,84 @@ function () {
       writable: false,
       value: {}
     });
-  }
+  } // region propertyChanged
+
 
   _createClass(ObservableObject, [{
-    key: "onPropertyChanged",
-    value: function onPropertyChanged() {
-      for (var _len = arguments.length, propertyNames = new Array(_len), _key = 0; _key < _len; _key++) {
-        propertyNames[_key] = arguments[_key];
+    key: "_emitPropertyChanged",
+    value: function _emitPropertyChanged(eventsOrPropertyNames, emitFunc) {
+      var _this = this;
+
+      if (eventsOrPropertyNames === null) {
+        return;
       }
 
-      if (propertyNames.length === 0) {
-        this.propertyChanged.emit({});
-      }
+      var toEvent = function toEvent(event) {
+        if (event == null) {
+          return {};
+        }
 
-      propertyNames = expandAndDistinct(propertyNames);
-      var _iteratorNormalCompletion = true;
-      var _didIteratorError = false;
-      var _iteratorError = undefined;
-
-      try {
-        for (var _iterator = propertyNames[Symbol.iterator](), _step; !(_iteratorNormalCompletion = (_step = _iterator.next()).done); _iteratorNormalCompletion = true) {
-          var propertyName = _step.value;
-          var value = this[propertyName];
-          this.propertyChanged.emit({
-            name: propertyName,
+        if (_typeof(event) !== 'object') {
+          var value = _this[event];
+          event = {
+            name: event,
             oldValue: value,
             newValue: value
-          });
+          };
         }
-      } catch (err) {
-        _didIteratorError = true;
-        _iteratorError = err;
-      } finally {
-        try {
-          if (!_iteratorNormalCompletion && _iterator.return != null) {
-            _iterator.return();
-          }
-        } finally {
-          if (_didIteratorError) {
-            throw _iteratorError;
-          }
+
+        return event;
+      };
+
+      if (!Array.isArray(eventsOrPropertyNames)) {
+        emitFunc(toEvent(eventsOrPropertyNames));
+      } else {
+        var items = expandAndDistinct(eventsOrPropertyNames);
+
+        for (var i = 0, len = items.length; i < len; i++) {
+          emitFunc(toEvent(items[i]));
         }
       }
     }
+  }, {
+    key: "onPropertyChanged",
+    value: function onPropertyChanged(eventsOrPropertyNames) {
+      var _this$__meta = this.__meta,
+          propertyChanged = _this$__meta.propertyChanged,
+          deepPropertyChanged = _this$__meta.deepPropertyChanged;
+
+      if (!propertyChanged && !deepPropertyChanged) {
+        return this;
+      }
+
+      this._emitPropertyChanged(eventsOrPropertyNames, function (event) {
+        if (propertyChanged) {
+          propertyChanged.emit(event);
+        }
+
+        if (deepPropertyChanged) {
+          deepPropertyChanged.emit(event);
+        }
+      });
+
+      return this;
+    }
+  }, {
+    key: "onDeepPropertyChanged",
+    value: function onDeepPropertyChanged(eventsOrPropertyNames) {
+      var deepPropertyChanged = this.__meta.deepPropertyChanged;
+
+      if (!deepPropertyChanged) {
+        return this;
+      }
+
+      this._emitPropertyChanged(eventsOrPropertyNames, function (event) {
+        deepPropertyChanged.emit(event);
+      });
+
+      return this;
+    } // endregion
+
   }, {
     key: "_set",
     value: function _set(name, newValue, options) {
@@ -99,9 +134,7 @@ function () {
         beforeChange(oldValue);
       }
 
-      var _this$__meta = this.__meta,
-          propertyChanged = _this$__meta.propertyChanged,
-          unsubscribers = _this$__meta.unsubscribers;
+      var unsubscribers = this.__meta.unsubscribers;
       var unsubscribe = unsubscribers[name];
 
       if (unsubscribe) {
@@ -116,7 +149,7 @@ function () {
         afterChange(newValue);
       }
 
-      propertyChanged.emit({
+      this.onPropertyChanged({
         name: name,
         oldValue: oldValue,
         newValue: newValue
@@ -126,33 +159,50 @@ function () {
   }, {
     key: "_propagatePropertyChanged",
     value: function _propagatePropertyChanged(propertyName, value) {
-      var _this = this;
+      var _this2 = this;
 
       if (!value) {
         return null;
       }
 
-      var propertyChanged = value.propertyChanged;
+      var deepPropertyChanged = value.deepPropertyChanged;
 
-      if (!propertyChanged) {
+      if (!deepPropertyChanged) {
         return null;
       }
 
       var subscriber = function subscriber(event) {
-        _this.propertyChanged.emit({
+        _this2.deepPropertyChanged.emit({
           name: propertyName,
           next: event
         });
       };
 
-      return this.propertyChanged.hasSubscribersObservable.autoConnect(null, function () {
-        return propertyChanged.subscribe(subscriber);
+      return this.deepPropertyChanged.hasSubscribersObservable.autoConnect(null, function () {
+        return deepPropertyChanged.subscribe(subscriber);
       });
     }
   }, {
     key: "propertyChanged",
     get: function get() {
-      return this.__meta.propertyChanged;
+      var propertyChanged = this.__meta.propertyChanged;
+
+      if (!propertyChanged) {
+        this.__meta.propertyChanged = propertyChanged = new HasSubscribersSubject();
+      }
+
+      return propertyChanged;
+    }
+  }, {
+    key: "deepPropertyChanged",
+    get: function get() {
+      var deepPropertyChanged = this.__meta.deepPropertyChanged;
+
+      if (!deepPropertyChanged) {
+        this.__meta.deepPropertyChanged = deepPropertyChanged = new HasSubscribersSubject();
+      }
+
+      return deepPropertyChanged;
     }
   }]);
 
@@ -168,26 +218,26 @@ function expandAndDistinct(inputItems) {
   }
 
   if (Array.isArray(inputItems)) {
-    var _iteratorNormalCompletion2 = true;
-    var _didIteratorError2 = false;
-    var _iteratorError2 = undefined;
+    var _iteratorNormalCompletion = true;
+    var _didIteratorError = false;
+    var _iteratorError = undefined;
 
     try {
-      for (var _iterator2 = inputItems[Symbol.iterator](), _step2; !(_iteratorNormalCompletion2 = (_step2 = _iterator2.next()).done); _iteratorNormalCompletion2 = true) {
-        var item = _step2.value;
+      for (var _iterator = inputItems[Symbol.iterator](), _step; !(_iteratorNormalCompletion = (_step = _iterator.next()).done); _iteratorNormalCompletion = true) {
+        var item = _step.value;
         expandAndDistinct(item, output, map);
       }
     } catch (err) {
-      _didIteratorError2 = true;
-      _iteratorError2 = err;
+      _didIteratorError = true;
+      _iteratorError = err;
     } finally {
       try {
-        if (!_iteratorNormalCompletion2 && _iterator2.return != null) {
-          _iterator2.return();
+        if (!_iteratorNormalCompletion && _iterator.return != null) {
+          _iterator.return();
         }
       } finally {
-        if (_didIteratorError2) {
-          throw _iteratorError2;
+        if (_didIteratorError) {
+          throw _iteratorError;
         }
       }
     }
@@ -290,8 +340,7 @@ function () {
 
           if (value !== oldValue) {
             __fields[name] = value;
-            var propertyChanged = object.__meta.propertyChanged;
-            propertyChanged.emit({
+            object.onPropertyChanged({
               name: name,
               oldValue: oldValue,
               newValue: value
@@ -321,12 +370,11 @@ function () {
 
       delete object[name];
 
-      if (__meta) {
+      if (__fields) {
         delete __fields[name];
 
         if (typeof oldValue !== 'undefined') {
-          var propertyChanged = __meta.propertyChanged;
-          propertyChanged.emit({
+          object.onPropertyChanged({
             name: name,
             oldValue: oldValue
           });

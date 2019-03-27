@@ -13,7 +13,7 @@ describe('fundamental-operations', function () {
 		return item
 	}
 
-	it('array add item', function () {
+	xit('array add item', function () {
 		this.timeout(300000)
 
 		const item = 'qweqweqweqweqwe'
@@ -23,7 +23,7 @@ describe('fundamental-operations', function () {
 		let path = new Path(item)
 
 		const result = calcPerformance(
-			30000,
+			5000,
 			() => {
 				// no operations
 			}, () => {
@@ -46,5 +46,115 @@ describe('fundamental-operations', function () {
 		)
 
 		console.log(str, result)
+	})
+
+	xit('pass arguments', function () {
+		this.timeout(300000)
+
+		function f1(args) {
+			return args.length + 1
+		}
+
+		function f2(...args) {
+			return args.length + 2
+		}
+
+		function passF1(...args) {
+			f1(args)
+		}
+
+		function passF2(...args) {
+			f2(...args)
+		}
+
+		const result = calcPerformance(
+			5000,
+			() => {
+				// no operations
+			},
+			() => passF1(1, 2, 3, 4, 5, 6, 7, 8, 9),
+			() => passF2(1, 2, 3, 4, 5, 6, 7, 8, 9)
+		)
+
+		console.log(result)
+	})
+
+	it('lambda vs function', function () {
+		this.timeout(300000)
+
+		function f1(args) {
+			const calc = () => {
+				if (Math.random() + 1) {
+					return 1
+				}
+
+				let inputItems
+				let output
+				let map
+				let expandAndDistinct
+
+				if (inputItems == null) {
+					return output
+				}
+
+				if (Array.isArray(inputItems)) {
+					for (const item of inputItems) {
+						expandAndDistinct(item, output, map)
+					}
+					return output
+				}
+
+				if (!map[inputItems]) {
+					map[inputItems] = true
+					output[output.length] = inputItems
+				}
+
+				return output
+			}
+			return calc()
+		}
+
+		function f2(args) {
+			return calc()
+			function calc() {
+				if (Math.random() + 1) {
+					return 1
+				}
+
+				let inputItems
+				let output
+				let map
+				let expandAndDistinct
+
+				if (inputItems == null) {
+					return output
+				}
+
+				if (Array.isArray(inputItems)) {
+					for (const item of inputItems) {
+						expandAndDistinct(item, output, map)
+					}
+					return output
+				}
+
+				if (!map[inputItems]) {
+					map[inputItems] = true
+					output[output.length] = inputItems
+				}
+
+				return output
+			}
+		}
+
+		const result = calcPerformance(
+			30000,
+			() => {
+				// no operations
+			},
+			() => f1(1),
+			() => f2(2)
+		)
+
+		console.log(result)
 	})
 })

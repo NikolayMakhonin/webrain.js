@@ -27,7 +27,7 @@ export class CalcSync extends ObservableObject {
 	invalidate() {
 		if (this.isCalculated) {
 			this.isCalculated = false
-			this.onPropertyChanged('value')
+			this.onDeepPropertyChanged('value')
 		}
 	}
 }

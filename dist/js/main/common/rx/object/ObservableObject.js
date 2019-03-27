@@ -16,8 +16,7 @@ class ObservableObject {
       enumerable: false,
       writable: false,
       value: {
-        unsubscribers: {},
-        propertyChanged: new _hasSubscribers.HasSubscribersSubject()
+        unsubscribers: {}
       }
     });
     Object.defineProperty(this, '__fields', {
@@ -26,28 +25,105 @@ class ObservableObject {
       writable: false,
       value: {}
     });
-  }
+  } // region propertyChanged
+
 
   get propertyChanged() {
-    return this.__meta.propertyChanged;
-  }
+    let {
+      propertyChanged
+    } = this.__meta;
 
-  onPropertyChanged(...propertyNames) {
-    if (propertyNames.length === 0) {
-      this.propertyChanged.emit({});
+    if (!propertyChanged) {
+      this.__meta.propertyChanged = propertyChanged = new _hasSubscribers.HasSubscribersSubject();
     }
 
-    propertyNames = expandAndDistinct(propertyNames);
+    return propertyChanged;
+  }
 
-    for (const propertyName of propertyNames) {
-      const value = this[propertyName];
-      this.propertyChanged.emit({
-        name: propertyName,
-        oldValue: value,
-        newValue: value
-      });
+  get deepPropertyChanged() {
+    let {
+      deepPropertyChanged
+    } = this.__meta;
+
+    if (!deepPropertyChanged) {
+      this.__meta.deepPropertyChanged = deepPropertyChanged = new _hasSubscribers.HasSubscribersSubject();
+    }
+
+    return deepPropertyChanged;
+  }
+
+  _emitPropertyChanged(eventsOrPropertyNames, emitFunc) {
+    if (eventsOrPropertyNames === null) {
+      return;
+    }
+
+    const toEvent = event => {
+      if (event == null) {
+        return {};
+      }
+
+      if (typeof event !== 'object') {
+        const value = this[event];
+        event = {
+          name: event,
+          oldValue: value,
+          newValue: value
+        };
+      }
+
+      return event;
+    };
+
+    if (!Array.isArray(eventsOrPropertyNames)) {
+      emitFunc(toEvent(eventsOrPropertyNames));
+    } else {
+      const items = expandAndDistinct(eventsOrPropertyNames);
+
+      for (let i = 0, len = items.length; i < len; i++) {
+        emitFunc(toEvent(items[i]));
+      }
     }
   }
+
+  onPropertyChanged(eventsOrPropertyNames) {
+    const {
+      propertyChanged,
+      deepPropertyChanged
+    } = this.__meta;
+
+    if (!propertyChanged && !deepPropertyChanged) {
+      return this;
+    }
+
+    this._emitPropertyChanged(eventsOrPropertyNames, event => {
+      if (propertyChanged) {
+        propertyChanged.emit(event);
+      }
+
+      if (deepPropertyChanged) {
+        deepPropertyChanged.emit(event);
+      }
+    });
+
+    return this;
+  }
+
+  onDeepPropertyChanged(eventsOrPropertyNames) {
+    const {
+      deepPropertyChanged
+    } = this.__meta;
+
+    if (!deepPropertyChanged) {
+      return this;
+    }
+
+    this._emitPropertyChanged(eventsOrPropertyNames, event => {
+      deepPropertyChanged.emit(event);
+    });
+
+    return this;
+  } // endregion
+
 
   _set(name, newValue, options) {
     const {
@@ -91,7 +167,6 @@ class ObservableObject {
     }
 
     const {
-      propertyChanged,
       unsubscribers
     } = this.__meta;
     const unsubscribe = unsubscribers[name];
@@ -110,7 +185,7 @@ class ObservableObject {
       afterChange(newValue);
     }
 
-    propertyChanged.emit({
+    this.onPropertyChanged({
       name,
       oldValue,
       newValue
@@ -124,21 +199,21 @@ class ObservableObject {
     }
 
     const {
-      propertyChanged
+      deepPropertyChanged
     } = value;
 
-    if (!propertyChanged) {
+    if (!deepPropertyChanged) {
       return null;
     }
 
     const subscriber = event => {
-      this.propertyChanged.emit({
+      this.deepPropertyChanged.emit({
         name: propertyName,
         next: event
       });
     };
 
-    return this.propertyChanged.hasSubscribersObservable.autoConnect(null, () => propertyChanged.subscribe(subscriber));
+    return this.deepPropertyChanged.hasSubscribersObservable.autoConnect(null, () => deepPropertyChanged.subscribe(subscriber));
   }
 
 }
@@ -263,10 +338,7 @@ class ObservableObjectBuilder {
 
         if (value !== oldValue) {
           __fields[name] = value;
-          const {
-            propertyChanged
-          } = object.__meta;
-          propertyChanged.emit({
+          object.onPropertyChanged({
             name,
             oldValue,
             newValue: value
@@ -301,14 +373,11 @@ class ObservableObjectBuilder {
 
     delete object[name];
 
-    if (__meta) {
+    if (__fields) {
       delete __fields[name];
 
       if (typeof oldValue !== 'undefined') {
-        const {
-          propertyChanged
-        } = __meta;
-        propertyChanged.emit({
+        object.onPropertyChanged({
           name,
           oldValue
         });
