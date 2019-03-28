@@ -10,13 +10,13 @@ matrix:
 #    - name: "browsers osx"
 #      os: "osx"
 #      node_js: "11.5.0"
-#    - name: "browsers windows"
-#      os: "windows"
-#      node_js: "11.5.0"
-    - name: "node old"
-      os: "osx"
-      node_js: "8.6.0"
-      env: NODE_ONLY=true
+    - name: "browsers windows & node old"
+      os: "windows"
+      node_js: "10.9.0"
+#    - name: "node old"
+#      os: "osx"
+#      node_js: "10.9.0"
+#      env: NODE_ONLY=true
 
 sudo: false
 cache: npm
