@@ -96,7 +96,7 @@ export class ObservableObject implements IObservableObject {
 
 	// region propertyChanged
 
-	get propertyChanged(): IHasSubscribersSubject<IPropertyChangedEvent> {
+	public get propertyChanged(): IHasSubscribersSubject<IPropertyChangedEvent> {
 		let {propertyChanged} = this.__meta
 		if (!propertyChanged) {
 			this.__meta.propertyChanged = propertyChanged = new HasSubscribersSubject()
@@ -104,7 +104,7 @@ export class ObservableObject implements IObservableObject {
 		return propertyChanged
 	}
 
-	get deepPropertyChanged(): IHasSubscribersSubject<IAnyPropertyChangedEvent> {
+	public get deepPropertyChanged(): IHasSubscribersSubject<IAnyPropertyChangedEvent> {
 		let {deepPropertyChanged} = this.__meta
 		if (!deepPropertyChanged) {
 			this.__meta.deepPropertyChanged = deepPropertyChanged = new HasSubscribersSubject()
