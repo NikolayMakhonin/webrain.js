@@ -54,5 +54,7 @@ describe('common > main > lists > helpers > array', function () {
 		assert.strictEqual(binarySearch([0, 0, 1, 1, 1], 1, null, null, null, 1), 4)
 		assert.strictEqual(binarySearch([1, 1, 1], 1, null, null, null, -1), 0)
 		assert.strictEqual(binarySearch([1, 1, 1], 1, null, null, null, 1), 2)
+		assert.strictEqual(binarySearch([0], 0, 0, 0), ~0)
+		assert.strictEqual(binarySearch([0], 0, 0, 1), 0)
 	})
 })

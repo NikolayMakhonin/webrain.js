@@ -2,6 +2,7 @@ import {ObservableObject} from '../rx/object/ObservableObject'
 import {HasSubscribersSubject, IHasSubscribersSubject} from '../rx/subjects/hasSubscribers'
 import {ICompare} from './contracts/ICompare'
 import {IIterable} from './contracts/IIterable'
+import {binarySearch, defaultCompare} from './helpers/array'
 
 export interface IList<T> extends IIterable<T> {
 	addAll(iterable: IIterable<T>)
@@ -92,7 +93,8 @@ export class SortedList<T> extends ObservableObject implements ISortedList<T> {
 	} = {}) {
 		super()
 		if (list) {
-			this.addAll(list)
+			// TODO
+			// this.addAll(list)
 		}
 
 		if (compare) {
@@ -337,6 +339,69 @@ export class SortedList<T> extends ObservableObject implements ISortedList<T> {
 	// endregion
 
 	// region Methods
+
+	public indexOf(item: T, start?: number, end?: number, bound?: number): number {
+		const {_list, _count, _countSorted} = this
+		const compare = this._compare || defaultCompare
+
+		if (start == null || start < 0) {
+			start = 0
+		}
+
+		if (end == null || end > _count) {
+			end = _count
+		}
+
+		if (bound > 0) {
+			for (
+				let i = _count - 1,
+				i0 = start < _countSorted ? _countSorted : start;
+				i >= i0;
+				i--
+			) {
+				if (compare(_list[i], item) === 0) {
+					return i
+				}
+			}
+		}
+
+		const index = binarySearch(
+			_list,
+			item,
+			start,
+			end > _countSorted ? _countSorted : end,
+			compare,
+			bound,
+		)
+
+		if (index >= 0) {
+			return index
+		}
+
+		if (!bound || bound < 0) {
+			for (
+				let i = start < _countSorted ? _countSorted : start;
+				i < _count;
+				i++
+			) {
+				if (compare(_list[i], item) === 0) {
+					return i
+				}
+			}
+		}
+
+		return _countSorted > 0 && bound < 0
+			? index
+			: ~end
+	}
+
+	public firstIndexOf(item: T, start?: number, end?: number): number {
+		return this.indexOf(item, start, end, -1)
+	}
+
+	public lastIndexOf(item: T, start?: number, end?: number): number {
+		return this.indexOf(item, start, end, 1)
+	}
 
 	private _insert(index: number, item: T) {
 		const {_count: oldCount, _list, _collectionChanged} = this

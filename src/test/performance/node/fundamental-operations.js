@@ -368,7 +368,7 @@ describe('fundamental-operations', function () {
 		console.log(result)
 	})
 
-	it('array default value', function () {
+	xit('array default value', function () {
 		this.timeout(300000)
 
 		const arrNumbers = generateArray(10)
@@ -489,8 +489,61 @@ describe('fundamental-operations', function () {
 			},
 			() => { // 8
 				arr[arr.length - 1] = defaultNumber
-			},
+			}
 
+		)
+
+		console.log(result)
+	})
+
+	it('array last index', function () {
+		this.timeout(300000)
+
+		function defaultCompare(o1, o2) {
+			return o1 === o2
+		}
+
+		function lastIndexOf1(array, value, compare) {
+			if (!compare) {
+				compare = defaultCompare
+			}
+
+			let i = 0
+			const len = array.length
+			let ind = -1
+			while (i !== len) {
+				if (compare(array[i], value)) {
+					ind = i
+				}
+				i++
+			}
+			return ind
+		}
+
+		function lastIndexOf2(array, value, compare) {
+			if (!compare) {
+				compare = defaultCompare
+			}
+
+			let i = array.length
+			while (i !== 0) {
+				if (compare(array[i], value)) {
+					return i
+				}
+				i--
+			}
+			return -1
+		}
+
+		const arr = generateArray(10000)
+
+		const result = calcPerformance(
+			10000,
+			() => {
+				// no operations
+			},
+			() => lastIndexOf1(arr, 5000),
+			() => lastIndexOf2(arr, 5000)
 		)
 
 		console.log(result)
