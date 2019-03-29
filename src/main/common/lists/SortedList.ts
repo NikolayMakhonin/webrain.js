@@ -1,7 +1,7 @@
-import {EventsOrPropertyNames, IPropertyChangedEvent, ObservableObject} from '../rx/object/ObservableObject'
+import {ObservableObject} from '../rx/object/ObservableObject'
 import {HasSubscribersSubject, IHasSubscribersSubject} from '../rx/subjects/hasSubscribers'
-import {IIterable} from './IIterable'
-import {IIterator} from './IIterator'
+import {ICompare} from './contracts/ICompare'
+import {IIterable} from './contracts/IIterable'
 
 export interface IList<T> extends IIterable<T> {
 	addAll(iterable: IIterable<T>)
@@ -10,8 +10,6 @@ export interface IList<T> extends IIterable<T> {
 export interface ISortedList<T> extends IList<T> {
 
 }
-
-export type ICompare<T> = (a: T, b: T) => number
 
 export enum CollectionChangedType {
 	/**
@@ -50,8 +48,30 @@ export interface ICollectionChangedEvent<T> {
 	readonly newItems?: T[]
 }
 
+function calcOptimalArraySize(desiredSize: number) {
+	let optimalSize = 4
+	while (desiredSize > optimalSize) {
+		optimalSize <<= 1
+	}
+	return optimalSize
+}
+
+function getDefaultValue(value) {
+	if (value === null || typeof value === 'undefined') {
+		return value
+	}
+	if (typeof value === 'number') {
+		return 0
+	}
+	if (typeof value === 'boolean') {
+		return false
+	}
+	return null
+}
+
 export class SortedList<T> extends ObservableObject implements ISortedList<T> {
 	private _list: T[] = []
+	private _defaultValue?: T
 
 	// region constructor
 
@@ -61,12 +81,14 @@ export class SortedList<T> extends ObservableObject implements ISortedList<T> {
 		autoSort,
 		notAddIfExists,
 		capacity,
+		defaultValue,
 	}: {
 		list?: T[],
 		compare?: ICompare<T>,
 		autoSort?: boolean,
 		notAddIfExists?: boolean,
 		capacity?: number,
+		defaultValue?: T,
 	} = {}) {
 		super()
 		if (list) {
@@ -86,7 +108,16 @@ export class SortedList<T> extends ObservableObject implements ISortedList<T> {
 		}
 
 		if (capacity) {
-			this.capacity = capacity
+			if (capacity < SortedList.CAPACITY_MIN) {
+				capacity = SortedList.CAPACITY_MIN
+			} else if (capacity > SortedList.CAPACITY_MAX) {
+				capacity = SortedList.CAPACITY_MAX
+			}
+			this._capacity = calcOptimalArraySize(capacity)
+		}
+
+		if (defaultValue) {
+			this._defaultValue = defaultValue
 		}
 	}
 
@@ -105,16 +136,6 @@ export class SortedList<T> extends ObservableObject implements ISortedList<T> {
 		return this._capacity
 	}
 
-	public set capacity(value: number) {
-		if (value < SortedList.CAPACITY_MIN) {
-			value = SortedList.CAPACITY_MIN
-		} else if (value > SortedList.CAPACITY_MAX) {
-			value = SortedList.CAPACITY_MAX
-		}
-
-		this._capacity = value
-	}
-
 	// endregion
 
 	// region count
@@ -125,77 +146,86 @@ export class SortedList<T> extends ObservableObject implements ISortedList<T> {
 		return this._count
 	}
 
-	public set count(value: number) {
-		this._capacity = value
-	}
-
 	private setCount(newCount: number, suppressCollectionChanged?: boolean) {
 		const oldCount = this._count
-		this._count = newCount
+		if (oldCount === newCount) {
+			return
+		}
+
+		const {_list, _collectionChanged, onPropertyChanged} = this
+
 		if (newCount < this._countSorted) {
 			this._countSorted = newCount
 		}
-		const {_list, _collectionChanged} = this
 
-		if (newCount < oldCount)
-		{
-			if (!suppressCollectionChanged)
-			{
-				if (!_collectionChanged || !_collectionChanged.hasSubscribers)
-				{
-					const removedList = _list.slice(newCount, oldCount)
-					_collectionChanged.emit(new CollectionChangedEventArgs<T>(
-						CollectionChangedType.Removed, newCount, -1,
-						removedList, null));
-				}
-			}
+		if (!suppressCollectionChanged
+			&& newCount < oldCount
+			&& (!_collectionChanged || !_collectionChanged.hasSubscribers)
+		) {
+			const removedItems = _list.slice(newCount, oldCount)
+			_collectionChanged.emit({
+				type: CollectionChangedType.Removed,
+				oldIndex: newCount,
+				oldItems: removedItems,
+			})
 		}
-		if (newCount > _list.length)
-		{
-			let newLength = newCount * 2;
-			if (newLength < this._capacity) {
-				newLength = this._capacity;
-			}
-			Array.Resize(_list, newLength);
-		}
-		if (newCount * 2 < _list.length)
-		{
-			let newLength = newCount * 2;
-			if (newLength < this._capacity) {
-				newLength = this._capacity;
-			}
-			if (newLength != _list.length)
-			{
-				Array.Resize(_list, newLength);
-			}
-		}
-		// TODO
-		// if (_default(T) == null && newCount < oldCount)
-		// {
-		// 	let newLength = _list.length
-		// 	for (let i = newCount; i < newLength; i++)
-		// 	{
-		// 		_list[i] = _default(T)
+
+		// if (newCount > _list.length) {
+		// 	let newLength = newCount * 2
+		// 	if (newLength < this._capacity) {
+		// 		newLength = this._capacity
 		// 	}
+		// 	Array.Resize(_list, newLength)
 		// }
-		if (newCount > oldCount)
-		{
-			if (!suppressCollectionChanged)
-			{
-				if (!_collectionChanged || !_collectionChanged.hasSubscribers)
-				{
-					const addedList: T[] = new Array(newCount - oldCount)
-					Array.Copy(_list, oldCount, addedList, 0, addedList.length)
-					OnCollectionChanged(new CollectionChangedEventArgs<T>(
-						CollectionChangedType.Added, -1, oldCount,
-						null, addedList))
-				}
+
+		if (newCount * 2 < _list.length) {
+			let newLength = newCount * 2
+			if (newLength < this._capacity) {
+				newLength = this._capacity
+			}
+			newLength = calcOptimalArraySize(newLength)
+			if (newLength !== _list.length) {
+				_list.length = newLength
 			}
 		}
 
-		if (this._count !== oldCount)
-		{
-			OnPropertyChanged('count')
+		if (newCount < oldCount) {
+			const defaultValue = getDefaultValue(_list[newCount === 0 ? 0 : newCount - 1])
+
+			const newLength = _list.length
+			for (let i = newCount; i < newLength; i++) {
+				_list[i] = defaultValue
+			}
+		}
+
+		if (!suppressCollectionChanged
+			&& newCount > oldCount
+			&& (!_collectionChanged || !_collectionChanged.hasSubscribers)
+		) {
+			const defaultValue = getDefaultValue(_list[oldCount === 0 ? 0 : oldCount - 1])
+
+			const addedItems: T[] = new Array(newCount - oldCount)
+				.fill(defaultValue)
+
+			_collectionChanged.emit({
+				type: CollectionChangedType.Added,
+				newIndex: oldCount,
+				newItems: addedItems,
+			})
+		}
+
+		onPropertyChanged('count')
+	}
+
+	private allocate(defaultValue: T, count?: number) {
+		if (count == null) {
+			count = this._count
+		}
+
+		const {_list} = this
+
+		for (let i = _list.length; i < count; i++) {
+			_list[i] = defaultValue
 		}
 	}
 
@@ -306,11 +336,88 @@ export class SortedList<T> extends ObservableObject implements ISortedList<T> {
 
 	// endregion
 
-	public addAll(iterable: IIterable<T>) {
-		// TODO
+	// region Methods
+
+	private _insert(index: number, item: T) {
+		const {_count: oldCount, _list, _collectionChanged} = this
+		this.setCount(oldCount + 1, true)
+		for (let i = oldCount; i > index; i--) {
+			_list[i] = _list[i - 1]
+		}
+
+		_list[index] = item
+
+		if (_collectionChanged != null && _collectionChanged.hasSubscribers) {
+			if (index < oldCount) {
+				_collectionChanged.emit({
+					type: CollectionChangedType.Shift,
+					oldIndex: index,
+					newIndex: index + 1,
+				})
+			}
+			_collectionChanged.emit({
+				type: CollectionChangedType.Added,
+				newIndex: index,
+				newItems: [item],
+			})
+		}
 	}
 
-	public [Symbol.iterator](): IIterator<T> {
-		return this._list[Symbol.iterator]()
+	public insert(index: number, item: T): this {
+		if (this._autoSort) {
+			// TODO
+			// add(item)
+			return
+		}
+
+		// TODO
+		// if (this._notAddIfExists && this.contains(item)) {
+		// 	return
+		// }
+
+		if (index < this._countSorted) {
+			this._countSorted = index
+		}
+
+		this._insert(index, item)
 	}
+
+	public get(index: number) {
+		const {_count, _list} = this
+		if (index < 0 || index >= _count) {
+			throw new Error(`index (${index}) is out of range [0..${_count}]`)
+		}
+
+		if (this._autoSort) {
+			// TODO
+			// sort(true)
+		}
+
+		return _list[index]
+	}
+
+	// public set(index: number, item: T): this {
+	// 	const {_count, _list} = this
+	// 	if (index < 0 || index > _count) {
+	// 		throw new Error(`index (${index}) is out of range [0..${_count}]`)
+	// 	}
+	//
+	// 	if (index === _count) {
+	// 		return this.add(item)
+	// 	}
+	//
+	// 	_list[index] = item
+	//
+	// 	return this
+	// }
+
+	// public addAll(iterable: IIterable<T>) {
+	// 	// TODO
+	// }
+
+	// public [Symbol.iterator](): IIterator<T> {
+	// 	return this._list[Symbol.iterator]()
+	// }
+
+	// endregion
 }

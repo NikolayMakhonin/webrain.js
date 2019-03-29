@@ -204,8 +204,12 @@ describe('fundamental-operations', function () {
 	}
 
 	function generateArray(size) {
-		// eslint-disable-next-line prefer-spread
-		return Array.apply(null, {length: size}).map(Number.call, Number)
+		const arr = []
+		for (let i = 0; i < size; i++) {
+			arr.push(i)
+		}
+
+		return arr
 	}
 
 	xit('array decrease length', function () {
@@ -318,7 +322,7 @@ describe('fundamental-operations', function () {
 		console.log(result)
 	})
 
-	it('array increase length 100', function () {
+	xit('array increase length 100', function () {
 		this.timeout(300000)
 
 		const arr = generateArray(10000)
@@ -364,36 +368,129 @@ describe('fundamental-operations', function () {
 		console.log(result)
 	})
 
-	xit('array insert first', function () {
+	it('array default value', function () {
 		this.timeout(300000)
 
-		const arr = generateArray(100000)
-		let arr2
+		const arrNumbers = generateArray(10)
+		const arrStrings = arrNumbers.map(o => o.toString())
+		const arrFunctions = arrNumbers.map(o => () => o.toString())
+		const arrObjects = arrNumbers.map(o => ({o}))
+
+		const defaultNumber = 0
+		const defaultString = ''
+		const defaultFunction = new Function()
+		const defaultObject = {}
+
+		let arr
 
 		const result = calcPerformance(
-			60000,
+			180000,
 			() => {
 				// no operations
 			},
 			() => {
-				arr2 = arr.slice()
+				arr = arrNumbers.slice()
 			},
-			() => { // 690226
-				copyToArray(arr2, arr2, arr2.length - 1, 1)
-				arr2[0] = 10
-			},
-			() => {
-				arr2 = arr.slice()
+			() => { // 31
+				arr[arr.length - 1] = undefined
 			},
 			() => {
-				arr2.unshift(10) // 2126940
+				arr = arrNumbers.slice()
+			},
+			() => { // 4
+				arr[arr.length - 1] = null
 			},
 			() => {
-				arr2 = arr.slice()
+				arr = arrNumbers.slice()
+			},
+			() => { // -11
+				arr[arr.length - 1] = defaultNumber
 			},
 			() => {
-				arr2.splice(0, 0, 10) // 2128534
+				arr = arrNumbers.slice()
 			},
+			() => { // 35
+				arr[arr.length - 1] = defaultString
+			},
+
+
+			() => {
+				arr = arrStrings.slice()
+			},
+			() => { // 8
+				arr[arr.length - 1] = undefined
+			},
+			() => {
+				arr = arrStrings.slice()
+			},
+			() => { // -4
+				arr[arr.length - 1] = null
+			},
+			() => {
+				arr = arrStrings.slice()
+			},
+			() => { // 27
+				arr[arr.length - 1] = defaultString
+			},
+			() => {
+				arr = arrStrings.slice()
+			},
+			() => { // -7
+				arr[arr.length - 1] = defaultNumber
+			},
+
+
+			() => {
+				arr = arrFunctions.slice()
+			},
+			() => { // 4
+				arr[arr.length - 1] = undefined
+			},
+			() => {
+				arr = arrFunctions.slice()
+			},
+			() => { // -7
+				arr[arr.length - 1] = null
+			},
+			() => {
+				arr = arrFunctions.slice()
+			},
+			() => { // 11
+				arr[arr.length - 1] = defaultFunction
+			},
+			() => {
+				arr = arrFunctions.slice()
+			},
+			() => { // 27
+				arr[arr.length - 1] = defaultNumber
+			},
+
+
+			() => {
+				arr = arrObjects.slice()
+			},
+			() => { // 8
+				arr[arr.length - 1] = undefined
+			},
+			() => {
+				arr = arrObjects.slice()
+			},
+			() => { // 27
+				arr[arr.length - 1] = null
+			},
+			() => {
+				arr = arrObjects.slice()
+			},
+			() => { // 11
+				arr[arr.length - 1] = defaultObject
+			},
+			() => {
+				arr = arrObjects.slice()
+			},
+			() => { // 8
+				arr[arr.length - 1] = defaultNumber
+			},
+
 		)
 
 		console.log(result)

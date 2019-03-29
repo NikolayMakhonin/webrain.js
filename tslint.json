@@ -18,7 +18,9 @@
 	"no-commented-code": false,
 	"max-union-size": false,
 	"member-ordering": false,
-	"bool-param-default": false
+	"bool-param-default": false,
+	"no-bitwise": false,
+	"cognitive-complexity": false
   },
   "rulesDirectory": [
 	"node_modules/tslint-eslint-rules/dist/rules"
