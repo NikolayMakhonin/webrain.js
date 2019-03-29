@@ -340,6 +340,8 @@ export class SortedList<T> extends ObservableObject implements ISortedList<T> {
 
 	// region Methods
 
+	// region Search
+
 	public indexOf(item: T, start?: number, end?: number, bound?: number): number {
 		const {_list, _count, _countSorted} = this
 		const compare = this._compare || defaultCompare
@@ -403,7 +405,15 @@ export class SortedList<T> extends ObservableObject implements ISortedList<T> {
 		return this.indexOf(item, start, end, 1)
 	}
 
-	private _insert(index: number, item: T) {
+	public contains(item: T): boolean {
+		return this.indexOf(item) >= 0
+	}
+
+	// endregion
+
+	// region Insert
+
+	private _insert(index: number, item: T): void {
 		const {_count: oldCount, _list, _collectionChanged} = this
 		this.setCount(oldCount + 1, true)
 		for (let i = oldCount; i > index; i--) {
@@ -428,24 +438,55 @@ export class SortedList<T> extends ObservableObject implements ISortedList<T> {
 		}
 	}
 
-	public insert(index: number, item: T): this {
+	public insert(index: number, item: T): boolean {
 		if (this._autoSort) {
-			// TODO
-			// add(item)
-			return
+			return add(item)
 		}
 
-		// TODO
-		// if (this._notAddIfExists && this.contains(item)) {
-		// 	return
-		// }
+		if (this._notAddIfExists && this.contains(item)) {
+			return
+		}
 
 		if (index < this._countSorted) {
 			this._countSorted = index
 		}
 
 		this._insert(index, item)
+
+		return true
 	}
+
+	public add(item: T): boolean {
+		const {_notAddIfExists, _autoSort} = this
+
+		if (_notAddIfExists || _autoSort) {
+			let i = this.indexOf(item)
+
+			if (i < 0) {
+				i = ~i
+			} else if (_notAddIfExists) {
+				return false
+			}
+
+			if (_autoSort) {
+				this._countSorted++
+			}
+
+			this._insert((_autoSort) ? i : this._count, item)
+
+			return true
+		}
+
+		this._insert(this._count, item)
+
+		return true
+	}
+
+	// endregion
+
+	// region Remove
+
+	// endregion
 
 	public get(index: number) {
 		const {_count, _list} = this
