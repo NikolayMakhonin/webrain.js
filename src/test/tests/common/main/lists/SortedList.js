@@ -67,5 +67,6 @@ describe('common > main > lists > SortedList', function () {
 		testIndexOf([0, 1, 2, 1, 2], 2, 2, null, null, 2, 4)
 		testIndexOf([0, 1, 3, 3, 1, 3, 3], 3, 3, null, null, 2, 6)
 		testIndexOf([0, 1, 3, 3, 1, 3, 3], 2, 3, null, null, ~2, ~7)
+		testIndexOf([0, 1, 3, 3, 1, 3, 3], 2, 4, 3, 6, ~3, ~6)
 	})
 })
