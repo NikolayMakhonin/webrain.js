@@ -285,10 +285,14 @@ export class SortedList<T> extends ObservableObject implements ISortedList<T> {
 
 		this._autoSort = value
 
-		if (value && this._countSorted !== this._count) {
-			this.onCollectionChanged({
-				type: CollectionChangedType.Resorted,
-			})
+		if (this._countSorted !== this._count) {
+			if (!value) {
+				this.sort()
+			} else {
+				this.onCollectionChanged({
+					type: CollectionChangedType.Resorted,
+				})
+			}
 		}
 	}
 
@@ -343,7 +347,12 @@ export class SortedList<T> extends ObservableObject implements ISortedList<T> {
 	// region Search
 
 	public indexOf(item: T, start?: number, end?: number, bound?: number): number {
+		if (this._autoSort) {
+			this.sort()
+		}
+
 		const {_list, _count, _countSorted} = this
+
 		const compare = this._compare || defaultCompare
 
 		if (start == null || start < 0) {
@@ -440,7 +449,7 @@ export class SortedList<T> extends ObservableObject implements ISortedList<T> {
 
 	public insert(index: number, item: T): boolean {
 		if (this._autoSort) {
-			return add(item)
+			return this.add(item)
 		}
 
 		if (this._notAddIfExists && this.contains(item)) {
@@ -488,6 +497,45 @@ export class SortedList<T> extends ObservableObject implements ISortedList<T> {
 
 	// endregion
 
+	// region Sort
+
+	public reSort() {
+		const {_count} = this
+
+		if (_count === 0) {
+			return
+		}
+
+		this._countSorted = 0
+
+		if (!this._autoSort) {
+			this.sort()
+		}
+
+		this.onCollectionChanged({
+			type: CollectionChangedType.Resorted,
+		})
+	}
+
+	public sort() {
+		const {_countSorted: countSorted, _count} = this
+
+		if (countSorted === _count) {
+			return
+		}
+
+		const {_list} = this
+
+		_list.length = _count
+		_list.sort(this._compare)
+
+		this._countSorted = _count
+	}
+
+	// endregion
+
+	// region get/set
+
 	public get(index: number) {
 		const {_count, _list} = this
 		if (index < 0 || index >= _count) {
@@ -517,12 +565,25 @@ export class SortedList<T> extends ObservableObject implements ISortedList<T> {
 	// 	return this
 	// }
 
-	// public addAll(iterable: IIterable<T>) {
-	// 	// TODO
-	// }
+	// endregion
+
+	// region Other
+
+	public toArray(): T[] {
+		if (this._autoSort) {
+			this.sort()
+		}
+		return this._list.slice(0, this._count)
+	}
 
 	// public [Symbol.iterator](): IIterator<T> {
 	// 	return this._list[Symbol.iterator]()
+	// }
+
+	// endregion
+
+	// public addAll(iterable: IIterable<T>) {
+	// 	// TODO
 	// }
 
 	// endregion
