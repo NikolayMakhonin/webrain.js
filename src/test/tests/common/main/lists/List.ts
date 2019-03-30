@@ -200,6 +200,85 @@ describe('common > main > lists > List', function() {
 		)
 	})
 
+	it('get', function() {
+		testChange(
+			[],
+			Error,
+			list => list.get(0),
+			list => list.get(1),
+			list => list.get(-1),
+		)
+
+		testChange(
+			['0'],
+			Error,
+			list => list.get(1),
+			list => list.get(2),
+			list => list.get(-2),
+			list => list.get(-3),
+		)
+	})
+
+	it('addArray', function() {
+		testChange(
+			[],
+			[],
+			list => list.addArray([]),
+			list => list.addArray(['0'], 1),
+			list => list.addArray(['0'], 2),
+			list => list.addArray(['0'], null, 0),
+			list => list.addArray(['0'], null, -2),
+			list => list.addArray(['0'], null, -3),
+		)
+
+		testChange(
+			[],
+			['0'],
+			list => list.addArray(['0']),
+			list => list.addArray(['0'], 0),
+			list => list.addArray(['0'], -1),
+			list => list.addArray(['0'], null, 1),
+			list => list.addArray(['0'], null, -1),
+		)
+
+		testChange(
+			[],
+			Error,
+			list => list.addArray(['0'], -2),
+			list => list.addArray(['0'], null, 2),
+		)
+
+		testChange(
+			['0'],
+			['0', '1', '2', '3'],
+			list => list.addArray(['1', '2', '3']),
+			list => list.addArray(['1', '2', '3'], 0, 3),
+			list => list.addArray(['1', '2', '3'], -3, -1),
+		)
+
+		testChange(
+			['0'],
+			['0', '1', '2'],
+			list => list.addArray(['1', '2', '3'], null, 2),
+			list => list.addArray(['1', '2', '3'], null, -2),
+			list => list.addArray(['1', '2', '3'], 0, 2),
+			list => list.addArray(['1', '2', '3'], 0, -2),
+			list => list.addArray(['1', '2', '3'], -3, 2),
+			list => list.addArray(['1', '2', '3'], -3, -2),
+		)
+
+		testChange(
+			['0'],
+			['0', '2', '3'],
+			list => list.addArray(['1', '2', '3'], 1, null),
+			list => list.addArray(['1', '2', '3'], -2, null),
+			list => list.addArray(['1', '2', '3'], 1, -1),
+			list => list.addArray(['1', '2', '3'], -2, -1),
+			list => list.addArray(['1', '2', '3'], 1, 3),
+			list => list.addArray(['1', '2', '3'], -2, 3),
+		)
+	})
+
 	// it('add / remove', function () {
 	// 	const list = new List()
 	//
