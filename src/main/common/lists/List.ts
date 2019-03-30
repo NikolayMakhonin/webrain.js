@@ -127,10 +127,16 @@ export class List<T> {
 
 	// region Methods
 
-	private static _checkIndex(index: number, size: number) {
+	private static _prepareIndex(index: number, size: number): number {
+		if (index < 0) {
+			index += size
+		}
+
 		if (index < 0 || index >= size) {
 			throw new Error(`index (${index}) is out of range [0..${size - 1}]`)
 		}
+
+		return index
 	}
 
 	private static _prepareStart(start: number, size: number) {
@@ -155,7 +161,7 @@ export class List<T> {
 		}
 
 		if (end < 0) {
-			end += size
+			end += size + 1
 		}
 
 		if (end > size) {
@@ -168,7 +174,7 @@ export class List<T> {
 	public get(index: number) {
 		const {_size, _array} = this
 
-		List._checkIndex(index, _size)
+		index = List._prepareIndex(index, _size)
 
 		return _array[index]
 	}
@@ -176,7 +182,7 @@ export class List<T> {
 	public set(index: number, item: T): boolean {
 		const {_size, _array} = this
 
-		List._checkIndex(index, _size + 1)
+		index = List._prepareIndex(index, _size + 1)
 
 		_array[index] = item
 
@@ -185,12 +191,13 @@ export class List<T> {
 
 	public add(item: T): boolean {
 		const {_size, _array} = this
+		this._setSize(_size + 1)
 		_array[_size] = item
 		return true
 	}
 
-	public addArray(items: T[]): boolean {
-		return this.insertArray(this._size, items)
+	public addArray(sourceItems: T[], sourceStart?: number, sourceEnd?: number): boolean {
+		return this.insertArray(this._size, sourceItems, sourceStart, sourceEnd)
 	}
 
 	public addIterable(items: Iterable<T>, itemsSize: number): boolean {
@@ -200,7 +207,7 @@ export class List<T> {
 	public insert(index: number, item: T): boolean {
 		const {_size, _array} = this
 
-		List._checkIndex(index, _size + 1)
+		index = List._prepareIndex(index, _size + 1)
 
 		const newSize = _size + 1
 
@@ -215,12 +222,20 @@ export class List<T> {
 		return true
 	}
 
-	public insertArray(index: number, items: T[]): boolean {
+	public insertArray(index: number, sourceItems: T[], sourceStart?: number, sourceEnd?: number): boolean {
 		const {_size, _array} = this
 
-		List._checkIndex(index, _size + 1)
+		let itemsSize = sourceItems.length
 
-		const itemsSize = items.length
+		index = List._prepareIndex(index, _size + 1)
+		sourceStart = List._prepareStart(sourceStart, itemsSize)
+		sourceEnd = List._prepareEnd(sourceEnd, itemsSize)
+
+		itemsSize = sourceEnd - sourceStart
+		if (itemsSize <= 0) {
+			return false
+		}
+
 		const newSize = _size + itemsSize
 
 		this._setSize(newSize)
@@ -230,7 +245,7 @@ export class List<T> {
 		}
 
 		for (let i = 0; i < itemsSize; i++) {
-			_array[index + i] = items[i]
+			_array[index + i] = sourceItems[sourceStart + i]
 		}
 
 		return true
@@ -239,7 +254,7 @@ export class List<T> {
 	public insertIterable(index: number, items: Iterable<T>, itemsSize: number): boolean {
 		const {_size, _array} = this
 
-		List._checkIndex(index, _size + 1)
+		index = List._prepareIndex(index, _size + 1)
 
 		const newSize = _size + itemsSize
 
@@ -266,7 +281,7 @@ export class List<T> {
 	public removeAt(index: number, shift: boolean = true): T {
 		const {_size, _array} = this
 
-		List._checkIndex(index, _size)
+		index = List._prepareIndex(index, _size)
 
 		const oldItem = _array[index]
 
@@ -283,7 +298,7 @@ export class List<T> {
 		return oldItem
 	}
 
-	public removeRange(start: number, end?: number, shift: boolean = true): void {
+	public removeRange(start: number, end?: number, shift: boolean = true): boolean {
 		const {_size, _array} = this
 
 		start = List._prepareStart(start, _size)
@@ -291,17 +306,23 @@ export class List<T> {
 
 		const removeSize = end - start
 
+		if (removeSize <= 0) {
+			return false
+		}
+
 		if (shift || removeSize >= _size - end) {
 			for (let i = end; i < _size; i++) {
 				_array[i - removeSize] = _array[i]
 			}
 		} else {
-			for (let i = start - end; i < 0; i++) {
-				_array[i] = _array[_size + i]
+			for (let i = 0; i < removeSize; i++) {
+				_array[i] = _array[_size - removeSize + i]
 			}
 		}
 
 		this._setSize(_size - removeSize)
+
+		return true
 	}
 
 	public remove(item: T, shift: boolean = true): boolean {

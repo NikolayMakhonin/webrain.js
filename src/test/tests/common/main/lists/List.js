@@ -101,4 +101,136 @@ describe('common > main > lists > List', function () {
 		list.minAllocatedSize = 0
 		assert.strictEqual(list.allocatedSize, 4)
 	})
+
+	it('add / remove', function () {
+		const list = new List()
+
+		assert.deepStrictEqual(list.toArray(), [])
+		assert.strictEqual(list.size, 0)
+
+		list.add('0')
+		assert.deepStrictEqual(list.toArray(), ['0'])
+		assert.strictEqual(list.size, 1)
+
+		assert.throws(() => list.removeAt(1), Error)
+		assert.throws(() => list.removeAt(-2), Error)
+		assert.strictEqual(list.size, 1)
+
+		list.removeAt(-1)
+		assert.deepStrictEqual(list.toArray(), [])
+		assert.strictEqual(list.size, 0)
+
+		assert.throws(() => list.removeAt(-1), Error)
+		assert.throws(() => list.removeAt(0), Error)
+		assert.strictEqual(list.size, 0)
+
+		assert.throws(() => list.insert(1, '0'), Error)
+		assert.throws(() => list.insert(-2, '0'), Error)
+
+		list.insert(-1, '0')
+		assert.deepStrictEqual(list.toArray(), ['0'])
+		assert.strictEqual(list.size, 1)
+
+		list.insert(-1, '1')
+		assert.deepStrictEqual(list.toArray(), ['0', '1'])
+		assert.strictEqual(list.size, 2)
+
+		list.removeAt(-1)
+		assert.deepStrictEqual(list.toArray(), ['0'])
+		assert.strictEqual(list.size, 1)
+
+		list.removeAt(0)
+		assert.deepStrictEqual(list.toArray(), [])
+		assert.strictEqual(list.size, 0)
+	})
+
+	it('add array / remove range', function () {
+		const list = new List()
+
+		assert.deepStrictEqual(list.toArray(), [])
+		assert.strictEqual(list.size, 0)
+
+		list.addArray(['0', '1', '2'])
+		assert.deepStrictEqual(list.toArray(), ['0', '1', '2'])
+		assert.strictEqual(list.size, 3)
+
+		assert.throws(() => list.removeRange(null, 4), Error)
+		assert.throws(() => list.removeRange(-4, null), Error)
+		assert.throws(() => list.removeRange(-4, 4), Error)
+		// assert.throws(() => list.removeRange(-4, null), Error)
+		// assert.throws(() => list.removeRange(-4, 4), Error)
+		assert.strictEqual(list.size, 3)
+
+		list.removeRange(null, -5)
+		assert.strictEqual(list.size, 3)
+
+		list.removeRange(null, -4)
+		assert.strictEqual(list.size, 3)
+
+		list.removeRange(3, null)
+		assert.strictEqual(list.size, 3)
+
+		list.removeRange(4, null)
+		assert.strictEqual(list.size, 3)
+
+		list.removeRange(3, -4)
+		assert.strictEqual(list.size, 3)
+		assert.deepStrictEqual(list.toArray(), ['0', '1', '2'])
+
+		list.removeRange(-3, -1)
+		assert.deepStrictEqual(list.toArray(), [])
+		assert.strictEqual(list.size, 0)
+
+		list.addArray(['0', '1', '2'])
+		list.insertArray(1, ['3', '4'])
+		assert.deepStrictEqual(list.toArray(), ['0', '3', '4', '1', '2'])
+		assert.strictEqual(list.size, 5)
+
+		list.removeRange(0, 2)
+		assert.deepStrictEqual(list.toArray(), ['4', '1', '2'])
+		assert.strictEqual(list.size, 3)
+
+		list.insertArray(3, ['5', '6'])
+		assert.deepStrictEqual(list.toArray(), ['4', '1', '2', '5', '6'])
+		assert.strictEqual(list.size, 5)
+
+		list.removeRange(0, 2, false)
+		assert.deepStrictEqual(list.toArray(), ['5', '6', '2'])
+		assert.strictEqual(list.size, 3)
+
+		list.addIterable(['7', '8', '9'], 2)
+		assert.deepStrictEqual(list.toArray(), ['5', '6', '2', '7', '8'])
+		assert.strictEqual(list.size, 5)
+
+		list.insertIterable(4, ['a', 'b', 'c'], 2)
+		assert.deepStrictEqual(list.toArray(), ['5', '6', '2', '7', 'a', 'b', '8'])
+		assert.strictEqual(list.size, 7)
+
+		// list.removeAt(-1)
+		// assert.deepStrictEqual(list.toArray(), [])
+		// assert.strictEqual(list.size, 0)
+		//
+		// assert.throws(() => list.removeAt(-1), Error)
+		// assert.throws(() => list.removeAt(0), Error)
+		// assert.strictEqual(list.size, 0)
+		//
+		// assert.throws(() => list.insert(1, '0'), Error)
+		// assert.throws(() => list.insert(-2, '0'), Error)
+		//
+		// list.insert(-1, '0')
+		// assert.deepStrictEqual(list.toArray(), ['0'])
+		// assert.strictEqual(list.size, 1)
+		//
+		// list.insert(-1, '1')
+		// assert.deepStrictEqual(list.toArray(), ['0', '1'])
+		// assert.strictEqual(list.size, 2)
+		//
+		// list.removeAt(-1)
+		// assert.deepStrictEqual(list.toArray(), ['0'])
+		// assert.strictEqual(list.size, 1)
+		//
+		// list.removeAt(0)
+		// assert.deepStrictEqual(list.toArray(), [])
+		// assert.strictEqual(list.size, 0)
+	})
 })
