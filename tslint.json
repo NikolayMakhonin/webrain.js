@@ -20,7 +20,11 @@
 	"member-ordering": false,
 	"bool-param-default": false,
 	"no-bitwise": false,
-	"cognitive-complexity": false
+	"cognitive-complexity": false,
+	"no-big-function": false,
+	"arrow-parens": [true, "ban-single-arg-parens"],
+
+	"only-arrow-functions": false
   },
   "rulesDirectory": [
 	"node_modules/tslint-eslint-rules/dist/rules"

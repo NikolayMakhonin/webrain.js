@@ -184,6 +184,10 @@ export class List<T> {
 
 		index = List._prepareIndex(index, _size + 1)
 
+		if (index >= _size) {
+			this._setSize(_size + 1)
+		}
+
 		_array[index] = item
 
 		return true
