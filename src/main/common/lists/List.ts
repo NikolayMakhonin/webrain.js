@@ -296,19 +296,19 @@ export class List<T> {
 		return true
 	}
 
-	public removeAt(index: number, shift: boolean = true): T {
+	public removeAt(index: number, withoutShift?: boolean): T {
 		const {_size, _array} = this
 
 		index = List._prepareIndex(index, _size)
 
 		const oldItem = _array[index]
 
-		if (shift) {
+		if (withoutShift) {
+			_array[index] = _array[_size - 1]
+		} else {
 			for (let i = index + 1; i < _size; i++) {
 				_array[i - 1] = _array[i]
 			}
-		} else {
-			_array[index] = _array[_size - 1]
 		}
 
 		this._setSize(_size - 1)
@@ -316,7 +316,7 @@ export class List<T> {
 		return oldItem
 	}
 
-	public removeRange(start: number, end?: number, shift: boolean = true): boolean {
+	public removeRange(start: number, end?: number, withoutShift?: boolean): boolean {
 		const {_size, _array} = this
 
 		start = List._prepareStart(start, _size)
@@ -328,13 +328,13 @@ export class List<T> {
 			return false
 		}
 
-		if (shift || removeSize >= _size - end) {
-			for (let i = end; i < _size; i++) {
-				_array[i - removeSize] = _array[i]
-			}
-		} else {
+		if (withoutShift && removeSize < _size - end) {
 			for (let i = 0; i < removeSize; i++) {
 				_array[i] = _array[_size - removeSize + i]
+			}
+		} else {
+			for (let i = end; i < _size; i++) {
+				_array[i - removeSize] = _array[i]
 			}
 		}
 
@@ -343,14 +343,14 @@ export class List<T> {
 		return true
 	}
 
-	public remove(item: T, shift: boolean = true): boolean {
+	public remove(item: T, withoutShift?: boolean): boolean {
 		const index = this.indexOf(item)
 
 		if (index < 0) {
 			return false
 		}
 
-		this.removeAt(index, shift)
+		this.removeAt(index, withoutShift)
 
 		return true
 	}
@@ -390,7 +390,7 @@ export class List<T> {
 		return this._array.slice(start, end)
 	}
 
-	public copyTo(destArray: T[], destIndex?: number, start?: number, end?: number): void {
+	public copyTo(destArray: T[], destIndex?: number, start?: number, end?: number): boolean {
 		const {_size, _array} = this
 
 		if (destIndex == null) {
@@ -400,9 +400,15 @@ export class List<T> {
 		start = List._prepareStart(start, _size)
 		end = List._prepareEnd(end, _size)
 
-		for (let i = start; i < end; i++) {
-			destArray[destIndex + i] = _array[i]
+		if (end <= start) {
+			return false
 		}
+
+		for (let i = start; i < end; i++) {
+			destArray[destIndex - start + i] = _array[i]
+		}
+
+		return true
 	}
 
 	public *[Symbol.iterator](): Iterator<T> {

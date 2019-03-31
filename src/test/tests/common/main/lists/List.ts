@@ -145,12 +145,7 @@ describe('common > main > lists > List', function() {
 			assert.strictEqual(list.get(i), expectedArray[i])
 		}
 
-		{
-			let i = 0
-			for (const item of list) {
-				assert.strictEqual(item, expectedArray[i++])
-			}
-		}
+		assert.deepStrictEqual(Array.from(list), expectedArray)
 	}
 
 	function testChange<T>(
@@ -176,7 +171,7 @@ describe('common > main > lists > List', function() {
 					assertList(list, orig)
 
 					if (Array.isArray(expected)) {
-						assert.strictEqual(testFunc(list), funcResult)
+						assert.deepStrictEqual(testFunc(list), funcResult)
 
 						assert.strictEqual(list.minAllocatedSize, undefined)
 						assertList(list, expected)
@@ -295,12 +290,14 @@ describe('common > main > lists > List', function() {
 		testChange(
 			[],
 			['0'],
+			true, null,
 			add('0'),
 		)
 
 		testChange(
 			['0'],
 			['0', '1'],
+			true, null,
 			add('1'),
 		)
 	})
@@ -396,7 +393,7 @@ describe('common > main > lists > List', function() {
 
 	it('insert', function() {
 		function insert<T>(
-			index,
+			index: number,
 			item: T,
 		): ITestFuncsWithDescription<T> {
 			return {
@@ -569,6 +566,293 @@ describe('common > main > lists > List', function() {
 			['', 0],
 			true, 0,
 			remove(true),
+		)
+	})
+
+	it('removeAt', function() {
+		function removeAt<T>(
+			index: number,
+		): ITestFuncsWithDescription<T> {
+			return {
+				funcs: [
+					list => list.removeAt(index),
+				],
+				description: `removeAt(${index})\n`,
+			}
+		}
+
+		testChange(
+			[],
+			Error,
+			null, null,
+			removeAt(0),
+			removeAt(-1),
+		)
+
+		testChange(
+			['0'],
+			Error,
+			null, null,
+			removeAt(1),
+			removeAt(-2),
+		)
+
+		testChange(
+			['0'],
+			[],
+			'0', null,
+			removeAt(0),
+			removeAt(-1),
+		)
+
+		testChange(
+			[0, 1, 2, 3],
+			[0, 2, 3],
+			1, 0,
+			removeAt(1),
+			removeAt(-3),
+		)
+	})
+
+	it('removeRange', function() {
+		function removeRange<T>(
+			start: number,
+			end?: number,
+			withoutShift?: boolean,
+		): ITestFuncsWithDescription<T> {
+			return {
+				funcs: [
+					list => list.removeRange(start, end, withoutShift),
+				],
+				description: `removeRange(${start}, ${end}, ${withoutShift})\n`,
+			}
+		}
+
+		testChange(
+			[],
+			[],
+			false, null,
+			removeRange(0),
+			removeRange(0, 0),
+		)
+
+		testChange(
+			[],
+			Error,
+			null, null,
+			removeRange(-1),
+			removeRange(0, 1),
+		)
+
+		testChange(
+			['0'],
+			[],
+			true, null,
+			removeRange(0),
+			removeRange(-1),
+			removeRange(0, 1),
+			removeRange(-1, 1),
+			removeRange(0, -1),
+			removeRange(-1, -1),
+		)
+
+		testChange(
+			['0'],
+			['0'],
+			false, null,
+			removeRange(1),
+			removeRange(0, 0),
+			removeRange(1, 0),
+			removeRange(0, -2),
+			removeRange(-1, -2),
+		)
+
+		testChange(
+			[0, 1, 2, 3, 4, true],
+			[0, 4, true],
+			true, false,
+			removeRange(1, 4),
+			removeRange(-5, -3),
+		)
+	})
+
+	it('clear', function() {
+		function clear<T>(): ITestFuncsWithDescription<T> {
+			return {
+				funcs: [
+					list => list.clear(),
+					list => list.removeRange(0, list.size),
+				],
+				description: 'clear()\n',
+			}
+		}
+
+		testChange(
+			[],
+			[],
+			false, null,
+			clear(),
+		)
+
+		testChange(
+			['0'],
+			[],
+			true, null,
+			clear(),
+		)
+
+		testChange(
+			[0, 1, 2],
+			[],
+			true, 0,
+			clear(),
+		)
+
+		testChange(
+			[0, 1, 2, true],
+			[],
+			true, 0,
+			clear(),
+		)
+
+		testChange(
+			[true, 0, 1, 2],
+			[],
+			true, false,
+			clear(),
+		)
+	})
+
+	it('toArray', function() {
+		function toArray<T>(
+			start?: number,
+			end?: number,
+		): ITestFuncsWithDescription<T> {
+			return {
+				funcs: [
+					list => list.toArray(start, end),
+					list => {
+						const result = []
+						list.copyTo(result, null, start, end)
+						return result
+					},
+				],
+				description: `toArray(${start}, ${end})\n`,
+			}
+		}
+
+		testChange(
+			[],
+			[],
+			[], null,
+			toArray(),
+		)
+
+		testChange(
+			['0'],
+			['0'],
+			['0'], null,
+			toArray(),
+		)
+
+		testChange(
+			['0', '1'],
+			['0', '1'],
+			['0'], null,
+			toArray(0, 1),
+			toArray(null, 1),
+			toArray(-2, 1),
+			toArray(-2, -2),
+		)
+
+		testChange(
+			['0', '1'],
+			['0', '1'],
+			['1'], null,
+			toArray(1, 2),
+			toArray(-1, 2),
+			toArray(1, -1),
+			toArray(-1, -1),
+		)
+
+		testChange(
+			['0', '1', '2', '3'],
+			['0', '1', '2', '3'],
+			['1', '2'], null,
+			toArray(1, 3),
+			toArray(-3, 3),
+			toArray(1, -2),
+			toArray(-3, -2),
+		)
+	})
+
+	it('copyTo', function() {
+		function copyTo<T>(
+			result: boolean,
+			destArray: T[],
+			destIndex?: number,
+			start?: number,
+			end?: number
+		): ITestFuncsWithDescription<T> {
+			return {
+				funcs: [
+					list => {
+						assert.strictEqual(list.copyTo(destArray, destIndex, start, end), result)
+						return destArray
+					},
+				],
+				description: `copyTo(${JSON.stringify(destArray)}, ${destIndex}, ${start}, ${end})\n`,
+			}
+		}
+
+		testChange(
+			[],
+			[],
+			[], null,
+			copyTo(false, []),
+		)
+
+		testChange(
+			[],
+			Error,
+			null, null,
+			copyTo(false, [], null, -1),
+			copyTo(false, [], null, null, 1),
+		)
+
+		testChange(
+			['0'],
+			Error,
+			null, null,
+			copyTo(false, [], null, -2),
+			copyTo(false, [], null, null, 2),
+		)
+
+		testChange(
+			['0', '1', '2'],
+			Error,
+			['0', '1'], null,
+			copyTo(false, [], null, null, 2),
+			copyTo(false, [], null, 0, 2),
+			copyTo(false, [], null, -3, 2),
+			copyTo(false, [], null, -3, -2),
+		)
+
+		testChange(
+			['0', '1', '2'],
+			Error,
+			['1', '2'], null,
+			copyTo(false, [], null, 1, null),
+			copyTo(false, [], null, 1, 2),
+			copyTo(false, [], null, -2, null),
+			copyTo(false, [], null, -2, -1),
+		)
+
+		testChange(
+			['0', '1', '2'],
+			Error,
+			['0', '1', '2', '1', '2'], null,
+			copyTo(false, ['0', '1', '2', '3'], 3, 1, null),
 		)
 	})
 })
