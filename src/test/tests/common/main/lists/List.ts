@@ -890,4 +890,46 @@ describe('common > main > lists > List', function() {
 			copyTo(false, ['0', '1', '2', '3'], 3, 1, null),
 		)
 	})
+
+	it('indexOf', function() {
+		testChange(
+			['b', 'd', 'f', 'h', 'j', 'l'],
+			['b', 'd', 'f', 'h', 'j', 'l'],
+			~6, null,
+			list => list.indexOf('a'),
+			list => list.indexOf('a', 0),
+			list => list.indexOf('a', 0, 1),
+			list => list.indexOf('a', 0, 1, -1),
+			list => list.indexOf('a', 0, 1, 1),
+		)
+
+		testChange(
+			[],
+			Error,
+			null, null,
+			list => list.indexOf('a', -1),
+			list => list.indexOf('a', null, 1),
+		)
+
+		testChange(
+			['b', 'd', 'd', 'd', 'j', 'l'],
+			['b', 'd', 'd', 'd', 'j', 'l'],
+			1, null,
+			list => list.indexOf('d'),
+			list => list.indexOf('d', 1),
+			list => list.indexOf('d', 1, 2),
+			list => list.indexOf('d', 1, 6, -1),
+			list => list.indexOf('d', null, 2, 1),
+		)
+
+		testChange(
+			['b', 'd', 'd', 'd', 'j', 'l'],
+			['b', 'd', 'd', 'd', 'j', 'l'],
+			3, null,
+			list => list.indexOf('d', 3),
+			list => list.indexOf('d', 3, 4),
+			list => list.indexOf('d', 3, 6, 1),
+			list => list.indexOf('d', null, null, 1),
+		)
+	})
 })

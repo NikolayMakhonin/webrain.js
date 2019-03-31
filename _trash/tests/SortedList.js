@@ -1,4 +1,4 @@
-import {SortedList} from '../../../../../main/common/lists/SortedList'
+import {SortedList} from '../lists/SortedList'
 
 describe('common > main > lists > SortedList', function () {
 	xit('constructor', function () {

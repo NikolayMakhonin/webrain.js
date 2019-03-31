@@ -355,12 +355,23 @@ export class List<T> {
 		return true
 	}
 
-	public indexOf(item: T): number {
+	public indexOf(item: T, start?: number, end?: number, bound?: number): number {
 		const {_size, _array} = this
 
-		for (let i = 0; i < _size; i++) {
-			if (_array[i] === item) {
-				return i
+		start = List._prepareStart(start, _size)
+		end = List._prepareEnd(end, _size)
+
+		if (bound == null || bound <= 0) {
+			for (let i = start; i < end; i++) {
+				if (_array[i] === item) {
+					return i
+				}
+			}
+		} else {
+			for (let i = end - 1; i >= start; i--) {
+				if (_array[i] === item) {
+					return i
+				}
 			}
 		}
 
@@ -387,7 +398,7 @@ export class List<T> {
 		start = List._prepareStart(start, _size)
 		end = List._prepareEnd(end, _size)
 
-		return this._array.slice(start, end)
+		return _array.slice(start, end)
 	}
 
 	public copyTo(destArray: T[], destIndex?: number, start?: number, end?: number): boolean {
