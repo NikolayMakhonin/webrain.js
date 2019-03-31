@@ -217,7 +217,7 @@ export class List<T> {
 
 		this._setSize(newSize)
 
-		for (let i = index + 1; i < newSize; i++) {
+		for (let i = newSize - 1; i > index; i--) {
 			_array[i] = _array[i - 1]
 		}
 
@@ -244,8 +244,8 @@ export class List<T> {
 
 		this._setSize(newSize)
 
-		for (let i = index + itemsSize; i < newSize; i++) {
-			_array[i] = _array[i - itemsSize]
+		for (let i = newSize - 1 - itemsSize; i >= index; i--) {
+			_array[i + itemsSize] = _array[i]
 		}
 
 		for (let i = 0; i < itemsSize; i++) {
@@ -275,8 +275,8 @@ export class List<T> {
 
 		let i
 
-		for (i = end; i < newSize; i++) {
-			_array[i] = _array[i - itemsSize]
+		for (i = newSize - 1 - itemsSize; i >= start; i--) {
+			_array[i + itemsSize] = _array[i]
 		}
 
 		i = start

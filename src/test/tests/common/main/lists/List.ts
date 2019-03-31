@@ -156,6 +156,8 @@ describe('common > main > lists > List', function() {
 	function testChange<T>(
 		orig: T[],
 		expected: T[]|(new () => Error),
+		funcResult: any,
+		defaultValue: any,
 		...testFuncsWithDescriptions: TestFuncsWithDescriptions<T>
 	) {
 		for (const testFuncsWithDescription of expandArray(testFuncsWithDescriptions)) {
@@ -167,13 +169,14 @@ describe('common > main > lists > List', function() {
 
 			for (const testFunc of expandArray(funcs)) {
 				try {
-					const list = new List({array: orig.slice()})
+					const array = orig.slice()
+					const list = new List({array})
 
 					assert.strictEqual(list.minAllocatedSize, undefined)
 					assertList(list, orig)
 
 					if (Array.isArray(expected)) {
-						testFunc(list)
+						assert.strictEqual(testFunc(list), funcResult)
 
 						assert.strictEqual(list.minAllocatedSize, undefined)
 						assertList(list, expected)
@@ -183,6 +186,11 @@ describe('common > main > lists > List', function() {
 						assert.strictEqual(list.minAllocatedSize, undefined)
 						assertList(list, orig)
 					}
+
+					assert.deepStrictEqual(array.slice(0, list.size), list.toArray())
+					for (let i = list.size; i < array.length; i++) {
+						assert.strictEqual(array[i], defaultValue)
+					}
 				} catch (ex) {
 					console.log(`Error in: ${description}\n${testFunc.toString()}\n`)
 					throw ex
@@ -191,34 +199,22 @@ describe('common > main > lists > List', function() {
 		}
 	}
 
-	it('add', function() {
-		function add<T>(
-			item: T,
-		): ITestFuncsWithDescription<T> {
-			return {
-				funcs: [
-					list => list.add(item),
-					list => list.set(list.size, item),
-					list => list.insert(list.size, item),
-					list => list.addArray([item]),
-					list => list.addIterable(toIterable([item]), 1),
-					list => list.insertArray(list.size, [item]),
-					list => list.insertIterable(list.size, toIterable([item]), 1),
-				],
-				description: `add(${item})\n`,
-			}
-		}
-
+	it('get', function() {
 		testChange(
 			[],
-			['0'],
-			add('0'),
+			Error, null, null,
+			list => list.get(0),
+			list => list.get(1),
+			list => list.get(-1),
 		)
 
 		testChange(
 			['0'],
-			['0', '1'],
-			add('1'),
+			Error, null, null,
+			list => list.get(1),
+			list => list.get(2),
+			list => list.get(-2),
+			list => list.get(-3),
 		)
 	})
 
@@ -231,7 +227,7 @@ describe('common > main > lists > List', function() {
 				funcs: [
 					list => list.set(index, item),
 				],
-				description: `add(${item})\n`,
+				description: `set(${index}, ${JSON.stringify(item)})\n`,
 			}
 		}
 
@@ -278,22 +274,34 @@ describe('common > main > lists > List', function() {
 		)
 	})
 
-	it('get', function() {
+	it('add', function() {
+		function add<T>(
+			item: T,
+		): ITestFuncsWithDescription<T> {
+			return {
+				funcs: [
+					list => list.add(item),
+					list => list.set(list.size, item),
+					list => list.insert(list.size, item),
+					list => list.addArray([item]),
+					list => list.addIterable(toIterable([item]), 1),
+					list => list.insertArray(list.size, [item]),
+					list => list.insertIterable(list.size, toIterable([item]), 1),
+				],
+				description: `add(${JSON.stringify(item)})\n`,
+			}
+		}
+
 		testChange(
 			[],
-			Error,
-			list => list.get(0),
-			list => list.get(1),
-			list => list.get(-1),
+			['0'],
+			add('0'),
 		)
 
 		testChange(
 			['0'],
-			Error,
-			list => list.get(1),
-			list => list.get(2),
-			list => list.get(-2),
-			list => list.get(-3),
+			['0', '1'],
+			add('1'),
 		)
 	})
 
@@ -324,6 +332,7 @@ describe('common > main > lists > List', function() {
 		testChange(
 			[],
 			[],
+			false, null,
 			addArray([]),
 			addArray(['0'], 1),
 			addArray(['0'], 2),
@@ -335,6 +344,7 @@ describe('common > main > lists > List', function() {
 		testChange(
 			[],
 			['0'],
+			true, null,
 			addArray(['0']),
 			addArray(['0'], 0),
 			addArray(['0'], -1),
@@ -345,6 +355,7 @@ describe('common > main > lists > List', function() {
 		testChange(
 			[],
 			Error,
+			null, null,
 			addArray(['0'], -2),
 			addArray(['0'], null, 2),
 		)
@@ -352,6 +363,7 @@ describe('common > main > lists > List', function() {
 		testChange(
 			['0'],
 			['0', '1', '2', '3'],
+			true, null,
 			addArray(['1', '2', '3']),
 			addArray(['1', '2', '3'], 0, 3),
 			addArray(['1', '2', '3'], -3, -1),
@@ -360,6 +372,7 @@ describe('common > main > lists > List', function() {
 		testChange(
 			['0'],
 			['0', '1', '2'],
+			true, null,
 			addArray(['1', '2', '3'], null, 2),
 			addArray(['1', '2', '3'], null, -2),
 			addArray(['1', '2', '3'], 0, 2),
@@ -371,12 +384,69 @@ describe('common > main > lists > List', function() {
 		testChange(
 			['0'],
 			['0', '2', '3'],
+			true, null,
 			addArray(['1', '2', '3'], 1, null),
 			addArray(['1', '2', '3'], -2, null),
 			addArray(['1', '2', '3'], 1, -1),
 			addArray(['1', '2', '3'], -2, -1),
 			addArray(['1', '2', '3'], 1, 3),
 			addArray(['1', '2', '3'], -2, 3),
+		)
+	})
+
+	it('insert', function() {
+		function insert<T>(
+			index,
+			item: T,
+		): ITestFuncsWithDescription<T> {
+			return {
+				funcs: [
+					list => list.insert(index, item),
+					list => list.insertArray(index, [item]),
+					list => list.insertIterable(index, toIterable([item]), 1),
+				],
+				description: `insert(${index}, ${JSON.stringify(item)})\n`,
+			}
+		}
+
+		testChange(
+			[],
+			['0'],
+			true, null,
+			insert(0, '0'),
+			insert(-1, '0'),
+		)
+
+		testChange(
+			[],
+			Error,
+			null, null,
+			insert(1, '0'),
+			insert(-2, '0'),
+		)
+
+		testChange(
+			['0'],
+			['0', '1'],
+			true, null,
+			insert(1, '1'),
+			insert(-1, '1'),
+		)
+
+		testChange(
+			['0'],
+			Error,
+			null, null,
+			insert(2, '1'),
+			insert(-3, '1'),
+		)
+
+		testChange(
+			['0', '1', '2'],
+			['0', '3', '1', '2'],
+			true, null,
+			insert(1, '3'),
+			insert(-3, '3'),
 		)
 	})
 
@@ -398,13 +468,14 @@ describe('common > main > lists > List', function() {
 						list => list.insertIterable(index, toIterable(sourceItems), sourceEnd),
 					],
 				],
-				description: `insertArray(${JSON.stringify(sourceItems)}, ${sourceStart}, ${sourceEnd})\n`,
+				description: `insertArray(${index}, ${JSON.stringify(sourceItems)}, ${sourceStart}, ${sourceEnd})\n`,
 			}
 		}
 
 		testChange(
 			['0'],
 			['1', '2', '0'],
+			true, null,
 			insertArray(0, ['1', '2']),
 			insertArray(0, ['1', '2'], 0, 2),
 			insertArray(0, ['1', '2'], -2, -1),
@@ -417,8 +488,9 @@ describe('common > main > lists > List', function() {
 		)
 
 		testChange(
-			['0', '1', '2', '3'],
-			['0', '1', '4', '5', '2', '3'],
+			['0', '1', '2', '3', '4'],
+			['0', '1', '4', '5', '2', '3', '4'],
+			true, null,
 			insertArray(2, ['4', '5']),
 			insertArray(2, ['4', '5'], 0, 2),
 			insertArray(2, ['4', '5'], -2, -1),
@@ -428,6 +500,75 @@ describe('common > main > lists > List', function() {
 			insertArray(2, ['4', '5', '6'], 0, -2),
 			insertArray(2, ['4', '5', '6'], -3, 2),
 			insertArray(2, ['4', '5', '6'], -3, -2),
+		)
+	})
+
+	it('remove', function() {
+		function remove<T>(
+			item: T,
+		): ITestFuncsWithDescription<T> {
+			return {
+				funcs: [
+					list => list.remove(item),
+				],
+				description: `remove(${JSON.stringify(item)})\n`,
+			}
+		}
+
+		testChange(
+			[],
+			[],
+			false, null,
+			remove('0'),
+		)
+
+		testChange(
+			['0'],
+			[],
+			true, null,
+			remove('0'),
+		)
+
+		testChange(
+			['0', '1', '2'],
+			['1', '2'],
+			true, null,
+			remove('0'),
+		)
+
+		testChange(
+			['0', '1', '2'],
+			['0', '2'],
+			true, null,
+			remove('1'),
+		)
+
+		testChange(
+			['0', '1', '2'],
+			['0', '1', '2'],
+			false, null,
+			remove('3'),
+		)
+
+		testChange(
+			[0, 1, 2],
+			[0, 2],
+			true, 0,
+			remove(1),
+		)
+
+		testChange(
+			[true, true],
+			[true],
+			true, false,
+			remove(true),
+		)
+
+		testChange(
+			['', 0, true],
+			['', 0],
+			true, 0,
+			remove(true),
 		)
 	})
 })
