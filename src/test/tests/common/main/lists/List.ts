@@ -42,13 +42,6 @@ describe('common > main > lists > List', function() {
 	})
 
 	it('size', function() {
-		try {
-			assert.strictEqual(1, 2)
-		} catch (ex) {
-			console.log('qweqwe')
-			throw ex
-		}
-
 		const array = generateArray(31)
 		const list = new List({
 			array,
@@ -118,7 +111,7 @@ describe('common > main > lists > List', function() {
 		funcs: TestFuncs<T>,
 		description: string
 	}
-	type TestFuncsWithDescription<T> = ITestFuncsWithDescription<T> | TestFuncsWithDescriptions<T>
+	type TestFuncsWithDescription<T> = TestFunc<T> | ITestFuncsWithDescription<T> | TestFuncsWithDescriptions<T>
 	interface TestFuncsWithDescriptions<T> extends Array<TestFuncsWithDescription<T>> { }
 
 	function expandArray<T>(array: T[], output: any[] = []): any[] {
@@ -143,19 +136,19 @@ describe('common > main > lists > List', function() {
 		}
 	}
 
-	function assertList<T>(list: List<T>, expectedArray: T[], description: string) {
-		assert.deepStrictEqual(list.toArray(), expectedArray, description)
-		assert.strictEqual(list.size, expectedArray.length, description)
-		assert.ok(list.allocatedSize >= expectedArray.length, description)
+	function assertList<T>(list: List<T>, expectedArray: T[]) {
+		assert.deepStrictEqual(list.toArray(), expectedArray)
+		assert.strictEqual(list.size, expectedArray.length)
+		assert.ok(list.allocatedSize >= expectedArray.length)
 
 		for (let i = 0; i < expectedArray.length; i++) {
-			assert.strictEqual(list.get(i), expectedArray[i], description)
+			assert.strictEqual(list.get(i), expectedArray[i])
 		}
 
 		{
 			let i = 0
 			for (const item of list) {
-				assert.strictEqual(item, expectedArray[i++], description)
+				assert.strictEqual(item, expectedArray[i++])
 			}
 		}
 	}
@@ -165,84 +158,123 @@ describe('common > main > lists > List', function() {
 		expected: T[]|(new () => Error),
 		...testFuncsWithDescriptions: TestFuncsWithDescriptions<T>
 	) {
-		for (const {testFuncs, description} of expandArray(testFuncsWithDescriptions)) {
-			for (const testFunc of expandArray(testFuncs)) {
-				const descriptionWithFunc = description + '\n' + testFunc.toString() + '\n'
-				const list = new List({array: orig.slice()})
+		for (const testFuncsWithDescription of expandArray(testFuncsWithDescriptions)) {
+			let {funcs, description} = testFuncsWithDescription
+			if (typeof testFuncsWithDescription === 'function') {
+				funcs = [testFuncsWithDescription]
+				description = ''
+			}
 
-				assert.strictEqual(list.minAllocatedSize, undefined, descriptionWithFunc)
-				assertList(list, orig, descriptionWithFunc)
+			for (const testFunc of expandArray(funcs)) {
+				try {
+					const list = new List({array: orig.slice()})
 
-				if (Array.isArray(expected)) {
-					testFunc(list)
+					assert.strictEqual(list.minAllocatedSize, undefined)
+					assertList(list, orig)
 
-					assert.strictEqual(list.minAllocatedSize, undefined, descriptionWithFunc)
-					assertList(list, expected, descriptionWithFunc)
-				} else {
-					assert.throws(() => testFunc(list), expected, descriptionWithFunc)
+					if (Array.isArray(expected)) {
+						testFunc(list)
 
-					assert.strictEqual(list.minAllocatedSize, undefined, descriptionWithFunc)
-					assertList(list, orig, descriptionWithFunc)
+						assert.strictEqual(list.minAllocatedSize, undefined)
+						assertList(list, expected)
+					} else {
+						assert.throws(() => testFunc(list), expected)
+
+						assert.strictEqual(list.minAllocatedSize, undefined)
+						assertList(list, orig)
+					}
+				} catch (ex) {
+					console.log(`Error in: ${description}\n${testFunc.toString()}\n`)
+					throw ex
 				}
 			}
 		}
 	}
 
 	it('add', function() {
+		function add<T>(
+			item: T,
+		): ITestFuncsWithDescription<T> {
+			return {
+				funcs: [
+					list => list.add(item),
+					list => list.set(list.size, item),
+					list => list.insert(list.size, item),
+					list => list.addArray([item]),
+					list => list.addIterable(toIterable([item]), 1),
+					list => list.insertArray(list.size, [item]),
+					list => list.insertIterable(list.size, toIterable([item]), 1),
+				],
+				description: `add(${item})\n`,
+			}
+		}
+
 		testChange(
 			[],
 			['0'],
-			list => list.add('0'),
+			add('0'),
 		)
 
 		testChange(
 			['0'],
 			['0', '1'],
-			list => list.add('1'),
+			add('1'),
 		)
 	})
 
 	it('set', function() {
+		function set<T>(
+			index: number,
+			item: T,
+		): ITestFuncsWithDescription<T> {
+			return {
+				funcs: [
+					list => list.set(index, item),
+				],
+				description: `add(${item})\n`,
+			}
+		}
+
 		testChange(
 			[],
 			['0'],
-			list => list.set(0, '0'),
-			list => list.set(-1, '0'),
+			set(0, '0'),
+			set(-1, '0'),
 		)
 
 		testChange(
 			[],
 			Error,
-			list => list.set(1, '0'),
-			list => list.set(-2, '0'),
+			set(1, '0'),
+			set(-2, '0'),
 		)
 
 		testChange(
 			['0'],
 			['1'],
-			list => list.set(0, '1'),
-			list => list.set(-2, '1'),
+			set(0, '1'),
+			set(-2, '1'),
 		)
 
 		testChange(
 			['0'],
 			Error,
-			list => list.set(-3, '0'),
-			list => list.set(2, '0'),
+			set(-3, '0'),
+			set(2, '0'),
 		)
 
 		testChange(
 			['0'],
 			['0', '1'],
-			list => list.set(1, '1'),
-			list => list.set(-1, '1'),
+			set(1, '1'),
+			set(-1, '1'),
 		)
 
 		testChange(
 			['0', '1'],
 			['2', '1'],
-			list => list.set(0, '2'),
-			list => list.set(-3, '2'),
+			set(0, '2'),
+			set(-3, '2'),
 		)
 	})
 
@@ -270,14 +302,23 @@ describe('common > main > lists > List', function() {
 			sourceItems: T[],
 			sourceStart?: number,
 			sourceEnd?: number,
-		): TestFuncs<T> {
-			return [
-				list => list.addArray(sourceItems, sourceStart, sourceEnd),
-				!sourceStart && sourceEnd != null && (list => list.addIterable(sourceItems, sourceEnd)),
-			].map(o => [
-				o,
-				`Error in arrArray(${JSON.stringify(sourceItems)}, ${sourceStart}, ${sourceEnd})\n`,
-			])
+		): ITestFuncsWithDescription<T> {
+			return {
+				funcs: [
+					list => list.addArray(sourceItems, sourceStart, sourceEnd),
+					list => list.insertArray(list.size, sourceItems, sourceStart, sourceEnd),
+					!sourceStart
+						&& sourceEnd != null
+						&& sourceEnd >= 0
+						&& [
+							list => list.addIterable(sourceItems, sourceEnd),
+							list => list.addIterable(toIterable(sourceItems), sourceEnd),
+							list => list.insertIterable(list.size, sourceItems, sourceEnd),
+							list => list.insertIterable(list.size, toIterable(sourceItems), sourceEnd),
+						],
+				],
+				description: `arrArray(${JSON.stringify(sourceItems)}, ${sourceStart}, ${sourceEnd})\n`,
+			}
 		}
 
 		testChange(
@@ -339,159 +380,54 @@ describe('common > main > lists > List', function() {
 		)
 	})
 
-	// it('add / remove', function () {
-	// 	const list = new List()
-	//
-	// 	assert.deepStrictEqual(list.toArray(), [])
-	// 	assert.strictEqual(list.size, 0)
-	//
-	// 	list.add('0')
-	// 	assert.deepStrictEqual(list.toArray(), ['0'])
-	// 	assert.strictEqual(list.size, 1)
-	//
-	// 	assert.throws(() => list.removeAt(1), Error)
-	// 	assert.throws(() => list.removeAt(-2), Error)
-	// 	assert.strictEqual(list.size, 1)
-	//
-	// 	list.removeAt(-1)
-	// 	assert.deepStrictEqual(list.toArray(), [])
-	// 	assert.strictEqual(list.size, 0)
-	//
-	// 	assert.throws(() => list.removeAt(-1), Error)
-	// 	assert.throws(() => list.removeAt(0), Error)
-	// 	assert.strictEqual(list.size, 0)
-	//
-	// 	assert.throws(() => list.insert(1, '0'), Error)
-	// 	assert.throws(() => list.insert(-2, '0'), Error)
-	//
-	// 	list.insert(-1, '0')
-	// 	assert.deepStrictEqual(list.toArray(), ['0'])
-	// 	assert.strictEqual(list.size, 1)
-	//
-	// 	list.insert(-1, '1')
-	// 	assert.deepStrictEqual(list.toArray(), ['0', '1'])
-	// 	assert.strictEqual(list.size, 2)
-	//
-	// 	list.removeAt(-1)
-	// 	assert.deepStrictEqual(list.toArray(), ['0'])
-	// 	assert.strictEqual(list.size, 1)
-	//
-	// 	list.removeAt(0)
-	// 	assert.deepStrictEqual(list.toArray(), [])
-	// 	assert.strictEqual(list.size, 0)
-	// })
-	//
-	// it('add array / remove range', function () {
-	// 	const list = new List()
-	//
-	// 	assert.deepStrictEqual(list.toArray(), [])
-	// 	assert.strictEqual(list.size, 0)
-	//
-	// 	list.addArray(['0', '1', '2'])
-	// 	assert.deepStrictEqual(list.toArray(), ['0', '1', '2'])
-	// 	assert.strictEqual(list.size, 3)
-	//
-	// 	assert.throws(() => list.removeRange(null, 4), Error)
-	// 	assert.throws(() => list.removeRange(-4, null), Error)
-	// 	assert.throws(() => list.removeRange(-4, 4), Error)
-	// 	// assert.throws(() => list.removeRange(-4, null), Error)
-	// 	// assert.throws(() => list.removeRange(-4, 4), Error)
-	// 	assert.strictEqual(list.size, 3)
-	//
-	// 	list.removeRange(null, -5)
-	// 	assert.strictEqual(list.size, 3)
-	//
-	// 	list.removeRange(null, -4)
-	// 	assert.strictEqual(list.size, 3)
-	//
-	// 	list.removeRange(3, null)
-	// 	assert.strictEqual(list.size, 3)
-	//
-	// 	list.removeRange(4, null)
-	// 	assert.strictEqual(list.size, 3)
-	//
-	// 	list.removeRange(3, -4)
-	// 	assert.strictEqual(list.size, 3)
-	// 	assert.deepStrictEqual(list.toArray(), ['0', '1', '2'])
-	//
-	// 	list.removeRange(-3, -1)
-	// 	assert.deepStrictEqual(list.toArray(), [])
-	// 	assert.strictEqual(list.size, 0)
-	//
-	// 	list.addArray(['0', '1', '2'])
-	// 	list.insertArray(1, ['3', '4'])
-	// 	assert.deepStrictEqual(list.toArray(), ['0', '3', '4', '1', '2'])
-	// 	assert.strictEqual(list.size, 5)
-	//
-	// 	list.removeRange(0, 2)
-	// 	assert.deepStrictEqual(list.toArray(), ['4', '1', '2'])
-	// 	assert.strictEqual(list.size, 3)
-	//
-	// 	list.insertArray(3, ['5', '6'])
-	// 	assert.deepStrictEqual(list.toArray(), ['4', '1', '2', '5', '6'])
-	// 	assert.strictEqual(list.size, 5)
-	//
-	// 	list.removeRange(0, 2, false)
-	// 	assert.deepStrictEqual(list.toArray(), ['5', '6', '2'])
-	// 	assert.strictEqual(list.size, 3)
-	//
-	// 	list.addIterable(['7', '8', '9'], 2)
-	// 	assert.deepStrictEqual(list.toArray(), ['5', '6', '2', '7', '8'])
-	// 	assert.strictEqual(list.size, 5)
-	//
-	// 	list.insertIterable(4, ['a', 'b', 'c'], 2)
-	// 	assert.deepStrictEqual(list.toArray(), ['5', '6', '2', '7', 'a', 'b', '8'])
-	// 	assert.strictEqual(list.size, 7)
-	//
-	// 	list.removeAt(0)
-	// 	assert.deepStrictEqual(list.toArray(), ['6', '2', '7', 'a', 'b', '8'])
-	// 	assert.strictEqual(list.size, 6)
-	//
-	// 	list.removeAt(-1)
-	// 	assert.deepStrictEqual(list.toArray(), ['6', '2', '7', 'a', 'b'])
-	// 	assert.strictEqual(list.size, 5)
-	//
-	// 	list.removeRange(4, 5)
-	// 	assert.deepStrictEqual(list.toArray(), ['6', '2', '7', 'a'])
-	// 	assert.strictEqual(list.size, 4)
-	//
-	// 	list.addArray(['d', 'e', 'f', 'g'], 1, 3)
-	// 	assert.deepStrictEqual(list.toArray(), ['6', '2', '7', 'a', 'e', 'f'])
-	// 	assert.strictEqual(list.size, 6)
-	//
-	// 	list.removeRange(2, 4, false)
-	// 	assert.deepStrictEqual(list.toArray(), ['6', '2', 'e', 'f'])
-	// 	assert.strictEqual(list.size, 4)
-	//
-	// 	list.insertArray(1, ['h', 'i', 'j', 'k'], 1, 3)
-	// 	assert.deepStrictEqual(list.toArray(), ['6', 'i', 'j', '2', 'e', 'f'])
-	// 	assert.strictEqual(list.size, 6)
-	//
-	// 	// list.removeAt(-1)
-	// 	// assert.deepStrictEqual(list.toArray(), [])
-	// 	// assert.strictEqual(list.size, 0)
-	// 	//
-	// 	// assert.throws(() => list.removeAt(-1), Error)
-	// 	// assert.throws(() => list.removeAt(0), Error)
-	// 	// assert.strictEqual(list.size, 0)
-	// 	//
-	// 	// assert.throws(() => list.insert(1, '0'), Error)
-	// 	// assert.throws(() => list.insert(-2, '0'), Error)
-	// 	//
-	// 	// list.insert(-1, '0')
-	// 	// assert.deepStrictEqual(list.toArray(), ['0'])
-	// 	// assert.strictEqual(list.size, 1)
-	// 	//
-	// 	// list.insert(-1, '1')
-	// 	// assert.deepStrictEqual(list.toArray(), ['0', '1'])
-	// 	// assert.strictEqual(list.size, 2)
-	// 	//
-	// 	// list.removeAt(-1)
-	// 	// assert.deepStrictEqual(list.toArray(), ['0'])
-	// 	// assert.strictEqual(list.size, 1)
-	// 	//
-	// 	// list.removeAt(0)
-	// 	// assert.deepStrictEqual(list.toArray(), [])
-	// 	// assert.strictEqual(list.size, 0)
-	// })
+	it('insertArray', function() {
+		function insertArray<T>(
+			index: number,
+			sourceItems: T[],
+			sourceStart?: number,
+			sourceEnd?: number,
+		): ITestFuncsWithDescription<T> {
+			return {
+				funcs: [
+					list => list.insertArray(index, sourceItems, sourceStart, sourceEnd),
+					!sourceStart
+					&& sourceEnd != null
+					&& sourceEnd >= 0
+					&& [
+						list => list.insertIterable(index, sourceItems, sourceEnd),
+						list => list.insertIterable(index, toIterable(sourceItems), sourceEnd),
+					],
+				],
+				description: `insertArray(${JSON.stringify(sourceItems)}, ${sourceStart}, ${sourceEnd})\n`,
+			}
+		}
+
+		testChange(
+			['0'],
+			['1', '2', '0'],
+			insertArray(0, ['1', '2']),
+			insertArray(0, ['1', '2'], 0, 2),
+			insertArray(0, ['1', '2'], -2, -1),
+			insertArray(0, ['1', '2', '3'], null, 2),
+			insertArray(0, ['1', '2', '3'], null, -2),
+			insertArray(0, ['1', '2', '3'], 0, 2),
+			insertArray(0, ['1', '2', '3'], 0, -2),
+			insertArray(0, ['1', '2', '3'], -3, 2),
+			insertArray(0, ['1', '2', '3'], -3, -2),
+		)
+
+		testChange(
+			['0', '1', '2', '3'],
+			['0', '1', '4', '5', '2', '3'],
+			insertArray(2, ['4', '5']),
+			insertArray(2, ['4', '5'], 0, 2),
+			insertArray(2, ['4', '5'], -2, -1),
+			insertArray(2, ['4', '5', '6'], null, 2),
+			insertArray(2, ['4', '5', '6'], null, -2),
+			insertArray(2, ['4', '5', '6'], 0, 2),
+			insertArray(2, ['4', '5', '6'], 0, -2),
+			insertArray(2, ['4', '5', '6'], -3, 2),
+			insertArray(2, ['4', '5', '6'], -3, -2),
+		)
+	})
 })

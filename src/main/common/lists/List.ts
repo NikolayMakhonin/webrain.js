@@ -262,25 +262,35 @@ export class List<T> {
 			return false
 		}
 
-		index = List._prepareIndex(index, _size + 1)
+		if (Array.isArray(items)) {
+			return this.insertArray(index, items, null, itemsSize)
+		}
+
+		const start = List._prepareIndex(index, _size + 1)
+		const end = start + itemsSize
 
 		const newSize = _size + itemsSize
 
 		this._setSize(newSize)
 
-		for (let i = index + itemsSize; i < newSize; i++) {
+		let i
+
+		for (i = end; i < newSize; i++) {
 			_array[i] = _array[i - itemsSize]
 		}
 
-		if (Array.isArray(items)) {
-			for (let i = 0; i < itemsSize; i++) {
-				_array[index + i] = items[i]
+		i = start
+		for (const item of items) {
+			_array[i++] = item
+			if (i >= end) {
+				break
 			}
-		} else {
-			let i
-			for (const item of items) {
-				_array[i++] = item
-			}
+		}
+
+		if (i !== end) {
+			// rollback
+			this.removeRange(start, end)
+			throw new Error(`Iterable items size (${i - start}) less than itemsSize (${itemsSize})`)
 		}
 
 		return true
