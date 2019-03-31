@@ -24,7 +24,8 @@
 	"no-big-function": false,
 	"arrow-parens": [true, "ban-single-arg-parens"],
 
-	"only-arrow-functions": false
+	"only-arrow-functions": false,
+	"no-console": false
   },
   "rulesDirectory": [
 	"node_modules/tslint-eslint-rules/dist/rules"

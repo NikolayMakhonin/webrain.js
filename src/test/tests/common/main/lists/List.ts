@@ -42,6 +42,13 @@ describe('common > main > lists > List', function() {
 	})
 
 	it('size', function() {
+		try {
+			assert.strictEqual(1, 2)
+		} catch (ex) {
+			console.log('qweqwe')
+			throw ex
+		}
+
 		const array = generateArray(31)
 		const list = new List({
 			array,
@@ -104,40 +111,79 @@ describe('common > main > lists > List', function() {
 		assert.strictEqual(list.allocatedSize, 4)
 	})
 
-	function assertList<T>(list: List<T>, expectedArray: T[]) {
-		assert.deepStrictEqual(list.toArray(), expectedArray)
-		assert.strictEqual(list.size, expectedArray.length)
-		assert.ok(list.allocatedSize >= expectedArray.length)
+	type TestFunc<T> = ((list: List<T>) => any) | TestFuncs<T>
+	interface TestFuncs<T> extends Array<TestFunc<T>> { }
+
+	interface ITestFuncsWithDescription<T> {
+		funcs: TestFuncs<T>,
+		description: string
+	}
+	type TestFuncsWithDescription<T> = ITestFuncsWithDescription<T> | TestFuncsWithDescriptions<T>
+	interface TestFuncsWithDescriptions<T> extends Array<TestFuncsWithDescription<T>> { }
+
+	function expandArray<T>(array: T[], output: any[] = []): any[] {
+		for (const item of array) {
+			if (!item) {
+				continue
+			}
+
+			if (Array.isArray(item)) {
+				expandArray(item, output)
+			} else {
+				output.push(item)
+			}
+		}
+
+		return output
+	}
+
+	function *toIterable<T>(array: T[]): Iterable<T> {
+		for (const item of array) {
+			yield item
+		}
+	}
+
+	function assertList<T>(list: List<T>, expectedArray: T[], description: string) {
+		assert.deepStrictEqual(list.toArray(), expectedArray, description)
+		assert.strictEqual(list.size, expectedArray.length, description)
+		assert.ok(list.allocatedSize >= expectedArray.length, description)
 
 		for (let i = 0; i < expectedArray.length; i++) {
-			assert.strictEqual(list.get(i), expectedArray[i])
+			assert.strictEqual(list.get(i), expectedArray[i], description)
 		}
 
 		{
 			let i = 0
 			for (const item of list) {
-				assert.strictEqual(item, expectedArray[i++])
+				assert.strictEqual(item, expectedArray[i++], description)
 			}
 		}
 	}
 
-	function testChange<T>(orig: T[], expected: T[]|(new () => Error), ...changeFuncs: ((list: List<T>) => any)[]) {
-		for (const changeFunc of changeFuncs) {
-			const list = new List({array: orig.slice()})
+	function testChange<T>(
+		orig: T[],
+		expected: T[]|(new () => Error),
+		...testFuncsWithDescriptions: TestFuncsWithDescriptions<T>
+	) {
+		for (const {testFuncs, description} of expandArray(testFuncsWithDescriptions)) {
+			for (const testFunc of expandArray(testFuncs)) {
+				const descriptionWithFunc = description + '\n' + testFunc.toString() + '\n'
+				const list = new List({array: orig.slice()})
 
-			assert.strictEqual(list.minAllocatedSize, undefined)
-			assertList(list, orig)
+				assert.strictEqual(list.minAllocatedSize, undefined, descriptionWithFunc)
+				assertList(list, orig, descriptionWithFunc)
 
-			if (Array.isArray(expected)) {
-				changeFunc(list)
+				if (Array.isArray(expected)) {
+					testFunc(list)
 
-				assert.strictEqual(list.minAllocatedSize, undefined)
-				assertList(list, expected)
-			} else {
-				assert.throws(() => changeFunc(list), expected)
+					assert.strictEqual(list.minAllocatedSize, undefined, descriptionWithFunc)
+					assertList(list, expected, descriptionWithFunc)
+				} else {
+					assert.throws(() => testFunc(list), expected, descriptionWithFunc)
 
-				assert.strictEqual(list.minAllocatedSize, undefined)
-				assertList(list, orig)
+					assert.strictEqual(list.minAllocatedSize, undefined, descriptionWithFunc)
+					assertList(list, orig, descriptionWithFunc)
+				}
 			}
 		}
 	}
@@ -220,62 +266,76 @@ describe('common > main > lists > List', function() {
 	})
 
 	it('addArray', function() {
+		function addArray<T>(
+			sourceItems: T[],
+			sourceStart?: number,
+			sourceEnd?: number,
+		): TestFuncs<T> {
+			return [
+				list => list.addArray(sourceItems, sourceStart, sourceEnd),
+				!sourceStart && sourceEnd != null && (list => list.addIterable(sourceItems, sourceEnd)),
+			].map(o => [
+				o,
+				`Error in arrArray(${JSON.stringify(sourceItems)}, ${sourceStart}, ${sourceEnd})\n`,
+			])
+		}
+
 		testChange(
 			[],
 			[],
-			list => list.addArray([]),
-			list => list.addArray(['0'], 1),
-			list => list.addArray(['0'], 2),
-			list => list.addArray(['0'], null, 0),
-			list => list.addArray(['0'], null, -2),
-			list => list.addArray(['0'], null, -3),
+			addArray([]),
+			addArray(['0'], 1),
+			addArray(['0'], 2),
+			addArray(['0'], null, 0),
+			addArray(['0'], null, -2),
+			addArray(['0'], null, -3),
 		)
 
 		testChange(
 			[],
 			['0'],
-			list => list.addArray(['0']),
-			list => list.addArray(['0'], 0),
-			list => list.addArray(['0'], -1),
-			list => list.addArray(['0'], null, 1),
-			list => list.addArray(['0'], null, -1),
+			addArray(['0']),
+			addArray(['0'], 0),
+			addArray(['0'], -1),
+			addArray(['0'], null, 1),
+			addArray(['0'], null, -1),
 		)
 
 		testChange(
 			[],
 			Error,
-			list => list.addArray(['0'], -2),
-			list => list.addArray(['0'], null, 2),
+			addArray(['0'], -2),
+			addArray(['0'], null, 2),
 		)
 
 		testChange(
 			['0'],
 			['0', '1', '2', '3'],
-			list => list.addArray(['1', '2', '3']),
-			list => list.addArray(['1', '2', '3'], 0, 3),
-			list => list.addArray(['1', '2', '3'], -3, -1),
+			addArray(['1', '2', '3']),
+			addArray(['1', '2', '3'], 0, 3),
+			addArray(['1', '2', '3'], -3, -1),
 		)
 
 		testChange(
 			['0'],
 			['0', '1', '2'],
-			list => list.addArray(['1', '2', '3'], null, 2),
-			list => list.addArray(['1', '2', '3'], null, -2),
-			list => list.addArray(['1', '2', '3'], 0, 2),
-			list => list.addArray(['1', '2', '3'], 0, -2),
-			list => list.addArray(['1', '2', '3'], -3, 2),
-			list => list.addArray(['1', '2', '3'], -3, -2),
+			addArray(['1', '2', '3'], null, 2),
+			addArray(['1', '2', '3'], null, -2),
+			addArray(['1', '2', '3'], 0, 2),
+			addArray(['1', '2', '3'], 0, -2),
+			addArray(['1', '2', '3'], -3, 2),
+			addArray(['1', '2', '3'], -3, -2),
 		)
 
 		testChange(
 			['0'],
 			['0', '2', '3'],
-			list => list.addArray(['1', '2', '3'], 1, null),
-			list => list.addArray(['1', '2', '3'], -2, null),
-			list => list.addArray(['1', '2', '3'], 1, -1),
-			list => list.addArray(['1', '2', '3'], -2, -1),
-			list => list.addArray(['1', '2', '3'], 1, 3),
-			list => list.addArray(['1', '2', '3'], -2, 3),
+			addArray(['1', '2', '3'], 1, null),
+			addArray(['1', '2', '3'], -2, null),
+			addArray(['1', '2', '3'], 1, -1),
+			addArray(['1', '2', '3'], -2, -1),
+			addArray(['1', '2', '3'], 1, 3),
+			addArray(['1', '2', '3'], -2, 3),
 		)
 	})
 

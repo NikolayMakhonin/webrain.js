@@ -258,6 +258,10 @@ export class List<T> {
 	public insertIterable(index: number, items: Iterable<T>, itemsSize: number): boolean {
 		const {_size, _array} = this
 
+		if (itemsSize <= 0) {
+			return false
+		}
+
 		index = List._prepareIndex(index, _size + 1)
 
 		const newSize = _size + itemsSize
