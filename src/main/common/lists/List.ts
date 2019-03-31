@@ -329,8 +329,8 @@ export class List<T> {
 		}
 
 		if (withoutShift && removeSize < _size - end) {
-			for (let i = 0; i < removeSize; i++) {
-				_array[i] = _array[_size - removeSize + i]
+			for (let i = start; i < end; i++) {
+				_array[i] = _array[_size - end + i]
 			}
 		} else {
 			for (let i = end; i < _size; i++) {

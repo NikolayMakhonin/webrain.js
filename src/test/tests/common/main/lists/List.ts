@@ -143,6 +143,9 @@ describe('common > main > lists > List', function() {
 
 		for (let i = 0; i < expectedArray.length; i++) {
 			assert.strictEqual(list.get(i), expectedArray[i])
+			assert.strictEqual(expectedArray[list.indexOf(expectedArray[i])], expectedArray[i])
+			assert.strictEqual(list.contains(expectedArray[i]), true)
+			assert.strictEqual(list.contains({} as any), false)
 		}
 
 		assert.deepStrictEqual(Array.from(list), expectedArray)
@@ -572,10 +575,11 @@ describe('common > main > lists > List', function() {
 	it('removeAt', function() {
 		function removeAt<T>(
 			index: number,
+			withoutShift?: boolean,
 		): ITestFuncsWithDescription<T> {
 			return {
 				funcs: [
-					list => list.removeAt(index),
+					list => list.removeAt(index, withoutShift),
 				],
 				description: `removeAt(${index})\n`,
 			}
@@ -611,6 +615,14 @@ describe('common > main > lists > List', function() {
 			1, 0,
 			removeAt(1),
 			removeAt(-3),
+		)
+
+		testChange(
+			['0', '1', '2', '3'],
+			['0', '3', '2'],
+			'1', null,
+			removeAt(1, true),
+			removeAt(-3, true),
 		)
 	})
 
@@ -673,6 +685,29 @@ describe('common > main > lists > List', function() {
 			true, false,
 			removeRange(1, 4),
 			removeRange(-5, -3),
+		)
+
+		testChange(
+			[0, 1, 2, 3, 4, null],
+			[0, 4, null],
+			true, null,
+			removeRange(1, 4),
+			removeRange(-5, -3),
+		)
+
+		testChange(
+			[0, 1, 2, 3, 4, undefined],
+			[0, 4, undefined],
+			true, undefined,
+			removeRange(1, 4),
+			removeRange(-5, -3),
+		)
+
+		testChange(
+			['0', '1', '2', '3', '4', '5', '6', '7', '8', '9'],
+			['0', '1', '7', '8', '9', '5', '6'],
+			true, null,
+			removeRange(2, 5, true),
 		)
 	})
 
@@ -792,7 +827,7 @@ describe('common > main > lists > List', function() {
 			destArray: T[],
 			destIndex?: number,
 			start?: number,
-			end?: number
+			end?: number,
 		): ITestFuncsWithDescription<T> {
 			return {
 				funcs: [
