@@ -207,6 +207,16 @@ describe('common > main > lists > List', function() {
 		useCollectionChanged: boolean
 	}
 
+	function compareDefault(o1, o2) {
+		if (o1 > o2) {
+			return 1
+		} else if (o2 > o1) {
+			return -1
+		} else {
+			return 0
+		}
+	}
+
 	const staticList = new List()
 
 	function testChangeVariant<T>(
@@ -215,6 +225,7 @@ describe('common > main > lists > List', function() {
 		let unsubscribe
 		try {
 			const array = options.orig.slice()
+			assert.deepStrictEqual(array, array.slice().sort(compareDefault))
 			const arrayReplicate = options.orig.slice()
 			const compare = options.withCompare ? (o1, o2) => o1 === o2 : undefined
 			let list: List<T>
@@ -1106,14 +1117,14 @@ describe('common > main > lists > List', function() {
 
 		testChange(
 			{
-				orig: [0, 1, 2, 3, 4, true],
-				expected: [0, 4, true],
+				orig: [-5, -4, -3, -2, -1, true],
+				expected: [-5, -1, true],
 				funcResult: true,
 				defaultValue: false,
 				collectionChanged: [{
 					type: CollectionChangedType.Removed,
 					index: 1,
-					oldItems: [1, 2, 3],
+					oldItems: [-4, -3, -2],
 					shiftIndex: 4,
 				}],
 			},
@@ -1123,14 +1134,14 @@ describe('common > main > lists > List', function() {
 
 		testChange(
 			{
-				orig: [0, 1, 2, 3, 4, null],
-				expected: [0, 4, null],
+				orig: [-5, -4, -3, -2, -1, null],
+				expected: [-5, -1, null],
 				funcResult: true,
 				defaultValue: null,
 				collectionChanged: [{
 					type: CollectionChangedType.Removed,
 					index: 1,
-					oldItems: [1, 2, 3],
+					oldItems: [-4, -3, -2],
 					shiftIndex: 4,
 				}],
 			},
@@ -1140,14 +1151,14 @@ describe('common > main > lists > List', function() {
 
 		testChange(
 			{
-				orig: [0, 1, 2, 3, 4, undefined],
-				expected: [0, 4, undefined],
+				orig: [-5, -4, -3, -2, -1, undefined],
+				expected: [-5, -1, undefined],
 				funcResult: true,
 				defaultValue: undefined,
 				collectionChanged: [{
 					type: CollectionChangedType.Removed,
 					index: 1,
-					oldItems: [1, 2, 3],
+					oldItems: [-4, -3, -2],
 					shiftIndex: 4,
 				}],
 			},
@@ -1227,14 +1238,14 @@ describe('common > main > lists > List', function() {
 
 		testChange(
 			{
-				orig: [0, 1, 2, true],
+				orig: [-3, -2, -1, true],
 				expected: [],
 				funcResult: true,
 				defaultValue: 0,
 				collectionChanged: [{
 					type: CollectionChangedType.Removed,
 					index: 0,
-					oldItems: [0, 1, 2, true],
+					oldItems: [-3, -2, -1, true],
 					shiftIndex: 0,
 				}],
 			},
@@ -1243,14 +1254,14 @@ describe('common > main > lists > List', function() {
 
 		testChange(
 			{
-				orig: [true, 0, 1, 2],
+				orig: [true, 'z1', 'z2', 'z3'],
 				expected: [],
 				funcResult: true,
 				defaultValue: false,
 				collectionChanged: [{
 					type: CollectionChangedType.Removed,
 					index: 0,
-					oldItems: [true, 0, 1, 2],
+					oldItems: [true, 'z1', 'z2', 'z3'],
 					shiftIndex: 0,
 				}],
 			},
