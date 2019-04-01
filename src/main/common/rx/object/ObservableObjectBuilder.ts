@@ -35,12 +35,9 @@ export class ObservableObjectBuilder {
 		if (__fields && typeof initValue !== 'undefined') {
 			const value = __fields[name]
 			if (initValue === value) {
-				const {unsubscribers} = object.__meta
-				const unsubscribe = unsubscribers[name]
-				if (unsubscribe) {
-					unsubscribe()
-				}
-				unsubscribers[name] = object._propagatePropertyChanged(name, value)
+				const {__meta} = object
+
+				object._propagatePropertyChanged(name, value)
 			} else {
 				object[name] = initValue
 			}
@@ -71,12 +68,8 @@ export class ObservableObjectBuilder {
 
 		if (__fields && typeof value !== 'undefined') {
 			const oldValue = __fields[name]
-			const {unsubscribers} = object.__meta
-			const unsubscribe = unsubscribers[name]
-			if (unsubscribe) {
-				unsubscribe()
-			}
-			unsubscribers[name] = object._propagatePropertyChanged(name, value)
+
+			object._propagatePropertyChanged(name, value)
 
 			if (value !== oldValue) {
 				__fields[name] = value
@@ -94,19 +87,12 @@ export class ObservableObjectBuilder {
 	public delete(name: string | number): this {
 		const {object} = this
 		const oldValue = object[name]
-		const {__fields, __meta} = object
 
-		if (__meta) {
-			const {unsubscribers} = __meta
-			const unsubscribe = unsubscribers[name]
-
-			if (unsubscribe) {
-				unsubscribe()
-			}
-		}
+		object._setUnsubscriber(name, null)
 
 		delete object[name]
 
+		const {__fields} = object
 		if (__fields) {
 			delete __fields[name]
 			if (typeof oldValue !== 'undefined') {

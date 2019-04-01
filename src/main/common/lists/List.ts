@@ -1,3 +1,6 @@
+import {ICompare, IEqualityCompare} from "./contracts/ICompare";
+import {ObservableObject} from "../rx/object/ObservableObject";
+
 function calcOptimalArraySize(desiredSize: number) {
 	let optimalSize = 4
 	while (desiredSize > optimalSize) {
@@ -19,7 +22,7 @@ function getDefaultValue(value) {
 	return null
 }
 
-export class List<T> {
+export class List<T> extends ObservableObject {
 	// region constructor
 
 	private _array: T[]
@@ -27,15 +30,23 @@ export class List<T> {
 	constructor({
 		array,
 		minAllocatedSize,
+		compare,
 	}: {
 		array?: T[],
 		minAllocatedSize?: number,
+		compare?: IEqualityCompare<T>,
 	} = {}) {
+		super()
+
 		this._array = array || []
 		this._size = this._array.length
 
 		if (minAllocatedSize) {
 			this._minAllocatedSize = minAllocatedSize
+		}
+
+		if (compare) {
+			this._compare = compare
 		}
 	}
 
@@ -92,10 +103,6 @@ export class List<T> {
 		return this._size
 	}
 
-	public set size(value: number) {
-		this._setSize(value)
-	}
-
 	private _setSize(newSize: number): number {
 		const oldSize = this._size
 		if (oldSize === newSize) {
@@ -119,6 +126,20 @@ export class List<T> {
 		}
 
 		return newSize
+	}
+
+	// endregion
+
+	// region compare
+
+	private _compare: IEqualityCompare<T>
+
+	public get compare(): IEqualityCompare<T> {
+		return this._compare
+	}
+
+	public set compare(value: IEqualityCompare<T>) {
+		this._compare = value
 	}
 
 	// endregion
@@ -356,21 +377,41 @@ export class List<T> {
 	}
 
 	public indexOf(item: T, start?: number, end?: number, bound?: number): number {
-		const {_size, _array} = this
+		const {_size, _array, _compare} = this
 
 		start = List._prepareStart(start, _size)
 		end = List._prepareEnd(end, _size)
 
 		if (bound == null || bound <= 0) {
-			for (let i = start; i < end; i++) {
-				if (_array[i] === item) {
-					return i
+			if (_compare) {
+				for (let i = start; i < end; i++) {
+					if (_compare(_array[i], item)) {
+						return i
+					}
+				}
+			} else {
+				for (let i = start; i < end; i++) {
+					if (_array[i] === item) {
+						return i
+					}
 				}
 			}
 		} else {
-			for (let i = end - 1; i >= start; i--) {
-				if (_array[i] === item) {
-					return i
+			if (_compare) {
+				for (let i = end - 1; i >= start; i--) {
+					if (_compare(_array[i], item)) {
+						return i
+					}
+				}
+			} else {
+				let last = -1
+				for (let i = start; i < end; i++) {
+					if (_array[i] === item) {
+						last = i
+					}
+				}
+				if (last >= 0) {
+					return last
 				}
 			}
 		}

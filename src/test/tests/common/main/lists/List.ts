@@ -166,32 +166,37 @@ describe('common > main > lists > List', function() {
 			}
 
 			for (const testFunc of expandArray(funcs)) {
-				try {
-					const array = orig.slice()
-					const list = new List({array})
-
-					assert.strictEqual(list.minAllocatedSize, undefined)
-					assertList(list, orig)
-
-					if (Array.isArray(expected)) {
-						assert.deepStrictEqual(testFunc(list), funcResult)
-
-						assert.strictEqual(list.minAllocatedSize, undefined)
-						assertList(list, expected)
-					} else {
-						assert.throws(() => testFunc(list), expected)
+				for (let withCompare = 0; withCompare <= 1; withCompare++) {
+					try {
+						const array = orig.slice()
+						const list = new List({
+							array,
+							compare: withCompare ? (o1, o2) => o1 === o2 : undefined,
+						})
 
 						assert.strictEqual(list.minAllocatedSize, undefined)
 						assertList(list, orig)
-					}
 
-					assert.deepStrictEqual(array.slice(0, list.size), list.toArray())
-					for (let i = list.size; i < array.length; i++) {
-						assert.strictEqual(array[i], defaultValue)
+						if (Array.isArray(expected)) {
+							assert.deepStrictEqual(testFunc(list), funcResult)
+
+							assert.strictEqual(list.minAllocatedSize, undefined)
+							assertList(list, expected)
+						} else {
+							assert.throws(() => testFunc(list), expected)
+
+							assert.strictEqual(list.minAllocatedSize, undefined)
+							assertList(list, orig)
+						}
+
+						assert.deepStrictEqual(array.slice(0, list.size), list.toArray())
+						for (let i = list.size; i < array.length; i++) {
+							assert.strictEqual(array[i], defaultValue)
+						}
+					} catch (ex) {
+						console.log(`Error in: ${description}${withCompare ? ' withCompare' : ''}\n${testFunc.toString()}\n`)
+						throw ex
 					}
-				} catch (ex) {
-					console.log(`Error in: ${description}\n${testFunc.toString()}\n`)
-					throw ex
 				}
 			}
 		}
