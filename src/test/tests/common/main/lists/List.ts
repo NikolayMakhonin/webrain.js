@@ -265,27 +265,6 @@ describe('common > main > lists > List', function() {
 							assert.strictEqual(arrayReplicate[event.index], event.oldItems[0])
 							arrayReplicate[event.index] = event.newItems[0]
 							break
-						case CollectionChangedType.Shift:
-							// if (event.shiftIndex > event.index) {
-							// 	const len = arrayReplicate.length
-							// 	const shift = event.shiftIndex - event.index
-							// 	for (let i = len - shift; i < len; i++) {
-							// 		arrayReplicate[i + shift] = arrayReplicate[i]
-							// 	}
-							// 	for (let i = event.shiftIndex; i < len; i++) {
-							// 		arrayReplicate[i] = arrayReplicate[i - shift]
-							// 	}
-							// } else {
-							// 	for (let i = event.index; i < arrayReplicate.length; i++) {
-							// 		arrayReplicate[event.shiftIndex + i - event.index] = arrayReplicate[i]
-							// 	}
-							// }
-							break
-						case CollectionChangedType.ReSize:
-							// if (event.newSize < event.oldSize) {
-							// 	arrayReplicate.length = event.newSize
-							// }
-							break
 						case CollectionChangedType.Moved:
 							// TODO
 							break
@@ -294,15 +273,7 @@ describe('common > main > lists > List', function() {
 							break
 					}
 
-					// if (event.type !== CollectionChangedType.Shift
-					// 	&& event.type !== CollectionChangedType.Removed
-					// 	&& (event.type !== CollectionChangedType.ReSize || event.newSize < event.oldSize)
-					// ) {
-					if (event.type !== CollectionChangedType.Shift
-						&& event.type !== CollectionChangedType.ReSize
-					) {
-						assert.deepStrictEqual(arrayReplicate, list.toArray())
-					}
+					assert.deepStrictEqual(arrayReplicate, list.toArray())
 				})
 			}
 
@@ -419,10 +390,6 @@ describe('common > main > lists > List', function() {
 				funcResult: true,
 				defaultValue: null,
 				collectionChanged: [{
-					type: CollectionChangedType.ReSize,
-					oldSize: 0,
-					newSize: 1,
-				}, {
 					type: CollectionChangedType.Added,
 					index: 0,
 					newItems: ['0'],
@@ -479,10 +446,6 @@ describe('common > main > lists > List', function() {
 				funcResult: true,
 				defaultValue: null,
 				collectionChanged: [{
-					type: CollectionChangedType.ReSize,
-					oldSize: 1,
-					newSize: 2,
-				}, {
 					type: CollectionChangedType.Added,
 					index: 1,
 					newItems: ['1'],
@@ -536,10 +499,6 @@ describe('common > main > lists > List', function() {
 				funcResult: true,
 				defaultValue: null,
 				collectionChanged: [{
-					type: CollectionChangedType.ReSize,
-					oldSize: 0,
-					newSize: 1,
-				}, {
 					type: CollectionChangedType.Added,
 					index: 0,
 					newItems: ['0'],
@@ -556,10 +515,6 @@ describe('common > main > lists > List', function() {
 				funcResult: true,
 				defaultValue: null,
 				collectionChanged: [{
-					type: CollectionChangedType.ReSize,
-					oldSize: 1,
-					newSize: 2,
-				}, {
 					type: CollectionChangedType.Added,
 					index: 1,
 					newItems: ['1'],
@@ -616,10 +571,6 @@ describe('common > main > lists > List', function() {
 				funcResult: true,
 				defaultValue: null,
 				collectionChanged: [{
-					type: CollectionChangedType.ReSize,
-					oldSize: 0,
-					newSize: 1,
-				}, {
 					type: CollectionChangedType.Added,
 					index: 0,
 					newItems: ['0'],
@@ -651,10 +602,6 @@ describe('common > main > lists > List', function() {
 				funcResult: true,
 				defaultValue: null,
 				collectionChanged: [{
-					type: CollectionChangedType.ReSize,
-					oldSize: 1,
-					newSize: 4,
-				}, {
 					type: CollectionChangedType.Added,
 					index: 1,
 					newItems: ['1', '2', '3'],
@@ -673,10 +620,6 @@ describe('common > main > lists > List', function() {
 				funcResult: true,
 				defaultValue: null,
 				collectionChanged: [{
-					type: CollectionChangedType.ReSize,
-					oldSize: 1,
-					newSize: 3,
-				}, {
 					type: CollectionChangedType.Added,
 					index: 1,
 					newItems: ['1', '2'],
@@ -698,10 +641,6 @@ describe('common > main > lists > List', function() {
 				funcResult: true,
 				defaultValue: null,
 				collectionChanged: [{
-					type: CollectionChangedType.ReSize,
-					oldSize: 1,
-					newSize: 3,
-				}, {
 					type: CollectionChangedType.Added,
 					index: 1,
 					newItems: ['2', '3'],
@@ -739,10 +678,6 @@ describe('common > main > lists > List', function() {
 				funcResult: true,
 				defaultValue: null,
 				collectionChanged: [{
-					type: CollectionChangedType.ReSize,
-					oldSize: 0,
-					newSize: 1,
-				}, {
 					type: CollectionChangedType.Added,
 					index: 0,
 					newItems: ['0'],
@@ -771,10 +706,6 @@ describe('common > main > lists > List', function() {
 				funcResult: true,
 				defaultValue: null,
 				collectionChanged: [{
-					type: CollectionChangedType.ReSize,
-					oldSize: 1,
-					newSize: 2,
-				}, {
 					type: CollectionChangedType.Added,
 					index: 1,
 					newItems: ['1'],
@@ -803,14 +734,6 @@ describe('common > main > lists > List', function() {
 				funcResult: true,
 				defaultValue: null,
 				collectionChanged: [{
-					type: CollectionChangedType.ReSize,
-					oldSize: 3,
-					newSize: 4,
-				}, {
-					type: CollectionChangedType.Shift,
-					index: 1,
-					shiftIndex: 2,
-				}, {
 					type: CollectionChangedType.Added,
 					index: 1,
 					newItems: ['3'],
@@ -851,14 +774,6 @@ describe('common > main > lists > List', function() {
 				funcResult: true,
 				defaultValue: null,
 				collectionChanged: [{
-					type: CollectionChangedType.ReSize,
-					oldSize: 1,
-					newSize: 3,
-				}, {
-					type: CollectionChangedType.Shift,
-					index: 0,
-					shiftIndex: 2,
-				}, {
 					type: CollectionChangedType.Added,
 					index: 0,
 					newItems: ['1', '2'],
@@ -883,14 +798,6 @@ describe('common > main > lists > List', function() {
 				funcResult: true,
 				defaultValue: null,
 				collectionChanged: [{
-					type: CollectionChangedType.ReSize,
-					oldSize: 5,
-					newSize: 7,
-				}, {
-					type: CollectionChangedType.Shift,
-					index: 2,
-					shiftIndex: 4,
-				}, {
 					type: CollectionChangedType.Added,
 					index: 2,
 					newItems: ['4', '5'],
@@ -942,10 +849,6 @@ describe('common > main > lists > List', function() {
 					index: 0,
 					oldItems: ['0'],
 					shiftIndex: 0,
-				}, {
-					type: CollectionChangedType.ReSize,
-					oldSize: 1,
-					newSize: 0,
 				}],
 			},
 			remove('0'),
@@ -962,14 +865,6 @@ describe('common > main > lists > List', function() {
 					index: 0,
 					oldItems: ['0'],
 					shiftIndex: 1,
-				}, {
-					type: CollectionChangedType.Shift,
-					index: 1,
-					shiftIndex: 0,
-				}, {
-					type: CollectionChangedType.ReSize,
-					oldSize: 3,
-					newSize: 2,
 				}],
 			},
 			remove('0'),
@@ -986,14 +881,6 @@ describe('common > main > lists > List', function() {
 					index: 1,
 					oldItems: ['1'],
 					shiftIndex: 2,
-				}, {
-					type: CollectionChangedType.Shift,
-					index: 2,
-					shiftIndex: 1,
-				}, {
-					type: CollectionChangedType.ReSize,
-					oldSize: 3,
-					newSize: 2,
 				}],
 			},
 			remove('1'),
@@ -1020,14 +907,6 @@ describe('common > main > lists > List', function() {
 					index: 1,
 					oldItems: [1],
 					shiftIndex: 2,
-				}, {
-					type: CollectionChangedType.Shift,
-					index: 2,
-					shiftIndex: 1,
-				}, {
-					type: CollectionChangedType.ReSize,
-					oldSize: 3,
-					newSize: 2,
 				}],
 			},
 			remove(1),
@@ -1044,10 +923,6 @@ describe('common > main > lists > List', function() {
 					index: 1,
 					oldItems: [true],
 					shiftIndex: 1,
-				}, {
-					type: CollectionChangedType.ReSize,
-					oldSize: 2,
-					newSize: 1,
 				}],
 			},
 			remove(true),
@@ -1064,10 +939,6 @@ describe('common > main > lists > List', function() {
 					index: 2,
 					oldItems: [true],
 					shiftIndex: 2,
-				}, {
-					type: CollectionChangedType.ReSize,
-					oldSize: 3,
-					newSize: 2,
 				}],
 			},
 			remove(true),
@@ -1120,10 +991,6 @@ describe('common > main > lists > List', function() {
 					index: 0,
 					oldItems: ['0'],
 					shiftIndex: 0,
-				}, {
-					type: CollectionChangedType.ReSize,
-					oldSize: 1,
-					newSize: 0,
 				}],
 			},
 			removeAt(0),
@@ -1141,14 +1008,6 @@ describe('common > main > lists > List', function() {
 					index: 1,
 					oldItems: [1],
 					shiftIndex: 2,
-				}, {
-					type: CollectionChangedType.Shift,
-					index: 2,
-					shiftIndex: 1,
-				}, {
-					type: CollectionChangedType.ReSize,
-					oldSize: 4,
-					newSize: 3,
 				}],
 			},
 			removeAt(1),
@@ -1166,14 +1025,6 @@ describe('common > main > lists > List', function() {
 					index: 1,
 					oldItems: ['1'],
 					shiftIndex: 3,
-				}, {
-					type: CollectionChangedType.Shift,
-					index: 3,
-					shiftIndex: 1,
-				}, {
-					type: CollectionChangedType.ReSize,
-					oldSize: 4,
-					newSize: 3,
 				}],
 			},
 			removeAt(1, true),
@@ -1228,10 +1079,6 @@ describe('common > main > lists > List', function() {
 					index: 0,
 					oldItems: ['0'],
 					shiftIndex: 0,
-				}, {
-					type: CollectionChangedType.ReSize,
-					oldSize: 1,
-					newSize: 0,
 				}],
 			},
 			removeRange(0),
@@ -1267,14 +1114,6 @@ describe('common > main > lists > List', function() {
 					index: 1,
 					oldItems: [1, 2, 3],
 					shiftIndex: 4,
-				}, {
-					type: CollectionChangedType.Shift,
-					index: 4,
-					shiftIndex: 1,
-				}, {
-					type: CollectionChangedType.ReSize,
-					oldSize: 6,
-					newSize: 3,
 				}],
 			},
 			removeRange(1, 4),
@@ -1292,14 +1131,6 @@ describe('common > main > lists > List', function() {
 					index: 1,
 					oldItems: [1, 2, 3],
 					shiftIndex: 4,
-				}, {
-					type: CollectionChangedType.Shift,
-					index: 4,
-					shiftIndex: 1,
-				}, {
-					type: CollectionChangedType.ReSize,
-					oldSize: 6,
-					newSize: 3,
 				}],
 			},
 			removeRange(1, 4),
@@ -1317,14 +1148,6 @@ describe('common > main > lists > List', function() {
 					index: 1,
 					oldItems: [1, 2, 3],
 					shiftIndex: 4,
-				}, {
-					type: CollectionChangedType.Shift,
-					index: 4,
-					shiftIndex: 1,
-				}, {
-					type: CollectionChangedType.ReSize,
-					oldSize: 6,
-					newSize: 3,
 				}],
 			},
 			removeRange(1, 4),
@@ -1342,14 +1165,6 @@ describe('common > main > lists > List', function() {
 					index: 2,
 					oldItems: ['2', '3', '4'],
 					shiftIndex: 7,
-				}, {
-					type: CollectionChangedType.Shift,
-					index: 7,
-					shiftIndex: 2,
-				}, {
-					type: CollectionChangedType.ReSize,
-					oldSize: 10,
-					newSize: 7,
 				}],
 			},
 			removeRange(2, 5, true),
@@ -1388,10 +1203,6 @@ describe('common > main > lists > List', function() {
 					index: 0,
 					oldItems: ['0'],
 					shiftIndex: 0,
-				}, {
-					type: CollectionChangedType.ReSize,
-					oldSize: 1,
-					newSize: 0,
 				}],
 			},
 			clear(),
@@ -1408,10 +1219,6 @@ describe('common > main > lists > List', function() {
 					index: 0,
 					oldItems: [0, 1, 2],
 					shiftIndex: 0,
-				}, {
-					type: CollectionChangedType.ReSize,
-					oldSize: 3,
-					newSize: 0,
 				}],
 			},
 			clear(),
@@ -1428,10 +1235,6 @@ describe('common > main > lists > List', function() {
 					index: 0,
 					oldItems: [0, 1, 2, true],
 					shiftIndex: 0,
-				}, {
-					type: CollectionChangedType.ReSize,
-					oldSize: 4,
-					newSize: 0,
 				}],
 			},
 			clear(),
@@ -1448,10 +1251,6 @@ describe('common > main > lists > List', function() {
 					index: 0,
 					oldItems: [true, 0, 1, 2],
 					shiftIndex: 0,
-				}, {
-					type: CollectionChangedType.ReSize,
-					oldSize: 4,
-					newSize: 0,
 				}],
 			},
 			clear(),
