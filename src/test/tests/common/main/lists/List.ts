@@ -7,6 +7,13 @@ import {List} from '../../../../../main/common/lists/List'
 declare const assert: any
 
 describe('common > main > lists > List', function() {
+
+	let totalListTests = 0
+
+	after(function() {
+		console.log('Total List tests >= ' + totalListTests)
+	})
+
 	function generateArray(size) {
 		const arr = []
 		for (let i = 0; i < size; i++) {
@@ -328,6 +335,7 @@ describe('common > main > lists > List', function() {
 			if (unsubscribe) {
 				unsubscribe()
 			}
+			totalListTests++
 		}
 	}
 
