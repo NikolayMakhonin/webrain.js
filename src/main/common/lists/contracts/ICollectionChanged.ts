@@ -22,19 +22,28 @@ export enum CollectionChangedType {
 	 */
 	Moved,
 	/**
-	 * is set properties: oldIndex, newIndex
+	 * is set properties: oldIndex, newIndex, newSize
 	 */
 	Shift,
+	/**
+	 * is set properties: oldSize, newSize
+	 */
+	ReSize,
 }
 
 export interface ICollectionChangedEvent<T> {
 	readonly type: CollectionChangedType
+
 	/** index of the first old item */
 	readonly oldIndex?: number
 	/** index of the first new item */
 	readonly newIndex?: number
+
 	readonly oldItems?: T[]
 	readonly newItems?: T[]
+
+	readonly oldSize?: number
+	readonly newSize?: number
 }
 
 export interface ICollectionChanged<T> {

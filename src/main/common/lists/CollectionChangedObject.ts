@@ -3,8 +3,6 @@ import {HasSubscribersSubject, IHasSubscribersSubject} from '../rx/subjects/hasS
 import {ICollectionChangedEvent} from './contracts/ICollectionChanged'
 
 export class CollectionChangedObject<T> extends PropertyChangedObject {
-	// region collectionChanged
-
 	protected _collectionChanged?: IHasSubscribersSubject<ICollectionChangedEvent<T>>
 	public get collectionChanged(): IHasSubscribersSubject<ICollectionChangedEvent<T>> {
 		let {_collectionChanged} = this
@@ -25,5 +23,12 @@ export class CollectionChangedObject<T> extends PropertyChangedObject {
 		return this
 	}
 
-	// endregion
+	protected _collectionChangedDisabled?: boolean
+
+	protected get _collectionChangedIfCanEmit() {
+		const {_collectionChangedDisabled, _collectionChanged} = this
+		return !_collectionChangedDisabled && _collectionChanged && _collectionChanged.hasSubscribers
+			? _collectionChanged
+			: null
+	}
 }
