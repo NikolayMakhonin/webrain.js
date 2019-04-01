@@ -1,5 +1,7 @@
-import {ICompare, IEqualityCompare} from "./contracts/ICompare";
-import {ObservableObject} from "../rx/object/ObservableObject";
+import {PropertyChangedObject} from '../rx/object/PropertyChangedObject'
+import {ICompare, IEqualityCompare} from './contracts/ICompare'
+import {HasSubscribersSubject, IHasSubscribersSubject} from "../rx/subjects/hasSubscribers";
+import {ICollectionChangedEvent} from "./contracts/ICollectionChanged";
 
 function calcOptimalArraySize(desiredSize: number) {
 	let optimalSize = 4
@@ -22,7 +24,33 @@ function getDefaultValue(value) {
 	return null
 }
 
-export class List<T> extends ObservableObject {
+export class CollectionChangedObject extends PropertyChangedObject {
+	// region collectionChanged
+
+	private _collectionChanged?: IHasSubscribersSubject<ICollectionChangedEvent<T>>
+	public get collectionChanged(): IHasSubscribersSubject<ICollectionChangedEvent<T>> {
+		let {_collectionChanged} = this
+		if (!_collectionChanged) {
+			this._collectionChanged = _collectionChanged = new HasSubscribersSubject()
+		}
+		return _collectionChanged
+	}
+
+	public onCollectionChanged(event: ICollectionChangedEvent<T>): this {
+		const {_collectionChanged} = this
+		if (!_collectionChanged || !_collectionChanged.hasSubscribers) {
+			return this
+		}
+
+		_collectionChanged.emit(event)
+
+		return this
+	}
+
+	// endregion
+}
+
+export class List<T> extends CollectionChangedObject {
 	// region constructor
 
 	private _array: T[]

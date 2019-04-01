@@ -151,11 +151,110 @@ describe('common > main > lists > List', function() {
 		assert.deepStrictEqual(Array.from(list), expectedArray)
 	}
 
-	function testChange<T>(
+	interface TestOptionsBase<T> {
 		orig: T[],
 		expected: T[]|(new () => Error),
 		funcResult: any,
 		defaultValue: any,
+	}
+
+	function *generateOptions(base: {}, optionsVariants: {}) {
+		let hasChilds
+		for (const key in optionsVariants) {
+			if (Object.prototype.hasOwnProperty.call(optionsVariants, key)) {
+				for (const optionVariant of optionsVariants[key]) {
+					const variant = {
+						...base,
+						[key]: optionVariant,
+					}
+
+					const newOptionsVariants = {
+						...optionsVariants,
+					}
+
+					delete newOptionsVariants[key]
+
+					hasChilds = true
+
+					yield* generateOptions(variant, newOptionsVariants)
+				}
+
+				break
+			}
+		}
+
+		if (!hasChilds) {
+			yield base
+		}
+	}
+
+	const variants = Array.from(generateOptions({}, {
+		withCompare: [false, true],
+		reuseListInstance: [false, true],
+	}))
+
+	interface TestOptionsVariant<T> extends TestOptionsBase<T> {
+		description: string,
+		testFunc: (list: List<T>) => any,
+		withCompare: boolean,
+		reuseListInstance: boolean
+	}
+
+	const staticList = new List()
+
+	function testChangeVariant<T>(
+		options: TestOptionsVariant<T>,
+	) {
+		try {
+			const array = options.orig.slice()
+			const compare = options.withCompare ? (o1, o2) => o1 === o2 : undefined
+			let list: List<T>
+
+			if (options.reuseListInstance) {
+				staticList.clear()
+				staticList.addArray(array)
+				staticList.compare = compare
+				list = staticList as List<T>
+			} else {
+				list = new List({
+					array,
+					compare,
+				})
+			}
+
+			assert.strictEqual(list.minAllocatedSize, undefined)
+			assertList(list, options.orig)
+
+			if (Array.isArray(options.expected)) {
+				assert.deepStrictEqual(options.testFunc(list), options.funcResult)
+
+				assert.strictEqual(list.minAllocatedSize, undefined)
+				assertList(list, options.expected)
+			} else {
+				assert.throws(() => options.testFunc(list), options.expected)
+
+				assert.strictEqual(list.minAllocatedSize, undefined)
+				assertList(list, options.orig)
+			}
+
+			if (!options.reuseListInstance) {
+				assert.deepStrictEqual(array.slice(0, list.size), list.toArray())
+				for (let i = list.size; i < array.length; i++) {
+					assert.strictEqual(array[i], options.defaultValue)
+				}
+			}
+		} catch (ex) {
+			console.log(`Error in: ${
+				options.description
+				}\n${
+				JSON.stringify(options, null, 4)
+				}\n${options.testFunc.toString()}\n`)
+			throw ex
+		}
+	}
+
+	function testChange<T>(
+		options: TestOptionsBase<T>,
 		...testFuncsWithDescriptions: TestFuncsWithDescriptions<T>
 	) {
 		for (const testFuncsWithDescription of expandArray(testFuncsWithDescriptions)) {
@@ -166,37 +265,13 @@ describe('common > main > lists > List', function() {
 			}
 
 			for (const testFunc of expandArray(funcs)) {
-				for (let withCompare = 0; withCompare <= 1; withCompare++) {
-					try {
-						const array = orig.slice()
-						const list = new List({
-							array,
-							compare: withCompare ? (o1, o2) => o1 === o2 : undefined,
-						})
-
-						assert.strictEqual(list.minAllocatedSize, undefined)
-						assertList(list, orig)
-
-						if (Array.isArray(expected)) {
-							assert.deepStrictEqual(testFunc(list), funcResult)
-
-							assert.strictEqual(list.minAllocatedSize, undefined)
-							assertList(list, expected)
-						} else {
-							assert.throws(() => testFunc(list), expected)
-
-							assert.strictEqual(list.minAllocatedSize, undefined)
-							assertList(list, orig)
-						}
-
-						assert.deepStrictEqual(array.slice(0, list.size), list.toArray())
-						for (let i = list.size; i < array.length; i++) {
-							assert.strictEqual(array[i], defaultValue)
-						}
-					} catch (ex) {
-						console.log(`Error in: ${description}${withCompare ? ' withCompare' : ''}\n${testFunc.toString()}\n`)
-						throw ex
-					}
+				for (const variant of variants as Array<TestOptionsVariant<T>>) {
+					testChangeVariant({
+						...options,
+						description,
+						testFunc,
+						...variant,
+					})
 				}
 			}
 		}
@@ -204,16 +279,24 @@ describe('common > main > lists > List', function() {
 
 	it('get', function() {
 		testChange(
-			[],
-			Error, null, null,
+			{
+				orig: [],
+				expected: Error,
+				funcResult: null,
+				defaultValue: null,
+			},
 			list => list.get(0),
 			list => list.get(1),
 			list => list.get(-1),
 		)
 
 		testChange(
-			['0'],
-			Error, null, null,
+			{
+				orig: ['0'],
+				expected: Error,
+				funcResult: null,
+				defaultValue: null,
+			},
 			list => list.get(1),
 			list => list.get(2),
 			list => list.get(-2),
@@ -235,43 +318,67 @@ describe('common > main > lists > List', function() {
 		}
 
 		testChange(
-			[],
-			['0'],
+			{
+				orig: [],
+				expected: ['0'],
+				funcResult: true,
+				defaultValue: null,
+			},
 			set(0, '0'),
 			set(-1, '0'),
 		)
 
 		testChange(
-			[],
-			Error,
+			{
+				orig: [],
+				expected: Error,
+				funcResult: null,
+				defaultValue: null,
+			},
 			set(1, '0'),
 			set(-2, '0'),
 		)
 
 		testChange(
-			['0'],
-			['1'],
+			{
+				orig: ['0'],
+				expected: ['1'],
+				funcResult: true,
+				defaultValue: null,
+			},
 			set(0, '1'),
 			set(-2, '1'),
 		)
 
 		testChange(
-			['0'],
-			Error,
+			{
+				orig: ['0'],
+				expected: Error,
+				funcResult: null,
+				defaultValue: null,
+			},
 			set(-3, '0'),
 			set(2, '0'),
 		)
 
 		testChange(
-			['0'],
-			['0', '1'],
+			{
+				orig: ['0'],
+				expected: ['0', '1'],
+				funcResult: true,
+				defaultValue: null,
+			},
 			set(1, '1'),
 			set(-1, '1'),
 		)
 
 		testChange(
-			['0', '1'],
-			['2', '1'],
+			{
+				orig: ['0', '1'],
+				expected: ['2', '1'],
+				funcResult: true,
+				defaultValue: null,
+			},
 			set(0, '2'),
 			set(-3, '2'),
 		)
@@ -296,16 +403,22 @@ describe('common > main > lists > List', function() {
 		}
 
 		testChange(
-			[],
-			['0'],
-			true, null,
+			{
+				orig: [],
+				expected: ['0'],
+				funcResult: true,
+				defaultValue: null,
+			},
 			add('0'),
 		)
 
 		testChange(
-			['0'],
-			['0', '1'],
-			true, null,
+			{
+				orig: ['0'],
+				expected: ['0', '1'],
+				funcResult: true,
+				defaultValue: null,
+			},
 			add('1'),
 		)
 	})
@@ -335,9 +448,12 @@ describe('common > main > lists > List', function() {
 		}
 
 		testChange(
-			[],
-			[],
-			false, null,
+			{
+				orig: [],
+				expected: [],
+				funcResult: false,
+				defaultValue: null,
+			},
 			addArray([]),
 			addArray(['0'], 1),
 			addArray(['0'], 2),
@@ -347,9 +463,12 @@ describe('common > main > lists > List', function() {
 		)
 
 		testChange(
-			[],
-			['0'],
-			true, null,
+			{
+				orig: [],
+				expected: ['0'],
+				funcResult: true,
+				defaultValue: null,
+			},
 			addArray(['0']),
 			addArray(['0'], 0),
 			addArray(['0'], -1),
@@ -358,26 +477,35 @@ describe('common > main > lists > List', function() {
 		)
 
 		testChange(
-			[],
-			Error,
-			null, null,
+			{
+				orig: [],
+				expected: Error,
+				funcResult: null,
+				defaultValue: null,
+			},
 			addArray(['0'], -2),
 			addArray(['0'], null, 2),
 		)
 
 		testChange(
-			['0'],
-			['0', '1', '2', '3'],
-			true, null,
+			{
+				orig: ['0'],
+				expected: ['0', '1', '2', '3'],
+				funcResult: true,
+				defaultValue: null,
+			},
 			addArray(['1', '2', '3']),
 			addArray(['1', '2', '3'], 0, 3),
 			addArray(['1', '2', '3'], -3, -1),
 		)
 
 		testChange(
-			['0'],
-			['0', '1', '2'],
-			true, null,
+			{
+				orig: ['0'],
+				expected: ['0', '1', '2'],
+				funcResult: true,
+				defaultValue: null,
+			},
 			addArray(['1', '2', '3'], null, 2),
 			addArray(['1', '2', '3'], null, -2),
 			addArray(['1', '2', '3'], 0, 2),
@@ -387,9 +515,12 @@ describe('common > main > lists > List', function() {
 		)
 
 		testChange(
-			['0'],
-			['0', '2', '3'],
-			true, null,
+			{
+				orig: ['0'],
+				expected: ['0', '2', '3'],
+				funcResult: true,
+				defaultValue: null,
+			},
 			addArray(['1', '2', '3'], 1, null),
 			addArray(['1', '2', '3'], -2, null),
 			addArray(['1', '2', '3'], 1, -1),
@@ -415,41 +546,56 @@ describe('common > main > lists > List', function() {
 		}
 
 		testChange(
-			[],
-			['0'],
-			true, null,
+			{
+				orig: [],
+				expected: ['0'],
+				funcResult: true,
+				defaultValue: null,
+			},
 			insert(0, '0'),
 			insert(-1, '0'),
 		)
 
 		testChange(
-			[],
-			Error,
-			null, null,
+			{
+				orig: [],
+				expected: Error,
+				funcResult: null,
+				defaultValue: null,
+			},
 			insert(1, '0'),
 			insert(-2, '0'),
 		)
 
 		testChange(
-			['0'],
-			['0', '1'],
-			true, null,
+			{
+				orig: ['0'],
+				expected: ['0', '1'],
+				funcResult: true,
+				defaultValue: null,
+			},
 			insert(1, '1'),
 			insert(-1, '1'),
 		)
 
 		testChange(
-			['0'],
-			Error,
-			null, null,
+			{
+				orig: ['0'],
+				expected: Error,
+				funcResult: null,
+				defaultValue: null,
+			},
 			insert(2, '1'),
 			insert(-3, '1'),
 		)
 
 		testChange(
-			['0', '1', '2'],
-			['0', '3', '1', '2'],
-			true, null,
+			{
+				orig: ['0', '1', '2'],
+				expected: ['0', '3', '1', '2'],
+				funcResult: true,
+				defaultValue: null,
+			},
 			insert(1, '3'),
 			insert(-3, '3'),
 		)
@@ -478,9 +624,12 @@ describe('common > main > lists > List', function() {
 		}
 
 		testChange(
-			['0'],
-			['1', '2', '0'],
-			true, null,
+			{
+				orig: ['0'],
+				expected: ['1', '2', '0'],
+				funcResult: true,
+				defaultValue: null,
+			},
 			insertArray(0, ['1', '2']),
 			insertArray(0, ['1', '2'], 0, 2),
 			insertArray(0, ['1', '2'], -2, -1),
@@ -493,9 +642,12 @@ describe('common > main > lists > List', function() {
 		)
 
 		testChange(
-			['0', '1', '2', '3', '4'],
-			['0', '1', '4', '5', '2', '3', '4'],
-			true, null,
+			{
+				orig: ['0', '1', '2', '3', '4'],
+				expected: ['0', '1', '4', '5', '2', '3', '4'],
+				funcResult: true,
+				defaultValue: null,
+			},
 			insertArray(2, ['4', '5']),
 			insertArray(2, ['4', '5'], 0, 2),
 			insertArray(2, ['4', '5'], -2, -1),
@@ -521,58 +673,82 @@ describe('common > main > lists > List', function() {
 		}
 
 		testChange(
-			[],
-			[],
-			false, null,
+			{
+				orig: [],
+				expected: [],
+				funcResult: false,
+				defaultValue: null,
+			},
 			remove('0'),
 		)
 
 		testChange(
-			['0'],
-			[],
-			true, null,
+			{
+				orig: ['0'],
+				expected: [],
+				funcResult: true,
+				defaultValue: null,
+			},
 			remove('0'),
 		)
 
 		testChange(
-			['0', '1', '2'],
-			['1', '2'],
-			true, null,
+			{
+				orig: ['0', '1', '2'],
+				expected: ['1', '2'],
+				funcResult: true,
+				defaultValue: null,
+			},
 			remove('0'),
 		)
 
 		testChange(
-			['0', '1', '2'],
-			['0', '2'],
-			true, null,
+			{
+				orig: ['0', '1', '2'],
+				expected: ['0', '2'],
+				funcResult: true,
+				defaultValue: null,
+			},
 			remove('1'),
 		)
 
 		testChange(
-			['0', '1', '2'],
-			['0', '1', '2'],
-			false, null,
+			{
+				orig: ['0', '1', '2'],
+				expected: ['0', '1', '2'],
+				funcResult: false,
+				defaultValue: null,
+			},
 			remove('3'),
 		)
 
 		testChange(
-			[0, 1, 2],
-			[0, 2],
-			true, 0,
+			{
+				orig: [0, 1, 2],
+				expected: [0, 2],
+				funcResult: true,
+				defaultValue: 0,
+			},
 			remove(1),
 		)
 
 		testChange(
-			[true, true],
-			[true],
-			true, false,
+			{
+				orig: [true, true],
+				expected: [true],
+				funcResult: true,
+				defaultValue: false,
+			},
 			remove(true),
 		)
 
 		testChange(
-			['', 0, true],
-			['', 0],
-			true, 0,
+			{
+				orig: ['', 0, true],
+				expected: ['', 0],
+				funcResult: true,
+				defaultValue: 0,
+			},
 			remove(true),
 		)
 	})
@@ -591,41 +767,56 @@ describe('common > main > lists > List', function() {
 		}
 
 		testChange(
-			[],
-			Error,
-			null, null,
+			{
+				orig: [],
+				expected: Error,
+				funcResult: null,
+				defaultValue: null,
+			},
 			removeAt(0),
 			removeAt(-1),
 		)
 
 		testChange(
-			['0'],
-			Error,
-			null, null,
+			{
+				orig: ['0'],
+				expected: Error,
+				funcResult: null,
+				defaultValue: null,
+			},
 			removeAt(1),
 			removeAt(-2),
 		)
 
 		testChange(
-			['0'],
-			[],
-			'0', null,
+			{
+				orig: ['0'],
+				expected: [],
+				funcResult: '0',
+				defaultValue: null,
+			},
 			removeAt(0),
 			removeAt(-1),
 		)
 
 		testChange(
-			[0, 1, 2, 3],
-			[0, 2, 3],
-			1, 0,
+			{
+				orig: [0, 1, 2, 3],
+				expected: [0, 2, 3],
+				funcResult: 1,
+				defaultValue: 0,
+			},
 			removeAt(1),
 			removeAt(-3),
 		)
 
 		testChange(
-			['0', '1', '2', '3'],
-			['0', '3', '2'],
-			'1', null,
+			{
+				orig: ['0', '1', '2', '3'],
+				expected: ['0', '3', '2'],
+				funcResult: '1',
+				defaultValue: null,
+			},
 			removeAt(1, true),
 			removeAt(-3, true),
 		)
@@ -646,25 +837,34 @@ describe('common > main > lists > List', function() {
 		}
 
 		testChange(
-			[],
-			[],
-			false, null,
+			{
+				orig: [],
+				expected: [],
+				funcResult: false,
+				defaultValue: null,
+			},
 			removeRange(0),
 			removeRange(0, 0),
 		)
 
 		testChange(
-			[],
-			Error,
-			null, null,
+			{
+				orig: [],
+				expected: Error,
+				funcResult: null,
+				defaultValue: null,
+			},
 			removeRange(-1),
 			removeRange(0, 1),
 		)
 
 		testChange(
-			['0'],
-			[],
-			true, null,
+			{
+				orig: ['0'],
+				expected: [],
+				funcResult: true,
+				defaultValue: null,
+			},
 			removeRange(0),
 			removeRange(-1),
 			removeRange(0, 1),
@@ -674,9 +874,12 @@ describe('common > main > lists > List', function() {
 		)
 
 		testChange(
-			['0'],
-			['0'],
-			false, null,
+			{
+				orig: ['0'],
+				expected: ['0'],
+				funcResult: false,
+				defaultValue: null,
+			},
 			removeRange(1),
 			removeRange(0, 0),
 			removeRange(1, 0),
@@ -685,33 +888,45 @@ describe('common > main > lists > List', function() {
 		)
 
 		testChange(
-			[0, 1, 2, 3, 4, true],
-			[0, 4, true],
-			true, false,
+			{
+				orig: [0, 1, 2, 3, 4, true],
+				expected: [0, 4, true],
+				funcResult: true,
+				defaultValue: false,
+			},
 			removeRange(1, 4),
 			removeRange(-5, -3),
 		)
 
 		testChange(
-			[0, 1, 2, 3, 4, null],
-			[0, 4, null],
-			true, null,
+			{
+				orig: [0, 1, 2, 3, 4, null],
+				expected: [0, 4, null],
+				funcResult: true,
+				defaultValue: null,
+			},
 			removeRange(1, 4),
 			removeRange(-5, -3),
 		)
 
 		testChange(
-			[0, 1, 2, 3, 4, undefined],
-			[0, 4, undefined],
-			true, undefined,
+			{
+				orig: [0, 1, 2, 3, 4, undefined],
+				expected: [0, 4, undefined],
+				funcResult: true,
+				defaultValue: undefined,
+			},
 			removeRange(1, 4),
 			removeRange(-5, -3),
 		)
 
 		testChange(
-			['0', '1', '2', '3', '4', '5', '6', '7', '8', '9'],
-			['0', '1', '7', '8', '9', '5', '6'],
-			true, null,
+			{
+				orig: ['0', '1', '2', '3', '4', '5', '6', '7', '8', '9'],
+				expected: ['0', '1', '7', '8', '9', '5', '6'],
+				funcResult: true,
+				defaultValue: null,
+			},
 			removeRange(2, 5, true),
 		)
 	})
@@ -728,37 +943,52 @@ describe('common > main > lists > List', function() {
 		}
 
 		testChange(
-			[],
-			[],
-			false, null,
+			{
+				orig: [],
+				expected: [],
+				funcResult: false,
+				defaultValue: null,
+			},
 			clear(),
 		)
 
 		testChange(
-			['0'],
-			[],
-			true, null,
+			{
+				orig: ['0'],
+				expected: [],
+				funcResult: true,
+				defaultValue: null,
+			},
 			clear(),
 		)
 
 		testChange(
-			[0, 1, 2],
-			[],
-			true, 0,
+			{
+				orig: [0, 1, 2],
+				expected: [],
+				funcResult: true,
+				defaultValue: 0,
+			},
 			clear(),
 		)
 
 		testChange(
-			[0, 1, 2, true],
-			[],
-			true, 0,
+			{
+				orig: [0, 1, 2, true],
+				expected: [],
+				funcResult: true,
+				defaultValue: 0,
+			},
 			clear(),
 		)
 
 		testChange(
-			[true, 0, 1, 2],
-			[],
-			true, false,
+			{
+				orig: [true, 0, 1, 2],
+				expected: [],
+				funcResult: true,
+				defaultValue: false,
+			},
 			clear(),
 		)
 	})
@@ -782,23 +1012,32 @@ describe('common > main > lists > List', function() {
 		}
 
 		testChange(
-			[],
-			[],
-			[], null,
+			{
+				orig: [],
+				expected: [],
+				funcResult: [],
+				defaultValue: null,
+			},
 			toArray(),
 		)
 
 		testChange(
-			['0'],
-			['0'],
-			['0'], null,
+			{
+				orig: ['0'],
+				expected: ['0'],
+				funcResult: ['0'],
+				defaultValue: null,
+			},
 			toArray(),
 		)
 
 		testChange(
-			['0', '1'],
-			['0', '1'],
-			['0'], null,
+			{
+				orig: ['0', '1'],
+				expected: ['0', '1'],
+				funcResult: ['0'],
+				defaultValue: null,
+			},
 			toArray(0, 1),
 			toArray(null, 1),
 			toArray(-2, 1),
@@ -806,9 +1045,12 @@ describe('common > main > lists > List', function() {
 		)
 
 		testChange(
-			['0', '1'],
-			['0', '1'],
-			['1'], null,
+			{
+				orig: ['0', '1'],
+				expected: ['0', '1'],
+				funcResult: ['1'],
+				defaultValue: null,
+			},
 			toArray(1, 2),
 			toArray(-1, 2),
 			toArray(1, -1),
@@ -816,9 +1058,12 @@ describe('common > main > lists > List', function() {
 		)
 
 		testChange(
-			['0', '1', '2', '3'],
-			['0', '1', '2', '3'],
-			['1', '2'], null,
+			{
+				orig: ['0', '1', '2', '3'],
+				expected: ['0', '1', '2', '3'],
+				funcResult: ['1', '2'],
+				defaultValue: null,
+			},
 			toArray(1, 3),
 			toArray(-3, 3),
 			toArray(1, -2),
@@ -846,32 +1091,44 @@ describe('common > main > lists > List', function() {
 		}
 
 		testChange(
-			[],
-			[],
-			[], null,
+			{
+				orig: [],
+				expected: [],
+				funcResult: [],
+				defaultValue: null,
+			},
 			copyTo(false, []),
 		)
 
 		testChange(
-			[],
-			Error,
-			null, null,
+			{
+				orig: [],
+				expected: Error,
+				funcResult: null,
+				defaultValue: null,
+			},
 			copyTo(false, [], null, -1),
 			copyTo(false, [], null, null, 1),
 		)
 
 		testChange(
-			['0'],
-			Error,
-			null, null,
+			{
+				orig: ['0'],
+				expected: Error,
+				funcResult: null,
+				defaultValue: null,
+			},
 			copyTo(false, [], null, -2),
 			copyTo(false, [], null, null, 2),
 		)
 
 		testChange(
-			['0', '1', '2'],
-			Error,
-			['0', '1'], null,
+			{
+				orig: ['0', '1', '2'],
+				expected: Error,
+				funcResult: ['0', '1'],
+				defaultValue: null,
+			},
 			copyTo(false, [], null, null, 2),
 			copyTo(false, [], null, 0, 2),
 			copyTo(false, [], null, -3, 2),
@@ -879,9 +1136,12 @@ describe('common > main > lists > List', function() {
 		)
 
 		testChange(
-			['0', '1', '2'],
-			Error,
-			['1', '2'], null,
+			{
+				orig: ['0', '1', '2'],
+				expected: Error,
+				funcResult: ['1', '2'],
+				defaultValue: null,
+			},
 			copyTo(false, [], null, 1, null),
 			copyTo(false, [], null, 1, 2),
 			copyTo(false, [], null, -2, null),
@@ -889,18 +1149,24 @@ describe('common > main > lists > List', function() {
 		)
 
 		testChange(
-			['0', '1', '2'],
-			Error,
-			['0', '1', '2', '1', '2'], null,
+			{
+				orig: ['0', '1', '2'],
+				expected: Error,
+				funcResult: ['0', '1', '2', '1', '2'],
+				defaultValue: null,
+			},
 			copyTo(false, ['0', '1', '2', '3'], 3, 1, null),
 		)
 	})
 
 	it('indexOf', function() {
 		testChange(
-			['b', 'd', 'f', 'h', 'j', 'l'],
-			['b', 'd', 'f', 'h', 'j', 'l'],
-			~6, null,
+			{
+				orig: ['b', 'd', 'f', 'h', 'j', 'l'],
+				expected: ['b', 'd', 'f', 'h', 'j', 'l'],
+				funcResult: ~6,
+				defaultValue: null,
+			},
 			list => list.indexOf('a'),
 			list => list.indexOf('a', 0),
 			list => list.indexOf('a', 0, 1),
@@ -909,17 +1175,23 @@ describe('common > main > lists > List', function() {
 		)
 
 		testChange(
-			[],
-			Error,
-			null, null,
+			{
+				orig: [],
+				expected: Error,
+				funcResult: null,
+				defaultValue: null,
+			},
 			list => list.indexOf('a', -1),
 			list => list.indexOf('a', null, 1),
 		)
 
 		testChange(
-			['b', 'd', 'd', 'd', 'j', 'l'],
-			['b', 'd', 'd', 'd', 'j', 'l'],
-			1, null,
+			{
+				orig: ['b', 'd', 'd', 'd', 'j', 'l'],
+				expected: ['b', 'd', 'd', 'd', 'j', 'l'],
+				funcResult: 1,
+				defaultValue: null,
+			},
 			list => list.indexOf('d'),
 			list => list.indexOf('d', 1),
 			list => list.indexOf('d', 1, 2),
@@ -928,9 +1200,12 @@ describe('common > main > lists > List', function() {
 		)
 
 		testChange(
-			['b', 'd', 'd', 'd', 'j', 'l'],
-			['b', 'd', 'd', 'd', 'j', 'l'],
-			3, null,
+			{
+				orig: ['b', 'd', 'd', 'd', 'j', 'l'],
+				expected: ['b', 'd', 'd', 'd', 'j', 'l'],
+				funcResult: 3,
+				defaultValue: null,
+			},
 			list => list.indexOf('d', 3),
 			list => list.indexOf('d', 3, 4),
 			list => list.indexOf('d', 3, 6, 1),
