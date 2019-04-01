@@ -225,14 +225,14 @@ export class List<T> extends CollectionChangedObject<T> {
 
 				_collectionChangedIfCanEmit.emit({
 					type: CollectionChangedType.Added,
-					newIndex: index,
+					index: index,
 					newItems: [item],
+					shiftIndex: index,
 				})
 			} else {
 				_collectionChangedIfCanEmit.emit({
 					type: CollectionChangedType.Set,
-					oldIndex: index,
-					newIndex: index,
+					index: index,
 					oldItems: [oldItem],
 					newItems: [item],
 				})
@@ -259,8 +259,9 @@ export class List<T> extends CollectionChangedObject<T> {
 
 			_collectionChangedIfCanEmit.emit({
 				type: CollectionChangedType.Added,
-				newIndex: _size,
+				index: _size,
 				newItems: [item],
+				shiftIndex: _size,
 			})
 		}
 
@@ -301,15 +302,16 @@ export class List<T> extends CollectionChangedObject<T> {
 			if (index < _size) {
 				_collectionChangedIfCanEmit.emit({
 					type: CollectionChangedType.Shift,
-					oldIndex: index,
-					newIndex: index + 1,
+					index: index,
+					shiftIndex: index + 1,
 				})
 			}
 
 			_collectionChangedIfCanEmit.emit({
 				type: CollectionChangedType.Added,
-				newIndex: index,
+				index: index,
 				newItems: [item],
+				shiftIndex: index < _size ? index + 1 : index,
 			})
 		}
 
@@ -353,15 +355,16 @@ export class List<T> extends CollectionChangedObject<T> {
 			if (index < _size) {
 				_collectionChangedIfCanEmit.emit({
 					type: CollectionChangedType.Shift,
-					oldIndex: index,
-					newIndex: index + itemsSize,
+					index: index,
+					shiftIndex: index + itemsSize,
 				})
 			}
 
 			_collectionChangedIfCanEmit.emit({
 				type: CollectionChangedType.Added,
-				newIndex: index,
+				index: index,
 				newItems: _array.slice(index, index + itemsSize),
+				shiftIndex: index < _size ? index + itemsSize : index,
 			})
 		}
 
@@ -408,7 +411,7 @@ export class List<T> extends CollectionChangedObject<T> {
 			} finally {
 				this._collectionChangedDisabled = false
 			}
-			
+
 			throw new Error(`Iterable items size (${i - start}) less than itemsSize (${itemsSize})`)
 		}
 
@@ -423,15 +426,16 @@ export class List<T> extends CollectionChangedObject<T> {
 			if (start < _size) {
 				_collectionChangedIfCanEmit.emit({
 					type: CollectionChangedType.Shift,
-					oldIndex: start,
-					newIndex: end,
+					index: start,
+					shiftIndex: end,
 				})
 			}
 
 			_collectionChangedIfCanEmit.emit({
 				type: CollectionChangedType.Added,
-				newIndex: start,
+				index: start,
 				newItems: _array.slice(start, end),
+				shiftIndex: start < _size ? end : start,
 			})
 		}
 
@@ -463,22 +467,25 @@ export class List<T> extends CollectionChangedObject<T> {
 		if (_collectionChangedIfCanEmit) {
 			_collectionChangedIfCanEmit.emit({
 				type: CollectionChangedType.Removed,
-				oldIndex: index,
+				index: index,
 				oldItems,
+				shiftIndex: index < _size - 1
+					? (withoutShift ? _size - 1 : index + 1)
+					: index,
 			})
 
 			if (index < _size - 1) {
 				if (withoutShift) {
 					_collectionChangedIfCanEmit.emit({
 						type: CollectionChangedType.Shift,
-						oldIndex: _size - 1,
-						newIndex: index,
+						index: _size - 1,
+						shiftIndex: index,
 					})
 				} else {
 					_collectionChangedIfCanEmit.emit({
 						type: CollectionChangedType.Shift,
-						oldIndex: index + 1,
-						newIndex: index,
+						index: index + 1,
+						shiftIndex: index,
 					})
 				}
 			}
@@ -507,15 +514,15 @@ export class List<T> extends CollectionChangedObject<T> {
 
 		const {_collectionChangedIfCanEmit} = this
 		let oldItems
-		
+
 		if (_collectionChangedIfCanEmit) {
 			oldItems = _array.slice(start, end)
 		}
-		
+
 		if (!withoutShift) {
 			withoutShift = removeSize < _size - end
 		}
-		
+
 		if (withoutShift) {
 			for (let i = start; i < end; i++) {
 				_array[i] = _array[_size - end + i]
@@ -531,22 +538,25 @@ export class List<T> extends CollectionChangedObject<T> {
 		if (_collectionChangedIfCanEmit) {
 			_collectionChangedIfCanEmit.emit({
 				type: CollectionChangedType.Removed,
-				oldIndex: start,
+				index: start,
 				oldItems,
+				shiftIndex: end < _size
+					? (withoutShift ? _size - removeSize : end)
+					: start,
 			})
 
 			if (end < _size) {
 				if (withoutShift) {
 					_collectionChangedIfCanEmit.emit({
 						type: CollectionChangedType.Shift,
-						oldIndex: _size - removeSize,
-						newIndex: start,
+						index: _size - removeSize,
+						shiftIndex: start,
 					})
 				} else {
 					_collectionChangedIfCanEmit.emit({
 						type: CollectionChangedType.Shift,
-						oldIndex: end,
-						newIndex: start,
+						index: end,
+						shiftIndex: start,
 					})
 				}
 			}
@@ -557,7 +567,7 @@ export class List<T> extends CollectionChangedObject<T> {
 				newSize: _size - removeSize,
 			})
 		}
-		
+
 		return true
 	}
 
@@ -638,8 +648,9 @@ export class List<T> extends CollectionChangedObject<T> {
 		if (_collectionChangedIfCanEmit) {
 			_collectionChangedIfCanEmit.emit({
 				type: CollectionChangedType.Removed,
-				oldIndex: 0,
+				index: 0,
 				oldItems,
+				shiftIndex: 0,
 			})
 
 			_collectionChangedIfCanEmit.emit({
