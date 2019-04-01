@@ -304,6 +304,7 @@ describe('common > main > lists > List', function() {
 					unsubscribe()
 				}
 				assert.deepStrictEqual(collectionChangedEvents, options.collectionChanged || [])
+				assert.deepStrictEqual(arrayReplicate, list.toArray())
 			}
 		} catch (ex) {
 			console.log(`Error in: ${
