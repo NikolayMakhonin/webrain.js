@@ -1,7 +1,6 @@
-import {PropertyChangedObject} from '../rx/object/PropertyChangedObject'
-import {ICompare, IEqualityCompare} from './contracts/ICompare'
-import {HasSubscribersSubject, IHasSubscribersSubject} from "../rx/subjects/hasSubscribers";
-import {ICollectionChangedEvent} from "./contracts/ICollectionChanged";
+import {CollectionChangedObject} from './CollectionChangedObject'
+import {CollectionChangedType} from './contracts/ICollectionChanged'
+import {IEqualityCompare} from './contracts/ICompare'
 
 function calcOptimalArraySize(desiredSize: number) {
 	let optimalSize = 4
@@ -24,33 +23,7 @@ function getDefaultValue(value) {
 	return null
 }
 
-export class CollectionChangedObject extends PropertyChangedObject {
-	// region collectionChanged
-
-	private _collectionChanged?: IHasSubscribersSubject<ICollectionChangedEvent<T>>
-	public get collectionChanged(): IHasSubscribersSubject<ICollectionChangedEvent<T>> {
-		let {_collectionChanged} = this
-		if (!_collectionChanged) {
-			this._collectionChanged = _collectionChanged = new HasSubscribersSubject()
-		}
-		return _collectionChanged
-	}
-
-	public onCollectionChanged(event: ICollectionChangedEvent<T>): this {
-		const {_collectionChanged} = this
-		if (!_collectionChanged || !_collectionChanged.hasSubscribers) {
-			return this
-		}
-
-		_collectionChanged.emit(event)
-
-		return this
-	}
-
-	// endregion
-}
-
-export class List<T> extends CollectionChangedObject {
+export class List<T> extends CollectionChangedObject<T> {
 	// region constructor
 
 	private _array: T[]
@@ -237,7 +210,30 @@ export class List<T> extends CollectionChangedObject {
 			this._setSize(_size + 1)
 		}
 
-		_array[index] = item
+		const {_collectionChanged} = this
+		if (_collectionChanged && _collectionChanged.hasSubscribers) {
+			const oldItem = _array[index]
+
+			_array[index] = item
+
+			if (index >= _size) {
+				_collectionChanged.emit({
+					type: CollectionChangedType.Added,
+					newIndex: index,
+					newItems: [item],
+				})
+			} else {
+				_collectionChanged.emit({
+					type: CollectionChangedType.Set,
+					oldIndex: index,
+					newIndex: index,
+					oldItems: [oldItem],
+					newItems: [item],
+				})
+			}
+		} else {
+			_array[index] = item
+		}
 
 		return true
 	}

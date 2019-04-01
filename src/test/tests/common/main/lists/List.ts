@@ -1,4 +1,8 @@
 import {List} from '../../../../../main/common/lists/List'
+import {
+	CollectionChangedType,
+	ICollectionChangedEvent
+} from "../../../../../main/common/lists/contracts/ICollectionChanged";
 
 declare const assert: any
 
@@ -156,6 +160,7 @@ describe('common > main > lists > List', function() {
 		expected: T[]|(new () => Error),
 		funcResult: any,
 		defaultValue: any,
+		collectionChanged?: Array<ICollectionChangedEvent<T>>,
 	}
 
 	function *generateOptions(base: {}, optionsVariants: {}) {
@@ -191,6 +196,7 @@ describe('common > main > lists > List', function() {
 	const variants = Array.from(generateOptions({}, {
 		withCompare: [false, true],
 		reuseListInstance: [false, true],
+		useCollectionChanged: [false, true],
 	}))
 
 	interface TestOptionsVariant<T> extends TestOptionsBase<T> {
@@ -198,6 +204,7 @@ describe('common > main > lists > List', function() {
 		testFunc: (list: List<T>) => any,
 		withCompare: boolean,
 		reuseListInstance: boolean
+		useCollectionChanged: boolean
 	}
 
 	const staticList = new List()
@@ -205,6 +212,7 @@ describe('common > main > lists > List', function() {
 	function testChangeVariant<T>(
 		options: TestOptionsVariant<T>,
 	) {
+		let unsubscribe
 		try {
 			const array = options.orig.slice()
 			const compare = options.withCompare ? (o1, o2) => o1 === o2 : undefined
@@ -219,6 +227,13 @@ describe('common > main > lists > List', function() {
 				list = new List({
 					array,
 					compare,
+				})
+			}
+
+			const collectionChangedEvents = []
+			if (options.useCollectionChanged) {
+				unsubscribe = list.collectionChanged.subscribe(event => {
+					collectionChangedEvents.push(event)
 				})
 			}
 
@@ -243,6 +258,13 @@ describe('common > main > lists > List', function() {
 					assert.strictEqual(array[i], options.defaultValue)
 				}
 			}
+
+			if (options.useCollectionChanged) {
+				if (unsubscribe) {
+					unsubscribe()
+				}
+				assert.deepStrictEqual(collectionChangedEvents, options.collectionChanged || [])
+			}
 		} catch (ex) {
 			console.log(`Error in: ${
 				options.description
@@ -250,6 +272,10 @@ describe('common > main > lists > List', function() {
 				JSON.stringify(options, null, 4)
 				}\n${options.testFunc.toString()}\n`)
 			throw ex
+		} finally {
+			if (unsubscribe) {
+				unsubscribe()
+			}
 		}
 	}
 
@@ -323,6 +349,11 @@ describe('common > main > lists > List', function() {
 				expected: ['0'],
 				funcResult: true,
 				defaultValue: null,
+				collectionChanged: [{
+					type: CollectionChangedType.Added,
+					newIndex: 0,
+					newItems: ['0'],
+				}],
 			},
 			set(0, '0'),
 			set(-1, '0'),
@@ -345,6 +376,13 @@ describe('common > main > lists > List', function() {
 				expected: ['1'],
 				funcResult: true,
 				defaultValue: null,
+				collectionChanged: [{
+					type: CollectionChangedType.Set,
+					oldIndex: 0,
+					oldItems: ['0'],
+					newIndex: 0,
+					newItems: ['1'],
+				}],
 			},
 			set(0, '1'),
 			set(-2, '1'),
@@ -367,6 +405,11 @@ describe('common > main > lists > List', function() {
 				expected: ['0', '1'],
 				funcResult: true,
 				defaultValue: null,
+				collectionChanged: [{
+					type: CollectionChangedType.Added,
+					newIndex: 1,
+					newItems: ['1'],
+				}],
 			},
 			set(1, '1'),
 			set(-1, '1'),
@@ -378,6 +421,13 @@ describe('common > main > lists > List', function() {
 				expected: ['2', '1'],
 				funcResult: true,
 				defaultValue: null,
+				collectionChanged: [{
+					type: CollectionChangedType.Set,
+					oldIndex: 0,
+					oldItems: ['0'],
+					newIndex: 0,
+					newItems: ['2'],
+				}],
 			},
 			set(0, '2'),
 			set(-3, '2'),
