@@ -15,11 +15,13 @@ declare const assert: any
 declare const after: any
 
 describe('common > main > lists > List', function() {
+	this.timeout(5000)
+
 	// region helpers
 
 	let totalListTests = 0
 
-	after(function () {
+	after(function() {
 		console.log('Total List tests >= ' + totalListTests)
 	})
 
@@ -43,48 +45,75 @@ describe('common > main > lists > List', function() {
 		expected: T[] | (new () => Error),
 		funcResult: any,
 		defaultValue: any,
-		variants?: { [key: string]: any },
+		variants?: TestOptionsVariants,
 		collectionChanged?: Array<ICollectionChangedEvent<T>>,
 	}
 
-	const baseVariants = {
+	const baseVariants: TestOptionsVariants = {
+		notAddIfExists: [false, true],
+		withEquals: [false, true],
 		withCompare: [false, true],
 		reuseListInstance: [false, true],
 		useCollectionChanged: [false, true],
 	}
 
-	interface TestOptionsVariant<T> extends TestOptionsBase<T> {
-		description: string,
-		testFunc: (list: List<T>) => any,
-		withCompare: boolean,
-		reuseListInstance: boolean
-		useCollectionChanged: boolean
+	interface TestOptionsVariants {
+		withEquals?: boolean[]
+		withCompare?: boolean[]
+		reuseListInstance?: boolean[]
+		useCollectionChanged?: boolean[]
+		autoSort?: boolean[]
+		notAddIfExists?: boolean[]
+	}
+
+	interface TestOptionsVariant {
+		withEquals?: boolean
+		withCompare?: boolean
+		reuseListInstance?: boolean
+		useCollectionChanged?: boolean
+		autoSort?: boolean
+		notAddIfExists?: boolean
+	}
+
+	interface TestOptions<T> extends TestOptionsBase<T>, TestOptionsVariant {
+		description?: string
+		testFunc?: (list: List<T>) => any
 	}
 
 	const staticList = new List()
 
 	function testChangeVariant<T>(
-		options: TestOptionsVariant<T>,
+		options: TestOptions<T>,
 	) {
 		let unsubscribe
 		try {
 			const array = options.orig.slice()
-			assert.deepStrictEqual(array, array.slice().sort(compareDefault))
-			const arrayReplicate = options.orig.slice()
-			const compare = options.withCompare ? (o1, o2) => o1 === o2 : undefined
+			// assert.deepStrictEqual(array, array.slice().sort(compareDefault))
+			const equals = options.withEquals ? (o1, o2) => o1 === o2 : undefined
+			const compare = options.withCompare ? compareDefault : undefined
 			let list: List<T>
 
 			if (options.reuseListInstance) {
 				staticList.clear()
 				staticList.addArray(array)
+				staticList.equals = equals
 				staticList.compare = compare
+				staticList.autoSort = options.autoSort
+				staticList.notAddIfExists = options.notAddIfExists
 				list = staticList as List<T>
 			} else {
 				list = new List({
 					array,
+					equals,
 					compare,
+					autoSort: options.autoSort,
+					notAddIfExists: options.notAddIfExists,
 				})
 			}
+
+			const arrayReplicate = options.autoSort || options.notAddIfExists
+				? list.toArray().slice()
+				: array.slice()
 
 			const collectionChangedEvents = []
 			if (options.useCollectionChanged) {
@@ -97,7 +126,9 @@ describe('common > main > lists > List', function() {
 			}
 
 			assert.strictEqual(list.minAllocatedSize, undefined)
-			assertList(list, options.orig)
+			if (!options.reuseListInstance) {
+				assertList(list, array)
+			}
 
 			if (Array.isArray(options.expected)) {
 				assert.deepStrictEqual(options.testFunc(list), options.funcResult)
@@ -144,6 +175,15 @@ describe('common > main > lists > List', function() {
 		baseOptions: TestOptionsBase<T>,
 		...testFuncsWithDescriptions: TestFuncsWithDescriptions<T>
 	) {
+		if ((!baseOptions.orig || baseOptions.orig.length <= 1)
+			&& (!baseOptions.expected || baseOptions.expected.length <= 1)
+		) {
+			baseOptions.variants = {
+				...baseOptions.variants,
+				autoSort: [false, true],
+			}
+		}
+
 		testListBase(
 			baseOptions,
 			baseVariants,
@@ -154,13 +194,17 @@ describe('common > main > lists > List', function() {
 
 	// endregion
 
-	it('constructor', function () {
+	it('constructor', function() {
 		let list
 
 		list = new List()
 		assert.strictEqual(list.size, 0)
 		assert.strictEqual(list.minAllocatedSize, undefined)
 		assert.strictEqual(list.allocatedSize, 0)
+		assert.strictEqual(list.equals, undefined)
+		assert.strictEqual(list.compare, undefined)
+		assert.strictEqual(list.autoSort, undefined)
+		assert.strictEqual(list.notAddIfExists, undefined)
 		assert.deepStrictEqual(list.toArray(), [])
 
 		list = new List({
@@ -169,21 +213,84 @@ describe('common > main > lists > List', function() {
 		assert.strictEqual(list.size, 0)
 		assert.strictEqual(list.minAllocatedSize, 3)
 		assert.strictEqual(list.allocatedSize, 0)
+		assert.strictEqual(list.equals, undefined)
+		assert.strictEqual(list.compare, undefined)
+		assert.strictEqual(list.autoSort, undefined)
+		assert.strictEqual(list.notAddIfExists, undefined)
 		assert.deepStrictEqual(list.toArray(), [])
 
-		const array = [0, 1, 2]
+		let array = [0, 1, 2]
 		list = new List({
 			array,
 		})
 		assert.strictEqual(list.size, 3)
 		assert.strictEqual(list.minAllocatedSize, undefined)
 		assert.strictEqual(list.allocatedSize, 3)
-		const toArray = list.toArray()
+		assert.strictEqual(list.equals, undefined)
+		assert.strictEqual(list.compare, undefined)
+		assert.strictEqual(list.autoSort, undefined)
+		assert.strictEqual(list.notAddIfExists, undefined)
+		let toArray = list.toArray()
 		assert.deepStrictEqual(toArray, [0, 1, 2])
+		assert.notStrictEqual(toArray, array)
+
+		const equals = (o1, o2) => o1 === o2
+		list = new List({
+			equals,
+		})
+		assert.strictEqual(list.size, 0)
+		assert.strictEqual(list.minAllocatedSize, undefined)
+		assert.strictEqual(list.allocatedSize, 0)
+		assert.strictEqual(list.equals, equals)
+		assert.strictEqual(list.compare, undefined)
+		assert.strictEqual(list.autoSort, undefined)
+		assert.strictEqual(list.notAddIfExists, undefined)
+		assert.deepStrictEqual(list.toArray(), [])
+
+		list = new List({
+			compare: compareDefault,
+		})
+		assert.strictEqual(list.size, 0)
+		assert.strictEqual(list.minAllocatedSize, undefined)
+		assert.strictEqual(list.allocatedSize, 0)
+		assert.strictEqual(list.equals, undefined)
+		assert.strictEqual(list.compare, compareDefault)
+		assert.strictEqual(list.autoSort, undefined)
+		assert.strictEqual(list.notAddIfExists, undefined)
+		assert.deepStrictEqual(list.toArray(), [])
+
+		list = new List({
+			array: array = [2, 1, 1, 1, 1, 3],
+			notAddIfExists: true,
+		})
+		assert.strictEqual(list.size, 3)
+		assert.strictEqual(list.minAllocatedSize, undefined)
+		assert.strictEqual(list.allocatedSize, 6)
+		assert.strictEqual(list.equals, undefined)
+		assert.strictEqual(list.compare, undefined)
+		assert.strictEqual(list.autoSort, undefined)
+		assert.strictEqual(list.notAddIfExists, true)
+		toArray = list.toArray()
+		assert.deepStrictEqual(toArray, [2, 1, 3])
+		assert.notStrictEqual(toArray, array)
+
+		list = new List({
+			array: array = [2, 1, 3],
+			autoSort: true,
+		})
+		assert.strictEqual(list.size, 3)
+		assert.strictEqual(list.minAllocatedSize, undefined)
+		assert.strictEqual(list.allocatedSize, 3)
+		assert.strictEqual(list.equals, undefined)
+		assert.strictEqual(list.compare, undefined)
+		assert.strictEqual(list.autoSort, true)
+		assert.strictEqual(list.notAddIfExists, undefined)
+		toArray = list.toArray()
+		assert.deepStrictEqual(toArray, [1, 2, 3])
 		assert.notStrictEqual(toArray, array)
 	})
 
-	it('size', function () {
+	it('size', function() {
 		const array = generateArray(31)
 		const list = new List({
 			array,
@@ -246,7 +353,7 @@ describe('common > main > lists > List', function() {
 		assert.strictEqual(list.allocatedSize, 4)
 	})
 
-	it('get', function () {
+	it('get', function() {
 		testChange(
 			{
 				orig: [],
@@ -271,9 +378,23 @@ describe('common > main > lists > List', function() {
 			list => list.get(-2),
 			list => list.get(-3),
 		)
+
+		testChange(
+			{
+				orig: ['4', '2', '3'],
+				expected: ['2', '3', '4'],
+				funcResult: '3',
+				defaultValue: null,
+				variants: {
+					autoSort: [true],
+				},
+			},
+			list => list.get(1),
+			list => list.get(-1),
+		)
 	})
 
-	it('set', function () {
+	it('set', function() {
 		function set<T>(
 			index: number,
 			item: T,
@@ -377,7 +498,7 @@ describe('common > main > lists > List', function() {
 		)
 	})
 
-	it('add', function () {
+	it('add', function() {
 		function add<T>(
 			item: T,
 		): ITestFuncsWithDescription<T> {
@@ -428,7 +549,7 @@ describe('common > main > lists > List', function() {
 		)
 	})
 
-	it('addArray', function () {
+	it('addArray', function() {
 		function addArray<T>(
 			sourceItems: T[],
 			sourceStart?: number,
@@ -559,7 +680,7 @@ describe('common > main > lists > List', function() {
 		)
 	})
 
-	it('insert', function () {
+	it('insert', function() {
 		function insert<T>(
 			index: number,
 			item: T,
@@ -648,7 +769,7 @@ describe('common > main > lists > List', function() {
 		)
 	})
 
-	it('insertArray', function () {
+	it('insertArray', function() {
 		function insertArray<T>(
 			index: number,
 			sourceItems: T[],
@@ -719,7 +840,7 @@ describe('common > main > lists > List', function() {
 		)
 	})
 
-	it('remove', function () {
+	it('remove', function() {
 		function remove<T>(
 			item: T,
 		): ITestFuncsWithDescription<T> {
@@ -821,6 +942,9 @@ describe('common > main > lists > List', function() {
 				expected: [true],
 				funcResult: true,
 				defaultValue: false,
+				variants: {
+					notAddIfExists: [false],
+				},
 				collectionChanged: [{
 					type: CollectionChangedType.Removed,
 					index: 1,
@@ -848,7 +972,7 @@ describe('common > main > lists > List', function() {
 		)
 	})
 
-	it('removeAt', function () {
+	it('removeAt', function() {
 		function removeAt<T>(
 			index: number,
 			withoutShift?: boolean,
@@ -935,7 +1059,7 @@ describe('common > main > lists > List', function() {
 		)
 	})
 
-	it('removeRange', function () {
+	it('removeRange', function() {
 		function removeRange<T>(
 			start: number,
 			end?: number,
@@ -1074,7 +1198,7 @@ describe('common > main > lists > List', function() {
 		)
 	})
 
-	it('clear', function () {
+	it('clear', function() {
 		function clear<T>(): ITestFuncsWithDescription<T> {
 			return {
 				funcs: [
@@ -1160,7 +1284,7 @@ describe('common > main > lists > List', function() {
 		)
 	})
 
-	it('toArray', function () {
+	it('toArray', function() {
 		function toArray<T>(
 			start?: number,
 			end?: number,
@@ -1238,7 +1362,7 @@ describe('common > main > lists > List', function() {
 		)
 	})
 
-	it('copyTo', function () {
+	it('copyTo', function() {
 		function copyTo<T>(
 			result: boolean,
 			destArray: T[],
@@ -1326,7 +1450,7 @@ describe('common > main > lists > List', function() {
 		)
 	})
 
-	it('indexOf', function () {
+	it('indexOf', function() {
 		testChange(
 			{
 				orig: ['b', 'd', 'f', 'h', 'j', 'l'],
@@ -1358,6 +1482,9 @@ describe('common > main > lists > List', function() {
 				expected: ['b', 'd', 'd', 'd', 'd', 'd', 'j', 'l'],
 				funcResult: 1,
 				defaultValue: null,
+				variants: {
+					notAddIfExists: [false],
+				},
 			},
 			list => list.indexOf('d'),
 			list => list.indexOf('d', 1),
@@ -1372,6 +1499,9 @@ describe('common > main > lists > List', function() {
 				expected: ['b', 'd', 'd', 'd', 'd', 'd', 'j', 'l'],
 				funcResult: 5,
 				defaultValue: null,
+				variants: {
+					notAddIfExists: [false],
+				},
 			},
 			list => list.indexOf('d', 5),
 			list => list.indexOf('d', 5, 6),

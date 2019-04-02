@@ -1,7 +1,7 @@
 import {CollectionChangedObject} from './CollectionChangedObject'
 import {CollectionChangedType} from './contracts/ICollectionChanged'
-import {IEqualityCompare} from './contracts/ICompare'
-import {move} from "./helpers/array";
+import {ICompare, IEquals} from './contracts/ICompare'
+import {move} from './helpers/array'
 
 function calcOptimalArraySize(desiredSize: number) {
 	let optimalSize = 4
@@ -32,11 +32,17 @@ export class List<T> extends CollectionChangedObject<T> {
 	constructor({
 		array,
 		minAllocatedSize,
+		equals,
 		compare,
+		autoSort,
+		notAddIfExists,
 	}: {
 		array?: T[],
 		minAllocatedSize?: number,
-		compare?: IEqualityCompare<T>,
+		equals?: IEquals<T>,
+		compare?: ICompare<T>,
+		autoSort?: boolean,
+		notAddIfExists?: boolean,
 	} = {}) {
 		super()
 
@@ -47,8 +53,24 @@ export class List<T> extends CollectionChangedObject<T> {
 			this._minAllocatedSize = minAllocatedSize
 		}
 
+		if (equals) {
+			this._equals = equals
+		}
+
 		if (compare) {
 			this._compare = compare
+		}
+
+		if (autoSort) {
+			this._autoSort = autoSort
+		}
+
+		if (notAddIfExists) {
+			this._notAddIfExists = notAddIfExists
+		}
+
+		if (notAddIfExists) {
+			this.removeDuplicates()
 		}
 	}
 
@@ -132,16 +154,77 @@ export class List<T> extends CollectionChangedObject<T> {
 
 	// endregion
 
+	// region equals
+
+	private _equals: IEquals<T>
+
+	public get equals(): IEquals<T> {
+		return this._equals
+	}
+
+	public set equals(value: IEquals<T>) {
+		this._equals = value
+	}
+
+	// endregion
+
 	// region compare
 
-	private _compare: IEqualityCompare<T>
+	private _compare: ICompare<T>
 
-	public get compare(): IEqualityCompare<T> {
+	public get compare(): ICompare<T> {
 		return this._compare
 	}
 
-	public set compare(value: IEqualityCompare<T>) {
+	public set compare(value: ICompare<T>) {
 		this._compare = value
+	}
+
+	// endregion
+
+	// region countSorted
+
+	private _countSorted: number
+
+	public get countSorted(): number {
+		return this._countSorted
+	}
+
+	// endregion
+
+	// region autoSort
+
+	private _autoSort: boolean
+
+	public get autoSort(): boolean {
+		return this._autoSort
+	}
+
+	public set autoSort(value: boolean) {
+		this._autoSort = value
+
+		if (value && this._countSorted !== this._size) {
+			const {_collectionChangedIfCanEmit} = this
+			if (_collectionChangedIfCanEmit) {
+				_collectionChangedIfCanEmit.emit({
+					type: CollectionChangedType.Resorted,
+				})
+			}
+		}
+	}
+
+	// endregion
+
+	// region notAddIfExists
+
+	private _notAddIfExists: boolean
+
+	public get notAddIfExists(): boolean {
+		return this._notAddIfExists
+	}
+
+	public set notAddIfExists(value: boolean) {
+		this._notAddIfExists = value
 	}
 
 	// endregion
@@ -194,8 +277,34 @@ export class List<T> extends CollectionChangedObject<T> {
 		return end
 	}
 
+	public removeDuplicates(): number {
+		const {_array} = this
+		let size = this._size
+
+		let count = 0
+		let i = size - 1
+
+		while (i >= 0) {
+			const prevCount = size
+			size = i
+			const contains = this.indexOf(_array[i], 0, i) >= 0
+			size = prevCount
+			if (contains) {
+				this.removeAt(i)
+				count++
+			}
+			i--
+		}
+
+		return count
+	}
+
 	public get(index: number) {
-		const {_size, _array} = this
+		const {_size, _array, _autoSort} = this
+
+		if (_autoSort) {
+			this.sort()
+		}
 
 		index = List._prepareIndex(index, _size)
 
@@ -550,15 +659,15 @@ export class List<T> extends CollectionChangedObject<T> {
 	}
 
 	public indexOf(item: T, start?: number, end?: number, bound?: number): number {
-		const {_size, _array, _compare} = this
+		const {_size, _array, _equals} = this
 
 		start = List._prepareStart(start, _size)
 		end = List._prepareEnd(end, _size)
 
 		if (bound == null || bound <= 0) {
-			if (_compare) {
+			if (_equals) {
 				for (let i = start; i < end; i++) {
-					if (_compare(_array[i], item)) {
+					if (_equals(_array[i], item)) {
 						return i
 					}
 				}
@@ -570,9 +679,9 @@ export class List<T> extends CollectionChangedObject<T> {
 				}
 			}
 		} else {
-			if (_compare) {
+			if (_equals) {
 				for (let i = end - 1; i >= start; i--) {
-					if (_compare(_array[i], item)) {
+					if (_equals(_array[i], item)) {
 						return i
 					}
 				}
@@ -623,8 +732,67 @@ export class List<T> extends CollectionChangedObject<T> {
 		return true
 	}
 
+	public reSort(): boolean {
+		if (!this._countSorted) {
+			return false
+		}
+
+		const {_size} = this
+		if (_size <= 1) {
+			this._countSorted = _size
+			return false
+		}
+
+		this._countSorted = 0
+
+		if (this._autoSort) {
+			const {_collectionChangedIfCanEmit} = this
+			if (_collectionChangedIfCanEmit) {
+				_collectionChangedIfCanEmit.emit({
+					type: CollectionChangedType.Resorted,
+				})
+			}
+		} else {
+			this.sort()
+		}
+
+		return true
+	}
+
+	public sort(): boolean {
+		const {_size, _array, _countSorted} = this
+
+		if (_countSorted >= _size) {
+			return false
+		}
+
+		if (_size <= 1) {
+			this._countSorted = _size
+			return false
+		}
+
+		_array.length = _size
+		_array.sort(this._compare)
+		this._countSorted = _size
+
+		if (!this._autoSort) {
+			const {_collectionChangedIfCanEmit} = this
+			if (_collectionChangedIfCanEmit) {
+				_collectionChangedIfCanEmit.emit({
+					type: CollectionChangedType.Resorted,
+				})
+			}
+		}
+
+		return true
+	}
+
 	public toArray(start?: number, end?: number): T[] {
-		const {_size, _array} = this
+		const {_size, _array, _autoSort} = this
+
+		if (_autoSort) {
+			this.sort()
+		}
 
 		start = List._prepareStart(start, _size)
 		end = List._prepareEnd(end, _size)
