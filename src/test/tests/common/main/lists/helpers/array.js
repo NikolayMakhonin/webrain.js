@@ -1,4 +1,4 @@
-import {binarySearch, binarySearchFirst, binarySearchLast} from '../../../../../../main/common/lists/helpers/array'
+import {binarySearch, binarySearchFirst, binarySearchLast, move} from '../../../../../../main/common/lists/helpers/array'
 
 describe('common > main > lists > helpers > array', function () {
 	it('binarySearch full', function () {
@@ -56,5 +56,43 @@ describe('common > main > lists > helpers > array', function () {
 		assert.strictEqual(binarySearch([1, 1, 1], 1, null, null, null, 1), 2)
 		assert.strictEqual(binarySearch([0], 0, 0, 0), ~0)
 		assert.strictEqual(binarySearch([0], 0, 0, 1), 0)
+	})
+
+	it('move', function () {
+		function testMove(array, start, end, newIndex, expectedArray) {
+			array = array.slice()
+			move(array, start, end, newIndex)
+			assert.deepStrictEqual(array, expectedArray)
+		}
+
+		testMove(
+			[0, 1],
+			1, 2, 0,
+			[1, 0]
+		)
+
+		testMove(
+			[0, 1, 2],
+			1, 2, 0,
+			[1, 0, 2]
+		)
+
+		testMove(
+			[0, 1, 2],
+			2, 3, 0,
+			[2, 0, 1]
+		)
+
+		testMove(
+			[0, 1, 2, 3, 4, 5, 6, 7, 8],
+			1, 5, 3,
+			[0, 5, 6, 1, 2, 3, 4, 7, 8]
+		)
+
+		testMove(
+			[0, 5, 6, 1, 2, 3, 4, 7, 8],
+			3, 7, 1,
+			[0, 1, 2, 3, 4, 5, 6, 7, 8]
+		)
 	})
 })

@@ -2,10 +2,11 @@ import {HasSubscribersSubject, IHasSubscribersSubject} from '../../rx/subjects/h
 
 export enum CollectionChangedType {
 	/**
-	 * is set properties: index, oldItems
+	 * Removed @items from @index and shift [shiftIndex .. size) -> index
 	 */
 	Removed,
 	/**
+	 * Shift [index .. size) -> shiftIndex and added @items to @index
 	 * is set properties: newIndex, newItems
 	 */
 	Added,
@@ -18,7 +19,7 @@ export enum CollectionChangedType {
 	 */
 	Resorted,
 	/**
-	 * is set properties: index, newIndex, newItems[1]
+	 * Moved @moveSize items from index to @moveIndex
 	 */
 	Moved,
 }
@@ -26,16 +27,12 @@ export enum CollectionChangedType {
 export interface ICollectionChangedEvent<T> {
 	readonly type: CollectionChangedType
 
-	/** index of the first old item */
 	readonly index?: number
-	/** move with replace [shiftIndex .. size) -> index */
 	readonly shiftIndex?: number
-
 	readonly oldItems?: T[]
 	readonly newItems?: T[]
-
-	readonly oldSize?: number
-	readonly newSize?: number
+	readonly moveIndex?: number
+	readonly moveSize?: number
 }
 
 export interface ICollectionChanged<T> {

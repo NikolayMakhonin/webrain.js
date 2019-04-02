@@ -3,27 +3,160 @@ import {
 	ICollectionChangedEvent,
 } from '../../../../../main/common/lists/contracts/ICollectionChanged'
 import {List} from '../../../../../main/common/lists/List'
+import {
+	applyCollectionChangedToArray,
+	compareDefault,
+	generateArray,
+	ITestFuncsWithDescription, TestFuncsWithDescriptions, testListBase,
+	toIterable,
+} from './helpers/list'
 
 declare const assert: any
+declare const after: any
+
+// TODO: first/last index
 
 describe('common > main > lists > List', function() {
+	// region helpers
 
 	let totalListTests = 0
 
-	after(function() {
+	after(function () {
 		console.log('Total List tests >= ' + totalListTests)
 	})
 
-	function generateArray(size) {
-		const arr = []
-		for (let i = 0; i < size; i++) {
-			arr.push(i)
+	function assertList<T>(list: List<T>, expectedArray: T[]) {
+		assert.deepStrictEqual(list.toArray(), expectedArray)
+		assert.strictEqual(list.size, expectedArray.length)
+		assert.ok(list.allocatedSize >= expectedArray.length)
+
+		for (let i = 0; i < expectedArray.length; i++) {
+			assert.strictEqual(list.get(i), expectedArray[i])
+			assert.strictEqual(expectedArray[list.indexOf(expectedArray[i])], expectedArray[i])
+			assert.strictEqual(list.contains(expectedArray[i]), true)
+			assert.strictEqual(list.contains({} as any), false)
 		}
 
-		return arr
+		assert.deepStrictEqual(Array.from(list), expectedArray)
 	}
 
-	it('constructor', function() {
+	interface TestOptionsBase<T> {
+		orig: T[],
+		expected: T[] | (new () => Error),
+		funcResult: any,
+		defaultValue: any,
+		variants?: { [key: string]: any },
+		collectionChanged?: Array<ICollectionChangedEvent<T>>,
+	}
+
+	const baseVariants = {
+		withCompare: [false, true],
+		reuseListInstance: [false, true],
+		useCollectionChanged: [false, true],
+	}
+
+	interface TestOptionsVariant<T> extends TestOptionsBase<T> {
+		description: string,
+		testFunc: (list: List<T>) => any,
+		withCompare: boolean,
+		reuseListInstance: boolean
+		useCollectionChanged: boolean
+	}
+
+	const staticList = new List()
+
+	function testChangeVariant<T>(
+		options: TestOptionsVariant<T>,
+	) {
+		let unsubscribe
+		try {
+			const array = options.orig.slice()
+			assert.deepStrictEqual(array, array.slice().sort(compareDefault))
+			const arrayReplicate = options.orig.slice()
+			const compare = options.withCompare ? (o1, o2) => o1 === o2 : undefined
+			let list: List<T>
+
+			if (options.reuseListInstance) {
+				staticList.clear()
+				staticList.addArray(array)
+				staticList.compare = compare
+				list = staticList as List<T>
+			} else {
+				list = new List({
+					array,
+					compare,
+				})
+			}
+
+			const collectionChangedEvents = []
+			if (options.useCollectionChanged) {
+				unsubscribe = list.collectionChanged.subscribe(event => {
+					collectionChangedEvents.push(event)
+					applyCollectionChangedToArray(event, arrayReplicate, compare)
+
+					assert.deepStrictEqual(arrayReplicate, list.toArray())
+				})
+			}
+
+			assert.strictEqual(list.minAllocatedSize, undefined)
+			assertList(list, options.orig)
+
+			if (Array.isArray(options.expected)) {
+				assert.deepStrictEqual(options.testFunc(list), options.funcResult)
+
+				assert.strictEqual(list.minAllocatedSize, undefined)
+				assertList(list, options.expected)
+			} else {
+				assert.throws(() => options.testFunc(list), options.expected)
+
+				assert.strictEqual(list.minAllocatedSize, undefined)
+				assertList(list, options.orig)
+			}
+
+			if (!options.reuseListInstance) {
+				assert.deepStrictEqual(array.slice(0, list.size), list.toArray())
+				for (let i = list.size; i < array.length; i++) {
+					assert.strictEqual(array[i], options.defaultValue)
+				}
+			}
+
+			if (options.useCollectionChanged) {
+				if (unsubscribe) {
+					unsubscribe()
+				}
+				assert.deepStrictEqual(collectionChangedEvents, options.collectionChanged || [])
+				assert.deepStrictEqual(arrayReplicate, list.toArray())
+			}
+		} catch (ex) {
+			console.log(`Error in: ${
+				options.description
+				}\n${
+				JSON.stringify(options, null, 4)
+				}\n${options.testFunc.toString()}\n`)
+			throw ex
+		} finally {
+			if (unsubscribe) {
+				unsubscribe()
+			}
+			totalListTests++
+		}
+	}
+
+	function testChange<T>(
+		baseOptions: TestOptionsBase<T>,
+		...testFuncsWithDescriptions: TestFuncsWithDescriptions<T>
+	) {
+		testListBase(
+			baseOptions,
+			baseVariants,
+			testChangeVariant,
+			...testFuncsWithDescriptions,
+		)
+	}
+
+	// endregion
+
+	it('constructor', function () {
 		let list
 
 		list = new List()
@@ -52,7 +185,7 @@ describe('common > main > lists > List', function() {
 		assert.notStrictEqual(toArray, array)
 	})
 
-	it('size', function() {
+	it('size', function () {
 		const array = generateArray(31)
 		const list = new List({
 			array,
@@ -115,255 +248,7 @@ describe('common > main > lists > List', function() {
 		assert.strictEqual(list.allocatedSize, 4)
 	})
 
-	type TestFunc<T> = ((list: List<T>) => any) | TestFuncs<T>
-	interface TestFuncs<T> extends Array<TestFunc<T>> { }
-
-	interface ITestFuncsWithDescription<T> {
-		funcs: TestFuncs<T>,
-		description: string
-	}
-	type TestFuncsWithDescription<T> = TestFunc<T> | ITestFuncsWithDescription<T> | TestFuncsWithDescriptions<T>
-	interface TestFuncsWithDescriptions<T> extends Array<TestFuncsWithDescription<T>> { }
-
-	function expandArray<T>(array: T[], output: any[] = []): any[] {
-		for (const item of array) {
-			if (!item) {
-				continue
-			}
-
-			if (Array.isArray(item)) {
-				expandArray(item, output)
-			} else {
-				output.push(item)
-			}
-		}
-
-		return output
-	}
-
-	function *toIterable<T>(array: T[]): Iterable<T> {
-		for (const item of array) {
-			yield item
-		}
-	}
-
-	function assertList<T>(list: List<T>, expectedArray: T[]) {
-		assert.deepStrictEqual(list.toArray(), expectedArray)
-		assert.strictEqual(list.size, expectedArray.length)
-		assert.ok(list.allocatedSize >= expectedArray.length)
-
-		for (let i = 0; i < expectedArray.length; i++) {
-			assert.strictEqual(list.get(i), expectedArray[i])
-			assert.strictEqual(expectedArray[list.indexOf(expectedArray[i])], expectedArray[i])
-			assert.strictEqual(list.contains(expectedArray[i]), true)
-			assert.strictEqual(list.contains({} as any), false)
-		}
-
-		assert.deepStrictEqual(Array.from(list), expectedArray)
-	}
-
-	interface TestOptionsBase<T> {
-		orig: T[],
-		expected: T[]|(new () => Error),
-		funcResult: any,
-		defaultValue: any,
-		collectionChanged?: Array<ICollectionChangedEvent<T>>,
-	}
-
-	function *generateOptions(base: {}, optionsVariants: {}) {
-		let hasChilds
-		for (const key in optionsVariants) {
-			if (Object.prototype.hasOwnProperty.call(optionsVariants, key)) {
-				for (const optionVariant of optionsVariants[key]) {
-					const variant = {
-						...base,
-						[key]: optionVariant,
-					}
-
-					const newOptionsVariants = {
-						...optionsVariants,
-					}
-
-					delete newOptionsVariants[key]
-
-					hasChilds = true
-
-					yield* generateOptions(variant, newOptionsVariants)
-				}
-
-				break
-			}
-		}
-
-		if (!hasChilds) {
-			yield base
-		}
-	}
-
-	const variants = Array.from(generateOptions({}, {
-		withCompare: [false, true],
-		reuseListInstance: [false, true],
-		useCollectionChanged: [false, true],
-	}))
-
-	interface TestOptionsVariant<T> extends TestOptionsBase<T> {
-		description: string,
-		testFunc: (list: List<T>) => any,
-		withCompare: boolean,
-		reuseListInstance: boolean
-		useCollectionChanged: boolean
-	}
-
-	function compareDefault(o1, o2) {
-		if (o1 > o2) {
-			return 1
-		} else if (o2 > o1) {
-			return -1
-		} else {
-			return 0
-		}
-	}
-
-	const staticList = new List()
-
-	function testChangeVariant<T>(
-		options: TestOptionsVariant<T>,
-	) {
-		let unsubscribe
-		try {
-			const array = options.orig.slice()
-			assert.deepStrictEqual(array, array.slice().sort(compareDefault))
-			const arrayReplicate = options.orig.slice()
-			const compare = options.withCompare ? (o1, o2) => o1 === o2 : undefined
-			let list: List<T>
-
-			if (options.reuseListInstance) {
-				staticList.clear()
-				staticList.addArray(array)
-				staticList.compare = compare
-				list = staticList as List<T>
-			} else {
-				list = new List({
-					array,
-					compare,
-				})
-			}
-
-			const collectionChangedEvents = []
-			if (options.useCollectionChanged) {
-				unsubscribe = list.collectionChanged.subscribe(event => {
-					collectionChangedEvents.push(event)
-					switch (event.type) {
-						case CollectionChangedType.Added:
-							{
-								const len = arrayReplicate.length
-								const shift = event.shiftIndex - event.index
-								for (let i = len - shift; i < len; i++) {
-									arrayReplicate[i + shift] = arrayReplicate[i]
-								}
-								for (let i = event.shiftIndex; i < len; i++) {
-									arrayReplicate[i] = arrayReplicate[i - shift]
-								}
-							}
-
-							for (let i = 0; i < event.newItems.length; i++) {
-								arrayReplicate[event.index + i] = event.newItems[i]
-							}
-							break
-						case CollectionChangedType.Removed:
-							for (let i = 0; i < event.oldItems.length; i++) {
-								assert.strictEqual(arrayReplicate[event.index + i], event.oldItems[i])
-							}
-							for (let i = event.shiftIndex; i < arrayReplicate.length; i++) {
-								arrayReplicate[event.index + i - event.shiftIndex] = arrayReplicate[i]
-							}
-							arrayReplicate.length -= event.oldItems.length
-							break
-						case CollectionChangedType.Set:
-							assert.strictEqual(arrayReplicate[event.index], event.oldItems[0])
-							arrayReplicate[event.index] = event.newItems[0]
-							break
-						case CollectionChangedType.Moved:
-							// TODO
-							break
-						case CollectionChangedType.Resorted:
-							// TODO
-							break
-					}
-
-					assert.deepStrictEqual(arrayReplicate, list.toArray())
-				})
-			}
-
-			assert.strictEqual(list.minAllocatedSize, undefined)
-			assertList(list, options.orig)
-
-			if (Array.isArray(options.expected)) {
-				assert.deepStrictEqual(options.testFunc(list), options.funcResult)
-
-				assert.strictEqual(list.minAllocatedSize, undefined)
-				assertList(list, options.expected)
-			} else {
-				assert.throws(() => options.testFunc(list), options.expected)
-
-				assert.strictEqual(list.minAllocatedSize, undefined)
-				assertList(list, options.orig)
-			}
-
-			if (!options.reuseListInstance) {
-				assert.deepStrictEqual(array.slice(0, list.size), list.toArray())
-				for (let i = list.size; i < array.length; i++) {
-					assert.strictEqual(array[i], options.defaultValue)
-				}
-			}
-
-			if (options.useCollectionChanged) {
-				if (unsubscribe) {
-					unsubscribe()
-				}
-				assert.deepStrictEqual(collectionChangedEvents, options.collectionChanged || [])
-				assert.deepStrictEqual(arrayReplicate, list.toArray())
-			}
-		} catch (ex) {
-			console.log(`Error in: ${
-				options.description
-				}\n${
-				JSON.stringify(options, null, 4)
-				}\n${options.testFunc.toString()}\n`)
-			throw ex
-		} finally {
-			if (unsubscribe) {
-				unsubscribe()
-			}
-			totalListTests++
-		}
-	}
-
-	function testChange<T>(
-		options: TestOptionsBase<T>,
-		...testFuncsWithDescriptions: TestFuncsWithDescriptions<T>
-	) {
-		for (const testFuncsWithDescription of expandArray(testFuncsWithDescriptions)) {
-			let {funcs, description} = testFuncsWithDescription
-			if (typeof testFuncsWithDescription === 'function') {
-				funcs = [testFuncsWithDescription]
-				description = ''
-			}
-
-			for (const testFunc of expandArray(funcs)) {
-				for (const variant of variants as Array<TestOptionsVariant<T>>) {
-					testChangeVariant({
-						...options,
-						description,
-						testFunc,
-						...variant,
-					})
-				}
-			}
-		}
-	}
-
-	it('get', function() {
+	it('get', function () {
 		testChange(
 			{
 				orig: [],
@@ -390,7 +275,7 @@ describe('common > main > lists > List', function() {
 		)
 	})
 
-	it('set', function() {
+	it('set', function () {
 		function set<T>(
 			index: number,
 			item: T,
@@ -494,7 +379,7 @@ describe('common > main > lists > List', function() {
 		)
 	})
 
-	it('add', function() {
+	it('add', function () {
 		function add<T>(
 			item: T,
 		): ITestFuncsWithDescription<T> {
@@ -545,7 +430,7 @@ describe('common > main > lists > List', function() {
 		)
 	})
 
-	it('addArray', function() {
+	it('addArray', function () {
 		function addArray<T>(
 			sourceItems: T[],
 			sourceStart?: number,
@@ -556,14 +441,14 @@ describe('common > main > lists > List', function() {
 					list => list.addArray(sourceItems, sourceStart, sourceEnd),
 					list => list.insertArray(list.size, sourceItems, sourceStart, sourceEnd),
 					!sourceStart
-						&& sourceEnd != null
-						&& sourceEnd >= 0
-						&& [
-							list => list.addIterable(sourceItems, sourceEnd),
-							list => list.addIterable(toIterable(sourceItems), sourceEnd),
-							list => list.insertIterable(list.size, sourceItems, sourceEnd),
-							list => list.insertIterable(list.size, toIterable(sourceItems), sourceEnd),
-						],
+					&& sourceEnd != null
+					&& sourceEnd >= 0
+					&& [
+						list => list.addIterable(sourceItems, sourceEnd),
+						list => list.addIterable(toIterable(sourceItems), sourceEnd),
+						list => list.insertIterable(list.size, sourceItems, sourceEnd),
+						list => list.insertIterable(list.size, toIterable(sourceItems), sourceEnd),
+					],
 				],
 				description: `arrArray(${JSON.stringify(sourceItems)}, ${sourceStart}, ${sourceEnd})\n`,
 			}
@@ -676,7 +561,7 @@ describe('common > main > lists > List', function() {
 		)
 	})
 
-	it('insert', function() {
+	it('insert', function () {
 		function insert<T>(
 			index: number,
 			item: T,
@@ -749,8 +634,8 @@ describe('common > main > lists > List', function() {
 
 		testChange(
 			{
-				orig: ['0', '1', '2'],
-				expected: ['0', '3', '1', '2'],
+				orig: ['0', '1', '2', '3', '4'],
+				expected: ['0', '3', '1', '2', '3', '4'],
 				funcResult: true,
 				defaultValue: null,
 				collectionChanged: [{
@@ -761,11 +646,11 @@ describe('common > main > lists > List', function() {
 				}],
 			},
 			insert(1, '3'),
-			insert(-3, '3'),
+			insert(-5, '3'),
 		)
 	})
 
-	it('insertArray', function() {
+	it('insertArray', function () {
 		function insertArray<T>(
 			index: number,
 			sourceItems: T[],
@@ -836,7 +721,7 @@ describe('common > main > lists > List', function() {
 		)
 	})
 
-	it('remove', function() {
+	it('remove', function () {
 		function remove<T>(
 			item: T,
 		): ITestFuncsWithDescription<T> {
@@ -965,7 +850,7 @@ describe('common > main > lists > List', function() {
 		)
 	})
 
-	it('removeAt', function() {
+	it('removeAt', function () {
 		function removeAt<T>(
 			index: number,
 			withoutShift?: boolean,
@@ -1052,7 +937,7 @@ describe('common > main > lists > List', function() {
 		)
 	})
 
-	it('removeRange', function() {
+	it('removeRange', function () {
 		function removeRange<T>(
 			start: number,
 			end?: number,
@@ -1191,7 +1076,7 @@ describe('common > main > lists > List', function() {
 		)
 	})
 
-	it('clear', function() {
+	it('clear', function () {
 		function clear<T>(): ITestFuncsWithDescription<T> {
 			return {
 				funcs: [
@@ -1277,7 +1162,7 @@ describe('common > main > lists > List', function() {
 		)
 	})
 
-	it('toArray', function() {
+	it('toArray', function () {
 		function toArray<T>(
 			start?: number,
 			end?: number,
@@ -1355,7 +1240,7 @@ describe('common > main > lists > List', function() {
 		)
 	})
 
-	it('copyTo', function() {
+	it('copyTo', function () {
 		function copyTo<T>(
 			result: boolean,
 			destArray: T[],
@@ -1443,7 +1328,7 @@ describe('common > main > lists > List', function() {
 		)
 	})
 
-	it('indexOf', function() {
+	it('indexOf', function () {
 		testChange(
 			{
 				orig: ['b', 'd', 'f', 'h', 'j', 'l'],
@@ -1494,6 +1379,131 @@ describe('common > main > lists > List', function() {
 			list => list.indexOf('d', 3, 4),
 			list => list.indexOf('d', 3, 6, 1),
 			list => list.indexOf('d', null, null, 1),
+		)
+	})
+
+	it('move', function() {
+		function move<T>(
+			oldIndex: number,
+			newIndex?: number,
+		): ITestFuncsWithDescription<T> {
+			return {
+				funcs: [
+					list => list.move(oldIndex, newIndex),
+					list => list.moveRange(oldIndex, oldIndex + 1, newIndex),
+				],
+				description: `move(${oldIndex}, ${newIndex})\n`,
+			}
+		}
+
+		testChange(
+			{
+				orig: [],
+				expected: [],
+				funcResult: false,
+				defaultValue: null,
+			},
+			move(-1, -1),
+			move(-2, -2),
+			move(2, 2),
+			move(10, 10),
+		)
+
+		testChange(
+			{
+				orig: [],
+				expected: Error,
+				funcResult: false,
+				defaultValue: null,
+			},
+			move(-1, 1),
+			move(-2, 1),
+			move(0, 2),
+			move(0, -3),
+		)
+
+		testChange(
+			{
+				orig: ['0'],
+				expected: ['0'],
+				funcResult: false,
+				defaultValue: null,
+			},
+			move(0, 0),
+			move(-1, -1),
+		)
+
+		testChange(
+			{
+				orig: ['0', '1', '2', '3', '4'],
+				expected: ['0', '3', '1', '2', '4'],
+				funcResult: true,
+				defaultValue: null,
+				collectionChanged: [{
+					type: CollectionChangedType.Moved,
+					index: 3,
+					moveIndex: 1,
+					moveSize: 1,
+				}],
+			},
+			move(3, 1),
+			move(-2, -4),
+		)
+	})
+
+	it('moveRange', function() {
+		function moveRange<T>(
+			start: number,
+			end?: number,
+			moveIndex?: number,
+		): ITestFuncsWithDescription<T> {
+			return {
+				funcs: [
+					list => list.moveRange(start, end, moveIndex),
+				],
+				description: `move(${start}, ${end}, ${moveIndex})\n`,
+			}
+		}
+
+		testChange(
+			{
+				orig: [],
+				expected: Error,
+				funcResult: false,
+				defaultValue: null,
+			},
+			moveRange(-1, 1),
+			move(-2, 1),
+			move(0, 2),
+			move(0, -3),
+		)
+
+		testChange(
+			{
+				orig: ['0'],
+				expected: ['0'],
+				funcResult: false,
+				defaultValue: null,
+			},
+			move(0, 0),
+			move(-1, -1),
+		)
+
+		testChange(
+			{
+				orig: ['0', '1', '2', '3', '4'],
+				expected: ['0', '3', '1', '2', '4'],
+				funcResult: true,
+				defaultValue: null,
+				collectionChanged: [{
+					type: CollectionChangedType.Moved,
+					index: 3,
+					moveIndex: 1,
+					moveSize: 1,
+				}],
+			},
+			move(3, 1),
+			move(-2, -4),
 		)
 	})
 })

@@ -65,3 +65,61 @@ export function binarySearch<T>(
 
 	return found >= 0 ? found : -from - 1
 }
+
+export function move<T>(array: T[], start: number, end: number, moveIndex: number): boolean {
+	if (start >= end) {
+		return false
+	}
+
+	const len = array.length
+
+	if (len === 0) {
+		return false
+	}
+
+	const maxIndex = len - end + start
+	if (moveIndex > maxIndex) {
+		moveIndex = maxIndex
+	}
+
+	if (moveIndex === start) {
+		return false
+	}
+
+	const rangeLen = end - start
+	const shiftIn = moveIndex - start
+	const shiftOut = shiftIn > 0
+		? -rangeLen
+		: rangeLen
+
+	let count = 0
+	let startIndex = start
+	while (true) {
+		let index = startIndex
+		let bufferItem = array[index]
+
+		while (true) {
+			index = index >= start && index < end
+				? index + shiftIn
+				: index + shiftOut
+
+			count++
+			if (index !== startIndex) {
+				const newBufferItem = array[index]
+				array[index] = bufferItem
+				bufferItem = newBufferItem
+			} else {
+				array[index] = bufferItem
+				break
+			}
+		}
+
+		if (count > rangeLen) {
+			break
+		}
+
+		startIndex++
+	}
+
+	return true
+}

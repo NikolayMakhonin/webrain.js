@@ -1,6 +1,7 @@
 import {CollectionChangedObject} from './CollectionChangedObject'
 import {CollectionChangedType} from './contracts/ICollectionChanged'
 import {IEqualityCompare} from './contracts/ICompare'
+import {move} from "./helpers/array";
 
 function calcOptimalArraySize(desiredSize: number) {
 	let optimalSize = 4
@@ -481,6 +482,69 @@ export class List<T> extends CollectionChangedObject<T> {
 		}
 
 		this.removeAt(index, withoutShift)
+
+		return true
+	}
+
+	public move(oldIndex: number, newIndex: number): boolean {
+		if (oldIndex === newIndex) {
+			return false
+		}
+
+		const {_size, _array} = this
+
+		oldIndex = List._prepareIndex(oldIndex, _size)
+		newIndex = List._prepareIndex(newIndex, _size)
+
+		const moveItem = _array[oldIndex]
+		const step = (newIndex > oldIndex) ? 1 : -1
+		for (let i = oldIndex; i !== newIndex; i += step) {
+			_array[i] = _array[i + step]
+		}
+
+		_array[newIndex] = moveItem
+
+		const {_collectionChangedIfCanEmit} = this
+		if (_collectionChangedIfCanEmit) {
+			_collectionChangedIfCanEmit.emit({
+				type: CollectionChangedType.Moved,
+				index: oldIndex,
+				moveSize: 1,
+				moveIndex: newIndex,
+			})
+		}
+
+		return true
+	}
+
+	public moveRange(start: number, end: number, moveIndex: number): boolean {
+		if (start === moveIndex) {
+			return false
+		}
+
+		const {_size, _array} = this
+
+		start = List._prepareStart(start, _size)
+		end = List._prepareStart(end, _size)
+		moveIndex = List._prepareIndex(moveIndex, _size)
+		const maxIndex = _size - end + start
+		if (moveIndex > maxIndex) {
+			moveIndex = maxIndex
+		}
+
+		if (!move(_array, start, end, moveIndex)) {
+			return false
+		}
+
+		const {_collectionChangedIfCanEmit} = this
+		if (_collectionChangedIfCanEmit) {
+			_collectionChangedIfCanEmit.emit({
+				type: CollectionChangedType.Moved,
+				index: start,
+				moveSize: end - start,
+				moveIndex,
+			})
+		}
 
 		return true
 	}

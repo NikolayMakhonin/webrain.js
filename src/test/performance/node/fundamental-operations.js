@@ -1,6 +1,8 @@
 /* eslint-disable no-new-func,no-array-constructor,object-property-newline */
 
 import {calcPerformance} from 'rdtsc'
+import {compareDefault} from "../../tests/common/main/lists/helpers/list";
+import {binarySearch} from "../../../main/common/lists/helpers/array";
 
 describe('fundamental-operations', function () {
 	function Path(value) {
@@ -496,7 +498,7 @@ describe('fundamental-operations', function () {
 		console.log(result)
 	})
 
-	it('array last index', function () {
+	xit('array last index', function () {
 		this.timeout(300000)
 
 		function defaultCompare(o1, o2) {
@@ -603,4 +605,89 @@ describe('fundamental-operations', function () {
 	//
 	// 	console.log(result)
 	// })
+
+	function calcSortCompareCount(array, size, addArray) {
+		// array.length = size
+		let count = 0
+		for (let i = 0, len = addArray.length; i < len; i++) {
+			array[size++] = addArray[i]
+		}
+		array.sort((o1, o2) => {
+			count++
+			return compareDefault(o1, o2)
+		})
+
+		// console.log(`${JSON.stringify(array)}`)
+
+		return count
+	}
+
+	function calcBinarySearchCount(array, size, addArray) {
+		let count = 0
+		for (let i = 0, addLen = addArray.length; i < addLen; i++) {
+			const addItem = addArray[i]
+
+			let insertIndex = binarySearch(array, addItem, null, size, (o1, o2) => {
+				count++
+				return compareDefault(o1, o2)
+			})
+
+			if (insertIndex < 0) {
+				insertIndex = ~insertIndex
+			}
+
+			// insert
+			for (let j = size - 1; j < size; j++) {
+				array[j + 1] = array[j]
+			}
+			for (let j = size - 1; j > insertIndex; j--) {
+				array[j] = array[j - 1]
+			}
+
+			array[insertIndex] = addItem
+
+			size++
+		}
+
+		// console.log(`${JSON.stringify(array)}`)
+
+		return count
+	}
+
+	function printSortCompareCount(array, addArray) {
+		const sortCount = calcSortCompareCount(array, array.length, addArray)
+		const binarySearchCount = calcBinarySearchCount(array, array.length, addArray)
+		console.log(`${sortCount}\t${binarySearchCount}\t${JSON.stringify(array)}\t${JSON.stringify(addArray)}`)
+	}
+
+	it('sorted array add items', function() {
+		this.timeout(300000)
+
+		const array = []
+		const addArray = generateArray(1000).sort((o1, o2) => {
+			return Math.random() > 0.5 ? -1 : 1
+		})
+		// [-3, -1, -2, 1, 9, -4, 7, -6, 11]
+		let resultArray
+
+		// console.log(JSON.stringify(addArray))
+		// printSortCompareCount(array.slice(), addArray)
+
+		const result = calcPerformance(
+			10000,
+			() => {
+				// no operations
+			},
+			() => {
+				resultArray = array.slice().concat(addArray.map(o => 0))
+			},
+			() => calcSortCompareCount(resultArray, array.length, addArray),
+			() => {
+				resultArray = array.slice().concat(addArray.map(o => 0))
+			},
+			() => calcBinarySearchCount(resultArray, array.length, addArray)
+		)
+
+		console.log(result)
+	})
 })
