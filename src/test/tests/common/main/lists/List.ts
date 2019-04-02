@@ -1468,42 +1468,76 @@ describe('common > main > lists > List', function() {
 		testChange(
 			{
 				orig: [],
-				expected: Error,
+				expected: [],
 				funcResult: false,
 				defaultValue: null,
 			},
-			moveRange(-1, 1),
-			move(-2, 1),
-			move(0, 2),
-			move(0, -3),
+			moveRange(0, 0, 0),
+			moveRange(10, -10, 10),
 		)
 
 		testChange(
 			{
-				orig: ['0'],
-				expected: ['0'],
-				funcResult: false,
+				orig: [0, 1, 2, 3, 4, 5, 6, 7, 8],
+				expected: [0, 5, 6, 1, 2, 3, 4, 7, 8],
+				funcResult: true,
 				defaultValue: null,
+				collectionChanged: [{
+					type: CollectionChangedType.Moved,
+					index: 1,
+					moveIndex: 3,
+					moveSize: 4,
+				}],
 			},
-			move(0, 0),
-			move(-1, -1),
+			moveRange(1, 5, 3),
 		)
 
 		testChange(
 			{
-				orig: ['0', '1', '2', '3', '4'],
-				expected: ['0', '3', '1', '2', '4'],
+				orig: [0, 1, 2, 3, 4, 5, 6, 7, 8],
+				expected: [0, 3, 4, 5, 6, 1, 2, 7, 8],
 				funcResult: true,
 				defaultValue: null,
 				collectionChanged: [{
 					type: CollectionChangedType.Moved,
 					index: 3,
 					moveIndex: 1,
-					moveSize: 1,
+					moveSize: 4,
 				}],
 			},
-			move(3, 1),
-			move(-2, -4),
+			moveRange(3, 7, 1),
+		)
+
+		testChange(
+			{
+				orig: [0, 1, 2, 3, 4, 5, 6, 7, 8, 9],
+				expected: [0, 8, 9, 1, 2, 3, 4, 5, 6, 7],
+				funcResult: true,
+				defaultValue: null,
+				collectionChanged: [{
+					type: CollectionChangedType.Moved,
+					index: 1,
+					moveIndex: 3,
+					moveSize: 7,
+				}],
+			},
+			moveRange(1, 8, 3),
+		)
+
+		testChange(
+			{
+				orig: [0, 1, 2, 3, 4, 5, 6, 7, 8, 9],
+				expected: [0, 3, 4, 5, 6, 7, 8, 9, 1, 2],
+				funcResult: true,
+				defaultValue: null,
+				collectionChanged: [{
+					type: CollectionChangedType.Moved,
+					index: 3,
+					moveIndex: 1,
+					moveSize: 7,
+				}],
+			},
+			moveRange(3, 10, 1),
 		)
 	})
 })
