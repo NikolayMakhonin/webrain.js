@@ -14,8 +14,6 @@ import {
 declare const assert: any
 declare const after: any
 
-// TODO: first/last index
-
 describe('common > main > lists > List', function() {
 	// region helpers
 
@@ -1356,28 +1354,28 @@ describe('common > main > lists > List', function() {
 
 		testChange(
 			{
-				orig: ['b', 'd', 'd', 'd', 'j', 'l'],
-				expected: ['b', 'd', 'd', 'd', 'j', 'l'],
+				orig: ['b', 'd', 'd', 'd', 'd', 'd', 'j', 'l'],
+				expected: ['b', 'd', 'd', 'd', 'd', 'd', 'j', 'l'],
 				funcResult: 1,
 				defaultValue: null,
 			},
 			list => list.indexOf('d'),
 			list => list.indexOf('d', 1),
 			list => list.indexOf('d', 1, 2),
-			list => list.indexOf('d', 1, 6, -1),
+			list => list.indexOf('d', 1, 8, -1),
 			list => list.indexOf('d', null, 2, 1),
 		)
 
 		testChange(
 			{
-				orig: ['b', 'd', 'd', 'd', 'j', 'l'],
-				expected: ['b', 'd', 'd', 'd', 'j', 'l'],
-				funcResult: 3,
+				orig: ['b', 'd', 'd', 'd', 'd', 'd', 'j', 'l'],
+				expected: ['b', 'd', 'd', 'd', 'd', 'd', 'j', 'l'],
+				funcResult: 5,
 				defaultValue: null,
 			},
-			list => list.indexOf('d', 3),
-			list => list.indexOf('d', 3, 4),
-			list => list.indexOf('d', 3, 6, 1),
+			list => list.indexOf('d', 5),
+			list => list.indexOf('d', 5, 6),
+			list => list.indexOf('d', 5, 8, 1),
 			list => list.indexOf('d', null, null, 1),
 		)
 	})
