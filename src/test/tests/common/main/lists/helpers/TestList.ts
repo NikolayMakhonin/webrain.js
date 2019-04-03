@@ -63,7 +63,7 @@ export function applyCollectionChangedToArray<T>(event: ICollectionChangedEvent<
 	}
 }
 
-export type IListAction<T> = (list: List<T>) => any
+export type IListAction<T> = (list: List<T>, array?: T[]) => any
 
 interface IListOptionsVariant<T> {
 	expected: T[]
@@ -83,6 +83,7 @@ interface IListExpected<T> {
 	returnValue: any,
 	defaultValue: any,
 	collectionChanged?: Array<ICollectionChangedEvent<T>>,
+	countSorted?: number
 }
 
 interface IListOptionsVariants<T> extends IOptionsVariants {
@@ -162,9 +163,15 @@ export class TestList<T> extends TestVariants<
 				})
 			}
 
+			assert.strictEqual(list.countSorted, 0)
+
 			const arrayReplicate = options.autoSort || options.notAddIfExists
 				? list.toArray().slice()
 				: array.slice()
+
+			if (options.autoSort) {
+				assert.strictEqual(list.countSorted, list.size)
+			}
 
 			const collectionChangedEvents = []
 			if (options.useCollectionChanged) {
@@ -182,11 +189,11 @@ export class TestList<T> extends TestVariants<
 			}
 
 			if (options.expected.error) {
-				assert.throws(() => options.action(list), options.expected.error)
+				assert.throws(() => options.action(list, array), options.expected.error)
 				assert.strictEqual(list.minAllocatedSize, undefined)
 				assertList(list, options.array)
 			} else {
-				assert.deepStrictEqual(options.action(list), options.expected.returnValue)
+				assert.deepStrictEqual(options.action(list, array), options.expected.returnValue)
 				assert.strictEqual(list.minAllocatedSize, undefined)
 				assertList(list, options.expected.array)
 			}
@@ -205,6 +212,11 @@ export class TestList<T> extends TestVariants<
 				assert.deepStrictEqual(collectionChangedEvents, options.expected.collectionChanged || [])
 				assert.deepStrictEqual(arrayReplicate, list.toArray())
 			}
+
+			assert.strictEqual(
+				list.countSorted,
+				options.expected.countSorted || (options.autoSort ? list.size : 0),
+			)
 		} catch (ex) {
 			console.log(`Error in: ${
 				options.description

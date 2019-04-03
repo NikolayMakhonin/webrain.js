@@ -295,6 +295,29 @@ describe('common > main > lists > List', function() {
 		toArray = list.toArray()
 		assert.deepStrictEqual(toArray, [1, 2, 3])
 		assert.notStrictEqual(toArray, array)
+
+		list = new List({
+			array: array = [2, 3, 1],
+			countSorted: 2,
+		})
+		assert.strictEqual(list.size, 3)
+		assert.strictEqual(list.minAllocatedSize, undefined)
+		assert.strictEqual(list.allocatedSize, 3)
+		assert.strictEqual(list.equals, undefined)
+		assert.strictEqual(list.compare, undefined)
+		assert.strictEqual(list.autoSort, undefined)
+		assert.strictEqual(list.countSorted, 2)
+		assert.strictEqual(list.notAddIfExists, undefined)
+		toArray = list.toArray()
+		assert.deepStrictEqual(toArray, [2, 3, 1])
+		assert.notStrictEqual(toArray, array)
+
+		list.autoSort = true
+		assert.strictEqual(list.countSorted, 2)
+
+		list.get(0)
+		assert.strictEqual(list.countSorted, 3)
+		assert.deepStrictEqual(list.toArray(), [1, 2, 3])
 	})
 
 	it('size', function() {
@@ -397,6 +420,7 @@ describe('common > main > lists > List', function() {
 				array: ['2', '3', '4'],
 				returnValue: '3',
 				defaultValue: null,
+				countSorted: 3,
 			},
 			actions: [
 				list => list.get(1),
@@ -1643,6 +1667,23 @@ describe('common > main > lists > List', function() {
 		})
 
 		testList({
+			array: [[0]],
+			autoSort: [true],
+			expected: {
+				error: Error,
+				returnValue: null,
+				defaultValue: null,
+			},
+			actions: [
+				list => list.indexOf('true' as any),
+				list => list.indexOf([] as any),
+				list => list.indexOf({} as any),
+				list => list.indexOf((() => 0) as any),
+				list => list.indexOf(NaN as any),
+			],
+		})
+
+		testList({
 			array: [['b', 'd', 'd', 'd', 'd', 'd', 'j', 'l']],
 			notAddIfExists: [false],
 			expected: {
@@ -1849,6 +1890,67 @@ describe('common > main > lists > List', function() {
 			},
 			actions: [
 				moveRange(3, 10, 1),
+			],
+		})
+	})
+
+	it('sort', function() {
+		function sort<T>(): ITestActionsWithDescription<IListAction<T>> {
+			return {
+				actions: [
+					list => list.sort(),
+					list => list.reSort(),
+					list => {
+						const countSorted = list.countSorted
+						list.autoSort = true
+						list.autoSort = false
+						return list.countSorted !== countSorted
+					},
+				],
+				description: 'sort()\n',
+			}
+		}
+
+		testList({
+			array: [['2', '1', '3']],
+			expected: {
+				array: ['1', '2', '3'],
+				returnValue: true,
+				defaultValue: null,
+				countSorted: 3,
+				collectionChanged: [{
+					type: CollectionChangedType.Resorted,
+				}],
+			},
+			actions: [
+				sort(),
+			],
+		})
+	})
+
+	it('reSort', function() {
+		function reSort<T>(): ITestActionsWithDescription<IListAction<T>> {
+			return {
+				actions: [
+					list => list.reSort(),
+				],
+				description: 'reSort()\n',
+			}
+		}
+
+		testList({
+			array: [['1', '2', '3']],
+			autoSort: [true],
+			expected: {
+				array: ['1', '2', '3'],
+				returnValue: true,
+				defaultValue: null,
+				collectionChanged: [{
+					type: CollectionChangedType.Resorted,
+				}],
+			},
+			actions: [
+				reSort(),
 			],
 		})
 	})

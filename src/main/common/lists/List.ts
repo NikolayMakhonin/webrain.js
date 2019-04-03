@@ -49,6 +49,7 @@ export class List<T> extends CollectionChangedObject<T> {
 		compare,
 		autoSort,
 		notAddIfExists,
+		countSorted,
 	}: {
 		array?: T[],
 		minAllocatedSize?: number,
@@ -56,6 +57,7 @@ export class List<T> extends CollectionChangedObject<T> {
 		compare?: ICompare<T>,
 		autoSort?: boolean,
 		notAddIfExists?: boolean,
+		countSorted?: number,
 	} = {}) {
 		super()
 
@@ -81,6 +83,8 @@ export class List<T> extends CollectionChangedObject<T> {
 		if (notAddIfExists) {
 			this._notAddIfExists = notAddIfExists
 		}
+
+		this._countSorted = countSorted || 0
 	}
 
 	// endregion
@@ -210,15 +214,25 @@ export class List<T> extends CollectionChangedObject<T> {
 	}
 
 	public set autoSort(value: boolean) {
+		value = !!value
+
+		if (this._autoSort == value) {
+			return
+		}
+
 		this._autoSort = value
 
-		if (value && this._countSorted !== this._size) {
-			const {_collectionChangedIfCanEmit} = this
-			if (_collectionChangedIfCanEmit) {
-				_collectionChangedIfCanEmit.emit({
-					type: CollectionChangedType.Resorted,
-				})
+		if (value) {
+			if (this._countSorted !== this._size) {
+				const {_collectionChangedIfCanEmit} = this
+				if (_collectionChangedIfCanEmit) {
+					_collectionChangedIfCanEmit.emit({
+						type: CollectionChangedType.Resorted,
+					})
+				}
 			}
+		} else {
+			this.sort()
 		}
 	}
 
@@ -233,7 +247,7 @@ export class List<T> extends CollectionChangedObject<T> {
 	}
 
 	public set notAddIfExists(value: boolean) {
-		this._notAddIfExists = value
+		this._notAddIfExists = !!value
 	}
 
 	// endregion
@@ -410,6 +424,10 @@ export class List<T> extends CollectionChangedObject<T> {
 
 		_array[index] = item
 
+		if (index < this._countSorted) {
+			this._countSorted = index
+		}
+
 		const {_collectionChangedIfCanEmit} = this
 		if (_collectionChangedIfCanEmit) {
 			_collectionChangedIfCanEmit.emit({
@@ -430,10 +448,6 @@ export class List<T> extends CollectionChangedObject<T> {
 
 		if (this._notAddIfExists && this.indexOf(item) >= 0) {
 			return false
-		}
-
-		if (index < this._countSorted) {
-			this._countSorted = index
 		}
 
 		return this._insert(index, item)
@@ -577,7 +591,7 @@ export class List<T> extends CollectionChangedObject<T> {
 
 		this._setSize(_size - 1)
 
-		if (index >= this._countSorted - 1) {
+		if (index < this._countSorted) {
 			this._countSorted--
 		}
 
@@ -836,7 +850,9 @@ export class List<T> extends CollectionChangedObject<T> {
 	}
 
 	public reSort(): boolean {
-		if (!this._countSorted) {
+		const {_countSorted, _autoSort} = this
+
+		if (!_countSorted && _autoSort) {
 			return false
 		}
 
