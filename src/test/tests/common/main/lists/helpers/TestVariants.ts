@@ -86,7 +86,7 @@ export abstract class TestVariants<
 	TOptionsVariant extends AnyObject,
 	TOptionsVariants extends IOptionsVariants
 > {
-	public abstract baseOptionsVariants: TOptionsVariants
+	protected abstract baseOptionsVariants: TOptionsVariants
 
 	protected abstract testVariant(optionsVariant: TOptionsVariant & IOptionsVariant<TAction, TExpected>)
 

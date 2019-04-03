@@ -1,9 +1,8 @@
 import {
 	CollectionChangedType,
 } from '../../../../../main/common/lists/contracts/ICollectionChanged'
-import {List} from '../../../../../main/common/lists/List'
+import {compareDefault, List} from '../../../../../main/common/lists/List'
 import {
-	compareDefault,
 	generateArray, IListAction,
 	TestList,
 	toIterable,
@@ -18,7 +17,7 @@ describe('common > main > lists > List', function() {
 
 	const testList = TestList.test
 
-	after(function () {
+	after(function() {
 		console.log('Total List tests >= ' + TestList.totalListTests)
 	})
 
@@ -199,7 +198,7 @@ describe('common > main > lists > List', function() {
 
 	// endregion
 
-	it('constructor', function () {
+	it('constructor', function() {
 		let list
 
 		list = new List()
@@ -298,7 +297,7 @@ describe('common > main > lists > List', function() {
 		assert.notStrictEqual(toArray, array)
 	})
 
-	it('size', function () {
+	it('size', function() {
 		const array = generateArray(31)
 		const list = new List({
 			array,
@@ -361,7 +360,7 @@ describe('common > main > lists > List', function() {
 		assert.strictEqual(list.allocatedSize, 4)
 	})
 
-	it('get', function () {
+	it('get', function() {
 		testList({
 			array: [[]],
 			expected: {
@@ -406,7 +405,7 @@ describe('common > main > lists > List', function() {
 		})
 	})
 
-	it('set', function () {
+	it('set', function() {
 		function set<T>(
 			index: number,
 			item: T,
@@ -541,7 +540,7 @@ describe('common > main > lists > List', function() {
 		})
 	})
 
-	it('add', function () {
+	it('add', function() {
 		function add<T>(
 			item: T,
 		): ITestActionsWithDescription<IListAction<T>> {
@@ -596,7 +595,7 @@ describe('common > main > lists > List', function() {
 		})
 	})
 
-	it('addArray', function () {
+	it('addArray', function() {
 		function addArray<T>(
 			sourceItems: T[],
 			sourceStart?: number,
@@ -739,7 +738,7 @@ describe('common > main > lists > List', function() {
 		})
 	})
 
-	it('insert', function () {
+	it('insert', function() {
 		function insert<T>(
 			index: number,
 			item: T,
@@ -838,7 +837,7 @@ describe('common > main > lists > List', function() {
 		})
 	})
 
-	it('insertArray', function () {
+	it('insertArray', function() {
 		function insertArray<T>(
 			index: number,
 			sourceItems: T[],
@@ -913,7 +912,7 @@ describe('common > main > lists > List', function() {
 		})
 	})
 
-	it('remove', function () {
+	it('remove', function() {
 		function remove<T>(
 			item: T,
 		): ITestActionsWithDescription<IListAction<T>> {
@@ -1059,7 +1058,7 @@ describe('common > main > lists > List', function() {
 		})
 	})
 
-	it('removeAt', function () {
+	it('removeAt', function() {
 		function removeAt<T>(
 			index: number,
 			withoutShift?: boolean,
@@ -1156,7 +1155,7 @@ describe('common > main > lists > List', function() {
 		})
 	})
 
-	it('removeRange', function () {
+	it('removeRange', function() {
 		function removeRange<T>(
 			start: number,
 			end?: number,
@@ -1329,7 +1328,7 @@ describe('common > main > lists > List', function() {
 		})
 	})
 
-	it('clear', function () {
+	it('clear', function() {
 		function clear<T>(): ITestActionsWithDescription<IListAction<T>> {
 			return {
 				actions: [
@@ -1425,7 +1424,7 @@ describe('common > main > lists > List', function() {
 		})
 	})
 
-	it('toArray', function () {
+	it('toArray', function() {
 		function toArray<T>(
 			start?: number,
 			end?: number,
@@ -1513,7 +1512,7 @@ describe('common > main > lists > List', function() {
 		})
 	})
 
-	it('copyTo', function () {
+	it('copyTo', function() {
 		function copyTo<T>(
 			result: boolean,
 			destArray: T[],
@@ -1613,7 +1612,7 @@ describe('common > main > lists > List', function() {
 		})
 	})
 
-	it('indexOf', function () {
+	it('indexOf', function() {
 		testList({
 			array: [['b', 'd', 'f', 'h', 'j', 'l']],
 			expected: {
@@ -1677,7 +1676,7 @@ describe('common > main > lists > List', function() {
 		})
 	})
 
-	it('move', function () {
+	it('move', function() {
 		function move<T>(
 			oldIndex: number,
 			newIndex?: number,
@@ -1754,7 +1753,7 @@ describe('common > main > lists > List', function() {
 		})
 	})
 
-	it('moveRange', function () {
+	it('moveRange', function() {
 		function moveRange<T>(
 			start: number,
 			end?: number,

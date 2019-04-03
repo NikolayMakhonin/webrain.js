@@ -17,55 +17,9 @@ export function generateArray(size) {
 	return arr
 }
 
-export function expandArray<T>(array: T[], output: any[] = []): any[] {
-	for (const item of array) {
-		if (!item) {
-			continue
-		}
-
-		if (Array.isArray(item)) {
-			expandArray(item, output)
-		} else {
-			output.push(item)
-		}
-	}
-
-	return output
-}
-
 export function *toIterable<T>(array: T[]): Iterable<T> {
 	for (const item of array) {
 		yield item
-	}
-}
-
-export function *generateOptions(base: {}, optionsVariants: {}) {
-	let hasChilds
-	for (const key in optionsVariants) {
-		if (Object.prototype.hasOwnProperty.call(optionsVariants, key)) {
-			for (const optionVariant of optionsVariants[key]) {
-				const variant = {
-					...base,
-					[key]: optionVariant,
-				}
-
-				const newOptionsVariants = {
-					...optionsVariants,
-				}
-
-				delete newOptionsVariants[key]
-
-				hasChilds = true
-
-				yield* generateOptions(variant, newOptionsVariants)
-			}
-
-			break
-		}
-	}
-
-	if (!hasChilds) {
-		yield base
 	}
 }
 
@@ -108,42 +62,6 @@ export function applyCollectionChangedToArray<T>(event: ICollectionChangedEvent<
 			break
 	}
 }
-
-// type TestFunc<T> = ((list: List<T>) => any) | TestFuncs<T>
-// interface TestFuncs<T> extends Array<TestFunc<T>> { }
-//
-// export interface ITestFuncsWithDescription<T> {
-// 	funcs: TestFuncs<T>,
-// 	description: string
-// }
-// type TestFuncsWithDescription<T> = TestFunc<T> | ITestFuncsWithDescription<T> | TestFuncsWithDescriptions<T>
-// export interface TestFuncsWithDescriptions<T> extends Array<TestFuncsWithDescription<T>> { }
-//
-// export function testListBase<T>(
-// 	baseOptions: { [key: string]: any },
-// 	variants: { [key: string]: any },
-// 	testVariant: (options: {}) => any,
-// 	...testFuncsWithDescriptions: TestFuncsWithDescriptions<T>
-// ) {
-// 	for (const testFuncsWithDescription of expandArray(testFuncsWithDescriptions)) {
-// 		let {funcs, description} = testFuncsWithDescription
-// 		if (typeof testFuncsWithDescription === 'function') {
-// 			funcs = [testFuncsWithDescription]
-// 			description = ''
-// 		}
-//
-// 		for (const testFunc of expandArray(funcs)) {
-// 			for (const variant of generateOptions({}, variants)) {
-// 				testVariant({
-// 					...baseOptions,
-// 					description,
-// 					testFunc,
-// 					...variant,
-// 				})
-// 			}
-// 		}
-// 	}
-// }
 
 export type IListAction<T> = (list: List<T>) => any
 
@@ -207,7 +125,7 @@ export class TestList<T> extends TestVariants<
 
 	public static totalListTests: number = 0
 
-	public baseOptionsVariants = {
+	protected baseOptionsVariants: IListOptionsVariants<T> = {
 		notAddIfExists: [false, true],
 		withEquals: [false, true],
 		withCompare: [false, true],
@@ -314,4 +232,5 @@ export class TestList<T> extends TestVariants<
 
 		(TestList._instance as TestList<T>).test(testCases)
 	}
+
 }
