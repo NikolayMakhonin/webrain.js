@@ -1,7 +1,7 @@
 import {CollectionChangedObject} from './CollectionChangedObject'
 import {CollectionChangedType} from './contracts/ICollectionChanged'
 import {ICompare, IEquals} from './contracts/ICompare'
-import {move} from './helpers/array'
+import {binarySearch, move} from './helpers/array'
 
 function calcOptimalArraySize(desiredSize: number) {
 	let optimalSize = 4
@@ -67,10 +67,6 @@ export class List<T> extends CollectionChangedObject<T> {
 
 		if (notAddIfExists) {
 			this._notAddIfExists = notAddIfExists
-		}
-
-		if (notAddIfExists) {
-			this.removeDuplicates()
 		}
 	}
 
@@ -277,7 +273,7 @@ export class List<T> extends CollectionChangedObject<T> {
 		return end
 	}
 
-	public removeDuplicates(): number {
+	public removeDuplicates(withoutShift?: boolean): number {
 		const {_array} = this
 		let size = this._size
 
@@ -290,7 +286,7 @@ export class List<T> extends CollectionChangedObject<T> {
 			const contains = this.indexOf(_array[i], 0, i) >= 0
 			size = prevCount
 			if (contains) {
-				this.removeAt(i)
+				this.removeAt(i, withoutShift)
 				count++
 			}
 			i--
@@ -318,6 +314,10 @@ export class List<T> extends CollectionChangedObject<T> {
 
 		if (index >= _size) {
 			this._setSize(_size + 1)
+		}
+
+		if (index < this._countSorted) {
+			this._countSorted = index
 		}
 
 		const {_collectionChangedIfCanEmit} = this
@@ -349,21 +349,29 @@ export class List<T> extends CollectionChangedObject<T> {
 	}
 
 	public add(item: T): boolean {
-		const {_size, _array} = this
-		this._setSize(_size + 1)
-		_array[_size] = item
-
-		const {_collectionChangedIfCanEmit} = this
-		if (_collectionChangedIfCanEmit) {
-			_collectionChangedIfCanEmit.emit({
-				type: CollectionChangedType.Added,
-				index: _size,
-				newItems: [item],
-				shiftIndex: _size,
-			})
+		const {_notAddIfExists, _autoSort, _size} = this
+		let index
+		if (_notAddIfExists) {
+			index = this.indexOf(item, null, null, _autoSort ? 1 : 0)
+			if (index < 0) {
+				index = ~index
+			} else {
+				return false
+			}
+		} else if (_autoSort) {
+			index = this.indexOf(item, 0, this._countSorted, 1)
+			if (index < 0) {
+				index = ~index
+			}
+		} else {
+			index = _size
 		}
 
-		return true
+		if (_autoSort) {
+			this._countSorted++
+		}
+
+		return this._insert(index, item)
 	}
 
 	public addArray(sourceItems: T[], sourceStart?: number, sourceEnd?: number): boolean {
@@ -374,7 +382,7 @@ export class List<T> extends CollectionChangedObject<T> {
 		return this.insertIterable(this._size, items, itemsSize)
 	}
 
-	public insert(index: number, item: T): boolean {
+	private _insert(index: number, item: T): boolean {
 		const {_size, _array} = this
 
 		const newSize = _size + 1
@@ -402,8 +410,24 @@ export class List<T> extends CollectionChangedObject<T> {
 		return true
 	}
 
+	public insert(index: number, item: T): boolean {
+		if (this._autoSort) {
+			return this.add(item)
+		}
+
+		if (this._notAddIfExists && this.indexOf(item) >= 0) {
+			return false
+		}
+
+		if (index < this._countSorted) {
+			this._countSorted = index
+		}
+
+		return this._insert(index, item)
+	}
+
 	public insertArray(index: number, sourceItems: T[], sourceStart?: number, sourceEnd?: number): boolean {
-		const {_size, _array} = this
+		const {_size, _array, _autoSort} = this
 
 		let itemsSize = sourceItems.length
 
@@ -416,6 +440,15 @@ export class List<T> extends CollectionChangedObject<T> {
 			return false
 		}
 
+		if (_autoSort) {
+			let result = false
+			for (let i = 0; i < itemsSize; i++) {
+				result = this.add(sourceItems[i]) || result
+			}
+
+			return result
+		}
+
 		const newSize = _size + itemsSize
 
 		this._setSize(newSize)
@@ -426,6 +459,10 @@ export class List<T> extends CollectionChangedObject<T> {
 
 		for (let i = 0; i < itemsSize; i++) {
 			_array[index + i] = sourceItems[sourceStart + i]
+		}
+
+		if (index < this._countSorted) {
+			this._countSorted = index
 		}
 
 		const {_collectionChangedIfCanEmit} = this
@@ -485,6 +522,10 @@ export class List<T> extends CollectionChangedObject<T> {
 			throw new Error(`Iterable items size (${i - start}) less than itemsSize (${itemsSize})`)
 		}
 
+		if (start < this._countSorted) {
+			this._countSorted = start
+		}
+
 		const {_collectionChangedIfCanEmit} = this
 		if (_collectionChangedIfCanEmit) {
 			_collectionChangedIfCanEmit.emit({
@@ -499,7 +540,7 @@ export class List<T> extends CollectionChangedObject<T> {
 	}
 
 	public removeAt(index: number, withoutShift?: boolean): boolean {
-		const {_size, _array} = this
+		const {_size, _array, _autoSort} = this
 
 		index = List._prepareIndex(index, _size)
 
@@ -510,8 +551,11 @@ export class List<T> extends CollectionChangedObject<T> {
 			oldItems = [_array[index]]
 		}
 
-		if (withoutShift) {
+		if (withoutShift && !_autoSort) {
 			_array[index] = _array[_size - 1]
+			if (index < _size - 2 && index < this._countSorted) {
+				this._countSorted = index
+			}
 		} else {
 			for (let i = index + 1; i < _size; i++) {
 				_array[i - 1] = _array[i]
@@ -519,6 +563,10 @@ export class List<T> extends CollectionChangedObject<T> {
 		}
 
 		this._setSize(_size - 1)
+
+		if (index >= this._countSorted - 1) {
+			this._countSorted--
+		}
 
 		if (_collectionChangedIfCanEmit) {
 			_collectionChangedIfCanEmit.emit({
@@ -553,13 +601,17 @@ export class List<T> extends CollectionChangedObject<T> {
 			oldItems = _array.slice(start, end)
 		}
 
-		if (!withoutShift) {
-			withoutShift = removeSize < _size - end
-		}
+		// if (!withoutShift) {
+		// 	withoutShift = removeSize < _size - end
+		// }
 
 		if (withoutShift) {
 			for (let i = start; i < end; i++) {
 				_array[i] = _array[_size - end + i]
+			}
+
+			if (removeSize < _size - end && start < this._countSorted) {
+				this._countSorted = start
 			}
 		} else {
 			for (let i = end; i < _size; i++) {
@@ -568,6 +620,13 @@ export class List<T> extends CollectionChangedObject<T> {
 		}
 
 		this._setSize(_size - removeSize)
+
+		if (end <= this._countSorted) {
+			this._countSorted -= removeSize
+		} else if (start < this._countSorted) {
+			this._countSorted = start
+		}
+
 
 		if (_collectionChangedIfCanEmit) {
 			_collectionChangedIfCanEmit.emit({
@@ -613,6 +672,8 @@ export class List<T> extends CollectionChangedObject<T> {
 
 		_array[newIndex] = moveItem
 
+		this._countSorted = Math.min(this._countSorted, oldIndex, newIndex)
+
 		const {_collectionChangedIfCanEmit} = this
 		if (_collectionChangedIfCanEmit) {
 			_collectionChangedIfCanEmit.emit({
@@ -645,6 +706,8 @@ export class List<T> extends CollectionChangedObject<T> {
 			return false
 		}
 
+		this._countSorted = Math.min(this._countSorted, start, moveIndex)
+
 		const {_collectionChangedIfCanEmit} = this
 		if (_collectionChangedIfCanEmit) {
 			_collectionChangedIfCanEmit.emit({
@@ -659,20 +722,41 @@ export class List<T> extends CollectionChangedObject<T> {
 	}
 
 	public indexOf(item: T, start?: number, end?: number, bound?: number): number {
-		const {_size, _array, _equals} = this
+		const {_size, _array, _equals, _compare, _autoSort} = this
 
 		start = List._prepareStart(start, _size)
 		end = List._prepareEnd(end, _size)
 
+		if (this._autoSort) {
+			this.sort()
+		}
+
+		let countSorted = this._countSorted
+		if (!countSorted || countSorted < start || !_autoSort && countSorted <= start + 2) {
+			countSorted = start
+		} else if (countSorted > end) {
+			countSorted = end
+		}
+
+		let index
+
 		if (bound == null || bound <= 0) {
+			if (countSorted > start) {
+				index = binarySearch(_array, item, start, countSorted, _compare, bound)
+
+				if (index >= 0) {
+					return index
+				}
+			}
+
 			if (_equals) {
-				for (let i = start; i < end; i++) {
+				for (let i = countSorted; i < end; i++) {
 					if (_equals(_array[i], item)) {
 						return i
 					}
 				}
 			} else {
-				for (let i = start; i < end; i++) {
+				for (let i = countSorted; i < end; i++) {
 					if (_array[i] === item) {
 						return i
 					}
@@ -680,14 +764,14 @@ export class List<T> extends CollectionChangedObject<T> {
 			}
 		} else {
 			if (_equals) {
-				for (let i = end - 1; i >= start; i--) {
+				for (let i = end - 1; i >= countSorted; i--) {
 					if (_equals(_array[i], item)) {
 						return i
 					}
 				}
 			} else {
 				let last = -1
-				for (let i = start; i < end; i++) {
+				for (let i = countSorted; i < end; i++) {
 					if (_array[i] === item) {
 						last = i
 					}
@@ -696,9 +780,15 @@ export class List<T> extends CollectionChangedObject<T> {
 					return last
 				}
 			}
+
+			if (countSorted > start) {
+				index = binarySearch(_array, item, start, countSorted, _compare, bound)
+			}
 		}
 
-		return ~_size
+		return index == null || index < 0 && !_autoSort
+			? ~_size
+			: index
 	}
 
 	public contains(item: T): boolean {
@@ -719,6 +809,7 @@ export class List<T> extends CollectionChangedObject<T> {
 		}
 
 		this._setSize(0)
+		this._countSorted = 0
 
 		if (_collectionChangedIfCanEmit) {
 			_collectionChangedIfCanEmit.emit({
