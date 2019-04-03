@@ -425,6 +425,7 @@ export class List<T> extends CollectionChangedObject<T> {
 		_array[index] = item
 
 		if (index < this._countSorted) {
+			// TODO: do not do that if auto sort mode
 			this._countSorted = index
 		}
 

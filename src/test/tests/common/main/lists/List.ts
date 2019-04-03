@@ -617,6 +617,25 @@ describe('common > main > lists > List', function() {
 				add('1'),
 			],
 		})
+
+		testList({
+			array: [['0', '2', '3']],
+			autoSort: [true],
+			expected: {
+				array: ['0', '1', '2', '3'],
+				returnValue: true,
+				defaultValue: null,
+				collectionChanged: [{
+					type: CollectionChangedType.Added,
+					index: 1,
+					newItems: ['1'],
+					shiftIndex: 2,
+				}],
+			},
+			actions: [
+				add('1'),
+			],
+		})
 	})
 
 	it('addArray', function() {

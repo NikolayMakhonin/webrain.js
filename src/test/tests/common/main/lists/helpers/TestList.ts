@@ -169,9 +169,10 @@ export class TestList<T> extends TestVariants<
 				? list.toArray().slice()
 				: array.slice()
 
-			if (options.autoSort) {
-				assert.strictEqual(list.countSorted, list.size)
-			}
+			assert.strictEqual(
+				list.countSorted,
+				options.autoSort ? list.size : 0,
+			)
 
 			const collectionChangedEvents = []
 			if (options.useCollectionChanged) {
@@ -190,10 +191,20 @@ export class TestList<T> extends TestVariants<
 
 			if (options.expected.error) {
 				assert.throws(() => options.action(list, array), options.expected.error)
+				assert.strictEqual(
+					list.countSorted,
+					options.expected.countSorted == null
+						? (options.autoSort ? list.size : 0)
+						: options.expected.countSorted
+				)
+
 				assert.strictEqual(list.minAllocatedSize, undefined)
 				assertList(list, options.array)
 			} else {
 				assert.deepStrictEqual(options.action(list, array), options.expected.returnValue)
+				if (options.expected.countSorted != null) {
+					assert.strictEqual(list.countSorted, options.expected.countSorted)
+				}
 				assert.strictEqual(list.minAllocatedSize, undefined)
 				assertList(list, options.expected.array)
 			}
@@ -215,7 +226,7 @@ export class TestList<T> extends TestVariants<
 
 			assert.strictEqual(
 				list.countSorted,
-				options.expected.countSorted || (options.autoSort ? list.size : 0),
+				options.autoSort ? list.size : 0,
 			)
 		} catch (ex) {
 			console.log(`Error in: ${
