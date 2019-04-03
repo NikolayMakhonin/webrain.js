@@ -1407,15 +1407,15 @@ describe('common > main > lists > List', function() {
 		})
 
 		testList({
-			array: [[true, 'z1', 'z2', 'z3']],
+			array: [[1, '2', '3', '4']],
 			expected: {
 				array: [],
 				returnValue: true,
-				defaultValue: false,
+				defaultValue: 0,
 				collectionChanged: [{
 					type: CollectionChangedType.Removed,
 					index: 0,
-					oldItems: [true, 'z1', 'z2', 'z3'],
+					oldItems: [1, '2', '3', '4'],
 					shiftIndex: 0,
 				}],
 			},

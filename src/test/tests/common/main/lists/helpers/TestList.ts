@@ -3,7 +3,7 @@ import {
 	ICollectionChangedEvent,
 } from '../../../../../../main/common/lists/contracts/ICollectionChanged'
 import {ICompare} from '../../../../../../main/common/lists/contracts/ICompare'
-import {List} from '../../../../../../main/common/lists/List'
+import {compareDefault, List} from '../../../../../../main/common/lists/List'
 import {IOptionsVariant, IOptionsVariants, ITestCase, TestVariants} from './TestVariants'
 
 declare const assert: any
@@ -15,16 +15,6 @@ export function generateArray(size) {
 	}
 
 	return arr
-}
-
-export function compareDefault(o1, o2) {
-	if (o1 > o2) {
-		return 1
-	} else if (o2 > o1) {
-		return -1
-	} else {
-		return 0
-	}
 }
 
 export function expandArray<T>(array: T[], output: any[] = []): any[] {
@@ -197,7 +187,7 @@ function assertList<T>(list: List<T>, expectedArray: T[]) {
 		assert.strictEqual(list.get(i), expectedArray[i])
 		assert.strictEqual(expectedArray[list.indexOf(expectedArray[i])], expectedArray[i])
 		assert.strictEqual(list.contains(expectedArray[i]), true)
-		assert.strictEqual(list.contains({} as any), false)
+		assert.strictEqual(list.contains(Math.random() as any), false)
 	}
 
 	assert.deepStrictEqual(Array.from(list), expectedArray)

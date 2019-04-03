@@ -24,6 +24,19 @@ function getDefaultValue(value) {
 	return null
 }
 
+export function compareDefault(o1, o2) {
+	if (o1 > o2) {
+		return 1
+	} else if (o2 > o1) {
+		return -1
+	} else {
+		if (o1 !== o2) {
+			throw new Error(`Compare values is not supported: ${typeof o1}, ${typeof o2}`)
+		}
+		return 0
+	}
+}
+
 export class List<T> extends CollectionChangedObject<T> {
 	// region constructor
 
@@ -627,7 +640,6 @@ export class List<T> extends CollectionChangedObject<T> {
 			this._countSorted = start
 		}
 
-
 		if (_collectionChangedIfCanEmit) {
 			_collectionChangedIfCanEmit.emit({
 				type: CollectionChangedType.Removed,
@@ -742,7 +754,7 @@ export class List<T> extends CollectionChangedObject<T> {
 
 		if (bound == null || bound <= 0) {
 			if (countSorted > start) {
-				index = binarySearch(_array, item, start, countSorted, _compare, bound)
+				index = binarySearch(_array, item, start, countSorted, _compare || List.compareDefault, bound)
 
 				if (index >= 0) {
 					return index
@@ -782,7 +794,7 @@ export class List<T> extends CollectionChangedObject<T> {
 			}
 
 			if (countSorted > start) {
-				index = binarySearch(_array, item, start, countSorted, _compare, bound)
+				index = binarySearch(_array, item, start, countSorted, _compare || List.compareDefault, bound)
 			}
 		}
 
@@ -863,7 +875,7 @@ export class List<T> extends CollectionChangedObject<T> {
 		}
 
 		_array.length = _size
-		_array.sort(this._compare)
+		_array.sort(this._compare || List.compareDefault)
 		this._countSorted = _size
 
 		if (!this._autoSort) {
@@ -918,6 +930,12 @@ export class List<T> extends CollectionChangedObject<T> {
 			yield _array[i]
 		}
 	}
+
+	// endregion
+
+	// region Static
+
+	public static readonly compareDefault: ICompare<any> = compareDefault
 
 	// endregion
 }
