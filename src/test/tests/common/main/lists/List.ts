@@ -21,183 +21,6 @@ describe('common > main > lists > List', function() {
 		console.log('Total List tests >= ' + TestList.totalListTests)
 	})
 
-	// region helpers
-
-	// function assertList<T>(list: List<T>, expectedArray: T[]) {
-	// 	assert.deepStrictEqual(list.toArray(), expectedArray)
-	// 	assert.strictEqual(list.size, expectedArray.length)
-	// 	assert.ok(list.allocatedSize >= expectedArray.length)
-	//
-	// 	for (let i = 0; i < expectedArray.length; i++) {
-	// 		assert.strictEqual(list.get(i), expectedArray[i])
-	// 		assert.strictEqual(expectedArray[list.indexOf(expectedArray[i])], expectedArray[i])
-	// 		assert.strictEqual(list.contains(expectedArray[i]), true)
-	// 		assert.strictEqual(list.contains({} as any), false)
-	// 	}
-	//
-	// 	assert.deepStrictEqual(Array.from(list), expectedArray)
-	// }
-	//
-	// interface TestOptionsBase<T> {
-	// 	orig: T[],
-	// 	expected: T[] | (new () => Error),
-	// 	returnValue: any,
-	// 	defaultValue: any,
-	// 	variants?: TestOptionsVariants,
-	// 	collectionChanged?: Array<ICollectionChangedEvent<T>>,
-	// }
-	//
-	// const baseVariants: TestOptionsVariants = {
-	// 	notAddIfExists: [false, true],
-	// 	withEquals: [false, true],
-	// 	withCompare: [false, true],
-	// 	reuseListInstance: [false, true],
-	// 	useCollectionChanged: [false, true],
-	// }
-	//
-	// interface TestOptionsVariants {
-	// 	withEquals?: boolean[]
-	// 	withCompare?: boolean[]
-	// 	reuseListInstance?: boolean[]
-	// 	useCollectionChanged?: boolean[]
-	// 	autoSort?: boolean[]
-	// 	notAddIfExists?: boolean[]
-	// }
-	//
-	// interface TestOptionsVariant {
-	// 	withEquals?: boolean
-	// 	withCompare?: boolean
-	// 	reuseListInstance?: boolean
-	// 	useCollectionChanged?: boolean
-	// 	autoSort?: boolean
-	// 	notAddIfExists?: boolean
-	// }
-	//
-	// interface TestOptions<T> extends TestOptionsBase<T>, TestOptionsVariant {
-	// 	description?: string
-	// 	testFunc?: (list: List<T>) => any
-	// }
-	//
-	// const staticList = new List()
-	//
-	// function testChangeVariant<T>(
-	// 	options: TestOptions<T>,
-	// ) {
-	// 	let unsubscribe
-	// 	try {
-	// 		const array = options.orig.slice()
-	// 		// assert.deepStrictEqual(array, array.slice().sort(compareDefault))
-	// 		const equals = options.withEquals ? (o1, o2) => o1 === o2 : undefined
-	// 		const compare = options.withCompare ? compareDefault : undefined
-	// 		let list: List<T>
-	//
-	// 		if (options.reuseListInstance) {
-	// 			staticList.clear()
-	// 			staticList.equals = equals
-	// 			staticList.compare = compare
-	// 			staticList.autoSort = false
-	// 			staticList.notAddIfExists = false
-	// 			staticList.addArray(array)
-	// 			staticList.autoSort = options.autoSort
-	// 			staticList.notAddIfExists = options.notAddIfExists
-	// 			list = staticList as List<T>
-	// 		} else {
-	// 			list = new List({
-	// 				array,
-	// 				equals,
-	// 				compare,
-	// 				autoSort: options.autoSort,
-	// 				notAddIfExists: options.notAddIfExists,
-	// 			})
-	// 		}
-	//
-	// 		const arrayReplicate = options.autoSort || options.notAddIfExists
-	// 			? list.toArray().slice()
-	// 			: array.slice()
-	//
-	// 		const collectionChangedEvents = []
-	// 		if (options.useCollectionChanged) {
-	// 			unsubscribe = list.collectionChanged.subscribe(event => {
-	// 				collectionChangedEvents.push(event)
-	// 				applyCollectionChangedToArray(event, arrayReplicate, compare)
-	//
-	// 				assert.deepStrictEqual(arrayReplicate, list.toArray())
-	// 			})
-	// 		}
-	//
-	// 		assert.strictEqual(list.minAllocatedSize, undefined)
-	// 		if (!options.reuseListInstance) {
-	// 			assertList(list, array)
-	// 		}
-	//
-	// 		if (Array.isArray(options.expected)) {
-	// 			assert.deepStrictEqual(options.testFunc(list), options.funcResult)
-	//
-	// 			assert.strictEqual(list.minAllocatedSize, undefined)
-	// 			assertList(list, options.expected)
-	// 		} else {
-	// 			assert.throws(() => options.testFunc(list), options.expected)
-	//
-	// 			assert.strictEqual(list.minAllocatedSize, undefined)
-	// 			assertList(list, options.orig)
-	// 		}
-	//
-	// 		if (!options.reuseListInstance) {
-	// 			assert.deepStrictEqual(array.slice(0, list.size), list.toArray())
-	// 			for (let i = list.size; i < array.length; i++) {
-	// 				assert.strictEqual(array[i], options.defaultValue)
-	// 			}
-	// 		}
-	//
-	// 		if (options.useCollectionChanged) {
-	// 			if (unsubscribe) {
-	// 				unsubscribe()
-	// 			}
-	// 			assert.deepStrictEqual(collectionChangedEvents, options.collectionChanged || [])
-	// 			assert.deepStrictEqual(arrayReplicate, list.toArray())
-	// 		}
-	// 	} catch (ex) {
-	// 		console.log(`Error in: ${
-	// 			options.description
-	// 			}\n${
-	// 			JSON.stringify(options, null, 4)
-	// 			}\n${options.testFunc.toString()}\n`)
-	// 		throw ex
-	// 	} finally {
-	// 		if (unsubscribe) {
-	// 			unsubscribe()
-	// 		}
-	// 		totalListTests++
-	// 	}
-	// }
-	//
-	// function testChange<T>(
-	// 	baseOptions: TestOptionsBase<T>,
-	// 	...testFuncsWithDescriptions: TestFuncsWithDescriptions<T>
-	// ) {
-	// 	if ((!baseOptions.orig || baseOptions.orig.length <= 1)
-	// 		&& Array.isArray(baseOptions.expected)
-	// 		&& (!baseOptions.expected || baseOptions.expected.length <= 1)
-	// 	) {
-	// 		baseOptions.variants = {
-	// 			autoSort: [false, true],
-	// 			...baseOptions.variants,
-	// 		}
-	// 	}
-	//
-	// 	testListBase(
-	// 		baseOptions,
-	// 		{
-	// 			...baseVariants,
-	// 			...baseOptions.variants,
-	// 		},
-	// 		testChangeVariant,
-	// 		...testFuncsWithDescriptions,
-	// 	)
-	// }
-
-	// endregion
-
 	it('constructor', function() {
 		let list
 
@@ -205,7 +28,6 @@ describe('common > main > lists > List', function() {
 		assert.strictEqual(list.size, 0)
 		assert.strictEqual(list.minAllocatedSize, undefined)
 		assert.strictEqual(list.allocatedSize, 0)
-		assert.strictEqual(list.equals, undefined)
 		assert.strictEqual(list.compare, undefined)
 		assert.strictEqual(list.autoSort, undefined)
 		assert.strictEqual(list.notAddIfExists, undefined)
@@ -217,7 +39,6 @@ describe('common > main > lists > List', function() {
 		assert.strictEqual(list.size, 0)
 		assert.strictEqual(list.minAllocatedSize, 3)
 		assert.strictEqual(list.allocatedSize, 0)
-		assert.strictEqual(list.equals, undefined)
 		assert.strictEqual(list.compare, undefined)
 		assert.strictEqual(list.autoSort, undefined)
 		assert.strictEqual(list.notAddIfExists, undefined)
@@ -230,7 +51,6 @@ describe('common > main > lists > List', function() {
 		assert.strictEqual(list.size, 3)
 		assert.strictEqual(list.minAllocatedSize, undefined)
 		assert.strictEqual(list.allocatedSize, 3)
-		assert.strictEqual(list.equals, undefined)
 		assert.strictEqual(list.compare, undefined)
 		assert.strictEqual(list.autoSort, undefined)
 		assert.strictEqual(list.notAddIfExists, undefined)
@@ -238,26 +58,12 @@ describe('common > main > lists > List', function() {
 		assert.deepStrictEqual(toArray, [0, 1, 2])
 		assert.notStrictEqual(toArray, array)
 
-		const equals = (o1, o2) => o1 === o2
-		list = new List({
-			equals,
-		})
-		assert.strictEqual(list.size, 0)
-		assert.strictEqual(list.minAllocatedSize, undefined)
-		assert.strictEqual(list.allocatedSize, 0)
-		assert.strictEqual(list.equals, equals)
-		assert.strictEqual(list.compare, undefined)
-		assert.strictEqual(list.autoSort, undefined)
-		assert.strictEqual(list.notAddIfExists, undefined)
-		assert.deepStrictEqual(list.toArray(), [])
-
 		list = new List({
 			compare: compareDefault,
 		})
 		assert.strictEqual(list.size, 0)
 		assert.strictEqual(list.minAllocatedSize, undefined)
 		assert.strictEqual(list.allocatedSize, 0)
-		assert.strictEqual(list.equals, undefined)
 		assert.strictEqual(list.compare, compareDefault)
 		assert.strictEqual(list.autoSort, undefined)
 		assert.strictEqual(list.notAddIfExists, undefined)
@@ -270,7 +76,6 @@ describe('common > main > lists > List', function() {
 		assert.strictEqual(list.size, 6)
 		assert.strictEqual(list.minAllocatedSize, undefined)
 		assert.strictEqual(list.allocatedSize, 6)
-		assert.strictEqual(list.equals, undefined)
 		assert.strictEqual(list.compare, undefined)
 		assert.strictEqual(list.autoSort, undefined)
 		assert.strictEqual(list.notAddIfExists, true)
@@ -280,6 +85,9 @@ describe('common > main > lists > List', function() {
 		// assert.strictEqual(list.size, 3)
 		// assert.deepStrictEqual(toArray, [2, 1, 3])
 		assert.notStrictEqual(toArray, array)
+		list.autoSort = false
+		assert.deepStrictEqual(list.toArray(), [2, 1, 1, 1, 1, 3])
+		assert.strictEqual(list.autoSort, false)
 
 		list = new List({
 			array: array = [2, 1, 3],
@@ -288,7 +96,6 @@ describe('common > main > lists > List', function() {
 		assert.strictEqual(list.size, 3)
 		assert.strictEqual(list.minAllocatedSize, undefined)
 		assert.strictEqual(list.allocatedSize, 3)
-		assert.strictEqual(list.equals, undefined)
 		assert.strictEqual(list.compare, undefined)
 		assert.strictEqual(list.autoSort, true)
 		assert.strictEqual(list.notAddIfExists, undefined)
@@ -303,7 +110,6 @@ describe('common > main > lists > List', function() {
 		assert.strictEqual(list.size, 3)
 		assert.strictEqual(list.minAllocatedSize, undefined)
 		assert.strictEqual(list.allocatedSize, 3)
-		assert.strictEqual(list.equals, undefined)
 		assert.strictEqual(list.compare, undefined)
 		assert.strictEqual(list.autoSort, undefined)
 		assert.strictEqual(list.countSorted, 2)
@@ -504,6 +310,7 @@ describe('common > main > lists > List', function() {
 					index: 0,
 					oldItems: ['0'],
 					newItems: ['1'],
+					moveIndex: 0,
 				}],
 			},
 			actions: [
@@ -555,11 +362,90 @@ describe('common > main > lists > List', function() {
 					index: 0,
 					oldItems: ['0'],
 					newItems: ['2'],
+					moveIndex: 0,
 				}],
 			},
 			actions: [
 				set(0, '2'),
 				set(-3, '2'),
+			],
+		})
+
+		testList({ // '0', '3', '4', '5', '7'
+			array: [['5', '3', '7', '4', '0']],
+			autoSort: [true],
+			expected: {
+				array: ['0', '1', '3', '5', '7'],
+				returnValue: true,
+				defaultValue: null,
+				collectionChanged: [{
+					type: CollectionChangedType.Set,
+					index: 2,
+					oldItems: ['4'],
+					newItems: ['1'],
+					moveIndex: 1,
+				}],
+			},
+			actions: [
+				set(2, '1'),
+				set(-4, '1'),
+			],
+		})
+
+		testList({ // '0', '3', '4', '5', '7'
+			array: [['5', '3', '7', '4', '0']],
+			notAddIfExists: [true],
+			autoSort: [true],
+			expected: {
+				array: ['0', '3', '5', '7'],
+				returnValue: true,
+				defaultValue: null,
+				collectionChanged: [{
+					type: CollectionChangedType.Removed,
+					index: 2,
+					oldItems: ['4'],
+					shiftIndex: 3,
+				}],
+			},
+			actions: [
+				set(2, '0'),
+				set(-4, '0'),
+			],
+		})
+
+		testList({
+			array: [['5', '3', '7', '4', '0']],
+			notAddIfExists: [true],
+			autoSort: [false],
+			expected: {
+				array: ['5', '3', '4', '0'],
+				returnValue: true,
+				defaultValue: null,
+				collectionChanged: [{
+					type: CollectionChangedType.Removed,
+					index: 2,
+					oldItems: ['7'],
+					shiftIndex: 3,
+				}],
+			},
+			actions: [
+				set(2, '0'),
+				set(-4, '0'),
+			],
+		})
+
+		testList({ // '0', '3', '5', '5', '7'
+			array: [['5', '3', '5', '7', '0']],
+			notAddIfExists: [false],
+			autoSort: [true],
+			expected: {
+				array: ['0', '3', '5', '5', '7'],
+				returnValue: false,
+				defaultValue: null,
+			},
+			actions: [
+				set(2, '5'),
+				set(-4, '5'),
 			],
 		})
 	})
@@ -636,6 +522,21 @@ describe('common > main > lists > List', function() {
 				add('1'),
 			],
 		})
+
+		testList({
+			array: [['0', '2', '3']],
+			notAddIfExists: [true],
+			expected: {
+				array: ['0', '2', '3'],
+				returnValue: false,
+				defaultValue: null,
+			},
+			actions: [
+				add('0'),
+				add('2'),
+				add('3'),
+			],
+		})
 	})
 
 	it('addArray', function() {
@@ -703,6 +604,7 @@ describe('common > main > lists > List', function() {
 
 		testList({
 			array: [[]],
+			notAddIfExists: [false],
 			expected: {
 				error: Error,
 				returnValue: null,
@@ -716,6 +618,7 @@ describe('common > main > lists > List', function() {
 
 		testList({
 			array: [['0']],
+			notAddIfExists: [false],
 			expected: {
 				array: ['0', '1', '2', '3'],
 				returnValue: true,
@@ -736,6 +639,7 @@ describe('common > main > lists > List', function() {
 
 		testList({
 			array: [['0']],
+			notAddIfExists: [false],
 			expected: {
 				array: ['0', '1', '2'],
 				returnValue: true,
@@ -759,6 +663,7 @@ describe('common > main > lists > List', function() {
 
 		testList({
 			array: [['0']],
+			notAddIfExists: [false],
 			expected: {
 				array: ['0', '2', '3'],
 				returnValue: true,
@@ -862,8 +767,10 @@ describe('common > main > lists > List', function() {
 
 		testList({
 			array: [['0', '1', '2', '3', '4']],
+			countSorted: [1, 2, 3, 4],
 			expected: {
 				array: ['0', '5', '1', '2', '3', '4'],
+				countSorted: 1,
 				returnValue: true,
 				defaultValue: null,
 				collectionChanged: [{
@@ -904,6 +811,7 @@ describe('common > main > lists > List', function() {
 
 		testList({
 			array: [['0']],
+			notAddIfExists: [false],
 			expected: {
 				array: ['1', '2', '0'],
 				returnValue: true,
@@ -930,6 +838,7 @@ describe('common > main > lists > List', function() {
 
 		testList({
 			array: [['0', '1', '2', '3', '4']],
+			notAddIfExists: [false],
 			expected: {
 				array: ['0', '1', '4', '5', '2', '3', '4'],
 				returnValue: true,
@@ -1083,9 +992,9 @@ describe('common > main > lists > List', function() {
 		})
 
 		testList({
-			array: [['', 0, true]],
+			array: [['0', 2, true]],
 			expected: {
-				array: ['', 0],
+				array: ['0', 2],
 				returnValue: true,
 				defaultValue: 0,
 				collectionChanged: [{
@@ -1317,6 +1226,7 @@ describe('common > main > lists > List', function() {
 
 		testList({
 			array: [[-5, -4, -3, -2, -1, undefined]],
+			compare: [(o1: any, o2: any) => compareDefault(o1 || 0, o2 || 0)],
 			expected: {
 				array: [-5, -1, undefined],
 				returnValue: true,
@@ -1658,6 +1568,7 @@ describe('common > main > lists > List', function() {
 	it('indexOf', function() {
 		testList({
 			array: [['b', 'd', 'f', 'h', 'j', 'l']],
+			compare: [(o1: any, o2: any) => compareDefault(o1 + '', o2 + '')],
 			expected: {
 				array: ['b', 'd', 'f', 'h', 'j', 'l'],
 				returnValue: ~6,
@@ -1704,6 +1615,7 @@ describe('common > main > lists > List', function() {
 
 		testList({
 			array: [['b', 'd', 'd', 'd', 'd', 'd', 'j', 'l']],
+			compare: [(o1: any, o2: any) => compareDefault(o1 + '', o2 + '')],
 			notAddIfExists: [false],
 			expected: {
 				array: ['b', 'd', 'd', 'd', 'd', 'd', 'j', 'l'],
@@ -1721,6 +1633,7 @@ describe('common > main > lists > List', function() {
 
 		testList({
 			array: [['b', 'd', 'd', 'd', 'd', 'd', 'j', 'l']],
+			compare: [(o1: any, o2: any) => compareDefault(o1 + '', o2 + '')],
 			notAddIfExists: [false],
 			expected: {
 				array: ['b', 'd', 'd', 'd', 'd', 'd', 'j', 'l'],
@@ -1970,6 +1883,98 @@ describe('common > main > lists > List', function() {
 			},
 			actions: [
 				reSort(),
+			],
+		})
+	})
+
+	it('removeDuplicates', function() {
+		function removeDuplicates<T>(
+			withoutShift?: boolean,
+		): ITestActionsWithDescription<IListAction<T>> {
+			return {
+				actions: [
+					list => list.removeDuplicates(withoutShift),
+					// !withoutShift && (list => {
+					// 	list.notAddIfExists = true
+					// 	const size = list.size
+					// 	for (let i = size - 1; i >= 0; i--) {
+					// 		list.set(i, list.get(i))
+					// 	}
+					// 	return size - list.size
+					// }),
+				],
+				description: `removeDuplicates(${withoutShift})\n`,
+			}
+		}
+
+		testList({
+			array: [['2', '1', '2', '3', '4', '2']],
+			expected: {
+				array: ['2', '1', '3', '4'],
+				returnValue: 2,
+				defaultValue: null,
+				collectionChanged: [{
+					type: CollectionChangedType.Removed,
+					index: 5,
+					oldItems: ['2'],
+					shiftIndex: 5,
+				}, {
+					type: CollectionChangedType.Removed,
+					index: 2,
+					oldItems: ['2'],
+					shiftIndex: 3,
+				}],
+			},
+			actions: [
+				removeDuplicates(),
+				removeDuplicates(false),
+			],
+		})
+
+		testList({
+			array: [['2', '1', '2', '3', '4', '2']],
+			expected: {
+				array: ['2', '1', '4', '3'],
+				returnValue: 2,
+				defaultValue: null,
+				collectionChanged: [{
+					type: CollectionChangedType.Removed,
+					index: 5,
+					oldItems: ['2'],
+					shiftIndex: 5,
+				}, {
+					type: CollectionChangedType.Removed,
+					index: 2,
+					oldItems: ['2'],
+					shiftIndex: 4,
+				}],
+			},
+			actions: [
+				removeDuplicates(true),
+			],
+		})
+
+		testList({ // '1', '2', '2', '2', '3', '4'
+			array: [['2', '1', '2', '3', '4', '2']],
+			autoSort: [true],
+			expected: {
+				array: ['1', '2', '3', '4'],
+				returnValue: 2,
+				defaultValue: null,
+				collectionChanged: [{
+					type: CollectionChangedType.Removed,
+					index: 3,
+					oldItems: ['2'],
+					shiftIndex: 4,
+				}, {
+					type: CollectionChangedType.Removed,
+					index: 2,
+					oldItems: ['2'],
+					shiftIndex: 3,
+				}],
+			},
+			actions: [
+				removeDuplicates(true),
 			],
 		})
 	})

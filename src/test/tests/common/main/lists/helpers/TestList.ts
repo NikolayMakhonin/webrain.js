@@ -53,6 +53,9 @@ export function applyCollectionChangedToArray<T>(event: ICollectionChangedEvent<
 		case CollectionChangedType.Set:
 			assert.strictEqual(array[event.index], event.oldItems[0])
 			array[event.index] = event.newItems[0]
+			if (event.moveIndex !== event.index) {
+				array.splice(event.moveIndex, 0, ...array.splice(event.index, 1))
+			}
 			break
 		case CollectionChangedType.Moved:
 			array.splice(event.moveIndex, 0, ...array.splice(event.index, event.moveSize))
@@ -69,12 +72,13 @@ interface IListOptionsVariant<T> {
 	expected: T[]
 	array: T[]
 
-	withEquals?: boolean
+	compare?: ICompare<T>
 	withCompare?: boolean
 	reuseListInstance?: boolean
 	useCollectionChanged?: boolean
 	autoSort?: boolean
 	notAddIfExists?: boolean
+	countSorted?: number
 }
 
 interface IListExpected<T> {
@@ -89,12 +93,13 @@ interface IListExpected<T> {
 interface IListOptionsVariants<T> extends IOptionsVariants {
 	array?: T[][]
 
-	withEquals?: boolean[]
+	compare?: Array<ICompare<T>>
 	withCompare?: boolean[]
 	reuseListInstance?: boolean[]
 	useCollectionChanged?: boolean[]
 	autoSort?: boolean[]
 	notAddIfExists?: boolean[]
+	countSorted?: number[]
 }
 
 function assertList<T>(list: List<T>, expectedArray: T[]) {
@@ -112,7 +117,10 @@ function assertList<T>(list: List<T>, expectedArray: T[]) {
 	assert.deepStrictEqual(Array.from(list), expectedArray)
 }
 
-const staticList = new List()
+const staticArray = []
+const staticList = new List({
+	array: staticArray,
+})
 
 export class TestList<T> extends TestVariants<
 	IListAction<T>,
@@ -128,118 +136,140 @@ export class TestList<T> extends TestVariants<
 
 	protected baseOptionsVariants: IListOptionsVariants<T> = {
 		notAddIfExists: [false, true],
-		withEquals: [false, true],
 		withCompare: [false, true],
 		reuseListInstance: [false, true],
 		useCollectionChanged: [false, true],
 	}
 
 	protected testVariant(options: IListOptionsVariant<T> & IOptionsVariant<IListAction<T>, IListExpected<T>>) {
-		let unsubscribe
-		try {
-			const array = options.array.slice()
-			// assert.deepStrictEqual(array, array.slice().sort(compareDefault))
-			const equals = options.withEquals ? (o1, o2) => o1 === o2 : undefined
-			const compare = options.withCompare ? compareDefault : undefined
-			let list: List<T>
+		let error
+		for (let debugIteration = 0; debugIteration < 3; debugIteration++) {
+			let unsubscribe
+			try {
+				let array = options.array.slice()
+				// assert.deepStrictEqual(array, array.slice().sort(compareDefault))
+				const compare = options.compare || (options.withCompare ? compareDefault : undefined)
+				let list: List<T>
 
-			if (options.reuseListInstance) {
-				staticList.clear()
-				staticList.equals = equals
-				staticList.compare = compare
-				staticList.autoSort = false
-				staticList.notAddIfExists = false
-				staticList.addArray(array)
-				staticList.autoSort = options.autoSort
-				staticList.notAddIfExists = options.notAddIfExists
-				list = staticList as List<T>
-			} else {
-				list = new List({
-					array,
-					equals,
-					compare,
-					autoSort: options.autoSort,
-					notAddIfExists: options.notAddIfExists,
-				})
-			}
+				if (options.reuseListInstance) {
+					staticList.clear()
+					staticList.compare = compare
+					staticList.notAddIfExists = false
+					if (options.countSorted != null) {
+						staticList.autoSort = true
+						for (let i = 0; i < options.countSorted; i++) {
+							staticList.add(array[i])
+						}
+						staticList.autoSort = false
+						for (let i = options.countSorted; i < array.length; i++) {
+							staticList.add(array[i])
+						}
+					} else {
+						staticList.autoSort = false
+						staticList.addArray(array)
+					}
+					staticList.autoSort = options.autoSort
+					staticList.notAddIfExists = options.notAddIfExists
+					list = staticList as List<T>
+					array = staticArray
+				} else {
+					list = new List({
+						array,
+						compare,
+						autoSort: options.autoSort,
+						notAddIfExists: options.notAddIfExists,
+						countSorted: options.countSorted,
+					})
+				}
 
-			assert.strictEqual(list.countSorted, 0)
+				assert.strictEqual(list.countSorted, options.countSorted || 0)
 
-			const arrayReplicate = options.autoSort || options.notAddIfExists
-				? list.toArray().slice()
-				: array.slice()
+				const arrayReplicate = options.autoSort
+					? array.slice(0, list.size).sort(compare)
+					: array.slice(0, list.size)
 
-			assert.strictEqual(
-				list.countSorted,
-				options.autoSort ? list.size : 0,
-			)
+				// assert.strictEqual(
+				// 	list.countSorted,
+				// 	options.autoSort ? list.size : options.countSorted || 0,
+				// )
 
-			const collectionChangedEvents = []
-			if (options.useCollectionChanged) {
-				unsubscribe = list.collectionChanged.subscribe(event => {
-					collectionChangedEvents.push(event)
-					applyCollectionChangedToArray(event, arrayReplicate, compare)
+				const collectionChangedEvents = []
+				if (options.useCollectionChanged) {
+					unsubscribe = list.collectionChanged.subscribe(event => {
+						collectionChangedEvents.push(event)
+						applyCollectionChangedToArray(event, arrayReplicate, compare)
 
+						assert.deepStrictEqual(arrayReplicate, array.slice(0, list.size))
+					})
+				}
+
+				assert.strictEqual(list.minAllocatedSize, undefined)
+				// if (!options.reuseListInstance) {
+				// 	assertList(list, array)
+				// }
+
+				if (options.expected.error) {
+					assert.throws(() => options.action(list, array), options.expected.error)
+					assert.strictEqual(
+						list.countSorted,
+						options.expected.countSorted == null
+							? (options.autoSort ? list.size : options.countSorted || 0)
+							: options.expected.countSorted,
+					)
+
+					assert.strictEqual(list.minAllocatedSize, undefined)
+					assertList(list, options.array)
+				} else {
+					assert.deepStrictEqual(options.action(list, array), options.expected.returnValue)
+					if (options.expected.countSorted != null) {
+						assert.strictEqual(list.countSorted, options.expected.countSorted)
+					}
+					assert.strictEqual(list.minAllocatedSize, undefined)
+					assertList(list, options.expected.array)
+				}
+
+				if (!options.reuseListInstance) {
+					assert.deepStrictEqual(array.slice(0, list.size), list.toArray())
+					for (let i = list.size; i < array.length; i++) {
+						assert.strictEqual(array[i], options.expected.defaultValue)
+					}
+				}
+
+				if (options.useCollectionChanged) {
+					if (unsubscribe) {
+						unsubscribe()
+					}
+					assert.deepStrictEqual(collectionChangedEvents, options.expected.collectionChanged || [])
 					assert.deepStrictEqual(arrayReplicate, list.toArray())
-				})
-			}
+				}
 
-			assert.strictEqual(list.minAllocatedSize, undefined)
-			if (!options.reuseListInstance) {
-				assertList(list, array)
-			}
-
-			if (options.expected.error) {
-				assert.throws(() => options.action(list, array), options.expected.error)
 				assert.strictEqual(
 					list.countSorted,
 					options.expected.countSorted == null
-						? (options.autoSort ? list.size : 0)
-						: options.expected.countSorted
+						? options.autoSort ? list.size : options.countSorted || 0
+						: options.expected.countSorted,
 				)
 
-				assert.strictEqual(list.minAllocatedSize, undefined)
-				assertList(list, options.array)
-			} else {
-				assert.deepStrictEqual(options.action(list, array), options.expected.returnValue)
-				if (options.expected.countSorted != null) {
-					assert.strictEqual(list.countSorted, options.expected.countSorted)
+				break
+			} catch (ex) {
+				if (!debugIteration) {
+					console.log(`Error in: ${
+						options.description
+						}\n${
+						JSON.stringify(options, null, 4)
+						}\n${options.action.toString()}\n${ex.stack}`)
+					error = ex
 				}
-				assert.strictEqual(list.minAllocatedSize, undefined)
-				assertList(list, options.expected.array)
-			}
-
-			if (!options.reuseListInstance) {
-				assert.deepStrictEqual(array.slice(0, list.size), list.toArray())
-				for (let i = list.size; i < array.length; i++) {
-					assert.strictEqual(array[i], options.expected.defaultValue)
-				}
-			}
-
-			if (options.useCollectionChanged) {
+			} finally {
 				if (unsubscribe) {
 					unsubscribe()
 				}
-				assert.deepStrictEqual(collectionChangedEvents, options.expected.collectionChanged || [])
-				assert.deepStrictEqual(arrayReplicate, list.toArray())
+				TestList.totalListTests++
 			}
+		}
 
-			assert.strictEqual(
-				list.countSorted,
-				options.autoSort ? list.size : 0,
-			)
-		} catch (ex) {
-			console.log(`Error in: ${
-				options.description
-				}\n${
-				JSON.stringify(options, null, 4)
-				}\n${options.action.toString()}\n`)
-			throw ex
-		} finally {
-			if (unsubscribe) {
-				unsubscribe()
-			}
-			TestList.totalListTests++
+		if (error) {
+			throw error
 		}
 	}
 
@@ -251,6 +281,39 @@ export class TestList<T> extends TestVariants<
 			&& (!testCases.expected.array || testCases.expected.array.length <= 1)
 		) {
 			testCases.autoSort = [false, true]
+		}
+
+		if (!testCases.countSorted
+			&& testCases.array
+			&& testCases.array.length >= 1
+			&& (!testCases.compare || testCases.compare.length <= 0)
+		) {
+			const compare = testCases.compare && testCases.compare.length && testCases.compare[0]
+				|| compareDefault
+
+			let minCountSorted
+			for (const array of testCases.array) {
+				let countSorted = 0
+				for (let i = 0; i < array.length; i++) {
+					if (i > 0 && compare(array[i - 1], array[i]) > 0) {
+						break
+					}
+					countSorted++
+				}
+
+				if (minCountSorted == null || countSorted < minCountSorted) {
+					minCountSorted = countSorted
+				}
+
+				if (minCountSorted === 0) {
+					break
+				}
+			}
+
+			testCases.countSorted = [undefined, 0]
+			for (let i = 1; i <= minCountSorted; i++) {
+				testCases.countSorted.push(i)
+			}
 		}
 
 		(TestList._instance as TestList<T>).test(testCases)

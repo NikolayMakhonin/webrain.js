@@ -45,7 +45,6 @@ export class List<T> extends CollectionChangedObject<T> {
 	constructor({
 		array,
 		minAllocatedSize,
-		equals,
 		compare,
 		autoSort,
 		notAddIfExists,
@@ -53,7 +52,6 @@ export class List<T> extends CollectionChangedObject<T> {
 	}: {
 		array?: T[],
 		minAllocatedSize?: number,
-		equals?: IEquals<T>,
 		compare?: ICompare<T>,
 		autoSort?: boolean,
 		notAddIfExists?: boolean,
@@ -68,20 +66,16 @@ export class List<T> extends CollectionChangedObject<T> {
 			this._minAllocatedSize = minAllocatedSize
 		}
 
-		if (equals) {
-			this._equals = equals
-		}
-
 		if (compare) {
 			this._compare = compare
 		}
 
 		if (autoSort) {
-			this._autoSort = autoSort
+			this._autoSort = !!autoSort
 		}
 
 		if (notAddIfExists) {
-			this._notAddIfExists = notAddIfExists
+			this._notAddIfExists = !!notAddIfExists
 		}
 
 		this._countSorted = countSorted || 0
@@ -167,20 +161,6 @@ export class List<T> extends CollectionChangedObject<T> {
 
 	// endregion
 
-	// region equals
-
-	private _equals: IEquals<T>
-
-	public get equals(): IEquals<T> {
-		return this._equals
-	}
-
-	public set equals(value: IEquals<T>) {
-		this._equals = value
-	}
-
-	// endregion
-
 	// region compare
 
 	private _compare: ICompare<T>
@@ -216,7 +196,12 @@ export class List<T> extends CollectionChangedObject<T> {
 	public set autoSort(value: boolean) {
 		value = !!value
 
-		if (this._autoSort == value) {
+		if (this._autoSort === value) {
+			return
+		}
+
+		if (!value && !this._autoSort) {
+			this._autoSort = value
 			return
 		}
 
@@ -307,6 +292,10 @@ export class List<T> extends CollectionChangedObject<T> {
 		let count = 0
 		let i = size - 1
 
+		if (this._autoSort) {
+			withoutShift = false
+		}
+
 		while (i >= 0) {
 			const prevCount = size
 			size = i
@@ -340,36 +329,77 @@ export class List<T> extends CollectionChangedObject<T> {
 		index = List._prepareIndex(index, _size + 1)
 
 		if (index >= _size) {
-			this._setSize(_size + 1)
+			return this.add(item)
 		}
 
-		if (index < this._countSorted) {
-			this._countSorted = index
+		const {_autoSort, _notAddIfExists, _compare, _collectionChangedIfCanEmit} = this
+
+		if (_autoSort) {
+			this.sort()
 		}
 
-		const {_collectionChangedIfCanEmit} = this
+		const oldItem = _array[index]
+
+		if ((_notAddIfExists || _autoSort || _collectionChangedIfCanEmit)
+			&& (_compare || List.compareDefault)(oldItem, item) === 0
+		) {
+			return false
+		}
+
+		let moveIndex
+		if (_notAddIfExists) {
+			let foundIndex = this.indexOf(item, null, null, _autoSort ? 1 : 0)
+			if (foundIndex < 0) {
+				if (_autoSort) {
+					foundIndex = ~foundIndex
+					moveIndex = foundIndex > index
+						? foundIndex - 1
+						: foundIndex
+				} else {
+					moveIndex = index
+				}
+			} else if (foundIndex !== index) {
+				return this.removeAt(index)
+			} else {
+				return false
+			}
+		} else if (_autoSort) {
+			let foundIndex = this.indexOf(item, 0, this._countSorted, 1)
+			if (foundIndex < 0) {
+				foundIndex = ~foundIndex
+			} else if (foundIndex === index) {
+				return false
+			}
+
+			moveIndex = foundIndex > index
+				? foundIndex - 1
+				: foundIndex
+		} else {
+			moveIndex = index
+		}
+
 		if (_collectionChangedIfCanEmit) {
 			const oldItem = _array[index]
 
 			_array[index] = item
 
-			if (index >= _size) {
-				_collectionChangedIfCanEmit.emit({
-					type: CollectionChangedType.Added,
-					index,
-					newItems: [item],
-					shiftIndex: index,
-				})
-			} else {
-				_collectionChangedIfCanEmit.emit({
-					type: CollectionChangedType.Set,
-					index,
-					oldItems: [oldItem],
-					newItems: [item],
-				})
+			if (moveIndex !== index) {
+				this._move(index, moveIndex)
 			}
+
+			_collectionChangedIfCanEmit.emit({
+				type: CollectionChangedType.Set,
+				index,
+				oldItems: [oldItem],
+				newItems: [item],
+				moveIndex,
+			})
 		} else {
 			_array[index] = item
+
+			if (moveIndex !== index) {
+				this._move(index, moveIndex)
+			}
 		}
 
 		return true
@@ -377,6 +407,11 @@ export class List<T> extends CollectionChangedObject<T> {
 
 	public add(item: T): boolean {
 		const {_notAddIfExists, _autoSort, _size} = this
+
+		if (_autoSort) {
+			this.sort()
+		}
+
 		let index
 		if (_notAddIfExists) {
 			index = this.indexOf(item, null, null, _autoSort ? 1 : 0)
@@ -398,6 +433,8 @@ export class List<T> extends CollectionChangedObject<T> {
 			this._countSorted++
 		}
 
+		index = List._prepareIndex(index, _size + 1)
+
 		return this._insert(index, item)
 	}
 
@@ -414,8 +451,6 @@ export class List<T> extends CollectionChangedObject<T> {
 
 		const newSize = _size + 1
 
-		index = List._prepareIndex(index, newSize)
-
 		this._setSize(newSize)
 
 		for (let i = newSize - 1; i > index; i--) {
@@ -423,11 +458,6 @@ export class List<T> extends CollectionChangedObject<T> {
 		}
 
 		_array[index] = item
-
-		if (index < this._countSorted) {
-			// TODO: do not do that if auto sort mode
-			this._countSorted = index
-		}
 
 		const {_collectionChangedIfCanEmit} = this
 		if (_collectionChangedIfCanEmit) {
@@ -451,6 +481,12 @@ export class List<T> extends CollectionChangedObject<T> {
 			return false
 		}
 
+		index = List._prepareIndex(index, this._size + 1)
+
+		if (index < this._countSorted) {
+			this._countSorted = index
+		}
+
 		return this._insert(index, item)
 	}
 
@@ -463,6 +499,22 @@ export class List<T> extends CollectionChangedObject<T> {
 		sourceStart = List._prepareStart(sourceStart, itemsSize)
 		sourceEnd = List._prepareEnd(sourceEnd, itemsSize)
 
+		if (this._autoSort) {
+			let result = false
+			for (let i = sourceStart; i < sourceEnd; i++) {
+				result = this.add(sourceItems[i]) || result
+			}
+			return result
+		} else if (this._notAddIfExists) {
+			let nextIndex = index
+			for (let i = sourceStart; i < sourceEnd; i++) {
+				if (this.insert(nextIndex, sourceItems[i])) {
+					nextIndex++
+				}
+			}
+			return nextIndex !== index
+		}
+
 		itemsSize = sourceEnd - sourceStart
 		if (itemsSize <= 0) {
 			return false
@@ -471,7 +523,7 @@ export class List<T> extends CollectionChangedObject<T> {
 		if (_autoSort) {
 			let result = false
 			for (let i = 0; i < itemsSize; i++) {
-				result = this.add(sourceItems[i]) || result
+				result = this.add(sourceItems[i]) || result // TODO fix => i + sourceStart
 			}
 
 			return result
@@ -517,14 +569,35 @@ export class List<T> extends CollectionChangedObject<T> {
 			return this.insertArray(index, items, null, itemsSize)
 		}
 
+		let i
+
 		const start = List._prepareIndex(index, _size + 1)
+
+		if (this._autoSort) {
+			let result = false
+			for (const item of items) {
+				result = this.add(item) || result
+			}
+			return result
+		} else if (this._notAddIfExists) {
+			let nextIndex = start
+			i = 0
+			for (const item of items) {
+				if (this.insert(nextIndex, item)) {
+					nextIndex++
+				}
+				i++
+				if (i >= itemsSize) {
+					break
+				}
+			}
+			return nextIndex !== start
+		}
 		const end = start + itemsSize
 
 		const newSize = _size + itemsSize
 
 		this._setSize(newSize)
-
-		let i
 
 		for (i = newSize - 1 - itemsSize; i >= start; i--) {
 			_array[i + itemsSize] = _array[i]
@@ -681,15 +754,8 @@ export class List<T> extends CollectionChangedObject<T> {
 		return true
 	}
 
-	public move(oldIndex: number, newIndex: number): boolean {
-		if (oldIndex === newIndex) {
-			return false
-		}
-
-		const {_size, _array} = this
-
-		oldIndex = List._prepareIndex(oldIndex, _size)
-		newIndex = List._prepareIndex(newIndex, _size)
+	private _move(oldIndex: number, newIndex: number): void {
+		const {_array} = this
 
 		const moveItem = _array[oldIndex]
 		const step = (newIndex > oldIndex) ? 1 : -1
@@ -698,6 +764,19 @@ export class List<T> extends CollectionChangedObject<T> {
 		}
 
 		_array[newIndex] = moveItem
+	}
+
+	public move(oldIndex: number, newIndex: number): boolean {
+		if (oldIndex === newIndex) {
+			return false
+		}
+
+		const {_size} = this
+
+		oldIndex = List._prepareIndex(oldIndex, _size)
+		newIndex = List._prepareIndex(newIndex, _size)
+
+		this._move(oldIndex, newIndex)
 
 		this._countSorted = Math.min(this._countSorted, oldIndex, newIndex)
 
@@ -749,7 +828,7 @@ export class List<T> extends CollectionChangedObject<T> {
 	}
 
 	public indexOf(item: T, start?: number, end?: number, bound?: number): number {
-		const {_size, _array, _equals, _compare, _autoSort} = this
+		const {_size, _array, _compare, _autoSort} = this
 
 		start = List._prepareStart(start, _size)
 		end = List._prepareEnd(end, _size)
@@ -776,9 +855,9 @@ export class List<T> extends CollectionChangedObject<T> {
 				}
 			}
 
-			if (_equals) {
+			if (_compare) {
 				for (let i = countSorted; i < end; i++) {
-					if (_equals(_array[i], item)) {
+					if (_compare(_array[i], item) === 0) {
 						return i
 					}
 				}
@@ -790,9 +869,9 @@ export class List<T> extends CollectionChangedObject<T> {
 				}
 			}
 		} else {
-			if (_equals) {
+			if (_compare) {
 				for (let i = end - 1; i >= countSorted; i--) {
-					if (_equals(_array[i], item)) {
+					if (_compare(_array[i], item) === 0) {
 						return i
 					}
 				}
