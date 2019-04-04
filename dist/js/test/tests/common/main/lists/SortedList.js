@@ -7,7 +7,7 @@ var _SortedList = require("../../../../../main/common/lists/SortedList");
 var _TestList = require("./helpers/TestList");
 
 describe('common > main > lists > List', function () {
-  this.timeout(5000);
+  this.timeout(20000);
   const testList = _TestList.TestList.test;
   after(function () {
     console.log('Total List tests >= ' + _TestList.TestList.totalListTests);

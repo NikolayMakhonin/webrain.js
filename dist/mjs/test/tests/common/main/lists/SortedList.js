@@ -2,7 +2,7 @@ import { CollectionChangedType } from '../../../../../main/common/lists/contract
 import { compareDefault, SortedList } from '../../../../../main/common/lists/SortedList';
 import { generateArray, TestList, toIterable } from './helpers/TestList';
 describe('common > main > lists > List', function () {
-  this.timeout(5000);
+  this.timeout(20000);
   var testList = TestList.test;
   after(function () {
     console.log('Total List tests >= ' + TestList.totalListTests);

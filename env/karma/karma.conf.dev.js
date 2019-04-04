@@ -26,13 +26,13 @@ module.exports = function (config) {
 			helpers.servedPattern(helpers.writeTextFile('tmp/karma/chai.js', '"use strict"; var assert = chai.assert, expect = chai.expect, should = chai.should;')),
 			helpers.concatJsFiles(
 				'tmp/karma/tests.js',
-				'src/test/tests/{common,browser}/**/*.js',
+				'src/test/tests/{common,browser}/**/*{.es6,.es,.js,.mjs,.ts}',
 				// 'src/test/tests/common/env/class.js',
-				'!*/**/src/**/*.js'
+				'!*/**/src/**/*{.es6,.es,.js,.mjs,.ts}'
 			),
 			// ...helpers.watchPatterns(
-			// 	'src/test/tests/{common,browser}/**/*.js',
-			// 	'src/main/**/*.js'
+			// 	'src/test/tests/{common,browser}/**/*{.es6,.es,.js,.mjs,.ts}',
+			// 	'src/main/**/*{.es6,.es,.js,.mjs,.ts}'
 			// )
 		],
 

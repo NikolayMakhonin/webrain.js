@@ -13,7 +13,7 @@ declare const assert: any
 declare const after: any
 
 describe('common > main > lists > List', function() {
-	this.timeout(5000)
+	this.timeout(20000)
 
 	const testList = TestList.test
 
