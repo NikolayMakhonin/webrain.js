@@ -545,18 +545,24 @@ describe('common > main > lists > List', function() {
 			sourceStart?: number,
 			sourceEnd?: number,
 		): ITestActionsWithDescription<IListAction<T>> {
+			let start = sourceStart == null ? 0 : sourceStart
+			let end = sourceEnd == null ? sourceItems.length : sourceEnd
+			if (start < 0) {
+				start += sourceItems.length
+			}
+			if (end < 0) {
+				end += sourceItems.length + 1
+			}
+
 			return {
 				actions: [
 					list => list.addArray(sourceItems, sourceStart, sourceEnd),
 					list => list.insertArray(list.size, sourceItems, sourceStart, sourceEnd),
-					!sourceStart
-					&& sourceEnd != null
-					&& sourceEnd >= 0
-					&& [
-						list => list.addIterable(sourceItems, sourceEnd),
-						list => list.addIterable(toIterable(sourceItems), sourceEnd),
-						list => list.insertIterable(list.size, sourceItems, sourceEnd),
-						list => list.insertIterable(list.size, toIterable(sourceItems), sourceEnd),
+					[
+						list => list.addIterable(sourceItems.slice(start, end), end - start),
+						list => list.addIterable(toIterable(sourceItems.slice(start, end)), end - start),
+						list => list.insertIterable(list.size, sourceItems.slice(start, end), end - start),
+						list => list.insertIterable(list.size, toIterable(sourceItems.slice(start, end)), end - start),
 					],
 				],
 				description: `arrArray(${JSON.stringify(sourceItems)}, ${sourceStart}, ${sourceEnd})\n`,
@@ -794,15 +800,21 @@ describe('common > main > lists > List', function() {
 			sourceStart?: number,
 			sourceEnd?: number,
 		): ITestActionsWithDescription<IListAction<T>> {
+			let start = sourceStart == null ? 0 : sourceStart
+			let end = sourceEnd == null ? sourceItems.length : sourceEnd
+			if (start < 0) {
+				start += sourceItems.length
+			}
+			if (end < 0) {
+				end += sourceItems.length + 1
+			}
+
 			return {
 				actions: [
 					list => list.insertArray(index, sourceItems, sourceStart, sourceEnd),
-					!sourceStart
-					&& sourceEnd != null
-					&& sourceEnd >= 0
-					&& [
-						list => list.insertIterable(index, sourceItems, sourceEnd),
-						list => list.insertIterable(index, toIterable(sourceItems), sourceEnd),
+					[
+						list => list.insertIterable(index, sourceItems.slice(start, end), end - start),
+						list => list.insertIterable(index, toIterable(sourceItems.slice(start, end)), end - start),
 					],
 				],
 				description: `insertArray(${index}, ${JSON.stringify(sourceItems)}, ${sourceStart}, ${sourceEnd})\n`,
@@ -860,6 +872,81 @@ describe('common > main > lists > List', function() {
 				insertArray(2, ['4', '5', '6'], 0, -2),
 				insertArray(2, ['4', '5', '6'], -3, 2),
 				insertArray(2, ['4', '5', '6'], -3, -2),
+			],
+		})
+
+		testList({ // '0', '1', '3', '4', '5'
+			array: [['0', '1', '3', '5', '4']],
+			autoSort: [true],
+			notAddIfExists: [true],
+			expected: {
+				array: ['0', '1', '2', '3', '4', '5'],
+				returnValue: true,
+				defaultValue: null,
+				collectionChanged: [{
+					type: CollectionChangedType.Added,
+					index: 2,
+					newItems: ['2'],
+					shiftIndex: 3,
+				}],
+			},
+			actions: [
+				insertArray(0, ['4', '2']),
+				insertArray(1, ['4', '2']),
+				insertArray(2, ['4', '2']),
+				insertArray(3, ['4', '2']),
+				insertArray(4, ['4', '2']),
+				insertArray(5, ['4', '2']),
+			],
+		})
+
+		testList({
+			array: [['0', '1', '3', '5', '4']],
+			autoSort: [false],
+			notAddIfExists: [true],
+			expected: {
+				array: ['0', '2', '1', '3', '5', '4'],
+				returnValue: true,
+				defaultValue: null,
+				collectionChanged: [{
+					type: CollectionChangedType.Added,
+					index: 1,
+					newItems: ['2'],
+					shiftIndex: 2,
+				}],
+			},
+			actions: [
+				insertArray(1, ['4', '2']),
+			],
+		})
+
+		testList({ // '0', '1', '3', '4', '5'
+			array: [['0', '1', '3', '5', '4']],
+			autoSort: [true],
+			notAddIfExists: [false],
+			expected: {
+				array: ['0', '1', '2', '3', '4', '4', '5'],
+				returnValue: true,
+				defaultValue: null,
+				collectionChanged: [{
+					type: CollectionChangedType.Added,
+					index: 3,
+					newItems: ['4'],
+					shiftIndex: 4,
+				}, {
+					type: CollectionChangedType.Added,
+					index: 2,
+					newItems: ['2'],
+					shiftIndex: 3,
+				}],
+			},
+			actions: [
+				insertArray(0, ['4', '2']),
+				insertArray(1, ['4', '2']),
+				insertArray(2, ['4', '2']),
+				insertArray(3, ['4', '2']),
+				insertArray(4, ['4', '2']),
+				insertArray(5, ['4', '2']),
 			],
 		})
 	})
@@ -1722,6 +1809,25 @@ describe('common > main > lists > List', function() {
 			actions: [
 				move(3, 1),
 				move(-2, -4),
+			],
+		})
+
+		testList({
+			array: [['0', '1', '2', '3', '4']],
+			expected: {
+				array: ['0', '2', '3', '1', '4'],
+				returnValue: true,
+				defaultValue: null,
+				collectionChanged: [{
+					type: CollectionChangedType.Moved,
+					index: 1,
+					moveIndex: 3,
+					moveSize: 1,
+				}],
+			},
+			actions: [
+				move(1, 3),
+				move(-4, -2),
 			],
 		})
 	})
