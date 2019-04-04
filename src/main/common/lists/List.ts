@@ -294,6 +294,7 @@ export class List<T> extends CollectionChangedObject<T> {
 
 		if (this._autoSort) {
 			withoutShift = false
+			this.sort()
 		}
 
 		while (i >= 0) {
@@ -379,8 +380,6 @@ export class List<T> extends CollectionChangedObject<T> {
 		}
 
 		if (_collectionChangedIfCanEmit) {
-			const oldItem = _array[index]
-
 			_array[index] = item
 
 			if (moveIndex !== index) {

@@ -1824,6 +1824,43 @@ describe('common > main > lists > List', function() {
 				moveRange(3, 10, 1),
 			],
 		})
+
+		testList({
+			array: [[0, 1, 2, 3]],
+			expected: {
+				array: [0, 3, 1, 2],
+				returnValue: true,
+				defaultValue: null,
+				collectionChanged: [{
+					type: CollectionChangedType.Moved,
+					index: 1,
+					moveIndex: 2,
+					moveSize: 2,
+				}],
+			},
+			actions: [
+				moveRange(1, 3, 2),
+				moveRange(1, 3, 3),
+				moveRange(1, 3, -2),
+				moveRange(1, 3, -1),
+			],
+		})
+
+		testList({
+			array: [[0, 1, 2, 3]],
+			expected: {
+				array: [0, 1, 2, 3],
+				returnValue: false,
+				defaultValue: null,
+			},
+			actions: [
+				moveRange(1, 3, 1),
+				moveRange(1, 3, -3),
+				moveRange(0, 4, 2),
+				moveRange(0, 4, 3),
+				moveRange(0, 4, -1),
+			],
+		})
 	})
 
 	it('sort', function() {
@@ -1872,6 +1909,21 @@ describe('common > main > lists > List', function() {
 
 		testList({
 			array: [['1', '2', '3']],
+			countSorted: [undefined, 0],
+			autoSort: [true],
+			expected: {
+				array: ['1', '2', '3'],
+				returnValue: false,
+				defaultValue: null,
+			},
+			actions: [
+				reSort(),
+			],
+		})
+
+		testList({
+			array: [['1', '2', '3']],
+			countSorted: [1, 2, 3],
 			autoSort: [true],
 			expected: {
 				array: ['1', '2', '3'],
@@ -1880,6 +1932,19 @@ describe('common > main > lists > List', function() {
 				collectionChanged: [{
 					type: CollectionChangedType.Resorted,
 				}],
+			},
+			actions: [
+				reSort(),
+			],
+		})
+
+		testList({
+			array: [['1']],
+			autoSort: [true],
+			expected: {
+				array: ['1'],
+				returnValue: false,
+				defaultValue: null,
 			},
 			actions: [
 				reSort(),

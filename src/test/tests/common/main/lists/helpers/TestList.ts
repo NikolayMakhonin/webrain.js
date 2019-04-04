@@ -184,7 +184,9 @@ export class TestList<T> extends TestVariants<
 
 				assert.strictEqual(list.countSorted, options.countSorted || 0)
 
-				const arrayReplicate = array.slice(0, list.size)
+				const arrayReplicate = options.autoSort
+					? array.slice(0, list.size).sort(compare || compareDefault)
+					: array.slice(0, list.size)
 
 				// assert.strictEqual(
 				// 	list.countSorted,
