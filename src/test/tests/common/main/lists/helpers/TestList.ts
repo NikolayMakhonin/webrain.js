@@ -3,9 +3,9 @@ import {
 	ICollectionChangedEvent,
 } from '../../../../../../main/common/lists/contracts/ICollectionChanged'
 import {ICompare} from '../../../../../../main/common/lists/contracts/ICompare'
-import {compareDefault, List} from '../../../../../../main/common/lists/List'
+import {compareDefault, SortedList} from '../../../../../../main/common/lists/SortedList'
+import {IPropertyChangedEvent} from '../../../../../../main/common/rx/object/PropertyChangedObject'
 import {IOptionsVariant, IOptionsVariants, ITestCase, TestVariants} from './TestVariants'
-import {IPropertyChangedEvent} from "../../../../../../main/common/rx/object/PropertyChangedObject";
 
 declare const assert: any
 
@@ -67,7 +67,7 @@ export function applyCollectionChangedToArray<T>(event: ICollectionChangedEvent<
 	}
 }
 
-export type IListAction<T> = (list: List<T>, array?: T[]) => any
+export type IListAction<T> = (list: SortedList<T>, array?: T[]) => any
 
 interface IListOptionsVariant<T> {
 	expected: T[]
@@ -104,7 +104,7 @@ interface IListOptionsVariants<T> extends IOptionsVariants {
 	countSorted?: number[]
 }
 
-function assertList<T>(list: List<T>, expectedArray: T[]) {
+function assertList<T>(list: SortedList<T>, expectedArray: T[]) {
 	assert.deepStrictEqual(list.toArray(), expectedArray)
 	assert.strictEqual(list.size, expectedArray.length)
 	assert.ok(list.allocatedSize >= expectedArray.length)
@@ -120,7 +120,7 @@ function assertList<T>(list: List<T>, expectedArray: T[]) {
 }
 
 const staticArray = []
-const staticList = new List({
+const staticList = new SortedList({
 	array: staticArray,
 })
 
@@ -152,7 +152,7 @@ export class TestList<T> extends TestVariants<
 				let array = options.array.slice()
 				// assert.deepStrictEqual(array, array.slice().sort(compareDefault))
 				const compare = options.compare || (options.withCompare ? compareDefault : undefined)
-				let list: List<T>
+				let list: SortedList<T>
 
 				if (options.reuseListInstance) {
 					staticList.clear()
@@ -173,10 +173,10 @@ export class TestList<T> extends TestVariants<
 					}
 					staticList.autoSort = options.autoSort
 					staticList.notAddIfExists = options.notAddIfExists
-					list = staticList as List<T>
+					list = staticList as SortedList<T>
 					array = staticArray
 				} else {
-					list = new List({
+					list = new SortedList({
 						array,
 						compare,
 						autoSort: options.autoSort,

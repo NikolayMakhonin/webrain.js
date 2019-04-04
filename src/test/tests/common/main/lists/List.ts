@@ -1,7 +1,7 @@
 import {
 	CollectionChangedType,
 } from '../../../../../main/common/lists/contracts/ICollectionChanged'
-import {compareDefault, List} from '../../../../../main/common/lists/List'
+import {compareDefault, SortedList} from '../../../../../main/common/lists/SortedList'
 import {
 	generateArray, IListAction,
 	TestList,
@@ -24,7 +24,7 @@ describe('common > main > lists > List', function() {
 	it('constructor', function() {
 		let list
 
-		list = new List()
+		list = new SortedList()
 		assert.strictEqual(list.size, 0)
 		assert.strictEqual(list.minAllocatedSize, undefined)
 		assert.strictEqual(list.allocatedSize, 0)
@@ -33,7 +33,7 @@ describe('common > main > lists > List', function() {
 		assert.strictEqual(list.notAddIfExists, undefined)
 		assert.deepStrictEqual(list.toArray(), [])
 
-		list = new List({
+		list = new SortedList({
 			minAllocatedSize: 3,
 		})
 		assert.strictEqual(list.size, 0)
@@ -45,7 +45,7 @@ describe('common > main > lists > List', function() {
 		assert.deepStrictEqual(list.toArray(), [])
 
 		let array = [0, 1, 2]
-		list = new List({
+		list = new SortedList({
 			array,
 		})
 		assert.strictEqual(list.size, 3)
@@ -58,7 +58,7 @@ describe('common > main > lists > List', function() {
 		assert.deepStrictEqual(toArray, [0, 1, 2])
 		assert.notStrictEqual(toArray, array)
 
-		list = new List({
+		list = new SortedList({
 			compare: compareDefault,
 		})
 		assert.strictEqual(list.size, 0)
@@ -69,7 +69,7 @@ describe('common > main > lists > List', function() {
 		assert.strictEqual(list.notAddIfExists, undefined)
 		assert.deepStrictEqual(list.toArray(), [])
 
-		list = new List({
+		list = new SortedList({
 			array: array = [2, 1, 1, 1, 1, 3],
 			notAddIfExists: true,
 		})
@@ -89,7 +89,7 @@ describe('common > main > lists > List', function() {
 		assert.deepStrictEqual(list.toArray(), [2, 1, 1, 1, 1, 3])
 		assert.strictEqual(list.autoSort, false)
 
-		list = new List({
+		list = new SortedList({
 			array: array = [2, 1, 3],
 			autoSort: true,
 		})
@@ -103,7 +103,7 @@ describe('common > main > lists > List', function() {
 		assert.deepStrictEqual(toArray, [1, 2, 3])
 		assert.notStrictEqual(toArray, array)
 
-		list = new List({
+		list = new SortedList({
 			array: array = [2, 3, 1],
 			countSorted: 2,
 		})
@@ -128,7 +128,7 @@ describe('common > main > lists > List', function() {
 
 	it('size', function() {
 		const array = generateArray(31)
-		const list = new List({
+		const list = new SortedList({
 			array,
 			minAllocatedSize: 30,
 		})

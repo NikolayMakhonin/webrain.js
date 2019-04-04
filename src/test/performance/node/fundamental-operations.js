@@ -1,8 +1,17 @@
 /* eslint-disable no-new-func,no-array-constructor,object-property-newline */
 
 import {calcPerformance} from 'rdtsc'
-import {compareDefault} from "../../tests/common/main/lists/helpers/list";
-import {binarySearch} from "../../../main/common/lists/helpers/array";
+import {binarySearch} from '../../../main/common/lists/helpers/array'
+
+export function compareDefault(o1, o2) {
+	if (o1 > o2) {
+		return 1
+	}
+	if (o2 > o1) {
+		return -1
+	}
+	return 0
+}
 
 describe('fundamental-operations', function () {
 	function Path(value) {
@@ -627,6 +636,7 @@ describe('fundamental-operations', function () {
 		for (let i = 0, addLen = addArray.length; i < addLen; i++) {
 			const addItem = addArray[i]
 
+			// eslint-disable-next-line no-loop-func
 			let insertIndex = binarySearch(array, addItem, null, size, (o1, o2) => {
 				count++
 				return compareDefault(o1, o2)
@@ -660,13 +670,11 @@ describe('fundamental-operations', function () {
 		console.log(`${sortCount}\t${binarySearchCount}\t${JSON.stringify(array)}\t${JSON.stringify(addArray)}`)
 	}
 
-	it('sorted array add items', function() {
+	it('sorted array add items', function () {
 		this.timeout(300000)
 
 		const array = []
-		const addArray = generateArray(1000).sort((o1, o2) => {
-			return Math.random() > 0.5 ? -1 : 1
-		})
+		const addArray = generateArray(1000).sort((o1, o2) => (Math.random() > 0.5 ? -1 : 1))
 		// [-3, -1, -2, 1, 9, -4, 7, -6, 11]
 		let resultArray
 

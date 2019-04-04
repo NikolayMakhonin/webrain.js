@@ -37,7 +37,7 @@ export function compareDefault(o1, o2) {
 	}
 }
 
-export class List<T> extends CollectionChangedObject<T> {
+export class SortedList<T> extends CollectionChangedObject<T> {
 	// region constructor
 
 	private _array: T[]
@@ -355,7 +355,7 @@ export class List<T> extends CollectionChangedObject<T> {
 			this.sort()
 		}
 
-		index = List._prepareIndex(index, _size)
+		index = SortedList._prepareIndex(index, _size)
 
 		return _array[index]
 	}
@@ -363,7 +363,7 @@ export class List<T> extends CollectionChangedObject<T> {
 	public set(index: number, item: T): boolean {
 		const {_size, _array} = this
 
-		index = List._prepareIndex(index, _size + 1)
+		index = SortedList._prepareIndex(index, _size + 1)
 
 		if (index >= _size) {
 			return this.add(item)
@@ -378,7 +378,7 @@ export class List<T> extends CollectionChangedObject<T> {
 		const oldItem = _array[index]
 
 		if ((_notAddIfExists || _autoSort || _collectionChangedIfCanEmit)
-			&& (_compare || List.compareDefault)(oldItem, item) === 0
+			&& (_compare || SortedList.compareDefault)(oldItem, item) === 0
 		) {
 			return false
 		}
@@ -468,7 +468,7 @@ export class List<T> extends CollectionChangedObject<T> {
 			this._countSorted++
 		}
 
-		index = List._prepareIndex(index, _size + 1)
+		index = SortedList._prepareIndex(index, _size + 1)
 
 		return this._insert(index, item)
 	}
@@ -522,7 +522,7 @@ export class List<T> extends CollectionChangedObject<T> {
 			return false
 		}
 
-		index = List._prepareIndex(index, this._size + 1)
+		index = SortedList._prepareIndex(index, this._size + 1)
 
 		if (index < this._countSorted) {
 			this._countSorted = index
@@ -536,9 +536,9 @@ export class List<T> extends CollectionChangedObject<T> {
 
 		let itemsSize = sourceItems.length
 
-		index = List._prepareIndex(index, size + 1)
-		sourceStart = List._prepareStart(sourceStart, itemsSize)
-		sourceEnd = List._prepareEnd(sourceEnd, itemsSize)
+		index = SortedList._prepareIndex(index, size + 1)
+		sourceStart = SortedList._prepareStart(sourceStart, itemsSize)
+		sourceEnd = SortedList._prepareEnd(sourceEnd, itemsSize)
 
 		if (_autoSort) {
 			let result = false
@@ -609,7 +609,7 @@ export class List<T> extends CollectionChangedObject<T> {
 
 		let i
 
-		const start = List._prepareIndex(index, size + 1)
+		const start = SortedList._prepareIndex(index, size + 1)
 
 		if (this._autoSort) {
 			let result = false
@@ -687,7 +687,7 @@ export class List<T> extends CollectionChangedObject<T> {
 	public removeAt(index: number, withoutShift?: boolean): boolean {
 		const {_size: size, _array, _autoSort} = this
 
-		index = List._prepareIndex(index, size)
+		index = SortedList._prepareIndex(index, size)
 
 		const {_collectionChangedIfCanEmit} = this
 		let oldItems
@@ -736,8 +736,8 @@ export class List<T> extends CollectionChangedObject<T> {
 	public removeRange(start: number, end?: number, withoutShift?: boolean): boolean {
 		const {_size: size, _array} = this
 
-		start = List._prepareStart(start, size)
-		end = List._prepareEnd(end, size)
+		start = SortedList._prepareStart(start, size)
+		end = SortedList._prepareEnd(end, size)
 
 		const removeSize = end - start
 
@@ -829,8 +829,8 @@ export class List<T> extends CollectionChangedObject<T> {
 
 		const {_size} = this
 
-		oldIndex = List._prepareIndex(oldIndex, _size)
-		newIndex = List._prepareIndex(newIndex, _size)
+		oldIndex = SortedList._prepareIndex(oldIndex, _size)
+		newIndex = SortedList._prepareIndex(newIndex, _size)
 
 		this._move(oldIndex, newIndex)
 
@@ -856,9 +856,9 @@ export class List<T> extends CollectionChangedObject<T> {
 
 		const {_size, _array} = this
 
-		start = List._prepareStart(start, _size)
-		end = List._prepareStart(end, _size)
-		moveIndex = List._prepareIndex(moveIndex, _size)
+		start = SortedList._prepareStart(start, _size)
+		end = SortedList._prepareStart(end, _size)
+		moveIndex = SortedList._prepareIndex(moveIndex, _size)
 		const maxIndex = _size - end + start
 		if (moveIndex > maxIndex) {
 			moveIndex = maxIndex
@@ -886,8 +886,8 @@ export class List<T> extends CollectionChangedObject<T> {
 	public indexOf(item: T, start?: number, end?: number, bound?: number): number {
 		const {_size, _array, _compare, _autoSort} = this
 
-		start = List._prepareStart(start, _size)
-		end = List._prepareEnd(end, _size)
+		start = SortedList._prepareStart(start, _size)
+		end = SortedList._prepareEnd(end, _size)
 
 		if (this._autoSort) {
 			this.sort()
@@ -904,7 +904,7 @@ export class List<T> extends CollectionChangedObject<T> {
 
 		if (bound == null || bound <= 0) {
 			if (countSorted > start) {
-				index = binarySearch(_array, item, start, countSorted, _compare || List.compareDefault, bound)
+				index = binarySearch(_array, item, start, countSorted, _compare || SortedList.compareDefault, bound)
 
 				if (index >= 0) {
 					return index
@@ -944,7 +944,7 @@ export class List<T> extends CollectionChangedObject<T> {
 			}
 
 			if (countSorted > start) {
-				index = binarySearch(_array, item, start, countSorted, _compare || List.compareDefault, bound)
+				index = binarySearch(_array, item, start, countSorted, _compare || SortedList.compareDefault, bound)
 			}
 		}
 
@@ -1033,7 +1033,7 @@ export class List<T> extends CollectionChangedObject<T> {
 		}
 
 		_array.length = _size
-		_array.sort(this._compare || List.compareDefault)
+		_array.sort(this._compare || SortedList.compareDefault)
 		this._countSorted = _size
 
 		if (!this._autoSort) {
@@ -1055,8 +1055,8 @@ export class List<T> extends CollectionChangedObject<T> {
 			this.sort()
 		}
 
-		start = List._prepareStart(start, _size)
-		end = List._prepareEnd(end, _size)
+		start = SortedList._prepareStart(start, _size)
+		end = SortedList._prepareEnd(end, _size)
 
 		return _array.slice(start, end)
 	}
@@ -1068,8 +1068,8 @@ export class List<T> extends CollectionChangedObject<T> {
 			destIndex = 0
 		}
 
-		start = List._prepareStart(start, _size)
-		end = List._prepareEnd(end, _size)
+		start = SortedList._prepareStart(start, _size)
+		end = SortedList._prepareEnd(end, _size)
 
 		if (end <= start) {
 			return false

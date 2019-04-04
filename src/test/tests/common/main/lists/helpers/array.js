@@ -1,4 +1,7 @@
-import {binarySearch, binarySearchFirst, binarySearchLast, move} from '../../../../../../main/common/lists/helpers/array'
+import {
+	binarySearch,
+	move
+} from '../../../../../../main/common/lists/helpers/array'
 
 describe('common > main > lists > helpers > array', function () {
 	it('binarySearch full', function () {
