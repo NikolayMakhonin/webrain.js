@@ -5,6 +5,8 @@ import {
 
 describe('common > main > lists > helpers > array', function () {
 	it('binarySearch full', function () {
+		this.timeout(20000)
+
 		const indexToItem = index => `item${(index + 2).toString().padStart(3, '0')}`
 		const arr = new Array(51).fill(0).map((o, i) => indexToItem(i) + (i % 2 ? '_' : ''))
 		for (let index = -2; index < arr.length + 2; index++) {

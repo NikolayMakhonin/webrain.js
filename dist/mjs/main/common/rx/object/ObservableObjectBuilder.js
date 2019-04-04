@@ -40,14 +40,9 @@ function () {
         var value = __fields[name];
 
         if (initValue === value) {
-          var unsubscribers = object.__meta.unsubscribers;
-          var unsubscribe = unsubscribers[name];
+          var __meta = object.__meta;
 
-          if (unsubscribe) {
-            unsubscribe();
-          }
-
-          unsubscribers[name] = object._propagatePropertyChanged(name, value);
+          object._propagatePropertyChanged(name, value);
         } else {
           object[name] = initValue;
         }
@@ -79,14 +74,8 @@ function () {
 
       if (__fields && typeof value !== 'undefined') {
         var oldValue = __fields[name];
-        var unsubscribers = object.__meta.unsubscribers;
-        var unsubscribe = unsubscribers[name];
 
-        if (unsubscribe) {
-          unsubscribe();
-        }
-
-        unsubscribers[name] = object._propagatePropertyChanged(name, value);
+        object._propagatePropertyChanged(name, value);
 
         if (value !== oldValue) {
           __fields[name] = value;
@@ -105,19 +94,11 @@ function () {
     value: function _delete(name) {
       var object = this.object;
       var oldValue = object[name];
-      var __fields = object.__fields,
-          __meta = object.__meta;
 
-      if (__meta) {
-        var unsubscribers = __meta.unsubscribers;
-        var unsubscribe = unsubscribers[name];
-
-        if (unsubscribe) {
-          unsubscribe();
-        }
-      }
+      object._setUnsubscriber(name, null);
 
       delete object[name];
+      var __fields = object.__fields;
 
       if (__fields) {
         delete __fields[name];

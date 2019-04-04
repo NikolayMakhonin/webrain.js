@@ -49,15 +49,10 @@ class ObservableObjectBuilder {
 
       if (initValue === value) {
         const {
-          unsubscribers
-        } = object.__meta;
-        const unsubscribe = unsubscribers[name];
+          __meta
+        } = object;
 
-        if (unsubscribe) {
-          unsubscribe();
-        }
-
-        unsubscribers[name] = object._propagatePropertyChanged(name, value);
+        object._propagatePropertyChanged(name, value);
       } else {
         object[name] = initValue;
       }
@@ -94,16 +89,8 @@ class ObservableObjectBuilder {
 
     if (__fields && typeof value !== 'undefined') {
       const oldValue = __fields[name];
-      const {
-        unsubscribers
-      } = object.__meta;
-      const unsubscribe = unsubscribers[name];
 
-      if (unsubscribe) {
-        unsubscribe();
-      }
-
-      unsubscribers[name] = object._propagatePropertyChanged(name, value);
+      object._propagatePropertyChanged(name, value);
 
       if (value !== oldValue) {
         __fields[name] = value;
@@ -123,23 +110,13 @@ class ObservableObjectBuilder {
       object
     } = this;
     const oldValue = object[name];
-    const {
-      __fields,
-      __meta
-    } = object;
 
-    if (__meta) {
-      const {
-        unsubscribers
-      } = __meta;
-      const unsubscribe = unsubscribers[name];
-
-      if (unsubscribe) {
-        unsubscribe();
-      }
-    }
+    object._setUnsubscriber(name, null);
 
     delete object[name];
+    const {
+      __fields
+    } = object;
 
     if (__fields) {
       delete __fields[name];

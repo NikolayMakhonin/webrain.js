@@ -7,147 +7,19 @@ exports.ObservableObject = void 0;
 
 require("../extensions/autoConnect");
 
-var _hasSubscribers = require("../subjects/hasSubscribers");
+var _DeepPropertyChangedObject = require("./DeepPropertyChangedObject");
 
-function expandAndDistinct(inputItems, output = [], map = {}) {
-  if (inputItems == null) {
-    return output;
-  }
-
-  if (Array.isArray(inputItems)) {
-    for (const item of inputItems) {
-      expandAndDistinct(item, output, map);
-    }
-
-    return output;
-  }
-
-  if (!map[inputItems]) {
-    map[inputItems] = true;
-    output[output.length] = inputItems;
-  }
-
-  return output;
-}
-
-class ObservableObject {
-  /** @internal */
-
+class ObservableObject extends _DeepPropertyChangedObject.DeepPropertyChangedObject {
   /** @internal */
   constructor() {
-    Object.defineProperty(this, '__meta', {
-      configurable: false,
-      enumerable: false,
-      writable: false,
-      value: {
-        unsubscribers: {}
-      }
-    });
+    super();
     Object.defineProperty(this, '__fields', {
       configurable: false,
       enumerable: false,
       writable: false,
       value: {}
     });
-  } // region propertyChanged
-
-
-  get propertyChanged() {
-    let {
-      propertyChanged
-    } = this.__meta;
-
-    if (!propertyChanged) {
-      this.__meta.propertyChanged = propertyChanged = new _hasSubscribers.HasSubscribersSubject();
-    }
-
-    return propertyChanged;
   }
-
-  get deepPropertyChanged() {
-    let {
-      deepPropertyChanged
-    } = this.__meta;
-
-    if (!deepPropertyChanged) {
-      this.__meta.deepPropertyChanged = deepPropertyChanged = new _hasSubscribers.HasSubscribersSubject();
-    }
-
-    return deepPropertyChanged;
-  }
-
-  _emitPropertyChanged(eventsOrPropertyNames, emitFunc) {
-    if (eventsOrPropertyNames === null) {
-      return;
-    }
-
-    const toEvent = event => {
-      if (event == null) {
-        return {};
-      }
-
-      if (typeof event !== 'object') {
-        const value = this[event];
-        event = {
-          name: event,
-          oldValue: value,
-          newValue: value
-        };
-      }
-
-      return event;
-    };
-
-    if (!Array.isArray(eventsOrPropertyNames)) {
-      emitFunc(toEvent(eventsOrPropertyNames));
-    } else {
-      const items = expandAndDistinct(eventsOrPropertyNames);
-
-      for (let i = 0, len = items.length; i < len; i++) {
-        emitFunc(toEvent(items[i]));
-      }
-    }
-  }
-
-  onPropertyChanged(eventsOrPropertyNames) {
-    const {
-      propertyChanged,
-      deepPropertyChanged
-    } = this.__meta;
-
-    if (!propertyChanged && !deepPropertyChanged) {
-      return this;
-    }
-
-    this._emitPropertyChanged(eventsOrPropertyNames, event => {
-      if (propertyChanged) {
-        propertyChanged.emit(event);
-      }
-
-      if (deepPropertyChanged) {
-        deepPropertyChanged.emit(event);
-      }
-    });
-
-    return this;
-  }
-
-  onDeepPropertyChanged(eventsOrPropertyNames) {
-    const {
-      deepPropertyChanged
-    } = this.__meta;
-
-    if (!deepPropertyChanged) {
-      return this;
-    }
-
-    this._emitPropertyChanged(eventsOrPropertyNames, event => {
-      deepPropertyChanged.emit(event);
-    });
-
-    return this;
-  } // endregion
-
   /** @internal */
 
 
@@ -192,17 +64,10 @@ class ObservableObject {
       beforeChange(oldValue);
     }
 
-    const {
-      unsubscribers
-    } = this.__meta;
-    const unsubscribe = unsubscribers[name];
-
-    if (unsubscribe) {
-      unsubscribe();
-    }
-
     __fields[name] = newValue;
-    unsubscribers[name] = this._propagatePropertyChanged(name, newValue);
+
+    this._propagatePropertyChanged(name, newValue);
+
     const {
       afterChange
     } = options;
@@ -217,31 +82,6 @@ class ObservableObject {
       newValue
     });
     return true;
-  }
-  /** @internal */
-
-
-  _propagatePropertyChanged(propertyName, value) {
-    if (!value) {
-      return null;
-    }
-
-    const {
-      deepPropertyChanged
-    } = value;
-
-    if (!deepPropertyChanged) {
-      return null;
-    }
-
-    const subscriber = event => {
-      this.deepPropertyChanged.emit({
-        name: propertyName,
-        next: event
-      });
-    };
-
-    return this.deepPropertyChanged.hasSubscribersObservable.autoConnect(null, () => deepPropertyChanged.subscribe(subscriber));
   }
 
 }
