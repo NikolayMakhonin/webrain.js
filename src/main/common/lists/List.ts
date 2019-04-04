@@ -205,9 +205,8 @@ export class List<T> extends CollectionChangedObject<T> {
 			return
 		}
 
-		this._autoSort = value
-
 		if (value) {
+			this._autoSort = value
 			if (this._countSorted !== this._size) {
 				const {_collectionChangedIfCanEmit} = this
 				if (_collectionChangedIfCanEmit) {
@@ -218,6 +217,7 @@ export class List<T> extends CollectionChangedObject<T> {
 			}
 		} else {
 			this.sort()
+			this._autoSort = value
 		}
 	}
 
@@ -499,7 +499,7 @@ export class List<T> extends CollectionChangedObject<T> {
 		sourceStart = List._prepareStart(sourceStart, itemsSize)
 		sourceEnd = List._prepareEnd(sourceEnd, itemsSize)
 
-		if (this._autoSort) {
+		if (_autoSort) {
 			let result = false
 			for (let i = sourceStart; i < sourceEnd; i++) {
 				result = this.add(sourceItems[i]) || result
@@ -518,15 +518,6 @@ export class List<T> extends CollectionChangedObject<T> {
 		itemsSize = sourceEnd - sourceStart
 		if (itemsSize <= 0) {
 			return false
-		}
-
-		if (_autoSort) {
-			let result = false
-			for (let i = 0; i < itemsSize; i++) {
-				result = this.add(sourceItems[i]) || result // TODO fix => i + sourceStart
-			}
-
-			return result
 		}
 
 		const newSize = _size + itemsSize

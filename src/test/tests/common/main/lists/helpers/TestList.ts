@@ -184,9 +184,7 @@ export class TestList<T> extends TestVariants<
 
 				assert.strictEqual(list.countSorted, options.countSorted || 0)
 
-				const arrayReplicate = options.autoSort
-					? array.slice(0, list.size).sort(compare)
-					: array.slice(0, list.size)
+				const arrayReplicate = array.slice(0, list.size)
 
 				// assert.strictEqual(
 				// 	list.countSorted,
@@ -197,9 +195,11 @@ export class TestList<T> extends TestVariants<
 				if (options.useCollectionChanged) {
 					unsubscribe = list.collectionChanged.subscribe(event => {
 						collectionChangedEvents.push(event)
-						applyCollectionChangedToArray(event, arrayReplicate, compare)
+						applyCollectionChangedToArray(event, arrayReplicate, compare || compareDefault)
 
-						assert.deepStrictEqual(arrayReplicate, array.slice(0, list.size))
+						if (event.type !== CollectionChangedType.Resorted) {
+							assert.deepStrictEqual(arrayReplicate, array.slice(0, list.size))
+						}
 					})
 				}
 
@@ -243,12 +243,11 @@ export class TestList<T> extends TestVariants<
 					assert.deepStrictEqual(arrayReplicate, list.toArray())
 				}
 
-				assert.strictEqual(
-					list.countSorted,
-					options.expected.countSorted == null
-						? options.autoSort ? list.size : options.countSorted || 0
-						: options.expected.countSorted,
-				)
+				if (options.expected.countSorted != null) {
+					assert.strictEqual(list.countSorted, options.expected.countSorted)
+				} else if (options.autoSort) {
+					assert.strictEqual(list.countSorted, list.size)
+				}
 
 				break
 			} catch (ex) {
