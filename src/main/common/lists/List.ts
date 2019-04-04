@@ -1,6 +1,6 @@
 import {CollectionChangedObject} from './CollectionChangedObject'
 import {CollectionChangedType} from './contracts/ICollectionChanged'
-import {ICompare, IEquals} from './contracts/ICompare'
+import {ICompare} from './contracts/ICompare'
 import {binarySearch, move} from './helpers/array'
 
 function calcOptimalArraySize(desiredSize: number) {
@@ -93,8 +93,19 @@ export class List<T> extends CollectionChangedObject<T> {
 	}
 
 	public set minAllocatedSize(value: number) {
+		const {_minAllocatedSize: oldValue} = this
+		if (oldValue === value) {
+			return
+		}
+
 		this._minAllocatedSize = value
 		this._updateAllocatedSize()
+
+		this.onPropertyChanged({
+			name: 'minAllocatedSize',
+			oldValue,
+			newValue: value,
+		})
 	}
 
 	// endregion
@@ -196,11 +207,12 @@ export class List<T> extends CollectionChangedObject<T> {
 	public set autoSort(value: boolean) {
 		value = !!value
 
-		if (this._autoSort === value) {
+		const {_autoSort: oldValue} = this
+		if (oldValue === value) {
 			return
 		}
 
-		if (!value && !this._autoSort) {
+		if (!value && !oldValue) {
 			this._autoSort = value
 			return
 		}
@@ -219,6 +231,12 @@ export class List<T> extends CollectionChangedObject<T> {
 			this.sort()
 			this._autoSort = value
 		}
+
+		this.onPropertyChanged({
+			name: 'autoSort',
+			oldValue: !!oldValue,
+			newValue: value,
+		})
 	}
 
 	// endregion
@@ -232,7 +250,25 @@ export class List<T> extends CollectionChangedObject<T> {
 	}
 
 	public set notAddIfExists(value: boolean) {
-		this._notAddIfExists = !!value
+		value = !!value
+
+		const {_notAddIfExists: oldValue} = this
+		if (oldValue === value) {
+			return
+		}
+
+		if (!value && !oldValue) {
+			this._notAddIfExists = value
+			return
+		}
+
+		this._notAddIfExists = value
+
+		this.onPropertyChanged({
+			name: 'notAddIfExists',
+			oldValue: !!oldValue,
+			newValue: value,
+		})
 	}
 
 	// endregion
@@ -446,9 +482,9 @@ export class List<T> extends CollectionChangedObject<T> {
 	}
 
 	private _insert(index: number, item: T): boolean {
-		const {_size, _array} = this
+		const {_size: size, _array} = this
 
-		const newSize = _size + 1
+		const newSize = size + 1
 
 		this._setSize(newSize)
 
@@ -464,9 +500,15 @@ export class List<T> extends CollectionChangedObject<T> {
 				type: CollectionChangedType.Added,
 				index,
 				newItems: [item],
-				shiftIndex: index < _size ? index + 1 : index,
+				shiftIndex: index < size ? index + 1 : index,
 			})
 		}
+
+		this.onPropertyChanged({
+			name: 'size',
+			oldValue: size,
+			newValue: newSize,
+		})
 
 		return true
 	}
@@ -490,11 +532,11 @@ export class List<T> extends CollectionChangedObject<T> {
 	}
 
 	public insertArray(index: number, sourceItems: T[], sourceStart?: number, sourceEnd?: number): boolean {
-		const {_size, _array, _autoSort} = this
+		const {_size: size, _array, _autoSort} = this
 
 		let itemsSize = sourceItems.length
 
-		index = List._prepareIndex(index, _size + 1)
+		index = List._prepareIndex(index, size + 1)
 		sourceStart = List._prepareStart(sourceStart, itemsSize)
 		sourceEnd = List._prepareEnd(sourceEnd, itemsSize)
 
@@ -519,7 +561,7 @@ export class List<T> extends CollectionChangedObject<T> {
 			return false
 		}
 
-		const newSize = _size + itemsSize
+		const newSize = size + itemsSize
 
 		this._setSize(newSize)
 
@@ -541,15 +583,21 @@ export class List<T> extends CollectionChangedObject<T> {
 				type: CollectionChangedType.Added,
 				index,
 				newItems: _array.slice(index, index + itemsSize),
-				shiftIndex: index < _size ? index + itemsSize : index,
+				shiftIndex: index < size ? index + itemsSize : index,
 			})
 		}
+
+		this.onPropertyChanged({
+			name: 'size',
+			oldValue: size,
+			newValue: newSize,
+		})
 
 		return true
 	}
 
 	public insertIterable(index: number, items: Iterable<T>, itemsSize: number): boolean {
-		const {_size, _array} = this
+		const {_size: size, _array} = this
 
 		if (itemsSize <= 0) {
 			return false
@@ -561,7 +609,7 @@ export class List<T> extends CollectionChangedObject<T> {
 
 		let i
 
-		const start = List._prepareIndex(index, _size + 1)
+		const start = List._prepareIndex(index, size + 1)
 
 		if (this._autoSort) {
 			let result = false
@@ -585,7 +633,7 @@ export class List<T> extends CollectionChangedObject<T> {
 		}
 		const end = start + itemsSize
 
-		const newSize = _size + itemsSize
+		const newSize = size + itemsSize
 
 		this._setSize(newSize)
 
@@ -604,10 +652,10 @@ export class List<T> extends CollectionChangedObject<T> {
 		if (i !== end) {
 			// rollback
 			try {
-				this._collectionChangedDisabled = true
+				this._propertyChangedDisabled = true
 				this.removeRange(start, end)
 			} finally {
-				this._collectionChangedDisabled = false
+				this._propertyChangedDisabled = false
 			}
 
 			throw new Error(`Iterable items size (${i - start}) less than itemsSize (${itemsSize})`)
@@ -623,17 +671,23 @@ export class List<T> extends CollectionChangedObject<T> {
 				type: CollectionChangedType.Added,
 				index: start,
 				newItems: _array.slice(start, end),
-				shiftIndex: start < _size ? end : start,
+				shiftIndex: start < size ? end : start,
 			})
 		}
+
+		this.onPropertyChanged({
+			name: 'size',
+			oldValue: size,
+			newValue: newSize,
+		})
 
 		return true
 	}
 
 	public removeAt(index: number, withoutShift?: boolean): boolean {
-		const {_size, _array, _autoSort} = this
+		const {_size: size, _array, _autoSort} = this
 
-		index = List._prepareIndex(index, _size)
+		index = List._prepareIndex(index, size)
 
 		const {_collectionChangedIfCanEmit} = this
 		let oldItems
@@ -643,17 +697,17 @@ export class List<T> extends CollectionChangedObject<T> {
 		}
 
 		if (withoutShift && !_autoSort) {
-			_array[index] = _array[_size - 1]
-			if (index < _size - 2 && index < this._countSorted) {
+			_array[index] = _array[size - 1]
+			if (index < size - 2 && index < this._countSorted) {
 				this._countSorted = index
 			}
 		} else {
-			for (let i = index + 1; i < _size; i++) {
+			for (let i = index + 1; i < size; i++) {
 				_array[i - 1] = _array[i]
 			}
 		}
 
-		this._setSize(_size - 1)
+		const newSize = this._setSize(size - 1)
 
 		if (index < this._countSorted) {
 			this._countSorted--
@@ -664,20 +718,26 @@ export class List<T> extends CollectionChangedObject<T> {
 				type: CollectionChangedType.Removed,
 				index,
 				oldItems,
-				shiftIndex: index < _size - 1
-					? (withoutShift ? _size - 1 : index + 1)
+				shiftIndex: index < size - 1
+					? (withoutShift ? size - 1 : index + 1)
 					: index,
 			})
 		}
+
+		this.onPropertyChanged({
+			name: 'size',
+			oldValue: size,
+			newValue: newSize,
+		})
 
 		return true
 	}
 
 	public removeRange(start: number, end?: number, withoutShift?: boolean): boolean {
-		const {_size, _array} = this
+		const {_size: size, _array} = this
 
-		start = List._prepareStart(start, _size)
-		end = List._prepareEnd(end, _size)
+		start = List._prepareStart(start, size)
+		end = List._prepareEnd(end, size)
 
 		const removeSize = end - start
 
@@ -698,19 +758,19 @@ export class List<T> extends CollectionChangedObject<T> {
 
 		if (withoutShift) {
 			for (let i = start; i < end; i++) {
-				_array[i] = _array[_size - end + i]
+				_array[i] = _array[size - end + i]
 			}
 
-			if (removeSize < _size - end && start < this._countSorted) {
+			if (removeSize < size - end && start < this._countSorted) {
 				this._countSorted = start
 			}
 		} else {
-			for (let i = end; i < _size; i++) {
+			for (let i = end; i < size; i++) {
 				_array[i - removeSize] = _array[i]
 			}
 		}
 
-		this._setSize(_size - removeSize)
+		const newSize = this._setSize(size - removeSize)
 
 		if (end <= this._countSorted) {
 			this._countSorted -= removeSize
@@ -723,11 +783,17 @@ export class List<T> extends CollectionChangedObject<T> {
 				type: CollectionChangedType.Removed,
 				index: start,
 				oldItems,
-				shiftIndex: end < _size
-					? (withoutShift ? _size - removeSize : end)
+				shiftIndex: end < size
+					? (withoutShift ? size - removeSize : end)
 					: start,
 			})
 		}
+
+		this.onPropertyChanged({
+			name: 'size',
+			oldValue: size,
+			newValue: newSize,
+		})
 
 		return true
 	}
@@ -892,8 +958,8 @@ export class List<T> extends CollectionChangedObject<T> {
 	}
 
 	public clear(): boolean {
-		const {_size} = this
-		if (_size === 0) {
+		const {_size: size} = this
+		if (size === 0) {
 			return false
 		}
 
@@ -901,7 +967,7 @@ export class List<T> extends CollectionChangedObject<T> {
 		let oldItems
 
 		if (_collectionChangedIfCanEmit) {
-			oldItems = _array.slice(0, _size)
+			oldItems = _array.slice(0, size)
 		}
 
 		this._setSize(0)
@@ -915,6 +981,12 @@ export class List<T> extends CollectionChangedObject<T> {
 				shiftIndex: 0,
 			})
 		}
+
+		this.onPropertyChanged({
+			name: 'size',
+			oldValue: size,
+			newValue: 0,
+		})
 
 		return true
 	}

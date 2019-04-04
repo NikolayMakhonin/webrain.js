@@ -5,6 +5,7 @@ import {
 import {ICompare} from '../../../../../../main/common/lists/contracts/ICompare'
 import {compareDefault, List} from '../../../../../../main/common/lists/List'
 import {IOptionsVariant, IOptionsVariants, ITestCase, TestVariants} from './TestVariants'
+import {IPropertyChangedEvent} from "../../../../../../main/common/rx/object/PropertyChangedObject";
 
 declare const assert: any
 
@@ -87,6 +88,7 @@ interface IListExpected<T> {
 	returnValue: any,
 	defaultValue: any,
 	collectionChanged?: Array<ICollectionChangedEvent<T>>,
+	propertyChanged?: IPropertyChangedEvent[],
 	countSorted?: number
 }
 
@@ -144,7 +146,8 @@ export class TestList<T> extends TestVariants<
 	protected testVariant(options: IListOptionsVariant<T> & IOptionsVariant<IListAction<T>, IListExpected<T>>) {
 		let error
 		for (let debugIteration = 0; debugIteration < 3; debugIteration++) {
-			let unsubscribe
+			let unsubscribeCollectionChanged
+			let unsubscribePropertyChanged
 			try {
 				let array = options.array.slice()
 				// assert.deepStrictEqual(array, array.slice().sort(compareDefault))
@@ -195,7 +198,7 @@ export class TestList<T> extends TestVariants<
 
 				const collectionChangedEvents = []
 				if (options.useCollectionChanged) {
-					unsubscribe = list.collectionChanged.subscribe(event => {
+					unsubscribeCollectionChanged = list.collectionChanged.subscribe(event => {
 						collectionChangedEvents.push(event)
 						applyCollectionChangedToArray(event, arrayReplicate, compare || compareDefault)
 
@@ -204,6 +207,11 @@ export class TestList<T> extends TestVariants<
 						}
 					})
 				}
+
+				const propertyChangedEvents = []
+				unsubscribePropertyChanged = list.propertyChanged.subscribe(event => {
+					propertyChangedEvents.push(event)
+				})
 
 				assert.strictEqual(list.minAllocatedSize, undefined)
 				// if (!options.reuseListInstance) {
@@ -238,12 +246,30 @@ export class TestList<T> extends TestVariants<
 				}
 
 				if (options.useCollectionChanged) {
-					if (unsubscribe) {
-						unsubscribe()
+					if (unsubscribeCollectionChanged) {
+						unsubscribeCollectionChanged()
 					}
 					assert.deepStrictEqual(collectionChangedEvents, options.expected.collectionChanged || [])
 					assert.deepStrictEqual(arrayReplicate, list.toArray())
 				}
+
+				if (unsubscribePropertyChanged) {
+					unsubscribePropertyChanged()
+				}
+
+				let expectedPropertyChanged = options.expected.propertyChanged
+				if (!expectedPropertyChanged
+					&& !options.expected.error
+					&& options.array.length !== options.expected.array.length
+				) {
+					expectedPropertyChanged = [{
+						name: 'size',
+						oldValue: options.array.length,
+						newValue: options.expected.array.length,
+					}]
+				}
+
+				assert.deepStrictEqual(propertyChangedEvents, expectedPropertyChanged || [])
 
 				if (options.expected.countSorted != null) {
 					assert.strictEqual(list.countSorted, options.expected.countSorted)
@@ -262,8 +288,11 @@ export class TestList<T> extends TestVariants<
 					error = ex
 				}
 			} finally {
-				if (unsubscribe) {
-					unsubscribe()
+				if (unsubscribeCollectionChanged) {
+					unsubscribeCollectionChanged()
+				}
+				if (unsubscribePropertyChanged) {
+					unsubscribePropertyChanged()
 				}
 				TestList.totalListTests++
 			}

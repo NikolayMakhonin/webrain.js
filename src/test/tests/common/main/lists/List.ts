@@ -928,6 +928,15 @@ describe('common > main > lists > List', function() {
 				array: ['0', '1', '2', '3', '4', '4', '5'],
 				returnValue: true,
 				defaultValue: null,
+				propertyChanged: [{
+					name: 'size',
+					oldValue: 5,
+					newValue: 6,
+				}, {
+					name: 'size',
+					oldValue: 6,
+					newValue: 7,
+				}],
 				collectionChanged: [{
 					type: CollectionChangedType.Added,
 					index: 3,
@@ -1975,12 +1984,6 @@ describe('common > main > lists > List', function() {
 				actions: [
 					list => list.sort(),
 					list => list.reSort(),
-					list => {
-						const countSorted = list.countSorted
-						list.autoSort = true
-						list.autoSort = false
-						return list.countSorted !== countSorted
-					},
 				],
 				description: 'sort()\n',
 			}
@@ -1999,6 +2002,36 @@ describe('common > main > lists > List', function() {
 			},
 			actions: [
 				sort(),
+			],
+		})
+
+		testList({
+			array: [['2', '1', '3']],
+			expected: {
+				array: ['1', '2', '3'],
+				returnValue: true,
+				defaultValue: null,
+				countSorted: 3,
+				propertyChanged: [{
+					name: 'autoSort',
+					oldValue: false,
+					newValue: true,
+				}, {
+					name: 'autoSort',
+					oldValue: true,
+					newValue: false,
+				}],
+				collectionChanged: [{
+					type: CollectionChangedType.Resorted,
+				}],
+			},
+			actions: [
+				list => {
+					const countSorted = list.countSorted
+					list.autoSort = true
+					list.autoSort = false
+					return list.countSorted !== countSorted
+				},
 			],
 		})
 	})
@@ -2084,6 +2117,15 @@ describe('common > main > lists > List', function() {
 				array: ['2', '1', '3', '4'],
 				returnValue: 2,
 				defaultValue: null,
+				propertyChanged: [{
+					name: 'size',
+					oldValue: 6,
+					newValue: 5,
+				}, {
+					name: 'size',
+					oldValue: 5,
+					newValue: 4,
+				}],
 				collectionChanged: [{
 					type: CollectionChangedType.Removed,
 					index: 5,
@@ -2108,6 +2150,15 @@ describe('common > main > lists > List', function() {
 				array: ['2', '1', '4', '3'],
 				returnValue: 2,
 				defaultValue: null,
+				propertyChanged: [{
+					name: 'size',
+					oldValue: 6,
+					newValue: 5,
+				}, {
+					name: 'size',
+					oldValue: 5,
+					newValue: 4,
+				}],
 				collectionChanged: [{
 					type: CollectionChangedType.Removed,
 					index: 5,
@@ -2132,6 +2183,15 @@ describe('common > main > lists > List', function() {
 				array: ['1', '2', '3', '4'],
 				returnValue: 2,
 				defaultValue: null,
+				propertyChanged: [{
+					name: 'size',
+					oldValue: 6,
+					newValue: 5,
+				}, {
+					name: 'size',
+					oldValue: 5,
+					newValue: 4,
+				}],
 				collectionChanged: [{
 					type: CollectionChangedType.Removed,
 					index: 3,

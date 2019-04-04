@@ -23,11 +23,9 @@ export class CollectionChangedObject<T> extends PropertyChangedObject {
 		return this
 	}
 
-	protected _collectionChangedDisabled?: boolean
-
 	protected get _collectionChangedIfCanEmit() {
-		const {_collectionChangedDisabled, _collectionChanged} = this
-		return !_collectionChangedDisabled && _collectionChanged && _collectionChanged.hasSubscribers
+		const {_propertyChangedDisabled, _collectionChanged} = this
+		return !_propertyChangedDisabled && _collectionChanged && _collectionChanged.hasSubscribers
 			? _collectionChanged
 			: null
 	}
