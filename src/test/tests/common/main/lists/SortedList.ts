@@ -1,6 +1,6 @@
 import {
-	CollectionChangedType,
-} from '../../../../../main/common/lists/contracts/ICollectionChanged'
+	ListChangedType,
+} from '../../../../../main/common/lists/contracts/IListChanged'
 import {compareDefault, SortedList} from '../../../../../main/common/lists/SortedList'
 import {
 	generateArray, IListAction,
@@ -254,8 +254,8 @@ describe('common > main > lists > List', function() {
 				array: ['0'],
 				returnValue: true,
 				defaultValue: null,
-				collectionChanged: [{
-					type: CollectionChangedType.Added,
+				listChanged: [{
+					type: ListChangedType.Added,
 					index: 0,
 					newItems: ['0'],
 					shiftIndex: 0,
@@ -273,8 +273,8 @@ describe('common > main > lists > List', function() {
 				array: ['0'],
 				returnValue: true,
 				defaultValue: null,
-				collectionChanged: [{
-					type: CollectionChangedType.Added,
+				listChanged: [{
+					type: ListChangedType.Added,
 					index: 0,
 					newItems: ['0'],
 					shiftIndex: 0,
@@ -305,8 +305,8 @@ describe('common > main > lists > List', function() {
 				array: ['1'],
 				returnValue: true,
 				defaultValue: null,
-				collectionChanged: [{
-					type: CollectionChangedType.Set,
+				listChanged: [{
+					type: ListChangedType.Set,
 					index: 0,
 					oldItems: ['0'],
 					newItems: ['1'],
@@ -338,8 +338,8 @@ describe('common > main > lists > List', function() {
 				array: ['0', '1'],
 				returnValue: true,
 				defaultValue: null,
-				collectionChanged: [{
-					type: CollectionChangedType.Added,
+				listChanged: [{
+					type: ListChangedType.Added,
 					index: 1,
 					newItems: ['1'],
 					shiftIndex: 1,
@@ -357,8 +357,8 @@ describe('common > main > lists > List', function() {
 				array: ['2', '1'],
 				returnValue: true,
 				defaultValue: null,
-				collectionChanged: [{
-					type: CollectionChangedType.Set,
+				listChanged: [{
+					type: ListChangedType.Set,
 					index: 0,
 					oldItems: ['0'],
 					newItems: ['2'],
@@ -378,8 +378,8 @@ describe('common > main > lists > List', function() {
 				array: ['0', '1', '3', '5', '7'],
 				returnValue: true,
 				defaultValue: null,
-				collectionChanged: [{
-					type: CollectionChangedType.Set,
+				listChanged: [{
+					type: ListChangedType.Set,
 					index: 2,
 					oldItems: ['4'],
 					newItems: ['1'],
@@ -400,8 +400,8 @@ describe('common > main > lists > List', function() {
 				array: ['0', '3', '5', '7'],
 				returnValue: true,
 				defaultValue: null,
-				collectionChanged: [{
-					type: CollectionChangedType.Removed,
+				listChanged: [{
+					type: ListChangedType.Removed,
 					index: 2,
 					oldItems: ['4'],
 					shiftIndex: 3,
@@ -421,8 +421,8 @@ describe('common > main > lists > List', function() {
 				array: ['5', '3', '4', '0'],
 				returnValue: true,
 				defaultValue: null,
-				collectionChanged: [{
-					type: CollectionChangedType.Removed,
+				listChanged: [{
+					type: ListChangedType.Removed,
 					index: 2,
 					oldItems: ['7'],
 					shiftIndex: 3,
@@ -474,8 +474,8 @@ describe('common > main > lists > List', function() {
 				array: ['0'],
 				returnValue: true,
 				defaultValue: null,
-				collectionChanged: [{
-					type: CollectionChangedType.Added,
+				listChanged: [{
+					type: ListChangedType.Added,
 					index: 0,
 					newItems: ['0'],
 					shiftIndex: 0,
@@ -492,8 +492,8 @@ describe('common > main > lists > List', function() {
 				array: ['0', '1'],
 				returnValue: true,
 				defaultValue: null,
-				collectionChanged: [{
-					type: CollectionChangedType.Added,
+				listChanged: [{
+					type: ListChangedType.Added,
 					index: 1,
 					newItems: ['1'],
 					shiftIndex: 1,
@@ -511,8 +511,8 @@ describe('common > main > lists > List', function() {
 				array: ['0', '1', '2', '3'],
 				returnValue: true,
 				defaultValue: null,
-				collectionChanged: [{
-					type: CollectionChangedType.Added,
+				listChanged: [{
+					type: ListChangedType.Added,
 					index: 1,
 					newItems: ['1'],
 					shiftIndex: 2,
@@ -592,8 +592,8 @@ describe('common > main > lists > List', function() {
 				array: ['0'],
 				returnValue: true,
 				defaultValue: null,
-				collectionChanged: [{
-					type: CollectionChangedType.Added,
+				listChanged: [{
+					type: ListChangedType.Added,
 					index: 0,
 					newItems: ['0'],
 					shiftIndex: 0,
@@ -629,8 +629,8 @@ describe('common > main > lists > List', function() {
 				array: ['0', '1', '2', '3'],
 				returnValue: true,
 				defaultValue: null,
-				collectionChanged: [{
-					type: CollectionChangedType.Added,
+				listChanged: [{
+					type: ListChangedType.Added,
 					index: 1,
 					newItems: ['1', '2', '3'],
 					shiftIndex: 1,
@@ -650,8 +650,8 @@ describe('common > main > lists > List', function() {
 				array: ['0', '1', '2'],
 				returnValue: true,
 				defaultValue: null,
-				collectionChanged: [{
-					type: CollectionChangedType.Added,
+				listChanged: [{
+					type: ListChangedType.Added,
 					index: 1,
 					newItems: ['1', '2'],
 					shiftIndex: 1,
@@ -674,8 +674,8 @@ describe('common > main > lists > List', function() {
 				array: ['0', '2', '3'],
 				returnValue: true,
 				defaultValue: null,
-				collectionChanged: [{
-					type: CollectionChangedType.Added,
+				listChanged: [{
+					type: ListChangedType.Added,
 					index: 1,
 					newItems: ['2', '3'],
 					shiftIndex: 1,
@@ -713,8 +713,8 @@ describe('common > main > lists > List', function() {
 				array: ['0'],
 				returnValue: true,
 				defaultValue: null,
-				collectionChanged: [{
-					type: CollectionChangedType.Added,
+				listChanged: [{
+					type: ListChangedType.Added,
 					index: 0,
 					newItems: ['0'],
 					shiftIndex: 0,
@@ -745,8 +745,8 @@ describe('common > main > lists > List', function() {
 				array: ['0', '1'],
 				returnValue: true,
 				defaultValue: null,
-				collectionChanged: [{
-					type: CollectionChangedType.Added,
+				listChanged: [{
+					type: ListChangedType.Added,
 					index: 1,
 					newItems: ['1'],
 					shiftIndex: 1,
@@ -779,8 +779,8 @@ describe('common > main > lists > List', function() {
 				countSorted: 1,
 				returnValue: true,
 				defaultValue: null,
-				collectionChanged: [{
-					type: CollectionChangedType.Added,
+				listChanged: [{
+					type: ListChangedType.Added,
 					index: 1,
 					newItems: ['5'],
 					shiftIndex: 2,
@@ -828,8 +828,8 @@ describe('common > main > lists > List', function() {
 				array: ['1', '2', '0'],
 				returnValue: true,
 				defaultValue: null,
-				collectionChanged: [{
-					type: CollectionChangedType.Added,
+				listChanged: [{
+					type: ListChangedType.Added,
 					index: 0,
 					newItems: ['1', '2'],
 					shiftIndex: 2,
@@ -855,8 +855,8 @@ describe('common > main > lists > List', function() {
 				array: ['0', '1', '4', '5', '2', '3', '4'],
 				returnValue: true,
 				defaultValue: null,
-				collectionChanged: [{
-					type: CollectionChangedType.Added,
+				listChanged: [{
+					type: ListChangedType.Added,
 					index: 2,
 					newItems: ['4', '5'],
 					shiftIndex: 4,
@@ -883,8 +883,8 @@ describe('common > main > lists > List', function() {
 				array: ['0', '1', '2', '3', '4', '5'],
 				returnValue: true,
 				defaultValue: null,
-				collectionChanged: [{
-					type: CollectionChangedType.Added,
+				listChanged: [{
+					type: ListChangedType.Added,
 					index: 2,
 					newItems: ['2'],
 					shiftIndex: 3,
@@ -908,8 +908,8 @@ describe('common > main > lists > List', function() {
 				array: ['0', '2', '1', '3', '5', '4'],
 				returnValue: true,
 				defaultValue: null,
-				collectionChanged: [{
-					type: CollectionChangedType.Added,
+				listChanged: [{
+					type: ListChangedType.Added,
 					index: 1,
 					newItems: ['2'],
 					shiftIndex: 2,
@@ -937,13 +937,13 @@ describe('common > main > lists > List', function() {
 					oldValue: 6,
 					newValue: 7,
 				}],
-				collectionChanged: [{
-					type: CollectionChangedType.Added,
+				listChanged: [{
+					type: ListChangedType.Added,
 					index: 3,
 					newItems: ['4'],
 					shiftIndex: 4,
 				}, {
-					type: CollectionChangedType.Added,
+					type: ListChangedType.Added,
 					index: 2,
 					newItems: ['2'],
 					shiftIndex: 3,
@@ -990,8 +990,8 @@ describe('common > main > lists > List', function() {
 				array: [],
 				returnValue: true,
 				defaultValue: null,
-				collectionChanged: [{
-					type: CollectionChangedType.Removed,
+				listChanged: [{
+					type: ListChangedType.Removed,
 					index: 0,
 					oldItems: ['0'],
 					shiftIndex: 0,
@@ -1008,8 +1008,8 @@ describe('common > main > lists > List', function() {
 				array: ['1', '2'],
 				returnValue: true,
 				defaultValue: null,
-				collectionChanged: [{
-					type: CollectionChangedType.Removed,
+				listChanged: [{
+					type: ListChangedType.Removed,
 					index: 0,
 					oldItems: ['0'],
 					shiftIndex: 1,
@@ -1026,8 +1026,8 @@ describe('common > main > lists > List', function() {
 				array: ['0', '2'],
 				returnValue: true,
 				defaultValue: null,
-				collectionChanged: [{
-					type: CollectionChangedType.Removed,
+				listChanged: [{
+					type: ListChangedType.Removed,
 					index: 1,
 					oldItems: ['1'],
 					shiftIndex: 2,
@@ -1056,8 +1056,8 @@ describe('common > main > lists > List', function() {
 				array: [0, 2],
 				returnValue: true,
 				defaultValue: 0,
-				collectionChanged: [{
-					type: CollectionChangedType.Removed,
+				listChanged: [{
+					type: ListChangedType.Removed,
 					index: 1,
 					oldItems: [1],
 					shiftIndex: 2,
@@ -1075,8 +1075,8 @@ describe('common > main > lists > List', function() {
 				array: [true],
 				returnValue: true,
 				defaultValue: false,
-				collectionChanged: [{
-					type: CollectionChangedType.Removed,
+				listChanged: [{
+					type: ListChangedType.Removed,
 					index: 1,
 					oldItems: [true],
 					shiftIndex: 1,
@@ -1093,8 +1093,8 @@ describe('common > main > lists > List', function() {
 				array: ['0', 2],
 				returnValue: true,
 				defaultValue: 0,
-				collectionChanged: [{
-					type: CollectionChangedType.Removed,
+				listChanged: [{
+					type: ListChangedType.Removed,
 					index: 2,
 					oldItems: [true],
 					shiftIndex: 2,
@@ -1151,8 +1151,8 @@ describe('common > main > lists > List', function() {
 				array: [],
 				returnValue: true,
 				defaultValue: null,
-				collectionChanged: [{
-					type: CollectionChangedType.Removed,
+				listChanged: [{
+					type: ListChangedType.Removed,
 					index: 0,
 					oldItems: ['0'],
 					shiftIndex: 0,
@@ -1170,8 +1170,8 @@ describe('common > main > lists > List', function() {
 				array: [0, 2, 3],
 				returnValue: true,
 				defaultValue: 0,
-				collectionChanged: [{
-					type: CollectionChangedType.Removed,
+				listChanged: [{
+					type: ListChangedType.Removed,
 					index: 1,
 					oldItems: [1],
 					shiftIndex: 2,
@@ -1189,8 +1189,8 @@ describe('common > main > lists > List', function() {
 				array: ['0', '3', '2'],
 				returnValue: true,
 				defaultValue: null,
-				collectionChanged: [{
-					type: CollectionChangedType.Removed,
+				listChanged: [{
+					type: ListChangedType.Removed,
 					index: 1,
 					oldItems: ['1'],
 					shiftIndex: 3,
@@ -1249,8 +1249,8 @@ describe('common > main > lists > List', function() {
 				array: [],
 				returnValue: true,
 				defaultValue: null,
-				collectionChanged: [{
-					type: CollectionChangedType.Removed,
+				listChanged: [{
+					type: ListChangedType.Removed,
 					index: 0,
 					oldItems: ['0'],
 					shiftIndex: 0,
@@ -1288,8 +1288,8 @@ describe('common > main > lists > List', function() {
 				array: [-5, -1, true],
 				returnValue: true,
 				defaultValue: false,
-				collectionChanged: [{
-					type: CollectionChangedType.Removed,
+				listChanged: [{
+					type: ListChangedType.Removed,
 					index: 1,
 					oldItems: [-4, -3, -2],
 					shiftIndex: 4,
@@ -1307,8 +1307,8 @@ describe('common > main > lists > List', function() {
 				array: [-5, -1, null],
 				returnValue: true,
 				defaultValue: null,
-				collectionChanged: [{
-					type: CollectionChangedType.Removed,
+				listChanged: [{
+					type: ListChangedType.Removed,
 					index: 1,
 					oldItems: [-4, -3, -2],
 					shiftIndex: 4,
@@ -1327,8 +1327,8 @@ describe('common > main > lists > List', function() {
 				array: [-5, -1, undefined],
 				returnValue: true,
 				defaultValue: undefined,
-				collectionChanged: [{
-					type: CollectionChangedType.Removed,
+				listChanged: [{
+					type: ListChangedType.Removed,
 					index: 1,
 					oldItems: [-4, -3, -2],
 					shiftIndex: 4,
@@ -1346,8 +1346,8 @@ describe('common > main > lists > List', function() {
 				array: ['0', '1', '7', '8', '9', '5', '6'],
 				returnValue: true,
 				defaultValue: null,
-				collectionChanged: [{
-					type: CollectionChangedType.Removed,
+				listChanged: [{
+					type: ListChangedType.Removed,
 					index: 2,
 					oldItems: ['2', '3', '4'],
 					shiftIndex: 7,
@@ -1364,8 +1364,8 @@ describe('common > main > lists > List', function() {
 				array: ['0', '1', '5', '6', '7', '8', '9'],
 				returnValue: true,
 				defaultValue: null,
-				collectionChanged: [{
-					type: CollectionChangedType.Removed,
+				listChanged: [{
+					type: ListChangedType.Removed,
 					index: 2,
 					oldItems: ['2', '3', '4'],
 					shiftIndex: 5,
@@ -1406,8 +1406,8 @@ describe('common > main > lists > List', function() {
 				array: [],
 				returnValue: true,
 				defaultValue: null,
-				collectionChanged: [{
-					type: CollectionChangedType.Removed,
+				listChanged: [{
+					type: ListChangedType.Removed,
 					index: 0,
 					oldItems: ['0'],
 					shiftIndex: 0,
@@ -1424,8 +1424,8 @@ describe('common > main > lists > List', function() {
 				array: [],
 				returnValue: true,
 				defaultValue: 0,
-				collectionChanged: [{
-					type: CollectionChangedType.Removed,
+				listChanged: [{
+					type: ListChangedType.Removed,
 					index: 0,
 					oldItems: [0, 1, 2],
 					shiftIndex: 0,
@@ -1442,8 +1442,8 @@ describe('common > main > lists > List', function() {
 				array: [],
 				returnValue: true,
 				defaultValue: 0,
-				collectionChanged: [{
-					type: CollectionChangedType.Removed,
+				listChanged: [{
+					type: ListChangedType.Removed,
 					index: 0,
 					oldItems: [-3, -2, -1, true],
 					shiftIndex: 0,
@@ -1460,8 +1460,8 @@ describe('common > main > lists > List', function() {
 				array: [],
 				returnValue: true,
 				defaultValue: 0,
-				collectionChanged: [{
-					type: CollectionChangedType.Removed,
+				listChanged: [{
+					type: ListChangedType.Removed,
 					index: 0,
 					oldItems: [1, '2', '3', '4'],
 					shiftIndex: 0,
@@ -1808,8 +1808,8 @@ describe('common > main > lists > List', function() {
 				array: ['0', '3', '1', '2', '4'],
 				returnValue: true,
 				defaultValue: null,
-				collectionChanged: [{
-					type: CollectionChangedType.Moved,
+				listChanged: [{
+					type: ListChangedType.Moved,
 					index: 3,
 					moveIndex: 1,
 					moveSize: 1,
@@ -1827,8 +1827,8 @@ describe('common > main > lists > List', function() {
 				array: ['0', '2', '3', '1', '4'],
 				returnValue: true,
 				defaultValue: null,
-				collectionChanged: [{
-					type: CollectionChangedType.Moved,
+				listChanged: [{
+					type: ListChangedType.Moved,
 					index: 1,
 					moveIndex: 3,
 					moveSize: 1,
@@ -1874,8 +1874,8 @@ describe('common > main > lists > List', function() {
 				array: [0, 5, 6, 1, 2, 3, 4, 7, 8],
 				returnValue: true,
 				defaultValue: null,
-				collectionChanged: [{
-					type: CollectionChangedType.Moved,
+				listChanged: [{
+					type: ListChangedType.Moved,
 					index: 1,
 					moveIndex: 3,
 					moveSize: 4,
@@ -1892,8 +1892,8 @@ describe('common > main > lists > List', function() {
 				array: [0, 3, 4, 5, 6, 1, 2, 7, 8],
 				returnValue: true,
 				defaultValue: null,
-				collectionChanged: [{
-					type: CollectionChangedType.Moved,
+				listChanged: [{
+					type: ListChangedType.Moved,
 					index: 3,
 					moveIndex: 1,
 					moveSize: 4,
@@ -1910,8 +1910,8 @@ describe('common > main > lists > List', function() {
 				array: [0, 8, 9, 1, 2, 3, 4, 5, 6, 7],
 				returnValue: true,
 				defaultValue: null,
-				collectionChanged: [{
-					type: CollectionChangedType.Moved,
+				listChanged: [{
+					type: ListChangedType.Moved,
 					index: 1,
 					moveIndex: 3,
 					moveSize: 7,
@@ -1928,8 +1928,8 @@ describe('common > main > lists > List', function() {
 				array: [0, 3, 4, 5, 6, 7, 8, 9, 1, 2],
 				returnValue: true,
 				defaultValue: null,
-				collectionChanged: [{
-					type: CollectionChangedType.Moved,
+				listChanged: [{
+					type: ListChangedType.Moved,
 					index: 3,
 					moveIndex: 1,
 					moveSize: 7,
@@ -1946,8 +1946,8 @@ describe('common > main > lists > List', function() {
 				array: [0, 3, 1, 2],
 				returnValue: true,
 				defaultValue: null,
-				collectionChanged: [{
-					type: CollectionChangedType.Moved,
+				listChanged: [{
+					type: ListChangedType.Moved,
 					index: 1,
 					moveIndex: 2,
 					moveSize: 2,
@@ -1996,8 +1996,8 @@ describe('common > main > lists > List', function() {
 				returnValue: true,
 				defaultValue: null,
 				countSorted: 3,
-				collectionChanged: [{
-					type: CollectionChangedType.Resorted,
+				listChanged: [{
+					type: ListChangedType.Resorted,
 				}],
 			},
 			actions: [
@@ -2021,8 +2021,8 @@ describe('common > main > lists > List', function() {
 					oldValue: true,
 					newValue: false,
 				}],
-				collectionChanged: [{
-					type: CollectionChangedType.Resorted,
+				listChanged: [{
+					type: ListChangedType.Resorted,
 				}],
 			},
 			actions: [
@@ -2068,8 +2068,8 @@ describe('common > main > lists > List', function() {
 				array: ['1', '2', '3'],
 				returnValue: true,
 				defaultValue: null,
-				collectionChanged: [{
-					type: CollectionChangedType.Resorted,
+				listChanged: [{
+					type: ListChangedType.Resorted,
 				}],
 			},
 			actions: [
@@ -2126,13 +2126,13 @@ describe('common > main > lists > List', function() {
 					oldValue: 5,
 					newValue: 4,
 				}],
-				collectionChanged: [{
-					type: CollectionChangedType.Removed,
+				listChanged: [{
+					type: ListChangedType.Removed,
 					index: 5,
 					oldItems: ['2'],
 					shiftIndex: 5,
 				}, {
-					type: CollectionChangedType.Removed,
+					type: ListChangedType.Removed,
 					index: 2,
 					oldItems: ['2'],
 					shiftIndex: 3,
@@ -2159,13 +2159,13 @@ describe('common > main > lists > List', function() {
 					oldValue: 5,
 					newValue: 4,
 				}],
-				collectionChanged: [{
-					type: CollectionChangedType.Removed,
+				listChanged: [{
+					type: ListChangedType.Removed,
 					index: 5,
 					oldItems: ['2'],
 					shiftIndex: 5,
 				}, {
-					type: CollectionChangedType.Removed,
+					type: ListChangedType.Removed,
 					index: 2,
 					oldItems: ['2'],
 					shiftIndex: 4,
@@ -2192,13 +2192,13 @@ describe('common > main > lists > List', function() {
 					oldValue: 5,
 					newValue: 4,
 				}],
-				collectionChanged: [{
-					type: CollectionChangedType.Removed,
+				listChanged: [{
+					type: ListChangedType.Removed,
 					index: 3,
 					oldItems: ['2'],
 					shiftIndex: 4,
 				}, {
-					type: CollectionChangedType.Removed,
+					type: ListChangedType.Removed,
 					index: 2,
 					oldItems: ['2'],
 					shiftIndex: 3,

@@ -1,7 +1,7 @@
 import {
-	CollectionChangedType,
-	ICollectionChangedEvent,
-} from '../../../../../../main/common/lists/contracts/ICollectionChanged'
+	ListChangedType,
+	IListChangedEvent,
+} from '../../../../../../main/common/lists/contracts/IListChanged'
 import {ICompare} from '../../../../../../main/common/lists/contracts/ICompare'
 import {compareDefault, SortedList} from '../../../../../../main/common/lists/SortedList'
 import {IPropertyChangedEvent} from '../../../../../../main/common/rx/object/PropertyChangedObject'
@@ -24,9 +24,9 @@ export function *toIterable<T>(array: T[]): Iterable<T> {
 	}
 }
 
-export function applyCollectionChangedToArray<T>(event: ICollectionChangedEvent<T>, array: T[], compare: ICompare<T>) {
+export function applyListChangedToArray<T>(event: IListChangedEvent<T>, array: T[], compare: ICompare<T>) {
 	switch (event.type) {
-		case CollectionChangedType.Added:
+		case ListChangedType.Added:
 			{
 				const len = array.length
 				const shift = event.shiftIndex - event.index
@@ -42,7 +42,7 @@ export function applyCollectionChangedToArray<T>(event: ICollectionChangedEvent<
 				array[event.index + i] = event.newItems[i]
 			}
 			break
-		case CollectionChangedType.Removed:
+		case ListChangedType.Removed:
 			for (let i = 0; i < event.oldItems.length; i++) {
 				assert.strictEqual(array[event.index + i], event.oldItems[i])
 			}
@@ -51,17 +51,17 @@ export function applyCollectionChangedToArray<T>(event: ICollectionChangedEvent<
 			}
 			array.length -= event.oldItems.length
 			break
-		case CollectionChangedType.Set:
+		case ListChangedType.Set:
 			assert.strictEqual(array[event.index], event.oldItems[0])
 			array[event.index] = event.newItems[0]
 			if (event.moveIndex !== event.index) {
 				array.splice(event.moveIndex, 0, ...array.splice(event.index, 1))
 			}
 			break
-		case CollectionChangedType.Moved:
+		case ListChangedType.Moved:
 			array.splice(event.moveIndex, 0, ...array.splice(event.index, event.moveSize))
 			break
-		case CollectionChangedType.Resorted:
+		case ListChangedType.Resorted:
 			array.sort(compare)
 			break
 	}
@@ -76,7 +76,7 @@ interface IListOptionsVariant<T> {
 	compare?: ICompare<T>
 	withCompare?: boolean
 	reuseListInstance?: boolean
-	useCollectionChanged?: boolean
+	useListChanged?: boolean
 	autoSort?: boolean
 	notAddIfExists?: boolean
 	countSorted?: number
@@ -87,7 +87,7 @@ interface IListExpected<T> {
 	error?: new () => Error,
 	returnValue: any,
 	defaultValue: any,
-	collectionChanged?: Array<ICollectionChangedEvent<T>>,
+	listChanged?: Array<IListChangedEvent<T>>,
 	propertyChanged?: IPropertyChangedEvent[],
 	countSorted?: number
 }
@@ -98,7 +98,7 @@ interface IListOptionsVariants<T> extends IOptionsVariants {
 	compare?: Array<ICompare<T>>
 	withCompare?: boolean[]
 	reuseListInstance?: boolean[]
-	useCollectionChanged?: boolean[]
+	useListChanged?: boolean[]
 	autoSort?: boolean[]
 	notAddIfExists?: boolean[]
 	countSorted?: number[]
@@ -140,13 +140,13 @@ export class TestList<T> extends TestVariants<
 		notAddIfExists: [false, true],
 		withCompare: [false, true],
 		reuseListInstance: [false, true],
-		useCollectionChanged: [false, true],
+		useListChanged: [false, true],
 	}
 
 	protected testVariant(options: IListOptionsVariant<T> & IOptionsVariant<IListAction<T>, IListExpected<T>>) {
 		let error
 		for (let debugIteration = 0; debugIteration < 3; debugIteration++) {
-			let unsubscribeCollectionChanged
+			let unsubscribeListChanged
 			let unsubscribePropertyChanged
 			try {
 				let array = options.array.slice()
@@ -196,13 +196,13 @@ export class TestList<T> extends TestVariants<
 				// 	options.autoSort ? list.size : options.countSorted || 0,
 				// )
 
-				const collectionChangedEvents = []
-				if (options.useCollectionChanged) {
-					unsubscribeCollectionChanged = list.collectionChanged.subscribe(event => {
-						collectionChangedEvents.push(event)
-						applyCollectionChangedToArray(event, arrayReplicate, compare || compareDefault)
+				const listChangedEvents = []
+				if (options.useListChanged) {
+					unsubscribeListChanged = list.listChanged.subscribe(event => {
+						listChangedEvents.push(event)
+						applyListChangedToArray(event, arrayReplicate, compare || compareDefault)
 
-						if (event.type !== CollectionChangedType.Resorted) {
+						if (event.type !== ListChangedType.Resorted) {
 							assert.deepStrictEqual(arrayReplicate, array.slice(0, list.size))
 						}
 					})
@@ -245,11 +245,11 @@ export class TestList<T> extends TestVariants<
 					}
 				}
 
-				if (options.useCollectionChanged) {
-					if (unsubscribeCollectionChanged) {
-						unsubscribeCollectionChanged()
+				if (options.useListChanged) {
+					if (unsubscribeListChanged) {
+						unsubscribeListChanged()
 					}
-					assert.deepStrictEqual(collectionChangedEvents, options.expected.collectionChanged || [])
+					assert.deepStrictEqual(listChangedEvents, options.expected.listChanged || [])
 					assert.deepStrictEqual(arrayReplicate, list.toArray())
 				}
 
@@ -288,8 +288,8 @@ export class TestList<T> extends TestVariants<
 					error = ex
 				}
 			} finally {
-				if (unsubscribeCollectionChanged) {
-					unsubscribeCollectionChanged()
+				if (unsubscribeListChanged) {
+					unsubscribeListChanged()
 				}
 				if (unsubscribePropertyChanged) {
 					unsubscribePropertyChanged()

@@ -1,6 +1,6 @@
-import {CollectionChangedObject} from './CollectionChangedObject'
-import {CollectionChangedType} from './contracts/ICollectionChanged'
+import {ListChangedObject} from './base/ListChangedObject'
 import {ICompare} from './contracts/ICompare'
+import {ListChangedType} from './contracts/IListChanged'
 import {binarySearch, move} from './helpers/array'
 
 function calcOptimalArraySize(desiredSize: number) {
@@ -37,7 +37,7 @@ export function compareDefault(o1, o2) {
 	}
 }
 
-export class SortedList<T> extends CollectionChangedObject<T> {
+export class SortedList<T> extends ListChangedObject<T> {
 	// region constructor
 
 	private _array: T[]
@@ -220,10 +220,10 @@ export class SortedList<T> extends CollectionChangedObject<T> {
 		if (value) {
 			this._autoSort = value
 			if (this._countSorted !== this._size) {
-				const {_collectionChangedIfCanEmit} = this
-				if (_collectionChangedIfCanEmit) {
-					_collectionChangedIfCanEmit.emit({
-						type: CollectionChangedType.Resorted,
+				const {_listChangedIfCanEmit} = this
+				if (_listChangedIfCanEmit) {
+					_listChangedIfCanEmit.emit({
+						type: ListChangedType.Resorted,
 					})
 				}
 			}
@@ -369,7 +369,7 @@ export class SortedList<T> extends CollectionChangedObject<T> {
 			return this.add(item)
 		}
 
-		const {_autoSort, _notAddIfExists, _compare, _collectionChangedIfCanEmit} = this
+		const {_autoSort, _notAddIfExists, _compare, _listChangedIfCanEmit} = this
 
 		if (_autoSort) {
 			this.sort()
@@ -377,7 +377,7 @@ export class SortedList<T> extends CollectionChangedObject<T> {
 
 		const oldItem = _array[index]
 
-		if ((_notAddIfExists || _autoSort || _collectionChangedIfCanEmit)
+		if ((_notAddIfExists || _autoSort || _listChangedIfCanEmit)
 			&& (_compare || SortedList.compareDefault)(oldItem, item) === 0
 		) {
 			return false
@@ -415,15 +415,15 @@ export class SortedList<T> extends CollectionChangedObject<T> {
 			moveIndex = index
 		}
 
-		if (_collectionChangedIfCanEmit) {
+		if (_listChangedIfCanEmit) {
 			_array[index] = item
 
 			if (moveIndex !== index) {
 				this._move(index, moveIndex)
 			}
 
-			_collectionChangedIfCanEmit.emit({
-				type: CollectionChangedType.Set,
+			_listChangedIfCanEmit.emit({
+				type: ListChangedType.Set,
 				index,
 				oldItems: [oldItem],
 				newItems: [item],
@@ -494,10 +494,10 @@ export class SortedList<T> extends CollectionChangedObject<T> {
 
 		_array[index] = item
 
-		const {_collectionChangedIfCanEmit} = this
-		if (_collectionChangedIfCanEmit) {
-			_collectionChangedIfCanEmit.emit({
-				type: CollectionChangedType.Added,
+		const {_listChangedIfCanEmit} = this
+		if (_listChangedIfCanEmit) {
+			_listChangedIfCanEmit.emit({
+				type: ListChangedType.Added,
 				index,
 				newItems: [item],
 				shiftIndex: index < size ? index + 1 : index,
@@ -577,10 +577,10 @@ export class SortedList<T> extends CollectionChangedObject<T> {
 			this._countSorted = index
 		}
 
-		const {_collectionChangedIfCanEmit} = this
-		if (_collectionChangedIfCanEmit) {
-			_collectionChangedIfCanEmit.emit({
-				type: CollectionChangedType.Added,
+		const {_listChangedIfCanEmit} = this
+		if (_listChangedIfCanEmit) {
+			_listChangedIfCanEmit.emit({
+				type: ListChangedType.Added,
 				index,
 				newItems: _array.slice(index, index + itemsSize),
 				shiftIndex: index < size ? index + itemsSize : index,
@@ -665,10 +665,10 @@ export class SortedList<T> extends CollectionChangedObject<T> {
 			this._countSorted = start
 		}
 
-		const {_collectionChangedIfCanEmit} = this
-		if (_collectionChangedIfCanEmit) {
-			_collectionChangedIfCanEmit.emit({
-				type: CollectionChangedType.Added,
+		const {_listChangedIfCanEmit} = this
+		if (_listChangedIfCanEmit) {
+			_listChangedIfCanEmit.emit({
+				type: ListChangedType.Added,
 				index: start,
 				newItems: _array.slice(start, end),
 				shiftIndex: start < size ? end : start,
@@ -689,10 +689,10 @@ export class SortedList<T> extends CollectionChangedObject<T> {
 
 		index = SortedList._prepareIndex(index, size)
 
-		const {_collectionChangedIfCanEmit} = this
+		const {_listChangedIfCanEmit} = this
 		let oldItems
 
-		if (_collectionChangedIfCanEmit) {
+		if (_listChangedIfCanEmit) {
 			oldItems = [_array[index]]
 		}
 
@@ -713,9 +713,9 @@ export class SortedList<T> extends CollectionChangedObject<T> {
 			this._countSorted--
 		}
 
-		if (_collectionChangedIfCanEmit) {
-			_collectionChangedIfCanEmit.emit({
-				type: CollectionChangedType.Removed,
+		if (_listChangedIfCanEmit) {
+			_listChangedIfCanEmit.emit({
+				type: ListChangedType.Removed,
 				index,
 				oldItems,
 				shiftIndex: index < size - 1
@@ -745,10 +745,10 @@ export class SortedList<T> extends CollectionChangedObject<T> {
 			return false
 		}
 
-		const {_collectionChangedIfCanEmit} = this
+		const {_listChangedIfCanEmit} = this
 		let oldItems
 
-		if (_collectionChangedIfCanEmit) {
+		if (_listChangedIfCanEmit) {
 			oldItems = _array.slice(start, end)
 		}
 
@@ -778,9 +778,9 @@ export class SortedList<T> extends CollectionChangedObject<T> {
 			this._countSorted = start
 		}
 
-		if (_collectionChangedIfCanEmit) {
-			_collectionChangedIfCanEmit.emit({
-				type: CollectionChangedType.Removed,
+		if (_listChangedIfCanEmit) {
+			_listChangedIfCanEmit.emit({
+				type: ListChangedType.Removed,
 				index: start,
 				oldItems,
 				shiftIndex: end < size
@@ -836,10 +836,10 @@ export class SortedList<T> extends CollectionChangedObject<T> {
 
 		this._countSorted = Math.min(this._countSorted, oldIndex, newIndex)
 
-		const {_collectionChangedIfCanEmit} = this
-		if (_collectionChangedIfCanEmit) {
-			_collectionChangedIfCanEmit.emit({
-				type: CollectionChangedType.Moved,
+		const {_listChangedIfCanEmit} = this
+		if (_listChangedIfCanEmit) {
+			_listChangedIfCanEmit.emit({
+				type: ListChangedType.Moved,
 				index: oldIndex,
 				moveSize: 1,
 				moveIndex: newIndex,
@@ -870,10 +870,10 @@ export class SortedList<T> extends CollectionChangedObject<T> {
 
 		this._countSorted = Math.min(this._countSorted, start, moveIndex)
 
-		const {_collectionChangedIfCanEmit} = this
-		if (_collectionChangedIfCanEmit) {
-			_collectionChangedIfCanEmit.emit({
-				type: CollectionChangedType.Moved,
+		const {_listChangedIfCanEmit} = this
+		if (_listChangedIfCanEmit) {
+			_listChangedIfCanEmit.emit({
+				type: ListChangedType.Moved,
 				index: start,
 				moveSize: end - start,
 				moveIndex,
@@ -963,19 +963,19 @@ export class SortedList<T> extends CollectionChangedObject<T> {
 			return false
 		}
 
-		const {_array, _collectionChangedIfCanEmit} = this
+		const {_array, _listChangedIfCanEmit} = this
 		let oldItems
 
-		if (_collectionChangedIfCanEmit) {
+		if (_listChangedIfCanEmit) {
 			oldItems = _array.slice(0, size)
 		}
 
 		this._setSize(0)
 		this._countSorted = 0
 
-		if (_collectionChangedIfCanEmit) {
-			_collectionChangedIfCanEmit.emit({
-				type: CollectionChangedType.Removed,
+		if (_listChangedIfCanEmit) {
+			_listChangedIfCanEmit.emit({
+				type: ListChangedType.Removed,
 				index: 0,
 				oldItems,
 				shiftIndex: 0,
@@ -1007,10 +1007,10 @@ export class SortedList<T> extends CollectionChangedObject<T> {
 		this._countSorted = 0
 
 		if (this._autoSort) {
-			const {_collectionChangedIfCanEmit} = this
-			if (_collectionChangedIfCanEmit) {
-				_collectionChangedIfCanEmit.emit({
-					type: CollectionChangedType.Resorted,
+			const {_listChangedIfCanEmit} = this
+			if (_listChangedIfCanEmit) {
+				_listChangedIfCanEmit.emit({
+					type: ListChangedType.Resorted,
 				})
 			}
 		} else {
@@ -1037,10 +1037,10 @@ export class SortedList<T> extends CollectionChangedObject<T> {
 		this._countSorted = _size
 
 		if (!this._autoSort) {
-			const {_collectionChangedIfCanEmit} = this
-			if (_collectionChangedIfCanEmit) {
-				_collectionChangedIfCanEmit.emit({
-					type: CollectionChangedType.Resorted,
+			const {_listChangedIfCanEmit} = this
+			if (_listChangedIfCanEmit) {
+				_listChangedIfCanEmit.emit({
+					type: ListChangedType.Resorted,
 				})
 			}
 		}

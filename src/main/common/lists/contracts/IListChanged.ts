@@ -1,6 +1,6 @@
 import {HasSubscribersSubject, IHasSubscribersSubject} from '../../rx/subjects/hasSubscribers'
 
-export enum CollectionChangedType {
+export enum ListChangedType {
 	/**
 	 * Removed @items from @index and shift [shiftIndex .. size) -> index
 	 */
@@ -24,8 +24,8 @@ export enum CollectionChangedType {
 	Moved,
 }
 
-export interface ICollectionChangedEvent<T> {
-	readonly type: CollectionChangedType
+export interface IListChangedEvent<T> {
+	readonly type: ListChangedType
 
 	readonly index?: number
 	readonly shiftIndex?: number
@@ -35,7 +35,7 @@ export interface ICollectionChangedEvent<T> {
 	readonly moveSize?: number
 }
 
-export interface ICollectionChanged<T> {
-	readonly collectionChanged: IHasSubscribersSubject<ICollectionChangedEvent<T>>
-	onCollectionChanged(event: ICollectionChangedEvent<T>): this
+export interface IListChanged<T> {
+	readonly listChanged: IHasSubscribersSubject<IListChangedEvent<T>>
+	onListChanged(event: IListChangedEvent<T>): this
 }
