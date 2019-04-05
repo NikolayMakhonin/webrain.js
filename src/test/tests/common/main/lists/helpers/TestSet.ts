@@ -18,7 +18,7 @@ export function applySetChangedToArray<T>(event: ISetChangedEvent<T>, array: T[]
 			}
 			break
 		case SetChangedType.Removed:
-			for (const item of event.newItems) {
+			for (const item of event.oldItems) {
 				const index = array.indexOf(item)
 				array.splice(index, 1)
 			}
@@ -64,7 +64,7 @@ function assertSet<T>(set: ObservableSet<T>, expectedArray: T[]) {
 		assert.strictEqual(set.has(Math.random() as any), false)
 	}
 
-	assert.deepStrictEqual(Array.from(set), expectedArray)
+	assert.deepStrictEqual(Array.from(set).sort(), expectedArray)
 }
 
 const staticSetInner = new Set()

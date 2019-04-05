@@ -53,5 +53,85 @@ describe('common > main > lists > ObservableSet', function() {
 				add('0'),
 			],
 		})
+
+		testSet({
+			array: [['0']],
+			expected: {
+				array: ['0'],
+				returnValue: THIS,
+			},
+			actions: [
+				add('0'),
+			],
+		})
+
+		testSet({
+			array: [['0']],
+			expected: {
+				array: ['0', '1'],
+				returnValue: THIS,
+				setChanged: [{
+					type: SetChangedType.Added,
+					newItems: ['1'],
+				}],
+			},
+			actions: [
+				add('1'),
+			],
+		})
+	})
+
+	it('delete', function() {
+		function remove<T>(
+			item: T,
+		): ITestActionsWithDescription<ISetAction<T>> {
+			return {
+				actions: [
+					list => list.delete(item),
+				],
+				description: `delete(${JSON.stringify(item)})\n`,
+			}
+		}
+
+		testSet({
+			array: [[]],
+			expected: {
+				array: [],
+				returnValue: false,
+			},
+			actions: [
+				remove('0'),
+			],
+		})
+
+		testSet({
+			array: [['0']],
+			expected: {
+				array: [],
+				returnValue: true,
+				setChanged: [{
+					type: SetChangedType.Removed,
+					oldItems: ['0'],
+				}],
+			},
+			actions: [
+				remove('0'),
+			],
+		})
+
+		testSet({
+			array: [['2', '1']],
+			expected: {
+				array: ['1'],
+				returnValue: true,
+				setChanged: [{
+					type: SetChangedType.Removed,
+					oldItems: ['2'],
+				}],
+			},
+			actions: [
+				remove('2'),
+			],
+		})
 	})
 })
