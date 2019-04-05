@@ -10,33 +10,75 @@ export class ObservableMap<K, V> extends MapChangedObject<K, V> implements Map<K
 		map?: Map<K, V>,
 	} = {}) {
 		super()
-		this._map = map || new Map<T>()
+		this._map = map || new Map<K, V>()
 	}
 
 	public set(key: K, value: V): this {
-		return undefined
-	}
-
-	public add(value: T): this {
 		const {_map} = this
 		const oldSize = _map.size
+		const oldValue = _map.get(key)
 
-		this._map.add(value)
+		_map.set(key, value)
 
 		const size = _map.size
 		if (size > oldSize) {
-			this.onMapChanged({
-				type: MapChangedType.Added,
-				newItem: value,
-			})
+			const {_mapChangedIfCanEmit} = this
+			if (_mapChangedIfCanEmit) {
+				_mapChangedIfCanEmit.emit({
+					type: MapChangedType.Added,
+					key,
+					newValue: value,
+				})
+			}
+
 			this.onPropertyChanged({
 				name: 'size',
 				oldValue: oldSize,
 				newValue: size,
 			})
+		} else {
+			const {_mapChangedIfCanEmit} = this
+			if (_mapChangedIfCanEmit) {
+				_mapChangedIfCanEmit.emit({
+					type: MapChangedType.Set,
+					key,
+					oldValue,
+					newValue: value,
+				})
+			}
 		}
 
 		return this
+	}
+
+	public delete(key: K): boolean {
+		const {_map} = this
+		const oldSize = _map.size
+		const oldValue = _map.get(key)
+
+		this._map.delete(key)
+
+		const size = _map.size
+		if (size < oldSize) {
+			const {_mapChangedIfCanEmit} = this
+			if (_mapChangedIfCanEmit) {
+				_mapChangedIfCanEmit.emit({
+					type: MapChangedType.Removed,
+					key,
+					oldValue,
+				})
+			}
+
+			this.onPropertyChanged({
+				name: 'size',
+				oldValue: oldSize,
+				newValue: size,
+			})
+
+			return true
+		}
+
+		return false
 	}
 
 	public clear(): void {
@@ -47,14 +89,16 @@ export class ObservableMap<K, V> extends MapChangedObject<K, V> implements Map<K
 
 		const {_mapChangedIfCanEmit} = this
 		if (_mapChangedIfCanEmit) {
-			const oldItems = Array.from(this)
+			const oldItems = Array.from(this.entries())
 
 			this._map.clear()
 
 			for (let i = 0, len = oldItems.length; i < len; i++) {
+				const oldItem = oldItems[i]
 				this.onMapChanged({
 					type: MapChangedType.Removed,
-					oldItem: oldItems[i],
+					key: oldItem[0],
+					oldValue: oldItem[1],
 				})
 			}
 		} else {
@@ -66,28 +110,6 @@ export class ObservableMap<K, V> extends MapChangedObject<K, V> implements Map<K
 			oldValue: size,
 			newValue: 0,
 		})
-	}
-
-	public delete(value: T): boolean {
-		const {_map} = this
-		const oldSize = _map.size
-
-		const result = this._map.delete(value)
-
-		const size = _map.size
-		if (size < oldSize) {
-			this.onMapChanged({
-				type: MapChangedType.Removed,
-				oldItem: value,
-			})
-			this.onPropertyChanged({
-				name: 'size',
-				oldValue: oldSize,
-				newValue: size,
-			})
-		}
-
-		return result
 	}
 
 	// region Unchanged Map methods

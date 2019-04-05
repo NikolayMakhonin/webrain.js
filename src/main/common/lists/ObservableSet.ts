@@ -21,10 +21,14 @@ export class ObservableSet<T> extends SetChangedObject<T> implements Set<T> {
 
 		const size = _set.size
 		if (size > oldSize) {
-			this.onSetChanged({
-				type: SetChangedType.Added,
-				newItem: value,
-			})
+			const {_setChangedIfCanEmit} = this
+			if (_setChangedIfCanEmit) {
+				_setChangedIfCanEmit.emit({
+					type: SetChangedType.Added,
+					newItems: [value],
+				})
+			}
+
 			this.onPropertyChanged({
 				name: 'size',
 				oldValue: oldSize,
@@ -33,6 +37,34 @@ export class ObservableSet<T> extends SetChangedObject<T> implements Set<T> {
 		}
 
 		return this
+	}
+
+	public delete(value: T): boolean {
+		const {_set} = this
+		const oldSize = _set.size
+
+		this._set.delete(value)
+
+		const size = _set.size
+		if (size < oldSize) {
+			const {_setChangedIfCanEmit} = this
+			if (_setChangedIfCanEmit) {
+				_setChangedIfCanEmit.emit({
+					type: SetChangedType.Removed,
+					oldItems: [value],
+				})
+			}
+
+			this.onPropertyChanged({
+				name: 'size',
+				oldValue: oldSize,
+				newValue: size,
+			})
+
+			return true
+		}
+
+		return false
 	}
 
 	public clear(): void {
@@ -47,12 +79,10 @@ export class ObservableSet<T> extends SetChangedObject<T> implements Set<T> {
 
 			this._set.clear()
 
-			for (let i = 0, len = oldItems.length; i < len; i++) {
-				this.onSetChanged({
-					type: SetChangedType.Removed,
-					oldItem: oldItems[i],
-				})
-			}
+			this.onSetChanged({
+				type: SetChangedType.Removed,
+				oldItems,
+			})
 		} else {
 			this._set.clear()
 		}
@@ -62,28 +92,6 @@ export class ObservableSet<T> extends SetChangedObject<T> implements Set<T> {
 			oldValue: size,
 			newValue: 0,
 		})
-	}
-
-	public delete(value: T): boolean {
-		const {_set} = this
-		const oldSize = _set.size
-
-		const result = this._set.delete(value)
-
-		const size = _set.size
-		if (size < oldSize) {
-			this.onSetChanged({
-				type: SetChangedType.Removed,
-				oldItem: value,
-			})
-			this.onPropertyChanged({
-				name: 'size',
-				oldValue: oldSize,
-				newValue: size,
-			})
-		}
-
-		return result
 	}
 
 	// region Unchanged Set methods

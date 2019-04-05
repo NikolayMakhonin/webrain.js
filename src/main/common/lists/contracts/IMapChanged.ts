@@ -18,8 +18,9 @@ export enum MapChangedType {
 export interface IMapChangedEvent<K, V> {
 	readonly type: MapChangedType
 
-	readonly oldItems: Array<[K, V]>
-	readonly newItems: Array<[K, V]>
+	readonly key: K
+	readonly oldValue?: V
+	readonly newValue?: V
 }
 
 export interface IMapChanged<K, V> {
