@@ -38,3 +38,12 @@ export const allValues = [
 	Infinity,
 	NaN,
 ]
+
+export function indexOfNaN(array) {
+	for (let i = 0, len = array.length; i < len; i++) {
+		const item = array[i]
+		if (item !== item) {
+			return i
+		}
+	}
+}

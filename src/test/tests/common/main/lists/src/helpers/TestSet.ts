@@ -2,8 +2,10 @@ import {
 	ISetChangedEvent,
 	SetChangedType,
 } from '../../../../../../../main/common/lists/contracts/ISetChanged'
+import {compareFast} from '../../../../../../../main/common/lists/helpers/compare'
 import {ObservableSet} from '../../../../../../../main/common/lists/ObservableSet'
 import {IPropertyChangedEvent} from '../../../../../../../main/common/rx/object/PropertyChangedObject'
+import {indexOfNaN} from './common'
 import {IOptionsVariant, IOptionsVariants, ITestCase, TestVariants} from './TestVariants'
 
 declare const assert: any
@@ -19,7 +21,9 @@ export function applySetChangedToArray<T>(event: ISetChangedEvent<T>, array: T[]
 			break
 		case SetChangedType.Removed:
 			for (const item of event.oldItems) {
-				const index = array.indexOf(item)
+				const index = item === item
+					? array.indexOf(item)
+					: indexOfNaN(array)
 				array.splice(index, 1)
 			}
 			break
@@ -52,11 +56,11 @@ interface ISetOptionsVariants<T> extends IOptionsVariants {
 }
 
 function assertSet<T>(set: ObservableSet<T>, expectedArray: T[]) {
-	expectedArray = expectedArray.slice().sort()
-	assert.deepStrictEqual(Array.from(set.keys()).sort(), expectedArray)
-	assert.deepStrictEqual(Array.from(set.values()).sort(), expectedArray)
-	assert.deepStrictEqual(Array.from(set.entries()).map(o => o[0]).sort(), expectedArray)
-	assert.deepStrictEqual(Array.from(set.entries()).map(o => o[1]).sort(), expectedArray)
+	expectedArray = expectedArray.slice().sort(compareFast)
+	assert.deepStrictEqual(Array.from(set.keys()).sort(compareFast), expectedArray)
+	assert.deepStrictEqual(Array.from(set.values()).sort(compareFast), expectedArray)
+	assert.deepStrictEqual(Array.from(set.entries()).map(o => o[0]).sort(compareFast), expectedArray)
+	assert.deepStrictEqual(Array.from(set.entries()).map(o => o[1]).sort(compareFast), expectedArray)
 	assert.strictEqual(set.size, expectedArray.length)
 
 	for (const item of expectedArray) {
@@ -64,7 +68,7 @@ function assertSet<T>(set: ObservableSet<T>, expectedArray: T[]) {
 		assert.strictEqual(set.has(Math.random() as any), false)
 	}
 
-	assert.deepStrictEqual(Array.from(set).sort(), expectedArray)
+	assert.deepStrictEqual(Array.from(set).sort(compareFast), expectedArray)
 }
 
 const staticSetInner = new Set()
@@ -122,7 +126,7 @@ export class TestSet<T> extends TestVariants<
 					unsubscribeSetChanged = set.setChanged.subscribe(event => {
 						setChangedEvents.push(event)
 						applySetChangedToArray(event, arrayReplicate)
-						assert.deepStrictEqual(arrayReplicate.sort(), Array.from(setInner.values()).sort())
+						assert.deepStrictEqual(arrayReplicate.slice().sort(compareFast), Array.from(setInner.values()).sort(compareFast))
 					})
 				}
 
@@ -145,14 +149,14 @@ export class TestSet<T> extends TestVariants<
 					assertSet(set, options.expected.array)
 				}
 
-				assert.deepStrictEqual(Array.from(setInner.values()).sort(), Array.from(set.values()).sort())
+				assert.deepStrictEqual(Array.from(setInner.values()).sort(compareFast), Array.from(set.values()).sort(compareFast))
 
 				if (options.useSetChanged) {
 					if (unsubscribeSetChanged) {
 						unsubscribeSetChanged()
 					}
 					assert.deepStrictEqual(setChangedEvents, options.expected.setChanged || [])
-					assert.deepStrictEqual(arrayReplicate.slice().sort(), Array.from(set.values()).sort())
+					assert.deepStrictEqual(arrayReplicate.slice().sort(compareFast), Array.from(set.values()).sort(compareFast))
 				}
 
 				if (unsubscribePropertyChanged) {
