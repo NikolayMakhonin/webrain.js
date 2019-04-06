@@ -1,7 +1,4 @@
-import {
-	IMapChangedEvent,
-	MapChangedType,
-} from '../../../../../../../main/common/lists/contracts/IMapChanged'
+import {IMapChangedEvent, MapChangedType,} from '../../../../../../../main/common/lists/contracts/IMapChanged'
 import {compareFast} from '../../../../../../../main/common/lists/helpers/compare'
 import {ObservableMap} from '../../../../../../../main/common/lists/ObservableMap'
 import {IPropertyChangedEvent} from '../../../../../../../main/common/rx/object/PropertyChangedObject'
@@ -141,10 +138,12 @@ export class TestMap<K, V> extends TestVariants<
 					unsubscribeMapChanged = map.mapChanged.subscribe(event => {
 						mapChangedEvents.push(event)
 						applyMapChangedToArray(event, arrayReplicate)
-						assert.deepStrictEqual(
-							arrayReplicate.map(o => o.slice() as [K, V]).sort(compareEntries),
-							Array.from(mapInner.entries()).sort(compareEntries),
-						)
+						if (event.type !== MapChangedType.Removed || mapInner.size > 0) {
+							assert.deepStrictEqual(
+								arrayReplicate.map(o => o.slice() as [K, V]).sort(compareEntries),
+								Array.from(mapInner.entries()).sort(compareEntries),
+							)
+						}
 					})
 				}
 
