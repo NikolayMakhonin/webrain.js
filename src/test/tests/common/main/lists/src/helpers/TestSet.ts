@@ -1,9 +1,9 @@
 import {
 	ISetChangedEvent,
 	SetChangedType,
-} from '../../../../../../main/common/lists/contracts/ISetChanged'
-import {ObservableSet} from '../../../../../../main/common/lists/ObservableSet'
-import {IPropertyChangedEvent} from '../../../../../../main/common/rx/object/PropertyChangedObject'
+} from '../../../../../../../main/common/lists/contracts/ISetChanged'
+import {ObservableSet} from '../../../../../../../main/common/lists/ObservableSet'
+import {IPropertyChangedEvent} from '../../../../../../../main/common/rx/object/PropertyChangedObject'
 import {IOptionsVariant, IOptionsVariants, ITestCase, TestVariants} from './TestVariants'
 
 declare const assert: any

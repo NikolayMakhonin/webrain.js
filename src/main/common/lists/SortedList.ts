@@ -2,6 +2,7 @@ import {ListChangedObject} from './base/ListChangedObject'
 import {ICompare} from './contracts/ICompare'
 import {ListChangedType} from './contracts/IListChanged'
 import {binarySearch, move} from './helpers/array'
+import {compareFast} from './helpers/compare'
 
 function calcOptimalArraySize(desiredSize: number) {
 	let optimalSize = 4
@@ -11,7 +12,7 @@ function calcOptimalArraySize(desiredSize: number) {
 	return optimalSize
 }
 
-function getDefaultValue(value) {
+export function getDefaultValue(value) {
 	if (value === null || typeof value === 'undefined') {
 		return value
 	}
@@ -22,19 +23,6 @@ function getDefaultValue(value) {
 		return false
 	}
 	return null
-}
-
-export function compareDefault(o1, o2) {
-	if (o1 > o2) {
-		return 1
-	} else if (o2 > o1) {
-		return -1
-	} else {
-		if (o1 !== o2) {
-			throw new Error(`Compare values is not supported: ${typeof o1}, ${typeof o2}`)
-		}
-		return 0
-	}
 }
 
 export class SortedList<T> extends ListChangedObject<T> {
@@ -810,6 +798,38 @@ export class SortedList<T> extends ListChangedObject<T> {
 		return true
 	}
 
+	public removeArray(sourceItems: T[], sourceStart?: number, sourceEnd?: number): boolean {
+		const {_size: size, _array, _autoSort} = this
+
+		const itemsSize = sourceItems.length
+		sourceStart = SortedList._prepareStart(sourceStart, itemsSize)
+		sourceEnd = SortedList._prepareEnd(sourceEnd, itemsSize)
+
+		let result = false
+		for (let i = sourceStart; i < sourceEnd; i++) {
+			result = this.remove(sourceItems[i]) || result
+		}
+		return result
+	}
+
+	public removeIterable(items: Iterable<T>, itemsSize: number): boolean {
+		const {_size: size, _array} = this
+
+		if (itemsSize <= 0) {
+			return false
+		}
+
+		if (Array.isArray(items)) {
+			return this.removeArray(items, null, itemsSize)
+		}
+
+		let result = false
+		for (const item of items) {
+			result = this.remove(item) || result
+		}
+		return result
+	}
+
 	private _move(oldIndex: number, newIndex: number): void {
 		const {_array} = this
 
@@ -917,6 +937,13 @@ export class SortedList<T> extends ListChangedObject<T> {
 						return i
 					}
 				}
+			} else if (item !== item) { // item is NaN
+				for (let i = countSorted; i < end; i++) {
+					const o = _array[i]
+					if (o !== o) { // array item is NaN
+						return i
+					}
+				}
 			} else {
 				for (let i = countSorted; i < end; i++) {
 					if (_array[i] === item) {
@@ -930,6 +957,17 @@ export class SortedList<T> extends ListChangedObject<T> {
 					if (_compare(_array[i], item) === 0) {
 						return i
 					}
+				}
+			} else if (item !== item) { // item is NaN
+				let last = -1
+				for (let i = countSorted; i < end; i++) {
+					const o = _array[i]
+					if (o !== o) { // array item is NaN
+						last = i
+					}
+				}
+				if (last >= 0) {
+					return last
 				}
 			} else {
 				let last = -1
@@ -1093,7 +1131,7 @@ export class SortedList<T> extends ListChangedObject<T> {
 
 	// region Static
 
-	public static readonly compareDefault: ICompare<any> = compareDefault
+	public static readonly compareDefault: ICompare<any> = compareFast
 
 	// endregion
 }

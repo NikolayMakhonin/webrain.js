@@ -1,28 +1,14 @@
+import {ICompare} from '../../../../../../../main/common/lists/contracts/ICompare'
 import {
-	ListChangedType,
 	IListChangedEvent,
-} from '../../../../../../main/common/lists/contracts/IListChanged'
-import {ICompare} from '../../../../../../main/common/lists/contracts/ICompare'
-import {compareDefault, SortedList} from '../../../../../../main/common/lists/SortedList'
-import {IPropertyChangedEvent} from '../../../../../../main/common/rx/object/PropertyChangedObject'
+	ListChangedType,
+} from '../../../../../../../main/common/lists/contracts/IListChanged'
+import {compareFast} from '../../../../../../../main/common/lists/helpers/compare'
+import {SortedList} from '../../../../../../../main/common/lists/SortedList'
+import {IPropertyChangedEvent} from '../../../../../../../main/common/rx/object/PropertyChangedObject'
 import {IOptionsVariant, IOptionsVariants, ITestCase, TestVariants} from './TestVariants'
 
 declare const assert: any
-
-export function generateArray(size) {
-	const arr = []
-	for (let i = 0; i < size; i++) {
-		arr.push(i)
-	}
-
-	return arr
-}
-
-export function *toIterable<T>(array: T[]): Iterable<T> {
-	for (const item of array) {
-		yield item
-	}
-}
 
 export function applyListChangedToArray<T>(event: IListChangedEvent<T>, array: T[], compare: ICompare<T>) {
 	switch (event.type) {
@@ -104,14 +90,18 @@ interface IListOptionsVariants<T> extends IOptionsVariants {
 	countSorted?: number[]
 }
 
+function equalsWithNaN(o1, o2) {
+	return o1 === o2 || (o1 !== o1) && (o2 !== o2)
+}
+
 function assertList<T>(list: SortedList<T>, expectedArray: T[]) {
 	assert.deepStrictEqual(list.toArray(), expectedArray)
 	assert.strictEqual(list.size, expectedArray.length)
 	assert.ok(list.allocatedSize >= expectedArray.length)
 
 	for (let i = 0; i < expectedArray.length; i++) {
-		assert.strictEqual(list.get(i), expectedArray[i])
-		assert.strictEqual(expectedArray[list.indexOf(expectedArray[i])], expectedArray[i])
+		assert.ok(equalsWithNaN(list.get(i), expectedArray[i]))
+		assert.ok(equalsWithNaN(expectedArray[list.indexOf(expectedArray[i])], expectedArray[i]))
 		assert.strictEqual(list.contains(expectedArray[i]), true)
 		assert.strictEqual(list.contains(Math.random() as any), false)
 	}
@@ -150,8 +140,8 @@ export class TestList<T> extends TestVariants<
 			let unsubscribePropertyChanged
 			try {
 				let array = options.array.slice()
-				// assert.deepStrictEqual(array, array.slice().sort(compareDefault))
-				const compare = options.compare || (options.withCompare ? compareDefault : undefined)
+				// assert.deepStrictEqual(array, array.slice().sort(compareFast))
+				const compare = options.compare || (options.withCompare ? compareFast : undefined)
 				let list: SortedList<T>
 
 				if (options.reuseListInstance) {
@@ -188,7 +178,7 @@ export class TestList<T> extends TestVariants<
 				assert.strictEqual(list.countSorted, options.countSorted || 0)
 
 				const arrayReplicate = options.autoSort
-					? array.slice(0, list.size).sort(compare || compareDefault)
+					? array.slice(0, list.size).sort(compare || compareFast)
 					: array.slice(0, list.size)
 
 				// assert.strictEqual(
@@ -200,7 +190,7 @@ export class TestList<T> extends TestVariants<
 				if (options.useListChanged) {
 					unsubscribeListChanged = list.listChanged.subscribe(event => {
 						listChangedEvents.push(event)
-						applyListChangedToArray(event, arrayReplicate, compare || compareDefault)
+						applyListChangedToArray(event, arrayReplicate, compare || compareFast)
 
 						if (event.type !== ListChangedType.Resorted) {
 							assert.deepStrictEqual(arrayReplicate, array.slice(0, list.size))
@@ -306,7 +296,17 @@ export class TestList<T> extends TestVariants<
 	private static readonly _instance = new TestList()
 
 	public static test<T>(testCases: ITestCase<IListAction<T>, IListExpected<T>> & IListOptionsVariants<T>) {
-		if ((!testCases.array || testCases.array.length <= 1)
+		let maxArrayLength = 0
+		if (testCases.array) {
+			for (let i = 0; i < testCases.array.length; i++) {
+				const array = testCases.array[i]
+				if (array.length > maxArrayLength) {
+					maxArrayLength = array.length
+				}
+			}
+		}
+
+		if (maxArrayLength <= 1
 			&& !testCases.expected.error
 			&& (!testCases.expected.array || testCases.expected.array.length <= 1)
 		) {
@@ -314,12 +314,11 @@ export class TestList<T> extends TestVariants<
 		}
 
 		if (!testCases.countSorted
-			&& testCases.array
-			&& testCases.array.length >= 1
+			&& maxArrayLength <= 1
 			&& (!testCases.compare || testCases.compare.length <= 0)
 		) {
 			const compare = testCases.compare && testCases.compare.length && testCases.compare[0]
-				|| compareDefault
+				|| compareFast
 
 			let minCountSorted
 			for (const array of testCases.array) {

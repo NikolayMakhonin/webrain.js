@@ -1,13 +1,14 @@
 import {
 	ListChangedType,
 } from '../../../../../main/common/lists/contracts/IListChanged'
-import {compareDefault, SortedList} from '../../../../../main/common/lists/SortedList'
+import {compareFast} from '../../../../../main/common/lists/helpers/compare'
+import {getDefaultValue, SortedList} from '../../../../../main/common/lists/SortedList'
+import {allValues, generateArray, shuffle, toIterable} from './src/helpers/common'
 import {
-	generateArray, IListAction,
+	IListAction,
 	TestList,
-	toIterable,
-} from './helpers/TestList'
-import {ITestActionsWithDescription} from './helpers/TestVariants'
+} from './src/helpers/TestList'
+import {ITestActionsWithDescription} from './src/helpers/TestVariants'
 
 declare const assert: any
 declare const after: any
@@ -59,12 +60,12 @@ describe('common > main > lists > List', function() {
 		assert.notStrictEqual(toArray, array)
 
 		list = new SortedList({
-			compare: compareDefault,
+			compare: compareFast,
 		})
 		assert.strictEqual(list.size, 0)
 		assert.strictEqual(list.minAllocatedSize, undefined)
 		assert.strictEqual(list.allocatedSize, 0)
-		assert.strictEqual(list.compare, compareDefault)
+		assert.strictEqual(list.compare, compareFast)
 		assert.strictEqual(list.autoSort, undefined)
 		assert.strictEqual(list.notAddIfExists, undefined)
 		assert.deepStrictEqual(list.toArray(), [])
@@ -958,6 +959,57 @@ describe('common > main > lists > List', function() {
 				insertArray(5, ['4', '2']),
 			],
 		})
+
+		const allValuesShuffle = shuffle(allValues)
+		const allValuesSort = allValuesShuffle.slice().sort()
+
+		testList({
+			array: [[]],
+			autoSort: [true],
+			notAddIfExists: [true],
+			useListChanged: [false],
+			expected: {
+				array: allValues.sort(compareFast),
+				returnValue: true,
+				defaultValue: null,
+				propertyChanged: allValuesShuffle
+					.map((o, i) => ({
+						name: 'size',
+						oldValue: i,
+						newValue: i + 1,
+					})),
+			},
+			actions: [
+				insertArray(0, allValuesShuffle.concat(allValuesShuffle)),
+			],
+		})
+
+		testList({
+			array: [[]],
+			autoSort: [false],
+			notAddIfExists: [true],
+			expected: {
+				array: allValuesShuffle,
+				returnValue: true,
+				defaultValue: null,
+				propertyChanged: allValuesShuffle
+					.map((o, i) => ({
+						name: 'size',
+						oldValue: i,
+						newValue: i + 1,
+					})),
+				listChanged: allValuesShuffle
+					.map((o, i) => ({
+						type: ListChangedType.Added,
+						index: i,
+						newItems: [o],
+						shiftIndex: i,
+					})),
+			},
+			actions: [
+				insertArray(0, allValuesShuffle),
+			],
+		})
 	})
 
 	it('remove', function() {
@@ -1322,7 +1374,7 @@ describe('common > main > lists > List', function() {
 
 		testList({
 			array: [[-5, -4, -3, -2, -1, undefined]],
-			compare: [(o1: any, o2: any) => compareDefault(o1 || 0, o2 || 0)],
+			compare: [(o1: any, o2: any) => compareFast(o1 || 0, o2 || 0)],
 			expected: {
 				array: [-5, -1, undefined],
 				returnValue: true,
@@ -1373,6 +1425,111 @@ describe('common > main > lists > List', function() {
 			},
 			actions: [
 				removeRange(2, 5, false),
+			],
+		})
+	})
+
+	it('removeArray', function() {
+		function removeArray<T>(
+			sourceItems: T[],
+			sourceStart?: number,
+			sourceEnd?: number,
+		): ITestActionsWithDescription<IListAction<T>> {
+			let start = sourceStart == null ? 0 : sourceStart
+			let end = sourceEnd == null ? sourceItems.length : sourceEnd
+			if (start < 0) {
+				start += sourceItems.length
+			}
+			if (end < 0) {
+				end += sourceItems.length + 1
+			}
+
+			return {
+				actions: [
+					list => list.removeArray(sourceItems, sourceStart, sourceEnd),
+					[
+						list => list.removeIterable(sourceItems.slice(start, end), end - start),
+						list => list.removeIterable(toIterable(sourceItems.slice(start, end)), end - start),
+					],
+				],
+				description: `removeArray(${JSON.stringify(sourceItems)}, ${sourceStart}, ${sourceEnd})\n`,
+			}
+		}
+
+		testList({
+			array: [[]],
+			expected: {
+				array: [],
+				returnValue: false,
+				defaultValue: null,
+			},
+			actions: [
+				removeArray([]),
+				removeArray(['0']),
+				removeArray([], 0, -1),
+				removeArray(['0'], -1, -2),
+			],
+		})
+
+		testList({
+			array: [['0', '1', '2', '3', '4']],
+			expected: {
+				array: ['0', '2', '4'],
+				returnValue: true,
+				defaultValue: null,
+				propertyChanged: [
+					{
+						name: 'size',
+						oldValue: 5,
+						newValue: 4,
+					},
+					{
+						name: 'size',
+						oldValue: 4,
+						newValue: 3,
+					},
+				],
+				listChanged: [
+					{
+						type: ListChangedType.Removed,
+						index: 3,
+						oldItems: ['3'],
+						shiftIndex: 4,
+					},
+					{
+						type: ListChangedType.Removed,
+						index: 1,
+						oldItems: ['1'],
+						shiftIndex: 2,
+					},
+				],
+			},
+			actions: [
+				removeArray(['0', '3', '1', '4'], 1, 3),
+			],
+		})
+
+		const allValuesShuffle = shuffle(allValues.concat(allValues))
+		const allValuesSort = allValuesShuffle.slice().sort()
+
+		testList({
+			array: [allValuesShuffle],
+			autoSort: [false, true],
+			notAddIfExists: [false, true],
+			useListChanged: [false],
+			expected: {
+				array: [],
+				returnValue: true,
+				defaultValue: getDefaultValue(allValuesShuffle[allValuesShuffle.length - 1]),
+				propertyChanged: allValuesShuffle
+					.map((o, i) => ({
+						name: 'size',
+						oldValue: allValuesShuffle.length - i,
+						newValue: allValuesShuffle.length - i - 1,
+					})),
+			},
+			actions: [
+				removeArray(allValuesShuffle),
 			],
 		})
 	})
@@ -1664,7 +1821,7 @@ describe('common > main > lists > List', function() {
 	it('indexOf', function() {
 		testList({
 			array: [['b', 'd', 'f', 'h', 'j', 'l']],
-			compare: [(o1: any, o2: any) => compareDefault(o1 + '', o2 + '')],
+			compare: [(o1: any, o2: any) => compareFast(o1 + '', o2 + '')],
 			expected: {
 				array: ['b', 'd', 'f', 'h', 'j', 'l'],
 				returnValue: ~6,
@@ -1693,12 +1850,12 @@ describe('common > main > lists > List', function() {
 		})
 
 		testList({
-			array: [[0]],
+			array: [[false]],
 			autoSort: [true],
 			expected: {
-				error: Error,
-				returnValue: null,
-				defaultValue: null,
+				array: [false],
+				returnValue: -2,
+				defaultValue: false,
 			},
 			actions: [
 				list => list.indexOf('true' as any),
@@ -1711,7 +1868,7 @@ describe('common > main > lists > List', function() {
 
 		testList({
 			array: [['b', 'd', 'd', 'd', 'd', 'd', 'j', 'l']],
-			compare: [(o1: any, o2: any) => compareDefault(o1 + '', o2 + '')],
+			compare: [(o1: any, o2: any) => compareFast(o1 + '', o2 + '')],
 			notAddIfExists: [false],
 			expected: {
 				array: ['b', 'd', 'd', 'd', 'd', 'd', 'j', 'l'],
@@ -1729,7 +1886,7 @@ describe('common > main > lists > List', function() {
 
 		testList({
 			array: [['b', 'd', 'd', 'd', 'd', 'd', 'j', 'l']],
-			compare: [(o1: any, o2: any) => compareDefault(o1 + '', o2 + '')],
+			compare: [(o1: any, o2: any) => compareFast(o1 + '', o2 + '')],
 			notAddIfExists: [false],
 			expected: {
 				array: ['b', 'd', 'd', 'd', 'd', 'd', 'j', 'l'],

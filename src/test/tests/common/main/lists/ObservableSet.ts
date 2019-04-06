@@ -5,8 +5,8 @@ import {ObservableSet} from '../../../../../main/common/lists/ObservableSet'
 import {
 	ISetAction,
 	TestSet, THIS,
-} from './helpers/TestSet'
-import {ITestActionsWithDescription} from './helpers/TestVariants'
+} from './src/helpers/TestSet'
+import {ITestActionsWithDescription} from './src/helpers/TestVariants'
 
 declare const assert: any
 declare const after: any
@@ -131,6 +131,58 @@ describe('common > main > lists > ObservableSet', function() {
 			},
 			actions: [
 				remove('2'),
+			],
+		})
+	})
+
+	it('clear', function() {
+		function clear<T>(): ITestActionsWithDescription<ISetAction<T>> {
+			return {
+				actions: [
+					list => list.clear(),
+				],
+				description: 'clear()\n',
+			}
+		}
+
+		testSet({
+			array: [[]],
+			expected: {
+				array: [],
+				returnValue: undefined,
+			},
+			actions: [
+				clear(),
+			],
+		})
+
+		testSet({
+			array: [['0']],
+			expected: {
+				array: [],
+				returnValue: undefined,
+				setChanged: [{
+					type: SetChangedType.Removed,
+					oldItems: ['0'],
+				}],
+			},
+			actions: [
+				clear(),
+			],
+		})
+
+		testSet({
+			array: [['1', '0']],
+			expected: {
+				array: [],
+				returnValue: undefined,
+				setChanged: [{
+					type: SetChangedType.Removed,
+					oldItems: ['1', '0'],
+				}],
+			},
+			actions: [
+				clear(),
 			],
 		})
 	})
