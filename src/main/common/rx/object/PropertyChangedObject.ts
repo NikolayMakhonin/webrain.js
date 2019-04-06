@@ -1,3 +1,9 @@
+import {
+	EventOrPropertyName,
+	EventsOrPropertyNames,
+	IPropertyChangedEvent,
+	IPropertyChangedObject,
+} from '../../lists/contracts/IPropertyChanged'
 import {HasSubscribersSubject, IHasSubscribersSubject} from '../subjects/hasSubscribers'
 
 function expandAndDistinct(inputItems: any, output: string[] = [], map: any = {}): string[] {
@@ -18,24 +24,6 @@ function expandAndDistinct(inputItems: any, output: string[] = [], map: any = {}
 	}
 
 	return output
-}
-
-export interface IPropertyChangedEvent {
-	name?: string | number,
-	oldValue?: any,
-	newValue?: any,
-}
-
-type EventOrPropertyName = string | number | IPropertyChangedEvent
-type EventsOrPropertyNames = EventOrPropertyName | Array<EventOrPropertyName | any>
-
-export interface IPropertyChanged {
-	readonly propertyChanged: IHasSubscribersSubject<IPropertyChangedEvent>
-}
-
-export interface IPropertyChangedObject extends IPropertyChanged {
-	readonly propertyChanged: IHasSubscribersSubject<IPropertyChangedEvent>
-	onPropertyChanged(eventsOrPropertyNames: EventsOrPropertyNames): this
 }
 
 export class PropertyChangedObject implements IPropertyChangedObject {

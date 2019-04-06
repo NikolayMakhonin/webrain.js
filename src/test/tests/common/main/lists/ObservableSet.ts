@@ -177,17 +177,18 @@ describe('common > main > lists > ObservableSet', function() {
 		})
 
 		const allValuesShuffle = shuffle(allValues)
+		const additional: any = [[[], {}], [{}, []]]
 
 		testSet({
-			array: [allValuesShuffle],
+			array: [allValuesShuffle.concat(additional)],
 			expected: {
-				array: [],
+				array: additional,
 				returnValue: true,
 				propertyChanged: allValuesShuffle
 					.map((o, i) => ({
 						name: 'size',
-						oldValue: allValuesShuffle.length - i,
-						newValue: allValuesShuffle.length - i - 1,
+						oldValue: allValuesShuffle.length - i + 2,
+						newValue: allValuesShuffle.length - i + 1,
 					})),
 				setChanged: allValuesShuffle
 					.map((o, i) => ({

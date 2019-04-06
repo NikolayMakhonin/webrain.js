@@ -4,10 +4,10 @@ import _createClass from "@babel/runtime/helpers/createClass";
 import _possibleConstructorReturn from "@babel/runtime/helpers/possibleConstructorReturn";
 import _getPrototypeOf from "@babel/runtime/helpers/getPrototypeOf";
 import _inherits from "@babel/runtime/helpers/inherits";
-import _typeof from "@babel/runtime/helpers/typeof";
-import { CollectionChangedObject } from './CollectionChangedObject';
-import { CollectionChangedType } from './contracts/ICollectionChanged';
+import { ListChangedObject } from './base/ListChangedObject';
+import { ListChangedType } from './contracts/IListChanged';
 import { binarySearch, move } from './helpers/array';
+import { compareFast } from './helpers/compare';
 
 function calcOptimalArraySize(desiredSize) {
   var optimalSize = 4;
@@ -19,7 +19,7 @@ function calcOptimalArraySize(desiredSize) {
   return optimalSize;
 }
 
-function getDefaultValue(value) {
+export function getDefaultValue(value) {
   if (value === null || typeof value === 'undefined') {
     return value;
   }
@@ -34,25 +34,11 @@ function getDefaultValue(value) {
 
   return null;
 }
-
-export function compareDefault(o1, o2) {
-  if (o1 > o2) {
-    return 1;
-  } else if (o2 > o1) {
-    return -1;
-  } else {
-    if (o1 !== o2) {
-      throw new Error("Compare values is not supported: ".concat(_typeof(o1), ", ").concat(_typeof(o2)));
-    }
-
-    return 0;
-  }
-}
 var _Symbol$iterator = Symbol.iterator;
 export var SortedList =
 /*#__PURE__*/
-function (_CollectionChangedObj) {
-  _inherits(SortedList, _CollectionChangedObj);
+function (_ListChangedObject) {
+  _inherits(SortedList, _ListChangedObject);
 
   // region constructor
   function SortedList() {
@@ -205,7 +191,7 @@ function (_CollectionChangedObj) {
       var _autoSort = this._autoSort,
           _notAddIfExists = this._notAddIfExists,
           _compare = this._compare,
-          _collectionChangedIfCanEmit = this._collectionChangedIfCanEmit;
+          _listChangedIfCanEmit = this._listChangedIfCanEmit;
 
       if (_autoSort) {
         this.sort();
@@ -213,7 +199,7 @@ function (_CollectionChangedObj) {
 
       var oldItem = _array[index];
 
-      if ((_notAddIfExists || _autoSort || _collectionChangedIfCanEmit) && (_compare || SortedList.compareDefault)(oldItem, item) === 0) {
+      if ((_notAddIfExists || _autoSort || _listChangedIfCanEmit) && (_compare || SortedList.compareDefault)(oldItem, item) === 0) {
         return false;
       }
 
@@ -248,15 +234,15 @@ function (_CollectionChangedObj) {
         moveIndex = index;
       }
 
-      if (_collectionChangedIfCanEmit) {
+      if (_listChangedIfCanEmit) {
         _array[index] = item;
 
         if (moveIndex !== index) {
           this._move(index, moveIndex);
         }
 
-        _collectionChangedIfCanEmit.emit({
-          type: CollectionChangedType.Set,
+        _listChangedIfCanEmit.emit({
+          type: ListChangedType.Set,
           index: index,
           oldItems: [oldItem],
           newItems: [item],
@@ -334,11 +320,11 @@ function (_CollectionChangedObj) {
       }
 
       _array[index] = item;
-      var _collectionChangedIfCanEmit = this._collectionChangedIfCanEmit;
+      var _listChangedIfCanEmit = this._listChangedIfCanEmit;
 
-      if (_collectionChangedIfCanEmit) {
-        _collectionChangedIfCanEmit.emit({
-          type: CollectionChangedType.Added,
+      if (_listChangedIfCanEmit) {
+        _listChangedIfCanEmit.emit({
+          type: ListChangedType.Added,
           index: index,
           newItems: [item],
           shiftIndex: index < size ? index + 1 : index
@@ -424,11 +410,11 @@ function (_CollectionChangedObj) {
         this._countSorted = index;
       }
 
-      var _collectionChangedIfCanEmit = this._collectionChangedIfCanEmit;
+      var _listChangedIfCanEmit = this._listChangedIfCanEmit;
 
-      if (_collectionChangedIfCanEmit) {
-        _collectionChangedIfCanEmit.emit({
-          type: CollectionChangedType.Added,
+      if (_listChangedIfCanEmit) {
+        _listChangedIfCanEmit.emit({
+          type: ListChangedType.Added,
           index: index,
           newItems: _array.slice(index, index + itemsSize),
           shiftIndex: index < size ? index + itemsSize : index
@@ -580,11 +566,11 @@ function (_CollectionChangedObj) {
         this._countSorted = start;
       }
 
-      var _collectionChangedIfCanEmit = this._collectionChangedIfCanEmit;
+      var _listChangedIfCanEmit = this._listChangedIfCanEmit;
 
-      if (_collectionChangedIfCanEmit) {
-        _collectionChangedIfCanEmit.emit({
-          type: CollectionChangedType.Added,
+      if (_listChangedIfCanEmit) {
+        _listChangedIfCanEmit.emit({
+          type: ListChangedType.Added,
           index: start,
           newItems: _array.slice(start, end),
           shiftIndex: start < size ? end : start
@@ -605,10 +591,10 @@ function (_CollectionChangedObj) {
           _array = this._array,
           _autoSort = this._autoSort;
       index = SortedList._prepareIndex(index, size);
-      var _collectionChangedIfCanEmit = this._collectionChangedIfCanEmit;
+      var _listChangedIfCanEmit = this._listChangedIfCanEmit;
       var oldItems;
 
-      if (_collectionChangedIfCanEmit) {
+      if (_listChangedIfCanEmit) {
         oldItems = [_array[index]];
       }
 
@@ -630,9 +616,9 @@ function (_CollectionChangedObj) {
         this._countSorted--;
       }
 
-      if (_collectionChangedIfCanEmit) {
-        _collectionChangedIfCanEmit.emit({
-          type: CollectionChangedType.Removed,
+      if (_listChangedIfCanEmit) {
+        _listChangedIfCanEmit.emit({
+          type: ListChangedType.Removed,
           index: index,
           oldItems: oldItems,
           shiftIndex: index < size - 1 ? withoutShift ? size - 1 : index + 1 : index
@@ -659,10 +645,10 @@ function (_CollectionChangedObj) {
         return false;
       }
 
-      var _collectionChangedIfCanEmit = this._collectionChangedIfCanEmit;
+      var _listChangedIfCanEmit = this._listChangedIfCanEmit;
       var oldItems;
 
-      if (_collectionChangedIfCanEmit) {
+      if (_listChangedIfCanEmit) {
         oldItems = _array.slice(start, end);
       } // if (!withoutShift) {
       // 	withoutShift = removeSize < _size - end
@@ -691,9 +677,9 @@ function (_CollectionChangedObj) {
         this._countSorted = start;
       }
 
-      if (_collectionChangedIfCanEmit) {
-        _collectionChangedIfCanEmit.emit({
-          type: CollectionChangedType.Removed,
+      if (_listChangedIfCanEmit) {
+        _listChangedIfCanEmit.emit({
+          type: ListChangedType.Removed,
           index: start,
           oldItems: oldItems,
           shiftIndex: end < size ? withoutShift ? size - removeSize : end : start
@@ -718,6 +704,64 @@ function (_CollectionChangedObj) {
 
       this.removeAt(index, withoutShift);
       return true;
+    }
+  }, {
+    key: "removeArray",
+    value: function removeArray(sourceItems, sourceStart, sourceEnd) {
+      var size = this._size,
+          _array = this._array,
+          _autoSort = this._autoSort;
+      var itemsSize = sourceItems.length;
+      sourceStart = SortedList._prepareStart(sourceStart, itemsSize);
+      sourceEnd = SortedList._prepareEnd(sourceEnd, itemsSize);
+      var result = false;
+
+      for (var i = sourceStart; i < sourceEnd; i++) {
+        result = this.remove(sourceItems[i]) || result;
+      }
+
+      return result;
+    }
+  }, {
+    key: "removeIterable",
+    value: function removeIterable(items, itemsSize) {
+      var size = this._size,
+          _array = this._array;
+
+      if (itemsSize <= 0) {
+        return false;
+      }
+
+      if (Array.isArray(items)) {
+        return this.removeArray(items, null, itemsSize);
+      }
+
+      var result = false;
+      var _iteratorNormalCompletion4 = true;
+      var _didIteratorError4 = false;
+      var _iteratorError4 = undefined;
+
+      try {
+        for (var _iterator4 = items[Symbol.iterator](), _step4; !(_iteratorNormalCompletion4 = (_step4 = _iterator4.next()).done); _iteratorNormalCompletion4 = true) {
+          var item = _step4.value;
+          result = this.remove(item) || result;
+        }
+      } catch (err) {
+        _didIteratorError4 = true;
+        _iteratorError4 = err;
+      } finally {
+        try {
+          if (!_iteratorNormalCompletion4 && _iterator4.return != null) {
+            _iterator4.return();
+          }
+        } finally {
+          if (_didIteratorError4) {
+            throw _iteratorError4;
+          }
+        }
+      }
+
+      return result;
     }
   }, {
     key: "_move",
@@ -746,11 +790,11 @@ function (_CollectionChangedObj) {
       this._move(oldIndex, newIndex);
 
       this._countSorted = Math.min(this._countSorted, oldIndex, newIndex);
-      var _collectionChangedIfCanEmit = this._collectionChangedIfCanEmit;
+      var _listChangedIfCanEmit = this._listChangedIfCanEmit;
 
-      if (_collectionChangedIfCanEmit) {
-        _collectionChangedIfCanEmit.emit({
-          type: CollectionChangedType.Moved,
+      if (_listChangedIfCanEmit) {
+        _listChangedIfCanEmit.emit({
+          type: ListChangedType.Moved,
           index: oldIndex,
           moveSize: 1,
           moveIndex: newIndex
@@ -782,11 +826,11 @@ function (_CollectionChangedObj) {
       }
 
       this._countSorted = Math.min(this._countSorted, start, moveIndex);
-      var _collectionChangedIfCanEmit = this._collectionChangedIfCanEmit;
+      var _listChangedIfCanEmit = this._listChangedIfCanEmit;
 
-      if (_collectionChangedIfCanEmit) {
-        _collectionChangedIfCanEmit.emit({
-          type: CollectionChangedType.Moved,
+      if (_listChangedIfCanEmit) {
+        _listChangedIfCanEmit.emit({
+          type: ListChangedType.Moved,
           index: start,
           moveSize: end - start,
           moveIndex: moveIndex
@@ -834,31 +878,57 @@ function (_CollectionChangedObj) {
               return i;
             }
           }
-        } else {
+        } else if (item !== item) {
+          // item is NaN
           for (var _i5 = countSorted; _i5 < end; _i5++) {
-            if (_array[_i5] === item) {
+            var o = _array[_i5];
+
+            if (o !== o) {
+              // array item is NaN
               return _i5;
+            }
+          }
+        } else {
+          for (var _i6 = countSorted; _i6 < end; _i6++) {
+            if (_array[_i6] === item) {
+              return _i6;
             }
           }
         }
       } else {
         if (_compare) {
-          for (var _i6 = end - 1; _i6 >= countSorted; _i6--) {
-            if (_compare(_array[_i6], item) === 0) {
-              return _i6;
+          for (var _i7 = end - 1; _i7 >= countSorted; _i7--) {
+            if (_compare(_array[_i7], item) === 0) {
+              return _i7;
             }
           }
-        } else {
+        } else if (item !== item) {
+          // item is NaN
           var last = -1;
 
-          for (var _i7 = countSorted; _i7 < end; _i7++) {
-            if (_array[_i7] === item) {
-              last = _i7;
+          for (var _i8 = countSorted; _i8 < end; _i8++) {
+            var _o = _array[_i8];
+
+            if (_o !== _o) {
+              // array item is NaN
+              last = _i8;
             }
           }
 
           if (last >= 0) {
             return last;
+          }
+        } else {
+          var _last = -1;
+
+          for (var _i9 = countSorted; _i9 < end; _i9++) {
+            if (_array[_i9] === item) {
+              _last = _i9;
+            }
+          }
+
+          if (_last >= 0) {
+            return _last;
           }
         }
 
@@ -884,10 +954,10 @@ function (_CollectionChangedObj) {
       }
 
       var _array = this._array,
-          _collectionChangedIfCanEmit = this._collectionChangedIfCanEmit;
+          _listChangedIfCanEmit = this._listChangedIfCanEmit;
       var oldItems;
 
-      if (_collectionChangedIfCanEmit) {
+      if (_listChangedIfCanEmit) {
         oldItems = _array.slice(0, size);
       }
 
@@ -895,9 +965,9 @@ function (_CollectionChangedObj) {
 
       this._countSorted = 0;
 
-      if (_collectionChangedIfCanEmit) {
-        _collectionChangedIfCanEmit.emit({
-          type: CollectionChangedType.Removed,
+      if (_listChangedIfCanEmit) {
+        _listChangedIfCanEmit.emit({
+          type: ListChangedType.Removed,
           index: 0,
           oldItems: oldItems,
           shiftIndex: 0
@@ -931,11 +1001,11 @@ function (_CollectionChangedObj) {
       this._countSorted = 0;
 
       if (this._autoSort) {
-        var _collectionChangedIfCanEmit = this._collectionChangedIfCanEmit;
+        var _listChangedIfCanEmit = this._listChangedIfCanEmit;
 
-        if (_collectionChangedIfCanEmit) {
-          _collectionChangedIfCanEmit.emit({
-            type: CollectionChangedType.Resorted
+        if (_listChangedIfCanEmit) {
+          _listChangedIfCanEmit.emit({
+            type: ListChangedType.Resorted
           });
         }
       } else {
@@ -967,11 +1037,11 @@ function (_CollectionChangedObj) {
       this._countSorted = _size;
 
       if (!this._autoSort) {
-        var _collectionChangedIfCanEmit = this._collectionChangedIfCanEmit;
+        var _listChangedIfCanEmit = this._listChangedIfCanEmit;
 
-        if (_collectionChangedIfCanEmit) {
-          _collectionChangedIfCanEmit.emit({
-            type: CollectionChangedType.Resorted
+        if (_listChangedIfCanEmit) {
+          _listChangedIfCanEmit.emit({
+            type: ListChangedType.Resorted
           });
         }
       }
@@ -1127,11 +1197,11 @@ function (_CollectionChangedObj) {
         this._autoSort = value;
 
         if (this._countSorted !== this._size) {
-          var _collectionChangedIfCanEmit = this._collectionChangedIfCanEmit;
+          var _listChangedIfCanEmit = this._listChangedIfCanEmit;
 
-          if (_collectionChangedIfCanEmit) {
-            _collectionChangedIfCanEmit.emit({
-              type: CollectionChangedType.Resorted
+          if (_listChangedIfCanEmit) {
+            _listChangedIfCanEmit.emit({
+              type: ListChangedType.Resorted
             });
           }
         }
@@ -1226,5 +1296,5 @@ function (_CollectionChangedObj) {
   }]);
 
   return SortedList;
-}(CollectionChangedObject);
-SortedList.compareDefault = compareDefault;
+}(ListChangedObject);
+SortedList.compareDefault = compareFast;

@@ -199,16 +199,18 @@ describe('common > main > lists > ObservableMap', function() {
 		const keys = shuffle(allValues)
 		const entries: any = keys.map((o, i) => [o, keys[keys.length - 1 - i]])
 
+		const additional: any = [[[], {}], [{}, []]]
+
 		testMap({
-			array: [entries],
+			array: [entries.concat(additional)],
 			expected: {
-				array: [],
+				array: additional,
 				returnValue: true,
 				propertyChanged: keys
 					.map((o, i) => ({
 						name: 'size',
-						oldValue: keys.length - i,
-						newValue: keys.length - i - 1,
+						oldValue: keys.length - i + 2,
+						newValue: keys.length - i + 1,
 					})),
 				mapChanged: entries
 					.map((o, i) => ({

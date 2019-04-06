@@ -1,4 +1,5 @@
-import {HasSubscribersSubject, IHasSubscribersSubject} from '../../rx/subjects/hasSubscribers'
+import {IHasSubscribersSubject} from '../../rx/subjects/hasSubscribers'
+import {IPropertyChangedObject} from './IPropertyChanged'
 
 export enum MapChangedType {
 	/**
@@ -25,5 +26,12 @@ export interface IMapChangedEvent<K, V> {
 
 export interface IMapChanged<K, V> {
 	readonly mapChanged: IHasSubscribersSubject<IMapChangedEvent<K, V>>
+}
+
+export interface IMapChangedObject<K, V> extends IMapChanged<K, V>, IPropertyChangedObject {
+	readonly mapChanged: IHasSubscribersSubject<IMapChangedEvent<K, V>>
 	onMapChanged(event: IMapChangedEvent<K, V>): this
+}
+
+export interface IObservableMap<K, V> extends IMapChangedObject<K, V>, Map<K, V> {
 }

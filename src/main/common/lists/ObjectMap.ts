@@ -1,11 +1,15 @@
-export class ObservableMap<TValue> implements Map<string | number, TValue> {
+import {MapChangedObject} from './base/MapChangedObject'
+import {IObservableMap} from './contracts/IMapChanged'
+
+export class ObjectMap<V> extends MapChangedObject<string, V> implements IObservableMap<string | number, V> {
 	private readonly _object: object
 
 	constructor(object: object) {
+		super()
 		this._object = object || {}
 	}
 
-	public set(key: string | number, value: TValue): this {
+	public set(key: string | number, value: V): this {
 		this._object[key] = value
 		return this
 	}
@@ -37,18 +41,32 @@ export class ObservableMap<TValue> implements Map<string | number, TValue> {
 		return Object.keys(this._object).length
 	}
 
-	public [Symbol.iterator](): IterableIterator<[string | number, TValue]> {
-		return undefined
+	public [Symbol.iterator](): IterableIterator<[string | number, V]> {
+		return this.entries()
 	}
 
-	public entries(): IterableIterator<[string | number, TValue]> {
-		return undefined
+	public *entries(): IterableIterator<[string | number, V]> {
+		const {_object} = this
+		for (const key in _object) {
+			if (Object.prototype.hasOwnProperty.call(_object, key)) {
+				yield [key, _object[key]]
+			}
+		}
 	}
 
-	public forEach(callbackfn: (value: TValue, key: string | number, map: Map<string | number, TValue>) => void, thisArg?: any): void {
+	public forEach(
+		callbackfn: (value: V, key: string | number, map: Map<string | number, V>) => void,
+		thisArg?: any,
+	): void {
+		const {_object} = this
+		for (const key in _object) {
+			if (Object.prototype.hasOwnProperty.call(_object, key)) {
+				callbackfn.call(thisArg, _object[key], key, this)
+			}
+		}
 	}
 
-	public get(key: string | number): TValue | undefined {
+	public get(key: string | number): V | undefined {
 		return this._object[key]
 	}
 
@@ -57,11 +75,11 @@ export class ObservableMap<TValue> implements Map<string | number, TValue> {
 	}
 
 	public keys(): IterableIterator<string | number> {
-		return (Object.keys(this._object) as Array<string | number>)[Symbol.iterator]
+		return Object.keys(this._object)[Symbol.iterator]()
 	}
 
-	public values(): IterableIterator<TValue> {
-		return undefined
+	public values(): IterableIterator<V> {
+		return Object.values(this._object)[Symbol.iterator]()
 	}
 
 }

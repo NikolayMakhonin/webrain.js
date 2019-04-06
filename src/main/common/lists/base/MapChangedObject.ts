@@ -1,10 +1,11 @@
 import {PropertyChangedObject} from '../../rx/object/PropertyChangedObject'
 import {HasSubscribersSubject, IHasSubscribersSubject} from '../../rx/subjects/hasSubscribers'
-import {IMapChangedEvent} from '../contracts/IMapChanged'
+import {IMapChangedEvent, IMapChangedObject} from '../contracts/IMapChanged'
+import {IPropertyChangedObject} from '../contracts/IPropertyChanged'
 
-export class MapChangedObject<K, V> extends PropertyChangedObject {
+export class MapChangedObject<K, V> extends PropertyChangedObject implements IMapChangedObject<K, V> {
 	protected _mapChanged?: IHasSubscribersSubject<IMapChangedEvent<K, V>>
-	public get mapChanged(): IHasSubscribersSubject<IMapChangedEvent<K, V>> {
+	get mapChanged(): IHasSubscribersSubject<IMapChangedEvent<K, V>> {
 		let {_mapChanged} = this
 		if (!_mapChanged) {
 			this._mapChanged = _mapChanged = new HasSubscribersSubject()

@@ -50,6 +50,7 @@ interface IMapOptionsVariant<K, V> {
 
 	reuseMapInstance?: boolean
 	useMapChanged?: boolean
+	useObjectMap?: boolean
 }
 
 interface IMapExpected<K, V> {
@@ -65,6 +66,7 @@ interface IMapOptionsVariants<K, V> extends IOptionsVariants {
 
 	reuseMapInstance?: boolean[]
 	useMapChanged?: boolean[]
+	useObjectMap?: boolean[]
 }
 
 function assertMap<K, V>(map: ObservableMap<K, V>, expectedArray: Array<[K, V]>) {
@@ -88,6 +90,33 @@ const staticMap = new ObservableMap({
 	map: staticMapInner,
 })
 
+const staticObjectMapInner = {}
+const staticObjectMap = new ObjectMap({
+	map: staticObjectMapInner,
+})
+
+// class ObjectMapWrapper<V> implements Map<string, V> {
+// 	private readonly _object: { [key: string]: V }
+// 	constructor(object: { [key: string]: V }) {
+// 		this._object = object
+// 	}
+//
+// 	public get size(): number {
+// 		return Object.keys(this._object).length
+// 	}
+//
+// 	public entries(): IterableIterator<[string, V]> {
+// 		const {_object} = this
+// 		return Object.keys(_object).map(o => [o, _object[o]] as [string, V])[Symbol.iterator]()
+// 	}
+//
+// 	public set(key: string, value: V): this {
+// 		this._object[key] = value
+// 		return this
+// 	}
+//
+// }
+
 export class TestMap<K, V> extends TestVariants<
 	IMapAction<K, V>,
 	IMapExpected<K, V>,
@@ -103,6 +132,7 @@ export class TestMap<K, V> extends TestVariants<
 	protected baseOptionsVariants: IMapOptionsVariants<K, V> = {
 		reuseMapInstance: [false, true],
 		useMapChanged: [false, true],
+		useObjectMap: [false, true],
 	}
 
 	protected testVariant(options: IMapOptionsVariant<K, V> & IOptionsVariant<IMapAction<K, V>, IMapExpected<K, V>>) {
@@ -112,23 +142,54 @@ export class TestMap<K, V> extends TestVariants<
 			let unsubscribePropertyChanged
 			try {
 				const array = options.array.map(o => o.slice() as [K, V])
-				let map: ObservableMap<K, V>
-				let mapInner = new Map<K, V>()
-				for (const item of array) {
-					mapInner.set(...item)
-				}
+				let map: Map<K, V>
+				let getInnerEntries: () => Array<[K, V]>
 
-				if (options.reuseMapInstance) {
-					staticMap.clear()
-					for (const item of array) {
-						staticMap.set(...item)
+				if (options.useObjectMap) {
+					let objectMapInner
+					if (options.reuseMapInstance) {
+						staticObjectMap.clear()
+						for (const item of array) {
+							staticObjectMap.set(...item)
+						}
+						map = staticObjectMap as Map<K, V>
+						objectMapInner = staticObjectMapInner
+					} else {
+						objectMapInner = {}
+						for (const item of array) {
+							objectMapInner[item[0] as any] = item[1]
+						}
+
+						map = new ObjectMap<V>({
+							map: objectMapInner,
+						})
 					}
-					map = staticMap as ObservableMap<K, V>
-					mapInner = staticMapInner
+
+					getInnerEntries = () => Object
+						.keys(objectMapInner)
+						.map(o => [o as any, objectMapInner[o]] as [K, V])
+
 				} else {
-					map = new ObservableMap({
-						map: mapInner,
-					})
+					let mapInner
+					if (options.reuseMapInstance) {
+						staticMap.clear()
+						for (const item of array) {
+							staticMap.set(...item)
+						}
+						map = staticMap as Map<K, V>
+						mapInner = staticMapInner
+					} else {
+						mapInner = new Map<K, V>()
+						for (const item of array) {
+							mapInner.set(...item)
+						}
+
+						map = new ObservableMap({
+							map: mapInner,
+						})
+					}
+
+					getInnerEntries = () => Array.from(mapInner.entries())
 				}
 
 				const arrayReplicate = array.map(o => o.slice() as [K, V])
@@ -138,10 +199,10 @@ export class TestMap<K, V> extends TestVariants<
 					unsubscribeMapChanged = map.mapChanged.subscribe(event => {
 						mapChangedEvents.push(event)
 						applyMapChangedToArray(event, arrayReplicate)
-						if (event.type !== MapChangedType.Removed || mapInner.size > 0) {
+						if (event.type !== MapChangedType.Removed || getInnerEntries().length > 0) {
 							assert.deepStrictEqual(
 								arrayReplicate.map(o => o.slice() as [K, V]).sort(compareEntries),
-								Array.from(mapInner.entries()).sort(compareEntries),
+								Array.from(getInnerEntries()).sort(compareEntries),
 							)
 						}
 					})

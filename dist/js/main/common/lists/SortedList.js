@@ -3,14 +3,16 @@
 Object.defineProperty(exports, "__esModule", {
   value: true
 });
-exports.compareDefault = compareDefault;
+exports.getDefaultValue = getDefaultValue;
 exports.SortedList = void 0;
 
-var _CollectionChangedObject = require("./CollectionChangedObject");
+var _ListChangedObject = require("./base/ListChangedObject");
 
-var _ICollectionChanged = require("./contracts/ICollectionChanged");
+var _IListChanged = require("./contracts/IListChanged");
 
 var _array2 = require("./helpers/array");
+
+var _compare2 = require("./helpers/compare");
 
 function calcOptimalArraySize(desiredSize) {
   let optimalSize = 4;
@@ -38,23 +40,9 @@ function getDefaultValue(value) {
   return null;
 }
 
-function compareDefault(o1, o2) {
-  if (o1 > o2) {
-    return 1;
-  } else if (o2 > o1) {
-    return -1;
-  } else {
-    if (o1 !== o2) {
-      throw new Error(`Compare values is not supported: ${typeof o1}, ${typeof o2}`);
-    }
-
-    return 0;
-  }
-}
-
 var _Symbol$iterator = Symbol.iterator;
 
-class SortedList extends _CollectionChangedObject.CollectionChangedObject {
+class SortedList extends _ListChangedObject.ListChangedObject {
   // region constructor
   constructor({
     array,
@@ -219,12 +207,12 @@ class SortedList extends _CollectionChangedObject.CollectionChangedObject {
 
       if (this._countSorted !== this._size) {
         const {
-          _collectionChangedIfCanEmit
+          _listChangedIfCanEmit
         } = this;
 
-        if (_collectionChangedIfCanEmit) {
-          _collectionChangedIfCanEmit.emit({
-            type: _ICollectionChanged.CollectionChangedType.Resorted
+        if (_listChangedIfCanEmit) {
+          _listChangedIfCanEmit.emit({
+            type: _IListChanged.ListChangedType.Resorted
           });
         }
       }
@@ -376,7 +364,7 @@ class SortedList extends _CollectionChangedObject.CollectionChangedObject {
       _autoSort,
       _notAddIfExists,
       _compare,
-      _collectionChangedIfCanEmit
+      _listChangedIfCanEmit
     } = this;
 
     if (_autoSort) {
@@ -385,7 +373,7 @@ class SortedList extends _CollectionChangedObject.CollectionChangedObject {
 
     const oldItem = _array[index];
 
-    if ((_notAddIfExists || _autoSort || _collectionChangedIfCanEmit) && (_compare || SortedList.compareDefault)(oldItem, item) === 0) {
+    if ((_notAddIfExists || _autoSort || _listChangedIfCanEmit) && (_compare || SortedList.compareDefault)(oldItem, item) === 0) {
       return false;
     }
 
@@ -420,15 +408,15 @@ class SortedList extends _CollectionChangedObject.CollectionChangedObject {
       moveIndex = index;
     }
 
-    if (_collectionChangedIfCanEmit) {
+    if (_listChangedIfCanEmit) {
       _array[index] = item;
 
       if (moveIndex !== index) {
         this._move(index, moveIndex);
       }
 
-      _collectionChangedIfCanEmit.emit({
-        type: _ICollectionChanged.CollectionChangedType.Set,
+      _listChangedIfCanEmit.emit({
+        type: _IListChanged.ListChangedType.Set,
         index,
         oldItems: [oldItem],
         newItems: [item],
@@ -507,12 +495,12 @@ class SortedList extends _CollectionChangedObject.CollectionChangedObject {
 
     _array[index] = item;
     const {
-      _collectionChangedIfCanEmit
+      _listChangedIfCanEmit
     } = this;
 
-    if (_collectionChangedIfCanEmit) {
-      _collectionChangedIfCanEmit.emit({
-        type: _ICollectionChanged.CollectionChangedType.Added,
+    if (_listChangedIfCanEmit) {
+      _listChangedIfCanEmit.emit({
+        type: _IListChanged.ListChangedType.Added,
         index,
         newItems: [item],
         shiftIndex: index < size ? index + 1 : index
@@ -599,12 +587,12 @@ class SortedList extends _CollectionChangedObject.CollectionChangedObject {
     }
 
     const {
-      _collectionChangedIfCanEmit
+      _listChangedIfCanEmit
     } = this;
 
-    if (_collectionChangedIfCanEmit) {
-      _collectionChangedIfCanEmit.emit({
-        type: _ICollectionChanged.CollectionChangedType.Added,
+    if (_listChangedIfCanEmit) {
+      _listChangedIfCanEmit.emit({
+        type: _IListChanged.ListChangedType.Added,
         index,
         newItems: _array.slice(index, index + itemsSize),
         shiftIndex: index < size ? index + itemsSize : index
@@ -700,12 +688,12 @@ class SortedList extends _CollectionChangedObject.CollectionChangedObject {
     }
 
     const {
-      _collectionChangedIfCanEmit
+      _listChangedIfCanEmit
     } = this;
 
-    if (_collectionChangedIfCanEmit) {
-      _collectionChangedIfCanEmit.emit({
-        type: _ICollectionChanged.CollectionChangedType.Added,
+    if (_listChangedIfCanEmit) {
+      _listChangedIfCanEmit.emit({
+        type: _IListChanged.ListChangedType.Added,
         index: start,
         newItems: _array.slice(start, end),
         shiftIndex: start < size ? end : start
@@ -728,11 +716,11 @@ class SortedList extends _CollectionChangedObject.CollectionChangedObject {
     } = this;
     index = SortedList._prepareIndex(index, size);
     const {
-      _collectionChangedIfCanEmit
+      _listChangedIfCanEmit
     } = this;
     let oldItems;
 
-    if (_collectionChangedIfCanEmit) {
+    if (_listChangedIfCanEmit) {
       oldItems = [_array[index]];
     }
 
@@ -754,9 +742,9 @@ class SortedList extends _CollectionChangedObject.CollectionChangedObject {
       this._countSorted--;
     }
 
-    if (_collectionChangedIfCanEmit) {
-      _collectionChangedIfCanEmit.emit({
-        type: _ICollectionChanged.CollectionChangedType.Removed,
+    if (_listChangedIfCanEmit) {
+      _listChangedIfCanEmit.emit({
+        type: _IListChanged.ListChangedType.Removed,
         index,
         oldItems,
         shiftIndex: index < size - 1 ? withoutShift ? size - 1 : index + 1 : index
@@ -785,11 +773,11 @@ class SortedList extends _CollectionChangedObject.CollectionChangedObject {
     }
 
     const {
-      _collectionChangedIfCanEmit
+      _listChangedIfCanEmit
     } = this;
     let oldItems;
 
-    if (_collectionChangedIfCanEmit) {
+    if (_listChangedIfCanEmit) {
       oldItems = _array.slice(start, end);
     } // if (!withoutShift) {
     // 	withoutShift = removeSize < _size - end
@@ -818,9 +806,9 @@ class SortedList extends _CollectionChangedObject.CollectionChangedObject {
       this._countSorted = start;
     }
 
-    if (_collectionChangedIfCanEmit) {
-      _collectionChangedIfCanEmit.emit({
-        type: _ICollectionChanged.CollectionChangedType.Removed,
+    if (_listChangedIfCanEmit) {
+      _listChangedIfCanEmit.emit({
+        type: _IListChanged.ListChangedType.Removed,
         index: start,
         oldItems,
         shiftIndex: end < size ? withoutShift ? size - removeSize : end : start
@@ -844,6 +832,47 @@ class SortedList extends _CollectionChangedObject.CollectionChangedObject {
 
     this.removeAt(index, withoutShift);
     return true;
+  }
+
+  removeArray(sourceItems, sourceStart, sourceEnd) {
+    const {
+      _size: size,
+      _array,
+      _autoSort
+    } = this;
+    const itemsSize = sourceItems.length;
+    sourceStart = SortedList._prepareStart(sourceStart, itemsSize);
+    sourceEnd = SortedList._prepareEnd(sourceEnd, itemsSize);
+    let result = false;
+
+    for (let i = sourceStart; i < sourceEnd; i++) {
+      result = this.remove(sourceItems[i]) || result;
+    }
+
+    return result;
+  }
+
+  removeIterable(items, itemsSize) {
+    const {
+      _size: size,
+      _array
+    } = this;
+
+    if (itemsSize <= 0) {
+      return false;
+    }
+
+    if (Array.isArray(items)) {
+      return this.removeArray(items, null, itemsSize);
+    }
+
+    let result = false;
+
+    for (const item of items) {
+      result = this.remove(item) || result;
+    }
+
+    return result;
   }
 
   _move(oldIndex, newIndex) {
@@ -875,12 +904,12 @@ class SortedList extends _CollectionChangedObject.CollectionChangedObject {
 
     this._countSorted = Math.min(this._countSorted, oldIndex, newIndex);
     const {
-      _collectionChangedIfCanEmit
+      _listChangedIfCanEmit
     } = this;
 
-    if (_collectionChangedIfCanEmit) {
-      _collectionChangedIfCanEmit.emit({
-        type: _ICollectionChanged.CollectionChangedType.Moved,
+    if (_listChangedIfCanEmit) {
+      _listChangedIfCanEmit.emit({
+        type: _IListChanged.ListChangedType.Moved,
         index: oldIndex,
         moveSize: 1,
         moveIndex: newIndex
@@ -914,12 +943,12 @@ class SortedList extends _CollectionChangedObject.CollectionChangedObject {
 
     this._countSorted = Math.min(this._countSorted, start, moveIndex);
     const {
-      _collectionChangedIfCanEmit
+      _listChangedIfCanEmit
     } = this;
 
-    if (_collectionChangedIfCanEmit) {
-      _collectionChangedIfCanEmit.emit({
-        type: _ICollectionChanged.CollectionChangedType.Moved,
+    if (_listChangedIfCanEmit) {
+      _listChangedIfCanEmit.emit({
+        type: _IListChanged.ListChangedType.Moved,
         index: start,
         moveSize: end - start,
         moveIndex
@@ -968,6 +997,16 @@ class SortedList extends _CollectionChangedObject.CollectionChangedObject {
             return i;
           }
         }
+      } else if (item !== item) {
+        // item is NaN
+        for (let i = countSorted; i < end; i++) {
+          const o = _array[i];
+
+          if (o !== o) {
+            // array item is NaN
+            return i;
+          }
+        }
       } else {
         for (let i = countSorted; i < end; i++) {
           if (_array[i] === item) {
@@ -981,6 +1020,22 @@ class SortedList extends _CollectionChangedObject.CollectionChangedObject {
           if (_compare(_array[i], item) === 0) {
             return i;
           }
+        }
+      } else if (item !== item) {
+        // item is NaN
+        let last = -1;
+
+        for (let i = countSorted; i < end; i++) {
+          const o = _array[i];
+
+          if (o !== o) {
+            // array item is NaN
+            last = i;
+          }
+        }
+
+        if (last >= 0) {
+          return last;
         }
       } else {
         let last = -1;
@@ -1019,11 +1074,11 @@ class SortedList extends _CollectionChangedObject.CollectionChangedObject {
 
     const {
       _array,
-      _collectionChangedIfCanEmit
+      _listChangedIfCanEmit
     } = this;
     let oldItems;
 
-    if (_collectionChangedIfCanEmit) {
+    if (_listChangedIfCanEmit) {
       oldItems = _array.slice(0, size);
     }
 
@@ -1031,9 +1086,9 @@ class SortedList extends _CollectionChangedObject.CollectionChangedObject {
 
     this._countSorted = 0;
 
-    if (_collectionChangedIfCanEmit) {
-      _collectionChangedIfCanEmit.emit({
-        type: _ICollectionChanged.CollectionChangedType.Removed,
+    if (_listChangedIfCanEmit) {
+      _listChangedIfCanEmit.emit({
+        type: _IListChanged.ListChangedType.Removed,
         index: 0,
         oldItems,
         shiftIndex: 0
@@ -1071,12 +1126,12 @@ class SortedList extends _CollectionChangedObject.CollectionChangedObject {
 
     if (this._autoSort) {
       const {
-        _collectionChangedIfCanEmit
+        _listChangedIfCanEmit
       } = this;
 
-      if (_collectionChangedIfCanEmit) {
-        _collectionChangedIfCanEmit.emit({
-          type: _ICollectionChanged.CollectionChangedType.Resorted
+      if (_listChangedIfCanEmit) {
+        _listChangedIfCanEmit.emit({
+          type: _IListChanged.ListChangedType.Resorted
         });
       }
     } else {
@@ -1110,12 +1165,12 @@ class SortedList extends _CollectionChangedObject.CollectionChangedObject {
 
     if (!this._autoSort) {
       const {
-        _collectionChangedIfCanEmit
+        _listChangedIfCanEmit
       } = this;
 
-      if (_collectionChangedIfCanEmit) {
-        _collectionChangedIfCanEmit.emit({
-          type: _ICollectionChanged.CollectionChangedType.Resorted
+      if (_listChangedIfCanEmit) {
+        _listChangedIfCanEmit.emit({
+          type: _IListChanged.ListChangedType.Resorted
         });
       }
     }
@@ -1180,4 +1235,4 @@ class SortedList extends _CollectionChangedObject.CollectionChangedObject {
 }
 
 exports.SortedList = SortedList;
-SortedList.compareDefault = compareDefault;
+SortedList.compareDefault = _compare2.compareFast;

@@ -1,11 +1,13 @@
 let nextObjectId: number = 0
 
-Object.defineProperty(Object.prototype, 'uniqueId', {
+export const UNIQUE_ID_PROPERTY_NAME = 'uniqueId-22xvm5z032r'
+
+Object.defineProperty(Object.prototype, UNIQUE_ID_PROPERTY_NAME, {
 	enumerable: false,
 	configurable: false,
 	get() {
 		const uniqueId = nextObjectId++
-		Object.defineProperty(this, 'uniqueId', {
+		Object.defineProperty(this, UNIQUE_ID_PROPERTY_NAME, {
 			enumerable: false,
 			configurable: false,
 			get() {

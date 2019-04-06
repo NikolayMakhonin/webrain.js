@@ -1,7 +1,7 @@
 import {SetChangedObject} from './base/SetChangedObject'
-import {SetChangedType} from './contracts/ISetChanged'
+import {IObservableSet, SetChangedType} from './contracts/ISetChanged'
 
-export class ObservableSet<T> extends SetChangedObject<T> implements Set<T> {
+export class ObservableSet<T> extends SetChangedObject<T> implements IObservableSet<T> {
 	private readonly _set: Set<T>
 
 	constructor({

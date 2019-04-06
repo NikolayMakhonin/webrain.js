@@ -1,4 +1,6 @@
 import {HasSubscribersSubject, IHasSubscribersSubject} from '../../rx/subjects/hasSubscribers'
+import {IPropertyChangedObject} from "./IPropertyChanged";
+import {IMapChangedObject} from "./IMapChanged";
 
 export enum ListChangedType {
 	/**
@@ -37,5 +39,12 @@ export interface IListChangedEvent<T> {
 
 export interface IListChanged<T> {
 	readonly listChanged: IHasSubscribersSubject<IListChangedEvent<T>>
+}
+
+export interface IListChangedObject<T> extends IListChanged<T>, IPropertyChangedObject {
+	readonly listChanged: IHasSubscribersSubject<IListChangedEvent<T>>
 	onListChanged(event: IListChangedEvent<T>): this
 }
+
+// export interface IObservableList<T> extends IListChanged<T>, IList<T> {
+// }

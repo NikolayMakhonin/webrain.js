@@ -1,6 +1,6 @@
 import {ListChangedObject} from './base/ListChangedObject'
 import {ICompare} from './contracts/ICompare'
-import {ListChangedType} from './contracts/IListChanged'
+import {IListChangedObject, ListChangedType} from './contracts/IListChanged'
 import {binarySearch, move} from './helpers/array'
 import {compareFast} from './helpers/compare'
 
@@ -25,7 +25,7 @@ export function getDefaultValue(value) {
 	return null
 }
 
-export class SortedList<T> extends ListChangedObject<T> {
+export class SortedList<T> extends ListChangedObject<T> implements IListChangedObject<T> {
 	// region constructor
 
 	private _array: T[]
@@ -799,8 +799,6 @@ export class SortedList<T> extends ListChangedObject<T> {
 	}
 
 	public removeArray(sourceItems: T[], sourceStart?: number, sourceEnd?: number): boolean {
-		const {_size: size, _array, _autoSort} = this
-
 		const itemsSize = sourceItems.length
 		sourceStart = SortedList._prepareStart(sourceStart, itemsSize)
 		sourceEnd = SortedList._prepareEnd(sourceEnd, itemsSize)
@@ -813,8 +811,6 @@ export class SortedList<T> extends ListChangedObject<T> {
 	}
 
 	public removeIterable(items: Iterable<T>, itemsSize: number): boolean {
-		const {_size: size, _array} = this
-
 		if (itemsSize <= 0) {
 			return false
 		}

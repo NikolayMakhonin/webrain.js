@@ -1,7 +1,7 @@
 import {MapChangedObject} from './base/MapChangedObject'
-import {MapChangedType} from './contracts/IMapChanged'
+import {IObservableMap, MapChangedType} from './contracts/IMapChanged'
 
-export class ObservableMap<K, V> extends MapChangedObject<K, V> implements Map<K, V> {
+export class ObservableMap<K, V> extends MapChangedObject<K, V> implements IObservableMap<K, V> {
 	private readonly _map: Map<K, V>
 
 	constructor({
