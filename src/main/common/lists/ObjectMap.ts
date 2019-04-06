@@ -1,11 +1,7 @@
-import {MapChangedObject} from './base/MapChangedObject'
-import {IObservableMap} from './contracts/IMapChanged'
-
-export class ObjectMap<V> extends MapChangedObject<string, V> implements IObservableMap<string | number, V> {
+export class ObjectMap<V> implements Map<string | number, V> {
 	private readonly _object: object
 
 	constructor(object: object) {
-		super()
 		this._object = object || {}
 	}
 

@@ -708,9 +708,6 @@ function (_ListChangedObject) {
   }, {
     key: "removeArray",
     value: function removeArray(sourceItems, sourceStart, sourceEnd) {
-      var size = this._size,
-          _array = this._array,
-          _autoSort = this._autoSort;
       var itemsSize = sourceItems.length;
       sourceStart = SortedList._prepareStart(sourceStart, itemsSize);
       sourceEnd = SortedList._prepareEnd(sourceEnd, itemsSize);
@@ -725,9 +722,6 @@ function (_ListChangedObject) {
   }, {
     key: "removeIterable",
     value: function removeIterable(items, itemsSize) {
-      var size = this._size,
-          _array = this._array;
-
       if (itemsSize <= 0) {
         return false;
       }

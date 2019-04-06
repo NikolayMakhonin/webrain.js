@@ -2,13 +2,12 @@ import {
 	SetChangedType,
 } from '../../../../../main/common/lists/contracts/ISetChanged'
 import {ObservableSet} from '../../../../../main/common/lists/ObservableSet'
+import {allValues, shuffle} from './src/helpers/common'
 import {
 	ISetAction,
 	TestSet, THIS,
 } from './src/helpers/TestSet'
 import {ITestActionsWithDescription} from './src/helpers/TestVariants'
-import {allValues, shuffle} from "./src/helpers/common";
-import {compareFast} from "../../../../../main/common/lists/helpers/compare";
 
 declare const assert: any
 declare const after: any
@@ -94,6 +93,7 @@ describe('common > main > lists > ObservableSet', function() {
 
 		testSet({
 			array: [[]],
+			useObjectSet: [false],
 			expected: {
 				array: allValues,
 				returnValue: THIS,
@@ -181,6 +181,7 @@ describe('common > main > lists > ObservableSet', function() {
 
 		testSet({
 			array: [allValuesShuffle.concat(additional)],
+			useObjectSet: [false],
 			expected: {
 				array: additional,
 				returnValue: true,
@@ -239,13 +240,13 @@ describe('common > main > lists > ObservableSet', function() {
 		})
 
 		testSet({
-			array: [['1', '0']],
+			array: [['0', '1']],
 			expected: {
 				array: [],
 				returnValue: undefined,
 				setChanged: [{
 					type: SetChangedType.Removed,
-					oldItems: ['1', '0'],
+					oldItems: ['0', '1'],
 				}],
 			},
 			actions: [

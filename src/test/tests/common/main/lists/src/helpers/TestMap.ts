@@ -1,7 +1,8 @@
-import {IMapChangedEvent, MapChangedType,} from '../../../../../../../main/common/lists/contracts/IMapChanged'
+import {IMapChangedEvent, MapChangedType} from '../../../../../../../main/common/lists/contracts/IMapChanged'
+import {IPropertyChangedEvent} from '../../../../../../../main/common/lists/contracts/IPropertyChanged'
 import {compareFast} from '../../../../../../../main/common/lists/helpers/compare'
+import {ObjectMap} from '../../../../../../../main/common/lists/ObjectMap'
 import {ObservableMap} from '../../../../../../../main/common/lists/ObservableMap'
-import {IPropertyChangedEvent} from '../../../../../../../main/common/rx/object/PropertyChangedObject'
 import {IOptionsVariant, IOptionsVariants, ITestCase, TestVariants} from './TestVariants'
 
 declare const assert: any
@@ -82,17 +83,21 @@ function assertMap<K, V>(map: ObservableMap<K, V>, expectedArray: Array<[K, V]>)
 		assert.strictEqual(map.has(Math.random() as any), false)
 	}
 
+	const forEachArray = []
+	const thisArg = {}
+	map.forEach(function(value, key, instance) {
+		assert.strictEqual(this, thisArg)
+		assert.strictEqual(instance, map)
+		forEachArray.push([key, value])
+	}, thisArg)
+	assert.deepStrictEqual(forEachArray.sort(compareEntries), expectedArray)
+
 	assert.deepStrictEqual(Array.from(map).sort(compareEntries), expectedArray)
 }
 
 const staticMapInner = new Map()
 const staticMap = new ObservableMap({
 	map: staticMapInner,
-})
-
-const staticObjectMapInner = {}
-const staticObjectMap = new ObjectMap({
-	map: staticObjectMapInner,
 })
 
 // class ObjectMapWrapper<V> implements Map<string, V> {
@@ -142,54 +147,28 @@ export class TestMap<K, V> extends TestVariants<
 			let unsubscribePropertyChanged
 			try {
 				const array = options.array.map(o => o.slice() as [K, V])
-				let map: Map<K, V>
-				let getInnerEntries: () => Array<[K, V]>
+				let map: ObservableMap<K, V>
+				let mapInner: Map<K, V>
 
-				if (options.useObjectMap) {
-					let objectMapInner
-					if (options.reuseMapInstance) {
-						staticObjectMap.clear()
-						for (const item of array) {
-							staticObjectMap.set(...item)
-						}
-						map = staticObjectMap as Map<K, V>
-						objectMapInner = staticObjectMapInner
-					} else {
-						objectMapInner = {}
-						for (const item of array) {
-							objectMapInner[item[0] as any] = item[1]
-						}
-
-						map = new ObjectMap<V>({
-							map: objectMapInner,
-						})
+				if (options.reuseMapInstance) {
+					staticMap.clear()
+					for (const item of array) {
+						staticMap.set(...item)
 					}
-
-					getInnerEntries = () => Object
-						.keys(objectMapInner)
-						.map(o => [o as any, objectMapInner[o]] as [K, V])
-
+					map = staticMap as ObservableMap<K, V>
+					mapInner = staticMapInner
 				} else {
-					let mapInner
-					if (options.reuseMapInstance) {
-						staticMap.clear()
-						for (const item of array) {
-							staticMap.set(...item)
-						}
-						map = staticMap as Map<K, V>
-						mapInner = staticMapInner
-					} else {
-						mapInner = new Map<K, V>()
-						for (const item of array) {
-							mapInner.set(...item)
-						}
+					mapInner = options.useObjectMap
+						? new ObjectMap({}) as any
+						: new Map() as any
 
-						map = new ObservableMap({
-							map: mapInner,
-						})
+					for (const item of array) {
+						mapInner.set(...item)
 					}
 
-					getInnerEntries = () => Array.from(mapInner.entries())
+					map = new ObservableMap({
+						map: mapInner,
+					})
 				}
 
 				const arrayReplicate = array.map(o => o.slice() as [K, V])
@@ -199,10 +178,10 @@ export class TestMap<K, V> extends TestVariants<
 					unsubscribeMapChanged = map.mapChanged.subscribe(event => {
 						mapChangedEvents.push(event)
 						applyMapChangedToArray(event, arrayReplicate)
-						if (event.type !== MapChangedType.Removed || getInnerEntries().length > 0) {
+						if (event.type !== MapChangedType.Removed || mapInner.size > 0) {
 							assert.deepStrictEqual(
 								arrayReplicate.map(o => o.slice() as [K, V]).sort(compareEntries),
-								Array.from(getInnerEntries()).sort(compareEntries),
+								Array.from(mapInner.entries()).sort(compareEntries),
 							)
 						}
 					})

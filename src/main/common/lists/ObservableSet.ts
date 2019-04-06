@@ -79,7 +79,7 @@ export class ObservableSet<T> extends SetChangedObject<T> implements IObservable
 
 			this._set.clear()
 
-			this.onSetChanged({
+			_setChangedIfCanEmit.emit({
 				type: SetChangedType.Removed,
 				oldItems,
 			})
@@ -113,7 +113,7 @@ export class ObservableSet<T> extends SetChangedObject<T> implements IObservable
 	}
 
 	public forEach(callbackfn: (value: T, value2: T, set: Set<T>) => void, thisArg?: any): void {
-		this._set.forEach(callbackfn, thisArg)
+		this._set.forEach((k, v, s) => callbackfn.call(thisArg, k, v, this))
 	}
 
 	public has(value: T): boolean {

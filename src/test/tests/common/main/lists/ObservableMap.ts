@@ -104,6 +104,7 @@ describe('common > main > lists > ObservableMap', function() {
 
 		testMap({
 			array: [[]],
+			useObjectMap: [false],
 			expected: {
 				array: entries,
 				returnValue: THIS,
@@ -203,6 +204,7 @@ describe('common > main > lists > ObservableMap', function() {
 
 		testMap({
 			array: [entries.concat(additional)],
+			useObjectMap: [false],
 			expected: {
 				array: additional,
 				returnValue: true,

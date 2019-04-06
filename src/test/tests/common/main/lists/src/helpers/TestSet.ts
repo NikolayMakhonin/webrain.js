@@ -1,10 +1,11 @@
+import {IPropertyChangedEvent} from '../../../../../../../main/common/lists/contracts/IPropertyChanged'
 import {
 	ISetChangedEvent,
 	SetChangedType,
 } from '../../../../../../../main/common/lists/contracts/ISetChanged'
 import {compareFast} from '../../../../../../../main/common/lists/helpers/compare'
+import {ObjectSet} from '../../../../../../../main/common/lists/ObjectSet'
 import {ObservableSet} from '../../../../../../../main/common/lists/ObservableSet'
-import {IPropertyChangedEvent} from '../../../../../../../main/common/rx/object/PropertyChangedObject'
 import {indexOfNaN} from './common'
 import {IOptionsVariant, IOptionsVariants, ITestCase, TestVariants} from './TestVariants'
 
@@ -38,6 +39,7 @@ interface ISetOptionsVariant<T> {
 
 	reuseSetInstance?: boolean
 	useSetChanged?: boolean
+	useObjectSet?: boolean
 }
 
 interface ISetExpected<T> {
@@ -53,6 +55,7 @@ interface ISetOptionsVariants<T> extends IOptionsVariants {
 
 	reuseSetInstance?: boolean[]
 	useSetChanged?: boolean[]
+	useObjectSet?: boolean[]
 }
 
 function assertSet<T>(set: ObservableSet<T>, expectedArray: T[]) {
@@ -67,6 +70,16 @@ function assertSet<T>(set: ObservableSet<T>, expectedArray: T[]) {
 		assert.strictEqual(set.has(item), true)
 		assert.strictEqual(set.has(Math.random() as any), false)
 	}
+
+	const forEachArray = []
+	const thisArg = {}
+	set.forEach(function(value, key, instance) {
+		assert.strictEqual(this, thisArg)
+		assert.strictEqual(instance, set)
+		forEachArray.push([key, value])
+	}, thisArg)
+	assert.deepStrictEqual(forEachArray.map(o => o[0]).sort(compareFast), expectedArray)
+	assert.deepStrictEqual(forEachArray.map(o => o[1]).sort(compareFast), expectedArray)
 
 	assert.deepStrictEqual(Array.from(set).sort(compareFast), expectedArray)
 }
@@ -91,6 +104,7 @@ export class TestSet<T> extends TestVariants<
 	protected baseOptionsVariants: ISetOptionsVariants<T> = {
 		reuseSetInstance: [false, true],
 		useSetChanged: [false, true],
+		useObjectSet: [false, true],
 	}
 
 	protected testVariant(options: ISetOptionsVariant<T> & IOptionsVariant<ISetAction<T>, ISetExpected<T>>) {
@@ -101,10 +115,7 @@ export class TestSet<T> extends TestVariants<
 			try {
 				const array = options.array.slice()
 				let set: ObservableSet<T>
-				let setInner = new Set<T>()
-				for (const item of array) {
-					setInner.add(item)
-				}
+				let setInner: Set<T>
 
 				if (options.reuseSetInstance) {
 					staticSet.clear()
@@ -114,6 +125,14 @@ export class TestSet<T> extends TestVariants<
 					set = staticSet as ObservableSet<T>
 					setInner = staticSetInner
 				} else {
+					setInner = options.useObjectSet
+						? new ObjectSet({}) as any
+						: new Set() as any
+
+					for (const item of array) {
+						setInner.add(item)
+					}
+
 					set = new ObservableSet({
 						set: setInner,
 					})

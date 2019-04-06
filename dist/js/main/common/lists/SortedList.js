@@ -835,11 +835,6 @@ class SortedList extends _ListChangedObject.ListChangedObject {
   }
 
   removeArray(sourceItems, sourceStart, sourceEnd) {
-    const {
-      _size: size,
-      _array,
-      _autoSort
-    } = this;
     const itemsSize = sourceItems.length;
     sourceStart = SortedList._prepareStart(sourceStart, itemsSize);
     sourceEnd = SortedList._prepareEnd(sourceEnd, itemsSize);
@@ -853,11 +848,6 @@ class SortedList extends _ListChangedObject.ListChangedObject {
   }
 
   removeIterable(items, itemsSize) {
-    const {
-      _size: size,
-      _array
-    } = this;
-
     if (itemsSize <= 0) {
       return false;
     }

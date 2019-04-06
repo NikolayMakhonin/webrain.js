@@ -95,7 +95,7 @@ export class ObservableMap<K, V> extends MapChangedObject<K, V> implements IObse
 
 			for (let i = 0, len = oldItems.length; i < len; i++) {
 				const oldItem = oldItems[i]
-				this.onMapChanged({
+				_mapChangedIfCanEmit.emit({
 					type: MapChangedType.Removed,
 					key: oldItem[0],
 					oldValue: oldItem[1],
@@ -135,7 +135,7 @@ export class ObservableMap<K, V> extends MapChangedObject<K, V> implements IObse
 	}
 
 	public forEach(callbackfn: (value: V, key: K, map: Map<K, V>) => void, thisArg?: any): void {
-		this._map.forEach(callbackfn, thisArg)
+		this._map.forEach((k, v, s) => callbackfn.call(thisArg, k, v, this))
 	}
 
 	public has(key: K): boolean {
