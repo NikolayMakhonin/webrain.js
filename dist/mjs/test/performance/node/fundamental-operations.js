@@ -643,7 +643,7 @@ describe('fundamental-operations', function () {
     console.log("".concat(sortCount, "\t").concat(binarySearchCount, "\t").concat(JSON.stringify(array), "\t").concat(JSON.stringify(addArray)));
   }
 
-  it('sorted array add items', function () {
+  xit('sorted array add items', function () {
     this.timeout(300000);
     var array = [];
     var addArray = generateArray(1000).sort(function (o1, o2) {
@@ -666,6 +666,29 @@ describe('fundamental-operations', function () {
       }));
     }, function () {
       return calcBinarySearchCount(resultArray, array.length, addArray);
+    });
+    console.log(result);
+  });
+  it('regexp', function () {
+    this.timeout(300000);
+    var regexp = /qwe\/wer\/ert\/rty\/tyu/;
+    var path = 'qwe/wer/ert/rty/tyu';
+    var wrongPath = 'wwe/wer/ert/rty/tyu';
+    var checkPath = wrongPath.replace(/^w/, 'q');
+    var result = calcPerformance(10000, // () => {
+    // 	// no operations
+    function () {
+      return wrongPath === checkPath;
+    }, function () {
+      return path === checkPath;
+    }, function () {
+      return regexp.test(wrongPath);
+    }, function () {
+      return wrongPath.match(regexp);
+    }, function () {
+      return regexp.test(path);
+    }, function () {
+      return path.match(regexp);
     });
     console.log(result);
   });

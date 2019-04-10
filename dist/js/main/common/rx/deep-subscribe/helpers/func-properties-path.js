@@ -1,0 +1,51 @@
+"use strict";
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+exports.parsePropertiesPathString = parsePropertiesPathString;
+exports.parsePropertiesPath = parsePropertiesPath;
+exports.getFuncPropertiesPath = getFuncPropertiesPath;
+const variablePattern = '([$A-Za-z_][$A-Za-z_]*)';
+const propertyPattern = variablePattern;
+
+function parsePropertiesPathString(getValueFunc) {
+  if (typeof getValueFunc !== 'string') {
+    getValueFunc = getValueFunc.toString();
+  }
+
+  const match = getValueFunc.match(/^.*?(?:\(\s*)?(\w+)(?:\s*\))?\s*(?:(?:=>\s*)?{\s*return\s|=>)[\s(]*\1\s*(.*?)[\s;]*}?[\s)]*$/);
+  const path = match && match[2];
+
+  if (!path) {
+    throw new Error(`Error parse getValueFunc:\n${getValueFunc}\n\n` + 'This parameter should be a function which simple return nested property value, like that:\n' + '(o) => o.o["/\\"\'"].o[0].o.o\n' + 'o => (o.o["/\\"\'"].o[0].o.o)\n' + '(o) => {return o.o["/\\"\'"].o[0].o.o}\n' + 'function (o) { return o.o["/\\"\'"].o[0].o.o }\n' + 'y(o) {\n' + '\t\treturn o.o["/\\"\'"].o[0].o.o\n' + '}');
+  }
+
+  return path;
+}
+
+function parsePropertiesPath(propertiesPathString) {
+  const propertiesPath = [];
+  const remains = propertiesPathString.replace(/(?:\.\s*(\w+)\s*|\[\s*(?:(\d+)|("(?:[^\\"]*|\\.)+"|'(?:[^\\']*|\\.)+'))\s*]\s*)/g, (s, g1, g2, g3, g4) => {
+    propertiesPath.push(g1 || g2 || g3 && new Function('return ' + g3)());
+    return '';
+  });
+
+  if (remains) {
+    throw new Error(`Error parse properties path from:\n${propertiesPathString}\nerror in: ${remains}`);
+  }
+
+  return propertiesPath;
+}
+
+const PROPERTIES_PATH_CACHE_ID = 'propertiesPath_26lds5zs9ft';
+
+function getFuncPropertiesPath(getValueFunc) {
+  let propertiesPath = getValueFunc[PROPERTIES_PATH_CACHE_ID];
+
+  if (!propertiesPath) {
+    getValueFunc[PROPERTIES_PATH_CACHE_ID] = propertiesPath = parsePropertiesPath(parsePropertiesPathString(getValueFunc));
+  }
+
+  return propertiesPath;
+}

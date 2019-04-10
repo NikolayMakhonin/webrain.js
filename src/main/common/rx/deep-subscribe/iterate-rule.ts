@@ -7,7 +7,9 @@ export interface IRuleIterable extends Iterable<IRuleOrIterable> {
 
 export function *iterateRule(rule: IRule, next: () => IRuleIterable = null): IRuleIterable {
 	if (!rule) {
-		yield* next ? next() : null
+		if (next) {
+			yield* next()
+		}
 		return
 	}
 

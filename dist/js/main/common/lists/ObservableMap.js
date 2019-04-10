@@ -121,7 +121,8 @@ class ObservableMap extends _MapChangedObject.MapChangedObject {
 
       for (let i = 0, len = oldItems.length; i < len; i++) {
         const oldItem = oldItems[i];
-        this.onMapChanged({
+
+        _mapChangedIfCanEmit.emit({
           type: _IMapChanged.MapChangedType.Removed,
           key: oldItem[0],
           oldValue: oldItem[1]

@@ -577,7 +577,7 @@ describe('fundamental-operations', function () {
     console.log(`${sortCount}\t${binarySearchCount}\t${JSON.stringify(array)}\t${JSON.stringify(addArray)}`);
   }
 
-  it('sorted array add items', function () {
+  xit('sorted array add items', function () {
     this.timeout(300000);
     const array = [];
     const addArray = generateArray(1000).sort((o1, o2) => Math.random() > 0.5 ? -1 : 1); // [-3, -1, -2, 1, 9, -4, 7, -6, 11]
@@ -591,6 +591,17 @@ describe('fundamental-operations', function () {
     }, () => calcSortCompareCount(resultArray, array.length, addArray), () => {
       resultArray = array.slice().concat(addArray.map(o => 0));
     }, () => calcBinarySearchCount(resultArray, array.length, addArray));
+    console.log(result);
+  });
+  it('regexp', function () {
+    this.timeout(300000);
+    const regexp = /qwe\/wer\/ert\/rty\/tyu/;
+    const path = 'qwe/wer/ert/rty/tyu';
+    const wrongPath = 'wwe/wer/ert/rty/tyu';
+    const checkPath = wrongPath.replace(/^w/, 'q');
+    const result = (0, _rdtsc.calcPerformance)(10000, // () => {
+    // 	// no operations
+    () => wrongPath === checkPath, () => path === checkPath, () => regexp.test(wrongPath), () => wrongPath.match(regexp), () => regexp.test(path), () => path.match(regexp));
     console.log(result);
   });
 });

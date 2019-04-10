@@ -100,7 +100,7 @@ class ObservableSet extends _SetChangedObject.SetChangedObject {
 
       this._set.clear();
 
-      this.onSetChanged({
+      _setChangedIfCanEmit.emit({
         type: _ISetChanged.SetChangedType.Removed,
         oldItems
       });

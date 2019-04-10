@@ -98,7 +98,7 @@ function (_SetChangedObject) {
 
         this._set.clear();
 
-        this.onSetChanged({
+        _setChangedIfCanEmit.emit({
           type: SetChangedType.Removed,
           oldItems: oldItems
         });

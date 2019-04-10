@@ -2,7 +2,7 @@
 /* eslint-disable no-useless-escape,computed-property-spacing */
 import {IRule, RuleType} from '../../../../../../main/common/rx/deep-subscribe/contracts/rules'
 import {RuleBuilder} from '../../../../../../main/common/rx/deep-subscribe/RuleBuilder'
-import {IRuleIterable, IRuleOrIterable, iterateRule} from '../../../../../../main/common/rx/deep-subscribe/RuleState'
+import {IRuleIterable, IRuleOrIterable, iterateRule} from '../../../../../../main/common/rx/deep-subscribe/iterate-rule'
 
 declare const assert
 

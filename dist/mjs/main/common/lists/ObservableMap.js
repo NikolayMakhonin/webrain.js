@@ -117,7 +117,8 @@ function (_MapChangedObject) {
 
         for (var i = 0, len = oldItems.length; i < len; i++) {
           var oldItem = oldItems[i];
-          this.onMapChanged({
+
+          _mapChangedIfCanEmit.emit({
             type: MapChangedType.Removed,
             key: oldItem[0],
             oldValue: oldItem[1]
