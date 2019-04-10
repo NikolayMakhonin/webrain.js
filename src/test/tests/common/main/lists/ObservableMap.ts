@@ -10,8 +10,8 @@ import {
 } from './src/helpers/TestMap'
 import {ITestActionsWithDescription} from './src/helpers/TestVariants'
 
-declare const assert: any
-declare const after: any
+declare const assert
+declare const after
 
 describe('common > main > lists > ObservableMap', function() {
 	this.timeout(20000)

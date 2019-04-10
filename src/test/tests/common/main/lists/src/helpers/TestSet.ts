@@ -9,7 +9,7 @@ import {ObservableSet} from '../../../../../../../main/common/lists/ObservableSe
 import {indexOfNaN} from './common'
 import {IOptionsVariant, IOptionsVariants, ITestCase, TestVariants} from './TestVariants'
 
-declare const assert: any
+declare const assert
 
 export const THIS = {}
 
