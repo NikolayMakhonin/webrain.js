@@ -33,7 +33,7 @@ describe('common > main > rx > deep-subscribe > RuleState', function() {
 
 	const endObject = { _end: true }
 
-	function rulesToObjectTree(ruleIterator: Iterator<IRuleOrIterable>): any {
+	function rulesToObject(ruleIterator: Iterator<IRuleOrIterable>): any {
 		const iteration = ruleIterator.next()
 		if (iteration.done) {
 			return endObject
@@ -44,43 +44,213 @@ describe('common > main > rx > deep-subscribe > RuleState', function() {
 
 		if (ruleOrIterable[Symbol.iterator]) {
 			for (const ruleIterable of ruleOrIterable as Iterable<IRuleOrIterable>) {
-				if (ruleIterable[Symbol.iterator]) {
-					Object.assign(obj, rulesToObjectTree(ruleIterable[Symbol.iterator]()))
-				} else {
-					Object.assign(obj, {[(ruleIterable as IRule).description]: endObject})
-				}
+				Object.assign(obj, rulesToObject(ruleIterable[Symbol.iterator]()))
 			}
 		} else {
 			const rule = iteration.value as IRule
-			obj = {[rule.description]: rulesToObjectTree(ruleIterator)}
+			obj = {[rule.description]: rulesToObject(ruleIterator)}
 		}
 
 		return obj
 	}
 
+	function *objectToPaths(obj, parentPath: string = ''): Iterable<string> {
+		assert.ok(obj, parentPath)
+
+		if (obj._end) {
+			yield parentPath
+		}
+
+		if (obj === endObject) {
+			return
+		}
+
+		let count = 0
+		for (const key in obj) {
+			if (key !== '_end' && Object.prototype.hasOwnProperty.call(obj, key)) {
+				count++
+				yield* objectToPaths(obj[key], (parentPath ? parentPath + '.' : '') + key)
+			}
+		}
+
+		if (!count) {
+			throw new Error(parentPath + ' is empty')
+		}
+	}
+
+	function testIterateRule(buildRule: (builder: RuleBuilder<any>) => RuleBuilder<any>, ...expectedPaths: string[]) {
+		const result = iterateRule(buildRule(new RuleBuilder<any>()).rule)
+		assert.ok(result)
+		const object = rulesToObject(result[Symbol.iterator]())
+		// console.log(JSON.stringify(objectTree, null, 4))
+		const paths = Array.from(objectToPaths(object))
+		assert.deepStrictEqual(paths.sort(), expectedPaths.sort(), JSON.stringify(paths, null, 4))
+	}
+
 	it('path', function() {
 		const builder = new RuleBuilder<any>()
 
-		const result = iterateRule(
-			builder
-				.repeat(0, 2,
-					// b => b.path(o => o.a1),
-					b => b.repeat(0, 2,
-						// b => b.path(o => o.a1),
-						b => b.any(
-							b => b.path(o => o.a1),
-							b => b.path(o => o.b1),
-						),
-					),
-				)
-				.path(o => o.c1)
-				.rule,
+		testIterateRule(
+			b => b
+				.path(o => o.a),
+			'a',
 		)
 
-		// console.log(rulesToString(result))
+		testIterateRule(
+			b => b
+				.path(o => o.a.b.c),
+			'a.b.c',
+		)
+	})
 
-		const objectTree = rulesToObjectTree(result[Symbol.iterator]())
+	it('any', function() {
+		const builder = new RuleBuilder<any>()
 
-		console.log(JSON.stringify(objectTree, null, 4))
+		testIterateRule(
+			b => b
+				.any(
+					b => b.path(o => o.a),
+					b => b.path(o => o.b),
+				),
+			'a',
+			'b',
+		)
+
+		testIterateRule(
+			b => b
+				.any(
+					b => b.path(o => o.a.b),
+					b => b.path(o => o.c.d),
+				),
+			'a.b',
+			'c.d',
+		)
+
+		testIterateRule(
+			b => b
+				.any(
+					b => b
+						.any(
+							b => b.path(o => o.a.b),
+							b => b.path(o => o.c.d),
+						),
+					b => b.path(o => o.e.f),
+				),
+			'a.b',
+			'c.d',
+			'e.f',
+		)
+
+		testIterateRule(
+			b => b
+				.any(
+					b => b
+						.path(o => o.a.b)
+						.any(
+							b => b.path(o => o.c.d),
+							b => b.path(o => o.e.f),
+						),
+					b => b.path(o => o.g.h),
+				)
+				.path(o => o.i),
+			'a.b.c.d.i',
+			'a.b.e.f.i',
+			'g.h.i',
+		)
+	})
+
+	it('repeat', function() {
+		const builder = new RuleBuilder<any>()
+
+		testIterateRule(
+			b => b
+				.repeat(1, 1,
+					b => b.path(o => o.a),
+				),
+			'a',
+		)
+
+		testIterateRule(
+			b => b
+				.repeat(0, 2,
+					b => b.path(o => o.a),
+				),
+			'',
+			'a',
+			'a.a',
+		)
+
+		testIterateRule(
+			b => b
+				.repeat(0, 2,
+					b => b
+						.repeat(0, 2,
+							b => b.path(o => o.a),
+						)
+						.path(o => o.b),
+				),
+			'',
+			'b',
+			'a.b',
+			'a.a.b',
+			'b.b',
+			'b.a.b',
+			'b.a.a.b',
+			'a.b.b',
+			'a.b.a.b',
+			'a.b.a.a.b',
+			'a.a.b.b',
+			'a.a.b.a.b',
+			'a.a.b.a.a.b',
+		)
+
+		testIterateRule(
+			b => b
+				.repeat(1, 2,
+					b => b
+						.any(
+							b => b.repeat(1, 2,
+								b => b.path(o => o.a),
+							),
+							b => b.path(o => o.b.c),
+						),
+				)
+				.path(o => o.d),
+			'a.d',
+			'a.a.d',
+			'b.c.d',
+
+			// 'a.a.d',
+			'a.a.a.d',
+			'a.b.c.d',
+
+			// 'a.a.a.d',
+			'a.a.a.a.d',
+			'a.a.b.c.d',
+
+			'b.c.a.d',
+			'b.c.a.a.d',
+			'b.c.b.c.d',
+		)
+
+		testIterateRule(
+			b => b
+				.any(
+					b => b
+						.repeat(2, 2,
+							b => b.any(
+								b => b.path(o => o.a),
+								b => b.path(o => o.b),
+							),
+						),
+					b => b.path(o => o.c),
+				)
+				.path(o => o.d),
+			'a.a.d',
+			'a.b.d',
+			'b.a.d',
+			'b.b.d',
+			'c.d',
+		)
 	})
 })
