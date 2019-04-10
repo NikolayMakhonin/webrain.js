@@ -12,6 +12,7 @@ export interface IRule {
 
 export interface IRuleProperty extends IRule {
 	readonly predicate: (propertyName: string, object) => boolean
+	readonly iterateObject: (object) => Iterable<any>
 }
 
 export interface IRuleAny extends IRule {

@@ -253,4 +253,14 @@ describe('common > main > rx > deep-subscribe > RuleState', function() {
 			'c.d',
 		)
 	})
+
+	it('throws', function() {
+		Array.from(iterateRule({
+			type: 0 as RuleType,
+		}))
+
+		assert.throws(() => Array.from(iterateRule({
+			type: -1 as RuleType,
+		})), Error)
+	})
 })

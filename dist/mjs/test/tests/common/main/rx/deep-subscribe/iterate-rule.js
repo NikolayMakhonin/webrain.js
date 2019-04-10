@@ -382,4 +382,14 @@ describe('common > main > rx > deep-subscribe > RuleState', function () {
       });
     }, 'a.a.d', 'a.b.d', 'b.a.d', 'b.b.d', 'c.d');
   });
+  it('throws', function () {
+    Array.from(iterateRule({
+      type: 0
+    }));
+    assert.throws(function () {
+      return Array.from(iterateRule({
+        type: -1
+      }));
+    }, Error);
+  });
 });

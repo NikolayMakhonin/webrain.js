@@ -117,4 +117,12 @@ describe('common > main > rx > deep-subscribe > RuleState', function () {
     'a.a.a.a.d', 'a.a.b.c.d', 'b.c.a.d', 'b.c.a.a.d', 'b.c.b.c.d');
     testIterateRule(b => b.any(b => b.repeat(2, 2, b => b.any(b => b.path(o => o.a), b => b.path(o => o.b))), b => b.path(o => o.c)).path(o => o.d), 'a.a.d', 'a.b.d', 'b.a.d', 'b.b.d', 'c.d');
   });
+  it('throws', function () {
+    Array.from((0, _iterateRule.iterateRule)({
+      type: 0
+    }));
+    assert.throws(() => Array.from((0, _iterateRule.iterateRule)({
+      type: -1
+    })), Error);
+  });
 });
