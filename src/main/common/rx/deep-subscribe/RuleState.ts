@@ -5,45 +5,46 @@ export interface IRuleIterable extends Iterable<IRuleOrIterable> {
 
 }
 
-export function *iterateRule(rule: IRule, next: IRuleIterable = null): IRuleIterable {
+export function *iterateRule(rule: IRule, next: () => IRuleIterable = null): IRuleIterable {
 	if (!rule) {
-		yield* (next || [])
+		yield* next ? next() : null
 		return
 	}
 
-	next = iterateRule(rule.next, next)
+	const nextRule = () => iterateRule(rule.next, next)
 
 	switch (rule.type) {
 		case RuleType.Property:
 			yield rule
-			yield* next
+			yield* nextRule()
 			break
 		case RuleType.Any:
 			const {rules} = (rule as IRuleAny)
 			function *any() {
 				for (let i = 0, len = rules.length; i < len; i++) {
-					yield iterateRule(rules[i], next)
+					yield iterateRule(rules[i], nextRule)
 				}
 			}
 			yield any()
 			break
 		case RuleType.Repeat:
 			const {countMin, countMax, rule: subRule} = rule as IRuleRepeat
-			let count = 0
-			function *repeatNext() {
+			function *repeatNext(count) {
 				if (count >= countMax) {
-					yield next
+					yield* nextRule()
 					return
 				}
 
-				count++
-				yield iterateRule(rule, repeatNext())
+				const nextIteration = () => iterateRule(subRule, () => repeatNext(count + 1))
 
-				if (count >= countMin) {
-					yield next
+				if (count < countMin) {
+					yield* nextIteration()
+				} else {
+					yield [nextRule(), nextIteration()]
 				}
 			}
-			yield repeatNext()
+
+			yield* repeatNext(0)
 			break
 		default:
 			throw new Error('Unknown RuleType: ' + rule.type)

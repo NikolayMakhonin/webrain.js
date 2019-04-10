@@ -31,10 +31,12 @@ describe('common > main > rx > deep-subscribe > RuleState', function() {
 			.map(o => ruleToString(o)).join('\n')
 	}
 
+	const endObject = { _end: true }
+
 	function rulesToObjectTree(ruleIterator: Iterator<IRuleOrIterable>): any {
 		const iteration = ruleIterator.next()
 		if (iteration.done) {
-			return null
+			return endObject
 		}
 
 		const ruleOrIterable = iteration.value
@@ -45,7 +47,7 @@ describe('common > main > rx > deep-subscribe > RuleState', function() {
 				if (ruleIterable[Symbol.iterator]) {
 					Object.assign(obj, rulesToObjectTree(ruleIterable[Symbol.iterator]()))
 				} else {
-					Object.assign(obj, {[(ruleIterable as IRule).description]: null})
+					Object.assign(obj, {[(ruleIterable as IRule).description]: endObject})
 				}
 			}
 		} else {
@@ -61,11 +63,17 @@ describe('common > main > rx > deep-subscribe > RuleState', function() {
 
 		const result = iterateRule(
 			builder
-				.any(
-					b => b.path(o => o.a1.a2.a3),
-					b => b.path(o => o.b1.b2.b3),
+				.repeat(0, 2,
+					// b => b.path(o => o.a1),
+					b => b.repeat(0, 2,
+						// b => b.path(o => o.a1),
+						b => b.any(
+							b => b.path(o => o.a1),
+							b => b.path(o => o.b1),
+						),
+					),
 				)
-				// .path(o => o.prop1.prop2.prop3)
+				.path(o => o.c1)
 				.rule,
 		)
 
