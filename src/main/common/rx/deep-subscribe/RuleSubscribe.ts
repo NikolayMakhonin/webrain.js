@@ -310,7 +310,7 @@ function createPropertyPredicate(propertyNames: string[]) {
 
 		return (propName: string, object) => {
 			return propName === propertyName
-				&& Object.prototype.hasOwnProperty.call(object, propName)
+				// && Object.prototype.hasOwnProperty.call(object, propName)
 		}
 	} else {
 		const propertyNamesMap = {}
@@ -326,7 +326,7 @@ function createPropertyPredicate(propertyNames: string[]) {
 
 		return (propName: string, object) => {
 			return !!propertyNamesMap[propName]
-				&& Object.prototype.hasOwnProperty.call(object, propName)
+				// && Object.prototype.hasOwnProperty.call(object, propName)
 		}
 	}
 }

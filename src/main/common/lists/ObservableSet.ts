@@ -4,11 +4,7 @@ import {IObservableSet, SetChangedType} from './contracts/ISetChanged'
 export class ObservableSet<T> extends SetChangedObject<T> implements IObservableSet<T> {
 	private readonly _set: Set<T>
 
-	constructor({
-		set,
-	}: {
-		set?: Set<T>,
-	} = {}) {
+	constructor(set?: Set<T>) {
 		super()
 		this._set = set || new Set<T>()
 	}

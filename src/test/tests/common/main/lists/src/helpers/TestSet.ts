@@ -86,9 +86,7 @@ function assertSet<T>(set: ObservableSet<T>, expectedArray: T[]) {
 }
 
 const staticSetInner = new Set()
-const staticSet = new ObservableSet({
-	set: staticSetInner,
-})
+const staticSet = new ObservableSet(staticSetInner)
 
 const valueToObjectMap = new Map()
 function convertToObject(value: any) {
@@ -228,9 +226,7 @@ export class TestSet<T> extends TestVariants<
 						setInner.add(item)
 					}
 
-					set = new ObservableSet({
-						set: setInner,
-					})
+					set = new ObservableSet(setInner)
 				}
 
 				const arrayReplicate = array.slice(0, set.size)

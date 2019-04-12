@@ -10,6 +10,8 @@ import {
 import {IRule, IRuleProperty, RuleType} from '../../../../../../main/common/rx/deep-subscribe/contracts/rules'
 import {RuleBuilder} from '../../../../../../main/common/rx/deep-subscribe/RuleBuilder'
 import {ObservableObjectBuilder} from '../../../../../../main/common/rx/object/ObservableObjectBuilder'
+import {ObjectSet} from "../../../../../../main/common/lists/ObjectSet";
+import {ObservableSet} from "../../../../../../main/common/lists/ObservableSet";
 
 declare const assert
 
@@ -52,8 +54,9 @@ describe('common > main > rx > deep-subscribe > RuleBuilder', function() {
 		subscribe: ISubscribeObject<TObject, string>,
 		properties: string[],
 		subscribeProperties: string[],
+		add: (object, property) => void,
 		change: (object, property) => void,
-		remove: (object, property) => void,
+		remove: (object, property, isNonSubscribe) => void,
 	) {
 		const nonSubscribeProperties = properties.slice()
 		for (const property of subscribeProperties) {
@@ -82,10 +85,10 @@ describe('common > main > rx > deep-subscribe > RuleBuilder', function() {
 		let subscribedItems = []
 
 		function subscribeItem(value: string, debugPropertyName: string) {
-			// if (typeof value === 'undefined') {
-			// 	subscribedItems.push('+' + value)
-			// 	return
-			// }
+			if (typeof value === 'undefined') {
+				subscribedItems.push('+' + value)
+				return
+			}
 			assert.strictEqual(typeof value, 'string', value)
 			value = value.trim()
 			checkDebugPropertyName(value, debugPropertyName)
@@ -94,6 +97,10 @@ describe('common > main > rx > deep-subscribe > RuleBuilder', function() {
 
 		// tslint:disable-next-line:no-identical-functions
 		function unsubscribeItem(value: string, debugPropertyName: string) {
+			if (typeof value === 'undefined') {
+				subscribedItems.push('-' + value)
+				return
+			}
 			value = value.trim()
 			checkDebugPropertyName(value, debugPropertyName)
 			subscribedItems.push('-' + value)
@@ -101,9 +108,14 @@ describe('common > main > rx > deep-subscribe > RuleBuilder', function() {
 
 		function testNonSubscribeProperties(object) {
 			for (const nonSubscribeProperty of nonSubscribeProperties) {
-				change(object, nonSubscribeProperty)
+				add(object, nonSubscribeProperty)
 				assert.deepStrictEqual(subscribedItems, [])
-				remove(object, nonSubscribeProperty)
+				if (change) {
+					change(object, nonSubscribeProperty)
+					assert.deepStrictEqual(subscribedItems, [])
+				}
+				remove(object, nonSubscribeProperty, true)
+				assert.deepStrictEqual(subscribedItems, [])
 				// if (object === observableObject) {
 				// 	assert.deepStrictEqual(subscribedItems, ['+undefined'])
 				// 	subscribedItems = []
@@ -111,7 +123,9 @@ describe('common > main > rx > deep-subscribe > RuleBuilder', function() {
 			}
 		}
 
-		for (let debugIteration = 0; debugIteration < 3; debugIteration++) {
+		let lastError
+
+		for (let debugIteration = 0; debugIteration < 2; debugIteration++) {
 			try {
 				// region Non Observable
 
@@ -123,16 +137,36 @@ describe('common > main > rx > deep-subscribe > RuleBuilder', function() {
 					unsubscribe = subscribe(nonObservableObject, true, subscribeItem, unsubscribeItem)
 					assert.ok(unsubscribe)
 					assert.strictEqual(typeof unsubscribe, 'function')
-					assert.deepStrictEqual(subscribedItems.sort(), subscribeProperties.map(o => '+value_' + o).sort())
+					assert.deepStrictEqual(subscribedItems, [])
 					subscribedItems = []
 					testNonSubscribeProperties(nonObservableObject)
 					for (const property of subscribeProperties) {
-						change(nonObservableObject, property)
+						add(nonObservableObject, property)
 						assert.deepStrictEqual(subscribedItems, [])
+
+						if (change) {
+							change(nonObservableObject, property)
+							assert.deepStrictEqual(subscribedItems, [])
+						}
 					}
 					testNonSubscribeProperties(nonObservableObject)
 					unsubscribe()
 					assert.deepStrictEqual(subscribedItems.sort(), subscribeProperties.map(o => '-value_' + o).sort())
+					subscribedItems = []
+
+					unsubscribe = subscribe(nonObservableObject, true, subscribeItem, unsubscribeItem)
+					assert.ok(unsubscribe)
+					assert.strictEqual(typeof unsubscribe, 'function')
+					assert.deepStrictEqual(subscribedItems.sort(), subscribeProperties.map(o => '+value_' + o).sort())
+					subscribedItems = []
+					testNonSubscribeProperties(nonObservableObject)
+					for (const property of subscribeProperties) {
+						remove(nonObservableObject, property, false)
+						assert.deepStrictEqual(subscribedItems, [])
+					}
+					testNonSubscribeProperties(nonObservableObject)
+					unsubscribe()
+					assert.deepStrictEqual(subscribedItems, [])
 					subscribedItems = []
 
 					unsubscribe = subscribe(nonObservableObject, false, subscribeItem, unsubscribeItem)
@@ -150,22 +184,31 @@ describe('common > main > rx > deep-subscribe > RuleBuilder', function() {
 					assert.strictEqual(typeof unsubscribe, 'function')
 					testNonSubscribeProperties(observableObject)
 					unsubscribe()
-					assert.deepStrictEqual(subscribedItems.sort(), subscribeProperties.map(o => '-value_' + o).sort())
+					assert.deepStrictEqual(subscribedItems, [])
 					subscribedItems = []
 
 					unsubscribe = subscribe(observableObject, true, subscribeItem, unsubscribeItem)
 					assert.ok(unsubscribe)
 					assert.strictEqual(typeof unsubscribe, 'function')
-					assert.deepStrictEqual(subscribedItems.sort(), subscribeProperties.map(o => '+value_' + o).sort())
+					assert.deepStrictEqual(subscribedItems, [])
 					subscribedItems = []
 					testNonSubscribeProperties(observableObject)
 					for (const property of subscribeProperties) {
-						change(observableObject, property)
+						add(observableObject, property)
 						assert.deepStrictEqual(subscribedItems, [
-							'-value_' + property,
+							'-undefined',
 							'+value_' + property,
 						])
 						subscribedItems = []
+
+						if (change) {
+							change(observableObject, property)
+							assert.deepStrictEqual(subscribedItems, [
+								'-value_' + property,
+								'+value_' + property,
+							])
+							subscribedItems = []
+						}
 					}
 					testNonSubscribeProperties(observableObject)
 					unsubscribe()
@@ -178,20 +221,53 @@ describe('common > main > rx > deep-subscribe > RuleBuilder', function() {
 					unsubscribe()
 					assert.deepStrictEqual(subscribedItems.sort(), subscribeProperties.map(o => '-value_' + o).sort())
 					subscribedItems = []
+
+					unsubscribe = subscribe(observableObject, true, subscribeItem, unsubscribeItem)
+					assert.ok(unsubscribe)
+					assert.strictEqual(typeof unsubscribe, 'function')
+					assert.deepStrictEqual(subscribedItems.sort(), subscribeProperties.map(o => '+value_' + o).sort())
+					subscribedItems = []
+					testNonSubscribeProperties(observableObject)
+					for (const property of subscribeProperties) {
+						remove(observableObject, property, false)
+						assert.deepStrictEqual(subscribedItems, [
+							'-value_' + property,
+							'+undefined',
+						])
+						subscribedItems = []
+					}
+					testNonSubscribeProperties(observableObject)
+					unsubscribe()
+					assert.deepStrictEqual(subscribedItems, [])
+					subscribedItems = []
 				}
 
 				// endregion
 			} catch (ex) {
-				if (debugIteration === 0) {
+				if (!lastError) {
 					console.log(ex)
+					lastError = ex
 				}
 			}
+		}
+
+		if (lastError) {
+			throw lastError
 		}
 	}
 
 	function testObject(properties: string | string[], subscribe: ISubscribeObject<any, string>) {
 		const builder = new ObservableObjectBuilder()
-			.writable(nonSubscribeProperty, null, 'value_' + nonSubscribeProperty)
+			// .writable(nonSubscribeProperty)
+
+		function add(object, property) {
+			if (object.propertyChanged) {
+				new ObservableObjectBuilder(object)
+					.writable(property, null, 'value_' + property)
+			} else {
+				change(object, property)
+			}
+		}
 
 		function change(object, property) {
 			object[property] = object[property]
@@ -199,8 +275,13 @@ describe('common > main > rx > deep-subscribe > RuleBuilder', function() {
 				: 'value_' + property
 		}
 
-		function remove(object, property) {
-			delete object[property]
+		function remove(object, property, isNonSubscribe) {
+			if (object.propertyChanged) {
+				new ObservableObjectBuilder(object)
+					.delete(property)
+			} else {
+				delete object[property]
+			}
 		}
 
 		testSubscribe(
@@ -208,25 +289,21 @@ describe('common > main > rx > deep-subscribe > RuleBuilder', function() {
 			{...builder.object},
 			builder.object,
 			subscribe,
-			[nonSubscribeProperty, ...(properties === ANY ? Object.keys(builder.object) : properties)],
+			[nonSubscribeProperty, ...properties],
 			properties === ANY
-				? Object.keys(builder.object)
-				: [],
+				? [nonSubscribeProperty, ...properties]
+				: properties as string[],
+			add,
 			change,
 			remove,
 		)
-
-		for (const property of properties) {
-			builder
-				.writable(property, null, 'value_' + property)
-		}
 
 		testSubscribe(
 			false,
 			Object.create({...builder.object}),
 			Object.create(builder.object),
 			subscribe,
-			[nonSubscribeProperty, ...(properties === ANY ? Object.keys(builder.object) : properties)],
+			[nonSubscribeProperty, ...properties],
 			[],
 			(object, property) => {
 				Object.defineProperty(object, property, {
@@ -235,22 +312,10 @@ describe('common > main > rx > deep-subscribe > RuleBuilder', function() {
 					value: 'value_' + property,
 				})
 			},
+			change,
 			(object, property) => {
 				delete object[property]
 			},
-		)
-
-		testSubscribe(
-			false,
-			{...builder.object},
-			builder.object,
-			subscribe,
-			[nonSubscribeProperty, ...(properties === ANY ? Object.keys(builder.object) : properties)],
-			properties === ANY
-				? Object.keys(builder.object)
-				: properties as string[],
-			change,
-			remove,
 		)
 	}
 
@@ -281,24 +346,8 @@ describe('common > main > rx > deep-subscribe > RuleBuilder', function() {
 			[nonSubscribeProperty, ...(properties === ANY ? Object.keys(object) : properties)],
 			properties === ANY
 				? Object.keys(object)
-				: [],
-			change,
-			remove,
-		)
-
-		for (const property of properties) {
-			object[property] = 'value_' + property
-		}
-
-		testSubscribe(
-			false,
-			object,
-			null,
-			subscribe,
-			[nonSubscribeProperty, ...(properties === ANY ? Object.keys(object) : properties)],
-			properties === ANY
-				? Object.keys(object)
 				: properties as string[],
+			change,
 			change,
 			remove,
 		)
@@ -309,6 +358,58 @@ describe('common > main > rx > deep-subscribe > RuleBuilder', function() {
 		const observableMap = new ObservableMap(new ObjectMap<string>())
 		map.set(nonSubscribeProperty, 'value_' + nonSubscribeProperty)
 		observableMap.set(nonSubscribeProperty, 'value_' + nonSubscribeProperty)
+
+		function change(object, property) {
+			object.set(property, object.get(property)
+				? object.get(property) + ' '
+				: 'value_' + property)
+		}
+
+		function remove(object, property) {
+			object.delete(property)
+		}
+
+		testSubscribe(
+			true,
+			map,
+			observableMap,
+			subscribe,
+			properties === ANY
+				? []
+				: [nonSubscribeProperty],
+			properties === ANY
+				? Array.from(map.keys())
+				: [],
+			change,
+			change,
+			remove,
+		)
+
+		for (const property of properties) {
+			map.set(property, 'value_' + property)
+			observableMap.set(property, 'value_' + property)
+		}
+
+		testSubscribe(
+			true,
+			map,
+			observableMap,
+			subscribe,
+			properties === ANY
+				? []
+				: [nonSubscribeProperty],
+			properties === ANY
+				? Array.from(map.keys())
+				: properties as string[],
+			change,
+			change,
+			remove,
+		)
+	}
+
+	function testSet(properties: string | string[], subscribe: ISubscribeObject<any, string>) {
+		const set = new ObjectSet()
+		const observableSet = new ObservableSet<string>(new ObjectSet())
 
 		function change(object, property) {
 			object.set(property, object.get(property)
