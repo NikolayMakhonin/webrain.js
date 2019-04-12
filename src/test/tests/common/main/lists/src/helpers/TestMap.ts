@@ -96,9 +96,7 @@ function assertMap<K, V>(map: ObservableMap<K, V>, expectedArray: Array<[K, V]>)
 }
 
 const staticMapInner = new Map()
-const staticMap = new ObservableMap({
-	map: staticMapInner,
-})
+const staticMap = new ObservableMap(staticMapInner)
 
 // class ObjectMapWrapper<V> implements Map<string, V> {
 // 	private readonly _object: { [key: string]: V }
@@ -166,9 +164,7 @@ export class TestMap<K, V> extends TestVariants<
 						mapInner.set(...item)
 					}
 
-					map = new ObservableMap({
-						map: mapInner,
-					})
+					map = new ObservableMap(mapInner)
 				}
 
 				const arrayReplicate = array.map(o => o.slice() as [K, V])

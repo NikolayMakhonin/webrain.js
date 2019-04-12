@@ -3,13 +3,13 @@ import {IMapChanged} from '../../../lists/contracts/IMapChanged'
 import {IPropertyChanged} from '../../../lists/contracts/IPropertyChanged'
 import {ISetChanged} from '../../../lists/contracts/ISetChanged'
 import {IUnsubscribe} from '../../subjects/subject'
-import {ANY} from '../contracts/constants'
+import {ANY, ANY_DISPLAY} from '../contracts/constants'
 
 interface ISubscribeChildOptions<TObject, TChild> {
 	object: TObject
-	propertyPredicate: (propertyName) => boolean
-	subscribeItem: (item: TChild) => void,
-	unsubscribeItem: (item: TChild) => void,
+	propertyPredicate: (propertyName, object) => boolean
+	subscribeItem: (item: TChild, debugPropertyName: string) => void,
+	unsubscribeItem: (item: TChild, debugPropertyName: string) => void,
 }
 
 type ISubscribeChilds<TObject, TChild>
@@ -30,13 +30,13 @@ function subscribeChildsObject<TValue>(
 		return
 	}
 
-	const any = propertyPredicate(ANY)
+	const any = propertyPredicate(ANY, object)
 
 	return propertyChanged
 		.subscribe(event => {
-			if (any || propertyPredicate(event.name)) {
-				unsubscribeItem(event.oldValue)
-				subscribeItem(event.newValue)
+			if (any || propertyPredicate(event.name, object)) {
+				unsubscribeItem(event.oldValue, event.name as string)
+				subscribeItem(event.newValue, event.name as string)
 			}
 		})
 }
@@ -58,7 +58,7 @@ function subscribeChildsList<TItem>(
 		return
 	}
 
-	if (!propertyPredicate(ANY)) {
+	if (!propertyPredicate(ANY, object)) {
 		return null
 	}
 
@@ -67,17 +67,17 @@ function subscribeChildsList<TItem>(
 			switch (type) {
 				case ListChangedType.Added:
 					for (let i = 0, len = newItems.length; i < len; i++) {
-						subscribeItem(newItems[i])
+						subscribeItem(newItems[i], ANY_DISPLAY)
 					}
 					break
 				case ListChangedType.Removed:
 					for (let i = 0, len = oldItems.length; i < len; i++) {
-						unsubscribeItem(oldItems[i])
+						unsubscribeItem(oldItems[i], ANY_DISPLAY)
 					}
 					break
 				case ListChangedType.Set:
-					unsubscribeItem(oldItems[0])
-					subscribeItem(newItems[0])
+					unsubscribeItem(oldItems[0], ANY_DISPLAY)
+					subscribeItem(newItems[0], ANY_DISPLAY)
 					break
 			}
 		})
@@ -100,17 +100,17 @@ function subscribeChildsSet<TItem>(
 		return
 	}
 
-	if (!propertyPredicate(ANY)) {
+	if (!propertyPredicate(ANY, object)) {
 		return null
 	}
 
 	return setChanged
 		.subscribe(({oldItems, newItems}) => {
 			for (let i = 0, len = oldItems.length; i < len; i++) {
-				unsubscribeItem(oldItems[i])
+				unsubscribeItem(oldItems[i], ANY_DISPLAY)
 			}
 			for (let i = 0, len = newItems.length; i < len; i++) {
-				subscribeItem(newItems[i])
+				subscribeItem(newItems[i], ANY_DISPLAY)
 			}
 		})
 }
@@ -132,14 +132,14 @@ function subscribeChildsMap<K, V>(
 		return
 	}
 
-	if (!propertyPredicate(ANY)) {
+	if (!propertyPredicate(ANY, object)) {
 		return null
 	}
 
 	return mapChanged
 		.subscribe(({key, oldValue, newValue}) => {
-			unsubscribeItem([key, oldValue])
-			subscribeItem([key, newValue])
+			unsubscribeItem([key, oldValue], key as unknown as string)
+			subscribeItem([key, newValue], key as unknown as string)
 		})
 }
 

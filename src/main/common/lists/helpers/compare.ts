@@ -1,6 +1,6 @@
 /* tslint:disable:use-isnan */
 import './object-unique-id'
-import {UNIQUE_ID_PROPERTY_NAME} from "./object-unique-id";
+import {getObjectUniqueId} from './object-unique-id'
 
 export function compareFast(o1, o2): number {
 	if (o1 === o2) {
@@ -45,8 +45,8 @@ export function compareFast(o1, o2): number {
 			return -1
 		}
 
-		o1 = o1[UNIQUE_ID_PROPERTY_NAME]
-		o2 = o2[UNIQUE_ID_PROPERTY_NAME]
+		o1 = getObjectUniqueId(o1)
+		o2 = getObjectUniqueId(o2)
 		if (o1 > o2) {
 			return 1
 		}
@@ -104,8 +104,8 @@ export function compareStrict(o1, o2): number {
 			return -1
 		}
 
-		o1 = o1[UNIQUE_ID_PROPERTY_NAME]
-		o2 = o2[UNIQUE_ID_PROPERTY_NAME]
+		o1 = getObjectUniqueId(o1)
+		o2 = getObjectUniqueId(o2)
 		if (o1 > o2) {
 			return 1
 		}

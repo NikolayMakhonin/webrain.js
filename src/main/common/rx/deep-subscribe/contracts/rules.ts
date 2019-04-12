@@ -1,5 +1,7 @@
+import {IUnsubscribe} from '../../subjects/subject'
+
 export enum RuleType {
-	Property,
+	Action,
 	Any,
 	Repeat,
 }
@@ -12,7 +14,7 @@ export interface IRule {
 
 export interface IRuleProperty extends IRule {
 	readonly predicate: (propertyName: string, object) => boolean
-	readonly iterateObject: (object) => Iterable<any>
+	readonly forEachChilds: (object: any, callbackfn: (propertyName: string, value) => void) => void
 }
 
 export interface IRuleAny extends IRule {

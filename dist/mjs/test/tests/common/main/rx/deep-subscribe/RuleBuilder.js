@@ -1,11 +1,15 @@
+import _typeof from "@babel/runtime/helpers/typeof";
+import _defineProperty from "@babel/runtime/helpers/defineProperty";
 import _objectSpread from "@babel/runtime/helpers/objectSpread";
 
-/* tslint:disable:no-shadowed-variable */
+/* tslint:disable:no-shadowed-variable no-duplicate-string */
 
 /* eslint-disable no-useless-escape,computed-property-spacing */
 import { RuleType } from '../../../../../../main/common/rx/deep-subscribe/contracts/rules';
 import { RuleBuilder } from '../../../../../../main/common/rx/deep-subscribe/RuleBuilder';
+import { ANY } from "../../../../../../main/common/rx/deep-subscribe/contracts/constants";
 describe('common > main > rx > deep-subscribe > RuleBuilder', function () {
+  // noinspection JSUnusedLocalSymbols
   function checkType(builder) {
     return true;
   }
@@ -19,6 +23,7 @@ describe('common > main > rx > deep-subscribe > RuleBuilder', function () {
     rule = _objectSpread({}, rule);
     expected = _objectSpread({}, expected);
     delete rule.predicate;
+    delete rule.iterateObject;
     delete rule.next;
     delete rule.rule;
     delete rule.rules;
@@ -37,18 +42,31 @@ describe('common > main > rx > deep-subscribe > RuleBuilder', function () {
 
     assertRuleParams(rule, expected);
 
+    var object = _defineProperty({}, Math.random().toString(36), Math.random().toString(36));
+
+    var objectChild = Object.create(object);
+
     if (!expected.predicate) {
       assert.strictEqual(rule.predicate, undefined);
+      assert.strictEqual(rule.iterateObject, undefined);
     } else {
-      assert.strictEqual(rule.predicate(Math.random().toString(36), null), false);
+      var expectedPredicates = expected.predicate;
+
+      if (expectedPredicates === ANY) {
+        expectedPredicates = Object.keys(object);
+      } // test predicate
+
+
+      assert.strictEqual(rule.predicate(Math.random().toString(36), object), false);
+      assert.strictEqual(rule.predicate(Math.random().toString(36), objectChild), false);
       var _iteratorNormalCompletion = true;
       var _didIteratorError = false;
       var _iteratorError = undefined;
 
       try {
-        for (var _iterator = expected.predicate[Symbol.iterator](), _step; !(_iteratorNormalCompletion = (_step = _iterator.next()).done); _iteratorNormalCompletion = true) {
+        for (var _iterator = expectedPredicates[Symbol.iterator](), _step; !(_iteratorNormalCompletion = (_step = _iterator.next()).done); _iteratorNormalCompletion = true) {
           var expectedPredicate = _step.value;
-          assert.strictEqual(rule.predicate(expectedPredicate, null), true, expectedPredicate);
+          object[expectedPredicate] = 'value_' + expectedPredicate;
         }
       } catch (err) {
         _didIteratorError = true;
@@ -64,6 +82,38 @@ describe('common > main > rx > deep-subscribe > RuleBuilder', function () {
           }
         }
       }
+
+      var _iteratorNormalCompletion2 = true;
+      var _didIteratorError2 = false;
+      var _iteratorError2 = undefined;
+
+      try {
+        for (var _iterator2 = expectedPredicates[Symbol.iterator](), _step2; !(_iteratorNormalCompletion2 = (_step2 = _iterator2.next()).done); _iteratorNormalCompletion2 = true) {
+          var _expectedPredicate = _step2.value;
+          assert.strictEqual(rule.predicate(_expectedPredicate, object), true, _expectedPredicate);
+          assert.strictEqual(rule.predicate(_expectedPredicate, objectChild), false, _expectedPredicate);
+        } // test iterateObject
+
+      } catch (err) {
+        _didIteratorError2 = true;
+        _iteratorError2 = err;
+      } finally {
+        try {
+          if (!_iteratorNormalCompletion2 && _iterator2.return != null) {
+            _iterator2.return();
+          }
+        } finally {
+          if (_didIteratorError2) {
+            throw _iteratorError2;
+          }
+        }
+      }
+
+      assert.strictEqual(_typeof(rule.iterateObject), 'function');
+      assert.deepStrictEqual(Array.from(rule.iterateObject(object)).sort(), expectedPredicates.map(function (o) {
+        return 'value_' + o;
+      }).sort());
+      assert.deepStrictEqual(Array.from(rule.iterateObject(objectChild)), []);
     }
 
     _assertRule(rule.next, expected.next);
@@ -155,48 +205,179 @@ describe('common > main > rx > deep-subscribe > RuleBuilder', function () {
   });
   it('property', function () {
     var builder = new RuleBuilder();
+    assert.strictEqual(builder.rule, undefined); // @ts-ignore
+
+    assert.throws(function () {
+      return builder.propertyRegexp();
+    }, Error); // @ts-ignore
+
+    assert.throws(function () {
+      return builder.propertyRegexp('string');
+    }, Error);
+    assert.throws(function () {
+      return builder.propertyRegexp(null);
+    }, Error); // @ts-ignore
+
+    assert.throws(function () {
+      return builder.propertyPredicate();
+    }, Error); // @ts-ignore
+
+    assert.throws(function () {
+      return builder.propertyPredicate('string');
+    }, Error);
+    assert.throws(function () {
+      return builder.propertyPredicate(null, 'description');
+    }, Error);
     assert.strictEqual(builder.rule, undefined);
-    var builder1 = builder.property(function (name) {
-      return /prop1|prop2/.test(name);
-    });
+    var builder1 = builder.propertyRegexp(/prop1|prop2/);
     var rule1 = builder1.rule;
     assert.strictEqual(builder1, builder);
     assertRule(rule1, {
       type: RuleType.Property,
-      predicate: ['prop1', 'prop2']
+      predicate: ['prop1', 'prop2'],
+      description: '/prop1|prop2/'
     });
-    var builder2 = builder.property(function (name) {
-      return /prop2|prop3/.test(name);
-    });
+    var builder2 = builder.propertyRegexp(/prop2|prop3/);
     checkType(builder2);
     assert.strictEqual(builder2, builder);
     assert.strictEqual(builder2.rule, rule1);
     assertRule(rule1, {
       type: RuleType.Property,
       predicate: ['prop1', 'prop2'],
+      description: '/prop1|prop2/',
       next: {
         type: RuleType.Property,
-        predicate: ['prop2', 'prop3']
+        predicate: ['prop2', 'prop3'],
+        description: '/prop2|prop3/'
       }
     });
-    var builder3 = builder.property(function (name) {
-      return /prop3|prop4/.test(name);
-    });
+    var builder3 = builder.propertyRegexp(/prop3|prop4/);
     checkType(builder3);
     assert.strictEqual(builder3, builder);
     assert.strictEqual(builder3.rule, rule1);
     assertRule(rule1, {
       type: RuleType.Property,
       predicate: ['prop1', 'prop2'],
+      description: '/prop1|prop2/',
       next: {
         type: RuleType.Property,
         predicate: ['prop2', 'prop3'],
+        description: '/prop2|prop3/',
         next: {
           type: RuleType.Property,
-          predicate: ['prop3', 'prop4']
+          predicate: ['prop3', 'prop4'],
+          description: '/prop3|prop4/'
         }
       }
+    }); // noinspection JSUnusedLocalSymbols
+
+    var rule3 = builder3.rule.next.next;
+  });
+  it('propertyAll', function () {
+    var builder = new RuleBuilder();
+    assert.strictEqual(builder.rule, undefined);
+    var builder1 = builder.propertyAll();
+    var rule1 = builder1.rule;
+    assert.strictEqual(builder1, builder);
+    assertRule(rule1, {
+      type: RuleType.Property,
+      predicate: ANY,
+      description: '*'
     });
+    var builder2 = builder.propertyNames(ANY);
+    checkType(builder2);
+    assert.strictEqual(builder2, builder);
+    assert.strictEqual(builder2.rule, rule1);
+    assertRule(rule1, {
+      type: RuleType.Property,
+      predicate: ANY,
+      description: '*',
+      next: {
+        type: RuleType.Property,
+        predicate: ANY,
+        description: '*'
+      }
+    });
+    var builder3 = builder.propertyNames('prop1', ANY, 'prop2');
+    checkType(builder3);
+    assert.strictEqual(builder3, builder);
+    assert.strictEqual(builder3.rule, rule1);
+    assertRule(rule1, {
+      type: RuleType.Property,
+      predicate: ANY,
+      description: '*',
+      next: {
+        type: RuleType.Property,
+        predicate: ANY,
+        description: '*',
+        next: {
+          type: RuleType.Property,
+          predicate: ANY,
+          description: '*'
+        }
+      }
+    }); // noinspection JSUnusedLocalSymbols
+
+    var rule3 = builder3.rule.next.next;
+  });
+  it('propertyNames', function () {
+    var builder = new RuleBuilder();
+    assert.strictEqual(builder.rule, undefined);
+    assert.throws(function () {
+      return builder.propertyNames();
+    }, Error);
+    assert.throws(function () {
+      return builder.propertyNames(true);
+    }, Error);
+    assert.throws(function () {
+      return builder.propertyNames(true, true);
+    }, Error);
+    assert.throws(function () {
+      return builder.propertyNames('prop1', true);
+    }, Error);
+    assert.strictEqual(builder.rule, undefined);
+    var builder1 = builder.propertyNames('prop1');
+    var rule1 = builder1.rule;
+    assert.strictEqual(builder1, builder);
+    assertRule(rule1, {
+      type: RuleType.Property,
+      predicate: ['prop1'],
+      description: 'prop1'
+    });
+    var builder2 = builder.propertyNames('prop2', 'prop3');
+    checkType(builder2);
+    assert.strictEqual(builder2, builder);
+    assert.strictEqual(builder2.rule, rule1);
+    assertRule(rule1, {
+      type: RuleType.Property,
+      predicate: ['prop1'],
+      description: 'prop1',
+      next: {
+        type: RuleType.Property,
+        predicate: ['prop2', 'prop3'],
+        description: 'prop2|prop3'
+      }
+    });
+    var builder3 = builder.propertyNames('prop3', 'prop4', 'prop5');
+    checkType(builder3);
+    assert.strictEqual(builder3, builder);
+    assert.strictEqual(builder3.rule, rule1);
+    assertRule(rule1, {
+      type: RuleType.Property,
+      predicate: ['prop1'],
+      description: 'prop1',
+      next: {
+        type: RuleType.Property,
+        predicate: ['prop2', 'prop3'],
+        description: 'prop2|prop3',
+        next: {
+          type: RuleType.Property,
+          predicate: ['prop3', 'prop4', 'prop5'],
+          description: 'prop3|prop4|prop5'
+        }
+      }
+    }); // noinspection JSUnusedLocalSymbols
+
     var rule3 = builder3.rule.next.next;
   });
   it('repeat', function () {

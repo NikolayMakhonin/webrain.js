@@ -1,134 +1,170 @@
-import {ANY} from './contracts/constants'
+import {ANY, ANY_DISPLAY, COLLECTION_PREFIX} from './contracts/constants'
+import {IRuleSubscribe} from './contracts/rule-subscribe'
 import {IRule, IRuleAny, IRuleProperty, IRuleRepeat, RuleType} from './contracts/rules'
 import {getFuncPropertiesPath} from './helpers/func-properties-path'
+import {RuleSubscribeCollection, RuleSubscribeMap, RuleSubscribeObject} from './RuleSubscribe'
+
+const RuleSubscribeObjectPropertyNames = RuleSubscribeObject.bind(null, null)
+const RuleSubscribeMapKeys = RuleSubscribeMap.bind(null, null)
 
 export class RuleBuilder<TObject> {
 	public rule: IRule
 	private _ruleLast: IRule
 
-	private _property<TValue>(rule: IRuleProperty) {
+	public subscribe<TValue>(ruleSubscribe: IRuleSubscribe<TObject, TValue>, description: string) {
 		const {_ruleLast: ruleLast} = this
 
-		if (ruleLast) {
-			ruleLast.next = rule
-		} else {
-			this.rule = rule
+		if (description) {
+			ruleSubscribe.description = description
 		}
 
-		this._ruleLast = rule
+		if (ruleLast) {
+			ruleLast.next = ruleSubscribe
+		} else {
+			this.rule = ruleSubscribe
+		}
+
+		this._ruleLast = ruleSubscribe
 
 		return this as unknown as RuleBuilder<TValue>
 	}
 
-	public propertyRegexp<TValue>(regexp: RegExp) {
-		return this.propertyPredicate<TValue>(regexp.test, regexp.toString())
+	/**
+	 * Object property, Array index
+	 */
+	public propertyName<TValue>(propertyName: string): RuleBuilder<TValue> {
+		return this.subscribe(
+			new RuleSubscribeObjectPropertyNames(propertyName),
+			propertyName,
+		)
 	}
 
+	/**
+	 * Object property, Array index
+	 */
+	public propertyNames<TValue>(...propertiesNames: string[]): RuleBuilder<TValue> {
+		return this.subscribe(
+			new RuleSubscribeObjectPropertyNames(...propertiesNames),
+			propertiesNames.join('|'),
+		)
+	}
+
+	/**
+	 * Object property, Array index
+	 */
+	public propertyAll<TValue>(): RuleBuilder<TValue> {
+		return this.subscribe(
+			new RuleSubscribeObject(),
+			ANY_DISPLAY,
+		)
+	}
+
+	/**
+	 * Object property, Array index
+	 */
 	public propertyPredicate<TValue>(
 		predicate: (propertyName: string, object) => boolean,
 		description: string,
 	): RuleBuilder<TValue> {
-		return this._property<TValue>({
-			type: RuleType.Property,
-			predicate(propertyName, object) {
-				return Object.prototype.hasOwnProperty.call(object, propertyName)
-					&& predicate(propertyName, object)
-			},
-			*iterateObject(object) {
-				for (const key in object) {
-					if (Object.prototype.hasOwnProperty.call(object, key)
-						&& predicate(key, object)
-					) {
-						yield object[key]
-					}
-				}
-			},
+		return this.subscribe(
+			new RuleSubscribeObject(predicate),
 			description,
-		})
+		)
 	}
 
-	public propertyAll<TValue>(): RuleBuilder<TValue> {
-		return this._property<TValue>({
-			type: RuleType.Property,
-			predicate(propertyName, object) {
-				return Object.prototype.hasOwnProperty.call(object, propertyName)
-			},
-			*iterateObject(object) {
-				for (const key in object) {
-					if (Object.prototype.hasOwnProperty.call(object, key)) {
-						yield object[key]
-					}
-				}
-			},
-			description: '*',
-		})
+	/**
+	 * Object property, Array index
+	 */
+	public propertyRegexp<TValue>(regexp: RegExp) {
+		if (!(regexp instanceof RegExp)) {
+			throw new Error(`regexp (${regexp}) is not instance of RegExp`)
+		}
+
+		return this.propertyPredicate<TValue>(
+			name => regexp.test(name),
+			regexp.toString(),
+		)
 	}
 
-	public propertyName<TValue>(propertyName: string): RuleBuilder<TValue> {
-		return this._property<TValue>({
-			type: RuleType.Property,
-			predicate(propName, object) {
-				return propName === propertyName
-					&& Object.prototype.hasOwnProperty.call(object, propertyName)
-			},
-			*iterateObject(object) {
-				for (const propName in object) {
-					if (propName === propertyName
-						&& Object.prototype.hasOwnProperty.call(object, propertyName)
-					) {
-						yield object[propertyName]
-					}
-				}
-			},
-			description: propertyName,
-		})
+	/**
+	 * IListChanged & Iterable, ISetChanged & Iterable, IMapChanged & Iterable, Iterable
+	 */
+	public collection<TValue>(): RuleBuilder<TValue> {
+		return this.subscribe(
+			new RuleSubscribeCollection<any, TValue>(),
+			COLLECTION_PREFIX,
+		)
 	}
 
-	public propertyNames<TValue>(...propertiesNames: string[]): RuleBuilder<TValue> {
-		if (propertiesNames.length === 1) {
-			return this.propertyName(propertiesNames[1])
+	/**
+	 * IMapChanged & Map, Map
+	 */
+	public mapKey<TKey, TValue>(key: TKey): RuleBuilder<TValue> {
+		return this.subscribe(
+			new RuleSubscribeMapKeys(key),
+			COLLECTION_PREFIX + key,
+		)
+	}
+
+	/**
+	 * IMapChanged & Map, Map
+	 */
+	public mapKeys<TKey, TValue>(...keys: TKey[]): RuleBuilder<TValue> {
+		return this.subscribe(
+			new RuleSubscribeMapKeys(...keys),
+			COLLECTION_PREFIX + keys.join('|'),
+		)
+	}
+
+	/**
+	 * IMapChanged & Map, Map
+	 */
+	public mapAll<TValue>(): RuleBuilder<TValue> {
+		return this.subscribe(
+			new RuleSubscribeMap() as any,
+			COLLECTION_PREFIX,
+		)
+	}
+
+	/**
+	 * IMapChanged & Map, Map
+	 */
+	public mapPredicate<TKey, TValue>(
+		keyPredicate: (key: TKey, object) => boolean,
+		description: string,
+	): RuleBuilder<TValue> {
+		return this.subscribe(
+			new RuleSubscribeMap(keyPredicate) as any,
+			description,
+		)
+	}
+
+	/**
+	 * IMapChanged & Map, Map
+	 */
+	public mapRegexp<TValue>(keyRegexp: RegExp) {
+		if (!(keyRegexp instanceof RegExp)) {
+			throw new Error(`keyRegexp (${keyRegexp}) is not instance of RegExp`)
 		}
 
-		if (propertiesNames.length === 0) {
-			throw new Error('propertiesNames is empty')
-		}
-
-		let properties
-		for (let i = 0, len = propertiesNames.length; i < len; i++) {
-			const propertiesName = propertiesNames[i]
-			if (propertiesName === ANY) {
-				return this.propertyAll()
-			}
-			if (!properties) {
-				properties = {
-					[propertiesNames[i]]: true,
-				}
-			} else {
-				properties[propertiesNames[i]] = true
-			}
-		}
-
-		return this._property<TValue>({
-			type: RuleType.Property,
-			predicate(propertyName, object) {
-				return properties[propertyName]
-					&& Object.prototype.hasOwnProperty.call(object, propertyName)
-			},
-			*iterateObject(object) {
-				for (let i = 0, len = propertiesNames.length; i < len; i++) {
-					const propertyName = propertiesNames[i]
-					if (Object.prototype.hasOwnProperty.call(object, propertyName)) {
-						yield object[propertyName]
-					}
-				}
-			},
-			description: propertiesNames.join('|'),
-		})
+		return this.mapPredicate<string | number, TValue>(
+			name => keyRegexp.test(name as string),
+			keyRegexp.toString(),
+		)
 	}
 
 	public path<TValue>(getValueFunc: (o: TObject) => TValue): RuleBuilder<TValue> {
-		for (const propertyName of getFuncPropertiesPath(getValueFunc)) {
-			this.propertyName(propertyName)
+		for (const propertyNames of getFuncPropertiesPath(getValueFunc)) {
+			if (!propertyNames.startsWith(COLLECTION_PREFIX)) {
+				this.propertyNames(...propertyNames.split('|'))
+			} else {
+				const keys = propertyNames.substring(1)
+				if (keys === ANY) {
+					this.collection()
+				} else {
+					this.mapKeys(...keys.split('|'))
+				}
+			}
 		}
 
 		return this as unknown as RuleBuilder<TValue>

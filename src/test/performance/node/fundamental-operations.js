@@ -2,6 +2,12 @@
 
 import {calcPerformance} from 'rdtsc'
 import {binarySearch} from '../../../main/common/lists/helpers/array'
+import {getObjectUniqueId} from '../../../main/common/lists/helpers/object-unique-id'
+import {SortedList} from '../../../main/common/lists/SortedList'
+import {ArraySet} from '../../../main/common/lists/ArraySet'
+
+const SetNative = Set
+require('./src/SetPolyfill')
 
 export function compareDefault(o1, o2) {
 	if (o1 > o2) {
@@ -699,7 +705,7 @@ describe('fundamental-operations', function () {
 		console.log(result)
 	})
 
-	it('regexp', function () {
+	xit('regexp', function () {
 		this.timeout(300000)
 
 		const regexp = /qwe\/wer\/ert\/rty\/tyu/
@@ -718,6 +724,117 @@ describe('fundamental-operations', function () {
 			() => wrongPath.match(regexp),
 			() => regexp.test(path),
 			() => path.match(regexp)
+		)
+
+		console.log(result)
+	})
+
+	it('Set', function () {
+		this.timeout(300000)
+
+		assert.strictEqual(SetNative, Set)
+		assert.notStrictEqual(Set, SetPolyfill)
+
+		const objects = []
+		for (let i = 0; i < 100; i++) {
+			objects[i] = {value: i}
+			getObjectUniqueId(objects[i])
+		}
+
+		function testSet(addObject, removeObject, getIterableValues) {
+			for (let i = 0; i < 100; i++) {
+				addObject(objects[i])
+			}
+			for (let i = 99; i >= 0; i--) {
+				removeObject(objects[i])
+			}
+			for(const value of getIterableValues()) {
+
+			}
+		}
+
+		// const set1 = new Set()
+		// const set2 = {}
+		// const set3 = []
+
+		function testSetNative() {
+			const set = new SetNative()
+			testSet(
+				o => set.add(o),
+				o => set.delete(o),
+				() => set
+			)
+			// assert.strictEqual(set1.size, 0)
+		}
+
+		function testObject() {
+			const set = {}
+			testSet(
+				o => (set[getObjectUniqueId(o)] = o),
+				o => delete set[getObjectUniqueId(o)],
+				o => Object.values(set)
+			)
+			// assert.strictEqual(Object.keys(set).length, 0)
+		}
+
+		function testArray() {
+			const set = []
+			testSet(
+				o => (set[getObjectUniqueId(o)] = o),
+				o => delete set[getObjectUniqueId(o)],
+				o => set
+			)
+			// assert.strictEqual(set.length, 0)
+		}
+
+		function testSortedList() {
+			const set = new SortedList({
+				autoSort      : true,
+				notAddIfExists: true,
+				minAllocatedSize: 1000
+			})
+			testSet(
+				o => set.add(o),
+				o => set.remove(o),
+				o => set
+			)
+			// set.clear()
+			// assert.strictEqual(set.size, 0)
+		}
+
+		function testSetPolyfill() {
+			console.log(SetPolyfill.toString())
+			const set = new SetPolyfill()
+			testSet(
+				o => set.add(o),
+				o => set.delete(o),
+				o => set
+			)
+			// assert.strictEqual(set.size, 0)
+		}
+
+		function testArraySet() {
+			console.log(ArraySet.toString())
+			const set = new ArraySet()
+			testSet(
+				o => set.add(o),
+				o => set.delete(o),
+				o => set
+			)
+			// assert.strictEqual(set.size, 0)
+		}
+
+		const result = calcPerformance(
+			10000,
+			() => {
+				// no operations
+			},
+			testSetNative,
+			testObject,
+			testArray,
+			// testSortedList,
+			testSetPolyfill,
+			testArraySet
 		)
 
 		console.log(result)

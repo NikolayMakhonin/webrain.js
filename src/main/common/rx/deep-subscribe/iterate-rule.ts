@@ -16,7 +16,7 @@ export function *iterateRule(rule: IRule, next: () => IRuleIterable = null): IRu
 	const nextRule = () => iterateRule(rule.next, next)
 
 	switch (rule.type) {
-		case RuleType.Property:
+		case RuleType.Action:
 			yield rule
 			yield* nextRule()
 			break

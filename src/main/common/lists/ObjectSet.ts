@@ -37,13 +37,8 @@ export class ObjectSet implements Set<string | number> {
 		return Object.keys(this._object).length
 	}
 
-	public *[Symbol.iterator](): IterableIterator<string | number> {
-		const {_object} = this
-		for (const value in _object) {
-			if (Object.prototype.hasOwnProperty.call(_object, value)) {
-				yield value
-			}
-		}
+	public [Symbol.iterator](): IterableIterator<string | number> {
+		return Object.keys(this._object)[Symbol.iterator]()
 	}
 
 	public *entries(): IterableIterator<[string | number, string | number]> {
@@ -72,10 +67,10 @@ export class ObjectSet implements Set<string | number> {
 	}
 
 	public keys(): IterableIterator<string | number> {
-		return Object.keys(this._object)[Symbol.iterator]()
+		return this[Symbol.iterator]()
 	}
 
 	public values(): IterableIterator<string | number> {
-		return Object.keys(this._object)[Symbol.iterator]()
+		return this[Symbol.iterator]()
 	}
 }

@@ -4,11 +4,11 @@ import {ISetOptions, ObservableObject} from './ObservableObject'
 export class ObservableObjectBuilder {
 	public object: ObservableObject
 
-	constructor(object: ObservableObject) {
+	constructor(object?: ObservableObject) {
 		this.object = object || new ObservableObject()
 	}
 
-	public writable(name: string | number, options: ISetOptions, initValue): this {
+	public writable(name: string | number, options?: ISetOptions, initValue?): this {
 		if (!options) {
 			options = {}
 		}

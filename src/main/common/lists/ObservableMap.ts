@@ -4,11 +4,9 @@ import {IObservableMap, MapChangedType} from './contracts/IMapChanged'
 export class ObservableMap<K, V> extends MapChangedObject<K, V> implements IObservableMap<K, V> {
 	private readonly _map: Map<K, V>
 
-	constructor({
-		map,
-	}: {
+	constructor(
 		map?: Map<K, V>,
-	} = {}) {
+	) {
 		super()
 		this._map = map || new Map<K, V>()
 	}

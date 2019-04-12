@@ -4,10 +4,13 @@ var _rules = require("../../../../../../main/common/rx/deep-subscribe/contracts/
 
 var _RuleBuilder = require("../../../../../../main/common/rx/deep-subscribe/RuleBuilder");
 
-/* tslint:disable:no-shadowed-variable */
+var _constants = require("../../../../../../main/common/rx/deep-subscribe/contracts/constants");
+
+/* tslint:disable:no-shadowed-variable no-duplicate-string */
 
 /* eslint-disable no-useless-escape,computed-property-spacing */
 describe('common > main > rx > deep-subscribe > RuleBuilder', function () {
+  // noinspection JSUnusedLocalSymbols
   function checkType(builder) {
     return true;
   }
@@ -23,6 +26,7 @@ describe('common > main > rx > deep-subscribe > RuleBuilder', function () {
     expected = { ...expected
     };
     delete rule.predicate;
+    delete rule.iterateObject;
     delete rule.next;
     delete rule.rule;
     delete rule.rules;
@@ -40,15 +44,38 @@ describe('common > main > rx > deep-subscribe > RuleBuilder', function () {
     }
 
     assertRuleParams(rule, expected);
+    const object = {
+      [Math.random().toString(36)]: Math.random().toString(36)
+    };
+    const objectChild = Object.create(object);
 
     if (!expected.predicate) {
       assert.strictEqual(rule.predicate, undefined);
+      assert.strictEqual(rule.iterateObject, undefined);
     } else {
-      assert.strictEqual(rule.predicate(Math.random().toString(36), null), false);
+      let expectedPredicates = expected.predicate;
 
-      for (const expectedPredicate of expected.predicate) {
-        assert.strictEqual(rule.predicate(expectedPredicate, null), true, expectedPredicate);
+      if (expectedPredicates === _constants.ANY) {
+        expectedPredicates = Object.keys(object);
+      } // test predicate
+
+
+      assert.strictEqual(rule.predicate(Math.random().toString(36), object), false);
+      assert.strictEqual(rule.predicate(Math.random().toString(36), objectChild), false);
+
+      for (const expectedPredicate of expectedPredicates) {
+        object[expectedPredicate] = 'value_' + expectedPredicate;
       }
+
+      for (const expectedPredicate of expectedPredicates) {
+        assert.strictEqual(rule.predicate(expectedPredicate, object), true, expectedPredicate);
+        assert.strictEqual(rule.predicate(expectedPredicate, objectChild), false, expectedPredicate);
+      } // test iterateObject
+
+
+      assert.strictEqual(typeof rule.iterateObject, 'function');
+      assert.deepStrictEqual(Array.from(rule.iterateObject(object)).sort(), expectedPredicates.map(o => 'value_' + o).sort());
+      assert.deepStrictEqual(Array.from(rule.iterateObject(objectChild)), []);
     }
 
     _assertRule(rule.next, expected.next);
@@ -134,42 +161,159 @@ describe('common > main > rx > deep-subscribe > RuleBuilder', function () {
   });
   it('property', function () {
     const builder = new _RuleBuilder.RuleBuilder();
+    assert.strictEqual(builder.rule, undefined); // @ts-ignore
+
+    assert.throws(() => builder.propertyRegexp(), Error); // @ts-ignore
+
+    assert.throws(() => builder.propertyRegexp('string'), Error);
+    assert.throws(() => builder.propertyRegexp(null), Error); // @ts-ignore
+
+    assert.throws(() => builder.propertyPredicate(), Error); // @ts-ignore
+
+    assert.throws(() => builder.propertyPredicate('string'), Error);
+    assert.throws(() => builder.propertyPredicate(null, 'description'), Error);
     assert.strictEqual(builder.rule, undefined);
-    const builder1 = builder.property(name => /prop1|prop2/.test(name));
+    const builder1 = builder.propertyRegexp(/prop1|prop2/);
     const rule1 = builder1.rule;
     assert.strictEqual(builder1, builder);
     assertRule(rule1, {
       type: _rules.RuleType.Property,
-      predicate: ['prop1', 'prop2']
+      predicate: ['prop1', 'prop2'],
+      description: '/prop1|prop2/'
     });
-    const builder2 = builder.property(name => /prop2|prop3/.test(name));
+    const builder2 = builder.propertyRegexp(/prop2|prop3/);
     checkType(builder2);
     assert.strictEqual(builder2, builder);
     assert.strictEqual(builder2.rule, rule1);
     assertRule(rule1, {
       type: _rules.RuleType.Property,
       predicate: ['prop1', 'prop2'],
+      description: '/prop1|prop2/',
       next: {
         type: _rules.RuleType.Property,
-        predicate: ['prop2', 'prop3']
+        predicate: ['prop2', 'prop3'],
+        description: '/prop2|prop3/'
       }
     });
-    const builder3 = builder.property(name => /prop3|prop4/.test(name));
+    const builder3 = builder.propertyRegexp(/prop3|prop4/);
     checkType(builder3);
     assert.strictEqual(builder3, builder);
     assert.strictEqual(builder3.rule, rule1);
     assertRule(rule1, {
       type: _rules.RuleType.Property,
       predicate: ['prop1', 'prop2'],
+      description: '/prop1|prop2/',
       next: {
         type: _rules.RuleType.Property,
         predicate: ['prop2', 'prop3'],
+        description: '/prop2|prop3/',
         next: {
           type: _rules.RuleType.Property,
-          predicate: ['prop3', 'prop4']
+          predicate: ['prop3', 'prop4'],
+          description: '/prop3|prop4/'
         }
       }
+    }); // noinspection JSUnusedLocalSymbols
+
+    const rule3 = builder3.rule.next.next;
+  });
+  it('propertyAll', function () {
+    const builder = new _RuleBuilder.RuleBuilder();
+    assert.strictEqual(builder.rule, undefined);
+    const builder1 = builder.propertyAll();
+    const rule1 = builder1.rule;
+    assert.strictEqual(builder1, builder);
+    assertRule(rule1, {
+      type: _rules.RuleType.Property,
+      predicate: _constants.ANY,
+      description: '*'
     });
+    const builder2 = builder.propertyNames(_constants.ANY);
+    checkType(builder2);
+    assert.strictEqual(builder2, builder);
+    assert.strictEqual(builder2.rule, rule1);
+    assertRule(rule1, {
+      type: _rules.RuleType.Property,
+      predicate: _constants.ANY,
+      description: '*',
+      next: {
+        type: _rules.RuleType.Property,
+        predicate: _constants.ANY,
+        description: '*'
+      }
+    });
+    const builder3 = builder.propertyNames('prop1', _constants.ANY, 'prop2');
+    checkType(builder3);
+    assert.strictEqual(builder3, builder);
+    assert.strictEqual(builder3.rule, rule1);
+    assertRule(rule1, {
+      type: _rules.RuleType.Property,
+      predicate: _constants.ANY,
+      description: '*',
+      next: {
+        type: _rules.RuleType.Property,
+        predicate: _constants.ANY,
+        description: '*',
+        next: {
+          type: _rules.RuleType.Property,
+          predicate: _constants.ANY,
+          description: '*'
+        }
+      }
+    }); // noinspection JSUnusedLocalSymbols
+
+    const rule3 = builder3.rule.next.next;
+  });
+  it('propertyNames', function () {
+    const builder = new _RuleBuilder.RuleBuilder();
+    assert.strictEqual(builder.rule, undefined);
+    assert.throws(() => builder.propertyNames(), Error);
+    assert.throws(() => builder.propertyNames(true), Error);
+    assert.throws(() => builder.propertyNames(true, true), Error);
+    assert.throws(() => builder.propertyNames('prop1', true), Error);
+    assert.strictEqual(builder.rule, undefined);
+    const builder1 = builder.propertyNames('prop1');
+    const rule1 = builder1.rule;
+    assert.strictEqual(builder1, builder);
+    assertRule(rule1, {
+      type: _rules.RuleType.Property,
+      predicate: ['prop1'],
+      description: 'prop1'
+    });
+    const builder2 = builder.propertyNames('prop2', 'prop3');
+    checkType(builder2);
+    assert.strictEqual(builder2, builder);
+    assert.strictEqual(builder2.rule, rule1);
+    assertRule(rule1, {
+      type: _rules.RuleType.Property,
+      predicate: ['prop1'],
+      description: 'prop1',
+      next: {
+        type: _rules.RuleType.Property,
+        predicate: ['prop2', 'prop3'],
+        description: 'prop2|prop3'
+      }
+    });
+    const builder3 = builder.propertyNames('prop3', 'prop4', 'prop5');
+    checkType(builder3);
+    assert.strictEqual(builder3, builder);
+    assert.strictEqual(builder3.rule, rule1);
+    assertRule(rule1, {
+      type: _rules.RuleType.Property,
+      predicate: ['prop1'],
+      description: 'prop1',
+      next: {
+        type: _rules.RuleType.Property,
+        predicate: ['prop2', 'prop3'],
+        description: 'prop2|prop3',
+        next: {
+          type: _rules.RuleType.Property,
+          predicate: ['prop3', 'prop4', 'prop5'],
+          description: 'prop3|prop4|prop5'
+        }
+      }
+    }); // noinspection JSUnusedLocalSymbols
+
     const rule3 = builder3.rule.next.next;
   });
   it('repeat', function () {

@@ -14,7 +14,7 @@ interface IObj {
 
 declare global {
 	export interface Set<T> {
-		0: T
+		0?: T
 	}
 }
 
