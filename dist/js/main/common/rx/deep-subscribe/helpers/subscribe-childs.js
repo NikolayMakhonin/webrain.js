@@ -24,11 +24,11 @@ function subscribeChildsObject({
     return;
   }
 
-  const any = propertyPredicate(_constants.ANY);
+  const any = propertyPredicate(_constants.ANY, object);
   return propertyChanged.subscribe(event => {
-    if (any || propertyPredicate(event.name)) {
-      unsubscribeItem(event.oldValue);
-      subscribeItem(event.newValue);
+    if (any || propertyPredicate(event.name, object)) {
+      unsubscribeItem(event.oldValue, event.name);
+      subscribeItem(event.newValue, event.name);
     }
   });
 } // endregion
@@ -49,7 +49,7 @@ function subscribeChildsList({
     return;
   }
 
-  if (!propertyPredicate(_constants.ANY)) {
+  if (!propertyPredicate(_constants.ANY, object)) {
     return null;
   }
 
@@ -61,21 +61,21 @@ function subscribeChildsList({
     switch (type) {
       case _IListChanged.ListChangedType.Added:
         for (let i = 0, len = newItems.length; i < len; i++) {
-          subscribeItem(newItems[i]);
+          subscribeItem(newItems[i], _constants.ANY_DISPLAY);
         }
 
         break;
 
       case _IListChanged.ListChangedType.Removed:
         for (let i = 0, len = oldItems.length; i < len; i++) {
-          unsubscribeItem(oldItems[i]);
+          unsubscribeItem(oldItems[i], _constants.ANY_DISPLAY);
         }
 
         break;
 
       case _IListChanged.ListChangedType.Set:
-        unsubscribeItem(oldItems[0]);
-        subscribeItem(newItems[0]);
+        unsubscribeItem(oldItems[0], _constants.ANY_DISPLAY);
+        subscribeItem(newItems[0], _constants.ANY_DISPLAY);
         break;
     }
   });
@@ -97,7 +97,7 @@ function subscribeChildsSet({
     return;
   }
 
-  if (!propertyPredicate(_constants.ANY)) {
+  if (!propertyPredicate(_constants.ANY, object)) {
     return null;
   }
 
@@ -106,11 +106,11 @@ function subscribeChildsSet({
     newItems
   }) => {
     for (let i = 0, len = oldItems.length; i < len; i++) {
-      unsubscribeItem(oldItems[i]);
+      unsubscribeItem(oldItems[i], _constants.ANY_DISPLAY);
     }
 
     for (let i = 0, len = newItems.length; i < len; i++) {
-      subscribeItem(newItems[i]);
+      subscribeItem(newItems[i], _constants.ANY_DISPLAY);
     }
   });
 } // endregion
@@ -131,7 +131,7 @@ function subscribeChildsMap({
     return;
   }
 
-  if (!propertyPredicate(_constants.ANY)) {
+  if (!propertyPredicate(_constants.ANY, object)) {
     return null;
   }
 
@@ -140,8 +140,8 @@ function subscribeChildsMap({
     oldValue,
     newValue
   }) => {
-    unsubscribeItem([key, oldValue]);
-    subscribeItem([key, newValue]);
+    unsubscribeItem([key, oldValue], key);
+    subscribeItem([key, newValue], key);
   });
 } // endregion
 // region subscribeChilds

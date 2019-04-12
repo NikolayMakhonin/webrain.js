@@ -1,12 +1,15 @@
 import _regeneratorRuntime from "@babel/runtime/regenerator";
 import _classCallCheck from "@babel/runtime/helpers/classCallCheck";
 import _createClass from "@babel/runtime/helpers/createClass";
+var _Symbol$toStringTag = Symbol.toStringTag;
+var _Symbol$iterator = Symbol.iterator;
 export var ObjectMap =
 /*#__PURE__*/
 function () {
   function ObjectMap(object) {
     _classCallCheck(this, ObjectMap);
 
+    this[_Symbol$toStringTag] = 'Map';
     this._object = object || {};
   }
 
@@ -42,7 +45,7 @@ function () {
       return true;
     }
   }, {
-    key: Symbol.iterator,
+    key: _Symbol$iterator,
     value: function value() {
       return this.entries();
     }

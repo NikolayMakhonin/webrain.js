@@ -87,7 +87,7 @@ describe('common > main > lists > ObservableSet', function () {
     var allValuesShuffle = shuffle(allValues);
     testSet({
       array: [[]],
-      useObjectSet: [false],
+      innerSet: ['Set', 'Set<Object>', 'ArraySet'],
       expected: {
         array: allValues,
         returnValue: THIS,
@@ -185,7 +185,7 @@ describe('common > main > lists > ObservableSet', function () {
     var additional = [[[], {}], [{}, []]];
     testSet({
       array: [allValuesShuffle.concat(additional)],
-      useObjectSet: [false],
+      innerSet: ['Set', 'Set<Object>', 'ArraySet'],
       expected: {
         array: additional,
         returnValue: true,

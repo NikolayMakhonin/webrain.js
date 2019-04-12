@@ -45,7 +45,7 @@ export function iterateRule(rule) {
           };
 
           _context3.t1 = rule.type;
-          _context3.next = _context3.t1 === RuleType.Property ? 9 : _context3.t1 === RuleType.Any ? 13 : _context3.t1 === RuleType.Repeat ? 18 : 22;
+          _context3.next = _context3.t1 === RuleType.Action ? 9 : _context3.t1 === RuleType.Any ? 13 : _context3.t1 === RuleType.Repeat ? 18 : 22;
           break;
 
         case 9:

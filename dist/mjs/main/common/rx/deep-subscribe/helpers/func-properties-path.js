@@ -3,9 +3,10 @@ var propertyPattern = variablePattern;
 export function parsePropertiesPathString(getValueFunc) {
   if (typeof getValueFunc !== 'string') {
     getValueFunc = getValueFunc.toString();
-  }
+  } // noinspection RegExpRedundantEscape
 
-  var match = getValueFunc.match(/^.*?(?:\(\s*)?(\w+)(?:\s*\))?\s*(?:(?:=>\s*)?{\s*return\s|=>)[\s(]*\1\s*(.*?)[\s;]*}?[\s)]*$/);
+
+  var match = getValueFunc.match(/^[\0-\uFFFF]*?(?:\([\t-\r \xA0\u1680\u2000-\u200A\u2028\u2029\u202F\u205F\u3000\uFEFF]*)?([0-9A-Z_a-z]+)(?:[\t-\r \xA0\u1680\u2000-\u200A\u2028\u2029\u202F\u205F\u3000\uFEFF]*\))?[\t-\r \xA0\u1680\u2000-\u200A\u2028\u2029\u202F\u205F\u3000\uFEFF]*(?:(?:=>[\t-\r \xA0\u1680\u2000-\u200A\u2028\u2029\u202F\u205F\u3000\uFEFF]*)?\{[\0-\uFFFF]*?\breturn[\t-\r \xA0\u1680\u2000-\u200A\u2028\u2029\u202F\u205F\u3000\uFEFF]|=>)[\t-\r \(\xA0\u1680\u2000-\u200A\u2028\u2029\u202F\u205F\u3000\uFEFF]*(?:[\0-!#-&\(-\+\x2D-\uFFFF]*,)*[\t-\r \xA0\u1680\u2000-\u200A\u2028\u2029\u202F\u205F\u3000\uFEFF]*\1[\t-\r \xA0\u1680\u2000-\u200A\u2028\u2029\u202F\u205F\u3000\uFEFF]*([\0-\uFFFF]*?)[\t-\r ;\xA0\u1680\u2000-\u200A\u2028\u2029\u202F\u205F\u3000\uFEFF]*\}?[\t-\r \)\xA0\u1680\u2000-\u200A\u2028\u2029\u202F\u205F\u3000\uFEFF]*$/);
   var path = match && match[2];
 
   if (!path) {

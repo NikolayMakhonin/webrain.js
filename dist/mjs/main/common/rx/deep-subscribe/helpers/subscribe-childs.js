@@ -1,5 +1,5 @@
 import { ListChangedType } from '../../../lists/contracts/IListChanged';
-import { ANY } from '../contracts/constants';
+import { ANY, ANY_DISPLAY } from '../contracts/constants';
 
 // region subscribeChildsObject
 function subscribeChildsObject(_ref) {
@@ -13,11 +13,11 @@ function subscribeChildsObject(_ref) {
     return;
   }
 
-  var any = propertyPredicate(ANY);
+  var any = propertyPredicate(ANY, object);
   return propertyChanged.subscribe(function (event) {
-    if (any || propertyPredicate(event.name)) {
-      unsubscribeItem(event.oldValue);
-      subscribeItem(event.newValue);
+    if (any || propertyPredicate(event.name, object)) {
+      unsubscribeItem(event.oldValue, event.name);
+      subscribeItem(event.newValue, event.name);
     }
   });
 } // endregion
@@ -35,7 +35,7 @@ function subscribeChildsList(_ref2) {
     return;
   }
 
-  if (!propertyPredicate(ANY)) {
+  if (!propertyPredicate(ANY, object)) {
     return null;
   }
 
@@ -47,21 +47,21 @@ function subscribeChildsList(_ref2) {
     switch (type) {
       case ListChangedType.Added:
         for (var i = 0, len = newItems.length; i < len; i++) {
-          subscribeItem(newItems[i]);
+          subscribeItem(newItems[i], ANY_DISPLAY);
         }
 
         break;
 
       case ListChangedType.Removed:
         for (var _i = 0, _len = oldItems.length; _i < _len; _i++) {
-          unsubscribeItem(oldItems[_i]);
+          unsubscribeItem(oldItems[_i], ANY_DISPLAY);
         }
 
         break;
 
       case ListChangedType.Set:
-        unsubscribeItem(oldItems[0]);
-        subscribeItem(newItems[0]);
+        unsubscribeItem(oldItems[0], ANY_DISPLAY);
+        subscribeItem(newItems[0], ANY_DISPLAY);
         break;
     }
   });
@@ -80,7 +80,7 @@ function subscribeChildsSet(_ref4) {
     return;
   }
 
-  if (!propertyPredicate(ANY)) {
+  if (!propertyPredicate(ANY, object)) {
     return null;
   }
 
@@ -89,11 +89,11 @@ function subscribeChildsSet(_ref4) {
         newItems = _ref5.newItems;
 
     for (var i = 0, len = oldItems.length; i < len; i++) {
-      unsubscribeItem(oldItems[i]);
+      unsubscribeItem(oldItems[i], ANY_DISPLAY);
     }
 
     for (var _i2 = 0, _len2 = newItems.length; _i2 < _len2; _i2++) {
-      subscribeItem(newItems[_i2]);
+      subscribeItem(newItems[_i2], ANY_DISPLAY);
     }
   });
 } // endregion
@@ -111,7 +111,7 @@ function subscribeChildsMap(_ref6) {
     return;
   }
 
-  if (!propertyPredicate(ANY)) {
+  if (!propertyPredicate(ANY, object)) {
     return null;
   }
 
@@ -119,8 +119,8 @@ function subscribeChildsMap(_ref6) {
     var key = _ref7.key,
         oldValue = _ref7.oldValue,
         newValue = _ref7.newValue;
-    unsubscribeItem([key, oldValue]);
-    subscribeItem([key, newValue]);
+    unsubscribeItem([key, oldValue], key);
+    subscribeItem([key, newValue], key);
   });
 } // endregion
 // region subscribeChilds

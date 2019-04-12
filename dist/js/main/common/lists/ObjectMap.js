@@ -4,9 +4,12 @@ Object.defineProperty(exports, "__esModule", {
   value: true
 });
 exports.ObjectMap = void 0;
+var _Symbol$toStringTag = Symbol.toStringTag;
+var _Symbol$iterator = Symbol.iterator;
 
 class ObjectMap {
   constructor(object) {
+    this[_Symbol$toStringTag] = 'Map';
     this._object = object || {};
   }
 
@@ -46,7 +49,7 @@ class ObjectMap {
     return Object.keys(this._object).length;
   }
 
-  [Symbol.iterator]() {
+  [_Symbol$iterator]() {
     return this.entries();
   }
 

@@ -35,6 +35,7 @@ export function getDefaultValue(value) {
   return null;
 }
 var _Symbol$iterator = Symbol.iterator;
+var _Symbol$toStringTag = Symbol.toStringTag;
 export var SortedList =
 /*#__PURE__*/
 function (_ListChangedObject) {
@@ -55,6 +56,7 @@ function (_ListChangedObject) {
     _classCallCheck(this, SortedList);
 
     _this = _possibleConstructorReturn(this, _getPrototypeOf(SortedList).call(this));
+    _this[_Symbol$toStringTag] = 'List';
     _this._array = array || [];
     _this._size = _this._array.length;
 
@@ -1116,7 +1118,6 @@ function (_ListChangedObject) {
       }, value, this);
     }) // endregion
     // region Static
-    // endregion
 
   }, {
     key: "minAllocatedSize",

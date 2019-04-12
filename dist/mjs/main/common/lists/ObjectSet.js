@@ -1,12 +1,15 @@
 import _regeneratorRuntime from "@babel/runtime/regenerator";
 import _classCallCheck from "@babel/runtime/helpers/classCallCheck";
 import _createClass from "@babel/runtime/helpers/createClass";
+var _Symbol$toStringTag = Symbol.toStringTag;
+var _Symbol$iterator = Symbol.iterator;
 export var ObjectSet =
 /*#__PURE__*/
 function () {
   function ObjectSet(object) {
     _classCallCheck(this, ObjectSet);
 
+    this[_Symbol$toStringTag] = 'Set';
     this._object = object || {};
   }
 
@@ -42,13 +45,18 @@ function () {
       return this;
     }
   }, {
-    key: Symbol.iterator,
+    key: _Symbol$iterator,
+    value: function value() {
+      return Object.keys(this._object)[Symbol.iterator]();
+    }
+  }, {
+    key: "entries",
     value:
     /*#__PURE__*/
-    _regeneratorRuntime.mark(function value() {
+    _regeneratorRuntime.mark(function entries() {
       var _object, _value2;
 
-      return _regeneratorRuntime.wrap(function value$(_context) {
+      return _regeneratorRuntime.wrap(function entries$(_context) {
         while (1) {
           switch (_context.prev = _context.next) {
             case 0:
@@ -69,7 +77,7 @@ function () {
               }
 
               _context.next = 7;
-              return _value2;
+              return [_value2, _value2];
 
             case 7:
               _context.next = 2;
@@ -80,47 +88,6 @@ function () {
               return _context.stop();
           }
         }
-      }, value, this);
-    })
-  }, {
-    key: "entries",
-    value:
-    /*#__PURE__*/
-    _regeneratorRuntime.mark(function entries() {
-      var _object, _value3;
-
-      return _regeneratorRuntime.wrap(function entries$(_context2) {
-        while (1) {
-          switch (_context2.prev = _context2.next) {
-            case 0:
-              _object = this._object;
-              _context2.t0 = _regeneratorRuntime.keys(_object);
-
-            case 2:
-              if ((_context2.t1 = _context2.t0()).done) {
-                _context2.next = 9;
-                break;
-              }
-
-              _value3 = _context2.t1.value;
-
-              if (!Object.prototype.hasOwnProperty.call(_object, _value3)) {
-                _context2.next = 7;
-                break;
-              }
-
-              _context2.next = 7;
-              return [_value3, _value3];
-
-            case 7:
-              _context2.next = 2;
-              break;
-
-            case 9:
-            case "end":
-              return _context2.stop();
-          }
-        }
       }, entries, this);
     })
   }, {
@@ -128,9 +95,9 @@ function () {
     value: function forEach(callbackfn, thisArg) {
       var _object = this._object;
 
-      for (var _value4 in _object) {
-        if (Object.prototype.hasOwnProperty.call(_object, _value4)) {
-          callbackfn.call(thisArg, _value4, _value4, this);
+      for (var _value3 in _object) {
+        if (Object.prototype.hasOwnProperty.call(_object, _value3)) {
+          callbackfn.call(thisArg, _value3, _value3, this);
         }
       }
     }
@@ -142,12 +109,12 @@ function () {
   }, {
     key: "keys",
     value: function keys() {
-      return Object.keys(this._object)[Symbol.iterator]();
+      return this[Symbol.iterator]();
     }
   }, {
     key: "values",
     value: function values() {
-      return Object.keys(this._object)[Symbol.iterator]();
+      return this[Symbol.iterator]();
     }
   }, {
     key: "size",

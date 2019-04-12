@@ -1,6 +1,13 @@
-/* eslint-disable no-new-func,no-array-constructor,object-property-newline */
+/* eslint-disable no-new-func,no-array-constructor,object-property-newline,no-undef,no-empty */
 import { calcPerformance } from 'rdtsc';
 import { binarySearch } from '../../../main/common/lists/helpers/array';
+import { getObjectUniqueId } from '../../../main/common/lists/helpers/object-unique-id';
+import { SortedList } from '../../../main/common/lists/SortedList';
+import { ArraySet } from '../../../main/common/lists/ArraySet';
+var SetNative = Set;
+
+require('./src/SetPolyfill');
+
 export function compareDefault(o1, o2) {
   if (o1 > o2) {
     return 1;
@@ -669,7 +676,7 @@ describe('fundamental-operations', function () {
     });
     console.log(result);
   });
-  it('regexp', function () {
+  xit('regexp', function () {
     this.timeout(300000);
     var regexp = /qwe\/wer\/ert\/rty\/tyu/;
     var path = 'qwe/wer/ert/rty/tyu';
@@ -690,6 +697,133 @@ describe('fundamental-operations', function () {
     }, function () {
       return path.match(regexp);
     });
+    console.log(result);
+  });
+  it('Set', function () {
+    this.timeout(300000);
+    assert.strictEqual(SetNative, Set);
+    assert.notStrictEqual(Set, SetPolyfill);
+    var objects = [];
+
+    for (var i = 0; i < 100; i++) {
+      objects[i] = {
+        value: i
+      };
+      getObjectUniqueId(objects[i]);
+    }
+
+    function testSet(addObject, removeObject, getIterableValues) {
+      for (var _i = 0; _i < 100; _i++) {
+        addObject(objects[_i]);
+      }
+
+      for (var _i2 = 99; _i2 >= 0; _i2--) {
+        removeObject(objects[_i2]);
+      }
+
+      var _iteratorNormalCompletion3 = true;
+      var _didIteratorError3 = false;
+      var _iteratorError3 = undefined;
+
+      try {
+        for (var _iterator3 = getIterableValues()[Symbol.iterator](), _step3; !(_iteratorNormalCompletion3 = (_step3 = _iterator3.next()).done); _iteratorNormalCompletion3 = true) {
+          var value = _step3.value;
+        }
+      } catch (err) {
+        _didIteratorError3 = true;
+        _iteratorError3 = err;
+      } finally {
+        try {
+          if (!_iteratorNormalCompletion3 && _iterator3.return != null) {
+            _iterator3.return();
+          }
+        } finally {
+          if (_didIteratorError3) {
+            throw _iteratorError3;
+          }
+        }
+      }
+    } // const set1 = new Set()
+    // const set2 = {}
+    // const set3 = []
+
+
+    function testSetNative() {
+      var set = new SetNative();
+      testSet(function (o) {
+        return set.add(o);
+      }, function (o) {
+        return set.delete(o);
+      }, function () {
+        return set;
+      }); // assert.strictEqual(set1.size, 0)
+    }
+
+    function testObject() {
+      var set = {};
+      testSet(function (o) {
+        return set[getObjectUniqueId(o)] = o;
+      }, function (o) {
+        return delete set[getObjectUniqueId(o)];
+      }, function (o) {
+        return Object.values(set);
+      }); // assert.strictEqual(Object.keys(set).length, 0)
+    }
+
+    function testArray() {
+      var set = [];
+      testSet(function (o) {
+        return set[getObjectUniqueId(o)] = o;
+      }, function (o) {
+        return delete set[getObjectUniqueId(o)];
+      }, function (o) {
+        return set;
+      }); // assert.strictEqual(set.length, 0)
+    }
+
+    function testSortedList() {
+      var set = new SortedList({
+        autoSort: true,
+        notAddIfExists: true,
+        minAllocatedSize: 1000
+      });
+      testSet(function (o) {
+        return set.add(o);
+      }, function (o) {
+        return set.remove(o);
+      }, function (o) {
+        return set;
+      }); // set.clear()
+      // assert.strictEqual(set.size, 0)
+    }
+
+    function testSetPolyfill() {
+      console.log(SetPolyfill.toString());
+      var set = new SetPolyfill();
+      testSet(function (o) {
+        return set.add(o);
+      }, function (o) {
+        return set.delete(o);
+      }, function (o) {
+        return set;
+      }); // assert.strictEqual(set.size, 0)
+    }
+
+    function testArraySet() {
+      console.log(ArraySet.toString());
+      var set = new ArraySet();
+      testSet(function (o) {
+        return set.add(o);
+      }, function (o) {
+        return set.delete(o);
+      }, function (o) {
+        return set;
+      }); // assert.strictEqual(set.size, 0)
+    }
+
+    var result = calcPerformance(10000, function () {// no operations
+    }, testSetNative, testObject, testArray, // testSortedList,
+    testSetPolyfill, testArraySet);
     console.log(result);
   });
 });

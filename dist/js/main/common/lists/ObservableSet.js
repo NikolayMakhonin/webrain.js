@@ -10,9 +10,7 @@ var _SetChangedObject = require("./base/SetChangedObject");
 var _ISetChanged = require("./contracts/ISetChanged");
 
 class ObservableSet extends _SetChangedObject.SetChangedObject {
-  constructor({
-    set
-  } = {}) {
+  constructor(set) {
     super();
     this._set = set || new Set();
   }

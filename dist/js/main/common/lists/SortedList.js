@@ -41,6 +41,7 @@ function getDefaultValue(value) {
 }
 
 var _Symbol$iterator = Symbol.iterator;
+var _Symbol$toStringTag = Symbol.toStringTag;
 
 class SortedList extends _ListChangedObject.ListChangedObject {
   // region constructor
@@ -53,6 +54,7 @@ class SortedList extends _ListChangedObject.ListChangedObject {
     countSorted
   } = {}) {
     super();
+    this[_Symbol$toStringTag] = 'List';
     this._array = array || [];
     this._size = this._array.length;
 
@@ -1219,7 +1221,6 @@ class SortedList extends _ListChangedObject.ListChangedObject {
     }
   } // endregion
   // region Static
-  // endregion
 
 
 }

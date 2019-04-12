@@ -10,11 +10,8 @@ export var ObservableSet =
 function (_SetChangedObject) {
   _inherits(ObservableSet, _SetChangedObject);
 
-  function ObservableSet() {
+  function ObservableSet(set) {
     var _this;
-
-    var _ref = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : {},
-        set = _ref.set;
 
     _classCallCheck(this, ObservableSet);
 

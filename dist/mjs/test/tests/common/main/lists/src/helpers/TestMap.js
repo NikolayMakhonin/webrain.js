@@ -98,9 +98,7 @@ function assertMap(map, expectedArray) {
 }
 
 var staticMapInner = new Map();
-var staticMap = new ObservableMap({
-  map: staticMapInner
-}); // class ObjectMapWrapper<V> implements Map<string, V> {
+var staticMap = new ObservableMap(staticMapInner); // class ObjectMapWrapper<V> implements Map<string, V> {
 // 	private readonly _object: { [key: string]: V }
 // 	constructor(object: { [key: string]: V }) {
 // 		this._object = object
@@ -215,9 +213,7 @@ function (_TestVariants) {
                 }
               }
 
-              map = new ObservableMap({
-                map: mapInner
-              });
+              map = new ObservableMap(mapInner);
             }
 
             var arrayReplicate = array.map(function (o) {

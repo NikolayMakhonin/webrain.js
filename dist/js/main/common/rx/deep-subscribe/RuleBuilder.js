@@ -11,21 +11,67 @@ var _rules = require("./contracts/rules");
 
 var _funcPropertiesPath = require("./helpers/func-properties-path");
 
+var _RuleSubscribe = require("./RuleSubscribe");
+
+const RuleSubscribeObjectPropertyNames = _RuleSubscribe.RuleSubscribeObject.bind(null, null);
+
+const RuleSubscribeMapKeys = _RuleSubscribe.RuleSubscribeMap.bind(null, null);
+
 class RuleBuilder {
-  _property(rule) {
+  subscribe(ruleSubscribe, description) {
     const {
       _ruleLast: ruleLast
     } = this;
 
-    if (ruleLast) {
-      ruleLast.next = rule;
-    } else {
-      this.rule = rule;
+    if (description) {
+      ruleSubscribe.description = description;
     }
 
-    this._ruleLast = rule;
+    if (ruleLast) {
+      ruleLast.next = ruleSubscribe;
+    } else {
+      this.rule = ruleSubscribe;
+    }
+
+    this._ruleLast = ruleSubscribe;
     return this;
   }
+  /**
+   * Object property, Array index
+   */
+
+
+  propertyName(propertyName) {
+    return this.subscribe(new RuleSubscribeObjectPropertyNames(propertyName), propertyName);
+  }
+  /**
+   * Object property, Array index
+   */
+
+
+  propertyNames(...propertiesNames) {
+    return this.subscribe(new RuleSubscribeObjectPropertyNames(...propertiesNames), propertiesNames.join('|'));
+  }
+  /**
+   * Object property, Array index
+   */
+
+
+  propertyAll() {
+    return this.subscribe(new _RuleSubscribe.RuleSubscribeObject(), _constants.ANY_DISPLAY);
+  }
+  /**
+   * Object property, Array index
+   */
+
+
+  propertyPredicate(predicate, description) {
+    return this.subscribe(new _RuleSubscribe.RuleSubscribeObject(predicate), description);
+  }
+  /**
+   * Object property, Array index
+   */
+
 
   propertyRegexp(regexp) {
     if (!(regexp instanceof RegExp)) {
@@ -34,134 +80,72 @@ class RuleBuilder {
 
     return this.propertyPredicate(name => regexp.test(name), regexp.toString());
   }
+  /**
+   * IListChanged & Iterable, ISetChanged & Iterable, IMapChanged & Iterable, Iterable
+   */
 
-  propertyPredicate(predicate, description) {
-    if (typeof predicate !== 'function') {
-      throw new Error(`predicate (${predicate}) is not a function`);
-    }
 
-    return this._property({
-      type: _rules.RuleType.Property,
-
-      predicate(propertyName, object) {
-        return Object.prototype.hasOwnProperty.call(object, propertyName) && predicate(propertyName, object);
-      },
-
-      *iterateObject(object) {
-        for (const key in object) {
-          if (Object.prototype.hasOwnProperty.call(object, key) && predicate(key, object)) {
-            yield object[key];
-          }
-        }
-      },
-
-      description
-    });
+  collection() {
+    return this.subscribe(new _RuleSubscribe.RuleSubscribeCollection(), _constants.COLLECTION_PREFIX);
   }
+  /**
+   * IMapChanged & Map, Map
+   */
 
-  propertyAll() {
-    return this._property({
-      type: _rules.RuleType.Property,
 
-      predicate(propertyName, object) {
-        return Object.prototype.hasOwnProperty.call(object, propertyName);
-      },
-
-      *iterateObject(object) {
-        for (const key in object) {
-          if (Object.prototype.hasOwnProperty.call(object, key)) {
-            yield object[key];
-          }
-        }
-      },
-
-      description: '*'
-    });
+  mapKey(key) {
+    return this.subscribe(new RuleSubscribeMapKeys(key), _constants.COLLECTION_PREFIX + key);
   }
+  /**
+   * IMapChanged & Map, Map
+   */
 
-  propertyName(propertyName) {
-    if (typeof propertyName !== 'string') {
-      throw new Error(`propertyName (${propertyName}) should be a string`);
-    }
 
-    if (propertyName === _constants.ANY) {
-      return this.propertyAll();
-    }
-
-    return this._property({
-      type: _rules.RuleType.Property,
-
-      predicate(propName, object) {
-        return propName === propertyName && Object.prototype.hasOwnProperty.call(object, propertyName);
-      },
-
-      *iterateObject(object) {
-        for (const propName in object) {
-          if (propName === propertyName && Object.prototype.hasOwnProperty.call(object, propertyName)) {
-            yield object[propertyName];
-          }
-        }
-      },
-
-      description: propertyName
-    });
+  mapKeys(...keys) {
+    return this.subscribe(new RuleSubscribeMapKeys(...keys), _constants.COLLECTION_PREFIX + keys.join('|'));
   }
+  /**
+   * IMapChanged & Map, Map
+   */
 
-  propertyNames(...propertiesNames) {
-    if (propertiesNames.length === 1) {
-      return this.propertyName(propertiesNames[0]);
+
+  mapAll() {
+    return this.subscribe(new _RuleSubscribe.RuleSubscribeMap(), _constants.COLLECTION_PREFIX);
+  }
+  /**
+   * IMapChanged & Map, Map
+   */
+
+
+  mapPredicate(keyPredicate, description) {
+    return this.subscribe(new _RuleSubscribe.RuleSubscribeMap(keyPredicate), description);
+  }
+  /**
+   * IMapChanged & Map, Map
+   */
+
+
+  mapRegexp(keyRegexp) {
+    if (!(keyRegexp instanceof RegExp)) {
+      throw new Error(`keyRegexp (${keyRegexp}) is not instance of RegExp`);
     }
 
-    if (!propertiesNames.length) {
-      throw new Error('propertiesNames is empty');
-    }
-
-    let properties;
-
-    for (let i = 0, len = propertiesNames.length; i < len; i++) {
-      const propertyName = propertiesNames[i];
-
-      if (typeof propertyName !== 'string') {
-        throw new Error(`propertyName (${typeof propertyName}) should be a string`);
-      }
-
-      if (propertyName === _constants.ANY) {
-        return this.propertyAll();
-      }
-
-      if (!properties) {
-        properties = {
-          [propertyName]: true
-        };
-      } else {
-        properties[propertyName] = true;
-      }
-    }
-
-    return this._property({
-      type: _rules.RuleType.Property,
-
-      predicate(propertyName, object) {
-        return !!properties[propertyName] && Object.prototype.hasOwnProperty.call(object, propertyName);
-      },
-
-      *iterateObject(object) {
-        for (let i = 0, len = propertiesNames.length; i < len; i++) {
-          const propertyName = propertiesNames[i];
-
-          if (Object.prototype.hasOwnProperty.call(object, propertyName)) {
-            yield object[propertyName];
-          }
-        }
-      },
-
-      description: propertiesNames.join('|')
-    });
+    return this.mapPredicate(name => keyRegexp.test(name), keyRegexp.toString());
   }
 
   path(getValueFunc) {
-    for (const propertyName of (0, _funcPropertiesPath.getFuncPropertiesPath)(getValueFunc)) {
-      this.propertyName(propertyName);
+    for (const propertyNames of (0, _funcPropertiesPath.getFuncPropertiesPath)(getValueFunc)) {
+      if (!propertyNames.startsWith(_constants.COLLECTION_PREFIX)) {
+        this.propertyNames(...propertyNames.split('|'));
+      } else {
+        const keys = propertyNames.substring(1);
+
+        if (keys === _constants.ANY) {
+          this.collection();
+        } else {
+          this.mapKeys(...keys.split('|'));
+        }
+      }
     }
 
     return this;

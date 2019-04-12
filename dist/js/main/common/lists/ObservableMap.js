@@ -10,9 +10,7 @@ var _MapChangedObject = require("./base/MapChangedObject");
 var _IMapChanged = require("./contracts/IMapChanged");
 
 class ObservableMap extends _MapChangedObject.MapChangedObject {
-  constructor({
-    map
-  } = {}) {
+  constructor(map) {
     super();
     this._map = map || new Map();
   }

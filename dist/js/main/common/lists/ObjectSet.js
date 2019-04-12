@@ -4,9 +4,12 @@ Object.defineProperty(exports, "__esModule", {
   value: true
 });
 exports.ObjectSet = void 0;
+var _Symbol$toStringTag = Symbol.toStringTag;
+var _Symbol$iterator = Symbol.iterator;
 
 class ObjectSet {
   constructor(object) {
+    this[_Symbol$toStringTag] = 'Set';
     this._object = object || {};
   }
 
@@ -46,16 +49,8 @@ class ObjectSet {
     return Object.keys(this._object).length;
   }
 
-  *[Symbol.iterator]() {
-    const {
-      _object
-    } = this;
-
-    for (const value in _object) {
-      if (Object.prototype.hasOwnProperty.call(_object, value)) {
-        yield value;
-      }
-    }
+  [_Symbol$iterator]() {
+    return Object.keys(this._object)[Symbol.iterator]();
   }
 
   *entries() {
@@ -87,11 +82,11 @@ class ObjectSet {
   }
 
   keys() {
-    return Object.keys(this._object)[Symbol.iterator]();
+    return this[Symbol.iterator]();
   }
 
   values() {
-    return Object.keys(this._object)[Symbol.iterator]();
+    return this[Symbol.iterator]();
   }
 
 }

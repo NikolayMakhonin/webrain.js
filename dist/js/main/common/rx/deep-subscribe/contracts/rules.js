@@ -8,7 +8,7 @@ let RuleType;
 exports.RuleType = RuleType;
 
 (function (RuleType) {
-  RuleType[RuleType["Property"] = 0] = "Property";
+  RuleType[RuleType["Action"] = 0] = "Action";
   RuleType[RuleType["Any"] = 1] = "Any";
   RuleType[RuleType["Repeat"] = 2] = "Repeat";
 })(RuleType || (exports.RuleType = RuleType = {}));

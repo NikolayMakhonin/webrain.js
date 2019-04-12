@@ -1,11 +1,13 @@
-import _defineProperty from "@babel/runtime/helpers/defineProperty";
-import _typeof from "@babel/runtime/helpers/typeof";
-import _regeneratorRuntime from "@babel/runtime/regenerator";
+import _toConsumableArray from "@babel/runtime/helpers/toConsumableArray";
+import _construct from "@babel/runtime/helpers/construct";
 import _classCallCheck from "@babel/runtime/helpers/classCallCheck";
 import _createClass from "@babel/runtime/helpers/createClass";
-import { ANY } from './contracts/constants';
+import { ANY, ANY_DISPLAY, COLLECTION_PREFIX } from './contracts/constants';
 import { RuleType } from './contracts/rules';
 import { getFuncPropertiesPath } from './helpers/func-properties-path';
+import { RuleSubscribeCollection, RuleSubscribeMap, RuleSubscribeObject } from './RuleSubscribe';
+var RuleSubscribeObjectPropertyNames = RuleSubscribeObject.bind(null, null);
+var RuleSubscribeMapKeys = RuleSubscribeMap.bind(null, null);
 export var RuleBuilder =
 /*#__PURE__*/
 function () {
@@ -14,130 +16,27 @@ function () {
   }
 
   _createClass(RuleBuilder, [{
-    key: "_property",
-    value: function _property(rule) {
+    key: "subscribe",
+    value: function subscribe(ruleSubscribe, description) {
       var ruleLast = this._ruleLast;
 
-      if (ruleLast) {
-        ruleLast.next = rule;
-      } else {
-        this.rule = rule;
+      if (description) {
+        ruleSubscribe.description = description;
       }
 
-      this._ruleLast = rule;
+      if (ruleLast) {
+        ruleLast.next = ruleSubscribe;
+      } else {
+        this.rule = ruleSubscribe;
+      }
+
+      this._ruleLast = ruleSubscribe;
       return this;
     }
-  }, {
-    key: "propertyRegexp",
-    value: function propertyRegexp(regexp) {
-      if (!(regexp instanceof RegExp)) {
-        throw new Error("regexp (".concat(regexp, ") is not instance of RegExp"));
-      }
+    /**
+     * Object property, Array index
+     */
 
-      return this.propertyPredicate(function (name) {
-        return regexp.test(name);
-      }, regexp.toString());
-    }
-  }, {
-    key: "propertyPredicate",
-    value: function propertyPredicate(_predicate, description) {
-      if (typeof _predicate !== 'function') {
-        throw new Error("predicate (".concat(_predicate, ") is not a function"));
-      }
-
-      return this._property({
-        type: RuleType.Property,
-        predicate: function predicate(propertyName, object) {
-          return Object.prototype.hasOwnProperty.call(object, propertyName) && _predicate(propertyName, object);
-        },
-        iterateObject:
-        /*#__PURE__*/
-        _regeneratorRuntime.mark(function iterateObject(object) {
-          var key;
-          return _regeneratorRuntime.wrap(function iterateObject$(_context) {
-            while (1) {
-              switch (_context.prev = _context.next) {
-                case 0:
-                  _context.t0 = _regeneratorRuntime.keys(object);
-
-                case 1:
-                  if ((_context.t1 = _context.t0()).done) {
-                    _context.next = 8;
-                    break;
-                  }
-
-                  key = _context.t1.value;
-
-                  if (!(Object.prototype.hasOwnProperty.call(object, key) && _predicate(key, object))) {
-                    _context.next = 6;
-                    break;
-                  }
-
-                  _context.next = 6;
-                  return object[key];
-
-                case 6:
-                  _context.next = 1;
-                  break;
-
-                case 8:
-                case "end":
-                  return _context.stop();
-              }
-            }
-          }, iterateObject);
-        }),
-        description: description
-      });
-    }
-  }, {
-    key: "propertyAll",
-    value: function propertyAll() {
-      return this._property({
-        type: RuleType.Property,
-        predicate: function predicate(propertyName, object) {
-          return Object.prototype.hasOwnProperty.call(object, propertyName);
-        },
-        iterateObject:
-        /*#__PURE__*/
-        _regeneratorRuntime.mark(function iterateObject(object) {
-          var key;
-          return _regeneratorRuntime.wrap(function iterateObject$(_context2) {
-            while (1) {
-              switch (_context2.prev = _context2.next) {
-                case 0:
-                  _context2.t0 = _regeneratorRuntime.keys(object);
-
-                case 1:
-                  if ((_context2.t1 = _context2.t0()).done) {
-                    _context2.next = 8;
-                    break;
-                  }
-
-                  key = _context2.t1.value;
-
-                  if (!Object.prototype.hasOwnProperty.call(object, key)) {
-                    _context2.next = 6;
-                    break;
-                  }
-
-                  _context2.next = 6;
-                  return object[key];
-
-                case 6:
-                  _context2.next = 1;
-                  break;
-
-                case 8:
-                case "end":
-                  return _context2.stop();
-              }
-            }
-          }, iterateObject);
-        }),
-        description: '*'
-      });
-    }
   }, {
     key: "propertyName",
     value: function (_propertyName) {
@@ -151,59 +50,12 @@ function () {
 
       return propertyName;
     }(function (propertyName) {
-      if (typeof propertyName !== 'string') {
-        throw new Error("propertyName (".concat(propertyName, ") should be a string"));
-      }
-
-      if (propertyName === ANY) {
-        return this.propertyAll();
-      }
-
-      return this._property({
-        type: RuleType.Property,
-        predicate: function predicate(propName, object) {
-          return propName === propertyName && Object.prototype.hasOwnProperty.call(object, propertyName);
-        },
-        iterateObject:
-        /*#__PURE__*/
-        _regeneratorRuntime.mark(function iterateObject(object) {
-          var propName;
-          return _regeneratorRuntime.wrap(function iterateObject$(_context3) {
-            while (1) {
-              switch (_context3.prev = _context3.next) {
-                case 0:
-                  _context3.t0 = _regeneratorRuntime.keys(object);
-
-                case 1:
-                  if ((_context3.t1 = _context3.t0()).done) {
-                    _context3.next = 8;
-                    break;
-                  }
-
-                  propName = _context3.t1.value;
-
-                  if (!(propName === propertyName && Object.prototype.hasOwnProperty.call(object, propertyName))) {
-                    _context3.next = 6;
-                    break;
-                  }
-
-                  _context3.next = 6;
-                  return object[propertyName];
-
-                case 6:
-                  _context3.next = 1;
-                  break;
-
-                case 8:
-                case "end":
-                  return _context3.stop();
-              }
-            }
-          }, iterateObject);
-        }),
-        description: propertyName
-      });
+      return this.subscribe(new RuleSubscribeObjectPropertyNames(propertyName), propertyName);
     })
+    /**
+     * Object property, Array index
+     */
+
   }, {
     key: "propertyNames",
     value: function propertyNames() {
@@ -211,80 +63,104 @@ function () {
         propertiesNames[_key] = arguments[_key];
       }
 
-      if (propertiesNames.length === 1) {
-        return this.propertyName(propertiesNames[0]);
+      return this.subscribe(_construct(RuleSubscribeObjectPropertyNames, propertiesNames), propertiesNames.join('|'));
+    }
+    /**
+     * Object property, Array index
+     */
+
+  }, {
+    key: "propertyAll",
+    value: function propertyAll() {
+      return this.subscribe(new RuleSubscribeObject(), ANY_DISPLAY);
+    }
+    /**
+     * Object property, Array index
+     */
+
+  }, {
+    key: "propertyPredicate",
+    value: function propertyPredicate(predicate, description) {
+      return this.subscribe(new RuleSubscribeObject(predicate), description);
+    }
+    /**
+     * Object property, Array index
+     */
+
+  }, {
+    key: "propertyRegexp",
+    value: function propertyRegexp(regexp) {
+      if (!(regexp instanceof RegExp)) {
+        throw new Error("regexp (".concat(regexp, ") is not instance of RegExp"));
       }
 
-      if (!propertiesNames.length) {
-        throw new Error('propertiesNames is empty');
+      return this.propertyPredicate(function (name) {
+        return regexp.test(name);
+      }, regexp.toString());
+    }
+    /**
+     * IListChanged & Iterable, ISetChanged & Iterable, IMapChanged & Iterable, Iterable
+     */
+
+  }, {
+    key: "collection",
+    value: function collection() {
+      return this.subscribe(new RuleSubscribeCollection(), COLLECTION_PREFIX);
+    }
+    /**
+     * IMapChanged & Map, Map
+     */
+
+  }, {
+    key: "mapKey",
+    value: function mapKey(key) {
+      return this.subscribe(new RuleSubscribeMapKeys(key), COLLECTION_PREFIX + key);
+    }
+    /**
+     * IMapChanged & Map, Map
+     */
+
+  }, {
+    key: "mapKeys",
+    value: function mapKeys() {
+      for (var _len2 = arguments.length, keys = new Array(_len2), _key2 = 0; _key2 < _len2; _key2++) {
+        keys[_key2] = arguments[_key2];
       }
 
-      var properties;
+      return this.subscribe(_construct(RuleSubscribeMapKeys, keys), COLLECTION_PREFIX + keys.join('|'));
+    }
+    /**
+     * IMapChanged & Map, Map
+     */
 
-      for (var i = 0, len = propertiesNames.length; i < len; i++) {
-        var _propertyName2 = propertiesNames[i];
+  }, {
+    key: "mapAll",
+    value: function mapAll() {
+      return this.subscribe(new RuleSubscribeMap(), COLLECTION_PREFIX);
+    }
+    /**
+     * IMapChanged & Map, Map
+     */
 
-        if (typeof _propertyName2 !== 'string') {
-          throw new Error("propertyName (".concat(_typeof(_propertyName2), ") should be a string"));
-        }
+  }, {
+    key: "mapPredicate",
+    value: function mapPredicate(keyPredicate, description) {
+      return this.subscribe(new RuleSubscribeMap(keyPredicate), description);
+    }
+    /**
+     * IMapChanged & Map, Map
+     */
 
-        if (_propertyName2 === ANY) {
-          return this.propertyAll();
-        }
-
-        if (!properties) {
-          properties = _defineProperty({}, _propertyName2, true);
-        } else {
-          properties[_propertyName2] = true;
-        }
+  }, {
+    key: "mapRegexp",
+    value: function mapRegexp(keyRegexp) {
+      if (!(keyRegexp instanceof RegExp)) {
+        throw new Error("keyRegexp (".concat(keyRegexp, ") is not instance of RegExp"));
       }
 
-      return this._property({
-        type: RuleType.Property,
-        predicate: function predicate(propertyName, object) {
-          return !!properties[propertyName] && Object.prototype.hasOwnProperty.call(object, propertyName);
-        },
-        iterateObject:
-        /*#__PURE__*/
-        _regeneratorRuntime.mark(function iterateObject(object) {
-          var _i, _len2, _propertyName3;
-
-          return _regeneratorRuntime.wrap(function iterateObject$(_context4) {
-            while (1) {
-              switch (_context4.prev = _context4.next) {
-                case 0:
-                  _i = 0, _len2 = propertiesNames.length;
-
-                case 1:
-                  if (!(_i < _len2)) {
-                    _context4.next = 9;
-                    break;
-                  }
-
-                  _propertyName3 = propertiesNames[_i];
-
-                  if (!Object.prototype.hasOwnProperty.call(object, _propertyName3)) {
-                    _context4.next = 6;
-                    break;
-                  }
-
-                  _context4.next = 6;
-                  return object[_propertyName3];
-
-                case 6:
-                  _i++;
-                  _context4.next = 1;
-                  break;
-
-                case 9:
-                case "end":
-                  return _context4.stop();
-              }
-            }
-          }, iterateObject);
-        }),
-        description: propertiesNames.join('|')
-      });
+      return this.mapPredicate(function (name) {
+        return keyRegexp.test(name);
+      }, keyRegexp.toString());
     }
   }, {
     key: "path",
@@ -295,8 +171,19 @@ function () {
 
       try {
         for (var _iterator = getFuncPropertiesPath(getValueFunc)[Symbol.iterator](), _step; !(_iteratorNormalCompletion = (_step = _iterator.next()).done); _iteratorNormalCompletion = true) {
-          var _propertyName4 = _step.value;
-          this.propertyName(_propertyName4);
+          var propertyNames = _step.value;
+
+          if (!propertyNames.startsWith(COLLECTION_PREFIX)) {
+            this.propertyNames.apply(this, _toConsumableArray(propertyNames.split('|')));
+          } else {
+            var keys = propertyNames.substring(1);
+
+            if (keys === ANY) {
+              this.collection();
+            } else {
+              this.mapKeys.apply(this, _toConsumableArray(keys.split('|')));
+            }
+          }
         }
       } catch (err) {
         _didIteratorError = true;
@@ -320,8 +207,8 @@ function () {
     value: function any() {
       var ruleLast = this._ruleLast;
 
-      for (var _len3 = arguments.length, getChilds = new Array(_len3), _key2 = 0; _key2 < _len3; _key2++) {
-        getChilds[_key2] = arguments[_key2];
+      for (var _len3 = arguments.length, getChilds = new Array(_len3), _key3 = 0; _key3 < _len3; _key3++) {
+        getChilds[_key3] = arguments[_key3];
       }
 
       var rule = {

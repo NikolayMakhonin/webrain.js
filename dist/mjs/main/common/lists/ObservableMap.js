@@ -10,11 +10,8 @@ export var ObservableMap =
 function (_MapChangedObject) {
   _inherits(ObservableMap, _MapChangedObject);
 
-  function ObservableMap() {
+  function ObservableMap(map) {
     var _this;
-
-    var _ref = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : {},
-        map = _ref.map;
 
     _classCallCheck(this, ObservableMap);
 

@@ -1,4 +1,4 @@
-/* eslint-disable no-new-func,no-array-constructor,object-property-newline */
+/* eslint-disable no-new-func,no-array-constructor,object-property-newline,no-undef,no-empty */
 
 import {calcPerformance} from 'rdtsc'
 import {binarySearch} from '../../../main/common/lists/helpers/array'
@@ -748,7 +748,7 @@ describe('fundamental-operations', function () {
 			for (let i = 99; i >= 0; i--) {
 				removeObject(objects[i])
 			}
-			for(const value of getIterableValues()) {
+			for (const value of getIterableValues()) {
 
 			}
 		}
@@ -789,8 +789,8 @@ describe('fundamental-operations', function () {
 
 		function testSortedList() {
 			const set = new SortedList({
-				autoSort      : true,
-				notAddIfExists: true,
+				autoSort        : true,
+				notAddIfExists  : true,
 				minAllocatedSize: 1000
 			})
 			testSet(

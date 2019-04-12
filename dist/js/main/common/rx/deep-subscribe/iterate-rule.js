@@ -19,7 +19,7 @@ function* iterateRule(rule, next = null) {
   const nextRule = () => iterateRule(rule.next, next);
 
   switch (rule.type) {
-    case _rules.RuleType.Property:
+    case _rules.RuleType.Action:
       yield rule;
       yield* nextRule();
       break;

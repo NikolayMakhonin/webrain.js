@@ -55,8 +55,8 @@ function compareFast(o1, o2) {
       return -1;
     }
 
-    o1 = o1[_objectUniqueId.UNIQUE_ID_PROPERTY_NAME];
-    o2 = o2[_objectUniqueId.UNIQUE_ID_PROPERTY_NAME];
+    o1 = (0, _objectUniqueId.getObjectUniqueId)(o1);
+    o2 = (0, _objectUniqueId.getObjectUniqueId)(o2);
 
     if (o1 > o2) {
       return 1;
@@ -118,8 +118,8 @@ function compareStrict(o1, o2) {
       return -1;
     }
 
-    o1 = o1[_objectUniqueId.UNIQUE_ID_PROPERTY_NAME];
-    o2 = o2[_objectUniqueId.UNIQUE_ID_PROPERTY_NAME];
+    o1 = (0, _objectUniqueId.getObjectUniqueId)(o1);
+    o2 = (0, _objectUniqueId.getObjectUniqueId)(o2);
 
     if (o1 > o2) {
       return 1;

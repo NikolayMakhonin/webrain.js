@@ -80,9 +80,7 @@ function assertMap(map, expectedArray) {
 }
 
 const staticMapInner = new Map();
-const staticMap = new _ObservableMap.ObservableMap({
-  map: staticMapInner
-}); // class ObjectMapWrapper<V> implements Map<string, V> {
+const staticMap = new _ObservableMap.ObservableMap(staticMapInner); // class ObjectMapWrapper<V> implements Map<string, V> {
 // 	private readonly _object: { [key: string]: V }
 // 	constructor(object: { [key: string]: V }) {
 // 		this._object = object
@@ -142,9 +140,7 @@ class TestMap extends _TestVariants.TestVariants {
             mapInner.set(...item);
           }
 
-          map = new _ObservableMap.ObservableMap({
-            map: mapInner
-          });
+          map = new _ObservableMap.ObservableMap(mapInner);
         }
 
         const arrayReplicate = array.map(o => o.slice());
