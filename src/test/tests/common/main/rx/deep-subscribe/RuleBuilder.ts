@@ -102,15 +102,23 @@ describe('common > main > rx > deep-subscribe > RuleBuilder', function() {
 		}
 
 		function testNonSubscribeProperties(object) {
-			for (const nonSubscribeProperty of nonSubscribeProperties) {
-				add(object, nonSubscribeProperty)
+			for (const property of nonSubscribeProperties) {
+				add(object, property)
 				assert.deepStrictEqual(subscribedItems, [])
+
 				if (change) {
-					change(object, nonSubscribeProperty)
+					change(object, property)
 					assert.deepStrictEqual(subscribedItems, [])
 				}
-				remove(object, nonSubscribeProperty, true)
+
+				remove(object, property, true)
 				assert.deepStrictEqual(subscribedItems, [])
+
+				if (property === nonSubscribeProperty) {
+					add(object, nonSubscribeProperty)
+					assert.deepStrictEqual(subscribedItems, [])
+				}
+
 				// if (object === observableObject) {
 				// 	assert.deepStrictEqual(subscribedItems, ['+undefined'])
 				// 	subscribedItems = []
@@ -416,6 +424,11 @@ describe('common > main > rx > deep-subscribe > RuleBuilder', function() {
 	}
 
 	function testIterable(properties: string | string[], subscribe: ISubscribeObject<any, string>) {
+		assert.strictEqual(
+			subscribe({}, true, item => { assert.fail() }, item => { assert.fail() }),
+			null,
+		)
+
 		const array = []
 
 		// tslint:disable-next-line:no-identical-functions
@@ -985,8 +998,35 @@ describe('common > main > rx > deep-subscribe > RuleBuilder', function() {
 			},
 		})
 
-		// noinspection JSUnusedLocalSymbols
-		const rule3 = builder3.rule.next.next as IRuleProperty
+		const builder4 = builder.mapKeys<string, boolean[]>(ANY)
+		checkType<boolean[]>(builder4)
+		assert.strictEqual(builder4 as any, builder)
+		assert.strictEqual(builder4.rule, rule1)
+
+		assertRule(rule1, {
+			type: RuleType.Action,
+			objectTypes: ['map'],
+			properties: ANY,
+			description: COLLECTION_PREFIX,
+			next: {
+				type: RuleType.Action,
+				objectTypes: ['map'],
+				properties: ANY,
+				description: COLLECTION_PREFIX,
+				next: {
+					type: RuleType.Action,
+					objectTypes: ['map'],
+					properties: ANY,
+					description: `${COLLECTION_PREFIX}prop1|${ANY_DISPLAY}|prop2`,
+					next: {
+						type: RuleType.Action,
+						objectTypes: ['map'],
+						properties: ANY,
+						description: COLLECTION_PREFIX + ANY_DISPLAY,
+					},
+				},
+			},
+		})
 	})
 
 	it('mapKeys', function() {
