@@ -1130,4 +1130,6 @@ export class SortedList<T> extends ListChangedObject<T> implements IListChangedO
 	public static readonly compareDefault: ICompare<any> = compareFast
 
 	// endregion
+
+	public readonly [Symbol.toStringTag]: string = 'List'
 }

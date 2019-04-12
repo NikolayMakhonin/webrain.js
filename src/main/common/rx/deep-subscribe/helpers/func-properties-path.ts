@@ -8,8 +8,9 @@ export function parsePropertiesPathString(
 		getValueFunc = getValueFunc.toString()
 	}
 
+	// noinspection RegExpRedundantEscape
 	const match = getValueFunc
-		.match(/^.*?(?:\(\s*)?(\w+)(?:\s*\))?\s*(?:(?:=>\s*)?{\s*return\s|=>)[\s(]*\1\s*(.*?)[\s;]*}?[\s)]*$/)
+		.match(/^.*?(?:\(\s*)?(\w+)(?:\s*\))?\s*(?:(?:=>\s*)?\{.*?\breturn\s|=>)[\s(]*\1\s*(.*?)[\s;]*\}?[\s)]*$/s)
 
 	const path = match && match[2]
 

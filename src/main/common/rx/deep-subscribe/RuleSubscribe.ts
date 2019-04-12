@@ -1,10 +1,10 @@
 /* tslint:disable:no-identical-functions */
 import {IListChanged, ListChangedType} from '../../lists/contracts/IListChanged'
-import {IMapChanged} from '../../lists/contracts/IMapChanged'
+import {IMapChanged, MapChangedType} from '../../lists/contracts/IMapChanged'
 import {IPropertyChanged} from '../../lists/contracts/IPropertyChanged'
-import {ISetChanged} from '../../lists/contracts/ISetChanged'
+import {ISetChanged, SetChangedType} from '../../lists/contracts/ISetChanged'
 import {IUnsubscribe} from '../subjects/subject'
-import {ANY, ANY_DISPLAY, COLLECTION_PREFIX} from './contracts/constants'
+import {ANY, COLLECTION_PREFIX} from './contracts/constants'
 import {IRuleSubscribe, ISubscribeObject} from './contracts/rule-subscribe'
 import {IRule, RuleType} from './contracts/rules'
 
@@ -27,10 +27,14 @@ function subscribeObject<TValue>(
 
 	if (propertyChanged) {
 		unsubscribe = propertyChanged
-			.subscribe(event => {
-				if (!propertyPredicate || propertyPredicate(event.name, object)) {
-					unsubscribeItem(event.oldValue, event.name + '')
-					subscribeItem(event.newValue, event.name + '')
+			.subscribe(({name, oldValue, newValue}) => {
+				if (!propertyPredicate || propertyPredicate(name, object)) {
+					if (typeof oldValue !== 'undefined') {
+						unsubscribeItem(oldValue, name + '')
+					}
+					if (typeof newValue !== 'undefined') {
+						subscribeItem(newValue, name + '')
+					}
 				}
 			})
 	}
@@ -84,7 +88,7 @@ function subscribeIterable<TItem>(
 
 	function forEach(callbackfn: (item: TItem, debugPropertyName: string) => void) {
 		for (const item of object) {
-			callbackfn(item, ANY_DISPLAY)
+			callbackfn(item, COLLECTION_PREFIX)
 		}
 	}
 
@@ -117,25 +121,29 @@ function subscribeList<TItem>(
 				switch (type) {
 					case ListChangedType.Added:
 						for (let i = 0, len = newItems.length; i < len; i++) {
-							subscribeItem(newItems[i], ANY_DISPLAY)
+							subscribeItem(newItems[i], COLLECTION_PREFIX)
 						}
 						break
 					case ListChangedType.Removed:
 						for (let i = 0, len = oldItems.length; i < len; i++) {
-							unsubscribeItem(oldItems[i], ANY_DISPLAY)
+							unsubscribeItem(oldItems[i], COLLECTION_PREFIX)
 						}
 						break
 					case ListChangedType.Set:
-						unsubscribeItem(oldItems[0], ANY_DISPLAY)
-						subscribeItem(newItems[0], ANY_DISPLAY)
+						unsubscribeItem(oldItems[0], COLLECTION_PREFIX)
+						subscribeItem(newItems[0], COLLECTION_PREFIX)
 						break
 				}
 			})
 	}
 
+	if (object[Symbol.toStringTag] !== 'List') {
+		return unsubscribe
+	}
+
 	function forEach(callbackfn: (item: TItem, debugPropertyName: string) => void) {
 		for (const item of object) {
-			callbackfn(item, ANY_DISPLAY)
+			callbackfn(item, COLLECTION_PREFIX)
 		}
 	}
 
@@ -167,19 +175,29 @@ function subscribeSet<TItem>(
 	let unsubscribe
 	if (setChanged) {
 		unsubscribe = setChanged
-			.subscribe(({oldItems, newItems}) => {
-				for (let i = 0, len = oldItems.length; i < len; i++) {
-					unsubscribeItem(oldItems[i], ANY_DISPLAY)
-				}
-				for (let i = 0, len = newItems.length; i < len; i++) {
-					subscribeItem(newItems[i], ANY_DISPLAY)
+			.subscribe(({type, oldItems, newItems}) => {
+				switch (type) {
+					case SetChangedType.Added:
+						for (let i = 0, len = newItems.length; i < len; i++) {
+							subscribeItem(newItems[i], COLLECTION_PREFIX)
+						}
+						break
+					case SetChangedType.Removed:
+						for (let i = 0, len = oldItems.length; i < len; i++) {
+							unsubscribeItem(oldItems[i], COLLECTION_PREFIX)
+						}
+						break
 				}
 			})
 	}
 
+	if (object[Symbol.toStringTag] !== 'Set' && !(object instanceof Set)) {
+		return unsubscribe
+	}
+
 	function forEach(callbackfn: (item: TItem, debugPropertyName: string) => void) {
 		for (const item of object) {
-			callbackfn(item, ANY_DISPLAY)
+			callbackfn(item, COLLECTION_PREFIX)
 		}
 	}
 
@@ -214,12 +232,26 @@ function subscribeMap<K, V>(
 
 	if (mapChanged) {
 		unsubscribe = mapChanged
-			.subscribe(({key, oldValue, newValue}) => {
+			.subscribe(({type, key, oldValue, newValue}) => {
 				if (!keyPredicate || keyPredicate(key, object)) {
-					unsubscribeItem(oldValue, COLLECTION_PREFIX + key)
-					subscribeItem(newValue, COLLECTION_PREFIX + key)
+					switch (type) {
+						case MapChangedType.Added:
+							subscribeItem(newValue, COLLECTION_PREFIX + key)
+							break
+						case MapChangedType.Removed:
+							unsubscribeItem(oldValue, COLLECTION_PREFIX + key)
+							break
+						case MapChangedType.Set:
+							unsubscribeItem(oldValue, COLLECTION_PREFIX + key)
+							subscribeItem(newValue, COLLECTION_PREFIX + key)
+							break
+					}
 				}
 			})
+	}
+
+	if (object[Symbol.toStringTag] !== 'Map' && !(object instanceof Map)) {
+		return unsubscribe
 	}
 
 	function forEach(callbackfn: (item: V, debugPropertyName: string) => void) {
@@ -310,7 +342,6 @@ function createPropertyPredicate(propertyNames: string[]) {
 
 		return (propName: string, object) => {
 			return propName === propertyName
-				// && Object.prototype.hasOwnProperty.call(object, propName)
 		}
 	} else {
 		const propertyNamesMap = {}
@@ -326,7 +357,6 @@ function createPropertyPredicate(propertyNames: string[]) {
 
 		return (propName: string, object) => {
 			return !!propertyNamesMap[propName]
-				// && Object.prototype.hasOwnProperty.call(object, propName)
 		}
 	}
 }
@@ -383,7 +413,6 @@ function createKeyPredicate<TKey>(keys: TKey[]) {
 
 		return (k: TKey, object) => {
 			return k === key
-				&& object.has(k)
 		}
 	} else {
 		for (let i = 0, len = keys.length; i < len; i++) {
@@ -395,8 +424,7 @@ function createKeyPredicate<TKey>(keys: TKey[]) {
 		}
 
 		return (k: TKey, object) => {
-			return object.has(k)
-				&& keys.indexOf(k) >= 0
+			return keys.indexOf(k) >= 0
 		}
 	}
 }

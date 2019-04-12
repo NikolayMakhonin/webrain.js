@@ -52,7 +52,7 @@ export class ArraySet<T extends Object> implements Set<T> {
 		return this
 	}
 
-	public readonly [Symbol.toStringTag]: 'Set'
+	public readonly [Symbol.toStringTag]: string = 'Set'
 	public get size(): number {
 		return this._size
 	}

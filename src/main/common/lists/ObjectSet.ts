@@ -32,7 +32,7 @@ export class ObjectSet implements Set<string> {
 		return this
 	}
 
-	public readonly [Symbol.toStringTag]: 'Set'
+	public readonly [Symbol.toStringTag]: string = 'Set'
 	public get size(): number {
 		return Object.keys(this._object).length
 	}

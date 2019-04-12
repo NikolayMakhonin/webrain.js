@@ -12,6 +12,7 @@ import {RuleBuilder} from '../../../../../../main/common/rx/deep-subscribe/RuleB
 import {ObservableObjectBuilder} from '../../../../../../main/common/rx/object/ObservableObjectBuilder'
 import {ObjectSet} from "../../../../../../main/common/lists/ObjectSet";
 import {ObservableSet} from "../../../../../../main/common/lists/ObservableSet";
+import {SortedList} from "../../../../../../main/common/lists/SortedList";
 
 declare const assert
 
@@ -49,6 +50,7 @@ describe('common > main > rx > deep-subscribe > RuleBuilder', function() {
 
 	function testSubscribe<TObject>(
 		isCollection: boolean,
+		isMap: boolean,
 		nonObservableObject: TObject,
 		observableObject: TObject,
 		subscribe: ISubscribeObject<TObject, string>,
@@ -74,21 +76,17 @@ describe('common > main > rx > deep-subscribe > RuleBuilder', function() {
 			if (isCollection) {
 				assert.strictEqual(debugPropertyName[0], COLLECTION_PREFIX)
 				debugPropertyName = debugPropertyName.substring(1)
-			} else if (debugPropertyName === ANY) {
-				assert.ok(value.startsWith('value_'))
-				return
 			}
 
-			assert.strictEqual('value_' + debugPropertyName, value)
+			if (isMap) {
+				assert.strictEqual('value_' + debugPropertyName, value)
+			}
 		}
 
 		let subscribedItems = []
 
 		function subscribeItem(value: string, debugPropertyName: string) {
-			if (typeof value === 'undefined') {
-				subscribedItems.push('+' + value)
-				return
-			}
+			assert.ok(value)
 			assert.strictEqual(typeof value, 'string', value)
 			value = value.trim()
 			checkDebugPropertyName(value, debugPropertyName)
@@ -97,10 +95,7 @@ describe('common > main > rx > deep-subscribe > RuleBuilder', function() {
 
 		// tslint:disable-next-line:no-identical-functions
 		function unsubscribeItem(value: string, debugPropertyName: string) {
-			if (typeof value === 'undefined') {
-				subscribedItems.push('-' + value)
-				return
-			}
+			assert.ok(value)
 			value = value.trim()
 			checkDebugPropertyName(value, debugPropertyName)
 			subscribedItems.push('-' + value)
@@ -196,7 +191,7 @@ describe('common > main > rx > deep-subscribe > RuleBuilder', function() {
 					for (const property of subscribeProperties) {
 						add(observableObject, property)
 						assert.deepStrictEqual(subscribedItems, [
-							'-undefined',
+							// '-undefined',
 							'+value_' + property,
 						])
 						subscribedItems = []
@@ -232,7 +227,7 @@ describe('common > main > rx > deep-subscribe > RuleBuilder', function() {
 						remove(observableObject, property, false)
 						assert.deepStrictEqual(subscribedItems, [
 							'-value_' + property,
-							'+undefined',
+							// '+undefined',
 						])
 						subscribedItems = []
 					}
@@ -258,7 +253,10 @@ describe('common > main > rx > deep-subscribe > RuleBuilder', function() {
 
 	function testObject(properties: string | string[], subscribe: ISubscribeObject<any, string>) {
 		const builder = new ObservableObjectBuilder()
-			// .writable(nonSubscribeProperty)
+
+		if (properties !== ANY) {
+			builder.writable(nonSubscribeProperty, null, 'value_' + nonSubscribeProperty)
+		}
 
 		function add(object, property) {
 			if (object.propertyChanged) {
@@ -285,13 +283,13 @@ describe('common > main > rx > deep-subscribe > RuleBuilder', function() {
 		}
 
 		testSubscribe(
-			false,
+			false, true,
 			{...builder.object},
 			builder.object,
 			subscribe,
-			[nonSubscribeProperty, ...properties],
+			[nonSubscribeProperty, ...(properties === ANY ? [] : properties)],
 			properties === ANY
-				? [nonSubscribeProperty, ...properties]
+				? [nonSubscribeProperty]
 				: properties as string[],
 			add,
 			change,
@@ -299,11 +297,11 @@ describe('common > main > rx > deep-subscribe > RuleBuilder', function() {
 		)
 
 		testSubscribe(
-			false,
+			false, true,
 			Object.create({...builder.object}),
 			Object.create(builder.object),
 			subscribe,
-			[nonSubscribeProperty, ...properties],
+			[nonSubscribeProperty, ...(properties === ANY ? [] : properties)],
 			[],
 			(object, property) => {
 				Object.defineProperty(object, property, {
@@ -339,13 +337,13 @@ describe('common > main > rx > deep-subscribe > RuleBuilder', function() {
 		}
 
 		testSubscribe(
-			false,
+			false, true,
 			object,
 			null,
 			subscribe,
-			[nonSubscribeProperty, ...(properties === ANY ? Object.keys(object) : properties)],
+			[nonSubscribeProperty, ...(properties === ANY ? [] : properties)],
 			properties === ANY
-				? Object.keys(object)
+				? [nonSubscribeProperty]
 				: properties as string[],
 			change,
 			change,
@@ -356,8 +354,11 @@ describe('common > main > rx > deep-subscribe > RuleBuilder', function() {
 	function testMap(properties: string | string[], subscribe: ISubscribeObject<any, string>) {
 		const map = new ObjectMap<string>()
 		const observableMap = new ObservableMap(new ObjectMap<string>())
-		map.set(nonSubscribeProperty, 'value_' + nonSubscribeProperty)
-		observableMap.set(nonSubscribeProperty, 'value_' + nonSubscribeProperty)
+
+		if (properties !== ANY) {
+			map.set(nonSubscribeProperty, 'value_' + nonSubscribeProperty)
+			observableMap.set(nonSubscribeProperty, 'value_' + nonSubscribeProperty)
+		}
 
 		function change(object, property) {
 			object.set(property, object.get(property)
@@ -370,36 +371,13 @@ describe('common > main > rx > deep-subscribe > RuleBuilder', function() {
 		}
 
 		testSubscribe(
-			true,
+			true, true,
 			map,
 			observableMap,
 			subscribe,
+			[nonSubscribeProperty, ...(properties === ANY ? [] : properties)],
 			properties === ANY
-				? []
-				: [nonSubscribeProperty],
-			properties === ANY
-				? Array.from(map.keys())
-				: [],
-			change,
-			change,
-			remove,
-		)
-
-		for (const property of properties) {
-			map.set(property, 'value_' + property)
-			observableMap.set(property, 'value_' + property)
-		}
-
-		testSubscribe(
-			true,
-			map,
-			observableMap,
-			subscribe,
-			properties === ANY
-				? []
-				: [nonSubscribeProperty],
-			properties === ANY
-				? Array.from(map.keys())
+				? [nonSubscribeProperty]
 				: properties as string[],
 			change,
 			change,
@@ -409,49 +387,116 @@ describe('common > main > rx > deep-subscribe > RuleBuilder', function() {
 
 	function testSet(properties: string | string[], subscribe: ISubscribeObject<any, string>) {
 		const set = new ObjectSet()
-		const observableSet = new ObservableSet<string>(new ObjectSet())
+		const observableSet = new ObservableSet(new ObjectSet())
 
-		function change(object, property) {
-			object.set(property, object.get(property)
-				? object.get(property) + ' '
-				: 'value_' + property)
+		function add(object, property) {
+			object.add('value_' + property)
 		}
 
 		function remove(object, property) {
-			object.delete(property)
+			object.delete('value_' + property)
 		}
 
 		testSubscribe(
-			true,
-			map,
-			observableMap,
+			true, false,
+			set,
+			observableSet,
 			subscribe,
-			properties === ANY
-				? []
-				: [nonSubscribeProperty],
-			properties === ANY
-				? Array.from(map.keys())
-				: [],
+			[],
+			['p1', 'p2', 'p3'],
+			add,
+			null,
+			remove,
+		)
+	}
+
+	function testIterable(properties: string | string[], subscribe: ISubscribeObject<any, string>) {
+		const array = []
+
+		// tslint:disable-next-line:no-identical-functions
+		function add(object, property) {
+			object.push('value_' + property)
+		}
+
+		function change(object, property) {
+			for (let i = object.length - 1; i >= 0; i--) {
+				if (object[i].trim() === 'value_' + property) {
+					object[i] += ' '
+					return
+				}
+			}
+		}
+
+		function remove(object, property) {
+			for (let i = object.length - 1; i >= 0; i--) {
+				if (object[i].trim() === 'value_' + property) {
+					object.splice(i, 1)
+					return
+				}
+			}
+		}
+
+		testSubscribe(
+			true, false,
+			array,
+			null,
+			subscribe,
+			[],
+			['p1', 'p2', 'p3'],
+			add,
 			change,
 			remove,
 		)
+	}
 
-		for (const property of properties) {
-			map.set(property, 'value_' + property)
-			observableMap.set(property, 'value_' + property)
+	function testList(properties: string | string[], subscribe: ISubscribeObject<any, string>) {
+		const list = new SortedList({
+			autoSort: true,
+			notAddIfExists: true,
+		})
+		// @ts-ignore
+		Object.defineProperty(list, 'listChanged', {
+			configurable: true,
+			writable: true,
+			value: null,
+		})
+
+		const observableList = new SortedList({
+			autoSort: true,
+			notAddIfExists: true,
+		})
+
+		// tslint:disable-next-line:no-identical-functions
+		function add(object, property) {
+			object.add('value_' + property)
+		}
+
+		function change(object, property) {
+			for (let i = object.size - 1; i >= 0; i--) {
+				if (object.get(i).trim() === 'value_' + property) {
+					object.set(i, object.get(i) + ' ')
+					return
+				}
+			}
+		}
+
+		function remove(object, property) {
+			for (let i = object.size - 1; i >= 0; i--) {
+				if (object.get(i).trim() === 'value_' + property) {
+					object.removeAt(i)
+					return
+				}
+			}
 		}
 
 		testSubscribe(
-			true,
-			map,
-			observableMap,
+			true, false,
+			list,
+			observableList,
 			subscribe,
-			properties === ANY
-				? []
-				: [nonSubscribeProperty],
-			properties === ANY
-				? Array.from(map.keys())
-				: properties as string[],
+			[],
+			['p1', 'p2', 'p3'],
+			add,
 			change,
 			remove,
 		)
@@ -496,10 +541,16 @@ describe('common > main > rx > deep-subscribe > RuleBuilder', function() {
 						testArray(expected.properties, rule.subscribe)
 						break
 					case 'map':
-					case 'set':
-					case 'list':
-					case 'iterable':
 						testMap(expected.properties, rule.subscribe)
+						break
+					case 'list':
+						testList(expected.properties, rule.subscribe)
+						break
+					case 'iterable':
+						testIterable(expected.properties, rule.subscribe)
+						break
+					case 'set':
+						testSet(expected.properties, rule.subscribe)
 						break
 					default:
 						assert.fail('Unknown objectType: ' + objectType)
@@ -988,6 +1039,67 @@ describe('common > main > rx > deep-subscribe > RuleBuilder', function() {
 					objectTypes: ['map'],
 					properties: ['prop3', 'prop4', 'prop5'],
 					description: COLLECTION_PREFIX + 'prop3|prop4|prop5',
+				},
+			},
+		})
+
+		// noinspection JSUnusedLocalSymbols
+		const rule3 = builder3.rule.next.next as IRuleProperty
+	})
+
+	it('collection', function() {
+		const builder = new RuleBuilder<IObject>()
+		assert.strictEqual(builder.rule, undefined)
+
+		const builder1 = builder.collection()
+		const rule1 = builder1.rule as IRuleProperty
+		assert.strictEqual(builder1 as any, builder)
+
+		assertRule(rule1, {
+			type: RuleType.Action,
+			objectTypes: ['set'],
+			properties: ANY,
+			description: COLLECTION_PREFIX,
+		})
+
+		const builder2 = builder.collection<string>()
+		checkType<string>(builder2)
+		assert.strictEqual(builder2 as any, builder)
+		assert.strictEqual(builder2.rule, rule1)
+
+		assertRule(rule1, {
+			type: RuleType.Action,
+			objectTypes: ['map', 'set', 'list', 'iterable'],
+			properties: ANY,
+			description: COLLECTION_PREFIX,
+			next: {
+				type: RuleType.Action,
+				objectTypes: ['set'],
+				properties: ANY,
+				description: COLLECTION_PREFIX,
+			},
+		})
+
+		const builder3 = builder.collection<boolean>()
+		checkType<boolean>(builder3)
+		assert.strictEqual(builder3 as any, builder)
+		assert.strictEqual(builder3.rule, rule1)
+
+		assertRule(rule1, {
+			type: RuleType.Action,
+			objectTypes: ['set'],
+			properties: ANY,
+			description: COLLECTION_PREFIX,
+			next: {
+				type: RuleType.Action,
+				objectTypes: ['set'],
+				properties: ANY,
+				description: COLLECTION_PREFIX,
+				next: {
+					type: RuleType.Action,
+					objectTypes: ['set'],
+					properties: ANY,
+					description: COLLECTION_PREFIX,
 				},
 			},
 		})

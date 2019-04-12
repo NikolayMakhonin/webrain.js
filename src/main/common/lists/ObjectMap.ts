@@ -32,7 +32,7 @@ export class ObjectMap<V> implements Map<string, V> {
 		return true
 	}
 
-	public readonly [Symbol.toStringTag]: 'Map'
+	public readonly [Symbol.toStringTag]: string = 'Map'
 	public get size(): number {
 		return Object.keys(this._object).length
 	}
