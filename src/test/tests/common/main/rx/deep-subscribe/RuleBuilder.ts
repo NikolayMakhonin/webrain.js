@@ -289,12 +289,17 @@ describe('common > main > rx > deep-subscribe > RuleBuilder', function() {
 			subscribe,
 			[nonSubscribeProperty, ...(properties === ANY ? [] : properties)],
 			properties === ANY
-				? [nonSubscribeProperty]
+				? [nonSubscribeProperty, 'p1', 'p2', 'p3']
 				: properties as string[],
 			add,
 			change,
 			remove,
 		)
+
+		builder
+			.writable('p1', null, 'value_p1')
+			.writable('p2', null, 'value_p2')
+			.writable('p3', null, 'value_p3')
 
 		testSubscribe(
 			false, true,
@@ -377,7 +382,7 @@ describe('common > main > rx > deep-subscribe > RuleBuilder', function() {
 			subscribe,
 			[nonSubscribeProperty, ...(properties === ANY ? [] : properties)],
 			properties === ANY
-				? [nonSubscribeProperty]
+				? [nonSubscribeProperty, 'p1', 'p2', 'p3']
 				: properties as string[],
 			change,
 			change,
