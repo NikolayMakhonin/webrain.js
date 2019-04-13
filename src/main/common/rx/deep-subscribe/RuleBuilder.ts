@@ -1,6 +1,6 @@
 import {ANY, ANY_DISPLAY, COLLECTION_PREFIX} from './contracts/constants'
 import {IRuleSubscribe} from './contracts/rule-subscribe'
-import {IRule, IRuleAny, IRuleProperty, IRuleRepeat, RuleType} from './contracts/rules'
+import {IRule, IRuleAny, IRuleRepeat, RuleType} from './contracts/rules'
 import {getFuncPropertiesPath} from './helpers/func-properties-path'
 import {RuleSubscribeCollection, RuleSubscribeMap, RuleSubscribeObject} from './RuleSubscribe'
 

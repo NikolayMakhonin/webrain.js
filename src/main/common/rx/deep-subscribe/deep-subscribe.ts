@@ -4,9 +4,10 @@ import {IPropertyChanged} from '../../lists/contracts/IPropertyChanged'
 import {ISetChanged} from '../../lists/contracts/ISetChanged'
 import {IObservable} from '../subjects/observable'
 import {IUnsubscribe} from '../subjects/subject'
-import {IRule, IRuleProperty} from './contracts/rules'
+import {IRule} from './contracts/rules'
 import {subscribeChilds} from './helpers/subscribe-childs'
 import {IRuleOrIterable, iterateRule} from './iterate-rule'
+import {IRuleSubscribe} from "./contracts/rule-subscribe";
 
 export interface IDeepSubscribeOptions {
 
@@ -57,7 +58,7 @@ function *_deepSubscribe<TValue>(
 			}
 		}
 	} else {
-		const rule = ruleOrIterable as IRuleProperty
+		const rule = ruleOrIterable as IRuleSubscribe
 		const unsubscribers = new ArraySet<IUnsubscribe>()
 
 		function subscribeItem(item, debugPropertyName: string) {

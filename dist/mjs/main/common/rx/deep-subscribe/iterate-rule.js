@@ -7,7 +7,7 @@ _regeneratorRuntime.mark(iterateRule);
 import { RuleType } from './contracts/rules';
 export function iterateRule(rule) {
   var next,
-      nextRule,
+      ruleNext,
       _ref,
       rules,
       any,
@@ -40,7 +40,7 @@ export function iterateRule(rule) {
           return _context3.abrupt("return");
 
         case 5:
-          nextRule = function nextRule() {
+          ruleNext = function ruleNext() {
             return iterateRule(rule.next, next);
           };
 
@@ -53,7 +53,7 @@ export function iterateRule(rule) {
           return rule;
 
         case 11:
-          return _context3.delegateYield(nextRule(), "t2", 12);
+          return _context3.delegateYield(ruleNext(), "t2", 12);
 
         case 12:
           return _context3.abrupt("break", 23);
@@ -77,7 +77,7 @@ export function iterateRule(rule) {
                     }
 
                     _context.next = 4;
-                    return iterateRule(rules[i], nextRule);
+                    return iterateRule(rules[i], ruleNext);
 
                   case 4:
                     i++;
@@ -112,15 +112,15 @@ export function iterateRule(rule) {
                       break;
                     }
 
-                    return _context2.delegateYield(nextRule(), "t0", 2);
+                    return _context2.delegateYield(ruleNext(), "t0", 2);
 
                   case 2:
                     return _context2.abrupt("return");
 
                   case 3:
-                    nextIteration = function nextIteration() {
+                    nextIteration = function nextIteration(newCount) {
                       return iterateRule(subRule, function () {
-                        return repeatNext(count + 1);
+                        return repeatNext(newCount);
                       });
                     };
 
@@ -129,7 +129,7 @@ export function iterateRule(rule) {
                       break;
                     }
 
-                    return _context2.delegateYield(nextIteration(), "t1", 6);
+                    return _context2.delegateYield(nextIteration(count + 1), "t1", 6);
 
                   case 6:
                     _context2.next = 10;
@@ -137,7 +137,7 @@ export function iterateRule(rule) {
 
                   case 8:
                     _context2.next = 10;
-                    return [nextRule(), nextIteration()];
+                    return [ruleNext(), nextIteration(count + 1)];
 
                   case 10:
                   case "end":
@@ -160,4 +160,60 @@ export function iterateRule(rule) {
       }
     }
   }, _marked);
+}
+export function subscribeNextRule(ruleIterator, fork, subscribeNode, subscribeLeaf) {
+  var iteration = ruleIterator.next();
+
+  if (iteration.done) {
+    return subscribeLeaf();
+  }
+
+  var ruleOrIterable = iteration.value;
+
+  if (ruleOrIterable[Symbol.iterator]) {
+    var unsubscribers;
+    var _iteratorNormalCompletion = true;
+    var _didIteratorError = false;
+    var _iteratorError = undefined;
+
+    try {
+      for (var _iterator = ruleOrIterable[Symbol.iterator](), _step; !(_iteratorNormalCompletion = (_step = _iterator.next()).done); _iteratorNormalCompletion = true) {
+        var ruleIterable = _step.value;
+        var unsubscribe = fork(ruleIterable[Symbol.iterator]());
+
+        if (unsubscribe != null) {
+          if (!unsubscribers) {
+            unsubscribers = [unsubscribe];
+          } else {
+            unsubscribers.push(unsubscribe);
+          }
+        }
+      }
+    } catch (err) {
+      _didIteratorError = true;
+      _iteratorError = err;
+    } finally {
+      try {
+        if (!_iteratorNormalCompletion && _iterator.return != null) {
+          _iterator.return();
+        }
+      } finally {
+        if (_didIteratorError) {
+          throw _iteratorError;
+        }
+      }
+    }
+
+    if (!unsubscribers) {
+      return null;
+    }
+
+    return function () {
+      for (var i = 0, len = unsubscribers.length; i < len; i++) {
+        unsubscribers[i]();
+      }
+    };
+  }
+
+  return subscribeNode(ruleOrIterable);
 }

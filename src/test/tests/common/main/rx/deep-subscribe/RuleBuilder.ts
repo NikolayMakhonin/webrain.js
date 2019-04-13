@@ -1,18 +1,18 @@
 /* tslint:disable:no-shadowed-variable no-duplicate-string */
 /* eslint-disable no-useless-escape,computed-property-spacing */
 import {ObjectMap} from '../../../../../../main/common/lists/ObjectMap'
+import {ObjectSet} from '../../../../../../main/common/lists/ObjectSet'
 import {ObservableMap} from '../../../../../../main/common/lists/ObservableMap'
+import {ObservableSet} from '../../../../../../main/common/lists/ObservableSet'
+import {SortedList} from '../../../../../../main/common/lists/SortedList'
 import {ANY, ANY_DISPLAY, COLLECTION_PREFIX} from '../../../../../../main/common/rx/deep-subscribe/contracts/constants'
 import {
 	IRuleSubscribe,
 	ISubscribeObject,
 } from '../../../../../../main/common/rx/deep-subscribe/contracts/rule-subscribe'
-import {IRule, IRuleProperty, RuleType} from '../../../../../../main/common/rx/deep-subscribe/contracts/rules'
+import {IRule, RuleType} from '../../../../../../main/common/rx/deep-subscribe/contracts/rules'
 import {RuleBuilder} from '../../../../../../main/common/rx/deep-subscribe/RuleBuilder'
 import {ObservableObjectBuilder} from '../../../../../../main/common/rx/object/ObservableObjectBuilder'
-import {ObjectSet} from "../../../../../../main/common/lists/ObjectSet";
-import {ObservableSet} from "../../../../../../main/common/lists/ObservableSet";
-import {SortedList} from "../../../../../../main/common/lists/SortedList";
 
 declare const assert
 
@@ -735,7 +735,7 @@ describe('common > main > rx > deep-subscribe > RuleBuilder', function() {
 		assert.strictEqual(builder.rule, undefined)
 
 		const builder1 = builder.propertyRegexp(/prop1|prop2/)
-		const rule1 = builder1.rule as IRuleProperty
+		const rule1 = builder1.rule as IRuleSubscribe
 		assert.strictEqual(builder1 as any, builder)
 
 		assertRule(rule1, {
@@ -788,7 +788,7 @@ describe('common > main > rx > deep-subscribe > RuleBuilder', function() {
 		})
 
 		// noinspection JSUnusedLocalSymbols
-		const rule3 = builder3.rule.next.next as IRuleProperty
+		const rule3 = builder3.rule.next.next as IRuleSubscribe
 	})
 
 	it('propertyAll', function() {
@@ -796,7 +796,7 @@ describe('common > main > rx > deep-subscribe > RuleBuilder', function() {
 		assert.strictEqual(builder.rule, undefined)
 
 		const builder1 = builder.propertyAll()
-		const rule1 = builder1.rule as IRuleProperty
+		const rule1 = builder1.rule as IRuleSubscribe
 		assert.strictEqual(builder1 as any, builder)
 
 		assertRule(rule1, {
@@ -849,7 +849,7 @@ describe('common > main > rx > deep-subscribe > RuleBuilder', function() {
 		})
 
 		// noinspection JSUnusedLocalSymbols
-		const rule3 = builder3.rule.next.next as IRuleProperty
+		const rule3 = builder3.rule.next.next as IRuleSubscribe
 	})
 
 	it('propertyNames', function() {
@@ -859,7 +859,7 @@ describe('common > main > rx > deep-subscribe > RuleBuilder', function() {
 		assert.strictEqual(builder.rule, undefined)
 
 		const builder1 = builder.propertyNames('prop1')
-		const rule1 = builder1.rule as IRuleProperty
+		const rule1 = builder1.rule as IRuleSubscribe
 		assert.strictEqual(builder1 as any, builder)
 
 		assertRule(rule1, {
@@ -912,7 +912,7 @@ describe('common > main > rx > deep-subscribe > RuleBuilder', function() {
 		})
 
 		// noinspection JSUnusedLocalSymbols
-		const rule3 = builder3.rule.next.next as IRuleProperty
+		const rule3 = builder3.rule.next.next as IRuleSubscribe
 	})
 
 	it('map', function() {
@@ -931,7 +931,7 @@ describe('common > main > rx > deep-subscribe > RuleBuilder', function() {
 		assert.strictEqual(builder.rule, undefined)
 
 		const builder1 = builder.mapRegexp(/prop1|prop2/)
-		const rule1 = builder1.rule as IRuleProperty
+		const rule1 = builder1.rule as IRuleSubscribe
 		assert.strictEqual(builder1 as any, builder)
 
 		assertRule(rule1, {
@@ -984,7 +984,7 @@ describe('common > main > rx > deep-subscribe > RuleBuilder', function() {
 		})
 
 		// noinspection JSUnusedLocalSymbols
-		const rule3 = builder3.rule.next.next as IRuleProperty
+		const rule3 = builder3.rule.next.next as IRuleSubscribe
 	})
 
 	it('mapAll', function() {
@@ -992,7 +992,7 @@ describe('common > main > rx > deep-subscribe > RuleBuilder', function() {
 		assert.strictEqual(builder.rule, undefined)
 
 		const builder1 = builder.mapAll()
-		const rule1 = builder1.rule as IRuleProperty
+		const rule1 = builder1.rule as IRuleSubscribe
 		assert.strictEqual(builder1 as any, builder)
 
 		assertRule(rule1, {
@@ -1082,7 +1082,7 @@ describe('common > main > rx > deep-subscribe > RuleBuilder', function() {
 		assert.strictEqual(builder.rule, undefined)
 
 		const builder1 = builder.mapKeys('prop1')
-		const rule1 = builder1.rule as IRuleProperty
+		const rule1 = builder1.rule as IRuleSubscribe
 		assert.strictEqual(builder1 as any, builder)
 
 		assertRule(rule1, {
@@ -1135,7 +1135,7 @@ describe('common > main > rx > deep-subscribe > RuleBuilder', function() {
 		})
 
 		// noinspection JSUnusedLocalSymbols
-		const rule3 = builder3.rule.next.next as IRuleProperty
+		const rule3 = builder3.rule.next.next as IRuleSubscribe
 	})
 
 	it('collection', function() {
@@ -1143,7 +1143,7 @@ describe('common > main > rx > deep-subscribe > RuleBuilder', function() {
 		assert.strictEqual(builder.rule, undefined)
 
 		const builder1 = builder.collection()
-		const rule1 = builder1.rule as IRuleProperty
+		const rule1 = builder1.rule as IRuleSubscribe
 		assert.strictEqual(builder1 as any, builder)
 
 		assertRule(rule1, {
@@ -1196,7 +1196,7 @@ describe('common > main > rx > deep-subscribe > RuleBuilder', function() {
 		})
 
 		// noinspection JSUnusedLocalSymbols
-		const rule3 = builder3.rule.next.next as IRuleProperty
+		const rule3 = builder3.rule.next.next as IRuleSubscribe
 	})
 
 	it('repeat', function() {

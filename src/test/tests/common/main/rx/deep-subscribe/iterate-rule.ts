@@ -1,12 +1,13 @@
-/* tslint:disable:no-shadowed-variable */
+/* tslint:disable:no-shadowed-variable no-empty */
 /* eslint-disable no-useless-escape,computed-property-spacing */
 import {IRule, RuleType} from '../../../../../../main/common/rx/deep-subscribe/contracts/rules'
+import {IRuleIterable, IRuleOrIterable, iterateRule, subscribeNextRule} from '../../../../../../main/common/rx/deep-subscribe/iterate-rule'
 import {RuleBuilder} from '../../../../../../main/common/rx/deep-subscribe/RuleBuilder'
-import {IRuleIterable, IRuleOrIterable, iterateRule} from '../../../../../../main/common/rx/deep-subscribe/iterate-rule'
+import {IUnsubscribe} from "../../../../../../main/common/rx/subjects/subject";
 
 declare const assert
 
-describe('common > main > rx > deep-subscribe > RuleState', function() {
+describe('common > main > rx > deep-subscribe > iterate-rule', function() {
 	function ruleToString(rule: IRule) {
 		if (!rule) {
 			return rule + ''
@@ -33,43 +34,43 @@ describe('common > main > rx > deep-subscribe > RuleState', function() {
 
 	const endObject = { _end: true }
 
-	function rulesToObject(ruleIterator: Iterator<IRuleOrIterable>): any {
-		const iteration = ruleIterator.next()
-		if (iteration.done) {
-			return endObject
-		}
+	function rulesToObject(ruleIterator: Iterator<IRuleOrIterable>, obj: any = {}): IUnsubscribe {
+		return subscribeNextRule(
+			ruleIterator,
+			nextRuleIterator => rulesToObject(nextRuleIterator, obj),
+			rule => {
+				const newObj = {}
+				const unsubscribe = rulesToObject(ruleIterator, newObj)
+				Object.assign(obj, {[rule.description]: newObj})
+				return unsubscribe
+			},
+			() => {
+				obj._end = true
 
-		const ruleOrIterable = iteration.value
-		let obj: any = {}
-
-		if (ruleOrIterable[Symbol.iterator]) {
-			for (const ruleIterable of ruleOrIterable as Iterable<IRuleOrIterable>) {
-				Object.assign(obj, rulesToObject(ruleIterable[Symbol.iterator]()))
-			}
-		} else {
-			const rule = iteration.value as IRule
-			obj = {[rule.description]: rulesToObject(ruleIterator)}
-		}
-
-		return obj
+				return () => {
+					obj._end = false
+				}
+			},
+		)
 	}
 
-	function *objectToPaths(obj, parentPath: string = ''): Iterable<string> {
+	function *objectToPaths(obj, endValue, parentPath: string = ''): Iterable<string> {
 		assert.ok(obj, parentPath)
 
-		if (obj._end) {
+		if (obj._end === endValue) {
 			yield parentPath
-		}
 
-		if (obj === endObject) {
-			return
+			const keys = Object.keys(obj)
+			if (keys.length === 1 && keys[0] === '_end') {
+				return
+			}
 		}
 
 		let count = 0
 		for (const key in obj) {
 			if (key !== '_end' && Object.prototype.hasOwnProperty.call(obj, key)) {
 				count++
-				yield* objectToPaths(obj[key], (parentPath ? parentPath + '.' : '') + key)
+				yield* objectToPaths(obj[key], endValue, (parentPath ? parentPath + '.' : '') + key)
 			}
 		}
 
@@ -81,9 +82,15 @@ describe('common > main > rx > deep-subscribe > RuleState', function() {
 	function testIterateRule(buildRule: (builder: RuleBuilder<any>) => RuleBuilder<any>, ...expectedPaths: string[]) {
 		const result = iterateRule(buildRule(new RuleBuilder<any>()).rule)
 		assert.ok(result)
-		const object = rulesToObject(result[Symbol.iterator]())
-		// console.log(JSON.stringify(objectTree, null, 4))
-		const paths = Array.from(objectToPaths(object))
+		const object = {}
+		const unsubscribe = rulesToObject(result[Symbol.iterator](), object)
+		// console.log(JSON.stringify(object, null, 4))
+		let paths = Array.from(objectToPaths(object, true))
+		assert.deepStrictEqual(paths.sort(), expectedPaths.sort(), JSON.stringify(paths, null, 4))
+
+		unsubscribe()
+		// console.log(JSON.stringify(object, null, 4))
+		paths = Array.from(objectToPaths(object, false))
 		assert.deepStrictEqual(paths.sort(), expectedPaths.sort(), JSON.stringify(paths, null, 4))
 	}
 
@@ -168,6 +175,23 @@ describe('common > main > rx > deep-subscribe > RuleState', function() {
 					b => b.path(o => o.a),
 				),
 			'a',
+		)
+
+		testIterateRule(
+			b => b
+				.repeat(2, 2,
+					b => b.path(o => o.a),
+				),
+			'a.a',
+		)
+
+		testIterateRule(
+			b => b
+				.repeat(1, 2,
+					b => b.path(o => o.a),
+				),
+			'a',
+			'a.a',
 		)
 
 		testIterateRule(
@@ -262,5 +286,20 @@ describe('common > main > rx > deep-subscribe > RuleState', function() {
 		assert.throws(() => Array.from(iterateRule({
 			type: -1 as RuleType,
 		})), Error)
+	})
+
+	it('specific', function() {
+		testIterateRule(
+			b => b
+				.any(
+					b => b.path(o => o.a),
+					b => b.any<any>().path(o => o.b),
+					b => b.repeat(1, 1, b => b).path(o => o.c),
+					b => b.repeat(0, 0, b => b.path(o => o.d)).path(o => o.e),
+				),
+			'a',
+			'c',
+			'e',
+		)
 	})
 })

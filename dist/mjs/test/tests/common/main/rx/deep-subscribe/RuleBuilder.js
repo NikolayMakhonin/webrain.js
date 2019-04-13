@@ -6,14 +6,14 @@ import _typeof from "@babel/runtime/helpers/typeof";
 
 /* eslint-disable no-useless-escape,computed-property-spacing */
 import { ObjectMap } from '../../../../../../main/common/lists/ObjectMap';
+import { ObjectSet } from '../../../../../../main/common/lists/ObjectSet';
 import { ObservableMap } from '../../../../../../main/common/lists/ObservableMap';
+import { ObservableSet } from '../../../../../../main/common/lists/ObservableSet';
+import { SortedList } from '../../../../../../main/common/lists/SortedList';
 import { ANY, ANY_DISPLAY, COLLECTION_PREFIX } from '../../../../../../main/common/rx/deep-subscribe/contracts/constants';
 import { RuleType } from '../../../../../../main/common/rx/deep-subscribe/contracts/rules';
 import { RuleBuilder } from '../../../../../../main/common/rx/deep-subscribe/RuleBuilder';
 import { ObservableObjectBuilder } from '../../../../../../main/common/rx/object/ObservableObjectBuilder';
-import { ObjectSet } from "../../../../../../main/common/lists/ObjectSet";
-import { ObservableSet } from "../../../../../../main/common/lists/ObservableSet";
-import { SortedList } from "../../../../../../main/common/lists/SortedList";
 describe('common > main > rx > deep-subscribe > RuleBuilder', function () {
   // noinspection JSUnusedLocalSymbols
   function checkType(builder) {

@@ -12,9 +12,8 @@ export interface IRule {
 	description?: string
 }
 
-export interface IRuleProperty extends IRule {
-	readonly predicate: (propertyName: string, object) => boolean
-	readonly forEachChilds: (object: any, callbackfn: (propertyName: string, value) => void) => void
+// tslint:disable-next-line:no-empty-interface
+export interface IRuleAction extends IRule {
 }
 
 export interface IRuleAny extends IRule {

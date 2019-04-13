@@ -1,5 +1,5 @@
 import {IUnsubscribe} from '../../subjects/subject'
-import {IRule} from './rules'
+import {IRule, IRuleAction} from './rules'
 
 export type ISubscribeObject<TObject, TChild> = (
 	object: TObject,
@@ -8,6 +8,6 @@ export type ISubscribeObject<TObject, TChild> = (
 	unsubscribeItem: (item: TChild, debugPropertyName: string) => void,
 ) => IUnsubscribe
 
-export interface IRuleSubscribe<TObject, TChild> extends IRule {
+export interface IRuleSubscribe<TObject = any, TChild = any> extends IRuleAction {
 	readonly subscribe: ISubscribeObject<TObject, TChild>
 }

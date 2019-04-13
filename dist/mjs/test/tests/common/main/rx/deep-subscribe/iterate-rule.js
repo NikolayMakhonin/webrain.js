@@ -1,13 +1,13 @@
 import _defineProperty from "@babel/runtime/helpers/defineProperty";
 import _regeneratorRuntime from "@babel/runtime/regenerator";
 
-/* tslint:disable:no-shadowed-variable */
+/* tslint:disable:no-shadowed-variable no-empty */
 
 /* eslint-disable no-useless-escape,computed-property-spacing */
 import { RuleType } from '../../../../../../main/common/rx/deep-subscribe/contracts/rules';
+import { iterateRule, subscribeNextRule } from '../../../../../../main/common/rx/deep-subscribe/iterate-rule';
 import { RuleBuilder } from '../../../../../../main/common/rx/deep-subscribe/RuleBuilder';
-import { iterateRule } from '../../../../../../main/common/rx/deep-subscribe/iterate-rule';
-describe('common > main > rx > deep-subscribe > RuleState', function () {
+describe('common > main > rx > deep-subscribe > iterate-rule', function () {
   var _marked =
   /*#__PURE__*/
   _regeneratorRuntime.mark(resolveRules),
@@ -115,49 +115,25 @@ describe('common > main > rx > deep-subscribe > RuleState', function () {
   };
 
   function rulesToObject(ruleIterator) {
-    var iteration = ruleIterator.next();
-
-    if (iteration.done) {
-      return endObject;
-    }
-
-    var ruleOrIterable = iteration.value;
-    var obj = {};
-
-    if (ruleOrIterable[Symbol.iterator]) {
-      var _iteratorNormalCompletion2 = true;
-      var _didIteratorError2 = false;
-      var _iteratorError2 = undefined;
-
-      try {
-        for (var _iterator2 = ruleOrIterable[Symbol.iterator](), _step2; !(_iteratorNormalCompletion2 = (_step2 = _iterator2.next()).done); _iteratorNormalCompletion2 = true) {
-          var ruleIterable = _step2.value;
-          Object.assign(obj, rulesToObject(ruleIterable[Symbol.iterator]()));
-        }
-      } catch (err) {
-        _didIteratorError2 = true;
-        _iteratorError2 = err;
-      } finally {
-        try {
-          if (!_iteratorNormalCompletion2 && _iterator2.return != null) {
-            _iterator2.return();
-          }
-        } finally {
-          if (_didIteratorError2) {
-            throw _iteratorError2;
-          }
-        }
-      }
-    } else {
-      var rule = iteration.value;
-      obj = _defineProperty({}, rule.description, rulesToObject(ruleIterator));
-    }
-
-    return obj;
+    var obj = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : {};
+    return subscribeNextRule(ruleIterator, function (nextRuleIterator) {
+      return rulesToObject(nextRuleIterator, obj);
+    }, function (rule) {
+      var newObj = {};
+      var unsubscribe = rulesToObject(ruleIterator, newObj);
+      Object.assign(obj, _defineProperty({}, rule.description, newObj));
+      return unsubscribe;
+    }, function () {
+      obj._end = true;
+      return function () {
+        obj._end = false;
+      };
+    });
   }
 
-  function objectToPaths(obj) {
+  function objectToPaths(obj, endValue) {
     var parentPath,
+        keys,
         count,
         key,
         _args2 = arguments;
@@ -165,11 +141,11 @@ describe('common > main > rx > deep-subscribe > RuleState', function () {
       while (1) {
         switch (_context2.prev = _context2.next) {
           case 0:
-            parentPath = _args2.length > 1 && _args2[1] !== undefined ? _args2[1] : '';
+            parentPath = _args2.length > 2 && _args2[2] !== undefined ? _args2[2] : '';
             assert.ok(obj, parentPath);
 
-            if (!obj._end) {
-              _context2.next = 5;
+            if (!(obj._end === endValue)) {
+              _context2.next = 8;
               break;
             }
 
@@ -177,46 +153,48 @@ describe('common > main > rx > deep-subscribe > RuleState', function () {
             return parentPath;
 
           case 5:
-            if (!(obj === endObject)) {
-              _context2.next = 7;
+            keys = Object.keys(obj);
+
+            if (!(keys.length === 1 && keys[0] === '_end')) {
+              _context2.next = 8;
               break;
             }
 
             return _context2.abrupt("return");
 
-          case 7:
+          case 8:
             count = 0;
             _context2.t0 = _regeneratorRuntime.keys(obj);
 
-          case 9:
+          case 10:
             if ((_context2.t1 = _context2.t0()).done) {
-              _context2.next = 16;
+              _context2.next = 17;
               break;
             }
 
             key = _context2.t1.value;
 
             if (!(key !== '_end' && Object.prototype.hasOwnProperty.call(obj, key))) {
-              _context2.next = 14;
+              _context2.next = 15;
               break;
             }
 
             count++;
-            return _context2.delegateYield(objectToPaths(obj[key], (parentPath ? parentPath + '.' : '') + key), "t2", 14);
+            return _context2.delegateYield(objectToPaths(obj[key], endValue, (parentPath ? parentPath + '.' : '') + key), "t2", 15);
 
-          case 14:
-            _context2.next = 9;
+          case 15:
+            _context2.next = 10;
             break;
 
-          case 16:
+          case 17:
             if (count) {
-              _context2.next = 18;
+              _context2.next = 19;
               break;
             }
 
             throw new Error(parentPath + ' is empty');
 
-          case 18:
+          case 19:
           case "end":
             return _context2.stop();
         }
@@ -227,14 +205,19 @@ describe('common > main > rx > deep-subscribe > RuleState', function () {
   function testIterateRule(buildRule) {
     var result = iterateRule(buildRule(new RuleBuilder()).rule);
     assert.ok(result);
-    var object = rulesToObject(result[Symbol.iterator]()); // console.log(JSON.stringify(objectTree, null, 4))
+    var object = {};
+    var unsubscribe = rulesToObject(result[Symbol.iterator](), object); // console.log(JSON.stringify(object, null, 4))
 
-    var paths = Array.from(objectToPaths(object));
+    var paths = Array.from(objectToPaths(object, true));
 
     for (var _len = arguments.length, expectedPaths = new Array(_len > 1 ? _len - 1 : 0), _key = 1; _key < _len; _key++) {
       expectedPaths[_key - 1] = arguments[_key];
     }
 
+    assert.deepStrictEqual(paths.sort(), expectedPaths.sort(), JSON.stringify(paths, null, 4));
+    unsubscribe(); // console.log(JSON.stringify(object, null, 4))
+
+    paths = Array.from(objectToPaths(object, false));
     assert.deepStrictEqual(paths.sort(), expectedPaths.sort(), JSON.stringify(paths, null, 4));
   }
 
@@ -324,6 +307,20 @@ describe('common > main > rx > deep-subscribe > RuleState', function () {
       });
     }, 'a');
     testIterateRule(function (b) {
+      return b.repeat(2, 2, function (b) {
+        return b.path(function (o) {
+          return o.a;
+        });
+      });
+    }, 'a.a');
+    testIterateRule(function (b) {
+      return b.repeat(1, 2, function (b) {
+        return b.path(function (o) {
+          return o.a;
+        });
+      });
+    }, 'a', 'a.a');
+    testIterateRule(function (b) {
       return b.repeat(0, 2, function (b) {
         return b.path(function (o) {
           return o.a;
@@ -391,5 +388,32 @@ describe('common > main > rx > deep-subscribe > RuleState', function () {
         type: -1
       }));
     }, Error);
+  });
+  it('specific', function () {
+    testIterateRule(function (b) {
+      return b.any(function (b) {
+        return b.path(function (o) {
+          return o.a;
+        });
+      }, function (b) {
+        return b.any().path(function (o) {
+          return o.b;
+        });
+      }, function (b) {
+        return b.repeat(1, 1, function (b) {
+          return b;
+        }).path(function (o) {
+          return o.c;
+        });
+      }, function (b) {
+        return b.repeat(0, 0, function (b) {
+          return b.path(function (o) {
+            return o.d;
+          });
+        }).path(function (o) {
+          return o.e;
+        });
+      });
+    }, 'a', 'c', 'e');
   });
 });

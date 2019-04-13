@@ -2,7 +2,13 @@
 
 var _ObjectMap = require("../../../../../../main/common/lists/ObjectMap");
 
+var _ObjectSet = require("../../../../../../main/common/lists/ObjectSet");
+
 var _ObservableMap = require("../../../../../../main/common/lists/ObservableMap");
+
+var _ObservableSet = require("../../../../../../main/common/lists/ObservableSet");
+
+var _SortedList = require("../../../../../../main/common/lists/SortedList");
 
 var _constants = require("../../../../../../main/common/rx/deep-subscribe/contracts/constants");
 
@@ -11,12 +17,6 @@ var _rules = require("../../../../../../main/common/rx/deep-subscribe/contracts/
 var _RuleBuilder = require("../../../../../../main/common/rx/deep-subscribe/RuleBuilder");
 
 var _ObservableObjectBuilder = require("../../../../../../main/common/rx/object/ObservableObjectBuilder");
-
-var _ObjectSet = require("../../../../../../main/common/lists/ObjectSet");
-
-var _ObservableSet = require("../../../../../../main/common/lists/ObservableSet");
-
-var _SortedList = require("../../../../../../main/common/lists/SortedList");
 
 /* tslint:disable:no-shadowed-variable no-duplicate-string */
 

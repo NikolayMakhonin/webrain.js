@@ -2,14 +2,14 @@
 
 var _rules = require("../../../../../../main/common/rx/deep-subscribe/contracts/rules");
 
-var _RuleBuilder = require("../../../../../../main/common/rx/deep-subscribe/RuleBuilder");
-
 var _iterateRule = require("../../../../../../main/common/rx/deep-subscribe/iterate-rule");
 
-/* tslint:disable:no-shadowed-variable */
+var _RuleBuilder = require("../../../../../../main/common/rx/deep-subscribe/RuleBuilder");
+
+/* tslint:disable:no-shadowed-variable no-empty */
 
 /* eslint-disable no-useless-escape,computed-property-spacing */
-describe('common > main > rx > deep-subscribe > RuleState', function () {
+describe('common > main > rx > deep-subscribe > iterate-rule', function () {
   function ruleToString(rule) {
     if (!rule) {
       return rule + '';
@@ -37,39 +37,32 @@ describe('common > main > rx > deep-subscribe > RuleState', function () {
     _end: true
   };
 
-  function rulesToObject(ruleIterator) {
-    const iteration = ruleIterator.next();
-
-    if (iteration.done) {
-      return endObject;
-    }
-
-    const ruleOrIterable = iteration.value;
-    let obj = {};
-
-    if (ruleOrIterable[Symbol.iterator]) {
-      for (const ruleIterable of ruleOrIterable) {
-        Object.assign(obj, rulesToObject(ruleIterable[Symbol.iterator]()));
-      }
-    } else {
-      const rule = iteration.value;
-      obj = {
-        [rule.description]: rulesToObject(ruleIterator)
+  function rulesToObject(ruleIterator, obj = {}) {
+    return (0, _iterateRule.subscribeNextRule)(ruleIterator, nextRuleIterator => rulesToObject(nextRuleIterator, obj), rule => {
+      const newObj = {};
+      const unsubscribe = rulesToObject(ruleIterator, newObj);
+      Object.assign(obj, {
+        [rule.description]: newObj
+      });
+      return unsubscribe;
+    }, () => {
+      obj._end = true;
+      return () => {
+        obj._end = false;
       };
-    }
-
-    return obj;
+    });
   }
 
-  function* objectToPaths(obj, parentPath = '') {
+  function* objectToPaths(obj, endValue, parentPath = '') {
     assert.ok(obj, parentPath);
 
-    if (obj._end) {
+    if (obj._end === endValue) {
       yield parentPath;
-    }
+      const keys = Object.keys(obj);
 
-    if (obj === endObject) {
-      return;
+      if (keys.length === 1 && keys[0] === '_end') {
+        return;
+      }
     }
 
     let count = 0;
@@ -77,7 +70,7 @@ describe('common > main > rx > deep-subscribe > RuleState', function () {
     for (const key in obj) {
       if (key !== '_end' && Object.prototype.hasOwnProperty.call(obj, key)) {
         count++;
-        yield* objectToPaths(obj[key], (parentPath ? parentPath + '.' : '') + key);
+        yield* objectToPaths(obj[key], endValue, (parentPath ? parentPath + '.' : '') + key);
       }
     }
 
@@ -89,9 +82,14 @@ describe('common > main > rx > deep-subscribe > RuleState', function () {
   function testIterateRule(buildRule, ...expectedPaths) {
     const result = (0, _iterateRule.iterateRule)(buildRule(new _RuleBuilder.RuleBuilder()).rule);
     assert.ok(result);
-    const object = rulesToObject(result[Symbol.iterator]()); // console.log(JSON.stringify(objectTree, null, 4))
+    const object = {};
+    const unsubscribe = rulesToObject(result[Symbol.iterator](), object); // console.log(JSON.stringify(object, null, 4))
 
-    const paths = Array.from(objectToPaths(object));
+    let paths = Array.from(objectToPaths(object, true));
+    assert.deepStrictEqual(paths.sort(), expectedPaths.sort(), JSON.stringify(paths, null, 4));
+    unsubscribe(); // console.log(JSON.stringify(object, null, 4))
+
+    paths = Array.from(objectToPaths(object, false));
     assert.deepStrictEqual(paths.sort(), expectedPaths.sort(), JSON.stringify(paths, null, 4));
   }
 
@@ -110,6 +108,8 @@ describe('common > main > rx > deep-subscribe > RuleState', function () {
   it('repeat', function () {
     const builder = new _RuleBuilder.RuleBuilder();
     testIterateRule(b => b.repeat(1, 1, b => b.path(o => o.a)), 'a');
+    testIterateRule(b => b.repeat(2, 2, b => b.path(o => o.a)), 'a.a');
+    testIterateRule(b => b.repeat(1, 2, b => b.path(o => o.a)), 'a', 'a.a');
     testIterateRule(b => b.repeat(0, 2, b => b.path(o => o.a)), '', 'a', 'a.a');
     testIterateRule(b => b.repeat(0, 2, b => b.repeat(0, 2, b => b.path(o => o.a)).path(o => o.b)), '', 'b', 'a.b', 'a.a.b', 'b.b', 'b.a.b', 'b.a.a.b', 'a.b.b', 'a.b.a.b', 'a.b.a.a.b', 'a.a.b.b', 'a.a.b.a.b', 'a.a.b.a.a.b');
     testIterateRule(b => b.repeat(1, 2, b => b.any(b => b.repeat(1, 2, b => b.path(o => o.a)), b => b.path(o => o.b.c))).path(o => o.d), 'a.d', 'a.a.d', 'b.c.d', // 'a.a.d',
@@ -124,5 +124,8 @@ describe('common > main > rx > deep-subscribe > RuleState', function () {
     assert.throws(() => Array.from((0, _iterateRule.iterateRule)({
       type: -1
     })), Error);
+  });
+  it('specific', function () {
+    testIterateRule(b => b.any(b => b.path(o => o.a), b => b.any().path(o => o.b), b => b.repeat(1, 1, b => b).path(o => o.c), b => b.repeat(0, 0, b => b.path(o => o.d)).path(o => o.e)), 'a', 'c', 'e');
   });
 });
