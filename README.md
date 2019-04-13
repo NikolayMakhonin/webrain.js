@@ -13,11 +13,11 @@
 
 On development stage ...
 
----
+<!-- ---
 
 [![BrowserStack](https://i.imgur.com/cOdhMed.png)](https://www.browserstack.com/)
 
----
+--- -->
 
 # License
 
