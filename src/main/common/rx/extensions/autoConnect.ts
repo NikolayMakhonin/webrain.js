@@ -9,7 +9,7 @@ declare module '../subjects/observable' {
 
 Observable.prototype.autoConnect = function(connectPredicate, connectFunc) {
 	let disconnect
-	return this.subscribe((value) => {
+	return this.subscribe(value => {
 		if (connectPredicate && connectPredicate(value) || !connectPredicate && value) {
 			if (!disconnect) {
 				disconnect = connectFunc()

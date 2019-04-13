@@ -48,10 +48,6 @@ class ObservableObjectBuilder {
       const value = __fields[name];
 
       if (initValue === value) {
-        const {
-          __meta
-        } = object;
-
         object._propagatePropertyChanged(name, value);
       } else {
         object[name] = initValue;

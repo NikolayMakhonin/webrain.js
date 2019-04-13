@@ -1,6 +1,7 @@
+import {IPropertyChanged, IPropertyChangedEvent} from '../../lists/contracts/IPropertyChanged'
 import {HasSubscribersSubject, IHasSubscribersSubject} from '../subjects/hasSubscribers'
 import {IUnsubscribe} from '../subjects/subject'
-import {IPropertyChanged, IPropertyChangedEvent, PropertyChangedObject} from './PropertyChangedObject'
+import {PropertyChangedObject} from './PropertyChangedObject'
 
 type EventOrPropertyName = string | number | IDeepPropertyChangedEvent | IPropertyChangedEvent
 export type EventsOrPropertyNames = EventOrPropertyName | Array<EventOrPropertyName | any>

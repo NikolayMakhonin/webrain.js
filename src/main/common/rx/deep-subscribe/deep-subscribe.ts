@@ -1,11 +1,12 @@
+/* tslint:disable */
 import {ArraySet} from '../../lists/ArraySet'
 import {IPropertyChanged} from '../../lists/contracts/IPropertyChanged'
 import {ISetChanged} from '../../lists/contracts/ISetChanged'
 import {IObservable} from '../subjects/observable'
 import {IUnsubscribe} from '../subjects/subject'
 import {IRule, IRuleProperty} from './contracts/rules'
+import {subscribeChilds} from './helpers/subscribe-childs'
 import {IRuleOrIterable, iterateRule} from './iterate-rule'
-import {subscribeChilds} from "./helpers/subscribe-childs";
 
 export interface IDeepSubscribeOptions {
 

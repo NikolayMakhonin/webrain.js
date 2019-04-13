@@ -673,6 +673,52 @@ describe('common > main > rx > deep-subscribe > RuleBuilder', function() {
 		})
 	})
 
+	it('path complex', function() {
+		const builder = new RuleBuilder<IObject>()
+		assert.strictEqual(builder.rule, undefined)
+
+		const builder1 = builder.path(o => o['prop1|prop2']['#prop3']['#prop4|prop5']['*']['#']['#*'])
+		const rule1 = builder1.rule
+		assert.strictEqual(builder1 as any, builder)
+
+		assertRule(rule1, {
+			type: RuleType.Action,
+			objectTypes: ['object', 'array'],
+			properties: ['prop1', 'prop2'],
+			description: 'prop1|prop2',
+			next: {
+				type: RuleType.Action,
+				objectTypes: ['map'],
+				properties: ['prop3'],
+				description: '#prop3',
+				next: {
+					type: RuleType.Action,
+					objectTypes: ['map'],
+					properties: ['prop4', 'prop5'],
+					description: '#prop4|prop5',
+					next: {
+						type: RuleType.Action,
+						objectTypes: ['object', 'array'],
+						properties: ANY,
+						description: ANY_DISPLAY,
+						next: {
+							type: RuleType.Action,
+							objectTypes: ['map', 'set', 'list', 'iterable'],
+							properties: ANY,
+							description: COLLECTION_PREFIX,
+							next: {
+								type: RuleType.Action,
+								objectTypes: ['map'],
+								properties: ANY,
+								description: COLLECTION_PREFIX + ANY_DISPLAY,
+							},
+						},
+					},
+				},
+			},
+		})
+	})
+
 	it('property', function() {
 		const builder = new RuleBuilder<IObject>()
 		assert.strictEqual(builder.rule, undefined)

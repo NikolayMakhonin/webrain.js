@@ -77,20 +77,26 @@ describe('common > main > rx > deep-subscribe > RuleBuilder', function () {
     }
 
     function testNonSubscribeProperties(object) {
-      for (const nonSubscribeProperty of nonSubscribeProperties) {
-        add(object, nonSubscribeProperty);
+      for (const property of nonSubscribeProperties) {
+        add(object, property);
         assert.deepStrictEqual(subscribedItems, []);
 
         if (change) {
-          change(object, nonSubscribeProperty);
+          change(object, property);
           assert.deepStrictEqual(subscribedItems, []);
         }
 
-        remove(object, nonSubscribeProperty, true);
-        assert.deepStrictEqual(subscribedItems, []); // if (object === observableObject) {
+        remove(object, property, true);
+        assert.deepStrictEqual(subscribedItems, []);
+
+        if (property === nonSubscribeProperty) {
+          add(object, nonSubscribeProperty);
+          assert.deepStrictEqual(subscribedItems, []);
+        } // if (object === observableObject) {
         // 	assert.deepStrictEqual(subscribedItems, ['+undefined'])
         // 	subscribedItems = []
         // }
+
       }
     }
 
@@ -245,7 +251,8 @@ describe('common > main > rx > deep-subscribe > RuleBuilder', function () {
     }
 
     testSubscribe(false, true, { ...builder.object
-    }, builder.object, subscribe, [nonSubscribeProperty, ...(properties === _constants.ANY ? [] : properties)], properties === _constants.ANY ? [nonSubscribeProperty] : properties, add, change, remove);
+    }, builder.object, subscribe, [nonSubscribeProperty, ...(properties === _constants.ANY ? [] : properties)], properties === _constants.ANY ? [nonSubscribeProperty, 'p1', 'p2', 'p3'] : properties, add, change, remove);
+    builder.writable('p1', null, 'value_p1').writable('p2', null, 'value_p2').writable('p3', null, 'value_p3');
     testSubscribe(false, true, Object.create({ ...builder.object
     }), Object.create(builder.object), subscribe, [nonSubscribeProperty, ...(properties === _constants.ANY ? [] : properties)], [], (object, property) => {
       Object.defineProperty(object, property, {
@@ -294,7 +301,7 @@ describe('common > main > rx > deep-subscribe > RuleBuilder', function () {
       object.delete(property);
     }
 
-    testSubscribe(true, true, map, observableMap, subscribe, [nonSubscribeProperty, ...(properties === _constants.ANY ? [] : properties)], properties === _constants.ANY ? [nonSubscribeProperty] : properties, change, change, remove);
+    testSubscribe(true, true, map, observableMap, subscribe, [nonSubscribeProperty, ...(properties === _constants.ANY ? [] : properties)], properties === _constants.ANY ? [nonSubscribeProperty, 'p1', 'p2', 'p3'] : properties, change, change, remove);
   }
 
   function testSet(properties, subscribe) {
@@ -313,6 +320,11 @@ describe('common > main > rx > deep-subscribe > RuleBuilder', function () {
   }
 
   function testIterable(properties, subscribe) {
+    assert.strictEqual(subscribe({}, true, item => {
+      assert.fail();
+    }, item => {
+      assert.fail();
+    }), null);
     const array = []; // tslint:disable-next-line:no-identical-functions
 
     function add(object, property) {
@@ -530,6 +542,49 @@ describe('common > main > rx > deep-subscribe > RuleBuilder', function () {
             objectTypes: ['object', 'array'],
             properties: ['length'],
             description: 'length'
+          }
+        }
+      }
+    });
+  });
+  it('path complex', function () {
+    const builder = new _RuleBuilder.RuleBuilder();
+    assert.strictEqual(builder.rule, undefined);
+    const builder1 = builder.path(o => o['prop1|prop2']['#prop3']['#prop4|prop5']['*']['#']['#*']);
+    const rule1 = builder1.rule;
+    assert.strictEqual(builder1, builder);
+    assertRule(rule1, {
+      type: _rules.RuleType.Action,
+      objectTypes: ['object', 'array'],
+      properties: ['prop1', 'prop2'],
+      description: 'prop1|prop2',
+      next: {
+        type: _rules.RuleType.Action,
+        objectTypes: ['map'],
+        properties: ['prop3'],
+        description: '#prop3',
+        next: {
+          type: _rules.RuleType.Action,
+          objectTypes: ['map'],
+          properties: ['prop4', 'prop5'],
+          description: '#prop4|prop5',
+          next: {
+            type: _rules.RuleType.Action,
+            objectTypes: ['object', 'array'],
+            properties: _constants.ANY,
+            description: _constants.ANY_DISPLAY,
+            next: {
+              type: _rules.RuleType.Action,
+              objectTypes: ['map', 'set', 'list', 'iterable'],
+              properties: _constants.ANY,
+              description: _constants.COLLECTION_PREFIX,
+              next: {
+                type: _rules.RuleType.Action,
+                objectTypes: ['map'],
+                properties: _constants.ANY,
+                description: _constants.COLLECTION_PREFIX + _constants.ANY_DISPLAY
+              }
+            }
           }
         }
       }
@@ -813,9 +868,35 @@ describe('common > main > rx > deep-subscribe > RuleBuilder', function () {
           description: `${_constants.COLLECTION_PREFIX}prop1|${_constants.ANY_DISPLAY}|prop2`
         }
       }
-    }); // noinspection JSUnusedLocalSymbols
-
-    const rule3 = builder3.rule.next.next;
+    });
+    const builder4 = builder.mapKeys(_constants.ANY);
+    checkType(builder4);
+    assert.strictEqual(builder4, builder);
+    assert.strictEqual(builder4.rule, rule1);
+    assertRule(rule1, {
+      type: _rules.RuleType.Action,
+      objectTypes: ['map'],
+      properties: _constants.ANY,
+      description: _constants.COLLECTION_PREFIX,
+      next: {
+        type: _rules.RuleType.Action,
+        objectTypes: ['map'],
+        properties: _constants.ANY,
+        description: _constants.COLLECTION_PREFIX,
+        next: {
+          type: _rules.RuleType.Action,
+          objectTypes: ['map'],
+          properties: _constants.ANY,
+          description: `${_constants.COLLECTION_PREFIX}prop1|${_constants.ANY_DISPLAY}|prop2`,
+          next: {
+            type: _rules.RuleType.Action,
+            objectTypes: ['map'],
+            properties: _constants.ANY,
+            description: _constants.COLLECTION_PREFIX + _constants.ANY_DISPLAY
+          }
+        }
+      }
+    });
   });
   it('mapKeys', function () {
     const builder = new _RuleBuilder.RuleBuilder();

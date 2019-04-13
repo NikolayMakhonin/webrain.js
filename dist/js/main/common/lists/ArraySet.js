@@ -41,7 +41,8 @@ class ArraySet {
 
     if (typeof _array[id] === 'undefined') {
       return false;
-    }
+    } // tslint:disable-next-line:no-array-delete
+
 
     delete _array[id];
     this._size--;
@@ -55,6 +56,7 @@ class ArraySet {
 
     for (const id in _array) {
       if (Object.prototype.hasOwnProperty.call(_array, id)) {
+        // tslint:disable-next-line:no-array-delete
         delete _array[id];
       }
     }

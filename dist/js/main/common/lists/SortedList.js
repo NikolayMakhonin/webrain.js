@@ -310,9 +310,8 @@ class SortedList extends _ListChangedObject.ListChangedObject {
     const {
       _array
     } = this;
-    let size = this._size;
     let count = 0;
-    let i = size - 1;
+    let i = this._size - 1;
 
     if (this._autoSort) {
       withoutShift = false;
@@ -320,10 +319,7 @@ class SortedList extends _ListChangedObject.ListChangedObject {
     }
 
     while (i >= 0) {
-      const prevCount = size;
-      size = i;
       const contains = this.indexOf(_array[i], 0, i) >= 0;
-      size = prevCount;
 
       if (contains) {
         this.removeAt(i, withoutShift);

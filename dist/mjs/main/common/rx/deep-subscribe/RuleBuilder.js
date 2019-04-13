@@ -2,7 +2,7 @@ import _toConsumableArray from "@babel/runtime/helpers/toConsumableArray";
 import _construct from "@babel/runtime/helpers/construct";
 import _classCallCheck from "@babel/runtime/helpers/classCallCheck";
 import _createClass from "@babel/runtime/helpers/createClass";
-import { ANY, ANY_DISPLAY, COLLECTION_PREFIX } from './contracts/constants';
+import { ANY_DISPLAY, COLLECTION_PREFIX } from './contracts/constants';
 import { RuleType } from './contracts/rules';
 import { getFuncPropertiesPath } from './helpers/func-properties-path';
 import { RuleSubscribeCollection, RuleSubscribeMap, RuleSubscribeObject } from './RuleSubscribe';
@@ -178,7 +178,7 @@ function () {
           } else {
             var keys = propertyNames.substring(1);
 
-            if (keys === ANY) {
+            if (keys === '') {
               this.collection();
             } else {
               this.mapKeys.apply(this, _toConsumableArray(keys.split('|')));

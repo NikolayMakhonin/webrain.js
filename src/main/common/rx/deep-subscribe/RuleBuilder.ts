@@ -159,7 +159,7 @@ export class RuleBuilder<TObject> {
 				this.propertyNames(...propertyNames.split('|'))
 			} else {
 				const keys = propertyNames.substring(1)
-				if (keys === ANY) {
+				if (keys === '') {
 					this.collection()
 				} else {
 					this.mapKeys(...keys.split('|'))

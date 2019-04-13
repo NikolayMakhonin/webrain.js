@@ -5,6 +5,8 @@ import _getPrototypeOf from "@babel/runtime/helpers/getPrototypeOf";
 import _inherits from "@babel/runtime/helpers/inherits";
 import { MapChangedObject } from './base/MapChangedObject';
 import { MapChangedType } from './contracts/IMapChanged';
+var _Symbol$toStringTag = Symbol.toStringTag;
+var _Symbol$iterator = Symbol.iterator;
 export var ObservableMap =
 /*#__PURE__*/
 function (_MapChangedObject) {
@@ -16,6 +18,7 @@ function (_MapChangedObject) {
     _classCallCheck(this, ObservableMap);
 
     _this = _possibleConstructorReturn(this, _getPrototypeOf(ObservableMap).call(this));
+    _this[_Symbol$toStringTag] = 'Map';
     _this._map = map || new Map();
     return _this;
   }
@@ -133,7 +136,7 @@ function (_MapChangedObject) {
     } // region Unchanged Map methods
 
   }, {
-    key: Symbol.iterator,
+    key: _Symbol$iterator,
     value: function value() {
       return this._map[Symbol.iterator]();
     }
@@ -172,11 +175,6 @@ function (_MapChangedObject) {
       return this._map.values();
     } // endregion
 
-  }, {
-    key: Symbol.toStringTag,
-    get: function get() {
-      return this._map[Symbol.toStringTag];
-    }
   }, {
     key: "size",
     get: function get() {

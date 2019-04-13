@@ -34,10 +34,10 @@ describe('common > main > rx > deep-subscribe > RuleBuilder', function () {
 
     try {
       for (var _iterator = subscribeProperties[Symbol.iterator](), _step; !(_iteratorNormalCompletion = (_step = _iterator.next()).done); _iteratorNormalCompletion = true) {
-        var _property5 = _step.value;
+        var _property6 = _step.value;
         var index = void 0; // tslint:disable-next-line:no-conditional-assignment
 
-        while ((index = nonSubscribeProperties.indexOf(_property5)) >= 0) {
+        while ((index = nonSubscribeProperties.indexOf(_property6)) >= 0) {
           nonSubscribeProperties.splice(index, 1);
         }
       }
@@ -95,20 +95,26 @@ describe('common > main > rx > deep-subscribe > RuleBuilder', function () {
 
       try {
         for (var _iterator2 = nonSubscribeProperties[Symbol.iterator](), _step2; !(_iteratorNormalCompletion2 = (_step2 = _iterator2.next()).done); _iteratorNormalCompletion2 = true) {
-          var _nonSubscribeProperty = _step2.value;
-          add(object, _nonSubscribeProperty);
+          var _property = _step2.value;
+          add(object, _property);
           assert.deepStrictEqual(subscribedItems, []);
 
           if (change) {
-            change(object, _nonSubscribeProperty);
+            change(object, _property);
             assert.deepStrictEqual(subscribedItems, []);
           }
 
-          remove(object, _nonSubscribeProperty, true);
-          assert.deepStrictEqual(subscribedItems, []); // if (object === observableObject) {
+          remove(object, _property, true);
+          assert.deepStrictEqual(subscribedItems, []);
+
+          if (_property === nonSubscribeProperty) {
+            add(object, nonSubscribeProperty);
+            assert.deepStrictEqual(subscribedItems, []);
+          } // if (object === observableObject) {
           // 	assert.deepStrictEqual(subscribedItems, ['+undefined'])
           // 	subscribedItems = []
           // }
+
         }
       } catch (err) {
         _didIteratorError2 = true;
@@ -147,12 +153,12 @@ describe('common > main > rx > deep-subscribe > RuleBuilder', function () {
 
           try {
             for (var _iterator3 = subscribeProperties[Symbol.iterator](), _step3; !(_iteratorNormalCompletion3 = (_step3 = _iterator3.next()).done); _iteratorNormalCompletion3 = true) {
-              var _property = _step3.value;
-              add(nonObservableObject, _property);
+              var _property2 = _step3.value;
+              add(nonObservableObject, _property2);
               assert.deepStrictEqual(subscribedItems, []);
 
               if (change) {
-                change(nonObservableObject, _property);
+                change(nonObservableObject, _property2);
                 assert.deepStrictEqual(subscribedItems, []);
               }
             }
@@ -191,8 +197,8 @@ describe('common > main > rx > deep-subscribe > RuleBuilder', function () {
 
           try {
             for (var _iterator4 = subscribeProperties[Symbol.iterator](), _step4; !(_iteratorNormalCompletion4 = (_step4 = _iterator4.next()).done); _iteratorNormalCompletion4 = true) {
-              var _property2 = _step4.value;
-              remove(nonObservableObject, _property2, false);
+              var _property3 = _step4.value;
+              remove(nonObservableObject, _property3, false);
               assert.deepStrictEqual(subscribedItems, []);
             }
           } catch (err) {
@@ -244,15 +250,15 @@ describe('common > main > rx > deep-subscribe > RuleBuilder', function () {
 
           try {
             for (var _iterator5 = subscribeProperties[Symbol.iterator](), _step5; !(_iteratorNormalCompletion5 = (_step5 = _iterator5.next()).done); _iteratorNormalCompletion5 = true) {
-              var _property3 = _step5.value;
-              add(observableObject, _property3);
+              var _property4 = _step5.value;
+              add(observableObject, _property4);
               assert.deepStrictEqual(subscribedItems, [// '-undefined',
-              '+value_' + _property3]);
+              '+value_' + _property4]);
               subscribedItems = [];
 
               if (change) {
-                change(observableObject, _property3);
-                assert.deepStrictEqual(subscribedItems, ['-value_' + _property3, '+value_' + _property3]);
+                change(observableObject, _property4);
+                assert.deepStrictEqual(subscribedItems, ['-value_' + _property4, '+value_' + _property4]);
                 subscribedItems = [];
               }
             }
@@ -303,9 +309,9 @@ describe('common > main > rx > deep-subscribe > RuleBuilder', function () {
 
           try {
             for (var _iterator6 = subscribeProperties[Symbol.iterator](), _step6; !(_iteratorNormalCompletion6 = (_step6 = _iterator6.next()).done); _iteratorNormalCompletion6 = true) {
-              var _property4 = _step6.value;
-              remove(observableObject, _property4, false);
-              assert.deepStrictEqual(subscribedItems, ['-value_' + _property4]);
+              var _property5 = _step6.value;
+              remove(observableObject, _property5, false);
+              assert.deepStrictEqual(subscribedItems, ['-value_' + _property5]);
               subscribedItems = [];
             }
           } catch (err) {
@@ -371,7 +377,8 @@ describe('common > main > rx > deep-subscribe > RuleBuilder', function () {
       }
     }
 
-    testSubscribe(false, true, _objectSpread({}, builder.object), builder.object, subscribe, [nonSubscribeProperty].concat(_toConsumableArray(properties === ANY ? [] : properties)), properties === ANY ? [nonSubscribeProperty] : properties, add, change, remove);
+    testSubscribe(false, true, _objectSpread({}, builder.object), builder.object, subscribe, [nonSubscribeProperty].concat(_toConsumableArray(properties === ANY ? [] : properties)), properties === ANY ? [nonSubscribeProperty, 'p1', 'p2', 'p3'] : properties, add, change, remove);
+    builder.writable('p1', null, 'value_p1').writable('p2', null, 'value_p2').writable('p3', null, 'value_p3');
     testSubscribe(false, true, Object.create(_objectSpread({}, builder.object)), Object.create(builder.object), subscribe, [nonSubscribeProperty].concat(_toConsumableArray(properties === ANY ? [] : properties)), [], function (object, property) {
       Object.defineProperty(object, property, {
         configurable: true,
@@ -419,7 +426,7 @@ describe('common > main > rx > deep-subscribe > RuleBuilder', function () {
       object.delete(property);
     }
 
-    testSubscribe(true, true, map, observableMap, subscribe, [nonSubscribeProperty].concat(_toConsumableArray(properties === ANY ? [] : properties)), properties === ANY ? [nonSubscribeProperty] : properties, change, change, remove);
+    testSubscribe(true, true, map, observableMap, subscribe, [nonSubscribeProperty].concat(_toConsumableArray(properties === ANY ? [] : properties)), properties === ANY ? [nonSubscribeProperty, 'p1', 'p2', 'p3'] : properties, change, change, remove);
   }
 
   function testSet(properties, subscribe) {
@@ -438,6 +445,11 @@ describe('common > main > rx > deep-subscribe > RuleBuilder', function () {
   }
 
   function testIterable(properties, subscribe) {
+    assert.strictEqual(subscribe({}, true, function (item) {
+      assert.fail();
+    }, function (item) {
+      assert.fail();
+    }), null);
     var array = []; // tslint:disable-next-line:no-identical-functions
 
     function add(object, property) {
@@ -679,6 +691,51 @@ describe('common > main > rx > deep-subscribe > RuleBuilder', function () {
             objectTypes: ['object', 'array'],
             properties: ['length'],
             description: 'length'
+          }
+        }
+      }
+    });
+  });
+  it('path complex', function () {
+    var builder = new RuleBuilder();
+    assert.strictEqual(builder.rule, undefined);
+    var builder1 = builder.path(function (o) {
+      return o['prop1|prop2']['#prop3']['#prop4|prop5']['*']['#']['#*'];
+    });
+    var rule1 = builder1.rule;
+    assert.strictEqual(builder1, builder);
+    assertRule(rule1, {
+      type: RuleType.Action,
+      objectTypes: ['object', 'array'],
+      properties: ['prop1', 'prop2'],
+      description: 'prop1|prop2',
+      next: {
+        type: RuleType.Action,
+        objectTypes: ['map'],
+        properties: ['prop3'],
+        description: '#prop3',
+        next: {
+          type: RuleType.Action,
+          objectTypes: ['map'],
+          properties: ['prop4', 'prop5'],
+          description: '#prop4|prop5',
+          next: {
+            type: RuleType.Action,
+            objectTypes: ['object', 'array'],
+            properties: ANY,
+            description: ANY_DISPLAY,
+            next: {
+              type: RuleType.Action,
+              objectTypes: ['map', 'set', 'list', 'iterable'],
+              properties: ANY,
+              description: COLLECTION_PREFIX,
+              next: {
+                type: RuleType.Action,
+                objectTypes: ['map'],
+                properties: ANY,
+                description: COLLECTION_PREFIX + ANY_DISPLAY
+              }
+            }
           }
         }
       }
@@ -978,9 +1035,35 @@ describe('common > main > rx > deep-subscribe > RuleBuilder', function () {
           description: "".concat(COLLECTION_PREFIX, "prop1|").concat(ANY_DISPLAY, "|prop2")
         }
       }
-    }); // noinspection JSUnusedLocalSymbols
-
-    var rule3 = builder3.rule.next.next;
+    });
+    var builder4 = builder.mapKeys(ANY);
+    checkType(builder4);
+    assert.strictEqual(builder4, builder);
+    assert.strictEqual(builder4.rule, rule1);
+    assertRule(rule1, {
+      type: RuleType.Action,
+      objectTypes: ['map'],
+      properties: ANY,
+      description: COLLECTION_PREFIX,
+      next: {
+        type: RuleType.Action,
+        objectTypes: ['map'],
+        properties: ANY,
+        description: COLLECTION_PREFIX,
+        next: {
+          type: RuleType.Action,
+          objectTypes: ['map'],
+          properties: ANY,
+          description: "".concat(COLLECTION_PREFIX, "prop1|").concat(ANY_DISPLAY, "|prop2"),
+          next: {
+            type: RuleType.Action,
+            objectTypes: ['map'],
+            properties: ANY,
+            description: COLLECTION_PREFIX + ANY_DISPLAY
+          }
+        }
+      }
+    });
   });
   it('mapKeys', function () {
     var builder = new RuleBuilder();

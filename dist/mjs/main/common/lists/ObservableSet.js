@@ -5,6 +5,8 @@ import _getPrototypeOf from "@babel/runtime/helpers/getPrototypeOf";
 import _inherits from "@babel/runtime/helpers/inherits";
 import { SetChangedObject } from './base/SetChangedObject';
 import { SetChangedType } from './contracts/ISetChanged';
+var _Symbol$toStringTag = Symbol.toStringTag;
+var _Symbol$iterator = Symbol.iterator;
 export var ObservableSet =
 /*#__PURE__*/
 function (_SetChangedObject) {
@@ -16,6 +18,7 @@ function (_SetChangedObject) {
     _classCallCheck(this, ObservableSet);
 
     _this = _possibleConstructorReturn(this, _getPrototypeOf(ObservableSet).call(this));
+    _this[_Symbol$toStringTag] = 'Set';
     _this._set = set || new Set();
     return _this;
   }
@@ -111,7 +114,7 @@ function (_SetChangedObject) {
     } // region Unchanged Set methods
 
   }, {
-    key: Symbol.iterator,
+    key: _Symbol$iterator,
     value: function value() {
       return this._set[Symbol.iterator]();
     }
@@ -145,11 +148,6 @@ function (_SetChangedObject) {
       return this._set.values();
     } // endregion
 
-  }, {
-    key: Symbol.toStringTag,
-    get: function get() {
-      return this._set[Symbol.toStringTag];
-    }
   }, {
     key: "size",
     get: function get() {

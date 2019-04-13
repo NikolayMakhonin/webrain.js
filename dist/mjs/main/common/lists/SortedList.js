@@ -140,9 +140,8 @@ function (_ListChangedObject) {
     key: "removeDuplicates",
     value: function removeDuplicates(withoutShift) {
       var _array = this._array;
-      var size = this._size;
       var count = 0;
-      var i = size - 1;
+      var i = this._size - 1;
 
       if (this._autoSort) {
         withoutShift = false;
@@ -150,10 +149,7 @@ function (_ListChangedObject) {
       }
 
       while (i >= 0) {
-        var prevCount = size;
-        size = i;
         var contains = this.indexOf(_array[i], 0, i) >= 0;
-        size = prevCount;
 
         if (contains) {
           this.removeAt(i, withoutShift);

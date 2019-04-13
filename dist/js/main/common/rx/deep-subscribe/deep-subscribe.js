@@ -2,10 +2,11 @@
 
 var _ArraySet = require("../../lists/ArraySet");
 
-var _iterateRule = require("./iterate-rule");
-
 var _subscribeChilds = require("./helpers/subscribe-childs");
 
+var _iterateRule = require("./iterate-rule");
+
+/* tslint:disable */
 function deepSubscribe(object, rule, bind, options) {
   return _deepSubscribe(object, (0, _iterateRule.iterateRule)(rule)[Symbol.iterator](), bind, options);
 }

@@ -4,9 +4,10 @@ var _marked =
 /*#__PURE__*/
 _regeneratorRuntime.mark(_deepSubscribe);
 
+/* tslint:disable */
 import { ArraySet } from '../../lists/ArraySet';
+import { subscribeChilds } from './helpers/subscribe-childs';
 import { iterateRule } from './iterate-rule';
-import { subscribeChilds } from "./helpers/subscribe-childs";
 
 function deepSubscribe(object, rule, bind, options) {
   return _deepSubscribe(object, iterateRule(rule)[Symbol.iterator](), bind, options);

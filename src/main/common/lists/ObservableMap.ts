@@ -112,9 +112,7 @@ export class ObservableMap<K, V> extends MapChangedObject<K, V> implements IObse
 
 	// region Unchanged Map methods
 
-	public get [Symbol.toStringTag](): 'Map' {
-		return this._map[Symbol.toStringTag]
-	}
+	public readonly [Symbol.toStringTag]: string = 'Map'
 
 	public get size(): number {
 		return this._map.size

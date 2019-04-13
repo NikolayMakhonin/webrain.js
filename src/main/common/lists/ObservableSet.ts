@@ -92,9 +92,7 @@ export class ObservableSet<T> extends SetChangedObject<T> implements IObservable
 
 	// region Unchanged Set methods
 
-	public get [Symbol.toStringTag](): 'Set' {
-		return this._set[Symbol.toStringTag]
-	}
+	public readonly [Symbol.toStringTag]: string = 'Set'
 
 	public get size(): number {
 		return this._set.size

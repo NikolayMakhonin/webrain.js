@@ -140,7 +140,7 @@ class RuleBuilder {
       } else {
         const keys = propertyNames.substring(1);
 
-        if (keys === _constants.ANY) {
+        if (keys === '') {
           this.collection();
         } else {
           this.mapKeys(...keys.split('|'));

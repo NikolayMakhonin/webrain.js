@@ -27,12 +27,12 @@ export class ArraySet<T extends Object> implements Set<T> {
 	public delete(value: T): boolean {
 		const {_array} = this
 		const id = getObjectUniqueId(value)
-
 		// if (Object.prototype.hasOwnProperty.call(_array, id)) {
 		if (typeof _array[id] === 'undefined') {
 			return false
 		}
 
+		// tslint:disable-next-line:no-array-delete
 		delete _array[id]
 		this._size--
 
@@ -43,6 +43,7 @@ export class ArraySet<T extends Object> implements Set<T> {
 		const {_array} = this
 		for (const id in _array) {
 			if (Object.prototype.hasOwnProperty.call(_array, id)) {
+				// tslint:disable-next-line:no-array-delete
 				delete _array[id]
 			}
 		}

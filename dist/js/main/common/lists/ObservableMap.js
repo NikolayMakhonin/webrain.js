@@ -9,9 +9,13 @@ var _MapChangedObject = require("./base/MapChangedObject");
 
 var _IMapChanged = require("./contracts/IMapChanged");
 
+var _Symbol$toStringTag = Symbol.toStringTag;
+var _Symbol$iterator = Symbol.iterator;
+
 class ObservableMap extends _MapChangedObject.MapChangedObject {
   constructor(map) {
     super();
+    this[_Symbol$toStringTag] = 'Map';
     this._map = map || new Map();
   }
 
@@ -138,15 +142,11 @@ class ObservableMap extends _MapChangedObject.MapChangedObject {
   } // region Unchanged Map methods
 
 
-  get [Symbol.toStringTag]() {
-    return this._map[Symbol.toStringTag];
-  }
-
   get size() {
     return this._map.size;
   }
 
-  [Symbol.iterator]() {
+  [_Symbol$iterator]() {
     return this._map[Symbol.iterator]();
   }
 

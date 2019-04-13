@@ -3,9 +3,9 @@ import {
 	IListChangedEvent,
 	ListChangedType,
 } from '../../../../../../../main/common/lists/contracts/IListChanged'
+import {IPropertyChangedEvent} from '../../../../../../../main/common/lists/contracts/IPropertyChanged'
 import {compareFast} from '../../../../../../../main/common/lists/helpers/compare'
 import {SortedList} from '../../../../../../../main/common/lists/SortedList'
-import {IPropertyChangedEvent} from '../../../../../../../main/common/rx/object/PropertyChangedObject'
 import {IOptionsVariant, IOptionsVariants, ITestCase, TestVariants} from './TestVariants'
 
 declare const assert

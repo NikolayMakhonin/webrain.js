@@ -40,8 +40,6 @@ function () {
         var value = __fields[name];
 
         if (initValue === value) {
-          var __meta = object.__meta;
-
           object._propagatePropertyChanged(name, value);
         } else {
           object[name] = initValue;

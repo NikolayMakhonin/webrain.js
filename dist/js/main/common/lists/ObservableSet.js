@@ -9,9 +9,13 @@ var _SetChangedObject = require("./base/SetChangedObject");
 
 var _ISetChanged = require("./contracts/ISetChanged");
 
+var _Symbol$toStringTag = Symbol.toStringTag;
+var _Symbol$iterator = Symbol.iterator;
+
 class ObservableSet extends _SetChangedObject.SetChangedObject {
   constructor(set) {
     super();
+    this[_Symbol$toStringTag] = 'Set';
     this._set = set || new Set();
   }
 
@@ -114,15 +118,11 @@ class ObservableSet extends _SetChangedObject.SetChangedObject {
   } // region Unchanged Set methods
 
 
-  get [Symbol.toStringTag]() {
-    return this._set[Symbol.toStringTag];
-  }
-
   get size() {
     return this._set.size;
   }
 
-  [Symbol.iterator]() {
+  [_Symbol$iterator]() {
     return this._set[Symbol.iterator]();
   }
 
