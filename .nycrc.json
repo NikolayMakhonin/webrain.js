@@ -1,6 +1,6 @@
 {
     "include": [
-        "{src,dist/{js,mjs}}/{main,test/**}/**/*"
+        "{src,dist/{js,mjs}}/{main,test/**/src}/**/*"
     ],
     "extension": [
         ".es6", ".es", ".js", ".mjs", ".ts"

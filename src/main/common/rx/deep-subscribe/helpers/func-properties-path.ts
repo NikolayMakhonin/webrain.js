@@ -11,7 +11,7 @@ export function parsePropertiesPathString(
 	// noinspection RegExpRedundantEscape
 	const match = getValueFunc
 		// tslint:disable-next-line:max-line-length
-		.match(/^.*?(?:\(\s*)?(\w+)(?:\s*\))?\s*(?:(?:=>\s*)?\{.*?\breturn\s|=>)[\s(]*(?:[^'",]*,)*\s*\1\s*(.*?)[\s;]*\}?[\s)]*$/s)
+		.match(/^.*?\(?\s*(\w+)\s*(?:\/\*.*?\*\/\s*)?\)?\s*(?:(?:=>\s*)?\{.*?\breturn\s|=>)(?:[\s(]|[^'",]*,)*\s*\1\s*(.*?)[\s;]*\}?[\s)]*$/s)
 
 	const path = match && match[2]
 

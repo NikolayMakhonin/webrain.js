@@ -4,6 +4,7 @@ import {
 	parsePropertiesPath,
 	parsePropertiesPathString,
 } from '../../../../../../../main/common/rx/deep-subscribe/helpers/func-properties-path'
+import {compileTest} from './src/func-properties-path'
 
 declare const assert
 
@@ -16,12 +17,20 @@ describe('common > main > rx > deep-subscribe > func-properties-path', function(
 		}
 
 		testParse(`(a) => a ${path}`)
-		testParse(`b => ( ( b ${path} ) ) `)
+		testParse(`b => ( ( ( b ${path} ) ) ) `)
 		testParse(`c =>  {  return c ${path} ; }`)
 		testParse(`function  (d)  {  return d ${path}}`)
 		testParse(`function funcName (e)  {  return e ${path}}`)
 		testParse(` funcName (f)  {  return f ${path}}`)
 		testParse(new Function('o', `return o${path}`) as any)
+
+		testParse(`(a /* comment */ ) => coverage(), coverage(), a ${path}`)
+		testParse(`b /* comment */ => coverage(), ( coverage(), coverage(), ( coverage(), ( coverage(), b ${path} ) ) ) `)
+		testParse(`c /* comment */ =>  { coverage()\n return coverage(), c ${path} ; }`)
+		testParse(`function  (d /* comment */ )  { coverage() \n return ( coverage(), ( coverage(), d ${path}} ) )`)
+		testParse(`function funcName (e /*/** comment ***/ )  {  coverage() \n return ( coverage(), ( coverage(), e ${path}}`)
+		testParse(` funcName (f /* comment */ )  {  coverage()  return f ${path}}`)
+		testParse(new Function('o', `coverage() \n return o${path}`) as any)
 
 		assert.throws(() => parsePropertiesPathString(''), Error)
 		assert.throws(() => parsePropertiesPathString(`(a) => b ${path}`), Error)
@@ -56,6 +65,11 @@ describe('common > main > rx > deep-subscribe > func-properties-path', function(
 		testParse(path)
 		testParseFunc(new Function('o', `return o${path} ; `))
 		testParseFunc(o => o . o[ "\`\"\'\\`'[]]" ] . o [ 0 ] . o [ '\`\"\'\\`"][]' ] . o)
+
+		compileTest()
+			.forEach(result => {
+				assertParse(result)
+			})
 
 		assert.throws(() => parsePropertiesPath('.' + path), Error)
 	})
