@@ -16,8 +16,8 @@ function () {
   }
 
   _createClass(RuleBuilder, [{
-    key: "subscribe",
-    value: function subscribe(ruleSubscribe, description) {
+    key: "custom",
+    value: function custom(ruleSubscribe, description) {
       var ruleLast = this._ruleLast;
 
       if (description) {
@@ -50,7 +50,7 @@ function () {
 
       return propertyName;
     }(function (propertyName) {
-      return this.subscribe(new RuleSubscribeObjectPropertyNames(propertyName), propertyName);
+      return this.custom(new RuleSubscribeObjectPropertyNames(propertyName), propertyName);
     })
     /**
      * Object property, Array index
@@ -63,7 +63,7 @@ function () {
         propertiesNames[_key] = arguments[_key];
       }
 
-      return this.subscribe(_construct(RuleSubscribeObjectPropertyNames, propertiesNames), propertiesNames.join('|'));
+      return this.custom(_construct(RuleSubscribeObjectPropertyNames, propertiesNames), propertiesNames.join('|'));
     }
     /**
      * Object property, Array index
@@ -72,7 +72,7 @@ function () {
   }, {
     key: "propertyAll",
     value: function propertyAll() {
-      return this.subscribe(new RuleSubscribeObject(), ANY_DISPLAY);
+      return this.custom(new RuleSubscribeObject(), ANY_DISPLAY);
     }
     /**
      * Object property, Array index
@@ -81,7 +81,7 @@ function () {
   }, {
     key: "propertyPredicate",
     value: function propertyPredicate(predicate, description) {
-      return this.subscribe(new RuleSubscribeObject(predicate), description);
+      return this.custom(new RuleSubscribeObject(predicate), description);
     }
     /**
      * Object property, Array index
@@ -105,7 +105,7 @@ function () {
   }, {
     key: "collection",
     value: function collection() {
-      return this.subscribe(new RuleSubscribeCollection(), COLLECTION_PREFIX);
+      return this.custom(new RuleSubscribeCollection(), COLLECTION_PREFIX);
     }
     /**
      * IMapChanged & Map, Map
@@ -114,7 +114,7 @@ function () {
   }, {
     key: "mapKey",
     value: function mapKey(key) {
-      return this.subscribe(new RuleSubscribeMapKeys(key), COLLECTION_PREFIX + key);
+      return this.custom(new RuleSubscribeMapKeys(key), COLLECTION_PREFIX + key);
     }
     /**
      * IMapChanged & Map, Map
@@ -127,7 +127,7 @@ function () {
         keys[_key2] = arguments[_key2];
       }
 
-      return this.subscribe(_construct(RuleSubscribeMapKeys, keys), COLLECTION_PREFIX + keys.join('|'));
+      return this.custom(_construct(RuleSubscribeMapKeys, keys), COLLECTION_PREFIX + keys.join('|'));
     }
     /**
      * IMapChanged & Map, Map
@@ -136,7 +136,7 @@ function () {
   }, {
     key: "mapAll",
     value: function mapAll() {
-      return this.subscribe(new RuleSubscribeMap(), COLLECTION_PREFIX);
+      return this.custom(new RuleSubscribeMap(), COLLECTION_PREFIX);
     }
     /**
      * IMapChanged & Map, Map
@@ -145,7 +145,7 @@ function () {
   }, {
     key: "mapPredicate",
     value: function mapPredicate(keyPredicate, description) {
-      return this.subscribe(new RuleSubscribeMap(keyPredicate), description);
+      return this.custom(new RuleSubscribeMap(keyPredicate), description);
     }
     /**
      * IMapChanged & Map, Map

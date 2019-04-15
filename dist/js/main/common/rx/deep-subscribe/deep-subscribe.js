@@ -1,96 +1,87 @@
 "use strict";
 
-var _ArraySet = require("../../lists/ArraySet");
-
-var _subscribeChilds = require("./helpers/subscribe-childs");
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+exports.deepSubscribeRule = deepSubscribeRule;
+exports.deepSubscribe = deepSubscribe;
 
 var _iterateRule = require("./iterate-rule");
 
+var _RuleBuilder = require("./RuleBuilder");
+
 /* tslint:disable */
-function deepSubscribe(object, rule, bind, options) {
-  return _deepSubscribe(object, (0, _iterateRule.iterateRule)(rule)[Symbol.iterator](), bind, options);
-}
+function deepSubscribeRuleIterator(object, subscribe, immediate, ruleIterator, propertiesPath) {
+  const subscribeNext = () => {
+    let unsubscribePropertyName;
+    return (0, _iterateRule.subscribeNextRule)(ruleIterator, nextRuleIterator => deepSubscribeRuleIterator(object, subscribe, immediate, nextRuleIterator, propertiesPath), rule => {
+      function subscribeItem(item, debugPropertyName) {
+        const newPropertiesPath = (propertiesPath ? propertiesPath + '.' : '') + debugPropertyName + '(' + rule.description + ')';
 
-function* _deepSubscribe(object, ruleIterator, bind, options, propertiesPath) {
-  const iteration = ruleIterator.next();
+        const subscribe = () => deepSubscribeRuleIterator(item, subscribe, immediate, ruleIterator, newPropertiesPath);
 
-  if (iteration.done) {
-    return null;
-  }
+        if (!(item instanceof Object)) {
+          const unsubscribe = subscribe();
 
-  const ruleOrIterable = iteration.value;
+          if (unsubscribe) {
+            throw new Error(`You should not return unsubscribe function (${unsubscribe}) for non Object value (${object}).\nFor subscribe value types use their object wrappers: Number, Boolean, String classes.\nValue property path: ${newPropertiesPath}`);
+          }
 
-  if (ruleOrIterable[Symbol.iterator]) {
-    const unsubscribers = [];
+          return;
+        }
 
-    for (const ruleIterable of ruleOrIterable) {
-      unsubscribers.push(_deepSubscribe(object, ruleIterable[Symbol.iterator](), bind, options));
-    }
+        if (!unsubscribePropertyName) {
+          unsubscribePropertyName = Math.random().toString(36);
+        }
 
-    return () => {
-      for (let i = 0, len = unsubscribers.length; i < len; i++) {
-        unsubscribers[i]();
+        let unsubscribe = item[unsubscribePropertyName];
+
+        if (!unsubscribe) {
+          unsubscribe = subscribe();
+          Object.defineProperty(item, unsubscribePropertyName, {
+            configurable: true,
+            enumerable: false,
+            writable: false,
+            value: unsubscribe
+          });
+        }
       }
-    };
-  } else {
-    const rule = ruleOrIterable;
-    const unsubscribers = new _ArraySet.ArraySet();
 
-    function subscribeItem(item, debugPropertyName) {
-      let unsubscribe = item.unsubscribe; // TODO
+      function unsubscribeItem(item, debugPropertyName) {
+        if (!(item instanceof Object)) {
+          return;
+        }
 
-      if (!unsubscribe) {
-        unsubscribe = _deepSubscribe(object, ruleIterator, bind, options, (propertiesPath ? propertiesPath + '.' : '') + debugPropertyName + '(' + rule.description + ')');
-        item.unsubscribe = unsubscribe; // TODO
+        if (!unsubscribePropertyName) {
+          return;
+        }
+
+        const unsubscribe = item[unsubscribePropertyName];
+
+        if (unsubscribe) {
+          unsubscribe();
+          delete item[unsubscribePropertyName];
+        }
       }
-    }
 
-    function unsubscribeItem(item, debugPropertyName) {
-      const unsubscribe = item.unsubscribe; // TODO
+      return rule.subscribe(object, immediate, subscribeItem, unsubscribeItem);
+    }, () => {
+      return subscribe(object);
+    });
+  };
 
-      if (unsubscribe) {
-        unsubscribe();
-        delete item.unsubscribe; // TODO
-      }
-    }
-
-    {
-      const unsubscribe = (0, _subscribeChilds.subscribeChilds)({
-        object,
-        propertyPredicate: rule.predicate,
-        subscribeItem,
-        unsubscribeItem
-      });
-
-      if (unsubscribe) {
-        unsubscribers.add(unsubscribe);
-      }
-    }
-
-    for (const item of rule.iterateObject(object)) {
-      subscribeItem(item);
-    }
-
-    return () => {
-      for (const item of rule.iterateObject(object)) {
-        unsubscribeItem(item);
-      }
-    };
+  try {
+    return subscribeNext();
+  } catch (ex) {
+    ex.message += `\nObject property path: ${propertiesPath}`;
+    throw ex;
   }
 }
 
-function deepSubscribeOld(object, rule, bind, options) {
-  const ruleNext = nextRule(rule);
+function deepSubscribeRule(object, subscribe, immediate, rule) {
+  return deepSubscribeRuleIterator(object, subscribe, immediate, (0, _iterateRule.iterateRule)(rule)[Symbol.iterator]());
+}
 
-  if (object.propertyChanged) {
-    object.propertyChanged.subscribe(event => {
-      const unsubscribe = deepSubscribe(event.newValue, ruleNext, value => {}, options);
-    });
-  } else if (object.setChanged) {
-    object.setChanged.subscribe(event => {
-      for (const newItem of event.newItems) {
-        const unsubscribe = deepSubscribe(newItem, ruleNext, value => {}, options);
-      }
-    });
-  } else if (object.mapChanged) {} else if (object.listChanged) {}
+function deepSubscribe(object, subscribe, immediate, ruleBuilder) {
+  return deepSubscribeRule(object, subscribe, immediate, ruleBuilder(new _RuleBuilder.RuleBuilder()).rule);
 }

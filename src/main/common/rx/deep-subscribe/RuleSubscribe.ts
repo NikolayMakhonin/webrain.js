@@ -22,6 +22,10 @@ function subscribeObject<TValue>(
 	subscribeItem: (item: TValue, debugPropertyName: string) => void,
 	unsubscribeItem: (item: TValue, debugPropertyName: string) => void,
 ): IUnsubscribe {
+	if (!(object instanceof Object)) {
+		return null
+	}
+
 	const {propertyChanged} = object
 	let unsubscribe
 
@@ -39,7 +43,7 @@ function subscribeObject<TValue>(
 			})
 	}
 
-	function forEach(callbackfn: (item: TValue, debugPropertyName: string) => void) {
+	const forEach = (callbackfn: (item: TValue, debugPropertyName: string) => void) => {
 		if (propertyNames) {
 			for (let i = 0, len = propertyNames.length; i < len; i++) {
 				const propertyName = propertyNames[i]
@@ -82,11 +86,11 @@ function subscribeIterable<TItem>(
 	subscribeItem: (item: TItem, debugPropertyName: string) => void,
 	unsubscribeItem: (item: TItem, debugPropertyName: string) => void,
 ): IUnsubscribe {
-	if (!object[Symbol.iterator]) {
+	if (!object || !object[Symbol.iterator]) {
 		return null
 	}
 
-	function forEach(callbackfn: (item: TItem, debugPropertyName: string) => void) {
+	const forEach = (callbackfn: (item: TItem, debugPropertyName: string) => void) => {
 		for (const item of object) {
 			callbackfn(item, COLLECTION_PREFIX)
 		}
@@ -113,6 +117,10 @@ function subscribeList<TItem>(
 	subscribeItem: (item: TItem, debugPropertyName: string) => void,
 	unsubscribeItem: (item: TItem, debugPropertyName: string) => void,
 ): IUnsubscribe {
+	if (!object) {
+		return null
+	}
+
 	const {listChanged} = object
 	let unsubscribe
 	if (listChanged) {
@@ -141,7 +149,7 @@ function subscribeList<TItem>(
 		return unsubscribe
 	}
 
-	function forEach(callbackfn: (item: TItem, debugPropertyName: string) => void) {
+	const forEach = (callbackfn: (item: TItem, debugPropertyName: string) => void) => {
 		for (const item of object) {
 			callbackfn(item, COLLECTION_PREFIX)
 		}
@@ -171,6 +179,10 @@ function subscribeSet<TItem>(
 	subscribeItem: (item: TItem, debugPropertyName: string) => void,
 	unsubscribeItem: (item: TItem, debugPropertyName: string) => void,
 ): IUnsubscribe {
+	if (!object) {
+		return null
+	}
+
 	const {setChanged} = object
 	let unsubscribe
 	if (setChanged) {
@@ -195,7 +207,7 @@ function subscribeSet<TItem>(
 		return unsubscribe
 	}
 
-	function forEach(callbackfn: (item: TItem, debugPropertyName: string) => void) {
+	const forEach = (callbackfn: (item: TItem, debugPropertyName: string) => void) => {
 		for (const item of object) {
 			callbackfn(item, COLLECTION_PREFIX)
 		}
@@ -227,6 +239,10 @@ function subscribeMap<K, V>(
 	subscribeItem: (item: V, debugPropertyName: string) => void,
 	unsubscribeItem: (item: V, debugPropertyName: string) => void,
 ): IUnsubscribe {
+	if (!object) {
+		return null
+	}
+
 	const {mapChanged} = object
 	let unsubscribe
 
@@ -254,7 +270,7 @@ function subscribeMap<K, V>(
 		return unsubscribe
 	}
 
-	function forEach(callbackfn: (item: V, debugPropertyName: string) => void) {
+	const forEach = (callbackfn: (item: V, debugPropertyName: string) => void) => {
 		if (keys) {
 			for (let i = 0, len = keys.length; i < len; i++) {
 				const key = keys[i]
@@ -295,6 +311,10 @@ function subscribeCollection<TItem>(
 	subscribeItem: (item: TItem, debugPropertyName: string) => void,
 	unsubscribeItem: (item: TItem, debugPropertyName: string) => void,
 ) {
+	if (!object) {
+		return null
+	}
+
 	const unsubscribeList = subscribeList(object as any, immediateSubscribe, subscribeItem, unsubscribeItem)
 	const unsubscribeSet = subscribeSet(object as any, immediateSubscribe, subscribeItem, unsubscribeItem)
 	const unsubscribeMap = subscribeMap(null, null, object as any, immediateSubscribe, subscribeItem, unsubscribeItem)

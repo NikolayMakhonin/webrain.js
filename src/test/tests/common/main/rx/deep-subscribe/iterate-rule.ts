@@ -1,9 +1,15 @@
 /* tslint:disable:no-shadowed-variable no-empty */
 /* eslint-disable no-useless-escape,computed-property-spacing */
 import {IRule, RuleType} from '../../../../../../main/common/rx/deep-subscribe/contracts/rules'
-import {IRuleIterable, IRuleOrIterable, iterateRule, subscribeNextRule} from '../../../../../../main/common/rx/deep-subscribe/iterate-rule'
+import {
+	IRuleIterable,
+	IRuleOrIterable,
+	iterateRule,
+	subscribeNextRule,
+} from '../../../../../../main/common/rx/deep-subscribe/iterate-rule'
 import {RuleBuilder} from '../../../../../../main/common/rx/deep-subscribe/RuleBuilder'
-import {IUnsubscribe} from "../../../../../../main/common/rx/subjects/subject";
+import {IUnsubscribe} from '../../../../../../main/common/rx/subjects/subject'
+import {IRuleSubscribe} from "../../../../../../main/common/rx/deep-subscribe/contracts/rule-subscribe";
 
 declare const assert
 
@@ -38,9 +44,9 @@ describe('common > main > rx > deep-subscribe > iterate-rule', function() {
 		return subscribeNextRule(
 			ruleIterator,
 			nextRuleIterator => rulesToObject(nextRuleIterator, obj),
-			rule => {
+			(rule, getRuleIterator) => {
 				const newObj = {}
-				const unsubscribe = rulesToObject(ruleIterator, newObj)
+				const unsubscribe = rulesToObject(getRuleIterator(), newObj)
 				Object.assign(obj, {[rule.description]: newObj})
 				return unsubscribe
 			},
@@ -163,6 +169,22 @@ describe('common > main > rx > deep-subscribe > iterate-rule', function() {
 			'a.b.c.d.i',
 			'a.b.e.f.i',
 			'g.h.i',
+		)
+	})
+
+	it('path any', function() {
+		const builder = new RuleBuilder<any>()
+
+		testIterateRule(
+			b => b.path(o => o['a|b'].c),
+			'a|b.c',
+		)
+
+		testIterateRule(
+			b => b
+				.propertyRegexp(/[ab]/)
+				.path((o: any) => o.c),
+			'/[ab]/.c',
 		)
 	})
 

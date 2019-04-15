@@ -27,9 +27,9 @@ module.exports = {
 		'@babel/plugin-proposal-throw-expressions',
 
 		['@babel/plugin-proposal-class-properties', {loose: true}],
-		// '@babel/plugin-transform-parameters',
-		// '@babel/plugin-transform-async-to-generator',
-		// '@babel/plugin-transform-for-of',
-		// '@babel/plugin-transform-regenerator'
+		'@babel/plugin-transform-parameters',
+		'@babel/plugin-transform-async-to-generator',
+		'@babel/plugin-transform-for-of',
+		'@babel/plugin-transform-regenerator'
 	]
 }

@@ -2,7 +2,8 @@ import {IUnsubscribe} from '../subjects/subject'
 import {IRuleSubscribe} from './contracts/rule-subscribe'
 import {IRule, IRuleAction, IRuleAny, IRuleRepeat, RuleType} from './contracts/rules'
 
-export type IRuleOrIterable = IRuleAction | IRuleIterable
+type GetIterableFunction = () => Iterable<IRuleOrIterable>
+export type IRuleOrIterable = IRuleAction | IRuleIterable | GetIterableFunction
 export interface IRuleIterable extends Iterable<IRuleOrIterable> {
 
 }
@@ -20,11 +21,11 @@ export function *iterateRule(rule: IRule, next: () => IRuleIterable = null): IRu
 	switch (rule.type) {
 		case RuleType.Action:
 			yield rule
-			yield* ruleNext()
+			yield ruleNext
 			break
 		case RuleType.Any:
 			const {rules} = (rule as IRuleAny)
-			function *any() {
+			const any = function *() {
 				for (let i = 0, len = rules.length; i < len; i++) {
 					yield iterateRule(rules[i], ruleNext)
 				}
@@ -33,7 +34,7 @@ export function *iterateRule(rule: IRule, next: () => IRuleIterable = null): IRu
 			break
 		case RuleType.Repeat:
 			const {countMin, countMax, rule: subRule} = rule as IRuleRepeat
-			function *repeatNext(count) {
+			const repeatNext = function *(count) {
 				if (count >= countMax) {
 					yield* ruleNext()
 					return
@@ -60,7 +61,7 @@ export function *iterateRule(rule: IRule, next: () => IRuleIterable = null): IRu
 export function subscribeNextRule(
 	ruleIterator: Iterator<IRuleOrIterable>,
 	fork: (ruleIterator: Iterator<IRuleOrIterable>) => IUnsubscribe,
-	subscribeNode: (rule: IRuleSubscribe) => IUnsubscribe,
+	subscribeNode: (rule: IRuleSubscribe, getRuleIterator: () => Iterator<IRuleOrIterable>) => IUnsubscribe,
 	subscribeLeaf: () => IUnsubscribe,
 ) {
 	const iteration = ruleIterator.next()
@@ -72,6 +73,19 @@ export function subscribeNextRule(
 
 	if (ruleOrIterable[Symbol.iterator]) {
 		let unsubscribers: IUnsubscribe[]
+
+		// for (let step, innerIterator = ruleOrIterable[Symbol.iterator](); !(step = innerIterator.next()).done;) {
+		// 	const ruleIterable = step.value
+		// 	const unsubscribe = fork(ruleIterable[Symbol.iterator]())
+		// 	if (unsubscribe != null) {
+		// 		if (!unsubscribers) {
+		// 			unsubscribers = [unsubscribe]
+		// 		} else {
+		// 			unsubscribers.push(unsubscribe)
+		// 		}
+		// 	}
+		// }
+
 		for (const ruleIterable of ruleOrIterable as Iterable<IRuleOrIterable>) {
 			const unsubscribe = fork(ruleIterable[Symbol.iterator]())
 			if (unsubscribe != null) {
@@ -94,5 +108,10 @@ export function subscribeNextRule(
 		}
 	}
 
-	return subscribeNode(ruleOrIterable as IRuleSubscribe)
+	const nextIterable = ruleIterator.next().value as GetIterableFunction
+
+	return subscribeNode(
+		ruleOrIterable as IRuleSubscribe,
+		() => nextIterable()[Symbol.iterator](),
+	)
 }

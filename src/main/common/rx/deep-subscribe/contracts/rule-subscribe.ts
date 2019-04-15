@@ -10,4 +10,5 @@ export type ISubscribeObject<TObject, TChild> = (
 
 export interface IRuleSubscribe<TObject = any, TChild = any> extends IRuleAction {
 	readonly subscribe: ISubscribeObject<TObject, TChild>
+	unsubscribePropertyName?: string
 }

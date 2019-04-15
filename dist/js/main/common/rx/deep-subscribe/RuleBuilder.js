@@ -18,7 +18,7 @@ const RuleSubscribeObjectPropertyNames = _RuleSubscribe.RuleSubscribeObject.bind
 const RuleSubscribeMapKeys = _RuleSubscribe.RuleSubscribeMap.bind(null, null);
 
 class RuleBuilder {
-  subscribe(ruleSubscribe, description) {
+  custom(ruleSubscribe, description) {
     const {
       _ruleLast: ruleLast
     } = this;
@@ -42,7 +42,7 @@ class RuleBuilder {
 
 
   propertyName(propertyName) {
-    return this.subscribe(new RuleSubscribeObjectPropertyNames(propertyName), propertyName);
+    return this.custom(new RuleSubscribeObjectPropertyNames(propertyName), propertyName);
   }
   /**
    * Object property, Array index
@@ -50,7 +50,7 @@ class RuleBuilder {
 
 
   propertyNames(...propertiesNames) {
-    return this.subscribe(new RuleSubscribeObjectPropertyNames(...propertiesNames), propertiesNames.join('|'));
+    return this.custom(new RuleSubscribeObjectPropertyNames(...propertiesNames), propertiesNames.join('|'));
   }
   /**
    * Object property, Array index
@@ -58,7 +58,7 @@ class RuleBuilder {
 
 
   propertyAll() {
-    return this.subscribe(new _RuleSubscribe.RuleSubscribeObject(), _constants.ANY_DISPLAY);
+    return this.custom(new _RuleSubscribe.RuleSubscribeObject(), _constants.ANY_DISPLAY);
   }
   /**
    * Object property, Array index
@@ -66,7 +66,7 @@ class RuleBuilder {
 
 
   propertyPredicate(predicate, description) {
-    return this.subscribe(new _RuleSubscribe.RuleSubscribeObject(predicate), description);
+    return this.custom(new _RuleSubscribe.RuleSubscribeObject(predicate), description);
   }
   /**
    * Object property, Array index
@@ -86,7 +86,7 @@ class RuleBuilder {
 
 
   collection() {
-    return this.subscribe(new _RuleSubscribe.RuleSubscribeCollection(), _constants.COLLECTION_PREFIX);
+    return this.custom(new _RuleSubscribe.RuleSubscribeCollection(), _constants.COLLECTION_PREFIX);
   }
   /**
    * IMapChanged & Map, Map
@@ -94,7 +94,7 @@ class RuleBuilder {
 
 
   mapKey(key) {
-    return this.subscribe(new RuleSubscribeMapKeys(key), _constants.COLLECTION_PREFIX + key);
+    return this.custom(new RuleSubscribeMapKeys(key), _constants.COLLECTION_PREFIX + key);
   }
   /**
    * IMapChanged & Map, Map
@@ -102,7 +102,7 @@ class RuleBuilder {
 
 
   mapKeys(...keys) {
-    return this.subscribe(new RuleSubscribeMapKeys(...keys), _constants.COLLECTION_PREFIX + keys.join('|'));
+    return this.custom(new RuleSubscribeMapKeys(...keys), _constants.COLLECTION_PREFIX + keys.join('|'));
   }
   /**
    * IMapChanged & Map, Map
@@ -110,7 +110,7 @@ class RuleBuilder {
 
 
   mapAll() {
-    return this.subscribe(new _RuleSubscribe.RuleSubscribeMap(), _constants.COLLECTION_PREFIX);
+    return this.custom(new _RuleSubscribe.RuleSubscribeMap(), _constants.COLLECTION_PREFIX);
   }
   /**
    * IMapChanged & Map, Map
@@ -118,7 +118,7 @@ class RuleBuilder {
 
 
   mapPredicate(keyPredicate, description) {
-    return this.subscribe(new _RuleSubscribe.RuleSubscribeMap(keyPredicate), description);
+    return this.custom(new _RuleSubscribe.RuleSubscribeMap(keyPredicate), description);
   }
   /**
    * IMapChanged & Map, Map

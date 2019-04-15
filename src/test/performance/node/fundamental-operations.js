@@ -1,10 +1,11 @@
-/* eslint-disable no-new-func,no-array-constructor,object-property-newline,no-undef,no-empty */
+/* eslint-disable no-new-func,no-array-constructor,object-property-newline,no-undef,no-empty,no-shadow,no-prototype-builtins */
 
 import {calcPerformance} from 'rdtsc'
 import {binarySearch} from '../../../main/common/lists/helpers/array'
 import {getObjectUniqueId} from '../../../main/common/lists/helpers/object-unique-id'
 import {SortedList} from '../../../main/common/lists/SortedList'
 import {ArraySet} from '../../../main/common/lists/ArraySet'
+import {createObject, Tester} from '../../tests/common/main/rx/deep-subscribe/helpers/Tester'
 
 const SetNative = Set
 require('./src/SetPolyfill')
@@ -729,7 +730,7 @@ describe('fundamental-operations', function () {
 		console.log(result)
 	})
 
-	it('Set', function () {
+	xit('Set', function () {
 		this.timeout(300000)
 
 		assert.strictEqual(SetNative, Set)
@@ -835,6 +836,107 @@ describe('fundamental-operations', function () {
 			// testSortedList,
 			testSetPolyfill,
 			testArraySet
+		)
+
+		console.log(result)
+	})
+
+	xit('Number toString', function () {
+		this.timeout(300000)
+		const numInt = 123456789
+		const numFloat = 1234.56789
+		const str = '1234.56789_'
+
+		const result = calcPerformance(
+			60000,
+			() => {
+				// no operations
+			},
+			() => str + 99,
+			() => numInt.toString(10),
+			() => numInt.toString(16),
+			() => numInt.toString(36),
+			() => numFloat.toString(10),
+			() => numFloat.toString(16),
+			() => numFloat.toString(36)
+		)
+
+		console.log(result)
+	})
+
+	xit('hasOwnProperty', function () {
+		this.timeout(300000)
+		const object = {property: true}
+		const child = Object.create(object)
+
+		const result = calcPerformance(
+			60000,
+			() => {
+				// no operations
+			},
+			() => Object.prototype.hasOwnProperty.call(object, 'property'),
+			() => object.hasOwnProperty('property'),
+			() => Object.prototype.hasOwnProperty.call(child, 'property'),
+			() => child.hasOwnProperty('property'),
+		)
+
+		console.log(result)
+	})
+
+	it('deepSubscribe', function () {
+		this.timeout(300000)
+
+		const createTester = (...propertyNames) => new Tester(
+			{
+				object         : createObject().object,
+				immediate      : true,
+				performanceTest: true
+			},
+			b => b
+				.repeat(1, 3, b => b
+					.any(
+						// b => b.propertyRegexp(/object|observableObject/),
+						b => b.propertyNames('object', 'observableObject'),
+						b => b.propertyNames(...propertyNames).path(o => o['#'])
+					))
+				.path(o => o['#'])
+		)
+			.subscribe([])
+			.unsubscribe([])
+
+		const testerList = createTester('list')
+		const testerSet = createTester('set')
+		const testerMap = createTester('map')
+		const testerObservableList = createTester('observableList')
+		const testerObservableSet = createTester('observableSet')
+		const testerObservableMap = createTester('observableMap')
+		const testerAll = createTester('list', 'set', 'map', 'observableList', 'observableSet', 'observableMap')
+
+		const result = calcPerformance(
+			10000,
+			() => {
+				// no operations
+			},
+			() => testerList.subscribe([]),
+			() => testerList.unsubscribe([]),
+
+			() => testerSet.subscribe([]),
+			() => testerSet.unsubscribe([]),
+
+			() => testerMap.subscribe([]),
+			() => testerMap.unsubscribe([]),
+
+			() => testerObservableList.subscribe([]),
+			() => testerObservableList.unsubscribe([]),
+
+			() => testerObservableSet.subscribe([]),
+			() => testerObservableSet.unsubscribe([]),
+
+			() => testerObservableMap.subscribe([]),
+			() => testerObservableMap.unsubscribe([]),
+
+			() => testerAll.subscribe([]),
+			() => testerAll.unsubscribe([]),
 		)
 
 		console.log(result)

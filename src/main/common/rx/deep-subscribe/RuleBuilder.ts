@@ -1,4 +1,4 @@
-import {ANY, ANY_DISPLAY, COLLECTION_PREFIX} from './contracts/constants'
+import {ANY_DISPLAY, COLLECTION_PREFIX} from './contracts/constants'
 import {IRuleSubscribe} from './contracts/rule-subscribe'
 import {IRule, IRuleAny, IRuleRepeat, RuleType} from './contracts/rules'
 import {getFuncPropertiesPath} from './helpers/func-properties-path'
@@ -7,16 +7,28 @@ import {RuleSubscribeCollection, RuleSubscribeMap, RuleSubscribeObject} from './
 const RuleSubscribeObjectPropertyNames = RuleSubscribeObject.bind(null, null)
 const RuleSubscribeMapKeys = RuleSubscribeMap.bind(null, null)
 
+const UNSUBSCRIBE_PROPERTY_PREFIX = Math.random().toString(36)
+let nextUnsubscribePropertyId = 0
+
 export class RuleBuilder<TObject> {
 	public rule: IRule
 	private _ruleLast: IRule
 
-	public subscribe<TValue>(ruleSubscribe: IRuleSubscribe<TObject, TValue>, description: string) {
+	public custom<TValue>(
+		ruleSubscribe: IRuleSubscribe<TObject, TValue>,
+		description: string,
+	): RuleBuilder<TValue> {
 		const {_ruleLast: ruleLast} = this
 
 		if (description) {
 			ruleSubscribe.description = description
 		}
+
+		if (ruleSubscribe.unsubscribePropertyName) {
+			throw new Error('You should not add duplicate IRuleSubscribe instances. Clone rule before add.')
+		}
+
+		ruleSubscribe.unsubscribePropertyName = UNSUBSCRIBE_PROPERTY_PREFIX + (nextUnsubscribePropertyId++)
 
 		if (ruleLast) {
 			ruleLast.next = ruleSubscribe
@@ -33,7 +45,7 @@ export class RuleBuilder<TObject> {
 	 * Object property, Array index
 	 */
 	public propertyName<TValue>(propertyName: string): RuleBuilder<TValue> {
-		return this.subscribe(
+		return this.custom(
 			new RuleSubscribeObjectPropertyNames(propertyName),
 			propertyName,
 		)
@@ -43,7 +55,7 @@ export class RuleBuilder<TObject> {
 	 * Object property, Array index
 	 */
 	public propertyNames<TValue>(...propertiesNames: string[]): RuleBuilder<TValue> {
-		return this.subscribe(
+		return this.custom(
 			new RuleSubscribeObjectPropertyNames(...propertiesNames),
 			propertiesNames.join('|'),
 		)
@@ -53,7 +65,7 @@ export class RuleBuilder<TObject> {
 	 * Object property, Array index
 	 */
 	public propertyAll<TValue>(): RuleBuilder<TValue> {
-		return this.subscribe(
+		return this.custom(
 			new RuleSubscribeObject(),
 			ANY_DISPLAY,
 		)
@@ -66,7 +78,7 @@ export class RuleBuilder<TObject> {
 		predicate: (propertyName: string, object) => boolean,
 		description: string,
 	): RuleBuilder<TValue> {
-		return this.subscribe(
+		return this.custom(
 			new RuleSubscribeObject(predicate),
 			description,
 		)
@@ -90,7 +102,7 @@ export class RuleBuilder<TObject> {
 	 * IListChanged & Iterable, ISetChanged & Iterable, IMapChanged & Iterable, Iterable
 	 */
 	public collection<TValue>(): RuleBuilder<TValue> {
-		return this.subscribe(
+		return this.custom(
 			new RuleSubscribeCollection<any, TValue>(),
 			COLLECTION_PREFIX,
 		)
@@ -100,7 +112,7 @@ export class RuleBuilder<TObject> {
 	 * IMapChanged & Map, Map
 	 */
 	public mapKey<TKey, TValue>(key: TKey): RuleBuilder<TValue> {
-		return this.subscribe(
+		return this.custom(
 			new RuleSubscribeMapKeys(key),
 			COLLECTION_PREFIX + key,
 		)
@@ -110,7 +122,7 @@ export class RuleBuilder<TObject> {
 	 * IMapChanged & Map, Map
 	 */
 	public mapKeys<TKey, TValue>(...keys: TKey[]): RuleBuilder<TValue> {
-		return this.subscribe(
+		return this.custom(
 			new RuleSubscribeMapKeys(...keys),
 			COLLECTION_PREFIX + keys.join('|'),
 		)
@@ -120,7 +132,7 @@ export class RuleBuilder<TObject> {
 	 * IMapChanged & Map, Map
 	 */
 	public mapAll<TValue>(): RuleBuilder<TValue> {
-		return this.subscribe(
+		return this.custom(
 			new RuleSubscribeMap() as any,
 			COLLECTION_PREFIX,
 		)
@@ -133,7 +145,7 @@ export class RuleBuilder<TObject> {
 		keyPredicate: (key: TKey, object) => boolean,
 		description: string,
 	): RuleBuilder<TValue> {
-		return this.subscribe(
+		return this.custom(
 			new RuleSubscribeMap(keyPredicate) as any,
 			description,
 		)

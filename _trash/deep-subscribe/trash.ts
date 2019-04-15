@@ -1,6 +1,6 @@
 // region Test
 
-import {RuleBuilder} from "../deep-subscribe";
+import {RuleBuilder} from "../../src/main/common/rx/deep-subscribe/deep-subscribe";
 
 interface IObj {
 	a__: boolean
