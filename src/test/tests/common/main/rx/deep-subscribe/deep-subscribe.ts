@@ -244,22 +244,22 @@ describe('common > main > rx > deep-subscribe > deep-subscribe', function() {
 			})
 			.unsubscribe([value])
 
-		new Tester(
-			{
-				object: createObject().object,
-				immediate: true,
-				ignoreSubscribeCount: true,
-			},
-			b => b
-				.repeat(1, 3, b => b
-					.any(
-						b => b.propertyRegexp(/object|observableObject/),
-						b => b.path(o => o['list|set|map|observableList|observableSet|observableMap']['#']),
-					),
-				)
-				.path(o => o['#']),
-		)
-			.subscribe([])
+		// new Tester(
+		// 	{
+		// 		object: createObject().object,
+		// 		immediate: true,
+		// 		ignoreSubscribeCount: true,
+		// 	},
+		// 	b => b
+		// 		.repeat(1, 3, b => b
+		// 			.any(
+		// 				b => b.propertyRegexp(/object|observableObject/),
+		// 				b => b.path(o => o['list|set|map|observableList|observableSet|observableMap']['#']),
+		// 			),
+		// 		)
+		// 		.path(o => o['#']),
+		// )
+		// 	.subscribe([])
 			// .change(o => {
 			// 	o.observableObject.value = value
 			// 	return [[], []]

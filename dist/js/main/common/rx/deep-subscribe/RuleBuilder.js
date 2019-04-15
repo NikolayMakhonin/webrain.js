@@ -17,6 +17,9 @@ const RuleSubscribeObjectPropertyNames = _RuleSubscribe.RuleSubscribeObject.bind
 
 const RuleSubscribeMapKeys = _RuleSubscribe.RuleSubscribeMap.bind(null, null);
 
+const UNSUBSCRIBE_PROPERTY_PREFIX = Math.random().toString(36);
+let nextUnsubscribePropertyId = 0;
+
 class RuleBuilder {
   custom(ruleSubscribe, description) {
     const {
@@ -26,6 +29,17 @@ class RuleBuilder {
     if (description) {
       ruleSubscribe.description = description;
     }
+
+    if (ruleSubscribe.unsubscribePropertyName) {
+      throw new Error('You should not add duplicate IRuleSubscribe instances. Clone rule before add.');
+    }
+
+    Object.defineProperty(ruleSubscribe, 'unsubscribePropertyName', {
+      configurable: true,
+      enumerable: false,
+      writable: false,
+      value: UNSUBSCRIBE_PROPERTY_PREFIX + nextUnsubscribePropertyId++
+    });
 
     if (ruleLast) {
       ruleLast.next = ruleSubscribe;

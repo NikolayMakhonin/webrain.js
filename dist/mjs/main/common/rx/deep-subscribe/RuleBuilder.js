@@ -8,6 +8,8 @@ import { getFuncPropertiesPath } from './helpers/func-properties-path';
 import { RuleSubscribeCollection, RuleSubscribeMap, RuleSubscribeObject } from './RuleSubscribe';
 var RuleSubscribeObjectPropertyNames = RuleSubscribeObject.bind(null, null);
 var RuleSubscribeMapKeys = RuleSubscribeMap.bind(null, null);
+var UNSUBSCRIBE_PROPERTY_PREFIX = Math.random().toString(36);
+var nextUnsubscribePropertyId = 0;
 export var RuleBuilder =
 /*#__PURE__*/
 function () {
@@ -23,6 +25,17 @@ function () {
       if (description) {
         ruleSubscribe.description = description;
       }
+
+      if (ruleSubscribe.unsubscribePropertyName) {
+        throw new Error('You should not add duplicate IRuleSubscribe instances. Clone rule before add.');
+      }
+
+      Object.defineProperty(ruleSubscribe, 'unsubscribePropertyName', {
+        configurable: true,
+        enumerable: false,
+        writable: false,
+        value: UNSUBSCRIBE_PROPERTY_PREFIX + nextUnsubscribePropertyId++
+      });
 
       if (ruleLast) {
         ruleLast.next = ruleSubscribe;

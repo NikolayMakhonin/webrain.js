@@ -11,43 +11,48 @@ var _iterateRule = require("./iterate-rule");
 var _RuleBuilder = require("./RuleBuilder");
 
 /* tslint:disable */
-function deepSubscribeRuleIterator(object, subscribe, immediate, ruleIterator, propertiesPath) {
+// const UNSUBSCRIBE_PROPERTY_PREFIX = Math.random().toString(36)
+let nextUnsubscribePropertyId = 0;
+
+function deepSubscribeRuleIterator(object, subscribeValue, immediate, ruleIterator, propertiesPath) {
   const subscribeNext = () => {
     let unsubscribePropertyName;
-    return (0, _iterateRule.subscribeNextRule)(ruleIterator, nextRuleIterator => deepSubscribeRuleIterator(object, subscribe, immediate, nextRuleIterator, propertiesPath), rule => {
-      function subscribeItem(item, debugPropertyName) {
-        const newPropertiesPath = (propertiesPath ? propertiesPath + '.' : '') + debugPropertyName + '(' + rule.description + ')';
+    return (0, _iterateRule.subscribeNextRule)(ruleIterator, nextRuleIterator => deepSubscribeRuleIterator(object, subscribeValue, immediate, nextRuleIterator, propertiesPath), (rule, getNextRuleIterator) => {
+      const subscribeItem = (item, debugPropertyName) => {
+        const newPropertiesPath = () => (propertiesPath ? propertiesPath() + '.' : '') + debugPropertyName + '(' + rule.description + ')';
 
-        const subscribe = () => deepSubscribeRuleIterator(item, subscribe, immediate, ruleIterator, newPropertiesPath);
+        const subscribe = () => deepSubscribeRuleIterator(item, subscribeValue, immediate, getNextRuleIterator(), newPropertiesPath);
 
         if (!(item instanceof Object)) {
           const unsubscribe = subscribe();
 
           if (unsubscribe) {
-            throw new Error(`You should not return unsubscribe function (${unsubscribe}) for non Object value (${object}).\nFor subscribe value types use their object wrappers: Number, Boolean, String classes.\nValue property path: ${newPropertiesPath}`);
+            throw new Error(`You should not return unsubscribe function for non Object value.\nFor subscribe value types use their object wrappers: Number, Boolean, String classes.\nUnsubscribe function: ${unsubscribe}\nValue: ${item}\nValue property path: ${newPropertiesPath()}`);
           }
 
           return;
         }
 
         if (!unsubscribePropertyName) {
-          unsubscribePropertyName = Math.random().toString(36);
+          unsubscribePropertyName = rule.unsubscribePropertyName; // + '_' + (nextUnsubscribePropertyId++)
         }
 
         let unsubscribe = item[unsubscribePropertyName];
 
         if (!unsubscribe) {
-          unsubscribe = subscribe();
+          // if (typeof unsubscribe === 'undefined') {
           Object.defineProperty(item, unsubscribePropertyName, {
             configurable: true,
             enumerable: false,
-            writable: false,
-            value: unsubscribe
-          });
+            writable: true,
+            value: subscribe()
+          }); // } else {
+          // 	item[unsubscribePropertyName] = subscribe()
+          // }
         }
-      }
+      };
 
-      function unsubscribeItem(item, debugPropertyName) {
+      const unsubscribeItem = (item, debugPropertyName) => {
         if (!(item instanceof Object)) {
           return;
         }
@@ -59,29 +64,35 @@ function deepSubscribeRuleIterator(object, subscribe, immediate, ruleIterator, p
         const unsubscribe = item[unsubscribePropertyName];
 
         if (unsubscribe) {
-          unsubscribe();
           delete item[unsubscribePropertyName];
+          unsubscribe(); // item[unsubscribePropertyName] = null
         }
-      }
+      };
 
       return rule.subscribe(object, immediate, subscribeItem, unsubscribeItem);
     }, () => {
-      return subscribe(object);
+      return subscribeValue(object);
     });
   };
 
   try {
     return subscribeNext();
   } catch (ex) {
-    ex.message += `\nObject property path: ${propertiesPath}`;
+    if (ex.propertiesPath) {
+      throw ex;
+    }
+
+    const propertiesPathStr = propertiesPath ? propertiesPath() : '';
+    ex.propertiesPath = propertiesPathStr;
+    ex.message += `\nObject property path: ${propertiesPathStr}`;
     throw ex;
   }
 }
 
-function deepSubscribeRule(object, subscribe, immediate, rule) {
-  return deepSubscribeRuleIterator(object, subscribe, immediate, (0, _iterateRule.iterateRule)(rule)[Symbol.iterator]());
+function deepSubscribeRule(object, subscribeValue, immediate, rule) {
+  return deepSubscribeRuleIterator(object, subscribeValue, immediate, (0, _iterateRule.iterateRule)(rule)[Symbol.iterator]());
 }
 
-function deepSubscribe(object, subscribe, immediate, ruleBuilder) {
-  return deepSubscribeRule(object, subscribe, immediate, ruleBuilder(new _RuleBuilder.RuleBuilder()).rule);
+function deepSubscribe(object, subscribeValue, immediate, ruleBuilder) {
+  return deepSubscribeRule(object, subscribeValue, immediate, ruleBuilder(new _RuleBuilder.RuleBuilder()).rule);
 }

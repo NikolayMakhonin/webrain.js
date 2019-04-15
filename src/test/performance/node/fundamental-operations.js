@@ -877,7 +877,7 @@ describe('fundamental-operations', function () {
 			() => Object.prototype.hasOwnProperty.call(object, 'property'),
 			() => object.hasOwnProperty('property'),
 			() => Object.prototype.hasOwnProperty.call(child, 'property'),
-			() => child.hasOwnProperty('property'),
+			() => child.hasOwnProperty('property')
 		)
 
 		console.log(result)
@@ -936,7 +936,7 @@ describe('fundamental-operations', function () {
 			() => testerObservableMap.unsubscribe([]),
 
 			() => testerAll.subscribe([]),
-			() => testerAll.unsubscribe([]),
+			() => testerAll.unsubscribe([])
 		)
 
 		console.log(result)
