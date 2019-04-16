@@ -8,6 +8,8 @@ exports.subscribeNextRule = subscribeNextRule;
 
 var _rules = require("./contracts/rules");
 
+var _PeekIterator = require("./helpers/PeekIterator");
+
 function* iterateRule(rule, next = null) {
   if (!rule) {
     if (next) {
@@ -17,12 +19,12 @@ function* iterateRule(rule, next = null) {
     return;
   }
 
-  const ruleNext = () => iterateRule(rule.next, next);
+  const ruleNext = rule.next || next ? () => iterateRule(rule.next, next) : null;
 
   switch (rule.type) {
     case _rules.RuleType.Action:
       yield rule;
-      yield* ruleNext();
+      yield ruleNext;
       break;
 
     case _rules.RuleType.Any:
@@ -30,41 +32,60 @@ function* iterateRule(rule, next = null) {
         rules
       } = rule;
 
-      function* any() {
-        for (let i = 0, len = rules.length; i < len; i++) {
-          yield iterateRule(rules[i], ruleNext);
-        }
+      if (rules.length <= 1) {
+        throw new Error(`RuleType.Any rules.length=${rules.length}`);
       }
+
+      const any = function* () {
+        for (let i = 0, len = rules.length; i < len; i++) {
+          const subRule = rules[i];
+
+          if (!subRule) {
+            throw new Error(`RuleType.Any rule=${subRule}`);
+          }
+
+          yield iterateRule(subRule, ruleNext);
+        }
+      };
 
       yield any();
       break;
 
     case _rules.RuleType.Repeat:
-      const {
-        countMin,
-        countMax,
-        rule: subRule
-      } = rule;
+      {
+        const {
+          countMin,
+          countMax,
+          rule: subRule
+        } = rule;
 
-      function* repeatNext(count) {
-        if (count >= countMax) {
-          yield* ruleNext();
-          return;
+        if (countMax < countMin || countMax <= 0 || rule == null) {
+          throw new Error(`RuleType.Repeat countMin=${countMin} countMax=${countMax} rule=${rule}`);
         }
 
-        const nextIteration = newCount => {
-          return iterateRule(subRule, () => repeatNext(newCount));
+        const repeatNext = function* (count) {
+          if (count >= countMax) {
+            if (ruleNext) {
+              yield* ruleNext();
+            }
+
+            return;
+          }
+
+          const nextIteration = newCount => {
+            return iterateRule(subRule, () => repeatNext(newCount));
+          };
+
+          if (count < countMin) {
+            yield* nextIteration(count + 1);
+          } else {
+            yield [ruleNext ? ruleNext() : [], nextIteration(count + 1)];
+          }
         };
 
-        if (count < countMin) {
-          yield* nextIteration(count + 1);
-        } else {
-          yield [ruleNext(), nextIteration(count + 1)];
-        }
+        yield* repeatNext(0);
+        break;
       }
-
-      yield* repeatNext(0);
-      break;
 
     default:
       throw new Error('Unknown RuleType: ' + rule.type);
@@ -72,19 +93,29 @@ function* iterateRule(rule, next = null) {
 }
 
 function subscribeNextRule(ruleIterator, fork, subscribeNode, subscribeLeaf) {
-  const iteration = ruleIterator.next();
+  let iteration;
 
-  if (iteration.done) {
+  if (!ruleIterator || (iteration = ruleIterator.next()).done) {
     return subscribeLeaf();
   }
 
   const ruleOrIterable = iteration.value;
 
   if (ruleOrIterable[Symbol.iterator]) {
-    let unsubscribers;
+    let unsubscribers; // for (let step, innerIterator = ruleOrIterable[Symbol.iterator](); !(step = innerIterator.next()).done;) {
+    // 	const ruleIterable = step.value
+    // 	const unsubscribe = fork(ruleIterable[Symbol.iterator]())
+    // 	if (unsubscribe != null) {
+    // 		if (!unsubscribers) {
+    // 			unsubscribers = [unsubscribe]
+    // 		} else {
+    // 			unsubscribers.push(unsubscribe)
+    // 		}
+    // 	}
+    // }
 
     for (const ruleIterable of ruleOrIterable) {
-      const unsubscribe = fork(ruleIterable[Symbol.iterator]());
+      const unsubscribe = fork(new _PeekIterator.PeekIterator(ruleIterable[Symbol.iterator]()));
 
       if (unsubscribe != null) {
         if (!unsubscribers) {
@@ -106,5 +137,6 @@ function subscribeNextRule(ruleIterator, fork, subscribeNode, subscribeLeaf) {
     };
   }
 
-  return subscribeNode(ruleOrIterable);
+  const nextIterable = ruleIterator.next().value;
+  return subscribeNode(ruleOrIterable, nextIterable ? () => new _PeekIterator.PeekIterator(nextIterable()[Symbol.iterator]()) : null);
 }

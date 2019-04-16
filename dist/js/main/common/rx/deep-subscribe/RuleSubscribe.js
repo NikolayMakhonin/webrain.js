@@ -21,6 +21,10 @@ var _rules = require("./contracts/rules");
 // }
 // region subscribeObject
 function subscribeObject(propertyNames, propertyPredicate, object, immediateSubscribe, subscribeItem, unsubscribeItem) {
+  if (!(object instanceof Object)) {
+    return null;
+  }
+
   const {
     propertyChanged
   } = object;
@@ -37,14 +41,14 @@ function subscribeObject(propertyNames, propertyPredicate, object, immediateSubs
           unsubscribeItem(oldValue, name + '');
         }
 
-        if (typeof newValue !== 'undefined') {
+        if (unsubscribe && typeof newValue !== 'undefined') {
           subscribeItem(newValue, name + '');
         }
       }
     });
   }
 
-  function forEach(callbackfn) {
+  const forEach = callbackfn => {
     if (propertyNames) {
       for (let i = 0, len = propertyNames.length; i < len; i++) {
         const propertyName = propertyNames[i];
@@ -60,7 +64,7 @@ function subscribeObject(propertyNames, propertyPredicate, object, immediateSubs
         }
       }
     }
-  }
+  };
 
   if (immediateSubscribe) {
     forEach(subscribeItem);
@@ -71,6 +75,7 @@ function subscribeObject(propertyNames, propertyPredicate, object, immediateSubs
   return () => {
     if (unsubscribe) {
       unsubscribe();
+      unsubscribe = null;
     }
 
     forEach(unsubscribeItem);
@@ -80,15 +85,15 @@ function subscribeObject(propertyNames, propertyPredicate, object, immediateSubs
 
 
 function subscribeIterable(object, immediateSubscribe, subscribeItem, unsubscribeItem) {
-  if (!object[Symbol.iterator]) {
+  if (!object || !object[Symbol.iterator]) {
     return null;
   }
 
-  function forEach(callbackfn) {
+  const forEach = callbackfn => {
     for (const item of object) {
       callbackfn(item, _constants.COLLECTION_PREFIX);
     }
-  }
+  };
 
   if (immediateSubscribe) {
     forEach(subscribeItem);
@@ -104,6 +109,10 @@ function subscribeIterable(object, immediateSubscribe, subscribeItem, unsubscrib
 
 
 function subscribeList(object, immediateSubscribe, subscribeItem, unsubscribeItem) {
+  if (!object || object[Symbol.toStringTag] !== 'List') {
+    return null;
+  }
+
   const {
     listChanged
   } = object;
@@ -117,8 +126,10 @@ function subscribeList(object, immediateSubscribe, subscribeItem, unsubscribeIte
     }) => {
       switch (type) {
         case _IListChanged.ListChangedType.Added:
-          for (let i = 0, len = newItems.length; i < len; i++) {
-            subscribeItem(newItems[i], _constants.COLLECTION_PREFIX);
+          if (unsubscribe) {
+            for (let i = 0, len = newItems.length; i < len; i++) {
+              subscribeItem(newItems[i], _constants.COLLECTION_PREFIX);
+            }
           }
 
           break;
@@ -132,21 +143,21 @@ function subscribeList(object, immediateSubscribe, subscribeItem, unsubscribeIte
 
         case _IListChanged.ListChangedType.Set:
           unsubscribeItem(oldItems[0], _constants.COLLECTION_PREFIX);
-          subscribeItem(newItems[0], _constants.COLLECTION_PREFIX);
+
+          if (unsubscribe) {
+            subscribeItem(newItems[0], _constants.COLLECTION_PREFIX);
+          }
+
           break;
       }
     });
   }
 
-  if (object[Symbol.toStringTag] !== 'List') {
-    return unsubscribe;
-  }
-
-  function forEach(callbackfn) {
+  const forEach = callbackfn => {
     for (const item of object) {
       callbackfn(item, _constants.COLLECTION_PREFIX);
     }
-  }
+  };
 
   if (immediateSubscribe) {
     forEach(subscribeItem);
@@ -157,6 +168,7 @@ function subscribeList(object, immediateSubscribe, subscribeItem, unsubscribeIte
   return () => {
     if (unsubscribe) {
       unsubscribe();
+      unsubscribe = null;
     }
 
     forEach(unsubscribeItem);
@@ -166,6 +178,10 @@ function subscribeList(object, immediateSubscribe, subscribeItem, unsubscribeIte
 
 
 function subscribeSet(object, immediateSubscribe, subscribeItem, unsubscribeItem) {
+  if (!object || object[Symbol.toStringTag] !== 'Set' && !(object instanceof Set)) {
+    return null;
+  }
+
   const {
     setChanged
   } = object;
@@ -179,8 +195,10 @@ function subscribeSet(object, immediateSubscribe, subscribeItem, unsubscribeItem
     }) => {
       switch (type) {
         case _ISetChanged.SetChangedType.Added:
-          for (let i = 0, len = newItems.length; i < len; i++) {
-            subscribeItem(newItems[i], _constants.COLLECTION_PREFIX);
+          if (unsubscribe) {
+            for (let i = 0, len = newItems.length; i < len; i++) {
+              subscribeItem(newItems[i], _constants.COLLECTION_PREFIX);
+            }
           }
 
           break;
@@ -195,15 +213,11 @@ function subscribeSet(object, immediateSubscribe, subscribeItem, unsubscribeItem
     });
   }
 
-  if (object[Symbol.toStringTag] !== 'Set' && !(object instanceof Set)) {
-    return unsubscribe;
-  }
-
-  function forEach(callbackfn) {
+  const forEach = callbackfn => {
     for (const item of object) {
       callbackfn(item, _constants.COLLECTION_PREFIX);
     }
-  }
+  };
 
   if (immediateSubscribe) {
     forEach(subscribeItem);
@@ -214,6 +228,7 @@ function subscribeSet(object, immediateSubscribe, subscribeItem, unsubscribeItem
   return () => {
     if (unsubscribe) {
       unsubscribe();
+      unsubscribe = null;
     }
 
     forEach(unsubscribeItem);
@@ -223,6 +238,10 @@ function subscribeSet(object, immediateSubscribe, subscribeItem, unsubscribeItem
 
 
 function subscribeMap(keys, keyPredicate, object, immediateSubscribe, subscribeItem, unsubscribeItem) {
+  if (!object || object[Symbol.toStringTag] !== 'Map' && !(object instanceof Map)) {
+    return null;
+  }
+
   const {
     mapChanged
   } = object;
@@ -238,7 +257,10 @@ function subscribeMap(keys, keyPredicate, object, immediateSubscribe, subscribeI
       if (!keyPredicate || keyPredicate(key, object)) {
         switch (type) {
           case _IMapChanged.MapChangedType.Added:
-            subscribeItem(newValue, _constants.COLLECTION_PREFIX + key);
+            if (unsubscribe) {
+              subscribeItem(newValue, _constants.COLLECTION_PREFIX + key);
+            }
+
             break;
 
           case _IMapChanged.MapChangedType.Removed:
@@ -247,18 +269,18 @@ function subscribeMap(keys, keyPredicate, object, immediateSubscribe, subscribeI
 
           case _IMapChanged.MapChangedType.Set:
             unsubscribeItem(oldValue, _constants.COLLECTION_PREFIX + key);
-            subscribeItem(newValue, _constants.COLLECTION_PREFIX + key);
+
+            if (unsubscribe) {
+              subscribeItem(newValue, _constants.COLLECTION_PREFIX + key);
+            }
+
             break;
         }
       }
     });
   }
 
-  if (object[Symbol.toStringTag] !== 'Map' && !(object instanceof Map)) {
-    return unsubscribe;
-  }
-
-  function forEach(callbackfn) {
+  const forEach = callbackfn => {
     if (keys) {
       for (let i = 0, len = keys.length; i < len; i++) {
         const key = keys[i];
@@ -274,7 +296,7 @@ function subscribeMap(keys, keyPredicate, object, immediateSubscribe, subscribeI
         }
       }
     }
-  }
+  };
 
   if (immediateSubscribe) {
     forEach(subscribeItem);
@@ -285,6 +307,7 @@ function subscribeMap(keys, keyPredicate, object, immediateSubscribe, subscribeI
   return () => {
     if (unsubscribe) {
       unsubscribe();
+      unsubscribe = null;
     }
 
     forEach(unsubscribeItem);
@@ -294,6 +317,10 @@ function subscribeMap(keys, keyPredicate, object, immediateSubscribe, subscribeI
 
 
 function subscribeCollection(object, immediateSubscribe, subscribeItem, unsubscribeItem) {
+  if (!object) {
+    return null;
+  }
+
   const unsubscribeList = subscribeList(object, immediateSubscribe, subscribeItem, unsubscribeItem);
   const unsubscribeSet = subscribeSet(object, immediateSubscribe, subscribeItem, unsubscribeItem);
   const unsubscribeMap = subscribeMap(null, null, object, immediateSubscribe, subscribeItem, unsubscribeItem);

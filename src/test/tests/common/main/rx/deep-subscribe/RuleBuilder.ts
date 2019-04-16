@@ -1203,6 +1203,9 @@ describe('common > main > rx > deep-subscribe > RuleBuilder', function() {
 		const builder = new RuleBuilder<IObject>()
 		assert.strictEqual(builder.rule, undefined)
 
+		assert.throws(() => builder.repeat(1, 1, b => null), Error)
+		assert.throws(() => builder.repeat(1, 1, b => ({rule: null} as any)), Error)
+
 		const builder1 = builder
 			.repeat(
 				null, null,
@@ -1283,6 +1286,11 @@ describe('common > main > rx > deep-subscribe > RuleBuilder', function() {
 	it('any', function() {
 		const builder = new RuleBuilder<IObject>()
 		assert.strictEqual(builder.rule, undefined)
+
+		assert.throws(() => builder.any(), Error)
+		assert.throws(() => builder.any(null), Error)
+		assert.throws(() => builder.any(b => null), Error)
+		assert.throws(() => builder.any(b => ({rule: null} as any)), Error)
 
 		const builder1 = builder
 			.any(b => b.path(o => o.prop1))

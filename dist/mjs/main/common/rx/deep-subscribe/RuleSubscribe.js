@@ -11,6 +11,10 @@ import { RuleType } from './contracts/rules'; // function propertyPredicateAll(p
 // region subscribeObject
 
 function subscribeObject(propertyNames, propertyPredicate, object, immediateSubscribe, subscribeItem, unsubscribeItem) {
+  if (!(object instanceof Object)) {
+    return null;
+  }
+
   var propertyChanged = object.propertyChanged;
   var unsubscribe;
 
@@ -25,14 +29,14 @@ function subscribeObject(propertyNames, propertyPredicate, object, immediateSubs
           unsubscribeItem(oldValue, name + '');
         }
 
-        if (typeof newValue !== 'undefined') {
+        if (unsubscribe && typeof newValue !== 'undefined') {
           subscribeItem(newValue, name + '');
         }
       }
     });
   }
 
-  function forEach(callbackfn) {
+  var forEach = function forEach(callbackfn) {
     if (propertyNames) {
       for (var i = 0, len = propertyNames.length; i < len; i++) {
         var _propertyName = propertyNames[i];
@@ -48,7 +52,7 @@ function subscribeObject(propertyNames, propertyPredicate, object, immediateSubs
         }
       }
     }
-  }
+  };
 
   if (immediateSubscribe) {
     forEach(subscribeItem);
@@ -59,6 +63,7 @@ function subscribeObject(propertyNames, propertyPredicate, object, immediateSubs
   return function () {
     if (unsubscribe) {
       unsubscribe();
+      unsubscribe = null;
     }
 
     forEach(unsubscribeItem);
@@ -68,11 +73,11 @@ function subscribeObject(propertyNames, propertyPredicate, object, immediateSubs
 
 
 function subscribeIterable(object, immediateSubscribe, subscribeItem, unsubscribeItem) {
-  if (!object[Symbol.iterator]) {
+  if (!object || !object[Symbol.iterator]) {
     return null;
   }
 
-  function forEach(callbackfn) {
+  var forEach = function forEach(callbackfn) {
     var _iteratorNormalCompletion = true;
     var _didIteratorError = false;
     var _iteratorError = undefined;
@@ -96,7 +101,7 @@ function subscribeIterable(object, immediateSubscribe, subscribeItem, unsubscrib
         }
       }
     }
-  }
+  };
 
   if (immediateSubscribe) {
     forEach(subscribeItem);
@@ -112,6 +117,10 @@ function subscribeIterable(object, immediateSubscribe, subscribeItem, unsubscrib
 
 
 function subscribeList(object, immediateSubscribe, subscribeItem, unsubscribeItem) {
+  if (!object || object[Symbol.toStringTag] !== 'List') {
+    return null;
+  }
+
   var listChanged = object.listChanged;
   var unsubscribe;
 
@@ -123,8 +132,10 @@ function subscribeList(object, immediateSubscribe, subscribeItem, unsubscribeIte
 
       switch (type) {
         case ListChangedType.Added:
-          for (var i = 0, len = newItems.length; i < len; i++) {
-            subscribeItem(newItems[i], COLLECTION_PREFIX);
+          if (unsubscribe) {
+            for (var i = 0, len = newItems.length; i < len; i++) {
+              subscribeItem(newItems[i], COLLECTION_PREFIX);
+            }
           }
 
           break;
@@ -138,17 +149,17 @@ function subscribeList(object, immediateSubscribe, subscribeItem, unsubscribeIte
 
         case ListChangedType.Set:
           unsubscribeItem(oldItems[0], COLLECTION_PREFIX);
-          subscribeItem(newItems[0], COLLECTION_PREFIX);
+
+          if (unsubscribe) {
+            subscribeItem(newItems[0], COLLECTION_PREFIX);
+          }
+
           break;
       }
     });
   }
 
-  if (object[Symbol.toStringTag] !== 'List') {
-    return unsubscribe;
-  }
-
-  function forEach(callbackfn) {
+  var forEach = function forEach(callbackfn) {
     var _iteratorNormalCompletion2 = true;
     var _didIteratorError2 = false;
     var _iteratorError2 = undefined;
@@ -172,7 +183,7 @@ function subscribeList(object, immediateSubscribe, subscribeItem, unsubscribeIte
         }
       }
     }
-  }
+  };
 
   if (immediateSubscribe) {
     forEach(subscribeItem);
@@ -183,6 +194,7 @@ function subscribeList(object, immediateSubscribe, subscribeItem, unsubscribeIte
   return function () {
     if (unsubscribe) {
       unsubscribe();
+      unsubscribe = null;
     }
 
     forEach(unsubscribeItem);
@@ -192,6 +204,10 @@ function subscribeList(object, immediateSubscribe, subscribeItem, unsubscribeIte
 
 
 function subscribeSet(object, immediateSubscribe, subscribeItem, unsubscribeItem) {
+  if (!object || object[Symbol.toStringTag] !== 'Set' && !(object instanceof Set)) {
+    return null;
+  }
+
   var setChanged = object.setChanged;
   var unsubscribe;
 
@@ -203,8 +219,10 @@ function subscribeSet(object, immediateSubscribe, subscribeItem, unsubscribeItem
 
       switch (type) {
         case SetChangedType.Added:
-          for (var i = 0, len = newItems.length; i < len; i++) {
-            subscribeItem(newItems[i], COLLECTION_PREFIX);
+          if (unsubscribe) {
+            for (var i = 0, len = newItems.length; i < len; i++) {
+              subscribeItem(newItems[i], COLLECTION_PREFIX);
+            }
           }
 
           break;
@@ -219,11 +237,7 @@ function subscribeSet(object, immediateSubscribe, subscribeItem, unsubscribeItem
     });
   }
 
-  if (object[Symbol.toStringTag] !== 'Set' && !(object instanceof Set)) {
-    return unsubscribe;
-  }
-
-  function forEach(callbackfn) {
+  var forEach = function forEach(callbackfn) {
     var _iteratorNormalCompletion3 = true;
     var _didIteratorError3 = false;
     var _iteratorError3 = undefined;
@@ -247,7 +261,7 @@ function subscribeSet(object, immediateSubscribe, subscribeItem, unsubscribeItem
         }
       }
     }
-  }
+  };
 
   if (immediateSubscribe) {
     forEach(subscribeItem);
@@ -258,6 +272,7 @@ function subscribeSet(object, immediateSubscribe, subscribeItem, unsubscribeItem
   return function () {
     if (unsubscribe) {
       unsubscribe();
+      unsubscribe = null;
     }
 
     forEach(unsubscribeItem);
@@ -267,6 +282,10 @@ function subscribeSet(object, immediateSubscribe, subscribeItem, unsubscribeItem
 
 
 function subscribeMap(keys, keyPredicate, object, immediateSubscribe, subscribeItem, unsubscribeItem) {
+  if (!object || object[Symbol.toStringTag] !== 'Map' && !(object instanceof Map)) {
+    return null;
+  }
+
   var mapChanged = object.mapChanged;
   var unsubscribe;
 
@@ -280,7 +299,10 @@ function subscribeMap(keys, keyPredicate, object, immediateSubscribe, subscribeI
       if (!keyPredicate || keyPredicate(key, object)) {
         switch (type) {
           case MapChangedType.Added:
-            subscribeItem(newValue, COLLECTION_PREFIX + key);
+            if (unsubscribe) {
+              subscribeItem(newValue, COLLECTION_PREFIX + key);
+            }
+
             break;
 
           case MapChangedType.Removed:
@@ -289,18 +311,18 @@ function subscribeMap(keys, keyPredicate, object, immediateSubscribe, subscribeI
 
           case MapChangedType.Set:
             unsubscribeItem(oldValue, COLLECTION_PREFIX + key);
-            subscribeItem(newValue, COLLECTION_PREFIX + key);
+
+            if (unsubscribe) {
+              subscribeItem(newValue, COLLECTION_PREFIX + key);
+            }
+
             break;
         }
       }
     });
   }
 
-  if (object[Symbol.toStringTag] !== 'Map' && !(object instanceof Map)) {
-    return unsubscribe;
-  }
-
-  function forEach(callbackfn) {
+  var forEach = function forEach(callbackfn) {
     if (keys) {
       for (var i = 0, len = keys.length; i < len; i++) {
         var _key = keys[i];
@@ -337,7 +359,7 @@ function subscribeMap(keys, keyPredicate, object, immediateSubscribe, subscribeI
         }
       }
     }
-  }
+  };
 
   if (immediateSubscribe) {
     forEach(subscribeItem);
@@ -348,6 +370,7 @@ function subscribeMap(keys, keyPredicate, object, immediateSubscribe, subscribeI
   return function () {
     if (unsubscribe) {
       unsubscribe();
+      unsubscribe = null;
     }
 
     forEach(unsubscribeItem);
@@ -357,6 +380,10 @@ function subscribeMap(keys, keyPredicate, object, immediateSubscribe, subscribeI
 
 
 function subscribeCollection(object, immediateSubscribe, subscribeItem, unsubscribeItem) {
+  if (!object) {
+    return null;
+  }
+
   var unsubscribeList = subscribeList(object, immediateSubscribe, subscribeItem, unsubscribeItem);
   var unsubscribeSet = subscribeSet(object, immediateSubscribe, subscribeItem, unsubscribeItem);
   var unsubscribeMap = subscribeMap(null, null, object, immediateSubscribe, subscribeItem, unsubscribeItem);

@@ -5,6 +5,7 @@ var _marked =
 _regeneratorRuntime.mark(iterateRule);
 
 import { RuleType } from './contracts/rules';
+import { PeekIterator } from './helpers/PeekIterator';
 export function iterateRule(rule) {
   var next,
       ruleNext,
@@ -40,12 +41,11 @@ export function iterateRule(rule) {
           return _context3.abrupt("return");
 
         case 5:
-          ruleNext = function ruleNext() {
+          ruleNext = rule.next || next ? function () {
             return iterateRule(rule.next, next);
-          };
-
+          } : null;
           _context3.t1 = rule.type;
-          _context3.next = _context3.t1 === RuleType.Action ? 9 : _context3.t1 === RuleType.Any ? 13 : _context3.t1 === RuleType.Repeat ? 18 : 22;
+          _context3.next = _context3.t1 === RuleType.Action ? 9 : _context3.t1 === RuleType.Any ? 14 : _context3.t1 === RuleType.Repeat ? 21 : 27;
           break;
 
         case 9:
@@ -53,17 +53,27 @@ export function iterateRule(rule) {
           return rule;
 
         case 11:
-          return _context3.delegateYield(ruleNext(), "t2", 12);
-
-        case 12:
-          return _context3.abrupt("break", 23);
+          _context3.next = 13;
+          return ruleNext;
 
         case 13:
+          return _context3.abrupt("break", 28);
+
+        case 14:
           _ref = rule, rules = _ref.rules;
+
+          if (!(rules.length <= 1)) {
+            _context3.next = 17;
+            break;
+          }
+
+          throw new Error("RuleType.Any rules.length=".concat(rules.length));
+
+        case 17:
           any =
           /*#__PURE__*/
           _regeneratorRuntime.mark(function _callee() {
-            var i, len;
+            var i, len, subRule;
             return _regeneratorRuntime.wrap(function _callee$(_context) {
               while (1) {
                 switch (_context.prev = _context.next) {
@@ -72,33 +82,52 @@ export function iterateRule(rule) {
 
                   case 1:
                     if (!(i < len)) {
-                      _context.next = 7;
+                      _context.next = 10;
                       break;
                     }
 
-                    _context.next = 4;
-                    return iterateRule(rules[i], ruleNext);
+                    subRule = rules[i];
 
-                  case 4:
+                    if (subRule) {
+                      _context.next = 5;
+                      break;
+                    }
+
+                    throw new Error("RuleType.Any rule=".concat(subRule));
+
+                  case 5:
+                    _context.next = 7;
+                    return iterateRule(subRule, ruleNext);
+
+                  case 7:
                     i++;
                     _context.next = 1;
                     break;
 
-                  case 7:
+                  case 10:
                   case "end":
                     return _context.stop();
                 }
               }
             }, _callee);
           });
-          _context3.next = 17;
+          _context3.next = 20;
           return any();
 
-        case 17:
-          return _context3.abrupt("break", 23);
+        case 20:
+          return _context3.abrupt("break", 28);
 
-        case 18:
+        case 21:
           _ref2 = rule, countMin = _ref2.countMin, countMax = _ref2.countMax, subRule = _ref2.rule;
+
+          if (!(countMax < countMin || countMax <= 0 || rule == null)) {
+            _context3.next = 24;
+            break;
+          }
+
+          throw new Error("RuleType.Repeat countMin=".concat(countMin, " countMax=").concat(countMax, " rule=").concat(rule));
+
+        case 24:
           repeatNext =
           /*#__PURE__*/
           _regeneratorRuntime.mark(function _callee2(count) {
@@ -108,16 +137,21 @@ export function iterateRule(rule) {
                 switch (_context2.prev = _context2.next) {
                   case 0:
                     if (!(count >= countMax)) {
+                      _context2.next = 4;
+                      break;
+                    }
+
+                    if (!ruleNext) {
                       _context2.next = 3;
                       break;
                     }
 
-                    return _context2.delegateYield(ruleNext(), "t0", 2);
-
-                  case 2:
-                    return _context2.abrupt("return");
+                    return _context2.delegateYield(ruleNext(), "t0", 3);
 
                   case 3:
+                    return _context2.abrupt("return");
+
+                  case 4:
                     nextIteration = function nextIteration(newCount) {
                       return iterateRule(subRule, function () {
                         return repeatNext(newCount);
@@ -125,36 +159,36 @@ export function iterateRule(rule) {
                     };
 
                     if (!(count < countMin)) {
-                      _context2.next = 8;
+                      _context2.next = 9;
                       break;
                     }
 
-                    return _context2.delegateYield(nextIteration(count + 1), "t1", 6);
+                    return _context2.delegateYield(nextIteration(count + 1), "t1", 7);
 
-                  case 6:
-                    _context2.next = 10;
+                  case 7:
+                    _context2.next = 11;
                     break;
 
-                  case 8:
-                    _context2.next = 10;
-                    return [ruleNext(), nextIteration(count + 1)];
+                  case 9:
+                    _context2.next = 11;
+                    return [ruleNext ? ruleNext() : [], nextIteration(count + 1)];
 
-                  case 10:
+                  case 11:
                   case "end":
                     return _context2.stop();
                 }
               }
             }, _callee2);
           });
-          return _context3.delegateYield(repeatNext(0), "t3", 21);
+          return _context3.delegateYield(repeatNext(0), "t2", 26);
 
-        case 21:
-          return _context3.abrupt("break", 23);
+        case 26:
+          return _context3.abrupt("break", 28);
 
-        case 22:
+        case 27:
           throw new Error('Unknown RuleType: ' + rule.type);
 
-        case 23:
+        case 28:
         case "end":
           return _context3.stop();
       }
@@ -162,16 +196,27 @@ export function iterateRule(rule) {
   }, _marked);
 }
 export function subscribeNextRule(ruleIterator, fork, subscribeNode, subscribeLeaf) {
-  var iteration = ruleIterator.next();
+  var iteration;
 
-  if (iteration.done) {
+  if (!ruleIterator || (iteration = ruleIterator.next()).done) {
     return subscribeLeaf();
   }
 
   var ruleOrIterable = iteration.value;
 
   if (ruleOrIterable[Symbol.iterator]) {
-    var unsubscribers;
+    var unsubscribers; // for (let step, innerIterator = ruleOrIterable[Symbol.iterator](); !(step = innerIterator.next()).done;) {
+    // 	const ruleIterable = step.value
+    // 	const unsubscribe = fork(ruleIterable[Symbol.iterator]())
+    // 	if (unsubscribe != null) {
+    // 		if (!unsubscribers) {
+    // 			unsubscribers = [unsubscribe]
+    // 		} else {
+    // 			unsubscribers.push(unsubscribe)
+    // 		}
+    // 	}
+    // }
+
     var _iteratorNormalCompletion = true;
     var _didIteratorError = false;
     var _iteratorError = undefined;
@@ -179,7 +224,7 @@ export function subscribeNextRule(ruleIterator, fork, subscribeNode, subscribeLe
     try {
       for (var _iterator = ruleOrIterable[Symbol.iterator](), _step; !(_iteratorNormalCompletion = (_step = _iterator.next()).done); _iteratorNormalCompletion = true) {
         var ruleIterable = _step.value;
-        var unsubscribe = fork(ruleIterable[Symbol.iterator]());
+        var unsubscribe = fork(new PeekIterator(ruleIterable[Symbol.iterator]()));
 
         if (unsubscribe != null) {
           if (!unsubscribers) {
@@ -215,5 +260,8 @@ export function subscribeNextRule(ruleIterator, fork, subscribeNode, subscribeLe
     };
   }
 
-  return subscribeNode(ruleOrIterable);
+  var nextIterable = ruleIterator.next().value;
+  return subscribeNode(ruleOrIterable, nextIterable ? function () {
+    return new PeekIterator(nextIterable()[Symbol.iterator]());
+  } : null);
 }

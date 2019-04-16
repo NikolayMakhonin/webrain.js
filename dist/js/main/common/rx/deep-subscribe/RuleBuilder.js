@@ -166,12 +166,24 @@ class RuleBuilder {
   }
 
   any(...getChilds) {
+    if (getChilds.length === 0) {
+      throw new Error('any() parameters is empty');
+    }
+
     const {
       _ruleLast: ruleLast
     } = this;
     const rule = {
       type: _rules.RuleType.Any,
-      rules: getChilds.map(o => o(new RuleBuilder()).rule)
+      rules: getChilds.map(o => {
+        const subRule = o(new RuleBuilder()).rule;
+
+        if (!subRule) {
+          throw new Error(`Any subRule=${rule}`);
+        }
+
+        return subRule;
+      })
     };
 
     if (ruleLast) {
@@ -185,15 +197,40 @@ class RuleBuilder {
   }
 
   repeat(countMin, countMax, getChild) {
+    const subRule = getChild(new RuleBuilder()).rule;
+
+    if (!subRule) {
+      throw new Error(`getChild(...).rule = ${subRule}`);
+    }
+
+    if (countMax == null) {
+      countMax = Number.MAX_SAFE_INTEGER;
+    }
+
+    if (countMin == null) {
+      countMin = 0;
+    }
+
+    if (countMax < countMin || countMax <= 0) {
+      return this;
+    }
+
+    let rule;
+
+    if (countMax === countMin && countMax === 1) {
+      rule = subRule;
+    } else {
+      rule = {
+        type: _rules.RuleType.Repeat,
+        countMin,
+        countMax,
+        rule: getChild(new RuleBuilder()).rule
+      };
+    }
+
     const {
       _ruleLast: ruleLast
     } = this;
-    const rule = {
-      type: _rules.RuleType.Repeat,
-      countMin,
-      countMax,
-      rule: getChild(new RuleBuilder()).rule
-    };
 
     if (ruleLast) {
       ruleLast.next = rule;

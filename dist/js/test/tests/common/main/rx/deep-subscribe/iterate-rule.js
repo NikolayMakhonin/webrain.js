@@ -2,6 +2,8 @@
 
 var _rules = require("../../../../../../main/common/rx/deep-subscribe/contracts/rules");
 
+var _PeekIterator = require("../../../../../../main/common/rx/deep-subscribe/helpers/PeekIterator");
+
 var _iterateRule = require("../../../../../../main/common/rx/deep-subscribe/iterate-rule");
 
 var _RuleBuilder = require("../../../../../../main/common/rx/deep-subscribe/RuleBuilder");
@@ -38,9 +40,9 @@ describe('common > main > rx > deep-subscribe > iterate-rule', function () {
   };
 
   function rulesToObject(ruleIterator, obj = {}) {
-    return (0, _iterateRule.subscribeNextRule)(ruleIterator, nextRuleIterator => rulesToObject(nextRuleIterator, obj), rule => {
+    return (0, _iterateRule.subscribeNextRule)(ruleIterator, nextRuleIterator => rulesToObject(nextRuleIterator, obj), (rule, getRuleIterator) => {
       const newObj = {};
-      const unsubscribe = rulesToObject(ruleIterator, newObj);
+      const unsubscribe = rulesToObject(getRuleIterator ? getRuleIterator() : null, newObj);
       Object.assign(obj, {
         [rule.description]: newObj
       });
@@ -83,7 +85,7 @@ describe('common > main > rx > deep-subscribe > iterate-rule', function () {
     const result = (0, _iterateRule.iterateRule)(buildRule(new _RuleBuilder.RuleBuilder()).rule);
     assert.ok(result);
     const object = {};
-    const unsubscribe = rulesToObject(result[Symbol.iterator](), object); // console.log(JSON.stringify(object, null, 4))
+    const unsubscribe = rulesToObject(new _PeekIterator.PeekIterator(result[Symbol.iterator]()), object); // console.log(JSON.stringify(object, null, 4))
 
     let paths = Array.from(objectToPaths(object, true));
     assert.deepStrictEqual(paths.sort(), expectedPaths.sort(), JSON.stringify(paths, null, 4));
@@ -105,6 +107,11 @@ describe('common > main > rx > deep-subscribe > iterate-rule', function () {
     testIterateRule(b => b.any(b => b.any(b => b.path(o => o.a.b), b => b.path(o => o.c.d)), b => b.path(o => o.e.f)), 'a.b', 'c.d', 'e.f');
     testIterateRule(b => b.any(b => b.path(o => o.a.b).any(b => b.path(o => o.c.d), b => b.path(o => o.e.f)), b => b.path(o => o.g.h)).path(o => o.i), 'a.b.c.d.i', 'a.b.e.f.i', 'g.h.i');
   });
+  it('path any', function () {
+    const builder = new _RuleBuilder.RuleBuilder();
+    testIterateRule(b => b.path(o => o['a|b'].c), 'a|b.c');
+    testIterateRule(b => b.propertyRegexp(/[ab]/).path(o => o.c), '/[ab]/.c');
+  });
   it('repeat', function () {
     const builder = new _RuleBuilder.RuleBuilder();
     testIterateRule(b => b.repeat(1, 1, b => b.path(o => o.a)), 'a');
@@ -124,8 +131,10 @@ describe('common > main > rx > deep-subscribe > iterate-rule', function () {
     assert.throws(() => Array.from((0, _iterateRule.iterateRule)({
       type: -1
     })), Error);
+    assert.throws(() => new _RuleBuilder.RuleBuilder().repeat(1, 2, b => b), Error);
+    assert.throws(() => new _RuleBuilder.RuleBuilder().any(), Error);
   });
   it('specific', function () {
-    testIterateRule(b => b.any(b => b.path(o => o.a), b => b.any().path(o => o.b), b => b.repeat(1, 1, b => b).path(o => o.c), b => b.repeat(0, 0, b => b.path(o => o.d)).path(o => o.e)), 'a', 'c', 'e');
+    testIterateRule(b => b.any(b => b.path(o => o.a), b => b.repeat(0, 0, b => b.path(o => o.b)).path(o => o.c)), 'a', 'c');
   });
 });

@@ -1175,6 +1175,18 @@ describe('common > main > rx > deep-subscribe > RuleBuilder', function () {
   it('repeat', function () {
     var builder = new RuleBuilder();
     assert.strictEqual(builder.rule, undefined);
+    assert.throws(function () {
+      return builder.repeat(1, 1, function (b) {
+        return null;
+      });
+    }, Error);
+    assert.throws(function () {
+      return builder.repeat(1, 1, function (b) {
+        return {
+          rule: null
+        };
+      });
+    }, Error);
     var builder1 = builder.repeat(null, null, function (b) {
       return b.repeat(1, null, function (b) {
         return b.path(function (o) {
@@ -1202,12 +1214,12 @@ describe('common > main > rx > deep-subscribe > RuleBuilder', function () {
     assert.strictEqual(builder1, builder);
     assertRule(builder1.rule, {
       type: RuleType.Repeat,
-      countMin: null,
-      countMax: null,
+      countMin: 0,
+      countMax: Number.MAX_SAFE_INTEGER,
       rule: {
         type: RuleType.Repeat,
         countMin: 1,
-        countMax: null,
+        countMax: Number.MAX_SAFE_INTEGER,
         rule: {
           type: RuleType.Action,
           objectTypes: ['object', 'array'],
@@ -1216,7 +1228,7 @@ describe('common > main > rx > deep-subscribe > RuleBuilder', function () {
         },
         next: {
           type: RuleType.Repeat,
-          countMin: null,
+          countMin: 0,
           countMax: 2,
           rule: {
             type: RuleType.Action,
@@ -1264,6 +1276,24 @@ describe('common > main > rx > deep-subscribe > RuleBuilder', function () {
   it('any', function () {
     var builder = new RuleBuilder();
     assert.strictEqual(builder.rule, undefined);
+    assert.throws(function () {
+      return builder.any();
+    }, Error);
+    assert.throws(function () {
+      return builder.any(null);
+    }, Error);
+    assert.throws(function () {
+      return builder.any(function (b) {
+        return null;
+      });
+    }, Error);
+    assert.throws(function () {
+      return builder.any(function (b) {
+        return {
+          rule: null
+        };
+      });
+    }, Error);
     var builder1 = builder.any(function (b) {
       return b.path(function (o) {
         return o.prop1;

@@ -10,6 +10,8 @@ var _iterateRule = require("./iterate-rule");
 
 var _RuleBuilder = require("./RuleBuilder");
 
+var _PeekIterator = require("./helpers/PeekIterator");
+
 /* tslint:disable */
 // const UNSUBSCRIBE_PROPERTY_PREFIX = Math.random().toString(36)
 let nextUnsubscribePropertyId = 0;
@@ -21,12 +23,13 @@ function deepSubscribeRuleIterator(object, subscribeValue, immediate, ruleIterat
       const subscribeItem = (item, debugPropertyName) => {
         const newPropertiesPath = () => (propertiesPath ? propertiesPath() + '.' : '') + debugPropertyName + '(' + rule.description + ')';
 
-        const subscribe = () => deepSubscribeRuleIterator(item, subscribeValue, immediate, getNextRuleIterator(), newPropertiesPath);
+        const subscribe = () => deepSubscribeRuleIterator(item, subscribeValue, immediate, getNextRuleIterator ? getNextRuleIterator() : null, newPropertiesPath);
 
         if (!(item instanceof Object)) {
           const unsubscribe = subscribe();
 
           if (unsubscribe) {
+            unsubscribe();
             throw new Error(`You should not return unsubscribe function for non Object value.\nFor subscribe value types use their object wrappers: Number, Boolean, String classes.\nUnsubscribe function: ${unsubscribe}\nValue: ${item}\nValue property path: ${newPropertiesPath()}`);
           }
 
@@ -90,7 +93,7 @@ function deepSubscribeRuleIterator(object, subscribeValue, immediate, ruleIterat
 }
 
 function deepSubscribeRule(object, subscribeValue, immediate, rule) {
-  return deepSubscribeRuleIterator(object, subscribeValue, immediate, (0, _iterateRule.iterateRule)(rule)[Symbol.iterator]());
+  return deepSubscribeRuleIterator(object, subscribeValue, immediate, new _PeekIterator.PeekIterator((0, _iterateRule.iterateRule)(rule)[Symbol.iterator]()));
 }
 
 function deepSubscribe(object, subscribeValue, immediate, ruleBuilder) {

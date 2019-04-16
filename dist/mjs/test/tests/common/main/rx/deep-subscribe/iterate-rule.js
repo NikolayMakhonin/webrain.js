@@ -5,6 +5,7 @@ import _regeneratorRuntime from "@babel/runtime/regenerator";
 
 /* eslint-disable no-useless-escape,computed-property-spacing */
 import { RuleType } from '../../../../../../main/common/rx/deep-subscribe/contracts/rules';
+import { PeekIterator } from '../../../../../../main/common/rx/deep-subscribe/helpers/PeekIterator';
 import { iterateRule, subscribeNextRule } from '../../../../../../main/common/rx/deep-subscribe/iterate-rule';
 import { RuleBuilder } from '../../../../../../main/common/rx/deep-subscribe/RuleBuilder';
 describe('common > main > rx > deep-subscribe > iterate-rule', function () {
@@ -118,9 +119,9 @@ describe('common > main > rx > deep-subscribe > iterate-rule', function () {
     var obj = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : {};
     return subscribeNextRule(ruleIterator, function (nextRuleIterator) {
       return rulesToObject(nextRuleIterator, obj);
-    }, function (rule) {
+    }, function (rule, getRuleIterator) {
       var newObj = {};
-      var unsubscribe = rulesToObject(ruleIterator, newObj);
+      var unsubscribe = rulesToObject(getRuleIterator ? getRuleIterator() : null, newObj);
       Object.assign(obj, _defineProperty({}, rule.description, newObj));
       return unsubscribe;
     }, function () {
@@ -206,7 +207,7 @@ describe('common > main > rx > deep-subscribe > iterate-rule', function () {
     var result = iterateRule(buildRule(new RuleBuilder()).rule);
     assert.ok(result);
     var object = {};
-    var unsubscribe = rulesToObject(result[Symbol.iterator](), object); // console.log(JSON.stringify(object, null, 4))
+    var unsubscribe = rulesToObject(new PeekIterator(result[Symbol.iterator]()), object); // console.log(JSON.stringify(object, null, 4))
 
     var paths = Array.from(objectToPaths(object, true));
 
@@ -296,6 +297,19 @@ describe('common > main > rx > deep-subscribe > iterate-rule', function () {
         return o.i;
       });
     }, 'a.b.c.d.i', 'a.b.e.f.i', 'g.h.i');
+  });
+  it('path any', function () {
+    var builder = new RuleBuilder();
+    testIterateRule(function (b) {
+      return b.path(function (o) {
+        return o['a|b'].c;
+      });
+    }, 'a|b.c');
+    testIterateRule(function (b) {
+      return b.propertyRegexp(/[ab]/).path(function (o) {
+        return o.c;
+      });
+    }, '/[ab]/.c');
   });
   it('repeat', function () {
     var builder = new RuleBuilder();
@@ -388,6 +402,14 @@ describe('common > main > rx > deep-subscribe > iterate-rule', function () {
         type: -1
       }));
     }, Error);
+    assert.throws(function () {
+      return new RuleBuilder().repeat(1, 2, function (b) {
+        return b;
+      });
+    }, Error);
+    assert.throws(function () {
+      return new RuleBuilder().any();
+    }, Error);
   });
   it('specific', function () {
     testIterateRule(function (b) {
@@ -396,24 +418,14 @@ describe('common > main > rx > deep-subscribe > iterate-rule', function () {
           return o.a;
         });
       }, function (b) {
-        return b.any().path(function (o) {
-          return o.b;
-        });
-      }, function (b) {
-        return b.repeat(1, 1, function (b) {
-          return b;
+        return b.repeat(0, 0, function (b) {
+          return b.path(function (o) {
+            return o.b;
+          });
         }).path(function (o) {
           return o.c;
         });
-      }, function (b) {
-        return b.repeat(0, 0, function (b) {
-          return b.path(function (o) {
-            return o.d;
-          });
-        }).path(function (o) {
-          return o.e;
-        });
       });
-    }, 'a', 'c', 'e');
+    }, 'a', 'c');
   });
 });

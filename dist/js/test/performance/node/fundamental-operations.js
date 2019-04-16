@@ -15,7 +15,9 @@ var _SortedList = require("../../../main/common/lists/SortedList");
 
 var _ArraySet = require("../../../main/common/lists/ArraySet");
 
-/* eslint-disable no-new-func,no-array-constructor,object-property-newline,no-undef,no-empty */
+var _Tester = require("../../tests/common/main/rx/deep-subscribe/helpers/Tester");
+
+/* eslint-disable no-new-func,no-array-constructor,object-property-newline,no-undef,no-empty,no-shadow,no-prototype-builtins */
 const SetNative = Set;
 
 require('./src/SetPolyfill');
@@ -614,7 +616,7 @@ describe('fundamental-operations', function () {
     () => wrongPath === checkPath, () => path === checkPath, () => regexp.test(wrongPath), () => wrongPath.match(regexp), () => regexp.test(path), () => path.match(regexp));
     console.log(result);
   });
-  it('Set', function () {
+  xit('Set', function () {
     this.timeout(300000);
     assert.strictEqual(SetNative, Set);
     assert.notStrictEqual(Set, SetPolyfill);
@@ -682,6 +684,46 @@ describe('fundamental-operations', function () {
     const result = (0, _rdtsc.calcPerformance)(10000, () => {// no operations
     }, testSetNative, testObject, testArray, // testSortedList,
     testSetPolyfill, testArraySet);
+    console.log(result);
+  });
+  xit('Number toString', function () {
+    this.timeout(300000);
+    const numInt = 123456789;
+    const numFloat = 1234.56789;
+    const str = '1234.56789_';
+    const result = (0, _rdtsc.calcPerformance)(60000, () => {// no operations
+    }, () => str + 99, () => numInt.toString(10), () => numInt.toString(16), () => numInt.toString(36), () => numFloat.toString(10), () => numFloat.toString(16), () => numFloat.toString(36));
+    console.log(result);
+  });
+  xit('hasOwnProperty', function () {
+    this.timeout(300000);
+    const object = {
+      property: true
+    };
+    const child = Object.create(object);
+    const result = (0, _rdtsc.calcPerformance)(60000, () => {// no operations
+    }, () => Object.prototype.hasOwnProperty.call(object, 'property'), () => object.hasOwnProperty('property'), () => Object.prototype.hasOwnProperty.call(child, 'property'), () => child.hasOwnProperty('property'));
+    console.log(result);
+  });
+  it('deepSubscribe', function () {
+    this.timeout(300000);
+
+    const createTester = (...propertyNames) => new _Tester.Tester({
+      object: (0, _Tester.createObject)().object,
+      immediate: true,
+      performanceTest: true
+    }, b => b.repeat(1, 3, b => b.any( // b => b.propertyRegexp(/object|observableObject/),
+    b => b.propertyNames('object', 'observableObject'), b => b.propertyNames(...propertyNames).path(o => o['#']))).path(o => o['#'])).subscribe([]).unsubscribe([]);
+
+    const testerList = createTester('list');
+    const testerSet = createTester('set');
+    const testerMap = createTester('map');
+    const testerObservableList = createTester('observableList');
+    const testerObservableSet = createTester('observableSet');
+    const testerObservableMap = createTester('observableMap');
+    const testerAll = createTester('list', 'set', 'map', 'observableList', 'observableSet', 'observableMap');
+    const result = (0, _rdtsc.calcPerformance)(10000, () => {// no operations
+    }, () => testerList.subscribe([]), () => testerList.unsubscribe([]), () => testerSet.subscribe([]), () => testerSet.unsubscribe([]), () => testerMap.subscribe([]), () => testerMap.unsubscribe([]), () => testerObservableList.subscribe([]), () => testerObservableList.unsubscribe([]), () => testerObservableSet.subscribe([]), () => testerObservableSet.unsubscribe([]), () => testerObservableMap.subscribe([]), () => testerObservableMap.unsubscribe([]), () => testerAll.subscribe([]), () => testerAll.unsubscribe([]));
     console.log(result);
   });
 });

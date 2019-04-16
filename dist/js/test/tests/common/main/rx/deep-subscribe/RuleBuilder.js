@@ -1008,17 +1008,21 @@ describe('common > main > rx > deep-subscribe > RuleBuilder', function () {
   it('repeat', function () {
     const builder = new _RuleBuilder.RuleBuilder();
     assert.strictEqual(builder.rule, undefined);
+    assert.throws(() => builder.repeat(1, 1, b => null), Error);
+    assert.throws(() => builder.repeat(1, 1, b => ({
+      rule: null
+    })), Error);
     const builder1 = builder.repeat(null, null, b => b.repeat(1, null, b => b.path(o => o.prop1)).repeat(null, 2, b => b.path(o => o["prop '2'"])).repeat(3, 4, b => b.path(o => o.prop4))).repeat(5, 6, b => b.path(o => o.prop5)).repeat(7, 8, b => b.path(o => o.length));
     checkType(builder1);
     assert.strictEqual(builder1, builder);
     assertRule(builder1.rule, {
       type: _rules.RuleType.Repeat,
-      countMin: null,
-      countMax: null,
+      countMin: 0,
+      countMax: Number.MAX_SAFE_INTEGER,
       rule: {
         type: _rules.RuleType.Repeat,
         countMin: 1,
-        countMax: null,
+        countMax: Number.MAX_SAFE_INTEGER,
         rule: {
           type: _rules.RuleType.Action,
           objectTypes: ['object', 'array'],
@@ -1027,7 +1031,7 @@ describe('common > main > rx > deep-subscribe > RuleBuilder', function () {
         },
         next: {
           type: _rules.RuleType.Repeat,
-          countMin: null,
+          countMin: 0,
           countMax: 2,
           rule: {
             type: _rules.RuleType.Action,
@@ -1075,6 +1079,12 @@ describe('common > main > rx > deep-subscribe > RuleBuilder', function () {
   it('any', function () {
     const builder = new _RuleBuilder.RuleBuilder();
     assert.strictEqual(builder.rule, undefined);
+    assert.throws(() => builder.any(), Error);
+    assert.throws(() => builder.any(null), Error);
+    assert.throws(() => builder.any(b => null), Error);
+    assert.throws(() => builder.any(b => ({
+      rule: null
+    })), Error);
     const builder1 = builder.any(b => b.path(o => o.prop1)).any(b => b.path(o => o["prop '2'"])).any(b => b.any(b => b.path(o => o.prop4)), b => b.any(b => b.path(o => o.prop4), b => b.path(o => o.prop4_1)), b => b.any(b => b.path(o => o.prop4), b => b.path(o => o.prop4_1), b => b.path(o => o.prop4_2))).any(b => b.path(o => o.prop5)).any(b => b.path(o => o.length));
     checkType(builder1);
     assert.strictEqual(builder1, builder);

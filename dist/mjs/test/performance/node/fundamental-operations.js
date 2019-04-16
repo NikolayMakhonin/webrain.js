@@ -1,9 +1,10 @@
-/* eslint-disable no-new-func,no-array-constructor,object-property-newline,no-undef,no-empty */
+/* eslint-disable no-new-func,no-array-constructor,object-property-newline,no-undef,no-empty,no-shadow,no-prototype-builtins */
 import { calcPerformance } from 'rdtsc';
 import { binarySearch } from '../../../main/common/lists/helpers/array';
 import { getObjectUniqueId } from '../../../main/common/lists/helpers/object-unique-id';
 import { SortedList } from '../../../main/common/lists/SortedList';
 import { ArraySet } from '../../../main/common/lists/ArraySet';
+import { createObject, Tester } from '../../tests/common/main/rx/deep-subscribe/helpers/Tester';
 var SetNative = Set;
 
 require('./src/SetPolyfill');
@@ -699,7 +700,7 @@ describe('fundamental-operations', function () {
     });
     console.log(result);
   });
-  it('Set', function () {
+  xit('Set', function () {
     this.timeout(300000);
     assert.strictEqual(SetNative, Set);
     assert.notStrictEqual(Set, SetPolyfill);
@@ -824,6 +825,114 @@ describe('fundamental-operations', function () {
     var result = calcPerformance(10000, function () {// no operations
     }, testSetNative, testObject, testArray, // testSortedList,
     testSetPolyfill, testArraySet);
+    console.log(result);
+  });
+  xit('Number toString', function () {
+    this.timeout(300000);
+    var numInt = 123456789;
+    var numFloat = 1234.56789;
+    var str = '1234.56789_';
+    var result = calcPerformance(60000, function () {// no operations
+    }, function () {
+      return str + 99;
+    }, function () {
+      return numInt.toString(10);
+    }, function () {
+      return numInt.toString(16);
+    }, function () {
+      return numInt.toString(36);
+    }, function () {
+      return numFloat.toString(10);
+    }, function () {
+      return numFloat.toString(16);
+    }, function () {
+      return numFloat.toString(36);
+    });
+    console.log(result);
+  });
+  xit('hasOwnProperty', function () {
+    this.timeout(300000);
+    var object = {
+      property: true
+    };
+    var child = Object.create(object);
+    var result = calcPerformance(60000, function () {// no operations
+    }, function () {
+      return Object.prototype.hasOwnProperty.call(object, 'property');
+    }, function () {
+      return object.hasOwnProperty('property');
+    }, function () {
+      return Object.prototype.hasOwnProperty.call(child, 'property');
+    }, function () {
+      return child.hasOwnProperty('property');
+    });
+    console.log(result);
+  });
+  it('deepSubscribe', function () {
+    this.timeout(300000);
+
+    var createTester = function createTester() {
+      for (var _len2 = arguments.length, propertyNames = new Array(_len2), _key2 = 0; _key2 < _len2; _key2++) {
+        propertyNames[_key2] = arguments[_key2];
+      }
+
+      return new Tester({
+        object: createObject().object,
+        immediate: true,
+        performanceTest: true
+      }, function (b) {
+        return b.repeat(1, 3, function (b) {
+          return b.any( // b => b.propertyRegexp(/object|observableObject/),
+          function (b) {
+            return b.propertyNames('object', 'observableObject');
+          }, function (b) {
+            return b.propertyNames.apply(b, propertyNames).path(function (o) {
+              return o['#'];
+            });
+          });
+        }).path(function (o) {
+          return o['#'];
+        });
+      }).subscribe([]).unsubscribe([]);
+    };
+
+    var testerList = createTester('list');
+    var testerSet = createTester('set');
+    var testerMap = createTester('map');
+    var testerObservableList = createTester('observableList');
+    var testerObservableSet = createTester('observableSet');
+    var testerObservableMap = createTester('observableMap');
+    var testerAll = createTester('list', 'set', 'map', 'observableList', 'observableSet', 'observableMap');
+    var result = calcPerformance(10000, function () {// no operations
+    }, function () {
+      return testerList.subscribe([]);
+    }, function () {
+      return testerList.unsubscribe([]);
+    }, function () {
+      return testerSet.subscribe([]);
+    }, function () {
+      return testerSet.unsubscribe([]);
+    }, function () {
+      return testerMap.subscribe([]);
+    }, function () {
+      return testerMap.unsubscribe([]);
+    }, function () {
+      return testerObservableList.subscribe([]);
+    }, function () {
+      return testerObservableList.unsubscribe([]);
+    }, function () {
+      return testerObservableSet.subscribe([]);
+    }, function () {
+      return testerObservableSet.unsubscribe([]);
+    }, function () {
+      return testerObservableMap.subscribe([]);
+    }, function () {
+      return testerObservableMap.unsubscribe([]);
+    }, function () {
+      return testerAll.subscribe([]);
+    }, function () {
+      return testerAll.unsubscribe([]);
+    });
     console.log(result);
   });
 });
