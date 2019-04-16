@@ -731,7 +731,38 @@ describe('fundamental-operations', function () {
 		console.log(result)
 	})
 
-	it('Set', function () {
+	xit('operations inside compare func', function () {
+		this.timeout(300000)
+
+		const obj = () => {}
+		const obj2 = {}
+
+		const result = calcPerformance(
+			60000,
+			() => {
+				// no operations
+			},
+			() => obj === obj2, // -11
+			() => typeof obj === 'undefined', // -7
+			() => obj === null, // -7
+			() => obj.valueOf(), // 16
+			() => typeof obj === 'number', // -7
+			() => typeof obj === 'boolean', // -8
+			() => typeof obj === 'string', // -7
+			() => typeof obj2 === 'function', // -7
+			() => typeof obj.valueOf() === 'number', // -7
+			() => typeof obj.valueOf() === 'boolean', // -8
+			() => typeof obj.valueOf() === 'string', // -7
+			() => typeof obj2.valueOf() === 'function', // -7
+			() => getObjectUniqueId(obj), // -11
+			() => typeof obj === 'object', // 146
+			() => typeof obj === 'symbol' // 150
+		)
+
+		console.log(result)
+	})
+
+	xit('Set', function () {
 		this.timeout(300000)
 
 		assert.strictEqual(SetNative, Set)
@@ -892,8 +923,8 @@ describe('fundamental-operations', function () {
 				autoSort        : true,
 				notAddIfExists  : true,
 				minAllocatedSize: 1000,
-				compare         : compareUniqueId
-			}),
+				// compare         : compareUniqueId
+			})
 			// () => testSortedList({
 			// 	autoSort        : true,
 			// 	notAddIfExists  : false,
