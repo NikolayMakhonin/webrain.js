@@ -36,7 +36,7 @@ function subscribeObject<TValue>(
 					if (typeof oldValue !== 'undefined') {
 						unsubscribeItem(oldValue, name + '')
 					}
-					if (typeof newValue !== 'undefined') {
+					if (unsubscribe && typeof newValue !== 'undefined') {
 						subscribeItem(newValue, name + '')
 					}
 				}
@@ -71,6 +71,7 @@ function subscribeObject<TValue>(
 	return () => {
 		if (unsubscribe) {
 			unsubscribe()
+			unsubscribe = null
 		}
 		forEach(unsubscribeItem)
 	}
@@ -117,7 +118,7 @@ function subscribeList<TItem>(
 	subscribeItem: (item: TItem, debugPropertyName: string) => void,
 	unsubscribeItem: (item: TItem, debugPropertyName: string) => void,
 ): IUnsubscribe {
-	if (!object) {
+	if (!object || object[Symbol.toStringTag] !== 'List') {
 		return null
 	}
 
@@ -128,8 +129,10 @@ function subscribeList<TItem>(
 			.subscribe(({type, oldItems, newItems}) => {
 				switch (type) {
 					case ListChangedType.Added:
-						for (let i = 0, len = newItems.length; i < len; i++) {
-							subscribeItem(newItems[i], COLLECTION_PREFIX)
+						if (unsubscribe) {
+							for (let i = 0, len = newItems.length; i < len; i++) {
+								subscribeItem(newItems[i], COLLECTION_PREFIX)
+							}
 						}
 						break
 					case ListChangedType.Removed:
@@ -139,14 +142,12 @@ function subscribeList<TItem>(
 						break
 					case ListChangedType.Set:
 						unsubscribeItem(oldItems[0], COLLECTION_PREFIX)
-						subscribeItem(newItems[0], COLLECTION_PREFIX)
+						if (unsubscribe) {
+							subscribeItem(newItems[0], COLLECTION_PREFIX)
+						}
 						break
 				}
 			})
-	}
-
-	if (object[Symbol.toStringTag] !== 'List') {
-		return unsubscribe
 	}
 
 	const forEach = (callbackfn: (item: TItem, debugPropertyName: string) => void) => {
@@ -164,6 +165,7 @@ function subscribeList<TItem>(
 	return () => {
 		if (unsubscribe) {
 			unsubscribe()
+			unsubscribe = null
 		}
 		forEach(unsubscribeItem)
 	}
@@ -179,7 +181,7 @@ function subscribeSet<TItem>(
 	subscribeItem: (item: TItem, debugPropertyName: string) => void,
 	unsubscribeItem: (item: TItem, debugPropertyName: string) => void,
 ): IUnsubscribe {
-	if (!object) {
+	if (!object || object[Symbol.toStringTag] !== 'Set' && !(object instanceof Set)) {
 		return null
 	}
 
@@ -190,8 +192,10 @@ function subscribeSet<TItem>(
 			.subscribe(({type, oldItems, newItems}) => {
 				switch (type) {
 					case SetChangedType.Added:
-						for (let i = 0, len = newItems.length; i < len; i++) {
-							subscribeItem(newItems[i], COLLECTION_PREFIX)
+						if (unsubscribe) {
+							for (let i = 0, len = newItems.length; i < len; i++) {
+								subscribeItem(newItems[i], COLLECTION_PREFIX)
+							}
 						}
 						break
 					case SetChangedType.Removed:
@@ -201,10 +205,6 @@ function subscribeSet<TItem>(
 						break
 				}
 			})
-	}
-
-	if (object[Symbol.toStringTag] !== 'Set' && !(object instanceof Set)) {
-		return unsubscribe
 	}
 
 	const forEach = (callbackfn: (item: TItem, debugPropertyName: string) => void) => {
@@ -222,6 +222,7 @@ function subscribeSet<TItem>(
 	return () => {
 		if (unsubscribe) {
 			unsubscribe()
+			unsubscribe = null
 		}
 		forEach(unsubscribeItem)
 	}
@@ -239,7 +240,7 @@ function subscribeMap<K, V>(
 	subscribeItem: (item: V, debugPropertyName: string) => void,
 	unsubscribeItem: (item: V, debugPropertyName: string) => void,
 ): IUnsubscribe {
-	if (!object) {
+	if (!object || object[Symbol.toStringTag] !== 'Map' && !(object instanceof Map)) {
 		return null
 	}
 
@@ -252,22 +253,22 @@ function subscribeMap<K, V>(
 				if (!keyPredicate || keyPredicate(key, object)) {
 					switch (type) {
 						case MapChangedType.Added:
-							subscribeItem(newValue, COLLECTION_PREFIX + key)
+							if (unsubscribe) {
+								subscribeItem(newValue, COLLECTION_PREFIX + key)
+							}
 							break
 						case MapChangedType.Removed:
 							unsubscribeItem(oldValue, COLLECTION_PREFIX + key)
 							break
 						case MapChangedType.Set:
 							unsubscribeItem(oldValue, COLLECTION_PREFIX + key)
-							subscribeItem(newValue, COLLECTION_PREFIX + key)
+							if (unsubscribe) {
+								subscribeItem(newValue, COLLECTION_PREFIX + key)
+							}
 							break
 					}
 				}
 			})
-	}
-
-	if (object[Symbol.toStringTag] !== 'Map' && !(object instanceof Map)) {
-		return unsubscribe
 	}
 
 	const forEach = (callbackfn: (item: V, debugPropertyName: string) => void) => {
@@ -296,6 +297,7 @@ function subscribeMap<K, V>(
 	return () => {
 		if (unsubscribe) {
 			unsubscribe()
+			unsubscribe = null
 		}
 		forEach(unsubscribeItem)
 	}

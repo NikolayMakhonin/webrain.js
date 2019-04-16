@@ -21,15 +21,7 @@ export interface IRuleAny extends IRule {
 }
 
 export interface IRuleRepeat extends IRule {
-	/**
-	 * Default: 0
-	 */
-	readonly countMin?: number
-
-	/**
-	 * Default: Infinity
-	 */
-	readonly countMax?: number
-
+	readonly countMin: number
+	readonly countMax: number
 	readonly rule: IRule
 }

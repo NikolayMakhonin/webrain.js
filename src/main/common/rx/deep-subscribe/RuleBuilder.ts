@@ -190,11 +190,21 @@ export class RuleBuilder<TObject> {
 	public any<TValue>(
 		...getChilds: Array<(builder: RuleBuilder<TObject>) => RuleBuilder<TValue>>
 	): RuleBuilder<TValue> {
+		if (getChilds.length === 0) {
+			throw new Error('any() parameters is empty')
+		}
+
 		const {_ruleLast: ruleLast} = this
 
 		const rule: IRuleAny = {
 			type: RuleType.Any,
-			rules: getChilds.map(o => o(new RuleBuilder<TObject>()).rule),
+			rules: getChilds.map(o => {
+				const subRule = o(new RuleBuilder<TObject>()).rule
+				if (!subRule) {
+					throw new Error(`Any subRule=${rule}`)
+				}
+				return subRule
+			}),
 		}
 
 		if (ruleLast) {
@@ -213,14 +223,36 @@ export class RuleBuilder<TObject> {
 		countMax: number,
 		getChild: (builder: RuleBuilder<TObject>) => RuleBuilder<TValue>,
 	): RuleBuilder<TValue> {
-		const {_ruleLast: ruleLast} = this
-
-		const rule: IRuleRepeat = {
-			type: RuleType.Repeat,
-			countMin,
-			countMax,
-			rule: getChild(new RuleBuilder<TObject>()).rule,
+		const subRule = getChild(new RuleBuilder<TObject>()).rule
+		if (!subRule) {
+			throw new Error(`getChild(...).rule = ${subRule}`)
 		}
+
+		if (countMax == null) {
+			countMax = Number.MAX_SAFE_INTEGER
+		}
+
+		if (countMin == null) {
+			countMin = 0
+		}
+
+		if (countMax < countMin || countMax <= 0) {
+			return this as unknown as RuleBuilder<TValue>
+		}
+
+		let rule: IRule
+		if (countMax === countMin && countMax === 1) {
+			rule = subRule
+		} else {
+			rule = {
+				type: RuleType.Repeat,
+				countMin,
+				countMax,
+				rule: getChild(new RuleBuilder<TObject>()).rule,
+			} as IRuleRepeat
+		}
+
+		const {_ruleLast: ruleLast} = this
 
 		if (ruleLast) {
 			ruleLast.next = rule

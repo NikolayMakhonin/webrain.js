@@ -1220,12 +1220,12 @@ describe('common > main > rx > deep-subscribe > RuleBuilder', function() {
 
 		assertRule(builder1.rule, {
 			type: RuleType.Repeat,
-			countMin: null,
-			countMax: null,
+			countMin: 0,
+			countMax: Number.MAX_SAFE_INTEGER,
 			rule: {
 				type: RuleType.Repeat,
 				countMin: 1,
-				countMax: null,
+				countMax: Number.MAX_SAFE_INTEGER,
 				rule: {
 					type: RuleType.Action,
 					objectTypes: ['object', 'array'],
@@ -1234,7 +1234,7 @@ describe('common > main > rx > deep-subscribe > RuleBuilder', function() {
 				},
 				next: {
 					type: RuleType.Repeat,
-					countMin: null,
+					countMin: 0,
 					countMax: 2,
 					rule: {
 						type: RuleType.Action,

@@ -1,6 +1,7 @@
 /* tslint:disable:no-shadowed-variable no-empty */
 /* eslint-disable no-useless-escape,computed-property-spacing */
 import {IRule, RuleType} from '../../../../../../main/common/rx/deep-subscribe/contracts/rules'
+import {PeekIterator} from '../../../../../../main/common/rx/deep-subscribe/helpers/PeekIterator'
 import {
 	IRuleIterable,
 	IRuleOrIterable,
@@ -9,7 +10,6 @@ import {
 } from '../../../../../../main/common/rx/deep-subscribe/iterate-rule'
 import {RuleBuilder} from '../../../../../../main/common/rx/deep-subscribe/RuleBuilder'
 import {IUnsubscribe} from '../../../../../../main/common/rx/subjects/subject'
-import {IRuleSubscribe} from "../../../../../../main/common/rx/deep-subscribe/contracts/rule-subscribe";
 
 declare const assert
 
@@ -40,13 +40,16 @@ describe('common > main > rx > deep-subscribe > iterate-rule', function() {
 
 	const endObject = { _end: true }
 
-	function rulesToObject(ruleIterator: Iterator<IRuleOrIterable>, obj: any = {}): IUnsubscribe {
+	function rulesToObject(ruleIterator: PeekIterator<IRuleOrIterable>, obj: any = {}): IUnsubscribe {
 		return subscribeNextRule(
 			ruleIterator,
 			nextRuleIterator => rulesToObject(nextRuleIterator, obj),
 			(rule, getRuleIterator) => {
 				const newObj = {}
-				const unsubscribe = rulesToObject(getRuleIterator(), newObj)
+				const unsubscribe = rulesToObject(
+					getRuleIterator
+						? getRuleIterator()
+						: null, newObj)
 				Object.assign(obj, {[rule.description]: newObj})
 				return unsubscribe
 			},
@@ -89,7 +92,7 @@ describe('common > main > rx > deep-subscribe > iterate-rule', function() {
 		const result = iterateRule(buildRule(new RuleBuilder<any>()).rule)
 		assert.ok(result)
 		const object = {}
-		const unsubscribe = rulesToObject(result[Symbol.iterator](), object)
+		const unsubscribe = rulesToObject(new PeekIterator(result[Symbol.iterator]()), object)
 		// console.log(JSON.stringify(object, null, 4))
 		let paths = Array.from(objectToPaths(object, true))
 		assert.deepStrictEqual(paths.sort(), expectedPaths.sort(), JSON.stringify(paths, null, 4))
@@ -308,6 +311,10 @@ describe('common > main > rx > deep-subscribe > iterate-rule', function() {
 		assert.throws(() => Array.from(iterateRule({
 			type: -1 as RuleType,
 		})), Error)
+
+		assert.throws(() => new RuleBuilder().repeat(1, 2, b => b), Error)
+
+		assert.throws(() => new RuleBuilder().any<any>(), Error)
 	})
 
 	it('specific', function() {
@@ -315,13 +322,10 @@ describe('common > main > rx > deep-subscribe > iterate-rule', function() {
 			b => b
 				.any(
 					b => b.path(o => o.a),
-					b => b.any<any>().path(o => o.b),
-					b => b.repeat(1, 1, b => b).path(o => o.c),
-					b => b.repeat(0, 0, b => b.path(o => o.d)).path(o => o.e),
+					b => b.repeat(0, 0, b => b.path(o => o.b)).path(o => o.c),
 				),
 			'a',
 			'c',
-			'e',
 		)
 	})
 })

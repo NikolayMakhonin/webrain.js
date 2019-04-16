@@ -4,6 +4,7 @@ import {IRule} from './contracts/rules'
 import {IRuleOrIterable, iterateRule, subscribeNextRule} from './iterate-rule'
 import {RuleBuilder} from "./RuleBuilder";
 import {IRuleSubscribe} from "./contracts/rule-subscribe";
+import {PeekIterator} from "./helpers/PeekIterator";
 
 // const UNSUBSCRIBE_PROPERTY_PREFIX = Math.random().toString(36)
 let nextUnsubscribePropertyId = 0
@@ -12,7 +13,7 @@ function deepSubscribeRuleIterator<TValue>(
 	object: any,
 	subscribeValue: (value: TValue) => IUnsubscribe,
 	immediate: boolean,
-	ruleIterator: Iterator<IRuleOrIterable>,
+	ruleIterator: PeekIterator<IRuleOrIterable>,
 	propertiesPath?: () => string,
 ): IUnsubscribe {
 	const subscribeNext = () => {
@@ -30,13 +31,16 @@ function deepSubscribeRuleIterator<TValue>(
 						item,
 						subscribeValue,
 						immediate,
-						getNextRuleIterator(),
+						getNextRuleIterator
+							? getNextRuleIterator()
+							: null,
 						newPropertiesPath,
 					)
 
 					if (!(item instanceof Object)) {
 						const unsubscribe = subscribe()
 						if (unsubscribe) {
+							unsubscribe()
 							throw new Error(`You should not return unsubscribe function for non Object value.\nFor subscribe value types use their object wrappers: Number, Boolean, String classes.\nUnsubscribe function: ${unsubscribe}\nValue: ${item}\nValue property path: ${newPropertiesPath()}`)
 						}
 						return
@@ -118,7 +122,7 @@ export function deepSubscribeRule<TValue>(
 		object,
 		subscribeValue,
 		immediate,
-		iterateRule(rule)[Symbol.iterator](),
+		new PeekIterator(iterateRule(rule)[Symbol.iterator]()),
 	)
 }
 
