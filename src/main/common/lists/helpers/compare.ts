@@ -61,6 +61,20 @@ export function compareFast(o1, o2): number {
 	return 1
 }
 
+export function compareUniqueId(o1, o2): number {
+	if (o1 === o2) {
+		return 0
+	}
+
+	o1 = getObjectUniqueId(o1)
+	o2 = getObjectUniqueId(o2)
+	if (o1 > o2) {
+		return 1
+	}
+
+	return -1
+}
+
 export function compareStrict(o1, o2): number {
 	if (o1 === o2) {
 		return 0

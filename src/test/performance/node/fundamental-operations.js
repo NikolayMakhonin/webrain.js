@@ -4,6 +4,7 @@ import {calcPerformance} from 'rdtsc'
 import {binarySearch} from '../../../main/common/lists/helpers/array'
 import {getObjectUniqueId} from '../../../main/common/lists/helpers/object-unique-id'
 import {SortedList} from '../../../main/common/lists/SortedList'
+import {compareUniqueId} from '../../../main/common/lists/helpers/compare'
 import {ArraySet} from '../../../main/common/lists/ArraySet'
 import {createObject, Tester} from '../../tests/common/main/rx/deep-subscribe/helpers/Tester'
 
@@ -730,23 +731,26 @@ describe('fundamental-operations', function () {
 		console.log(result)
 	})
 
-	xit('Set', function () {
+	it('Set', function () {
 		this.timeout(300000)
 
 		assert.strictEqual(SetNative, Set)
 		assert.notStrictEqual(Set, SetPolyfill)
 
+		const countObject = 1000
+
 		const objects = []
-		for (let i = 0; i < 100; i++) {
+		for (let i = 0; i < countObject; i++) {
 			objects[i] = {value: i}
 			getObjectUniqueId(objects[i])
 		}
 
 		function testSet(addObject, removeObject, getIterableValues) {
-			for (let i = 0; i < 100; i++) {
+			for (let i = 0; i < countObject; i++) {
 				addObject(objects[i])
 			}
-			for (let i = 99; i >= 0; i--) {
+			for (let i = 0; i < countObject; i++) {
+			// for (let i = 99; i >= 0; i--) {
 				removeObject(objects[i])
 			}
 			for (const value of getIterableValues()) {
@@ -778,7 +782,7 @@ describe('fundamental-operations', function () {
 			// assert.strictEqual(Object.keys(set).length, 0)
 		}
 
-		function testArray() {
+		function testArrayHashTable() {
 			const set = []
 			testSet(
 				o => (set[getObjectUniqueId(o)] = o),
@@ -788,12 +792,58 @@ describe('fundamental-operations', function () {
 			// assert.strictEqual(set.length, 0)
 		}
 
-		function testSortedList() {
-			const set = new SortedList({
-				autoSort        : true,
-				notAddIfExists  : true,
-				minAllocatedSize: 1000
-			})
+		function testArraySplice() {
+			const set = []
+			testSet(
+				o => (set[set.length] = o),
+				o => {
+					const i = set.indexOf(o)
+					if (i >= 0) {
+						set.splice(i, 1)
+					}
+				},
+				o => set
+			)
+			// assert.strictEqual(set.length, 0)
+		}
+
+		function testArray() {
+			const set = []
+			testSet(
+				o => (set[set.length] = o),
+				o => {
+					const i = set.indexOf(o)
+					if (i >= 0) {
+						set[i] = set[set.length - 1]
+						set.length--
+					}
+				},
+				o => set
+			)
+			// assert.strictEqual(set.length, 0)
+		}
+
+		function testArrayKeepOrder() {
+			const set = []
+			testSet(
+				o => (set[set.length] = o),
+				o => {
+					const i = set.indexOf(o)
+					if (i >= 0) {
+						const len = set.length
+						for (let j = i + 1; j < len; j++) {
+							set[j - 1] = set[j]
+						}
+						set.length = len - 1
+					}
+				},
+				o => set
+			)
+			// assert.strictEqual(set.length, 0)
+		}
+
+		function testSortedList(options) {
+			const set = new SortedList(options)
 			testSet(
 				o => set.add(o),
 				o => set.remove(o),
@@ -804,7 +854,7 @@ describe('fundamental-operations', function () {
 		}
 
 		function testSetPolyfill() {
-			console.log(SetPolyfill.toString())
+			// console.log(SetPolyfill.toString())
 			const set = new SetPolyfill()
 			testSet(
 				o => set.add(o),
@@ -815,7 +865,7 @@ describe('fundamental-operations', function () {
 		}
 
 		function testArraySet() {
-			console.log(ArraySet.toString())
+			// console.log(ArraySet.toString())
 			const set = new ArraySet()
 			testSet(
 				o => set.add(o),
@@ -832,10 +882,28 @@ describe('fundamental-operations', function () {
 			},
 			testSetNative,
 			testObject,
+			testArrayHashTable,
+			testArraySplice,
 			testArray,
-			// testSortedList,
+			testArrayKeepOrder,
 			testSetPolyfill,
-			testArraySet
+			testArraySet,
+			() => testSortedList({
+				autoSort        : true,
+				notAddIfExists  : true,
+				minAllocatedSize: 1000,
+				compare         : compareUniqueId
+			}),
+			// () => testSortedList({
+			// 	autoSort        : true,
+			// 	notAddIfExists  : false,
+			// 	minAllocatedSize: 1000
+			// }),
+			// () => testSortedList({
+			// 	autoSort        : false,
+			// 	notAddIfExists  : false,
+			// 	minAllocatedSize: 1000
+			// })
 		)
 
 		console.log(result)
@@ -883,7 +951,7 @@ describe('fundamental-operations', function () {
 		console.log(result)
 	})
 
-	it('deepSubscribe', function () {
+	xit('deepSubscribe', function () {
 		this.timeout(300000)
 
 		const createTester = (...propertyNames) => new Tester(
