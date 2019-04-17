@@ -19,8 +19,7 @@ export class TestTiming implements ITiming {
 		if (time <= 0) {
 			throw new Error(`time (${time} should be > 0)`)
 		}
-		const {_handlers} = this
-		this._now = time
+		const {_handlers, _now: now} = this
 		Object.keys(_handlers)
 			.map(key => _handlers[key] as IHandler)
 			.filter(o => o.time <= time)
@@ -42,8 +41,11 @@ export class TestTiming implements ITiming {
 			})
 			.forEach(handler => {
 				delete _handlers[handler.id]
+				this._now = Math.max(now, handler.time)
 				handler.handler()
 			})
+
+		this._now = time
 	}
 
 	public now(): number {

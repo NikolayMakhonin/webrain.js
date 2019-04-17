@@ -134,7 +134,7 @@ export class TestDeferredCalc extends TestVariants<
 					staticDeferredCalc.maxThrottleTime = null
 					staticDeferredCalc.autoInvalidateInterval = null
 					staticDeferredCalc.calc()
-					timing.addTime(100)
+					timing.addTime(options.minTimeBetweenCalc)
 					testStartTime = timing.now()
 
 					events = staticEvents = []
@@ -180,13 +180,6 @@ export class TestDeferredCalc extends TestVariants<
 						autoInvalidateInterval: options.autoInvalidateInterval,
 					})
 				}
-
-				assertEvents(events, [{
-					time: 0,
-					type: EventType.CanBeCalc,
-				}])
-
-				events.splice(0, events.length)
 
 				const propertyChangedEvents = []
 				if ((deferredCalc as unknown as IPropertyChanged).propertyChanged) {
