@@ -155,4 +155,217 @@ describe('common > main > rx > deferred-calc > DeferredCalc', function() {
 			],
 		})
 	})
+
+	it('maxThrottleTime', function() {
+		testDeferredCalc({
+			calcTime: [0],
+			throttleTime: [10],
+			maxThrottleTime: [0],
+			minTimeBetweenCalc: [null, 0, 1, 10],
+			autoInvalidateInterval: [null],
+			expected: {
+				events: [
+					{
+						time: 0,
+						type: EventType.CanBeCalc,
+					},
+					{
+						time: 0,
+						type: EventType.Calc,
+					},
+					{
+						time: 0,
+						type: EventType.Completed,
+					},
+				],
+			},
+			actions: [
+				deferredCalc => {
+					deferredCalc.calc()
+				},
+				deferredCalc => {
+					deferredCalc.calc()
+					timing.addTime(0)
+				},
+			],
+		})
+
+		testDeferredCalc({
+			calcTime: [5],
+			throttleTime: [5],
+			maxThrottleTime: [10],
+			minTimeBetweenCalc: [null, 0, 1, 5],
+			autoInvalidateInterval: [null],
+			expected: {
+				events: [
+					{
+						time: 10,
+						type: EventType.CanBeCalc,
+					},
+					{
+						time: 12,
+						type: EventType.Calc,
+					},
+					{
+						time: 17,
+						type: EventType.Completed,
+					},
+					{
+						time: 22,
+						type: EventType.Calc,
+					},
+					{
+						time: 27,
+						type: EventType.Completed,
+					},
+					{
+						time: 32,
+						type: EventType.CanBeCalc,
+					},
+					{
+						time: 32,
+						type: EventType.Calc,
+					},
+					{
+						time: 37,
+						type: EventType.Completed,
+					},
+				],
+			},
+			actions: [
+				deferredCalc => {
+					deferredCalc.invalidate()
+					timing.addTime(4)
+					deferredCalc.invalidate()
+					timing.addTime(4)
+					deferredCalc.invalidate()
+					timing.addTime(4) // 12
+
+					deferredCalc.calc()
+
+					deferredCalc.invalidate()
+					timing.addTime(4)
+					deferredCalc.invalidate()
+					timing.addTime(4)
+					deferredCalc.invalidate()
+					timing.addTime(1)
+					deferredCalc.calc()
+					timing.addTime(1)
+
+					deferredCalc.invalidate()
+					timing.addTime(4)
+					deferredCalc.invalidate()
+					timing.addTime(4)
+					deferredCalc.invalidate()
+					timing.addTime(2)
+					deferredCalc.calc()
+					timing.addTime(5)
+				},
+			],
+		})
+	})
+
+	it('minTimeBetweenCalc', function() {
+		testDeferredCalc({
+			calcTime: [0],
+			throttleTime: [0],
+			maxThrottleTime: [0],
+			minTimeBetweenCalc: [5],
+			autoInvalidateInterval: [null],
+			expected: {
+				events: [
+					{
+						time: 0,
+						type: EventType.CanBeCalc,
+					},
+					{
+						time: 0,
+						type: EventType.Calc,
+					},
+					{
+						time: 0,
+						type: EventType.Completed,
+					},
+					{
+						time: 5,
+						type: EventType.Calc,
+					},
+					{
+						time: 5,
+						type: EventType.Completed,
+					},
+					{
+						time: 14,
+						type: EventType.Calc,
+					},
+					{
+						time: 14,
+						type: EventType.Completed,
+					},
+					{
+						time: 19,
+						type: EventType.Calc,
+					},
+					{
+						time: 19,
+						type: EventType.Completed,
+					},
+				],
+			},
+			actions: [
+				deferredCalc => {
+					deferredCalc.calc()
+					timing.addTime(3)
+					deferredCalc.calc()
+					timing.addTime(1)
+					deferredCalc.calc()
+					timing.addTime(10)
+					deferredCalc.calc()
+					deferredCalc.calc()
+					timing.addTime(5)
+				},
+			],
+		})
+	})
+
+	it('autoInvalidateInterval', function() {
+		testDeferredCalc({
+			calcTime: [5],
+			throttleTime: [0],
+			maxThrottleTime: [0],
+			minTimeBetweenCalc: [20],
+			autoInvalidateInterval: [15],
+			autoCalc: [true],
+			expected: {
+				events: [
+					{
+						time: 0,
+						type: EventType.CanBeCalc,
+					},
+					{
+						time: 0,
+						type: EventType.Calc,
+					},
+					{
+						time: 5,
+						type: EventType.Completed,
+					},
+					{
+						time: 25,
+						type: EventType.Calc,
+					},
+					{
+						time: 25,
+						type: EventType.Completed,
+					},
+				],
+			},
+			actions: [
+				deferredCalc => {
+					timing.addTime(100)
+					deferredCalc.autoInvalidateInterval = null
+				},
+			],
+		})
+	})
 })

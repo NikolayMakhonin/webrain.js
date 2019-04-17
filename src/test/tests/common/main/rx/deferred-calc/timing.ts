@@ -57,5 +57,17 @@ describe('common > main > rx > deferred-calc > timing', function() {
 		timing.addTime(1)
 		assert.deepStrictEqual(results, [])
 		assert.strictEqual(timing.now(), 12)
+
+		timing.setTimeout(() => results.push(1), 1)
+		timing.setTimeout(() => results.push(2), 2)
+		timing.setTimeout(() => results.push(3), 3)
+		timing.setTimeout(() => results.push(4), 4)
+		timing.setTimeout(() => results.push(5), 5)
+		timing.addTime(5)
+		assert.deepStrictEqual(results, [1, 2, 3, 4, 5])
+		results = []
+		timing.addTime(10)
+		assert.deepStrictEqual(results, [])
+		assert.strictEqual(timing.now(), 27)
 	})
 })

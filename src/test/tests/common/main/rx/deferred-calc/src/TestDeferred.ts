@@ -28,6 +28,7 @@ interface IDeferredCalcOptionsVariant {
 	maxThrottleTime?: number,
 	autoInvalidateInterval?: number,
 	reuseSetInstance?: boolean
+	autoCalc?: boolean
 }
 
 interface IDeferredCalcExpected {
@@ -47,21 +48,38 @@ interface IDeferredCalcOptionsVariants extends IOptionsVariants {
 	maxThrottleTime?: number[],
 	autoInvalidateInterval?: number[],
 	reuseSetInstance?: boolean[]
+	autoCalc?: boolean[]
 }
 
 export const timing = new TestTiming()
+let staticAutoCalc
 let staticCalcTime
 let testStartTime
 let staticEvents: IEvent[] = []
 const staticDeferredCalc = new DeferredCalc({
 	timing,
-	canBeCalcCallback: () => {
+	canBeCalcCallback() {
+		if (staticDeferredCalc) {
+			assert.strictEqual(this, staticDeferredCalc)
+		} else {
+			assert.ok(this)
+		}
+
 		staticEvents.push({
 			time: timing.now() - testStartTime,
 			type: EventType.CanBeCalc,
 		})
+		if (staticAutoCalc) {
+			staticDeferredCalc.calc()
+		}
 	},
-	calcFunc: done => {
+	calcFunc(done) {
+		if (staticDeferredCalc) {
+			assert.strictEqual(this, staticDeferredCalc)
+		} else {
+			assert.ok(this)
+		}
+
 		staticEvents.push({
 			time: timing.now() - testStartTime,
 			type: EventType.Calc,
@@ -72,7 +90,13 @@ const staticDeferredCalc = new DeferredCalc({
 			timing.setTimeout(done, staticCalcTime)
 		}
 	},
-	calcCompletedCallback: () => {
+	calcCompletedCallback() {
+		if (staticDeferredCalc) {
+			assert.strictEqual(this, staticDeferredCalc)
+		} else {
+			assert.ok(this)
+		}
+
 		staticEvents.push({
 			time: timing.now() - testStartTime,
 			type: EventType.Completed,
@@ -114,6 +138,7 @@ export class TestDeferredCalc extends TestVariants<
 		minTimeBetweenCalc: [null],
 		autoInvalidateInterval: [null],
 		reuseSetInstance: [false, true],
+		autoCalc: [false],
 	}
 
 	protected testVariant(
@@ -129,6 +154,7 @@ export class TestDeferredCalc extends TestVariants<
 
 				if (options.reuseSetInstance) {
 					staticCalcTime = 0
+					staticAutoCalc = false
 					staticDeferredCalc.minTimeBetweenCalc = null
 					staticDeferredCalc.throttleTime = null
 					staticDeferredCalc.maxThrottleTime = null
@@ -139,6 +165,7 @@ export class TestDeferredCalc extends TestVariants<
 
 					events = staticEvents = []
 					deferredCalc = staticDeferredCalc
+					staticAutoCalc = options.autoCalc
 					staticCalcTime = options.calcTime
 					staticDeferredCalc.minTimeBetweenCalc = options.minTimeBetweenCalc
 					staticDeferredCalc.throttleTime = options.throttleTime
@@ -148,16 +175,32 @@ export class TestDeferredCalc extends TestVariants<
 				} else {
 					testStartTime = timing.now()
 					events = []
+					const autoCalc = options.autoCalc
 					const calcTime = options.calcTime
 					deferredCalc = new DeferredCalc({
 						timing,
-						canBeCalcCallback: () => {
+						canBeCalcCallback() {
+							if (deferredCalc) {
+								assert.strictEqual(this, deferredCalc)
+							} else {
+								assert.ok(this)
+							}
+
 							events.push({
 								time: timing.now() - testStartTime,
 								type: EventType.CanBeCalc,
 							})
+							if (autoCalc) {
+								this.calc()
+							}
 						},
-						calcFunc: done => {
+						calcFunc(done) {
+							if (deferredCalc) {
+								assert.strictEqual(this, deferredCalc)
+							} else {
+								assert.ok(this)
+							}
+
 							events.push({
 								time: timing.now() - testStartTime,
 								type: EventType.Calc,
@@ -168,7 +211,13 @@ export class TestDeferredCalc extends TestVariants<
 								timing.setTimeout(done, calcTime)
 							}
 						},
-						calcCompletedCallback: () => {
+						calcCompletedCallback() {
+							if (deferredCalc) {
+								assert.strictEqual(this, deferredCalc)
+							} else {
+								assert.ok(this)
+							}
+
 							events.push({
 								time: timing.now() - testStartTime,
 								type: EventType.Completed,

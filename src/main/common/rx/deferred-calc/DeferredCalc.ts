@@ -53,11 +53,11 @@ export class DeferredCalc {
 			this._throttleTime = throttleTime
 		}
 
-		if (maxThrottleTime) {
+		if (maxThrottleTime != null) {
 			this._maxThrottleTime = maxThrottleTime
 		}
 
-		if (autoInvalidateInterval) {
+		if (autoInvalidateInterval != null) {
 			this._autoInvalidateInterval = autoInvalidateInterval
 		}
 
@@ -141,16 +141,16 @@ export class DeferredCalc {
 		this._timeCalcEnd = null
 		this._pulse()
 
-		this._calcFunc(() => {
+		this._calcFunc.call(this, () => {
 			this._timeCalcEnd = this._timing.now()
-			this._calcCompletedCallback()
+			this._calcCompletedCallback.call(this)
 			this._pulse()
 		})
 	}
 
 	private _canBeCalc() {
 		this._canBeCalcEmitted = true
-		this._canBeCalcCallback()
+		this._canBeCalcCallback.call(this)
 	}
 
 	private _pulse(): void {
