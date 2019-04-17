@@ -2,12 +2,12 @@ import {
 	SetChangedType,
 } from '../../../../../main/common/lists/contracts/ISetChanged'
 import {ObservableSet} from '../../../../../main/common/lists/ObservableSet'
+import {ITestActionsWithDescription, THIS} from '../helpers/TestVariants'
 import {allValues, shuffle} from './src/helpers/common'
 import {
 	ISetAction,
-	TestSet, THIS,
+	TestSet,
 } from './src/helpers/TestSet'
-import {ITestActionsWithDescription} from './src/helpers/TestVariants'
 
 declare const assert
 declare const after

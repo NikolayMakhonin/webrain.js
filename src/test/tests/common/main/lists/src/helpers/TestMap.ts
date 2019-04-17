@@ -3,11 +3,9 @@ import {IPropertyChangedEvent} from '../../../../../../../main/common/lists/cont
 import {compareFast} from '../../../../../../../main/common/lists/helpers/compare'
 import {ObjectMap} from '../../../../../../../main/common/lists/ObjectMap'
 import {ObservableMap} from '../../../../../../../main/common/lists/ObservableMap'
-import {IOptionsVariant, IOptionsVariants, ITestCase, TestVariants} from './TestVariants'
+import {IOptionsVariant, IOptionsVariants, ITestCase, TestVariants, THIS} from '../../../helpers/TestVariants'
 
 declare const assert
-
-export const THIS = {}
 
 function compareEntries<K, V>(o1: [K, V], o2: [K, V]) {
 	return compareFast(o1[0], o2[0])

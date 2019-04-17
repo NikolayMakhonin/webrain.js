@@ -1,14 +1,13 @@
 import {
 	MapChangedType,
 } from '../../../../../main/common/lists/contracts/IMapChanged'
-import {compareFast} from '../../../../../main/common/lists/helpers/compare'
 import {ObservableMap} from '../../../../../main/common/lists/ObservableMap'
+import {ITestActionsWithDescription, THIS} from '../helpers/TestVariants'
 import {allValues, shuffle} from './src/helpers/common'
 import {
 	IMapAction,
-	TestMap, THIS,
+	TestMap,
 } from './src/helpers/TestMap'
-import {ITestActionsWithDescription} from './src/helpers/TestVariants'
 
 declare const assert
 declare const after

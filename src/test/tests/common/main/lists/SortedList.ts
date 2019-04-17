@@ -8,7 +8,7 @@ import {
 	IListAction,
 	TestList,
 } from './src/helpers/TestList'
-import {ITestActionsWithDescription} from './src/helpers/TestVariants'
+import {ITestActionsWithDescription} from '../helpers/TestVariants'
 
 declare const assert
 declare const after

@@ -7,12 +7,10 @@ import {
 import {compareFast} from '../../../../../../../main/common/lists/helpers/compare'
 import {ObjectSet} from '../../../../../../../main/common/lists/ObjectSet'
 import {ObservableSet} from '../../../../../../../main/common/lists/ObservableSet'
+import {IOptionsVariant, IOptionsVariants, ITestCase, TestVariants, THIS} from '../../../helpers/TestVariants'
 import {indexOfNaN} from './common'
-import {IOptionsVariant, IOptionsVariants, ITestCase, TestVariants} from './TestVariants'
 
 declare const assert
-
-export const THIS = {}
 
 export function applySetChangedToArray<T>(event: ISetChangedEvent<T>, array: T[]) {
 	switch (event.type) {

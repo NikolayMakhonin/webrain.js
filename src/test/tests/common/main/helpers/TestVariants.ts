@@ -14,6 +14,8 @@ export function expandArray<T>(array: T[], output: any[] = []): any[] {
 	return output
 }
 
+export const THIS = {}
+
 interface AnyObject { [key: string]: any }
 type AnyFunction = (...args: any[]) => any
 
