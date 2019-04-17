@@ -15,7 +15,8 @@ export class DeferredCalc {
 
 	private _timeInvalidateFirst?: number
 	private _timeInvalidateLast?: number
-	private _timeRequestCalc?: number
+	private _canBeCalcEmitted?: boolean
+	private _calcRequested?: boolean
 	private _timeCalcStart?: number
 	private _timeCalcEnd?: number
 
@@ -62,9 +63,10 @@ export class DeferredCalc {
 	}
 
 	private async _calc(): Promise<void> {
-		this._timeRequestCalc = null
 		this._timeInvalidateFirst = null
 		this._timeInvalidateLast = null
+		this._canBeCalcEmitted = false
+		this._calcRequested = false
 		this._timeCalcStart = this._timing.now()
 		this._timeCalcEnd = null
 		this.pulse()
@@ -74,6 +76,11 @@ export class DeferredCalc {
 		this._timeCalcEnd = this._timing.now()
 		this._calcCompletedCallback()
 		this.pulse()
+	}
+
+	private _canBeCalc() {
+		this._canBeCalcEmitted = true
+		this._canBeCalcCallback()
 	}
 
 	public pulse(): void {
@@ -93,30 +100,34 @@ export class DeferredCalc {
 
 		// region Auto invalidate
 
-		const autoInvalidateTime = Math.max(
-			this._timeCalcStart || 0,
-			this._timeInvalidateLast || 0,
-			now)
+		const {_autoInvalidateInterval} = this
+		if (_autoInvalidateInterval != null) {
+			const autoInvalidateTime = Math.max(
+				(this._timeCalcStart || 0) + _autoInvalidateInterval,
+				(this._timeInvalidateLast || 0) + _autoInvalidateInterval,
+				now)
 
-		if (autoInvalidateTime <= now) {
-			this._invalidate()
-		} else if (autoInvalidateTime > timeNextPulse) {
-			timeNextPulse = autoInvalidateTime
+			if (autoInvalidateTime <= now) {
+				this._invalidate()
+			} else if (autoInvalidateTime > timeNextPulse) {
+				timeNextPulse = autoInvalidateTime
+			}
 		}
 
 		// endregion
 
 		// region Can be calc
 
-		if (!this._timeRequestCalc && this._timeInvalidateLast) {
+		if (!this._canBeCalcEmitted && !this._calcRequested && this._timeInvalidateLast) {
 			const {_throttleTime, _maxThrottleTime} = this
-			let canBeCalcTime = this._timeInvalidateLast + (this._throttleTime || 0)
-			if (this._maxThrottleTime != null) {
-				canBeCalcTime = Math.min(canBeCalcTime, this._timeInvalidateFirst + (this._maxThrottleTime || 0))
+			let canBeCalcTime = this._timeInvalidateLast + (_throttleTime || 0)
+			if (_maxThrottleTime != null) {
+				canBeCalcTime = Math.min(canBeCalcTime, this._timeInvalidateFirst + (_maxThrottleTime || 0))
 			}
 			if (canBeCalcTime <= now) {
-				this._timeRequestCalc = now
-				this._canBeCalcCallback()
+				this._canBeCalc()
+				this.pulse()
+				return
 			} else if (canBeCalcTime > timeNextPulse) {
 				timeNextPulse = canBeCalcTime
 			}
@@ -126,15 +137,33 @@ export class DeferredCalc {
 
 		// region Calc
 
+		if (this._calcRequested && (this._timeCalcEnd || !this._timeCalcStart)) {
+			const {_throttleTime, _maxThrottleTime} = this
+			let calcTime = this._timeInvalidateLast + (_throttleTime || 0)
+			if (_maxThrottleTime != null) {
+				calcTime = Math.min(calcTime, this._timeInvalidateFirst + (_maxThrottleTime || 0))
+			}
+			if (this._timeCalcEnd) {
+				calcTime = Math.max(calcTime, this._timeCalcEnd + this._minTimeBetweenCalc || 0)
+			}
+			if (calcTime <= now) {
+				this._calc()
+				return
+			} else if (calcTime > timeNextPulse) {
+				timeNextPulse = calcTime
+			}
+		}
+
 		// endregion
 
 		// region Timer
 
-		if (timeNextPulse > now) {
+		if (timeNextPulse > now && timeNextPulse !== this._timeNextPulse) {
 			const {_timerId: timerId} = this
 			if (timerId != null) {
 				_timing.clearTimeout(timerId)
 			}
+			this._timeNextPulse = timeNextPulse
 			this._timerId = _timing.setTimeout(this.pulse, timeNextPulse - now)
 		}
 
@@ -155,7 +184,7 @@ export class DeferredCalc {
 	}
 
 	public calc(): void {
-		this._timeRequestCalc = this._timing.now()
+		this._calcRequested = true
 		this.pulse()
 	}
 }
