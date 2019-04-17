@@ -8,7 +8,7 @@ interface IHandler {
 
 export class TestTiming implements ITiming {
 	private _handlers: IHandler[] = []
-	private _now: number = 0
+	private _now: number = 1
 	private _nextId: number = 0
 
 	public addTime(time: number) {
@@ -16,6 +16,9 @@ export class TestTiming implements ITiming {
 	}
 
 	public setTime(time: number) {
+		if (time <= 0) {
+			throw new Error(`time (${time} should be > 0)`)
+		}
 		const {_handlers} = this
 		this._now = time
 		Object.keys(_handlers)

@@ -1040,4 +1040,44 @@ describe('fundamental-operations', function () {
 
 		console.log(result)
 	})
+
+	xit('setTimeout', function () {
+		this.timeout(300000)
+		const func = () => {}
+		let timerId
+
+		const result = calcPerformance(
+			10000,
+			() => {
+				// no operations
+			},
+			() => (timerId = setTimeout(func, 1000)),
+			() => clearTimeout(timerId),
+		)
+
+		console.log(result)
+	})
+
+	it('Math.max()', function () {
+		this.timeout(300000)
+		const func = () => {}
+		let timerId
+
+		this.value1 = 0
+		this.value2 = 1
+		this.value3 = 2
+
+		const {value1, value2, value3} = this
+
+		const result = calcPerformance(
+			10000,
+			() => {
+				// no operations
+			},
+			() => Math.max(this.value1, this.value2, this.value3),
+			() => Math.max(value1, value2, value3),
+		)
+
+		console.log(result)
+	})
 })

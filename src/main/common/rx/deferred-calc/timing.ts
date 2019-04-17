@@ -4,7 +4,7 @@ export interface ITiming {
 	clearTimeout(handle: number)
 }
 
-export const timing: ITiming = {
+export const timingDefault: ITiming = {
 	now: Date.now,
 	setTimeout,
 	clearTimeout,

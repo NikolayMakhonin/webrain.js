@@ -7,6 +7,9 @@ describe('common > main > rx > deferred-calc > timing', function() {
 		const timing = new TestTiming()
 		let results = []
 
+		assert.throws(() => timing.setTime(0), Error)
+		assert.throws(() => timing.addTime(-1), Error)
+
 		timing.setTimeout(() => results.push(1), 0)
 		timing.addTime(0)
 		assert.deepStrictEqual(results, [1])
@@ -41,11 +44,11 @@ describe('common > main > rx > deferred-calc > timing', function() {
 		timing.setTime(4)
 		timing.setTimeout(() => results.push(1), 1) // 5
 		timing.setTimeout(() => results.push(2), 2) // 6
-		timing.setTime(0)
-		timing.setTimeout(() => results.push(5), 5) // 5
-		timing.setTimeout(() => results.push(3), 3) // 3
-		timing.setTimeout(() => results.push(4), 3) // 3
-		timing.setTimeout(() => results.push(6), 3) // 3
+		timing.setTime(1)
+		timing.setTimeout(() => results.push(5), 4) // 5
+		timing.setTimeout(() => results.push(3), 2) // 3
+		timing.setTimeout(() => results.push(4), 2) // 3
+		timing.setTimeout(() => results.push(6), 2) // 3
 		timing.setTimeout(() => results.push(0), 0) // 0
 		results = []
 		timing.addTime(10)
@@ -53,6 +56,6 @@ describe('common > main > rx > deferred-calc > timing', function() {
 		results = []
 		timing.addTime(1)
 		assert.deepStrictEqual(results, [])
-		assert.strictEqual(timing.now(), 11)
+		assert.strictEqual(timing.now(), 12)
 	})
 })
