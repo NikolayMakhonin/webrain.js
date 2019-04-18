@@ -188,11 +188,18 @@ export class DeferredCalc {
 
 		// region Can be calc
 
-		if (!this._canBeCalcEmitted && !this._calcRequested && this._timeInvalidateLast) {
+		if (!this._canBeCalcEmitted
+			&& !this._calcRequested
+			&& this._timeInvalidateLast
+			&& (this._timeCalcEnd || !this._timeCalcStart)
+		) {
 			const {_throttleTime, _maxThrottleTime} = this
 			let canBeCalcTime = this._timeInvalidateLast + (_throttleTime || 0)
 			if (_maxThrottleTime != null) {
 				canBeCalcTime = Math.min(canBeCalcTime, this._timeInvalidateFirst + (_maxThrottleTime || 0))
+			}
+			if (this._timeCalcEnd) {
+				canBeCalcTime = Math.max(canBeCalcTime, this._timeCalcEnd + this._minTimeBetweenCalc || 0)
 			}
 			if (canBeCalcTime <= now) {
 				this._canBeCalc()

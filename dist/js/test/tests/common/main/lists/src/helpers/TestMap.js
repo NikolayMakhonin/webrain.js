@@ -4,7 +4,7 @@ Object.defineProperty(exports, "__esModule", {
   value: true
 });
 exports.applyMapChangedToArray = applyMapChangedToArray;
-exports.TestMap = exports.THIS = void 0;
+exports.TestMap = void 0;
 
 var _IMapChanged = require("../../../../../../../main/common/lists/contracts/IMapChanged");
 
@@ -14,10 +14,7 @@ var _ObjectMap = require("../../../../../../../main/common/lists/ObjectMap");
 
 var _ObservableMap = require("../../../../../../../main/common/lists/ObservableMap");
 
-var _TestVariants = require("./TestVariants");
-
-const THIS = {};
-exports.THIS = THIS;
+var _TestVariants = require("../../../helpers/TestVariants");
 
 function compareEntries(o1, o2) {
   return (0, _compare.compareFast)(o1[0], o2[0]);
@@ -170,7 +167,7 @@ class TestMap extends _TestVariants.TestVariants {
           assert.throws(() => options.action(map), options.expected.error);
           assertMap(map, options.array);
         } else {
-          assert.deepStrictEqual(options.action(map), options.expected.returnValue === THIS ? map : options.expected.returnValue);
+          assert.deepStrictEqual(options.action(map), options.expected.returnValue === _TestVariants.THIS ? map : options.expected.returnValue);
           assertMap(map, options.expected.array);
         }
 

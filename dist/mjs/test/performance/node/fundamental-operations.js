@@ -1,3 +1,5 @@
+import _typeof from "@babel/runtime/helpers/typeof";
+
 /* eslint-disable no-new-func,no-array-constructor,object-property-newline,no-undef,no-empty,no-shadow,no-prototype-builtins */
 import { calcPerformance } from 'rdtsc';
 import { binarySearch } from '../../../main/common/lists/helpers/array';
@@ -700,13 +702,69 @@ describe('fundamental-operations', function () {
     });
     console.log(result);
   });
+  xit('operations inside compare func', function () {
+    this.timeout(300000);
+
+    var obj = function obj() {};
+
+    var obj2 = {};
+    var result = calcPerformance(60000, function () {// no operations
+    }, function () {
+      return obj === obj2;
+    }, // -11
+    function () {
+      return typeof obj === 'undefined';
+    }, // -7
+    function () {
+      return obj === null;
+    }, // -7
+    function () {
+      return obj.valueOf();
+    }, // 16
+    function () {
+      return typeof obj === 'number';
+    }, // -7
+    function () {
+      return typeof obj === 'boolean';
+    }, // -8
+    function () {
+      return typeof obj === 'string';
+    }, // -7
+    function () {
+      return typeof obj2 === 'function';
+    }, // -7
+    function () {
+      return typeof obj.valueOf() === 'number';
+    }, // -7
+    function () {
+      return typeof obj.valueOf() === 'boolean';
+    }, // -8
+    function () {
+      return typeof obj.valueOf() === 'string';
+    }, // -7
+    function () {
+      return typeof obj2.valueOf() === 'function';
+    }, // -7
+    function () {
+      return getObjectUniqueId(obj);
+    }, // -11
+    function () {
+      return _typeof(obj) === 'object';
+    }, // 146
+    function () {
+      return _typeof(obj) === 'symbol';
+    } // 150
+    );
+    console.log(result);
+  });
   xit('Set', function () {
     this.timeout(300000);
     assert.strictEqual(SetNative, Set);
     assert.notStrictEqual(Set, SetPolyfill);
+    var countObject = 1000;
     var objects = [];
 
-    for (var i = 0; i < 100; i++) {
+    for (var i = 0; i < countObject; i++) {
       objects[i] = {
         value: i
       };
@@ -714,11 +772,12 @@ describe('fundamental-operations', function () {
     }
 
     function testSet(addObject, removeObject, getIterableValues) {
-      for (var _i = 0; _i < 100; _i++) {
+      for (var _i = 0; _i < countObject; _i++) {
         addObject(objects[_i]);
       }
 
-      for (var _i2 = 99; _i2 >= 0; _i2--) {
+      for (var _i2 = 0; _i2 < countObject; _i2++) {
+        // for (let i = 99; i >= 0; i--) {
         removeObject(objects[_i2]);
       }
 
@@ -771,7 +830,7 @@ describe('fundamental-operations', function () {
       }); // assert.strictEqual(Object.keys(set).length, 0)
     }
 
-    function testArray() {
+    function testArrayHashTable() {
       var set = [];
       testSet(function (o) {
         return set[getObjectUniqueId(o)] = o;
@@ -782,12 +841,60 @@ describe('fundamental-operations', function () {
       }); // assert.strictEqual(set.length, 0)
     }
 
-    function testSortedList() {
-      var set = new SortedList({
-        autoSort: true,
-        notAddIfExists: true,
-        minAllocatedSize: 1000
-      });
+    function testArraySplice() {
+      var set = [];
+      testSet(function (o) {
+        return set[set.length] = o;
+      }, function (o) {
+        var i = set.indexOf(o);
+
+        if (i >= 0) {
+          set.splice(i, 1);
+        }
+      }, function (o) {
+        return set;
+      }); // assert.strictEqual(set.length, 0)
+    }
+
+    function testArray() {
+      var set = [];
+      testSet(function (o) {
+        return set[set.length] = o;
+      }, function (o) {
+        var i = set.indexOf(o);
+
+        if (i >= 0) {
+          set[i] = set[set.length - 1];
+          set.length--;
+        }
+      }, function (o) {
+        return set;
+      }); // assert.strictEqual(set.length, 0)
+    }
+
+    function testArrayKeepOrder() {
+      var set = [];
+      testSet(function (o) {
+        return set[set.length] = o;
+      }, function (o) {
+        var i = set.indexOf(o);
+
+        if (i >= 0) {
+          var len = set.length;
+
+          for (var j = i + 1; j < len; j++) {
+            set[j - 1] = set[j];
+          }
+
+          set.length = len - 1;
+        }
+      }, function (o) {
+        return set;
+      }); // assert.strictEqual(set.length, 0)
+    }
+
+    function testSortedList(options) {
+      var set = new SortedList(options);
       testSet(function (o) {
         return set.add(o);
       }, function (o) {
@@ -799,7 +906,7 @@ describe('fundamental-operations', function () {
     }
 
     function testSetPolyfill() {
-      console.log(SetPolyfill.toString());
+      // console.log(SetPolyfill.toString())
       var set = new SetPolyfill();
       testSet(function (o) {
         return set.add(o);
@@ -811,7 +918,7 @@ describe('fundamental-operations', function () {
     }
 
     function testArraySet() {
-      console.log(ArraySet.toString());
+      // console.log(ArraySet.toString())
       var set = new ArraySet();
       testSet(function (o) {
         return set.add(o);
@@ -823,8 +930,24 @@ describe('fundamental-operations', function () {
     }
 
     var result = calcPerformance(10000, function () {// no operations
-    }, testSetNative, testObject, testArray, // testSortedList,
-    testSetPolyfill, testArraySet);
+    }, testSetNative, testObject, testArrayHashTable, testArraySplice, testArray, testArrayKeepOrder, testSetPolyfill, testArraySet, function () {
+      return testSortedList({
+        autoSort: true,
+        notAddIfExists: true,
+        minAllocatedSize: 1000 // compare         : compareUniqueId
+
+      });
+    } // () => testSortedList({
+    // 	autoSort        : true,
+    // 	notAddIfExists  : false,
+    // 	minAllocatedSize: 1000
+    // }),
+    // () => testSortedList({
+    // 	autoSort        : false,
+    // 	notAddIfExists  : false,
+    // 	minAllocatedSize: 1000
+    // })
+    );
     console.log(result);
   });
   xit('Number toString', function () {
@@ -868,7 +991,7 @@ describe('fundamental-operations', function () {
     });
     console.log(result);
   });
-  it('deepSubscribe', function () {
+  xit('deepSubscribe', function () {
     this.timeout(300000);
 
     var createTester = function createTester() {
@@ -932,6 +1055,42 @@ describe('fundamental-operations', function () {
       return testerAll.subscribe([]);
     }, function () {
       return testerAll.unsubscribe([]);
+    });
+    console.log(result);
+  });
+  xit('setTimeout', function () {
+    this.timeout(300000);
+
+    var func = function func() {};
+
+    var timerId;
+    var result = calcPerformance(10000, function () {// no operations
+    }, function () {
+      return timerId = setTimeout(func, 1000);
+    }, function () {
+      return clearTimeout(timerId);
+    });
+    console.log(result);
+  });
+  it('Math.max()', function () {
+    var _this = this;
+
+    this.timeout(300000);
+
+    var func = function func() {};
+
+    var timerId;
+    this.value1 = 0;
+    this.value2 = 1;
+    this.value3 = 2;
+    var value1 = this.value1,
+        value2 = this.value2,
+        value3 = this.value3;
+    var result = calcPerformance(10000, function () {// no operations
+    }, function () {
+      return Math.max(_this.value1, _this.value2, _this.value3);
+    }, function () {
+      return Math.max(value1, value2, value3);
     });
     console.log(result);
   });

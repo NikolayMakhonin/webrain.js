@@ -12,7 +12,7 @@ var _compare = require("../../../../../../../main/common/lists/helpers/compare")
 
 var _SortedList = require("../../../../../../../main/common/lists/SortedList");
 
-var _TestVariants = require("./TestVariants");
+var _TestVariants = require("../../../helpers/TestVariants");
 
 function applyListChangedToArray(event, array, compare) {
   switch (event.type) {

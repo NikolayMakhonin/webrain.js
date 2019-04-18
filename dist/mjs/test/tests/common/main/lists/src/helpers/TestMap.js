@@ -8,8 +8,7 @@ import { MapChangedType } from '../../../../../../../main/common/lists/contracts
 import { compareFast } from '../../../../../../../main/common/lists/helpers/compare';
 import { ObjectMap } from '../../../../../../../main/common/lists/ObjectMap';
 import { ObservableMap } from '../../../../../../../main/common/lists/ObservableMap';
-import { TestVariants } from './TestVariants';
-export var THIS = {};
+import { TestVariants, THIS } from '../../../helpers/TestVariants';
 
 function compareEntries(o1, o2) {
   return compareFast(o1[0], o2[0]);

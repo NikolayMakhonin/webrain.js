@@ -15,11 +15,8 @@ Object.defineProperty(Object.prototype, UNIQUE_ID_PROPERTY_NAME, {
     Object.defineProperty(this, UNIQUE_ID_PROPERTY_NAME, {
       enumerable: false,
       configurable: false,
-
-      get() {
-        return uniqueId;
-      }
-
+      writable: false,
+      value: uniqueId
     });
     return uniqueId;
   }

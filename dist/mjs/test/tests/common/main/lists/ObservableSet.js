@@ -1,7 +1,8 @@
 import { SetChangedType } from '../../../../../main/common/lists/contracts/ISetChanged';
 import { ObservableSet } from '../../../../../main/common/lists/ObservableSet';
+import { THIS } from '../helpers/TestVariants';
 import { allValues, shuffle } from './src/helpers/common';
-import { TestSet, THIS } from './src/helpers/TestSet';
+import { TestSet } from './src/helpers/TestSet';
 describe('common > main > lists > ObservableSet', function () {
   this.timeout(20000);
   var testSet = TestSet.test;

@@ -4,7 +4,7 @@ Object.defineProperty(exports, "__esModule", {
   value: true
 });
 exports.expandArray = expandArray;
-exports.TestVariants = void 0;
+exports.TestVariants = exports.THIS = void 0;
 
 function expandArray(array, output = []) {
   for (const item of array) {
@@ -21,6 +21,9 @@ function expandArray(array, output = []) {
 
   return output;
 }
+
+const THIS = {};
+exports.THIS = THIS;
 
 function* generateOptions(base, optionsVariants) {
   let hasChilds;

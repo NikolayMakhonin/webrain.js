@@ -1052,7 +1052,7 @@ describe('fundamental-operations', function () {
 				// no operations
 			},
 			() => (timerId = setTimeout(func, 1000)),
-			() => clearTimeout(timerId),
+			() => clearTimeout(timerId)
 		)
 
 		console.log(result)
@@ -1075,7 +1075,7 @@ describe('fundamental-operations', function () {
 				// no operations
 			},
 			() => Math.max(this.value1, this.value2, this.value3),
-			() => Math.max(value1, value2, value3),
+			() => Math.max(value1, value2, value3)
 		)
 
 		console.log(result)

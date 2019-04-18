@@ -4,7 +4,7 @@ Object.defineProperty(exports, "__esModule", {
   value: true
 });
 exports.applySetChangedToArray = applySetChangedToArray;
-exports.TestSet = exports.THIS = void 0;
+exports.TestSet = void 0;
 
 var _ArraySet = require("../../../../../../../main/common/lists/ArraySet");
 
@@ -16,12 +16,9 @@ var _ObjectSet = require("../../../../../../../main/common/lists/ObjectSet");
 
 var _ObservableSet = require("../../../../../../../main/common/lists/ObservableSet");
 
+var _TestVariants = require("../../../helpers/TestVariants");
+
 var _common = require("./common");
-
-var _TestVariants = require("./TestVariants");
-
-const THIS = {};
-exports.THIS = THIS;
 
 function applySetChangedToArray(event, array) {
   switch (event.type) {
@@ -237,7 +234,7 @@ class TestSet extends _TestVariants.TestVariants {
           assert.throws(() => options.action(set), options.expected.error);
           assertSet(set, array);
         } else {
-          assert.deepStrictEqual(options.action(set), options.expected.returnValue === THIS ? set : options.expected.returnValue);
+          assert.deepStrictEqual(options.action(set), options.expected.returnValue === _TestVariants.THIS ? set : options.expected.returnValue);
           assertSet(set, expectedArray);
         }
 

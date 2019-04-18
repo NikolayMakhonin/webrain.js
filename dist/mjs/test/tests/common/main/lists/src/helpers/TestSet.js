@@ -10,9 +10,8 @@ import { SetChangedType } from '../../../../../../../main/common/lists/contracts
 import { compareFast } from '../../../../../../../main/common/lists/helpers/compare';
 import { ObjectSet } from '../../../../../../../main/common/lists/ObjectSet';
 import { ObservableSet } from '../../../../../../../main/common/lists/ObservableSet';
+import { TestVariants, THIS } from '../../../helpers/TestVariants';
 import { indexOfNaN } from './common';
-import { TestVariants } from './TestVariants';
-export var THIS = {};
 export function applySetChangedToArray(event, array) {
   switch (event.type) {
     case SetChangedType.Added:

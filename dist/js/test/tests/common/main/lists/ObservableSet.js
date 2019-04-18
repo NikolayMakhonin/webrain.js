@@ -4,6 +4,8 @@ var _ISetChanged = require("../../../../../main/common/lists/contracts/ISetChang
 
 var _ObservableSet = require("../../../../../main/common/lists/ObservableSet");
 
+var _TestVariants = require("../helpers/TestVariants");
+
 var _common = require("./src/helpers/common");
 
 var _TestSet = require("./src/helpers/TestSet");
@@ -41,7 +43,7 @@ describe('common > main > lists > ObservableSet', function () {
       array: [[]],
       expected: {
         array: ['0'],
-        returnValue: _TestSet.THIS,
+        returnValue: _TestVariants.THIS,
         setChanged: [{
           type: _ISetChanged.SetChangedType.Added,
           newItems: ['0']
@@ -53,7 +55,7 @@ describe('common > main > lists > ObservableSet', function () {
       array: [['0']],
       expected: {
         array: ['0'],
-        returnValue: _TestSet.THIS
+        returnValue: _TestVariants.THIS
       },
       actions: [add('0')]
     });
@@ -61,7 +63,7 @@ describe('common > main > lists > ObservableSet', function () {
       array: [['0']],
       expected: {
         array: ['0', '1'],
-        returnValue: _TestSet.THIS,
+        returnValue: _TestVariants.THIS,
         setChanged: [{
           type: _ISetChanged.SetChangedType.Added,
           newItems: ['1']
@@ -75,7 +77,7 @@ describe('common > main > lists > ObservableSet', function () {
       innerSet: ['Set', 'Set<Object>', 'ArraySet'],
       expected: {
         array: _common.allValues,
-        returnValue: _TestSet.THIS,
+        returnValue: _TestVariants.THIS,
         propertyChanged: allValuesShuffle.map((o, i) => ({
           name: 'size',
           oldValue: i,

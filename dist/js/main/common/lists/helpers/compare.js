@@ -4,6 +4,7 @@ Object.defineProperty(exports, "__esModule", {
   value: true
 });
 exports.compareFast = compareFast;
+exports.compareUniqueId = compareUniqueId;
 exports.compareStrict = compareStrict;
 
 var _objectUniqueId = require("./object-unique-id");
@@ -45,31 +46,74 @@ function compareFast(o1, o2) {
     return -1;
   }
 
-  const t1 = typeof o1;
-  const t2 = typeof o2;
-
-  if (t1 === t2) {
-    if (o1 > o2) {
-      return 1;
-    } else if (o1 < o2) {
+  if (typeof o1 === 'number') {
+    if (typeof o2 !== 'number') {
       return -1;
     }
 
-    o1 = (0, _objectUniqueId.getObjectUniqueId)(o1);
-    o2 = (0, _objectUniqueId.getObjectUniqueId)(o2);
+    return o1 > o2 ? 1 : -1;
+  }
 
-    if (o1 > o2) {
-      return 1;
+  if (typeof o2 === 'number') {
+    return 1;
+  }
+
+  if (typeof o1 === 'boolean') {
+    if (typeof o2 !== 'boolean') {
+      return -1;
     }
 
-    return -1;
+    return o1 > o2 ? 1 : -1;
   }
 
-  if (t1 < t2) {
-    return -1;
+  if (typeof o2 === 'boolean') {
+    return 1;
   }
 
-  return 1;
+  if (typeof o1 === 'string') {
+    if (typeof o2 !== 'string') {
+      return -1;
+    }
+
+    return o1 > o2 ? 1 : -1;
+  }
+
+  if (typeof o2 === 'string') {
+    return 1;
+  } // if (typeof o1 === 'symbol') {
+  // 	if (typeof o2 !== 'symbol') {
+  // 		return -1
+  // 	}
+  // 	return -1
+  // }
+  // if (typeof o2 === 'symbol') {
+  // 	return 1
+  // }
+
+
+  o1 = (0, _objectUniqueId.getObjectUniqueId)(o1);
+  o2 = (0, _objectUniqueId.getObjectUniqueId)(o2);
+
+  if (o1 > o2) {
+    return 1;
+  }
+
+  return -1;
+}
+
+function compareUniqueId(o1, o2) {
+  if (o1 === o2) {
+    return 0;
+  }
+
+  o1 = (0, _objectUniqueId.getObjectUniqueId)(o1);
+  o2 = (0, _objectUniqueId.getObjectUniqueId)(o2);
+
+  if (o1 > o2) {
+    return 1;
+  }
+
+  return -1;
 }
 
 function compareStrict(o1, o2) {

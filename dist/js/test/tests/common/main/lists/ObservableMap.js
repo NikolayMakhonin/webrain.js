@@ -4,6 +4,8 @@ var _IMapChanged = require("../../../../../main/common/lists/contracts/IMapChang
 
 var _ObservableMap = require("../../../../../main/common/lists/ObservableMap");
 
+var _TestVariants = require("../helpers/TestVariants");
+
 var _common = require("./src/helpers/common");
 
 var _TestMap = require("./src/helpers/TestMap");
@@ -41,7 +43,7 @@ describe('common > main > lists > ObservableMap', function () {
       array: [[]],
       expected: {
         array: [['0', '1']],
-        returnValue: _TestMap.THIS,
+        returnValue: _TestVariants.THIS,
         mapChanged: [{
           type: _IMapChanged.MapChangedType.Added,
           key: '0',
@@ -54,7 +56,7 @@ describe('common > main > lists > ObservableMap', function () {
       array: [[['0', '1']]],
       expected: {
         array: [['0', '2']],
-        returnValue: _TestMap.THIS,
+        returnValue: _TestVariants.THIS,
         mapChanged: [{
           type: _IMapChanged.MapChangedType.Set,
           key: '0',
@@ -68,7 +70,7 @@ describe('common > main > lists > ObservableMap', function () {
       array: [[['0', '1']]],
       expected: {
         array: [['0', '1'], ['2', '3']],
-        returnValue: _TestMap.THIS,
+        returnValue: _TestVariants.THIS,
         mapChanged: [{
           type: _IMapChanged.MapChangedType.Added,
           key: '2',
@@ -86,7 +88,7 @@ describe('common > main > lists > ObservableMap', function () {
       useObjectMap: [false],
       expected: {
         array: entries,
-        returnValue: _TestMap.THIS,
+        returnValue: _TestVariants.THIS,
         propertyChanged: entriesShuffle.map((o, i) => ({
           name: 'size',
           oldValue: i,

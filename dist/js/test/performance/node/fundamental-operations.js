@@ -616,13 +616,39 @@ describe('fundamental-operations', function () {
     () => wrongPath === checkPath, () => path === checkPath, () => regexp.test(wrongPath), () => wrongPath.match(regexp), () => regexp.test(path), () => path.match(regexp));
     console.log(result);
   });
+  xit('operations inside compare func', function () {
+    this.timeout(300000);
+
+    const obj = () => {};
+
+    const obj2 = {};
+    const result = (0, _rdtsc.calcPerformance)(60000, () => {// no operations
+    }, () => obj === obj2, // -11
+    () => typeof obj === 'undefined', // -7
+    () => obj === null, // -7
+    () => obj.valueOf(), // 16
+    () => typeof obj === 'number', // -7
+    () => typeof obj === 'boolean', // -8
+    () => typeof obj === 'string', // -7
+    () => typeof obj2 === 'function', // -7
+    () => typeof obj.valueOf() === 'number', // -7
+    () => typeof obj.valueOf() === 'boolean', // -8
+    () => typeof obj.valueOf() === 'string', // -7
+    () => typeof obj2.valueOf() === 'function', // -7
+    () => (0, _objectUniqueId.getObjectUniqueId)(obj), // -11
+    () => typeof obj === 'object', // 146
+    () => typeof obj === 'symbol' // 150
+    );
+    console.log(result);
+  });
   xit('Set', function () {
     this.timeout(300000);
     assert.strictEqual(SetNative, Set);
     assert.notStrictEqual(Set, SetPolyfill);
+    const countObject = 1000;
     const objects = [];
 
-    for (let i = 0; i < 100; i++) {
+    for (let i = 0; i < countObject; i++) {
       objects[i] = {
         value: i
       };
@@ -630,11 +656,12 @@ describe('fundamental-operations', function () {
     }
 
     function testSet(addObject, removeObject, getIterableValues) {
-      for (let i = 0; i < 100; i++) {
+      for (let i = 0; i < countObject; i++) {
         addObject(objects[i]);
       }
 
-      for (let i = 99; i >= 0; i--) {
+      for (let i = 0; i < countObject; i++) {
+        // for (let i = 99; i >= 0; i--) {
         removeObject(objects[i]);
       }
 
@@ -654,36 +681,86 @@ describe('fundamental-operations', function () {
       testSet(o => set[(0, _objectUniqueId.getObjectUniqueId)(o)] = o, o => delete set[(0, _objectUniqueId.getObjectUniqueId)(o)], o => Object.values(set)); // assert.strictEqual(Object.keys(set).length, 0)
     }
 
-    function testArray() {
+    function testArrayHashTable() {
       const set = [];
       testSet(o => set[(0, _objectUniqueId.getObjectUniqueId)(o)] = o, o => delete set[(0, _objectUniqueId.getObjectUniqueId)(o)], o => set); // assert.strictEqual(set.length, 0)
     }
 
-    function testSortedList() {
-      const set = new _SortedList.SortedList({
-        autoSort: true,
-        notAddIfExists: true,
-        minAllocatedSize: 1000
-      });
+    function testArraySplice() {
+      const set = [];
+      testSet(o => set[set.length] = o, o => {
+        const i = set.indexOf(o);
+
+        if (i >= 0) {
+          set.splice(i, 1);
+        }
+      }, o => set); // assert.strictEqual(set.length, 0)
+    }
+
+    function testArray() {
+      const set = [];
+      testSet(o => set[set.length] = o, o => {
+        const i = set.indexOf(o);
+
+        if (i >= 0) {
+          set[i] = set[set.length - 1];
+          set.length--;
+        }
+      }, o => set); // assert.strictEqual(set.length, 0)
+    }
+
+    function testArrayKeepOrder() {
+      const set = [];
+      testSet(o => set[set.length] = o, o => {
+        const i = set.indexOf(o);
+
+        if (i >= 0) {
+          const len = set.length;
+
+          for (let j = i + 1; j < len; j++) {
+            set[j - 1] = set[j];
+          }
+
+          set.length = len - 1;
+        }
+      }, o => set); // assert.strictEqual(set.length, 0)
+    }
+
+    function testSortedList(options) {
+      const set = new _SortedList.SortedList(options);
       testSet(o => set.add(o), o => set.remove(o), o => set); // set.clear()
       // assert.strictEqual(set.size, 0)
     }
 
     function testSetPolyfill() {
-      console.log(SetPolyfill.toString());
+      // console.log(SetPolyfill.toString())
       const set = new SetPolyfill();
       testSet(o => set.add(o), o => set.delete(o), o => set); // assert.strictEqual(set.size, 0)
     }
 
     function testArraySet() {
-      console.log(_ArraySet.ArraySet.toString());
+      // console.log(ArraySet.toString())
       const set = new _ArraySet.ArraySet();
       testSet(o => set.add(o), o => set.delete(o), o => set); // assert.strictEqual(set.size, 0)
     }
 
     const result = (0, _rdtsc.calcPerformance)(10000, () => {// no operations
-    }, testSetNative, testObject, testArray, // testSortedList,
-    testSetPolyfill, testArraySet);
+    }, testSetNative, testObject, testArrayHashTable, testArraySplice, testArray, testArrayKeepOrder, testSetPolyfill, testArraySet, () => testSortedList({
+      autoSort: true,
+      notAddIfExists: true,
+      minAllocatedSize: 1000 // compare         : compareUniqueId
+
+    }) // () => testSortedList({
+    // 	autoSort        : true,
+    // 	notAddIfExists  : false,
+    // 	minAllocatedSize: 1000
+    // }),
+    // () => testSortedList({
+    // 	autoSort        : false,
+    // 	notAddIfExists  : false,
+    // 	minAllocatedSize: 1000
+    // })
+    );
     console.log(result);
   });
   xit('Number toString', function () {
@@ -705,7 +782,7 @@ describe('fundamental-operations', function () {
     }, () => Object.prototype.hasOwnProperty.call(object, 'property'), () => object.hasOwnProperty('property'), () => Object.prototype.hasOwnProperty.call(child, 'property'), () => child.hasOwnProperty('property'));
     console.log(result);
   });
-  it('deepSubscribe', function () {
+  xit('deepSubscribe', function () {
     this.timeout(300000);
 
     const createTester = (...propertyNames) => new _Tester.Tester({
@@ -724,6 +801,34 @@ describe('fundamental-operations', function () {
     const testerAll = createTester('list', 'set', 'map', 'observableList', 'observableSet', 'observableMap');
     const result = (0, _rdtsc.calcPerformance)(10000, () => {// no operations
     }, () => testerList.subscribe([]), () => testerList.unsubscribe([]), () => testerSet.subscribe([]), () => testerSet.unsubscribe([]), () => testerMap.subscribe([]), () => testerMap.unsubscribe([]), () => testerObservableList.subscribe([]), () => testerObservableList.unsubscribe([]), () => testerObservableSet.subscribe([]), () => testerObservableSet.unsubscribe([]), () => testerObservableMap.subscribe([]), () => testerObservableMap.unsubscribe([]), () => testerAll.subscribe([]), () => testerAll.unsubscribe([]));
+    console.log(result);
+  });
+  xit('setTimeout', function () {
+    this.timeout(300000);
+
+    const func = () => {};
+
+    let timerId;
+    const result = (0, _rdtsc.calcPerformance)(10000, () => {// no operations
+    }, () => timerId = setTimeout(func, 1000), () => clearTimeout(timerId));
+    console.log(result);
+  });
+  it('Math.max()', function () {
+    this.timeout(300000);
+
+    const func = () => {};
+
+    let timerId;
+    this.value1 = 0;
+    this.value2 = 1;
+    this.value3 = 2;
+    const {
+      value1,
+      value2,
+      value3
+    } = this;
+    const result = (0, _rdtsc.calcPerformance)(10000, () => {// no operations
+    }, () => Math.max(this.value1, this.value2, this.value3), () => Math.max(value1, value2, value3));
     console.log(result);
   });
 });

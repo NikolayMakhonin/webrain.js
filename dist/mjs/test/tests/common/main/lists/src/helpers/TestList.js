@@ -7,7 +7,7 @@ import _toConsumableArray from "@babel/runtime/helpers/toConsumableArray";
 import { ListChangedType } from '../../../../../../../main/common/lists/contracts/IListChanged';
 import { compareFast } from '../../../../../../../main/common/lists/helpers/compare';
 import { SortedList } from '../../../../../../../main/common/lists/SortedList';
-import { TestVariants } from './TestVariants';
+import { TestVariants } from '../../../helpers/TestVariants';
 export function applyListChangedToArray(event, array, compare) {
   switch (event.type) {
     case ListChangedType.Added:

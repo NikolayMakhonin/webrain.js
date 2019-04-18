@@ -17,7 +17,7 @@ export enum EventType {
 }
 
 export interface IEvent {
-	time: number
+	time?: number
 	type: EventType
 }
 
@@ -56,7 +56,8 @@ let staticAutoCalc
 let staticCalcTime
 let testStartTime
 let staticEvents: IEvent[] = []
-const staticDeferredCalc = new DeferredCalc({
+let staticDeferredCalc
+staticDeferredCalc = new DeferredCalc({
 	timing,
 	canBeCalcCallback() {
 		if (staticDeferredCalc) {
@@ -108,12 +109,14 @@ function eventsToDisplay(events: IEvent[]): IEvent[] {
 	return events.map(event => {
 		return {
 			...event,
-			type: EventType[event.type] as any
+			type: event.type == null
+				? event.type
+				: EventType[event.type] as any
 		}
 	})
 }
 
-function assertEvents(events: IEvent[], excepted: IEvent[]) {
+export function assertEvents(events: IEvent[], excepted: IEvent[]) {
 	events = eventsToDisplay(events)
 	excepted = eventsToDisplay(excepted)
 	assert.deepStrictEqual(events, excepted)

@@ -45,6 +45,7 @@ export function expandArray(array) {
 
   return output;
 }
+export var THIS = {};
 
 function generateOptions(base, optionsVariants) {
   var hasChilds, _key, _iteratorNormalCompletion2, _didIteratorError2, _iteratorError2, _iterator2, _step2, optionVariant, variant, newOptionsVariants;

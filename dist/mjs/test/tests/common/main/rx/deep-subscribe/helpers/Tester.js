@@ -36,13 +36,16 @@ export function createObject() {
   });
   var observableObjectBuilder = new ObservableObjectBuilder(observableObject);
   Object.keys(object).forEach(function (key) {
-    list.add(object[key]);
-    set.add(object[key]);
-    map.set(key, object[key]);
+    if (key !== 'value') {
+      list.add(object[key]);
+      set.add(object[key]);
+      map.set(key, object[key]);
+      observableList.add(object[key]);
+      observableSet.add(object[key]);
+      observableMap.set(key, object[key]);
+    }
+
     observableObjectBuilder.writable(key, null, object[key]);
-    observableList.add(object[key]);
-    observableSet.add(object[key]);
-    observableMap.set(key, object[key]);
   });
   return object;
 }
