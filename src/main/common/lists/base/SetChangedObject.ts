@@ -13,8 +13,9 @@ export class SetChangedObject<T> extends PropertyChangedObject {
 	}
 
 	public onSetChanged(event: ISetChangedEvent<T>): this {
-		const {_propertyChangedDisabled, _setChanged} = this
-		if (_propertyChangedDisabled || !_setChanged || !_setChanged.hasSubscribers) {
+		const {propertyChangedDisabled} = this.__meta
+		const {_setChanged} = this
+		if (propertyChangedDisabled || !_setChanged || !_setChanged.hasSubscribers) {
 			return this
 		}
 
@@ -24,8 +25,9 @@ export class SetChangedObject<T> extends PropertyChangedObject {
 	}
 
 	protected get _setChangedIfCanEmit() {
-		const {_propertyChangedDisabled, _setChanged} = this
-		return !_propertyChangedDisabled && _setChanged && _setChanged.hasSubscribers
+		const {propertyChangedDisabled} = this.__meta
+		const {_setChanged} = this
+		return !propertyChangedDisabled && _setChanged && _setChanged.hasSubscribers
 			? _setChanged
 			: null
 	}

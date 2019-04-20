@@ -30,6 +30,7 @@ export class PropertyChangedObject implements IPropertyChangedObject {
 	/** @internal */
 	public readonly __meta: {
 		propertyChanged?: IHasSubscribersSubject<IPropertyChangedEvent>,
+		propertyChangedDisabled?: boolean,
 	}
 
 	constructor() {
@@ -49,6 +50,13 @@ export class PropertyChangedObject implements IPropertyChangedObject {
 			this.__meta.propertyChanged = propertyChanged = new HasSubscribersSubject()
 		}
 		return propertyChanged
+	}
+
+	protected get _propertyChangedIfCanEmit() {
+		const {propertyChangedDisabled, propertyChanged} = this.__meta
+		return !propertyChangedDisabled && propertyChanged && propertyChanged.hasSubscribers
+			? propertyChanged
+			: null
 	}
 
 	protected _emitPropertyChanged(
@@ -87,16 +95,10 @@ export class PropertyChangedObject implements IPropertyChangedObject {
 		}
 	}
 
-	protected _propertyChangedDisabled?: boolean
-
 	public onPropertyChanged(eventsOrPropertyNames: EventsOrPropertyNames): this {
-		if (this._propertyChangedDisabled) {
-			return this
-		}
+		const {propertyChanged, propertyChangedDisabled} = this.__meta
 
-		const {propertyChanged} = this.__meta
-
-		if (!propertyChanged) {
+		if (!propertyChanged || propertyChangedDisabled) {
 			return this
 		}
 

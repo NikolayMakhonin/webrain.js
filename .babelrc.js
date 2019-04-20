@@ -9,6 +9,7 @@ module.exports = {
 		]
 	],
 	plugins: [
+		'babel-plugin-ts-nameof',
 		'@babel/plugin-transform-typescript',
 		[
 			'@babel/plugin-proposal-decorators', {

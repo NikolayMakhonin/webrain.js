@@ -24,8 +24,9 @@ export class ListChangedObject<T> extends PropertyChangedObject {
 	}
 
 	protected get _listChangedIfCanEmit() {
-		const {_propertyChangedDisabled, _listChanged} = this
-		return !_propertyChangedDisabled && _listChanged && _listChanged.hasSubscribers
+		const {propertyChangedDisabled} = this.__meta
+		const {_listChanged} = this
+		return !propertyChangedDisabled && _listChanged && _listChanged.hasSubscribers
 			? _listChanged
 			: null
 	}

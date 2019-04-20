@@ -636,10 +636,10 @@ export class SortedList<T> extends ListChangedObject<T> implements IListChangedO
 		if (i !== end) {
 			// rollback
 			try {
-				this._propertyChangedDisabled = true
+				this.__meta.propertyChangedDisabled = true
 				this.removeRange(start, end)
 			} finally {
-				this._propertyChangedDisabled = false
+				this.__meta.propertyChangedDisabled = false
 			}
 
 			throw new Error(`Iterable items size (${i - start}) less than itemsSize (${itemsSize})`)

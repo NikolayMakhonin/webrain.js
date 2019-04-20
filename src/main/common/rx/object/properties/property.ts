@@ -1,49 +1,46 @@
 import {ObservableObject} from '../ObservableObject'
+import {ObservableObjectBuilder} from '../ObservableObjectBuilder'
 
 export const SetMode = {
 	Default: 0,
 	Fill   : 1,
-	Clone  : 2
+	Clone  : 2,
 }
 
-export class Property extends ObservableObject {
-	constructor(valueFactory) {
+export class Property<TValue> extends ObservableObject {
+	protected readonly _valueFactory: () => TValue
+
+	constructor(valueFactory: () => TValue) {
 		super()
 		this._valueFactory = valueFactory
 	}
 
-	_valueField = {}
+	public value: TValue
 
-	get value() {
-		return this._valueField.value
-	}
-
-	set value(value) {
-		this.set(value)
-	}
-
-	set(source, options) {
+	public set(source, options): boolean {
 		const {
-			fill, clone, fillFunc, valueFactory
+			fill,
+			clone,
+			fillFunc,
+			valueFactory,
 		} = options
 
 		return this._set(
 			'value',
-			this._valueField,
 			source,
 			{
 				fillFunc: fill
 					? fillFunc
 					: null,
 
-				convert(sourceValue) {
+				convertFunc(sourceValue) {
 					if (clone && sourceValue != null) {
 						return cloneValue(sourceValue)
 					}
 
 					return sourceValue
-				}
-			}
+				},
+			},
 		)
 
 		function cloneValue(sourceValue) {
@@ -73,3 +70,6 @@ export class Property extends ObservableObject {
 		}
 	}
 }
+
+new ObservableObjectBuilder(Property.prototype)
+	.writable('value')

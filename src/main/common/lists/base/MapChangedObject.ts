@@ -25,8 +25,9 @@ export class MapChangedObject<K, V> extends PropertyChangedObject implements IMa
 	}
 
 	protected get _mapChangedIfCanEmit() {
-		const {_propertyChangedDisabled, _mapChanged} = this
-		return !_propertyChangedDisabled && _mapChanged && _mapChanged.hasSubscribers
+		const {propertyChangedDisabled} = this.__meta
+		const {_mapChanged} = this
+		return !propertyChangedDisabled && _mapChanged && _mapChanged.hasSubscribers
 			? _mapChanged
 			: null
 	}

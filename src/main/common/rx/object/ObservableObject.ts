@@ -31,21 +31,21 @@ export class ObservableObject extends DeepPropertyChangedObject {
 	/** @internal */
 	public _set(name: string | number, newValue, options: ISetOptions) {
 		const {__fields} = this
-		const oldValue =  __fields[name]
+		const oldValue = __fields[name]
 
 		const {equalsFunc} = options
-		if (equalsFunc ? equalsFunc(oldValue, newValue) : oldValue === newValue) {
+		if (equalsFunc ? equalsFunc.call(this, oldValue, newValue) : oldValue === newValue) {
 			return false
 		}
 
 		const {fillFunc} = options
-		if (fillFunc && oldValue != null && newValue != null && fillFunc(oldValue, newValue)) {
+		if (fillFunc && oldValue != null && newValue != null && fillFunc.call(this, oldValue, newValue)) {
 			return false
 		}
 
 		const {convertFunc} = options
 		if (convertFunc) {
-			newValue = convertFunc(newValue)
+			newValue = convertFunc.call(this, newValue)
 		}
 
 		if (oldValue === newValue) {
@@ -54,7 +54,7 @@ export class ObservableObject extends DeepPropertyChangedObject {
 
 		const {beforeChange} = options
 		if (beforeChange) {
-			beforeChange(oldValue)
+			beforeChange.call(this, oldValue)
 		}
 
 		__fields[name] = newValue
@@ -63,7 +63,7 @@ export class ObservableObject extends DeepPropertyChangedObject {
 
 		const {afterChange} = options
 		if (afterChange) {
-			afterChange(newValue)
+			afterChange.call(this, newValue)
 		}
 
 		this.onPropertyChanged({
