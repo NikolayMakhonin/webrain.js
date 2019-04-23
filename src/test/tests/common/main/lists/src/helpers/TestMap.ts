@@ -1,9 +1,12 @@
+import {ArrayMap} from '../../../../../../../main/common/lists/ArrayMap'
 import {IMapChangedEvent, MapChangedType} from '../../../../../../../main/common/lists/contracts/IMapChanged'
 import {IPropertyChangedEvent} from '../../../../../../../main/common/lists/contracts/IPropertyChanged'
 import {compareFast} from '../../../../../../../main/common/lists/helpers/compare'
+import {ObjectHashMap} from '../../../../../../../main/common/lists/ObjectHashMap'
 import {ObjectMap} from '../../../../../../../main/common/lists/ObjectMap'
 import {ObservableMap} from '../../../../../../../main/common/lists/ObservableMap'
 import {IOptionsVariant, IOptionsVariants, ITestCase, TestVariants, THIS} from '../../../helpers/TestVariants'
+import {convertToObject} from './common'
 
 declare const assert
 
@@ -49,7 +52,7 @@ interface IMapOptionsVariant<K, V> {
 
 	reuseMapInstance?: boolean
 	useMapChanged?: boolean
-	useObjectMap?: boolean
+	innerMap?: string
 }
 
 interface IMapExpected<K, V> {
@@ -65,7 +68,7 @@ interface IMapOptionsVariants<K, V> extends IOptionsVariants {
 
 	reuseMapInstance?: boolean[]
 	useMapChanged?: boolean[]
-	useObjectMap?: boolean[]
+	innerMap?: string[]
 }
 
 function assertMap<K, V>(map: ObservableMap<K, V>, expectedArray: Array<[K, V]>) {
@@ -117,6 +120,67 @@ const staticMap = new ObservableMap(staticMapInner)
 // 	}
 //
 // }
+class MapWrapper<K, V> implements Map<K, V> {
+	private readonly _map: Map<any, any>
+
+	constructor(map: Map<any, any>) {
+		this._map = map
+	}
+
+	public readonly [Symbol.toStringTag]: string = 'Map'
+	public get size(): number {
+		return this._map.size
+	}
+
+	public *[Symbol.iterator](): IterableIterator<[K, V]> {
+		for (const item of this._map) {
+			yield [item[0].value, item[1]]
+		}
+	}
+
+	public clear(): void {
+		this._map.clear()
+	}
+
+	public delete(key: K): boolean {
+		return this._map.delete(convertToObject(key))
+	}
+
+	public *entries(): IterableIterator<[K, V]> {
+		for (const entry of this._map.entries()) {
+			yield [entry[0].value, entry[1]]
+		}
+	}
+
+	public forEach(callbackfn: (value: V, key: K, map: Map<K, V>) => void, thisArg?: any): void {
+		this._map.forEach(function(value, key) {
+			callbackfn(value, key.value, this)
+		}, thisArg)
+	}
+
+	public get(key: K): V | undefined {
+		return this._map.get(convertToObject(key))
+	}
+
+	public has(key: K): boolean {
+		return this._map.has(convertToObject(key))
+	}
+
+	public *keys(): IterableIterator<K> {
+		for (const item of this._map.keys()) {
+			yield item.value
+		}
+	}
+
+	public set(key: K, value: V): this {
+		this._map.set(convertToObject(key), value)
+		return this
+	}
+
+	public values(): IterableIterator<V> {
+		return this._map.values()
+	}
+}
 
 export class TestMap<K, V> extends TestVariants<
 	IMapAction<K, V>,
@@ -133,7 +197,7 @@ export class TestMap<K, V> extends TestVariants<
 	protected baseOptionsVariants: IMapOptionsVariants<K, V> = {
 		reuseMapInstance: [false, true],
 		useMapChanged: [false, true],
-		useObjectMap: [false, true],
+		innerMap: ['Map', 'Map<Object>', 'ObjectMap', 'ObjectHashMap', 'ArrayMap'],
 	}
 
 	protected testVariant(options: IMapOptionsVariant<K, V> & IOptionsVariant<IMapAction<K, V>, IMapExpected<K, V>>) {
@@ -154,9 +218,26 @@ export class TestMap<K, V> extends TestVariants<
 					map = staticMap as ObservableMap<K, V>
 					mapInner = staticMapInner
 				} else {
-					mapInner = options.useObjectMap
-						? new ObjectMap({}) as any
-						: new Map() as any
+					switch (options.innerMap) {
+						case 'ObjectMap':
+							mapInner = new ObjectMap({}) as any
+							break
+						case 'ObjectHashMap':
+							mapInner = new MapWrapper(new ObjectHashMap({})) as any
+							break
+						case 'ArrayMap':
+							mapInner = new MapWrapper(new ArrayMap({})) as any
+							break
+						case 'Map<Object>':
+							mapInner = new MapWrapper(new Map()) as any
+							break
+						case 'Map':
+							mapInner = new Map() as any
+							break
+						default:
+							assert.fail('Unknown options.innerMap: ' + options.innerMap)
+							break
+					}
 
 					for (const item of array) {
 						mapInner.set(...item)

@@ -176,6 +176,21 @@ describe('common > main > lists > ObservableSet', function() {
 			],
 		})
 
+		testSet({
+			array: [['2', '1']],
+			expected: {
+				array: ['1'],
+				returnValue: true,
+				setChanged: [{
+					type: SetChangedType.Removed,
+					oldItems: ['2'],
+				}],
+			},
+			actions: [
+				remove('2'),
+			],
+		})
+
 		const allValuesShuffle = shuffle(allValues)
 		const additional: any = [[[], {}], [{}, []]]
 

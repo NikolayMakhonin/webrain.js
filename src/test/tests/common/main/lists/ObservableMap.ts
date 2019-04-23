@@ -103,7 +103,7 @@ describe('common > main > lists > ObservableMap', function() {
 
 		testMap({
 			array: [[]],
-			useObjectMap: [false],
+			innerMap: ['Map', 'Map<Object>', 'ObjectHashMap', 'ArrayMap'],
 			expected: {
 				array: entries,
 				returnValue: THIS,
@@ -203,7 +203,7 @@ describe('common > main > lists > ObservableMap', function() {
 
 		testMap({
 			array: [entries.concat(additional)],
-			useObjectMap: [false],
+			innerMap: ['Map', 'Map<Object>', 'ObjectHashMap', 'ArrayMap'],
 			expected: {
 				array: additional,
 				returnValue: true,

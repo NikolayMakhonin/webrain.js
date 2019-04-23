@@ -8,7 +8,7 @@ import {compareFast} from '../../../../../../../main/common/lists/helpers/compar
 import {ObjectSet} from '../../../../../../../main/common/lists/ObjectSet'
 import {ObservableSet} from '../../../../../../../main/common/lists/ObservableSet'
 import {IOptionsVariant, IOptionsVariants, ITestCase, TestVariants, THIS} from '../../../helpers/TestVariants'
-import {indexOfNaN} from './common'
+import {convertToObject, indexOfNaN} from './common'
 
 declare const assert
 
@@ -86,24 +86,7 @@ function assertSet<T>(set: ObservableSet<T>, expectedArray: T[]) {
 const staticSetInner = new Set()
 const staticSet = new ObservableSet(staticSetInner)
 
-const valueToObjectMap = new Map()
-function convertToObject(value: any) {
-	if (value
-		&& typeof value === 'object'
-		&& Object.prototype.hasOwnProperty.call(value, 'value')
-	) {
-		assert.fail('typeof value === ' + typeof value)
-	}
-
-	let obj = valueToObjectMap.get(value)
-	if (!obj) {
-		valueToObjectMap.set(value, obj = {value})
-	}
-
-	return obj
-}
-
-class SetWrapper implements Set<string> {
+class SetWrapper<T> implements Set<T> {
 	private readonly _set: Set<any>
 
 	constructor(set: Set<any>) {
@@ -115,13 +98,13 @@ class SetWrapper implements Set<string> {
 		return this._set.size
 	}
 
-	public *[Symbol.iterator](): IterableIterator<string> {
+	public *[Symbol.iterator](): IterableIterator<T> {
 		for (const item of this._set) {
 			yield item.value
 		}
 	}
 
-	public add(value: string): this {
+	public add(value: T): this {
 		this._set.add(convertToObject(value))
 		return this
 	}
@@ -130,33 +113,33 @@ class SetWrapper implements Set<string> {
 		this._set.clear()
 	}
 
-	public delete(value: string): boolean {
+	public delete(value: T): boolean {
 		return this._set.delete(convertToObject(value))
 	}
 
-	public *entries(): IterableIterator<[string, string]> {
+	public *entries(): IterableIterator<[T, T]> {
 		for (const entry of this._set.entries()) {
 			yield [entry[0].value, entry[1].value]
 		}
 	}
 
-	public forEach(callbackfn: (key: string, value: string, set: Set<string>) => void, thisArg?: any): void {
-		this._set.forEach(function(key, value) {
-			callbackfn(key.value, value.value, this)
+	public forEach(callbackfn: (value: T, key: T, set: Set<T>) => void, thisArg?: any): void {
+		this._set.forEach(function(value, key) {
+			callbackfn(value.value, key.value, this)
 		}, thisArg)
 	}
 
-	public has(value: string): boolean {
+	public has(value: T): boolean {
 		return this._set.has(convertToObject(value))
 	}
 
-	public *keys(): IterableIterator<string> {
+	public *keys(): IterableIterator<T> {
 		for (const item of this._set.keys()) {
 			yield item.value
 		}
 	}
 
-	public *values(): IterableIterator<string> {
+	public *values(): IterableIterator<T> {
 		for (const item of this._set.values()) {
 			yield item.value
 		}

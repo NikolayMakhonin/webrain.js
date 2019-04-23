@@ -1,3 +1,5 @@
+declare const assert
+
 export function generateArray(size) {
 	const arr = []
 	for (let i = 0; i < size; i++) {
@@ -46,4 +48,21 @@ export function indexOfNaN(array) {
 			return i
 		}
 	}
+}
+
+const valueToObjectMap = new Map()
+export function convertToObject(value: any) {
+	if (value
+		&& typeof value === 'object'
+		&& Object.prototype.hasOwnProperty.call(value, 'value')
+	) {
+		assert.fail('typeof value === ' + typeof value)
+	}
+
+	let obj = valueToObjectMap.get(value)
+	if (!obj) {
+		valueToObjectMap.set(value, obj = {value})
+	}
+
+	return obj
 }
