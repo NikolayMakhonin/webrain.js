@@ -19,7 +19,7 @@ export class TypeMetaCollection<TMeta extends ITypeMeta> implements ITypeMetaCol
 	private readonly _typeMap: { [uuid: string]: TClass }
 	private readonly _proto: ITypeMetaCollection<TMeta>
 
-	constructor(proto: ITypeMetaCollection<TMeta>) {
+	constructor(proto?: ITypeMetaCollection<TMeta>) {
 		if (proto) {
 			this._proto = proto
 		}
