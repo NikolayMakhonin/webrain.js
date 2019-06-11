@@ -16,7 +16,7 @@ let typeMetaPropertyNameIndex: number = 0
 
 export class TypeMetaCollection<TMeta extends ITypeMeta> implements ITypeMetaCollection<TMeta> {
 	private readonly _typeMetaPropertyName: string = typeMetaPropertyNameBase + (typeMetaPropertyNameIndex++)
-	private readonly _typeMap: { [uuid: string]: TClass }
+	private readonly _typeMap: { [uuid: string]: TClass } = {}
 	private readonly _proto: ITypeMetaCollection<TMeta>
 
 	constructor(proto?: ITypeMetaCollection<TMeta>) {
@@ -28,19 +28,27 @@ export class TypeMetaCollection<TMeta extends ITypeMeta> implements ITypeMetaCol
 	public getMeta(type: TClass): TMeta {
 		const meta = type[this._typeMetaPropertyName]
 
-		const {_proto} = this
-		if (_proto && typeof meta === 'undefined') {
-			return _proto.getMeta(type)
+		if (typeof meta === 'undefined') {
+			const {_proto} = this
+			if (_proto) {
+				return _proto.getMeta(type)
+			}
 		}
+
+		return meta
 	}
 
 	public getType(uuid: string): TClass {
 		const type = this._typeMap[uuid]
 
-		const {_proto} = this
-		if (_proto && typeof type === 'undefined') {
-			return _proto.getType(uuid)
+		if (typeof type === 'undefined') {
+			const {_proto} = this
+			if (_proto) {
+				return _proto.getType(uuid)
+			}
 		}
+
+		return type
 	}
 
 	public putType(type: TClass, meta: TMeta): TMeta {
@@ -55,7 +63,14 @@ export class TypeMetaCollection<TMeta extends ITypeMeta> implements ITypeMetaCol
 
 		this._typeMap[uuid] = type
 		const prevMeta = type[this._typeMetaPropertyName]
-		type[this._typeMetaPropertyName] = meta
+		if (typeof prevMeta === 'undefined') {
+			Object.defineProperty(type, this._typeMetaPropertyName, {
+				configurable: false,
+				enumerable: false,
+				writable: false,
+				value: meta,
+			})
+		}
 
 		return prevMeta
 	}

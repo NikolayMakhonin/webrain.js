@@ -4,7 +4,7 @@ import {
 	ICollectionSerializer,
 	ISerializable, ISerializedArray,
 	ISerializedObject,
-} from '../../serialization/contracts'
+} from '../../../serialization/contracts'
 import {Property} from './property'
 
 export class CollectionProperty<TItem, TCollection> extends Property<TCollection> {

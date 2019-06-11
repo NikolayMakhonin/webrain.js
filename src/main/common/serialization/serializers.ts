@@ -1,14 +1,14 @@
 import {
-	IDeSerializerVisitor,
-	IObjectSerializer,
+	IDeSerializerVisitor, IDeSerializeValue,
+	IObjectSerializer, ISerializable,
 	ISerializedData,
-	ISerializedDataOrValue,
-	ISerializedTyped,
+	ISerializedDataOrValue, ISerializedObject,
+	ISerializedTyped, ISerializedTypedValue,
 	ISerializedValue,
-	ISerializerVisitor,
-	ITypeMetaSerializer,
+	ISerializerVisitor, ISerializeValue,
+	ITypeMetaSerializer, ITypeMetaSerializerCollection,
 } from './contracts'
-import {ITypeMetaCollection, TypeMetaCollection} from './TypeMeta'
+import {TClass, TypeMetaCollection} from './TypeMeta'
 
 // export interface IWriter {
 // 	write(value: any): this
@@ -30,9 +30,9 @@ import {ITypeMetaCollection, TypeMetaCollection} from './TypeMeta'
 export class SerializerVisitor implements ISerializerVisitor {
 	public types: string[]
 	public typesMap: { [uuid: string]: number }
-	private _typeMeta: ITypeMetaCollection<ITypeMetaSerializer>
+	private _typeMeta: ITypeMetaSerializerCollection
 
-	constructor(typeMeta: ITypeMetaCollection<ITypeMetaSerializer>) {
+	constructor(typeMeta: ITypeMetaSerializerCollection) {
 		this._typeMeta = typeMeta
 	}
 
@@ -85,7 +85,7 @@ export class SerializerVisitor implements ISerializerVisitor {
 
 		const serializedTyped = {
 			type: this.addType(uuid),
-			data: serializer.serialize(this, value),
+			data: serializer.serialize(this.serialize.bind(this), value),
 		}
 
 		return serializedTyped
@@ -94,9 +94,9 @@ export class SerializerVisitor implements ISerializerVisitor {
 
 export class DeSerializerVisitor implements IDeSerializerVisitor {
 	private readonly _types: string[]
-	private readonly _typeMeta: ITypeMetaCollection<ITypeMetaSerializer>
+	private readonly _typeMeta: ITypeMetaSerializerCollection
 
-	constructor(typeMeta: ITypeMetaCollection<ITypeMetaSerializer>, types: string[]) {
+	constructor(typeMeta: ITypeMetaSerializerCollection, types: string[]) {
 		this._typeMeta = typeMeta
 		this._types = types
 	}
@@ -142,8 +142,8 @@ export class DeSerializerVisitor implements IDeSerializerVisitor {
 			throw new Error(`Class (${type}) serializer have no deSerialize method`)
 		}
 
-		const value = serializer.deSerialize<TValue>(
-			this,
+		const value = serializer.deSerialize(
+			this.deSerialize.bind(this),
 			(serializedValue as ISerializedTyped).data,
 			valueFactory || meta.valueFactory,
 		)
@@ -154,13 +154,134 @@ export class DeSerializerVisitor implements IDeSerializerVisitor {
 
 // endregion
 
+// region TypeMetaSerializerCollection
+
+export type TSerializableClass<TObject extends ISerializable>
+	= (new (...args: any[]) => TObject) & { readonly uuid: string }
+
+export class TypeMetaSerializerCollection
+	extends TypeMetaCollection<ITypeMetaSerializer<any>>
+	implements ITypeMetaSerializerCollection {
+	
+	constructor(proto?: ITypeMetaSerializerCollection) {
+		super(proto || TypeMetaSerializerCollection.default)
+	}
+
+	public static default: TypeMetaSerializerCollection = new TypeMetaSerializerCollection()
+
+	private static makeTypeMetaSerializer<TObject extends ISerializable>(
+		type: TSerializableClass<TObject>,
+		valueFactory?: () => TObject,
+	): ITypeMetaSerializer<TObject> {
+		return {
+			uuid: type.uuid,
+			serializer: {
+				serialize(
+					serialize: ISerializeValue,
+					value: ISerializable,
+				): ISerializedTypedValue {
+					return value.serialize(serialize)
+				},
+				deSerialize<TValue>(
+					deSerialize: IDeSerializeValue,
+					serializedValue: ISerializedTypedValue,
+					valueFactory2?: () => TValue,
+				): TValue {
+					const value = valueFactory2() as unknown as TObject
+					value.deSerialize(deSerialize, serializedValue)
+					return value as unknown as TValue
+				},
+			},
+			valueFactory: valueFactory || (() => new (type as new () => TObject)()),
+		}
+	}
+
+	public putSerializableType<TObject extends ISerializable>(
+		type: TSerializableClass<TObject>,
+		valueFactory?: () => TObject,
+	): ITypeMetaSerializer<TObject> {
+		return this.putType(type, TypeMetaSerializerCollection.makeTypeMetaSerializer(type, valueFactory))
+	}
+}
+
+export function registerSerializable<TObject extends ISerializable>(
+	type: TSerializableClass<TObject>,
+	valueFactory?: () => TObject,
+) {
+	TypeMetaSerializerCollection.default.putSerializableType(type, valueFactory)
+}
+
+export function registerSerializer<TValue>(
+	type: TClass,
+	meta: ITypeMetaSerializer<TValue>,
+) {
+	TypeMetaSerializerCollection.default.putType(type, meta)
+}
+
+// endregion
+
+// region Register common serializers
+
+// Handled in SerializerVisitor:
+// undefined
+// null
+// number
+// string
+// boolean
+
+registerSerializer<object>(Object, {
+	uuid: '88968a59-178c-4e73-a99f-801e8cdfc37d',
+	serializer: {
+		serialize(serialize: ISerializeValue, value: any): ISerializedObject {
+			const serializedValue = {}
+			for (const key in value) {
+				if (Object.prototype.hasOwnProperty.call(value, key)) {
+					serializedValue[key] = serialize(value[key])
+				}
+			}
+			return serializedValue
+		},
+		deSerialize(
+			deSerialize: IDeSerializeValue,
+			serializedValue: ISerializedTypedValue,
+			valueFactory?: () => object,
+		): object {
+			const value = valueFactory ? valueFactory() : {}
+			for (const key in serializedValue as ISerializedObject) {
+				if (Object.prototype.hasOwnProperty.call(serializedValue, key)) {
+					value[key] = deSerialize(serializedValue[key])
+				}
+			}
+			return value
+		},
+	},
+})
+
+registerSerializer<Date>(Date, {
+	uuid: '7a6c01db-a6b8-4822-a9a5-86e4d3a4460b',
+	serializer: {
+		serialize(serialize: ISerializeValue, value: Date): number {
+			return value.getTime()
+		},
+		deSerialize(
+			deSerialize: IDeSerializeValue,
+			serializedValue: number,
+			valueFactory?: () => Date,
+		): Date {
+			return new Date(serializedValue)
+		},
+	},
+})
+
+// endregion
+
 // region ObjectSerializer
 
 export class ObjectSerializer implements IObjectSerializer {
-	public typeMeta: ITypeMetaCollection<ITypeMetaSerializer>
+	public typeMeta: ITypeMetaSerializerCollection
 
-	constructor(typeMeta?: ITypeMetaCollection<ITypeMetaSerializer>) {
-		this.typeMeta = new TypeMetaCollection<ITypeMetaSerializer>(typeMeta)
+	constructor(typeMeta?: ITypeMetaSerializerCollection) {
+		this.typeMeta = new TypeMetaSerializerCollection(typeMeta)
 	}
 
 	public serialize(value: any): ISerializedDataOrValue {

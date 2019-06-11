@@ -33,24 +33,27 @@ export interface ISerializedData {
 
 // region Serializers
 
+export type ISerializeValue = (value: any) => ISerializedValue
+export type IDeSerializeValue = <TValue>(
+	serializedValue: ISerializedValue,
+	valueFactory?: () => TValue,
+) => TValue
+
 export interface ISerializerVisitor {
-	serialize(value: any): ISerializedValue
+	serialize: ISerializeValue
 }
 
 export interface IDeSerializerVisitor {
-	deSerialize<TValue>(
-		serializedValue: ISerializedValue,
-		valueFactory?: () => TValue,
-	): TValue
+	deSerialize: IDeSerializeValue
 }
 
-export interface IValueSerializer {
+export interface IValueSerializer<TValue> {
 	serialize(
-		serializer: ISerializerVisitor,
-		value: any,
+		serialize: ISerializeValue,
+		value: TValue,
 	): ISerializedTypedValue
-	deSerialize<TValue>(
-		deSerializer: IDeSerializerVisitor,
+	deSerialize(
+		deSerialize: IDeSerializeValue,
 		serializedValue: ISerializedTypedValue,
 		valueFactory?: () => TValue,
 	): TValue
@@ -67,13 +70,31 @@ export interface IDeSerializer {
 	): TValue
 }
 
-export interface ITypeMetaSerializer extends ITypeMeta {
-	serializer: IValueSerializer
+export interface ITypeMetaSerializer<TValue> extends ITypeMeta {
+	serializer: IValueSerializer<TValue>
 	valueFactory?: () => any
 }
 
+export interface ITypeMetaSerializerCollection extends ITypeMetaCollection<ITypeMetaSerializer<any>> {
+
+}
+
 export interface IObjectSerializer extends ISerializer, IDeSerializer {
-	typeMeta: ITypeMetaCollection<ITypeMetaSerializer>
+	typeMeta: ITypeMetaSerializerCollection
+}
+
+// endregion
+
+// region Serializable
+
+export interface ISerializable {
+	serialize(
+		serialize: ISerializeValue,
+	): ISerializedTypedValue
+	deSerialize(
+		deSerialize: IDeSerializeValue,
+		serializedValue: ISerializedTypedValue,
+	)
 }
 
 // endregion
