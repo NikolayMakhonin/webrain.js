@@ -244,7 +244,7 @@ describe('common > serialization > serializers', function() {
 	}
 
 	it('Class: Serializable inherit', function() {
-		const obj3 = new Class3('p_2')
+		const obj3 = new Class3('prop2')
 		obj3.prop1 = 'p1'
 		obj3.prop2 = 'p2'
 		obj3.prop3 = 'p3'
@@ -253,9 +253,10 @@ describe('common > serialization > serializers', function() {
 		assert.throws(() => serializeValue(obj3), Error)
 		registerSerializable(Class3, () => new Class3('prop2'))
 		const serialized = serializeValue(obj3)
-		const result = deSerializeValue(serialized, () => new Class3('p2'))
+		const result = deSerializeValue(serialized)
 
 		delete obj3.prop1
+		obj3.prop2 = 'prop2'
 
 		assert.notStrictEqual(result, obj3)
 		assert.deepStrictEqual(result, obj3)

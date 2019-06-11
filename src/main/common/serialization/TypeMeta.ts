@@ -77,7 +77,7 @@ export class TypeMetaCollection<TMeta extends ITypeMeta> implements ITypeMetaCol
 		}
 
 		Object.defineProperty(type, _typeMetaPropertyName, {
-			configurable: false,
+			configurable: true,
 			enumerable: false,
 			writable: false,
 			value: meta,
@@ -97,8 +97,10 @@ export class TypeMetaCollection<TMeta extends ITypeMeta> implements ITypeMetaCol
 			type = this.getType(typeOrUuid)
 			uuid = typeOrUuid
 		} else {
-			return
+			throw new Error(`typeOrUuid (${typeOrUuid === null ? 'null' : typeof typeOrUuid}) is not a Function or String`)
 		}
+
+		const { _typeMetaPropertyName } = this
 
 		let prevMeta
 		if (Object.prototype.hasOwnProperty.call(type, _typeMetaPropertyName)) {
