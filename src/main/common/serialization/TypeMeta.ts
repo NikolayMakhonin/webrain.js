@@ -1,4 +1,4 @@
-export type TClass = new () => any
+export type TClass = new (...args: any[]) => any
 
 export interface ITypeMeta {
 	uuid: string
@@ -26,7 +26,12 @@ export class TypeMetaCollection<TMeta extends ITypeMeta> implements ITypeMetaCol
 	}
 
 	public getMeta(type: TClass): TMeta {
-		const meta = type[this._typeMetaPropertyName]
+		let meta
+
+		const {_typeMetaPropertyName} = this
+		if (Object.prototype.hasOwnProperty.call(type, _typeMetaPropertyName)) {
+			meta = type[_typeMetaPropertyName]
+		}
 
 		if (typeof meta === 'undefined') {
 			const {_proto} = this
@@ -61,16 +66,22 @@ export class TypeMetaCollection<TMeta extends ITypeMeta> implements ITypeMetaCol
 			throw new Error(`meta.uuid (${uuid}) should be a string with length > 0`)
 		}
 
+		const { _typeMetaPropertyName } = this
+
 		this._typeMap[uuid] = type
-		const prevMeta = type[this._typeMetaPropertyName]
-		if (typeof prevMeta === 'undefined') {
-			Object.defineProperty(type, this._typeMetaPropertyName, {
-				configurable: false,
-				enumerable: false,
-				writable: false,
-				value: meta,
-			})
+
+		let prevMeta
+		if (Object.prototype.hasOwnProperty.call(type, _typeMetaPropertyName)) {
+			prevMeta = type[_typeMetaPropertyName]
+			delete type[_typeMetaPropertyName]
 		}
+
+		Object.defineProperty(type, _typeMetaPropertyName, {
+			configurable: false,
+			enumerable: false,
+			writable: false,
+			value: meta,
+		})
 
 		return prevMeta
 	}
@@ -89,8 +100,12 @@ export class TypeMetaCollection<TMeta extends ITypeMeta> implements ITypeMetaCol
 			return
 		}
 
-		const prevMeta = type[this._typeMetaPropertyName]
-		delete type[this._typeMetaPropertyName]
+		let prevMeta
+		if (Object.prototype.hasOwnProperty.call(type, _typeMetaPropertyName)) {
+			prevMeta = type[_typeMetaPropertyName]
+			delete type[_typeMetaPropertyName]
+		}
+
 		delete this._typeMap[uuid]
 
 		return prevMeta

@@ -4,7 +4,7 @@ import {
 	ISerializedData,
 	ISerializedDataOrValue, ISerializedObject,
 	ISerializedTyped, ISerializedTypedValue,
-	ISerializedValue,
+	ISerializedValue, ISerializedValueArray,
 	ISerializerVisitor, ISerializeValue,
 	ITypeMetaSerializer, ITypeMetaSerializerCollection,
 } from './contracts'
@@ -232,7 +232,7 @@ export function registerSerializer<TValue>(
 registerSerializer<object>(Object, {
 	uuid: '88968a59-178c-4e73-a99f-801e8cdfc37d',
 	serializer: {
-		serialize(serialize: ISerializeValue, value: any): ISerializedObject {
+		serialize(serialize: ISerializeValue, value: object): ISerializedObject {
 			const serializedValue = {}
 			for (const key in value) {
 				if (Object.prototype.hasOwnProperty.call(value, key)) {
@@ -251,6 +251,85 @@ registerSerializer<object>(Object, {
 				if (Object.prototype.hasOwnProperty.call(serializedValue, key)) {
 					value[key] = deSerialize(serializedValue[key])
 				}
+			}
+			return value
+		},
+	},
+})
+
+registerSerializer<any[]>(Array, {
+	uuid: 'f8c84ed0-8463-4f45-b14a-228967dfb0de',
+	serializer: {
+		serialize(serialize: ISerializeValue, value: any[]): ISerializedValueArray {
+			const serializedValue = []
+			for (let i = 0, len = value.length; i < len; i++) {
+				serializedValue[i] = serialize(value[i])
+			}
+			return serializedValue
+		},
+		deSerialize(
+			deSerialize: IDeSerializeValue,
+			serializedValue: ISerializedValueArray,
+			valueFactory?: () => any[],
+		): any[] {
+			const value = valueFactory ? valueFactory() : []
+			for (let i = 0, len = serializedValue.length; i < len; i++) {
+				value[i] = deSerialize(serializedValue[i])
+			}
+			return value
+		},
+	},
+})
+
+registerSerializer<Set<any>>(Set, {
+	uuid: '17b11d99-ce03-4349-969e-4f9291d0778c',
+	serializer: {
+		serialize(serialize: ISerializeValue, value: Set<any>): ISerializedValueArray {
+			const serializedValue = []
+			for (const item of value) {
+				serializedValue.push(serialize(item))
+			}
+			return serializedValue
+		},
+		deSerialize(
+			deSerialize: IDeSerializeValue,
+			serializedValue: ISerializedValueArray,
+			valueFactory?: () => Set<any>,
+		): Set<any> {
+			const value = valueFactory ? valueFactory() : new Set()
+			for (let i = 0, len = serializedValue.length; i < len; i++) {
+				value.add(deSerialize(serializedValue[i]))
+			}
+			return value
+		},
+	},
+})
+
+registerSerializer<Map<any, any>>(Map, {
+	uuid: 'fdf40f21-59b7-4cb2-804f-3d18ebb19b57',
+	serializer: {
+		serialize(serialize: ISerializeValue, value: Map<any, any>): ISerializedValueArray {
+			const serializedValue = []
+			for (const item of value) {
+				serializedValue.push([
+					serialize(item[0]),
+					serialize(item[1]),
+				])
+			}
+			return serializedValue
+		},
+		deSerialize(
+			deSerialize: IDeSerializeValue,
+			serializedValue: ISerializedValueArray,
+			valueFactory?: () => Map<any, any>,
+		): Map<any, any> {
+			const value = valueFactory ? valueFactory() : new Map()
+			for (let i = 0, len = serializedValue.length; i < len; i++) {
+				const item = serializedValue[i]
+				value.set(
+					deSerialize(item[0]),
+					deSerialize(item[1]),
+				)
 			}
 			return value
 		},
@@ -283,6 +362,8 @@ export class ObjectSerializer implements IObjectSerializer {
 	constructor(typeMeta?: ITypeMetaSerializerCollection) {
 		this.typeMeta = new TypeMetaSerializerCollection(typeMeta)
 	}
+
+	public static default: ObjectSerializer = new ObjectSerializer()
 
 	public serialize(value: any): ISerializedDataOrValue {
 		const serializer = new SerializerVisitor(this.typeMeta)
