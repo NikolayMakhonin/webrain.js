@@ -1,4 +1,4 @@
-import {ITypeMeta, ITypeMetaCollection} from './TypeMeta'
+import {ITypeMeta, ITypeMetaCollection, TClass} from './TypeMeta'
 
 // region Serialized Value
 
@@ -33,9 +33,10 @@ export interface ISerializedData {
 
 // region Serializers
 
-export type ISerializeValue = (value: any) => ISerializedValue
+export type ISerializeValue = (value: any, valueType?: TClass) => ISerializedValue
 export type IDeSerializeValue = <TValue>(
 	serializedValue: ISerializedValue,
+	valueType?: TClass,
 	valueFactory?: () => TValue,
 ) => TValue
 
@@ -60,12 +61,13 @@ export interface IValueSerializer<TValue> {
 }
 
 export interface ISerializer {
-	serialize(value: any): ISerializedDataOrValue
+	serialize(value: any, valueType?: TClass): ISerializedDataOrValue
 }
 
 export interface IDeSerializer {
 	deSerialize<TValue>(
 		serializedData: ISerializedDataOrValue,
+		valueType?: TClass,
 		valueFactory?: () => TValue,
 	): TValue
 }

@@ -52,7 +52,7 @@ export class SerializerVisitor implements ISerializerVisitor {
 		return typeIndex
 	}
 
-	public serialize(value: any): ISerializedValue {
+	public serialize(value: any, valueType?: TClass): ISerializedValue {
 		if (typeof value === 'undefined') {
 			return value
 		}
@@ -64,7 +64,7 @@ export class SerializerVisitor implements ISerializerVisitor {
 			return value
 		}
 
-		const meta = this._typeMeta.getMeta(value.constructor)
+		const meta = this._typeMeta.getMeta(valueType || value.constructor)
 		if (!meta) {
 			throw new Error(`Class (${value.constructor}) have no type meta`)
 		}
@@ -101,7 +101,11 @@ export class DeSerializerVisitor implements IDeSerializerVisitor {
 		this._types = types
 	}
 
-	public deSerialize<TValue>(serializedValue: ISerializedValue, valueFactory?: () => TValue): TValue {
+	public deSerialize<TValue>(
+		serializedValue: ISerializedValue,
+		valueType?: TClass,
+		valueFactory?: () => TValue,
+	): TValue {
 		if (typeof serializedValue === 'undefined') {
 			return serializedValue
 		}
@@ -113,19 +117,23 @@ export class DeSerializerVisitor implements IDeSerializerVisitor {
 			return serializedValue as unknown as TValue
 		}
 
-		const typeIndex = (serializedValue as ISerializedTyped).type
-		if (typeof typeIndex !== 'number') {
-			throw new Error(`Serialized value have no type field: ${JSON.stringify(serializedValue, null, 4)}`)
-		}
-
-		const uuid = this._types[typeIndex]
-		if (typeof uuid !== 'string') {
-			throw new Error(`type uuid not found for index (${typeIndex}): ${JSON.stringify(serializedValue, null, 4)}`)
-		}
-
-		const type = this._typeMeta.getType(uuid)
+		let type = valueType
 		if (!type) {
-			throw new Error(`type not found for uuid (${uuid}): ${JSON.stringify(serializedValue, null, 4)}`)
+			const typeIndex = (serializedValue as ISerializedTyped).type
+			if (typeof typeIndex !== 'number') {
+				throw new Error(`Serialized value have no type field: ${JSON.stringify(serializedValue, null, 4)}`)
+			}
+
+			const uuid = this._types[typeIndex]
+			if (typeof uuid !== 'string') {
+				throw new Error(`type uuid not found for index (${typeIndex}): ${JSON.stringify(serializedValue, null, 4)}`)
+			}
+
+			type = this._typeMeta.getType(uuid)
+
+			if (!type) {
+				throw new Error(`type not found for uuid (${uuid}): ${JSON.stringify(serializedValue, null, 4)}`)
+			}
 		}
 
 		const meta = this._typeMeta.getMeta(type)
@@ -365,9 +373,9 @@ export class ObjectSerializer implements IObjectSerializer {
 
 	public static default: ObjectSerializer = new ObjectSerializer()
 
-	public serialize(value: any): ISerializedDataOrValue {
+	public serialize(value: any, valueType?: TClass): ISerializedDataOrValue {
 		const serializer = new SerializerVisitor(this.typeMeta)
-		const serializedValue = serializer.serialize(value)
+		const serializedValue = serializer.serialize(value, valueType)
 
 		if (!serializedValue || typeof serializedValue !== 'object') {
 			return serializedValue
@@ -386,6 +394,7 @@ export class ObjectSerializer implements IObjectSerializer {
 
 	public deSerialize<TValue>(
 		serializedValue: ISerializedDataOrValue,
+		valueType?: TClass,
 		valueFactory?: () => TValue,
 	): TValue {
 		if (!serializedValue || typeof serializedValue !== 'object') {
@@ -400,7 +409,7 @@ export class ObjectSerializer implements IObjectSerializer {
 
 		const deSerializer = new DeSerializerVisitor(this.typeMeta, types)
 
-		const value = deSerializer.deSerialize(data, valueFactory)
+		const value = deSerializer.deSerialize(data, valueType, valueFactory)
 
 		return value
 	}

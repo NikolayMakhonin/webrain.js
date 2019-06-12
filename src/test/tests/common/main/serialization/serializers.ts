@@ -213,7 +213,7 @@ describe('common > serialization > serializers', function() {
 		assert.throws(() => serializeValue(obj2), Error)
 		registerSerializable(Class2, () => new Class2('prop2'))
 		const serialized = serializeValue(obj2)
-		const result = deSerializeValue(serialized, () => new Class2('p2'))
+		const result = deSerializeValue(serialized, null, () => new Class2('p2'))
 
 		delete obj2.prop1
 
