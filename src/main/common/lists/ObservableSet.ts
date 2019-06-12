@@ -1,7 +1,15 @@
+import {
+	IDeSerializeValue,
+	ISerializable,
+	ISerializedObject, ISerializedTypedValue,
+	ISerializedValueArray,
+	ISerializeValue,
+} from '../serialization/contracts'
+import {deSerializeArray, registerSerializable, registerSerializer, serializeArray} from '../serialization/serializers';
 import {SetChangedObject} from './base/SetChangedObject'
 import {IObservableSet, SetChangedType} from './contracts/ISetChanged'
 
-export class ObservableSet<T> extends SetChangedObject<T> implements IObservableSet<T> {
+export class ObservableSet<T> extends SetChangedObject<T> implements IObservableSet<T>, ISerializable {
 	private readonly _set: Set<T>
 
 	constructor(set?: Set<T>) {
@@ -123,4 +131,45 @@ export class ObservableSet<T> extends SetChangedObject<T> implements IObservable
 	}
 
 	// endregion
+
+	// region ISerializable
+
+	public static uuid: string = '6988ebc9-cd06-4a9b-97a9-8415b8cf1dc4'
+
+	public serialize(serialize: ISerializeValue): ISerializedObject {
+		return {
+			set: serialize(this._set),
+		}
+	}
+
+	// tslint:disable-next-line:no-empty
+	public deSerialize(deSerialize: IDeSerializeValue, serializedValue: ISerializedObject) {
+
+	}
+
+	// endregion
 }
+
+registerSerializer(ObservableSet, {
+	uuid: 'dcd3ae30-4f69-479b-9fe9-24f7562b4340',
+	serializer: {
+		serialize(
+			serialize: ISerializeValue,
+			value: ObservableSet<any>,
+		): ISerializedObject {
+			return value.serialize(serialize)
+		},
+		deSerialize<T>(
+			deSerialize: IDeSerializeValue,
+			serializedValue: ISerializedObject,
+			valueFactory?: (set?: Set<T>) => ObservableSet<T>,
+		): ObservableSet<T> {
+			const innerSet = deSerialize<Set<T>>(serializedValue.set)
+			const value = valueFactory
+				? valueFactory(innerSet)
+				: new ObservableSet<T>(innerSet)
+			value.deSerialize(deSerialize, serializedValue)
+			return value
+		},
+	},
+})

@@ -1,4 +1,7 @@
-export class ObjectSet implements Set<string> {
+import {IDeSerializeValue, ISerializable, ISerializedObject, ISerializeValue} from '../serialization/contracts'
+import {registerSerializer} from '../serialization/serializers'
+
+export class ObjectSet implements Set<string>, ISerializable {
 	private readonly _object: object
 
 	constructor(object?: object) {
@@ -73,4 +76,45 @@ export class ObjectSet implements Set<string> {
 	public values(): IterableIterator<string> {
 		return this[Symbol.iterator]()
 	}
+
+	// region ISerializable
+
+	public static uuid: string = '6988ebc9-cd06-4a9b-97a9-8415b8cf1dc4'
+
+	public serialize(serialize: ISerializeValue): ISerializedObject {
+		return {
+			object: serialize(this._object),
+		}
+	}
+
+	// tslint:disable-next-line:no-empty
+	public deSerialize(deSerialize: IDeSerializeValue, serializedValue: ISerializedObject) {
+
+	}
+
+	// endregion
 }
+
+registerSerializer(ObjectSet, {
+	uuid: 'da346c2a-8dcd-415b-8a27-ed9523e03917',
+	serializer: {
+		serialize(
+			serialize: ISerializeValue,
+			value: ObjectSet,
+		): ISerializedObject {
+			return value.serialize(serialize)
+		},
+		deSerialize<T>(
+			deSerialize: IDeSerializeValue,
+			serializedValue: ISerializedObject,
+			valueFactory?: (object?: object) => ObjectSet,
+		): ObjectSet {
+			const innerSet = deSerialize<object>(serializedValue.object)
+			const value = valueFactory
+				? valueFactory(innerSet)
+				: new ObjectSet(innerSet)
+			value.deSerialize(deSerialize, serializedValue)
+			return value
+		},
+	},
+})

@@ -51,21 +51,21 @@ export class SerializerVisitor implements ISerializerVisitor {
 
 		const meta = this._typeMeta.getMeta(valueType || value.constructor)
 		if (!meta) {
-			throw new Error(`Class (${value.constructor}) have no type meta`)
+			throw new Error(`Class (${value.constructor.name}) have no type meta`)
 		}
 
 		const uuid = meta.uuid
 		if (!uuid) {
-			throw new Error(`Class (${value.constructor}) type meta have no uuid`)
+			throw new Error(`Class (${value.constructor.name}) type meta have no uuid`)
 		}
 
 		const serializer = meta.serializer
 		if (!serializer) {
-			throw new Error(`Class (${value.constructor}) type meta have no serializer`)
+			throw new Error(`Class (${value.constructor.name}) type meta have no serializer`)
 		}
 
 		if (!serializer.serialize) {
-			throw new Error(`Class (${value.constructor}) serializer have no serialize method`)
+			throw new Error(`Class (${value.constructor.name}) serializer have no serialize method`)
 		}
 
 		const serializedTyped = {

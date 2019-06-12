@@ -1,13 +1,21 @@
 /* tslint:disable:ban-types */
+import {
+	IDeSerializeValue,
+	ISerializable,
+	ISerializedObject,
+	ISerializedValueArray,
+	ISerializeValue
+} from '../serialization/contracts'
+import {deSerializeArray, registerSerializer, serializeArray} from '../serialization/serializers'
 import {getObjectUniqueId} from './helpers/object-unique-id'
 
-export class ArraySet<T extends Object> implements Set<T> {
+export class ArraySet<T extends Object> implements Set<T>, ISerializable {
 	private readonly _array: T[]
 	private _size: number
 
-	constructor(array?: T[]) {
+	constructor(array?: T[], size?: number) {
 		this._array = array || []
-		this._size = this._array.length
+		this._size = size || Object.keys(this._array).length
 	}
 
 	public add(value: T): this {
@@ -101,4 +109,45 @@ export class ArraySet<T extends Object> implements Set<T> {
 	public values(): IterableIterator<T> {
 		return this[Symbol.iterator]()
 	}
+
+	// region ISerializable
+
+	public static uuid: string = '6988ebc9-cd06-4a9b-97a9-8415b8cf1dc4'
+
+	public serialize(serialize: ISerializeValue): ISerializedObject {
+		return {
+			array: serialize(this._array, Object),
+		}
+	}
+
+	// tslint:disable-next-line:no-empty
+	public deSerialize(deSerialize: IDeSerializeValue, serializedValue: ISerializedObject) {
+
+	}
+
+	// endregion
 }
+
+registerSerializer(ArraySet, {
+	uuid: '5d8afd61-6d86-46de-892c-4857e824b639',
+	serializer: {
+		serialize(
+			serialize: ISerializeValue,
+			value: ArraySet<any>,
+		): ISerializedObject {
+			return value.serialize(serialize)
+		},
+		deSerialize<T>(
+			deSerialize: IDeSerializeValue,
+			serializedValue: ISerializedObject,
+			valueFactory?: (set?: T[]) => ArraySet<T>,
+		): ArraySet<T> {
+			const innerSet = deSerialize(serializedValue.array, Object, () => [])
+			const value = valueFactory
+				? valueFactory(innerSet)
+				: new ArraySet<T>(innerSet)
+			value.deSerialize(deSerialize, serializedValue)
+			return value
+		},
+	},
+})

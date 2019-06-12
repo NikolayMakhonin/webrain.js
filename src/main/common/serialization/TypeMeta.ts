@@ -68,6 +68,11 @@ export class TypeMetaCollection<TMeta extends ITypeMeta> implements ITypeMetaCol
 
 		const { _typeMetaPropertyName } = this
 
+		const prevType = this._typeMap[uuid]
+		if (prevType && prevType !== type) {
+			throw new Error(`Same uuid (${uuid}) used for different types: ${prevType.name}, ${type.name}`)
+		}
+
 		this._typeMap[uuid] = type
 
 		let prevMeta
