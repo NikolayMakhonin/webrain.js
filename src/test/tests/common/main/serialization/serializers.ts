@@ -8,9 +8,9 @@ import {
 import {
 	ObjectSerializer,
 	registerSerializable,
-	TypeMetaSerializerCollection
+	TypeMetaSerializerCollection,
 } from '../../../../../main/common/serialization/serializers'
-import {TClass} from "../../../../../main/common/serialization/TypeMeta";
+import {TClass} from '../../../../../main/common/serialization/TypeMeta'
 
 declare const assert
 

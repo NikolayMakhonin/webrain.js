@@ -10,21 +10,6 @@ import {
 } from './contracts'
 import {TClass, TypeMetaCollection} from './TypeMeta'
 
-// export interface IWriter {
-// 	write(value: any): this
-// }
-//
-// export interface IReader {
-// 	read<TValue>(valueFactory?: () => TValue & ISerializable): TValue
-// }
-//
-// export interface ISerializer extends IWriter, IReader { }
-
-// каждый сериализуемый класс должен содержать поле с его UUID
-// UUID устанавливается вручную
-// при сериализации UUID сохраняются в отдельный список,
-// а в данных используется индекс (для уменьшения размера сериализованных данных)
-
 // region SerializerVisitor
 
 export class SerializerVisitor implements ISerializerVisitor {
@@ -39,7 +24,7 @@ export class SerializerVisitor implements ISerializerVisitor {
 	private addType(uuid: string): number {
 		let {types, typesMap} = this
 		if (!typesMap) {
-			this.typesMap = typesMap = {}
+			this.typesMap = {}
 			this.types = types = []
 		}
 
@@ -228,140 +213,6 @@ export function registerSerializer<TValue>(
 
 // endregion
 
-// region Register common serializers
-
-// Handled in SerializerVisitor:
-// undefined
-// null
-// number
-// string
-// boolean
-
-registerSerializer<object>(Object, {
-	uuid: '88968a59-178c-4e73-a99f-801e8cdfc37d',
-	serializer: {
-		serialize(serialize: ISerializeValue, value: object): ISerializedObject {
-			const serializedValue = {}
-			for (const key in value) {
-				if (Object.prototype.hasOwnProperty.call(value, key)) {
-					serializedValue[key] = serialize(value[key])
-				}
-			}
-			return serializedValue
-		},
-		deSerialize(
-			deSerialize: IDeSerializeValue,
-			serializedValue: ISerializedTypedValue,
-			valueFactory?: () => object,
-		): object {
-			const value = valueFactory ? valueFactory() : {}
-			for (const key in serializedValue as ISerializedObject) {
-				if (Object.prototype.hasOwnProperty.call(serializedValue, key)) {
-					value[key] = deSerialize(serializedValue[key])
-				}
-			}
-			return value
-		},
-	},
-})
-
-registerSerializer<any[]>(Array, {
-	uuid: 'f8c84ed0-8463-4f45-b14a-228967dfb0de',
-	serializer: {
-		serialize(serialize: ISerializeValue, value: any[]): ISerializedValueArray {
-			const serializedValue = []
-			for (let i = 0, len = value.length; i < len; i++) {
-				serializedValue[i] = serialize(value[i])
-			}
-			return serializedValue
-		},
-		deSerialize(
-			deSerialize: IDeSerializeValue,
-			serializedValue: ISerializedValueArray,
-			valueFactory?: () => any[],
-		): any[] {
-			const value = valueFactory ? valueFactory() : []
-			for (let i = 0, len = serializedValue.length; i < len; i++) {
-				value[i] = deSerialize(serializedValue[i])
-			}
-			return value
-		},
-	},
-})
-
-registerSerializer<Set<any>>(Set, {
-	uuid: '17b11d99-ce03-4349-969e-4f9291d0778c',
-	serializer: {
-		serialize(serialize: ISerializeValue, value: Set<any>): ISerializedValueArray {
-			const serializedValue = []
-			for (const item of value) {
-				serializedValue.push(serialize(item))
-			}
-			return serializedValue
-		},
-		deSerialize(
-			deSerialize: IDeSerializeValue,
-			serializedValue: ISerializedValueArray,
-			valueFactory?: () => Set<any>,
-		): Set<any> {
-			const value = valueFactory ? valueFactory() : new Set()
-			for (let i = 0, len = serializedValue.length; i < len; i++) {
-				value.add(deSerialize(serializedValue[i]))
-			}
-			return value
-		},
-	},
-})
-
-registerSerializer<Map<any, any>>(Map, {
-	uuid: 'fdf40f21-59b7-4cb2-804f-3d18ebb19b57',
-	serializer: {
-		serialize(serialize: ISerializeValue, value: Map<any, any>): ISerializedValueArray {
-			const serializedValue = []
-			for (const item of value) {
-				serializedValue.push([
-					serialize(item[0]),
-					serialize(item[1]),
-				])
-			}
-			return serializedValue
-		},
-		deSerialize(
-			deSerialize: IDeSerializeValue,
-			serializedValue: ISerializedValueArray,
-			valueFactory?: () => Map<any, any>,
-		): Map<any, any> {
-			const value = valueFactory ? valueFactory() : new Map()
-			for (let i = 0, len = serializedValue.length; i < len; i++) {
-				const item = serializedValue[i]
-				value.set(
-					deSerialize(item[0]),
-					deSerialize(item[1]),
-				)
-			}
-			return value
-		},
-	},
-})
-
-registerSerializer<Date>(Date, {
-	uuid: '7a6c01db-a6b8-4822-a9a5-86e4d3a4460b',
-	serializer: {
-		serialize(serialize: ISerializeValue, value: Date): number {
-			return value.getTime()
-		},
-		deSerialize(
-			deSerialize: IDeSerializeValue,
-			serializedValue: number,
-			valueFactory?: () => Date,
-		): Date {
-			return new Date(serializedValue)
-		},
-	},
-})
-
-// endregion
-
 // region ObjectSerializer
 
 export class ObjectSerializer implements IObjectSerializer {
@@ -414,5 +265,193 @@ export class ObjectSerializer implements IObjectSerializer {
 		return value
 	}
 }
+
+// endregion
+
+// region Primitive Serializers
+
+// Handled in SerializerVisitor:
+// undefined
+// null
+// number
+// string
+// boolean
+
+// region Helpers
+
+export function serializeArray(
+	serialize: ISerializeValue,
+	value: any[],
+	length?: number,
+): ISerializedValueArray {
+	if (length == null) {
+		length = value.length
+	}
+
+	const serializedValue = []
+	for (let i = 0; i < length; i++) {
+		serializedValue[i] = serialize(value[i])
+	}
+
+	return serializedValue
+}
+
+export function deSerializeArray<T>(
+	deSerialize: IDeSerializeValue,
+	serializedValue: ISerializedValueArray,
+	valueFactory?: () => T[],
+): T[] {
+	const value = valueFactory ? valueFactory() : []
+	for (let i = 0, len = serializedValue.length; i < len; i++) {
+		value[i] = deSerialize(serializedValue[i])
+	}
+	return value
+}
+
+export function serializeIterable(
+	serialize: ISerializeValue,
+	value: Iterable<any>,
+): ISerializedValueArray {
+	const serializedValue = []
+	for (const item of value) {
+		serializedValue.push(serialize(item))
+	}
+	return serializedValue
+}
+
+export function deSerializeIterable(
+	serializedValue: ISerializedValueArray,
+	add: (item: any) => void,
+): void {
+	for (let i = 0, len = serializedValue.length; i < len; i++) {
+		add(serializedValue[i])
+	}
+}
+
+// endregion
+
+// region Object
+
+registerSerializer<object>(Object, {
+	uuid: '88968a59-178c-4e73-a99f-801e8cdfc37d',
+	serializer: {
+		serialize(serialize: ISerializeValue, value: object): ISerializedObject {
+			const serializedValue = {}
+			for (const key in value) {
+				if (Object.prototype.hasOwnProperty.call(value, key)) {
+					serializedValue[key] = serialize(value[key])
+				}
+			}
+			return serializedValue
+		},
+		deSerialize(
+			deSerialize: IDeSerializeValue,
+			serializedValue: ISerializedTypedValue,
+			valueFactory?: () => object,
+		): object {
+			const value = valueFactory ? valueFactory() : {}
+			for (const key in serializedValue as ISerializedObject) {
+				if (Object.prototype.hasOwnProperty.call(serializedValue, key)) {
+					value[key] = deSerialize(serializedValue[key])
+				}
+			}
+			return value
+		},
+	},
+})
+
+// endregion
+
+// region Array
+
+registerSerializer<any[]>(Array, {
+	uuid: 'f8c84ed0-8463-4f45-b14a-228967dfb0de',
+	serializer: {
+		serialize(serialize: ISerializeValue, value: any[]): ISerializedValueArray {
+			return serializeArray(serialize, value)
+		},
+		deSerialize(
+			deSerialize: IDeSerializeValue,
+			serializedValue: ISerializedValueArray,
+			valueFactory?: () => any[],
+		): any[] {
+			return deSerializeArray(deSerialize, serializedValue, valueFactory)
+		},
+	},
+})
+
+// endregion
+
+// region Set
+
+registerSerializer<Set<any>>(Set, {
+	uuid: '17b11d99-ce03-4349-969e-4f9291d0778c',
+	serializer: {
+		serialize(serialize: ISerializeValue, value: Set<any>): ISerializedValueArray {
+			return serializeIterable(serialize, value)
+		},
+		deSerialize(
+			deSerialize: IDeSerializeValue,
+			serializedValue: ISerializedValueArray,
+			valueFactory?: () => Set<any>,
+		): Set<any> {
+			const value = valueFactory ? valueFactory() : new Set()
+			deSerializeIterable(serializedValue, o => value.add(deSerialize(o)))
+			return value
+		},
+	},
+})
+
+// endregion
+
+// region Map
+
+registerSerializer<Map<any, any>>(Map, {
+	uuid: 'fdf40f21-59b7-4cb2-804f-3d18ebb19b57',
+	serializer: {
+		serialize(serialize: ISerializeValue, value: Map<any, any>): ISerializedValueArray {
+			return serializeIterable(item => [
+				serialize(item[0]),
+				serialize(item[1]),
+			], value)
+		},
+		deSerialize(
+			deSerialize: IDeSerializeValue,
+			serializedValue: ISerializedValueArray,
+			valueFactory?: () => Map<any, any>,
+		): Map<any, any> {
+			const value = valueFactory ? valueFactory() : new Map()
+			deSerializeIterable(
+				serializedValue,
+				item => value.set(
+					deSerialize(item[0]),
+					deSerialize(item[1]),
+				))
+			return value
+		},
+	},
+})
+
+// endregion
+
+// region Date
+
+registerSerializer<Date>(Date, {
+	uuid: '7a6c01db-a6b8-4822-a9a5-86e4d3a4460b',
+	serializer: {
+		serialize(serialize: ISerializeValue, value: Date): number {
+			return value.getTime()
+		},
+		deSerialize(
+			deSerialize: IDeSerializeValue,
+			serializedValue: number,
+			valueFactory?: () => Date,
+		): Date {
+			return new Date(serializedValue)
+		},
+	},
+})
+
+// endregion
 
 // endregion

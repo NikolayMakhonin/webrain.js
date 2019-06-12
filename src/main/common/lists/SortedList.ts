@@ -3,6 +3,14 @@ import {ICompare} from './contracts/ICompare'
 import {IListChangedObject, ListChangedType} from './contracts/IListChanged'
 import {binarySearch, move} from './helpers/array'
 import {compareFast} from './helpers/compare'
+import {
+	IDeSerializeValue,
+	ISerializable,
+	ISerializedObject,
+	ISerializedTypedValue, ISerializedValue, ISerializedValueArray,
+	ISerializeValue
+} from "../serialization/contracts";
+import {deSerializeArray, registerSerializable, serializeArray} from "../serialization/serializers";
 
 function calcOptimalArraySize(desiredSize: number) {
 	let optimalSize = 4
@@ -25,7 +33,7 @@ export function getDefaultValue(value) {
 	return null
 }
 
-export class SortedList<T> extends ListChangedObject<T> implements IListChangedObject<T> {
+export class SortedList<T> extends ListChangedObject<T> implements IListChangedObject<T>, ISerializable {
 	// region constructor
 
 	private _array: T[]
@@ -1128,4 +1136,33 @@ export class SortedList<T> extends ListChangedObject<T> implements IListChangedO
 	// endregion
 
 	public readonly [Symbol.toStringTag]: string = 'List'
+
+	// region ISerializable
+
+	public static uuid: string = '6988ebc9-cd06-4a9b-97a9-8415b8cf1dc4'
+
+	public serialize(serialize: ISerializeValue): ISerializedObject {
+		return {
+			array: (this._array as any) && serializeArray(serialize, this._array, this._size),
+			autoSort: serialize(this._autoSort),
+			countSorted: serialize(this._countSorted),
+			minAllocatedSize: serialize(this._minAllocatedSize),
+			notAddIfExists: serialize(this._notAddIfExists),
+		}
+	}
+
+	public deSerialize(deSerialize: IDeSerializeValue, serializedValue: ISerializedObject) {
+		this._array = (serializedValue.array as any)
+			&& deSerializeArray(deSerialize, serializedValue.array as ISerializedValueArray)
+			|| []
+		this._size = this._array.length
+		this._autoSort = deSerialize(serializedValue.autoSort)
+		this._countSorted = deSerialize(serializedValue.countSorted)
+		this._minAllocatedSize = deSerialize(serializedValue.minAllocatedSize)
+		this._notAddIfExists = deSerialize(serializedValue.notAddIfExists)
+	}
+
+	// endregion
 }
+
+registerSerializable(SortedList)

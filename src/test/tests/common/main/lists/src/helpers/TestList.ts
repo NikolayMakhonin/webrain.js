@@ -7,6 +7,7 @@ import {IPropertyChangedEvent} from '../../../../../../../main/common/lists/cont
 import {compareFast} from '../../../../../../../main/common/lists/helpers/compare'
 import {SortedList} from '../../../../../../../main/common/lists/SortedList'
 import {IOptionsVariant, IOptionsVariants, ITestCase, TestVariants} from '../../../helpers/TestVariants'
+import {ObjectSerializer} from "../../../../../../../main/common/serialization/serializers";
 
 declare const assert
 
@@ -94,6 +95,19 @@ function equalsWithNaN(o1, o2) {
 	return o1 === o2 || (o1 !== o1) && (o2 !== o2)
 }
 
+function testSerialization<T>(list: SortedList<T>) {
+	const serialized = ObjectSerializer.default.serialize(list)
+	const result: SortedList<T> = ObjectSerializer.default.deSerialize(serialized)
+
+	assert.notStrictEqual(result, list)
+	assert.strictEqual(result.autoSort, list.autoSort)
+	assert.strictEqual(result.countSorted, list.countSorted)
+	assert.strictEqual(result.minAllocatedSize, list.minAllocatedSize)
+	assert.strictEqual(result.notAddIfExists, list.notAddIfExists)
+	assert.strictEqual(result.size, list.size)
+	assert.deepStrictEqual(result.toArray(), list.toArray())
+}
+
 function assertList<T>(list: SortedList<T>, expectedArray: T[]) {
 	assert.deepStrictEqual(list.toArray(), expectedArray)
 	assert.strictEqual(list.size, expectedArray.length)
@@ -107,6 +121,8 @@ function assertList<T>(list: SortedList<T>, expectedArray: T[]) {
 	}
 
 	assert.deepStrictEqual(Array.from(list), expectedArray)
+
+	testSerialization(list)
 }
 
 const staticArray = []
