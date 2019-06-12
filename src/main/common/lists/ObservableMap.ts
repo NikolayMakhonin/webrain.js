@@ -1,7 +1,9 @@
+import {IDeSerializeValue, ISerializable, ISerializedObject, ISerializeValue} from '../serialization/contracts'
+import {registerSerializer} from '../serialization/serializers'
 import {MapChangedObject} from './base/MapChangedObject'
 import {IObservableMap, MapChangedType} from './contracts/IMapChanged'
 
-export class ObservableMap<K, V> extends MapChangedObject<K, V> implements IObservableMap<K, V> {
+export class ObservableMap<K, V> extends MapChangedObject<K, V> implements IObservableMap<K, V>, ISerializable {
 	private readonly _map: Map<K, V>
 
 	constructor(
@@ -147,4 +149,45 @@ export class ObservableMap<K, V> extends MapChangedObject<K, V> implements IObse
 	}
 
 	// endregion
+
+	// region ISerializable
+
+	public static uuid: string = 'e162178d-5123-4bea-ab6e-b96d5b8f130b'
+
+	public serialize(serialize: ISerializeValue): ISerializedObject {
+		return {
+			map: serialize(this._map),
+		}
+	}
+
+	// tslint:disable-next-line:no-empty
+	public deSerialize(deSerialize: IDeSerializeValue, serializedValue: ISerializedObject) {
+
+	}
+
+	// endregion
 }
+
+registerSerializer(ObservableMap, {
+	uuid: ObservableMap.uuid,
+	serializer: {
+		serialize(
+			serialize: ISerializeValue,
+			value: ObservableMap<any, any>,
+		): ISerializedObject {
+			return value.serialize(serialize)
+		},
+		deSerialize<K, V>(
+			deSerialize: IDeSerializeValue,
+			serializedValue: ISerializedObject,
+			valueFactory?: (map?: Map<K, V>) => ObservableMap<K, V>,
+		): ObservableMap<K, V> {
+			const innerMap = deSerialize<Map<K, V>>(serializedValue.map)
+			const value = valueFactory
+				? valueFactory(innerMap)
+				: new ObservableMap<K, V>(innerMap)
+			value.deSerialize(deSerialize, serializedValue)
+			return value
+		},
+	},
+})

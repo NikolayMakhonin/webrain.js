@@ -7,16 +7,15 @@ import {
 import {compareFast} from '../../../../../../../main/common/lists/helpers/compare'
 import {ObjectSet} from '../../../../../../../main/common/lists/ObjectSet'
 import {ObservableSet} from '../../../../../../../main/common/lists/ObservableSet'
-import {IOptionsVariant, IOptionsVariants, ITestCase, TestVariants, THIS} from '../../../helpers/TestVariants'
-import {convertToObject, indexOfNaN} from './common'
-import {SortedList} from "../../../../../../../main/common/lists/SortedList";
-import {ObjectSerializer, registerSerializer} from "../../../../../../../main/common/serialization/serializers";
 import {
 	IDeSerializeValue,
 	ISerializable,
 	ISerializedObject,
-	ISerializeValue
-} from "../../../../../../../main/common/serialization/contracts";
+	ISerializeValue,
+} from '../../../../../../../main/common/serialization/contracts'
+import {ObjectSerializer, registerSerializer} from '../../../../../../../main/common/serialization/serializers'
+import {IOptionsVariant, IOptionsVariants, ITestCase, TestVariants, THIS} from '../../../helpers/TestVariants'
+import {convertToObject, indexOfNaN} from './common'
 
 declare const assert
 
@@ -65,15 +64,15 @@ interface ISetOptionsVariants<T> extends IOptionsVariants {
 	innerSet?: string[]
 }
 
-function testSerialization<T>(set: ObservableSet<T>) {
+function testSerialization<T>(set: Set<T>) {
 	const serialized = ObjectSerializer.default.serialize(set)
-	const result: ObservableSet<T> = ObjectSerializer.default.deSerialize(serialized)
+	const result: Set<T> = ObjectSerializer.default.deSerialize(serialized)
 
 	assert.notStrictEqual(result, set)
 	assert.deepStrictEqual(result.entries(), set.entries())
 }
 
-function assertSet<T>(set: ObservableSet<T>, expectedArray: T[]) {
+function assertSet<T>(set: Set<T>, expectedArray: T[]) {
 	expectedArray = expectedArray.sort(compareFast)
 	assert.deepStrictEqual(Array.from(set.keys()).sort(compareFast), expectedArray)
 	assert.deepStrictEqual(Array.from(set.values()).sort(compareFast), expectedArray)
@@ -165,7 +164,7 @@ class SetWrapper<T> implements Set<T>, ISerializable {
 
 	// region ISerializable
 
-	public static uuid: string = '6988ebc9-cd06-4a9b-97a9-8415b8cf1dc4'
+	public static uuid: string = '5de4524d-6cdb-41e9-8968-9798ecedef5d'
 
 	public serialize(serialize: ISerializeValue): ISerializedObject {
 		return {
@@ -182,7 +181,7 @@ class SetWrapper<T> implements Set<T>, ISerializable {
 }
 
 registerSerializer(SetWrapper, {
-	uuid: 'feb06c1f-e4f1-4017-852e-a55a23256b3e',
+	uuid: SetWrapper.uuid,
 	serializer: {
 		serialize(
 			serialize: ISerializeValue,

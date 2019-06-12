@@ -3,10 +3,9 @@ import {
 	IDeSerializeValue,
 	ISerializable,
 	ISerializedObject,
-	ISerializedValueArray,
-	ISerializeValue
+	ISerializeValue,
 } from '../serialization/contracts'
-import {deSerializeArray, registerSerializer, serializeArray} from '../serialization/serializers'
+import {registerSerializer} from '../serialization/serializers'
 import {getObjectUniqueId} from './helpers/object-unique-id'
 
 export class ArraySet<T extends Object> implements Set<T>, ISerializable {
@@ -112,7 +111,7 @@ export class ArraySet<T extends Object> implements Set<T>, ISerializable {
 
 	// region ISerializable
 
-	public static uuid: string = '6988ebc9-cd06-4a9b-97a9-8415b8cf1dc4'
+	public static uuid: string = '0e8c7f09-ea9e-4631-8af8-a635c214a01c'
 
 	public serialize(serialize: ISerializeValue): ISerializedObject {
 		return {
@@ -129,7 +128,7 @@ export class ArraySet<T extends Object> implements Set<T>, ISerializable {
 }
 
 registerSerializer(ArraySet, {
-	uuid: '5d8afd61-6d86-46de-892c-4857e824b639',
+	uuid: ArraySet.uuid,
 	serializer: {
 		serialize(
 			serialize: ISerializeValue,
@@ -142,7 +141,7 @@ registerSerializer(ArraySet, {
 			serializedValue: ISerializedObject,
 			valueFactory?: (set?: T[]) => ArraySet<T>,
 		): ArraySet<T> {
-			const innerSet = deSerialize(serializedValue.array, Object, () => [])
+			const innerSet = deSerialize<T[]>(serializedValue.array, Object, () => [])
 			const value = valueFactory
 				? valueFactory(innerSet)
 				: new ArraySet<T>(innerSet)

@@ -1,16 +1,16 @@
+import {
+	IDeSerializeValue,
+	ISerializable,
+	ISerializedObject,
+	ISerializedValueArray,
+	ISerializeValue,
+} from '../serialization/contracts'
+import {deSerializeArray, registerSerializable, serializeArray} from '../serialization/serializers'
 import {ListChangedObject} from './base/ListChangedObject'
 import {ICompare} from './contracts/ICompare'
 import {IListChangedObject, ListChangedType} from './contracts/IListChanged'
 import {binarySearch, move} from './helpers/array'
 import {compareFast} from './helpers/compare'
-import {
-	IDeSerializeValue,
-	ISerializable,
-	ISerializedObject,
-	ISerializedTypedValue, ISerializedValue, ISerializedValueArray,
-	ISerializeValue
-} from "../serialization/contracts";
-import {deSerializeArray, registerSerializable, serializeArray} from "../serialization/serializers";
 
 function calcOptimalArraySize(desiredSize: number) {
 	let optimalSize = 4
@@ -1139,7 +1139,7 @@ export class SortedList<T> extends ListChangedObject<T> implements IListChangedO
 
 	// region ISerializable
 
-	public static uuid: string = '6988ebc9-cd06-4a9b-97a9-8415b8cf1dc4'
+	public static uuid: string = '1ec56e52-1aa5-4dd1-8471-a6185f22ed0a'
 
 	public serialize(serialize: ISerializeValue): ISerializedObject {
 		return {

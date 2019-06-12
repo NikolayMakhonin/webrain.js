@@ -6,8 +6,8 @@ import {
 import {IPropertyChangedEvent} from '../../../../../../../main/common/lists/contracts/IPropertyChanged'
 import {compareFast} from '../../../../../../../main/common/lists/helpers/compare'
 import {SortedList} from '../../../../../../../main/common/lists/SortedList'
+import {ObjectSerializer} from '../../../../../../../main/common/serialization/serializers'
 import {IOptionsVariant, IOptionsVariants, ITestCase, TestVariants} from '../../../helpers/TestVariants'
-import {ObjectSerializer} from "../../../../../../../main/common/serialization/serializers";
 
 declare const assert
 

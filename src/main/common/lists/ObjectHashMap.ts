@@ -1,3 +1,5 @@
+import {IDeSerializeValue, ISerializedObject, ISerializeValue} from '../serialization/contracts'
+import {registerSerializer} from '../serialization/serializers'
 import {getObjectUniqueId} from './helpers/object-unique-id'
 
 export class ObjectHashMap<K, V> implements Map<K, V> {
@@ -5,7 +7,7 @@ export class ObjectHashMap<K, V> implements Map<K, V> {
 		[id: number]: [K, V],
 	}
 
-	constructor(object?: object) {
+	constructor(object?: { [id: number]: [K, V] }) {
 		this._object = object || {} as any
 	}
 
@@ -90,6 +92,7 @@ export class ObjectHashMap<K, V> implements Map<K, V> {
 		}
 	}
 
+	// tslint:disable-next-line:no-identical-functions
 	public *values(): IterableIterator<V> {
 		const {_object} = this
 		for (const id in _object) {
@@ -99,4 +102,45 @@ export class ObjectHashMap<K, V> implements Map<K, V> {
 			}
 		}
 	}
+
+	// region ISerializable
+
+	public static uuid: string = '7a5731ae-37ad-4c5b-aee0-25a8f1cd2228'
+
+	public serialize(serialize: ISerializeValue): ISerializedObject {
+		return {
+			object: serialize(this._object),
+		}
+	}
+
+	// tslint:disable-next-line:no-empty
+	public deSerialize(deSerialize: IDeSerializeValue, serializedValue: ISerializedObject) {
+
+	}
+
+	// endregion
 }
+
+registerSerializer(ObjectHashMap, {
+	uuid: ObjectHashMap.uuid,
+	serializer: {
+		serialize(
+			serialize: ISerializeValue,
+			value: ObjectHashMap<any, any>,
+		): ISerializedObject {
+			return value.serialize(serialize)
+		},
+		deSerialize<K, V>(
+			deSerialize: IDeSerializeValue,
+			serializedValue: ISerializedObject,
+			valueFactory?: (map?: { [id: number]: [K, V] }) => ObjectHashMap<K, V>,
+		): ObjectHashMap<K, V> {
+			const innerMap = deSerialize<{ [id: number]: [K, V] }>(serializedValue.object)
+			const value = valueFactory
+				? valueFactory(innerMap)
+				: new ObjectHashMap<K, V>(innerMap)
+			value.deSerialize(deSerialize, serializedValue)
+			return value
+		},
+	},
+})

@@ -96,7 +96,7 @@ export class ObjectSet implements Set<string>, ISerializable {
 }
 
 registerSerializer(ObjectSet, {
-	uuid: 'da346c2a-8dcd-415b-8a27-ed9523e03917',
+	uuid: ObjectSet.uuid,
 	serializer: {
 		serialize(
 			serialize: ISerializeValue,

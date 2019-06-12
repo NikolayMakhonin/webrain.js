@@ -5,6 +5,12 @@ import {compareFast} from '../../../../../../../main/common/lists/helpers/compar
 import {ObjectHashMap} from '../../../../../../../main/common/lists/ObjectHashMap'
 import {ObjectMap} from '../../../../../../../main/common/lists/ObjectMap'
 import {ObservableMap} from '../../../../../../../main/common/lists/ObservableMap'
+import {
+	IDeSerializeValue, ISerializable,
+	ISerializedObject,
+	ISerializeValue,
+} from '../../../../../../../main/common/serialization/contracts'
+import {ObjectSerializer, registerSerializer} from '../../../../../../../main/common/serialization/serializers'
 import {IOptionsVariant, IOptionsVariants, ITestCase, TestVariants, THIS} from '../../../helpers/TestVariants'
 import {convertToObject} from './common'
 
@@ -71,7 +77,15 @@ interface IMapOptionsVariants<K, V> extends IOptionsVariants {
 	innerMap?: string[]
 }
 
-function assertMap<K, V>(map: ObservableMap<K, V>, expectedArray: Array<[K, V]>) {
+function testSerialization<K, V>(map: Map<K, V>) {
+	const serialized = ObjectSerializer.default.serialize(map)
+	const result: Map<K, V> = ObjectSerializer.default.deSerialize(serialized)
+
+	assert.notStrictEqual(result, map)
+	assert.deepStrictEqual(result.entries(), map.entries())
+}
+
+function assertMap<K, V>(map: Map<K, V>, expectedArray: Array<[K, V]>) {
 	expectedArray = expectedArray.map(o => o.slice() as [K, V]).sort(compareEntries)
 	assert.deepStrictEqual(Array.from(map.keys()).sort(compareFast), expectedArray.map(o => o[0]))
 	assert.deepStrictEqual(Array.from(map.values()).sort(compareFast), expectedArray.map(o => o[1]).sort(compareFast))
@@ -94,6 +108,8 @@ function assertMap<K, V>(map: ObservableMap<K, V>, expectedArray: Array<[K, V]>)
 	assert.deepStrictEqual(forEachArray.sort(compareEntries), expectedArray)
 
 	assert.deepStrictEqual(Array.from(map).sort(compareEntries), expectedArray)
+
+	testSerialization(map)
 }
 
 const staticMapInner = new Map()
@@ -120,7 +136,7 @@ const staticMap = new ObservableMap(staticMapInner)
 // 	}
 //
 // }
-class MapWrapper<K, V> implements Map<K, V> {
+class MapWrapper<K, V> implements Map<K, V>, ISerializable {
 	private readonly _map: Map<any, any>
 
 	constructor(map: Map<any, any>) {
@@ -180,7 +196,48 @@ class MapWrapper<K, V> implements Map<K, V> {
 	public values(): IterableIterator<V> {
 		return this._map.values()
 	}
+
+	// region ISerializable
+
+	public static uuid: string = 'bc06eeb6-5139-444a-a735-57a6e1928ac9'
+
+	public serialize(serialize: ISerializeValue): ISerializedObject {
+		return {
+			map: serialize(this._map),
+		}
+	}
+
+	// tslint:disable-next-line:no-empty
+	public deSerialize(deSerialize: IDeSerializeValue, serializedValue: ISerializedObject) {
+
+	}
+
+	// endregion
 }
+
+registerSerializer(MapWrapper, {
+	uuid: MapWrapper.uuid,
+	serializer: {
+		serialize(
+			serialize: ISerializeValue,
+			value: MapWrapper<any, any>,
+		): ISerializedObject {
+			return value.serialize(serialize)
+		},
+		deSerialize<K, V>(
+			deSerialize: IDeSerializeValue,
+			serializedValue: ISerializedObject,
+			valueFactory?: (map?: Map<K, V>) => MapWrapper<K, V>,
+		): MapWrapper<K, V> {
+			const innerMap = deSerialize<Map<K, V>>(serializedValue.map)
+			const value = valueFactory
+				? valueFactory(innerMap)
+				: new MapWrapper<K, V>(innerMap)
+			value.deSerialize(deSerialize, serializedValue)
+			return value
+		},
+	},
+})
 
 export class TestMap<K, V> extends TestVariants<
 	IMapAction<K, V>,
@@ -226,7 +283,7 @@ export class TestMap<K, V> extends TestVariants<
 							mapInner = new MapWrapper(new ObjectHashMap({})) as any
 							break
 						case 'ArrayMap':
-							mapInner = new MapWrapper(new ArrayMap({})) as any
+							mapInner = new MapWrapper(new ArrayMap([])) as any
 							break
 						case 'Map<Object>':
 							mapInner = new MapWrapper(new Map()) as any

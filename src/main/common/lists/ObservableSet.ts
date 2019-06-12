@@ -1,11 +1,10 @@
 import {
 	IDeSerializeValue,
 	ISerializable,
-	ISerializedObject, ISerializedTypedValue,
-	ISerializedValueArray,
+	ISerializedObject,
 	ISerializeValue,
 } from '../serialization/contracts'
-import {deSerializeArray, registerSerializable, registerSerializer, serializeArray} from '../serialization/serializers';
+import {registerSerializer} from '../serialization/serializers'
 import {SetChangedObject} from './base/SetChangedObject'
 import {IObservableSet, SetChangedType} from './contracts/ISetChanged'
 
@@ -134,7 +133,7 @@ export class ObservableSet<T> extends SetChangedObject<T> implements IObservable
 
 	// region ISerializable
 
-	public static uuid: string = '6988ebc9-cd06-4a9b-97a9-8415b8cf1dc4'
+	public static uuid: string = '91539dfb-55f4-4bfb-9dbf-bff7f6ab800d'
 
 	public serialize(serialize: ISerializeValue): ISerializedObject {
 		return {
@@ -151,7 +150,7 @@ export class ObservableSet<T> extends SetChangedObject<T> implements IObservable
 }
 
 registerSerializer(ObservableSet, {
-	uuid: 'dcd3ae30-4f69-479b-9fe9-24f7562b4340',
+	uuid: ObservableSet.uuid,
 	serializer: {
 		serialize(
 			serialize: ISerializeValue,

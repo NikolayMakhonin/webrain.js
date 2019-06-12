@@ -1,3 +1,6 @@
+import {IDeSerializeValue, ISerializedObject, ISerializeValue} from '../serialization/contracts'
+import {registerSerializer} from '../serialization/serializers'
+
 export class ObjectMap<V> implements Map<string, V> {
 	private readonly _object: object
 
@@ -77,5 +80,45 @@ export class ObjectMap<V> implements Map<string, V> {
 	public values(): IterableIterator<V> {
 		return Object.values(this._object)[Symbol.iterator]()
 	}
+	
+	// region ISerializable
 
+	public static uuid: string = '62388f07-b21a-4778-8b38-58f225cdbd42'
+
+	public serialize(serialize: ISerializeValue): ISerializedObject {
+		return {
+			object: serialize(this._object),
+		}
+	}
+
+	// tslint:disable-next-line:no-empty
+	public deSerialize(deSerialize: IDeSerializeValue, serializedValue: ISerializedObject) {
+
+	}
+
+	// endregion
 }
+
+registerSerializer(ObjectMap, {
+	uuid: ObjectMap.uuid,
+	serializer: {
+		serialize(
+			serialize: ISerializeValue,
+			value: ObjectMap<any>,
+		): ISerializedObject {
+			return value.serialize(serialize)
+		},
+		deSerialize<V>(
+			deSerialize: IDeSerializeValue,
+			serializedValue: ISerializedObject,
+			valueFactory?: (map?: object) => ObjectMap<V>,
+		): ObjectMap<V> {
+			const innerMap = deSerialize<object>(serializedValue.object)
+			const value = valueFactory
+				? valueFactory(innerMap)
+				: new ObjectMap<V>(innerMap)
+			value.deSerialize(deSerialize, serializedValue)
+			return value
+		},
+	},
+})
