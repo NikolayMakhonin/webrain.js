@@ -1,29 +1,56 @@
 import {ObservableObject} from '../ObservableObject'
 import {ObservableObjectBuilder} from '../ObservableObjectBuilder'
 
-export const SetMode = {
-	Default: 0,
-	Fill   : 1,
-	Clone  : 2,
-}
-
 export class Property<TValue> extends ObservableObject {
-	protected readonly _valueFactory: () => TValue
+	protected readonly _defaultOptions: {
+		fill?: boolean,
+		clone?: boolean,
+		fillFunc?: (dest: TValue, source: TValue) => boolean,
+		valueFactory?: () => TValue,
+	}
 
-	constructor(valueFactory: () => TValue) {
+	constructor(defaultOptions: {
+		fill?: boolean,
+		clone?: boolean,
+		fillFunc?: (dest: TValue, source: TValue) => boolean,
+		valueFactory?: () => TValue,
+	} = {}) {
 		super()
-		this._valueFactory = valueFactory
+		this._defaultOptions = defaultOptions || {}
 	}
 
 	public value: TValue
 
-	public set(source, options): boolean {
-		const {
-			fill,
-			clone,
-			fillFunc,
-			valueFactory,
-		} = options
+	public set(source, options?: {
+		fill?: boolean,
+		clone?: boolean,
+		fillFunc?: (dest: TValue, source: TValue) => boolean,
+		valueFactory?: () => TValue,
+	}): boolean {
+		let fill: boolean
+		let clone: boolean
+		let fillFunc: (dest: TValue, source: TValue) => boolean
+		let valueFactory: () => TValue
+
+		const { _defaultOptions } = this
+		if (options) {
+			if (_defaultOptions) {
+				fill = options.fill || _defaultOptions.fill
+				clone = options.clone || _defaultOptions.clone
+				fillFunc = options.fillFunc || _defaultOptions.fillFunc
+				valueFactory = options.valueFactory || _defaultOptions.valueFactory
+			} else {
+				fill = options.fill
+				clone = options.clone
+				fillFunc = options.fillFunc
+				valueFactory = options.valueFactory
+			}
+		} else if (_defaultOptions) {
+			fill = _defaultOptions.fill
+			clone = _defaultOptions.clone
+			fillFunc = _defaultOptions.fillFunc
+			valueFactory = _defaultOptions.valueFactory
+		}
 
 		return this._set(
 			'value',
@@ -48,19 +75,11 @@ export class Property<TValue> extends ObservableObject {
 				throw new Error('Cannot clone value, because fillFunc == null')
 			}
 
-			let value
-			if (valueFactory != null) {
-				value = valueFactory(sourceValue)
-				if (value != null) {
-					return value
-				}
+			const factory = valueFactory || this._valueFactory
+			if (!factory) {
+				throw new Error('Cannot clone value, because valueFactory is null')
 			}
-
-			const {_valueFactory} = this
-			if (!_valueFactory) {
-				throw new Error('Cannot clone value, because this._valueFactory == null')
-			}
-			value = _valueFactory()
+			const value = factory()
 
 			if (!fillFunc(value, sourceValue)) {
 				throw new Error('Cannot clone value, because fillFunc return false')
