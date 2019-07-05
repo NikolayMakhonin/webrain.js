@@ -1,56 +1,64 @@
 import {ObservableObject} from '../ObservableObject'
 import {ObservableObjectBuilder} from '../ObservableObjectBuilder'
+import {objectSpreadIgnoreNull} from "../../../helpers/object-spread";
+
+export interface ISetOptions<TValue> {
+	fill?: boolean,
+	clone?: boolean,
+	fillFunc?: (target: TValue, source: TValue) => boolean,
+	valueFactory?: () => TValue,
+}
 
 export class Property<TValue> extends ObservableObject {
-	protected readonly _defaultOptions: {
-		fill?: boolean,
-		clone?: boolean,
-		fillFunc?: (dest: TValue, source: TValue) => boolean,
-		valueFactory?: () => TValue,
-	}
+	protected readonly _defaultOptions: ISetOptions<TValue>
 
-	constructor(defaultOptions: {
-		fill?: boolean,
-		clone?: boolean,
-		fillFunc?: (dest: TValue, source: TValue) => boolean,
-		valueFactory?: () => TValue,
-	} = {}) {
+	constructor(defaultOptions: ISetOptions<TValue>) {
 		super()
-		this._defaultOptions = defaultOptions || {}
+		this._defaultOptions = objectSpreadIgnoreNull({
+			fill: true,
+		}, defaultOptions)
 	}
 
 	public value: TValue
 
-	public set(source, options?: {
-		fill?: boolean,
-		clone?: boolean,
-		fillFunc?: (dest: TValue, source: TValue) => boolean,
-		valueFactory?: () => TValue,
-	}): boolean {
-		let fill: boolean
-		let clone: boolean
-		let fillFunc: (dest: TValue, source: TValue) => boolean
-		let valueFactory: () => TValue
+	public set(source, options?: ISetOptions<TValue>): boolean {
+		const { fill, clone, fillFunc, valueFactory }
+			= objectSpreadIgnoreNull({}, options, this._defaultOptions)
 
-		const { _defaultOptions } = this
-		if (options) {
-			if (_defaultOptions) {
-				fill = options.fill || _defaultOptions.fill
-				clone = options.clone || _defaultOptions.clone
-				fillFunc = options.fillFunc || _defaultOptions.fillFunc
-				valueFactory = options.valueFactory || _defaultOptions.valueFactory
-			} else {
-				fill = options.fill
-				clone = options.clone
-				fillFunc = options.fillFunc
-				valueFactory = options.valueFactory
-			}
-		} else if (_defaultOptions) {
-			fill = _defaultOptions.fill
-			clone = _defaultOptions.clone
-			fillFunc = _defaultOptions.fillFunc
-			valueFactory = _defaultOptions.valueFactory
-		}
+		// const { _defaultOptions } = this
+		// if (options) {
+		// 	if (_defaultOptions) {
+		// 		fill = options.fill
+		// 		if (fill == null) {
+		// 			fill = _defaultOptions.fill
+		// 		}
+		//
+		// 		clone = options.clone || _defaultOptions.clone
+		// 		if (clone == null) {
+		// 			clone = _defaultOptions.clone
+		// 		}
+		//
+		// 		fillFunc = options.fillFunc || _defaultOptions.fillFunc
+		// 		if (fillFunc == null) {
+		// 			fillFunc = _defaultOptions.fillFunc
+		// 		}
+		//
+		// 		valueFactory = options.valueFactory || _defaultOptions.valueFactory
+		// 		if (valueFactory == null) {
+		// 			valueFactory = _defaultOptions.valueFactory
+		// 		}
+		// 	} else {
+		// 		fill = options.fill
+		// 		clone = options.clone
+		// 		fillFunc = options.fillFunc
+		// 		valueFactory = options.valueFactory
+		// 	}
+		// } else if (_defaultOptions) {
+		// 	fill = _defaultOptions.fill
+		// 	clone = _defaultOptions.clone
+		// 	fillFunc = _defaultOptions.fillFunc
+		// 	valueFactory = _defaultOptions.valueFactory
+		// }
 
 		return this._set(
 			'value',
