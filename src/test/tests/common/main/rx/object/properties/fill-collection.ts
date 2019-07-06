@@ -1,5 +1,5 @@
 import {
-	fillIterable,
+	FillCollection,
 } from '../../../../../../../main/common/rx/object/properties/fill-collection'
 
 declare const assert
@@ -40,11 +40,12 @@ describe('common > main > rx > object > properties > fill-collection > fillItera
 			new Class('14', ['v14'], false),
 		]
 
-		const makeSource = (target) => [
+		// tslint:disable-next-line:no-shadowed-variable
+		const makeSource = (target: Class[]) => [
 			target[0],
 			new Class('2', ['v2a'], true),
 			new Class('2', ['v2b'], true),
-			new Class('7', ['v7'], true),
+			new Class('7', ['v7'], false),
 			new Class('7', ['v7a'], true),
 			new Class('11', ['v11a'], true),
 			new Class('12', ['v12a'], true),
@@ -55,53 +56,77 @@ describe('common > main > rx > object > properties > fill-collection > fillItera
 		const target = makeTarget()
 		const source = makeSource(target)
 
-		assert.strictEqual(fillIterable(
-			target,
-			source,
-			o => o.id,
-			(o1, o2) => o1.fill(o2),
-			(id, item) => {
-				assert.strictEqual(item.id, id)
-				target.push(item)
-			},
-			(id, index) => {
-				assert.strictEqual(target[index].id, id)
-				target[index] = target[target.length - 1]
-				target.length--
-			},
-			(id: string, item) => {
-				assert.strictEqual(item.id, id)
+		const fillCollection = FillCollection
+			.fillFrom(
+				source,
+				{
+					getKey: o => o.id,
+					fill: (o1, o2) => o1.fill(o2),
+					add: (collection, id, item) => {
+						assert.strictEqual(item.id, id)
+						collection.push(item)
+					},
+					remove: (collection, id, index) => {
+						assert.strictEqual(collection[index].id, id)
+						collection.splice(index, 1)
+					},
+					set: (collection, id: string, item) => {
+						assert.strictEqual(item.id, id)
 
-				let index = null
-				for (let i = 0; i < target.length; i++) {
-					if (target[i].id === id) {
-						index = i
-						break
-					}
-				}
+						let index = null
+						for (let i = 0; i < collection.length; i++) {
+							if (collection[i].id === id) {
+								index = i
+								break
+							}
+						}
 
-				assert.strictEqual(target[index].id, id)
-				assert.notStrictEqual(target[index], item)
+						assert.strictEqual(collection[index].id, id)
+						assert.notStrictEqual(collection[index], item)
 
-				if (((id as unknown as number|0) % 2) === 0) {
-					return false
-				}
+						if (((id as unknown as number|0) % 2) === 0) {
+							return false
+						}
 
-				target[index] = item
+						collection[index] = item
 
-				return (this.id as unknown as number|0) % 2 === 0 ? null : true
-			},
-		), undefined)
+						return (this.id as unknown as number|0) % 2 === 0 ? null : true
+					},
+				},
+			)
 
-		assert.deepStrictEqual(source, makeSource(makeTarget()))
-		assert.deepStrictEqual(target, [
+		assert.ok(fillCollection)
+
+		assert.deepStrictEqual(source, [
 			new Class('1', ['v1'], true),
-			new Class('2', ['v2', 'v2a', 'v2b'], true),
-			new Class('7', ['v7', 'v7a'], true),
+			new Class('2', ['v2a', 'v2b'], true),
+			new Class('7', ['v7a'], true),
 			new Class('11', ['v11a'], true),
 			new Class('12', ['v12a'], true),
 			new Class('13', ['v13a'], true),
 			new Class('14', ['v14a'], true),
+		])
+
+		assert.strictEqual(fillCollection.fillTo(target), fillCollection)
+
+		assert.deepStrictEqual(source, [
+			new Class('1', ['v1'], true),
+			new Class('2', ['v2a', 'v2b'], true),
+			new Class('7', ['v7a'], true),
+			new Class('11', ['v11a'], true),
+			new Class('12', ['v12a'], true),
+			new Class('13', ['v13a'], true),
+			new Class('14', ['v14a'], true),
+		])
+
+		assert.deepStrictEqual(target, [
+			new Class('1', ['v1'], true),
+			new Class('2', ['v2', 'v2a', 'v2b'], true),
+			new Class('11', ['v11a'], true),
+			new Class('13', ['v13a'], true),
+			new Class('14', ['v14a'], true),
+			new Class('12', ['v12a'], true),
+			new Class('7', ['v7a'], true),
 		])
 	})
 })
