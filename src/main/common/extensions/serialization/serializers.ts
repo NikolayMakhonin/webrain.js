@@ -1,3 +1,4 @@
+import {TClass, TypeMetaCollectionWithId} from '../TypeMeta'
 import {
 	IDeSerializerVisitor, IDeSerializeValue,
 	IObjectSerializer, ISerializable,
@@ -8,7 +9,6 @@ import {
 	ISerializerVisitor, ISerializeValue,
 	ITypeMetaSerializer, ITypeMetaSerializerCollection,
 } from './contracts'
-import {TClass, TypeMetaCollection} from './TypeMeta'
 
 // region SerializerVisitor
 
@@ -22,6 +22,7 @@ export class SerializerVisitor implements ISerializerVisitor {
 	}
 
 	private addType(uuid: string): number {
+		// tslint:disable-next-line:prefer-const
 		let {types, typesMap} = this
 		if (!typesMap) {
 			this.typesMap = {}
@@ -153,7 +154,7 @@ export type TSerializableClass<TObject extends ISerializable>
 	= (new (...args: any[]) => TObject) & { readonly uuid: string }
 
 export class TypeMetaSerializerCollection
-	extends TypeMetaCollection<ITypeMetaSerializer<any>>
+	extends TypeMetaCollectionWithId<ITypeMetaSerializer<any>>
 	implements ITypeMetaSerializerCollection {
 	
 	constructor(proto?: ITypeMetaSerializerCollection) {

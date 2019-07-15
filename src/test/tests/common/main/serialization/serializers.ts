@@ -4,13 +4,13 @@ import {
 	ISerializable,
 	ISerializedObject,
 	ISerializeValue,
-} from '../../../../../main/common/serialization/contracts'
+} from '../../../../../main/common/extensions/serialization/contracts'
 import {
 	ObjectSerializer,
 	registerSerializable,
 	TypeMetaSerializerCollection,
-} from '../../../../../main/common/serialization/serializers'
-import {TClass} from '../../../../../main/common/serialization/TypeMeta'
+} from '../../../../../main/common/extensions/serialization/serializers'
+import {TClass} from '../../../../../main/common/extensions/TypeMeta'
 
 declare const assert
 

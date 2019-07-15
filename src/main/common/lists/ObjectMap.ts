@@ -1,5 +1,5 @@
-import {IDeSerializeValue, ISerializedObject, ISerializeValue} from '../serialization/contracts'
-import {registerSerializer} from '../serialization/serializers'
+import {IDeSerializeValue, ISerializedObject, ISerializeValue} from '../extensions/serialization/contracts'
+import {registerSerializer} from '../extensions/serialization/serializers'
 
 export class ObjectMap<V> implements Map<string, V> {
 	private readonly _object: object

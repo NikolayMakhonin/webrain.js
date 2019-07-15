@@ -5,9 +5,15 @@ export interface ITypeMeta {
 }
 
 export interface ITypeMetaCollection<TMeta extends ITypeMeta> {
-	getType(uuid: string): TClass
 	getMeta(type: TClass): TMeta
 	putType(type: TClass, meta: TMeta): TMeta
+	deleteType(type: TClass): TMeta
+}
+
+export interface ITypeMetaCollectionWithId<TMeta extends ITypeMeta>
+	extends ITypeMetaCollection<TMeta>
+{
+	getType(uuid: string): TClass
 	deleteType(typeOrUuid: TClass|string): TMeta
 }
 
@@ -16,8 +22,7 @@ let typeMetaPropertyNameIndex: number = 0
 
 export class TypeMetaCollection<TMeta extends ITypeMeta> implements ITypeMetaCollection<TMeta> {
 	private readonly _typeMetaPropertyName: string = typeMetaPropertyNameBase + (typeMetaPropertyNameIndex++)
-	private readonly _typeMap: { [uuid: string]: TClass } = {}
-	private readonly _proto: ITypeMetaCollection<TMeta>
+	protected readonly _proto: ITypeMetaCollection<TMeta>
 
 	constructor(proto?: ITypeMetaCollection<TMeta>) {
 		if (proto) {
@@ -43,6 +48,53 @@ export class TypeMetaCollection<TMeta extends ITypeMeta> implements ITypeMetaCol
 		return meta
 	}
 
+	public putType(type: TClass, meta: TMeta): TMeta {
+		if (!type || typeof type !== 'function') {
+			throw new Error(`type (${type}) should be function`)
+		}
+
+		const { _typeMetaPropertyName } = this
+
+		let prevMeta
+		if (Object.prototype.hasOwnProperty.call(type, _typeMetaPropertyName)) {
+			prevMeta = type[_typeMetaPropertyName]
+			delete type[_typeMetaPropertyName]
+		}
+
+		Object.defineProperty(type, _typeMetaPropertyName, {
+			configurable: true,
+			enumerable: false,
+			writable: false,
+			value: meta,
+		})
+
+		return prevMeta
+	}
+
+	public deleteType(type: TClass): TMeta {
+		const { _typeMetaPropertyName } = this
+
+		let prevMeta
+		if (Object.prototype.hasOwnProperty.call(type, _typeMetaPropertyName)) {
+			prevMeta = type[_typeMetaPropertyName]
+			delete type[_typeMetaPropertyName]
+		}
+
+		return prevMeta
+	}
+}
+
+export class TypeMetaCollectionWithId<TMeta extends ITypeMeta>
+	extends TypeMetaCollection<TMeta>
+	implements ITypeMetaCollectionWithId<TMeta>
+{
+	private readonly _typeMap: { [uuid: string]: TClass } = {}
+	protected readonly _proto: ITypeMetaCollectionWithId<TMeta>
+
+	constructor(proto?: ITypeMetaCollectionWithId<TMeta>) {
+		super(proto)
+	}
+
 	public getType(uuid: string): TClass {
 		const type = this._typeMap[uuid]
 
@@ -57,36 +109,19 @@ export class TypeMetaCollection<TMeta extends ITypeMeta> implements ITypeMetaCol
 	}
 
 	public putType(type: TClass, meta: TMeta): TMeta {
-		if (!type || typeof type !== 'function') {
-			throw new Error(`type (${type}) should be function`)
-		}
-
-		const uuid = meta.uuid
+		const uuid = meta && meta.uuid
 		if (!uuid || typeof uuid !== 'string') {
 			throw new Error(`meta.uuid (${uuid}) should be a string with length > 0`)
 		}
 
-		const { _typeMetaPropertyName } = this
-
 		const prevType = this._typeMap[uuid]
 		if (prevType && prevType !== type) {
-			throw new Error(`Same uuid (${uuid}) used for different types: ${prevType.name}, ${type.name}`)
+			throw new Error(`Same uuid (${uuid}) used for different types: ${prevType.name}, ${type && type.name}`)
 		}
+
+		const prevMeta = super.putType(type, meta)
 
 		this._typeMap[uuid] = type
-
-		let prevMeta
-		if (Object.prototype.hasOwnProperty.call(type, _typeMetaPropertyName)) {
-			prevMeta = type[_typeMetaPropertyName]
-			delete type[_typeMetaPropertyName]
-		}
-
-		Object.defineProperty(type, _typeMetaPropertyName, {
-			configurable: true,
-			enumerable: false,
-			writable: false,
-			value: meta,
-		})
 
 		return prevMeta
 	}
@@ -105,13 +140,7 @@ export class TypeMetaCollection<TMeta extends ITypeMeta> implements ITypeMetaCol
 			throw new Error(`typeOrUuid (${typeOrUuid === null ? 'null' : typeof typeOrUuid}) is not a Function or String`)
 		}
 
-		const { _typeMetaPropertyName } = this
-
-		let prevMeta
-		if (Object.prototype.hasOwnProperty.call(type, _typeMetaPropertyName)) {
-			prevMeta = type[_typeMetaPropertyName]
-			delete type[_typeMetaPropertyName]
-		}
+		const prevMeta = super.deleteType(type)
 
 		delete this._typeMap[uuid]
 

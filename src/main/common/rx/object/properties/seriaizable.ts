@@ -1,4 +1,4 @@
-import {ISerializable, ISerializedObject, ReadValue, WriteValue} from '../../../serialization/contracts'
+import {ISerializable, ISerializedObject, ReadValue, WriteValue} from '../../../extensions/serialization/contracts'
 import {Property} from './property'
 
 export class PropertySerializable<TValue> extends Property<TValue> implements ISerializable {

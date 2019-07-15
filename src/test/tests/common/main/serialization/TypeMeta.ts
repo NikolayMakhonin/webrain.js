@@ -1,4 +1,4 @@
-import {TypeMetaCollection} from '../../../../../main/common/serialization/TypeMeta'
+import {TypeMetaCollectionWithId} from '../../../../../main/common/extensions/TypeMeta'
 
 declare const assert
 
@@ -7,10 +7,10 @@ describe('common > serialization > TypeMeta', function() {
 		class Class1 {}
 		class Class2 extends Class1 {}
 
-		const typeMeta0 = new TypeMetaCollection()
-		const typeMeta1 = new TypeMetaCollection(typeMeta0)
-		const typeMeta2 = new TypeMetaCollection(typeMeta1)
-		const typeMeta3 = new TypeMetaCollection(typeMeta2)
+		const typeMeta0 = new TypeMetaCollectionWithId()
+		const typeMeta1 = new TypeMetaCollectionWithId(typeMeta0)
+		const typeMeta2 = new TypeMetaCollectionWithId(typeMeta1)
+		const typeMeta3 = new TypeMetaCollectionWithId(typeMeta2)
 
 		// region typeMeta0
 

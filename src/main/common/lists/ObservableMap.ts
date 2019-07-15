@@ -1,5 +1,5 @@
-import {IDeSerializeValue, ISerializable, ISerializedObject, ISerializeValue} from '../serialization/contracts'
-import {registerSerializer} from '../serialization/serializers'
+import {IDeSerializeValue, ISerializable, ISerializedObject, ISerializeValue} from '../extensions/serialization/contracts'
+import {registerSerializer} from '../extensions/serialization/serializers'
 import {MapChangedObject} from './base/MapChangedObject'
 import {IObservableMap, MapChangedType} from './contracts/IMapChanged'
 

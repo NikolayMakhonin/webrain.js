@@ -12,8 +12,8 @@ import {
 	ISerializable,
 	ISerializedObject,
 	ISerializeValue,
-} from '../../../../../../../main/common/serialization/contracts'
-import {ObjectSerializer, registerSerializer} from '../../../../../../../main/common/serialization/serializers'
+} from '../../../../../../../main/common/extensions/serialization/contracts'
+import {ObjectSerializer, registerSerializer} from '../../../../../../../main/common/extensions/serialization/serializers'
 import {IOptionsVariant, IOptionsVariants, ITestCase, TestVariants, THIS} from '../../../helpers/TestVariants'
 import {convertToObject, indexOfNaN} from './common'
 

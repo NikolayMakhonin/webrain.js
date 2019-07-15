@@ -3,8 +3,8 @@ import {
 	ISerializable,
 	ISerializedObject,
 	ISerializeValue,
-} from '../serialization/contracts'
-import {registerSerializer} from '../serialization/serializers'
+} from '../extensions/serialization/contracts'
+import {registerSerializer} from '../extensions/serialization/serializers'
 import {SetChangedObject} from './base/SetChangedObject'
 import {IObservableSet, SetChangedType} from './contracts/ISetChanged'
 

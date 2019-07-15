@@ -1,6 +1,6 @@
 import {ObservableObject} from '../ObservableObject'
 import {ObservableObjectBuilder} from '../ObservableObjectBuilder'
-import {objectSpreadIgnoreNull} from "../../../helpers/object-spread";
+import {fillObject} from './fill-object'
 
 export interface ISetOptions<TValue> {
 	fill?: boolean,
@@ -14,16 +14,16 @@ export class Property<TValue> extends ObservableObject {
 
 	constructor(defaultOptions: ISetOptions<TValue>) {
 		super()
-		this._defaultOptions = objectSpreadIgnoreNull({
+		this._defaultOptions = fillObject({
 			fill: true,
-		}, defaultOptions)
+		}, defaultOptions, true)
 	}
 
 	public value: TValue
 
 	public set(source, options?: ISetOptions<TValue>): boolean {
 		const { fill, clone, fillFunc, valueFactory }
-			= objectSpreadIgnoreNull({}, options, this._defaultOptions)
+			= fillObject(Object.create(options), this._defaultOptions)
 
 		// const { _defaultOptions } = this
 		// if (options) {

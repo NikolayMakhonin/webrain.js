@@ -1,5 +1,5 @@
-import {IDeSerializeValue, ISerializedObject, ISerializeValue} from '../serialization/contracts'
-import {registerSerializer} from '../serialization/serializers'
+import {IDeSerializeValue, ISerializedObject, ISerializeValue} from '../extensions/serialization/contracts'
+import {registerSerializer} from '../extensions/serialization/serializers'
 import {getObjectUniqueId} from './helpers/object-unique-id'
 
 export class ObjectHashMap<K, V> implements Map<K, V> {

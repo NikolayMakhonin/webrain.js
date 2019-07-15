@@ -4,8 +4,8 @@ import {
 	ISerializedObject,
 	ISerializedValueArray,
 	ISerializeValue,
-} from '../serialization/contracts'
-import {deSerializeArray, registerSerializable, serializeArray} from '../serialization/serializers'
+} from '../extensions/serialization/contracts'
+import {deSerializeArray, registerSerializable, serializeArray} from '../extensions/serialization/serializers'
 import {ListChangedObject} from './base/ListChangedObject'
 import {ICompare} from './contracts/ICompare'
 import {IListChangedObject, ListChangedType} from './contracts/IListChanged'

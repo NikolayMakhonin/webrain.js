@@ -1,7 +1,8 @@
+// @ts-ignore
 import _defineProperty from '@babel/runtime/helpers/esm/defineProperty'
 
 function definePropertyIgnoreNull(target, key, value) {
-	if (value == null) {
+	if (typeof value === 'undefined') {
 		return
 	}
 

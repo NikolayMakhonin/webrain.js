@@ -4,8 +4,8 @@ import {
 	ISerializable,
 	ISerializedObject,
 	ISerializeValue,
-} from '../serialization/contracts'
-import {registerSerializer} from '../serialization/serializers'
+} from '../extensions/serialization/contracts'
+import {registerSerializer} from '../extensions/serialization/serializers'
 import {getObjectUniqueId} from './helpers/object-unique-id'
 
 export class ArraySet<T extends Object> implements Set<T>, ISerializable {
