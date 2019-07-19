@@ -19,6 +19,7 @@ export class SerializerVisitor implements ISerializerVisitor {
 
 	constructor(typeMeta: ITypeMetaSerializerCollection) {
 		this._typeMeta = typeMeta
+		this.serialize = this.serialize.bind(this)
 	}
 
 	private addType(uuid: string): number {
@@ -71,7 +72,7 @@ export class SerializerVisitor implements ISerializerVisitor {
 
 		const serializedTyped = {
 			type: this.addType(uuid),
-			data: serializer.serialize(this.serialize.bind(this), value),
+			data: serializer.serialize(this.serialize, value),
 		}
 
 		return serializedTyped
@@ -85,6 +86,7 @@ export class DeSerializerVisitor implements IDeSerializerVisitor {
 	constructor(typeMeta: ITypeMetaSerializerCollection, types: string[]) {
 		this._typeMeta = typeMeta
 		this._types = types
+		this.deSerialize = this.deSerialize.bind(this)
 	}
 
 	public deSerialize<TValue>(
@@ -137,7 +139,7 @@ export class DeSerializerVisitor implements IDeSerializerVisitor {
 		}
 
 		const value = serializer.deSerialize(
-			this.deSerialize.bind(this),
+			this.deSerialize,
 			(serializedValue as ISerializedTyped).data,
 			valueFactory || meta.valueFactory,
 		)

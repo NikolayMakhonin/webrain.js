@@ -1058,7 +1058,7 @@ describe('fundamental-operations', function () {
 		console.log(result)
 	})
 
-	it('Math.max()', function () {
+	xit('Math.max()', function () {
 		this.timeout(300000)
 		const func = () => {}
 		let timerId
@@ -1076,6 +1076,49 @@ describe('fundamental-operations', function () {
 			},
 			() => Math.max(this.value1, this.value2, this.value3),
 			() => Math.max(value1, value2, value3)
+		)
+
+		console.log(result)
+	})
+
+	it('"out" vs "set func" params', function () {
+		this.timeout(300000)
+
+		const funcOut = (a, out) => {
+			out[0] = a
+			return Math.random() !== 0.5
+		}
+
+		const funcSet = (a, set) => {
+			if (Math.random() !== 0.5) {
+				set(a)
+			}
+			return a
+		}
+
+		const out = []
+
+		const result = calcPerformance(
+			120000,
+			() => {
+				// no operations
+			},
+			() => {
+				const out0 = []
+				if (funcOut(Math.random(), out0)) {
+					this.prop = out0[0]
+				}
+			},
+			() => {
+				if (funcOut(Math.random(), out)) {
+					this.prop = out[0]
+				}
+			},
+			() => {
+				funcSet(Math.random(), a => {
+					this.prop = a
+				})
+			}
 		)
 
 		console.log(result)

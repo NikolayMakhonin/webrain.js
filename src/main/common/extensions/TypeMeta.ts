@@ -1,6 +1,8 @@
 export type TClass = new (...args: any[]) => any
 
-export interface ITypeMeta {
+export interface ITypeMeta { }
+
+export interface ITypeMetaWithId extends ITypeMeta {
 	uuid: string
 }
 
@@ -10,7 +12,7 @@ export interface ITypeMetaCollection<TMeta extends ITypeMeta> {
 	deleteType(type: TClass): TMeta
 }
 
-export interface ITypeMetaCollectionWithId<TMeta extends ITypeMeta>
+export interface ITypeMetaCollectionWithId<TMeta extends ITypeMetaWithId>
 	extends ITypeMetaCollection<TMeta>
 {
 	getType(uuid: string): TClass
@@ -84,7 +86,7 @@ export class TypeMetaCollection<TMeta extends ITypeMeta> implements ITypeMetaCol
 	}
 }
 
-export class TypeMetaCollectionWithId<TMeta extends ITypeMeta>
+export class TypeMetaCollectionWithId<TMeta extends ITypeMetaWithId>
 	extends TypeMetaCollection<TMeta>
 	implements ITypeMetaCollectionWithId<TMeta>
 {

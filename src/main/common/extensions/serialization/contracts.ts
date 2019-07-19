@@ -1,4 +1,4 @@
-import {ITypeMeta, TClass, TypeMetaCollectionWithId} from '../TypeMeta'
+import {ITypeMetaWithId, TClass, TypeMetaCollectionWithId} from '../TypeMeta'
 
 // region Serialized Value
 
@@ -72,7 +72,7 @@ export interface IDeSerializer {
 	): TValue
 }
 
-export interface ITypeMetaSerializer<TValue> extends ITypeMeta {
+export interface ITypeMetaSerializer<TValue> extends ITypeMetaWithId {
 	serializer: IValueSerializer<TValue>
 	valueFactory?: () => any
 }

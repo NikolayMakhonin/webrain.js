@@ -2,7 +2,7 @@ import {TClass, TypeMetaCollection} from '../TypeMeta'
 import {
 	IMergeable,
 	IMergerVisitor, IMergeValue, IObjectMerger,
-	ITypeMetaMerger, ITypeMetaMergerCollection,
+	ITypeMetaMerger, ITypeMetaMergerCollection, IValueMerger,
 } from './contracts'
 
 // region MergerVisitor
@@ -14,41 +14,139 @@ export class MergerVisitor implements IMergerVisitor {
 		this._typeMeta = typeMeta
 	}
 
-	public merge<TValue extends any>(base: TValue, older: TValue, newer?: TValue, valueType?: TClass): TValue {
-		if (base === newer) {
-			if (base === older) {
-				return older
+	public merge<TTarget extends any, TSource extends any>(
+		base: TTarget,
+		older: TSource,
+		newer?: TSource,
+		set?: (value: TTarget) => void,
+		valueType?: TClass,
+		valueFactory?: () => TTarget,
+		preferClone?: boolean,
+	): boolean {
+		if (base as any === newer) {
+			if (base as any === older) {
+				return false
 			}
 			newer = older
 		}
 
-		if (base == null
-			|| newer == null
-			|| typeof base === 'number'
-			|| typeof base === 'boolean'
+		if (newer == null
 			|| typeof newer === 'number'
 			|| typeof newer === 'boolean'
-			|| typeof base !== typeof newer
-			|| base.constructor !== newer.constructor
 		) {
-			return newer
+			if (set) { set(newer as any) }
+			return true
 		}
 
-		const meta = this._typeMeta.getMeta(valueType || base.constructor)
-		if (!meta) {
-			throw new Error(`Class (${base.constructor.name}) have no type meta`)
+		let meta: ITypeMetaMerger<TTarget, TSource>
+		// multiple call
+		const getMeta = () => {
+			if (!meta) {
+				meta = this._typeMeta.getMeta(valueType || base.constructor)
+				if (!meta) {
+					throw new Error(`Class (${base.constructor.name}) have no type meta`)
+				}
+			}
+
+			return meta
 		}
 
-		const merger = meta.merger
-		if (!merger) {
-			throw new Error(`Class (${newer.constructor.name}) type meta have no merger`)
+		if (!getMeta().canBeSource || !meta.canBeSource(newer)) {
+			if (set) { set(newer as any) }
+			return true
 		}
 
-		if (!merger.merge) {
-			throw new Error(`Class (${newer.constructor.name}) merger have no merge method`)
+		let merger: IValueMerger<TTarget, TSource>
+		const getMerger = () => {
+			if (!merger) {
+				merger = getMeta().merger
+				if (!merger) {
+					throw new Error(`Class (${newer.constructor.name}) type meta have no merger`)
+				}
+
+				if (!merger.merge) {
+					throw new Error(`Class (${newer.constructor.name}) merger have no merge method`)
+				}
+			}
+
+			return merger
 		}
 
-		return merger.merge(this.merge.bind(this), base, older, newer)
+		const nextMerge: IMergeValue = <TNextTarget, TNextSource>(
+			next_base: TNextTarget,
+			next_older: TNextSource,
+			next_newer?: TNextSource,
+			next_set?: (value: TNextTarget) => void,
+			next_valueType?: TClass,
+			next_valueFactory?: () => TNextTarget,
+			next_preferClone?: boolean,
+		) => this.merge(
+			next_base,
+			next_older,
+			next_newer,
+			next_set,
+			next_valueType,
+			next_valueFactory,
+			next_preferClone == null ? preferClone : next_preferClone,
+		)
+
+		const merge = (setFunc: (value: TTarget) => void) => getMerger().merge(
+			nextMerge,
+			base,
+			older,
+			newer,
+			setFunc,
+		)
+
+		valueFactory = (valueType || valueFactory)
+			&& (preferClone || getMeta().preferClone)
+			&& (valueFactory || getMeta().valueFactory)
+
+		const clone = value => {
+			let setValue
+			if (valueFactory) {
+				setValue = base = valueFactory()
+				merge(val => {
+					if (val !== base) {
+						throw new Error(`Class (${val.constructor.name}) cannot be clone using constructor and merger`)
+					}
+				})
+			} else {
+				setValue = value
+			}
+
+			if (set) { set(setValue as any) }
+		}
+
+		if (base == null
+			|| typeof base === 'number'
+			|| typeof base === 'boolean'
+		) {
+			clone(newer)
+			return true
+		}
+
+		if (merge(valueFactory
+			? value => clone(newer)
+			: set)
+		) {
+			return true
+		}
+
+		if (newer === older) {
+			return false
+		}
+
+		newer = older
+
+		if (!getMeta().canBeSource || !meta.canBeSource(newer)) {
+			if (set) { set(newer as any) }
+			return true
+		}
+
+		return merge(valueFactory
+			? value => clone(newer)
+			: set)
 	}
 }
 
@@ -56,11 +154,11 @@ export class MergerVisitor implements IMergerVisitor {
 
 // region TypeMetaMergerCollection
 
-export type TMergeableClass<TObject extends IMergeable<TObject>>
+export type TMergeableClass<TObject extends IMergeable<TObject, TSource>, TSource>
 	= new (...args: any[]) => TObject
 
 export class TypeMetaMergerCollection
-	extends TypeMetaCollection<ITypeMetaMerger<any>>
+	extends TypeMetaCollection<ITypeMetaMerger<any, any>>
 	implements ITypeMetaMergerCollection {
 	
 	constructor(proto?: ITypeMetaMergerCollection) {
@@ -69,43 +167,49 @@ export class TypeMetaMergerCollection
 
 	public static default: TypeMetaMergerCollection = new TypeMetaMergerCollection()
 
-	private static makeTypeMetaMerger<TObject extends IMergeable<TObject>>(
-		type: TMergeableClass<TObject>,
-		valueFactory?: () => TObject,
-	): ITypeMetaMerger<TObject> {
+	private static makeTypeMetaMerger<TTarget extends IMergeable<TTarget, TSource>, TSource>(
+		type: TMergeableClass<TTarget, TSource>,
+		valueFactory?: () => TTarget,
+	): ITypeMetaMerger<TTarget, TSource> {
 		return {
 			merger: {
 				merge(
 					merge: IMergeValue,
-					base: TObject,
-					older: TObject,
-					newer?: TObject,
-				): TObject {
-					return base.merge(older, newer)
+					base: TTarget,
+					older: TSource,
+					newer?: TSource,
+					set?: (value: TTarget) => void,
+				): boolean {
+					return base.merge(
+						merge,
+						older,
+						newer,
+						set,
+					)
 				},
 			},
-			valueFactory: valueFactory || (() => new (type as new () => TObject)()),
+			valueFactory: valueFactory || (() => new (type as new () => TTarget)()),
 		}
 	}
 
-	public putMergeableType<TObject extends IMergeable<TObject>>(
-		type: TMergeableClass<TObject>,
-		valueFactory?: () => TObject,
-	): ITypeMetaMerger<TObject> {
+	public putMergeableType<TTarget extends IMergeable<TTarget, TSource>, TSource>(
+		type: TMergeableClass<TTarget, TSource>,
+		valueFactory?: () => TTarget,
+	): ITypeMetaMerger<TTarget, TSource> {
 		return this.putType(type, TypeMetaMergerCollection.makeTypeMetaMerger(type, valueFactory))
 	}
 }
 
-export function registerMergeable<TObject extends IMergeable<TObject>>(
-	type: TMergeableClass<TObject>,
-	valueFactory?: () => TObject,
+export function registerMergeable<TTarget extends IMergeable<TTarget, TSource>, TSource>(
+	type: TMergeableClass<TTarget, TSource>,
+	valueFactory?: () => TTarget,
 ) {
 	TypeMetaMergerCollection.default.putMergeableType(type, valueFactory)
 }
 
-export function registerMerger<TValue extends any>(
+export function registerMerger<TTarget extends any, TSource extends any>(
 	type: TClass,
-	meta: ITypeMetaMerger<TValue>,
+	meta: ITypeMetaMerger<TTarget, TSource>,
 ) {
 	TypeMetaMergerCollection.default.putType(type, meta)
 }
@@ -123,14 +227,17 @@ export class ObjectMerger implements IObjectMerger {
 
 	public static default: ObjectMerger = new ObjectMerger()
 
-	public merge<TValue extends any>(
-		base: TValue,
-		older: TValue,
-		newer?: TValue,
+	public merge<TTarget extends any, TSource extends any>(
+		base: TTarget,
+		older: TSource,
+		newer?: TSource,
 		valueType?: TClass,
-	): TValue {
+		set?: (value: TTarget) => void,
+		valueFactory?: () => TTarget,
+		preferClone?: boolean,
+	): boolean {
 		const merger = new MergerVisitor(this.typeMeta)
-		const mergedValue = merger.merge(base, older, newer, valueType)
+		const mergedValue = merger.merge(base, older, newer, set, valueType, valueFactory, preferClone)
 		return mergedValue
 	}
 }
@@ -151,10 +258,10 @@ registerMerger<string>(String, {
 			merge: IMergeValue,
 			base: string,
 			older: string,
-			newer?: string
+			newer?: string,
 		): string {
 			return newer // TODO
-		}
+		},
 	},
 })
 
@@ -164,13 +271,10 @@ registerMerger<string>(String, {
 
 export function mergeArray(
 	merge: IMergeValue,
-	value: any[],
-	length?: number,
-): IMergedValueArray {
-	if (length == null) {
-		length = value.length
-	}
-
+	base: any[],
+	older: any[],
+	newer?: any[],
+): any[] {
 	const mergedValue = []
 	for (let i = 0; i < length; i++) {
 		mergedValue[i] = merge(value[i])
@@ -181,8 +285,10 @@ export function mergeArray(
 
 export function mergeIterable(
 	merge: IMergeValue,
-	value: Iterable<any>,
-): IMergedValueArray {
+	base: Iterable<any>,
+	older: Iterable<any>,
+	newer?: Iterable<any>,
+): Iterable<any> {
 	const mergedValue = []
 	for (const item of value) {
 		mergedValue.push(merge(item))

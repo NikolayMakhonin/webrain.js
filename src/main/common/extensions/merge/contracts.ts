@@ -2,36 +2,54 @@ import {ITypeMeta, ITypeMetaCollection, TClass} from '../TypeMeta'
 
 // region Mergers
 
-export type IMergeValue = <TValue>(base: TValue, older: TValue, newer?: TValue, valueType?: TClass) => TValue
+export interface IMergeOptions {
+	preferClone: boolean
+}
+
+export type IMergeValue = <TTarget extends any, TSource extends any>(
+	base: TTarget,
+	older: TSource,
+	newer?: TSource,
+	set?: (value: TTarget) => void,
+	valueType?: TClass,
+	valueFactory?: () => TTarget,
+	preferClone?: boolean,
+) => boolean
 
 export interface IMergerVisitor {
 	merge: IMergeValue
 }
 
-export interface IValueMerger<TValue> {
+export interface IValueMerger<TTarget, TSource> {
 	merge(
 		merge: IMergeValue,
-		base: TValue,
-		older: TValue,
-		newer?: TValue,
-	): TValue
+		base: TTarget,
+		older: TSource,
+		newer?: TSource,
+		set?: (value: TTarget) => void,
+	): boolean
 }
 
 export interface IMerger {
-	merge<TValue>(
-		base: TValue,
-		older: TValue,
-		newer?: TValue,
+	merge<TTarget extends any, TSource extends any>(
+		base: TTarget,
+		older: TSource,
+		newer?: TSource,
 		valueType?: TClass,
-	): TValue
+		set?: (value: TTarget) => void,
+		valueFactory?: () => TTarget,
+		preferClone?: boolean,
+	): boolean
 }
 
-export interface ITypeMetaMerger<TValue> extends ITypeMeta {
-	merger: IValueMerger<TValue>
-	valueFactory?: () => any
+export interface ITypeMetaMerger<TTarget, TSource> extends ITypeMeta {
+	merger: IValueMerger<TTarget, TSource>
+	canBeSource?: (value: TSource) => boolean
+	preferClone?: boolean
+	valueFactory?: () => TTarget
 }
 
-export interface ITypeMetaMergerCollection extends ITypeMetaCollection<ITypeMetaMerger<any>> {
+export interface ITypeMetaMergerCollection extends ITypeMetaCollection<ITypeMetaMerger<any, any>> {
 
 }
 
@@ -43,11 +61,13 @@ export interface IObjectMerger extends IMerger {
 
 // region Mergeable
 
-export interface IMergeable<TObject> {
+export interface IMergeable<TTarget, TSource> {
 	merge(
-		older: TObject,
-		newer?: TObject,
-	): this
+		merge: IMergeValue,
+		older: TSource,
+		newer?: TSource,
+		set?: (value: TTarget) => void,
+	): boolean
 }
 
 // endregion
