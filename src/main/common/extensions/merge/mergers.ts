@@ -90,7 +90,7 @@ export class MergerVisitor implements IMergerVisitor {
 			next_preferClone == null ? preferClone : next_preferClone,
 		)
 
-		const merge = (setFunc: (value: TTarget) => void) => getMerger().merge(
+		const merge = (setFunc: (value: TTarget) => void): boolean => getMerger().merge(
 			nextMerge,
 			base,
 			older,
@@ -126,23 +126,23 @@ export class MergerVisitor implements IMergerVisitor {
 			return true
 		}
 
-		if (merge(valueFactory
-			? value => clone(newer)
-			: set)
-		) {
-			return true
-		}
-
-		if (newer === older) {
-			return false
-		}
-
-		newer = older
-
-		if (!getMeta().canBeSource || !meta.canBeSource(newer)) {
-			if (set) { set(newer as any) }
-			return true
-		}
+		// if (merge(valueFactory
+		// 	? value => clone(newer)
+		// 	: set)
+		// ) {
+		// 	return true
+		// }
+		//
+		// if (newer === older) {
+		// 	return false
+		// }
+		//
+		// newer = older
+		//
+		// if (!getMeta().canBeSource || !meta.canBeSource(newer)) {
+		// 	if (set) { set(newer as any) }
+		// 	return true
+		// }
 
 		return merge(valueFactory
 			? value => clone(newer)
@@ -154,7 +154,7 @@ export class MergerVisitor implements IMergerVisitor {
 
 // region TypeMetaMergerCollection
 
-export type TMergeableClass<TObject extends IMergeable<TObject, TSource>, TSource>
+export type TMergeableClass<TObject extends IMergeable<TObject, TSource>, TSource extends any>
 	= new (...args: any[]) => TObject
 
 export class TypeMetaMergerCollection
@@ -167,7 +167,7 @@ export class TypeMetaMergerCollection
 
 	public static default: TypeMetaMergerCollection = new TypeMetaMergerCollection()
 
-	private static makeTypeMetaMerger<TTarget extends IMergeable<TTarget, TSource>, TSource>(
+	private static makeTypeMetaMerger<TTarget extends IMergeable<TTarget, TSource>, TSource extends any>(
 		type: TMergeableClass<TTarget, TSource>,
 		valueFactory?: () => TTarget,
 	): ITypeMetaMerger<TTarget, TSource> {
@@ -192,7 +192,7 @@ export class TypeMetaMergerCollection
 		}
 	}
 
-	public putMergeableType<TTarget extends IMergeable<TTarget, TSource>, TSource>(
+	public putMergeableType<TTarget extends IMergeable<TTarget, TSource>, TSource extends any>(
 		type: TMergeableClass<TTarget, TSource>,
 		valueFactory?: () => TTarget,
 	): ITypeMetaMerger<TTarget, TSource> {
@@ -200,7 +200,7 @@ export class TypeMetaMergerCollection
 	}
 }
 
-export function registerMergeable<TTarget extends IMergeable<TTarget, TSource>, TSource>(
+export function registerMergeable<TTarget extends IMergeable<TTarget, TSource>, TSource extends any>(
 	type: TMergeableClass<TTarget, TSource>,
 	valueFactory?: () => TTarget,
 ) {
@@ -252,15 +252,17 @@ export class ObjectMerger implements IObjectMerger {
 // number
 // boolean
 
-registerMerger<string>(String, {
+registerMerger<string, string>(String, {
 	merger: {
 		merge(
 			merge: IMergeValue,
 			base: string,
 			older: string,
 			newer?: string,
-		): string {
-			return newer // TODO
+			set?: (value: string) => void,
+		): boolean {
+			set(newer)
+			return true
 		},
 	},
 })
@@ -300,9 +302,15 @@ export function mergeIterable(
 
 // region Object
 
-registerMerger<object>(Object, {
+registerMerger<object, object>(Object, {
 	merger: {
-		merge(merge: IMergeValue, value: object): IMergedObject {
+		merge(
+			merge: IMergeValue,
+			base: object,
+			older: object,
+			newer?: object,
+			set?: (value: object) => void,
+		): boolean {
 			const mergedValue = {}
 			for (const key in value) {
 				if (Object.prototype.hasOwnProperty.call(value, key)) {
@@ -311,6 +319,15 @@ registerMerger<object>(Object, {
 			}
 			return mergedValue
 		},
+		// merge2(merge: IMergeValue, value: object): IMergedObject {
+		// 	const mergedValue = {}
+		// 	for (const key in value) {
+		// 		if (Object.prototype.hasOwnProperty.call(value, key)) {
+		// 			mergedValue[key] = merge(value[key])
+		// 		}
+		// 	}
+		// 	return mergedValue
+		// },
 	},
 })
 

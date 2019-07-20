@@ -20,7 +20,7 @@ export interface IMergerVisitor {
 	merge: IMergeValue
 }
 
-export interface IValueMerger<TTarget, TSource> {
+export interface IValueMerger<TTarget extends any, TSource extends any> {
 	merge(
 		merge: IMergeValue,
 		base: TTarget,
@@ -42,7 +42,7 @@ export interface IMerger {
 	): boolean
 }
 
-export interface ITypeMetaMerger<TTarget, TSource> extends ITypeMeta {
+export interface ITypeMetaMerger<TTarget extends any, TSource extends any> extends ITypeMeta {
 	merger: IValueMerger<TTarget, TSource>
 	canBeSource?: (value: TSource) => boolean
 	preferClone?: boolean
@@ -61,7 +61,7 @@ export interface IObjectMerger extends IMerger {
 
 // region Mergeable
 
-export interface IMergeable<TTarget, TSource> {
+export interface IMergeable<TTarget, TSource extends any> {
 	merge(
 		merge: IMergeValue,
 		older: TSource,

@@ -89,7 +89,7 @@ export class DeSerializerVisitor implements IDeSerializerVisitor {
 		this.deSerialize = this.deSerialize.bind(this)
 	}
 
-	public deSerialize<TValue>(
+	public deSerialize<TValue extends any>(
 		serializedValue: ISerializedValue,
 		valueType?: TClass,
 		valueFactory?: () => TValue,
@@ -178,14 +178,14 @@ export class TypeMetaSerializerCollection
 				): ISerializedTypedValue {
 					return value.serialize(serialize)
 				},
-				deSerialize<TValue>(
+				deSerialize(
 					deSerialize: IDeSerializeValue,
 					serializedValue: ISerializedTypedValue,
-					valueFactory2?: () => TValue,
-				): TValue {
-					const value = valueFactory2() as unknown as TObject
+					valueFactory2?: () => TObject,
+				): TObject {
+					const value = valueFactory2()
 					value.deSerialize(deSerialize, serializedValue)
-					return value as unknown as TValue
+					return value
 				},
 			},
 			valueFactory: valueFactory || (() => new (type as new () => TObject)()),
@@ -207,7 +207,7 @@ export function registerSerializable<TObject extends ISerializable>(
 	TypeMetaSerializerCollection.default.putSerializableType(type, valueFactory)
 }
 
-export function registerSerializer<TValue>(
+export function registerSerializer<TValue extends any>(
 	type: TClass,
 	meta: ITypeMetaSerializer<TValue>,
 ) {
@@ -246,7 +246,7 @@ export class ObjectSerializer implements IObjectSerializer {
 		return serializedData
 	}
 
-	public deSerialize<TValue>(
+	public deSerialize<TValue extends any>(
 		serializedValue: ISerializedDataOrValue,
 		valueType?: TClass,
 		valueFactory?: () => TValue,
