@@ -1,5 +1,5 @@
 import {
-	FillCollection,
+	MergeCollection,
 } from '../../../../../../../main/common/rx/object/properties/fill-collection'
 
 declare const assert
@@ -23,7 +23,7 @@ describe('common > main > rx > object > properties > fill-collection > fillItera
 
 			this.value = [...this.value, ...other.value]
 
-			return (this.id as unknown as number|0) % 2 === 0 ? null : true
+			return true // (this.id as unknown as number|0) % 2 === 0 ? null : true
 		}
 	}
 
@@ -56,46 +56,46 @@ describe('common > main > rx > object > properties > fill-collection > fillItera
 		const target = makeTarget()
 		const source = makeSource(target)
 
-		const fillCollection = FillCollection
-			.fillFrom(
-				source,
-				{
-					getKey: o => o.id,
-					fill: (o1, o2) => o1.fill(o2),
-					add: (collection, id, item) => {
-						assert.strictEqual(item.id, id)
-						collection.push(item)
-					},
-					remove: (collection, id, index) => {
-						assert.strictEqual(collection[index].id, id)
-						collection.splice(index, 1)
-					},
-					set: (collection, id: string, item) => {
-						assert.strictEqual(item.id, id)
-
-						let index = null
-						for (let i = 0; i < collection.length; i++) {
-							if (collection[i].id === id) {
-								index = i
-								break
-							}
-						}
-
-						assert.strictEqual(collection[index].id, id)
-						assert.notStrictEqual(collection[index], item)
-
-						if (((id as unknown as number|0) % 2) === 0) {
-							return false
-						}
-
-						collection[index] = item
-
-						return (this.id as unknown as number|0) % 2 === 0 ? null : true
-					},
+		const mergeCollection = new MergeCollection<Class, Class, Class[]>(
+			{
+				getKey: o => o.id,
+				merge: (base, older, newer, set) => base !== older && (base && base.fill(older) || (set(older), true)),
+				add: (collection, id, item) => {
+					assert.strictEqual(item.id, id)
+					collection.push(item)
 				},
-			)
+				remove: (collection, id, index) => {
+					assert.strictEqual(collection[index].id, id)
+					collection.splice(index, 1)
+				},
+				set: (collection, id: string, item) => {
+					assert.strictEqual(item.id, id)
 
-		assert.ok(fillCollection)
+					let index = null
+					for (let i = 0; i < collection.length; i++) {
+						if (collection[i].id === id) {
+							index = i
+							break
+						}
+					}
+
+					assert.strictEqual(collection[index].id, id)
+					assert.notStrictEqual(collection[index], item)
+
+					if (((id as unknown as number|0) % 2) === 0) {
+						return false
+					}
+
+					collection[index] = item
+
+					return (this.id as unknown as number|0) % 2 === 0 ? null : true
+				},
+			},
+		)
+
+		let sourceMap
+		assert.strictEqual(mergeCollection.merge(source, null, null, null, o => sourceMap = o), true)
+		assert.ok(sourceMap)
 
 		assert.deepStrictEqual(source, [
 			new Class('1', ['v1'], true),
@@ -107,7 +107,7 @@ describe('common > main > rx > object > properties > fill-collection > fillItera
 			new Class('14', ['v14a'], true),
 		])
 
-		assert.strictEqual(fillCollection.fillTo(target), fillCollection)
+		assert.strictEqual(mergeCollection.merge(target, sourceMap), true)
 
 		assert.deepStrictEqual(source, [
 			new Class('1', ['v1'], true),

@@ -169,8 +169,8 @@ export class MergeCollection<
 
 	public merge(
 		target: TCollection,
-		older: CollectionMap<TSourceItem>,
-		newer: CollectionMap<TSourceItem>,
+		older?: CollectionMap<TSourceItem>,
+		newer?: CollectionMap<TSourceItem>,
 		mergeOptions?: MergeCollectionOptions<TTargetItem, TSourceItem, TCollection>,
 		targetMapCallback?: (targetMap: CollectionMap<TTargetItem>) => void,
 	): boolean {
@@ -239,13 +239,12 @@ export class MergeCollection<
 				}
 			} else if (older && Object.prototype.hasOwnProperty.call(older, key)) {
 				targetNew[i] = item
-				itemsOlder[i] = older[key]
-				itemsNewer[i] = older[key]
+				const olderItem = older[key]
+				itemsOlder[i] = olderItem
+				itemsNewer[i] = olderItem
 				delete older[key]
 				targetMap[key] = i
-			}
-
-			if (Object.prototype.hasOwnProperty.call(targetMap, key)) {
+			} else if (Object.prototype.hasOwnProperty.call(targetMap, key)) {
 				const index = targetMap[key]
 				merge(targetNew[index], item, item, o => {
 					targetNew[index] = o
@@ -280,7 +279,7 @@ export class MergeCollection<
 		const addItems = []
 
 		for (let i = targetArray.length; i--;) {
-			const targetItem = targetNew[i]
+			let targetItem = targetNew[i]
 			const key = keys[i]
 			if (targetItem == null) {
 				remove(target as TCollection, key, i)
@@ -288,13 +287,11 @@ export class MergeCollection<
 			} else {
 				const olderItem = itemsOlder[i]
 				const newerItem = itemsNewer[i]
-				changed = merge(targetItem, olderItem, newerItem, o => {
-					if (!set || !set(target as TCollection, key, o)
-					) {
-						remove(target as TCollection, key, i)
-						addItems.push([target, key, o])
-					}
-				}) || changed
+				changed = merge(targetItem, olderItem, newerItem, o => targetItem = o) || changed
+				if (targetItem !== targetArray[i] && (!set || !set(target as TCollection, key, targetItem))) {
+					remove(target as TCollection, key, i)
+					addItems.push([target, key, targetItem])
+				}
 			}
 		}
 
