@@ -1,4 +1,4 @@
-export type TClass = new (...args: any[]) => any
+export type TClass<T> = new (...args: any[]) => T
 
 export interface ITypeMeta { }
 
@@ -7,16 +7,16 @@ export interface ITypeMetaWithId extends ITypeMeta {
 }
 
 export interface ITypeMetaCollection<TMeta extends ITypeMeta> {
-	getMeta(type: TClass): TMeta
-	putType(type: TClass, meta: TMeta): TMeta
-	deleteType(type: TClass): TMeta
+	getMeta(type: TClass<any>): TMeta
+	putType(type: TClass<any>, meta: TMeta): TMeta
+	deleteType(type: TClass<any>): TMeta
 }
 
 export interface ITypeMetaCollectionWithId<TMeta extends ITypeMetaWithId>
 	extends ITypeMetaCollection<TMeta>
 {
-	getType(uuid: string): TClass
-	deleteType(typeOrUuid: TClass|string): TMeta
+	getType(uuid: string): TClass<any>
+	deleteType(typeOrUuid: TClass<any>|string): TMeta
 }
 
 const typeMetaPropertyNameBase: string = Math.random().toString(36)
@@ -32,7 +32,7 @@ export class TypeMetaCollection<TMeta extends ITypeMeta> implements ITypeMetaCol
 		}
 	}
 
-	public getMeta(type: TClass): TMeta {
+	public getMeta(type: TClass<any>): TMeta {
 		let meta
 
 		const {_typeMetaPropertyName} = this
@@ -50,7 +50,7 @@ export class TypeMetaCollection<TMeta extends ITypeMeta> implements ITypeMetaCol
 		return meta
 	}
 
-	public putType(type: TClass, meta: TMeta): TMeta {
+	public putType(type: TClass<any>, meta: TMeta): TMeta {
 		if (!type || typeof type !== 'function') {
 			throw new Error(`type (${type}) should be function`)
 		}
@@ -73,7 +73,7 @@ export class TypeMetaCollection<TMeta extends ITypeMeta> implements ITypeMetaCol
 		return prevMeta
 	}
 
-	public deleteType(type: TClass): TMeta {
+	public deleteType(type: TClass<any>): TMeta {
 		const { _typeMetaPropertyName } = this
 
 		let prevMeta
@@ -90,14 +90,14 @@ export class TypeMetaCollectionWithId<TMeta extends ITypeMetaWithId>
 	extends TypeMetaCollection<TMeta>
 	implements ITypeMetaCollectionWithId<TMeta>
 {
-	private readonly _typeMap: { [uuid: string]: TClass } = {}
+	private readonly _typeMap: { [uuid: string]: TClass<any> } = {}
 	protected readonly _proto: ITypeMetaCollectionWithId<TMeta>
 
 	constructor(proto?: ITypeMetaCollectionWithId<TMeta>) {
 		super(proto)
 	}
 
-	public getType(uuid: string): TClass {
+	public getType(uuid: string): TClass<any> {
 		const type = this._typeMap[uuid]
 
 		if (typeof type === 'undefined') {
@@ -110,7 +110,7 @@ export class TypeMetaCollectionWithId<TMeta extends ITypeMetaWithId>
 		return type
 	}
 
-	public putType(type: TClass, meta: TMeta): TMeta {
+	public putType(type: TClass<any>, meta: TMeta): TMeta {
 		const uuid = meta && meta.uuid
 		if (!uuid || typeof uuid !== 'string') {
 			throw new Error(`meta.uuid (${uuid}) should be a string with length > 0`)
@@ -128,7 +128,7 @@ export class TypeMetaCollectionWithId<TMeta extends ITypeMetaWithId>
 		return prevMeta
 	}
 
-	public deleteType(typeOrUuid: TClass | string): TMeta {
+	public deleteType(typeOrUuid: TClass<any> | string): TMeta {
 		let uuid
 		let type
 		if (typeof typeOrUuid === 'function') {

@@ -1,4 +1,4 @@
-import {TypeMetaCollectionWithId} from '../../../../../main/common/extensions/TypeMeta'
+import {TypeMetaCollectionWithId} from '../../../../../../main/common/extensions/TypeMeta'
 
 declare const assert
 

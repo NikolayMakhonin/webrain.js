@@ -19,7 +19,7 @@ export class MergerVisitor implements IMergerVisitor {
 		older: TSource,
 		newer?: TSource,
 		set?: (value: TTarget) => void,
-		valueType?: TClass,
+		valueType?: TClass<TTarget>,
 		valueFactory?: () => TTarget,
 		preferClone?: boolean,
 	): boolean {
@@ -51,9 +51,18 @@ export class MergerVisitor implements IMergerVisitor {
 			return meta
 		}
 
-		if (!getMeta().canBeSource || !meta.canBeSource(newer)) {
-			if (set) { set(newer as any) }
-			return true
+		if (base != null
+			&& typeof base !== 'number'
+			&& typeof base !== 'boolean'
+		) {
+			const canBeSource = getMeta().canBeSource
+			if (!canBeSource && newer.constructor !== base.constructor
+				|| canBeSource && !meta.canBeSource(newer)) {
+				if (set) {
+					set(newer as any)
+				}
+				return true
+			}
 		}
 
 		let merger: IValueMerger<TTarget, TSource>
@@ -77,7 +86,7 @@ export class MergerVisitor implements IMergerVisitor {
 			next_older: TNextSource,
 			next_newer?: TNextSource,
 			next_set?: (value: TNextTarget) => void,
-			next_valueType?: TClass,
+			next_valueType?: TClass<TNextTarget>,
 			next_valueFactory?: () => TNextTarget,
 			next_preferClone?: boolean,
 		) => this.merge(
@@ -139,7 +148,8 @@ export class MergerVisitor implements IMergerVisitor {
 		//
 		// newer = older
 		//
-		// if (!getMeta().canBeSource || !meta.canBeSource(newer)) {
+		// if (!canBeSource && newer.constructor !== base.constructor
+		// 	|| canBeSource && !meta.canBeSource(newer)) {
 		// 	if (set) { set(newer as any) }
 		// 	return true
 		// }
@@ -208,7 +218,7 @@ export function registerMergeable<TTarget extends IMergeable<TTarget, TSource>, 
 }
 
 export function registerMerger<TTarget extends any, TSource extends any>(
-	type: TClass,
+	type: TClass<TTarget>,
 	meta: ITypeMetaMerger<TTarget, TSource>,
 ) {
 	TypeMetaMergerCollection.default.putType(type, meta)
@@ -231,7 +241,7 @@ export class ObjectMerger implements IObjectMerger {
 		base: TTarget,
 		older: TSource,
 		newer?: TSource,
-		valueType?: TClass,
+		valueType?: TClass<TTarget>,
 		set?: (value: TTarget) => void,
 		valueFactory?: () => TTarget,
 		preferClone?: boolean,
@@ -252,7 +262,7 @@ export class ObjectMerger implements IObjectMerger {
 // number
 // boolean
 
-registerMerger<string, string>(String, {
+registerMerger<string, string>(String as any, {
 	merger: {
 		merge(
 			merge: IMergeValue,
@@ -265,123 +275,124 @@ registerMerger<string, string>(String, {
 			return true
 		},
 	},
+
 })
 
 // endregion
 
-// region Helpers
-
-export function mergeArray(
-	merge: IMergeValue,
-	base: any[],
-	older: any[],
-	newer?: any[],
-): any[] {
-	const mergedValue = []
-	for (let i = 0; i < length; i++) {
-		mergedValue[i] = merge(value[i])
-	}
-
-	return mergedValue
-}
-
-export function mergeIterable(
-	merge: IMergeValue,
-	base: Iterable<any>,
-	older: Iterable<any>,
-	newer?: Iterable<any>,
-): Iterable<any> {
-	const mergedValue = []
-	for (const item of value) {
-		mergedValue.push(merge(item))
-	}
-	return mergedValue
-}
-
-// endregion
-
-// region Object
-
-registerMerger<object, object>(Object, {
-	merger: {
-		merge(
-			merge: IMergeValue,
-			base: object,
-			older: object,
-			newer?: object,
-			set?: (value: object) => void,
-		): boolean {
-			const mergedValue = {}
-			for (const key in value) {
-				if (Object.prototype.hasOwnProperty.call(value, key)) {
-					mergedValue[key] = merge(value[key])
-				}
-			}
-			return mergedValue
-		},
-		// merge2(merge: IMergeValue, value: object): IMergedObject {
-		// 	const mergedValue = {}
-		// 	for (const key in value) {
-		// 		if (Object.prototype.hasOwnProperty.call(value, key)) {
-		// 			mergedValue[key] = merge(value[key])
-		// 		}
-		// 	}
-		// 	return mergedValue
-		// },
-	},
-})
-
-// endregion
-
-// region Array
-
-registerMerger<any[]>(Array, {
-	merger: {
-		merge(merge: IMergeValue, value: any[]): IMergedValueArray {
-			return mergeArray(merge, value)
-		},
-	},
-})
-
-// endregion
-
-// region Set
-
-registerMerger<Set<any>>(Set, {
-	merger: {
-		merge(merge: IMergeValue, value: Set<any>): IMergedValueArray {
-			return mergeIterable(merge, value)
-		},
-	},
-})
-
-// endregion
-
-// region Map
-
-registerMerger<Map<any, any>>(Map, {
-	merger: {
-		merge(merge: IMergeValue, value: Map<any, any>): IMergedValueArray {
-			return mergeIterable(item => [
-				merge(item[0]),
-				merge(item[1]),
-			], value)
-		},
-	},
-})
-
-// endregion
-
-// region Date
-
-registerMerger<Date>(Date, {
-	merger: {
-		merge(merge: IMergeValue, value: Date): number {
-			return value.getTime()
-		},
-	},
-})
-
-// endregion
+// // region Helpers
+//
+// export function mergeArray(
+// 	merge: IMergeValue,
+// 	base: any[],
+// 	older: any[],
+// 	newer?: any[],
+// ): any[] {
+// 	const mergedValue = []
+// 	for (let i = 0; i < length; i++) {
+// 		mergedValue[i] = merge(value[i])
+// 	}
+//
+// 	return mergedValue
+// }
+//
+// export function mergeIterable(
+// 	merge: IMergeValue,
+// 	base: Iterable<any>,
+// 	older: Iterable<any>,
+// 	newer?: Iterable<any>,
+// ): Iterable<any> {
+// 	const mergedValue = []
+// 	for (const item of value) {
+// 		mergedValue.push(merge(item))
+// 	}
+// 	return mergedValue
+// }
+//
+// // endregion
+//
+// // region Object
+//
+// registerMerger<object, object>(Object, {
+// 	merger: {
+// 		merge(
+// 			merge: IMergeValue,
+// 			base: object,
+// 			older: object,
+// 			newer?: object,
+// 			set?: (value: object) => void,
+// 		): boolean {
+// 			const mergedValue = {}
+// 			for (const key in value) {
+// 				if (Object.prototype.hasOwnProperty.call(value, key)) {
+// 					mergedValue[key] = merge(value[key])
+// 				}
+// 			}
+// 			return mergedValue
+// 		},
+// 		// merge2(merge: IMergeValue, value: object): IMergedObject {
+// 		// 	const mergedValue = {}
+// 		// 	for (const key in value) {
+// 		// 		if (Object.prototype.hasOwnProperty.call(value, key)) {
+// 		// 			mergedValue[key] = merge(value[key])
+// 		// 		}
+// 		// 	}
+// 		// 	return mergedValue
+// 		// },
+// 	},
+// })
+//
+// // endregion
+//
+// // region Array
+//
+// registerMerger<any[]>(Array, {
+// 	merger: {
+// 		merge(merge: IMergeValue, value: any[]): IMergedValueArray {
+// 			return mergeArray(merge, value)
+// 		},
+// 	},
+// })
+//
+// // endregion
+//
+// // region Set
+//
+// registerMerger<Set<any>>(Set, {
+// 	merger: {
+// 		merge(merge: IMergeValue, value: Set<any>): IMergedValueArray {
+// 			return mergeIterable(merge, value)
+// 		},
+// 	},
+// })
+//
+// // endregion
+//
+// // region Map
+//
+// registerMerger<Map<any, any>>(Map, {
+// 	merger: {
+// 		merge(merge: IMergeValue, value: Map<any, any>): IMergedValueArray {
+// 			return mergeIterable(item => [
+// 				merge(item[0]),
+// 				merge(item[1]),
+// 			], value)
+// 		},
+// 	},
+// })
+//
+// // endregion
+//
+// // region Date
+//
+// registerMerger<Date>(Date, {
+// 	merger: {
+// 		merge(merge: IMergeValue, value: Date): number {
+// 			return value.getTime()
+// 		},
+// 	},
+// })
+//
+// // endregion
 
 // endregion

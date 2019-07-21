@@ -1,6 +1,6 @@
 import {ArrayMap} from '../../../lists/ArrayMap'
 import {SortedList} from '../../../lists/SortedList'
-import {FillCollection, FillCollectionOptions} from './fill-collection'
+import {FillCollection, FillCollectionOptions} from '../../../extensions/merge/merge-collection'
 import {ISetOptions, Property} from './property'
 
 export interface ICollectionSetOptions<TItem, TCollection> extends ISetOptions<TCollection> {

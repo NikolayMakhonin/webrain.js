@@ -39,7 +39,7 @@ export class SerializerVisitor implements ISerializerVisitor {
 		return typeIndex
 	}
 
-	public serialize(value: any, valueType?: TClass): ISerializedValue {
+	public serialize<TValue>(value: TValue, valueType?: TClass<TValue>): ISerializedValue {
 		if (typeof value === 'undefined') {
 			return value
 		}
@@ -48,10 +48,10 @@ export class SerializerVisitor implements ISerializerVisitor {
 			|| typeof value === 'number'
 			|| typeof value === 'string'
 			|| typeof value === 'boolean') {
-			return value
+			return value as any
 		}
 
-		const meta = this._typeMeta.getMeta(valueType || value.constructor)
+		const meta = this._typeMeta.getMeta(valueType || value.constructor as TClass<TValue>)
 		if (!meta) {
 			throw new Error(`Class (${value.constructor.name}) have no type meta`)
 		}
@@ -91,7 +91,7 @@ export class DeSerializerVisitor implements IDeSerializerVisitor {
 
 	public deSerialize<TValue extends any>(
 		serializedValue: ISerializedValue,
-		valueType?: TClass,
+		valueType?: TClass<TValue>,
 		valueFactory?: () => TValue,
 	): TValue {
 		if (typeof serializedValue === 'undefined') {
@@ -208,7 +208,7 @@ export function registerSerializable<TObject extends ISerializable>(
 }
 
 export function registerSerializer<TValue extends any>(
-	type: TClass,
+	type: TClass<TValue>,
 	meta: ITypeMetaSerializer<TValue>,
 ) {
 	TypeMetaSerializerCollection.default.putType(type, meta)
@@ -227,7 +227,7 @@ export class ObjectSerializer implements IObjectSerializer {
 
 	public static default: ObjectSerializer = new ObjectSerializer()
 
-	public serialize(value: any, valueType?: TClass): ISerializedDataOrValue {
+	public serialize<TValue>(value: TValue, valueType?: TClass<TValue>): ISerializedDataOrValue {
 		const serializer = new SerializerVisitor(this.typeMeta)
 		const serializedValue = serializer.serialize(value, valueType)
 
@@ -248,7 +248,7 @@ export class ObjectSerializer implements IObjectSerializer {
 
 	public deSerialize<TValue extends any>(
 		serializedValue: ISerializedDataOrValue,
-		valueType?: TClass,
+		valueType?: TClass<TValue>,
 		valueFactory?: () => TValue,
 	): TValue {
 		if (!serializedValue || typeof serializedValue !== 'object') {

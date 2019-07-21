@@ -15,7 +15,7 @@ export class MergeCollectionOptions<
 	public set?: (collection: TCollection, key: string, item: TTargetItem) => boolean
 }
 
-interface CollectionMap<TItem> { [key: string]: TItem }
+export interface CollectionMap<TItem> { [key: string]: TItem }
 
 export class MergeCollection<
 	TTargetItem,

@@ -33,10 +33,10 @@ export interface ISerializedData {
 
 // region Serializers
 
-export type ISerializeValue = (value: any, valueType?: TClass) => ISerializedValue
+export type ISerializeValue = <TValue extends any>(value: TValue, valueType?: TClass<TValue>) => ISerializedValue
 export type IDeSerializeValue = <TValue extends any>(
 	serializedValue: ISerializedValue,
-	valueType?: TClass,
+	valueType?: TClass<TValue>,
 	valueFactory?: () => TValue,
 ) => TValue
 
@@ -61,13 +61,13 @@ export interface IValueSerializer<TValue extends any> {
 }
 
 export interface ISerializer {
-	serialize(value: any, valueType?: TClass): ISerializedDataOrValue
+	serialize<TValue>(value: TValue, valueType?: TClass<TValue>): ISerializedDataOrValue
 }
 
 export interface IDeSerializer {
 	deSerialize<TValue extends any>(
 		serializedData: ISerializedDataOrValue,
-		valueType?: TClass,
+		valueType?: TClass<TValue>,
 		valueFactory?: () => TValue,
 	): TValue
 }
