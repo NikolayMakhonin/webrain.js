@@ -236,24 +236,6 @@ export class MergerVisitor implements IMergerVisitor {
 			return true
 		}
 
-		const nextMerge: IMergeValue = <TNextTarget, TNextSource>(
-			next_base: TNextTarget,
-			next_older: TNextSource,
-			next_newer?: TNextSource,
-			next_set?: (value: TNextTarget) => void,
-			next_valueType?: TClass<TNextTarget>,
-			next_valueFactory?: () => TNextTarget,
-			next_preferClone?: boolean,
-		) => this.merge(
-			next_base,
-			next_older,
-			next_newer,
-			next_set,
-			next_valueType,
-			next_valueFactory,
-			next_preferClone == null ? preferClone : next_preferClone,
-		)
-
 		const setOrClone = (value, preferClone) => {
 			const constructor = value.constructor as TClass<TTarget>
 			const type = valueType || constructor
@@ -285,27 +267,30 @@ export class MergerVisitor implements IMergerVisitor {
 
 				const merger = getMerger(meta, type)
 
-				const equals = merger.equals
-				if (!equals || !merger.equals(setItem, value))
 				const canMerge = merger.canMerge
-				const canMergeResult = canMerge
+				const canMergeResult: boolean = canMerge
 					? canMerge(setItem, value)
 					: value.constructor !== type
 
-				if (canMergeResult === false) {
-					throw new Error(`Class (${type.name}) cannot be merged with clone`)
-				}
-
-				if (canMergeResult === true) {
-					merger.merge(
-						this.getNextMerge(preferClone, preferClone),
-						setItem,
-						value,
-						value,
-						o => {
-							throw new Error(`Class (${type.name}) cannot be merged with clone`)
-						},
-					)
+				switch (canMergeResult) {
+					case null:
+					case void 0:
+						break
+					case true:
+						merger.merge(
+							this.getNextMerge(preferClone, preferClone),
+							setItem,
+							value,
+							value,
+							o => {
+								throw new Error(`Class (${type.name}) cannot be merged with clone`)
+							},
+						)
+						break
+					case false:
+						throw new Error(`Class (${type.name}) cannot be merged with clone`)
+					default:
+						throw new Error(`Unknown canMerge() result (${canMergeResult.constructor.name}) for ${type.name}`)
 				}
 			} else {
 				setItem = value
