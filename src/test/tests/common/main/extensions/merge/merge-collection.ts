@@ -1,4 +1,5 @@
 /* tslint:disable:no-shadowed-variable */
+import { deepEqual as deepStrictEqual } from 'fast-equals'
 import {IMergeable, IMergeValue} from '../../../../../../main/common/extensions/merge/contracts'
 import {
 	CollectionMap,
@@ -6,6 +7,7 @@ import {
 } from '../../../../../../main/common/extensions/merge/merge-collection'
 import {ObjectMerger, registerMergeable} from '../../../../../../main/common/extensions/merge/mergers';
 
+declare function deepStrictEqual(a, b): boolean
 declare const assert
 
 describe('common > main > rx > object > properties > merge-collection', function() {
@@ -36,8 +38,13 @@ describe('common > main > rx > object > properties > merge-collection', function
 			newer?: Class,
 			set?: (value: Class) => void,
 		): boolean {
-			if (!this.mergeEnabled || this.id !== older.id || this.id !== newer.id) {
+			if (newer.id !== this.id) {
 				set(newer)
+				return true
+			}
+
+			if (!this.mergeEnabled || older.id !== this.id) {
+				set(older)
 				return true
 			}
 
@@ -53,31 +60,9 @@ describe('common > main > rx > object > properties > merge-collection', function
 		}
 	}
 
-	function arrayDeepEqual<T>(o1: T[], o2: T[]): boolean {
-		if ((o1 == null) !== (o2 == null)) {
-			return false
-		}
-		if (o1 == null) {
-			return true
-		}
-
-		const len = o1.length
-		if (o2.length !== len) {
-			return false
-		}
-
-		for (let i = 0; i < len; i++) {
-			if (o1[i] !== o2[i]) {
-				return false
-			}
-		}
-
-		return true
-	}
-
 	const objectMerger = new ObjectMerger()
 	objectMerger.typeMeta.putMergeableType(Class)
-	objectMerger.typeMeta.putType<string, string>(String, {
+	objectMerger.typeMeta.putType<string, string>(String as any, {
 		merger: {
 			merge(
 				merge: IMergeValue,
@@ -98,6 +83,31 @@ describe('common > main > rx > object > properties > merge-collection', function
 				return true
 			},
 		},
+	})
+
+	it('merge simple', function() {
+		const None = {}
+		let base, older, newer, setItem
+
+		base = new Class('1', 'v1', true)
+		older = new Class('1', 'v2', true)
+		newer = new Class('1', 'v3', true)
+		setItem = None
+		assert.strictEqual(objectMerger.merge(base, older, newer, null, o => setItem = o), true)
+		assert.deepStrictEqual(base, new Class('1', 'v1, v3', true))
+		assert.deepStrictEqual(older, new Class('1', 'v2', true))
+		assert.deepStrictEqual(newer, new Class('1', 'v3', true))
+		assert.strictEqual(setItem, None)
+
+		base = new Class('1', 'v1', true)
+		older = new Class('2', 'v1', true)
+		newer = new Class('1', 'v1', true)
+		setItem = None
+		assert.strictEqual(objectMerger.merge(base, older, newer, null, o => setItem = o), true)
+		assert.deepStrictEqual(base, new Class('1', 'v1', true))
+		assert.deepStrictEqual(older, new Class('2', 'v1', true))
+		assert.deepStrictEqual(newer, new Class('1', 'v1', true))
+		assert.strictEqual(setItem, new Class('2', 'v1', true))
 	})
 
 	it('fillIterable', function() {
@@ -192,8 +202,11 @@ describe('common > main > rx > object > properties > merge-collection', function
 		function testFill(makeNewer: (target, older) => Class[]) {
 			const target = makeTarget()
 			const older = makeOlder(target)
-			const olderMap = makeMap(older)
 			const newer = makeNewer(target, older)
+			if (newer) {
+				assert.ok(deepStrictEqual(newer, older) || deepStrictEqual(newer, target))
+			}
+			const olderMap = makeMap(older)
 			const newerMap = makeMap(newer)
 
 			assert.deepStrictEqual(older, [
@@ -234,11 +247,19 @@ describe('common > main > rx > object > properties > merge-collection', function
 		})
 
 		testFill((target, older) => {
+			return makeOlder(makeTarget())
+		})
+
+		testFill((target, older) => {
 			return makeOlder(target)
 		})
 
 		testFill((target, older) => {
 			return older
+		})
+
+		testFill((target, older) => {
+			return makeTarget()
 		})
 
 		testFill((target, older) => {

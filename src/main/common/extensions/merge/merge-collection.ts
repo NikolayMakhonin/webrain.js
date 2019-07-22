@@ -196,7 +196,10 @@ export class MergeCollection<
 		} = mergeOptions
 
 		let changed = false
-		// const fill = (item1, item2) => merge(item1, item2, item2)
+
+		if (newer === older) {
+			newer = null
+		}
 
 		// Scan target
 
@@ -307,7 +310,15 @@ export class MergeCollection<
 			for (const key in older) {
 				if (Object.prototype.hasOwnProperty.call(older, key)) {
 					const olderItem = older[key]
-					merge(void 0, olderItem, olderItem, o => {
+					let newerItem
+					if (newer && Object.prototype.hasOwnProperty.call(newer, key)) {
+						newerItem = newer[key]
+						delete newer[key]
+					} else {
+						newerItem = olderItem
+					}
+
+					merge(void 0, olderItem, newerItem, o => {
 						add(target as TCollection, key, o)
 					})
 				}

@@ -9,8 +9,9 @@ export type IMergeValue = <TTarget extends any, TSource extends any>(
 	newer?: TSource,
 	set?: (value: TTarget) => void,
 	valueType?: TClass<TTarget>,
-	valueFactory?: () => TTarget,
-	preferClone?: boolean,
+	valueFactory?: (source: TSource) => TTarget,
+	preferCloneOlder?: boolean,
+	preferCloneNewer?: boolean,
 ) => boolean
 
 export interface IMergerVisitor {
@@ -18,6 +19,8 @@ export interface IMergerVisitor {
 }
 
 export interface IValueMerger<TTarget extends any, TSource extends any> {
+	/** @return true, false, null - is equals */
+	canMerge?: (target: TTarget, source: TSource) => boolean
 	merge(
 		merge: IMergeValue,
 		base: TTarget,
@@ -34,16 +37,16 @@ export interface IMerger {
 		newer?: TSource,
 		valueType?: TClass<TTarget>,
 		set?: (value: TTarget) => void,
-		valueFactory?: () => TTarget,
-		preferClone?: boolean,
+		valueFactory?: (source: TSource) => TTarget,
+		preferCloneOlder?: boolean,
+		preferCloneNewer?: boolean,
 	): boolean
 }
 
 export interface ITypeMetaMerger<TTarget extends any, TSource extends any> extends ITypeMeta {
-	merger: IValueMerger<TTarget, TSource>
-	canBeSource?: (value: TSource) => boolean
 	preferClone?: boolean
-	valueFactory?: () => TTarget
+	valueFactory?: (source: TSource) => TTarget
+	merger: IValueMerger<TTarget, TSource>
 }
 
 export interface ITypeMetaMergerCollection extends ITypeMetaCollection<ITypeMetaMerger<any, any>> {
@@ -53,7 +56,7 @@ export interface ITypeMetaMergerCollection extends ITypeMetaCollection<ITypeMeta
 	): ITypeMetaMerger<TTarget, TSource>
 	putMergeableType<TTarget extends IMergeable<TTarget, TSource>, TSource extends any>(
 		type: TMergeableClass<TTarget, TSource>,
-		valueFactory?: () => TTarget,
+		valueFactory?: (source: TSource) => TTarget,
 	): ITypeMetaMerger<TTarget, TSource>
 }
 
@@ -66,11 +69,12 @@ export interface IObjectMerger extends IMerger {
 // region Mergeable
 
 export interface IMergeable<TTarget, TSource extends any> {
+	/** @return true, false, null - is equals */
+	canMerge?: (source: TSource) => boolean
 	merge(
 		merge: IMergeValue,
 		older: TSource,
 		newer?: TSource,
-		set?: (value: TTarget) => void,
 	): boolean
 }
 
