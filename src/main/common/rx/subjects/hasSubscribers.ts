@@ -11,7 +11,7 @@ export interface IHasSubscribers<T> {
 // tslint:disable-next-line:no-shadowed-variable
 function createHasSubscribersSubjectDefault(hasSubscribers: boolean) {
 	const subject = new BehaviorSubject()
-	subject.value = hasSubscribers
+	subject.target = hasSubscribers
 	subject.unsubscribeValue = null
 	return subject
 }
