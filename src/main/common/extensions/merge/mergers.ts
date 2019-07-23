@@ -13,52 +13,44 @@ function isPrimitive(value) {
 		|| typeof value === 'boolean'
 }
 
-function getMerger<TTarget extends any, TSource extends any>(
-	meta: ITypeMetaMerger<TTarget, TSource>,
-	valueType: TClass<TTarget>,
-): IValueMerger<TTarget, TSource> {
-	const merger = meta.merger
-	if (!merger) {
-		throw new Error(`Class (${valueType && valueType.name}) type meta have no merger`)
-	}
-
-	if (!merger.merge) {
-		throw new Error(`Class (${valueType && valueType.name}) merger have no merge method`)
-	}
-
-	return merger
-}
+// function getMerger<TTarget extends any, TSource extends any>(
+// 	meta: ITypeMetaMerger<TTarget, TSource>,
+// 	valueType: TClass<TTarget>,
+// ): IValueMerger<TTarget, TSource> {
+// 	const merger = meta.merger
+// 	if (!merger) {
+// 		throw new Error(`Class (${valueType && valueType.name}) type meta have no merger`)
+// 	}
+//
+// 	if (!merger.merge) {
+// 		throw new Error(`Class (${valueType && valueType.name}) merger have no merge method`)
+// 	}
+//
+// 	return merger
+// }
 
 class ValueState<TTarget, TSource> {
-	private _mergerVisitor: MergerVisitor
+	public mergerState: MergeState<TTarget, TSource>
 	public target: TTarget
-	public valueType: TClass<TTarget>
-	public ctor: TClass<TTarget>
 	public type: TClass<TTarget>
 	public preferClone: boolean
-	public valueFactory: (source: TTarget|TSource) => TTarget
 
 	constructor(
-		mergerVisitor: MergerVisitor,
+		mergerState: MergeState<TTarget, TSource>,
 		target: TTarget,
-		valueType: TClass<TTarget>,
-		valueFactory: (source: TTarget|TSource) => TTarget,
 		preferClone: boolean,
 	) {
-		this._mergerVisitor = mergerVisitor
+		this.mergerState = mergerState
 		this.target = target
-		this.valueType = valueType
-		this.valueFactory = valueFactory
 		this.preferClone = preferClone
-		this.ctor = target.constructor as any
-		this.type = valueType || target.constructor as any
+		this.type = mergerState.valueType || target.constructor as any
 	}
 
 	private _meta: ITypeMetaMerger<TTarget, TSource>
 	public get meta(): ITypeMetaMerger<TTarget, TSource> {
 		let { _meta } = this
 		if (!_meta) {
-			_meta = this._mergerVisitor.typeMeta.getMeta(this.type)
+			_meta = this.mergerState.mergerVisitor.typeMeta.getMeta(this.type)
 			if (!_meta) {
 				throw new Error(`Class (${this.type && this.type.name}) have no type meta`)
 			}
@@ -88,11 +80,11 @@ class ValueState<TTarget, TSource> {
 	public get mustBeCloned(): boolean {
 		let { _mustBeCloned } = this
 		if (_mustBeCloned == null) {
-			const valueType = this.valueType
+			const valueType = this.mergerState.valueType
 			const metaPreferClone = this.meta.preferClone
 			this._mustBeCloned = _mustBeCloned =
 				(metaPreferClone == null ? this.preferClone : metaPreferClone)
-				|| valueType && valueType !== this.ctor
+				|| valueType && valueType !== this.target.constructor
 		}
 		return _mustBeCloned
 	}
@@ -102,9 +94,9 @@ class ValueState<TTarget, TSource> {
 		let { _cloneInstance } = this
 		if (_cloneInstance == null) {
 			const {target, type} = this
-			_cloneInstance = (this.valueFactory
+			_cloneInstance = (this.mergerState.valueFactory
 				|| this.meta.valueFactory
-				|| (() => (!this.valueType || this.ctor === this.valueType) && new type())
+				|| (() => (!this.mergerState.valueType || this.target.constructor === this.mergerState.valueType) && new type())
 			)(target)
 
 			if (!_cloneInstance) {
@@ -135,7 +127,7 @@ class ValueState<TTarget, TSource> {
 				throw new Error(`Unknown canMerge() result (${(result as any).constructor.name}) for ${this.type.name}`)
 			}
 		}
-		return this.ctor !== this.type
+		return this.target.constructor !== this.type
 	}
 
 	private _clone: TTarget
@@ -154,11 +146,11 @@ class ValueState<TTarget, TSource> {
 					case true:
 						const { preferClone } = this
 						this.merger.merge(
-							this._mergerVisitor.getNextMerge(preferClone, preferClone),
+							this.mergerState.mergerVisitor.getNextMerge(preferClone, preferClone),
 							_clone,
 							target,
 							target,
-							o => {
+							() => {
 								throw new Error(`Class (${this.type.name}) cannot be merged with clone`)
 							},
 						)
@@ -179,14 +171,115 @@ class ValueState<TTarget, TSource> {
 	public fill(source: TTarget|TSource): boolean {
 		const { preferClone } = this
 		return this.merger.merge(
-			this._mergerVisitor.getNextMerge(preferClone, preferClone),
+			this.mergerState.mergerVisitor.getNextMerge(preferClone, preferClone),
 			this.clone,
 			source,
 			source,
-			o => {
+			() => {
 				throw new Error(`Class (${this.type.name}) cannot be merged`)
 			},
 		)
+	}
+}
+
+class MergeState<TTarget, TSource> {
+	public mergerVisitor: MergerVisitor
+	public base: TTarget
+	public older: TTarget|TSource
+	public newer: TTarget|TSource
+	public set: (value: TTarget) => void
+	public valueType: TClass<TTarget>
+	public valueFactory: (source: TTarget|TSource) => TTarget
+	public preferCloneOlder: boolean
+	public preferCloneNewer: boolean
+
+	constructor(
+		mergerVisitor: MergerVisitor,
+		base: TTarget,
+		older: TTarget|TSource,
+		newer: TTarget|TSource,
+		set: (value: TTarget) => void,
+		valueType: TClass<TTarget>,
+		valueFactory: (source: TTarget|TSource) => TTarget,
+		preferCloneOlder: boolean,
+		preferCloneNewer: boolean,
+	) {
+		this.mergerVisitor = mergerVisitor
+		this.base = base
+		this.older = older
+		this.newer = newer
+		this.set = set
+		this.valueType = valueType
+		this.valueFactory = valueFactory
+		this.preferCloneOlder = preferCloneOlder
+		this.preferCloneNewer = preferCloneNewer
+	}
+
+	private _baseState: ValueState<TTarget, TSource>
+	public get baseState(): ValueState<TTarget, TSource> {
+		let { _baseState } = this
+		if (_baseState == null) {
+			this._baseState = _baseState = new ValueState<TTarget, TSource>(
+				this,
+				this.base,
+				false,
+			)
+		}
+		return _baseState
+	}
+
+	private _olderState: ValueState<TTarget, TSource>
+	public get olderState(): ValueState<TTarget, TSource> {
+		let { _olderState } = this
+		if (_olderState == null) {
+			this._olderState = _olderState = new ValueState<TTarget, TSource>(
+				this,
+				this.older as any,
+				this.preferCloneOlder,
+			)
+		}
+		return _olderState
+	}
+
+	private _newerState: ValueState<TTarget, TSource>
+	public get newerState(): ValueState<TTarget, TSource> {
+		let { _newerState } = this
+		if (_newerState == null) {
+			this._newerState = _newerState = new ValueState<TTarget, TSource>(
+				this,
+				this.newer as any,
+				this.older === this.newer
+					? this.preferCloneOlder || this.preferCloneNewer
+					: this.preferCloneNewer,
+			)
+		}
+		return _newerState
+	}
+
+	public fill(
+		targetState: ValueState<TTarget, TSource>,
+		sourceState: ValueState<TTarget, TSource>,
+	): boolean {
+		const canMerge = targetState.canMerge(sourceState.target)
+		const {base, set} = this
+
+		let setItem
+		let result
+		if (canMerge === true) {
+			result = targetState.fill(sourceState.target)
+			setItem = targetState.clone
+		} else {
+			setItem = canMerge == null && !targetState.mustBeCloned
+				? targetState.clone
+				: sourceState.clone
+			result = setItem !== base
+		}
+
+		if (setItem !== base && set) {
+			set(setItem)
+		}
+
+		return result
 	}
 }
 
@@ -373,7 +466,7 @@ export class MergerVisitor implements IMergerVisitor {
 		newer: TTarget|TSource,
 		set?: (value: TTarget) => void,
 		valueType?: TClass<TTarget>,
-		valueFactory?: (source: TTarget|TSource) => TTarget,
+		valueFactory?: (source: TTarget|TSource|any) => TTarget,
 		preferCloneOlder?: boolean,
 		preferCloneNewer?: boolean,
 	): boolean {
@@ -389,99 +482,33 @@ export class MergerVisitor implements IMergerVisitor {
 			return true
 		}
 
-		// const fill = (
-		// 	target: TTarget,
-		// 	value: TTarget|TSource,
-		// 	// tslint:disable-next-line:no-shadowed-variable
-		// 	set: (value: TTarget) => void,
-		// 	preferClone: boolean,
-		// ) => {
-		// 	const constructor = value.constructor as TClass<TTarget>
-		// 	const type = valueType || constructor
-		// 	const meta = this.getMeta<TTarget, TSource>(type)
-		// 	const merger = getMerger(meta, type)
-		//
-		// 	const canMerge = merger.canMerge
-		// 	const canMergeResult: boolean = canMerge
-		// 		? canMerge(target, value)
-		// 		: value.constructor !== type
-		//
-		// 	switch (canMergeResult) {
-		// 		case null:
-		// 			return true
-		// 		case true:
-		// 			return merger.merge(
-		// 				this.getNextMerge(preferClone, preferClone),
-		// 				base,
-		// 				value,
-		// 				value,
-		// 				o => {
-		// 					set(cloneIfNeeded(o, preferClone))
-		// 				},
-		// 			)
-		// 		case false:
-		// 			throw new Error(`Class (${type.name}) cannot be merged with clone`)
-		// 		default:
-		// 			throw new Error(`Unknown canMerge() result (${canMergeResult.constructor.name}) for ${type.name}`)
-		// 	}
-		// }
+		const mergeState = new MergeState(
+			this,
+			base,
+			older,
+			newer,
+			set,
+			valueType,
+			valueFactory,
+			preferCloneOlder,
+			preferCloneNewer,
+		)
 
 		if (isPrimitive(base)) {
 			if (set) {
 				if (isPrimitive(older) || older === newer) {
-					const valueState = new ValueState<TTarget, TSource>(
-						this,
-						newer as any,
-						valueType,
-						valueFactory,
-						older === newer
-							? preferCloneOlder || preferCloneNewer
-							: preferCloneNewer,
-					)
-
-					set(valueState.clone)
-
-					return true
+					set(mergeState.newerState.clone)
 				} else {
-					const olderState = new ValueState<TTarget, TSource>(
-						this,
-						older as any,
-						valueType,
-						valueFactory,
-						preferCloneOlder,
+					mergeState.fill(
+						mergeState.olderState,
+						mergeState.newerState,
 					)
-
-					const canMerge = olderState.canMerge(newer)
-					if (canMerge === true) {
-						olderState.fill(newer)
-						set(olderState.clone)
-					} else {
-						const state = canMerge == null && !olderState.mustBeCloned
-							? olderState
-							: new ValueState<TTarget, TSource>(
-								this,
-								newer as any,
-								valueType,
-								valueFactory,
-								preferCloneNewer,
-							)
-
-						set(state.clone)
-					}
 				}
 			}
 
 			return true
 		} else if (isPrimitive(older)) {
-			const baseState = new ValueState<TTarget, TSource>(
-				this,
-				base as any,
-				valueType,
-				valueFactory,
-				false,
-			)
-
-			switch (baseState.canMerge(newer)) {
+			switch (mergeState.baseState.canMerge(newer)) {
 				case null:
 					if (set) {
 						set(older as any)
@@ -489,19 +516,11 @@ export class MergerVisitor implements IMergerVisitor {
 					break
 				case false:
 					if (set) {
-						const newerState = new ValueState<TTarget, TSource>(
-							this,
-							newer as any,
-							valueType,
-							valueFactory,
-							preferCloneNewer,
-						)
-
-						set(newerState.clone)
+						set(mergeState.newerState.clone)
 					}
 					break
 				case true:
-					if (!baseState.fill(newer) && set) {
+					if (!mergeState.baseState.fill(newer) && set) {
 						set(older as any)
 					}
 					break
@@ -509,100 +528,29 @@ export class MergerVisitor implements IMergerVisitor {
 
 			return true
 		} else {
-			const baseState = new ValueState<TTarget, TSource>(
-				this,
-				base as any,
-				valueType,
-				valueFactory,
-				false,
-			)
-
-			switch (baseState.canMerge(newer)) {
+			switch (mergeState.baseState.canMerge(newer)) {
 				case null:
-					return baseState.fill(older)
+					return mergeState.fill(mergeState.baseState, mergeState.olderState)
 				case false:
-					if (set) {
-						const newerState = new ValueState<TTarget, TSource>(
-							this,
-							newer as any,
-							valueType,
-							valueFactory,
-							preferCloneNewer,
-						)
-
-						set(newerState.clone)
-					}
-					return true
-				case true:
-					if (!baseState.fill(newer) && set) {
-						set(older as any)
-					}
-					break
+					return mergeState.fill(mergeState.olderState, mergeState.newerState)
 			}
 
+			switch (mergeState.baseState.canMerge(older)) {
+				case null:
+				case false:
+					return mergeState.fill(mergeState.baseState, mergeState.newerState)
+				case true:
+					return mergeState.baseState.merger.merge(
+						this.getNextMerge(preferCloneOlder, preferCloneNewer),
+						base,
+						older,
+						newer,
+						set,
+					)
+			}
 
+			throw new Error('Unreachable code')
 		}
-
-
-
-
-
-
-
-			// if (base != null
-		// 	&& typeof base !== 'number'
-		// 	&& typeof base !== 'boolean'
-		// ) {
-		// 	const canMerge = getMerger().canMerge
-		// 	if (!canMerge && newer.constructor !== base.constructor
-		// 		|| canMerge && !canMerge(base, newer)) {
-		// 		if (set) {
-		// 			set(newer)
-		// 		}
-		// 		return true
-		// 	}
-		// }
-		//
-		//
-		// const merge = (setFunc: (value: TTarget) => void): boolean => getMerger().merge(
-		// 	nextMerge,
-		// 	base,
-		// 	older,
-		// 	newer,
-		// 	setFunc,
-		// )
-		//
-		// valueFactory = (valueType || valueFactory)
-		// 	&& (preferClone || getMeta().preferClone)
-		// 	&& (valueFactory || getMeta().valueFactory)
-		//
-		// const clone = value => {
-		// 	let setValue
-		// 	if (valueFactory) {
-		// 		setValue = base = valueFactory()
-		// 		merge(val => {
-		// 			if (val !== base) {
-		// 				throw new Error(`Class (${val.constructor.name}) cannot be clone using constructor and merger`)
-		// 			}
-		// 		})
-		// 	} else {
-		// 		setValue = value
-		// 	}
-		//
-		// 	if (set) { set(setValue) }
-		// }
-		//
-		// if (base == null
-		// 	|| typeof base === 'number'
-		// 	|| typeof base === 'boolean'
-		// ) {
-		// 	clone(newer)
-		// 	return true
-		// }
-
-		// return merge(valueFactory
-		// 	? value => clone(newer)
-		// 	: set)
 	}
 }
 
@@ -625,27 +573,26 @@ export class TypeMetaMergerCollection
 
 	private static makeTypeMetaMerger<TTarget extends IMergeable<TTarget, TSource>, TSource extends any>(
 		type: TMergeableClass<TTarget, TSource>,
-		valueFactory?: () => TTarget,
+		valueFactory?: (source: TTarget|TSource) => TTarget,
 	): ITypeMetaMerger<TTarget, TSource> {
 		return {
 			merger: {
 				canMerge(target: TTarget, source: TTarget|TSource): boolean {
 					return target.canMerge
 						? target.canMerge(source)
-						: target.constructor === source.constructor
+						: target.constructor === (source as any).constructor
 				},
 				merge(
 					merge: IMergeValue,
 					base: TTarget,
 					older: TTarget|TSource,
 					newer: TTarget|TSource,
-					set?: (value: TTarget) => void,
+					// set?: (value: TTarget) => void,
 				): boolean {
 					return base.merge(
 						merge,
 						older,
 						newer,
-						set,
 					)
 				},
 			},
@@ -655,7 +602,7 @@ export class TypeMetaMergerCollection
 
 	public putMergeableType<TTarget extends IMergeable<TTarget, TSource>, TSource extends any>(
 		type: TMergeableClass<TTarget, TSource>,
-		valueFactory?: () => TTarget,
+		valueFactory?: (source: TTarget|TSource) => TTarget,
 	): ITypeMetaMerger<TTarget, TSource> {
 		return this.putType(type, TypeMetaMergerCollection.makeTypeMetaMerger(type, valueFactory))
 	}
@@ -663,7 +610,7 @@ export class TypeMetaMergerCollection
 
 export function registerMergeable<TTarget extends IMergeable<TTarget, TSource>, TSource extends any>(
 	type: TMergeableClass<TTarget, TSource>,
-	valueFactory?: () => TTarget,
+	valueFactory?: (source: TTarget|TSource) => TTarget,
 ) {
 	TypeMetaMergerCollection.default.putMergeableType(type, valueFactory)
 }
@@ -692,13 +639,23 @@ export class ObjectMerger implements IObjectMerger {
 		base: TTarget,
 		older: TTarget|TSource,
 		newer: TTarget|TSource,
-		valueType?: TClass<TTarget>,
 		set?: (value: TTarget) => void,
-		valueFactory?: () => TTarget,
-		preferClone?: boolean,
+		valueType?: TClass<TTarget>,
+		valueFactory?: (source: TTarget|TSource|any) => TTarget,
+		preferCloneOlder?: boolean,
+		preferCloneNewer?: boolean,
 	): boolean {
 		const merger = new MergerVisitor(this.typeMeta)
-		const mergedValue = merger.merge(base, older, newer, set, valueType, valueFactory, preferClone)
+		const mergedValue = merger.merge(
+			base,
+			older,
+			newer,
+			set,
+			valueType,
+			valueFactory,
+			preferCloneOlder,
+			preferCloneNewer,
+		)
 		return mergedValue
 	}
 }

@@ -35,9 +35,9 @@ export interface IMerger {
 		base: TTarget,
 		older: TTarget|TSource,
 		newer: TTarget|TSource,
-		valueType?: TClass<TTarget>,
 		set?: (value: TTarget) => void,
-		valueFactory?: (source: TTarget|TSource) => TTarget,
+		valueType?: TClass<TTarget>,
+		valueFactory?: (source: TTarget|TSource|any) => TTarget,
 		preferCloneOlder?: boolean,
 		preferCloneNewer?: boolean,
 	): boolean
@@ -69,7 +69,7 @@ export interface IObjectMerger extends IMerger {
 // region Mergeable
 
 export interface IMergeable<TTarget, TSource extends any> {
-	/** @return true, false, null - is equals */
+	/** @return true, false, null - is non strict equals */
 	canMerge?: (source: TTarget|TSource) => boolean
 	merge(
 		merge: IMergeValue,
