@@ -1,10 +1,12 @@
 /* tslint:disable:no-empty no-identical-functions */
+import { copy as deepClone } from 'fast-copy'
 import { deepEqual as deepStrictEqual } from 'fast-equals'
 import {BASE, NEWER, OLDER, TestMerger} from './src/TestMerger'
 
 declare const assert
 declare const after
 declare function deepStrictEqual(a, b): boolean
+declare function deepClone<T extends any>(o: T): T
 
 describe('common > extensions > merge > ObjectMerger', function() {
 	this.timeout(20000)
