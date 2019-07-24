@@ -1,3 +1,4 @@
+/* tslint:disable:no-construct use-primitive-type */
 import {ITypeMetaMerger} from '../../../../../../../main/common/extensions/merge/contracts'
 import {ObjectMerger, TypeMetaMergerCollection} from '../../../../../../../main/common/extensions/merge/mergers'
 import {TClass} from '../../../../../../../main/common/extensions/TypeMeta'
@@ -30,10 +31,10 @@ interface IMergerOptionsVariant {
 	setFunc?: boolean
 }
 
-export const NONE = { NONE: 0 }
-export const BASE = { BASE: 0 }
-export const OLDER = { OLDER: 0 }
-export const NEWER = { NEWER: 0 }
+export const NONE = new String('NONE')
+export const BASE = new String('BASE')
+export const OLDER = new String('OLDER')
+export const NEWER = new String('NEWER')
 
 interface IMergerExpected {
 	error?: (new () => Error)|((variant: IMergerOptionsVariant) => new () => Error)
@@ -88,6 +89,58 @@ const merger = new ObjectMerger(TypeMetaMergerCollectionMock.default)
 
 type IMergerAction = (...args: any[]) => any
 
+function resolveValue(opts, value, functions: boolean, refers: boolean) {
+	if (functions && typeof value === 'function' && !(value instanceof Error)) {
+		value = value(opts)
+	}
+
+	if (refers) {
+		switch (value) {
+			case BASE:
+				return opts.base
+			case OLDER:
+				return opts.older
+			case NEWER:
+				return opts.newer
+			default:
+				return value
+		}
+	}
+
+	return value
+}
+
+function resolveOptions(
+	options: IMergerOptionsVariant & IOptionsVariant<IMergerAction, IMergerExpected>,
+	functions: boolean,
+	refers: boolean,
+): IMergerOptionsVariant & IOptionsVariant<IMergerAction, IMergerExpected> {
+
+	const resolvedOptions: IMergerOptionsVariant & IOptionsVariant<IMergerAction, IMergerExpected>
+		= {} as any
+
+	for (const key in options) {
+		if (Object.prototype.hasOwnProperty.call(options, key)) {
+			resolvedOptions[key] = key === 'action'
+				? options[key]
+				: resolveValue(options, options[key], false, refers)
+		}
+	}
+
+	resolvedOptions.expected = {}
+	for (const key in options.expected) {
+		if (Object.prototype.hasOwnProperty.call(options.expected, key)) {
+			resolvedOptions.expected[key] = resolveValue(resolvedOptions, options.expected[key], functions, refers)
+		}
+	}
+
+	return resolvedOptions
+}
+
+export function isRefer(value) {
+	return value === BASE || value === OLDER || value === NEWER
+}
+
 export class TestMerger extends TestVariants<
 	IMergerAction,
 	IMergerExpected,
@@ -104,17 +157,20 @@ export class TestMerger extends TestVariants<
 		base: [],
 		older: [],
 		newer: [],
-		preferCloneOlderParam: [false, true],
-		preferCloneNewerParam: [false, true],
-		preferCloneMeta: [false, true],
+		preferCloneOlderParam: [null, false, true],
+		preferCloneNewerParam: [null, false, true],
+		preferCloneMeta: [null, false, true],
 		valueType: [null],
 		valueFactory: [null],
 		setFunc: [false, true],
 	}
 
 	protected testVariant(
-		options: IMergerOptionsVariant & IOptionsVariant<IMergerAction, IMergerExpected>,
+		inputOptions: IMergerOptionsVariant & IOptionsVariant<IMergerAction, IMergerExpected>,
 	) {
+		inputOptions = resolveOptions(inputOptions, true, false)
+		const options = resolveOptions(inputOptions, false, true)
+
 		let error
 		for (let debugIteration = 0; debugIteration < 3; debugIteration++) {
 			try {
@@ -128,33 +184,20 @@ export class TestMerger extends TestVariants<
 					}
 				}
 
-				const resolveValue = value => {
-					switch (value) {
+				const isPreferClone = initialValue => {
+					switch (initialValue) {
 						case BASE:
-							return options.base
-						case OLDER:
-							return options.older
+							return false
 						case NEWER:
-							return options.newer
+							return options.preferCloneNewerParam == null
+								? options.preferCloneMeta
+								: options.preferCloneNewerParam
+						case OLDER:
+							return options.preferCloneOlderParam == null
+								? options.preferCloneMeta
+								: options.preferCloneOlderParam
 						default:
-							return value
-					}
-				}
-
-				const expected: IMergerExpected = {}
-				for (const key in options.expected) {
-					if (Object.prototype.hasOwnProperty.call(options.expected, key)) {
-						let value = options.expected[key]
-						if (typeof value === 'function' && !(value instanceof Error)) {
-							value = value(options)
-						}
-						expected[key] = resolveValue(value)
-					}
-				}
-
-				for (const key in options) {
-					if (Object.prototype.hasOwnProperty.call(options, key)) {
-						options[key] = resolveValue(options[key])
+							return false
 					}
 				}
 
@@ -170,45 +213,53 @@ export class TestMerger extends TestVariants<
 						setValue = o
 						setCount++
 					}),
-					options.valueType,
-					options.valueFactory,
 					options.preferCloneOlderParam,
 					options.preferCloneNewerParam,
+					options.valueType,
+					options.valueFactory,
 				)
 
-				if (expected.error) {
-					assert.throws(action, expected.error)
+				if (options.expected.error) {
+					assert.throws(action, options.expected.error)
 				} else {
 					action()
 
-					assert.strictEqual(returnValue, expected.returnValue)
+					assert.strictEqual(returnValue, options.expected.returnValue)
 
-					// tslint:disable-next-line:no-shadowed-variable
-					const assertValue = (actual, expected) => {
-						if (actual != null && typeof actual === 'object' || typeof actual === 'function') {
-							assert.notStrictEqual(actual, options.base)
-							assert.notStrictEqual(actual, options.older)
-							assert.notStrictEqual(actual, options.newer)
+					const assertValue = (actual, expected, initial) => {
+						if (isPreferClone(initial) !== true) {
+							assert.strictEqual(actual, expected)
+						} else {
+							if (actual !== NONE && actual != null && typeof actual === 'object' || typeof actual === 'function') {
+								assert.notStrictEqual(actual, expected)
+								assert.notStrictEqual(actual, options.base)
+								assert.notStrictEqual(actual, options.older)
+								assert.notStrictEqual(actual, options.newer)
+							}
+							assert.deepStrictEqual(actual, expected)
 						}
-						assert.deepStrictEqual(actual, expected)
 					}
 
-					assertValue(setValue, options.setFunc ? expected.setValue : NONE)
-					assert.strictEqual(setCount, options.setFunc && expected.setValue !== NONE ? 1 : 0)
+					assertValue(setValue,
+						options.setFunc ? options.expected.setValue : NONE,
+						options.setFunc ? inputOptions.expected.setValue : NONE,
+					)
+					assert.strictEqual(setCount,
+						options.setFunc && options.expected.setValue !== NONE ? 1 : 0)
 
-					assertValue(options.base, expected.base)
-					assertValue(options.older, expected.older)
-					assertValue(options.newer, expected.newer)
+					assertValue(options.base, options.expected.base, inputOptions.expected.base)
+					assertValue(options.older, options.expected.older, inputOptions.expected.older)
+					assertValue(options.newer, options.expected.newer, inputOptions.expected.newer)
 				}
 
 				break
 			} catch (ex) {
 				if (!debugIteration) {
 					console.log(`Error in: ${
-						options.description
+						inputOptions.description
 						}\n${
-						JSON.stringify(options, null, 4)
-						}\n${options.action.toString()}\n${ex.stack}`)
+						JSON.stringify(inputOptions, null, 4)
+						}\n${inputOptions.action.toString()}\n${ex.stack}`)
 					error = ex
 				}
 			} finally {

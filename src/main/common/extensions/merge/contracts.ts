@@ -8,10 +8,10 @@ export type IMergeValue = <TTarget extends any, TSource extends any>(
 	older: TTarget|TSource,
 	newer: TTarget|TSource,
 	set?: (value: TTarget) => void,
-	valueType?: TClass<TTarget>,
-	valueFactory?: (source: TTarget|TSource) => TTarget,
 	preferCloneOlder?: boolean,
 	preferCloneNewer?: boolean,
+	valueType?: TClass<TTarget>,
+	valueFactory?: (source: TTarget|TSource) => TTarget,
 ) => boolean
 
 export interface IMergerVisitor {
@@ -27,6 +27,8 @@ export interface IValueMerger<TTarget extends any, TSource extends any> {
 		older: TTarget|TSource,
 		newer: TTarget|TSource,
 		set?: (value: TTarget) => void,
+		preferCloneOlder?: boolean,
+		preferCloneNewer?: boolean,
 	): boolean
 }
 
@@ -36,10 +38,10 @@ export interface IMerger {
 		older: TTarget|TSource,
 		newer: TTarget|TSource,
 		set?: (value: TTarget) => void,
-		valueType?: TClass<TTarget>,
-		valueFactory?: (source: TTarget|TSource|any) => TTarget,
 		preferCloneOlder?: boolean,
 		preferCloneNewer?: boolean,
+		valueType?: TClass<TTarget>,
+		valueFactory?: (source: TTarget|TSource|any) => TTarget,
 	): boolean
 }
 
@@ -75,6 +77,8 @@ export interface IMergeable<TTarget, TSource extends any> {
 		merge: IMergeValue,
 		older: TTarget|TSource,
 		newer: TTarget|TSource,
+		preferCloneOlder?: boolean,
+		preferCloneNewer?: boolean,
 	): boolean
 }
 

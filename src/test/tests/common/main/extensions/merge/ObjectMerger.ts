@@ -1,7 +1,11 @@
 /* tslint:disable:no-empty no-identical-functions */
+// @ts-ignore
+// noinspection ES6UnusedImports
 import { copy as deepClone } from 'fast-copy'
+// @ts-ignore
+// noinspection ES6UnusedImports
 import { deepEqual as deepStrictEqual } from 'fast-equals'
-import {BASE, NEWER, OLDER, TestMerger} from './src/TestMerger'
+import {BASE, isRefer, NEWER, NONE, OLDER, TestMerger} from './src/TestMerger'
 
 declare const assert
 declare const after
@@ -17,27 +21,42 @@ describe('common > extensions > merge > ObjectMerger', function() {
 		console.log('Total ObjectMerger tests >= ' + TestMerger.totalTests)
 	})
 
+	function canBeReferObject(value) {
+		return value != null
+			&& !isRefer(value)
+			&& (typeof value === 'object' || typeof value === 'function')
+	}
+
 	it('base', function() {
+		const common = [null, void 0, 0, 1, false, true, BASE, OLDER, NEWER]
 		testMerger({
-			base: [null, void 0, 0, 1, false, true],
-			older: [null, void 0, 0, 1, false, true],
-			newer: [null, void 0, 0, 1, false, true],
-			preferCloneOlderParam: [false, true],
-			preferCloneNewerParam: [false, true],
-			preferCloneMeta: [false, true],
+			base: [...common, {}, { x: {y: 1} }, { x: {y: 2, z: 3} }, { x: {y: 4}, z: 3 }],
+			older: [...common, {}, { x: {y: 1} }, { x: {y: 2, z: 3} }, { x: {y: 4}, z: 3 }],
+			newer: [...common, {}, { x: {y: 1} }, { x: {y: 2, z: 3} }, { x: {y: 4}, z: 3 }],
+			preferCloneOlderParam: [null, false, true],
+			preferCloneNewerParam: [null, false, true],
+			preferCloneMeta: [null, false, true],
 			valueType: [null],
 			valueFactory: [null],
 			setFunc: [false, true],
 			exclude: o => {
-				if (deepStrictEqual(o.base, o.newer)) {
+				if (o.newer === NEWER || (o.base === NEWER || o.older === NEWER) && !canBeReferObject(o.newer)) {
+					return true
+				}
+				if (o.older === OLDER || (o.base === OLDER || o.newer === OLDER) && !canBeReferObject(o.older)) {
+					return true
+				}
+				if (o.base === BASE || (o.older === BASE || o.newer === BASE) && !canBeReferObject(o.base)) {
 					return true
 				}
 				return false
 			},
 			expected: {
 				error: null,
-				returnValue: true,
-				setValue: NEWER,
+				returnValue: o => !deepStrictEqual(o.base, o.newer) || !deepStrictEqual(o.base, o.older),
+				setValue: o => !deepStrictEqual(o.base, o.newer)
+					? NEWER
+					: !deepStrictEqual(o.base, o.older) ? OLDER : NONE,
 				base: BASE,
 				older: OLDER,
 				newer: NEWER,
