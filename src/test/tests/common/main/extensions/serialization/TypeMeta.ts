@@ -2,7 +2,7 @@ import {TypeMetaCollectionWithId} from '../../../../../../main/common/extensions
 
 declare const assert
 
-describe('common > serialization > TypeMeta', function() {
+describe('common > extensions> serialization > TypeMeta', function() {
 	it('base', function() {
 		class Class1 {}
 		class Class2 extends Class1 {}

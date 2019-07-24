@@ -14,7 +14,7 @@ import {TClass} from '../../../../../../main/common/extensions/TypeMeta'
 
 declare const assert
 
-describe('common > serialization > serializers', function() {
+describe('common > extensions > serialization > serializers', function() {
 	// function testSerializer(
 	// 	type: TClass,
 	// 	constructorProps: string[],

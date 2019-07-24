@@ -1,3 +1,4 @@
+import {ObjectSerializer} from '../../../../../../../main/common/extensions/serialization/serializers'
 import {ICompare} from '../../../../../../../main/common/lists/contracts/ICompare'
 import {
 	IListChangedEvent,
@@ -6,7 +7,6 @@ import {
 import {IPropertyChangedEvent} from '../../../../../../../main/common/lists/contracts/IPropertyChanged'
 import {compareFast} from '../../../../../../../main/common/lists/helpers/compare'
 import {SortedList} from '../../../../../../../main/common/lists/SortedList'
-import {ObjectSerializer} from '../../../../../../../main/common/extensions/serialization/serializers'
 import {IOptionsVariant, IOptionsVariants, ITestCase, TestVariants} from '../../../helpers/TestVariants'
 
 declare const assert
@@ -311,7 +311,9 @@ export class TestList<T> extends TestVariants<
 
 	private static readonly _instance = new TestList()
 
-	public static test<T>(testCases: ITestCase<IListAction<T>, IListExpected<T>> & IListOptionsVariants<T>) {
+	public static test<T>(
+		testCases: ITestCase<IListAction<T>, IListExpected<T>, IListOptionsVariant<T>> & IListOptionsVariants<T>,
+	) {
 		let maxArrayLength = 0
 		if (testCases.array) {
 			for (let i = 0; i < testCases.array.length; i++) {

@@ -71,7 +71,8 @@ export interface TestActionsWithDescriptions<TAction extends AnyFunction>
 
 // endregion
 
-export interface ITestCase<TAction extends AnyFunction, TExpected> {
+export interface ITestCase<TAction extends AnyFunction, TExpected, TOptionsVariant> {
+	exclude?: (variant: TOptionsVariant) => boolean
 	actions: Array<TestActionsWithDescription<TAction>>
 	expected: TExpected
 }
@@ -92,14 +93,16 @@ export abstract class TestVariants<
 
 	protected abstract testVariant(optionsVariant: TOptionsVariant & IOptionsVariant<TAction, TExpected>)
 
-	public test(testCases: ITestCase<TAction, TExpected> & TOptionsVariants) {
+	public test(testCases: ITestCase<TAction, TExpected, TOptionsVariant> & TOptionsVariants) {
 		const optionsVariants = {
 			...this.baseOptionsVariants as object,
 			...testCases as object,
 		} as TOptionsVariants
 
 		const expected = testCases.expected
+		const exclude = testCases.exclude
 		delete optionsVariants.expected
+		delete optionsVariants.exclude
 
 		const actionsWithDescriptions: Array<ITestActionsWithDescription<TAction>>
 			= expandArray(optionsVariants.actions)
@@ -116,12 +119,14 @@ export abstract class TestVariants<
 
 			for (const action of expandArray(actions)) {
 				for (const variant of variants) {
-					this.testVariant({
-						...variant as any,
-						action,
-						description,
-						expected,
-					})
+					if (!exclude || !exclude(variant)) {
+						this.testVariant({
+							...variant as any,
+							action,
+							description,
+							expected,
+						})
+					}
 				}
 			}
 		}

@@ -1,3 +1,13 @@
+import {
+	IDeSerializeValue,
+	ISerializable,
+	ISerializedObject,
+	ISerializeValue,
+} from '../../../../../../../main/common/extensions/serialization/contracts'
+import {
+	ObjectSerializer,
+	registerSerializer,
+} from '../../../../../../../main/common/extensions/serialization/serializers'
 import {ArraySet} from '../../../../../../../main/common/lists/ArraySet'
 import {IPropertyChangedEvent} from '../../../../../../../main/common/lists/contracts/IPropertyChanged'
 import {
@@ -7,13 +17,6 @@ import {
 import {compareFast} from '../../../../../../../main/common/lists/helpers/compare'
 import {ObjectSet} from '../../../../../../../main/common/lists/ObjectSet'
 import {ObservableSet} from '../../../../../../../main/common/lists/ObservableSet'
-import {
-	IDeSerializeValue,
-	ISerializable,
-	ISerializedObject,
-	ISerializeValue,
-} from '../../../../../../../main/common/extensions/serialization/contracts'
-import {ObjectSerializer, registerSerializer} from '../../../../../../../main/common/extensions/serialization/serializers'
 import {IOptionsVariant, IOptionsVariants, ITestCase, TestVariants, THIS} from '../../../helpers/TestVariants'
 import {convertToObject, indexOfNaN} from './common'
 
@@ -354,7 +357,9 @@ export class TestSet<T> extends TestVariants<
 
 	private static readonly _instance = new TestSet()
 
-	public static test<T>(testCases: ITestCase<ISetAction<T>, ISetExpected<T>> & ISetOptionsVariants<T>) {
+	public static test<T>(
+		testCases: ITestCase<ISetAction<T>, ISetExpected<T>, ISetOptionsVariant<T>> & ISetOptionsVariants<T>,
+	) {
 		(TestSet._instance as TestSet<T>).test(testCases)
 	}
 }

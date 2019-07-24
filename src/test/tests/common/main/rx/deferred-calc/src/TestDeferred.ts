@@ -27,7 +27,7 @@ interface IDeferredCalcOptionsVariant {
 	throttleTime?: number,
 	maxThrottleTime?: number,
 	autoInvalidateInterval?: number,
-	reuseSetInstance?: boolean
+	reuseInstance?: boolean
 	autoCalc?: boolean
 }
 
@@ -47,7 +47,7 @@ interface IDeferredCalcOptionsVariants extends IOptionsVariants {
 	throttleTime?: number[],
 	maxThrottleTime?: number[],
 	autoInvalidateInterval?: number[],
-	reuseSetInstance?: boolean[]
+	reuseInstance?: boolean[]
 	autoCalc?: boolean[]
 }
 
@@ -111,7 +111,7 @@ function eventsToDisplay(events: IEvent[]): IEvent[] {
 			...event,
 			type: event.type == null
 				? event.type
-				: EventType[event.type] as any
+				: EventType[event.type] as any,
 		}
 	})
 }
@@ -140,7 +140,7 @@ export class TestDeferredCalc extends TestVariants<
 		maxThrottleTime: [null],
 		minTimeBetweenCalc: [null],
 		autoInvalidateInterval: [null],
-		reuseSetInstance: [false, true],
+		reuseInstance: [false, true],
 		autoCalc: [false],
 	}
 
@@ -155,7 +155,7 @@ export class TestDeferredCalc extends TestVariants<
 				let events: IEvent[]
 				let deferredCalc: DeferredCalc
 
-				if (options.reuseSetInstance) {
+				if (options.reuseInstance) {
 					staticCalcTime = 0
 					staticAutoCalc = false
 					staticDeferredCalc.minTimeBetweenCalc = null
@@ -291,7 +291,13 @@ export class TestDeferredCalc extends TestVariants<
 
 	private static readonly _instance: TestDeferredCalc = new TestDeferredCalc()
 
-	public static test(testCases: ITestCase<IDeferredCalcAction, IDeferredCalcExpected> & IDeferredCalcOptionsVariants) {
+	public static test(
+		testCases: ITestCase<
+			IDeferredCalcAction,
+			IDeferredCalcExpected,
+			IDeferredCalcOptionsVariant
+		> & IDeferredCalcOptionsVariants,
+	) {
 		TestDeferredCalc._instance.test(testCases)
 	}
 }
