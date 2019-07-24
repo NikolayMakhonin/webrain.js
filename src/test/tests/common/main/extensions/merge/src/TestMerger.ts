@@ -205,19 +205,21 @@ export class TestMerger extends TestVariants<
 				let setCount = 0
 				let returnValue: any = NONE
 
-				const action = () => returnValue = merger.merge(
-					options.base,
-					options.older,
-					options.newer,
-					options.setFunc && (o => {
-						setValue = o
-						setCount++
-					}),
-					options.preferCloneOlderParam,
-					options.preferCloneNewerParam,
-					options.valueType,
-					options.valueFactory,
-				)
+				const action = () => {
+					returnValue = merger.merge(
+						options.base,
+						options.older,
+						options.newer,
+						options.setFunc && (o => {
+							setValue = o
+							setCount++
+						}),
+						options.preferCloneOlderParam,
+						options.preferCloneNewerParam,
+						options.valueType,
+						options.valueFactory,
+					)
+				}
 
 				if (options.expected.error) {
 					assert.throws(action, options.expected.error)
@@ -226,8 +228,8 @@ export class TestMerger extends TestVariants<
 
 					assert.strictEqual(returnValue, options.expected.returnValue)
 
-					const assertValue = (actual, expected, initial) => {
-						if (isPreferClone(initial) !== true) {
+					const assertValue = (actual, expected, strict) => {
+						if (strict) {
 							assert.strictEqual(actual, expected)
 						} else {
 							if (actual !== NONE && actual != null && typeof actual === 'object' || typeof actual === 'function') {
@@ -241,15 +243,15 @@ export class TestMerger extends TestVariants<
 					}
 
 					assertValue(setValue,
-						options.setFunc ? options.expected.setValue : NONE,
-						options.setFunc ? inputOptions.expected.setValue : NONE,
+						options.expected.setValue,
+						isPreferClone(inputOptions.expected.setValue) !== true,
 					)
 					assert.strictEqual(setCount,
-						options.setFunc && options.expected.setValue !== NONE ? 1 : 0)
+						options.expected.setValue !== NONE ? 1 : 0)
 
-					assertValue(options.base, options.expected.base, inputOptions.expected.base)
-					assertValue(options.older, options.expected.older, inputOptions.expected.older)
-					assertValue(options.newer, options.expected.newer, inputOptions.expected.newer)
+					assertValue(options.base, options.expected.base, isRefer(inputOptions.expected.base))
+					assertValue(options.older, options.expected.older, isRefer(inputOptions.expected.older))
+					assertValue(options.newer, options.expected.newer, isRefer(inputOptions.expected.newer))
 				}
 
 				break

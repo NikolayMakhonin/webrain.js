@@ -54,9 +54,9 @@ describe('common > extensions > merge > ObjectMerger', function() {
 			expected: {
 				error: null,
 				returnValue: o => !deepStrictEqual(o.base, o.newer) || !deepStrictEqual(o.base, o.older),
-				setValue: o => !deepStrictEqual(o.base, o.newer)
-					? NEWER
-					: !deepStrictEqual(o.base, o.older) ? OLDER : NONE,
+				setValue: o => !o.setFunc || deepStrictEqual(o.base, o.newer)
+					? (!o.setFunc || deepStrictEqual(o.base, o.older) ? NONE : OLDER)
+					: NEWER,
 				base: BASE,
 				older: OLDER,
 				newer: NEWER,
