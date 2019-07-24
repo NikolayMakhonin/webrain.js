@@ -4,7 +4,7 @@ import {
 	IMergerVisitor, IMergeValue, IObjectMerger,
 	ITypeMetaMerger, ITypeMetaMergerCollection, IValueMerger,
 } from './contracts'
-import {mergeObject} from "./merge-object";
+import {mergeObject} from './merge-object'
 
 // region MergerVisitor
 
@@ -12,23 +12,8 @@ function isPrimitive(value) {
 	return value == null
 		|| typeof value === 'number'
 		|| typeof value === 'boolean'
+		|| typeof value === 'function'
 }
-
-// function getMerger<TTarget extends any, TSource extends any>(
-// 	meta: ITypeMetaMerger<TTarget, TSource>,
-// 	valueType: TClass<TTarget>,
-// ): IValueMerger<TTarget, TSource> {
-// 	const merger = meta.merger
-// 	if (!merger) {
-// 		throw new Error(`Class (${valueType && valueType.name}) type meta have no merger`)
-// 	}
-//
-// 	if (!merger.merge) {
-// 		throw new Error(`Class (${valueType && valueType.name}) merger have no merge method`)
-// 	}
-//
-// 	return merger
-// }
 
 class ValueState<TTarget, TSource> {
 	public mergerState: MergeState<TTarget, TSource>
@@ -296,151 +281,6 @@ export class MergerVisitor implements IMergerVisitor {
 		this.typeMeta = typeMeta
 	}
 
-	// public mergeOld<TTarget extends any, TSource extends any>(
-	// 	base: TTarget,
-	// 	older: TTarget|TSource,
-	// 	newer: TTarget|TSource,
-	// 	set?: (value: TTarget) => void,
-	// 	valueType?: TClass<TTarget>,
-	// 	valueFactory?: () => TTarget,
-	// 	preferClone?: boolean,
-	// ): boolean {
-	// 	if (base === newer) {
-	// 		if (base === older) {
-	// 			return false
-	// 		}
-	// 		newer = older
-	// 	}
-	//
-	// 	if (newer == null
-	// 		|| typeof newer === 'number'
-	// 		|| typeof newer === 'boolean'
-	// 	) {
-	// 		if (set) { set(newer) }
-	// 		return true
-	// 	}
-	//
-	// 	let meta: ITypeMetaMerger<TTarget, TSource>
-	// 	// multiple call
-	// 	const getMeta = () => {
-	// 		if (!meta) {
-	// 			meta = this._typeMeta.getMeta(valueType || base.constructor)
-	// 			if (!meta) {
-	// 				throw new Error(`Class (${base.constructor.name}) have no type meta`)
-	// 			}
-	// 		}
-	//
-	// 		return meta
-	// 	}
-	//
-	// 	let merger: IValueMerger<TTarget, TSource>
-	// 	const getMerger = () => {
-	// 		if (!merger) {
-	// 			merger = getMeta().merger
-	// 			if (!merger) {
-	// 				throw new Error(`Class (${newer.constructor.name}) type meta have no merger`)
-	// 			}
-	//
-	// 			if (!merger.merge) {
-	// 				throw new Error(`Class (${newer.constructor.name}) merger have no merge method`)
-	// 			}
-	// 		}
-	//
-	// 		return merger
-	// 	}
-	//
-	// 	if (base != null
-	// 		&& typeof base !== 'number'
-	// 		&& typeof base !== 'boolean'
-	// 	) {
-	// 		const canMerge = getMerger().canMerge
-	// 		if (!canMerge && newer.constructor !== base.constructor
-	// 			|| canMerge && !canMerge(base, newer)) {
-	// 			if (set) {
-	// 				set(newer)
-	// 			}
-	// 			return true
-	// 		}
-	// 	}
-	//
-	// 	const nextMerge: IMergeValue = <TNextTarget, TNextSource>(
-	// 		next_base: TNextTarget,
-	// 		next_older: TNextSource,
-	// 		next_newer: TNextSource,
-	// 		next_set?: (value: TNextTarget) => void,
-	// 		next_valueType?: TClass<TNextTarget>,
-	// 		next_valueFactory?: () => TNextTarget,
-	// 		next_preferClone?: boolean,
-	// 	) => this.merge(
-	// 		next_base,
-	// 		next_older,
-	// 		next_newer,
-	// 		next_set,
-	// 		next_valueType,
-	// 		next_valueFactory,
-	// 		next_preferClone == null ? preferClone : next_preferClone,
-	// 	)
-	//
-	// 	const merge = (setFunc: (value: TTarget) => void): boolean => getMerger().merge(
-	// 		nextMerge,
-	// 		base,
-	// 		older,
-	// 		newer,
-	// 		setFunc,
-	// 	)
-	//
-	// 	valueFactory = (valueType || valueFactory)
-	// 		&& (preferClone || getMeta().preferClone)
-	// 		&& (valueFactory || getMeta().valueFactory)
-	//
-	// 	const clone = value => {
-	// 		let setValue
-	// 		if (valueFactory) {
-	// 			setValue = base = valueFactory()
-	// 			merge(val => {
-	// 				if (val !== base) {
-	// 					throw new Error(`Class (${val.constructor.name}) cannot be clone using constructor and merger`)
-	// 				}
-	// 			})
-	// 		} else {
-	// 			setValue = value
-	// 		}
-	//
-	// 		if (set) { set(setValue) }
-	// 	}
-	//
-	// 	if (base == null
-	// 		|| typeof base === 'number'
-	// 		|| typeof base === 'boolean'
-	// 	) {
-	// 		clone(newer)
-	// 		return true
-	// 	}
-	//
-	// 	// if (merge(valueFactory
-	// 	// 	? value => clone(newer)
-	// 	// 	: set)
-	// 	// ) {
-	// 	// 	return true
-	// 	// }
-	// 	//
-	// 	// if (newer === older) {
-	// 	// 	return false
-	// 	// }
-	// 	//
-	// 	// newer = older
-	// 	//
-	// 	// if (!canBeSource && newer.constructor !== base.constructor
-	// 	// 	|| canBeSource && !meta.canBeSource(newer)) {
-	// 	// 	if (set) { set(newer) }
-	// 	// 	return true
-	// 	// }
-	//
-	// 	return merge(valueFactory
-	// 		? value => clone(newer)
-	// 		: set)
-	// }
-
 	public getNextMerge(
 		preferCloneOlder: boolean,
 		preferCloneNewer: boolean,
@@ -480,6 +320,7 @@ export class MergerVisitor implements IMergerVisitor {
 			if (base === older) {
 				return false
 			}
+			preferCloneNewer = preferCloneOlder
 			newer = older
 		}
 

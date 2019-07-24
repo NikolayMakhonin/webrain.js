@@ -68,7 +68,8 @@ export class TypeMetaMergerCollectionMock extends TypeMetaMergerCollection {
 
 	public getMeta(type: TClass<any>): ITypeMetaMerger<any, any> {
 		const meta = super.getMeta(type)
-		if (this.changeMetaFunc) {
+		// assert.ok(meta, `Meta not found for type: ${type}`)
+		if (meta && this.changeMetaFunc) {
 			const resetFunc = this.changeMetaFunc(meta)
 			if (resetFunc) {
 				this._resetFuncs.push(resetFunc)
@@ -95,15 +96,26 @@ function resolveValue(opts, value, functions: boolean, refers: boolean) {
 	}
 
 	if (refers) {
-		switch (value) {
-			case BASE:
-				return opts.base
-			case OLDER:
-				return opts.older
-			case NEWER:
-				return opts.newer
-			default:
-				return value
+		let i = 0
+		while (true) {
+			i++
+			if (i > 10) {
+				throw new Error(`Value cannot be resolved: ${value}`)
+			}
+
+			switch (value) {
+				case BASE:
+					value = opts.base
+					continue
+				case OLDER:
+					value = opts.older
+					continue
+				case NEWER:
+					value = opts.newer
+					continue
+			}
+
+			break
 		}
 	}
 
@@ -111,26 +123,27 @@ function resolveValue(opts, value, functions: boolean, refers: boolean) {
 }
 
 function resolveOptions(
-	options: IMergerOptionsVariant & IOptionsVariant<IMergerAction, IMergerExpected>,
+	optionsSource: IMergerOptionsVariant & IOptionsVariant<IMergerAction, IMergerExpected>,
+	optionsParams: IMergerOptionsVariant & IOptionsVariant<IMergerAction, IMergerExpected>,
 	functions: boolean,
 	refers: boolean,
 ): IMergerOptionsVariant & IOptionsVariant<IMergerAction, IMergerExpected> {
 
 	const resolvedOptions: IMergerOptionsVariant & IOptionsVariant<IMergerAction, IMergerExpected>
-		= {} as any
+		= {...optionsSource} as any
 
-	for (const key in options) {
-		if (Object.prototype.hasOwnProperty.call(options, key)) {
+	for (const key in optionsSource) {
+		if (Object.prototype.hasOwnProperty.call(optionsSource, key)) {
 			resolvedOptions[key] = key === 'action'
-				? options[key]
-				: resolveValue(options, options[key], false, refers)
+				? optionsSource[key]
+				: resolveValue(optionsParams || resolvedOptions, optionsSource[key], false, refers)
 		}
 	}
 
 	resolvedOptions.expected = {}
-	for (const key in options.expected) {
-		if (Object.prototype.hasOwnProperty.call(options.expected, key)) {
-			resolvedOptions.expected[key] = resolveValue(resolvedOptions, options.expected[key], functions, refers)
+	for (const key in optionsSource.expected) {
+		if (Object.prototype.hasOwnProperty.call(optionsSource.expected, key)) {
+			resolvedOptions.expected[key] = resolveValue(optionsParams || resolvedOptions, optionsSource.expected[key], functions, refers)
 		}
 	}
 
@@ -168,19 +181,26 @@ export class TestMerger extends TestVariants<
 	protected testVariant(
 		inputOptions: IMergerOptionsVariant & IOptionsVariant<IMergerAction, IMergerExpected>,
 	) {
-		inputOptions = resolveOptions(inputOptions, true, false)
-		const options = resolveOptions(inputOptions, false, true)
-
 		let error
 		for (let debugIteration = 0; debugIteration < 3; debugIteration++) {
+			let initialOptions
 			try {
+				const options = resolveOptions(inputOptions, null, true, true)
+				initialOptions = resolveOptions(inputOptions, options, true, false)
+
 				if (options.preferCloneMeta == null) {
 					TypeMetaMergerCollectionMock.default.changeMetaFunc = null
 				} else {
 					TypeMetaMergerCollectionMock.default.changeMetaFunc = meta => {
-						const preferClone = meta.preferClone
-						meta.preferClone = options.preferCloneMeta
-						return () => meta.preferClone = preferClone
+						if (!(meta as any).isMocked) {
+							const preferClone = meta.preferClone;
+							(meta as any).isMocked = true
+							meta.preferClone = options.preferCloneMeta
+							return () => {
+								meta.preferClone = preferClone
+								delete (meta as any).isMocked
+							}
+						}
 					}
 				}
 
@@ -189,13 +209,13 @@ export class TestMerger extends TestVariants<
 						case BASE:
 							return false
 						case NEWER:
-							return options.preferCloneNewerParam == null
-								? options.preferCloneMeta
-								: options.preferCloneNewerParam
+							return options.preferCloneMeta == null
+								? options.preferCloneNewerParam || options.preferCloneOlderParam && options.newer === options.older
+								: options.preferCloneMeta
 						case OLDER:
-							return options.preferCloneOlderParam == null
-								? options.preferCloneMeta
-								: options.preferCloneOlderParam
+							return options.preferCloneMeta == null
+								? options.preferCloneOlderParam || options.preferCloneNewerParam && options.newer === options.older
+								: options.preferCloneMeta
 						default:
 							return false
 					}
@@ -226,8 +246,6 @@ export class TestMerger extends TestVariants<
 				} else {
 					action()
 
-					assert.strictEqual(returnValue, options.expected.returnValue)
-
 					const assertValue = (actual, expected, strict) => {
 						if (strict) {
 							assert.strictEqual(actual, expected)
@@ -242,26 +260,28 @@ export class TestMerger extends TestVariants<
 						}
 					}
 
+					assert.strictEqual(returnValue, options.expected.returnValue)
+
 					assertValue(setValue,
 						options.expected.setValue,
-						isPreferClone(inputOptions.expected.setValue) !== true,
+						isPreferClone(initialOptions.expected.setValue) !== true,
 					)
 					assert.strictEqual(setCount,
 						options.expected.setValue !== NONE ? 1 : 0)
 
-					assertValue(options.base, options.expected.base, isRefer(inputOptions.expected.base))
-					assertValue(options.older, options.expected.older, isRefer(inputOptions.expected.older))
-					assertValue(options.newer, options.expected.newer, isRefer(inputOptions.expected.newer))
+					assertValue(options.base, options.expected.base, isRefer(initialOptions.expected.base))
+					assertValue(options.older, options.expected.older, isRefer(initialOptions.expected.older))
+					assertValue(options.newer, options.expected.newer, isRefer(initialOptions.expected.newer))
 				}
 
 				break
 			} catch (ex) {
 				if (!debugIteration) {
 					console.log(`Error in: ${
-						inputOptions.description
+						initialOptions.description
 						}\n${
-						JSON.stringify(inputOptions, null, 4)
-						}\n${inputOptions.action.toString()}\n${ex.stack}`)
+						JSON.stringify(initialOptions, null, 4)
+						}\n${initialOptions.action.toString()}\n${ex.stack}`)
 					error = ex
 				}
 			} finally {

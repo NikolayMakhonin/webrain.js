@@ -40,6 +40,9 @@ describe('common > extensions > merge > ObjectMerger', function() {
 			valueFactory: [null],
 			setFunc: [false, true],
 			exclude: o => {
+				if (typeof o.older === 'object' && typeof o.newer === 'object') {
+					return true
+				}
 				if (o.newer === NEWER || (o.base === NEWER || o.older === NEWER) && !canBeReferObject(o.newer)) {
 					return true
 				}
