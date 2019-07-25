@@ -276,7 +276,9 @@ class MergeState<TTarget, TSource> {
 			result = targetState.fill(sourceState.target)
 			setItem = targetState.clone
 		} else {
-			setItem = canMerge == null && sourceState.mustBeCloned && !targetState.mustBeCloned
+			setItem = canMerge == null
+				&& (targetState.target === base || sourceState.mustBeCloned)
+				&& !targetState.mustBeCloned
 				? targetState.clone
 				: sourceState.clone
 			result = setItem !== base
