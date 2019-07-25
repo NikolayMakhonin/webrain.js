@@ -1,7 +1,7 @@
 /* tslint:disable:no-empty no-identical-functions */
 // @ts-ignore
 // noinspection ES6UnusedImports
-import { copy as deepClone } from 'fast-copy'
+import deepClone from 'fast-copy'
 // @ts-ignore
 // noinspection ES6UnusedImports
 import { deepEqual as deepStrictEqual } from 'fast-equals'

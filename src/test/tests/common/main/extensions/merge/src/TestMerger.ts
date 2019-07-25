@@ -1,3 +1,6 @@
+// @ts-ignore
+// noinspection ES6UnusedImports
+import deepClone from 'fast-copy'
 /* tslint:disable:no-construct use-primitive-type */
 import {ITypeMetaMerger} from '../../../../../../../main/common/extensions/merge/contracts'
 import {ObjectMerger, TypeMetaMergerCollection} from '../../../../../../../main/common/extensions/merge/mergers'
@@ -5,6 +8,7 @@ import {TClass} from '../../../../../../../main/common/extensions/TypeMeta'
 import {IOptionsVariant, IOptionsVariants, ITestCase, TestVariants} from '../../../helpers/TestVariants'
 
 declare const assert
+declare function deepClone<T extends any>(o: T): T
 
 // export enum EqualsType {
 // 	Not,
@@ -226,6 +230,16 @@ export class TestMerger extends TestVariants<
 				let setCount = 0
 				let returnValue: any = NONE
 
+				const initialBase = isPreferClone(initialOptions.expected.base)
+					? deepClone(options.base)
+					: options.base
+				const initialOlder = isPreferClone(initialOptions.expected.older)
+					? deepClone(options.older)
+					: options.older
+				const initialNewer = isPreferClone(initialOptions.expected.newer)
+					? deepClone(options.newer)
+					: options.newer
+
 				const action = () => {
 					returnValue = merger.merge(
 						options.base,
@@ -270,6 +284,10 @@ export class TestMerger extends TestVariants<
 
 					assert.strictEqual(setCount,
 						options.expected.setValue !== NONE ? 1 : 0)
+
+					assert.deepStrictEqual(options.base, initialBase)
+					assert.deepStrictEqual(options.older, initialOlder)
+					assert.deepStrictEqual(options.newer, initialNewer)
 
 					assertValue(options.base, options.expected.base, isRefer(initialOptions.expected.base))
 					assertValue(options.older, options.expected.older, isRefer(initialOptions.expected.older))
