@@ -12,7 +12,7 @@ declare const assert
 // 	Strict,
 // }
 
-interface IMergerOptionsVariant {
+export interface IMergerOptionsVariant {
 	base?: any
 	older?: any
 	newer?: any
@@ -143,7 +143,8 @@ function resolveOptions(
 	resolvedOptions.expected = {}
 	for (const key in optionsSource.expected) {
 		if (Object.prototype.hasOwnProperty.call(optionsSource.expected, key)) {
-			resolvedOptions.expected[key] = resolveValue(optionsParams || resolvedOptions, optionsSource.expected[key], functions, refers)
+			resolvedOptions.expected[key] =
+				resolveValue(optionsParams || resolvedOptions, optionsSource.expected[key], functions, refers)
 		}
 	}
 
@@ -260,12 +261,13 @@ export class TestMerger extends TestVariants<
 						}
 					}
 
-					assert.strictEqual(returnValue, options.expected.returnValue)
-
 					assertValue(setValue,
 						options.expected.setValue,
 						isPreferClone(initialOptions.expected.setValue) !== true,
 					)
+
+					assert.strictEqual(returnValue, options.expected.returnValue)
+
 					assert.strictEqual(setCount,
 						options.expected.setValue !== NONE ? 1 : 0)
 

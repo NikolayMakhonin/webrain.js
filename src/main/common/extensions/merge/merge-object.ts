@@ -15,9 +15,7 @@ export function mergeObject<TObject extends object>(
 	let changed = false
 
 	for (const key in base) {
-		if (!Object.prototype.hasOwnProperty.call(older, key)
-			&& !Object.prototype.hasOwnProperty.call(newer, key)
-		) {
+		if (!Object.prototype.hasOwnProperty.call(newer, key)) {
 			delete base[key]
 			changed = true
 		}

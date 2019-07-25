@@ -102,10 +102,13 @@ class ValueState<TTarget, TSource> {
 		return _cloneInstance
 	}
 
-	public canMerge(source: TTarget|TSource): boolean {
+	public canMerge(source: TTarget|TSource, target?: TTarget): boolean {
 		const canMerge = this.merger.canMerge
 		if (canMerge) {
-			const result = canMerge(this.target, source)
+			if (target == null) {
+				target = this.target
+			}
+			const result = canMerge(target, source)
 			if (result == null) {
 				return null
 			}
@@ -125,7 +128,7 @@ class ValueState<TTarget, TSource> {
 			if (this.mustBeCloned) {
 				_clone = this.cloneInstance
 
-				const canMergeResult: boolean = this.canMerge(target)
+				const canMergeResult: boolean = this.canMerge(target, _clone)
 
 				switch (canMergeResult) {
 					case null:
@@ -226,7 +229,9 @@ class MergeState<TTarget, TSource> {
 			this._olderState = _olderState = new ValueState<TTarget, TSource>(
 				this,
 				this.older as any,
-				this.preferCloneOlder,
+				this.older === this.newer
+					? this.preferCloneNewer || this.preferCloneOlder
+					: this.preferCloneOlder,
 			)
 		}
 		return _olderState
@@ -379,7 +384,14 @@ export class MergerVisitor implements IMergerVisitor {
 				case null:
 					return mergeState.fill(mergeState.baseState, mergeState.olderState)
 				case false:
-					return mergeState.fill(mergeState.olderState, mergeState.newerState)
+					if (older === newer) {
+						if (set) {
+							set(mergeState.newerState.clone)
+						}
+					} else {
+						mergeState.fill(mergeState.olderState, mergeState.newerState)
+					}
+					return true
 			}
 
 			switch (mergeState.baseState.canMerge(older)) {
