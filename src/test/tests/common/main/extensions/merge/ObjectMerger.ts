@@ -6,6 +6,8 @@ import deepClone from 'fast-copy'
 // noinspection ES6UnusedImports
 import { deepEqual as deepStrictEqual } from 'fast-equals'
 import {BASE, IMergerOptionsVariant, isRefer, NEWER, NONE, OLDER, TestMerger} from './src/TestMerger'
+import {IMergeable, IMergeValue} from "../../../../../../main/common/extensions/merge/contracts";
+import {registerMergeable} from "../../../../../../main/common/extensions/merge/mergers";
 
 declare const assert
 declare const after
@@ -39,12 +41,43 @@ describe('common > extensions > merge > ObjectMerger', function() {
 		return !deepStrictEqual(o.base, o.newer) || !deepStrictEqual(o.base, o.older)
 	}
 
+	class Class implements IMergeable<Class, object> {
+		public value: any
+
+		constructor(value: any) {
+			this.value = value
+		}
+
+		public canMerge(source: (Class | object)): boolean {
+			if (source.constructor !== Class && source.constructor !== Object) {
+				return false
+			}
+			return true
+		}
+
+		public merge(
+			merge: IMergeValue,
+			older: Class | object,
+			newer: Class | object,
+			preferCloneOlder?: boolean,
+			preferCloneNewer?: boolean,
+		): boolean {
+			let changed = false
+			changed = merge(this.value, (older as any).value, (newer as any).value,
+				o => this.value = o) || changed
+
+			return changed
+		}
+	}
+
+	registerMergeable(Class)
+
 	it('combinations', function() {
 		const common = [null, void 0, 0, 1, false, true, '', '1', BASE, OLDER, NEWER]
 		testMerger({
-			base: [...common, {}, { a: {a: 1, b: 2}, b: 3 }, { a: {b: 4, c: 5}, c: 6 }, { a: {a: 7, b: 8}, d: 9 }, Object.freeze({ x: {y: 1} }), new Date(1), new Date(2)],
-			older: [...common, {}, { a: {a: 1, b: 2}, b: 3 }, { a: {b: 4, c: 5}, c: 6 }, { a: {a: 7, b: 8}, d: 9 }, Object.freeze({ x: {y: 1} }), new Date(1), new Date(2)],
-			newer: [...common, {}, { a: {a: 1, b: 2}, b: 3 }, { a: {b: 4, c: 5}, c: 6 }, { a: {a: 7, b: 8}, d: 9 }, Object.freeze({ x: {y: 1} }), new Date(1), new Date(2)],
+			base: [new Class(new Date(1)), new Class({ a: {a: 1, b: 2}, b: 3 }), new Class(Object.freeze({ x: {y: 1} })), ...common, {}, { a: {a: 1, b: 2}, b: 3 }, { a: {b: 4, c: 5}, c: 6 }, { a: {a: 7, b: 8}, d: 9 }, Object.freeze({ x: {y: 1} }), new Date(1), new Date(2)],
+			older: [new Class(new Date(1)), new Class({ a: {a: 1, b: 2}, b: 3 }), new Class(Object.freeze({ x: {y: 1} })), ...common, {}, { a: {a: 1, b: 2}, b: 3 }, { a: {b: 4, c: 5}, c: 6 }, { a: {a: 7, b: 8}, d: 9 }, Object.freeze({ x: {y: 1} }), new Date(1), new Date(2)],
+			newer: [new Class(new Date(1)), new Class({ a: {a: 1, b: 2}, b: 3 }), new Class(Object.freeze({ x: {y: 1} })), ...common, {}, { a: {a: 1, b: 2}, b: 3 }, { a: {b: 4, c: 5}, c: 6 }, { a: {a: 7, b: 8}, d: 9 }, Object.freeze({ x: {y: 1} }), new Date(1), new Date(2)],
 			preferCloneOlderParam: [null, false, true],
 			preferCloneNewerParam: [null, false, true],
 			preferCloneMeta: [null, false, true],
