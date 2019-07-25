@@ -26,12 +26,13 @@ export interface IOptionsVariants {
 function *generateOptions<TOptions extends AnyObject>(
 	base: TOptions,
 	optionsVariants: IOptionsVariants,
+	exclude: (variant: TOptions) => boolean,
 ): Iterable<TOptions> {
 	let hasChilds
 	for (const key in optionsVariants) {
 		if (Object.prototype.hasOwnProperty.call(optionsVariants, key)) {
 			for (const optionVariant of optionsVariants[key]) {
-				const variant = {
+				const variant =  {
 					...base as any,
 					[key]: optionVariant,
 				}
@@ -44,14 +45,14 @@ function *generateOptions<TOptions extends AnyObject>(
 
 				hasChilds = true
 
-				yield* generateOptions(variant, newOptionsVariants)
+				yield* generateOptions(variant, newOptionsVariants, exclude)
 			}
 
 			break
 		}
 	}
 
-	if (!hasChilds) {
+	if (!hasChilds && (!exclude || !exclude(base))) {
 		yield base
 	}
 }
@@ -108,7 +109,7 @@ export abstract class TestVariants<
 			= expandArray(optionsVariants.actions)
 		delete optionsVariants.actions
 
-		const variants = Array.from(generateOptions({} as TOptionsVariant, optionsVariants))
+		const variants = Array.from(generateOptions({} as TOptionsVariant, optionsVariants, exclude))
 
 		for (const actionsWithDescription of actionsWithDescriptions) {
 			let {actions, description} = actionsWithDescription
@@ -119,14 +120,12 @@ export abstract class TestVariants<
 
 			for (const action of expandArray(actions)) {
 				for (const variant of variants) {
-					if (!exclude || !exclude(variant)) {
-						this.testVariant({
+					this.testVariant({
 							...variant as any,
 							action,
 							description,
 							expected,
 						})
-					}
 				}
 			}
 		}

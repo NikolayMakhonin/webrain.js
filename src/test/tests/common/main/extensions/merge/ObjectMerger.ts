@@ -1,4 +1,4 @@
-/* tslint:disable:no-empty no-identical-functions */
+/* tslint:disable:no-empty no-identical-functions max-line-length */
 // @ts-ignore
 // noinspection ES6UnusedImports
 import deepClone from 'fast-copy'
@@ -13,7 +13,7 @@ declare function deepStrictEqual(a, b): boolean
 declare function deepClone<T extends any>(o: T): T
 
 describe('common > extensions > merge > ObjectMerger', function() {
-	this.timeout(20000)
+	this.timeout(60000)
 
 	const testMerger = TestMerger.test
 
@@ -24,7 +24,7 @@ describe('common > extensions > merge > ObjectMerger', function() {
 	function canBeReferObject(value) {
 		return value != null
 			&& !isRefer(value)
-			&& (typeof value === 'object' || typeof value === 'function')
+			&& (value.constructor === Object || typeof value === 'function')
 	}
 
 	function mustBeChanged(o: IMergerOptionsVariant) {
@@ -32,7 +32,7 @@ describe('common > extensions > merge > ObjectMerger', function() {
 			return false
 		}
 
-		if (o.base !== null && typeof o.base === 'object' && Object.isFrozen(o.base)) {
+		if (o.base != null && o.base.constructor === Object && Object.isFrozen(o.base)) {
 			return true
 		}
 
@@ -40,11 +40,11 @@ describe('common > extensions > merge > ObjectMerger', function() {
 	}
 
 	it('combinations', function() {
-		const common = [null, void 0, 0, 1, false, true, BASE, OLDER, NEWER]
+		const common = [null, void 0, 0, 1, false, true, '', '1', BASE, OLDER, NEWER]
 		testMerger({
-			base: [...common, {}, { x: {y: 1} }, { x: {y: 2, z: 3} }, { x: {y: 4}, z: 3 }, Object.freeze({ x: {y: 1} })],
-			older: [...common, {}, { x: {y: 1} }, { x: {y: 2, z: 3} }, { x: {y: 4}, z: 3 }, Object.freeze({ x: {y: 1} })],
-			newer: [...common, {}, { x: {y: 1} }, { x: {y: 2, z: 3} }, { x: {y: 4}, z: 3 }, Object.freeze({ x: {y: 1} })],
+			base: [...common, {}, { a: {a: 1, b: 2}, b: 3 }, { a: {b: 4, c: 5}, c: 6 }, { a: {a: 7, b: 8}, d: 9 }, Object.freeze({ x: {y: 1} }), new Date(1), new Date(2)],
+			older: [...common, {}, { a: {a: 1, b: 2}, b: 3 }, { a: {b: 4, c: 5}, c: 6 }, { a: {a: 7, b: 8}, d: 9 }, Object.freeze({ x: {y: 1} }), new Date(1), new Date(2)],
+			newer: [...common, {}, { a: {a: 1, b: 2}, b: 3 }, { a: {b: 4, c: 5}, c: 6 }, { a: {a: 7, b: 8}, d: 9 }, Object.freeze({ x: {y: 1} }), new Date(1), new Date(2)],
 			preferCloneOlderParam: [null, false, true],
 			preferCloneNewerParam: [null, false, true],
 			preferCloneMeta: [null, false, true],
@@ -52,7 +52,7 @@ describe('common > extensions > merge > ObjectMerger', function() {
 			valueFactory: [null],
 			setFunc: [false, true],
 			exclude: o => {
-				// if (typeof o.older === 'object' && typeof o.newer === 'object') {
+				// if (typeof o.older.constructor === Object && typeof o.newer.constructor === Object) {
 				// 	return true
 				// }
 				if (o.newer === NEWER || (o.base === NEWER || o.older === NEWER) && !canBeReferObject(o.newer)) {
@@ -73,14 +73,24 @@ describe('common > extensions > merge > ObjectMerger', function() {
 					if (!o.setFunc || !mustBeChanged(o)) {
 						return NONE
 					}
-					if (o.older != null && typeof o.older === 'object' && !Object.isFrozen(o.older)
-						&& o.newer != null && typeof o.newer === 'object'
+					if (o.older != null && o.older.constructor === Object && !Object.isFrozen(o.older)
+						&& o.newer != null && o.newer.constructor === Object
 					) {
 						return OLDER
 					}
+
+					if (!deepStrictEqual(o.base, o.newer)
+						&& o.older !== o.newer
+						&& deepStrictEqual(o.older, o.newer)
+						&& o.older instanceof Date && o.newer instanceof Date
+						&& o.preferCloneMeta == null && o.preferCloneNewerParam && !o.preferCloneOlderParam
+					) {
+						return OLDER
+					}
+
 					return !deepStrictEqual(o.base, o.newer)
 						|| o.newer !== o.base
-							&& o.base != null && typeof o.base === 'object' && Object.isFrozen(o.base)
+							&& o.base != null && o.base.constructor === Object && Object.isFrozen(o.base)
 						? NEWER
 						: OLDER
 				},
@@ -105,7 +115,7 @@ describe('common > extensions > merge > ObjectMerger', function() {
 			valueFactory: [null],
 			setFunc: [false, true],
 			exclude: o => {
-				if (typeof o.older === 'object' && typeof o.newer === 'object') {
+				if (o.older.constructor === Object && o.newer.constructor === Object) {
 					return true
 				}
 				if (o.newer === NEWER || (o.base === NEWER || o.older === NEWER) && !canBeReferObject(o.newer)) {

@@ -18,18 +18,20 @@ export interface IMergerVisitor {
 	merge: IMergeValue
 }
 
+export type IValueMerge<TTarget extends any, TSource extends any> = (
+	merge: IMergeValue,
+	base: TTarget,
+	older: TTarget|TSource,
+	newer: TTarget|TSource,
+	set?: (value: TTarget) => void,
+	preferCloneOlder?: boolean,
+	preferCloneNewer?: boolean,
+) => boolean
+
 export interface IValueMerger<TTarget extends any, TSource extends any> {
 	/** @return true, false, null - is equals */
 	canMerge?: (target: TTarget, source: TTarget|TSource) => boolean
-	merge(
-		merge: IMergeValue,
-		base: TTarget,
-		older: TTarget|TSource,
-		newer: TTarget|TSource,
-		set?: (value: TTarget) => void,
-		preferCloneOlder?: boolean,
-		preferCloneNewer?: boolean,
-	): boolean
+	merge?: IValueMerge<TTarget, TSource>
 }
 
 export interface IMerger {

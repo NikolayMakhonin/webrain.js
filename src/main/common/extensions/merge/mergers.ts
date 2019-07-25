@@ -2,7 +2,7 @@ import {TClass, TypeMetaCollection} from '../TypeMeta'
 import {
 	IMergeable,
 	IMergerVisitor, IMergeValue, IObjectMerger,
-	ITypeMetaMerger, ITypeMetaMergerCollection, IValueMerger,
+	ITypeMetaMerger, ITypeMetaMergerCollection, IValueMerge, IValueMerger,
 } from './contracts'
 import {mergeObject} from './merge-object'
 
@@ -20,15 +20,18 @@ class ValueState<TTarget, TSource> {
 	public target: TTarget
 	public type: TClass<TTarget>
 	public preferClone: boolean
+	public isBase: boolean
 
 	constructor(
 		mergerState: MergeState<TTarget, TSource>,
 		target: TTarget,
 		preferClone: boolean,
+		isBase: boolean,
 	) {
 		this.mergerState = mergerState
 		this.target = target
 		this.preferClone = preferClone
+		this.isBase = isBase
 		this.type = mergerState.valueType || target.constructor as any
 	}
 
@@ -54,12 +57,17 @@ class ValueState<TTarget, TSource> {
 			if (!_merger) {
 				throw new Error(`Class (${this.type && this.type.name}) type meta have no merger`)
 			}
-			if (!_merger.merge) {
-				throw new Error(`Class (${this.type && this.type.name}) merger have no merge method`)
-			}
 			this._merger = _merger
 		}
 		return _merger
+	}
+
+	public get merge(): IValueMerge<TTarget, TSource> {
+		const {merger} = this
+		if (!merger.merge) {
+			throw new Error(`Class (${this.type && this.type.name}) merger have no merge method`)
+		}
+		return merger.merge
 	}
 
 	private _mustBeCloned: boolean
@@ -67,7 +75,7 @@ class ValueState<TTarget, TSource> {
 		let { _mustBeCloned } = this
 		if (_mustBeCloned == null) {
 			const valueType = this.mergerState.valueType
-			const metaPreferClone = this.meta.preferClone
+			const metaPreferClone = this.isBase ? false : this.meta.preferClone
 			this._mustBeCloned = _mustBeCloned =
 				(metaPreferClone == null ? this.preferClone : metaPreferClone)
 				|| valueType && valueType !== this.target.constructor
@@ -135,7 +143,7 @@ class ValueState<TTarget, TSource> {
 						break
 					case true:
 						const { preferClone } = this
-						this.merger.merge(
+						this.merge(
 							this.mergerState.mergerVisitor.getNextMerge(preferClone, preferClone),
 							_clone,
 							target,
@@ -162,7 +170,7 @@ class ValueState<TTarget, TSource> {
 
 	public fill(source: TTarget|TSource): boolean {
 		const { preferClone } = this
-		return this.merger.merge(
+		return this.merge(
 			this.mergerState.mergerVisitor.getNextMerge(preferClone, preferClone),
 			this.clone,
 			source,
@@ -217,6 +225,7 @@ class MergeState<TTarget, TSource> {
 				this,
 				this.base,
 				false,
+				true,
 			)
 		}
 		return _baseState
@@ -232,6 +241,7 @@ class MergeState<TTarget, TSource> {
 				this.older === this.newer
 					? this.preferCloneNewer || this.preferCloneOlder
 					: this.preferCloneOlder,
+				false,
 			)
 		}
 		return _olderState
@@ -247,6 +257,7 @@ class MergeState<TTarget, TSource> {
 				this.older === this.newer
 					? this.preferCloneOlder || this.preferCloneNewer
 					: this.preferCloneNewer,
+				false,
 			)
 		}
 		return _newerState
@@ -265,13 +276,14 @@ class MergeState<TTarget, TSource> {
 			result = targetState.fill(sourceState.target)
 			setItem = targetState.clone
 		} else {
-			setItem = canMerge == null && !targetState.mustBeCloned
+			setItem = canMerge == null && sourceState.mustBeCloned && !targetState.mustBeCloned
 				? targetState.clone
 				: sourceState.clone
 			result = setItem !== base
 		}
 
 		if (setItem !== base && set) {
+			result = true
 			set(setItem)
 		}
 
@@ -397,9 +409,12 @@ export class MergerVisitor implements IMergerVisitor {
 			switch (mergeState.baseState.canMerge(older)) {
 				case null:
 				case false:
-					return mergeState.fill(mergeState.baseState, mergeState.newerState)
+					if (mergeState.fill(mergeState.baseState, mergeState.newerState)) {
+						return true
+					}
+					return mergeState.fill(mergeState.baseState, mergeState.olderState)
 				case true:
-					return mergeState.baseState.merger.merge(
+					return mergeState.baseState.merge(
 						this.getNextMerge(preferCloneOlder, preferCloneNewer),
 						base,
 						older,
@@ -550,6 +565,7 @@ registerMerger<string, string>(String as any, {
 			return true
 		},
 	},
+	preferClone: false,
 })
 
 // endregion
@@ -559,7 +575,7 @@ registerMerger<string, string>(String as any, {
 registerMerger<object, object>(Object, {
 	merger: {
 		canMerge(target: object, source: object): boolean {
-			if (source == null || typeof source !== 'object' || Object.isFrozen(target)) {
+			if (source.constructor !== Object || Object.isFrozen(target)) {
 				return false
 			}
 			return true
@@ -576,6 +592,24 @@ registerMerger<object, object>(Object, {
 			return mergeObject(merge, base, older, newer, preferCloneOlder, preferCloneNewer)
 		},
 	},
+})
+
+// endregion
+
+// region Date
+
+registerMerger<Date, Date>(Date, {
+	merger: {
+		canMerge(target: Date, source: Date): boolean {
+			if (source.constructor !== Date) {
+				return false
+			}
+			return target.getTime() === source.getTime()
+				? null
+				: false
+		},
+	},
+	valueFactory: (source: Date) => new Date(source),
 })
 
 // endregion

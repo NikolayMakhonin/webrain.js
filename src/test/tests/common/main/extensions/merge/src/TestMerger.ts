@@ -198,14 +198,17 @@ export class TestMerger extends TestVariants<
 				} else {
 					TypeMetaMergerCollectionMock.default.changeMetaFunc = meta => {
 						if (!(meta as any).isMocked) {
-							const preferClone = meta.preferClone;
-							(meta as any).isMocked = true
-							meta.preferClone = options.preferCloneMeta
-							return () => {
-								meta.preferClone = preferClone
-								delete (meta as any).isMocked
+							const preferClone = meta.preferClone
+							if (preferClone !== false) {
+								(meta as any).isMocked = true
+								meta.preferClone = options.preferCloneMeta
+								return () => {
+									meta.preferClone = preferClone
+									delete (meta as any).isMocked
+								}
 							}
 						}
+						return null
 					}
 				}
 
