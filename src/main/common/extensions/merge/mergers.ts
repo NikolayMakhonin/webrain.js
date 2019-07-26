@@ -130,7 +130,7 @@ class ValueState<TTarget, TSource> {
 			}
 			return result
 		}
-		return this.target.constructor !== this.type
+		return this.target.constructor === this.type
 	}
 
 	private _clone: TTarget
@@ -479,19 +479,21 @@ export class MergerVisitor implements IMergerVisitor {
 
 					return mergeState.fill(mergeState.baseState, mergeState.olderState)
 				case true:
+					let setItem = mergeState.baseState.clone
 					const result = mergeState.baseState.merge(
 						this.getNextMerge(preferCloneOlder, preferCloneNewer),
-						mergeState.baseState.clone,
+						setItem,
 						older,
 						newer,
-						o => {
-							throw new Error(`Class (${mergeState.baseState.type.name}) cannot be merged`)
-						},
+						set ? o => setItem = o : null,
 						preferCloneOlder,
 						preferCloneNewer,
 					)
 
-					if (result && mergeState.baseState.mustBeCloned) {
+					if (setItem !== mergeState.baseState.clone) {
+						set(setItem)
+						return true
+					} else if (result && mergeState.baseState.mustBeCloned) {
 						if (set) {
 							set(mergeState.baseState.clone)
 						} else {
@@ -629,6 +631,12 @@ export class ObjectMerger implements IObjectMerger {
 
 registerMerger<string, string>(String as any, {
 	merger: {
+		// canMerge(target: object, source: object): boolean {
+		// 	if (typeof source !== 'string') {
+		// 		return false
+		// 	}
+		// 	return true
+		// },
 		merge(
 			merge: IMergeValue,
 			base: string,

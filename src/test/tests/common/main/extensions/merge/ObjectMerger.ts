@@ -275,6 +275,29 @@ describe('common > extensions > merge > ObjectMerger', function() {
 		})
 	})
 
+	it('strings', function() {
+		testMerger({
+			base: ['', '1', '2'],
+			older: ['2'],
+			newer: ['3'],
+			preferCloneOlderParam: [null],
+			preferCloneNewerParam: [null],
+			preferCloneMeta: [null],
+			valueType: [null],
+			valueFactory: [null],
+			setFunc: [true],
+			expected: {
+				error: null,
+				returnValue: true,
+				setValue: '3',
+				base: BASE,
+				older: OLDER,
+				newer: NEWER,
+			},
+			actions: null,
+		})
+	})
+
 	it('merge 3 objects', function() {
 		testMerger({
 			base: [{ a: {a: 1, b: 2}, b: 3 }],
