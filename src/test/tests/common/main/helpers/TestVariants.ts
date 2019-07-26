@@ -109,7 +109,8 @@ export abstract class TestVariants<
 			= expandArray(optionsVariants.actions)
 		delete optionsVariants.actions
 
-		const variants = Array.from(generateOptions({} as TOptionsVariant, optionsVariants, exclude))
+		const variants = generateOptions({} as TOptionsVariant, optionsVariants, exclude)
+		// variants = Array.from(variants)
 
 		for (const actionsWithDescription of actionsWithDescriptions) {
 			let {actions, description} = actionsWithDescription

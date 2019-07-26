@@ -29,7 +29,11 @@ describe('common > extensions > merge > ObjectMerger', function() {
 			&& (value.constructor === Object || typeof value === 'function')
 	}
 
-	function mustBeChanged(o: IMergerOptionsVariant) {
+	function mustBeSet(o: IMergerOptionsVariant) {
+		if (!o.setFunc) {
+			return false
+		}
+
 		if (o.base === o.older && o.base === o.newer) {
 			return false
 		}
@@ -46,6 +50,14 @@ describe('common > extensions > merge > ObjectMerger', function() {
 		}
 
 		return !deepStrictEqual(o.base, o.newer) || !deepStrictEqual(o.base, o.older)
+	}
+
+	function mustBeFilled(o: IMergerOptionsVariant) {
+		return !o.preferCloneBase
+			&& o.base != null && o.base.constructor === Object
+			&& (!deepStrictEqual(o.base, o.newer) && o.newer != null && o.newer.constructor === Object
+				|| deepStrictEqual(o.base, o.newer)
+					&& !deepStrictEqual(o.base, o.older) && o.older != null && o.older.constructor === Object)
 	}
 
 	class Class implements IMergeable<Class, object> {
@@ -122,6 +134,14 @@ describe('common > extensions > merge > ObjectMerger', function() {
 				if (o.base === BASE || (o.older === BASE || o.newer === BASE) && !canBeReferObject(o.base)) {
 					return true
 				}
+
+				if (o.base != null && typeof o.base === 'object'
+					&& o.older != null && typeof o.older === 'object'
+					&& o.newer != null && typeof o.newer === 'object'
+				) {
+					return true
+				}
+
 				if (o.preferCloneMeta != null
 					&& (o.older != null && typeof o.older === 'object'
 						|| o.newer != null && typeof o.newer === 'object')
@@ -132,7 +152,7 @@ describe('common > extensions > merge > ObjectMerger', function() {
 				if (typeof o.base === 'object' && !Object.isFrozen(o.base) && !isRefer(o.base)) {
 					o.base = deepClone(o.base)
 				}
-				if (typeof o.older === 'object' && !Object.isFrozen(o.older) && !isRefer(o.base)) {
+				if (typeof o.older === 'object' && !Object.isFrozen(o.older) && !isRefer(o.older)) {
 					o.older = deepClone(o.older)
 				}
 
@@ -140,19 +160,48 @@ describe('common > extensions > merge > ObjectMerger', function() {
 			},
 			expected: {
 				error: null,
-				returnValue: mustBeChanged,
+				returnValue: o => mustBeSet(o) || mustBeFilled(o),
 				setValue: o => {
 					const deepStrictEqual2 = deepStrictEqual
 
-					if (!o.setFunc || !mustBeChanged(o)) {
+					if (!mustBeSet(o)) {
 						return NONE
 					}
 
-					if (o.base != null && o.base.constructor === Object && !Object.isFrozen(o.base)
+					if (o.base != null && o.base.constructor === Object) {
+						if (o.newer != null && o.newer.constructor === Object) {
+							if (deepStrictEqual2(o.base, o.newer)) {
+								if (o.older != null && o.older.constructor === Object) {
+									return o.preferCloneBase
+										? deepClone(o.older)
+										: NONE
+								} else {
+									return OLDER
+								}
+							} else {
+								return o.preferCloneBase
+									? deepClone(o.newer)
+									: NONE
+							}
+						}
+					} else if (
+						o.older != null && o.older.constructor === Object
+						&& o.newer != null && o.newer.constructor === Object
+					) {
+						return o.preferCloneOlder
+							? deepClone(o.newer)
+							: OLDER
+					}
+
+					if (o.base != null && o.base.constructor === Object
 						&& o.older != null && o.older.constructor === Object
 						&& o.newer != null && o.newer.constructor === Object
 					) {
-						return NONE
+						return o.preferCloneBase
+							? deepClone(deepStrictEqual2(o.base, o.newer)
+								? o.older
+								: o.newer)
+							: NONE
 					}
 
 					if (o.base instanceof Class
@@ -226,39 +275,75 @@ describe('common > extensions > merge > ObjectMerger', function() {
 		})
 	})
 
-	xit('specific', function() {
-		const common = [null, void 0, 0, 1, false, true, BASE, OLDER, NEWER]
+	it('merge 3 objects', function() {
 		testMerger({
-			base: [...common, {}, { x: {y: 1} }, { x: {y: 2, z: 3} }, { x: {y: 4}, z: 3 }],
-			older: [...common, {}, { x: {y: 1} }, { x: {y: 2, z: 3} }, { x: {y: 4}, z: 3 }],
-			newer: [...common, {}, { x: {y: 1} }, { x: {y: 2, z: 3} }, { x: {y: 4}, z: 3 }],
-			preferCloneOlderParam: [null, false, true],
-			preferCloneNewerParam: [null, false, true],
-			preferCloneMeta: [null, false, true],
+			base: [{ a: {a: 1, b: 2}, b: 3 }],
+			older: [{ a: {a: 4, b: 5}, c: 6 }],
+			newer: [{ a: {a: 7, b: 2}, d: 9 }],
+			preferCloneOlderParam: [null],
+			preferCloneNewerParam: [null],
+			preferCloneMeta: [null],
 			valueType: [null],
 			valueFactory: [null],
 			setFunc: [false, true],
-			exclude: o => {
-				if (o.older.constructor === Object && o.newer.constructor === Object) {
-					return true
-				}
-				if (o.newer === NEWER || (o.base === NEWER || o.older === NEWER) && !canBeReferObject(o.newer)) {
-					return true
-				}
-				if (o.older === OLDER || (o.base === OLDER || o.newer === OLDER) && !canBeReferObject(o.older)) {
-					return true
-				}
-				if (o.base === BASE || (o.older === BASE || o.newer === BASE) && !canBeReferObject(o.base)) {
-					return true
-				}
-				return false
-			},
 			expected: {
 				error: null,
-				returnValue: o => !deepStrictEqual(o.base, o.newer) || !deepStrictEqual(o.base, o.older),
-				setValue: o => !o.setFunc || deepStrictEqual(o.base, o.newer)
-					? (!o.setFunc || deepStrictEqual(o.base, o.older) ? NONE : OLDER)
-					: NEWER,
+				returnValue: true,
+				setValue: NONE,
+				base: { a: {a: 7, b: 5}, c: 6, d: 9 },
+				older: OLDER,
+				newer: NEWER,
+			},
+			actions: null,
+		})
+	})
+
+	it('value type', function() {
+		testMerger({
+			base: [{ a: {a: 1, b: 2}, b: 3 }],
+			older: [{ a: {a: 4, b: 5}, c: 6 }],
+			newer: [{ a: {a: 7, b: 2}, d: 9 }],
+			preferCloneOlderParam: [null],
+			preferCloneNewerParam: [null],
+			preferCloneMeta: [null],
+			valueType: [Class],
+			valueFactory: [null],
+			setFunc: [true],
+			expected: {
+				error: null,
+				returnValue: true,
+				setValue: new Class({ a: {a: 7, b: 5}, c: 6, d: 9 }),
+				base: BASE,
+				older: OLDER,
+				newer: NEWER,
+			},
+			actions: null,
+		})
+
+		testMerger({
+			base: [null, void 0, 0, 1, false, true, '', '1'],
+			older: [{ a: {a: 4, b: 5}, c: 6 }],
+			newer: [{ a: {a: 7, b: 2}, d: 9 }],
+			preferCloneOlderParam: [null],
+			preferCloneNewerParam: [null],
+			preferCloneMeta: [null],
+			valueType: [Class],
+			valueFactory: [null, o => {
+				const instance = new Class(null);
+				(instance as any).custom = true
+				return instance
+			}],
+			setFunc: [true],
+			expected: {
+				error: null,
+				returnValue: true,
+				setValue: o => {
+					const value = new Class({ a: {a: 7, b: 2}, d: 9 })
+					if (o.valueFactory) {
+						(value as any).custom = true
+					}
+					return value
+				},
 				base: BASE,
 				older: OLDER,
 				newer: NEWER,

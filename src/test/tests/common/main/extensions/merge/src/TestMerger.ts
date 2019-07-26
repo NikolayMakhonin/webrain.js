@@ -35,6 +35,7 @@ export interface IMergerOptionsVariant {
 	setFunc?: boolean
 
 	// Calculated:
+	preferCloneBase?: boolean
 	preferCloneOlder?: boolean
 	preferCloneNewer?: boolean
 }
@@ -101,6 +102,13 @@ type IMergerAction = (...args: any[]) => any
 function isPreferClone(options, initialValue): boolean {
 	switch (initialValue) {
 		case BASE:
+			if (options.base != null && options.base.constructor === Object && Object.isFrozen(options.base)) {
+				return true
+			}
+			return options.preferCloneMeta == null
+				? options.preferCloneOlderParam && options.base === options.older
+					|| options.preferCloneNewerParam && options.base === options.newer
+				: options.preferCloneMeta
 		case NONE:
 			return false
 		case NEWER:
@@ -185,6 +193,7 @@ function resolveOptions(
 		}
 	}
 
+	resolvedOptions.preferCloneBase = isPreferClone(optionsParams || resolvedOptions, BASE)
 	resolvedOptions.preferCloneOlder = isPreferClone(optionsParams || resolvedOptions, OLDER)
 	resolvedOptions.preferCloneNewer = isPreferClone(optionsParams || resolvedOptions, NEWER)
 
@@ -263,16 +272,16 @@ export class TestMerger extends TestVariants<
 				let returnValue: any = NONE
 
 				const initialBase = isPreferClone(initialOptions, initialOptions.expected.base)
-					? deepClone(options.base)
-					: options.base
+					? deepClone(options.expected.base)
+					: options.expected.base
 				const initialOlder = isPreferClone(initialOptions, initialOptions.expected.older)
 					&& !(options.older === options.base && !isPreferClone(initialOptions, initialOptions.expected.base))
-					? deepClone(options.older)
-					: options.older
+					? deepClone(options.expected.older)
+					: options.expected.older
 				const initialNewer = isPreferClone(initialOptions, initialOptions.expected.newer)
 					&& !(options.newer === options.base && !isPreferClone(initialOptions, initialOptions.expected.base))
-					? deepClone(options.newer)
-					: options.newer
+					? deepClone(options.expected.newer)
+					: options.expected.newer
 
 				const action = () => {
 					returnValue = merger.merge(
@@ -323,9 +332,9 @@ export class TestMerger extends TestVariants<
 					assert.deepStrictEqual(options.older, initialOlder)
 					assert.deepStrictEqual(options.newer, initialNewer)
 
-					assertValue(options.base, options.expected.base, isRefer(initialOptions.expected.base))
-					assertValue(options.older, options.expected.older, isRefer(initialOptions.expected.older))
-					assertValue(options.newer, options.expected.newer, isRefer(initialOptions.expected.newer))
+					// assertValue(options.base, options.expected.base, isRefer(initialOptions.expected.base))
+					// assertValue(options.older, options.expected.older, isRefer(initialOptions.expected.older))
+					// assertValue(options.newer, options.expected.newer, isRefer(initialOptions.expected.newer))
 				}
 
 				assert.deepStrictEqual(inputOptions, inputOptionsClone)
@@ -333,7 +342,7 @@ export class TestMerger extends TestVariants<
 				break
 			} catch (ex) {
 				if (!debugIteration) {
-					console.log(`Error in: ${
+					console.log(`Test number: ${TestMerger.totalTests}\r\nError in: ${
 						initialOptions.description
 						}\n${
 						JSON.stringify(initialOptions, null, 4)

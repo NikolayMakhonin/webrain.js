@@ -82,7 +82,7 @@ class ValueState<TTarget, TSource> {
 			}
 
 			this._mustBeCloned = _mustBeCloned =
-				(metaPreferClone != null || this.isBase ? metaPreferClone : this.preferClone)
+				(metaPreferClone != null ? metaPreferClone : this.preferClone)
 				|| valueType && valueType !== this.target.constructor
 		}
 		return _mustBeCloned
@@ -274,24 +274,36 @@ class MergeState<TTarget, TSource> {
 		const canMerge = targetState.canMerge(sourceState.target)
 		const {base, set} = this
 
-		let setItem
 		let result
 		if (canMerge === true) {
 			result = targetState.fill(sourceState.target)
-			setItem = targetState.clone
+			if (targetState.target !== base && set) {
+				result = true
+				set(targetState.clone)
+			}
+		} else if (canMerge == null
+			&& (targetState.target === base || sourceState.mustBeCloned)
+			&& !targetState.mustBeCloned
+		) {
+			if (targetState.target !== base && set) {
+				result = true
+				set(targetState.target)
+			} else {
+				result = false
+			}
 		} else {
-			setItem = canMerge == null
-				&& (targetState.target === base || sourceState.mustBeCloned)
-				&& !targetState.mustBeCloned
-				? targetState.clone
-				: sourceState.clone
-			result = setItem !== base
+			if (set) {
+				result = true // setItem !== base
+				set(sourceState.clone)
+			} else {
+				result = false
+			}
 		}
 
-		if (setItem !== base && set) {
-			result = true
-			set(setItem)
-		}
+		// if (targetState.target !== base && set) {
+		// 	result = true
+		// 	set(setItem)
+		// }
 
 		return result
 	}
@@ -357,8 +369,11 @@ export class MergerVisitor implements IMergerVisitor {
 		}
 
 		if (isPrimitive(newer)) {
-			if (set) { set(newer as any) }
-			return true
+			if (set) {
+				set(newer as any)
+				return true
+			}
+			return false
 		}
 
 		if (base === older) {
@@ -386,55 +401,82 @@ export class MergerVisitor implements IMergerVisitor {
 				if (isPrimitive(older) || older === newer) {
 					set(mergeState.newerState.clone)
 				} else {
-					mergeState.fill(
+					return mergeState.fill(
 						mergeState.olderState,
 						mergeState.newerState,
 					)
 				}
+
+				return true
 			}
 
-			return true
+			return false
 		} else if (isPrimitive(older)) {
 			switch (mergeState.baseState.canMerge(newer)) {
 				case null:
 					if (set) {
 						set(older as any)
+						return true
 					}
 					break
 				case false:
 					if (set) {
 						set(mergeState.newerState.clone)
+						return true
 					}
 					break
 				case true:
-					if (!mergeState.baseState.fill(newer) && set) {
-						set(older as any)
+					const result = mergeState.baseState.fill(newer)
+					if (!result) {
+						if (set) {
+							set(older as any)
+							return true
+						}
+					} else if (mergeState.baseState.mustBeCloned) {
+						if (set) {
+							set(mergeState.baseState.clone)
+							return true
+						} else {
+							return false
+						}
 					}
-					break
+
+					return result
 			}
 
-			return true
+			return false
 		} else {
 			switch (mergeState.baseState.canMerge(newer)) {
 				case null:
 					return mergeState.fill(mergeState.baseState, mergeState.olderState)
 				case false:
-					if (older === newer) {
-						if (set) {
+					if (set) {
+						if (older === newer) {
 							set(mergeState.newerState.clone)
+							return true
+						} else {
+							return mergeState.fill(mergeState.olderState, mergeState.newerState)
 						}
 					} else {
-						mergeState.fill(mergeState.olderState, mergeState.newerState)
+						return false
 					}
-					return true
 			}
 
 			switch (mergeState.baseState.canMerge(older)) {
 				case null:
 				case false:
-					if (mergeState.fill(mergeState.baseState, mergeState.newerState)) {
-						return true
+					if (mergeState.baseState.fill(newer)) {
+						if (mergeState.baseState.mustBeCloned) {
+							if (set) {
+								set(mergeState.baseState.clone)
+								return true
+							}
+							return false
+						} else {
+							return true
+						}
 					}
+
 					return mergeState.fill(mergeState.baseState, mergeState.olderState)
 				case true:
 					const result = mergeState.baseState.merge(
@@ -449,8 +491,12 @@ export class MergerVisitor implements IMergerVisitor {
 						preferCloneNewer,
 					)
 
-					if (result && set && mergeState.baseState.mustBeCloned) {
-						set(mergeState.baseState.clone)
+					if (result && mergeState.baseState.mustBeCloned) {
+						if (set) {
+							set(mergeState.baseState.clone)
+						} else {
+							return false
+						}
 					}
 
 					return result
