@@ -33,6 +33,10 @@ export interface IMergerOptionsVariant {
 	valueType?: TClass<any>
 	valueFactory?: (source) => any
 	setFunc?: boolean
+
+	// Calculated:
+	preferCloneOlder?: boolean
+	preferCloneNewer?: boolean
 }
 
 export const NONE = new String('NONE')
@@ -94,6 +98,30 @@ const merger = new ObjectMerger(TypeMetaMergerCollectionMock.default)
 
 type IMergerAction = (...args: any[]) => any
 
+function isPreferClone(options, initialValue): boolean {
+	switch (initialValue) {
+		case BASE:
+		case NONE:
+			return false
+		case NEWER:
+			if (options.newer != null && options.newer.constructor === Object && Object.isFrozen(options.newer)) {
+				return true
+			}
+			return options.preferCloneMeta == null
+				? options.preferCloneNewerParam || options.preferCloneOlderParam && options.newer === options.older
+				: options.preferCloneMeta
+		case OLDER:
+			if (options.older != null && options.older.constructor === Object && Object.isFrozen(options.older)) {
+				return true
+			}
+			return options.preferCloneMeta == null
+				? options.preferCloneOlderParam || options.preferCloneNewerParam && options.newer === options.older
+				: options.preferCloneMeta
+		default:
+			return true
+	}
+}
+
 function resolveValue(opts, value, functions: boolean, refers: boolean) {
 	if (functions && typeof value === 'function' && !(value instanceof Error)) {
 		value = value(opts)
@@ -131,6 +159,7 @@ function resolveOptions(
 	optionsParams: IMergerOptionsVariant & IOptionsVariant<IMergerAction, IMergerExpected>,
 	functions: boolean,
 	refers: boolean,
+	clone: boolean,
 ): IMergerOptionsVariant & IOptionsVariant<IMergerAction, IMergerExpected> {
 
 	const resolvedOptions: IMergerOptionsVariant & IOptionsVariant<IMergerAction, IMergerExpected>
@@ -138,11 +167,24 @@ function resolveOptions(
 
 	for (const key in optionsSource) {
 		if (Object.prototype.hasOwnProperty.call(optionsSource, key)) {
+			let value = optionsSource[key]
+			switch (key) {
+				case 'base':
+				case 'older':
+					value = clone && !Object.isFrozen(value) && !isRefer(value)
+						? deepClone(value)
+						: value
+					break
+			}
+
 			resolvedOptions[key] = key === 'action'
-				? optionsSource[key]
-				: resolveValue(optionsParams || resolvedOptions, optionsSource[key], false, refers)
+				? value
+				: resolveValue(optionsParams || resolvedOptions, value, false, refers)
 		}
 	}
+
+	resolvedOptions.preferCloneOlder = isPreferClone(optionsParams || resolvedOptions, OLDER)
+	resolvedOptions.preferCloneNewer = isPreferClone(optionsParams || resolvedOptions, NEWER)
 
 	resolvedOptions.expected = {}
 	for (const key in optionsSource.expected) {
@@ -188,10 +230,12 @@ export class TestMerger extends TestVariants<
 	) {
 		let error
 		for (let debugIteration = 0; debugIteration < 3; debugIteration++) {
-			let initialOptions
+			let initialOptions = inputOptions
+			const inputOptionsClone = deepClone(inputOptions)
 			try {
-				const options = resolveOptions(inputOptions, null, true, true)
-				initialOptions = resolveOptions(inputOptions, options, true, false)
+				let options = resolveOptions(initialOptions, null, false, true, true)
+				options = resolveOptions(options, options, true, true, false)
+				initialOptions = resolveOptions(initialOptions, options, true, false, true)
 
 				if (options.preferCloneMeta == null) {
 					TypeMetaMergerCollectionMock.default.changeMetaFunc = null
@@ -199,7 +243,7 @@ export class TestMerger extends TestVariants<
 					TypeMetaMergerCollectionMock.default.changeMetaFunc = meta => {
 						if (!(meta as any).isMocked) {
 							const preferClone = meta.preferClone
-							if (preferClone !== false) {
+							if (preferClone !== false && typeof preferClone !== 'function') {
 								(meta as any).isMocked = true
 								meta.preferClone = options.preferCloneMeta
 								return () => {
@@ -212,34 +256,17 @@ export class TestMerger extends TestVariants<
 					}
 				}
 
-				const isPreferClone = initialValue => {
-					switch (initialValue) {
-						case BASE:
-							return false
-						case NEWER:
-							return options.preferCloneMeta == null
-								? options.preferCloneNewerParam || options.preferCloneOlderParam && options.newer === options.older
-								: options.preferCloneMeta
-						case OLDER:
-							return options.preferCloneMeta == null
-								? options.preferCloneOlderParam || options.preferCloneNewerParam && options.newer === options.older
-								: options.preferCloneMeta
-						default:
-							return false
-					}
-				}
-
 				let setValue = NONE
 				let setCount = 0
 				let returnValue: any = NONE
 
-				const initialBase = isPreferClone(initialOptions.expected.base)
+				const initialBase = isPreferClone(initialOptions, initialOptions.expected.base)
 					? deepClone(options.base)
 					: options.base
-				const initialOlder = isPreferClone(initialOptions.expected.older)
+				const initialOlder = isPreferClone(initialOptions, initialOptions.expected.older)
 					? deepClone(options.older)
 					: options.older
-				const initialNewer = isPreferClone(initialOptions.expected.newer)
+				const initialNewer = isPreferClone(initialOptions, initialOptions.expected.newer)
 					? deepClone(options.newer)
 					: options.newer
 
@@ -280,7 +307,7 @@ export class TestMerger extends TestVariants<
 
 					assertValue(setValue,
 						options.expected.setValue,
-						isPreferClone(initialOptions.expected.setValue) !== true,
+						isPreferClone(initialOptions, initialOptions.expected.setValue) !== true,
 					)
 
 					assert.strictEqual(returnValue, options.expected.returnValue)
@@ -296,6 +323,8 @@ export class TestMerger extends TestVariants<
 					assertValue(options.older, options.expected.older, isRefer(initialOptions.expected.older))
 					assertValue(options.newer, options.expected.newer, isRefer(initialOptions.expected.newer))
 				}
+
+				assert.deepStrictEqual(inputOptions, inputOptionsClone)
 
 				break
 			} catch (ex) {

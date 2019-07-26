@@ -48,7 +48,7 @@ export interface IMerger {
 }
 
 export interface ITypeMetaMerger<TTarget extends any, TSource extends any> extends ITypeMeta {
-	preferClone?: boolean
+	preferClone?: boolean|((target: TTarget) => boolean)
 	valueFactory?: (source: TTarget|TSource) => TTarget
 	merger: IValueMerger<TTarget, TSource>
 }

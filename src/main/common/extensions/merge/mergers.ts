@@ -75,7 +75,12 @@ class ValueState<TTarget, TSource> {
 		let { _mustBeCloned } = this
 		if (_mustBeCloned == null) {
 			const valueType = this.mergerState.valueType
-			const metaPreferClone = this.isBase ? false : this.meta.preferClone
+
+			let metaPreferClone = this.isBase ? false : this.meta.preferClone
+			if (typeof metaPreferClone === 'function') {
+				metaPreferClone = metaPreferClone(this.target)
+			}
+
 			this._mustBeCloned = _mustBeCloned =
 				(metaPreferClone == null ? this.preferClone : metaPreferClone)
 				|| valueType && valueType !== this.target.constructor
@@ -577,7 +582,7 @@ registerMerger<string, string>(String as any, {
 registerMerger<object, object>(Object, {
 	merger: {
 		canMerge(target: object, source: object): boolean {
-			if (source.constructor !== Object || Object.isFrozen(target)) {
+			if (source.constructor !== Object) { // || Object.isFrozen(target)) {
 				return false
 			}
 			return true
@@ -594,6 +599,7 @@ registerMerger<object, object>(Object, {
 			return mergeObject(merge, base, older, newer, preferCloneOlder, preferCloneNewer)
 		},
 	},
+	preferClone: o => Object.isFrozen(o) ? true : null,
 })
 
 // endregion
