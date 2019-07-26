@@ -14,15 +14,28 @@ export function mergeObject<TObject extends object>(
 ): boolean {
 	let changed = false
 
+	let deleted
+
+	const deleteItem = (key: string) => {
+		if (!deleted) {
+			deleted = { [key]: true }
+		} else {
+			deleted[key] = true
+		}
+		delete base[key]
+		changed = true
+	}
+
 	for (const key in base) {
-		if (!Object.prototype.hasOwnProperty.call(newer, key)) {
-			delete base[key]
-			changed = true
+		if (!Object.prototype.hasOwnProperty.call(older, key)
+			|| !Object.prototype.hasOwnProperty.call(newer, key)
+		) {
+			deleteItem(key)
 		}
 	}
 
 	for (const key in newer) {
-		if (Object.prototype.hasOwnProperty.call(newer, key)) {
+		if (Object.prototype.hasOwnProperty.call(newer, key) && (!deleted || !deleted[key])) {
 			const baseItem = Object.prototype.hasOwnProperty.call(base, key)
 				? base[key]
 				: NONE
@@ -37,7 +50,7 @@ export function mergeObject<TObject extends object>(
 
 			changed = merge(baseItem, olderItem, newerItem, o => {
 				if (o === NONE) {
-					delete base[key]
+					deleteItem(key)
 				} else {
 					base[key] = o
 				}
@@ -47,7 +60,7 @@ export function mergeObject<TObject extends object>(
 
 	if (older !== newer) {
 		for (const key in older) {
-			if (!Object.prototype.hasOwnProperty.call(newer, key)) {
+			if (!Object.prototype.hasOwnProperty.call(newer, key) && (!deleted || !deleted[key])) {
 				const baseItem = Object.prototype.hasOwnProperty.call(base, key)
 					? base[key]
 					: NONE
@@ -58,7 +71,7 @@ export function mergeObject<TObject extends object>(
 
 				changed = merge(baseItem, olderItem, olderItem, o => {
 					if (o === NONE) {
-						delete base[key]
+						deleteItem(key)
 					} else {
 						base[key] = o
 					}

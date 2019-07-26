@@ -76,13 +76,13 @@ class ValueState<TTarget, TSource> {
 		if (_mustBeCloned == null) {
 			const valueType = this.mergerState.valueType
 
-			let metaPreferClone = this.isBase ? false : this.meta.preferClone
+			let metaPreferClone = this.meta.preferClone
 			if (typeof metaPreferClone === 'function') {
 				metaPreferClone = metaPreferClone(this.target)
 			}
 
 			this._mustBeCloned = _mustBeCloned =
-				(metaPreferClone == null ? this.preferClone : metaPreferClone)
+				(metaPreferClone != null || this.isBase ? metaPreferClone : this.preferClone)
 				|| valueType && valueType !== this.target.constructor
 		}
 		return _mustBeCloned
@@ -197,6 +197,7 @@ class MergeState<TTarget, TSource> {
 	public set: (value: TTarget) => void
 	public preferCloneOlder: boolean
 	public preferCloneNewer: boolean
+	public preferCloneBase: boolean
 	public valueType: TClass<TTarget>
 	public valueFactory: (source: TTarget|TSource) => TTarget
 
@@ -208,6 +209,7 @@ class MergeState<TTarget, TSource> {
 		set: (value: TTarget) => void,
 		preferCloneOlder: boolean,
 		preferCloneNewer: boolean,
+		preferCloneBase: boolean,
 		valueType: TClass<TTarget>,
 		valueFactory: (source: TTarget|TSource) => TTarget,
 	) {
@@ -218,6 +220,7 @@ class MergeState<TTarget, TSource> {
 		this.set = set
 		this.preferCloneOlder = preferCloneOlder
 		this.preferCloneNewer = preferCloneNewer
+		this.preferCloneBase = preferCloneBase
 		this.valueType = valueType
 		this.valueFactory = valueFactory
 	}
@@ -229,7 +232,7 @@ class MergeState<TTarget, TSource> {
 			this._baseState = _baseState = new ValueState<TTarget, TSource>(
 				this,
 				this.base,
-				false,
+				this.preferCloneBase,
 				true,
 			)
 		}
@@ -243,9 +246,7 @@ class MergeState<TTarget, TSource> {
 			this._olderState = _olderState = new ValueState<TTarget, TSource>(
 				this,
 				this.older as any,
-				this.older === this.newer
-					? this.preferCloneNewer || this.preferCloneOlder
-					: this.preferCloneOlder,
+				this.preferCloneOlder,
 				false,
 			)
 		}
@@ -259,9 +260,7 @@ class MergeState<TTarget, TSource> {
 			this._newerState = _newerState = new ValueState<TTarget, TSource>(
 				this,
 				this.newer as any,
-				this.older === this.newer
-					? this.preferCloneOlder || this.preferCloneNewer
-					: this.preferCloneNewer,
+				this.preferCloneNewer,
 				false,
 			)
 		}
@@ -296,6 +295,13 @@ class MergeState<TTarget, TSource> {
 
 		return result
 	}
+}
+
+function mergePreferClone(o1, o2) {
+	if (o1 || o2) {
+		return true
+	}
+	return o1 == null ? o2 : o1
 }
 
 export class MergerVisitor implements IMergerVisitor {
@@ -340,10 +346,12 @@ export class MergerVisitor implements IMergerVisitor {
 		valueType?: TClass<TTarget>,
 		valueFactory?: (source: TTarget|TSource|any) => TTarget,
 	): boolean {
+		let preferCloneBase = null
 		if (base === newer) {
 			if (base === older) {
 				return false
 			}
+			preferCloneBase = preferCloneNewer
 			preferCloneNewer = preferCloneOlder
 			newer = older
 		}
@@ -351,6 +359,13 @@ export class MergerVisitor implements IMergerVisitor {
 		if (isPrimitive(newer)) {
 			if (set) { set(newer as any) }
 			return true
+		}
+
+		if (base === older) {
+			preferCloneBase = preferCloneOlder = mergePreferClone(preferCloneBase, preferCloneOlder)
+		}
+		if (older === newer) {
+			preferCloneOlder = preferCloneNewer = mergePreferClone(preferCloneOlder, preferCloneNewer)
 		}
 
 		const mergeState = new MergeState(
@@ -361,6 +376,7 @@ export class MergerVisitor implements IMergerVisitor {
 			set,
 			preferCloneOlder,
 			preferCloneNewer,
+			preferCloneBase,
 			valueType,
 			valueFactory,
 		)
@@ -421,15 +437,23 @@ export class MergerVisitor implements IMergerVisitor {
 					}
 					return mergeState.fill(mergeState.baseState, mergeState.olderState)
 				case true:
-					return mergeState.baseState.merge(
+					const result = mergeState.baseState.merge(
 						this.getNextMerge(preferCloneOlder, preferCloneNewer),
-						base,
+						mergeState.baseState.clone,
 						older,
 						newer,
-						set,
+						o => {
+							throw new Error(`Class (${mergeState.baseState.type.name}) cannot be merged`)
+						},
 						preferCloneOlder,
 						preferCloneNewer,
 					)
+
+					if (result && set && mergeState.baseState.mustBeCloned) {
+						set(mergeState.baseState.clone)
+					}
+
+					return result
 			}
 
 			throw new Error('Unreachable code')

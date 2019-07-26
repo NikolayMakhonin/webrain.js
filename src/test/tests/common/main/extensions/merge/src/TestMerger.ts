@@ -165,21 +165,23 @@ function resolveOptions(
 	const resolvedOptions: IMergerOptionsVariant & IOptionsVariant<IMergerAction, IMergerExpected>
 		= {...optionsSource} as any
 
-	for (const key in optionsSource) {
-		if (Object.prototype.hasOwnProperty.call(optionsSource, key)) {
-			let value = optionsSource[key]
-			switch (key) {
-				case 'base':
-				case 'older':
-					value = clone && !Object.isFrozen(value) && !isRefer(value)
-						? deepClone(value)
-						: value
-					break
-			}
+	if (clone) {
+		if (!Object.isFrozen(resolvedOptions.base) && !isRefer(resolvedOptions.base)) {
+			resolvedOptions.base = deepClone(resolvedOptions.base)
+		}
+		if (!Object.isFrozen(resolvedOptions.older) && !isRefer(resolvedOptions.older)) {
+			resolvedOptions.older = deepClone(resolvedOptions.older)
+		}
+		if (!Object.isFrozen(resolvedOptions.newer) && !isRefer(resolvedOptions.newer)) {
+			resolvedOptions.newer = deepClone(resolvedOptions.newer)
+		}
+	}
 
+	for (const key in resolvedOptions) {
+		if (Object.prototype.hasOwnProperty.call(resolvedOptions, key)) {
 			resolvedOptions[key] = key === 'action'
-				? value
-				: resolveValue(optionsParams || resolvedOptions, value, false, refers)
+				? resolvedOptions[key]
+				: resolveValue(optionsParams || resolvedOptions, resolvedOptions[key], false, refers)
 		}
 	}
 
@@ -264,9 +266,11 @@ export class TestMerger extends TestVariants<
 					? deepClone(options.base)
 					: options.base
 				const initialOlder = isPreferClone(initialOptions, initialOptions.expected.older)
+					&& !(options.older === options.base && !isPreferClone(initialOptions, initialOptions.expected.base))
 					? deepClone(options.older)
 					: options.older
 				const initialNewer = isPreferClone(initialOptions, initialOptions.expected.newer)
+					&& !(options.newer === options.base && !isPreferClone(initialOptions, initialOptions.expected.base))
 					? deepClone(options.newer)
 					: options.newer
 

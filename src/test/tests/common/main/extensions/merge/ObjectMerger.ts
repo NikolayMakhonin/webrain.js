@@ -34,9 +34,9 @@ describe('common > extensions > merge > ObjectMerger', function() {
 			return false
 		}
 
-		if (o.base != null && o.base.constructor === Object && Object.isFrozen(o.base)) {
-			return true
-		}
+		// if (o.base != null && o.base.constructor === Object && Object.isFrozen(o.base)) {
+		// 	return true
+		// }
 
 		if (o.base instanceof Class
 			&& (deepStrictEqual(o.base, o.older) || deepStrictEqual(o.base.value, o.older) && o.older != null && o.older.constructor === Object)
