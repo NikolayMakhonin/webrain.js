@@ -1,3 +1,4 @@
+/* tslint:disable:no-nested-switch */
 import {TClass, TypeMetaCollection} from '../TypeMeta'
 import {
 	IMergeable,
@@ -515,6 +516,158 @@ export class MergerVisitor implements IMergerVisitor {
 
 			throw new Error('Unreachable code')
 		}
+	}
+
+	public merge<TTarget extends any, TSource extends any>(
+		base: TTarget,
+		older: TTarget|TSource,
+		newer: TTarget|TSource,
+		set?: (value: TTarget) => void,
+		preferCloneOlder?: boolean,
+		preferCloneNewer?: boolean,
+		valueType?: TClass<TTarget>,
+		valueFactory?: (source: TTarget|TSource|any) => TTarget,
+	): boolean {
+		let preferCloneBase = null
+		if (base === newer) {
+			if (base === older) {
+				return false
+			}
+			preferCloneBase = preferCloneNewer
+			preferCloneNewer = preferCloneOlder
+			newer = older
+		}
+
+		if (isPrimitive(newer)) {
+			if (set) {
+				set(newer as any)
+				return true
+			}
+			return false
+		}
+
+		if (base === older) {
+			preferCloneBase = preferCloneOlder = mergePreferClone(preferCloneBase, preferCloneOlder)
+		}
+		if (older === newer) {
+			preferCloneOlder = preferCloneNewer = mergePreferClone(preferCloneOlder, preferCloneNewer)
+		}
+
+		const mergeState = new MergeState(
+			this,
+			base,
+			older,
+			newer,
+			set,
+			preferCloneOlder,
+			preferCloneNewer,
+			preferCloneBase,
+			valueType,
+			valueFactory,
+		)
+
+		const fillOlderNewer = (): void => {
+			// TODO:
+			mergeState.fill(
+				mergeState.olderState,
+				mergeState.newerState,
+			)
+		}
+
+		if (isPrimitive(base)) {
+			if (set) {
+				if (isPrimitive(older) || older === newer) {
+					set(mergeState.newerState.clone)
+				} else {
+					fillOlderNewer()
+				}
+
+				return true
+			}
+
+			return false
+		}
+
+		if (!set && mergeState.baseState.mustBeCloned) {
+			return false
+		}
+
+		// tslint:disable-next-line:no-shadowed-variable
+		const mergeWithBase = (older: TTarget|TSource, newer: TTarget|TSource): boolean => {
+			// TODO:
+		}
+
+		if (isPrimitive(older)) {
+			switch (mergeState.baseState.canMerge(newer)) {
+				case null:
+					if (set) {
+						set(older as any)
+						return true
+					}
+					break
+				case false:
+					if (set) {
+						set(mergeState.newerState.clone)
+						return true
+					}
+					break
+				case true:
+					if (!mergeWithBase(newer, newer)) {
+						if (set) {
+							set(older as any)
+							return true
+						}
+						return false
+					}
+					return true
+			}
+
+			return false
+		}
+
+		switch (mergeState.baseState.canMerge(newer)) {
+			case false:
+				if (set) {
+					fillOlderNewer()
+					return true
+				}
+				return false
+			case null:
+				switch (mergeState.baseState.canMerge(older)) {
+					case null:
+						return false
+					case false:
+						if (set) {
+							set(mergeState.olderState.clone)
+							return true
+						}
+						return false
+					case true:
+						return mergeWithBase(older, older)
+				}
+				throw new Error('Unreachable code')
+		}
+
+		switch (mergeState.baseState.canMerge(older)) {
+			case null:
+				if (!mergeWithBase(newer, newer)) {
+					throw new Error('base == newer; base == older; base != newer')
+				}
+				return true
+			case false:
+				if (!mergeWithBase(newer, newer)) {
+					if (set) {
+						set(mergeState.olderState.clone)
+						return true
+					}
+					return false
+				}
+				return true
+			case true:
+				return mergeWithBase(older, newer)
+		}
+
+		throw new Error('Unreachable code')
 	}
 }
 

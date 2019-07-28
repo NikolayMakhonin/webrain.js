@@ -2042,14 +2042,110 @@
       </data>
     </node>
     <node id="n87">
+      <data key="d5" xml:space="preserve"><![CDATA[Желание любое]]></data>
+      <data key="d6">
+        <y:ShapeNode>
+          <y:Geometry height="30.0" width="151.17956565534178" x="2526.165320332804" y="-245.39848648648652"/>
+          <y:Fill color="#FFFFFF" transparent="false"/>
+          <y:BorderStyle color="#000000" raised="false" type="line" width="1.0"/>
+          <y:NodeLabel alignment="center" autoSizePolicy="content" fontFamily="Calibri" fontSize="16" fontStyle="plain" hasBackgroundColor="false" hasLineColor="false" height="20.0" horizontalTextPosition="center" iconTextGap="4" modelName="internal" modelPosition="c" textColor="#000000" verticalTextPosition="bottom" visible="true" width="106.7734375" x="22.203064077671115" xml:space="preserve" y="5.0">base === newer</y:NodeLabel>
+          <y:Shape type="hexagon"/>
+        </y:ShapeNode>
+      </data>
+    </node>
+    <node id="n88">
+      <data key="d5" xml:space="preserve"><![CDATA[Желание любое]]></data>
+      <data key="d6">
+        <y:ShapeNode>
+          <y:Geometry height="30.0" width="125.86705979729686" x="2462.268356655505" y="-184.21076756756761"/>
+          <y:Fill color="#FFFFFF" transparent="false"/>
+          <y:BorderStyle color="#000000" raised="false" type="line" width="1.0"/>
+          <y:NodeLabel alignment="center" autoSizePolicy="content" fontFamily="Calibri" fontSize="16" fontStyle="plain" hasBackgroundColor="false" hasLineColor="false" height="20.0" horizontalTextPosition="center" iconTextGap="4" modelName="internal" modelPosition="c" textColor="#000000" verticalTextPosition="bottom" visible="true" width="96.7265625" x="14.57024864864843" xml:space="preserve" y="5.0">base !== older</y:NodeLabel>
+          <y:Shape type="hexagon"/>
+        </y:ShapeNode>
+      </data>
+    </node>
+    <node id="n89">
+      <data key="d5" xml:space="preserve"><![CDATA[Желание любое]]></data>
+      <data key="d6">
+        <y:ShapeNode>
+          <y:Geometry height="30.0" width="135.03125" x="2615.3747898681486" y="-184.21076756756761"/>
+          <y:Fill color="#FFFFFF" transparent="false"/>
+          <y:BorderStyle color="#000000" raised="false" type="line" width="1.0"/>
+          <y:NodeLabel alignment="center" autoSizePolicy="content" fontFamily="Calibri" fontSize="16" fontStyle="plain" hasBackgroundColor="false" hasLineColor="false" height="20.0" horizontalTextPosition="center" iconTextGap="4" modelName="internal" modelPosition="c" textColor="#000000" verticalTextPosition="bottom" visible="true" width="99.484375" x="17.7734375" xml:space="preserve" y="5.0">base === older</y:NodeLabel>
+          <y:Shape type="hexagon"/>
+        </y:ShapeNode>
+      </data>
+    </node>
+    <node id="n90">
+      <data key="d5" xml:space="preserve"><![CDATA[Желание любое]]></data>
+      <data key="d6">
+        <y:ShapeNode>
+          <y:Geometry height="30.0" width="135.03125" x="2163.9914020302044" y="-245.39848648648652"/>
+          <y:Fill color="#FFFFFF" transparent="false"/>
+          <y:BorderStyle color="#000000" raised="false" type="line" width="1.0"/>
+          <y:NodeLabel alignment="center" autoSizePolicy="content" fontFamily="Calibri" fontSize="16" fontStyle="plain" hasBackgroundColor="false" hasLineColor="false" height="20.0" horizontalTextPosition="center" iconTextGap="4" modelName="internal" modelPosition="c" textColor="#000000" verticalTextPosition="bottom" visible="true" width="104.015625" x="15.5078125" xml:space="preserve" y="5.0">base !== newer</y:NodeLabel>
+          <y:Shape type="hexagon"/>
+        </y:ShapeNode>
+      </data>
+    </node>
+    <node id="n91">
+      <data key="d5" xml:space="preserve"><![CDATA[Узел]]></data>
+      <data key="d6">
+        <y:ShapeNode>
+          <y:Geometry height="39.32784958871912" width="39.32784958871912" x="2405.749791436035" y="-391.6221434051064"/>
+          <y:Fill color="#FFFFFF" transparent="false"/>
+          <y:BorderStyle color="#000000" raised="false" type="line" width="1.0"/>
+          <y:NodeLabel alignment="center" autoSizePolicy="content" fontFamily="Calibri" fontSize="16" fontStyle="plain" hasBackgroundColor="false" hasLineColor="false" hasText="false" height="34.0" horizontalTextPosition="center" iconData="1" iconTextGap="4" modelName="internal" modelPosition="c" textColor="#000000" verticalTextPosition="bottom" visible="true" width="34.0" x="2.6639247943594455" y="2.663924794359559"/>
+          <y:Shape type="ellipse"/>
+        </y:ShapeNode>
+      </data>
+    </node>
+    <node id="n92">
       <data key="d5" xml:space="preserve"><![CDATA[Точка входа в ОзВ]]></data>
       <data key="d6">
         <y:ShapeNode>
-          <y:Geometry height="70.0" width="70.0" x="1861.1000739895571" y="0.0"/>
+          <y:Geometry height="70.0" width="70.0" x="2390.4137162303946" y="-559.9908831651874"/>
           <y:Fill color="#00FFFF" transparent="false"/>
           <y:BorderStyle color="#000000" raised="false" type="line" width="1.0"/>
           <y:NodeLabel alignment="center" autoSizePolicy="content" fontFamily="Calibri" fontSize="16" fontStyle="plain" hasBackgroundColor="false" hasLineColor="false" hasText="false" height="34.0" horizontalTextPosition="center" iconData="2" iconTextGap="4" modelName="internal" modelPosition="c" textColor="#000000" verticalTextPosition="bottom" visible="true" width="34.0" x="18.0" y="18.0"/>
           <y:Shape type="star8"/>
+        </y:ShapeNode>
+      </data>
+    </node>
+    <node id="n93">
+      <data key="d5" xml:space="preserve"><![CDATA[ОзУ]]></data>
+      <data key="d6">
+        <y:ShapeNode>
+          <y:Geometry height="30.0" width="104.6015625" x="2472.9011053041536" y="-101.30698202340375"/>
+          <y:Fill color="#E5E5FF" transparent="false"/>
+          <y:BorderStyle color="#000000" raised="false" type="line" width="1.0"/>
+          <y:NodeLabel alignment="center" autoSizePolicy="content" fontFamily="Calibri" fontSize="16" fontStyle="plain" hasBackgroundColor="false" hasLineColor="false" height="20.0" horizontalTextPosition="center" iconTextGap="4" modelName="internal" modelPosition="c" textColor="#0000FF" verticalTextPosition="bottom" visible="true" width="94.6015625" x="5.0" xml:space="preserve" y="5.0">newer = older</y:NodeLabel>
+          <y:Shape type="rectangle"/>
+        </y:ShapeNode>
+      </data>
+    </node>
+    <node id="n94">
+      <data key="d5" xml:space="preserve"><![CDATA[Желание любое]]></data>
+      <data key="d6">
+        <y:ShapeNode>
+          <y:Geometry height="30.0" width="135.03125" x="1756.8785030169734" y="451.6791443850269"/>
+          <y:Fill color="#FFFFFF" transparent="false"/>
+          <y:BorderStyle color="#000000" raised="false" type="line" width="1.0"/>
+          <y:NodeLabel alignment="center" autoSizePolicy="content" fontFamily="Calibri" fontSize="16" fontStyle="plain" hasBackgroundColor="false" hasLineColor="false" height="20.0" horizontalTextPosition="center" iconTextGap="4" modelName="internal" modelPosition="c" textColor="#000000" verticalTextPosition="bottom" visible="true" width="99.484375" x="17.7734375" xml:space="preserve" y="5.0">base === older</y:NodeLabel>
+          <y:Shape type="hexagon"/>
+        </y:ShapeNode>
+      </data>
+    </node>
+    <node id="n95">
+      <data key="d5" xml:space="preserve"><![CDATA[НСУ]]></data>
+      <data key="d6">
+        <y:ShapeNode>
+          <y:Geometry height="30.0" width="44.4375" x="2660.6716648681486" y="-101.30698202340375"/>
+          <y:Fill color="#FF7F7F" transparent="false"/>
+          <y:BorderStyle color="#000000" raised="false" type="line" width="1.0"/>
+          <y:NodeLabel alignment="center" autoSizePolicy="content" fontFamily="Calibri" fontSize="16" fontStyle="plain" hasBackgroundColor="false" hasLineColor="false" height="20.0" horizontalTextPosition="center" iconTextGap="4" modelName="internal" modelPosition="c" textColor="#000000" verticalTextPosition="bottom" visible="true" width="34.4375" x="5.0" xml:space="preserve" y="5.0">false</y:NodeLabel>
+          <y:Shape type="rectangle"/>
         </y:ShapeNode>
       </data>
     </node>
@@ -3052,7 +3148,7 @@
         </y:QuadCurveEdge>
       </data>
     </edge>
-    <edge id="e58" source="n87" target="n56">
+    <edge id="e58" source="n64" target="n65">
       <data key="d10">
         <y:QuadCurveEdge straightness="0.1">
           <y:Path sx="0.0" sy="0.0" tx="0.0" ty="0.0"/>
@@ -3061,7 +3157,7 @@
         </y:QuadCurveEdge>
       </data>
     </edge>
-    <edge id="e59" source="n64" target="n65">
+    <edge id="e59" source="n17" target="n63">
       <data key="d10">
         <y:QuadCurveEdge straightness="0.1">
           <y:Path sx="0.0" sy="0.0" tx="0.0" ty="0.0"/>
@@ -3070,7 +3166,7 @@
         </y:QuadCurveEdge>
       </data>
     </edge>
-    <edge id="e60" source="n17" target="n63">
+    <edge id="e60" source="n17" target="n64">
       <data key="d10">
         <y:QuadCurveEdge straightness="0.1">
           <y:Path sx="0.0" sy="0.0" tx="0.0" ty="0.0"/>
@@ -3079,7 +3175,7 @@
         </y:QuadCurveEdge>
       </data>
     </edge>
-    <edge id="e61" source="n17" target="n64">
+    <edge id="e61" source="n67" target="n66">
       <data key="d10">
         <y:QuadCurveEdge straightness="0.1">
           <y:Path sx="0.0" sy="0.0" tx="0.0" ty="0.0"/>
@@ -3088,7 +3184,7 @@
         </y:QuadCurveEdge>
       </data>
     </edge>
-    <edge id="e62" source="n67" target="n66">
+    <edge id="e62" source="n34" target="n67">
       <data key="d10">
         <y:QuadCurveEdge straightness="0.1">
           <y:Path sx="0.0" sy="0.0" tx="0.0" ty="0.0"/>
@@ -3097,7 +3193,7 @@
         </y:QuadCurveEdge>
       </data>
     </edge>
-    <edge id="e63" source="n34" target="n67">
+    <edge id="e63" source="n34" target="n68">
       <data key="d10">
         <y:QuadCurveEdge straightness="0.1">
           <y:Path sx="0.0" sy="0.0" tx="0.0" ty="0.0"/>
@@ -3106,7 +3202,7 @@
         </y:QuadCurveEdge>
       </data>
     </edge>
-    <edge id="e64" source="n34" target="n68">
+    <edge id="e64" source="n70" target="n69">
       <data key="d10">
         <y:QuadCurveEdge straightness="0.1">
           <y:Path sx="0.0" sy="0.0" tx="0.0" ty="0.0"/>
@@ -3115,7 +3211,7 @@
         </y:QuadCurveEdge>
       </data>
     </edge>
-    <edge id="e65" source="n70" target="n69">
+    <edge id="e65" source="n19" target="n71">
       <data key="d10">
         <y:QuadCurveEdge straightness="0.1">
           <y:Path sx="0.0" sy="0.0" tx="0.0" ty="0.0"/>
@@ -3124,7 +3220,7 @@
         </y:QuadCurveEdge>
       </data>
     </edge>
-    <edge id="e66" source="n19" target="n71">
+    <edge id="e66" source="n19" target="n70">
       <data key="d10">
         <y:QuadCurveEdge straightness="0.1">
           <y:Path sx="0.0" sy="0.0" tx="0.0" ty="0.0"/>
@@ -3133,7 +3229,7 @@
         </y:QuadCurveEdge>
       </data>
     </edge>
-    <edge id="e67" source="n19" target="n70">
+    <edge id="e67" source="n73" target="n74">
       <data key="d10">
         <y:QuadCurveEdge straightness="0.1">
           <y:Path sx="0.0" sy="0.0" tx="0.0" ty="0.0"/>
@@ -3142,7 +3238,7 @@
         </y:QuadCurveEdge>
       </data>
     </edge>
-    <edge id="e68" source="n73" target="n74">
+    <edge id="e68" source="n4" target="n72">
       <data key="d10">
         <y:QuadCurveEdge straightness="0.1">
           <y:Path sx="0.0" sy="0.0" tx="0.0" ty="0.0"/>
@@ -3151,7 +3247,7 @@
         </y:QuadCurveEdge>
       </data>
     </edge>
-    <edge id="e69" source="n4" target="n72">
+    <edge id="e69" source="n4" target="n73">
       <data key="d10">
         <y:QuadCurveEdge straightness="0.1">
           <y:Path sx="0.0" sy="0.0" tx="0.0" ty="0.0"/>
@@ -3160,7 +3256,7 @@
         </y:QuadCurveEdge>
       </data>
     </edge>
-    <edge id="e70" source="n4" target="n73">
+    <edge id="e70" source="n76" target="n75">
       <data key="d10">
         <y:QuadCurveEdge straightness="0.1">
           <y:Path sx="0.0" sy="0.0" tx="0.0" ty="0.0"/>
@@ -3169,7 +3265,7 @@
         </y:QuadCurveEdge>
       </data>
     </edge>
-    <edge id="e71" source="n76" target="n75">
+    <edge id="e71" source="n12" target="n77">
       <data key="d10">
         <y:QuadCurveEdge straightness="0.1">
           <y:Path sx="0.0" sy="0.0" tx="0.0" ty="0.0"/>
@@ -3178,7 +3274,7 @@
         </y:QuadCurveEdge>
       </data>
     </edge>
-    <edge id="e72" source="n12" target="n77">
+    <edge id="e72" source="n12" target="n76">
       <data key="d10">
         <y:QuadCurveEdge straightness="0.1">
           <y:Path sx="0.0" sy="0.0" tx="0.0" ty="0.0"/>
@@ -3187,7 +3283,7 @@
         </y:QuadCurveEdge>
       </data>
     </edge>
-    <edge id="e73" source="n12" target="n76">
+    <edge id="e73" source="n79" target="n78">
       <data key="d10">
         <y:QuadCurveEdge straightness="0.1">
           <y:Path sx="0.0" sy="0.0" tx="0.0" ty="0.0"/>
@@ -3196,7 +3292,7 @@
         </y:QuadCurveEdge>
       </data>
     </edge>
-    <edge id="e74" source="n79" target="n78">
+    <edge id="e74" source="n37" target="n80">
       <data key="d10">
         <y:QuadCurveEdge straightness="0.1">
           <y:Path sx="0.0" sy="0.0" tx="0.0" ty="0.0"/>
@@ -3205,7 +3301,7 @@
         </y:QuadCurveEdge>
       </data>
     </edge>
-    <edge id="e75" source="n37" target="n80">
+    <edge id="e75" source="n37" target="n79">
       <data key="d10">
         <y:QuadCurveEdge straightness="0.1">
           <y:Path sx="0.0" sy="0.0" tx="0.0" ty="0.0"/>
@@ -3214,7 +3310,7 @@
         </y:QuadCurveEdge>
       </data>
     </edge>
-    <edge id="e76" source="n37" target="n79">
+    <edge id="e76" source="n1" target="n82">
       <data key="d10">
         <y:QuadCurveEdge straightness="0.1">
           <y:Path sx="0.0" sy="0.0" tx="0.0" ty="0.0"/>
@@ -3223,7 +3319,7 @@
         </y:QuadCurveEdge>
       </data>
     </edge>
-    <edge id="e77" source="n1" target="n82">
+    <edge id="e77" source="n1" target="n81">
       <data key="d10">
         <y:QuadCurveEdge straightness="0.1">
           <y:Path sx="0.0" sy="0.0" tx="0.0" ty="0.0"/>
@@ -3232,7 +3328,7 @@
         </y:QuadCurveEdge>
       </data>
     </edge>
-    <edge id="e78" source="n1" target="n81">
+    <edge id="e78" source="n82" target="n83">
       <data key="d10">
         <y:QuadCurveEdge straightness="0.1">
           <y:Path sx="0.0" sy="0.0" tx="0.0" ty="0.0"/>
@@ -3241,7 +3337,7 @@
         </y:QuadCurveEdge>
       </data>
     </edge>
-    <edge id="e79" source="n82" target="n83">
+    <edge id="e79" source="n81" target="n84">
       <data key="d10">
         <y:QuadCurveEdge straightness="0.1">
           <y:Path sx="0.0" sy="0.0" tx="0.0" ty="0.0"/>
@@ -3250,7 +3346,7 @@
         </y:QuadCurveEdge>
       </data>
     </edge>
-    <edge id="e80" source="n81" target="n84">
+    <edge id="e80" source="n84" target="n86">
       <data key="d10">
         <y:QuadCurveEdge straightness="0.1">
           <y:Path sx="0.0" sy="0.0" tx="0.0" ty="0.0"/>
@@ -3259,7 +3355,7 @@
         </y:QuadCurveEdge>
       </data>
     </edge>
-    <edge id="e81" source="n84" target="n86">
+    <edge id="e81" source="n81" target="n85">
       <data key="d10">
         <y:QuadCurveEdge straightness="0.1">
           <y:Path sx="0.0" sy="0.0" tx="0.0" ty="0.0"/>
@@ -3268,16 +3364,7 @@
         </y:QuadCurveEdge>
       </data>
     </edge>
-    <edge id="e82" source="n81" target="n85">
-      <data key="d10">
-        <y:QuadCurveEdge straightness="0.1">
-          <y:Path sx="0.0" sy="0.0" tx="0.0" ty="0.0"/>
-          <y:LineStyle color="#000000" type="line" width="1.0"/>
-          <y:Arrows source="none" target="standard"/>
-        </y:QuadCurveEdge>
-      </data>
-    </edge>
-    <edge id="e83" source="n85" target="n83">
+    <edge id="e82" source="n85" target="n83">
       <data key="d10">
         <y:QuadCurveEdge straightness="0.1">
           <y:Path sx="0.0" sy="0.0" tx="0.0" ty="0.0"/>
@@ -3467,6 +3554,105 @@
       </data>
     </edge>
     <edge id="n26::e41" source="n26::n34" target="n26::n39">
+      <data key="d10">
+        <y:QuadCurveEdge straightness="0.1">
+          <y:Path sx="0.0" sy="0.0" tx="0.0" ty="0.0"/>
+          <y:LineStyle color="#000000" type="line" width="1.0"/>
+          <y:Arrows source="none" target="standard"/>
+        </y:QuadCurveEdge>
+      </data>
+    </edge>
+    <edge id="e83" source="n87" target="n89">
+      <data key="d10">
+        <y:QuadCurveEdge straightness="0.1">
+          <y:Path sx="0.0" sy="0.0" tx="0.0" ty="0.0"/>
+          <y:LineStyle color="#000000" type="line" width="1.0"/>
+          <y:Arrows source="none" target="standard"/>
+        </y:QuadCurveEdge>
+      </data>
+    </edge>
+    <edge id="e84" source="n87" target="n88">
+      <data key="d10">
+        <y:QuadCurveEdge straightness="0.1">
+          <y:Path sx="0.0" sy="0.0" tx="0.0" ty="0.0"/>
+          <y:LineStyle color="#000000" type="line" width="1.0"/>
+          <y:Arrows source="none" target="standard"/>
+        </y:QuadCurveEdge>
+      </data>
+    </edge>
+    <edge id="e85" source="n92" target="n91">
+      <data key="d10">
+        <y:QuadCurveEdge straightness="0.1">
+          <y:Path sx="0.0" sy="0.0" tx="0.0" ty="0.0"/>
+          <y:LineStyle color="#000000" type="line" width="1.0"/>
+          <y:Arrows source="none" target="standard"/>
+        </y:QuadCurveEdge>
+      </data>
+    </edge>
+    <edge id="e86" source="n91" target="n90">
+      <data key="d10">
+        <y:QuadCurveEdge straightness="0.1">
+          <y:Path sx="0.0" sy="0.0" tx="0.0" ty="0.0"/>
+          <y:LineStyle color="#000000" type="line" width="1.0"/>
+          <y:Arrows source="none" target="standard"/>
+        </y:QuadCurveEdge>
+      </data>
+    </edge>
+    <edge id="e87" source="n91" target="n87">
+      <data key="d10">
+        <y:QuadCurveEdge straightness="0.1">
+          <y:Path sx="0.0" sy="0.0" tx="0.0" ty="0.0"/>
+          <y:LineStyle color="#000000" type="line" width="1.0"/>
+          <y:Arrows source="none" target="standard"/>
+        </y:QuadCurveEdge>
+      </data>
+    </edge>
+    <edge id="e88" source="n88" target="n93">
+      <data key="d10">
+        <y:QuadCurveEdge straightness="0.1">
+          <y:Path sx="0.0" sy="0.0" tx="0.0" ty="0.0"/>
+          <y:LineStyle color="#000000" type="line" width="1.0"/>
+          <y:Arrows source="none" target="standard"/>
+        </y:QuadCurveEdge>
+      </data>
+    </edge>
+    <edge id="e89" source="n90" target="n56">
+      <data key="d10">
+        <y:QuadCurveEdge straightness="0.1">
+          <y:Path sx="0.0" sy="0.0" tx="0.0" ty="0.0"/>
+          <y:LineStyle color="#000000" type="line" width="1.0"/>
+          <y:Arrows source="none" target="standard"/>
+        </y:QuadCurveEdge>
+      </data>
+    </edge>
+    <edge id="e90" source="n93" target="n56">
+      <data key="d10">
+        <y:QuadCurveEdge straightness="0.1">
+          <y:Path sx="0.0" sy="0.0" tx="0.0" ty="0.0"/>
+          <y:LineStyle color="#000000" type="line" width="1.0"/>
+          <y:Arrows source="none" target="standard"/>
+        </y:QuadCurveEdge>
+      </data>
+    </edge>
+    <edge id="e91" source="n57" target="n94">
+      <data key="d10">
+        <y:QuadCurveEdge straightness="0.1">
+          <y:Path sx="0.0" sy="0.0" tx="0.0" ty="0.0"/>
+          <y:LineStyle color="#000000" type="line" width="1.0"/>
+          <y:Arrows source="none" target="standard"/>
+        </y:QuadCurveEdge>
+      </data>
+    </edge>
+    <edge id="e92" source="n94" target="n54">
+      <data key="d10">
+        <y:QuadCurveEdge straightness="0.1">
+          <y:Path sx="0.0" sy="0.0" tx="0.0" ty="0.0"/>
+          <y:LineStyle color="#000000" type="line" width="1.0"/>
+          <y:Arrows source="none" target="standard"/>
+        </y:QuadCurveEdge>
+      </data>
+    </edge>
+    <edge id="e93" source="n89" target="n95">
       <data key="d10">
         <y:QuadCurveEdge straightness="0.1">
           <y:Path sx="0.0" sy="0.0" tx="0.0" ty="0.0"/>
