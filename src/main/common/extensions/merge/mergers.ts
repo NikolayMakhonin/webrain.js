@@ -131,7 +131,7 @@ class ValueState<TTarget, TSource> {
 			}
 			return result
 		}
-		return this.target.constructor === this.type
+		return this.target.constructor === source.constructor
 	}
 
 	private _clone: TTarget
@@ -257,7 +257,6 @@ class MergeState<TTarget, TSource> {
 		const { olderState, newerState, set } = this
 		const { preferClone } = olderState
 		let isSet
-		let setItem
 		const result = olderState.merge(
 			this.mergerVisitor.getNextMerge(preferClone, preferClone),
 			olderState.clone,
@@ -265,7 +264,7 @@ class MergeState<TTarget, TSource> {
 			newerState.target,
 			set
 				? o => {
-					setItem = o
+					set(o)
 					isSet = true
 				}
 				: () => {
@@ -292,7 +291,6 @@ class MergeState<TTarget, TSource> {
 		const { baseState, set } = this
 		const { preferClone } = baseState
 		let isSet
-		let setItem
 		const result = baseState.merge(
 			this.mergerVisitor.getNextMerge(preferClone, preferClone),
 			baseState.clone,
@@ -300,7 +298,7 @@ class MergeState<TTarget, TSource> {
 			newer,
 			set
 				? o => {
-					setItem = o
+					set(o)
 					isSet = true
 				}
 				: () => {

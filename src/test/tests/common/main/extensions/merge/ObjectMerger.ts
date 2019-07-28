@@ -188,9 +188,15 @@ describe('common > extensions > merge > ObjectMerger', function() {
 						o.older != null && o.older.constructor === Object
 						&& o.newer != null && o.newer.constructor === Object
 					) {
-						return o.preferCloneOlder
-							? deepClone(o.newer)
-							: OLDER
+						if (deepStrictEqual2(o.older, o.newer)) {
+							return !o.preferCloneNewer
+								? NEWER
+								: (o.preferCloneOlder ? deepClone(o.newer) : OLDER)
+						} else {
+							return o.preferCloneOlder
+								? deepClone(o.newer)
+								: OLDER
+						}
 					}
 
 					if (o.base != null && o.base.constructor === Object
