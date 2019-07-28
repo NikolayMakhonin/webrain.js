@@ -173,19 +173,28 @@ class ValueState<TTarget, TSource> {
 		return _clone
 	}
 
-	public fill(source: TTarget|TSource): boolean {
+	public fill(source: TTarget|TSource, set: (value: TTarget) => void): boolean {
 		const { preferClone } = this
-		return this.merge(
+		let setItem
+		const result = this.merge(
 			this.mergerState.mergerVisitor.getNextMerge(preferClone, preferClone),
 			this.clone,
 			source,
 			source,
-			() => {
-				throw new Error(`Class (${this.type.name}) cannot be merged`)
-			},
+			set ? o => setItem = o : null,
 			preferClone,
 			preferClone,
 		)
+		if (!result && setItem !== this.clone) {
+			throw new Error(`If you use set function inside merge you should return false. (${this.type.name})`)
+		}
+		if (!result) {
+
+		}
+		if (set && (!this.isBase || this.mustBeCloned)) {
+			set(setItem)
+		}
+		return result
 	}
 }
 
@@ -426,7 +435,7 @@ export class MergerVisitor implements IMergerVisitor {
 					}
 					break
 				case true:
-					const result = mergeState.baseState.fill(newer)
+					const result = mergeState.baseState. fill(newer)
 					if (!result) {
 						if (set) {
 							set(older as any)
