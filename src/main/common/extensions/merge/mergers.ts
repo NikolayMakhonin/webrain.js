@@ -302,8 +302,12 @@ class MergeState<TTarget, TSource> {
 					isSet = true
 				}
 				: () => {
-					throw new Error(`Class ${baseState.type.name} does not need cloning.` +
-						'You should use "preferClone: false" in merger options for this class')
+					if (baseState.mustBeCloned) {
+						throw new Error(`Class ${baseState.type.name} does not need cloning.` +
+							'You should use "preferClone: false" in merger options for this class')
+					} else {
+						isSet = true
+					}
 				},
 			preferClone,
 			preferClone,
