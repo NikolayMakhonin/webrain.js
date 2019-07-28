@@ -173,30 +173,6 @@ class ValueState<TTarget, TSource> {
 
 		return _clone
 	}
-
-	public fill(source: TTarget|TSource, set: (value: TTarget) => void): boolean {
-		const { preferClone } = this
-		let setItem
-		const result = this.merge(
-			this.mergerState.mergerVisitor.getNextMerge(preferClone, preferClone),
-			this.clone,
-			source,
-			source,
-			set ? o => setItem = o : null,
-			preferClone,
-			preferClone,
-		)
-		if (!result && setItem !== this.clone) {
-			throw new Error(`If you use set function inside merge you should return false. (${this.type.name})`)
-		}
-		if (!result) {
-
-		}
-		if (set && (!this.isBase || this.mustBeCloned)) {
-			set(setItem)
-		}
-		return result
-	}
 }
 
 class MergeState<TTarget, TSource> {
@@ -277,45 +253,77 @@ class MergeState<TTarget, TSource> {
 		return _newerState
 	}
 
-	public fill(
-		targetState: ValueState<TTarget, TSource>,
-		sourceState: ValueState<TTarget, TSource>,
-	): boolean {
-		const canMerge = targetState.canMerge(sourceState.target)
-		const {base, set} = this
+	public fillOlderNewer(): void {
+		const { olderState, newerState, set } = this
+		const { preferClone } = olderState
+		let isSet
+		let setItem
+		const result = olderState.merge(
+			this.mergerVisitor.getNextMerge(preferClone, preferClone),
+			olderState.clone,
+			newerState.target,
+			newerState.target,
+			set
+				? o => {
+					setItem = o
+					isSet = true
+				}
+				: () => {
+					throw new Error(`Class ${olderState.type.name} does not need cloning.` +
+						'You should use "preferClone: false" in merger options for this class')
+				},
+			preferClone,
+			preferClone,
+		)
 
-		let result
-		if (canMerge === true) {
-			result = targetState.fill(sourceState.target)
-			if (targetState.target !== base && set) {
-				result = true
-				set(targetState.clone)
-			}
-		} else if (canMerge == null
-			&& (targetState.target === base || sourceState.mustBeCloned)
-			&& !targetState.mustBeCloned
-		) {
-			if (targetState.target !== base && set) {
-				result = true
-				set(targetState.target)
-			} else {
-				result = false
-			}
-		} else {
-			if (set) {
-				result = true // setItem !== base
-				set(sourceState.clone)
-			} else {
-				result = false
-			}
+		if (isSet) {
+			return
 		}
 
-		// if (targetState.target !== base && set) {
-		// 	result = true
-		// 	set(setItem)
-		// }
+		if (result || newerState.mustBeCloned) {
+			set(olderState.clone)
+			return
+		}
 
-		return result
+		set(newerState.target)
+	}
+
+	public mergeWithBase(older: TTarget|TSource, newer: TTarget|TSource): boolean {
+		const { baseState, set } = this
+		const { preferClone } = baseState
+		let isSet
+		let setItem
+		const result = baseState.merge(
+			this.mergerVisitor.getNextMerge(preferClone, preferClone),
+			baseState.clone,
+			older,
+			newer,
+			set
+				? o => {
+					setItem = o
+					isSet = true
+				}
+				: () => {
+					throw new Error(`Class ${baseState.type.name} does not need cloning.` +
+						'You should use "preferClone: false" in merger options for this class')
+				},
+			preferClone,
+			preferClone,
+		)
+
+		if (isSet) {
+			return !!set
+		}
+
+		if (!result) {
+			return false
+		}
+
+		if (baseState.mustBeCloned) {
+			set(baseState.clone)
+		}
+
+		return true
 	}
 }
 
@@ -358,6 +366,166 @@ export class MergerVisitor implements IMergerVisitor {
 		)
 	}
 
+	// public merge<TTarget extends any, TSource extends any>(
+	// 	base: TTarget,
+	// 	older: TTarget|TSource,
+	// 	newer: TTarget|TSource,
+	// 	set?: (value: TTarget) => void,
+	// 	preferCloneOlder?: boolean,
+	// 	preferCloneNewer?: boolean,
+	// 	valueType?: TClass<TTarget>,
+	// 	valueFactory?: (source: TTarget|TSource|any) => TTarget,
+	// ): boolean {
+	// 	let preferCloneBase = null
+	// 	if (base === newer) {
+	// 		if (base === older) {
+	// 			return false
+	// 		}
+	// 		preferCloneBase = preferCloneNewer
+	// 		preferCloneNewer = preferCloneOlder
+	// 		newer = older
+	// 	}
+	//
+	// 	if (isPrimitive(newer)) {
+	// 		if (set) {
+	// 			set(newer as any)
+	// 			return true
+	// 		}
+	// 		return false
+	// 	}
+	//
+	// 	if (base === older) {
+	// 		preferCloneBase = preferCloneOlder = mergePreferClone(preferCloneBase, preferCloneOlder)
+	// 	}
+	// 	if (older === newer) {
+	// 		preferCloneOlder = preferCloneNewer = mergePreferClone(preferCloneOlder, preferCloneNewer)
+	// 	}
+	//
+	// 	const mergeState = new MergeState(
+	// 		this,
+	// 		base,
+	// 		older,
+	// 		newer,
+	// 		set,
+	// 		preferCloneOlder,
+	// 		preferCloneNewer,
+	// 		preferCloneBase,
+	// 		valueType,
+	// 		valueFactory,
+	// 	)
+	//
+	// 	if (isPrimitive(base)) {
+	// 		if (set) {
+	// 			if (isPrimitive(older) || older === newer) {
+	// 				set(mergeState.newerState.clone)
+	// 			} else {
+	// 				return mergeState.fill(
+	// 					mergeState.olderState,
+	// 					mergeState.newerState,
+	// 				)
+	// 			}
+	//
+	// 			return true
+	// 		}
+	//
+	// 		return false
+	// 	} else if (isPrimitive(older)) {
+	// 		switch (mergeState.baseState.canMerge(newer)) {
+	// 			case null:
+	// 				if (set) {
+	// 					set(older as any)
+	// 					return true
+	// 				}
+	// 				break
+	// 			case false:
+	// 				if (set) {
+	// 					set(mergeState.newerState.clone)
+	// 					return true
+	// 				}
+	// 				break
+	// 			case true:
+	// 				const result = mergeState.baseState. fill(newer)
+	// 				if (!result) {
+	// 					if (set) {
+	// 						set(older as any)
+	// 						return true
+	// 					}
+	// 				} else if (mergeState.baseState.mustBeCloned) {
+	// 					if (set) {
+	// 						set(mergeState.baseState.clone)
+	// 						return true
+	// 					} else {
+	// 						return false
+	// 					}
+	// 				}
+	//
+	// 				return result
+	// 		}
+	//
+	// 		return false
+	// 	} else {
+	// 		switch (mergeState.baseState.canMerge(newer)) {
+	// 			case null:
+	// 				return mergeState.fill(mergeState.baseState, mergeState.olderState)
+	// 			case false:
+	// 				if (set) {
+	// 					if (older === newer) {
+	// 						set(mergeState.newerState.clone)
+	// 						return true
+	// 					} else {
+	// 						return mergeState.fill(mergeState.olderState, mergeState.newerState)
+	// 					}
+	// 				} else {
+	// 					return false
+	// 				}
+	// 		}
+	//
+	// 		switch (mergeState.baseState.canMerge(older)) {
+	// 			case null:
+	// 			case false:
+	// 				if (mergeState.baseState.fill(newer)) {
+	// 					if (mergeState.baseState.mustBeCloned) {
+	// 						if (set) {
+	// 							set(mergeState.baseState.clone)
+	// 							return true
+	// 						}
+	// 						return false
+	// 					} else {
+	// 						return true
+	// 					}
+	// 				}
+	//
+	// 				return mergeState.fill(mergeState.baseState, mergeState.olderState)
+	// 			case true:
+	// 				let setItem = mergeState.baseState.clone
+	// 				const result = mergeState.baseState.merge(
+	// 					this.getNextMerge(preferCloneOlder, preferCloneNewer),
+	// 					setItem,
+	// 					older,
+	// 					newer,
+	// 					set ? o => setItem = o : null,
+	// 					preferCloneOlder,
+	// 					preferCloneNewer,
+	// 				)
+	//
+	// 				if (setItem !== mergeState.baseState.clone) {
+	// 					set(setItem)
+	// 					return true
+	// 				} else if (result && mergeState.baseState.mustBeCloned) {
+	// 					if (set) {
+	// 						set(mergeState.baseState.clone)
+	// 					} else {
+	// 						return false
+	// 					}
+	// 				}
+	//
+	// 				return result
+	// 		}
+	//
+	// 		throw new Error('Unreachable code')
+	// 	}
+	// }
+
 	public merge<TTarget extends any, TSource extends any>(
 		base: TTarget,
 		older: TTarget|TSource,
@@ -406,172 +574,26 @@ export class MergerVisitor implements IMergerVisitor {
 			valueFactory,
 		)
 
-		if (isPrimitive(base)) {
-			if (set) {
-				if (isPrimitive(older) || older === newer) {
-					set(mergeState.newerState.clone)
-				} else {
-					return mergeState.fill(
-						mergeState.olderState,
-						mergeState.newerState,
-					)
-				}
-
-				return true
-			}
-
-			return false
-		} else if (isPrimitive(older)) {
-			switch (mergeState.baseState.canMerge(newer)) {
+		const fillOlderNewer = () => {
+			switch (mergeState.olderState.canMerge(newer)) {
 				case null:
-					if (set) {
-						set(older as any)
-						return true
-					}
-					break
-				case false:
-					if (set) {
+					if (mergeState.olderState.mustBeCloned) {
 						set(mergeState.newerState.clone)
-						return true
+					} else {
+						if (mergeState.newerState.mustBeCloned) {
+							set(mergeState.olderState.target)
+						} else {
+							set(mergeState.newerState.target)
+						}
 					}
 					break
-				case true:
-					const result = mergeState.baseState. fill(newer)
-					if (!result) {
-						if (set) {
-							set(older as any)
-							return true
-						}
-					} else if (mergeState.baseState.mustBeCloned) {
-						if (set) {
-							set(mergeState.baseState.clone)
-							return true
-						} else {
-							return false
-						}
-					}
-
-					return result
-			}
-
-			return false
-		} else {
-			switch (mergeState.baseState.canMerge(newer)) {
-				case null:
-					return mergeState.fill(mergeState.baseState, mergeState.olderState)
 				case false:
-					if (set) {
-						if (older === newer) {
-							set(mergeState.newerState.clone)
-							return true
-						} else {
-							return mergeState.fill(mergeState.olderState, mergeState.newerState)
-						}
-					} else {
-						return false
-					}
-			}
-
-			switch (mergeState.baseState.canMerge(older)) {
-				case null:
-				case false:
-					if (mergeState.baseState.fill(newer)) {
-						if (mergeState.baseState.mustBeCloned) {
-							if (set) {
-								set(mergeState.baseState.clone)
-								return true
-							}
-							return false
-						} else {
-							return true
-						}
-					}
-
-					return mergeState.fill(mergeState.baseState, mergeState.olderState)
+					set(mergeState.newerState.clone)
+					break
 				case true:
-					let setItem = mergeState.baseState.clone
-					const result = mergeState.baseState.merge(
-						this.getNextMerge(preferCloneOlder, preferCloneNewer),
-						setItem,
-						older,
-						newer,
-						set ? o => setItem = o : null,
-						preferCloneOlder,
-						preferCloneNewer,
-					)
-
-					if (setItem !== mergeState.baseState.clone) {
-						set(setItem)
-						return true
-					} else if (result && mergeState.baseState.mustBeCloned) {
-						if (set) {
-							set(mergeState.baseState.clone)
-						} else {
-							return false
-						}
-					}
-
-					return result
+					mergeState.fillOlderNewer()
+					return true
 			}
-
-			throw new Error('Unreachable code')
-		}
-	}
-
-	public merge<TTarget extends any, TSource extends any>(
-		base: TTarget,
-		older: TTarget|TSource,
-		newer: TTarget|TSource,
-		set?: (value: TTarget) => void,
-		preferCloneOlder?: boolean,
-		preferCloneNewer?: boolean,
-		valueType?: TClass<TTarget>,
-		valueFactory?: (source: TTarget|TSource|any) => TTarget,
-	): boolean {
-		let preferCloneBase = null
-		if (base === newer) {
-			if (base === older) {
-				return false
-			}
-			preferCloneBase = preferCloneNewer
-			preferCloneNewer = preferCloneOlder
-			newer = older
-		}
-
-		if (isPrimitive(newer)) {
-			if (set) {
-				set(newer as any)
-				return true
-			}
-			return false
-		}
-
-		if (base === older) {
-			preferCloneBase = preferCloneOlder = mergePreferClone(preferCloneBase, preferCloneOlder)
-		}
-		if (older === newer) {
-			preferCloneOlder = preferCloneNewer = mergePreferClone(preferCloneOlder, preferCloneNewer)
-		}
-
-		const mergeState = new MergeState(
-			this,
-			base,
-			older,
-			newer,
-			set,
-			preferCloneOlder,
-			preferCloneNewer,
-			preferCloneBase,
-			valueType,
-			valueFactory,
-		)
-
-		const fillOlderNewer = (): void => {
-			// TODO:
-			mergeState.fill(
-				mergeState.olderState,
-				mergeState.newerState,
-			)
 		}
 
 		if (isPrimitive(base)) {
@@ -592,11 +614,6 @@ export class MergerVisitor implements IMergerVisitor {
 			return false
 		}
 
-		// tslint:disable-next-line:no-shadowed-variable
-		const mergeWithBase = (older: TTarget|TSource, newer: TTarget|TSource): boolean => {
-			// TODO:
-		}
-
 		if (isPrimitive(older)) {
 			switch (mergeState.baseState.canMerge(newer)) {
 				case null:
@@ -612,7 +629,7 @@ export class MergerVisitor implements IMergerVisitor {
 					}
 					break
 				case true:
-					if (!mergeWithBase(newer, newer)) {
+					if (!mergeState.mergeWithBase(newer, newer)) {
 						if (set) {
 							set(older as any)
 							return true
@@ -643,19 +660,19 @@ export class MergerVisitor implements IMergerVisitor {
 						}
 						return false
 					case true:
-						return mergeWithBase(older, older)
+						return mergeState.mergeWithBase(older, older)
 				}
 				throw new Error('Unreachable code')
 		}
 
 		switch (mergeState.baseState.canMerge(older)) {
 			case null:
-				if (!mergeWithBase(newer, newer)) {
+				if (!mergeState.mergeWithBase(newer, newer)) {
 					throw new Error('base == newer; base == older; base != newer')
 				}
 				return true
 			case false:
-				if (!mergeWithBase(newer, newer)) {
+				if (!mergeState.mergeWithBase(newer, newer)) {
 					if (set) {
 						set(mergeState.olderState.clone)
 						return true
@@ -664,7 +681,7 @@ export class MergerVisitor implements IMergerVisitor {
 				}
 				return true
 			case true:
-				return mergeWithBase(older, newer)
+				return mergeState.mergeWithBase(older, newer)
 		}
 
 		throw new Error('Unreachable code')

@@ -520,16 +520,16 @@
         <y:ProxyAutoBoundsNode>
           <y:Realizers active="0">
             <y:GroupNode>
-              <y:Geometry height="597.6628437866723" width="1412.8491047930752" x="704.2963016705266" y="1342.9099140991723"/>
+              <y:Geometry height="798.0807792762191" width="1452.7449090558243" x="704.2963016705266" y="1342.9099140991723"/>
               <y:Fill color="#F2F0D8" transparent="false"/>
               <y:BorderStyle color="#000000" type="line" width="1.0"/>
-              <y:NodeLabel alignment="center" autoSizePolicy="node_width" backgroundColor="#B7B69E" borderDistance="0.0" fontFamily="Dialog" fontSize="15" fontStyle="plain" hasLineColor="false" height="22.37646484375" horizontalTextPosition="center" iconTextGap="4" modelName="internal" modelPosition="t" textColor="#000000" verticalTextPosition="bottom" visible="true" width="1412.8491047930752" x="0.0" xml:space="preserve" y="0.0">merge - older &lt;= newer</y:NodeLabel>
+              <y:NodeLabel alignment="center" autoSizePolicy="node_width" backgroundColor="#B7B69E" borderDistance="0.0" fontFamily="Dialog" fontSize="15" fontStyle="plain" hasLineColor="false" height="22.37646484375" horizontalTextPosition="center" iconTextGap="4" modelName="internal" modelPosition="t" textColor="#000000" verticalTextPosition="bottom" visible="true" width="1452.7449090558243" x="0.0" xml:space="preserve" y="0.0">merge - older &lt;= newer</y:NodeLabel>
               <y:Shape type="rectangle"/>
               <y:DropShadow color="#D2D2D2" offsetX="4" offsetY="4"/>
               <y:State closed="false" closedHeight="50.0" closedWidth="50.0" innerGraphDisplayEnabled="false"/>
               <y:NodeBounds considerNodeLabelSize="true"/>
               <y:Insets bottom="15" bottomF="15.0" left="15" leftF="15.0" right="15" rightF="15.0" top="15" topF="15.0"/>
-              <y:BorderInsets bottom="25" bottomF="25.286378942922283" left="0" leftF="0.0" right="0" rightF="0.0" top="0" topF="0.0"/>
+              <y:BorderInsets bottom="0" bottomF="0.0" left="0" leftF="0.0" right="0" rightF="0.0" top="0" topF="0.0"/>
             </y:GroupNode>
             <y:GroupNode>
               <y:Geometry height="50.0" width="50.0" x="1863.8388195633943" y="410.6240932450271"/>
@@ -547,19 +547,6 @@
       </data>
       <graph edgedefault="directed" id="n26:">
         <node id="n26::n0">
-          <data key="d4" xml:space="preserve"/>
-          <data key="d5" xml:space="preserve"><![CDATA[Категория]]></data>
-          <data key="d6">
-            <y:ShapeNode>
-              <y:Geometry height="30.0" width="205.375" x="1210.0931766705266" y="1590.2863789429223"/>
-              <y:Fill color="#FFFFFF" transparent="false"/>
-              <y:BorderStyle color="#000000" raised="false" type="line" width="1.0"/>
-              <y:NodeLabel alignment="center" autoSizePolicy="content" fontFamily="Calibri" fontSize="16" fontStyle="plain" hasBackgroundColor="false" hasLineColor="false" height="20.0" horizontalTextPosition="center" iconTextGap="4" modelName="internal" modelPosition="c" textColor="#000000" verticalTextPosition="bottom" visible="true" width="195.375" x="5.0" xml:space="preserve" y="5.0">merge - older clone &lt;= newer</y:NodeLabel>
-              <y:Shape type="roundrectangle"/>
-            </y:ShapeNode>
-          </data>
-        </node>
-        <node id="n26::n1">
           <data key="d5" xml:space="preserve"><![CDATA[ОзУ]]></data>
           <data key="d6">
             <y:ShapeNode>
@@ -571,7 +558,7 @@
             </y:ShapeNode>
           </data>
         </node>
-        <node id="n26::n2">
+        <node id="n26::n1">
           <data key="d5" xml:space="preserve"><![CDATA[ОзУ]]></data>
           <data key="d6">
             <y:ShapeNode>
@@ -583,7 +570,7 @@
             </y:ShapeNode>
           </data>
         </node>
-        <node id="n26::n3">
+        <node id="n26::n2">
           <data key="d5" xml:space="preserve"><![CDATA[ОзУ]]></data>
           <data key="d6">
             <y:ShapeNode>
@@ -595,7 +582,7 @@
             </y:ShapeNode>
           </data>
         </node>
-        <node id="n26::n4">
+        <node id="n26::n3">
           <data key="d5" xml:space="preserve"><![CDATA[ОзУ]]></data>
           <data key="d6">
             <y:ShapeNode>
@@ -607,104 +594,7 @@
             </y:ShapeNode>
           </data>
         </node>
-        <node id="n26::n5">
-          <data key="d5" xml:space="preserve"><![CDATA[ОзУ]]></data>
-          <data key="d6">
-            <y:ShapeNode>
-              <y:Geometry height="30.0" width="98.5" x="1263.5306766705266" y="1520.2863789429223"/>
-              <y:Fill color="#E5E5FF" transparent="false"/>
-              <y:BorderStyle color="#000000" raised="false" type="line" width="1.0"/>
-              <y:NodeLabel alignment="center" autoSizePolicy="content" fontFamily="Calibri" fontSize="16" fontStyle="plain" hasBackgroundColor="false" hasLineColor="false" height="20.0" horizontalTextPosition="center" iconTextGap="4" modelName="internal" modelPosition="c" textColor="#0000FF" verticalTextPosition="bottom" visible="true" width="88.5" x="5.0" xml:space="preserve" y="5.0">+ older clone</y:NodeLabel>
-              <y:Shape type="rectangle"/>
-            </y:ShapeNode>
-          </data>
-        </node>
-        <node id="n26::n6">
-          <data key="d5" xml:space="preserve"><![CDATA[ОзУ]]></data>
-          <data key="d6">
-            <y:ShapeNode>
-              <y:Geometry height="30.0" width="99.359375" x="1568.0775516705266" y="1520.2863789429223"/>
-              <y:Fill color="#E5E5FF" transparent="false"/>
-              <y:BorderStyle color="#000000" raised="false" type="line" width="1.0"/>
-              <y:NodeLabel alignment="center" autoSizePolicy="content" fontFamily="Calibri" fontSize="16" fontStyle="plain" hasBackgroundColor="false" hasLineColor="false" height="20.0" horizontalTextPosition="center" iconTextGap="4" modelName="internal" modelPosition="c" textColor="#0000FF" verticalTextPosition="bottom" visible="true" width="89.359375" x="5.0" xml:space="preserve" y="5.0">! older  clone</y:NodeLabel>
-              <y:Shape type="rectangle"/>
-            </y:ShapeNode>
-          </data>
-        </node>
-        <node id="n26::n7">
-          <data key="d4" xml:space="preserve"/>
-          <data key="d5" xml:space="preserve"><![CDATA[Категория]]></data>
-          <data key="d6">
-            <y:ShapeNode>
-              <y:Geometry height="30.0" width="166.515625" x="1534.4994266705266" y="1590.2863789429223"/>
-              <y:Fill color="#FFFFFF" transparent="false"/>
-              <y:BorderStyle color="#000000" raised="false" type="line" width="1.0"/>
-              <y:NodeLabel alignment="center" autoSizePolicy="content" fontFamily="Calibri" fontSize="16" fontStyle="plain" hasBackgroundColor="false" hasLineColor="false" height="20.0" horizontalTextPosition="center" iconTextGap="4" modelName="internal" modelPosition="c" textColor="#000000" verticalTextPosition="bottom" visible="true" width="156.515625" x="5.0" xml:space="preserve" y="5.0">merge - older &lt;= newer</y:NodeLabel>
-              <y:Shape type="roundrectangle"/>
-            </y:ShapeNode>
-          </data>
-        </node>
-        <node id="n26::n8">
-          <data key="d5" xml:space="preserve"><![CDATA[ОзУ]]></data>
-          <data key="d6">
-            <y:ShapeNode>
-              <y:Geometry height="30.0" width="110.109375" x="1160.0677860455266" y="1730.2863789429223"/>
-              <y:Fill color="#E5E5FF" transparent="false"/>
-              <y:BorderStyle color="#000000" raised="false" type="line" width="1.0"/>
-              <y:NodeLabel alignment="center" autoSizePolicy="content" fontFamily="Calibri" fontSize="16" fontStyle="plain" hasBackgroundColor="false" hasLineColor="false" height="20.0" horizontalTextPosition="center" iconTextGap="4" modelName="internal" modelPosition="c" textColor="#0000FF" verticalTextPosition="bottom" visible="true" width="100.109375" x="5.0" xml:space="preserve" y="5.0">set older clone</y:NodeLabel>
-              <y:Shape type="rectangle"/>
-            </y:ShapeNode>
-          </data>
-        </node>
-        <node id="n26::n9">
-          <data key="d5" xml:space="preserve"><![CDATA[НСУ]]></data>
-          <data key="d6">
-            <y:ShapeNode>
-              <y:Geometry height="30.0" width="41.3046875" x="1194.4701297955266" y="1800.2863789429223"/>
-              <y:Fill color="#FFFF00" transparent="false"/>
-              <y:BorderStyle color="#000000" raised="false" type="line" width="1.0"/>
-              <y:NodeLabel alignment="center" autoSizePolicy="content" fontFamily="Calibri" fontSize="16" fontStyle="plain" hasBackgroundColor="false" hasLineColor="false" height="20.0" horizontalTextPosition="center" iconTextGap="4" modelName="internal" modelPosition="c" textColor="#000000" verticalTextPosition="bottom" visible="true" width="31.3046875" x="5.0" xml:space="preserve" y="5.0">true</y:NodeLabel>
-              <y:Shape type="rectangle"/>
-            </y:ShapeNode>
-          </data>
-        </node>
-        <node id="n26::n10">
-          <data key="d5" xml:space="preserve"><![CDATA[ОзУ]]></data>
-          <data key="d6">
-            <y:ShapeNode>
-              <y:Geometry height="30.0" width="44.4375" x="1728.1570460117425" y="1660.2863789429223"/>
-              <y:Fill color="#E5E5FF" transparent="false"/>
-              <y:BorderStyle color="#000000" raised="false" type="line" width="1.0"/>
-              <y:NodeLabel alignment="center" autoSizePolicy="content" fontFamily="Calibri" fontSize="16" fontStyle="plain" hasBackgroundColor="false" hasLineColor="false" height="20.0" horizontalTextPosition="center" iconTextGap="4" modelName="internal" modelPosition="c" textColor="#0000FF" verticalTextPosition="bottom" visible="true" width="34.4375" x="5.0" xml:space="preserve" y="5.0">false</y:NodeLabel>
-              <y:Shape type="rectangle"/>
-            </y:ShapeNode>
-          </data>
-        </node>
-        <node id="n26::n11">
-          <data key="d5" xml:space="preserve"><![CDATA[ОзУ]]></data>
-          <data key="d6">
-            <y:ShapeNode>
-              <y:Geometry height="30.0" width="71.25" x="1582.1322391705266" y="1800.2863789429223"/>
-              <y:Fill color="#E5E5FF" transparent="false"/>
-              <y:BorderStyle color="#000000" raised="false" type="line" width="1.0"/>
-              <y:NodeLabel alignment="center" autoSizePolicy="content" fontFamily="Calibri" fontSize="16" fontStyle="plain" hasBackgroundColor="false" hasLineColor="false" height="20.0" horizontalTextPosition="center" iconTextGap="4" modelName="internal" modelPosition="c" textColor="#0000FF" verticalTextPosition="bottom" visible="true" width="61.25" x="5.0" xml:space="preserve" y="5.0">set older</y:NodeLabel>
-              <y:Shape type="rectangle"/>
-            </y:ShapeNode>
-          </data>
-        </node>
-        <node id="n26::n12">
-          <data key="d5" xml:space="preserve"><![CDATA[НСУ]]></data>
-          <data key="d6">
-            <y:ShapeNode>
-              <y:Geometry height="30.0" width="41.3046875" x="1597.1048954205266" y="1870.2863789429223"/>
-              <y:Fill color="#FFFF00" transparent="false"/>
-              <y:BorderStyle color="#000000" raised="false" type="line" width="1.0"/>
-              <y:NodeLabel alignment="center" autoSizePolicy="content" fontFamily="Calibri" fontSize="16" fontStyle="plain" hasBackgroundColor="false" hasLineColor="false" height="20.0" horizontalTextPosition="center" iconTextGap="4" modelName="internal" modelPosition="c" textColor="#000000" verticalTextPosition="bottom" visible="true" width="31.3046875" x="5.0" xml:space="preserve" y="5.0">true</y:NodeLabel>
-              <y:Shape type="rectangle"/>
-            </y:ShapeNode>
-          </data>
-        </node>
-        <node id="n26::n13">
+        <node id="n26::n4">
           <data key="d5" xml:space="preserve"><![CDATA[ОзУ]]></data>
           <data key="d6">
             <y:ShapeNode>
@@ -716,7 +606,7 @@
             </y:ShapeNode>
           </data>
         </node>
-        <node id="n26::n14">
+        <node id="n26::n5">
           <data key="d5" xml:space="preserve"><![CDATA[ОзУ]]></data>
           <data key="d6">
             <y:ShapeNode>
@@ -728,7 +618,7 @@
             </y:ShapeNode>
           </data>
         </node>
-        <node id="n26::n15">
+        <node id="n26::n6">
           <data key="d5" xml:space="preserve"><![CDATA[ОзУ]]></data>
           <data key="d6">
             <y:ShapeNode>
@@ -740,7 +630,7 @@
             </y:ShapeNode>
           </data>
         </node>
-        <node id="n26::n16">
+        <node id="n26::n7">
           <data key="d5" xml:space="preserve"><![CDATA[ОзУ]]></data>
           <data key="d6">
             <y:ShapeNode>
@@ -752,7 +642,7 @@
             </y:ShapeNode>
           </data>
         </node>
-        <node id="n26::n17">
+        <node id="n26::n8">
           <data key="d5" xml:space="preserve"><![CDATA[НСУ]]></data>
           <data key="d6">
             <y:ShapeNode>
@@ -764,7 +654,7 @@
             </y:ShapeNode>
           </data>
         </node>
-        <node id="n26::n18">
+        <node id="n26::n9">
           <data key="d5" xml:space="preserve"><![CDATA[ОзУ]]></data>
           <data key="d6">
             <y:ShapeNode>
@@ -776,7 +666,7 @@
             </y:ShapeNode>
           </data>
         </node>
-        <node id="n26::n19">
+        <node id="n26::n10">
           <data key="d5" xml:space="preserve"><![CDATA[НСУ]]></data>
           <data key="d6">
             <y:ShapeNode>
@@ -788,7 +678,7 @@
             </y:ShapeNode>
           </data>
         </node>
-        <node id="n26::n20">
+        <node id="n26::n11">
           <data key="d5" xml:space="preserve"><![CDATA[ОзУ]]></data>
           <data key="d6">
             <y:ShapeNode>
@@ -800,7 +690,7 @@
             </y:ShapeNode>
           </data>
         </node>
-        <node id="n26::n21">
+        <node id="n26::n12">
           <data key="d5" xml:space="preserve"><![CDATA[НСУ]]></data>
           <data key="d6">
             <y:ShapeNode>
@@ -812,7 +702,7 @@
             </y:ShapeNode>
           </data>
         </node>
-        <node id="n26::n22">
+        <node id="n26::n13">
           <data key="d5" xml:space="preserve"><![CDATA[НСУ]]></data>
           <data key="d6">
             <y:ShapeNode>
@@ -824,222 +714,342 @@
             </y:ShapeNode>
           </data>
         </node>
-        <node id="n26::n23">
-          <data key="d5" xml:space="preserve"><![CDATA[НСУ]]></data>
-          <data key="d6">
-            <y:ShapeNode>
-              <y:Geometry height="30.0" width="78.5390625" x="1434.2787235455266" y="1800.2863789429223"/>
-              <y:Fill color="#E5E5FF" transparent="false"/>
-              <y:BorderStyle color="#000000" raised="false" type="line" width="1.0"/>
-              <y:NodeLabel alignment="center" autoSizePolicy="content" fontFamily="Calibri" fontSize="16" fontStyle="plain" hasBackgroundColor="false" hasLineColor="false" height="20.0" horizontalTextPosition="center" iconTextGap="4" modelName="internal" modelPosition="c" textColor="#000000" verticalTextPosition="bottom" visible="true" width="68.5390625" x="5.0" xml:space="preserve" y="5.0">set newer</y:NodeLabel>
-              <y:Shape type="rectangle"/>
-            </y:ShapeNode>
-          </data>
-        </node>
-        <node id="n26::n24">
-          <data key="d5" xml:space="preserve"><![CDATA[ОзУ]]></data>
-          <data key="d6">
-            <y:ShapeNode>
-              <y:Geometry height="30.0" width="106.6484375" x="1420.2240360455266" y="1730.2863789429223"/>
-              <y:Fill color="#E5E5FF" transparent="false"/>
-              <y:BorderStyle color="#000000" raised="false" type="line" width="1.0"/>
-              <y:NodeLabel alignment="center" autoSizePolicy="content" fontFamily="Calibri" fontSize="16" fontStyle="plain" hasBackgroundColor="false" hasLineColor="false" height="20.0" horizontalTextPosition="center" iconTextGap="4" modelName="internal" modelPosition="c" textColor="#0000FF" verticalTextPosition="bottom" visible="true" width="96.6484375" x="5.0" xml:space="preserve" y="5.0">! newer  clone</y:NodeLabel>
-              <y:Shape type="rectangle"/>
-            </y:ShapeNode>
-          </data>
-        </node>
-        <node id="n26::n25">
-          <data key="d5" xml:space="preserve"><![CDATA[ОзУ]]></data>
-          <data key="d6">
-            <y:ShapeNode>
-              <y:Geometry height="30.0" width="105.7890625" x="1294.4349735455266" y="1730.2863789429223"/>
-              <y:Fill color="#E5E5FF" transparent="false"/>
-              <y:BorderStyle color="#000000" raised="false" type="line" width="1.0"/>
-              <y:NodeLabel alignment="center" autoSizePolicy="content" fontFamily="Calibri" fontSize="16" fontStyle="plain" hasBackgroundColor="false" hasLineColor="false" height="20.0" horizontalTextPosition="center" iconTextGap="4" modelName="internal" modelPosition="c" textColor="#0000FF" verticalTextPosition="bottom" visible="true" width="95.7890625" x="5.0" xml:space="preserve" y="5.0">+ newer clone</y:NodeLabel>
-              <y:Shape type="rectangle"/>
-            </y:ShapeNode>
-          </data>
-        </node>
-        <node id="n26::n26">
-          <data key="d5" xml:space="preserve"><![CDATA[НСУ]]></data>
-          <data key="d6">
-            <y:ShapeNode>
-              <y:Geometry height="30.0" width="41.3046875" x="1452.8959110455266" y="1870.2863789429223"/>
-              <y:Fill color="#FFFF00" transparent="false"/>
-              <y:BorderStyle color="#000000" raised="false" type="line" width="1.0"/>
-              <y:NodeLabel alignment="center" autoSizePolicy="content" fontFamily="Calibri" fontSize="16" fontStyle="plain" hasBackgroundColor="false" hasLineColor="false" height="20.0" horizontalTextPosition="center" iconTextGap="4" modelName="internal" modelPosition="c" textColor="#000000" verticalTextPosition="bottom" visible="true" width="31.3046875" x="5.0" xml:space="preserve" y="5.0">true</y:NodeLabel>
-              <y:Shape type="rectangle"/>
-            </y:ShapeNode>
-          </data>
-        </node>
-        <node id="n26::n27">
-          <data key="d5" xml:space="preserve"><![CDATA[ОзУ]]></data>
-          <data key="d6">
-            <y:ShapeNode>
-              <y:Geometry height="30.0" width="44.4375" x="1388.2201297955266" y="1660.2863789429223"/>
-              <y:Fill color="#E5E5FF" transparent="false"/>
-              <y:BorderStyle color="#000000" raised="false" type="line" width="1.0"/>
-              <y:NodeLabel alignment="center" autoSizePolicy="content" fontFamily="Calibri" fontSize="16" fontStyle="plain" hasBackgroundColor="false" hasLineColor="false" height="20.0" horizontalTextPosition="center" iconTextGap="4" modelName="internal" modelPosition="c" textColor="#0000FF" verticalTextPosition="bottom" visible="true" width="34.4375" x="5.0" xml:space="preserve" y="5.0">false</y:NodeLabel>
-              <y:Shape type="rectangle"/>
-            </y:ShapeNode>
-          </data>
-        </node>
-        <node id="n26::n28">
-          <data key="d5" xml:space="preserve"><![CDATA[ОзУ]]></data>
-          <data key="d6">
-            <y:ShapeNode>
-              <y:Geometry height="30.0" width="47.125" x="1082.6039188580266" y="1660.2863789429223"/>
-              <y:Fill color="#E5E5FF" transparent="false"/>
-              <y:BorderStyle color="#000000" raised="false" type="line" width="1.0"/>
-              <y:NodeLabel alignment="center" autoSizePolicy="content" fontFamily="Calibri" fontSize="16" fontStyle="plain" hasBackgroundColor="false" hasLineColor="false" height="20.0" horizontalTextPosition="center" iconTextGap="4" modelName="internal" modelPosition="c" textColor="#0000FF" verticalTextPosition="bottom" visible="true" width="37.125" x="5.0" xml:space="preserve" y="5.0">is set</y:NodeLabel>
-              <y:Shape type="rectangle"/>
-            </y:ShapeNode>
-          </data>
-        </node>
-        <node id="n26::n29">
-          <data key="d5" xml:space="preserve"><![CDATA[ОзУ]]></data>
-          <data key="d6">
-            <y:ShapeNode>
-              <y:Geometry height="30.0" width="106.6484375" x="1760.1609522617425" y="1730.2863789429223"/>
-              <y:Fill color="#E5E5FF" transparent="false"/>
-              <y:BorderStyle color="#000000" raised="false" type="line" width="1.0"/>
-              <y:NodeLabel alignment="center" autoSizePolicy="content" fontFamily="Calibri" fontSize="16" fontStyle="plain" hasBackgroundColor="false" hasLineColor="false" height="20.0" horizontalTextPosition="center" iconTextGap="4" modelName="internal" modelPosition="c" textColor="#0000FF" verticalTextPosition="bottom" visible="true" width="96.6484375" x="5.0" xml:space="preserve" y="5.0">! newer  clone</y:NodeLabel>
-              <y:Shape type="rectangle"/>
-            </y:ShapeNode>
-          </data>
-        </node>
-        <node id="n26::n30">
-          <data key="d5" xml:space="preserve"><![CDATA[ОзУ]]></data>
-          <data key="d6">
-            <y:ShapeNode>
-              <y:Geometry height="30.0" width="105.7890625" x="1634.3718897617428" y="1730.2863789429223"/>
-              <y:Fill color="#E5E5FF" transparent="false"/>
-              <y:BorderStyle color="#000000" raised="false" type="line" width="1.0"/>
-              <y:NodeLabel alignment="center" autoSizePolicy="content" fontFamily="Calibri" fontSize="16" fontStyle="plain" hasBackgroundColor="false" hasLineColor="false" height="20.0" horizontalTextPosition="center" iconTextGap="4" modelName="internal" modelPosition="c" textColor="#0000FF" verticalTextPosition="bottom" visible="true" width="95.7890625" x="5.0" xml:space="preserve" y="5.0">+ newer clone</y:NodeLabel>
-              <y:Shape type="rectangle"/>
-            </y:ShapeNode>
-          </data>
-        </node>
-        <node id="n26::n31">
-          <data key="d5" xml:space="preserve"><![CDATA[НСУ]]></data>
-          <data key="d6">
-            <y:ShapeNode>
-              <y:Geometry height="30.0" width="78.5390625" x="1774.2156397617425" y="1800.2863789429223"/>
-              <y:Fill color="#E5E5FF" transparent="false"/>
-              <y:BorderStyle color="#000000" raised="false" type="line" width="1.0"/>
-              <y:NodeLabel alignment="center" autoSizePolicy="content" fontFamily="Calibri" fontSize="16" fontStyle="plain" hasBackgroundColor="false" hasLineColor="false" height="20.0" horizontalTextPosition="center" iconTextGap="4" modelName="internal" modelPosition="c" textColor="#000000" verticalTextPosition="bottom" visible="true" width="68.5390625" x="5.0" xml:space="preserve" y="5.0">set newer</y:NodeLabel>
-              <y:Shape type="rectangle"/>
-            </y:ShapeNode>
-          </data>
-        </node>
-        <node id="n26::n32">
-          <data key="d5" xml:space="preserve"><![CDATA[НСУ]]></data>
-          <data key="d6">
-            <y:ShapeNode>
-              <y:Geometry height="30.0" width="41.3046875" x="1792.8328272617425" y="1870.2863789429223"/>
-              <y:Fill color="#FFFF00" transparent="false"/>
-              <y:BorderStyle color="#000000" raised="false" type="line" width="1.0"/>
-              <y:NodeLabel alignment="center" autoSizePolicy="content" fontFamily="Calibri" fontSize="16" fontStyle="plain" hasBackgroundColor="false" hasLineColor="false" height="20.0" horizontalTextPosition="center" iconTextGap="4" modelName="internal" modelPosition="c" textColor="#000000" verticalTextPosition="bottom" visible="true" width="31.3046875" x="5.0" xml:space="preserve" y="5.0">true</y:NodeLabel>
-              <y:Shape type="rectangle"/>
-            </y:ShapeNode>
-          </data>
-        </node>
-        <node id="n26::n33">
-          <data key="d5" xml:space="preserve"><![CDATA[ОзУ]]></data>
-          <data key="d6">
-            <y:ShapeNode>
-              <y:Geometry height="30.0" width="59.3984375" x="1277.8685672955266" y="1660.2863789429223"/>
-              <y:Fill color="#E5E5FF" transparent="false"/>
-              <y:BorderStyle color="#000000" raised="false" type="line" width="1.0"/>
-              <y:NodeLabel alignment="center" autoSizePolicy="content" fontFamily="Calibri" fontSize="16" fontStyle="plain" hasBackgroundColor="false" hasLineColor="false" height="20.0" horizontalTextPosition="center" iconTextGap="4" modelName="internal" modelPosition="c" textColor="#0000FF" verticalTextPosition="bottom" visible="true" width="49.3984375" x="5.0" xml:space="preserve" y="5.0">not set</y:NodeLabel>
-              <y:Shape type="rectangle"/>
-            </y:ShapeNode>
-          </data>
-        </node>
-        <node id="n26::n34">
-          <data key="d5" xml:space="preserve"><![CDATA[ОзУ]]></data>
-          <data key="d6">
-            <y:ShapeNode>
-              <y:Geometry height="30.0" width="47.125" x="1908.7388795843779" y="1660.2863789429223"/>
-              <y:Fill color="#E5E5FF" transparent="false"/>
-              <y:BorderStyle color="#000000" raised="false" type="line" width="1.0"/>
-              <y:NodeLabel alignment="center" autoSizePolicy="content" fontFamily="Calibri" fontSize="16" fontStyle="plain" hasBackgroundColor="false" hasLineColor="false" height="20.0" horizontalTextPosition="center" iconTextGap="4" modelName="internal" modelPosition="c" textColor="#0000FF" verticalTextPosition="bottom" visible="true" width="37.125" x="5.0" xml:space="preserve" y="5.0">is set</y:NodeLabel>
-              <y:Shape type="rectangle"/>
-            </y:ShapeNode>
-          </data>
-        </node>
-        <node id="n26::n35">
-          <data key="d5" xml:space="preserve"><![CDATA[ОзУ]]></data>
-          <data key="d6">
-            <y:ShapeNode>
-              <y:Geometry height="30.0" width="59.3984375" x="1534.4994266705266" y="1660.2863789429223"/>
-              <y:Fill color="#E5E5FF" transparent="false"/>
-              <y:BorderStyle color="#000000" raised="false" type="line" width="1.0"/>
-              <y:NodeLabel alignment="center" autoSizePolicy="content" fontFamily="Calibri" fontSize="16" fontStyle="plain" hasBackgroundColor="false" hasLineColor="false" height="20.0" horizontalTextPosition="center" iconTextGap="4" modelName="internal" modelPosition="c" textColor="#0000FF" verticalTextPosition="bottom" visible="true" width="49.3984375" x="5.0" xml:space="preserve" y="5.0">not set</y:NodeLabel>
-              <y:Shape type="rectangle"/>
-            </y:ShapeNode>
-          </data>
-        </node>
-        <node id="n26::n36">
+        <node id="n26::n14" yfiles.foldertype="group">
           <data key="d4" xml:space="preserve"/>
-          <data key="d5" xml:space="preserve"><![CDATA[НФ]]></data>
           <data key="d6">
-            <y:ShapeNode>
-              <y:Geometry height="30.0" width="46.984375" x="1081.9032298766035" y="1730.2863789429223"/>
-              <y:Fill color="#FF0000" transparent="false"/>
-              <y:BorderStyle color="#000000" raised="false" type="line" width="3.0"/>
-              <y:NodeLabel alignment="center" autoSizePolicy="content" fontFamily="Calibri" fontSize="16" fontStyle="plain" hasBackgroundColor="false" hasLineColor="false" height="20.0" horizontalTextPosition="center" iconTextGap="4" modelName="internal" modelPosition="c" textColor="#000000" verticalTextPosition="bottom" visible="true" width="36.984375" x="5.0" xml:space="preserve" y="5.0">Error</y:NodeLabel>
-              <y:Shape type="roundrectangle"/>
-            </y:ShapeNode>
+            <y:ProxyAutoBoundsNode>
+              <y:Realizers active="0">
+                <y:GroupNode>
+                  <y:Geometry height="511.7043144324691" width="903.9606497077741" x="1234.0805610185769" y="1610.2863789429223"/>
+                  <y:Fill color="#F2F0D8" transparent="false"/>
+                  <y:BorderStyle color="#000000" type="line" width="1.0"/>
+                  <y:NodeLabel alignment="center" autoSizePolicy="node_width" backgroundColor="#B7B69E" borderDistance="0.0" fontFamily="Dialog" fontSize="15" fontStyle="plain" hasLineColor="false" height="22.37646484375" horizontalTextPosition="center" iconTextGap="4" modelName="internal" modelPosition="t" textColor="#000000" verticalTextPosition="bottom" visible="true" width="903.9606497077741" x="0.0" xml:space="preserve" y="0.0">merge - older &lt;= newer</y:NodeLabel>
+                  <y:Shape type="rectangle"/>
+                  <y:DropShadow color="#D2D2D2" offsetX="4" offsetY="4"/>
+                  <y:State closed="false" closedHeight="50.0" closedWidth="50.0" innerGraphDisplayEnabled="false"/>
+                  <y:NodeBounds considerNodeLabelSize="true"/>
+                  <y:Insets bottom="15" bottomF="15.0" left="15" leftF="15.0" right="15" rightF="15.0" top="15" topF="15.0"/>
+                  <y:BorderInsets bottom="0" bottomF="0.0" left="0" leftF="0.0" right="0" rightF="0.0" top="0" topF="0.0"/>
+                </y:GroupNode>
+                <y:GroupNode>
+                  <y:Geometry height="50.0" width="50.0" x="1863.8388195633943" y="410.6240932450271"/>
+                  <y:Fill color="#F2F0D8" transparent="false"/>
+                  <y:BorderStyle color="#000000" type="line" width="1.0"/>
+                  <y:NodeLabel alignment="right" autoSizePolicy="node_width" backgroundColor="#B7B69E" borderDistance="0.0" fontFamily="Dialog" fontSize="15" fontStyle="plain" hasLineColor="false" height="22.37646484375" horizontalTextPosition="center" iconTextGap="4" modelName="internal" modelPosition="t" textColor="#000000" verticalTextPosition="bottom" visible="true" width="50.0" x="0.0" xml:space="preserve" y="0.0">3</y:NodeLabel>
+                  <y:Shape type="rectangle"/>
+                  <y:DropShadow color="#D2D2D2" offsetX="4" offsetY="4"/>
+                  <y:State closed="true" closedHeight="50.0" closedWidth="50.0" innerGraphDisplayEnabled="false"/>
+                  <y:Insets bottom="15" bottomF="15.0" left="15" leftF="15.0" right="15" rightF="15.0" top="15" topF="15.0"/>
+                  <y:BorderInsets bottom="0" bottomF="0.0" left="0" leftF="0.0" right="0" rightF="0.0" top="0" topF="0.0"/>
+                </y:GroupNode>
+              </y:Realizers>
+            </y:ProxyAutoBoundsNode>
           </data>
-        </node>
-        <node id="n26::n37">
-          <data key="d5" xml:space="preserve"><![CDATA[НСУ]]></data>
-          <data key="d6">
-            <y:ShapeNode>
-              <y:Geometry height="30.0" width="41.3046875" x="1911.6490358343779" y="1820.2863789429223"/>
-              <y:Fill color="#FFFF00" transparent="false"/>
-              <y:BorderStyle color="#000000" raised="false" type="line" width="1.0"/>
-              <y:NodeLabel alignment="center" autoSizePolicy="content" fontFamily="Calibri" fontSize="16" fontStyle="plain" hasBackgroundColor="false" hasLineColor="false" height="20.0" horizontalTextPosition="center" iconTextGap="4" modelName="internal" modelPosition="c" textColor="#000000" verticalTextPosition="bottom" visible="true" width="31.3046875" x="5.0" xml:space="preserve" y="5.0">true</y:NodeLabel>
-              <y:Shape type="rectangle"/>
-            </y:ShapeNode>
-          </data>
-        </node>
-        <node id="n26::n38">
-          <data key="d5" xml:space="preserve"><![CDATA[ОзУ]]></data>
-          <data key="d6">
-            <y:ShapeNode>
-              <y:Geometry height="30.0" width="45.1640625" x="1972.2114094805745" y="1730.2863789429223"/>
-              <y:Fill color="#E5E5FF" transparent="false"/>
-              <y:BorderStyle color="#000000" raised="false" type="line" width="1.0"/>
-              <y:NodeLabel alignment="center" autoSizePolicy="content" fontFamily="Calibri" fontSize="16" fontStyle="plain" hasBackgroundColor="false" hasLineColor="false" height="20.0" horizontalTextPosition="center" iconTextGap="4" modelName="internal" modelPosition="c" textColor="#0000FF" verticalTextPosition="bottom" visible="true" width="35.1640625" x="5.0" xml:space="preserve" y="5.0">+ set</y:NodeLabel>
-              <y:Shape type="rectangle"/>
-            </y:ShapeNode>
-          </data>
-        </node>
-        <node id="n26::n39">
-          <data key="d5" xml:space="preserve"><![CDATA[ОзУ]]></data>
-          <data key="d6">
-            <y:ShapeNode>
-              <y:Geometry height="30.0" width="42.40625" x="2059.739156463602" y="1730.2863789429223"/>
-              <y:Fill color="#E5E5FF" transparent="false"/>
-              <y:BorderStyle color="#000000" raised="false" type="line" width="1.0"/>
-              <y:NodeLabel alignment="center" autoSizePolicy="content" fontFamily="Calibri" fontSize="16" fontStyle="plain" hasBackgroundColor="false" hasLineColor="false" height="20.0" horizontalTextPosition="center" iconTextGap="4" modelName="internal" modelPosition="c" textColor="#0000FF" verticalTextPosition="bottom" visible="true" width="32.40625" x="5.0" xml:space="preserve" y="5.0">! set</y:NodeLabel>
-              <y:Shape type="rectangle"/>
-            </y:ShapeNode>
-          </data>
-        </node>
-        <node id="n26::n40">
-          <data key="d5" xml:space="preserve"><![CDATA[НСУ]]></data>
-          <data key="d6">
-            <y:ShapeNode>
-              <y:Geometry height="30.0" width="44.4375" x="1994.5739209287503" y="1820.2863789429223"/>
-              <y:Fill color="#FF7F7F" transparent="false"/>
-              <y:BorderStyle color="#000000" raised="false" type="line" width="1.0"/>
-              <y:NodeLabel alignment="center" autoSizePolicy="content" fontFamily="Calibri" fontSize="16" fontStyle="plain" hasBackgroundColor="false" hasLineColor="false" height="20.0" horizontalTextPosition="center" iconTextGap="4" modelName="internal" modelPosition="c" textColor="#000000" verticalTextPosition="bottom" visible="true" width="34.4375" x="5.0" xml:space="preserve" y="5.0">false</y:NodeLabel>
-              <y:Shape type="rectangle"/>
-            </y:ShapeNode>
-          </data>
+          <graph edgedefault="directed" id="n26::n14:">
+            <node id="n26::n14::n0">
+              <data key="d4" xml:space="preserve"/>
+              <data key="d5" xml:space="preserve"><![CDATA[Категория]]></data>
+              <data key="d6">
+                <y:ShapeNode>
+                  <y:Geometry height="30.0" width="205.375" x="1377.2705078125002" y="1796.9906933753914"/>
+                  <y:Fill color="#FFFFFF" transparent="false"/>
+                  <y:BorderStyle color="#000000" raised="false" type="line" width="1.0"/>
+                  <y:NodeLabel alignment="center" autoSizePolicy="content" fontFamily="Calibri" fontSize="16" fontStyle="plain" hasBackgroundColor="false" hasLineColor="false" height="20.0" horizontalTextPosition="center" iconTextGap="4" modelName="internal" modelPosition="c" textColor="#000000" verticalTextPosition="bottom" visible="true" width="195.375" x="5.0" xml:space="preserve" y="5.0">merge - older clone &lt;= newer</y:NodeLabel>
+                  <y:Shape type="roundrectangle"/>
+                </y:ShapeNode>
+              </data>
+            </node>
+            <node id="n26::n14::n1">
+              <data key="d5" xml:space="preserve"><![CDATA[ОзУ]]></data>
+              <data key="d6">
+                <y:ShapeNode>
+                  <y:Geometry height="30.0" width="98.5" x="1430.7080078125002" y="1726.9906933753914"/>
+                  <y:Fill color="#E5E5FF" transparent="false"/>
+                  <y:BorderStyle color="#000000" raised="false" type="line" width="1.0"/>
+                  <y:NodeLabel alignment="center" autoSizePolicy="content" fontFamily="Calibri" fontSize="16" fontStyle="plain" hasBackgroundColor="false" hasLineColor="false" height="20.0" horizontalTextPosition="center" iconTextGap="4" modelName="internal" modelPosition="c" textColor="#0000FF" verticalTextPosition="bottom" visible="true" width="88.5" x="5.0" xml:space="preserve" y="5.0">+ older clone</y:NodeLabel>
+                  <y:Shape type="rectangle"/>
+                </y:ShapeNode>
+              </data>
+            </node>
+            <node id="n26::n14::n2">
+              <data key="d5" xml:space="preserve"><![CDATA[ОзУ]]></data>
+              <data key="d6">
+                <y:ShapeNode>
+                  <y:Geometry height="30.0" width="99.359375" x="1735.2548828125002" y="1726.9906933753914"/>
+                  <y:Fill color="#E5E5FF" transparent="false"/>
+                  <y:BorderStyle color="#000000" raised="false" type="line" width="1.0"/>
+                  <y:NodeLabel alignment="center" autoSizePolicy="content" fontFamily="Calibri" fontSize="16" fontStyle="plain" hasBackgroundColor="false" hasLineColor="false" height="20.0" horizontalTextPosition="center" iconTextGap="4" modelName="internal" modelPosition="c" textColor="#0000FF" verticalTextPosition="bottom" visible="true" width="89.359375" x="5.0" xml:space="preserve" y="5.0">! older  clone</y:NodeLabel>
+                  <y:Shape type="rectangle"/>
+                </y:ShapeNode>
+              </data>
+            </node>
+            <node id="n26::n14::n3">
+              <data key="d4" xml:space="preserve"/>
+              <data key="d5" xml:space="preserve"><![CDATA[Категория]]></data>
+              <data key="d6">
+                <y:ShapeNode>
+                  <y:Geometry height="30.0" width="166.515625" x="1701.6767578125002" y="1796.9906933753914"/>
+                  <y:Fill color="#FFFFFF" transparent="false"/>
+                  <y:BorderStyle color="#000000" raised="false" type="line" width="1.0"/>
+                  <y:NodeLabel alignment="center" autoSizePolicy="content" fontFamily="Calibri" fontSize="16" fontStyle="plain" hasBackgroundColor="false" hasLineColor="false" height="20.0" horizontalTextPosition="center" iconTextGap="4" modelName="internal" modelPosition="c" textColor="#000000" verticalTextPosition="bottom" visible="true" width="156.515625" x="5.0" xml:space="preserve" y="5.0">merge - older &lt;= newer</y:NodeLabel>
+                  <y:Shape type="roundrectangle"/>
+                </y:ShapeNode>
+              </data>
+            </node>
+            <node id="n26::n14::n4">
+              <data key="d5" xml:space="preserve"><![CDATA[ОзУ]]></data>
+              <data key="d6">
+                <y:ShapeNode>
+                  <y:Geometry height="30.0" width="110.109375" x="1327.2451171875002" y="1936.9906933753914"/>
+                  <y:Fill color="#E5E5FF" transparent="false"/>
+                  <y:BorderStyle color="#000000" raised="false" type="line" width="1.0"/>
+                  <y:NodeLabel alignment="center" autoSizePolicy="content" fontFamily="Calibri" fontSize="16" fontStyle="plain" hasBackgroundColor="false" hasLineColor="false" height="20.0" horizontalTextPosition="center" iconTextGap="4" modelName="internal" modelPosition="c" textColor="#0000FF" verticalTextPosition="bottom" visible="true" width="100.109375" x="5.0" xml:space="preserve" y="5.0">set older clone</y:NodeLabel>
+                  <y:Shape type="rectangle"/>
+                </y:ShapeNode>
+              </data>
+            </node>
+            <node id="n26::n14::n5">
+              <data key="d5" xml:space="preserve"><![CDATA[НСУ]]></data>
+              <data key="d6">
+                <y:ShapeNode>
+                  <y:Geometry height="30.0" width="41.3046875" x="1361.6474609375002" y="2006.9906933753914"/>
+                  <y:Fill color="#FFFF00" transparent="false"/>
+                  <y:BorderStyle color="#000000" raised="false" type="line" width="1.0"/>
+                  <y:NodeLabel alignment="center" autoSizePolicy="content" fontFamily="Calibri" fontSize="16" fontStyle="plain" hasBackgroundColor="false" hasLineColor="false" height="20.0" horizontalTextPosition="center" iconTextGap="4" modelName="internal" modelPosition="c" textColor="#000000" verticalTextPosition="bottom" visible="true" width="31.3046875" x="5.0" xml:space="preserve" y="5.0">true</y:NodeLabel>
+                  <y:Shape type="rectangle"/>
+                </y:ShapeNode>
+              </data>
+            </node>
+            <node id="n26::n14::n6">
+              <data key="d5" xml:space="preserve"><![CDATA[ОзУ]]></data>
+              <data key="d6">
+                <y:ShapeNode>
+                  <y:Geometry height="30.0" width="44.4375" x="1895.3343771537159" y="1866.9906933753914"/>
+                  <y:Fill color="#E5E5FF" transparent="false"/>
+                  <y:BorderStyle color="#000000" raised="false" type="line" width="1.0"/>
+                  <y:NodeLabel alignment="center" autoSizePolicy="content" fontFamily="Calibri" fontSize="16" fontStyle="plain" hasBackgroundColor="false" hasLineColor="false" height="20.0" horizontalTextPosition="center" iconTextGap="4" modelName="internal" modelPosition="c" textColor="#0000FF" verticalTextPosition="bottom" visible="true" width="34.4375" x="5.0" xml:space="preserve" y="5.0">false</y:NodeLabel>
+                  <y:Shape type="rectangle"/>
+                </y:ShapeNode>
+              </data>
+            </node>
+            <node id="n26::n14::n7">
+              <data key="d5" xml:space="preserve"><![CDATA[ОзУ]]></data>
+              <data key="d6">
+                <y:ShapeNode>
+                  <y:Geometry height="30.0" width="71.25" x="1749.3095703125002" y="2006.9906933753914"/>
+                  <y:Fill color="#E5E5FF" transparent="false"/>
+                  <y:BorderStyle color="#000000" raised="false" type="line" width="1.0"/>
+                  <y:NodeLabel alignment="center" autoSizePolicy="content" fontFamily="Calibri" fontSize="16" fontStyle="plain" hasBackgroundColor="false" hasLineColor="false" height="20.0" horizontalTextPosition="center" iconTextGap="4" modelName="internal" modelPosition="c" textColor="#0000FF" verticalTextPosition="bottom" visible="true" width="61.25" x="5.0" xml:space="preserve" y="5.0">set older</y:NodeLabel>
+                  <y:Shape type="rectangle"/>
+                </y:ShapeNode>
+              </data>
+            </node>
+            <node id="n26::n14::n8">
+              <data key="d5" xml:space="preserve"><![CDATA[НСУ]]></data>
+              <data key="d6">
+                <y:ShapeNode>
+                  <y:Geometry height="30.0" width="41.3046875" x="1764.2822265625002" y="2076.9906933753914"/>
+                  <y:Fill color="#FFFF00" transparent="false"/>
+                  <y:BorderStyle color="#000000" raised="false" type="line" width="1.0"/>
+                  <y:NodeLabel alignment="center" autoSizePolicy="content" fontFamily="Calibri" fontSize="16" fontStyle="plain" hasBackgroundColor="false" hasLineColor="false" height="20.0" horizontalTextPosition="center" iconTextGap="4" modelName="internal" modelPosition="c" textColor="#000000" verticalTextPosition="bottom" visible="true" width="31.3046875" x="5.0" xml:space="preserve" y="5.0">true</y:NodeLabel>
+                  <y:Shape type="rectangle"/>
+                </y:ShapeNode>
+              </data>
+            </node>
+            <node id="n26::n14::n9">
+              <data key="d5" xml:space="preserve"><![CDATA[НСУ]]></data>
+              <data key="d6">
+                <y:ShapeNode>
+                  <y:Geometry height="30.0" width="78.5390625" x="1601.4560546875002" y="2006.9906933753914"/>
+                  <y:Fill color="#E5E5FF" transparent="false"/>
+                  <y:BorderStyle color="#000000" raised="false" type="line" width="1.0"/>
+                  <y:NodeLabel alignment="center" autoSizePolicy="content" fontFamily="Calibri" fontSize="16" fontStyle="plain" hasBackgroundColor="false" hasLineColor="false" height="20.0" horizontalTextPosition="center" iconTextGap="4" modelName="internal" modelPosition="c" textColor="#000000" verticalTextPosition="bottom" visible="true" width="68.5390625" x="5.0" xml:space="preserve" y="5.0">set newer</y:NodeLabel>
+                  <y:Shape type="rectangle"/>
+                </y:ShapeNode>
+              </data>
+            </node>
+            <node id="n26::n14::n10">
+              <data key="d5" xml:space="preserve"><![CDATA[ОзУ]]></data>
+              <data key="d6">
+                <y:ShapeNode>
+                  <y:Geometry height="30.0" width="106.6484375" x="1587.4013671875002" y="1936.9906933753914"/>
+                  <y:Fill color="#E5E5FF" transparent="false"/>
+                  <y:BorderStyle color="#000000" raised="false" type="line" width="1.0"/>
+                  <y:NodeLabel alignment="center" autoSizePolicy="content" fontFamily="Calibri" fontSize="16" fontStyle="plain" hasBackgroundColor="false" hasLineColor="false" height="20.0" horizontalTextPosition="center" iconTextGap="4" modelName="internal" modelPosition="c" textColor="#0000FF" verticalTextPosition="bottom" visible="true" width="96.6484375" x="5.0" xml:space="preserve" y="5.0">! newer  clone</y:NodeLabel>
+                  <y:Shape type="rectangle"/>
+                </y:ShapeNode>
+              </data>
+            </node>
+            <node id="n26::n14::n11">
+              <data key="d5" xml:space="preserve"><![CDATA[ОзУ]]></data>
+              <data key="d6">
+                <y:ShapeNode>
+                  <y:Geometry height="30.0" width="105.7890625" x="1461.6123046875002" y="1936.9906933753914"/>
+                  <y:Fill color="#E5E5FF" transparent="false"/>
+                  <y:BorderStyle color="#000000" raised="false" type="line" width="1.0"/>
+                  <y:NodeLabel alignment="center" autoSizePolicy="content" fontFamily="Calibri" fontSize="16" fontStyle="plain" hasBackgroundColor="false" hasLineColor="false" height="20.0" horizontalTextPosition="center" iconTextGap="4" modelName="internal" modelPosition="c" textColor="#0000FF" verticalTextPosition="bottom" visible="true" width="95.7890625" x="5.0" xml:space="preserve" y="5.0">+ newer clone</y:NodeLabel>
+                  <y:Shape type="rectangle"/>
+                </y:ShapeNode>
+              </data>
+            </node>
+            <node id="n26::n14::n12">
+              <data key="d5" xml:space="preserve"><![CDATA[НСУ]]></data>
+              <data key="d6">
+                <y:ShapeNode>
+                  <y:Geometry height="30.0" width="41.3046875" x="1620.0732421875002" y="2076.9906933753914"/>
+                  <y:Fill color="#FFFF00" transparent="false"/>
+                  <y:BorderStyle color="#000000" raised="false" type="line" width="1.0"/>
+                  <y:NodeLabel alignment="center" autoSizePolicy="content" fontFamily="Calibri" fontSize="16" fontStyle="plain" hasBackgroundColor="false" hasLineColor="false" height="20.0" horizontalTextPosition="center" iconTextGap="4" modelName="internal" modelPosition="c" textColor="#000000" verticalTextPosition="bottom" visible="true" width="31.3046875" x="5.0" xml:space="preserve" y="5.0">true</y:NodeLabel>
+                  <y:Shape type="rectangle"/>
+                </y:ShapeNode>
+              </data>
+            </node>
+            <node id="n26::n14::n13">
+              <data key="d5" xml:space="preserve"><![CDATA[ОзУ]]></data>
+              <data key="d6">
+                <y:ShapeNode>
+                  <y:Geometry height="30.0" width="44.4375" x="1555.3974609375002" y="1866.9906933753914"/>
+                  <y:Fill color="#E5E5FF" transparent="false"/>
+                  <y:BorderStyle color="#000000" raised="false" type="line" width="1.0"/>
+                  <y:NodeLabel alignment="center" autoSizePolicy="content" fontFamily="Calibri" fontSize="16" fontStyle="plain" hasBackgroundColor="false" hasLineColor="false" height="20.0" horizontalTextPosition="center" iconTextGap="4" modelName="internal" modelPosition="c" textColor="#0000FF" verticalTextPosition="bottom" visible="true" width="34.4375" x="5.0" xml:space="preserve" y="5.0">false</y:NodeLabel>
+                  <y:Shape type="rectangle"/>
+                </y:ShapeNode>
+              </data>
+            </node>
+            <node id="n26::n14::n14">
+              <data key="d5" xml:space="preserve"><![CDATA[ОзУ]]></data>
+              <data key="d6">
+                <y:ShapeNode>
+                  <y:Geometry height="30.0" width="47.125" x="1249.7812500000002" y="1866.9906933753914"/>
+                  <y:Fill color="#E5E5FF" transparent="false"/>
+                  <y:BorderStyle color="#000000" raised="false" type="line" width="1.0"/>
+                  <y:NodeLabel alignment="center" autoSizePolicy="content" fontFamily="Calibri" fontSize="16" fontStyle="plain" hasBackgroundColor="false" hasLineColor="false" height="20.0" horizontalTextPosition="center" iconTextGap="4" modelName="internal" modelPosition="c" textColor="#0000FF" verticalTextPosition="bottom" visible="true" width="37.125" x="5.0" xml:space="preserve" y="5.0">is set</y:NodeLabel>
+                  <y:Shape type="rectangle"/>
+                </y:ShapeNode>
+              </data>
+            </node>
+            <node id="n26::n14::n15">
+              <data key="d5" xml:space="preserve"><![CDATA[ОзУ]]></data>
+              <data key="d6">
+                <y:ShapeNode>
+                  <y:Geometry height="30.0" width="106.6484375" x="1927.3382834037159" y="1936.9906933753914"/>
+                  <y:Fill color="#E5E5FF" transparent="false"/>
+                  <y:BorderStyle color="#000000" raised="false" type="line" width="1.0"/>
+                  <y:NodeLabel alignment="center" autoSizePolicy="content" fontFamily="Calibri" fontSize="16" fontStyle="plain" hasBackgroundColor="false" hasLineColor="false" height="20.0" horizontalTextPosition="center" iconTextGap="4" modelName="internal" modelPosition="c" textColor="#0000FF" verticalTextPosition="bottom" visible="true" width="96.6484375" x="5.0" xml:space="preserve" y="5.0">! newer  clone</y:NodeLabel>
+                  <y:Shape type="rectangle"/>
+                </y:ShapeNode>
+              </data>
+            </node>
+            <node id="n26::n14::n16">
+              <data key="d5" xml:space="preserve"><![CDATA[ОзУ]]></data>
+              <data key="d6">
+                <y:ShapeNode>
+                  <y:Geometry height="30.0" width="105.7890625" x="1801.5492209037159" y="1936.9906933753914"/>
+                  <y:Fill color="#E5E5FF" transparent="false"/>
+                  <y:BorderStyle color="#000000" raised="false" type="line" width="1.0"/>
+                  <y:NodeLabel alignment="center" autoSizePolicy="content" fontFamily="Calibri" fontSize="16" fontStyle="plain" hasBackgroundColor="false" hasLineColor="false" height="20.0" horizontalTextPosition="center" iconTextGap="4" modelName="internal" modelPosition="c" textColor="#0000FF" verticalTextPosition="bottom" visible="true" width="95.7890625" x="5.0" xml:space="preserve" y="5.0">+ newer clone</y:NodeLabel>
+                  <y:Shape type="rectangle"/>
+                </y:ShapeNode>
+              </data>
+            </node>
+            <node id="n26::n14::n17">
+              <data key="d5" xml:space="preserve"><![CDATA[НСУ]]></data>
+              <data key="d6">
+                <y:ShapeNode>
+                  <y:Geometry height="30.0" width="78.5390625" x="1941.3929709037159" y="2006.9906933753914"/>
+                  <y:Fill color="#E5E5FF" transparent="false"/>
+                  <y:BorderStyle color="#000000" raised="false" type="line" width="1.0"/>
+                  <y:NodeLabel alignment="center" autoSizePolicy="content" fontFamily="Calibri" fontSize="16" fontStyle="plain" hasBackgroundColor="false" hasLineColor="false" height="20.0" horizontalTextPosition="center" iconTextGap="4" modelName="internal" modelPosition="c" textColor="#000000" verticalTextPosition="bottom" visible="true" width="68.5390625" x="5.0" xml:space="preserve" y="5.0">set newer</y:NodeLabel>
+                  <y:Shape type="rectangle"/>
+                </y:ShapeNode>
+              </data>
+            </node>
+            <node id="n26::n14::n18">
+              <data key="d5" xml:space="preserve"><![CDATA[НСУ]]></data>
+              <data key="d6">
+                <y:ShapeNode>
+                  <y:Geometry height="30.0" width="41.3046875" x="1960.0101584037159" y="2076.9906933753914"/>
+                  <y:Fill color="#FFFF00" transparent="false"/>
+                  <y:BorderStyle color="#000000" raised="false" type="line" width="1.0"/>
+                  <y:NodeLabel alignment="center" autoSizePolicy="content" fontFamily="Calibri" fontSize="16" fontStyle="plain" hasBackgroundColor="false" hasLineColor="false" height="20.0" horizontalTextPosition="center" iconTextGap="4" modelName="internal" modelPosition="c" textColor="#000000" verticalTextPosition="bottom" visible="true" width="31.3046875" x="5.0" xml:space="preserve" y="5.0">true</y:NodeLabel>
+                  <y:Shape type="rectangle"/>
+                </y:ShapeNode>
+              </data>
+            </node>
+            <node id="n26::n14::n19">
+              <data key="d5" xml:space="preserve"><![CDATA[ОзУ]]></data>
+              <data key="d6">
+                <y:ShapeNode>
+                  <y:Geometry height="30.0" width="59.3984375" x="1445.0458984375002" y="1866.9906933753914"/>
+                  <y:Fill color="#E5E5FF" transparent="false"/>
+                  <y:BorderStyle color="#000000" raised="false" type="line" width="1.0"/>
+                  <y:NodeLabel alignment="center" autoSizePolicy="content" fontFamily="Calibri" fontSize="16" fontStyle="plain" hasBackgroundColor="false" hasLineColor="false" height="20.0" horizontalTextPosition="center" iconTextGap="4" modelName="internal" modelPosition="c" textColor="#0000FF" verticalTextPosition="bottom" visible="true" width="49.3984375" x="5.0" xml:space="preserve" y="5.0">not set</y:NodeLabel>
+                  <y:Shape type="rectangle"/>
+                </y:ShapeNode>
+              </data>
+            </node>
+            <node id="n26::n14::n20">
+              <data key="d5" xml:space="preserve"><![CDATA[ОзУ]]></data>
+              <data key="d6">
+                <y:ShapeNode>
+                  <y:Geometry height="30.0" width="47.125" x="2075.916210726351" y="1866.9906933753914"/>
+                  <y:Fill color="#E5E5FF" transparent="false"/>
+                  <y:BorderStyle color="#000000" raised="false" type="line" width="1.0"/>
+                  <y:NodeLabel alignment="center" autoSizePolicy="content" fontFamily="Calibri" fontSize="16" fontStyle="plain" hasBackgroundColor="false" hasLineColor="false" height="20.0" horizontalTextPosition="center" iconTextGap="4" modelName="internal" modelPosition="c" textColor="#0000FF" verticalTextPosition="bottom" visible="true" width="37.125" x="5.0" xml:space="preserve" y="5.0">is set</y:NodeLabel>
+                  <y:Shape type="rectangle"/>
+                </y:ShapeNode>
+              </data>
+            </node>
+            <node id="n26::n14::n21">
+              <data key="d5" xml:space="preserve"><![CDATA[ОзУ]]></data>
+              <data key="d6">
+                <y:ShapeNode>
+                  <y:Geometry height="30.0" width="59.3984375" x="1701.6767578125002" y="1866.9906933753914"/>
+                  <y:Fill color="#E5E5FF" transparent="false"/>
+                  <y:BorderStyle color="#000000" raised="false" type="line" width="1.0"/>
+                  <y:NodeLabel alignment="center" autoSizePolicy="content" fontFamily="Calibri" fontSize="16" fontStyle="plain" hasBackgroundColor="false" hasLineColor="false" height="20.0" horizontalTextPosition="center" iconTextGap="4" modelName="internal" modelPosition="c" textColor="#0000FF" verticalTextPosition="bottom" visible="true" width="49.3984375" x="5.0" xml:space="preserve" y="5.0">not set</y:NodeLabel>
+                  <y:Shape type="rectangle"/>
+                </y:ShapeNode>
+              </data>
+            </node>
+            <node id="n26::n14::n22">
+              <data key="d4" xml:space="preserve"/>
+              <data key="d5" xml:space="preserve"><![CDATA[НФ]]></data>
+              <data key="d6">
+                <y:ShapeNode>
+                  <y:Geometry height="30.0" width="46.984375" x="1249.0805610185769" y="1936.9906933753914"/>
+                  <y:Fill color="#FF0000" transparent="false"/>
+                  <y:BorderStyle color="#000000" raised="false" type="line" width="3.0"/>
+                  <y:NodeLabel alignment="center" autoSizePolicy="content" fontFamily="Calibri" fontSize="16" fontStyle="plain" hasBackgroundColor="false" hasLineColor="false" height="20.0" horizontalTextPosition="center" iconTextGap="4" modelName="internal" modelPosition="c" textColor="#000000" verticalTextPosition="bottom" visible="true" width="36.984375" x="5.0" xml:space="preserve" y="5.0">Error</y:NodeLabel>
+                  <y:Shape type="roundrectangle"/>
+                </y:ShapeNode>
+              </data>
+            </node>
+            <node id="n26::n14::n23">
+              <data key="d5" xml:space="preserve"><![CDATA[НСУ]]></data>
+              <data key="d6">
+                <y:ShapeNode>
+                  <y:Geometry height="30.0" width="41.3046875" x="2078.826366976351" y="1936.9906933753914"/>
+                  <y:Fill color="#FFFF00" transparent="false"/>
+                  <y:BorderStyle color="#000000" raised="false" type="line" width="1.0"/>
+                  <y:NodeLabel alignment="center" autoSizePolicy="content" fontFamily="Calibri" fontSize="16" fontStyle="plain" hasBackgroundColor="false" hasLineColor="false" height="20.0" horizontalTextPosition="center" iconTextGap="4" modelName="internal" modelPosition="c" textColor="#000000" verticalTextPosition="bottom" visible="true" width="31.3046875" x="5.0" xml:space="preserve" y="5.0">true</y:NodeLabel>
+                  <y:Shape type="rectangle"/>
+                </y:ShapeNode>
+              </data>
+            </node>
+            <node id="n26::n14::n24">
+              <data key="d5" xml:space="preserve"><![CDATA[Узел]]></data>
+              <data key="d6">
+                <y:ShapeNode>
+                  <y:Geometry height="39.32784958871912" width="39.32784958871912" x="1621.0616611431408" y="1647.6628437866723"/>
+                  <y:Fill color="#FFFFFF" transparent="false"/>
+                  <y:BorderStyle color="#000000" raised="false" type="line" width="1.0"/>
+                  <y:NodeLabel alignment="center" autoSizePolicy="content" fontFamily="Calibri" fontSize="16" fontStyle="plain" hasBackgroundColor="false" hasLineColor="false" hasText="false" height="34.0" horizontalTextPosition="center" iconData="1" iconTextGap="4" modelName="internal" modelPosition="c" textColor="#000000" verticalTextPosition="bottom" visible="true" width="34.0" x="2.6639247943594455" y="2.663924794359673"/>
+                  <y:Shape type="ellipse"/>
+                </y:ShapeNode>
+              </data>
+            </node>
+          </graph>
         </node>
       </graph>
     </node>
@@ -2320,7 +2330,7 @@
         </y:QuadCurveEdge>
       </data>
     </edge>
-    <edge id="n26::e0" source="n26::n3" target="n26::n1">
+    <edge id="n26::e0" source="n26::n2" target="n26::n0">
       <data key="d10">
         <y:QuadCurveEdge straightness="0.1">
           <y:Path sx="0.0" sy="0.0" tx="0.0" ty="0.0"/>
@@ -2329,7 +2339,7 @@
         </y:QuadCurveEdge>
       </data>
     </edge>
-    <edge id="n26::e1" source="n26::n3" target="n26::n2">
+    <edge id="n26::e1" source="n26::n2" target="n26::n1">
       <data key="d10">
         <y:QuadCurveEdge straightness="0.1">
           <y:Path sx="0.0" sy="0.0" tx="0.0" ty="0.0"/>
@@ -2338,7 +2348,7 @@
         </y:QuadCurveEdge>
       </data>
     </edge>
-    <edge id="n26::e2" source="n26::n3" target="n26::n4">
+    <edge id="n26::e2" source="n26::n2" target="n26::n3">
       <data key="d10">
         <y:QuadCurveEdge straightness="0.1">
           <y:Path sx="0.0" sy="0.0" tx="0.0" ty="0.0"/>
@@ -2347,7 +2357,7 @@
         </y:QuadCurveEdge>
       </data>
     </edge>
-    <edge id="n26::e3" source="n26::n1" target="n26::n5">
+    <edge id="n26::e3" source="n26::n3" target="n26::n4">
       <data key="d10">
         <y:QuadCurveEdge straightness="0.1">
           <y:Path sx="0.0" sy="0.0" tx="0.0" ty="0.0"/>
@@ -2356,7 +2366,7 @@
         </y:QuadCurveEdge>
       </data>
     </edge>
-    <edge id="n26::e4" source="n26::n1" target="n26::n6">
+    <edge id="n26::e4" source="n26::n3" target="n26::n5">
       <data key="d10">
         <y:QuadCurveEdge straightness="0.1">
           <y:Path sx="0.0" sy="0.0" tx="0.0" ty="0.0"/>
@@ -2365,7 +2375,7 @@
         </y:QuadCurveEdge>
       </data>
     </edge>
-    <edge id="n26::e5" source="n26::n8" target="n26::n9">
+    <edge id="n26::e5" source="n26::n5" target="n26::n6">
       <data key="d10">
         <y:QuadCurveEdge straightness="0.1">
           <y:Path sx="0.0" sy="0.0" tx="0.0" ty="0.0"/>
@@ -2374,7 +2384,7 @@
         </y:QuadCurveEdge>
       </data>
     </edge>
-    <edge id="n26::e6" source="n26::n7" target="n26::n10">
+    <edge id="n26::e6" source="n26::n7" target="n26::n8">
       <data key="d10">
         <y:QuadCurveEdge straightness="0.1">
           <y:Path sx="0.0" sy="0.0" tx="0.0" ty="0.0"/>
@@ -2383,7 +2393,7 @@
         </y:QuadCurveEdge>
       </data>
     </edge>
-    <edge id="n26::e7" source="n26::n11" target="n26::n12">
+    <edge id="n26::e7" source="n26::n6" target="n26::n7">
       <data key="d10">
         <y:QuadCurveEdge straightness="0.1">
           <y:Path sx="0.0" sy="0.0" tx="0.0" ty="0.0"/>
@@ -2392,7 +2402,7 @@
         </y:QuadCurveEdge>
       </data>
     </edge>
-    <edge id="n26::e8" source="n26::n5" target="n26::n0">
+    <edge id="n26::e8" source="n26::n11" target="n26::n9">
       <data key="d10">
         <y:QuadCurveEdge straightness="0.1">
           <y:Path sx="0.0" sy="0.0" tx="0.0" ty="0.0"/>
@@ -2401,7 +2411,7 @@
         </y:QuadCurveEdge>
       </data>
     </edge>
-    <edge id="n26::e9" source="n26::n6" target="n26::n7">
+    <edge id="n26::e9" source="n26::n9" target="n26::n10">
       <data key="d10">
         <y:QuadCurveEdge straightness="0.1">
           <y:Path sx="0.0" sy="0.0" tx="0.0" ty="0.0"/>
@@ -2410,7 +2420,7 @@
         </y:QuadCurveEdge>
       </data>
     </edge>
-    <edge id="n26::e10" source="n26::n4" target="n26::n13">
+    <edge id="n26::e10" source="n26::n5" target="n26::n11">
       <data key="d10">
         <y:QuadCurveEdge straightness="0.1">
           <y:Path sx="0.0" sy="0.0" tx="0.0" ty="0.0"/>
@@ -2419,7 +2429,7 @@
         </y:QuadCurveEdge>
       </data>
     </edge>
-    <edge id="n26::e11" source="n26::n4" target="n26::n14">
+    <edge id="n26::e11" source="n26::n1" target="n26::n12">
       <data key="d10">
         <y:QuadCurveEdge straightness="0.1">
           <y:Path sx="0.0" sy="0.0" tx="0.0" ty="0.0"/>
@@ -2428,70 +2438,7 @@
         </y:QuadCurveEdge>
       </data>
     </edge>
-    <edge id="n26::e12" source="n26::n14" target="n26::n15">
-      <data key="d10">
-        <y:QuadCurveEdge straightness="0.1">
-          <y:Path sx="0.0" sy="0.0" tx="0.0" ty="0.0"/>
-          <y:LineStyle color="#000000" type="line" width="1.0"/>
-          <y:Arrows source="none" target="standard"/>
-        </y:QuadCurveEdge>
-      </data>
-    </edge>
-    <edge id="n26::e13" source="n26::n16" target="n26::n17">
-      <data key="d10">
-        <y:QuadCurveEdge straightness="0.1">
-          <y:Path sx="0.0" sy="0.0" tx="0.0" ty="0.0"/>
-          <y:LineStyle color="#000000" type="line" width="1.0"/>
-          <y:Arrows source="none" target="standard"/>
-        </y:QuadCurveEdge>
-      </data>
-    </edge>
-    <edge id="n26::e14" source="n26::n15" target="n26::n16">
-      <data key="d10">
-        <y:QuadCurveEdge straightness="0.1">
-          <y:Path sx="0.0" sy="0.0" tx="0.0" ty="0.0"/>
-          <y:LineStyle color="#000000" type="line" width="1.0"/>
-          <y:Arrows source="none" target="standard"/>
-        </y:QuadCurveEdge>
-      </data>
-    </edge>
-    <edge id="n26::e15" source="n26::n20" target="n26::n18">
-      <data key="d10">
-        <y:QuadCurveEdge straightness="0.1">
-          <y:Path sx="0.0" sy="0.0" tx="0.0" ty="0.0"/>
-          <y:LineStyle color="#000000" type="line" width="1.0"/>
-          <y:Arrows source="none" target="standard"/>
-        </y:QuadCurveEdge>
-      </data>
-    </edge>
-    <edge id="n26::e16" source="n26::n18" target="n26::n19">
-      <data key="d10">
-        <y:QuadCurveEdge straightness="0.1">
-          <y:Path sx="0.0" sy="0.0" tx="0.0" ty="0.0"/>
-          <y:LineStyle color="#000000" type="line" width="1.0"/>
-          <y:Arrows source="none" target="standard"/>
-        </y:QuadCurveEdge>
-      </data>
-    </edge>
-    <edge id="n26::e17" source="n26::n14" target="n26::n20">
-      <data key="d10">
-        <y:QuadCurveEdge straightness="0.1">
-          <y:Path sx="0.0" sy="0.0" tx="0.0" ty="0.0"/>
-          <y:LineStyle color="#000000" type="line" width="1.0"/>
-          <y:Arrows source="none" target="standard"/>
-        </y:QuadCurveEdge>
-      </data>
-    </edge>
-    <edge id="n26::e18" source="n26::n2" target="n26::n21">
-      <data key="d10">
-        <y:QuadCurveEdge straightness="0.1">
-          <y:Path sx="0.0" sy="0.0" tx="0.0" ty="0.0"/>
-          <y:LineStyle color="#000000" type="line" width="1.0"/>
-          <y:Arrows source="none" target="standard"/>
-        </y:QuadCurveEdge>
-      </data>
-    </edge>
-    <edge id="n26::e19" source="n26::n13" target="n26::n22">
+    <edge id="n26::e12" source="n26::n4" target="n26::n13">
       <data key="d10">
         <y:QuadCurveEdge straightness="0.1">
           <y:Path sx="0.0" sy="0.0" tx="0.0" ty="0.0"/>
@@ -2618,123 +2565,6 @@
       </data>
     </edge>
     <edge id="e20" source="n77" target="n25">
-      <data key="d10">
-        <y:QuadCurveEdge straightness="0.1">
-          <y:Path sx="0.0" sy="0.0" tx="0.0" ty="0.0"/>
-          <y:LineStyle color="#000000" type="line" width="1.0"/>
-          <y:Arrows source="none" target="standard"/>
-        </y:QuadCurveEdge>
-      </data>
-    </edge>
-    <edge id="n26::e20" source="n26::n33" target="n26::n8">
-      <data key="d10">
-        <y:QuadCurveEdge straightness="0.1">
-          <y:Path sx="-10.39991107931246" sy="6.706606952339143" tx="0.0" ty="0.0"/>
-          <y:LineStyle color="#000000" type="line" width="1.0"/>
-          <y:Arrows source="none" target="standard"/>
-        </y:QuadCurveEdge>
-      </data>
-    </edge>
-    <edge id="n26::e21" source="n26::n24" target="n26::n23">
-      <data key="d10">
-        <y:QuadCurveEdge straightness="0.1">
-          <y:Path sx="0.0" sy="0.0" tx="0.0" ty="0.0"/>
-          <y:LineStyle color="#000000" type="line" width="1.0"/>
-          <y:Arrows source="none" target="standard"/>
-        </y:QuadCurveEdge>
-      </data>
-    </edge>
-    <edge id="n26::e22" source="n26::n23" target="n26::n26">
-      <data key="d10">
-        <y:QuadCurveEdge straightness="0.1">
-          <y:Path sx="0.0" sy="0.0" tx="0.0" ty="0.0"/>
-          <y:LineStyle color="#000000" type="line" width="1.0"/>
-          <y:Arrows source="none" target="standard"/>
-        </y:QuadCurveEdge>
-      </data>
-    </edge>
-    <edge id="n26::e23" source="n26::n25" target="n26::n8">
-      <data key="d10">
-        <y:QuadCurveEdge straightness="0.1">
-          <y:Path sx="0.0" sy="0.0" tx="0.0" ty="0.0"/>
-          <y:LineStyle color="#000000" type="line" width="1.0"/>
-          <y:Arrows source="none" target="standard"/>
-        </y:QuadCurveEdge>
-      </data>
-    </edge>
-    <edge id="n26::e24" source="n26::n0" target="n26::n28">
-      <data key="d10">
-        <y:QuadCurveEdge straightness="0.1">
-          <y:Path sx="0.0" sy="0.0" tx="0.0" ty="0.0"/>
-          <y:LineStyle color="#000000" type="line" width="1.0"/>
-          <y:Arrows source="none" target="standard"/>
-        </y:QuadCurveEdge>
-      </data>
-    </edge>
-    <edge id="n26::e25" source="n26::n0" target="n26::n27">
-      <data key="d10">
-        <y:QuadCurveEdge straightness="0.1">
-          <y:Path sx="0.0" sy="0.0" tx="0.0" ty="0.0"/>
-          <y:LineStyle color="#000000" type="line" width="1.0"/>
-          <y:Arrows source="none" target="standard"/>
-        </y:QuadCurveEdge>
-      </data>
-    </edge>
-    <edge id="n26::e26" source="n26::n27" target="n26::n25">
-      <data key="d10">
-        <y:QuadCurveEdge straightness="0.1">
-          <y:Path sx="0.0" sy="0.0" tx="0.0" ty="0.0"/>
-          <y:LineStyle color="#000000" type="line" width="1.0"/>
-          <y:Arrows source="none" target="standard"/>
-        </y:QuadCurveEdge>
-      </data>
-    </edge>
-    <edge id="n26::e27" source="n26::n27" target="n26::n24">
-      <data key="d10">
-        <y:QuadCurveEdge straightness="0.1">
-          <y:Path sx="0.0" sy="0.0" tx="0.0" ty="0.0"/>
-          <y:LineStyle color="#000000" type="line" width="1.0"/>
-          <y:Arrows source="none" target="standard"/>
-        </y:QuadCurveEdge>
-      </data>
-    </edge>
-    <edge id="n26::e28" source="n26::n10" target="n26::n29">
-      <data key="d10">
-        <y:QuadCurveEdge straightness="0.1">
-          <y:Path sx="0.0" sy="0.0" tx="0.0" ty="0.0"/>
-          <y:LineStyle color="#000000" type="line" width="1.0"/>
-          <y:Arrows source="none" target="standard"/>
-        </y:QuadCurveEdge>
-      </data>
-    </edge>
-    <edge id="n26::e29" source="n26::n10" target="n26::n30">
-      <data key="d10">
-        <y:QuadCurveEdge straightness="0.1">
-          <y:Path sx="0.0" sy="0.0" tx="0.0" ty="0.0"/>
-          <y:LineStyle color="#000000" type="line" width="1.0"/>
-          <y:Arrows source="none" target="standard"/>
-        </y:QuadCurveEdge>
-      </data>
-    </edge>
-    <edge id="n26::e30" source="n26::n31" target="n26::n32">
-      <data key="d10">
-        <y:QuadCurveEdge straightness="0.1">
-          <y:Path sx="0.0" sy="0.0" tx="0.0" ty="0.0"/>
-          <y:LineStyle color="#000000" type="line" width="1.0"/>
-          <y:Arrows source="none" target="standard"/>
-        </y:QuadCurveEdge>
-      </data>
-    </edge>
-    <edge id="n26::e31" source="n26::n29" target="n26::n31">
-      <data key="d10">
-        <y:QuadCurveEdge straightness="0.1">
-          <y:Path sx="0.0" sy="0.0" tx="0.0" ty="0.0"/>
-          <y:LineStyle color="#000000" type="line" width="1.0"/>
-          <y:Arrows source="none" target="standard"/>
-        </y:QuadCurveEdge>
-      </data>
-    </edge>
-    <edge id="n26::e32" source="n26::n30" target="n26::n11">
       <data key="d10">
         <y:QuadCurveEdge straightness="0.1">
           <y:Path sx="0.0" sy="0.0" tx="0.0" ty="0.0"/>
@@ -3382,51 +3212,6 @@
         </y:QuadCurveEdge>
       </data>
     </edge>
-    <edge id="n26::e33" source="n26::n0" target="n26::n33">
-      <data key="d10">
-        <y:QuadCurveEdge straightness="0.1">
-          <y:Path sx="0.0" sy="0.0" tx="0.0" ty="0.0"/>
-          <y:LineStyle color="#000000" type="line" width="1.0"/>
-          <y:Arrows source="none" target="standard"/>
-        </y:QuadCurveEdge>
-      </data>
-    </edge>
-    <edge id="n26::e34" source="n26::n7" target="n26::n35">
-      <data key="d10">
-        <y:QuadCurveEdge straightness="0.1">
-          <y:Path sx="0.0" sy="0.0" tx="0.0" ty="0.0"/>
-          <y:LineStyle color="#000000" type="line" width="1.0"/>
-          <y:Arrows source="none" target="standard"/>
-        </y:QuadCurveEdge>
-      </data>
-    </edge>
-    <edge id="n26::e35" source="n26::n35" target="n26::n11">
-      <data key="d10">
-        <y:QuadCurveEdge straightness="0.1">
-          <y:Path sx="0.0" sy="0.0" tx="0.0" ty="0.0"/>
-          <y:LineStyle color="#000000" type="line" width="1.0"/>
-          <y:Arrows source="none" target="standard"/>
-        </y:QuadCurveEdge>
-      </data>
-    </edge>
-    <edge id="n26::e36" source="n26::n7" target="n26::n34">
-      <data key="d10">
-        <y:QuadCurveEdge straightness="0.1">
-          <y:Path sx="0.0" sy="0.0" tx="0.0" ty="0.0"/>
-          <y:LineStyle color="#000000" type="line" width="1.0"/>
-          <y:Arrows source="none" target="standard"/>
-        </y:QuadCurveEdge>
-      </data>
-    </edge>
-    <edge id="n26::e37" source="n26::n28" target="n26::n36">
-      <data key="d10">
-        <y:QuadCurveEdge straightness="0.1">
-          <y:Path sx="0.0" sy="0.0" tx="0.0" ty="0.0"/>
-          <y:LineStyle color="#000000" type="line" width="1.0"/>
-          <y:Arrows source="none" target="standard"/>
-        </y:QuadCurveEdge>
-      </data>
-    </edge>
     <edge id="n42::e9" source="n42::n12" target="n42::n14">
       <data key="d10">
         <y:QuadCurveEdge straightness="0.1">
@@ -3526,42 +3311,6 @@
         </y:QuadCurveEdge>
       </data>
     </edge>
-    <edge id="n26::e38" source="n26::n38" target="n26::n37">
-      <data key="d10">
-        <y:QuadCurveEdge straightness="0.1">
-          <y:Path sx="0.0" sy="0.0" tx="0.0" ty="0.0"/>
-          <y:LineStyle color="#000000" type="line" width="1.0"/>
-          <y:Arrows source="none" target="standard"/>
-        </y:QuadCurveEdge>
-      </data>
-    </edge>
-    <edge id="n26::e39" source="n26::n39" target="n26::n40">
-      <data key="d10">
-        <y:QuadCurveEdge straightness="0.1">
-          <y:Path sx="0.0" sy="0.0" tx="0.0" ty="0.0"/>
-          <y:LineStyle color="#000000" type="line" width="1.0"/>
-          <y:Arrows source="none" target="standard"/>
-        </y:QuadCurveEdge>
-      </data>
-    </edge>
-    <edge id="n26::e40" source="n26::n34" target="n26::n38">
-      <data key="d10">
-        <y:QuadCurveEdge straightness="0.1">
-          <y:Path sx="0.0" sy="0.0" tx="0.0" ty="0.0"/>
-          <y:LineStyle color="#000000" type="line" width="1.0"/>
-          <y:Arrows source="none" target="standard"/>
-        </y:QuadCurveEdge>
-      </data>
-    </edge>
-    <edge id="n26::e41" source="n26::n34" target="n26::n39">
-      <data key="d10">
-        <y:QuadCurveEdge straightness="0.1">
-          <y:Path sx="0.0" sy="0.0" tx="0.0" ty="0.0"/>
-          <y:LineStyle color="#000000" type="line" width="1.0"/>
-          <y:Arrows source="none" target="standard"/>
-        </y:QuadCurveEdge>
-      </data>
-    </edge>
     <edge id="e83" source="n87" target="n89">
       <data key="d10">
         <y:QuadCurveEdge straightness="0.1">
@@ -3653,6 +3402,258 @@
       </data>
     </edge>
     <edge id="e93" source="n89" target="n95">
+      <data key="d10">
+        <y:QuadCurveEdge straightness="0.1">
+          <y:Path sx="0.0" sy="0.0" tx="0.0" ty="0.0"/>
+          <y:LineStyle color="#000000" type="line" width="1.0"/>
+          <y:Arrows source="none" target="standard"/>
+        </y:QuadCurveEdge>
+      </data>
+    </edge>
+    <edge id="n26::n14::e0" source="n26::n14::n4" target="n26::n14::n5">
+      <data key="d10">
+        <y:QuadCurveEdge straightness="0.1">
+          <y:Path sx="0.0" sy="0.0" tx="0.0" ty="0.0"/>
+          <y:LineStyle color="#000000" type="line" width="1.0"/>
+          <y:Arrows source="none" target="standard"/>
+        </y:QuadCurveEdge>
+      </data>
+    </edge>
+    <edge id="n26::n14::e1" source="n26::n14::n3" target="n26::n14::n6">
+      <data key="d10">
+        <y:QuadCurveEdge straightness="0.1">
+          <y:Path sx="0.0" sy="0.0" tx="0.0" ty="0.0"/>
+          <y:LineStyle color="#000000" type="line" width="1.0"/>
+          <y:Arrows source="none" target="standard"/>
+        </y:QuadCurveEdge>
+      </data>
+    </edge>
+    <edge id="n26::n14::e2" source="n26::n14::n7" target="n26::n14::n8">
+      <data key="d10">
+        <y:QuadCurveEdge straightness="0.1">
+          <y:Path sx="0.0" sy="0.0" tx="0.0" ty="0.0"/>
+          <y:LineStyle color="#000000" type="line" width="1.0"/>
+          <y:Arrows source="none" target="standard"/>
+        </y:QuadCurveEdge>
+      </data>
+    </edge>
+    <edge id="n26::n14::e3" source="n26::n14::n1" target="n26::n14::n0">
+      <data key="d10">
+        <y:QuadCurveEdge straightness="0.1">
+          <y:Path sx="0.0" sy="0.0" tx="0.0" ty="0.0"/>
+          <y:LineStyle color="#000000" type="line" width="1.0"/>
+          <y:Arrows source="none" target="standard"/>
+        </y:QuadCurveEdge>
+      </data>
+    </edge>
+    <edge id="n26::n14::e4" source="n26::n14::n2" target="n26::n14::n3">
+      <data key="d10">
+        <y:QuadCurveEdge straightness="0.1">
+          <y:Path sx="0.0" sy="0.0" tx="0.0" ty="0.0"/>
+          <y:LineStyle color="#000000" type="line" width="1.0"/>
+          <y:Arrows source="none" target="standard"/>
+        </y:QuadCurveEdge>
+      </data>
+    </edge>
+    <edge id="n26::n14::e5" source="n26::n14::n19" target="n26::n14::n4">
+      <data key="d10">
+        <y:QuadCurveEdge straightness="0.1">
+          <y:Path sx="-10.39991107931246" sy="6.706606952339143" tx="0.0" ty="0.0"/>
+          <y:LineStyle color="#000000" type="line" width="1.0"/>
+          <y:Arrows source="none" target="standard"/>
+        </y:QuadCurveEdge>
+      </data>
+    </edge>
+    <edge id="n26::n14::e6" source="n26::n14::n10" target="n26::n14::n9">
+      <data key="d10">
+        <y:QuadCurveEdge straightness="0.1">
+          <y:Path sx="0.0" sy="0.0" tx="0.0" ty="0.0"/>
+          <y:LineStyle color="#000000" type="line" width="1.0"/>
+          <y:Arrows source="none" target="standard"/>
+        </y:QuadCurveEdge>
+      </data>
+    </edge>
+    <edge id="n26::n14::e7" source="n26::n14::n9" target="n26::n14::n12">
+      <data key="d10">
+        <y:QuadCurveEdge straightness="0.1">
+          <y:Path sx="0.0" sy="0.0" tx="0.0" ty="0.0"/>
+          <y:LineStyle color="#000000" type="line" width="1.0"/>
+          <y:Arrows source="none" target="standard"/>
+        </y:QuadCurveEdge>
+      </data>
+    </edge>
+    <edge id="n26::n14::e8" source="n26::n14::n11" target="n26::n14::n4">
+      <data key="d10">
+        <y:QuadCurveEdge straightness="0.1">
+          <y:Path sx="0.0" sy="0.0" tx="0.0" ty="0.0"/>
+          <y:LineStyle color="#000000" type="line" width="1.0"/>
+          <y:Arrows source="none" target="standard"/>
+        </y:QuadCurveEdge>
+      </data>
+    </edge>
+    <edge id="n26::n14::e9" source="n26::n14::n0" target="n26::n14::n14">
+      <data key="d10">
+        <y:QuadCurveEdge straightness="0.1">
+          <y:Path sx="0.0" sy="0.0" tx="0.0" ty="0.0"/>
+          <y:LineStyle color="#000000" type="line" width="1.0"/>
+          <y:Arrows source="none" target="standard"/>
+        </y:QuadCurveEdge>
+      </data>
+    </edge>
+    <edge id="n26::n14::e10" source="n26::n14::n0" target="n26::n14::n13">
+      <data key="d10">
+        <y:QuadCurveEdge straightness="0.1">
+          <y:Path sx="0.0" sy="0.0" tx="0.0" ty="0.0"/>
+          <y:LineStyle color="#000000" type="line" width="1.0"/>
+          <y:Arrows source="none" target="standard"/>
+        </y:QuadCurveEdge>
+      </data>
+    </edge>
+    <edge id="n26::n14::e11" source="n26::n14::n13" target="n26::n14::n11">
+      <data key="d10">
+        <y:QuadCurveEdge straightness="0.1">
+          <y:Path sx="0.0" sy="0.0" tx="0.0" ty="0.0"/>
+          <y:LineStyle color="#000000" type="line" width="1.0"/>
+          <y:Arrows source="none" target="standard"/>
+        </y:QuadCurveEdge>
+      </data>
+    </edge>
+    <edge id="n26::n14::e12" source="n26::n14::n13" target="n26::n14::n10">
+      <data key="d10">
+        <y:QuadCurveEdge straightness="0.1">
+          <y:Path sx="0.0" sy="0.0" tx="0.0" ty="0.0"/>
+          <y:LineStyle color="#000000" type="line" width="1.0"/>
+          <y:Arrows source="none" target="standard"/>
+        </y:QuadCurveEdge>
+      </data>
+    </edge>
+    <edge id="n26::n14::e13" source="n26::n14::n6" target="n26::n14::n15">
+      <data key="d10">
+        <y:QuadCurveEdge straightness="0.1">
+          <y:Path sx="0.0" sy="0.0" tx="0.0" ty="0.0"/>
+          <y:LineStyle color="#000000" type="line" width="1.0"/>
+          <y:Arrows source="none" target="standard"/>
+        </y:QuadCurveEdge>
+      </data>
+    </edge>
+    <edge id="n26::n14::e14" source="n26::n14::n6" target="n26::n14::n16">
+      <data key="d10">
+        <y:QuadCurveEdge straightness="0.1">
+          <y:Path sx="0.0" sy="0.0" tx="0.0" ty="0.0"/>
+          <y:LineStyle color="#000000" type="line" width="1.0"/>
+          <y:Arrows source="none" target="standard"/>
+        </y:QuadCurveEdge>
+      </data>
+    </edge>
+    <edge id="n26::n14::e15" source="n26::n14::n17" target="n26::n14::n18">
+      <data key="d10">
+        <y:QuadCurveEdge straightness="0.1">
+          <y:Path sx="0.0" sy="0.0" tx="0.0" ty="0.0"/>
+          <y:LineStyle color="#000000" type="line" width="1.0"/>
+          <y:Arrows source="none" target="standard"/>
+        </y:QuadCurveEdge>
+      </data>
+    </edge>
+    <edge id="n26::n14::e16" source="n26::n14::n15" target="n26::n14::n17">
+      <data key="d10">
+        <y:QuadCurveEdge straightness="0.1">
+          <y:Path sx="0.0" sy="0.0" tx="0.0" ty="0.0"/>
+          <y:LineStyle color="#000000" type="line" width="1.0"/>
+          <y:Arrows source="none" target="standard"/>
+        </y:QuadCurveEdge>
+      </data>
+    </edge>
+    <edge id="n26::n14::e17" source="n26::n14::n16" target="n26::n14::n7">
+      <data key="d10">
+        <y:QuadCurveEdge straightness="0.1">
+          <y:Path sx="0.0" sy="0.0" tx="0.0" ty="0.0"/>
+          <y:LineStyle color="#000000" type="line" width="1.0"/>
+          <y:Arrows source="none" target="standard"/>
+        </y:QuadCurveEdge>
+      </data>
+    </edge>
+    <edge id="n26::n14::e18" source="n26::n14::n0" target="n26::n14::n19">
+      <data key="d10">
+        <y:QuadCurveEdge straightness="0.1">
+          <y:Path sx="0.0" sy="0.0" tx="0.0" ty="0.0"/>
+          <y:LineStyle color="#000000" type="line" width="1.0"/>
+          <y:Arrows source="none" target="standard"/>
+        </y:QuadCurveEdge>
+      </data>
+    </edge>
+    <edge id="n26::n14::e19" source="n26::n14::n3" target="n26::n14::n21">
+      <data key="d10">
+        <y:QuadCurveEdge straightness="0.1">
+          <y:Path sx="0.0" sy="0.0" tx="0.0" ty="0.0"/>
+          <y:LineStyle color="#000000" type="line" width="1.0"/>
+          <y:Arrows source="none" target="standard"/>
+        </y:QuadCurveEdge>
+      </data>
+    </edge>
+    <edge id="n26::n14::e20" source="n26::n14::n21" target="n26::n14::n7">
+      <data key="d10">
+        <y:QuadCurveEdge straightness="0.1">
+          <y:Path sx="0.0" sy="0.0" tx="0.0" ty="0.0"/>
+          <y:LineStyle color="#000000" type="line" width="1.0"/>
+          <y:Arrows source="none" target="standard"/>
+        </y:QuadCurveEdge>
+      </data>
+    </edge>
+    <edge id="n26::n14::e21" source="n26::n14::n3" target="n26::n14::n20">
+      <data key="d10">
+        <y:QuadCurveEdge straightness="0.1">
+          <y:Path sx="0.0" sy="0.0" tx="0.0" ty="0.0"/>
+          <y:LineStyle color="#000000" type="line" width="1.0"/>
+          <y:Arrows source="none" target="standard"/>
+        </y:QuadCurveEdge>
+      </data>
+    </edge>
+    <edge id="n26::n14::e22" source="n26::n14::n14" target="n26::n14::n22">
+      <data key="d10">
+        <y:QuadCurveEdge straightness="0.1">
+          <y:Path sx="0.0" sy="0.0" tx="0.0" ty="0.0"/>
+          <y:LineStyle color="#000000" type="line" width="1.0"/>
+          <y:Arrows source="none" target="standard"/>
+        </y:QuadCurveEdge>
+      </data>
+    </edge>
+    <edge id="n26::n14::e23" source="n26::n14::n20" target="n26::n14::n23">
+      <data key="d10">
+        <y:QuadCurveEdge straightness="0.1">
+          <y:Path sx="0.0" sy="0.0" tx="0.0" ty="0.0"/>
+          <y:LineStyle color="#000000" type="line" width="1.0"/>
+          <y:Arrows source="none" target="standard"/>
+        </y:QuadCurveEdge>
+      </data>
+    </edge>
+    <edge id="n26::e13" source="n26::n14" target="n26::n14">
+      <data key="d10">
+        <y:QuadCurveEdge straightness="0.1">
+          <y:Path sx="0.0" sy="0.0" tx="0.0" ty="0.0"/>
+          <y:LineStyle color="#000000" type="line" width="1.0"/>
+          <y:Arrows source="none" target="standard"/>
+        </y:QuadCurveEdge>
+      </data>
+    </edge>
+    <edge id="n26::n14::e24" source="n26::n14::n24" target="n26::n14::n1">
+      <data key="d10">
+        <y:QuadCurveEdge straightness="0.1">
+          <y:Path sx="0.0" sy="0.0" tx="0.0" ty="0.0"/>
+          <y:LineStyle color="#000000" type="line" width="1.0"/>
+          <y:Arrows source="none" target="standard"/>
+        </y:QuadCurveEdge>
+      </data>
+    </edge>
+    <edge id="n26::n14::e25" source="n26::n14::n24" target="n26::n14::n2">
+      <data key="d10">
+        <y:QuadCurveEdge straightness="0.1">
+          <y:Path sx="0.0" sy="0.0" tx="0.0" ty="0.0"/>
+          <y:LineStyle color="#000000" type="line" width="1.0"/>
+          <y:Arrows source="none" target="standard"/>
+        </y:QuadCurveEdge>
+      </data>
+    </edge>
+    <edge id="n26::e14" source="n26::n0" target="n26::n14::n24">
       <data key="d10">
         <y:QuadCurveEdge straightness="0.1">
           <y:Path sx="0.0" sy="0.0" tx="0.0" ty="0.0"/>
