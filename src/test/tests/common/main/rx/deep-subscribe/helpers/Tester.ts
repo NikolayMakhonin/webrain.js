@@ -166,7 +166,7 @@ export class Tester<TObject, TValue> {
 		}
 
 		if (!this._ignoreSubscribeCount) {
-			assert.deepStrictEqual(subscribes, expectedSubscribes)
+			assert.circularDeepStrictEqual(subscribes, expectedSubscribes)
 			return
 		}
 

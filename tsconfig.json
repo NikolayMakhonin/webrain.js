@@ -1,5 +1,7 @@
 {
   "compilerOptions": {
+	"baseUrl": ".",
+	"paths": { "*": ["types/*"] },
 	"target": "ESNext",
 	"lib": ["es2015", "es2017", "es2018", "dom"],
 	"emitDecoratorMetadata": true,

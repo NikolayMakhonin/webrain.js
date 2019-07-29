@@ -690,6 +690,7 @@ const primitiveMerger: ITypeMetaMerger<any, any> = {
 
 registerMerger<Number, Number>(Number as any, primitiveMerger)
 registerMerger<Boolean, Boolean>(Boolean as any, primitiveMerger)
+registerMerger<any[], any[]>(Array as any, primitiveMerger)
 
 // endregion
 
@@ -698,7 +699,7 @@ registerMerger<Boolean, Boolean>(Boolean as any, primitiveMerger)
 registerMerger<object, object>(Object, {
 	merger: {
 		canMerge(target: object, source: object): boolean {
-			return source.constructor === Object;
+			return source.constructor === Object
 		},
 		merge(
 			merge: IMergeValue,

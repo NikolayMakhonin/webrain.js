@@ -1,11 +1,11 @@
 /* tslint:disable:no-shadowed-variable */
 import { deepEqual as deepStrictEqual } from 'fast-equals'
-import {IMergeable, IMergeValue} from '../../../../../../main/common/extensions/merge/contracts'
+import {IMergeable, IMergeValue} from '../../../../../../../../src/main/common/extensions/merge/contracts'
 import {
 	CollectionMap,
 	MergeCollection,
-} from '../../../../../../main/common/extensions/merge/merge-collection'
-import {ObjectMerger, registerMergeable} from '../../../../../../main/common/extensions/merge/mergers';
+} from '../../../../../../../../src/main/common/extensions/merge/merge-collection'
+import {ObjectMerger, registerMergeable} from '../../../../../../../../src/main/common/extensions/merge/mergers';
 
 declare function deepStrictEqual(a, b): boolean
 declare const assert

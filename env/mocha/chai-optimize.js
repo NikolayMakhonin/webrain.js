@@ -1,5 +1,8 @@
 /* eslint-disable eqeqeq */
-const fastDeepStrictEqual = require('fast-equals').deepEqual
+const {
+	deepEqual: fastDeepStrictEqual,
+	circularDeepEqual: fastCircularDeepStrictEqual
+} = require('fast-equals')
 
 ;(function() {
 	const {assert} = global
@@ -25,7 +28,13 @@ const fastDeepStrictEqual = require('fast-equals').deepEqual
 	}
 
 	assert.deepStrictEqual = (o1, o2, message) => {
-		if (!fastDeepStrictEqual(o1, o2)) {
+		if (!fastDeepStrictEqual(o1, o2, {})) {
+			deepStrictEqual(o1, o2, message)
+		}
+	}
+
+	assert.circularDeepStrictEqual = (o1, o2, message) => {
+		if (!fastCircularDeepStrictEqual(o1, o2)) {
 			deepStrictEqual(o1, o2, message)
 		}
 	}

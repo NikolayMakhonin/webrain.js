@@ -10,8 +10,7 @@ export interface IHasSubscribers<T> {
 // eslint-disable-next-line no-shadow
 // tslint:disable-next-line:no-shadowed-variable
 function createHasSubscribersSubjectDefault(hasSubscribers: boolean) {
-	const subject = new BehaviorSubject()
-	subject.target = hasSubscribers
+	const subject = new BehaviorSubject({value: hasSubscribers})
 	subject.unsubscribeValue = null
 	return subject
 }

@@ -94,27 +94,25 @@ describe('common > extensions > merge > ObjectMerger', function() {
 
 	registerMergeable(Class)
 
-	it('combinations', function() {
+	it('base', function() {
 		assert.ok(deepStrictEqual(
-			new Class({ a: {a: 1, b: 2}, b: 3 }),
-			new Class({ a: {a: 1, b: 2}, b: 3 }),
+			new Class({a: {a: 1, b: 2}, b: 3}),
+			new Class({a: {a: 1, b: 2}, b: 3}),
 		))
 
 		assert.ok(deepStrictEqual(
-			deepClone(new Class({ a: {a: 1, b: 2}, b: 3 })),
-			new Class({ a: {a: 1, b: 2}, b: 3 }),
+			deepClone(new Class({a: {a: 1, b: 2}, b: 3})),
+			new Class({a: {a: 1, b: 2}, b: 3}),
 		))
 
 		// tslint:disable-next-line:use-primitive-type no-construct
-		const symbol = { x: new String('SYMBOL') }
+		const symbol = {x: new String('SYMBOL')}
 		const symbolClone = deepClone(symbol)
 		assert.ok(deepStrictEqual(symbol, symbolClone))
+	})
 
-		const common = [null, void 0, 0, 1, false, true, '', '1', BASE, OLDER, NEWER]
-		testMerger({
-			base: [/* new Class(new Date(1)), new Class({ a: {a: 1, b: 2}, b: 3 }), new Class(Object.freeze({ x: {y: 1} })), */ ...common, {}, { a: {a: 1, b: 2}, b: 3 }, { a: {b: 4, c: 5}, c: 6 }, { a: {a: 7, b: 8}, d: 9 }, Object.freeze({ x: {y: 1} }), new Date(1), new Date(2)],
-			older: [/* new Class(new Date(1)), new Class({ a: {a: 1, b: 2}, b: 3 }), new Class(Object.freeze({ x: {y: 1} })), */ ...common, {}, { a: {a: 1, b: 2}, b: 3 }, { a: {b: 4, c: 5}, c: 6 }, { a: {a: 7, b: 8}, d: 9 }, Object.freeze({ x: {y: 1} }), new Date(1), new Date(2)],
-			newer: [/* new Class(new Date(1)), new Class({ a: {a: 1, b: 2}, b: 3 }), new Class(Object.freeze({ x: {y: 1} })), */ ...common, {}, { a: {a: 1, b: 2}, b: 3 }, { a: {b: 4, c: 5}, c: 6 }, { a: {a: 7, b: 8}, d: 9 }, Object.freeze({ x: {y: 1} }), new Date(1), new Date(2)],
+	describe('combinations', function() {
+		const options = {
 			preferCloneOlderParam: [null, false, true],
 			preferCloneNewerParam: [null, false, true],
 			preferCloneMeta: [null, false, true],
@@ -266,10 +264,10 @@ describe('common > extensions > merge > ObjectMerger', function() {
 					}
 
 					return !(deepStrictEqual2(o.base, o.newer)
-							|| o.base instanceof Class && deepStrictEqual2(o.base.value, o.newer)
-							&& o.newer != null && o.newer.constructor === Object)
-						|| o.newer !== o.base
-							&& o.base != null && o.base.constructor === Object && Object.isFrozen(o.base)
+						|| o.base instanceof Class && deepStrictEqual2(o.base.value, o.newer)
+						&& o.newer != null && o.newer.constructor === Object)
+					|| o.newer !== o.base
+					&& o.base != null && o.base.constructor === Object && Object.isFrozen(o.base)
 						? NEWER
 						: OLDER
 				},
@@ -278,6 +276,81 @@ describe('common > extensions > merge > ObjectMerger', function() {
 				newer: NEWER,
 			},
 			actions: null,
+		}
+
+		xit('full', function() {
+			const createValues = () => [
+				BASE, OLDER, NEWER,
+				null, void 0, 0, 1, false, true, '', '1',
+				/* new Class(new Date(1)), new Class({ a: {a: 1, b: 2}, b: 3 }), new Class(Object.freeze({ x: {y: 1} })), */
+				{}, {a: {a: 1, b: 2}, b: 3}, {a: {b: 4, c: 5}, c: 6}, {a: {a: 7, b: 8}, d: 9}, Object.freeze({x: {y: 1}}),
+				new Date(1), new Date(2),
+			]
+
+			testMerger({
+				...options,
+				base: createValues(),
+				older: createValues(),
+				newer: createValues(),
+			})
+		})
+
+		it('primitives', function() {
+			const createValues = () => [
+				BASE, OLDER, NEWER,
+				null, void 0, 0, 1, false, true,
+			]
+
+			testMerger({
+				...options,
+				base: createValues(),
+				older: createValues(),
+				newer: createValues(),
+			})
+		})
+
+		it('strings', function() {
+			const createValues = () => [
+				BASE, OLDER, NEWER,
+				void 0, 1, '', '1', '2',
+			]
+
+			testMerger({
+				...options,
+				base: createValues(),
+				older: createValues(),
+				newer: createValues(),
+			})
+		})
+
+		it('date', function() {
+			const createValues = () => [
+				BASE, OLDER, NEWER,
+				void 0, '', {}, new Date(1), new Date(2), new Date(3),
+			]
+
+			testMerger({
+				...options,
+				base: createValues(),
+				older: createValues(),
+				newer: createValues(),
+			})
+		})
+
+		it('objects', function() {
+			const createValues = () => [
+				BASE, OLDER, NEWER,
+				null, {}, new Date(1),
+				/* new Class(new Date(1)), new Class({ a: {a: 1, b: 2}, b: 3 }), new Class(Object.freeze({ x: {y: 1} })), */
+				{a: {a: 1, b: 2}, b: 3}, {a: {b: 4, c: 5}, c: 6}, {a: {a: 7, b: 8}, d: 9}, Object.freeze({x: {y: 1}}),
+			]
+
+			testMerger({
+				...options,
+				base: createValues(),
+				older: createValues(),
+				newer: createValues(),
+			})
 		})
 	})
 
@@ -440,6 +513,29 @@ describe('common > extensions > merge > ObjectMerger', function() {
 					}
 					return value
 				},
+				base: BASE,
+				older: OLDER,
+				newer: NEWER,
+			},
+			actions: null,
+		})
+	})
+
+	it('array as primitive', function() {
+		testMerger({
+			base: [[], [1], [2]],
+			older: [[], [1], [2]],
+			newer: [[3]],
+			preferCloneOlderParam: [null],
+			preferCloneNewerParam: [null],
+			preferCloneMeta: [null],
+			valueType: [null],
+			valueFactory: [null],
+			setFunc: [true],
+			expected: {
+				error: null,
+				returnValue: true,
+				setValue: NEWER,
 				base: BASE,
 				older: OLDER,
 				newer: NEWER,
