@@ -1,6 +1,6 @@
 // @ts-ignore
 // noinspection ES6UnusedImports
-import deepClone from 'fast-copy'
+import fastCopy from 'fast-copy'
 /* tslint:disable:no-construct use-primitive-type */
 import {ITypeMetaMerger} from '../../../../../../../main/common/extensions/merge/contracts'
 import {ObjectMerger, TypeMetaMergerCollection} from '../../../../../../../main/common/extensions/merge/mergers'
@@ -8,7 +8,18 @@ import {TClass} from '../../../../../../../main/common/extensions/TypeMeta'
 import {IOptionsVariant, IOptionsVariants, ITestCase, TestVariants} from '../../../helpers/TestVariants'
 
 declare const assert
-declare function deepClone<T extends any>(o: T): T
+// declare function fastCopy<T extends any>(o: T): T
+
+function deepClone<T extends any>(o: T): T {
+	if (o == null
+		|| o.constructor === String
+		|| o.constructor === Number
+		|| o.constructor === Boolean
+	) {
+		return o
+	}
+	return fastCopy(o)
+}
 
 // export enum EqualsType {
 // 	Not,
@@ -308,7 +319,11 @@ export class TestMerger extends TestVariants<
 						if (strict) {
 							assert.strictEqual(actual, expected)
 						} else {
-							if (actual !== NONE && actual != null && typeof actual === 'object' || typeof actual === 'function') {
+							if (actual !== NONE && actual != null && typeof actual === 'object'
+								&& actual.constructor !== String
+								&& actual.constructor !== Number
+								&& actual.constructor !== Boolean
+								|| typeof actual === 'function') {
 								assert.notStrictEqual(actual, expected)
 								assert.notStrictEqual(actual, options.base)
 								assert.notStrictEqual(actual, options.older)

@@ -1,4 +1,4 @@
-/* tslint:disable:no-empty no-identical-functions max-line-length */
+/* tslint:disable:no-empty no-identical-functions max-line-length no-construct use-primitive-type */
 // @ts-ignore
 // noinspection ES6UnusedImports
 import deepClone from 'fast-copy'
@@ -281,11 +281,34 @@ describe('common > extensions > merge > ObjectMerger', function() {
 		})
 	})
 
+	it('custom class', function() {
+		testMerger({
+			base: [new Class({ a: {a: 1, b: 2}, b: 3 })],
+			older: [new Class({ a: {a: 4, b: 5}, c: 6 }), { a: {a: 4, b: 5}, c: 6 }],
+			newer: [new Class({ a: {a: 7, b: 2}, d: 9 }), { a: {a: 7, b: 2}, d: 9 }],
+			preferCloneOlderParam: [null],
+			preferCloneNewerParam: [null],
+			preferCloneMeta: [null],
+			valueType: [null],
+			valueFactory: [null],
+			setFunc: [true],
+			expected: {
+				error: null,
+				returnValue: true,
+				setValue: NONE,
+				base: new Class({ a: {a: 7, b: 5}, c: 6, d: 9 }),
+				older: OLDER,
+				newer: NEWER,
+			},
+			actions: null,
+		})
+	})
+
 	it('strings', function() {
 		testMerger({
-			base: ['', '1', '2'],
-			older: ['2'],
-			newer: ['3'],
+			base: ['', '1', '2', new String('1')],
+			older: ['2', new String('2')],
+			newer: ['3', new String('3')],
 			preferCloneOlderParam: [null],
 			preferCloneNewerParam: [null],
 			preferCloneMeta: [null],
@@ -296,6 +319,50 @@ describe('common > extensions > merge > ObjectMerger', function() {
 				error: null,
 				returnValue: true,
 				setValue: '3',
+				base: BASE,
+				older: OLDER,
+				newer: NEWER,
+			},
+			actions: null,
+		})
+	})
+
+	it('number / boolean', function() {
+		testMerger({
+			base: [new Number(1)],
+			older: [2, new Number(2)],
+			newer: [3, new Number(3)],
+			preferCloneOlderParam: [null],
+			preferCloneNewerParam: [null],
+			preferCloneMeta: [null],
+			valueType: [null],
+			valueFactory: [null],
+			setFunc: [true],
+			expected: {
+				error: null,
+				returnValue: true,
+				setValue: 3,
+				base: BASE,
+				older: OLDER,
+				newer: NEWER,
+			},
+			actions: null,
+		})
+
+		testMerger({
+			base: [new Boolean(false)],
+			older: [true, false, new Boolean(true), new Boolean(false)],
+			newer: [true, new Boolean(true)],
+			preferCloneOlderParam: [null],
+			preferCloneNewerParam: [null],
+			preferCloneMeta: [null],
+			valueType: [null],
+			valueFactory: [null],
+			setFunc: [true],
+			expected: {
+				error: null,
+				returnValue: true,
+				setValue: true,
 				base: BASE,
 				older: OLDER,
 				newer: NEWER,

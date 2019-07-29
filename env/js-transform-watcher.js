@@ -6,6 +6,7 @@ const fileOutput = files[1]
 const rollup = require('rollup')
 const {createFilter} = require('rollup-pluginutils')
 const rollupPlugins = require('./rollup/plugins')
+const babel = require('@babel/core')
 
 function addHeaderFooterPlugin(options = {}) {
 	const filter = createFilter(options.include, options.exclude)
@@ -38,6 +39,10 @@ function getCodeBetweenHeaderFooterPlugin(options = {}) {
 	}
 }
 
+async function doBabel(file) {
+	return (await babel.transformFileAsync(file)).code
+}
+
 async function doRollup(file) {
 	// eslint-disable-next-line no-useless-concat
 	const markStartEnd = '//6c84fb9012c411e' + '1840d7b25c5ee775a\n'
@@ -61,8 +66,8 @@ async function doRollup(file) {
 				header: markStartEnd,
 				footer: markStartEnd
 			}),
-			rollupPlugins.terser(),
-			rollupPlugins.prettier()
+			// rollupPlugins.terser(),
+			// rollupPlugins.prettier()
 		]
 	})
 
@@ -102,7 +107,7 @@ if (!relativeOutput.match(/^tmp[\\/]/)) {
 console.log(`js watcher transform: ${relativeInput} => ${relativeOutput}`)
 
 async function transform(fileInput, fileOutput) {
-	const content = await doRollup(fileInput)
+	const content = await doBabel(fileInput)
 
 	if (!content) {
 		throw new Error('transformed content is empty')
