@@ -2,7 +2,7 @@
 // noinspection ES6UnusedImports
 import fastCopy from 'fast-copy'
 /* tslint:disable:no-construct use-primitive-type */
-import {ITypeMetaMerger} from '../../../../../../../main/common/extensions/merge/contracts'
+import {IMergeOptions, ITypeMetaMerger} from '../../../../../../../main/common/extensions/merge/contracts'
 import {ObjectMerger, TypeMetaMergerCollection} from '../../../../../../../main/common/extensions/merge/mergers'
 import {TClass} from '../../../../../../../main/common/extensions/TypeMeta'
 import {IOptionsVariant, IOptionsVariants, ITestCase, TestVariants} from '../../../helpers/TestVariants'
@@ -44,6 +44,7 @@ export interface IMergerOptionsVariant {
 	valueType?: TClass<any>
 	valueFactory?: (source) => any
 	setFunc?: boolean
+	options?: IMergeOptions
 
 	// Calculated:
 	preferCloneBase?: boolean
@@ -72,6 +73,7 @@ interface IMergerOptionsVariants extends IOptionsVariants {
 	preferCloneOlderParam?: boolean[]
 	preferCloneNewerParam?: boolean[]
 	preferCloneMeta?: boolean[]
+	options?: IMergeOptions[]
 	valueType?: Array<TClass<any>>
 	valueFactory?: Array<(source) => any>
 	setFunc?: boolean[]
@@ -242,6 +244,7 @@ export class TestMerger extends TestVariants<
 		preferCloneOlderParam: [null, false, true],
 		preferCloneNewerParam: [null, false, true],
 		preferCloneMeta: [null, false, true],
+		options: [void 0, {}],
 		valueType: [null],
 		valueFactory: [null],
 		setFunc: [false, true],
@@ -305,6 +308,7 @@ export class TestMerger extends TestVariants<
 						}),
 						options.preferCloneOlderParam,
 						options.preferCloneNewerParam,
+						options.options,
 						options.valueType,
 						options.valueFactory,
 					)

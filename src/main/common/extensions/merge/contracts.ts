@@ -3,6 +3,10 @@ import {TMergeableClass} from './mergers'
 
 // region Mergers
 
+export interface IMergeOptions {
+
+}
+
 export type IMergeValue = <TTarget extends any, TSource extends any>(
 	base: TTarget,
 	older: TTarget|TSource,
@@ -10,6 +14,7 @@ export type IMergeValue = <TTarget extends any, TSource extends any>(
 	set?: (value: TTarget) => void,
 	preferCloneOlder?: boolean,
 	preferCloneNewer?: boolean,
+	options?: IMergeOptions,
 	valueType?: TClass<TTarget>,
 	valueFactory?: (source: TTarget|TSource) => TTarget,
 ) => boolean
@@ -26,6 +31,7 @@ export type IValueMerge<TTarget extends any, TSource extends any> = (
 	set?: (value: TTarget) => void,
 	preferCloneOlder?: boolean,
 	preferCloneNewer?: boolean,
+	options?: IMergeOptions,
 ) => boolean
 
 export interface IValueMerger<TTarget extends any, TSource extends any> {
@@ -42,6 +48,7 @@ export interface IMerger {
 		set?: (value: TTarget) => void,
 		preferCloneOlder?: boolean,
 		preferCloneNewer?: boolean,
+		options?: IMergeOptions,
 		valueType?: TClass<TTarget>,
 		valueFactory?: (source: TTarget|TSource|any) => TTarget,
 	): boolean
@@ -81,6 +88,7 @@ export interface IMergeable<TTarget, TSource extends any> {
 		newer: TTarget|TSource,
 		preferCloneOlder?: boolean,
 		preferCloneNewer?: boolean,
+		options?: IMergeOptions,
 	): boolean
 }
 

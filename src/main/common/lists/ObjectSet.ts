@@ -1,7 +1,10 @@
-import {IDeSerializeValue, ISerializable, ISerializedObject, ISerializeValue} from '../extensions/serialization/contracts'
+import {
+	IDeSerializeValue,
+	ISerializable,
+	ISerializedObject,
+	ISerializeValue,
+} from '../extensions/serialization/contracts'
 import {registerSerializer} from '../extensions/serialization/serializers'
-import {registerMergerPrimitive} from "../extensions/merge/mergers";
-import {ArraySet} from "./ArraySet";
 
 export class ObjectSet implements Set<string>, ISerializable {
 	private readonly _object: object

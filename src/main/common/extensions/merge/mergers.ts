@@ -1,7 +1,7 @@
 /* tslint:disable:no-nested-switch ban-types use-primitive-type */
 import {TClass, TypeMetaCollection} from '../TypeMeta'
 import {
-	IMergeable,
+	IMergeable, IMergeOptions,
 	IMergerVisitor, IMergeValue, IObjectMerger,
 	ITypeMetaMerger, ITypeMetaMergerCollection, IValueMerge, IValueMerger,
 } from './contracts'
@@ -143,7 +143,7 @@ class ValueState<TTarget, TSource> {
 					case true:
 						const { preferClone } = this
 						this.merge(
-							this.mergerState.mergerVisitor.getNextMerge(preferClone, preferClone),
+							this.mergerState.mergerVisitor.getNextMerge(preferClone, preferClone, this.mergerState.options),
 							_clone,
 							target,
 							target,
@@ -177,6 +177,7 @@ class MergeState<TTarget, TSource> {
 	public preferCloneOlder: boolean
 	public preferCloneNewer: boolean
 	public preferCloneBase: boolean
+	public options: IMergeOptions
 	public valueType: TClass<TTarget>
 	public valueFactory: (source: TTarget|TSource) => TTarget
 
@@ -189,6 +190,7 @@ class MergeState<TTarget, TSource> {
 		preferCloneOlder: boolean,
 		preferCloneNewer: boolean,
 		preferCloneBase: boolean,
+		options: IMergeOptions,
 		valueType: TClass<TTarget>,
 		valueFactory: (source: TTarget|TSource) => TTarget,
 	) {
@@ -200,6 +202,7 @@ class MergeState<TTarget, TSource> {
 		this.preferCloneOlder = preferCloneOlder
 		this.preferCloneNewer = preferCloneNewer
 		this.preferCloneBase = preferCloneBase
+		this.options = options
 		this.valueType = valueType
 		this.valueFactory = valueFactory
 	}
@@ -247,11 +250,11 @@ class MergeState<TTarget, TSource> {
 	}
 
 	public fillOlderNewer(): void {
-		const { olderState, newerState, set } = this
+		const { olderState, newerState, options, set } = this
 		const { preferClone } = olderState
 		let isSet
 		const result = olderState.merge(
-			this.mergerVisitor.getNextMerge(preferClone, preferClone),
+			this.mergerVisitor.getNextMerge(preferClone, preferClone, options),
 			olderState.clone,
 			newerState.target,
 			newerState.target,
@@ -281,11 +284,11 @@ class MergeState<TTarget, TSource> {
 	}
 
 	public mergeWithBase(older: TTarget|TSource, newer: TTarget|TSource): boolean {
-		const { baseState, set } = this
+		const { baseState, options, set } = this
 		const { preferClone } = baseState
 		let isSet
 		const result = baseState.merge(
-			this.mergerVisitor.getNextMerge(preferClone, preferClone),
+			this.mergerVisitor.getNextMerge(preferClone, preferClone, options),
 			baseState.clone,
 			older,
 			newer,
@@ -339,6 +342,7 @@ export class MergerVisitor implements IMergerVisitor {
 	public getNextMerge(
 		preferCloneOlder: boolean,
 		preferCloneNewer: boolean,
+		options: IMergeOptions,
 	): IMergeValue {
 		return <TNextTarget, TNextSource>(
 			next_base: TNextTarget,
@@ -347,6 +351,7 @@ export class MergerVisitor implements IMergerVisitor {
 			next_set?: (value: TNextTarget) => void,
 			next_preferCloneOlder?: boolean,
 			next_preferCloneNewer?: boolean,
+			next_options?: IMergeOptions,
 			next_valueType?: TClass<TNextTarget>,
 			next_valueFactory?: (source: TNextTarget|TNextSource) => TNextTarget,
 		) => this.merge(
@@ -356,6 +361,12 @@ export class MergerVisitor implements IMergerVisitor {
 			next_set,
 			next_preferCloneOlder == null ? preferCloneOlder : next_preferCloneOlder,
 			next_preferCloneNewer == null ? preferCloneNewer : next_preferCloneNewer,
+			next_options == null || next_options === options
+				? options
+				: (options == null ? options : {
+					...options,
+					...next_options,
+				}),
 			next_valueType,
 			next_valueFactory,
 		)
@@ -368,6 +379,7 @@ export class MergerVisitor implements IMergerVisitor {
 		set?: (value: TTarget) => void,
 		preferCloneOlder?: boolean,
 		preferCloneNewer?: boolean,
+		options?: IMergeOptions,
 		valueType?: TClass<TTarget>,
 		valueFactory?: (source: TTarget|TSource|any) => TTarget,
 	): boolean {
@@ -405,6 +417,7 @@ export class MergerVisitor implements IMergerVisitor {
 			preferCloneOlder,
 			preferCloneNewer,
 			preferCloneBase,
+			options,
 			valueType,
 			valueFactory,
 		)
@@ -559,6 +572,7 @@ export class TypeMetaMergerCollection
 					set?: (value: TTarget) => void,
 					preferCloneOlder?: boolean,
 					preferCloneNewer?: boolean,
+					options?: IMergeOptions,
 				): boolean {
 					return base.merge(
 						merge,
@@ -566,6 +580,7 @@ export class TypeMetaMergerCollection
 						newer,
 						preferCloneOlder,
 						preferCloneNewer,
+						options,
 					)
 				},
 			},
@@ -611,6 +626,7 @@ export function registerMergerPrimitive<TTarget extends any, TSource extends any
 				set?: (value: any) => void,
 				// preferCloneOlder?: boolean,
 				// preferCloneNewer?: boolean,
+				// options?: IMergeOptions,
 			): boolean {
 				set((newer as any).valueOf())
 				return true
@@ -640,6 +656,7 @@ export class ObjectMerger implements IObjectMerger {
 		set?: (value: TTarget) => void,
 		preferCloneOlder?: boolean,
 		preferCloneNewer?: boolean,
+		options?: IMergeOptions,
 		valueType?: TClass<TTarget>,
 		valueFactory?: (source: TTarget|TSource|any) => TTarget,
 	): boolean {
@@ -651,6 +668,7 @@ export class ObjectMerger implements IObjectMerger {
 			set,
 			preferCloneOlder,
 			preferCloneNewer,
+			options,
 			valueType,
 			valueFactory,
 		)
@@ -687,6 +705,7 @@ registerMerger<string, string>(String as any, {
 			set?: (value: string) => void,
 			// preferCloneOlder?: boolean,
 			// preferCloneNewer?: boolean,
+			// options?: IMergeOptions,
 		): boolean {
 			set(newer.valueOf())
 			return true
@@ -716,8 +735,17 @@ registerMerger<object, object>(Object, {
 			set?: (value: object) => void,
 			preferCloneOlder?: boolean,
 			preferCloneNewer?: boolean,
+			options?: IMergeOptions,
 		): boolean {
-			return mergeMapsOrObjects(merge, base, older, newer, preferCloneOlder, preferCloneNewer)
+			return mergeMapsOrObjects(
+				merge,
+				base,
+				older,
+				newer,
+				preferCloneOlder,
+				preferCloneNewer,
+				options,
+			)
 		},
 	},
 	preferClone: o => Object.isFrozen(o) ? true : null,

@@ -5,7 +5,7 @@ import deepClone from 'fast-copy'
 // @ts-ignore
 // noinspection ES6UnusedImports
 import { deepEqual as deepStrictEqual } from 'fast-equals'
-import {IMergeable, IMergeValue} from '../../../../../../main/common/extensions/merge/contracts'
+import {IMergeable, IMergeOptions, IMergeValue} from '../../../../../../main/common/extensions/merge/contracts'
 import {registerMergeable} from '../../../../../../main/common/extensions/merge/mergers'
 import {BASE, IMergerOptionsVariant, isRefer, NEWER, NONE, OLDER, TestMerger} from './src/TestMerger'
 
@@ -80,6 +80,7 @@ describe('common > extensions > merge > ObjectMerger', function() {
 			newer: Class | object,
 			preferCloneOlder?: boolean,
 			preferCloneNewer?: boolean,
+			options?: IMergeOptions,
 		): boolean {
 			let changed = false
 			changed = merge(
@@ -362,6 +363,7 @@ describe('common > extensions > merge > ObjectMerger', function() {
 			preferCloneOlderParam: [null],
 			preferCloneNewerParam: [null],
 			preferCloneMeta: [null],
+			options: [null, {}],
 			valueType: [null],
 			valueFactory: [null],
 			setFunc: [true],
@@ -385,6 +387,7 @@ describe('common > extensions > merge > ObjectMerger', function() {
 			preferCloneOlderParam: [null],
 			preferCloneNewerParam: [null],
 			preferCloneMeta: [null],
+			options: [null, {}],
 			valueType: [null],
 			valueFactory: [null],
 			setFunc: [true],
@@ -408,6 +411,7 @@ describe('common > extensions > merge > ObjectMerger', function() {
 			preferCloneOlderParam: [null],
 			preferCloneNewerParam: [null],
 			preferCloneMeta: [null],
+			options: [null, {}],
 			valueType: [null],
 			valueFactory: [null],
 			setFunc: [true],
@@ -429,6 +433,7 @@ describe('common > extensions > merge > ObjectMerger', function() {
 			preferCloneOlderParam: [null],
 			preferCloneNewerParam: [null],
 			preferCloneMeta: [null],
+			options: [null, {}],
 			valueType: [null],
 			valueFactory: [null],
 			setFunc: [true],
@@ -452,6 +457,7 @@ describe('common > extensions > merge > ObjectMerger', function() {
 			preferCloneOlderParam: [null],
 			preferCloneNewerParam: [null],
 			preferCloneMeta: [null],
+			options: [null, {}],
 			valueType: [null],
 			valueFactory: [null],
 			setFunc: [false, true],
@@ -475,6 +481,7 @@ describe('common > extensions > merge > ObjectMerger', function() {
 			preferCloneOlderParam: [null],
 			preferCloneNewerParam: [null],
 			preferCloneMeta: [null],
+			options: [null, {}],
 			valueType: [Class],
 			valueFactory: [null],
 			setFunc: [true],
@@ -496,6 +503,7 @@ describe('common > extensions > merge > ObjectMerger', function() {
 			preferCloneOlderParam: [null],
 			preferCloneNewerParam: [null],
 			preferCloneMeta: [null],
+			options: [null, {}],
 			valueType: [Class],
 			valueFactory: [null, o => {
 				const instance = new Class(null);
@@ -529,6 +537,7 @@ describe('common > extensions > merge > ObjectMerger', function() {
 			preferCloneOlderParam: [null],
 			preferCloneNewerParam: [null],
 			preferCloneMeta: [null],
+			options: [null, {}],
 			valueType: [null],
 			valueFactory: [null],
 			setFunc: [true],

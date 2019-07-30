@@ -1,5 +1,5 @@
 /* tslint:disable:no-identical-functions */
-import {IMergeValue} from './contracts'
+import {IMergeOptions, IMergeValue} from './contracts'
 
 // tslint:disable-next-line:no-empty no-shadowed-variable
 const NONE: any = function NONE() {}
@@ -193,6 +193,7 @@ function mergeMapWrappers<K, V>(
 	newer: IMergeMapWrapper<K, V>,
 	preferCloneOlder?: boolean,
 	preferCloneNewer?: boolean,
+	options?: IMergeOptions,
 ): boolean {
 	let changed = false
 
@@ -206,7 +207,7 @@ function mergeMapWrappers<K, V>(
 
 		merge(NONE, olderItem, newerItem, o => {
 			setItem = o
-		}, preferCloneOlder, preferCloneNewer)
+		}, preferCloneOlder, preferCloneNewer, options)
 
 		if (setItem === NONE) {
 			throw new Error('setItem === NONE')
@@ -255,7 +256,7 @@ function mergeMapWrappers<K, V>(
 				} else {
 					base.set(key, o)
 				}
-			}, preferCloneOlder, preferCloneNewer) || changed
+			}, preferCloneOlder, preferCloneNewer, options) || changed
 	})
 
 	const len = addItems.length
@@ -348,6 +349,7 @@ export function mergeMapsOrObjects<TObject extends object>(
 	newer: TObject,
 	preferCloneOlder?: boolean,
 	preferCloneNewer?: boolean,
+	options?: IMergeOptions,
 ): boolean {
 	const baseWrapper = createMergeMapWrapper(base)
 	const olderWrapper = older === base ? baseWrapper : createMergeMapWrapper(older)
@@ -362,5 +364,6 @@ export function mergeMapsOrObjects<TObject extends object>(
 		newerWrapper,
 		preferCloneOlder,
 		preferCloneNewer,
+		options,
 	)
 }

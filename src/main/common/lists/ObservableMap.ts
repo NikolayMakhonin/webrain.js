@@ -1,4 +1,4 @@
-import {IMergeable, IMergeValue} from '../extensions/merge/contracts'
+import {IMergeable, IMergeOptions, IMergeValue} from '../extensions/merge/contracts'
 import {mergeMapsOrObjects} from '../extensions/merge/merge-maps-or-objects'
 import {registerMergeable} from '../extensions/merge/mergers'
 import {
@@ -182,6 +182,7 @@ export class ObservableMap<K, V>
 		newer: ObservableMap<K, V> | object,
 		preferCloneOlder?: boolean,
 		preferCloneNewer?: boolean,
+		options?: IMergeOptions,
 	): boolean {
 		return mergeMapsOrObjects(
 			merge,
@@ -190,6 +191,7 @@ export class ObservableMap<K, V>
 			newer,
 			preferCloneOlder,
 			preferCloneNewer,
+			options,
 		)
 	}
 
