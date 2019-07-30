@@ -8,6 +8,9 @@ import { deepEqual as deepStrictEqual } from 'fast-equals'
 import {IMergeable, IMergeOptions, IMergeValue} from '../../../../../../main/common/extensions/merge/contracts'
 import {registerMergeable} from '../../../../../../main/common/extensions/merge/mergers'
 import {BASE, IMergerOptionsVariant, isRefer, NEWER, NONE, OLDER, TestMerger} from './src/TestMerger'
+import {fillMap} from "../../../../../../main/common/lists/helpers/set";
+import {ObservableMap} from "../../../../../../main/common/lists/ObservableMap";
+import {toIterable} from "../../lists/src/helpers/common";
 
 declare const assert
 declare const after
@@ -545,6 +548,47 @@ describe('common > extensions > merge > ObjectMerger', function() {
 				error: null,
 				returnValue: true,
 				setValue: NEWER,
+				base: BASE,
+				older: OLDER,
+				newer: NEWER,
+			},
+			actions: null,
+		})
+	})
+
+	it('merge maps', function() {
+		const base: any = [[0, null], [null, {}], [void 0, { a: 1, b: 2 }], [{}, {a: 2, b: 3}], [() => {}, () => {}]]
+		const older: any = [[0, null], [null, {}], [void 0, { a: 1, b: 2 }], [{}, {a: 2, b: 3}], [() => {}, () => {}]]
+		const newer: any = [[0, null], [null, {}], [void 0, { a: 1, b: 2 }], [{}, {a: 2, b: 3}], [() => {}, () => {}]]
+
+		testMerger({
+			base: [
+				fillMap(new Map(), base),
+				fillMap(new ObservableMap(new Map()), base),
+			],
+			older: [
+				fillMap(new Map(), base),
+				fillMap(new ObservableMap(new Map()), base),
+				base,
+				toIterable(base),
+			],
+			newer: [
+				fillMap(new Map(), base),
+				fillMap(new ObservableMap(new Map()), base),
+				base,
+				toIterable(base),
+			],
+			preferCloneOlderParam: [null],
+			preferCloneNewerParam: [null],
+			preferCloneMeta: [null],
+			options: [null, {}],
+			valueType: [null],
+			valueFactory: [null],
+			setFunc: [false, true],
+			expected: {
+				error: null,
+				returnValue: true,
+				setValue: NONE,
 				base: BASE,
 				older: OLDER,
 				newer: NEWER,

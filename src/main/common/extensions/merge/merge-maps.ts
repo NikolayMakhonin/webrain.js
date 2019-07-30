@@ -1,5 +1,6 @@
 /* tslint:disable:no-identical-functions */
 import {IMergeOptions, IMergeValue} from './contracts'
+import {MergeSetWrapper} from "./merge-sets";
 
 // tslint:disable-next-line:no-empty no-shadowed-variable
 const NONE: any = function NONE() {}
@@ -178,7 +179,7 @@ const NONE: any = function NONE() {}
 // 	return changed
 // }
 
-interface IMergeMapWrapper<K, V> {
+export interface IMergeMapWrapper<K, V> {
 	has(key: K): boolean
 	get(key: K): V
 	set(key: K, value: V): void
@@ -186,7 +187,7 @@ interface IMergeMapWrapper<K, V> {
 	forEachKeys(callbackfn: (key: K) => void): void
 }
 
-function mergeMapWrappers<K, V>(
+export function mergeMapWrappers<K, V>(
 	merge: IMergeValue,
 	base: IMergeMapWrapper<K, V>,
 	older: IMergeMapWrapper<K, V>,
@@ -333,16 +334,20 @@ export class MergeMapWrapper<K, V> implements IMergeMapWrapper<K, V> {
 	}
 }
 
-export function createMergeMapWrapper<K, V>(mapOrObject: object|Map<K, V>) {
-	if (mapOrObject.constructor === Object) {
+export function createMergeMapWrapper<K, V>(mapOrObject: object | V[] | Map<K, V>) {
+	if (mapOrObject.constructor === Object || Array.isArray(mapOrObject)) {
 		return new MergeObjectWrapper(mapOrObject)
 	}
 
-	return new MergeMapWrapper(mapOrObject as Map<K, V>)
+	if (mapOrObject[Symbol.toStringTag] === 'Map') {
+		return new MergeMapWrapper(mapOrObject as Map<K, V>)
+	}
+
+	throw new Error(`Unsupported type (${mapOrObject.constructor.name}) to merge with Map`)
 }
 
 // 10039 cycles
-export function mergeMapsOrObjects<TObject extends object>(
+export function mergeMaps<TObject extends object>(
 	merge: IMergeValue,
 	base: TObject,
 	older: TObject,

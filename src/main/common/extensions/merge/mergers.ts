@@ -5,7 +5,7 @@ import {
 	IMergerVisitor, IMergeValue, IObjectMerger,
 	ITypeMetaMerger, ITypeMetaMergerCollection, IValueMerge, IValueMerger,
 } from './contracts'
-import {mergeMapsOrObjects} from './merge-maps-or-objects'
+import {mergeMaps} from './merge-maps'
 
 // region MergerVisitor
 
@@ -737,7 +737,7 @@ registerMerger<object, object>(Object, {
 			preferCloneNewer?: boolean,
 			options?: IMergeOptions,
 		): boolean {
-			return mergeMapsOrObjects(
+			return mergeMaps(
 				merge,
 				base,
 				older,

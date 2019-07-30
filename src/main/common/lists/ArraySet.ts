@@ -1,4 +1,5 @@
 /* tslint:disable:ban-types */
+import {IMergeable, IMergeOptions, IMergeValue} from '../extensions/merge/contracts'
 import {
 	IDeSerializeValue,
 	ISerializable,
@@ -7,8 +8,16 @@ import {
 } from '../extensions/serialization/contracts'
 import {registerSerializer} from '../extensions/serialization/serializers'
 import {getObjectUniqueId} from './helpers/object-unique-id'
+import {mergeMaps} from "../extensions/merge/merge-maps";
+import {mergeSets} from "../extensions/merge/merge-sets";
+import {registerMergeable} from "../extensions/merge/mergers";
+import {fillSet} from "./helpers/set";
 
-export class ArraySet<T extends Object> implements Set<T>, ISerializable {
+export class ArraySet<T extends Object> implements
+	Set<T>,
+	IMergeable<ArraySet<T>, T[] | Iterable<T>>,
+	ISerializable
+{
 	private readonly _array: T[]
 	private _size: number
 
@@ -109,6 +118,46 @@ export class ArraySet<T extends Object> implements Set<T>, ISerializable {
 		return this[Symbol.iterator]()
 	}
 
+	public static from<T>(arrayOrIterable: T[] | Iterable<T>): ArraySet<T> {
+		return fillSet(new ArraySet<T>(), arrayOrIterable)
+	}
+
+	// region IMergeable
+
+	public canMerge(source: ArraySet<T>): boolean {
+		if (source.constructor === ArraySet
+			&& this._array === (source as ArraySet<T>)._array
+		) {
+			return null
+		}
+
+		return source[Symbol.toStringTag] === 'Set'
+			|| Array.isArray(source)
+			|| !!source[Symbol.iterator]
+	}
+
+	public merge(
+		merge: IMergeValue,
+		older: ArraySet<T> | T[] | Iterable<T>,
+		newer: ArraySet<T> | T[] | Iterable<T>,
+		preferCloneOlder?: boolean,
+		preferCloneNewer?: boolean,
+		options?: IMergeOptions,
+	): boolean {
+		return mergeSets(
+			arrayOrIterable => ArraySet.from(arrayOrIterable),
+			merge,
+			this,
+			older,
+			newer,
+			preferCloneOlder,
+			preferCloneNewer,
+			options,
+		)
+	}
+
+	// endregion
+
 	// region ISerializable
 
 	public static uuid: string = '0e8c7f09-ea9e-4631-8af8-a635c214a01c'
@@ -126,6 +175,8 @@ export class ArraySet<T extends Object> implements Set<T>, ISerializable {
 
 	// endregion
 }
+
+registerMergeable(ArraySet)
 
 registerSerializer(ArraySet, {
 	uuid: ArraySet.uuid,

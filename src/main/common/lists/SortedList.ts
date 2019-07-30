@@ -11,6 +11,10 @@ import {ICompare} from './contracts/ICompare'
 import {IListChangedObject, ListChangedType} from './contracts/IListChanged'
 import {binarySearch, move} from './helpers/array'
 import {compareFast} from './helpers/compare'
+import {IMergeable, IMergeOptions, IMergeValue} from "../extensions/merge/contracts";
+import {mergeSets} from "../extensions/merge/merge-sets";
+import {fillCollection, fillSet} from "./helpers/set";
+import {registerMergeable} from "../extensions/merge/mergers";
 
 function calcOptimalArraySize(desiredSize: number) {
 	let optimalSize = 4
@@ -33,7 +37,12 @@ export function getDefaultValue(value) {
 	return null
 }
 
-export class SortedList<T> extends ListChangedObject<T> implements IListChangedObject<T>, ISerializable {
+export class SortedList<T>
+	extends ListChangedObject<T>
+	implements IListChangedObject<T>,
+		IMergeable<SortedList<T>, T[] | Iterable<T>>,
+		ISerializable
+{
 	// region constructor
 
 	private _array: T[]
@@ -1137,6 +1146,50 @@ export class SortedList<T> extends ListChangedObject<T> implements IListChangedO
 
 	public readonly [Symbol.toStringTag]: string = 'List'
 
+	// region IMergeable
+
+	public canMerge(source: SortedList<T>): boolean {
+		if (source.constructor === SortedList
+			&& this._array === (source as SortedList<T>)._array
+			&& this._autoSort === (source as SortedList<T>)._autoSort
+			&& this._notAddIfExists === (source as SortedList<T>)._notAddIfExists
+		) {
+			return null
+		}
+
+		return this._autoSort
+			&& this._notAddIfExists
+			&& (source[Symbol.toStringTag] === 'Set'
+				|| Array.isArray(source)
+				|| !!source[Symbol.iterator])
+	}
+
+	public merge(
+		merge: IMergeValue,
+		older: SortedList<T> | T[] | Iterable<T>,
+		newer: SortedList<T> | T[] | Iterable<T>,
+		preferCloneOlder?: boolean,
+		preferCloneNewer?: boolean,
+		options?: IMergeOptions,
+	): boolean {
+		return mergeSets(
+			arrayOrIterable => fillCollection(new SortedList<T>({
+				autoSort: true,
+				notAddIfExists: true,
+				compare: this.compare,
+			}), arrayOrIterable, (c, o: T) => c.add(o)),
+			merge,
+			this,
+			older,
+			newer,
+			preferCloneOlder,
+			preferCloneNewer,
+			options,
+		)
+	}
+
+	// endregion
+
 	// region ISerializable
 
 	public static uuid: string = '1ec56e52-1aa5-4dd1-8471-a6185f22ed0a'
@@ -1164,5 +1217,7 @@ export class SortedList<T> extends ListChangedObject<T> implements IListChangedO
 
 	// endregion
 }
+
+registerMergeable(SortedList)
 
 registerSerializable(SortedList)

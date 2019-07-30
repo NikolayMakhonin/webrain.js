@@ -1,3 +1,6 @@
+import {IMergeable, IMergeOptions, IMergeValue} from '../extensions/merge/contracts'
+import {mergeSets} from '../extensions/merge/merge-sets'
+import {registerMergeable} from '../extensions/merge/mergers'
 import {
 	IDeSerializeValue,
 	ISerializable,
@@ -5,10 +8,16 @@ import {
 	ISerializeValue,
 } from '../extensions/serialization/contracts'
 import {registerSerializer} from '../extensions/serialization/serializers'
+import {ArraySet} from './ArraySet'
 import {SetChangedObject} from './base/SetChangedObject'
 import {IObservableSet, SetChangedType} from './contracts/ISetChanged'
+import {fillSet} from "./helpers/set";
 
-export class ObservableSet<T> extends SetChangedObject<T> implements IObservableSet<T>, ISerializable {
+export class ObservableSet<T> extends SetChangedObject<T> implements
+	IObservableSet<T>,
+	IMergeable<ObservableSet<T>, T[] | Iterable<T>>,
+	ISerializable
+{
 	private readonly _set: Set<T>
 
 	constructor(set?: Set<T>) {
@@ -131,6 +140,42 @@ export class ObservableSet<T> extends SetChangedObject<T> implements IObservable
 
 	// endregion
 
+	// region IMergeable
+
+	public canMerge(source: ObservableSet<T>): boolean {
+		if (source.constructor === ObservableSet
+			&& this._set === (source as ObservableSet<T>)._set
+		) {
+			return null
+		}
+
+		return source[Symbol.toStringTag] === 'Set'
+			|| Array.isArray(source)
+			|| !!source[Symbol.iterator]
+	}
+
+	public merge(
+		merge: IMergeValue,
+		older: ObservableSet<T> | T[] | Iterable<T>,
+		newer: ObservableSet<T> | T[] | Iterable<T>,
+		preferCloneOlder?: boolean,
+		preferCloneNewer?: boolean,
+		options?: IMergeOptions,
+	): boolean {
+		return mergeSets(
+			arrayOrIterable => fillSet(new Set(), arrayOrIterable),
+			merge,
+			this,
+			older,
+			newer,
+			preferCloneOlder,
+			preferCloneNewer,
+			options,
+		)
+	}
+
+	// endregion
+
 	// region ISerializable
 
 	public static uuid: string = '91539dfb-55f4-4bfb-9dbf-bff7f6ab800d'
@@ -148,6 +193,8 @@ export class ObservableSet<T> extends SetChangedObject<T> implements IObservable
 
 	// endregion
 }
+
+registerMergeable(ObservableSet)
 
 registerSerializer(ObservableSet, {
 	uuid: ObservableSet.uuid,

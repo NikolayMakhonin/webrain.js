@@ -1,3 +1,6 @@
+import {IMergeable, IMergeOptions, IMergeValue} from '../extensions/merge/contracts'
+import {mergeSets} from '../extensions/merge/merge-sets'
+import {registerMergeable} from '../extensions/merge/mergers'
 import {
 	IDeSerializeValue,
 	ISerializable,
@@ -5,8 +8,14 @@ import {
 	ISerializeValue,
 } from '../extensions/serialization/contracts'
 import {registerSerializer} from '../extensions/serialization/serializers'
+import {fillObjectKeys, fillSet} from "./helpers/set";
 
-export class ObjectSet implements Set<string>, ISerializable {
+export class ObjectSet implements
+	Set<string>,
+	IMergeable<ObjectSet, string[] | Iterable<string>>,
+	ISerializable,
+	ISerializable
+{
 	private readonly _object: object
 
 	constructor(object?: object) {
@@ -82,6 +91,46 @@ export class ObjectSet implements Set<string>, ISerializable {
 		return this[Symbol.iterator]()
 	}
 
+	public static from(arrayOrIterable: string[] | Iterable<string>): ObjectSet {
+		return new ObjectSet(fillObjectKeys({}, arrayOrIterable))
+	}
+
+	// region IMergeable
+
+	public canMerge(source: ObjectSet): boolean {
+		if (source.constructor === ObjectSet
+			&& this._object === (source as ObjectSet)._object
+		) {
+			return null
+		}
+
+		return source[Symbol.toStringTag] === 'Set'
+			|| Array.isArray(source)
+			|| !!source[Symbol.iterator]
+	}
+
+	public merge(
+		merge: IMergeValue,
+		older: ObjectSet | string[] | Iterable<string>,
+		newer: ObjectSet | string[] | Iterable<string>,
+		preferCloneOlder?: boolean,
+		preferCloneNewer?: boolean,
+		options?: IMergeOptions,
+	): boolean {
+		return mergeSets(
+			array => ObjectSet.from(array),
+			merge,
+			this,
+			older,
+			newer,
+			preferCloneOlder,
+			preferCloneNewer,
+			options,
+		)
+	}
+
+	// endregion
+
 	// region ISerializable
 
 	public static uuid: string = '6988ebc9-cd06-4a9b-97a9-8415b8cf1dc4'
@@ -99,6 +148,8 @@ export class ObjectSet implements Set<string>, ISerializable {
 
 	// endregion
 }
+
+registerMergeable(ObjectSet)
 
 registerSerializer(ObjectSet, {
 	uuid: ObjectSet.uuid,

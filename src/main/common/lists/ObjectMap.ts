@@ -1,5 +1,5 @@
 import {IMergeable, IMergeOptions, IMergeValue} from '../extensions/merge/contracts'
-import {mergeMapsOrObjects} from '../extensions/merge/merge-maps-or-objects'
+import {mergeMaps} from '../extensions/merge/merge-maps'
 import {registerMergeable} from '../extensions/merge/mergers'
 import {
 	IDeSerializeValue,
@@ -114,7 +114,7 @@ export class ObjectMap<V> implements
 		preferCloneNewer?: boolean,
 		options?: IMergeOptions,
 	): boolean {
-		return mergeMapsOrObjects(
+		return mergeMaps(
 			merge,
 			this,
 			older,
