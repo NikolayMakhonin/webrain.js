@@ -141,6 +141,7 @@ registerSerializer(ArraySet, {
 			serializedValue: ISerializedObject,
 			valueFactory?: (set?: T[]) => ArraySet<T>,
 		): ArraySet<T> {
+			// @ts-ignore
 			const innerSet = deSerialize<T[]>(serializedValue.array, Object, () => [])
 			const value = valueFactory
 				? valueFactory(innerSet)

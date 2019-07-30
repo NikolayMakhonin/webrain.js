@@ -4,3 +4,6 @@ chai.use(chaiAsPromised)
 
 require('chai/register-assert')
 require('./chai-optimize')
+
+const log = console.log.bind(console)
+console.log = (...args) => log(...args, '\r\n')

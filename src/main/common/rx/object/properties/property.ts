@@ -1,6 +1,6 @@
 import {ObservableObject} from '../ObservableObject'
 import {ObservableObjectBuilder} from '../ObservableObjectBuilder'
-import {fillObject} from '../../../extensions/merge/merge-object'
+import {fillObject} from '../../../extensions/merge/merge-maps-or-objects'
 
 export interface ISetOptions<TValue> {
 	fill?: boolean,

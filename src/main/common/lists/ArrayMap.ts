@@ -1,8 +1,20 @@
-import {IDeSerializeValue, ISerializedObject, ISerializeValue} from '../extensions/serialization/contracts'
+import {IMergeable, IMergeValue} from '../extensions/merge/contracts'
+import {mergeMapsOrObjects} from '../extensions/merge/merge-maps-or-objects'
+import {registerMergeable} from '../extensions/merge/mergers'
+import {
+	IDeSerializeValue,
+	ISerializable,
+	ISerializedObject,
+	ISerializeValue,
+} from '../extensions/serialization/contracts'
 import {registerSerializer} from '../extensions/serialization/serializers'
 import {getObjectUniqueId} from './helpers/object-unique-id'
 
-export class ArrayMap<K, V> implements Map<K, V> {
+export class ArrayMap<K, V> implements
+	Map<K, V>,
+	IMergeable<ArrayMap<K, V>, ArrayMap<K, V>>,
+	ISerializable
+{
 	private readonly _array: Array<[K, V]>
 
 	constructor(array?: Array<[K, V]>) {
@@ -101,6 +113,38 @@ export class ArrayMap<K, V> implements Map<K, V> {
 		}
 	}
 
+	// region IMergeable
+
+	public canMerge(source: ArrayMap<K, V>): boolean {
+		if (source.constructor === ArrayMap
+			&& this._array === (source as ArrayMap<K, V>)._array
+		) {
+			return null
+		}
+
+		return source.constructor === Object
+			|| source[Symbol.toStringTag] === 'Map'
+	}
+
+	public merge(
+		merge: IMergeValue,
+		older: ArrayMap<K, V> | object,
+		newer: ArrayMap<K, V> | object,
+		preferCloneOlder?: boolean,
+		preferCloneNewer?: boolean,
+	): boolean {
+		return mergeMapsOrObjects(
+			merge,
+			this,
+			older,
+			newer,
+			preferCloneOlder,
+			preferCloneNewer,
+		)
+	}
+
+	// endregion
+
 	// region ISerializable
 
 	public static uuid: string = 'ef0ced8a-58f7-4381-b850-3b09c0a42eed'
@@ -119,6 +163,8 @@ export class ArrayMap<K, V> implements Map<K, V> {
 	// endregion
 }
 
+registerMergeable(ArrayMap)
+
 registerSerializer(ArrayMap, {
 	uuid: ArrayMap.uuid,
 	serializer: {
@@ -133,6 +179,7 @@ registerSerializer(ArrayMap, {
 			serializedValue: ISerializedObject,
 			valueFactory?: (map?: Array<[K, V]>) => ArrayMap<K, V>,
 		): ArrayMap<K, V> {
+			// @ts-ignore
 			const innerMap = deSerialize<Array<[K, V]>>(serializedValue.array, Object, () => [])
 			const value = valueFactory
 				? valueFactory(innerMap)

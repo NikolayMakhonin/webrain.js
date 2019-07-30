@@ -278,23 +278,6 @@ describe('common > extensions > merge > ObjectMerger', function() {
 			actions: null,
 		}
 
-		xit('full', function() {
-			const createValues = () => [
-				BASE, OLDER, NEWER,
-				null, void 0, 0, 1, false, true, '', '1',
-				/* new Class(new Date(1)), new Class({ a: {a: 1, b: 2}, b: 3 }), new Class(Object.freeze({ x: {y: 1} })), */
-				{}, {a: {a: 1, b: 2}, b: 3}, {a: {b: 4, c: 5}, c: 6}, {a: {a: 7, b: 8}, d: 9}, Object.freeze({x: {y: 1}}),
-				new Date(1), new Date(2),
-			]
-
-			testMerger({
-				...options,
-				base: createValues(),
-				older: createValues(),
-				newer: createValues(),
-			})
-		})
-
 		it('primitives', function() {
 			const createValues = () => [
 				BASE, OLDER, NEWER,
@@ -343,6 +326,23 @@ describe('common > extensions > merge > ObjectMerger', function() {
 				null, {}, new Date(1),
 				/* new Class(new Date(1)), new Class({ a: {a: 1, b: 2}, b: 3 }), new Class(Object.freeze({ x: {y: 1} })), */
 				{a: {a: 1, b: 2}, b: 3}, {a: {b: 4, c: 5}, c: 6}, {a: {a: 7, b: 8}, d: 9}, Object.freeze({x: {y: 1}}),
+			]
+
+			testMerger({
+				...options,
+				base: createValues(),
+				older: createValues(),
+				newer: createValues(),
+			})
+		})
+
+		it('full', function() {
+			const createValues = () => [
+				BASE, OLDER, NEWER,
+				null, void 0, 0, 1, false, true, '', '1',
+				/* new Class(new Date(1)), new Class({ a: {a: 1, b: 2}, b: 3 }), new Class(Object.freeze({ x: {y: 1} })), */
+				{}, {a: {a: 1, b: 2}, b: 3}, {a: {b: 4, c: 5}, c: 6}, {a: {a: 7, b: 8}, d: 9}, Object.freeze({x: {y: 1}}),
+				new Date(1), new Date(2),
 			]
 
 			testMerger({

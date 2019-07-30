@@ -1,7 +1,19 @@
-import {IDeSerializeValue, ISerializedObject, ISerializeValue} from '../extensions/serialization/contracts'
+import {IMergeable, IMergeValue} from '../extensions/merge/contracts'
+import {mergeMapsOrObjects} from '../extensions/merge/merge-maps-or-objects'
+import {registerMergeable} from '../extensions/merge/mergers'
+import {
+	IDeSerializeValue,
+	ISerializable,
+	ISerializedObject,
+	ISerializeValue,
+} from '../extensions/serialization/contracts'
 import {registerSerializer} from '../extensions/serialization/serializers'
 
-export class ObjectMap<V> implements Map<string, V> {
+export class ObjectMap<V> implements
+	Map<string, V>,
+	IMergeable<ObjectMap<V>, object>,
+	ISerializable
+{
 	private readonly _object: object
 
 	constructor(object?: object) {
@@ -80,7 +92,39 @@ export class ObjectMap<V> implements Map<string, V> {
 	public values(): IterableIterator<V> {
 		return Object.values(this._object)[Symbol.iterator]()
 	}
-	
+
+	// region IMergeable
+
+	public canMerge(source: ObjectMap<V>|object): boolean {
+		if (source.constructor === ObjectMap
+			&& this._object === (source as ObjectMap<V>)._object
+		) {
+			return null
+		}
+
+		return !(source.constructor !== Object
+			&& source[Symbol.toStringTag] !== 'Map')
+	}
+
+	public merge(
+		merge: IMergeValue,
+		older: ObjectMap<V> | object,
+		newer: ObjectMap<V> | object,
+		preferCloneOlder?: boolean,
+		preferCloneNewer?: boolean,
+	): boolean {
+		return mergeMapsOrObjects(
+			merge,
+			this,
+			older,
+			newer,
+			preferCloneOlder,
+			preferCloneNewer,
+		)
+	}
+
+	// endregion
+
 	// region ISerializable
 
 	public static uuid: string = '62388f07-b21a-4778-8b38-58f225cdbd42'
@@ -98,6 +142,8 @@ export class ObjectMap<V> implements Map<string, V> {
 
 	// endregion
 }
+
+registerMergeable(ObjectMap)
 
 registerSerializer(ObjectMap, {
 	uuid: ObjectMap.uuid,

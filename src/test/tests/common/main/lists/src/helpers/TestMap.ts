@@ -85,7 +85,7 @@ function testSerialization<K, V>(map: Map<K, V>) {
 	const result: Map<K, V> = ObjectSerializer.default.deSerialize(serialized)
 
 	assert.notStrictEqual(result, map)
-	assert.deepStrictEqual(result.entries(), map.entries())
+	assert.deepStrictEqual(Array.from(result.entries()), Array.from(map.entries()))
 }
 
 function assertMap<K, V>(map: Map<K, V>, expectedArray: Array<[K, V]>) {

@@ -1,13 +1,27 @@
-import {IDeSerializeValue, ISerializedObject, ISerializeValue} from '../extensions/serialization/contracts'
+import {IMergeable, IMergeValue} from '../extensions/merge/contracts'
+import {mergeMapsOrObjects} from '../extensions/merge/merge-maps-or-objects'
+import {registerMergeable} from '../extensions/merge/mergers'
+import {
+	IDeSerializeValue,
+	ISerializable,
+	ISerializedObject,
+	ISerializeValue,
+} from '../extensions/serialization/contracts'
 import {registerSerializer} from '../extensions/serialization/serializers'
 import {getObjectUniqueId} from './helpers/object-unique-id'
 
-export class ObjectHashMap<K, V> implements Map<K, V> {
-	private readonly _object: {
-		[id: number]: [K, V],
-	}
+interface TNumberObject<K, V> {
+	[id: number]: [K, V],
+}
 
-	constructor(object?: { [id: number]: [K, V] }) {
+export class ObjectHashMap<K, V> implements
+	Map<K, V>,
+	IMergeable<ObjectHashMap<K, V>, TNumberObject<K, V>>,
+	ISerializable
+{
+	private readonly _object: TNumberObject<K, V>
+
+	constructor(object?: TNumberObject<K, V>) {
 		this._object = object || {} as any
 	}
 
@@ -103,6 +117,37 @@ export class ObjectHashMap<K, V> implements Map<K, V> {
 		}
 	}
 
+	// region IMergeable
+
+	public canMerge(source: ObjectHashMap<K, V>): boolean {
+		if (source.constructor === ObjectHashMap
+			&& this._object === (source as ObjectHashMap<K, V>)._object
+		) {
+			return null
+		}
+
+		return source[Symbol.toStringTag] === 'Map'
+	}
+
+	public merge(
+		merge: IMergeValue,
+		older: ObjectHashMap<K, V> | TNumberObject<K, V>,
+		newer: ObjectHashMap<K, V> | TNumberObject<K, V>,
+		preferCloneOlder?: boolean,
+		preferCloneNewer?: boolean,
+	): boolean {
+		return mergeMapsOrObjects(
+			merge,
+			this,
+			older,
+			newer,
+			preferCloneOlder,
+			preferCloneNewer,
+		)
+	}
+
+	// endregion
+
 	// region ISerializable
 
 	public static uuid: string = '7a5731ae-37ad-4c5b-aee0-25a8f1cd2228'
@@ -120,6 +165,8 @@ export class ObjectHashMap<K, V> implements Map<K, V> {
 
 	// endregion
 }
+
+registerMergeable(ObjectHashMap)
 
 registerSerializer(ObjectHashMap, {
 	uuid: ObjectHashMap.uuid,

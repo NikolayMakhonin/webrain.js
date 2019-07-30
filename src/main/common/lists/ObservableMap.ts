@@ -1,9 +1,22 @@
-import {IDeSerializeValue, ISerializable, ISerializedObject, ISerializeValue} from '../extensions/serialization/contracts'
+import {IMergeable, IMergeValue} from '../extensions/merge/contracts'
+import {mergeMapsOrObjects} from '../extensions/merge/merge-maps-or-objects'
+import {registerMergeable} from '../extensions/merge/mergers'
+import {
+	IDeSerializeValue,
+	ISerializable,
+	ISerializedObject,
+	ISerializeValue,
+} from '../extensions/serialization/contracts'
 import {registerSerializer} from '../extensions/serialization/serializers'
 import {MapChangedObject} from './base/MapChangedObject'
 import {IObservableMap, MapChangedType} from './contracts/IMapChanged'
 
-export class ObservableMap<K, V> extends MapChangedObject<K, V> implements IObservableMap<K, V>, ISerializable {
+export class ObservableMap<K, V>
+	extends MapChangedObject<K, V>
+	implements IObservableMap<K, V>,
+		IMergeable<ObservableMap<K, V>, object>,
+		ISerializable
+{
 	private readonly _map: Map<K, V>
 
 	constructor(
@@ -150,6 +163,38 @@ export class ObservableMap<K, V> extends MapChangedObject<K, V> implements IObse
 
 	// endregion
 
+	// region IMergeable
+
+	public canMerge(source: ObservableMap<K, V>): boolean {
+		if (source.constructor === ObservableMap
+			&& this._map === (source as ObservableMap<K, V>)._map
+		) {
+			return null
+		}
+
+		return source.constructor === Object
+			|| source[Symbol.toStringTag] === 'Map'
+	}
+
+	public merge(
+		merge: IMergeValue,
+		older: ObservableMap<K, V> | object,
+		newer: ObservableMap<K, V> | object,
+		preferCloneOlder?: boolean,
+		preferCloneNewer?: boolean,
+	): boolean {
+		return mergeMapsOrObjects(
+			merge,
+			this,
+			older,
+			newer,
+			preferCloneOlder,
+			preferCloneNewer,
+		)
+	}
+
+	// endregion
+
 	// region ISerializable
 
 	public static uuid: string = 'e162178d-5123-4bea-ab6e-b96d5b8f130b'
@@ -167,6 +212,8 @@ export class ObservableMap<K, V> extends MapChangedObject<K, V> implements IObse
 
 	// endregion
 }
+
+registerMergeable(ObservableMap)
 
 registerSerializer(ObservableMap, {
 	uuid: ObservableMap.uuid,

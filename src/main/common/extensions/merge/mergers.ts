@@ -5,7 +5,7 @@ import {
 	IMergerVisitor, IMergeValue, IObjectMerger,
 	ITypeMetaMerger, ITypeMetaMergerCollection, IValueMerge, IValueMerger,
 } from './contracts'
-import {mergeObject} from './merge-object'
+import {mergeMapsOrObjects} from './merge-maps-or-objects'
 
 // region MergerVisitor
 
@@ -595,6 +595,31 @@ export function registerMerger<TTarget extends any, TSource extends any>(
 	TypeMetaMergerCollection.default.putType(type, meta)
 }
 
+export function registerMergerPrimitive<TTarget extends any, TSource extends any>(
+	type: TClass<TTarget>,
+	meta?: ITypeMetaMerger<TTarget, TSource>,
+) {
+	registerMerger(type, {
+		preferClone: false,
+		...meta,
+		merger: {
+			merge(
+				merge: IMergeValue,
+				base: TTarget,
+				older: TTarget|TSource,
+				newer: TTarget|TSource,
+				set?: (value: any) => void,
+				// preferCloneOlder?: boolean,
+				// preferCloneNewer?: boolean,
+			): boolean {
+				set((newer as any).valueOf())
+				return true
+			},
+			...(meta ? meta.merger : {}),
+		},
+	})
+}
+
 // endregion
 
 // region ObjectMerger
@@ -660,8 +685,8 @@ registerMerger<string, string>(String as any, {
 			older: string,
 			newer: string,
 			set?: (value: string) => void,
-			preferCloneOlder?: boolean,
-			preferCloneNewer?: boolean,
+			// preferCloneOlder?: boolean,
+			// preferCloneNewer?: boolean,
 		): boolean {
 			set(newer.valueOf())
 			return true
@@ -670,27 +695,9 @@ registerMerger<string, string>(String as any, {
 	preferClone: false,
 })
 
-const primitiveMerger: ITypeMetaMerger<any, any> = {
-	merger: {
-		merge(
-			merge: IMergeValue,
-			base: any,
-			older: any,
-			newer: any,
-			set?: (value: any) => void,
-			preferCloneOlder?: boolean,
-			preferCloneNewer?: boolean,
-		): boolean {
-			set(newer.valueOf())
-			return true
-		},
-	},
-	preferClone: false,
-}
-
-registerMerger<Number, Number>(Number as any, primitiveMerger)
-registerMerger<Boolean, Boolean>(Boolean as any, primitiveMerger)
-registerMerger<any[], any[]>(Array as any, primitiveMerger)
+registerMergerPrimitive(Number)
+registerMergerPrimitive(Boolean)
+registerMergerPrimitive(Array)
 
 // endregion
 
@@ -710,7 +717,7 @@ registerMerger<object, object>(Object, {
 			preferCloneOlder?: boolean,
 			preferCloneNewer?: boolean,
 		): boolean {
-			return mergeObject(merge, base, older, newer, preferCloneOlder, preferCloneNewer)
+			return mergeMapsOrObjects(merge, base, older, newer, preferCloneOlder, preferCloneNewer)
 		},
 	},
 	preferClone: o => Object.isFrozen(o) ? true : null,
