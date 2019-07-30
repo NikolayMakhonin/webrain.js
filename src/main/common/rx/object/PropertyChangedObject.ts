@@ -96,6 +96,11 @@ export class PropertyChangedObject implements IPropertyChangedObject {
 	}
 
 	public onPropertyChanged(eventsOrPropertyNames: EventsOrPropertyNames): this {
+		const {__meta} = this
+		if (!__meta) {
+			return this
+		}
+
 		const {propertyChanged, propertyChangedDisabled} = this.__meta
 
 		if (!propertyChanged || propertyChangedDisabled) {

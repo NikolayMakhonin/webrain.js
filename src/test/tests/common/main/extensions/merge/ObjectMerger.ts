@@ -557,9 +557,9 @@ describe('common > extensions > merge > ObjectMerger', function() {
 	})
 
 	it('merge maps', function() {
-		const base: any = [[0, null], [null, {}], [void 0, { a: 1, b: 2 }], [{}, {a: 2, b: 3}], [() => {}, () => {}]]
-		const older: any = [[0, null], [null, {}], [void 0, { a: 1, b: 2 }], [{}, {a: 2, b: 3}], [() => {}, () => {}]]
-		const newer: any = [[0, null], [null, {}], [void 0, { a: 1, b: 2 }], [{}, {a: 2, b: 3}], [() => {}, () => {}]]
+		const base: any = [[0, null], [null, {}], [() => {}, () => {}], [void 0, { a: 1, b: 2 }], [{}, {a: 2, c: 3}]]
+		const older: any = [[0, {}], [null, () => {}], [() => {}, null], [void 0, { a: 4, b: 5 }], [{}, {a: 6, c: 7}]]
+		const newer: any = [[0, () => {}], [null, null], [() => {}, {}], [void 0, { a: 8, b: 9 }], [{}, {a: 10, c: 11}]]
 
 		testMerger({
 			base: [
@@ -567,16 +567,16 @@ describe('common > extensions > merge > ObjectMerger', function() {
 				fillMap(new ObservableMap(new Map()), base),
 			],
 			older: [
-				fillMap(new Map(), base),
-				fillMap(new ObservableMap(new Map()), base),
-				base,
-				toIterable(base),
+				fillMap(new Map(), older),
+				fillMap(new ObservableMap(new Map()), older),
+				older,
+				toIterable(older),
 			],
 			newer: [
-				fillMap(new Map(), base),
-				fillMap(new ObservableMap(new Map()), base),
-				base,
-				toIterable(base),
+				fillMap(new Map(), newer),
+				fillMap(new ObservableMap(new Map()), newer),
+				newer,
+				toIterable(newer),
 			],
 			preferCloneOlderParam: [null],
 			preferCloneNewerParam: [null],

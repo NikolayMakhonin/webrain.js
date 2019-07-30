@@ -10,7 +10,7 @@ import {
 import {registerSerializer} from '../extensions/serialization/serializers'
 import {MapChangedObject} from './base/MapChangedObject'
 import {IObservableMap, MapChangedType} from './contracts/IMapChanged'
-import {fillMap} from "./helpers/set";
+import {fillMap} from './helpers/set'
 
 export class ObservableMap<K, V>
 	extends MapChangedObject<K, V>
