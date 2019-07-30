@@ -10,6 +10,7 @@ import {
 import {registerSerializer} from '../extensions/serialization/serializers'
 import {MapChangedObject} from './base/MapChangedObject'
 import {IObservableMap, MapChangedType} from './contracts/IMapChanged'
+import {fillMap} from "./helpers/set";
 
 export class ObservableMap<K, V>
 	extends MapChangedObject<K, V>
@@ -166,6 +167,11 @@ export class ObservableMap<K, V>
 	// region IMergeable
 
 	public canMerge(source: ObservableMap<K, V>): boolean {
+		const {_map} = this
+		if ((_map as any).canMerge) {
+			return (_map as any).canMerge(source)
+		}
+
 		if (source.constructor === ObservableMap
 			&& this._map === (source as ObservableMap<K, V>)._map
 		) {
@@ -174,6 +180,8 @@ export class ObservableMap<K, V>
 
 		return source.constructor === Object
 			|| source[Symbol.toStringTag] === 'Map'
+			|| Array.isArray(source)
+			|| !!source[Symbol.iterator]
 	}
 
 	public merge(
@@ -185,6 +193,7 @@ export class ObservableMap<K, V>
 		options?: IMergeOptions,
 	): boolean {
 		return mergeMaps(
+			arrayOrIterable => fillMap(new Map(), arrayOrIterable),
 			merge,
 			this,
 			older,

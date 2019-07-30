@@ -104,7 +104,8 @@ export class ObjectSet implements
 			return null
 		}
 
-		return source[Symbol.toStringTag] === 'Set'
+		return source.constructor === Object
+			|| source[Symbol.toStringTag] === 'Set'
 			|| Array.isArray(source)
 			|| !!source[Symbol.iterator]
 	}

@@ -9,6 +9,7 @@ import {
 } from '../extensions/serialization/contracts'
 import {registerSerializer} from '../extensions/serialization/serializers'
 import {getObjectUniqueId} from './helpers/object-unique-id'
+import {fillMap} from "./helpers/set";
 
 export class ArrayMap<K, V> implements
 	Map<K, V>,
@@ -122,8 +123,9 @@ export class ArrayMap<K, V> implements
 			return null
 		}
 
-		return source.constructor === Object
-			|| source[Symbol.toStringTag] === 'Map'
+		return source[Symbol.toStringTag] === 'Map'
+			|| Array.isArray(source)
+			|| !!source[Symbol.iterator]
 	}
 
 	public merge(
@@ -135,6 +137,7 @@ export class ArrayMap<K, V> implements
 		options?: IMergeOptions,
 	): boolean {
 		return mergeMaps(
+			arrayOrIterable => fillMap(new ArrayMap(), arrayOrIterable),
 			merge,
 			this,
 			older,

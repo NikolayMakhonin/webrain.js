@@ -1,4 +1,5 @@
 /* tslint:disable:no-nested-switch ban-types use-primitive-type */
+import {fillMap, fillSet} from '../../lists/helpers/set'
 import {TClass, TypeMetaCollection} from '../TypeMeta'
 import {
 	IMergeable, IMergeOptions,
@@ -6,6 +7,7 @@ import {
 	ITypeMetaMerger, ITypeMetaMergerCollection, IValueMerge, IValueMerger,
 } from './contracts'
 import {mergeMaps} from './merge-maps'
+import {mergeSets} from './merge-sets'
 
 // region MergerVisitor
 
@@ -738,6 +740,7 @@ registerMerger<object, object>(Object, {
 			options?: IMergeOptions,
 		): boolean {
 			return mergeMaps(
+				null,
 				merge,
 				base,
 				older,
@@ -767,6 +770,80 @@ registerMerger<Date, Date>(Date, {
 		},
 	},
 	valueFactory: (source: Date) => new Date(source),
+})
+
+// endregion
+
+// region Set
+
+registerMerger<Set<any>, Set<any>>(Set, {
+	merger: {
+		canMerge<T extends any>(target: Set<T>, source: Set<T>): boolean {
+			return source.constructor === Object
+				|| source[Symbol.toStringTag] === 'Set'
+				|| Array.isArray(source)
+				|| !!source[Symbol.iterator]
+		},
+		merge<T>(
+			merge: IMergeValue,
+			base: Set<T>,
+			older: Set<T> | T[] | Iterable<T>,
+			newer: Set<T> | T[] | Iterable<T>,
+			set?: (value: Set<T>) => void,
+			preferCloneOlder?: boolean,
+			preferCloneNewer?: boolean,
+			options?: IMergeOptions,
+		): boolean {
+			return mergeSets(
+				arrayOrIterable => fillSet(new Set(), arrayOrIterable),
+				merge,
+				base,
+				older,
+				newer,
+				preferCloneOlder,
+				preferCloneNewer,
+				options,
+			)
+		},
+	},
+	// valueFactory: (source: Set<any>) => new Set(source),
+})
+
+// endregion
+
+// region Map
+
+registerMerger<Map<any, any>, Map<any, any>>(Map, {
+	merger: {
+		canMerge<K extends any, V extends any>(target: Map<K, V>, source: Map<K, V>): boolean {
+			return source.constructor === Object
+				|| source[Symbol.toStringTag] === 'Map'
+				|| Array.isArray(source)
+				|| !!source[Symbol.iterator]
+		},
+		merge<K, V>(
+			merge: IMergeValue,
+			base: Map<K, V>,
+			older: Map<K, V> | Array<[K, V]> | Iterable<[K, V]>,
+			newer: Map<K, V> | Array<[K, V]> | Iterable<[K, V]>,
+			set?: (value: Map<K, V>) => void,
+			preferCloneOlder?: boolean,
+			preferCloneNewer?: boolean,
+			options?: IMergeOptions,
+		): boolean {
+			return mergeMaps(
+				arrayOrIterable => fillMap(new Map(), arrayOrIterable),
+				merge,
+				base,
+				older,
+				newer,
+				preferCloneOlder,
+				preferCloneNewer,
+				options,
+			)
+		},
+	},
+	// valueFactory: (source: Map<any, any>) => new Map(source),
 })
 
 // endregion

@@ -9,6 +9,7 @@ import {
 } from '../extensions/serialization/contracts'
 import {registerSerializer} from '../extensions/serialization/serializers'
 import {getObjectUniqueId} from './helpers/object-unique-id'
+import {fillMap} from "./helpers/set";
 
 interface TNumberObject<K, V> {
 	[id: number]: [K, V],
@@ -127,6 +128,8 @@ export class ObjectHashMap<K, V> implements
 		}
 
 		return source[Symbol.toStringTag] === 'Map'
+			|| Array.isArray(source)
+			|| !!source[Symbol.iterator]
 	}
 
 	public merge(
@@ -138,6 +141,7 @@ export class ObjectHashMap<K, V> implements
 		options?: IMergeOptions,
 	): boolean {
 		return mergeMaps(
+			arrayOrIterable => fillMap(new ObjectHashMap(), arrayOrIterable),
 			merge,
 			this,
 			older,

@@ -8,6 +8,7 @@ import {
 	ISerializeValue,
 } from '../extensions/serialization/contracts'
 import {registerSerializer} from '../extensions/serialization/serializers'
+import {fillMap} from "./helpers/set";
 
 export class ObjectMap<V> implements
 	Map<string, V>,
@@ -102,8 +103,10 @@ export class ObjectMap<V> implements
 			return null
 		}
 
-		return !(source.constructor !== Object
-			&& source[Symbol.toStringTag] !== 'Map')
+		return source.constructor === Object
+			|| source[Symbol.toStringTag] === 'Map'
+			|| Array.isArray(source)
+			|| !!source[Symbol.iterator]
 	}
 
 	public merge(
@@ -115,6 +118,7 @@ export class ObjectMap<V> implements
 		options?: IMergeOptions,
 	): boolean {
 		return mergeMaps(
+			arrayOrIterable => fillMap(new ObjectMap(), arrayOrIterable),
 			merge,
 			this,
 			older,

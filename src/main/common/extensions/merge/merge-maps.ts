@@ -273,9 +273,13 @@ export function mergeMapWrappers<K, V>(
 
 export class MergeObjectWrapper implements IMergeMapWrapper<string, any> {
 	private readonly _object: { [key: string]: any }
+	private readonly _keyAsValue: boolean
 
-	constructor(object: { [key: string]: any }) {
+	constructor(object: { [key: string]: any }, keyAsValue?: boolean) {
 		this._object = object
+		if (keyAsValue) {
+			this._keyAsValue = true
+		}
 	}
 
 	public delete(key: string): void {
@@ -292,7 +296,7 @@ export class MergeObjectWrapper implements IMergeMapWrapper<string, any> {
 	}
 
 	public get(key: string): any {
-		return this._object[key]
+		return this._keyAsValue ? key : this._object[key]
 	}
 
 	public has(key: string): boolean {
@@ -300,7 +304,7 @@ export class MergeObjectWrapper implements IMergeMapWrapper<string, any> {
 	}
 
 	public set(key: string, value: any): void {
-		this._object[key] = value
+		this._object[key] = this._keyAsValue ? true : value
 	}
 }
 
@@ -334,20 +338,28 @@ export class MergeMapWrapper<K, V> implements IMergeMapWrapper<K, V> {
 	}
 }
 
-export function createMergeMapWrapper<K, V>(mapOrObject: object | V[] | Map<K, V>) {
-	if (mapOrObject.constructor === Object || Array.isArray(mapOrObject)) {
-		return new MergeObjectWrapper(mapOrObject)
+export function createMergeMapWrapper<K, V>(
+	source: object | V[] | Map<K, V>,
+	arrayOrIterableToMap: (array) => object | Map<K, V>,
+) {
+	if (source.constructor === Object || Array.isArray(source)) {
+		return new MergeObjectWrapper(source)
 	}
 
-	if (mapOrObject[Symbol.toStringTag] === 'Map') {
-		return new MergeMapWrapper(mapOrObject as Map<K, V>)
+	if (source[Symbol.toStringTag] === 'Map') {
+		return new MergeMapWrapper(source as Map<K, V>)
 	}
 
-	throw new Error(`Unsupported type (${mapOrObject.constructor.name}) to merge with Map`)
+	if (arrayOrIterableToMap && (source[Symbol.iterator] || Array.isArray(source))) {
+		return createMergeMapWrapper(arrayOrIterableToMap(source), null)
+	}
+
+	throw new Error(`Unsupported type (${source.constructor.name}) to merge with Map`)
 }
 
 // 10039 cycles
 export function mergeMaps<TObject extends object>(
+	arrayOrIterableToMap: (array) => object | Map<any, any>,
 	merge: IMergeValue,
 	base: TObject,
 	older: TObject,
@@ -356,11 +368,11 @@ export function mergeMaps<TObject extends object>(
 	preferCloneNewer?: boolean,
 	options?: IMergeOptions,
 ): boolean {
-	const baseWrapper = createMergeMapWrapper(base)
-	const olderWrapper = older === base ? baseWrapper : createMergeMapWrapper(older)
+	const baseWrapper = createMergeMapWrapper(base, arrayOrIterableToMap)
+	const olderWrapper = older === base ? baseWrapper : createMergeMapWrapper(older, arrayOrIterableToMap)
 	const newerWrapper = newer === base
 		? baseWrapper
-		: (newer === older ? olderWrapper : createMergeMapWrapper(newer))
+		: (newer === older ? olderWrapper : createMergeMapWrapper(newer, arrayOrIterableToMap))
 
 	return mergeMapWrappers(
 		merge,

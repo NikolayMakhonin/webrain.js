@@ -143,13 +143,19 @@ export class ObservableSet<T> extends SetChangedObject<T> implements
 	// region IMergeable
 
 	public canMerge(source: ObservableSet<T>): boolean {
+		const {_set} = this
+		if ((_set as any).canMerge) {
+			return (_set as any).canMerge(source)
+		}
+
 		if (source.constructor === ObservableSet
 			&& this._set === (source as ObservableSet<T>)._set
 		) {
 			return null
 		}
 
-		return source[Symbol.toStringTag] === 'Set'
+		return source.constructor === Object
+			|| source[Symbol.toStringTag] === 'Set'
 			|| Array.isArray(source)
 			|| !!source[Symbol.iterator]
 	}

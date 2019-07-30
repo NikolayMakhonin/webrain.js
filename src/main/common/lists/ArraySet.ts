@@ -1,5 +1,7 @@
 /* tslint:disable:ban-types */
 import {IMergeable, IMergeOptions, IMergeValue} from '../extensions/merge/contracts'
+import {mergeSets} from '../extensions/merge/merge-sets'
+import {registerMergeable} from '../extensions/merge/mergers'
 import {
 	IDeSerializeValue,
 	ISerializable,
@@ -8,10 +10,7 @@ import {
 } from '../extensions/serialization/contracts'
 import {registerSerializer} from '../extensions/serialization/serializers'
 import {getObjectUniqueId} from './helpers/object-unique-id'
-import {mergeMaps} from "../extensions/merge/merge-maps";
-import {mergeSets} from "../extensions/merge/merge-sets";
-import {registerMergeable} from "../extensions/merge/mergers";
-import {fillSet} from "./helpers/set";
+import {fillSet} from './helpers/set'
 
 export class ArraySet<T extends Object> implements
 	Set<T>,

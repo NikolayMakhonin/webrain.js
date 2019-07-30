@@ -33,22 +33,22 @@ export class MergeSetWrapper<V> implements IMergeMapWrapper<V, V> {
 }
 
 export function createMergeSetWrapper<V>(
-	setOrObject: object | Set<V> | V[] | Iterable<V>,
+	source: object | Set<V> | V[] | Iterable<V>,
 	arrayOrIterableToSet: (array) => object | Set<V>,
 ) {
-	if (setOrObject.constructor === Object) {
-		return new MergeObjectWrapper(setOrObject)
+	if (source.constructor === Object) {
+		return new MergeObjectWrapper(source, true)
 	}
 
-	if (setOrObject[Symbol.toStringTag] === 'Set') {
-		return new MergeSetWrapper(setOrObject as Set<V>)
+	if (source[Symbol.toStringTag] === 'Set') {
+		return new MergeSetWrapper(source as Set<V>)
 	}
 
-	if (arrayOrIterableToSet && (setOrObject[Symbol.iterator] || Array.isArray(setOrObject))) {
-		return createMergeSetWrapper(arrayOrIterableToSet(setOrObject), null)
+	if (arrayOrIterableToSet && (source[Symbol.iterator] || Array.isArray(source))) {
+		return createMergeSetWrapper(arrayOrIterableToSet(source), null)
 	}
 
-	throw new Error(`Unsupported type (${setOrObject.constructor.name}) to merge with Set`)
+	throw new Error(`Unsupported type (${source.constructor.name}) to merge with Set`)
 }
 
 export function mergeSets<TObject extends object>(
