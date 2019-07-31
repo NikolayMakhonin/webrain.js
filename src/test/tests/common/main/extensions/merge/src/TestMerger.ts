@@ -381,6 +381,14 @@ export class TestMerger extends TestVariants<
 					action()
 
 					const assertValue = (actual, expected, strict) => {
+						if (expected && expected !== NONE && expected.constructor === String) {
+							expected = expected.valueOf()
+						}
+
+						if (actual && actual !== NONE && actual.constructor === String) {
+							actual = actual.valueOf()
+						}
+
 						if (strict) {
 							assert.strictEqual(actual, expected)
 						} else {

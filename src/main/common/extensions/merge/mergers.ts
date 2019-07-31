@@ -518,7 +518,10 @@ export class MergerVisitor implements IMergerVisitor {
 		switch (mergeState.baseState.canMerge(older)) {
 			case null:
 				if (!mergeState.mergeWithBase(newer, newer)) {
-					throw new Error('base == newer; base == older; base != newer')
+					if (set) {
+						throw new Error('base != newer; base == older; base == newer')
+					}
+					return false
 				}
 				return true
 			case false:
@@ -695,12 +698,20 @@ function isPrimitive(value) {
 
 registerMerger<string, string>(String as any, {
 	merger: {
-		// canMerge(target: object, source: object): boolean {
-		// 	if (typeof source !== 'string') {
-		// 		return false
-		// 	}
-		// 	return true
-		// },
+		canMerge(target: string, source: string): boolean {
+			target = target.valueOf()
+			source = source.valueOf()
+
+			if (typeof source !== 'string') {
+				return false
+			}
+
+			if (target === source) {
+				return null
+			}
+
+			return true
+		},
 		merge(
 			merge: IMergeValue,
 			base: string,
@@ -711,6 +722,16 @@ registerMerger<string, string>(String as any, {
 			// preferCloneNewer?: boolean,
 			// options?: IMergeOptions,
 		): boolean {
+			// base = base.valueOf()
+			// older = older.valueOf()
+			// newer = newer.valueOf()
+			// if (base === newer) {
+			// 	if (base === older) {
+			// 		return false
+			// 	}
+			// 	set(older)
+			// 	return true
+			// }
 			set(newer.valueOf())
 			return true
 		},
@@ -821,6 +842,7 @@ registerMerger<Set<any>, Set<any>>(Set, {
 
 registerMerger<Map<any, any>, Map<any, any>>(Map, {
 	merger: {
+		// tslint:disable-next-line:no-identical-functions
 		canMerge<K extends any, V extends any>(target: Map<K, V>, source: Map<K, V>): boolean {
 			return source.constructor === Object
 				|| source[Symbol.toStringTag] === 'Map'
@@ -857,76 +879,3 @@ registerMerger<Map<any, any>, Map<any, any>>(Map, {
 
 // endregion
 
-// // region Helpers
-//
-// export function mergeArray(
-// 	merge: IMergeValue,
-// 	base: any[],
-// 	older: any[],
-// 	newer: any[],
-// ): any[] {
-// 	const mergedValue = []
-// 	for (let i = 0; i < length; i++) {
-// 		mergedValue[i] = merge(value[i])
-// 	}
-//
-// 	return mergedValue
-// }
-//
-// export function mergeIterable(
-// 	merge: IMergeValue,
-// 	base: Iterable<any>,
-// 	older: Iterable<any>,
-// 	newer: Iterable<any>,
-// ): Iterable<any> {
-// 	const mergedValue = []
-// 	for (const item of value) {
-// 		mergedValue.push(merge(item))
-// 	}
-// 	return mergedValue
-// }
-//
-// // endregion
-//
-//
-//
-// // region Array
-//
-// registerMerger<any[]>(Array, {
-// 	merger: {
-// 		merge(merge: IMergeValue, value: any[]): IMergedValueArray {
-// 			return mergeArray(merge, value)
-// 		},
-// 	},
-// })
-//
-// // endregion
-//
-// // region Set
-//
-// registerMerger<Set<any>>(Set, {
-// 	merger: {
-// 		merge(merge: IMergeValue, value: Set<any>): IMergedValueArray {
-// 			return mergeIterable(merge, value)
-// 		},
-// 	},
-// })
-//
-// // endregion
-//
-// // region Map
-//
-// registerMerger<Map<any, any>>(Map, {
-// 	merger: {
-// 		merge(merge: IMergeValue, value: Map<any, any>): IMergedValueArray {
-// 			return mergeIterable(item => [
-// 				merge(item[0]),
-// 				merge(item[1]),
-// 			], value)
-// 		},
-// 	},
-// })
-//
-// // endregion
-
-// endregion

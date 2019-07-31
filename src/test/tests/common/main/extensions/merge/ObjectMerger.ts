@@ -144,24 +144,24 @@ describe('common > extensions > merge > ObjectMerger', function() {
 					return true
 				}
 
-				if (o.base != null && typeof o.base === 'object'
-					&& o.older != null && typeof o.older === 'object'
-					&& o.newer != null && typeof o.newer === 'object'
+				if (o.base != null && o.base.constructor === Object
+					&& o.older != null && o.older.constructor === Object
+					&& o.newer != null && o.newer.constructor === Object
 				) {
 					return true
 				}
 
 				if (o.preferCloneMeta != null
-					&& (o.older != null && typeof o.older === 'object'
-						|| o.newer != null && typeof o.newer === 'object')
+					&& (o.older != null && o.older.constructor === Object
+						|| o.newer != null && o.newer.constructor === Object)
 				) {
 					return true
 				}
 
-				if (typeof o.base === 'object' && !Object.isFrozen(o.base) && !isRefer(o.base)) {
+				if (o.base && o.base.constructor === Object && !Object.isFrozen(o.base) && !isRefer(o.base)) {
 					o.base = deepClone(o.base)
 				}
-				if (typeof o.older === 'object' && !Object.isFrozen(o.older) && !isRefer(o.older)) {
+				if (o.older && o.older.constructor === Object && !Object.isFrozen(o.older) && !isRefer(o.older)) {
 					o.older = deepClone(o.older)
 				}
 
@@ -307,6 +307,20 @@ describe('common > extensions > merge > ObjectMerger', function() {
 			const createValues = () => [
 				BASE, OLDER, NEWER,
 				void 0, 1, '', '1', '2',
+			]
+
+			testMerger({
+				...options,
+				base: createValues(),
+				older: createValues(),
+				newer: createValues(),
+			})
+		})
+
+		it('Strings', function() {
+			const createValues = () => [
+				BASE, OLDER, NEWER,
+				void 0, 1, new String(''), new String('1'), new String('2'),
 			]
 
 			testMerger({
