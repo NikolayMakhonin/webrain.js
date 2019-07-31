@@ -1160,7 +1160,8 @@ export class SortedList<T>
 
 		return this._autoSort
 			&& this._notAddIfExists
-			&& (source[Symbol.toStringTag] === 'Set'
+			&& (source.constructor === Object
+				|| source[Symbol.toStringTag] === 'Set'
 				|| Array.isArray(source)
 				|| Symbol.iterator in source)
 	}
@@ -1272,9 +1273,7 @@ export function createMergeSortedListWrapper<V>(
 		return createMergeSortedListWrapper(target, arrayOrIterableToSortedList(source), null)
 	}
 
-	createMergeSetWrapper(target, source)
-
-	throw new Error(`${target.constructor.name} cannot be merge with ${source.constructor.name}`)
+	return createMergeSetWrapper(target, source)
 }
 
 // endregion

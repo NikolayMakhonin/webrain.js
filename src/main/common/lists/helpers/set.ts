@@ -30,9 +30,16 @@ export function fillMap<TMap extends Map<K, V>, K extends any, V extends any>(
 	return fillCollection(map, arrayOrIterable, (c, o) => c.set.apply(c, o))
 }
 
+export function fillObject<V extends any>(
+	object: object,
+	arrayOrIterable: Array<[string, V]> | Iterable<[string, V]>,
+): object {
+	return fillCollection(object, arrayOrIterable, (c, o) => c[o[0]] = o[1])
+}
+
 export function fillObjectKeys(
 	object: object,
 	arrayOrIterable: string[] | Iterable<string>,
 ): object {
-	return fillCollection(object, arrayOrIterable, (c, o) => c[o] = o)
+	return fillCollection(object, arrayOrIterable, (c, o) => c[o] = true)
 }

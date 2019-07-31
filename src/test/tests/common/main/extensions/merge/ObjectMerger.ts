@@ -9,7 +9,7 @@ import {IMergeable, IMergeOptions, IMergeValue} from '../../../../../../main/com
 import {registerMergeable} from '../../../../../../main/common/extensions/merge/mergers'
 import {ArrayMap} from '../../../../../../main/common/lists/ArrayMap'
 import {ArraySet} from '../../../../../../main/common/lists/ArraySet'
-import {fillMap, fillSet} from '../../../../../../main/common/lists/helpers/set'
+import {fillMap, fillObject, fillObjectKeys, fillSet} from '../../../../../../main/common/lists/helpers/set'
 import {ObjectHashMap} from '../../../../../../main/common/lists/ObjectHashMap'
 import {ObjectMap} from '../../../../../../main/common/lists/ObjectMap'
 import {ObjectSet} from '../../../../../../main/common/lists/ObjectSet'
@@ -584,15 +584,15 @@ describe('common > extensions > merge > ObjectMerger', function() {
 			const testMergeMaps = (targetFactories, sourceFactories, base, older, newer, result) => {
 				testMerger({
 					base: [
-						...targetFactories.map(o => fillMap(o(), base)),
+						...targetFactories.map(o => o(base)),
 					],
 					older: [
-						...sourceFactories.map(o => fillMap(o(), older)),
+						...sourceFactories.map(o => o(older)),
 						older,
 						toIterable(older),
 					],
 					newer: [
-						...sourceFactories.map(o => fillMap(o(), newer)),
+						...sourceFactories.map(o => o(newer)),
 						newer,
 						toIterable(newer),
 					],
@@ -617,8 +617,8 @@ describe('common > extensions > merge > ObjectMerger', function() {
 
 			it('Map', function() {
 				testMergeMaps(
-					[() => new Map(), () => new ObservableMap(new Map())],
-					[() => new Map(), () => new ObservableMap(new Map())],
+					[o => fillMap(new Map(), o), o => fillMap(new ObservableMap(new Map()), o)],
+					[o => fillMap(new Map(), o), o => fillMap(new ObservableMap(new Map()), o)],
 					[[0, null], [func, func], [void 0, {a: 1, b: 2}], [object, {a: 2, c: 3}]],
 					[[0, object], [null, func], [void 0, {a: 4, c: 5}], [object, {a: 6, b: 7}]],
 					[[0, null], [null, null], [func, func], [void 0, {a: 1, b: 2}], [object, {a: 10, c: 11}]],
@@ -629,13 +629,13 @@ describe('common > extensions > merge > ObjectMerger', function() {
 			it('ArrayMap', function() {
 				testMergeMaps(
 					[
-						() => new ArrayMap(), () => new ObservableMap(new ArrayMap()),
-						() => new ObjectHashMap(), () => new ObservableMap(new ObjectHashMap()),
+						o => fillMap(new ArrayMap(), o), o => fillMap(new ObservableMap(new ArrayMap()), o),
+						o => fillMap(new ObjectHashMap(), o), o => fillMap(new ObservableMap(new ObjectHashMap()), o),
 					],
 					[
-						() => new Map(), () => new ObservableMap(new Map()),
-						() => new ArrayMap(), () => new ObservableMap(new ArrayMap()),
-						() => new ObjectHashMap(), () => new ObservableMap(new ObjectHashMap()),
+						o => fillMap(new Map(), o), o => fillMap(new ObservableMap(new Map()), o),
+						o => fillMap(new ArrayMap(), o), o => fillMap(new ObservableMap(new ArrayMap()), o),
+						o => fillMap(new ObjectHashMap(), o), o => fillMap(new ObservableMap(new ObjectHashMap()), o),
 					],
 					[[func2, null], [func, func], [func4, {a: 1, b: 2}], [object, {a: 2, c: 3}]],
 					[[func2, object], [func3, func], [func4, {a: 4, c: 5}], [object, {a: 6, b: 7}]],
@@ -646,10 +646,11 @@ describe('common > extensions > merge > ObjectMerger', function() {
 
 			it('ObjectMap', function() {
 				testMergeMaps(
-					[() => new ObjectMap(), () => new ObservableMap(new ObjectMap())],
+					[o => fillMap(new ObjectMap(), o), o => fillMap(new ObservableMap(new ObjectMap()), o)],
 					[
-						() => new Map(), () => new ObservableMap(new Map()),
-						() => new ObjectMap(), () => new ObservableMap(new ObjectMap()),
+						o => fillMap(new Map(), o), o => fillMap(new ObservableMap(new Map()), o),
+						o => fillMap(new ObjectMap(), o), o => fillMap(new ObservableMap(new ObjectMap()), o),
+						o => fillObject({}, o),
 					],
 					[['0', null], ['1', func], ['3', {a: 1, b: 2}], ['5', {a: 2, c: 3}]],
 					[['0', object], ['6', func], ['3', {a: 4, c: 5}], ['5', {a: 6, b: 7}]],
@@ -679,15 +680,15 @@ describe('common > extensions > merge > ObjectMerger', function() {
 			const testMergeSets = (targetFactories, sourceFactories, base, older, newer, result) => {
 				testMerger({
 					base: [
-						...targetFactories.map(o => fillSet(o(), base)),
+						...targetFactories.map(o => o(base)),
 					],
 					older: [
-						...sourceFactories.map(o => fillSet(o(), older)),
+						...sourceFactories.map(o => o(older)),
 						older,
 						toIterable(older),
 					],
 					newer: [
-						...sourceFactories.map(o => fillSet(o(), newer)),
+						...sourceFactories.map(o => o(newer)),
 						newer,
 						toIterable(newer),
 					],
@@ -712,8 +713,8 @@ describe('common > extensions > merge > ObjectMerger', function() {
 
 			it('Set', function() {
 				testMergeSets(
-					[() => new Set(), () => new ObservableSet(new Set())],
-					[() => new Set(), () => new ObservableSet(new Set())],
+					[o => fillSet(new Set(), o), o => fillSet(new ObservableSet(new Set()), o)],
+					[o => fillSet(new Set(), o), o => fillSet(new ObservableSet(new Set()), o)],
 					[0, func, void 0],
 					[0, func, object],
 					[0, 1, void 0, object],
@@ -724,13 +725,13 @@ describe('common > extensions > merge > ObjectMerger', function() {
 			it('ArraySet', function() {
 				testMergeSets(
 					[
-						() => new ArraySet(), () => new ObservableSet(new ArraySet()),
-						// () => new ObjectHashSet(), () => new ObservableSet(new ObjectHashSet()),
+						o => fillSet(new ArraySet(), o), o => fillSet(new ObservableSet(new ArraySet()), o),
+						// o => fillSet(new ObjectHashSet(), o), o => fillSet(new ObservableSet(new ObjectHashSet()), o),
 					],
 					[
-						() => new Set(), () => new ObservableSet(new Set()),
-						() => new ArraySet(), () => new ObservableSet(new ArraySet()),
-						// () => new ObjectHashSet(), () => new ObservableSet(new ObjectHashSet()),
+						o => fillSet(new Set(), o), o => fillSet(new ObservableSet(new Set()), o),
+						o => fillSet(new ArraySet(), o), o => fillSet(new ObservableSet(new ArraySet()), o),
+						// o => fillSet(new ObjectHashSet(), o), o => fillSet(new ObservableSet(new ObjectHashSet()), o),
 					],
 					[func2, func, func4],
 					[func2, func, object],
@@ -742,13 +743,14 @@ describe('common > extensions > merge > ObjectMerger', function() {
 			it('ObjectSet', function() {
 				testMergeSets(
 					[
-						() => new ObjectSet(), () => new ObservableSet(new ObjectSet()),
-						() => new SortedList({autoSort: true, notAddIfExists: true}),
+						o => fillSet(new ObjectSet(), o), o => fillSet(new ObservableSet(new ObjectSet()), o),
+						o => fillSet(new SortedList({autoSort: true, notAddIfExists: true}) as any, o),
 					],
 					[
-						() => new Set(), () => new ObservableSet(new Set()),
-						() => new ObjectSet(), () => new ObservableSet(new ObjectSet()),
-						() => new SortedList({autoSort: true, notAddIfExists: true}),
+						o => fillSet(new Set(), o), o => fillSet(new ObservableSet(new Set()), o),
+						o => fillSet(new ObjectSet(), o), o => fillSet(new ObservableSet(new ObjectSet()), o),
+						o => fillSet(new SortedList({autoSort: true, notAddIfExists: true}) as any, o),
+						o => fillObjectKeys({}, o),
 					],
 					['0', '2', '3'],
 					['0', '2', '4'],
