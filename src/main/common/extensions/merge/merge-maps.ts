@@ -1,6 +1,5 @@
 /* tslint:disable:no-identical-functions */
 import {IMergeOptions, IMergeValue} from './contracts'
-import {MergeSetWrapper} from "./merge-sets";
 
 // tslint:disable-next-line:no-empty no-shadowed-variable
 const NONE: any = function NONE() {}
@@ -339,22 +338,23 @@ export class MergeMapWrapper<K, V> implements IMergeMapWrapper<K, V> {
 }
 
 export function createMergeMapWrapper<K, V>(
+	target: object | V[] | Map<K, V>,
 	source: object | V[] | Map<K, V>,
 	arrayOrIterableToMap: (array) => object | Map<K, V>,
 ) {
-	if (source.constructor === Object || Array.isArray(source)) {
-		return new MergeObjectWrapper(source)
-	}
-
 	if (source[Symbol.toStringTag] === 'Map') {
 		return new MergeMapWrapper(source as Map<K, V>)
 	}
 
-	if (arrayOrIterableToMap && (source[Symbol.iterator] || Array.isArray(source))) {
-		return createMergeMapWrapper(arrayOrIterableToMap(source), null)
+	if (arrayOrIterableToMap && (Array.isArray(source) || Symbol.iterator in source)) {
+		return createMergeMapWrapper(target, arrayOrIterableToMap(source), null)
 	}
 
-	throw new Error(`Unsupported type (${source.constructor.name}) to merge with Map`)
+	if (source.constructor === Object) {
+		return new MergeObjectWrapper(source)
+	}
+
+	throw new Error(`${target.constructor.name} cannot be merge with ${source.constructor.name}`)
 }
 
 // 10039 cycles
@@ -368,11 +368,11 @@ export function mergeMaps<TObject extends object>(
 	preferCloneNewer?: boolean,
 	options?: IMergeOptions,
 ): boolean {
-	const baseWrapper = createMergeMapWrapper(base, arrayOrIterableToMap)
-	const olderWrapper = older === base ? baseWrapper : createMergeMapWrapper(older, arrayOrIterableToMap)
+	const baseWrapper = createMergeMapWrapper(base, base, arrayOrIterableToMap)
+	const olderWrapper = older === base ? baseWrapper : createMergeMapWrapper(base, older, arrayOrIterableToMap)
 	const newerWrapper = newer === base
 		? baseWrapper
-		: (newer === older ? olderWrapper : createMergeMapWrapper(newer, arrayOrIterableToMap))
+		: (newer === older ? olderWrapper : createMergeMapWrapper(base, newer, arrayOrIterableToMap))
 
 	return mergeMapWrappers(
 		merge,

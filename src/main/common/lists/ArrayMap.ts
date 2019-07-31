@@ -9,7 +9,7 @@ import {
 } from '../extensions/serialization/contracts'
 import {registerSerializer} from '../extensions/serialization/serializers'
 import {getObjectUniqueId} from './helpers/object-unique-id'
-import {fillMap} from "./helpers/set";
+import {fillMap} from './helpers/set'
 
 export class ArrayMap<K, V> implements
 	Map<K, V>,
@@ -84,8 +84,10 @@ export class ArrayMap<K, V> implements
 
 	public get(key: K): V | undefined {
 		const id = getObjectUniqueId(key)
-		const entry = this._array[id]
-		return entry && entry[1]
+		if (!Object.prototype.hasOwnProperty.call(this._array, id)) {
+			return void 0
+		}
+		return this._array[id][1]
 	}
 
 	public has(key: K): boolean {
@@ -125,7 +127,7 @@ export class ArrayMap<K, V> implements
 
 		return source[Symbol.toStringTag] === 'Map'
 			|| Array.isArray(source)
-			|| !!source[Symbol.iterator]
+			|| Symbol.iterator in source
 	}
 
 	public merge(

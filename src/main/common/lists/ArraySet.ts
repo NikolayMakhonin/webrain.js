@@ -132,7 +132,7 @@ export class ArraySet<T extends Object> implements
 
 		return source[Symbol.toStringTag] === 'Set'
 			|| Array.isArray(source)
-			|| !!source[Symbol.iterator]
+			|| Symbol.iterator in source
 	}
 
 	public merge(

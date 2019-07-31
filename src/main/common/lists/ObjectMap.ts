@@ -106,7 +106,7 @@ export class ObjectMap<V> implements
 		return source.constructor === Object
 			|| source[Symbol.toStringTag] === 'Map'
 			|| Array.isArray(source)
-			|| !!source[Symbol.iterator]
+			|| Symbol.iterator in source
 	}
 
 	public merge(

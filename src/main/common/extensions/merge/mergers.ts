@@ -557,9 +557,11 @@ export class TypeMetaMergerCollection
 
 	private static makeTypeMetaMerger<TTarget extends IMergeable<TTarget, TSource>, TSource extends any>(
 		type: TMergeableClass<TTarget, TSource>,
-		valueFactory?: (source: TTarget|TSource) => TTarget,
+		meta?: ITypeMetaMerger<TTarget, TSource>,
 	): ITypeMetaMerger<TTarget, TSource> {
 		return {
+			valueFactory: () => new (type as new () => TTarget)(),
+			...meta,
 			merger: {
 				canMerge(target: TTarget, source: TTarget|TSource): boolean {
 					return target.canMerge
@@ -585,24 +587,24 @@ export class TypeMetaMergerCollection
 						options,
 					)
 				},
+				...(meta ? meta.merger : {}),
 			},
-			valueFactory: valueFactory || (() => new (type as new () => TTarget)()),
 		}
 	}
 
 	public putMergeableType<TTarget extends IMergeable<TTarget, TSource>, TSource extends any>(
 		type: TMergeableClass<TTarget, TSource>,
-		valueFactory?: (source: TTarget|TSource) => TTarget,
+		meta?: ITypeMetaMerger<TTarget, TSource>,
 	): ITypeMetaMerger<TTarget, TSource> {
-		return this.putType(type, TypeMetaMergerCollection.makeTypeMetaMerger(type, valueFactory))
+		return this.putType(type, TypeMetaMergerCollection.makeTypeMetaMerger(type, meta))
 	}
 }
 
 export function registerMergeable<TTarget extends IMergeable<TTarget, TSource>, TSource extends any>(
 	type: TMergeableClass<TTarget, TSource>,
-	valueFactory?: (source: TTarget|TSource) => TTarget,
+	meta?: ITypeMetaMerger<TTarget, TSource>,
 ) {
-	TypeMetaMergerCollection.default.putMergeableType(type, valueFactory)
+	TypeMetaMergerCollection.default.putMergeableType(type, meta)
 }
 
 export function registerMerger<TTarget extends any, TSource extends any>(
@@ -719,6 +721,7 @@ registerMerger<string, string>(String as any, {
 registerMergerPrimitive(Number)
 registerMergerPrimitive(Boolean)
 registerMergerPrimitive(Array)
+registerMergerPrimitive(Error)
 
 // endregion
 
@@ -782,7 +785,7 @@ registerMerger<Set<any>, Set<any>>(Set, {
 			return source.constructor === Object
 				|| source[Symbol.toStringTag] === 'Set'
 				|| Array.isArray(source)
-				|| !!source[Symbol.iterator]
+				|| Symbol.iterator in source
 		},
 		merge<T>(
 			merge: IMergeValue,
@@ -819,7 +822,7 @@ registerMerger<Map<any, any>, Map<any, any>>(Map, {
 			return source.constructor === Object
 				|| source[Symbol.toStringTag] === 'Map'
 				|| Array.isArray(source)
-				|| !!source[Symbol.iterator]
+				|| Symbol.iterator in source
 		},
 		merge<K, V>(
 			merge: IMergeValue,

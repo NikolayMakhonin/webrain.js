@@ -1161,7 +1161,7 @@ export class SortedList<T>
 			&& this._notAddIfExists
 			&& (source[Symbol.toStringTag] === 'Set'
 				|| Array.isArray(source)
-				|| !!source[Symbol.iterator])
+				|| Symbol.iterator in source)
 	}
 
 	public merge(
@@ -1218,6 +1218,13 @@ export class SortedList<T>
 	// endregion
 }
 
-registerMergeable(SortedList)
+registerMergeable(SortedList, {
+	valueFactory: <T>(source: SortedList<T>) => new SortedList<T>({
+		autoSort: source.autoSort,
+		notAddIfExists: source.notAddIfExists,
+		compare: source.compare,
+		minAllocatedSize: source.minAllocatedSize,
+	}),
+})
 
 registerSerializable(SortedList)

@@ -181,7 +181,7 @@ export class ObservableMap<K, V>
 		return source.constructor === Object
 			|| source[Symbol.toStringTag] === 'Map'
 			|| Array.isArray(source)
-			|| !!source[Symbol.iterator]
+			|| Symbol.iterator in source
 	}
 
 	public merge(
@@ -193,7 +193,7 @@ export class ObservableMap<K, V>
 		options?: IMergeOptions,
 	): boolean {
 		return mergeMaps(
-			arrayOrIterable => fillMap(new Map(), arrayOrIterable),
+			arrayOrIterable => fillMap(new (this._map.constructor as any)(), arrayOrIterable),
 			merge,
 			this,
 			older,

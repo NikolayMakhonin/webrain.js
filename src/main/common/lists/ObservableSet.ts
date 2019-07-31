@@ -157,7 +157,7 @@ export class ObservableSet<T> extends SetChangedObject<T> implements
 		return source.constructor === Object
 			|| source[Symbol.toStringTag] === 'Set'
 			|| Array.isArray(source)
-			|| !!source[Symbol.iterator]
+			|| Symbol.iterator in source
 	}
 
 	public merge(
@@ -169,7 +169,7 @@ export class ObservableSet<T> extends SetChangedObject<T> implements
 		options?: IMergeOptions,
 	): boolean {
 		return mergeSets(
-			arrayOrIterable => fillSet(new Set(), arrayOrIterable),
+			arrayOrIterable => fillSet(new (this._set.constructor as any)(), arrayOrIterable),
 			merge,
 			this,
 			older,

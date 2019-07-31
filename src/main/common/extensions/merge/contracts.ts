@@ -57,7 +57,7 @@ export interface IMerger {
 export interface ITypeMetaMerger<TTarget extends any, TSource extends any> extends ITypeMeta {
 	preferClone?: boolean|((target: TTarget) => boolean)
 	valueFactory?: (source: TTarget|TSource) => TTarget
-	merger: IValueMerger<TTarget, TSource>
+	merger?: IValueMerger<TTarget, TSource>
 }
 
 export interface ITypeMetaMergerCollection extends ITypeMetaCollection<ITypeMetaMerger<any, any>> {
@@ -67,7 +67,7 @@ export interface ITypeMetaMergerCollection extends ITypeMetaCollection<ITypeMeta
 	): ITypeMetaMerger<TTarget, TSource>
 	putMergeableType<TTarget extends IMergeable<TTarget, TSource>, TSource extends any>(
 		type: TMergeableClass<TTarget, TSource>,
-		valueFactory?: (source: TTarget|TSource) => TTarget,
+		meta?: ITypeMetaMerger<TTarget, TSource>,
 	): ITypeMetaMerger<TTarget, TSource>
 }
 

@@ -6,6 +6,7 @@ import {IMergeOptions, ITypeMetaMerger} from '../../../../../../../main/common/e
 import {ObjectMerger, TypeMetaMergerCollection} from '../../../../../../../main/common/extensions/merge/mergers'
 import {TClass} from '../../../../../../../main/common/extensions/TypeMeta'
 import {IOptionsVariant, IOptionsVariants, ITestCase, TestVariants} from '../../../helpers/TestVariants'
+import {fillMap} from "../../../../../../../main/common/lists/helpers/set";
 
 declare const assert
 // declare function fastCopy<T extends any>(o: T): T
@@ -18,6 +19,23 @@ function deepClone<T extends any>(o: T): T {
 	) {
 		return o
 	}
+
+	if (o[Symbol.toStringTag] === 'Map') {
+		const map = new (o.constructor)();
+		(o as unknown as Map<any, any>).forEach((value, key) => {
+			map.set(key, deepClone(value))
+		})
+		return map
+	}
+
+	if (o[Symbol.toStringTag] === 'Set') {
+		const set = new (o.constructor)();
+		(o as unknown as Set<any>).forEach(value => {
+			set.add(deepClone(value))
+		})
+		return set
+	}
+
 	return fastCopy(o)
 }
 
@@ -268,9 +286,21 @@ export class TestMerger extends TestVariants<
 					TypeMetaMergerCollectionMock.default.changeMetaFunc = meta => {
 						if (!(meta as any).isMocked) {
 							const preferClone = meta.preferClone
-							if (preferClone !== false && typeof preferClone !== 'function') {
+							if (preferClone !== false) {
 								(meta as any).isMocked = true
-								meta.preferClone = options.preferCloneMeta
+
+								if (typeof preferClone !== 'function') {
+									meta.preferClone = options.preferCloneMeta
+								} else {
+									meta.preferClone = target => {
+										const calcPreferClone = (preferClone as any)(target)
+										if (calcPreferClone === false) {
+											return calcPreferClone
+										}
+										return options.preferCloneMeta
+									}
+								}
+
 								return () => {
 									meta.preferClone = preferClone
 									delete (meta as any).isMocked

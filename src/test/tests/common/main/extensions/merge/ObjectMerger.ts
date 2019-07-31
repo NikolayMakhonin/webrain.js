@@ -7,15 +7,22 @@ import deepClone from 'fast-copy'
 import { deepEqual as deepStrictEqual } from 'fast-equals'
 import {IMergeable, IMergeOptions, IMergeValue} from '../../../../../../main/common/extensions/merge/contracts'
 import {registerMergeable} from '../../../../../../main/common/extensions/merge/mergers'
+import {fillMap, fillSet} from '../../../../../../main/common/lists/helpers/set'
+import {ObservableMap} from '../../../../../../main/common/lists/ObservableMap'
+import {toIterable} from '../../lists/src/helpers/common'
 import {BASE, IMergerOptionsVariant, isRefer, NEWER, NONE, OLDER, TestMerger} from './src/TestMerger'
-import {fillMap} from "../../../../../../main/common/lists/helpers/set";
-import {ObservableMap} from "../../../../../../main/common/lists/ObservableMap";
-import {toIterable} from "../../lists/src/helpers/common";
+import {ArrayMap} from "../../../../../../main/common/lists/ArrayMap";
+import {ObjectMap} from "../../../../../../main/common/lists/ObjectMap";
+import {ObjectHashMap} from "../../../../../../main/common/lists/ObjectHashMap";
+import {ObservableSet} from "../../../../../../main/common/lists/ObservableSet";
+import {ArraySet} from "../../../../../../main/common/lists/ArraySet";
+import {ObjectSet} from "../../../../../../main/common/lists/ObjectSet";
+import {SortedList} from "../../../../../../main/common/lists/SortedList";
 
 declare const assert
 declare const after
 declare function deepStrictEqual(a, b): boolean
-declare function deepClone<T extends any>(o: T): T
+// declare function deepClone<T extends any>(o: T): T
 
 describe('common > extensions > merge > ObjectMerger', function() {
 	this.timeout(60000)
@@ -340,7 +347,7 @@ describe('common > extensions > merge > ObjectMerger', function() {
 			})
 		})
 
-		it('full', function() {
+		xit('full', function() {
 			const createValues = () => [
 				BASE, OLDER, NEWER,
 				null, void 0, 0, 1, false, true, '', '1',
@@ -556,44 +563,189 @@ describe('common > extensions > merge > ObjectMerger', function() {
 		})
 	})
 
-	it('merge maps', function() {
-		const base: any = [[0, null], [null, {}], [() => {}, () => {}], [void 0, { a: 1, b: 2 }], [{}, {a: 2, c: 3}]]
-		const older: any = [[0, {}], [null, () => {}], [() => {}, null], [void 0, { a: 4, b: 5 }], [{}, {a: 6, c: 7}]]
-		const newer: any = [[0, () => {}], [null, null], [() => {}, {}], [void 0, { a: 8, b: 9 }], [{}, {a: 10, c: 11}]]
+	describe('merge maps', function() {
+		const func = () => {}
+		const func2 = () => {}
+		const func3 = () => {}
+		const func4 = () => {}
+		const object = new Error('test error')
+		assert.strictEqual(deepClone(func), func)
+		assert.strictEqual(deepClone(object), object)
+		const iterable = toIterable([1, 2, 3])
+		assert.ok(iterable[Symbol.iterator])
+		assert.deepStrictEqual(Array.from(iterable), [1, 2, 3])
+		assert.deepStrictEqual(Array.from(iterable), [1, 2, 3])
 
-		testMerger({
-			base: [
-				fillMap(new Map(), base),
-				fillMap(new ObservableMap(new Map()), base),
-			],
-			older: [
-				fillMap(new Map(), older),
-				fillMap(new ObservableMap(new Map()), older),
-				older,
-				toIterable(older),
-			],
-			newer: [
-				fillMap(new Map(), newer),
-				fillMap(new ObservableMap(new Map()), newer),
-				newer,
-				toIterable(newer),
-			],
-			preferCloneOlderParam: [null],
-			preferCloneNewerParam: [null],
-			preferCloneMeta: [null],
-			options: [null, {}],
-			valueType: [null],
-			valueFactory: [null],
-			setFunc: [false, true],
-			expected: {
-				error: null,
-				returnValue: true,
-				setValue: NONE,
-				base: BASE,
-				older: OLDER,
-				newer: NEWER,
-			},
-			actions: null,
+		const testMergeMaps = (targetFactories, sourceFactories, base, older, newer, result) => {
+			testMerger({
+				base: [
+					...targetFactories.map(o => fillMap(o(), base)),
+				],
+				older: [
+					...sourceFactories.map(o => fillMap(o(), older)),
+					older,
+					toIterable(older),
+				],
+				newer: [
+					...sourceFactories.map(o => fillMap(o(), newer)),
+					newer,
+					toIterable(newer),
+				],
+				preferCloneOlderParam: [null],
+				preferCloneNewerParam: [null],
+				preferCloneMeta: [true],
+				options: [null, {}],
+				valueType: [null],
+				valueFactory: [null],
+				setFunc: [true],
+				expected: {
+					error: null,
+					returnValue: true,
+					setValue: fillMap(new Map(), result),
+					base: BASE,
+					older: OLDER,
+					newer: NEWER,
+				},
+				actions: null,
+			})
+		}
+
+		it('Map', function() {
+			testMergeMaps(
+				[() => new Map(), () => new ObservableMap(new Map())],
+				[() => new Map(), () => new ObservableMap(new Map())],
+				[[0, null], [func, func], [void 0, {a: 1, b: 2}], [object, {a: 2, c: 3}]],
+				[[0, object], [null, func], [void 0, {a: 4, c: 5}], [object, {a: 6, b: 7}]],
+				[[0, null], [null, null], [func, func], [void 0, {a: 1, b: 2}], [object, {a: 10, c: 11}]],
+				[[0, object], [void 0, {a: 4, c: 5}], [object, {a: 10, b: 7, c: 11}], [null, null]],
+			)
+		})
+
+		it('ArrayMap', function() {
+			testMergeMaps(
+				[
+					() => new ArrayMap(), () => new ObservableMap(new ArrayMap()),
+					() => new ObjectHashMap(), () => new ObservableMap(new ObjectHashMap()),
+				],
+				[
+					() => new Map(), () => new ObservableMap(new Map()),
+					() => new ArrayMap(), () => new ObservableMap(new ArrayMap()),
+					() => new ObjectHashMap(), () => new ObservableMap(new ObjectHashMap()),
+				],
+				[[func2, null], [func, func], [func4, {a: 1, b: 2}], [object, {a: 2, c: 3}]],
+				[[func2, object], [func3, func], [func4, {a: 4, c: 5}], [object, {a: 6, b: 7}]],
+				[[func2, null], [func3, null], [func, func], [func4, {a: 1, b: 2}], [object, {a: 10, c: 11}]],
+				[[func2, object], [func4, {a: 4, c: 5}], [object, {a: 10, b: 7, c: 11}], [func3, null]],
+			)
+		})
+
+		it('ObjectMap', function() {
+			testMergeMaps(
+				[() => new ObjectMap(), () => new ObservableMap(new ObjectMap())],
+				[
+					() => new Map(), () => new ObservableMap(new Map()),
+					() => new ObjectMap(), () => new ObservableMap(new ObjectMap()),
+				],
+				[['0', null], ['1', func], ['3', {a: 1, b: 2}], ['5', {a: 2, c: 3}]],
+				[['0', object], ['6', func], ['3', {a: 4, c: 5}], ['5', {a: 6, b: 7}]],
+				[['0', null], ['6', null], ['1', func], ['3', {a: 1, b: 2}], ['5', {a: 10, c: 11}]],
+				[['0', object], ['3', {a: 4, c: 5}], ['5', {a: 10, c: 11, b: 7}], ['6', null]],
+			)
+		})
+	})
+
+	describe('merge sets', function() {
+		const func = () => {}
+		const func2 = () => {}
+		const func3 = () => {}
+		const func4 = () => {}
+		const object = new Error('test error')
+		assert.strictEqual(deepClone(func), func)
+		assert.strictEqual(deepClone(object), object)
+		const iterable = toIterable([1, 2, 3])
+		assert.ok(iterable[Symbol.iterator])
+		assert.deepStrictEqual(Array.from(iterable), [1, 2, 3])
+		assert.deepStrictEqual(Array.from(iterable), [1, 2, 3])
+
+		const testMergeSets = (targetFactories, sourceFactories, base, older, newer, result) => {
+			testMerger({
+				base: [
+					...targetFactories.map(o => fillSet(o(), base)),
+				],
+				older: [
+					...sourceFactories.map(o => fillSet(o(), older)),
+					older,
+					toIterable(older),
+				],
+				newer: [
+					...sourceFactories.map(o => fillSet(o(), newer)),
+					newer,
+					toIterable(newer),
+				],
+				preferCloneOlderParam: [null],
+				preferCloneNewerParam: [null],
+				preferCloneMeta: [true],
+				options: [null, {}],
+				valueType: [null],
+				valueFactory: [null],
+				setFunc: [true],
+				expected: {
+					error: null,
+					returnValue: true,
+					setValue: fillSet(new Set(), result),
+					base: BASE,
+					older: OLDER,
+					newer: NEWER,
+				},
+				actions: null,
+			})
+		}
+
+		it('Set', function() {
+			testMergeSets(
+				[() => new Set(), () => new ObservableSet(new Set())],
+				[() => new Set(), () => new ObservableSet(new Set())],
+				[0, func, void 0],
+				[0, func, object],
+				[0, 1, void 0, object],
+				[0, 1, object],
+			)
+		})
+
+		it('ArraySet', function() {
+			testMergeSets(
+				[
+					() => new ArraySet(), () => new ObservableSet(new ArraySet()),
+					// () => new ObjectHashSet(), () => new ObservableSet(new ObjectHashSet()),
+				],
+				[
+					() => new Set(), () => new ObservableSet(new Set()),
+					() => new ArraySet(), () => new ObservableSet(new ArraySet()),
+					// () => new ObjectHashSet(), () => new ObservableSet(new ObjectHashSet()),
+				],
+				[func2, func, func4],
+				[func2, func, object],
+				[func2, func3, func4, object],
+				[func2, func3, object],
+			)
+		})
+
+		it('ObjectSet', function() {
+			testMergeSets(
+				[
+					() => new ObjectSet(), () => new ObservableSet(new ObjectSet()),
+					() => new SortedList({autoSort: true, notAddIfExists: true}),
+				],
+				[
+					() => new Set(), () => new ObservableSet(new Set()),
+					() => new ObjectSet(), () => new ObservableSet(new ObjectSet()),
+					() => new SortedList({autoSort: true, notAddIfExists: true}),
+				],
+				['0', '2', '3'],
+				['0', '2', '4'],
+				['0', '1', '3', '4'],
+				['0', '1', '4'],
+			)
 		})
 	})
 })

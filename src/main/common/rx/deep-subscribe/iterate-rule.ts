@@ -89,7 +89,7 @@ export function subscribeNextRule(
 
 	const ruleOrIterable = iteration.value
 
-	if (ruleOrIterable[Symbol.iterator]) {
+	if (Symbol.iterator in ruleOrIterable) {
 		let unsubscribers: IUnsubscribe[]
 
 		// for (let step, innerIterator = ruleOrIterable[Symbol.iterator](); !(step = innerIterator.next()).done;) {

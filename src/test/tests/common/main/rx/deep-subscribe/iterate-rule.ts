@@ -23,7 +23,7 @@ describe('common > main > rx > deep-subscribe > iterate-rule', function() {
 	}
 
 	function *resolveRules(ruleOrIterable: IRuleOrIterable): Iterable<IRule> {
-		if (!ruleOrIterable[Symbol.iterator]) {
+		if (!(Symbol.iterator in ruleOrIterable)) {
 			yield ruleOrIterable as IRule
 			return
 		}

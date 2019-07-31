@@ -87,7 +87,7 @@ function subscribeIterable<TItem>(
 	subscribeItem: (item: TItem, debugPropertyName: string) => void,
 	unsubscribeItem: (item: TItem, debugPropertyName: string) => void,
 ): IUnsubscribe {
-	if (!object || !object[Symbol.iterator]) {
+	if (!object || !(Symbol.iterator in object)) {
 		return null
 	}
 

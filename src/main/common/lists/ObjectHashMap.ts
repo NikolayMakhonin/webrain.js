@@ -129,7 +129,7 @@ export class ObjectHashMap<K, V> implements
 
 		return source[Symbol.toStringTag] === 'Map'
 			|| Array.isArray(source)
-			|| !!source[Symbol.iterator]
+			|| Symbol.iterator in source
 	}
 
 	public merge(

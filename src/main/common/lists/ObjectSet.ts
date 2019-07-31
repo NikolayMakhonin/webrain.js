@@ -107,7 +107,7 @@ export class ObjectSet implements
 		return source.constructor === Object
 			|| source[Symbol.toStringTag] === 'Set'
 			|| Array.isArray(source)
-			|| !!source[Symbol.iterator]
+			|| Symbol.iterator in source
 	}
 
 	public merge(

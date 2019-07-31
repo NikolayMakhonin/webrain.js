@@ -3,7 +3,6 @@ import {IMergeMapWrapper, mergeMapWrappers, MergeObjectWrapper} from './merge-ma
 
 export class MergeSetWrapper<V> implements IMergeMapWrapper<V, V> {
 	private readonly _set: Set<V>
-	private readonly _getKey: Set<V>
 
 	constructor(set: Set<V>) {
 		this._set = set
@@ -33,22 +32,23 @@ export class MergeSetWrapper<V> implements IMergeMapWrapper<V, V> {
 }
 
 export function createMergeSetWrapper<V>(
+	target: object | Set<V> | V[] | Iterable<V>,
 	source: object | Set<V> | V[] | Iterable<V>,
 	arrayOrIterableToSet: (array) => object | Set<V>,
 ) {
-	if (source.constructor === Object) {
-		return new MergeObjectWrapper(source, true)
-	}
-
 	if (source[Symbol.toStringTag] === 'Set') {
 		return new MergeSetWrapper(source as Set<V>)
 	}
 
-	if (arrayOrIterableToSet && (source[Symbol.iterator] || Array.isArray(source))) {
-		return createMergeSetWrapper(arrayOrIterableToSet(source), null)
+	if (arrayOrIterableToSet && (Array.isArray(source) || Symbol.iterator in source)) {
+		return createMergeSetWrapper(target, arrayOrIterableToSet(source), null)
 	}
 
-	throw new Error(`Unsupported type (${source.constructor.name}) to merge with Set`)
+	if (source.constructor === Object) {
+		return new MergeObjectWrapper(source, true)
+	}
+
+	throw new Error(`${target.constructor.name} cannot be merge with ${source.constructor.name}`)
 }
 
 export function mergeSets<TObject extends object>(
@@ -61,11 +61,11 @@ export function mergeSets<TObject extends object>(
 	preferCloneNewer?: boolean,
 	options?: IMergeOptions,
 ): boolean {
-	const baseWrapper = createMergeSetWrapper(base, arrayOrIterableToSet)
-	const olderWrapper = older === base ? baseWrapper : createMergeSetWrapper(older, arrayOrIterableToSet)
+	const baseWrapper = createMergeSetWrapper(base, base, arrayOrIterableToSet)
+	const olderWrapper = older === base ? baseWrapper : createMergeSetWrapper(base, older, arrayOrIterableToSet)
 	const newerWrapper = newer === base
 		? baseWrapper
-		: (newer === older ? olderWrapper : createMergeSetWrapper(newer, arrayOrIterableToSet))
+		: (newer === older ? olderWrapper : createMergeSetWrapper(base, newer, arrayOrIterableToSet))
 
 	return mergeMapWrappers(
 		merge,
