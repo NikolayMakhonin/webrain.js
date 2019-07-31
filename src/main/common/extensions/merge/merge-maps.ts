@@ -243,6 +243,8 @@ export function mergeMapWrappers<K, V>(
 		})
 	}
 
+	const deleteItems = []
+
 	// [b * *]
 	base.forEachKeys(key => {
 		changed = merge(
@@ -251,15 +253,22 @@ export function mergeMapWrappers<K, V>(
 			newer.has(key) ? newer.get(key) : NONE,
 			o => {
 				if ((o as any) === NONE) {
-					base.delete(key)
-					changed = true
+					deleteItems.push(key)
 				} else {
 					base.set(key, o)
 				}
 			}, preferCloneOlder, preferCloneNewer, options) || changed
 	})
 
-	const len = addItems.length
+	let len = deleteItems.length
+	if (len > 0) {
+		changed = true
+		for (let i = len - 1; i >= 0; i--) {
+			base.delete(deleteItems[i])
+		}
+	}
+
+	len = addItems.length
 	if (len > 0) {
 		changed = true
 		for (let i = 0; i < len; i++) {
@@ -340,7 +349,7 @@ export class MergeMapWrapper<K, V> implements IMergeMapWrapper<K, V> {
 export function createMergeMapWrapper<K, V>(
 	target: object | V[] | Map<K, V>,
 	source: object | V[] | Map<K, V>,
-	arrayOrIterableToMap: (array) => object | Map<K, V>,
+	arrayOrIterableToMap?: (array) => object | Map<K, V>,
 ) {
 	if (source[Symbol.toStringTag] === 'Map') {
 		return new MergeMapWrapper(source as Map<K, V>)
@@ -359,7 +368,7 @@ export function createMergeMapWrapper<K, V>(
 
 // 10039 cycles
 export function mergeMaps<TObject extends object>(
-	arrayOrIterableToMap: (array) => object | Map<any, any>,
+	createSourceMapWrapper: (target, source) => IMergeMapWrapper<any, any>,
 	merge: IMergeValue,
 	base: TObject,
 	older: TObject,
@@ -368,11 +377,11 @@ export function mergeMaps<TObject extends object>(
 	preferCloneNewer?: boolean,
 	options?: IMergeOptions,
 ): boolean {
-	const baseWrapper = createMergeMapWrapper(base, base, arrayOrIterableToMap)
-	const olderWrapper = older === base ? baseWrapper : createMergeMapWrapper(base, older, arrayOrIterableToMap)
+	const baseWrapper = createSourceMapWrapper(base, base)
+	const olderWrapper = older === base ? baseWrapper : createSourceMapWrapper(base, older)
 	const newerWrapper = newer === base
 		? baseWrapper
-		: (newer === older ? olderWrapper : createMergeMapWrapper(base, newer, arrayOrIterableToMap))
+		: (newer === older ? olderWrapper : createSourceMapWrapper(base, newer))
 
 	return mergeMapWrappers(
 		merge,

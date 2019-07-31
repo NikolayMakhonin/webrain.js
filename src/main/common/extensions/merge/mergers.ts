@@ -6,8 +6,8 @@ import {
 	IMergerVisitor, IMergeValue, IObjectMerger,
 	ITypeMetaMerger, ITypeMetaMergerCollection, IValueMerge, IValueMerger,
 } from './contracts'
-import {mergeMaps} from './merge-maps'
-import {mergeSets} from './merge-sets'
+import {createMergeMapWrapper, mergeMaps} from './merge-maps'
+import {createMergeSetWrapper} from './merge-sets'
 
 // region MergerVisitor
 
@@ -743,7 +743,7 @@ registerMerger<object, object>(Object, {
 			options?: IMergeOptions,
 		): boolean {
 			return mergeMaps(
-				null,
+				createMergeMapWrapper,
 				merge,
 				base,
 				older,
@@ -797,8 +797,11 @@ registerMerger<Set<any>, Set<any>>(Set, {
 			preferCloneNewer?: boolean,
 			options?: IMergeOptions,
 		): boolean {
-			return mergeSets(
-				arrayOrIterable => fillSet(new Set(), arrayOrIterable),
+			return mergeMaps(
+				(target, source) => createMergeSetWrapper(
+					target,
+					source,
+					arrayOrIterable => fillSet(new Set(), arrayOrIterable)),
 				merge,
 				base,
 				older,
@@ -835,7 +838,10 @@ registerMerger<Map<any, any>, Map<any, any>>(Map, {
 			options?: IMergeOptions,
 		): boolean {
 			return mergeMaps(
-				arrayOrIterable => fillMap(new Map(), arrayOrIterable),
+				(target, source) => createMergeMapWrapper(
+					target,
+					source,
+					arrayOrIterable => fillMap(new Map(), arrayOrIterable)),
 				merge,
 				base,
 				older,

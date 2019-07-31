@@ -1,5 +1,6 @@
 import {IMergeable, IMergeOptions, IMergeValue} from '../extensions/merge/contracts'
-import {mergeSets} from '../extensions/merge/merge-sets'
+import {mergeMaps} from '../extensions/merge/merge-maps'
+import {createMergeSetWrapper} from '../extensions/merge/merge-sets'
 import {registerMergeable} from '../extensions/merge/mergers'
 import {
 	IDeSerializeValue,
@@ -8,10 +9,9 @@ import {
 	ISerializeValue,
 } from '../extensions/serialization/contracts'
 import {registerSerializer} from '../extensions/serialization/serializers'
-import {ArraySet} from './ArraySet'
 import {SetChangedObject} from './base/SetChangedObject'
 import {IObservableSet, SetChangedType} from './contracts/ISetChanged'
-import {fillSet} from "./helpers/set";
+import {fillSet} from './helpers/set'
 
 export class ObservableSet<T> extends SetChangedObject<T> implements
 	IObservableSet<T>,
@@ -168,8 +168,11 @@ export class ObservableSet<T> extends SetChangedObject<T> implements
 		preferCloneNewer?: boolean,
 		options?: IMergeOptions,
 	): boolean {
-		return mergeSets(
-			arrayOrIterable => fillSet(new (this._set.constructor as any)(), arrayOrIterable),
+		return mergeMaps(
+			(target, source) => createMergeSetWrapper(
+				target,
+				source,
+				arrayOrIterable => fillSet(new (this._set.constructor as any)(), arrayOrIterable)),
 			merge,
 			this,
 			older,

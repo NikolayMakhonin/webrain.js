@@ -5,8 +5,8 @@ import fastCopy from 'fast-copy'
 import {IMergeOptions, ITypeMetaMerger} from '../../../../../../../main/common/extensions/merge/contracts'
 import {ObjectMerger, TypeMetaMergerCollection} from '../../../../../../../main/common/extensions/merge/mergers'
 import {TClass} from '../../../../../../../main/common/extensions/TypeMeta'
+import {SortedList} from '../../../../../../../main/common/lists/SortedList';
 import {IOptionsVariant, IOptionsVariants, ITestCase, TestVariants} from '../../../helpers/TestVariants'
-import {fillMap} from "../../../../../../../main/common/lists/helpers/set";
 
 declare const assert
 // declare function fastCopy<T extends any>(o: T): T
@@ -36,7 +36,38 @@ function deepClone<T extends any>(o: T): T {
 		return set
 	}
 
+	if (o.constructor === SortedList) {
+		const list = new SortedList({
+			autoSort: o.autoSort,
+			notAddIfExists: o.notAddIfExists,
+			compare: o.compare,
+		})
+		for (const item of (o as unknown as SortedList<any>)) {
+			list.add(deepClone(item))
+		}
+		return list as any
+	}
+
 	return fastCopy(o)
+}
+
+function deepStrictEqualsExt(o1, o2) {
+	if (o1 && o1.constructor === SortedList) {
+		if (o1.constructor === o2.constructor) {
+			assert.deepStrictEqual((o1 as SortedList<any>).autoSort, o2.autoSort)
+			assert.deepStrictEqual((o1 as SortedList<any>).notAddIfExists, o2.notAddIfExists)
+			assert.deepStrictEqual((o1 as SortedList<any>).compare, o2.compare)
+		}
+		let count = 0
+		for (const item of o2) {
+			assert.ok(o1.contains(item))
+			count++
+		}
+		assert.strictEqual(o1.size, count)
+		return
+	}
+
+	assert.deepStrictEqual(o1, o2)
 }
 
 // export enum EqualsType {
@@ -363,7 +394,7 @@ export class TestMerger extends TestVariants<
 								assert.notStrictEqual(actual, options.older)
 								assert.notStrictEqual(actual, options.newer)
 							}
-							assert.deepStrictEqual(actual, expected)
+							deepStrictEqualsExt(actual, expected)
 						}
 					}
 
@@ -377,9 +408,9 @@ export class TestMerger extends TestVariants<
 					assert.strictEqual(setCount,
 						options.expected.setValue !== NONE ? 1 : 0)
 
-					assert.deepStrictEqual(options.base, initialBase)
-					assert.deepStrictEqual(options.older, initialOlder)
-					assert.deepStrictEqual(options.newer, initialNewer)
+					deepStrictEqualsExt(options.base, initialBase)
+					deepStrictEqualsExt(options.older, initialOlder)
+					deepStrictEqualsExt(options.newer, initialNewer)
 
 					// assertValue(options.base, options.expected.base, isRefer(initialOptions.expected.base))
 					// assertValue(options.older, options.expected.older, isRefer(initialOptions.expected.older))

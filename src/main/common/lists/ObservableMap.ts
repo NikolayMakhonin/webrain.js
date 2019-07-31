@@ -1,5 +1,5 @@
 import {IMergeable, IMergeOptions, IMergeValue} from '../extensions/merge/contracts'
-import {mergeMaps} from '../extensions/merge/merge-maps'
+import {createMergeMapWrapper, mergeMaps} from '../extensions/merge/merge-maps'
 import {registerMergeable} from '../extensions/merge/mergers'
 import {
 	IDeSerializeValue,
@@ -193,7 +193,10 @@ export class ObservableMap<K, V>
 		options?: IMergeOptions,
 	): boolean {
 		return mergeMaps(
-			arrayOrIterable => fillMap(new (this._map.constructor as any)(), arrayOrIterable),
+			(target, source) => createMergeMapWrapper(
+				target,
+				source,
+				arrayOrIterable => fillMap(new (this._map.constructor as any)(), arrayOrIterable)),
 			merge,
 			this,
 			older,

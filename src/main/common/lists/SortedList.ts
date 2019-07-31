@@ -1,3 +1,7 @@
+import {IMergeable, IMergeOptions, IMergeValue} from '../extensions/merge/contracts'
+import {IMergeMapWrapper, mergeMaps} from '../extensions/merge/merge-maps'
+import {createMergeSetWrapper} from '../extensions/merge/merge-sets'
+import {registerMergeable} from '../extensions/merge/mergers'
 import {
 	IDeSerializeValue,
 	ISerializable,
@@ -11,10 +15,7 @@ import {ICompare} from './contracts/ICompare'
 import {IListChangedObject, ListChangedType} from './contracts/IListChanged'
 import {binarySearch, move} from './helpers/array'
 import {compareFast} from './helpers/compare'
-import {IMergeable, IMergeOptions, IMergeValue} from "../extensions/merge/contracts";
-import {mergeSets} from "../extensions/merge/merge-sets";
-import {fillCollection, fillSet} from "./helpers/set";
-import {registerMergeable} from "../extensions/merge/mergers";
+import {fillCollection} from './helpers/set'
 
 function calcOptimalArraySize(desiredSize: number) {
 	let optimalSize = 4
@@ -1172,12 +1173,15 @@ export class SortedList<T>
 		preferCloneNewer?: boolean,
 		options?: IMergeOptions,
 	): boolean {
-		return mergeSets(
-			arrayOrIterable => fillCollection(new SortedList<T>({
-				autoSort: true,
-				notAddIfExists: true,
-				compare: this.compare,
-			}), arrayOrIterable, (c, o: T) => c.add(o)),
+		return mergeMaps(
+			(target, source) => createMergeSortedListWrapper(
+				target,
+				source,
+				arrayOrIterable => fillCollection(new SortedList<T>({
+					autoSort: true,
+					notAddIfExists: true,
+					compare: this.compare,
+				}), arrayOrIterable, (c, o: T) => c.add(o))),
 			merge,
 			this,
 			older,
@@ -1217,6 +1221,63 @@ export class SortedList<T>
 
 	// endregion
 }
+
+// region Merge helpers
+
+export class MergeSortedListWrapper<V> implements IMergeMapWrapper<V, V> {
+	private readonly _list: SortedList<V>
+
+	constructor(list: SortedList<V>) {
+		if (!list.autoSort || !list.notAddIfExists) {
+			throw new Error('Cannot create IMergeMapWrapper with ' +
+				`SortedList(autoSort = ${list.autoSort} (must be true), ` +
+				`notAddIfExists = ${list.notAddIfExists} (must be true))`)
+		}
+		this._list = list
+	}
+
+	public delete(key: V): void {
+		this._list.remove(key)
+	}
+
+	public forEachKeys(callbackfn: (key: V) => void): void {
+		for (const key of this._list) {
+			callbackfn(key)
+		}
+	}
+
+	public get(key: V): V {
+		return key
+	}
+
+	public has(key: V): boolean {
+		return this._list.contains(key)
+	}
+
+	public set(key: V, value: V): void {
+		this._list.add(value)
+	}
+}
+
+export function createMergeSortedListWrapper<V>(
+	target: object | Set<V> | SortedList<V> | V[] | Iterable<V>,
+	source: object | Set<V> | SortedList<V> | V[] | Iterable<V>,
+	arrayOrIterableToSortedList: (array) => object | SortedList<V>,
+) {
+	if (source.constructor === SortedList) {
+		return new MergeSortedListWrapper(source as SortedList<V>)
+	}
+
+	if (arrayOrIterableToSortedList && (Array.isArray(source) || Symbol.iterator in source)) {
+		return createMergeSortedListWrapper(target, arrayOrIterableToSortedList(source), null)
+	}
+
+	createMergeSetWrapper(target, source)
+
+	throw new Error(`${target.constructor.name} cannot be merge with ${source.constructor.name}`)
+}
+
+// endregion
 
 registerMergeable(SortedList, {
 	valueFactory: <T>(source: SortedList<T>) => new SortedList<T>({

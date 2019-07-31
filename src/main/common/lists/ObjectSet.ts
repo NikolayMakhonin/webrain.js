@@ -1,5 +1,6 @@
 import {IMergeable, IMergeOptions, IMergeValue} from '../extensions/merge/contracts'
-import {mergeSets} from '../extensions/merge/merge-sets'
+import {mergeMaps} from '../extensions/merge/merge-maps'
+import {createMergeSetWrapper} from '../extensions/merge/merge-sets'
 import {registerMergeable} from '../extensions/merge/mergers'
 import {
 	IDeSerializeValue,
@@ -8,7 +9,7 @@ import {
 	ISerializeValue,
 } from '../extensions/serialization/contracts'
 import {registerSerializer} from '../extensions/serialization/serializers'
-import {fillObjectKeys, fillSet} from "./helpers/set";
+import {fillObjectKeys} from './helpers/set'
 
 export class ObjectSet implements
 	Set<string>,
@@ -118,8 +119,11 @@ export class ObjectSet implements
 		preferCloneNewer?: boolean,
 		options?: IMergeOptions,
 	): boolean {
-		return mergeSets(
-			array => ObjectSet.from(array),
+		return mergeMaps(
+			(target, source) => createMergeSetWrapper(
+				target,
+				source,
+				arrayOrIterable => ObjectSet.from(arrayOrIterable)),
 			merge,
 			this,
 			older,
