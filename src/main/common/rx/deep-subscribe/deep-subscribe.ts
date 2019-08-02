@@ -95,9 +95,7 @@ function deepSubscribeRuleIterator<TValue>(
 		)
 	}
 
-	try {
-		return subscribeNext()
-	} catch (ex) {
+	const catchHandler = (ex) => {
 		if (ex.propertiesPath) {
 			throw ex
 		}
@@ -109,6 +107,36 @@ function deepSubscribeRuleIterator<TValue>(
 		ex.message += `\nObject property path: ${propertiesPathStr}`
 
 		throw ex
+	}
+
+	try {
+		// Resolve Promises
+		if (object != null && typeof object.then === 'function') {
+			let unsubscribe
+			Promise
+				.resolve(object)
+				.then(o => {
+					if (!unsubscribe) {
+						unsubscribe = subscribeNext()
+						if (typeof unsubscribe !== 'function') {
+							throw new Error(`unsubscribe is not a function: ${unsubscribe}`)
+						}
+					}
+					return o
+				})
+				.catch(catchHandler)
+
+			return () => {
+				if (typeof unsubscribe === 'function') {
+					unsubscribe()
+				}
+				unsubscribe = true
+			}
+		}
+
+		return subscribeNext()
+	} catch (ex) {
+		catchHandler(ex)
 	}
 }
 
