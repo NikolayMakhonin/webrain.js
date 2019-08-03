@@ -3,8 +3,8 @@ import {IUnsubscribe} from '../subjects/subject'
 import {IRule} from './contracts/rules'
 import {IRuleOrIterable, iterateRule, subscribeNextRule} from './iterate-rule'
 import {RuleBuilder} from "./RuleBuilder";
-import {IRuleSubscribe} from "./contracts/rule-subscribe";
 import {PeekIterator} from "./helpers/PeekIterator";
+import {checkUnsubscribe} from "./helpers/common";
 
 // const UNSUBSCRIBE_PROPERTY_PREFIX = Math.random().toString(36)
 let nextUnsubscribePropertyId = 0
@@ -16,7 +16,7 @@ function deepSubscribeRuleIterator<TValue>(
 	ruleIterator: PeekIterator<IRuleOrIterable>,
 	propertiesPath?: () => string,
 ): IUnsubscribe {
-	const subscribeNext = () => {
+	const subscribeNext = (object) => {
 		let unsubscribePropertyName: string
 
 		return subscribeNextRule(
@@ -38,7 +38,7 @@ function deepSubscribeRuleIterator<TValue>(
 					)
 
 					if (!(item instanceof Object)) {
-						const unsubscribe = subscribe()
+						const unsubscribe = checkUnsubscribe(subscribe())
 						if (unsubscribe) {
 							unsubscribe()
 							throw new Error(`You should not return unsubscribe function for non Object value.\nFor subscribe value types use their object wrappers: Number, Boolean, String classes.\nUnsubscribe function: ${unsubscribe}\nValue: ${item}\nValue property path: ${newPropertiesPath()}`)
@@ -57,7 +57,7 @@ function deepSubscribeRuleIterator<TValue>(
 								configurable: true,
 								enumerable: false,
 								writable: true,
-								value: subscribe()
+								value: checkUnsubscribe(subscribe()),
 							})
 						// } else {
 						// 	item[unsubscribePropertyName] = subscribe()
@@ -82,12 +82,12 @@ function deepSubscribeRuleIterator<TValue>(
 					}
 				}
 
-				return rule.subscribe(
+				return checkUnsubscribe(rule.subscribe(
 					object,
 					immediate,
 					subscribeItem,
 					unsubscribeItem,
-				)
+				))
 			},
 			() => {
 				return subscribeValue(object)
@@ -117,10 +117,10 @@ function deepSubscribeRuleIterator<TValue>(
 				.resolve(object)
 				.then(o => {
 					if (!unsubscribe) {
-						unsubscribe = subscribeNext()
-						if (typeof unsubscribe !== 'function') {
-							throw new Error(`unsubscribe is not a function: ${unsubscribe}`)
-						}
+						unsubscribe = subscribeNext(o)
+						// if (typeof unsubscribe !== 'function') {
+						// 	throw new Error(`unsubscribe is not a function: ${unsubscribe}`)
+						// }
 					}
 					return o
 				})
@@ -134,7 +134,7 @@ function deepSubscribeRuleIterator<TValue>(
 			}
 		}
 
-		return subscribeNext()
+		return subscribeNext(object)
 	} catch (ex) {
 		catchHandler(ex)
 	}

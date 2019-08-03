@@ -1,4 +1,5 @@
 /* tslint:disable:no-construct use-primitive-type no-shadowed-variable no-duplicate-string no-empty max-line-length */
+import {delay} from 'q'
 import {createObject, Tester} from './helpers/Tester'
 
 declare const assert
@@ -276,6 +277,71 @@ describe('common > main > rx > deep-subscribe > deep-subscribe', function() {
 			.change(o => {}, [], [])
 	})
 
+	it('promises', async function() {
+		const object = createObject()
+		object.observableObject.value = new Number(1)
+
+		const tester = new Tester(
+			{
+				object: object.promiseSync as any,
+				immediate: true,
+				doNotSubscribeNonObjectValues: true,
+			},
+			b => b
+				.path((o: any) => o.promiseAsync.value),
+		)
+
+		await tester.subscribeAsync([new Number(1)])
+
+		await delay(20)
+
+		await tester.changeAsync(
+			o => object.observableObject.value = new Number(2) as any,
+			[new Number(1)],
+			[new Number(2)],
+		)
+
+		await delay(20)
+
+		await tester.unsubscribe([new Number(2)])
+
+		await delay(100)
+	})
+
+	it('promises throw', async function() {
+		const object = createObject()
+		object.observableObject.value = new Number(1)
+
+		const tester = new Tester(
+			{
+				object: object.promiseSync as any,
+				immediate: true,
+				doNotSubscribeNonObjectValues: true,
+				useIncorrectUnsubscribe: true,
+			},
+			b => b
+				.path((o: any) => o.promiseAsync.value),
+		)
+
+		await tester.subscribeAsync([new Number(1)])
+
+		await delay(20)
+
+		await tester.changeAsync(
+			o => object.observableObject.value = new Number(2) as any,
+			[],
+			[new Number(2)],
+			Error,
+			/should return null\/undefined or unsubscribe function/
+		)
+
+		await delay(20)
+
+		await tester.unsubscribe([])
+
+		await delay(100)
+	})
+
 	it('lists', function() {
 		const value = new Number(1)
 
@@ -405,6 +471,40 @@ describe('common > main > rx > deep-subscribe > deep-subscribe', function() {
 				[null], [null],
 				Error,
 				/unsubscribe function for non Object value/,
+			)
+	})
+
+	it('throws incorrect Unsubscribe', function() {
+		new Tester(
+			{
+				object: createObject().object,
+				immediate: true,
+				doNotSubscribeNonObjectValues: true,
+				useIncorrectUnsubscribe: true,
+			},
+			b => b
+				.path((o: any) => o.object),
+		)
+			.subscribe(
+				o => [o.object], [],
+				Error,
+				/should return null\/undefined or unsubscribe function/,
+			)
+
+		new Tester(
+			{
+				object: createObject().object,
+				immediate: true,
+				// doNotSubscribeNonObjectValues: true,
+				useIncorrectUnsubscribe: true,
+			},
+			b => b
+				.path((o: any) => o.object.value),
+		)
+			.subscribe(
+				[null], [],
+				Error,
+				/should return null\/undefined or unsubscribe function/,
 			)
 	})
 })
