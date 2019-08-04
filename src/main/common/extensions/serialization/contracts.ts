@@ -9,12 +9,16 @@ export interface ISerializedTyped {
 	data: ISerializedTypedValue
 }
 
+export interface ISerializedRef {
+	id: number
+}
+
 export interface ISerializedObject {
 	[key: string]: ISerializedValue,
 }
 
 export type ISerializedPrimitive = string | number | boolean | null | undefined
-export type ISerializedValue = ISerializedTyped | ISerializedPrimitive | ISerializedValueArray
+export type ISerializedValue = ISerializedTyped | ISerializedRef | ISerializedPrimitive | ISerializedValueArray
 export interface ISerializedValueArray extends Array<ISerializedValue> {
 
 }
@@ -26,7 +30,8 @@ export interface ISerializedValueArray extends Array<ISerializedValue> {
 export type ISerializedDataOrValue = ISerializedData | ISerializedValue
 export interface ISerializedData {
 	types?: string[]
-	data?: ISerializedValue
+	objects?: ISerializedTyped[]
+	data: ISerializedValue
 }
 
 // endregion
@@ -37,7 +42,7 @@ export type ISerializeValue = <TValue extends any>(value: TValue, valueType?: TC
 export type IDeSerializeValue = <TValue extends any>(
 	serializedValue: ISerializedValue,
 	valueType?: TClass<TValue>,
-	valueFactory?: () => TValue,
+	valueFactory?: (...args) => TValue,
 ) => TValue
 
 export interface ISerializerVisitor {
@@ -56,7 +61,7 @@ export interface IValueSerializer<TValue extends any> {
 	deSerialize(
 		deSerialize: IDeSerializeValue,
 		serializedValue: ISerializedTypedValue,
-		valueFactory?: () => TValue,
+		valueFactory: (...args) => TValue,
 	): TValue
 }
 
@@ -68,13 +73,13 @@ export interface IDeSerializer {
 	deSerialize<TValue extends any>(
 		serializedData: ISerializedDataOrValue,
 		valueType?: TClass<TValue>,
-		valueFactory?: () => TValue,
+		valueFactory?: (...args) => TValue,
 	): TValue
 }
 
 export interface ITypeMetaSerializer<TValue extends any> extends ITypeMetaWithId {
 	serializer: IValueSerializer<TValue>
-	valueFactory?: () => any
+	valueFactory?: (...args) => any
 }
 
 export interface ITypeMetaSerializerCollection extends TypeMetaCollectionWithId<ITypeMetaSerializer<any>> {

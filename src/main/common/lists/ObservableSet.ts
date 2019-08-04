@@ -8,7 +8,7 @@ import {
 	ISerializedObject,
 	ISerializeValue,
 } from '../extensions/serialization/contracts'
-import {registerSerializer} from '../extensions/serialization/serializers'
+import {registerSerializable, registerSerializer} from '../extensions/serialization/serializers'
 import {SetChangedObject} from './base/SetChangedObject'
 import {IObservableSet, SetChangedType} from './contracts/ISetChanged'
 import {fillSet} from './helpers/set'
@@ -205,15 +205,8 @@ export class ObservableSet<T> extends SetChangedObject<T> implements
 
 registerMergeable(ObservableSet)
 
-registerSerializer(ObservableSet, {
-	uuid: ObservableSet.uuid,
+registerSerializable(ObservableSet, {
 	serializer: {
-		serialize(
-			serialize: ISerializeValue,
-			value: ObservableSet<any>,
-		): ISerializedObject {
-			return value.serialize(serialize)
-		},
 		deSerialize<T>(
 			deSerialize: IDeSerializeValue,
 			serializedValue: ISerializedObject,

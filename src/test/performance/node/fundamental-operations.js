@@ -1127,7 +1127,7 @@ describe('fundamental-operations', function () {
 		console.log(result)
 	})
 
-	it('func params as object', function () {
+	xit('func params as object', function () {
 		this.timeout(300000)
 
 		const funcSimple = (
@@ -1183,6 +1183,46 @@ describe('fundamental-operations', function () {
 					param2: Math.random() < 0.5,
 					param3: Math.random() < 0.5
 				})
+			}
+		)
+
+		console.log(result)
+	})
+
+	it('new Array(size)', function () {
+		this.timeout(300000)
+
+		const size = 1000
+		const arrSimple = []
+		const arrConstructor = new Array(size)
+		const arrConstructorFilled = new Array(size)
+		for (let i = 0; i < size; i++) {
+			arrSimple[i] = undefined
+			arrConstructorFilled[i] = undefined
+		}
+
+
+		let i = (size / 2)|0
+
+		const result = calcPerformance(
+			120000,
+			() => {
+				// no operations
+			},
+			() => {
+				arrSimple[i] = i
+				i = (i + 7) % size
+				return arrSimple[i]
+			},
+			() => {
+				arrConstructorFilled[i] = i
+				i = (i + 7) % size
+				return arrConstructorFilled[i]
+			},
+			() => {
+				arrConstructor[i] = i
+				i = (i + 7) % size
+				return arrConstructor[i]
 			}
 		)
 

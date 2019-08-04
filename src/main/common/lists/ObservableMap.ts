@@ -7,7 +7,7 @@ import {
 	ISerializedObject,
 	ISerializeValue,
 } from '../extensions/serialization/contracts'
-import {registerSerializer} from '../extensions/serialization/serializers'
+import {registerSerializable, registerSerializer} from '../extensions/serialization/serializers'
 import {MapChangedObject} from './base/MapChangedObject'
 import {IObservableMap, MapChangedType} from './contracts/IMapChanged'
 import {fillMap} from './helpers/set'
@@ -229,15 +229,8 @@ export class ObservableMap<K, V>
 
 registerMergeable(ObservableMap)
 
-registerSerializer(ObservableMap, {
-	uuid: ObservableMap.uuid,
+registerSerializable(ObservableMap, {
 	serializer: {
-		serialize(
-			serialize: ISerializeValue,
-			value: ObservableMap<any, any>,
-		): ISerializedObject {
-			return value.serialize(serialize)
-		},
 		deSerialize<K, V>(
 			deSerialize: IDeSerializeValue,
 			serializedValue: ISerializedObject,

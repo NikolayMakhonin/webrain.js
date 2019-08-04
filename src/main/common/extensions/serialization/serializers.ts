@@ -1,9 +1,10 @@
+import {getObjectUniqueId} from '../../lists/helpers/object-unique-id'
 import {TClass, TypeMetaCollectionWithId} from '../TypeMeta'
 import {
 	IDeSerializerVisitor, IDeSerializeValue,
 	IObjectSerializer, ISerializable,
 	ISerializedData,
-	ISerializedDataOrValue, ISerializedObject,
+	ISerializedDataOrValue, ISerializedObject, ISerializedRef,
 	ISerializedTyped, ISerializedTypedValue,
 	ISerializedValue, ISerializedValueArray,
 	ISerializerVisitor, ISerializeValue,
@@ -15,6 +16,8 @@ import {
 export class SerializerVisitor implements ISerializerVisitor {
 	public types: string[]
 	public typesMap: { [uuid: string]: number }
+	public objects: ISerializedTyped[]
+	public objectsMap: Array<ISerializedTyped|ISerializedRef>
 	private _typeMeta: ITypeMetaSerializerCollection
 
 	constructor(typeMeta: ITypeMetaSerializerCollection) {
@@ -26,31 +29,56 @@ export class SerializerVisitor implements ISerializerVisitor {
 		// tslint:disable-next-line:prefer-const
 		let {types, typesMap} = this
 		if (!typesMap) {
-			this.typesMap = {}
+			this.typesMap = typesMap = {}
 			this.types = types = []
 		}
 
-		let typeIndex = types[uuid]
+		let typeIndex = typesMap[uuid]
 		if (typeIndex == null) {
 			typeIndex = types.length
 			types[typeIndex] = uuid
+			typesMap[uuid] = typeIndex
 		}
 
 		return typeIndex
 	}
 
-	public serialize<TValue>(value: TValue, valueType?: TClass<TValue>): ISerializedValue {
-		if (typeof value === 'undefined') {
-			return value
+	private addObject(
+		object: object,
+		serialize: (out: ISerializedTyped) => void,
+	): ISerializedTyped|ISerializedRef {
+		// tslint:disable-next-line:prefer-const
+		let {objects, objectsMap} = this
+		if (!objectsMap) {
+			this.objectsMap = objectsMap = []
+			this.objects = objects = []
 		}
 
-		if (value === null
-			|| typeof value === 'number'
-			|| typeof value === 'string'
-			|| typeof value === 'boolean') {
-			return value as any
+		const id = getObjectUniqueId(object)
+		let data = objectsMap[id]
+		if (data == null) {
+			data = {} as any
+			objectsMap[id] = data
+			serialize(data as ISerializedTyped)
+			return data
 		}
 
+		if (!(data as ISerializedRef).id) {
+			const index = objects.length
+			objects[index] = { ...(data as ISerializedTyped) }
+			delete (data as ISerializedTyped).type
+			delete (data as ISerializedTyped).data;
+			(data as ISerializedRef).id = id
+		}
+
+		return data
+	}
+
+	private serializeObject<TValue>(
+		out: ISerializedTyped,
+		value: TValue,
+		valueType?: TClass<TValue>,
+	): void {
 		const meta = this._typeMeta.getMeta(valueType || value.constructor as TClass<TValue>)
 		if (!meta) {
 			throw new Error(`Class (${value.constructor.name}) have no type meta`)
@@ -70,29 +98,58 @@ export class SerializerVisitor implements ISerializerVisitor {
 			throw new Error(`Class (${value.constructor.name}) serializer have no serialize method`)
 		}
 
-		const serializedTyped = {
-			type: this.addType(uuid),
-			data: serializer.serialize(this.serialize, value),
+		out.type = this.addType(uuid)
+		out.data = serializer.serialize(this.serialize, value)
+	}
+
+	public serialize<TValue extends any>(
+		value: TValue,
+		valueType?: TClass<TValue>,
+	): ISerializedValue {
+		if (typeof value === 'undefined') {
+			return value
 		}
 
-		return serializedTyped
+		if (value === null
+			|| typeof value === 'number'
+			|| typeof value === 'string'
+			|| typeof value === 'boolean') {
+			return value as any
+		}
+
+		return this.addObject(value as any, out => this.serializeObject(out, value, valueType))
 	}
 }
 
 export class DeSerializerVisitor implements IDeSerializerVisitor {
 	private readonly _types: string[]
+	private readonly _objects: ISerializedTyped[]
+	private readonly _instances: any[]
 	private readonly _typeMeta: ITypeMetaSerializerCollection
 
-	constructor(typeMeta: ITypeMetaSerializerCollection, types: string[]) {
+	constructor(
+		typeMeta: ITypeMetaSerializerCollection,
+		types: string[],
+		objects: ISerializedTyped[],
+	) {
 		this._typeMeta = typeMeta
 		this._types = types
+		this._objects = objects
+
+		const len = objects.length
+		const instances = new Array(len)
+		for (let i = 0; i < len; i++) {
+			instances[i] = null
+		}
+		this._instances = instances
+
 		this.deSerialize = this.deSerialize.bind(this)
 	}
 
 	public deSerialize<TValue extends any>(
 		serializedValue: ISerializedValue,
 		valueType?: TClass<TValue>,
-		valueFactory?: () => TValue,
+		valueFactory?: (...args) => TValue,
 	): TValue {
 		if (typeof serializedValue === 'undefined') {
 			return serializedValue
@@ -103,6 +160,15 @@ export class DeSerializerVisitor implements IDeSerializerVisitor {
 			|| typeof serializedValue === 'string'
 			|| typeof serializedValue === 'boolean') {
 			return serializedValue as unknown as TValue
+		}
+
+		const id = (serializedValue as ISerializedRef).id
+		if (id != null) {
+			const cachedInstance = this._instances[id]
+			if (cachedInstance) {
+				return cachedInstance
+			}
+			serializedValue = this._objects[id]
 		}
 
 		let type = valueType
@@ -138,11 +204,28 @@ export class DeSerializerVisitor implements IDeSerializerVisitor {
 			throw new Error(`Class (${type}) serializer have no deSerialize method`)
 		}
 
+		const factory = valueFactory || meta.valueFactory
+		if (id != null && !factory) {
+			throw new Error(`valueFactory not found for ${type}. Any object serializers should have valueFactory`)
+		}
+
+		let instance
+
 		const value = serializer.deSerialize(
 			this.deSerialize,
 			(serializedValue as ISerializedTyped).data,
-			valueFactory || meta.valueFactory,
+			id != null
+				? (...args) => {
+					instance = factory(...args)
+					this._instances[id] = instance
+					return instance
+				}
+				: factory,
 		)
+
+		if (id != null && instance !== value) {
+			throw new Error(`valueFactory instance !== return value in serializer for ${type}`)
+		}
 
 		return value
 	}
@@ -167,10 +250,12 @@ export class TypeMetaSerializerCollection
 
 	private static makeTypeMetaSerializer<TObject extends ISerializable>(
 		type: TSerializableClass<TObject>,
-		valueFactory?: () => TObject,
+		meta?: ITypeMetaSerializer<TObject>,
 	): ITypeMetaSerializer<TObject> {
 		return {
 			uuid: type.uuid,
+			valueFactory: () => new (type as new () => TObject)(),
+			...meta,
 			serializer: {
 				serialize(
 					serialize: ISerializeValue,
@@ -181,30 +266,30 @@ export class TypeMetaSerializerCollection
 				deSerialize(
 					deSerialize: IDeSerializeValue,
 					serializedValue: ISerializedTypedValue,
-					valueFactory2?: () => TObject,
+					valueFactory2?: (...args) => TObject,
 				): TObject {
 					const value = valueFactory2()
 					value.deSerialize(deSerialize, serializedValue)
 					return value
 				},
+				...(meta ? meta.serializer : {}),
 			},
-			valueFactory: valueFactory || (() => new (type as new () => TObject)()),
 		}
 	}
 
 	public putSerializableType<TObject extends ISerializable>(
 		type: TSerializableClass<TObject>,
-		valueFactory?: () => TObject,
+		meta?: ITypeMetaSerializer<TObject>,
 	): ITypeMetaSerializer<TObject> {
-		return this.putType(type, TypeMetaSerializerCollection.makeTypeMetaSerializer(type, valueFactory))
+		return this.putType(type, TypeMetaSerializerCollection.makeTypeMetaSerializer(type, meta))
 	}
 }
 
 export function registerSerializable<TObject extends ISerializable>(
 	type: TSerializableClass<TObject>,
-	valueFactory?: () => TObject,
+	meta?: ITypeMetaSerializer<TObject>|any,
 ) {
-	TypeMetaSerializerCollection.default.putSerializableType(type, valueFactory)
+	TypeMetaSerializerCollection.default.putSerializableType(type, meta)
 }
 
 export function registerSerializer<TValue extends any>(
@@ -243,25 +328,29 @@ export class ObjectSerializer implements IObjectSerializer {
 			serializedData.types = serializer.types
 		}
 
+		if (serializer.objects) {
+			serializedData.objects = serializer.objects
+		}
+
 		return serializedData
 	}
 
 	public deSerialize<TValue extends any>(
 		serializedValue: ISerializedDataOrValue,
 		valueType?: TClass<TValue>,
-		valueFactory?: () => TValue,
+		valueFactory?: (...args) => TValue,
 	): TValue {
 		if (!serializedValue || typeof serializedValue !== 'object') {
-			return serializedValue as TValue
+			return serializedValue as any
 		}
 
-		const {types, data} = serializedValue as ISerializedData
+		const {types, objects, data} = serializedValue as ISerializedData
 
 		if (!Array.isArray(types)) {
 			throw new Error(`serialized value types field is not array: ${types}`)
 		}
 
-		const deSerializer = new DeSerializerVisitor(this.typeMeta, types)
+		const deSerializer = new DeSerializerVisitor(this.typeMeta, types, objects)
 
 		const value = deSerializer.deSerialize(data, valueType, valueFactory)
 
@@ -302,9 +391,8 @@ export function serializeArray(
 export function deSerializeArray<T>(
 	deSerialize: IDeSerializeValue,
 	serializedValue: ISerializedValueArray,
-	valueFactory?: () => T[],
+	value: T[],
 ): T[] {
-	const value = valueFactory ? valueFactory() : []
 	for (let i = 0, len = serializedValue.length; i < len; i++) {
 		value[i] = deSerialize(serializedValue[i])
 	}
@@ -350,9 +438,9 @@ registerSerializer<object>(Object, {
 		deSerialize(
 			deSerialize: IDeSerializeValue,
 			serializedValue: ISerializedTypedValue,
-			valueFactory?: () => object,
+			valueFactory: (...args) => object,
 		): object {
-			const value = valueFactory ? valueFactory() : {}
+			const value = valueFactory()
 			for (const key in serializedValue as ISerializedObject) {
 				if (Object.prototype.hasOwnProperty.call(serializedValue, key)) {
 					value[key] = deSerialize(serializedValue[key])
@@ -361,6 +449,7 @@ registerSerializer<object>(Object, {
 			return value
 		},
 	},
+	valueFactory: () => ({}),
 })
 
 // endregion
@@ -376,11 +465,12 @@ registerSerializer<any[]>(Array, {
 		deSerialize(
 			deSerialize: IDeSerializeValue,
 			serializedValue: ISerializedValueArray,
-			valueFactory?: () => any[],
+			valueFactory: (...args) => any[],
 		): any[] {
-			return deSerializeArray(deSerialize, serializedValue, valueFactory)
+			return deSerializeArray(deSerialize, serializedValue, valueFactory())
 		},
 	},
+	valueFactory: () => [],
 })
 
 // endregion
@@ -396,13 +486,14 @@ registerSerializer<Set<any>>(Set, {
 		deSerialize(
 			deSerialize: IDeSerializeValue,
 			serializedValue: ISerializedValueArray,
-			valueFactory?: () => Set<any>,
+			valueFactory: (...args) => Set<any>,
 		): Set<any> {
-			const value = valueFactory ? valueFactory() : new Set()
+			const value = valueFactory()
 			deSerializeIterable(serializedValue, o => value.add(deSerialize(o)))
 			return value
 		},
 	},
+	valueFactory: () => new Set(),
 })
 
 // endregion
@@ -421,9 +512,9 @@ registerSerializer<Map<any, any>>(Map, {
 		deSerialize(
 			deSerialize: IDeSerializeValue,
 			serializedValue: ISerializedValueArray,
-			valueFactory?: () => Map<any, any>,
+			valueFactory: (...args) => Map<any, any>,
 		): Map<any, any> {
-			const value = valueFactory ? valueFactory() : new Map()
+			const value = valueFactory()
 			deSerializeIterable(
 				serializedValue,
 				item => value.set(
@@ -433,6 +524,7 @@ registerSerializer<Map<any, any>>(Map, {
 			return value
 		},
 	},
+	valueFactory: () => new Map(),
 })
 
 // endregion
@@ -448,11 +540,12 @@ registerSerializer<Date>(Date, {
 		deSerialize(
 			deSerialize: IDeSerializeValue,
 			serializedValue: number,
-			valueFactory?: () => Date,
+			valueFactory: (...args) => Date,
 		): Date {
-			return new Date(serializedValue)
+			return valueFactory(serializedValue)
 		},
 	},
+	valueFactory: (value: number|string|Date) => new Date(value),
 })
 
 // endregion

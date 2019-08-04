@@ -8,7 +8,7 @@ import {
 	ISerializedObject,
 	ISerializeValue,
 } from '../extensions/serialization/contracts'
-import {registerSerializer} from '../extensions/serialization/serializers'
+import {registerSerializable, registerSerializer} from '../extensions/serialization/serializers'
 import {fillObjectKeys} from './helpers/set'
 
 export class ObjectSet implements
@@ -156,15 +156,8 @@ export class ObjectSet implements
 
 registerMergeable(ObjectSet)
 
-registerSerializer(ObjectSet, {
-	uuid: ObjectSet.uuid,
+registerSerializable(ObjectSet, {
 	serializer: {
-		serialize(
-			serialize: ISerializeValue,
-			value: ObjectSet,
-		): ISerializedObject {
-			return value.serialize(serialize)
-		},
 		deSerialize<T>(
 			deSerialize: IDeSerializeValue,
 			serializedValue: ISerializedObject,

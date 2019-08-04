@@ -9,7 +9,7 @@ import {
 	ISerializedObject,
 	ISerializeValue,
 } from '../extensions/serialization/contracts'
-import {registerSerializer} from '../extensions/serialization/serializers'
+import {registerSerializable, registerSerializer} from '../extensions/serialization/serializers'
 import {getObjectUniqueId} from './helpers/object-unique-id'
 import {fillSet} from './helpers/set'
 
@@ -181,15 +181,8 @@ export class ArraySet<T extends Object> implements
 
 registerMergeable(ArraySet)
 
-registerSerializer(ArraySet, {
-	uuid: ArraySet.uuid,
+registerSerializable(ArraySet, {
 	serializer: {
-		serialize(
-			serialize: ISerializeValue,
-			value: ArraySet<any>,
-		): ISerializedObject {
-			return value.serialize(serialize)
-		},
 		deSerialize<T>(
 			deSerialize: IDeSerializeValue,
 			serializedValue: ISerializedObject,

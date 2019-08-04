@@ -7,7 +7,7 @@ import {
 	ISerializedObject,
 	ISerializeValue,
 } from '../extensions/serialization/contracts'
-import {registerSerializer} from '../extensions/serialization/serializers'
+import {registerSerializable, registerSerializer} from '../extensions/serialization/serializers'
 import {fillMap} from './helpers/set'
 
 export class ObjectMap<V> implements
@@ -154,15 +154,8 @@ export class ObjectMap<V> implements
 
 registerMergeable(ObjectMap)
 
-registerSerializer(ObjectMap, {
-	uuid: ObjectMap.uuid,
+registerSerializable(ObjectMap, {
 	serializer: {
-		serialize(
-			serialize: ISerializeValue,
-			value: ObjectMap<any>,
-		): ISerializedObject {
-			return value.serialize(serialize)
-		},
 		deSerialize<V>(
 			deSerialize: IDeSerializeValue,
 			serializedValue: ISerializedObject,

@@ -7,7 +7,7 @@ import {
 	ISerializedObject,
 	ISerializeValue,
 } from '../extensions/serialization/contracts'
-import {registerSerializer} from '../extensions/serialization/serializers'
+import {registerSerializable, registerSerializer} from '../extensions/serialization/serializers'
 import {getObjectUniqueId} from './helpers/object-unique-id'
 import {fillMap} from './helpers/set'
 
@@ -177,15 +177,8 @@ export class ObjectHashMap<K, V> implements
 
 registerMergeable(ObjectHashMap)
 
-registerSerializer(ObjectHashMap, {
-	uuid: ObjectHashMap.uuid,
+registerSerializable(ObjectHashMap, {
 	serializer: {
-		serialize(
-			serialize: ISerializeValue,
-			value: ObjectHashMap<any, any>,
-		): ISerializedObject {
-			return value.serialize(serialize)
-		},
 		deSerialize<K, V>(
 			deSerialize: IDeSerializeValue,
 			serializedValue: ISerializedObject,
