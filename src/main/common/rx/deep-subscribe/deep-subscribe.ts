@@ -5,23 +5,26 @@ import {IRuleOrIterable, iterateRule, subscribeNextRule} from './iterate-rule'
 import {RuleBuilder} from "./RuleBuilder";
 import {PeekIterator} from "./helpers/PeekIterator";
 import {checkUnsubscribe} from "./helpers/common";
+import {ISubscribeValue} from "./contracts/common";
 
 // const UNSUBSCRIBE_PROPERTY_PREFIX = Math.random().toString(36)
 let nextUnsubscribePropertyId = 0
 
 function deepSubscribeRuleIterator<TValue>(
 	object: any,
-	subscribeValue: (value: TValue) => IUnsubscribe,
+	subscribeValue: ISubscribeValue<TValue>,
 	immediate: boolean,
 	ruleIterator: PeekIterator<IRuleOrIterable>,
 	propertiesPath?: () => string,
+	debugPropertyName?: string,
+	debugParent?: any,
 ): IUnsubscribe {
 	const subscribeNext = (object) => {
 		let unsubscribePropertyName: string
 
 		return subscribeNextRule(
 			ruleIterator,
-			nextRuleIterator => deepSubscribeRuleIterator<TValue>(object, subscribeValue, immediate, nextRuleIterator, propertiesPath),
+			nextRuleIterator => deepSubscribeRuleIterator<TValue>(object, subscribeValue, immediate, nextRuleIterator, propertiesPath, debugPropertyName, debugParent),
 			(rule, getNextRuleIterator) => {
 				const subscribeItem = (item, debugPropertyName: string) => {
 					const newPropertiesPath = () => (propertiesPath ? propertiesPath() + '.' : '')
@@ -35,6 +38,8 @@ function deepSubscribeRuleIterator<TValue>(
 							? getNextRuleIterator()
 							: null,
 						newPropertiesPath,
+						debugPropertyName,
+						object,
 					)
 
 					if (!(item instanceof Object)) {
@@ -90,7 +95,7 @@ function deepSubscribeRuleIterator<TValue>(
 				))
 			},
 			() => {
-				return subscribeValue(object)
+				return subscribeValue(object, debugParent, debugPropertyName)
 			},
 		)
 	}
@@ -142,7 +147,7 @@ function deepSubscribeRuleIterator<TValue>(
 
 export function deepSubscribeRule<TValue>(
 	object: any,
-	subscribeValue: (value: TValue) => IUnsubscribe,
+	subscribeValue: ISubscribeValue<TValue>,
 	immediate: boolean,
 	rule: IRule,
 ): IUnsubscribe {
@@ -156,7 +161,7 @@ export function deepSubscribeRule<TValue>(
 
 export function deepSubscribe<TObject, TValue>(
 	object: TObject,
-	subscribeValue: (value: TValue) => IUnsubscribe,
+	subscribeValue: ISubscribeValue<TValue>,
 	immediate: boolean,
 	ruleBuilder: (ruleBuilder: RuleBuilder<TObject>) => RuleBuilder<TValue>,
 ): IUnsubscribe {
