@@ -1,102 +1,247 @@
+import {IMergeable, IMergeOptions, IMergeValue} from '../../../extensions/merge/contracts'
+import {ObjectMerger, registerMergeable} from '../../../extensions/merge/mergers'
+import {
+	IDeSerializeValue,
+	ISerializable,
+	ISerializedObject,
+	ISerializeValue,
+} from '../../../extensions/serialization/contracts'
+import {registerSerializable} from '../../../extensions/serialization/serializers'
+import {TClass} from '../../../extensions/TypeMeta'
+import {objectSpreadIgnoreNull} from '../../../helpers/object-spread'
 import {ObservableObject} from '../ObservableObject'
 import {ObservableObjectBuilder} from '../ObservableObjectBuilder'
-import {fillObject} from '../../../extensions/merge/merge-maps'
 
-export interface ISetOptions<TValue> {
-	fill?: boolean,
-	clone?: boolean,
-	fillFunc?: (target: TValue, source: TValue) => boolean,
-	valueFactory?: () => TValue,
-}
+export class Property<TTarget, TSource>
+	extends ObservableObject
+	implements
+		IMergeable<Property<TTarget, TSource>, any>,
+		ISerializable
+{
+	protected merger?: ObjectMerger
+	protected valueType?: TClass<TTarget>
+	protected valueFactory?: (source: TTarget|TSource) => TTarget
+	protected mergeOptions?: IMergeOptions
 
-export class Property<TValue> extends ObservableObject {
-	protected readonly _defaultOptions: ISetOptions<TValue>
-
-	constructor(defaultOptions: ISetOptions<TValue>) {
+	constructor(
+		{
+			merger,
+			valueType,
+			valueFactory,
+			mergeOptions,
+		}: {
+			merger?: ObjectMerger,
+			valueType?: TClass<TTarget>,
+			valueFactory?: (source: TTarget | TSource) => TTarget,
+			mergeOptions?: IMergeOptions,
+		} = {},
+	) {
 		super()
-		this._defaultOptions = fillObject({
-			fill: true,
-		}, defaultOptions, true)
-	}
-
-	public value: TValue
-
-	public set(source, options?: ISetOptions<TValue>): boolean {
-		const { fill, clone, fillFunc, valueFactory }
-			= fillObject(Object.create(options), this._defaultOptions)
-
-		// const { _defaultOptions } = this
-		// if (options) {
-		// 	if (_defaultOptions) {
-		// 		fill = options.fill
-		// 		if (fill == null) {
-		// 			fill = _defaultOptions.fill
-		// 		}
-		//
-		// 		clone = options.clone || _defaultOptions.clone
-		// 		if (clone == null) {
-		// 			clone = _defaultOptions.clone
-		// 		}
-		//
-		// 		fillFunc = options.fillFunc || _defaultOptions.fillFunc
-		// 		if (fillFunc == null) {
-		// 			fillFunc = _defaultOptions.fillFunc
-		// 		}
-		//
-		// 		valueFactory = options.valueFactory || _defaultOptions.valueFactory
-		// 		if (valueFactory == null) {
-		// 			valueFactory = _defaultOptions.valueFactory
-		// 		}
-		// 	} else {
-		// 		fill = options.fill
-		// 		clone = options.clone
-		// 		fillFunc = options.fillFunc
-		// 		valueFactory = options.valueFactory
-		// 	}
-		// } else if (_defaultOptions) {
-		// 	fill = _defaultOptions.fill
-		// 	clone = _defaultOptions.clone
-		// 	fillFunc = _defaultOptions.fillFunc
-		// 	valueFactory = _defaultOptions.valueFactory
-		// }
-
-		return this._set(
-			'value',
-			source,
-			{
-				fillFunc: fill
-					? fillFunc
-					: null,
-
-				convertFunc(sourceValue) {
-					if (clone && sourceValue != null) {
-						return cloneValue(sourceValue)
-					}
-
-					return sourceValue
-				},
-			},
-		)
-
-		function cloneValue(sourceValue) {
-			if (fillFunc == null) {
-				throw new Error('Cannot clone value, because fillFunc == null')
-			}
-
-			const factory = valueFactory || this._valueFactory
-			if (!factory) {
-				throw new Error('Cannot clone value, because valueFactory is null')
-			}
-			const value = factory()
-
-			if (!fillFunc(value, sourceValue)) {
-				throw new Error('Cannot clone value, because fillFunc return false')
-			}
-
-			return value
+		if (merger != null) {
+			this.merger = merger
+		}
+		if (valueType != null) {
+			this.valueType = valueType
+		}
+		if (valueFactory != null) {
+			this.valueFactory = valueFactory
+		}
+		if (mergeOptions != null) {
+			this.mergeOptions = mergeOptions
 		}
 	}
+
+	public value: TTarget
+
+	public readonly [Symbol.toStringTag]: string = 'Property'
+
+	// region set / fill / merge
+
+	public set(
+		value: Property<TTarget|TSource, any> | TTarget | TSource,
+		clone?: boolean,
+		options?: IMergeOptions,
+		valueType?: TClass<TTarget>,
+		valueFactory?: (source: TTarget|TSource) => TTarget,
+	): boolean {
+		const result = this.mergeValue(
+			void 0,
+			value,
+			value,
+			clone,
+			clone,
+			options,
+			valueType,
+			valueFactory,
+		)
+
+		if (!result) {
+			this.value = void 0
+		}
+
+		return result
+	}
+
+	public fill(
+		value: Property<TTarget|TSource, any> | TTarget | TSource,
+		preferClone?: boolean,
+		options?: IMergeOptions,
+		valueType?: TClass<TTarget>,
+		valueFactory?: (source: TTarget|TSource) => TTarget,
+	): boolean {
+		return this.mergeValue(
+			this.value,
+			value,
+			value,
+			preferClone,
+			preferClone,
+			options,
+			valueType,
+			valueFactory,
+		)
+	}
+
+	public merge(
+		older: Property<TTarget|TSource, any> | TTarget | TSource,
+		newer: Property<TTarget|TSource, any> | TTarget | TSource,
+		preferCloneOlder?: boolean,
+		preferCloneNewer?: boolean,
+		options?: IMergeOptions,
+		valueType?: TClass<TTarget>,
+		valueFactory?: (source: TTarget|TSource) => TTarget,
+	): boolean {
+		return this.mergeValue(
+			this.value,
+			older,
+			newer,
+			preferCloneOlder,
+			preferCloneNewer,
+			options,
+			valueType,
+			valueFactory,
+		)
+	}
+
+	// endregion
+
+	// region merge helpers
+
+	private mergeValue(
+		base: TTarget,
+		older: Property<TTarget|TSource, any> | TTarget | TSource,
+		newer: Property<TTarget|TSource, any> | TTarget | TSource,
+		preferCloneOlder?: boolean,
+		preferCloneNewer?: boolean,
+		options?: IMergeOptions,
+		valueType?: TClass<TTarget>,
+		valueFactory?: (source: TTarget|TSource) => TTarget,
+	): boolean {
+		return this._mergeValue(
+			(this.merger || ObjectMerger.default).merge,
+			base,
+			older,
+			newer,
+			preferCloneOlder,
+			preferCloneNewer,
+			options,
+			valueType,
+			valueFactory,
+		)
+	}
+
+	private _mergeValue(
+		merge: IMergeValue,
+		base: TTarget,
+		older: Property<TTarget|TSource, any> | TTarget | TSource,
+		newer: Property<TTarget|TSource, any> | TTarget | TSource,
+		preferCloneOlder?: boolean,
+		preferCloneNewer?: boolean,
+		options?: IMergeOptions,
+		valueType?: TClass<TTarget>,
+		valueFactory?: (source: TTarget|TSource) => TTarget,
+	): boolean {
+		if (older instanceof Property) {
+			older = (older as Property<TTarget|TSource, any>).value
+		}
+		if (newer instanceof Property) {
+			newer = (newer as Property<TTarget|TSource, any>).value
+		}
+
+		return merge(
+			base,
+			older,
+			newer,
+			o => this.value = o,
+			preferCloneOlder,
+			preferCloneNewer,
+			options == null
+				? this.mergeOptions
+				: objectSpreadIgnoreNull({}, this.mergeOptions, options),
+			valueType == null ? this.valueType : valueType,
+			valueFactory == null ? this.valueFactory : valueFactory,
+		)
+	}
+
+	// endregion
+
+	// region IMergeable
+
+	public _canMerge(source: Property<TTarget, TSource>|TTarget|TSource): boolean {
+		if (source.constructor === Property
+			&& this.value === (source as Property<TTarget, TSource>).value
+			|| this.value === source
+		) {
+			return null
+		}
+
+		return true
+	}
+
+	public _merge(
+		merge: IMergeValue,
+		older: Property<TTarget|TSource, any> | TTarget | TSource,
+		newer: Property<TTarget|TSource, any> | TTarget | TSource,
+		preferCloneOlder?: boolean,
+		preferCloneNewer?: boolean,
+		options?: IMergeOptions,
+		valueType?: TClass<TTarget>,
+		valueFactory?: (source: TTarget|TSource) => TTarget,
+	): boolean {
+		return this._mergeValue(
+			merge,
+			this.value,
+			older,
+			newer,
+			preferCloneOlder,
+			preferCloneNewer,
+			options,
+			valueType,
+			valueFactory,
+		)
+	}
+
+	// endregion
+
+	// region ISerializable
+
+	public static uuid: string = '6f2c51cc-d865-4baa-9a93-226e3374ccaf'
+
+	public serialize(serialize: ISerializeValue): ISerializedObject {
+		return {
+			value: serialize(this.value),
+		}
+	}
+
+	public deSerialize(deSerialize: IDeSerializeValue, serializedValue: ISerializedObject) {
+		this.value = deSerialize(serializedValue.value)
+	}
+
+	// endregion
 }
 
 new ObservableObjectBuilder(Property.prototype)
 	.writable('value')
+
+registerMergeable(Property)
+
+registerSerializable(Property)

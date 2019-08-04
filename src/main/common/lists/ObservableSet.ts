@@ -142,7 +142,7 @@ export class ObservableSet<T> extends SetChangedObject<T> implements
 
 	// region IMergeable
 
-	public canMerge(source: ObservableSet<T>): boolean {
+	public _canMerge(source: ObservableSet<T>): boolean {
 		const {_set} = this
 		if ((_set as any).canMerge) {
 			return (_set as any).canMerge(source)
@@ -160,7 +160,7 @@ export class ObservableSet<T> extends SetChangedObject<T> implements
 			|| Symbol.iterator in source
 	}
 
-	public merge(
+	public _merge(
 		merge: IMergeValue,
 		older: ObservableSet<T> | T[] | Iterable<T>,
 		newer: ObservableSet<T> | T[] | Iterable<T>,

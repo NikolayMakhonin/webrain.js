@@ -96,7 +96,7 @@ export class ObjectMap<V> implements
 
 	// region IMergeable
 
-	public canMerge(source: ObjectMap<V>|object): boolean {
+	public _canMerge(source: ObjectMap<V>|object): boolean {
 		if (source.constructor === ObjectMap
 			&& this._object === (source as ObjectMap<V>)._object
 		) {
@@ -109,7 +109,7 @@ export class ObjectMap<V> implements
 			|| Symbol.iterator in source
 	}
 
-	public merge(
+	public _merge(
 		merge: IMergeValue,
 		older: ObjectMap<V> | object,
 		newer: ObjectMap<V> | object,

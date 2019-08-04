@@ -1149,7 +1149,7 @@ export class SortedList<T>
 
 	// region IMergeable
 
-	public canMerge(source: SortedList<T>): boolean {
+	public _canMerge(source: SortedList<T>): boolean {
 		if (source.constructor === SortedList
 			&& this._array === (source as SortedList<T>)._array
 			&& this._autoSort === (source as SortedList<T>)._autoSort
@@ -1166,7 +1166,7 @@ export class SortedList<T>
 				|| Symbol.iterator in source)
 	}
 
-	public merge(
+	public _merge(
 		merge: IMergeValue,
 		older: SortedList<T> | T[] | Iterable<T>,
 		newer: SortedList<T> | T[] | Iterable<T>,

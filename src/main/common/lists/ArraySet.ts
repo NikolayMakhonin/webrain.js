@@ -124,7 +124,7 @@ export class ArraySet<T extends Object> implements
 
 	// region IMergeable
 
-	public canMerge(source: ArraySet<T>): boolean {
+	public _canMerge(source: ArraySet<T>): boolean {
 		if (source.constructor === ArraySet
 			&& this._array === (source as ArraySet<T>)._array
 		) {
@@ -136,7 +136,7 @@ export class ArraySet<T extends Object> implements
 			|| Symbol.iterator in source
 	}
 
-	public merge(
+	public _merge(
 		merge: IMergeValue,
 		older: ArraySet<T> | T[] | Iterable<T>,
 		newer: ArraySet<T> | T[] | Iterable<T>,

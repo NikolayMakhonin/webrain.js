@@ -120,7 +120,7 @@ export class ObjectHashMap<K, V> implements
 
 	// region IMergeable
 
-	public canMerge(source: ObjectHashMap<K, V>): boolean {
+	public _canMerge(source: ObjectHashMap<K, V>): boolean {
 		if (source.constructor === ObjectHashMap
 			&& this._object === (source as ObjectHashMap<K, V>)._object
 		) {
@@ -132,7 +132,7 @@ export class ObjectHashMap<K, V> implements
 			|| Symbol.iterator in source
 	}
 
-	public merge(
+	public _merge(
 		merge: IMergeValue,
 		older: ObjectHashMap<K, V> | TNumberObject<K, V>,
 		newer: ObjectHashMap<K, V> | TNumberObject<K, V>,

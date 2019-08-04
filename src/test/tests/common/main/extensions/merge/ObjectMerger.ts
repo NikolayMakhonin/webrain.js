@@ -77,14 +77,14 @@ describe('common > extensions > merge > ObjectMerger', function() {
 			this.value = value
 		}
 
-		public canMerge(source: (Class | object)): boolean {
+		public _canMerge(source: (Class | object)): boolean {
 			if (source.constructor !== Class && source.constructor !== Object) {
 				return false
 			}
 			return true
 		}
 
-		public merge(
+		public _merge(
 			merge: IMergeValue,
 			older: Class | object,
 			newer: Class | object,

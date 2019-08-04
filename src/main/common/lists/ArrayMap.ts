@@ -118,7 +118,7 @@ export class ArrayMap<K, V> implements
 
 	// region IMergeable
 
-	public canMerge(source: ArrayMap<K, V>): boolean {
+	public _canMerge(source: ArrayMap<K, V>): boolean {
 		if (source.constructor === ArrayMap
 			&& this._array === (source as ArrayMap<K, V>)._array
 		) {
@@ -130,7 +130,7 @@ export class ArrayMap<K, V> implements
 			|| Symbol.iterator in source
 	}
 
-	public merge(
+	public _merge(
 		merge: IMergeValue,
 		older: ArrayMap<K, V> | object,
 		newer: ArrayMap<K, V> | object,

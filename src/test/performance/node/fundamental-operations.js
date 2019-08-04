@@ -1,4 +1,4 @@
-/* eslint-disable no-new-func,no-array-constructor,object-property-newline,no-undef,no-empty,no-shadow,no-prototype-builtins */
+/* eslint-disable no-new-func,no-array-constructor,object-property-newline,no-undef,no-empty,no-shadow,no-prototype-builtins,prefer-destructuring,prefer-rest-params */
 
 import {calcPerformance} from 'rdtsc'
 import {binarySearch} from '../../../main/common/lists/helpers/array'
@@ -7,6 +7,9 @@ import {SortedList} from '../../../main/common/lists/SortedList'
 import {compareUniqueId} from '../../../main/common/lists/helpers/compare'
 import {ArraySet} from '../../../main/common/lists/ArraySet'
 import {createObject, Tester} from '../../tests/common/main/rx/deep-subscribe/helpers/Tester'
+import {ObjectMerger} from "../../../main/common/extensions/merge/mergers";
+import {TClass} from "../../../main/common/extensions/TypeMeta";
+import {IMergeOptions} from "../../../main/common/extensions/merge/contracts";
 
 const SetNative = Set
 require('./src/SetPolyfill')
@@ -1081,7 +1084,7 @@ describe('fundamental-operations', function () {
 		console.log(result)
 	})
 
-	it('"out" vs "set func" params', function () {
+	xit('"out" vs "set func" params', function () {
 		this.timeout(300000)
 
 		const funcOut = (a, out) => {
@@ -1117,6 +1120,68 @@ describe('fundamental-operations', function () {
 			() => {
 				funcSet(Math.random(), a => {
 					this.prop = a
+				})
+			}
+		)
+
+		console.log(result)
+	})
+
+	it('func params as object', function () {
+		this.timeout(300000)
+
+		const funcSimple = (
+			param0,
+			param1,
+			param2,
+			param3
+		) => param0 || param1 || param2 || param3
+
+		const funcObjectParams = ({
+			param0,
+			param1,
+			param2,
+			param3,
+		} = {}) => param0 || param1 || param2 || param3
+
+		const funcObjectParamsBabel = () => {
+			// eslint-disable-next-line one-var
+			const _ref = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : {},
+				param0 = _ref.param0,
+				param1 = _ref.param1,
+				param2 = _ref.param2,
+				param3 = _ref.param3
+
+			return param0 || param1 || param2 || param3
+		}
+
+		const result = calcPerformance(
+			120000,
+			() => {
+				// no operations
+			},
+			() => {
+				funcSimple(
+					Math.random() < 0.5,
+					Math.random() < 0.5,
+					Math.random() < 0.5,
+					Math.random() < 0.5
+				)
+			},
+			() => {
+				funcObjectParams({
+					param0: Math.random() < 0.5,
+					param1: Math.random() < 0.5,
+					param2: Math.random() < 0.5,
+					param3: Math.random() < 0.5
+				})
+			},
+			() => {
+				funcObjectParamsBabel({
+					param0: Math.random() < 0.5,
+					param1: Math.random() < 0.5,
+					param2: Math.random() < 0.5,
+					param3: Math.random() < 0.5
 				})
 			}
 		)

@@ -567,8 +567,8 @@ export class TypeMetaMergerCollection
 			...meta,
 			merger: {
 				canMerge(target: TTarget, source: TTarget|TSource): boolean {
-					return target.canMerge
-						? target.canMerge(source)
+					return target._canMerge
+						? target._canMerge(source)
 						: target.constructor === (source as any).constructor
 				},
 				merge(
@@ -581,7 +581,7 @@ export class TypeMetaMergerCollection
 					preferCloneNewer?: boolean,
 					options?: IMergeOptions,
 				): boolean {
-					return base.merge(
+					return base._merge(
 						merge,
 						older,
 						newer,
@@ -652,6 +652,7 @@ export class ObjectMerger implements IObjectMerger {
 
 	constructor(typeMeta?: ITypeMetaMergerCollection) {
 		this.typeMeta = new TypeMetaMergerCollection(typeMeta)
+		this.merge = this.merge.bind(this)
 	}
 
 	public static default: ObjectMerger = new ObjectMerger()

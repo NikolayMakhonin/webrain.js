@@ -81,8 +81,8 @@ export interface IObjectMerger extends IMerger {
 
 export interface IMergeable<TTarget, TSource extends any> {
 	/** @return true, false, null - is non strict equals */
-	canMerge?: (source: TTarget|TSource) => boolean
-	merge(
+	_canMerge(source: TTarget|TSource): boolean
+	_merge(
 		merge: IMergeValue,
 		older: TTarget|TSource,
 		newer: TTarget|TSource,

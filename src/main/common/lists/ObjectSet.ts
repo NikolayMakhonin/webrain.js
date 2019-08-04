@@ -98,7 +98,7 @@ export class ObjectSet implements
 
 	// region IMergeable
 
-	public canMerge(source: ObjectSet): boolean {
+	public _canMerge(source: ObjectSet): boolean {
 		if (source.constructor === ObjectSet
 			&& this._object === (source as ObjectSet)._object
 		) {
@@ -111,7 +111,7 @@ export class ObjectSet implements
 			|| Symbol.iterator in source
 	}
 
-	public merge(
+	public _merge(
 		merge: IMergeValue,
 		older: ObjectSet | string[] | Iterable<string>,
 		newer: ObjectSet | string[] | Iterable<string>,

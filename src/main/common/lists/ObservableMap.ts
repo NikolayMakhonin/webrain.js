@@ -166,7 +166,7 @@ export class ObservableMap<K, V>
 
 	// region IMergeable
 
-	public canMerge(source: ObservableMap<K, V>): boolean {
+	public _canMerge(source: ObservableMap<K, V>): boolean {
 		const {_map} = this
 		if ((_map as any).canMerge) {
 			return (_map as any).canMerge(source)
@@ -184,7 +184,7 @@ export class ObservableMap<K, V>
 			|| Symbol.iterator in source
 	}
 
-	public merge(
+	public _merge(
 		merge: IMergeValue,
 		older: ObservableMap<K, V> | object,
 		newer: ObservableMap<K, V> | object,
