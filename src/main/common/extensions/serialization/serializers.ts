@@ -508,7 +508,16 @@ export function serializeIterable(
 	return serializedValue
 }
 
-export function *deSerializeIterable(
+export function *deSerializeIterableOrdered(
+	serializedValue: ISerializedValueArray,
+	add: (item: any) => void|TThenAny,
+): Iterator<void|TThenAny> {
+	for (let i = 0, len = serializedValue.length; i < len; i++) {
+		yield add(serializedValue[i])
+	}
+}
+
+export function deSerializeIterable(
 	serializedValue: ISerializedValueArray,
 	add: (item: any) => void,
 ): void {
@@ -587,7 +596,7 @@ registerSerializer<Set<any>>(Set, {
 			valueFactory: (...args) => Set<any>,
 		): Set<any> {
 			const value = valueFactory()
-			deSerializeIterable(serializedValue, o => value.add(deSerialize(o)))
+			deSerializeIterable(serializedValue, o => deSerialize(o, val => value.add(val)))
 			return value
 		},
 	},
@@ -615,10 +624,11 @@ registerSerializer<Map<any, any>>(Map, {
 			const value = valueFactory()
 			deSerializeIterable(
 				serializedValue,
-				item => value.set(
-					deSerialize(item[0]),
-					deSerialize(item[1]),
-				))
+				item => deSerialize(item[0], key => {
+					deSerialize(item[1], val => {
+						value.set(key, val)
+					})
+				}))
 			return value
 		},
 	},
