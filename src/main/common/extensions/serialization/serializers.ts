@@ -8,7 +8,8 @@ import {
 	ISerializedTyped, ISerializedTypedValue,
 	ISerializedValue, ISerializedValueArray,
 	ISerializerVisitor, ISerializeValue,
-	ITypeMetaSerializer, ITypeMetaSerializerCollection, ITypeMetaSerializerOverride, ThenFunc, TResolve,
+	ITypeMetaSerializer, ITypeMetaSerializerCollection,
+	ITypeMetaSerializerOverride, TResolve, TThen, TThenAny,
 } from './contracts'
 
 // region SerializerVisitor
@@ -144,12 +145,39 @@ export class DeSerializerVisitor implements IDeSerializerVisitor {
 		this.deSerialize = this.deSerialize.bind(this)
 	}
 
+	public assertEnd() {
+		const {_types, _objects, _instances, _typeMeta} = this
+
+		const getDebugObject = id => {
+			const object = _objects[id]
+			const uuid = _types[object.type]
+			const type = _typeMeta.getType(uuid)
+			return {
+				type: type == null ? `<Type not found: ${uuid}>` : type.name,
+				data: object.data,
+			}
+		}
+
+		const resolveInstancesIds = Object.keys(this._resolveInstances)
+		if (resolveInstancesIds.length > 0) {
+			throw new Error('Object cannot be deserialized because some inner dependencies is not resolved:\r\n'
+				+ JSON.stringify(resolveInstancesIds.map(id => getDebugObject(id)), null, 4))
+		}
+
+		for (let i = 0, len; i < len; i++) {
+			const instance = _instances[i]
+			if (instance === LOCKED || !instance) {
+				throw new Error(`Instance was not deserialize:\r\n${JSON.stringify(getDebugObject(i))}`)
+			}
+		}
+	}
+
 	public deSerialize<TValue extends any>(
 		serializedValue: ISerializedValue,
 		set?: (value: TValue) => void,
 		valueType?: TClass<TValue>,
 		valueFactory?: (...args) => TValue,
-	): TValue|ThenFunc<TValue> {
+	): TValue|TThenAny {
 		if (typeof serializedValue === 'undefined') {
 			return serializedValue
 		}
@@ -282,13 +310,13 @@ export class DeSerializerVisitor implements IDeSerializerVisitor {
 		}
 
 		const resolveIterator = (
-			iteration: IteratorResult<TValue|ThenFunc<TValue>>,
-		): TValue|ThenFunc<TValue> => {
+			iteration: IteratorResult<TValue|TThen<any>>,
+		): TValue|TThenAny => {
 			if (iteration.done) {
 				return resolveValue(iteration.value as TValue)
 			}
 
-			(iteration.value as ThenFunc<TValue>)(o => {
+			(iteration.value as TThenAny)(o => {
 				resolveIterator(iteratorOrValue.next(o))
 			})
 
@@ -420,7 +448,9 @@ export class ObjectSerializer implements IObjectSerializer {
 
 		const deSerializer = new DeSerializerVisitor(this.typeMeta, types, objects)
 
-		const value = deSerializer.deSerialize(data, valueType, valueFactory)
+		const value = deSerializer.deSerialize(data, null, valueType, valueFactory) as TValue
+
+		deSerializer.assertEnd()
 
 		return value
 	}
@@ -456,13 +486,13 @@ export function serializeArray(
 	return serializedValue
 }
 
-export function deSerializeArray<T>(
+export function *deSerializeArray<T>(
 	deSerialize: IDeSerializeValue,
 	serializedValue: ISerializedValueArray,
 	value: T[],
-): T[] {
+): Iterator<T[]|TThen<any>> {
 	for (let i = 0, len = serializedValue.length; i < len; i++) {
-		value[i] = deSerialize(serializedValue[i])
+		value[i] = yield deSerialize(serializedValue[i])
 	}
 	return value
 }
@@ -478,7 +508,7 @@ export function serializeIterable(
 	return serializedValue
 }
 
-export function deSerializeIterable(
+export function *deSerializeIterable(
 	serializedValue: ISerializedValueArray,
 	add: (item: any) => void,
 ): void {
@@ -534,7 +564,7 @@ registerSerializer<any[]>(Array, {
 			deSerialize: IDeSerializeValue,
 			serializedValue: ISerializedValueArray,
 			valueFactory: (...args) => any[],
-		): any[] {
+		): Iterator<any[]|TThenAny> {
 			return deSerializeArray(deSerialize, serializedValue, valueFactory())
 		},
 	},

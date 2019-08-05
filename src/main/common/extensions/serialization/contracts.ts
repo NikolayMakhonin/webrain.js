@@ -1,7 +1,8 @@
 import {ITypeMetaWithId, TClass, TypeMetaCollectionWithId} from '../TypeMeta'
 
 export type TResolve<TValue> = (value: TValue) => void
-export type ThenFunc<TValue> = (resolve: TResolve<TValue>) => void
+export type TThen<TValue> = (resolve: TResolve<TValue>) => void
+export type TThenAny = TThen<any>
 
 // region Serialized Value
 
@@ -47,7 +48,7 @@ export type IDeSerializeValue = <TValue extends any>(
 	set?: (value: TValue) => void,
 	valueType?: TClass<TValue>,
 	valueFactory?: (...args) => TValue,
-) => TValue|ThenFunc<TValue>
+) => TValue|TThenAny
 
 export interface ISerializerVisitor {
 	serialize: ISerializeValue
@@ -66,7 +67,7 @@ export interface IValueSerializer<TValue extends any> {
 		deSerialize: IDeSerializeValue,
 		serializedValue: ISerializedTypedValue,
 		valueFactory: (...args) => TValue,
-	): TValue|Iterator<TValue>
+	): TValue|Iterator<TValue|TThenAny>
 }
 
 export interface ISerializer {
