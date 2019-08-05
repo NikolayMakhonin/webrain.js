@@ -11,6 +11,7 @@ import {
 	ITypeMetaSerializer, ITypeMetaSerializerCollection,
 	ITypeMetaSerializerOverride, TResolve, TThen, TThenAny,
 } from './contracts'
+import {isThenFunc, resolveThenableIterator} from "../../helpers/thenable-sync";
 
 // region SerializerVisitor
 
@@ -268,7 +269,7 @@ export class DeSerializerVisitor implements IDeSerializerVisitor {
 			},
 		)
 
-		let resolveValueQueue
+		const valueOrThenFunc = resolveThenableIterator(iteratorOrValue)
 
 		const resolveValue = (value: TValue) => {
 			if (id != null) {
@@ -285,12 +286,6 @@ export class DeSerializerVisitor implements IDeSerializerVisitor {
 				}
 			}
 
-			if (resolveValueQueue) {
-				for (let i = 0, len = resolveValueQueue.length; i < len; i++) {
-					resolveValueQueue[i](value)
-				}
-			}
-
 			if (set) {
 				set(value)
 			}
@@ -298,32 +293,13 @@ export class DeSerializerVisitor implements IDeSerializerVisitor {
 			return value
 		}
 
-		if (!(Symbol.iterator in iteratorOrValue)) {
-			return resolveValue(iteratorOrValue as TValue)
+		if (!isThenFunc(valueOrThenFunc)) {
+			return resolveValue(valueOrThenFunc)
 		}
 
-		const thenValueFunc = (resolve: (value: TValue) => void): void => {
-			if (!resolveValueQueue) {
-				resolveValueQueue = []
-			}
-			resolveValueQueue.push(resolve)
-		}
+		valueOrThenFunc(resolveValue)
 
-		const resolveIterator = (
-			iteration: IteratorResult<TValue|TThen<any>>,
-		): TValue|TThenAny => {
-			if (iteration.done) {
-				return resolveValue(iteration.value as TValue)
-			}
-
-			(iteration.value as TThenAny)(o => {
-				resolveIterator(iteratorOrValue.next(o))
-			})
-
-			return thenValueFunc
-		}
-
-		return resolveIterator(iteratorOrValue.next())
+		return valueOrThenFunc
 	}
 }
 

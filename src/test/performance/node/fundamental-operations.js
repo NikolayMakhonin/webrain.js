@@ -4,12 +4,9 @@ import {calcPerformance} from 'rdtsc'
 import {binarySearch} from '../../../main/common/lists/helpers/array'
 import {getObjectUniqueId} from '../../../main/common/lists/helpers/object-unique-id'
 import {SortedList} from '../../../main/common/lists/SortedList'
-import {compareUniqueId} from '../../../main/common/lists/helpers/compare'
 import {ArraySet} from '../../../main/common/lists/ArraySet'
 import {createObject, Tester} from '../../tests/common/main/rx/deep-subscribe/helpers/Tester'
-import {ObjectMerger} from "../../../main/common/extensions/merge/mergers";
-import {TClass} from "../../../main/common/extensions/TypeMeta";
-import {IMergeOptions} from "../../../main/common/extensions/merge/contracts";
+import {SynchronousPromise} from 'synchronous-promise'
 
 const SetNative = Set
 require('./src/SetPolyfill')
@@ -1204,6 +1201,35 @@ describe('fundamental-operations', function () {
 
 		let i = (size / 2)|0
 
+		const result = calcPerformance(
+			120000,
+			() => {
+				// no operations
+			},
+			() => {
+				arrSimple[i] = i
+				i = (i + 7) % size
+				return arrSimple[i]
+			},
+			() => {
+				arrConstructorFilled[i] = i
+				i = (i + 7) % size
+				return arrConstructorFilled[i]
+			},
+			() => {
+				arrConstructor[i] = i
+				i = (i + 7) % size
+				return arrConstructor[i]
+			}
+		)
+
+		console.log(result)
+	})
+
+	it('Promise sync', function () {
+		this.timeout(300000)
+
+SynchronousPromise.
 		const result = calcPerformance(
 			120000,
 			() => {

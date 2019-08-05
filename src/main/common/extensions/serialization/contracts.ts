@@ -1,9 +1,5 @@
 import {ITypeMetaWithId, TClass, TypeMetaCollectionWithId} from '../TypeMeta'
 
-export type TResolve<TValue> = (value: TValue) => void
-export type TThen<TValue> = (resolve: TResolve<TValue>) => void
-export type TThenAny = TThen<any>
-
 // region Serialized Value
 
 export type ISerializedTypedValue = ISerializedPrimitive|ISerializedValueArray|ISerializedObject
