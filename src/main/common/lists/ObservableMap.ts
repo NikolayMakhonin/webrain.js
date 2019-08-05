@@ -236,7 +236,10 @@ registerSerializable(ObservableMap, {
 			serializedValue: ISerializedObject,
 			valueFactory?: (map?: Map<K, V>) => ObservableMap<K, V>,
 		): ObservableMap<K, V> {
-			const innerMap = deSerialize<Map<K, V>>(serializedValue.map)
+			const innerMap = deSerialize<Map<K, V>>(
+				serializedValue.map,
+
+			)
 			const value = valueFactory
 				? valueFactory(innerMap)
 				: new ObservableMap<K, V>(innerMap)

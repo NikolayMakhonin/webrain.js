@@ -8,7 +8,7 @@ import {
 	ISerializedTyped, ISerializedTypedValue,
 	ISerializedValue, ISerializedValueArray,
 	ISerializerVisitor, ISerializeValue,
-	ITypeMetaSerializer, ITypeMetaSerializerCollection,
+	ITypeMetaSerializer, ITypeMetaSerializerCollection, ITypeMetaSerializerOverride, ThenFunc, TResolve,
 } from './contracts'
 
 // region SerializerVisitor
@@ -55,23 +55,17 @@ export class SerializerVisitor implements ISerializerVisitor {
 		}
 
 		const id = getObjectUniqueId(object)
-		let data = objectsMap[id]
-		if (data == null) {
-			data = {} as any
-			objectsMap[id] = data
-			serialize(data as ISerializedTyped)
-			return data
-		}
-
-		if (!(data as ISerializedRef).id) {
+		let ref = objectsMap[id]
+		if (ref == null) {
 			const index = objects.length
-			objects[index] = { ...(data as ISerializedTyped) }
-			delete (data as ISerializedTyped).type
-			delete (data as ISerializedTyped).data;
-			(data as ISerializedRef).id = id
+			ref = {id: index}
+			objectsMap[id] = ref
+			const data = {} as any
+			objects[index] = data
+			serialize(data as ISerializedTyped)
 		}
 
-		return data
+		return ref
 	}
 
 	private serializeObject<TValue>(
@@ -121,10 +115,14 @@ export class SerializerVisitor implements ISerializerVisitor {
 	}
 }
 
+// tslint:disable-next-line:no-shadowed-variable no-empty
+const LOCKED = function LOCKED() {}
+
 export class DeSerializerVisitor implements IDeSerializerVisitor {
 	private readonly _types: string[]
 	private readonly _objects: ISerializedTyped[]
 	private readonly _instances: any[]
+	private readonly _resolveInstances: Array<Array<TResolve<any>>>
 	private readonly _typeMeta: ITypeMetaSerializerCollection
 
 	constructor(
@@ -148,9 +146,10 @@ export class DeSerializerVisitor implements IDeSerializerVisitor {
 
 	public deSerialize<TValue extends any>(
 		serializedValue: ISerializedValue,
+		set?: (value: TValue) => void,
 		valueType?: TClass<TValue>,
 		valueFactory?: (...args) => TValue,
-	): TValue {
+	): TValue|ThenFunc<TValue> {
 		if (typeof serializedValue === 'undefined') {
 			return serializedValue
 		}
@@ -165,9 +164,23 @@ export class DeSerializerVisitor implements IDeSerializerVisitor {
 		const id = (serializedValue as ISerializedRef).id
 		if (id != null) {
 			const cachedInstance = this._instances[id]
+
+			if (cachedInstance === LOCKED) {
+				return (resolve: (value: TValue) => void): void => {
+					let resolveInstanceQueue = this._resolveInstances[id]
+					if (!resolveInstanceQueue) {
+						this._resolveInstances[id] = resolveInstanceQueue = []
+					}
+					resolveInstanceQueue.push(resolve)
+				}
+			}
+
 			if (cachedInstance) {
 				return cachedInstance
 			}
+
+			this._instances[id] = LOCKED
+
 			serializedValue = this._objects[id]
 		}
 
@@ -204,30 +217,85 @@ export class DeSerializerVisitor implements IDeSerializerVisitor {
 			throw new Error(`Class (${type}) serializer have no deSerialize method`)
 		}
 
-		const factory = valueFactory || meta.valueFactory
+		let factory = valueFactory || meta.valueFactory
 		if (id != null && !factory) {
 			throw new Error(`valueFactory not found for ${type}. Any object serializers should have valueFactory`)
 		}
 
 		let instance
 
-		const value = serializer.deSerialize(
+		const iteratorOrValue = serializer.deSerialize(
 			this.deSerialize,
 			(serializedValue as ISerializedTyped).data,
-			id != null
-				? (...args) => {
-					instance = factory(...args)
-					this._instances[id] = instance
-					return instance
+			(...args) => {
+				if (!factory) {
+					throw new Error('Multiple call valueFactory is forbidden')
 				}
-				: factory,
+
+				instance = factory(...args)
+				factory = null
+				this._instances[id] = instance
+
+				return instance
+			},
 		)
 
-		if (id != null && instance !== value) {
-			throw new Error(`valueFactory instance !== return value in serializer for ${type}`)
+		let resolveValueQueue
+
+		const resolveValue = (value: TValue) => {
+			if (id != null) {
+				if (!factory && instance !== value) {
+					throw new Error(`valueFactory instance !== return value in serializer for ${type}`)
+				}
+
+				const resolveInstanceQueue = this._resolveInstances[id]
+				delete this._resolveInstances[id]
+				if (resolveInstanceQueue) {
+					for (let i = 0, len = resolveInstanceQueue.length; i < len; i++) {
+						resolveInstanceQueue[i](value)
+					}
+				}
+			}
+
+			if (resolveValueQueue) {
+				for (let i = 0, len = resolveValueQueue.length; i < len; i++) {
+					resolveValueQueue[i](value)
+				}
+			}
+
+			if (set) {
+				set(value)
+			}
+
+			return value
 		}
 
-		return value
+		if (!(Symbol.iterator in iteratorOrValue)) {
+			return resolveValue(iteratorOrValue as TValue)
+		}
+
+		const thenValueFunc = (resolve: (value: TValue) => void): void => {
+			if (!resolveValueQueue) {
+				resolveValueQueue = []
+			}
+			resolveValueQueue.push(resolve)
+		}
+
+		const resolveIterator = (
+			iteration: IteratorResult<TValue|ThenFunc<TValue>>,
+		): TValue|ThenFunc<TValue> => {
+			if (iteration.done) {
+				return resolveValue(iteration.value as TValue)
+			}
+
+			(iteration.value as ThenFunc<TValue>)(o => {
+				resolveIterator(iteratorOrValue.next(o))
+			})
+
+			return thenValueFunc
+		}
+
+		return resolveIterator(iteratorOrValue.next())
 	}
 }
 
@@ -250,7 +318,7 @@ export class TypeMetaSerializerCollection
 
 	private static makeTypeMetaSerializer<TObject extends ISerializable>(
 		type: TSerializableClass<TObject>,
-		meta?: ITypeMetaSerializer<TObject>,
+		meta?: ITypeMetaSerializerOverride<TObject>,
 	): ITypeMetaSerializer<TObject> {
 		return {
 			uuid: type.uuid,
@@ -279,7 +347,7 @@ export class TypeMetaSerializerCollection
 
 	public putSerializableType<TObject extends ISerializable>(
 		type: TSerializableClass<TObject>,
-		meta?: ITypeMetaSerializer<TObject>,
+		meta?: ITypeMetaSerializerOverride<TObject>,
 	): ITypeMetaSerializer<TObject> {
 		return this.putType(type, TypeMetaSerializerCollection.makeTypeMetaSerializer(type, meta))
 	}
@@ -287,7 +355,7 @@ export class TypeMetaSerializerCollection
 
 export function registerSerializable<TObject extends ISerializable>(
 	type: TSerializableClass<TObject>,
-	meta?: ITypeMetaSerializer<TObject>|any,
+	meta?: ITypeMetaSerializerOverride<TObject>,
 ) {
 	TypeMetaSerializerCollection.default.putSerializableType(type, meta)
 }

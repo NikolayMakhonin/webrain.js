@@ -10,7 +10,6 @@ import {
 	registerSerializable,
 	TypeMetaSerializerCollection,
 } from '../../../../../../main/common/extensions/serialization/serializers'
-import {TClass} from '../../../../../../main/common/extensions/TypeMeta'
 
 declare const assert
 
@@ -97,17 +96,18 @@ describe('common > extensions > serialization > serializers', function() {
 		p5: undefined,
 		p6: new Date(),
 	}
-	obj.p6 = {
+	obj.p7 = {
 		...obj,
 	}
-	obj.p7 = Object.values(obj)
+	obj.p8 = Object.values(obj)
+	obj.p9 = obj
 
 	it('Object', function() {
 		const serialized = serializeValue(obj)
 		const result = deSerializeValue(serialized)
 
 		assert.notStrictEqual(result, obj)
-		assert.deepStrictEqual(result, obj)
+		assert.circularDeepStrictEqual(result, obj)
 	})
 
 	const arr = [Object.values(obj), ...Object.values(obj)]
@@ -117,7 +117,7 @@ describe('common > extensions > serialization > serializers', function() {
 		const result = deSerializeValue(serialized)
 
 		assert.notStrictEqual(result, arr)
-		assert.deepStrictEqual(result, arr)
+		assert.circularDeepStrictEqual(result, arr)
 	})
 
 	it('Map', function() {
@@ -130,7 +130,7 @@ describe('common > extensions > serialization > serializers', function() {
 		const result = deSerializeValue(serialized)
 
 		assert.notStrictEqual(result, map)
-		assert.deepStrictEqual(result, map)
+		assert.circularDeepStrictEqual(result, map)
 	})
 
 	it('Set', function() {
@@ -140,7 +140,7 @@ describe('common > extensions > serialization > serializers', function() {
 		const result = deSerializeValue(serialized)
 
 		assert.notStrictEqual(result, set)
-		assert.deepStrictEqual(result, set)
+		assert.circularDeepStrictEqual(result, set)
 	})
 
 	it('Date', function() {
@@ -150,7 +150,7 @@ describe('common > extensions > serialization > serializers', function() {
 		const result = deSerializeValue(serialized)
 
 		assert.notStrictEqual(result, date)
-		assert.deepStrictEqual(result, date)
+		assert.circularDeepStrictEqual(result, date)
 	})
 
 	class Class1 {
@@ -170,6 +170,7 @@ describe('common > extensions > serialization > serializers', function() {
 		serializer.typeMeta.putType(Class1, {
 			uuid: 'Class1 uuid',
 			serializer: TypeMetaSerializerCollection.default.getMeta(Object).serializer,
+			valueFactory: () => new Class1(),
 		})
 
 		assert.throws(() => serializeValue(obj1), Error)
@@ -179,7 +180,7 @@ describe('common > extensions > serialization > serializers', function() {
 		const result = serializer.deSerialize(serialized)
 
 		assert.notStrictEqual(result, obj1)
-		assert.deepStrictEqual(result, obj1)
+		assert.circularDeepStrictEqual(result, obj1)
 	})
 
 	class Class2 extends Class1 implements ISerializable {
@@ -211,14 +212,16 @@ describe('common > extensions > serialization > serializers', function() {
 		obj2.prop3 = 'p3'
 
 		assert.throws(() => serializeValue(obj2), Error)
-		registerSerializable(Class2, () => new Class2('prop2'))
+		registerSerializable(Class2, {
+			valueFactory: () => new Class2('prop2'),
+		})
 		const serialized = serializeValue(obj2)
 		const result = deSerializeValue(serialized, null, () => new Class2('p2'))
 
 		delete obj2.prop1
 
 		assert.notStrictEqual(result, obj2)
-		assert.deepStrictEqual(result, obj2)
+		assert.circularDeepStrictEqual(result, obj2)
 	})
 
 	class Class3 extends Class2 implements ISerializable {
@@ -251,7 +254,9 @@ describe('common > extensions > serialization > serializers', function() {
 		obj3.prop4 = 'p4'
 
 		assert.throws(() => serializeValue(obj3), Error)
-		registerSerializable(Class3, () => new Class3('prop2'))
+		registerSerializable(Class3, {
+			valueFactory: () => new Class3('prop2'),
+		})
 		const serialized = serializeValue(obj3)
 		const result = deSerializeValue(serialized)
 
@@ -259,6 +264,6 @@ describe('common > extensions > serialization > serializers', function() {
 		obj3.prop2 = 'prop2'
 
 		assert.notStrictEqual(result, obj3)
-		assert.deepStrictEqual(result, obj3)
+		assert.circularDeepStrictEqual(result, obj3)
 	})
 })

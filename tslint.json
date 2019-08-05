@@ -26,6 +26,8 @@
 	"prefer-for-of": false,
 	"one-line": [true, "check-catch", "check-finally", "check-else", "check-whitespace"],
 	"no-empty-interface": false,
+	"no-void-expression": true,
+	"return-undefined": true,
 
 	"only-arrow-functions": false,
 	"no-console": false
