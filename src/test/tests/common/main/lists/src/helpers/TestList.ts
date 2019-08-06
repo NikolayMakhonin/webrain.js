@@ -7,7 +7,7 @@ import {
 import {IPropertyChangedEvent} from '../../../../../../../main/common/lists/contracts/IPropertyChanged'
 import {compareFast} from '../../../../../../../main/common/lists/helpers/compare'
 import {SortedList} from '../../../../../../../main/common/lists/SortedList'
-import {IOptionsVariant, IOptionsVariants, ITestCase, TestVariants} from '../../../helpers/TestVariants'
+import {IOptionsVariant, IOptionsVariants, ITestCase, TestVariants} from '../../../src/helpers/TestVariants'
 
 declare const assert
 

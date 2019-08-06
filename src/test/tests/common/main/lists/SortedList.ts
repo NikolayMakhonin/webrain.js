@@ -3,7 +3,7 @@ import {
 } from '../../../../../main/common/lists/contracts/IListChanged'
 import {compareFast} from '../../../../../main/common/lists/helpers/compare'
 import {getDefaultValue, SortedList} from '../../../../../main/common/lists/SortedList'
-import {ITestActionsWithDescription} from '../helpers/TestVariants'
+import {ITestActionsWithDescription} from '../src/helpers/TestVariants'
 import {allValues, generateArray, shuffle, toIterable} from './src/helpers/common'
 import {
 	IListAction,

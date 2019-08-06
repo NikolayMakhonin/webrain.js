@@ -2,7 +2,7 @@ import {
 	MapChangedType,
 } from '../../../../../main/common/lists/contracts/IMapChanged'
 import {ObservableMap} from '../../../../../main/common/lists/ObservableMap'
-import {ITestActionsWithDescription, THIS} from '../helpers/TestVariants'
+import {ITestActionsWithDescription, THIS} from '../src/helpers/TestVariants'
 import {allValues, shuffle} from './src/helpers/common'
 import {
 	IMapAction,

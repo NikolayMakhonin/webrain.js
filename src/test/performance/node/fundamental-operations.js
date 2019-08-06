@@ -7,6 +7,7 @@ import {SortedList} from '../../../main/common/lists/SortedList'
 import {ArraySet} from '../../../main/common/lists/ArraySet'
 import {createObject, Tester} from '../../tests/common/main/rx/deep-subscribe/helpers/Tester'
 import {SynchronousPromise} from 'synchronous-promise'
+import {ThenableSync} from "../../../main/common/helpers/ThenableSync";
 
 const SetNative = Set
 require('./src/SetPolyfill')
@@ -1229,26 +1230,32 @@ describe('fundamental-operations', function () {
 	it('Promise sync', function () {
 		this.timeout(300000)
 
-SynchronousPromise.
 		const result = calcPerformance(
-			120000,
+			1000,
 			() => {
 				// no operations
 			},
 			() => {
-				arrSimple[i] = i
-				i = (i + 7) % size
-				return arrSimple[i]
+				let resolve
+				let result
+				new SynchronousPromise(o => {
+					resolve = o
+				})
+					.then(o => true)
+					.then(o => (result = o))
+
+				resolve(1)
 			},
 			() => {
-				arrConstructorFilled[i] = i
-				i = (i + 7) % size
-				return arrConstructorFilled[i]
-			},
-			() => {
-				arrConstructor[i] = i
-				i = (i + 7) % size
-				return arrConstructor[i]
+				let resolve
+				let result
+				new ThenableSync(o => {
+					resolve = o
+				})
+					.then(o => true)
+					.then(o => (result = o))
+
+				resolve(1)
 			}
 		)
 

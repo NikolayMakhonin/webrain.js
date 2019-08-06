@@ -1,12 +1,10 @@
-// @ts-ignore
-// noinspection ES6UnusedImports
-import fastCopy from 'fast-copy'
 /* tslint:disable:no-construct use-primitive-type */
+import fastCopy from 'fast-copy'
 import {IMergeOptions, ITypeMetaMerger} from '../../../../../../../main/common/extensions/merge/contracts'
 import {ObjectMerger, TypeMetaMergerCollection} from '../../../../../../../main/common/extensions/merge/mergers'
 import {TClass} from '../../../../../../../main/common/extensions/TypeMeta'
-import {SortedList} from '../../../../../../../main/common/lists/SortedList';
-import {IOptionsVariant, IOptionsVariants, ITestCase, TestVariants} from '../../../helpers/TestVariants'
+import {SortedList} from '../../../../../../../main/common/lists/SortedList'
+import {IOptionsVariant, IOptionsVariants, ITestCase, TestVariants} from '../../../src/helpers/TestVariants'
 
 declare const assert
 // declare function fastCopy<T extends any>(o: T): T

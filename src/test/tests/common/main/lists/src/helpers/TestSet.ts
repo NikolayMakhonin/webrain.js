@@ -17,7 +17,7 @@ import {
 import {compareFast} from '../../../../../../../main/common/lists/helpers/compare'
 import {ObjectSet} from '../../../../../../../main/common/lists/ObjectSet'
 import {ObservableSet} from '../../../../../../../main/common/lists/ObservableSet'
-import {IOptionsVariant, IOptionsVariants, ITestCase, TestVariants, THIS} from '../../../helpers/TestVariants'
+import {IOptionsVariant, IOptionsVariants, ITestCase, TestVariants, THIS} from '../../../src/helpers/TestVariants'
 import {convertToObject, indexOfNaN} from './common'
 
 declare const assert

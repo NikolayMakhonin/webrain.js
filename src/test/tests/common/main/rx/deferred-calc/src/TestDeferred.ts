@@ -3,7 +3,7 @@ import {
 	IPropertyChangedEvent,
 } from '../../../../../../../main/common/lists/contracts/IPropertyChanged'
 import {DeferredCalc} from '../../../../../../../main/common/rx/deferred-calc/DeferredCalc'
-import {IOptionsVariant, IOptionsVariants, ITestCase, TestVariants, THIS} from '../../../helpers/TestVariants'
+import {IOptionsVariant, IOptionsVariants, ITestCase, TestVariants, THIS} from '../../../src/helpers/TestVariants'
 import {TestTiming} from './timing'
 
 declare const assert

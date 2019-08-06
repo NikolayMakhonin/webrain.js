@@ -14,7 +14,7 @@ import {compareFast} from '../../../../../../../main/common/lists/helpers/compar
 import {ObjectHashMap} from '../../../../../../../main/common/lists/ObjectHashMap'
 import {ObjectMap} from '../../../../../../../main/common/lists/ObjectMap'
 import {ObservableMap} from '../../../../../../../main/common/lists/ObservableMap'
-import {IOptionsVariant, IOptionsVariants, ITestCase, TestVariants, THIS} from '../../../helpers/TestVariants'
+import {IOptionsVariant, IOptionsVariants, ITestCase, TestVariants, THIS} from '../../../src/helpers/TestVariants'
 import {convertToObject} from './common'
 
 declare const assert
