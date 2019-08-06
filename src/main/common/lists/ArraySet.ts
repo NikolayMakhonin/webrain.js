@@ -10,6 +10,7 @@ import {
 	ISerializeValue,
 } from '../extensions/serialization/contracts'
 import {registerSerializable, registerSerializer} from '../extensions/serialization/serializers'
+import {isIterable} from '../helpers/helpers'
 import {getObjectUniqueId} from './helpers/object-unique-id'
 import {fillSet} from './helpers/set'
 
@@ -133,7 +134,7 @@ export class ArraySet<T extends Object> implements
 
 		return source[Symbol.toStringTag] === 'Set'
 			|| Array.isArray(source)
-			|| Symbol.iterator in source
+			|| isIterable(source)
 	}
 
 	public _merge(

@@ -1,4 +1,5 @@
 /* tslint:disable:no-identical-functions */
+import {isIterable} from '../../helpers/helpers'
 import {IMergeOptions, IMergeValue} from './contracts'
 
 // tslint:disable-next-line:no-empty no-shadowed-variable
@@ -181,7 +182,7 @@ export function createMergeMapWrapper<K, V>(
 		return new MergeMapWrapper(source as Map<K, V>)
 	}
 
-	if (arrayOrIterableToMap && (Array.isArray(source) || Symbol.iterator in source)) {
+	if (arrayOrIterableToMap && (Array.isArray(source) || isIterable(source))) {
 		return createMergeMapWrapper(target, arrayOrIterableToMap(source), null)
 	}
 

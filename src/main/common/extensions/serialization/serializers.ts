@@ -1,3 +1,4 @@
+import {ThenableSync} from '../../helpers/ThenableSync'
 import {getObjectUniqueId} from '../../lists/helpers/object-unique-id'
 import {TClass, TypeMetaCollectionWithId} from '../TypeMeta'
 import {
@@ -9,9 +10,8 @@ import {
 	ISerializedValue, ISerializedValueArray,
 	ISerializerVisitor, ISerializeValue,
 	ITypeMetaSerializer, ITypeMetaSerializerCollection,
-	ITypeMetaSerializerOverride,
+	ITypeMetaSerializerOverride, ThenableIterator,
 } from './contracts'
-import {ThenableSync} from "../../helpers/ThenableSync";
 
 // region SerializerVisitor
 
@@ -177,14 +177,14 @@ export class DeSerializerVisitor implements IDeSerializerVisitor {
 		valueType?: TClass<TValue>,
 		valueFactory?: (...args) => TValue,
 	): TValue|ThenableSync<TValue> {
-		if (typeof serializedValue === 'undefined') {
-			return serializedValue
-		}
-
-		if (serializedValue === null
+		if (serializedValue == null
 			|| typeof serializedValue === 'number'
 			|| typeof serializedValue === 'string'
-			|| typeof serializedValue === 'boolean') {
+			|| typeof serializedValue === 'boolean'
+		) {
+			if (set) {
+				set(serializedValue as unknown as TValue)
+			}
 			return serializedValue as unknown as TValue
 		}
 
@@ -194,8 +194,20 @@ export class DeSerializerVisitor implements IDeSerializerVisitor {
 
 			if (cachedInstance) {
 				if (cachedInstance === LOCKED) {
-					this._instances[id] = cachedInstance = new ThenableSync()
+					this._instances[id] = cachedInstance = new ThenableSync<TValue>()
 				}
+
+				if (set) {
+					if (cachedInstance instanceof ThenableSync) {
+						(cachedInstance as ThenableSync<TValue>)
+							.thenLast(value => {
+								set(value)
+							})
+					} else {
+						set(cachedInstance)
+					}
+				}
+
 				return cachedInstance
 			}
 
@@ -284,7 +296,7 @@ export class DeSerializerVisitor implements IDeSerializerVisitor {
 			return value
 		}
 
-		const valueOrThenFunc = ThenableSync.resolveIterator(iteratorOrValue, resolveValue)
+		const valueOrThenFunc = ThenableSync.resolve(iteratorOrValue, resolveValue)
 
 		if (id != null && !factory && ThenableSync.isThenableSync(valueOrThenFunc)) {
 			resolveInstance(instance)
@@ -318,7 +330,7 @@ export class TypeMetaSerializerCollection
 	): ITypeMetaSerializer<TObject> {
 		return {
 			uuid: type.uuid,
-			valueFactory: (...args) => new (type as new () => TObject)(...args),
+			valueFactory: (...args) => new (type as new (...args: any[]) => TObject)(...args),
 			...meta,
 			serializer: {
 				serialize(
@@ -458,7 +470,7 @@ export function *deSerializeArray<T>(
 	deSerialize: IDeSerializeValue,
 	serializedValue: ISerializedValueArray,
 	value: T[],
-): Iterator<T[]|TThen<any>> {
+): ThenableIterator<T[]> {
 	for (let i = 0, len = serializedValue.length; i < len; i++) {
 		value[i] = yield deSerialize(serializedValue[i])
 	}
@@ -478,8 +490,8 @@ export function serializeIterable(
 
 export function *deSerializeIterableOrdered(
 	serializedValue: ISerializedValueArray,
-	add: (item: any) => void|TThenAny,
-): Iterator<void|TThenAny> {
+	add: (item: any) => void|ThenableSync<any>,
+): ThenableIterator<any> {
 	for (let i = 0, len = serializedValue.length; i < len; i++) {
 		yield add(serializedValue[i])
 	}
@@ -518,7 +530,7 @@ registerSerializer<object>(Object, {
 			const value = valueFactory()
 			for (const key in serializedValue as ISerializedObject) {
 				if (Object.prototype.hasOwnProperty.call(serializedValue, key)) {
-					value[key] = deSerialize(serializedValue[key])
+					deSerialize(serializedValue[key], o => { value[key] = o })
 				}
 			}
 			return value
@@ -541,7 +553,7 @@ registerSerializer<any[]>(Array, {
 			deSerialize: IDeSerializeValue,
 			serializedValue: ISerializedValueArray,
 			valueFactory: (...args) => any[],
-		): Iterator<any[]|TThenAny> {
+		): ThenableIterator<any[]> {
 			return deSerializeArray(deSerialize, serializedValue, valueFactory())
 		},
 	},
@@ -564,7 +576,7 @@ registerSerializer<Set<any>>(Set, {
 			valueFactory: (...args) => Set<any>,
 		): Set<any> {
 			const value = valueFactory()
-			deSerializeIterable(serializedValue, o => deSerialize(o, val => value.add(val)))
+			deSerializeIterable(serializedValue, o => deSerialize(o, val => { value.add(val) }))
 			return value
 		},
 	},

@@ -1,3 +1,4 @@
+import {isIterable} from '../../helpers/helpers'
 import {IUnsubscribe} from '../subjects/subject'
 import {IRuleSubscribe} from './contracts/rule-subscribe'
 import {IRule, IRuleAction, IRuleAny, IRuleRepeat, RuleType} from './contracts/rules'
@@ -89,7 +90,7 @@ export function subscribeNextRule(
 
 	const ruleOrIterable = iteration.value
 
-	if (Symbol.iterator in ruleOrIterable) {
+	if (isIterable(ruleOrIterable)) {
 		let unsubscribers: IUnsubscribe[]
 
 		// for (let step, innerIterator = ruleOrIterable[Symbol.iterator](); !(step = innerIterator.next()).done;) {

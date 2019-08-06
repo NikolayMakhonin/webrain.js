@@ -1,5 +1,6 @@
 /* tslint:disable:no-shadowed-variable no-empty */
 /* eslint-disable no-useless-escape,computed-property-spacing */
+import {isIterable} from '../../../../../../main/common/helpers/helpers'
 import {IRule, RuleType} from '../../../../../../main/common/rx/deep-subscribe/contracts/rules'
 import {PeekIterator} from '../../../../../../main/common/rx/deep-subscribe/helpers/PeekIterator'
 import {
@@ -23,7 +24,7 @@ describe('common > main > rx > deep-subscribe > iterate-rule', function() {
 	}
 
 	function *resolveRules(ruleOrIterable: IRuleOrIterable): Iterable<IRule> {
-		if (!(Symbol.iterator in ruleOrIterable)) {
+		if (!isIterable(ruleOrIterable)) {
 			yield ruleOrIterable as IRule
 			return
 		}

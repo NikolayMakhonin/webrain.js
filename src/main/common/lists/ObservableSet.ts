@@ -9,6 +9,7 @@ import {
 	ISerializeValue,
 } from '../extensions/serialization/contracts'
 import {registerSerializable, registerSerializer} from '../extensions/serialization/serializers'
+import {isIterable} from '../helpers/helpers'
 import {SetChangedObject} from './base/SetChangedObject'
 import {IObservableSet, SetChangedType} from './contracts/ISetChanged'
 import {fillSet} from './helpers/set'
@@ -157,7 +158,7 @@ export class ObservableSet<T> extends SetChangedObject<T> implements
 		return source.constructor === Object
 			|| source[Symbol.toStringTag] === 'Set'
 			|| Array.isArray(source)
-			|| Symbol.iterator in source
+			|| isIterable(source)
 	}
 
 	public _merge(

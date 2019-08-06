@@ -1,4 +1,5 @@
 /* tslint:disable:no-identical-functions */
+import {isIterable} from '../../helpers/helpers'
 import {IListChanged, ListChangedType} from '../../lists/contracts/IListChanged'
 import {IMapChanged, MapChangedType} from '../../lists/contracts/IMapChanged'
 import {IPropertyChanged} from '../../lists/contracts/IPropertyChanged'
@@ -7,7 +8,7 @@ import {IUnsubscribe} from '../subjects/subject'
 import {ANY, COLLECTION_PREFIX} from './contracts/constants'
 import {IRuleSubscribe, ISubscribeObject} from './contracts/rule-subscribe'
 import {IRule, RuleType} from './contracts/rules'
-import {checkUnsubscribe} from "./helpers/common";
+import {checkUnsubscribe} from './helpers/common'
 
 // function propertyPredicateAll(propertyName: string, object) {
 // 	return Object.prototype.hasOwnProperty.call(object, propertyName)
@@ -88,7 +89,7 @@ function subscribeIterable<TItem>(
 	subscribeItem: (item: TItem, debugPropertyName: string) => void,
 	unsubscribeItem: (item: TItem, debugPropertyName: string) => void,
 ): IUnsubscribe {
-	if (!object || !(Symbol.iterator in object)) {
+	if (!object || !isIterable(object)) {
 		return null
 	}
 

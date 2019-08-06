@@ -8,6 +8,7 @@ import {
 	ISerializeValue,
 } from '../extensions/serialization/contracts'
 import {registerSerializable, registerSerializer} from '../extensions/serialization/serializers'
+import {isIterable} from '../helpers/helpers'
 import {MapChangedObject} from './base/MapChangedObject'
 import {IObservableMap, MapChangedType} from './contracts/IMapChanged'
 import {fillMap} from './helpers/set'
@@ -181,7 +182,7 @@ export class ObservableMap<K, V>
 		return source.constructor === Object
 			|| source[Symbol.toStringTag] === 'Map'
 			|| Array.isArray(source)
-			|| Symbol.iterator in source
+			|| isIterable(source)
 	}
 
 	public _merge(

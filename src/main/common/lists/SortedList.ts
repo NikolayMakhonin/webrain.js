@@ -10,6 +10,7 @@ import {
 	ISerializeValue,
 } from '../extensions/serialization/contracts'
 import {deSerializeArray, registerSerializable, serializeArray} from '../extensions/serialization/serializers'
+import {isIterable} from '../helpers/helpers'
 import {ListChangedObject} from './base/ListChangedObject'
 import {ICompare} from './contracts/ICompare'
 import {IListChangedObject, ListChangedType} from './contracts/IListChanged'
@@ -1163,7 +1164,7 @@ export class SortedList<T>
 			&& (source.constructor === Object
 				|| source[Symbol.toStringTag] === 'Set'
 				|| Array.isArray(source)
-				|| Symbol.iterator in source)
+				|| isIterable(source))
 	}
 
 	public _merge(
@@ -1269,7 +1270,7 @@ export function createMergeSortedListWrapper<V>(
 		return new MergeSortedListWrapper(source as SortedList<V>)
 	}
 
-	if (arrayOrIterableToSortedList && (Array.isArray(source) || Symbol.iterator in source)) {
+	if (arrayOrIterableToSortedList && (Array.isArray(source) || isIterable(source))) {
 		return createMergeSortedListWrapper(target, arrayOrIterableToSortedList(source), null)
 	}
 

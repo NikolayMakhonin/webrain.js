@@ -1,4 +1,5 @@
 /* tslint:disable:no-nested-switch ban-types use-primitive-type */
+import {isIterable} from '../../helpers/helpers'
 import {fillMap, fillSet} from '../../lists/helpers/set'
 import {TClass, TypeMetaCollection} from '../TypeMeta'
 import {
@@ -807,7 +808,7 @@ registerMerger<Set<any>, Set<any>>(Set, {
 			return source.constructor === Object
 				|| source[Symbol.toStringTag] === 'Set'
 				|| Array.isArray(source)
-				|| Symbol.iterator in source
+				|| isIterable(source)
 		},
 		merge<T>(
 			merge: IMergeValue,
@@ -848,7 +849,7 @@ registerMerger<Map<any, any>, Map<any, any>>(Map, {
 			return source.constructor === Object
 				|| source[Symbol.toStringTag] === 'Map'
 				|| Array.isArray(source)
-				|| Symbol.iterator in source
+				|| isIterable(source)
 		},
 		merge<K, V>(
 			merge: IMergeValue,

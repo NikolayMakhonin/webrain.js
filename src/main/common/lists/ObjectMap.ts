@@ -8,6 +8,7 @@ import {
 	ISerializeValue,
 } from '../extensions/serialization/contracts'
 import {registerSerializable, registerSerializer} from '../extensions/serialization/serializers'
+import {isIterable} from '../helpers/helpers'
 import {fillMap} from './helpers/set'
 
 export class ObjectMap<V> implements
@@ -106,7 +107,7 @@ export class ObjectMap<V> implements
 		return source.constructor === Object
 			|| source[Symbol.toStringTag] === 'Map'
 			|| Array.isArray(source)
-			|| Symbol.iterator in source
+			|| isIterable(source)
 	}
 
 	public _merge(

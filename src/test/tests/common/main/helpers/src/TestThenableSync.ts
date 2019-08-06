@@ -4,21 +4,13 @@ import {IOptionsVariant, IOptionsVariants, ITestCase, TestVariants} from '../../
 
 declare const assert
 
-// export enum ValueType {
-// 	Value,
-// 	ThenableSync,
-// 	Iterator,
-// }
-
 export interface IThenableSyncOptionsVariant {
 	value?: any
 	valueAsThenableSync?: boolean
 	valueIsResolved?: boolean
 	createWithExecutor?: boolean
-	createWithResolver?: boolean
 	createWithIterator?: number
 	resolveImmediate?: boolean
-	getValueWithResolveIterator?: number
 	getValueWithResolve?: number
 	getValueWithThen?: number
 }
@@ -33,10 +25,8 @@ interface IThenableSyncOptionsVariants extends IOptionsVariants {
 	valueAsThenableSync?: boolean[]
 	valueIsResolved?: boolean[]
 	createWithExecutor?: boolean[]
-	createWithResolver?: boolean[]
 	createWithIterator?: number[]
 	resolveImmediate?: boolean[]
-	getValueWithResolveIterator?: number[]
 	getValueWithResolve?: number[]
 	getValueWithThen?: number[]
 }
@@ -87,11 +77,14 @@ function createWithExecutor<T>() {
 	return [thenable, resultResolve]
 }
 
-const OBJ = {}
-const THEN_LIKE = { then: () => {} }
-const FUNC = () => {}
-const ITERATOR = (function *() { yield OBJ })()
-const ITERABLE = new Set()
+export const OBJ = {}
+export const THEN_LIKE = { then: () => {} }
+export const FUNC = () => {}
+export const ITERABLE = new Set()
+export const ITERATOR = (function *() {
+	yield OBJ
+	return ITERABLE
+})
 
 function createWithIterator<T, TResult>(
 	value: T | ThenableSync<T>,
@@ -106,8 +99,8 @@ function createWithIterator<T, TResult>(
 		assert.strictEqual(yield OBJ, OBJ)
 		assert.strictEqual(yield FUNC, FUNC)
 		assert.strictEqual(yield THEN_LIKE, THEN_LIKE)
-		assert.strictEqual(yield ITERATOR, ITERATOR)
 		assert.strictEqual(yield ITERABLE, ITERABLE)
+		assert.strictEqual(yield ITERATOR(), ITERABLE)
 
 		assert.strictEqual(yield new ThenableSync(resolve => resolve(void 0)), void 0)
 		assert.strictEqual(yield new ThenableSync(resolve => resolve(null)), null)
@@ -117,13 +110,13 @@ function createWithIterator<T, TResult>(
 		assert.strictEqual(yield new ThenableSync(resolve => resolve(OBJ)), OBJ)
 		assert.strictEqual(yield new ThenableSync(resolve => resolve(FUNC)), FUNC)
 		assert.strictEqual(yield new ThenableSync(resolve => resolve(THEN_LIKE)), THEN_LIKE)
-		assert.strictEqual(yield new ThenableSync(resolve => resolve(ITERATOR)), ITERATOR)
 		assert.strictEqual(yield new ThenableSync(resolve => resolve(ITERABLE)), ITERABLE)
+		assert.strictEqual(yield new ThenableSync(resolve => resolve(ITERATOR())), ITERABLE)
 
 		return value
 	})()
 
-	return ThenableSync.resolveIterator<T, TResult>(iterator, onfulfilled)
+	return ThenableSync.resolve<T, TResult>(iterator, onfulfilled)
 }
 
 export class TestThenableSync extends TestVariants<
@@ -137,14 +130,12 @@ export class TestThenableSync extends TestVariants<
 	}
 
 	protected baseOptionsVariants: IThenableSyncOptionsVariants = {
-		value: [void 0, null, false, 0, '', OBJ, FUNC, THEN_LIKE, ITERATOR, ITERABLE],
+		value: [void 0, null, false, 0, '', OBJ, FUNC, THEN_LIKE, ITERABLE, ITERATOR],
 		valueAsThenableSync: [false, true],
 		valueIsResolved: [false, true],
 		createWithExecutor: [false, true],
-		createWithResolver: [false, true],
 		createWithIterator: [0, 1, 3],
 		resolveImmediate: [true, false],
-		getValueWithResolveIterator: [0, 1, 3],
 		getValueWithResolve: [0, 1, 3],
 		getValueWithThen: [0, 1, 3],
 	}
@@ -161,6 +152,10 @@ export class TestThenableSync extends TestVariants<
 
 				const action = () => {
 					let value = options.value
+					if (value === ITERATOR) {
+						value = ITERATOR()
+					}
+
 					const resolveImmediate = options.resolveImmediate
 						&& (!options.valueAsThenableSync || options.valueIsResolved)
 
@@ -193,31 +188,31 @@ export class TestThenableSync extends TestVariants<
 						resolve(value)
 					}
 
-					if (options.createWithResolver) {
-						const oldValue = value
-						value = ThenableSync.resolve(value)
-						assert.strictEqual(value,
-							options.valueAsThenableSync && options.valueIsResolved
-								? options.value
-								: oldValue)
-						thenable = ThenableSync.resolve(thenable)
-					}
+					// if (options.createWithResolver) {
+					// 	const oldValue = value
+					// 	value = ThenableSync.resolve(value)
+					// 	assert.strictEqual(value,
+					// 		options.valueAsThenableSync && options.valueIsResolved
+					// 			? options.value
+					// 			: oldValue)
+					// 	thenable = ThenableSync.resolve(thenable)
+					// }
 
-					if (options.createWithIterator) {
-						if (!value || !(Symbol.iterator in value))
-						{
-							const oldValue = value
-							value = ThenableSync.resolveIterator(value)
-							assert.strictEqual(value,
-								options.valueAsThenableSync && options.valueIsResolved
-									? options.value
-									: oldValue)
-						}
-
-						if (!thenable || !(Symbol.iterator in thenable)) {
-							thenable = ThenableSync.resolveIterator(thenable)
-						}
-					}
+					// if (options.createWithIterator) {
+					// 	if (!value || !(isIterable(value)))
+					// 	{
+					// 		const oldValue = value
+					// 		value = ThenableSync.resolve(value)
+					// 		assert.strictEqual(value,
+					// 			options.valueAsThenableSync && options.valueIsResolved
+					// 				? options.value
+					// 				: oldValue)
+					// 	}
+					//
+					// 	if (!thenable || !(isIterable(thenable))) {
+					// 		thenable = ThenableSync.resolve(thenable)
+					// 	}
+					// }
 
 					let countQueued = 0
 					let countFulfilled = 0
@@ -248,7 +243,7 @@ export class TestThenableSync extends TestVariants<
 					}
 
 					for (let i = 0; i < options.createWithIterator; i++) {
-						if (options.getValueWithResolveIterator) {
+						if (options.getValueWithResolve) {
 							countQueued++
 							let fulfilled
 							checkResult(createWithIterator(thenable, o => {
@@ -263,9 +258,7 @@ export class TestThenableSync extends TestVariants<
 						thenable = createWithIterator(thenable)
 					}
 
-					if (resolveImmediate
-						&& (options.createWithIterator || options.createWithResolver)
-					) {
+					if (resolveImmediate && options.createWithIterator) {
 						assert.strictEqual(thenable, options.expected.value)
 					} else {
 						assert.strictEqual(thenable && thenable.constructor, ThenableSync)
@@ -298,20 +291,6 @@ export class TestThenableSync extends TestVariants<
 							countFulfilled++
 							return fulfillResult
 						}))
-					}
-
-					if (!thenable || !(Symbol.iterator in thenable)) {
-						for (let i = 0; i < options.getValueWithResolveIterator; i++) {
-							countQueued++
-							let fulfilled
-							checkResult(ThenableSync.resolveIterator(thenable, o => {
-								assert.notOk(fulfilled)
-								fulfilled = true
-								assert.strictEqual(o, options.expected.value)
-								countFulfilled++
-								return fulfillResult
-							}))
-						}
 					}
 
 					if (!options.resolveImmediate) {

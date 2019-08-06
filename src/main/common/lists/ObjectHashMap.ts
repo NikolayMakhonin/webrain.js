@@ -8,6 +8,7 @@ import {
 	ISerializeValue,
 } from '../extensions/serialization/contracts'
 import {registerSerializable, registerSerializer} from '../extensions/serialization/serializers'
+import {isIterable} from '../helpers/helpers'
 import {getObjectUniqueId} from './helpers/object-unique-id'
 import {fillMap} from './helpers/set'
 
@@ -129,7 +130,7 @@ export class ObjectHashMap<K, V> implements
 
 		return source[Symbol.toStringTag] === 'Map'
 			|| Array.isArray(source)
-			|| Symbol.iterator in source
+			|| isIterable(source)
 	}
 
 	public _merge(

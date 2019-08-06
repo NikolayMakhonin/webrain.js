@@ -1,6 +1,10 @@
 import {ThenableSync} from '../../helpers/ThenableSync'
 import {ITypeMetaWithId, TClass, TypeMetaCollectionWithId} from '../TypeMeta'
 
+export interface ThenableIterator<TValue>
+	extends Iterator<TValue|any|ThenableSync<any>|ThenableIterator<TValue>>
+{}
+
 // region Serialized Value
 
 export type ISerializedTypedValue = ISerializedPrimitive|ISerializedValueArray|ISerializedObject
@@ -64,7 +68,7 @@ export interface IValueSerializer<TValue extends any> {
 		deSerialize: IDeSerializeValue,
 		serializedValue: ISerializedTypedValue,
 		valueFactory: (...args) => TValue,
-	): TValue|Iterator<TValue|any|ThenableSync<any>>
+	): TValue|ThenableIterator<TValue>
 }
 
 export interface ISerializer {
@@ -95,7 +99,7 @@ export interface ITypeMetaSerializerOverride<TValue extends any> {
 			deSerialize: IDeSerializeValue,
 			serializedValue: ISerializedTypedValue,
 			valueFactory: (...args) => TValue,
-		): TValue|Iterator<TValue|any|ThenableSync<any>>,
+		): TValue|ThenableIterator<TValue>,
 	}
 	valueFactory?: (...args) => any
 }
@@ -119,7 +123,7 @@ export interface ISerializable {
 	deSerialize(
 		deSerialize: IDeSerializeValue,
 		serializedValue: ISerializedTypedValue,
-	): void|Iterator<any|ThenableSync<any>>
+	): void|ThenableIterator<any>
 }
 
 // endregion

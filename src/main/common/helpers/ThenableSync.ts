@@ -1,3 +1,5 @@
+import {isIterable} from './helpers'
+
 export type TResolve<TValue extends any>
 	= (value?: TValue | ThenableSync<TValue>) => TValue | ThenableSync<TValue>
 export type TExecutor<TValue extends any> = (resolve: TResolve<TValue>) => void
@@ -33,6 +35,8 @@ export class ThenableSync<TValue extends any> {
 			throw new Error(`Multiple call resolve() is forbidden; status = ${_status}`)
 		}
 
+		value = ThenableSync.resolve(value)
+
 		if (ThenableSync.isThenableSync(value)) {
 			this._status = ThenableSyncStatus.Resolving
 
@@ -51,6 +55,8 @@ export class ThenableSync<TValue extends any> {
 				_onfulfilled[i](value as TValue)
 			}
 		}
+
+		return value
 	}
 
 	private _then<TResult extends any>(
@@ -63,7 +69,7 @@ export class ThenableSync<TValue extends any> {
 				return _value as any
 			}
 
-			const result = onfulfilled(_value as TValue)
+			const result = ThenableSync.resolve(onfulfilled(_value as TValue))
 
 			return lastExpression || ThenableSync.isThenableSync(result)
 				? result
@@ -111,11 +117,20 @@ export class ThenableSync<TValue extends any> {
 		return value instanceof ThenableSync
 	}
 
-	public static resolveIterator<TValue extends any, TResult extends any = TValue>(
+	public static resolve<TValue extends any, TResult extends any = TValue>(
 		value: TValue|ThenableSync<TValue>|Iterator<TValue|ThenableSync<any>|any>,
 		onfulfilled?: TOnFulfilled<TValue, TResult>,
 	): TResult|ThenableSync<TResult> {
-		if (value && Symbol.iterator in value && !ThenableSync.isThenableSync(value)) {
+		if (ThenableSync.isThenableSync(value)) {
+			value = (value as ThenableSync<TValue>)
+				.thenLast(onfulfilled) as any
+
+			return value as any
+		}
+
+		if (value && isIterable(value)
+			&& typeof (value as any).next === 'function'
+		) {
 			const iterator = value as Iterator<TValue | ThenableSync<any>>
 			const resolveIterator = (
 				iteration: IteratorResult<TValue|ThenableSync<TValue>|Iterator<TValue|ThenableSync<any>>>,
@@ -130,20 +145,13 @@ export class ThenableSync<TValue extends any> {
 			}
 
 			value = resolveIterator((value as Iterator<TValue | ThenableSync<any>>).next())
+
+			return this.resolve(value, onfulfilled)
 		}
 
-		return ThenableSync.resolve(value as any, onfulfilled)
-	}
-
-	public static resolve<TValue extends any, TResult extends any = TValue>(
-		value: TValue|ThenableSync<TValue>,
-		onfulfilled?: TOnFulfilled<TValue, TResult>,
-	): TResult|ThenableSync<TResult> {
-		if (ThenableSync.isThenableSync(value)) {
-			value = (value as ThenableSync<TValue>)
-				.thenLast(onfulfilled) as any
-		} else if (onfulfilled) {
+		if (onfulfilled) {
 			value = onfulfilled(value as TValue) as any
+			return this.resolve(value)
 		}
 
 		return value as any

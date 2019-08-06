@@ -1,4 +1,4 @@
-/* eslint-disable no-new-func,no-array-constructor,object-property-newline,no-undef,no-empty,no-shadow,no-prototype-builtins,prefer-destructuring,prefer-rest-params */
+/* eslint-disable no-new-func,no-array-constructor,object-property-newline,no-undef,no-empty,no-shadow,no-prototype-builtins,prefer-destructuring,prefer-rest-params,arrow-body-style */
 
 import {calcPerformance} from 'rdtsc'
 import {binarySearch} from '../../../main/common/lists/helpers/array'
@@ -8,7 +8,7 @@ import {ArraySet} from '../../../main/common/lists/ArraySet'
 import {createObject, Tester} from '../../tests/common/main/rx/deep-subscribe/helpers/Tester'
 import {SynchronousPromise} from 'synchronous-promise'
 import {ThenableSync} from '../../../main/common/helpers/ThenableSync'
-import {checkUnsubscribe} from '../../../main/common/rx/deep-subscribe/helpers/common'
+import {isIterable} from '../../../main/common/helpers/helpers'
 
 const SetNative = Set
 require('./src/SetPolyfill')
@@ -1228,7 +1228,7 @@ describe('fundamental-operations', function () {
 		console.log(result)
 	})
 
-	it('delete property', function () {
+	xit('delete property', function () {
 		this.timeout(300000)
 
 		const obj = {}
@@ -1268,7 +1268,7 @@ describe('fundamental-operations', function () {
 		console.log(result)
 	})
 
-	it('Promise sync', function () {
+	xit('Promise sync', function () {
 		this.timeout(300000)
 
 		const result = calcPerformance(
@@ -1317,6 +1317,52 @@ describe('fundamental-operations', function () {
 					.then(o => (result = o))
 
 				resolve(1)
+			}
+		)
+
+		console.log(result)
+	})
+
+	it('is iterable', function () {
+		this.timeout(300000)
+
+		const iterable = true
+		const iterable2 = {
+			* [Symbol.iterator]() {
+				for (let i = 0; i < 100; i++) {
+					if (Math.random() > 1) {
+						return 2
+					}
+				}
+				yield 1
+			}
+		}
+
+		const result = calcPerformance(
+			20000,
+			() => {
+				// no operations
+			},
+			// () => {
+			// 	return iterable && Symbol.iterator in iterable
+			// },
+			// () => {
+			// 	return iterable != null && Symbol.iterator in iterable
+			// },
+			() => { // 0
+				return iterable && typeof iterable[Symbol.iterator] === 'function'
+			},
+			() => { // 0
+				return iterable != null && typeof iterable[Symbol.iterator] === 'function'
+			},
+			() => { // 100
+				return iterable && Symbol.iterator in Object(iterable)
+			},
+			() => { // 100
+				return iterable != null && Symbol.iterator in Object(iterable)
+			},
+			() => { // 0
+				return isIterable(iterable)
 			}
 		)
 

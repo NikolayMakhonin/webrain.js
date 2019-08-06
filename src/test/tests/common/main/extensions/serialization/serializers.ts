@@ -3,7 +3,7 @@ import {
 	IDeSerializeValue,
 	ISerializable,
 	ISerializedObject, ISerializedTypedValue,
-	ISerializeValue,
+	ISerializeValue, ThenableIterator,
 } from '../../../../../../main/common/extensions/serialization/contracts'
 import {
 	ObjectSerializer,
@@ -89,6 +89,52 @@ describe('common > extensions > serialization > serializers', function() {
 		testPrimitive('str')
 	})
 
+	class Class implements ISerializable {
+		public array: any[]
+		public value: any[]
+
+		constructor(array: any[]) {
+			this.array = array
+			this.value = array
+		}
+
+		// region ISerializable
+
+		public static uuid: string = 'e729e03f-d0f4-4994-9f0f-97da23c7bab8'
+
+		public serialize(serialize: ISerializeValue): ISerializedTypedValue {
+			return {
+				array: serialize(this.array),
+				value: serialize(this.value),
+			}
+		}
+
+		public *deSerialize(
+			deSerialize: IDeSerializeValue,
+			serializedValue: ISerializedObject,
+		): ThenableIterator<any> {
+			this.value = yield deSerialize(serializedValue.value)
+		}
+
+		// endregion
+	}
+	registerSerializable(Class, {
+		serializer: {
+			*deSerialize(
+				deSerialize: IDeSerializeValue,
+				serializedValue: ISerializedObject,
+				valueFactory: (...args) => Class,
+			): ThenableIterator<Class> | Class {
+				const array = yield deSerialize(serializedValue.array)
+				const value = valueFactory(array)
+				yield value.deSerialize(deSerialize, serializedValue)
+				return value
+			},
+		},
+	})
+
+	const array = []
+
 	const obj: any = {
 		p1: 'p1',
 		p2: 123,
@@ -96,59 +142,16 @@ describe('common > extensions > serialization > serializers', function() {
 		p4: null,
 		p5: undefined,
 		p6: new Date(),
+		p7: new Class(array),
 	}
 	obj.p7 = {
 		...obj,
 	}
-	obj.p8 = Object.values(obj)
 	obj.p9 = obj
+	obj.p7.value = obj
+	obj.p8 = Object.values(obj)
 
 	it('simple circular', function() {
-		class Class implements ISerializable {
-			public array: any[]
-			public value: any[]
-
-			constructor(array: any[]) {
-				this.array = array
-				this.value = array
-			}
-
-			// region ISerializable
-
-			public static uuid: string = 'e729e03f-d0f4-4994-9f0f-97da23c7bab8'
-
-			public serialize(serialize: ISerializeValue): ISerializedTypedValue {
-				return {
-					array: serialize(this.array),
-					value: serialize(this.value),
-				}
-			}
-
-			public *deSerialize(
-				deSerialize: IDeSerializeValue,
-				serializedValue: ISerializedObject,
-			): void|Iterator<any|ThenableSync<any>> {
-				this.value = yield deSerialize(serializedValue.value)
-			}
-
-			// endregion
-		}
-
-		registerSerializable(Class, {
-			serializer: {
-				*deSerialize(
-					deSerialize: IDeSerializeValue,
-					serializedValue: ISerializedObject,
-					valueFactory: (...args) => Class,
-				): Iterator<any | ThenableSync<any> | Class> | Class {
-					const array = yield deSerialize(serializedValue.array)
-					const value = valueFactory(array)
-					yield ThenableSync.resolveIterator(value.deSerialize(deSerialize, serializedValue))
-					return value
-				},
-			},
-		})
-
 		const array = []
 		const object = new Class(array)
 		array[0] = object

@@ -1,5 +1,6 @@
+import {isIterable} from '../../../../../main/common/helpers/helpers'
 import {ThenableSync} from '../../../../../main/common/helpers/ThenableSync'
-import {TestThenableSync} from './src/TestThenableSync'
+import {ITERABLE, ITERATOR, TestThenableSync} from './src/TestThenableSync'
 
 declare const assert
 declare const after
@@ -16,7 +17,12 @@ describe('common > main > helpers > ThenableSync', function() {
 	it('variants', function() {
 		testThenableSync({
 			expected: {
-				value: o => o.value,
+				value: o => {
+					if (o.value && isIterable(o.value) && o.value.next) {
+						return ITERABLE
+					}
+					return o.value
+				},
 			},
 			actions: null,
 		})

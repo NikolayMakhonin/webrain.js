@@ -9,6 +9,7 @@ import {
 	ISerializeValue,
 } from '../extensions/serialization/contracts'
 import {registerSerializable, registerSerializer} from '../extensions/serialization/serializers'
+import {isIterable} from '../helpers/helpers'
 import {fillObjectKeys} from './helpers/set'
 
 export class ObjectSet implements
@@ -108,7 +109,7 @@ export class ObjectSet implements
 		return source.constructor === Object
 			|| source[Symbol.toStringTag] === 'Set'
 			|| Array.isArray(source)
-			|| Symbol.iterator in source
+			|| isIterable(source)
 	}
 
 	public _merge(

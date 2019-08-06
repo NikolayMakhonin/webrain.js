@@ -1,3 +1,4 @@
+import {isIterable} from '../../helpers/helpers'
 import {IMergeMapWrapper, MergeObjectWrapper} from './merge-maps'
 
 export class MergeSetWrapper<V> implements IMergeMapWrapper<V, V> {
@@ -39,7 +40,7 @@ export function createMergeSetWrapper<V>(
 		return new MergeSetWrapper(source as Set<V>)
 	}
 
-	if (arrayOrIterableToSet && (Array.isArray(source) || Symbol.iterator in source)) {
+	if (arrayOrIterableToSet && (Array.isArray(source) || isIterable(source))) {
 		return createMergeSetWrapper(target, arrayOrIterableToSet(source), null)
 	}
 
