@@ -1,4 +1,4 @@
-export function fillCollection<TCollection, T extends any>(
+export function fillCollection<TCollection, T = any>(
 	collection: TCollection,
 	arrayOrIterable: T[] | Iterable<T>,
 	add: (collection: TCollection, item: T) => void,
@@ -16,21 +16,21 @@ export function fillCollection<TCollection, T extends any>(
 	return collection
 }
 
-export function fillSet<TSet extends Set<T>, T extends any>(
+export function fillSet<TSet extends Set<T>, T = any>(
 	set: TSet,
 	arrayOrIterable: T[] | Iterable<T>,
 ): TSet {
 	return fillCollection(set, arrayOrIterable, (c, o) => c.add(o))
 }
 
-export function fillMap<TMap extends Map<K, V>, K extends any, V extends any>(
+export function fillMap<TMap extends Map<K, V>, K = any, V = any>(
 	map: TMap,
 	arrayOrIterable: Array<[K, V]> | Iterable<[K, V]>,
 ): TMap {
 	return fillCollection(map, arrayOrIterable, (c, o) => c.set.apply(c, o))
 }
 
-export function fillObject<V extends any>(
+export function fillObject<V = any>(
 	object: object,
 	arrayOrIterable: Array<[string, V]> | Iterable<[string, V]>,
 ): object {

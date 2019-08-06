@@ -7,9 +7,9 @@ import {SortedList} from '../../../../../../../main/common/lists/SortedList'
 import {IOptionsVariant, IOptionsVariants, ITestCase, TestVariants} from '../../../src/helpers/TestVariants'
 
 declare const assert
-// declare function fastCopy<T extends any>(o: T): T
+// declare function fastCopy<T = any>(o: T): T
 
-function deepClone<T extends any>(o: T): T {
+function deepClone<T = any>(o: T): T {
 	if (o == null
 		|| o.constructor === String
 		|| o.constructor === Number
@@ -137,7 +137,7 @@ export class TypeMetaMergerCollectionMock extends TypeMetaMergerCollection {
 
 	public getMeta(type: TClass<any>): ITypeMetaMerger<any, any> {
 		const meta = super.getMeta(type)
-		// assert.ok(meta, `Meta not found for type: ${type}`)
+		// assert.ok(meta, `Meta not found for type: ${typeToDebugString(type)}`)
 		if (meta && this.changeMetaFunc) {
 			const resetFunc = this.changeMetaFunc(meta)
 			if (resetFunc) {

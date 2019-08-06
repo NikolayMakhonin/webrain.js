@@ -10,7 +10,7 @@ import {
 	registerSerializable,
 	TypeMetaSerializerCollection,
 } from '../../../../../../main/common/extensions/serialization/serializers'
-import {ThenableSync} from "../../../../../../main/common/helpers/ThenableSync";
+import {CircularClass, createComplexObject} from "../../src/helpers/helpers";
 
 declare const assert
 
@@ -89,50 +89,6 @@ describe('common > extensions > serialization > serializers', function() {
 		testPrimitive('str')
 	})
 
-	class Class implements ISerializable {
-		public array: any[]
-		public value: any[]
-
-		constructor(array: any[]) {
-			this.array = array
-			this.value = array
-		}
-
-		// region ISerializable
-
-		public static uuid: string = 'e729e03f-d0f4-4994-9f0f-97da23c7bab8'
-
-		public serialize(serialize: ISerializeValue): ISerializedTypedValue {
-			return {
-				array: serialize(this.array),
-				value: serialize(this.value),
-			}
-		}
-
-		public *deSerialize(
-			deSerialize: IDeSerializeValue,
-			serializedValue: ISerializedObject,
-		): ThenableIterator<any> {
-			this.value = yield deSerialize(serializedValue.value)
-		}
-
-		// endregion
-	}
-	registerSerializable(Class, {
-		serializer: {
-			*deSerialize(
-				deSerialize: IDeSerializeValue,
-				serializedValue: ISerializedObject,
-				valueFactory: (...args) => Class,
-			): ThenableIterator<Class> | Class {
-				const array = yield deSerialize(serializedValue.array)
-				const value = valueFactory(array)
-				yield value.deSerialize(deSerialize, serializedValue)
-				return value
-			},
-		},
-	})
-
 	const array = []
 
 	const obj: any = {
@@ -142,18 +98,18 @@ describe('common > extensions > serialization > serializers', function() {
 		p4: null,
 		p5: undefined,
 		p6: new Date(),
-		p7: new Class(array),
+		// p7: new CircularClass(array),
 	}
-	obj.p7 = {
+	obj.p8 = {
 		...obj,
 	}
-	obj.p9 = obj
-	obj.p7.value = obj
-	obj.p8 = Object.values(obj)
+	// obj.p8.value = obj
+	// obj.p9 = obj
+	obj.p10 = Object.values(obj)
 
 	it('simple circular', function() {
 		const array = []
-		const object = new Class(array)
+		const object = new CircularClass(array)
 		array[0] = object
 		const serialized = serializeValue(object)
 		const result = deSerializeValue(serialized)
@@ -262,7 +218,7 @@ describe('common > extensions > serialization > serializers', function() {
 		}
 
 		public deSerialize(deSerialize: IDeSerializeValue, serializedValue: ISerializedObject) {
-			this.prop3 = deSerialize(serializedValue.prop3)
+			deSerialize(serializedValue.prop3, o => { this.prop3 = o })
 		}
 	}
 
@@ -301,9 +257,9 @@ describe('common > extensions > serialization > serializers', function() {
 			}
 		}
 
-		public deSerialize(deSerialize: IDeSerializeValue, serializedValue: ISerializedObject) {
+		public *deSerialize(deSerialize: IDeSerializeValue, serializedValue: ISerializedObject) {
 			super.deSerialize(deSerialize, serializedValue)
-			this.prop4 = deSerialize(serializedValue.prop4)
+			this.prop4 = yield deSerialize(serializedValue.prop4)
 		}
 	}
 
@@ -327,4 +283,14 @@ describe('common > extensions > serialization > serializers', function() {
 		assert.notStrictEqual(result, obj3)
 		assert.circularDeepStrictEqual(result, obj3)
 	})
+
+	it('complex object', function() {
+		const object = createComplexObject()
+		const serialized = serializeValue(object)
+		const result = deSerializeValue(serialized)
+
+		assert.notStrictEqual(result, object)
+		assert.circularDeepStrictEqual(result, object)
+	})
+
 })

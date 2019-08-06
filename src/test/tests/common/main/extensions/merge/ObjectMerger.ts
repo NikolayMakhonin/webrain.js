@@ -22,7 +22,7 @@ import {BASE, IMergerOptionsVariant, isRefer, NEWER, NONE, OLDER, TestMerger} fr
 declare const assert
 declare const after
 declare function deepStrictEqual(a, b): boolean
-// declare function deepClone<T extends any>(o: T): T
+// declare function deepClone<T = any>(o: T): T
 
 describe('common > extensions > merge > ObjectMerger', function() {
 	this.timeout(60000)

@@ -1,3 +1,4 @@
+import {typeToDebugString} from '../../helpers/helpers'
 import {ThenableSync} from '../../helpers/ThenableSync'
 import {getObjectUniqueId} from '../../lists/helpers/object-unique-id'
 import {TClass, TypeMetaCollectionWithId} from '../TypeMeta'
@@ -98,7 +99,7 @@ export class SerializerVisitor implements ISerializerVisitor {
 		out.data = serializer.serialize(this.serialize, value)
 	}
 
-	public serialize<TValue extends any>(
+	public serialize<TValue = any>(
 		value: TValue,
 		valueType?: TClass<TValue>,
 	): ISerializedValue {
@@ -171,7 +172,7 @@ export class DeSerializerVisitor implements IDeSerializerVisitor {
 		}
 	}
 
-	public deSerialize<TValue extends any>(
+	public deSerialize<TValue = any>(
 		serializedValue: ISerializedValue,
 		set?: (value: TValue) => void,
 		valueType?: TClass<TValue>,
@@ -237,21 +238,22 @@ export class DeSerializerVisitor implements IDeSerializerVisitor {
 
 		const meta = this._typeMeta.getMeta(type)
 		if (!meta) {
-			throw new Error(`Class (${type}) have no type meta`)
+			throw new Error(`Class (${typeToDebugString(type)}) have no type meta`)
 		}
 
 		const serializer = meta.serializer
 		if (!serializer) {
-			throw new Error(`Class (${type}) type meta have no serializer`)
+			throw new Error(`Class (${typeToDebugString(type)}) type meta have no serializer`)
 		}
 
 		if (!serializer.deSerialize) {
-			throw new Error(`Class (${type}) serializer have no deSerialize method`)
+			throw new Error(`Class (${typeToDebugString(type)}) serializer have no deSerialize method`)
 		}
 
 		let factory = valueFactory || meta.valueFactory
 		if (id != null && !factory) {
-			throw new Error(`valueFactory not found for ${type}. Any object serializers should have valueFactory`)
+			throw new Error(`valueFactory not found for ${typeToDebugString(type)}. `
+				+ 'Any object serializers should have valueFactory')
 		}
 
 		let instance
@@ -282,7 +284,7 @@ export class DeSerializerVisitor implements IDeSerializerVisitor {
 		const resolveValue = (value: TValue) => {
 			if (id != null) {
 				if (!factory && instance !== value) {
-					throw new Error(`valueFactory instance !== return value in serializer for ${type}`)
+					throw new Error(`valueFactory instance !== return value in serializer for ${typeToDebugString(type)}`)
 				}
 
 				resolveInstance(value)
@@ -339,13 +341,13 @@ export class TypeMetaSerializerCollection
 				): ISerializedTypedValue {
 					return value.serialize(serialize)
 				},
-				deSerialize(
+				* deSerialize(
 					deSerialize: IDeSerializeValue,
 					serializedValue: ISerializedTypedValue,
 					valueFactory2?: (...args) => TObject,
-				): TObject {
+				) {
 					const value = valueFactory2()
-					value.deSerialize(deSerialize, serializedValue)
+					yield value.deSerialize(deSerialize, serializedValue)
 					return value
 				},
 				...(meta ? meta.serializer : {}),
@@ -368,7 +370,7 @@ export function registerSerializable<TObject extends ISerializable>(
 	TypeMetaSerializerCollection.default.putSerializableType(type, meta)
 }
 
-export function registerSerializer<TValue extends any>(
+export function registerSerializer<TValue = any>(
 	type: TClass<TValue>,
 	meta: ITypeMetaSerializer<TValue>,
 ) {
@@ -411,7 +413,7 @@ export class ObjectSerializer implements IObjectSerializer {
 		return serializedData
 	}
 
-	public deSerialize<TValue extends any>(
+	public deSerialize<TValue = any>(
 		serializedValue: ISerializedDataOrValue,
 		valueType?: TClass<TValue>,
 		valueFactory?: (...args) => TValue,

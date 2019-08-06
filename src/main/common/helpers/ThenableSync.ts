@@ -1,16 +1,16 @@
 import {isIterable} from './helpers'
 
-export type TResolve<TValue extends any>
+export type TResolve<TValue = any>
 	= (value?: TValue | ThenableSync<TValue>) => TValue | ThenableSync<TValue>
-export type TExecutor<TValue extends any> = (resolve: TResolve<TValue>) => void
-export type TOnFulfilled<TValue extends any, TResult extends any> = (value: TValue) => TResult|ThenableSync<TResult>
+export type TExecutor<TValue = any> = (resolve: TResolve<TValue>) => void
+export type TOnFulfilled<TValue = any, TResult = any> = (value: TValue) => TResult|ThenableSync<TResult>
 
 export enum ThenableSyncStatus {
 	Resolving = 'Resolving',
 	Resolved = 'Resolved',
 }
 
-export class ThenableSync<TValue extends any> {
+export class ThenableSync<TValue = any> {
 	private _onfulfilled: Array<TOnFulfilled<TValue, any>>
 	private _value: TValue
 	private _status: ThenableSyncStatus
@@ -59,7 +59,7 @@ export class ThenableSync<TValue extends any> {
 		return value
 	}
 
-	private _then<TResult extends any>(
+	private _then<TResult = any>(
 		onfulfilled: TOnFulfilled<TValue, TResult>,
 		lastExpression: boolean,
 	): TResult|ThenableSync<TResult> {
@@ -94,19 +94,19 @@ export class ThenableSync<TValue extends any> {
 		}
 	}
 
-	public then<TResult extends any>(
+	public then<TResult = any>(
 		onfulfilled?: TOnFulfilled<TValue, TResult>,
 	): TResult|ThenableSync<TResult> {
 		return this._then(onfulfilled, false)
 	}
 
-	public thenLast<TResult extends any>(
+	public thenLast<TResult = any>(
 		onfulfilled?: TOnFulfilled<TValue, TResult>,
 	): TResult|ThenableSync<TResult> {
 		return this._then(onfulfilled, true)
 	}
 
-	public static createResolved<TValue extends any>(value: TValue): ThenableSync<TValue> {
+	public static createResolved<TValue = any>(value: TValue): ThenableSync<TValue> {
 		const thenable = new ThenableSync<TValue>()
 		thenable._status = ThenableSyncStatus.Resolved
 		thenable._value = value
@@ -117,7 +117,7 @@ export class ThenableSync<TValue extends any> {
 		return value instanceof ThenableSync
 	}
 
-	public static resolve<TValue extends any, TResult extends any = TValue>(
+	public static resolve<TValue = any, TResult = TValue>(
 		value: TValue|ThenableSync<TValue>|Iterator<TValue|ThenableSync<any>|any>,
 		onfulfilled?: TOnFulfilled<TValue, TResult>,
 	): TResult|ThenableSync<TResult> {

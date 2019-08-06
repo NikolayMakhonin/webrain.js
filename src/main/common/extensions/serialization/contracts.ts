@@ -43,8 +43,8 @@ export interface ISerializedData {
 
 // region Serializers
 
-export type ISerializeValue = <TValue extends any>(value: TValue, valueType?: TClass<TValue>) => ISerializedValue
-export type IDeSerializeValue = <TValue extends any>(
+export type ISerializeValue = <TValue = any>(value: TValue, valueType?: TClass<TValue>) => ISerializedValue
+export type IDeSerializeValue = <TValue = any>(
 	serializedValue: ISerializedValue,
 	set?: (value: TValue) => void,
 	valueType?: TClass<TValue>,
@@ -59,7 +59,7 @@ export interface IDeSerializerVisitor {
 	deSerialize: IDeSerializeValue
 }
 
-export interface IValueSerializer<TValue extends any> {
+export interface IValueSerializer<TValue = any> {
 	serialize(
 		serialize: ISerializeValue,
 		value: TValue,
@@ -76,19 +76,19 @@ export interface ISerializer {
 }
 
 export interface IDeSerializer {
-	deSerialize<TValue extends any>(
+	deSerialize<TValue = any>(
 		serializedData: ISerializedDataOrValue,
 		valueType?: TClass<TValue>,
 		valueFactory?: (...args) => TValue,
 	): TValue
 }
 
-export interface ITypeMetaSerializer<TValue extends any> extends ITypeMetaWithId {
+export interface ITypeMetaSerializer<TValue = any> extends ITypeMetaWithId {
 	serializer: IValueSerializer<TValue>
 	valueFactory?: (...args) => any
 }
 
-export interface ITypeMetaSerializerOverride<TValue extends any> {
+export interface ITypeMetaSerializerOverride<TValue = any> {
 	uuid?: string
 	serializer?: {
 		serialize?(

@@ -7,7 +7,7 @@ export interface IMergeOptions {
 
 }
 
-export type IMergeValue = <TTarget extends any, TSource extends any>(
+export type IMergeValue = <TTarget = any, TSource = any>(
 	base: TTarget,
 	older: TTarget|TSource,
 	newer: TTarget|TSource,
@@ -23,7 +23,7 @@ export interface IMergerVisitor {
 	merge: IMergeValue
 }
 
-export type IValueMerge<TTarget extends any, TSource extends any> = (
+export type IValueMerge<TTarget = any, TSource = any> = (
 	merge: IMergeValue,
 	base: TTarget,
 	older: TTarget|TSource,
@@ -34,14 +34,14 @@ export type IValueMerge<TTarget extends any, TSource extends any> = (
 	options?: IMergeOptions,
 ) => boolean
 
-export interface IValueMerger<TTarget extends any, TSource extends any> {
+export interface IValueMerger<TTarget = any, TSource = any> {
 	/** @return true, false, null - is equals */
 	canMerge?: (target: TTarget, source: TTarget|TSource) => boolean
 	merge?: IValueMerge<TTarget, TSource>
 }
 
 export interface IMerger {
-	merge<TTarget extends any, TSource extends any>(
+	merge<TTarget = any, TSource = any>(
 		base: TTarget,
 		older: TTarget|TSource,
 		newer: TTarget|TSource,
@@ -54,7 +54,7 @@ export interface IMerger {
 	): boolean
 }
 
-export interface ITypeMetaMerger<TTarget extends any, TSource extends any> extends ITypeMeta {
+export interface ITypeMetaMerger<TTarget = any, TSource = any> extends ITypeMeta {
 	preferClone?: boolean|((target: TTarget) => boolean)
 	valueFactory?: (source: TTarget|TSource) => TTarget
 	merger?: IValueMerger<TTarget, TSource>
@@ -65,7 +65,7 @@ export interface ITypeMetaMergerCollection extends ITypeMetaCollection<ITypeMeta
 		type: TClass<TTarget>,
 		meta: ITypeMetaMerger<TTarget, TSource>,
 	): ITypeMetaMerger<TTarget, TSource>
-	putMergeableType<TTarget extends IMergeable<TTarget, TSource>, TSource extends any>(
+	putMergeableType<TTarget extends IMergeable<TTarget, TSource>, TSource = any>(
 		type: TMergeableClass<TTarget, TSource>,
 		meta?: ITypeMetaMerger<TTarget, TSource>,
 	): ITypeMetaMerger<TTarget, TSource>
@@ -79,7 +79,7 @@ export interface IObjectMerger extends IMerger {
 
 // region Mergeable
 
-export interface IMergeable<TTarget, TSource extends any> {
+export interface IMergeable<TTarget, TSource = any> {
 	/** @return true, false, null - is non strict equals */
 	_canMerge(source: TTarget|TSource): boolean
 	_merge(

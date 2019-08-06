@@ -1,3 +1,5 @@
+import {typeToDebugString} from "../helpers/helpers";
+
 export type TClass<T> = new (...args: any[]) => T
 
 export interface ITypeMeta { }
@@ -118,7 +120,8 @@ export class TypeMetaCollectionWithId<TMeta extends ITypeMetaWithId>
 
 		const prevType = this._typeMap[uuid]
 		if (prevType && prevType !== type) {
-			throw new Error(`Same uuid (${uuid}) used for different types: ${prevType.name}, ${type && type.name}`)
+			throw new Error(`Same uuid (${uuid}) used for different types: `
+				+ `${typeToDebugString(prevType)}, ${typeToDebugString(type)}`)
 		}
 
 		const prevMeta = super.putType(type, meta)

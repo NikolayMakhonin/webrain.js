@@ -1,5 +1,5 @@
 /* tslint:disable:no-nested-switch ban-types use-primitive-type */
-import {isIterable} from '../../helpers/helpers'
+import {isIterable, typeToDebugString} from '../../helpers/helpers'
 import {fillMap, fillSet} from '../../lists/helpers/set'
 import {TClass, TypeMetaCollection} from '../TypeMeta'
 import {
@@ -96,15 +96,15 @@ class ValueState<TTarget, TSource> {
 			)(target)
 
 			if (!_cloneInstance) {
-				throw new Error(`Class (${type.name}) cannot be clone`)
+				throw new Error(`Class (${typeToDebugString(type)}) cannot be clone`)
 			}
 
 			if (_cloneInstance === target) {
-				throw new Error(`Clone result === Source for (${type.name})`)
+				throw new Error(`Clone result === Source for (${typeToDebugString(type)})`)
 			}
 
 			if (_cloneInstance.constructor !== type) {
-				throw new Error(`Clone type !== (${type.name})`)
+				throw new Error(`Clone type !== (${typeToDebugString(type)})`)
 			}
 
 			this._cloneInstance = _cloneInstance
@@ -375,7 +375,7 @@ export class MergerVisitor implements IMergerVisitor {
 		)
 	}
 
-	public merge<TTarget extends any, TSource extends any>(
+	public merge<TTarget = any, TSource = any>(
 		base: TTarget,
 		older: TTarget|TSource,
 		newer: TTarget|TSource,
@@ -546,7 +546,7 @@ export class MergerVisitor implements IMergerVisitor {
 
 // region TypeMetaMergerCollection
 
-export type TMergeableClass<TObject extends IMergeable<TObject, TSource>, TSource extends any>
+export type TMergeableClass<TObject extends IMergeable<TObject, TSource>, TSource = any>
 	= new (...args: any[]) => TObject
 
 export class TypeMetaMergerCollection
@@ -559,7 +559,7 @@ export class TypeMetaMergerCollection
 
 	public static default: TypeMetaMergerCollection = new TypeMetaMergerCollection()
 
-	private static makeTypeMetaMerger<TTarget extends IMergeable<TTarget, TSource>, TSource extends any>(
+	private static makeTypeMetaMerger<TTarget extends IMergeable<TTarget, TSource>, TSource = any>(
 		type: TMergeableClass<TTarget, TSource>,
 		meta?: ITypeMetaMerger<TTarget, TSource>,
 	): ITypeMetaMerger<TTarget, TSource> {
@@ -596,7 +596,7 @@ export class TypeMetaMergerCollection
 		}
 	}
 
-	public putMergeableType<TTarget extends IMergeable<TTarget, TSource>, TSource extends any>(
+	public putMergeableType<TTarget extends IMergeable<TTarget, TSource>, TSource = any>(
 		type: TMergeableClass<TTarget, TSource>,
 		meta?: ITypeMetaMerger<TTarget, TSource>,
 	): ITypeMetaMerger<TTarget, TSource> {
@@ -604,21 +604,21 @@ export class TypeMetaMergerCollection
 	}
 }
 
-export function registerMergeable<TTarget extends IMergeable<TTarget, TSource>, TSource extends any>(
+export function registerMergeable<TTarget extends IMergeable<TTarget, TSource>, TSource = any>(
 	type: TMergeableClass<TTarget, TSource>,
 	meta?: ITypeMetaMerger<TTarget, TSource>,
 ) {
 	TypeMetaMergerCollection.default.putMergeableType(type, meta)
 }
 
-export function registerMerger<TTarget extends any, TSource extends any>(
+export function registerMerger<TTarget = any, TSource = any>(
 	type: TClass<TTarget>,
 	meta: ITypeMetaMerger<TTarget, TSource>,
 ) {
 	TypeMetaMergerCollection.default.putType(type, meta)
 }
 
-export function registerMergerPrimitive<TTarget extends any, TSource extends any>(
+export function registerMergerPrimitive<TTarget = any, TSource = any>(
 	type: TClass<TTarget>,
 	meta?: ITypeMetaMerger<TTarget, TSource>,
 ) {
@@ -658,7 +658,7 @@ export class ObjectMerger implements IObjectMerger {
 
 	public static default: ObjectMerger = new ObjectMerger()
 
-	public merge<TTarget extends any, TSource extends any>(
+	public merge<TTarget = any, TSource = any>(
 		base: TTarget,
 		older: TTarget|TSource,
 		newer: TTarget|TSource,
@@ -804,7 +804,7 @@ registerMerger<Date, Date>(Date, {
 
 registerMerger<Set<any>, Set<any>>(Set, {
 	merger: {
-		canMerge<T extends any>(target: Set<T>, source: Set<T>): boolean {
+		canMerge<T = any>(target: Set<T>, source: Set<T>): boolean {
 			return source.constructor === Object
 				|| source[Symbol.toStringTag] === 'Set'
 				|| Array.isArray(source)
@@ -845,7 +845,7 @@ registerMerger<Set<any>, Set<any>>(Set, {
 registerMerger<Map<any, any>, Map<any, any>>(Map, {
 	merger: {
 		// tslint:disable-next-line:no-identical-functions
-		canMerge<K extends any, V extends any>(target: Map<K, V>, source: Map<K, V>): boolean {
+		canMerge<K = any, V = any>(target: Map<K, V>, source: Map<K, V>): boolean {
 			return source.constructor === Object
 				|| source[Symbol.toStringTag] === 'Map'
 				|| Array.isArray(source)
