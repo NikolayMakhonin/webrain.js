@@ -192,7 +192,7 @@ registerSerializable(ArraySet, {
 			serializedValue: ISerializedObject,
 			valueFactory: (set?: T[]) => ArraySet<T>,
 		): ThenableIterator<ArraySet<T>> {
-			const innerSet = yield deSerialize<T[]>(serializedValue.array, Object, null, () => [])
+			const innerSet = yield deSerialize(serializedValue.array, null, Object, () => [])
 			const value = valueFactory(innerSet)
 			value.deSerialize(deSerialize, serializedValue)
 			return value

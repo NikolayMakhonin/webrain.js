@@ -290,6 +290,8 @@ describe('common > extensions > serialization > serializers', function() {
 		const result = deSerializeValue(serialized)
 
 		assert.notStrictEqual(result, object)
+		console.log(object)
+		console.log(result)
 		assert.circularDeepStrictEqual(result, object)
 	})
 

@@ -1,3 +1,5 @@
+import {isIterable} from '../../../../../src/main/common/helpers/helpers'
+
 export type TThen<TValue> = (resolve: TResolve<TValue>) => void
 export type TThenAny = TThen<any>
 
@@ -23,7 +25,7 @@ export function toThenFunc<T>(func: TThen<T>): TThen<T> {
 export function resolveThenableIterator<TValue>(
 	iteratorOrValue: TValue|Iterator<TValue|TThenAny>,
 ): TValue|TThenAny {
-	if (!(Symbol.iterator in iteratorOrValue)) {
+	if (!isIterable(iteratorOrValue)) {
 		return iteratorOrValue as TValue
 	}
 
@@ -62,4 +64,3 @@ export function resolveThenableIterator<TValue>(
 
 	return resolveIterator((iteratorOrValue as Iterator<TValue|TThenAny>).next())
 }
-

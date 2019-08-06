@@ -188,7 +188,7 @@ registerSerializable(ArrayMap, {
 			valueFactory: (map?: Array<[K, V]>) => ArrayMap<K, V>,
 		): ThenableIterator<ArrayMap<K, V>> {
 			// @ts-ignore
-			const innerMap = yield deSerialize<Array<[K, V]>>(serializedValue.array, Object, () => [])
+			const innerMap = yield deSerialize<Array<[K, V]>>(serializedValue.array, null, Object, () => [])
 			const value = valueFactory(innerMap)
 			value.deSerialize(deSerialize, serializedValue)
 			return value
