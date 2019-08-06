@@ -5,11 +5,12 @@ import {
 	IDeSerializeValue,
 	ISerializable,
 	ISerializedObject,
-	ISerializeValue,
+	ISerializeValue, ThenableIterator,
 } from '../extensions/serialization/contracts'
 import {registerSerializable, registerSerializer} from '../extensions/serialization/serializers'
 import {isIterable} from '../helpers/helpers'
 import {fillMap} from './helpers/set'
+import {ObjectHashMap} from "./ObjectHashMap";
 
 export class ObjectMap<V> implements
 	Map<string, V>,
@@ -145,8 +146,11 @@ export class ObjectMap<V> implements
 		}
 	}
 
+	public deSerialize(
+		deSerialize: IDeSerializeValue,
+		serializedValue: ISerializedObject,
 	// tslint:disable-next-line:no-empty
-	public deSerialize(deSerialize: IDeSerializeValue, serializedValue: ISerializedObject) {
+	): void {
 
 	}
 
@@ -157,15 +161,13 @@ registerMergeable(ObjectMap)
 
 registerSerializable(ObjectMap, {
 	serializer: {
-		deSerialize<V>(
+		*deSerialize<V>(
 			deSerialize: IDeSerializeValue,
 			serializedValue: ISerializedObject,
-			valueFactory?: (map?: object) => ObjectMap<V>,
-		): ObjectMap<V> {
-			const innerMap = deSerialize<object>(serializedValue.object)
-			const value = valueFactory
-				? valueFactory(innerMap)
-				: new ObjectMap<V>(innerMap)
+			valueFactory: (map?: object) => ObjectMap<V>,
+		): ThenableIterator<ObjectMap<V>> {
+			const innerMap = yield deSerialize<object>(serializedValue.object)
+			const value = valueFactory(innerMap)
 			value.deSerialize(deSerialize, serializedValue)
 			return value
 		},

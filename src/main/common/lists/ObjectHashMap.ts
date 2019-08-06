@@ -5,12 +5,13 @@ import {
 	IDeSerializeValue,
 	ISerializable,
 	ISerializedObject,
-	ISerializeValue,
+	ISerializeValue, ThenableIterator,
 } from '../extensions/serialization/contracts'
 import {registerSerializable, registerSerializer} from '../extensions/serialization/serializers'
 import {isIterable} from '../helpers/helpers'
 import {getObjectUniqueId} from './helpers/object-unique-id'
 import {fillMap} from './helpers/set'
+import {ArrayMap} from "./ArrayMap";
 
 interface TNumberObject<K, V> {
 	[id: number]: [K, V],
@@ -168,8 +169,11 @@ export class ObjectHashMap<K, V> implements
 		}
 	}
 
+	public deSerialize(
+		deSerialize: IDeSerializeValue,
+		serializedValue: ISerializedObject,
 	// tslint:disable-next-line:no-empty
-	public deSerialize(deSerialize: IDeSerializeValue, serializedValue: ISerializedObject) {
+	): void {
 
 	}
 
@@ -180,15 +184,13 @@ registerMergeable(ObjectHashMap)
 
 registerSerializable(ObjectHashMap, {
 	serializer: {
-		deSerialize<K, V>(
+		*deSerialize<K, V>(
 			deSerialize: IDeSerializeValue,
 			serializedValue: ISerializedObject,
-			valueFactory?: (map?: { [id: number]: [K, V] }) => ObjectHashMap<K, V>,
-		): ObjectHashMap<K, V> {
-			const innerMap = deSerialize<{ [id: number]: [K, V] }>(serializedValue.object)
-			const value = valueFactory
-				? valueFactory(innerMap)
-				: new ObjectHashMap<K, V>(innerMap)
+			valueFactory: (map?: { [id: number]: [K, V] }) => ObjectHashMap<K, V>,
+		): ThenableIterator<ObjectHashMap<K, V>> {
+			const innerMap = yield deSerialize<{ [id: number]: [K, V] }>(serializedValue.object)
+			const value = valueFactory(innerMap)
 			value.deSerialize(deSerialize, serializedValue)
 			return value
 		},

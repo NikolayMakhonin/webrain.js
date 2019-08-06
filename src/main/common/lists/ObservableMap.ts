@@ -5,13 +5,14 @@ import {
 	IDeSerializeValue,
 	ISerializable,
 	ISerializedObject,
-	ISerializeValue,
+	ISerializeValue, ThenableIterator,
 } from '../extensions/serialization/contracts'
 import {registerSerializable, registerSerializer} from '../extensions/serialization/serializers'
 import {isIterable} from '../helpers/helpers'
 import {MapChangedObject} from './base/MapChangedObject'
 import {IObservableMap, MapChangedType} from './contracts/IMapChanged'
 import {fillMap} from './helpers/set'
+import {ObjectHashMap} from "./ObjectHashMap";
 
 export class ObservableMap<K, V>
 	extends MapChangedObject<K, V>
@@ -220,8 +221,11 @@ export class ObservableMap<K, V>
 		}
 	}
 
+	public deSerialize(
+		deSerialize: IDeSerializeValue,
+		serializedValue: ISerializedObject,
 	// tslint:disable-next-line:no-empty
-	public deSerialize(deSerialize: IDeSerializeValue, serializedValue: ISerializedObject) {
+	): void {
 
 	}
 
@@ -232,18 +236,13 @@ registerMergeable(ObservableMap)
 
 registerSerializable(ObservableMap, {
 	serializer: {
-		deSerialize<K, V>(
+		*deSerialize<K, V>(
 			deSerialize: IDeSerializeValue,
 			serializedValue: ISerializedObject,
-			valueFactory?: (map?: Map<K, V>) => ObservableMap<K, V>,
-		): ObservableMap<K, V> {
-			const innerMap = deSerialize<Map<K, V>>(
-				serializedValue.map,
-
-			)
-			const value = valueFactory
-				? valueFactory(innerMap)
-				: new ObservableMap<K, V>(innerMap)
+			valueFactory: (map?: Map<K, V>) => ObservableMap<K, V>,
+		): ThenableIterator<ObservableMap<K, V>> {
+			const innerMap = yield deSerialize<Map<K, V>>(serializedValue.map)
+			const value = valueFactory(innerMap)
 			value.deSerialize(deSerialize, serializedValue)
 			return value
 		},

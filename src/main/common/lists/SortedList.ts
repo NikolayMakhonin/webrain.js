@@ -6,10 +6,9 @@ import {
 	IDeSerializeValue,
 	ISerializable,
 	ISerializedObject,
-	ISerializedValueArray,
-	ISerializeValue,
+	ISerializeValue, ThenableIterator,
 } from '../extensions/serialization/contracts'
-import {deSerializeArray, registerSerializable, serializeArray} from '../extensions/serialization/serializers'
+import {registerSerializable} from '../extensions/serialization/serializers'
 import {isIterable} from '../helpers/helpers'
 import {ListChangedObject} from './base/ListChangedObject'
 import {ICompare} from './contracts/ICompare'
@@ -47,7 +46,7 @@ export class SortedList<T>
 {
 	// region constructor
 
-	private _array: T[]
+	private readonly _array: T[]
 
 	constructor({
 		array,
@@ -1202,23 +1201,22 @@ export class SortedList<T>
 
 	public serialize(serialize: ISerializeValue): ISerializedObject {
 		return {
-			array: (this._array as any) && serializeArray(serialize, this._array, this._size),
-			autoSort: serialize(this._autoSort),
-			countSorted: serialize(this._countSorted),
-			minAllocatedSize: serialize(this._minAllocatedSize),
-			notAddIfExists: serialize(this._notAddIfExists),
+			options: serialize({
+				array: this._array,
+				autoSort: this._autoSort,
+				countSorted: this._countSorted,
+				minAllocatedSize: this._minAllocatedSize,
+				notAddIfExists: this._notAddIfExists,
+			}),
 		}
 	}
 
-	public deSerialize(deSerialize: IDeSerializeValue, serializedValue: ISerializedObject) {
-		this._array = (serializedValue.array as any)
-			&& deSerializeArray(deSerialize, serializedValue.array as ISerializedValueArray)
-			|| []
-		this._size = this._array.length
-		this._autoSort = deSerialize(serializedValue.autoSort)
-		this._countSorted = deSerialize(serializedValue.countSorted)
-		this._minAllocatedSize = deSerialize(serializedValue.minAllocatedSize)
-		this._notAddIfExists = deSerialize(serializedValue.notAddIfExists)
+	public deSerialize(
+		deSerialize: IDeSerializeValue,
+		serializedValue: ISerializedObject,
+	// tslint:disable-next-line:no-empty
+	): void {
+
 	}
 
 	// endregion
@@ -1288,4 +1286,17 @@ registerMergeable(SortedList, {
 	}),
 })
 
-registerSerializable(SortedList)
+registerSerializable(SortedList, {
+	serializer: {
+		*deSerialize<T>(
+			deSerialize: IDeSerializeValue,
+			serializedValue: ISerializedObject,
+			valueFactory: (...args) => SortedList<T>,
+		): ThenableIterator<SortedList<T>> {
+			const options = yield deSerialize(serializedValue.options)
+			const value = valueFactory(options)
+			value.deSerialize(deSerialize, serializedValue)
+			return value
+		},
+	},
+})

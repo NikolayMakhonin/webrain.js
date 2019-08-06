@@ -6,11 +6,12 @@ import {
 	IDeSerializeValue,
 	ISerializable,
 	ISerializedObject,
-	ISerializeValue,
+	ISerializeValue, ThenableIterator,
 } from '../extensions/serialization/contracts'
 import {registerSerializable, registerSerializer} from '../extensions/serialization/serializers'
 import {isIterable} from '../helpers/helpers'
 import {fillObjectKeys} from './helpers/set'
+import {ArraySet} from "./ArraySet";
 
 export class ObjectSet implements
 	Set<string>,
@@ -147,8 +148,11 @@ export class ObjectSet implements
 		}
 	}
 
+	public deSerialize(
+		deSerialize: IDeSerializeValue,
+		serializedValue: ISerializedObject,
 	// tslint:disable-next-line:no-empty
-	public deSerialize(deSerialize: IDeSerializeValue, serializedValue: ISerializedObject) {
+	): void {
 
 	}
 
@@ -159,15 +163,13 @@ registerMergeable(ObjectSet)
 
 registerSerializable(ObjectSet, {
 	serializer: {
-		deSerialize<T>(
+		*deSerialize<T>(
 			deSerialize: IDeSerializeValue,
 			serializedValue: ISerializedObject,
-			valueFactory?: (object?: object) => ObjectSet,
-		): ObjectSet {
-			const innerSet = deSerialize<object>(serializedValue.object)
-			const value = valueFactory
-				? valueFactory(innerSet)
-				: new ObjectSet(innerSet)
+			valueFactory: (object?: object) => ObjectSet,
+		): ThenableIterator<ObjectSet> {
+			const innerSet = yield deSerialize<object>(serializedValue.object)
+			const value = valueFactory(innerSet)
 			value.deSerialize(deSerialize, serializedValue)
 			return value
 		},

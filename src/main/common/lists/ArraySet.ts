@@ -7,7 +7,7 @@ import {
 	IDeSerializeValue,
 	ISerializable,
 	ISerializedObject,
-	ISerializeValue,
+	ISerializeValue, ThenableIterator,
 } from '../extensions/serialization/contracts'
 import {registerSerializable, registerSerializer} from '../extensions/serialization/serializers'
 import {isIterable} from '../helpers/helpers'
@@ -172,8 +172,11 @@ export class ArraySet<T extends Object> implements
 		}
 	}
 
+	public deSerialize(
+		deSerialize: IDeSerializeValue,
+		serializedValue: ISerializedObject,
 	// tslint:disable-next-line:no-empty
-	public deSerialize(deSerialize: IDeSerializeValue, serializedValue: ISerializedObject) {
+	): void {
 
 	}
 
@@ -184,16 +187,13 @@ registerMergeable(ArraySet)
 
 registerSerializable(ArraySet, {
 	serializer: {
-		deSerialize<T>(
+		*deSerialize<T>(
 			deSerialize: IDeSerializeValue,
 			serializedValue: ISerializedObject,
-			valueFactory?: (set?: T[]) => ArraySet<T>,
-		): ArraySet<T> {
-			// @ts-ignore
-			const innerSet = deSerialize<T[]>(serializedValue.array, Object, () => [])
-			const value = valueFactory
-				? valueFactory(innerSet)
-				: new ArraySet<T>(innerSet)
+			valueFactory: (set?: T[]) => ArraySet<T>,
+		): ThenableIterator<ArraySet<T>> {
+			const innerSet = yield deSerialize<T[]>(serializedValue.array, Object, null, () => [])
+			const value = valueFactory(innerSet)
 			value.deSerialize(deSerialize, serializedValue)
 			return value
 		},

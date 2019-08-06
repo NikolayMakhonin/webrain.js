@@ -2,8 +2,10 @@ import {ThenableSync} from '../../helpers/ThenableSync'
 import {ITypeMetaWithId, TClass, TypeMetaCollectionWithId} from '../TypeMeta'
 
 export interface ThenableIterator<TValue>
-	extends Iterator<TValue|any|ThenableSync<any>|ThenableIterator<TValue>>
+	extends Iterator<TValue|any|ThenableSync<any|TValue>|ThenableIterator<TValue>>
 {}
+
+// export type ThenableIterator<TValue> = Iterator<TValue|any|ThenableSync<any|TValue>|_ThenableIterator<TValue>>
 
 // region Serialized Value
 

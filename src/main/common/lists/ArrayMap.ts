@@ -5,12 +5,13 @@ import {
 	IDeSerializeValue,
 	ISerializable,
 	ISerializedObject,
-	ISerializeValue,
+	ISerializeValue, ThenableIterator,
 } from '../extensions/serialization/contracts'
 import {registerSerializable, registerSerializer} from '../extensions/serialization/serializers'
 import {isIterable} from '../helpers/helpers'
 import {getObjectUniqueId} from './helpers/object-unique-id'
 import {fillMap} from './helpers/set'
+import {ArraySet} from "./ArraySet";
 
 export class ArrayMap<K, V> implements
 	Map<K, V>,
@@ -166,8 +167,11 @@ export class ArrayMap<K, V> implements
 		}
 	}
 
+	public deSerialize(
+		deSerialize: IDeSerializeValue,
+		serializedValue: ISerializedObject,
 	// tslint:disable-next-line:no-empty
-	public deSerialize(deSerialize: IDeSerializeValue, serializedValue: ISerializedObject) {
+	): void {
 
 	}
 
@@ -178,16 +182,14 @@ registerMergeable(ArrayMap)
 
 registerSerializable(ArrayMap, {
 	serializer: {
-		deSerialize<K, V>(
+		*deSerialize<K, V>(
 			deSerialize: IDeSerializeValue,
 			serializedValue: ISerializedObject,
-			valueFactory?: (map?: Array<[K, V]>) => ArrayMap<K, V>,
-		): ArrayMap<K, V> {
+			valueFactory: (map?: Array<[K, V]>) => ArrayMap<K, V>,
+		): ThenableIterator<ArrayMap<K, V>> {
 			// @ts-ignore
-			const innerMap = deSerialize<Array<[K, V]>>(serializedValue.array, Object, () => [])
-			const value = valueFactory
-				? valueFactory(innerMap)
-				: new ArrayMap<K, V>(innerMap)
+			const innerMap = yield deSerialize<Array<[K, V]>>(serializedValue.array, Object, () => [])
+			const value = valueFactory(innerMap)
 			value.deSerialize(deSerialize, serializedValue)
 			return value
 		},
