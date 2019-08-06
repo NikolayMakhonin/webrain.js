@@ -1187,7 +1187,7 @@ describe('fundamental-operations', function () {
 		console.log(result)
 	})
 
-	it('new Array(size)', function () {
+	xit('new Array(size)', function () {
 		this.timeout(300000)
 
 		const size = 1000
@@ -1227,13 +1227,57 @@ describe('fundamental-operations', function () {
 		console.log(result)
 	})
 
+	it('delete property', function () {
+		this.timeout(300000)
+
+		const obj = {}
+
+		const result = calcPerformance(
+			20000,
+			() => {
+				// no operations
+			},
+			() => {
+				obj.x = 0
+			},
+			() => {
+				obj.x = void 0
+			},
+			() => {
+				delete obj.x
+			}
+		)
+
+		console.log(result)
+	})
+
 	it('Promise sync', function () {
 		this.timeout(300000)
 
 		const result = calcPerformance(
-			1000,
+			20000,
 			() => {
 				// no operations
+			},
+			() => {
+				let resolve
+				new SynchronousPromise(o => {
+					resolve = o
+				})
+					.then(o => true)
+					// .then(o => true)
+
+				resolve(1)
+			},
+			() => {
+				let resolve
+				new ThenableSync(o => {
+					resolve = o
+				})
+					.then(o => true)
+					// .then(o => true)
+
+				resolve(1)
 			},
 			() => {
 				let resolve

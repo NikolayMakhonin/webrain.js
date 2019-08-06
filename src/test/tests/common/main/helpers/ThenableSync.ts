@@ -1,3 +1,4 @@
+import {ThenableSync} from '../../../../../main/common/helpers/ThenableSync'
 import {TestThenableSync} from './src/TestThenableSync'
 
 declare const assert
@@ -19,5 +20,23 @@ describe('common > main > helpers > ThenableSync', function() {
 			},
 			actions: null,
 		})
+	})
+
+	xit('performance', function() {
+		this.timeout(120000)
+
+		const time0 = new Date().getTime()
+		do {
+			let resolve
+			let result
+
+			new ThenableSync(o => {
+				resolve = o
+			})
+				.then(o => true)
+				.then(o => (result = o))
+
+			resolve(1)
+		} while (new Date().getTime() - time0 < 60000)
 	})
 })

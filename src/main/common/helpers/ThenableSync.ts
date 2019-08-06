@@ -46,7 +46,7 @@ export class ThenableSync<TValue extends any> {
 
 		const {_onfulfilled} = this
 		if (_onfulfilled) {
-			delete this._onfulfilled
+			this._onfulfilled = void 0
 			for (let i = 0, len = _onfulfilled.length; i < len; i++) {
 				_onfulfilled[i](value as TValue)
 			}
