@@ -223,20 +223,27 @@ export class TestThenableSync extends TestVariants<
 					let countFulfilled = 0
 					const fulfillResult = new String('Fulfill Result')
 
-					const checkResult = result => {
-						if (resolveImmediate) {
+					const checkResult = (result, isThenResult = false) => {
+						if (!isThenResult && resolveImmediate) {
 							assert.strictEqual(result, fulfillResult)
 						} else {
 							assert.strictEqual(result && result.constructor, ThenableSync)
 							countQueued++
 							let fulfilled
-							result.then(o => {
+							const thenResult = result.thenLast(o => {
 								assert.notOk(fulfilled)
 								fulfilled = true
 								assert.strictEqual(o, fulfillResult)
 								countFulfilled++
 								return fulfillResult
 							})
+							if (resolveImmediate) {
+								assert.strictEqual(thenResult, fulfillResult)
+							} else {
+								assert.notStrictEqual(thenResult, result)
+								assert.strictEqual(thenResult.constructor, ThenableSync)
+								assert.strictEqual(ThenableSync.isThenableSync(thenResult), true)
+							}
 						}
 					}
 
@@ -267,13 +274,17 @@ export class TestThenableSync extends TestVariants<
 						for (let i = 0; i < options.getValueWithThen; i++) {
 							countQueued++
 							let fulfilled
-							checkResult(thenable.then(o => {
+							const thenResult = thenable.then(o => {
 								assert.notOk(fulfilled)
 								fulfilled = true
 								assert.strictEqual(o, options.expected.value)
 								countFulfilled++
 								return fulfillResult
-							}))
+							})
+							assert.notStrictEqual(thenResult, thenable)
+							assert.strictEqual(thenResult.constructor, ThenableSync)
+							assert.strictEqual(ThenableSync.isThenableSync(thenResult), true)
+							checkResult(thenResult, true)
 						}
 					}
 

@@ -7,7 +7,8 @@ import {SortedList} from '../../../main/common/lists/SortedList'
 import {ArraySet} from '../../../main/common/lists/ArraySet'
 import {createObject, Tester} from '../../tests/common/main/rx/deep-subscribe/helpers/Tester'
 import {SynchronousPromise} from 'synchronous-promise'
-import {ThenableSync} from "../../../main/common/helpers/ThenableSync";
+import {ThenableSync} from '../../../main/common/helpers/ThenableSync'
+import {checkUnsubscribe} from '../../../main/common/rx/deep-subscribe/helpers/common'
 
 const SetNative = Set
 require('./src/SetPolyfill')
@@ -1232,6 +1233,13 @@ describe('fundamental-operations', function () {
 
 		const obj = {}
 
+		const propOptions = {
+			configurable: true,
+			enumerable  : false,
+			writable    : true,
+			value       : 0,
+		}
+
 		const result = calcPerformance(
 			20000,
 			() => {
@@ -1239,6 +1247,15 @@ describe('fundamental-operations', function () {
 			},
 			() => {
 				obj.x = 0
+			},
+			() => {
+				obj.x = void 0
+			},
+			() => {
+				delete obj.x
+			},
+			() => {
+				Object.defineProperty(obj, 'x', propOptions)
 			},
 			() => {
 				obj.x = void 0

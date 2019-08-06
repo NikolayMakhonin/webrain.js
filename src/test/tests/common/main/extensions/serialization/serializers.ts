@@ -1,8 +1,8 @@
-/* tslint:disable:no-duplicate-string */
+/* tslint:disable:no-duplicate-string no-shadowed-variable */
 import {
 	IDeSerializeValue,
 	ISerializable,
-	ISerializedObject,
+	ISerializedObject, ISerializedTypedValue,
 	ISerializeValue,
 } from '../../../../../../main/common/extensions/serialization/contracts'
 import {
@@ -10,6 +10,7 @@ import {
 	registerSerializable,
 	TypeMetaSerializerCollection,
 } from '../../../../../../main/common/extensions/serialization/serializers'
+import {ThenableSync} from "../../../../../../main/common/helpers/ThenableSync";
 
 declare const assert
 
@@ -101,6 +102,47 @@ describe('common > extensions > serialization > serializers', function() {
 	}
 	obj.p8 = Object.values(obj)
 	obj.p9 = obj
+
+	it('simple circular', function() {
+		class Class implements ISerializable {
+			public array: any[]
+
+			constructor(array: any[]) {
+				this.array = array
+			}
+
+			// region ISerializable
+
+			public static uuid: string = 'e729e03f-d0f4-4994-9f0f-97da23c7bab8'
+
+			public serialize(serialize: ISerializeValue): ISerializedTypedValue {
+				return {
+					array: serialize(this.array),
+				}
+			}
+
+			public *deSerialize(
+				deSerialize: IDeSerializeValue,
+				serializedValue: ISerializedObject,
+			): void|Iterator<any|ThenableSync<any>> {
+				this.array = yield deSerialize(serializedValue.array)
+			}
+
+			// endregion
+		}
+
+		registerSerializable(Class)
+
+		const array = []
+		const object = new Class(array)
+		array[0] = object
+		const serialized = serializeValue(object)
+		const result = deSerializeValue(serialized)
+
+		assert.notStrictEqual(result, object)
+		assert.notStrictEqual(result.array, object.array)
+		assert.circularDeepStrictEqual(result, object)
+	})
 
 	it('Object', function() {
 		const serialized = serializeValue(obj)

@@ -9,9 +9,9 @@ import {
 	ISerializedValue, ISerializedValueArray,
 	ISerializerVisitor, ISerializeValue,
 	ITypeMetaSerializer, ITypeMetaSerializerCollection,
-	ITypeMetaSerializerOverride, TResolve, TThen, TThenAny,
+	ITypeMetaSerializerOverride,
 } from './contracts'
-import {isThenFunc, resolveThenableIterator} from "../../helpers/thenable-sync";
+import {ThenableSync} from "../../helpers/ThenableSync";
 
 // region SerializerVisitor
 
@@ -124,7 +124,7 @@ export class DeSerializerVisitor implements IDeSerializerVisitor {
 	private readonly _types: string[]
 	private readonly _objects: ISerializedTyped[]
 	private readonly _instances: any[]
-	private readonly _resolveInstances: Array<Array<TResolve<any>>>
+	private _countDeserialized: number = 0
 	private readonly _typeMeta: ITypeMetaSerializerCollection
 
 	constructor(
@@ -149,27 +149,25 @@ export class DeSerializerVisitor implements IDeSerializerVisitor {
 	public assertEnd() {
 		const {_types, _objects, _instances, _typeMeta} = this
 
-		const getDebugObject = id => {
+		const getDebugObject = (deserialized, id) => {
 			const object = _objects[id]
 			const uuid = _types[object.type]
 			const type = _typeMeta.getType(uuid)
 			return {
 				type: type == null ? `<Type not found: ${uuid}>` : type.name,
 				data: object.data,
+				deserialized: deserialized == null
+					? deserialized
+					: deserialized.constructor.name,
 			}
 		}
 
-		const resolveInstancesIds = Object.keys(this._resolveInstances)
-		if (resolveInstancesIds.length > 0) {
-			throw new Error('Object cannot be deserialized because some inner dependencies is not resolved:\r\n'
-				+ JSON.stringify(resolveInstancesIds.map(id => getDebugObject(id)), null, 4))
-		}
-
-		for (let i = 0, len; i < len; i++) {
-			const instance = _instances[i]
-			if (instance === LOCKED || !instance) {
-				throw new Error(`Instance was not deserialize:\r\n${JSON.stringify(getDebugObject(i))}`)
-			}
+		if (this._countDeserialized !== _instances.length) {
+			throw new Error(`${_instances.length - this._countDeserialized} instances is not deserialized\r\n` +
+				JSON.stringify(_instances
+					.map((o, i) => [o, i])
+					.filter(o => !o[0] || o[0] === LOCKED || ThenableSync.isThenableSync(o[0]))
+					.map(o => getDebugObject(o[0], o[1]))))
 		}
 	}
 
@@ -178,7 +176,7 @@ export class DeSerializerVisitor implements IDeSerializerVisitor {
 		set?: (value: TValue) => void,
 		valueType?: TClass<TValue>,
 		valueFactory?: (...args) => TValue,
-	): TValue|TThenAny {
+	): TValue|ThenableSync<TValue> {
 		if (typeof serializedValue === 'undefined') {
 			return serializedValue
 		}
@@ -192,19 +190,12 @@ export class DeSerializerVisitor implements IDeSerializerVisitor {
 
 		const id = (serializedValue as ISerializedRef).id
 		if (id != null) {
-			const cachedInstance = this._instances[id]
-
-			if (cachedInstance === LOCKED) {
-				return (resolve: (value: TValue) => void): void => {
-					let resolveInstanceQueue = this._resolveInstances[id]
-					if (!resolveInstanceQueue) {
-						this._resolveInstances[id] = resolveInstanceQueue = []
-					}
-					resolveInstanceQueue.push(resolve)
-				}
-			}
+			let cachedInstance = this._instances[id]
 
 			if (cachedInstance) {
+				if (cachedInstance === LOCKED) {
+					this._instances[id] = cachedInstance = new ThenableSync()
+				}
 				return cachedInstance
 			}
 
@@ -269,20 +260,17 @@ export class DeSerializerVisitor implements IDeSerializerVisitor {
 			},
 		)
 
-		const valueOrThenFunc = resolveThenableIterator(iteratorOrValue)
-
 		const resolveValue = (value: TValue) => {
 			if (id != null) {
 				if (!factory && instance !== value) {
 					throw new Error(`valueFactory instance !== return value in serializer for ${type}`)
 				}
 
-				const resolveInstanceQueue = this._resolveInstances[id]
-				delete this._resolveInstances[id]
-				if (resolveInstanceQueue) {
-					for (let i = 0, len = resolveInstanceQueue.length; i < len; i++) {
-						resolveInstanceQueue[i](value)
-					}
+				const cachedInstance = this._instances[id]
+				this._instances[id] = value
+				this._countDeserialized++
+				if (cachedInstance instanceof ThenableSync) {
+					cachedInstance.resolve(value)
 				}
 			}
 
@@ -293,11 +281,7 @@ export class DeSerializerVisitor implements IDeSerializerVisitor {
 			return value
 		}
 
-		if (!isThenFunc(valueOrThenFunc)) {
-			return resolveValue(valueOrThenFunc)
-		}
-
-		valueOrThenFunc(resolveValue)
+		const valueOrThenFunc = ThenableSync.resolveIterator(iteratorOrValue, resolveValue)
 
 		return valueOrThenFunc
 	}

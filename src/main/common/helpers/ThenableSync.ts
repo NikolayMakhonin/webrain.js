@@ -37,7 +37,7 @@ export class ThenableSync<TValue extends any> {
 			this._status = ThenableSyncStatus.Resolving
 
 			return (value as ThenableSync<TValue>)
-				.then(this._resolve.bind(this))
+				.thenLast(this._resolve.bind(this))
 		}
 
 		this._status = ThenableSyncStatus.Resolved
@@ -53,8 +53,9 @@ export class ThenableSync<TValue extends any> {
 		}
 	}
 
-	public then<TResult extends any>(
-		onfulfilled?: TOnFulfilled<TValue, TResult>,
+	private _then<TResult extends any>(
+		onfulfilled: TOnFulfilled<TValue, TResult>,
+		lastExpression: boolean,
 	): TResult|ThenableSync<TResult> {
 		if (Object.prototype.hasOwnProperty.call(this, '_value')) {
 			const {_value} = this
@@ -62,7 +63,11 @@ export class ThenableSync<TValue extends any> {
 				return _value as any
 			}
 
-			return onfulfilled(_value as TValue)
+			const result = onfulfilled(_value as TValue)
+
+			return lastExpression || ThenableSync.isThenableSync(result)
+				? result
+				: ThenableSync.createResolved(result as TResult)
 		} else {
 			if (!onfulfilled) {
 				return this as any
@@ -81,6 +86,25 @@ export class ThenableSync<TValue extends any> {
 
 			return result
 		}
+	}
+
+	public then<TResult extends any>(
+		onfulfilled?: TOnFulfilled<TValue, TResult>,
+	): TResult|ThenableSync<TResult> {
+		return this._then(onfulfilled, false)
+	}
+
+	public thenLast<TResult extends any>(
+		onfulfilled?: TOnFulfilled<TValue, TResult>,
+	): TResult|ThenableSync<TResult> {
+		return this._then(onfulfilled, true)
+	}
+
+	public static createResolved<TValue extends any>(value: TValue): ThenableSync<TValue> {
+		const thenable = new ThenableSync<TValue>()
+		thenable._status = ThenableSyncStatus.Resolved
+		thenable._value = value
+		return thenable
 	}
 
 	public static isThenableSync(value: any): boolean {
@@ -116,7 +140,7 @@ export class ThenableSync<TValue extends any> {
 	): TResult|ThenableSync<TResult> {
 		if (ThenableSync.isThenableSync(value)) {
 			value = (value as ThenableSync<TValue>)
-				.then(onfulfilled) as any
+				.thenLast(onfulfilled) as any
 		} else if (onfulfilled) {
 			value = onfulfilled(value as TValue) as any
 		}
