@@ -106,9 +106,11 @@ describe('common > extensions > serialization > serializers', function() {
 	it('simple circular', function() {
 		class Class implements ISerializable {
 			public array: any[]
+			public value: any[]
 
 			constructor(array: any[]) {
 				this.array = array
+				this.value = array
 			}
 
 			// region ISerializable
@@ -118,6 +120,7 @@ describe('common > extensions > serialization > serializers', function() {
 			public serialize(serialize: ISerializeValue): ISerializedTypedValue {
 				return {
 					array: serialize(this.array),
+					value: serialize(this.value),
 				}
 			}
 
@@ -125,13 +128,26 @@ describe('common > extensions > serialization > serializers', function() {
 				deSerialize: IDeSerializeValue,
 				serializedValue: ISerializedObject,
 			): void|Iterator<any|ThenableSync<any>> {
-				this.array = yield deSerialize(serializedValue.array)
+				this.value = yield deSerialize(serializedValue.value)
 			}
 
 			// endregion
 		}
 
-		registerSerializable(Class)
+		registerSerializable(Class, {
+			serializer: {
+				*deSerialize(
+					deSerialize: IDeSerializeValue,
+					serializedValue: ISerializedObject,
+					valueFactory: (...args) => Class,
+				): Iterator<any | ThenableSync<any> | Class> | Class {
+					const array = yield deSerialize(serializedValue.array)
+					const value = valueFactory(array)
+					yield ThenableSync.resolveIterator(value.deSerialize(deSerialize, serializedValue))
+					return value
+				},
+			},
+		})
 
 		const array = []
 		const object = new Class(array)

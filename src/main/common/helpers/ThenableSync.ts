@@ -116,6 +116,7 @@ export class ThenableSync<TValue extends any> {
 		onfulfilled?: TOnFulfilled<TValue, TResult>,
 	): TResult|ThenableSync<TResult> {
 		if (value && Symbol.iterator in value && !ThenableSync.isThenableSync(value)) {
+			const iterator = value as Iterator<TValue | ThenableSync<any>>
 			const resolveIterator = (
 				iteration: IteratorResult<TValue|ThenableSync<TValue>|Iterator<TValue|ThenableSync<any>>>,
 			): TValue|ThenableSync<TValue> => {
@@ -123,7 +124,7 @@ export class ThenableSync<TValue extends any> {
 					return iteration.value as TValue
 				} else {
 					return ThenableSync.resolve(iteration.value as TValue|ThenableSync<TValue>, o => {
-						return resolveIterator((value as Iterator<TValue | ThenableSync<any>>).next(o))
+						return resolveIterator(iterator.next(o))
 					})
 				}
 			}

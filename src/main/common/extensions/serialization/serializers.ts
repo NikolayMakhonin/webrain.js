@@ -254,11 +254,18 @@ export class DeSerializerVisitor implements IDeSerializerVisitor {
 
 				instance = factory(...args)
 				factory = null
-				this._instances[id] = instance
 
 				return instance
 			},
 		)
+
+		const resolveInstance = (value: TValue) => {
+			const cachedInstance = this._instances[id]
+			this._instances[id] = value
+			if (cachedInstance instanceof ThenableSync) {
+				cachedInstance.resolve(value)
+			}
+		}
 
 		const resolveValue = (value: TValue) => {
 			if (id != null) {
@@ -266,12 +273,8 @@ export class DeSerializerVisitor implements IDeSerializerVisitor {
 					throw new Error(`valueFactory instance !== return value in serializer for ${type}`)
 				}
 
-				const cachedInstance = this._instances[id]
-				this._instances[id] = value
+				resolveInstance(value)
 				this._countDeserialized++
-				if (cachedInstance instanceof ThenableSync) {
-					cachedInstance.resolve(value)
-				}
 			}
 
 			if (set) {
@@ -282,6 +285,11 @@ export class DeSerializerVisitor implements IDeSerializerVisitor {
 		}
 
 		const valueOrThenFunc = ThenableSync.resolveIterator(iteratorOrValue, resolveValue)
+
+		if (id != null && !factory && ThenableSync.isThenableSync(valueOrThenFunc)) {
+			resolveInstance(instance)
+			return instance
+		}
 
 		return valueOrThenFunc
 	}
@@ -310,7 +318,7 @@ export class TypeMetaSerializerCollection
 	): ITypeMetaSerializer<TObject> {
 		return {
 			uuid: type.uuid,
-			valueFactory: () => new (type as new () => TObject)(),
+			valueFactory: (...args) => new (type as new () => TObject)(...args),
 			...meta,
 			serializer: {
 				serialize(
