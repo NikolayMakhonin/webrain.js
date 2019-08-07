@@ -523,6 +523,9 @@ describe('common > main > rx > deep-subscribe > RuleBuilder', function() {
 	function assertRuleParams(rule: IRule | any, expected: any) {
 		rule = {...rule}
 		expected = {...expected}
+		if ('unsubscribePropertyName' in rule) {
+			expected.unsubscribePropertyName = rule.unsubscribePropertyName
+		}
 
 		delete rule.subscribe
 		delete rule.next

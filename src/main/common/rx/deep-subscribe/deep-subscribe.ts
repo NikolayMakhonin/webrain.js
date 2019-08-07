@@ -58,12 +58,17 @@ function deepSubscribeRuleIterator<TValue>(
 					let unsubscribe: IUnsubscribe = item[unsubscribePropertyName]
 					if (!unsubscribe) {
 						// if (typeof unsubscribe === 'undefined') {
+
+							// !Warning defineProperty is slow
 							Object.defineProperty(item, unsubscribePropertyName, {
 								configurable: true,
 								enumerable: false,
 								writable: true,
 								value: checkUnsubscribe(subscribe()),
 							})
+
+							// item[unsubscribePropertyName] = checkUnsubscribe(subscribe())
+
 						// } else {
 						// 	item[unsubscribePropertyName] = subscribe()
 						// }

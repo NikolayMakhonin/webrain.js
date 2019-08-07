@@ -28,12 +28,15 @@ export class RuleBuilder<TObject> {
 			throw new Error('You should not add duplicate IRuleSubscribe instances. Clone rule before add.')
 		}
 
-		Object.defineProperty(ruleSubscribe, 'unsubscribePropertyName', {
-			configurable: true,
-			enumerable: false,
-			writable: false,
-			value: UNSUBSCRIBE_PROPERTY_PREFIX + (nextUnsubscribePropertyId++),
-		})
+		// !Warning defineProperty is slow
+		// Object.defineProperty(ruleSubscribe, 'unsubscribePropertyName', {
+		// 	configurable: true,
+		// 	enumerable: false,
+		// 	writable: false,
+		// 	value: UNSUBSCRIBE_PROPERTY_PREFIX + (nextUnsubscribePropertyId++),
+		// })
+
+		ruleSubscribe.unsubscribePropertyName = UNSUBSCRIBE_PROPERTY_PREFIX + (nextUnsubscribePropertyId++)
 
 		if (ruleLast) {
 			ruleLast.next = ruleSubscribe

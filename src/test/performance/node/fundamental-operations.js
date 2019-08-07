@@ -1228,17 +1228,25 @@ describe('fundamental-operations', function () {
 		console.log(result)
 	})
 
-	xit('delete property', function () {
-		this.timeout(300000)
-
-		const obj = {}
-
-		const propOptions = {
+	function defineProperty(obj, propertyName) {
+		obj[propertyName] = 0
+		Object.defineProperty(obj, propertyName, {
 			configurable: true,
 			enumerable  : false,
 			writable    : true,
 			value       : 0,
+		})
+	}
+
+	it('delete property', function () {
+		this.timeout(300000)
+
+		const hashTable = {}
+		for (let i = 0; i < 10000; i++) {
+			hashTable[i] = i
 		}
+
+		const obj = {}
 
 		const result = calcPerformance(
 			20000,
@@ -1255,13 +1263,19 @@ describe('fundamental-operations', function () {
 				delete obj.x
 			},
 			() => {
-				Object.defineProperty(obj, 'x', propOptions)
+				defineProperty(obj, 'x')
 			},
 			() => {
 				obj.x = void 0
 			},
 			() => {
-				delete obj.x
+				hashTable[(Math.random() * 10000)|0] = void 0
+			},
+			() => {
+				delete hashTable[(Math.random() * 10000)|0]
+			},
+			() => {
+				getObjectUniqueId({})
 			}
 		)
 
@@ -1370,7 +1384,7 @@ describe('fundamental-operations', function () {
 		console.log(result)
 	})
 
-	it('array is associative', function () {
+	xit('array is associative', function () {
 		this.timeout(300000)
 
 		const arr = []
