@@ -6,14 +6,14 @@ import {
 	IDeSerializeValue,
 	ISerializable,
 	ISerializedObject,
-	ISerializeValue, ThenableIterator,
+	ISerializeValue,
 } from '../extensions/serialization/contracts'
 import {registerSerializable, registerSerializer} from '../extensions/serialization/serializers'
 import {isIterable} from '../helpers/helpers'
+import {ThenableSyncIterator} from '../helpers/ThenableSync'
 import {SetChangedObject} from './base/SetChangedObject'
 import {IObservableSet, SetChangedType} from './contracts/ISetChanged'
 import {fillSet} from './helpers/set'
-import {ObjectSet} from "./ObjectSet";
 
 export class ObservableSet<T> extends SetChangedObject<T> implements
 	IObservableSet<T>,
@@ -215,8 +215,8 @@ registerSerializable(ObservableSet, {
 		*deSerialize<T>(
 			deSerialize: IDeSerializeValue,
 			serializedValue: ISerializedObject,
-			valueFactory?: (set?: Set<T>) => ObservableSet<T>,
-		): ThenableIterator<ObservableSet<T>> {
+			valueFactory: (set?: Set<T>) => ObservableSet<T>,
+		): ThenableSyncIterator<ObservableSet<T>> {
 			const innerSet = yield deSerialize<Set<T>>(serializedValue.set)
 			const value = valueFactory(innerSet)
 			value.deSerialize(deSerialize, serializedValue)

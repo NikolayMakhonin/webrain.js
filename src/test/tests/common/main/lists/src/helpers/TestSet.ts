@@ -5,7 +5,7 @@ import {
 	ISerializeValue,
 } from '../../../../../../../main/common/extensions/serialization/contracts'
 import {
-	ObjectSerializer,
+	ObjectSerializer, registerSerializable,
 	registerSerializer,
 } from '../../../../../../../main/common/extensions/serialization/serializers'
 import {ArraySet} from '../../../../../../../main/common/lists/ArraySet'
@@ -19,6 +19,7 @@ import {ObjectSet} from '../../../../../../../main/common/lists/ObjectSet'
 import {ObservableSet} from '../../../../../../../main/common/lists/ObservableSet'
 import {IOptionsVariant, IOptionsVariants, ITestCase, TestVariants, THIS} from '../../../src/helpers/TestVariants'
 import {convertToObject, indexOfNaN} from './common'
+import {ThenableSyncIterator} from "../../../../../../../main/common/helpers/ThenableSync";
 
 declare const assert
 
@@ -183,24 +184,15 @@ class SetWrapper<T> implements Set<T>, ISerializable {
 	// endregion
 }
 
-registerSerializer(SetWrapper, {
-	uuid: SetWrapper.uuid,
+registerSerializable(SetWrapper, {
 	serializer: {
-		serialize(
-			serialize: ISerializeValue,
-			value: SetWrapper<any>,
-		): ISerializedObject {
-			return value.serialize(serialize)
-		},
-		deSerialize<T>(
+		*deSerialize<T>(
 			deSerialize: IDeSerializeValue,
 			serializedValue: ISerializedObject,
-			valueFactory?: (set?: Set<T>) => SetWrapper<T>,
-		): SetWrapper<T> {
-			const innerSet = deSerialize<Set<T>>(serializedValue.set)
-			const value = valueFactory
-				? valueFactory(innerSet)
-				: new SetWrapper<T>(innerSet)
+			valueFactory: (set?: Set<T>) => SetWrapper<T>,
+		): ThenableSyncIterator<SetWrapper<T>> {
+			const innerSet = yield deSerialize<Set<T>>(serializedValue.set)
+			const value = valueFactory(innerSet)
 			value.deSerialize(deSerialize, serializedValue)
 			return value
 		},

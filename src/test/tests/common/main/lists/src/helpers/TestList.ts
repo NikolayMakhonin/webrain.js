@@ -100,10 +100,10 @@ function testSerialization<T>(list: SortedList<T>) {
 	const result: SortedList<T> = ObjectSerializer.default.deSerialize(serialized)
 
 	assert.notStrictEqual(result, list)
-	assert.strictEqual(result.autoSort, list.autoSort)
+	assert.strictEqual(!!result.autoSort, !!list.autoSort)
 	assert.strictEqual(result.countSorted, list.countSorted)
 	assert.strictEqual(result.minAllocatedSize, list.minAllocatedSize)
-	assert.strictEqual(result.notAddIfExists, list.notAddIfExists)
+	assert.strictEqual(!!result.notAddIfExists, !!list.notAddIfExists)
 	assert.strictEqual(result.size, list.size)
 	assert.deepStrictEqual(result.toArray(), list.toArray())
 }

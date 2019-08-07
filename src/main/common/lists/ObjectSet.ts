@@ -6,12 +6,12 @@ import {
 	IDeSerializeValue,
 	ISerializable,
 	ISerializedObject,
-	ISerializeValue, ThenableIterator,
+	ISerializeValue,
 } from '../extensions/serialization/contracts'
-import {registerSerializable, registerSerializer} from '../extensions/serialization/serializers'
+import {registerSerializable} from '../extensions/serialization/serializers'
 import {isIterable} from '../helpers/helpers'
+import {ThenableSyncIterator} from '../helpers/ThenableSync'
 import {fillObjectKeys} from './helpers/set'
-import {ArraySet} from "./ArraySet";
 
 export class ObjectSet implements
 	Set<string>,
@@ -167,7 +167,7 @@ registerSerializable(ObjectSet, {
 			deSerialize: IDeSerializeValue,
 			serializedValue: ISerializedObject,
 			valueFactory: (object?: object) => ObjectSet,
-		): ThenableIterator<ObjectSet> {
+		): ThenableSyncIterator<ObjectSet> {
 			const innerSet = yield deSerialize<object>(serializedValue.object)
 			const value = valueFactory(innerSet)
 			value.deSerialize(deSerialize, serializedValue)

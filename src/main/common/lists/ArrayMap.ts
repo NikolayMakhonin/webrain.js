@@ -5,13 +5,13 @@ import {
 	IDeSerializeValue,
 	ISerializable,
 	ISerializedObject,
-	ISerializeValue, ThenableIterator,
+	ISerializeValue,
 } from '../extensions/serialization/contracts'
-import {registerSerializable, registerSerializer} from '../extensions/serialization/serializers'
+import {registerSerializable} from '../extensions/serialization/serializers'
 import {isIterable} from '../helpers/helpers'
+import {ThenableSyncIterator} from '../helpers/ThenableSync'
 import {getObjectUniqueId} from './helpers/object-unique-id'
 import {fillMap} from './helpers/set'
-import {ArraySet} from "./ArraySet";
 
 export class ArrayMap<K, V> implements
 	Map<K, V>,
@@ -186,7 +186,7 @@ registerSerializable(ArrayMap, {
 			deSerialize: IDeSerializeValue,
 			serializedValue: ISerializedObject,
 			valueFactory: (map?: Array<[K, V]>) => ArrayMap<K, V>,
-		): ThenableIterator<ArrayMap<K, V>> {
+		): ThenableSyncIterator<ArrayMap<K, V>> {
 			// @ts-ignore
 			const innerMap = yield deSerialize<Array<[K, V]>>(serializedValue.array, null, { arrayAsObject: true })
 			const value = valueFactory(innerMap)

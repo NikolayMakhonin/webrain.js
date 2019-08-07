@@ -1,10 +1,13 @@
+/* tslint:disable:object-literal-key-quotes */
 import {
 	IDeSerializeValue,
 	ISerializable, ISerializedObject,
 	ISerializedTypedValue,
-	ISerializeValue, ThenableIterator,
+	ISerializeValue,
 } from '../../../../../../main/common/extensions/serialization/contracts'
 import {registerSerializable} from '../../../../../../main/common/extensions/serialization/serializers'
+import {isIterable} from '../../../../../../main/common/helpers/helpers'
+import {ThenableSyncIterator} from '../../../../../../main/common/helpers/ThenableSync'
 import {ArrayMap} from '../../../../../../main/common/lists/ArrayMap'
 import {ArraySet} from '../../../../../../main/common/lists/ArraySet'
 import {ObjectMap} from '../../../../../../main/common/lists/ObjectMap'
@@ -13,7 +16,6 @@ import {ObservableSet} from '../../../../../../main/common/lists/ObservableSet'
 import {SortedList} from '../../../../../../main/common/lists/SortedList'
 import {ObservableObject} from '../../../../../../main/common/rx/object/ObservableObject'
 import {ObservableObjectBuilder} from '../../../../../../main/common/rx/object/ObservableObjectBuilder'
-import {isIterable} from "../../../../../../main/common/helpers/helpers";
 
 export class CircularClass extends ObservableObject implements ISerializable {
 	public array: any[]
@@ -39,7 +41,7 @@ export class CircularClass extends ObservableObject implements ISerializable {
 	public *deSerialize(
 		deSerialize: IDeSerializeValue,
 		serializedValue: ISerializedObject,
-	): ThenableIterator<any> {
+	): ThenableSyncIterator<any> {
 		this.value = yield deSerialize(serializedValue.value)
 	}
 
@@ -52,7 +54,7 @@ registerSerializable(CircularClass, {
 			deSerialize: IDeSerializeValue,
 			serializedValue: ISerializedObject,
 			valueFactory: (...args) => CircularClass,
-		): ThenableIterator<CircularClass> | CircularClass {
+		): ThenableSyncIterator<CircularClass> | CircularClass {
 			const array = yield deSerialize(serializedValue.array)
 			const value = valueFactory(array)
 			yield value.deSerialize(deSerialize, serializedValue)
@@ -64,7 +66,9 @@ registerSerializable(CircularClass, {
 new ObservableObjectBuilder(CircularClass.prototype)
 	.writable('array')
 
-interface IOptions {
+export interface IComplexObjectOptions {
+	undefined?: boolean,
+
 	circular?: boolean,
 
 	circularClass?: boolean,
@@ -82,29 +86,29 @@ interface IOptions {
 	observableMap?: boolean,
 }
 
-const defaultOptions: IOptions = {
-	circular: true,
+// const defaultOptions: IOptions = {
+// 	circular: true,
+//
+// 	circularClass: true,
+//
+// 	sortedList: true,
+//
+// 	set: true,
+// 	arraySet: true,
+// 	objectSet: true,
+// 	observableSet: true,
+//
+// 	map: true,
+// 	arrayMap: true,
+// 	objectMap: true,
+// 	observableMap: true,
+// }
 
-	circularClass: true,
-
-	sortedList: true,
-
-	set: true,
-	arraySet: true,
-	objectSet: true,
-	observableSet: true,
-
-	map: true,
-	arrayMap: true,
-	objectMap: true,
-	observableMap: true,
-}
-
-export function createComplexObject(options: IOptions = {}) {
-	options = {
-		...defaultOptions,
-		...options,
-	}
+export function createComplexObject(options: IComplexObjectOptions = {}) {
+	// options = {
+	// 	...defaultOptions,
+	// 	...options,
+	// }
 
 	const array = []
 	const object: any = {}
@@ -113,13 +117,18 @@ export function createComplexObject(options: IOptions = {}) {
 	circularClass.value = object
 
 	Object.assign(object, {
-		p1: void 0,
-		p2: null,
-		p3: false,
-		p4: true,
-		p5: '',
-		p6: 'str',
-		p7: new Date(),
+		_undefined: void 0,
+		_null: null,
+		_false: false,
+		_strEmpty: '',
+		_zero: 0,
+		true: true,
+		str: 'str',
+		date: new Date(12345),
+		number: 123.45,
+		'nan': NaN,
+		'infinity': Infinity,
+		'-infinity': -Infinity,
 		circularClass: options.circular && options.circularClass && circularClass,
 		object: options.circular && object,
 		array,
@@ -150,6 +159,15 @@ export function createComplexObject(options: IOptions = {}) {
 	for (const key in object) {
 		if (Object.prototype.hasOwnProperty.call(object, key)) {
 			const value = object[key]
+
+			if (!value && !key.startsWith('_')) {
+				delete object[key]
+				continue
+			}
+
+			if (!options.undefined && typeof value === 'undefined') {
+				delete object[key]
+			}
 
 			if (options.circular || !valueIsCollection(value)) {
 				if (object.sortedList) {

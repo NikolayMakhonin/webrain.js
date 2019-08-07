@@ -4,7 +4,7 @@ import {
 	ISerializeValue,
 } from '../../../../../../../main/common/extensions/serialization/contracts'
 import {
-	ObjectSerializer,
+	ObjectSerializer, registerSerializable,
 	registerSerializer,
 } from '../../../../../../../main/common/extensions/serialization/serializers'
 import {ArrayMap} from '../../../../../../../main/common/lists/ArrayMap'
@@ -16,6 +16,7 @@ import {ObjectMap} from '../../../../../../../main/common/lists/ObjectMap'
 import {ObservableMap} from '../../../../../../../main/common/lists/ObservableMap'
 import {IOptionsVariant, IOptionsVariants, ITestCase, TestVariants, THIS} from '../../../src/helpers/TestVariants'
 import {convertToObject} from './common'
+import {ThenableSyncIterator} from "../../../../../../../main/common/helpers/ThenableSync";
 
 declare const assert
 
@@ -218,24 +219,15 @@ class MapWrapper<K, V> implements Map<K, V>, ISerializable {
 	// endregion
 }
 
-registerSerializer(MapWrapper, {
-	uuid: MapWrapper.uuid,
+registerSerializable(MapWrapper, {
 	serializer: {
-		serialize(
-			serialize: ISerializeValue,
-			value: MapWrapper<any, any>,
-		): ISerializedObject {
-			return value.serialize(serialize)
-		},
-		deSerialize<K, V>(
+		*deSerialize<K, V>(
 			deSerialize: IDeSerializeValue,
 			serializedValue: ISerializedObject,
-			valueFactory?: (map?: Map<K, V>) => MapWrapper<K, V>,
-		): MapWrapper<K, V> {
-			const innerMap = deSerialize<Map<K, V>>(serializedValue.map)
-			const value = valueFactory
-				? valueFactory(innerMap)
-				: new MapWrapper<K, V>(innerMap)
+			valueFactory: (map?: Map<K, V>) => MapWrapper<K, V>,
+		): ThenableSyncIterator<MapWrapper<K, V>> {
+			const innerMap = yield deSerialize<Map<K, V>>(serializedValue.map)
+			const value = valueFactory(innerMap)
 			value.deSerialize(deSerialize, serializedValue)
 			return value
 		},

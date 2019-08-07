@@ -5,13 +5,13 @@ import {
 	IDeSerializeValue,
 	ISerializable,
 	ISerializedObject,
-	ISerializeValue, ThenableIterator,
+	ISerializeValue,
 } from '../extensions/serialization/contracts'
-import {registerSerializable, registerSerializer} from '../extensions/serialization/serializers'
+import {registerSerializable} from '../extensions/serialization/serializers'
 import {isIterable} from '../helpers/helpers'
+import {ThenableSyncIterator} from '../helpers/ThenableSync'
 import {getObjectUniqueId} from './helpers/object-unique-id'
 import {fillMap} from './helpers/set'
-import {ArrayMap} from "./ArrayMap";
 
 interface TNumberObject<K, V> {
 	[id: number]: [K, V],
@@ -188,7 +188,7 @@ registerSerializable(ObjectHashMap, {
 			deSerialize: IDeSerializeValue,
 			serializedValue: ISerializedObject,
 			valueFactory: (map?: { [id: number]: [K, V] }) => ObjectHashMap<K, V>,
-		): ThenableIterator<ObjectHashMap<K, V>> {
+		): ThenableSyncIterator<ObjectHashMap<K, V>> {
 			const innerMap = yield deSerialize<{ [id: number]: [K, V] }>(serializedValue.object)
 			const value = valueFactory(innerMap)
 			value.deSerialize(deSerialize, serializedValue)

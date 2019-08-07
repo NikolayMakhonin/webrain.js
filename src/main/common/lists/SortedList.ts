@@ -6,10 +6,11 @@ import {
 	IDeSerializeValue,
 	ISerializable,
 	ISerializedObject,
-	ISerializeValue, ThenableIterator,
+	ISerializeValue,
 } from '../extensions/serialization/contracts'
 import {registerSerializable} from '../extensions/serialization/serializers'
 import {isIterable} from '../helpers/helpers'
+import {ThenableSyncIterator} from '../helpers/ThenableSync'
 import {ListChangedObject} from './base/ListChangedObject'
 import {ICompare} from './contracts/ICompare'
 import {IListChangedObject, ListChangedType} from './contracts/IListChanged'
@@ -1292,9 +1293,9 @@ registerSerializable(SortedList, {
 			deSerialize: IDeSerializeValue,
 			serializedValue: ISerializedObject,
 			valueFactory: (...args) => SortedList<T>,
-		): ThenableIterator<SortedList<T>> {
+		): ThenableSyncIterator<SortedList<T>> {
 			const options = yield deSerialize(serializedValue.options)
-			options.array = yield deSerialize(serializedValue.array, null, { arrayAsObject: true })
+			options.array = yield deSerialize(serializedValue.array)
 			const value = valueFactory(options)
 			value.deSerialize(deSerialize, serializedValue)
 			return value

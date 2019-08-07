@@ -5,12 +5,12 @@ import {
 	IDeSerializeValue,
 	ISerializable,
 	ISerializedObject,
-	ISerializeValue, ThenableIterator,
+	ISerializeValue,
 } from '../extensions/serialization/contracts'
-import {registerSerializable, registerSerializer} from '../extensions/serialization/serializers'
+import {registerSerializable} from '../extensions/serialization/serializers'
 import {isIterable} from '../helpers/helpers'
+import {ThenableSyncIterator} from '../helpers/ThenableSync'
 import {fillMap} from './helpers/set'
-import {ObjectHashMap} from "./ObjectHashMap";
 
 export class ObjectMap<V> implements
 	Map<string, V>,
@@ -165,7 +165,7 @@ registerSerializable(ObjectMap, {
 			deSerialize: IDeSerializeValue,
 			serializedValue: ISerializedObject,
 			valueFactory: (map?: object) => ObjectMap<V>,
-		): ThenableIterator<ObjectMap<V>> {
+		): ThenableSyncIterator<ObjectMap<V>> {
 			const innerMap = yield deSerialize<object>(serializedValue.object)
 			const value = valueFactory(innerMap)
 			value.deSerialize(deSerialize, serializedValue)

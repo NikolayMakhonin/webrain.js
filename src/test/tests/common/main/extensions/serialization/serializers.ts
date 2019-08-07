@@ -2,8 +2,8 @@
 import {
 	IDeSerializeValue,
 	ISerializable,
-	ISerializedObject, ISerializedTypedValue,
-	ISerializeValue, ThenableIterator,
+	ISerializedObject,
+	ISerializeValue,
 } from '../../../../../../main/common/extensions/serialization/contracts'
 import {
 	ObjectSerializer,
@@ -11,7 +11,7 @@ import {
 	TypeMetaSerializerCollection,
 } from '../../../../../../main/common/extensions/serialization/serializers'
 import {SortedList} from '../../../../../../main/common/lists/SortedList'
-import {CircularClass, createComplexObject} from '../../src/helpers/helpers'
+import {CircularClass, createComplexObject, IComplexObjectOptions} from '../../src/helpers/helpers'
 
 declare const assert
 
@@ -74,6 +74,32 @@ describe('common > extensions > serialization > serializers', function() {
 	const serializeValue = ObjectSerializer.default.serialize.bind(ObjectSerializer.default)
 	const deSerializeValue = ObjectSerializer.default.deSerialize.bind(ObjectSerializer.default)
 
+	function testComplexObject(options: IComplexObjectOptions, prepare?: (object) => any, log?: boolean) {
+		let object = createComplexObject({
+			undefined: true,
+			...options,
+		})
+		let checkObject = createComplexObject({
+			...options,
+			undefined: false,
+		})
+
+		if (prepare) {
+			object = prepare(object)
+			checkObject = prepare(checkObject)
+		}
+
+		const serialized = serializeValue(object)
+		const result = deSerializeValue(serialized)
+
+		assert.notStrictEqual(result, object)
+		if (log) {
+			console.log(object)
+			console.log(result)
+		}
+		assert.circularDeepStrictEqual(result, checkObject)
+	}
+
 	it('primitives', function() {
 		function testPrimitive(value: any) {
 			assert.strictEqual(deSerializeValue(serializeValue(value)), value)
@@ -90,23 +116,23 @@ describe('common > extensions > serialization > serializers', function() {
 		testPrimitive('str')
 	})
 
-	const array = []
-
-	const obj: any = {
-		p1: 'p1',
-		p2: 123,
-		p3: true,
-		p4: null,
-		p5: undefined,
-		p6: new Date(),
-		// p7: new CircularClass(array),
-	}
-	obj.p8 = {
-		...obj,
-	}
-	// obj.p8.value = obj
-	// obj.p9 = obj
-	obj.p10 = Object.values(obj)
+	// const array = []
+	//
+	// const obj: any = {
+	// 	p1: 'p1',
+	// 	p2: 123,
+	// 	p3: true,
+	// 	p4: null,
+	// 	p5: undefined,
+	// 	p6: new Date(),
+	// 	// p7: new CircularClass(array),
+	// }
+	// obj.p8 = {
+	// 	...obj,
+	// }
+	// // obj.p8.value = obj
+	// // obj.p9 = obj
+	// obj.p10 = Object.values(obj)
 
 	it('simple circular', function() {
 		const array = []
@@ -121,25 +147,16 @@ describe('common > extensions > serialization > serializers', function() {
 	})
 
 	it('Object', function() {
-		const serialized = serializeValue(obj)
-		const result = deSerializeValue(serialized)
-
-		assert.notStrictEqual(result, obj)
-		assert.circularDeepStrictEqual(result, obj)
+		testComplexObject({})
 	})
 
-	const arr = [Object.values(obj), ...Object.values(obj)]
-
 	it('Array', function() {
-		const serialized = serializeValue(arr)
-		const result = deSerializeValue(serialized)
-
-		assert.notStrictEqual(result, arr)
-		assert.circularDeepStrictEqual(result, arr)
+		testComplexObject({}, o => o.array)
 	})
 
 	it('Map', function() {
 		const map = new Map()
+		const arr = createComplexObject().array
 		for (let i = 1; i < arr.length; i++) {
 			map.set(arr[i - 1], arr[i])
 		}
@@ -152,6 +169,7 @@ describe('common > extensions > serialization > serializers', function() {
 	})
 
 	it('Set', function() {
+		const arr = createComplexObject().array
 		const set = new Set(arr)
 
 		const serialized = serializeValue(set)
@@ -299,30 +317,23 @@ describe('common > extensions > serialization > serializers', function() {
 	})
 
 	it('complex object', function() {
-		const object = createComplexObject({
+		testComplexObject({
 			circular: true,
 
-			circularClass: false,
+			circularClass: true,
 
-			sortedList: true, // error
+			sortedList: true,
 
-			set: false,
-			arraySet: false, // error
-			objectSet: false,
-			observableSet: false,
+			set: true,
+			arraySet: true, // error
+			objectSet: true,
+			observableSet: true,
 
-			map: false,
-			arrayMap: false,
-			objectMap: false,
-			observableMap: false,
-		})
-		const serialized = serializeValue(object)
-		const result = deSerializeValue(serialized)
-
-		assert.notStrictEqual(result, object)
-		console.log(object)
-		console.log(result)
-		assert.circularDeepStrictEqual(result, object)
+			map: true,
+			arrayMap: true, // error
+			objectMap: true,
+			observableMap: true,
+		}, null, false)
 	})
 
 })
