@@ -40,6 +40,7 @@ export interface ISerializedData {
 // region Serializers
 
 export interface ISerializeOptions {
+	arrayLength?: number
 	arrayAsObject?: boolean
 	objectKeepUndefined?: boolean
 }

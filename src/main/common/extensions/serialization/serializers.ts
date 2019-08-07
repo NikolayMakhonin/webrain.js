@@ -659,7 +659,7 @@ registerSerializer<any[]>(Array, {
 			if (options && options.arrayAsObject) {
 				return serializeObject(serialize, value, options)
 			}
-			return serializeArray(serialize, value)
+			return serializeArray(serialize, value, options && options.arrayLength)
 		},
 		deSerialize(
 			deSerialize: IDeSerializeValue,

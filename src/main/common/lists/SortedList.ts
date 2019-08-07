@@ -1202,7 +1202,7 @@ export class SortedList<T>
 
 	public serialize(serialize: ISerializeValue): ISerializedObject {
 		return {
-			array: serialize(this._array),
+			array: serialize(this._array, { arrayLength: this._size }),
 			options: serialize({
 				autoSort: this._autoSort,
 				countSorted: this._countSorted,
