@@ -1201,8 +1201,8 @@ export class SortedList<T>
 
 	public serialize(serialize: ISerializeValue): ISerializedObject {
 		return {
+			array: serialize(this._array),
 			options: serialize({
-				array: this._array,
 				autoSort: this._autoSort,
 				countSorted: this._countSorted,
 				minAllocatedSize: this._minAllocatedSize,
@@ -1294,6 +1294,7 @@ registerSerializable(SortedList, {
 			valueFactory: (...args) => SortedList<T>,
 		): ThenableIterator<SortedList<T>> {
 			const options = yield deSerialize(serializedValue.options)
+			options.array = yield deSerialize(serializedValue.array, null, { arrayAsObject: true })
 			const value = valueFactory(options)
 			value.deSerialize(deSerialize, serializedValue)
 			return value

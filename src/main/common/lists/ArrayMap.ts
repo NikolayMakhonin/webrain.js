@@ -163,7 +163,7 @@ export class ArrayMap<K, V> implements
 
 	public serialize(serialize: ISerializeValue): ISerializedObject {
 		return {
-			array: serialize(this._array, Object),
+			array: serialize(this._array, { arrayAsObject: true, objectKeepUndefined: true }),
 		}
 	}
 
@@ -188,7 +188,7 @@ registerSerializable(ArrayMap, {
 			valueFactory: (map?: Array<[K, V]>) => ArrayMap<K, V>,
 		): ThenableIterator<ArrayMap<K, V>> {
 			// @ts-ignore
-			const innerMap = yield deSerialize<Array<[K, V]>>(serializedValue.array, null, Object, () => [])
+			const innerMap = yield deSerialize<Array<[K, V]>>(serializedValue.array, null, { arrayAsObject: true })
 			const value = valueFactory(innerMap)
 			value.deSerialize(deSerialize, serializedValue)
 			return value

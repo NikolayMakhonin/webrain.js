@@ -3,12 +3,13 @@ import {ThenableSync} from '../../helpers/ThenableSync'
 import {getObjectUniqueId} from '../../lists/helpers/object-unique-id'
 import {TClass, TypeMetaCollectionWithId} from '../TypeMeta'
 import {
+	IDeSerializeOptions,
 	IDeSerializerVisitor, IDeSerializeValue,
 	IObjectSerializer, ISerializable,
 	ISerializedData,
 	ISerializedDataOrValue, ISerializedObject, ISerializedRef,
 	ISerializedTyped, ISerializedTypedValue,
-	ISerializedValue, ISerializedValueArray,
+	ISerializedValue, ISerializedValueArray, ISerializeOptions,
 	ISerializerVisitor, ISerializeValue,
 	ITypeMetaSerializer, ITypeMetaSerializerCollection,
 	ITypeMetaSerializerOverride, ThenableIterator,
@@ -74,6 +75,7 @@ export class SerializerVisitor implements ISerializerVisitor {
 	private serializeObject<TValue>(
 		out: ISerializedTyped,
 		value: TValue,
+		options?: ISerializeOptions,
 		valueType?: TClass<TValue>,
 	): void {
 		const meta = this._typeMeta.getMeta(valueType || value.constructor as TClass<TValue>)
@@ -96,11 +98,31 @@ export class SerializerVisitor implements ISerializerVisitor {
 		}
 
 		out.type = this.addType(uuid)
-		out.data = serializer.serialize(this.serialize, value)
+		out.data = serializer.serialize(this.getNextSerialize(), value, options)
+	}
+
+	public getNextSerialize(
+		options?: ISerializeOptions,
+	): ISerializeValue {
+		return <TNextValue = any>(
+			next_value: TNextValue,
+			next_options?: ISerializeOptions,
+			next_valueType?: TClass<TNextValue>,
+		) => this.serialize(
+			next_value,
+			next_options == null || next_options === options
+				? options
+				: (options == null ? next_options : {
+					...options,
+					...next_options,
+				}),
+			next_valueType,
+		)
 	}
 
 	public serialize<TValue = any>(
 		value: TValue,
+		options?: ISerializeOptions,
 		valueType?: TClass<TValue>,
 	): ISerializedValue {
 		if (typeof value === 'undefined') {
@@ -114,7 +136,7 @@ export class SerializerVisitor implements ISerializerVisitor {
 			return value as any
 		}
 
-		return this.addObject(value as any, out => this.serializeObject(out, value, valueType))
+		return this.addObject(value as any, out => this.serializeObject(out, value, options, valueType))
 	}
 }
 
@@ -172,9 +194,33 @@ export class DeSerializerVisitor implements IDeSerializerVisitor {
 		}
 	}
 
+	public getNextDeSerialize(
+		options?: IDeSerializeOptions,
+	): IDeSerializeValue {
+		return <TNextValue = any>(
+			next_serializedValue: ISerializedValue,
+			next_set?: (value: TNextValue) => void,
+			next_options?: IDeSerializeOptions,
+			next_valueType?: TClass<TNextValue>,
+			next_valueFactory?: (...args) => TNextValue,
+		) => this.deSerialize(
+			next_serializedValue,
+			next_set,
+			next_options == null || next_options === options
+				? options
+				: (options == null ? next_options : {
+					...options,
+					...next_options,
+				}),
+			next_valueType,
+			next_valueFactory,
+		)
+	}
+
 	public deSerialize<TValue = any>(
 		serializedValue: ISerializedValue,
 		set?: (value: TValue) => void,
+		options?: IDeSerializeOptions,
 		valueType?: TClass<TValue>,
 		valueFactory?: (...args) => TValue,
 	): TValue|ThenableSync<TValue> {
@@ -259,7 +305,7 @@ export class DeSerializerVisitor implements IDeSerializerVisitor {
 		let instance
 
 		const iteratorOrValue = serializer.deSerialize(
-			this.deSerialize,
+			this.getNextDeSerialize(),
 			(serializedValue as ISerializedTyped).data,
 			(...args) => {
 				if (!factory) {
@@ -271,6 +317,7 @@ export class DeSerializerVisitor implements IDeSerializerVisitor {
 
 				return instance
 			},
+			options,
 		)
 
 		const resolveInstance = (value: TValue) => {
@@ -338,16 +385,18 @@ export class TypeMetaSerializerCollection
 				serialize(
 					serialize: ISerializeValue,
 					value: ISerializable,
+					options?: ISerializeOptions,
 				): ISerializedTypedValue {
-					return value.serialize(serialize)
+					return value.serialize(serialize, options)
 				},
 				* deSerialize(
 					deSerialize: IDeSerializeValue,
 					serializedValue: ISerializedTypedValue,
-					valueFactory2?: (...args) => TObject,
+					valueFactory?: (...args) => TObject,
+					options?: IDeSerializeOptions,
 				) {
-					const value = valueFactory2()
-					yield value.deSerialize(deSerialize, serializedValue)
+					const value = valueFactory()
+					yield value.deSerialize(deSerialize, serializedValue, options)
 					return value
 				},
 				...(meta ? meta.serializer : {}),
@@ -390,9 +439,13 @@ export class ObjectSerializer implements IObjectSerializer {
 
 	public static default: ObjectSerializer = new ObjectSerializer()
 
-	public serialize<TValue>(value: TValue, valueType?: TClass<TValue>): ISerializedDataOrValue {
+	public serialize<TValue>(
+		value: TValue,
+		options?: ISerializeOptions,
+		valueType?: TClass<TValue>,
+	): ISerializedDataOrValue {
 		const serializer = new SerializerVisitor(this.typeMeta)
-		const serializedValue = serializer.serialize(value, valueType)
+		const serializedValue = serializer.serialize(value, options, valueType)
 
 		if (!serializedValue || typeof serializedValue !== 'object') {
 			return serializedValue
@@ -415,6 +468,7 @@ export class ObjectSerializer implements IObjectSerializer {
 
 	public deSerialize<TValue = any>(
 		serializedValue: ISerializedDataOrValue,
+		options?: IDeSerializeOptions,
 		valueType?: TClass<TValue>,
 		valueFactory?: (...args) => TValue,
 	): TValue {
@@ -430,7 +484,7 @@ export class ObjectSerializer implements IObjectSerializer {
 
 		const deSerializer = new DeSerializerVisitor(this.typeMeta, types, objects)
 
-		const value = deSerializer.deSerialize(data, null, valueType, valueFactory) as TValue
+		const value = deSerializer.deSerialize(data, null, options, valueType, valueFactory) as TValue
 
 		deSerializer.assertEnd()
 
@@ -512,30 +566,55 @@ export function deSerializeIterable(
 
 // region Object
 
+export function serializeObject(
+	serialize: ISerializeValue,
+	value: object,
+	options?: ISerializeOptions,
+): ISerializedObject {
+	const keepUndefined = options && options.objectKeepUndefined
+	const serializedValue = {}
+	for (const key in value) {
+		if (Object.prototype.hasOwnProperty.call(value, key)) {
+			const item = value[key]
+			if (keepUndefined || typeof item !== 'undefined') {
+				serializedValue[key] = serialize(item)
+			}
+		}
+	}
+	return serializedValue
+}
+
+export function deSerializeObject<T extends object>(
+	deSerialize: IDeSerializeValue,
+	serializedValue: ISerializedTypedValue,
+	value: T,
+): T {
+	for (const key in serializedValue as ISerializedObject) {
+		if (Object.prototype.hasOwnProperty.call(serializedValue, key)) {
+			deSerialize(serializedValue[key], o => { value[key] = o })
+		}
+	}
+	return value
+}
+
 registerSerializer<object>(Object, {
 	uuid: '88968a59-178c-4e73-a99f-801e8cdfc37d',
 	serializer: {
-		serialize(serialize: ISerializeValue, value: object): ISerializedObject {
-			const serializedValue = {}
-			for (const key in value) {
-				if (Object.prototype.hasOwnProperty.call(value, key)) {
-					serializedValue[key] = serialize(value[key])
-				}
-			}
-			return serializedValue
+		serialize(
+			serialize: ISerializeValue,
+			value: object,
+			options?: ISerializeOptions,
+		): ISerializedObject {
+			return serializeObject(serialize, value, options)
 		},
 		deSerialize(
 			deSerialize: IDeSerializeValue,
 			serializedValue: ISerializedTypedValue,
 			valueFactory: (...args) => object,
+			options?: IDeSerializeOptions,
 		): object {
 			const value = valueFactory()
-			for (const key in serializedValue as ISerializedObject) {
-				if (Object.prototype.hasOwnProperty.call(serializedValue, key)) {
-					deSerialize(serializedValue[key], o => { value[key] = o })
-				}
-			}
-			return value
+			return deSerializeObject(deSerialize, serializedValue, value)
 		},
 	},
 	valueFactory: () => ({}),
@@ -548,15 +627,27 @@ registerSerializer<object>(Object, {
 registerSerializer<any[]>(Array, {
 	uuid: 'f8c84ed0-8463-4f45-b14a-228967dfb0de',
 	serializer: {
-		serialize(serialize: ISerializeValue, value: any[]): ISerializedValueArray {
+		serialize(
+			serialize: ISerializeValue,
+			value: any[],
+			options?: ISerializeOptions,
+		): ISerializedValueArray|ISerializedObject {
+			if (options && options.arrayAsObject) {
+				return serializeObject(serialize, value, options)
+			}
 			return serializeArray(serialize, value)
 		},
 		deSerialize(
 			deSerialize: IDeSerializeValue,
 			serializedValue: ISerializedValueArray,
 			valueFactory: (...args) => any[],
-		): ThenableIterator<any[]> {
-			return deSerializeArray(deSerialize, serializedValue, valueFactory())
+			options?: IDeSerializeOptions,
+		): ThenableIterator<any[]>|any[] {
+			const value = valueFactory()
+			if (options && options.arrayAsObject) {
+				return deSerializeObject(deSerialize, serializedValue, value)
+			}
+			return deSerializeArray(deSerialize, serializedValue, value)
 		},
 	},
 	valueFactory: () => [],
@@ -569,13 +660,18 @@ registerSerializer<any[]>(Array, {
 registerSerializer<Set<any>>(Set, {
 	uuid: '17b11d99-ce03-4349-969e-4f9291d0778c',
 	serializer: {
-		serialize(serialize: ISerializeValue, value: Set<any>): ISerializedValueArray {
+		serialize(
+			serialize: ISerializeValue,
+			value: Set<any>,
+			options?: ISerializeOptions,
+		): ISerializedValueArray {
 			return serializeIterable(serialize, value)
 		},
 		deSerialize(
 			deSerialize: IDeSerializeValue,
 			serializedValue: ISerializedValueArray,
 			valueFactory: (...args) => Set<any>,
+			options?: IDeSerializeOptions,
 		): Set<any> {
 			const value = valueFactory()
 			deSerializeIterable(serializedValue, o => deSerialize(o, val => { value.add(val) }))
@@ -592,7 +688,11 @@ registerSerializer<Set<any>>(Set, {
 registerSerializer<Map<any, any>>(Map, {
 	uuid: 'fdf40f21-59b7-4cb2-804f-3d18ebb19b57',
 	serializer: {
-		serialize(serialize: ISerializeValue, value: Map<any, any>): ISerializedValueArray {
+		serialize(
+			serialize: ISerializeValue,
+			value: Map<any, any>,
+			options?: ISerializeOptions,
+		): ISerializedValueArray {
 			return serializeIterable(item => [
 				serialize(item[0]),
 				serialize(item[1]),
@@ -602,6 +702,7 @@ registerSerializer<Map<any, any>>(Map, {
 			deSerialize: IDeSerializeValue,
 			serializedValue: ISerializedValueArray,
 			valueFactory: (...args) => Map<any, any>,
+			options?: IDeSerializeOptions,
 		): Map<any, any> {
 			const value = valueFactory()
 			deSerializeIterable(
@@ -624,13 +725,18 @@ registerSerializer<Map<any, any>>(Map, {
 registerSerializer<Date>(Date, {
 	uuid: '7a6c01db-a6b8-4822-a9a5-86e4d3a4460b',
 	serializer: {
-		serialize(serialize: ISerializeValue, value: Date): number {
+		serialize(
+			serialize: ISerializeValue,
+			value: Date,
+			options?: ISerializeOptions,
+		): number {
 			return value.getTime()
 		},
 		deSerialize(
 			deSerialize: IDeSerializeValue,
 			serializedValue: number,
 			valueFactory: (...args) => Date,
+			options?: IDeSerializeOptions,
 		): Date {
 			return valueFactory(serializedValue)
 		},

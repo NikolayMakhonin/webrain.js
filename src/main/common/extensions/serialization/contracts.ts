@@ -45,10 +45,25 @@ export interface ISerializedData {
 
 // region Serializers
 
-export type ISerializeValue = <TValue = any>(value: TValue, valueType?: TClass<TValue>) => ISerializedValue
+export interface ISerializeOptions {
+	arrayAsObject?: boolean
+	objectKeepUndefined?: boolean
+}
+
+export interface IDeSerializeOptions {
+	arrayAsObject?: boolean
+	waitDeserialize?: boolean
+}
+
+export type ISerializeValue = <TValue = any>(
+	value: TValue,
+	options?: ISerializeOptions,
+	valueType?: TClass<TValue>,
+) => ISerializedValue
 export type IDeSerializeValue = <TValue = any>(
 	serializedValue: ISerializedValue,
 	set?: (value: TValue) => void,
+	options?: IDeSerializeOptions,
 	valueType?: TClass<TValue>,
 	valueFactory?: (...args) => TValue,
 ) => TValue|ThenableSync<TValue>
@@ -65,21 +80,28 @@ export interface IValueSerializer<TValue = any> {
 	serialize(
 		serialize: ISerializeValue,
 		value: TValue,
+		options?: ISerializeOptions,
 	): ISerializedTypedValue
 	deSerialize(
 		deSerialize: IDeSerializeValue,
 		serializedValue: ISerializedTypedValue,
 		valueFactory: (...args) => TValue,
+		options?: IDeSerializeOptions,
 	): TValue|ThenableIterator<TValue>
 }
 
 export interface ISerializer {
-	serialize<TValue>(value: TValue, valueType?: TClass<TValue>): ISerializedDataOrValue
+	serialize<TValue>(
+		value: TValue,
+		options?: ISerializeOptions,
+		valueType?: TClass<TValue>,
+	): ISerializedDataOrValue
 }
 
 export interface IDeSerializer {
 	deSerialize<TValue = any>(
 		serializedData: ISerializedDataOrValue,
+		options?: IDeSerializeOptions,
 		valueType?: TClass<TValue>,
 		valueFactory?: (...args) => TValue,
 	): TValue
@@ -96,11 +118,13 @@ export interface ITypeMetaSerializerOverride<TValue = any> {
 		serialize?(
 			serialize: ISerializeValue,
 			value: TValue,
+			options?: ISerializeOptions,
 		): ISerializedTypedValue
 		deSerialize?(
 			deSerialize: IDeSerializeValue,
 			serializedValue: ISerializedTypedValue,
 			valueFactory: (...args) => TValue,
+			options?: IDeSerializeOptions,
 		): TValue|ThenableIterator<TValue>,
 	}
 	valueFactory?: (...args) => any
@@ -121,28 +145,13 @@ export interface IObjectSerializer extends ISerializer, IDeSerializer {
 export interface ISerializable {
 	serialize(
 		serialize: ISerializeValue,
+		options?: ISerializeOptions,
 	): ISerializedTypedValue
 	deSerialize(
 		deSerialize: IDeSerializeValue,
 		serializedValue: ISerializedTypedValue,
+		options?: IDeSerializeOptions,
 	): void|ThenableIterator<any>
 }
 
 // endregion
-
-// export type WriteValue<TValue> = (value: TValue) => ISerializedValue
-// export type ReadValue<TValue> = (serializedValue: ISerializedValue, valueFactory: () => TValue) => TValue
-//
-// export interface ISerializable {
-// 	serialize(): ISerializedValue
-// 	deSerialize(serializedValue: ISerializedValue)
-// }
-//
-// export interface ICollectionSerializer<TCollection> {
-// 	serialize(collection: TCollection): ISerializedValueArray
-// 	deSerialize(serializedArray: ISerializedValueArray): TCollection
-// }
-//
-// export interface ICollectionFactorySerializer<TItem, TCollection> extends ICollectionSerializer<TCollection> {
-// 	create(source?: Iterable<TItem>): TCollection
-// }

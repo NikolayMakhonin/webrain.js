@@ -1323,7 +1323,7 @@ describe('fundamental-operations', function () {
 		console.log(result)
 	})
 
-	it('is iterable', function () {
+	xit('is iterable', function () {
 		this.timeout(300000)
 
 		const iterable = true
@@ -1335,6 +1335,7 @@ describe('fundamental-operations', function () {
 					}
 				}
 				yield 1
+				return 0
 			}
 		}
 
@@ -1363,6 +1364,27 @@ describe('fundamental-operations', function () {
 			},
 			() => { // 0
 				return isIterable(iterable)
+			}
+		)
+
+		console.log(result)
+	})
+
+	it('array is associative', function () {
+		this.timeout(300000)
+
+		const arr = []
+		for (let i = 0; i < 1000; i++) {
+			arr[i] = i
+		}
+
+		const result = calcPerformance(
+			2000,
+			() => {
+				// no operations
+			},
+			() => {
+				return arr.length === Object.keys(arr).length
 			}
 		)
 

@@ -4,7 +4,9 @@ const {
 	circularDeepEqual: fastCircularDeepStrictEqual
 } = require('fast-equals')
 
-;(function() {
+// const AssertionError = require('assertion-error')
+
+;(function () {
 	const {assert} = global
 
 	const {
@@ -15,41 +17,46 @@ const {
 		notEqual,
 	} = assert
 
-	assert.strictEqual = (o1, o2, message) => {
-		if (o1 !== o2) {
-			strictEqual(o1, o2, message)
+	assert.strictEqual = (actual, expected, message) => {
+		if (actual !== expected) {
+			strictEqual(actual, expected, message)
 		}
 	}
 
-	assert.notStrictEqual = (o1, o2, message) => {
-		if (o1 === o2) {
-			notStrictEqual(o1, o2, message)
+	assert.notStrictEqual = (actual, expected, message) => {
+		if (actual === expected) {
+			notStrictEqual(actual, expected, message)
 		}
 	}
 
-	assert.deepStrictEqual = (o1, o2, message) => {
-		if (!fastDeepStrictEqual(o1, o2, {})) {
-			deepStrictEqual(o1, o2, message)
+	assert.deepStrictEqual = (actual, expected, message) => {
+		if (!fastDeepStrictEqual(actual, expected, {})) {
+			deepStrictEqual(actual, expected, message)
 		}
 	}
 
-	assert.circularDeepStrictEqual = (o1, o2, message) => {
-		if (!fastCircularDeepStrictEqual(o1, o2)) {
-			deepStrictEqual(o1, o2, message)
+	assert.circularDeepStrictEqual = (actual, expected, message) => {
+		if (!fastCircularDeepStrictEqual(actual, expected)) {
+			// throw new AssertionError(message, {
+			// 	actual,
+			// 	expected,
+			// 	showDiff: true,
+			// })
+			deepStrictEqual(actual, expected, message)
 		}
 	}
 
-	assert.equal = (o1, o2, message) => {
+	assert.equal = (actual, expected, message) => {
 		// noinspection EqualityComparisonWithCoercionJS
-		if (o1 != o2) {
-			equal(o1, o2, message)
+		if (actual != expected) {
+			equal(actual, expected, message)
 		}
 	}
 
-	assert.notEqual = (o1, o2, message) => {
+	assert.notEqual = (actual, expected, message) => {
 		// noinspection EqualityComparisonWithCoercionJS
-		if (o1 == o2) {
-			notEqual(o1, o2, message)
+		if (actual == expected) {
+			notEqual(actual, expected, message)
 		}
 	}
 })()

@@ -13,6 +13,7 @@ import {ObservableSet} from '../../../../../../main/common/lists/ObservableSet'
 import {SortedList} from '../../../../../../main/common/lists/SortedList'
 import {ObservableObject} from '../../../../../../main/common/rx/object/ObservableObject'
 import {ObservableObjectBuilder} from '../../../../../../main/common/rx/object/ObservableObjectBuilder'
+import {isIterable} from "../../../../../../main/common/helpers/helpers";
 
 export class CircularClass extends ObservableObject implements ISerializable {
 	public array: any[]
@@ -63,7 +64,48 @@ registerSerializable(CircularClass, {
 new ObservableObjectBuilder(CircularClass.prototype)
 	.writable('array')
 
-export function createComplexObject() {
+interface IOptions {
+	circular?: boolean,
+
+	circularClass?: boolean,
+
+	sortedList?: boolean,
+
+	set?: boolean,
+	arraySet?: boolean,
+	objectSet?: boolean,
+	observableSet?: boolean,
+
+	map?: boolean,
+	arrayMap?: boolean,
+	objectMap?: boolean,
+	observableMap?: boolean,
+}
+
+const defaultOptions: IOptions = {
+	circular: true,
+
+	circularClass: true,
+
+	sortedList: true,
+
+	set: true,
+	arraySet: true,
+	objectSet: true,
+	observableSet: true,
+
+	map: true,
+	arrayMap: true,
+	objectMap: true,
+	observableMap: true,
+}
+
+export function createComplexObject(options: IOptions = {}) {
+	options = {
+		...defaultOptions,
+		...options,
+	}
+
 	const array = []
 	const object: any = {}
 
@@ -78,45 +120,66 @@ export function createComplexObject() {
 		p5: '',
 		p6: 'str',
 		p7: new Date(),
-		circularClass,
-		object,
+		circularClass: options.circular && options.circularClass && circularClass,
+		object: options.circular && object,
 		array,
-		sortedList: new SortedList() as any,
-		set: new Set() as any,
-		arraySet: new ArraySet() as any,
-		objectSet: new ObjectSet() as any,
-		map: new Map() as any,
-		arrayMap: new ArrayMap() as any,
-		objectMap: new ObjectMap() as any,
+		sortedList: options.sortedList && new SortedList() as any,
+		set: options.set && new Set() as any,
+		arraySet: options.arraySet && new ArraySet() as any,
+		objectSet: options.objectSet && new ObjectSet() as any,
+		map: options.map && new Map() as any,
+		arrayMap: options.arrayMap && new ArrayMap() as any,
+		objectMap: options.objectMap && new ObjectMap() as any,
 	})
 
-	object.setObservable = new ObservableSet(object.set)
-	object.arraySetObservable = new ObservableSet(object.arraySet)
-	object.objectSetObservable = new ObservableSet(object.objectSet)
+	object.setObservable = options.set && options.observableSet && new ObservableSet(object.set)
+	object.arraySetObservable = options.arraySet && options.observableSet && new ObservableSet(object.arraySet)
+	object.objectSetObservable = options.objectSet && options.observableSet && new ObservableSet(object.objectSet)
 
-	object.mapObservable = new ObservableSet(object.map)
-	object.arrayMapObservable = new ObservableSet(object.arrayMap)
-	object.objectMapObservable = new ObservableSet(object.objectMap)
+	object.mapObservable = options.map && options.observableMap && new ObservableSet(object.map)
+	object.arrayMapObservable = options.arrayMap && options.observableMap && new ObservableSet(object.arrayMap)
+	object.objectMapObservable = options.objectMap && options.observableMap && new ObservableSet(object.objectMap)
+
+	const valueIsCollection = value => {
+		return value && (
+			isIterable(value)
+			|| value.constructor === Object
+		)
+	}
 
 	for (const key in object) {
 		if (Object.prototype.hasOwnProperty.call(object, key)) {
 			const value = object[key]
 
-			object.sortedList.add(value)
+			if (options.circular || !valueIsCollection(value)) {
+				if (object.sortedList) {
+					object.sortedList.add(value)
+				}
 
-			object.set.add(value)
-			if (value && typeof value === 'object') {
-				object.arraySet.add(value)
+				if (object.set) {
+					object.set.add(value)
+				}
+				if (object.arraySet && value && typeof value === 'object') {
+					object.arraySet.add(value)
+				}
+				if (object.objectSet) {
+					object.objectSet.add(key)
+				}
+
+				if (object.map) {
+					object.map.set(value, value)
+				}
+				if (object.arrayMap && value && typeof value === 'object') {
+					object.arrayMap.set(value, value)
+				}
+				if (object.objectMap) {
+					object.objectMap.set(key, value)
+				}
+
+				if (object.array) {
+					array.push(value)
+				}
 			}
-			object.objectSet.add(key)
-
-			object.map.set(value, value)
-			if (value && typeof value === 'object') {
-				object.arrayMap.set(value, value)
-			}
-			object.objectMap.set(key, value)
-
-			array.push(value)
 		}
 	}
 

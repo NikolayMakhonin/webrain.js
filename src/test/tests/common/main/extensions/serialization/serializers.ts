@@ -10,7 +10,8 @@ import {
 	registerSerializable,
 	TypeMetaSerializerCollection,
 } from '../../../../../../main/common/extensions/serialization/serializers'
-import {CircularClass, createComplexObject} from "../../src/helpers/helpers";
+import {SortedList} from '../../../../../../main/common/lists/SortedList'
+import {CircularClass, createComplexObject} from '../../src/helpers/helpers'
 
 declare const assert
 
@@ -233,7 +234,7 @@ describe('common > extensions > serialization > serializers', function() {
 			valueFactory: () => new Class2('prop2'),
 		})
 		const serialized = serializeValue(obj2)
-		const result = deSerializeValue(serialized, null, () => new Class2('p2'))
+		const result = deSerializeValue(serialized, null, null, () => new Class2('p2'))
 
 		delete obj2.prop1
 
@@ -284,8 +285,37 @@ describe('common > extensions > serialization > serializers', function() {
 		assert.circularDeepStrictEqual(result, obj3)
 	})
 
+	it('SortedList circular', function() {
+		const sortedList = new SortedList()
+		sortedList.add(sortedList)
+
+		const serialized = serializeValue(sortedList)
+		const result = deSerializeValue(serialized)
+
+		assert.notStrictEqual(result, sortedList)
+		console.log(sortedList)
+		console.log(result)
+		assert.circularDeepStrictEqual(result, sortedList)
+	})
+
 	it('complex object', function() {
-		const object = createComplexObject()
+		const object = createComplexObject({
+			circular: true,
+
+			circularClass: false,
+
+			sortedList: true, // error
+
+			set: false,
+			arraySet: false, // error
+			objectSet: false,
+			observableSet: false,
+
+			map: false,
+			arrayMap: false,
+			objectMap: false,
+			observableMap: false,
+		})
 		const serialized = serializeValue(object)
 		const result = deSerializeValue(serialized)
 

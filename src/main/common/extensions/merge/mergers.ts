@@ -366,7 +366,7 @@ export class MergerVisitor implements IMergerVisitor {
 			next_preferCloneNewer == null ? preferCloneNewer : next_preferCloneNewer,
 			next_options == null || next_options === options
 				? options
-				: (options == null ? options : {
+				: (options == null ? next_options : {
 					...options,
 					...next_options,
 				}),

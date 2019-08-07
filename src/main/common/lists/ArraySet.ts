@@ -168,7 +168,7 @@ export class ArraySet<T extends Object> implements
 
 	public serialize(serialize: ISerializeValue): ISerializedObject {
 		return {
-			array: serialize(this._array, Object),
+			array: serialize(this._array, { arrayAsObject: true, objectKeepUndefined: true }),
 		}
 	}
 
@@ -192,7 +192,7 @@ registerSerializable(ArraySet, {
 			serializedValue: ISerializedObject,
 			valueFactory: (set?: T[]) => ArraySet<T>,
 		): ThenableIterator<ArraySet<T>> {
-			const innerSet = yield deSerialize(serializedValue.array, null, Object, () => [])
+			const innerSet = yield deSerialize(serializedValue.array, null, { arrayAsObject: true })
 			const value = valueFactory(innerSet)
 			value.deSerialize(deSerialize, serializedValue)
 			return value

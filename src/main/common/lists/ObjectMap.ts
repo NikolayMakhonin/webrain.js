@@ -142,7 +142,7 @@ export class ObjectMap<V> implements
 
 	public serialize(serialize: ISerializeValue): ISerializedObject {
 		return {
-			object: serialize(this._object),
+			object: serialize(this._object, { objectKeepUndefined: true }),
 		}
 	}
 
