@@ -67,6 +67,8 @@ new ObservableObjectBuilder(CircularClass.prototype)
 	.writable('array')
 
 export interface IComplexObjectOptions {
+	array?: boolean,
+
 	undefined?: boolean,
 
 	circular?: boolean,
@@ -131,7 +133,7 @@ export function createComplexObject(options: IComplexObjectOptions = {}) {
 		'-infinity': -Infinity,
 		circularClass: options.circular && options.circularClass && circularClass,
 		object: options.circular && object,
-		array,
+		array: options.array && array,
 		sortedList: options.sortedList && new SortedList() as any,
 		set: options.set && new Set() as any,
 		arraySet: options.arraySet && new ArraySet() as any,

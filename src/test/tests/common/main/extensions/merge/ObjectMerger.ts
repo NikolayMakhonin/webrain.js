@@ -4,7 +4,9 @@
 import deepClone from 'fast-copy'
 // @ts-ignore
 // noinspection ES6UnusedImports
-import { deepEqual as deepStrictEqual } from 'fast-equals'
+import {
+	circularDeepEqual as circularDeepStrictEqual,
+} from 'fast-equals'
 import {IMergeable, IMergeOptions, IMergeValue} from '../../../../../../main/common/extensions/merge/contracts'
 import {registerMergeable} from '../../../../../../main/common/extensions/merge/mergers'
 import {ArrayMap} from '../../../../../../main/common/lists/ArrayMap'
@@ -17,11 +19,13 @@ import {ObservableMap} from '../../../../../../main/common/lists/ObservableMap'
 import {ObservableSet} from '../../../../../../main/common/lists/ObservableSet'
 import {SortedList} from '../../../../../../main/common/lists/SortedList'
 import {toIterable} from '../../lists/src/helpers/common'
+import {createComplexObject, IComplexObjectOptions} from '../../src/helpers/helpers'
 import {BASE, IMergerOptionsVariant, isRefer, NEWER, NONE, OLDER, TestMerger} from './src/TestMerger'
 
 declare const assert
 declare const after
-declare function deepStrictEqual(a, b): boolean
+// declare function deepStrictEqual(a, b): boolean
+// declare function circularDeepStrictEqual(a, b): boolean
 // declare function deepClone<T = any>(o: T): T
 
 describe('common > extensions > merge > ObjectMerger', function() {
@@ -53,21 +57,21 @@ describe('common > extensions > merge > ObjectMerger', function() {
 		// }
 
 		if (o.base instanceof Class
-			&& (deepStrictEqual(o.base, o.older) || deepStrictEqual(o.base.value, o.older) && o.older != null && o.older.constructor === Object)
-			&& (deepStrictEqual(o.base, o.newer) || deepStrictEqual(o.base.value, o.newer) && o.newer != null && o.newer.constructor === Object)
+			&& (circularDeepStrictEqual(o.base, o.older) || circularDeepStrictEqual(o.base.value, o.older) && o.older != null && o.older.constructor === Object)
+			&& (circularDeepStrictEqual(o.base, o.newer) || circularDeepStrictEqual(o.base.value, o.newer) && o.newer != null && o.newer.constructor === Object)
 		) {
 			return false
 		}
 
-		return !deepStrictEqual(o.base, o.newer) || !deepStrictEqual(o.base, o.older)
+		return !circularDeepStrictEqual(o.base, o.newer) || !circularDeepStrictEqual(o.base, o.older)
 	}
 
 	function mustBeFilled(o: IMergerOptionsVariant) {
 		return !o.preferCloneBase
 			&& o.base != null && o.base.constructor === Object
-			&& (!deepStrictEqual(o.base, o.newer) && o.newer != null && o.newer.constructor === Object
-				|| deepStrictEqual(o.base, o.newer)
-					&& !deepStrictEqual(o.base, o.older) && o.older != null && o.older.constructor === Object)
+			&& (!circularDeepStrictEqual(o.base, o.newer) && o.newer != null && o.newer.constructor === Object
+				|| circularDeepStrictEqual(o.base, o.newer)
+					&& !circularDeepStrictEqual(o.base, o.older) && o.older != null && o.older.constructor === Object)
 	}
 
 	class Class implements IMergeable<Class, object> {
@@ -106,12 +110,12 @@ describe('common > extensions > merge > ObjectMerger', function() {
 	registerMergeable(Class)
 
 	it('base', function() {
-		assert.ok(deepStrictEqual(
+		assert.ok(circularDeepStrictEqual(
 			new Class({a: {a: 1, b: 2}, b: 3}),
 			new Class({a: {a: 1, b: 2}, b: 3}),
 		))
 
-		assert.ok(deepStrictEqual(
+		assert.ok(circularDeepStrictEqual(
 			deepClone(new Class({a: {a: 1, b: 2}, b: 3})),
 			new Class({a: {a: 1, b: 2}, b: 3}),
 		))
@@ -119,7 +123,7 @@ describe('common > extensions > merge > ObjectMerger', function() {
 		// tslint:disable-next-line:use-primitive-type no-construct
 		const symbol = {x: new String('SYMBOL')}
 		const symbolClone = deepClone(symbol)
-		assert.ok(deepStrictEqual(symbol, symbolClone))
+		assert.ok(circularDeepStrictEqual(symbol, symbolClone))
 	})
 
 	describe('combinations', function() {
@@ -171,7 +175,7 @@ describe('common > extensions > merge > ObjectMerger', function() {
 				error: null,
 				returnValue: o => mustBeSet(o) || mustBeFilled(o),
 				setValue: o => {
-					const deepStrictEqual2 = deepStrictEqual
+					const circularDeepStrictEqual2 = circularDeepStrictEqual
 
 					if (!mustBeSet(o)) {
 						return NONE
@@ -179,7 +183,7 @@ describe('common > extensions > merge > ObjectMerger', function() {
 
 					if (o.base != null && o.base.constructor === Object) {
 						if (o.newer != null && o.newer.constructor === Object) {
-							if (deepStrictEqual2(o.base, o.newer)) {
+							if (circularDeepStrictEqual2(o.base, o.newer)) {
 								if (o.older != null && o.older.constructor === Object) {
 									return o.preferCloneBase
 										? deepClone(o.older)
@@ -197,7 +201,7 @@ describe('common > extensions > merge > ObjectMerger', function() {
 						o.older != null && o.older.constructor === Object
 						&& o.newer != null && o.newer.constructor === Object
 					) {
-						if (deepStrictEqual2(o.older, o.newer)) {
+						if (circularDeepStrictEqual2(o.older, o.newer)) {
 							return !o.preferCloneNewer
 								? NEWER
 								: (o.preferCloneOlder ? deepClone(o.newer) : OLDER)
@@ -213,7 +217,7 @@ describe('common > extensions > merge > ObjectMerger', function() {
 						&& o.newer != null && o.newer.constructor === Object
 					) {
 						return o.preferCloneBase
-							? deepClone(deepStrictEqual2(o.base, o.newer)
+							? deepClone(circularDeepStrictEqual2(o.base, o.newer)
 								? o.older
 								: o.newer)
 							: NONE
@@ -229,8 +233,8 @@ describe('common > extensions > merge > ObjectMerger', function() {
 					if (o.base instanceof Class
 						&& !(o.older instanceof Class || o.older != null && o.older.constructor === Object)
 						&& (o.newer instanceof Class || o.newer != null && o.newer.constructor === Object)
-						&& !deepStrictEqual2(o.base, o.newer)
-						&& !deepStrictEqual2(o.base.value, o.newer)
+						&& !circularDeepStrictEqual2(o.base, o.newer)
+						&& !circularDeepStrictEqual2(o.base.value, o.newer)
 					) {
 						return NONE
 					}
@@ -238,7 +242,7 @@ describe('common > extensions > merge > ObjectMerger', function() {
 					if (o.base != null && o.base.constructor === Object && !Object.isFrozen(o.base)
 						&& !(o.older != null && o.older.constructor === Object)
 						&& (o.newer != null && o.newer.constructor === Object)
-						&& !deepStrictEqual2(o.base, o.newer)
+						&& !circularDeepStrictEqual2(o.base, o.newer)
 					) {
 						return NONE
 					}
@@ -250,9 +254,9 @@ describe('common > extensions > merge > ObjectMerger', function() {
 						return OLDER
 					}
 
-					if (!deepStrictEqual2(o.base, o.newer)
+					if (!circularDeepStrictEqual2(o.base, o.newer)
 						&& o.older !== o.newer
-						&& deepStrictEqual2(o.older, o.newer)
+						&& circularDeepStrictEqual2(o.older, o.newer)
 						&& o.older instanceof Date && o.newer instanceof Date
 						&& o.preferCloneNewer && !o.preferCloneOlder
 					) {
@@ -261,7 +265,7 @@ describe('common > extensions > merge > ObjectMerger', function() {
 
 					if ((o.older instanceof Class || o.older != null && o.older.constructor === Object)
 						&& o.newer != null && o.newer.constructor === Object
-						&& (o.preferCloneOlder && !deepStrictEqual2(o.older, o.newer)
+						&& (o.preferCloneOlder && !circularDeepStrictEqual2(o.older, o.newer)
 							|| o.preferCloneOlder && o.preferCloneNewer)
 						|| o.newer === o.older && (o.preferCloneOlder || o.preferCloneNewer)
 					) {
@@ -274,8 +278,8 @@ describe('common > extensions > merge > ObjectMerger', function() {
 						return OLDER
 					}
 
-					return !(deepStrictEqual2(o.base, o.newer)
-						|| o.base instanceof Class && deepStrictEqual2(o.base.value, o.newer)
+					return !(circularDeepStrictEqual2(o.base, o.newer)
+						|| o.base instanceof Class && circularDeepStrictEqual2(o.base.value, o.newer)
 						&& o.newer != null && o.newer.constructor === Object)
 					|| o.newer !== o.base
 					&& o.base != null && o.base.constructor === Object && Object.isFrozen(o.base)
@@ -369,6 +373,32 @@ describe('common > extensions > merge > ObjectMerger', function() {
 				{}, {a: {a: 1, b: 2}, b: 3}, {a: {b: 4, c: 5}, c: 6}, {a: {a: 7, b: 8}, d: 9}, Object.freeze({x: {y: 1}}),
 				new Date(1), new Date(2),
 			]
+
+			testMerger({
+				...options,
+				base: createValues(),
+				older: createValues(),
+				newer: createValues(),
+			})
+		})
+
+		it('merge complex objects', function() {
+			const complexObjectOptions: IComplexObjectOptions = {
+				array: false,
+				circular: true,
+			}
+
+			const createValues = () => [
+				BASE, OLDER, NEWER,
+				createComplexObject(complexObjectOptions),
+			]
+
+			// testMerger({
+			// 	...options,
+			// 	base: [OLDER],
+			// 	older: [createComplexObject(complexObjectOptions)],
+			// 	newer: [createComplexObject(complexObjectOptions)],
+			// })
 
 			testMerger({
 				...options,

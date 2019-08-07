@@ -14,3 +14,6 @@ export function typeToDebugString(type) {
 		? type + ''
 		: (type && type.name || type.toString())
 }
+
+// tslint:disable-next-line:no-empty no-shadowed-variable
+export const EMPTY: any = function EMPTY() {}

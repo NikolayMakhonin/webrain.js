@@ -1238,6 +1238,16 @@ describe('fundamental-operations', function () {
 		})
 	}
 
+	function definePropertyGetSet(obj, propertyName) {
+		obj[propertyName] = 0
+		Object.defineProperty(obj, propertyName, {
+			configurable: true,
+			enumerable  : false,
+			get         : () => 0,
+			set(o) {	}
+		})
+	}
+
 	it('delete property', function () {
 		this.timeout(300000)
 
@@ -1263,12 +1273,6 @@ describe('fundamental-operations', function () {
 				delete obj.x
 			},
 			() => {
-				defineProperty(obj, 'x')
-			},
-			() => {
-				obj.x = void 0
-			},
-			() => {
 				hashTable[(Math.random() * 10000)|0] = void 0
 			},
 			() => {
@@ -1276,6 +1280,24 @@ describe('fundamental-operations', function () {
 			},
 			() => {
 				getObjectUniqueId({})
+			},
+			() => {
+				defineProperty(obj, 'x')
+			},
+			() => {
+				obj.x = void 0
+			},
+			() => {
+				delete obj.x
+			},
+			() => {
+				definePropertyGetSet(obj, 'x')
+			},
+			() => {
+				obj.x = void 0
+			},
+			() => {
+				delete obj.x
 			}
 		)
 

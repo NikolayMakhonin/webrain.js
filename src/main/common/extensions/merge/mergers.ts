@@ -1,5 +1,5 @@
 /* tslint:disable:no-nested-switch ban-types use-primitive-type */
-import {isIterable, typeToDebugString} from '../../helpers/helpers'
+import {isIterable, EMPTY, typeToDebugString} from '../../helpers/helpers'
 import {fillMap, fillSet} from '../../lists/helpers/set'
 import {TClass, TypeMetaCollection} from '../TypeMeta'
 import {
@@ -745,6 +745,52 @@ registerMergerPrimitive(Number)
 registerMergerPrimitive(Boolean)
 registerMergerPrimitive(Array)
 registerMergerPrimitive(Error)
+
+// endregion
+
+// region Array
+
+// @ts-ignore
+// registerMerger<any[], any[]>(Array, {
+// 	merger: {
+// 		canMerge(target: any[], source: any[]): boolean {
+// 			return Array.isArray(source)
+// 		},
+// 		merge(
+// 			merge: IMergeValue,
+// 			base: any[],
+// 			older: any[],
+// 			newer: any[],
+// 			set?: (value: any[]) => void,
+// 			preferCloneOlder?: boolean,
+// 			preferCloneNewer?: boolean,
+// 			options?: IMergeOptions,
+// 		): boolean {
+// 			let changed = false
+// 			const lenBase = base.length
+// 			const lenOlder = older.length
+// 			const lenNewer = newer.length
+// 			for (let i = 0; i < lenNewer; i++) {
+// 				if (i < lenBase) {
+// 					if (i < lenOlder) {
+// 						changed = merge(base[i], older[i], newer[i], o => base[i] = o, preferCloneOlder, preferCloneNewer)
+// 							|| changed
+// 					} else {
+// 						changed = merge(base[i], newer[i], newer[i], o => base[i] = o, preferCloneNewer, preferCloneNewer)
+// 							|| changed
+// 					}
+// 				} else if (i < lenOlder) {
+// 					changed = merge(EMPTY, older[i], newer[i], o => base[i] = o, preferCloneOlder, preferCloneNewer)
+// 						|| changed
+// 				} else {
+// 					changed = merge(EMPTY, newer[i], newer[i], o => base[i] = o, preferCloneNewer, preferCloneNewer)
+// 						|| changed
+// 				}
+// 			}
+// 		},
+// 	},
+// 	preferClone: o => Array.isFrozen(o) ? true : null,
+// })
 
 // endregion
 

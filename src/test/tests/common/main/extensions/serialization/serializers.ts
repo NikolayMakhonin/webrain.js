@@ -76,10 +76,12 @@ describe('common > extensions > serialization > serializers', function() {
 
 	function testComplexObject(options: IComplexObjectOptions, prepare?: (object) => any, log?: boolean) {
 		let object = createComplexObject({
+			array: true,
 			undefined: true,
 			...options,
 		})
 		let checkObject = createComplexObject({
+			array: true,
 			...options,
 			undefined: false,
 		})
@@ -156,7 +158,7 @@ describe('common > extensions > serialization > serializers', function() {
 
 	it('Map', function() {
 		const map = new Map()
-		const arr = createComplexObject().array
+		const arr = createComplexObject({ array: true }).array
 		for (let i = 1; i < arr.length; i++) {
 			map.set(arr[i - 1], arr[i])
 		}
@@ -169,7 +171,7 @@ describe('common > extensions > serialization > serializers', function() {
 	})
 
 	it('Set', function() {
-		const arr = createComplexObject().array
+		const arr = createComplexObject({ array: true }).array
 		const set = new Set(arr)
 
 		const serialized = serializeValue(set)

@@ -1,9 +1,6 @@
 /* tslint:disable:no-identical-functions */
-import {isIterable} from '../../helpers/helpers'
+import {isIterable, EMPTY} from '../../helpers/helpers'
 import {IMergeOptions, IMergeValue} from './contracts'
-
-// tslint:disable-next-line:no-empty no-shadowed-variable
-const NONE: any = function NONE() {}
 
 export interface IMergeMapWrapper<K, V> {
 	has(key: K): boolean
@@ -30,13 +27,13 @@ export function mergeMapWrappers<K, V>(
 		olderItem: V,
 		newerItem: V,
 	): V => {
-		let setItem: V = NONE
+		let setItem: V = EMPTY
 
-		merge(NONE, olderItem, newerItem, o => {
+		merge(EMPTY, olderItem, newerItem, o => {
 			setItem = o
 		}, preferCloneOlder, preferCloneNewer, options)
 
-		if (setItem === NONE) {
+		if (setItem === EMPTY) {
 			throw new Error('setItem === NONE')
 		}
 
@@ -47,14 +44,14 @@ export function mergeMapWrappers<K, V>(
 		// [- n n]
 		newer.forEachKeys(key => {
 			if (!base.has(key)) {
-				addItems.push([key, fill(NONE, newer.get(key))])
+				addItems.push([key, fill(EMPTY, newer.get(key))])
 			}
 		})
 	} else {
 		// [- - n]
 		newer.forEachKeys(key => {
 			if (!base.has(key) && !older.has(key)) {
-				addItems.push([key, fill(NONE, newer.get(key))])
+				addItems.push([key, fill(EMPTY, newer.get(key))])
 			}
 		})
 
@@ -62,7 +59,7 @@ export function mergeMapWrappers<K, V>(
 		older.forEachKeys(key => {
 			if (!base.has(key)) {
 				if (!newer.has(key)) {
-					addItems.push([key, fill(older.get(key), NONE)])
+					addItems.push([key, fill(older.get(key), EMPTY)])
 				} else {
 					addItems.push([key, fill(older.get(key), newer.get(key))])
 				}
@@ -76,10 +73,10 @@ export function mergeMapWrappers<K, V>(
 	base.forEachKeys(key => {
 		changed = merge(
 			base.get(key),
-			older.has(key) ? older.get(key) : NONE,
-			newer.has(key) ? newer.get(key) : NONE,
+			older.has(key) ? older.get(key) : EMPTY,
+			newer.has(key) ? newer.get(key) : EMPTY,
 			o => {
-				if ((o as any) === NONE) {
+				if ((o as any) === EMPTY) {
 					deleteItems.push(key)
 				} else {
 					base.set(key, o)

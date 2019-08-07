@@ -49,12 +49,12 @@ function deepClone<T = any>(o: T): T {
 	return fastCopy(o)
 }
 
-function deepStrictEqualsExt(o1, o2) {
+function circularDeepStrictEqualExt(o1, o2) {
 	if (o1 && o1.constructor === SortedList) {
 		if (o1.constructor === o2.constructor) {
-			assert.deepStrictEqual((o1 as SortedList<any>).autoSort, o2.autoSort)
-			assert.deepStrictEqual((o1 as SortedList<any>).notAddIfExists, o2.notAddIfExists)
-			assert.deepStrictEqual((o1 as SortedList<any>).compare, o2.compare)
+			assert.strictEqual((o1 as SortedList<any>).autoSort, o2.autoSort)
+			assert.strictEqual((o1 as SortedList<any>).notAddIfExists, o2.notAddIfExists)
+			assert.strictEqual((o1 as SortedList<any>).compare, o2.compare)
 		}
 		let count = 0
 		for (const item of o2) {
@@ -65,7 +65,7 @@ function deepStrictEqualsExt(o1, o2) {
 		return
 	}
 
-	assert.deepStrictEqual(o1, o2)
+	assert.circularDeepStrictEqual(o1, o2)
 }
 
 // export enum EqualsType {
@@ -305,8 +305,8 @@ export class TestMerger extends TestVariants<
 			let initialOptions = inputOptions
 			const inputOptionsClone = deepClone(inputOptions)
 			try {
-				let options = resolveOptions(initialOptions, null, false, true, true)
-				options = resolveOptions(options, options, true, true, false)
+				let options = resolveOptions(initialOptions, null, true, true, true)
+				// options = resolveOptions(options, options, true, true, false)
 				initialOptions = resolveOptions(initialOptions, options, true, false, true)
 
 				if (options.preferCloneMeta == null) {
@@ -400,7 +400,7 @@ export class TestMerger extends TestVariants<
 								assert.notStrictEqual(actual, options.older)
 								assert.notStrictEqual(actual, options.newer)
 							}
-							deepStrictEqualsExt(actual, expected)
+							circularDeepStrictEqualExt(actual, expected)
 						}
 					}
 
@@ -414,16 +414,16 @@ export class TestMerger extends TestVariants<
 					assert.strictEqual(setCount,
 						options.expected.setValue !== NONE ? 1 : 0)
 
-					deepStrictEqualsExt(options.base, initialBase)
-					deepStrictEqualsExt(options.older, initialOlder)
-					deepStrictEqualsExt(options.newer, initialNewer)
+					circularDeepStrictEqualExt(options.base, initialBase)
+					circularDeepStrictEqualExt(options.older, initialOlder)
+					circularDeepStrictEqualExt(options.newer, initialNewer)
 
 					// assertValue(options.base, options.expected.base, isRefer(initialOptions.expected.base))
 					// assertValue(options.older, options.expected.older, isRefer(initialOptions.expected.older))
 					// assertValue(options.newer, options.expected.newer, isRefer(initialOptions.expected.newer))
 				}
 
-				assert.deepStrictEqual(inputOptions, inputOptionsClone)
+				assert.circularDeepStrictEqual(inputOptions, inputOptionsClone)
 
 				break
 			} catch (ex) {
