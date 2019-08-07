@@ -36,7 +36,7 @@ export class RuleBuilder<TObject> {
 		// 	value: UNSUBSCRIBE_PROPERTY_PREFIX + (nextUnsubscribePropertyId++),
 		// })
 
-		ruleSubscribe.unsubscribePropertyName = UNSUBSCRIBE_PROPERTY_PREFIX + (nextUnsubscribePropertyId++)
+		ruleSubscribe.unsubscribePropertyName = [] // UNSUBSCRIBE_PROPERTY_PREFIX + (nextUnsubscribePropertyId++)
 
 		if (ruleLast) {
 			ruleLast.next = ruleSubscribe

@@ -6,6 +6,7 @@ import {RuleBuilder} from "./RuleBuilder";
 import {PeekIterator} from "./helpers/PeekIterator";
 import {checkUnsubscribe} from "./helpers/common";
 import {ISubscribeValue} from "./contracts/common";
+import {getObjectUniqueId} from "../../lists/helpers/object-unique-id";
 
 // const UNSUBSCRIBE_PROPERTY_PREFIX = Math.random().toString(36)
 let nextUnsubscribePropertyId = 0
@@ -20,7 +21,7 @@ function deepSubscribeRuleIterator<TValue>(
 	debugParent?: any,
 ): IUnsubscribe {
 	const subscribeNext = (object) => {
-		let unsubscribePropertyName: string
+		let unsubscribePropertyName: IUnsubscribe[]
 
 		return subscribeNextRule(
 			ruleIterator,
@@ -55,19 +56,23 @@ function deepSubscribeRuleIterator<TValue>(
 						unsubscribePropertyName = rule.unsubscribePropertyName // + '_' + (nextUnsubscribePropertyId++)
 					}
 
-					let unsubscribe: IUnsubscribe = item[unsubscribePropertyName]
+					const itemUniqueId = getObjectUniqueId(item)
+
+					let unsubscribe: IUnsubscribe = unsubscribePropertyName[itemUniqueId]
 					if (!unsubscribe) {
 						// if (typeof unsubscribe === 'undefined') {
 
 							// !Warning defineProperty is slow
-							Object.defineProperty(item, unsubscribePropertyName, {
-								configurable: true,
-								enumerable: false,
-								writable: true,
-								value: checkUnsubscribe(subscribe()),
-							})
+							// Object.defineProperty(item, unsubscribePropertyName, {
+							// 	configurable: true,
+							// 	enumerable: false,
+							// 	writable: true,
+							// 	value: checkUnsubscribe(subscribe()),
+							// })
 
 							// item[unsubscribePropertyName] = checkUnsubscribe(subscribe())
+
+							unsubscribePropertyName[itemUniqueId] = checkUnsubscribe(subscribe())
 
 						// } else {
 						// 	item[unsubscribePropertyName] = subscribe()
@@ -84,9 +89,11 @@ function deepSubscribeRuleIterator<TValue>(
 						return
 					}
 
-					const unsubscribe = item[unsubscribePropertyName]
+					const itemUniqueId = getObjectUniqueId(item)
+
+					const unsubscribe = unsubscribePropertyName[itemUniqueId]
 					if (unsubscribe) {
-						delete item[unsubscribePropertyName]
+						delete unsubscribePropertyName[itemUniqueId]
 						unsubscribe()
 						// item[unsubscribePropertyName] = null
 					}
