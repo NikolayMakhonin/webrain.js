@@ -2,7 +2,7 @@
 
 import {calcPerformance} from 'rdtsc'
 import {binarySearch} from '../../../main/common/lists/helpers/array'
-import {getObjectUniqueId} from '../../../main/common/lists/helpers/object-unique-id'
+import {getObjectUniqueId, freezeWithUniqueId} from '../../../main/common/lists/helpers/object-unique-id'
 import {SortedList} from '../../../main/common/lists/SortedList'
 import {ArraySet} from '../../../main/common/lists/ArraySet'
 import {createObject, Tester} from '../../tests/common/main/rx/deep-subscribe/helpers/Tester'
@@ -1248,7 +1248,7 @@ describe('fundamental-operations', function () {
 		})
 	}
 
-	it('delete property', function () {
+	xit('delete property', function () {
 		this.timeout(300000)
 
 		const hashTable = {}
@@ -1421,6 +1421,36 @@ describe('fundamental-operations', function () {
 			},
 			() => {
 				return arr.length === Object.keys(arr).length
+			}
+		)
+
+		console.log(result)
+	})
+
+	it('Object.freeze', function () {
+		this.timeout(300000)
+
+		const result = calcPerformance(
+			2000,
+			// () => {
+			// 	// no operations
+			// },
+			() => {
+				const x = {}
+				return x
+			},
+			() => {
+				const x = {}
+				Object.freeze(x)
+			},
+			() => {
+				const x = {}
+				getObjectUniqueId(x)
+				Object.freeze(x)
+			},
+			() => {
+				const x = {}
+				freezeWithUniqueId(x)
 			}
 		)
 

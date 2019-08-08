@@ -5,6 +5,7 @@ import {ObjectMerger, TypeMetaMergerCollection} from '../../../../../../../main/
 import {TClass} from '../../../../../../../main/common/extensions/TypeMeta'
 import {SortedList} from '../../../../../../../main/common/lists/SortedList'
 import {IOptionsVariant, IOptionsVariants, ITestCase, TestVariants} from '../../../src/helpers/TestVariants'
+import {isFrozenWithoutUniqueId} from "../../../../../../../main/common/lists/helpers/object-unique-id";
 
 declare const assert
 // declare function fastCopy<T = any>(o: T): T
@@ -97,6 +98,9 @@ export interface IMergerOptionsVariant {
 	preferCloneBase?: boolean
 	preferCloneOlder?: boolean
 	preferCloneNewer?: boolean
+	baseIsFrozen?: boolean
+	olderIsFrozen?: boolean
+	newerIsFrozen?: boolean
 }
 
 export const NONE = new String('NONE')
@@ -302,12 +306,18 @@ export class TestMerger extends TestVariants<
 	) {
 		let error
 		for (let debugIteration = 0; debugIteration < 3; debugIteration++) {
+			// if (TestMerger.totalTests >= 457) {
+			// 	new Date().getTime()
+			// }
 			let initialOptions = inputOptions
 			const inputOptionsClone = deepClone(inputOptions)
 			try {
-				let options = resolveOptions(initialOptions, null, true, true, true)
+				const options = resolveOptions(initialOptions, null, true, true, true)
 				// options = resolveOptions(options, options, true, true, false)
 				initialOptions = resolveOptions(initialOptions, options, true, false, true)
+				initialOptions.baseIsFrozen = Object.isFrozen(options.base)
+				initialOptions.olderIsFrozen = Object.isFrozen(options.older)
+				initialOptions.newerIsFrozen = Object.isFrozen(options.newer)
 
 				if (options.preferCloneMeta == null) {
 					TypeMetaMergerCollectionMock.default.changeMetaFunc = null
@@ -394,6 +404,7 @@ export class TestMerger extends TestVariants<
 								&& actual.constructor !== String
 								&& actual.constructor !== Number
 								&& actual.constructor !== Boolean
+								&& !isFrozenWithoutUniqueId(actual)
 								|| typeof actual === 'function') {
 								assert.notStrictEqual(actual, expected)
 								assert.notStrictEqual(actual, options.base)

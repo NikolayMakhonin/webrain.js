@@ -1,5 +1,6 @@
 /* tslint:disable:no-nested-switch ban-types use-primitive-type */
-import {isIterable, EMPTY, typeToDebugString} from '../../helpers/helpers'
+import {isIterable, typeToDebugString} from '../../helpers/helpers'
+import {getObjectUniqueId, hasObjectUniqueId, isFrozenWithoutUniqueId} from '../../lists/helpers/object-unique-id'
 import {fillMap, fillSet} from '../../lists/helpers/set'
 import {TClass, TypeMetaCollection} from '../TypeMeta'
 import {
@@ -145,8 +146,12 @@ class ValueState<TTarget, TSource> {
 						break
 					case true:
 						const { preferClone } = this
+						const mergerVisitor = this.mergerState.mergerVisitor
+
+						mergerVisitor.setRef(target, _clone, false)
+
 						this.merge(
-							this.mergerState.mergerVisitor.getNextMerge(preferClone, preferClone, this.mergerState.options),
+							mergerVisitor.getNextMerge(preferClone, preferClone, this.mergerState.options),
 							_clone,
 							target,
 							target,
@@ -335,11 +340,72 @@ function mergePreferClone(o1, o2) {
 	return o1 == null ? o2 : o1
 }
 
+interface IRef {
+	isChanged: boolean
+	obj: object
+}
+
 export class MergerVisitor implements IMergerVisitor {
 	public readonly typeMeta: ITypeMetaMergerCollection
+	public refs: IRef[]
 
 	constructor(typeMeta: ITypeMetaMergerCollection) {
 		this.typeMeta = typeMeta
+	}
+
+	public getRef(object: any): IRef {
+		const {refs} = this
+		if (!refs) {
+			return null
+		}
+
+		const id = getObjectUniqueId(object)
+		if (id == null) {
+			throw new Error(`merger getRef: object is primitive: ${object}`)
+		}
+		return this.refs[id]
+	}
+
+	public setRef(object: any, refObject: any, isChanged: boolean): any {
+		if (object === refObject) {
+			return object
+		}
+
+		let {refs} = this
+		if (!refs) {
+			this.refs = refs = []
+		}
+
+		const id = getObjectUniqueId(object)
+		if (id == null) {
+			throw new Error(`merger setRef: object is primitive: ${object}`)
+		}
+		const ref = this.refs[id]
+		if (ref) {
+			if (ref.isChanged || !isChanged) {
+				throw new Error('Repeated set object reference')
+			}
+			ref.isChanged = isChanged
+		} else {
+			this.refs[id] = {
+				obj: refObject,
+				isChanged,
+			}
+		}
+
+		return refObject
+	}
+
+	public isPrimitive(object: any, setRef: (ref: any) => void): boolean {
+		let isPrimitiveObject = isPrimitive(object)
+		if (!isPrimitiveObject) {
+			const ref = this.getRef(object)
+			if (ref) {
+				isPrimitiveObject = ref.isChanged
+				setRef(ref.obj)
+			}
+		}
+		return isPrimitiveObject
 	}
 
 	public getNextMerge(
@@ -387,16 +453,32 @@ export class MergerVisitor implements IMergerVisitor {
 		valueFactory?: (source: TTarget|TSource|any) => TTarget,
 	): boolean {
 		let preferCloneBase = null
+		const isPrimitiveBase = this.isPrimitive(base, o => {
+			base = o
+			preferCloneBase = false
+		})
+		const isPrimitiveOlder = this.isPrimitive(older, o => {
+			older = o
+			preferCloneOlder = false
+		})
+		let isPrimitiveNewer = this.isPrimitive(newer, o => {
+			newer = o
+			preferCloneNewer = false
+		})
+
 		if (base === newer) {
 			if (base === older) {
 				return false
 			}
-			preferCloneBase = preferCloneNewer
+			if (preferCloneBase == null) {
+				preferCloneBase = preferCloneNewer
+			}
 			preferCloneNewer = preferCloneOlder
+			isPrimitiveNewer = isPrimitiveOlder
 			newer = older
 		}
 
-		if (isPrimitive(newer)) {
+		if (isPrimitiveNewer) {
 			if (set) {
 				set(newer as any)
 				return true
@@ -404,7 +486,7 @@ export class MergerVisitor implements IMergerVisitor {
 			return false
 		}
 
-		if (base === older) {
+		if (base === older && preferCloneBase == null) {
 			preferCloneBase = preferCloneOlder = mergePreferClone(preferCloneBase, preferCloneOlder)
 		}
 		if (older === newer) {
@@ -447,9 +529,9 @@ export class MergerVisitor implements IMergerVisitor {
 			}
 		}
 
-		if (isPrimitive(base)) {
+		if (isPrimitiveBase) {
 			if (set) {
-				if (isPrimitive(older) || older === newer) {
+				if (isPrimitiveOlder || older === newer) {
 					set(mergeState.newerState.clone)
 				} else {
 					fillOlderNewer()
@@ -465,7 +547,7 @@ export class MergerVisitor implements IMergerVisitor {
 			return false
 		}
 
-		if (isPrimitive(older)) {
+		if (isPrimitiveOlder) {
 			switch (mergeState.baseState.canMerge(newer)) {
 				case null:
 					if (set) {
@@ -696,6 +778,7 @@ function isPrimitive(value) {
 		|| typeof value === 'number'
 		|| typeof value === 'boolean'
 		|| typeof value === 'function'
+		|| isFrozenWithoutUniqueId(value)
 }
 
 registerMerger<string, string>(String as any, {
