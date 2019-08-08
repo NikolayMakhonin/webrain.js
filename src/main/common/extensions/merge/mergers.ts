@@ -1,6 +1,6 @@
 /* tslint:disable:no-nested-switch ban-types use-primitive-type */
 import {isIterable, typeToDebugString} from '../../helpers/helpers'
-import {getObjectUniqueId, hasObjectUniqueId, isFrozenWithoutUniqueId} from '../../lists/helpers/object-unique-id'
+import {getObjectUniqueId, isFrozenWithoutUniqueId} from '../../lists/helpers/object-unique-id'
 import {fillMap, fillSet} from '../../lists/helpers/set'
 import {TClass, TypeMetaCollection} from '../TypeMeta'
 import {
@@ -18,18 +18,18 @@ class ValueState<TTarget, TSource> {
 	public target: TTarget
 	public type: TClass<TTarget>
 	public preferClone: boolean
-	public isBase: boolean
+	public refs: any[]
 
 	constructor(
 		mergerState: MergeState<TTarget, TSource>,
 		target: TTarget,
 		preferClone: boolean,
-		isBase: boolean,
+		refs: any[],
 	) {
 		this.mergerState = mergerState
 		this.target = target
 		this.preferClone = preferClone
-		this.isBase = isBase
+		this.refs = refs
 		this.type = mergerState.valueType || target.constructor as any
 	}
 
@@ -145,13 +145,17 @@ class ValueState<TTarget, TSource> {
 					case null:
 						break
 					case true:
-						const { preferClone } = this
+						const { preferClone, refs } = this
 						const mergerVisitor = this.mergerState.mergerVisitor
 
-						mergerVisitor.setRef(target, _clone, false)
+						mergerVisitor.setStatus(_clone, ObjectStatus.Cloned)
+						// const id = getObjectUniqueId(target as any)
+						// if (id != null) {
+						// 	refs[id] = _clone
+						// }
 
 						this.merge(
-							mergerVisitor.getNextMerge(preferClone, preferClone, this.mergerState.options),
+							mergerVisitor.getNextMerge(preferClone, preferClone, refs, refs, refs),
 							_clone,
 							target,
 							target,
@@ -185,6 +189,9 @@ class MergeState<TTarget, TSource> {
 	public preferCloneOlder: boolean
 	public preferCloneNewer: boolean
 	public preferCloneBase: boolean
+	public refsBase: any[]
+	public refsOlder: any[]
+	public refsNewer: any[]
 	public options: IMergeOptions
 	public valueType: TClass<TTarget>
 	public valueFactory: (source: TTarget|TSource) => TTarget
@@ -195,9 +202,12 @@ class MergeState<TTarget, TSource> {
 		older: TTarget|TSource,
 		newer: TTarget|TSource,
 		set: (value: TTarget) => void,
+		preferCloneBase: boolean,
 		preferCloneOlder: boolean,
 		preferCloneNewer: boolean,
-		preferCloneBase: boolean,
+		refsBase: any[],
+		refsOlder: any[],
+		refsNewer: any[],
 		options: IMergeOptions,
 		valueType: TClass<TTarget>,
 		valueFactory: (source: TTarget|TSource) => TTarget,
@@ -207,9 +217,12 @@ class MergeState<TTarget, TSource> {
 		this.older = older
 		this.newer = newer
 		this.set = set
+		this.preferCloneBase = preferCloneBase
 		this.preferCloneOlder = preferCloneOlder
 		this.preferCloneNewer = preferCloneNewer
-		this.preferCloneBase = preferCloneBase
+		this.refsBase = refsBase
+		this.refsOlder = refsOlder
+		this.refsNewer = refsNewer
 		this.options = options
 		this.valueType = valueType
 		this.valueFactory = valueFactory
@@ -223,7 +236,7 @@ class MergeState<TTarget, TSource> {
 				this,
 				this.base,
 				this.preferCloneBase,
-				true,
+				this.refsBase,
 			)
 		}
 		return _baseState
@@ -237,7 +250,7 @@ class MergeState<TTarget, TSource> {
 				this,
 				this.older as any,
 				this.preferCloneOlder,
-				false,
+				this.refsOlder,
 			)
 		}
 		return _olderState
@@ -251,23 +264,35 @@ class MergeState<TTarget, TSource> {
 				this,
 				this.newer as any,
 				this.preferCloneNewer,
-				false,
+				this.refsNewer,
 			)
 		}
 		return _newerState
 	}
 
 	public fillOlderNewer(): void {
-		const { olderState, newerState, options, set } = this
-		const { preferClone } = olderState
+		const { olderState, newerState, options, set,
+			preferCloneNewer, refsOlder, refsNewer } = this
+
+		this.mergerVisitor.setStatus(olderState.clone, ObjectStatus.Merged)
+		const idNewer = getObjectUniqueId(newerState.target as any)
+		if (idNewer != null) {
+			refsNewer[idNewer] = olderState.clone
+		}
+
 		let isSet
 		const result = olderState.merge(
-			this.mergerVisitor.getNextMerge(preferClone, preferClone, options),
+			this.mergerVisitor.getNextMerge(
+				preferCloneNewer, preferCloneNewer, refsOlder, refsNewer, refsNewer,
+			),
 			olderState.clone,
 			newerState.target,
 			newerState.target,
 			set
 				? o => {
+					if (idNewer != null) {
+						refsNewer[idNewer] = o
+					}
 					set(o)
 					isSet = true
 				}
@@ -275,8 +300,9 @@ class MergeState<TTarget, TSource> {
 					throw new Error(`Class ${olderState.type.name} does not need cloning.` +
 						'You should use "preferClone: false" in merger options for this class')
 				},
-			preferClone,
-			preferClone,
+			preferCloneNewer,
+			preferCloneNewer,
+			options,
 		)
 
 		if (isSet) {
@@ -291,15 +317,16 @@ class MergeState<TTarget, TSource> {
 		set(newerState.target)
 	}
 
-	public mergeWithBase(older: TTarget|TSource, newer: TTarget|TSource): boolean {
-		const { baseState, options, set } = this
-		const { preferClone } = baseState
+	public mergeWithBase(olderState: ValueState<TTarget, TSource>, newerState: ValueState<TTarget, TSource>): boolean {
+		const { baseState, options, set, refsBase } = this
+		const { preferClone: preferCloneOlder, refs: refsOlder } = olderState
+		const { preferClone: preferCloneNewer, refs: refsNewer } = newerState
 		let isSet
 		const result = baseState.merge(
-			this.mergerVisitor.getNextMerge(preferClone, preferClone, options),
+			this.mergerVisitor.getNextMerge(preferCloneOlder, preferCloneNewer, refsBase, refsOlder, refsNewer),
 			baseState.clone,
-			older,
-			newer,
+			olderState.target,
+			newerState.target,
 			set
 				? o => {
 					set(o)
@@ -313,8 +340,9 @@ class MergeState<TTarget, TSource> {
 						isSet = true
 					}
 				},
-			preferClone,
-			preferClone,
+			preferCloneOlder,
+			preferCloneNewer,
+			options,
 		)
 
 		if (isSet) {
@@ -340,78 +368,109 @@ function mergePreferClone(o1, o2) {
 	return o1 == null ? o2 : o1
 }
 
-interface IRef {
-	isChanged: boolean
-	obj: object
+enum ObjectStatus {
+	Cloned,
+	Merged,
 }
 
 export class MergerVisitor implements IMergerVisitor {
 	public readonly typeMeta: ITypeMetaMergerCollection
-	public refs: IRef[]
+	// public refs: IRef[]
+	public statuses: ObjectStatus[]
 
 	constructor(typeMeta: ITypeMetaMergerCollection) {
 		this.typeMeta = typeMeta
 	}
 
-	public getRef(object: any): IRef {
-		const {refs} = this
-		if (!refs) {
+	// public getRef(object: any): IRef {
+	// 	const {refs} = this
+	// 	if (!refs) {
+	// 		return null
+	// 	}
+	//
+	// 	const id = getObjectUniqueId(object)
+	// 	if (id == null) {
+	// 		throw new Error(`merger getRef: object is primitive: ${object}`)
+	// 	}
+	// 	return this.refs[id]
+	// }
+	//
+	// public setRef(object: any, refObject: any, isChanged: boolean): any {
+	// 	if (object === refObject) {
+	// 		return object
+	// 	}
+	//
+	// 	let {refs} = this
+	// 	if (!refs) {
+	// 		this.refs = refs = []
+	// 	}
+	//
+	// 	const id = getObjectUniqueId(object)
+	// 	if (id == null) {
+	// 		throw new Error(`merger setRef: object is primitive: ${object}`)
+	// 	}
+	// 	const ref = refs[id]
+	// 	if (ref) {
+	// 		if (ref.isChanged || !isChanged) {
+	// 			throw new Error('Repeated set object reference')
+	// 		}
+	// 		ref.isChanged = isChanged
+	// 	} else {
+	// 		this.refs[id] = {
+	// 			obj: refObject,
+	// 			isChanged,
+	// 		}
+	// 	}
+	//
+	// 	return refObject
+	// }
+
+	public getStatus(object: any): ObjectStatus {
+		const {statuses} = this
+		if (!statuses) {
 			return null
 		}
 
 		const id = getObjectUniqueId(object)
 		if (id == null) {
-			throw new Error(`merger getRef: object is primitive: ${object}`)
+			throw new Error(`object is primitive: ${object}`)
 		}
-		return this.refs[id]
+		return this.statuses[id]
 	}
 
-	public setRef(object: any, refObject: any, isChanged: boolean): any {
-		if (object === refObject) {
-			return object
-		}
-
-		let {refs} = this
-		if (!refs) {
-			this.refs = refs = []
+	public setStatus(object: any, status: ObjectStatus): any {
+		let {statuses} = this
+		if (!statuses) {
+			this.statuses = statuses = []
 		}
 
 		const id = getObjectUniqueId(object)
 		if (id == null) {
-			throw new Error(`merger setRef: object is primitive: ${object}`)
+			throw new Error(`object is primitive: ${object}`)
 		}
-		const ref = this.refs[id]
-		if (ref) {
-			if (ref.isChanged || !isChanged) {
-				throw new Error('Repeated set object reference')
-			}
-			ref.isChanged = isChanged
-		} else {
-			this.refs[id] = {
-				obj: refObject,
-				isChanged,
-			}
-		}
-
-		return refObject
+		this.statuses[id] = status
+		return object
 	}
 
-	public isPrimitive(object: any, setRef: (ref: any) => void): boolean {
-		let isPrimitiveObject = isPrimitive(object)
-		if (!isPrimitiveObject) {
-			const ref = this.getRef(object)
-			if (ref) {
-				isPrimitiveObject = ref.isChanged
-				setRef(ref.obj)
-			}
-		}
-		return isPrimitiveObject
-	}
+	// public isPrimitive(object: any, setRef: (ref: any) => void): boolean {
+	// 	let isPrimitiveObject = isPrimitive(object)
+	// 	if (!isPrimitiveObject) {
+	// 		const ref = this.getRef(object)
+	// 		if (ref) {
+	// 			isPrimitiveObject = ref.isChanged
+	// 			setRef(ref.obj)
+	// 		}
+	// 	}
+	// 	return isPrimitiveObject
+	// }
 
 	public getNextMerge(
 		preferCloneOlder: boolean,
 		preferCloneNewer: boolean,
-		options: IMergeOptions,
+		refsBase: any[],
+		refsOlder: any[],
+		refsNewer: any[],
+		// options: IMergeOptions,
 	): IMergeValue {
 		return <TNextTarget, TNextSource>(
 			next_base: TNextTarget,
@@ -430,14 +489,18 @@ export class MergerVisitor implements IMergerVisitor {
 			next_set,
 			next_preferCloneOlder == null ? preferCloneOlder : next_preferCloneOlder,
 			next_preferCloneNewer == null ? preferCloneNewer : next_preferCloneNewer,
-			next_options == null || next_options === options
-				? options
-				: (options == null ? next_options : {
-					...options,
-					...next_options,
-				}),
+			next_options,
+			// next_options == null || next_options === options
+			// 	? options
+			// 	: (options == null ? next_options : {
+			// 		...options,
+			// 		...next_options,
+			// 	}),
 			next_valueType,
 			next_valueFactory,
+			refsBase,
+			refsOlder,
+			refsNewer,
 		)
 	}
 
@@ -451,20 +514,101 @@ export class MergerVisitor implements IMergerVisitor {
 		options?: IMergeOptions,
 		valueType?: TClass<TTarget>,
 		valueFactory?: (source: TTarget|TSource|any) => TTarget,
+		refsBase?: any[],
+		refsOlder?: any[],
+		refsNewer?: any[],
 	): boolean {
 		let preferCloneBase = null
-		const isPrimitiveBase = this.isPrimitive(base, o => {
-			base = o
-			preferCloneBase = false
-		})
-		const isPrimitiveOlder = this.isPrimitive(older, o => {
-			older = o
-			preferCloneOlder = false
-		})
-		let isPrimitiveNewer = this.isPrimitive(newer, o => {
-			newer = o
-			preferCloneNewer = false
-		})
+
+		// region isPrimitiveBase
+		
+		let isPrimitiveBase
+		if (isPrimitive(base)) {
+			isPrimitiveBase = true
+		} else {
+			const id = getObjectUniqueId(base as any)
+			if (id != null) {
+				let ref
+				if (!refsBase) {
+					refsBase = []
+					refsBase[id] = base
+					// tslint:disable-next-line:no-conditional-assignment
+				} else if ((ref = refsBase[id])) {
+					base = ref
+					isPrimitiveBase = !options || !options.isNotCircularBase
+				}
+				switch (this.getStatus(base)) {
+					case ObjectStatus.Cloned:
+						preferCloneBase = false
+						break
+					case ObjectStatus.Merged:
+						isPrimitiveBase = true
+						break
+				}
+			}
+		}
+		
+		// endregion
+
+		// region isPrimitiveOlder
+		
+		let isPrimitiveOlder
+		if (isPrimitive(older)) {
+			isPrimitiveOlder = true
+		} else {
+			const id = getObjectUniqueId(older as any)
+			if (id != null) {
+				let ref
+				if (!refsOlder) {
+					refsOlder = []
+					refsOlder[id] = older
+					// tslint:disable-next-line:no-conditional-assignment
+				} else if ((ref = refsOlder[id])) {
+					older = ref
+					isPrimitiveOlder = !options || !options.isNotCircularOlder
+				}
+				switch (this.getStatus(older)) {
+					case ObjectStatus.Cloned:
+						preferCloneOlder = false
+						break
+					case ObjectStatus.Merged:
+						isPrimitiveOlder = true
+						break
+				}
+			}
+		}
+		
+		// endregion
+
+		// region isPrimitiveNewer
+		
+		let isPrimitiveNewer
+		if (isPrimitive(newer)) {
+			isPrimitiveNewer = true
+		} else {
+			const id = getObjectUniqueId(newer as any)
+			if (id != null) {
+				let ref
+				if (!refsNewer) {
+					refsNewer = []
+					refsNewer[id] = newer
+					// tslint:disable-next-line:no-conditional-assignment
+				} else if ((ref = refsNewer[id])) {
+					newer = ref
+					isPrimitiveNewer = !options || !options.isNotCircularNewer
+				}
+				switch (this.getStatus(newer)) {
+					case ObjectStatus.Cloned:
+						preferCloneNewer = false
+						break
+					case ObjectStatus.Merged:
+						isPrimitiveNewer = true
+						break
+				}
+			}
+		}
+		
+		// endregion
 
 		if (base === newer) {
 			if (base === older) {
@@ -489,7 +633,7 @@ export class MergerVisitor implements IMergerVisitor {
 		if (base === older && preferCloneBase == null) {
 			preferCloneBase = preferCloneOlder = mergePreferClone(preferCloneBase, preferCloneOlder)
 		}
-		if (older === newer) {
+		if (older === newer && preferCloneNewer == null) {
 			preferCloneOlder = preferCloneNewer = mergePreferClone(preferCloneOlder, preferCloneNewer)
 		}
 
@@ -499,9 +643,12 @@ export class MergerVisitor implements IMergerVisitor {
 			older,
 			newer,
 			set,
+			preferCloneBase,
 			preferCloneOlder,
 			preferCloneNewer,
-			preferCloneBase,
+			refsBase,
+			refsOlder,
+			refsNewer,
 			options,
 			valueType,
 			valueFactory,
@@ -562,7 +709,7 @@ export class MergerVisitor implements IMergerVisitor {
 					}
 					break
 				case true:
-					if (!mergeState.mergeWithBase(newer, newer)) {
+					if (!mergeState.mergeWithBase(mergeState.newerState, mergeState.newerState)) {
 						if (set) {
 							set(older as any)
 							return true
@@ -593,14 +740,14 @@ export class MergerVisitor implements IMergerVisitor {
 						}
 						return false
 					case true:
-						return mergeState.mergeWithBase(older, older)
+						return mergeState.mergeWithBase(mergeState.olderState, mergeState.olderState)
 				}
 				throw new Error('Unreachable code')
 		}
 
 		switch (mergeState.baseState.canMerge(older)) {
 			case null:
-				if (!mergeState.mergeWithBase(newer, newer)) {
+				if (!mergeState.mergeWithBase(mergeState.newerState, mergeState.newerState)) {
 					if (set) {
 						throw new Error('base != newer; base == older; base == newer')
 					}
@@ -608,7 +755,7 @@ export class MergerVisitor implements IMergerVisitor {
 				}
 				return true
 			case false:
-				if (!mergeState.mergeWithBase(newer, newer)) {
+				if (!mergeState.mergeWithBase(mergeState.newerState, mergeState.newerState)) {
 					if (set) {
 						set(mergeState.olderState.clone)
 						return true
@@ -617,7 +764,7 @@ export class MergerVisitor implements IMergerVisitor {
 				}
 				return true
 			case true:
-				return mergeState.mergeWithBase(older, newer)
+				return mergeState.mergeWithBase(mergeState.olderState, mergeState.newerState)
 		}
 
 		throw new Error('Unreachable code')
@@ -668,7 +815,7 @@ export class TypeMetaMergerCollection
 						merge,
 						older,
 						newer,
-						preferCloneOlder,
+					 	preferCloneOlder,
 						preferCloneNewer,
 						options,
 					)

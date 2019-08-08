@@ -113,7 +113,14 @@ describe('common > extensions > merge > ObjectMerger', function() {
 				this.value,
 				older instanceof Class ? (older as any).value : older,
 				newer instanceof Class ? (newer as any).value : newer,
-				o => { this.value = o }) || changed
+				o => { this.value = o },
+				null,
+				null,
+				{
+					isNotCircularOlder: !(older instanceof Class),
+					isNotCircularNewer: !(newer instanceof Class),
+				},
+			) || changed
 
 			return changed
 		}

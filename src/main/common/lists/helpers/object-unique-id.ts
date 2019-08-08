@@ -1,4 +1,4 @@
-let nextObjectId: number = 0
+let nextObjectId: number = 1
 
 const UNIQUE_ID_PROPERTY_NAME = 'uniqueId-22xvm5z032r'
 

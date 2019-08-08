@@ -195,7 +195,7 @@ export class DeSerializerVisitor implements IDeSerializerVisitor {
 	}
 
 	public getNextDeSerialize(
-		options?: IDeSerializeOptions,
+		// options?: IDeSerializeOptions,
 	): IDeSerializeValue {
 		return <TNextValue = any>(
 			next_serializedValue: ISerializedValue,
@@ -206,12 +206,13 @@ export class DeSerializerVisitor implements IDeSerializerVisitor {
 		) => this.deSerialize(
 			next_serializedValue,
 			next_onfulfilled,
-			next_options == null || next_options === options
-				? options
-				: (options == null ? next_options : {
-					...options,
-					...next_options,
-				}),
+			next_options,
+			// next_options == null || next_options === options
+			// 	? options
+			// 	: (options == null ? next_options : {
+			// 		...options,
+			// 		...next_options,
+			// 	}),
 			next_valueType,
 			next_valueFactory,
 		)
