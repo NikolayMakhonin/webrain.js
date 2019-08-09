@@ -21,13 +21,13 @@ describe('common > env > mocha > deep-clone-equal', function() {
 		array: true,
 
 		map: true,
-		arrayMap: true,
-		objectMap: true,
+		// arrayMap: true,
+		// objectMap: true,
 		observableMap: true,
 
 		set: true,
-		arraySet: true,
-		objectSet: true,
+		// arraySet: true,
+		// objectSet: true,
 		observableSet: true,
 
 		sortedList: true,

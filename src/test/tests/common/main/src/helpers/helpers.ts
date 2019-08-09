@@ -16,6 +16,7 @@ import {ObservableSet} from '../../../../../../main/common/lists/ObservableSet'
 import {SortedList} from '../../../../../../main/common/lists/SortedList'
 import {ObservableObject} from '../../../../../../main/common/rx/object/ObservableObject'
 import {ObservableObjectBuilder} from '../../../../../../main/common/rx/object/ObservableObjectBuilder'
+import {ObservableMap} from "../../../../../../main/common/lists/ObservableMap";
 
 export class CircularClass extends ObservableObject implements ISerializable {
 	public array: any[]
@@ -157,9 +158,9 @@ export function createComplexObject(options: IComplexObjectOptions = {}) {
 	object.arraySetObservable = options.arraySet && options.observableSet && new ObservableSet(object.arraySet)
 	object.objectSetObservable = options.objectSet && options.observableSet && new ObservableSet(object.objectSet)
 
-	object.mapObservable = options.map && options.observableMap && new ObservableSet(object.map)
-	object.arrayMapObservable = options.arrayMap && options.observableMap && new ObservableSet(object.arrayMap)
-	object.objectMapObservable = options.objectMap && options.observableMap && new ObservableSet(object.objectMap)
+	object.mapObservable = options.map && options.observableMap && new ObservableMap(object.map)
+	object.arrayMapObservable = options.arrayMap && options.observableMap && new ObservableMap(object.arrayMap)
+	object.objectMapObservable = options.objectMap && options.observableMap && new ObservableMap(object.objectMap)
 
 	const valueIsCollection = value => {
 		return value && (

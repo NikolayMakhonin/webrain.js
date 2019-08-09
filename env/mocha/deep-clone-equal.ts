@@ -80,7 +80,7 @@ export interface IDeepEqualOptions {
 
 export function deepEqual(
 	o1: any, o2: any, options?: IDeepEqualOptions,
-	cache1?: boolean[], cache2?: boolean[],
+	cache1?: number[], cache2?: number[], nodeId?: number,
 ): boolean {
 	if (o1 == null
 		|| typeof o1 === 'boolean'
@@ -93,6 +93,10 @@ export function deepEqual(
 		} else {
 			return false
 		}
+	}
+
+	if (nodeId == null) {
+		nodeId = 1
 	}
 
 	if (options && (options.circular || options.equalInnerReferences)) {
@@ -123,6 +127,8 @@ export function deepEqual(
 				if (options.noCrossReferences) {
 					return false
 				} else {
+					cache1[id1] = nodeId
+					cache2[id2] = nodeId
 					return true
 				}
 			}
@@ -130,20 +136,16 @@ export function deepEqual(
 				return false
 			}
 
-			if (options.equalInnerReferences) {
-				if (cache1[id1] || cache2[id2]) {
-					if (cache1[id1] === cache2[id2]) {
-						return true
-					} else {
-						return false
-					}
-				}
-			} else if (cache1[id1] && cache2[id2]) {
+			if (options.equalInnerReferences && cache1[id1] !== cache2[id2]) {
+				return false
+			}
+
+			if (cache1[id1] && cache2[id2]) {
 				return true
 			}
 
-			cache1[id1] = true
-			cache2[id2] = true
+			cache1[id1] = nodeId
+			cache2[id2] = nodeId
 		}
 	} else if (o1 === o2) {
 		if (options && options.noCrossReferences) {
@@ -190,7 +192,7 @@ export function deepEqual(
 					const iteration1 = iterator1.next()
 					const iteration2 = iterator2.next()
 
-					if (!deepEqual(iteration1.value, iteration2.value, options, cache1, cache2)) {
+					if (!deepEqual(iteration1.value, iteration2.value, options, cache1, cache2, ++nodeId)) {
 						return false
 					}
 
@@ -214,7 +216,7 @@ export function deepEqual(
 	for (const key in o1) {
 		if (Object.prototype.hasOwnProperty.call(o1, key)
 			&& (!Object.prototype.hasOwnProperty.call(o2, key)
-				|| !deepEqual(o1[key], o2[key], options, cache1, cache2))
+				|| !deepEqual(o1[key], o2[key], options, cache1, cache2, ++nodeId))
 		) {
 			return false
 		}
