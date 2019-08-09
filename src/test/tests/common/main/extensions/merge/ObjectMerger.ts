@@ -1,7 +1,8 @@
 /* tslint:disable:no-empty no-identical-functions max-line-length no-construct use-primitive-type */
 // @ts-ignore
 // noinspection ES6UnusedImports
-import deepClone from 'fast-copy'
+// import deepClone from 'fast-copy'
+import deepClone from 'clone'
 // @ts-ignore
 // noinspection ES6UnusedImports
 import {
@@ -343,17 +344,14 @@ describe('common > extensions > merge > ObjectMerger', function() {
 		})
 	})
 
-	it('simple circular', function() {
-		const createValue = (value: any) => {
+	describe('circular', function() {
+		const createValue = (value: any, circular: boolean) => {
 			const obj: any = { value }
-			obj.obj = {}
+			obj.obj = circular ? obj : { value }
 			return obj
 		}
 
-		testMerger({
-			base: [createValue(1), createValue(2), null],
-			older: [createValue(1), createValue(2), null],
-			newer: [createValue(1), createValue(2), null],
+		const options = {
 			preferCloneOlderParam: [null],
 			preferCloneNewerParam: [null],
 			preferCloneMeta: [null],
@@ -409,34 +407,109 @@ describe('common > extensions > merge > ObjectMerger', function() {
 				newer: NEWER,
 			},
 			actions: null,
+		}
+
+		it('deepClone circular', function() {
+			class TestClass {
+				private value
+				constructor(value) {
+					this.value = value
+				}
+			}
+
+			const obj: any = {
+				undefined: void 0,
+				null: null,
+				String: new String('String'),
+				Number: new Number(1),
+				Boolean: new Boolean(true),
+				error: new Error('test error'),
+				func: () => 'func',
+			}
+			obj.circular = obj
+			obj.class = new TestClass(obj)
+			obj.array = [...Object.values(obj)]
+			obj.nested = { ...obj }
+
+			const clone = deepClone(obj)
+
+			const isRefType = value => {
+				// value = value && value.valueOf()
+				if (value == null
+					|| typeof value === 'number'
+					|| typeof value === 'boolean'
+					|| typeof value === 'string'
+					|| typeof value === 'function'
+				) {
+					return false
+				}
+
+				return true
+			}
+
+			const assertCloneValue = (cloneValue, value, message) => {
+				// if (typeof value === 'function') {
+				// 	value = value()
+				// 	cloneValue = cloneValue()
+				// }
+
+				if (isRefType(value)) {
+					assert.notStrictEqual(cloneValue, value, message)
+				} else {
+					assert.strictEqual(cloneValue, value, message)
+				}
+			}
+
+			circularDeepStrictEqual(clone, obj)
+			assertCloneValue(clone, obj, 'root')
+			for (const key in obj) {
+				if (Object.prototype.hasOwnProperty.call(obj, key)) {
+					assertCloneValue(clone[key], obj[key], key)
+					assertCloneValue(clone.nested[key], obj.nested[key], key)
+				}
+			}
+			for (let i = 0; i < obj.array.length; i++) {
+				assertCloneValue(clone.array[i], obj.array[i], `array[${i}]`)
+			}
 		})
 
-		// testMerger({
-		// 	...options,
-		// 	base: createValues(),
-		// 	older: createValues(),
-		// 	newer: createValues(),
-		// })
+		it('simple circular', function() {
+			testMerger({
+				...options,
+				base: [createValue(1, true)],
+				older: [createValue(2, true)],
+				newer: [createValue(3, true)],
+			})
+		})
+
+		it('not circular', function() {
+			testMerger({
+				...options,
+				base: [createValue(1, false), createValue(2, false), createValue(3, false), null],
+				older: [createValue(1, false), createValue(2, false), createValue(3, false), null],
+				newer: [createValue(1, false), createValue(2, false), createValue(3, false), null],
+			})
+		})
 	})
 
 	describe('collections', function() {
-		describe('maps', function() {
-			const func = () => {
-			}
-			const func2 = () => {
-			}
-			const func3 = () => {
-			}
-			const func4 = () => {
-			}
-			const object = new Error('test error')
+		const func = () => 'func'
+		const func2 = () => 'func2'
+		const func3 = () => 'func3'
+		const func4 = () => 'func4'
+
+		const object = () => 'object' // Object.freeze(new Error('test error'))
+
+		it('helpers', function() {
 			assert.strictEqual(deepClone(func), func)
-			assert.strictEqual(deepClone(object), object)
+			// assert.strictEqual(deepClone(object), object)
 			const iterable = toIterable([1, 2, 3])
 			assert.ok(iterable[Symbol.iterator])
 			assert.deepStrictEqual(Array.from(iterable), [1, 2, 3])
 			assert.deepStrictEqual(Array.from(iterable), [1, 2, 3])
+		})
 
+		describe('maps', function() {
 			const testMergeMaps = (targetFactories, sourceFactories, base, older, newer, result) => {
 				testMerger({
 					base: [
@@ -517,22 +590,6 @@ describe('common > extensions > merge > ObjectMerger', function() {
 		})
 
 		describe('sets', function() {
-			const func = () => {
-			}
-			const func2 = () => {
-			}
-			const func3 = () => {
-			}
-			const func4 = () => {
-			}
-			const object = new Error('test error')
-			assert.strictEqual(deepClone(func), func)
-			assert.strictEqual(deepClone(object), object)
-			const iterable = toIterable([1, 2, 3])
-			assert.ok(iterable[Symbol.iterator])
-			assert.deepStrictEqual(Array.from(iterable), [1, 2, 3])
-			assert.deepStrictEqual(Array.from(iterable), [1, 2, 3])
-
 			const testMergeSets = (targetFactories, sourceFactories, base, older, newer, result) => {
 				testMerger({
 					base: [

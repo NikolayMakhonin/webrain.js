@@ -164,7 +164,6 @@ class ValueState<TTarget, TSource> {
 				}
 			}
 
-
 			const result = canMerge(target, source)
 			if (result == null) {
 				return null
@@ -375,7 +374,8 @@ class MergeState<TTarget, TSource> {
 		olderState.setRef(base)
 		newerState.setRef(base)
 
-		const { options, set, refsBase } = this
+		const { options, set } = this
+		const { refs: refsBase } = baseState
 		const { preferClone: preferCloneOlder, refs: refsOlder } = olderState
 		const { preferClone: preferCloneNewer, refs: refsNewer } = newerState
 

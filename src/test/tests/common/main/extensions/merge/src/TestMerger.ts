@@ -1,5 +1,5 @@
 /* tslint:disable:no-construct use-primitive-type */
-import fastCopy from 'fast-copy'
+import clone from 'clone'
 import {IMergeOptions, ITypeMetaMerger} from '../../../../../../../main/common/extensions/merge/contracts'
 import {ObjectMerger, TypeMetaMergerCollection} from '../../../../../../../main/common/extensions/merge/mergers'
 import {TClass} from '../../../../../../../main/common/extensions/TypeMeta'
@@ -49,7 +49,7 @@ function deepClone<T = any>(o: T): T {
 		return list as any
 	}
 
-	return fastCopy(o)
+	return clone(o)
 }
 
 function circularDeepStrictEqualExt(o1, o2) {
