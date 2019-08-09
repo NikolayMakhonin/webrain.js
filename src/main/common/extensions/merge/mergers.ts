@@ -390,6 +390,7 @@ class MergeState<TTarget, TSource> {
 			// for String() etc., that cannot be changed
 			set
 				? o => {
+					baseState.setRef(o)
 					olderState.setRef(o)
 					newerState.setRef(o)
 

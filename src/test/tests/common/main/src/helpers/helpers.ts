@@ -1,4 +1,4 @@
-/* tslint:disable:object-literal-key-quotes */
+/* tslint:disable:object-literal-key-quotes no-construct use-primitive-type */
 import {
 	IDeSerializeValue,
 	ISerializable, ISerializedObject,
@@ -122,15 +122,25 @@ export function createComplexObject(options: IComplexObjectOptions = {}) {
 		_undefined: void 0,
 		_null: null,
 		_false: false,
-		_strEmpty: '',
+		_stringEmpty: '',
 		_zero: 0,
+
 		true: true,
-		str: 'str',
+		string: 'string',
 		date: new Date(12345),
 		number: 123.45,
 		'nan': NaN,
 		'infinity': Infinity,
 		'-infinity': -Infinity,
+
+		StringEmpty: new String(''),
+		String: new String('String'),
+		Number: new Number(123),
+		NaN: new Number(NaN),
+		Infinity: new Number(Infinity),
+		'-Infinity': new Number(-Infinity),
+		Boolean: new Boolean(true),
+
 		circularClass: options.circular && options.circularClass && circularClass,
 		object: options.circular && object,
 		array: options.array && array,

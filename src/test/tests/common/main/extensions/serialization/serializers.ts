@@ -208,7 +208,7 @@ describe('common > extensions > serialization > serializers', function() {
 		serializer.typeMeta.putType(Class1, {
 			uuid: 'Class1 uuid',
 			serializer: TypeMetaSerializerCollection.default.getMeta(Object).serializer,
-			valueFactory: () => new Class1(),
+			// valueFactory: () => new Class1(),
 		})
 
 		assert.throws(() => serializeValue(obj1), Error)

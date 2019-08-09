@@ -1,5 +1,5 @@
 import {typeToDebugString} from '../../helpers/helpers'
-import {ThenableSyncIterator, ThenableSync, TOnFulfilled, ThenableSyncOrValue} from '../../helpers/ThenableSync'
+import {ThenableSync, ThenableSyncIterator, ThenableSyncOrValue, TOnFulfilled} from '../../helpers/ThenableSync'
 import {getObjectUniqueId} from '../../lists/helpers/object-unique-id'
 import {TClass, TypeMetaCollectionWithId} from '../TypeMeta'
 import {
@@ -304,7 +304,7 @@ export class DeSerializerVisitor implements IDeSerializerVisitor {
 			throw new Error(`Class (${typeToDebugString(type)}) serializer have no deSerialize method`)
 		}
 
-		let factory = valueFactory || meta.valueFactory
+		let factory = valueFactory || meta.valueFactory || ((...args) => new type(...args))
 		if (id != null && !factory) {
 			throw new Error(`valueFactory not found for ${typeToDebugString(type)}. `
 				+ 'Any object serializers should have valueFactory')
@@ -394,7 +394,7 @@ export class TypeMetaSerializerCollection
 	): ITypeMetaSerializer<TObject> {
 		return {
 			uuid: type.uuid,
-			valueFactory: (...args) => new (type as new (...args: any[]) => TObject)(...args),
+			// valueFactory: (...args) => new (type as new (...args: any[]) => TObject)(...args),
 			...meta,
 			serializer: {
 				serialize(
@@ -606,7 +606,7 @@ export function serializeObject(
 
 export function deSerializeObject<T extends object>(
 	deSerialize: IDeSerializeValue,
-	serializedValue: ISerializedTypedValue,
+	serializedValue: ISerializedObject,
 	value: T,
 ): T {
 	for (const key in serializedValue as ISerializedObject) {
@@ -634,7 +634,7 @@ registerSerializer<object>(Object, {
 		},
 		deSerialize(
 			deSerialize: IDeSerializeValue,
-			serializedValue: ISerializedTypedValue,
+			serializedValue: ISerializedObject,
 			valueFactory: (...args) => object,
 			// options?: IDeSerializeOptions,
 		): object {
@@ -643,6 +643,61 @@ registerSerializer<object>(Object, {
 		},
 	},
 	valueFactory: () => ({}),
+})
+
+// endregion
+
+// region Primitive as object
+
+export function serializePrimitiveAsObject<T extends object>(
+	serialize: ISerializeValue,
+	object: T,
+	options?: ISerializeOptions,
+): ISerializedValue {
+	const value = object.valueOf() as any
+	if (value === object) {
+		throw new Error(`value is not primitive as object: ${value && value.constructor.name}`)
+	}
+	return value
+
+	// return {
+	// 	value: serialize(value),
+	// 	object: serializeObject(serialize, object, options) as any,
+	// }
+}
+
+export function deSerializePrimitiveAsObject<T extends object>(
+	deSerialize: IDeSerializeValue,
+	serializedValue: ISerializedObject,
+	valueFactory: (...args) => T,
+	options?: ISerializeOptions,
+): T {
+	const object = valueFactory(serializedValue)
+	// deSerializeObject(deSerialize, serializedValue.object as any, object)
+	return object
+}
+
+const primitiveAsObjectSerializer = {
+	serialize: serializePrimitiveAsObject,
+	deSerialize: deSerializePrimitiveAsObject,
+}
+
+// @ts-ignore
+registerSerializer<string>(String, {
+	uuid: '96104fd7-d6f8-4a32-b8f2-feaa4f3666d8',
+	serializer: primitiveAsObjectSerializer,
+})
+
+// @ts-ignore
+registerSerializer<number>(Number, {
+	uuid: 'dea0de40-1801-4025-b6a4-b6f6c7a4fa11',
+	serializer: primitiveAsObjectSerializer,
+})
+
+// @ts-ignore
+registerSerializer<boolean>(Boolean, {
+	uuid: 'e8d1ac82-a0fa-4431-a23e-3d8f954f736f',
+	serializer: primitiveAsObjectSerializer,
 })
 
 // endregion
@@ -670,7 +725,7 @@ registerSerializer<any[]>(Array, {
 		): ThenableSyncIterator<any[]>|any[] {
 			const value = valueFactory()
 			if (options && options.arrayAsObject) {
-				return deSerializeObject(deSerialize, serializedValue, value)
+				return deSerializeObject(deSerialize, serializedValue as any, value)
 			}
 			return deSerializeArray(deSerialize, serializedValue, value)
 		},
@@ -703,7 +758,7 @@ registerSerializer<Set<any>>(Set, {
 			return value
 		},
 	},
-	valueFactory: () => new Set(),
+	// valueFactory: () => new Set(),
 })
 
 // endregion
@@ -741,7 +796,7 @@ registerSerializer<Map<any, any>>(Map, {
 			return value
 		},
 	},
-	valueFactory: () => new Map(),
+	// valueFactory: () => new Map(),
 })
 
 // endregion
@@ -767,7 +822,7 @@ registerSerializer<Date>(Date, {
 			return valueFactory(serializedValue)
 		},
 	},
-	valueFactory: (value: number|string|Date) => new Date(value),
+	// valueFactory: (value: number|string|Date) => new Date(value),
 })
 
 // endregion

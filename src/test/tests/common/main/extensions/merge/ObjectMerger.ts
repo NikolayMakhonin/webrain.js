@@ -264,62 +264,6 @@ describe('common > extensions > merge > ObjectMerger', function() {
 		})
 	})
 
-	it('value type', function() {
-		testMerger({
-			base: [{ a: {a: 1, b: 2}, b: 3 }],
-			older: [{ a: {a: 4, b: 5}, c: 6 }],
-			newer: [{ a: {a: 7, b: 2}, d: 9 }],
-			preferCloneOlderParam: [null],
-			preferCloneNewerParam: [null],
-			preferCloneMeta: [null],
-			options: [null, {}],
-			valueType: [Class],
-			valueFactory: [null],
-			setFunc: [true],
-			expected: {
-				error: null,
-				returnValue: true,
-				setValue: new Class({ a: {a: 7, b: 5}, c: 6, d: 9 }),
-				base: BASE,
-				older: OLDER,
-				newer: NEWER,
-			},
-			actions: null,
-		})
-
-		testMerger({
-			base: [null, void 0, 0, 1, false, true, '', '1'],
-			older: [{ a: {a: 4, b: 5}, c: 6 }],
-			newer: [{ a: {a: 7, b: 2}, d: 9 }],
-			preferCloneOlderParam: [null],
-			preferCloneNewerParam: [null],
-			preferCloneMeta: [null],
-			options: [null, {}],
-			valueType: [Class],
-			valueFactory: [null, o => {
-				const instance = new Class(null);
-				(instance as any).custom = true
-				return instance
-			}],
-			setFunc: [true],
-			expected: {
-				error: null,
-				returnValue: true,
-				setValue: o => {
-					const value = new Class({ a: {a: 7, b: 2}, d: 9 })
-					if (o.valueFactory) {
-						(value as any).custom = true
-					}
-					return value
-				},
-				base: BASE,
-				older: OLDER,
-				newer: NEWER,
-			},
-			actions: null,
-		})
-	})
-
 	it('array as primitive', function() {
 		testMerger({
 			base: [[], [1], [2]],
@@ -477,8 +421,8 @@ describe('common > extensions > merge > ObjectMerger', function() {
 			testMerger({
 				...options,
 				base: [createValue(1, true)],
-				older: [createValue(2, true)],
-				newer: [createValue(3, true)],
+				older: [createValue(1, true)],
+				newer: [createValue(1, true)],
 			})
 		})
 
@@ -488,6 +432,62 @@ describe('common > extensions > merge > ObjectMerger', function() {
 				base: [createValue(1, false), createValue(2, false), createValue(3, false), null],
 				older: [createValue(1, false), createValue(2, false), createValue(3, false), null],
 				newer: [createValue(1, false), createValue(2, false), createValue(3, false), null],
+			})
+		})
+
+		it('value type', function() {
+			testMerger({
+				base: [{ a: {a: 1, b: 2}, b: 3 }],
+				older: [{ a: {a: 4, b: 5}, c: 6 }],
+				newer: [{ a: {a: 7, b: 2}, d: 9 }],
+				preferCloneOlderParam: [null],
+				preferCloneNewerParam: [null],
+				preferCloneMeta: [null],
+				options: [null, {}],
+				valueType: [Class],
+				valueFactory: [null],
+				setFunc: [true],
+				expected: {
+					error: null,
+					returnValue: true,
+					setValue: new Class({ a: {a: 7, b: 5}, c: 6, d: 9 }),
+					base: BASE,
+					older: OLDER,
+					newer: NEWER,
+				},
+				actions: null,
+			})
+
+			testMerger({
+				base: [null, void 0, 0, 1, false, true, '', '1'],
+				older: [{ a: {a: 4, b: 5}, c: 6 }],
+				newer: [{ a: {a: 7, b: 2}, d: 9 }],
+				preferCloneOlderParam: [null],
+				preferCloneNewerParam: [null],
+				preferCloneMeta: [null],
+				options: [null, {}],
+				valueType: [Class],
+				valueFactory: [null, o => {
+					const instance = new Class(null);
+					(instance as any).custom = true
+					return instance
+				}],
+				setFunc: [true],
+				expected: {
+					error: null,
+					returnValue: true,
+					setValue: o => {
+						const value = new Class({ a: {a: 7, b: 2}, d: 9 })
+						if (o.valueFactory) {
+							(value as any).custom = true
+						}
+						return value
+					},
+					base: BASE,
+					older: OLDER,
+					newer: NEWER,
+				},
+				actions: null,
 			})
 		})
 	})

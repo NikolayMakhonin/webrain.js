@@ -11,7 +11,7 @@ describe('common > main > helpers > ThenableSync', function() {
 	const testThenableSync = TestThenableSync.test
 
 	after(function() {
-		console.log('Total ObjectMerger tests >= ' + TestThenableSync.totalTests)
+		console.log('Total ThenableSync tests >= ' + TestThenableSync.totalTests)
 	})
 
 	it('variants', function() {

@@ -13,7 +13,7 @@ import {ThenableSyncIterator} from '../helpers/ThenableSync'
 import {getObjectUniqueId} from './helpers/object-unique-id'
 import {fillMap} from './helpers/set'
 
-export class ArrayMap<K, V> implements
+export class ArrayMap<K extends object, V> implements
 	Map<K, V>,
 	IMergeable<ArrayMap<K, V>, ArrayMap<K, V>>,
 	ISerializable
@@ -182,7 +182,7 @@ registerMergeable(ArrayMap)
 
 registerSerializable(ArrayMap, {
 	serializer: {
-		*deSerialize<K, V>(
+		*deSerialize<K extends object, V>(
 			deSerialize: IDeSerializeValue,
 			serializedValue: ISerializedObject,
 			valueFactory: (map?: Array<[K, V]>) => ArrayMap<K, V>,

@@ -1,4 +1,3 @@
-require('./register-tests')
 const registerBabel = require('@babel/register')
 
 registerBabel({
@@ -9,3 +8,5 @@ registerBabel({
 	// only        : [/.*/],
 	babelrcRoots: true
 })
+
+require('./register-tests')
