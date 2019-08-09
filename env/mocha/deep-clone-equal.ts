@@ -88,10 +88,14 @@ export function deepEqual(
 		|| typeof o1 === 'string'
 		|| typeof o1 === 'function'
 	) {
-		return o1 === o2 || Number.isNaN(o1 as any) && Number.isNaN(o2 as any)
+		if (o1 === o2 || Number.isNaN(o1 as any) && Number.isNaN(o2 as any)) {
+			return true
+		} else {
+			return false
+		}
 	}
 
-	if (options && options.circular) {
+	if (options && (options.circular || options.equalInnerReferences)) {
 		const id1 = getObjectUniqueId(o1 as any)
 		const id2 = getObjectUniqueId(o2 as any)
 
@@ -116,15 +120,23 @@ export function deepEqual(
 				return false
 			}
 			if (o1 === o2) {
-				return !options.noCrossReferences
+				if (options.noCrossReferences) {
+					return false
+				} else {
+					return true
+				}
 			}
-			if (cache1[id2] || cache2[id1]) {
+			if (options.noCrossReferences && (cache1[id2] || cache2[id1])) {
 				return false
 			}
 
 			if (options.equalInnerReferences) {
 				if (cache1[id1] || cache2[id2]) {
-					return cache1[id1] === cache2[id2]
+					if (cache1[id1] === cache2[id2]) {
+						return true
+					} else {
+						return false
+					}
 				}
 			} else if (cache1[id1] && cache2[id2]) {
 				return true
@@ -134,14 +146,23 @@ export function deepEqual(
 			cache2[id2] = true
 		}
 	} else if (o1 === o2) {
-		return !options || !options.noCrossReferences
+		if (options && options.noCrossReferences) {
+			return false
+		} else {
+			return true
+		}
 	}
 
 	const valueOf1 = o1.valueOf()
 	const valueOf2 = o2.valueOf()
 	if (valueOf1 !== o1 || valueOf2 !== o2) {
-		return valueOf1 === valueOf2
+		if (valueOf1 === valueOf2
 			|| Number.isNaN(valueOf1 as any) && Number.isNaN(valueOf2 as any)
+		) {
+			return true
+		} else {
+			return false
+		}
 	}
 
 	if (options && options.equalTypes) {

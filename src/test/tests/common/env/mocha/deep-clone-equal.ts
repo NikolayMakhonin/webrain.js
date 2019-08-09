@@ -1,7 +1,8 @@
+/* tslint:disable:no-construct use-primitive-type */
 import {deepClone, deepEqual, IDeepEqualOptions} from '../../../../../../env/mocha/deep-clone-equal'
+import {TestThenableSync} from '../../main/helpers/src/TestThenableSync'
 import {createComplexObject, IComplexObjectOptions} from '../../main/src/helpers/helpers'
-import {TestThenableSync} from "../../main/helpers/src/TestThenableSync";
-import {TestDeepEqual} from "./src/TestDeepEqual";
+import {TestDeepEqual} from './src/TestDeepEqual'
 
 declare const assert
 declare const after
@@ -47,7 +48,7 @@ describe('common > env > mocha > deep-clone-equal', function() {
 		_testDeepEqual({
 			value1: actual,
 			value2: expected,
-			equalInnerReferences: [false],
+			// equalInnerReferences: [false],
 			exclude: o => {
 				if (!o.circular && options.circular) {
 					return true
@@ -81,7 +82,7 @@ describe('common > env > mocha > deep-clone-equal', function() {
 			circular: false,
 			equalTypes: true,
 			noCrossReferences: true,
-			equalInnerReferences: true,
+			// equalInnerReferences: true,
 		})
 
 		clone = deepClone(clone, {
@@ -91,7 +92,7 @@ describe('common > env > mocha > deep-clone-equal', function() {
 			circular: true,
 			equalTypes: true,
 			noCrossReferences: true,
-			equalInnerReferences: true,
+			// equalInnerReferences: true,
 		})
 	})
 
@@ -171,19 +172,35 @@ describe('common > env > mocha > deep-clone-equal', function() {
 				equalInnerReferences: true,
 			})
 
-			// obj.array = new Set(obj.array)
-			// testDeepEqual([clone], [obj], {
-			// 	circular: true,
-			// 	// equalTypes: true,
-			// 	noCrossReferences: true,
-			// 	equalInnerReferences: true,
-			// })
+			clone.array.length--
+			obj.array.length--
 
 			obj.object = {...obj.object}
 			testDeepEqual([clone], [obj], {
 				circular: true,
+				equalTypes: true,
+				noCrossReferences: true,
+				// equalInnerReferences: true,
+			})
+
+			obj.array = new Set(obj.array)
+			testDeepEqual([clone], [obj], {
+				circular: true,
 				// equalTypes: true,
 				noCrossReferences: true,
+				// equalInnerReferences: true,
+			})
+
+			clone.cross = new String('cross')
+			clone.cross2 = new String('cross')
+			obj.cross = clone.cross2
+			obj.cross2 = clone.cross
+			obj.object.cross = clone.cross2
+			obj.object.cross2 = clone.cross
+			testDeepEqual([clone], [obj], {
+				circular: true,
+				// equalTypes: true,
+				// noCrossReferences: true,
 				// equalInnerReferences: true,
 			})
 		}
