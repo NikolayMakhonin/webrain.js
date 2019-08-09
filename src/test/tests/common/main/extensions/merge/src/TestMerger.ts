@@ -3,9 +3,9 @@ import fastCopy from 'fast-copy'
 import {IMergeOptions, ITypeMetaMerger} from '../../../../../../../main/common/extensions/merge/contracts'
 import {ObjectMerger, TypeMetaMergerCollection} from '../../../../../../../main/common/extensions/merge/mergers'
 import {TClass} from '../../../../../../../main/common/extensions/TypeMeta'
+import {isFrozenWithoutUniqueId} from '../../../../../../../main/common/lists/helpers/object-unique-id'
 import {SortedList} from '../../../../../../../main/common/lists/SortedList'
 import {IOptionsVariant, IOptionsVariants, ITestCase, TestVariants} from '../../../src/helpers/TestVariants'
-import {isFrozenWithoutUniqueId} from "../../../../../../../main/common/lists/helpers/object-unique-id";
 
 declare const assert
 // declare function fastCopy<T = any>(o: T): T
@@ -20,6 +20,7 @@ function deepClone<T = any>(o: T): T {
 	}
 
 	if (o[Symbol.toStringTag] === 'Map') {
+		// @ts-ignore
 		const map = new (o.constructor)();
 		(o as unknown as Map<any, any>).forEach((value, key) => {
 			map.set(key, deepClone(value))
@@ -28,6 +29,7 @@ function deepClone<T = any>(o: T): T {
 	}
 
 	if (o[Symbol.toStringTag] === 'Set') {
+		// @ts-ignore
 		const set = new (o.constructor)();
 		(o as unknown as Set<any>).forEach(value => {
 			set.add(deepClone(value))
@@ -37,9 +39,9 @@ function deepClone<T = any>(o: T): T {
 
 	if (o.constructor === SortedList) {
 		const list = new SortedList({
-			autoSort: o.autoSort,
-			notAddIfExists: o.notAddIfExists,
-			compare: o.compare,
+			autoSort: (o as any).autoSort,
+			notAddIfExists: (o as any).notAddIfExists,
+			compare: (o as any).compare,
 		})
 		for (const item of (o as unknown as SortedList<any>)) {
 			list.add(deepClone(item))
