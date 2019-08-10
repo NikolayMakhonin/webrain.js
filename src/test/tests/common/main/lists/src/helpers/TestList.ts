@@ -8,8 +8,22 @@ import {
 import {IPropertyChangedEvent} from '../../../../../../../main/common/lists/contracts/IPropertyChanged'
 import {compareFast} from '../../../../../../../main/common/lists/helpers/compare'
 import {SortedList} from '../../../../../../../main/common/lists/SortedList'
-import {assert} from '../../../../../../../main/common/test/Assert'
+import {Assert} from '../../../../../../../main/common/test/Assert'
+import {DeepCloneEqual} from '../../../../../../../main/common/test/DeepCloneEqual'
 import {IOptionsVariant, IOptionsVariants, ITestCase, TestVariants} from '../../../src/helpers/TestVariants'
+
+export const assert = new Assert(new DeepCloneEqual({
+	commonOptions: {
+
+	},
+	equalOptions: {
+		// noCrossReferences: true,
+		equalInnerReferences: true,
+		equalTypes: true,
+		equalMapSetOrder: true,
+		strictEqualFunctions: true,
+	},
+}))
 
 export function applyListChangedToArray<T>(event: IListChangedEvent<T>, array: T[], compare: ICompare<T>) {
 	switch (event.type) {

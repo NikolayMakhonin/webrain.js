@@ -3,24 +3,26 @@ import {
 } from '../../../../../main/common/lists/contracts/IListChanged'
 import {compareFast} from '../../../../../main/common/lists/helpers/compare'
 import {getDefaultValue, SortedList} from '../../../../../main/common/lists/SortedList'
-import {assert, AssertionError} from '../../../../../main/common/test/Assert'
+import {Assert, AssertionError} from '../../../../../main/common/test/Assert'
+import {DeepCloneEqual} from '../../../../../main/common/test/DeepCloneEqual'
 import {createIterable} from '../src/helpers/helpers'
 import {ITestActionsWithDescription} from '../src/helpers/TestVariants'
 import {allValues, generateArray, shuffle} from './src/helpers/common'
 import {
+	assert,
 	IListAction,
 	TestList,
 } from './src/helpers/TestList'
 
 declare const after
 
-describe('common > main > lists > List', function() {
+describe('common > main > lists > SortedList', function() {
 	this.timeout(20000)
 
 	const testList = TestList.test
 
 	after(function() {
-		console.log('Total List tests >= ' + TestList.totalListTests)
+		console.log('Total Sorted tests >= ' + TestList.totalListTests)
 	})
 
 	it('constructor', function() {

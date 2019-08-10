@@ -25,6 +25,20 @@ const assert = new Assert(new DeepCloneEqual({
 	},
 }))
 
+const assertDeepEqualExt = (o1, o2) => {
+	assert.circularDeepStrictEqual(o1, o2)
+	assert.circularDeepStrictEqual(o1, o2, null, {
+		equalTypes: true,
+	})
+	assert.circularDeepStrictEqual(o1, o2, null, {
+		equalMapSetOrder: true,
+	})
+	assert.circularDeepStrictEqual(o1, o2, null, {
+		equalMapSetOrder: true,
+		equalTypes: true,
+	})
+}
+
 describe('common > extensions > serialization > serializers', function() {
 	// function testSerializer(
 	// 	type: TClass,
@@ -109,7 +123,7 @@ describe('common > extensions > serialization > serializers', function() {
 			console.log(object)
 			console.log(result)
 		}
-		assert.circularDeepStrictEqual(result, checkObject)
+		assertDeepEqualExt(result, checkObject)
 	}
 
 	it('primitives', function() {
@@ -155,7 +169,7 @@ describe('common > extensions > serialization > serializers', function() {
 
 		assert.notStrictEqual(result, object)
 		assert.notStrictEqual(result.array, object.array)
-		assert.circularDeepStrictEqual(result, object)
+		assertDeepEqualExt(result, object)
 	})
 
 	it('Object', function() {
@@ -177,7 +191,7 @@ describe('common > extensions > serialization > serializers', function() {
 		const result = deSerializeValue(serialized)
 
 		assert.notStrictEqual(result, map)
-		assert.circularDeepStrictEqual(result, map)
+		assertDeepEqualExt(result, map)
 	})
 
 	it('Set', function() {
@@ -188,7 +202,7 @@ describe('common > extensions > serialization > serializers', function() {
 		const result = deSerializeValue(serialized)
 
 		assert.notStrictEqual(result, set)
-		assert.circularDeepStrictEqual(result, set)
+		assertDeepEqualExt(result, set)
 	})
 
 	it('Date', function() {
@@ -198,7 +212,7 @@ describe('common > extensions > serialization > serializers', function() {
 		const result = deSerializeValue(serialized)
 
 		assert.notStrictEqual(result, date)
-		assert.circularDeepStrictEqual(result, date)
+		assertDeepEqualExt(result, date)
 	})
 
 	class Class1 {
@@ -228,7 +242,7 @@ describe('common > extensions > serialization > serializers', function() {
 		const result = serializer.deSerialize(serialized)
 
 		assert.notStrictEqual(result, obj1)
-		assert.circularDeepStrictEqual(result, obj1)
+		assertDeepEqualExt(result, obj1)
 	})
 
 	class Class2 extends Class1 implements ISerializable {
@@ -269,7 +283,7 @@ describe('common > extensions > serialization > serializers', function() {
 		delete obj2.prop1
 
 		assert.notStrictEqual(result, obj2)
-		assert.circularDeepStrictEqual(result, obj2)
+		assertDeepEqualExt(result, obj2)
 	})
 
 	class Class3 extends Class2 implements ISerializable {
@@ -312,7 +326,7 @@ describe('common > extensions > serialization > serializers', function() {
 		obj3.prop2 = 'prop2'
 
 		assert.notStrictEqual(result, obj3)
-		assert.circularDeepStrictEqual(result, obj3)
+		assertDeepEqualExt(result, obj3)
 	})
 
 	it('SortedList circular', function() {
@@ -325,7 +339,7 @@ describe('common > extensions > serialization > serializers', function() {
 		assert.notStrictEqual(result, sortedList)
 		console.log(sortedList)
 		console.log(result)
-		assert.circularDeepStrictEqual(result, sortedList)
+		assertDeepEqualExt(result, sortedList)
 	})
 
 	it('complex object', function() {

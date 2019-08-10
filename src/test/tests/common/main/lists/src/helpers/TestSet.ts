@@ -17,9 +17,23 @@ import {
 import {compareFast} from '../../../../../../../main/common/lists/helpers/compare'
 import {ObjectSet} from '../../../../../../../main/common/lists/ObjectSet'
 import {ObservableSet} from '../../../../../../../main/common/lists/ObservableSet'
-import {assert} from '../../../../../../../main/common/test/Assert'
+import {Assert} from '../../../../../../../main/common/test/Assert'
+import {DeepCloneEqual} from '../../../../../../../main/common/test/DeepCloneEqual'
 import {IOptionsVariant, IOptionsVariants, ITestCase, TestVariants, THIS} from '../../../src/helpers/TestVariants'
 import {convertToObject, indexOfNaN} from './common'
+
+export const assert = new Assert(new DeepCloneEqual({
+	commonOptions: {
+
+	},
+	equalOptions: {
+		// noCrossReferences: true,
+		equalInnerReferences: true,
+		equalTypes: true,
+		equalMapSetOrder: true,
+		strictEqualFunctions: true,
+	},
+}))
 
 export function applySetChangedToArray<T>(event: ISetChangedEvent<T>, array: T[]) {
 	switch (event.type) {

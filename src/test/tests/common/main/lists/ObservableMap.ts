@@ -5,10 +5,10 @@ import {ObservableMap} from '../../../../../main/common/lists/ObservableMap'
 import {ITestActionsWithDescription, THIS} from '../src/helpers/TestVariants'
 import {allValues, shuffle} from './src/helpers/common'
 import {
+	assert,
 	IMapAction,
 	TestMap,
 } from './src/helpers/TestMap'
-import {assert} from "../../../../../main/common/test/Assert";
 
 declare const after
 

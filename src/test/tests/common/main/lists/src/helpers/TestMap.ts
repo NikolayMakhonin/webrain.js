@@ -15,9 +15,23 @@ import {compareFast} from '../../../../../../../main/common/lists/helpers/compar
 import {ObjectHashMap} from '../../../../../../../main/common/lists/ObjectHashMap'
 import {ObjectMap} from '../../../../../../../main/common/lists/ObjectMap'
 import {ObservableMap} from '../../../../../../../main/common/lists/ObservableMap'
-import {assert} from '../../../../../../../main/common/test/Assert'
+import {Assert} from '../../../../../../../main/common/test/Assert'
+import {DeepCloneEqual} from '../../../../../../../main/common/test/DeepCloneEqual'
 import {IOptionsVariant, IOptionsVariants, ITestCase, TestVariants, THIS} from '../../../src/helpers/TestVariants'
 import {convertToObject} from './common'
+
+export const assert = new Assert(new DeepCloneEqual({
+	commonOptions: {
+
+	},
+	equalOptions: {
+		// noCrossReferences: true,
+		equalInnerReferences: true,
+		equalTypes: true,
+		equalMapSetOrder: true,
+		strictEqualFunctions: true,
+	},
+}))
 
 function compareEntries<K, V>(o1: [K, V], o2: [K, V]) {
 	return compareFast(o1[0], o2[0])
