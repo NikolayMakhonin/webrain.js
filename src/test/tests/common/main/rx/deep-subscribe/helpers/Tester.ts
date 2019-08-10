@@ -11,6 +11,17 @@ import {RuleBuilder} from '../../../../../../../main/common/rx/deep-subscribe/Ru
 import {ObservableObject} from '../../../../../../../main/common/rx/object/ObservableObject'
 import {ObservableObjectBuilder} from '../../../../../../../main/common/rx/object/ObservableObjectBuilder'
 import {IUnsubscribe} from '../../../../../../../main/common/rx/subjects/subject'
+import {Assert} from '../../../../../../../main/common/test/Assert'
+import {DeepCloneEqual} from '../../../../../../../main/common/test/DeepCloneEqual'
+
+const assert = new Assert(new DeepCloneEqual({
+	commonOptions: {
+
+	},
+	equalOptions: {
+
+	},
+}))
 
 type IAny = IObject | IList | ISet | IMap
 
@@ -48,8 +59,6 @@ interface IObservableSet extends ISet, ISetChanged<IAny> {
 
 interface IObservableMap extends IMap, IMapChanged<string, IAny> {
 }
-
-declare const assert
 
 export function createObject() {
 	const object: IObject = {} as any

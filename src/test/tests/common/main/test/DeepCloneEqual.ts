@@ -1,9 +1,9 @@
 /* tslint:disable:no-construct use-primitive-type */
-import {DeepCloneEqual, IDeepCloneOptions, IDeepEqualOptions} from '../../../../../../env/mocha/deep-clone-equal'
-import {createComplexObject, IComplexObjectOptions} from '../../main/src/helpers/helpers'
+import {assert} from '../../../../../main/common/test/Assert'
+import {IDeepCloneOptions, IDeepEqualOptions} from '../../../../../main/common/test/DeepCloneEqual'
+import {createComplexObject, IComplexObjectOptions} from '../src/helpers/helpers'
 import {deepCloneEqual, TestDeepEqual} from './src/TestDeepEqual'
 
-declare const assert
 declare const after
 
 describe('common > env > mocha > deep-clone-equal', function() {

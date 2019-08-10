@@ -1,4 +1,4 @@
-declare const assert
+import {assert} from "../../../../../../../main/common/test/Assert";
 
 export function generateArray(size) {
 	const arr = []

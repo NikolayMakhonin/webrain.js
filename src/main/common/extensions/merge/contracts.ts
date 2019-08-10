@@ -1,4 +1,5 @@
-import {ITypeMeta, ITypeMetaCollection, TClass} from '../TypeMeta'
+import {TClass} from '../../helpers/helpers'
+import {ITypeMeta, ITypeMetaCollection} from '../TypeMeta'
 import {TMergeableClass} from './mergers'
 
 // region Mergers

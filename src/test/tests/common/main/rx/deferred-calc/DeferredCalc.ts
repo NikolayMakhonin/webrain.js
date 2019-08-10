@@ -1,10 +1,10 @@
 /* tslint:disable:no-empty no-identical-functions */
 import {DeferredCalc} from '../../../../../../main/common/rx/deferred-calc/DeferredCalc'
 import {timingDefault} from '../../../../../../main/common/rx/deferred-calc/timing'
+import {assert} from '../../../../../../main/common/test/Assert'
 import {assertEvents, EventType, IEvent, TestDeferredCalc, timing} from './src/TestDeferred'
 import {TestTiming} from './src/timing'
 
-declare const assert
 declare const after
 
 describe('common > main > rx > deferred-calc > DeferredCalc', function() {

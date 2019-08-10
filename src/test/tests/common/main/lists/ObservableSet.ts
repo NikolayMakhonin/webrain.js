@@ -2,6 +2,7 @@ import {
 	SetChangedType,
 } from '../../../../../main/common/lists/contracts/ISetChanged'
 import {ObservableSet} from '../../../../../main/common/lists/ObservableSet'
+import {assert} from '../../../../../main/common/test/Assert'
 import {ITestActionsWithDescription, THIS} from '../src/helpers/TestVariants'
 import {allValues, shuffle} from './src/helpers/common'
 import {
@@ -9,7 +10,6 @@ import {
 	TestSet,
 } from './src/helpers/TestSet'
 
-declare const assert
 declare const after
 
 describe('common > main > lists > ObservableSet', function() {

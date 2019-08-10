@@ -6,8 +6,8 @@ import {
 } from '../../../../../../../main/common/extensions/serialization/contracts'
 import {
 	ObjectSerializer, registerSerializable,
-	registerSerializer,
 } from '../../../../../../../main/common/extensions/serialization/serializers'
+import {ThenableSyncIterator} from '../../../../../../../main/common/helpers/ThenableSync'
 import {ArraySet} from '../../../../../../../main/common/lists/ArraySet'
 import {IPropertyChangedEvent} from '../../../../../../../main/common/lists/contracts/IPropertyChanged'
 import {
@@ -17,11 +17,9 @@ import {
 import {compareFast} from '../../../../../../../main/common/lists/helpers/compare'
 import {ObjectSet} from '../../../../../../../main/common/lists/ObjectSet'
 import {ObservableSet} from '../../../../../../../main/common/lists/ObservableSet'
+import {assert} from '../../../../../../../main/common/test/Assert'
 import {IOptionsVariant, IOptionsVariants, ITestCase, TestVariants, THIS} from '../../../src/helpers/TestVariants'
 import {convertToObject, indexOfNaN} from './common'
-import {ThenableSyncIterator} from "../../../../../../../main/common/helpers/ThenableSync";
-
-declare const assert
 
 export function applySetChangedToArray<T>(event: ISetChangedEvent<T>, array: T[]) {
 	switch (event.type) {

@@ -1,4 +1,4 @@
 /* eslint-disable eqeqeq */
-const {assert} = require('./assert')
+const {assert} = require('../../src/main/common/test/Assert')
 
 Object.assign(global.assert, assert)

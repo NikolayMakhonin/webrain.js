@@ -11,9 +11,8 @@ import {
 	TypeMetaSerializerCollection,
 } from '../../../../../../main/common/extensions/serialization/serializers'
 import {SortedList} from '../../../../../../main/common/lists/SortedList'
+import {assert} from '../../../../../../main/common/test/Assert'
 import {CircularClass, createComplexObject, IComplexObjectOptions} from '../../src/helpers/helpers'
-
-declare const assert
 
 describe('common > extensions > serialization > serializers', function() {
 	// function testSerializer(
@@ -110,7 +109,7 @@ describe('common > extensions > serialization > serializers', function() {
 		testPrimitive(null)
 		testPrimitive(undefined)
 		testPrimitive(123)
-		assert.isOk(Number.isNaN(deSerializeValue(serializeValue(NaN))))
+		assert.ok(Number.isNaN(deSerializeValue(serializeValue(NaN))))
 		testPrimitive(Infinity)
 		testPrimitive(true)
 		testPrimitive(false)

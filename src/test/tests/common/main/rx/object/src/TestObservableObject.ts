@@ -6,8 +6,6 @@
 // import {ObservableObjectBuilder} from '../../../../../../../main/common/rx/object/ObservableObjectBuilder';
 // import {IOptionsVariant, IOptionsVariants, ITestCase, TestVariants, THIS} from '../../../helpers/TestVariants'
 //
-// declare const assert
-//
 // export type IObservableObjectAction = (set: ObservableObject) => any
 //
 // export enum PropertyType {

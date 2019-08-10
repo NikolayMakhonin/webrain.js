@@ -1,7 +1,7 @@
-import {typeToDebugString} from '../../helpers/helpers'
+import {TClass, typeToDebugString} from '../../helpers/helpers'
 import {ThenableSync, ThenableSyncIterator, ThenableSyncOrValue, TOnFulfilled} from '../../helpers/ThenableSync'
 import {getObjectUniqueId} from '../../lists/helpers/object-unique-id'
-import {TClass, TypeMetaCollectionWithId} from '../TypeMeta'
+import {TypeMetaCollectionWithId} from '../TypeMeta'
 import {
 	IDeSerializeOptions,
 	IDeSerializerVisitor, IDeSerializeValue,

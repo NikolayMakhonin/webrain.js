@@ -4,9 +4,8 @@ import {
 	parsePropertiesPath,
 	parsePropertiesPathString,
 } from '../../../../../../../main/common/rx/deep-subscribe/helpers/func-properties-path'
+import {assert} from '../../../../../../../main/common/test/Assert'
 import {compileTest} from './src/func-properties-path'
-
-declare const assert
 
 describe('common > main > rx > deep-subscribe > func-properties-path', function() {
 	it('parsePropertiesPathString', function() {

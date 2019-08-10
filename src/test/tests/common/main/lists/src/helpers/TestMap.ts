@@ -7,6 +7,7 @@ import {
 	ObjectSerializer, registerSerializable,
 	registerSerializer,
 } from '../../../../../../../main/common/extensions/serialization/serializers'
+import {ThenableSyncIterator} from '../../../../../../../main/common/helpers/ThenableSync'
 import {ArrayMap} from '../../../../../../../main/common/lists/ArrayMap'
 import {IMapChangedEvent, MapChangedType} from '../../../../../../../main/common/lists/contracts/IMapChanged'
 import {IPropertyChangedEvent} from '../../../../../../../main/common/lists/contracts/IPropertyChanged'
@@ -14,11 +15,9 @@ import {compareFast} from '../../../../../../../main/common/lists/helpers/compar
 import {ObjectHashMap} from '../../../../../../../main/common/lists/ObjectHashMap'
 import {ObjectMap} from '../../../../../../../main/common/lists/ObjectMap'
 import {ObservableMap} from '../../../../../../../main/common/lists/ObservableMap'
+import {assert} from '../../../../../../../main/common/test/Assert'
 import {IOptionsVariant, IOptionsVariants, ITestCase, TestVariants, THIS} from '../../../src/helpers/TestVariants'
 import {convertToObject} from './common'
-import {ThenableSyncIterator} from "../../../../../../../main/common/helpers/ThenableSync";
-
-declare const assert
 
 function compareEntries<K, V>(o1: [K, V], o2: [K, V]) {
 	return compareFast(o1[0], o2[0])

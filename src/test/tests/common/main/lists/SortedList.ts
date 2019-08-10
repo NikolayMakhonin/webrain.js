@@ -9,8 +9,8 @@ import {
 	IListAction,
 	TestList,
 } from './src/helpers/TestList'
+import {assert} from "../../../../../main/common/test/Assert";
 
-declare const assert
 declare const after
 
 describe('common > main > lists > List', function() {

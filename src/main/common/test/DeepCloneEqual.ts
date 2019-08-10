@@ -1,4 +1,4 @@
-import {getObjectUniqueId} from '../../src/main/common/lists/helpers/object-unique-id'
+import {getObjectUniqueId} from '../lists/helpers/object-unique-id'
 
 export interface IDeepCloneEqualOptions {
 	circular?: boolean
@@ -48,6 +48,13 @@ export class DeepCloneEqual {
 		if (equalOptions) {
 			this.equalOptions = equalOptions
 		}
+	}
+
+	public isPrimitive(value: any): boolean {
+		const {commonOptions} = this
+		const isPrimitive = commonOptions && commonOptions.customIsPrimitive
+			|| isPrimitiveDefault
+		return isPrimitive(value)
 	}
 
 	public clone<T extends any>(value: T, options?: IDeepCloneOptions, cache?: any[]): T {

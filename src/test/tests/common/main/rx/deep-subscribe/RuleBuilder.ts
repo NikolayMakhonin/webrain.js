@@ -13,8 +13,7 @@ import {
 import {IRule, RuleType} from '../../../../../../main/common/rx/deep-subscribe/contracts/rules'
 import {RuleBuilder} from '../../../../../../main/common/rx/deep-subscribe/RuleBuilder'
 import {ObservableObjectBuilder} from '../../../../../../main/common/rx/object/ObservableObjectBuilder'
-
-declare const assert
+import {assert} from '../../../../../../main/common/test/Assert'
 
 describe('common > main > rx > deep-subscribe > RuleBuilder', function() {
 	interface IObject {

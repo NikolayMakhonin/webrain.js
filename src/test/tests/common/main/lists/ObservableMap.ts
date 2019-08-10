@@ -8,8 +8,8 @@ import {
 	IMapAction,
 	TestMap,
 } from './src/helpers/TestMap'
+import {assert} from "../../../../../main/common/test/Assert";
 
-declare const assert
 declare const after
 
 describe('common > main > lists > ObservableMap', function() {

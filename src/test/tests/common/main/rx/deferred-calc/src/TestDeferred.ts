@@ -3,10 +3,9 @@ import {
 	IPropertyChangedEvent,
 } from '../../../../../../../main/common/lists/contracts/IPropertyChanged'
 import {DeferredCalc} from '../../../../../../../main/common/rx/deferred-calc/DeferredCalc'
+import {assert} from '../../../../../../../main/common/test/Assert'
 import {IOptionsVariant, IOptionsVariants, ITestCase, TestVariants, THIS} from '../../../src/helpers/TestVariants'
 import {TestTiming} from './timing'
-
-declare const assert
 
 export type IDeferredCalcAction = (set: DeferredCalc) => any
 
@@ -151,7 +150,7 @@ export class TestDeferredCalc extends TestVariants<
 		for (let debugIteration = 0; debugIteration < 3; debugIteration++) {
 			let unsubscribePropertyChanged
 			try {
-				let expectedEvents: IEvent[] = options.expected.events.slice()
+				const expectedEvents: IEvent[] = options.expected.events.slice()
 				let events: IEvent[]
 				let deferredCalc: DeferredCalc
 

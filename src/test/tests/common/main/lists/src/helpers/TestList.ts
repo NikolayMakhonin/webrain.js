@@ -8,8 +8,7 @@ import {IPropertyChangedEvent} from '../../../../../../../main/common/lists/cont
 import {compareFast} from '../../../../../../../main/common/lists/helpers/compare'
 import {SortedList} from '../../../../../../../main/common/lists/SortedList'
 import {IOptionsVariant, IOptionsVariants, ITestCase, TestVariants} from '../../../src/helpers/TestVariants'
-
-declare const assert
+import {assert} from "../../../../../../../main/common/test/Assert";
 
 export function applyListChangedToArray<T>(event: IListChangedEvent<T>, array: T[], compare: ICompare<T>) {
 	switch (event.type) {

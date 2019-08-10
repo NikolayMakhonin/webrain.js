@@ -1,6 +1,5 @@
 import {TypeMetaCollectionWithId} from '../../../../../main/common/extensions/TypeMeta'
-
-declare const assert
+import {assert} from '../../../../../main/common/test/Assert'
 
 describe('common > extensions > TypeMeta', function() {
 	it('base', function() {

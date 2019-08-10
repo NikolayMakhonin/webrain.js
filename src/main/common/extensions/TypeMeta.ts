@@ -1,6 +1,4 @@
-import {typeToDebugString} from "../helpers/helpers";
-
-export type TClass<T> = new (...args: any[]) => T
+import {TClass, typeToDebugString} from '../helpers/helpers'
 
 export interface ITypeMeta { }
 

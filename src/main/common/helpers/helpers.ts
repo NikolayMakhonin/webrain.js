@@ -17,3 +17,5 @@ export function typeToDebugString(type) {
 
 // tslint:disable-next-line:no-empty no-shadowed-variable
 export const EMPTY: any = function EMPTY() {}
+
+export type TClass<T> = new (...args: any[]) => T

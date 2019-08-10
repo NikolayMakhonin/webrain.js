@@ -1,5 +1,5 @@
 /* tslint:disable:no-identical-functions */
-import {isIterable, EMPTY} from '../../helpers/helpers'
+import {EMPTY, isIterable} from '../../helpers/helpers'
 import {IMergeOptions, IMergeValue} from './contracts'
 
 export interface IMergeMapWrapper<K, V> {

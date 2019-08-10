@@ -2,8 +2,6 @@
 import {delay} from 'q'
 import {createObject, Tester} from './helpers/Tester'
 
-declare const assert
-
 describe('common > main > rx > deep-subscribe > deep-subscribe', function() {
 	const check = createObject()
 
@@ -332,7 +330,7 @@ describe('common > main > rx > deep-subscribe > deep-subscribe', function() {
 			[],
 			[new Number(2)],
 			Error,
-			/should return null\/undefined or unsubscribe function/
+			/should return null\/undefined or unsubscribe function/,
 		)
 
 		await delay(20)

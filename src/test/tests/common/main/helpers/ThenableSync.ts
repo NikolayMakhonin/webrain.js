@@ -1,8 +1,6 @@
 import {isIterable} from '../../../../../main/common/helpers/helpers'
-import {ThenableSync} from '../../../../../main/common/helpers/ThenableSync'
-import {ITERABLE, ITERATOR, TestThenableSync} from './src/TestThenableSync'
+import {ITERABLE, TestThenableSync} from './src/TestThenableSync'
 
-declare const assert
 declare const after
 
 describe('common > main > helpers > ThenableSync', function() {

@@ -1,8 +1,7 @@
 /* tslint:disable:no-empty no-identical-functions no-construct use-primitive-type */
 import {ThenableSync, TOnFulfilled} from '../../../../../../main/common/helpers/ThenableSync'
+import {assert} from '../../../../../../main/common/test/Assert'
 import {IOptionsVariant, IOptionsVariants, ITestCase, TestVariants} from '../../src/helpers/TestVariants'
-
-declare const assert
 
 export interface IThenableSyncOptionsVariant {
 	value?: any

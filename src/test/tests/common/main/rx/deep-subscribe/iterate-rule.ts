@@ -11,8 +11,7 @@ import {
 } from '../../../../../../main/common/rx/deep-subscribe/iterate-rule'
 import {RuleBuilder} from '../../../../../../main/common/rx/deep-subscribe/RuleBuilder'
 import {IUnsubscribe} from '../../../../../../main/common/rx/subjects/subject'
-
-declare const assert
+import {assert} from '../../../../../../main/common/test/Assert'
 
 describe('common > main > rx > deep-subscribe > iterate-rule', function() {
 	function ruleToString(rule: IRule) {

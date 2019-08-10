@@ -2,7 +2,6 @@
 import {calcPerformance} from 'rdtsc'
 import {ObjectMerger} from '../../../main/common/extensions/merge/mergers'
 
-declare const assert
 declare const after
 declare const babelGetFileCode
 

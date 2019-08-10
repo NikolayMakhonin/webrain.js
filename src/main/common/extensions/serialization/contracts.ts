@@ -1,5 +1,6 @@
+import {TClass} from '../../helpers/helpers'
 import {ThenableSync, ThenableSyncIterator, TOnFulfilled} from '../../helpers/ThenableSync'
-import {ITypeMetaWithId, TClass, TypeMetaCollectionWithId} from '../TypeMeta'
+import {ITypeMetaWithId, TypeMetaCollectionWithId} from '../TypeMeta'
 
 // region Serialized Value
 

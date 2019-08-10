@@ -1,8 +1,8 @@
 /* tslint:disable:no-nested-switch ban-types use-primitive-type */
-import {isIterable, typeToDebugString} from '../../helpers/helpers'
+import {isIterable, TClass, typeToDebugString} from '../../helpers/helpers'
 import {getObjectUniqueId, isFrozenWithoutUniqueId} from '../../lists/helpers/object-unique-id'
 import {fillMap, fillSet} from '../../lists/helpers/set'
-import {TClass, TypeMetaCollection} from '../TypeMeta'
+import {TypeMetaCollection} from '../TypeMeta'
 import {
 	IMergeable, IMergeOptions,
 	IMergerVisitor, IMergeValue, IObjectMerger,
@@ -600,7 +600,6 @@ export class MergerVisitor implements IMergerVisitor {
 			}
 			return false
 		}
-
 
 		if (base === older) {
 			preferCloneBase = preferCloneOlder = mergePreferClone(preferCloneBase, preferCloneOlder)

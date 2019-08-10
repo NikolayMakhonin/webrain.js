@@ -1,12 +1,11 @@
-import {DeepCloneEqual} from '../../../../../../../env/mocha/deep-clone-equal'
+import {assert} from '../../../../../../main/common/test/Assert'
+import {DeepCloneEqual} from '../../../../../../main/common/test/DeepCloneEqual'
 import {
 	IOptionsVariant,
 	IOptionsVariants,
 	ITestCase,
 	TestVariants,
-} from '../../../main/src/helpers/TestVariants'
-
-declare const assert
+} from '../../src/helpers/TestVariants'
 
 export const deepCloneEqual = new DeepCloneEqual()
 

@@ -1,15 +1,13 @@
 /* tslint:disable:no-construct use-primitive-type */
 // import clone from 'clone'
-import {DeepCloneEqual, isPrimitiveDefault} from '../../../../../../../../env/mocha/deep-clone-equal'
 import {IMergeOptions, ITypeMetaMerger} from '../../../../../../../main/common/extensions/merge/contracts'
 import {ObjectMerger, TypeMetaMergerCollection} from '../../../../../../../main/common/extensions/merge/mergers'
-import {TClass} from '../../../../../../../main/common/extensions/TypeMeta'
+import {TClass} from '../../../../../../../main/common/helpers/helpers'
 import {isFrozenWithoutUniqueId} from '../../../../../../../main/common/lists/helpers/object-unique-id'
 import {SortedList} from '../../../../../../../main/common/lists/SortedList'
+import {Assert} from '../../../../../../../main/common/test/Assert'
+import {DeepCloneEqual, isPrimitiveDefault} from '../../../../../../../main/common/test/DeepCloneEqual'
 import {IOptionsVariant, IOptionsVariants, ITestCase, TestVariants} from '../../../src/helpers/TestVariants'
-
-declare const assert
-// declare function fastCopy<T = any>(o: T): T
 
 export const deepCloneEqual = new DeepCloneEqual({
 	commonOptions: {
@@ -79,6 +77,8 @@ export const deepCloneEqual = new DeepCloneEqual({
 		},
 	},
 })
+
+const assert = new Assert(deepCloneEqual)
 
 export interface IMergerOptionsVariant {
 	base?: any
