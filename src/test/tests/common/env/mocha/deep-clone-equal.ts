@@ -1,7 +1,7 @@
 /* tslint:disable:no-construct use-primitive-type */
-import {deepClone, deepEqual, IDeepCloneOptions, IDeepEqualOptions} from '../../../../../../env/mocha/deep-clone-equal'
+import {DeepCloneEqual, IDeepCloneOptions, IDeepEqualOptions} from '../../../../../../env/mocha/deep-clone-equal'
 import {createComplexObject, IComplexObjectOptions} from '../../main/src/helpers/helpers'
-import {TestDeepEqual} from './src/TestDeepEqual'
+import {deepCloneEqual, TestDeepEqual} from './src/TestDeepEqual'
 
 declare const assert
 declare const after
@@ -12,7 +12,7 @@ describe('common > env > mocha > deep-clone-equal', function() {
 	const _testDeepEqual = TestDeepEqual.test
 
 	after(function() {
-		console.log('Total deepEqual tests >= ' + TestDeepEqual.totalTests)
+		console.log('Total DeepCloneEqual tests >= ' + TestDeepEqual.totalTests)
 	})
 
 	const objectOptions: IComplexObjectOptions = {
@@ -33,27 +33,17 @@ describe('common > env > mocha > deep-clone-equal', function() {
 		circularClass: true,
 	}
 
-	// 	if (options.noCrossReferences && expected.array) {
-	// 		assert.notStrictEqual(actual.array, expected.array)
-	// 		for (let i = 0; i < obj.array.length; i++) {
-	// 			const value = obj.array[i]
-	// 			if (value && typeof value === 'object') {
-	// 				assert.notStrictEqual(actual.array[i], value)
-	// 			}
-	// 		}
-	// 	}
-
 	const testDeepEqual = (actual: any[], expected: any[], options: IDeepEqualOptions) => {
 		_testDeepEqual({
 			value1: actual,
 			value2: expected,
 			// equalInnerReferences: [false],
-			// ignoreOrderForMapSet: [options.ignoreOrderForMapSet],
+			// equalMapSetOrder: [options.equalMapSetOrder],
 			exclude: o => {
 				if (!o.circular && options.circular) {
 					return true
 				}
-				if (!o.ignoreOrderForMapSet && options.ignoreOrderForMapSet) {
+				if (o.equalMapSetOrder && !options.equalMapSetOrder) {
 					return true
 				}
 				return false
@@ -78,24 +68,24 @@ describe('common > env > mocha > deep-clone-equal', function() {
 	}
 
 	const deepCloneWrapper = <T>(value: T, options?: IDeepCloneOptions, cache?: any[]): T => {
-		const result = deepClone(value, options, cache)
+		const result = deepCloneEqual.clone(value, options, cache)
 
 		return result
 	}
 
-	const notCircularTest = (ignoreOrderForMapSet: boolean) => {
+	const notCircularTest = (equalMapSetOrder: boolean) => {
 		const obj = createComplexObject({
 			...objectOptions,
-			arraySet: objectOptions.arraySet && ignoreOrderForMapSet,
-			objectSet: objectOptions.objectSet && ignoreOrderForMapSet,
-			arrayMap: objectOptions.arrayMap && ignoreOrderForMapSet,
-			objectMap: objectOptions.objectMap && ignoreOrderForMapSet,
+			arraySet: objectOptions.arraySet && !equalMapSetOrder,
+			objectSet: objectOptions.objectSet && !equalMapSetOrder,
+			arrayMap: objectOptions.arrayMap && !equalMapSetOrder,
+			objectMap: objectOptions.objectMap && !equalMapSetOrder,
 		})
 
 		let clone = deepCloneWrapper(obj)
 		testDeepEqual([clone], [obj], {
 			circular: false,
-			ignoreOrderForMapSet,
+			equalMapSetOrder,
 			equalTypes: true,
 			noCrossReferences: true,
 			// equalInnerReferences: true,
@@ -106,21 +96,21 @@ describe('common > env > mocha > deep-clone-equal', function() {
 		})
 		testDeepEqual([clone], [obj], {
 			circular: true,
-			ignoreOrderForMapSet,
+			equalMapSetOrder,
 			equalTypes: true,
 			noCrossReferences: true,
 			// equalInnerReferences: true,
 		})
 	}
 
-	const circularTest = (ignoreOrderForMapSet: boolean) => {
+	const circularTest = (equalMapSetOrder: boolean) => {
 		const obj = createComplexObject({
 			...objectOptions,
 			circular: true,
-			arraySet: objectOptions.arraySet && ignoreOrderForMapSet,
-			objectSet: objectOptions.objectSet && ignoreOrderForMapSet,
-			arrayMap: objectOptions.arrayMap && ignoreOrderForMapSet,
-			objectMap: objectOptions.objectMap && ignoreOrderForMapSet,
+			arraySet: objectOptions.arraySet && !equalMapSetOrder,
+			objectSet: objectOptions.objectSet && !equalMapSetOrder,
+			arrayMap: objectOptions.arrayMap && !equalMapSetOrder,
+			objectMap: objectOptions.objectMap && !equalMapSetOrder,
 		})
 
 		let cache1: any = []
@@ -155,7 +145,7 @@ describe('common > env > mocha > deep-clone-equal', function() {
 
 		testDeepEqual([clone], [obj], {
 			circular: true,
-			ignoreOrderForMapSet,
+			equalMapSetOrder,
 			equalTypes: true,
 			noCrossReferences: true,
 			equalInnerReferences: true,
@@ -165,7 +155,7 @@ describe('common > env > mocha > deep-clone-equal', function() {
 		obj.cross = clone.cross
 		testDeepEqual([clone], [obj], {
 			circular: true,
-			ignoreOrderForMapSet,
+			equalMapSetOrder,
 			equalTypes: true,
 			equalInnerReferences: true,
 		})
@@ -173,7 +163,7 @@ describe('common > env > mocha > deep-clone-equal', function() {
 		obj.cross = {}
 		testDeepEqual([clone], [obj], {
 			circular: true,
-			ignoreOrderForMapSet,
+			equalMapSetOrder,
 			equalTypes: true,
 			noCrossReferences: true,
 			equalInnerReferences: true,
@@ -184,7 +174,7 @@ describe('common > env > mocha > deep-clone-equal', function() {
 			obj.array.push(clone)
 			testDeepEqual([clone], [obj], {
 				circular: true,
-				ignoreOrderForMapSet,
+				equalMapSetOrder,
 				equalTypes: true,
 				equalInnerReferences: true,
 			})
@@ -192,7 +182,7 @@ describe('common > env > mocha > deep-clone-equal', function() {
 			obj.array[obj.array.length - 1] = obj
 			testDeepEqual([clone], [obj], {
 				circular: true,
-				ignoreOrderForMapSet,
+				equalMapSetOrder,
 				equalTypes: true,
 				noCrossReferences: true,
 				equalInnerReferences: true,
@@ -204,7 +194,7 @@ describe('common > env > mocha > deep-clone-equal', function() {
 			obj.object = {...obj.object}
 			testDeepEqual([clone], [obj], {
 				circular: true,
-				ignoreOrderForMapSet,
+				equalMapSetOrder,
 				equalTypes: true,
 				noCrossReferences: true,
 				// equalInnerReferences: true,
@@ -213,7 +203,7 @@ describe('common > env > mocha > deep-clone-equal', function() {
 			obj.array = new Set(obj.array)
 			testDeepEqual([clone], [obj], {
 				circular: true,
-				ignoreOrderForMapSet,
+				equalMapSetOrder,
 				// equalTypes: true,
 				noCrossReferences: true,
 				// equalInnerReferences: true,
@@ -227,7 +217,7 @@ describe('common > env > mocha > deep-clone-equal', function() {
 			obj.object.cross2 = clone.cross
 			testDeepEqual([clone], [obj], {
 				circular: true,
-				ignoreOrderForMapSet,
+				equalMapSetOrder,
 				// equalTypes: true,
 				// noCrossReferences: true,
 				// equalInnerReferences: true,
@@ -236,18 +226,18 @@ describe('common > env > mocha > deep-clone-equal', function() {
 	}
 
 	it('not circular', function() {
-		notCircularTest(false)
-	})
-
-	it('not circular ignoreOrderForMapSet', function() {
 		notCircularTest(true)
 	})
 
-	it('circular', function() {
-		circularTest(false)
+	it('not circular not equalMapSetOrder', function() {
+		notCircularTest(false)
 	})
 
-	it('circular ignoreOrderForMapSet', function() {
+	it('circular', function() {
 		circularTest(true)
+	})
+
+	it('circular not equalMapSetOrder', function() {
+		circularTest(false)
 	})
 })

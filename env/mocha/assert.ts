@@ -1,7 +1,9 @@
 /* tslint:disable:no-var-requires triple-equals */
-import {deepEqual, IDeepEqualOptions} from './deep-clone-equal'
+import {DeepCloneEqual, IDeepEqualOptions} from './deep-clone-equal'
 
 const AssertionError = require('assertion-error')
+
+const deepCloneEqual = new DeepCloneEqual()
 
 class Assert {
 	public strictEqual = (actual, expected, message) => {
@@ -17,13 +19,13 @@ class Assert {
 	}
 
 	public deepStrictEqual = (actual, expected, message, options?: IDeepEqualOptions) => {
-		if (!deepEqual(actual, expected, options)) {
+		if (!deepCloneEqual.equal(actual, expected, options)) {
 			this.throwAssertionError(actual, expected, message)
 		}
 	}
 
 	public circularDeepStrictEqual = (actual, expected, message, options?: IDeepEqualOptions) => {
-		if (!deepEqual(actual, expected, {
+		if (!deepCloneEqual.equal(actual, expected, {
 			...options,
 			circular: true,
 		})) {

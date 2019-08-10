@@ -1,4 +1,4 @@
-import {deepEqual} from '../../../../../../../env/mocha/deep-clone-equal'
+import {DeepCloneEqual} from '../../../../../../../env/mocha/deep-clone-equal'
 import {
 	IOptionsVariant,
 	IOptionsVariants,
@@ -8,6 +8,8 @@ import {
 
 declare const assert
 
+export const deepCloneEqual = new DeepCloneEqual()
+
 export interface IDeepEqualOptionsVariant {
 	value1: any,
 	value2: any,
@@ -15,7 +17,7 @@ export interface IDeepEqualOptionsVariant {
 	noCrossReferences?: boolean,
 	equalTypes?: boolean
 	equalInnerReferences?: boolean
-	ignoreOrderForMapSet?: boolean
+	equalMapSetOrder?: boolean
 }
 
 interface IDeepEqualExpected {
@@ -30,7 +32,7 @@ interface IDeepEqualOptionsVariants extends IOptionsVariants {
 	noCrossReferences?: boolean[],
 	equalTypes?: boolean[]
 	equalInnerReferences?: boolean[]
-	ignoreOrderForMapSet?: boolean[]
+	equalMapSetOrder?: boolean[]
 }
 
 type IDeepEqualAction = (...args: any[]) => any
@@ -85,7 +87,7 @@ export class TestDeepEqual extends TestVariants<
 		noCrossReferences: [false, true],
 		equalTypes: [false, true],
 		equalInnerReferences: [false, true],
-		ignoreOrderForMapSet: [false, true],
+		equalMapSetOrder: [false, true],
 	}
 
 	public static totalTests: number = 0
@@ -99,12 +101,12 @@ export class TestDeepEqual extends TestVariants<
 				const options = inputOptions = resolveOptions(inputOptions, null)
 
 				const action = () => {
-					const result = deepEqual(options.value1, options.value2, {
+					const result = deepCloneEqual.equal(options.value1, options.value2, {
 						circular: options.circular,
 						equalTypes: options.equalTypes,
 						noCrossReferences: options.noCrossReferences,
 						equalInnerReferences: options.equalInnerReferences,
-						ignoreOrderForMapSet: options.ignoreOrderForMapSet,
+						equalMapSetOrder: options.equalMapSetOrder,
 					})
 
 					assert.strictEqual(result, options.expected.result)

@@ -90,30 +90,7 @@ export interface IComplexObjectOptions {
 	observableMap?: boolean,
 }
 
-// const defaultOptions: IOptions = {
-// 	circular: true,
-//
-// 	circularClass: true,
-//
-// 	sortedList: true,
-//
-// 	set: true,
-// 	arraySet: true,
-// 	objectSet: true,
-// 	observableSet: true,
-//
-// 	map: true,
-// 	arrayMap: true,
-// 	objectMap: true,
-// 	observableMap: true,
-// }
-
 export function createComplexObject(options: IComplexObjectOptions = {}) {
-	// options = {
-	// 	...defaultOptions,
-	// 	...options,
-	// }
-
 	const array = []
 	const object: any = {}
 
@@ -146,10 +123,13 @@ export function createComplexObject(options: IComplexObjectOptions = {}) {
 		circularClass: options.circular && options.circularClass && circularClass,
 		object: options.circular && object,
 		array: options.array && array,
+
 		sortedList: options.sortedList && new SortedList() as any,
+
 		set: options.set && new Set() as any,
 		arraySet: options.arraySet && new ArraySet() as any,
 		objectSet: options.objectSet && new ObjectSet() as any,
+
 		map: options.map && new Map() as any,
 		arrayMap: options.arrayMap && new ArrayMap() as any,
 		objectMap: options.objectMap && new ObjectMap() as any,

@@ -64,14 +64,14 @@ class ValueState<TTarget, TSource> {
 	}
 
 	public setRef(refObj: any): void {
-		const id = getObjectUniqueId(this.target as any)
-		if (id != null) {
-			let {refs} = this
-			if (refs == null) {
-				this.refs = refs = []
-			}
-			refs[id] = refObj
-		}
+		// const id = getObjectUniqueId(this.target as any)
+		// if (id != null) {
+		// 	let {refs} = this
+		// 	if (refs == null) {
+		// 		this.refs = refs = []
+		// 	}
+		// 	refs[id] = refObj
+		// }
 	}
 
 	private _meta: ITypeMetaMerger<TTarget, TSource>
