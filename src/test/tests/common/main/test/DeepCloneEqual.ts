@@ -6,7 +6,7 @@ import {deepCloneEqual, TestDeepEqual} from './src/TestDeepEqual'
 
 declare const after
 
-describe('common > env > mocha > deep-clone-equal', function() {
+describe('common > test > DeepCloneEqual', function() {
 	this.timeout(60000)
 
 	const _testDeepEqual = TestDeepEqual.test
@@ -16,21 +16,21 @@ describe('common > env > mocha > deep-clone-equal', function() {
 	})
 
 	const objectOptions: IComplexObjectOptions = {
-		undefined: true,
+		// undefined: true,
 		array: true,
-
-		map: true,
-		arrayMap: true,
-		objectMap: true,
-		observableMap: true,
-
-		set: true,
-		arraySet: true,
-		objectSet: true,
-		observableSet: true,
-
-		sortedList: true,
-		circularClass: true,
+		//
+		// map: true,
+		// arrayMap: true,
+		// objectMap: true,
+		// observableMap: true,
+		//
+		// set: true,
+		// arraySet: true,
+		// objectSet: true,
+		// observableSet: true,
+		//
+		// sortedList: true,
+		// circularClass: true,
 	}
 
 	const testDeepEqual = (actual: any[], expected: any[], options: IDeepEqualOptions) => {

@@ -1,3 +1,4 @@
+import {TClass} from '../../../../../../main/common/helpers/helpers'
 import {assert} from '../../../../../../main/common/test/Assert'
 import {DeepCloneEqual} from '../../../../../../main/common/test/DeepCloneEqual'
 import {
@@ -20,7 +21,8 @@ export interface IDeepEqualOptionsVariant {
 }
 
 interface IDeepEqualExpected {
-	error?: (new () => Error)|((variant: IDeepEqualOptionsVariant) => new () => Error)
+	error?: (TClass<Error>|Array<TClass<Error>>)
+		|((variant: IDeepEqualOptionsVariant) => TClass<Error>|Array<TClass<Error>>)
 	result?: boolean|((variant: IDeepEqualOptionsVariant) => boolean)
 }
 
@@ -112,7 +114,7 @@ export class TestDeepEqual extends TestVariants<
 				}
 
 				if (options.expected.error) {
-					assert.throws(action, options.expected.error)
+					assert.throws(action, options.expected.error as TClass<Error>|Array<TClass<Error>>)
 				} else {
 					action()
 				}

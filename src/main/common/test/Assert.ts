@@ -1,7 +1,10 @@
 /* tslint:disable:no-var-requires triple-equals */
+import _AssertionError from 'assertion-error'
+import {TClass} from '../helpers/helpers'
 import {DeepCloneEqual, IDeepEqualOptions} from './DeepCloneEqual'
 
-const AssertionError = require('assertion-error')
+export const AssertionError = _AssertionError
+
 const deepCloneEqualDefault = new DeepCloneEqual()
 
 export class Assert {
@@ -70,15 +73,11 @@ export class Assert {
 
 	public equalCustom(actual, expected, check, message?: string) {
 		if (!check(actual, expected)) {
-			throw new AssertionError(message, {
-				actual,
-				expected,
-				showDiff: true,
-			})
+			this.throwAssertionError(actual, expected, message)
 		}
 	}
 
-	public throws(fn: () => void, errType?: any, regExp?: RegExp): void {
+	public throws(fn: () => void, errType?: TClass<any>|Array<TClass<any>>, regExp?: RegExp, message?: string): void {
 		let err
 		try {
 			fn()
@@ -89,7 +88,22 @@ export class Assert {
 		this.ok(err)
 
 		if (errType) {
-			this.strictEqual(err.constructor, errType)
+			const actualErrType = err.constructor
+			if (Array.isArray(errType)) {
+				if (!(errType as Array<TClass<any>>).some(o => o === actualErrType)) {
+					this.throwAssertionError(
+						actualErrType.name,
+						errType.map(o => o && o.name),
+						err ? (message || '') + '\r\n' + err + '\r\n' + err.stack : message)
+				}
+			} else {
+				if (actualErrType !== errType) {
+					this.throwAssertionError(
+						actualErrType.name,
+						errType.name,
+						err ? (message || '') + '\r\n' + err + '\r\n' + err.stack : message)
+				}
+			}
 		}
 
 		if (regExp) {

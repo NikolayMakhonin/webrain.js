@@ -18,8 +18,7 @@ import {ObservableMap} from '../../../../../../main/common/lists/ObservableMap'
 import {ObservableSet} from '../../../../../../main/common/lists/ObservableSet'
 import {SortedList} from '../../../../../../main/common/lists/SortedList'
 import {Assert} from '../../../../../../main/common/test/Assert'
-import {toIterable} from '../../lists/src/helpers/common'
-import {createComplexObject, IComplexObjectOptions} from '../../src/helpers/helpers'
+import {createComplexObject, IComplexObjectOptions, createIterable} from '../../src/helpers/helpers'
 import {
 	BASE,
 	deepCloneEqual,
@@ -378,15 +377,10 @@ describe('common > extensions > merge > ObjectMerger', function() {
 			const clone = deepCloneEqual.clone(obj)
 
 			const assertCloneValue = (cloneValue, value, message) => {
-				// if (typeof value === 'function') {
-				// 	value = value()
-				// 	cloneValue = cloneValue()
-				// }
-
 				if (deepCloneEqual.isPrimitive(value)) {
-					assert.notStrictEqual(cloneValue, value, message)
-				} else {
 					assert.strictEqual(cloneValue, value, message)
+				} else {
+					assert.notStrictEqual(cloneValue, value, message)
 				}
 			}
 
@@ -489,7 +483,7 @@ describe('common > extensions > merge > ObjectMerger', function() {
 		it('helpers', function() {
 			assert.strictEqual(deepCloneEqual.clone(func), func)
 			// assert.strictEqual(deepCloneEqual.clone(object), object)
-			const iterable = toIterable([1, 2, 3])
+			const iterable = createIterable([1, 2, 3])
 			assert.ok(iterable[Symbol.iterator])
 			assert.deepStrictEqual(Array.from(iterable), [1, 2, 3])
 			assert.deepStrictEqual(Array.from(iterable), [1, 2, 3])
@@ -504,12 +498,12 @@ describe('common > extensions > merge > ObjectMerger', function() {
 					older: [
 						...sourceFactories.map(o => o(older)),
 						older,
-						toIterable(older),
+						createIterable(older),
 					],
 					newer: [
 						...sourceFactories.map(o => o(newer)),
 						newer,
-						toIterable(newer),
+						createIterable(newer),
 					],
 					preferCloneOlderParam: [null],
 					preferCloneNewerParam: [null],
@@ -584,12 +578,12 @@ describe('common > extensions > merge > ObjectMerger', function() {
 					older: [
 						...sourceFactories.map(o => o(older)),
 						older,
-						toIterable(older),
+						createIterable(older),
 					],
 					newer: [
 						...sourceFactories.map(o => o(newer)),
 						newer,
-						toIterable(newer),
+						createIterable(newer),
 					],
 					preferCloneOlderParam: [null],
 					preferCloneNewerParam: [null],

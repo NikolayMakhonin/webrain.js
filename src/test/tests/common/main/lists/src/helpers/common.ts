@@ -9,20 +9,6 @@ export function generateArray(size) {
 	return arr
 }
 
-export function *toIterableIterator<T>(array: T[]): IterableIterator<T> {
-	for (const item of array) {
-		yield item
-	}
-}
-
-export function toIterable<T>(array: T[]): Iterable<T> {
-	return {
-		[Symbol.iterator]() {
-			return toIterableIterator(array)
-		},
-	}
-}
-
 export function shuffle(array) {
 	return array.slice().sort(() => (Math.random() > 0.5 ? 1 : -1))
 }

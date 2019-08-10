@@ -25,6 +25,16 @@ export function isPrimitiveDefault(value: any): boolean {
 		|| value instanceof Error
 }
 
+function *toIterableIterator<T>(array: T[]): IterableIterator<T> {
+	for (const item of array) {
+		yield item
+	}
+}
+
+function toIterableIteratorGenerator<T>(array: T[]): () => IterableIterator<T> {
+	return () => toIterableIterator(array)
+}
+
 export class DeepCloneEqual {
 	public commonOptions?: IDeepCloneEqualOptions
 	public cloneOptions?: IDeepCloneOptions
@@ -62,7 +72,7 @@ export class DeepCloneEqual {
 		const customClone = options && options.customClone
 		const isPrimitive = options && options.customIsPrimitive || isPrimitiveDefault
 
-		const clone = (source: T) => {
+		const clone = (source: any): any => {
 			if (isPrimitive(source)) {
 				return source
 			}
@@ -87,9 +97,17 @@ export class DeepCloneEqual {
 				}
 			}
 
-			const type: new (...args) => T = source.constructor as any
-
 			let cloned
+
+			if (source[Symbol.iterator] && source.next) {
+				cloned = toIterableIterator(clone(Array.from(source[Symbol.iterator]())))
+				if (id != null) {
+					cache[id] = cloned
+				}
+				return cloned
+			}
+
+			const type: new (...args) => T = source.constructor as any
 
 			const valueOf = source.valueOf()
 			if (valueOf !== source) {
@@ -97,34 +115,44 @@ export class DeepCloneEqual {
 				if (id != null) {
 					cache[id] = cloned
 				}
-			} else {
-				cloned = new type()
-				if (id != null) {
-					cache[id] = cloned
-				}
+				return cloned
+			}
 
-				switch (source[Symbol.toStringTag]) {
-					case 'Set':
-						for (const item of source as any) {
-							(cloned as Set<any>).add(
-								clone(item),
-							)
-						}
-						return cloned
-					case 'Map':
-						for (const item of source as any) {
-							(cloned as Map<any, any>).set(
-								clone(item[0]),
-								clone(item[1]),
-							)
-						}
-						return cloned
-				}
+			cloned = new type()
+			if (id != null) {
+				cache[id] = cloned
+			}
 
-				for (const key in source) {
-					if (Object.prototype.hasOwnProperty.call(source, key)) {
-						cloned[key] = clone(source[key] as any)
+			const sourceTag = source[Symbol.toStringTag]
+			if (cloned[Symbol.toStringTag] !== sourceTag) {
+				cloned[Symbol.toStringTag] = sourceTag
+			}
+
+			switch (sourceTag) {
+				case 'Set':
+					for (const item of source as any) {
+						(cloned as Set<any>).add(
+							clone(item),
+						)
 					}
+					return cloned
+				case 'Map':
+					for (const item of source as any) {
+						(cloned as Map<any, any>).set(
+							clone(item[0]),
+							clone(item[1]),
+						)
+					}
+					return cloned
+			}
+
+			if (source[Symbol.iterator] && !cloned[Symbol.iterator]) {
+				cloned[Symbol.iterator] = toIterableIteratorGenerator(clone(Array.from(source[Symbol.iterator]())))
+			}
+
+			for (const key in source) {
+				if (Object.prototype.hasOwnProperty.call(source, key)) {
+					cloned[key] = clone(source[key] as any)
 				}
 			}
 

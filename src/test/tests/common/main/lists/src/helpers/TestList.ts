@@ -1,4 +1,5 @@
 import {ObjectSerializer} from '../../../../../../../main/common/extensions/serialization/serializers'
+import {TClass} from '../../../../../../../main/common/helpers/helpers'
 import {ICompare} from '../../../../../../../main/common/lists/contracts/ICompare'
 import {
 	IListChangedEvent,
@@ -7,8 +8,8 @@ import {
 import {IPropertyChangedEvent} from '../../../../../../../main/common/lists/contracts/IPropertyChanged'
 import {compareFast} from '../../../../../../../main/common/lists/helpers/compare'
 import {SortedList} from '../../../../../../../main/common/lists/SortedList'
+import {assert} from '../../../../../../../main/common/test/Assert'
 import {IOptionsVariant, IOptionsVariants, ITestCase, TestVariants} from '../../../src/helpers/TestVariants'
-import {assert} from "../../../../../../../main/common/test/Assert";
 
 export function applyListChangedToArray<T>(event: IListChangedEvent<T>, array: T[], compare: ICompare<T>) {
 	switch (event.type) {
@@ -70,7 +71,7 @@ interface IListOptionsVariant<T> {
 
 interface IListExpected<T> {
 	array?: T[],
-	error?: new () => Error,
+	error?: TClass<Error>|Array<TClass<Error>>
 	returnValue: any,
 	defaultValue: any,
 	listChanged?: Array<IListChangedEvent<T>>,

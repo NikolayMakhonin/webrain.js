@@ -12,12 +12,11 @@ import {ArrayMap} from '../../../../../../main/common/lists/ArrayMap'
 import {ArraySet} from '../../../../../../main/common/lists/ArraySet'
 import {ObjectMap} from '../../../../../../main/common/lists/ObjectMap'
 import {ObjectSet} from '../../../../../../main/common/lists/ObjectSet'
+import {ObservableMap} from '../../../../../../main/common/lists/ObservableMap'
 import {ObservableSet} from '../../../../../../main/common/lists/ObservableSet'
 import {SortedList} from '../../../../../../main/common/lists/SortedList'
 import {ObservableObject} from '../../../../../../main/common/rx/object/ObservableObject'
 import {ObservableObjectBuilder} from '../../../../../../main/common/rx/object/ObservableObjectBuilder'
-import {ObservableMap} from "../../../../../../main/common/lists/ObservableMap";
-import {getObjectUniqueId} from "../../../../../../main/common/lists/helpers/object-unique-id";
 
 export class CircularClass extends ObservableObject implements ISerializable {
 	public array: any[]
@@ -73,6 +72,8 @@ export interface IComplexObjectOptions {
 
 	undefined?: boolean,
 
+	function?: boolean,
+
 	circular?: boolean,
 
 	circularClass?: boolean,
@@ -88,6 +89,22 @@ export interface IComplexObjectOptions {
 	arrayMap?: boolean,
 	objectMap?: boolean,
 	observableMap?: boolean,
+}
+
+export function *createIterableIterator<T>(iterable: Iterable<T>): IterableIterator<T> {
+	const array = Array.from(iterable)
+	for (const item of array) {
+		yield item
+	}
+}
+
+export function createIterable<T>(iterable: Iterable<T>): Iterable<T> {
+	const array = Array.from(iterable)
+	return {
+		[Symbol.iterator]() {
+			return createIterableIterator(array)
+		},
+	}
 }
 
 export function createComplexObject(options: IComplexObjectOptions = {}) {
@@ -133,6 +150,11 @@ export function createComplexObject(options: IComplexObjectOptions = {}) {
 		map: options.map && new Map() as any,
 		arrayMap: options.arrayMap && new ArrayMap() as any,
 		objectMap: options.objectMap && new ObjectMap() as any,
+
+		iterable: options.function && createIterable(array),
+		// iterator: options.function && toIterableIterator(array),
+		promiseSync: options.function && { then: resolve => resolve(object) },
+		promiseAsync: options.function && { then: resolve => setTimeout(() => resolve(object), 0) }	,
 	})
 
 	object.setObservable = options.set && options.observableSet && new ObservableSet(object.set)

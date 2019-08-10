@@ -17,9 +17,9 @@ export const deepCloneEqual = new DeepCloneEqual({
 				return true
 			}
 
-			if (o.constructor === String
-				|| o.constructor === Number
+			if (o.constructor === Number
 				|| o.constructor === Boolean
+				|| o.constructor === String && Object.isFrozen(o)
 				|| isFrozenWithoutUniqueId(o)
 			) {
 				return true
@@ -102,13 +102,13 @@ export interface IMergerOptionsVariant {
 	newerIsFrozen?: boolean
 }
 
-export const NONE = new String('NONE')
-export const BASE = new String('BASE')
-export const OLDER = new String('OLDER')
-export const NEWER = new String('NEWER')
+export const NONE = Object.freeze(new String('NONE'))
+export const BASE = Object.freeze(new String('BASE'))
+export const OLDER = Object.freeze(new String('OLDER'))
+export const NEWER = Object.freeze(new String('NEWER'))
 
 interface IMergerExpected {
-	error?: (new () => Error)|((variant: IMergerOptionsVariant) => new () => Error)
+	error?: (TClass<Error>|Array<TClass<Error>>)|((variant: IMergerOptionsVariant) => TClass<Error>|Array<TClass<Error>>)
 	returnValue?: any|((variant: IMergerOptionsVariant) => any)
 	setValue?: any|((variant: IMergerOptionsVariant) => any)
 	base?: any|((variant: IMergerOptionsVariant) => any)
@@ -383,7 +383,7 @@ export class TestMerger extends TestVariants<
 				}
 
 				if (options.expected.error) {
-					assert.throws(action, options.expected.error)
+					assert.throws(action, options.expected.error as TClass<Error>|Array<TClass<Error>>)
 				} else {
 					action()
 
