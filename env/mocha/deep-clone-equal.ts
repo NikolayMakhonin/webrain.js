@@ -210,9 +210,13 @@ export function deepEqual(
 					if (options && options.ignoreOrderForMapSet) {
 						const tag1 = o1[Symbol.toStringTag]
 						const tag2 = o2[Symbol.toStringTag]
-						if (tag1 === 'Set' || tag1 === 'Map'
-							|| tag2 === 'Set' || tag2 === 'Map'
-						) {
+						const isMap = tag1 === 'Map' || tag2 === 'Map'
+						if (tag1 === 'Set' || tag2 === 'Set' || isMap) {
+							if (tag1 && tag2 && tag1 !== tag2)
+							{
+								return false
+							}
+
 							if (!cache1New) {
 								cache1New = []
 							}
@@ -223,14 +227,23 @@ export function deepEqual(
 							const initialCache2NewLength = cache2New.length
 
 							for (const item1 of o1) {
+								if (isMap && (!Array.isArray(item1) || item1.length !== 2)) {
+									return false
+								}
 								let found
 								for (const item2 of o2) {
+									if (isMap && (!Array.isArray(item2) || item2.length !== 2)) {
+										return false
+									}
+
 									const prevNodeId = nodeId
 									const prevCache1NewLength = cache1New.length
 									const prevCache2NewLength = cache2New.length
 
 									nodeId++
-									const result = equal(item1, item2)
+									const result = isMap
+										? equal(item1[0], item2[0])	&& equal(item1[1], item2[1])
+										: equal(item1, item2)
 
 									if (result) {
 										found = true

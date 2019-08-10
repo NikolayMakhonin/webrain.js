@@ -16,14 +16,14 @@ describe('common > env > mocha > deep-clone-equal', function() {
 	})
 
 	const objectOptions: IComplexObjectOptions = {
-		// undefined: true,
-		// array: true,
-		//
-		// map: true,
+		undefined: true,
+		array: true,
+
+		map: true,
 		arrayMap: true,
-		// objectMap: true,
+		objectMap: true,
 		observableMap: true,
-		//
+
 		// set: true,
 		// arraySet: true,
 		// objectSet: true,
