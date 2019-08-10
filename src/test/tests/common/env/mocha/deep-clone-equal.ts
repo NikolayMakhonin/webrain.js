@@ -24,13 +24,13 @@ describe('common > env > mocha > deep-clone-equal', function() {
 		objectMap: true,
 		observableMap: true,
 
-		// set: true,
-		// arraySet: true,
-		// objectSet: true,
-		// observableSet: true,
-		//
-		// sortedList: true,
-		// circularClass: true,
+		set: true,
+		arraySet: true,
+		objectSet: true,
+		observableSet: true,
+
+		sortedList: true,
+		circularClass: true,
 	}
 
 	// 	if (options.noCrossReferences && expected.array) {

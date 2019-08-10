@@ -95,6 +95,8 @@ export function deepEqual(
 	let nodeId: number
 	let cache1New: number[]
 	let cache2New: number[]
+	let cache1NewLength: number
+	let cache2NewLength: number
 
 	const equal = (o1: any, o2: any): boolean => {
 		if (isPrimitive(o1) || isPrimitive(o2)) {
@@ -156,11 +158,11 @@ export function deepEqual(
 					return true
 				}
 
-				if (cache1New && !cache1[id1]) {
+				if (cache1NewLength != null && !cache1[id1]) {
 					cache1New.push(id1)
 				}
 
-				if (cache2New && !cache2[id1]) {
+				if (cache2NewLength != null && !cache2[id1]) {
 					cache2New.push(id2)
 				}
 
@@ -223,8 +225,15 @@ export function deepEqual(
 							if (!cache2New) {
 								cache2New = []
 							}
-							const initialCache1NewLength = cache1New.length
-							const initialCache2NewLength = cache2New.length
+							if (cache1NewLength == null) {
+								cache1NewLength = 0
+							}
+							if (cache2NewLength == null) {
+								cache2NewLength = 0
+							}
+
+							const initialCache1NewLength = cache1NewLength
+							const initialCache2NewLength = cache2NewLength
 
 							for (const item1 of o1) {
 								if (isMap && (!Array.isArray(item1) || item1.length !== 2)) {
@@ -237,8 +246,8 @@ export function deepEqual(
 									}
 
 									const prevNodeId = nodeId
-									const prevCache1NewLength = cache1New.length
-									const prevCache2NewLength = cache2New.length
+									const prevCache1NewLength = cache1NewLength
+									const prevCache2NewLength = cache2NewLength
 
 									nodeId++
 									const result = isMap
@@ -251,12 +260,12 @@ export function deepEqual(
 									} else {
 										nodeId = prevNodeId
 
-										for (let i = prevCache1NewLength, len = cache1New.length; i < len; i++) {
+										for (let i = prevCache1NewLength, len = cache1NewLength; i < len; i++) {
 											cache1[cache1New[i]] = 0
 										}
 										cache1New.length = prevCache1NewLength
 
-										for (let i = prevCache2NewLength, len = cache2New.length; i < len; i++) {
+										for (let i = prevCache2NewLength, len = cache2NewLength; i < len; i++) {
 											cache2[cache2New[i]] = 0
 										}
 										cache2New.length = prevCache2NewLength
@@ -268,10 +277,10 @@ export function deepEqual(
 							}
 
 							if (initialCache1NewLength === 0) {
-								cache1New = null
+								cache1NewLength = null
 							}
 							if (initialCache2NewLength === 0) {
-								cache2New = null
+								cache2NewLength = null
 							}
 
 							return true
