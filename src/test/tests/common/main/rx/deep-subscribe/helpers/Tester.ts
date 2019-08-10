@@ -19,7 +19,8 @@ const assert = new Assert(new DeepCloneEqual({
 
 	},
 	equalOptions: {
-
+		equalInnerReferences: true,
+		equalMapSetOrder: true,
 	},
 }))
 

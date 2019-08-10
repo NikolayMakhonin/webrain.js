@@ -181,10 +181,6 @@ export function createComplexObject(options: IComplexObjectOptions = {}) {
 				continue
 			}
 
-			if (!options.undefined && typeof value === 'undefined') {
-				delete object[key]
-			}
-
 			if (options.circular || !valueIsCollection(value)) {
 				if (object.sortedList) {
 					object.sortedList.add(value)
@@ -208,6 +204,10 @@ export function createComplexObject(options: IComplexObjectOptions = {}) {
 	for (const key of Object.keys(object).reverse()) {
 		if (Object.prototype.hasOwnProperty.call(object, key)) {
 			const value = object[key]
+
+			if (!options.undefined && typeof value === 'undefined') {
+				delete object[key]
+			}
 
 			if (options.circular || !valueIsCollection(value)) {
 				if (object.arraySet && value && typeof value === 'object') {

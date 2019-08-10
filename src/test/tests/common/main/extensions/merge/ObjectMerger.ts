@@ -397,7 +397,7 @@ describe('common > extensions > merge > ObjectMerger', function() {
 			}
 		})
 
-		it('simple circular', function() {
+		xit('simple circular', function() {
 			testMerger({
 				...options,
 				base: [createValue(1, true)],
@@ -912,6 +912,7 @@ describe('common > extensions > merge > ObjectMerger', function() {
 			const complexObjectOptions: IComplexObjectOptions = {
 				array: false,
 				circular: true,
+				// TODO
 			}
 
 			const createValues = () => [

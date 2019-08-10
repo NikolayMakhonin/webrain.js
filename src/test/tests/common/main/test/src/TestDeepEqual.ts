@@ -18,6 +18,7 @@ export interface IDeepEqualOptionsVariant {
 	equalTypes?: boolean
 	equalInnerReferences?: boolean
 	equalMapSetOrder?: boolean
+	strictEqualFunctions?: boolean
 }
 
 interface IDeepEqualExpected {
@@ -34,6 +35,7 @@ interface IDeepEqualOptionsVariants extends IOptionsVariants {
 	equalTypes?: boolean[]
 	equalInnerReferences?: boolean[]
 	equalMapSetOrder?: boolean[]
+	strictEqualFunctions?: boolean[]
 }
 
 type IDeepEqualAction = (...args: any[]) => any
@@ -89,6 +91,7 @@ export class TestDeepEqual extends TestVariants<
 		equalTypes: [false, true],
 		equalInnerReferences: [false, true],
 		equalMapSetOrder: [false, true],
+		strictEqualFunctions: [false, true],
 	}
 
 	public static totalTests: number = 0
@@ -108,6 +111,7 @@ export class TestDeepEqual extends TestVariants<
 						noCrossReferences: options.noCrossReferences,
 						equalInnerReferences: options.equalInnerReferences,
 						equalMapSetOrder: options.equalMapSetOrder,
+						strictEqualFunctions: options.strictEqualFunctions,
 					})
 
 					assert.strictEqual(result, options.expected.result)

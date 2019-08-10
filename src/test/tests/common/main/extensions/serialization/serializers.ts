@@ -11,8 +11,19 @@ import {
 	TypeMetaSerializerCollection,
 } from '../../../../../../main/common/extensions/serialization/serializers'
 import {SortedList} from '../../../../../../main/common/lists/SortedList'
-import {assert} from '../../../../../../main/common/test/Assert'
+import {Assert} from '../../../../../../main/common/test/Assert'
+import {DeepCloneEqual} from '../../../../../../main/common/test/DeepCloneEqual'
 import {CircularClass, createComplexObject, IComplexObjectOptions} from '../../src/helpers/helpers'
+
+const assert = new Assert(new DeepCloneEqual({
+	commonOptions: {
+
+	},
+	equalOptions: {
+		noCrossReferences: true,
+		equalInnerReferences: true,
+	},
+}))
 
 describe('common > extensions > serialization > serializers', function() {
 	// function testSerializer(
@@ -326,12 +337,12 @@ describe('common > extensions > serialization > serializers', function() {
 			sortedList: true,
 
 			set: true,
-			arraySet: true, // error
+			arraySet: true,
 			objectSet: true,
 			observableSet: true,
 
 			map: true,
-			arrayMap: true, // error
+			arrayMap: true,
 			objectMap: true,
 			observableMap: true,
 		}, null, false)

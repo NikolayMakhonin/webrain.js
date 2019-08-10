@@ -47,6 +47,7 @@ export const deepCloneEqual = new DeepCloneEqual({
 	},
 	equalOptions: {
 		equalInnerReferences: true,
+		strictEqualFunctions: true,
 		customEqual: (o1, o2, equal) => {
 			if (o1.constructor === SortedList) {
 				// tslint:disable-next-line:no-collapsible-if

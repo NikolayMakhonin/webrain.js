@@ -16,21 +16,23 @@ describe('common > test > DeepCloneEqual', function() {
 	})
 
 	const objectOptions: IComplexObjectOptions = {
-		// undefined: true,
+		undefined: true,
 		array: true,
-		//
-		// map: true,
-		// arrayMap: true,
-		// objectMap: true,
-		// observableMap: true,
-		//
-		// set: true,
-		// arraySet: true,
-		// objectSet: true,
-		// observableSet: true,
-		//
-		// sortedList: true,
-		// circularClass: true,
+
+		function: true,
+
+		map: true,
+		arrayMap: true,
+		objectMap: true,
+		observableMap: true,
+
+		set: true,
+		arraySet: true,
+		objectSet: true,
+		observableSet: true,
+
+		sortedList: true,
+		circularClass: true,
 	}
 
 	const testDeepEqual = (actual: any[], expected: any[], options: IDeepEqualOptions) => {
