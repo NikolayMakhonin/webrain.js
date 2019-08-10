@@ -17,6 +17,7 @@ import {SortedList} from '../../../../../../main/common/lists/SortedList'
 import {ObservableObject} from '../../../../../../main/common/rx/object/ObservableObject'
 import {ObservableObjectBuilder} from '../../../../../../main/common/rx/object/ObservableObjectBuilder'
 import {ObservableMap} from "../../../../../../main/common/lists/ObservableMap";
+import {getObjectUniqueId} from "../../../../../../main/common/lists/helpers/object-unique-id";
 
 export class CircularClass extends ObservableObject implements ISerializable {
 	public array: any[]
@@ -190,6 +191,23 @@ export function createComplexObject(options: IComplexObjectOptions = {}) {
 				if (object.set) {
 					object.set.add(value)
 				}
+
+				if (object.map) {
+					object.map.set(value, value)
+				}
+
+				if (object.array) {
+					array.push(value)
+				}
+			}
+		}
+	}
+
+	for (const key of Object.keys(object).reverse()) {
+		if (Object.prototype.hasOwnProperty.call(object, key)) {
+			const value = object[key]
+
+			if (options.circular || !valueIsCollection(value)) {
 				if (object.arraySet && value && typeof value === 'object') {
 					object.arraySet.add(value)
 				}
@@ -197,18 +215,11 @@ export function createComplexObject(options: IComplexObjectOptions = {}) {
 					object.objectSet.add(key)
 				}
 
-				if (object.map) {
-					object.map.set(value, value)
-				}
 				if (object.arrayMap && value && typeof value === 'object') {
 					object.arrayMap.set(value, value)
 				}
 				if (object.objectMap) {
 					object.objectMap.set(key, value)
-				}
-
-				if (object.array) {
-					array.push(value)
 				}
 			}
 		}

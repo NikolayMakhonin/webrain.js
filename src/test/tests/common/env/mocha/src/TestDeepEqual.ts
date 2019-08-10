@@ -1,10 +1,10 @@
+import {deepEqual} from '../../../../../../../env/mocha/deep-clone-equal'
 import {
 	IOptionsVariant,
 	IOptionsVariants,
 	ITestCase,
 	TestVariants,
 } from '../../../main/src/helpers/TestVariants'
-import {deepEqual} from "../../../../../../../env/mocha/deep-clone-equal";
 
 declare const assert
 
@@ -15,6 +15,7 @@ export interface IDeepEqualOptionsVariant {
 	noCrossReferences?: boolean,
 	equalTypes?: boolean
 	equalInnerReferences?: boolean
+	ignoreOrderForMapSet?: boolean
 }
 
 interface IDeepEqualExpected {
@@ -29,6 +30,7 @@ interface IDeepEqualOptionsVariants extends IOptionsVariants {
 	noCrossReferences?: boolean[],
 	equalTypes?: boolean[]
 	equalInnerReferences?: boolean[]
+	ignoreOrderForMapSet?: boolean[]
 }
 
 type IDeepEqualAction = (...args: any[]) => any
@@ -83,6 +85,7 @@ export class TestDeepEqual extends TestVariants<
 		noCrossReferences: [false, true],
 		equalTypes: [false, true],
 		equalInnerReferences: [false, true],
+		ignoreOrderForMapSet: [false, true],
 	}
 
 	public static totalTests: number = 0
@@ -101,6 +104,7 @@ export class TestDeepEqual extends TestVariants<
 						equalTypes: options.equalTypes,
 						noCrossReferences: options.noCrossReferences,
 						equalInnerReferences: options.equalInnerReferences,
+						ignoreOrderForMapSet: options.ignoreOrderForMapSet,
 					})
 
 					assert.strictEqual(result, options.expected.result)
