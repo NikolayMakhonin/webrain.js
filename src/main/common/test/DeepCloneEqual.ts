@@ -13,6 +13,7 @@ export interface IDeepEqualOptions extends IDeepCloneEqualOptions {
 	equalTypes?: boolean
 	equalInnerReferences?: boolean
 	equalMapSetOrder?: boolean // faster
+	strictEqualFunctions?: boolean
 	customEqual?: (o1: any, o2: any, equal: (o1: any, o2: any) => boolean) => boolean|null
 }
 
@@ -179,7 +180,12 @@ export class DeepCloneEqual {
 
 		const equal = (o1: any, o2: any): boolean => {
 			if (isPrimitive(o1) || isPrimitive(o2)) {
-				if (o1 === o2 || Number.isNaN(o1 as any) && Number.isNaN(o2 as any)) {
+				if (o1 === o2
+					|| Number.isNaN(o1 as any) && Number.isNaN(o2 as any)
+					|| (!options || !options.strictEqualFunctions)
+						&& typeof o1 === 'function' && typeof o2 === 'function'
+						&& o1.toString() === o2.toString()
+				) {
 					return true
 				} else {
 					return false
