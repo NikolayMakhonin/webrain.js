@@ -3,7 +3,7 @@
 import {IMergeOptions, ITypeMetaMerger} from '../../../../../../../main/common/extensions/merge/contracts'
 import {ObjectMerger, TypeMetaMergerCollection} from '../../../../../../../main/common/extensions/merge/mergers'
 import {TClass} from '../../../../../../../main/common/helpers/helpers'
-import {isFrozenWithoutUniqueId} from '../../../../../../../main/common/lists/helpers/object-unique-id'
+import {canHaveUniqueId, isFrozenWithoutUniqueId} from '../../../../../../../main/common/lists/helpers/object-unique-id'
 import {SortedList} from '../../../../../../../main/common/lists/SortedList'
 import {Assert} from '../../../../../../../main/common/test/Assert'
 import {DeepCloneEqual, isPrimitiveDefault} from '../../../../../../../main/common/test/DeepCloneEqual'
@@ -20,7 +20,7 @@ export const deepCloneEqual = new DeepCloneEqual({
 			if (o.constructor === Number
 				|| o.constructor === Boolean
 				|| o.constructor === String && Object.isFrozen(o)
-				|| isFrozenWithoutUniqueId(o)
+				|| !canHaveUniqueId(o)
 			) {
 				return true
 			}
@@ -407,7 +407,7 @@ export class TestMerger extends TestVariants<
 								&& actual.constructor !== String
 								&& actual.constructor !== Number
 								&& actual.constructor !== Boolean
-								&& !isFrozenWithoutUniqueId(actual)
+								&& canHaveUniqueId(actual)
 								|| typeof actual === 'function') {
 								assert.notStrictEqual(actual, expected)
 								assert.notStrictEqual(actual, options.base)

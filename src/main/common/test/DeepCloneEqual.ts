@@ -280,6 +280,14 @@ export class DeepCloneEqual {
 				}
 			}
 
+			if (options && options.equalTypes) {
+				const type1 = o1.constructor
+				const type2 = o2.constructor
+				if (type1 !== type2) {
+					return false
+				}
+			}
+
 			const valueOf1 = o1.valueOf()
 			const valueOf2 = o2.valueOf()
 			if (valueOf1 !== o1 || valueOf2 !== o2) {
@@ -288,14 +296,6 @@ export class DeepCloneEqual {
 				) {
 					return true
 				} else {
-					return false
-				}
-			}
-
-			if (options && options.equalTypes) {
-				const type1 = o1.constructor
-				const type2 = o2.constructor
-				if (type1 !== type2) {
 					return false
 				}
 			}

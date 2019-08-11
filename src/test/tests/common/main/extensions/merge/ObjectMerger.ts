@@ -9,7 +9,7 @@ import {IMergeable, IMergeOptions, IMergeValue} from '../../../../../../main/com
 import {registerMergeable} from '../../../../../../main/common/extensions/merge/mergers'
 import {ArrayMap} from '../../../../../../main/common/lists/ArrayMap'
 import {ArraySet} from '../../../../../../main/common/lists/ArraySet'
-import {isFrozenWithoutUniqueId} from '../../../../../../main/common/lists/helpers/object-unique-id'
+import {canHaveUniqueId, isFrozenWithoutUniqueId} from '../../../../../../main/common/lists/helpers/object-unique-id'
 import {fillMap, fillObject, fillObjectKeys, fillSet} from '../../../../../../main/common/lists/helpers/set'
 import {ObjectHashMap} from '../../../../../../main/common/lists/ObjectHashMap'
 import {ObjectMap} from '../../../../../../main/common/lists/ObjectMap'
@@ -75,7 +75,7 @@ describe('common > extensions > merge > ObjectMerger', function() {
 	}
 
 	function isObject(value: any) {
-		return value != null && value.constructor === Object && !isFrozenWithoutUniqueId(value)
+		return value != null && value.constructor === Object && canHaveUniqueId(value)
 	}
 
 	function mustBeFilled(o: IMergerOptionsVariant) {
@@ -293,7 +293,7 @@ describe('common > extensions > merge > ObjectMerger', function() {
 			actions: null,
 		}
 
-		xit('primitives', function() {
+		it('primitives', function() {
 			const createValues = () => [
 				BASE, OLDER, NEWER,
 				null, void 0, 0, 1, false, true,
@@ -307,7 +307,7 @@ describe('common > extensions > merge > ObjectMerger', function() {
 			})
 		})
 
-		xit('strings', function() {
+		it('strings', function() {
 			const createValues = () => [
 				BASE, OLDER, NEWER,
 				void 0, 1, '', '1', '2',
@@ -321,7 +321,7 @@ describe('common > extensions > merge > ObjectMerger', function() {
 			})
 		})
 
-		xit('Strings', function() {
+		it('Strings', function() {
 			const createValues = () => [
 				BASE, OLDER, NEWER,
 				void 0, 1, new String(''), new String('1'), new String('2'),
@@ -335,7 +335,7 @@ describe('common > extensions > merge > ObjectMerger', function() {
 			})
 		})
 
-		xit('date', function() {
+		it('date', function() {
 			const createValues = () => [
 				BASE, OLDER, NEWER,
 				void 0, '', {}, new Date(1), new Date(2), new Date(3),
@@ -349,7 +349,7 @@ describe('common > extensions > merge > ObjectMerger', function() {
 			})
 		})
 
-		xit('objects', function() {
+		it('objects', function() {
 			const createValues = () => [
 				BASE, OLDER, NEWER,
 				null, {}, new Date(1),
@@ -365,7 +365,9 @@ describe('common > extensions > merge > ObjectMerger', function() {
 			})
 		})
 
-		xit('full', function() {
+		it('full', function() {
+			this.timeout(180000)
+
 			const createValues = () => [
 				BASE, OLDER, NEWER,
 				null, void 0, 0, 1, false, true, '', '1',
@@ -383,60 +385,60 @@ describe('common > extensions > merge > ObjectMerger', function() {
 		})
 
 		it('complex objects', function() {
-				const complexObjectOptions: IComplexObjectOptions = {
-					undefined: true,
-					function: true,
-					array: true,
-					circular: true,
-					// circularClass: true,
-					//
-					// set: true,
-					// arraySet: true,
-					// objectSet: true,
-					// observableSet: true,
-					//
-					// map: true,
-					// arrayMap: true,
-					// objectMap: true,
-					// observableMap: true,
-					//
-					// sortedList: true,
-				}
+			const complexObjectOptions: IComplexObjectOptions = {
+				// undefined: true,
+				// function: true,
+				// array: true,
+				// circular: true,
+				// circularClass: true,
+				//
+				// set: true,
+				// arraySet: true, // error
+				// objectSet: true,
+				// observableSet: true,
+				//
+				// map: true,
+				// arrayMap: true,
+				objectMap: true, // error
+				// observableMap: true,
+				//
+				// sortedList: true,
+			}
 
-				const createValues = () => [
-					// BASE, OLDER, NEWER,
-					createComplexObject(complexObjectOptions),
-				]
+			const createValues = () => [
+				BASE, OLDER, NEWER,
+				createComplexObject(complexObjectOptions),
+			]
 
-				// testMerger({
-				// 	base: [OLDER],
-				// 	older: createValues(),
-				// 	newer: createValues(),
-				// 	preferCloneOlderParam: [true],
-				// 	preferCloneNewerParam: [null],
-				// 	preferCloneMeta: [null],
-				// 	options: [null, {}],
-				// 	valueType: [null],
-				// 	valueFactory: [null],
-				// 	setFunc: [true],
-				// 	expected: {
-				// 		error: null,
-				// 		returnValue: true,
-				// 		setValue: NONE,
-				// 		base: BASE,
-				// 		older: OLDER,
-				// 		newer: NEWER,
-				// 	},
-				// 	actions: null,
-				// })
+			// testMerger({
+			// 	base: [OLDER],
+			// 	older: createValues(),
+			// 	newer: createValues(),
+			// 	preferCloneOlderParam: [true],
+			// 	preferCloneNewerParam: [null],
+			// 	preferCloneMeta: [null],
+			// 	options: [null, {}],
+			// 	valueType: [null],
+			// 	valueFactory: [null],
+			// 	setFunc: [true],
+			// 	expected: {
+			// 		error: null,
+			// 		returnValue: true,
+			// 		setValue: NONE,
+			// 		base: BASE,
+			// 		older: OLDER,
+			// 		newer: NEWER,
+			// 	},
+			// 	actions: null,
+			// })
 
-				testMerger({
-					...options,
-					base: createValues(),
-					older: createValues(),
-					newer: createValues(),
-				})
+			testMerger({
+				...options,
+				base: createValues(),
+				older: createValues(),
+				newer: createValues(),
 			})
+		})
 	})
 
 	describe('base', function() {

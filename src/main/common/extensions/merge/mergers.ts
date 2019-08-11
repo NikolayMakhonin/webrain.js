@@ -1,6 +1,6 @@
 /* tslint:disable:no-nested-switch ban-types use-primitive-type */
 import {isIterable, TClass, typeToDebugString} from '../../helpers/helpers'
-import {getObjectUniqueId, isFrozenWithoutUniqueId} from '../../lists/helpers/object-unique-id'
+import {canHaveUniqueId, getObjectUniqueId, isFrozenWithoutUniqueId} from '../../lists/helpers/object-unique-id'
 import {fillMap, fillSet} from '../../lists/helpers/set'
 import {TypeMetaCollection} from '../TypeMeta'
 import {
@@ -794,13 +794,14 @@ export class MergerVisitor implements IMergerVisitor {
 
 		switch (mergeState.baseState.canMerge(older)) {
 			case null:
-				if (!mergeState.mergeWithBase(mergeState.newerState, mergeState.newerState)) {
-					if (set) {
-						throw new Error('base != newer; base == older; base == newer')
-					}
-					return false
-				}
-				return true
+				return mergeState.mergeWithBase(mergeState.newerState, mergeState.newerState)
+				// if (!mergeState.mergeWithBase(mergeState.newerState, mergeState.newerState)) {
+				// 	if (set) {
+				// 		throw new Error('base != newer; base == older; base == newer')
+				// 	}
+				// 	return false
+				// }
+				// return true
 			case false:
 				if (!mergeState.mergeWithBase(mergeState.newerState, mergeState.newerState)) {
 					if (set) {
@@ -968,11 +969,10 @@ export class ObjectMerger implements IObjectMerger {
 // Handled in MergerVisitor:
 
 function isPrimitive(value) {
-	return value == null
-		|| typeof value === 'number'
-		|| typeof value === 'boolean'
-		|| typeof value === 'function'
-		|| isFrozenWithoutUniqueId(value)
+	return !canHaveUniqueId(value) || typeof value === 'function'
+		// value == null
+		// || typeof value === 'number'
+		// || typeof value === 'boolean'
 }
 
 registerMerger<string, string>(String as any, {
