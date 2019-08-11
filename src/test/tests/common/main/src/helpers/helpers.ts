@@ -2,6 +2,7 @@
 import {IMergeable, IMergeOptions, IMergeValue} from '../../../../../../main/common/extensions/merge/contracts'
 import {mergeMaps} from '../../../../../../main/common/extensions/merge/merge-maps'
 import {createMergeSetWrapper} from '../../../../../../main/common/extensions/merge/merge-sets'
+import {registerMergeable} from '../../../../../../main/common/extensions/merge/mergers'
 import {
 	IDeSerializeValue,
 	ISerializable, ISerializedObject,
@@ -20,7 +21,7 @@ import {ObservableSet} from '../../../../../../main/common/lists/ObservableSet'
 import {SortedList} from '../../../../../../main/common/lists/SortedList'
 import {ObservableObject} from '../../../../../../main/common/rx/object/ObservableObject'
 import {ObservableObjectBuilder} from '../../../../../../main/common/rx/object/ObservableObjectBuilder'
-import {registerMergeable} from "../../../../../../main/common/extensions/merge/mergers";
+import {Property} from "../../../../../../main/common/rx/object/properties/property";
 
 export class CircularClass extends ObservableObject
 	implements ISerializable, IMergeable<CircularClass, any>
@@ -190,7 +191,9 @@ export function createComplexObject(options: IComplexObjectOptions = {}) {
 		iterable: options.function && createIterable(array),
 		// iterator: options.function && toIterableIterator(array),
 		promiseSync: options.function && { then: resolve => resolve(object) },
-		promiseAsync: options.function && { then: resolve => setTimeout(() => resolve(object), 0) }	,
+		promiseAsync: options.function && { then: resolve => setTimeout(() => resolve(object), 0) },
+
+		property: new Property(null, object),
 	})
 
 	object.setObservable = options.set && options.observableSet && new ObservableSet(object.set)

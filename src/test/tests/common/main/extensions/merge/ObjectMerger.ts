@@ -29,6 +29,7 @@ import {
 	OLDER,
 	TestMerger,
 } from './src/TestMerger'
+import {Property} from "../../../../../../main/common/rx/object/properties/property";
 
 const assert = new Assert(deepCloneEqual)
 declare const after
@@ -799,45 +800,13 @@ describe('common > extensions > merge > ObjectMerger', function() {
 				preferCloneNewerParam: [null],
 				preferCloneMeta: [null],
 				options: [null, {}],
-				valueType: [Class],
+				valueType: [Property],
 				valueFactory: [null],
 				setFunc: [true],
 				expected: {
 					error: null,
 					returnValue: true,
-					setValue: new Class({ a: {a: 7, b: 5}, c: 6, d: 9 }),
-					base: BASE,
-					older: OLDER,
-					newer: NEWER,
-				},
-				actions: null,
-			})
-
-			testMerger({
-				base: [null, void 0, 0, 1, false, true, '', '1'],
-				older: [{ a: {a: 4, b: 5}, c: 6 }],
-				newer: [{ a: {a: 7, b: 2}, d: 9 }],
-				preferCloneOlderParam: [null],
-				preferCloneNewerParam: [null],
-				preferCloneMeta: [null],
-				options: [null, {}],
-				valueType: [Class],
-				valueFactory: [null, () => {
-					const instance = new Class(null);
-					(instance as any).custom = true
-					return instance
-				}],
-				setFunc: [true],
-				expected: {
-					error: null,
-					returnValue: true,
-					setValue: o => {
-						const value = new Class({ a: {a: 7, b: 2}, d: 9 })
-						if (o.valueFactory) {
-							(value as any).custom = true
-						}
-						return value
-					},
+					setValue: new Property(null, { a: {a: 7, b: 5}, c: 6, d: 9 }),
 					base: BASE,
 					older: OLDER,
 					newer: NEWER,

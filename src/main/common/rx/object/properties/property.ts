@@ -7,10 +7,16 @@ import {
 	ISerializeValue,
 } from '../../../extensions/serialization/contracts'
 import {registerSerializable} from '../../../extensions/serialization/serializers'
-import {TClass} from '../../../extensions/TypeMeta'
-import {objectSpreadIgnoreNull} from '../../../helpers/object-spread'
+import {TClass} from '../../../helpers/helpers'
 import {ObservableObject} from '../ObservableObject'
 import {ObservableObjectBuilder} from '../ObservableObjectBuilder'
+
+export interface IPropertyOptions<TTarget, TSource> {
+	merger?: ObjectMerger,
+	valueType?: TClass<TTarget>,
+	valueFactory?: (source: TTarget | TSource) => TTarget,
+	mergeOptions?: IMergeOptions,
+}
 
 export class Property<TTarget, TSource>
 	extends ObservableObject
@@ -24,19 +30,18 @@ export class Property<TTarget, TSource>
 	protected mergeOptions?: IMergeOptions
 
 	constructor(
-		{
+		options?: IPropertyOptions<TTarget, TSource>,
+		value?: TTarget,
+	) {
+		super()
+
+		const {
 			merger,
 			valueType,
 			valueFactory,
 			mergeOptions,
-		}: {
-			merger?: ObjectMerger,
-			valueType?: TClass<TTarget>,
-			valueFactory?: (source: TTarget | TSource) => TTarget,
-			mergeOptions?: IMergeOptions,
-		} = {},
-	) {
-		super()
+		} = options || {} as any
+
 		if (merger != null) {
 			this.merger = merger
 		}
@@ -48,6 +53,9 @@ export class Property<TTarget, TSource>
 		}
 		if (mergeOptions != null) {
 			this.mergeOptions = mergeOptions
+		}
+		if (typeof value !== 'undefined') {
+			this.value = value
 		}
 	}
 
@@ -162,9 +170,20 @@ export class Property<TTarget, TSource>
 	): boolean {
 		if (older instanceof Property) {
 			older = (older as Property<TTarget|TSource, any>).value
+		} else {
+			options = {
+				...options,
+				selfAsValueOlder: true,
+			}
 		}
+
 		if (newer instanceof Property) {
 			newer = (newer as Property<TTarget|TSource, any>).value
+		} else {
+			if (!options) {
+				options = {}
+			}
+			options.selfAsValueNewer = true
 		}
 
 		return merge(
@@ -174,9 +193,12 @@ export class Property<TTarget, TSource>
 			o => { this.value = o },
 			preferCloneOlder,
 			preferCloneNewer,
-			options == null
-				? this.mergeOptions
-				: objectSpreadIgnoreNull({}, this.mergeOptions, options),
+			{
+				...this.mergeOptions,
+				...options,
+				selfAsValueOlder: !(older instanceof Property),
+				selfAsValueNewer: !(newer instanceof Property),
+			},
 			valueType == null ? this.valueType : valueType,
 			valueFactory == null ? this.valueFactory : valueFactory,
 		)
@@ -189,7 +211,7 @@ export class Property<TTarget, TSource>
 	public _canMerge(source: Property<TTarget, TSource>|TTarget|TSource): boolean {
 		if (source.constructor === Property
 			&& this.value === (source as Property<TTarget, TSource>).value
-			|| this.value === source
+				|| this.value === source
 		) {
 			return null
 		}
@@ -232,8 +254,11 @@ export class Property<TTarget, TSource>
 		}
 	}
 
-	public deSerialize(deSerialize: IDeSerializeValue, serializedValue: ISerializedObject) {
-		this.value = deSerialize(serializedValue.value)
+	public deSerialize(
+		deSerialize: IDeSerializeValue,
+		serializedValue: ISerializedObject,
+	) {
+		deSerialize(serializedValue.value, o => this.value = o)
 	}
 
 	// endregion
