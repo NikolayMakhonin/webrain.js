@@ -1,4 +1,7 @@
 /* tslint:disable:object-literal-key-quotes no-construct use-primitive-type */
+import {IMergeable, IMergeOptions, IMergeValue} from '../../../../../../main/common/extensions/merge/contracts'
+import {mergeMaps} from '../../../../../../main/common/extensions/merge/merge-maps'
+import {createMergeSetWrapper} from '../../../../../../main/common/extensions/merge/merge-sets'
 import {
 	IDeSerializeValue,
 	ISerializable, ISerializedObject,
@@ -17,8 +20,11 @@ import {ObservableSet} from '../../../../../../main/common/lists/ObservableSet'
 import {SortedList} from '../../../../../../main/common/lists/SortedList'
 import {ObservableObject} from '../../../../../../main/common/rx/object/ObservableObject'
 import {ObservableObjectBuilder} from '../../../../../../main/common/rx/object/ObservableObjectBuilder'
+import {registerMergeable} from "../../../../../../main/common/extensions/merge/mergers";
 
-export class CircularClass extends ObservableObject implements ISerializable {
+export class CircularClass extends ObservableObject
+	implements ISerializable, IMergeable<CircularClass, any>
+{
 	public array: any[]
 	public value: {}
 
@@ -27,6 +33,34 @@ export class CircularClass extends ObservableObject implements ISerializable {
 		this.array = array
 		this.value = value
 	}
+
+	// region IMergeable
+
+	public _canMerge(source: ObjectSet): boolean {
+		if (source.constructor === CircularClass) {
+			return null
+		}
+
+		return source.constructor === CircularClass
+			// || Array.isArray(source)
+			// || isIterable(source)
+	}
+
+	public _merge(
+		merge: IMergeValue,
+		older: CircularClass | any,
+		newer: CircularClass | any,
+		preferCloneOlder?: boolean,
+		preferCloneNewer?: boolean,
+		options?: IMergeOptions,
+	): boolean {
+		let changed = false
+		changed = merge(this.array, older.array, newer.array, o => { this.array = o }) || changed
+		changed = merge(this.value, older.value, newer.value, o => { this.value = o }) || changed
+		return changed
+	}
+
+	// endregion
 
 	// region ISerializable
 
@@ -48,6 +82,8 @@ export class CircularClass extends ObservableObject implements ISerializable {
 
 	// endregion
 }
+
+registerMergeable(CircularClass)
 
 registerSerializable(CircularClass, {
 	serializer: {

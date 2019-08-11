@@ -117,8 +117,8 @@ describe('common > extensions > merge > ObjectMerger', function() {
 				null,
 				null,
 				{
-					isNotCircularOlder: !(older instanceof Class),
-					isNotCircularNewer: !(newer instanceof Class),
+					selfAsValueOlder: !(older instanceof Class),
+					selfAsValueNewer: !(newer instanceof Class),
 				},
 			) || changed
 
@@ -128,142 +128,454 @@ describe('common > extensions > merge > ObjectMerger', function() {
 
 	registerMergeable(Class)
 
-	it('base', function() {
-		assert.ok(deepCloneEqual.equal(
-			new Class({a: {a: 1, b: 2}, b: 3}),
-			new Class({a: {a: 1, b: 2}, b: 3}),
-		))
-
-		assert.ok(deepCloneEqual.equal(
-			deepCloneEqual.clone(new Class({a: {a: 1, b: 2}, b: 3})),
-			new Class({a: {a: 1, b: 2}, b: 3}),
-		))
-
-		// tslint:disable-next-line:use-primitive-type no-construct
-		const symbol = {x: new String('SYMBOL')}
-		const symbolClone = deepCloneEqual.clone(symbol)
-		assert.ok(deepCloneEqual.equal(symbol, symbolClone))
-	})
-
-	it('custom class', function() {
-		testMerger({
-			base: [new Class({ a: {a: 1, b: 2}, b: 3 })],
-			older: [new Class({ a: {a: 4, b: 5}, c: 6 }), { a: {a: 4, b: 5}, c: 6 }],
-			newer: [new Class({ a: {a: 7, b: 2}, d: 9 }), { a: {a: 7, b: 2}, d: 9 }],
-			preferCloneOlderParam: [null],
-			preferCloneNewerParam: [null],
-			preferCloneMeta: [null],
-			options: [null, {}],
-			valueType: [null],
-			valueFactory: [null],
-			setFunc: [true],
-			expected: {
-				error: null,
-				returnValue: true,
-				setValue: NONE,
-				base: new Class({ a: {a: 7, b: 5}, c: 6, d: 9 }),
-				older: OLDER,
-				newer: NEWER,
-			},
-			actions: null,
-		})
-	})
-
-	it('strings', function() {
-		testMerger({
-			base: ['', '1', '2', new String('1')],
-			older: ['2', new String('2')],
-			newer: ['3', new String('3')],
-			preferCloneOlderParam: [null],
-			preferCloneNewerParam: [null],
-			preferCloneMeta: [null],
-			options: [null, {}],
-			valueType: [null],
-			valueFactory: [null],
-			setFunc: [true],
-			expected: {
-				error: null,
-				returnValue: true,
-				setValue: '3',
-				base: BASE,
-				older: OLDER,
-				newer: NEWER,
-			},
-			actions: null,
-		})
-	})
-
-	it('number / boolean', function() {
-		testMerger({
-			base: [new Number(1)],
-			older: [2, new Number(2)],
-			newer: [3, new Number(3)],
-			preferCloneOlderParam: [null],
-			preferCloneNewerParam: [null],
-			preferCloneMeta: [null],
-			options: [null, {}],
-			valueType: [null],
-			valueFactory: [null],
-			setFunc: [true],
-			expected: {
-				error: null,
-				returnValue: true,
-				setValue: 3,
-				base: BASE,
-				older: OLDER,
-				newer: NEWER,
-			},
-			actions: null,
-		})
-
-		testMerger({
-			base: [new Boolean(false)],
-			older: [true, false, new Boolean(true), new Boolean(false)],
-			newer: [true, new Boolean(true)],
-			preferCloneOlderParam: [null],
-			preferCloneNewerParam: [null],
-			preferCloneMeta: [null],
-			options: [null, {}],
-			valueType: [null],
-			valueFactory: [null],
-			setFunc: [true],
-			expected: {
-				error: null,
-				returnValue: true,
-				setValue: true,
-				base: BASE,
-				older: OLDER,
-				newer: NEWER,
-			},
-			actions: null,
-		})
-	})
-
-	it('merge 3 objects', function() {
-		testMerger({
-			base: [{ a: {a: 1, b: 2}, b: 3 }],
-			older: [{ a: {a: 4, b: 5}, c: 6 }],
-			newer: [{ a: {a: 7, b: 2}, d: 9 }],
-			preferCloneOlderParam: [null],
-			preferCloneNewerParam: [null],
-			preferCloneMeta: [null],
-			options: [null, {}],
+	describe('combinations', function() {
+		const options = {
+			preferCloneOlderParam: [null, false, true],
+			preferCloneNewerParam: [null, false, true],
+			preferCloneMeta: [null, false, true],
 			valueType: [null],
 			valueFactory: [null],
 			setFunc: [false, true],
+			exclude: o => {
+				// if (o.older.constructor === Object && o.newer.constructor === Object) {
+				// 	return true
+				// }
+				if (o.newer === NEWER || (o.base === NEWER || o.older === NEWER) && !canBeReferObject(o.newer)) {
+					return true
+				}
+				if (o.older === OLDER || (o.base === OLDER || o.newer === OLDER) && !canBeReferObject(o.older)) {
+					return true
+				}
+				if (o.base === BASE || (o.older === BASE || o.newer === BASE) && !canBeReferObject(o.base)) {
+					return true
+				}
+
+				if (isObject(o.base)
+					&& isObject(o.older)
+					&& isObject(o.newer)
+				) {
+					return true
+				}
+
+				if (o.preferCloneMeta != null
+					&& (isObject(o.older)
+						|| isObject(o.newer))
+				) {
+					return true
+				}
+
+				if (isObject(o.base) && !Object.isFrozen(o.base) && !isRefer(o.base)) {
+					o.base = deepCloneEqual.clone(o.base)
+				}
+				if (isObject(o.older) && !Object.isFrozen(o.older) && !isRefer(o.older)) {
+					o.older = deepCloneEqual.clone(o.older)
+				}
+
+				return false
+			},
 			expected: {
 				error: null,
-				returnValue: true,
-				setValue: NONE,
-				base: { a: {a: 7, b: 5}, c: 6, d: 9 },
+				returnValue: o => mustBeSet(o) || mustBeFilled(o),
+				setValue: o => {
+					if (!mustBeSet(o)) {
+						return NONE
+					}
+
+					if (isObject(o.base)) {
+						if (isObject(o.newer)) {
+							if (deepCloneEqual.equal(o.base, o.newer)) {
+								if (isObject(o.older)) {
+									return o.preferCloneBase
+										? deepCloneEqual.clone(o.older)
+										: NONE
+								} else {
+									return OLDER
+								}
+							} else {
+								return o.preferCloneBase
+									? deepCloneEqual.clone(o.newer)
+									: NONE
+							}
+						}
+					} else if (
+						isObject(o.older)
+						&& isObject(o.newer)
+					) {
+						if (deepCloneEqual.equal(o.older, o.newer)) {
+							return !o.preferCloneNewer
+								? NEWER
+								: (o.preferCloneOlder ? deepCloneEqual.clone(o.newer) : OLDER)
+						} else {
+							return o.preferCloneOlder
+								? deepCloneEqual.clone(o.newer)
+								: OLDER
+						}
+					}
+
+					if (isObject(o.base)
+						&& isObject(o.older)
+						&& isObject(o.newer)
+					) {
+						return o.preferCloneBase
+							? deepCloneEqual.clone(deepCloneEqual.equal(o.base, o.newer)
+								? o.older
+								: o.newer)
+							: NONE
+					}
+
+					if (o.base instanceof Class
+						&& (o.older instanceof Class || isObject(o.older))
+						&& (o.newer instanceof Class || isObject(o.newer))
+					) {
+						return NONE
+					}
+
+					if (o.base instanceof Class
+						&& !(o.older instanceof Class || isObject(o.older))
+						&& (o.newer instanceof Class || isObject(o.newer))
+						&& !deepCloneEqual.equal(o.base, o.newer)
+						&& !deepCloneEqual.equal(o.base.value, o.newer)
+					) {
+						return NONE
+					}
+
+					if (isObject(o.base) && !Object.isFrozen(o.base)
+						&& !(isObject(o.older))
+						&& (isObject(o.newer))
+						&& !deepCloneEqual.equal(o.base, o.newer)
+					) {
+						return NONE
+					}
+
+					if (!(o.base instanceof Class)
+						&& o.older instanceof Class
+						&& (o.newer instanceof Class || isObject(o.newer))
+					) {
+						return OLDER
+					}
+
+					if (!deepCloneEqual.equal(o.base, o.newer)
+						&& o.older !== o.newer
+						&& deepCloneEqual.equal(o.older, o.newer)
+						&& o.older instanceof Date && o.newer instanceof Date
+						&& o.preferCloneNewer && !o.preferCloneOlder
+					) {
+						return OLDER
+					}
+
+					if ((o.older instanceof Class || isObject(o.older))
+						&& isObject(o.newer)
+						&& (o.preferCloneOlder && !deepCloneEqual.equal(o.older, o.newer)
+							|| o.preferCloneOlder && o.preferCloneNewer)
+						|| o.newer === o.older && (o.preferCloneOlder || o.preferCloneNewer)
+					) {
+						return deepCloneEqual.clone(o.newer)
+					}
+
+					if (isObject(o.older) && !Object.isFrozen(o.older)
+						&& isObject(o.newer)
+					) {
+						return OLDER
+					}
+
+					return !(deepCloneEqual.equal(o.base, o.newer)
+						|| o.base instanceof Class && deepCloneEqual.equal(o.base.value, o.newer)
+						&& isObject(o.newer))
+					|| o.newer !== o.base
+					&& isObject(o.base) && Object.isFrozen(o.base)
+						? NEWER
+						: OLDER
+				},
+				base: BASE,
 				older: OLDER,
 				newer: NEWER,
 			},
 			actions: null,
+		}
+
+		xit('primitives', function() {
+			const createValues = () => [
+				BASE, OLDER, NEWER,
+				null, void 0, 0, 1, false, true,
+			]
+
+			testMerger({
+				...options,
+				base: createValues(),
+				older: createValues(),
+				newer: createValues(),
+			})
 		})
+
+		xit('strings', function() {
+			const createValues = () => [
+				BASE, OLDER, NEWER,
+				void 0, 1, '', '1', '2',
+			]
+
+			testMerger({
+				...options,
+				base: createValues(),
+				older: createValues(),
+				newer: createValues(),
+			})
+		})
+
+		xit('Strings', function() {
+			const createValues = () => [
+				BASE, OLDER, NEWER,
+				void 0, 1, new String(''), new String('1'), new String('2'),
+			]
+
+			testMerger({
+				...options,
+				base: createValues(),
+				older: createValues(),
+				newer: createValues(),
+			})
+		})
+
+		xit('date', function() {
+			const createValues = () => [
+				BASE, OLDER, NEWER,
+				void 0, '', {}, new Date(1), new Date(2), new Date(3),
+			]
+
+			testMerger({
+				...options,
+				base: createValues(),
+				older: createValues(),
+				newer: createValues(),
+			})
+		})
+
+		xit('objects', function() {
+			const createValues = () => [
+				BASE, OLDER, NEWER,
+				null, {}, new Date(1),
+				/* new Class(new Date(1)), new Class({ a: {a: 1, b: 2}, b: 3 }), new Class(Object.freeze({ x: {y: 1} })), */
+				{a: {a: 1, b: 2}, b: 3}, {a: {b: 4, c: 5}, c: 6}, {a: {a: 7, b: 8}, d: 9}, Object.freeze({x: {y: 1}}),
+			]
+
+			testMerger({
+				...options,
+				base: createValues(),
+				older: createValues(),
+				newer: createValues(),
+			})
+		})
+
+		xit('full', function() {
+			const createValues = () => [
+				BASE, OLDER, NEWER,
+				null, void 0, 0, 1, false, true, '', '1',
+				/* new Class(new Date(1)), new Class({ a: {a: 1, b: 2}, b: 3 }), new Class(Object.freeze({ x: {y: 1} })), */
+				{}, {a: {a: 1, b: 2}, b: 3}, {a: {b: 4, c: 5}, c: 6}, {a: {a: 7, b: 8}, d: 9}, Object.freeze({x: {y: 1}}),
+				new Date(1), new Date(2),
+			]
+
+			testMerger({
+				...options,
+				base: createValues(),
+				older: createValues(),
+				newer: createValues(),
+			})
+		})
+
+		it('complex objects', function() {
+				const complexObjectOptions: IComplexObjectOptions = {
+					undefined: true,
+					function: true,
+					array: true,
+					circular: true,
+					// circularClass: true,
+					//
+					// set: true,
+					// arraySet: true,
+					// objectSet: true,
+					// observableSet: true,
+					//
+					// map: true,
+					// arrayMap: true,
+					// objectMap: true,
+					// observableMap: true,
+					//
+					// sortedList: true,
+				}
+
+				const createValues = () => [
+					// BASE, OLDER, NEWER,
+					createComplexObject(complexObjectOptions),
+				]
+
+				// testMerger({
+				// 	base: [OLDER],
+				// 	older: createValues(),
+				// 	newer: createValues(),
+				// 	preferCloneOlderParam: [true],
+				// 	preferCloneNewerParam: [null],
+				// 	preferCloneMeta: [null],
+				// 	options: [null, {}],
+				// 	valueType: [null],
+				// 	valueFactory: [null],
+				// 	setFunc: [true],
+				// 	expected: {
+				// 		error: null,
+				// 		returnValue: true,
+				// 		setValue: NONE,
+				// 		base: BASE,
+				// 		older: OLDER,
+				// 		newer: NEWER,
+				// 	},
+				// 	actions: null,
+				// })
+
+				testMerger({
+					...options,
+					base: createValues(),
+					older: createValues(),
+					newer: createValues(),
+				})
+			})
 	})
 
-	it('array as primitive', function() {
+	describe('base', function() {
+		it('base', function() {
+			assert.ok(deepCloneEqual.equal(
+				new Class({a: {a: 1, b: 2}, b: 3}),
+				new Class({a: {a: 1, b: 2}, b: 3}),
+			))
+
+			assert.ok(deepCloneEqual.equal(
+				deepCloneEqual.clone(new Class({a: {a: 1, b: 2}, b: 3})),
+				new Class({a: {a: 1, b: 2}, b: 3}),
+			))
+
+			// tslint:disable-next-line:use-primitive-type no-construct
+			const symbol = {x: new String('SYMBOL')}
+			const symbolClone = deepCloneEqual.clone(symbol)
+			assert.ok(deepCloneEqual.equal(symbol, symbolClone))
+		})
+
+		it('custom class', function() {
+			testMerger({
+				base: [new Class({ a: {a: 1, b: 2}, b: 3 })],
+				older: [new Class({ a: {a: 4, b: 5}, c: 6 }), { a: {a: 4, b: 5}, c: 6 }],
+				newer: [new Class({ a: {a: 7, b: 2}, d: 9 }), { a: {a: 7, b: 2}, d: 9 }],
+				preferCloneOlderParam: [null],
+				preferCloneNewerParam: [null],
+				preferCloneMeta: [null],
+				options: [null, {}],
+				valueType: [null],
+				valueFactory: [null],
+				setFunc: [true],
+				expected: {
+					error: null,
+					returnValue: true,
+					setValue: NONE,
+					base: new Class({ a: {a: 7, b: 5}, c: 6, d: 9 }),
+					older: OLDER,
+					newer: NEWER,
+				},
+				actions: null,
+			})
+		})
+
+		it('strings', function() {
+			testMerger({
+				base: ['', '1', '2', new String('1')],
+				older: ['2', new String('2')],
+				newer: ['3', new String('3')],
+				preferCloneOlderParam: [null],
+				preferCloneNewerParam: [null],
+				preferCloneMeta: [null],
+				options: [null, {}],
+				valueType: [null],
+				valueFactory: [null],
+				setFunc: [true],
+				expected: {
+					error: null,
+					returnValue: true,
+					setValue: '3',
+					base: BASE,
+					older: OLDER,
+					newer: NEWER,
+				},
+				actions: null,
+			})
+		})
+
+		it('number / boolean', function() {
+			testMerger({
+				base: [new Number(1)],
+				older: [2, new Number(2)],
+				newer: [3, new Number(3)],
+				preferCloneOlderParam: [null],
+				preferCloneNewerParam: [null],
+				preferCloneMeta: [null],
+				options: [null, {}],
+				valueType: [null],
+				valueFactory: [null],
+				setFunc: [true],
+				expected: {
+					error: null,
+					returnValue: true,
+					setValue: 3,
+					base: BASE,
+					older: OLDER,
+					newer: NEWER,
+				},
+				actions: null,
+			})
+
+			testMerger({
+				base: [new Boolean(false)],
+				older: [true, false, new Boolean(true), new Boolean(false)],
+				newer: [true, new Boolean(true)],
+				preferCloneOlderParam: [null],
+				preferCloneNewerParam: [null],
+				preferCloneMeta: [null],
+				options: [null, {}],
+				valueType: [null],
+				valueFactory: [null],
+				setFunc: [true],
+				expected: {
+					error: null,
+					returnValue: true,
+					setValue: true,
+					base: BASE,
+					older: OLDER,
+					newer: NEWER,
+				},
+				actions: null,
+			})
+		})
+
+		it('merge 3 objects', function() {
+			testMerger({
+				base: [{ a: {a: 1, b: 2}, b: 3 }],
+				older: [{ a: {a: 4, b: 5}, c: 6 }],
+				newer: [{ a: {a: 7, b: 2}, d: 9 }],
+				preferCloneOlderParam: [null],
+				preferCloneNewerParam: [null],
+				preferCloneMeta: [null],
+				options: [null, {}],
+				valueType: [null],
+				valueFactory: [null],
+				setFunc: [false, true],
+				expected: {
+					error: null,
+					returnValue: true,
+					setValue: NONE,
+					base: { a: {a: 7, b: 5}, c: 6, d: 9 },
+					older: OLDER,
+					newer: NEWER,
+				},
+				actions: null,
+			})
+		})
+
+		it('array as primitive', function() {
 		testMerger({
 			base: [[], [1], [2]],
 			older: [[], [1], [2]],
@@ -285,6 +597,7 @@ describe('common > extensions > merge > ObjectMerger', function() {
 			},
 			actions: null,
 		})
+	})
 	})
 
 	describe('circular', function() {
@@ -397,7 +710,7 @@ describe('common > extensions > merge > ObjectMerger', function() {
 			}
 		})
 
-		xit('simple circular', function() {
+		it('simple circular', function() {
 			testMerger({
 				...options,
 				base: [createValue(1, true)],
@@ -651,303 +964,6 @@ describe('common > extensions > merge > ObjectMerger', function() {
 					['0', '1', '4'],
 				)
 			})
-		})
-	})
-
-	describe('combinations', function() {
-		const options = {
-			preferCloneOlderParam: [null, false, true],
-			preferCloneNewerParam: [null, false, true],
-			preferCloneMeta: [null, false, true],
-			valueType: [null],
-			valueFactory: [null],
-			setFunc: [false, true],
-			exclude: o => {
-				// if (o.older.constructor === Object && o.newer.constructor === Object) {
-				// 	return true
-				// }
-				if (o.newer === NEWER || (o.base === NEWER || o.older === NEWER) && !canBeReferObject(o.newer)) {
-					return true
-				}
-				if (o.older === OLDER || (o.base === OLDER || o.newer === OLDER) && !canBeReferObject(o.older)) {
-					return true
-				}
-				if (o.base === BASE || (o.older === BASE || o.newer === BASE) && !canBeReferObject(o.base)) {
-					return true
-				}
-
-				if (isObject(o.base)
-					&& isObject(o.older)
-					&& isObject(o.newer)
-				) {
-					return true
-				}
-
-				if (o.preferCloneMeta != null
-					&& (isObject(o.older)
-						|| isObject(o.newer))
-				) {
-					return true
-				}
-
-				if (isObject(o.base) && !Object.isFrozen(o.base) && !isRefer(o.base)) {
-					o.base = deepCloneEqual.clone(o.base)
-				}
-				if (isObject(o.older) && !Object.isFrozen(o.older) && !isRefer(o.older)) {
-					o.older = deepCloneEqual.clone(o.older)
-				}
-
-				return false
-			},
-			expected: {
-				error: null,
-				returnValue: o => mustBeSet(o) || mustBeFilled(o),
-				setValue: o => {
-					if (!mustBeSet(o)) {
-						return NONE
-					}
-
-					if (isObject(o.base)) {
-						if (isObject(o.newer)) {
-							if (deepCloneEqual.equal(o.base, o.newer)) {
-								if (isObject(o.older)) {
-									return o.preferCloneBase
-										? deepCloneEqual.clone(o.older)
-										: NONE
-								} else {
-									return OLDER
-								}
-							} else {
-								return o.preferCloneBase
-									? deepCloneEqual.clone(o.newer)
-									: NONE
-							}
-						}
-					} else if (
-						isObject(o.older)
-						&& isObject(o.newer)
-					) {
-						if (deepCloneEqual.equal(o.older, o.newer)) {
-							return !o.preferCloneNewer
-								? NEWER
-								: (o.preferCloneOlder ? deepCloneEqual.clone(o.newer) : OLDER)
-						} else {
-							return o.preferCloneOlder
-								? deepCloneEqual.clone(o.newer)
-								: OLDER
-						}
-					}
-
-					if (isObject(o.base)
-						&& isObject(o.older)
-						&& isObject(o.newer)
-					) {
-						return o.preferCloneBase
-							? deepCloneEqual.clone(deepCloneEqual.equal(o.base, o.newer)
-								? o.older
-								: o.newer)
-							: NONE
-					}
-
-					if (o.base instanceof Class
-						&& (o.older instanceof Class || isObject(o.older))
-						&& (o.newer instanceof Class || isObject(o.newer))
-					) {
-						return NONE
-					}
-
-					if (o.base instanceof Class
-						&& !(o.older instanceof Class || isObject(o.older))
-						&& (o.newer instanceof Class || isObject(o.newer))
-						&& !deepCloneEqual.equal(o.base, o.newer)
-						&& !deepCloneEqual.equal(o.base.value, o.newer)
-					) {
-						return NONE
-					}
-
-					if (isObject(o.base) && !Object.isFrozen(o.base)
-						&& !(isObject(o.older))
-						&& (isObject(o.newer))
-						&& !deepCloneEqual.equal(o.base, o.newer)
-					) {
-						return NONE
-					}
-
-					if (!(o.base instanceof Class)
-						&& o.older instanceof Class
-						&& (o.newer instanceof Class || isObject(o.newer))
-					) {
-						return OLDER
-					}
-
-					if (!deepCloneEqual.equal(o.base, o.newer)
-						&& o.older !== o.newer
-						&& deepCloneEqual.equal(o.older, o.newer)
-						&& o.older instanceof Date && o.newer instanceof Date
-						&& o.preferCloneNewer && !o.preferCloneOlder
-					) {
-						return OLDER
-					}
-
-					if ((o.older instanceof Class || isObject(o.older))
-						&& isObject(o.newer)
-						&& (o.preferCloneOlder && !deepCloneEqual.equal(o.older, o.newer)
-							|| o.preferCloneOlder && o.preferCloneNewer)
-						|| o.newer === o.older && (o.preferCloneOlder || o.preferCloneNewer)
-					) {
-						return deepCloneEqual.clone(o.newer)
-					}
-
-					if (isObject(o.older) && !Object.isFrozen(o.older)
-						&& isObject(o.newer)
-					) {
-						return OLDER
-					}
-
-					return !(deepCloneEqual.equal(o.base, o.newer)
-						|| o.base instanceof Class && deepCloneEqual.equal(o.base.value, o.newer)
-						&& isObject(o.newer))
-					|| o.newer !== o.base
-					&& isObject(o.base) && Object.isFrozen(o.base)
-						? NEWER
-						: OLDER
-				},
-				base: BASE,
-				older: OLDER,
-				newer: NEWER,
-			},
-			actions: null,
-		}
-
-		it('primitives', function() {
-			const createValues = () => [
-				BASE, OLDER, NEWER,
-				null, void 0, 0, 1, false, true,
-			]
-
-			testMerger({
-				...options,
-				base: createValues(),
-				older: createValues(),
-				newer: createValues(),
-			})
-		})
-
-		it('strings', function() {
-			const createValues = () => [
-				BASE, OLDER, NEWER,
-				void 0, 1, '', '1', '2',
-			]
-
-			testMerger({
-				...options,
-				base: createValues(),
-				older: createValues(),
-				newer: createValues(),
-			})
-		})
-
-		it('Strings', function() {
-			const createValues = () => [
-				BASE, OLDER, NEWER,
-				void 0, 1, new String(''), new String('1'), new String('2'),
-			]
-
-			testMerger({
-				...options,
-				base: createValues(),
-				older: createValues(),
-				newer: createValues(),
-			})
-		})
-
-		it('date', function() {
-			const createValues = () => [
-				BASE, OLDER, NEWER,
-				void 0, '', {}, new Date(1), new Date(2), new Date(3),
-			]
-
-			testMerger({
-				...options,
-				base: createValues(),
-				older: createValues(),
-				newer: createValues(),
-			})
-		})
-
-		it('objects', function() {
-			const createValues = () => [
-				BASE, OLDER, NEWER,
-				null, {}, new Date(1),
-				/* new Class(new Date(1)), new Class({ a: {a: 1, b: 2}, b: 3 }), new Class(Object.freeze({ x: {y: 1} })), */
-				{a: {a: 1, b: 2}, b: 3}, {a: {b: 4, c: 5}, c: 6}, {a: {a: 7, b: 8}, d: 9}, Object.freeze({x: {y: 1}}),
-			]
-
-			testMerger({
-				...options,
-				base: createValues(),
-				older: createValues(),
-				newer: createValues(),
-			})
-		})
-
-		xit('full', function() {
-			const createValues = () => [
-				BASE, OLDER, NEWER,
-				null, void 0, 0, 1, false, true, '', '1',
-				/* new Class(new Date(1)), new Class({ a: {a: 1, b: 2}, b: 3 }), new Class(Object.freeze({ x: {y: 1} })), */
-				{}, {a: {a: 1, b: 2}, b: 3}, {a: {b: 4, c: 5}, c: 6}, {a: {a: 7, b: 8}, d: 9}, Object.freeze({x: {y: 1}}),
-				new Date(1), new Date(2),
-			]
-
-			testMerger({
-				...options,
-				base: createValues(),
-				older: createValues(),
-				newer: createValues(),
-			})
-		})
-
-		xit('complex objects', function() {
-			const complexObjectOptions: IComplexObjectOptions = {
-				array: false,
-				circular: true,
-				// TODO
-			}
-
-			const createValues = () => [
-				// BASE, OLDER, NEWER,
-				createComplexObject(complexObjectOptions),
-			]
-
-			testMerger({
-				base: createValues(),
-				older: createValues(),
-				newer: createValues(),
-				preferCloneOlderParam: [null],
-				preferCloneNewerParam: [null],
-				preferCloneMeta: [null],
-				options: [null, {}],
-				valueType: [null],
-				valueFactory: [null],
-				setFunc: [true],
-				expected: {
-					error: null,
-					returnValue: true,
-					setValue: NONE,
-					base: BASE,
-					older: OLDER,
-					newer: NEWER,
-				},
-				actions: null,
-			})
-
-			// testMerger({
-			// 	...options,
-			// 	base: createValues(),
-			// 	older: createValues(),
-			// 	newer: createValues(),
-			// })
 		})
 	})
 })

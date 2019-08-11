@@ -29,15 +29,18 @@ export const deepCloneEqual = new DeepCloneEqual({
 		},
 	},
 	cloneOptions: {
-		customClone: (o, clone) => {
+		customClone: (o, setInstance, cloneNested) => {
 			if (o.constructor === SortedList) {
 				const list = new SortedList({
 					autoSort: (o as any).autoSort,
 					notAddIfExists: (o as any).notAddIfExists,
 					compare: (o as any).compare,
 				})
+
+				setInstance(list)
+
 				for (const item of (o as unknown as SortedList<any>)) {
-					list.add(clone(item))
+					list.add(cloneNested(item))
 				}
 				return list as any
 			}

@@ -5,9 +5,9 @@ import {TMergeableClass} from './mergers'
 // region Mergers
 
 export interface IMergeOptions {
-	isNotCircularBase?: boolean
-	isNotCircularOlder?: boolean
-	isNotCircularNewer?: boolean
+	selfAsValueBase?: boolean
+	selfAsValueOlder?: boolean
+	selfAsValueNewer?: boolean
 }
 
 export type IMergeValue = <TTarget = any, TSource = any>(

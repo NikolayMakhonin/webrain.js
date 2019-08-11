@@ -6,7 +6,7 @@ export interface IDeepCloneEqualOptions {
 }
 
 export interface IDeepCloneOptions extends IDeepCloneEqualOptions {
-	customClone?: (o: any, clone: (o: any) => any) => any
+	customClone?: (value: any, setInstance: (instance) => void, cloneNested: (nested: any) => any) => any
 }
 export interface IDeepEqualOptions extends IDeepCloneEqualOptions {
 	noCrossReferences?: boolean,
@@ -91,14 +91,24 @@ export class DeepCloneEqual {
 				}
 			}
 
+			let cloned
+
 			if (customClone) {
-				const result = customClone(source, clone)
+				const result = customClone(source, o => {
+					cloned = o
+					if (id != null) {
+						cache[id] = o
+					}
+				}, clone)
+
 				if (result != null) {
 					return result
 				}
-			}
 
-			let cloned
+				if (id != null && cloned !== null) {
+					cache[id] = null
+				}
+			}
 
 			if (source[Symbol.iterator] && source.next) {
 				cloned = toIterableIterator(clone(Array.from(source[Symbol.iterator]())))
