@@ -600,6 +600,62 @@ describe('common > extensions > merge > ObjectMerger', function() {
 			actions: null,
 		})
 	})
+
+		it('value type', function() {
+			testMerger({
+				base: [{ a: {a: 1, b: 2}, b: 3 }],
+				older: [{ a: {a: 4, b: 5}, c: 6 }],
+				newer: [{ a: {a: 7, b: 2}, d: 9 }],
+				preferCloneOlderParam: [null],
+				preferCloneNewerParam: [null],
+				preferCloneMeta: [null],
+				options: [null, {}],
+				valueType: [Class],
+				valueFactory: [null],
+				setFunc: [true],
+				expected: {
+					error: null,
+					returnValue: true,
+					setValue: new Class({ a: {a: 7, b: 5}, c: 6, d: 9 }),
+					base: BASE,
+					older: OLDER,
+					newer: NEWER,
+				},
+				actions: null,
+			})
+
+			testMerger({
+				base: [null, void 0, 0, 1, false, true, '', '1'],
+				older: [{ a: {a: 4, b: 5}, c: 6 }],
+				newer: [{ a: {a: 7, b: 2}, d: 9 }],
+				preferCloneOlderParam: [null],
+				preferCloneNewerParam: [null],
+				preferCloneMeta: [null],
+				options: [null, {}],
+				valueType: [Class],
+				valueFactory: [null, () => {
+					const instance = new Class(null);
+					(instance as any).custom = true
+					return instance
+				}],
+				setFunc: [true],
+				expected: {
+					error: null,
+					returnValue: true,
+					setValue: o => {
+						const value = new Class({ a: {a: 7, b: 2}, d: 9 })
+						if (o.valueFactory) {
+							(value as any).custom = true
+						}
+						return value
+					},
+					base: BASE,
+					older: OLDER,
+					newer: NEWER,
+				},
+				actions: null,
+			})
+		})
 	})
 
 	describe('circular', function() {
@@ -730,11 +786,15 @@ describe('common > extensions > merge > ObjectMerger', function() {
 			})
 		})
 
-		it('value type', function() {
+		it('value type circular', function() {
+			const base = { a: {a: 1, b: 2}, b: 3 }
+			const older = { a: {a: 1, b: 2}, b: 3 }
+			const newer = { a: {a: 1, b: 2}, b: 3 }
+
 			testMerger({
-				base: [{ a: {a: 1, b: 2}, b: 3 }],
-				older: [{ a: {a: 4, b: 5}, c: 6 }],
-				newer: [{ a: {a: 7, b: 2}, d: 9 }],
+				base: [base, OLDER, { a: older.a, b: 3 }],
+				older: [older, { a: newer.a, c: 6 }],
+				newer: [newer],
 				preferCloneOlderParam: [null],
 				preferCloneNewerParam: [null],
 				preferCloneMeta: [null],
