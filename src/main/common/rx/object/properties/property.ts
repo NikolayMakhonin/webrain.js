@@ -171,7 +171,7 @@ export class Property<TTarget, TSource>
 			base,
 			older,
 			newer,
-			o => this.value = o,
+			o => { this.value = o },
 			preferCloneOlder,
 			preferCloneNewer,
 			options == null
