@@ -1,6 +1,6 @@
 /* tslint:disable:no-nested-switch ban-types use-primitive-type */
 import {isIterable, TClass, typeToDebugString} from '../../helpers/helpers'
-import {canHaveUniqueId, getObjectUniqueId, isFrozenWithoutUniqueId} from '../../lists/helpers/object-unique-id'
+import {canHaveUniqueId, getObjectUniqueId} from '../../lists/helpers/object-unique-id'
 import {fillMap, fillSet} from '../../lists/helpers/set'
 import {TypeMetaCollection} from '../TypeMeta'
 import {
@@ -163,17 +163,19 @@ class ValueState<TTarget, TSource> {
 		return _cloneInstance
 	}
 
-	public canMerge(source: TTarget|TSource, target?: TTarget): boolean {
+	public canMerge(source: ValueState<TTarget, TSource>, target?: TTarget): boolean {
 		const canMerge = this.merger.canMerge
 		if (canMerge) {
 			if (target == null) {
 				target = this.target
-				if (this.isRef) {
-					return false
+				if (this.isRef || source.isRef) {
+					return target === source.target
+						? null
+						: false
 				}
 			}
 
-			const result = canMerge(target, source)
+			const result = canMerge(target, source.target)
 			if (result == null) {
 				return null
 			}
@@ -193,7 +195,7 @@ class ValueState<TTarget, TSource> {
 			if (this.mustBeCloned) {
 				_clone = this.cloneInstance
 
-				const canMergeResult: boolean = this.canMerge(target, _clone)
+				const canMergeResult: boolean = this.canMerge(this, _clone)
 
 				switch (canMergeResult) {
 					case null:
@@ -702,7 +704,7 @@ export class MergerVisitor implements IMergerVisitor {
 		// endregion
 
 		const fillOlderNewer = () => {
-			switch (mergeState.olderState.canMerge(newer)) {
+			switch (mergeState.olderState.canMerge(mergeState.newerState)) {
 				case null:
 					if (mergeState.olderState.mustBeCloned) {
 						set(mergeState.newerState.clone)
@@ -742,7 +744,7 @@ export class MergerVisitor implements IMergerVisitor {
 		}
 
 		if (isPrimitive(older)) {
-			switch (mergeState.baseState.canMerge(newer)) {
+			switch (mergeState.baseState.canMerge(mergeState.newerState)) {
 				case null:
 					if (set) {
 						set(older as any)
@@ -769,7 +771,7 @@ export class MergerVisitor implements IMergerVisitor {
 			return false
 		}
 
-		switch (mergeState.baseState.canMerge(newer)) {
+		switch (mergeState.baseState.canMerge(mergeState.newerState)) {
 			case false:
 				if (set) {
 					fillOlderNewer()
@@ -777,7 +779,7 @@ export class MergerVisitor implements IMergerVisitor {
 				}
 				return false
 			case null:
-				switch (mergeState.baseState.canMerge(older)) {
+				switch (mergeState.baseState.canMerge(mergeState.olderState)) {
 					case null:
 						return false
 					case false:
@@ -792,7 +794,7 @@ export class MergerVisitor implements IMergerVisitor {
 				throw new Error('Unreachable code')
 		}
 
-		switch (mergeState.baseState.canMerge(older)) {
+		switch (mergeState.baseState.canMerge(mergeState.olderState)) {
 			case null:
 				return mergeState.mergeWithBase(mergeState.newerState, mergeState.newerState)
 				// if (!mergeState.mergeWithBase(mergeState.newerState, mergeState.newerState)) {

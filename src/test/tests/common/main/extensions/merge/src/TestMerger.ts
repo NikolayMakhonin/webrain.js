@@ -414,7 +414,9 @@ export class TestMerger extends TestVariants<
 								assert.notStrictEqual(actual, options.older)
 								assert.notStrictEqual(actual, options.newer)
 							}
-							deepCloneEqual.equal(actual, expected)
+							deepCloneEqual.equal(actual, expected, {
+								noCrossReferences: true,
+							})
 						}
 					}
 

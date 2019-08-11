@@ -227,6 +227,32 @@ describe('common > test > DeepCloneEqual', function() {
 		}
 	}
 
+	it('noCrossReferences', function() {
+		const obj = { a: {} }
+		const obj2 = { a: {} }
+		testDeepEqual([obj], [obj], {
+			circular: false,
+			equalTypes: true,
+			noCrossReferences: false,
+			equalInnerReferences: true,
+		})
+
+		testDeepEqual([obj], [obj2], {
+			circular: false,
+			equalTypes: true,
+			noCrossReferences: true,
+			equalInnerReferences: true,
+		})
+
+		obj2.a = obj.a
+		testDeepEqual([obj], [obj2], {
+			circular: false,
+			equalTypes: true,
+			noCrossReferences: false,
+			equalInnerReferences: true,
+		})
+	})
+
 	it('not circular', function() {
 		notCircularTest(true)
 	})

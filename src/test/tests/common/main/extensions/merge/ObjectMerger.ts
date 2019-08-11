@@ -293,6 +293,62 @@ describe('common > extensions > merge > ObjectMerger', function() {
 			actions: null,
 		}
 
+		it('complex objects', function() {
+			const complexObjectOptions: IComplexObjectOptions = {
+				undefined: true,
+				function: true,
+				array: true,
+				circular: true,
+				circularClass: true,
+
+				set: true,
+				arraySet: true,
+				objectSet: true,
+				observableSet: true,
+
+				map: true,
+				arrayMap: true,
+				objectMap: true,
+				observableMap: true,
+
+				sortedList: true,
+			}
+
+			const createValues = () => [
+				BASE, OLDER, NEWER,
+				createComplexObject(complexObjectOptions),
+			]
+
+			// testMerger({
+			// 	base: [OLDER],
+			// 	older: createValues(),
+			// 	newer: createValues(),
+			// 	preferCloneOlderParam: [true],
+			// 	preferCloneNewerParam: [null],
+			// 	preferCloneMeta: [null],
+			// 	options: [null, {}],
+			// 	valueType: [null],
+			// 	valueFactory: [null],
+			// 	setFunc: [true],
+			// 	expected: {
+			// 		error: null,
+			// 		returnValue: true,
+			// 		setValue: NONE,
+			// 		base: BASE,
+			// 		older: OLDER,
+			// 		newer: NEWER,
+			// 	},
+			// 	actions: null,
+			// })
+
+			testMerger({
+				...options,
+				base: createValues(),
+				older: createValues(),
+				newer: createValues(),
+			})
+		})
+
 		it('primitives', function() {
 			const createValues = () => [
 				BASE, OLDER, NEWER,
@@ -365,7 +421,7 @@ describe('common > extensions > merge > ObjectMerger', function() {
 			})
 		})
 
-		it('full', function() {
+		xit('full', function() {
 			this.timeout(180000)
 
 			const createValues = () => [
@@ -375,62 +431,6 @@ describe('common > extensions > merge > ObjectMerger', function() {
 				{}, {a: {a: 1, b: 2}, b: 3}, {a: {b: 4, c: 5}, c: 6}, {a: {a: 7, b: 8}, d: 9}, Object.freeze({x: {y: 1}}),
 				new Date(1), new Date(2),
 			]
-
-			testMerger({
-				...options,
-				base: createValues(),
-				older: createValues(),
-				newer: createValues(),
-			})
-		})
-
-		it('complex objects', function() {
-			const complexObjectOptions: IComplexObjectOptions = {
-				// undefined: true,
-				// function: true,
-				// array: true,
-				// circular: true,
-				// circularClass: true,
-				//
-				// set: true,
-				// arraySet: true, // error
-				// objectSet: true,
-				// observableSet: true,
-				//
-				// map: true,
-				// arrayMap: true,
-				objectMap: true, // error
-				// observableMap: true,
-				//
-				// sortedList: true,
-			}
-
-			const createValues = () => [
-				BASE, OLDER, NEWER,
-				createComplexObject(complexObjectOptions),
-			]
-
-			// testMerger({
-			// 	base: [OLDER],
-			// 	older: createValues(),
-			// 	newer: createValues(),
-			// 	preferCloneOlderParam: [true],
-			// 	preferCloneNewerParam: [null],
-			// 	preferCloneMeta: [null],
-			// 	options: [null, {}],
-			// 	valueType: [null],
-			// 	valueFactory: [null],
-			// 	setFunc: [true],
-			// 	expected: {
-			// 		error: null,
-			// 		returnValue: true,
-			// 		setValue: NONE,
-			// 		base: BASE,
-			// 		older: OLDER,
-			// 		newer: NEWER,
-			// 	},
-			// 	actions: null,
-			// })
 
 			testMerger({
 				...options,
