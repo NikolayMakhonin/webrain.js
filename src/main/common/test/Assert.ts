@@ -1,4 +1,5 @@
 /* tslint:disable:no-var-requires triple-equals */
+// @ts-ignore
 import _AssertionError from 'assertion-error'
 import {TClass} from '../helpers/helpers'
 import {DeepCloneEqual, IDeepEqualOptions} from './DeepCloneEqual'
