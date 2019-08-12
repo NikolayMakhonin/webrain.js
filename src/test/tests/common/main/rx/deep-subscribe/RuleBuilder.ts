@@ -1205,8 +1205,8 @@ describe('common > main > rx > deep-subscribe > RuleBuilder', function() {
 		const builder = new RuleBuilder<IObject>()
 		assert.strictEqual(builder.rule, undefined)
 
-		assert.throws(() => builder.repeat(1, 1, b => null), [Error, TypeError])
-		assert.throws(() => builder.repeat(1, 1, b => ({rule: null} as any)), [Error, TypeError])
+		assert.throws(() => builder.repeat(1, 1, b => null), [Error, TypeError, ReferenceError])
+		assert.throws(() => builder.repeat(1, 1, b => ({rule: null} as any)), [Error, TypeError, ReferenceError])
 
 		const builder1 = builder
 			.repeat(
@@ -1289,10 +1289,10 @@ describe('common > main > rx > deep-subscribe > RuleBuilder', function() {
 		const builder = new RuleBuilder<IObject>()
 		assert.strictEqual(builder.rule, undefined)
 
-		assert.throws(() => builder.any(), [Error, TypeError])
-		assert.throws(() => builder.any(null), [Error, TypeError])
-		assert.throws(() => builder.any(b => null), [Error, TypeError])
-		assert.throws(() => builder.any(b => ({rule: null} as any)), [Error, TypeError])
+		assert.throws(() => builder.any(), [Error, TypeError, ReferenceError])
+		assert.throws(() => builder.any(null), [Error, TypeError, ReferenceError])
+		assert.throws(() => builder.any(b => null), [Error, TypeError, ReferenceError])
+		assert.throws(() => builder.any(b => ({rule: null} as any)), [Error, TypeError, ReferenceError])
 
 		const builder1 = builder
 			.any(b => b.path(o => o.prop1))

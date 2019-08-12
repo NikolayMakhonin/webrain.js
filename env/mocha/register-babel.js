@@ -10,3 +10,4 @@ registerBabel({
 })
 
 require('./register-tests')
+global.assert = require('../../src/main/common/test/Assert').assert
