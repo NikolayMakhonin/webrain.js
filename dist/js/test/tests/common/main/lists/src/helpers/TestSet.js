@@ -4,7 +4,9 @@ Object.defineProperty(exports, "__esModule", {
   value: true
 });
 exports.applySetChangedToArray = applySetChangedToArray;
-exports.TestSet = void 0;
+exports.TestSet = exports.assert = void 0;
+
+var _serializers = require("../../../../../../../main/common/extensions/serialization/serializers");
 
 var _ArraySet = require("../../../../../../../main/common/lists/ArraySet");
 
@@ -16,9 +18,25 @@ var _ObjectSet = require("../../../../../../../main/common/lists/ObjectSet");
 
 var _ObservableSet = require("../../../../../../../main/common/lists/ObservableSet");
 
-var _TestVariants = require("../../../helpers/TestVariants");
+var _Assert = require("../../../../../../../main/common/test/Assert");
+
+var _DeepCloneEqual = require("../../../../../../../main/common/test/DeepCloneEqual");
+
+var _TestVariants = require("../../../src/helpers/TestVariants");
 
 var _common = require("./common");
+
+const assert = new _Assert.Assert(new _DeepCloneEqual.DeepCloneEqual({
+  commonOptions: {},
+  equalOptions: {
+    // noCrossReferences: true,
+    equalInnerReferences: true,
+    equalTypes: true,
+    equalMapSetOrder: true,
+    strictEqualFunctions: true
+  }
+}));
+exports.assert = assert;
 
 function applySetChangedToArray(event, array) {
   switch (event.type) {
@@ -37,6 +55,15 @@ function applySetChangedToArray(event, array) {
 
       break;
   }
+}
+
+function testSerialization(set) {
+  const serialized = _serializers.ObjectSerializer.default.serialize(set);
+
+  const result = _serializers.ObjectSerializer.default.deSerialize(serialized);
+
+  assert.notStrictEqual(result, set);
+  assert.deepStrictEqual(result.entries(), set.entries());
 }
 
 function assertSet(set, expectedArray) {
@@ -62,28 +89,11 @@ function assertSet(set, expectedArray) {
   assert.deepStrictEqual(forEachArray.map(o => o[0]).sort(_compare.compareFast), expectedArray);
   assert.deepStrictEqual(forEachArray.map(o => o[1]).sort(_compare.compareFast), expectedArray);
   assert.deepStrictEqual(Array.from(set).sort(_compare.compareFast), expectedArray);
+  testSerialization(set);
 }
 
 const staticSetInner = new Set();
 const staticSet = new _ObservableSet.ObservableSet(staticSetInner);
-const valueToObjectMap = new Map();
-
-function convertToObject(value) {
-  if (value && typeof value === 'object' && Object.prototype.hasOwnProperty.call(value, 'value')) {
-    assert.fail('typeof value === ' + typeof value);
-  }
-
-  let obj = valueToObjectMap.get(value);
-
-  if (!obj) {
-    valueToObjectMap.set(value, obj = {
-      value
-    });
-  }
-
-  return obj;
-}
-
 var _Symbol$toStringTag = Symbol.toStringTag;
 var _Symbol$iterator = Symbol.iterator;
 
@@ -104,7 +114,7 @@ class SetWrapper {
   }
 
   add(value) {
-    this._set.add(convertToObject(value));
+    this._set.add((0, _common.convertToObject)(value));
 
     return this;
   }
@@ -114,7 +124,7 @@ class SetWrapper {
   }
 
   delete(value) {
-    return this._set.delete(convertToObject(value));
+    return this._set.delete((0, _common.convertToObject)(value));
   }
 
   *entries() {
@@ -124,13 +134,13 @@ class SetWrapper {
   }
 
   forEach(callbackfn, thisArg) {
-    this._set.forEach(function (key, value) {
-      callbackfn(key.value, value.value, this);
+    this._set.forEach(function (value, key) {
+      callbackfn(value.value, key.value, this);
     }, thisArg);
   }
 
   has(value) {
-    return this._set.has(convertToObject(value));
+    return this._set.has((0, _common.convertToObject)(value));
   }
 
   *keys() {
@@ -143,9 +153,33 @@ class SetWrapper {
     for (const item of this._set.values()) {
       yield item.value;
     }
-  }
+  } // region ISerializable
+
+
+  serialize(serialize) {
+    return {
+      set: serialize(this._set)
+    };
+  } // tslint:disable-next-line:no-empty
+
+
+  deSerialize(deSerialize, serializedValue) {} // endregion
+
 
 }
+
+SetWrapper.uuid = '5de4524d-6cdb-41e9-8968-9798ecedef5d';
+(0, _serializers.registerSerializable)(SetWrapper, {
+  serializer: {
+    *deSerialize(deSerialize, serializedValue, valueFactory) {
+      const innerSet = yield deSerialize(serializedValue.set);
+      const value = valueFactory(innerSet);
+      value.deSerialize(deSerialize, serializedValue);
+      return value;
+    }
+
+  }
+});
 
 class TestSet extends _TestVariants.TestVariants {
   constructor() {

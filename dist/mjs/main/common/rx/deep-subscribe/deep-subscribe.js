@@ -1,15 +1,17 @@
 /* tslint:disable */
 import { iterateRule, subscribeNextRule } from './iterate-rule';
 import { RuleBuilder } from "./RuleBuilder";
-import { PeekIterator } from "./helpers/PeekIterator"; // const UNSUBSCRIBE_PROPERTY_PREFIX = Math.random().toString(36)
+import { PeekIterator } from "./helpers/PeekIterator";
+import { checkUnsubscribe } from "./helpers/common";
+import { getObjectUniqueId } from "../../lists/helpers/object-unique-id"; // const UNSUBSCRIBE_PROPERTY_PREFIX = Math.random().toString(36)
 
 var nextUnsubscribePropertyId = 0;
 
-function deepSubscribeRuleIterator(object, subscribeValue, immediate, ruleIterator, propertiesPath) {
-  var subscribeNext = function subscribeNext() {
+function deepSubscribeRuleIterator(object, subscribeValue, immediate, ruleIterator, propertiesPath, debugPropertyName, debugParent) {
+  var subscribeNext = function subscribeNext(object) {
     var unsubscribePropertyName;
     return subscribeNextRule(ruleIterator, function (nextRuleIterator) {
-      return deepSubscribeRuleIterator(object, subscribeValue, immediate, nextRuleIterator, propertiesPath);
+      return deepSubscribeRuleIterator(object, subscribeValue, immediate, nextRuleIterator, propertiesPath, debugPropertyName, debugParent);
     }, function (rule, getNextRuleIterator) {
       var subscribeItem = function subscribeItem(item, debugPropertyName) {
         var newPropertiesPath = function newPropertiesPath() {
@@ -17,11 +19,11 @@ function deepSubscribeRuleIterator(object, subscribeValue, immediate, ruleIterat
         };
 
         var subscribe = function subscribe() {
-          return deepSubscribeRuleIterator(item, subscribeValue, immediate, getNextRuleIterator ? getNextRuleIterator() : null, newPropertiesPath);
+          return deepSubscribeRuleIterator(item, subscribeValue, immediate, getNextRuleIterator ? getNextRuleIterator() : null, newPropertiesPath, debugPropertyName, object);
         };
 
         if (!(item instanceof Object)) {
-          var _unsubscribe = subscribe();
+          var _unsubscribe = checkUnsubscribe(subscribe());
 
           if (_unsubscribe) {
             _unsubscribe();
@@ -36,16 +38,20 @@ function deepSubscribeRuleIterator(object, subscribeValue, immediate, ruleIterat
           unsubscribePropertyName = rule.unsubscribePropertyName; // + '_' + (nextUnsubscribePropertyId++)
         }
 
-        var unsubscribe = item[unsubscribePropertyName];
+        var itemUniqueId = getObjectUniqueId(item);
+        var unsubscribe = unsubscribePropertyName[itemUniqueId];
 
         if (!unsubscribe) {
           // if (typeof unsubscribe === 'undefined') {
-          Object.defineProperty(item, unsubscribePropertyName, {
-            configurable: true,
-            enumerable: false,
-            writable: true,
-            value: subscribe()
-          }); // } else {
+          // !Warning defineProperty is slow
+          // Object.defineProperty(item, unsubscribePropertyName, {
+          // 	configurable: true,
+          // 	enumerable: false,
+          // 	writable: true,
+          // 	value: checkUnsubscribe(subscribe()),
+          // })
+          // item[unsubscribePropertyName] = checkUnsubscribe(subscribe())
+          unsubscribePropertyName[itemUniqueId] = checkUnsubscribe(subscribe()); // } else {
           // 	item[unsubscribePropertyName] = subscribe()
           // }
         }
@@ -60,23 +66,22 @@ function deepSubscribeRuleIterator(object, subscribeValue, immediate, ruleIterat
           return;
         }
 
-        var unsubscribe = item[unsubscribePropertyName];
+        var itemUniqueId = getObjectUniqueId(item);
+        var unsubscribe = unsubscribePropertyName[itemUniqueId];
 
         if (unsubscribe) {
-          delete item[unsubscribePropertyName];
+          delete unsubscribePropertyName[itemUniqueId];
           unsubscribe(); // item[unsubscribePropertyName] = null
         }
       };
 
-      return rule.subscribe(object, immediate, subscribeItem, unsubscribeItem);
+      return checkUnsubscribe(rule.subscribe(object, immediate, subscribeItem, unsubscribeItem));
     }, function () {
-      return subscribeValue(object);
+      return subscribeValue(object, debugParent, debugPropertyName);
     });
   };
 
-  try {
-    return subscribeNext();
-  } catch (ex) {
+  var catchHandler = function catchHandler(ex) {
     if (ex.propertiesPath) {
       throw ex;
     }
@@ -85,6 +90,33 @@ function deepSubscribeRuleIterator(object, subscribeValue, immediate, ruleIterat
     ex.propertiesPath = propertiesPathStr;
     ex.message += "\nObject property path: ".concat(propertiesPathStr);
     throw ex;
+  };
+
+  try {
+    // Resolve Promises
+    if (object != null && typeof object.then === 'function') {
+      var unsubscribe;
+      Promise.resolve(object).then(function (o) {
+        if (!unsubscribe) {
+          unsubscribe = subscribeNext(o); // if (typeof unsubscribe !== 'function') {
+          // 	throw new Error(`unsubscribe is not a function: ${unsubscribe}`)
+          // }
+        }
+
+        return o;
+      }).catch(catchHandler);
+      return function () {
+        if (typeof unsubscribe === 'function') {
+          unsubscribe();
+        }
+
+        unsubscribe = true;
+      };
+    }
+
+    return subscribeNext(object);
+  } catch (ex) {
+    catchHandler(ex);
   }
 }
 

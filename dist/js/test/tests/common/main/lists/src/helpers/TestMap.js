@@ -4,17 +4,41 @@ Object.defineProperty(exports, "__esModule", {
   value: true
 });
 exports.applyMapChangedToArray = applyMapChangedToArray;
-exports.TestMap = void 0;
+exports.TestMap = exports.assert = void 0;
+
+var _serializers = require("../../../../../../../main/common/extensions/serialization/serializers");
+
+var _ArrayMap = require("../../../../../../../main/common/lists/ArrayMap");
 
 var _IMapChanged = require("../../../../../../../main/common/lists/contracts/IMapChanged");
 
 var _compare = require("../../../../../../../main/common/lists/helpers/compare");
 
+var _ObjectHashMap = require("../../../../../../../main/common/lists/ObjectHashMap");
+
 var _ObjectMap = require("../../../../../../../main/common/lists/ObjectMap");
 
 var _ObservableMap = require("../../../../../../../main/common/lists/ObservableMap");
 
-var _TestVariants = require("../../../helpers/TestVariants");
+var _Assert = require("../../../../../../../main/common/test/Assert");
+
+var _DeepCloneEqual = require("../../../../../../../main/common/test/DeepCloneEqual");
+
+var _TestVariants = require("../../../src/helpers/TestVariants");
+
+var _common = require("./common");
+
+const assert = new _Assert.Assert(new _DeepCloneEqual.DeepCloneEqual({
+  commonOptions: {},
+  equalOptions: {
+    // noCrossReferences: true,
+    equalInnerReferences: true,
+    equalTypes: true,
+    equalMapSetOrder: true,
+    strictEqualFunctions: true
+  }
+}));
+exports.assert = assert;
 
 function compareEntries(o1, o2) {
   return (0, _compare.compareFast)(o1[0], o2[0]);
@@ -52,6 +76,15 @@ function applyMapChangedToArray(event, array) {
   }
 }
 
+function testSerialization(map) {
+  const serialized = _serializers.ObjectSerializer.default.serialize(map);
+
+  const result = _serializers.ObjectSerializer.default.deSerialize(serialized);
+
+  assert.notStrictEqual(result, map);
+  assert.deepStrictEqual(Array.from(result.entries()), Array.from(map.entries()));
+}
+
 function assertMap(map, expectedArray) {
   expectedArray = expectedArray.map(o => o.slice()).sort(compareEntries);
   assert.deepStrictEqual(Array.from(map.keys()).sort(_compare.compareFast), expectedArray.map(o => o[0]));
@@ -74,6 +107,7 @@ function assertMap(map, expectedArray) {
   }, thisArg);
   assert.deepStrictEqual(forEachArray.sort(compareEntries), expectedArray);
   assert.deepStrictEqual(Array.from(map).sort(compareEntries), expectedArray);
+  testSerialization(map);
 }
 
 const staticMapInner = new Map();
@@ -99,13 +133,102 @@ const staticMap = new _ObservableMap.ObservableMap(staticMapInner); // class Obj
 //
 // }
 
+var _Symbol$toStringTag = Symbol.toStringTag;
+var _Symbol$iterator = Symbol.iterator;
+
+class MapWrapper {
+  constructor(map) {
+    this[_Symbol$toStringTag] = 'Map';
+    this._map = map;
+  }
+
+  get size() {
+    return this._map.size;
+  }
+
+  *[_Symbol$iterator]() {
+    for (const item of this._map) {
+      yield [item[0].value, item[1]];
+    }
+  }
+
+  clear() {
+    this._map.clear();
+  }
+
+  delete(key) {
+    return this._map.delete((0, _common.convertToObject)(key));
+  }
+
+  *entries() {
+    for (const entry of this._map.entries()) {
+      yield [entry[0].value, entry[1]];
+    }
+  }
+
+  forEach(callbackfn, thisArg) {
+    this._map.forEach(function (value, key) {
+      callbackfn(value, key.value, this);
+    }, thisArg);
+  }
+
+  get(key) {
+    return this._map.get((0, _common.convertToObject)(key));
+  }
+
+  has(key) {
+    return this._map.has((0, _common.convertToObject)(key));
+  }
+
+  *keys() {
+    for (const item of this._map.keys()) {
+      yield item.value;
+    }
+  }
+
+  set(key, value) {
+    this._map.set((0, _common.convertToObject)(key), value);
+
+    return this;
+  }
+
+  values() {
+    return this._map.values();
+  } // region ISerializable
+
+
+  serialize(serialize) {
+    return {
+      map: serialize(this._map)
+    };
+  } // tslint:disable-next-line:no-empty
+
+
+  deSerialize(deSerialize, serializedValue) {} // endregion
+
+
+}
+
+MapWrapper.uuid = 'bc06eeb6-5139-444a-a735-57a6e1928ac9';
+(0, _serializers.registerSerializable)(MapWrapper, {
+  serializer: {
+    *deSerialize(deSerialize, serializedValue, valueFactory) {
+      const innerMap = yield deSerialize(serializedValue.map);
+      const value = valueFactory(innerMap);
+      value.deSerialize(deSerialize, serializedValue);
+      return value;
+    }
+
+  }
+});
+
 class TestMap extends _TestVariants.TestVariants {
   constructor() {
     super();
     this.baseOptionsVariants = {
       reuseMapInstance: [false, true],
       useMapChanged: [false, true],
-      useObjectMap: [false, true]
+      innerMap: ['Map', 'Map<Object>', 'ObjectMap', 'ObjectHashMap', 'ArrayMap']
     };
   }
 
@@ -131,7 +254,31 @@ class TestMap extends _TestVariants.TestVariants {
           map = staticMap;
           mapInner = staticMapInner;
         } else {
-          mapInner = options.useObjectMap ? new _ObjectMap.ObjectMap({}) : new Map();
+          switch (options.innerMap) {
+            case 'ObjectMap':
+              mapInner = new _ObjectMap.ObjectMap({});
+              break;
+
+            case 'ObjectHashMap':
+              mapInner = new MapWrapper(new _ObjectHashMap.ObjectHashMap({}));
+              break;
+
+            case 'ArrayMap':
+              mapInner = new MapWrapper(new _ArrayMap.ArrayMap([]));
+              break;
+
+            case 'Map<Object>':
+              mapInner = new MapWrapper(new Map());
+              break;
+
+            case 'Map':
+              mapInner = new Map();
+              break;
+
+            default:
+              assert.fail('Unknown options.innerMap: ' + options.innerMap);
+              break;
+          }
 
           for (const item of array) {
             mapInner.set(...item);

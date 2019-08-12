@@ -1,13 +1,15 @@
 import { ListChangedType } from '../../../../../main/common/lists/contracts/IListChanged';
 import { compareFast } from '../../../../../main/common/lists/helpers/compare';
 import { getDefaultValue, SortedList } from '../../../../../main/common/lists/SortedList';
-import { allValues, generateArray, shuffle, toIterable } from './src/helpers/common';
-import { TestList } from './src/helpers/TestList';
-describe('common > main > lists > List', function () {
+import { AssertionError } from '../../../../../main/common/test/Assert';
+import { createIterable } from '../src/helpers/helpers';
+import { allValues, generateArray, shuffle } from './src/helpers/common';
+import { assert, TestList } from './src/helpers/TestList';
+describe('common > main > lists > SortedList', function () {
   this.timeout(20000);
   var testList = TestList.test;
   after(function () {
-    console.log('Total List tests >= ' + TestList.totalListTests);
+    console.log('Total Sorted tests >= ' + TestList.totalListTests);
   });
   it('constructor', function () {
     var list;
@@ -383,11 +385,11 @@ describe('common > main > lists > List', function () {
         }, function (list) {
           return list.addArray([item]);
         }, function (list) {
-          return list.addIterable(toIterable([item]), 1);
+          return list.addIterable(createIterable([item]), 1);
         }, function (list) {
           return list.insertArray(list.size, [item]);
         }, function (list) {
-          return list.insertIterable(list.size, toIterable([item]), 1);
+          return list.insertIterable(list.size, createIterable([item]), 1);
         }],
         description: "add(".concat(JSON.stringify(item), ")\n")
       };
@@ -471,11 +473,11 @@ describe('common > main > lists > List', function () {
         }, [function (list) {
           return list.addIterable(sourceItems.slice(start, end), end - start);
         }, function (list) {
-          return list.addIterable(toIterable(sourceItems.slice(start, end)), end - start);
+          return list.addIterable(createIterable(sourceItems.slice(start, end)), end - start);
         }, function (list) {
           return list.insertIterable(list.size, sourceItems.slice(start, end), end - start);
         }, function (list) {
-          return list.insertIterable(list.size, toIterable(sourceItems.slice(start, end)), end - start);
+          return list.insertIterable(list.size, createIterable(sourceItems.slice(start, end)), end - start);
         }]],
         description: "arrArray(".concat(JSON.stringify(sourceItems), ", ").concat(sourceStart, ", ").concat(sourceEnd, ")\n")
       };
@@ -572,7 +574,7 @@ describe('common > main > lists > List', function () {
         }, function (list) {
           return list.insertArray(index, [item]);
         }, function (list) {
-          return list.insertIterable(index, toIterable([item]), 1);
+          return list.insertIterable(index, createIterable([item]), 1);
         }],
         description: "insert(".concat(index, ", ").concat(JSON.stringify(item), ")\n")
       };
@@ -663,7 +665,7 @@ describe('common > main > lists > List', function () {
         }, [function (list) {
           return list.insertIterable(index, sourceItems.slice(start, end), end - start);
         }, function (list) {
-          return list.insertIterable(index, toIterable(sourceItems.slice(start, end)), end - start);
+          return list.insertIterable(index, createIterable(sourceItems.slice(start, end)), end - start);
         }]],
         description: "insertArray(".concat(index, ", ").concat(JSON.stringify(sourceItems), ", ").concat(sourceStart, ", ").concat(sourceEnd, ")\n")
       };
@@ -1160,7 +1162,7 @@ describe('common > main > lists > List', function () {
         }, [function (list) {
           return list.removeIterable(sourceItems.slice(start, end), end - start);
         }, function (list) {
-          return list.removeIterable(toIterable(sourceItems.slice(start, end)), end - start);
+          return list.removeIterable(createIterable(sourceItems.slice(start, end)), end - start);
         }]],
         description: "removeArray(".concat(JSON.stringify(sourceItems), ", ").concat(sourceStart, ", ").concat(sourceEnd, ")\n")
       };
@@ -1391,7 +1393,7 @@ describe('common > main > lists > List', function () {
     testList({
       array: [[]],
       expected: {
-        error: Error,
+        error: [Error, AssertionError],
         returnValue: null,
         defaultValue: null
       },
@@ -1409,7 +1411,7 @@ describe('common > main > lists > List', function () {
     testList({
       array: [['0', '1', '2']],
       expected: {
-        error: Error,
+        error: [Error, AssertionError],
         returnValue: ['0', '1'],
         defaultValue: null
       },
@@ -1418,7 +1420,7 @@ describe('common > main > lists > List', function () {
     testList({
       array: [['0', '1', '2']],
       expected: {
-        error: Error,
+        error: [Error, AssertionError],
         returnValue: ['1', '2'],
         defaultValue: null
       },
@@ -1427,7 +1429,7 @@ describe('common > main > lists > List', function () {
     testList({
       array: [['0', '1', '2']],
       expected: {
-        error: Error,
+        error: [Error, AssertionError],
         returnValue: ['0', '1', '2', '1', '2'],
         defaultValue: null
       },

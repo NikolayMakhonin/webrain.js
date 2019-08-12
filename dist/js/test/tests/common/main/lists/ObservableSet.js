@@ -4,7 +4,7 @@ var _ISetChanged = require("../../../../../main/common/lists/contracts/ISetChang
 
 var _ObservableSet = require("../../../../../main/common/lists/ObservableSet");
 
-var _TestVariants = require("../helpers/TestVariants");
+var _TestVariants = require("../src/helpers/TestVariants");
 
 var _common = require("./src/helpers/common");
 
@@ -19,7 +19,8 @@ describe('common > main > lists > ObservableSet', function () {
   it('constructor', function () {
     let set;
     set = new _ObservableSet.ObservableSet();
-    assert.strictEqual(set.size, 0);
+
+    _TestSet.assert.strictEqual(set.size, 0);
   });
   it('add', function () {
     function addArray(list, array) {
@@ -128,6 +129,18 @@ describe('common > main > lists > ObservableSet', function () {
         }]
       },
       actions: [remove('0')]
+    });
+    testSet({
+      array: [['2', '1']],
+      expected: {
+        array: ['1'],
+        returnValue: true,
+        setChanged: [{
+          type: _ISetChanged.SetChangedType.Removed,
+          oldItems: ['2']
+        }]
+      },
+      actions: [remove('2')]
     });
     testSet({
       array: [['2', '1']],

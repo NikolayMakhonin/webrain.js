@@ -6,110 +6,186 @@ var _compare = require("../../../../../main/common/lists/helpers/compare");
 
 var _SortedList = require("../../../../../main/common/lists/SortedList");
 
+var _Assert = require("../../../../../main/common/test/Assert");
+
+var _helpers = require("../src/helpers/helpers");
+
 var _common = require("./src/helpers/common");
 
 var _TestList = require("./src/helpers/TestList");
 
-describe('common > main > lists > List', function () {
+describe('common > main > lists > SortedList', function () {
   this.timeout(20000);
   const testList = _TestList.TestList.test;
   after(function () {
-    console.log('Total List tests >= ' + _TestList.TestList.totalListTests);
+    console.log('Total Sorted tests >= ' + _TestList.TestList.totalListTests);
   });
   it('constructor', function () {
     let list;
     list = new _SortedList.SortedList();
-    assert.strictEqual(list.size, 0);
-    assert.strictEqual(list.minAllocatedSize, undefined);
-    assert.strictEqual(list.allocatedSize, 0);
-    assert.strictEqual(list.compare, undefined);
-    assert.strictEqual(list.autoSort, undefined);
-    assert.strictEqual(list.notAddIfExists, undefined);
-    assert.deepStrictEqual(list.toArray(), []);
+
+    _TestList.assert.strictEqual(list.size, 0);
+
+    _TestList.assert.strictEqual(list.minAllocatedSize, undefined);
+
+    _TestList.assert.strictEqual(list.allocatedSize, 0);
+
+    _TestList.assert.strictEqual(list.compare, undefined);
+
+    _TestList.assert.strictEqual(list.autoSort, undefined);
+
+    _TestList.assert.strictEqual(list.notAddIfExists, undefined);
+
+    _TestList.assert.deepStrictEqual(list.toArray(), []);
+
     list = new _SortedList.SortedList({
       minAllocatedSize: 3
     });
-    assert.strictEqual(list.size, 0);
-    assert.strictEqual(list.minAllocatedSize, 3);
-    assert.strictEqual(list.allocatedSize, 0);
-    assert.strictEqual(list.compare, undefined);
-    assert.strictEqual(list.autoSort, undefined);
-    assert.strictEqual(list.notAddIfExists, undefined);
-    assert.deepStrictEqual(list.toArray(), []);
+
+    _TestList.assert.strictEqual(list.size, 0);
+
+    _TestList.assert.strictEqual(list.minAllocatedSize, 3);
+
+    _TestList.assert.strictEqual(list.allocatedSize, 0);
+
+    _TestList.assert.strictEqual(list.compare, undefined);
+
+    _TestList.assert.strictEqual(list.autoSort, undefined);
+
+    _TestList.assert.strictEqual(list.notAddIfExists, undefined);
+
+    _TestList.assert.deepStrictEqual(list.toArray(), []);
+
     let array = [0, 1, 2];
     list = new _SortedList.SortedList({
       array
     });
-    assert.strictEqual(list.size, 3);
-    assert.strictEqual(list.minAllocatedSize, undefined);
-    assert.strictEqual(list.allocatedSize, 3);
-    assert.strictEqual(list.compare, undefined);
-    assert.strictEqual(list.autoSort, undefined);
-    assert.strictEqual(list.notAddIfExists, undefined);
+
+    _TestList.assert.strictEqual(list.size, 3);
+
+    _TestList.assert.strictEqual(list.minAllocatedSize, undefined);
+
+    _TestList.assert.strictEqual(list.allocatedSize, 3);
+
+    _TestList.assert.strictEqual(list.compare, undefined);
+
+    _TestList.assert.strictEqual(list.autoSort, undefined);
+
+    _TestList.assert.strictEqual(list.notAddIfExists, undefined);
+
     let toArray = list.toArray();
-    assert.deepStrictEqual(toArray, [0, 1, 2]);
-    assert.notStrictEqual(toArray, array);
+
+    _TestList.assert.deepStrictEqual(toArray, [0, 1, 2]);
+
+    _TestList.assert.notStrictEqual(toArray, array);
+
     list = new _SortedList.SortedList({
       compare: _compare.compareFast
     });
-    assert.strictEqual(list.size, 0);
-    assert.strictEqual(list.minAllocatedSize, undefined);
-    assert.strictEqual(list.allocatedSize, 0);
-    assert.strictEqual(list.compare, _compare.compareFast);
-    assert.strictEqual(list.autoSort, undefined);
-    assert.strictEqual(list.notAddIfExists, undefined);
-    assert.deepStrictEqual(list.toArray(), []);
+
+    _TestList.assert.strictEqual(list.size, 0);
+
+    _TestList.assert.strictEqual(list.minAllocatedSize, undefined);
+
+    _TestList.assert.strictEqual(list.allocatedSize, 0);
+
+    _TestList.assert.strictEqual(list.compare, _compare.compareFast);
+
+    _TestList.assert.strictEqual(list.autoSort, undefined);
+
+    _TestList.assert.strictEqual(list.notAddIfExists, undefined);
+
+    _TestList.assert.deepStrictEqual(list.toArray(), []);
+
     list = new _SortedList.SortedList({
       array: array = [2, 1, 1, 1, 1, 3],
       notAddIfExists: true
     });
-    assert.strictEqual(list.size, 6);
-    assert.strictEqual(list.minAllocatedSize, undefined);
-    assert.strictEqual(list.allocatedSize, 6);
-    assert.strictEqual(list.compare, undefined);
-    assert.strictEqual(list.autoSort, undefined);
-    assert.strictEqual(list.notAddIfExists, true);
+
+    _TestList.assert.strictEqual(list.size, 6);
+
+    _TestList.assert.strictEqual(list.minAllocatedSize, undefined);
+
+    _TestList.assert.strictEqual(list.allocatedSize, 6);
+
+    _TestList.assert.strictEqual(list.compare, undefined);
+
+    _TestList.assert.strictEqual(list.autoSort, undefined);
+
+    _TestList.assert.strictEqual(list.notAddIfExists, true);
+
     toArray = list.toArray();
-    assert.deepStrictEqual(toArray, [2, 1, 1, 1, 1, 3]); // list.removeDuplicates()
+
+    _TestList.assert.deepStrictEqual(toArray, [2, 1, 1, 1, 1, 3]); // list.removeDuplicates()
     // assert.strictEqual(list.size, 3)
     // assert.deepStrictEqual(toArray, [2, 1, 3])
 
-    assert.notStrictEqual(toArray, array);
+
+    _TestList.assert.notStrictEqual(toArray, array);
+
     list.autoSort = false;
-    assert.deepStrictEqual(list.toArray(), [2, 1, 1, 1, 1, 3]);
-    assert.strictEqual(list.autoSort, false);
+
+    _TestList.assert.deepStrictEqual(list.toArray(), [2, 1, 1, 1, 1, 3]);
+
+    _TestList.assert.strictEqual(list.autoSort, false);
+
     list = new _SortedList.SortedList({
       array: array = [2, 1, 3],
       autoSort: true
     });
-    assert.strictEqual(list.size, 3);
-    assert.strictEqual(list.minAllocatedSize, undefined);
-    assert.strictEqual(list.allocatedSize, 3);
-    assert.strictEqual(list.compare, undefined);
-    assert.strictEqual(list.autoSort, true);
-    assert.strictEqual(list.notAddIfExists, undefined);
+
+    _TestList.assert.strictEqual(list.size, 3);
+
+    _TestList.assert.strictEqual(list.minAllocatedSize, undefined);
+
+    _TestList.assert.strictEqual(list.allocatedSize, 3);
+
+    _TestList.assert.strictEqual(list.compare, undefined);
+
+    _TestList.assert.strictEqual(list.autoSort, true);
+
+    _TestList.assert.strictEqual(list.notAddIfExists, undefined);
+
     toArray = list.toArray();
-    assert.deepStrictEqual(toArray, [1, 2, 3]);
-    assert.notStrictEqual(toArray, array);
+
+    _TestList.assert.deepStrictEqual(toArray, [1, 2, 3]);
+
+    _TestList.assert.notStrictEqual(toArray, array);
+
     list = new _SortedList.SortedList({
       array: array = [2, 3, 1],
       countSorted: 2
     });
-    assert.strictEqual(list.size, 3);
-    assert.strictEqual(list.minAllocatedSize, undefined);
-    assert.strictEqual(list.allocatedSize, 3);
-    assert.strictEqual(list.compare, undefined);
-    assert.strictEqual(list.autoSort, undefined);
-    assert.strictEqual(list.countSorted, 2);
-    assert.strictEqual(list.notAddIfExists, undefined);
+
+    _TestList.assert.strictEqual(list.size, 3);
+
+    _TestList.assert.strictEqual(list.minAllocatedSize, undefined);
+
+    _TestList.assert.strictEqual(list.allocatedSize, 3);
+
+    _TestList.assert.strictEqual(list.compare, undefined);
+
+    _TestList.assert.strictEqual(list.autoSort, undefined);
+
+    _TestList.assert.strictEqual(list.countSorted, 2);
+
+    _TestList.assert.strictEqual(list.notAddIfExists, undefined);
+
     toArray = list.toArray();
-    assert.deepStrictEqual(toArray, [2, 3, 1]);
-    assert.notStrictEqual(toArray, array);
+
+    _TestList.assert.deepStrictEqual(toArray, [2, 3, 1]);
+
+    _TestList.assert.notStrictEqual(toArray, array);
+
     list.autoSort = true;
-    assert.strictEqual(list.countSorted, 2);
+
+    _TestList.assert.strictEqual(list.countSorted, 2);
+
     list.get(0);
-    assert.strictEqual(list.countSorted, 3);
-    assert.deepStrictEqual(list.toArray(), [1, 2, 3]);
+
+    _TestList.assert.strictEqual(list.countSorted, 3);
+
+    _TestList.assert.deepStrictEqual(list.toArray(), [1, 2, 3]);
   });
   it('size', function () {
     const array = (0, _common.generateArray)(31);
@@ -117,46 +193,86 @@ describe('common > main > lists > List', function () {
       array,
       minAllocatedSize: 30
     });
-    assert.strictEqual(list.size, 31);
-    assert.strictEqual(list.allocatedSize, 31);
+
+    _TestList.assert.strictEqual(list.size, 31);
+
+    _TestList.assert.strictEqual(list.allocatedSize, 31);
+
     list.removeRange(-1);
-    assert.strictEqual(list.size, 30);
-    assert.strictEqual(list.allocatedSize, 31);
+
+    _TestList.assert.strictEqual(list.size, 30);
+
+    _TestList.assert.strictEqual(list.allocatedSize, 31);
+
     list.removeRange(-1);
-    assert.strictEqual(list.size, 29);
-    assert.strictEqual(list.allocatedSize, 31);
+
+    _TestList.assert.strictEqual(list.size, 29);
+
+    _TestList.assert.strictEqual(list.allocatedSize, 31);
+
     list.addArray([1, 2, 3, 4]);
-    assert.strictEqual(list.size, 33);
-    assert.strictEqual(list.allocatedSize, 33);
+
+    _TestList.assert.strictEqual(list.size, 33);
+
+    _TestList.assert.strictEqual(list.allocatedSize, 33);
+
     list.removeRange(-2);
-    assert.strictEqual(list.size, 31);
-    assert.strictEqual(list.allocatedSize, 33);
+
+    _TestList.assert.strictEqual(list.size, 31);
+
+    _TestList.assert.strictEqual(list.allocatedSize, 33);
+
     list.removeRange(-2);
-    assert.strictEqual(list.size, 29);
-    assert.strictEqual(list.allocatedSize, 33);
+
+    _TestList.assert.strictEqual(list.size, 29);
+
+    _TestList.assert.strictEqual(list.allocatedSize, 33);
+
     list.removeRange(-12);
-    assert.strictEqual(list.size, 17);
-    assert.strictEqual(list.allocatedSize, 33);
+
+    _TestList.assert.strictEqual(list.size, 17);
+
+    _TestList.assert.strictEqual(list.allocatedSize, 33);
+
     list.removeRange(-1);
-    assert.strictEqual(list.size, 16);
-    assert.strictEqual(list.allocatedSize, 32);
+
+    _TestList.assert.strictEqual(list.size, 16);
+
+    _TestList.assert.strictEqual(list.allocatedSize, 32);
+
     list.removeRange(-7);
-    assert.strictEqual(list.size, 9);
-    assert.strictEqual(list.allocatedSize, 32);
+
+    _TestList.assert.strictEqual(list.size, 9);
+
+    _TestList.assert.strictEqual(list.allocatedSize, 32);
+
     list.removeRange(-1);
-    assert.strictEqual(list.size, 8);
-    assert.strictEqual(list.allocatedSize, 32);
+
+    _TestList.assert.strictEqual(list.size, 8);
+
+    _TestList.assert.strictEqual(list.allocatedSize, 32);
+
     list.clear();
-    assert.strictEqual(list.size, 0);
-    assert.strictEqual(list.allocatedSize, 32);
+
+    _TestList.assert.strictEqual(list.size, 0);
+
+    _TestList.assert.strictEqual(list.allocatedSize, 32);
+
     list.minAllocatedSize = 17;
-    assert.strictEqual(list.allocatedSize, 32);
+
+    _TestList.assert.strictEqual(list.allocatedSize, 32);
+
     list.minAllocatedSize = 16;
-    assert.strictEqual(list.allocatedSize, 16);
+
+    _TestList.assert.strictEqual(list.allocatedSize, 16);
+
     list.minAllocatedSize = 15;
-    assert.strictEqual(list.allocatedSize, 16);
+
+    _TestList.assert.strictEqual(list.allocatedSize, 16);
+
     list.minAllocatedSize = 0;
-    assert.strictEqual(list.allocatedSize, 4);
+
+    _TestList.assert.strictEqual(list.allocatedSize, 4);
   });
   it('get', function () {
     testList({
@@ -361,7 +477,7 @@ describe('common > main > lists > List', function () {
   it('add', function () {
     function add(item) {
       return {
-        actions: [list => list.add(item), list => list.set(list.size, item), list => list.insert(list.size, item), list => list.addArray([item]), list => list.addIterable((0, _common.toIterable)([item]), 1), list => list.insertArray(list.size, [item]), list => list.insertIterable(list.size, (0, _common.toIterable)([item]), 1)],
+        actions: [list => list.add(item), list => list.set(list.size, item), list => list.insert(list.size, item), list => list.addArray([item]), list => list.addIterable((0, _helpers.createIterable)([item]), 1), list => list.insertArray(list.size, [item]), list => list.insertIterable(list.size, (0, _helpers.createIterable)([item]), 1)],
         description: `add(${JSON.stringify(item)})\n`
       };
     }
@@ -437,7 +553,7 @@ describe('common > main > lists > List', function () {
       }
 
       return {
-        actions: [list => list.addArray(sourceItems, sourceStart, sourceEnd), list => list.insertArray(list.size, sourceItems, sourceStart, sourceEnd), [list => list.addIterable(sourceItems.slice(start, end), end - start), list => list.addIterable((0, _common.toIterable)(sourceItems.slice(start, end)), end - start), list => list.insertIterable(list.size, sourceItems.slice(start, end), end - start), list => list.insertIterable(list.size, (0, _common.toIterable)(sourceItems.slice(start, end)), end - start)]],
+        actions: [list => list.addArray(sourceItems, sourceStart, sourceEnd), list => list.insertArray(list.size, sourceItems, sourceStart, sourceEnd), [list => list.addIterable(sourceItems.slice(start, end), end - start), list => list.addIterable((0, _helpers.createIterable)(sourceItems.slice(start, end)), end - start), list => list.insertIterable(list.size, sourceItems.slice(start, end), end - start), list => list.insertIterable(list.size, (0, _helpers.createIterable)(sourceItems.slice(start, end)), end - start)]],
         description: `arrArray(${JSON.stringify(sourceItems)}, ${sourceStart}, ${sourceEnd})\n`
       };
     }
@@ -528,7 +644,7 @@ describe('common > main > lists > List', function () {
   it('insert', function () {
     function insert(index, item) {
       return {
-        actions: [list => list.insert(index, item), list => list.insertArray(index, [item]), list => list.insertIterable(index, (0, _common.toIterable)([item]), 1)],
+        actions: [list => list.insert(index, item), list => list.insertArray(index, [item]), list => list.insertIterable(index, (0, _helpers.createIterable)([item]), 1)],
         description: `insert(${index}, ${JSON.stringify(item)})\n`
       };
     }
@@ -613,7 +729,7 @@ describe('common > main > lists > List', function () {
       }
 
       return {
-        actions: [list => list.insertArray(index, sourceItems, sourceStart, sourceEnd), [list => list.insertIterable(index, sourceItems.slice(start, end), end - start), list => list.insertIterable(index, (0, _common.toIterable)(sourceItems.slice(start, end)), end - start)]],
+        actions: [list => list.insertArray(index, sourceItems, sourceStart, sourceEnd), [list => list.insertIterable(index, sourceItems.slice(start, end), end - start), list => list.insertIterable(index, (0, _helpers.createIterable)(sourceItems.slice(start, end)), end - start)]],
         description: `insertArray(${index}, ${JSON.stringify(sourceItems)}, ${sourceStart}, ${sourceEnd})\n`
       };
     }
@@ -1090,7 +1206,7 @@ describe('common > main > lists > List', function () {
       }
 
       return {
-        actions: [list => list.removeArray(sourceItems, sourceStart, sourceEnd), [list => list.removeIterable(sourceItems.slice(start, end), end - start), list => list.removeIterable((0, _common.toIterable)(sourceItems.slice(start, end)), end - start)]],
+        actions: [list => list.removeArray(sourceItems, sourceStart, sourceEnd), [list => list.removeIterable(sourceItems.slice(start, end), end - start), list => list.removeIterable((0, _helpers.createIterable)(sourceItems.slice(start, end)), end - start)]],
         description: `removeArray(${JSON.stringify(sourceItems)}, ${sourceStart}, ${sourceEnd})\n`
       };
     }
@@ -1293,7 +1409,8 @@ describe('common > main > lists > List', function () {
     function copyTo(result, destArray, destIndex, start, end) {
       return {
         actions: [list => {
-          assert.strictEqual(list.copyTo(destArray, destIndex, start, end), result);
+          _TestList.assert.strictEqual(list.copyTo(destArray, destIndex, start, end), result);
+
           return destArray;
         }],
         description: `copyTo(${JSON.stringify(destArray)}, ${destIndex}, ${start}, ${end})\n`
@@ -1312,7 +1429,7 @@ describe('common > main > lists > List', function () {
     testList({
       array: [[]],
       expected: {
-        error: Error,
+        error: [Error, _Assert.AssertionError],
         returnValue: null,
         defaultValue: null
       },
@@ -1330,7 +1447,7 @@ describe('common > main > lists > List', function () {
     testList({
       array: [['0', '1', '2']],
       expected: {
-        error: Error,
+        error: [Error, _Assert.AssertionError],
         returnValue: ['0', '1'],
         defaultValue: null
       },
@@ -1339,7 +1456,7 @@ describe('common > main > lists > List', function () {
     testList({
       array: [['0', '1', '2']],
       expected: {
-        error: Error,
+        error: [Error, _Assert.AssertionError],
         returnValue: ['1', '2'],
         defaultValue: null
       },
@@ -1348,7 +1465,7 @@ describe('common > main > lists > List', function () {
     testList({
       array: [['0', '1', '2']],
       expected: {
-        error: Error,
+        error: [Error, _Assert.AssertionError],
         returnValue: ['0', '1', '2', '1', '2'],
         defaultValue: null
       },

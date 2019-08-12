@@ -13,8 +13,9 @@ var _subject = require("./subject");
 // eslint-disable-next-line no-shadow
 // tslint:disable-next-line:no-shadowed-variable
 function createHasSubscribersSubjectDefault(hasSubscribers) {
-  const subject = new _behavior.BehaviorSubject();
-  subject.value = hasSubscribers;
+  const subject = new _behavior.BehaviorSubject({
+    value: hasSubscribers
+  });
   subject.unsubscribeValue = null;
   return subject;
 }

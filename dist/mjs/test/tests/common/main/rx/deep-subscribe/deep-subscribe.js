@@ -1,6 +1,9 @@
+import _regeneratorRuntime from "@babel/runtime/regenerator";
+import _asyncToGenerator from "@babel/runtime/helpers/asyncToGenerator";
 import _toConsumableArray from "@babel/runtime/helpers/toConsumableArray";
 
 /* tslint:disable:no-construct use-primitive-type no-shadowed-variable no-duplicate-string no-empty max-line-length */
+import { delay } from '../../../../../../main/common/helpers/helpers';
 import { createObject, Tester } from './helpers/Tester';
 describe('common > main > rx > deep-subscribe > deep-subscribe', function () {
   var check = createObject();
@@ -301,6 +304,113 @@ describe('common > main > rx > deep-subscribe > deep-subscribe', function () {
       });
     }).subscribe([]).change(function (o) {}, [], []);
   });
+  it('promises',
+  /*#__PURE__*/
+  _asyncToGenerator(
+  /*#__PURE__*/
+  _regeneratorRuntime.mark(function _callee() {
+    var object, tester;
+    return _regeneratorRuntime.wrap(function _callee$(_context) {
+      while (1) {
+        switch (_context.prev = _context.next) {
+          case 0:
+            object = createObject();
+            object.observableObject.value = new Number(1);
+            tester = new Tester({
+              object: object.promiseSync,
+              immediate: true,
+              doNotSubscribeNonObjectValues: true
+            }, function (b) {
+              return b.path(function (o) {
+                return o.promiseAsync.value;
+              });
+            });
+            _context.next = 5;
+            return tester.subscribeAsync([new Number(1)]);
+
+          case 5:
+            _context.next = 7;
+            return delay(20);
+
+          case 7:
+            _context.next = 9;
+            return tester.changeAsync(function (o) {
+              return object.observableObject.value = new Number(2);
+            }, [new Number(1)], [new Number(2)]);
+
+          case 9:
+            _context.next = 11;
+            return delay(20);
+
+          case 11:
+            _context.next = 13;
+            return tester.unsubscribe([new Number(2)]);
+
+          case 13:
+            _context.next = 15;
+            return delay(100);
+
+          case 15:
+          case "end":
+            return _context.stop();
+        }
+      }
+    }, _callee);
+  })));
+  it('promises throw',
+  /*#__PURE__*/
+  _asyncToGenerator(
+  /*#__PURE__*/
+  _regeneratorRuntime.mark(function _callee2() {
+    var object, tester;
+    return _regeneratorRuntime.wrap(function _callee2$(_context2) {
+      while (1) {
+        switch (_context2.prev = _context2.next) {
+          case 0:
+            object = createObject();
+            object.observableObject.value = new Number(1);
+            tester = new Tester({
+              object: object.promiseSync,
+              immediate: true,
+              doNotSubscribeNonObjectValues: true,
+              useIncorrectUnsubscribe: true
+            }, function (b) {
+              return b.path(function (o) {
+                return o.promiseAsync.value;
+              });
+            });
+            _context2.next = 5;
+            return tester.subscribeAsync([new Number(1)]);
+
+          case 5:
+            _context2.next = 7;
+            return delay(20);
+
+          case 7:
+            _context2.next = 9;
+            return tester.changeAsync(function (o) {
+              return object.observableObject.value = new Number(2);
+            }, [], [new Number(2)], Error, /should return null\/undefined or unsubscribe function/);
+
+          case 9:
+            _context2.next = 11;
+            return delay(20);
+
+          case 11:
+            _context2.next = 13;
+            return tester.unsubscribe([]);
+
+          case 13:
+            _context2.next = 15;
+            return delay(100);
+
+          case 15:
+          case "end":
+            return _context2.stop();
+        }
+      }
+    }, _callee2);
+  })));
   it('lists', function () {
     var value = new Number(1);
     new Tester({
@@ -321,7 +431,7 @@ describe('common > main > rx > deep-subscribe > deep-subscribe', function () {
         return o.value;
       });
     }).subscribe([]).change(function (o) {
-      return o.observableObject.value = value;
+      return o.observableObject.target = value;
     }, [], [value]).change(function (o) {
       return o.observableList.add(value);
     }, [], []).change(function (o) {
@@ -347,7 +457,7 @@ describe('common > main > rx > deep-subscribe > deep-subscribe', function () {
         return o['#value'];
       });
     }).subscribe([]).change(function (o) {
-      return o.observableObject.value = value;
+      return o.observableObject.target = value;
     }, [], []).change(function (o) {
       return o.observableList.add(value);
     }, [], []).change(function (o) {
@@ -432,5 +542,29 @@ describe('common > main > rx > deep-subscribe > deep-subscribe', function () {
       delete b.rule.next.next.description;
       return b;
     }).subscribe([null], [null], Error, /unsubscribe function for non Object value/);
+  });
+  it('throws incorrect Unsubscribe', function () {
+    new Tester({
+      object: createObject().object,
+      immediate: true,
+      doNotSubscribeNonObjectValues: true,
+      useIncorrectUnsubscribe: true
+    }, function (b) {
+      return b.path(function (o) {
+        return o.object;
+      });
+    }).subscribe(function (o) {
+      return [o.object];
+    }, [], Error, /should return null\/undefined or unsubscribe function/);
+    new Tester({
+      object: createObject().object,
+      immediate: true,
+      // doNotSubscribeNonObjectValues: true,
+      useIncorrectUnsubscribe: true
+    }, function (b) {
+      return b.path(function (o) {
+        return o.object.value;
+      });
+    }).subscribe([null], [], Error, /should return null\/undefined or unsubscribe function/);
   });
 });

@@ -4,7 +4,7 @@ var _IMapChanged = require("../../../../../main/common/lists/contracts/IMapChang
 
 var _ObservableMap = require("../../../../../main/common/lists/ObservableMap");
 
-var _TestVariants = require("../helpers/TestVariants");
+var _TestVariants = require("../src/helpers/TestVariants");
 
 var _common = require("./src/helpers/common");
 
@@ -19,7 +19,8 @@ describe('common > main > lists > ObservableMap', function () {
   it('constructor', function () {
     let map;
     map = new _ObservableMap.ObservableMap();
-    assert.strictEqual(map.size, 0);
+
+    _TestMap.assert.strictEqual(map.size, 0);
   });
   it('set', function () {
     function setArray(list, array) {
@@ -85,7 +86,7 @@ describe('common > main > lists > ObservableMap', function () {
     const entriesShuffle = (0, _common.shuffle)(entries);
     testMap({
       array: [[]],
-      useObjectMap: [false],
+      innerMap: ['Map', 'Map<Object>', 'ObjectHashMap', 'ArrayMap'],
       expected: {
         array: entries,
         returnValue: _TestVariants.THIS,
@@ -165,7 +166,7 @@ describe('common > main > lists > ObservableMap', function () {
     const additional = [[[], {}], [{}, []]];
     testMap({
       array: [entries.concat(additional)],
-      useObjectMap: [false],
+      innerMap: ['Map', 'Map<Object>', 'ObjectHashMap', 'ArrayMap'],
       expected: {
         array: additional,
         returnValue: true,

@@ -10,7 +10,7 @@ function subscribeChildsObject(_ref) {
   var propertyChanged = object.propertyChanged;
 
   if (!propertyChanged) {
-    return;
+    return null;
   }
 
   var any = propertyPredicate(ANY, object);
@@ -32,7 +32,7 @@ function subscribeChildsList(_ref2) {
   var listChanged = object.listChanged;
 
   if (!listChanged) {
-    return;
+    return null;
   }
 
   if (!propertyPredicate(ANY, object)) {
@@ -77,7 +77,7 @@ function subscribeChildsSet(_ref4) {
   var setChanged = object.setChanged;
 
   if (!setChanged) {
-    return;
+    return null;
   }
 
   if (!propertyPredicate(ANY, object)) {
@@ -108,7 +108,7 @@ function subscribeChildsMap(_ref6) {
   var mapChanged = object.mapChanged;
 
   if (!mapChanged) {
-    return;
+    return null;
   }
 
   if (!propertyPredicate(ANY, object)) {

@@ -1,5 +1,7 @@
 "use strict";
 
+var _helpers = require("../../../../../../main/common/helpers/helpers");
+
 var _rules = require("../../../../../../main/common/rx/deep-subscribe/contracts/rules");
 
 var _PeekIterator = require("../../../../../../main/common/rx/deep-subscribe/helpers/PeekIterator");
@@ -7,6 +9,8 @@ var _PeekIterator = require("../../../../../../main/common/rx/deep-subscribe/hel
 var _iterateRule = require("../../../../../../main/common/rx/deep-subscribe/iterate-rule");
 
 var _RuleBuilder = require("../../../../../../main/common/rx/deep-subscribe/RuleBuilder");
+
+var _Assert = require("../../../../../../main/common/test/Assert");
 
 /* tslint:disable:no-shadowed-variable no-empty */
 
@@ -21,7 +25,7 @@ describe('common > main > rx > deep-subscribe > iterate-rule', function () {
   }
 
   function* resolveRules(ruleOrIterable) {
-    if (!ruleOrIterable[Symbol.iterator]) {
+    if (!(0, _helpers.isIterable)(ruleOrIterable)) {
       yield ruleOrIterable;
       return;
     }
@@ -56,7 +60,7 @@ describe('common > main > rx > deep-subscribe > iterate-rule', function () {
   }
 
   function* objectToPaths(obj, endValue, parentPath = '') {
-    assert.ok(obj, parentPath);
+    _Assert.assert.ok(obj, parentPath);
 
     if (obj._end === endValue) {
       yield parentPath;
@@ -83,16 +87,21 @@ describe('common > main > rx > deep-subscribe > iterate-rule', function () {
 
   function testIterateRule(buildRule, ...expectedPaths) {
     const result = (0, _iterateRule.iterateRule)(buildRule(new _RuleBuilder.RuleBuilder()).rule);
-    assert.ok(result);
+
+    _Assert.assert.ok(result);
+
     const object = {};
     const unsubscribe = rulesToObject(new _PeekIterator.PeekIterator(result[Symbol.iterator]()), object); // console.log(JSON.stringify(object, null, 4))
 
     let paths = Array.from(objectToPaths(object, true));
-    assert.deepStrictEqual(paths.sort(), expectedPaths.sort(), JSON.stringify(paths, null, 4));
+
+    _Assert.assert.deepStrictEqual(paths.sort(), expectedPaths.sort(), JSON.stringify(paths, null, 4));
+
     unsubscribe(); // console.log(JSON.stringify(object, null, 4))
 
     paths = Array.from(objectToPaths(object, false));
-    assert.deepStrictEqual(paths.sort(), expectedPaths.sort(), JSON.stringify(paths, null, 4));
+
+    _Assert.assert.deepStrictEqual(paths.sort(), expectedPaths.sort(), JSON.stringify(paths, null, 4));
   }
 
   it('path', function () {
@@ -128,11 +137,14 @@ describe('common > main > rx > deep-subscribe > iterate-rule', function () {
     Array.from((0, _iterateRule.iterateRule)({
       type: 0
     }));
-    assert.throws(() => Array.from((0, _iterateRule.iterateRule)({
+
+    _Assert.assert.throws(() => Array.from((0, _iterateRule.iterateRule)({
       type: -1
     })), Error);
-    assert.throws(() => new _RuleBuilder.RuleBuilder().repeat(1, 2, b => b), Error);
-    assert.throws(() => new _RuleBuilder.RuleBuilder().any(), Error);
+
+    _Assert.assert.throws(() => new _RuleBuilder.RuleBuilder().repeat(1, 2, b => b), Error);
+
+    _Assert.assert.throws(() => new _RuleBuilder.RuleBuilder().any(), Error);
   });
   it('specific', function () {
     testIterateRule(b => b.any(b => b.path(o => o.a), b => b.repeat(0, 0, b => b.path(o => o.b)).path(o => o.c)), 'a', 'c');

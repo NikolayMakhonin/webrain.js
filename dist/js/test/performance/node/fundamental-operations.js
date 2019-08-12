@@ -7,17 +7,31 @@ exports.compareDefault = compareDefault;
 
 var _rdtsc = require("rdtsc");
 
+var _synchronousPromise = require("synchronous-promise");
+
+var _helpers = require("../../../main/common/helpers/helpers");
+
+var _ThenableSync = require("../../../main/common/helpers/ThenableSync");
+
+var _ArraySet = require("../../../main/common/lists/ArraySet");
+
 var _array = require("../../../main/common/lists/helpers/array");
 
 var _objectUniqueId = require("../../../main/common/lists/helpers/object-unique-id");
 
 var _SortedList = require("../../../main/common/lists/SortedList");
 
-var _ArraySet = require("../../../main/common/lists/ArraySet");
-
 var _Tester = require("../../tests/common/main/rx/deep-subscribe/helpers/Tester");
 
-/* eslint-disable no-new-func,no-array-constructor,object-property-newline,no-undef,no-empty,no-shadow,no-prototype-builtins */
+/* tslint:disable:prefer-const no-identical-functions no-empty no-shadowed-variable */
+
+/* tslint:disable:no-var-requires one-variable-per-declaration */
+
+/* eslint-disable no-new-func,no-array-constructor,object-property-newline,no-undef */
+
+/* eslint-disable no-empty,no-shadow,no-prototype-builtins,prefer-destructuring */
+
+/* eslint-disable prefer-rest-params,arrow-body-style */
 const SetNative = Set;
 
 require('./src/SetPolyfill');
@@ -96,7 +110,7 @@ describe('fundamental-operations', function () {
     console.log(result);
   });
   xit('lambda vs function', function () {
-    this.timeout(300000);
+    this.timeout(300000); // noinspection JSUnusedLocalSymbols
 
     function f1(args) {
       const calc = () => {
@@ -813,7 +827,7 @@ describe('fundamental-operations', function () {
     }, () => timerId = setTimeout(func, 1000), () => clearTimeout(timerId));
     console.log(result);
   });
-  it('Math.max()', function () {
+  xit('Math.max()', function () {
     this.timeout(300000);
 
     const func = () => {};
@@ -829,6 +843,357 @@ describe('fundamental-operations', function () {
     } = this;
     const result = (0, _rdtsc.calcPerformance)(10000, () => {// no operations
     }, () => Math.max(this.value1, this.value2, this.value3), () => Math.max(value1, value2, value3));
+    console.log(result);
+  });
+  xit('"out" vs "set func" params', function () {
+    this.timeout(300000);
+
+    const funcOut = (a, out) => {
+      out[0] = a;
+      return Math.random() !== 0.5;
+    };
+
+    const funcSet = (a, set) => {
+      if (Math.random() !== 0.5) {
+        set(a);
+      }
+
+      return a;
+    };
+
+    const out = [];
+    const result = (0, _rdtsc.calcPerformance)(120000, () => {// no operations
+    }, () => {
+      const out0 = [];
+
+      if (funcOut(Math.random(), out0)) {
+        this.prop = out0[0];
+      }
+    }, () => {
+      if (funcOut(Math.random(), out)) {
+        this.prop = out[0];
+      }
+    }, () => {
+      funcSet(Math.random(), a => {
+        this.prop = a;
+      });
+    });
+    console.log(result);
+  });
+  xit('func params as object', function () {
+    this.timeout(300000);
+
+    const funcSimple = (param0, param1, param2, param3) => param0 || param1 || param2 || param3;
+
+    const funcObjectParams = ({
+      param0,
+      param1,
+      param2,
+      param3
+    } = {}) => param0 || param1 || param2 || param3;
+
+    const funcObjectParamsBabel = () => {
+      // eslint-disable-next-line one-var
+      const _ref = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : {},
+            param0 = _ref.param0,
+            param1 = _ref.param1,
+            param2 = _ref.param2,
+            param3 = _ref.param3;
+
+      return param0 || param1 || param2 || param3;
+    };
+
+    const result = (0, _rdtsc.calcPerformance)(120000, () => {// no operations
+    }, () => {
+      funcSimple(Math.random() < 0.5, Math.random() < 0.5, Math.random() < 0.5, Math.random() < 0.5);
+    }, () => {
+      funcObjectParams({
+        param0: Math.random() < 0.5,
+        param1: Math.random() < 0.5,
+        param2: Math.random() < 0.5,
+        param3: Math.random() < 0.5
+      });
+    }, () => {
+      // @ts-ignore
+      funcObjectParamsBabel({
+        param0: Math.random() < 0.5,
+        param1: Math.random() < 0.5,
+        param2: Math.random() < 0.5,
+        param3: Math.random() < 0.5
+      });
+    });
+    console.log(result);
+  });
+  xit('new Array(size)', function () {
+    this.timeout(300000);
+    const size = 1000;
+    const arrSimple = [];
+    const arrConstructor = new Array(size);
+    const arrConstructorFilled = new Array(size);
+
+    for (let i = 0; i < size; i++) {
+      arrSimple[i] = undefined;
+      arrConstructorFilled[i] = undefined;
+    }
+
+    let i = size / 2 | 0;
+    const result = (0, _rdtsc.calcPerformance)(120000, () => {// no operations
+    }, () => {
+      arrSimple[i] = i;
+      i = (i + 7) % size;
+      return arrSimple[i];
+    }, () => {
+      arrConstructorFilled[i] = i;
+      i = (i + 7) % size;
+      return arrConstructorFilled[i];
+    }, () => {
+      arrConstructor[i] = i;
+      i = (i + 7) % size;
+      return arrConstructor[i];
+    });
+    console.log(result);
+  });
+
+  function defineProperty(obj, propertyName) {
+    obj[propertyName] = 0;
+    Object.defineProperty(obj, propertyName, {
+      configurable: true,
+      enumerable: false,
+      writable: true,
+      value: 0
+    });
+  }
+
+  function definePropertyGetSet(obj, propertyName) {
+    obj[propertyName] = 0;
+    Object.defineProperty(obj, propertyName, {
+      configurable: true,
+      enumerable: false,
+      get: () => 0,
+
+      set(o) {}
+
+    });
+  }
+
+  it('delete property', function () {
+    this.timeout(300000);
+    const hashTable = {};
+
+    for (let i = 0; i < 10000; i++) {
+      hashTable[i] = i;
+    }
+
+    const obj = {};
+    const result = (0, _rdtsc.calcPerformance)(20000, () => {// no operations
+    }, () => {
+      // 154
+      obj.x = 0;
+    }, () => {
+      // 46
+      obj.x = void 0;
+    }, () => {
+      // 108
+      delete obj.x;
+    }, () => {
+      // 92
+      hashTable[Math.random() * 10000 | 0] = void 0;
+    }, () => {
+      // 395
+      delete hashTable[Math.random() * 10000 | 0];
+    }, () => {
+      // 2320
+      (0, _objectUniqueId.getObjectUniqueId)({});
+    }, () => {
+      // 1507
+      defineProperty(obj, 'x');
+    }, () => {
+      // 58
+      obj.x = void 0;
+    }, () => {
+      // 108
+      delete obj.x;
+    }, () => {
+      // 1860
+      definePropertyGetSet(obj, 'x');
+    }, () => {
+      // 909
+      obj.x = void 0;
+    }, () => {
+      // 119
+      delete obj.x;
+    }, () => {
+      // 5
+      return {};
+    });
+    console.log(result);
+  });
+  xit('Promise sync', function () {
+    this.timeout(300000);
+    const result = (0, _rdtsc.calcPerformance)(20000, () => {// no operations
+    }, () => {
+      let resolve;
+      new _synchronousPromise.SynchronousPromise(o => {
+        resolve = o;
+      }).then(o => true); // .then(o => true)
+
+      resolve(1);
+    }, () => {
+      let resolve;
+      new _ThenableSync.ThenableSync(o => {
+        resolve = o;
+      }).then(o => true); // .then(o => true)
+
+      resolve(1);
+    }, () => {
+      let resolve;
+      let result;
+      new _synchronousPromise.SynchronousPromise(o => {
+        resolve = o;
+      }).then(o => true).then(o => result = o);
+      resolve(1);
+    }, () => {
+      let resolve;
+      let result;
+      new _ThenableSync.ThenableSync(o => {
+        resolve = o;
+      }).then(o => true).then(o => result = o);
+      resolve(1);
+    });
+    console.log(result);
+  });
+  xit('is iterable', function () {
+    this.timeout(300000);
+    const iterable = true;
+    const iterable2 = {
+      *[Symbol.iterator]() {
+        for (let i = 0; i < 100; i++) {
+          if (Math.random() > 1) {
+            return 2;
+          }
+        }
+
+        yield 1;
+        return 0;
+      }
+
+    };
+    const result = (0, _rdtsc.calcPerformance)(20000, () => {// no operations
+    }, // () => {
+    // 	return iterable && Symbol.iterator in iterable
+    // },
+    // () => {
+    // 	return iterable != null && Symbol.iterator in iterable
+    () => {
+      // 0
+      return iterable && typeof iterable[Symbol.iterator] === 'function';
+    }, () => {
+      // 0
+      return iterable != null && typeof iterable[Symbol.iterator] === 'function';
+    }, () => {
+      // 100
+      return iterable && Symbol.iterator in Object(iterable);
+    }, () => {
+      // 100
+      return iterable != null && Symbol.iterator in Object(iterable);
+    }, () => {
+      // 0
+      return (0, _helpers.isIterable)(iterable);
+    });
+    console.log(result);
+  });
+  xit('array is associative', function () {
+    this.timeout(300000);
+    const arr = [];
+
+    for (let i = 0; i < 1000; i++) {
+      arr[i] = i;
+    }
+
+    const result = (0, _rdtsc.calcPerformance)(2000, () => {// no operations
+    }, () => {
+      return arr.length === Object.keys(arr).length;
+    });
+    console.log(result);
+  });
+  xit('Object.freeze', function () {
+    this.timeout(300000);
+    const result = (0, _rdtsc.calcPerformance)(2000, // () => {
+    // 	// no operations
+    () => {
+      const x = {};
+      return x;
+    }, () => {
+      const x = {};
+      Object.freeze(x);
+    }, () => {
+      const x = {};
+      (0, _objectUniqueId.getObjectUniqueId)(x);
+      Object.freeze(x);
+    }, () => {
+      const x = {};
+      (0, _objectUniqueId.freezeWithUniqueId)(x);
+    });
+    console.log(result);
+  });
+  xit('defineProperty', function () {
+    this.timeout(300000);
+    const hashTable = {};
+
+    for (let i = 0; i < 10000; i++) {
+      hashTable[i] = i;
+    }
+
+    class Class {
+      get value() {
+        return this._field;
+      }
+
+      set value(value) {
+        this._field = value;
+      }
+
+    }
+
+    const obj = new Class();
+    Object.defineProperty(obj, 'manual', {
+      configurable: true,
+      enumerable: true,
+
+      get() {
+        return this._manual;
+      },
+
+      set(value) {
+        this._manual = value;
+      }
+
+    });
+    Object.defineProperty(obj, 'hidden', {
+      configurable: true,
+      enumerable: false,
+      writable: true,
+      value: 0
+    });
+    const result = (0, _rdtsc.calcPerformance)(120000, () => {
+      return Math.random() && 1;
+    }, () => {
+      obj.x = Math.random(); // 0
+    }, () => {
+      return Math.random() && obj.x; // 4
+    }, () => {
+      obj.value = Math.random(); // 4
+    }, () => {
+      return Math.random() && obj.value; // 11
+    }, () => {
+      obj.manual = Math.random(); // 0
+    }, () => {
+      return Math.random() && obj.manual; // 27
+    }, () => {
+      obj.hidden = Math.random(); // 27
+    }, () => {
+      return Math.random() && obj.hidden; // 27
+    });
     console.log(result);
   });
 });

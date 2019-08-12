@@ -1,5 +1,6 @@
 /* eslint-disable no-useless-escape,computed-property-spacing */
 import { getFuncPropertiesPath, parsePropertiesPath, parsePropertiesPathString } from '../../../../../../../main/common/rx/deep-subscribe/helpers/func-properties-path';
+import { assert } from '../../../../../../../main/common/test/Assert';
 import { compileTest } from './src/func-properties-path';
 describe('common > main > rx > deep-subscribe > func-properties-path', function () {
   it('parsePropertiesPathString', function () {

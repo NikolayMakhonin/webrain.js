@@ -4,7 +4,9 @@ Object.defineProperty(exports, "__esModule", {
   value: true
 });
 exports.applyListChangedToArray = applyListChangedToArray;
-exports.TestList = void 0;
+exports.TestList = exports.assert = void 0;
+
+var _serializers = require("../../../../../../../main/common/extensions/serialization/serializers");
 
 var _IListChanged = require("../../../../../../../main/common/lists/contracts/IListChanged");
 
@@ -12,7 +14,23 @@ var _compare = require("../../../../../../../main/common/lists/helpers/compare")
 
 var _SortedList = require("../../../../../../../main/common/lists/SortedList");
 
-var _TestVariants = require("../../../helpers/TestVariants");
+var _Assert = require("../../../../../../../main/common/test/Assert");
+
+var _DeepCloneEqual = require("../../../../../../../main/common/test/DeepCloneEqual");
+
+var _TestVariants = require("../../../src/helpers/TestVariants");
+
+const assert = new _Assert.Assert(new _DeepCloneEqual.DeepCloneEqual({
+  commonOptions: {},
+  equalOptions: {
+    // noCrossReferences: true,
+    equalInnerReferences: true,
+    equalTypes: true,
+    equalMapSetOrder: true,
+    strictEqualFunctions: true
+  }
+}));
+exports.assert = assert;
 
 function applyListChangedToArray(event, array, compare) {
   switch (event.type) {
@@ -72,6 +90,20 @@ function equalsWithNaN(o1, o2) {
   return o1 === o2 || o1 !== o1 && o2 !== o2;
 }
 
+function testSerialization(list) {
+  const serialized = _serializers.ObjectSerializer.default.serialize(list);
+
+  const result = _serializers.ObjectSerializer.default.deSerialize(serialized);
+
+  assert.notStrictEqual(result, list);
+  assert.strictEqual(!!result.autoSort, !!list.autoSort);
+  assert.strictEqual(result.countSorted, list.countSorted);
+  assert.strictEqual(result.minAllocatedSize, list.minAllocatedSize);
+  assert.strictEqual(!!result.notAddIfExists, !!list.notAddIfExists);
+  assert.strictEqual(result.size, list.size);
+  assert.deepStrictEqual(result.toArray(), list.toArray());
+}
+
 function assertList(list, expectedArray) {
   assert.deepStrictEqual(list.toArray(), expectedArray);
   assert.strictEqual(list.size, expectedArray.length);
@@ -85,6 +117,7 @@ function assertList(list, expectedArray) {
   }
 
   assert.deepStrictEqual(Array.from(list), expectedArray);
+  testSerialization(list);
 }
 
 const staticArray = [];

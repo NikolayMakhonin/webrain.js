@@ -1,6 +1,11 @@
 import _regeneratorRuntime from "@babel/runtime/regenerator";
 import _classCallCheck from "@babel/runtime/helpers/classCallCheck";
 import _createClass from "@babel/runtime/helpers/createClass";
+import { createMergeMapWrapper, mergeMaps } from '../extensions/merge/merge-maps';
+import { registerMergeable } from '../extensions/merge/mergers';
+import { registerSerializable } from '../extensions/serialization/serializers';
+import { isIterable } from '../helpers/helpers';
+import { fillMap } from './helpers/set';
 var _Symbol$toStringTag = Symbol.toStringTag;
 var _Symbol$iterator = Symbol.iterator;
 export var ObjectMap =
@@ -120,7 +125,41 @@ function () {
     key: "values",
     value: function values() {
       return Object.values(this._object)[Symbol.iterator]();
+    } // region IMergeable
+
+  }, {
+    key: "_canMerge",
+    value: function _canMerge(source) {
+      if (source.constructor === ObjectMap && this._object === source._object) {
+        return null;
+      }
+
+      return source.constructor === Object || source[Symbol.toStringTag] === 'Map' || Array.isArray(source) || isIterable(source);
     }
+  }, {
+    key: "_merge",
+    value: function _merge(merge, older, newer, preferCloneOlder, preferCloneNewer, options) {
+      return mergeMaps(function (target, source) {
+        return createMergeMapWrapper(target, source, function (arrayOrIterable) {
+          return fillMap(new ObjectMap(), arrayOrIterable);
+        });
+      }, merge, this, older, newer, preferCloneOlder, preferCloneNewer, options);
+    } // endregion
+    // region ISerializable
+
+  }, {
+    key: "serialize",
+    value: function serialize(_serialize) {
+      return {
+        object: _serialize(this._object, {
+          objectKeepUndefined: true
+        })
+      };
+    }
+  }, {
+    key: "deSerialize",
+    value: function deSerialize(_deSerialize, serializedValue) {} // endregion
+
   }, {
     key: "size",
     get: function get() {
@@ -130,3 +169,33 @@ function () {
 
   return ObjectMap;
 }();
+ObjectMap.uuid = '62388f07-b21a-4778-8b38-58f225cdbd42';
+registerMergeable(ObjectMap);
+registerSerializable(ObjectMap, {
+  serializer: {
+    deSerialize:
+    /*#__PURE__*/
+    _regeneratorRuntime.mark(function deSerialize(_deSerialize2, serializedValue, valueFactory) {
+      var innerMap, value;
+      return _regeneratorRuntime.wrap(function deSerialize$(_context2) {
+        while (1) {
+          switch (_context2.prev = _context2.next) {
+            case 0:
+              _context2.next = 2;
+              return _deSerialize2(serializedValue.object);
+
+            case 2:
+              innerMap = _context2.sent;
+              value = valueFactory(innerMap);
+              value.deSerialize(_deSerialize2, serializedValue);
+              return _context2.abrupt("return", value);
+
+            case 6:
+            case "end":
+              return _context2.stop();
+          }
+        }
+      }, deSerialize);
+    })
+  }
+});

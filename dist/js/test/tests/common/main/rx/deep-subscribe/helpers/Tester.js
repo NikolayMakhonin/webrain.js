@@ -18,7 +18,21 @@ var _ObservableObject = require("../../../../../../../main/common/rx/object/Obse
 
 var _ObservableObjectBuilder = require("../../../../../../../main/common/rx/object/ObservableObjectBuilder");
 
+var _Assert = require("../../../../../../../main/common/test/Assert");
+
+var _DeepCloneEqual = require("../../../../../../../main/common/test/DeepCloneEqual");
+
+var _helpers = require("../../../../../../../main/common/helpers/helpers");
+
 /* tslint:disable:no-empty */
+const assert = new _Assert.Assert(new _DeepCloneEqual.DeepCloneEqual({
+  commonOptions: {},
+  equalOptions: {
+    equalInnerReferences: true,
+    equalMapSetOrder: true
+  }
+}));
+
 function createObject() {
   const object = {};
   const list = new _SortedList.SortedList(); // @ts-ignore
@@ -43,7 +57,13 @@ function createObject() {
     list,
     set,
     map,
-    value: null
+    value: null,
+    promiseSync: {
+      then: resolve => resolve(observableObject)
+    },
+    promiseAsync: {
+      then: resolve => setTimeout(() => resolve(observableObject), 0)
+    }
   });
   const observableObjectBuilder = new _ObservableObjectBuilder.ObservableObjectBuilder(observableObject);
   Object.keys(object).forEach(key => {
@@ -93,7 +113,8 @@ class Tester {
     immediate,
     ignoreSubscribeCount,
     performanceTest,
-    doNotSubscribeNonObjectValues
+    doNotSubscribeNonObjectValues,
+    useIncorrectUnsubscribe
   }, ...ruleBuilders) {
     this._object = object;
     this._immediate = immediate;
@@ -101,6 +122,7 @@ class Tester {
     this._performanceTest = performanceTest;
     this._doNotSubscribeNonObjectValues = doNotSubscribeNonObjectValues;
     this._ruleBuilders = ruleBuilders;
+    this._useIncorrectUnsubscribe = useIncorrectUnsubscribe;
     this._unsubscribe = ruleBuilders.map(o => null);
 
     if (!performanceTest) {
@@ -115,7 +137,7 @@ class Tester {
     }
 
     if (!this._ignoreSubscribeCount) {
-      assert.deepStrictEqual(subscribes, expectedSubscribes);
+      assert.circularDeepStrictEqual(subscribes, expectedSubscribes);
       return;
     }
 
@@ -129,29 +151,34 @@ class Tester {
     }
   }
 
+  subscribePrivate(ruleBuilder, i) {
+    this._unsubscribe[i] = (0, _deepSubscribe.deepSubscribe)(this._object, value => {
+      if (this._doNotSubscribeNonObjectValues && !(value instanceof Object)) {
+        return;
+      }
+
+      if (this._performanceTest) {
+        return () => {};
+      }
+
+      this._subscribed[i].push(value);
+
+      if (this._useIncorrectUnsubscribe) {
+        return 'Test Incorrect Unsubscribe';
+      }
+
+      return () => {
+        this._unsubscribed[i].push(value);
+      };
+    }, this._immediate, ruleBuilder);
+  } // region Sync
+
+
   subscribe(expectedSubscribed, expectedUnsubscribed, errorType, errorRegExp) {
-    const subscribe = (ruleBuilder, i) => {
-      this._unsubscribe[i] = (0, _deepSubscribe.deepSubscribe)(this._object, value => {
-        if (this._doNotSubscribeNonObjectValues && !(value instanceof Object)) {
-          return;
-        }
-
-        if (this._performanceTest) {
-          return () => {};
-        }
-
-        this._subscribed[i].push(value);
-
-        return () => {
-          this._unsubscribed[i].push(value);
-        };
-      }, this._immediate, ruleBuilder);
-    };
-
     if (this._performanceTest) {
       for (let i = 0; i < this._ruleBuilders.length; i++) {
         const ruleBuilder = this._ruleBuilders[i];
-        subscribe(ruleBuilder, i);
+        this.subscribePrivate(ruleBuilder, i);
       }
 
       return this;
@@ -164,9 +191,9 @@ class Tester {
       assert.deepStrictEqual(this._unsubscribed[i], []);
 
       if (errorType) {
-        assert.throws(() => subscribe(ruleBuilder, i), errorType, errorRegExp);
+        assert.throws(() => this.subscribePrivate(ruleBuilder, i), errorType, errorRegExp);
       } else {
-        subscribe(ruleBuilder, i);
+        this.subscribePrivate(ruleBuilder, i);
         expectedUnsubscribed = [];
       }
 
@@ -248,7 +275,117 @@ class Tester {
     }
 
     return this;
+  } // endregion
+  // rergion Async
+
+
+  async subscribeAsync(expectedSubscribed, expectedUnsubscribed, errorType, errorRegExp) {
+    if (this._performanceTest) {
+      for (let i = 0; i < this._ruleBuilders.length; i++) {
+        const ruleBuilder = this._ruleBuilders[i];
+        this.subscribePrivate(ruleBuilder, i);
+      }
+
+      return this;
+    }
+
+    for (let i = 0; i < this._ruleBuilders.length; i++) {
+      const ruleBuilder = this._ruleBuilders[i];
+      assert.ok(this._unsubscribe[i] == null);
+      assert.deepStrictEqual(this._subscribed[i], []);
+      assert.deepStrictEqual(this._unsubscribed[i], []);
+
+      if (errorType) {
+        assert.throws(() => this.subscribePrivate(ruleBuilder, i), errorType, errorRegExp);
+      } else {
+        this.subscribePrivate(ruleBuilder, i);
+        expectedUnsubscribed = [];
+      }
+
+      await (0, _helpers.delay)(10);
+      this.checkSubscribes(this._unsubscribed[i], expectedUnsubscribed);
+
+      if (!expectedSubscribed) {
+        assert.strictEqual(this._unsubscribe[i], null);
+        assert.deepStrictEqual(this._subscribed[i], []);
+      } else {
+        this.checkSubscribes(this._subscribed[i], expectedSubscribed);
+        this._subscribed[i] = [];
+      }
+    }
+
+    return this;
   }
+
+  async changeAsync(changeFunc, expectedUnsubscribed, expectedSubscribed, errorType, errorRegExp) {
+    if (this._performanceTest) {
+      changeFunc(this._object);
+      return this;
+    }
+
+    for (let i = 0; i < this._ruleBuilders.length; i++) {
+      assert.deepStrictEqual(this._subscribed[i], []);
+      assert.deepStrictEqual(this._unsubscribed[i], []);
+    }
+
+    if (typeof expectedUnsubscribed === 'function') {
+      expectedUnsubscribed = expectedUnsubscribed(this._object);
+    }
+
+    if (errorType) {
+      assert.throws(() => changeFunc(this._object), errorType, errorRegExp);
+    } else {
+      changeFunc(this._object);
+    }
+
+    await (0, _helpers.delay)(10);
+
+    for (let i = 0; i < this._ruleBuilders.length; i++) {
+      this.checkSubscribes(this._unsubscribed[i], expectedUnsubscribed);
+      this.checkSubscribes(this._subscribed[i], expectedSubscribed);
+      this._unsubscribed[i] = [];
+      this._subscribed[i] = [];
+    }
+
+    return this;
+  }
+
+  async unsubscribeAsync(expectedUnsubscribed, errorType, errorRegExp) {
+    if (this._performanceTest) {
+      for (let i = 0; i < this._ruleBuilders.length; i++) {
+        this._unsubscribe[i]();
+      }
+
+      return this;
+    }
+
+    for (let i = 0; i < this._ruleBuilders.length; i++) {
+      assert.ok(this._unsubscribe[i]);
+      assert.deepStrictEqual(this._subscribed[i], []);
+      assert.deepStrictEqual(this._unsubscribed[i], []);
+
+      if (errorType) {
+        assert.throws(() => this._unsubscribe[i](), errorType, errorRegExp);
+        assert.deepStrictEqual(this._subscribed[i], []);
+        assert.deepStrictEqual(this._unsubscribed[i], []);
+      } else {
+        this._unsubscribe[i]();
+
+        this._unsubscribe[i]();
+
+        this._unsubscribe[i]();
+
+        this._unsubscribe[i] = null;
+        await (0, _helpers.delay)(10);
+        this.checkSubscribes(this._unsubscribed[i], expectedUnsubscribed);
+        assert.deepStrictEqual(this._subscribed[i], []);
+        this._unsubscribed[i] = [];
+      }
+    }
+
+    return this;
+  } // endregion
+
 
 }
 

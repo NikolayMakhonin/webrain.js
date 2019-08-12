@@ -43,9 +43,10 @@ function (_PropertyChangedObjec) {
   }, {
     key: "_mapChangedIfCanEmit",
     get: function get() {
-      var _propertyChangedDisabled = this._propertyChangedDisabled,
-          _mapChanged = this._mapChanged;
-      return !_propertyChangedDisabled && _mapChanged && _mapChanged.hasSubscribers ? _mapChanged : null;
+      var __meta = this.__meta;
+      var propertyChangedDisabled = __meta ? __meta.propertyChangedDisabled : null;
+      var _mapChanged = this._mapChanged;
+      return !propertyChangedDisabled && _mapChanged && _mapChanged.hasSubscribers ? _mapChanged : null;
     }
   }]);
 

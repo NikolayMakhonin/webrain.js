@@ -493,13 +493,14 @@ describe('common > main > rx > deferred-calc > DeferredCalc', function() {
 
 	it('real timing', async function() {
 		let events: IEvent[] = []
+		const timeCoef = 2
 		const startTestTime = timingDefault.now()
 
 		const deferredCalc = new DeferredCalc({
-			autoInvalidateInterval: 9,
-			throttleTime: 10,
-			maxThrottleTime: 100,
-			minTimeBetweenCalc: 5,
+			autoInvalidateInterval: 9 * timeCoef,
+			throttleTime: 10 * timeCoef,
+			maxThrottleTime: 100 * timeCoef,
+			minTimeBetweenCalc: 5 * timeCoef,
 			canBeCalcCallback() {
 				events.push({
 					time: timingDefault.now() - startTestTime,
@@ -522,13 +523,13 @@ describe('common > main > rx > deferred-calc > DeferredCalc', function() {
 			},
 		})
 
-		await new Promise(resolve => setTimeout(resolve, 100))
+		await new Promise(resolve => setTimeout(resolve, 100 * timeCoef))
 		deferredCalc.autoInvalidateInterval = null
-		await new Promise(resolve => setTimeout(resolve, 10))
+		await new Promise(resolve => setTimeout(resolve, 10 * timeCoef))
 
 		for (let i = 0; i < events.length; i++) {
-			assert.ok(events[i].time >= 100)
-			assert.ok(events[i].time < 150)
+			assert.ok(events[i].time >= 100 * timeCoef)
+			assert.ok(events[i].time < 150 * timeCoef)
 		}
 
 		assertEvents(events.map(o => ({ type: o.type })), [
@@ -538,7 +539,7 @@ describe('common > main > rx > deferred-calc > DeferredCalc', function() {
 		])
 		events = []
 
-		await new Promise(resolve => setTimeout(resolve, 100))
+		await new Promise(resolve => setTimeout(resolve, 100 * timeCoef))
 
 		assert.deepStrictEqual(events, [])
 	})

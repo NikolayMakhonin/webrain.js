@@ -4,7 +4,18 @@ Object.defineProperty(exports, "__esModule", {
   value: true
 });
 exports.getDefaultValue = getDefaultValue;
-exports.SortedList = void 0;
+exports.createMergeSortedListWrapper = createMergeSortedListWrapper;
+exports.MergeSortedListWrapper = exports.SortedList = void 0;
+
+var _mergeMaps = require("../extensions/merge/merge-maps");
+
+var _mergeSets = require("../extensions/merge/merge-sets");
+
+var _mergers = require("../extensions/merge/mergers");
+
+var _serializers = require("../extensions/serialization/serializers");
+
+var _helpers = require("../helpers/helpers");
 
 var _ListChangedObject = require("./base/ListChangedObject");
 
@@ -13,6 +24,8 @@ var _IListChanged = require("./contracts/IListChanged");
 var _array2 = require("./helpers/array");
 
 var _compare2 = require("./helpers/compare");
+
+var _set = require("./helpers/set");
 
 function calcOptimalArraySize(desiredSize) {
   let optimalSize = 4;
@@ -672,10 +685,10 @@ class SortedList extends _ListChangedObject.ListChangedObject {
     if (i !== end) {
       // rollback
       try {
-        this._propertyChangedDisabled = true;
+        this.__meta.propertyChangedDisabled = true;
         this.removeRange(start, end);
       } finally {
-        this._propertyChangedDisabled = false;
+        this.__meta.propertyChangedDisabled = false;
       }
 
       throw new Error(`Iterable items size (${i - start}) less than itemsSize (${itemsSize})`);
@@ -1219,7 +1232,114 @@ class SortedList extends _ListChangedObject.ListChangedObject {
   // region Static
 
 
-}
+  // region IMergeable
+  _canMerge(source) {
+    if (source.constructor === SortedList && this._array === source._array && this._autoSort === source._autoSort && this._notAddIfExists === source._notAddIfExists) {
+      return null;
+    }
+
+    return this._autoSort && this._notAddIfExists && (source.constructor === Object || source[Symbol.toStringTag] === 'Set' || Array.isArray(source) || (0, _helpers.isIterable)(source));
+  }
+
+  _merge(merge, older, newer, preferCloneOlder, preferCloneNewer, options) {
+    return (0, _mergeMaps.mergeMaps)((target, source) => createMergeSortedListWrapper(target, source, arrayOrIterable => (0, _set.fillCollection)(new SortedList({
+      autoSort: true,
+      notAddIfExists: true,
+      compare: this.compare
+    }), arrayOrIterable, (c, o) => c.add(o))), merge, this, older, newer, preferCloneOlder, preferCloneNewer, options);
+  } // endregion
+  // region ISerializable
+
+
+  serialize(serialize) {
+    return {
+      array: serialize(this._array, {
+        arrayLength: this._size
+      }),
+      options: serialize({
+        autoSort: this._autoSort,
+        countSorted: this._countSorted,
+        minAllocatedSize: this._minAllocatedSize,
+        notAddIfExists: this._notAddIfExists
+      })
+    };
+  }
+
+  deSerialize(deSerialize, serializedValue) {} // endregion
+
+
+} // region Merge helpers
+
 
 exports.SortedList = SortedList;
 SortedList.compareDefault = _compare2.compareFast;
+SortedList.uuid = '1ec56e52-1aa5-4dd1-8471-a6185f22ed0a';
+
+class MergeSortedListWrapper {
+  constructor(list) {
+    if (!list.autoSort || !list.notAddIfExists) {
+      throw new Error('Cannot create IMergeMapWrapper with ' + `SortedList(autoSort = ${list.autoSort} (must be true), ` + `notAddIfExists = ${list.notAddIfExists} (must be true))`);
+    }
+
+    this._list = list;
+  }
+
+  delete(key) {
+    this._list.remove(key);
+  }
+
+  forEachKeys(callbackfn) {
+    for (const key of this._list) {
+      callbackfn(key);
+    }
+  }
+
+  get(key) {
+    return key;
+  }
+
+  has(key) {
+    return this._list.contains(key);
+  }
+
+  set(key, value) {
+    this._list.add(value);
+  }
+
+}
+
+exports.MergeSortedListWrapper = MergeSortedListWrapper;
+
+function createMergeSortedListWrapper(target, source, arrayOrIterableToSortedList) {
+  if (source.constructor === SortedList) {
+    return new MergeSortedListWrapper(source);
+  }
+
+  if (arrayOrIterableToSortedList && (Array.isArray(source) || (0, _helpers.isIterable)(source))) {
+    return createMergeSortedListWrapper(target, arrayOrIterableToSortedList(source), null);
+  }
+
+  return (0, _mergeSets.createMergeSetWrapper)(target, source);
+} // endregion
+
+
+(0, _mergers.registerMergeable)(SortedList, {
+  valueFactory: source => new SortedList({
+    autoSort: source.autoSort,
+    notAddIfExists: source.notAddIfExists,
+    compare: source.compare,
+    minAllocatedSize: source.minAllocatedSize
+  })
+});
+(0, _serializers.registerSerializable)(SortedList, {
+  serializer: {
+    *deSerialize(deSerialize, serializedValue, valueFactory) {
+      const options = yield deSerialize(serializedValue.options);
+      options.array = yield deSerialize(serializedValue.array);
+      const value = valueFactory(options);
+      value.deSerialize(deSerialize, serializedValue);
+      return value;
+    }
+
+  }
+});

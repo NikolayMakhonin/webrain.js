@@ -24,11 +24,13 @@ class SetChangedObject extends _PropertyChangedObject.PropertyChangedObject {
 
   onSetChanged(event) {
     const {
-      _propertyChangedDisabled,
+      propertyChangedDisabled
+    } = this.__meta;
+    const {
       _setChanged
     } = this;
 
-    if (_propertyChangedDisabled || !_setChanged || !_setChanged.hasSubscribers) {
+    if (propertyChangedDisabled || !_setChanged || !_setChanged.hasSubscribers) {
       return this;
     }
 
@@ -39,10 +41,12 @@ class SetChangedObject extends _PropertyChangedObject.PropertyChangedObject {
 
   get _setChangedIfCanEmit() {
     const {
-      _propertyChangedDisabled,
+      propertyChangedDisabled
+    } = this.__meta;
+    const {
       _setChanged
     } = this;
-    return !_propertyChangedDisabled && _setChanged && _setChanged.hasSubscribers ? _setChanged : null;
+    return !propertyChangedDisabled && _setChanged && _setChanged.hasSubscribers ? _setChanged : null;
   }
 
 }

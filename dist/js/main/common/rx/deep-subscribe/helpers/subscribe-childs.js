@@ -21,7 +21,7 @@ function subscribeChildsObject({
   } = object;
 
   if (!propertyChanged) {
-    return;
+    return null;
   }
 
   const any = propertyPredicate(_constants.ANY, object);
@@ -46,7 +46,7 @@ function subscribeChildsList({
   } = object;
 
   if (!listChanged) {
-    return;
+    return null;
   }
 
   if (!propertyPredicate(_constants.ANY, object)) {
@@ -94,7 +94,7 @@ function subscribeChildsSet({
   } = object;
 
   if (!setChanged) {
-    return;
+    return null;
   }
 
   if (!propertyPredicate(_constants.ANY, object)) {
@@ -128,7 +128,7 @@ function subscribeChildsMap({
   } = object;
 
   if (!mapChanged) {
-    return;
+    return null;
   }
 
   if (!propertyPredicate(_constants.ANY, object)) {

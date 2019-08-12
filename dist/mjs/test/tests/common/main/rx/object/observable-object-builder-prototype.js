@@ -8,7 +8,7 @@ import _inherits from "@babel/runtime/helpers/inherits";
 import { ObservableObject } from '../../../../../../main/common/rx/object/ObservableObject';
 import { ObservableObjectBuilder } from '../../../../../../main/common/rx/object/ObservableObjectBuilder';
 describe('common > main > rx > observable-object-builder-prototype', function () {
-  it('base', function () {
+  it('writable', function () {
     var BaseClass1 =
     /*#__PURE__*/
     function (_ObservableObject) {
@@ -207,5 +207,230 @@ describe('common > main > rx > observable-object-builder-prototype', function ()
     assert.deepStrictEqual(baseObject2.baseProp1, '2');
     assert.deepStrictEqual(object1.baseProp1, '4');
     assert.deepStrictEqual(object2.baseProp1, '7');
+  });
+  it('readable', function () {
+    var BaseClass1 =
+    /*#__PURE__*/
+    function (_ObservableObject2) {
+      _inherits(BaseClass1, _ObservableObject2);
+
+      function BaseClass1() {
+        _classCallCheck(this, BaseClass1);
+
+        return _possibleConstructorReturn(this, _getPrototypeOf(BaseClass1).apply(this, arguments));
+      }
+
+      return BaseClass1;
+    }(ObservableObject);
+
+    var BaseClass2 =
+    /*#__PURE__*/
+    function (_BaseClass4) {
+      _inherits(BaseClass2, _BaseClass4);
+
+      function BaseClass2() {
+        _classCallCheck(this, BaseClass2);
+
+        return _possibleConstructorReturn(this, _getPrototypeOf(BaseClass2).apply(this, arguments));
+      }
+
+      return BaseClass2;
+    }(BaseClass1);
+
+    var Class1 =
+    /*#__PURE__*/
+    function (_BaseClass5) {
+      _inherits(Class1, _BaseClass5);
+
+      function Class1() {
+        _classCallCheck(this, Class1);
+
+        return _possibleConstructorReturn(this, _getPrototypeOf(Class1).apply(this, arguments));
+      }
+
+      return Class1;
+    }(BaseClass1);
+
+    var Class2 =
+    /*#__PURE__*/
+    function (_BaseClass6) {
+      _inherits(Class2, _BaseClass6);
+
+      function Class2() {
+        _classCallCheck(this, Class2);
+
+        return _possibleConstructorReturn(this, _getPrototypeOf(Class2).apply(this, arguments));
+      }
+
+      return Class2;
+    }(BaseClass2);
+
+    var baseBuilder1 = new ObservableObjectBuilder(BaseClass1.prototype).readable('baseProp1');
+    var baseBuilder2 = new ObservableObjectBuilder(BaseClass2.prototype).readable('baseProp2');
+    var builder1 = new ObservableObjectBuilder(Class1.prototype).readable('prop1');
+    var builder2 = new ObservableObjectBuilder(Class2.prototype).readable('prop2');
+    var baseObject1 = new BaseClass1();
+    var baseObject2 = new BaseClass2();
+    var object1 = new Class1();
+    var object2 = new Class2(); // eslint-disable-next-line prefer-const
+
+    var baseResults1 = [];
+
+    var baseSubscriber1 = function baseSubscriber1(value) {
+      baseResults1.push(value);
+    }; // eslint-disable-next-line prefer-const
+
+
+    var baseResults2 = [];
+
+    var baseSubscriber2 = function baseSubscriber2(value) {
+      baseResults2.push(value);
+    }; // eslint-disable-next-line prefer-const
+
+
+    var results1 = [];
+
+    var subscriber1 = function subscriber1(value) {
+      results1.push(value);
+    }; // eslint-disable-next-line prefer-const
+
+
+    var results2 = [];
+
+    var subscriber2 = function subscriber2(value) {
+      results2.push(value);
+    };
+
+    var baseUnsubscribe1 = [];
+    var baseUnsubscribe2 = [];
+    var unsubscribe1 = [];
+    var unsubscribe2 = [];
+    assert.strictEqual(_typeof(baseUnsubscribe1[0] = baseObject1.deepPropertyChanged.subscribe(baseSubscriber1)), 'function');
+    assert.strictEqual(_typeof(baseUnsubscribe2[0] = baseObject2.deepPropertyChanged.subscribe(baseSubscriber2)), 'function');
+    assert.strictEqual(_typeof(unsubscribe1[0] = object1.deepPropertyChanged.subscribe(subscriber1)), 'function');
+    assert.strictEqual(_typeof(unsubscribe2[0] = object2.deepPropertyChanged.subscribe(subscriber2)), 'function');
+    baseBuilder1.readable('baseProp1', null, '1');
+    assert.deepStrictEqual(baseResults1, []);
+    baseResults1 = [];
+    assert.deepStrictEqual(baseResults2, []);
+    assert.deepStrictEqual(results1, []);
+    assert.deepStrictEqual(results2, []);
+    assert.deepStrictEqual(baseObject1.baseProp1, '1');
+    assert.deepStrictEqual(baseObject2.baseProp1, '1');
+    assert.deepStrictEqual(object1.baseProp1, '1');
+    assert.deepStrictEqual(object2.baseProp1, '1');
+    baseBuilder2.readable('baseProp1', {
+      factory: function factory() {
+        return '2';
+      }
+    });
+    assert.deepStrictEqual(baseResults1, []);
+    assert.deepStrictEqual(baseResults2, []);
+    baseResults2 = [];
+    assert.deepStrictEqual(results1, []);
+    assert.deepStrictEqual(results2, []);
+    assert.deepStrictEqual(baseObject1.baseProp1, '1');
+    assert.deepStrictEqual(baseObject2.baseProp1, '1');
+    assert.deepStrictEqual(object1.baseProp1, '1');
+    assert.deepStrictEqual(object2.baseProp1, '1');
+    delete baseObject1.baseProp1;
+    delete baseObject2.baseProp1;
+    delete object1.baseProp1;
+    delete object2.baseProp1;
+    assert.deepStrictEqual(baseResults1, []);
+    assert.deepStrictEqual(baseResults2, []);
+    baseResults2 = [];
+    assert.deepStrictEqual(results1, []);
+    assert.deepStrictEqual(results2, []);
+    assert.deepStrictEqual(baseObject1.baseProp1, '1');
+    assert.deepStrictEqual(baseObject2.baseProp1, '2');
+    assert.deepStrictEqual(object1.baseProp1, '1');
+    assert.deepStrictEqual(object2.baseProp1, '2');
+    baseBuilder2.readable('baseProp2', null, '3');
+    assert.deepStrictEqual(baseResults1, []);
+    assert.deepStrictEqual(baseResults2, []);
+    baseResults2 = [];
+    assert.deepStrictEqual(results1, []);
+    assert.deepStrictEqual(results2, []);
+    assert.deepStrictEqual(baseObject1.baseProp2, undefined);
+    assert.deepStrictEqual(baseObject2.baseProp2, '3');
+    assert.deepStrictEqual(object1.baseProp2, undefined);
+    assert.deepStrictEqual(object2.baseProp2, '3');
+    builder1.readable('baseProp1', {
+      factory: function factory() {
+        return '4';
+      }
+    });
+    assert.deepStrictEqual(baseResults1, []);
+    assert.deepStrictEqual(baseResults2, []);
+    assert.deepStrictEqual(results1, []);
+    results1 = [];
+    assert.deepStrictEqual(results2, []);
+    assert.deepStrictEqual(baseObject1.baseProp1, '1');
+    assert.deepStrictEqual(baseObject2.baseProp1, '2');
+    assert.deepStrictEqual(object1.baseProp1, '1');
+    delete object1.baseProp1;
+    assert.deepStrictEqual(object1.baseProp1, '4');
+    assert.deepStrictEqual(object2.baseProp1, '2');
+    builder2.readable('baseProp1', null, '5');
+    assert.deepStrictEqual(baseResults1, []);
+    assert.deepStrictEqual(baseResults2, []);
+    assert.deepStrictEqual(results1, []);
+    assert.deepStrictEqual(results2, []);
+    results2 = [];
+    assert.deepStrictEqual(baseObject1.baseProp1, '1');
+    assert.deepStrictEqual(baseObject2.baseProp1, '2');
+    assert.deepStrictEqual(object1.baseProp1, '4');
+    assert.deepStrictEqual(object2.baseProp1, '2');
+    delete object2.baseProp1;
+    assert.deepStrictEqual(object2.baseProp1, '5');
+    builder2.readable('baseProp2', {
+      factory: function factory() {
+        return '6';
+      }
+    });
+    assert.deepStrictEqual(baseResults1, []);
+    assert.deepStrictEqual(baseResults2, []);
+    assert.deepStrictEqual(results1, []);
+    assert.deepStrictEqual(results2, []);
+    results2 = [];
+    assert.deepStrictEqual(baseObject1.baseProp2, undefined);
+    assert.deepStrictEqual(baseObject2.baseProp2, '3');
+    assert.deepStrictEqual(object1.baseProp2, undefined);
+    assert.deepStrictEqual(object2.baseProp2, '3');
+    delete object2.baseProp2;
+    assert.deepStrictEqual(object2.baseProp2, '6');
+    new ObservableObjectBuilder(object2).readable('baseProp1', null, '7');
+    assert.deepStrictEqual(baseResults1, []);
+    assert.deepStrictEqual(baseResults2, []);
+    assert.deepStrictEqual(results1, []);
+    assert.deepStrictEqual(results2, [{
+      name: 'baseProp1',
+      newValue: '7',
+      oldValue: '5'
+    }]);
+    results2 = [];
+    assert.deepStrictEqual(baseObject1.baseProp1, '1');
+    assert.deepStrictEqual(baseObject2.baseProp1, '2');
+    assert.deepStrictEqual(object1.baseProp1, '4');
+    assert.deepStrictEqual(object2.baseProp1, '7');
+    new ObservableObjectBuilder(object2).readable('baseProp2', {
+      factory: function factory() {
+        return '8';
+      }
+    });
+    assert.deepStrictEqual(baseResults1, []);
+    assert.deepStrictEqual(baseResults2, []);
+    assert.deepStrictEqual(results1, []);
+    assert.deepStrictEqual(results2, [{
+      name: 'baseProp2',
+      newValue: '8',
+      oldValue: '6'
+    }]);
+    results2 = [];
+    assert.deepStrictEqual(baseObject1.baseProp2, undefined);
+    assert.deepStrictEqual(baseObject2.baseProp2, '3');
+    assert.deepStrictEqual(object1.baseProp2, undefined);
+    assert.deepStrictEqual(object2.baseProp2, '8');
   });
 });

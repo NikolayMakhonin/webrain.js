@@ -251,6 +251,27 @@ describe('common > main > rx > observable-object-builder', function () {
     assert.strictEqual(builder.object['prop'], null);
     assert.strictEqual(builder.object, object);
   });
+  it('readable factory', function () {
+    const {
+      object
+    } = new _ObservableObjectBuilder.ObservableObjectBuilder();
+    assert.ok(object instanceof _ObservableObject.ObservableObject);
+    const builder = new _ObservableObjectBuilder.ObservableObjectBuilder(object);
+    assert.strictEqual(builder.object, object);
+    assert.strictEqual(builder.readable('prop'), builder);
+    assert.strictEqual(builder.object['prop'], undefined);
+    let valueCreated = false;
+    assert.strictEqual(builder.readable('prop', {
+      factory() {
+        valueCreated = true;
+        return '2';
+      }
+
+    }), builder);
+    assert.strictEqual(valueCreated, false);
+    assert.strictEqual(builder.object['prop'], '2');
+    assert.strictEqual(valueCreated, true);
+  });
   it('writable simple', function () {
     const {
       object
@@ -324,9 +345,24 @@ describe('common > main > rx > observable-object-builder', function () {
     }]);
     results = [];
     assert.strictEqual(object['prop'], '1');
-    assert.strictEqual(builder.readable('prop', null, '1'), builder);
+    let valueCreated = false;
+    assert.strictEqual(builder.readable('prop', {
+      factory() {
+        assert.strictEqual(this, builder.object);
+        valueCreated = true;
+        return '1';
+      }
+
+    }), builder);
+    assert.strictEqual(valueCreated, false);
     assert.deepStrictEqual(hasSubscribers, []);
-    assert.deepStrictEqual(results, []);
+    assert.deepStrictEqual(results, [{
+      name: 'prop',
+      newValue: '1',
+      oldValue: '1'
+    }]);
+    results = [];
+    assert.strictEqual(valueCreated, true);
     assert.strictEqual(object['prop'], '1');
     assert.strictEqual(builder.readable('prop', null, 1), builder);
     assert.deepStrictEqual(hasSubscribers, []);

@@ -38,10 +38,12 @@ class ListChangedObject extends _PropertyChangedObject.PropertyChangedObject {
 
   get _listChangedIfCanEmit() {
     const {
-      _propertyChangedDisabled,
+      propertyChangedDisabled
+    } = this.__meta;
+    const {
       _listChanged
     } = this;
-    return !_propertyChangedDisabled && _listChanged && _listChanged.hasSubscribers ? _listChanged : null;
+    return !propertyChangedDisabled && _listChanged && _listChanged.hasSubscribers ? _listChanged : null;
   }
 
 }

@@ -1,17 +1,15 @@
 "use strict";
 
-var _interopRequireDefault = require("@babel/runtime/helpers/interopRequireDefault");
-
 Object.defineProperty(exports, "__esModule", {
   value: true
 });
 exports.main = main;
 exports.default = void 0;
 
-var _helpers = _interopRequireDefault(require("./helpers/helpers"));
+var _helpers = require("./helpers/helpers");
 
 function main(args) {
-  console.log(JSON.stringify(args), _helpers.default.test);
+  console.log(JSON.stringify(args), _helpers.isIterable);
 }
 
 var _default = {

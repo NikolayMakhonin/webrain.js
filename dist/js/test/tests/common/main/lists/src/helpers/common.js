@@ -4,10 +4,12 @@ Object.defineProperty(exports, "__esModule", {
   value: true
 });
 exports.generateArray = generateArray;
-exports.toIterable = toIterable;
 exports.shuffle = shuffle;
 exports.indexOfNaN = indexOfNaN;
+exports.convertToObject = convertToObject;
 exports.allValues = void 0;
+
+var _Assert = require("../../../../../../../main/common/test/Assert");
 
 function generateArray(size) {
   const arr = [];
@@ -17,12 +19,6 @@ function generateArray(size) {
   }
 
   return arr;
-}
-
-function* toIterable(array) {
-  for (const item of array) {
-    yield item;
-  }
 }
 
 function shuffle(array) {
@@ -40,4 +36,22 @@ function indexOfNaN(array) {
       return i;
     }
   }
+}
+
+const valueToObjectMap = new Map();
+
+function convertToObject(value) {
+  if (value && typeof value === 'object' && Object.prototype.hasOwnProperty.call(value, 'value')) {
+    _Assert.assert.fail('typeof value === ' + typeof value);
+  }
+
+  let obj = valueToObjectMap.get(value);
+
+  if (!obj) {
+    valueToObjectMap.set(value, obj = {
+      value
+    });
+  }
+
+  return obj;
 }

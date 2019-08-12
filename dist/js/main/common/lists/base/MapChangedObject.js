@@ -38,10 +38,13 @@ class MapChangedObject extends _PropertyChangedObject.PropertyChangedObject {
 
   get _mapChangedIfCanEmit() {
     const {
-      _propertyChangedDisabled,
+      __meta
+    } = this;
+    const propertyChangedDisabled = __meta ? __meta.propertyChangedDisabled : null;
+    const {
       _mapChanged
     } = this;
-    return !_propertyChangedDisabled && _mapChanged && _mapChanged.hasSubscribers ? _mapChanged : null;
+    return !propertyChangedDisabled && _mapChanged && _mapChanged.hasSubscribers ? _mapChanged : null;
   }
 
 }

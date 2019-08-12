@@ -8,7 +8,9 @@ exports.TestDeferredCalc = exports.timing = exports.EventType = void 0;
 
 var _DeferredCalc = require("../../../../../../../main/common/rx/deferred-calc/DeferredCalc");
 
-var _TestVariants = require("../../../helpers/TestVariants");
+var _Assert = require("../../../../../../../main/common/test/Assert");
+
+var _TestVariants = require("../../../src/helpers/TestVariants");
 
 var _timing = require("./timing");
 
@@ -33,9 +35,9 @@ staticDeferredCalc = new _DeferredCalc.DeferredCalc({
 
   canBeCalcCallback() {
     if (staticDeferredCalc) {
-      assert.strictEqual(this, staticDeferredCalc);
+      _Assert.assert.strictEqual(this, staticDeferredCalc);
     } else {
-      assert.ok(this);
+      _Assert.assert.ok(this);
     }
 
     staticEvents.push({
@@ -50,9 +52,9 @@ staticDeferredCalc = new _DeferredCalc.DeferredCalc({
 
   calcFunc(done) {
     if (staticDeferredCalc) {
-      assert.strictEqual(this, staticDeferredCalc);
+      _Assert.assert.strictEqual(this, staticDeferredCalc);
     } else {
-      assert.ok(this);
+      _Assert.assert.ok(this);
     }
 
     staticEvents.push({
@@ -69,9 +71,9 @@ staticDeferredCalc = new _DeferredCalc.DeferredCalc({
 
   calcCompletedCallback() {
     if (staticDeferredCalc) {
-      assert.strictEqual(this, staticDeferredCalc);
+      _Assert.assert.strictEqual(this, staticDeferredCalc);
     } else {
-      assert.ok(this);
+      _Assert.assert.ok(this);
     }
 
     staticEvents.push({
@@ -93,7 +95,8 @@ function eventsToDisplay(events) {
 function assertEvents(events, excepted) {
   events = eventsToDisplay(events);
   excepted = eventsToDisplay(excepted);
-  assert.deepStrictEqual(events, excepted);
+
+  _Assert.assert.deepStrictEqual(events, excepted);
 }
 
 class TestDeferredCalc extends _TestVariants.TestVariants {
@@ -105,7 +108,7 @@ class TestDeferredCalc extends _TestVariants.TestVariants {
       maxThrottleTime: [null],
       minTimeBetweenCalc: [null],
       autoInvalidateInterval: [null],
-      reuseSetInstance: [false, true],
+      reuseInstance: [false, true],
       autoCalc: [false]
     };
   }
@@ -117,11 +120,11 @@ class TestDeferredCalc extends _TestVariants.TestVariants {
       let unsubscribePropertyChanged;
 
       try {
-        let expectedEvents = options.expected.events.slice();
+        const expectedEvents = options.expected.events.slice();
         let events;
         let deferredCalc;
 
-        if (options.reuseSetInstance) {
+        if (options.reuseInstance) {
           staticCalcTime = 0;
           staticAutoCalc = false;
           staticDeferredCalc.minTimeBetweenCalc = null;
@@ -150,9 +153,9 @@ class TestDeferredCalc extends _TestVariants.TestVariants {
 
             canBeCalcCallback() {
               if (deferredCalc) {
-                assert.strictEqual(this, deferredCalc);
+                _Assert.assert.strictEqual(this, deferredCalc);
               } else {
-                assert.ok(this);
+                _Assert.assert.ok(this);
               }
 
               events.push({
@@ -167,9 +170,9 @@ class TestDeferredCalc extends _TestVariants.TestVariants {
 
             calcFunc(done) {
               if (deferredCalc) {
-                assert.strictEqual(this, deferredCalc);
+                _Assert.assert.strictEqual(this, deferredCalc);
               } else {
-                assert.ok(this);
+                _Assert.assert.ok(this);
               }
 
               events.push({
@@ -186,9 +189,9 @@ class TestDeferredCalc extends _TestVariants.TestVariants {
 
             calcCompletedCallback() {
               if (deferredCalc) {
-                assert.strictEqual(this, deferredCalc);
+                _Assert.assert.strictEqual(this, deferredCalc);
               } else {
-                assert.ok(this);
+                _Assert.assert.ok(this);
               }
 
               events.push({
@@ -213,9 +216,9 @@ class TestDeferredCalc extends _TestVariants.TestVariants {
         }
 
         if (options.expected.error) {
-          assert.throws(() => options.action(deferredCalc), options.expected.error);
+          _Assert.assert.throws(() => options.action(deferredCalc), options.expected.error);
         } else {
-          assert.deepStrictEqual(options.action(deferredCalc), options.expected.returnValue === _TestVariants.THIS ? deferredCalc : options.expected.returnValue);
+          _Assert.assert.deepStrictEqual(options.action(deferredCalc), options.expected.returnValue === _TestVariants.THIS ? deferredCalc : options.expected.returnValue);
         }
 
         assertEvents(events, expectedEvents);
@@ -227,7 +230,8 @@ class TestDeferredCalc extends _TestVariants.TestVariants {
           unsubscribePropertyChanged();
         }
 
-        assert.deepStrictEqual(propertyChangedEvents, options.expected.propertyChanged || []);
+        _Assert.assert.deepStrictEqual(propertyChangedEvents, options.expected.propertyChanged || []);
+
         break;
       } catch (ex) {
         if (!debugIteration) {

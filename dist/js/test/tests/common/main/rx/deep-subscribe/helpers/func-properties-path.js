@@ -2,6 +2,8 @@
 
 var _funcPropertiesPath = require("../../../../../../../main/common/rx/deep-subscribe/helpers/func-properties-path");
 
+var _Assert = require("../../../../../../../main/common/test/Assert");
+
 var _funcPropertiesPath2 = require("./src/func-properties-path");
 
 /* eslint-disable no-useless-escape,computed-property-spacing */
@@ -10,7 +12,7 @@ describe('common > main > rx > deep-subscribe > func-properties-path', function 
     const path = '. o[ "\\`\\"\\\'\\\\`\'[]]" ] . o [ 0 ] . o [ \'\\`\\"\\\'\\\\`"][]\' ] . o';
 
     function testParse(funcStr) {
-      assert.strictEqual((0, _funcPropertiesPath.parsePropertiesPathString)(funcStr), path);
+      _Assert.assert.strictEqual((0, _funcPropertiesPath.parsePropertiesPathString)(funcStr), path);
     }
 
     testParse(`(a) => a ${path}`);
@@ -27,16 +29,20 @@ describe('common > main > rx > deep-subscribe > func-properties-path', function 
     testParse(`function funcName (e /*/** comment ***/ )  {  coverage() \n return ( coverage(), ( coverage(), e ${path}}`);
     testParse(` funcName (f /* comment */ )  {  coverage()  return f ${path}}`);
     testParse(new Function('o', `coverage() \n return o${path}`));
-    assert.throws(() => (0, _funcPropertiesPath.parsePropertiesPathString)(''), Error);
-    assert.throws(() => (0, _funcPropertiesPath.parsePropertiesPathString)(`(a) => b ${path}`), Error);
-    assert.throws(() => (0, _funcPropertiesPath.parsePropertiesPathString)(`b => ( ( c ${path} ) ) `), Error);
-    assert.throws(() => (0, _funcPropertiesPath.parsePropertiesPathString)(new Function('w', `return o${path}`)), Error);
+
+    _Assert.assert.throws(() => (0, _funcPropertiesPath.parsePropertiesPathString)(''), Error);
+
+    _Assert.assert.throws(() => (0, _funcPropertiesPath.parsePropertiesPathString)(`(a) => b ${path}`), Error);
+
+    _Assert.assert.throws(() => (0, _funcPropertiesPath.parsePropertiesPathString)(`b => ( ( c ${path} ) ) `), Error);
+
+    _Assert.assert.throws(() => (0, _funcPropertiesPath.parsePropertiesPathString)(new Function('w', `return o${path}`)), Error);
   });
   it('parsePropertiesPath', function () {
     const path = '. o[ "\\`\\"\\\'\\\\`\'[]]" ] . o [ 0 ] . o [ \'\\`\\"\\\'\\\\`"][]\' ] . o';
 
     function assertParse(properties) {
-      assert.deepStrictEqual(properties, ['o', '`\"\'\\`\'[]]', 'o', '0', 'o', '`\"\'\\`\"][]', 'o']);
+      _Assert.assert.deepStrictEqual(properties, ['o', '`\"\'\\`\'[]]', 'o', '0', 'o', '`\"\'\\`\"][]', 'o']);
     }
 
     function testParse(propertiesPath) {
@@ -54,6 +60,7 @@ describe('common > main > rx > deep-subscribe > func-properties-path', function 
     (0, _funcPropertiesPath2.compileTest)().forEach(result => {
       assertParse(result);
     });
-    assert.throws(() => (0, _funcPropertiesPath.parsePropertiesPath)('.' + path), Error);
+
+    _Assert.assert.throws(() => (0, _funcPropertiesPath.parsePropertiesPath)('.' + path), Error);
   });
 });

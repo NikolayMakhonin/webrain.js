@@ -1,10 +1,16 @@
+import _regeneratorRuntime from "@babel/runtime/regenerator";
 import _classCallCheck from "@babel/runtime/helpers/classCallCheck";
 import _createClass from "@babel/runtime/helpers/createClass";
 import _possibleConstructorReturn from "@babel/runtime/helpers/possibleConstructorReturn";
 import _getPrototypeOf from "@babel/runtime/helpers/getPrototypeOf";
 import _inherits from "@babel/runtime/helpers/inherits";
+import { createMergeMapWrapper, mergeMaps } from '../extensions/merge/merge-maps';
+import { registerMergeable } from '../extensions/merge/mergers';
+import { registerSerializable } from '../extensions/serialization/serializers';
+import { isIterable } from '../helpers/helpers';
 import { MapChangedObject } from './base/MapChangedObject';
 import { MapChangedType } from './contracts/IMapChanged';
+import { fillMap } from './helpers/set';
 var _Symbol$toStringTag = Symbol.toStringTag;
 var _Symbol$iterator = Symbol.iterator;
 export var ObservableMap =
@@ -174,6 +180,46 @@ function (_MapChangedObject) {
     value: function values() {
       return this._map.values();
     } // endregion
+    // region IMergeable
+
+  }, {
+    key: "_canMerge",
+    value: function _canMerge(source) {
+      var _map = this._map;
+
+      if (_map.canMerge) {
+        return _map.canMerge(source);
+      }
+
+      if (source.constructor === ObservableMap && this._map === source._map) {
+        return null;
+      }
+
+      return source.constructor === Object || source[Symbol.toStringTag] === 'Map' || Array.isArray(source) || isIterable(source);
+    }
+  }, {
+    key: "_merge",
+    value: function _merge(merge, older, newer, preferCloneOlder, preferCloneNewer, options) {
+      var _this3 = this;
+
+      return mergeMaps(function (target, source) {
+        return createMergeMapWrapper(target, source, function (arrayOrIterable) {
+          return fillMap(new _this3._map.constructor(), arrayOrIterable);
+        });
+      }, merge, this, older, newer, preferCloneOlder, preferCloneNewer, options);
+    } // endregion
+    // region ISerializable
+
+  }, {
+    key: "serialize",
+    value: function serialize(_serialize) {
+      return {
+        map: _serialize(this._map)
+      };
+    }
+  }, {
+    key: "deSerialize",
+    value: function deSerialize(_deSerialize, serializedValue) {} // endregion
 
   }, {
     key: "size",
@@ -184,3 +230,33 @@ function (_MapChangedObject) {
 
   return ObservableMap;
 }(MapChangedObject);
+ObservableMap.uuid = 'e162178d-5123-4bea-ab6e-b96d5b8f130b';
+registerMergeable(ObservableMap);
+registerSerializable(ObservableMap, {
+  serializer: {
+    deSerialize:
+    /*#__PURE__*/
+    _regeneratorRuntime.mark(function deSerialize(_deSerialize2, serializedValue, valueFactory) {
+      var innerMap, value;
+      return _regeneratorRuntime.wrap(function deSerialize$(_context) {
+        while (1) {
+          switch (_context.prev = _context.next) {
+            case 0:
+              _context.next = 2;
+              return _deSerialize2(serializedValue.map);
+
+            case 2:
+              innerMap = _context.sent;
+              value = valueFactory(innerMap);
+              value.deSerialize(_deSerialize2, serializedValue);
+              return _context.abrupt("return", value);
+
+            case 6:
+            case "end":
+              return _context.stop();
+          }
+        }
+      }, deSerialize);
+    })
+  }
+});

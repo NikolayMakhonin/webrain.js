@@ -4,6 +4,8 @@ var _DeferredCalc = require("../../../../../../main/common/rx/deferred-calc/Defe
 
 var _timing = require("../../../../../../main/common/rx/deferred-calc/timing");
 
+var _Assert = require("../../../../../../main/common/test/Assert");
+
 var _TestDeferred = require("./src/TestDeferred");
 
 var _timing2 = require("./src/timing");
@@ -441,14 +443,15 @@ describe('common > main > rx > deferred-calc > DeferredCalc', function () {
   });
   it('real timing', async function () {
     let events = [];
+    const timeCoef = 2;
 
     const startTestTime = _timing.timingDefault.now();
 
     const deferredCalc = new _DeferredCalc.DeferredCalc({
-      autoInvalidateInterval: 9,
-      throttleTime: 10,
-      maxThrottleTime: 100,
-      minTimeBetweenCalc: 5,
+      autoInvalidateInterval: 9 * timeCoef,
+      throttleTime: 10 * timeCoef,
+      maxThrottleTime: 100 * timeCoef,
+      minTimeBetweenCalc: 5 * timeCoef,
 
       canBeCalcCallback() {
         events.push({
@@ -474,13 +477,14 @@ describe('common > main > rx > deferred-calc > DeferredCalc', function () {
       }
 
     });
-    await new Promise(resolve => setTimeout(resolve, 100));
+    await new Promise(resolve => setTimeout(resolve, 100 * timeCoef));
     deferredCalc.autoInvalidateInterval = null;
-    await new Promise(resolve => setTimeout(resolve, 10));
+    await new Promise(resolve => setTimeout(resolve, 10 * timeCoef));
 
     for (let i = 0; i < events.length; i++) {
-      assert.ok(events[i].time >= 100);
-      assert.ok(events[i].time < 150);
+      _Assert.assert.ok(events[i].time >= 100 * timeCoef);
+
+      _Assert.assert.ok(events[i].time < 150 * timeCoef);
     }
 
     (0, _TestDeferred.assertEvents)(events.map(o => ({
@@ -493,8 +497,9 @@ describe('common > main > rx > deferred-calc > DeferredCalc', function () {
       type: _TestDeferred.EventType.Completed
     }]);
     events = [];
-    await new Promise(resolve => setTimeout(resolve, 100));
-    assert.deepStrictEqual(events, []);
+    await new Promise(resolve => setTimeout(resolve, 100 * timeCoef));
+
+    _Assert.assert.deepStrictEqual(events, []);
   });
   it('properties', async function () {
     const canBeCalcCallback = () => {};
@@ -513,17 +518,26 @@ describe('common > main > rx > deferred-calc > DeferredCalc', function () {
       calcCompletedCallback: () => {},
       timing: new _timing2.TestTiming()
     });
-    assert.strictEqual(deferredCalc.autoInvalidateInterval, 1);
-    assert.strictEqual(deferredCalc.throttleTime, 2);
-    assert.strictEqual(deferredCalc.maxThrottleTime, 3);
-    assert.strictEqual(deferredCalc.minTimeBetweenCalc, 4);
+
+    _Assert.assert.strictEqual(deferredCalc.autoInvalidateInterval, 1);
+
+    _Assert.assert.strictEqual(deferredCalc.throttleTime, 2);
+
+    _Assert.assert.strictEqual(deferredCalc.maxThrottleTime, 3);
+
+    _Assert.assert.strictEqual(deferredCalc.minTimeBetweenCalc, 4);
+
     deferredCalc.autoInvalidateInterval = 11;
     deferredCalc.throttleTime = 12;
     deferredCalc.maxThrottleTime = 13;
     deferredCalc.minTimeBetweenCalc = 14;
-    assert.strictEqual(deferredCalc.autoInvalidateInterval, 11);
-    assert.strictEqual(deferredCalc.throttleTime, 12);
-    assert.strictEqual(deferredCalc.maxThrottleTime, 13);
-    assert.strictEqual(deferredCalc.minTimeBetweenCalc, 14);
+
+    _Assert.assert.strictEqual(deferredCalc.autoInvalidateInterval, 11);
+
+    _Assert.assert.strictEqual(deferredCalc.throttleTime, 12);
+
+    _Assert.assert.strictEqual(deferredCalc.maxThrottleTime, 13);
+
+    _Assert.assert.strictEqual(deferredCalc.minTimeBetweenCalc, 14);
   });
 });

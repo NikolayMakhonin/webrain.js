@@ -1,5 +1,7 @@
 "use strict";
 
+var _helpers = require("../../../../../../main/common/helpers/helpers");
+
 var _Tester = require("./helpers/Tester");
 
 /* tslint:disable:no-construct use-primitive-type no-shadowed-variable no-duplicate-string no-empty max-line-length */
@@ -86,6 +88,37 @@ describe('common > main > rx > deep-subscribe > deep-subscribe', function () {
       doNotSubscribeNonObjectValues: true
     }, b => b.path(o => o['object|observableObject'].value)).subscribe([]).change(o => {}, [], []);
   });
+  it('promises', async function () {
+    const object = (0, _Tester.createObject)();
+    object.observableObject.value = new Number(1);
+    const tester = new _Tester.Tester({
+      object: object.promiseSync,
+      immediate: true,
+      doNotSubscribeNonObjectValues: true
+    }, b => b.path(o => o.promiseAsync.value));
+    await tester.subscribeAsync([new Number(1)]);
+    await (0, _helpers.delay)(20);
+    await tester.changeAsync(o => object.observableObject.value = new Number(2), [new Number(1)], [new Number(2)]);
+    await (0, _helpers.delay)(20);
+    await tester.unsubscribe([new Number(2)]);
+    await (0, _helpers.delay)(100);
+  });
+  it('promises throw', async function () {
+    const object = (0, _Tester.createObject)();
+    object.observableObject.value = new Number(1);
+    const tester = new _Tester.Tester({
+      object: object.promiseSync,
+      immediate: true,
+      doNotSubscribeNonObjectValues: true,
+      useIncorrectUnsubscribe: true
+    }, b => b.path(o => o.promiseAsync.value));
+    await tester.subscribeAsync([new Number(1)]);
+    await (0, _helpers.delay)(20);
+    await tester.changeAsync(o => object.observableObject.value = new Number(2), [], [new Number(2)], Error, /should return null\/undefined or unsubscribe function/);
+    await (0, _helpers.delay)(20);
+    await tester.unsubscribe([]);
+    await (0, _helpers.delay)(100);
+  });
   it('lists', function () {
     const value = new Number(1);
     new _Tester.Tester({
@@ -93,13 +126,13 @@ describe('common > main > rx > deep-subscribe > deep-subscribe', function () {
       immediate: true,
       ignoreSubscribeCount: true,
       doNotSubscribeNonObjectValues: true
-    }, b => b.repeat(1, 3, b => b.any(b => b.propertyRegexp(/object|observableObject/), b => b.path(o => o['list|set|map|observableList|observableSet|observableMap']['#']))).path(o => o.value)).subscribe([]).change(o => o.observableObject.value = value, [], [value]).change(o => o.observableList.add(value), [], []).change(o => o.observableSet.add(value), [], []).change(o => o.observableMap.set('value', value), [], []).unsubscribe([value]);
+    }, b => b.repeat(1, 3, b => b.any(b => b.propertyRegexp(/object|observableObject/), b => b.path(o => o['list|set|map|observableList|observableSet|observableMap']['#']))).path(o => o.value)).subscribe([]).change(o => o.observableObject.target = value, [], [value]).change(o => o.observableList.add(value), [], []).change(o => o.observableSet.add(value), [], []).change(o => o.observableMap.set('value', value), [], []).unsubscribe([value]);
     new _Tester.Tester({
       object: (0, _Tester.createObject)().object,
       immediate: true,
       ignoreSubscribeCount: true,
       doNotSubscribeNonObjectValues: true
-    }, b => b.repeat(1, 3, b => b.any(b => b.propertyRegexp(/object|observableObject/), b => b.path(o => o['list|set|map|observableList|observableSet|observableMap']['#']))).path(o => o['#value'])).subscribe([]).change(o => o.observableObject.value = value, [], []).change(o => o.observableList.add(value), [], []).change(o => o.observableSet.add(value), [], []).change(o => o.observableMap.set('value', value), [], [value]).unsubscribe([value]); // new Tester(
+    }, b => b.repeat(1, 3, b => b.any(b => b.propertyRegexp(/object|observableObject/), b => b.path(o => o['list|set|map|observableList|observableSet|observableMap']['#']))).path(o => o['#value'])).subscribe([]).change(o => o.observableObject.target = value, [], []).change(o => o.observableList.add(value), [], []).change(o => o.observableSet.add(value), [], []).change(o => o.observableMap.set('value', value), [], [value]).unsubscribe([value]); // new Tester(
     // 	{
     // 		object: createObject().object,
     // 		immediate: true,
@@ -147,5 +180,19 @@ describe('common > main > rx > deep-subscribe > deep-subscribe', function () {
       delete b.rule.next.next.description;
       return b;
     }).subscribe([null], [null], Error, /unsubscribe function for non Object value/);
+  });
+  it('throws incorrect Unsubscribe', function () {
+    new _Tester.Tester({
+      object: (0, _Tester.createObject)().object,
+      immediate: true,
+      doNotSubscribeNonObjectValues: true,
+      useIncorrectUnsubscribe: true
+    }, b => b.path(o => o.object)).subscribe(o => [o.object], [], Error, /should return null\/undefined or unsubscribe function/);
+    new _Tester.Tester({
+      object: (0, _Tester.createObject)().object,
+      immediate: true,
+      // doNotSubscribeNonObjectValues: true,
+      useIncorrectUnsubscribe: true
+    }, b => b.path(o => o.object.value)).subscribe([null], [], Error, /should return null\/undefined or unsubscribe function/);
   });
 });

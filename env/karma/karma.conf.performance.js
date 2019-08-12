@@ -6,8 +6,8 @@ module.exports = function (config) {
 	helpers.configCommon(config)
 
 	config.set({
-		browserNoActivityTimeout: 900000,
-		// browserDisconnectTimeout: 900000,
+		browserNoActivityTimeout: 300000,
+		browserDisconnectTimeout: 300000,
 		// browserSocketTimeout: 900000,
 		captureTimeout          : 900000,
 		// processKillTimeout: 2000,

@@ -3,85 +3,124 @@
 Object.defineProperty(exports, "__esModule", {
   value: true
 });
-exports.Property = exports.SetMode = void 0;
+exports.Property = void 0;
+
+var _mergers = require("../../../extensions/merge/mergers");
+
+var _serializers = require("../../../extensions/serialization/serializers");
 
 var _ObservableObject = require("../ObservableObject");
 
-const SetMode = {
-  Default: 0,
-  Fill: 1,
-  Clone: 2
-};
-exports.SetMode = SetMode;
+var _ObservableObjectBuilder = require("../ObservableObjectBuilder");
+
+var _Symbol$toStringTag = Symbol.toStringTag;
 
 class Property extends _ObservableObject.ObservableObject {
-  constructor(valueFactory) {
+  constructor(options, value) {
     super();
-    this._valueField = {};
-    this._valueFactory = valueFactory;
-  }
-
-  get value() {
-    return this._valueField.value;
-  }
-
-  set value(value) {
-    this.set(value);
-  }
-
-  set(source, options) {
+    this[_Symbol$toStringTag] = 'Property';
     const {
-      fill,
-      clone,
-      fillFunc,
-      valueFactory
-    } = options;
-    return this._set('value', this._valueField, source, {
-      fillFunc: fill ? fillFunc : null,
+      merger,
+      mergeOptions
+    } = options || {};
 
-      convert(sourceValue) {
-        if (clone && sourceValue != null) {
-          return cloneValue(sourceValue);
-        }
+    if (merger != null) {
+      this.merger = merger;
+    }
 
-        return sourceValue;
-      }
+    if (mergeOptions != null) {
+      this.mergeOptions = mergeOptions;
+    }
 
-    });
-
-    function cloneValue(sourceValue) {
-      if (fillFunc == null) {
-        throw new Error('Cannot clone value, because fillFunc == null');
-      }
-
-      let value;
-
-      if (valueFactory != null) {
-        value = valueFactory(sourceValue);
-
-        if (value != null) {
-          return value;
-        }
-      }
-
-      const {
-        _valueFactory
-      } = this;
-
-      if (!_valueFactory) {
-        throw new Error('Cannot clone value, because this._valueFactory == null');
-      }
-
-      value = _valueFactory();
-
-      if (!fillFunc(value, sourceValue)) {
-        throw new Error('Cannot clone value, because fillFunc return false');
-      }
-
-      return value;
+    if (typeof value !== 'undefined') {
+      this.value = value;
     }
   }
+
+  // region set / fill / merge
+  set(value, clone, options) {
+    const result = this.mergeValue(void 0, value, value, clone, clone, options);
+
+    if (!result) {
+      this.value = void 0;
+    }
+
+    return result;
+  }
+
+  fill(value, preferClone, options) {
+    return this.mergeValue(this.value, value, value, preferClone, preferClone, options);
+  }
+
+  merge(older, newer, preferCloneOlder, preferCloneNewer, options) {
+    return this.mergeValue(this.value, older, newer, preferCloneOlder, preferCloneNewer, options);
+  } // endregion
+  // region merge helpers
+
+
+  mergeValue(base, older, newer, preferCloneOlder, preferCloneNewer, options) {
+    return this._mergeValue((this.merger || _mergers.ObjectMerger.default).merge, base, older, newer, preferCloneOlder, preferCloneNewer, options);
+  }
+
+  _mergeValue(merge, base, older, newer, preferCloneOlder, preferCloneNewer, options) {
+    if (older instanceof Property) {
+      older = older.value;
+    } else {
+      options = { ...options,
+        selfAsValueOlder: true
+      };
+    }
+
+    if (newer instanceof Property) {
+      newer = newer.value;
+    } else {
+      if (!options) {
+        options = {};
+      }
+
+      options.selfAsValueNewer = true;
+    }
+
+    return merge(base, older, newer, o => {
+      this.value = o;
+    }, preferCloneOlder, preferCloneNewer, { ...this.mergeOptions,
+      ...options,
+      selfAsValueOlder: !(older instanceof Property),
+      selfAsValueNewer: !(newer instanceof Property)
+    });
+  } // endregion
+  // region IMergeable
+
+
+  _canMerge(source) {
+    if (source.constructor === Property && this.value === source.value || this.value === source) {
+      return null;
+    }
+
+    return true;
+  }
+
+  _merge(merge, older, newer, preferCloneOlder, preferCloneNewer, options) {
+    return this._mergeValue(merge, this.value, older, newer, preferCloneOlder, preferCloneNewer);
+  } // endregion
+  // region ISerializable
+
+
+  serialize(serialize) {
+    return {
+      value: serialize(this.value)
+    };
+  }
+
+  deSerialize(deSerialize, serializedValue) {
+    deSerialize(serializedValue.value, o => this.value = o);
+  } // endregion
+
 
 }
 
 exports.Property = Property;
+Property.uuid = '6f2c51cc-d865-4baa-9a93-226e3374ccaf';
+new _ObservableObjectBuilder.ObservableObjectBuilder(Property.prototype).writable('value');
+(0, _mergers.registerMergeable)(Property);
+(0, _serializers.registerSerializable)(Property);

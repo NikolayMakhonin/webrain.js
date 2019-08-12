@@ -1,10 +1,17 @@
+import _regeneratorRuntime from "@babel/runtime/regenerator";
 import _classCallCheck from "@babel/runtime/helpers/classCallCheck";
 import _createClass from "@babel/runtime/helpers/createClass";
 import _possibleConstructorReturn from "@babel/runtime/helpers/possibleConstructorReturn";
 import _getPrototypeOf from "@babel/runtime/helpers/getPrototypeOf";
 import _inherits from "@babel/runtime/helpers/inherits";
+import { mergeMaps } from '../extensions/merge/merge-maps';
+import { createMergeSetWrapper } from '../extensions/merge/merge-sets';
+import { registerMergeable } from '../extensions/merge/mergers';
+import { registerSerializable } from '../extensions/serialization/serializers';
+import { isIterable } from '../helpers/helpers';
 import { SetChangedObject } from './base/SetChangedObject';
 import { SetChangedType } from './contracts/ISetChanged';
+import { fillSet } from './helpers/set';
 var _Symbol$toStringTag = Symbol.toStringTag;
 var _Symbol$iterator = Symbol.iterator;
 export var ObservableSet =
@@ -147,6 +154,46 @@ function (_SetChangedObject) {
     value: function values() {
       return this._set.values();
     } // endregion
+    // region IMergeable
+
+  }, {
+    key: "_canMerge",
+    value: function _canMerge(source) {
+      var _set = this._set;
+
+      if (_set.canMerge) {
+        return _set.canMerge(source);
+      }
+
+      if (source.constructor === ObservableSet && this._set === source._set) {
+        return null;
+      }
+
+      return source.constructor === Object || source[Symbol.toStringTag] === 'Set' || Array.isArray(source) || isIterable(source);
+    }
+  }, {
+    key: "_merge",
+    value: function _merge(merge, older, newer, preferCloneOlder, preferCloneNewer, options) {
+      var _this3 = this;
+
+      return mergeMaps(function (target, source) {
+        return createMergeSetWrapper(target, source, function (arrayOrIterable) {
+          return fillSet(new _this3._set.constructor(), arrayOrIterable);
+        });
+      }, merge, this, older, newer, preferCloneOlder, preferCloneNewer, options);
+    } // endregion
+    // region ISerializable
+
+  }, {
+    key: "serialize",
+    value: function serialize(_serialize) {
+      return {
+        set: _serialize(this._set)
+      };
+    }
+  }, {
+    key: "deSerialize",
+    value: function deSerialize(_deSerialize, serializedValue) {} // endregion
 
   }, {
     key: "size",
@@ -157,3 +204,33 @@ function (_SetChangedObject) {
 
   return ObservableSet;
 }(SetChangedObject);
+ObservableSet.uuid = '91539dfb-55f4-4bfb-9dbf-bff7f6ab800d';
+registerMergeable(ObservableSet);
+registerSerializable(ObservableSet, {
+  serializer: {
+    deSerialize:
+    /*#__PURE__*/
+    _regeneratorRuntime.mark(function deSerialize(_deSerialize2, serializedValue, valueFactory) {
+      var innerSet, value;
+      return _regeneratorRuntime.wrap(function deSerialize$(_context) {
+        while (1) {
+          switch (_context.prev = _context.next) {
+            case 0:
+              _context.next = 2;
+              return _deSerialize2(serializedValue.set);
+
+            case 2:
+              innerSet = _context.sent;
+              value = valueFactory(innerSet);
+              value.deSerialize(_deSerialize2, serializedValue);
+              return _context.abrupt("return", value);
+
+            case 6:
+            case "end":
+              return _context.stop();
+          }
+        }
+      }, deSerialize);
+    })
+  }
+});

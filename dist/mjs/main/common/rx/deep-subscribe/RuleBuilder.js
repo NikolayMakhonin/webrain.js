@@ -7,9 +7,9 @@ import { RuleType } from './contracts/rules';
 import { getFuncPropertiesPath } from './helpers/func-properties-path';
 import { RuleSubscribeCollection, RuleSubscribeMap, RuleSubscribeObject } from './RuleSubscribe';
 var RuleSubscribeObjectPropertyNames = RuleSubscribeObject.bind(null, null);
-var RuleSubscribeMapKeys = RuleSubscribeMap.bind(null, null);
-var UNSUBSCRIBE_PROPERTY_PREFIX = Math.random().toString(36);
-var nextUnsubscribePropertyId = 0;
+var RuleSubscribeMapKeys = RuleSubscribeMap.bind(null, null); // const UNSUBSCRIBE_PROPERTY_PREFIX = Math.random().toString(36)
+// let nextUnsubscribePropertyId = 0
+
 export var RuleBuilder =
 /*#__PURE__*/
 function () {
@@ -28,14 +28,16 @@ function () {
 
       if (ruleSubscribe.unsubscribePropertyName) {
         throw new Error('You should not add duplicate IRuleSubscribe instances. Clone rule before add.');
-      }
+      } // !Warning defineProperty is slow
+      // Object.defineProperty(ruleSubscribe, 'unsubscribePropertyName', {
+      // 	configurable: true,
+      // 	enumerable: false,
+      // 	writable: false,
+      // 	value: UNSUBSCRIBE_PROPERTY_PREFIX + (nextUnsubscribePropertyId++),
+      // })
 
-      Object.defineProperty(ruleSubscribe, 'unsubscribePropertyName', {
-        configurable: true,
-        enumerable: false,
-        writable: false,
-        value: UNSUBSCRIBE_PROPERTY_PREFIX + nextUnsubscribePropertyId++
-      });
+
+      ruleSubscribe.unsubscribePropertyName = []; // UNSUBSCRIBE_PROPERTY_PREFIX + (nextUnsubscribePropertyId++)
 
       if (ruleLast) {
         ruleLast.next = ruleSubscribe;

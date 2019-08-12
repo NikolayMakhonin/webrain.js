@@ -167,7 +167,7 @@ function () {
 
         this._timeNextPulse = timeNextPulse;
         this._timerId = _timing.setTimeout(function () {
-          return _this2._pulse();
+          _this2._pulse();
         }, timeNextPulse - now);
       } // endregion
 

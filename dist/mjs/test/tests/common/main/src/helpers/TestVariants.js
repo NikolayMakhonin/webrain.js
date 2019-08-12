@@ -47,8 +47,8 @@ export function expandArray(array) {
 }
 export var THIS = {};
 
-function generateOptions(base, optionsVariants) {
-  var hasChilds, _key, _iteratorNormalCompletion2, _didIteratorError2, _iteratorError2, _iterator2, _step2, optionVariant, variant, newOptionsVariants;
+function generateOptions(base, optionsVariants, exclude) {
+  var hasChilds, _key, _iteratorNormalCompletion2, _didIteratorError2, _iteratorError2, _iterator2, _step2, optionVariant, _variant, newOptionsVariants;
 
   return _regeneratorRuntime.wrap(function generateOptions$(_context) {
     while (1) {
@@ -82,11 +82,11 @@ function generateOptions(base, optionsVariants) {
           }
 
           optionVariant = _step2.value;
-          variant = _objectSpread({}, base, _defineProperty({}, _key, optionVariant));
+          _variant = _objectSpread({}, base, _defineProperty({}, _key, optionVariant));
           newOptionsVariants = _objectSpread({}, optionsVariants);
           delete newOptionsVariants[_key];
           hasChilds = true;
-          return _context.delegateYield(generateOptions(variant, newOptionsVariants), "t2", 16);
+          return _context.delegateYield(generateOptions(_variant, newOptionsVariants, exclude), "t2", 16);
 
         case 16:
           _iteratorNormalCompletion2 = true;
@@ -135,7 +135,7 @@ function generateOptions(base, optionsVariants) {
           break;
 
         case 36:
-          if (hasChilds) {
+          if (!(!hasChilds && (!exclude || !exclude(base)))) {
             _context.next = 39;
             break;
           }
@@ -165,10 +165,13 @@ function () {
       var optionsVariants = _objectSpread({}, this.baseOptionsVariants, testCases);
 
       var expected = testCases.expected;
+      var exclude = testCases.exclude;
       delete optionsVariants.expected;
+      delete optionsVariants.exclude;
       var actionsWithDescriptions = expandArray(optionsVariants.actions);
       delete optionsVariants.actions;
-      var variants = Array.from(generateOptions({}, optionsVariants));
+      var variants = generateOptions({}, optionsVariants, exclude); // variants = Array.from(variants)
+
       var _iteratorNormalCompletion3 = true;
       var _didIteratorError3 = false;
       var _iteratorError3 = undefined;
@@ -191,15 +194,32 @@ function () {
           try {
             for (var _iterator4 = expandArray(actions)[Symbol.iterator](), _step4; !(_iteratorNormalCompletion4 = (_step4 = _iterator4.next()).done); _iteratorNormalCompletion4 = true) {
               var action = _step4.value;
-              var _arr = variants;
+              var _iteratorNormalCompletion5 = true;
+              var _didIteratorError5 = false;
+              var _iteratorError5 = undefined;
 
-              for (var _i = 0; _i < _arr.length; _i++) {
-                var variant = _arr[_i];
-                this.testVariant(_objectSpread({}, variant, {
-                  action: action,
-                  description: description,
-                  expected: expected
-                }));
+              try {
+                for (var _iterator5 = variants[Symbol.iterator](), _step5; !(_iteratorNormalCompletion5 = (_step5 = _iterator5.next()).done); _iteratorNormalCompletion5 = true) {
+                  var _variant2 = _step5.value;
+                  this.testVariant(_objectSpread({}, _variant2, {
+                    action: action,
+                    description: description,
+                    expected: expected
+                  }));
+                }
+              } catch (err) {
+                _didIteratorError5 = true;
+                _iteratorError5 = err;
+              } finally {
+                try {
+                  if (!_iteratorNormalCompletion5 && _iterator5.return != null) {
+                    _iterator5.return();
+                  }
+                } finally {
+                  if (_didIteratorError5) {
+                    throw _iteratorError5;
+                  }
+                }
               }
             }
           } catch (err) {

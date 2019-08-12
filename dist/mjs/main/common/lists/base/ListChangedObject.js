@@ -43,9 +43,9 @@ function (_PropertyChangedObjec) {
   }, {
     key: "_listChangedIfCanEmit",
     get: function get() {
-      var _propertyChangedDisabled = this._propertyChangedDisabled,
-          _listChanged = this._listChanged;
-      return !_propertyChangedDisabled && _listChanged && _listChanged.hasSubscribers ? _listChanged : null;
+      var propertyChangedDisabled = this.__meta.propertyChangedDisabled;
+      var _listChanged = this._listChanged;
+      return !propertyChangedDisabled && _listChanged && _listChanged.hasSubscribers ? _listChanged : null;
     }
   }]);
 

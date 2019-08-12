@@ -6,6 +6,8 @@ Object.defineProperty(exports, "__esModule", {
 exports.iterateRule = iterateRule;
 exports.subscribeNextRule = subscribeNextRule;
 
+var _helpers = require("../../helpers/helpers");
+
 var _rules = require("./contracts/rules");
 
 var _PeekIterator = require("./helpers/PeekIterator");
@@ -101,7 +103,7 @@ function subscribeNextRule(ruleIterator, fork, subscribeNode, subscribeLeaf) {
 
   const ruleOrIterable = iteration.value;
 
-  if (ruleOrIterable[Symbol.iterator]) {
+  if ((0, _helpers.isIterable)(ruleOrIterable)) {
     let unsubscribers; // for (let step, innerIterator = ruleOrIterable[Symbol.iterator](); !(step = innerIterator.next()).done;) {
     // 	const ruleIterable = step.value
     // 	const unsubscribe = fork(ruleIterable[Symbol.iterator]())

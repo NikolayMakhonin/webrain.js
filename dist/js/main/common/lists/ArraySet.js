@@ -5,17 +5,29 @@ Object.defineProperty(exports, "__esModule", {
 });
 exports.ArraySet = void 0;
 
+var _mergeMaps = require("../extensions/merge/merge-maps");
+
+var _mergeSets = require("../extensions/merge/merge-sets");
+
+var _mergers = require("../extensions/merge/mergers");
+
+var _serializers = require("../extensions/serialization/serializers");
+
+var _helpers = require("../helpers/helpers");
+
 var _objectUniqueId = require("./helpers/object-unique-id");
+
+var _set = require("./helpers/set");
 
 /* tslint:disable:ban-types */
 var _Symbol$toStringTag = Symbol.toStringTag;
 var _Symbol$iterator = Symbol.iterator;
 
 class ArraySet {
-  constructor(array) {
+  constructor(array, size) {
     this[_Symbol$toStringTag] = 'Set';
     this._array = array || [];
-    this._size = this._array.length;
+    this._size = size || Object.keys(this._array).length;
   }
 
   add(value) {
@@ -119,6 +131,52 @@ class ArraySet {
     return this[Symbol.iterator]();
   }
 
+  static from(arrayOrIterable) {
+    return (0, _set.fillSet)(new ArraySet(), arrayOrIterable);
+  } // region IMergeable
+
+
+  _canMerge(source) {
+    if (source.constructor === ArraySet && this._array === source._array) {
+      return null;
+    }
+
+    return source[Symbol.toStringTag] === 'Set' || Array.isArray(source) || (0, _helpers.isIterable)(source);
+  }
+
+  _merge(merge, older, newer, preferCloneOlder, preferCloneNewer, options) {
+    return (0, _mergeMaps.mergeMaps)((target, source) => (0, _mergeSets.createMergeSetWrapper)(target, source, arrayOrIterable => ArraySet.from(arrayOrIterable)), merge, this, older, newer, preferCloneOlder, preferCloneNewer, options);
+  } // endregion
+  // region ISerializable
+
+
+  serialize(serialize) {
+    return {
+      array: serialize(this._array, {
+        arrayAsObject: true,
+        objectKeepUndefined: true
+      })
+    };
+  }
+
+  deSerialize(deSerialize, serializedValue) {} // endregion
+
+
 }
 
 exports.ArraySet = ArraySet;
+ArraySet.uuid = '0e8c7f09-ea9e-4631-8af8-a635c214a01c';
+(0, _mergers.registerMergeable)(ArraySet);
+(0, _serializers.registerSerializable)(ArraySet, {
+  serializer: {
+    *deSerialize(deSerialize, serializedValue, valueFactory) {
+      const innerSet = yield deSerialize(serializedValue.array, null, {
+        arrayAsObject: true
+      });
+      const value = valueFactory(innerSet);
+      value.deSerialize(deSerialize, serializedValue);
+      return value;
+    }
+
+  }
+});

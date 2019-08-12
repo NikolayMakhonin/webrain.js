@@ -102,13 +102,17 @@ function () {
   }, {
     key: "onPropertyChanged",
     value: function onPropertyChanged(eventsOrPropertyNames) {
-      if (this._propertyChangedDisabled) {
+      var __meta = this.__meta;
+
+      if (!__meta) {
         return this;
       }
 
-      var propertyChanged = this.__meta.propertyChanged;
+      var _this$__meta = this.__meta,
+          propertyChanged = _this$__meta.propertyChanged,
+          propertyChangedDisabled = _this$__meta.propertyChangedDisabled;
 
-      if (!propertyChanged) {
+      if (!propertyChanged || propertyChangedDisabled) {
         return this;
       }
 
@@ -131,6 +135,14 @@ function () {
       }
 
       return propertyChanged;
+    }
+  }, {
+    key: "_propertyChangedIfCanEmit",
+    get: function get() {
+      var _this$__meta2 = this.__meta,
+          propertyChangedDisabled = _this$__meta2.propertyChangedDisabled,
+          propertyChanged = _this$__meta2.propertyChanged;
+      return !propertyChangedDisabled && propertyChanged && propertyChanged.hasSubscribers ? propertyChanged : null;
     }
   }]);
 

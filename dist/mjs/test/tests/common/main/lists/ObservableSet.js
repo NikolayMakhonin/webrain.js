@@ -1,8 +1,8 @@
 import { SetChangedType } from '../../../../../main/common/lists/contracts/ISetChanged';
 import { ObservableSet } from '../../../../../main/common/lists/ObservableSet';
-import { THIS } from '../helpers/TestVariants';
+import { THIS } from '../src/helpers/TestVariants';
 import { allValues, shuffle } from './src/helpers/common';
-import { TestSet } from './src/helpers/TestSet';
+import { assert, TestSet } from './src/helpers/TestSet';
 describe('common > main > lists > ObservableSet', function () {
   this.timeout(20000);
   var testSet = TestSet.test;
@@ -169,6 +169,18 @@ describe('common > main > lists > ObservableSet', function () {
         }]
       },
       actions: [remove('0')]
+    });
+    testSet({
+      array: [['2', '1']],
+      expected: {
+        array: ['1'],
+        returnValue: true,
+        setChanged: [{
+          type: SetChangedType.Removed,
+          oldItems: ['2']
+        }]
+      },
+      actions: [remove('2')]
     });
     testSet({
       array: [['2', '1']],

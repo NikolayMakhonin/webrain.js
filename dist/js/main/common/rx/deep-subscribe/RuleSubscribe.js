@@ -5,6 +5,8 @@ Object.defineProperty(exports, "__esModule", {
 });
 exports.RuleSubscribeCollection = exports.RuleSubscribeMap = exports.RuleSubscribeObject = void 0;
 
+var _helpers = require("../../helpers/helpers");
+
 var _IListChanged = require("../../lists/contracts/IListChanged");
 
 var _IMapChanged = require("../../lists/contracts/IMapChanged");
@@ -14,6 +16,8 @@ var _ISetChanged = require("../../lists/contracts/ISetChanged");
 var _constants = require("./contracts/constants");
 
 var _rules = require("./contracts/rules");
+
+var _common = require("./helpers/common");
 
 /* tslint:disable:no-identical-functions */
 // function propertyPredicateAll(propertyName: string, object) {
@@ -31,7 +35,7 @@ function subscribeObject(propertyNames, propertyPredicate, object, immediateSubs
   let unsubscribe;
 
   if (propertyChanged) {
-    unsubscribe = propertyChanged.subscribe(({
+    unsubscribe = (0, _common.checkUnsubscribe)(propertyChanged.subscribe(({
       name,
       oldValue,
       newValue
@@ -45,7 +49,7 @@ function subscribeObject(propertyNames, propertyPredicate, object, immediateSubs
           subscribeItem(newValue, name + '');
         }
       }
-    });
+    }));
   }
 
   const forEach = callbackfn => {
@@ -68,7 +72,7 @@ function subscribeObject(propertyNames, propertyPredicate, object, immediateSubs
 
   if (immediateSubscribe) {
     forEach(subscribeItem);
-  } else if (!unsubscribe) {
+  } else if (unsubscribe == null) {
     return null;
   }
 
@@ -85,7 +89,7 @@ function subscribeObject(propertyNames, propertyPredicate, object, immediateSubs
 
 
 function subscribeIterable(object, immediateSubscribe, subscribeItem, unsubscribeItem) {
-  if (!object || !object[Symbol.iterator]) {
+  if (!object || !(0, _helpers.isIterable)(object)) {
     return null;
   }
 
@@ -119,7 +123,7 @@ function subscribeList(object, immediateSubscribe, subscribeItem, unsubscribeIte
   let unsubscribe;
 
   if (listChanged) {
-    unsubscribe = listChanged.subscribe(({
+    unsubscribe = (0, _common.checkUnsubscribe)(listChanged.subscribe(({
       type,
       oldItems,
       newItems
@@ -150,7 +154,7 @@ function subscribeList(object, immediateSubscribe, subscribeItem, unsubscribeIte
 
           break;
       }
-    });
+    }));
   }
 
   const forEach = callbackfn => {
@@ -161,7 +165,7 @@ function subscribeList(object, immediateSubscribe, subscribeItem, unsubscribeIte
 
   if (immediateSubscribe) {
     forEach(subscribeItem);
-  } else if (!unsubscribe) {
+  } else if (unsubscribe == null) {
     return null;
   }
 
@@ -188,7 +192,7 @@ function subscribeSet(object, immediateSubscribe, subscribeItem, unsubscribeItem
   let unsubscribe;
 
   if (setChanged) {
-    unsubscribe = setChanged.subscribe(({
+    unsubscribe = (0, _common.checkUnsubscribe)(setChanged.subscribe(({
       type,
       oldItems,
       newItems
@@ -210,7 +214,7 @@ function subscribeSet(object, immediateSubscribe, subscribeItem, unsubscribeItem
 
           break;
       }
-    });
+    }));
   }
 
   const forEach = callbackfn => {
@@ -221,7 +225,7 @@ function subscribeSet(object, immediateSubscribe, subscribeItem, unsubscribeItem
 
   if (immediateSubscribe) {
     forEach(subscribeItem);
-  } else if (!unsubscribe) {
+  } else if (unsubscribe == null) {
     return null;
   }
 
@@ -248,7 +252,7 @@ function subscribeMap(keys, keyPredicate, object, immediateSubscribe, subscribeI
   let unsubscribe;
 
   if (mapChanged) {
-    unsubscribe = mapChanged.subscribe(({
+    unsubscribe = (0, _common.checkUnsubscribe)(mapChanged.subscribe(({
       type,
       key,
       oldValue,
@@ -277,7 +281,7 @@ function subscribeMap(keys, keyPredicate, object, immediateSubscribe, subscribeI
             break;
         }
       }
-    });
+    }));
   }
 
   const forEach = callbackfn => {
@@ -300,7 +304,7 @@ function subscribeMap(keys, keyPredicate, object, immediateSubscribe, subscribeI
 
   if (immediateSubscribe) {
     forEach(subscribeItem);
-  } else if (!unsubscribe) {
+  } else if (unsubscribe == null) {
     return null;
   }
 

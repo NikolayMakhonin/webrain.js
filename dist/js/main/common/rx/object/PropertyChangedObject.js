@@ -52,6 +52,14 @@ class PropertyChangedObject {
     return propertyChanged;
   }
 
+  get _propertyChangedIfCanEmit() {
+    const {
+      propertyChangedDisabled,
+      propertyChanged
+    } = this.__meta;
+    return !propertyChangedDisabled && propertyChanged && propertyChanged.hasSubscribers ? propertyChanged : null;
+  }
+
   _emitPropertyChanged(eventsOrPropertyNames, emitFunc) {
     if (eventsOrPropertyNames === null) {
       return;
@@ -86,15 +94,20 @@ class PropertyChangedObject {
   }
 
   onPropertyChanged(eventsOrPropertyNames) {
-    if (this._propertyChangedDisabled) {
+    const {
+      __meta
+    } = this;
+
+    if (!__meta) {
       return this;
     }
 
     const {
-      propertyChanged
+      propertyChanged,
+      propertyChangedDisabled
     } = this.__meta;
 
-    if (!propertyChanged) {
+    if (!propertyChanged || propertyChangedDisabled) {
       return this;
     }
 

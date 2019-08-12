@@ -1,9 +1,9 @@
 import _toConsumableArray from "@babel/runtime/helpers/toConsumableArray";
 import { MapChangedType } from '../../../../../main/common/lists/contracts/IMapChanged';
 import { ObservableMap } from '../../../../../main/common/lists/ObservableMap';
-import { THIS } from '../helpers/TestVariants';
+import { THIS } from '../src/helpers/TestVariants';
 import { allValues, shuffle } from './src/helpers/common';
-import { TestMap } from './src/helpers/TestMap';
+import { assert, TestMap } from './src/helpers/TestMap';
 describe('common > main > lists > ObservableMap', function () {
   this.timeout(20000);
   var testMap = TestMap.test;
@@ -100,7 +100,7 @@ describe('common > main > lists > ObservableMap', function () {
     var entriesShuffle = shuffle(entries);
     testMap({
       array: [[]],
-      useObjectMap: [false],
+      innerMap: ['Map', 'Map<Object>', 'ObjectHashMap', 'ArrayMap'],
       expected: {
         array: entries,
         returnValue: THIS,
@@ -211,7 +211,7 @@ describe('common > main > lists > ObservableMap', function () {
     var additional = [[[], {}], [{}, []]];
     testMap({
       array: [entries.concat(additional)],
-      useObjectMap: [false],
+      innerMap: ['Map', 'Map<Object>', 'ObjectHashMap', 'ArrayMap'],
       expected: {
         array: additional,
         returnValue: true,

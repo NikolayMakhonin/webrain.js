@@ -12,21 +12,25 @@ var _RuleBuilder = require("./RuleBuilder");
 
 var _PeekIterator = require("./helpers/PeekIterator");
 
+var _common = require("./helpers/common");
+
+var _objectUniqueId = require("../../lists/helpers/object-unique-id");
+
 /* tslint:disable */
 // const UNSUBSCRIBE_PROPERTY_PREFIX = Math.random().toString(36)
 let nextUnsubscribePropertyId = 0;
 
-function deepSubscribeRuleIterator(object, subscribeValue, immediate, ruleIterator, propertiesPath) {
-  const subscribeNext = () => {
+function deepSubscribeRuleIterator(object, subscribeValue, immediate, ruleIterator, propertiesPath, debugPropertyName, debugParent) {
+  const subscribeNext = object => {
     let unsubscribePropertyName;
-    return (0, _iterateRule.subscribeNextRule)(ruleIterator, nextRuleIterator => deepSubscribeRuleIterator(object, subscribeValue, immediate, nextRuleIterator, propertiesPath), (rule, getNextRuleIterator) => {
+    return (0, _iterateRule.subscribeNextRule)(ruleIterator, nextRuleIterator => deepSubscribeRuleIterator(object, subscribeValue, immediate, nextRuleIterator, propertiesPath, debugPropertyName, debugParent), (rule, getNextRuleIterator) => {
       const subscribeItem = (item, debugPropertyName) => {
         const newPropertiesPath = () => (propertiesPath ? propertiesPath() + '.' : '') + debugPropertyName + '(' + rule.description + ')';
 
-        const subscribe = () => deepSubscribeRuleIterator(item, subscribeValue, immediate, getNextRuleIterator ? getNextRuleIterator() : null, newPropertiesPath);
+        const subscribe = () => deepSubscribeRuleIterator(item, subscribeValue, immediate, getNextRuleIterator ? getNextRuleIterator() : null, newPropertiesPath, debugPropertyName, object);
 
         if (!(item instanceof Object)) {
-          const unsubscribe = subscribe();
+          const unsubscribe = (0, _common.checkUnsubscribe)(subscribe());
 
           if (unsubscribe) {
             unsubscribe();
@@ -40,16 +44,20 @@ function deepSubscribeRuleIterator(object, subscribeValue, immediate, ruleIterat
           unsubscribePropertyName = rule.unsubscribePropertyName; // + '_' + (nextUnsubscribePropertyId++)
         }
 
-        let unsubscribe = item[unsubscribePropertyName];
+        const itemUniqueId = (0, _objectUniqueId.getObjectUniqueId)(item);
+        let unsubscribe = unsubscribePropertyName[itemUniqueId];
 
         if (!unsubscribe) {
           // if (typeof unsubscribe === 'undefined') {
-          Object.defineProperty(item, unsubscribePropertyName, {
-            configurable: true,
-            enumerable: false,
-            writable: true,
-            value: subscribe()
-          }); // } else {
+          // !Warning defineProperty is slow
+          // Object.defineProperty(item, unsubscribePropertyName, {
+          // 	configurable: true,
+          // 	enumerable: false,
+          // 	writable: true,
+          // 	value: checkUnsubscribe(subscribe()),
+          // })
+          // item[unsubscribePropertyName] = checkUnsubscribe(subscribe())
+          unsubscribePropertyName[itemUniqueId] = (0, _common.checkUnsubscribe)(subscribe()); // } else {
           // 	item[unsubscribePropertyName] = subscribe()
           // }
         }
@@ -64,23 +72,22 @@ function deepSubscribeRuleIterator(object, subscribeValue, immediate, ruleIterat
           return;
         }
 
-        const unsubscribe = item[unsubscribePropertyName];
+        const itemUniqueId = (0, _objectUniqueId.getObjectUniqueId)(item);
+        const unsubscribe = unsubscribePropertyName[itemUniqueId];
 
         if (unsubscribe) {
-          delete item[unsubscribePropertyName];
+          delete unsubscribePropertyName[itemUniqueId];
           unsubscribe(); // item[unsubscribePropertyName] = null
         }
       };
 
-      return rule.subscribe(object, immediate, subscribeItem, unsubscribeItem);
+      return (0, _common.checkUnsubscribe)(rule.subscribe(object, immediate, subscribeItem, unsubscribeItem));
     }, () => {
-      return subscribeValue(object);
+      return subscribeValue(object, debugParent, debugPropertyName);
     });
   };
 
-  try {
-    return subscribeNext();
-  } catch (ex) {
+  const catchHandler = ex => {
     if (ex.propertiesPath) {
       throw ex;
     }
@@ -89,6 +96,33 @@ function deepSubscribeRuleIterator(object, subscribeValue, immediate, ruleIterat
     ex.propertiesPath = propertiesPathStr;
     ex.message += `\nObject property path: ${propertiesPathStr}`;
     throw ex;
+  };
+
+  try {
+    // Resolve Promises
+    if (object != null && typeof object.then === 'function') {
+      let unsubscribe;
+      Promise.resolve(object).then(o => {
+        if (!unsubscribe) {
+          unsubscribe = subscribeNext(o); // if (typeof unsubscribe !== 'function') {
+          // 	throw new Error(`unsubscribe is not a function: ${unsubscribe}`)
+          // }
+        }
+
+        return o;
+      }).catch(catchHandler);
+      return () => {
+        if (typeof unsubscribe === 'function') {
+          unsubscribe();
+        }
+
+        unsubscribe = true;
+      };
+    }
+
+    return subscribeNext(object);
+  } catch (ex) {
+    catchHandler(ex);
   }
 }
 

@@ -4,6 +4,7 @@ var _marked =
 /*#__PURE__*/
 _regeneratorRuntime.mark(iterateRule);
 
+import { isIterable } from '../../helpers/helpers';
 import { RuleType } from './contracts/rules';
 import { PeekIterator } from './helpers/PeekIterator';
 export function iterateRule(rule) {
@@ -204,7 +205,7 @@ export function subscribeNextRule(ruleIterator, fork, subscribeNode, subscribeLe
 
   var ruleOrIterable = iteration.value;
 
-  if (ruleOrIterable[Symbol.iterator]) {
+  if (isIterable(ruleOrIterable)) {
     var unsubscribers; // for (let step, innerIterator = ruleOrIterable[Symbol.iterator](); !(step = innerIterator.next()).done;) {
     // 	const ruleIterable = step.value
     // 	const unsubscribe = fork(ruleIterable[Symbol.iterator]())

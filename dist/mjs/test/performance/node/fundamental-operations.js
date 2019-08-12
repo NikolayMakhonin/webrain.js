@@ -1,11 +1,26 @@
+import _classCallCheck from "@babel/runtime/helpers/classCallCheck";
+import _createClass from "@babel/runtime/helpers/createClass";
+import _defineProperty from "@babel/runtime/helpers/defineProperty";
+import _regeneratorRuntime from "@babel/runtime/regenerator";
 import _typeof from "@babel/runtime/helpers/typeof";
 
-/* eslint-disable no-new-func,no-array-constructor,object-property-newline,no-undef,no-empty,no-shadow,no-prototype-builtins */
+/* tslint:disable:prefer-const no-identical-functions no-empty no-shadowed-variable */
+
+/* tslint:disable:no-var-requires one-variable-per-declaration */
+
+/* eslint-disable no-new-func,no-array-constructor,object-property-newline,no-undef */
+
+/* eslint-disable no-empty,no-shadow,no-prototype-builtins,prefer-destructuring */
+
+/* eslint-disable prefer-rest-params,arrow-body-style */
 import { calcPerformance } from 'rdtsc';
-import { binarySearch } from '../../../main/common/lists/helpers/array';
-import { getObjectUniqueId } from '../../../main/common/lists/helpers/object-unique-id';
-import { SortedList } from '../../../main/common/lists/SortedList';
+import { SynchronousPromise } from 'synchronous-promise';
+import { isIterable } from '../../../main/common/helpers/helpers';
+import { ThenableSync } from '../../../main/common/helpers/ThenableSync';
 import { ArraySet } from '../../../main/common/lists/ArraySet';
+import { binarySearch } from '../../../main/common/lists/helpers/array';
+import { freezeWithUniqueId, getObjectUniqueId } from '../../../main/common/lists/helpers/object-unique-id';
+import { SortedList } from '../../../main/common/lists/SortedList';
 import { createObject, Tester } from '../../tests/common/main/rx/deep-subscribe/helpers/Tester';
 var SetNative = Set;
 
@@ -92,7 +107,7 @@ describe('fundamental-operations', function () {
     console.log(result);
   });
   xit('lambda vs function', function () {
-    this.timeout(300000);
+    this.timeout(300000); // noinspection JSUnusedLocalSymbols
 
     function f1(args) {
       var calc = function calc() {
@@ -1072,7 +1087,7 @@ describe('fundamental-operations', function () {
     });
     console.log(result);
   });
-  it('Math.max()', function () {
+  xit('Math.max()', function () {
     var _this = this;
 
     this.timeout(300000);
@@ -1091,6 +1106,414 @@ describe('fundamental-operations', function () {
       return Math.max(_this.value1, _this.value2, _this.value3);
     }, function () {
       return Math.max(value1, value2, value3);
+    });
+    console.log(result);
+  });
+  xit('"out" vs "set func" params', function () {
+    var _this2 = this;
+
+    this.timeout(300000);
+
+    var funcOut = function funcOut(a, out) {
+      out[0] = a;
+      return Math.random() !== 0.5;
+    };
+
+    var funcSet = function funcSet(a, set) {
+      if (Math.random() !== 0.5) {
+        set(a);
+      }
+
+      return a;
+    };
+
+    var out = [];
+    var result = calcPerformance(120000, function () {// no operations
+    }, function () {
+      var out0 = [];
+
+      if (funcOut(Math.random(), out0)) {
+        _this2.prop = out0[0];
+      }
+    }, function () {
+      if (funcOut(Math.random(), out)) {
+        _this2.prop = out[0];
+      }
+    }, function () {
+      funcSet(Math.random(), function (a) {
+        _this2.prop = a;
+      });
+    });
+    console.log(result);
+  });
+  xit('func params as object', function () {
+    var _arguments = arguments;
+    this.timeout(300000);
+
+    var funcSimple = function funcSimple(param0, param1, param2, param3) {
+      return param0 || param1 || param2 || param3;
+    };
+
+    var funcObjectParams = function funcObjectParams() {
+      var _ref2 = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : {},
+          param0 = _ref2.param0,
+          param1 = _ref2.param1,
+          param2 = _ref2.param2,
+          param3 = _ref2.param3;
+
+      return param0 || param1 || param2 || param3;
+    };
+
+    var funcObjectParamsBabel = function funcObjectParamsBabel() {
+      // eslint-disable-next-line one-var
+      var _ref = _arguments.length > 0 && _arguments[0] !== undefined ? _arguments[0] : {},
+          param0 = _ref.param0,
+          param1 = _ref.param1,
+          param2 = _ref.param2,
+          param3 = _ref.param3;
+
+      return param0 || param1 || param2 || param3;
+    };
+
+    var result = calcPerformance(120000, function () {// no operations
+    }, function () {
+      funcSimple(Math.random() < 0.5, Math.random() < 0.5, Math.random() < 0.5, Math.random() < 0.5);
+    }, function () {
+      funcObjectParams({
+        param0: Math.random() < 0.5,
+        param1: Math.random() < 0.5,
+        param2: Math.random() < 0.5,
+        param3: Math.random() < 0.5
+      });
+    }, function () {
+      // @ts-ignore
+      funcObjectParamsBabel({
+        param0: Math.random() < 0.5,
+        param1: Math.random() < 0.5,
+        param2: Math.random() < 0.5,
+        param3: Math.random() < 0.5
+      });
+    });
+    console.log(result);
+  });
+  xit('new Array(size)', function () {
+    this.timeout(300000);
+    var size = 1000;
+    var arrSimple = [];
+    var arrConstructor = new Array(size);
+    var arrConstructorFilled = new Array(size);
+
+    for (var _i3 = 0; _i3 < size; _i3++) {
+      arrSimple[_i3] = undefined;
+      arrConstructorFilled[_i3] = undefined;
+    }
+
+    var i = size / 2 | 0;
+    var result = calcPerformance(120000, function () {// no operations
+    }, function () {
+      arrSimple[i] = i;
+      i = (i + 7) % size;
+      return arrSimple[i];
+    }, function () {
+      arrConstructorFilled[i] = i;
+      i = (i + 7) % size;
+      return arrConstructorFilled[i];
+    }, function () {
+      arrConstructor[i] = i;
+      i = (i + 7) % size;
+      return arrConstructor[i];
+    });
+    console.log(result);
+  });
+
+  function defineProperty(obj, propertyName) {
+    obj[propertyName] = 0;
+    Object.defineProperty(obj, propertyName, {
+      configurable: true,
+      enumerable: false,
+      writable: true,
+      value: 0
+    });
+  }
+
+  function definePropertyGetSet(obj, propertyName) {
+    obj[propertyName] = 0;
+    Object.defineProperty(obj, propertyName, {
+      configurable: true,
+      enumerable: false,
+      get: function get() {
+        return 0;
+      },
+      set: function set(o) {}
+    });
+  }
+
+  it('delete property', function () {
+    this.timeout(300000);
+    var hashTable = {};
+
+    for (var i = 0; i < 10000; i++) {
+      hashTable[i] = i;
+    }
+
+    var obj = {};
+    var result = calcPerformance(20000, function () {// no operations
+    }, function () {
+      // 154
+      obj.x = 0;
+    }, function () {
+      // 46
+      obj.x = void 0;
+    }, function () {
+      // 108
+      delete obj.x;
+    }, function () {
+      // 92
+      hashTable[Math.random() * 10000 | 0] = void 0;
+    }, function () {
+      // 395
+      delete hashTable[Math.random() * 10000 | 0];
+    }, function () {
+      // 2320
+      getObjectUniqueId({});
+    }, function () {
+      // 1507
+      defineProperty(obj, 'x');
+    }, function () {
+      // 58
+      obj.x = void 0;
+    }, function () {
+      // 108
+      delete obj.x;
+    }, function () {
+      // 1860
+      definePropertyGetSet(obj, 'x');
+    }, function () {
+      // 909
+      obj.x = void 0;
+    }, function () {
+      // 119
+      delete obj.x;
+    }, function () {
+      // 5
+      return {};
+    });
+    console.log(result);
+  });
+  xit('Promise sync', function () {
+    this.timeout(300000);
+    var result = calcPerformance(20000, function () {// no operations
+    }, function () {
+      var resolve;
+      new SynchronousPromise(function (o) {
+        resolve = o;
+      }).then(function (o) {
+        return true;
+      }); // .then(o => true)
+
+      resolve(1);
+    }, function () {
+      var resolve;
+      new ThenableSync(function (o) {
+        resolve = o;
+      }).then(function (o) {
+        return true;
+      }); // .then(o => true)
+
+      resolve(1);
+    }, function () {
+      var resolve;
+      var result;
+      new SynchronousPromise(function (o) {
+        resolve = o;
+      }).then(function (o) {
+        return true;
+      }).then(function (o) {
+        return result = o;
+      });
+      resolve(1);
+    }, function () {
+      var resolve;
+      var result;
+      new ThenableSync(function (o) {
+        resolve = o;
+      }).then(function (o) {
+        return true;
+      }).then(function (o) {
+        return result = o;
+      });
+      resolve(1);
+    });
+    console.log(result);
+  });
+  xit('is iterable', function () {
+    this.timeout(300000);
+    var iterable = true;
+
+    var iterable2 = _defineProperty({}, Symbol.iterator,
+    /*#__PURE__*/
+    _regeneratorRuntime.mark(function _callee() {
+      var i;
+      return _regeneratorRuntime.wrap(function _callee$(_context) {
+        while (1) {
+          switch (_context.prev = _context.next) {
+            case 0:
+              i = 0;
+
+            case 1:
+              if (!(i < 100)) {
+                _context.next = 7;
+                break;
+              }
+
+              if (!(Math.random() > 1)) {
+                _context.next = 4;
+                break;
+              }
+
+              return _context.abrupt("return", 2);
+
+            case 4:
+              i++;
+              _context.next = 1;
+              break;
+
+            case 7:
+              _context.next = 9;
+              return 1;
+
+            case 9:
+              return _context.abrupt("return", 0);
+
+            case 10:
+            case "end":
+              return _context.stop();
+          }
+        }
+      }, _callee);
+    }));
+
+    var result = calcPerformance(20000, function () {// no operations
+    }, // () => {
+    // 	return iterable && Symbol.iterator in iterable
+    // },
+    // () => {
+    // 	return iterable != null && Symbol.iterator in iterable
+    function () {
+      // 0
+      return iterable && typeof iterable[Symbol.iterator] === 'function';
+    }, function () {
+      // 0
+      return iterable != null && typeof iterable[Symbol.iterator] === 'function';
+    }, function () {
+      // 100
+      return iterable && Symbol.iterator in Object(iterable);
+    }, function () {
+      // 100
+      return iterable != null && Symbol.iterator in Object(iterable);
+    }, function () {
+      // 0
+      return isIterable(iterable);
+    });
+    console.log(result);
+  });
+  xit('array is associative', function () {
+    this.timeout(300000);
+    var arr = [];
+
+    for (var i = 0; i < 1000; i++) {
+      arr[i] = i;
+    }
+
+    var result = calcPerformance(2000, function () {// no operations
+    }, function () {
+      return arr.length === Object.keys(arr).length;
+    });
+    console.log(result);
+  });
+  xit('Object.freeze', function () {
+    this.timeout(300000);
+    var result = calcPerformance(2000, // () => {
+    // 	// no operations
+    function () {
+      var x = {};
+      return x;
+    }, function () {
+      var x = {};
+      Object.freeze(x);
+    }, function () {
+      var x = {};
+      getObjectUniqueId(x);
+      Object.freeze(x);
+    }, function () {
+      var x = {};
+      freezeWithUniqueId(x);
+    });
+    console.log(result);
+  });
+  xit('defineProperty', function () {
+    this.timeout(300000);
+    var hashTable = {};
+
+    for (var i = 0; i < 10000; i++) {
+      hashTable[i] = i;
+    }
+
+    var Class =
+    /*#__PURE__*/
+    function () {
+      function Class() {
+        _classCallCheck(this, Class);
+      }
+
+      _createClass(Class, [{
+        key: "value",
+        get: function get() {
+          return this._field;
+        },
+        set: function set(value) {
+          this._field = value;
+        }
+      }]);
+
+      return Class;
+    }();
+
+    var obj = new Class();
+    Object.defineProperty(obj, 'manual', {
+      configurable: true,
+      enumerable: true,
+      get: function get() {
+        return this._manual;
+      },
+      set: function set(value) {
+        this._manual = value;
+      }
+    });
+    Object.defineProperty(obj, 'hidden', {
+      configurable: true,
+      enumerable: false,
+      writable: true,
+      value: 0
+    });
+    var result = calcPerformance(120000, function () {
+      return Math.random() && 1;
+    }, function () {
+      obj.x = Math.random(); // 0
+    }, function () {
+      return Math.random() && obj.x; // 4
+    }, function () {
+      obj.value = Math.random(); // 4
+    }, function () {
+      return Math.random() && obj.value; // 11
+    }, function () {
+      obj.manual = Math.random(); // 0
+    }, function () {
+      return Math.random() && obj.manual; // 27
+    }, function () {
+      obj.hidden = Math.random(); // 27
+    }, function () {
+      return Math.random() && obj.hidden; // 27
     });
     console.log(result);
   });

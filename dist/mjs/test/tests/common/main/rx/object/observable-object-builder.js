@@ -255,9 +255,29 @@ describe('common > main > rx > observable-object-builder', function () {
     assert.strictEqual(builder.object['prop'], null);
     assert.strictEqual(builder.object, object);
   });
-  it('writable simple', function () {
+  it('readable factory', function () {
     var _ref8 = new ObservableObjectBuilder(),
         object = _ref8.object;
+
+    assert.ok(object instanceof ObservableObject);
+    var builder = new ObservableObjectBuilder(object);
+    assert.strictEqual(builder.object, object);
+    assert.strictEqual(builder.readable('prop'), builder);
+    assert.strictEqual(builder.object['prop'], undefined);
+    var valueCreated = false;
+    assert.strictEqual(builder.readable('prop', {
+      factory: function factory() {
+        valueCreated = true;
+        return '2';
+      }
+    }), builder);
+    assert.strictEqual(valueCreated, false);
+    assert.strictEqual(builder.object['prop'], '2');
+    assert.strictEqual(valueCreated, true);
+  });
+  it('writable simple', function () {
+    var _ref9 = new ObservableObjectBuilder(),
+        object = _ref9.object;
 
     assert.ok(object instanceof ObservableObject);
     var builder = new ObservableObjectBuilder(object);
@@ -326,9 +346,23 @@ describe('common > main > rx > observable-object-builder', function () {
     }]);
     results = [];
     assert.strictEqual(object['prop'], '1');
-    assert.strictEqual(builder.readable('prop', null, '1'), builder);
+    var valueCreated = false;
+    assert.strictEqual(builder.readable('prop', {
+      factory: function factory() {
+        assert.strictEqual(this, builder.object);
+        valueCreated = true;
+        return '1';
+      }
+    }), builder);
+    assert.strictEqual(valueCreated, false);
     assert.deepStrictEqual(hasSubscribers, []);
-    assert.deepStrictEqual(results, []);
+    assert.deepStrictEqual(results, [{
+      name: 'prop',
+      newValue: '1',
+      oldValue: '1'
+    }]);
+    results = [];
+    assert.strictEqual(valueCreated, true);
     assert.strictEqual(object['prop'], '1');
     assert.strictEqual(builder.readable('prop', null, 1), builder);
     assert.deepStrictEqual(hasSubscribers, []);

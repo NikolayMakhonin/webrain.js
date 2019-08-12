@@ -15,10 +15,9 @@ var _RuleSubscribe = require("./RuleSubscribe");
 
 const RuleSubscribeObjectPropertyNames = _RuleSubscribe.RuleSubscribeObject.bind(null, null);
 
-const RuleSubscribeMapKeys = _RuleSubscribe.RuleSubscribeMap.bind(null, null);
+const RuleSubscribeMapKeys = _RuleSubscribe.RuleSubscribeMap.bind(null, null); // const UNSUBSCRIBE_PROPERTY_PREFIX = Math.random().toString(36)
+// let nextUnsubscribePropertyId = 0
 
-const UNSUBSCRIBE_PROPERTY_PREFIX = Math.random().toString(36);
-let nextUnsubscribePropertyId = 0;
 
 class RuleBuilder {
   custom(ruleSubscribe, description) {
@@ -32,14 +31,16 @@ class RuleBuilder {
 
     if (ruleSubscribe.unsubscribePropertyName) {
       throw new Error('You should not add duplicate IRuleSubscribe instances. Clone rule before add.');
-    }
+    } // !Warning defineProperty is slow
+    // Object.defineProperty(ruleSubscribe, 'unsubscribePropertyName', {
+    // 	configurable: true,
+    // 	enumerable: false,
+    // 	writable: false,
+    // 	value: UNSUBSCRIBE_PROPERTY_PREFIX + (nextUnsubscribePropertyId++),
+    // })
 
-    Object.defineProperty(ruleSubscribe, 'unsubscribePropertyName', {
-      configurable: true,
-      enumerable: false,
-      writable: false,
-      value: UNSUBSCRIBE_PROPERTY_PREFIX + nextUnsubscribePropertyId++
-    });
+
+    ruleSubscribe.unsubscribePropertyName = []; // UNSUBSCRIBE_PROPERTY_PREFIX + (nextUnsubscribePropertyId++)
 
     if (ruleLast) {
       ruleLast.next = ruleSubscribe;

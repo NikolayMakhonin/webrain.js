@@ -25,7 +25,7 @@ function expandArray(array, output = []) {
 const THIS = {};
 exports.THIS = THIS;
 
-function* generateOptions(base, optionsVariants) {
+function* generateOptions(base, optionsVariants, exclude) {
   let hasChilds;
 
   for (const key in optionsVariants) {
@@ -38,14 +38,14 @@ function* generateOptions(base, optionsVariants) {
         };
         delete newOptionsVariants[key];
         hasChilds = true;
-        yield* generateOptions(variant, newOptionsVariants);
+        yield* generateOptions(variant, newOptionsVariants, exclude);
       }
 
       break;
     }
   }
 
-  if (!hasChilds) {
+  if (!hasChilds && (!exclude || !exclude(base))) {
     yield base;
   }
 } // region Test Actions
@@ -57,10 +57,12 @@ class TestVariants {
       ...testCases
     };
     const expected = testCases.expected;
+    const exclude = testCases.exclude;
     delete optionsVariants.expected;
+    delete optionsVariants.exclude;
     const actionsWithDescriptions = expandArray(optionsVariants.actions);
     delete optionsVariants.actions;
-    const variants = Array.from(generateOptions({}, optionsVariants));
+    const variants = generateOptions({}, optionsVariants, exclude); // variants = Array.from(variants)
 
     for (const actionsWithDescription of actionsWithDescriptions) {
       let {

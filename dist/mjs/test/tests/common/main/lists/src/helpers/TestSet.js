@@ -4,14 +4,26 @@ import _inherits from "@babel/runtime/helpers/inherits";
 import _regeneratorRuntime from "@babel/runtime/regenerator";
 import _classCallCheck from "@babel/runtime/helpers/classCallCheck";
 import _createClass from "@babel/runtime/helpers/createClass";
-import _typeof from "@babel/runtime/helpers/typeof";
+import { ObjectSerializer, registerSerializable } from '../../../../../../../main/common/extensions/serialization/serializers';
 import { ArraySet } from '../../../../../../../main/common/lists/ArraySet';
 import { SetChangedType } from '../../../../../../../main/common/lists/contracts/ISetChanged';
 import { compareFast } from '../../../../../../../main/common/lists/helpers/compare';
 import { ObjectSet } from '../../../../../../../main/common/lists/ObjectSet';
 import { ObservableSet } from '../../../../../../../main/common/lists/ObservableSet';
-import { TestVariants, THIS } from '../../../helpers/TestVariants';
-import { indexOfNaN } from './common';
+import { Assert } from '../../../../../../../main/common/test/Assert';
+import { DeepCloneEqual } from '../../../../../../../main/common/test/DeepCloneEqual';
+import { TestVariants, THIS } from '../../../src/helpers/TestVariants';
+import { convertToObject, indexOfNaN } from './common';
+export var assert = new Assert(new DeepCloneEqual({
+  commonOptions: {},
+  equalOptions: {
+    // noCrossReferences: true,
+    equalInnerReferences: true,
+    equalTypes: true,
+    equalMapSetOrder: true,
+    strictEqualFunctions: true
+  }
+}));
 export function applySetChangedToArray(event, array) {
   switch (event.type) {
     case SetChangedType.Added:
@@ -71,6 +83,13 @@ export function applySetChangedToArray(event, array) {
   }
 }
 
+function testSerialization(set) {
+  var serialized = ObjectSerializer.default.serialize(set);
+  var result = ObjectSerializer.default.deSerialize(serialized);
+  assert.notStrictEqual(result, set);
+  assert.deepStrictEqual(result.entries(), set.entries());
+}
+
 function assertSet(set, expectedArray) {
   expectedArray = expectedArray.sort(compareFast);
   assert.deepStrictEqual(Array.from(set.keys()).sort(compareFast), expectedArray);
@@ -121,28 +140,11 @@ function assertSet(set, expectedArray) {
     return o[1];
   }).sort(compareFast), expectedArray);
   assert.deepStrictEqual(Array.from(set).sort(compareFast), expectedArray);
+  testSerialization(set);
 }
 
 var staticSetInner = new Set();
 var staticSet = new ObservableSet(staticSetInner);
-var valueToObjectMap = new Map();
-
-function convertToObject(value) {
-  if (value && _typeof(value) === 'object' && Object.prototype.hasOwnProperty.call(value, 'value')) {
-    assert.fail('typeof value === ' + _typeof(value));
-  }
-
-  var obj = valueToObjectMap.get(value);
-
-  if (!obj) {
-    valueToObjectMap.set(value, obj = {
-      value: value
-    });
-  }
-
-  return obj;
-}
-
 var _Symbol$toStringTag = Symbol.toStringTag;
 var _Symbol$iterator = Symbol.iterator;
 
@@ -322,8 +324,8 @@ function () {
   }, {
     key: "forEach",
     value: function forEach(callbackfn, thisArg) {
-      this._set.forEach(function (key, value) {
-        callbackfn(key.value, value.value, this);
+      this._set.forEach(function (value, key) {
+        callbackfn(value.value, key.value, this);
       }, thisArg);
     }
   }, {
@@ -476,7 +478,20 @@ function () {
           }
         }
       }, values, this, [[3, 14, 18, 26], [19,, 21, 25]]);
-    })
+    }) // region ISerializable
+
+  }, {
+    key: "serialize",
+    value: function serialize(_serialize) {
+      return {
+        set: _serialize(this._set)
+      };
+    } // tslint:disable-next-line:no-empty
+
+  }, {
+    key: "deSerialize",
+    value: function deSerialize(_deSerialize, serializedValue) {} // endregion
+
   }, {
     key: "size",
     get: function get() {
@@ -487,6 +502,35 @@ function () {
   return SetWrapper;
 }();
 
+SetWrapper.uuid = '5de4524d-6cdb-41e9-8968-9798ecedef5d';
+registerSerializable(SetWrapper, {
+  serializer: {
+    deSerialize:
+    /*#__PURE__*/
+    _regeneratorRuntime.mark(function deSerialize(_deSerialize2, serializedValue, valueFactory) {
+      var innerSet, value;
+      return _regeneratorRuntime.wrap(function deSerialize$(_context5) {
+        while (1) {
+          switch (_context5.prev = _context5.next) {
+            case 0:
+              _context5.next = 2;
+              return _deSerialize2(serializedValue.set);
+
+            case 2:
+              innerSet = _context5.sent;
+              value = valueFactory(innerSet);
+              value.deSerialize(_deSerialize2, serializedValue);
+              return _context5.abrupt("return", value);
+
+            case 6:
+            case "end":
+              return _context5.stop();
+          }
+        }
+      }, deSerialize);
+    })
+  }
+});
 export var TestSet =
 /*#__PURE__*/
 function (_TestVariants) {

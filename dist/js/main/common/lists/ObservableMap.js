@@ -5,9 +5,19 @@ Object.defineProperty(exports, "__esModule", {
 });
 exports.ObservableMap = void 0;
 
+var _mergeMaps = require("../extensions/merge/merge-maps");
+
+var _mergers = require("../extensions/merge/mergers");
+
+var _serializers = require("../extensions/serialization/serializers");
+
+var _helpers = require("../helpers/helpers");
+
 var _MapChangedObject = require("./base/MapChangedObject");
 
 var _IMapChanged = require("./contracts/IMapChanged");
+
+var _set = require("./helpers/set");
 
 var _Symbol$toStringTag = Symbol.toStringTag;
 var _Symbol$iterator = Symbol.iterator;
@@ -173,8 +183,53 @@ class ObservableMap extends _MapChangedObject.MapChangedObject {
   values() {
     return this._map.values();
   } // endregion
+  // region IMergeable
+
+
+  _canMerge(source) {
+    const {
+      _map
+    } = this;
+
+    if (_map.canMerge) {
+      return _map.canMerge(source);
+    }
+
+    if (source.constructor === ObservableMap && this._map === source._map) {
+      return null;
+    }
+
+    return source.constructor === Object || source[Symbol.toStringTag] === 'Map' || Array.isArray(source) || (0, _helpers.isIterable)(source);
+  }
+
+  _merge(merge, older, newer, preferCloneOlder, preferCloneNewer, options) {
+    return (0, _mergeMaps.mergeMaps)((target, source) => (0, _mergeMaps.createMergeMapWrapper)(target, source, arrayOrIterable => (0, _set.fillMap)(new this._map.constructor(), arrayOrIterable)), merge, this, older, newer, preferCloneOlder, preferCloneNewer, options);
+  } // endregion
+  // region ISerializable
+
+
+  serialize(serialize) {
+    return {
+      map: serialize(this._map)
+    };
+  }
+
+  deSerialize(deSerialize, serializedValue) {} // endregion
 
 
 }
 
 exports.ObservableMap = ObservableMap;
+ObservableMap.uuid = 'e162178d-5123-4bea-ab6e-b96d5b8f130b';
+(0, _mergers.registerMergeable)(ObservableMap);
+(0, _serializers.registerSerializable)(ObservableMap, {
+  serializer: {
+    *deSerialize(deSerialize, serializedValue, valueFactory) {
+      const innerMap = yield deSerialize(serializedValue.map);
+      const value = valueFactory(innerMap);
+      value.deSerialize(deSerialize, serializedValue);
+      return value;
+    }
+
+  }
+});

@@ -226,7 +226,10 @@ class ValueState<TTarget, TSource> {
 						)
 						break
 					case false:
-						throw new Error(`Class (${this.type.name}) cannot be merged with clone`)
+						if (this.merger.merge) {
+							throw new Error(`Class (${this.type.name}) cannot be merged with clone`)
+						}
+						break
 				}
 			} else {
 				_clone = target

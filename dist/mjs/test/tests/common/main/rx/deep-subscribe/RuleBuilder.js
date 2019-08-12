@@ -14,6 +14,7 @@ import { ANY, ANY_DISPLAY, COLLECTION_PREFIX } from '../../../../../../main/comm
 import { RuleType } from '../../../../../../main/common/rx/deep-subscribe/contracts/rules';
 import { RuleBuilder } from '../../../../../../main/common/rx/deep-subscribe/RuleBuilder';
 import { ObservableObjectBuilder } from '../../../../../../main/common/rx/object/ObservableObjectBuilder';
+import { assert } from '../../../../../../main/common/test/Assert';
 describe('common > main > rx > deep-subscribe > RuleBuilder', function () {
   // noinspection JSUnusedLocalSymbols
   function checkType(builder) {
@@ -521,6 +522,11 @@ describe('common > main > rx > deep-subscribe > RuleBuilder', function () {
   function assertRuleParams(rule, expected) {
     rule = _objectSpread({}, rule);
     expected = _objectSpread({}, expected);
+
+    if ('unsubscribePropertyName' in rule) {
+      expected.unsubscribePropertyName = rule.unsubscribePropertyName;
+    }
+
     delete rule.subscribe;
     delete rule.next;
     delete rule.rule;
@@ -1179,14 +1185,14 @@ describe('common > main > rx > deep-subscribe > RuleBuilder', function () {
       return builder.repeat(1, 1, function (b) {
         return null;
       });
-    }, Error);
+    }, [Error, TypeError, ReferenceError]);
     assert.throws(function () {
       return builder.repeat(1, 1, function (b) {
         return {
           rule: null
         };
       });
-    }, Error);
+    }, [Error, TypeError, ReferenceError]);
     var builder1 = builder.repeat(null, null, function (b) {
       return b.repeat(1, null, function (b) {
         return b.path(function (o) {
@@ -1278,22 +1284,22 @@ describe('common > main > rx > deep-subscribe > RuleBuilder', function () {
     assert.strictEqual(builder.rule, undefined);
     assert.throws(function () {
       return builder.any();
-    }, Error);
+    }, [Error, TypeError, ReferenceError]);
     assert.throws(function () {
       return builder.any(null);
-    }, Error);
+    }, [Error, TypeError, ReferenceError]);
     assert.throws(function () {
       return builder.any(function (b) {
         return null;
       });
-    }, Error);
+    }, [Error, TypeError, ReferenceError]);
     assert.throws(function () {
       return builder.any(function (b) {
         return {
           rule: null
         };
       });
-    }, Error);
+    }, [Error, TypeError, ReferenceError]);
     var builder1 = builder.any(function (b) {
       return b.path(function (o) {
         return o.prop1;

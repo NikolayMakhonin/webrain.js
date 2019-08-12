@@ -23,6 +23,8 @@ function () {
 
       if (__fields) {
         __fields[name] = object[name];
+      } else if (typeof initValue !== 'undefined') {
+        throw new Error("You can't set initValue for prototype writable property");
       }
 
       Object.defineProperty(object, name, {
@@ -62,26 +64,71 @@ function () {
         __fields[name] = object[name];
       }
 
-      Object.defineProperty(object, name, {
-        configurable: true,
-        enumerable: true,
-        get: function get() {
-          return this.__fields[name];
+      var factory = options && options.factory;
+
+      if (factory) {
+        if (typeof value !== 'undefined') {
+          throw new Error("You can't use both: factory and value");
         }
-      });
+      } else if (!__fields && typeof value !== 'undefined') {
+        factory = function factory() {
+          return value;
+        };
+      }
 
-      if (__fields && typeof value !== 'undefined') {
-        var oldValue = __fields[name];
+      var createInstanceProperty = function createInstanceProperty(instance) {
+        Object.defineProperty(instance, name, {
+          configurable: true,
+          enumerable: true,
+          get: function get() {
+            return this.__fields[name];
+          }
+        });
+      };
 
-        object._propagatePropertyChanged(name, value);
+      if (factory) {
+        Object.defineProperty(object, name, {
+          configurable: true,
+          enumerable: true,
+          get: function get() {
+            var val = factory.call(this);
+            this.__fields[name] = val;
+            createInstanceProperty(this);
+            return val;
+          }
+        });
 
-        if (value !== oldValue) {
-          __fields[name] = value;
-          object.onPropertyChanged({
+        if (__fields) {
+          var oldValue = __fields[name];
+          var event = {
             name: name,
-            oldValue: oldValue,
-            newValue: value
+            oldValue: oldValue
+          };
+          Object.defineProperty(event, 'newValue', {
+            configurable: true,
+            enumerable: true,
+            get: function get() {
+              return object[name];
+            }
           });
+          object.onPropertyChanged(event);
+        }
+      } else {
+        createInstanceProperty(object);
+
+        if (__fields && typeof value !== 'undefined') {
+          var _oldValue = __fields[name];
+
+          object._propagatePropertyChanged(name, value);
+
+          if (value !== _oldValue) {
+            __fields[name] = value;
+            object.onPropertyChanged({
+              name: name,
+              oldValue: _oldValue,
+              newValue: value
+            });
+          }
         }
       }
 

@@ -5,9 +5,21 @@ Object.defineProperty(exports, "__esModule", {
 });
 exports.ObservableSet = void 0;
 
+var _mergeMaps = require("../extensions/merge/merge-maps");
+
+var _mergeSets = require("../extensions/merge/merge-sets");
+
+var _mergers = require("../extensions/merge/mergers");
+
+var _serializers = require("../extensions/serialization/serializers");
+
+var _helpers = require("../helpers/helpers");
+
 var _SetChangedObject = require("./base/SetChangedObject");
 
 var _ISetChanged = require("./contracts/ISetChanged");
+
+var _set2 = require("./helpers/set");
 
 var _Symbol$toStringTag = Symbol.toStringTag;
 var _Symbol$iterator = Symbol.iterator;
@@ -145,8 +157,53 @@ class ObservableSet extends _SetChangedObject.SetChangedObject {
   values() {
     return this._set.values();
   } // endregion
+  // region IMergeable
+
+
+  _canMerge(source) {
+    const {
+      _set
+    } = this;
+
+    if (_set.canMerge) {
+      return _set.canMerge(source);
+    }
+
+    if (source.constructor === ObservableSet && this._set === source._set) {
+      return null;
+    }
+
+    return source.constructor === Object || source[Symbol.toStringTag] === 'Set' || Array.isArray(source) || (0, _helpers.isIterable)(source);
+  }
+
+  _merge(merge, older, newer, preferCloneOlder, preferCloneNewer, options) {
+    return (0, _mergeMaps.mergeMaps)((target, source) => (0, _mergeSets.createMergeSetWrapper)(target, source, arrayOrIterable => (0, _set2.fillSet)(new this._set.constructor(), arrayOrIterable)), merge, this, older, newer, preferCloneOlder, preferCloneNewer, options);
+  } // endregion
+  // region ISerializable
+
+
+  serialize(serialize) {
+    return {
+      set: serialize(this._set)
+    };
+  }
+
+  deSerialize(deSerialize, serializedValue) {} // endregion
 
 
 }
 
 exports.ObservableSet = ObservableSet;
+ObservableSet.uuid = '91539dfb-55f4-4bfb-9dbf-bff7f6ab800d';
+(0, _mergers.registerMergeable)(ObservableSet);
+(0, _serializers.registerSerializable)(ObservableSet, {
+  serializer: {
+    *deSerialize(deSerialize, serializedValue, valueFactory) {
+      const innerSet = yield deSerialize(serializedValue.set);
+      const value = valueFactory(innerSet);
+      value.deSerialize(deSerialize, serializedValue);
+      return value;
+    }
+
+  }
+});

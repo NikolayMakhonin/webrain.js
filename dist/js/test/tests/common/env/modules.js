@@ -11,14 +11,14 @@ describe('common > env > modules', function () {
   it('babel', function (done) {
     const func1Str = _module.func1.toString().replace(/\s+/g, ' ');
 
-    assert.isOk(func1Str);
+    assert.ok(func1Str);
     assert.strictEqual((0, _module.func1)('qwe', [1, 2]), 'qwe 3 1 2');
     assert.strictEqual((0, _module.func1)('qwe', 1, 2), 'qwe 3 2 3');
     assert.strictEqual((0, _module.func1)('qwe'), 'qwe 3 0 1');
     assert.strictEqual((0, _module.func1)(), 'undefined undefined 0 0');
     assert.strictEqual((0, _module.func1)(null), 'null undefined 0 1');
-    assert.isOk(func1Str.indexOf('.?') < 0, `babel is not worked 1:\r\n${func1Str}`); // assert.isOk(func1Str.indexOf('arguments.length') >= 0, `babel is not worked 2:\r\n${func1Str}`)
-    // assert.isOk(func1Str.match(/function func1\(p1\)|function *\((\w|p1)\)/), `babel is not worked 3:\r\n${func1Str}`)
+    assert.ok(func1Str.indexOf('.?') < 0, `babel is not worked 1:\r\n${func1Str}`); // assert.ok(func1Str.indexOf('arguments.length') >= 0, `babel is not worked 2:\r\n${func1Str}`)
+    // assert.ok(func1Str.match(/function func1\(p1\)|function *\((\w|p1)\)/), `babel is not worked 3:\r\n${func1Str}`)
     // console.log(func1.toString());
 
     done();

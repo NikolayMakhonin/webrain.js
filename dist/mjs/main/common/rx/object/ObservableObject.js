@@ -36,20 +36,20 @@ function (_DeepPropertyChangedO) {
       var oldValue = __fields[name];
       var equalsFunc = options.equalsFunc;
 
-      if (equalsFunc ? equalsFunc(oldValue, newValue) : oldValue === newValue) {
+      if (equalsFunc ? equalsFunc.call(this, oldValue, newValue) : oldValue === newValue) {
         return false;
       }
 
       var fillFunc = options.fillFunc;
 
-      if (fillFunc && oldValue != null && newValue != null && fillFunc(oldValue, newValue)) {
+      if (fillFunc && oldValue != null && newValue != null && fillFunc.call(this, oldValue, newValue)) {
         return false;
       }
 
       var convertFunc = options.convertFunc;
 
       if (convertFunc) {
-        newValue = convertFunc(newValue);
+        newValue = convertFunc.call(this, newValue);
       }
 
       if (oldValue === newValue) {
@@ -59,7 +59,7 @@ function (_DeepPropertyChangedO) {
       var beforeChange = options.beforeChange;
 
       if (beforeChange) {
-        beforeChange(oldValue);
+        beforeChange.call(this, oldValue);
       }
 
       __fields[name] = newValue;
@@ -69,7 +69,7 @@ function (_DeepPropertyChangedO) {
       var afterChange = options.afterChange;
 
       if (afterChange) {
-        afterChange(newValue);
+        afterChange.call(this, newValue);
       }
 
       this.onPropertyChanged({

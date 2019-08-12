@@ -19,10 +19,10 @@ function (_PropertyChangedObjec) {
   _createClass(SetChangedObject, [{
     key: "onSetChanged",
     value: function onSetChanged(event) {
-      var _propertyChangedDisabled = this._propertyChangedDisabled,
-          _setChanged = this._setChanged;
+      var propertyChangedDisabled = this.__meta.propertyChangedDisabled;
+      var _setChanged = this._setChanged;
 
-      if (_propertyChangedDisabled || !_setChanged || !_setChanged.hasSubscribers) {
+      if (propertyChangedDisabled || !_setChanged || !_setChanged.hasSubscribers) {
         return this;
       }
 
@@ -44,9 +44,9 @@ function (_PropertyChangedObjec) {
   }, {
     key: "_setChangedIfCanEmit",
     get: function get() {
-      var _propertyChangedDisabled = this._propertyChangedDisabled,
-          _setChanged = this._setChanged;
-      return !_propertyChangedDisabled && _setChanged && _setChanged.hasSubscribers ? _setChanged : null;
+      var propertyChangedDisabled = this.__meta.propertyChangedDisabled;
+      var _setChanged = this._setChanged;
+      return !propertyChangedDisabled && _setChanged && _setChanged.hasSubscribers ? _setChanged : null;
     }
   }]);
 

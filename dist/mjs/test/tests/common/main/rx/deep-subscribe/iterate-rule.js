@@ -4,10 +4,12 @@ import _regeneratorRuntime from "@babel/runtime/regenerator";
 /* tslint:disable:no-shadowed-variable no-empty */
 
 /* eslint-disable no-useless-escape,computed-property-spacing */
+import { isIterable } from '../../../../../../main/common/helpers/helpers';
 import { RuleType } from '../../../../../../main/common/rx/deep-subscribe/contracts/rules';
 import { PeekIterator } from '../../../../../../main/common/rx/deep-subscribe/helpers/PeekIterator';
 import { iterateRule, subscribeNextRule } from '../../../../../../main/common/rx/deep-subscribe/iterate-rule';
 import { RuleBuilder } from '../../../../../../main/common/rx/deep-subscribe/RuleBuilder';
+import { assert } from '../../../../../../main/common/test/Assert';
 describe('common > main > rx > deep-subscribe > iterate-rule', function () {
   var _marked =
   /*#__PURE__*/
@@ -31,7 +33,7 @@ describe('common > main > rx > deep-subscribe > iterate-rule', function () {
       while (1) {
         switch (_context.prev = _context.next) {
           case 0:
-            if (ruleOrIterable[Symbol.iterator]) {
+            if (isIterable(ruleOrIterable)) {
               _context.next = 4;
               break;
             }

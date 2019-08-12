@@ -32,7 +32,7 @@ class ObservableObject extends _DeepPropertyChangedObject.DeepPropertyChangedObj
       equalsFunc
     } = options;
 
-    if (equalsFunc ? equalsFunc(oldValue, newValue) : oldValue === newValue) {
+    if (equalsFunc ? equalsFunc.call(this, oldValue, newValue) : oldValue === newValue) {
       return false;
     }
 
@@ -40,7 +40,7 @@ class ObservableObject extends _DeepPropertyChangedObject.DeepPropertyChangedObj
       fillFunc
     } = options;
 
-    if (fillFunc && oldValue != null && newValue != null && fillFunc(oldValue, newValue)) {
+    if (fillFunc && oldValue != null && newValue != null && fillFunc.call(this, oldValue, newValue)) {
       return false;
     }
 
@@ -49,7 +49,7 @@ class ObservableObject extends _DeepPropertyChangedObject.DeepPropertyChangedObj
     } = options;
 
     if (convertFunc) {
-      newValue = convertFunc(newValue);
+      newValue = convertFunc.call(this, newValue);
     }
 
     if (oldValue === newValue) {
@@ -61,7 +61,7 @@ class ObservableObject extends _DeepPropertyChangedObject.DeepPropertyChangedObj
     } = options;
 
     if (beforeChange) {
-      beforeChange(oldValue);
+      beforeChange.call(this, oldValue);
     }
 
     __fields[name] = newValue;
@@ -73,7 +73,7 @@ class ObservableObject extends _DeepPropertyChangedObject.DeepPropertyChangedObj
     } = options;
 
     if (afterChange) {
-      afterChange(newValue);
+      afterChange.call(this, newValue);
     }
 
     this.onPropertyChanged({

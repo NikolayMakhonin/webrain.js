@@ -4,10 +4,16 @@ import _createClass from "@babel/runtime/helpers/createClass";
 import _possibleConstructorReturn from "@babel/runtime/helpers/possibleConstructorReturn";
 import _getPrototypeOf from "@babel/runtime/helpers/getPrototypeOf";
 import _inherits from "@babel/runtime/helpers/inherits";
+import { mergeMaps } from '../extensions/merge/merge-maps';
+import { createMergeSetWrapper } from '../extensions/merge/merge-sets';
+import { registerMergeable } from '../extensions/merge/mergers';
+import { registerSerializable } from '../extensions/serialization/serializers';
+import { isIterable } from '../helpers/helpers';
 import { ListChangedObject } from './base/ListChangedObject';
 import { ListChangedType } from './contracts/IListChanged';
 import { binarySearch, move } from './helpers/array';
 import { compareFast } from './helpers/compare';
+import { fillCollection } from './helpers/set';
 
 function calcOptimalArraySize(desiredSize) {
   var optimalSize = 4;
@@ -551,10 +557,10 @@ function (_ListChangedObject) {
       if (i !== end) {
         // rollback
         try {
-          this._propertyChangedDisabled = true;
+          this.__meta.propertyChangedDisabled = true;
           this.removeRange(start, end);
         } finally {
-          this._propertyChangedDisabled = false;
+          this.__meta.propertyChangedDisabled = false;
         }
 
         throw new Error("Iterable items size (".concat(i - start, ") less than itemsSize (").concat(itemsSize, ")"));
@@ -1116,6 +1122,54 @@ function (_ListChangedObject) {
     // region Static
 
   }, {
+    key: "_canMerge",
+    // region IMergeable
+    value: function _canMerge(source) {
+      if (source.constructor === SortedList && this._array === source._array && this._autoSort === source._autoSort && this._notAddIfExists === source._notAddIfExists) {
+        return null;
+      }
+
+      return this._autoSort && this._notAddIfExists && (source.constructor === Object || source[Symbol.toStringTag] === 'Set' || Array.isArray(source) || isIterable(source));
+    }
+  }, {
+    key: "_merge",
+    value: function _merge(merge, older, newer, preferCloneOlder, preferCloneNewer, options) {
+      var _this2 = this;
+
+      return mergeMaps(function (target, source) {
+        return createMergeSortedListWrapper(target, source, function (arrayOrIterable) {
+          return fillCollection(new SortedList({
+            autoSort: true,
+            notAddIfExists: true,
+            compare: _this2.compare
+          }), arrayOrIterable, function (c, o) {
+            return c.add(o);
+          });
+        });
+      }, merge, this, older, newer, preferCloneOlder, preferCloneNewer, options);
+    } // endregion
+    // region ISerializable
+
+  }, {
+    key: "serialize",
+    value: function serialize(_serialize) {
+      return {
+        array: _serialize(this._array, {
+          arrayLength: this._size
+        }),
+        options: _serialize({
+          autoSort: this._autoSort,
+          countSorted: this._countSorted,
+          minAllocatedSize: this._minAllocatedSize,
+          notAddIfExists: this._notAddIfExists
+        })
+      };
+    }
+  }, {
+    key: "deSerialize",
+    value: function deSerialize(_deSerialize, serializedValue) {} // endregion
+
+  }, {
     key: "minAllocatedSize",
     get: function get() {
       return this._minAllocatedSize;
@@ -1287,5 +1341,126 @@ function (_ListChangedObject) {
   }]);
 
   return SortedList;
-}(ListChangedObject);
+}(ListChangedObject); // region Merge helpers
+
 SortedList.compareDefault = compareFast;
+SortedList.uuid = '1ec56e52-1aa5-4dd1-8471-a6185f22ed0a';
+export var MergeSortedListWrapper =
+/*#__PURE__*/
+function () {
+  function MergeSortedListWrapper(list) {
+    _classCallCheck(this, MergeSortedListWrapper);
+
+    if (!list.autoSort || !list.notAddIfExists) {
+      throw new Error('Cannot create IMergeMapWrapper with ' + "SortedList(autoSort = ".concat(list.autoSort, " (must be true), ") + "notAddIfExists = ".concat(list.notAddIfExists, " (must be true))"));
+    }
+
+    this._list = list;
+  }
+
+  _createClass(MergeSortedListWrapper, [{
+    key: "delete",
+    value: function _delete(key) {
+      this._list.remove(key);
+    }
+  }, {
+    key: "forEachKeys",
+    value: function forEachKeys(callbackfn) {
+      var _iteratorNormalCompletion5 = true;
+      var _didIteratorError5 = false;
+      var _iteratorError5 = undefined;
+
+      try {
+        for (var _iterator5 = this._list[Symbol.iterator](), _step5; !(_iteratorNormalCompletion5 = (_step5 = _iterator5.next()).done); _iteratorNormalCompletion5 = true) {
+          var _key = _step5.value;
+          callbackfn(_key);
+        }
+      } catch (err) {
+        _didIteratorError5 = true;
+        _iteratorError5 = err;
+      } finally {
+        try {
+          if (!_iteratorNormalCompletion5 && _iterator5.return != null) {
+            _iterator5.return();
+          }
+        } finally {
+          if (_didIteratorError5) {
+            throw _iteratorError5;
+          }
+        }
+      }
+    }
+  }, {
+    key: "get",
+    value: function get(key) {
+      return key;
+    }
+  }, {
+    key: "has",
+    value: function has(key) {
+      return this._list.contains(key);
+    }
+  }, {
+    key: "set",
+    value: function set(key, value) {
+      this._list.add(value);
+    }
+  }]);
+
+  return MergeSortedListWrapper;
+}();
+export function createMergeSortedListWrapper(target, source, arrayOrIterableToSortedList) {
+  if (source.constructor === SortedList) {
+    return new MergeSortedListWrapper(source);
+  }
+
+  if (arrayOrIterableToSortedList && (Array.isArray(source) || isIterable(source))) {
+    return createMergeSortedListWrapper(target, arrayOrIterableToSortedList(source), null);
+  }
+
+  return createMergeSetWrapper(target, source);
+} // endregion
+
+registerMergeable(SortedList, {
+  valueFactory: function valueFactory(source) {
+    return new SortedList({
+      autoSort: source.autoSort,
+      notAddIfExists: source.notAddIfExists,
+      compare: source.compare,
+      minAllocatedSize: source.minAllocatedSize
+    });
+  }
+});
+registerSerializable(SortedList, {
+  serializer: {
+    deSerialize:
+    /*#__PURE__*/
+    _regeneratorRuntime.mark(function deSerialize(_deSerialize2, serializedValue, valueFactory) {
+      var options, value;
+      return _regeneratorRuntime.wrap(function deSerialize$(_context2) {
+        while (1) {
+          switch (_context2.prev = _context2.next) {
+            case 0:
+              _context2.next = 2;
+              return _deSerialize2(serializedValue.options);
+
+            case 2:
+              options = _context2.sent;
+              _context2.next = 5;
+              return _deSerialize2(serializedValue.array);
+
+            case 5:
+              options.array = _context2.sent;
+              value = valueFactory(options);
+              value.deSerialize(_deSerialize2, serializedValue);
+              return _context2.abrupt("return", value);
+
+            case 9:
+            case "end":
+              return _context2.stop();
+          }
+        }
+      }, deSerialize);
+    })
+  }
+});

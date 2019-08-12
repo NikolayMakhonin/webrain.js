@@ -10,8 +10,9 @@ import { Subject } from './subject';
 // eslint-disable-next-line no-shadow
 // tslint:disable-next-line:no-shadowed-variable
 function createHasSubscribersSubjectDefault(hasSubscribers) {
-  var subject = new BehaviorSubject();
-  subject.value = hasSubscribers;
+  var subject = new BehaviorSubject({
+    value: hasSubscribers
+  });
   subject.unsubscribeValue = null;
   return subject;
 }

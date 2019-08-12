@@ -4,6 +4,7 @@ import _asyncToGenerator from "@babel/runtime/helpers/asyncToGenerator";
 /* tslint:disable:no-empty no-identical-functions */
 import { DeferredCalc } from '../../../../../../main/common/rx/deferred-calc/DeferredCalc';
 import { timingDefault } from '../../../../../../main/common/rx/deferred-calc/timing';
+import { assert } from '../../../../../../main/common/test/Assert';
 import { assertEvents, EventType, TestDeferredCalc, timing } from './src/TestDeferred';
 import { TestTiming } from './src/timing';
 describe('common > main > rx > deferred-calc > DeferredCalc', function () {
@@ -388,18 +389,19 @@ describe('common > main > rx > deferred-calc > DeferredCalc', function () {
   _asyncToGenerator(
   /*#__PURE__*/
   _regeneratorRuntime.mark(function _callee() {
-    var events, startTestTime, deferredCalc, i;
+    var events, timeCoef, startTestTime, deferredCalc, i;
     return _regeneratorRuntime.wrap(function _callee$(_context) {
       while (1) {
         switch (_context.prev = _context.next) {
           case 0:
             events = [];
+            timeCoef = 2;
             startTestTime = timingDefault.now();
             deferredCalc = new DeferredCalc({
-              autoInvalidateInterval: 9,
-              throttleTime: 10,
-              maxThrottleTime: 100,
-              minTimeBetweenCalc: 5,
+              autoInvalidateInterval: 9 * timeCoef,
+              throttleTime: 10 * timeCoef,
+              maxThrottleTime: 100 * timeCoef,
+              minTimeBetweenCalc: 5 * timeCoef,
               canBeCalcCallback: function canBeCalcCallback() {
                 events.push({
                   time: timingDefault.now() - startTestTime,
@@ -421,22 +423,22 @@ describe('common > main > rx > deferred-calc > DeferredCalc', function () {
                 });
               }
             });
-            _context.next = 5;
+            _context.next = 6;
             return new Promise(function (resolve) {
-              return setTimeout(resolve, 100);
+              return setTimeout(resolve, 100 * timeCoef);
             });
 
-          case 5:
+          case 6:
             deferredCalc.autoInvalidateInterval = null;
-            _context.next = 8;
+            _context.next = 9;
             return new Promise(function (resolve) {
-              return setTimeout(resolve, 10);
+              return setTimeout(resolve, 10 * timeCoef);
             });
 
-          case 8:
+          case 9:
             for (i = 0; i < events.length; i++) {
-              assert.ok(events[i].time >= 100);
-              assert.ok(events[i].time < 150);
+              assert.ok(events[i].time >= 100 * timeCoef);
+              assert.ok(events[i].time < 150 * timeCoef);
             }
 
             assertEvents(events.map(function (o) {
@@ -451,15 +453,15 @@ describe('common > main > rx > deferred-calc > DeferredCalc', function () {
               type: EventType.Completed
             }]);
             events = [];
-            _context.next = 13;
+            _context.next = 14;
             return new Promise(function (resolve) {
-              return setTimeout(resolve, 100);
+              return setTimeout(resolve, 100 * timeCoef);
             });
 
-          case 13:
+          case 14:
             assert.deepStrictEqual(events, []);
 
-          case 14:
+          case 15:
           case "end":
             return _context.stop();
         }

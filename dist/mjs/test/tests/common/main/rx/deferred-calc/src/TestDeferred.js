@@ -5,7 +5,8 @@ import _getPrototypeOf from "@babel/runtime/helpers/getPrototypeOf";
 import _inherits from "@babel/runtime/helpers/inherits";
 import _objectSpread from "@babel/runtime/helpers/objectSpread";
 import { DeferredCalc } from '../../../../../../../main/common/rx/deferred-calc/DeferredCalc';
-import { TestVariants, THIS } from '../../../helpers/TestVariants';
+import { assert } from '../../../../../../../main/common/test/Assert';
+import { TestVariants, THIS } from '../../../src/helpers/TestVariants';
 import { TestTiming } from './timing';
 export var EventType;
 
@@ -101,7 +102,7 @@ function (_TestVariants) {
       maxThrottleTime: [null],
       minTimeBetweenCalc: [null],
       autoInvalidateInterval: [null],
-      reuseSetInstance: [false, true],
+      reuseInstance: [false, true],
       autoCalc: [false]
     };
     return _this;
@@ -121,7 +122,7 @@ function (_TestVariants) {
             var events = void 0;
             var deferredCalc = void 0;
 
-            if (options.reuseSetInstance) {
+            if (options.reuseInstance) {
               staticCalcTime = 0;
               staticAutoCalc = false;
               staticDeferredCalc.minTimeBetweenCalc = null;

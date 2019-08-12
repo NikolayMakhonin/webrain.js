@@ -1,14 +1,31 @@
 import _toConsumableArray from "@babel/runtime/helpers/toConsumableArray";
-import _classCallCheck from "@babel/runtime/helpers/classCallCheck";
-import _createClass from "@babel/runtime/helpers/createClass";
 import _possibleConstructorReturn from "@babel/runtime/helpers/possibleConstructorReturn";
 import _getPrototypeOf from "@babel/runtime/helpers/getPrototypeOf";
 import _inherits from "@babel/runtime/helpers/inherits";
+import _regeneratorRuntime from "@babel/runtime/regenerator";
+import _classCallCheck from "@babel/runtime/helpers/classCallCheck";
+import _createClass from "@babel/runtime/helpers/createClass";
+import { ObjectSerializer, registerSerializable } from '../../../../../../../main/common/extensions/serialization/serializers';
+import { ArrayMap } from '../../../../../../../main/common/lists/ArrayMap';
 import { MapChangedType } from '../../../../../../../main/common/lists/contracts/IMapChanged';
 import { compareFast } from '../../../../../../../main/common/lists/helpers/compare';
+import { ObjectHashMap } from '../../../../../../../main/common/lists/ObjectHashMap';
 import { ObjectMap } from '../../../../../../../main/common/lists/ObjectMap';
 import { ObservableMap } from '../../../../../../../main/common/lists/ObservableMap';
-import { TestVariants, THIS } from '../../../helpers/TestVariants';
+import { Assert } from '../../../../../../../main/common/test/Assert';
+import { DeepCloneEqual } from '../../../../../../../main/common/test/DeepCloneEqual';
+import { TestVariants, THIS } from '../../../src/helpers/TestVariants';
+import { convertToObject } from './common';
+export var assert = new Assert(new DeepCloneEqual({
+  commonOptions: {},
+  equalOptions: {
+    // noCrossReferences: true,
+    equalInnerReferences: true,
+    equalTypes: true,
+    equalMapSetOrder: true,
+    strictEqualFunctions: true
+  }
+}));
 
 function compareEntries(o1, o2) {
   return compareFast(o1[0], o2[0]);
@@ -45,6 +62,13 @@ export function applyMapChangedToArray(event, array) {
       }
       break;
   }
+}
+
+function testSerialization(map) {
+  var serialized = ObjectSerializer.default.serialize(map);
+  var result = ObjectSerializer.default.deSerialize(serialized);
+  assert.notStrictEqual(result, map);
+  assert.deepStrictEqual(Array.from(result.entries()), Array.from(map.entries()));
 }
 
 function assertMap(map, expectedArray) {
@@ -94,6 +118,7 @@ function assertMap(map, expectedArray) {
   }, thisArg);
   assert.deepStrictEqual(forEachArray.sort(compareEntries), expectedArray);
   assert.deepStrictEqual(Array.from(map).sort(compareEntries), expectedArray);
+  testSerialization(map);
 }
 
 var staticMapInner = new Map();
@@ -119,6 +144,329 @@ var staticMap = new ObservableMap(staticMapInner); // class ObjectMapWrapper<V> 
 //
 // }
 
+var _Symbol$toStringTag = Symbol.toStringTag;
+var _Symbol$iterator = Symbol.iterator;
+
+var MapWrapper =
+/*#__PURE__*/
+function () {
+  function MapWrapper(map) {
+    _classCallCheck(this, MapWrapper);
+
+    this[_Symbol$toStringTag] = 'Map';
+    this._map = map;
+  }
+
+  _createClass(MapWrapper, [{
+    key: _Symbol$iterator,
+    value:
+    /*#__PURE__*/
+    _regeneratorRuntime.mark(function value() {
+      var _iteratorNormalCompletion2, _didIteratorError2, _iteratorError2, _iterator2, _step2, item;
+
+      return _regeneratorRuntime.wrap(function value$(_context) {
+        while (1) {
+          switch (_context.prev = _context.next) {
+            case 0:
+              _iteratorNormalCompletion2 = true;
+              _didIteratorError2 = false;
+              _iteratorError2 = undefined;
+              _context.prev = 3;
+              _iterator2 = this._map[Symbol.iterator]();
+
+            case 5:
+              if (_iteratorNormalCompletion2 = (_step2 = _iterator2.next()).done) {
+                _context.next = 12;
+                break;
+              }
+
+              item = _step2.value;
+              _context.next = 9;
+              return [item[0].value, item[1]];
+
+            case 9:
+              _iteratorNormalCompletion2 = true;
+              _context.next = 5;
+              break;
+
+            case 12:
+              _context.next = 18;
+              break;
+
+            case 14:
+              _context.prev = 14;
+              _context.t0 = _context["catch"](3);
+              _didIteratorError2 = true;
+              _iteratorError2 = _context.t0;
+
+            case 18:
+              _context.prev = 18;
+              _context.prev = 19;
+
+              if (!_iteratorNormalCompletion2 && _iterator2.return != null) {
+                _iterator2.return();
+              }
+
+            case 21:
+              _context.prev = 21;
+
+              if (!_didIteratorError2) {
+                _context.next = 24;
+                break;
+              }
+
+              throw _iteratorError2;
+
+            case 24:
+              return _context.finish(21);
+
+            case 25:
+              return _context.finish(18);
+
+            case 26:
+            case "end":
+              return _context.stop();
+          }
+        }
+      }, value, this, [[3, 14, 18, 26], [19,, 21, 25]]);
+    })
+  }, {
+    key: "clear",
+    value: function clear() {
+      this._map.clear();
+    }
+  }, {
+    key: "delete",
+    value: function _delete(key) {
+      return this._map.delete(convertToObject(key));
+    }
+  }, {
+    key: "entries",
+    value:
+    /*#__PURE__*/
+    _regeneratorRuntime.mark(function entries() {
+      var _iteratorNormalCompletion3, _didIteratorError3, _iteratorError3, _iterator3, _step3, entry;
+
+      return _regeneratorRuntime.wrap(function entries$(_context2) {
+        while (1) {
+          switch (_context2.prev = _context2.next) {
+            case 0:
+              _iteratorNormalCompletion3 = true;
+              _didIteratorError3 = false;
+              _iteratorError3 = undefined;
+              _context2.prev = 3;
+              _iterator3 = this._map.entries()[Symbol.iterator]();
+
+            case 5:
+              if (_iteratorNormalCompletion3 = (_step3 = _iterator3.next()).done) {
+                _context2.next = 12;
+                break;
+              }
+
+              entry = _step3.value;
+              _context2.next = 9;
+              return [entry[0].value, entry[1]];
+
+            case 9:
+              _iteratorNormalCompletion3 = true;
+              _context2.next = 5;
+              break;
+
+            case 12:
+              _context2.next = 18;
+              break;
+
+            case 14:
+              _context2.prev = 14;
+              _context2.t0 = _context2["catch"](3);
+              _didIteratorError3 = true;
+              _iteratorError3 = _context2.t0;
+
+            case 18:
+              _context2.prev = 18;
+              _context2.prev = 19;
+
+              if (!_iteratorNormalCompletion3 && _iterator3.return != null) {
+                _iterator3.return();
+              }
+
+            case 21:
+              _context2.prev = 21;
+
+              if (!_didIteratorError3) {
+                _context2.next = 24;
+                break;
+              }
+
+              throw _iteratorError3;
+
+            case 24:
+              return _context2.finish(21);
+
+            case 25:
+              return _context2.finish(18);
+
+            case 26:
+            case "end":
+              return _context2.stop();
+          }
+        }
+      }, entries, this, [[3, 14, 18, 26], [19,, 21, 25]]);
+    })
+  }, {
+    key: "forEach",
+    value: function forEach(callbackfn, thisArg) {
+      this._map.forEach(function (value, key) {
+        callbackfn(value, key.value, this);
+      }, thisArg);
+    }
+  }, {
+    key: "get",
+    value: function get(key) {
+      return this._map.get(convertToObject(key));
+    }
+  }, {
+    key: "has",
+    value: function has(key) {
+      return this._map.has(convertToObject(key));
+    }
+  }, {
+    key: "keys",
+    value:
+    /*#__PURE__*/
+    _regeneratorRuntime.mark(function keys() {
+      var _iteratorNormalCompletion4, _didIteratorError4, _iteratorError4, _iterator4, _step4, item;
+
+      return _regeneratorRuntime.wrap(function keys$(_context3) {
+        while (1) {
+          switch (_context3.prev = _context3.next) {
+            case 0:
+              _iteratorNormalCompletion4 = true;
+              _didIteratorError4 = false;
+              _iteratorError4 = undefined;
+              _context3.prev = 3;
+              _iterator4 = this._map.keys()[Symbol.iterator]();
+
+            case 5:
+              if (_iteratorNormalCompletion4 = (_step4 = _iterator4.next()).done) {
+                _context3.next = 12;
+                break;
+              }
+
+              item = _step4.value;
+              _context3.next = 9;
+              return item.value;
+
+            case 9:
+              _iteratorNormalCompletion4 = true;
+              _context3.next = 5;
+              break;
+
+            case 12:
+              _context3.next = 18;
+              break;
+
+            case 14:
+              _context3.prev = 14;
+              _context3.t0 = _context3["catch"](3);
+              _didIteratorError4 = true;
+              _iteratorError4 = _context3.t0;
+
+            case 18:
+              _context3.prev = 18;
+              _context3.prev = 19;
+
+              if (!_iteratorNormalCompletion4 && _iterator4.return != null) {
+                _iterator4.return();
+              }
+
+            case 21:
+              _context3.prev = 21;
+
+              if (!_didIteratorError4) {
+                _context3.next = 24;
+                break;
+              }
+
+              throw _iteratorError4;
+
+            case 24:
+              return _context3.finish(21);
+
+            case 25:
+              return _context3.finish(18);
+
+            case 26:
+            case "end":
+              return _context3.stop();
+          }
+        }
+      }, keys, this, [[3, 14, 18, 26], [19,, 21, 25]]);
+    })
+  }, {
+    key: "set",
+    value: function set(key, value) {
+      this._map.set(convertToObject(key), value);
+
+      return this;
+    }
+  }, {
+    key: "values",
+    value: function values() {
+      return this._map.values();
+    } // region ISerializable
+
+  }, {
+    key: "serialize",
+    value: function serialize(_serialize) {
+      return {
+        map: _serialize(this._map)
+      };
+    } // tslint:disable-next-line:no-empty
+
+  }, {
+    key: "deSerialize",
+    value: function deSerialize(_deSerialize, serializedValue) {} // endregion
+
+  }, {
+    key: "size",
+    get: function get() {
+      return this._map.size;
+    }
+  }]);
+
+  return MapWrapper;
+}();
+
+MapWrapper.uuid = 'bc06eeb6-5139-444a-a735-57a6e1928ac9';
+registerSerializable(MapWrapper, {
+  serializer: {
+    deSerialize:
+    /*#__PURE__*/
+    _regeneratorRuntime.mark(function deSerialize(_deSerialize2, serializedValue, valueFactory) {
+      var innerMap, value;
+      return _regeneratorRuntime.wrap(function deSerialize$(_context4) {
+        while (1) {
+          switch (_context4.prev = _context4.next) {
+            case 0:
+              _context4.next = 2;
+              return _deSerialize2(serializedValue.map);
+
+            case 2:
+              innerMap = _context4.sent;
+              value = valueFactory(innerMap);
+              value.deSerialize(_deSerialize2, serializedValue);
+              return _context4.abrupt("return", value);
+
+            case 6:
+            case "end":
+              return _context4.stop();
+          }
+        }
+      }, deSerialize);
+    })
+  }
+});
 export var TestMap =
 /*#__PURE__*/
 function (_TestVariants) {
@@ -133,7 +481,7 @@ function (_TestVariants) {
     _this.baseOptionsVariants = {
       reuseMapInstance: [false, true],
       useMapChanged: [false, true],
-      useObjectMap: [false, true]
+      innerMap: ['Map', 'Map<Object>', 'ObjectMap', 'ObjectHashMap', 'ArrayMap']
     };
     return _this;
   }
@@ -157,26 +505,26 @@ function (_TestVariants) {
 
             if (options.reuseMapInstance) {
               staticMap.clear();
-              var _iteratorNormalCompletion2 = true;
-              var _didIteratorError2 = false;
-              var _iteratorError2 = undefined;
+              var _iteratorNormalCompletion5 = true;
+              var _didIteratorError5 = false;
+              var _iteratorError5 = undefined;
 
               try {
-                for (var _iterator2 = array[Symbol.iterator](), _step2; !(_iteratorNormalCompletion2 = (_step2 = _iterator2.next()).done); _iteratorNormalCompletion2 = true) {
-                  var item = _step2.value;
+                for (var _iterator5 = array[Symbol.iterator](), _step5; !(_iteratorNormalCompletion5 = (_step5 = _iterator5.next()).done); _iteratorNormalCompletion5 = true) {
+                  var item = _step5.value;
                   staticMap.set.apply(staticMap, _toConsumableArray(item));
                 }
               } catch (err) {
-                _didIteratorError2 = true;
-                _iteratorError2 = err;
+                _didIteratorError5 = true;
+                _iteratorError5 = err;
               } finally {
                 try {
-                  if (!_iteratorNormalCompletion2 && _iterator2.return != null) {
-                    _iterator2.return();
+                  if (!_iteratorNormalCompletion5 && _iterator5.return != null) {
+                    _iterator5.return();
                   }
                 } finally {
-                  if (_didIteratorError2) {
-                    throw _iteratorError2;
+                  if (_didIteratorError5) {
+                    throw _iteratorError5;
                   }
                 }
               }
@@ -184,30 +532,55 @@ function (_TestVariants) {
               map = staticMap;
               mapInner = staticMapInner;
             } else {
-              mapInner = options.useObjectMap ? new ObjectMap({}) : new Map();
-              var _iteratorNormalCompletion3 = true;
-              var _didIteratorError3 = false;
-              var _iteratorError3 = undefined;
+              switch (options.innerMap) {
+                case 'ObjectMap':
+                  mapInner = new ObjectMap({});
+                  break;
+
+                case 'ObjectHashMap':
+                  mapInner = new MapWrapper(new ObjectHashMap({}));
+                  break;
+
+                case 'ArrayMap':
+                  mapInner = new MapWrapper(new ArrayMap([]));
+                  break;
+
+                case 'Map<Object>':
+                  mapInner = new MapWrapper(new Map());
+                  break;
+
+                case 'Map':
+                  mapInner = new Map();
+                  break;
+
+                default:
+                  assert.fail('Unknown options.innerMap: ' + options.innerMap);
+                  break;
+              }
+
+              var _iteratorNormalCompletion6 = true;
+              var _didIteratorError6 = false;
+              var _iteratorError6 = undefined;
 
               try {
-                for (var _iterator3 = array[Symbol.iterator](), _step3; !(_iteratorNormalCompletion3 = (_step3 = _iterator3.next()).done); _iteratorNormalCompletion3 = true) {
+                for (var _iterator6 = array[Symbol.iterator](), _step6; !(_iteratorNormalCompletion6 = (_step6 = _iterator6.next()).done); _iteratorNormalCompletion6 = true) {
                   var _mapInner;
 
-                  var _item = _step3.value;
+                  var _item = _step6.value;
 
                   (_mapInner = mapInner).set.apply(_mapInner, _toConsumableArray(_item));
                 }
               } catch (err) {
-                _didIteratorError3 = true;
-                _iteratorError3 = err;
+                _didIteratorError6 = true;
+                _iteratorError6 = err;
               } finally {
                 try {
-                  if (!_iteratorNormalCompletion3 && _iterator3.return != null) {
-                    _iterator3.return();
+                  if (!_iteratorNormalCompletion6 && _iterator6.return != null) {
+                    _iterator6.return();
                   }
                 } finally {
-                  if (_didIteratorError3) {
-                    throw _iteratorError3;
+                  if (_didIteratorError6) {
+                    throw _iteratorError6;
                   }
                 }
               }
