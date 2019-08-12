@@ -57,7 +57,7 @@ module.exports = function (config) {
 				helpers.rollup.plugins.babel(),
 				// helpers.rollup.plugins.terser(),
 				// helpers.rollup.plugins.prettier()
-			],
+			].filter(o => o),
 			output: {
 				format   : 'cjs',
 				sourcemap: true // 'inline'
