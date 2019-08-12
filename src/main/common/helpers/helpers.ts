@@ -19,3 +19,7 @@ export function typeToDebugString(type) {
 export const EMPTY: any = function EMPTY() {}
 
 export type TClass<T> = new (...args: any[]) => T
+
+export function delay(timeMilliseconds) {
+	return new Promise(resolve => setTimeout(resolve, timeMilliseconds))
+}

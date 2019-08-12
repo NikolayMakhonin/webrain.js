@@ -2,7 +2,9 @@
 import {TClass} from '../helpers/helpers'
 import {DeepCloneEqual, IDeepEqualOptions} from './DeepCloneEqual'
 
-export const AssertionError = require('assertion-error')
+export const AssertionError = typeof require === 'function'
+	? require('assertion-error')
+	: class extends Error { }
 
 const deepCloneEqualDefault = new DeepCloneEqual()
 

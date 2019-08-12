@@ -1,5 +1,5 @@
 /* tslint:disable:no-construct use-primitive-type no-shadowed-variable no-duplicate-string no-empty max-line-length */
-import {delay} from 'q'
+import {delay} from '../../../../../../main/common/helpers/helpers'
 import {createObject, Tester} from './helpers/Tester'
 
 describe('common > main > rx > deep-subscribe > deep-subscribe', function() {

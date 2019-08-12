@@ -1,5 +1,4 @@
 /* tslint:disable:no-empty */
-import {delay} from 'q'
 import {IListChanged} from '../../../../../../../main/common/lists/contracts/IListChanged'
 import {IMapChanged} from '../../../../../../../main/common/lists/contracts/IMapChanged'
 import {ISetChanged} from '../../../../../../../main/common/lists/contracts/ISetChanged'
@@ -13,6 +12,7 @@ import {ObservableObjectBuilder} from '../../../../../../../main/common/rx/objec
 import {IUnsubscribe} from '../../../../../../../main/common/rx/subjects/subject'
 import {Assert} from '../../../../../../../main/common/test/Assert'
 import {DeepCloneEqual} from '../../../../../../../main/common/test/DeepCloneEqual'
+import {delay} from "../../../../../../../main/common/helpers/helpers";
 
 const assert = new Assert(new DeepCloneEqual({
 	commonOptions: {
