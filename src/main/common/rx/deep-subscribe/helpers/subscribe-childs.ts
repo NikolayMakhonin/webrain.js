@@ -24,10 +24,10 @@ function subscribeChildsObject<TValue>(
 		subscribeItem,
 		unsubscribeItem,
 	}: ISubscribeChildOptions<IPropertyChanged, TValue>,
-) {
+): IUnsubscribe {
 	const {propertyChanged} = object
 	if (!propertyChanged) {
-		return
+		return null
 	}
 
 	const any = propertyPredicate(ANY, object)
@@ -52,10 +52,10 @@ function subscribeChildsList<TItem>(
 		subscribeItem,
 		unsubscribeItem,
 	}: ISubscribeChildOptions<IListChanged<TItem>, TItem>,
-) {
+): IUnsubscribe {
 	const {listChanged} = object
 	if (!listChanged) {
-		return
+		return null
 	}
 
 	if (!propertyPredicate(ANY, object)) {
@@ -94,10 +94,10 @@ function subscribeChildsSet<TItem>(
 		subscribeItem,
 		unsubscribeItem,
 	}: ISubscribeChildOptions<ISetChanged<TItem>, TItem>,
-) {
+): IUnsubscribe {
 	const {setChanged} = object
 	if (!setChanged) {
-		return
+		return null
 	}
 
 	if (!propertyPredicate(ANY, object)) {
@@ -126,10 +126,10 @@ function subscribeChildsMap<K, V>(
 		subscribeItem,
 		unsubscribeItem,
 	}: ISubscribeChildOptions<IMapChanged<K, V>, [K, V]>,
-) {
+): IUnsubscribe {
 	const {mapChanged} = object
 	if (!mapChanged) {
-		return
+		return null
 	}
 
 	if (!propertyPredicate(ANY, object)) {

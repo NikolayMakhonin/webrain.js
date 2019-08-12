@@ -483,7 +483,7 @@ export class MergerVisitor implements IMergerVisitor {
 		if (id == null) {
 			throw new Error(`object is primitive: ${object}`)
 		}
-		return this.statuses[id]
+		return statuses[id]
 	}
 
 	public setStatus(object: any, status: ObjectStatus): any {
@@ -496,7 +496,7 @@ export class MergerVisitor implements IMergerVisitor {
 		if (id == null) {
 			throw new Error(`object is primitive: ${object}`)
 		}
-		this.statuses[id] = status
+		statuses[id] = status
 		return object
 	}
 

@@ -151,7 +151,7 @@ export class ObservableSet<T> extends SetChangedObject<T> implements
 		}
 
 		if (source.constructor === ObservableSet
-			&& this._set === (source as ObservableSet<T>)._set
+			&& this._set === source._set
 		) {
 			return null
 		}

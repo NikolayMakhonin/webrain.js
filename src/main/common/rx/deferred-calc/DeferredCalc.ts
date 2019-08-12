@@ -241,7 +241,7 @@ export class DeferredCalc {
 				_timing.clearTimeout(timerId)
 			}
 			this._timeNextPulse = timeNextPulse
-			this._timerId = _timing.setTimeout(() => this._pulse(), timeNextPulse - now)
+			this._timerId = _timing.setTimeout(() => { this._pulse() }, timeNextPulse - now)
 		}
 
 		// endregion

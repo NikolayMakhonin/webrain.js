@@ -43,6 +43,8 @@ async function doBabel(file) {
 	return (await babel.transformFileAsync(file)).code
 }
 
+// noinspection JSUnusedLocalSymbols
+// eslint-disable-next-line no-unused-vars
 async function doRollup(file) {
 	// eslint-disable-next-line no-useless-concat
 	const markStartEnd = '//6c84fb9012c411e' + '1840d7b25c5ee775a\n'

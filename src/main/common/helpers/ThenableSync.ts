@@ -76,7 +76,7 @@ export class ThenableSync<TValue = any> {
 				return _value as any
 			}
 
-			const result = ThenableSync.resolve(onfulfilled(_value as TValue))
+			const result = ThenableSync.resolve(onfulfilled(_value))
 
 			return lastExpression || ThenableSync.isThenableSync(result)
 				? result

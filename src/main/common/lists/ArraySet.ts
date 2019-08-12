@@ -128,7 +128,7 @@ export class ArraySet<T extends Object> implements
 
 	public _canMerge(source: ArraySet<T>): boolean {
 		if (source.constructor === ArraySet
-			&& this._array === (source as ArraySet<T>)._array
+			&& this._array === source._array
 		) {
 			return null
 		}

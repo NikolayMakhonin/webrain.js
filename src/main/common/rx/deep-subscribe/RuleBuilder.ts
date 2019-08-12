@@ -7,8 +7,8 @@ import {RuleSubscribeCollection, RuleSubscribeMap, RuleSubscribeObject} from './
 const RuleSubscribeObjectPropertyNames = RuleSubscribeObject.bind(null, null)
 const RuleSubscribeMapKeys = RuleSubscribeMap.bind(null, null)
 
-const UNSUBSCRIBE_PROPERTY_PREFIX = Math.random().toString(36)
-let nextUnsubscribePropertyId = 0
+// const UNSUBSCRIBE_PROPERTY_PREFIX = Math.random().toString(36)
+// let nextUnsubscribePropertyId = 0
 
 export class RuleBuilder<TObject> {
 	public rule: IRule

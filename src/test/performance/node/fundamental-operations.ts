@@ -1,17 +1,23 @@
-/* eslint-disable no-new-func,no-array-constructor,object-property-newline,no-undef,no-empty,no-shadow,no-prototype-builtins,prefer-destructuring,prefer-rest-params,arrow-body-style */
+/* tslint:disable:prefer-const no-identical-functions no-empty no-shadowed-variable */
+/* tslint:disable:no-var-requires one-variable-per-declaration */
+/* eslint-disable no-new-func,no-array-constructor,object-property-newline,no-undef */
+/* eslint-disable no-empty,no-shadow,no-prototype-builtins,prefer-destructuring */
+/* eslint-disable prefer-rest-params,arrow-body-style */
 
 import {calcPerformance} from 'rdtsc'
-import {binarySearch} from '../../../main/common/lists/helpers/array'
-import {getObjectUniqueId, freezeWithUniqueId} from '../../../main/common/lists/helpers/object-unique-id'
-import {SortedList} from '../../../main/common/lists/SortedList'
-import {ArraySet} from '../../../main/common/lists/ArraySet'
-import {createObject, Tester} from '../../tests/common/main/rx/deep-subscribe/helpers/Tester'
 import {SynchronousPromise} from 'synchronous-promise'
-import {ThenableSync} from '../../../main/common/helpers/ThenableSync'
 import {isIterable} from '../../../main/common/helpers/helpers'
+import {ThenableSync} from '../../../main/common/helpers/ThenableSync'
+import {ArraySet} from '../../../main/common/lists/ArraySet'
+import {binarySearch} from '../../../main/common/lists/helpers/array'
+import {freezeWithUniqueId, getObjectUniqueId} from '../../../main/common/lists/helpers/object-unique-id'
+import {SortedList} from '../../../main/common/lists/SortedList'
+import {createObject, Tester} from '../../tests/common/main/rx/deep-subscribe/helpers/Tester'
 
 const SetNative = Set
 require('./src/SetPolyfill')
+declare const assert: any
+declare const SetPolyfill: any
 
 export function compareDefault(o1, o2) {
 	if (o1 > o2) {
@@ -23,18 +29,18 @@ export function compareDefault(o1, o2) {
 	return 0
 }
 
-describe('fundamental-operations', function () {
+describe('fundamental-operations', function() {
 	function Path(value) {
 		this.value = value
 	}
 
-	Path.prototype.unshift = function (value) {
+	Path.prototype.unshift = function(value) {
 		const item = new Path(value)
 		item.next = this
 		return item
 	}
 
-	xit('array add item', function () {
+	xit('array add item', function() {
 		this.timeout(300000)
 
 		const item = 'qweqweqweqweqwe'
@@ -63,13 +69,13 @@ describe('fundamental-operations', function () {
 				arr2[0] = item
 			}, () => {
 				path = path.unshift(item)
-			}
+			},
 		)
 
 		console.log(str, result)
 	})
 
-	xit('pass arguments', function () {
+	xit('pass arguments', function() {
 		this.timeout(300000)
 
 		function f1(args) {
@@ -94,15 +100,16 @@ describe('fundamental-operations', function () {
 				// no operations
 			},
 			() => passF1(1, 2, 3, 4, 5, 6, 7, 8, 9),
-			() => passF2(1, 2, 3, 4, 5, 6, 7, 8, 9)
+			() => passF2(1, 2, 3, 4, 5, 6, 7, 8, 9),
 		)
 
 		console.log(result)
 	})
 
-	xit('lambda vs function', function () {
+	xit('lambda vs function', function() {
 		this.timeout(300000)
 
+		// noinspection JSUnusedLocalSymbols
 		function f1(args) {
 			const calc = () => {
 				if (Math.random() + 1) {
@@ -173,13 +180,13 @@ describe('fundamental-operations', function () {
 				// no operations
 			},
 			() => f1(1),
-			() => f2(2)
+			() => f2(2),
 		)
 
 		console.log(result)
 	})
 
-	xit('lazy function parameters', function () {
+	xit('lazy function parameters', function() {
 		this.timeout(300000)
 
 		function f(arg1, arg2) {
@@ -206,13 +213,13 @@ describe('fundamental-operations', function () {
 			() => f(false, {x: [1, 2, 3], y: 2, z: 3}),
 			() => f(false, () => ({x: [1, 2, 3], y: 2, z: 3})),
 			() => f(true, {x: [1, 2, 3], y: 2, z: 3}),
-			() => f(true, () => ({x: [1, 2, 3], y: 2, z: 3}))
+			() => f(true, () => ({x: [1, 2, 3], y: 2, z: 3})),
 		)
 
 		console.log(result)
 	})
 
-	function copyToArray(source, dest, len, index) {
+	function copyToArray(source, dest, len?, index?) {
 		if (!len) {
 			len = source.length
 		}
@@ -233,7 +240,7 @@ describe('fundamental-operations', function () {
 		return arr
 	}
 
-	xit('array decrease length', function () {
+	xit('array decrease length', function() {
 		this.timeout(300000)
 
 		const arr = generateArray(10000)
@@ -261,13 +268,13 @@ describe('fundamental-operations', function () {
 			},
 			() => {
 				delete arr2[arr2.length - 1] // 291
-			}
+			},
 		)
 
 		console.log(result)
 	})
 
-	xit('array decrease length 100', function () {
+	xit('array decrease length 100', function() {
 		this.timeout(300000)
 
 		const arr = generateArray(10000)
@@ -289,13 +296,13 @@ describe('fundamental-operations', function () {
 			},
 			() => {
 				arr2.length -= 100 // 690
-			}
+			},
 		)
 
 		console.log(result)
 	})
 
-	xit('array increase length', function () {
+	xit('array increase length', function() {
 		this.timeout(300000)
 
 		const arr = generateArray(10000)
@@ -337,13 +344,13 @@ describe('fundamental-operations', function () {
 			},
 			() => {
 				arr2.splice(arr2.length, 0, arr2.length) // 138119
-			}
+			},
 		)
 
 		console.log(result)
 	})
 
-	xit('array increase length 100', function () {
+	xit('array increase length 100', function() {
 		this.timeout(300000)
 
 		const arr = generateArray(10000)
@@ -383,13 +390,13 @@ describe('fundamental-operations', function () {
 				for (let i = arr2.length, end = i + 100; i < end; i++) {
 					arr2[i] = 0
 				}
-			}
+			},
 		)
 
 		console.log(result)
 	})
 
-	xit('array default value', function () {
+	xit('array default value', function() {
 		this.timeout(300000)
 
 		const arrNumbers = generateArray(10)
@@ -434,7 +441,6 @@ describe('fundamental-operations', function () {
 				arr[arr.length - 1] = defaultString
 			},
 
-
 			() => {
 				arr = arrStrings.slice()
 			},
@@ -459,7 +465,6 @@ describe('fundamental-operations', function () {
 			() => { // -7
 				arr[arr.length - 1] = defaultNumber
 			},
-
 
 			() => {
 				arr = arrFunctions.slice()
@@ -486,7 +491,6 @@ describe('fundamental-operations', function () {
 				arr[arr.length - 1] = defaultNumber
 			},
 
-
 			() => {
 				arr = arrObjects.slice()
 			},
@@ -510,21 +514,21 @@ describe('fundamental-operations', function () {
 			},
 			() => { // 8
 				arr[arr.length - 1] = defaultNumber
-			}
+			},
 
 		)
 
 		console.log(result)
 	})
 
-	xit('array last index', function () {
+	xit('array last index', function() {
 		this.timeout(300000)
 
 		function defaultCompare(o1, o2) {
 			return o1 === o2
 		}
 
-		function lastIndexOf1(array, value, compare) {
+		function lastIndexOf1(array, value, compare?) {
 			if (!compare) {
 				compare = defaultCompare
 			}
@@ -541,7 +545,7 @@ describe('fundamental-operations', function () {
 			return ind
 		}
 
-		function lastIndexOf2(array, value, compare) {
+		function lastIndexOf2(array, value, compare?) {
 			if (!compare) {
 				compare = defaultCompare
 			}
@@ -564,7 +568,7 @@ describe('fundamental-operations', function () {
 				// no operations
 			},
 			() => lastIndexOf1(arr, 5000),
-			() => lastIndexOf2(arr, 5000)
+			() => lastIndexOf2(arr, 5000),
 		)
 
 		console.log(result)
@@ -680,7 +684,7 @@ describe('fundamental-operations', function () {
 		console.log(`${sortCount}\t${binarySearchCount}\t${JSON.stringify(array)}\t${JSON.stringify(addArray)}`)
 	}
 
-	xit('sorted array add items', function () {
+	xit('sorted array add items', function() {
 		this.timeout(300000)
 
 		const array = []
@@ -703,13 +707,13 @@ describe('fundamental-operations', function () {
 			() => {
 				resultArray = array.slice().concat(addArray.map(o => 0))
 			},
-			() => calcBinarySearchCount(resultArray, array.length, addArray)
+			() => calcBinarySearchCount(resultArray, array.length, addArray),
 		)
 
 		console.log(result)
 	})
 
-	xit('regexp', function () {
+	xit('regexp', function() {
 		this.timeout(300000)
 
 		const regexp = /qwe\/wer\/ert\/rty\/tyu/
@@ -727,13 +731,13 @@ describe('fundamental-operations', function () {
 			() => regexp.test(wrongPath),
 			() => wrongPath.match(regexp),
 			() => regexp.test(path),
-			() => path.match(regexp)
+			() => path.match(regexp),
 		)
 
 		console.log(result)
 	})
 
-	xit('operations inside compare func', function () {
+	xit('operations inside compare func', function() {
 		this.timeout(300000)
 
 		const obj = () => {}
@@ -758,13 +762,13 @@ describe('fundamental-operations', function () {
 			() => typeof obj2.valueOf() === 'function', // -7
 			() => getObjectUniqueId(obj), // -11
 			() => typeof obj === 'object', // 146
-			() => typeof obj === 'symbol' // 150
+			() => typeof obj === 'symbol', // 150
 		)
 
 		console.log(result)
 	})
 
-	xit('Set', function () {
+	xit('Set', function() {
 		this.timeout(300000)
 
 		assert.strictEqual(SetNative, Set)
@@ -800,7 +804,7 @@ describe('fundamental-operations', function () {
 			testSet(
 				o => set.add(o),
 				o => set.delete(o),
-				() => set
+				() => set,
 			)
 			// assert.strictEqual(set1.size, 0)
 		}
@@ -810,7 +814,7 @@ describe('fundamental-operations', function () {
 			testSet(
 				o => (set[getObjectUniqueId(o)] = o),
 				o => delete set[getObjectUniqueId(o)],
-				o => Object.values(set)
+				o => Object.values(set),
 			)
 			// assert.strictEqual(Object.keys(set).length, 0)
 		}
@@ -820,7 +824,7 @@ describe('fundamental-operations', function () {
 			testSet(
 				o => (set[getObjectUniqueId(o)] = o),
 				o => delete set[getObjectUniqueId(o)],
-				o => set
+				o => set,
 			)
 			// assert.strictEqual(set.length, 0)
 		}
@@ -835,7 +839,7 @@ describe('fundamental-operations', function () {
 						set.splice(i, 1)
 					}
 				},
-				o => set
+				o => set,
 			)
 			// assert.strictEqual(set.length, 0)
 		}
@@ -851,7 +855,7 @@ describe('fundamental-operations', function () {
 						set.length--
 					}
 				},
-				o => set
+				o => set,
 			)
 			// assert.strictEqual(set.length, 0)
 		}
@@ -870,7 +874,7 @@ describe('fundamental-operations', function () {
 						set.length = len - 1
 					}
 				},
-				o => set
+				o => set,
 			)
 			// assert.strictEqual(set.length, 0)
 		}
@@ -880,7 +884,7 @@ describe('fundamental-operations', function () {
 			testSet(
 				o => set.add(o),
 				o => set.remove(o),
-				o => set
+				o => set,
 			)
 			// set.clear()
 			// assert.strictEqual(set.size, 0)
@@ -892,7 +896,7 @@ describe('fundamental-operations', function () {
 			testSet(
 				o => set.add(o),
 				o => set.delete(o),
-				o => set
+				o => set,
 			)
 			// assert.strictEqual(set.size, 0)
 		}
@@ -903,7 +907,7 @@ describe('fundamental-operations', function () {
 			testSet(
 				o => set.add(o),
 				o => set.delete(o),
-				o => set
+				o => set,
 			)
 			// assert.strictEqual(set.size, 0)
 		}
@@ -926,7 +930,7 @@ describe('fundamental-operations', function () {
 				notAddIfExists  : true,
 				minAllocatedSize: 1000,
 				// compare         : compareUniqueId
-			})
+			}),
 			// () => testSortedList({
 			// 	autoSort        : true,
 			// 	notAddIfExists  : false,
@@ -942,7 +946,7 @@ describe('fundamental-operations', function () {
 		console.log(result)
 	})
 
-	xit('Number toString', function () {
+	xit('Number toString', function() {
 		this.timeout(300000)
 		const numInt = 123456789
 		const numFloat = 1234.56789
@@ -959,13 +963,13 @@ describe('fundamental-operations', function () {
 			() => numInt.toString(36),
 			() => numFloat.toString(10),
 			() => numFloat.toString(16),
-			() => numFloat.toString(36)
+			() => numFloat.toString(36),
 		)
 
 		console.log(result)
 	})
 
-	xit('hasOwnProperty', function () {
+	xit('hasOwnProperty', function() {
 		this.timeout(300000)
 		const object = {property: true}
 		const child = Object.create(object)
@@ -978,29 +982,29 @@ describe('fundamental-operations', function () {
 			() => Object.prototype.hasOwnProperty.call(object, 'property'),
 			() => object.hasOwnProperty('property'),
 			() => Object.prototype.hasOwnProperty.call(child, 'property'),
-			() => child.hasOwnProperty('property')
+			() => child.hasOwnProperty('property'),
 		)
 
 		console.log(result)
 	})
 
-	xit('deepSubscribe', function () {
+	xit('deepSubscribe', function() {
 		this.timeout(300000)
 
 		const createTester = (...propertyNames) => new Tester(
 			{
 				object         : createObject().object,
 				immediate      : true,
-				performanceTest: true
+				performanceTest: true,
 			},
 			b => b
 				.repeat(1, 3, b => b
 					.any(
 						// b => b.propertyRegexp(/object|observableObject/),
 						b => b.propertyNames('object', 'observableObject'),
-						b => b.propertyNames(...propertyNames).path(o => o['#'])
+						b => b.propertyNames(...propertyNames).path(o => o['#']),
 					))
-				.path(o => o['#'])
+				.path(o => o['#']),
 		)
 			.subscribe([])
 			.unsubscribe([])
@@ -1037,13 +1041,13 @@ describe('fundamental-operations', function () {
 			() => testerObservableMap.unsubscribe([]),
 
 			() => testerAll.subscribe([]),
-			() => testerAll.unsubscribe([])
+			() => testerAll.unsubscribe([]),
 		)
 
 		console.log(result)
 	})
 
-	xit('setTimeout', function () {
+	xit('setTimeout', function() {
 		this.timeout(300000)
 		const func = () => {}
 		let timerId
@@ -1054,13 +1058,13 @@ describe('fundamental-operations', function () {
 				// no operations
 			},
 			() => (timerId = setTimeout(func, 1000)),
-			() => clearTimeout(timerId)
+			() => clearTimeout(timerId),
 		)
 
 		console.log(result)
 	})
 
-	xit('Math.max()', function () {
+	xit('Math.max()', function() {
 		this.timeout(300000)
 		const func = () => {}
 		let timerId
@@ -1077,13 +1081,13 @@ describe('fundamental-operations', function () {
 				// no operations
 			},
 			() => Math.max(this.value1, this.value2, this.value3),
-			() => Math.max(value1, value2, value3)
+			() => Math.max(value1, value2, value3),
 		)
 
 		console.log(result)
 	})
 
-	xit('"out" vs "set func" params', function () {
+	xit('"out" vs "set func" params', function() {
 		this.timeout(300000)
 
 		const funcOut = (a, out) => {
@@ -1120,20 +1124,20 @@ describe('fundamental-operations', function () {
 				funcSet(Math.random(), a => {
 					this.prop = a
 				})
-			}
+			},
 		)
 
 		console.log(result)
 	})
 
-	xit('func params as object', function () {
+	xit('func params as object', function() {
 		this.timeout(300000)
 
 		const funcSimple = (
 			param0,
 			param1,
 			param2,
-			param3
+			param3,
 		) => param0 || param1 || param2 || param3
 
 		const funcObjectParams = ({
@@ -1141,7 +1145,7 @@ describe('fundamental-operations', function () {
 			param1,
 			param2,
 			param3,
-		} = {}) => param0 || param1 || param2 || param3
+		} = {} as any) => param0 || param1 || param2 || param3
 
 		const funcObjectParamsBabel = () => {
 			// eslint-disable-next-line one-var
@@ -1164,7 +1168,7 @@ describe('fundamental-operations', function () {
 					Math.random() < 0.5,
 					Math.random() < 0.5,
 					Math.random() < 0.5,
-					Math.random() < 0.5
+					Math.random() < 0.5,
 				)
 			},
 			() => {
@@ -1172,23 +1176,24 @@ describe('fundamental-operations', function () {
 					param0: Math.random() < 0.5,
 					param1: Math.random() < 0.5,
 					param2: Math.random() < 0.5,
-					param3: Math.random() < 0.5
+					param3: Math.random() < 0.5,
 				})
 			},
 			() => {
+				// @ts-ignore
 				funcObjectParamsBabel({
 					param0: Math.random() < 0.5,
 					param1: Math.random() < 0.5,
 					param2: Math.random() < 0.5,
-					param3: Math.random() < 0.5
+					param3: Math.random() < 0.5,
 				})
-			}
+			},
 		)
 
 		console.log(result)
 	})
 
-	xit('new Array(size)', function () {
+	xit('new Array(size)', function() {
 		this.timeout(300000)
 
 		const size = 1000
@@ -1200,8 +1205,7 @@ describe('fundamental-operations', function () {
 			arrConstructorFilled[i] = undefined
 		}
 
-
-		let i = (size / 2)|0
+		let i = (size / 2) | 0
 
 		const result = calcPerformance(
 			120000,
@@ -1222,7 +1226,7 @@ describe('fundamental-operations', function () {
 				arrConstructor[i] = i
 				i = (i + 7) % size
 				return arrConstructor[i]
-			}
+			},
 		)
 
 		console.log(result)
@@ -1244,11 +1248,11 @@ describe('fundamental-operations', function () {
 			configurable: true,
 			enumerable  : false,
 			get         : () => 0,
-			set(o) {	}
+			set(o) {	},
 		})
 	}
 
-	xit('delete property', function () {
+	it('delete property', function() {
 		this.timeout(300000)
 
 		const hashTable = {}
@@ -1256,55 +1260,58 @@ describe('fundamental-operations', function () {
 			hashTable[i] = i
 		}
 
-		const obj = {}
+		const obj: any = {}
 
 		const result = calcPerformance(
 			20000,
 			() => {
 				// no operations
 			},
-			() => {
+			() => { // 154
 				obj.x = 0
 			},
-			() => {
+			() => { // 46
 				obj.x = void 0
 			},
-			() => {
+			() => { // 108
 				delete obj.x
 			},
-			() => {
-				hashTable[(Math.random() * 10000)|0] = void 0
+			() => { // 92
+				hashTable[(Math.random() * 10000) | 0] = void 0
 			},
-			() => {
-				delete hashTable[(Math.random() * 10000)|0]
+			() => { // 395
+				delete hashTable[(Math.random() * 10000) | 0]
 			},
-			() => {
+			() => { // 2320
 				getObjectUniqueId({})
 			},
-			() => {
+			() => { // 1507
 				defineProperty(obj, 'x')
 			},
-			() => {
+			() => { // 58
 				obj.x = void 0
 			},
-			() => {
+			() => { // 108
 				delete obj.x
 			},
-			() => {
+			() => { // 1860
 				definePropertyGetSet(obj, 'x')
 			},
-			() => {
+			() => { // 909
 				obj.x = void 0
 			},
-			() => {
+			() => { // 119
 				delete obj.x
-			}
+			},
+			() => { // 5
+				return {}
+			},
 		)
 
 		console.log(result)
 	})
 
-	xit('Promise sync', function () {
+	xit('Promise sync', function() {
 		this.timeout(300000)
 
 		const result = calcPerformance(
@@ -1353,13 +1360,13 @@ describe('fundamental-operations', function () {
 					.then(o => (result = o))
 
 				resolve(1)
-			}
+			},
 		)
 
 		console.log(result)
 	})
 
-	xit('is iterable', function () {
+	xit('is iterable', function() {
 		this.timeout(300000)
 
 		const iterable = true
@@ -1372,7 +1379,7 @@ describe('fundamental-operations', function () {
 				}
 				yield 1
 				return 0
-			}
+			},
 		}
 
 		const result = calcPerformance(
@@ -1400,13 +1407,13 @@ describe('fundamental-operations', function () {
 			},
 			() => { // 0
 				return isIterable(iterable)
-			}
+			},
 		)
 
 		console.log(result)
 	})
 
-	xit('array is associative', function () {
+	xit('array is associative', function() {
 		this.timeout(300000)
 
 		const arr = []
@@ -1421,13 +1428,13 @@ describe('fundamental-operations', function () {
 			},
 			() => {
 				return arr.length === Object.keys(arr).length
-			}
+			},
 		)
 
 		console.log(result)
 	})
 
-	it('Object.freeze', function () {
+	xit('Object.freeze', function() {
 		this.timeout(300000)
 
 		const result = calcPerformance(
@@ -1451,7 +1458,73 @@ describe('fundamental-operations', function () {
 			() => {
 				const x = {}
 				freezeWithUniqueId(x)
+			},
+		)
+
+		console.log(result)
+	})
+
+	xit('defineProperty', function() {
+		this.timeout(300000)
+
+		const hashTable = {}
+		for (let i = 0; i < 10000; i++) {
+			hashTable[i] = i
+		}
+
+		class Class {
+			private _field
+			public get value() {
+				return this._field
 			}
+			public set value(value) {
+				this._field = value
+			}
+		}
+
+		const obj: any = new Class()
+		Object.defineProperty(obj, 'manual', {
+			configurable: true,
+			enumerable  : true,
+			get() { return this._manual},
+			set(value) { this._manual = value},
+		})
+		Object.defineProperty(obj, 'hidden', {
+			configurable: true,
+			enumerable  : false,
+			writable    : true,
+			value       : 0,
+		})
+
+		const result = calcPerformance(
+			120000,
+			() => {
+				return Math.random() && 1
+			},
+			() => {
+				obj.x = Math.random() // 0
+			},
+			() => {
+				return Math.random() && obj.x // 4
+			},
+			() => {
+				obj.value = Math.random() // 4
+			},
+			() => {
+				return Math.random() && obj.value // 11
+			},
+			() => {
+				obj.manual = Math.random() // 0
+			},
+			() => {
+				return Math.random() && obj.manual // 27
+			},
+			() => {
+				obj.hidden = Math.random() // 27
+			},
+			() => {
+				return Math.random() && obj.hidden // 27
+			},
 		)
 
 		console.log(result)

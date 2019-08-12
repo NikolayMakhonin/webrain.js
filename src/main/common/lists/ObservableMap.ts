@@ -175,7 +175,7 @@ export class ObservableMap<K, V>
 		}
 
 		if (source.constructor === ObservableMap
-			&& this._map === (source as ObservableMap<K, V>)._map
+			&& this._map === source._map
 		) {
 			return null
 		}

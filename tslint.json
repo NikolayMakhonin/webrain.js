@@ -29,6 +29,9 @@
 	"no-void-expression": true,
 	"return-undefined": true,
 
+	"use-type-alias": false,
+	"prefer-immediate-return": false,
+	"parameters-max-number": false,
 	"only-arrow-functions": false,
 	"no-console": false
   },

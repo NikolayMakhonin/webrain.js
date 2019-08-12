@@ -134,7 +134,7 @@ export class SerializerVisitor implements ISerializerVisitor {
 			return value as any
 		}
 
-		return this.addObject(value as any, out => this.serializeObject(out, value, options))
+		return this.addObject(value as any, out => { this.serializeObject(out, value, options) })
 	}
 }
 
@@ -598,7 +598,7 @@ export function deSerializeObject<T extends object>(
 	serializedValue: ISerializedObject,
 	value: T,
 ): T {
-	for (const key in serializedValue as ISerializedObject) {
+	for (const key in serializedValue) {
 		if (Object.prototype.hasOwnProperty.call(serializedValue, key)) {
 			// tslint:disable-next-line:no-collapsible-if
 			if (ThenableSync.isThenableSync(

@@ -34,6 +34,7 @@ export class ArrayMap<K extends object, V> implements
 		const {_array} = this
 		for (const id in _array) {
 			if (Object.prototype.hasOwnProperty.call(_array, id)) {
+				// tslint:disable-next-line:no-array-delete
 				delete _array[id]
 			}
 		}
@@ -48,6 +49,7 @@ export class ArrayMap<K extends object, V> implements
 			return false
 		}
 
+		// tslint:disable-next-line:no-array-delete
 		delete _array[id]
 
 		return true
@@ -122,7 +124,7 @@ export class ArrayMap<K extends object, V> implements
 
 	public _canMerge(source: ArrayMap<K, V>): boolean {
 		if (source.constructor === ArrayMap
-			&& this._array === (source as ArrayMap<K, V>)._array
+			&& this._array === source._array
 		) {
 			return null
 		}

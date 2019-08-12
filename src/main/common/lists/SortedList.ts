@@ -1152,9 +1152,9 @@ export class SortedList<T>
 
 	public _canMerge(source: SortedList<T>): boolean {
 		if (source.constructor === SortedList
-			&& this._array === (source as SortedList<T>)._array
-			&& this._autoSort === (source as SortedList<T>)._autoSort
-			&& this._notAddIfExists === (source as SortedList<T>)._notAddIfExists
+			&& this._array === source._array
+			&& this._autoSort === source._autoSort
+			&& this._notAddIfExists === source._notAddIfExists
 		) {
 			return null
 		}

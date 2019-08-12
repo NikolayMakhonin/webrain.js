@@ -138,7 +138,7 @@ export class Property<TTarget, TSource>
 		options?: IMergeVisitorOptions<TTarget, TSource>,
 	): boolean {
 		if (older instanceof Property) {
-			older = (older as Property<TTarget|TSource, any>).value
+			older = older.value
 		} else {
 			options = {
 				...options,
@@ -147,7 +147,7 @@ export class Property<TTarget, TSource>
 		}
 
 		if (newer instanceof Property) {
-			newer = (newer as Property<TTarget|TSource, any>).value
+			newer = newer.value
 		} else {
 			if (!options) {
 				options = {}

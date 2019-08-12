@@ -124,7 +124,7 @@ export class ObjectHashMap<K extends object, V> implements
 
 	public _canMerge(source: ObjectHashMap<K, V>): boolean {
 		if (source.constructor === ObjectHashMap
-			&& this._object === (source as ObjectHashMap<K, V>)._object
+			&& this._object === source._object
 		) {
 			return null
 		}

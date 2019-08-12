@@ -102,7 +102,7 @@ export class ObjectSet implements
 
 	public _canMerge(source: ObjectSet): boolean {
 		if (source.constructor === ObjectSet
-			&& this._object === (source as ObjectSet)._object
+			&& this._object === source._object
 		) {
 			return null
 		}
