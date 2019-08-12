@@ -47,9 +47,11 @@ before_install:
   - "test ! -d node_modules || npm rebuild"
   -
 before_script:
-  - if [[ "$TRAVIS_OS_NAME" == "linux" ]]; then export DISPLAY=:99.0; fi
-  - if [[ "$TRAVIS_OS_NAME" == "linux" ]]; then sh -e /etc/init.d/xvfb start; fi
-  - sleep 3 # give xvfb some time to start
+  - export DISPLAY=:99.0
+  # https://stackoverflow.com/questions/55674746/travis-sh-0-cant-open-etc-init-d-xvfb
+  # - if [[ "$TRAVIS_OS_NAME" == "linux" ]]; then export DISPLAY=:99.0; fi
+  # - if [[ "$TRAVIS_OS_NAME" == "linux" ]]; then sh -e /etc/init.d/xvfb start; fi
+  # - sleep 3 # give xvfb some time to start
 
 script:
   - if [[ ${NODE_ONLY} == true ]]; then
