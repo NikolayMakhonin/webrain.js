@@ -46,22 +46,28 @@ export interface ISerializeOptions {
 	objectKeepUndefined?: boolean
 }
 
+export interface ISerializeVisitorOptions<TValue> extends ISerializeOptions {
+	valueType?: TClass<TValue>,
+}
+
 export interface IDeSerializeOptions {
 	arrayAsObject?: boolean
 	// waitDeserialize?: boolean
 }
 
+export interface IDeSerializeVisitorOptions<TValue> extends IDeSerializeOptions {
+	valueType?: TClass<TValue>,
+	valueFactory?: (...args) => TValue,
+}
+
 export type ISerializeValue = <TValue = any>(
 	value: TValue,
-	options?: ISerializeOptions,
-	valueType?: TClass<TValue>,
+	options?: ISerializeVisitorOptions<TValue>,
 ) => ISerializedValue
 export type IDeSerializeValue = <TValue = any>(
 	serializedValue: ISerializedValue,
 	onfulfilled?: TOnFulfilled<TValue>,
-	options?: IDeSerializeOptions,
-	valueType?: TClass<TValue>,
-	valueFactory?: (...args) => TValue,
+	options?: IDeSerializeVisitorOptions<TValue>,
 ) => TValue|ThenableSync<TValue>
 
 export interface ISerializerVisitor {
@@ -89,17 +95,14 @@ export interface IValueSerializer<TValue = any> {
 export interface ISerializer {
 	serialize<TValue>(
 		value: TValue,
-		options?: ISerializeOptions,
-		valueType?: TClass<TValue>,
+		options?: ISerializeVisitorOptions<TValue>,
 	): ISerializedDataOrValue
 }
 
 export interface IDeSerializer {
 	deSerialize<TValue = any>(
 		serializedData: ISerializedDataOrValue,
-		options?: IDeSerializeOptions,
-		valueType?: TClass<TValue>,
-		valueFactory?: (...args) => TValue,
+		options?: IDeSerializeVisitorOptions<TValue>,
 	): TValue
 }
 

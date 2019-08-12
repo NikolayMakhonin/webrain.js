@@ -1,4 +1,4 @@
-import {IMergeable, IMergeOptions, IMergeValue} from '../../../extensions/merge/contracts'
+import {IMergeable, IMergeOptions, IMergeValue, IMergeVisitorOptions} from '../../../extensions/merge/contracts'
 import {ObjectMerger, registerMergeable} from '../../../extensions/merge/mergers'
 import {
 	IDeSerializeValue,
@@ -7,15 +7,12 @@ import {
 	ISerializeValue,
 } from '../../../extensions/serialization/contracts'
 import {registerSerializable} from '../../../extensions/serialization/serializers'
-import {TClass} from '../../../helpers/helpers'
 import {ObservableObject} from '../ObservableObject'
 import {ObservableObjectBuilder} from '../ObservableObjectBuilder'
 
 export interface IPropertyOptions<TTarget, TSource> {
 	merger?: ObjectMerger,
-	valueType?: TClass<TTarget>,
-	valueFactory?: (source: TTarget | TSource) => TTarget,
-	mergeOptions?: IMergeOptions,
+	mergeOptions?: IMergeVisitorOptions<TTarget, TSource>,
 }
 
 export class Property<TTarget, TSource>
@@ -25,9 +22,7 @@ export class Property<TTarget, TSource>
 		ISerializable
 {
 	protected merger?: ObjectMerger
-	protected valueType?: TClass<TTarget>
-	protected valueFactory?: (source: TTarget|TSource) => TTarget
-	protected mergeOptions?: IMergeOptions
+	protected mergeOptions?: IMergeVisitorOptions<TTarget, TSource>
 
 	constructor(
 		options?: IPropertyOptions<TTarget, TSource>,
@@ -37,19 +32,11 @@ export class Property<TTarget, TSource>
 
 		const {
 			merger,
-			valueType,
-			valueFactory,
 			mergeOptions,
 		} = options || {} as any
 
 		if (merger != null) {
 			this.merger = merger
-		}
-		if (valueType != null) {
-			this.valueType = valueType
-		}
-		if (valueFactory != null) {
-			this.valueFactory = valueFactory
 		}
 		if (mergeOptions != null) {
 			this.mergeOptions = mergeOptions
@@ -68,9 +55,7 @@ export class Property<TTarget, TSource>
 	public set(
 		value: Property<TTarget|TSource, any> | TTarget | TSource,
 		clone?: boolean,
-		options?: IMergeOptions,
-		valueType?: TClass<TTarget>,
-		valueFactory?: (source: TTarget|TSource) => TTarget,
+		options?: IMergeVisitorOptions<TTarget, TSource>,
 	): boolean {
 		const result = this.mergeValue(
 			void 0,
@@ -79,8 +64,6 @@ export class Property<TTarget, TSource>
 			clone,
 			clone,
 			options,
-			valueType,
-			valueFactory,
 		)
 
 		if (!result) {
@@ -93,9 +76,7 @@ export class Property<TTarget, TSource>
 	public fill(
 		value: Property<TTarget|TSource, any> | TTarget | TSource,
 		preferClone?: boolean,
-		options?: IMergeOptions,
-		valueType?: TClass<TTarget>,
-		valueFactory?: (source: TTarget|TSource) => TTarget,
+		options?: IMergeVisitorOptions<TTarget, TSource>,
 	): boolean {
 		return this.mergeValue(
 			this.value,
@@ -104,8 +85,6 @@ export class Property<TTarget, TSource>
 			preferClone,
 			preferClone,
 			options,
-			valueType,
-			valueFactory,
 		)
 	}
 
@@ -114,9 +93,7 @@ export class Property<TTarget, TSource>
 		newer: Property<TTarget|TSource, any> | TTarget | TSource,
 		preferCloneOlder?: boolean,
 		preferCloneNewer?: boolean,
-		options?: IMergeOptions,
-		valueType?: TClass<TTarget>,
-		valueFactory?: (source: TTarget|TSource) => TTarget,
+		options?: IMergeVisitorOptions<TTarget, TSource>,
 	): boolean {
 		return this.mergeValue(
 			this.value,
@@ -125,8 +102,6 @@ export class Property<TTarget, TSource>
 			preferCloneOlder,
 			preferCloneNewer,
 			options,
-			valueType,
-			valueFactory,
 		)
 	}
 
@@ -140,9 +115,7 @@ export class Property<TTarget, TSource>
 		newer: Property<TTarget|TSource, any> | TTarget | TSource,
 		preferCloneOlder?: boolean,
 		preferCloneNewer?: boolean,
-		options?: IMergeOptions,
-		valueType?: TClass<TTarget>,
-		valueFactory?: (source: TTarget|TSource) => TTarget,
+		options?: IMergeVisitorOptions<TTarget, TSource>,
 	): boolean {
 		return this._mergeValue(
 			(this.merger || ObjectMerger.default).merge,
@@ -152,8 +125,6 @@ export class Property<TTarget, TSource>
 			preferCloneOlder,
 			preferCloneNewer,
 			options,
-			valueType,
-			valueFactory,
 		)
 	}
 
@@ -164,9 +135,7 @@ export class Property<TTarget, TSource>
 		newer: Property<TTarget|TSource, any> | TTarget | TSource,
 		preferCloneOlder?: boolean,
 		preferCloneNewer?: boolean,
-		options?: IMergeOptions,
-		valueType?: TClass<TTarget>,
-		valueFactory?: (source: TTarget|TSource) => TTarget,
+		options?: IMergeVisitorOptions<TTarget, TSource>,
 	): boolean {
 		if (older instanceof Property) {
 			older = (older as Property<TTarget|TSource, any>).value
@@ -199,8 +168,6 @@ export class Property<TTarget, TSource>
 				selfAsValueOlder: !(older instanceof Property),
 				selfAsValueNewer: !(newer instanceof Property),
 			},
-			valueType == null ? this.valueType : valueType,
-			valueFactory == null ? this.valueFactory : valueFactory,
 		)
 	}
 
@@ -226,8 +193,6 @@ export class Property<TTarget, TSource>
 		preferCloneOlder?: boolean,
 		preferCloneNewer?: boolean,
 		options?: IMergeOptions,
-		valueType?: TClass<TTarget>,
-		valueFactory?: (source: TTarget|TSource) => TTarget,
 	): boolean {
 		return this._mergeValue(
 			merge,
@@ -236,9 +201,6 @@ export class Property<TTarget, TSource>
 			newer,
 			preferCloneOlder,
 			preferCloneNewer,
-			options,
-			valueType,
-			valueFactory,
 		)
 	}
 

@@ -1,5 +1,10 @@
-import {ISerializable, ISerializedObject, ReadValue, WriteValue} from '../../../extensions/serialization/contracts'
-import {Property} from './property'
+import {
+	ISerializable,
+	ISerializedObject,
+	ReadValue,
+	WriteValue,
+} from '../../../../../../../src/main/common/extensions/serialization/contracts'
+import {Property} from '../../../../../../../src/main/common/rx/object/properties/property'
 
 export class PropertySerializable<TValue> extends Property<TValue> implements ISerializable {
 	private readonly _writeValue: WriteValue<TValue>

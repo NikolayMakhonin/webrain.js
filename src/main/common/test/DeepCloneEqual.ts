@@ -80,7 +80,7 @@ export class DeepCloneEqual {
 
 			let id
 			if (options && options.circular) {
-				id = getObjectUniqueId(source as any)
+				id = getObjectUniqueId(source)
 				if (cache) {
 					const cached = cache[id]
 					if (cached != null) {
@@ -118,7 +118,7 @@ export class DeepCloneEqual {
 				return cloned
 			}
 
-			const type: new (...args) => T = source.constructor as any
+			const type: new (...args) => T = source.constructor
 
 			const valueOf = source.valueOf()
 			if (valueOf !== source) {
@@ -141,14 +141,14 @@ export class DeepCloneEqual {
 
 			switch (sourceTag) {
 				case 'Set':
-					for (const item of source as any) {
+					for (const item of source) {
 						(cloned as Set<any>).add(
 							clone(item),
 						)
 					}
 					return cloned
 				case 'Map':
-					for (const item of source as any) {
+					for (const item of source) {
 						(cloned as Map<any, any>).set(
 							clone(item[0]),
 							clone(item[1]),
@@ -163,7 +163,7 @@ export class DeepCloneEqual {
 
 			for (const key in source) {
 				if (Object.prototype.hasOwnProperty.call(source, key)) {
-					cloned[key] = clone(source[key] as any)
+					cloned[key] = clone(source[key])
 				}
 			}
 
@@ -191,7 +191,7 @@ export class DeepCloneEqual {
 		const equal = (o1: any, o2: any): boolean => {
 			if (isPrimitive(o1) || isPrimitive(o2)) {
 				if (o1 === o2
-					|| Number.isNaN(o1 as any) && Number.isNaN(o2 as any)
+					|| Number.isNaN(o1) && Number.isNaN(o2)
 					|| (!options || !options.strictEqualFunctions)
 						&& typeof o1 === 'function' && typeof o2 === 'function'
 						&& o1.toString() === o2.toString()
@@ -207,8 +207,8 @@ export class DeepCloneEqual {
 			}
 
 			if (options && (options.circular || options.equalInnerReferences)) {
-				const id1 = getObjectUniqueId(o1 as any)
-				const id2 = getObjectUniqueId(o2 as any)
+				const id1 = getObjectUniqueId(o1)
+				const id2 = getObjectUniqueId(o2)
 
 				if (id1 != null && !cache1) {
 					cache1 = []
@@ -292,7 +292,7 @@ export class DeepCloneEqual {
 			const valueOf2 = o2.valueOf()
 			if (valueOf1 !== o1 || valueOf2 !== o2) {
 				if (valueOf1 === valueOf2
-					|| Number.isNaN(valueOf1 as any) && Number.isNaN(valueOf2 as any)
+					|| Number.isNaN(valueOf1) && Number.isNaN(valueOf2)
 				) {
 					return true
 				} else {

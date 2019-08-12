@@ -4,13 +4,13 @@ import {getObjectUniqueId} from '../../lists/helpers/object-unique-id'
 import {TypeMetaCollectionWithId} from '../TypeMeta'
 import {
 	IDeSerializeOptions,
-	IDeSerializerVisitor, IDeSerializeValue,
+	IDeSerializerVisitor, IDeSerializeValue, IDeSerializeVisitorOptions,
 	IObjectSerializer, ISerializable,
 	ISerializedData,
 	ISerializedDataOrValue, ISerializedObject, ISerializedRef,
 	ISerializedTyped, ISerializedTypedValue,
 	ISerializedValue, ISerializedValueArray, ISerializeOptions,
-	ISerializerVisitor, ISerializeValue,
+	ISerializerVisitor, ISerializeValue, ISerializeVisitorOptions,
 	ITypeMetaSerializer, ITypeMetaSerializerCollection,
 	ITypeMetaSerializerOverride,
 } from './contracts'
@@ -75,10 +75,9 @@ export class SerializerVisitor implements ISerializerVisitor {
 	private serializeObject<TValue>(
 		out: ISerializedTyped,
 		value: TValue,
-		options?: ISerializeOptions,
-		valueType?: TClass<TValue>,
+		options: ISerializeVisitorOptions<TValue>,
 	): void {
-		const meta = this._typeMeta.getMeta(valueType || value.constructor as TClass<TValue>)
+		const meta = this._typeMeta.getMeta(options && options.valueType || value.constructor as TClass<TValue>)
 		if (!meta) {
 			throw new Error(`Class (${value.constructor.name}) have no type meta`)
 		}
@@ -98,32 +97,31 @@ export class SerializerVisitor implements ISerializerVisitor {
 		}
 
 		out.type = this.addType(uuid)
-		out.data = serializer.serialize(this.getNextSerialize(), value, options)
+		out.data = serializer.serialize(this.getNextSerialize(options), value, options)
 	}
 
+	// noinspection JSUnusedLocalSymbols
 	public getNextSerialize(
-		options?: ISerializeOptions,
+		options: ISerializeVisitorOptions<any>,
 	): ISerializeValue {
 		return <TNextValue = any>(
 			next_value: TNextValue,
-			next_options?: ISerializeOptions,
-			next_valueType?: TClass<TNextValue>,
+			next_options: ISerializeVisitorOptions<TNextValue>,
 		) => this.serialize(
 			next_value,
-			next_options == null || next_options === options
-				? options
-				: (options == null ? next_options : {
-					...options,
-					...next_options,
-				}),
-			next_valueType,
+			next_options,
+			// next_options == null || next_options === options
+			// 	? options
+			// 	: (options == null ? next_options : {
+			// 		...options,
+			// 		...next_options,
+			// 	}),
 		)
 	}
 
 	public serialize<TValue = any>(
 		value: TValue,
-		options?: ISerializeOptions,
-		valueType?: TClass<TValue>,
+		options?: ISerializeVisitorOptions<TValue>,
 	): ISerializedValue {
 		if (typeof value === 'undefined') {
 			return value
@@ -136,7 +134,7 @@ export class SerializerVisitor implements ISerializerVisitor {
 			return value as any
 		}
 
-		return this.addObject(value as any, out => this.serializeObject(out, value, options, valueType))
+		return this.addObject(value as any, out => this.serializeObject(out, value, options))
 	}
 }
 
@@ -194,15 +192,14 @@ export class DeSerializerVisitor implements IDeSerializerVisitor {
 		}
 	}
 
+	// noinspection JSUnusedLocalSymbols
 	public getNextDeSerialize(
-		// options?: IDeSerializeOptions,
+		options: IDeSerializeVisitorOptions<any>,
 	): IDeSerializeValue {
 		return <TNextValue = any>(
 			next_serializedValue: ISerializedValue,
 			next_onfulfilled?: TOnFulfilled<TNextValue>,
-			next_options?: IDeSerializeOptions,
-			next_valueType?: TClass<TNextValue>,
-			next_valueFactory?: (...args) => TNextValue,
+			next_options?: IDeSerializeVisitorOptions<TNextValue>,
 		) => this.deSerialize(
 			next_serializedValue,
 			next_onfulfilled,
@@ -213,17 +210,13 @@ export class DeSerializerVisitor implements IDeSerializerVisitor {
 			// 		...options,
 			// 		...next_options,
 			// 	}),
-			next_valueType,
-			next_valueFactory,
 		)
 	}
 
 	public deSerialize<TValue = any>(
 		serializedValue: ISerializedValue,
 		onfulfilled?: TOnFulfilled<TValue>,
-		options?: IDeSerializeOptions,
-		valueType?: TClass<TValue>,
-		valueFactory?: (...args) => TValue,
+		options?: IDeSerializeVisitorOptions<TValue>,
 	): ThenableSyncOrValue<TValue> {
 		if (onfulfilled) {
 			const input_onfulfilled = onfulfilled
@@ -271,7 +264,7 @@ export class DeSerializerVisitor implements IDeSerializerVisitor {
 			serializedValue = this._objects[id]
 		}
 
-		let type = valueType
+		let type = options && options.valueType
 		if (!type) {
 			const typeIndex = (serializedValue as ISerializedTyped).type
 			if (typeof typeIndex !== 'number') {
@@ -304,7 +297,7 @@ export class DeSerializerVisitor implements IDeSerializerVisitor {
 			throw new Error(`Class (${typeToDebugString(type)}) serializer have no deSerialize method`)
 		}
 
-		let factory = valueFactory || meta.valueFactory || ((...args) => new type(...args))
+		let factory = options && options.valueFactory || meta.valueFactory || ((...args) => new type(...args))
 		if (id != null && !factory) {
 			throw new Error(`valueFactory not found for ${typeToDebugString(type)}. `
 				+ 'Any object serializers should have valueFactory')
@@ -313,7 +306,7 @@ export class DeSerializerVisitor implements IDeSerializerVisitor {
 		let instance
 
 		const iteratorOrValue = serializer.deSerialize(
-			this.getNextDeSerialize(),
+			this.getNextDeSerialize(options),
 			(serializedValue as ISerializedTyped).data,
 			(...args) => {
 				if (!factory) {
@@ -358,7 +351,6 @@ export class DeSerializerVisitor implements IDeSerializerVisitor {
 		if (id != null
 			&& !factory
 			&& ThenableSync.isThenableSync(valueOrThenFunc)
-			// && (!options || !options.waitDeserialize)
 		) {
 			resolveInstance(instance)
 			if (onfulfilled) {
@@ -456,11 +448,10 @@ export class ObjectSerializer implements IObjectSerializer {
 
 	public serialize<TValue>(
 		value: TValue,
-		options?: ISerializeOptions,
-		valueType?: TClass<TValue>,
+		options?: ISerializeVisitorOptions<TValue>,
 	): ISerializedDataOrValue {
 		const serializer = new SerializerVisitor(this.typeMeta)
-		const serializedValue = serializer.serialize(value, options, valueType)
+		const serializedValue = serializer.serialize(value, options)
 
 		if (!serializedValue || typeof serializedValue !== 'object') {
 			return serializedValue
@@ -483,9 +474,7 @@ export class ObjectSerializer implements IObjectSerializer {
 
 	public deSerialize<TValue = any>(
 		serializedValue: ISerializedDataOrValue,
-		options?: IDeSerializeOptions,
-		valueType?: TClass<TValue>,
-		valueFactory?: (...args) => TValue,
+		options?: IDeSerializeVisitorOptions<TValue>,
 	): TValue {
 		if (!serializedValue || typeof serializedValue !== 'object') {
 			return serializedValue as any
@@ -499,7 +488,7 @@ export class ObjectSerializer implements IObjectSerializer {
 
 		const deSerializer = new DeSerializerVisitor(this.typeMeta, types, objects)
 
-		const value = deSerializer.deSerialize(data, null, options, valueType, valueFactory) as TValue
+		const value = deSerializer.deSerialize(data, null, options) as TValue
 
 		deSerializer.assertEnd()
 
@@ -652,7 +641,7 @@ registerSerializer<object>(Object, {
 export function serializePrimitiveAsObject<T extends object>(
 	serialize: ISerializeValue,
 	object: T,
-	options?: ISerializeOptions,
+	// options?: ISerializeOptions,
 ): ISerializedValue {
 	const value = object.valueOf() as any
 	if (value === object) {
@@ -670,7 +659,7 @@ export function deSerializePrimitiveAsObject<T extends object>(
 	deSerialize: IDeSerializeValue,
 	serializedValue: ISerializedObject,
 	valueFactory: (...args) => T,
-	options?: ISerializeOptions,
+	// options?: ISerializeOptions,
 ): T {
 	const object = valueFactory(serializedValue)
 	// deSerializeObject(deSerialize, serializedValue.object as any, object)

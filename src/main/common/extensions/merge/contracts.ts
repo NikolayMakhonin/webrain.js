@@ -10,6 +10,11 @@ export interface IMergeOptions {
 	selfAsValueNewer?: boolean
 }
 
+export interface IMergeVisitorOptions<TTarget, TSource> extends IMergeOptions {
+	valueType?: TClass<TTarget>
+	valueFactory?: (source: TTarget|TSource) => TTarget
+}
+
 export type IMergeValue = <TTarget = any, TSource = any>(
 	base: TTarget,
 	older: TTarget|TSource,
@@ -17,9 +22,7 @@ export type IMergeValue = <TTarget = any, TSource = any>(
 	set?: (value: TTarget) => void,
 	preferCloneOlder?: boolean,
 	preferCloneNewer?: boolean,
-	options?: IMergeOptions,
-	valueType?: TClass<TTarget>,
-	valueFactory?: (source: TTarget|TSource) => TTarget,
+	options?: IMergeVisitorOptions<TTarget, TSource>,
 ) => boolean
 
 export interface IMergerVisitor {
@@ -51,9 +54,7 @@ export interface IMerger {
 		set?: (value: TTarget) => void,
 		preferCloneOlder?: boolean,
 		preferCloneNewer?: boolean,
-		options?: IMergeOptions,
-		valueType?: TClass<TTarget>,
-		valueFactory?: (source: TTarget|TSource|any) => TTarget,
+		options?: IMergeVisitorOptions<TTarget, TSource>,
 	): boolean
 }
 

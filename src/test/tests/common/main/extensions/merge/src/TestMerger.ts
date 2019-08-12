@@ -95,7 +95,6 @@ export interface IMergerOptionsVariant {
 	valueType?: TClass<any>
 	valueFactory?: (source) => any
 	setFunc?: boolean
-	options?: IMergeOptions
 
 	// Calculated:
 	preferCloneBase?: boolean
@@ -127,7 +126,6 @@ interface IMergerOptionsVariants extends IOptionsVariants {
 	preferCloneOlderParam?: boolean[]
 	preferCloneNewerParam?: boolean[]
 	preferCloneMeta?: boolean[]
-	options?: IMergeOptions[]
 	valueType?: Array<TClass<any>>
 	valueFactory?: Array<(source) => any>
 	setFunc?: boolean[]
@@ -298,7 +296,6 @@ export class TestMerger extends TestVariants<
 		preferCloneOlderParam: [null, false, true],
 		preferCloneNewerParam: [null, false, true],
 		preferCloneMeta: [null, false, true],
-		options: [void 0, {}],
 		valueType: [null],
 		valueFactory: [null],
 		setFunc: [false, true],
@@ -380,9 +377,12 @@ export class TestMerger extends TestVariants<
 						}),
 						options.preferCloneOlderParam,
 						options.preferCloneNewerParam,
-						options.options,
-						options.valueType,
-						options.valueFactory,
+						options.valueType || options.valueFactory
+							? {
+								valueType: options.valueType,
+								valueFactory: options.valueFactory,
+							}
+							: void 0,
 					)
 				}
 

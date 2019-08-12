@@ -5,7 +5,7 @@ interface ISerializableValue {
 const serializers = {
 	Date: {
 
-	}
+	},
 }
 
 export class Writer {

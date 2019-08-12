@@ -91,7 +91,7 @@ export class Assert {
 		if (errType) {
 			const actualErrType = err.constructor
 			if (Array.isArray(errType)) {
-				if (!(errType as Array<TClass<any>>).some(o => o === actualErrType)) {
+				if (!errType.some(o => o === actualErrType)) {
 					this.throwAssertionError(
 						actualErrType.name,
 						errType.map(o => o && o.name),
@@ -112,6 +112,7 @@ export class Assert {
 		}
 	}
 
+	// noinspection JSMethodCanBeStatic
 	public throwAssertionError(actual, expected, message?: string) {
 		throw new AssertionError(message, {
 			actual,

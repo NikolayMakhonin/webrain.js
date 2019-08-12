@@ -95,8 +95,10 @@ describe('common > extensions > serialization > serializers', function() {
 	// 	assert.deepStrictEqual(result, obj)
 	// }
 
-	const serializeValue = ObjectSerializer.default.serialize.bind(ObjectSerializer.default)
-	const deSerializeValue = ObjectSerializer.default.deSerialize.bind(ObjectSerializer.default)
+	let serializeValue = ObjectSerializer.default.serialize
+	serializeValue = serializeValue.bind(ObjectSerializer.default)
+	let deSerializeValue = ObjectSerializer.default.deSerialize
+	deSerializeValue = deSerializeValue.bind(ObjectSerializer.default)
 
 	function testComplexObject(options: IComplexObjectOptions, prepare?: (object) => any, log?: boolean) {
 		let object = createComplexObject({
@@ -238,7 +240,7 @@ describe('common > extensions > serialization > serializers', function() {
 		assert.throws(() => serializeValue(obj1), Error)
 
 		const serialized = serializer.serialize(obj1)
-		assert.throws(() => deSerializeValue(obj1), Error)
+		assert.throws(() => deSerializeValue(obj1 as any), Error)
 		const result = serializer.deSerialize(serialized)
 
 		assert.notStrictEqual(result, obj1)
@@ -278,7 +280,7 @@ describe('common > extensions > serialization > serializers', function() {
 			valueFactory: () => new Class2('prop2'),
 		})
 		const serialized = serializeValue(obj2)
-		const result = deSerializeValue(serialized, null, null, () => new Class2('p2'))
+		const result = deSerializeValue(serialized, { valueFactory: () => new Class2('p2') })
 
 		delete obj2.prop1
 
