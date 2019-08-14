@@ -360,39 +360,41 @@ describe('common > main > rx > deep-subscribe > deep-subscribe', function() {
 		await delay(100)
 	})
 
-	it('promises throw', async function() {
-		const object = createObject()
-		object.observableObject.value = new Number(1)
+	if (!(global as any).window) {
+		it('promises throw', async function() {
+			const object = createObject()
+			object.observableObject.value = new Number(1)
 
-		const tester = new Tester(
-			{
-				object: object.promiseSync as any,
-				immediate: true,
-				doNotSubscribeNonObjectValues: true,
-				useIncorrectUnsubscribe: true,
-			},
-			b => b
-				.path((o: any) => o.promiseAsync.value),
-		)
+			const tester = new Tester(
+				{
+					object: object.promiseSync as any,
+					immediate: true,
+					doNotSubscribeNonObjectValues: true,
+					useIncorrectUnsubscribe: true,
+				},
+				b => b
+					.path((o: any) => o.promiseAsync.value),
+			)
 
-		await tester.subscribeAsync([new Number(1)])
+			await tester.subscribeAsync([new Number(1)])
 
-		await delay(20)
+			await delay(20)
 
-		await tester.changeAsync(
-			o => object.observableObject.value = new Number(2) as any,
-			[],
-			[new Number(2)],
-			Error,
-			/Value is not a function or null\/undefined/,
-		)
+			await tester.changeAsync(
+				o => object.observableObject.value = new Number(2) as any,
+				[],
+				[new Number(2)],
+				Error,
+				/Value is not a function or null\/undefined/,
+			)
 
-		await delay(20)
+			await delay(20)
 
-		await tester.unsubscribe([])
+			await tester.unsubscribe([])
 
-		await delay(100)
-	})
+			await delay(100)
+		})
+	}
 
 	it('lists', function() {
 		const value = new Number(1)
