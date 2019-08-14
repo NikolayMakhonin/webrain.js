@@ -23,6 +23,11 @@ export function *iterateRule(rule: IRule, next: () => IRuleIterable = null): IRu
 		: null
 
 	switch (rule.type) {
+		case RuleType.Nothing:
+			if (ruleNext) {
+				yield* ruleNext()
+			}
+			break
 		case RuleType.Action:
 			yield rule
 			yield ruleNext
@@ -82,7 +87,7 @@ export function subscribeNextRule(
 	fork: (ruleIterator: PeekIterator<IRuleOrIterable>) => IUnsubscribe,
 	subscribeNode: (rule: IRuleSubscribe, getRuleIterator: () => PeekIterator<IRuleOrIterable>) => IUnsubscribe,
 	subscribeLeaf: () => IUnsubscribe,
-) {
+): IUnsubscribe {
 	let iteration
 	if (!ruleIterator || (iteration = ruleIterator.next()).done) {
 		return subscribeLeaf()

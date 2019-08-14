@@ -1,5 +1,5 @@
 /* tslint:disable:no-identical-functions */
-import {isIterable} from '../../helpers/helpers'
+import {checkIsFuncOrNull, isIterable} from '../../helpers/helpers'
 import {IListChanged, ListChangedType} from '../../lists/contracts/IListChanged'
 import {IMapChanged, MapChangedType} from '../../lists/contracts/IMapChanged'
 import {IPropertyChanged} from '../../lists/contracts/IPropertyChanged'
@@ -8,7 +8,6 @@ import {IUnsubscribe} from '../subjects/subject'
 import {ANY, COLLECTION_PREFIX} from './contracts/constants'
 import {IRuleSubscribe, ISubscribeObject} from './contracts/rule-subscribe'
 import {IRule, RuleType} from './contracts/rules'
-import {checkUnsubscribe} from './helpers/common'
 
 // function propertyPredicateAll(propertyName: string, object) {
 // 	return Object.prototype.hasOwnProperty.call(object, propertyName)
@@ -24,15 +23,25 @@ function subscribeObject<TValue>(
 	subscribeItem: (item: TValue, debugPropertyName: string) => void,
 	unsubscribeItem: (item: TValue, debugPropertyName: string) => void,
 ): IUnsubscribe {
+	let unsubscribeSelf
+	if (propertyNames && propertyNames.indexOf('') >= 0
+		|| propertyPredicate && propertyPredicate('', null)
+	) {
+		subscribeItem(object as any, '')
+		unsubscribeSelf = () => {
+			unsubscribeItem(object as any, '')
+		}
+	}
+
 	if (!(object instanceof Object)) {
-		return null
+		return unsubscribeSelf || null
 	}
 
 	const {propertyChanged} = object
 	let unsubscribe
 
 	if (propertyChanged) {
-		unsubscribe = checkUnsubscribe(propertyChanged
+		unsubscribe = checkIsFuncOrNull(propertyChanged
 			.subscribe(({name, oldValue, newValue}) => {
 				if (!propertyPredicate || propertyPredicate(name, object)) {
 					if (typeof oldValue !== 'undefined') {
@@ -67,10 +76,13 @@ function subscribeObject<TValue>(
 	if (immediateSubscribe) {
 		forEach(subscribeItem)
 	} else if (unsubscribe == null) {
-		return null
+		return unsubscribeSelf || null
 	}
 
 	return () => {
+		if (unsubscribeSelf) {
+			unsubscribeSelf()
+		}
 		if (unsubscribe) {
 			unsubscribe()
 			unsubscribe = null
@@ -127,7 +139,7 @@ function subscribeList<TItem>(
 	const {listChanged} = object
 	let unsubscribe
 	if (listChanged) {
-		unsubscribe = checkUnsubscribe(listChanged
+		unsubscribe = checkIsFuncOrNull(listChanged
 			.subscribe(({type, oldItems, newItems}) => {
 				switch (type) {
 					case ListChangedType.Added:
@@ -190,7 +202,7 @@ function subscribeSet<TItem>(
 	const {setChanged} = object
 	let unsubscribe
 	if (setChanged) {
-		unsubscribe = checkUnsubscribe(setChanged
+		unsubscribe = checkIsFuncOrNull(setChanged
 			.subscribe(({type, oldItems, newItems}) => {
 				switch (type) {
 					case SetChangedType.Added:
@@ -250,7 +262,7 @@ function subscribeMap<K, V>(
 	let unsubscribe
 
 	if (mapChanged) {
-		unsubscribe = checkUnsubscribe(mapChanged
+		unsubscribe = checkIsFuncOrNull(mapChanged
 			.subscribe(({type, key, oldValue, newValue}) => {
 				if (!keyPredicate || keyPredicate(key, object)) {
 					switch (type) {
@@ -314,7 +326,7 @@ function subscribeCollection<TItem>(
 	immediateSubscribe: boolean,
 	subscribeItem: (item: TItem, debugPropertyName: string) => void,
 	unsubscribeItem: (item: TItem, debugPropertyName: string) => void,
-) {
+): IUnsubscribe {
 	if (!object) {
 		return null
 	}

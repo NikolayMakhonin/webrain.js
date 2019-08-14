@@ -1,6 +1,7 @@
 import {IUnsubscribe} from '../../subjects/subject'
 
 export enum RuleType {
+	Nothing,
 	Action,
 	Any,
 	Repeat,

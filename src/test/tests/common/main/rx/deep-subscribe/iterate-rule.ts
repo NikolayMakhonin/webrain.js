@@ -89,7 +89,7 @@ describe('common > main > rx > deep-subscribe > iterate-rule', function() {
 	}
 
 	function testIterateRule(buildRule: (builder: RuleBuilder<any>) => RuleBuilder<any>, ...expectedPaths: string[]) {
-		const result = iterateRule(buildRule(new RuleBuilder<any>()).rule)
+		const result = iterateRule(buildRule(new RuleBuilder<any>()).result)
 		assert.ok(result)
 		const object = {}
 		const unsubscribe = rulesToObject(new PeekIterator(result[Symbol.iterator]()), object)
