@@ -122,11 +122,11 @@ export abstract class TestVariants<
 			for (const action of expandArray(actions)) {
 				for (const variant of variants) {
 					this.testVariant({
-							...variant as any,
-							action,
-							description,
-							expected,
-						})
+						...variant as any,
+						action,
+						description,
+						expected,
+					})
 				}
 			}
 		}
