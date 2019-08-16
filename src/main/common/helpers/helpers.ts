@@ -1,10 +1,10 @@
 export function isIterable(value: any): boolean {
-	return value
+	return value != null
 		&& typeof value[Symbol.iterator] === 'function'
 }
 
 export function isIterator(value: any): boolean {
-	return value
+	return value != null
 		&& typeof value[Symbol.iterator] === 'function'
 		&& typeof value.next === 'function'
 }

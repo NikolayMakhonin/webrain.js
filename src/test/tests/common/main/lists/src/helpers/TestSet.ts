@@ -1,3 +1,4 @@
+import {ThenableIterator} from '../../../../../../../main/common/async/async'
 import {
 	IDeSerializeValue,
 	ISerializable,
@@ -7,7 +8,6 @@ import {
 import {
 	ObjectSerializer, registerSerializable,
 } from '../../../../../../../main/common/extensions/serialization/serializers'
-import {ThenableSyncIterator} from '../../../../../../../main/common/helpers/ThenableSync'
 import {ArraySet} from '../../../../../../../main/common/lists/ArraySet'
 import {IPropertyChangedEvent} from '../../../../../../../main/common/lists/contracts/IPropertyChanged'
 import {
@@ -202,7 +202,7 @@ registerSerializable(SetWrapper, {
 			deSerialize: IDeSerializeValue,
 			serializedValue: ISerializedObject,
 			valueFactory: (set?: Set<T>) => SetWrapper<T>,
-		): ThenableSyncIterator<SetWrapper<T>> {
+		): ThenableIterator<SetWrapper<T>> {
 			const innerSet = yield deSerialize<Set<T>>(serializedValue.set)
 			const value = valueFactory(innerSet)
 			value.deSerialize(deSerialize, serializedValue)

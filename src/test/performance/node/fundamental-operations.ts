@@ -6,8 +6,8 @@
 
 import {calcPerformance} from 'rdtsc'
 import {SynchronousPromise} from 'synchronous-promise'
+import {ThenableSync} from '../../../main/common/async/ThenableSync'
 import {isIterable} from '../../../main/common/helpers/helpers'
-import {ThenableSync} from '../../../main/common/helpers/ThenableSync'
 import {ArraySet} from '../../../main/common/lists/ArraySet'
 import {binarySearch} from '../../../main/common/lists/helpers/array'
 import {freezeWithUniqueId, getObjectUniqueId} from '../../../main/common/lists/helpers/object-unique-id'

@@ -1,3 +1,4 @@
+import {ThenableIterator} from '../async/async'
 import {IMergeable, IMergeOptions, IMergeValue} from '../extensions/merge/contracts'
 import {IMergeMapWrapper, mergeMaps} from '../extensions/merge/merge-maps'
 import {createMergeSetWrapper} from '../extensions/merge/merge-sets'
@@ -10,7 +11,6 @@ import {
 } from '../extensions/serialization/contracts'
 import {registerSerializable} from '../extensions/serialization/serializers'
 import {isIterable} from '../helpers/helpers'
-import {ThenableSyncIterator} from '../helpers/ThenableSync'
 import {ListChangedObject} from './base/ListChangedObject'
 import {ICompare} from './contracts/ICompare'
 import {IListChangedObject, ListChangedType} from './contracts/IListChanged'
@@ -1293,7 +1293,7 @@ registerSerializable(SortedList, {
 			deSerialize: IDeSerializeValue,
 			serializedValue: ISerializedObject,
 			valueFactory: (...args) => SortedList<T>,
-		): ThenableSyncIterator<SortedList<T>> {
+		): ThenableIterator<SortedList<T>> {
 			const options = yield deSerialize(serializedValue.options)
 			options.array = yield deSerialize(serializedValue.array)
 			const value = valueFactory(options)

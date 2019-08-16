@@ -1,3 +1,4 @@
+import {ThenableIterator} from '../async/async'
 import {IMergeable, IMergeOptions, IMergeValue} from '../extensions/merge/contracts'
 import {mergeMaps} from '../extensions/merge/merge-maps'
 import {createMergeSetWrapper} from '../extensions/merge/merge-sets'
@@ -10,7 +11,6 @@ import {
 } from '../extensions/serialization/contracts'
 import {registerSerializable, registerSerializer} from '../extensions/serialization/serializers'
 import {isIterable} from '../helpers/helpers'
-import {ThenableSyncIterator} from '../helpers/ThenableSync'
 import {SetChangedObject} from './base/SetChangedObject'
 import {IObservableSet, SetChangedType} from './contracts/ISetChanged'
 import {fillSet} from './helpers/set'
@@ -216,7 +216,7 @@ registerSerializable(ObservableSet, {
 			deSerialize: IDeSerializeValue,
 			serializedValue: ISerializedObject,
 			valueFactory: (set?: Set<T>) => ObservableSet<T>,
-		): ThenableSyncIterator<ObservableSet<T>> {
+		): ThenableIterator<ObservableSet<T>> {
 			const innerSet = yield deSerialize<Set<T>>(serializedValue.set)
 			const value = valueFactory(innerSet)
 			value.deSerialize(deSerialize, serializedValue)

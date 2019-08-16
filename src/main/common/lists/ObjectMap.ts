@@ -1,3 +1,4 @@
+import {ThenableIterator} from '../async/async'
 import {IMergeable, IMergeOptions, IMergeValue} from '../extensions/merge/contracts'
 import {createMergeMapWrapper, mergeMaps} from '../extensions/merge/merge-maps'
 import {registerMergeable} from '../extensions/merge/mergers'
@@ -9,7 +10,6 @@ import {
 } from '../extensions/serialization/contracts'
 import {registerSerializable} from '../extensions/serialization/serializers'
 import {isIterable} from '../helpers/helpers'
-import {ThenableSyncIterator} from '../helpers/ThenableSync'
 import {fillMap} from './helpers/set'
 
 export class ObjectMap<V> implements
@@ -165,7 +165,7 @@ registerSerializable(ObjectMap, {
 			deSerialize: IDeSerializeValue,
 			serializedValue: ISerializedObject,
 			valueFactory: (map?: object) => ObjectMap<V>,
-		): ThenableSyncIterator<ObjectMap<V>> {
+		): ThenableIterator<ObjectMap<V>> {
 			const innerMap = yield deSerialize<object>(serializedValue.object)
 			const value = valueFactory(innerMap)
 			value.deSerialize(deSerialize, serializedValue)

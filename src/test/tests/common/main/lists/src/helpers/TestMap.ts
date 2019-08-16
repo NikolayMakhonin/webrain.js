@@ -1,3 +1,4 @@
+import {ThenableIterator} from '../../../../../../../main/common/async/async'
 import {
 	IDeSerializeValue, ISerializable,
 	ISerializedObject,
@@ -7,7 +8,6 @@ import {
 	ObjectSerializer, registerSerializable,
 	registerSerializer,
 } from '../../../../../../../main/common/extensions/serialization/serializers'
-import {ThenableSyncIterator} from '../../../../../../../main/common/helpers/ThenableSync'
 import {ArrayMap} from '../../../../../../../main/common/lists/ArrayMap'
 import {IMapChangedEvent, MapChangedType} from '../../../../../../../main/common/lists/contracts/IMapChanged'
 import {IPropertyChangedEvent} from '../../../../../../../main/common/lists/contracts/IPropertyChanged'
@@ -238,7 +238,7 @@ registerSerializable(MapWrapper, {
 			deSerialize: IDeSerializeValue,
 			serializedValue: ISerializedObject,
 			valueFactory: (map?: Map<K, V>) => MapWrapper<K, V>,
-		): ThenableSyncIterator<MapWrapper<K, V>> {
+		): ThenableIterator<MapWrapper<K, V>> {
 			const innerMap = yield deSerialize<Map<K, V>>(serializedValue.map)
 			const value = valueFactory(innerMap)
 			value.deSerialize(deSerialize, serializedValue)

@@ -1,4 +1,5 @@
 /* tslint:disable:object-literal-key-quotes no-construct use-primitive-type */
+import {ThenableIterator} from '../../../../../../main/common/async/async'
 import {IMergeable, IMergeOptions, IMergeValue} from '../../../../../../main/common/extensions/merge/contracts'
 import {mergeMaps} from '../../../../../../main/common/extensions/merge/merge-maps'
 import {createMergeSetWrapper} from '../../../../../../main/common/extensions/merge/merge-sets'
@@ -11,7 +12,6 @@ import {
 } from '../../../../../../main/common/extensions/serialization/contracts'
 import {registerSerializable} from '../../../../../../main/common/extensions/serialization/serializers'
 import {isIterable} from '../../../../../../main/common/helpers/helpers'
-import {ThenableSyncIterator} from '../../../../../../main/common/helpers/ThenableSync'
 import {ArrayMap} from '../../../../../../main/common/lists/ArrayMap'
 import {ArraySet} from '../../../../../../main/common/lists/ArraySet'
 import {ObjectMap} from '../../../../../../main/common/lists/ObjectMap'
@@ -21,7 +21,7 @@ import {ObservableSet} from '../../../../../../main/common/lists/ObservableSet'
 import {SortedList} from '../../../../../../main/common/lists/SortedList'
 import {ObservableObject} from '../../../../../../main/common/rx/object/ObservableObject'
 import {ObservableObjectBuilder} from '../../../../../../main/common/rx/object/ObservableObjectBuilder'
-import {Property} from "../../../../../../main/common/rx/object/properties/property";
+import {Property} from '../../../../../../main/common/rx/object/properties/property'
 
 export class CircularClass extends ObservableObject
 	implements ISerializable, IMergeable<CircularClass, any>
@@ -77,7 +77,7 @@ export class CircularClass extends ObservableObject
 	public *deSerialize(
 		deSerialize: IDeSerializeValue,
 		serializedValue: ISerializedObject,
-	): ThenableSyncIterator<any> {
+	): ThenableIterator<any> {
 		this.value = yield deSerialize(serializedValue.value)
 	}
 
@@ -92,7 +92,7 @@ registerSerializable(CircularClass, {
 			deSerialize: IDeSerializeValue,
 			serializedValue: ISerializedObject,
 			valueFactory: (...args) => CircularClass,
-		): ThenableSyncIterator<CircularClass> | CircularClass {
+		): ThenableIterator<CircularClass> | CircularClass {
 			const array = yield deSerialize(serializedValue.array)
 			const value = valueFactory(array)
 			yield value.deSerialize(deSerialize, serializedValue)

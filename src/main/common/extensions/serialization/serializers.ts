@@ -1,5 +1,6 @@
+import {ThenableIterator, ThenableOrValue, TOnFulfilled} from '../../async/async'
+import {ThenableSync} from '../../async/ThenableSync'
 import {TClass, typeToDebugString} from '../../helpers/helpers'
-import {ThenableSync, ThenableSyncIterator, ThenableSyncOrValue, TOnFulfilled} from '../../helpers/ThenableSync'
 import {getObjectUniqueId} from '../../lists/helpers/object-unique-id'
 import {TypeMetaCollectionWithId} from '../TypeMeta'
 import {
@@ -187,7 +188,7 @@ export class DeSerializerVisitor implements IDeSerializerVisitor {
 			throw new Error(`${_instances.length - this._countDeserialized} instances is not deserialized\r\n` +
 				JSON.stringify(_instances
 					.map((o, i) => [o, i])
-					.filter(o => !o[0] || o[0] === LOCKED || ThenableSync.isThenableSync(o[0]))
+					.filter(o => !o[0] || o[0] === LOCKED || ThenableSync.isThenable(o[0]))
 					.map(o => getDebugObject(o[0], o[1]))))
 		}
 	}
@@ -217,7 +218,7 @@ export class DeSerializerVisitor implements IDeSerializerVisitor {
 		serializedValue: ISerializedValue,
 		onfulfilled?: TOnFulfilled<TValue>,
 		options?: IDeSerializeVisitorOptions<TValue>,
-	): ThenableSyncOrValue<TValue> {
+	): ThenableOrValue<TValue> {
 		if (onfulfilled) {
 			const input_onfulfilled = onfulfilled
 			onfulfilled = value => {
@@ -329,7 +330,7 @@ export class DeSerializerVisitor implements IDeSerializerVisitor {
 			}
 		}
 
-		const resolveValue = (value: TValue): ThenableSyncOrValue<TValue> => {
+		const resolveValue = (value: TValue): ThenableOrValue<TValue> => {
 			if (id != null) {
 				if (!factory && instance !== value) {
 					throw new Error(`valueFactory instance !== return value in serializer for ${typeToDebugString(type)}`)
@@ -350,7 +351,7 @@ export class DeSerializerVisitor implements IDeSerializerVisitor {
 
 		if (id != null
 			&& !factory
-			&& ThenableSync.isThenableSync(valueOrThenFunc)
+			&& ThenableSync.isThenable(valueOrThenFunc)
 		) {
 			resolveInstance(instance)
 			if (onfulfilled) {
@@ -533,7 +534,7 @@ export function deSerializeArray<T>(
 ): T[] {
 	for (let i = 0, len = serializedValue.length; i < len; i++) {
 		const index = i
-		if (ThenableSync.isThenableSync(
+		if (ThenableSync.isThenable(
 			deSerialize(serializedValue[index], o => { value[index] = o }),
 		)) {
 			value[index] = null
@@ -556,7 +557,7 @@ export function serializeIterable(
 export function *deSerializeIterableOrdered(
 	serializedValue: ISerializedValueArray,
 	add: (item: any) => void|ThenableSync<any>,
-): ThenableSyncIterator<any> {
+): ThenableIterator<any> {
 	for (let i = 0, len = serializedValue.length; i < len; i++) {
 		yield add(serializedValue[i])
 	}
@@ -601,7 +602,7 @@ export function deSerializeObject<T extends object>(
 	for (const key in serializedValue) {
 		if (Object.prototype.hasOwnProperty.call(serializedValue, key)) {
 			// tslint:disable-next-line:no-collapsible-if
-			if (ThenableSync.isThenableSync(
+			if (ThenableSync.isThenable(
 				deSerialize(serializedValue[key], o => { value[key] = o }),
 			)) {
 				value[key] = null
@@ -711,7 +712,7 @@ registerSerializer<any[]>(Array, {
 			serializedValue: ISerializedValueArray,
 			valueFactory: (...args) => any[],
 			options?: IDeSerializeOptions,
-		): ThenableSyncIterator<any[]>|any[] {
+		): ThenableIterator<any[]>|any[] {
 			const value = valueFactory()
 			if (options && options.arrayAsObject) {
 				return deSerializeObject(deSerialize, serializedValue as any, value)
@@ -741,7 +742,7 @@ registerSerializer<Set<any>>(Set, {
 			serializedValue: ISerializedValueArray,
 			valueFactory: (...args) => Set<any>,
 			// options?: IDeSerializeOptions,
-		): ThenableSyncIterator<Set<any>> {
+		): ThenableIterator<Set<any>> {
 			const value = valueFactory()
 			yield deSerializeIterableOrdered(serializedValue, o => deSerialize(o, val => { value.add(val) }))
 			return value
@@ -772,7 +773,7 @@ registerSerializer<Map<any, any>>(Map, {
 			serializedValue: ISerializedValueArray,
 			valueFactory: (...args) => Map<any, any>,
 			// options?: IDeSerializeOptions,
-		): ThenableSyncIterator<Map<any, any>> {
+		): ThenableIterator<Map<any, any>> {
 			const value = valueFactory()
 			yield deSerializeIterableOrdered(
 				serializedValue,
