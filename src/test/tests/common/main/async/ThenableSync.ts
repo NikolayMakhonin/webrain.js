@@ -1,5 +1,5 @@
 import {isIterable} from '../../../../../main/common/helpers/helpers'
-import {ITERABLE, TestThenableSync} from './src/TestThenableSync'
+import {ITERABLE, ResolveType, TestThenableSync} from './src/TestThenableSync'
 
 declare const after
 
@@ -14,11 +14,21 @@ describe('common > main > helpers > ThenableSync', function() {
 
 	it('variants', function() {
 		testThenableSync({
+			exclude: o => {
+				if ((o.type === ResolveType.Rejected
+					|| o.type === ResolveType.Throwed
+					|| o.type === ResolveType.Reject
+					|| o.valueType === ResolveType.Rejected
+					|| o.valueType === ResolveType.Throwed
+					|| o.valueType === ResolveType.Reject)
+					&& (o.getValueWithResolve || o.createWithIterator)) {
+					return true
+				}
+
+				return false
+			},
 			expected: {
 				value: o => {
-					if (o.value && isIterable(o.value) && o.value.next) {
-						return ITERABLE
-					}
 					return o.value
 				},
 			},

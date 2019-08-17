@@ -5,16 +5,25 @@ import {TClass} from '../../../../../../main/common/helpers/helpers'
 import {assert} from '../../../../../../main/common/test/Assert'
 import {IOptionsVariant, IOptionsVariants, ITestCase, TestVariants} from '../../src/helpers/TestVariants'
 
+export enum ResolveType {
+	Value,
+	Resolved,
+	Rejected,
+	Throwed,
+	Resolve,
+	Reject,
+}
+
 export interface IThenableSyncOptionsVariant {
 	value?: any
-	valueAsThenableSync?: boolean
-	valueIsResolved?: boolean
+	valueType?: ResolveType
+	type?: ResolveType
 	createWithExecutor?: boolean
 	createWithIterator?: number
-	resolveImmediate?: boolean
+	// resolveImmediate?: boolean
 	getValueWithResolve?: number
 	getValueWithThen?: number
-	useReject?: boolean
+	// useReject?: boolean
 }
 
 interface IThenableSyncExpected {
@@ -25,14 +34,14 @@ interface IThenableSyncExpected {
 
 interface IThenableSyncOptionsVariants extends IOptionsVariants {
 	value?: any[]
-	valueAsThenableSync?: boolean[]
-	valueIsResolved?: boolean[]
+	valueType?: ResolveType[]
+	type?: ResolveType[]
 	createWithExecutor?: boolean[]
 	createWithIterator?: number[]
-	resolveImmediate?: boolean[]
+	// resolveImmediate?: boolean[]
 	getValueWithResolve?: number[]
 	getValueWithThen?: number[]
-	useReject?: boolean[]
+	// useReject?: boolean[]
 }
 
 type IThenableSyncAction = (...args: any[]) => any
@@ -55,7 +64,7 @@ function resolveOptions(
 
 	for (const key in resolvedOptions) {
 		if (Object.prototype.hasOwnProperty.call(resolvedOptions, key)) {
-			resolvedOptions[key] = key === 'action'
+			resolvedOptions[key] = key === 'action' || key === 'value'
 				? resolvedOptions[key]
 				: resolveOptionValue(optionsParams || resolvedOptions, resolvedOptions[key])
 		}
@@ -144,14 +153,28 @@ export class TestThenableSync extends TestVariants<
 
 	protected baseOptionsVariants: IThenableSyncOptionsVariants = {
 		value: [void 0, null, false, 0, '', OBJ, FUNC, ITERABLE, ITERATOR_GENERATOR],
-		valueAsThenableSync: [false, true],
-		valueIsResolved: [false, true],
+		valueType: [
+			ResolveType.Value,
+			ResolveType.Resolved,
+			ResolveType.Rejected,
+			ResolveType.Throwed,
+			ResolveType.Resolve,
+			ResolveType.Reject,
+		],
+		type: [
+			ResolveType.Value,
+			ResolveType.Resolved,
+			ResolveType.Rejected,
+			// ResolveType.Throwed,
+			ResolveType.Resolve,
+			ResolveType.Reject,
+		],
 		createWithExecutor: [false, true],
 		createWithIterator: [0, 1, 3],
-		resolveImmediate: [true, false],
+		// resolveImmediate: [true, false],
 		getValueWithResolve: [0, 1, 3],
 		getValueWithThen: [0, 1, 3],
-		useReject: [false],
+		// useReject: [false, true],
 	}
 
 	public static totalTests: number = 0
@@ -166,15 +189,54 @@ export class TestThenableSync extends TestVariants<
 
 				const action = () => {
 					let value = options.value
-					if (value === ITERATOR_GENERATOR) {
-						value = ITERATOR_GENERATOR()
-					}
 
-					const resolveImmediate = options.resolveImmediate
-						&& (!options.valueAsThenableSync || options.valueIsResolved)
+					const resolveImmediate = (options.type === ResolveType.Value
+							|| options.type === ResolveType.Resolved
+							|| options.type === ResolveType.Rejected
+							|| options.type === ResolveType.Throwed)
+						&& (options.valueType === ResolveType.Value
+							|| options.valueType === ResolveType.Resolved
+							|| options.valueType === ResolveType.Rejected
+							|| options.valueType === ResolveType.Throwed)
+
+					const useReject =
+						options.type === ResolveType.Rejected
+						|| options.type === ResolveType.Throwed
+						|| options.type === ResolveType.Reject
+						|| options.valueType === ResolveType.Rejected
+						|| options.valueType === ResolveType.Throwed
+						|| options.valueType === ResolveType.Reject
 
 					assert.notStrictEqual(value && value.constructor, ThenableSync)
 					assert.strictEqual(ThenableSync.isThenable(value), false)
+
+					switch (options.valueType) {
+						case ResolveType.Value:
+							break
+						case ResolveType.Resolved:
+							value = new ThenableSync()
+							assert.strictEqual(ThenableSync.isThenable(value), true)
+							value.resolve(options.value)
+							break
+						case ResolveType.Rejected:
+							value = new ThenableSync()
+							assert.strictEqual(ThenableSync.isThenable(value), true)
+							value.reject(options.value)
+							break
+						case ResolveType.Throwed:
+							value = new ThenableSync(() => {
+								throw value
+							})
+							assert.strictEqual(ThenableSync.isThenable(value), true)
+							break
+						case ResolveType.Resolve:
+						case ResolveType.Reject:
+							value = new ThenableSync()
+							assert.strictEqual(ThenableSync.isThenable(value), true)
+							break
+						default:
+							throw new Error(`Unknown valueType: ${options.valueType}`)
+					}
 
 					let thenable
 					let resolve
@@ -193,63 +255,43 @@ export class TestThenableSync extends TestVariants<
 					assert.strictEqual(thenable && thenable.constructor, ThenableSync)
 					assert.strictEqual(ThenableSync.isThenable(thenable), true)
 
-					if (options.valueAsThenableSync) {
-						value = new ThenableSync()
-						assert.strictEqual(ThenableSync.isThenable(value), true)
-						if (options.valueIsResolved) {
-							if (options.useReject) {
-								value.reject(options.value)
-							} else {
-								value.resolve(options.value)
-							}
-						}
-					}
-
-					if (options.resolveImmediate) {
-						if (options.useReject) {
-							reject(value)
-						} else {
+					switch (options.type) {
+						case ResolveType.Value:
+							thenable = value
+							break
+						case ResolveType.Resolved:
 							resolve(value)
-						}
+							break
+						case ResolveType.Rejected:
+							reject(value)
+							break
+						case ResolveType.Throwed:
+							thenable = new ThenableSync(() => {
+								throw value
+							})
+							assert.strictEqual(ThenableSync.isThenable(thenable), true)
+							break
+						case ResolveType.Resolve:
+						case ResolveType.Reject:
+							break
+						default:
+							throw new Error(`Unknown valueType: ${options.valueType}`)
 					}
 
 					const resolveValue = <T>(func: () => T): T => {
-						if (options.useReject) {
+						if (useReject) {
 							try {
 								return func()
 							} catch (err) {
+								if (err instanceof Error) {
+									throw err
+								}
 								return err
 							}
 						} else {
 							return func()
 						}
 					}
-
-					// if (options.createWithResolver) {
-					// 	const oldValue = value
-					// 	value = ThenableSync.resolve(value)
-					// 	assert.strictEqual(value,
-					// 		options.valueAsThenableSync && options.valueIsResolved
-					// 			? options.value
-					// 			: oldValue)
-					// 	thenable = ThenableSync.resolve(thenable)
-					// }
-
-					// if (options.createWithIterator) {
-					// 	if (!value || !(isIterable(value)))
-					// 	{
-					// 		const oldValue = value
-					// 		value = ThenableSync.resolve(value)
-					// 		assert.strictEqual(value,
-					// 			options.valueAsThenableSync && options.valueIsResolved
-					// 				? options.value
-					// 				: oldValue)
-					// 	}
-					//
-					// 	if (!thenable || !(isIterable(thenable))) {
-					// 		thenable = ThenableSync.resolve(thenable)
-					// 	}
-					// }
 
 					let countQueued = 0
 					let countFulfilled = 0
@@ -266,7 +308,7 @@ export class TestThenableSync extends TestVariants<
 							return fulfillResult
 						}
 
-						if (options.useReject) {
+						if (useReject) {
 							checkResult(resolveValue(() => then(null, null)), options.expected.value, isThenResult)
 							checkResult(resolveValue(() => then(onResult, null)), options.expected.value, isThenResult)
 							checkResult(resolveValue(() => then(null, onResult)), fulfillResult, isThenResult)
@@ -278,7 +320,7 @@ export class TestThenableSync extends TestVariants<
 
 						countQueued++
 						fulfilled--
-						checkResult(resolveValue(() => then(onResult, null)), fulfillResult, isThenResult)
+						checkResult(resolveValue(() => then(onResult, onResult)), fulfillResult, isThenResult)
 					}
 
 					const checkResult = (result, expected, isThenResult = false) => {
@@ -296,7 +338,7 @@ export class TestThenableSync extends TestVariants<
 								return expected
 							}
 
-							const thenResult = resolveValue(() => result.thenLast(onResult, onResult))
+							const thenResult = resolveValue(() => result.then(onResult, onResult).thenLast())
 							if (resolveImmediate) {
 								assert.strictEqual(thenResult, expected)
 							} else {
@@ -315,7 +357,10 @@ export class TestThenableSync extends TestVariants<
 						thenable = resolveValue(() => createWithIterator(thenable))
 					}
 
-					if (resolveImmediate && options.createWithIterator) {
+					if (resolveImmediate && options.createWithIterator
+						|| options.type === ResolveType.Value
+						&& options.valueType === ResolveType.Value
+					) {
 						assert.strictEqual(thenable, options.expected.value)
 					} else {
 						assert.strictEqual(thenable && thenable.constructor, ThenableSync)
@@ -324,9 +369,10 @@ export class TestThenableSync extends TestVariants<
 						for (let i = 0; i < options.getValueWithThen; i++) {
 							testThen((r, e) => {
 								const thenResult = thenable.then(r, e)
-								if (!options.useReject && r || options.useReject && e) {
+								if (!useReject && r || useReject && e) {
 									assert.notStrictEqual(thenResult, thenable)
 								}
+
 								assert.strictEqual(thenResult.constructor, ThenableSync)
 								assert.strictEqual(ThenableSync.isThenable(thenResult), true)
 								return thenResult
@@ -338,20 +384,42 @@ export class TestThenableSync extends TestVariants<
 						testThen((r, e) => ThenableSync.resolve(thenable, r, e))
 					}
 
-					if (!options.resolveImmediate) {
-						assert.strictEqual(countFulfilled, 0)
-						resolve(value)
+					switch (options.type) {
+						case ResolveType.Resolve:
+							assert.strictEqual(countFulfilled, 0)
+							resolve(value)
+							break
+						case ResolveType.Reject:
+							assert.strictEqual(countFulfilled, 0)
+							reject(value)
+							break
 					}
 
-					if (options.valueAsThenableSync && !options.valueIsResolved) {
-						assert.strictEqual(countFulfilled, 0)
-						value.resolve(options.value)
+					switch (options.valueType) {
+						case ResolveType.Resolve:
+							assert.strictEqual(countFulfilled, 0)
+							value.resolve(options.value)
+							break
+						case ResolveType.Reject:
+							assert.strictEqual(countFulfilled, 0)
+							value.reject(options.value)
+							break
 					}
 
 					assert.strictEqual(countFulfilled, countQueued)
 
-					assert.throws(() => resolve(value), Error)
-					assert.throws(() => resolve(value), Error)
+					if (options.type !== ResolveType.Value) {
+						if (options.type === ResolveType.Rejected
+							|| options.type === ResolveType.Throwed
+							|| options.type === ResolveType.Reject
+						) {
+							assert.throws(() => resolve(value), Error)
+							assert.throws(() => reject(value), Error)
+						} else {
+							assert.throws(() => reject(value), Error)
+							assert.throws(() => resolve(value), Error)
+						}
+					}
 
 					assert.strictEqual(countFulfilled, countQueued)
 				}
@@ -371,7 +439,7 @@ export class TestThenableSync extends TestVariants<
 						// ${
 						// JSON.stringify(initialOptions, null, 4)
 						// }
-						`\n${inputOptions.action.toString()}\n${ex.stack}`)
+						`\n${inputOptions.action.toString()}\n${ex && ex.stack}`)
 					error = ex
 				}
 			} finally {

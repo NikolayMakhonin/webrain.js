@@ -30,36 +30,46 @@ export function isThenable(value: any): boolean {
 	return value != null && typeof value.then === 'function'
 }
 
+export enum ResolveResult {
+	None,
+	ImmediateResolved,
+	ImmediateRejected,
+	Deferred,
+}
+
 export function resolveIterator<T>(
 	iterator: ThenableIterator<T>,
 	onImmediate: (value: ThenableOrIteratorOrValue<T>) => void,
 	onDeferred: (value: ThenableOrIteratorOrValue<T>) => void,
 	reject: TReject,
-): boolean {
+): ResolveResult {
 	if (!isIterator(iterator)) {
-		return null
+		return ResolveResult.None
 	}
 
 	function iterate(
 		nextValue: any,
 		nextOnImmediate: (value: ThenableOrIteratorOrValue<T>) => void,
 		nextOnDeferred: (value: ThenableOrIteratorOrValue<T>) => void,
-	): boolean|null {
+	): ResolveResult {
 		while (true) {
 			const iteratorResult = iterator.next(nextValue) as IteratorResult<ThenableOrIteratorOrValue<T>>
 
 			if (iteratorResult.done) {
 				nextOnImmediate(iteratorResult.value)
-				return false
+				return ResolveResult.ImmediateResolved
 			}
 
-			if (resolveValue(
+			switch (resolveValue(
 				iteratorResult.value,
 				o => { nextValue = o },
 				o => iterate(o, nextOnDeferred, nextOnDeferred),
 				reject,
 			)) {
-				return true
+				case ResolveResult.Deferred:
+					return ResolveResult.Deferred
+				case ResolveResult.ImmediateRejected:
+					return ResolveResult.ImmediateRejected
 			}
 		}
 	}
@@ -72,31 +82,31 @@ export function resolveThenable<T>(
 	onImmediate: (value: ThenableOrIteratorOrValue<T>) => void,
 	onDeferred: (value: ThenableOrIteratorOrValue<T>) => void,
 	reject: TReject,
-): boolean|null {
+): ResolveResult {
 	if (!isThenable(thenable)) {
-		return null
+		return ResolveResult.None
 	}
 
-	let resolved
+	let result = ResolveResult.Deferred
 	let immediate = true;
 
 	((thenable as any).thenLast || thenable.then).call(thenable, value => {
 		if (immediate) {
-			resolved = true
+			result = ResolveResult.ImmediateResolved
 			onImmediate(value)
 		} else {
 			onDeferred(value)
 		}
 	}, err => {
+		if (immediate) {
+			result = ResolveResult.ImmediateRejected
+		}
 		reject(err)
 	})
 
 	immediate = false
-	if (resolved) {
-		return false
-	}
 
-	return true
+	return result
 }
 
 export function resolveValue<T>(
@@ -104,7 +114,7 @@ export function resolveValue<T>(
 	onImmediate: (value: T) => void,
 	onDeferred: (value: T) => void,
 	reject: TReject,
-): boolean {
+): ResolveResult {
 	while (true) {
 		const nextOnImmediate = o => { value = o }
 		const nextOnDeferred = val => { resolveValue(val, onDeferred, onDeferred, reject) }
@@ -115,9 +125,11 @@ export function resolveValue<T>(
 			nextOnDeferred,
 			reject,
 		)) {
-			case true:
-				return true
-			case false:
+			case ResolveResult.Deferred:
+				return ResolveResult.Deferred
+			case ResolveResult.ImmediateRejected:
+				return ResolveResult.ImmediateRejected
+			case ResolveResult.ImmediateResolved:
 				continue
 		}
 
@@ -127,13 +139,15 @@ export function resolveValue<T>(
 			nextOnDeferred,
 			reject,
 		)) {
-			case true:
-				return true
-			case false:
+			case ResolveResult.Deferred:
+				return ResolveResult.Deferred
+			case ResolveResult.ImmediateRejected:
+				return ResolveResult.ImmediateRejected
+			case ResolveResult.ImmediateResolved:
 				continue
 		}
 
 		onImmediate(value as T)
-		return false
+		return ResolveResult.ImmediateResolved
 	}
 }
