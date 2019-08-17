@@ -7,7 +7,7 @@ import {
 	TOnFulfilled,
 	TOnRejected,
 	TReject,
-	TResolve,
+	TResolve, tryCatch,
 } from './async'
 
 export type TExecutor<TValue = any> = (
@@ -19,20 +19,6 @@ export enum ThenableSyncStatus {
 	Resolving = 'Resolving',
 	Resolved = 'Resolved',
 	Rejected = 'Rejected',
-}
-
-function tryCatch(func: () => any, onValue: (value) => void, onError: (error) => void): boolean {
-	try {
-		if (onValue) {
-			onValue(func())
-		} else {
-			func()
-		}
-		return false
-	} catch (err) {
-		onError(err)
-		return true
-	}
 }
 
 export class ThenableSync<TValue = any> {
@@ -149,6 +135,39 @@ export class ThenableSync<TValue = any> {
 		onrejected: TOnRejected<TResult2>,
 		lastExpression: boolean,
 	): ThenableOrValue<TResult1> {
+		const reject = (error) => {
+			if (!onrejected) {
+				if (lastExpression) {
+					throw error
+				}
+				return ThenableSync.createRejected(error)
+			}
+
+			let result
+			tryCatch(
+				() => onrejected(error),
+				val => {
+					result = ThenableSync.resolve(val, null, null)
+				},
+				err => {
+					result = ThenableSync.resolve(err, null, null, true)
+				},
+			)
+
+			if (isThenable(result)) {
+				return result
+			}
+
+			if (lastExpression) {
+				if (onrejected) {
+					return result
+				}
+				throw result
+			}
+
+			return ThenableSync.createRejected(result)
+		}
+
 		switch (this._status) {
 			case ThenableSyncStatus.Resolved: {
 				const {_value} = this
@@ -162,55 +181,46 @@ export class ThenableSync<TValue = any> {
 				if (tryCatch(
 					() => onfulfilled(_value),
 					val => { result = ThenableSync.resolve(val, null, onrejected) },
-					error => {
-						if (lastExpression) {
-							throw error
-						}
-						result = ThenableSync.createRejected(error)
-					})
+					err => { result = ThenableSync.resolve(err, null, null, true) })
 				) {
-					return result
+					if (isThenable(result)) {
+						return result.then(onrejected, onrejected)
+					}
+					return reject(result)
 				}
 
 				return lastExpression || isThenable(result)
 					? result
 					: ThenableSync.createResolved(result as TResult1)
 			}
-			case ThenableSyncStatus.Rejected: {
-				const {_error} = this
-				if (!onrejected) {
-					if (lastExpression) {
-						throw _error
-					}
+			case ThenableSyncStatus.Rejected:
+				if (!onrejected && !lastExpression) {
 					return this as any
 				}
-
-				let result
-				tryCatch(
-					() => onrejected(_error),
-					val => { result = ThenableSync.resolve(val, null, onrejected) },
-					error => { result = error },
-				)
-
-				if (isThenable(result)) {
-					return result
-				}
-
-				if (lastExpression) {
-					if (onrejected) {
-						return result
-					}
-					throw result
-				}
-
-				return ThenableSync.createRejected(result)
-			}
+				return reject(this._error)
 			default: {
 				if (!onfulfilled && !onrejected) {
 					return this as any
 				}
 
 				const result = new ThenableSync<TResult1>()
+
+				let {_onrejected} = this
+				if (!_onrejected) {
+					this._onrejected = _onrejected = []
+				}
+
+				const rejected = onrejected
+					? (value): any => {
+						tryCatch(
+							() => onrejected(value),
+							val => { result.reject(val) },
+							err => { result.reject(err) },
+						)
+					}
+					: (value): any => { result.reject(value) }
+
+				_onrejected.push(rejected)
 
 				let {_onfulfilled} = this
 				if (!_onfulfilled) {
@@ -221,26 +231,11 @@ export class ThenableSync<TValue = any> {
 					? (value: any): any => {
 						tryCatch(
 							() => onfulfilled(value),
-							val => result.resolve(val),
-							err => result.reject(err),
+							val => { result.resolve(val) },
+							err => { resolveValue(err, rejected, rejected, rejected) },
 						)
 					}
 					: (value): any => { result.resolve(value as any) })
-
-				let {_onrejected} = this
-				if (!_onrejected) {
-					this._onrejected = _onrejected = []
-				}
-
-				_onrejected.push(onrejected
-					? (value): any => {
-						tryCatch(
-							() => onrejected(value),
-							val => result.reject(val),
-							err => result.reject(err),
-						)
-					}
-					: (value): any => { result.reject(value) })
 
 				return result
 			}

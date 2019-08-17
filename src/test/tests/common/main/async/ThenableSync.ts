@@ -1,5 +1,5 @@
 import {isIterable} from '../../../../../main/common/helpers/helpers'
-import {ITERABLE, ResolveType, TestThenableSync} from './src/TestThenableSync'
+import {ITERABLE, TestThenableSync} from './src/TestThenableSync'
 
 declare const after
 
@@ -15,16 +15,6 @@ describe('common > main > helpers > ThenableSync', function() {
 	it('variants', function() {
 		testThenableSync({
 			exclude: o => {
-				if ((o.type === ResolveType.Rejected
-					|| o.type === ResolveType.Throwed
-					|| o.type === ResolveType.Reject
-					|| o.valueType === ResolveType.Rejected
-					|| o.valueType === ResolveType.Throwed
-					|| o.valueType === ResolveType.Reject)
-					&& (o.getValueWithResolve || o.createWithIterator)) {
-					return true
-				}
-
 				return false
 			},
 			expected: {
@@ -35,6 +25,30 @@ describe('common > main > helpers > ThenableSync', function() {
 			actions: null,
 		})
 	})
+	//
+	// it('variants', function() {
+	// 	testThenableSync({
+	// 		exclude: o => {
+	// 			if ((o.type === ResolveType.Rejected
+	// 				|| o.type === ResolveType.Throwed
+	// 				|| o.type === ResolveType.Reject
+	// 				|| o.valueType === ResolveType.Rejected
+	// 				|| o.valueType === ResolveType.Throwed
+	// 				|| o.valueType === ResolveType.Reject)
+	// 				&& (o.getValueWithResolve || o.createWithIterator)) {
+	// 				return true
+	// 			}
+	//
+	// 			return false
+	// 		},
+	// 		expected: {
+	// 			value: o => {
+	// 				return o.value
+	// 			},
+	// 		},
+	// 		actions: null,
+	// 	})
+	// })
 
 	// xit('performance', function() {
 	// 	this.timeout(120000)

@@ -1,29 +1,51 @@
 /* tslint:disable:no-empty no-identical-functions no-construct use-primitive-type */
-import {TOnFulfilled, TOnRejected} from '../../../../../../main/common/async/async'
+import {
+	isThenable,
+	ThenableIterator,
+	ThenableOrIteratorOrValue,
+	TOnFulfilled,
+	TOnRejected,
+	TReject,
+	TResolve,
+} from '../../../../../../main/common/async/async'
 import {ThenableSync} from '../../../../../../main/common/async/ThenableSync'
-import {TClass} from '../../../../../../main/common/helpers/helpers'
+import {isIterator, TClass} from '../../../../../../main/common/helpers/helpers'
 import {assert} from '../../../../../../main/common/test/Assert'
 import {IOptionsVariant, IOptionsVariants, ITestCase, TestVariants} from '../../src/helpers/TestVariants'
 
-export enum ResolveType {
+export enum ValueType {
 	Value,
-	Resolved,
-	Rejected,
-	Throwed,
-	Resolve,
-	Reject,
+	ThenableResolved,
+	ThenableRejected,
+	ThenableThrowed,
+	ThenableResolve,
+	ThenableReject,
+	Iterator,
+}
+
+export enum ThenType {
+	Then,
+	ThenLast,
+	// ResolveAsync,
+	// ResolveValue,
 }
 
 export interface IThenableSyncOptionsVariant {
 	value?: any
-	valueType?: ResolveType
-	type?: ResolveType
-	createWithExecutor?: boolean
-	createWithIterator?: number
-	// resolveImmediate?: boolean
-	getValueWithResolve?: number
-	getValueWithThen?: number
-	// useReject?: boolean
+	createValue1?: ValueType
+	thenValue1?: ValueType
+	thenThrow1?: boolean
+	thenType1?: ThenType
+
+	createValue2?: ValueType
+	thenValue2?: ValueType
+	thenThrow2?: boolean
+	thenType2?: ThenType
+
+	// createValue3?: ValueType
+	// thenValue3?: ValueType
+	// thenThrow3?: boolean
+	// thenType3?: ThenType
 }
 
 interface IThenableSyncExpected {
@@ -34,14 +56,20 @@ interface IThenableSyncExpected {
 
 interface IThenableSyncOptionsVariants extends IOptionsVariants {
 	value?: any[]
-	valueType?: ResolveType[]
-	type?: ResolveType[]
-	createWithExecutor?: boolean[]
-	createWithIterator?: number[]
-	// resolveImmediate?: boolean[]
-	getValueWithResolve?: number[]
-	getValueWithThen?: number[]
-	// useReject?: boolean[]
+	createValue1?: ValueType[]
+	thenValue1?: ValueType[]
+	thenThrow1?: boolean[]
+	thenType1?: ThenType[]
+
+	createValue2?: ValueType[]
+	thenValue2?: ValueType[]
+	thenThrow2?: boolean[]
+	thenType2?: ThenType[]
+
+	// createValue3?: ValueType[]
+	// thenValue3?: ValueType[]
+	// thenThrow3?: boolean[]
+	// thenType3?: ThenType[]
 }
 
 type IThenableSyncAction = (...args: any[]) => any
@@ -81,18 +109,6 @@ function resolveOptions(
 	return resolvedOptions
 }
 
-function createWithExecutor<T>() {
-	let resultResolve = null
-	let resultReject = null
-	const thenable = new ThenableSync((resolve, reject) => {
-		resultResolve = resolve
-		resultReject = reject
-	})
-	assert.ok(resultResolve)
-	assert.ok(resultReject)
-	return [thenable, resultResolve, resultReject]
-}
-
 export const OBJ = {}
 export const THEN_LIKE = { then: onfulfill => { onfulfill('THEN_LIKE') } }
 export const FUNC = () => {}
@@ -102,11 +118,7 @@ export const ITERATOR_GENERATOR = function *() {
 	return ITERABLE
 }
 
-function createWithIterator<T, TResult1 = T, TResult2 = never>(
-	value: T | ThenableSync<T>,
-	onfulfilled?: TOnFulfilled<T, TResult1>,
-	onrejected?: TOnRejected<TResult2>,
-) {
+function createIterator<T>(value: ThenableOrIteratorOrValue<T>): ThenableIterator<T> {
 	const iteratorInner = function *() {
 		assert.strictEqual(yield void 0, void 0)
 		assert.strictEqual(yield null, null)
@@ -138,7 +150,183 @@ function createWithIterator<T, TResult1 = T, TResult2 = never>(
 		return result
 	})()
 
-	return ThenableSync.resolve<T, TResult1, TResult2>(iterator, onfulfilled, onrejected)
+	return iterator
+}
+
+function createThenable<TValue>(useExecutor: boolean): [ThenableSync<TValue>, TResolve<TValue>, TReject] {
+	if (useExecutor) {
+		let resultResolve = null
+		let resultReject = null
+		const thenable = new ThenableSync((resolve, reject) => {
+			resultResolve = resolve
+			resultReject = reject
+		})
+		assert.ok(resultResolve)
+		assert.ok(resultReject)
+		return [thenable, resultResolve, resultReject]
+	} else {
+		const thenable = new ThenableSync()
+		return [thenable, thenable.resolve.bind(thenable), thenable.reject.bind(thenable)]
+	}
+}
+
+interface IValueInfo {
+	origValue: any
+	value?: any
+	immediate: boolean
+	useReject: boolean
+}
+
+function createValue(
+	value,
+	getValueType: (index) => ValueType,
+	addResolve: (resolve: () => void) => void,
+	valueInfo?: IValueInfo,
+): IValueInfo {
+	if (!valueInfo) {
+		valueInfo = {
+			origValue: value,
+			immediate: true,
+			useReject: false,
+		}
+	}
+
+	for (let i = 0; i < 2; i++) {
+		switch (getValueType(i)) {
+			case ValueType.Value:
+				break
+			case ValueType.ThenableResolved: {
+				const [thenable, resolve, reject] = createThenable(i % 2 === 0)
+				resolve(value)
+				value = thenable
+				break
+			}
+			case ValueType.ThenableRejected: {
+				const [thenable, resolve, reject] = createThenable(i % 2 === 0)
+				reject(value)
+				value = thenable
+				valueInfo.useReject = true
+				break
+			}
+			case ValueType.ThenableThrowed: {
+				const thenable = new ThenableSync(() => {
+					throw value
+				})
+				value = thenable
+				valueInfo.useReject = true
+				break
+			}
+			case ValueType.ThenableResolve: {
+				const [thenable, resolve, reject] = createThenable(i % 2 === 0)
+				const val = value
+				addResolve(() => resolve(val))
+				value = thenable
+				valueInfo.immediate = false
+				break
+			}
+			case ValueType.ThenableReject: {
+				const [thenable, resolve, reject] = createThenable(i % 2 === 0)
+				const val = value
+				addResolve(() => reject(val))
+				value = thenable
+				valueInfo.useReject = true
+				valueInfo.immediate = false
+				break
+			}
+			case ValueType.Iterator: {
+				value = createIterator(value)
+				break
+			}
+		}
+	}
+
+	valueInfo.value = value
+
+	return valueInfo
+}
+
+function createThen(
+	valueInfo: IValueInfo,
+	getValueType: (index) => ValueType,
+	addResolve: (resolve: () => void) => void,
+	getThenType: (index) => ThenType,
+	getThenThrow: (index) => boolean,
+): void {
+	const createThenValue = (val, willUseThrow) => {
+		if (willUseThrow) {
+			valueInfo.useReject = true
+		}
+		return createValue(val, getValueType, addResolve, valueInfo).value
+	}
+
+	let thenable = valueInfo.value
+
+	for (let i = 0; i < 2; i++) {
+		// if (getThenThrow(i)) {
+		// 	onResult = (value) => throw createValue(value)
+		// } else {
+		// 	onResult = (value) => createValue(value)
+		// }
+
+		switch (getThenType(i)) {
+			case ThenType.Then:
+				if (isThenable(thenable)) {
+					if (getThenThrow(i)) {
+						if (valueInfo.useReject) {
+							thenable = thenable.then(null, o => { throw createThenValue(o, true) })
+						} else {
+							thenable = thenable.then(o => { throw createThenValue(o, true) }, null)
+						}
+					} else {
+						if (valueInfo.useReject) {
+							thenable = thenable.then(null, o => createThenValue(o, false))
+						} else {
+							thenable = thenable.then(o => createThenValue(o, false), null)
+						}
+					}
+				}
+				break
+			case ThenType.ThenLast:
+				try {
+					if (isThenable(thenable)) {
+						if (getThenThrow(i)) {
+							if (valueInfo.useReject) {
+								thenable = thenable.thenLast(null, o => {
+									throw createThenValue(o, true)
+								})
+							} else {
+								thenable = thenable.thenLast(o => {
+									throw createThenValue(o, true)
+								}, null)
+							}
+						} else {
+							if (valueInfo.useReject) {
+								thenable = thenable.thenLast(null, o => createThenValue(o, false))
+							} else {
+								thenable = thenable.thenLast(o => createThenValue(o, false), null)
+							}
+						}
+					}
+				} catch (err) {
+					if (err instanceof Error) {
+						throw err
+					}
+					assert.strictEqual(valueInfo.immediate, true)
+					assert.strictEqual(valueInfo.useReject, true)
+					assert.strictEqual(isThenable(err), false)
+					assert.strictEqual(isIterator(err), false)
+					valueInfo.useReject = false
+					thenable = err
+				}
+				break
+			// case ThenType.ResolveAsync:
+			// 	break
+			// case ThenType.ResolveValue:
+			// 	break
+		}
+	}
+
+	valueInfo.value = thenable
 }
 
 export class TestThenableSync extends TestVariants<
@@ -152,29 +340,21 @@ export class TestThenableSync extends TestVariants<
 	}
 
 	protected baseOptionsVariants: IThenableSyncOptionsVariants = {
-		value: [void 0, null, false, 0, '', OBJ, FUNC, ITERABLE, ITERATOR_GENERATOR],
-		valueType: [
-			ResolveType.Value,
-			ResolveType.Resolved,
-			ResolveType.Rejected,
-			ResolveType.Throwed,
-			ResolveType.Resolve,
-			ResolveType.Reject,
-		],
-		type: [
-			ResolveType.Value,
-			ResolveType.Resolved,
-			ResolveType.Rejected,
-			// ResolveType.Throwed,
-			ResolveType.Resolve,
-			ResolveType.Reject,
-		],
-		createWithExecutor: [false, true],
-		createWithIterator: [0, 1, 3],
-		// resolveImmediate: [true, false],
-		getValueWithResolve: [0, 1, 3],
-		getValueWithThen: [0, 1, 3],
-		// useReject: [false, true],
+		value: ['v', void 0, ITERABLE, ITERATOR_GENERATOR],
+		createValue1: Object.values(ValueType).filter(x => typeof x === 'number'),
+		thenValue1: Object.values(ValueType).filter(x => typeof x === 'number'),
+		thenThrow1: [false, true],
+		thenType1: Object.values(ThenType).filter(x => typeof x === 'number'),
+
+		createValue2: Object.values(ValueType).filter(x => typeof x === 'number'),
+		thenValue2: Object.values(ValueType).filter(x => typeof x === 'number'),
+		thenThrow2: [false, true],
+		thenType2: Object.values(ThenType).filter(x => typeof x === 'number'),
+
+		// createValue3: Object.values(ValueType).filter(x => typeof x === 'number'),
+		// thenValue3: Object.values(ValueType).filter(x => typeof x === 'number'),
+		// thenThrow3: [false, true],
+		// thenType3: Object.values(ThenType).filter(x => typeof x === 'number'),
 	}
 
 	public static totalTests: number = 0
@@ -188,240 +368,44 @@ export class TestThenableSync extends TestVariants<
 				const options = resolveOptions(inputOptions, null)
 
 				const action = () => {
-					let value = options.value
+					const resolveList = []
 
-					const resolveImmediate = (options.type === ResolveType.Value
-							|| options.type === ResolveType.Resolved
-							|| options.type === ResolveType.Rejected
-							|| options.type === ResolveType.Throwed)
-						&& (options.valueType === ResolveType.Value
-							|| options.valueType === ResolveType.Resolved
-							|| options.valueType === ResolveType.Rejected
-							|| options.valueType === ResolveType.Throwed)
+					const valueInfo = createValue(
+						options.value,
+						index => options['createValue' + index] as ValueType,
+						resolve => resolveList.push(resolve),
+					)
 
-					const useReject =
-						options.type === ResolveType.Rejected
-						|| options.type === ResolveType.Throwed
-						|| options.type === ResolveType.Reject
-						|| options.valueType === ResolveType.Rejected
-						|| options.valueType === ResolveType.Throwed
-						|| options.valueType === ResolveType.Reject
+					createThen(
+						valueInfo,
+						index => options['thenValue' + index] as ValueType,
+						resolve => resolveList.push(resolve),
+						index => options['thenType' + index] as ThenType,
+						index => options['thenThrow' + index] as boolean,
+					)
 
-					assert.notStrictEqual(value && value.constructor, ThenableSync)
-					assert.strictEqual(ThenableSync.isThenable(value), false)
+					// region Check
 
-					switch (options.valueType) {
-						case ResolveType.Value:
-							break
-						case ResolveType.Resolved:
-							value = new ThenableSync()
-							assert.strictEqual(ThenableSync.isThenable(value), true)
-							value.resolve(options.value)
-							break
-						case ResolveType.Rejected:
-							value = new ThenableSync()
-							assert.strictEqual(ThenableSync.isThenable(value), true)
-							value.reject(options.value)
-							break
-						case ResolveType.Throwed:
-							value = new ThenableSync(() => {
-								throw value
-							})
-							assert.strictEqual(ThenableSync.isThenable(value), true)
-							break
-						case ResolveType.Resolve:
-						case ResolveType.Reject:
-							value = new ThenableSync()
-							assert.strictEqual(ThenableSync.isThenable(value), true)
-							break
-						default:
-							throw new Error(`Unknown valueType: ${options.valueType}`)
+					let queueSize = 0
+					const onResult = o => {
+						assert.ok(queueSize > 0)
+						queueSize--
+						assert.strictEqual(o, valueInfo.origValue)
 					}
 
-					let thenable
-					let resolve
-					let reject
-					if (options.createWithExecutor) {
-						const result = createWithExecutor()
-						thenable = result[0]
-						resolve = result[1]
-						reject = result[2]
+					if (valueInfo.useReject) {
+						queueSize++
+						ThenableSync.resolve(valueInfo.value, null, onResult)
 					} else {
-						thenable = new ThenableSync()
-						resolve = thenable.resolve.bind(thenable)
-						reject = thenable.reject.bind(thenable)
+						queueSize++
+						ThenableSync.resolve(valueInfo.value, onResult, null)
 					}
 
-					assert.strictEqual(thenable && thenable.constructor, ThenableSync)
-					assert.strictEqual(ThenableSync.isThenable(thenable), true)
-
-					switch (options.type) {
-						case ResolveType.Value:
-							thenable = value
-							break
-						case ResolveType.Resolved:
-							resolve(value)
-							break
-						case ResolveType.Rejected:
-							reject(value)
-							break
-						case ResolveType.Throwed:
-							thenable = new ThenableSync(() => {
-								throw value
-							})
-							assert.strictEqual(ThenableSync.isThenable(thenable), true)
-							break
-						case ResolveType.Resolve:
-						case ResolveType.Reject:
-							break
-						default:
-							throw new Error(`Unknown valueType: ${options.valueType}`)
+					if (valueInfo.immediate) {
+						assert.strictEqual(queueSize, 0)
 					}
 
-					const resolveValue = <T>(func: () => T): T => {
-						if (useReject) {
-							try {
-								return func()
-							} catch (err) {
-								if (err instanceof Error) {
-									throw err
-								}
-								return err
-							}
-						} else {
-							return func()
-						}
-					}
-
-					let countQueued = 0
-					let countFulfilled = 0
-					const fulfillResult = new String('Fulfill Result')
-
-					const testThen = (then: (resolve, reject) => any, isThenResult = false) => {
-						countQueued++
-						let fulfilled = 0
-						const onResult = o => {
-							assert.ok(fulfilled <= 0)
-							fulfilled++
-							assert.strictEqual(o, options.expected.value)
-							countFulfilled++
-							return fulfillResult
-						}
-
-						if (useReject) {
-							checkResult(resolveValue(() => then(null, null)), options.expected.value, isThenResult)
-							checkResult(resolveValue(() => then(onResult, null)), options.expected.value, isThenResult)
-							checkResult(resolveValue(() => then(null, onResult)), fulfillResult, isThenResult)
-						} else {
-							checkResult(resolveValue(() => then(null, null)), options.expected.value, isThenResult)
-							checkResult(resolveValue(() => then(null, onResult)), options.expected.value, isThenResult)
-							checkResult(resolveValue(() => then(onResult, null)), fulfillResult, isThenResult)
-						}
-
-						countQueued++
-						fulfilled--
-						checkResult(resolveValue(() => then(onResult, onResult)), fulfillResult, isThenResult)
-					}
-
-					const checkResult = (result, expected, isThenResult = false) => {
-						if (!isThenResult && resolveImmediate) {
-							assert.strictEqual(result, expected)
-						} else {
-							assert.strictEqual(result && result.constructor, ThenableSync)
-							countQueued++
-							let fulfilled
-							const onResult = o => {
-								assert.notOk(fulfilled)
-								fulfilled = true
-								assert.strictEqual(o, expected)
-								countFulfilled++
-								return expected
-							}
-
-							const thenResult = resolveValue(() => result.then(onResult, onResult).thenLast())
-							if (resolveImmediate) {
-								assert.strictEqual(thenResult, expected)
-							} else {
-								assert.notStrictEqual(thenResult, result)
-								assert.strictEqual(thenResult.constructor, ThenableSync)
-								assert.strictEqual(ThenableSync.isThenable(thenResult), true)
-							}
-						}
-					}
-
-					for (let i = 0; i < options.createWithIterator; i++) {
-						if (options.getValueWithResolve) {
-							testThen((r, e) => createWithIterator(thenable, r, e))
-						}
-
-						thenable = resolveValue(() => createWithIterator(thenable))
-					}
-
-					if (resolveImmediate && options.createWithIterator
-						|| options.type === ResolveType.Value
-						&& options.valueType === ResolveType.Value
-					) {
-						assert.strictEqual(thenable, options.expected.value)
-					} else {
-						assert.strictEqual(thenable && thenable.constructor, ThenableSync)
-						assert.strictEqual(ThenableSync.isThenable(thenable), true)
-
-						for (let i = 0; i < options.getValueWithThen; i++) {
-							testThen((r, e) => {
-								const thenResult = thenable.then(r, e)
-								if (!useReject && r || useReject && e) {
-									assert.notStrictEqual(thenResult, thenable)
-								}
-
-								assert.strictEqual(thenResult.constructor, ThenableSync)
-								assert.strictEqual(ThenableSync.isThenable(thenResult), true)
-								return thenResult
-							}, true)
-						}
-					}
-
-					for (let i = 0; i < options.getValueWithResolve; i++) {
-						testThen((r, e) => ThenableSync.resolve(thenable, r, e))
-					}
-
-					switch (options.type) {
-						case ResolveType.Resolve:
-							assert.strictEqual(countFulfilled, 0)
-							resolve(value)
-							break
-						case ResolveType.Reject:
-							assert.strictEqual(countFulfilled, 0)
-							reject(value)
-							break
-					}
-
-					switch (options.valueType) {
-						case ResolveType.Resolve:
-							assert.strictEqual(countFulfilled, 0)
-							value.resolve(options.value)
-							break
-						case ResolveType.Reject:
-							assert.strictEqual(countFulfilled, 0)
-							value.reject(options.value)
-							break
-					}
-
-					assert.strictEqual(countFulfilled, countQueued)
-
-					if (options.type !== ResolveType.Value) {
-						if (options.type === ResolveType.Rejected
-							|| options.type === ResolveType.Throwed
-							|| options.type === ResolveType.Reject
-						) {
-							assert.throws(() => resolve(value), Error)
-							assert.throws(() => reject(value), Error)
-						} else {
-							assert.throws(() => reject(value), Error)
-							assert.throws(() => resolve(value), Error)
-						}
-					}
-
-					assert.strictEqual(countFulfilled, countQueued)
+					// endregion
 				}
 
 				if (options.expected.error) {

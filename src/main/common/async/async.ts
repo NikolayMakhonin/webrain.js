@@ -37,6 +37,20 @@ export enum ResolveResult {
 	Deferred,
 }
 
+export function tryCatch<T>(func: () => T|void, onValue: (value: T) => void, onError: (error) => void): boolean {
+	try {
+		if (onValue) {
+			onValue(func() as T)
+		} else {
+			func()
+		}
+		return false
+	} catch (err) {
+		onError(err)
+		return true
+	}
+}
+
 export function resolveIterator<T>(
 	iterator: ThenableIterator<T>,
 	onImmediate: (value: ThenableOrIteratorOrValue<T>) => void,
@@ -60,7 +74,7 @@ export function resolveIterator<T>(
 				return ResolveResult.ImmediateResolved
 			}
 
-			switch (resolveValue(
+			switch (_resolveValue(
 				iteratorResult.value,
 				o => { nextValue = o },
 				o => iterate(o, nextOnDeferred, nextOnDeferred),
@@ -109,7 +123,7 @@ export function resolveThenable<T>(
 	return result
 }
 
-export function resolveValue<T>(
+function _resolveValue<T>(
 	value: ThenableOrIteratorOrValue<T>,
 	onImmediate: (value: T) => void,
 	onDeferred: (value: T) => void,
@@ -117,7 +131,7 @@ export function resolveValue<T>(
 ): ResolveResult {
 	while (true) {
 		const nextOnImmediate = o => { value = o }
-		const nextOnDeferred = val => { resolveValue(val, onDeferred, onDeferred, reject) }
+		const nextOnDeferred = val => { _resolveValue(val, onDeferred, onDeferred, reject) }
 
 		switch (resolveThenable(
 			value as ThenableOrIteratorOrValueNested<T>,
@@ -150,4 +164,22 @@ export function resolveValue<T>(
 		onImmediate(value as T)
 		return ResolveResult.ImmediateResolved
 	}
+}
+
+export function resolveValue<T>(
+	value: ThenableOrIteratorOrValue<T>,
+	onImmediate: (value: T) => void,
+	onDeferred: (value: T) => void,
+	reject: TReject,
+): ResolveResult {
+	let result
+	if (tryCatch(
+		() => { result = _resolveValue(value, onImmediate, onDeferred, reject) },
+		null,
+		err => { _resolveValue(err, reject, reject, reject) },
+	)) {
+		return ResolveResult.ImmediateRejected
+	}
+
+	return result
 }
