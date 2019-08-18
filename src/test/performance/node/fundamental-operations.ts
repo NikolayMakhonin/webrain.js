@@ -6,13 +6,14 @@
 
 import {calcPerformance} from 'rdtsc'
 import {SynchronousPromise} from 'synchronous-promise'
-import {ThenableSync} from '../../../main/common/async/ThenableSync'
+import {resolveAsync, ThenableSync} from '../../../main/common/async/ThenableSync'
 import {isIterable} from '../../../main/common/helpers/helpers'
 import {ArraySet} from '../../../main/common/lists/ArraySet'
 import {binarySearch} from '../../../main/common/lists/helpers/array'
 import {freezeWithUniqueId, getObjectUniqueId} from '../../../main/common/lists/helpers/object-unique-id'
 import {SortedList} from '../../../main/common/lists/SortedList'
 import {createObject, Tester} from '../../tests/common/main/rx/deep-subscribe/helpers/Tester'
+import {resolveValue} from "../../../main/common/async/async";
 
 const SetNative = Set
 require('./src/SetPolyfill')
@@ -1530,7 +1531,7 @@ describe('fundamental-operations', function() {
 		console.log(result)
 	})
 
-	it('try catch', function() {
+	xit('try catch', function() {
 		this.timeout(300000)
 
 		function tryCatch<T>(func: () => T|void, onValue: (value: T) => void, onError: (error) => void): boolean {
@@ -1596,6 +1597,56 @@ describe('fundamental-operations', function() {
 				if (tryCatch(() => func(), () => {}, () => {})) {
 					return 0
 				}
+			},
+		)
+
+		console.log(result)
+	})
+
+	it('ThenableSync', function() {
+		this.timeout(300000)
+
+		const rejected = ThenableSync.createRejected(1)
+		const resolved = ThenableSync.createResolved(1)
+
+		const result = calcPerformance(
+			120000,
+			() => {
+				// no operations
+			},
+
+			() => { // 157
+				return resolveValue(1, () => {}, () => {}, () => {})
+			},
+			() => { // 767
+				return resolveValue(resolved, () => {}, () => {}, () => {})
+			},
+			() => { // 835
+				return resolveValue(rejected, () => {}, () => {}, () => {})
+			},
+
+			() => { // 563
+				return resolveAsync(1, () => {}, () => {}, true)
+			},
+			() => { // 1192
+				return resolveAsync(resolved, () => {}, () => {}, true)
+			},
+			() => { // 1192
+				return resolveAsync(rejected, () => {}, () => {}, true)
+			},
+
+			() => { // 533
+				return resolved.then(() => {}, () => {})
+			},
+			() => { // 636
+				return rejected.then(() => {}, () => {})
+			},
+
+			() => { // 463
+				return resolved.thenLast(() => {}, () => {})
+			},
+			() => { // 494
+				return rejected.thenLast(() => {}, () => {})
 			},
 		)
 

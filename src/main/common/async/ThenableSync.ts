@@ -7,7 +7,7 @@ import {
 	TOnFulfilled,
 	TOnRejected,
 	TReject,
-	TResolve
+	TResolve,
 } from './async'
 
 export type TExecutor<TValue = any> = (
@@ -19,6 +19,18 @@ export enum ThenableSyncStatus {
 	Resolving = 'Resolving',
 	Resolved = 'Resolved',
 	Rejected = 'Rejected',
+}
+
+export function createResolved<TValue = any>(value: ThenableOrIteratorOrValue<TValue>): ThenableSync<TValue> {
+	const thenable = new ThenableSync<TValue>()
+	thenable.resolve(value)
+	return thenable
+}
+
+export function createRejected<TValue = any>(error: ThenableOrIteratorOrValue<any>): ThenableSync<TValue> {
+	const thenable = new ThenableSync<TValue>()
+	thenable.reject(error)
+	return thenable
 }
 
 export class ThenableSync<TValue = any> {
@@ -135,7 +147,7 @@ export class ThenableSync<TValue = any> {
 		onrejected: TOnRejected<TResult2>,
 		lastExpression: boolean,
 	): ThenableOrValue<TResult1> {
-		const reject = (error) => {
+		const reject = error => {
 			if (!onrejected) {
 				if (lastExpression) {
 					throw error
@@ -153,11 +165,11 @@ export class ThenableSync<TValue = any> {
 				}
 			})()
 
-			const result = ThenableSync.resolve(error, null, null, !lastExpression)
+			const result = resolveAsync(error, null, null, !lastExpression)
 
 			if (isThenable(result)) {
 				return isError
-					? result.then(o => ThenableSync.createRejected(o))
+					? result.then(o => createRejected(o))
 					: result
 			}
 
@@ -169,8 +181,8 @@ export class ThenableSync<TValue = any> {
 			}
 
 			return isError
-				? ThenableSync.createRejected(result)
-				: ThenableSync.createResolved(result)
+				? createRejected(result)
+				: createResolved(result)
 		}
 
 		switch (this._status) {
@@ -193,16 +205,16 @@ export class ThenableSync<TValue = any> {
 				})()
 
 				if (isError) {
-					const result = ThenableSync.resolve(_value as any, null, null, !lastExpression)
+					const result = resolveAsync(_value as any, null, null, !lastExpression)
 					if (isThenable(result)) {
 						return result.then(o => reject(o), onrejected)
 					}
 					return reject(result)
 				} else {
-					const result = ThenableSync.resolve(_value as any, null, onrejected, !lastExpression)
+					const result = resolveAsync(_value as any, null, onrejected, !lastExpression)
 					return lastExpression || isThenable(result)
 						? result
-						: ThenableSync.createResolved(result as TResult1)
+						: createResolved(result as TResult1)
 				}
 			}
 			case ThenableSyncStatus.Rejected:
@@ -288,64 +300,15 @@ export class ThenableSync<TValue = any> {
 
 	// endregion
 
-	// region helpers
+	// region static helpers
 
-	public static createResolved<TValue = any>(value: TValue): ThenableSync<TValue> {
-		const thenable = new ThenableSync<TValue>()
-		thenable._status = ThenableSyncStatus.Resolved
-		thenable._value = value
-		return thenable
-	}
+	public static createResolved = createResolved
 
-	public static createRejected<TValue = any>(error: any): ThenableSync<TValue> {
-		const thenable = new ThenableSync<TValue>()
-		thenable._status = ThenableSyncStatus.Rejected
-		thenable._error = error
-		return thenable
-	}
+	public static createRejected = createRejected
 
-	public static isThenable: (value: any) => boolean = isThenable
+	public static isThenable = isThenable
 
-	public static resolve<TValue = any, TResult1 = TValue, TResult2 = never>(
-		value: ThenableOrIteratorOrValue<TValue>,
-		onfulfilled?: TOnFulfilled<TValue, TResult1>,
-		onrejected?: TOnRejected<TResult2>,
-		dontThrowOnImmediateReject?: boolean,
-	): ThenableOrValue<TResult1> {
-		return resolveAsync(value, onfulfilled, onrejected, dontThrowOnImmediateReject)
-		// if (ThenableSync.isThenableSync(value)) {
-		// 	value = (value as ThenableSync<TValue>)
-		// 		.thenLast(onfulfilled) as any
-		//
-		// 	return value as any
-		// }
-		//
-		// if (isIterator(value)) {
-		// 	const iterator = value as ThenableSyncIterator<TValue>
-		// 	const resolveIterator = (
-		// 		iteration: IteratorResult<ThenableSyncOrIteratorOrValue<TValue>>,
-		// 	): ThenableSyncOrValue<TValue> => {
-		// 		if (iteration.done) {
-		// 			return iteration.value as TValue
-		// 		} else {
-		// 			return ThenableSync.resolve(iteration.value, o => {
-		// 				return resolveIterator(iterator.next(o))
-		// 			})
-		// 		}
-		// 	}
-		//
-		// 	value = resolveIterator((value as ThenableSyncIterator<TValue>).next())
-		//
-		// 	return this.resolve(value, onfulfilled)
-		// }
-		//
-		// if (onfulfilled) {
-		// 	value = onfulfilled(value as TValue) as any
-		// 	return this.resolve(value)
-		// }
-		//
-		// return value as any
-	}
+	public static resolve = resolveAsync
 	
 	// endregion
 }
@@ -409,7 +372,7 @@ export function resolveAsync<TValue = any, TResult1 = TValue, TResult2 = never>(
 			})
 		case ResolveResult.ImmediateRejected:
 			if (dontThrowOnImmediateReject) {
-				return ThenableSync.createRejected(error)
+				return createRejected(error)
 			}
 			throw error
 	}

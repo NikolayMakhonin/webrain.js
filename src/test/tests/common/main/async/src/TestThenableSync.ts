@@ -21,7 +21,7 @@ export enum ValueType {
 	ThenableResolve,
 	ThenableReject,
 	Iterator,
-	// IteratorThrow,
+	IteratorThrow,
 }
 
 export enum ThenType {
@@ -177,8 +177,9 @@ function createThenable<TValue>(useExecutor: boolean): [ThenableSync<TValue>, TR
 interface IValueInfo {
 	origValue: any
 	value?: any
-	immediate: boolean
-	useReject: boolean
+	immediate?: boolean
+	useReject?: boolean
+	throw?: boolean
 }
 
 function createValue(
@@ -242,6 +243,7 @@ function createValue(
 				break
 			}
 			case ValueType.IteratorThrow: {
+				valueInfo.throw = true
 				valueInfo.useReject = true
 				value = createIterator(value, true)
 				break
@@ -275,7 +277,7 @@ function createThen(
 	}
 
 	const calcValueInfo = valInfo => {
-		return createValue(null, getValueType, addResolve, valInfo)
+		return createValue(null, getValueType, () => {}, valInfo)
 	}
 
 	const thenResolveValue = (value, onfulfilled, onrejected, isRejected: boolean) => {
@@ -358,12 +360,16 @@ function createThen(
 					assert.strictEqual(valueInfo.useReject, true)
 					assert.strictEqual(isThenable(err), false)
 					assert.strictEqual(isIterator(err), false)
+					valueInfo.throw = false
 					valueInfo.useReject = false
 					thenable = err
 				}
 				break
 			case ThenType.ResolveValue:
 				try {
+					if (calcValueInfo(null).throw && (!valueInfo.immediate || !calcValueInfo(null).immediate)) {
+						break
+					}
 					const [newThenable, resolve, reject] = createThenable(i % 2 === 0)
 					if (getThenThrow(i)) {
 						if (valueInfo.useReject) {
@@ -392,12 +398,19 @@ function createThen(
 					if (err instanceof Error) {
 						throw err
 					}
-					assert.strictEqual(valueInfo.immediate, true)
 					assert.strictEqual(valueInfo.useReject, true)
-					assert.strictEqual(isThenable(err), false)
-					assert.strictEqual(isIterator(err), false)
-					valueInfo.useReject = false
-					thenable = err
+					if (!valueInfo.throw) {
+						assert.strictEqual(valueInfo.immediate, true)
+						assert.strictEqual(isThenable(err), false)
+						assert.strictEqual(isIterator(err), false)
+					}
+					if (isThenable(err) || isIterator(err)) {
+						thenable = ThenableSync.createRejected(err)
+					} else {
+						valueInfo.throw = false
+						valueInfo.useReject = false
+						thenable = err
+					}
 				}
 				break
 			// case ThenType.ResolveAsync:

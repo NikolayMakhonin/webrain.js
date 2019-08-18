@@ -115,10 +115,10 @@ function _resolveValue<T>(
 	onDeferred: (value: T) => void,
 	reject: TReject,
 ): ResolveResult {
-	while (true) {
-		const nextOnImmediate = o => { value = o }
-		const nextOnDeferred = val => { _resolveValue(val, onDeferred, onDeferred, reject) }
+	const nextOnImmediate = o => { value = o }
+	const nextOnDeferred = val => { _resolveValue(val, onDeferred, onDeferred, reject) }
 
+	while (true) {
 		switch (resolveThenable(
 			value as ThenableOrIteratorOrValueNested<T>,
 			nextOnImmediate,
@@ -168,7 +168,9 @@ export function resolveValue<T>(
 				throw o
 			}
 		}
-		_resolveValue(err, onResult, onResult, onResult)
+		if (_resolveValue(err, onResult, onResult, onResult) === ResolveResult.Deferred) {
+			return ResolveResult.Deferred
+		}
 		return ResolveResult.ImmediateRejected
 	}
 }
