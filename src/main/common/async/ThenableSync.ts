@@ -7,7 +7,7 @@ import {
 	TOnFulfilled,
 	TOnRejected,
 	TReject,
-	TResolve, tryCatch,
+	TResolve
 } from './async'
 
 export type TExecutor<TValue = any> = (
@@ -30,11 +30,11 @@ export class ThenableSync<TValue = any> {
 
 	constructor(executor?: TExecutor<TValue>) {
 		if (executor) {
-			tryCatch(
-				() => executor(this.resolve.bind(this), this.reject.bind(this)),
-				null,
-				error => { this.reject(error) },
-			)
+			try {
+				executor(this.resolve.bind(this), this.reject.bind(this))
+			} catch (err) {
+				this.reject(err)
+			}
 		}
 	}
 
@@ -143,16 +143,17 @@ export class ThenableSync<TValue = any> {
 				return ThenableSync.createRejected(error)
 			}
 
-			let result
-			const isError = tryCatch(
-				() => onrejected(error),
-				val => {
-					result = ThenableSync.resolve(val, null, null, !lastExpression)
-				},
-				err => {
-					result = ThenableSync.resolve(err, null, null, !lastExpression)
-				},
-			)
+			let isError
+			error = (() => {
+				try {
+					return onrejected(error)
+				} catch (err) {
+					isError = true
+					return err
+				}
+			})()
+
+			const result = ThenableSync.resolve(error, null, null, !lastExpression)
 
 			if (isThenable(result)) {
 				return isError
@@ -174,28 +175,35 @@ export class ThenableSync<TValue = any> {
 
 		switch (this._status) {
 			case ThenableSyncStatus.Resolved: {
-				const {_value} = this
+				let {_value} = this
 				if (!onfulfilled) {
 					return lastExpression
 						? _value as any
 						: this
 				}
 
-				let result
-				if (tryCatch(
-					() => onfulfilled(_value),
-					val => { result = ThenableSync.resolve(val, null, onrejected, !lastExpression) },
-					err => { result = ThenableSync.resolve(err, null, null, !lastExpression) })
-				) {
+				let isError
+				_value = (() => {
+					try {
+						return onfulfilled(_value)
+					} catch (err) {
+						isError = true
+						return err
+					}
+				})()
+
+				if (isError) {
+					const result = ThenableSync.resolve(_value as any, null, null, !lastExpression)
 					if (isThenable(result)) {
 						return result.then(o => reject(o), onrejected)
 					}
 					return reject(result)
+				} else {
+					const result = ThenableSync.resolve(_value as any, null, onrejected, !lastExpression)
+					return lastExpression || isThenable(result)
+						? result
+						: ThenableSync.createResolved(result as TResult1)
 				}
-
-				return lastExpression || isThenable(result)
-					? result
-					: ThenableSync.createResolved(result as TResult1)
 			}
 			case ThenableSyncStatus.Rejected:
 				if (!onrejected && !lastExpression) {
@@ -216,11 +224,20 @@ export class ThenableSync<TValue = any> {
 
 				const rejected = onrejected
 					? (value): any => {
-						tryCatch(
-							() => onrejected(value),
-							val => { result.resolve(val as any) },
-							err => { result.reject(err) },
-						)
+						let isError
+						value = (() => {
+							try {
+								return onrejected(value)
+							} catch (err) {
+								isError = true
+								return err
+							}
+						})()
+						if (isError) {
+							result.reject(value)
+						} else {
+							result.resolve(value as any)
+						}
 					}
 					: (value): any => { result.reject(value) }
 
@@ -233,11 +250,20 @@ export class ThenableSync<TValue = any> {
 
 				_onfulfilled.push(onfulfilled
 					? (value: any): any => {
-						tryCatch(
-							() => onfulfilled(value),
-							val => { result.resolve(val) },
-							err => { resolveValue(err, rejected, rejected, rejected) },
-						)
+						let isError
+						value = (() => {
+							try {
+								return onfulfilled(value)
+							} catch (err) {
+								isError = true
+								return err
+							}
+						})()
+						if (isError) {
+							resolveValue(value, rejected, rejected, rejected)
+						} else {
+							result.resolve(value as any)
+						}
 					}
 					: (value): any => { result.resolve(value as any) })
 

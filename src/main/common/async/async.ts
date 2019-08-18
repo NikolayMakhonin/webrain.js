@@ -37,21 +37,6 @@ export enum ResolveResult {
 	Deferred,
 }
 
-export function tryCatch<T>(func: () => T|void, onValue: (value: T) => void, onError: (error) => void): boolean {
-	let value
-	try {
-		value = func()
-	} catch (err) {
-		onError(err)
-		return true
-	}
-
-	if (onValue) {
-		onValue(value)
-	}
-	return false
-}
-
 export function resolveIterator<T>(
 	iterator: ThenableIterator<T>,
 	onImmediate: (value: ThenableOrIteratorOrValue<T>) => void,
@@ -68,15 +53,7 @@ export function resolveIterator<T>(
 		nextOnDeferred: (value: ThenableOrIteratorOrValue<T>) => void,
 	): ResolveResult {
 		while (true) {
-			let iteratorResult
-			if (tryCatch(() => {
-					iteratorResult = iterator.next(nextValue) as IteratorResult<ThenableOrIteratorOrValue<T>>
-				},
-				null,
-				reject,
-			)) {
-				return ResolveResult.ImmediateRejected
-			}
+			const iteratorResult = iterator.next(nextValue) as IteratorResult<ThenableOrIteratorOrValue<T>>
 
 			if (iteratorResult.done) {
 				nextOnImmediate(iteratorResult.value)
@@ -181,23 +158,17 @@ export function resolveValue<T>(
 	onDeferred: (value: T) => void,
 	reject: TReject,
 ): ResolveResult {
-	let result
-	if (tryCatch(
-		() => { result = _resolveValue(value, onImmediate, onDeferred, reject) },
-		null,
-		err => {
-			const onResult = o => {
-				try {
-					reject(o)
-				} catch {
-					throw o
-				}
+	try {
+		return _resolveValue(value, onImmediate, onDeferred, reject)
+	} catch (err) {
+		const onResult = o => {
+			try {
+				reject(o)
+			} catch {
+				throw o
 			}
-			_resolveValue(err, onResult, onResult, onResult)
-		},
-	)) {
+		}
+		_resolveValue(err, onResult, onResult, onResult)
 		return ResolveResult.ImmediateRejected
 	}
-
-	return result
 }
