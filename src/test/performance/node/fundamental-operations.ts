@@ -1529,4 +1529,76 @@ describe('fundamental-operations', function() {
 
 		console.log(result)
 	})
+
+	it('try catch', function() {
+		this.timeout(300000)
+
+		function tryCatch<T>(func: () => T|void, onValue: (value: T) => void, onError: (error) => void): boolean {
+			let value
+			try {
+				value = func()
+			} catch (err) {
+				onError(err)
+				return true
+			}
+
+			if (onValue) {
+				onValue(value)
+			}
+			return false
+		}
+
+		function func() {
+			if (Math.random() === 0) {
+				throw 0
+			}
+			return 1
+		}
+
+		const result = calcPerformance(
+			20000,
+			// () => {
+			// 	// no operations
+			// },
+			() => {
+				if (Math.random() === 0) {
+					return 0
+				}
+				return 1
+			},
+			() => {
+				if (Math.random() === 0) {
+					throw 0
+				}
+				return 1
+			},
+			() => {
+				return func()
+			},
+			() => {
+				try {
+					if (Math.random() === 0) {
+						throw 0
+					}
+					return 1
+				} catch (e) {
+					return e
+				}
+			},
+			() => {
+				try {
+					return func()
+				} catch (e) {
+					return e
+				}
+			},
+			() => {
+				if (tryCatch(() => func(), () => {}, () => {})) {
+					return 0
+				}
+			},
+		)
+
+		console.log(result)
+	})
 })

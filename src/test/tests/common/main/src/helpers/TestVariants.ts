@@ -23,6 +23,9 @@ export interface IOptionsVariants {
 	[key: string]: any
 }
 
+// tslint:disable-next-line:no-shadowed-variable no-empty
+const NONE = function NONE() {}
+
 function *generateOptions<TOptions extends AnyObject>(
 	base: TOptions,
 	optionsVariants: IOptionsVariants,
@@ -30,7 +33,7 @@ function *generateOptions<TOptions extends AnyObject>(
 ): Iterable<TOptions> {
 	let hasChilds
 	for (const key in optionsVariants) {
-		if (Object.prototype.hasOwnProperty.call(optionsVariants, key)) {
+		if (optionsVariants[key]) {
 			for (const optionVariant of optionsVariants[key]) {
 				const variant =  {
 					...base as any,
@@ -41,7 +44,7 @@ function *generateOptions<TOptions extends AnyObject>(
 					...optionsVariants,
 				}
 
-				delete newOptionsVariants[key]
+				newOptionsVariants[key] = null
 
 				hasChilds = true
 
@@ -109,7 +112,7 @@ export abstract class TestVariants<
 			= expandArray(optionsVariants.actions)
 		delete optionsVariants.actions
 
-		const variants = generateOptions({} as TOptionsVariant, optionsVariants, exclude)
+		let variants = generateOptions({} as TOptionsVariant, optionsVariants, exclude)
 		// variants = Array.from(variants)
 
 		for (const actionsWithDescription of actionsWithDescriptions) {

@@ -4,7 +4,7 @@ import {ITERABLE, TestThenableSync} from './src/TestThenableSync'
 declare const after
 
 describe('common > main > helpers > ThenableSync', function() {
-	this.timeout(60000)
+	this.timeout(120000)
 
 	const testThenableSync = TestThenableSync.test
 

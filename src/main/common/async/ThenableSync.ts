@@ -144,28 +144,32 @@ export class ThenableSync<TValue = any> {
 			}
 
 			let result
-			tryCatch(
+			const isError = tryCatch(
 				() => onrejected(error),
 				val => {
-					result = ThenableSync.resolve(val, null, null)
+					result = ThenableSync.resolve(val, null, null, !lastExpression)
 				},
 				err => {
-					result = ThenableSync.resolve(err, null, null, true)
+					result = ThenableSync.resolve(err, null, null, !lastExpression)
 				},
 			)
 
 			if (isThenable(result)) {
-				return result
+				return isError
+					? result.then(o => ThenableSync.createRejected(o))
+					: result
 			}
 
 			if (lastExpression) {
-				if (onrejected) {
+				if (!isError) {
 					return result
 				}
 				throw result
 			}
 
-			return ThenableSync.createRejected(result)
+			return isError
+				? ThenableSync.createRejected(result)
+				: ThenableSync.createResolved(result)
 		}
 
 		switch (this._status) {
@@ -180,11 +184,11 @@ export class ThenableSync<TValue = any> {
 				let result
 				if (tryCatch(
 					() => onfulfilled(_value),
-					val => { result = ThenableSync.resolve(val, null, onrejected) },
-					err => { result = ThenableSync.resolve(err, null, null, true) })
+					val => { result = ThenableSync.resolve(val, null, onrejected, !lastExpression) },
+					err => { result = ThenableSync.resolve(err, null, null, !lastExpression) })
 				) {
 					if (isThenable(result)) {
-						return result.then(onrejected, onrejected)
+						return result.then(o => reject(o), onrejected)
 					}
 					return reject(result)
 				}
@@ -214,7 +218,7 @@ export class ThenableSync<TValue = any> {
 					? (value): any => {
 						tryCatch(
 							() => onrejected(value),
-							val => { result.reject(val) },
+							val => { result.resolve(val as any) },
 							err => { result.reject(err) },
 						)
 					}
@@ -334,7 +338,11 @@ export function resolveAsync<TValue = any, TResult1 = TValue, TResult2 = never>(
 
 	const onreject = o => {
 		if (onrejected) {
-			resolveValue(onrejected(o), reject, reject, reject)
+			if (resolve) {
+				resolveValue(onrejected(o), resolve as any, resolve as any, reject)
+			} else {
+				resolveValue(onrejected(o), val => { result = val as any }, resolve as any, reject)
+			}
 		} else {
 			reject(o as any)
 		}
