@@ -26,6 +26,8 @@ var _TestVariants = require("../../../src/helpers/TestVariants");
 
 var _common = require("./common");
 
+let _Symbol$toStringTag, _Symbol$iterator;
+
 const assert = new _Assert.Assert(new _DeepCloneEqual.DeepCloneEqual({
   commonOptions: {},
   equalOptions: {
@@ -94,8 +96,8 @@ function assertSet(set, expectedArray) {
 
 const staticSetInner = new Set();
 const staticSet = new _ObservableSet.ObservableSet(staticSetInner);
-var _Symbol$toStringTag = Symbol.toStringTag;
-var _Symbol$iterator = Symbol.iterator;
+_Symbol$toStringTag = Symbol.toStringTag;
+_Symbol$iterator = Symbol.iterator;
 
 class SetWrapper {
   constructor(set) {

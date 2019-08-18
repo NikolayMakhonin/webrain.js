@@ -6,6 +6,8 @@ Object.defineProperty(exports, "__esModule", {
 exports.createObject = createObject;
 exports.Tester = void 0;
 
+var _helpers = require("../../../../../../../main/common/helpers/helpers");
+
 var _ObservableMap = require("../../../../../../../main/common/lists/ObservableMap");
 
 var _ObservableSet = require("../../../../../../../main/common/lists/ObservableSet");
@@ -21,8 +23,6 @@ var _ObservableObjectBuilder = require("../../../../../../../main/common/rx/obje
 var _Assert = require("../../../../../../../main/common/test/Assert");
 
 var _DeepCloneEqual = require("../../../../../../../main/common/test/DeepCloneEqual");
-
-var _helpers = require("../../../../../../../main/common/helpers/helpers");
 
 /* tslint:disable:no-empty */
 const assert = new _Assert.Assert(new _DeepCloneEqual.DeepCloneEqual({

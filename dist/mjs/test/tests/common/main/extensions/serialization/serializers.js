@@ -5,7 +5,11 @@ import _possibleConstructorReturn from "@babel/runtime/helpers/possibleConstruct
 import _getPrototypeOf from "@babel/runtime/helpers/getPrototypeOf";
 import _inherits from "@babel/runtime/helpers/inherits";
 import _classCallCheck from "@babel/runtime/helpers/classCallCheck";
-import _objectSpread from "@babel/runtime/helpers/objectSpread";
+import _defineProperty from "@babel/runtime/helpers/defineProperty";
+
+function ownKeys(object, enumerableOnly) { var keys = Object.keys(object); if (Object.getOwnPropertySymbols) { var symbols = Object.getOwnPropertySymbols(object); if (enumerableOnly) symbols = symbols.filter(function (sym) { return Object.getOwnPropertyDescriptor(object, sym).enumerable; }); keys.push.apply(keys, symbols); } return keys; }
+
+function _objectSpread(target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i] != null ? arguments[i] : {}; if (i % 2) { ownKeys(source, true).forEach(function (key) { _defineProperty(target, key, source[key]); }); } else if (Object.getOwnPropertyDescriptors) { Object.defineProperties(target, Object.getOwnPropertyDescriptors(source)); } else { ownKeys(source).forEach(function (key) { Object.defineProperty(target, key, Object.getOwnPropertyDescriptor(source, key)); }); } } return target; }
 
 /* tslint:disable:no-duplicate-string no-shadowed-variable */
 import { ObjectSerializer, registerSerializable, TypeMetaSerializerCollection } from '../../../../../../main/common/extensions/serialization/serializers';
@@ -90,10 +94,10 @@ describe('common > extensions > serialization > serializers', function () {
   // 	assert.notStrictEqual(result, obj)
   // 	assert.deepStrictEqual(result, obj)
   // }
-  var serializeValue = ObjectSerializer.default.serialize;
-  serializeValue = serializeValue.bind(ObjectSerializer.default);
-  var deSerializeValue = ObjectSerializer.default.deSerialize;
-  deSerializeValue = deSerializeValue.bind(ObjectSerializer.default);
+  var serializeValue = ObjectSerializer["default"].serialize;
+  serializeValue = serializeValue.bind(ObjectSerializer["default"]);
+  var deSerializeValue = ObjectSerializer["default"].deSerialize;
+  deSerializeValue = deSerializeValue.bind(ObjectSerializer["default"]);
 
   function testComplexObject(options, prepare, log) {
     var object = createComplexObject(_objectSpread({
@@ -213,23 +217,23 @@ describe('common > extensions > serialization > serializers', function () {
   it('Class: Simple', function () {
     var obj1 = new Class1();
     obj1.prop1 = 'p1';
-    assert.throws(function () {
+    assert["throws"](function () {
       return serializeValue(obj1);
     }, Error);
     var serializer = new ObjectSerializer();
-    assert.throws(function () {
+    assert["throws"](function () {
       return serializer.serialize(obj1);
     }, Error);
     serializer.typeMeta.putType(Class1, {
       uuid: 'Class1 uuid',
-      serializer: TypeMetaSerializerCollection.default.getMeta(Object).serializer // valueFactory: () => new Class1(),
+      serializer: TypeMetaSerializerCollection["default"].getMeta(Object).serializer // valueFactory: () => new Class1(),
 
     });
-    assert.throws(function () {
+    assert["throws"](function () {
       return serializeValue(obj1);
     }, Error);
     var serialized = serializer.serialize(obj1);
-    assert.throws(function () {
+    assert["throws"](function () {
       return deSerializeValue(obj1);
     }, Error);
     var result = serializer.deSerialize(serialized);
@@ -280,7 +284,7 @@ describe('common > extensions > serialization > serializers', function () {
     obj2.prop1 = 'p1';
     obj2.prop2 = 'p2';
     obj2.prop3 = 'p3';
-    assert.throws(function () {
+    assert["throws"](function () {
       return serializeValue(obj2);
     }, Error);
     registerSerializable(Class2, {
@@ -353,7 +357,7 @@ describe('common > extensions > serialization > serializers', function () {
     obj3.prop2 = 'p2';
     obj3.prop3 = 'p3';
     obj3.prop4 = 'p4';
-    assert.throws(function () {
+    assert["throws"](function () {
       return serializeValue(obj3);
     }, Error);
     registerSerializable(Class3, {

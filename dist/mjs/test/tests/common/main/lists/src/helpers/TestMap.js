@@ -5,6 +5,9 @@ import _inherits from "@babel/runtime/helpers/inherits";
 import _regeneratorRuntime from "@babel/runtime/regenerator";
 import _classCallCheck from "@babel/runtime/helpers/classCallCheck";
 import _createClass from "@babel/runtime/helpers/createClass";
+
+var _Symbol$toStringTag, _Symbol$iterator;
+
 import { ObjectSerializer, registerSerializable } from '../../../../../../../main/common/extensions/serialization/serializers';
 import { ArrayMap } from '../../../../../../../main/common/lists/ArrayMap';
 import { MapChangedType } from '../../../../../../../main/common/lists/contracts/IMapChanged';
@@ -65,8 +68,8 @@ export function applyMapChangedToArray(event, array) {
 }
 
 function testSerialization(map) {
-  var serialized = ObjectSerializer.default.serialize(map);
-  var result = ObjectSerializer.default.deSerialize(serialized);
+  var serialized = ObjectSerializer["default"].serialize(map);
+  var result = ObjectSerializer["default"].deSerialize(serialized);
   assert.notStrictEqual(result, map);
   assert.deepStrictEqual(Array.from(result.entries()), Array.from(map.entries()));
 }
@@ -99,8 +102,8 @@ function assertMap(map, expectedArray) {
     _iteratorError = err;
   } finally {
     try {
-      if (!_iteratorNormalCompletion && _iterator.return != null) {
-        _iterator.return();
+      if (!_iteratorNormalCompletion && _iterator["return"] != null) {
+        _iterator["return"]();
       }
     } finally {
       if (_didIteratorError) {
@@ -144,8 +147,8 @@ var staticMap = new ObservableMap(staticMapInner); // class ObjectMapWrapper<V> 
 //
 // }
 
-var _Symbol$toStringTag = Symbol.toStringTag;
-var _Symbol$iterator = Symbol.iterator;
+_Symbol$toStringTag = Symbol.toStringTag;
+_Symbol$iterator = Symbol.iterator;
 
 var MapWrapper =
 /*#__PURE__*/
@@ -203,8 +206,8 @@ function () {
               _context.prev = 18;
               _context.prev = 19;
 
-              if (!_iteratorNormalCompletion2 && _iterator2.return != null) {
-                _iterator2.return();
+              if (!_iteratorNormalCompletion2 && _iterator2["return"] != null) {
+                _iterator2["return"]();
               }
 
             case 21:
@@ -238,7 +241,7 @@ function () {
   }, {
     key: "delete",
     value: function _delete(key) {
-      return this._map.delete(convertToObject(key));
+      return this._map["delete"](convertToObject(key));
     }
   }, {
     key: "entries",
@@ -286,8 +289,8 @@ function () {
               _context2.prev = 18;
               _context2.prev = 19;
 
-              if (!_iteratorNormalCompletion3 && _iterator3.return != null) {
-                _iterator3.return();
+              if (!_iteratorNormalCompletion3 && _iterator3["return"] != null) {
+                _iterator3["return"]();
               }
 
             case 21:
@@ -376,8 +379,8 @@ function () {
               _context3.prev = 18;
               _context3.prev = 19;
 
-              if (!_iteratorNormalCompletion4 && _iterator4.return != null) {
-                _iterator4.return();
+              if (!_iteratorNormalCompletion4 && _iterator4["return"] != null) {
+                _iterator4["return"]();
               }
 
             case 21:
@@ -441,30 +444,33 @@ function () {
 MapWrapper.uuid = 'bc06eeb6-5139-444a-a735-57a6e1928ac9';
 registerSerializable(MapWrapper, {
   serializer: {
-    deSerialize:
-    /*#__PURE__*/
-    _regeneratorRuntime.mark(function deSerialize(_deSerialize2, serializedValue, valueFactory) {
-      var innerMap, value;
-      return _regeneratorRuntime.wrap(function deSerialize$(_context4) {
-        while (1) {
-          switch (_context4.prev = _context4.next) {
-            case 0:
-              _context4.next = 2;
-              return _deSerialize2(serializedValue.map);
+    deSerialize: function deSerialize(_deSerialize2, serializedValue, valueFactory) {
+      return (
+        /*#__PURE__*/
+        _regeneratorRuntime.mark(function _callee() {
+          var innerMap, value;
+          return _regeneratorRuntime.wrap(function _callee$(_context4) {
+            while (1) {
+              switch (_context4.prev = _context4.next) {
+                case 0:
+                  _context4.next = 2;
+                  return _deSerialize2(serializedValue.map);
 
-            case 2:
-              innerMap = _context4.sent;
-              value = valueFactory(innerMap);
-              value.deSerialize(_deSerialize2, serializedValue);
-              return _context4.abrupt("return", value);
+                case 2:
+                  innerMap = _context4.sent;
+                  value = valueFactory(innerMap);
+                  value.deSerialize(_deSerialize2, serializedValue);
+                  return _context4.abrupt("return", value);
 
-            case 6:
-            case "end":
-              return _context4.stop();
-          }
-        }
-      }, deSerialize);
-    })
+                case 6:
+                case "end":
+                  return _context4.stop();
+              }
+            }
+          }, _callee);
+        })()
+      );
+    }
   }
 });
 export var TestMap =
@@ -519,8 +525,8 @@ function (_TestVariants) {
                 _iteratorError5 = err;
               } finally {
                 try {
-                  if (!_iteratorNormalCompletion5 && _iterator5.return != null) {
-                    _iterator5.return();
+                  if (!_iteratorNormalCompletion5 && _iterator5["return"] != null) {
+                    _iterator5["return"]();
                   }
                 } finally {
                   if (_didIteratorError5) {
@@ -575,8 +581,8 @@ function (_TestVariants) {
                 _iteratorError6 = err;
               } finally {
                 try {
-                  if (!_iteratorNormalCompletion6 && _iterator6.return != null) {
-                    _iterator6.return();
+                  if (!_iteratorNormalCompletion6 && _iterator6["return"] != null) {
+                    _iterator6["return"]();
                   }
                 } finally {
                   if (_didIteratorError6) {
@@ -616,7 +622,7 @@ function (_TestVariants) {
             }
 
             if (options.expected.error) {
-              assert.throws(function () {
+              assert["throws"](function () {
                 return options.action(map);
               }, options.expected.error);
               assertMap(map, options.array);

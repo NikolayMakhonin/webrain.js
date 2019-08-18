@@ -87,6 +87,7 @@ class TestDeepEqual extends _TestVariants.TestVariants {
         if (!debugIteration) {
           console.log(`Test number: ${TestDeepEqual.totalTests}\r\nError in: ${inputOptions.description}\n`, inputOptions, // ${
           // JSON.stringify(initialOptions, null, 4)
+          // }
           `\n${inputOptions.action.toString()}\n${ex.stack}`);
           error = ex;
         }

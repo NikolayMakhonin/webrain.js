@@ -4,6 +4,9 @@ import _createClass from "@babel/runtime/helpers/createClass";
 import _possibleConstructorReturn from "@babel/runtime/helpers/possibleConstructorReturn";
 import _getPrototypeOf from "@babel/runtime/helpers/getPrototypeOf";
 import _inherits from "@babel/runtime/helpers/inherits";
+
+var _Symbol$toStringTag, _Symbol$iterator;
+
 import { mergeMaps } from '../extensions/merge/merge-maps';
 import { createMergeSetWrapper } from '../extensions/merge/merge-sets';
 import { registerMergeable } from '../extensions/merge/mergers';
@@ -12,8 +15,8 @@ import { isIterable } from '../helpers/helpers';
 import { SetChangedObject } from './base/SetChangedObject';
 import { SetChangedType } from './contracts/ISetChanged';
 import { fillSet } from './helpers/set';
-var _Symbol$toStringTag = Symbol.toStringTag;
-var _Symbol$iterator = Symbol.iterator;
+_Symbol$toStringTag = Symbol.toStringTag;
+_Symbol$iterator = Symbol.iterator;
 export var ObservableSet =
 /*#__PURE__*/
 function (_SetChangedObject) {
@@ -65,7 +68,7 @@ function (_SetChangedObject) {
       var _set = this._set;
       var oldSize = _set.size;
 
-      this._set.delete(value);
+      this._set["delete"](value);
 
       var size = _set.size;
 
@@ -208,29 +211,32 @@ ObservableSet.uuid = '91539dfb-55f4-4bfb-9dbf-bff7f6ab800d';
 registerMergeable(ObservableSet);
 registerSerializable(ObservableSet, {
   serializer: {
-    deSerialize:
-    /*#__PURE__*/
-    _regeneratorRuntime.mark(function deSerialize(_deSerialize2, serializedValue, valueFactory) {
-      var innerSet, value;
-      return _regeneratorRuntime.wrap(function deSerialize$(_context) {
-        while (1) {
-          switch (_context.prev = _context.next) {
-            case 0:
-              _context.next = 2;
-              return _deSerialize2(serializedValue.set);
+    deSerialize: function deSerialize(_deSerialize2, serializedValue, valueFactory) {
+      return (
+        /*#__PURE__*/
+        _regeneratorRuntime.mark(function _callee() {
+          var innerSet, value;
+          return _regeneratorRuntime.wrap(function _callee$(_context) {
+            while (1) {
+              switch (_context.prev = _context.next) {
+                case 0:
+                  _context.next = 2;
+                  return _deSerialize2(serializedValue.set);
 
-            case 2:
-              innerSet = _context.sent;
-              value = valueFactory(innerSet);
-              value.deSerialize(_deSerialize2, serializedValue);
-              return _context.abrupt("return", value);
+                case 2:
+                  innerSet = _context.sent;
+                  value = valueFactory(innerSet);
+                  value.deSerialize(_deSerialize2, serializedValue);
+                  return _context.abrupt("return", value);
 
-            case 6:
-            case "end":
-              return _context.stop();
-          }
-        }
-      }, deSerialize);
-    })
+                case 6:
+                case "end":
+                  return _context.stop();
+              }
+            }
+          }, _callee);
+        })()
+      );
+    }
   }
 });

@@ -17,8 +17,10 @@ var _helpers = require("../helpers/helpers");
 
 var _set = require("./helpers/set");
 
-var _Symbol$toStringTag = Symbol.toStringTag;
-var _Symbol$iterator = Symbol.iterator;
+let _Symbol$toStringTag, _Symbol$iterator;
+
+_Symbol$toStringTag = Symbol.toStringTag;
+_Symbol$iterator = Symbol.iterator;
 
 class ObjectSet {
   constructor(object) {

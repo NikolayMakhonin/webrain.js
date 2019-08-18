@@ -63,7 +63,7 @@ export function mergeMapWrappers(merge, base, older, newer, preferCloneOlder, pr
     changed = true;
 
     for (var i = len - 1; i >= 0; i--) {
-      base.delete(deleteItems[i]);
+      base["delete"](deleteItems[i]);
     }
   }
 
@@ -139,7 +139,7 @@ function () {
   _createClass(MergeMapWrapper, [{
     key: "delete",
     value: function _delete(key) {
-      this._map.delete(key);
+      this._map["delete"](key);
     }
   }, {
     key: "forEachKeys",
@@ -158,8 +158,8 @@ function () {
         _iteratorError = err;
       } finally {
         try {
-          if (!_iteratorNormalCompletion && _iterator.return != null) {
-            _iterator.return();
+          if (!_iteratorNormalCompletion && _iterator["return"] != null) {
+            _iterator["return"]();
           }
         } finally {
           if (_didIteratorError) {

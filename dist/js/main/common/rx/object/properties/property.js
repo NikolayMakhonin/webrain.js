@@ -13,7 +13,9 @@ var _ObservableObject = require("../ObservableObject");
 
 var _ObservableObjectBuilder = require("../ObservableObjectBuilder");
 
-var _Symbol$toStringTag = Symbol.toStringTag;
+let _Symbol$toStringTag;
+
+_Symbol$toStringTag = Symbol.toStringTag;
 
 class Property extends _ObservableObject.ObservableObject {
   constructor(options, value) {

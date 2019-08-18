@@ -514,6 +514,7 @@ class MergerVisitor {
     // 	: (options == null ? next_options : {
     // 		...options,
     // 		...next_options,
+    // 	}),
     refsBase, refsOlder, refsNewer);
   }
 

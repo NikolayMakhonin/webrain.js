@@ -376,6 +376,7 @@ class TestMerger extends _TestVariants.TestVariants {
         if (!debugIteration) {
           console.log(`Test number: ${TestMerger.totalTests}\r\nError in: ${initialOptions.description}\n`, initialOptions, // ${
           // JSON.stringify(initialOptions, null, 4)
+          // }
           `\n${initialOptions.action.toString()}\n${ex.stack}`);
           error = ex;
         }

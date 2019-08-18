@@ -19,17 +19,36 @@ const RuleSubscribeMapKeys = _RuleSubscribe.RuleSubscribeMap.bind(null, null); /
 // let nextUnsubscribePropertyId = 0
 
 
+class RuleNothing {
+  constructor() {
+    this.type = _rules.RuleType.Nothing;
+    this.description = 'nothing';
+  }
+
+}
+
 class RuleBuilder {
-  custom(ruleSubscribe, description) {
+  rule(rule) {
     const {
       _ruleLast: ruleLast
     } = this;
 
+    if (ruleLast) {
+      ruleLast.next = rule;
+    } else {
+      this.result = rule;
+    }
+
+    this._ruleLast = rule;
+    return this;
+  }
+
+  ruleSubscribe(ruleSubscribe, description) {
     if (description) {
       ruleSubscribe.description = description;
     }
 
-    if (ruleSubscribe.unsubscribePropertyName) {
+    if (ruleSubscribe.unsubscribers) {
       throw new Error('You should not add duplicate IRuleSubscribe instances. Clone rule before add.');
     } // !Warning defineProperty is slow
     // Object.defineProperty(ruleSubscribe, 'unsubscribePropertyName', {
@@ -40,16 +59,13 @@ class RuleBuilder {
     // })
 
 
-    ruleSubscribe.unsubscribePropertyName = []; // UNSUBSCRIBE_PROPERTY_PREFIX + (nextUnsubscribePropertyId++)
+    ruleSubscribe.unsubscribers = []; // UNSUBSCRIBE_PROPERTY_PREFIX + (nextUnsubscribePropertyId++)
 
-    if (ruleLast) {
-      ruleLast.next = ruleSubscribe;
-    } else {
-      this.rule = ruleSubscribe;
-    }
+    return this.rule(ruleSubscribe);
+  }
 
-    this._ruleLast = ruleSubscribe;
-    return this;
+  nothing() {
+    return this.rule(new RuleNothing());
   }
   /**
    * Object property, Array index
@@ -57,7 +73,7 @@ class RuleBuilder {
 
 
   propertyName(propertyName) {
-    return this.custom(new RuleSubscribeObjectPropertyNames(propertyName), propertyName);
+    return this.ruleSubscribe(new RuleSubscribeObjectPropertyNames(propertyName), propertyName);
   }
   /**
    * Object property, Array index
@@ -65,7 +81,7 @@ class RuleBuilder {
 
 
   propertyNames(...propertiesNames) {
-    return this.custom(new RuleSubscribeObjectPropertyNames(...propertiesNames), propertiesNames.join('|'));
+    return this.ruleSubscribe(new RuleSubscribeObjectPropertyNames(...propertiesNames), propertiesNames.join('|'));
   }
   /**
    * Object property, Array index
@@ -73,7 +89,7 @@ class RuleBuilder {
 
 
   propertyAll() {
-    return this.custom(new _RuleSubscribe.RuleSubscribeObject(), _constants.ANY_DISPLAY);
+    return this.ruleSubscribe(new _RuleSubscribe.RuleSubscribeObject(), _constants.ANY_DISPLAY);
   }
   /**
    * Object property, Array index
@@ -81,7 +97,7 @@ class RuleBuilder {
 
 
   propertyPredicate(predicate, description) {
-    return this.custom(new _RuleSubscribe.RuleSubscribeObject(predicate), description);
+    return this.ruleSubscribe(new _RuleSubscribe.RuleSubscribeObject(predicate), description);
   }
   /**
    * Object property, Array index
@@ -101,7 +117,7 @@ class RuleBuilder {
 
 
   collection() {
-    return this.custom(new _RuleSubscribe.RuleSubscribeCollection(), _constants.COLLECTION_PREFIX);
+    return this.ruleSubscribe(new _RuleSubscribe.RuleSubscribeCollection(), _constants.COLLECTION_PREFIX);
   }
   /**
    * IMapChanged & Map, Map
@@ -109,7 +125,7 @@ class RuleBuilder {
 
 
   mapKey(key) {
-    return this.custom(new RuleSubscribeMapKeys(key), _constants.COLLECTION_PREFIX + key);
+    return this.ruleSubscribe(new RuleSubscribeMapKeys(key), _constants.COLLECTION_PREFIX + key);
   }
   /**
    * IMapChanged & Map, Map
@@ -117,7 +133,7 @@ class RuleBuilder {
 
 
   mapKeys(...keys) {
-    return this.custom(new RuleSubscribeMapKeys(...keys), _constants.COLLECTION_PREFIX + keys.join('|'));
+    return this.ruleSubscribe(new RuleSubscribeMapKeys(...keys), _constants.COLLECTION_PREFIX + keys.join('|'));
   }
   /**
    * IMapChanged & Map, Map
@@ -125,7 +141,7 @@ class RuleBuilder {
 
 
   mapAll() {
-    return this.custom(new _RuleSubscribe.RuleSubscribeMap(), _constants.COLLECTION_PREFIX);
+    return this.ruleSubscribe(new _RuleSubscribe.RuleSubscribeMap(), _constants.COLLECTION_PREFIX);
   }
   /**
    * IMapChanged & Map, Map
@@ -133,7 +149,7 @@ class RuleBuilder {
 
 
   mapPredicate(keyPredicate, description) {
-    return this.custom(new _RuleSubscribe.RuleSubscribeMap(keyPredicate), description);
+    return this.ruleSubscribe(new _RuleSubscribe.RuleSubscribeMap(keyPredicate), description);
   }
   /**
    * IMapChanged & Map, Map
@@ -171,13 +187,10 @@ class RuleBuilder {
       throw new Error('any() parameters is empty');
     }
 
-    const {
-      _ruleLast: ruleLast
-    } = this;
     const rule = {
       type: _rules.RuleType.Any,
       rules: getChilds.map(o => {
-        const subRule = o(new RuleBuilder()).rule;
+        const subRule = o(new RuleBuilder()).result;
 
         if (!subRule) {
           throw new Error(`Any subRule=${rule}`);
@@ -186,19 +199,11 @@ class RuleBuilder {
         return subRule;
       })
     };
-
-    if (ruleLast) {
-      ruleLast.next = rule;
-    } else {
-      this.rule = rule;
-    }
-
-    this._ruleLast = rule;
-    return this;
+    return this.rule(rule);
   }
 
   repeat(countMin, countMax, getChild) {
-    const subRule = getChild(new RuleBuilder()).rule;
+    const subRule = getChild(new RuleBuilder()).result;
 
     if (!subRule) {
       throw new Error(`getChild(...).rule = ${subRule}`);
@@ -225,22 +230,11 @@ class RuleBuilder {
         type: _rules.RuleType.Repeat,
         countMin,
         countMax,
-        rule: getChild(new RuleBuilder()).rule
+        rule: getChild(new RuleBuilder()).result
       };
     }
 
-    const {
-      _ruleLast: ruleLast
-    } = this;
-
-    if (ruleLast) {
-      ruleLast.next = rule;
-    } else {
-      this.rule = rule;
-    }
-
-    this._ruleLast = rule;
-    return this;
+    return this.rule(rule);
   }
 
 }

@@ -93,7 +93,8 @@ function () {
           get: function get() {
             var val = factory.call(this);
             this.__fields[name] = val;
-            createInstanceProperty(this);
+            createInstanceProperty(this); // this._set(name, val, {})
+
             return val;
           }
         });

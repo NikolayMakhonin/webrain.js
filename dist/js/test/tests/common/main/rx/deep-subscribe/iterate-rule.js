@@ -86,7 +86,7 @@ describe('common > main > rx > deep-subscribe > iterate-rule', function () {
   }
 
   function testIterateRule(buildRule, ...expectedPaths) {
-    const result = (0, _iterateRule.iterateRule)(buildRule(new _RuleBuilder.RuleBuilder()).rule);
+    const result = (0, _iterateRule.iterateRule)(buildRule(new _RuleBuilder.RuleBuilder()).result);
 
     _Assert.assert.ok(result);
 

@@ -1,11 +1,15 @@
 import _typeof from "@babel/runtime/helpers/typeof";
-import _objectSpread from "@babel/runtime/helpers/objectSpread";
+import _defineProperty from "@babel/runtime/helpers/defineProperty";
 import _classCallCheck from "@babel/runtime/helpers/classCallCheck";
 import _createClass from "@babel/runtime/helpers/createClass";
 import _possibleConstructorReturn from "@babel/runtime/helpers/possibleConstructorReturn";
 import _getPrototypeOf from "@babel/runtime/helpers/getPrototypeOf";
 import _get from "@babel/runtime/helpers/get";
 import _inherits from "@babel/runtime/helpers/inherits";
+
+function ownKeys(object, enumerableOnly) { var keys = Object.keys(object); if (Object.getOwnPropertySymbols) { var symbols = Object.getOwnPropertySymbols(object); if (enumerableOnly) symbols = symbols.filter(function (sym) { return Object.getOwnPropertyDescriptor(object, sym).enumerable; }); keys.push.apply(keys, symbols); } return keys; }
+
+function _objectSpread(target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i] != null ? arguments[i] : {}; if (i % 2) { ownKeys(source, true).forEach(function (key) { _defineProperty(target, key, source[key]); }); } else if (Object.getOwnPropertyDescriptors) { Object.defineProperties(target, Object.getOwnPropertyDescriptors(source)); } else { ownKeys(source).forEach(function (key) { Object.defineProperty(target, key, Object.getOwnPropertyDescriptor(source, key)); }); } } return target; }
 
 /* tslint:disable:no-construct use-primitive-type */
 // import clone from 'clone'
@@ -53,8 +57,8 @@ export var deepCloneEqual = new DeepCloneEqual({
           _iteratorError = err;
         } finally {
           try {
-            if (!_iteratorNormalCompletion && _iterator.return != null) {
-              _iterator.return();
+            if (!_iteratorNormalCompletion && _iterator["return"] != null) {
+              _iterator["return"]();
             }
           } finally {
             if (_didIteratorError) {
@@ -153,8 +157,8 @@ function (_TypeMetaMergerCollec) {
 
   return TypeMetaMergerCollectionMock;
 }(TypeMetaMergerCollection);
-TypeMetaMergerCollectionMock.default = new TypeMetaMergerCollectionMock();
-var merger = new ObjectMerger(TypeMetaMergerCollectionMock.default);
+TypeMetaMergerCollectionMock["default"] = new TypeMetaMergerCollectionMock();
+var merger = new ObjectMerger(TypeMetaMergerCollectionMock["default"]);
 
 function isPreferClone(options, initialValue) {
   switch (initialValue) {
@@ -310,9 +314,9 @@ function (_TestVariants) {
             initialOptions.newerIsFrozen = Object.isFrozen(options.newer);
 
             if (options.preferCloneMeta == null) {
-              TypeMetaMergerCollectionMock.default.changeMetaFunc = null;
+              TypeMetaMergerCollectionMock["default"].changeMetaFunc = null;
             } else {
-              TypeMetaMergerCollectionMock.default.changeMetaFunc = function (meta) {
+              TypeMetaMergerCollectionMock["default"].changeMetaFunc = function (meta) {
                 if (!meta.isMocked) {
                   var preferClone = meta.preferClone;
 
@@ -362,7 +366,7 @@ function (_TestVariants) {
             };
 
             if (options.expected.error) {
-              assert.throws(action, options.expected.error);
+              assert["throws"](action, options.expected.error);
             } else {
               action();
 
@@ -410,11 +414,12 @@ function (_TestVariants) {
           if (!debugIteration) {
             console.log("Test number: ".concat(TestMerger.totalTests, "\r\nError in: ").concat(initialOptions.description, "\n"), initialOptions, // ${
             // JSON.stringify(initialOptions, null, 4)
+            // }
             "\n".concat(initialOptions.action.toString(), "\n").concat(ex.stack));
             error = ex;
           }
         } finally {
-          TypeMetaMergerCollectionMock.default.reset();
+          TypeMetaMergerCollectionMock["default"].reset();
           TestMerger.totalTests++;
         }
       }

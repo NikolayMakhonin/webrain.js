@@ -2,6 +2,8 @@ import _regeneratorRuntime from "@babel/runtime/regenerator";
 import _classCallCheck from "@babel/runtime/helpers/classCallCheck";
 import _createClass from "@babel/runtime/helpers/createClass";
 
+var _Symbol$toStringTag, _Symbol$iterator;
+
 /* tslint:disable:ban-types */
 import { mergeMaps } from '../extensions/merge/merge-maps';
 import { createMergeSetWrapper } from '../extensions/merge/merge-sets';
@@ -10,8 +12,8 @@ import { registerSerializable } from '../extensions/serialization/serializers';
 import { isIterable } from '../helpers/helpers';
 import { getObjectUniqueId } from './helpers/object-unique-id';
 import { fillSet } from './helpers/set';
-var _Symbol$toStringTag = Symbol.toStringTag;
-var _Symbol$iterator = Symbol.iterator;
+_Symbol$toStringTag = Symbol.toStringTag;
+_Symbol$iterator = Symbol.iterator;
 export var ArraySet =
 /*#__PURE__*/
 function () {
@@ -230,31 +232,34 @@ ArraySet.uuid = '0e8c7f09-ea9e-4631-8af8-a635c214a01c';
 registerMergeable(ArraySet);
 registerSerializable(ArraySet, {
   serializer: {
-    deSerialize:
-    /*#__PURE__*/
-    _regeneratorRuntime.mark(function deSerialize(_deSerialize2, serializedValue, valueFactory) {
-      var innerSet, value;
-      return _regeneratorRuntime.wrap(function deSerialize$(_context3) {
-        while (1) {
-          switch (_context3.prev = _context3.next) {
-            case 0:
-              _context3.next = 2;
-              return _deSerialize2(serializedValue.array, null, {
-                arrayAsObject: true
-              });
+    deSerialize: function deSerialize(_deSerialize2, serializedValue, valueFactory) {
+      return (
+        /*#__PURE__*/
+        _regeneratorRuntime.mark(function _callee() {
+          var innerSet, value;
+          return _regeneratorRuntime.wrap(function _callee$(_context3) {
+            while (1) {
+              switch (_context3.prev = _context3.next) {
+                case 0:
+                  _context3.next = 2;
+                  return _deSerialize2(serializedValue.array, null, {
+                    arrayAsObject: true
+                  });
 
-            case 2:
-              innerSet = _context3.sent;
-              value = valueFactory(innerSet);
-              value.deSerialize(_deSerialize2, serializedValue);
-              return _context3.abrupt("return", value);
+                case 2:
+                  innerSet = _context3.sent;
+                  value = valueFactory(innerSet);
+                  value.deSerialize(_deSerialize2, serializedValue);
+                  return _context3.abrupt("return", value);
 
-            case 6:
-            case "end":
-              return _context3.stop();
-          }
-        }
-      }, deSerialize);
-    })
+                case 6:
+                case "end":
+                  return _context3.stop();
+              }
+            }
+          }, _callee);
+        })()
+      );
+    }
   }
 });

@@ -79,8 +79,8 @@ describe('common > main > rx > deep-subscribe > iterate-rule', function () {
             _context.prev = 21;
             _context.prev = 22;
 
-            if (!_iteratorNormalCompletion && _iterator.return != null) {
-              _iterator.return();
+            if (!_iteratorNormalCompletion && _iterator["return"] != null) {
+              _iterator["return"]();
             }
 
           case 24:
@@ -206,7 +206,7 @@ describe('common > main > rx > deep-subscribe > iterate-rule', function () {
   }
 
   function testIterateRule(buildRule) {
-    var result = iterateRule(buildRule(new RuleBuilder()).rule);
+    var result = iterateRule(buildRule(new RuleBuilder()).result);
     assert.ok(result);
     var object = {};
     var unsubscribe = rulesToObject(new PeekIterator(result[Symbol.iterator]()), object); // console.log(JSON.stringify(object, null, 4))
@@ -399,17 +399,17 @@ describe('common > main > rx > deep-subscribe > iterate-rule', function () {
     Array.from(iterateRule({
       type: 0
     }));
-    assert.throws(function () {
+    assert["throws"](function () {
       return Array.from(iterateRule({
         type: -1
       }));
     }, Error);
-    assert.throws(function () {
+    assert["throws"](function () {
       return new RuleBuilder().repeat(1, 2, function (b) {
         return b;
       });
     }, Error);
-    assert.throws(function () {
+    assert["throws"](function () {
       return new RuleBuilder().any();
     }, Error);
   });

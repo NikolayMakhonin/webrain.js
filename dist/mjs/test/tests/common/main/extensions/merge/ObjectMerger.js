@@ -1,7 +1,11 @@
 import _toConsumableArray from "@babel/runtime/helpers/toConsumableArray";
-import _objectSpread from "@babel/runtime/helpers/objectSpread";
+import _defineProperty from "@babel/runtime/helpers/defineProperty";
 import _classCallCheck from "@babel/runtime/helpers/classCallCheck";
 import _createClass from "@babel/runtime/helpers/createClass";
+
+function ownKeys(object, enumerableOnly) { var keys = Object.keys(object); if (Object.getOwnPropertySymbols) { var symbols = Object.getOwnPropertySymbols(object); if (enumerableOnly) symbols = symbols.filter(function (sym) { return Object.getOwnPropertyDescriptor(object, sym).enumerable; }); keys.push.apply(keys, symbols); } return keys; }
+
+function _objectSpread(target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i] != null ? arguments[i] : {}; if (i % 2) { ownKeys(source, true).forEach(function (key) { _defineProperty(target, key, source[key]); }); } else if (Object.getOwnPropertyDescriptors) { Object.defineProperties(target, Object.getOwnPropertyDescriptors(source)); } else { ownKeys(source).forEach(function (key) { Object.defineProperty(target, key, Object.getOwnPropertyDescriptor(source, key)); }); } } return target; }
 
 /* tslint:disable:no-empty no-identical-functions max-line-length no-construct use-primitive-type */
 // @ts-ignore
@@ -220,7 +224,7 @@ describe('common > extensions > merge > ObjectMerger', function () {
     it('complex objects', function () {
       var complexObjectOptions = {
         undefined: true,
-        function: true,
+        "function": true,
         array: true,
         circular: true,
         circularClass: true,
@@ -787,7 +791,7 @@ describe('common > extensions > merge > ObjectMerger', function () {
 
       var obj = {
         undefined: void 0,
-        null: null,
+        "null": null,
         String: new String('String'),
         Number: new Number(1),
         Boolean: new Boolean(true),
@@ -797,7 +801,7 @@ describe('common > extensions > merge > ObjectMerger', function () {
         }
       };
       obj.circular = obj;
-      obj.class = new TestClass(obj);
+      obj["class"] = new TestClass(obj);
       obj.array = _toConsumableArray(Object.values(obj));
       obj.nested = _objectSpread({}, obj);
       var clone = deepCloneEqual.clone(obj);

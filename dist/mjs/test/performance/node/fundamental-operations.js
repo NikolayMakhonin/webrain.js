@@ -1,10 +1,11 @@
+import _asyncToGenerator from "@babel/runtime/helpers/asyncToGenerator";
 import _classCallCheck from "@babel/runtime/helpers/classCallCheck";
 import _createClass from "@babel/runtime/helpers/createClass";
 import _defineProperty from "@babel/runtime/helpers/defineProperty";
 import _regeneratorRuntime from "@babel/runtime/regenerator";
 import _typeof from "@babel/runtime/helpers/typeof";
 
-/* tslint:disable:prefer-const no-identical-functions no-empty no-shadowed-variable */
+/* tslint:disable:prefer-const no-identical-functions no-empty no-shadowed-variable no-conditional-assignment */
 
 /* tslint:disable:no-var-requires one-variable-per-declaration */
 
@@ -15,13 +16,14 @@ import _typeof from "@babel/runtime/helpers/typeof";
 /* eslint-disable prefer-rest-params,arrow-body-style */
 import { calcPerformance } from 'rdtsc';
 import { SynchronousPromise } from 'synchronous-promise';
+import { resolveAsync, ThenableSync } from '../../../main/common/async/ThenableSync';
 import { isIterable } from '../../../main/common/helpers/helpers';
-import { ThenableSync } from '../../../main/common/helpers/ThenableSync';
 import { ArraySet } from '../../../main/common/lists/ArraySet';
 import { binarySearch } from '../../../main/common/lists/helpers/array';
 import { freezeWithUniqueId, getObjectUniqueId } from '../../../main/common/lists/helpers/object-unique-id';
 import { SortedList } from '../../../main/common/lists/SortedList';
 import { createObject, Tester } from '../../tests/common/main/rx/deep-subscribe/helpers/Tester';
+import { resolveValue } from "../../../main/common/async/async";
 var SetNative = Set;
 
 require('./src/SetPolyfill');
@@ -139,8 +141,8 @@ describe('fundamental-operations', function () {
             _iteratorError = err;
           } finally {
             try {
-              if (!_iteratorNormalCompletion && _iterator.return != null) {
-                _iterator.return();
+              if (!_iteratorNormalCompletion && _iterator["return"] != null) {
+                _iterator["return"]();
               }
             } finally {
               if (_didIteratorError) {
@@ -195,8 +197,8 @@ describe('fundamental-operations', function () {
             _iteratorError2 = err;
           } finally {
             try {
-              if (!_iteratorNormalCompletion2 && _iterator2.return != null) {
-                _iterator2.return();
+              if (!_iteratorNormalCompletion2 && _iterator2["return"] != null) {
+                _iterator2["return"]();
               }
             } finally {
               if (_didIteratorError2) {
@@ -702,6 +704,7 @@ describe('fundamental-operations', function () {
     var checkPath = wrongPath.replace(/^w/, 'q');
     var result = calcPerformance(10000, // () => {
     // 	// no operations
+    // },
     function () {
       return wrongPath === checkPath;
     }, function () {
@@ -809,8 +812,8 @@ describe('fundamental-operations', function () {
         _iteratorError3 = err;
       } finally {
         try {
-          if (!_iteratorNormalCompletion3 && _iterator3.return != null) {
-            _iterator3.return();
+          if (!_iteratorNormalCompletion3 && _iterator3["return"] != null) {
+            _iterator3["return"]();
           }
         } finally {
           if (_didIteratorError3) {
@@ -828,7 +831,7 @@ describe('fundamental-operations', function () {
       testSet(function (o) {
         return set.add(o);
       }, function (o) {
-        return set.delete(o);
+        return set["delete"](o);
       }, function () {
         return set;
       }); // assert.strictEqual(set1.size, 0)
@@ -926,7 +929,7 @@ describe('fundamental-operations', function () {
       testSet(function (o) {
         return set.add(o);
       }, function (o) {
-        return set.delete(o);
+        return set["delete"](o);
       }, function (o) {
         return set;
       }); // assert.strictEqual(set.size, 0)
@@ -938,7 +941,7 @@ describe('fundamental-operations', function () {
       testSet(function (o) {
         return set.add(o);
       }, function (o) {
-        return set.delete(o);
+        return set["delete"](o);
       }, function (o) {
         return set;
       }); // assert.strictEqual(set.size, 0)
@@ -1350,48 +1353,51 @@ describe('fundamental-operations', function () {
     this.timeout(300000);
     var iterable = true;
 
-    var iterable2 = _defineProperty({}, Symbol.iterator,
-    /*#__PURE__*/
-    _regeneratorRuntime.mark(function _callee() {
-      var i;
-      return _regeneratorRuntime.wrap(function _callee$(_context) {
-        while (1) {
-          switch (_context.prev = _context.next) {
-            case 0:
-              i = 0;
+    var iterable2 = _defineProperty({}, Symbol.iterator, function () {
+      return (
+        /*#__PURE__*/
+        _regeneratorRuntime.mark(function _callee() {
+          var i;
+          return _regeneratorRuntime.wrap(function _callee$(_context) {
+            while (1) {
+              switch (_context.prev = _context.next) {
+                case 0:
+                  i = 0;
 
-            case 1:
-              if (!(i < 100)) {
-                _context.next = 7;
-                break;
+                case 1:
+                  if (!(i < 100)) {
+                    _context.next = 7;
+                    break;
+                  }
+
+                  if (!(Math.random() > 1)) {
+                    _context.next = 4;
+                    break;
+                  }
+
+                  return _context.abrupt("return", 2);
+
+                case 4:
+                  i++;
+                  _context.next = 1;
+                  break;
+
+                case 7:
+                  _context.next = 9;
+                  return 1;
+
+                case 9:
+                  return _context.abrupt("return", 0);
+
+                case 10:
+                case "end":
+                  return _context.stop();
               }
-
-              if (!(Math.random() > 1)) {
-                _context.next = 4;
-                break;
-              }
-
-              return _context.abrupt("return", 2);
-
-            case 4:
-              i++;
-              _context.next = 1;
-              break;
-
-            case 7:
-              _context.next = 9;
-              return 1;
-
-            case 9:
-              return _context.abrupt("return", 0);
-
-            case 10:
-            case "end":
-              return _context.stop();
-          }
-        }
-      }, _callee);
-    }));
+            }
+          }, _callee);
+        })()
+      );
+    });
 
     var result = calcPerformance(20000, function () {// no operations
     }, // () => {
@@ -1399,6 +1405,7 @@ describe('fundamental-operations', function () {
     // },
     // () => {
     // 	return iterable != null && Symbol.iterator in iterable
+    // },
     function () {
       // 0
       return iterable && typeof iterable[Symbol.iterator] === 'function';
@@ -1435,6 +1442,7 @@ describe('fundamental-operations', function () {
     this.timeout(300000);
     var result = calcPerformance(2000, // () => {
     // 	// no operations
+    // },
     function () {
       var x = {};
       return x;
@@ -1517,4 +1525,375 @@ describe('fundamental-operations', function () {
     });
     console.log(result);
   });
+  xit('try catch', function () {
+    this.timeout(300000);
+
+    function tryCatch(func, onValue, onError) {
+      var value;
+
+      try {
+        value = func();
+      } catch (err) {
+        onError(err);
+        return true;
+      }
+
+      if (onValue) {
+        onValue(value);
+      }
+
+      return false;
+    }
+
+    function func() {
+      if (Math.random() === 0) {
+        throw 0;
+      }
+
+      return 1;
+    }
+
+    var result = calcPerformance(20000, // () => {
+    // 	// no operations
+    // },
+    function () {
+      if (Math.random() === 0) {
+        return 0;
+      }
+
+      return 1;
+    }, function () {
+      if (Math.random() === 0) {
+        throw 0;
+      }
+
+      return 1;
+    }, function () {
+      return func();
+    }, function () {
+      try {
+        if (Math.random() === 0) {
+          throw 0;
+        }
+
+        return 1;
+      } catch (e) {
+        return e;
+      }
+    }, function () {
+      try {
+        return func();
+      } catch (e) {
+        return e;
+      }
+    }, function () {
+      if (tryCatch(function () {
+        return func();
+      }, function () {}, function () {})) {
+        return 0;
+      }
+    });
+    console.log(result);
+  });
+  xit('ThenableSync', function () {
+    this.timeout(300000);
+    var rejected = ThenableSync.createRejected(1);
+    var resolved = ThenableSync.createResolved(1);
+    var result = calcPerformance(120000, function () {// no operations
+    }, function () {
+      // 157
+      return resolveValue(1, function () {}, function () {}, function () {});
+    }, function () {
+      // 767
+      return resolveValue(resolved, function () {}, function () {}, function () {});
+    }, function () {
+      // 835
+      return resolveValue(rejected, function () {}, function () {}, function () {});
+    }, function () {
+      // 563
+      return resolveAsync(1, function () {}, function () {}, true);
+    }, function () {
+      // 1192
+      return resolveAsync(resolved, function () {}, function () {}, true);
+    }, function () {
+      // 1192
+      return resolveAsync(rejected, function () {}, function () {}, true);
+    }, function () {
+      // 533
+      return resolved.then(function () {}, function () {});
+    }, function () {
+      // 636
+      return rejected.then(function () {}, function () {});
+    }, function () {
+      // 463
+      return resolved.thenLast(function () {}, function () {});
+    }, function () {
+      // 494
+      return rejected.thenLast(function () {}, function () {});
+    });
+    console.log(result);
+  });
+
+  function calcCountPerSecond(func) {
+    var maxTime = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : 10000;
+    var time0 = Date.now();
+    var time;
+    var count = 0;
+    var result = 0;
+
+    do {
+      result += resolveAsync(func());
+      count++;
+    } while ((time = Date.now() - time0) < maxTime);
+
+    return count / (time / 1000);
+  }
+
+  function calcCountPerSecondAsync(_x) {
+    return _calcCountPerSecondAsync.apply(this, arguments);
+  }
+
+  function _calcCountPerSecondAsync() {
+    _calcCountPerSecondAsync = _asyncToGenerator(
+    /*#__PURE__*/
+    _regeneratorRuntime.mark(function _callee6(func) {
+      var maxTime,
+          time0,
+          time,
+          count,
+          result,
+          _args7 = arguments;
+      return _regeneratorRuntime.wrap(function _callee6$(_context7) {
+        while (1) {
+          switch (_context7.prev = _context7.next) {
+            case 0:
+              maxTime = _args7.length > 1 && _args7[1] !== undefined ? _args7[1] : 10000;
+              time0 = Date.now();
+              count = 0;
+              result = 0;
+
+            case 4:
+              _context7.t0 = result;
+              _context7.next = 7;
+              return func();
+
+            case 7:
+              result = _context7.t0 += _context7.sent;
+              count++;
+
+            case 9:
+              if ((time = Date.now() - time0) < maxTime) {
+                _context7.next = 4;
+                break;
+              }
+
+            case 10:
+              return _context7.abrupt("return", count / (time / 1000));
+
+            case 11:
+            case "end":
+              return _context7.stop();
+          }
+        }
+      }, _callee6);
+    }));
+    return _calcCountPerSecondAsync.apply(this, arguments);
+  }
+
+  it('ThenableSync 2',
+  /*#__PURE__*/
+  _asyncToGenerator(
+  /*#__PURE__*/
+  _regeneratorRuntime.mark(function _callee5() {
+    var _marked, nestedPromise, _nestedPromise, nestedIterator;
+
+    return _regeneratorRuntime.wrap(function _callee5$(_context6) {
+      while (1) {
+        switch (_context6.prev = _context6.next) {
+          case 0:
+            nestedIterator = function _ref7() {
+              return _regeneratorRuntime.wrap(function nestedIterator$(_context3) {
+                while (1) {
+                  switch (_context3.prev = _context3.next) {
+                    case 0:
+                      _context3.next = 2;
+                      return 1;
+
+                    case 2:
+                      _context3.next = 4;
+                      return 2;
+
+                    case 4:
+                      _context3.next = 6;
+                      return 3;
+
+                    case 6:
+                      _context3.next = 8;
+                      return 4;
+
+                    case 8:
+                      _context3.next = 10;
+                      return 5;
+
+                    case 10:
+                      _context3.next = 12;
+                      return 6;
+
+                    case 12:
+                    case "end":
+                      return _context3.stop();
+                  }
+                }
+              }, _marked);
+            };
+
+            _nestedPromise = function _ref6() {
+              _nestedPromise = _asyncToGenerator(
+              /*#__PURE__*/
+              _regeneratorRuntime.mark(function _callee4() {
+                return _regeneratorRuntime.wrap(function _callee4$(_context5) {
+                  while (1) {
+                    switch (_context5.prev = _context5.next) {
+                      case 0:
+                        _context5.next = 2;
+                        return 1;
+
+                      case 2:
+                        _context5.next = 4;
+                        return 2;
+
+                      case 4:
+                        _context5.next = 6;
+                        return 3;
+
+                      case 6:
+                        _context5.next = 8;
+                        return 4;
+
+                      case 8:
+                        _context5.next = 10;
+                        return 5;
+
+                      case 10:
+                        _context5.next = 12;
+                        return 6;
+
+                      case 12:
+                      case "end":
+                        return _context5.stop();
+                    }
+                  }
+                }, _callee4);
+              }));
+              return _nestedPromise.apply(this, arguments);
+            };
+
+            nestedPromise = function _ref5() {
+              return _nestedPromise.apply(this, arguments);
+            };
+
+            _marked =
+            /*#__PURE__*/
+            _regeneratorRuntime.mark(nestedIterator);
+            this.timeout(300000);
+            _context6.t0 = console;
+            _context6.next = 8;
+            return calcCountPerSecondAsync(
+            /*#__PURE__*/
+            _asyncToGenerator(
+            /*#__PURE__*/
+            _regeneratorRuntime.mark(function _callee2() {
+              return _regeneratorRuntime.wrap(function _callee2$(_context2) {
+                while (1) {
+                  switch (_context2.prev = _context2.next) {
+                    case 0:
+                      _context2.next = 2;
+                      return 1;
+
+                    case 2:
+                      _context2.next = 4;
+                      return 2;
+
+                    case 4:
+                      _context2.next = 6;
+                      return 3;
+
+                    case 6:
+                      _context2.next = 8;
+                      return 4;
+
+                    case 8:
+                      _context2.next = 10;
+                      return 5;
+
+                    case 10:
+                      _context2.next = 12;
+                      return 6;
+
+                    case 12:
+                      _context2.next = 14;
+                      return nestedPromise();
+
+                    case 14:
+                    case "end":
+                      return _context2.stop();
+                  }
+                }
+              }, _callee2);
+            })));
+
+          case 8:
+            _context6.t1 = _context6.sent;
+
+            _context6.t0.log.call(_context6.t0, 'async/await: ', _context6.t1);
+
+            console.log('ThenableSync: ', calcCountPerSecond(
+            /*#__PURE__*/
+            _regeneratorRuntime.mark(function _callee3() {
+              return _regeneratorRuntime.wrap(function _callee3$(_context4) {
+                while (1) {
+                  switch (_context4.prev = _context4.next) {
+                    case 0:
+                      _context4.next = 2;
+                      return 1;
+
+                    case 2:
+                      _context4.next = 4;
+                      return 2;
+
+                    case 4:
+                      _context4.next = 6;
+                      return 3;
+
+                    case 6:
+                      _context4.next = 8;
+                      return 4;
+
+                    case 8:
+                      _context4.next = 10;
+                      return 5;
+
+                    case 10:
+                      _context4.next = 12;
+                      return 6;
+
+                    case 12:
+                      _context4.next = 14;
+                      return nestedIterator();
+
+                    case 14:
+                    case "end":
+                      return _context4.stop();
+                  }
+                }
+              }, _callee3);
+            })));
+
+          case 11:
+          case "end":
+            return _context6.stop();
+        }
+      }
+    }, _callee5, this);
+  })));
 });

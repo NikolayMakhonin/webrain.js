@@ -1,4 +1,4 @@
-/* tslint:disable:prefer-const no-identical-functions no-empty no-shadowed-variable */
+/* tslint:disable:prefer-const no-identical-functions no-empty no-shadowed-variable no-conditional-assignment */
 /* tslint:disable:no-var-requires one-variable-per-declaration */
 /* eslint-disable no-new-func,no-array-constructor,object-property-newline,no-undef */
 /* eslint-disable no-empty,no-shadow,no-prototype-builtins,prefer-destructuring */
@@ -1603,7 +1603,7 @@ describe('fundamental-operations', function() {
 		console.log(result)
 	})
 
-	it('ThenableSync', function() {
+	xit('ThenableSync', function() {
 		this.timeout(300000)
 
 		const rejected = ThenableSync.createRejected(1)
@@ -1651,5 +1651,71 @@ describe('fundamental-operations', function() {
 		)
 
 		console.log(result)
+	})
+
+	function calcCountPerSecond(func, maxTime = 10000) {
+		let time0 = Date.now()
+		let time
+		let count = 0
+		let result = 0
+		do {
+			result += resolveAsync(func())
+			count++
+		} while ((time = Date.now() - time0) < maxTime)
+		return count / (time / 1000)
+	}
+
+	async function calcCountPerSecondAsync(func, maxTime = 10000) {
+		let time0 = Date.now()
+		let time
+		let count = 0
+		let result = 0
+		do {
+			result += await func()
+			count++
+		} while ((time = Date.now() - time0) < maxTime)
+		return count / (time / 1000)
+	}
+
+	it('ThenableSync 2', async function() {
+		this.timeout(300000)
+
+		async function nestedPromise() {
+			await 1
+			await 2
+			await 3
+			await 4
+			await 5
+			await 6
+		}
+
+		console.log('async/await: ', await calcCountPerSecondAsync(async () => {
+			await 1
+			await 2
+			await 3
+			await 4
+			await 5
+			await 6
+			await nestedPromise()
+		}))
+
+		function *nestedIterator() {
+			yield 1
+			yield 2
+			yield 3
+			yield 4
+			yield 5
+			yield 6
+		}
+
+		console.log('ThenableSync: ', calcCountPerSecond(function *() {
+			yield 1
+			yield 2
+			yield 3
+			yield 4
+			yield 5
+			yield 6
+			yield nestedIterator()
+		}))
 	})
 })

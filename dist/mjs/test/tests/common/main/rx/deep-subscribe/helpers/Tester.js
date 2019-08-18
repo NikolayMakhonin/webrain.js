@@ -4,6 +4,7 @@ import _classCallCheck from "@babel/runtime/helpers/classCallCheck";
 import _createClass from "@babel/runtime/helpers/createClass";
 
 /* tslint:disable:no-empty */
+import { delay } from '../../../../../../../main/common/helpers/helpers';
 import { ObservableMap } from '../../../../../../../main/common/lists/ObservableMap';
 import { ObservableSet } from '../../../../../../../main/common/lists/ObservableSet';
 import { SortedList } from '../../../../../../../main/common/lists/SortedList';
@@ -12,7 +13,6 @@ import { ObservableObject } from '../../../../../../../main/common/rx/object/Obs
 import { ObservableObjectBuilder } from '../../../../../../../main/common/rx/object/ObservableObjectBuilder';
 import { Assert } from '../../../../../../../main/common/test/Assert';
 import { DeepCloneEqual } from '../../../../../../../main/common/test/DeepCloneEqual';
-import { delay } from "../../../../../../../main/common/helpers/helpers";
 var assert = new Assert(new DeepCloneEqual({
   commonOptions: {},
   equalOptions: {
@@ -207,7 +207,7 @@ function () {
         assert.deepStrictEqual(_this2._unsubscribed[_i], []);
 
         if (errorType) {
-          assert.throws(function () {
+          assert["throws"](function () {
             return _this2.subscribePrivate(ruleBuilder, _i);
           }, errorType, errorRegExp);
         } else {
@@ -254,7 +254,7 @@ function () {
       }
 
       if (errorType) {
-        assert.throws(function () {
+        assert["throws"](function () {
           return changeFunc(_this3._object);
         }, errorType, errorRegExp);
       } else {
@@ -289,7 +289,7 @@ function () {
         assert.deepStrictEqual(_this4._unsubscribed[_i3], []);
 
         if (errorType) {
-          assert.throws(function () {
+          assert["throws"](function () {
             return _this4._unsubscribe[_i3]();
           }, errorType, errorRegExp);
           assert.deepStrictEqual(_this4._subscribed[_i3], []);
@@ -359,7 +359,7 @@ function () {
                           assert.deepStrictEqual(_this5._unsubscribed[_i4], []);
 
                           if (errorType) {
-                            assert.throws(function () {
+                            assert["throws"](function () {
                               return _this5.subscribePrivate(ruleBuilder, _i4);
                             }, errorType, errorRegExp);
                           } else {
@@ -455,7 +455,7 @@ function () {
                 }
 
                 if (errorType) {
-                  assert.throws(function () {
+                  assert["throws"](function () {
                     return changeFunc(_this6._object);
                   }, errorType, errorRegExp);
                 } else {
@@ -531,7 +531,7 @@ function () {
                             break;
                           }
 
-                          assert.throws(function () {
+                          assert["throws"](function () {
                             return _this7._unsubscribe[_i6]();
                           }, errorType, errorRegExp);
                           assert.deepStrictEqual(_this7._subscribed[_i6], []);

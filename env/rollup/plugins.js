@@ -88,7 +88,7 @@ module.exports = {
 		},
 		...options
 	}),
-	prettier: (options = {}) => null && prettier({ // very slow
+	prettier: (options = {}) => null && prettier({// very slow
 		parser     : 'babylon',
 		tabWidth   : 4,
 		singleQuote: true,

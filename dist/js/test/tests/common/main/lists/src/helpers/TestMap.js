@@ -28,6 +28,8 @@ var _TestVariants = require("../../../src/helpers/TestVariants");
 
 var _common = require("./common");
 
+let _Symbol$toStringTag, _Symbol$iterator;
+
 const assert = new _Assert.Assert(new _DeepCloneEqual.DeepCloneEqual({
   commonOptions: {},
   equalOptions: {
@@ -133,8 +135,8 @@ const staticMap = new _ObservableMap.ObservableMap(staticMapInner); // class Obj
 //
 // }
 
-var _Symbol$toStringTag = Symbol.toStringTag;
-var _Symbol$iterator = Symbol.iterator;
+_Symbol$toStringTag = Symbol.toStringTag;
+_Symbol$iterator = Symbol.iterator;
 
 class MapWrapper {
   constructor(map) {

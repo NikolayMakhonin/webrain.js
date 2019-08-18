@@ -16,9 +16,9 @@ exports.serializePrimitiveAsObject = serializePrimitiveAsObject;
 exports.deSerializePrimitiveAsObject = deSerializePrimitiveAsObject;
 exports.ObjectSerializer = exports.TypeMetaSerializerCollection = exports.DeSerializerVisitor = exports.SerializerVisitor = void 0;
 
-var _helpers = require("../../helpers/helpers");
+var _ThenableSync = require("../../async/ThenableSync");
 
-var _ThenableSync = require("../../helpers/ThenableSync");
+var _helpers = require("../../helpers/helpers");
 
 var _objectUniqueId = require("../../lists/helpers/object-unique-id");
 
@@ -181,7 +181,7 @@ class DeSerializerVisitor {
     };
 
     if (this._countDeserialized !== _instances.length) {
-      throw new Error(`${_instances.length - this._countDeserialized} instances is not deserialized\r\n` + JSON.stringify(_instances.map((o, i) => [o, i]).filter(o => !o[0] || o[0] === LOCKED || _ThenableSync.ThenableSync.isThenableSync(o[0])).map(o => getDebugObject(o[0], o[1]))));
+      throw new Error(`${_instances.length - this._countDeserialized} instances is not deserialized\r\n` + JSON.stringify(_instances.map((o, i) => [o, i]).filter(o => !o[0] || o[0] === LOCKED || _ThenableSync.ThenableSync.isThenable(o[0])).map(o => getDebugObject(o[0], o[1]))));
     }
   } // noinspection JSUnusedLocalSymbols
 
@@ -323,7 +323,7 @@ class DeSerializerVisitor {
 
     const valueOrThenFunc = _ThenableSync.ThenableSync.resolve(iteratorOrValue, resolveValue);
 
-    if (id != null && !factory && _ThenableSync.ThenableSync.isThenableSync(valueOrThenFunc)) {
+    if (id != null && !factory && _ThenableSync.ThenableSync.isThenable(valueOrThenFunc)) {
       resolveInstance(instance);
 
       if (onfulfilled) {
@@ -468,7 +468,7 @@ function deSerializeArray(deSerialize, serializedValue, value) {
   for (let i = 0, len = serializedValue.length; i < len; i++) {
     const index = i;
 
-    if (_ThenableSync.ThenableSync.isThenableSync(deSerialize(serializedValue[index], o => {
+    if (_ThenableSync.ThenableSync.isThenable(deSerialize(serializedValue[index], o => {
       value[index] = o;
     }))) {
       value[index] = null;
@@ -523,7 +523,7 @@ function deSerializeObject(deSerialize, serializedValue, value) {
   for (const key in serializedValue) {
     if (Object.prototype.hasOwnProperty.call(serializedValue, key)) {
       // tslint:disable-next-line:no-collapsible-if
-      if (_ThenableSync.ThenableSync.isThenableSync(deSerialize(serializedValue[key], o => {
+      if (_ThenableSync.ThenableSync.isThenable(deSerialize(serializedValue[key], o => {
         value[key] = o;
       }))) {
         value[key] = null;

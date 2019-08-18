@@ -487,7 +487,7 @@ import _typeof3 from "@babel/runtime/helpers/typeof";
     try {
       return entries ? fn(_anObject(value)[0], value[1]) : fn(value);
     } catch (e) {
-      var ret = iterator.return;
+      var ret = iterator["return"];
       throw void 0 !== ret && _anObject(ret.call(iterator)), e;
     }
   },
@@ -601,7 +601,7 @@ import _typeof3 from "@babel/runtime/helpers/typeof";
 
           that._f = that._l = void 0, that[SIZE] = 0;
         },
-        delete: function _delete(key) {
+        "delete": function _delete(key) {
           var that = _validateCollection(this, NAME),
               entry = getEntry(that, key);
 
@@ -669,7 +669,7 @@ import _typeof3 from "@babel/runtime/helpers/typeof";
       SAFE_CLOSING = !1;
 
   try {
-    [7][ITERATOR$4]().return = function () {
+    [7][ITERATOR$4]()["return"] = function () {
       SAFE_CLOSING = !0;
     };
   } catch (e) {}

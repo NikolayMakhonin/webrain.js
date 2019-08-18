@@ -7,7 +7,7 @@ import _possibleConstructorReturn from "@babel/runtime/helpers/possibleConstruct
 import _getPrototypeOf from "@babel/runtime/helpers/getPrototypeOf";
 import _inherits from "@babel/runtime/helpers/inherits";
 
-var _marked2 =
+var _marked =
 /*#__PURE__*/
 _regeneratorRuntime.mark(createIterableIterator);
 
@@ -24,7 +24,7 @@ import { ObservableSet } from '../../../../../../main/common/lists/ObservableSet
 import { SortedList } from '../../../../../../main/common/lists/SortedList';
 import { ObservableObject } from '../../../../../../main/common/rx/object/ObservableObject';
 import { ObservableObjectBuilder } from '../../../../../../main/common/rx/object/ObservableObjectBuilder';
-import { Property } from "../../../../../../main/common/rx/object/properties/property";
+import { Property } from '../../../../../../main/common/rx/object/properties/property';
 export var CircularClass =
 /*#__PURE__*/
 function (_ObservableObject) {
@@ -108,27 +108,8 @@ registerMergeable(CircularClass);
 registerSerializable(CircularClass, {
   serializer: {
     deSerialize: function (_deSerialize2) {
-      var _marked =
-      /*#__PURE__*/
-      _regeneratorRuntime.mark(deSerialize);
-
       function deSerialize(_x, _x2, _x3) {
-        var _args2 = arguments;
-        return _regeneratorRuntime.wrap(function deSerialize$(_context2) {
-          while (1) {
-            switch (_context2.prev = _context2.next) {
-              case 0:
-                return _context2.delegateYield(_deSerialize2.apply(this, _args2), "t0", 1);
-
-              case 1:
-                return _context2.abrupt("return", _context2.t0);
-
-              case 2:
-              case "end":
-                return _context2.stop();
-            }
-          }
-        }, _marked, this);
+        return _deSerialize2.apply(this, arguments);
       }
 
       deSerialize.toString = function () {
@@ -136,68 +117,70 @@ registerSerializable(CircularClass, {
       };
 
       return deSerialize;
-    }(
-    /*#__PURE__*/
-    _regeneratorRuntime.mark(function _callee(deSerialize, serializedValue, valueFactory) {
-      var array, value;
-      return _regeneratorRuntime.wrap(function _callee$(_context3) {
-        while (1) {
-          switch (_context3.prev = _context3.next) {
-            case 0:
-              _context3.next = 2;
-              return deSerialize(serializedValue.array);
+    }(function (deSerialize, serializedValue, valueFactory) {
+      return (
+        /*#__PURE__*/
+        _regeneratorRuntime.mark(function _callee() {
+          var array, value;
+          return _regeneratorRuntime.wrap(function _callee$(_context2) {
+            while (1) {
+              switch (_context2.prev = _context2.next) {
+                case 0:
+                  _context2.next = 2;
+                  return deSerialize(serializedValue.array);
 
-            case 2:
-              array = _context3.sent;
-              value = valueFactory(array);
-              _context3.next = 6;
-              return value.deSerialize(deSerialize, serializedValue);
+                case 2:
+                  array = _context2.sent;
+                  value = valueFactory(array);
+                  _context2.next = 6;
+                  return value.deSerialize(deSerialize, serializedValue);
 
-            case 6:
-              return _context3.abrupt("return", value);
+                case 6:
+                  return _context2.abrupt("return", value);
 
-            case 7:
-            case "end":
-              return _context3.stop();
-          }
-        }
-      }, _callee);
-    }))
+                case 7:
+                case "end":
+                  return _context2.stop();
+              }
+            }
+          }, _callee);
+        })()
+      );
+    })
   }
 });
 new ObservableObjectBuilder(CircularClass.prototype).writable('array');
 export function createIterableIterator(iterable) {
-  var array, _arr, _i, item;
+  var array, _i, _array, item;
 
-  return _regeneratorRuntime.wrap(function createIterableIterator$(_context4) {
+  return _regeneratorRuntime.wrap(function createIterableIterator$(_context3) {
     while (1) {
-      switch (_context4.prev = _context4.next) {
+      switch (_context3.prev = _context3.next) {
         case 0:
           array = Array.from(iterable);
-          _arr = array;
-          _i = 0;
+          _i = 0, _array = array;
 
-        case 3:
-          if (!(_i < _arr.length)) {
-            _context4.next = 10;
+        case 2:
+          if (!(_i < _array.length)) {
+            _context3.next = 9;
             break;
           }
 
-          item = _arr[_i];
-          _context4.next = 7;
+          item = _array[_i];
+          _context3.next = 6;
           return item;
 
-        case 7:
+        case 6:
           _i++;
-          _context4.next = 3;
+          _context3.next = 2;
           break;
 
-        case 10:
+        case 9:
         case "end":
-          return _context4.stop();
+          return _context3.stop();
       }
     }
-  }, _marked2);
+  }, _marked);
 }
 export function createIterable(iterable) {
   var array = Array.from(iterable);
@@ -217,7 +200,7 @@ export function createComplexObject() {
     _false: false,
     _stringEmpty: '',
     _zero: 0,
-    true: true,
+    "true": true,
     string: 'string',
     date: new Date(12345),
     number: 123.45,
@@ -241,14 +224,14 @@ export function createComplexObject() {
     map: options.map && new Map(),
     arrayMap: options.arrayMap && new ArrayMap(),
     objectMap: options.objectMap && new ObjectMap(),
-    iterable: options.function && createIterable(array),
+    iterable: options["function"] && createIterable(array),
     // iterator: options.function && toIterableIterator(array),
-    promiseSync: options.function && {
+    promiseSync: options["function"] && {
       then: function then(resolve) {
         return resolve(object);
       }
     },
-    promiseAsync: options.function && {
+    promiseAsync: options["function"] && {
       then: function then(resolve) {
         return setTimeout(function () {
           return resolve(object);
@@ -336,8 +319,8 @@ export function createComplexObject() {
     _iteratorError = err;
   } finally {
     try {
-      if (!_iteratorNormalCompletion && _iterator.return != null) {
-        _iterator.return();
+      if (!_iteratorNormalCompletion && _iterator["return"] != null) {
+        _iterator["return"]();
       }
     } finally {
       if (_didIteratorError) {

@@ -4,10 +4,10 @@ describe('common > main > rx > deferred-calc > timing', function () {
   it('base', function () {
     var timing = new TestTiming();
     var results = [];
-    assert.throws(function () {
+    assert["throws"](function () {
       return timing.setTime(0);
     }, Error);
-    assert.throws(function () {
+    assert["throws"](function () {
       return timing.addTime(-1);
     }, Error);
     timing.setTimeout(function () {

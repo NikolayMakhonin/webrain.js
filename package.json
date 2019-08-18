@@ -145,6 +145,6 @@
   },
   "dependencies": {
     "@babel/polyfill": "^7.4.4",
-    "@babel/runtime": "^7.3.4"
+    "@babel/runtime": "7.3.4"
   }
 }

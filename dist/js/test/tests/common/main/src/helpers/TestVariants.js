@@ -25,18 +25,21 @@ function expandArray(array, output = []) {
 const THIS = {};
 exports.THIS = THIS;
 
+// tslint:disable-next-line:no-shadowed-variable no-empty
+const NONE = function NONE() {};
+
 function* generateOptions(base, optionsVariants, exclude) {
   let hasChilds;
 
   for (const key in optionsVariants) {
-    if (Object.prototype.hasOwnProperty.call(optionsVariants, key)) {
+    if (optionsVariants[key]) {
       for (const optionVariant of optionsVariants[key]) {
         const variant = { ...base,
           [key]: optionVariant
         };
         const newOptionsVariants = { ...optionsVariants
         };
-        delete newOptionsVariants[key];
+        newOptionsVariants[key] = null;
         hasChilds = true;
         yield* generateOptions(variant, newOptionsVariants, exclude);
       }
@@ -62,7 +65,7 @@ class TestVariants {
     delete optionsVariants.exclude;
     const actionsWithDescriptions = expandArray(optionsVariants.actions);
     delete optionsVariants.actions;
-    const variants = generateOptions({}, optionsVariants, exclude); // variants = Array.from(variants)
+    let variants = generateOptions({}, optionsVariants, exclude); // variants = Array.from(variants)
 
     for (const actionsWithDescription of actionsWithDescriptions) {
       let {

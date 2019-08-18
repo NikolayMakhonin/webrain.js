@@ -80,8 +80,8 @@ function equalsWithNaN(o1, o2) {
 }
 
 function testSerialization(list) {
-  var serialized = ObjectSerializer.default.serialize(list);
-  var result = ObjectSerializer.default.deSerialize(serialized);
+  var serialized = ObjectSerializer["default"].serialize(list);
+  var result = ObjectSerializer["default"].deSerialize(serialized);
   assert.notStrictEqual(result, list);
   assert.strictEqual(!!result.autoSort, !!list.autoSort);
   assert.strictEqual(result.countSorted, list.countSorted);
@@ -211,7 +211,7 @@ function (_TestVariants) {
             // }
 
             if (options.expected.error) {
-              assert.throws(function () {
+              assert["throws"](function () {
                 return options.action(list, array);
               }, options.expected.error);
               assert.strictEqual(list.countSorted, options.expected.countSorted == null ? options.autoSort ? list.size : options.countSorted || 0 : options.expected.countSorted);
@@ -345,8 +345,8 @@ function (_TestVariants) {
           _iteratorError = err;
         } finally {
           try {
-            if (!_iteratorNormalCompletion && _iterator.return != null) {
-              _iterator.return();
+            if (!_iteratorNormalCompletion && _iterator["return"] != null) {
+              _iterator["return"]();
             }
           } finally {
             if (_didIteratorError) {

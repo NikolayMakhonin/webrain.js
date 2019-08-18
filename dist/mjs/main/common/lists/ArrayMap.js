@@ -1,14 +1,17 @@
 import _regeneratorRuntime from "@babel/runtime/regenerator";
 import _classCallCheck from "@babel/runtime/helpers/classCallCheck";
 import _createClass from "@babel/runtime/helpers/createClass";
+
+var _Symbol$toStringTag, _Symbol$iterator;
+
 import { createMergeMapWrapper, mergeMaps } from '../extensions/merge/merge-maps';
 import { registerMergeable } from '../extensions/merge/mergers';
 import { registerSerializable } from '../extensions/serialization/serializers';
 import { isIterable } from '../helpers/helpers';
 import { getObjectUniqueId } from './helpers/object-unique-id';
 import { fillMap } from './helpers/set';
-var _Symbol$toStringTag = Symbol.toStringTag;
-var _Symbol$iterator = Symbol.iterator;
+_Symbol$toStringTag = Symbol.toStringTag;
+_Symbol$iterator = Symbol.iterator;
 export var ArrayMap =
 /*#__PURE__*/
 function () {
@@ -262,31 +265,34 @@ ArrayMap.uuid = 'ef0ced8a-58f7-4381-b850-3b09c0a42eed';
 registerMergeable(ArrayMap);
 registerSerializable(ArrayMap, {
   serializer: {
-    deSerialize:
-    /*#__PURE__*/
-    _regeneratorRuntime.mark(function deSerialize(_deSerialize2, serializedValue, valueFactory) {
-      var innerMap, value;
-      return _regeneratorRuntime.wrap(function deSerialize$(_context4) {
-        while (1) {
-          switch (_context4.prev = _context4.next) {
-            case 0:
-              _context4.next = 2;
-              return _deSerialize2(serializedValue.array, null, {
-                arrayAsObject: true
-              });
+    deSerialize: function deSerialize(_deSerialize2, serializedValue, valueFactory) {
+      return (
+        /*#__PURE__*/
+        _regeneratorRuntime.mark(function _callee() {
+          var innerMap, value;
+          return _regeneratorRuntime.wrap(function _callee$(_context4) {
+            while (1) {
+              switch (_context4.prev = _context4.next) {
+                case 0:
+                  _context4.next = 2;
+                  return _deSerialize2(serializedValue.array, null, {
+                    arrayAsObject: true
+                  });
 
-            case 2:
-              innerMap = _context4.sent;
-              value = valueFactory(innerMap);
-              value.deSerialize(_deSerialize2, serializedValue);
-              return _context4.abrupt("return", value);
+                case 2:
+                  innerMap = _context4.sent;
+                  value = valueFactory(innerMap);
+                  value.deSerialize(_deSerialize2, serializedValue);
+                  return _context4.abrupt("return", value);
 
-            case 6:
-            case "end":
-              return _context4.stop();
-          }
-        }
-      }, deSerialize);
-    })
+                case 6:
+                case "end":
+                  return _context4.stop();
+              }
+            }
+          }, _callee);
+        })()
+      );
+    }
   }
 });

@@ -126,14 +126,14 @@ export class ThenableSync<TValue = any> {
 
 		this._status = ThenableSyncStatus.Rejected
 
-		this._error = error as any
+		this._error = error
 
 		const {_onrejected} = this
 		if (_onrejected) {
 			this._onfulfilled = void 0
 			this._onrejected = void 0
 			for (let i = 0, len = _onrejected.length; i < len; i++) {
-				_onrejected[i](error as any)
+				_onrejected[i](error)
 			}
 		}
 	}
@@ -248,7 +248,7 @@ export class ThenableSync<TValue = any> {
 						if (isError) {
 							result.reject(value)
 						} else {
-							result.resolve(value as any)
+							result.resolve(value)
 						}
 					}
 					: (value): any => { result.reject(value) }
@@ -274,7 +274,7 @@ export class ThenableSync<TValue = any> {
 						if (isError) {
 							resolveValue(value, rejected, rejected, rejected)
 						} else {
-							result.resolve(value as any)
+							result.resolve(value)
 						}
 					}
 					: (value): any => { result.resolve(value as any) })
@@ -333,7 +333,7 @@ export function resolveAsync<TValue = any, TResult1 = TValue, TResult2 = never>(
 				resolveValue(onrejected(o), val => { result = val as any }, resolve as any, reject)
 			}
 		} else {
-			reject(o as any)
+			reject(o)
 		}
 	}
 

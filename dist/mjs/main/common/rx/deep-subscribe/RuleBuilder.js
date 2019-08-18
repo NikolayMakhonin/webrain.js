@@ -1,7 +1,7 @@
 import _toConsumableArray from "@babel/runtime/helpers/toConsumableArray";
 import _construct from "@babel/runtime/helpers/construct";
-import _classCallCheck from "@babel/runtime/helpers/classCallCheck";
 import _createClass from "@babel/runtime/helpers/createClass";
+import _classCallCheck from "@babel/runtime/helpers/classCallCheck";
 import { ANY_DISPLAY, COLLECTION_PREFIX } from './contracts/constants';
 import { RuleType } from './contracts/rules';
 import { getFuncPropertiesPath } from './helpers/func-properties-path';
@@ -9,6 +9,13 @@ import { RuleSubscribeCollection, RuleSubscribeMap, RuleSubscribeObject } from '
 var RuleSubscribeObjectPropertyNames = RuleSubscribeObject.bind(null, null);
 var RuleSubscribeMapKeys = RuleSubscribeMap.bind(null, null); // const UNSUBSCRIBE_PROPERTY_PREFIX = Math.random().toString(36)
 // let nextUnsubscribePropertyId = 0
+
+var RuleNothing = function RuleNothing() {
+  _classCallCheck(this, RuleNothing);
+
+  this.type = RuleType.Nothing;
+  this.description = 'nothing';
+};
 
 export var RuleBuilder =
 /*#__PURE__*/
@@ -18,15 +25,27 @@ function () {
   }
 
   _createClass(RuleBuilder, [{
-    key: "custom",
-    value: function custom(ruleSubscribe, description) {
+    key: "rule",
+    value: function rule(_rule) {
       var ruleLast = this._ruleLast;
 
-      if (description) {
-        ruleSubscribe.description = description;
+      if (ruleLast) {
+        ruleLast.next = _rule;
+      } else {
+        this.result = _rule;
       }
 
-      if (ruleSubscribe.unsubscribePropertyName) {
+      this._ruleLast = _rule;
+      return this;
+    }
+  }, {
+    key: "ruleSubscribe",
+    value: function ruleSubscribe(_ruleSubscribe, description) {
+      if (description) {
+        _ruleSubscribe.description = description;
+      }
+
+      if (_ruleSubscribe.unsubscribers) {
         throw new Error('You should not add duplicate IRuleSubscribe instances. Clone rule before add.');
       } // !Warning defineProperty is slow
       // Object.defineProperty(ruleSubscribe, 'unsubscribePropertyName', {
@@ -37,16 +56,14 @@ function () {
       // })
 
 
-      ruleSubscribe.unsubscribePropertyName = []; // UNSUBSCRIBE_PROPERTY_PREFIX + (nextUnsubscribePropertyId++)
+      _ruleSubscribe.unsubscribers = []; // UNSUBSCRIBE_PROPERTY_PREFIX + (nextUnsubscribePropertyId++)
 
-      if (ruleLast) {
-        ruleLast.next = ruleSubscribe;
-      } else {
-        this.rule = ruleSubscribe;
-      }
-
-      this._ruleLast = ruleSubscribe;
-      return this;
+      return this.rule(_ruleSubscribe);
+    }
+  }, {
+    key: "nothing",
+    value: function nothing() {
+      return this.rule(new RuleNothing());
     }
     /**
      * Object property, Array index
@@ -65,7 +82,7 @@ function () {
 
       return propertyName;
     }(function (propertyName) {
-      return this.custom(new RuleSubscribeObjectPropertyNames(propertyName), propertyName);
+      return this.ruleSubscribe(new RuleSubscribeObjectPropertyNames(propertyName), propertyName);
     })
     /**
      * Object property, Array index
@@ -78,7 +95,7 @@ function () {
         propertiesNames[_key] = arguments[_key];
       }
 
-      return this.custom(_construct(RuleSubscribeObjectPropertyNames, propertiesNames), propertiesNames.join('|'));
+      return this.ruleSubscribe(_construct(RuleSubscribeObjectPropertyNames, propertiesNames), propertiesNames.join('|'));
     }
     /**
      * Object property, Array index
@@ -87,7 +104,7 @@ function () {
   }, {
     key: "propertyAll",
     value: function propertyAll() {
-      return this.custom(new RuleSubscribeObject(), ANY_DISPLAY);
+      return this.ruleSubscribe(new RuleSubscribeObject(), ANY_DISPLAY);
     }
     /**
      * Object property, Array index
@@ -96,7 +113,7 @@ function () {
   }, {
     key: "propertyPredicate",
     value: function propertyPredicate(predicate, description) {
-      return this.custom(new RuleSubscribeObject(predicate), description);
+      return this.ruleSubscribe(new RuleSubscribeObject(predicate), description);
     }
     /**
      * Object property, Array index
@@ -120,7 +137,7 @@ function () {
   }, {
     key: "collection",
     value: function collection() {
-      return this.custom(new RuleSubscribeCollection(), COLLECTION_PREFIX);
+      return this.ruleSubscribe(new RuleSubscribeCollection(), COLLECTION_PREFIX);
     }
     /**
      * IMapChanged & Map, Map
@@ -129,7 +146,7 @@ function () {
   }, {
     key: "mapKey",
     value: function mapKey(key) {
-      return this.custom(new RuleSubscribeMapKeys(key), COLLECTION_PREFIX + key);
+      return this.ruleSubscribe(new RuleSubscribeMapKeys(key), COLLECTION_PREFIX + key);
     }
     /**
      * IMapChanged & Map, Map
@@ -142,7 +159,7 @@ function () {
         keys[_key2] = arguments[_key2];
       }
 
-      return this.custom(_construct(RuleSubscribeMapKeys, keys), COLLECTION_PREFIX + keys.join('|'));
+      return this.ruleSubscribe(_construct(RuleSubscribeMapKeys, keys), COLLECTION_PREFIX + keys.join('|'));
     }
     /**
      * IMapChanged & Map, Map
@@ -151,7 +168,7 @@ function () {
   }, {
     key: "mapAll",
     value: function mapAll() {
-      return this.custom(new RuleSubscribeMap(), COLLECTION_PREFIX);
+      return this.ruleSubscribe(new RuleSubscribeMap(), COLLECTION_PREFIX);
     }
     /**
      * IMapChanged & Map, Map
@@ -160,7 +177,7 @@ function () {
   }, {
     key: "mapPredicate",
     value: function mapPredicate(keyPredicate, description) {
-      return this.custom(new RuleSubscribeMap(keyPredicate), description);
+      return this.ruleSubscribe(new RuleSubscribeMap(keyPredicate), description);
     }
     /**
      * IMapChanged & Map, Map
@@ -205,8 +222,8 @@ function () {
         _iteratorError = err;
       } finally {
         try {
-          if (!_iteratorNormalCompletion && _iterator.return != null) {
-            _iterator.return();
+          if (!_iteratorNormalCompletion && _iterator["return"] != null) {
+            _iterator["return"]();
           }
         } finally {
           if (_didIteratorError) {
@@ -228,11 +245,10 @@ function () {
         throw new Error('any() parameters is empty');
       }
 
-      var ruleLast = this._ruleLast;
       var rule = {
         type: RuleType.Any,
         rules: getChilds.map(function (o) {
-          var subRule = o(new RuleBuilder()).rule;
+          var subRule = o(new RuleBuilder()).result;
 
           if (!subRule) {
             throw new Error("Any subRule=".concat(rule));
@@ -241,20 +257,12 @@ function () {
           return subRule;
         })
       };
-
-      if (ruleLast) {
-        ruleLast.next = rule;
-      } else {
-        this.rule = rule;
-      }
-
-      this._ruleLast = rule;
-      return this;
+      return this.rule(rule);
     }
   }, {
     key: "repeat",
     value: function repeat(countMin, countMax, getChild) {
-      var subRule = getChild(new RuleBuilder()).rule;
+      var subRule = getChild(new RuleBuilder()).result;
 
       if (!subRule) {
         throw new Error("getChild(...).rule = ".concat(subRule));
@@ -281,20 +289,11 @@ function () {
           type: RuleType.Repeat,
           countMin: countMin,
           countMax: countMax,
-          rule: getChild(new RuleBuilder()).rule
+          rule: getChild(new RuleBuilder()).result
         };
       }
 
-      var ruleLast = this._ruleLast;
-
-      if (ruleLast) {
-        ruleLast.next = rule;
-      } else {
-        this.rule = rule;
-      }
-
-      this._ruleLast = rule;
-      return this;
+      return this.rule(rule);
     }
   }]);
 

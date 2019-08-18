@@ -34,19 +34,19 @@ function (_DeepPropertyChangedO) {
     value: function _set(name, newValue, options) {
       var __fields = this.__fields;
       var oldValue = __fields[name];
-      var equalsFunc = options.equalsFunc;
+      var equalsFunc = options && options.equalsFunc;
 
       if (equalsFunc ? equalsFunc.call(this, oldValue, newValue) : oldValue === newValue) {
         return false;
       }
 
-      var fillFunc = options.fillFunc;
+      var fillFunc = options && options.fillFunc;
 
       if (fillFunc && oldValue != null && newValue != null && fillFunc.call(this, oldValue, newValue)) {
         return false;
       }
 
-      var convertFunc = options.convertFunc;
+      var convertFunc = options && options.convertFunc;
 
       if (convertFunc) {
         newValue = convertFunc.call(this, newValue);
@@ -56,7 +56,7 @@ function (_DeepPropertyChangedO) {
         return false;
       }
 
-      var beforeChange = options.beforeChange;
+      var beforeChange = options && options.beforeChange;
 
       if (beforeChange) {
         beforeChange.call(this, oldValue);
@@ -66,7 +66,7 @@ function (_DeepPropertyChangedO) {
 
       this._propagatePropertyChanged(name, newValue);
 
-      var afterChange = options.afterChange;
+      var afterChange = options && options.afterChange;
 
       if (afterChange) {
         afterChange.call(this, newValue);

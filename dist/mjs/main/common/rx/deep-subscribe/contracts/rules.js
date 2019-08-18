@@ -1,7 +1,8 @@
 export var RuleType;
 
 (function (RuleType) {
-  RuleType[RuleType["Action"] = 0] = "Action";
-  RuleType[RuleType["Any"] = 1] = "Any";
-  RuleType[RuleType["Repeat"] = 2] = "Repeat";
+  RuleType[RuleType["Nothing"] = 0] = "Nothing";
+  RuleType[RuleType["Action"] = 1] = "Action";
+  RuleType[RuleType["Any"] = 2] = "Any";
+  RuleType[RuleType["Repeat"] = 3] = "Repeat";
 })(RuleType || (RuleType = {}));

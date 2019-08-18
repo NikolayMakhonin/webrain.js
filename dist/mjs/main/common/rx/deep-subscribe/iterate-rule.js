@@ -46,31 +46,42 @@ export function iterateRule(rule) {
             return iterateRule(rule.next, next);
           } : null;
           _context3.t1 = rule.type;
-          _context3.next = _context3.t1 === RuleType.Action ? 9 : _context3.t1 === RuleType.Any ? 14 : _context3.t1 === RuleType.Repeat ? 21 : 27;
+          _context3.next = _context3.t1 === RuleType.Nothing ? 9 : _context3.t1 === RuleType.Action ? 12 : _context3.t1 === RuleType.Any ? 17 : _context3.t1 === RuleType.Repeat ? 24 : 30;
           break;
 
         case 9:
-          _context3.next = 11;
-          return rule;
+          if (!ruleNext) {
+            _context3.next = 11;
+            break;
+          }
+
+          return _context3.delegateYield(ruleNext(), "t2", 11);
 
         case 11:
-          _context3.next = 13;
-          return ruleNext;
+          return _context3.abrupt("break", 31);
 
-        case 13:
-          return _context3.abrupt("break", 28);
+        case 12:
+          _context3.next = 14;
+          return rule;
 
         case 14:
+          _context3.next = 16;
+          return ruleNext;
+
+        case 16:
+          return _context3.abrupt("break", 31);
+
+        case 17:
           _ref = rule, rules = _ref.rules;
 
           if (!(rules.length <= 1)) {
-            _context3.next = 17;
+            _context3.next = 20;
             break;
           }
 
           throw new Error("RuleType.Any rules.length=".concat(rules.length));
 
-        case 17:
+        case 20:
           any =
           /*#__PURE__*/
           _regeneratorRuntime.mark(function _callee() {
@@ -112,23 +123,23 @@ export function iterateRule(rule) {
               }
             }, _callee);
           });
-          _context3.next = 20;
+          _context3.next = 23;
           return any();
 
-        case 20:
-          return _context3.abrupt("break", 28);
+        case 23:
+          return _context3.abrupt("break", 31);
 
-        case 21:
+        case 24:
           _ref2 = rule, countMin = _ref2.countMin, countMax = _ref2.countMax, subRule = _ref2.rule;
 
           if (!(countMax < countMin || countMax <= 0 || rule == null)) {
-            _context3.next = 24;
+            _context3.next = 27;
             break;
           }
 
           throw new Error("RuleType.Repeat countMin=".concat(countMin, " countMax=").concat(countMax, " rule=").concat(rule));
 
-        case 24:
+        case 27:
           repeatNext =
           /*#__PURE__*/
           _regeneratorRuntime.mark(function _callee2(count) {
@@ -181,15 +192,15 @@ export function iterateRule(rule) {
               }
             }, _callee2);
           });
-          return _context3.delegateYield(repeatNext(0), "t2", 26);
+          return _context3.delegateYield(repeatNext(0), "t3", 29);
 
-        case 26:
-          return _context3.abrupt("break", 28);
+        case 29:
+          return _context3.abrupt("break", 31);
 
-        case 27:
+        case 30:
           throw new Error('Unknown RuleType: ' + rule.type);
 
-        case 28:
+        case 31:
         case "end":
           return _context3.stop();
       }
@@ -240,8 +251,8 @@ export function subscribeNextRule(ruleIterator, fork, subscribeNode, subscribeLe
       _iteratorError = err;
     } finally {
       try {
-        if (!_iteratorNormalCompletion && _iterator.return != null) {
-          _iterator.return();
+        if (!_iteratorNormalCompletion && _iterator["return"] != null) {
+          _iterator["return"]();
         }
       } finally {
         if (_didIteratorError) {

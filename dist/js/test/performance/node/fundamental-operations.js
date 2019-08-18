@@ -9,9 +9,9 @@ var _rdtsc = require("rdtsc");
 
 var _synchronousPromise = require("synchronous-promise");
 
-var _helpers = require("../../../main/common/helpers/helpers");
+var _ThenableSync = require("../../../main/common/async/ThenableSync");
 
-var _ThenableSync = require("../../../main/common/helpers/ThenableSync");
+var _helpers = require("../../../main/common/helpers/helpers");
 
 var _ArraySet = require("../../../main/common/lists/ArraySet");
 
@@ -23,7 +23,9 @@ var _SortedList = require("../../../main/common/lists/SortedList");
 
 var _Tester = require("../../tests/common/main/rx/deep-subscribe/helpers/Tester");
 
-/* tslint:disable:prefer-const no-identical-functions no-empty no-shadowed-variable */
+var _async = require("../../../main/common/async/async");
+
+/* tslint:disable:prefer-const no-identical-functions no-empty no-shadowed-variable no-conditional-assignment */
 
 /* tslint:disable:no-var-requires one-variable-per-declaration */
 
@@ -627,6 +629,7 @@ describe('fundamental-operations', function () {
     const checkPath = wrongPath.replace(/^w/, 'q');
     const result = (0, _rdtsc.calcPerformance)(10000, // () => {
     // 	// no operations
+    // },
     () => wrongPath === checkPath, () => path === checkPath, () => regexp.test(wrongPath), () => wrongPath.match(regexp), () => regexp.test(path), () => path.match(regexp));
     console.log(result);
   });
@@ -1084,6 +1087,7 @@ describe('fundamental-operations', function () {
     // },
     // () => {
     // 	return iterable != null && Symbol.iterator in iterable
+    // },
     () => {
       // 0
       return iterable && typeof iterable[Symbol.iterator] === 'function';
@@ -1120,6 +1124,7 @@ describe('fundamental-operations', function () {
     this.timeout(300000);
     const result = (0, _rdtsc.calcPerformance)(2000, // () => {
     // 	// no operations
+    // },
     () => {
       const x = {};
       return x;
@@ -1195,5 +1200,184 @@ describe('fundamental-operations', function () {
       return Math.random() && obj.hidden; // 27
     });
     console.log(result);
+  });
+  xit('try catch', function () {
+    this.timeout(300000);
+
+    function tryCatch(func, onValue, onError) {
+      let value;
+
+      try {
+        value = func();
+      } catch (err) {
+        onError(err);
+        return true;
+      }
+
+      if (onValue) {
+        onValue(value);
+      }
+
+      return false;
+    }
+
+    function func() {
+      if (Math.random() === 0) {
+        throw 0;
+      }
+
+      return 1;
+    }
+
+    const result = (0, _rdtsc.calcPerformance)(20000, // () => {
+    // 	// no operations
+    // },
+    () => {
+      if (Math.random() === 0) {
+        return 0;
+      }
+
+      return 1;
+    }, () => {
+      if (Math.random() === 0) {
+        throw 0;
+      }
+
+      return 1;
+    }, () => {
+      return func();
+    }, () => {
+      try {
+        if (Math.random() === 0) {
+          throw 0;
+        }
+
+        return 1;
+      } catch (e) {
+        return e;
+      }
+    }, () => {
+      try {
+        return func();
+      } catch (e) {
+        return e;
+      }
+    }, () => {
+      if (tryCatch(() => func(), () => {}, () => {})) {
+        return 0;
+      }
+    });
+    console.log(result);
+  });
+  xit('ThenableSync', function () {
+    this.timeout(300000);
+
+    const rejected = _ThenableSync.ThenableSync.createRejected(1);
+
+    const resolved = _ThenableSync.ThenableSync.createResolved(1);
+
+    const result = (0, _rdtsc.calcPerformance)(120000, () => {// no operations
+    }, () => {
+      // 157
+      return (0, _async.resolveValue)(1, () => {}, () => {}, () => {});
+    }, () => {
+      // 767
+      return (0, _async.resolveValue)(resolved, () => {}, () => {}, () => {});
+    }, () => {
+      // 835
+      return (0, _async.resolveValue)(rejected, () => {}, () => {}, () => {});
+    }, () => {
+      // 563
+      return (0, _ThenableSync.resolveAsync)(1, () => {}, () => {}, true);
+    }, () => {
+      // 1192
+      return (0, _ThenableSync.resolveAsync)(resolved, () => {}, () => {}, true);
+    }, () => {
+      // 1192
+      return (0, _ThenableSync.resolveAsync)(rejected, () => {}, () => {}, true);
+    }, () => {
+      // 533
+      return resolved.then(() => {}, () => {});
+    }, () => {
+      // 636
+      return rejected.then(() => {}, () => {});
+    }, () => {
+      // 463
+      return resolved.thenLast(() => {}, () => {});
+    }, () => {
+      // 494
+      return rejected.thenLast(() => {}, () => {});
+    });
+    console.log(result);
+  });
+
+  function calcCountPerSecond(func, maxTime = 10000) {
+    let time0 = Date.now();
+    let time;
+    let count = 0;
+    let result = 0;
+
+    do {
+      result += (0, _ThenableSync.resolveAsync)(func());
+      count++;
+    } while ((time = Date.now() - time0) < maxTime);
+
+    return count / (time / 1000);
+  }
+
+  async function calcCountPerSecondAsync(func, maxTime = 10000) {
+    let time0 = Date.now();
+    let time;
+    let count = 0;
+    let result = 0;
+
+    do {
+      result += await func();
+      count++;
+    } while ((time = Date.now() - time0) < maxTime);
+
+    return count / (time / 1000);
+  }
+
+  it('ThenableSync 2', async function () {
+    this.timeout(300000);
+
+    async function nestedPromise() {
+      await 1;
+      await 2;
+      await 3;
+      await 4;
+      await 5;
+      await 6;
+    }
+
+    console.log('async/await: ', (await calcCountPerSecondAsync(async () => {
+      await 1;
+      await 2;
+      await 3;
+      await 4;
+      await 5;
+      await 6;
+      await nestedPromise();
+    })));
+
+    function* nestedIterator() {
+      yield 1;
+      yield 2;
+      yield 3;
+      yield 4;
+      yield 5;
+      yield 6;
+    }
+
+    console.log('ThenableSync: ', calcCountPerSecond(function* () {
+      yield 1;
+      yield 2;
+      yield 3;
+      yield 4;
+      yield 5;
+      yield 6;
+      yield nestedIterator();
+    }));
   });
 });

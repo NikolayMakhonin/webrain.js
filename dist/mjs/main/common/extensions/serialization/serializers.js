@@ -1,6 +1,6 @@
 import _typeof from "@babel/runtime/helpers/typeof";
 import _regeneratorRuntime from "@babel/runtime/regenerator";
-import _objectSpread from "@babel/runtime/helpers/objectSpread";
+import _defineProperty from "@babel/runtime/helpers/defineProperty";
 import _possibleConstructorReturn from "@babel/runtime/helpers/possibleConstructorReturn";
 import _getPrototypeOf from "@babel/runtime/helpers/getPrototypeOf";
 import _inherits from "@babel/runtime/helpers/inherits";
@@ -12,8 +12,12 @@ var _marked =
 /*#__PURE__*/
 _regeneratorRuntime.mark(deSerializeIterableOrdered);
 
+function ownKeys(object, enumerableOnly) { var keys = Object.keys(object); if (Object.getOwnPropertySymbols) { var symbols = Object.getOwnPropertySymbols(object); if (enumerableOnly) symbols = symbols.filter(function (sym) { return Object.getOwnPropertyDescriptor(object, sym).enumerable; }); keys.push.apply(keys, symbols); } return keys; }
+
+function _objectSpread(target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i] != null ? arguments[i] : {}; if (i % 2) { ownKeys(source, true).forEach(function (key) { _defineProperty(target, key, source[key]); }); } else if (Object.getOwnPropertyDescriptors) { Object.defineProperties(target, Object.getOwnPropertyDescriptors(source)); } else { ownKeys(source).forEach(function (key) { Object.defineProperty(target, key, Object.getOwnPropertyDescriptor(source, key)); }); } } return target; }
+
+import { ThenableSync } from '../../async/ThenableSync';
 import { typeToDebugString } from '../../helpers/helpers';
-import { ThenableSync } from '../../helpers/ThenableSync';
 import { getObjectUniqueId } from '../../lists/helpers/object-unique-id';
 import { TypeMetaCollectionWithId } from '../TypeMeta';
 // region SerializerVisitor
@@ -191,7 +195,7 @@ function () {
         throw new Error("".concat(_instances.length - this._countDeserialized, " instances is not deserialized\r\n") + JSON.stringify(_instances.map(function (o, i) {
           return [o, i];
         }).filter(function (o) {
-          return !o[0] || o[0] === LOCKED || ThenableSync.isThenableSync(o[0]);
+          return !o[0] || o[0] === LOCKED || ThenableSync.isThenable(o[0]);
         }).map(function (o) {
           return getDebugObject(o[0], o[1]);
         })));
@@ -350,7 +354,7 @@ function () {
 
       var valueOrThenFunc = ThenableSync.resolve(iteratorOrValue, resolveValue);
 
-      if (id != null && !factory && ThenableSync.isThenableSync(valueOrThenFunc)) {
+      if (id != null && !factory && ThenableSync.isThenable(valueOrThenFunc)) {
         resolveInstance(instance);
 
         if (_onfulfilled) {
@@ -376,7 +380,7 @@ function (_TypeMetaCollectionWi) {
   function TypeMetaSerializerCollection(proto) {
     _classCallCheck(this, TypeMetaSerializerCollection);
 
-    return _possibleConstructorReturn(this, _getPrototypeOf(TypeMetaSerializerCollection).call(this, proto || TypeMetaSerializerCollection.default));
+    return _possibleConstructorReturn(this, _getPrototypeOf(TypeMetaSerializerCollection).call(this, proto || TypeMetaSerializerCollection["default"]));
   }
 
   _createClass(TypeMetaSerializerCollection, [{
@@ -394,28 +398,31 @@ function (_TypeMetaCollectionWi) {
           serialize: function serialize(_serialize, value, options) {
             return value.serialize(_serialize, options);
           },
-          deSerialize:
-          /*#__PURE__*/
-          _regeneratorRuntime.mark(function deSerialize(_deSerialize, serializedValue, valueFactory, options) {
-            var value;
-            return _regeneratorRuntime.wrap(function deSerialize$(_context) {
-              while (1) {
-                switch (_context.prev = _context.next) {
-                  case 0:
-                    value = valueFactory();
-                    _context.next = 3;
-                    return value.deSerialize(_deSerialize, serializedValue, options);
+          deSerialize: function deSerialize(_deSerialize, serializedValue, valueFactory, options) {
+            return (
+              /*#__PURE__*/
+              _regeneratorRuntime.mark(function _callee() {
+                var value;
+                return _regeneratorRuntime.wrap(function _callee$(_context) {
+                  while (1) {
+                    switch (_context.prev = _context.next) {
+                      case 0:
+                        value = valueFactory();
+                        _context.next = 3;
+                        return value.deSerialize(_deSerialize, serializedValue, options);
 
-                  case 3:
-                    return _context.abrupt("return", value);
+                      case 3:
+                        return _context.abrupt("return", value);
 
-                  case 4:
-                  case "end":
-                    return _context.stop();
-                }
-              }
-            }, deSerialize);
-          })
+                      case 4:
+                      case "end":
+                        return _context.stop();
+                    }
+                  }
+                }, _callee);
+              })()
+            );
+          }
         }, meta ? meta.serializer : {})
       });
     }
@@ -423,12 +430,12 @@ function (_TypeMetaCollectionWi) {
 
   return TypeMetaSerializerCollection;
 }(TypeMetaCollectionWithId);
-TypeMetaSerializerCollection.default = new TypeMetaSerializerCollection();
+TypeMetaSerializerCollection["default"] = new TypeMetaSerializerCollection();
 export function registerSerializable(type, meta) {
-  TypeMetaSerializerCollection.default.putSerializableType(type, meta);
+  TypeMetaSerializerCollection["default"].putSerializableType(type, meta);
 }
 export function registerSerializer(type, meta) {
-  TypeMetaSerializerCollection.default.putType(type, meta);
+  TypeMetaSerializerCollection["default"].putType(type, meta);
 } // endregion
 // region ObjectSerializer
 
@@ -499,7 +506,7 @@ function () {
 // boolean
 // region Helpers
 
-ObjectSerializer.default = new ObjectSerializer();
+ObjectSerializer["default"] = new ObjectSerializer();
 export function serializeArray(serialize, value, length) {
   if (length == null) {
     length = value.length;
@@ -517,7 +524,7 @@ export function deSerializeArray(deSerialize, serializedValue, value) {
   var _loop = function _loop(i, _len2) {
     var index = i;
 
-    if (ThenableSync.isThenableSync(deSerialize(serializedValue[index], function (o) {
+    if (ThenableSync.isThenable(deSerialize(serializedValue[index], function (o) {
       value[index] = o;
     }))) {
       value[index] = null;
@@ -546,8 +553,8 @@ export function serializeIterable(serialize, value) {
     _iteratorError = err;
   } finally {
     try {
-      if (!_iteratorNormalCompletion && _iterator.return != null) {
-        _iterator.return();
+      if (!_iteratorNormalCompletion && _iterator["return"] != null) {
+        _iterator["return"]();
       }
     } finally {
       if (_didIteratorError) {
@@ -615,7 +622,7 @@ export function deSerializeObject(deSerialize, serializedValue, value) {
   var _loop2 = function _loop2(key) {
     if (Object.prototype.hasOwnProperty.call(serializedValue, key)) {
       // tslint:disable-next-line:no-collapsible-if
-      if (ThenableSync.isThenableSync(deSerialize(serializedValue[key], function (o) {
+      if (ThenableSync.isThenable(deSerialize(serializedValue[key], function (o) {
         value[key] = o;
       }))) {
         value[key] = null;
@@ -635,20 +642,10 @@ registerSerializer(Object, {
     serialize: function serialize(_serialize2, value, options) {
       return serializeObject(_serialize2, value, options);
     },
-    deSerialize: function (_deSerialize2) {
-      function deSerialize(_x, _x2, _x3) {
-        return _deSerialize2.apply(this, arguments);
-      }
-
-      deSerialize.toString = function () {
-        return _deSerialize2.toString();
-      };
-
-      return deSerialize;
-    }(function (deSerialize, serializedValue, valueFactory) {
+    deSerialize: function deSerialize(_deSerialize2, serializedValue, valueFactory) {
       var value = valueFactory();
-      return deSerializeObject(deSerialize, serializedValue, value);
-    })
+      return deSerializeObject(_deSerialize2, serializedValue, value);
+    }
   },
   valueFactory: function valueFactory() {
     return {};
@@ -704,25 +701,15 @@ registerSerializer(Array, {
 
       return serializeArray(_serialize3, value, options && options.arrayLength);
     },
-    deSerialize: function (_deSerialize3) {
-      function deSerialize(_x4, _x5, _x6, _x7) {
-        return _deSerialize3.apply(this, arguments);
-      }
-
-      deSerialize.toString = function () {
-        return _deSerialize3.toString();
-      };
-
-      return deSerialize;
-    }(function (deSerialize, serializedValue, valueFactory, options) {
+    deSerialize: function deSerialize(_deSerialize3, serializedValue, valueFactory, options) {
       var value = valueFactory();
 
       if (options && options.arrayAsObject) {
-        return deSerializeObject(deSerialize, serializedValue, value);
+        return deSerializeObject(_deSerialize3, serializedValue, value);
       }
 
-      return deSerializeArray(deSerialize, serializedValue, value);
-    })
+      return deSerializeArray(_deSerialize3, serializedValue, value);
+    }
   },
   valueFactory: function valueFactory() {
     return [];
@@ -736,61 +723,35 @@ registerSerializer(Set, {
     serialize: function serialize(_serialize4, value) {
       return serializeIterable(_serialize4, value);
     },
-    deSerialize: function (_deSerialize4) {
-      var _marked2 =
-      /*#__PURE__*/
-      _regeneratorRuntime.mark(deSerialize);
+    deSerialize: function deSerialize(_deSerialize4, serializedValue, valueFactory) {
+      return (
+        /*#__PURE__*/
+        _regeneratorRuntime.mark(function _callee2() {
+          var value;
+          return _regeneratorRuntime.wrap(function _callee2$(_context3) {
+            while (1) {
+              switch (_context3.prev = _context3.next) {
+                case 0:
+                  value = valueFactory();
+                  _context3.next = 3;
+                  return deSerializeIterableOrdered(serializedValue, function (o) {
+                    return _deSerialize4(o, function (val) {
+                      value.add(val);
+                    });
+                  });
 
-      function deSerialize(_x8, _x9, _x10) {
-        var _args3 = arguments;
-        return _regeneratorRuntime.wrap(function deSerialize$(_context3) {
-          while (1) {
-            switch (_context3.prev = _context3.next) {
-              case 0:
-                return _context3.delegateYield(_deSerialize4.apply(this, _args3), "t0", 1);
+                case 3:
+                  return _context3.abrupt("return", value);
 
-              case 1:
-                return _context3.abrupt("return", _context3.t0);
-
-              case 2:
-              case "end":
-                return _context3.stop();
+                case 4:
+                case "end":
+                  return _context3.stop();
+              }
             }
-          }
-        }, _marked2, this);
-      }
-
-      deSerialize.toString = function () {
-        return _deSerialize4.toString();
-      };
-
-      return deSerialize;
-    }(
-    /*#__PURE__*/
-    _regeneratorRuntime.mark(function _callee(deSerialize, serializedValue, valueFactory) {
-      var value;
-      return _regeneratorRuntime.wrap(function _callee$(_context4) {
-        while (1) {
-          switch (_context4.prev = _context4.next) {
-            case 0:
-              value = valueFactory();
-              _context4.next = 3;
-              return deSerializeIterableOrdered(serializedValue, function (o) {
-                return deSerialize(o, function (val) {
-                  value.add(val);
-                });
-              });
-
-            case 3:
-              return _context4.abrupt("return", value);
-
-            case 4:
-            case "end":
-              return _context4.stop();
-          }
-        }
-      }, _callee);
-    }))
+          }, _callee2);
+        })()
+      );
+    }
   } // valueFactory: () => new Set(),
 
 }); // endregion
@@ -804,63 +765,37 @@ registerSerializer(Map, {
         return [_serialize5(item[0]), _serialize5(item[1])];
       }, value);
     },
-    deSerialize: function (_deSerialize5) {
-      var _marked3 =
-      /*#__PURE__*/
-      _regeneratorRuntime.mark(deSerialize);
-
-      function deSerialize(_x11, _x12, _x13) {
-        var _args5 = arguments;
-        return _regeneratorRuntime.wrap(function deSerialize$(_context5) {
-          while (1) {
-            switch (_context5.prev = _context5.next) {
-              case 0:
-                return _context5.delegateYield(_deSerialize5.apply(this, _args5), "t0", 1);
-
-              case 1:
-                return _context5.abrupt("return", _context5.t0);
-
-              case 2:
-              case "end":
-                return _context5.stop();
-            }
-          }
-        }, _marked3, this);
-      }
-
-      deSerialize.toString = function () {
-        return _deSerialize5.toString();
-      };
-
-      return deSerialize;
-    }(
-    /*#__PURE__*/
-    _regeneratorRuntime.mark(function _callee2(deSerialize, serializedValue, valueFactory) {
-      var value;
-      return _regeneratorRuntime.wrap(function _callee2$(_context6) {
-        while (1) {
-          switch (_context6.prev = _context6.next) {
-            case 0:
-              value = valueFactory();
-              _context6.next = 3;
-              return deSerializeIterableOrdered(serializedValue, function (item) {
-                return deSerialize(item[0], function (key) {
-                  return deSerialize(item[1], function (val) {
-                    value.set(key, val);
+    deSerialize: function deSerialize(_deSerialize5, serializedValue, valueFactory) {
+      return (
+        /*#__PURE__*/
+        _regeneratorRuntime.mark(function _callee3() {
+          var value;
+          return _regeneratorRuntime.wrap(function _callee3$(_context4) {
+            while (1) {
+              switch (_context4.prev = _context4.next) {
+                case 0:
+                  value = valueFactory();
+                  _context4.next = 3;
+                  return deSerializeIterableOrdered(serializedValue, function (item) {
+                    return _deSerialize5(item[0], function (key) {
+                      return _deSerialize5(item[1], function (val) {
+                        value.set(key, val);
+                      });
+                    });
                   });
-                });
-              });
 
-            case 3:
-              return _context6.abrupt("return", value);
+                case 3:
+                  return _context4.abrupt("return", value);
 
-            case 4:
-            case "end":
-              return _context6.stop();
-          }
-        }
-      }, _callee2);
-    }))
+                case 4:
+                case "end":
+                  return _context4.stop();
+              }
+            }
+          }, _callee3);
+        })()
+      );
+    }
   } // valueFactory: () => new Map(),
 
 }); // endregion
@@ -872,19 +807,9 @@ registerSerializer(Date, {
     serialize: function serialize(_serialize6, value) {
       return value.getTime();
     },
-    deSerialize: function (_deSerialize6) {
-      function deSerialize(_x14, _x15, _x16) {
-        return _deSerialize6.apply(this, arguments);
-      }
-
-      deSerialize.toString = function () {
-        return _deSerialize6.toString();
-      };
-
-      return deSerialize;
-    }(function (deSerialize, serializedValue, valueFactory) {
+    deSerialize: function deSerialize(_deSerialize6, serializedValue, valueFactory) {
       return valueFactory(serializedValue);
-    })
+    }
   } // valueFactory: (value: number|string|Date) => new Date(value),
 
 }); // endregion

@@ -21,8 +21,10 @@ var _ISetChanged = require("./contracts/ISetChanged");
 
 var _set2 = require("./helpers/set");
 
-var _Symbol$toStringTag = Symbol.toStringTag;
-var _Symbol$iterator = Symbol.iterator;
+let _Symbol$toStringTag, _Symbol$iterator;
+
+_Symbol$toStringTag = Symbol.toStringTag;
+_Symbol$iterator = Symbol.iterator;
 
 class ObservableSet extends _SetChangedObject.SetChangedObject {
   constructor(set) {

@@ -14,7 +14,7 @@ function () {
   _createClass(MergeSetWrapper, [{
     key: "delete",
     value: function _delete(key) {
-      this._set.delete(key);
+      this._set["delete"](key);
     }
   }, {
     key: "forEachKeys",
@@ -33,8 +33,8 @@ function () {
         _iteratorError = err;
       } finally {
         try {
-          if (!_iteratorNormalCompletion && _iterator.return != null) {
-            _iterator.return();
+          if (!_iteratorNormalCompletion && _iterator["return"] != null) {
+            _iterator["return"]();
           }
         } finally {
           if (_didIteratorError) {

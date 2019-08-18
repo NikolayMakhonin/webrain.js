@@ -1,7 +1,11 @@
-import _objectSpread from "@babel/runtime/helpers/objectSpread";
+import _defineProperty from "@babel/runtime/helpers/defineProperty";
 import _classCallCheck from "@babel/runtime/helpers/classCallCheck";
 import _createClass from "@babel/runtime/helpers/createClass";
 import _regeneratorRuntime from "@babel/runtime/regenerator";
+
+function ownKeys(object, enumerableOnly) { var keys = Object.keys(object); if (Object.getOwnPropertySymbols) { var symbols = Object.getOwnPropertySymbols(object); if (enumerableOnly) symbols = symbols.filter(function (sym) { return Object.getOwnPropertyDescriptor(object, sym).enumerable; }); keys.push.apply(keys, symbols); } return keys; }
+
+function _objectSpread(target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i] != null ? arguments[i] : {}; if (i % 2) { ownKeys(source, true).forEach(function (key) { _defineProperty(target, key, source[key]); }); } else if (Object.getOwnPropertyDescriptors) { Object.defineProperties(target, Object.getOwnPropertyDescriptors(source)); } else { ownKeys(source).forEach(function (key) { Object.defineProperty(target, key, Object.getOwnPropertyDescriptor(source, key)); }); } } return target; }
 
 var _marked =
 /*#__PURE__*/
@@ -54,8 +58,8 @@ function toIterableIterator(array) {
           _context.prev = 18;
           _context.prev = 19;
 
-          if (!_iteratorNormalCompletion && _iterator.return != null) {
-            _iterator.return();
+          if (!_iteratorNormalCompletion && _iterator["return"] != null) {
+            _iterator["return"]();
           }
 
         case 21:
@@ -122,7 +126,7 @@ function () {
   }, {
     key: "clone",
     value: function clone(value, options, cache) {
-      options = _objectSpread({}, this.commonOptions, this.cloneOptions, options);
+      options = _objectSpread({}, this.commonOptions, {}, this.cloneOptions, {}, options);
       var customClone = options && options.customClone;
       var isPrimitive = options && options.customIsPrimitive || isPrimitiveDefault;
 
@@ -218,8 +222,8 @@ function () {
               _iteratorError2 = err;
             } finally {
               try {
-                if (!_iteratorNormalCompletion2 && _iterator2.return != null) {
-                  _iterator2.return();
+                if (!_iteratorNormalCompletion2 && _iterator2["return"] != null) {
+                  _iterator2["return"]();
                 }
               } finally {
                 if (_didIteratorError2) {
@@ -245,8 +249,8 @@ function () {
               _iteratorError3 = err;
             } finally {
               try {
-                if (!_iteratorNormalCompletion3 && _iterator3.return != null) {
-                  _iterator3.return();
+                if (!_iteratorNormalCompletion3 && _iterator3["return"] != null) {
+                  _iterator3["return"]();
                 }
               } finally {
                 if (_didIteratorError3) {
@@ -276,7 +280,7 @@ function () {
   }, {
     key: "equal",
     value: function equal(obj1, obj2, options) {
-      options = _objectSpread({}, this.commonOptions, this.equalOptions, options);
+      options = _objectSpread({}, this.commonOptions, {}, this.equalOptions, {}, options);
       var customEqual = options && options.customEqual;
       var isPrimitive = options && options.customIsPrimitive || isPrimitiveDefault;
       var cache1;
@@ -489,8 +493,8 @@ function () {
                         _iteratorError5 = err;
                       } finally {
                         try {
-                          if (!_iteratorNormalCompletion5 && _iterator5.return != null) {
-                            _iterator5.return();
+                          if (!_iteratorNormalCompletion5 && _iterator5["return"] != null) {
+                            _iterator5["return"]();
                           }
                         } finally {
                           if (_didIteratorError5) {
@@ -508,8 +512,8 @@ function () {
                     _iteratorError4 = err;
                   } finally {
                     try {
-                      if (!_iteratorNormalCompletion4 && _iterator4.return != null) {
-                        _iterator4.return();
+                      if (!_iteratorNormalCompletion4 && _iterator4["return"] != null) {
+                        _iterator4["return"]();
                       }
                     } finally {
                       if (_didIteratorError4) {

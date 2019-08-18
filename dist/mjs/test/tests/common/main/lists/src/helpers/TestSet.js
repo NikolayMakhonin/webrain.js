@@ -4,6 +4,9 @@ import _inherits from "@babel/runtime/helpers/inherits";
 import _regeneratorRuntime from "@babel/runtime/regenerator";
 import _classCallCheck from "@babel/runtime/helpers/classCallCheck";
 import _createClass from "@babel/runtime/helpers/createClass";
+
+var _Symbol$toStringTag, _Symbol$iterator;
+
 import { ObjectSerializer, registerSerializable } from '../../../../../../../main/common/extensions/serialization/serializers';
 import { ArraySet } from '../../../../../../../main/common/lists/ArraySet';
 import { SetChangedType } from '../../../../../../../main/common/lists/contracts/ISetChanged';
@@ -41,8 +44,8 @@ export function applySetChangedToArray(event, array) {
         _iteratorError = err;
       } finally {
         try {
-          if (!_iteratorNormalCompletion && _iterator.return != null) {
-            _iterator.return();
+          if (!_iteratorNormalCompletion && _iterator["return"] != null) {
+            _iterator["return"]();
           }
         } finally {
           if (_didIteratorError) {
@@ -69,8 +72,8 @@ export function applySetChangedToArray(event, array) {
         _iteratorError2 = err;
       } finally {
         try {
-          if (!_iteratorNormalCompletion2 && _iterator2.return != null) {
-            _iterator2.return();
+          if (!_iteratorNormalCompletion2 && _iterator2["return"] != null) {
+            _iterator2["return"]();
           }
         } finally {
           if (_didIteratorError2) {
@@ -84,8 +87,8 @@ export function applySetChangedToArray(event, array) {
 }
 
 function testSerialization(set) {
-  var serialized = ObjectSerializer.default.serialize(set);
-  var result = ObjectSerializer.default.deSerialize(serialized);
+  var serialized = ObjectSerializer["default"].serialize(set);
+  var result = ObjectSerializer["default"].deSerialize(serialized);
   assert.notStrictEqual(result, set);
   assert.deepStrictEqual(result.entries(), set.entries());
 }
@@ -116,8 +119,8 @@ function assertSet(set, expectedArray) {
     _iteratorError3 = err;
   } finally {
     try {
-      if (!_iteratorNormalCompletion3 && _iterator3.return != null) {
-        _iterator3.return();
+      if (!_iteratorNormalCompletion3 && _iterator3["return"] != null) {
+        _iterator3["return"]();
       }
     } finally {
       if (_didIteratorError3) {
@@ -145,8 +148,8 @@ function assertSet(set, expectedArray) {
 
 var staticSetInner = new Set();
 var staticSet = new ObservableSet(staticSetInner);
-var _Symbol$toStringTag = Symbol.toStringTag;
-var _Symbol$iterator = Symbol.iterator;
+_Symbol$toStringTag = Symbol.toStringTag;
+_Symbol$iterator = Symbol.iterator;
 
 var SetWrapper =
 /*#__PURE__*/
@@ -204,8 +207,8 @@ function () {
               _context.prev = 18;
               _context.prev = 19;
 
-              if (!_iteratorNormalCompletion4 && _iterator4.return != null) {
-                _iterator4.return();
+              if (!_iteratorNormalCompletion4 && _iterator4["return"] != null) {
+                _iterator4["return"]();
               }
 
             case 21:
@@ -246,7 +249,7 @@ function () {
   }, {
     key: "delete",
     value: function _delete(value) {
-      return this._set.delete(convertToObject(value));
+      return this._set["delete"](convertToObject(value));
     }
   }, {
     key: "entries",
@@ -294,8 +297,8 @@ function () {
               _context2.prev = 18;
               _context2.prev = 19;
 
-              if (!_iteratorNormalCompletion5 && _iterator5.return != null) {
-                _iterator5.return();
+              if (!_iteratorNormalCompletion5 && _iterator5["return"] != null) {
+                _iterator5["return"]();
               }
 
             case 21:
@@ -379,8 +382,8 @@ function () {
               _context3.prev = 18;
               _context3.prev = 19;
 
-              if (!_iteratorNormalCompletion6 && _iterator6.return != null) {
-                _iterator6.return();
+              if (!_iteratorNormalCompletion6 && _iterator6["return"] != null) {
+                _iterator6["return"]();
               }
 
             case 21:
@@ -452,8 +455,8 @@ function () {
               _context4.prev = 18;
               _context4.prev = 19;
 
-              if (!_iteratorNormalCompletion7 && _iterator7.return != null) {
-                _iterator7.return();
+              if (!_iteratorNormalCompletion7 && _iterator7["return"] != null) {
+                _iterator7["return"]();
               }
 
             case 21:
@@ -505,30 +508,33 @@ function () {
 SetWrapper.uuid = '5de4524d-6cdb-41e9-8968-9798ecedef5d';
 registerSerializable(SetWrapper, {
   serializer: {
-    deSerialize:
-    /*#__PURE__*/
-    _regeneratorRuntime.mark(function deSerialize(_deSerialize2, serializedValue, valueFactory) {
-      var innerSet, value;
-      return _regeneratorRuntime.wrap(function deSerialize$(_context5) {
-        while (1) {
-          switch (_context5.prev = _context5.next) {
-            case 0:
-              _context5.next = 2;
-              return _deSerialize2(serializedValue.set);
+    deSerialize: function deSerialize(_deSerialize2, serializedValue, valueFactory) {
+      return (
+        /*#__PURE__*/
+        _regeneratorRuntime.mark(function _callee() {
+          var innerSet, value;
+          return _regeneratorRuntime.wrap(function _callee$(_context5) {
+            while (1) {
+              switch (_context5.prev = _context5.next) {
+                case 0:
+                  _context5.next = 2;
+                  return _deSerialize2(serializedValue.set);
 
-            case 2:
-              innerSet = _context5.sent;
-              value = valueFactory(innerSet);
-              value.deSerialize(_deSerialize2, serializedValue);
-              return _context5.abrupt("return", value);
+                case 2:
+                  innerSet = _context5.sent;
+                  value = valueFactory(innerSet);
+                  value.deSerialize(_deSerialize2, serializedValue);
+                  return _context5.abrupt("return", value);
 
-            case 6:
-            case "end":
-              return _context5.stop();
-          }
-        }
-      }, deSerialize);
-    })
+                case 6:
+                case "end":
+                  return _context5.stop();
+              }
+            }
+          }, _callee);
+        })()
+      );
+    }
   }
 });
 export var TestSet =
@@ -583,8 +589,8 @@ function (_TestVariants) {
                 _iteratorError8 = err;
               } finally {
                 try {
-                  if (!_iteratorNormalCompletion8 && _iterator8.return != null) {
-                    _iterator8.return();
+                  if (!_iteratorNormalCompletion8 && _iterator8["return"] != null) {
+                    _iterator8["return"]();
                   }
                 } finally {
                   if (_didIteratorError8) {
@@ -632,8 +638,8 @@ function (_TestVariants) {
                 _iteratorError9 = err;
               } finally {
                 try {
-                  if (!_iteratorNormalCompletion9 && _iterator9.return != null) {
-                    _iterator9.return();
+                  if (!_iteratorNormalCompletion9 && _iterator9["return"] != null) {
+                    _iterator9["return"]();
                   }
                 } finally {
                   if (_didIteratorError9) {
@@ -666,7 +672,7 @@ function (_TestVariants) {
             }
 
             if (options.expected.error) {
-              assert.throws(function () {
+              assert["throws"](function () {
                 return options.action(set);
               }, options.expected.error);
               assertSet(set, array);

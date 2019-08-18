@@ -32,8 +32,8 @@ describe('common > main > lists > ObservableMap', function () {
         _iteratorError = err;
       } finally {
         try {
-          if (!_iteratorNormalCompletion && _iterator.return != null) {
-            _iterator.return();
+          if (!_iteratorNormalCompletion && _iterator["return"] != null) {
+            _iterator["return"]();
           }
         } finally {
           if (_didIteratorError) {
@@ -141,15 +141,15 @@ describe('common > main > lists > ObservableMap', function () {
       try {
         for (var _iterator2 = array[Symbol.iterator](), _step2; !(_iteratorNormalCompletion2 = (_step2 = _iterator2.next()).done); _iteratorNormalCompletion2 = true) {
           var key = _step2.value;
-          result = list.delete(key) || result;
+          result = list["delete"](key) || result;
         }
       } catch (err) {
         _didIteratorError2 = true;
         _iteratorError2 = err;
       } finally {
         try {
-          if (!_iteratorNormalCompletion2 && _iterator2.return != null) {
-            _iterator2.return();
+          if (!_iteratorNormalCompletion2 && _iterator2["return"] != null) {
+            _iterator2["return"]();
           }
         } finally {
           if (_didIteratorError2) {
@@ -164,7 +164,7 @@ describe('common > main > lists > ObservableMap', function () {
     function remove(key) {
       return {
         actions: [function (list) {
-          return list.delete(key);
+          return list["delete"](key);
         }],
         description: "delete(".concat(JSON.stringify(key), ")\n")
       };

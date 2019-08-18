@@ -24,6 +24,13 @@ function* iterateRule(rule, next = null) {
   const ruleNext = rule.next || next ? () => iterateRule(rule.next, next) : null;
 
   switch (rule.type) {
+    case _rules.RuleType.Nothing:
+      if (ruleNext) {
+        yield* ruleNext();
+      }
+
+      break;
+
     case _rules.RuleType.Action:
       yield rule;
       yield ruleNext;

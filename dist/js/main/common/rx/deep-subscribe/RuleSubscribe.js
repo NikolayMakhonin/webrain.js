@@ -17,16 +17,24 @@ var _constants = require("./contracts/constants");
 
 var _rules = require("./contracts/rules");
 
-var _common = require("./helpers/common");
-
 /* tslint:disable:no-identical-functions */
 // function propertyPredicateAll(propertyName: string, object) {
 // 	return Object.prototype.hasOwnProperty.call(object, propertyName)
 // }
 // region subscribeObject
 function subscribeObject(propertyNames, propertyPredicate, object, immediateSubscribe, subscribeItem, unsubscribeItem) {
+  let unsubscribeSelf;
+
+  if (propertyNames && propertyNames.indexOf('') >= 0 || propertyPredicate && propertyPredicate('', null)) {
+    subscribeItem(object, '');
+
+    unsubscribeSelf = () => {
+      unsubscribeItem(object, '');
+    };
+  }
+
   if (!(object instanceof Object)) {
-    return null;
+    return unsubscribeSelf || null;
   }
 
   const {
@@ -35,7 +43,7 @@ function subscribeObject(propertyNames, propertyPredicate, object, immediateSubs
   let unsubscribe;
 
   if (propertyChanged) {
-    unsubscribe = (0, _common.checkUnsubscribe)(propertyChanged.subscribe(({
+    unsubscribe = (0, _helpers.checkIsFuncOrNull)(propertyChanged.subscribe(({
       name,
       oldValue,
       newValue
@@ -73,10 +81,14 @@ function subscribeObject(propertyNames, propertyPredicate, object, immediateSubs
   if (immediateSubscribe) {
     forEach(subscribeItem);
   } else if (unsubscribe == null) {
-    return null;
+    return unsubscribeSelf || null;
   }
 
   return () => {
+    if (unsubscribeSelf) {
+      unsubscribeSelf();
+    }
+
     if (unsubscribe) {
       unsubscribe();
       unsubscribe = null;
@@ -123,7 +135,7 @@ function subscribeList(object, immediateSubscribe, subscribeItem, unsubscribeIte
   let unsubscribe;
 
   if (listChanged) {
-    unsubscribe = (0, _common.checkUnsubscribe)(listChanged.subscribe(({
+    unsubscribe = (0, _helpers.checkIsFuncOrNull)(listChanged.subscribe(({
       type,
       oldItems,
       newItems
@@ -192,7 +204,7 @@ function subscribeSet(object, immediateSubscribe, subscribeItem, unsubscribeItem
   let unsubscribe;
 
   if (setChanged) {
-    unsubscribe = (0, _common.checkUnsubscribe)(setChanged.subscribe(({
+    unsubscribe = (0, _helpers.checkIsFuncOrNull)(setChanged.subscribe(({
       type,
       oldItems,
       newItems
@@ -252,7 +264,7 @@ function subscribeMap(keys, keyPredicate, object, immediateSubscribe, subscribeI
   let unsubscribe;
 
   if (mapChanged) {
-    unsubscribe = (0, _common.checkUnsubscribe)(mapChanged.subscribe(({
+    unsubscribe = (0, _helpers.checkIsFuncOrNull)(mapChanged.subscribe(({
       type,
       key,
       oldValue,

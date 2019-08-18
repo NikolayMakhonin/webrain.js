@@ -1,27 +1,36 @@
 import _classCallCheck from "@babel/runtime/helpers/classCallCheck";
 
 /* tslint:disable:no-identical-functions */
-import { isIterable } from '../../helpers/helpers';
+import { checkIsFuncOrNull, isIterable } from '../../helpers/helpers';
 import { ListChangedType } from '../../lists/contracts/IListChanged';
 import { MapChangedType } from '../../lists/contracts/IMapChanged';
 import { SetChangedType } from '../../lists/contracts/ISetChanged';
 import { ANY, COLLECTION_PREFIX } from './contracts/constants';
-import { RuleType } from './contracts/rules';
-import { checkUnsubscribe } from './helpers/common'; // function propertyPredicateAll(propertyName: string, object) {
+import { RuleType } from './contracts/rules'; // function propertyPredicateAll(propertyName: string, object) {
 // 	return Object.prototype.hasOwnProperty.call(object, propertyName)
 // }
 // region subscribeObject
 
 function subscribeObject(propertyNames, propertyPredicate, object, immediateSubscribe, subscribeItem, unsubscribeItem) {
+  var unsubscribeSelf;
+
+  if (propertyNames && propertyNames.indexOf('') >= 0 || propertyPredicate && propertyPredicate('', null)) {
+    subscribeItem(object, '');
+
+    unsubscribeSelf = function unsubscribeSelf() {
+      unsubscribeItem(object, '');
+    };
+  }
+
   if (!(object instanceof Object)) {
-    return null;
+    return unsubscribeSelf || null;
   }
 
   var propertyChanged = object.propertyChanged;
   var unsubscribe;
 
   if (propertyChanged) {
-    unsubscribe = checkUnsubscribe(propertyChanged.subscribe(function (_ref) {
+    unsubscribe = checkIsFuncOrNull(propertyChanged.subscribe(function (_ref) {
       var name = _ref.name,
           oldValue = _ref.oldValue,
           newValue = _ref.newValue;
@@ -59,10 +68,14 @@ function subscribeObject(propertyNames, propertyPredicate, object, immediateSubs
   if (immediateSubscribe) {
     forEach(subscribeItem);
   } else if (unsubscribe == null) {
-    return null;
+    return unsubscribeSelf || null;
   }
 
   return function () {
+    if (unsubscribeSelf) {
+      unsubscribeSelf();
+    }
+
     if (unsubscribe) {
       unsubscribe();
       unsubscribe = null;
@@ -94,8 +107,8 @@ function subscribeIterable(object, immediateSubscribe, subscribeItem, unsubscrib
       _iteratorError = err;
     } finally {
       try {
-        if (!_iteratorNormalCompletion && _iterator.return != null) {
-          _iterator.return();
+        if (!_iteratorNormalCompletion && _iterator["return"] != null) {
+          _iterator["return"]();
         }
       } finally {
         if (_didIteratorError) {
@@ -127,7 +140,7 @@ function subscribeList(object, immediateSubscribe, subscribeItem, unsubscribeIte
   var unsubscribe;
 
   if (listChanged) {
-    unsubscribe = checkUnsubscribe(listChanged.subscribe(function (_ref2) {
+    unsubscribe = checkIsFuncOrNull(listChanged.subscribe(function (_ref2) {
       var type = _ref2.type,
           oldItems = _ref2.oldItems,
           newItems = _ref2.newItems;
@@ -176,8 +189,8 @@ function subscribeList(object, immediateSubscribe, subscribeItem, unsubscribeIte
       _iteratorError2 = err;
     } finally {
       try {
-        if (!_iteratorNormalCompletion2 && _iterator2.return != null) {
-          _iterator2.return();
+        if (!_iteratorNormalCompletion2 && _iterator2["return"] != null) {
+          _iterator2["return"]();
         }
       } finally {
         if (_didIteratorError2) {
@@ -214,7 +227,7 @@ function subscribeSet(object, immediateSubscribe, subscribeItem, unsubscribeItem
   var unsubscribe;
 
   if (setChanged) {
-    unsubscribe = checkUnsubscribe(setChanged.subscribe(function (_ref3) {
+    unsubscribe = checkIsFuncOrNull(setChanged.subscribe(function (_ref3) {
       var type = _ref3.type,
           oldItems = _ref3.oldItems,
           newItems = _ref3.newItems;
@@ -254,8 +267,8 @@ function subscribeSet(object, immediateSubscribe, subscribeItem, unsubscribeItem
       _iteratorError3 = err;
     } finally {
       try {
-        if (!_iteratorNormalCompletion3 && _iterator3.return != null) {
-          _iterator3.return();
+        if (!_iteratorNormalCompletion3 && _iterator3["return"] != null) {
+          _iterator3["return"]();
         }
       } finally {
         if (_didIteratorError3) {
@@ -292,7 +305,7 @@ function subscribeMap(keys, keyPredicate, object, immediateSubscribe, subscribeI
   var unsubscribe;
 
   if (mapChanged) {
-    unsubscribe = checkUnsubscribe(mapChanged.subscribe(function (_ref4) {
+    unsubscribe = checkIsFuncOrNull(mapChanged.subscribe(function (_ref4) {
       var type = _ref4.type,
           key = _ref4.key,
           oldValue = _ref4.oldValue,
@@ -351,8 +364,8 @@ function subscribeMap(keys, keyPredicate, object, immediateSubscribe, subscribeI
         _iteratorError4 = err;
       } finally {
         try {
-          if (!_iteratorNormalCompletion4 && _iterator4.return != null) {
-            _iterator4.return();
+          if (!_iteratorNormalCompletion4 && _iterator4["return"] != null) {
+            _iterator4["return"]();
           }
         } finally {
           if (_didIteratorError4) {

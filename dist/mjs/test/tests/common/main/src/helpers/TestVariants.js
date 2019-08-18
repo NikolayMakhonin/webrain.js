@@ -2,11 +2,14 @@ import _classCallCheck from "@babel/runtime/helpers/classCallCheck";
 import _createClass from "@babel/runtime/helpers/createClass";
 import _regeneratorRuntime from "@babel/runtime/regenerator";
 import _defineProperty from "@babel/runtime/helpers/defineProperty";
-import _objectSpread from "@babel/runtime/helpers/objectSpread";
 
 var _marked =
 /*#__PURE__*/
 _regeneratorRuntime.mark(generateOptions);
+
+function ownKeys(object, enumerableOnly) { var keys = Object.keys(object); if (Object.getOwnPropertySymbols) { var symbols = Object.getOwnPropertySymbols(object); if (enumerableOnly) symbols = symbols.filter(function (sym) { return Object.getOwnPropertyDescriptor(object, sym).enumerable; }); keys.push.apply(keys, symbols); } return keys; }
+
+function _objectSpread(target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i] != null ? arguments[i] : {}; if (i % 2) { ownKeys(source, true).forEach(function (key) { _defineProperty(target, key, source[key]); }); } else if (Object.getOwnPropertyDescriptors) { Object.defineProperties(target, Object.getOwnPropertyDescriptors(source)); } else { ownKeys(source).forEach(function (key) { Object.defineProperty(target, key, Object.getOwnPropertyDescriptor(source, key)); }); } } return target; }
 
 export function expandArray(array) {
   var output = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : [];
@@ -33,8 +36,8 @@ export function expandArray(array) {
     _iteratorError = err;
   } finally {
     try {
-      if (!_iteratorNormalCompletion && _iterator.return != null) {
-        _iterator.return();
+      if (!_iteratorNormalCompletion && _iterator["return"] != null) {
+        _iterator["return"]();
       }
     } finally {
       if (_didIteratorError) {
@@ -46,6 +49,9 @@ export function expandArray(array) {
   return output;
 }
 export var THIS = {};
+
+// tslint:disable-next-line:no-shadowed-variable no-empty
+var NONE = function NONE() {};
 
 function generateOptions(base, optionsVariants, exclude) {
   var hasChilds, _key, _iteratorNormalCompletion2, _didIteratorError2, _iteratorError2, _iterator2, _step2, optionVariant, _variant, newOptionsVariants;
@@ -64,7 +70,7 @@ function generateOptions(base, optionsVariants, exclude) {
 
           _key = _context.t1.value;
 
-          if (!Object.prototype.hasOwnProperty.call(optionsVariants, _key)) {
+          if (!optionsVariants[_key]) {
             _context.next = 34;
             break;
           }
@@ -84,7 +90,7 @@ function generateOptions(base, optionsVariants, exclude) {
           optionVariant = _step2.value;
           _variant = _objectSpread({}, base, _defineProperty({}, _key, optionVariant));
           newOptionsVariants = _objectSpread({}, optionsVariants);
-          delete newOptionsVariants[_key];
+          newOptionsVariants[_key] = null;
           hasChilds = true;
           return _context.delegateYield(generateOptions(_variant, newOptionsVariants, exclude), "t2", 16);
 
@@ -107,8 +113,8 @@ function generateOptions(base, optionsVariants, exclude) {
           _context.prev = 25;
           _context.prev = 26;
 
-          if (!_iteratorNormalCompletion2 && _iterator2.return != null) {
-            _iterator2.return();
+          if (!_iteratorNormalCompletion2 && _iterator2["return"] != null) {
+            _iterator2["return"]();
           }
 
         case 28:
@@ -162,7 +168,7 @@ function () {
   _createClass(TestVariants, [{
     key: "test",
     value: function test(testCases) {
-      var optionsVariants = _objectSpread({}, this.baseOptionsVariants, testCases);
+      var optionsVariants = _objectSpread({}, this.baseOptionsVariants, {}, testCases);
 
       var expected = testCases.expected;
       var exclude = testCases.exclude;
@@ -212,8 +218,8 @@ function () {
                 _iteratorError5 = err;
               } finally {
                 try {
-                  if (!_iteratorNormalCompletion5 && _iterator5.return != null) {
-                    _iterator5.return();
+                  if (!_iteratorNormalCompletion5 && _iterator5["return"] != null) {
+                    _iterator5["return"]();
                   }
                 } finally {
                   if (_didIteratorError5) {
@@ -227,8 +233,8 @@ function () {
             _iteratorError4 = err;
           } finally {
             try {
-              if (!_iteratorNormalCompletion4 && _iterator4.return != null) {
-                _iterator4.return();
+              if (!_iteratorNormalCompletion4 && _iterator4["return"] != null) {
+                _iterator4["return"]();
               }
             } finally {
               if (_didIteratorError4) {
@@ -242,8 +248,8 @@ function () {
         _iteratorError3 = err;
       } finally {
         try {
-          if (!_iteratorNormalCompletion3 && _iterator3.return != null) {
-            _iterator3.return();
+          if (!_iteratorNormalCompletion3 && _iterator3["return"] != null) {
+            _iterator3["return"]();
           }
         } finally {
           if (_didIteratorError3) {

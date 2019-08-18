@@ -7,14 +7,16 @@ exports.isIterable = isIterable;
 exports.isIterator = isIterator;
 exports.typeToDebugString = typeToDebugString;
 exports.delay = delay;
+exports.checkIsFuncOrNull = checkIsFuncOrNull;
+exports.toSingleCall = toSingleCall;
 exports.EMPTY = void 0;
 
 function isIterable(value) {
-  return value && typeof value[Symbol.iterator] === 'function';
+  return value != null && typeof value[Symbol.iterator] === 'function';
 }
 
 function isIterator(value) {
-  return value && typeof value[Symbol.iterator] === 'function' && typeof value.next === 'function';
+  return value != null && typeof value[Symbol.iterator] === 'function' && typeof value.next === 'function';
 }
 
 function typeToDebugString(type) {
@@ -28,4 +30,33 @@ exports.EMPTY = EMPTY;
 
 function delay(timeMilliseconds) {
   return new Promise(resolve => setTimeout(resolve, timeMilliseconds));
+}
+
+function checkIsFuncOrNull(func) {
+  if (func != null && typeof func !== 'function') {
+    throw new Error(`Value is not a function or null/undefined: ${func}`);
+  }
+
+  return func;
+}
+
+function toSingleCall(func, throwOnMultipleCall) {
+  if (func == null) {
+    return func;
+  }
+
+  func = checkIsFuncOrNull(func);
+  let isCalled = false;
+  return (...args) => {
+    if (isCalled) {
+      if (throwOnMultipleCall) {
+        throw new Error(`Multiple call for single call function: ${func}`);
+      }
+
+      return;
+    }
+
+    isCalled = true;
+    return func(...args);
+  };
 }
