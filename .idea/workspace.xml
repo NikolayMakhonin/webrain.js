@@ -1,1 +1,1832 @@
-<?xml version="1.0" encoding="UTF-8"?><project version="4"><component name="BookmarkManager"><bookmark url="file://$PROJECT_DIR$/src/test/tests/common/main/rx/deep-subscribe/iterate-rule.ts" description="   assert.throws(() => new RuleBuilder().repeat(1,..." line="314"/></component><component name="ChangeListManager"><ignored path=".idea/"/><ignored path="$PROJECT_DIR$/node_modules/"/><ignored path="$PROJECT_DIR$/.tmp/"/><ignored path="$PROJECT_DIR$/temp/"/><ignored path="$PROJECT_DIR$/tmp/"/><option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true"/><option name="SHOW_DIALOG" value="false"/><option name="HIGHLIGHT_CONFLICTS" value="true"/><option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false"/><option name="LAST_RESOLUTION" value="IGNORE"/></component><component name="CoverageOptionsProvider"><option name="myAddOrReplace" value="0"/></component><component name="JsFlowSettings"><service-enabled>true</service-enabled><exe-path/><other-services-enabled>true</other-services-enabled><auto-save>true</auto-save></component><component name="ProjectLevelVcsManager"><ConfirmationsSetting value="2" id="Add"/></component><component name="PropertiesComponent"><property name="NewWatcherDialog.advanced.open" value="true"/><property name="WebServerToolWindowFactoryState" value="false"/><property name="auto.test.manager.delay" value="5000"/><property name="javascript.karma.karma_node_package_dir" value=""/><property name="last_opened_file_path" value="$PROJECT_DIR$/isolate-00000000003A97D0-v8.log"/><property name="node.js.detected.package.eslint" value="true"/><property name="node.js.detected.package.standard" value="true"/><property name="node.js.detected.package.tslint" value="true"/><property name="node.js.path.for.package.eslint" value="node"/><property name="node.js.path.for.package.standard" value="node"/><property name="node.js.path.for.package.tslint" value="project"/><property name="node.js.selected.package.eslint" value="L:\Work\_GIT\GitHub\NodeJs\templates\nodejs-templates\node_modules\eslint"/><property name="node.js.selected.package.standard" value="L:\Work\_GIT\GitHub\NodeJs\templates\nodejs-templates\node_modules\eslint"/><property name="node.js.selected.package.tslint" value="L:\Work\_GIT\GitHub\NodeJs\modules\tree-state-manager\node_modules\tslint"/><property name="nodejs.mocha.mocha_node_package_dir" value="$PROJECT_DIR$/node_modules/mocha"/><property name="nodejs_package_manager_path" value="npm"/><property name="restartRequiresConfirmation" value="false"/><property name="settings.editor.selected.configurable" value="preferences.pluginManager"/><property name="ts.external.directory.path" value="L:\Work\_GIT\GitHub\NodeJs\modules\tree-state-manager\node_modules\typescript\lib"/><property name="ts.rename.search.for.js.occurrences" value="false"/></component><component name="RunManager" selected="Mocha.DeferredCalc"><configuration name="Tests Dev" type="JavaScriptTestRunnerKarma"><config-file value="$PROJECT_DIR$/env/karma/karma.conf.dev.js"/><karma-package-dir value="$PROJECT_DIR$/node_modules/karma"/><working-directory value="$PROJECT_DIR$"/><node-interpreter value="node"/><envs/><method v="2"/></configuration><configuration default="true" type="JavaScriptTestRunnerKarma"><config-file value="$PROJECT_DIR$/env/karma/karma.conf.tests.js"/><karma-package-dir value="$PROJECT_DIR$/node_modules/karma"/><node-interpreter value="node"/><envs/><method v="2"/></configuration><configuration default="true" type="NodeJSConfigurationType" path-to-node="node" node-parameters="--max-old-space-size=4096" working-dir="$PROJECT_DIR$"><method v="2"/></configuration><configuration name="Coverage Mocha Report" type="js.build_tools.npm"><package-json value="$PROJECT_DIR$/package.json"/><command value="run"/><scripts><script value="coverage:dev"/></scripts><node-interpreter value="project"/><envs/><method v="2"/></configuration><configuration name="DeferredCalc (Coverage)" type="mocha-javascript-test-runner"><node-interpreter>node</node-interpreter><node-options>--max-old-space-size=4096</node-options><mocha-package>$PROJECT_DIR$/node_modules/mocha</mocha-package><working-directory>$PROJECT_DIR$</working-directory><pass-parent-env>true</pass-parent-env><ui>bdd</ui><extra-mocha-options>--opts ./env/mocha/mocha.babel.opts</extra-mocha-options><test-kind>SUITE</test-kind><test-file>$PROJECT_DIR$/src/test/tests/common/main/rx/deferred-calc/DeferredCalc.ts</test-file><test-names><name value="common > main > rx > deferred-calc > DeferredCalc"/></test-names><method v="2"/></configuration><configuration name="DeferredCalc" type="mocha-javascript-test-runner" temporary="true"><node-interpreter>node</node-interpreter><node-options>--max-old-space-size=4096</node-options><mocha-package>$PROJECT_DIR$/node_modules/mocha</mocha-package><working-directory>$PROJECT_DIR$</working-directory><pass-parent-env>true</pass-parent-env><ui>bdd</ui><extra-mocha-options>--opts ./env/mocha/mocha.babel.opts --watch</extra-mocha-options><test-kind>SUITE</test-kind><test-file>$PROJECT_DIR$/src/test/tests/common/main/rx/deferred-calc/DeferredCalc.ts</test-file><test-names><name value="common > main > rx > deferred-calc > DeferredCalc"/></test-names><method v="2"/></configuration><configuration name="Intern Export with rebuild" type="mocha-javascript-test-runner"><node-interpreter>node</node-interpreter><node-options>--max-old-space-size=4096</node-options><mocha-package>$PROJECT_DIR$/node_modules/mocha</mocha-package><working-directory>$PROJECT_DIR$</working-directory><pass-parent-env>true</pass-parent-env><ui>bdd</ui><extra-mocha-options>--opts ./env/mocha/mocha.babel.opts</extra-mocha-options><test-kind>PATTERN</test-kind><test-pattern>./env/intern/mocha-export.js</test-pattern><method v="2"/></configuration><configuration name="Intern Export" type="mocha-javascript-test-runner"><node-interpreter>node</node-interpreter><node-options>--max-old-space-size=4096</node-options><mocha-package>$PROJECT_DIR$/node_modules/mocha</mocha-package><working-directory>$PROJECT_DIR$</working-directory><pass-parent-env>true</pass-parent-env><ui>bdd</ui><extra-mocha-options>--opts ./env/mocha/mocha.babel.opts</extra-mocha-options><test-kind>PATTERN</test-kind><test-pattern>./env/intern/mocha-export.js</test-pattern><method v="2"/></configuration><configuration name="L:\Work\_GIT\GitHub\NodeJs\modules\tree-state-manager\src\test\tests\common\main\rx\deep-subscribe\**\*.ts (Coverage)" type="mocha-javascript-test-runner"><node-interpreter>node</node-interpreter><node-options>--max-old-space-size=4096</node-options><mocha-package>$PROJECT_DIR$/node_modules/mocha</mocha-package><working-directory>$PROJECT_DIR$</working-directory><pass-parent-env>true</pass-parent-env><ui>bdd</ui><extra-mocha-options>--opts ./env/mocha/mocha.babel.opts</extra-mocha-options><test-kind>PATTERN</test-kind><test-pattern>$PROJECT_DIR$/src/test/tests/common/main/rx/deep-subscribe/**/*.ts</test-pattern><method v="2"/></configuration><configuration name="Performance Mocha" type="mocha-javascript-test-runner"><node-interpreter>node</node-interpreter><node-options>--max-old-space-size=4096</node-options><mocha-package>$PROJECT_DIR$/node_modules/mocha</mocha-package><working-directory>$PROJECT_DIR$</working-directory><pass-parent-env>true</pass-parent-env><ui>bdd</ui><extra-mocha-options>--opts ./env/mocha/mocha.babel.opts</extra-mocha-options><test-kind>PATTERN</test-kind><test-pattern>./src/test/performance/node/**/*.*</test-pattern><method v="2"/></configuration><configuration default="true" type="mocha-javascript-test-runner"><node-interpreter>node</node-interpreter><node-options>--max-old-space-size=4096</node-options><mocha-package>$PROJECT_DIR$/node_modules/mocha</mocha-package><working-directory>$PROJECT_DIR$</working-directory><pass-parent-env>true</pass-parent-env><ui>bdd</ui><extra-mocha-options>--opts ./env/mocha/mocha.babel.opts --watch</extra-mocha-options><test-kind>PATTERN</test-kind><test-pattern>./src/test/tests/{common,node}/**/*.*</test-pattern><method v="2"/></configuration><configuration name="common > main > rx > deep-subscribe > deep-subscribe.object" type="mocha-javascript-test-runner" temporary="true" nameIsGenerated="true"><node-interpreter>node</node-interpreter><node-options>--max-old-space-size=4096</node-options><mocha-package>$PROJECT_DIR$/node_modules/mocha</mocha-package><working-directory>$PROJECT_DIR$</working-directory><pass-parent-env>true</pass-parent-env><ui>bdd</ui><extra-mocha-options>--opts ./env/mocha/mocha.babel.opts</extra-mocha-options><test-kind>TEST</test-kind><test-file>$PROJECT_DIR$/src/test/tests/common/main/rx/deep-subscribe/deep-subscribe.ts</test-file><test-names><name value="common > main > rx > deep-subscribe > deep-subscribe"/><name value="object"/></test-names><method v="2"/></configuration><configuration name="common > main > rx > deep-subscribe > deep-subscribe.throws" type="mocha-javascript-test-runner" temporary="true" nameIsGenerated="true"><node-interpreter>node</node-interpreter><node-options>--max-old-space-size=4096</node-options><mocha-package>$PROJECT_DIR$/node_modules/mocha</mocha-package><working-directory>$PROJECT_DIR$</working-directory><pass-parent-env>true</pass-parent-env><ui>bdd</ui><extra-mocha-options>--opts ./env/mocha/mocha.babel.opts</extra-mocha-options><test-kind>TEST</test-kind><test-file>$PROJECT_DIR$/src/test/tests/common/main/rx/deep-subscribe/deep-subscribe.ts</test-file><test-names><name value="common > main > rx > deep-subscribe > deep-subscribe"/><name value="throws"/></test-names><method v="2"/></configuration><configuration name="common > main > rx > deferred-calc > timing" type="mocha-javascript-test-runner" temporary="true" nameIsGenerated="true"><node-interpreter>node</node-interpreter><node-options>--max-old-space-size=4096</node-options><mocha-package>$PROJECT_DIR$/node_modules/mocha</mocha-package><working-directory>$PROJECT_DIR$</working-directory><pass-parent-env>true</pass-parent-env><ui>bdd</ui><extra-mocha-options>--opts ./env/mocha/mocha.babel.opts</extra-mocha-options><test-kind>SUITE</test-kind><test-file>$PROJECT_DIR$/src/test/tests/common/main/rx/deferred-calc/timing.ts</test-file><test-names><name value="common > main > rx > deferred-calc > timing"/></test-names><method v="2"/></configuration><configuration name="deep-subscribe (Coverage)" type="mocha-javascript-test-runner"><node-interpreter>node</node-interpreter><node-options>--max-old-space-size=4096</node-options><mocha-package>$PROJECT_DIR$/node_modules/mocha</mocha-package><working-directory>$PROJECT_DIR$</working-directory><pass-parent-env>true</pass-parent-env><ui>bdd</ui><extra-mocha-options>--opts ./env/mocha/mocha.babel.opts</extra-mocha-options><test-kind>TEST_FILE</test-kind><test-file>$PROJECT_DIR$/src/test/tests/common/main/rx/deep-subscribe/deep-subscribe.ts</test-file><method v="2"/></configuration><configuration name="deep-subscribe" type="mocha-javascript-test-runner" temporary="true"><node-interpreter>node</node-interpreter><node-options>--max-old-space-size=4096</node-options><mocha-package>$PROJECT_DIR$/node_modules/mocha</mocha-package><working-directory>$PROJECT_DIR$</working-directory><pass-parent-env>true</pass-parent-env><ui>bdd</ui><extra-mocha-options>--opts ./env/mocha/mocha.babel.opts</extra-mocha-options><test-kind>PATTERN</test-kind><test-pattern>$PROJECT_DIR$/src/test/tests/common/main/rx/deep-subscribe/**/*.ts</test-pattern><method v="2"/></configuration><list><item itemvalue="Karma.CI Karma"/><item itemvalue="Karma.Coverage Karma"/><item itemvalue="Karma.Tests Karma"/><item itemvalue="Karma.Tests Dev"/><item itemvalue="Karma.Performance Karma"/><item itemvalue="Mocha.Coverage Mocha"/><item itemvalue="Mocha.Watch Mocha"/><item itemvalue="Mocha.Performance Mocha"/><item itemvalue="Mocha.Intern Export"/><item itemvalue="Mocha.Intern Export with rebuild"/><item itemvalue="Mocha.L:\Work\_GIT\GitHub\NodeJs\modules\tree-state-manager\src\test\tests\common\main\rx\deep-subscribe\**\*.ts (Coverage)"/><item itemvalue="Mocha.deep-subscribe (Coverage)"/><item itemvalue="Mocha.DeferredCalc (Coverage)"/><item itemvalue="Mocha.deep-subscribe"/><item itemvalue="Mocha.common > main > rx > deep-subscribe > deep-subscribe.throws"/><item itemvalue="Mocha.common > main > rx > deep-subscribe > deep-subscribe.object"/><item itemvalue="Mocha.common > main > rx > deferred-calc > timing"/><item itemvalue="Mocha.DeferredCalc"/><item itemvalue="npm.Coverage Mocha Report"/></list><recent_temporary><list><item itemvalue="Mocha.DeferredCalc"/><item itemvalue="Mocha.common > main > rx > deferred-calc > timing"/><item itemvalue="Mocha.deep-subscribe"/><item itemvalue="Mocha.common > main > rx > deep-subscribe > deep-subscribe.throws"/><item itemvalue="Mocha.common > main > rx > deep-subscribe > deep-subscribe.object"/></list></recent_temporary></component><component name="VcsManagerConfiguration"><option name="CHECK_CODE_SMELLS_BEFORE_PROJECT_COMMIT" value="false"/><option name="CHECK_NEW_TODO" value="false"/><option name="LAST_COMMIT_MESSAGE" value="Develop"/><MESSAGE value="Fix travis: Exclude Edge from karma tests"/><MESSAGE value="SortedList indexOf improved test"/><MESSAGE value="List completed"/><MESSAGE value="ObservableObject refactoring"/><MESSAGE value="Develop collection changed List"/><MESSAGE value="Experiment collection changed Shift / ReSize"/><MESSAGE value="List refactoring"/><MESSAGE value="Replace experiment collection changed Shift / ReSize with better alternative - addition field shiftIndex"/><MESSAGE value="Collection changed completed. Tests OK"/><MESSAGE value="Develop tests for SortedList"/><MESSAGE value="List move method completed"/><MESSAGE value="List first/last indexOf completed"/><MESSAGE value="List tests refactoring"/><MESSAGE value="List tests refactoring completed"/><MESSAGE value="Sorted List is fully tested"/><MESSAGE value="Sorted List: Added propertyChanged"/><MESSAGE value="Fix Karma tests"/><MESSAGE value="Removed windows platform from travis"/><MESSAGE value="Iterate subscribe rules completed"/><MESSAGE value="Develop, Tests OK"/><MESSAGE value="Fix func-properties-path"/><MESSAGE value="Fix ReadMe"/><MESSAGE value="iterateRule and subscribeNextRule is completed and fully tested"/><MESSAGE value="deepSubscribe is ready to test"/><MESSAGE value="Develop"/></component><component name="masterDetails"><states><state key="ScopeChooserConfigurable.UI"><settings><splitter-proportions><option name="proportions"><list><option value="0.2"/></list></option></splitter-proportions></settings></state></states></component></project>
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="BookmarkManager">
+    <bookmark url="file://$PROJECT_DIR$/src/main/common/rx/object/ObservableObjectBuilder.ts" line="104" />
+    <bookmark url="file://$PROJECT_DIR$/src/main/common/rx/object/properties/calc.ts" line="2" />
+    <bookmark url="file://$PROJECT_DIR$/src/main/common/rx/object/properties/deferred-calc.ts" line="4" />
+    <bookmark url="file://$PROJECT_DIR$/src/main/common/test/DeepCloneEqual.ts" line="203" />
+    <bookmark url="file://$PROJECT_DIR$/src/main/common/extensions/merge/mergers.ts" line="672" />
+    <bookmark url="file://$PROJECT_DIR$/src/main/common/extensions/serialization/serializers.ts" line="634" />
+    <bookmark url="file://$PROJECT_DIR$/src/main/common/extensions/serialization/serializers.ts" line="722" />
+    <bookmark url="file://$PROJECT_DIR$/src/main/common/extensions/merge/mergers.ts" line="521" />
+    <bookmark url="file://$PROJECT_DIR$/src/test/tests/common/main/async/src/TestThenableSync.ts" line="548" />
+    <bookmark url="file://$PROJECT_DIR$/src/main/common/async/ThenableSync.ts" line="306" />
+    <bookmark url="file://$PROJECT_DIR$/src/test/performance/node/fundamental-operations.ts" description="&#9;&#9;&#9;&#9;const x = {}&#10;&#9;&#9;&#9;&#9;freezeWithUniqueId(x)&#10;" line="1645" />
+  </component>
+  <component name="ChangeListManager">
+    <list default="true" id="b30d9c6d-c76b-4685-ba32-5f9518633150" name="Default Changelist" comment="ThenableSync improved. All tests OK.">
+      <change afterPath="$PROJECT_DIR$/src/main/common/rx/object/properties/ConnectorBuilder.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/dictionaries/Mika.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/dictionaries/Mika.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+    </list>
+    <ignored path=".idea/" />
+    <ignored path="$PROJECT_DIR$/node_modules/" />
+    <ignored path="$PROJECT_DIR$/.tmp/" />
+    <ignored path="$PROJECT_DIR$/temp/" />
+    <ignored path="$PROJECT_DIR$/tmp/" />
+    <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
+    <option name="SHOW_DIALOG" value="false" />
+    <option name="HIGHLIGHT_CONFLICTS" value="true" />
+    <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
+    <option name="LAST_RESOLUTION" value="IGNORE" />
+  </component>
+  <component name="CoverageDataManager">
+    <SUITE FILE_PATH="coverage/tree_state_manager$L__Work__GIT_GitHub_NodeJs_modules_tree_state_manager_src_test_tests_common_main_rx_deep_subscribe___ts.dat" NAME="L:\Work\_GIT\GitHub\NodeJs\modules\tree-state-manager\src\test\tests\common\main\rx\deep-subscribe\*.ts Coverage Results" MODIFIED="1564842178633" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="MochaJavaScriptTestRunnerCoverage" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" />
+    <SUITE FILE_PATH="coverage/tree_state_manager$common___main___rx___ObservableObjectBuilder_readable_nested_changed.dat" NAME="common &gt; main &gt; rx &gt; ObservableObjectBuilder.readable nested changed Coverage Results" MODIFIED="1553508415613" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="MochaJavaScriptTestRunnerCoverage" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" />
+    <SUITE FILE_PATH="coverage/tree_state_manager$Coverage_Karma.dat" NAME="Coverage Karma Coverage Results" MODIFIED="1553699944959" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="KarmaJavaScriptTestRunnerCoverage" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" />
+    <SUITE FILE_PATH="coverage/tree_state_manager$L__Work__GIT_GitHub_NodeJs_modules_tree_state_manager_src_test_tests_common_main_rx_deep_subscribe______ts.dat" NAME="L:\Work\_GIT\GitHub\NodeJs\modules\tree-state-manager\src\test\tests\common\main\rx\deep-subscribe\**\*.ts Coverage Results" MODIFIED="1554963371918" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="MochaJavaScriptTestRunnerCoverage" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" />
+    <SUITE FILE_PATH="coverage/tree_state_manager$common___main___rx___subject.dat" NAME="common &gt; main &gt; rx &gt; subject Coverage Results" MODIFIED="1553424357528" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="MochaJavaScriptTestRunnerCoverage" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" />
+    <SUITE FILE_PATH="coverage/tree_state_manager$common___main___rx___deep_subscribe___func_properties_path.dat" NAME="common &gt; main &gt; rx &gt; deep-subscribe &gt; func-properties-path Coverage Results" MODIFIED="1555137986911" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="MochaJavaScriptTestRunnerCoverage" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" />
+    <SUITE FILE_PATH="coverage/tree_state_manager$common___extensions___merge___ObjectMerger_combinations_merge_complex_objects.dat" NAME="common &gt; extensions &gt; merge &gt; ObjectMerger.combinations.merge complex objects Coverage Results" MODIFIED="1565190825528" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="MochaJavaScriptTestRunnerCoverage" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" />
+    <SUITE FILE_PATH="coverage/tree_state_manager$common___extensions___merge___ObjectMerger.dat" NAME="common &gt; extensions &gt; merge &gt; ObjectMerger Coverage Results" MODIFIED="1564552110668" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="MochaJavaScriptTestRunnerCoverage" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" />
+    <SUITE FILE_PATH="coverage/tree_state_manager$Coverage_Mocha.dat" NAME="Coverage Mocha Coverage Results" MODIFIED="1564573828148" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="MochaJavaScriptTestRunnerCoverage" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" />
+    <SUITE FILE_PATH="coverage/tree_state_manager$L__Work__GIT_GitHub_NodeJs_modules_tree_state_manager_src_test_tests_common_main_rx_deep_subscribe______ts__Coverage_.dat" NAME="L:\Work\_GIT\GitHub\NodeJs\modules\tree-state-manager\src\test\tests\common\main\rx\deep-subscribe\**\*.ts (Coverage) Coverage Results" MODIFIED="1555083400589" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="MochaJavaScriptTestRunnerCoverage" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" />
+    <SUITE FILE_PATH="coverage/tree_state_manager$common___main___helpers___ThenableSync_variants.dat" NAME="common &gt; main &gt; helpers &gt; ThenableSync.variants Coverage Results" MODIFIED="1566135265565" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="MochaJavaScriptTestRunnerCoverage" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" />
+    <SUITE FILE_PATH="coverage/tree_state_manager$L__Work__GIT_GitHub_NodeJs_modules_tree_state_manager_src_test_tests_common_main_serialization______ts.dat" NAME="L:\Work\_GIT\GitHub\NodeJs\modules\tree-state-manager\src\test\tests\common\main\serialization\**\*.ts Coverage Results" MODIFIED="1560259053003" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="MochaJavaScriptTestRunnerCoverage" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" />
+    <SUITE FILE_PATH="coverage/tree_state_manager$common___extensions___serialization___serializers_Map.dat" NAME="common &gt; extensions &gt; serialization &gt; serializers.Map Coverage Results" MODIFIED="1565166656569" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="MochaJavaScriptTestRunnerCoverage" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" />
+    <SUITE FILE_PATH="coverage/tree_state_manager$common___main___rx___deep_subscribe___deep_subscribe_promises.dat" NAME="common &gt; main &gt; rx &gt; deep-subscribe &gt; deep-subscribe.promises Coverage Results" MODIFIED="1564836629502" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="MochaJavaScriptTestRunnerCoverage" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" />
+    <SUITE FILE_PATH="coverage/tree_state_manager$common___main___rx___deep_subscribe___RuleBuilder.dat" NAME="common &gt; main &gt; rx &gt; deep-subscribe &gt; RuleBuilder Coverage Results" MODIFIED="1555086077314" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="MochaJavaScriptTestRunnerCoverage" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" />
+    <SUITE FILE_PATH="coverage/tree_state_manager$common___main___rx___object___properties___fill_collection___fillIterable_fillIterable.dat" NAME="common &gt; main &gt; rx &gt; object &gt; properties &gt; fill-collection &gt; fillIterable.fillIterable Coverage Results" MODIFIED="1562387492749" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="MochaJavaScriptTestRunnerCoverage" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" />
+    <SUITE FILE_PATH="coverage/tree_state_manager$Watch_Mocha.dat" NAME="Watch Mocha Coverage Results" MODIFIED="1564581076421" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="MochaJavaScriptTestRunnerCoverage" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" />
+    <SUITE FILE_PATH="coverage/tree_state_manager$common___main___rx___deferred_calc___timing.dat" NAME="common &gt; main &gt; rx &gt; deferred-calc &gt; timing Coverage Results" MODIFIED="1555433307761" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="MochaJavaScriptTestRunnerCoverage" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" />
+    <SUITE FILE_PATH="coverage/tree_state_manager$common___main___rx___deferred_calc___DeferredCalc.dat" NAME="DeferredCalc Coverage Results" MODIFIED="1555564116677" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="MochaJavaScriptTestRunnerCoverage" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" />
+    <SUITE FILE_PATH="coverage/tree_state_manager$common___extensions___merge___ObjectMerger_simple_circular.dat" NAME="common &gt; extensions &gt; merge &gt; ObjectMerger.simple circular Coverage Results" MODIFIED="1565324301978" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="MochaJavaScriptTestRunnerCoverage" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" />
+  </component>
+  <component name="CoverageOptionsProvider">
+    <option name="myAddOrReplace" value="0" />
+  </component>
+  <component name="CoverageViewManager">
+    <option name="myElementSize" value="106" />
+  </component>
+  <component name="ExportTestResults" outputFolder="$PROJECT_DIR$/tmp/test_results" openResultsInEditor="true" userTempatePath="" />
+  <component name="FavoritesManager">
+    <favorites_list name="tree-state-manager" />
+  </component>
+  <component name="FileEditorManager">
+    <leaf SIDE_TABS_SIZE_LIMIT_KEY="375">
+      <file pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/.babelrc.js">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="-594">
+              <caret line="4" column="26" selection-start-line="4" selection-start-column="26" selection-end-line="4" selection-end-column="26" />
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/src/main/common/async/ThenableSync.ts">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="232">
+              <caret line="128" column="27" selection-start-line="128" selection-start-column="27" selection-end-line="128" selection-end-column="27" />
+              <folding>
+                <element signature="e#0#165#0" expanded="true" />
+              </folding>
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file pinned="false" current-in-tab="true">
+        <entry file="file://$PROJECT_DIR$/package.json">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="91">
+              <caret line="148" column="3" lean-forward="true" selection-start-line="148" selection-start-column="3" selection-end-line="148" selection-end-column="3" />
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/env/rollup/plugins.js">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="232">
+              <caret line="89" column="7" selection-start-line="89" selection-start-column="7" selection-end-line="89" selection-end-column="7" />
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/node_modules/@babel/runtime/regenerator/index.js">
+          <provider selected="true" editor-type-id="text-editor">
+            <state>
+              <caret column="34" selection-start-column="34" selection-end-column="34" />
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/node_modules/regenerator-runtime/package.json">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="-1180" />
+          </provider>
+        </entry>
+      </file>
+      <file pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/.babelrc-js.js">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="-522" />
+          </provider>
+        </entry>
+      </file>
+      <file pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/.babelrc-mjs.js">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="372">
+              <caret line="23" column="31" selection-start-line="23" selection-start-column="31" selection-end-line="23" selection-end-column="31" />
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/tmp/karma/tests.js">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="247">
+              <caret line="27" selection-start-line="27" selection-end-line="27" />
+              <folding>
+                <element signature="e#0#58#0" expanded="true" />
+              </folding>
+            </state>
+          </provider>
+        </entry>
+      </file>
+    </leaf>
+  </component>
+  <component name="FindInProjectRecents">
+    <findStrings>
+      <find>isThenableSync</find>
+      <find>ThenableSync</find>
+      <find>ThenableSyncOr</find>
+      <find>ThenableSyncIterator</find>
+      <find>Thenable</find>
+      <find>Resolved</find>
+      <find>THEN_LIKE</find>
+      <find>reason</find>
+      <find>checkResult</find>
+      <find>throw</find>
+      <find>valueAsThenableSync</find>
+      <find>useReject</find>
+      <find>iter</find>
+      <find>ITERATOR_GENERATOR</find>
+      <find>reject</find>
+      <find>ThenableSync.resolve</find>
+      <find>ResolveType</find>
+      <find>(\w+)Step(\d)(\w+)</find>
+      <find>valueInfo.value</find>
+      <find>useReject = false</find>
+      <find>3</find>
+      <find>onrejected</find>
+      <find>resolveValue</find>
+      <find>_error =</find>
+      <find>shad</find>
+      <find>Iterator</find>
+      <find>tryCatch</find>
+      <find>createValue1</find>
+      <find>try</find>
+      <find>@babel/runtime</find>
+    </findStrings>
+    <replaceStrings>
+      <replace>typeof $1[Symbol.iterator] === 'function'</replace>
+      <replace>isIterable($1)</replace>
+      <replace>!isIterable($1)</replace>
+      <replace>===</replace>
+      <replace />
+      <replace>= any</replace>
+      <replace>false</replace>
+      <replace>as unknown</replace>
+      <replace>isObject(o.older)</replace>
+      <replace>expected</replace>
+      <replace>[]</replace>
+      <replace>circularDeepStrictEqualExt</replace>
+      <replace>Older</replace>
+      <replace>isRef</replace>
+      <replace>deepCloneWrapper</replace>
+      <replace>DeepEqual</replace>
+      <replace>equalMapSetOrder</replace>
+      <replace>equal</replace>
+      <replace>deepCloneEqual.clone</replace>
+      <replace>message?: string</replace>
+      <replace>deepCloneEqual.equal</replace>
+      <replace>assertDeepEqualExt</replace>
+      <replace>[TypeError, ReferenceError])</replace>
+      <replace>TypeError, ReferenceError</replace>
+      <replace>Reject</replace>
+      <replace>error</replace>
+      <replace>CreateType</replace>
+      <replace>$1$3$2</replace>
+      <replace>thenable</replace>
+      <replace>2</replace>
+    </replaceStrings>
+    <dirStrings>
+      <dir>L:\Work\_GIT\GitHub\NodeJs\modules\tree-state-manager\src\main\common\lists\contracts</dir>
+      <dir>L:\Work\_GIT\GitHub\NodeJs\modules\tree-state-manager\node_modules\.cache</dir>
+      <dir>L:\Work\_GIT\GitHub\NodeJs\modules\tree-state-manager\node_modules</dir>
+      <dir>L:\Work\_GIT\GitHub\NodeJs\modules\tree-state-manager\src\main\</dir>
+      <dir>L:\Work\_GIT\GitHub\NodeJs\modules\tree-state-manager\src\main</dir>
+      <dir>L:\Work\_GIT\GitHub\NodeJs\modules\tree-state-manager\src\test</dir>
+      <dir>L:\Work\_GIT\GitHub\NodeJs\modules\tree-state-manager\dist\mjs</dir>
+      <dir>L:\Work\_GIT\GitHub\NodeJs\modules\tree-state-manager\src\</dir>
+      <dir>L:\Work\_GIT\GitHub\NodeJs\modules\tree-state-manager\env\karma</dir>
+      <dir>L:\Work\_GIT\GitHub\NodeJs\modules\tree-state-manager\src\main\common\rx\deep-subscribe</dir>
+      <dir>L:\Work\_GIT\GitHub\NodeJs\modules\tree-state-manager\src</dir>
+      <dir>L:\Work\_GIT\GitHub\NodeJs\modules\tree-state-manager\</dir>
+    </dirStrings>
+  </component>
+  <component name="Git.Settings">
+    <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
+    <option name="PREVIEW_PUSH_PROTECTED_ONLY" value="true" />
+  </component>
+  <component name="IdeDocumentHistory">
+    <option name="CHANGED_PATHS">
+      <list>
+        <option value="$PROJECT_DIR$/src/test/tests/common/env/modules.js" />
+        <option value="$PROJECT_DIR$/src/test/tests/common/main/rx/deep-subscribe/helpers/Tester.ts" />
+        <option value="$PROJECT_DIR$/src/main/common/test/Assert.ts" />
+        <option value="$PROJECT_DIR$/src/main/common/extensions/merge/mergers.ts" />
+        <option value="$PROJECT_DIR$/src/test/tests/common/main/rx/deferred-calc/DeferredCalc.ts" />
+        <option value="$PROJECT_DIR$/.travis.yml" />
+        <option value="$PROJECT_DIR$/env/karma/karma.conf.tests.js" />
+        <option value="$PROJECT_DIR$/env/karma/karma.conf.ci.js" />
+        <option value="$PROJECT_DIR$/env/karma/karma.conf.coverage.js" />
+        <option value="$PROJECT_DIR$/env/karma/karma.conf.performance.js" />
+        <option value="$PROJECT_DIR$/env/karma/karma.conf.dev.js" />
+        <option value="$PROJECT_DIR$/src/main/common/rx/object/properties/ConnectorBuilder.ts" />
+        <option value="$PROJECT_DIR$/src/main/common/rx/object/ObservableObject.ts" />
+        <option value="$PROJECT_DIR$/src/main/common/rx/deep-subscribe/contracts/rules.ts" />
+        <option value="$PROJECT_DIR$/src/main/common/rx/object/ObservableObjectBuilder.ts" />
+        <option value="$PROJECT_DIR$/src/main/common/rx/deep-subscribe/helpers/func-properties-path.ts" />
+        <option value="$PROJECT_DIR$/src/main/common/rx/deep-subscribe/helpers/common.ts" />
+        <option value="$PROJECT_DIR$/src/main/common/rx/deep-subscribe/RuleSubscribe.ts" />
+        <option value="$PROJECT_DIR$/src/main/common/rx/deep-subscribe/iterate-rule.ts" />
+        <option value="$PROJECT_DIR$/src/main/common/rx/deep-subscribe/RuleBuilder.ts" />
+        <option value="$PROJECT_DIR$/src/main/common/rx/deep-subscribe/contracts/rule-subscribe.ts" />
+        <option value="$PROJECT_DIR$/src/main/common/rx/deep-subscribe/deep-subscribe.ts" />
+        <option value="$PROJECT_DIR$/src/test/tests/common/main/rx/deep-subscribe/RuleBuilder.ts" />
+        <option value="$PROJECT_DIR$/src/test/tests/common/main/rx/deep-subscribe/deep-subscribe.ts" />
+        <option value="$PROJECT_DIR$/src/main/common/helpers/async.ts" />
+        <option value="$PROJECT_DIR$/src/test/tests/common/main/extensions/serialization/serializers.ts" />
+        <option value="$PROJECT_DIR$/src/main/common/helpers/helpers.ts" />
+        <option value="$PROJECT_DIR$/src/test/tests/common/main/src/helpers/helpers.ts" />
+        <option value="$PROJECT_DIR$/src/main/common/lists/SortedList.ts" />
+        <option value="$PROJECT_DIR$/src/main/common/lists/ArraySet.ts" />
+        <option value="$PROJECT_DIR$/src/main/common/lists/ObservableSet.ts" />
+        <option value="$PROJECT_DIR$/src/main/common/lists/ObservableMap.ts" />
+        <option value="$PROJECT_DIR$/src/main/common/lists/ObjectMap.ts" />
+        <option value="$PROJECT_DIR$/src/test/tests/common/main/lists/src/helpers/TestSet.ts" />
+        <option value="$PROJECT_DIR$/src/test/tests/common/main/lists/src/helpers/TestMap.ts" />
+        <option value="$PROJECT_DIR$/src/main/common/lists/ObjectSet.ts" />
+        <option value="$PROJECT_DIR$/src/main/common/lists/ArrayMap.ts" />
+        <option value="$PROJECT_DIR$/src/main/common/lists/ObjectHashMap.ts" />
+        <option value="$PROJECT_DIR$/src/main/common/extensions/serialization/serializers.ts" />
+        <option value="$PROJECT_DIR$/src/main/common/extensions/serialization/contracts.ts" />
+        <option value="$PROJECT_DIR$/src/test/tests/common/main/src/helpers/TestVariants.ts" />
+        <option value="$PROJECT_DIR$/src/test/tests/common/main/async/src/_TestThenableSync.ts" />
+        <option value="$PROJECT_DIR$/src/main/common/async/async.ts" />
+        <option value="$PROJECT_DIR$/src/test/tests/common/main/async/src/TestThenableSync.ts" />
+        <option value="$PROJECT_DIR$/src/test/tests/common/main/async/ThenableSync.ts" />
+        <option value="$PROJECT_DIR$/src/test/performance/node/fundamental-operations.ts" />
+        <option value="$PROJECT_DIR$/.babelrc.js" />
+        <option value="$PROJECT_DIR$/src/main/common/async/ThenableSync.ts" />
+        <option value="$PROJECT_DIR$/env/rollup/plugins.js" />
+        <option value="$PROJECT_DIR$/.babelrc-mjs.js" />
+        <option value="$PROJECT_DIR$/package.json" />
+      </list>
+    </option>
+  </component>
+  <component name="JsFlowSettings">
+    <service-enabled>true</service-enabled>
+    <exe-path />
+    <other-services-enabled>true</other-services-enabled>
+    <auto-save>true</auto-save>
+  </component>
+  <component name="ProjectFrameBounds" extendedState="6">
+    <option name="x" value="-4" />
+    <option name="y" value="-6" />
+    <option name="width" value="1002" />
+    <option name="height" value="882" />
+  </component>
+  <component name="ProjectLevelVcsManager">
+    <ConfirmationsSetting value="2" id="Add" />
+  </component>
+  <component name="ProjectView">
+    <navigator proportions="" version="1">
+      <foldersAlwaysOnTop value="true" />
+    </navigator>
+    <panes>
+      <pane id="Scope" />
+      <pane id="ProjectPane">
+        <subPane>
+          <expand>
+            <path>
+              <item name="tree-state-manager" type="b2602c69:ProjectViewProjectNode" />
+              <item name="tree-state-manager" type="462c0819:PsiDirectoryNode" />
+            </path>
+            <path>
+              <item name="tree-state-manager" type="b2602c69:ProjectViewProjectNode" />
+              <item name="tree-state-manager" type="462c0819:PsiDirectoryNode" />
+              <item name="node_modules" type="462c0819:PsiDirectoryNode" />
+            </path>
+            <path>
+              <item name="tree-state-manager" type="b2602c69:ProjectViewProjectNode" />
+              <item name="tree-state-manager" type="462c0819:PsiDirectoryNode" />
+              <item name="node_modules" type="462c0819:PsiDirectoryNode" />
+              <item name="regenerator-runtime" type="462c0819:PsiDirectoryNode" />
+            </path>
+            <path>
+              <item name="tree-state-manager" type="b2602c69:ProjectViewProjectNode" />
+              <item name="tree-state-manager" type="462c0819:PsiDirectoryNode" />
+              <item name="src" type="462c0819:PsiDirectoryNode" />
+            </path>
+            <path>
+              <item name="tree-state-manager" type="b2602c69:ProjectViewProjectNode" />
+              <item name="tree-state-manager" type="462c0819:PsiDirectoryNode" />
+              <item name="src" type="462c0819:PsiDirectoryNode" />
+              <item name="test" type="462c0819:PsiDirectoryNode" />
+            </path>
+            <path>
+              <item name="tree-state-manager" type="b2602c69:ProjectViewProjectNode" />
+              <item name="tree-state-manager" type="462c0819:PsiDirectoryNode" />
+              <item name="src" type="462c0819:PsiDirectoryNode" />
+              <item name="test" type="462c0819:PsiDirectoryNode" />
+              <item name="performance" type="462c0819:PsiDirectoryNode" />
+            </path>
+            <path>
+              <item name="tree-state-manager" type="b2602c69:ProjectViewProjectNode" />
+              <item name="tree-state-manager" type="462c0819:PsiDirectoryNode" />
+              <item name="src" type="462c0819:PsiDirectoryNode" />
+              <item name="test" type="462c0819:PsiDirectoryNode" />
+              <item name="performance" type="462c0819:PsiDirectoryNode" />
+              <item name="node" type="462c0819:PsiDirectoryNode" />
+            </path>
+            <path>
+              <item name="tree-state-manager" type="b2602c69:ProjectViewProjectNode" />
+              <item name="tree-state-manager" type="462c0819:PsiDirectoryNode" />
+              <item name="src" type="462c0819:PsiDirectoryNode" />
+              <item name="test" type="462c0819:PsiDirectoryNode" />
+              <item name="tests" type="462c0819:PsiDirectoryNode" />
+            </path>
+          </expand>
+          <select />
+        </subPane>
+      </pane>
+    </panes>
+  </component>
+  <component name="PropertiesComponent">
+    <property name="NewWatcherDialog.advanced.open" value="true" />
+    <property name="WebServerToolWindowFactoryState" value="false" />
+    <property name="auto.test.manager.delay" value="5000" />
+    <property name="javascript.karma.karma_node_package_dir" value="" />
+    <property name="last_opened_file_path" value="$PROJECT_DIR$/node_modules" />
+    <property name="node.js.detected.package.eslint" value="true" />
+    <property name="node.js.detected.package.standard" value="true" />
+    <property name="node.js.detected.package.tslint" value="true" />
+    <property name="node.js.path.for.package.eslint" value="node" />
+    <property name="node.js.path.for.package.standard" value="node" />
+    <property name="node.js.path.for.package.tslint" value="project" />
+    <property name="node.js.selected.package.eslint" value="L:\Work\_GIT\GitHub\NodeJs\templates\nodejs-templates\node_modules\eslint" />
+    <property name="node.js.selected.package.standard" value="L:\Work\_GIT\GitHub\NodeJs\templates\nodejs-templates\node_modules\eslint" />
+    <property name="node.js.selected.package.tslint" value="L:\Work\_GIT\GitHub\NodeJs\modules\tree-state-manager\node_modules\tslint" />
+    <property name="nodejs.mocha.mocha_node_package_dir" value="$PROJECT_DIR$/node_modules/mocha" />
+    <property name="nodejs_package_manager_path" value="npm" />
+    <property name="restartRequiresConfirmation" value="false" />
+    <property name="settings.editor.selected.configurable" value="preferences.pluginManager" />
+    <property name="ts.external.directory.path" value="L:\Work\_GIT\GitHub\NodeJs\modules\tree-state-manager\node_modules\typescript\lib" />
+  </component>
+  <component name="RecentsManager">
+    <key name="CopyFile.RECENT_KEYS">
+      <recent name="L:\Work\_GIT\GitHub\NodeJs\modules\tree-state-manager\src\test\tests\common\main\async\src" />
+      <recent name="L:\Work\_GIT\GitHub\NodeJs\modules\tree-state-manager\env\mocha" />
+      <recent name="L:\Work\_GIT\GitHub\NodeJs\modules\tree-state-manager\src\test\tests\common\env\mocha\src" />
+      <recent name="L:\Work\_GIT\GitHub\NodeJs\modules\tree-state-manager\src\test\tests\common\main\helpers" />
+      <recent name="L:\Work\_GIT\GitHub\NodeJs\modules\tree-state-manager\src\test\tests\common\main\helpers\src" />
+    </key>
+    <key name="MoveFile.RECENT_KEYS">
+      <recent name="L:\Work\_GIT\GitHub\NodeJs\modules\tree-state-manager\src\test\tests\common\main\async" />
+      <recent name="L:\Work\_GIT\GitHub\NodeJs\modules\tree-state-manager\src\main\common\async" />
+      <recent name="L:\Work\_GIT\GitHub\NodeJs\modules\tree-state-manager\_trash\src\main\common\rx\object\properties" />
+      <recent name="L:\Work\_GIT\GitHub\NodeJs\modules\tree-state-manager\src\test\tests\common\main\test" />
+      <recent name="L:\Work\_GIT\GitHub\NodeJs\modules\tree-state-manager\src\main\common\test" />
+    </key>
+  </component>
+  <component name="RunDashboard">
+    <option name="ruleStates">
+      <list>
+        <RuleState>
+          <option name="name" value="ConfigurationTypeDashboardGroupingRule" />
+        </RuleState>
+        <RuleState>
+          <option name="name" value="StatusDashboardGroupingRule" />
+        </RuleState>
+      </list>
+    </option>
+  </component>
+  <component name="RunManager" selected="Karma.Tests Dev">
+    <configuration name="Tests Dev" type="JavaScriptTestRunnerKarma">
+      <config-file value="$PROJECT_DIR$/env/karma/karma.conf.dev.js" />
+      <karma-package-dir value="$PROJECT_DIR$/node_modules/karma" />
+      <working-directory value="$PROJECT_DIR$" />
+      <node-interpreter value="node" />
+      <envs />
+      <method v="2" />
+    </configuration>
+    <configuration default="true" type="JavaScriptTestRunnerKarma">
+      <config-file value="$PROJECT_DIR$/env/karma/karma.conf.tests.js" />
+      <karma-package-dir value="$PROJECT_DIR$/node_modules/karma" />
+      <node-interpreter value="node" />
+      <envs />
+      <method v="2" />
+    </configuration>
+    <configuration default="true" type="NodeJSConfigurationType" path-to-node="node" node-parameters="--max-old-space-size=4096" working-dir="$PROJECT_DIR$">
+      <method v="2" />
+    </configuration>
+    <configuration name="Coverage Mocha Report" type="js.build_tools.npm">
+      <package-json value="$PROJECT_DIR$/package.json" />
+      <command value="run" />
+      <scripts>
+        <script value="coverage:dev" />
+      </scripts>
+      <node-interpreter value="project" />
+      <envs />
+      <method v="2" />
+    </configuration>
+    <configuration name="DeferredCalc (Coverage)" type="mocha-javascript-test-runner">
+      <node-interpreter>node</node-interpreter>
+      <node-options>--max-old-space-size=4096</node-options>
+      <mocha-package>$PROJECT_DIR$/node_modules/mocha</mocha-package>
+      <working-directory>$PROJECT_DIR$</working-directory>
+      <pass-parent-env>true</pass-parent-env>
+      <ui>bdd</ui>
+      <extra-mocha-options>--opts ./env/mocha/mocha.babel.opts</extra-mocha-options>
+      <test-kind>SUITE</test-kind>
+      <test-file>$PROJECT_DIR$/src/test/tests/common/main/rx/deferred-calc/DeferredCalc.ts</test-file>
+      <test-names>
+        <name value="common &gt; main &gt; rx &gt; deferred-calc &gt; DeferredCalc" />
+      </test-names>
+      <method v="2" />
+    </configuration>
+    <configuration name="Intern Export with rebuild" type="mocha-javascript-test-runner">
+      <node-interpreter>node</node-interpreter>
+      <node-options>--max-old-space-size=4096</node-options>
+      <mocha-package>$PROJECT_DIR$/node_modules/mocha</mocha-package>
+      <working-directory>$PROJECT_DIR$</working-directory>
+      <pass-parent-env>true</pass-parent-env>
+      <ui>bdd</ui>
+      <extra-mocha-options>--opts ./env/mocha/mocha.babel.opts</extra-mocha-options>
+      <test-kind>PATTERN</test-kind>
+      <test-pattern>./env/intern/mocha-export.js</test-pattern>
+      <method v="2" />
+    </configuration>
+    <configuration name="Intern Export" type="mocha-javascript-test-runner">
+      <node-interpreter>node</node-interpreter>
+      <node-options>--max-old-space-size=4096</node-options>
+      <mocha-package>$PROJECT_DIR$/node_modules/mocha</mocha-package>
+      <working-directory>$PROJECT_DIR$</working-directory>
+      <pass-parent-env>true</pass-parent-env>
+      <ui>bdd</ui>
+      <extra-mocha-options>--opts ./env/mocha/mocha.babel.opts</extra-mocha-options>
+      <test-kind>PATTERN</test-kind>
+      <test-pattern>./env/intern/mocha-export.js</test-pattern>
+      <method v="2" />
+    </configuration>
+    <configuration name="L:\Work\_GIT\GitHub\NodeJs\modules\tree-state-manager\src\test\tests\common\main\rx\deep-subscribe\**\*.ts (Coverage)" type="mocha-javascript-test-runner">
+      <node-interpreter>node</node-interpreter>
+      <node-options>--max-old-space-size=4096</node-options>
+      <mocha-package>$PROJECT_DIR$/node_modules/mocha</mocha-package>
+      <working-directory>$PROJECT_DIR$</working-directory>
+      <pass-parent-env>true</pass-parent-env>
+      <ui>bdd</ui>
+      <extra-mocha-options>--opts ./env/mocha/mocha.babel.opts</extra-mocha-options>
+      <test-kind>PATTERN</test-kind>
+      <test-pattern>$PROJECT_DIR$/src/test/tests/common/main/rx/deep-subscribe/**/*.ts</test-pattern>
+      <method v="2" />
+    </configuration>
+    <configuration name="Performance Mocha" type="mocha-javascript-test-runner">
+      <node-interpreter>node</node-interpreter>
+      <node-options>--max-old-space-size=4096</node-options>
+      <mocha-package>$PROJECT_DIR$/node_modules/mocha</mocha-package>
+      <working-directory>$PROJECT_DIR$</working-directory>
+      <pass-parent-env>true</pass-parent-env>
+      <ui>bdd</ui>
+      <extra-mocha-options>--opts ./env/mocha/mocha.babel.opts</extra-mocha-options>
+      <test-kind>PATTERN</test-kind>
+      <test-pattern>./src/test/performance/{common,node}/**/*.*</test-pattern>
+      <method v="2" />
+    </configuration>
+    <configuration default="true" type="mocha-javascript-test-runner">
+      <node-interpreter>node</node-interpreter>
+      <node-options>--max-old-space-size=4096</node-options>
+      <mocha-package>$PROJECT_DIR$/node_modules/mocha</mocha-package>
+      <working-directory>$PROJECT_DIR$</working-directory>
+      <pass-parent-env>true</pass-parent-env>
+      <ui>bdd</ui>
+      <extra-mocha-options>--opts ./env/mocha/mocha.babel.opts --watch</extra-mocha-options>
+      <test-kind>PATTERN</test-kind>
+      <test-pattern>./src/test/tests/{common,node}/**/*.*</test-pattern>
+      <method v="2" />
+    </configuration>
+    <configuration name="common &gt; main &gt; helpers &gt; ThenableSync.variants" type="mocha-javascript-test-runner" temporary="true" nameIsGenerated="true">
+      <node-interpreter>node</node-interpreter>
+      <node-options>--max-old-space-size=4096</node-options>
+      <mocha-package>$PROJECT_DIR$/node_modules/mocha</mocha-package>
+      <working-directory>$PROJECT_DIR$</working-directory>
+      <pass-parent-env>true</pass-parent-env>
+      <ui>bdd</ui>
+      <extra-mocha-options>--opts ./env/mocha/mocha.babel.opts</extra-mocha-options>
+      <test-kind>TEST</test-kind>
+      <test-file>$PROJECT_DIR$/src/test/tests/common/main/async/ThenableSync.ts</test-file>
+      <test-names>
+        <name value="common &gt; main &gt; helpers &gt; ThenableSync" />
+        <name value="variants" />
+      </test-names>
+      <method v="2" />
+    </configuration>
+    <configuration name="common &gt; main &gt; rx &gt; deep-subscribe &gt; deep-subscribe.promises" type="mocha-javascript-test-runner" temporary="true" nameIsGenerated="true">
+      <node-interpreter>node</node-interpreter>
+      <node-options>--max-old-space-size=4096</node-options>
+      <mocha-package>$PROJECT_DIR$/node_modules/mocha</mocha-package>
+      <working-directory>$PROJECT_DIR$</working-directory>
+      <pass-parent-env>true</pass-parent-env>
+      <ui>bdd</ui>
+      <extra-mocha-options>--opts ./env/mocha/mocha.babel.opts --watch</extra-mocha-options>
+      <test-kind>TEST</test-kind>
+      <test-file>$PROJECT_DIR$/src/test/tests/common/main/rx/deep-subscribe/deep-subscribe.ts</test-file>
+      <test-names>
+        <name value="common &gt; main &gt; rx &gt; deep-subscribe &gt; deep-subscribe" />
+        <name value="promises" />
+      </test-names>
+      <method v="2" />
+    </configuration>
+    <configuration name="deep-subscribe (Coverage)" type="mocha-javascript-test-runner">
+      <node-interpreter>node</node-interpreter>
+      <node-options>--max-old-space-size=4096</node-options>
+      <mocha-package>$PROJECT_DIR$/node_modules/mocha</mocha-package>
+      <working-directory>$PROJECT_DIR$</working-directory>
+      <pass-parent-env>true</pass-parent-env>
+      <ui>bdd</ui>
+      <extra-mocha-options>--opts ./env/mocha/mocha.babel.opts</extra-mocha-options>
+      <test-kind>TEST_FILE</test-kind>
+      <test-file>$PROJECT_DIR$/src/test/tests/common/main/rx/deep-subscribe/deep-subscribe.ts</test-file>
+      <method v="2" />
+    </configuration>
+    <configuration name="fundamental-operations.ThenableSync 2" type="mocha-javascript-test-runner" temporary="true" nameIsGenerated="true">
+      <node-interpreter>node</node-interpreter>
+      <node-options>--max-old-space-size=4096</node-options>
+      <mocha-package>$PROJECT_DIR$/node_modules/mocha</mocha-package>
+      <working-directory>$PROJECT_DIR$</working-directory>
+      <pass-parent-env>true</pass-parent-env>
+      <ui>bdd</ui>
+      <extra-mocha-options>--opts ./env/mocha/mocha.babel.opts</extra-mocha-options>
+      <test-kind>TEST</test-kind>
+      <test-file>$PROJECT_DIR$/src/test/performance/node/fundamental-operations.ts</test-file>
+      <test-names>
+        <name value="fundamental-operations" />
+        <name value="ThenableSync 2" />
+      </test-names>
+      <method v="2" />
+    </configuration>
+    <configuration name="fundamental-operations.ThenableSync" type="mocha-javascript-test-runner" temporary="true" nameIsGenerated="true">
+      <node-interpreter>node</node-interpreter>
+      <node-options>--max-old-space-size=4096</node-options>
+      <mocha-package>$PROJECT_DIR$/node_modules/mocha</mocha-package>
+      <working-directory>$PROJECT_DIR$</working-directory>
+      <pass-parent-env>true</pass-parent-env>
+      <ui>bdd</ui>
+      <extra-mocha-options>--opts ./env/mocha/mocha.babel.opts</extra-mocha-options>
+      <test-kind>TEST</test-kind>
+      <test-file>$PROJECT_DIR$/src/test/performance/node/fundamental-operations.ts</test-file>
+      <test-names>
+        <name value="fundamental-operations" />
+        <name value="ThenableSync" />
+      </test-names>
+      <method v="2" />
+    </configuration>
+    <configuration name="fundamental-operations.try catch" type="mocha-javascript-test-runner" temporary="true" nameIsGenerated="true">
+      <node-interpreter>node</node-interpreter>
+      <node-options>--max-old-space-size=4096</node-options>
+      <mocha-package>$PROJECT_DIR$/node_modules/mocha</mocha-package>
+      <working-directory>$PROJECT_DIR$</working-directory>
+      <pass-parent-env>true</pass-parent-env>
+      <ui>bdd</ui>
+      <extra-mocha-options>--opts ./env/mocha/mocha.babel.opts</extra-mocha-options>
+      <test-kind>TEST</test-kind>
+      <test-file>$PROJECT_DIR$/src/test/performance/node/fundamental-operations.ts</test-file>
+      <test-names>
+        <name value="fundamental-operations" />
+        <name value="try catch" />
+      </test-names>
+      <method v="2" />
+    </configuration>
+    <list>
+      <item itemvalue="Karma.Tests Dev" />
+      <item itemvalue="Karma.CI Karma" />
+      <item itemvalue="Karma.Coverage Karma" />
+      <item itemvalue="Karma.Performance Karma" />
+      <item itemvalue="Karma.Tests Karma" />
+      <item itemvalue="Mocha.DeferredCalc (Coverage)" />
+      <item itemvalue="Mocha.Intern Export with rebuild" />
+      <item itemvalue="Mocha.Intern Export" />
+      <item itemvalue="Mocha.L:\Work\_GIT\GitHub\NodeJs\modules\tree-state-manager\src\test\tests\common\main\rx\deep-subscribe\**\*.ts (Coverage)" />
+      <item itemvalue="Mocha.Performance Mocha" />
+      <item itemvalue="Mocha.deep-subscribe (Coverage)" />
+      <item itemvalue="Mocha.Coverage Mocha" />
+      <item itemvalue="Mocha.Watch Mocha" />
+      <item itemvalue="Mocha.common &gt; main &gt; rx &gt; deep-subscribe &gt; deep-subscribe.promises" />
+      <item itemvalue="Mocha.common &gt; main &gt; helpers &gt; ThenableSync.variants" />
+      <item itemvalue="Mocha.fundamental-operations.try catch" />
+      <item itemvalue="Mocha.fundamental-operations.ThenableSync" />
+      <item itemvalue="Mocha.fundamental-operations.ThenableSync 2" />
+      <item itemvalue="npm.Coverage Mocha Report" />
+    </list>
+    <recent_temporary>
+      <list>
+        <item itemvalue="Mocha.fundamental-operations.ThenableSync 2" />
+        <item itemvalue="Mocha.common &gt; main &gt; helpers &gt; ThenableSync.variants" />
+        <item itemvalue="Mocha.fundamental-operations.ThenableSync" />
+        <item itemvalue="Mocha.fundamental-operations.try catch" />
+        <item itemvalue="Mocha.common &gt; main &gt; rx &gt; deep-subscribe &gt; deep-subscribe.promises" />
+      </list>
+    </recent_temporary>
+  </component>
+  <component name="TaskManager">
+    <task active="true" id="Default" summary="Default task">
+      <changelist id="b30d9c6d-c76b-4685-ba32-5f9518633150" name="Default Changelist" comment="" />
+      <created>1553314222905</created>
+      <option name="number" value="Default" />
+      <option name="presentableId" value="Default" />
+      <updated>1553314222905</updated>
+    </task>
+    <task id="LOCAL-00074" summary="Develop serializers">
+      <created>1565157414540</created>
+      <option name="number" value="00074" />
+      <option name="presentableId" value="LOCAL-00074" />
+      <option name="project" value="LOCAL" />
+      <updated>1565157414540</updated>
+    </task>
+    <task id="LOCAL-00075" summary="Develop serializers">
+      <created>1565171476044</created>
+      <option name="number" value="00075" />
+      <option name="presentableId" value="LOCAL-00075" />
+      <option name="project" value="LOCAL" />
+      <updated>1565171476044</updated>
+    </task>
+    <task id="LOCAL-00076" summary="Serializers completed and tested. All tests OK.">
+      <created>1565177837776</created>
+      <option name="number" value="00076" />
+      <option name="presentableId" value="LOCAL-00076" />
+      <option name="project" value="LOCAL" />
+      <updated>1565177837776</updated>
+    </task>
+    <task id="LOCAL-00077" summary="Deleting slow defineProperty. Before deep-subscribe refactoring. All tests OK.">
+      <created>1565182467156</created>
+      <option name="number" value="00077" />
+      <option name="presentableId" value="LOCAL-00077" />
+      <option name="project" value="LOCAL" />
+      <updated>1565182467156</updated>
+    </task>
+    <task id="LOCAL-00078" summary="ThenableSync is optimized">
+      <created>1565183199490</created>
+      <option name="number" value="00078" />
+      <option name="presentableId" value="LOCAL-00078" />
+      <option name="project" value="LOCAL" />
+      <updated>1565183199490</updated>
+    </task>
+    <task id="LOCAL-00079" summary="Develop circular merge">
+      <created>1565192989444</created>
+      <option name="number" value="00079" />
+      <option name="presentableId" value="LOCAL-00079" />
+      <option name="project" value="LOCAL" />
+      <updated>1565192989444</updated>
+    </task>
+    <task id="LOCAL-00080" summary="Develop circular merge">
+      <created>1565246158788</created>
+      <option name="number" value="00080" />
+      <option name="presentableId" value="LOCAL-00080" />
+      <option name="project" value="LOCAL" />
+      <updated>1565246158788</updated>
+    </task>
+    <task id="LOCAL-00081" summary="Develop circular merge">
+      <created>1565281298073</created>
+      <option name="number" value="00081" />
+      <option name="presentableId" value="LOCAL-00081" />
+      <option name="project" value="LOCAL" />
+      <updated>1565281298073</updated>
+    </task>
+    <task id="LOCAL-00082" summary="ThenableSync is optimized">
+      <created>1565324437308</created>
+      <option name="number" value="00082" />
+      <option name="presentableId" value="LOCAL-00082" />
+      <option name="project" value="LOCAL" />
+      <updated>1565324437308</updated>
+    </task>
+    <task id="LOCAL-00083" summary="ThenableSync is optimized">
+      <created>1565334037174</created>
+      <option name="number" value="00083" />
+      <option name="presentableId" value="LOCAL-00083" />
+      <option name="project" value="LOCAL" />
+      <updated>1565334037175</updated>
+    </task>
+    <task id="LOCAL-00084" summary="Develop DeepClone">
+      <created>1565362775431</created>
+      <option name="number" value="00084" />
+      <option name="presentableId" value="LOCAL-00084" />
+      <option name="project" value="LOCAL" />
+      <updated>1565362775432</updated>
+    </task>
+    <task id="LOCAL-00085" summary="ThenableSync is optimized">
+      <created>1565365754107</created>
+      <option name="number" value="00085" />
+      <option name="presentableId" value="LOCAL-00085" />
+      <option name="project" value="LOCAL" />
+      <updated>1565365754107</updated>
+    </task>
+    <task id="LOCAL-00086" summary="deepClone and deepEqual is completed and tested">
+      <created>1565370977749</created>
+      <option name="number" value="00086" />
+      <option name="presentableId" value="LOCAL-00086" />
+      <option name="project" value="LOCAL" />
+      <updated>1565370977750</updated>
+    </task>
+    <task id="LOCAL-00087" summary="ThenableSync is optimized">
+      <created>1565409686239</created>
+      <option name="number" value="00087" />
+      <option name="presentableId" value="LOCAL-00087" />
+      <option name="project" value="LOCAL" />
+      <updated>1565409686240</updated>
+    </task>
+    <task id="LOCAL-00088" summary="ThenableSync is optimized">
+      <created>1565411567927</created>
+      <option name="number" value="00088" />
+      <option name="presentableId" value="LOCAL-00088" />
+      <option name="project" value="LOCAL" />
+      <updated>1565411567927</updated>
+    </task>
+    <task id="LOCAL-00089" summary="deepClone and deepEqual is completed and tested 2">
+      <created>1565411817851</created>
+      <option name="number" value="00089" />
+      <option name="presentableId" value="LOCAL-00089" />
+      <option name="project" value="LOCAL" />
+      <updated>1565411817851</updated>
+    </task>
+    <task id="LOCAL-00090" summary="DeepClone refactoring and usage testing">
+      <created>1565419527540</created>
+      <option name="number" value="00090" />
+      <option name="presentableId" value="LOCAL-00090" />
+      <option name="project" value="LOCAL" />
+      <updated>1565419527540</updated>
+    </task>
+    <task id="LOCAL-00091" summary="Big refactoring">
+      <created>1565423175100</created>
+      <option name="number" value="00091" />
+      <option name="presentableId" value="LOCAL-00091" />
+      <option name="project" value="LOCAL" />
+      <updated>1565423175100</updated>
+    </task>
+    <task id="LOCAL-00092" summary="DeepClone improving and usage testing">
+      <created>1565438961725</created>
+      <option name="number" value="00092" />
+      <option name="presentableId" value="LOCAL-00092" />
+      <option name="project" value="LOCAL" />
+      <updated>1565438961725</updated>
+    </task>
+    <task id="LOCAL-00093" summary="ThenableSync is optimized">
+      <created>1565440040437</created>
+      <option name="number" value="00093" />
+      <option name="presentableId" value="LOCAL-00093" />
+      <option name="project" value="LOCAL" />
+      <updated>1565440040437</updated>
+    </task>
+    <task id="LOCAL-00094" summary="DeepClone improving and usage testing">
+      <created>1565446259865</created>
+      <option name="number" value="00094" />
+      <option name="presentableId" value="LOCAL-00094" />
+      <option name="project" value="LOCAL" />
+      <updated>1565446259865</updated>
+    </task>
+    <task id="LOCAL-00095" summary="DeepCloneEqual completed and tested. All tests OK.">
+      <created>1565448339303</created>
+      <option name="number" value="00095" />
+      <option name="presentableId" value="LOCAL-00095" />
+      <option name="project" value="LOCAL" />
+      <updated>1565448339303</updated>
+    </task>
+    <task id="LOCAL-00096" summary="Develop circular merge. Simple circular tests is OK.">
+      <created>1565508761558</created>
+      <option name="number" value="00096" />
+      <option name="presentableId" value="LOCAL-00096" />
+      <option name="project" value="LOCAL" />
+      <updated>1565508761558</updated>
+    </task>
+    <task id="LOCAL-00097" summary="Develop circular merge. Simple circular tests is OK. All other tests OK.">
+      <created>1565514170463</created>
+      <option name="number" value="00097" />
+      <option name="presentableId" value="LOCAL-00097" />
+      <option name="project" value="LOCAL" />
+      <updated>1565514170463</updated>
+    </task>
+    <task id="LOCAL-00098" summary="Circular merge looks like completed. Complex circular object tests is OK. All tests OK.">
+      <created>1565518926933</created>
+      <option name="number" value="00098" />
+      <option name="presentableId" value="LOCAL-00098" />
+      <option name="project" value="LOCAL" />
+      <updated>1565518926933</updated>
+    </task>
+    <task id="LOCAL-00099" summary="Circular merge is completed.">
+      <created>1565519803785</created>
+      <option name="number" value="00099" />
+      <option name="presentableId" value="LOCAL-00099" />
+      <option name="project" value="LOCAL" />
+      <updated>1565519803785</updated>
+    </task>
+    <task id="LOCAL-00100" summary="Lint fixes">
+      <created>1565520897152</created>
+      <option name="number" value="00100" />
+      <option name="presentableId" value="LOCAL-00100" />
+      <option name="project" value="LOCAL" />
+      <updated>1565520897152</updated>
+    </task>
+    <task id="LOCAL-00101" summary="Develop property">
+      <created>1565520954993</created>
+      <option name="number" value="00101" />
+      <option name="presentableId" value="LOCAL-00101" />
+      <option name="project" value="LOCAL" />
+      <updated>1565520954994</updated>
+    </task>
+    <task id="LOCAL-00102" summary="Property merger and serializer tests is OK. All tests OK.">
+      <created>1565524621371</created>
+      <option name="number" value="00102" />
+      <option name="presentableId" value="LOCAL-00102" />
+      <option name="project" value="LOCAL" />
+      <updated>1565524621371</updated>
+    </task>
+    <task id="LOCAL-00103" summary="Serializer and Merger interfaces refactoring. All tests OK.">
+      <created>1565586834807</created>
+      <option name="number" value="00103" />
+      <option name="presentableId" value="LOCAL-00103" />
+      <option name="project" value="LOCAL" />
+      <updated>1565586834807</updated>
+    </task>
+    <task id="LOCAL-00104" summary="Lint fixes. Lint OK.">
+      <created>1565588449152</created>
+      <option name="number" value="00104" />
+      <option name="presentableId" value="LOCAL-00104" />
+      <option name="project" value="LOCAL" />
+      <updated>1565588449152</updated>
+    </task>
+    <task id="LOCAL-00105" summary="Debug travis tests. Mocha is OK. Karma is fail.">
+      <created>1565590776592</created>
+      <option name="number" value="00105" />
+      <option name="presentableId" value="LOCAL-00105" />
+      <option name="project" value="LOCAL" />
+      <updated>1565590776592</updated>
+    </task>
+    <task id="LOCAL-00106" summary="Debug travis tests">
+      <created>1565593367381</created>
+      <option name="number" value="00106" />
+      <option name="presentableId" value="LOCAL-00106" />
+      <option name="project" value="LOCAL" />
+      <updated>1565593367381</updated>
+    </task>
+    <task id="LOCAL-00107" summary="Travis tests should be OK.">
+      <created>1565600743039</created>
+      <option name="number" value="00107" />
+      <option name="presentableId" value="LOCAL-00107" />
+      <option name="project" value="LOCAL" />
+      <updated>1565600743040</updated>
+    </task>
+    <task id="LOCAL-00108" summary="Travis tests should be OK.">
+      <created>1565601963751</created>
+      <option name="number" value="00108" />
+      <option name="presentableId" value="LOCAL-00108" />
+      <option name="project" value="LOCAL" />
+      <updated>1565601963751</updated>
+    </task>
+    <task id="LOCAL-00109" summary="Travis tests should be OK.">
+      <created>1565602697336</created>
+      <option name="number" value="00109" />
+      <option name="presentableId" value="LOCAL-00109" />
+      <option name="project" value="LOCAL" />
+      <updated>1565602697336</updated>
+    </task>
+    <task id="LOCAL-00110" summary="Travis tests should be OK.">
+      <created>1565603611191</created>
+      <option name="number" value="00110" />
+      <option name="presentableId" value="LOCAL-00110" />
+      <option name="project" value="LOCAL" />
+      <updated>1565603611191</updated>
+    </task>
+    <task id="LOCAL-00111" summary="deepSubscribe improved. All tests OK.">
+      <created>1565774868049</created>
+      <option name="number" value="00111" />
+      <option name="presentableId" value="LOCAL-00111" />
+      <option name="project" value="LOCAL" />
+      <updated>1565774868050</updated>
+    </task>
+    <task id="LOCAL-00112" summary="Fix travis tests">
+      <created>1565778769046</created>
+      <option name="number" value="00112" />
+      <option name="presentableId" value="LOCAL-00112" />
+      <option name="project" value="LOCAL" />
+      <updated>1565778769046</updated>
+    </task>
+    <task id="LOCAL-00113" summary="Updated npm packages">
+      <created>1565780506132</created>
+      <option name="number" value="00113" />
+      <option name="presentableId" value="LOCAL-00113" />
+      <option name="project" value="LOCAL" />
+      <updated>1565780506132</updated>
+    </task>
+    <task id="LOCAL-00114" summary="npm packages updated to latest except: mocha, @babel/runtime">
+      <created>1565782856477</created>
+      <option name="number" value="00114" />
+      <option name="presentableId" value="LOCAL-00114" />
+      <option name="project" value="LOCAL" />
+      <updated>1565782856477</updated>
+    </task>
+    <task id="LOCAL-00115" summary="Improving ThenableSync">
+      <created>1565968680250</created>
+      <option name="number" value="00115" />
+      <option name="presentableId" value="LOCAL-00115" />
+      <option name="project" value="LOCAL" />
+      <updated>1565968680250</updated>
+    </task>
+    <task id="LOCAL-00116" summary="Improving ThenableSync">
+      <created>1565973103186</created>
+      <option name="number" value="00116" />
+      <option name="presentableId" value="LOCAL-00116" />
+      <option name="project" value="LOCAL" />
+      <updated>1565973103186</updated>
+    </task>
+    <task id="LOCAL-00117" summary="Improving ThenableSync">
+      <created>1566024461889</created>
+      <option name="number" value="00117" />
+      <option name="presentableId" value="LOCAL-00117" />
+      <option name="project" value="LOCAL" />
+      <updated>1566024461891</updated>
+    </task>
+    <task id="LOCAL-00118" summary="Improving ThenableSync">
+      <created>1566063702590</created>
+      <option name="number" value="00118" />
+      <option name="presentableId" value="LOCAL-00118" />
+      <option name="project" value="LOCAL" />
+      <updated>1566063702591</updated>
+    </task>
+    <task id="LOCAL-00119" summary="Improving ThenableSync. Before optimization try/catch.">
+      <created>1566124312729</created>
+      <option name="number" value="00119" />
+      <option name="presentableId" value="LOCAL-00119" />
+      <option name="project" value="LOCAL" />
+      <updated>1566124312729</updated>
+    </task>
+    <task id="LOCAL-00120" summary="Improving ThenableSync. After optimization try/catch.">
+      <created>1566126244081</created>
+      <option name="number" value="00120" />
+      <option name="presentableId" value="LOCAL-00120" />
+      <option name="project" value="LOCAL" />
+      <updated>1566126244081</updated>
+    </task>
+    <task id="LOCAL-00121" summary="ThenableSync improved">
+      <created>1566135248107</created>
+      <option name="number" value="00121" />
+      <option name="presentableId" value="LOCAL-00121" />
+      <option name="project" value="LOCAL" />
+      <updated>1566135248107</updated>
+    </task>
+    <task id="LOCAL-00122" summary="ThenableSync improved. All tests OK.">
+      <created>1566141142567</created>
+      <option name="number" value="00122" />
+      <option name="presentableId" value="LOCAL-00122" />
+      <option name="project" value="LOCAL" />
+      <updated>1566141142567</updated>
+    </task>
+    <option name="localTasksCounter" value="123" />
+    <servers />
+  </component>
+  <component name="TestHistory">
+    <history-entry file="fundamental-operations_ThenableSync_2 - 2019.08.18 at 16h 53m 31s.xml">
+      <configuration name="fundamental-operations.ThenableSync 2" configurationId="mocha-javascript-test-runner" />
+    </history-entry>
+    <history-entry file="fundamental-operations_ThenableSync_2 - 2019.08.18 at 16h 54m 02s.xml">
+      <configuration name="fundamental-operations.ThenableSync 2" configurationId="mocha-javascript-test-runner" />
+    </history-entry>
+    <history-entry file="fundamental-operations_ThenableSync_2 - 2019.08.18 at 16h 54m 36s.xml">
+      <configuration name="fundamental-operations.ThenableSync 2" configurationId="mocha-javascript-test-runner" />
+    </history-entry>
+    <history-entry file="fundamental-operations_ThenableSync_2 - 2019.08.18 at 16h 54m 38s.xml">
+      <configuration name="fundamental-operations.ThenableSync 2" configurationId="mocha-javascript-test-runner" />
+    </history-entry>
+    <history-entry file="fundamental-operations_ThenableSync_2 - 2019.08.18 at 16h 55m 33s.xml">
+      <configuration name="fundamental-operations.ThenableSync 2" configurationId="mocha-javascript-test-runner" />
+    </history-entry>
+    <history-entry file="fundamental-operations_ThenableSync_2 - 2019.08.18 at 16h 57m 01s.xml">
+      <configuration name="fundamental-operations.ThenableSync 2" configurationId="mocha-javascript-test-runner" />
+    </history-entry>
+    <history-entry file="Tests_Dev - 2019.08.18 at 17h 16m 49s.xml">
+      <configuration name="Tests Dev" configurationId="JavaScriptTestRunnerKarma" />
+    </history-entry>
+    <history-entry file="Tests_Dev - 2019.08.18 at 17h 33m 42s.xml">
+      <configuration name="Tests Dev" configurationId="JavaScriptTestRunnerKarma" />
+    </history-entry>
+    <history-entry file="Tests_Dev - 2019.08.18 at 17h 50m 49s.xml">
+      <configuration name="Tests Dev" configurationId="JavaScriptTestRunnerKarma" />
+    </history-entry>
+    <history-entry file="Tests_Dev - 2019.08.18 at 17h 53m 34s.xml">
+      <configuration name="Tests Dev" configurationId="JavaScriptTestRunnerKarma" />
+    </history-entry>
+  </component>
+  <component name="TodoView">
+    <todo-panel id="selected-file">
+      <is-autoscroll-to-source value="true" />
+    </todo-panel>
+    <todo-panel id="all">
+      <are-packages-shown value="true" />
+      <is-autoscroll-to-source value="true" />
+    </todo-panel>
+  </component>
+  <component name="ToolWindowManager">
+    <frame x="-6" y="-6" width="1932" height="894" extended-state="6" />
+    <layout>
+      <window_info content_ui="combo" id="Project" order="0" sideWeight="0.83040935" visible="true" weight="0.21374866" />
+      <window_info id="Structure" order="1" sideWeight="0.19784947" side_tool="true" weight="0.19513485" />
+      <window_info id="npm" order="2" sideWeight="0.16959064" side_tool="true" visible="true" weight="0.21374866" />
+      <window_info id="Favorites" order="3" sideWeight="0.41299304" side_tool="true" weight="0.26758328" />
+      <window_info anchor="bottom" id="V8 CPU Profiling" order="0" weight="0.39100817" />
+      <window_info anchor="bottom" id="Messages" order="1" />
+      <window_info anchor="bottom" id="Message" order="2" />
+      <window_info anchor="bottom" id="Find" order="3" weight="0.49046323" />
+      <window_info anchor="bottom" id="Run" order="4" sideWeight="0.49867794" weight="0.5476839" />
+      <window_info anchor="bottom" id="Debug" order="5" weight="0.3814714" />
+      <window_info anchor="bottom" id="Cvs" order="6" weight="0.25" />
+      <window_info anchor="bottom" id="Inspection" order="7" weight="0.4" />
+      <window_info anchor="bottom" id="TODO" order="8" weight="0.26158038" />
+      <window_info anchor="bottom" id="Version Control" order="9" weight="0.41553134" />
+      <window_info active="true" anchor="bottom" id="Terminal" order="10" visible="true" weight="0.53405994" />
+      <window_info anchor="bottom" id="Event Log" order="11" sideWeight="0.50132203" side_tool="true" weight="0.3705722" />
+      <window_info anchor="bottom" id="TypeScript" order="12" sideWeight="0.4997356" weight="0.2520436" />
+      <window_info anchor="right" x="0" y="0" width="433" height="694" id="Documentation" order="0" side_tool="true" weight="0.32975295" />
+      <window_info anchor="right" id="Commander" internal_type="SLIDING" order="1" type="SLIDING" weight="0.4" />
+      <window_info anchor="right" id="Ant Build" order="2" weight="0.25" />
+      <window_info anchor="right" content_ui="combo" id="Hierarchy" order="3" weight="0.25" />
+      <window_info anchor="right" id="Coverage" order="4" side_tool="true" visible="true" weight="0.12781955" />
+    </layout>
+  </component>
+  <component name="TypeScriptGeneratedFilesManager">
+    <option name="version" value="1" />
+  </component>
+  <component name="Vcs.Log.History.Properties">
+    <option name="COLUMN_ORDER">
+      <list>
+        <option value="0" />
+        <option value="2" />
+        <option value="3" />
+        <option value="1" />
+      </list>
+    </option>
+  </component>
+  <component name="VcsManagerConfiguration">
+    <option name="CHECK_CODE_SMELLS_BEFORE_PROJECT_COMMIT" value="false" />
+    <option name="CHECK_NEW_TODO" value="false" />
+    <MESSAGE value="Big refactoring" />
+    <MESSAGE value="ThenableSync is optimized" />
+    <MESSAGE value="DeepClone improving and usage testing" />
+    <MESSAGE value="DeepCloneEqual completed and tested. All tests OK." />
+    <MESSAGE value="Develop circular merge. Simple circular tests is OK." />
+    <MESSAGE value="Develop circular merge. Simple circular tests is OK. All other tests OK." />
+    <MESSAGE value="Circular merge looks like completed. Complex circular object tests is OK. All tests OK." />
+    <MESSAGE value="Circular merge is completed." />
+    <MESSAGE value="Lint fixes" />
+    <MESSAGE value="Develop property" />
+    <MESSAGE value="Property merger and serializer tests is OK. All tests OK." />
+    <MESSAGE value="Serializer and Merger interfaces refactoring. All tests OK." />
+    <MESSAGE value="Lint fixes. Lint OK." />
+    <MESSAGE value="Debug travis tests. Mocha is OK. Karma is fail." />
+    <MESSAGE value="Debug travis tests" />
+    <MESSAGE value="Travis tests should be OK." />
+    <MESSAGE value="deepSubscribe improved. All tests OK." />
+    <MESSAGE value="Fix travis tests" />
+    <MESSAGE value="Updated npm packages" />
+    <MESSAGE value="npm packages updated to latest except: mocha, @babel/runtime" />
+    <MESSAGE value="Improving ThenableSync" />
+    <MESSAGE value="Improving ThenableSync. Before optimization try/catch." />
+    <MESSAGE value="Improving ThenableSync. After optimization try/catch." />
+    <MESSAGE value="ThenableSync improved" />
+    <MESSAGE value="ThenableSync improved. All tests OK." />
+    <option name="LAST_COMMIT_MESSAGE" value="ThenableSync improved. All tests OK." />
+  </component>
+  <component name="XDebuggerManager">
+    <breakpoint-manager>
+      <breakpoints>
+        <line-breakpoint enabled="true" type="javascript">
+          <url>file://$PROJECT_DIR$/src/test/tests/common/main/lists/src/helpers/TestList.ts</url>
+          <line>307</line>
+          <option name="timeStamp" value="362" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" type="javascript">
+          <url>file://$PROJECT_DIR$/src/test/tests/common/main/lists/src/helpers/TestSet.ts</url>
+          <line>343</line>
+          <option name="timeStamp" value="365" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" type="javascript">
+          <url>file://$PROJECT_DIR$/src/test/tests/common/main/lists/src/helpers/TestMap.ts</url>
+          <line>390</line>
+          <option name="timeStamp" value="369" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" type="javascript">
+          <url>file://$PROJECT_DIR$/src/test/tests/common/main/rx/deep-subscribe/RuleBuilder.ts</url>
+          <line>504</line>
+          <option name="timeStamp" value="522" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" type="javascript">
+          <url>file://$PROJECT_DIR$/src/test/tests/common/main/rx/deferred-calc/DeferredCalc.ts</url>
+          <line>161</line>
+          <option name="timeStamp" value="650" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" type="javascript">
+          <url>file://$PROJECT_DIR$/src/test/tests/common/main/rx/object/observable-object-builder.js</url>
+          <line>8</line>
+          <option name="timeStamp" value="678" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" type="javascript">
+          <url>file://$PROJECT_DIR$/src/test/tests/common/main/extensions/TypeMeta.ts</url>
+          <line>72</line>
+          <option name="timeStamp" value="708" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" type="javascript">
+          <url>file://$PROJECT_DIR$/src/test/tests/common/main/lists/src/helpers/TestSet.ts</url>
+          <line>87</line>
+          <option name="timeStamp" value="721" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" type="javascript">
+          <condition expression="!entry || !entry[0] || !entry[1]" language="TypeScript" />
+          <url>file://$PROJECT_DIR$/src/test/tests/common/main/lists/src/helpers/TestSet.ts</url>
+          <line>154</line>
+          <option name="timeStamp" value="722" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" type="javascript">
+          <url>file://$PROJECT_DIR$/src/test/tests/common/main/lists/src/helpers/TestMap.ts</url>
+          <line>101</line>
+          <option name="timeStamp" value="725" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" type="javascript">
+          <url>file://$PROJECT_DIR$/node_modules/nano-equal/src/index.js</url>
+          <line>118</line>
+          <option name="timeStamp" value="783" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" type="javascript">
+          <url>file://$PROJECT_DIR$/node_modules/nano-equal/src/index.js</url>
+          <line>122</line>
+          <option name="timeStamp" value="784" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" type="javascript">
+          <url>file://$PROJECT_DIR$/node_modules/nano-equal/src/index.js</url>
+          <line>126</line>
+          <option name="timeStamp" value="785" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" type="javascript">
+          <url>file://$PROJECT_DIR$/node_modules/nano-equal/src/index.js</url>
+          <line>132</line>
+          <option name="timeStamp" value="786" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" type="javascript">
+          <url>file://$PROJECT_DIR$/node_modules/nano-equal/src/index.js</url>
+          <line>136</line>
+          <option name="timeStamp" value="787" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" type="javascript">
+          <url>file://$PROJECT_DIR$/node_modules/nano-equal/src/index.js</url>
+          <line>105</line>
+          <option name="timeStamp" value="788" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" type="javascript">
+          <url>file://$PROJECT_DIR$/node_modules/nano-equal/src/index.js</url>
+          <line>101</line>
+          <option name="timeStamp" value="789" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" type="javascript">
+          <url>file://$PROJECT_DIR$/node_modules/nano-equal/src/index.js</url>
+          <line>93</line>
+          <option name="timeStamp" value="790" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" type="javascript">
+          <url>file://$PROJECT_DIR$/node_modules/nano-equal/src/index.js</url>
+          <line>86</line>
+          <option name="timeStamp" value="791" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" type="javascript">
+          <url>file://$PROJECT_DIR$/node_modules/nano-equal/src/index.js</url>
+          <line>74</line>
+          <option name="timeStamp" value="792" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" type="javascript">
+          <url>file://$PROJECT_DIR$/_trash/src/test/tests/common/main/extensions/merge/merge-collection.ts</url>
+          <line>261</line>
+          <option name="timeStamp" value="807" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" type="javascript">
+          <url>file://$PROJECT_DIR$/_trash/src/test/tests/common/main/extensions/merge/merge-collection.ts</url>
+          <line>105</line>
+          <option name="timeStamp" value="808" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" type="javascript">
+          <url>file://$PROJECT_DIR$/src/test/tests/common/main/extensions/merge/src/TestMerger.ts</url>
+          <line>453</line>
+          <option name="timeStamp" value="917" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" type="javascript">
+          <url>file://$PROJECT_DIR$/src/test/tests/common/main/rx/subjects/hasSubscribers.js</url>
+          <line>21</line>
+          <option name="timeStamp" value="1062" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" type="javascript">
+          <url>file://$PROJECT_DIR$/src/test/tests/common/main/rx/subjects/behavior.js</url>
+          <line>38</line>
+          <option name="timeStamp" value="1069" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" type="javascript">
+          <url>file://$PROJECT_DIR$/src/test/tests/common/main/lists/src/helpers/TestMap.ts</url>
+          <line>98</line>
+          <option name="timeStamp" value="1213" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" type="javascript">
+          <url>file://$PROJECT_DIR$/src/main/common/extensions/serialization/serializers.ts</url>
+          <line>288</line>
+          <option name="timeStamp" value="1327" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" type="javascript">
+          <url>file://$PROJECT_DIR$/src/test/tests/common/main/rx/object/observable-object-builder.js</url>
+          <line>646</line>
+          <option name="timeStamp" value="1473" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" type="javascript">
+          <url>file://$PROJECT_DIR$/src/test/tests/common/main/test/src/TestDeepEqual.ts</url>
+          <line>130</line>
+          <option name="timeStamp" value="1533" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" type="javascript">
+          <url>file://$PROJECT_DIR$/src/test/tests/common/main/extensions/serialization/serializers.ts</url>
+          <line>347</line>
+          <option name="timeStamp" value="1704" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" type="javascript">
+          <condition expression="!object.hasOwnProperty('_undefined')" language="TypeScript" />
+          <url>file://$PROJECT_DIR$/src/main/common/lists/ObjectMap.ts</url>
+          <line>22</line>
+          <option name="timeStamp" value="1714" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" type="javascript">
+          <url>file://$PROJECT_DIR$/src/main/common/rx/deep-subscribe/RuleSubscribe.ts</url>
+          <line>29</line>
+          <option name="timeStamp" value="1735" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" type="javascript">
+          <url>file://$PROJECT_DIR$/src/test/tests/common/main/rx/deep-subscribe/deep-subscribe.ts</url>
+          <line>314</line>
+          <option name="timeStamp" value="1758" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" type="javascript">
+          <url>file://$PROJECT_DIR$/src/test/tests/common/main/async/src/TestThenableSync.ts</url>
+          <line>569</line>
+          <properties lambdaOrdinal="-1" />
+          <option name="timeStamp" value="1939" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" type="javascript">
+          <url>file://$PROJECT_DIR$/src/test/tests/common/main/async/src/TestThenableSync.ts</url>
+          <line>542</line>
+          <properties lambdaOrdinal="-1" />
+          <option name="timeStamp" value="2106" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" type="javascript">
+          <url>file://$PROJECT_DIR$/src/main/common/async/async.ts</url>
+          <line>163</line>
+          <properties lambdaOrdinal="-1" />
+          <option name="timeStamp" value="2108" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" type="javascript">
+          <url>file://$PROJECT_DIR$/src/main/common/async/async.ts</url>
+          <line>165</line>
+          <properties lambdaOrdinal="-1" />
+          <option name="timeStamp" value="2109" />
+        </line-breakpoint>
+      </breakpoints>
+      <breakpoints-dialog>
+        <breakpoints-dialog>
+          <selected-grouping-rules>
+            <grouping-rule id="by-file" />
+          </selected-grouping-rules>
+        </breakpoints-dialog>
+      </breakpoints-dialog>
+    </breakpoint-manager>
+    <watches-manager>
+      <configuration name="mocha-javascript-test-runner">
+        <watch expression="valueInfo" language="TypeScript" />
+        <watch expression="thenable" language="TypeScript" />
+        <watch expression="newThenable" language="TypeScript" />
+      </configuration>
+    </watches-manager>
+  </component>
+  <component name="debuggerHistoryManager">
+    <expressions id="breakpointCondition">
+      <expression>
+        <expression-string>isThenable(error)</expression-string>
+        <language-id>TypeScript</language-id>
+        <evaluation-mode>EXPRESSION</evaluation-mode>
+      </expression>
+      <expression>
+        <expression-string>!isThenable(error)</expression-string>
+        <language-id>TypeScript</language-id>
+        <evaluation-mode>EXPRESSION</evaluation-mode>
+      </expression>
+      <expression>
+        <expression-string>!object || typeof object !== 'object' || Object.isFrozen(object)</expression-string>
+        <language-id>TypeScript</language-id>
+        <evaluation-mode>EXPRESSION</evaluation-mode>
+      </expression>
+      <expression>
+        <expression-string>!object || typrof object !== 'object' || Object.isFrozen(object) || object.valueOf() !== object</expression-string>
+        <language-id>TypeScript</language-id>
+        <evaluation-mode>EXPRESSION</evaluation-mode>
+      </expression>
+      <expression>
+        <expression-string>!object || typrof object !== 'object' || Object.isFrozen(object)</expression-string>
+        <language-id>TypeScript</language-id>
+        <evaluation-mode>EXPRESSION</evaluation-mode>
+      </expression>
+      <expression>
+        <expression-string>!object || typrof object !== 'object'</expression-string>
+        <language-id>TypeScript</language-id>
+        <evaluation-mode>EXPRESSION</evaluation-mode>
+      </expression>
+      <expression>
+        <expression-string>mergeState.olderState.isRef || mergeState.newerState.isRef</expression-string>
+        <language-id>TypeScript</language-id>
+        <evaluation-mode>EXPRESSION</evaluation-mode>
+      </expression>
+      <expression>
+        <expression-string>o1.constructor === o2.constructor &amp;&amp; o1.constructor.name === 'ObservableMap'</expression-string>
+        <language-id>TypeScript</language-id>
+        <evaluation-mode>EXPRESSION</evaluation-mode>
+      </expression>
+      <expression>
+        <expression-string>!object.hasOwnProperty('_undefined')</expression-string>
+        <language-id>TypeScript</language-id>
+        <evaluation-mode>EXPRESSION</evaluation-mode>
+      </expression>
+    </expressions>
+    <expressions id="watch">
+      <expression>
+        <expression-string>newThenable</expression-string>
+        <language-id>TypeScript</language-id>
+        <evaluation-mode>EXPRESSION</evaluation-mode>
+      </expression>
+      <expression>
+        <expression-string>thenable</expression-string>
+        <language-id>TypeScript</language-id>
+        <evaluation-mode>EXPRESSION</evaluation-mode>
+      </expression>
+      <expression>
+        <expression-string>valueInfo.value.next</expression-string>
+        <language-id>TypeScript</language-id>
+        <evaluation-mode>EXPRESSION</evaluation-mode>
+      </expression>
+      <expression>
+        <expression-string>value</expression-string>
+        <language-id>TypeScript</language-id>
+        <evaluation-mode>EXPRESSION</evaluation-mode>
+      </expression>
+      <expression>
+        <expression-string>valueInfo</expression-string>
+        <language-id>TypeScript</language-id>
+        <evaluation-mode>EXPRESSION</evaluation-mode>
+      </expression>
+      <expression>
+        <expression-string>ITERABLE.next</expression-string>
+        <language-id>TypeScript</language-id>
+        <evaluation-mode>EXPRESSION</evaluation-mode>
+      </expression>
+      <expression>
+        <expression-string>ITERATOR_GENERATOR.next</expression-string>
+        <language-id>TypeScript</language-id>
+        <evaluation-mode>EXPRESSION</evaluation-mode>
+      </expression>
+      <expression>
+        <expression-string>ITERATOR_GENERATOR</expression-string>
+        <language-id>TypeScript</language-id>
+        <evaluation-mode>EXPRESSION</evaluation-mode>
+      </expression>
+      <expression>
+        <expression-string>options.value</expression-string>
+        <language-id>TypeScript</language-id>
+        <evaluation-mode>EXPRESSION</evaluation-mode>
+      </expression>
+      <expression>
+        <expression-string>options.value.next</expression-string>
+        <language-id>TypeScript</language-id>
+        <evaluation-mode>EXPRESSION</evaluation-mode>
+      </expression>
+    </expressions>
+  </component>
+  <component name="editorHistoryManager">
+    <entry file="file://$PROJECT_DIR$/src/main/common/rx/object/DeepPropertyChangedObject.ts">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="2766">
+          <caret line="105" column="21" lean-forward="true" selection-start-line="105" selection-start-column="21" selection-end-line="105" selection-end-column="21" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/test/tests/common/main/rx/object/observable-object-builder-prototype.js">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="104">
+          <caret line="286" column="15" selection-start-line="286" selection-start-column="15" selection-end-line="286" selection-end-column="15" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/test/tests/common/main/extensions/TypeMeta.ts">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="58">
+          <caret line="3" column="9" selection-start-line="3" selection-start-column="9" selection-end-line="3" selection-end-column="9" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/test/tests/common/main/rx/deep-subscribe/helpers/func-properties-path.ts">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="87">
+          <caret line="9" column="9" selection-start-line="9" selection-start-column="9" selection-end-line="9" selection-end-column="9" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/main/common/rx/subjects/subject.ts">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="285">
+          <caret line="44" column="4" selection-start-line="44" selection-start-column="4" selection-end-line="44" selection-end-column="4" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/main/common/rx/subjects/hasSubscribers.ts">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="130">
+          <caret line="44" column="4" selection-start-line="44" selection-start-column="4" selection-end-line="44" selection-end-column="4" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/main/common/rx/object/ObservableObjectBuilder.ts">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="140">
+          <caret line="33" column="16" selection-start-line="33" selection-start-column="16" selection-end-line="33" selection-end-column="16" />
+          <folding>
+            <element signature="e#0#34#0" expanded="true" />
+            <element signature="n#!!block;n#constructor#0;n#ObservableObjectBuilder#0" />
+            <element signature="n#!!doc;n#readable#0;n#ObservableObjectBuilder#0" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/main/common/rx/deep-subscribe/helpers/subscribe-childs.ts">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="-5028">
+          <folding>
+            <element signature="e#0#83#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/main/common/rx/deep-subscribe/helpers/func-properties-path.ts">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="127">
+          <caret line="53" column="16" selection-start-line="53" selection-start-column="16" selection-end-line="53" selection-end-column="16" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/main/common/rx/deep-subscribe/helpers/common.ts">
+      <provider selected="true" editor-type-id="text-editor" />
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/main/common/rx/deep-subscribe/helpers/PeekIterator.ts">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="304">
+          <caret line="13" column="4" selection-start-line="13" selection-start-column="4" selection-end-line="13" selection-end-column="4" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/main/common/rx/deep-subscribe/RuleSubscribe.ts">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="1218">
+          <caret line="50" column="24" selection-start-line="50" selection-start-column="24" selection-end-line="50" selection-end-column="24" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/main/common/rx/deep-subscribe/contracts/rules.ts">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="261">
+          <caret line="9" column="17" selection-start-line="9" selection-start-column="17" selection-end-line="9" selection-end-column="17" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/main/common/rx/deep-subscribe/contracts/rule-subscribe.ts">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="158">
+          <caret line="12" column="17" selection-start-line="12" selection-start-column="4" selection-end-line="12" selection-end-column="17" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/main/common/rx/deep-subscribe/RuleBuilder.ts">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="291">
+          <caret line="55" column="22" selection-start-line="55" selection-start-column="22" selection-end-line="55" selection-end-column="22" />
+          <folding>
+            <element signature="e#0#68#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/test/tests/common/main/rx/deep-subscribe/RuleBuilder.ts">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="107">
+          <caret line="525" column="34" selection-start-line="525" selection-start-column="34" selection-end-line="525" selection-end-column="34" />
+          <folding>
+            <element signature="n#!!doc" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/test/tests/common/main/rx/deep-subscribe/deep-subscribe.ts">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="12818">
+          <caret line="443" column="44" selection-start-line="443" selection-start-column="44" selection-end-line="443" selection-end-column="44" />
+          <folding>
+            <element signature="e#119#186#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/test/tests/common/env/src/throw.js">
+      <provider selected="true" editor-type-id="text-editor">
+        <state>
+          <caret column="6" selection-start-column="6" selection-end-column="6" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/test/tests/common/main/extensions/merge/ObjectMerger.ts">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="9512">
+          <caret line="352" column="11" selection-start-line="352" selection-start-column="11" selection-end-line="352" selection-end-column="11" />
+          <folding>
+            <element signature="n#!!doc" expanded="true" />
+            <element signature="e#287#398#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/test/tests/common/main/rx/deep-subscribe/helpers/Tester.ts">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="8352">
+          <caret line="301" column="17" selection-start-line="301" selection-start-column="17" selection-end-line="301" selection-end-column="17" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/main/common/rx/deep-subscribe/deep-subscribe.ts">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="2465">
+          <caret line="92" column="15" selection-start-line="92" selection-start-column="15" selection-end-line="92" selection-end-column="15" />
+          <folding>
+            <element signature="n#!!doc" expanded="true" />
+            <element signature="e#21#69#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/main/common/rx/deep-subscribe/iterate-rule.ts">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="2552">
+          <caret line="92" column="9" selection-start-line="92" selection-start-column="9" selection-end-line="92" selection-end-column="9" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/main/common/extensions/serialization/serializers.ts">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="9657">
+          <caret line="348" column="21" selection-start-line="348" selection-start-column="21" selection-end-line="348" selection-end-column="21" />
+          <folding>
+            <element signature="e#0#63#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/node_modules/typescript/lib/lib.es2015.iterable.d.ts">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="638">
+          <caret line="35" column="10" selection-start-line="35" selection-start-column="10" selection-end-line="35" selection-end-column="10" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/test/tests/common/main/extensions/serialization/serializers.ts">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="106">
+          <caret line="346" column="7" selection-start-line="346" selection-start-column="7" selection-end-line="346" selection-end-column="7" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/node_modules/typescript/lib/lib.es2015.promise.d.ts">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="106">
+          <caret line="32" column="109" selection-start-line="32" selection-start-column="22" selection-end-line="32" selection-end-column="109" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/main/common/lists/ArraySet.ts">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="377">
+          <caret line="13" column="6" selection-start-line="13" selection-start-column="6" selection-end-line="13" selection-end-column="6" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/main/common/lists/ArrayMap.ts">
+      <provider selected="true" editor-type-id="text-editor">
+        <state>
+          <caret line="13" column="37" selection-start-line="13" selection-start-column="37" selection-end-line="13" selection-end-column="37" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/node_modules/typescript/lib/lib.es5.d.ts">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="39788">
+          <caret line="1385" column="10" selection-start-line="1385" selection-start-column="10" selection-end-line="1385" selection-end-column="10" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/main/common/helpers/helpers.ts">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="174">
+          <caret line="6" column="4" selection-start-line="6" selection-start-column="4" selection-end-line="6" selection-end-column="4" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/env/polyfill/bundle.js">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="112">
+          <caret line="168" column="38" selection-start-line="168" selection-start-column="38" selection-end-line="168" selection-end-column="38" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/tslint.json">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="-821" />
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/test/tests/common/main/async/src/_TestThenableSync.ts">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="29">
+          <caret line="207" column="51" selection-start-line="207" selection-start-column="39" selection-end-line="207" selection-end-column="51" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/test/tests/common/main/src/helpers/TestVariants.ts">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="194">
+          <caret line="117" column="4" selection-start-line="117" selection-start-column="4" selection-end-line="117" selection-end-column="4" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/main/common/test/Assert.ts">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="117">
+          <caret line="116" column="4" selection-start-line="116" selection-start-column="4" selection-end-line="116" selection-end-column="4" />
+          <folding>
+            <element signature="n#!!doc" expanded="true" />
+            <element signature="e#51#92#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/test/tests/common/main/async/ThenableSync.ts">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="290">
+          <caret line="21" column="17" selection-start-line="21" selection-start-column="17" selection-end-line="21" selection-end-column="17" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/main/common/async/async.ts">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="174">
+          <caret line="170" column="4" selection-start-line="170" selection-start-column="4" selection-end-line="170" selection-end-column="4" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/test/tests/common/main/async/src/TestThenableSync.ts">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="16182">
+          <caret line="558" column="4" selection-start-line="558" selection-start-column="4" selection-end-line="558" selection-end-column="4" />
+          <folding>
+            <element signature="n#!!doc" expanded="true" />
+            <element signature="e#85#168#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/env/mocha/register-tests.js">
+      <provider selected="true" editor-type-id="text-editor">
+        <state>
+          <folding>
+            <element signature="n#!!doc" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/env/mocha/register-babel.js">
+      <provider selected="true" editor-type-id="text-editor" />
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/test/performance/node/fundamental-operations.ts">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="-259">
+          <caret line="1697" column="19" selection-start-line="1697" selection-start-column="19" selection-end-line="1697" selection-end-column="19" />
+          <folding>
+            <element signature="n#!!doc" expanded="true" />
+            <element signature="e#27633#28020#0" />
+            <element signature="e#28057#29217#0" />
+            <element signature="e#29248#30131#0" />
+            <element signature="e#30292#30679#0" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/tmp/karma/tests.js">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="247">
+          <caret line="27" selection-start-line="27" selection-end-line="27" />
+          <folding>
+            <element signature="e#0#58#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/.babelrc-mjs.js">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="372">
+          <caret line="23" column="31" selection-start-line="23" selection-start-column="31" selection-end-line="23" selection-end-column="31" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/.babelrc-js.js">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="-522" />
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/.babelrc.js">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="-594">
+          <caret line="4" column="26" selection-start-line="4" selection-start-column="26" selection-end-line="4" selection-end-column="26" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/node_modules/regenerator-runtime/runtime.js">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="-1305" />
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/node_modules/@babel/runtime/regenerator/index.js">
+      <provider selected="true" editor-type-id="text-editor">
+        <state>
+          <caret column="34" selection-start-column="34" selection-end-column="34" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/node_modules/regenerator-runtime/package.json">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="-1180" />
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/env/rollup/plugins.js">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="232">
+          <caret line="89" column="7" selection-start-line="89" selection-start-column="7" selection-end-line="89" selection-end-column="7" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/main/common/async/ThenableSync.ts">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="232">
+          <caret line="128" column="27" selection-start-line="128" selection-start-column="27" selection-end-line="128" selection-end-column="27" />
+          <folding>
+            <element signature="e#0#165#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/package.json">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="91">
+          <caret line="148" column="3" lean-forward="true" selection-start-line="148" selection-start-column="3" selection-end-line="148" selection-end-column="3" />
+        </state>
+      </provider>
+    </entry>
+  </component>
+  <component name="masterDetails">
+    <states>
+      <state key="ScopeChooserConfigurable.UI">
+        <settings>
+          <splitter-proportions>
+            <option name="proportions">
+              <list>
+                <option value="0.2" />
+              </list>
+            </option>
+          </splitter-proportions>
+        </settings>
+      </state>
+    </states>
+  </component>
+</project>

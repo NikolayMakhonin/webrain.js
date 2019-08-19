@@ -1,9 +1,9 @@
 /* tslint:disable:no-empty no-identical-functions no-construct use-primitive-type */
-import {TOnFulfilled, TOnRejected} from '../../../../../../main/common/async/async'
-import {ThenableSync} from '../../../../../../main/common/async/ThenableSync'
-import {TClass} from '../../../../../../main/common/helpers/helpers'
-import {assert} from '../../../../../../main/common/test/Assert'
-import {IOptionsVariant, IOptionsVariants, ITestCase, TestVariants} from '../../src/helpers/TestVariants'
+import {TOnFulfilled, TOnRejected} from '../../../../../../../../src/main/common/async/async'
+import {ThenableSync} from '../../../../../../../../src/main/common/async/ThenableSync'
+import {TClass} from '../../../../../../../../src/main/common/helpers/helpers'
+import {assert} from '../../../../../../../../src/main/common/test/Assert'
+import {IOptionsVariant, IOptionsVariants, ITestCase, TestVariants} from '../../../../../../../../src/test/tests/common/main/src/helpers/TestVariants'
 
 export enum ResolveType {
 	Value,
