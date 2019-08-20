@@ -1,5 +1,5 @@
 import '../extensions/autoConnect'
-import {DeepPropertyChangedObject} from './DeepPropertyChangedObject'
+import {PropertyChangedObject} from './PropertyChangedObject'
 
 export interface ISetOptions {
 	equalsFunc?: (oldValue, newValue) => boolean,
@@ -10,7 +10,7 @@ export interface ISetOptions {
 	suppressPropertyChanged?: boolean,
 }
 
-export class ObservableObject extends DeepPropertyChangedObject {
+export class ObservableObject extends PropertyChangedObject {
 
 	/** @internal */
 	public readonly __fields?: {
@@ -59,8 +59,6 @@ export class ObservableObject extends DeepPropertyChangedObject {
 		}
 
 		__fields[name] = newValue
-
-		this._propagatePropertyChanged(name, newValue)
 
 		const afterChange = options && options.afterChange
 		if (afterChange) {

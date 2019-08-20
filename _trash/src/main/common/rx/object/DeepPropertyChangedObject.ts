@@ -77,26 +77,6 @@ export class DeepPropertyChangedObject extends PropertyChangedObject implements 
 	}
 
 	/** @internal */
-	public _setUnsubscriber(propertyName: string | number, unsubscribe: IUnsubscribe) {
-		const {__meta} = this
-
-		let {unsubscribers} = __meta
-		if (unsubscribers) {
-			const oldUnsubscribe = unsubscribers[propertyName]
-			if (oldUnsubscribe) {
-				oldUnsubscribe()
-			}
-		}
-
-		if (unsubscribe) {
-			if (!unsubscribers) {
-				__meta.unsubscribers = unsubscribers = {}
-			}
-			unsubscribers[propertyName] = unsubscribe
-		}
-	}
-
-	/** @internal */
 	public _propagatePropertyChanged(
 		propertyName: string | number,
 		value: IDeepPropertyChanged | IPropertyChanged | any,

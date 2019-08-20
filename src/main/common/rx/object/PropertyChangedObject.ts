@@ -5,6 +5,7 @@ import {
 	IPropertyChangedObject,
 } from '../../lists/contracts/IPropertyChanged'
 import {HasSubscribersSubject, IHasSubscribersSubject} from '../subjects/hasSubscribers'
+import {IUnsubscribe} from '../subjects/subject'
 
 function expandAndDistinct(inputItems: any, output: string[] = [], map: any = {}): string[] {
 	if (inputItems == null) {
@@ -29,6 +30,10 @@ function expandAndDistinct(inputItems: any, output: string[] = [], map: any = {}
 export class PropertyChangedObject implements IPropertyChangedObject {
 	/** @internal */
 	public readonly __meta: {
+		unsubscribers: {
+			[key: string]: IUnsubscribe,
+			[key: number]: IUnsubscribe,
+		},
 		propertyChanged?: IHasSubscribersSubject<IPropertyChangedEvent>,
 		propertyChangedDisabled?: boolean,
 	}
@@ -40,6 +45,26 @@ export class PropertyChangedObject implements IPropertyChangedObject {
 			writable: false,
 			value: {},
 		})
+	}
+
+	/** @internal */
+	public _setUnsubscriber(propertyName: string | number, unsubscribe: IUnsubscribe) {
+		const {__meta} = this
+
+		let {unsubscribers} = __meta
+		if (unsubscribers) {
+			const oldUnsubscribe = unsubscribers[propertyName]
+			if (oldUnsubscribe) {
+				oldUnsubscribe()
+			}
+		}
+
+		if (unsubscribe) {
+			if (!unsubscribers) {
+				__meta.unsubscribers = unsubscribers = {}
+			}
+			unsubscribers[propertyName] = unsubscribe
+		}
 	}
 
 	// region propertyChanged

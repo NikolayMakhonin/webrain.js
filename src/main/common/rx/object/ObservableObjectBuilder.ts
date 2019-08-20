@@ -41,9 +41,7 @@ export class ObservableObjectBuilder<TObject extends ObservableObject> {
 
 		if (__fields && typeof initValue !== 'undefined') {
 			const value = __fields[name]
-			if (initValue === value) {
-				object._propagatePropertyChanged(name, value)
-			} else {
+			if (initValue !== value) {
 				object[name] = initValue
 			}
 		}
@@ -93,9 +91,7 @@ export class ObservableObjectBuilder<TObject extends ObservableObject> {
 
 					if (fields && typeof factoryValue !== 'undefined') {
 						const oldValue = fields[name]
-						if (factoryValue === oldValue) {
-							this._propagatePropertyChanged(name, oldValue)
-						} else {
+						if (factoryValue !== oldValue) {
 							this._set(name, factoryValue, {
 								...(options && options.factorySetOptions),
 								suppressPropertyChanged: true,
@@ -128,8 +124,6 @@ export class ObservableObjectBuilder<TObject extends ObservableObject> {
 
 			if (__fields && typeof value !== 'undefined') {
 				const oldValue = __fields[name]
-
-				object._propagatePropertyChanged(name, value)
 
 				if (value !== oldValue) {
 					__fields[name] = value
