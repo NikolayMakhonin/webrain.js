@@ -1,10 +1,11 @@
-import {ANY_DISPLAY, COLLECTION_PREFIX} from './contracts/constants'
+import {ANY_DISPLAY, COLLECTION_PREFIX, VALUE_PROPERTY_PREFIX} from './contracts/constants'
 import {IRuleSubscribe} from './contracts/rule-subscribe'
 import {IRule, IRuleAny, IRuleRepeat, RuleType} from './contracts/rules'
 import {getFuncPropertiesPath} from './helpers/func-properties-path'
-import {RuleSubscribeCollection, RuleSubscribeMap, RuleSubscribeObject} from './RuleSubscribe'
+import {RuleSubscribeCollection, RuleSubscribeMap, RuleSubscribeObject, SubscribeObjectType} from './RuleSubscribe'
 
-const RuleSubscribeObjectPropertyNames = RuleSubscribeObject.bind(null, null)
+const RuleSubscribeObjectPropertyNames = RuleSubscribeObject.bind(null, SubscribeObjectType.Property, null)
+const RuleSubscribeObjectValuePropertyNames = RuleSubscribeObject.bind(null, SubscribeObjectType.ValueProperty, null)
 const RuleSubscribeMapKeys = RuleSubscribeMap.bind(null, null)
 
 // const UNSUBSCRIBE_PROPERTY_PREFIX = Math.random().toString(36)
@@ -65,6 +66,26 @@ export class RuleBuilder<TObject> {
 	/**
 	 * Object property, Array index
 	 */
+	public valuePropertyName<TValue>(propertyName: string): RuleBuilder<TValue> {
+		return this.ruleSubscribe(
+			new RuleSubscribeObjectValuePropertyNames(propertyName),
+			VALUE_PROPERTY_PREFIX + propertyName,
+		)
+	}
+
+	/**
+	 * Object property, Array index
+	 */
+	public valuePropertyNames<TValue>(...propertiesNames: string[]): RuleBuilder<TValue> {
+		return this.ruleSubscribe(
+			new RuleSubscribeObjectValuePropertyNames(...propertiesNames),
+			VALUE_PROPERTY_PREFIX + propertiesNames.join('|'),
+		)
+	}
+
+	/**
+	 * Object property, Array index
+	 */
 	public propertyName<TValue>(propertyName: string): RuleBuilder<TValue> {
 		return this.ruleSubscribe(
 			new RuleSubscribeObjectPropertyNames(propertyName),
@@ -87,7 +108,7 @@ export class RuleBuilder<TObject> {
 	 */
 	public propertyAll<TValue>(): RuleBuilder<TValue> {
 		return this.ruleSubscribe(
-			new RuleSubscribeObject(),
+			new RuleSubscribeObjectPropertyNames(),
 			ANY_DISPLAY,
 		)
 	}
@@ -100,7 +121,7 @@ export class RuleBuilder<TObject> {
 		description: string,
 	): RuleBuilder<TValue> {
 		return this.ruleSubscribe(
-			new RuleSubscribeObject(predicate),
+			new RuleSubscribeObject(SubscribeObjectType.Property, predicate),
 			description,
 		)
 	}
@@ -188,15 +209,22 @@ export class RuleBuilder<TObject> {
 
 	public path<TValue>(getValueFunc: (o: TObject) => TValue): RuleBuilder<TValue> {
 		for (const propertyNames of getFuncPropertiesPath(getValueFunc)) {
-			if (!propertyNames.startsWith(COLLECTION_PREFIX)) {
-				this.propertyNames(...propertyNames.split('|'))
-			} else {
+			if (propertyNames.startsWith(COLLECTION_PREFIX)) {
 				const keys = propertyNames.substring(1)
 				if (keys === '') {
 					this.collection()
 				} else {
 					this.mapKeys(...keys.split('|'))
 				}
+			} else if (propertyNames.startsWith(VALUE_PROPERTY_PREFIX)) {
+				const valuePropertyNames = propertyNames.substring(1)
+				if (valuePropertyNames === '') {
+					throw new Error(`You should specify at least one value property name; path = ${getValueFunc}`)
+				} else {
+					this.valuePropertyNames(...valuePropertyNames.split('|'))
+				}
+			} else {
+				this.propertyNames(...propertyNames.split('|'))
 			}
 		}
 

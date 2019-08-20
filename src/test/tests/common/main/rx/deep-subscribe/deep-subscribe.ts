@@ -1,5 +1,7 @@
 /* tslint:disable:no-construct use-primitive-type no-shadowed-variable no-duplicate-string no-empty max-line-length */
 import {delay} from '../../../../../../main/common/helpers/helpers'
+import {VALUE_PROPERTY_DEFAULT} from '../../../../../../main/common/rx/deep-subscribe/contracts/constants'
+import {ObservableObjectBuilder} from '../../../../../../main/common/rx/object/ObservableObjectBuilder'
 import {createObject, Tester} from './helpers/Tester'
 
 describe('common > main > rx > deep-subscribe > deep-subscribe', function() {
@@ -315,6 +317,67 @@ describe('common > main > rx > deep-subscribe > deep-subscribe', function() {
 			.change(o => { o.set = o.observableObject as any }, o => [o.set], o => [])
 			.unsubscribe(o => [o, o.map])
 
+		// new Tester(
+		// 	{
+		// 		object: createObject().observableObject,
+		// 		immediate: true,
+		// 		doNotSubscribeNonObjectValues: true,
+		// 	},
+		// 	b => b
+		// 		.path((o: any) => o['map||set']),
+		// )
+		// 	.subscribe(o => [o, o.map, o.set])
+		// 	.change(o => { o.set = o.observableMap as any }, o => [o.set], o => [o.observableMap])
+		// 	.unsubscribe(o => [o, o.map, o.observableMap])
+	})
+
+	it('value properties', async function() {
+		{
+			const object = createObject()
+			new ObservableObjectBuilder(object.property).delete(VALUE_PROPERTY_DEFAULT)
+			new Tester(
+				{
+					object,
+					immediate: true,
+					doNotSubscribeNonObjectValues: true,
+				},
+				b => b.path((o: any) => o.property['@value_map|value_set|value_list']),
+			)
+				.subscribe(o => [o.property])
+				.change(o => {new ObservableObjectBuilder(o.property).writable(VALUE_PROPERTY_DEFAULT, null, null) }, o => [o.property], o => [o.map])
+				.change(o => { o.property.value_map = null }, o => [o.map], o => [])
+				.change(o => { new ObservableObjectBuilder(o.property).delete('value_map') }, o => [], o => [o.set])
+				.change(o => { new ObservableObjectBuilder(o.property).delete('value_set') }, o => [o.set], o => [o.list])
+				.change(o => { o.property.value_list = o.map as any }, o => [o.list], o => [o.map])
+				.change(o => { new ObservableObjectBuilder(o.property).delete('value_list') }, o => [o.map], o => [])
+				.change(o => { o.property[VALUE_PROPERTY_DEFAULT] = void 0 }, o => [], o => [])
+				.change(o => { o.property[VALUE_PROPERTY_DEFAULT] = o as any }, o => [], o => [o])
+				.change(o => { new ObservableObjectBuilder(o.property).writable('value_map', null, null) }, o => [o], o => [])
+				.change(o => { new ObservableObjectBuilder(o.property).delete('value_map') }, o => [], o => [o])
+				.change(o => { new ObservableObjectBuilder(o.property).writable('value_list', null, o.list) }, o => [o], o => [o.list])
+				.change(o => { new ObservableObjectBuilder(o.property).delete(VALUE_PROPERTY_DEFAULT) }, o => [o.list], o => [o.property])
+				.unsubscribe(o => [o.property])
+		}
+
+		new Tester(
+			{
+				object: createObject().observableObject,
+				immediate: true,
+				doNotSubscribeNonObjectValues: true,
+			},
+			b => b.path((o: any) => o.property['@value_map|value_set|value_list']),
+		)
+			.subscribe(o => [o.map])
+			.change(o => { o.property.value_map = null }, o => [o.map], o => [])
+			.change(o => { new ObservableObjectBuilder(o.property).delete('value_map') }, o => [], o => [o.set])
+			.change(o => { new ObservableObjectBuilder(o.property).delete('value_set') }, o => [o.set], o => [o.list])
+			.change(o => { o.property.value_list = o.map as any }, o => [o.list], o => [o.map])
+			.change(o => { new ObservableObjectBuilder(o.property).delete('value_list') }, o => [o.map], o => [o])
+			.change(o => { new ObservableObjectBuilder(o.property).writable('value_map', null, null) }, o => [o], o => [])
+			.change(o => { new ObservableObjectBuilder(o.property).delete('value_map') }, o => [], o => [o])
+			.change(o => { new ObservableObjectBuilder(o.property).writable('value_list', null, o.list) }, o => [o], o => [o.list])
+			.unsubscribe(o => [o.list])
+
 		new Tester(
 			{
 				object: createObject().observableObject,
@@ -322,11 +385,21 @@ describe('common > main > rx > deep-subscribe > deep-subscribe', function() {
 				doNotSubscribeNonObjectValues: true,
 			},
 			b => b
-				.path((o: any) => o['map||set']),
+				.any(
+					o => o.path((o: any) => o.property['@value_observableObject']['map|set']),
+					o => o.path((o: any) => o.property['@value_observableObject']['map|set']),
+					o => o.path((o: any) => o.property['@value_observableObject']['map|set'].object.observableObject),
+				),
+			b => b
+				.any(
+					o => o.path((o: any) => o.property['map|set']),
+					o => o.path((o: any) => o.property['map|set']),
+					o => o.path((o: any) => o.property['map|set'].object.observableObject),
+				),
 		)
-			.subscribe(o => [o, o.map, o.set])
-			.change(o => { o.set = o.observableMap as any }, o => [o.set], o => [o.observableMap])
-			.unsubscribe(o => [o, o.map, o.observableMap])
+			.subscribe(o => [o.map, o.set])
+			.change(o => { o.set = o.observableObject as any }, o => [o.set], o => [o.observableObject])
+			.unsubscribe(o => [o.map, o.set])
 	})
 
 	it('promises', async function() {

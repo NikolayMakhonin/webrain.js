@@ -95,8 +95,10 @@ function deepSubscribeRuleIterator<TValue>(
 			nextRuleIterator => deepSubscribeRuleIterator<TValue>(object, subscribeValue, immediate, nextRuleIterator, leafUnsubscribers, propertiesPath, debugPropertyName, debugParent),
 			(rule, getNextRuleIterator) => {
 				const subscribeItem = (item, debugPropertyName: string) => {
-					const newPropertiesPath = () => (propertiesPath ? propertiesPath() + '.' : '')
-						+ debugPropertyName + '(' + rule.description + ')'
+					const newPropertiesPath = debugPropertyName == null
+						? null
+						: () => (propertiesPath ? propertiesPath() + '.' : '')
+							+ debugPropertyName + '(' + rule.description + ')'
 
 					const subscribe = (): IUnsubscribe => deepSubscribeRuleIterator<TValue>(
 						item,

@@ -17,12 +17,14 @@
       <w>multiremote</w>
       <w>nycrc</w>
       <w>onfulfilled</w>
+      <w>onreject</w>
       <w>onrejected</w>
       <w>regenerator</w>
       <w>safaritechpreview</w>
       <w>samsung</w>
       <w>syntaxes</w>
       <w>systemjs</w>
+      <w>throwed</w>
       <w>unhandledrejection</w>
       <w>unsubscriber</w>
       <w>unsubscribers</w>
