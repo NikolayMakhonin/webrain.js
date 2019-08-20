@@ -21,21 +21,27 @@ class ConnectorBuilder extends _ObservableObjectBuilder.ObservableObjectBuilder 
     }
 
     return this.readable(name, {
-      factory() {
-        const oldValue = typeof initValue !== 'undefined' && this.__fields[name];
-        const unsubscribe = (0, _deepSubscribe.deepSubscribeRule)(this, value => {
-          this._set(name, value, options);
+      factorySetOptions: options,
 
+      factory() {
+        let setValue = value => {
+          if (typeof value !== 'undefined') {
+            initValue = value;
+          }
+        };
+
+        const unsubscribe = (0, _deepSubscribe.deepSubscribeRule)(this, value => {
+          setValue(value);
           return null;
         }, true, rule);
 
         this._setUnsubscriber(name, unsubscribe);
 
-        if (typeof initValue !== 'undefined' && oldValue === this.__fields[name]) {
-          this._set(name, initValue, options);
-        }
+        setValue = value => {
+          this._set(name, value, options);
+        };
 
-        return this.__fields[name];
+        return initValue;
       }
 
     });

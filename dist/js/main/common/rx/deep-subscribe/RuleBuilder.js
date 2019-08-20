@@ -13,7 +13,9 @@ var _funcPropertiesPath = require("./helpers/func-properties-path");
 
 var _RuleSubscribe = require("./RuleSubscribe");
 
-const RuleSubscribeObjectPropertyNames = _RuleSubscribe.RuleSubscribeObject.bind(null, null);
+const RuleSubscribeObjectPropertyNames = _RuleSubscribe.RuleSubscribeObject.bind(null, _RuleSubscribe.SubscribeObjectType.Property, null);
+
+const RuleSubscribeObjectValuePropertyNames = _RuleSubscribe.RuleSubscribeObject.bind(null, _RuleSubscribe.SubscribeObjectType.ValueProperty, null);
 
 const RuleSubscribeMapKeys = _RuleSubscribe.RuleSubscribeMap.bind(null, null); // const UNSUBSCRIBE_PROPERTY_PREFIX = Math.random().toString(36)
 // let nextUnsubscribePropertyId = 0
@@ -72,6 +74,22 @@ class RuleBuilder {
    */
 
 
+  valuePropertyName(propertyName) {
+    return this.ruleSubscribe(new RuleSubscribeObjectValuePropertyNames(propertyName), _constants.VALUE_PROPERTY_PREFIX + propertyName);
+  }
+  /**
+   * Object property, Array index
+   */
+
+
+  valuePropertyNames(...propertiesNames) {
+    return this.ruleSubscribe(new RuleSubscribeObjectValuePropertyNames(...propertiesNames), _constants.VALUE_PROPERTY_PREFIX + propertiesNames.join('|'));
+  }
+  /**
+   * Object property, Array index
+   */
+
+
   propertyName(propertyName) {
     return this.ruleSubscribe(new RuleSubscribeObjectPropertyNames(propertyName), propertyName);
   }
@@ -89,7 +107,7 @@ class RuleBuilder {
 
 
   propertyAll() {
-    return this.ruleSubscribe(new _RuleSubscribe.RuleSubscribeObject(), _constants.ANY_DISPLAY);
+    return this.ruleSubscribe(new RuleSubscribeObjectPropertyNames(), _constants.ANY_DISPLAY);
   }
   /**
    * Object property, Array index
@@ -97,7 +115,7 @@ class RuleBuilder {
 
 
   propertyPredicate(predicate, description) {
-    return this.ruleSubscribe(new _RuleSubscribe.RuleSubscribeObject(predicate), description);
+    return this.ruleSubscribe(new _RuleSubscribe.RuleSubscribeObject(_RuleSubscribe.SubscribeObjectType.Property, predicate), description);
   }
   /**
    * Object property, Array index
@@ -166,9 +184,7 @@ class RuleBuilder {
 
   path(getValueFunc) {
     for (const propertyNames of (0, _funcPropertiesPath.getFuncPropertiesPath)(getValueFunc)) {
-      if (!propertyNames.startsWith(_constants.COLLECTION_PREFIX)) {
-        this.propertyNames(...propertyNames.split('|'));
-      } else {
+      if (propertyNames.startsWith(_constants.COLLECTION_PREFIX)) {
         const keys = propertyNames.substring(1);
 
         if (keys === '') {
@@ -176,6 +192,16 @@ class RuleBuilder {
         } else {
           this.mapKeys(...keys.split('|'));
         }
+      } else if (propertyNames.startsWith(_constants.VALUE_PROPERTY_PREFIX)) {
+        const valuePropertyNames = propertyNames.substring(1);
+
+        if (valuePropertyNames === '') {
+          throw new Error(`You should specify at least one value property name; path = ${getValueFunc}`);
+        } else {
+          this.valuePropertyNames(...valuePropertyNames.split('|'));
+        }
+      } else {
+        this.propertyNames(...propertyNames.split('|'));
       }
     }
 

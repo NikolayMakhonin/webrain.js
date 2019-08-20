@@ -7,9 +7,9 @@ exports.ObservableObject = void 0;
 
 require("../extensions/autoConnect");
 
-var _DeepPropertyChangedObject = require("./DeepPropertyChangedObject");
+var _PropertyChangedObject = require("./PropertyChangedObject");
 
-class ObservableObject extends _DeepPropertyChangedObject.DeepPropertyChangedObject {
+class ObservableObject extends _PropertyChangedObject.PropertyChangedObject {
   /** @internal */
   constructor() {
     super();
@@ -57,20 +57,20 @@ class ObservableObject extends _DeepPropertyChangedObject.DeepPropertyChangedObj
     }
 
     __fields[name] = newValue;
-
-    this._propagatePropertyChanged(name, newValue);
-
     const afterChange = options && options.afterChange;
 
     if (afterChange) {
       afterChange.call(this, newValue);
     }
 
-    this.onPropertyChanged({
-      name,
-      oldValue,
-      newValue
-    });
+    if (!options || !options.suppressPropertyChanged) {
+      this.onPropertyChanged({
+        name,
+        oldValue,
+        newValue
+      });
+    }
+
     return true;
   }
 

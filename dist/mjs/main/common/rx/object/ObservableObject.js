@@ -5,11 +5,11 @@ import _getPrototypeOf from "@babel/runtime/helpers/getPrototypeOf";
 import _assertThisInitialized from "@babel/runtime/helpers/assertThisInitialized";
 import _inherits from "@babel/runtime/helpers/inherits";
 import '../extensions/autoConnect';
-import { DeepPropertyChangedObject } from './DeepPropertyChangedObject';
+import { PropertyChangedObject } from './PropertyChangedObject';
 export var ObservableObject =
 /*#__PURE__*/
-function (_DeepPropertyChangedO) {
-  _inherits(ObservableObject, _DeepPropertyChangedO);
+function (_PropertyChangedObjec) {
+  _inherits(ObservableObject, _PropertyChangedObjec);
 
   /** @internal */
   function ObservableObject() {
@@ -63,23 +63,23 @@ function (_DeepPropertyChangedO) {
       }
 
       __fields[name] = newValue;
-
-      this._propagatePropertyChanged(name, newValue);
-
       var afterChange = options && options.afterChange;
 
       if (afterChange) {
         afterChange.call(this, newValue);
       }
 
-      this.onPropertyChanged({
-        name: name,
-        oldValue: oldValue,
-        newValue: newValue
-      });
+      if (!options || !options.suppressPropertyChanged) {
+        this.onPropertyChanged({
+          name: name,
+          oldValue: oldValue,
+          newValue: newValue
+        });
+      }
+
       return true;
     }
   }]);
 
   return ObservableObject;
-}(DeepPropertyChangedObject);
+}(PropertyChangedObject);

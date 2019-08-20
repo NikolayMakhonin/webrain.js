@@ -18,8 +18,12 @@ export function parsePropertiesPathString(getValueFunc) {
 }
 export function parsePropertiesPath(propertiesPathString) {
   var propertiesPath = [];
-  var remains = propertiesPathString.replace(/(?:\.\s*(\w+)\s*|\[\s*(?:(\d+)|("(?:[^\\"]*|\\.)+"|'(?:[^\\']*|\\.)+'))\s*]\s*)/g, function (s, g1, g2, g3, g4) {
-    propertiesPath.push(g1 || g2 || g3 && new Function('return ' + g3)());
+  var remains = propertiesPathString.replace( // tslint:disable-next-line:max-line-length
+  /(?:\.[\t-\r \xA0\u1680\u2000-\u200A\u2028\u2029\u202F\u205F\u3000\uFEFF]*([0-9A-Z_a-z]+)[\t-\r \xA0\u1680\u2000-\u200A\u2028\u2029\u202F\u205F\u3000\uFEFF]*|\[[\t-\r \xA0\u1680\u2000-\u200A\u2028\u2029\u202F\u205F\u3000\uFEFF]*(?:([0-9]+)|("(?:[\0-!#-\[\]-\uFFFF]*|\\[\0-\uFFFF])+"|'(?:[\0-&\(-\[\]-\uFFFF]*|\\[\0-\uFFFF])+'))[\t-\r \xA0\u1680\u2000-\u200A\u2028\u2029\u202F\u205F\u3000\uFEFF]*\][\t-\r \xA0\u1680\u2000-\u200A\u2028\u2029\u202F\u205F\u3000\uFEFF]*|(\/\/)[\0-\t\x0B\f\x0E-\uFFFF]*[\n\r]+[\t-\r \xA0\u1680\u2000-\u200A\u2028\u2029\u202F\u205F\u3000\uFEFF]*|(\/\*)[\0-\uFFFF]*?\*\/[\t-\r \xA0\u1680\u2000-\u200A\u2028\u2029\u202F\u205F\u3000\uFEFF]*)/g, function (s, g1, g2, g3, g4, g5) {
+    if (!g4 && !g5) {
+      propertiesPath.push(g1 || g2 || g3 && new Function('return ' + g3)());
+    }
+
     return '';
   });
 

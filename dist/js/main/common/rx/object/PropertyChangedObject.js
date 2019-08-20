@@ -37,6 +37,33 @@ class PropertyChangedObject {
       writable: false,
       value: {}
     });
+  }
+  /** @internal */
+
+
+  _setUnsubscriber(propertyName, unsubscribe) {
+    const {
+      __meta
+    } = this;
+    let {
+      unsubscribers
+    } = __meta;
+
+    if (unsubscribers) {
+      const oldUnsubscribe = unsubscribers[propertyName];
+
+      if (oldUnsubscribe) {
+        oldUnsubscribe();
+      }
+    }
+
+    if (unsubscribe) {
+      if (!unsubscribers) {
+        __meta.unsubscribers = unsubscribers = {};
+      }
+
+      unsubscribers[propertyName] = unsubscribe;
+    }
   } // region propertyChanged
 
 

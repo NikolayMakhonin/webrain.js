@@ -49,9 +49,7 @@ class ObservableObjectBuilder {
     if (__fields && typeof initValue !== 'undefined') {
       const value = __fields[name];
 
-      if (initValue === value) {
-        object._propagatePropertyChanged(name, value);
-      } else {
+      if (initValue !== value) {
         object[name] = initValue;
       }
     }
@@ -103,11 +101,23 @@ class ObservableObjectBuilder {
         enumerable: true,
 
         get() {
-          const val = factory.call(this);
-          this.__fields[name] = val;
-          createInstanceProperty(this); // this._set(name, val, {})
+          const factoryValue = factory.call(this);
+          createInstanceProperty(this);
+          const {
+            __fields: fields
+          } = this;
 
-          return val;
+          if (fields && typeof factoryValue !== 'undefined') {
+            const oldValue = fields[name];
+
+            if (factoryValue !== oldValue) {
+              this._set(name, factoryValue, { ...(options && options.factorySetOptions),
+                suppressPropertyChanged: true
+              });
+            }
+          }
+
+          return factoryValue;
         }
 
       });
@@ -130,8 +140,6 @@ class ObservableObjectBuilder {
 
       if (__fields && typeof value !== 'undefined') {
         const oldValue = __fields[name];
-
-        object._propagatePropertyChanged(name, value);
 
         if (value !== oldValue) {
           __fields[name] = value;

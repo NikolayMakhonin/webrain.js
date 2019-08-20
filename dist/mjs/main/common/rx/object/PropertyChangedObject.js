@@ -60,10 +60,34 @@ function () {
       writable: false,
       value: {}
     });
-  } // region propertyChanged
+  }
+  /** @internal */
 
 
   _createClass(PropertyChangedObject, [{
+    key: "_setUnsubscriber",
+    value: function _setUnsubscriber(propertyName, unsubscribe) {
+      var __meta = this.__meta;
+      var unsubscribers = __meta.unsubscribers;
+
+      if (unsubscribers) {
+        var oldUnsubscribe = unsubscribers[propertyName];
+
+        if (oldUnsubscribe) {
+          oldUnsubscribe();
+        }
+      }
+
+      if (unsubscribe) {
+        if (!unsubscribers) {
+          __meta.unsubscribers = unsubscribers = {};
+        }
+
+        unsubscribers[propertyName] = unsubscribe;
+      }
+    } // region propertyChanged
+
+  }, {
     key: "_emitPropertyChanged",
     value: function _emitPropertyChanged(eventsOrPropertyNames, emitFunc) {
       var _this = this;

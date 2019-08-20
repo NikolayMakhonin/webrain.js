@@ -74,7 +74,7 @@ function deepSubscribeRuleIterator(object, subscribeValue, immediate, ruleIterat
       return deepSubscribeRuleIterator(object, subscribeValue, immediate, nextRuleIterator, leafUnsubscribers, propertiesPath, debugPropertyName, debugParent);
     }, function (rule, getNextRuleIterator) {
       var subscribeItem = function subscribeItem(item, debugPropertyName) {
-        var newPropertiesPath = function newPropertiesPath() {
+        var newPropertiesPath = debugPropertyName == null ? null : function () {
           return (propertiesPath ? propertiesPath() + '.' : '') + debugPropertyName + '(' + rule.description + ')';
         };
 

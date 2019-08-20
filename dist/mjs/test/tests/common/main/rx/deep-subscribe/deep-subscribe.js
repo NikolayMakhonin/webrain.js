@@ -4,6 +4,8 @@ import _toConsumableArray from "@babel/runtime/helpers/toConsumableArray";
 
 /* tslint:disable:no-construct use-primitive-type no-shadowed-variable no-duplicate-string no-empty max-line-length */
 import { delay } from '../../../../../../main/common/helpers/helpers';
+import { VALUE_PROPERTY_DEFAULT } from '../../../../../../main/common/rx/deep-subscribe/contracts/constants';
+import { ObservableObjectBuilder } from '../../../../../../main/common/rx/object/ObservableObjectBuilder';
 import { createObject, Tester } from './helpers/Tester';
 describe('common > main > rx > deep-subscribe > deep-subscribe', function () {
   var check = createObject();
@@ -383,81 +385,229 @@ describe('common > main > rx > deep-subscribe > deep-subscribe', function () {
       return [];
     }).unsubscribe(function (o) {
       return [o, o.map];
-    });
-    new Tester({
-      object: createObject().observableObject,
-      immediate: true,
-      doNotSubscribeNonObjectValues: true
-    }, function (b) {
-      return b.path(function (o) {
-        return o['map||set'];
-      });
-    }).subscribe(function (o) {
-      return [o, o.map, o.set];
-    }).change(function (o) {
-      o.set = o.observableMap;
-    }, function (o) {
-      return [o.set];
-    }, function (o) {
-      return [o.observableMap];
-    }).unsubscribe(function (o) {
-      return [o, o.map, o.observableMap];
-    });
+    }); // new Tester(
+    // 	{
+    // 		object: createObject().observableObject,
+    // 		immediate: true,
+    // 		doNotSubscribeNonObjectValues: true,
+    // 	},
+    // 	b => b
+    // 		.path((o: any) => o['map||set']),
+    // )
+    // 	.subscribe(o => [o, o.map, o.set])
+    // 	.change(o => { o.set = o.observableMap as any }, o => [o.set], o => [o.observableMap])
+    // 	.unsubscribe(o => [o, o.map, o.observableMap])
   });
-  it('promises',
+  it('value properties',
   /*#__PURE__*/
   _asyncToGenerator(
   /*#__PURE__*/
   _regeneratorRuntime.mark(function _callee() {
-    var object, tester;
+    var object;
     return _regeneratorRuntime.wrap(function _callee$(_context) {
       while (1) {
         switch (_context.prev = _context.next) {
           case 0:
             object = createObject();
-            object.observableObject.value = new Number(1);
-            tester = new Tester({
-              object: object.promiseSync,
+            new ObservableObjectBuilder(object.property)["delete"](VALUE_PROPERTY_DEFAULT);
+            new Tester({
+              object: object,
               immediate: true,
               doNotSubscribeNonObjectValues: true
             }, function (b) {
               return b.path(function (o) {
-                return o.promiseAsync.value;
+                return o.property['@value_map|value_set|value_list'];
               });
+            }).subscribe(function (o) {
+              return [o.property];
+            }).change(function (o) {
+              new ObservableObjectBuilder(o.property).writable(VALUE_PROPERTY_DEFAULT, null, null);
+            }, function (o) {
+              return [o.property];
+            }, function (o) {
+              return [o.map];
+            }).change(function (o) {
+              o.property.value_map = null;
+            }, function (o) {
+              return [o.map];
+            }, function (o) {
+              return [];
+            }).change(function (o) {
+              new ObservableObjectBuilder(o.property)["delete"]('value_map');
+            }, function (o) {
+              return [];
+            }, function (o) {
+              return [o.set];
+            }).change(function (o) {
+              new ObservableObjectBuilder(o.property)["delete"]('value_set');
+            }, function (o) {
+              return [o.set];
+            }, function (o) {
+              return [o.list];
+            }).change(function (o) {
+              o.property.value_list = o.map;
+            }, function (o) {
+              return [o.list];
+            }, function (o) {
+              return [o.map];
+            }).change(function (o) {
+              new ObservableObjectBuilder(o.property)["delete"]('value_list');
+            }, function (o) {
+              return [o.map];
+            }, function (o) {
+              return [];
+            }).change(function (o) {
+              o.property[VALUE_PROPERTY_DEFAULT] = void 0;
+            }, function (o) {
+              return [];
+            }, function (o) {
+              return [];
+            }).change(function (o) {
+              o.property[VALUE_PROPERTY_DEFAULT] = o;
+            }, function (o) {
+              return [];
+            }, function (o) {
+              return [o];
+            }).change(function (o) {
+              new ObservableObjectBuilder(o.property).writable('value_map', null, null);
+            }, function (o) {
+              return [o];
+            }, function (o) {
+              return [];
+            }).change(function (o) {
+              new ObservableObjectBuilder(o.property)["delete"]('value_map');
+            }, function (o) {
+              return [];
+            }, function (o) {
+              return [o];
+            }).change(function (o) {
+              new ObservableObjectBuilder(o.property).writable('value_list', null, o.list);
+            }, function (o) {
+              return [o];
+            }, function (o) {
+              return [o.list];
+            }).change(function (o) {
+              new ObservableObjectBuilder(o.property)["delete"](VALUE_PROPERTY_DEFAULT);
+            }, function (o) {
+              return [o.list];
+            }, function (o) {
+              return [o.property];
+            }).unsubscribe(function (o) {
+              return [o.property];
             });
-            _context.next = 5;
-            return tester.subscribeAsync([new Number(1)]);
+            new Tester({
+              object: createObject().observableObject,
+              immediate: true,
+              doNotSubscribeNonObjectValues: true
+            }, function (b) {
+              return b.path(function (o) {
+                return o.property['@value_map|value_set|value_list'];
+              });
+            }).subscribe(function (o) {
+              return [o.map];
+            }).change(function (o) {
+              o.property.value_map = null;
+            }, function (o) {
+              return [o.map];
+            }, function (o) {
+              return [];
+            }).change(function (o) {
+              new ObservableObjectBuilder(o.property)["delete"]('value_map');
+            }, function (o) {
+              return [];
+            }, function (o) {
+              return [o.set];
+            }).change(function (o) {
+              new ObservableObjectBuilder(o.property)["delete"]('value_set');
+            }, function (o) {
+              return [o.set];
+            }, function (o) {
+              return [o.list];
+            }).change(function (o) {
+              o.property.value_list = o.map;
+            }, function (o) {
+              return [o.list];
+            }, function (o) {
+              return [o.map];
+            }).change(function (o) {
+              new ObservableObjectBuilder(o.property)["delete"]('value_list');
+            }, function (o) {
+              return [o.map];
+            }, function (o) {
+              return [o];
+            }).change(function (o) {
+              new ObservableObjectBuilder(o.property).writable('value_map', null, null);
+            }, function (o) {
+              return [o];
+            }, function (o) {
+              return [];
+            }).change(function (o) {
+              new ObservableObjectBuilder(o.property)["delete"]('value_map');
+            }, function (o) {
+              return [];
+            }, function (o) {
+              return [o];
+            }).change(function (o) {
+              new ObservableObjectBuilder(o.property).writable('value_list', null, o.list);
+            }, function (o) {
+              return [o];
+            }, function (o) {
+              return [o.list];
+            }).unsubscribe(function (o) {
+              return [o.list];
+            });
+            new Tester({
+              object: createObject().observableObject,
+              immediate: true,
+              doNotSubscribeNonObjectValues: true
+            }, function (b) {
+              return b.any(function (o) {
+                return o.path(function (o) {
+                  return o.property['@value_observableObject']['map|set'];
+                });
+              }, function (o) {
+                return o.path(function (o) {
+                  return o.property['@value_observableObject']['map|set'];
+                });
+              }, function (o) {
+                return o.path(function (o) {
+                  return o.property['@value_observableObject']['map|set'].object.observableObject;
+                });
+              });
+            }, function (b) {
+              return b.any(function (o) {
+                return o.path(function (o) {
+                  return o.property['map|set'];
+                });
+              }, function (o) {
+                return o.path(function (o) {
+                  return o.property['map|set'];
+                });
+              }, function (o) {
+                return o.path(function (o) {
+                  return o.property['map|set'].object.observableObject;
+                });
+              });
+            }).subscribe(function (o) {
+              return [o.map, o.set];
+            }).change(function (o) {
+              o.set = o.observableObject;
+            }, function (o) {
+              return [o.set];
+            }, function (o) {
+              return [o.observableObject];
+            }).unsubscribe(function (o) {
+              return [o.map, o.set];
+            });
 
           case 5:
-            _context.next = 7;
-            return delay(20);
-
-          case 7:
-            _context.next = 9;
-            return tester.changeAsync(function (o) {
-              return object.observableObject.value = new Number(2);
-            }, [new Number(1)], [new Number(2)]);
-
-          case 9:
-            _context.next = 11;
-            return delay(20);
-
-          case 11:
-            _context.next = 13;
-            return tester.unsubscribe([new Number(2)]);
-
-          case 13:
-            _context.next = 15;
-            return delay(100);
-
-          case 15:
           case "end":
             return _context.stop();
         }
       }
     }, _callee);
   })));
-  xit('promises throw',
+  it('promises',
   /*#__PURE__*/
   _asyncToGenerator(
   /*#__PURE__*/
@@ -472,8 +622,7 @@ describe('common > main > rx > deep-subscribe > deep-subscribe', function () {
             tester = new Tester({
               object: object.promiseSync,
               immediate: true,
-              doNotSubscribeNonObjectValues: true,
-              useIncorrectUnsubscribe: true
+              doNotSubscribeNonObjectValues: true
             }, function (b) {
               return b.path(function (o) {
                 return o.promiseAsync.value;
@@ -490,7 +639,7 @@ describe('common > main > rx > deep-subscribe > deep-subscribe', function () {
             _context2.next = 9;
             return tester.changeAsync(function (o) {
               return object.observableObject.value = new Number(2);
-            }, [], [new Number(2)], Error, /Value is not a function or null\/undefined/);
+            }, [new Number(1)], [new Number(2)]);
 
           case 9:
             _context2.next = 11;
@@ -498,7 +647,7 @@ describe('common > main > rx > deep-subscribe > deep-subscribe', function () {
 
           case 11:
             _context2.next = 13;
-            return tester.unsubscribe([]);
+            return tester.unsubscribe([new Number(2)]);
 
           case 13:
             _context2.next = 15;
@@ -510,6 +659,60 @@ describe('common > main > rx > deep-subscribe > deep-subscribe', function () {
         }
       }
     }, _callee2);
+  })));
+  xit('promises throw',
+  /*#__PURE__*/
+  _asyncToGenerator(
+  /*#__PURE__*/
+  _regeneratorRuntime.mark(function _callee3() {
+    var object, tester;
+    return _regeneratorRuntime.wrap(function _callee3$(_context3) {
+      while (1) {
+        switch (_context3.prev = _context3.next) {
+          case 0:
+            object = createObject();
+            object.observableObject.value = new Number(1);
+            tester = new Tester({
+              object: object.promiseSync,
+              immediate: true,
+              doNotSubscribeNonObjectValues: true,
+              useIncorrectUnsubscribe: true
+            }, function (b) {
+              return b.path(function (o) {
+                return o.promiseAsync.value;
+              });
+            });
+            _context3.next = 5;
+            return tester.subscribeAsync([new Number(1)]);
+
+          case 5:
+            _context3.next = 7;
+            return delay(20);
+
+          case 7:
+            _context3.next = 9;
+            return tester.changeAsync(function (o) {
+              return object.observableObject.value = new Number(2);
+            }, [], [new Number(2)], Error, /Value is not a function or null\/undefined/);
+
+          case 9:
+            _context3.next = 11;
+            return delay(20);
+
+          case 11:
+            _context3.next = 13;
+            return tester.unsubscribe([]);
+
+          case 13:
+            _context3.next = 15;
+            return delay(100);
+
+          case 15:
+          case "end":
+            return _context3.stop();
+        }
+      }
+    }, _callee3);
   })));
   it('lists', function () {
     var value = new Number(1);

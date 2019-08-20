@@ -28,23 +28,28 @@ function (_ObservableObjectBuil) {
       }
 
       return this.readable(name, {
+        factorySetOptions: options,
         factory: function factory() {
           var _this = this;
 
-          var oldValue = typeof initValue !== 'undefined' && this.__fields[name];
-          var unsubscribe = deepSubscribeRule(this, function (value) {
-            _this._set(name, value, options);
+          var setValue = function setValue(value) {
+            if (typeof value !== 'undefined') {
+              initValue = value;
+            }
+          };
 
+          var unsubscribe = deepSubscribeRule(this, function (value) {
+            setValue(value);
             return null;
           }, true, rule);
 
           this._setUnsubscriber(name, unsubscribe);
 
-          if (typeof initValue !== 'undefined' && oldValue === this.__fields[name]) {
-            this._set(name, initValue, options);
-          }
+          setValue = function setValue(value) {
+            _this._set(name, value, options);
+          };
 
-          return this.__fields[name];
+          return initValue;
         }
       });
     }

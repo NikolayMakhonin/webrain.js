@@ -14,6 +14,8 @@ var _ObservableSet = require("../../../../../../../main/common/lists/ObservableS
 
 var _SortedList = require("../../../../../../../main/common/lists/SortedList");
 
+var _constants = require("../../../../../../../main/common/rx/deep-subscribe/contracts/constants");
+
 var _deepSubscribe = require("../../../../../../../main/common/rx/deep-subscribe/deep-subscribe");
 
 var _ObservableObject = require("../../../../../../../main/common/rx/object/ObservableObject");
@@ -48,12 +50,15 @@ function createObject() {
   const observableList = new _SortedList.SortedList();
   const observableSet = new _ObservableSet.ObservableSet();
   const observableMap = new _ObservableMap.ObservableMap();
+  const property = new _ObservableObject.ObservableObject();
   Object.assign(object, {
+    [_constants.VALUE_PROPERTY_DEFAULT]: 'nothing',
     observableObject,
     observableList,
     observableSet,
     observableMap,
     object,
+    property,
     list,
     set,
     map,
@@ -66,6 +71,7 @@ function createObject() {
     }
   });
   const observableObjectBuilder = new _ObservableObjectBuilder.ObservableObjectBuilder(observableObject);
+  const propertyBuilder = new _ObservableObjectBuilder.ObservableObjectBuilder(property);
   Object.keys(object).forEach(key => {
     if (key !== 'value') {
       list.add(object[key]);
@@ -76,8 +82,12 @@ function createObject() {
       observableMap.set(key, object[key]);
     }
 
-    observableObjectBuilder.writable(key, null, object[key]);
+    if (key !== _constants.VALUE_PROPERTY_DEFAULT) {
+      observableObjectBuilder.writable(key, null, object[key]);
+      propertyBuilder.writable('value_' + key, null, object[key]);
+    }
   });
+  propertyBuilder.writable(_constants.VALUE_PROPERTY_DEFAULT, null, observableObject);
   return object;
 }
 
