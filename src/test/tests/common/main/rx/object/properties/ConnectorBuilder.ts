@@ -5,9 +5,9 @@ import {
 	VALUE_PROPERTY_PREFIX,
 } from '../../../../../../../main/common/rx/deep-subscribe/contracts/constants'
 import {ObservableObject} from '../../../../../../../main/common/rx/object/ObservableObject'
+import {ObservableObjectBuilder} from '../../../../../../../main/common/rx/object/ObservableObjectBuilder'
 import {ConnectorBuilder} from '../../../../../../../main/common/rx/object/properties/ConnectorBuilder'
 import {createObject} from '../../deep-subscribe/helpers/Tester'
-import {ObservableObjectBuilder} from "../../../../../../../main/common/rx/object/ObservableObjectBuilder";
 
 declare const assert: any
 
@@ -45,23 +45,23 @@ describe('common > main > rx > properties > ConnectorBuilder', function() {
 				// .observableMap['#observableObject']
 				.baseProp1), null, 'baseProp1_init')
 
-		// const baseBuilder2 = new ConnectorBuilder(BaseClass2.prototype as BaseClass2)
-		// 	.connect('baseProp2', b => b.path(o => o.source
-		// 		.property['@value_property']
-		// 		.observableMap['#observableObject']
-		// 		.baseProp2), null, 'baseProp2_init')
-		//
-		// const builder1 = new ConnectorBuilder(Class1.prototype as Class1)
-		// 	.connect('prop1', b => b.path(o => o.source
-		// 		.property['@value_property']
-		// 		.observableMap['#observableObject']
-		// 		.prop1), null, 'prop1_init')
-		//
-		// const builder2 = new ConnectorBuilder(Class2.prototype as Class2)
-		// 	.connect('prop2', b => b.path(o => o.source
-		// 		.property['@value_property']
-		// 		.observableMap['#observableObject']
-		// 		.prop2), null, 'prop2_init')
+		const baseBuilder2 = new ConnectorBuilder(BaseClass2.prototype as BaseClass2)
+			.connect('baseProp2', b => b.path(o => o.source
+				// .property['@value_property']
+				// .observableMap['#observableObject']
+				.baseProp2), null, 'baseProp2_init')
+
+		const builder1 = new ConnectorBuilder(Class1.prototype as Class1)
+			.connect('prop1', b => b.path(o => o.source
+				.property['@value_property']
+				.observableMap['#observableObject']
+				.prop1), null, 'prop1_init')
+
+		const builder2 = new ConnectorBuilder(Class2.prototype as Class2)
+			.connect('prop2', b => b.path(o => o.source
+				.property['@value_property']
+				.observableMap['#observableObject']
+				.prop2), null, 'prop2_init')
 
 		const baseObject1 = new BaseClass1()
 		const baseObject2 = new BaseClass2()
@@ -81,7 +81,7 @@ describe('common > main > rx > properties > ConnectorBuilder', function() {
 		}
 
 		// eslint-disable-next-line prefer-const
-		let results1 = []
+		const results1 = []
 		const subscriber1 = value => {
 			results1.push(value)
 		}
@@ -98,11 +98,11 @@ describe('common > main > rx > properties > ConnectorBuilder', function() {
 		const unsubscribe2 = []
 
 		assert.strictEqual(typeof (baseUnsubscribe1[0]
-			= baseObject1.deepPropertyChanged.subscribe(baseSubscriber1)), 'function')
+			= baseObject1.propertyChanged.subscribe(baseSubscriber1)), 'function')
 		assert.strictEqual(typeof (baseUnsubscribe2[0]
-			= baseObject2.deepPropertyChanged.subscribe(baseSubscriber2)), 'function')
-		assert.strictEqual(typeof (unsubscribe1[0] = object1.deepPropertyChanged.subscribe(subscriber1)), 'function')
-		assert.strictEqual(typeof (unsubscribe2[0] = object2.deepPropertyChanged.subscribe(subscriber2)), 'function')
+			= baseObject2.propertyChanged.subscribe(baseSubscriber2)), 'function')
+		assert.strictEqual(typeof (unsubscribe1[0] = object1.propertyChanged.subscribe(subscriber1)), 'function')
+		assert.strictEqual(typeof (unsubscribe2[0] = object2.propertyChanged.subscribe(subscriber2)), 'function')
 
 		assert.strictEqual(baseObject1.baseProp1, 'baseProp1_init_source')
 
@@ -111,7 +111,7 @@ describe('common > main > rx > properties > ConnectorBuilder', function() {
 			{
 				name    : 'baseProp1',
 				newValue: '1',
-				oldValue: undefined,
+				oldValue: 'baseProp1_init_source',
 			},
 		])
 		baseResults1 = []
@@ -119,9 +119,9 @@ describe('common > main > rx > properties > ConnectorBuilder', function() {
 		assert.deepStrictEqual(results1, [])
 		assert.deepStrictEqual(results2, [])
 		assert.deepStrictEqual(baseObject1.baseProp1, '1')
-		assert.deepStrictEqual(baseObject2.baseProp1, undefined)
-		assert.deepStrictEqual(object1.baseProp1, undefined)
-		assert.deepStrictEqual(object2.baseProp1, undefined)
+		assert.deepStrictEqual(baseObject2.baseProp1, 'baseProp1_init_source')
+		assert.deepStrictEqual(object1.baseProp1, 'baseProp1_init_source')
+		assert.deepStrictEqual(object2.baseProp1, 'baseProp1_init_source')
 
 		assert.strictEqual(baseObject2.baseProp2, 'baseProp2_init')
 
@@ -131,7 +131,7 @@ describe('common > main > rx > properties > ConnectorBuilder', function() {
 			{
 				name    : 'baseProp2',
 				newValue: '3',
-				oldValue: undefined,
+				oldValue: 'baseProp2_init',
 			},
 		])
 		baseResults2 = []
@@ -140,7 +140,7 @@ describe('common > main > rx > properties > ConnectorBuilder', function() {
 		assert.deepStrictEqual((baseObject1 as any).baseProp2, undefined)
 		assert.deepStrictEqual(baseObject2.baseProp2, '3')
 		assert.deepStrictEqual((object1 as any).baseProp2, undefined)
-		assert.deepStrictEqual(object2.baseProp2, undefined)
+		assert.deepStrictEqual(object2.baseProp2, 'baseProp2_init')
 
 		new ConnectorBuilder(object2)
 			.readable('baseProp1', null, '7')
@@ -152,13 +152,13 @@ describe('common > main > rx > properties > ConnectorBuilder', function() {
 			{
 				name    : 'baseProp1',
 				newValue: '7',
-				oldValue: '5',
+				oldValue: 'baseProp1_init_source',
 			},
 		])
 		results2 = []
 		assert.deepStrictEqual(baseObject1.baseProp1, '1')
-		assert.deepStrictEqual(baseObject2.baseProp1, '1')
-		assert.deepStrictEqual(object1.baseProp1, '1')
+		assert.deepStrictEqual(baseObject2.baseProp1, 'baseProp1_init_source')
+		assert.deepStrictEqual(object1.baseProp1, 'baseProp1_init_source')
 		assert.deepStrictEqual(object2.baseProp1, '7')
 	})
 })

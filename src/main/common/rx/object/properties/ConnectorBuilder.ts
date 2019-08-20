@@ -20,7 +20,9 @@ export class ConnectorBuilder<TObject extends ObservableObject> extends Observab
 			factorySetOptions: options,
 			factory(this: ObservableObject) {
 				let setValue = (value: TValue): void => {
-					initValue = value
+					if (typeof value !== 'undefined') {
+						initValue = value
+					}
 				}
 
 				const unsubscribe = deepSubscribeRule<TValue>(this, value => {
