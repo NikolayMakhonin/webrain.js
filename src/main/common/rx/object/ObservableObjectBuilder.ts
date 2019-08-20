@@ -3,13 +3,14 @@ import {ISetOptions, ObservableObject} from './ObservableObject'
 
 export interface IGetOptions<T> {
 	factory: () => T
+	factorySetOptions?: ISetOptions
 }
 
-export class ObservableObjectBuilder {
-	public object: ObservableObject
+export class ObservableObjectBuilder<TObject extends ObservableObject> {
+	public object: TObject
 
-	constructor(object?: ObservableObject) {
-		this.object = object || new ObservableObject()
+	constructor(object?: TObject) {
+		this.object = object || new ObservableObject() as TObject
 	}
 
 	public writable<T>(name: string | number, options?: ISetOptions, initValue?: T): this {
@@ -30,10 +31,10 @@ export class ObservableObjectBuilder {
 		Object.defineProperty(object, name, {
 			configurable: true,
 			enumerable  : true,
-			get(this: ObservableObject) {
+			get(this: TObject) {
 				return this.__fields[name]
 			},
-			set(this: ObservableObject, newValue) {
+			set(this: TObject, newValue) {
 				this._set(name, newValue, options)
 			},
 		})
@@ -75,7 +76,7 @@ export class ObservableObjectBuilder {
 			Object.defineProperty(instance, name, {
 				configurable: true,
 				enumerable: true,
-				get(this: ObservableObject) {
+				get(this: TObject) {
 					return this.__fields[name]
 				},
 			})
@@ -85,12 +86,24 @@ export class ObservableObjectBuilder {
 			Object.defineProperty(object, name, {
 				configurable: true,
 				enumerable: true,
-				get(this: ObservableObject) {
-					const val = factory.call(this)
-					this.__fields[name] = val
+				get(this: TObject) {
+					const factoryValue = factory.call(this)
 					createInstanceProperty(this)
-					// this._set(name, val, {})
-					return val
+					const {__fields: fields} = this
+
+					if (fields && typeof factoryValue !== 'undefined') {
+						const oldValue = fields[name]
+						if (factoryValue === oldValue) {
+							this._propagatePropertyChanged(name, oldValue)
+						} else {
+							this._set(name, factoryValue, {
+								...(options && options.factorySetOptions),
+								suppressPropertyChanged: true,
+							})
+						}
+					}
+
+					return factoryValue
 				},
 			})
 

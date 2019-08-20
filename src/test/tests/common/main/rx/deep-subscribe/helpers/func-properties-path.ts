@@ -38,7 +38,7 @@ describe('common > main > rx > deep-subscribe > func-properties-path', function(
 	})
 
 	it('parsePropertiesPath', function() {
-		const path = '. o[ "\\`\\"\\\'\\\\`\'[]]" ] . o [ 0 ] . o [ \'\\`\\"\\\'\\\\`"][]\' ] . o'
+		const path = '. o[ "\\`\\"\\\'\\\\`\'[]]" ] // [0]\r\n/*\r\n*/ . o [ 0 ] . o [ \'\\`\\"\\\'\\\\`"][]\' ] . o'
 
 		function assertParse(properties) {
 			assert.deepStrictEqual(properties, [

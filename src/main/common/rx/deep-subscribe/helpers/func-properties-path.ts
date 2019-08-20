@@ -36,9 +36,12 @@ export function parsePropertiesPath(
 	const propertiesPath = []
 	const remains = propertiesPathString
 		.replace(
-			/(?:\.\s*(\w+)\s*|\[\s*(?:(\d+)|("(?:[^\\"]*|\\.)+"|'(?:[^\\']*|\\.)+'))\s*]\s*)/g,
-			(s, g1, g2, g3, g4) => {
-				propertiesPath.push(g1 || g2 || g3 && new Function('return ' + g3)())
+			// tslint:disable-next-line:max-line-length
+			/(?:\.\s*(\w+)\s*|\[\s*(?:(\d+)|("(?:[^\\"]*|\\.)+"|'(?:[^\\']*|\\.)+'))\s*]\s*|(\/\/)[^\r\n]*[\r\n]+\s*|(\/\*).*?\*\/\s*)/gs,
+			(s, g1, g2, g3, g4, g5) => {
+				if (!g4 && !g5) {
+					propertiesPath.push(g1 || g2 || g3 && new Function('return ' + g3)())
+				}
 				return ''
 			})
 

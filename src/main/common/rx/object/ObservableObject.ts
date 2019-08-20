@@ -7,6 +7,7 @@ export interface ISetOptions {
 	convertFunc?: (newValue) => any,
 	beforeChange?: (oldValue) => void,
 	afterChange?: (newValue) => void,
+	suppressPropertyChanged?: boolean,
 }
 
 export class ObservableObject extends DeepPropertyChangedObject {
@@ -66,11 +67,13 @@ export class ObservableObject extends DeepPropertyChangedObject {
 			afterChange.call(this, newValue)
 		}
 
-		this.onPropertyChanged({
-			name,
-			oldValue,
-			newValue,
-		})
+		if (!options || !options.suppressPropertyChanged) {
+			this.onPropertyChanged({
+				name,
+				oldValue,
+				newValue,
+			})
+		}
 
 		return true
 	}
