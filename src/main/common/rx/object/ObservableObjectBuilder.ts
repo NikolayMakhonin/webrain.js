@@ -1,3 +1,4 @@
+import {PropertyChangedEvent} from '../../lists/contracts/IPropertyChanged'
 import '../extensions/autoConnect'
 import {ISetOptions, ObservableObject} from './ObservableObject'
 
@@ -49,10 +50,7 @@ export class ObservableObjectBuilder<TObject extends ObservableObject> {
 		return this
 	}
 
-	/**
-	 * @param options - reserved
-	 */
-	public readable<T>(name: string | number, options: IGetOptions<T>, value?: T): this {
+	public readable<T>(name: string | number, options?: IGetOptions<T>, value?: T): this {
 		const {object} = this
 
 		const {__fields} = object
@@ -106,18 +104,14 @@ export class ObservableObjectBuilder<TObject extends ObservableObject> {
 			if (__fields) {
 				const oldValue = __fields[name]
 
-				const event = {
-					name,
-					oldValue,
+				const {propertyChangedIfCanEmit} = object
+				if (propertyChangedIfCanEmit) {
+					propertyChangedIfCanEmit.onPropertyChanged(new PropertyChangedEvent(
+						name,
+						oldValue,
+						() => object[name],
+					))
 				}
-
-				Object.defineProperty(event, 'newValue', {
-					configurable: true,
-					enumerable: true,
-					get: () => object[name],
-				})
-
-				object.onPropertyChanged(event)
 			}
 		} else {
 			createInstanceProperty(object)
@@ -127,11 +121,14 @@ export class ObservableObjectBuilder<TObject extends ObservableObject> {
 
 				if (value !== oldValue) {
 					__fields[name] = value
-					object.onPropertyChanged({
-						name,
-						oldValue,
-						newValue: value,
-					})
+					const {propertyChangedIfCanEmit} = object
+					if (propertyChangedIfCanEmit) {
+						propertyChangedIfCanEmit.onPropertyChanged({
+							name,
+							oldValue,
+							newValue: value,
+						})
+					}
 				}
 			}
 		}
@@ -151,10 +148,13 @@ export class ObservableObjectBuilder<TObject extends ObservableObject> {
 		if (__fields) {
 			delete __fields[name]
 			if (typeof oldValue !== 'undefined') {
-				object.onPropertyChanged({
-					name,
-					oldValue,
-				})
+				const {propertyChangedIfCanEmit} = object
+				if (propertyChangedIfCanEmit) {
+					propertyChangedIfCanEmit.onPropertyChanged({
+						name,
+						oldValue,
+					})
+				}
 			}
 		}
 

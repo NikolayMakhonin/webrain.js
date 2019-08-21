@@ -9,7 +9,7 @@ import {
 	ISerializedObject,
 	ISerializeValue,
 } from '../extensions/serialization/contracts'
-import {registerSerializable, registerSerializer} from '../extensions/serialization/serializers'
+import {registerSerializable} from '../extensions/serialization/serializers'
 import {isIterable} from '../helpers/helpers'
 import {SetChangedObject} from './base/SetChangedObject'
 import {IObservableSet, SetChangedType} from './contracts/ISetChanged'
@@ -43,11 +43,14 @@ export class ObservableSet<T> extends SetChangedObject<T> implements
 				})
 			}
 
-			this.onPropertyChanged({
-				name: 'size',
-				oldValue: oldSize,
-				newValue: size,
-			})
+			const {propertyChangedIfCanEmit} = this
+			if (propertyChangedIfCanEmit) {
+				propertyChangedIfCanEmit.onPropertyChanged({
+					name: 'size',
+					oldValue: oldSize,
+					newValue: size,
+				})
+			}
 		}
 
 		return this
@@ -69,11 +72,14 @@ export class ObservableSet<T> extends SetChangedObject<T> implements
 				})
 			}
 
-			this.onPropertyChanged({
-				name: 'size',
-				oldValue: oldSize,
-				newValue: size,
-			})
+			const {propertyChangedIfCanEmit} = this
+			if (propertyChangedIfCanEmit) {
+				propertyChangedIfCanEmit.onPropertyChanged({
+					name: 'size',
+					oldValue: oldSize,
+					newValue: size,
+				})
+			}
 
 			return true
 		}
@@ -101,11 +107,14 @@ export class ObservableSet<T> extends SetChangedObject<T> implements
 			this._set.clear()
 		}
 
-		this.onPropertyChanged({
-			name: 'size',
-			oldValue: size,
-			newValue: 0,
-		})
+		const {propertyChangedIfCanEmit} = this
+		if (propertyChangedIfCanEmit) {
+			propertyChangedIfCanEmit.onPropertyChanged({
+				name: 'size',
+				oldValue: size,
+				newValue: 0,
+			})
+		}
 	}
 
 	// region Unchanged Set methods

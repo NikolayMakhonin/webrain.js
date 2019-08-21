@@ -8,7 +8,7 @@ import {
 	ISerializedObject,
 	ISerializeValue,
 } from '../extensions/serialization/contracts'
-import {registerSerializable, registerSerializer} from '../extensions/serialization/serializers'
+import {registerSerializable} from '../extensions/serialization/serializers'
 import {isIterable} from '../helpers/helpers'
 import {MapChangedObject} from './base/MapChangedObject'
 import {IObservableMap, MapChangedType} from './contracts/IMapChanged'
@@ -47,11 +47,14 @@ export class ObservableMap<K, V>
 				})
 			}
 
-			this.onPropertyChanged({
-				name: 'size',
-				oldValue: oldSize,
-				newValue: size,
-			})
+			const {propertyChangedIfCanEmit} = this
+			if (propertyChangedIfCanEmit) {
+				propertyChangedIfCanEmit.onPropertyChanged({
+					name: 'size',
+					oldValue: oldSize,
+					newValue: size,
+				})
+			}
 		} else {
 			const {_mapChangedIfCanEmit} = this
 			if (_mapChangedIfCanEmit) {
@@ -85,11 +88,14 @@ export class ObservableMap<K, V>
 				})
 			}
 
-			this.onPropertyChanged({
-				name: 'size',
-				oldValue: oldSize,
-				newValue: size,
-			})
+			const {propertyChangedIfCanEmit} = this
+			if (propertyChangedIfCanEmit) {
+				propertyChangedIfCanEmit.onPropertyChanged({
+					name: 'size',
+					oldValue: oldSize,
+					newValue: size,
+				})
+			}
 
 			return true
 		}
@@ -121,11 +127,14 @@ export class ObservableMap<K, V>
 			this._map.clear()
 		}
 
-		this.onPropertyChanged({
-			name: 'size',
-			oldValue: size,
-			newValue: 0,
-		})
+		const {propertyChangedIfCanEmit} = this
+		if (propertyChangedIfCanEmit) {
+			propertyChangedIfCanEmit.onPropertyChanged({
+				name: 'size',
+				oldValue: size,
+				newValue: 0,
+			})
+		}
 	}
 
 	// region Unchanged Map methods

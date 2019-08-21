@@ -1,16 +1,16 @@
 import {BehaviorSubject, IBehavior} from './behavior'
-import {IObservable, Observable} from './observable'
+import {IObservable} from './observable'
 import {ISubject, ISubscriber, IUnsubscribe, Subject} from './subject'
 
 export interface IHasSubscribers<T> {
-	readonly hasSubscribersObservable: Observable<boolean>
+	readonly hasSubscribersObservable: IObservable<boolean>
 	subscribe(subscriber: ISubscriber<T>): IUnsubscribe
 }
 
 // eslint-disable-next-line no-shadow
 // tslint:disable-next-line:no-shadowed-variable
-function createHasSubscribersSubjectDefault(hasSubscribers: boolean) {
-	const subject = new BehaviorSubject({value: hasSubscribers})
+function createHasSubscribersSubjectDefault(hasSubscribers: boolean): ISubject<boolean> {
+	const subject = new BehaviorSubject(hasSubscribers)
 	subject.unsubscribeValue = null
 	return subject
 }
@@ -45,7 +45,9 @@ export function hasSubscribers(base, createHasSubscribersSubject = createHasSubs
 			}
 		}
 
-		public get hasSubscribersObservable() {
+		private _hasSubscribersSubject: ISubject<boolean>
+
+		public get hasSubscribersObservable(): IObservable<boolean> {
 			let {_hasSubscribersSubject} = this
 			if (!_hasSubscribersSubject) {
 				this._hasSubscribersSubject = _hasSubscribersSubject = createHasSubscribersSubject(this.hasSubscribers)

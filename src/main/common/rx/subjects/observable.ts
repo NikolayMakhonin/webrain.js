@@ -4,11 +4,7 @@ export interface IObservable<T> {
 	subscribe(subscriber: ISubscriber<T>): IUnsubscribe
 }
 
-export abstract class Observable<T> implements IObservable<T> {
-	constructor(fields: { any; }) {
-		Object.assign(this, fields)
-	}
-
+export abstract class Observable<T = any> implements IObservable<T> {
 	public call(func: (observable: this) => any): any {
 		return func(this)
 	}

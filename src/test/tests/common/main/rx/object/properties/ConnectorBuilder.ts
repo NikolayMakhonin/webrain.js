@@ -1,9 +1,5 @@
 /* tslint:disable:no-duplicate-string */
 /* eslint-disable guard-for-in */
-import {
-	COLLECTION_PREFIX,
-	VALUE_PROPERTY_PREFIX,
-} from '../../../../../../../main/common/rx/deep-subscribe/contracts/constants'
 import {ObservableObject} from '../../../../../../../main/common/rx/object/ObservableObject'
 import {ObservableObjectBuilder} from '../../../../../../../main/common/rx/object/ObservableObjectBuilder'
 import {ConnectorBuilder} from '../../../../../../../main/common/rx/object/properties/ConnectorBuilder'

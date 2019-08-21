@@ -108,11 +108,14 @@ export class SortedList<T>
 		this._minAllocatedSize = value
 		this._updateAllocatedSize()
 
-		this.onPropertyChanged({
-			name: 'minAllocatedSize',
-			oldValue,
-			newValue: value,
-		})
+		const {propertyChangedIfCanEmit} = this
+		if (propertyChangedIfCanEmit) {
+			propertyChangedIfCanEmit.onPropertyChanged({
+				name: 'minAllocatedSize',
+				oldValue,
+				newValue: value,
+			})
+		}
 	}
 
 	// endregion
@@ -239,11 +242,14 @@ export class SortedList<T>
 			this._autoSort = value
 		}
 
-		this.onPropertyChanged({
-			name: 'autoSort',
-			oldValue: !!oldValue,
-			newValue: value,
-		})
+		const {propertyChangedIfCanEmit} = this
+		if (propertyChangedIfCanEmit) {
+			propertyChangedIfCanEmit.onPropertyChanged({
+				name: 'autoSort',
+				oldValue: !!oldValue,
+				newValue: value,
+			})
+		}
 	}
 
 	// endregion
@@ -271,11 +277,14 @@ export class SortedList<T>
 
 		this._notAddIfExists = value
 
-		this.onPropertyChanged({
-			name: 'notAddIfExists',
-			oldValue: !!oldValue,
-			newValue: value,
-		})
+		const {propertyChangedIfCanEmit} = this
+		if (propertyChangedIfCanEmit) {
+			propertyChangedIfCanEmit.onPropertyChanged({
+				name: 'notAddIfExists',
+				oldValue: !!oldValue,
+				newValue: value,
+			})
+		}
 	}
 
 	// endregion
@@ -507,11 +516,14 @@ export class SortedList<T>
 			})
 		}
 
-		this.onPropertyChanged({
-			name: 'size',
-			oldValue: size,
-			newValue: newSize,
-		})
+		const {propertyChangedIfCanEmit} = this
+		if (propertyChangedIfCanEmit) {
+			propertyChangedIfCanEmit.onPropertyChanged({
+				name: 'size',
+				oldValue: size,
+				newValue: newSize,
+			})
+		}
 
 		return true
 	}
@@ -590,11 +602,14 @@ export class SortedList<T>
 			})
 		}
 
-		this.onPropertyChanged({
-			name: 'size',
-			oldValue: size,
-			newValue: newSize,
-		})
+		const {propertyChangedIfCanEmit} = this
+		if (propertyChangedIfCanEmit) {
+			propertyChangedIfCanEmit.onPropertyChanged({
+				name: 'size',
+				oldValue: size,
+				newValue: newSize,
+			})
+		}
 
 		return true
 	}
@@ -678,11 +693,14 @@ export class SortedList<T>
 			})
 		}
 
-		this.onPropertyChanged({
-			name: 'size',
-			oldValue: size,
-			newValue: newSize,
-		})
+		const {propertyChangedIfCanEmit} = this
+		if (propertyChangedIfCanEmit) {
+			propertyChangedIfCanEmit.onPropertyChanged({
+				name: 'size',
+				oldValue: size,
+				newValue: newSize,
+			})
+		}
 
 		return true
 	}
@@ -727,11 +745,14 @@ export class SortedList<T>
 			})
 		}
 
-		this.onPropertyChanged({
-			name: 'size',
-			oldValue: size,
-			newValue: newSize,
-		})
+		const {propertyChangedIfCanEmit} = this
+		if (propertyChangedIfCanEmit) {
+			propertyChangedIfCanEmit.onPropertyChanged({
+				name: 'size',
+				oldValue: size,
+				newValue: newSize,
+			})
+		}
 
 		return true
 	}
@@ -792,11 +813,14 @@ export class SortedList<T>
 			})
 		}
 
-		this.onPropertyChanged({
-			name: 'size',
-			oldValue: size,
-			newValue: newSize,
-		})
+		const {propertyChangedIfCanEmit} = this
+		if (propertyChangedIfCanEmit) {
+			propertyChangedIfCanEmit.onPropertyChanged({
+				name: 'size',
+				oldValue: size,
+				newValue: newSize,
+			})
+		}
 
 		return true
 	}
@@ -1031,11 +1055,14 @@ export class SortedList<T>
 			})
 		}
 
-		this.onPropertyChanged({
-			name: 'size',
-			oldValue: size,
-			newValue: 0,
-		})
+		const {propertyChangedIfCanEmit} = this
+		if (propertyChangedIfCanEmit) {
+			propertyChangedIfCanEmit.onPropertyChanged({
+				name: 'size',
+				oldValue: size,
+				newValue: 0,
+			})
+		}
 
 		return true
 	}

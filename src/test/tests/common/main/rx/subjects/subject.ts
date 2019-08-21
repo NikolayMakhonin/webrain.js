@@ -1,15 +1,17 @@
 import {Subject} from '../../../../../../main/common/rx/subjects/subject'
 
-describe('common > main > rx > subjects > subject', function () {
-	it('Subject', function () {
+declare const assert: any
+
+describe('common > main > rx > subjects > subject', function() {
+	it('Subject', function() {
 		const subject = new Subject()
 
 		assert.strictEqual(subject.hasSubscribers, false)
 
 		assert.strictEqual(subject.subscribe(null), null)
-		assert.strictEqual(subject.subscribe(false), null)
-		assert.strictEqual(subject.subscribe(''), null)
-		assert.strictEqual(subject.subscribe(0), null)
+		assert.strictEqual(subject.subscribe(false as any), null)
+		assert.strictEqual(subject.subscribe('' as any), null)
+		assert.strictEqual(subject.subscribe(0 as any), null)
 
 		assert.strictEqual(subject.emit('1'), subject)
 

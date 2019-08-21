@@ -63,7 +63,7 @@ export function subject(base): any {
 }
 
 export const Subject:
-	new<T>() => ISubject<T>
+	new<T = any>() => ISubject<T>
 	= subject(Observable)
 
 // export function createSubjectClass(base, ...extensions) {

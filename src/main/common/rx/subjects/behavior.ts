@@ -1,4 +1,3 @@
-import {IObservable} from './observable'
 import {ISubject, ISubscriber, IUnsubscribe, Subject} from './subject'
 
 export interface IBehavior<T> {
@@ -12,6 +11,13 @@ export function behavior<TBase>(base): any {
 	return class Behavior<T> extends base implements IBehavior<T> {
 		public value: T
 		public unsubscribeValue: T
+
+		constructor(value?: T) {
+			super()
+			if (typeof value !== 'undefined') {
+				this.value = value
+			}
+		}
 
 		public subscribe(subscriber: ISubscriber<T>): IUnsubscribe {
 			if (!subscriber) {

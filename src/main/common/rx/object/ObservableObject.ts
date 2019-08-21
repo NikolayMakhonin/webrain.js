@@ -66,11 +66,14 @@ export class ObservableObject extends PropertyChangedObject {
 		}
 
 		if (!options || !options.suppressPropertyChanged) {
-			this.onPropertyChanged({
-				name,
-				oldValue,
-				newValue,
-			})
+			const {propertyChangedIfCanEmit} = this
+			if (propertyChangedIfCanEmit) {
+				propertyChangedIfCanEmit.onPropertyChanged({
+					name,
+					oldValue,
+					newValue,
+				})
+			}
 		}
 
 		return true

@@ -1,4 +1,3 @@
-import {behavior} from '../../../../../../main/common/rx/subjects/behavior'
 import {Observable} from '../../../../../../main/common/rx/subjects/observable'
 
 function deleteFromArray(array, item) {
@@ -8,22 +7,22 @@ function deleteFromArray(array, item) {
 	}
 }
 
-export class TestSubject extends Observable {
-	_testSubscribers = []
+export class TestSubject<T> extends Observable<T> {
+	private _testSubscribers = []
 
 	get hasSubscribers() {
 		return !!this._testSubscribers.length
 	}
 
 	// eslint-disable-next-line no-shadow
-	subscribe(subscriber) {
+	public subscribe(subscriber) {
 		this._testSubscribers.push(subscriber)
 		return () => {
 			deleteFromArray(this._testSubscribers, subscriber)
 		}
 	}
 
-	emit(value) {
+	public emit(value) {
 		// eslint-disable-next-line no-shadow
 		for (const subscriber of this._testSubscribers) {
 			subscriber(value)

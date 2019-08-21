@@ -1,30 +1,64 @@
 import {
 	EventOrPropertyName,
-	EventsOrPropertyNames,
 	IPropertyChangedEvent,
-	IPropertyChangedObject,
+	IPropertyChangedObject, IPropertyChangedSubject,
 } from '../../lists/contracts/IPropertyChanged'
-import {HasSubscribersSubject, IHasSubscribersSubject} from '../subjects/hasSubscribers'
+import {HasSubscribersSubject} from '../subjects/hasSubscribers'
 import {IUnsubscribe} from '../subjects/subject'
 
-function expandAndDistinct(inputItems: any, output: string[] = [], map: any = {}): string[] {
-	if (inputItems == null) {
-		return output
+// function expandAndDistinct(inputItems: any, output: string[] = [], map: any = {}): string[] {
+// 	if (inputItems == null) {
+// 		return output
+// 	}
+//
+// 	if (Array.isArray(inputItems)) {
+// 		for (const item of inputItems) {
+// 			expandAndDistinct(item, output, map)
+// 		}
+// 		return output
+// 	}
+//
+// 	if (!map[inputItems]) {
+// 		map[inputItems] = true
+// 		output[output.length] = inputItems
+// 	}
+//
+// 	return output
+// }
+
+export class PropertyChangedSubject
+	extends HasSubscribersSubject<IPropertyChangedEvent>
+	implements IPropertyChangedSubject
+{
+	private readonly _object
+
+	constructor(object) {
+		super()
+		this._object = object
 	}
 
-	if (Array.isArray(inputItems)) {
-		for (const item of inputItems) {
-			expandAndDistinct(item, output, map)
+	public onPropertyChanged(...eventsOrPropertyNames: EventOrPropertyName[]): this {
+		for (let i = 0, len = eventsOrPropertyNames.length; i < len; i++) {
+			let event = eventsOrPropertyNames[i]
+
+			if (event == null) {
+				event = {}
+			}
+
+			if (typeof event !== 'object') {
+				const value = this._object[event]
+				event = {
+					name    : event,
+					oldValue: value,
+					newValue: value,
+				}
+			}
+
+			this.emit(event)
 		}
-		return output
-	}
 
-	if (!map[inputItems]) {
-		map[inputItems] = true
-		output[output.length] = inputItems
+		return this
 	}
-
-	return output
 }
 
 export class PropertyChangedObject implements IPropertyChangedObject {
@@ -34,7 +68,7 @@ export class PropertyChangedObject implements IPropertyChangedObject {
 			[key: string]: IUnsubscribe,
 			[key: number]: IUnsubscribe,
 		},
-		propertyChanged?: IHasSubscribersSubject<IPropertyChangedEvent>,
+		propertyChanged?: IPropertyChangedSubject,
 		propertyChangedDisabled?: boolean,
 	}
 
@@ -69,76 +103,19 @@ export class PropertyChangedObject implements IPropertyChangedObject {
 
 	// region propertyChanged
 
-	public get propertyChanged(): IHasSubscribersSubject<IPropertyChangedEvent> {
+	public get propertyChanged(): IPropertyChangedSubject {
 		let {propertyChanged} = this.__meta
 		if (!propertyChanged) {
-			this.__meta.propertyChanged = propertyChanged = new HasSubscribersSubject()
+			this.__meta.propertyChanged = propertyChanged = new PropertyChangedSubject(this)
 		}
 		return propertyChanged
 	}
 
-	protected get _propertyChangedIfCanEmit() {
+	public get propertyChangedIfCanEmit() {
 		const {propertyChangedDisabled, propertyChanged} = this.__meta
 		return !propertyChangedDisabled && propertyChanged && propertyChanged.hasSubscribers
 			? propertyChanged
 			: null
-	}
-
-	protected _emitPropertyChanged(
-		eventsOrPropertyNames: EventsOrPropertyNames,
-		emitFunc: (event: IPropertyChangedEvent) => void,
-	) {
-		if (eventsOrPropertyNames === null) {
-			return
-		}
-
-		const toEvent = (event: EventOrPropertyName): IPropertyChangedEvent => {
-			if (event == null) {
-				return {}
-			}
-
-			if (typeof event !== 'object') {
-				const value = this[event]
-				event = {
-					name    : event,
-					oldValue: value,
-					newValue: value,
-				}
-			}
-
-			return event
-		}
-
-		if (!Array.isArray(eventsOrPropertyNames)) {
-			emitFunc(toEvent(eventsOrPropertyNames))
-		} else {
-			const items = expandAndDistinct(eventsOrPropertyNames)
-
-			for (let i = 0, len = items.length; i < len; i++) {
-				emitFunc(toEvent(items[i]))
-			}
-		}
-	}
-
-	public onPropertyChanged(eventsOrPropertyNames: EventsOrPropertyNames): this {
-		const {__meta} = this
-		if (!__meta) {
-			return this
-		}
-
-		const {propertyChanged, propertyChangedDisabled} = this.__meta
-
-		if (!propertyChanged || propertyChangedDisabled) {
-			return this
-		}
-
-		this._emitPropertyChanged(eventsOrPropertyNames, (event: IPropertyChangedEvent) => {
-			if (propertyChanged) {
-				propertyChanged.emit(event)
-			}
-		})
-
-		return this
 	}
 
 	// endregion
