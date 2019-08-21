@@ -496,32 +496,33 @@ describe('common > main > rx > deferred-calc > DeferredCalc', function() {
 		const timeCoef = 2
 		const startTestTime = timingDefault.now()
 
-		const deferredCalc = new DeferredCalc({
-			autoInvalidateInterval: 9 * timeCoef,
-			throttleTime: 10 * timeCoef,
-			maxThrottleTime: 100 * timeCoef,
-			minTimeBetweenCalc: 5 * timeCoef,
-			canBeCalcCallback() {
-				events.push({
-					time: timingDefault.now() - startTestTime,
-					type: EventType.CanBeCalc,
-				})
-				this.calc()
+		const deferredCalc = new DeferredCalc(
+			function() {
+			events.push({
+			time: timingDefault.now() - startTestTime,
+			type: EventType.CanBeCalc,
+			})
+			this.calc()
 			},
-			calcFunc(done) {
-				events.push({
-					time: timingDefault.now() - startTestTime,
-					type: EventType.Calc,
-				})
-				done()
+			function(done) {
+			events.push({
+			time: timingDefault.now() - startTestTime,
+			type: EventType.Calc,
+			})
+			done()
 			},
-			calcCompletedCallback() {
-				events.push({
-					time: timingDefault.now() - startTestTime,
-					type: EventType.Completed,
-				})
+			function() {
+			events.push({
+			time: timingDefault.now() - startTestTime,
+			type: EventType.Completed,
+			})
 			},
-		})
+			{
+				autoInvalidateInterval: 9 * timeCoef,
+				throttleTime: 10 * timeCoef,
+				maxThrottleTime: 100 * timeCoef,
+				minTimeBetweenCalc: 5 * timeCoef,
+			})
 
 		await new Promise(resolve => setTimeout(resolve, 100 * timeCoef))
 		deferredCalc.autoInvalidateInterval = null
@@ -549,16 +550,17 @@ describe('common > main > rx > deferred-calc > DeferredCalc', function() {
 		const calcFunc = () => {}
 		const calcCompletedCallback = () => {}
 
-		const deferredCalc = new DeferredCalc({
-			autoInvalidateInterval: 1,
-			throttleTime: 2,
-			maxThrottleTime: 3,
-			minTimeBetweenCalc: 4,
-			canBeCalcCallback: () => {},
-			calcFunc: () => {},
-			calcCompletedCallback: () => {},
-			timing: new TestTiming(),
-		})
+		const deferredCalc = new DeferredCalc(
+			() => {},
+			() => {},
+			() => {},
+			{
+				autoInvalidateInterval: 1,
+				throttleTime: 2,
+				maxThrottleTime: 3,
+				minTimeBetweenCalc: 4,
+				timing: new TestTiming(),
+			})
 
 		assert.strictEqual(deferredCalc.autoInvalidateInterval, 1)
 		assert.strictEqual(deferredCalc.throttleTime, 2)

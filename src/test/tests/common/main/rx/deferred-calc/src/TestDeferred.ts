@@ -56,9 +56,8 @@ let staticCalcTime
 let testStartTime
 let staticEvents: IEvent[] = []
 let staticDeferredCalc
-staticDeferredCalc = new DeferredCalc({
-	timing,
-	canBeCalcCallback() {
+staticDeferredCalc = new DeferredCalc(
+	function() {
 		if (staticDeferredCalc) {
 			assert.strictEqual(this, staticDeferredCalc)
 		} else {
@@ -73,7 +72,7 @@ staticDeferredCalc = new DeferredCalc({
 			staticDeferredCalc.calc()
 		}
 	},
-	calcFunc(done) {
+	function(done) {
 		if (staticDeferredCalc) {
 			assert.strictEqual(this, staticDeferredCalc)
 		} else {
@@ -90,7 +89,7 @@ staticDeferredCalc = new DeferredCalc({
 			timing.setTimeout(done, staticCalcTime)
 		}
 	},
-	calcCompletedCallback() {
+	function() {
 		if (staticDeferredCalc) {
 			assert.strictEqual(this, staticDeferredCalc)
 		} else {
@@ -102,7 +101,9 @@ staticDeferredCalc = new DeferredCalc({
 			type: EventType.Completed,
 		})
 	},
-})
+	{
+		timing,
+	})
 
 function eventsToDisplay(events: IEvent[]): IEvent[] {
 	return events.map(event => {
@@ -179,9 +180,8 @@ export class TestDeferredCalc extends TestVariants<
 					events = []
 					const autoCalc = options.autoCalc
 					const calcTime = options.calcTime
-					deferredCalc = new DeferredCalc({
-						timing,
-						canBeCalcCallback() {
+					deferredCalc = new DeferredCalc(
+						function() {
 							if (deferredCalc) {
 								assert.strictEqual(this, deferredCalc)
 							} else {
@@ -196,7 +196,7 @@ export class TestDeferredCalc extends TestVariants<
 								this.calc()
 							}
 						},
-						calcFunc(done) {
+						function(done) {
 							if (deferredCalc) {
 								assert.strictEqual(this, deferredCalc)
 							} else {
@@ -213,7 +213,7 @@ export class TestDeferredCalc extends TestVariants<
 								timing.setTimeout(done, calcTime)
 							}
 						},
-						calcCompletedCallback() {
+						function() {
 							if (deferredCalc) {
 								assert.strictEqual(this, deferredCalc)
 							} else {
@@ -225,11 +225,13 @@ export class TestDeferredCalc extends TestVariants<
 								type: EventType.Completed,
 							})
 						},
-						minTimeBetweenCalc: options.minTimeBetweenCalc,
-						throttleTime: options.throttleTime,
-						maxThrottleTime: options.maxThrottleTime,
-						autoInvalidateInterval: options.autoInvalidateInterval,
-					})
+						{
+							timing,
+							minTimeBetweenCalc: options.minTimeBetweenCalc,
+							throttleTime: options.throttleTime,
+							maxThrottleTime: options.maxThrottleTime,
+							autoInvalidateInterval: options.autoInvalidateInterval,
+						})
 				}
 
 				const propertyChangedEvents = []
