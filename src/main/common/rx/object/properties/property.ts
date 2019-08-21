@@ -15,18 +15,18 @@ export interface IPropertyOptions<TTarget, TSource> {
 	mergeOptions?: IMergeVisitorOptions<TTarget, TSource>,
 }
 
-export class Property<TTarget, TSource>
+export class Property<TValue, TMergeSource>
 	extends ObservableObject
 	implements
-		IMergeable<Property<TTarget, TSource>, any>,
+		IMergeable<Property<TValue, TMergeSource>, any>,
 		ISerializable
 {
 	protected merger?: ObjectMerger
-	protected mergeOptions?: IMergeVisitorOptions<TTarget, TSource>
+	protected mergeOptions?: IMergeVisitorOptions<TValue, TMergeSource>
 
 	constructor(
-		options?: IPropertyOptions<TTarget, TSource>,
-		value?: TTarget,
+		options?: IPropertyOptions<TValue, TMergeSource>,
+		value?: TValue,
 	) {
 		super()
 
@@ -46,16 +46,16 @@ export class Property<TTarget, TSource>
 		}
 	}
 
-	public value: TTarget
+	public value: TValue
 
 	public readonly [Symbol.toStringTag]: string = 'Property'
 
 	// region set / fill / merge
 
 	public set(
-		value: Property<TTarget|TSource, any> | TTarget | TSource,
+		value: Property<TValue|TMergeSource, any> | TValue | TMergeSource,
 		clone?: boolean,
-		options?: IMergeVisitorOptions<TTarget, TSource>,
+		options?: IMergeVisitorOptions<TValue, TMergeSource>,
 	): boolean {
 		const result = this.mergeValue(
 			void 0,
@@ -74,9 +74,9 @@ export class Property<TTarget, TSource>
 	}
 
 	public fill(
-		value: Property<TTarget|TSource, any> | TTarget | TSource,
+		value: Property<TValue|TMergeSource, any> | TValue | TMergeSource,
 		preferClone?: boolean,
-		options?: IMergeVisitorOptions<TTarget, TSource>,
+		options?: IMergeVisitorOptions<TValue, TMergeSource>,
 	): boolean {
 		return this.mergeValue(
 			this.value,
@@ -89,11 +89,11 @@ export class Property<TTarget, TSource>
 	}
 
 	public merge(
-		older: Property<TTarget|TSource, any> | TTarget | TSource,
-		newer: Property<TTarget|TSource, any> | TTarget | TSource,
+		older: Property<TValue|TMergeSource, any> | TValue | TMergeSource,
+		newer: Property<TValue|TMergeSource, any> | TValue | TMergeSource,
 		preferCloneOlder?: boolean,
 		preferCloneNewer?: boolean,
-		options?: IMergeVisitorOptions<TTarget, TSource>,
+		options?: IMergeVisitorOptions<TValue, TMergeSource>,
 	): boolean {
 		return this.mergeValue(
 			this.value,
@@ -110,12 +110,12 @@ export class Property<TTarget, TSource>
 	// region merge helpers
 
 	private mergeValue(
-		base: TTarget,
-		older: Property<TTarget|TSource, any> | TTarget | TSource,
-		newer: Property<TTarget|TSource, any> | TTarget | TSource,
+		base: TValue,
+		older: Property<TValue|TMergeSource, any> | TValue | TMergeSource,
+		newer: Property<TValue|TMergeSource, any> | TValue | TMergeSource,
 		preferCloneOlder?: boolean,
 		preferCloneNewer?: boolean,
-		options?: IMergeVisitorOptions<TTarget, TSource>,
+		options?: IMergeVisitorOptions<TValue, TMergeSource>,
 	): boolean {
 		return this._mergeValue(
 			(this.merger || ObjectMerger.default).merge,
@@ -130,12 +130,12 @@ export class Property<TTarget, TSource>
 
 	private _mergeValue(
 		merge: IMergeValue,
-		base: TTarget,
-		older: Property<TTarget|TSource, any> | TTarget | TSource,
-		newer: Property<TTarget|TSource, any> | TTarget | TSource,
+		base: TValue,
+		older: Property<TValue|TMergeSource, any> | TValue | TMergeSource,
+		newer: Property<TValue|TMergeSource, any> | TValue | TMergeSource,
 		preferCloneOlder?: boolean,
 		preferCloneNewer?: boolean,
-		options?: IMergeVisitorOptions<TTarget, TSource>,
+		options?: IMergeVisitorOptions<TValue, TMergeSource>,
 	): boolean {
 		if (older instanceof Property) {
 			older = older.value
@@ -175,9 +175,9 @@ export class Property<TTarget, TSource>
 
 	// region IMergeable
 
-	public _canMerge(source: Property<TTarget, TSource>|TTarget|TSource): boolean {
+	public _canMerge(source: Property<TValue, TMergeSource>|TValue|TMergeSource): boolean {
 		if (source.constructor === Property
-			&& this.value === (source as Property<TTarget, TSource>).value
+			&& this.value === (source as Property<TValue, TMergeSource>).value
 				|| this.value === source
 		) {
 			return null
@@ -188,8 +188,8 @@ export class Property<TTarget, TSource>
 
 	public _merge(
 		merge: IMergeValue,
-		older: Property<TTarget|TSource, any> | TTarget | TSource,
-		newer: Property<TTarget|TSource, any> | TTarget | TSource,
+		older: Property<TValue|TMergeSource, any> | TValue | TMergeSource,
+		newer: Property<TValue|TMergeSource, any> | TValue | TMergeSource,
 		preferCloneOlder?: boolean,
 		preferCloneNewer?: boolean,
 		options?: IMergeOptions,
