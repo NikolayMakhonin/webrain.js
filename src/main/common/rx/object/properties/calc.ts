@@ -1,5 +1,6 @@
 import {isThenable, Thenable, ThenableOrValue} from '../../../async/async'
-import {resolveAsync, resolveAsyncFunc} from '../../../async/ThenableSync'
+import {resolveAsyncFunc} from '../../../async/ThenableSync'
+import {PropertyChangedEvent} from '../../../lists/contracts/IPropertyChanged'
 import {DeferredCalc, IDeferredCalcOptions} from '../../deferred-calc/DeferredCalc'
 import {ObservableObject} from '../ObservableObject'
 import {ObservableObjectBuilder} from '../ObservableObjectBuilder'
@@ -37,12 +38,13 @@ export class CalcProperty<TInput, TValue, TMergeSource> extends ObservableObject
 
 		this._deferredCalc = new DeferredCalc(
 			() => {
-				this.onPropertyChanged(propertyNames)
+				this.onValueChanged()
 			},
 			(done: () => void) => {
 				this._waiter = resolveAsyncFunc(
 					() => this._calcFunc(this.input, this._value),
 					() => {
+						this.hasValue = true
 						const val = this._value.value
 						done()
 						return val
@@ -51,8 +53,8 @@ export class CalcProperty<TInput, TValue, TMergeSource> extends ObservableObject
 					true,
 				)
 			},
-			function() {
-				this.onPropertyChanged(propertyNames)
+			() => {
+				this.onValueChanged()
 			},
 			calcOptions,
 		)
@@ -89,30 +91,20 @@ export class CalcProperty<TInput, TValue, TMergeSource> extends ObservableObject
 		return this._value.value
 	}
 
-	public invalidate(): void {
-		// this.onPropertyChanged(valuePropertiesNames)
-		if (this.isCalculated) {
-			const {_propertyChangedIfCanEmit} = this
-			if (!_propertyChangedIfCanEmit) {
-				this.isCalculated = false
-				return
-			}
-
-			const event = {
-				name    : 'value',
-				oldValue: this.value,
-			}
-
-			this.isCalculated = false
-
-			Object.defineProperty(event, 'newValue', {
-				configurable: true,
-				enumerable  : true,
-				get         : () => this.value,
-			})
-
-			_propertyChangedIfCanEmit.emit(event)
+	public onValueChanged() {
+		const {propertyChangedIfCanEmit} = this
+		if (propertyChangedIfCanEmit) {
+			const oldValue = this._value.value
+			propertyChangedIfCanEmit.onPropertyChanged(
+				new PropertyChangedEvent('current', oldValue, () => this.current),
+				new PropertyChangedEvent('wait', oldValue, () => this.wait),
+				new PropertyChangedEvent('currentOrWait', oldValue, () => this.currentOrWait),
+			)
 		}
+	}
+
+	public invalidate(): void {
+		this._deferredCalc.invalidate()
 	}
 }
 
