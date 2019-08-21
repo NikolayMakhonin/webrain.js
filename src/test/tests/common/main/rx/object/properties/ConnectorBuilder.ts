@@ -41,26 +41,30 @@ describe('common > main > rx > properties > ConnectorBuilder', function() {
 
 		const baseBuilder1 = new ConnectorBuilder(BaseClass1.prototype as BaseClass1)
 			.connect('baseProp1', b => b.path(o => o.source
-				// .property['@value_property']
-				// .observableMap['#observableObject']
+				.property['@value_property']
+				.observableMap['#observableList']
+				['#']
 				.baseProp1), null, 'baseProp1_init')
 
 		const baseBuilder2 = new ConnectorBuilder(BaseClass2.prototype as BaseClass2)
 			.connect('baseProp2', b => b.path(o => o.source
-				// .property['@value_property']
-				// .observableMap['#observableObject']
+				.property['@value_property']
+				.observableMap['#observableList']
+				['#']
 				.baseProp2), null, 'baseProp2_init')
 
 		const builder1 = new ConnectorBuilder(Class1.prototype as Class1)
 			.connect('prop1', b => b.path(o => o.source
 				.property['@value_property']
-				.observableMap['#observableObject']
+				.observableMap['#observableList']
+				['#']
 				.prop1), null, 'prop1_init')
 
 		const builder2 = new ConnectorBuilder(Class2.prototype as Class2)
 			.connect('prop2', b => b.path(o => o.source
 				.property['@value_property']
-				.observableMap['#observableObject']
+				.observableMap['#observableList']
+				['#']
 				.prop2), null, 'prop2_init')
 
 		const baseObject1 = new BaseClass1()
