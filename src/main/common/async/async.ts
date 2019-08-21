@@ -31,17 +31,20 @@ export function isThenable(value: any): boolean {
 }
 
 export enum ResolveResult {
-	None,
-	ImmediateResolved,
-	ImmediateRejected,
-	Deferred,
+	None = 0,
+	Immediate = 1,
+	Deferred = 2,
+	Error = 4,
+
+	ImmediateError = Immediate | Error,
+	DeferredError = Deferred | Error,
 }
 
 export function resolveIterator<T>(
 	iterator: ThenableIterator<T>,
-	onImmediate: (value: ThenableOrIteratorOrValue<T>) => void,
-	onDeferred: (value: ThenableOrIteratorOrValue<T>) => void,
-	reject: TReject,
+	isError: boolean,
+	onImmediate: (value: ThenableOrIteratorOrValue<T>, isError: boolean) => void,
+	onDeferred: (value: ThenableOrIteratorOrValue<T>, isError: boolean) => void,
 ): ResolveResult {
 	if (!isIterator(iterator)) {
 		return ResolveResult.None
@@ -49,128 +52,165 @@ export function resolveIterator<T>(
 
 	function iterate(
 		nextValue: any,
-		nextOnImmediate: (value: ThenableOrIteratorOrValue<T>) => void,
-		nextOnDeferred: (value: ThenableOrIteratorOrValue<T>) => void,
+		isThrow: boolean,
+		nextOnImmediate: (value: ThenableOrIteratorOrValue<T>, isError: boolean) => void,
+		nextOnDeferred: (value: ThenableOrIteratorOrValue<T>, isError: boolean) => void,
 	): ResolveResult {
-		while (true) {
-			const iteratorResult = iterator.next(nextValue) as IteratorResult<ThenableOrIteratorOrValue<T>>
+		const body = () => {
+			while (true) {
+				let iteratorResult: IteratorResult<ThenableOrIteratorOrValue<T>>
 
-			if (iteratorResult.done) {
-				nextOnImmediate(iteratorResult.value)
-				return ResolveResult.ImmediateResolved
-			}
+				if (isThrow) {
+					isThrow = false
+					iteratorResult = iterator.throw(nextValue)
+				} else {
+					iteratorResult = iterator.next(nextValue)
+				}
 
-			switch (_resolveValue(
-				iteratorResult.value,
-				o => { nextValue = o },
-				o => iterate(o, nextOnDeferred, nextOnDeferred),
-				reject,
-			)) {
-				case ResolveResult.Deferred:
-					return ResolveResult.Deferred
-				case ResolveResult.ImmediateRejected:
-					return ResolveResult.ImmediateRejected
+				if (iteratorResult.done) {
+					nextOnImmediate(iteratorResult.value, isError)
+					return isError ? ResolveResult.ImmediateError : ResolveResult.Immediate
+				}
+
+				const result = _resolveValue(
+					iteratorResult.value,
+					isError,
+					(o, nextIsError) => {
+						nextValue = o
+						isThrow = nextIsError
+					},
+					(o, nextIsError) => {
+						iterate(o, nextIsError, nextOnDeferred, nextOnDeferred)
+					},
+				)
+
+				if ((result & ResolveResult.Deferred) !== 0) {
+					return result
+				}
 			}
+		}
+
+		try {
+			return body()
+		} catch (err) {
+			nextOnImmediate(err, true)
+			return ResolveResult.ImmediateError
 		}
 	}
 
-	return iterate(void 0, onImmediate, onDeferred)
+	return iterate(void 0, false, onImmediate, onDeferred)
 }
 
 export function resolveThenable<T>(
 	thenable: ThenableOrIteratorOrValueNested<T>,
-	onImmediate: (value: ThenableOrIteratorOrValue<T>) => void,
-	onDeferred: (value: ThenableOrIteratorOrValue<T>) => void,
-	reject: TReject,
+	isError: boolean,
+	onImmediate: (value: ThenableOrIteratorOrValue<T>, isError: boolean) => void,
+	onDeferred: (value: ThenableOrIteratorOrValue<T>, isError: boolean) => void,
 ): ResolveResult {
 	if (!isThenable(thenable)) {
 		return ResolveResult.None
 	}
 
-	let result = ResolveResult.Deferred
-	let immediate = true;
+	let result = isError ? ResolveResult.DeferredError : ResolveResult.Deferred
+	let deferred
 
 	((thenable as any).thenLast || thenable.then).call(thenable, value => {
-		if (immediate) {
-			result = ResolveResult.ImmediateResolved
-			onImmediate(value)
+		if (deferred) {
+			onDeferred(value, isError)
 		} else {
-			onDeferred(value)
+			result = isError ? ResolveResult.ImmediateError : ResolveResult.Immediate
+			onImmediate(value, isError)
 		}
 	}, err => {
-		if (immediate) {
-			result = ResolveResult.ImmediateRejected
+		if (deferred) {
+			onDeferred(err, true)
+		} else {
+			result = ResolveResult.ImmediateError
+			onImmediate(err, true)
 		}
-		reject(err)
 	})
 
-	immediate = false
+	deferred = true
 
 	return result
 }
 
 function _resolveValue<T>(
 	value: ThenableOrIteratorOrValue<T>,
-	onImmediate: (value: T) => void,
-	onDeferred: (value: T) => void,
-	reject: TReject,
+	isError: boolean,
+	onImmediate: (value: T, isError: boolean) => void,
+	onDeferred: (value: T, isError: boolean) => void,
 ): ResolveResult {
-	const nextOnImmediate = o => { value = o }
-	const nextOnDeferred = val => { _resolveValue(val, onDeferred, onDeferred, reject) }
+	const nextOnImmediate = (o, nextIsError) => {
+		if (nextIsError) {
+			isError = true
+		}
+		value = o
+	}
+	const nextOnDeferred = (val, nextIsError) => {
+		_resolveValue(val, isError || nextIsError, onDeferred, onDeferred)
+	}
 
 	while (true) {
-		switch (resolveThenable(
-			value as ThenableOrIteratorOrValueNested<T>,
-			nextOnImmediate,
-			nextOnDeferred,
-			reject,
-		)) {
-			case ResolveResult.Deferred:
-				return ResolveResult.Deferred
-			case ResolveResult.ImmediateRejected:
-				return ResolveResult.ImmediateRejected
-			case ResolveResult.ImmediateResolved:
+		{
+			const result = resolveThenable(
+				value as ThenableOrIteratorOrValueNested<T>,
+				isError,
+				nextOnImmediate,
+				nextOnDeferred,
+			)
+
+			if ((result & ResolveResult.Deferred) !== 0) {
+				return result
+			}
+			if ((result & ResolveResult.Immediate) !== 0) {
 				continue
+			}
 		}
 
-		switch (resolveIterator(
-			value as ThenableIterator<T>,
-			nextOnImmediate,
-			nextOnDeferred,
-			reject,
-		)) {
-			case ResolveResult.Deferred:
-				return ResolveResult.Deferred
-			case ResolveResult.ImmediateRejected:
-				return ResolveResult.ImmediateRejected
-			case ResolveResult.ImmediateResolved:
+		{
+			const result = resolveIterator(
+				value as ThenableIterator<T>,
+				isError,
+				nextOnImmediate,
+				nextOnDeferred,
+			)
+
+			if ((result & ResolveResult.Deferred) !== 0) {
+				return result
+			}
+			if ((result & ResolveResult.Immediate) !== 0) {
 				continue
+			}
 		}
 
-		onImmediate(value as T)
-		return ResolveResult.ImmediateResolved
+		onImmediate(value as T, isError)
+		return isError ? ResolveResult.ImmediateError : ResolveResult.Immediate
 	}
 }
 
 export function resolveValue<T>(
 	value: ThenableOrIteratorOrValue<T>,
-	onImmediate: (value: T) => void,
-	onDeferred: (value: T) => void,
-	reject: TReject,
+	onImmediate: (value: T, isError: boolean) => void,
+	onDeferred: (value: T, isError: boolean) => void,
+): ResolveResult {
+	return _resolveValue(
+		value,
+		false,
+		onImmediate,
+		onDeferred,
+	)
+}
+
+export function resolveValueFunc<T>(
+	func: () => ThenableOrIteratorOrValue<T>,
+	onImmediate: (value: T, isError: boolean) => void,
+	onDeferred: (value: T, isError: boolean) => void,
 ): ResolveResult {
 	try {
-		return _resolveValue(value, onImmediate, onDeferred, reject)
+		return resolveValue(func(), onImmediate, onDeferred)
 	} catch (err) {
-		const onResult = o => {
-			try {
-				reject(o)
-			} catch {
-				throw o
-			}
-		}
-		if (_resolveValue(err, onResult, onResult, onResult) === ResolveResult.Deferred) {
-			return ResolveResult.Deferred
-		}
-		return ResolveResult.ImmediateRejected
+		onImmediate(err, true)
+		return ResolveResult.ImmediateError
 	}
 }

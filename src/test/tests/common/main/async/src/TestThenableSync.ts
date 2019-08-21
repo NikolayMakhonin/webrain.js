@@ -14,20 +14,20 @@ import {assert} from '../../../../../../main/common/test/Assert'
 import {IOptionsVariant, IOptionsVariants, ITestCase, TestVariants} from '../../src/helpers/TestVariants'
 
 export enum ValueType {
-	Value,
-	ThenableResolved,
-	ThenableRejected,
-	ThenableThrowed,
-	ThenableResolve,
-	ThenableReject,
-	Iterator,
-	IteratorThrow,
+	Value = 'Value',
+	ThenableResolved = 'ThenableResolved',
+	ThenableRejected = 'ThenableRejected',
+	ThenableThrowed = 'ThenableThrowed',
+	ThenableResolve = 'ThenableResolve',
+	ThenableReject = 'ThenableReject',
+	Iterator = 'Iterator',
+	IteratorThrow = 'IteratorThrow',
 }
 
 export enum ThenType {
-	ResolveValue,
-	Then,
-	ThenLast,
+	// ResolveValue = 'ResolveValue',
+	Then = 'Then',
+	ThenLast = 'ThenLast',
 	// ResolveAsync,
 }
 
@@ -256,15 +256,6 @@ function createValue(
 	return valueInfo
 }
 
-// function resolveError(func) {
-// 	try {
-// 		func()
-// 	} catch (err) {
-// 		return err
-// 	}
-// 	throw new Error(`Function should throw error: ${func}`)
-// }
-
 function createThen(
 	valueInfo: IValueInfo,
 	getValueType: (index) => ValueType,
@@ -281,15 +272,25 @@ function createThen(
 	}
 
 	const thenResolveValue = (value, onfulfilled, onrejected, isRejected: boolean) => {
-		const result = resolveValue(value, onfulfilled, onfulfilled, onrejected)
+		const onResult = (o, e) => {
+			if (e) {
+				return onrejected(o)
+			} else {
+				return onfulfilled(o)
+			}
+		}
+		const result = resolveValue(value, onResult, onResult)
 		switch (result) {
-			case ResolveResult.ImmediateResolved:
+			case ResolveResult.Immediate:
 				assert.strictEqual(isRejected, false)
 				break
-			case ResolveResult.ImmediateRejected:
+			case ResolveResult.ImmediateError:
 				assert.strictEqual(isRejected, true)
 				break
 			case ResolveResult.Deferred:
+				break
+			case ResolveResult.DeferredError:
+				assert.strictEqual(isRejected, true)
 				break
 			default:
 				throw new Error(`Unknown ResolveResult: ${result}`)
@@ -299,12 +300,6 @@ function createThen(
 	let thenable = valueInfo.value
 
 	for (let i = 0; i < 2; i++) {
-		// if (getThenThrow(i)) {
-		// 	onResult = (value) => throw createValue(value)
-		// } else {
-		// 	onResult = (value) => createValue(value)
-		// }
-
 		switch (getThenType(i)) {
 			case ThenType.Then:
 				if (isThenable(thenable)) {
@@ -365,54 +360,54 @@ function createThen(
 					thenable = err
 				}
 				break
-			case ThenType.ResolveValue:
-				try {
-					if (calcValueInfo(null).throw && (!valueInfo.immediate || !calcValueInfo(null).immediate)) {
-						break
-					}
-					const [newThenable, resolve, reject] = createThenable(i % 2 === 0)
-					if (getThenThrow(i)) {
-						if (valueInfo.useReject) {
-							if (!valueInfo.immediate || !calcValueInfo(null).immediate) {
-								break
-							}
-							calcValueInfo(valueInfo)
-							thenResolveValue(thenable, null, o => { throw createThenValue(o) }, true)
-						} else {
-							valueInfo.useReject = true
-							calcValueInfo(valueInfo)
-							thenResolveValue(thenable, o => { throw createThenValue(o) }, reject, true)
-						}
-					} else {
-						if (valueInfo.useReject) {
-							// valueInfo.useReject = false
-							calcValueInfo(valueInfo)
-							thenResolveValue(thenable, null, o => { reject(createThenValue(o)) }, true)
-						} else {
-							calcValueInfo(valueInfo)
-							thenResolveValue(thenable, o => { resolve(createThenValue(o)) }, null, false)
-						}
-					}
-					thenable = newThenable
-				} catch (err) {
-					if (err instanceof Error) {
-						throw err
-					}
-					assert.strictEqual(valueInfo.useReject, true)
-					if (!valueInfo.throw) {
-						assert.strictEqual(valueInfo.immediate, true)
-						assert.strictEqual(isThenable(err), false)
-						assert.strictEqual(isIterator(err), false)
-					}
-					if (isThenable(err) || isIterator(err)) {
-						thenable = ThenableSync.createRejected(err)
-					} else {
-						valueInfo.throw = false
-						valueInfo.useReject = false
-						thenable = err
-					}
-				}
-				break
+			// case ThenType.ResolveValue:
+			// 	try {
+			// 		if (calcValueInfo(null).throw && (!valueInfo.immediate || !calcValueInfo(null).immediate)) {
+			// 			break
+			// 		}
+			// 		const [newThenable, resolve, reject] = createThenable(i % 2 === 0)
+			// 		if (getThenThrow(i)) {
+			// 			if (valueInfo.useReject) {
+			// 				if (!valueInfo.immediate || !calcValueInfo(null).immediate) {
+			// 					break
+			// 				}
+			// 				calcValueInfo(valueInfo)
+			// 				thenResolveValue(thenable, null, o => { throw createThenValue(o) }, true)
+			// 			} else {
+			// 				valueInfo.useReject = true
+			// 				calcValueInfo(valueInfo)
+			// 				thenResolveValue(thenable, o => { throw createThenValue(o) }, reject, true)
+			// 			}
+			// 		} else {
+			// 			if (valueInfo.useReject) {
+			// 				// valueInfo.useReject = false
+			// 				calcValueInfo(valueInfo)
+			// 				thenResolveValue(thenable, null, o => { reject(createThenValue(o)) }, true)
+			// 			} else {
+			// 				calcValueInfo(valueInfo)
+			// 				thenResolveValue(thenable, o => { resolve(createThenValue(o)) }, null, false)
+			// 			}
+			// 		}
+			// 		thenable = newThenable
+			// 	} catch (err) {
+			// 		if (err instanceof Error) {
+			// 			throw err
+			// 		}
+			// 		assert.strictEqual(valueInfo.useReject, true)
+			// 		if (!valueInfo.throw) {
+			// 			assert.strictEqual(valueInfo.immediate, true)
+			// 			assert.strictEqual(isThenable(err), false)
+			// 			assert.strictEqual(isIterator(err), false)
+			// 		}
+			// 		if (isThenable(err) || isIterator(err)) {
+			// 			thenable = ThenableSync.createRejected(err)
+			// 		} else {
+			// 			valueInfo.throw = false
+			// 			valueInfo.useReject = false
+			// 			thenable = err
+			// 		}
+			// 	}
+			// 	break
 			// case ThenType.ResolveAsync:
 			// 	break
 			default:
@@ -435,20 +430,20 @@ export class TestThenableSync extends TestVariants<
 
 	protected baseOptionsVariants: IThenableSyncOptionsVariants = {
 		value: ['v'], // , void 0, ITERABLE, ITERATOR_GENERATOR],
-		createValue0: Object.values(ValueType).filter(x => typeof x === 'number'),
-		thenValue0: Object.values(ValueType).filter(x => typeof x === 'number'),
+		createValue0: Object.values(ValueType),
+		thenValue0: Object.values(ValueType),
 		thenThrow0: [false, true],
-		thenType0: Object.values(ThenType).filter(x => typeof x === 'number'),
+		thenType0: Object.values(ThenType),
 
-		createValue1: Object.values(ValueType).filter(x => typeof x === 'number'),
-		thenValue1: Object.values(ValueType).filter(x => typeof x === 'number'),
+		createValue1: Object.values(ValueType),
+		thenValue1: Object.values(ValueType),
 		thenThrow1: [false, true],
-		thenType1: Object.values(ThenType).filter(x => typeof x === 'number'),
+		thenType1: Object.values(ThenType),
 
-		// createValue2: Object.values(ValueType).filter(x => typeof x === 'number'),
-		// thenValue2: Object.values(ValueType).filter(x => typeof x === 'number'),
+		// createValue2: Object.values(ValueType),
+		// thenValue2: Object.values(ValueType),
 		// thenThrow2: [false, true],
-		// thenType2: Object.values(ThenType).filter(x => typeof x === 'number'),
+		// thenType2: Object.values(ThenType),
 	}
 
 	public static totalTests: number = 0

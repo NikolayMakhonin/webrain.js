@@ -2,6 +2,7 @@ import {
 	isThenable,
 	ResolveResult,
 	resolveValue,
+	resolveValueFunc,
 	ThenableOrIteratorOrValue,
 	ThenableOrValue,
 	TOnFulfilled,
@@ -66,17 +67,31 @@ export class ThenableSync<TValue = any> {
 			throw new Error(`Multiple call resolve/reject() is forbidden; status = ${_status}`)
 		}
 
-		switch (resolveValue(
+		const result = resolveValue(
 			value,
-			o => { value = o },
-			o => { this._resolve(o) },
-			o => { this._reject(o) },
-		)) {
-			case ResolveResult.Deferred:
-				this._status = ThenableSyncStatus.Resolving
-				return
-			case ResolveResult.ImmediateRejected:
-				return
+			(o, e) => {
+				if (e) {
+					this._reject(o)
+				} else {
+					value = o
+				}
+			},
+			(o, e) => {
+				if (e) {
+					this._reject(o)
+				} else {
+					this._resolve(o)
+				}
+			},
+		)
+
+		if ((result & ResolveResult.Deferred) !== 0) {
+			this._status = ThenableSyncStatus.Resolving
+			return
+		}
+
+		if ((result & ResolveResult.Error) !== 0) {
+			return
 		}
 
 		this._status = ThenableSyncStatus.Resolved
@@ -111,17 +126,15 @@ export class ThenableSync<TValue = any> {
 			throw new Error(`Multiple call resolve/reject() is forbidden; status = ${_status}`)
 		}
 
-		switch (resolveValue(
+		const result = resolveValue(
 			error,
-			o => { error = o },
-			o => { this._reject(o) },
-			o => { this._reject(o) },
-		)) {
-			case ResolveResult.Deferred:
-				this._status = ThenableSyncStatus.Resolving
-				return
-			case ResolveResult.ImmediateRejected:
-				return
+			(o, e) => { error = o },
+			(o, e) => { this._reject(o) },
+		)
+
+		if ((result & ResolveResult.Deferred) !== 0) {
+			this._status = ThenableSyncStatus.Resolving
+			return
 		}
 
 		this._status = ThenableSyncStatus.Rejected
@@ -272,7 +285,7 @@ export class ThenableSync<TValue = any> {
 							}
 						})()
 						if (isError) {
-							resolveValue(value, rejected, rejected, rejected)
+							resolveValue(value, rejected, rejected)
 						} else {
 							result.resolve(value)
 						}
@@ -317,65 +330,74 @@ export function resolveAsync<TValue = any, TResult1 = TValue, TResult2 = never>(
 	input: ThenableOrIteratorOrValue<TValue>,
 	onfulfilled?: TOnFulfilled<TValue, TResult1>,
 	onrejected?: TOnRejected<TResult2>,
-	dontThrowOnImmediateReject?: boolean,
+	dontThrowOnImmediateError?: boolean,
 ): ThenableOrValue<TResult1> {
-	let error
-	let resolve: TResolve<TResult1>
-	let reject: TReject = err => { error = err }
-
 	let result: ThenableOrValue<TResult1>
+	let isError: boolean
+	let onResult = (o: ThenableOrValue<TValue|TResult1>, e) => {
+		result = o as TResult1
+		isError = e
+	}
 
-	const onreject = o => {
-		if (onrejected) {
-			if (resolve) {
-				resolveValue(onrejected(o), resolve as any, resolve as any, reject)
-			} else {
-				resolveValue(onrejected(o), val => { result = val as any }, resolve as any, reject)
+	let thenable
+	const createThenable = () => {
+		if (!thenable) {
+			thenable = new ThenableSync((resolve, reject) => {
+				onResult = (o, e) => {
+					if (e) {
+						reject(o)
+					} else {
+						resolve(o as TResult1)
+					}
+				}
+			})
+		}
+		return thenable
+	}
+
+	const resolveOnResult = (o, e) => {
+		const handler = e ? onrejected : onfulfilled
+
+		if (handler) {
+			if ((resolveValueFunc<TResult1|TResult2>(
+				() => handler(o),
+				(o2, e2) => { onResult(o2 as TResult1, e2) },
+				(o2, e2) => { onResult(o2 as TResult1, e2) },
+			) & ResolveResult.Deferred) !== 0) {
+				result = createThenable()
 			}
 		} else {
-			reject(o)
+			onResult(o, e)
 		}
 	}
 
-	switch (resolveValue(
+	if ((resolveValue(
 		input,
-		o => {
-			if (onfulfilled) {
-				if (resolveValue<TResult1>(
-					onfulfilled(o),
-					val => { result = val },
-					resolve,
-					onreject,
-				) === ResolveResult.Deferred) {
-					result = new ThenableSync((r, e) => {
-						resolve = r
-						reject = e
-					})
-				}
-			} else {
-				result = o as any
-			}
-		},
-		o => {
-			if (onfulfilled) {
-				resolveValue(onfulfilled(o), resolve, resolve, onreject)
-			} else {
-				resolve(o as any)
-			}
-		},
-		onreject,
-	)) {
-		case ResolveResult.Deferred:
-			return new ThenableSync((r, e) => {
-				resolve = r
-				reject = e
-			})
-		case ResolveResult.ImmediateRejected:
-			if (dontThrowOnImmediateReject) {
-				return createRejected(error)
-			}
-			throw error
+		resolveOnResult,
+		resolveOnResult,
+	) & ResolveResult.Deferred) !== 0) {
+		return createThenable()
+	}
+
+	if (isError) {
+		if (dontThrowOnImmediateError) {
+			return ThenableSync.createRejected(result)
+		}
+		throw result
 	}
 
 	return result
+}
+
+export function resolveAsyncFunc<TValue = any, TResult1 = TValue, TResult2 = never>(
+	func: () => ThenableOrIteratorOrValue<TValue>,
+	onfulfilled?: TOnFulfilled<TValue, TResult1>,
+	onrejected?: TOnRejected<TResult2>,
+	dontThrowOnImmediateReject?: boolean,
+): ThenableOrValue<TResult1> {
+	try {
+		return resolveAsync(func(), onfulfilled, onrejected, dontThrowOnImmediateReject)
+	} catch (err) {
+		return resolveAsync(err as any, onrejected as any, onrejected, dontThrowOnImmediateReject)
+	}
 }
