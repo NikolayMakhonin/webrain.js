@@ -198,7 +198,7 @@ export class DeferredCalc {
 				canBeCalcTime = Math.min(canBeCalcTime, this._timeInvalidateFirst + (_maxThrottleTime || 0))
 			}
 			if (this._timeCalcEnd) {
-				canBeCalcTime = Math.max(canBeCalcTime, this._timeCalcEnd + this._minTimeBetweenCalc || 0)
+				canBeCalcTime = Math.max(canBeCalcTime, this._timeCalcEnd + (this._minTimeBetweenCalc || 0))
 			}
 			if (canBeCalcTime <= now) {
 				this._canBeCalc()
@@ -220,7 +220,7 @@ export class DeferredCalc {
 				calcTime = Math.min(calcTime, this._timeInvalidateFirst + (_maxThrottleTime || 0))
 			}
 			if (this._timeCalcEnd) {
-				calcTime = Math.max(calcTime, this._timeCalcEnd + this._minTimeBetweenCalc || 0)
+				calcTime = Math.max(calcTime, this._timeCalcEnd + (this._minTimeBetweenCalc || 0))
 			}
 			if (calcTime <= now) {
 				this._calc()
@@ -264,6 +264,13 @@ export class DeferredCalc {
 	}
 
 	public calc(): void {
+		if (!this._calcRequested && this._canBeCalcEmitted) {
+			this._calcRequested = true
+			this._pulse()
+		}
+	}
+
+	public reCalc(): void {
 		this._calcRequested = true
 		this._pulse()
 	}

@@ -16,7 +16,7 @@ describe('common > main > rx > deferred-calc > DeferredCalc', function() {
 		console.log('Total DeferredCalc tests >= ' + TestDeferredCalc.totalTests)
 	})
 
-	it('base', function() {
+	it('init', function() {
 		testDeferredCalc({
 			calcTime: [0, 1, 10],
 			throttleTime: [null, 0],
@@ -43,6 +43,104 @@ describe('common > main > rx > deferred-calc > DeferredCalc', function() {
 					timing.addTime(100)
 					deferredCalc.invalidate()
 					timing.addTime(100)
+				},
+			],
+		})
+	})
+
+	it('calc only after invalidate', function() {
+		testDeferredCalc({
+			calcTime: [5],
+			throttleTime: [null, 0],
+			maxThrottleTime: [null, 0, 10],
+			minTimeBetweenCalc: [null, 0],
+			autoInvalidateInterval: [null],
+			expected: {
+				events: [
+					{
+						time: 0,
+						type: EventType.CanBeCalc,
+					},
+					{
+						time: 0,
+						type: EventType.Calc,
+					},
+					{
+						time: 5,
+						type: EventType.Completed,
+					},
+
+					{
+						time: 15,
+						type: EventType.CanBeCalc,
+					},
+					{
+						time: 15,
+						type: EventType.Calc,
+					},
+					{
+						time: 20,
+						type: EventType.Completed,
+					},
+
+					{
+						time: 25,
+						type: EventType.CanBeCalc,
+					},
+					{
+						time: 25,
+						type: EventType.Calc,
+					},
+					{
+						time: 30,
+						type: EventType.Completed,
+					},
+					{
+						time: 30,
+						type: EventType.CanBeCalc,
+					},
+
+					{
+						time: 35,
+						type: EventType.Calc,
+					},
+					{
+						time: 40,
+						type: EventType.Completed,
+					},
+				],
+			},
+			actions: [
+				deferredCalc => {
+					deferredCalc.calc()
+					deferredCalc.calc()
+					deferredCalc.calc()
+					timing.addTime(5)
+					deferredCalc.calc()
+					deferredCalc.calc()
+					timing.addTime(5)
+					deferredCalc.calc()
+					timing.addTime(5) // 15
+
+					deferredCalc.invalidate()
+					deferredCalc.calc()
+					deferredCalc.calc()
+					timing.addTime(5)
+					deferredCalc.calc()
+					deferredCalc.calc()
+					timing.addTime(5)
+
+					deferredCalc.invalidate()
+					deferredCalc.calc()
+					deferredCalc.invalidate()
+					deferredCalc.calc()
+					timing.addTime(4)
+					deferredCalc.calc()
+					timing.addTime(1)
+					timing.addTime(5)
+
+					deferredCalc.calc()
+					timing.addTime(5)
 				},
 			],
 		})
@@ -104,14 +202,6 @@ describe('common > main > rx > deferred-calc > DeferredCalc', function() {
 					},
 					{
 						time: 49,
-						type: EventType.Calc,
-					},
-					{
-						time: 54,
-						type: EventType.Completed,
-					},
-					{
-						time: 63,
 						type: EventType.CanBeCalc,
 					},
 					{
@@ -133,7 +223,7 @@ describe('common > main > rx > deferred-calc > DeferredCalc', function() {
 					timing.addTime(9)
 					deferredCalc.invalidate()
 					timing.addTime(0)
-					timing.addTime(9)
+					timing.addTime(9) // 18
 					deferredCalc.invalidate()
 					timing.addTime(0)
 					timing.addTime(12) // 30
@@ -143,17 +233,17 @@ describe('common > main > rx > deferred-calc > DeferredCalc', function() {
 
 					deferredCalc.invalidate()
 					timing.addTime(0)
-					timing.addTime(9)
+					timing.addTime(9) // 39
 					deferredCalc.invalidate()
 					deferredCalc.calc()
 					timing.addTime(0)
-					timing.addTime(10)
+					timing.addTime(10) // 49
 
-					timing.addTime(4)
+					timing.addTime(4) // 53
 
 					deferredCalc.invalidate()
 					timing.addTime(0)
-					timing.addTime(11)
+					timing.addTime(11) // 64
 
 					deferredCalc.calc()
 					timing.addTime(9)
@@ -218,14 +308,6 @@ describe('common > main > rx > deferred-calc > DeferredCalc', function() {
 					},
 					{
 						time: 22,
-						type: EventType.Calc,
-					},
-					{
-						time: 27,
-						type: EventType.Completed,
-					},
-					{
-						time: 32,
 						type: EventType.CanBeCalc,
 					},
 					{
@@ -250,20 +332,20 @@ describe('common > main > rx > deferred-calc > DeferredCalc', function() {
 					deferredCalc.calc()
 
 					deferredCalc.invalidate()
-					timing.addTime(4)
+					timing.addTime(4) // 16
 					deferredCalc.invalidate()
-					timing.addTime(4)
+					timing.addTime(4) // 20
 					deferredCalc.invalidate()
-					timing.addTime(1)
+					timing.addTime(1) // 21
 					deferredCalc.calc()
-					timing.addTime(1)
+					timing.addTime(1) // 22
 
 					deferredCalc.invalidate()
-					timing.addTime(4)
+					timing.addTime(4) // 26
 					deferredCalc.invalidate()
-					timing.addTime(4)
+					timing.addTime(4) // 30
 					deferredCalc.invalidate()
-					timing.addTime(2)
+					timing.addTime(2) // 32
 					deferredCalc.calc()
 					timing.addTime(5)
 				},
@@ -294,11 +376,7 @@ describe('common > main > rx > deferred-calc > DeferredCalc', function() {
 					},
 					{
 						time: 5,
-						type: EventType.Calc,
-					},
-					{
-						time: 5,
-						type: EventType.Completed,
+						type: EventType.CanBeCalc,
 					},
 					{
 						time: 14,
@@ -322,12 +400,12 @@ describe('common > main > rx > deferred-calc > DeferredCalc', function() {
 				deferredCalc => {
 					deferredCalc.calc()
 					timing.addTime(3)
-					deferredCalc.calc()
+					deferredCalc.invalidate()
 					timing.addTime(1)
 					deferredCalc.calc()
 					timing.addTime(10)
-					deferredCalc.calc()
-					deferredCalc.calc()
+					deferredCalc.reCalc()
+					deferredCalc.reCalc()
 					timing.addTime(5)
 				},
 			],
