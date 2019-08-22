@@ -31,14 +31,10 @@ describe('common > main > rx > properties > ConnectorBuilder', function () {
 
     class Class2 extends BaseClass2 {}
 
-    const baseBuilder1 = new _ConnectorBuilder.ConnectorBuilder(BaseClass1.prototype).connect('baseProp1', b => b.path(o => o.source // .property['@value_property']
-    // .observableMap['#observableObject']
-    .baseProp1), null, 'baseProp1_init');
-    const baseBuilder2 = new _ConnectorBuilder.ConnectorBuilder(BaseClass2.prototype).connect('baseProp2', b => b.path(o => o.source // .property['@value_property']
-    // .observableMap['#observableObject']
-    .baseProp2), null, 'baseProp2_init');
-    const builder1 = new _ConnectorBuilder.ConnectorBuilder(Class1.prototype).connect('prop1', b => b.path(o => o.source.property['@value_property'].observableMap['#observableObject'].prop1), null, 'prop1_init');
-    const builder2 = new _ConnectorBuilder.ConnectorBuilder(Class2.prototype).connect('prop2', b => b.path(o => o.source.property['@value_property'].observableMap['#observableObject'].prop2), null, 'prop2_init');
+    const baseBuilder1 = new _ConnectorBuilder.ConnectorBuilder(BaseClass1.prototype).connect('baseProp1', b => b.path(o => o.source.property['@value_property'].observableMap['#observableList']['#'].baseProp1), null, 'baseProp1_init');
+    const baseBuilder2 = new _ConnectorBuilder.ConnectorBuilder(BaseClass2.prototype).connect('baseProp2', b => b.path(o => o.source.property['@value_property'].observableMap['#observableList']['#'].baseProp2), null, 'baseProp2_init');
+    const builder1 = new _ConnectorBuilder.ConnectorBuilder(Class1.prototype).connect('prop1', b => b.path(o => o.source.property['@value_property'].observableMap['#observableList']['#'].prop1), null, 'prop1_init');
+    const builder2 = new _ConnectorBuilder.ConnectorBuilder(Class2.prototype).connect('prop2', b => b.path(o => o.source.property['@value_property'].observableMap['#observableList']['#'].prop2), null, 'prop2_init');
     const baseObject1 = new BaseClass1();
     const baseObject2 = new BaseClass2();
     const object1 = new Class1();

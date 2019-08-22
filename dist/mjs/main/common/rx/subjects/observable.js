@@ -3,10 +3,8 @@ import _createClass from "@babel/runtime/helpers/createClass";
 export var Observable =
 /*#__PURE__*/
 function () {
-  function Observable(fields) {
+  function Observable() {
     _classCallCheck(this, Observable);
-
-    Object.assign(this, fields);
   }
 
   _createClass(Observable, [{

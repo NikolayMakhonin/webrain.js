@@ -5,6 +5,8 @@ Object.defineProperty(exports, "__esModule", {
 });
 exports.ObservableObjectBuilder = void 0;
 
+var _IPropertyChanged = require("../../lists/contracts/IPropertyChanged");
+
 require("../extensions/autoConnect");
 
 var _ObservableObject = require("./ObservableObject");
@@ -56,10 +58,6 @@ class ObservableObjectBuilder {
 
     return this;
   }
-  /**
-   * @param options - reserved
-   */
-
 
   readable(name, options, value) {
     const {
@@ -124,16 +122,13 @@ class ObservableObjectBuilder {
 
       if (__fields) {
         const oldValue = __fields[name];
-        const event = {
-          name,
-          oldValue
-        };
-        Object.defineProperty(event, 'newValue', {
-          configurable: true,
-          enumerable: true,
-          get: () => object[name]
-        });
-        object.onPropertyChanged(event);
+        const {
+          propertyChangedIfCanEmit
+        } = object;
+
+        if (propertyChangedIfCanEmit) {
+          propertyChangedIfCanEmit.onPropertyChanged(new _IPropertyChanged.PropertyChangedEvent(name, oldValue, () => object[name]));
+        }
       }
     } else {
       createInstanceProperty(object);
@@ -143,11 +138,17 @@ class ObservableObjectBuilder {
 
         if (value !== oldValue) {
           __fields[name] = value;
-          object.onPropertyChanged({
-            name,
-            oldValue,
-            newValue: value
-          });
+          const {
+            propertyChangedIfCanEmit
+          } = object;
+
+          if (propertyChangedIfCanEmit) {
+            propertyChangedIfCanEmit.onPropertyChanged({
+              name,
+              oldValue,
+              newValue: value
+            });
+          }
         }
       }
     }
@@ -172,10 +173,16 @@ class ObservableObjectBuilder {
       delete __fields[name];
 
       if (typeof oldValue !== 'undefined') {
-        object.onPropertyChanged({
-          name,
-          oldValue
-        });
+        const {
+          propertyChangedIfCanEmit
+        } = object;
+
+        if (propertyChangedIfCanEmit) {
+          propertyChangedIfCanEmit.onPropertyChanged({
+            name,
+            oldValue
+          });
+        }
       }
     }
 

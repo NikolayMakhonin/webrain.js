@@ -7,6 +7,7 @@ exports.isThenable = isThenable;
 exports.resolveIterator = resolveIterator;
 exports.resolveThenable = resolveThenable;
 exports.resolveValue = resolveValue;
+exports.resolveValueFunc = resolveValueFunc;
 exports.ResolveResult = void 0;
 
 var _helpers = require("../helpers/helpers");
@@ -20,118 +21,135 @@ exports.ResolveResult = ResolveResult;
 
 (function (ResolveResult) {
   ResolveResult[ResolveResult["None"] = 0] = "None";
-  ResolveResult[ResolveResult["ImmediateResolved"] = 1] = "ImmediateResolved";
-  ResolveResult[ResolveResult["ImmediateRejected"] = 2] = "ImmediateRejected";
-  ResolveResult[ResolveResult["Deferred"] = 3] = "Deferred";
+  ResolveResult[ResolveResult["Immediate"] = 1] = "Immediate";
+  ResolveResult[ResolveResult["Deferred"] = 2] = "Deferred";
+  ResolveResult[ResolveResult["Error"] = 4] = "Error";
+  ResolveResult[ResolveResult["ImmediateError"] = 5] = "ImmediateError";
+  ResolveResult[ResolveResult["DeferredError"] = 6] = "DeferredError";
 })(ResolveResult || (exports.ResolveResult = ResolveResult = {}));
 
-function resolveIterator(iterator, onImmediate, onDeferred, reject) {
+function resolveIterator(iterator, isError, onImmediate, onDeferred) {
   if (!(0, _helpers.isIterator)(iterator)) {
     return ResolveResult.None;
   }
 
-  function iterate(nextValue, nextOnImmediate, nextOnDeferred) {
-    while (true) {
-      const iteratorResult = iterator.next(nextValue);
+  function iterate(nextValue, isThrow, nextOnImmediate, nextOnDeferred) {
+    const body = () => {
+      while (true) {
+        let iteratorResult;
 
-      if (iteratorResult.done) {
-        nextOnImmediate(iteratorResult.value);
-        return ResolveResult.ImmediateResolved;
+        if (isThrow) {
+          isThrow = false;
+          iteratorResult = iterator.throw(nextValue);
+        } else {
+          iteratorResult = iterator.next(nextValue);
+        }
+
+        if (iteratorResult.done) {
+          nextOnImmediate(iteratorResult.value, isError);
+          return isError ? ResolveResult.ImmediateError : ResolveResult.Immediate;
+        }
+
+        const result = _resolveValue(iteratorResult.value, isError, (o, nextIsError) => {
+          nextValue = o;
+          isThrow = nextIsError;
+        }, (o, nextIsError) => {
+          iterate(o, nextIsError, nextOnDeferred, nextOnDeferred);
+        });
+
+        if ((result & ResolveResult.Deferred) !== 0) {
+          return result;
+        }
       }
+    };
 
-      switch (_resolveValue(iteratorResult.value, o => {
-        nextValue = o;
-      }, o => iterate(o, nextOnDeferred, nextOnDeferred), reject)) {
-        case ResolveResult.Deferred:
-          return ResolveResult.Deferred;
-
-        case ResolveResult.ImmediateRejected:
-          return ResolveResult.ImmediateRejected;
-      }
+    try {
+      return body();
+    } catch (err) {
+      nextOnImmediate(err, true);
+      return ResolveResult.ImmediateError;
     }
   }
 
-  return iterate(void 0, onImmediate, onDeferred);
+  return iterate(void 0, false, onImmediate, onDeferred);
 }
 
-function resolveThenable(thenable, onImmediate, onDeferred, reject) {
+function resolveThenable(thenable, isError, onImmediate, onDeferred) {
   if (!isThenable(thenable)) {
     return ResolveResult.None;
   }
 
-  let result = ResolveResult.Deferred;
-  let immediate = true;
+  let result = isError ? ResolveResult.DeferredError : ResolveResult.Deferred;
+  let deferred;
   (thenable.thenLast || thenable.then).call(thenable, value => {
-    if (immediate) {
-      result = ResolveResult.ImmediateResolved;
-      onImmediate(value);
+    if (deferred) {
+      onDeferred(value, isError);
     } else {
-      onDeferred(value);
+      result = isError ? ResolveResult.ImmediateError : ResolveResult.Immediate;
+      onImmediate(value, isError);
     }
   }, err => {
-    if (immediate) {
-      result = ResolveResult.ImmediateRejected;
+    if (deferred) {
+      onDeferred(err, true);
+    } else {
+      result = ResolveResult.ImmediateError;
+      onImmediate(err, true);
     }
-
-    reject(err);
   });
-  immediate = false;
+  deferred = true;
   return result;
 }
 
-function _resolveValue(value, onImmediate, onDeferred, reject) {
-  const nextOnImmediate = o => {
+function _resolveValue(value, isError, onImmediate, onDeferred) {
+  const nextOnImmediate = (o, nextIsError) => {
+    if (nextIsError) {
+      isError = true;
+    }
+
     value = o;
   };
 
-  const nextOnDeferred = val => {
-    _resolveValue(val, onDeferred, onDeferred, reject);
+  const nextOnDeferred = (val, nextIsError) => {
+    _resolveValue(val, isError || nextIsError, onDeferred, onDeferred);
   };
 
   while (true) {
-    switch (resolveThenable(value, nextOnImmediate, nextOnDeferred, reject)) {
-      case ResolveResult.Deferred:
-        return ResolveResult.Deferred;
+    {
+      const result = resolveThenable(value, isError, nextOnImmediate, nextOnDeferred);
 
-      case ResolveResult.ImmediateRejected:
-        return ResolveResult.ImmediateRejected;
+      if ((result & ResolveResult.Deferred) !== 0) {
+        return result;
+      }
 
-      case ResolveResult.ImmediateResolved:
+      if ((result & ResolveResult.Immediate) !== 0) {
         continue;
+      }
     }
+    {
+      const result = resolveIterator(value, isError, nextOnImmediate, nextOnDeferred);
 
-    switch (resolveIterator(value, nextOnImmediate, nextOnDeferred, reject)) {
-      case ResolveResult.Deferred:
-        return ResolveResult.Deferred;
+      if ((result & ResolveResult.Deferred) !== 0) {
+        return result;
+      }
 
-      case ResolveResult.ImmediateRejected:
-        return ResolveResult.ImmediateRejected;
-
-      case ResolveResult.ImmediateResolved:
+      if ((result & ResolveResult.Immediate) !== 0) {
         continue;
+      }
     }
-
-    onImmediate(value);
-    return ResolveResult.ImmediateResolved;
+    onImmediate(value, isError);
+    return isError ? ResolveResult.ImmediateError : ResolveResult.Immediate;
   }
 }
 
-function resolveValue(value, onImmediate, onDeferred, reject) {
+function resolveValue(value, onImmediate, onDeferred) {
+  return _resolveValue(value, false, onImmediate, onDeferred);
+}
+
+function resolveValueFunc(func, onImmediate, onDeferred) {
   try {
-    return _resolveValue(value, onImmediate, onDeferred, reject);
+    return resolveValue(func(), onImmediate, onDeferred);
   } catch (err) {
-    const onResult = o => {
-      try {
-        reject(o);
-      } catch (_unused) {
-        throw o;
-      }
-    };
-
-    if (_resolveValue(err, onResult, onResult, onResult) === ResolveResult.Deferred) {
-      return ResolveResult.Deferred;
-    }
-
-    return ResolveResult.ImmediateRejected;
+    onImmediate(err, true);
+    return ResolveResult.ImmediateError;
   }
 }

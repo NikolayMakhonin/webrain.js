@@ -1,8 +1,8 @@
 import _typeof from "@babel/runtime/helpers/typeof";
 
 /* eslint-disable class-methods-use-this */
-import { TestSubject } from '../src/TestSubject';
 import { behavior } from '../../../../../../main/common/rx/subjects/behavior';
+import { TestSubject } from '../src/TestSubject';
 describe('common > main > rx > subjects > behavior', function () {
   it('behavior', function () {
     var subject = new (behavior(TestSubject))();
@@ -32,17 +32,13 @@ describe('common > main > rx > subjects > behavior', function () {
     results = [];
     assert.strictEqual(unsubscribe[0](), undefined);
     assert.deepStrictEqual(results, []);
-    subject = new (behavior(TestSubject))({
-      value: null
-    });
+    subject = new (behavior(TestSubject))(null);
     assert.strictEqual(_typeof(unsubscribe[0] = subject.subscribe(subscriber)), 'function');
     assert.deepStrictEqual(results, [null]);
     results = [];
     assert.strictEqual(unsubscribe[0](), undefined);
     assert.deepStrictEqual(results, []);
-    subject = new (behavior(TestSubject))({
-      value: '1'
-    });
+    subject = new (behavior(TestSubject))('1');
     assert.strictEqual(_typeof(unsubscribe[0] = subject.subscribe(subscriber)), 'function');
     assert.deepStrictEqual(results, ['1']);
     results = [];

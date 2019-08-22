@@ -8,37 +8,33 @@ exports.DeferredCalc = void 0;
 var _timing2 = require("./timing");
 
 class DeferredCalc {
-  constructor({
-    canBeCalcCallback,
-    calcFunc,
-    calcCompletedCallback,
-    minTimeBetweenCalc,
-    throttleTime,
-    maxThrottleTime,
-    autoInvalidateInterval,
-    timing
-  }) {
+  constructor(canBeCalcCallback, calcFunc, calcCompletedCallback, options) {
     this._canBeCalcCallback = canBeCalcCallback;
     this._calcFunc = calcFunc;
     this._calcCompletedCallback = calcCompletedCallback;
 
-    if (minTimeBetweenCalc) {
-      this._minTimeBetweenCalc = minTimeBetweenCalc;
+    if (options) {
+      if (options.minTimeBetweenCalc) {
+        this._minTimeBetweenCalc = options.minTimeBetweenCalc;
+      }
+
+      if (options.throttleTime) {
+        this._throttleTime = options.throttleTime;
+      }
+
+      if (options.maxThrottleTime != null) {
+        this._maxThrottleTime = options.maxThrottleTime;
+      }
+
+      if (options.autoInvalidateInterval != null) {
+        this._autoInvalidateInterval = options.autoInvalidateInterval;
+      }
+
+      this._timing = options.timing || _timing2.timingDefault;
+    } else {
+      this._timing = _timing2.timingDefault;
     }
 
-    if (throttleTime) {
-      this._throttleTime = throttleTime;
-    }
-
-    if (maxThrottleTime != null) {
-      this._maxThrottleTime = maxThrottleTime;
-    }
-
-    if (autoInvalidateInterval != null) {
-      this._autoInvalidateInterval = autoInvalidateInterval;
-    }
-
-    this._timing = timing || _timing2.timingDefault;
     this.invalidate();
   } // region Properties
   // region minTimeBetweenCalc
@@ -182,7 +178,7 @@ class DeferredCalc {
       }
 
       if (this._timeCalcEnd) {
-        canBeCalcTime = Math.max(canBeCalcTime, this._timeCalcEnd + this._minTimeBetweenCalc || 0);
+        canBeCalcTime = Math.max(canBeCalcTime, this._timeCalcEnd + (this._minTimeBetweenCalc || 0));
       }
 
       if (canBeCalcTime <= now) {
@@ -210,7 +206,7 @@ class DeferredCalc {
       }
 
       if (this._timeCalcEnd) {
-        calcTime = Math.max(calcTime, this._timeCalcEnd + this._minTimeBetweenCalc || 0);
+        calcTime = Math.max(calcTime, this._timeCalcEnd + (this._minTimeBetweenCalc || 0));
       }
 
       if (calcTime <= now) {
@@ -260,6 +256,14 @@ class DeferredCalc {
   }
 
   calc() {
+    if (!this._calcRequested && this._canBeCalcEmitted) {
+      this._calcRequested = true;
+
+      this._pulse();
+    }
+  }
+
+  reCalc() {
     this._calcRequested = true;
 
     this._pulse();

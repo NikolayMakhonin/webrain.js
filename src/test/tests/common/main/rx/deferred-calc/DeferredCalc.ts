@@ -202,6 +202,14 @@ describe('common > main > rx > deferred-calc > DeferredCalc', function() {
 					},
 					{
 						time: 49,
+						type: EventType.Calc,
+					},
+					{
+						time: 54,
+						type: EventType.Completed,
+					},
+					{
+						time: 63,
 						type: EventType.CanBeCalc,
 					},
 					{
@@ -235,7 +243,7 @@ describe('common > main > rx > deferred-calc > DeferredCalc', function() {
 					timing.addTime(0)
 					timing.addTime(9) // 39
 					deferredCalc.invalidate()
-					deferredCalc.calc()
+					deferredCalc.reCalc()
 					timing.addTime(0)
 					timing.addTime(10) // 49
 
@@ -308,6 +316,14 @@ describe('common > main > rx > deferred-calc > DeferredCalc', function() {
 					},
 					{
 						time: 22,
+						type: EventType.Calc,
+					},
+					{
+						time: 27,
+						type: EventType.Completed,
+					},
+					{
+						time: 32,
 						type: EventType.CanBeCalc,
 					},
 					{
@@ -337,7 +353,7 @@ describe('common > main > rx > deferred-calc > DeferredCalc', function() {
 					timing.addTime(4) // 20
 					deferredCalc.invalidate()
 					timing.addTime(1) // 21
-					deferredCalc.calc()
+					deferredCalc.reCalc()
 					timing.addTime(1) // 22
 
 					deferredCalc.invalidate()

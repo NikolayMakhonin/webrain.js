@@ -4,7 +4,14 @@ var _observable = require("../../../../../../main/common/rx/subjects/observable"
 
 describe('common > main > rx > subjects > observable', function () {
   it('Observable', function () {
-    const observable = new _observable.Observable();
+    class CustomObservable extends _observable.Observable {
+      subscribe(subscriber) {
+        throw new Error('Not implemented');
+      }
+
+    }
+
+    const observable = new CustomObservable();
     let arg;
     const result = observable.call(o => {
       arg = o;

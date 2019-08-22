@@ -10,6 +10,14 @@ var _subject = require("./subject");
 
 function behavior(base) {
   return class Behavior extends base {
+    constructor(value) {
+      super();
+
+      if (typeof value !== 'undefined') {
+        this.value = value;
+      }
+    }
+
     subscribe(subscriber) {
       if (!subscriber) {
         return null;

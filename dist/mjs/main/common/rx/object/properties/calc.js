@@ -3,13 +3,19 @@ import _createClass from "@babel/runtime/helpers/createClass";
 import _possibleConstructorReturn from "@babel/runtime/helpers/possibleConstructorReturn";
 import _getPrototypeOf from "@babel/runtime/helpers/getPrototypeOf";
 import _inherits from "@babel/runtime/helpers/inherits";
+import { resolveAsyncFunc } from '../../../async/ThenableSync';
+import { PropertyChangedEvent } from '../../../lists/contracts/IPropertyChanged';
+import { DeferredCalc } from '../../deferred-calc/DeferredCalc';
 import { ObservableObject } from '../ObservableObject';
+import { ObservableObjectBuilder } from '../ObservableObjectBuilder';
+import { Property } from './property';
+var valuePropertiesNames = ['current', 'wait', 'currentOrWait'];
 export var CalcProperty =
 /*#__PURE__*/
 function (_ObservableObject) {
   _inherits(CalcProperty, _ObservableObject);
 
-  function CalcProperty(calcFunc) {
+  function CalcProperty(calcFunc, calcOptions, valueOptions, value) {
     var _this;
 
     _classCallCheck(this, CalcProperty);
@@ -21,52 +27,70 @@ function (_ObservableObject) {
     }
 
     _this._calcFunc = calcFunc;
+    _this._value = new Property(valueOptions, value);
+    _this._deferredCalc = new DeferredCalc(function () {
+      _this.onValueChanged();
+    }, function (done) {
+      _this._waiter = resolveAsyncFunc(function () {
+        return _this._calcFunc(_this.input, _this._value);
+      }, function () {
+        _this._hasValue = true;
+        var val = _this._value.value;
+        done();
+        return val;
+      }, done, true);
+    }, function () {
+      _this.onValueChanged();
+    }, calcOptions);
     return _this;
   }
 
   _createClass(CalcProperty, [{
-    key: "invalidate",
-    value: function invalidate() {
+    key: "onValueChanged",
+    value: function onValueChanged() {
       var _this2 = this;
 
-      if (this.isCalculated) {
-        var _propertyChangedIfCanEmit = this._propertyChangedIfCanEmit;
+      var propertyChangedIfCanEmit = this.propertyChangedIfCanEmit;
 
-        if (!_propertyChangedIfCanEmit) {
-          this.isCalculated = false;
-          return;
-        }
-
-        var event = {
-          name: 'value',
-          oldValue: this.value
-        };
-        this.isCalculated = false;
-        Object.defineProperty(event, 'newValue', {
-          configurable: true,
-          enumerable: true,
-          get: function get() {
-            return _this2.value;
-          }
-        });
-
-        _propertyChangedIfCanEmit.emit(event);
+      if (propertyChangedIfCanEmit) {
+        var oldValue = this._value.value;
+        propertyChangedIfCanEmit.onPropertyChanged(new PropertyChangedEvent('current', oldValue, function () {
+          return _this2.current;
+        }), new PropertyChangedEvent('wait', oldValue, function () {
+          return _this2.wait;
+        }), new PropertyChangedEvent('currentOrWait', oldValue, function () {
+          return _this2.currentOrWait;
+        }));
       }
     }
   }, {
-    key: "value",
+    key: "invalidate",
+    value: function invalidate() {
+      this._deferredCalc.invalidate();
+    }
+  }, {
+    key: "current",
     get: function get() {
-      if (this.isCalculated) {
-        return this._value;
-      }
+      this._deferredCalc.calc();
 
-      var value = this._calcFunc();
+      return this._value.value;
+    }
+  }, {
+    key: "wait",
+    get: function get() {
+      this._deferredCalc.calc();
 
-      this._value = value;
-      this.isCalculated = true;
-      return value;
+      return this._waiter;
+    }
+  }, {
+    key: "currentOrWait",
+    get: function get() {
+      this._deferredCalc.calc();
+
+      return this._hasValue ? this._value.value : this._waiter;
     }
   }]);
 
   return CalcProperty;
 }(ObservableObject);
+new ObservableObjectBuilder(CalcProperty.prototype).writable('input');

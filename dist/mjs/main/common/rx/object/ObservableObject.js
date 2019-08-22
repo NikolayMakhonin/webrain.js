@@ -70,11 +70,15 @@ function (_PropertyChangedObjec) {
       }
 
       if (!options || !options.suppressPropertyChanged) {
-        this.onPropertyChanged({
-          name: name,
-          oldValue: oldValue,
-          newValue: newValue
-        });
+        var propertyChangedIfCanEmit = this.propertyChangedIfCanEmit;
+
+        if (propertyChangedIfCanEmit) {
+          propertyChangedIfCanEmit.onPropertyChanged({
+            name: name,
+            oldValue: oldValue,
+            newValue: newValue
+          });
+        }
       }
 
       return true;

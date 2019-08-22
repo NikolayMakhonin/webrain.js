@@ -17,7 +17,7 @@ describe('common > main > rx > deferred-calc > DeferredCalc', function () {
   after(function () {
     console.log('Total DeferredCalc tests >= ' + _TestDeferred.TestDeferredCalc.totalTests);
   });
-  it('base', function () {
+  it('init', function () {
     testDeferredCalc({
       calcTime: [0, 1, 10],
       throttleTime: [null, 0],
@@ -38,6 +38,99 @@ describe('common > main > rx > deferred-calc > DeferredCalc', function () {
         deferredCalc.invalidate();
 
         _TestDeferred.timing.addTime(100);
+      }]
+    });
+  });
+  it('calc only after invalidate', function () {
+    testDeferredCalc({
+      calcTime: [5],
+      throttleTime: [null, 0],
+      maxThrottleTime: [null, 0, 10],
+      minTimeBetweenCalc: [null, 0],
+      autoInvalidateInterval: [null],
+      expected: {
+        events: [{
+          time: 0,
+          type: _TestDeferred.EventType.CanBeCalc
+        }, {
+          time: 0,
+          type: _TestDeferred.EventType.Calc
+        }, {
+          time: 5,
+          type: _TestDeferred.EventType.Completed
+        }, {
+          time: 15,
+          type: _TestDeferred.EventType.CanBeCalc
+        }, {
+          time: 15,
+          type: _TestDeferred.EventType.Calc
+        }, {
+          time: 20,
+          type: _TestDeferred.EventType.Completed
+        }, {
+          time: 25,
+          type: _TestDeferred.EventType.CanBeCalc
+        }, {
+          time: 25,
+          type: _TestDeferred.EventType.Calc
+        }, {
+          time: 30,
+          type: _TestDeferred.EventType.Completed
+        }, {
+          time: 30,
+          type: _TestDeferred.EventType.CanBeCalc
+        }, {
+          time: 35,
+          type: _TestDeferred.EventType.Calc
+        }, {
+          time: 40,
+          type: _TestDeferred.EventType.Completed
+        }]
+      },
+      actions: [deferredCalc => {
+        deferredCalc.calc();
+        deferredCalc.calc();
+        deferredCalc.calc();
+
+        _TestDeferred.timing.addTime(5);
+
+        deferredCalc.calc();
+        deferredCalc.calc();
+
+        _TestDeferred.timing.addTime(5);
+
+        deferredCalc.calc();
+
+        _TestDeferred.timing.addTime(5); // 15
+
+
+        deferredCalc.invalidate();
+        deferredCalc.calc();
+        deferredCalc.calc();
+
+        _TestDeferred.timing.addTime(5);
+
+        deferredCalc.calc();
+        deferredCalc.calc();
+
+        _TestDeferred.timing.addTime(5);
+
+        deferredCalc.invalidate();
+        deferredCalc.calc();
+        deferredCalc.invalidate();
+        deferredCalc.calc();
+
+        _TestDeferred.timing.addTime(4);
+
+        deferredCalc.calc();
+
+        _TestDeferred.timing.addTime(1);
+
+        _TestDeferred.timing.addTime(5);
+
+        deferredCalc.calc();
+
+        _TestDeferred.timing.addTime(5);
       }]
     });
   });
@@ -116,7 +209,8 @@ describe('common > main > rx > deferred-calc > DeferredCalc', function () {
 
         _TestDeferred.timing.addTime(0);
 
-        _TestDeferred.timing.addTime(9);
+        _TestDeferred.timing.addTime(9); // 18
+
 
         deferredCalc.invalidate();
 
@@ -133,22 +227,26 @@ describe('common > main > rx > deferred-calc > DeferredCalc', function () {
 
         _TestDeferred.timing.addTime(0);
 
-        _TestDeferred.timing.addTime(9);
+        _TestDeferred.timing.addTime(9); // 39
+
 
         deferredCalc.invalidate();
-        deferredCalc.calc();
+        deferredCalc.reCalc();
 
         _TestDeferred.timing.addTime(0);
 
-        _TestDeferred.timing.addTime(10);
+        _TestDeferred.timing.addTime(10); // 49
 
-        _TestDeferred.timing.addTime(4);
+
+        _TestDeferred.timing.addTime(4); // 53
+
 
         deferredCalc.invalidate();
 
         _TestDeferred.timing.addTime(0);
 
-        _TestDeferred.timing.addTime(11);
+        _TestDeferred.timing.addTime(11); // 64
+
 
         deferredCalc.calc();
 
@@ -233,31 +331,38 @@ describe('common > main > rx > deferred-calc > DeferredCalc', function () {
         deferredCalc.calc();
         deferredCalc.invalidate();
 
-        _TestDeferred.timing.addTime(4);
+        _TestDeferred.timing.addTime(4); // 16
+
 
         deferredCalc.invalidate();
 
-        _TestDeferred.timing.addTime(4);
+        _TestDeferred.timing.addTime(4); // 20
+
 
         deferredCalc.invalidate();
 
-        _TestDeferred.timing.addTime(1);
+        _TestDeferred.timing.addTime(1); // 21
 
-        deferredCalc.calc();
 
-        _TestDeferred.timing.addTime(1);
+        deferredCalc.reCalc();
 
-        deferredCalc.invalidate();
+        _TestDeferred.timing.addTime(1); // 22
 
-        _TestDeferred.timing.addTime(4);
 
         deferredCalc.invalidate();
 
-        _TestDeferred.timing.addTime(4);
+        _TestDeferred.timing.addTime(4); // 26
+
 
         deferredCalc.invalidate();
 
-        _TestDeferred.timing.addTime(2);
+        _TestDeferred.timing.addTime(4); // 30
+
+
+        deferredCalc.invalidate();
+
+        _TestDeferred.timing.addTime(2); // 32
+
 
         deferredCalc.calc();
 
@@ -284,10 +389,7 @@ describe('common > main > rx > deferred-calc > DeferredCalc', function () {
           type: _TestDeferred.EventType.Completed
         }, {
           time: 5,
-          type: _TestDeferred.EventType.Calc
-        }, {
-          time: 5,
-          type: _TestDeferred.EventType.Completed
+          type: _TestDeferred.EventType.CanBeCalc
         }, {
           time: 14,
           type: _TestDeferred.EventType.Calc
@@ -307,7 +409,7 @@ describe('common > main > rx > deferred-calc > DeferredCalc', function () {
 
         _TestDeferred.timing.addTime(3);
 
-        deferredCalc.calc();
+        deferredCalc.invalidate();
 
         _TestDeferred.timing.addTime(1);
 
@@ -315,8 +417,8 @@ describe('common > main > rx > deferred-calc > DeferredCalc', function () {
 
         _TestDeferred.timing.addTime(10);
 
-        deferredCalc.calc();
-        deferredCalc.calc();
+        deferredCalc.reCalc();
+        deferredCalc.reCalc();
 
         _TestDeferred.timing.addTime(5);
       }]
@@ -447,35 +549,28 @@ describe('common > main > rx > deferred-calc > DeferredCalc', function () {
 
     const startTestTime = _timing.timingDefault.now();
 
-    const deferredCalc = new _DeferredCalc.DeferredCalc({
+    const deferredCalc = new _DeferredCalc.DeferredCalc(function () {
+      events.push({
+        time: _timing.timingDefault.now() - startTestTime,
+        type: _TestDeferred.EventType.CanBeCalc
+      });
+      this.calc();
+    }, function (done) {
+      events.push({
+        time: _timing.timingDefault.now() - startTestTime,
+        type: _TestDeferred.EventType.Calc
+      });
+      done();
+    }, function () {
+      events.push({
+        time: _timing.timingDefault.now() - startTestTime,
+        type: _TestDeferred.EventType.Completed
+      });
+    }, {
       autoInvalidateInterval: 9 * timeCoef,
       throttleTime: 10 * timeCoef,
       maxThrottleTime: 100 * timeCoef,
-      minTimeBetweenCalc: 5 * timeCoef,
-
-      canBeCalcCallback() {
-        events.push({
-          time: _timing.timingDefault.now() - startTestTime,
-          type: _TestDeferred.EventType.CanBeCalc
-        });
-        this.calc();
-      },
-
-      calcFunc(done) {
-        events.push({
-          time: _timing.timingDefault.now() - startTestTime,
-          type: _TestDeferred.EventType.Calc
-        });
-        done();
-      },
-
-      calcCompletedCallback() {
-        events.push({
-          time: _timing.timingDefault.now() - startTestTime,
-          type: _TestDeferred.EventType.Completed
-        });
-      }
-
+      minTimeBetweenCalc: 5 * timeCoef
     });
     await new Promise(resolve => setTimeout(resolve, 100 * timeCoef));
     deferredCalc.autoInvalidateInterval = null;
@@ -508,14 +603,11 @@ describe('common > main > rx > deferred-calc > DeferredCalc', function () {
 
     const calcCompletedCallback = () => {};
 
-    const deferredCalc = new _DeferredCalc.DeferredCalc({
+    const deferredCalc = new _DeferredCalc.DeferredCalc(() => {}, () => {}, () => {}, {
       autoInvalidateInterval: 1,
       throttleTime: 2,
       maxThrottleTime: 3,
       minTimeBetweenCalc: 4,
-      canBeCalcCallback: () => {},
-      calcFunc: () => {},
-      calcCompletedCallback: () => {},
       timing: new _timing2.TestTiming()
     });
 

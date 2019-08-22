@@ -53,11 +53,15 @@ function (_SetChangedObject) {
           });
         }
 
-        this.onPropertyChanged({
-          name: 'size',
-          oldValue: oldSize,
-          newValue: size
-        });
+        var propertyChangedIfCanEmit = this.propertyChangedIfCanEmit;
+
+        if (propertyChangedIfCanEmit) {
+          propertyChangedIfCanEmit.onPropertyChanged({
+            name: 'size',
+            oldValue: oldSize,
+            newValue: size
+          });
+        }
       }
 
       return this;
@@ -82,11 +86,16 @@ function (_SetChangedObject) {
           });
         }
 
-        this.onPropertyChanged({
-          name: 'size',
-          oldValue: oldSize,
-          newValue: size
-        });
+        var propertyChangedIfCanEmit = this.propertyChangedIfCanEmit;
+
+        if (propertyChangedIfCanEmit) {
+          propertyChangedIfCanEmit.onPropertyChanged({
+            name: 'size',
+            oldValue: oldSize,
+            newValue: size
+          });
+        }
+
         return true;
       }
 
@@ -116,11 +125,15 @@ function (_SetChangedObject) {
         this._set.clear();
       }
 
-      this.onPropertyChanged({
-        name: 'size',
-        oldValue: size,
-        newValue: 0
-      });
+      var propertyChangedIfCanEmit = this.propertyChangedIfCanEmit;
+
+      if (propertyChangedIfCanEmit) {
+        propertyChangedIfCanEmit.onPropertyChanged({
+          name: 'size',
+          oldValue: size,
+          newValue: 0
+        });
+      }
     } // region Unchanged Set methods
 
   }, {

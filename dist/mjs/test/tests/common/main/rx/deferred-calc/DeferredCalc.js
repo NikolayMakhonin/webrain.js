@@ -13,7 +13,7 @@ describe('common > main > rx > deferred-calc > DeferredCalc', function () {
   after(function () {
     console.log('Total DeferredCalc tests >= ' + TestDeferredCalc.totalTests);
   });
-  it('base', function () {
+  it('init', function () {
     testDeferredCalc({
       calcTime: [0, 1, 10],
       throttleTime: [null, 0],
@@ -39,6 +39,83 @@ describe('common > main > rx > deferred-calc > DeferredCalc', function () {
         timing.addTime(100);
         deferredCalc.invalidate();
         timing.addTime(100);
+      }]
+    });
+  });
+  it('calc only after invalidate', function () {
+    testDeferredCalc({
+      calcTime: [5],
+      throttleTime: [null, 0],
+      maxThrottleTime: [null, 0, 10],
+      minTimeBetweenCalc: [null, 0],
+      autoInvalidateInterval: [null],
+      expected: {
+        events: [{
+          time: 0,
+          type: EventType.CanBeCalc
+        }, {
+          time: 0,
+          type: EventType.Calc
+        }, {
+          time: 5,
+          type: EventType.Completed
+        }, {
+          time: 15,
+          type: EventType.CanBeCalc
+        }, {
+          time: 15,
+          type: EventType.Calc
+        }, {
+          time: 20,
+          type: EventType.Completed
+        }, {
+          time: 25,
+          type: EventType.CanBeCalc
+        }, {
+          time: 25,
+          type: EventType.Calc
+        }, {
+          time: 30,
+          type: EventType.Completed
+        }, {
+          time: 30,
+          type: EventType.CanBeCalc
+        }, {
+          time: 35,
+          type: EventType.Calc
+        }, {
+          time: 40,
+          type: EventType.Completed
+        }]
+      },
+      actions: [function (deferredCalc) {
+        deferredCalc.calc();
+        deferredCalc.calc();
+        deferredCalc.calc();
+        timing.addTime(5);
+        deferredCalc.calc();
+        deferredCalc.calc();
+        timing.addTime(5);
+        deferredCalc.calc();
+        timing.addTime(5); // 15
+
+        deferredCalc.invalidate();
+        deferredCalc.calc();
+        deferredCalc.calc();
+        timing.addTime(5);
+        deferredCalc.calc();
+        deferredCalc.calc();
+        timing.addTime(5);
+        deferredCalc.invalidate();
+        deferredCalc.calc();
+        deferredCalc.invalidate();
+        deferredCalc.calc();
+        timing.addTime(4);
+        deferredCalc.calc();
+        timing.addTime(1);
+        timing.addTime(5);
+        deferredCalc.calc();
+        timing.addTime(5);
       }]
     });
   });
@@ -109,7 +186,8 @@ describe('common > main > rx > deferred-calc > DeferredCalc', function () {
         timing.addTime(9);
         deferredCalc.invalidate();
         timing.addTime(0);
-        timing.addTime(9);
+        timing.addTime(9); // 18
+
         deferredCalc.invalidate();
         timing.addTime(0);
         timing.addTime(12); // 30
@@ -118,15 +196,19 @@ describe('common > main > rx > deferred-calc > DeferredCalc', function () {
         timing.addTime(0);
         deferredCalc.invalidate();
         timing.addTime(0);
-        timing.addTime(9);
+        timing.addTime(9); // 39
+
         deferredCalc.invalidate();
-        deferredCalc.calc();
+        deferredCalc.reCalc();
         timing.addTime(0);
-        timing.addTime(10);
-        timing.addTime(4);
+        timing.addTime(10); // 49
+
+        timing.addTime(4); // 53
+
         deferredCalc.invalidate();
         timing.addTime(0);
-        timing.addTime(11);
+        timing.addTime(11); // 64
+
         deferredCalc.calc();
         timing.addTime(9);
       }]
@@ -201,19 +283,26 @@ describe('common > main > rx > deferred-calc > DeferredCalc', function () {
 
         deferredCalc.calc();
         deferredCalc.invalidate();
-        timing.addTime(4);
+        timing.addTime(4); // 16
+
         deferredCalc.invalidate();
-        timing.addTime(4);
+        timing.addTime(4); // 20
+
         deferredCalc.invalidate();
-        timing.addTime(1);
-        deferredCalc.calc();
-        timing.addTime(1);
+        timing.addTime(1); // 21
+
+        deferredCalc.reCalc();
+        timing.addTime(1); // 22
+
         deferredCalc.invalidate();
-        timing.addTime(4);
+        timing.addTime(4); // 26
+
         deferredCalc.invalidate();
-        timing.addTime(4);
+        timing.addTime(4); // 30
+
         deferredCalc.invalidate();
-        timing.addTime(2);
+        timing.addTime(2); // 32
+
         deferredCalc.calc();
         timing.addTime(5);
       }]
@@ -238,10 +327,7 @@ describe('common > main > rx > deferred-calc > DeferredCalc', function () {
           type: EventType.Completed
         }, {
           time: 5,
-          type: EventType.Calc
-        }, {
-          time: 5,
-          type: EventType.Completed
+          type: EventType.CanBeCalc
         }, {
           time: 14,
           type: EventType.Calc
@@ -259,12 +345,12 @@ describe('common > main > rx > deferred-calc > DeferredCalc', function () {
       actions: [function (deferredCalc) {
         deferredCalc.calc();
         timing.addTime(3);
-        deferredCalc.calc();
+        deferredCalc.invalidate();
         timing.addTime(1);
         deferredCalc.calc();
         timing.addTime(10);
-        deferredCalc.calc();
-        deferredCalc.calc();
+        deferredCalc.reCalc();
+        deferredCalc.reCalc();
         timing.addTime(5);
       }]
     });
@@ -397,31 +483,28 @@ describe('common > main > rx > deferred-calc > DeferredCalc', function () {
             events = [];
             timeCoef = 2;
             startTestTime = timingDefault.now();
-            deferredCalc = new DeferredCalc({
+            deferredCalc = new DeferredCalc(function () {
+              events.push({
+                time: timingDefault.now() - startTestTime,
+                type: EventType.CanBeCalc
+              });
+              this.calc();
+            }, function (done) {
+              events.push({
+                time: timingDefault.now() - startTestTime,
+                type: EventType.Calc
+              });
+              done();
+            }, function () {
+              events.push({
+                time: timingDefault.now() - startTestTime,
+                type: EventType.Completed
+              });
+            }, {
               autoInvalidateInterval: 9 * timeCoef,
               throttleTime: 10 * timeCoef,
               maxThrottleTime: 100 * timeCoef,
-              minTimeBetweenCalc: 5 * timeCoef,
-              canBeCalcCallback: function canBeCalcCallback() {
-                events.push({
-                  time: timingDefault.now() - startTestTime,
-                  type: EventType.CanBeCalc
-                });
-                this.calc();
-              },
-              calcFunc: function calcFunc(done) {
-                events.push({
-                  time: timingDefault.now() - startTestTime,
-                  type: EventType.Calc
-                });
-                done();
-              },
-              calcCompletedCallback: function calcCompletedCallback() {
-                events.push({
-                  time: timingDefault.now() - startTestTime,
-                  type: EventType.Completed
-                });
-              }
+              minTimeBetweenCalc: 5 * timeCoef
             });
             _context.next = 6;
             return new Promise(function (resolve) {
@@ -484,14 +567,11 @@ describe('common > main > rx > deferred-calc > DeferredCalc', function () {
 
             calcCompletedCallback = function calcCompletedCallback() {};
 
-            deferredCalc = new DeferredCalc({
+            deferredCalc = new DeferredCalc(function () {}, function () {}, function () {}, {
               autoInvalidateInterval: 1,
               throttleTime: 2,
               maxThrottleTime: 3,
               minTimeBetweenCalc: 4,
-              canBeCalcCallback: function canBeCalcCallback() {},
-              calcFunc: function calcFunc() {},
-              calcCompletedCallback: function calcCompletedCallback() {},
               timing: new TestTiming()
             });
             assert.strictEqual(deferredCalc.autoInvalidateInterval, 1);

@@ -1,8 +1,8 @@
 import _typeof from "@babel/runtime/helpers/typeof";
 
 /* eslint-disable class-methods-use-this */
-import { TestSubject } from '../src/TestSubject';
 import { hasSubscribers as toHasSubscribers } from '../../../../../../main/common/rx/subjects/hasSubscribers';
+import { TestSubject } from '../src/TestSubject';
 describe('common > main > rx > subjects > hasSubscribers', function () {
   function deleteFromArray(array, item) {
     var index = array.indexOf(item);

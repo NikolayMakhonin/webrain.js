@@ -11,16 +11,24 @@ export function behavior(base) {
     function (_base) {
       _inherits(Behavior, _base);
 
-      function Behavior() {
+      function Behavior(value) {
+        var _this;
+
         _classCallCheck(this, Behavior);
 
-        return _possibleConstructorReturn(this, _getPrototypeOf(Behavior).apply(this, arguments));
+        _this = _possibleConstructorReturn(this, _getPrototypeOf(Behavior).call(this));
+
+        if (typeof value !== 'undefined') {
+          _this.value = value;
+        }
+
+        return _this;
       }
 
       _createClass(Behavior, [{
         key: "subscribe",
         value: function subscribe(subscriber) {
-          var _this = this;
+          var _this2 = this;
 
           if (!subscriber) {
             return null;
@@ -42,8 +50,8 @@ export function behavior(base) {
             try {
               // eslint-disable-next-line no-shadow
               // tslint:disable-next-line:no-shadowed-variable
-              var _value = _this.value,
-                  unsubscribeValue = _this.unsubscribeValue;
+              var _value = _this2.value,
+                  unsubscribeValue = _this2.unsubscribeValue;
 
               if (typeof unsubscribeValue !== 'undefined' && unsubscribeValue !== _value) {
                 subscriber(unsubscribeValue);

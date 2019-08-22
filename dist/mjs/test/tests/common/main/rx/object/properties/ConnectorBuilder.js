@@ -85,26 +85,22 @@ describe('common > main > rx > properties > ConnectorBuilder', function () {
 
     var baseBuilder1 = new ConnectorBuilder(BaseClass1.prototype).connect('baseProp1', function (b) {
       return b.path(function (o) {
-        return o.source // .property['@value_property']
-        // .observableMap['#observableObject']
-        .baseProp1;
+        return o.source.property['@value_property'].observableMap['#observableList']['#'].baseProp1;
       });
     }, null, 'baseProp1_init');
     var baseBuilder2 = new ConnectorBuilder(BaseClass2.prototype).connect('baseProp2', function (b) {
       return b.path(function (o) {
-        return o.source // .property['@value_property']
-        // .observableMap['#observableObject']
-        .baseProp2;
+        return o.source.property['@value_property'].observableMap['#observableList']['#'].baseProp2;
       });
     }, null, 'baseProp2_init');
     var builder1 = new ConnectorBuilder(Class1.prototype).connect('prop1', function (b) {
       return b.path(function (o) {
-        return o.source.property['@value_property'].observableMap['#observableObject'].prop1;
+        return o.source.property['@value_property'].observableMap['#observableList']['#'].prop1;
       });
     }, null, 'prop1_init');
     var builder2 = new ConnectorBuilder(Class2.prototype).connect('prop2', function (b) {
       return b.path(function (o) {
-        return o.source.property['@value_property'].observableMap['#observableObject'].prop2;
+        return o.source.property['@value_property'].observableMap['#observableList']['#'].prop2;
       });
     }, null, 'prop2_init');
     var baseObject1 = new BaseClass1();

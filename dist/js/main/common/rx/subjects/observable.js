@@ -6,10 +6,6 @@ Object.defineProperty(exports, "__esModule", {
 exports.Observable = void 0;
 
 class Observable {
-  constructor(fields) {
-    Object.assign(this, fields);
-  }
-
   call(func) {
     return func(this);
   }

@@ -1,8 +1,8 @@
 "use strict";
 
-var _TestSubject = require("../src/TestSubject");
-
 var _hasSubscribers = require("../../../../../../main/common/rx/subjects/hasSubscribers");
+
+var _TestSubject = require("../src/TestSubject");
 
 /* eslint-disable class-methods-use-this */
 describe('common > main > rx > subjects > hasSubscribers', function () {

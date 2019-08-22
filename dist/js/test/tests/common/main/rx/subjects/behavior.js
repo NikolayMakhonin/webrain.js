@@ -1,8 +1,8 @@
 "use strict";
 
-var _TestSubject = require("../src/TestSubject");
-
 var _behavior = require("../../../../../../main/common/rx/subjects/behavior");
+
+var _TestSubject = require("../src/TestSubject");
 
 /* eslint-disable class-methods-use-this */
 describe('common > main > rx > subjects > behavior', function () {
@@ -34,17 +34,13 @@ describe('common > main > rx > subjects > behavior', function () {
     results = [];
     assert.strictEqual(unsubscribe[0](), undefined);
     assert.deepStrictEqual(results, []);
-    subject = new ((0, _behavior.behavior)(_TestSubject.TestSubject))({
-      value: null
-    });
+    subject = new ((0, _behavior.behavior)(_TestSubject.TestSubject))(null);
     assert.strictEqual(typeof (unsubscribe[0] = subject.subscribe(subscriber)), 'function');
     assert.deepStrictEqual(results, [null]);
     results = [];
     assert.strictEqual(unsubscribe[0](), undefined);
     assert.deepStrictEqual(results, []);
-    subject = new ((0, _behavior.behavior)(_TestSubject.TestSubject))({
-      value: '1'
-    });
+    subject = new ((0, _behavior.behavior)(_TestSubject.TestSubject))('1');
     assert.strictEqual(typeof (unsubscribe[0] = subject.subscribe(subscriber)), 'function');
     assert.deepStrictEqual(results, ['1']);
     results = [];

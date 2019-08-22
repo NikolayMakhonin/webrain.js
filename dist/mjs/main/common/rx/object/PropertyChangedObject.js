@@ -1,52 +1,72 @@
 import _typeof from "@babel/runtime/helpers/typeof";
 import _classCallCheck from "@babel/runtime/helpers/classCallCheck";
 import _createClass from "@babel/runtime/helpers/createClass";
+import _possibleConstructorReturn from "@babel/runtime/helpers/possibleConstructorReturn";
+import _getPrototypeOf from "@babel/runtime/helpers/getPrototypeOf";
+import _inherits from "@babel/runtime/helpers/inherits";
 import { HasSubscribersSubject } from '../subjects/hasSubscribers';
+// function expandAndDistinct(inputItems: any, output: string[] = [], map: any = {}): string[] {
+// 	if (inputItems == null) {
+// 		return output
+// 	}
+//
+// 	if (Array.isArray(inputItems)) {
+// 		for (const item of inputItems) {
+// 			expandAndDistinct(item, output, map)
+// 		}
+// 		return output
+// 	}
+//
+// 	if (!map[inputItems]) {
+// 		map[inputItems] = true
+// 		output[output.length] = inputItems
+// 	}
+//
+// 	return output
+// }
+export var PropertyChangedSubject =
+/*#__PURE__*/
+function (_HasSubscribersSubjec) {
+  _inherits(PropertyChangedSubject, _HasSubscribersSubjec);
 
-function expandAndDistinct(inputItems) {
-  var output = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : [];
-  var map = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : {};
+  function PropertyChangedSubject(object) {
+    var _this;
 
-  if (inputItems == null) {
-    return output;
+    _classCallCheck(this, PropertyChangedSubject);
+
+    _this = _possibleConstructorReturn(this, _getPrototypeOf(PropertyChangedSubject).call(this));
+    _this._object = object;
+    return _this;
   }
 
-  if (Array.isArray(inputItems)) {
-    var _iteratorNormalCompletion = true;
-    var _didIteratorError = false;
-    var _iteratorError = undefined;
+  _createClass(PropertyChangedSubject, [{
+    key: "onPropertyChanged",
+    value: function onPropertyChanged() {
+      for (var i = 0, len = arguments.length; i < len; i++) {
+        var event = i < 0 || arguments.length <= i ? undefined : arguments[i];
 
-    try {
-      for (var _iterator = inputItems[Symbol.iterator](), _step; !(_iteratorNormalCompletion = (_step = _iterator.next()).done); _iteratorNormalCompletion = true) {
-        var item = _step.value;
-        expandAndDistinct(item, output, map);
-      }
-    } catch (err) {
-      _didIteratorError = true;
-      _iteratorError = err;
-    } finally {
-      try {
-        if (!_iteratorNormalCompletion && _iterator["return"] != null) {
-          _iterator["return"]();
+        if (event == null) {
+          event = {};
         }
-      } finally {
-        if (_didIteratorError) {
-          throw _iteratorError;
+
+        if (_typeof(event) !== 'object') {
+          var value = this._object[event];
+          event = {
+            name: event,
+            oldValue: value,
+            newValue: value
+          };
         }
+
+        this.emit(event);
       }
+
+      return this;
     }
+  }]);
 
-    return output;
-  }
-
-  if (!map[inputItems]) {
-    map[inputItems] = true;
-    output[output.length] = inputItems;
-  }
-
-  return output;
-}
-
+  return PropertyChangedSubject;
+}(HasSubscribersSubject);
 export var PropertyChangedObject =
 /*#__PURE__*/
 function () {
@@ -88,86 +108,25 @@ function () {
     } // region propertyChanged
 
   }, {
-    key: "_emitPropertyChanged",
-    value: function _emitPropertyChanged(eventsOrPropertyNames, emitFunc) {
-      var _this = this;
-
-      if (eventsOrPropertyNames === null) {
-        return;
-      }
-
-      var toEvent = function toEvent(event) {
-        if (event == null) {
-          return {};
-        }
-
-        if (_typeof(event) !== 'object') {
-          var value = _this[event];
-          event = {
-            name: event,
-            oldValue: value,
-            newValue: value
-          };
-        }
-
-        return event;
-      };
-
-      if (!Array.isArray(eventsOrPropertyNames)) {
-        emitFunc(toEvent(eventsOrPropertyNames));
-      } else {
-        var items = expandAndDistinct(eventsOrPropertyNames);
-
-        for (var i = 0, len = items.length; i < len; i++) {
-          emitFunc(toEvent(items[i]));
-        }
-      }
-    }
-  }, {
-    key: "onPropertyChanged",
-    value: function onPropertyChanged(eventsOrPropertyNames) {
-      var __meta = this.__meta;
-
-      if (!__meta) {
-        return this;
-      }
-
-      var _this$__meta = this.__meta,
-          propertyChanged = _this$__meta.propertyChanged,
-          propertyChangedDisabled = _this$__meta.propertyChangedDisabled;
-
-      if (!propertyChanged || propertyChangedDisabled) {
-        return this;
-      }
-
-      this._emitPropertyChanged(eventsOrPropertyNames, function (event) {
-        if (propertyChanged) {
-          propertyChanged.emit(event);
-        }
-      });
-
-      return this;
-    } // endregion
-
-  }, {
     key: "propertyChanged",
     get: function get() {
       var propertyChanged = this.__meta.propertyChanged;
 
       if (!propertyChanged) {
-        this.__meta.propertyChanged = propertyChanged = new HasSubscribersSubject();
+        this.__meta.propertyChanged = propertyChanged = new PropertyChangedSubject(this);
       }
 
       return propertyChanged;
     }
   }, {
-    key: "_propertyChangedIfCanEmit",
+    key: "propertyChangedIfCanEmit",
     get: function get() {
-      var _this$__meta2 = this.__meta,
-          propertyChangedDisabled = _this$__meta2.propertyChangedDisabled,
-          propertyChanged = _this$__meta2.propertyChanged;
+      var _this$__meta = this.__meta,
+          propertyChangedDisabled = _this$__meta.propertyChangedDisabled,
+          propertyChanged = _this$__meta.propertyChanged;
       return !propertyChangedDisabled && propertyChanged && propertyChanged.hasSubscribers ? propertyChanged : null;
-    }
+    } // endregion
+
   }]);
 
   return PropertyChangedObject;

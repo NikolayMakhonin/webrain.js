@@ -27,54 +27,51 @@ var staticCalcTime;
 var testStartTime;
 var staticEvents = [];
 var staticDeferredCalc;
-staticDeferredCalc = new DeferredCalc({
-  timing: timing,
-  canBeCalcCallback: function canBeCalcCallback() {
-    if (staticDeferredCalc) {
-      assert.strictEqual(this, staticDeferredCalc);
-    } else {
-      assert.ok(this);
-    }
-
-    staticEvents.push({
-      time: timing.now() - testStartTime,
-      type: EventType.CanBeCalc
-    });
-
-    if (staticAutoCalc) {
-      staticDeferredCalc.calc();
-    }
-  },
-  calcFunc: function calcFunc(done) {
-    if (staticDeferredCalc) {
-      assert.strictEqual(this, staticDeferredCalc);
-    } else {
-      assert.ok(this);
-    }
-
-    staticEvents.push({
-      time: timing.now() - testStartTime,
-      type: EventType.Calc
-    });
-
-    if (!staticCalcTime) {
-      done();
-    } else {
-      timing.setTimeout(done, staticCalcTime);
-    }
-  },
-  calcCompletedCallback: function calcCompletedCallback() {
-    if (staticDeferredCalc) {
-      assert.strictEqual(this, staticDeferredCalc);
-    } else {
-      assert.ok(this);
-    }
-
-    staticEvents.push({
-      time: timing.now() - testStartTime,
-      type: EventType.Completed
-    });
+staticDeferredCalc = new DeferredCalc(function () {
+  if (staticDeferredCalc) {
+    assert.strictEqual(this, staticDeferredCalc);
+  } else {
+    assert.ok(this);
   }
+
+  staticEvents.push({
+    time: timing.now() - testStartTime,
+    type: EventType.CanBeCalc
+  });
+
+  if (staticAutoCalc) {
+    staticDeferredCalc.calc();
+  }
+}, function (done) {
+  if (staticDeferredCalc) {
+    assert.strictEqual(this, staticDeferredCalc);
+  } else {
+    assert.ok(this);
+  }
+
+  staticEvents.push({
+    time: timing.now() - testStartTime,
+    type: EventType.Calc
+  });
+
+  if (!staticCalcTime) {
+    done();
+  } else {
+    timing.setTimeout(done, staticCalcTime);
+  }
+}, function () {
+  if (staticDeferredCalc) {
+    assert.strictEqual(this, staticDeferredCalc);
+  } else {
+    assert.ok(this);
+  }
+
+  staticEvents.push({
+    time: timing.now() - testStartTime,
+    type: EventType.Completed
+  });
+}, {
+  timing: timing
 });
 
 function eventsToDisplay(events) {
@@ -151,54 +148,51 @@ function (_TestVariants) {
               events = [];
               var autoCalc = options.autoCalc;
               var calcTime = options.calcTime;
-              deferredCalc = new DeferredCalc({
+              deferredCalc = new DeferredCalc(function () {
+                if (deferredCalc) {
+                  assert.strictEqual(this, deferredCalc);
+                } else {
+                  assert.ok(this);
+                }
+
+                events.push({
+                  time: timing.now() - testStartTime,
+                  type: EventType.CanBeCalc
+                });
+
+                if (autoCalc) {
+                  this.calc();
+                }
+              }, function (done) {
+                if (deferredCalc) {
+                  assert.strictEqual(this, deferredCalc);
+                } else {
+                  assert.ok(this);
+                }
+
+                events.push({
+                  time: timing.now() - testStartTime,
+                  type: EventType.Calc
+                });
+
+                if (!calcTime) {
+                  done();
+                } else {
+                  timing.setTimeout(done, calcTime);
+                }
+              }, function () {
+                if (deferredCalc) {
+                  assert.strictEqual(this, deferredCalc);
+                } else {
+                  assert.ok(this);
+                }
+
+                events.push({
+                  time: timing.now() - testStartTime,
+                  type: EventType.Completed
+                });
+              }, {
                 timing: timing,
-                canBeCalcCallback: function canBeCalcCallback() {
-                  if (deferredCalc) {
-                    assert.strictEqual(this, deferredCalc);
-                  } else {
-                    assert.ok(this);
-                  }
-
-                  events.push({
-                    time: timing.now() - testStartTime,
-                    type: EventType.CanBeCalc
-                  });
-
-                  if (autoCalc) {
-                    this.calc();
-                  }
-                },
-                calcFunc: function calcFunc(done) {
-                  if (deferredCalc) {
-                    assert.strictEqual(this, deferredCalc);
-                  } else {
-                    assert.ok(this);
-                  }
-
-                  events.push({
-                    time: timing.now() - testStartTime,
-                    type: EventType.Calc
-                  });
-
-                  if (!calcTime) {
-                    done();
-                  } else {
-                    timing.setTimeout(done, calcTime);
-                  }
-                },
-                calcCompletedCallback: function calcCompletedCallback() {
-                  if (deferredCalc) {
-                    assert.strictEqual(this, deferredCalc);
-                  } else {
-                    assert.ok(this);
-                  }
-
-                  events.push({
-                    time: timing.now() - testStartTime,
-                    type: EventType.Completed
-                  });
-                },
                 minTimeBetweenCalc: options.minTimeBetweenCalc,
                 throttleTime: options.throttleTime,
                 maxThrottleTime: options.maxThrottleTime,

@@ -4,39 +4,35 @@ import { timingDefault } from './timing';
 export var DeferredCalc =
 /*#__PURE__*/
 function () {
-  function DeferredCalc(_ref) {
-    var canBeCalcCallback = _ref.canBeCalcCallback,
-        calcFunc = _ref.calcFunc,
-        calcCompletedCallback = _ref.calcCompletedCallback,
-        minTimeBetweenCalc = _ref.minTimeBetweenCalc,
-        throttleTime = _ref.throttleTime,
-        maxThrottleTime = _ref.maxThrottleTime,
-        autoInvalidateInterval = _ref.autoInvalidateInterval,
-        timing = _ref.timing;
-
+  function DeferredCalc(canBeCalcCallback, calcFunc, calcCompletedCallback, options) {
     _classCallCheck(this, DeferredCalc);
 
     this._canBeCalcCallback = canBeCalcCallback;
     this._calcFunc = calcFunc;
     this._calcCompletedCallback = calcCompletedCallback;
 
-    if (minTimeBetweenCalc) {
-      this._minTimeBetweenCalc = minTimeBetweenCalc;
+    if (options) {
+      if (options.minTimeBetweenCalc) {
+        this._minTimeBetweenCalc = options.minTimeBetweenCalc;
+      }
+
+      if (options.throttleTime) {
+        this._throttleTime = options.throttleTime;
+      }
+
+      if (options.maxThrottleTime != null) {
+        this._maxThrottleTime = options.maxThrottleTime;
+      }
+
+      if (options.autoInvalidateInterval != null) {
+        this._autoInvalidateInterval = options.autoInvalidateInterval;
+      }
+
+      this._timing = options.timing || timingDefault;
+    } else {
+      this._timing = timingDefault;
     }
 
-    if (throttleTime) {
-      this._throttleTime = throttleTime;
-    }
-
-    if (maxThrottleTime != null) {
-      this._maxThrottleTime = maxThrottleTime;
-    }
-
-    if (autoInvalidateInterval != null) {
-      this._autoInvalidateInterval = autoInvalidateInterval;
-    }
-
-    this._timing = timing || timingDefault;
     this.invalidate();
   } // region Properties
   // region minTimeBetweenCalc
@@ -118,7 +114,7 @@ function () {
         }
 
         if (this._timeCalcEnd) {
-          canBeCalcTime = Math.max(canBeCalcTime, this._timeCalcEnd + this._minTimeBetweenCalc || 0);
+          canBeCalcTime = Math.max(canBeCalcTime, this._timeCalcEnd + (this._minTimeBetweenCalc || 0));
         }
 
         if (canBeCalcTime <= now) {
@@ -144,7 +140,7 @@ function () {
         }
 
         if (this._timeCalcEnd) {
-          calcTime = Math.max(calcTime, this._timeCalcEnd + this._minTimeBetweenCalc || 0);
+          calcTime = Math.max(calcTime, this._timeCalcEnd + (this._minTimeBetweenCalc || 0));
         }
 
         if (calcTime <= now) {
@@ -195,6 +191,15 @@ function () {
   }, {
     key: "calc",
     value: function calc() {
+      if (!this._calcRequested && this._canBeCalcEmitted) {
+        this._calcRequested = true;
+
+        this._pulse();
+      }
+    }
+  }, {
+    key: "reCalc",
+    value: function reCalc() {
       this._calcRequested = true;
 
       this._pulse();

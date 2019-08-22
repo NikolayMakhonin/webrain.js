@@ -338,11 +338,16 @@ function (_ListChangedObject) {
         });
       }
 
-      this.onPropertyChanged({
-        name: 'size',
-        oldValue: size,
-        newValue: newSize
-      });
+      var propertyChangedIfCanEmit = this.propertyChangedIfCanEmit;
+
+      if (propertyChangedIfCanEmit) {
+        propertyChangedIfCanEmit.onPropertyChanged({
+          name: 'size',
+          oldValue: size,
+          newValue: newSize
+        });
+      }
+
       return true;
     }
   }, {
@@ -428,11 +433,16 @@ function (_ListChangedObject) {
         });
       }
 
-      this.onPropertyChanged({
-        name: 'size',
-        oldValue: size,
-        newValue: newSize
-      });
+      var propertyChangedIfCanEmit = this.propertyChangedIfCanEmit;
+
+      if (propertyChangedIfCanEmit) {
+        propertyChangedIfCanEmit.onPropertyChanged({
+          name: 'size',
+          oldValue: size,
+          newValue: newSize
+        });
+      }
+
       return true;
     }
   }, {
@@ -584,11 +594,16 @@ function (_ListChangedObject) {
         });
       }
 
-      this.onPropertyChanged({
-        name: 'size',
-        oldValue: size,
-        newValue: newSize
-      });
+      var propertyChangedIfCanEmit = this.propertyChangedIfCanEmit;
+
+      if (propertyChangedIfCanEmit) {
+        propertyChangedIfCanEmit.onPropertyChanged({
+          name: 'size',
+          oldValue: size,
+          newValue: newSize
+        });
+      }
+
       return true;
     }
   }, {
@@ -632,11 +647,16 @@ function (_ListChangedObject) {
         });
       }
 
-      this.onPropertyChanged({
-        name: 'size',
-        oldValue: size,
-        newValue: newSize
-      });
+      var propertyChangedIfCanEmit = this.propertyChangedIfCanEmit;
+
+      if (propertyChangedIfCanEmit) {
+        propertyChangedIfCanEmit.onPropertyChanged({
+          name: 'size',
+          oldValue: size,
+          newValue: newSize
+        });
+      }
+
       return true;
     }
   }, {
@@ -693,11 +713,16 @@ function (_ListChangedObject) {
         });
       }
 
-      this.onPropertyChanged({
-        name: 'size',
-        oldValue: size,
-        newValue: newSize
-      });
+      var propertyChangedIfCanEmit = this.propertyChangedIfCanEmit;
+
+      if (propertyChangedIfCanEmit) {
+        propertyChangedIfCanEmit.onPropertyChanged({
+          name: 'size',
+          oldValue: size,
+          newValue: newSize
+        });
+      }
+
       return true;
     }
   }, {
@@ -975,11 +1000,16 @@ function (_ListChangedObject) {
         });
       }
 
-      this.onPropertyChanged({
-        name: 'size',
-        oldValue: size,
-        newValue: 0
-      });
+      var propertyChangedIfCanEmit = this.propertyChangedIfCanEmit;
+
+      if (propertyChangedIfCanEmit) {
+        propertyChangedIfCanEmit.onPropertyChanged({
+          name: 'size',
+          oldValue: size,
+          newValue: 0
+        });
+      }
+
       return true;
     }
   }, {
@@ -1188,11 +1218,15 @@ function (_ListChangedObject) {
 
       this._updateAllocatedSize();
 
-      this.onPropertyChanged({
-        name: 'minAllocatedSize',
-        oldValue: oldValue,
-        newValue: value
-      });
+      var propertyChangedIfCanEmit = this.propertyChangedIfCanEmit;
+
+      if (propertyChangedIfCanEmit) {
+        propertyChangedIfCanEmit.onPropertyChanged({
+          name: 'minAllocatedSize',
+          oldValue: oldValue,
+          newValue: value
+        });
+      }
     } // endregion
     // region allocatedSize
 
@@ -1258,11 +1292,15 @@ function (_ListChangedObject) {
         this._autoSort = value;
       }
 
-      this.onPropertyChanged({
-        name: 'autoSort',
-        oldValue: !!oldValue,
-        newValue: value
-      });
+      var propertyChangedIfCanEmit = this.propertyChangedIfCanEmit;
+
+      if (propertyChangedIfCanEmit) {
+        propertyChangedIfCanEmit.onPropertyChanged({
+          name: 'autoSort',
+          oldValue: !!oldValue,
+          newValue: value
+        });
+      }
     } // endregion
     // region notAddIfExists
 
@@ -1285,11 +1323,15 @@ function (_ListChangedObject) {
       }
 
       this._notAddIfExists = value;
-      this.onPropertyChanged({
-        name: 'notAddIfExists',
-        oldValue: !!oldValue,
-        newValue: value
-      });
+      var propertyChangedIfCanEmit = this.propertyChangedIfCanEmit;
+
+      if (propertyChangedIfCanEmit) {
+        propertyChangedIfCanEmit.onPropertyChanged({
+          name: 'notAddIfExists',
+          oldValue: !!oldValue,
+          newValue: value
+        });
+      }
     } // endregion
     // endregion
     // region Methods

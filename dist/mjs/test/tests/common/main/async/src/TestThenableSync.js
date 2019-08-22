@@ -20,22 +20,21 @@ import { TestVariants } from '../../src/helpers/TestVariants';
 export var ValueType;
 
 (function (ValueType) {
-  ValueType[ValueType["Value"] = 0] = "Value";
-  ValueType[ValueType["ThenableResolved"] = 1] = "ThenableResolved";
-  ValueType[ValueType["ThenableRejected"] = 2] = "ThenableRejected";
-  ValueType[ValueType["ThenableThrowed"] = 3] = "ThenableThrowed";
-  ValueType[ValueType["ThenableResolve"] = 4] = "ThenableResolve";
-  ValueType[ValueType["ThenableReject"] = 5] = "ThenableReject";
-  ValueType[ValueType["Iterator"] = 6] = "Iterator";
-  ValueType[ValueType["IteratorThrow"] = 7] = "IteratorThrow";
+  ValueType["Value"] = "Value";
+  ValueType["ThenableResolved"] = "ThenableResolved";
+  ValueType["ThenableRejected"] = "ThenableRejected";
+  ValueType["ThenableThrowed"] = "ThenableThrowed";
+  ValueType["ThenableResolve"] = "ThenableResolve";
+  ValueType["ThenableReject"] = "ThenableReject";
+  ValueType["Iterator"] = "Iterator";
+  ValueType["IteratorThrow"] = "IteratorThrow";
 })(ValueType || (ValueType = {}));
 
 export var ThenType;
 
 (function (ThenType) {
-  ThenType[ThenType["ResolveValue"] = 0] = "ResolveValue";
-  ThenType[ThenType["Then"] = 1] = "Then";
-  ThenType[ThenType["ThenLast"] = 2] = "ThenLast";
+  ThenType["Then"] = "Then";
+  ThenType["ThenLast"] = "ThenLast";
 })(ThenType || (ThenType = {}));
 
 function resolveOptionValue(opts, value) {
@@ -470,15 +469,7 @@ function createValue(value, getValueType, addResolve, valueInfo) {
 
   valueInfo.value = value;
   return valueInfo;
-} // function resolveError(func) {
-// 	try {
-// 		func()
-// 	} catch (err) {
-// 		return err
-// 	}
-// 	throw new Error(`Function should throw error: ${func}`)
-// }
-
+}
 
 function createThen(valueInfo, getValueType, addResolve, getThenType, getThenThrow) {
   var createThenValue = function createThenValue(val) {
@@ -490,18 +481,30 @@ function createThen(valueInfo, getValueType, addResolve, getThenType, getThenThr
   };
 
   var thenResolveValue = function thenResolveValue(value, onfulfilled, onrejected, isRejected) {
-    var result = resolveValue(value, onfulfilled, onfulfilled, onrejected);
+    var onResult = function onResult(o, e) {
+      if (e) {
+        return onrejected(o);
+      } else {
+        return onfulfilled(o);
+      }
+    };
+
+    var result = resolveValue(value, onResult, onResult);
 
     switch (result) {
-      case ResolveResult.ImmediateResolved:
+      case ResolveResult.Immediate:
         assert.strictEqual(isRejected, false);
         break;
 
-      case ResolveResult.ImmediateRejected:
+      case ResolveResult.ImmediateError:
         assert.strictEqual(isRejected, true);
         break;
 
       case ResolveResult.Deferred:
+        break;
+
+      case ResolveResult.DeferredError:
+        assert.strictEqual(isRejected, true);
         break;
 
       default:
@@ -512,11 +515,6 @@ function createThen(valueInfo, getValueType, addResolve, getThenType, getThenThr
   var thenable = valueInfo.value;
 
   for (var i = 0; i < 2; i++) {
-    // if (getThenThrow(i)) {
-    // 	onResult = (value) => throw createValue(value)
-    // } else {
-    // 	onResult = (value) => createValue(value)
-    // }
     switch (getThenType(i)) {
       case ThenType.Then:
         if (isThenable(thenable)) {
@@ -597,79 +595,54 @@ function createThen(valueInfo, getValueType, addResolve, getThenType, getThenThr
         }
 
         break;
-
-      case ThenType.ResolveValue:
-        try {
-          var _ret3 = function () {
-            if (calcValueInfo(null)["throw"] && (!valueInfo.immediate || !calcValueInfo(null).immediate)) {
-              return "break";
-            }
-
-            var _createThenable9 = createThenable(i % 2 === 0),
-                _createThenable10 = _slicedToArray(_createThenable9, 3),
-                newThenable = _createThenable10[0],
-                resolve = _createThenable10[1],
-                reject = _createThenable10[2];
-
-            if (getThenThrow(i)) {
-              if (valueInfo.useReject) {
-                if (!valueInfo.immediate || !calcValueInfo(null).immediate) {
-                  return "break";
-                }
-
-                calcValueInfo(valueInfo);
-                thenResolveValue(thenable, null, function (o) {
-                  throw createThenValue(o);
-                }, true);
-              } else {
-                valueInfo.useReject = true;
-                calcValueInfo(valueInfo);
-                thenResolveValue(thenable, function (o) {
-                  throw createThenValue(o);
-                }, reject, true);
-              }
-            } else {
-              if (valueInfo.useReject) {
-                // valueInfo.useReject = false
-                calcValueInfo(valueInfo);
-                thenResolveValue(thenable, null, function (o) {
-                  reject(createThenValue(o));
-                }, true);
-              } else {
-                calcValueInfo(valueInfo);
-                thenResolveValue(thenable, function (o) {
-                  resolve(createThenValue(o));
-                }, null, false);
-              }
-            }
-
-            thenable = newThenable;
-          }();
-
-          if (_ret3 === "break") break;
-        } catch (err) {
-          if (err instanceof Error) {
-            throw err;
-          }
-
-          assert.strictEqual(valueInfo.useReject, true);
-
-          if (!valueInfo["throw"]) {
-            assert.strictEqual(valueInfo.immediate, true);
-            assert.strictEqual(isThenable(err), false);
-            assert.strictEqual(isIterator(err), false);
-          }
-
-          if (isThenable(err) || isIterator(err)) {
-            thenable = ThenableSync.createRejected(err);
-          } else {
-            valueInfo["throw"] = false;
-            valueInfo.useReject = false;
-            thenable = err;
-          }
-        }
-
-        break;
+      // case ThenType.ResolveValue:
+      // 	try {
+      // 		if (calcValueInfo(null).throw && (!valueInfo.immediate || !calcValueInfo(null).immediate)) {
+      // 			break
+      // 		}
+      // 		const [newThenable, resolve, reject] = createThenable(i % 2 === 0)
+      // 		if (getThenThrow(i)) {
+      // 			if (valueInfo.useReject) {
+      // 				if (!valueInfo.immediate || !calcValueInfo(null).immediate) {
+      // 					break
+      // 				}
+      // 				calcValueInfo(valueInfo)
+      // 				thenResolveValue(thenable, null, o => { throw createThenValue(o) }, true)
+      // 			} else {
+      // 				valueInfo.useReject = true
+      // 				calcValueInfo(valueInfo)
+      // 				thenResolveValue(thenable, o => { throw createThenValue(o) }, reject, true)
+      // 			}
+      // 		} else {
+      // 			if (valueInfo.useReject) {
+      // 				// valueInfo.useReject = false
+      // 				calcValueInfo(valueInfo)
+      // 				thenResolveValue(thenable, null, o => { reject(createThenValue(o)) }, true)
+      // 			} else {
+      // 				calcValueInfo(valueInfo)
+      // 				thenResolveValue(thenable, o => { resolve(createThenValue(o)) }, null, false)
+      // 			}
+      // 		}
+      // 		thenable = newThenable
+      // 	} catch (err) {
+      // 		if (err instanceof Error) {
+      // 			throw err
+      // 		}
+      // 		assert.strictEqual(valueInfo.useReject, true)
+      // 		if (!valueInfo.throw) {
+      // 			assert.strictEqual(valueInfo.immediate, true)
+      // 			assert.strictEqual(isThenable(err), false)
+      // 			assert.strictEqual(isIterator(err), false)
+      // 		}
+      // 		if (isThenable(err) || isIterator(err)) {
+      // 			thenable = ThenableSync.createRejected(err)
+      // 		} else {
+      // 			valueInfo.throw = false
+      // 			valueInfo.useReject = false
+      // 			thenable = err
+      // 		}
+      // 	}
+      // 	break
       // case ThenType.ResolveAsync:
       // 	break
 
@@ -695,29 +668,17 @@ function (_TestVariants) {
     _this.baseOptionsVariants = {
       value: ['v'],
       // , void 0, ITERABLE, ITERATOR_GENERATOR],
-      createValue0: Object.values(ValueType).filter(function (x) {
-        return typeof x === 'number';
-      }),
-      thenValue0: Object.values(ValueType).filter(function (x) {
-        return typeof x === 'number';
-      }),
+      createValue0: Object.values(ValueType),
+      thenValue0: Object.values(ValueType),
       thenThrow0: [false, true],
-      thenType0: Object.values(ThenType).filter(function (x) {
-        return typeof x === 'number';
-      }),
-      createValue1: Object.values(ValueType).filter(function (x) {
-        return typeof x === 'number';
-      }),
-      thenValue1: Object.values(ValueType).filter(function (x) {
-        return typeof x === 'number';
-      }),
+      thenType0: Object.values(ThenType),
+      createValue1: Object.values(ValueType),
+      thenValue1: Object.values(ValueType),
       thenThrow1: [false, true],
-      thenType1: Object.values(ThenType).filter(function (x) {
-        return typeof x === 'number';
-      }) // createValue2: Object.values(ValueType).filter(x => typeof x === 'number'),
-      // thenValue2: Object.values(ValueType).filter(x => typeof x === 'number'),
+      thenType1: Object.values(ThenType) // createValue2: Object.values(ValueType),
+      // thenValue2: Object.values(ValueType),
       // thenThrow2: [false, true],
-      // thenType2: Object.values(ThenType).filter(x => typeof x === 'number'),
+      // thenType2: Object.values(ThenType),
 
     };
     return _this;
@@ -829,9 +790,9 @@ function (_TestVariants) {
       };
 
       for (var debugIteration = 0; debugIteration < 3; debugIteration++) {
-        var _ret4 = _loop(debugIteration);
+        var _ret3 = _loop(debugIteration);
 
-        if (_ret4 === "break") break;
+        if (_ret3 === "break") break;
       }
 
       if (error) {

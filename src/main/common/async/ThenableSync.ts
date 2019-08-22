@@ -398,6 +398,6 @@ export function resolveAsyncFunc<TValue = any, TResult1 = TValue, TResult2 = nev
 	try {
 		return resolveAsync(func(), onfulfilled, onrejected, dontThrowOnImmediateReject)
 	} catch (err) {
-		return resolveAsync(err as any, onrejected as any, onrejected, dontThrowOnImmediateReject)
+		return resolveAsync(err, onrejected as any, onrejected, dontThrowOnImmediateReject)
 	}
 }

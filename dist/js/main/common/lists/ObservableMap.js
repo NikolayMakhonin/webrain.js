@@ -56,11 +56,17 @@ class ObservableMap extends _MapChangedObject.MapChangedObject {
         });
       }
 
-      this.onPropertyChanged({
-        name: 'size',
-        oldValue: oldSize,
-        newValue: size
-      });
+      const {
+        propertyChangedIfCanEmit
+      } = this;
+
+      if (propertyChangedIfCanEmit) {
+        propertyChangedIfCanEmit.onPropertyChanged({
+          name: 'size',
+          oldValue: oldSize,
+          newValue: size
+        });
+      }
     } else {
       const {
         _mapChangedIfCanEmit
@@ -104,11 +110,18 @@ class ObservableMap extends _MapChangedObject.MapChangedObject {
         });
       }
 
-      this.onPropertyChanged({
-        name: 'size',
-        oldValue: oldSize,
-        newValue: size
-      });
+      const {
+        propertyChangedIfCanEmit
+      } = this;
+
+      if (propertyChangedIfCanEmit) {
+        propertyChangedIfCanEmit.onPropertyChanged({
+          name: 'size',
+          oldValue: oldSize,
+          newValue: size
+        });
+      }
+
       return true;
     }
 
@@ -146,11 +159,17 @@ class ObservableMap extends _MapChangedObject.MapChangedObject {
       this._map.clear();
     }
 
-    this.onPropertyChanged({
-      name: 'size',
-      oldValue: size,
-      newValue: 0
-    });
+    const {
+      propertyChangedIfCanEmit
+    } = this;
+
+    if (propertyChangedIfCanEmit) {
+      propertyChangedIfCanEmit.onPropertyChanged({
+        name: 'size',
+        oldValue: size,
+        newValue: 0
+      });
+    }
   } // region Unchanged Map methods
 
 

@@ -55,11 +55,15 @@ function (_MapChangedObject) {
           });
         }
 
-        this.onPropertyChanged({
-          name: 'size',
-          oldValue: oldSize,
-          newValue: size
-        });
+        var propertyChangedIfCanEmit = this.propertyChangedIfCanEmit;
+
+        if (propertyChangedIfCanEmit) {
+          propertyChangedIfCanEmit.onPropertyChanged({
+            name: 'size',
+            oldValue: oldSize,
+            newValue: size
+          });
+        }
       } else {
         var _mapChangedIfCanEmit2 = this._mapChangedIfCanEmit;
 
@@ -98,11 +102,16 @@ function (_MapChangedObject) {
           });
         }
 
-        this.onPropertyChanged({
-          name: 'size',
-          oldValue: oldSize,
-          newValue: size
-        });
+        var propertyChangedIfCanEmit = this.propertyChangedIfCanEmit;
+
+        if (propertyChangedIfCanEmit) {
+          propertyChangedIfCanEmit.onPropertyChanged({
+            name: 'size',
+            oldValue: oldSize,
+            newValue: size
+          });
+        }
+
         return true;
       }
 
@@ -137,11 +146,15 @@ function (_MapChangedObject) {
         this._map.clear();
       }
 
-      this.onPropertyChanged({
-        name: 'size',
-        oldValue: size,
-        newValue: 0
-      });
+      var propertyChangedIfCanEmit = this.propertyChangedIfCanEmit;
+
+      if (propertyChangedIfCanEmit) {
+        propertyChangedIfCanEmit.onPropertyChanged({
+          name: 'size',
+          oldValue: size,
+          newValue: 0
+        });
+      }
     } // region Unchanged Map methods
 
   }, {

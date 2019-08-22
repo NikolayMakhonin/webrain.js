@@ -16,8 +16,7 @@ export class CalcProperty<TInput, TValue, TMergeSource> extends ObservableObject
 	private readonly _value: Property<TValue, TMergeSource>
 	private readonly _deferredCalc: DeferredCalc
 	private _waiter: ThenableOrValue<TValue>
-	private hasValue: boolean
-	private isCalculated: boolean
+	private _hasValue: boolean
 
 	public input: TInput
 
@@ -44,7 +43,7 @@ export class CalcProperty<TInput, TValue, TMergeSource> extends ObservableObject
 				this._waiter = resolveAsyncFunc(
 					() => this._calcFunc(this.input, this._value),
 					() => {
-						this.hasValue = true
+						this._hasValue = true
 						const val = this._value.value
 						done()
 						return val
@@ -61,34 +60,20 @@ export class CalcProperty<TInput, TValue, TMergeSource> extends ObservableObject
 	}
 
 	get current(): TValue {
-		if (!this.isCalculated) {
-			this._deferredCalc.calc()
-
-			if (!isThenable(this._waiter)) {
-				return this._waiter as TValue
-			}
-		}
-
+		this._deferredCalc.calc()
 		return this._value.value
 	}
 
 	get wait(): ThenableOrValue<TValue> {
-		if (!this.isCalculated) {
-			this._deferredCalc.calc()
-		}
-
+		this._deferredCalc.calc()
 		return this._waiter as TValue
 	}
 
 	get currentOrWait(): ThenableOrValue<TValue> {
-		if (!this.isCalculated) {
-			this._deferredCalc.calc()
-			if (!isThenable(this._waiter)) {
-				return this._waiter as TValue
-			}
-		}
-
-		return this._value.value
+		this._deferredCalc.calc()
+		return this._hasValue
+			? this._value.value
+			: this._waiter as TValue
 	}
 
 	public onValueChanged() {
