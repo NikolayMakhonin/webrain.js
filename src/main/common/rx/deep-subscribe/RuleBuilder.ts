@@ -1,8 +1,9 @@
 import {ANY_DISPLAY, COLLECTION_PREFIX, VALUE_PROPERTY_PREFIX} from './contracts/constants'
 import {IRuleSubscribe} from './contracts/rule-subscribe'
-import {IRule, IRuleAny, IRuleRepeat, RuleType} from './contracts/rules'
+import {IRule} from './contracts/rules'
 import {getFuncPropertiesPath} from './helpers/func-properties-path'
-import {RuleSubscribeCollection, RuleSubscribeMap, RuleSubscribeObject, SubscribeObjectType} from './RuleSubscribe'
+import {RuleAny, RuleNothing, RuleRepeat} from './rules'
+import {RuleSubscribeCollection, RuleSubscribeMap, RuleSubscribeObject, SubscribeObjectType} from './rules-subscribe'
 
 const RuleSubscribeObjectPropertyNames = RuleSubscribeObject.bind(null, SubscribeObjectType.Property, null)
 const RuleSubscribeObjectValuePropertyNames = RuleSubscribeObject.bind(null, SubscribeObjectType.ValueProperty, null)
@@ -11,14 +12,23 @@ const RuleSubscribeMapKeys = RuleSubscribeMap.bind(null, null)
 // const UNSUBSCRIBE_PROPERTY_PREFIX = Math.random().toString(36)
 // let nextUnsubscribePropertyId = 0
 
-class RuleNothing implements IRule {
-	public type = RuleType.Nothing
-	public description = 'nothing'
-}
-
 export class RuleBuilder<TObject> {
 	public result: IRule
 	private _ruleLast: IRule
+
+	constructor(rule?: IRule) {
+		if (rule != null) {
+			this.result = rule
+
+			let ruleLast
+			do {
+				ruleLast = rule
+				rule = rule.next
+			} while (rule != null)
+
+			this._ruleLast = ruleLast
+		}
+	}
 
 	public rule<TValue>(rule: IRule): RuleBuilder<TValue> {
 		const {_ruleLast: ruleLast} = this
@@ -238,16 +248,13 @@ export class RuleBuilder<TObject> {
 			throw new Error('any() parameters is empty')
 		}
 
-		const rule: IRuleAny = {
-			type: RuleType.Any,
-			rules: getChilds.map(o => {
-				const subRule = o(new RuleBuilder<TObject>()).result
-				if (!subRule) {
-					throw new Error(`Any subRule=${rule}`)
-				}
-				return subRule
-			}),
-		}
+		const rule = new RuleAny(getChilds.map(o => {
+			const subRule = o(new RuleBuilder<TObject>()).result
+			if (!subRule) {
+				throw new Error(`Any subRule=${rule}`)
+			}
+			return subRule
+		}))
 
 		return this.rule(rule)
 	}
@@ -278,14 +285,38 @@ export class RuleBuilder<TObject> {
 		if (countMax === countMin && countMax === 1) {
 			rule = subRule
 		} else {
-			rule = {
-				type: RuleType.Repeat,
+			rule = new RuleRepeat(
 				countMin,
 				countMax,
-				rule: getChild(new RuleBuilder<TObject>()).result,
-			} as IRuleRepeat
+				getChild(new RuleBuilder<TObject>()).result,
+			)
 		}
 
 		return this.rule(rule)
 	}
+
+	public clone() {
+		return new RuleBuilder(cloneRule(this.result))
+	}
+}
+
+export function cloneRule(rule: IRule) {
+	if (rule == null) {
+		return rule
+	}
+
+	const clone = {
+		...rule,
+	}
+
+	const {unsubscribers, next} = rule as any
+	if (unsubscribers != null) {
+		(clone as any).unsubscribers = []
+	}
+
+	if (next != null) {
+		clone.next = cloneRule(next)
+	}
+
+	return clone
 }

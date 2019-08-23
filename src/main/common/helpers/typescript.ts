@@ -12,3 +12,6 @@
 // 		}
 // 	}
 // }
+
+// tslint:disable-next-line:ban-types
+export type NotFunction<T> = T extends Function ? never : T

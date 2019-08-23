@@ -7,7 +7,7 @@ import {createObject} from '../../deep-subscribe/helpers/Tester'
 
 declare const assert: any
 
-describe('common > main > rx > properties > ConnectorBuilder', function() {
+describe('common > main > rx > properties > CalcProperty', function() {
 	it('connect', function() {
 		const source: any = createObject().observableObject
 		new ObservableObjectBuilder(source)
@@ -127,9 +127,9 @@ describe('common > main > rx > properties > ConnectorBuilder', function() {
 		assert.deepStrictEqual(results1, [])
 		assert.deepStrictEqual(results2, [])
 		assert.deepStrictEqual(baseObject1.baseProp1, '1')
-		assert.deepStrictEqual(baseObject2.baseProp1, '1')
-		assert.deepStrictEqual(object1.baseProp1, '1')
-		assert.deepStrictEqual(object2.baseProp1, '1')
+		assert.deepStrictEqual(baseObject2.baseProp1, 'baseProp1_init_source')
+		assert.deepStrictEqual(object1.baseProp1, 'baseProp1_init_source')
+		assert.deepStrictEqual(object2.baseProp1, 'baseProp1_init_source')
 
 		assert.strictEqual(baseObject2.baseProp2, 'baseProp2_init')
 
@@ -148,7 +148,7 @@ describe('common > main > rx > properties > ConnectorBuilder', function() {
 		assert.deepStrictEqual((baseObject1 as any).baseProp2, undefined)
 		assert.deepStrictEqual(baseObject2.baseProp2, '3')
 		assert.deepStrictEqual((object1 as any).baseProp2, undefined)
-		assert.deepStrictEqual(object2.baseProp2, '3')
+		assert.deepStrictEqual(object2.baseProp2, 'baseProp2_init')
 
 		new ConnectorBuilder(object2)
 			.readable('baseProp1', null, '7')
@@ -160,13 +160,13 @@ describe('common > main > rx > properties > ConnectorBuilder', function() {
 			{
 				name    : 'baseProp1',
 				newValue: '7',
-				oldValue: '1',
+				oldValue: 'baseProp1_init_source',
 			},
 		])
 		results2 = []
 		assert.deepStrictEqual(baseObject1.baseProp1, '1')
-		assert.deepStrictEqual(baseObject2.baseProp1, '1')
-		assert.deepStrictEqual(object1.baseProp1, '1')
+		assert.deepStrictEqual(baseObject2.baseProp1, 'baseProp1_init_source')
+		assert.deepStrictEqual(object1.baseProp1, 'baseProp1_init_source')
 		assert.deepStrictEqual(object2.baseProp1, '7')
 	})
 })

@@ -253,7 +253,9 @@ export class Tester<TObject, TValue> {
 				}
 			},
 			this._immediate,
-			ruleBuilder)
+			Math.random() > 0.5
+				? o => ruleBuilder(o).clone()
+				: ruleBuilder)
 	}
 
 	// region Sync

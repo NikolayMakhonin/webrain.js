@@ -26,7 +26,7 @@ export class Property<TValue, TMergeSource>
 
 	constructor(
 		options?: IPropertyOptions<TValue, TMergeSource>,
-		value?: TValue,
+		initValue?: TValue,
 	) {
 		super()
 
@@ -41,8 +41,8 @@ export class Property<TValue, TMergeSource>
 		if (mergeOptions != null) {
 			this.mergeOptions = mergeOptions
 		}
-		if (typeof value !== 'undefined') {
-			this.value = value
+		if (typeof initValue !== 'undefined') {
+			this.value = initValue
 		}
 	}
 
