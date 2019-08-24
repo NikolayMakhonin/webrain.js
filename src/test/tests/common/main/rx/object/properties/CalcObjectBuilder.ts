@@ -8,7 +8,7 @@ import {createObject} from '../../deep-subscribe/helpers/Tester'
 
 declare const assert: any
 
-describe('common > main > rx > properties > CalcObjectBuilder', function() {
+xdescribe('common > main > rx > properties > CalcObjectBuilder', function() {
 	it('calc', function() {
 		class Class1 extends ObservableObject {
 

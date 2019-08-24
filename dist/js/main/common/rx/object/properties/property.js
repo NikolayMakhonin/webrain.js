@@ -18,7 +18,7 @@ let _Symbol$toStringTag;
 _Symbol$toStringTag = Symbol.toStringTag;
 
 class Property extends _ObservableObject.ObservableObject {
-  constructor(options, value) {
+  constructor(options, initValue) {
     super();
     this[_Symbol$toStringTag] = 'Property';
     const {
@@ -34,8 +34,8 @@ class Property extends _ObservableObject.ObservableObject {
       this.mergeOptions = mergeOptions;
     }
 
-    if (typeof value !== 'undefined') {
-      this.value = value;
+    if (typeof initValue !== 'undefined') {
+      this.value = initValue;
     }
   }
 

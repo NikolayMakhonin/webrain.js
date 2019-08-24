@@ -1719,52 +1719,52 @@ describe('fundamental-operations', function() {
 		}))
 	})
 
-	it('decorators', function() {
-		this.timeout(300000)
-
-		function decoratorOwn() {
-			return descriptor => {
-				descriptor.placement = 'own'
-			}
-		}
-
-		function decoratorPrototype() {
-			return descriptor => {
-				descriptor.placement = 'prototype'
-			}
-		}
-
-		class Class {
-			public x: any
-		}
-
-		class ClassOwn {
-			@decoratorOwn()
-			public x: any
-		}
-
-		class ClassPrototype {
-			@decoratorPrototype()
-			public x: any
-		}
-
-		const result = calcPerformance(
-			120000,
-			() => {
-				// no operations
-			},
-
-			() => { // 4
-				return new Class()
-			},
-			() => { // 1400
-				return new ClassOwn()
-			},
-			() => { // 54
-				return new ClassPrototype()
-			},
-		)
-
-		console.log(result)
-	})
+	// xit('decorators', function() {
+	// 	this.timeout(300000)
+	//
+	// 	function decoratorOwn() {
+	// 		return descriptor => {
+	// 			descriptor.placement = 'own'
+	// 		}
+	// 	}
+	//
+	// 	function decoratorPrototype() {
+	// 		return descriptor => {
+	// 			descriptor.placement = 'prototype'
+	// 		}
+	// 	}
+	//
+	// 	class Class {
+	// 		public x: any
+	// 	}
+	//
+	// 	class ClassOwn {
+	// 		@decoratorOwn()
+	// 		public x: any
+	// 	}
+	//
+	// 	class ClassPrototype {
+	// 		@decoratorPrototype()
+	// 		public x: any
+	// 	}
+	//
+	// 	const result = calcPerformance(
+	// 		120000,
+	// 		() => {
+	// 			// no operations
+	// 		},
+	//
+	// 		() => { // 4
+	// 			return new Class()
+	// 		},
+	// 		() => { // 1400
+	// 			return new ClassOwn()
+	// 		},
+	// 		() => { // 54
+	// 			return new ClassPrototype()
+	// 		},
+	// 	)
+	//
+	// 	console.log(result)
+	// })
 })

@@ -17,10 +17,10 @@ class ObservableObjectBuilder {
   }
 
   writable(name, options, initValue) {
-    if (!options) {
-      options = {};
-    }
-
+    const {
+      setOptions,
+      hidden
+    } = options || {};
     const {
       object
     } = this;
@@ -36,14 +36,14 @@ class ObservableObjectBuilder {
 
     Object.defineProperty(object, name, {
       configurable: true,
-      enumerable: true,
+      enumerable: !hidden,
 
       get() {
         return this.__fields[name];
       },
 
       set(newValue) {
-        this._set(name, newValue, options);
+        this._set(name, newValue, setOptions);
       }
 
     });
@@ -59,7 +59,11 @@ class ObservableObjectBuilder {
     return this;
   }
 
-  readable(name, options, value) {
+  readable(name, options, initValue) {
+    const hidden = options && options.hidden;
+    const setOptions = { ...(options && options.setOptions),
+      suppressPropertyChanged: true
+    };
     const {
       object
     } = this;
@@ -73,18 +77,14 @@ class ObservableObjectBuilder {
 
     let factory = options && options.factory;
 
-    if (factory) {
-      if (typeof value !== 'undefined') {
-        throw new Error("You can't use both: factory and value");
-      }
-    } else if (!__fields && typeof value !== 'undefined') {
-      factory = () => value;
+    if (!factory && !__fields && typeof initValue !== 'undefined') {
+      factory = o => o;
     }
 
     const createInstanceProperty = instance => {
       Object.defineProperty(instance, name, {
         configurable: true,
-        enumerable: true,
+        enumerable: !hidden,
 
         get() {
           return this.__fields[name];
@@ -96,10 +96,10 @@ class ObservableObjectBuilder {
     if (factory) {
       Object.defineProperty(object, name, {
         configurable: true,
-        enumerable: true,
+        enumerable: !hidden,
 
         get() {
-          const factoryValue = factory.call(this);
+          const factoryValue = factory.call(this, initValue);
           createInstanceProperty(this);
           const {
             __fields: fields
@@ -109,9 +109,7 @@ class ObservableObjectBuilder {
             const oldValue = fields[name];
 
             if (factoryValue !== oldValue) {
-              this._set(name, factoryValue, { ...(options && options.factorySetOptions),
-                suppressPropertyChanged: true
-              });
+              this._set(name, factoryValue, setOptions);
             }
           }
 
@@ -133,11 +131,11 @@ class ObservableObjectBuilder {
     } else {
       createInstanceProperty(object);
 
-      if (__fields && typeof value !== 'undefined') {
+      if (__fields && typeof initValue !== 'undefined') {
         const oldValue = __fields[name];
 
-        if (value !== oldValue) {
-          __fields[name] = value;
+        if (initValue !== oldValue) {
+          __fields[name] = initValue;
           const {
             propertyChangedIfCanEmit
           } = object;
@@ -146,7 +144,7 @@ class ObservableObjectBuilder {
             propertyChangedIfCanEmit.onPropertyChanged({
               name,
               oldValue,
-              newValue: value
+              newValue: initValue
             });
           }
         }
@@ -189,6 +187,34 @@ class ObservableObjectBuilder {
     return this;
   }
 
-}
+} // const builder = new ObservableObjectBuilder(true as any)
+//
+// export function writable<T = any>(
+// 	options?: IWritableFieldOptions,
+// 	initValue?: T,
+// ) {
+// 	return (target: ObservableObject, propertyKey: string, descriptor: PropertyDescriptor) => {
+// 		builder.object = target
+// 		builder.writable(propertyKey, options, initValue)
+// 	}
+// }
+//
+// export function readable<T = any>(
+// 	options?: IReadableFieldOptions<T>,
+// 	initValue?: T,
+// ) {
+// 	return (target: ObservableObject, propertyKey: string) => {
+// 		builder.object = target
+// 		builder.readable(propertyKey, options, initValue)
+// 	}
+// }
+// class Class extends ObservableObject {
+// 	@writable()
+// 	public prop: number
+//
+// 	@readable()
+// 	public prop2: number
+// }
+
 
 exports.ObservableObjectBuilder = ObservableObjectBuilder;

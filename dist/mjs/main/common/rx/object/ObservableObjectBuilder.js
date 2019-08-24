@@ -21,9 +21,9 @@ function () {
   _createClass(ObservableObjectBuilder, [{
     key: "writable",
     value: function writable(name, options, initValue) {
-      if (!options) {
-        options = {};
-      }
+      var _ref = options || {},
+          setOptions = _ref.setOptions,
+          hidden = _ref.hidden;
 
       var object = this.object;
       var __fields = object.__fields;
@@ -36,12 +36,12 @@ function () {
 
       Object.defineProperty(object, name, {
         configurable: true,
-        enumerable: true,
+        enumerable: !hidden,
         get: function get() {
           return this.__fields[name];
         },
         set: function set(newValue) {
-          this._set(name, newValue, options);
+          this._set(name, newValue, setOptions);
         }
       });
 
@@ -57,7 +57,13 @@ function () {
     }
   }, {
     key: "readable",
-    value: function readable(name, options, value) {
+    value: function readable(name, options, initValue) {
+      var hidden = options && options.hidden;
+
+      var setOptions = _objectSpread({}, options && options.setOptions, {
+        suppressPropertyChanged: true
+      });
+
       var object = this.object;
       var __fields = object.__fields;
 
@@ -67,20 +73,16 @@ function () {
 
       var factory = options && options.factory;
 
-      if (factory) {
-        if (typeof value !== 'undefined') {
-          throw new Error("You can't use both: factory and value");
-        }
-      } else if (!__fields && typeof value !== 'undefined') {
-        factory = function factory() {
-          return value;
+      if (!factory && !__fields && typeof initValue !== 'undefined') {
+        factory = function factory(o) {
+          return o;
         };
       }
 
       var createInstanceProperty = function createInstanceProperty(instance) {
         Object.defineProperty(instance, name, {
           configurable: true,
-          enumerable: true,
+          enumerable: !hidden,
           get: function get() {
             return this.__fields[name];
           }
@@ -90,9 +92,9 @@ function () {
       if (factory) {
         Object.defineProperty(object, name, {
           configurable: true,
-          enumerable: true,
+          enumerable: !hidden,
           get: function get() {
-            var factoryValue = factory.call(this);
+            var factoryValue = factory.call(this, initValue);
             createInstanceProperty(this);
             var fields = this.__fields;
 
@@ -100,9 +102,7 @@ function () {
               var oldValue = fields[name];
 
               if (factoryValue !== oldValue) {
-                this._set(name, factoryValue, _objectSpread({}, options && options.factorySetOptions, {
-                  suppressPropertyChanged: true
-                }));
+                this._set(name, factoryValue, setOptions);
               }
             }
 
@@ -123,18 +123,18 @@ function () {
       } else {
         createInstanceProperty(object);
 
-        if (__fields && typeof value !== 'undefined') {
+        if (__fields && typeof initValue !== 'undefined') {
           var _oldValue = __fields[name];
 
-          if (value !== _oldValue) {
-            __fields[name] = value;
+          if (initValue !== _oldValue) {
+            __fields[name] = initValue;
             var _propertyChangedIfCanEmit = object.propertyChangedIfCanEmit;
 
             if (_propertyChangedIfCanEmit) {
               _propertyChangedIfCanEmit.onPropertyChanged({
                 name: name,
                 oldValue: _oldValue,
-                newValue: value
+                newValue: initValue
               });
             }
           }
@@ -174,4 +174,31 @@ function () {
   }]);
 
   return ObservableObjectBuilder;
-}();
+}(); // const builder = new ObservableObjectBuilder(true as any)
+//
+// export function writable<T = any>(
+// 	options?: IWritableFieldOptions,
+// 	initValue?: T,
+// ) {
+// 	return (target: ObservableObject, propertyKey: string, descriptor: PropertyDescriptor) => {
+// 		builder.object = target
+// 		builder.writable(propertyKey, options, initValue)
+// 	}
+// }
+//
+// export function readable<T = any>(
+// 	options?: IReadableFieldOptions<T>,
+// 	initValue?: T,
+// ) {
+// 	return (target: ObservableObject, propertyKey: string) => {
+// 		builder.object = target
+// 		builder.readable(propertyKey, options, initValue)
+// 	}
+// }
+// class Class extends ObservableObject {
+// 	@writable()
+// 	public prop: number
+//
+// 	@readable()
+// 	public prop2: number
+// }

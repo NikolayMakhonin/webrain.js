@@ -21,7 +21,7 @@ export var Property =
 function (_ObservableObject) {
   _inherits(Property, _ObservableObject);
 
-  function Property(options, value) {
+  function Property(options, initValue) {
     var _this;
 
     _classCallCheck(this, Property);
@@ -41,8 +41,8 @@ function (_ObservableObject) {
       _this.mergeOptions = mergeOptions;
     }
 
-    if (typeof value !== 'undefined') {
-      _this.value = value;
+    if (typeof initValue !== 'undefined') {
+      _this.value = initValue;
     }
 
     return _this;

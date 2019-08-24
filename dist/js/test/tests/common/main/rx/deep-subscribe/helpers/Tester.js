@@ -180,7 +180,7 @@ class Tester {
       return () => {
         this._unsubscribed[i].push(value);
       };
-    }, this._immediate, ruleBuilder);
+    }, this._immediate, Math.random() > 0.5 ? o => ruleBuilder(o).clone() : ruleBuilder);
   } // region Sync
 
 

@@ -1,5 +1,4 @@
 import {IRule, IRuleAny, IRuleRepeat, RuleType} from './contracts/rules'
-import {IRuleSubscribe} from "./contracts/rule-subscribe";
 
 export abstract class Rule implements IRule {
 	public readonly type: RuleType

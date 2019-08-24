@@ -7,7 +7,7 @@ import {createObject} from '../../deep-subscribe/helpers/Tester'
 
 declare const assert: any
 
-describe('common > main > rx > properties > CalcProperty', function() {
+xdescribe('common > main > rx > properties > CalcProperty', function() {
 	it('connect', function() {
 		const source: any = createObject().observableObject
 		new ObservableObjectBuilder(source)

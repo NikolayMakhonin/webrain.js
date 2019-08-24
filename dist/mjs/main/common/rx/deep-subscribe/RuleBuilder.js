@@ -1,28 +1,39 @@
+import _defineProperty from "@babel/runtime/helpers/defineProperty";
 import _toConsumableArray from "@babel/runtime/helpers/toConsumableArray";
 import _construct from "@babel/runtime/helpers/construct";
-import _createClass from "@babel/runtime/helpers/createClass";
 import _classCallCheck from "@babel/runtime/helpers/classCallCheck";
+import _createClass from "@babel/runtime/helpers/createClass";
+
+function ownKeys(object, enumerableOnly) { var keys = Object.keys(object); if (Object.getOwnPropertySymbols) { var symbols = Object.getOwnPropertySymbols(object); if (enumerableOnly) symbols = symbols.filter(function (sym) { return Object.getOwnPropertyDescriptor(object, sym).enumerable; }); keys.push.apply(keys, symbols); } return keys; }
+
+function _objectSpread(target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i] != null ? arguments[i] : {}; if (i % 2) { ownKeys(source, true).forEach(function (key) { _defineProperty(target, key, source[key]); }); } else if (Object.getOwnPropertyDescriptors) { Object.defineProperties(target, Object.getOwnPropertyDescriptors(source)); } else { ownKeys(source).forEach(function (key) { Object.defineProperty(target, key, Object.getOwnPropertyDescriptor(source, key)); }); } } return target; }
+
 import { ANY_DISPLAY, COLLECTION_PREFIX, VALUE_PROPERTY_PREFIX } from './contracts/constants';
-import { RuleType } from './contracts/rules';
 import { getFuncPropertiesPath } from './helpers/func-properties-path';
-import { RuleSubscribeCollection, RuleSubscribeMap, RuleSubscribeObject, SubscribeObjectType } from './RuleSubscribe';
+import { RuleAny, RuleNothing, RuleRepeat } from './rules';
+import { RuleSubscribeCollection, RuleSubscribeMap, RuleSubscribeObject, SubscribeObjectType } from './rules-subscribe';
 var RuleSubscribeObjectPropertyNames = RuleSubscribeObject.bind(null, SubscribeObjectType.Property, null);
 var RuleSubscribeObjectValuePropertyNames = RuleSubscribeObject.bind(null, SubscribeObjectType.ValueProperty, null);
 var RuleSubscribeMapKeys = RuleSubscribeMap.bind(null, null); // const UNSUBSCRIBE_PROPERTY_PREFIX = Math.random().toString(36)
 // let nextUnsubscribePropertyId = 0
 
-var RuleNothing = function RuleNothing() {
-  _classCallCheck(this, RuleNothing);
-
-  this.type = RuleType.Nothing;
-  this.description = 'nothing';
-};
-
 export var RuleBuilder =
 /*#__PURE__*/
 function () {
-  function RuleBuilder() {
+  function RuleBuilder(rule) {
     _classCallCheck(this, RuleBuilder);
+
+    if (rule != null) {
+      this.result = rule;
+      var ruleLast;
+
+      do {
+        ruleLast = rule;
+        rule = rule.next;
+      } while (rule != null);
+
+      this._ruleLast = ruleLast;
+    }
   }
 
   _createClass(RuleBuilder, [{
@@ -276,18 +287,15 @@ function () {
         throw new Error('any() parameters is empty');
       }
 
-      var rule = {
-        type: RuleType.Any,
-        rules: getChilds.map(function (o) {
-          var subRule = o(new RuleBuilder()).result;
+      var rule = new RuleAny(getChilds.map(function (o) {
+        var subRule = o(new RuleBuilder()).result;
 
-          if (!subRule) {
-            throw new Error("Any subRule=".concat(rule));
-          }
+        if (!subRule) {
+          throw new Error("Any subRule=".concat(rule));
+        }
 
-          return subRule;
-        })
-      };
+        return subRule;
+      }));
       return this.rule(rule);
     }
   }, {
@@ -316,17 +324,38 @@ function () {
       if (countMax === countMin && countMax === 1) {
         rule = subRule;
       } else {
-        rule = {
-          type: RuleType.Repeat,
-          countMin: countMin,
-          countMax: countMax,
-          rule: getChild(new RuleBuilder()).result
-        };
+        rule = new RuleRepeat(countMin, countMax, getChild(new RuleBuilder()).result);
       }
 
       return this.rule(rule);
+    }
+  }, {
+    key: "clone",
+    value: function clone() {
+      return new RuleBuilder(cloneRule(this.result));
     }
   }]);
 
   return RuleBuilder;
 }();
+export function cloneRule(rule) {
+  if (rule == null) {
+    return rule;
+  }
+
+  var clone = _objectSpread({}, rule);
+
+  var _ref = rule,
+      unsubscribers = _ref.unsubscribers,
+      next = _ref.next;
+
+  if (unsubscribers != null) {
+    clone.unsubscribers = [];
+  }
+
+  if (next != null) {
+    clone.next = cloneRule(next);
+  }
+
+  return clone;
+}

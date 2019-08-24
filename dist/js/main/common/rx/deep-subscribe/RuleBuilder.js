@@ -3,33 +3,40 @@
 Object.defineProperty(exports, "__esModule", {
   value: true
 });
+exports.cloneRule = cloneRule;
 exports.RuleBuilder = void 0;
 
 var _constants = require("./contracts/constants");
 
-var _rules = require("./contracts/rules");
-
 var _funcPropertiesPath = require("./helpers/func-properties-path");
 
-var _RuleSubscribe = require("./RuleSubscribe");
+var _rules = require("./rules");
 
-const RuleSubscribeObjectPropertyNames = _RuleSubscribe.RuleSubscribeObject.bind(null, _RuleSubscribe.SubscribeObjectType.Property, null);
+var _rulesSubscribe = require("./rules-subscribe");
 
-const RuleSubscribeObjectValuePropertyNames = _RuleSubscribe.RuleSubscribeObject.bind(null, _RuleSubscribe.SubscribeObjectType.ValueProperty, null);
+const RuleSubscribeObjectPropertyNames = _rulesSubscribe.RuleSubscribeObject.bind(null, _rulesSubscribe.SubscribeObjectType.Property, null);
 
-const RuleSubscribeMapKeys = _RuleSubscribe.RuleSubscribeMap.bind(null, null); // const UNSUBSCRIBE_PROPERTY_PREFIX = Math.random().toString(36)
+const RuleSubscribeObjectValuePropertyNames = _rulesSubscribe.RuleSubscribeObject.bind(null, _rulesSubscribe.SubscribeObjectType.ValueProperty, null);
+
+const RuleSubscribeMapKeys = _rulesSubscribe.RuleSubscribeMap.bind(null, null); // const UNSUBSCRIBE_PROPERTY_PREFIX = Math.random().toString(36)
 // let nextUnsubscribePropertyId = 0
 
 
-class RuleNothing {
-  constructor() {
-    this.type = _rules.RuleType.Nothing;
-    this.description = 'nothing';
+class RuleBuilder {
+  constructor(rule) {
+    if (rule != null) {
+      this.result = rule;
+      let ruleLast;
+
+      do {
+        ruleLast = rule;
+        rule = rule.next;
+      } while (rule != null);
+
+      this._ruleLast = ruleLast;
+    }
   }
 
-}
-
-class RuleBuilder {
   rule(rule) {
     const {
       _ruleLast: ruleLast
@@ -67,7 +74,7 @@ class RuleBuilder {
   }
 
   nothing() {
-    return this.rule(new RuleNothing());
+    return this.rule(new _rules.RuleNothing());
   }
   /**
    * Object property, Array index
@@ -115,7 +122,7 @@ class RuleBuilder {
 
 
   propertyPredicate(predicate, description) {
-    return this.ruleSubscribe(new _RuleSubscribe.RuleSubscribeObject(_RuleSubscribe.SubscribeObjectType.Property, predicate), description);
+    return this.ruleSubscribe(new _rulesSubscribe.RuleSubscribeObject(_rulesSubscribe.SubscribeObjectType.Property, predicate), description);
   }
   /**
    * Object property, Array index
@@ -135,7 +142,7 @@ class RuleBuilder {
 
 
   collection() {
-    return this.ruleSubscribe(new _RuleSubscribe.RuleSubscribeCollection(), _constants.COLLECTION_PREFIX);
+    return this.ruleSubscribe(new _rulesSubscribe.RuleSubscribeCollection(), _constants.COLLECTION_PREFIX);
   }
   /**
    * IMapChanged & Map, Map
@@ -159,7 +166,7 @@ class RuleBuilder {
 
 
   mapAll() {
-    return this.ruleSubscribe(new _RuleSubscribe.RuleSubscribeMap(), _constants.COLLECTION_PREFIX);
+    return this.ruleSubscribe(new _rulesSubscribe.RuleSubscribeMap(), _constants.COLLECTION_PREFIX);
   }
   /**
    * IMapChanged & Map, Map
@@ -167,7 +174,7 @@ class RuleBuilder {
 
 
   mapPredicate(keyPredicate, description) {
-    return this.ruleSubscribe(new _RuleSubscribe.RuleSubscribeMap(keyPredicate), description);
+    return this.ruleSubscribe(new _rulesSubscribe.RuleSubscribeMap(keyPredicate), description);
   }
   /**
    * IMapChanged & Map, Map
@@ -213,18 +220,15 @@ class RuleBuilder {
       throw new Error('any() parameters is empty');
     }
 
-    const rule = {
-      type: _rules.RuleType.Any,
-      rules: getChilds.map(o => {
-        const subRule = o(new RuleBuilder()).result;
+    const rule = new _rules.RuleAny(getChilds.map(o => {
+      const subRule = o(new RuleBuilder()).result;
 
-        if (!subRule) {
-          throw new Error(`Any subRule=${rule}`);
-        }
+      if (!subRule) {
+        throw new Error(`Any subRule=${rule}`);
+      }
 
-        return subRule;
-      })
-    };
+      return subRule;
+    }));
     return this.rule(rule);
   }
 
@@ -252,17 +256,39 @@ class RuleBuilder {
     if (countMax === countMin && countMax === 1) {
       rule = subRule;
     } else {
-      rule = {
-        type: _rules.RuleType.Repeat,
-        countMin,
-        countMax,
-        rule: getChild(new RuleBuilder()).result
-      };
+      rule = new _rules.RuleRepeat(countMin, countMax, getChild(new RuleBuilder()).result);
     }
 
     return this.rule(rule);
   }
 
+  clone() {
+    return new RuleBuilder(cloneRule(this.result));
+  }
+
 }
 
 exports.RuleBuilder = RuleBuilder;
+
+function cloneRule(rule) {
+  if (rule == null) {
+    return rule;
+  }
+
+  const clone = { ...rule
+  };
+  const {
+    unsubscribers,
+    next
+  } = rule;
+
+  if (unsubscribers != null) {
+    clone.unsubscribers = [];
+  }
+
+  if (next != null) {
+    clone.next = cloneRule(next);
+  }
+
+  return clone;
+}

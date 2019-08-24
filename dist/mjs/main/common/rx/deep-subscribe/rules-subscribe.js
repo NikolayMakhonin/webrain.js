@@ -1,4 +1,9 @@
 import _classCallCheck from "@babel/runtime/helpers/classCallCheck";
+import _createClass from "@babel/runtime/helpers/createClass";
+import _possibleConstructorReturn from "@babel/runtime/helpers/possibleConstructorReturn";
+import _getPrototypeOf from "@babel/runtime/helpers/getPrototypeOf";
+import _get from "@babel/runtime/helpers/get";
+import _inherits from "@babel/runtime/helpers/inherits";
 
 /* tslint:disable:no-identical-functions */
 import { checkIsFuncOrNull, isIterable } from '../../helpers/helpers';
@@ -6,7 +11,8 @@ import { ListChangedType } from '../../lists/contracts/IListChanged';
 import { MapChangedType } from '../../lists/contracts/IMapChanged';
 import { SetChangedType } from '../../lists/contracts/ISetChanged';
 import { ANY, COLLECTION_PREFIX, VALUE_PROPERTY_DEFAULT, VALUE_PROPERTY_PREFIX } from './contracts/constants';
-import { RuleType } from './contracts/rules'; // function propertyPredicateAll(propertyName: string, object) {
+import { RuleType } from './contracts/rules';
+import { Rule } from './rules'; // function propertyPredicateAll(propertyName: string, object) {
 // 	return Object.prototype.hasOwnProperty.call(object, propertyName)
 // }
 // region subscribeObject
@@ -578,44 +584,84 @@ export var SubscribeObjectType;
   SubscribeObjectType[SubscribeObjectType["ValueProperty"] = 1] = "ValueProperty";
 })(SubscribeObjectType || (SubscribeObjectType = {}));
 
-export var RuleSubscribeObject = function RuleSubscribeObject(type, propertyPredicate) {
-  for (var _len3 = arguments.length, propertyNames = new Array(_len3 > 2 ? _len3 - 2 : 0), _key2 = 2; _key2 < _len3; _key2++) {
-    propertyNames[_key2 - 2] = arguments[_key2];
+export var RuleSubscribe =
+/*#__PURE__*/
+function (_Rule) {
+  _inherits(RuleSubscribe, _Rule);
+
+  function RuleSubscribe() {
+    _classCallCheck(this, RuleSubscribe);
+
+    return _possibleConstructorReturn(this, _getPrototypeOf(RuleSubscribe).call(this, RuleType.Action));
   }
 
-  _classCallCheck(this, RuleSubscribeObject);
+  _createClass(RuleSubscribe, [{
+    key: "clone",
+    value: function clone() {
+      var clone = _get(_getPrototypeOf(RuleSubscribe.prototype), "clone", this).call(this);
 
-  this.type = RuleType.Action;
+      var subscribe = this.subscribe;
 
-  if (propertyNames && !propertyNames.length) {
-    propertyNames = null;
-  }
+      if (subscribe != null) {
+        clone.subscribe = subscribe;
+      }
 
-  if (propertyPredicate) {
-    if (typeof propertyPredicate !== 'function') {
-      throw new Error("propertyPredicate (".concat(propertyPredicate, ") is not a function"));
+      return clone;
     }
-  } else if (type === SubscribeObjectType.Property) {
-    propertyPredicate = createPropertyPredicate(propertyNames);
+  }]);
 
-    if (!propertyPredicate) {
+  return RuleSubscribe;
+}(Rule);
+export var RuleSubscribeObject =
+/*#__PURE__*/
+function (_RuleSubscribe) {
+  _inherits(RuleSubscribeObject, _RuleSubscribe);
+
+  function RuleSubscribeObject(type, propertyPredicate) {
+    var _this;
+
+    for (var _len3 = arguments.length, propertyNames = new Array(_len3 > 2 ? _len3 - 2 : 0), _key2 = 2; _key2 < _len3; _key2++) {
+      propertyNames[_key2 - 2] = arguments[_key2];
+    }
+
+    _classCallCheck(this, RuleSubscribeObject);
+
+    _this = _possibleConstructorReturn(this, _getPrototypeOf(RuleSubscribeObject).call(this));
+
+    if (propertyNames && !propertyNames.length) {
       propertyNames = null;
     }
+
+    if (propertyPredicate) {
+      if (typeof propertyPredicate !== 'function') {
+        throw new Error("propertyPredicate (".concat(propertyPredicate, ") is not a function"));
+      }
+    } else if (type === SubscribeObjectType.Property) {
+      propertyPredicate = createPropertyPredicate(propertyNames);
+
+      if (!propertyPredicate) {
+        propertyNames = null;
+      }
+    }
+
+    switch (type) {
+      case SubscribeObjectType.Property:
+        _this.subscribe = subscribeObject.bind(null, propertyNames, propertyPredicate);
+        break;
+
+      case SubscribeObjectType.ValueProperty:
+        _this.subscribe = subscribeObjectValue.bind(null, propertyNames);
+        break;
+
+      default:
+        throw new Error("Unknown SubscribeObjectType: ".concat(type));
+    }
+
+    return _this;
   }
 
-  switch (type) {
-    case SubscribeObjectType.Property:
-      this.subscribe = subscribeObject.bind(null, propertyNames, propertyPredicate);
-      break;
-
-    case SubscribeObjectType.ValueProperty:
-      this.subscribe = subscribeObjectValue.bind(null, propertyNames);
-      break;
-
-    default:
-      throw new Error("Unknown SubscribeObjectType: ".concat(type));
-  }
-}; // endregion
+  return RuleSubscribeObject;
+}(RuleSubscribe); // endregion
 // region RuleSubscribeMap
 
 function createKeyPredicate(keys) {
@@ -648,38 +694,60 @@ function createKeyPredicate(keys) {
   }
 }
 
-export var RuleSubscribeMap = function RuleSubscribeMap(keyPredicate) {
-  for (var _len4 = arguments.length, keys = new Array(_len4 > 1 ? _len4 - 1 : 0), _key5 = 1; _key5 < _len4; _key5++) {
-    keys[_key5 - 1] = arguments[_key5];
-  }
+export var RuleSubscribeMap =
+/*#__PURE__*/
+function (_RuleSubscribe2) {
+  _inherits(RuleSubscribeMap, _RuleSubscribe2);
 
-  _classCallCheck(this, RuleSubscribeMap);
+  function RuleSubscribeMap(keyPredicate) {
+    var _this2;
 
-  this.type = RuleType.Action;
-
-  if (keys && !keys.length) {
-    keys = null;
-  }
-
-  if (keyPredicate) {
-    if (typeof keyPredicate !== 'function') {
-      throw new Error("keyPredicate (".concat(keyPredicate, ") is not a function"));
+    for (var _len4 = arguments.length, keys = new Array(_len4 > 1 ? _len4 - 1 : 0), _key5 = 1; _key5 < _len4; _key5++) {
+      keys[_key5 - 1] = arguments[_key5];
     }
-  } else {
-    keyPredicate = createKeyPredicate(keys);
 
-    if (!keyPredicate) {
+    _classCallCheck(this, RuleSubscribeMap);
+
+    _this2 = _possibleConstructorReturn(this, _getPrototypeOf(RuleSubscribeMap).call(this));
+
+    if (keys && !keys.length) {
       keys = null;
     }
+
+    if (keyPredicate) {
+      if (typeof keyPredicate !== 'function') {
+        throw new Error("keyPredicate (".concat(keyPredicate, ") is not a function"));
+      }
+    } else {
+      keyPredicate = createKeyPredicate(keys);
+
+      if (!keyPredicate) {
+        keys = null;
+      }
+    }
+
+    _this2.subscribe = subscribeMap.bind(null, keys, keyPredicate);
+    return _this2;
   }
 
-  this.subscribe = subscribeMap.bind(null, keys, keyPredicate);
-}; // endregion
+  return RuleSubscribeMap;
+}(RuleSubscribe); // endregion
 // region RuleSubscribeCollection
 
-export var RuleSubscribeCollection = function RuleSubscribeCollection() {
-  _classCallCheck(this, RuleSubscribeCollection);
+export var RuleSubscribeCollection =
+/*#__PURE__*/
+function (_RuleSubscribe3) {
+  _inherits(RuleSubscribeCollection, _RuleSubscribe3);
 
-  this.type = RuleType.Action;
-  this.subscribe = subscribeCollection;
-}; // endregion
+  function RuleSubscribeCollection() {
+    var _this3;
+
+    _classCallCheck(this, RuleSubscribeCollection);
+
+    _this3 = _possibleConstructorReturn(this, _getPrototypeOf(RuleSubscribeCollection).call(this));
+    _this3.subscribe = subscribeCollection;
+    return _this3;
+  }
+
+  return RuleSubscribeCollection;
+}(RuleSubscribe); // endregion
