@@ -1253,7 +1253,7 @@ describe('fundamental-operations', function() {
 		})
 	}
 
-	it('delete property', function() {
+	xit('delete property', function() {
 		this.timeout(300000)
 
 		const hashTable = {}
@@ -1677,7 +1677,7 @@ describe('fundamental-operations', function() {
 		return count / (time / 1000)
 	}
 
-	it('ThenableSync 2', async function() {
+	xit('ThenableSync 2', async function() {
 		this.timeout(300000)
 
 		async function nestedPromise() {
@@ -1717,5 +1717,54 @@ describe('fundamental-operations', function() {
 			yield 6
 			yield nestedIterator()
 		}))
+	})
+
+	it('decorators', function() {
+		this.timeout(300000)
+
+		function decoratorOwn() {
+			return descriptor => {
+				descriptor.placement = 'own'
+			}
+		}
+
+		function decoratorPrototype() {
+			return descriptor => {
+				descriptor.placement = 'prototype'
+			}
+		}
+
+		class Class {
+			public x: any
+		}
+
+		class ClassOwn {
+			@decoratorOwn()
+			public x: any
+		}
+
+		class ClassPrototype {
+			@decoratorPrototype()
+			public x: any
+		}
+
+		const result = calcPerformance(
+			120000,
+			() => {
+				// no operations
+			},
+
+			() => { // 4
+				return new Class()
+			},
+			() => { // 1400
+				return new ClassOwn()
+			},
+			() => { // 54
+				return new ClassPrototype()
+			},
+		)
+
+		console.log(result)
 	})
 })

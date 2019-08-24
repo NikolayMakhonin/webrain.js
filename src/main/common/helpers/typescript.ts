@@ -13,19 +13,19 @@
 // 	}
 // }
 
-export function singleton(target: any, propertyKey: string) {
-	const factory = target[propertyKey]
-	delete target[propertyKey]
-	Object.defineProperty(target, propertyKey, {
-		configurable: true,
-		enumerable: true,
-		get(this) {
-			const value = factory.call(this)
-			this[propertyKey] = value
-			return value
-		},
-	})
-}
+// export function singleton(target: any, propertyKey: string) {
+// 	const factory = target[propertyKey]
+// 	delete target[propertyKey]
+// 	Object.defineProperty(target, propertyKey, {
+// 		configurable: true,
+// 		enumerable: true,
+// 		get(this) {
+// 			const value = factory.call(this)
+// 			this[propertyKey] = value
+// 			return value
+// 		},
+// 	})
+// }
 
 // tslint:disable-next-line:ban-types
 export type NotFunction<T> = T extends Function ? never : T

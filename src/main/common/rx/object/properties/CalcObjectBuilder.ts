@@ -60,3 +60,27 @@ export class CalcObjectBuilder<TObject extends ObservableObject>
 		})
 	}
 }
+
+// const builder = new CalcObjectBuilder(true as any)
+//
+// export function calc<
+// 	TObject extends ObservableObject,
+// 	TInput extends new (object: TObject) => any | NotFunction<any>,
+// 	TValue = any,
+// 	TMergeSource = any
+// >(
+// 	options?: IConnectPropertyOptions<TObject, TInput, TValue, TMergeSource>,
+// 	initValue?: TValue,
+// ) {
+// 	return (target: TObject, propertyKey: string) => {
+// 		builder.object = target
+// 		builder.calc(propertyKey, options, initValue)
+// 	}
+// }
+
+// class Class1 extends ObservableObject {
+// }
+// class Class extends Class1 {
+// 	@calc()
+// 	public prop: number
+// }

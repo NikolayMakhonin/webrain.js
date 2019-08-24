@@ -10,11 +10,13 @@ module.exports = {
 	plugins: [
 		'babel-plugin-ts-nameof',
 		'@babel/plugin-transform-typescript',
-		[
-			'@babel/plugin-proposal-decorators', {
-				legacy: true
-			}
-		],
+		// Even prototype decorators is slow - create object x13 times slower
+		// [
+		// 	'@babel/plugin-proposal-decorators', {
+		// 		legacy: false,
+		// 		decoratorsBeforeExport: true,
+		// 	}
+		// ],
 
 		'@babel/plugin-transform-runtime',
 		'@babel/plugin-proposal-optional-chaining',

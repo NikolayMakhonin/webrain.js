@@ -177,3 +177,33 @@ export class ObservableObjectBuilder<TObject extends ObservableObject> {
 		return this
 	}
 }
+
+// const builder = new ObservableObjectBuilder(true as any)
+//
+// export function writable<T = any>(
+// 	options?: IWritableFieldOptions,
+// 	initValue?: T,
+// ) {
+// 	return (target: ObservableObject, propertyKey: string, descriptor: PropertyDescriptor) => {
+// 		builder.object = target
+// 		builder.writable(propertyKey, options, initValue)
+// 	}
+// }
+//
+// export function readable<T = any>(
+// 	options?: IReadableFieldOptions<T>,
+// 	initValue?: T,
+// ) {
+// 	return (target: ObservableObject, propertyKey: string) => {
+// 		builder.object = target
+// 		builder.readable(propertyKey, options, initValue)
+// 	}
+// }
+
+// class Class extends ObservableObject {
+// 	@writable()
+// 	public prop: number
+//
+// 	@readable()
+// 	public prop2: number
+// }

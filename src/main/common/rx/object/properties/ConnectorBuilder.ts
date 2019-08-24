@@ -90,3 +90,22 @@ export function connector(
 	build(connectorBuilder)
 	return Connector
 }
+
+const builder = new ConnectorBuilder(true as any)
+
+export function connect<TObject extends ObservableObject, TValue = any>(
+	options?: IConnectFieldOptions<TObject, TValue>,
+	initValue?: TValue,
+) {
+	return (target: TObject, propertyKey: string) => {
+		builder.object = target
+		builder.connect(propertyKey, options, initValue)
+	}
+}
+
+// class Class1 extends ObservableObject {
+// }
+// class Class extends Class1 {
+// 	@connect()
+// 	public prop: number
+// }
