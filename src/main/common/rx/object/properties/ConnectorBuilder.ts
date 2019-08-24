@@ -66,7 +66,7 @@ export class ConnectorBuilder<TObject extends ObservableObject> extends Observab
 	}
 }
 
-const CONNECTOR_SOURCE_PROPERTY_NAME: string = Math.random().toString(36)
+const CONNECTOR_SOURCE_PROPERTY_NAME: string = '6ed1fe668f754d5ba2c903aca18bb2bb'
 
 class ConnectorBase extends ObservableObject {
 	constructor(source: object) {

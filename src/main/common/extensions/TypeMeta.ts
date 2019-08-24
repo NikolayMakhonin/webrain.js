@@ -19,7 +19,7 @@ export interface ITypeMetaCollectionWithId<TMeta extends ITypeMetaWithId>
 	deleteType(typeOrUuid: TClass<any>|string): TMeta
 }
 
-const typeMetaPropertyNameBase: string = Math.random().toString(36)
+const typeMetaPropertyNameBase: string = '043a5580-80e9-4cbd-a1ad-d09753c28772'
 let typeMetaPropertyNameIndex: number = 0
 
 export class TypeMetaCollection<TMeta extends ITypeMeta> implements ITypeMetaCollection<TMeta> {
