@@ -1,31 +1,44 @@
 import {deepSubscribeRule} from '../../deep-subscribe/deep-subscribe'
 import {cloneRule, RuleBuilder} from '../../deep-subscribe/RuleBuilder'
-import {ISetOptions, ObservableObject} from '../ObservableObject'
+import {ObservableObject} from '../ObservableObject'
 import {IWritableFieldOptions, ObservableObjectBuilder} from '../ObservableObjectBuilder'
 
-export interface IConnectFieldOptions<TObject, TValue> extends IWritableFieldOptions {
-	buildRule: (builder: RuleBuilder<TObject>) => RuleBuilder<TValue>,
-}
+export class ConnectorBuilder<TSource = ObservableObject>
+	extends ObservableObjectBuilder<ObservableObject>
+{
+	public buildSourceRule: <TObject extends ObservableObject>(builder: RuleBuilder<TObject>) => RuleBuilder<TSource>
 
-export class ConnectorBuilder<TObject extends ObservableObject> extends ObservableObjectBuilder<TObject> {
-	public connect<TValue>(
-		name: string | number,
-		options?: IConnectFieldOptions<TObject, TValue>,
+	constructor(
+		object?: ObservableObject,
+		buildSourceRule?: <TObject extends ObservableObject>(builder: RuleBuilder<TObject>) => RuleBuilder<TSource>,
+	) {
+		super(object)
+		this.buildSourceRule = buildSourceRule
+	}
+
+	public connect<TValue, Name extends string | number>(
+		name: Name,
+		buildRule: (builder: RuleBuilder<TSource>) => RuleBuilder<TValue>,
+		options?: IWritableFieldOptions,
 		initValue?: TValue,
-	): this {
+	): this & { object: { [newProp in Name]: TValue } } {
 		const {
-			buildRule,
 			setOptions,
 			hidden,
 		} = options
 
-		const ruleBuilder = buildRule(new RuleBuilder())
+		const {object, buildSourceRule} = this
+
+		let ruleBuilder = new RuleBuilder()
+		if (buildSourceRule) {
+			ruleBuilder = buildSourceRule(ruleBuilder)
+		}
+		ruleBuilder = buildRule(ruleBuilder)
+
 		const ruleBase = ruleBuilder && ruleBuilder.result
 		if (ruleBase == null) {
 			throw new Error('buildRule() return null or not initialized RuleBuilder')
 		}
-
-		const {object} = this
 
 		return this.readable(
 			name,
@@ -66,42 +79,47 @@ export class ConnectorBuilder<TObject extends ObservableObject> extends Observab
 	}
 }
 
-const CONNECTOR_SOURCE_PROPERTY_NAME: string = '6ed1fe668f754d5ba2c903aca18bb2bb'
+const CONNECTOR_SOURCE_PROPERTY_NAME = '6ed1fe668f754d5ba2c903aca18bb2bb'
 
-class ConnectorBase extends ObservableObject {
-	constructor(source: object) {
-		super()
-		this[CONNECTOR_SOURCE_PROPERTY_NAME] = source
+class ConnectorBase<TSubObject> extends ObservableObject {
+	public [CONNECTOR_SOURCE_PROPERTY_NAME]: TSubObject
+}
+
+new ObservableObjectBuilder(ConnectorBase.prototype)
+	.writable(CONNECTOR_SOURCE_PROPERTY_NAME, {
+		hidden: true,
+	})
+
+export function connector<
+	TSource extends ObservableObject,
+	TConnector,
+>(
+	build: (connectorBuilder: ConnectorBuilder<TSource>) => { object: TConnector },
+): (source: TSource) => TConnector {
+	class Connector extends ConnectorBase<TSource> { }
+	const connectorBuilder = build(new ConnectorBuilder<TSource>(
+		Connector.prototype,
+		b => b.path(o => o[CONNECTOR_SOURCE_PROPERTY_NAME]),
+	))
+
+	return source => {
+		const instance = new Connector()
+		instance[CONNECTOR_SOURCE_PROPERTY_NAME] = source
+		return instance as unknown as TConnector
 	}
 }
 
-Object.defineProperty(ConnectorBase.prototype, CONNECTOR_SOURCE_PROPERTY_NAME, {
-	configurable: false,
-	enumerable  : false,
-	writable    : false,
-	value       : null,
-})
-
-export function connector(
-	build: (connectorBuilder: ConnectorBuilder<ObservableObject>) => void,
-): new (source: object) => ObservableObject {
-	class Connector extends ConnectorBase { }
-	const connectorBuilder = new ConnectorBuilder(Connector.prototype)
-	build(connectorBuilder)
-	return Connector
-}
-
-const builder = new ConnectorBuilder(true as any)
-
-export function connect<TObject extends ObservableObject, TValue = any>(
-	options?: IConnectFieldOptions<TObject, TValue>,
-	initValue?: TValue,
-) {
-	return (target: TObject, propertyKey: string) => {
-		builder.object = target
-		builder.connect(propertyKey, options, initValue)
-	}
-}
+// const builder = new ConnectorBuilder(true as any)
+//
+// export function connect<TObject extends ObservableObject, TValue = any>(
+// 	options?: IConnectFieldOptions<TObject, TValue>,
+// 	initValue?: TValue,
+// ) {
+// 	return (target: TObject, propertyKey: string) => {
+// 		builder.object = target
+// 		builder.connect(propertyKey, options, initValue)
+// 	}
+// }
 
 // class Class1 extends ObservableObject {
 // }

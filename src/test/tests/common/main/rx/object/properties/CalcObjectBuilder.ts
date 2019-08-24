@@ -5,20 +5,31 @@ import {ObservableObjectBuilder} from '../../../../../../../main/common/rx/objec
 import {CalcObjectBuilder} from '../../../../../../../main/common/rx/object/properties/CalcObjectBuilder'
 import {connector, ConnectorBuilder} from '../../../../../../../main/common/rx/object/properties/ConnectorBuilder'
 import {createObject} from '../../deep-subscribe/helpers/Tester'
+import {Property} from "../../../../../../../main/common/rx/object/properties/property";
+import {ThenableOrValue} from "../../../../../../../main/common/async/async";
 
 declare const assert: any
 
-xdescribe('common > main > rx > properties > CalcObjectBuilder', function() {
+describe('common > main > rx > properties > CalcObjectBuilder', function() {
 	it('calc', function() {
 		class Class1 extends ObservableObject {
-
+			public source: {
+				value: string,
+			}
 		}
 
-		new CalcObjectBuilder(Class1.prototype)
-			.calc('prop1', {
-				input: connector(b => b
-					.connect('connectValue1', ))
-			})
+		type TInput = (object: Class1) => ObservableObject & { connectValue1: { value: string } }
+
+		const result = new CalcObjectBuilder(Class1.prototype)
+			.calc('prop1', connector(c => c
+				.connect('connectValue1', b => b.path(o => o.source))),
+				{
+					dependencies: b => b.path(o => o.connectValue1),
+					calcFunc(input, valueProperty: Property<Date, number>): ThenableOrValue<void> {
+						valueProperty.value = new Date(0)
+					},
+				})
+			.object.prop1['@wait']
 
 	})
 })

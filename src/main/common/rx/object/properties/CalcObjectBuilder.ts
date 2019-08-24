@@ -1,22 +1,20 @@
-import {NotFunction} from '../../../helpers/typescript'
-import {deepSubscribe, deepSubscribeRule} from '../../deep-subscribe/deep-subscribe'
+import {deepSubscribe} from '../../deep-subscribe/deep-subscribe'
 import {RuleBuilder} from '../../deep-subscribe/RuleBuilder'
 import {IDeferredCalcOptions} from '../../deferred-calc/DeferredCalc'
 import {ObservableObject} from '../ObservableObject'
 import {IWritableFieldOptions, ObservableObjectBuilder} from '../ObservableObjectBuilder'
-import {CalcProperty, CalcPropertyFunc} from './CalcProperty'
+import {CalcProperty, CalcPropertyFunc, ICalcProperty} from './CalcProperty'
 import {IPropertyOptions} from './property'
 
-export interface IConnectPropertyOptions<
+export interface ICalcPropertyOptions<
 	TObject,
-	TInput extends new (object: TObject) => any | NotFunction<any>,
+	TInput,
 	TValue,
 	TMergeSource
 > extends IWritableFieldOptions {
-	input: TInput,
 	dependencies: (inputRuleBuilder: RuleBuilder<TInput>) => void,
 	calcFunc: CalcPropertyFunc<TInput, TValue, TMergeSource>,
-	calcOptions: IDeferredCalcOptions,
+	calcOptions?: IDeferredCalcOptions,
 	valuePropertyOptions?: IPropertyOptions<TValue, TMergeSource>,
 }
 
@@ -24,25 +22,39 @@ export class CalcObjectBuilder<TObject extends ObservableObject>
 	extends ObservableObjectBuilder<TObject>
 {
 	public calc<
-		TInput extends new (object: TObject) => any | NotFunction<any>,
+		TInput,
 		TValue,
+		Name extends string | number,
 		TMergeSource
 	>(
-		name: string | number,
+		name: Name,
+		input: ((object: TObject) => TInput) | (TInput extends (() => void) ? never : TInput),
 		{
-			input,
 			dependencies,
 			calcFunc,
 			calcOptions,
 			valuePropertyOptions,
-		}: IConnectPropertyOptions<TObject, TInput, TValue, TMergeSource>,
+		}: ICalcPropertyOptions<
+			TObject,
+			TInput,
+			TValue,
+			TMergeSource
+		>,
 		initValue?: TValue,
-	): this {
-		return this.readable<CalcProperty<TInput, TValue, TMergeSource>>(name, {
+	): this & {
+		object: {
+			[prop in Name]: ICalcProperty<TInput, TValue, TMergeSource> & TValue
+		},
+	} {
+		return this.readable<CalcProperty<
+			TInput,
+			TValue,
+			TMergeSource
+		>, Name>(name, {
 			factory(this: TObject) {
 				const property = new CalcProperty(calcFunc, calcOptions, valuePropertyOptions, initValue)
 				property.input = typeof input === 'function'
-					? new input(this)
+					? (input as (object: TObject) => TInput)(this)
 					: input
 
 				if (dependencies) {
@@ -57,7 +69,7 @@ export class CalcObjectBuilder<TObject extends ObservableObject>
 
 				return property
 			},
-		})
+		}) as any
 	}
 }
 

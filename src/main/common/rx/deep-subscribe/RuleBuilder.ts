@@ -12,7 +12,7 @@ const RuleSubscribeMapKeys = RuleSubscribeMap.bind(null, null)
 // const UNSUBSCRIBE_PROPERTY_PREFIX = Math.random().toString(36)
 // let nextUnsubscribePropertyId = 0
 
-export class RuleBuilder<TObject> {
+export class RuleBuilder<TObject = any> {
 	public result: IRule
 	private _ruleLast: IRule
 

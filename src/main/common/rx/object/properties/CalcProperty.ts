@@ -8,7 +8,13 @@ import {ObservableObjectBuilder} from '../ObservableObjectBuilder'
 import {IPropertyOptions, Property} from './property'
 
 export type CalcPropertyFunc<TInput, TTarget, TSource>
-	= (input: TInput, value: Property<TTarget, TSource>) => ThenableOrValue<void>
+	= (input: TInput, valueProperty: Property<TTarget, TSource>) => ThenableOrValue<void>
+
+export interface ICalcProperty<TInput, TValue, TMergeSource> {
+	['@last']: TValue
+	['@wait']: TValue
+	['@lastOrWait']: TValue
+}
 
 export class CalcProperty<TInput, TValue, TMergeSource> extends ObservableObject {
 	private readonly _calcFunc: CalcPropertyFunc<TInput, TValue, TMergeSource>
@@ -74,21 +80,21 @@ export class CalcProperty<TInput, TValue, TMergeSource> extends ObservableObject
 		}
 	}
 
-	get [VALUE_PROPERTY_DEFAULT](): ThenableOrValue<TValue> {
+	public get [VALUE_PROPERTY_DEFAULT](): ThenableOrValue<TValue> {
 		return this.lastOrWait
 	}
 
-	get last(): TValue {
+	public get last(): TValue {
 		this._deferredCalc.calc()
 		return this._valueProperty.value
 	}
 
-	get wait(): ThenableOrValue<TValue> {
+	public get wait(): ThenableOrValue<TValue> {
 		this._deferredCalc.calc()
 		return this._deferredValue as TValue
 	}
 
-	get lastOrWait(): ThenableOrValue<TValue> {
+	public get lastOrWait(): ThenableOrValue<TValue> {
 		this._deferredCalc.calc()
 		return this._hasValue
 			? this._valueProperty.value

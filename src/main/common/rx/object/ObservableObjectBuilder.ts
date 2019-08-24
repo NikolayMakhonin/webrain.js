@@ -21,11 +21,11 @@ export class ObservableObjectBuilder<TObject extends ObservableObject> {
 		this.object = object || new ObservableObject() as TObject
 	}
 
-	public writable<T>(
-		name: string | number,
+	public writable<T, Name extends string | number>(
+		name: Name,
 		options?: IWritableFieldOptions,
 		initValue?: T,
-	): this {
+	): this & { object: { [newProp in Name]: T } } {
 		const {
 			setOptions,
 			hidden,
@@ -36,7 +36,7 @@ export class ObservableObjectBuilder<TObject extends ObservableObject> {
 		const {__fields} = object
 
 		if (__fields) {
-			__fields[name] = object[name]
+			__fields[name] = object[name as any]
 		} else if (typeof initValue !== 'undefined') {
 			throw new Error("You can't set initValue for prototype writable property")
 		}
@@ -55,18 +55,18 @@ export class ObservableObjectBuilder<TObject extends ObservableObject> {
 		if (__fields && typeof initValue !== 'undefined') {
 			const value = __fields[name]
 			if (initValue !== value) {
-				object[name] = initValue
+				object[name as any] = initValue
 			}
 		}
 
-		return this
+		return this as any
 	}
 
-	public readable<T>(
-		name: string | number,
+	public readable<T, Name extends string | number>(
+		name: Name,
 		options?: IReadableFieldOptions<T>,
 		initValue?: T,
-	): this {
+	): this & { object: { [newProp in Name]: T } } {
 		const hidden = options && options.hidden
 
 		const setOptions = {
@@ -79,7 +79,7 @@ export class ObservableObjectBuilder<TObject extends ObservableObject> {
 		const {__fields} = object
 
 		if (__fields) {
-			__fields[name] = object[name]
+			__fields[name] = object[name as any]
 		}
 
 		let factory = options && options.factory
@@ -125,7 +125,7 @@ export class ObservableObjectBuilder<TObject extends ObservableObject> {
 					propertyChangedIfCanEmit.onPropertyChanged(new PropertyChangedEvent(
 						name,
 						oldValue,
-						() => object[name],
+						() => object[name as any],
 					))
 				}
 			}
@@ -149,16 +149,18 @@ export class ObservableObjectBuilder<TObject extends ObservableObject> {
 			}
 		}
 
-		return this
+		return this as any
 	}
 
-	public delete(name: string | number): this {
+	public delete<Name extends string | number>(name: Name)
+		: this & { object: { [newProp in Name]: never } }
+	{
 		const {object} = this
-		const oldValue = object[name]
+		const oldValue = object[name as any]
 
 		object._setUnsubscriber(name, null)
 
-		delete object[name]
+		delete object[name as any]
 
 		const {__fields} = object
 		if (__fields) {
@@ -174,9 +176,18 @@ export class ObservableObjectBuilder<TObject extends ObservableObject> {
 			}
 		}
 
-		return this
+		return this as any
 	}
 }
+
+export const obj = new ObservableObjectBuilder()
+	.writable<number, 'prop1'>('prop1')
+	.readable<string, 'prop2'>('prop2')
+	.readable<string, 'prop3'>('prop3')
+	.delete('prop3')
+	.object
+
+export const x = obj.prop1 + obj.prop2 + obj.propertyChanged + obj.prop3
 
 // const builder = new ObservableObjectBuilder(true as any)
 //
