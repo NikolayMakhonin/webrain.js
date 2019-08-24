@@ -13,6 +13,9 @@ declare const assert: any
 describe('common > main > rx > properties > CalcObjectBuilder', function() {
 	it('calc', function() {
 		class Class1 extends ObservableObject {
+			public map: Map<string, {
+				value: string,
+			}>
 			public source: {
 				value: string,
 			}
@@ -22,14 +25,14 @@ describe('common > main > rx > properties > CalcObjectBuilder', function() {
 
 		const result = new CalcObjectBuilder(Class1.prototype)
 			.calc('prop1', connector(c => c
-				.connect('connectValue1', b => b.path(o => o.source))),
+				.connect('connectValue1', b => b.path(o => (o as Class1).map).mapKey('x').path(o => o.source))),
 				{
 					dependencies: b => b.path(o => o.connectValue1),
 					calcFunc(input, valueProperty: Property<Date, number>): ThenableOrValue<void> {
 						valueProperty.value = new Date(0)
 					},
 				})
-			.object.prop1['@wait']
+			.object.prop1
 
 	})
 })

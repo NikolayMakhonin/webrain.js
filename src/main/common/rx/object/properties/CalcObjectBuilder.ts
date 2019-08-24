@@ -42,9 +42,7 @@ export class CalcObjectBuilder<TObject extends ObservableObject>
 		>,
 		initValue?: TValue,
 	): this & {
-		object: {
-			[prop in Name]: ICalcProperty<TInput, TValue, TMergeSource> & TValue
-		},
+		object: TValue | CalcProperty<TInput, TValue, TMergeSource>,
 	} {
 		return this.readable<CalcProperty<
 			TInput,

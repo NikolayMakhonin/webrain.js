@@ -6,15 +6,16 @@ import {DeferredCalc, IDeferredCalcOptions} from '../../deferred-calc/DeferredCa
 import {ObservableObject} from '../ObservableObject'
 import {ObservableObjectBuilder} from '../ObservableObjectBuilder'
 import {IPropertyOptions, Property} from './property'
+import {RuleGetValueFunc} from "../../deep-subscribe/RuleBuilder";
 
 export type CalcPropertyFunc<TInput, TTarget, TSource>
 	= (input: TInput, valueProperty: Property<TTarget, TSource>) => ThenableOrValue<void>
 
-export interface ICalcProperty<TInput, TValue, TMergeSource> {
-	['@last']: TValue
-	['@wait']: TValue
-	['@lastOrWait']: TValue
-}
+// export interface ICalcProperty<TInput, TValue, TMergeSource> {
+// 	['@last']: TValue
+// 	['@wait']: TValue
+// 	['@lastOrWait']: TValue
+// }
 
 export class CalcProperty<TInput, TValue, TMergeSource> extends ObservableObject {
 	private readonly _calcFunc: CalcPropertyFunc<TInput, TValue, TMergeSource>
@@ -80,8 +81,9 @@ export class CalcProperty<TInput, TValue, TMergeSource> extends ObservableObject
 		}
 	}
 
-	public get [VALUE_PROPERTY_DEFAULT](): ThenableOrValue<TValue> {
-		return this.lastOrWait
+	public get [VALUE_PROPERTY_DEFAULT](): ThenableOrValue<TValue>
+	{
+		return this.lastOrWait as any
 	}
 
 	public get last(): TValue {
@@ -104,3 +106,6 @@ export class CalcProperty<TInput, TValue, TMergeSource> extends ObservableObject
 
 new ObservableObjectBuilder(CalcProperty.prototype)
 	.writable('input')
+
+const x: RuleGetValueFunc<CalcProperty<any, { xxxx: { yyyy: 123 } }, any>, number> =
+	o => o['@last']['@last']['@last'].xxxx['@last']['@wait'].yyyy['@last']

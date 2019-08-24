@@ -1,9 +1,11 @@
-import {ANY_DISPLAY, COLLECTION_PREFIX, VALUE_PROPERTY_PREFIX} from './contracts/constants'
+import {ANY_DISPLAY, COLLECTION_PREFIX, VALUE_PROPERTY_DEFAULT, VALUE_PROPERTY_PREFIX} from './contracts/constants'
 import {IRuleSubscribe} from './contracts/rule-subscribe'
 import {IRule} from './contracts/rules'
 import {getFuncPropertiesPath} from './helpers/func-properties-path'
 import {RuleAny, RuleNothing, RuleRepeat} from './rules'
 import {RuleSubscribeCollection, RuleSubscribeMap, RuleSubscribeObject, SubscribeObjectType} from './rules-subscribe'
+import {Thenable} from "../../async/async";
+import {Diff} from "../../helpers/typescript";
 
 const RuleSubscribeObjectPropertyNames = RuleSubscribeObject.bind(null, SubscribeObjectType.Property, null)
 const RuleSubscribeObjectValuePropertyNames = RuleSubscribeObject.bind(null, SubscribeObjectType.ValueProperty, null)
@@ -12,7 +14,22 @@ const RuleSubscribeMapKeys = RuleSubscribeMap.bind(null, null)
 // const UNSUBSCRIBE_PROPERTY_PREFIX = Math.random().toString(36)
 // let nextUnsubscribePropertyId = 0
 
-export class RuleBuilder<TObject = any> {
+export type TRulePathObject<TObject, TValueKeys extends string | number> =
+	TObject extends { [VALUE_PROPERTY_DEFAULT]: any }
+		? Diff<TObject[VALUE_PROPERTY_DEFAULT], Thenable<any>> & {
+			[key in keyof TObject[VALUE_PROPERTY_DEFAULT] | TValueKeys]
+				: Diff<TRulePathObject<TObject[VALUE_PROPERTY_DEFAULT], TValueKeys>, Thenable<any>>
+		}
+		: TObject & {
+			[key in keyof TObject]: TRulePathObject<Diff<TObject[key], Thenable<any>>, TValueKeys>
+		} & {
+			[key in TValueKeys]: TRulePathObject<Diff<TObject, Thenable<any>>, TValueKeys>
+		}
+
+export type RuleGetValueFunc<TObject, TValue, TValueKeys extends string | number>
+	= (o: TRulePathObject<TObject, TValueKeys>) => TValue
+
+export class RuleBuilder<TObject = any, TValueKeys extends string | number = any> {
 	public result: IRule
 	private _ruleLast: IRule
 
@@ -163,6 +180,8 @@ export class RuleBuilder<TObject = any> {
 	/**
 	 * IMapChanged & Map, Map
 	 */
+	public mapKey<TKey>(key: TKey)
+		: RuleBuilder<TObject extends Map<TKey, infer TValue> ? TValue: never>
 	public mapKey<TKey, TValue>(key: TKey): RuleBuilder<TValue> {
 		return this.ruleSubscribe(
 			new RuleSubscribeMapKeys(key),
@@ -217,7 +236,7 @@ export class RuleBuilder<TObject = any> {
 		)
 	}
 
-	public path<TValue>(getValueFunc: (o: TObject) => TValue): RuleBuilder<TValue> {
+	public path<TValue>(getValueFunc: RuleGetValueFunc<TObject, TValue, TValueKeys>): RuleBuilder<TValue> {
 		for (const propertyNames of getFuncPropertiesPath(getValueFunc)) {
 			if (propertyNames.startsWith(COLLECTION_PREFIX)) {
 				const keys = propertyNames.substring(1)
