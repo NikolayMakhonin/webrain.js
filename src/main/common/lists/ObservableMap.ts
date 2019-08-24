@@ -222,7 +222,7 @@ export class ObservableMap<K, V>
 
 	// region ISerializable
 
-	public static uuid: string = 'e162178d-5123-4bea-ab6e-b96d5b8f130b'
+	public static uuid: string = 'e162178d51234beaab6eb96d5b8f130b'
 
 	public serialize(serialize: ISerializeValue): ISerializedObject {
 		return {

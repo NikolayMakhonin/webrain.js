@@ -208,7 +208,7 @@ export class Property<TValue, TMergeSource>
 
 	// region ISerializable
 
-	public static uuid: string = '6f2c51cc-d865-4baa-9a93-226e3374ccaf'
+	public static uuid: string = '6f2c51ccd8654baa9a93226e3374ccaf'
 
 	public serialize(serialize: ISerializeValue): ISerializedObject {
 		return {

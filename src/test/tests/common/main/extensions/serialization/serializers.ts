@@ -256,7 +256,7 @@ describe('common > extensions > serialization > serializers', function() {
 			this.prop2 = prop2
 		}
 
-		public static uuid: string = '3cd34642-9e19-4a0d-8a57-ff526b445100'
+		public static uuid: string = '3cd346429e194a0d8a57ff526b445100'
 
 		public serialize(serialize: ISerializeValue): ISerializedObject {
 			return {
@@ -295,7 +295,7 @@ describe('common > extensions > serialization > serializers', function() {
 			super(prop2)
 		}
 
-		public static uuid: string = 'c2a26bc9-1cc5-4249-9f10-f8e087fd6a1b'
+		public static uuid: string = 'c2a26bc91cc542499f10f8e087fd6a1b'
 
 		public serialize(serialize: ISerializeValue): ISerializedObject {
 			return {

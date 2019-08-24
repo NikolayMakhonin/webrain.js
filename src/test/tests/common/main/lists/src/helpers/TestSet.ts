@@ -180,7 +180,7 @@ class SetWrapper<T> implements Set<T>, ISerializable {
 
 	// region ISerializable
 
-	public static uuid: string = '5de4524d-6cdb-41e9-8968-9798ecedef5d'
+	public static uuid: string = '5de4524d6cdb41e989689798ecedef5d'
 
 	public serialize(serialize: ISerializeValue): ISerializedObject {
 		return {

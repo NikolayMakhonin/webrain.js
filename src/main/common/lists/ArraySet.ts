@@ -165,7 +165,7 @@ export class ArraySet<T extends Object> implements
 
 	// region ISerializable
 
-	public static uuid: string = '0e8c7f09-ea9e-4631-8af8-a635c214a01c'
+	public static uuid: string = '0e8c7f09ea9e46318af8a635c214a01c'
 
 	public serialize(serialize: ISerializeValue): ISerializedObject {
 		return {

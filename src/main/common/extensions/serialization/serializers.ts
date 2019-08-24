@@ -613,7 +613,7 @@ export function deSerializeObject<T extends object>(
 }
 
 registerSerializer<object>(Object, {
-	uuid: '88968a59-178c-4e73-a99f-801e8cdfc37d',
+	uuid: '88968a59178c4e73a99f801e8cdfc37d',
 	serializer: {
 		serialize(
 			serialize: ISerializeValue,
@@ -674,19 +674,19 @@ const primitiveAsObjectSerializer = {
 
 // @ts-ignore
 registerSerializer<string>(String, {
-	uuid: '96104fd7-d6f8-4a32-b8f2-feaa4f3666d8',
+	uuid: '96104fd7d6f84a32b8f2feaa4f3666d8',
 	serializer: primitiveAsObjectSerializer,
 })
 
 // @ts-ignore
 registerSerializer<number>(Number, {
-	uuid: 'dea0de40-1801-4025-b6a4-b6f6c7a4fa11',
+	uuid: 'dea0de4018014025b6a4b6f6c7a4fa11',
 	serializer: primitiveAsObjectSerializer,
 })
 
 // @ts-ignore
 registerSerializer<boolean>(Boolean, {
-	uuid: 'e8d1ac82-a0fa-4431-a23e-3d8f954f736f',
+	uuid: 'e8d1ac82a0fa4431a23e3d8f954f736f',
 	serializer: primitiveAsObjectSerializer,
 })
 
@@ -695,7 +695,7 @@ registerSerializer<boolean>(Boolean, {
 // region Array
 
 registerSerializer<any[]>(Array, {
-	uuid: 'f8c84ed0-8463-4f45-b14a-228967dfb0de',
+	uuid: 'f8c84ed084634f45b14a228967dfb0de',
 	serializer: {
 		serialize(
 			serialize: ISerializeValue,
@@ -728,7 +728,7 @@ registerSerializer<any[]>(Array, {
 // region Set
 
 registerSerializer<Set<any>>(Set, {
-	uuid: '17b11d99-ce03-4349-969e-4f9291d0778c',
+	uuid: '17b11d99ce034349969e4f9291d0778c',
 	serializer: {
 		serialize(
 			serialize: ISerializeValue,
@@ -756,7 +756,7 @@ registerSerializer<Set<any>>(Set, {
 // region Map
 
 registerSerializer<Map<any, any>>(Map, {
-	uuid: 'fdf40f21-59b7-4cb2-804f-3d18ebb19b57',
+	uuid: 'fdf40f2159b74cb2804f3d18ebb19b57',
 	serializer: {
 		serialize(
 			serialize: ISerializeValue,
@@ -794,7 +794,7 @@ registerSerializer<Map<any, any>>(Map, {
 // region Date
 
 registerSerializer<Date>(Date, {
-	uuid: '7a6c01db-a6b8-4822-a9a5-86e4d3a4460b',
+	uuid: '7a6c01dba6b84822a9a586e4d3a4460b',
 	serializer: {
 		serialize(
 			serialize: ISerializeValue,

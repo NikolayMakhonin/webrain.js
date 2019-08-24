@@ -1225,7 +1225,7 @@ export class SortedList<T>
 
 	// region ISerializable
 
-	public static uuid: string = '1ec56e52-1aa5-4dd1-8471-a6185f22ed0a'
+	public static uuid: string = '1ec56e521aa54dd18471a6185f22ed0a'
 
 	public serialize(serialize: ISerializeValue): ISerializedObject {
 		return {

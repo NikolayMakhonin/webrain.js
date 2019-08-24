@@ -161,7 +161,7 @@ export class ArrayMap<K extends object, V> implements
 
 	// region ISerializable
 
-	public static uuid: string = 'ef0ced8a-58f7-4381-b850-3b09c0a42eed'
+	public static uuid: string = 'ef0ced8a58f74381b8503b09c0a42eed'
 
 	public serialize(serialize: ISerializeValue): ISerializedObject {
 		return {

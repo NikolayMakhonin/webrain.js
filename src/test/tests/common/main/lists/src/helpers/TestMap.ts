@@ -216,7 +216,7 @@ class MapWrapper<K, V> implements Map<K, V>, ISerializable {
 
 	// region ISerializable
 
-	public static uuid: string = 'bc06eeb6-5139-444a-a735-57a6e1928ac9'
+	public static uuid: string = 'bc06eeb65139444aa73557a6e1928ac9'
 
 	public serialize(serialize: ISerializeValue): ISerializedObject {
 		return {

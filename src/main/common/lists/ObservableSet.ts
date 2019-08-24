@@ -198,7 +198,7 @@ export class ObservableSet<T> extends SetChangedObject<T> implements
 
 	// region ISerializable
 
-	public static uuid: string = '91539dfb-55f4-4bfb-9dbf-bff7f6ab800d'
+	public static uuid: string = '91539dfb55f44bfb9dbfbff7f6ab800d'
 
 	public serialize(serialize: ISerializeValue): ISerializedObject {
 		return {

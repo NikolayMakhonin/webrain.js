@@ -140,7 +140,7 @@ export class ObjectSet implements
 
 	// region ISerializable
 
-	public static uuid: string = '6988ebc9-cd06-4a9b-97a9-8415b8cf1dc4'
+	public static uuid: string = '6988ebc9cd064a9b97a98415b8cf1dc4'
 
 	public serialize(serialize: ISerializeValue): ISerializedObject {
 		return {
