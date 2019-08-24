@@ -52,7 +52,7 @@ async function doRollup(file) {
 	const bundle = await rollup.rollup({
 		input  : file,
 		plugins: [
-			rollupPlugins.typescript(),
+			// rollupPlugins.typescript(),
 			// rollupPlugins.globals(),
 			// rollupPlugins.builtins(),
 			rollupPlugins.babel(),
