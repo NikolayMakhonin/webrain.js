@@ -113,9 +113,9 @@ function () {
         throw new Error("Multiple call resolve/reject() is forbidden; status = ".concat(_status));
       }
 
-      var result = resolveValue(error, function (o, e) {
+      var result = resolveValue(error, function (o) {
         error = o;
-      }, function (o, e) {
+      }, function (o) {
         _this2._reject(o);
       });
 

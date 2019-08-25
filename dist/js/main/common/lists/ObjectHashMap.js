@@ -156,20 +156,20 @@ class ObjectHashMap {
     };
   }
 
-  deSerialize(deSerialize, serializedValue) {} // endregion
+  deSerialize() {} // endregion
 
 
 }
 
 exports.ObjectHashMap = ObjectHashMap;
-ObjectHashMap.uuid = '7a5731ae-37ad-4c5b-aee0-25a8f1cd2228';
+ObjectHashMap.uuid = '7a5731ae37ad4c5baee025a8f1cd2228';
 (0, _mergers.registerMergeable)(ObjectHashMap);
 (0, _serializers.registerSerializable)(ObjectHashMap, {
   serializer: {
     *deSerialize(deSerialize, serializedValue, valueFactory) {
       const innerMap = yield deSerialize(serializedValue.object);
-      const value = valueFactory(innerMap);
-      value.deSerialize(deSerialize, serializedValue);
+      const value = valueFactory(innerMap); // value.deSerialize(deSerialize, serializedValue)
+
       return value;
     }
 

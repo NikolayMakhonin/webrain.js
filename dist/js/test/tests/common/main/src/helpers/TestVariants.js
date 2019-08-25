@@ -64,7 +64,8 @@ class TestVariants {
     delete optionsVariants.expected;
     delete optionsVariants.exclude;
     const actionsWithDescriptions = expandArray(optionsVariants.actions);
-    delete optionsVariants.actions;
+    delete optionsVariants.actions; // tslint:disable-next-line:prefer-const
+
     let variants = generateOptions({}, optionsVariants, exclude); // variants = Array.from(variants)
 
     for (const actionsWithDescription of actionsWithDescriptions) {

@@ -20,10 +20,13 @@ var _rules = require("./contracts/rules");
 var _rules2 = require("./rules");
 
 /* tslint:disable:no-identical-functions */
-// function propertyPredicateAll(propertyName: string, object) {
-// 	return Object.prototype.hasOwnProperty.call(object, propertyName)
-// }
-// region subscribeObject
+function forEachSimple(iterable, callbackfn) {
+  for (const item of iterable) {
+    callbackfn(item, _constants.COLLECTION_PREFIX);
+  }
+} // region subscribeObject
+
+
 function getFirstExistProperty(object, propertyNames) {
   for (let i = 0, len = propertyNames.length; i < len; i++) {
     const propertyName = propertyNames[i];
@@ -88,8 +91,7 @@ function subscribeObjectValue(propertyNames, object, immediateSubscribe, subscri
   if (propertyChanged) {
     unsubscribe = (0, _helpers.checkIsFuncOrNull)(propertyChanged.subscribe(({
       name,
-      oldValue,
-      newValue
+      oldValue
     }) => {
       const newSubscribePropertyName = getSubscribePropertyName();
 
@@ -275,14 +277,8 @@ function subscribeList(object, immediateSubscribe, subscribeItem, unsubscribeIte
     }));
   }
 
-  const forEach = callbackfn => {
-    for (const item of object) {
-      callbackfn(item, _constants.COLLECTION_PREFIX);
-    }
-  };
-
   if (immediateSubscribe) {
-    forEach(subscribeItem);
+    forEachSimple(object, subscribeItem);
   } else if (unsubscribe == null) {
     return null;
   }
@@ -293,7 +289,7 @@ function subscribeList(object, immediateSubscribe, subscribeItem, unsubscribeIte
       unsubscribe = null;
     }
 
-    forEach(unsubscribeItem);
+    forEachSimple(object, unsubscribeItem);
   };
 } // endregion
 // region subscribeSet
@@ -335,14 +331,8 @@ function subscribeSet(object, immediateSubscribe, subscribeItem, unsubscribeItem
     }));
   }
 
-  const forEach = callbackfn => {
-    for (const item of object) {
-      callbackfn(item, _constants.COLLECTION_PREFIX);
-    }
-  };
-
   if (immediateSubscribe) {
-    forEach(subscribeItem);
+    forEachSimple(object, subscribeItem);
   } else if (unsubscribe == null) {
     return null;
   }
@@ -353,7 +343,7 @@ function subscribeSet(object, immediateSubscribe, subscribeItem, unsubscribeItem
       unsubscribe = null;
     }
 
-    forEach(unsubscribeItem);
+    forEachSimple(object, unsubscribeItem);
   };
 } // endregion
 // region subscribeMap
@@ -490,7 +480,7 @@ function createPropertyPredicate(propertyNames) {
       return null;
     }
 
-    return (propName, object) => {
+    return propName => {
       return propName === propertyName;
     };
   } else {
@@ -506,7 +496,7 @@ function createPropertyPredicate(propertyNames) {
       propertyNamesMap[propertyName] = true;
     }
 
-    return (propName, object) => {
+    return propName => {
       return !!propertyNamesMap[propName];
     };
   }
@@ -594,7 +584,7 @@ function createKeyPredicate(keys) {
       return null;
     }
 
-    return (k, object) => {
+    return k => {
       return k === key;
     };
   } else {
@@ -606,7 +596,7 @@ function createKeyPredicate(keys) {
       }
     }
 
-    return (k, object) => {
+    return k => {
       return keys.indexOf(k) >= 0;
     };
   }

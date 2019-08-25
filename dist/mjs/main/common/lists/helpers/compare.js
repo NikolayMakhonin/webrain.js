@@ -2,7 +2,8 @@ import _typeof from "@babel/runtime/helpers/typeof";
 
 /* tslint:disable:use-isnan */
 import './object-unique-id';
-import { getObjectUniqueId } from './object-unique-id';
+import { getObjectUniqueId } from './object-unique-id'; // noinspection DuplicatedCode
+
 export function compareFast(o1, o2) {
   if (o1 === o2) {
     return 0;
@@ -106,7 +107,8 @@ export function compareUniqueId(o1, o2) {
   }
 
   return -1;
-}
+} // noinspection DuplicatedCode
+
 export function compareStrict(o1, o2) {
   if (o1 === o2) {
     return 0;

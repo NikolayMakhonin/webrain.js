@@ -71,6 +71,23 @@ function () {
       this._canBeCalcCallback.call(this);
     }
   }, {
+    key: "_getNextCalcTime",
+    value: function _getNextCalcTime() {
+      var _throttleTime = this._throttleTime,
+          _maxThrottleTime = this._maxThrottleTime;
+      var nextCalcTime = this._timeInvalidateLast + (_throttleTime || 0);
+
+      if (_maxThrottleTime != null) {
+        nextCalcTime = Math.min(nextCalcTime, this._timeInvalidateFirst + (_maxThrottleTime || 0));
+      }
+
+      if (this._timeCalcEnd) {
+        nextCalcTime = Math.max(nextCalcTime, this._timeCalcEnd + (this._minTimeBetweenCalc || 0));
+      }
+
+      return nextCalcTime;
+    }
+  }, {
     key: "_pulse",
     value: function _pulse() {
       var _this2 = this;
@@ -105,17 +122,7 @@ function () {
 
 
       if (!this._canBeCalcEmitted && !this._calcRequested && this._timeInvalidateLast && (this._timeCalcEnd || !this._timeCalcStart)) {
-        var _throttleTime = this._throttleTime,
-            _maxThrottleTime = this._maxThrottleTime;
-        var canBeCalcTime = this._timeInvalidateLast + (_throttleTime || 0);
-
-        if (_maxThrottleTime != null) {
-          canBeCalcTime = Math.min(canBeCalcTime, this._timeInvalidateFirst + (_maxThrottleTime || 0));
-        }
-
-        if (this._timeCalcEnd) {
-          canBeCalcTime = Math.max(canBeCalcTime, this._timeCalcEnd + (this._minTimeBetweenCalc || 0));
-        }
+        var canBeCalcTime = this._getNextCalcTime();
 
         if (canBeCalcTime <= now) {
           this._canBeCalc();
@@ -131,17 +138,7 @@ function () {
 
 
       if (this._calcRequested && (this._timeCalcEnd || !this._timeCalcStart)) {
-        var _throttleTime2 = this._throttleTime,
-            _maxThrottleTime2 = this._maxThrottleTime;
-        var calcTime = this._timeInvalidateLast + (_throttleTime2 || 0);
-
-        if (_maxThrottleTime2 != null) {
-          calcTime = Math.min(calcTime, this._timeInvalidateFirst + (_maxThrottleTime2 || 0));
-        }
-
-        if (this._timeCalcEnd) {
-          calcTime = Math.max(calcTime, this._timeCalcEnd + (this._minTimeBetweenCalc || 0));
-        }
+        var calcTime = this._getNextCalcTime();
 
         if (calcTime <= now) {
           this._calc();

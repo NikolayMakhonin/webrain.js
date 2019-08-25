@@ -12,10 +12,34 @@ import { MapChangedType } from '../../lists/contracts/IMapChanged';
 import { SetChangedType } from '../../lists/contracts/ISetChanged';
 import { ANY, COLLECTION_PREFIX, VALUE_PROPERTY_DEFAULT, VALUE_PROPERTY_PREFIX } from './contracts/constants';
 import { RuleType } from './contracts/rules';
-import { Rule } from './rules'; // function propertyPredicateAll(propertyName: string, object) {
-// 	return Object.prototype.hasOwnProperty.call(object, propertyName)
-// }
-// region subscribeObject
+import { Rule } from './rules';
+
+function forEachSimple(iterable, callbackfn) {
+  var _iteratorNormalCompletion = true;
+  var _didIteratorError = false;
+  var _iteratorError = undefined;
+
+  try {
+    for (var _iterator = iterable[Symbol.iterator](), _step; !(_iteratorNormalCompletion = (_step = _iterator.next()).done); _iteratorNormalCompletion = true) {
+      var _item = _step.value;
+      callbackfn(_item, COLLECTION_PREFIX);
+    }
+  } catch (err) {
+    _didIteratorError = true;
+    _iteratorError = err;
+  } finally {
+    try {
+      if (!_iteratorNormalCompletion && _iterator["return"] != null) {
+        _iterator["return"]();
+      }
+    } finally {
+      if (_didIteratorError) {
+        throw _iteratorError;
+      }
+    }
+  }
+} // region subscribeObject
+
 
 function getFirstExistProperty(object, propertyNames) {
   for (var i = 0, len = propertyNames.length; i < len; i++) {
@@ -79,8 +103,7 @@ function subscribeObjectValue(propertyNames, object, immediateSubscribe, subscri
   if (propertyChanged) {
     unsubscribe = checkIsFuncOrNull(propertyChanged.subscribe(function (_ref) {
       var name = _ref.name,
-          oldValue = _ref.oldValue,
-          newValue = _ref.newValue;
+          oldValue = _ref.oldValue;
       var newSubscribePropertyName = getSubscribePropertyName();
 
       if (name === subscribePropertyName) {
@@ -202,26 +225,26 @@ function subscribeIterable(object, immediateSubscribe, subscribeItem, unsubscrib
   }
 
   var forEach = function forEach(callbackfn) {
-    var _iteratorNormalCompletion = true;
-    var _didIteratorError = false;
-    var _iteratorError = undefined;
+    var _iteratorNormalCompletion2 = true;
+    var _didIteratorError2 = false;
+    var _iteratorError2 = undefined;
 
     try {
-      for (var _iterator = object[Symbol.iterator](), _step; !(_iteratorNormalCompletion = (_step = _iterator.next()).done); _iteratorNormalCompletion = true) {
-        var _item = _step.value;
-        callbackfn(_item, COLLECTION_PREFIX);
+      for (var _iterator2 = object[Symbol.iterator](), _step2; !(_iteratorNormalCompletion2 = (_step2 = _iterator2.next()).done); _iteratorNormalCompletion2 = true) {
+        var _item2 = _step2.value;
+        callbackfn(_item2, COLLECTION_PREFIX);
       }
     } catch (err) {
-      _didIteratorError = true;
-      _iteratorError = err;
+      _didIteratorError2 = true;
+      _iteratorError2 = err;
     } finally {
       try {
-        if (!_iteratorNormalCompletion && _iterator["return"] != null) {
-          _iterator["return"]();
+        if (!_iteratorNormalCompletion2 && _iterator2["return"] != null) {
+          _iterator2["return"]();
         }
       } finally {
-        if (_didIteratorError) {
-          throw _iteratorError;
+        if (_didIteratorError2) {
+          throw _iteratorError2;
         }
       }
     }
@@ -283,34 +306,8 @@ function subscribeList(object, immediateSubscribe, subscribeItem, unsubscribeIte
     }));
   }
 
-  var forEach = function forEach(callbackfn) {
-    var _iteratorNormalCompletion2 = true;
-    var _didIteratorError2 = false;
-    var _iteratorError2 = undefined;
-
-    try {
-      for (var _iterator2 = object[Symbol.iterator](), _step2; !(_iteratorNormalCompletion2 = (_step2 = _iterator2.next()).done); _iteratorNormalCompletion2 = true) {
-        var _item2 = _step2.value;
-        callbackfn(_item2, COLLECTION_PREFIX);
-      }
-    } catch (err) {
-      _didIteratorError2 = true;
-      _iteratorError2 = err;
-    } finally {
-      try {
-        if (!_iteratorNormalCompletion2 && _iterator2["return"] != null) {
-          _iterator2["return"]();
-        }
-      } finally {
-        if (_didIteratorError2) {
-          throw _iteratorError2;
-        }
-      }
-    }
-  };
-
   if (immediateSubscribe) {
-    forEach(subscribeItem);
+    forEachSimple(object, subscribeItem);
   } else if (unsubscribe == null) {
     return null;
   }
@@ -321,7 +318,7 @@ function subscribeList(object, immediateSubscribe, subscribeItem, unsubscribeIte
       unsubscribe = null;
     }
 
-    forEach(unsubscribeItem);
+    forEachSimple(object, unsubscribeItem);
   };
 } // endregion
 // region subscribeSet
@@ -361,34 +358,8 @@ function subscribeSet(object, immediateSubscribe, subscribeItem, unsubscribeItem
     }));
   }
 
-  var forEach = function forEach(callbackfn) {
-    var _iteratorNormalCompletion3 = true;
-    var _didIteratorError3 = false;
-    var _iteratorError3 = undefined;
-
-    try {
-      for (var _iterator3 = object[Symbol.iterator](), _step3; !(_iteratorNormalCompletion3 = (_step3 = _iterator3.next()).done); _iteratorNormalCompletion3 = true) {
-        var _item3 = _step3.value;
-        callbackfn(_item3, COLLECTION_PREFIX);
-      }
-    } catch (err) {
-      _didIteratorError3 = true;
-      _iteratorError3 = err;
-    } finally {
-      try {
-        if (!_iteratorNormalCompletion3 && _iterator3["return"] != null) {
-          _iterator3["return"]();
-        }
-      } finally {
-        if (_didIteratorError3) {
-          throw _iteratorError3;
-        }
-      }
-    }
-  };
-
   if (immediateSubscribe) {
-    forEach(subscribeItem);
+    forEachSimple(object, subscribeItem);
   } else if (unsubscribe == null) {
     return null;
   }
@@ -399,7 +370,7 @@ function subscribeSet(object, immediateSubscribe, subscribeItem, unsubscribeItem
       unsubscribe = null;
     }
 
-    forEach(unsubscribeItem);
+    forEachSimple(object, unsubscribeItem);
   };
 } // endregion
 // region subscribeMap
@@ -456,29 +427,29 @@ function subscribeMap(keys, keyPredicate, object, immediateSubscribe, subscribeI
         }
       }
     } else {
-      var _iteratorNormalCompletion4 = true;
-      var _didIteratorError4 = false;
-      var _iteratorError4 = undefined;
+      var _iteratorNormalCompletion3 = true;
+      var _didIteratorError3 = false;
+      var _iteratorError3 = undefined;
 
       try {
-        for (var _iterator4 = object[Symbol.iterator](), _step4; !(_iteratorNormalCompletion4 = (_step4 = _iterator4.next()).done); _iteratorNormalCompletion4 = true) {
-          var entry = _step4.value;
+        for (var _iterator3 = object[Symbol.iterator](), _step3; !(_iteratorNormalCompletion3 = (_step3 = _iterator3.next()).done); _iteratorNormalCompletion3 = true) {
+          var entry = _step3.value;
 
           if (!keyPredicate || keyPredicate(entry[0], object)) {
             callbackfn(entry[1], COLLECTION_PREFIX + entry[0]);
           }
         }
       } catch (err) {
-        _didIteratorError4 = true;
-        _iteratorError4 = err;
+        _didIteratorError3 = true;
+        _iteratorError3 = err;
       } finally {
         try {
-          if (!_iteratorNormalCompletion4 && _iterator4["return"] != null) {
-            _iterator4["return"]();
+          if (!_iteratorNormalCompletion3 && _iterator3["return"] != null) {
+            _iterator3["return"]();
           }
         } finally {
-          if (_didIteratorError4) {
-            throw _iteratorError4;
+          if (_didIteratorError3) {
+            throw _iteratorError3;
           }
         }
       }
@@ -555,7 +526,7 @@ function createPropertyPredicate(propertyNames) {
       return null;
     }
 
-    return function (propName, object) {
+    return function (propName) {
       return propName === _propertyName4;
     };
   } else {
@@ -571,7 +542,7 @@ function createPropertyPredicate(propertyNames) {
       propertyNamesMap[_propertyName5] = true;
     }
 
-    return function (propName, object) {
+    return function (propName) {
       return !!propertyNamesMap[propName];
     };
   }
@@ -676,7 +647,7 @@ function createKeyPredicate(keys) {
       return null;
     }
 
-    return function (k, object) {
+    return function (k) {
       return k === _key3;
     };
   } else {
@@ -688,7 +659,7 @@ function createKeyPredicate(keys) {
       }
     }
 
-    return function (k, object) {
+    return function (k) {
       return keys.indexOf(k) >= 0;
     };
   }

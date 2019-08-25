@@ -1,5 +1,5 @@
-var variablePattern = '([$A-Za-z_][$A-Za-z_]*)';
-var propertyPattern = variablePattern;
+// const variablePattern = '([$A-Za-z_][$A-Za-z_]*)'
+// const propertyPattern = variablePattern
 export function parsePropertiesPathString(getValueFunc) {
   if (typeof getValueFunc !== 'string') {
     getValueFunc = getValueFunc.toString();

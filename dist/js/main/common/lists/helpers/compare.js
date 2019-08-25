@@ -10,6 +10,7 @@ exports.compareStrict = compareStrict;
 var _objectUniqueId = require("./object-unique-id");
 
 /* tslint:disable:use-isnan */
+// noinspection DuplicatedCode
 function compareFast(o1, o2) {
   if (o1 === o2) {
     return 0;
@@ -114,7 +115,8 @@ function compareUniqueId(o1, o2) {
   }
 
   return -1;
-}
+} // noinspection DuplicatedCode
+
 
 function compareStrict(o1, o2) {
   if (o1 === o2) {

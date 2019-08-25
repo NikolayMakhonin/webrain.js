@@ -120,7 +120,7 @@ function (_ObservableObject) {
     }
   }, {
     key: "_merge",
-    value: function _merge(merge, older, newer, preferCloneOlder, preferCloneNewer, options) {
+    value: function _merge(merge, older, newer, preferCloneOlder, preferCloneNewer) {
       return this._mergeValue(merge, this.value, older, newer, preferCloneOlder, preferCloneNewer);
     } // endregion
     // region ISerializable
@@ -146,7 +146,7 @@ function (_ObservableObject) {
 
   return Property;
 }(ObservableObject);
-Property.uuid = '6f2c51cc-d865-4baa-9a93-226e3374ccaf';
+Property.uuid = '6f2c51ccd8654baa9a93226e3374ccaf';
 new ObservableObjectBuilder(Property.prototype).writable('value');
 registerMergeable(Property);
 registerSerializable(Property);

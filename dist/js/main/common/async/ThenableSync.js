@@ -119,9 +119,9 @@ class ThenableSync {
       throw new Error(`Multiple call resolve/reject() is forbidden; status = ${_status}`);
     }
 
-    const result = (0, _async.resolveValue)(error, (o, e) => {
+    const result = (0, _async.resolveValue)(error, o => {
       error = o;
-    }, (o, e) => {
+    }, o => {
       this._reject(o);
     });
 

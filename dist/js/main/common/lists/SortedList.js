@@ -40,7 +40,7 @@ function calcOptimalArraySize(desiredSize) {
 }
 
 function getDefaultValue(value) {
-  if (value === null || typeof value === 'undefined') {
+  if (value == null) {
     return value;
   }
 
@@ -1327,7 +1327,7 @@ class SortedList extends _ListChangedObject.ListChangedObject {
     };
   }
 
-  deSerialize(deSerialize, serializedValue) {} // endregion
+  deSerialize() {} // endregion
 
 
 } // region Merge helpers
@@ -1335,7 +1335,7 @@ class SortedList extends _ListChangedObject.ListChangedObject {
 
 exports.SortedList = SortedList;
 SortedList.compareDefault = _compare2.compareFast;
-SortedList.uuid = '1ec56e52-1aa5-4dd1-8471-a6185f22ed0a';
+SortedList.uuid = '1ec56e521aa54dd18471a6185f22ed0a';
 
 class MergeSortedListWrapper {
   constructor(list) {
@@ -1398,8 +1398,8 @@ function createMergeSortedListWrapper(target, source, arrayOrIterableToSortedLis
     *deSerialize(deSerialize, serializedValue, valueFactory) {
       const options = yield deSerialize(serializedValue.options);
       options.array = yield deSerialize(serializedValue.array);
-      const value = valueFactory(options);
-      value.deSerialize(deSerialize, serializedValue);
+      const value = valueFactory(options); // value.deSerialize(deSerialize, serializedValue)
+
       return value;
     }
 

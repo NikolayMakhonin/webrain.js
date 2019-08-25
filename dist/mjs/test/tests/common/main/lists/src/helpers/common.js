@@ -1,5 +1,5 @@
 import _typeof from "@babel/runtime/helpers/typeof";
-import { assert } from "../../../../../../../main/common/test/Assert";
+import { assert } from '../../../../../../../main/common/test/Assert';
 export function generateArray(size) {
   var arr = [];
 

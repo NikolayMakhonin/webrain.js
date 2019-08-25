@@ -10,8 +10,6 @@ var _iterateRule = require("./iterate-rule");
 
 var _RuleBuilder = require("./RuleBuilder");
 
-var _PeekIterator = require("./helpers/PeekIterator");
-
 var _objectUniqueId = require("../../lists/helpers/object-unique-id");
 
 var _helpers = require("../../helpers/helpers");
@@ -95,7 +93,8 @@ function deepSubscribeRuleIterator(object, subscribeValue, immediate, ruleIterat
 
           return unsubscribers;
         }, newPropertiesPath);
-      };
+      }; // noinspection JSUnusedLocalSymbols
+
 
       const unsubscribeItem = (item, debugPropertyName) => {
         unsubscribeNested(item, unsubscribers);
@@ -153,7 +152,7 @@ function deepSubscribeRuleIterator(object, subscribeValue, immediate, ruleIterat
 }
 
 function deepSubscribeRule(object, subscribeValue, immediate, rule) {
-  return (0, _helpers.toSingleCall)(deepSubscribeRuleIterator(object, subscribeValue, immediate, new _PeekIterator.PeekIterator((0, _iterateRule.iterateRule)(rule)[Symbol.iterator]())));
+  return (0, _helpers.toSingleCall)(deepSubscribeRuleIterator(object, subscribeValue, immediate, (0, _iterateRule.iterateRule)(rule)[Symbol.iterator]()));
 }
 
 function deepSubscribe(object, subscribeValue, immediate, ruleBuilder) {

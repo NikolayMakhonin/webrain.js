@@ -7,10 +7,11 @@ exports.TypeMetaCollectionWithId = exports.TypeMetaCollection = void 0;
 
 var _helpers = require("../helpers/helpers");
 
-const typeMetaPropertyNameBase = Math.random().toString(36);
+const typeMetaPropertyNameBase = '043a558080e94cbda1add09753c28772';
 let typeMetaPropertyNameIndex = 0;
 
 class TypeMetaCollection {
+  // noinspection JSUnusedLocalSymbols
   constructor(proto) {
     this._typeMetaPropertyName = typeMetaPropertyNameBase + typeMetaPropertyNameIndex++;
 
@@ -136,7 +137,7 @@ class TypeMetaCollectionWithId extends TypeMetaCollection {
       type = this.getType(typeOrUuid);
       uuid = typeOrUuid;
     } else {
-      throw new Error(`typeOrUuid (${typeOrUuid === null ? 'null' : typeof typeOrUuid}) is not a Function or String`);
+      throw new Error(`typeOrUuid (${typeOrUuid == null ? typeOrUuid : typeof typeOrUuid}) is not a Function or String`);
     }
 
     const prevMeta = super.deleteType(type);

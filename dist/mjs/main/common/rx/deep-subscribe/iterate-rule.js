@@ -6,7 +6,6 @@ _regeneratorRuntime.mark(iterateRule);
 
 import { isIterable } from '../../helpers/helpers';
 import { RuleType } from './contracts/rules';
-import { PeekIterator } from './helpers/PeekIterator';
 export function iterateRule(rule) {
   var next,
       ruleNext,
@@ -132,7 +131,7 @@ export function iterateRule(rule) {
         case 24:
           _ref2 = rule, countMin = _ref2.countMin, countMax = _ref2.countMax, subRule = _ref2.rule;
 
-          if (!(countMax < countMin || countMax <= 0 || rule == null)) {
+          if (!(countMax < countMin || countMax <= 0)) {
             _context3.next = 27;
             break;
           }
@@ -236,7 +235,7 @@ export function subscribeNextRule(ruleIterator, fork, subscribeNode, subscribeLe
     try {
       for (var _iterator = ruleOrIterable[Symbol.iterator](), _step; !(_iteratorNormalCompletion = (_step = _iterator.next()).done); _iteratorNormalCompletion = true) {
         var ruleIterable = _step.value;
-        var unsubscribe = fork(new PeekIterator(ruleIterable[Symbol.iterator]()));
+        var unsubscribe = fork(ruleIterable[Symbol.iterator]());
 
         if (unsubscribe != null) {
           if (!unsubscribers) {
@@ -274,6 +273,6 @@ export function subscribeNextRule(ruleIterator, fork, subscribeNode, subscribeLe
 
   var nextIterable = ruleIterator.next().value;
   return subscribeNode(ruleOrIterable, nextIterable ? function () {
-    return new PeekIterator(nextIterable()[Symbol.iterator]());
+    return nextIterable()[Symbol.iterator]();
   } : null);
 }

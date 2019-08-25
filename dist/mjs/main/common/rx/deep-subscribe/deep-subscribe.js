@@ -1,7 +1,6 @@
 /* tslint:disable */
 import { iterateRule, subscribeNextRule } from './iterate-rule';
 import { RuleBuilder } from "./RuleBuilder";
-import { PeekIterator } from "./helpers/PeekIterator";
 import { getObjectUniqueId } from "../../lists/helpers/object-unique-id";
 import { checkIsFuncOrNull, toSingleCall } from "../../helpers/helpers"; // const UNSUBSCRIBE_PROPERTY_PREFIX = Math.random().toString(36)
 // let nextUnsubscribePropertyId = 0
@@ -89,7 +88,8 @@ function deepSubscribeRuleIterator(object, subscribeValue, immediate, ruleIterat
 
           return unsubscribers;
         }, newPropertiesPath);
-      };
+      }; // noinspection JSUnusedLocalSymbols
+
 
       var unsubscribeItem = function unsubscribeItem(item, debugPropertyName) {
         unsubscribeNested(item, unsubscribers);
@@ -151,7 +151,7 @@ function deepSubscribeRuleIterator(object, subscribeValue, immediate, ruleIterat
 }
 
 export function deepSubscribeRule(object, subscribeValue, immediate, rule) {
-  return toSingleCall(deepSubscribeRuleIterator(object, subscribeValue, immediate, new PeekIterator(iterateRule(rule)[Symbol.iterator]())));
+  return toSingleCall(deepSubscribeRuleIterator(object, subscribeValue, immediate, iterateRule(rule)[Symbol.iterator]()));
 }
 export function deepSubscribe(object, subscribeValue, immediate, ruleBuilder) {
   return toSingleCall(deepSubscribeRule(object, subscribeValue, immediate, ruleBuilder(new RuleBuilder()).result));

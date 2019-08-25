@@ -164,7 +164,7 @@ class ObservableSet extends _SetChangedObject.SetChangedObject {
   }
 
   forEach(callbackfn, thisArg) {
-    this._set.forEach((k, v, s) => callbackfn.call(thisArg, k, v, this));
+    this._set.forEach((k, v) => callbackfn.call(thisArg, k, v, this));
   }
 
   has(value) {
@@ -209,20 +209,20 @@ class ObservableSet extends _SetChangedObject.SetChangedObject {
     };
   }
 
-  deSerialize(deSerialize, serializedValue) {} // endregion
+  deSerialize() {} // endregion
 
 
 }
 
 exports.ObservableSet = ObservableSet;
-ObservableSet.uuid = '91539dfb-55f4-4bfb-9dbf-bff7f6ab800d';
+ObservableSet.uuid = '91539dfb55f44bfb9dbfbff7f6ab800d';
 (0, _mergers.registerMergeable)(ObservableSet);
 (0, _serializers.registerSerializable)(ObservableSet, {
   serializer: {
     *deSerialize(deSerialize, serializedValue, valueFactory) {
       const innerSet = yield deSerialize(serializedValue.set);
-      const value = valueFactory(innerSet);
-      value.deSerialize(deSerialize, serializedValue);
+      const value = valueFactory(innerSet); // value.deSerialize(deSerialize, serializedValue)
+
       return value;
     }
 

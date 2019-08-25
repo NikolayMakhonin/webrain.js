@@ -174,7 +174,16 @@ function () {
   }]);
 
   return ObservableObjectBuilder;
-}(); // const builder = new ObservableObjectBuilder(true as any)
+}(); // Test:
+// export const obj = new ObservableObjectBuilder()
+// 	.writable<number, 'prop1'>('prop1')
+// 	.readable<string, 'prop2'>('prop2')
+// 	.readable<string, 'prop3'>('prop3')
+// 	.delete('prop3')
+// 	.object
+//
+// export const x = obj.prop1 + obj.prop2 + obj.propertyChanged + obj.prop3
+// const builder = new ObservableObjectBuilder(true as any)
 //
 // export function writable<T = any>(
 // 	options?: IWritableFieldOptions,

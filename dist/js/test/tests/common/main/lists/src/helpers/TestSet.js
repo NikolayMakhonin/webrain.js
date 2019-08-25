@@ -170,7 +170,7 @@ class SetWrapper {
 
 }
 
-SetWrapper.uuid = '5de4524d-6cdb-41e9-8968-9798ecedef5d';
+SetWrapper.uuid = '5de4524d6cdb41e989689798ecedef5d';
 (0, _serializers.registerSerializable)(SetWrapper, {
   serializer: {
     *deSerialize(deSerialize, serializedValue, valueFactory) {

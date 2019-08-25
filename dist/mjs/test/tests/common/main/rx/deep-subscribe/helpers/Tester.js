@@ -316,7 +316,7 @@ function () {
 
       return this;
     } // endregion
-    // rergion Async
+    // region Async
 
   }, {
     key: "subscribeAsync",

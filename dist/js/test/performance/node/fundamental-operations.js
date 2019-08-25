@@ -9,6 +9,8 @@ var _rdtsc = require("rdtsc");
 
 var _synchronousPromise = require("synchronous-promise");
 
+var _async = require("../../../main/common/async/async");
+
 var _ThenableSync = require("../../../main/common/async/ThenableSync");
 
 var _helpers = require("../../../main/common/helpers/helpers");
@@ -22,8 +24,6 @@ var _objectUniqueId = require("../../../main/common/lists/helpers/object-unique-
 var _SortedList = require("../../../main/common/lists/SortedList");
 
 var _Tester = require("../../tests/common/main/rx/deep-subscribe/helpers/Tester");
-
-var _async = require("../../../main/common/async/async");
 
 /* tslint:disable:prefer-const no-identical-functions no-empty no-shadowed-variable no-conditional-assignment */
 

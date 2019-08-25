@@ -175,7 +175,8 @@ function () {
       delete optionsVariants.expected;
       delete optionsVariants.exclude;
       var actionsWithDescriptions = expandArray(optionsVariants.actions);
-      delete optionsVariants.actions;
+      delete optionsVariants.actions; // tslint:disable-next-line:prefer-const
+
       var variants = generateOptions({}, optionsVariants, exclude); // variants = Array.from(variants)
 
       var _iteratorNormalCompletion3 = true;

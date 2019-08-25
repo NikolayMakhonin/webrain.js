@@ -177,7 +177,7 @@ function (_MapChangedObject) {
     value: function forEach(callbackfn, thisArg) {
       var _this2 = this;
 
-      this._map.forEach(function (k, v, s) {
+      this._map.forEach(function (k, v) {
         return callbackfn.call(thisArg, k, v, _this2);
       });
     }
@@ -235,7 +235,7 @@ function (_MapChangedObject) {
     }
   }, {
     key: "deSerialize",
-    value: function deSerialize(_deSerialize, serializedValue) {} // endregion
+    value: function deSerialize() {} // endregion
 
   }, {
     key: "size",
@@ -246,11 +246,11 @@ function (_MapChangedObject) {
 
   return ObservableMap;
 }(MapChangedObject);
-ObservableMap.uuid = 'e162178d-5123-4bea-ab6e-b96d5b8f130b';
+ObservableMap.uuid = 'e162178d51234beaab6eb96d5b8f130b';
 registerMergeable(ObservableMap);
 registerSerializable(ObservableMap, {
   serializer: {
-    deSerialize: function deSerialize(_deSerialize2, serializedValue, valueFactory) {
+    deSerialize: function deSerialize(_deSerialize, serializedValue, valueFactory) {
       return (
         /*#__PURE__*/
         _regeneratorRuntime.mark(function _callee() {
@@ -260,15 +260,15 @@ registerSerializable(ObservableMap, {
               switch (_context.prev = _context.next) {
                 case 0:
                   _context.next = 2;
-                  return _deSerialize2(serializedValue.map);
+                  return _deSerialize(serializedValue.map);
 
                 case 2:
                   innerMap = _context.sent;
-                  value = valueFactory(innerMap);
-                  value.deSerialize(_deSerialize2, serializedValue);
+                  value = valueFactory(innerMap); // value.deSerialize(deSerialize, serializedValue)
+
                   return _context.abrupt("return", value);
 
-                case 6:
+                case 5:
                 case "end":
                   return _context.stop();
               }

@@ -12,8 +12,7 @@ var _ObservableObjectBuilder = require("../ObservableObjectBuilder");
 var _CalcProperty = require("./CalcProperty");
 
 class CalcObjectBuilder extends _ObservableObjectBuilder.ObservableObjectBuilder {
-  calc(name, {
-    input,
+  calc(name, input, {
     dependencies,
     calcFunc,
     calcOptions,
@@ -22,7 +21,7 @@ class CalcObjectBuilder extends _ObservableObjectBuilder.ObservableObjectBuilder
     return this.readable(name, {
       factory() {
         const property = new _CalcProperty.CalcProperty(calcFunc, calcOptions, valuePropertyOptions, initValue);
-        property.input = typeof input === 'function' ? new input(this) : input;
+        property.input = typeof input === 'function' ? input(this) : input;
 
         if (dependencies) {
           (0, _deepSubscribe.deepSubscribe)(property, () => {

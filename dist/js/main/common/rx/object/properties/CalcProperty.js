@@ -19,6 +19,11 @@ var _ObservableObjectBuilder = require("../ObservableObjectBuilder");
 
 var _property = require("./property");
 
+// export interface ICalcProperty<TInput, TValue, TMergeSource> {
+// 	['@last']: TValue
+// 	['@wait']: TValue
+// 	['@lastOrWait']: TValue
+// }
 class CalcProperty extends _ObservableObject.ObservableObject {
   constructor(calcFunc, calcOptions, valueOptions, initValue) {
     super();
@@ -83,4 +88,6 @@ class CalcProperty extends _ObservableObject.ObservableObject {
 }
 
 exports.CalcProperty = CalcProperty;
-new _ObservableObjectBuilder.ObservableObjectBuilder(CalcProperty.prototype).writable('input');
+new _ObservableObjectBuilder.ObservableObjectBuilder(CalcProperty.prototype).writable('input'); // Test:
+// const test: RuleGetValueFunc<CalcProperty<any, { test1: { test2: 123 } }, any>, number> =
+// 	o => o['@last']['@last']['@last'].test1['@last']['@wait'].test2['@last']

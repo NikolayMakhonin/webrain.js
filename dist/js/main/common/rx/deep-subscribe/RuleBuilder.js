@@ -291,4 +291,6 @@ function cloneRule(rule) {
   }
 
   return clone;
-}
+} // Test:
+// export const test = new RuleBuilder<{ x: { y: number } }>()
+// 	.path(o => o.x.y)

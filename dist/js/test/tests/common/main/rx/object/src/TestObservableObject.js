@@ -215,7 +215,8 @@
 //
 // 				const propertyChangedEvents = []
 // 				if ((observableObject as unknown as IPropertyChanged).propertyChanged) {
-// 					unsubscribePropertyChanged = (observableObject as unknown as IPropertyChanged).propertyChanged.subscribe(event => {
+// 					unsubscribePropertyChanged
+// 					= (observableObject as unknown as IPropertyChanged).propertyChanged.subscribe(event => {
 // 						propertyChangedEvents.push(event)
 // 					})
 // 				}
@@ -271,7 +272,9 @@
 //
 // 	private static readonly _instance: TestObservableObject = new TestObservableObject()
 //
-// 	public static test(testCases: ITestCase<IObservableObjectAction, IObservableObjectExpected> & IObservableObjectOptionsVariants) {
+// 	public static test(
+// 	testCases: ITestCase<IObservableObjectAction, IObservableObjectExpected> & IObservableObjectOptionsVariants
+// 	) {
 // 		TestObservableObject._instance.test(testCases)
 // 	}
 // }

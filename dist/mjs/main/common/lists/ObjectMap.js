@@ -161,7 +161,7 @@ function () {
     }
   }, {
     key: "deSerialize",
-    value: function deSerialize(_deSerialize, serializedValue) {} // endregion
+    value: function deSerialize() {} // endregion
 
   }, {
     key: "size",
@@ -172,11 +172,11 @@ function () {
 
   return ObjectMap;
 }();
-ObjectMap.uuid = '62388f07-b21a-4778-8b38-58f225cdbd42';
+ObjectMap.uuid = '62388f07b21a47788b3858f225cdbd42';
 registerMergeable(ObjectMap);
 registerSerializable(ObjectMap, {
   serializer: {
-    deSerialize: function deSerialize(_deSerialize2, serializedValue, valueFactory) {
+    deSerialize: function deSerialize(_deSerialize, serializedValue, valueFactory) {
       return (
         /*#__PURE__*/
         _regeneratorRuntime.mark(function _callee() {
@@ -186,15 +186,15 @@ registerSerializable(ObjectMap, {
               switch (_context2.prev = _context2.next) {
                 case 0:
                   _context2.next = 2;
-                  return _deSerialize2(serializedValue.object);
+                  return _deSerialize(serializedValue.object);
 
                 case 2:
                   innerMap = _context2.sent;
-                  value = valueFactory(innerMap);
-                  value.deSerialize(_deSerialize2, serializedValue);
+                  value = valueFactory(innerMap); // value.deSerialize(deSerialize, serializedValue)
+
                   return _context2.abrupt("return", value);
 
-                case 6:
+                case 5:
                 case "end":
                   return _context2.stop();
               }

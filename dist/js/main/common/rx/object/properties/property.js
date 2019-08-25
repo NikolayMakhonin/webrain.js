@@ -102,7 +102,7 @@ class Property extends _ObservableObject.ObservableObject {
     return true;
   }
 
-  _merge(merge, older, newer, preferCloneOlder, preferCloneNewer, options) {
+  _merge(merge, older, newer, preferCloneOlder, preferCloneNewer) {
     return this._mergeValue(merge, this.value, older, newer, preferCloneOlder, preferCloneNewer);
   } // endregion
   // region ISerializable
@@ -122,7 +122,7 @@ class Property extends _ObservableObject.ObservableObject {
 }
 
 exports.Property = Property;
-Property.uuid = '6f2c51cc-d865-4baa-9a93-226e3374ccaf';
+Property.uuid = '6f2c51ccd8654baa9a93226e3374ccaf';
 new _ObservableObjectBuilder.ObservableObjectBuilder(Property.prototype).writable('value');
 (0, _mergers.registerMergeable)(Property);
 (0, _serializers.registerSerializable)(Property);

@@ -6,9 +6,9 @@ Object.defineProperty(exports, "__esModule", {
 exports.parsePropertiesPathString = parsePropertiesPathString;
 exports.parsePropertiesPath = parsePropertiesPath;
 exports.getFuncPropertiesPath = getFuncPropertiesPath;
-const variablePattern = '([$A-Za-z_][$A-Za-z_]*)';
-const propertyPattern = variablePattern;
 
+// const variablePattern = '([$A-Za-z_][$A-Za-z_]*)'
+// const propertyPattern = variablePattern
 function parsePropertiesPathString(getValueFunc) {
   if (typeof getValueFunc !== 'string') {
     getValueFunc = getValueFunc.toString();

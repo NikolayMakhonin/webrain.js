@@ -103,7 +103,7 @@ function (_ObservableObject) {
 
   return CircularClass;
 }(ObservableObject);
-CircularClass.uuid = 'e729e03f-d0f4-4994-9f0f-97da23c7bab8';
+CircularClass.uuid = 'e729e03fd0f449949f0f97da23c7bab8';
 registerMergeable(CircularClass);
 registerSerializable(CircularClass, {
   serializer: {

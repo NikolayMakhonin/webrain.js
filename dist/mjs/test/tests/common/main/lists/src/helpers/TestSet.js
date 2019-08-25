@@ -505,7 +505,7 @@ function () {
   return SetWrapper;
 }();
 
-SetWrapper.uuid = '5de4524d-6cdb-41e9-8968-9798ecedef5d';
+SetWrapper.uuid = '5de4524d6cdb41e989689798ecedef5d';
 registerSerializable(SetWrapper, {
   serializer: {
     deSerialize: function deSerialize(_deSerialize2, serializedValue, valueFactory) {

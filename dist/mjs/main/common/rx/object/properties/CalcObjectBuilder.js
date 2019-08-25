@@ -19,16 +19,15 @@ function (_ObservableObjectBuil) {
 
   _createClass(CalcObjectBuilder, [{
     key: "calc",
-    value: function calc(name, _ref, initValue) {
-      var input = _ref.input,
-          dependencies = _ref.dependencies,
+    value: function calc(name, input, _ref, initValue) {
+      var dependencies = _ref.dependencies,
           calcFunc = _ref.calcFunc,
           calcOptions = _ref.calcOptions,
           valuePropertyOptions = _ref.valuePropertyOptions;
       return this.readable(name, {
         factory: function factory() {
           var property = new CalcProperty(calcFunc, calcOptions, valuePropertyOptions, initValue);
-          property.input = typeof input === 'function' ? new input(this) : input;
+          property.input = typeof input === 'function' ? input(this) : input;
 
           if (dependencies) {
             deepSubscribe(property, function () {

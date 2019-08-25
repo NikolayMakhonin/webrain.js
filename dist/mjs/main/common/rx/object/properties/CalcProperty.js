@@ -10,6 +10,11 @@ import { DeferredCalc } from '../../deferred-calc/DeferredCalc';
 import { ObservableObject } from '../ObservableObject';
 import { ObservableObjectBuilder } from '../ObservableObjectBuilder';
 import { Property } from './property';
+// export interface ICalcProperty<TInput, TValue, TMergeSource> {
+// 	['@last']: TValue
+// 	['@wait']: TValue
+// 	['@lastOrWait']: TValue
+// }
 export var CalcProperty =
 /*#__PURE__*/
 function (_ObservableObject) {
@@ -98,4 +103,6 @@ function (_ObservableObject) {
 
   return CalcProperty;
 }(ObservableObject);
-new ObservableObjectBuilder(CalcProperty.prototype).writable('input');
+new ObservableObjectBuilder(CalcProperty.prototype).writable('input'); // Test:
+// const test: RuleGetValueFunc<CalcProperty<any, { test1: { test2: 123 } }, any>, number> =
+// 	o => o['@last']['@last']['@last'].test1['@last']['@wait'].test2['@last']

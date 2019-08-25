@@ -10,8 +10,6 @@ var _helpers = require("../../helpers/helpers");
 
 var _rules = require("./contracts/rules");
 
-var _PeekIterator = require("./helpers/PeekIterator");
-
 function* iterateRule(rule, next = null) {
   if (!rule) {
     if (next) {
@@ -68,7 +66,7 @@ function* iterateRule(rule, next = null) {
           rule: subRule
         } = rule;
 
-        if (countMax < countMin || countMax <= 0 || rule == null) {
+        if (countMax < countMin || countMax <= 0) {
           throw new Error(`RuleType.Repeat countMin=${countMin} countMax=${countMax} rule=${rule}`);
         }
 
@@ -124,7 +122,7 @@ function subscribeNextRule(ruleIterator, fork, subscribeNode, subscribeLeaf) {
     // }
 
     for (const ruleIterable of ruleOrIterable) {
-      const unsubscribe = fork(new _PeekIterator.PeekIterator(ruleIterable[Symbol.iterator]()));
+      const unsubscribe = fork(ruleIterable[Symbol.iterator]());
 
       if (unsubscribe != null) {
         if (!unsubscribers) {
@@ -147,5 +145,5 @@ function subscribeNextRule(ruleIterator, fork, subscribeNode, subscribeLeaf) {
   }
 
   const nextIterable = ruleIterator.next().value;
-  return subscribeNode(ruleOrIterable, nextIterable ? () => new _PeekIterator.PeekIterator(nextIterable()[Symbol.iterator]()) : null);
+  return subscribeNode(ruleOrIterable, nextIterable ? () => nextIterable()[Symbol.iterator]() : null);
 }

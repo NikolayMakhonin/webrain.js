@@ -151,7 +151,7 @@ function (_SetChangedObject) {
     value: function forEach(callbackfn, thisArg) {
       var _this2 = this;
 
-      this._set.forEach(function (k, v, s) {
+      this._set.forEach(function (k, v) {
         return callbackfn.call(thisArg, k, v, _this2);
       });
     }
@@ -209,7 +209,7 @@ function (_SetChangedObject) {
     }
   }, {
     key: "deSerialize",
-    value: function deSerialize(_deSerialize, serializedValue) {} // endregion
+    value: function deSerialize() {} // endregion
 
   }, {
     key: "size",
@@ -220,11 +220,11 @@ function (_SetChangedObject) {
 
   return ObservableSet;
 }(SetChangedObject);
-ObservableSet.uuid = '91539dfb-55f4-4bfb-9dbf-bff7f6ab800d';
+ObservableSet.uuid = '91539dfb55f44bfb9dbfbff7f6ab800d';
 registerMergeable(ObservableSet);
 registerSerializable(ObservableSet, {
   serializer: {
-    deSerialize: function deSerialize(_deSerialize2, serializedValue, valueFactory) {
+    deSerialize: function deSerialize(_deSerialize, serializedValue, valueFactory) {
       return (
         /*#__PURE__*/
         _regeneratorRuntime.mark(function _callee() {
@@ -234,15 +234,15 @@ registerSerializable(ObservableSet, {
               switch (_context.prev = _context.next) {
                 case 0:
                   _context.next = 2;
-                  return _deSerialize2(serializedValue.set);
+                  return _deSerialize(serializedValue.set);
 
                 case 2:
                   innerSet = _context.sent;
-                  value = valueFactory(innerSet);
-                  value.deSerialize(_deSerialize2, serializedValue);
+                  value = valueFactory(innerSet); // value.deSerialize(deSerialize, serializedValue)
+
                   return _context.abrupt("return", value);
 
-                case 6:
+                case 5:
                 case "end":
                   return _context.stop();
               }

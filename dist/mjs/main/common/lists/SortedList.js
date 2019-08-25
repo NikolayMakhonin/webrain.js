@@ -29,7 +29,7 @@ function calcOptimalArraySize(desiredSize) {
 }
 
 export function getDefaultValue(value) {
-  if (value === null || typeof value === 'undefined') {
+  if (value == null) {
     return value;
   }
 
@@ -1200,7 +1200,7 @@ function (_ListChangedObject) {
     }
   }, {
     key: "deSerialize",
-    value: function deSerialize(_deSerialize, serializedValue) {} // endregion
+    value: function deSerialize() {} // endregion
 
   }, {
     key: "minAllocatedSize",
@@ -1389,7 +1389,7 @@ function (_ListChangedObject) {
 }(ListChangedObject); // region Merge helpers
 
 SortedList.compareDefault = compareFast;
-SortedList.uuid = '1ec56e52-1aa5-4dd1-8471-a6185f22ed0a';
+SortedList.uuid = '1ec56e521aa54dd18471a6185f22ed0a';
 export var MergeSortedListWrapper =
 /*#__PURE__*/
 function () {
@@ -1478,7 +1478,7 @@ registerMergeable(SortedList, {
 });
 registerSerializable(SortedList, {
   serializer: {
-    deSerialize: function deSerialize(_deSerialize2, serializedValue, valueFactory) {
+    deSerialize: function deSerialize(_deSerialize, serializedValue, valueFactory) {
       return (
         /*#__PURE__*/
         _regeneratorRuntime.mark(function _callee() {
@@ -1488,20 +1488,20 @@ registerSerializable(SortedList, {
               switch (_context2.prev = _context2.next) {
                 case 0:
                   _context2.next = 2;
-                  return _deSerialize2(serializedValue.options);
+                  return _deSerialize(serializedValue.options);
 
                 case 2:
                   options = _context2.sent;
                   _context2.next = 5;
-                  return _deSerialize2(serializedValue.array);
+                  return _deSerialize(serializedValue.array);
 
                 case 5:
                   options.array = _context2.sent;
-                  value = valueFactory(options);
-                  value.deSerialize(_deSerialize2, serializedValue);
+                  value = valueFactory(options); // value.deSerialize(deSerialize, serializedValue)
+
                   return _context2.abrupt("return", value);
 
-                case 9:
+                case 8:
                 case "end":
                   return _context2.stop();
               }

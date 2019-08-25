@@ -6,11 +6,12 @@ import _inherits from "@babel/runtime/helpers/inherits";
 import _classCallCheck from "@babel/runtime/helpers/classCallCheck";
 import _createClass from "@babel/runtime/helpers/createClass";
 import { typeToDebugString } from '../helpers/helpers';
-var typeMetaPropertyNameBase = Math.random().toString(36);
+var typeMetaPropertyNameBase = '043a558080e94cbda1add09753c28772';
 var typeMetaPropertyNameIndex = 0;
 export var TypeMetaCollection =
 /*#__PURE__*/
 function () {
+  // noinspection JSUnusedLocalSymbols
   function TypeMetaCollection(proto) {
     _classCallCheck(this, TypeMetaCollection);
 
@@ -146,7 +147,7 @@ function (_TypeMetaCollection) {
         type = this.getType(typeOrUuid);
         uuid = typeOrUuid;
       } else {
-        throw new Error("typeOrUuid (".concat(typeOrUuid === null ? 'null' : _typeof(typeOrUuid), ") is not a Function or String"));
+        throw new Error("typeOrUuid (".concat(typeOrUuid == null ? typeOrUuid : _typeof(typeOrUuid), ") is not a Function or String"));
       }
 
       var prevMeta = _get(_getPrototypeOf(TypeMetaCollectionWithId.prototype), "deleteType", this).call(this, type);

@@ -163,13 +163,13 @@ class ArrayMap {
     };
   }
 
-  deSerialize(deSerialize, serializedValue) {} // endregion
+  deSerialize() {} // endregion
 
 
 }
 
 exports.ArrayMap = ArrayMap;
-ArrayMap.uuid = 'ef0ced8a-58f7-4381-b850-3b09c0a42eed';
+ArrayMap.uuid = 'ef0ced8a58f74381b8503b09c0a42eed';
 (0, _mergers.registerMergeable)(ArrayMap);
 (0, _serializers.registerSerializable)(ArrayMap, {
   serializer: {
@@ -178,8 +178,8 @@ ArrayMap.uuid = 'ef0ced8a-58f7-4381-b850-3b09c0a42eed';
       const innerMap = yield deSerialize(serializedValue.array, null, {
         arrayAsObject: true
       });
-      const value = valueFactory(innerMap);
-      value.deSerialize(deSerialize, serializedValue);
+      const value = valueFactory(innerMap); // value.deSerialize(deSerialize, serializedValue)
+
       return value;
     }
 

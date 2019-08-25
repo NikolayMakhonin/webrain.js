@@ -8,7 +8,7 @@ function ownKeys(object, enumerableOnly) { var keys = Object.keys(object); if (O
 
 function _objectSpread(target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i] != null ? arguments[i] : {}; if (i % 2) { ownKeys(source, true).forEach(function (key) { _defineProperty(target, key, source[key]); }); } else if (Object.getOwnPropertyDescriptors) { Object.defineProperties(target, Object.getOwnPropertyDescriptors(source)); } else { ownKeys(source).forEach(function (key) { Object.defineProperty(target, key, Object.getOwnPropertyDescriptor(source, key)); }); } } return target; }
 
-import { ANY_DISPLAY, COLLECTION_PREFIX, VALUE_PROPERTY_PREFIX } from './contracts/constants';
+import { ANY_DISPLAY, COLLECTION_PREFIX, VALUE_PROPERTY_DEFAULT, VALUE_PROPERTY_PREFIX } from './contracts/constants';
 import { getFuncPropertiesPath } from './helpers/func-properties-path';
 import { RuleAny, RuleNothing, RuleRepeat } from './rules';
 import { RuleSubscribeCollection, RuleSubscribeMap, RuleSubscribeObject, SubscribeObjectType } from './rules-subscribe';
@@ -237,18 +237,18 @@ function () {
 
       try {
         for (var _iterator = getFuncPropertiesPath(getValueFunc)[Symbol.iterator](), _step; !(_iteratorNormalCompletion = (_step = _iterator.next()).done); _iteratorNormalCompletion = true) {
-          var propertyNames = _step.value;
+          var _propertyNames = _step.value;
 
-          if (propertyNames.startsWith(COLLECTION_PREFIX)) {
-            var keys = propertyNames.substring(1);
+          if (_propertyNames.startsWith(COLLECTION_PREFIX)) {
+            var keys = _propertyNames.substring(1);
 
             if (keys === '') {
               this.collection();
             } else {
               this.mapKeys.apply(this, _toConsumableArray(keys.split('|')));
             }
-          } else if (propertyNames.startsWith(VALUE_PROPERTY_PREFIX)) {
-            var valuePropertyNames = propertyNames.substring(1);
+          } else if (_propertyNames.startsWith(VALUE_PROPERTY_PREFIX)) {
+            var valuePropertyNames = _propertyNames.substring(1);
 
             if (valuePropertyNames === '') {
               throw new Error("You should specify at least one value property name; path = ".concat(getValueFunc));
@@ -256,7 +256,7 @@ function () {
               this.valuePropertyNames.apply(this, _toConsumableArray(valuePropertyNames.split('|')));
             }
           } else {
-            this.propertyNames.apply(this, _toConsumableArray(propertyNames.split('|')));
+            this.propertyNames.apply(this, _toConsumableArray(_propertyNames.split('|')));
           }
         }
       } catch (err) {
@@ -358,4 +358,6 @@ export function cloneRule(rule) {
   }
 
   return clone;
-}
+} // Test:
+// export const test = new RuleBuilder<{ x: { y: number } }>()
+// 	.path(o => o.x.y)

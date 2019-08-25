@@ -129,20 +129,20 @@ class ObjectMap {
     };
   }
 
-  deSerialize(deSerialize, serializedValue) {} // endregion
+  deSerialize() {} // endregion
 
 
 }
 
 exports.ObjectMap = ObjectMap;
-ObjectMap.uuid = '62388f07-b21a-4778-8b38-58f225cdbd42';
+ObjectMap.uuid = '62388f07b21a47788b3858f225cdbd42';
 (0, _mergers.registerMergeable)(ObjectMap);
 (0, _serializers.registerSerializable)(ObjectMap, {
   serializer: {
     *deSerialize(deSerialize, serializedValue, valueFactory) {
       const innerMap = yield deSerialize(serializedValue.object);
-      const value = valueFactory(innerMap);
-      value.deSerialize(deSerialize, serializedValue);
+      const value = valueFactory(innerMap); // value.deSerialize(deSerialize, serializedValue)
+
       return value;
     }
 

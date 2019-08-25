@@ -8,8 +8,8 @@ import _inherits from "@babel/runtime/helpers/inherits";
 /* eslint-disable guard-for-in */
 import { ObservableObject } from '../../../../../../../main/common/rx/object/ObservableObject';
 import { CalcObjectBuilder } from '../../../../../../../main/common/rx/object/properties/CalcObjectBuilder';
-import { connector } from '../../../../../../../main/common/rx/object/properties/ConnectorBuilder';
-xdescribe('common > main > rx > properties > CalcObjectBuilder', function () {
+import { connector } from '../../../../../../../main/common/rx/object/properties/Connector';
+describe('common > main > rx > properties > CalcObjectBuilder', function () {
   it('calc', function () {
     var Class1 =
     /*#__PURE__*/
@@ -25,10 +25,21 @@ xdescribe('common > main > rx > properties > CalcObjectBuilder', function () {
       return Class1;
     }(ObservableObject);
 
-    new CalcObjectBuilder(Class1.prototype).calc('prop1', {
-      input: connector(function (b) {
-        return b.connect('connectValue1');
-      })
-    });
+    var result = new CalcObjectBuilder(Class1.prototype).calc('prop1', connector(function (c) {
+      return c.connect('connectValue1', function (b) {
+        return b.path(function (o) {
+          return o['@lastOrWait'].source['@wait'];
+        });
+      });
+    }), {
+      dependencies: function dependencies(b) {
+        return b.path(function (o) {
+          return o.connectValue1;
+        });
+      },
+      calcFunc: function calcFunc(input, valueProperty) {
+        valueProperty.value = new Date(0);
+      }
+    }).object.prop1;
   });
 });

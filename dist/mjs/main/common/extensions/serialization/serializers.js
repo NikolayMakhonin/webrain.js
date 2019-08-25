@@ -130,11 +130,7 @@ function () {
     value: function serialize(value, options) {
       var _this2 = this;
 
-      if (typeof value === 'undefined') {
-        return value;
-      }
-
-      if (value === null || typeof value === 'number' || typeof value === 'string' || typeof value === 'boolean') {
+      if (value == null || typeof value === 'number' || typeof value === 'string' || typeof value === 'boolean') {
         return value;
       }
 
@@ -182,7 +178,8 @@ function () {
         var object = _objects[id];
         var uuid = _types[object.type];
 
-        var type = _typeMeta.getType(uuid);
+        var type = _typeMeta.getType(uuid); // noinspection HtmlUnknownTag
+
 
         return {
           type: type == null ? "<Type not found: ".concat(uuid, ">") : type.name,
@@ -637,7 +634,7 @@ export function deSerializeObject(deSerialize, serializedValue, value) {
   return value;
 }
 registerSerializer(Object, {
-  uuid: '88968a59-178c-4e73-a99f-801e8cdfc37d',
+  uuid: '88968a59178c4e73a99f801e8cdfc37d',
   serializer: {
     serialize: function serialize(_serialize2, value, options) {
       return serializeObject(_serialize2, value, options);
@@ -676,23 +673,23 @@ var primitiveAsObjectSerializer = {
 
 };
 registerSerializer(String, {
-  uuid: '96104fd7-d6f8-4a32-b8f2-feaa4f3666d8',
+  uuid: '96104fd7d6f84a32b8f2feaa4f3666d8',
   serializer: primitiveAsObjectSerializer
 }); // @ts-ignore
 
 registerSerializer(Number, {
-  uuid: 'dea0de40-1801-4025-b6a4-b6f6c7a4fa11',
+  uuid: 'dea0de4018014025b6a4b6f6c7a4fa11',
   serializer: primitiveAsObjectSerializer
 }); // @ts-ignore
 
 registerSerializer(Boolean, {
-  uuid: 'e8d1ac82-a0fa-4431-a23e-3d8f954f736f',
+  uuid: 'e8d1ac82a0fa4431a23e3d8f954f736f',
   serializer: primitiveAsObjectSerializer
 }); // endregion
 // region Array
 
 registerSerializer(Array, {
-  uuid: 'f8c84ed0-8463-4f45-b14a-228967dfb0de',
+  uuid: 'f8c84ed084634f45b14a228967dfb0de',
   serializer: {
     serialize: function serialize(_serialize3, value, options) {
       if (options && options.arrayAsObject) {
@@ -718,7 +715,7 @@ registerSerializer(Array, {
 // region Set
 
 registerSerializer(Set, {
-  uuid: '17b11d99-ce03-4349-969e-4f9291d0778c',
+  uuid: '17b11d99ce034349969e4f9291d0778c',
   serializer: {
     serialize: function serialize(_serialize4, value) {
       return serializeIterable(_serialize4, value);
@@ -758,7 +755,7 @@ registerSerializer(Set, {
 // region Map
 
 registerSerializer(Map, {
-  uuid: 'fdf40f21-59b7-4cb2-804f-3d18ebb19b57',
+  uuid: 'fdf40f2159b74cb2804f3d18ebb19b57',
   serializer: {
     serialize: function serialize(_serialize5, value) {
       return serializeIterable(function (item) {
@@ -802,7 +799,7 @@ registerSerializer(Map, {
 // region Date
 
 registerSerializer(Date, {
-  uuid: '7a6c01db-a6b8-4822-a9a5-86e4d3a4460b',
+  uuid: '7a6c01dba6b84822a9a586e4d3a4460b',
   serializer: {
     serialize: function serialize(_serialize6, value) {
       return value.getTime();

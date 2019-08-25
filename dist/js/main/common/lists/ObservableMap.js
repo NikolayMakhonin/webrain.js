@@ -190,7 +190,7 @@ class ObservableMap extends _MapChangedObject.MapChangedObject {
   }
 
   forEach(callbackfn, thisArg) {
-    this._map.forEach((k, v, s) => callbackfn.call(thisArg, k, v, this));
+    this._map.forEach((k, v) => callbackfn.call(thisArg, k, v, this));
   }
 
   has(key) {
@@ -235,20 +235,20 @@ class ObservableMap extends _MapChangedObject.MapChangedObject {
     };
   }
 
-  deSerialize(deSerialize, serializedValue) {} // endregion
+  deSerialize() {} // endregion
 
 
 }
 
 exports.ObservableMap = ObservableMap;
-ObservableMap.uuid = 'e162178d-5123-4bea-ab6e-b96d5b8f130b';
+ObservableMap.uuid = 'e162178d51234beaab6eb96d5b8f130b';
 (0, _mergers.registerMergeable)(ObservableMap);
 (0, _serializers.registerSerializable)(ObservableMap, {
   serializer: {
     *deSerialize(deSerialize, serializedValue, valueFactory) {
       const innerMap = yield deSerialize(serializedValue.map);
-      const value = valueFactory(innerMap);
-      value.deSerialize(deSerialize, serializedValue);
+      const value = valueFactory(innerMap); // value.deSerialize(deSerialize, serializedValue)
+
       return value;
     }
 

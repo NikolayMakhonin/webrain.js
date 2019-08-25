@@ -160,13 +160,13 @@ class ArraySet {
     };
   }
 
-  deSerialize(deSerialize, serializedValue) {} // endregion
+  deSerialize() {} // endregion
 
 
 }
 
 exports.ArraySet = ArraySet;
-ArraySet.uuid = '0e8c7f09-ea9e-4631-8af8-a635c214a01c';
+ArraySet.uuid = '0e8c7f09ea9e46318af8a635c214a01c';
 (0, _mergers.registerMergeable)(ArraySet);
 (0, _serializers.registerSerializable)(ArraySet, {
   serializer: {
@@ -174,8 +174,8 @@ ArraySet.uuid = '0e8c7f09-ea9e-4631-8af8-a635c214a01c';
       const innerSet = yield deSerialize(serializedValue.array, null, {
         arrayAsObject: true
       });
-      const value = valueFactory(innerSet);
-      value.deSerialize(deSerialize, serializedValue);
+      const value = valueFactory(innerSet); // value.deSerialize(deSerialize, serializedValue)
+
       return value;
     }
 

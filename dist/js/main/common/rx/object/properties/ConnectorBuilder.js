@@ -3,38 +3,42 @@
 Object.defineProperty(exports, "__esModule", {
   value: true
 });
-exports.connector = connector;
-exports.connect = connect;
 exports.ConnectorBuilder = void 0;
 
 var _deepSubscribe = require("../../deep-subscribe/deep-subscribe");
 
 var _RuleBuilder = require("../../deep-subscribe/RuleBuilder");
 
-var _ObservableObject = require("../ObservableObject");
-
 var _ObservableObjectBuilder = require("../ObservableObjectBuilder");
 
 class ConnectorBuilder extends _ObservableObjectBuilder.ObservableObjectBuilder {
-  connect(name, options, initValue) {
+  constructor(object, buildSourceRule) {
+    super(object);
+    this.buildSourceRule = buildSourceRule;
+  }
+
+  connect(name, buildRule, options, initValue) {
     const {
-      buildRule,
-      setOptions,
-      hidden
-    } = options;
-    const ruleBuilder = buildRule(new _RuleBuilder.RuleBuilder());
+      object,
+      buildSourceRule
+    } = this;
+    let ruleBuilder = new _RuleBuilder.RuleBuilder();
+
+    if (buildSourceRule) {
+      ruleBuilder = buildSourceRule(ruleBuilder);
+    }
+
+    ruleBuilder = buildRule(ruleBuilder);
     const ruleBase = ruleBuilder && ruleBuilder.result;
 
     if (ruleBase == null) {
       throw new Error('buildRule() return null or not initialized RuleBuilder');
     }
 
-    const {
-      object
-    } = this;
+    const setOptions = options && options.setOptions;
     return this.readable(name, {
       setOptions,
-      hidden,
+      hidden: options && options.hidden,
 
       // tslint:disable-next-line:no-shadowed-variable
       factory(initValue) {
@@ -64,41 +68,3 @@ class ConnectorBuilder extends _ObservableObjectBuilder.ObservableObjectBuilder 
 }
 
 exports.ConnectorBuilder = ConnectorBuilder;
-const CONNECTOR_SOURCE_PROPERTY_NAME = Math.random().toString(36);
-
-class ConnectorBase extends _ObservableObject.ObservableObject {
-  constructor(source) {
-    super();
-    this[CONNECTOR_SOURCE_PROPERTY_NAME] = source;
-  }
-
-}
-
-Object.defineProperty(ConnectorBase.prototype, CONNECTOR_SOURCE_PROPERTY_NAME, {
-  configurable: false,
-  enumerable: false,
-  writable: false,
-  value: null
-});
-
-function connector(build) {
-  class Connector extends ConnectorBase {}
-
-  const connectorBuilder = new ConnectorBuilder(Connector.prototype);
-  build(connectorBuilder);
-  return Connector;
-}
-
-const builder = new ConnectorBuilder(true);
-
-function connect(options, initValue) {
-  return (target, propertyKey) => {
-    builder.object = target;
-    builder.connect(propertyKey, options, initValue);
-  };
-} // class Class1 extends ObservableObject {
-// }
-// class Class extends Class1 {
-// 	@connect()
-// 	public prop: number
-// }

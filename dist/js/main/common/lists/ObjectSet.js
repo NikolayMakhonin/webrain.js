@@ -131,20 +131,20 @@ class ObjectSet {
     };
   }
 
-  deSerialize(deSerialize, serializedValue) {} // endregion
+  deSerialize() {} // endregion
 
 
 }
 
 exports.ObjectSet = ObjectSet;
-ObjectSet.uuid = '6988ebc9-cd06-4a9b-97a9-8415b8cf1dc4';
+ObjectSet.uuid = '6988ebc9cd064a9b97a98415b8cf1dc4';
 (0, _mergers.registerMergeable)(ObjectSet);
 (0, _serializers.registerSerializable)(ObjectSet, {
   serializer: {
     *deSerialize(deSerialize, serializedValue, valueFactory) {
       const innerSet = yield deSerialize(serializedValue.object);
-      const value = valueFactory(innerSet);
-      value.deSerialize(deSerialize, serializedValue);
+      const value = valueFactory(innerSet); // value.deSerialize(deSerialize, serializedValue)
+
       return value;
     }
 

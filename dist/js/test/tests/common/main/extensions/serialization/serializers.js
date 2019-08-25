@@ -245,7 +245,7 @@ describe('common > extensions > serialization > serializers', function () {
 
   }
 
-  Class2.uuid = '3cd34642-9e19-4a0d-8a57-ff526b445100';
+  Class2.uuid = '3cd346429e194a0d8a57ff526b445100';
   it('Class: Serializable', function () {
     const obj2 = new Class2('p_2');
     obj2.prop1 = 'p1';
@@ -282,7 +282,7 @@ describe('common > extensions > serialization > serializers', function () {
 
   }
 
-  Class3.uuid = 'c2a26bc9-1cc5-4249-9f10-f8e087fd6a1b';
+  Class3.uuid = 'c2a26bc91cc542499f10f8e087fd6a1b';
   it('Class: Serializable inherit', function () {
     const obj3 = new Class3('prop2');
     obj3.prop1 = 'p1';

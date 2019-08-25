@@ -211,7 +211,7 @@ class MapWrapper {
 
 }
 
-MapWrapper.uuid = 'bc06eeb6-5139-444a-a735-57a6e1928ac9';
+MapWrapper.uuid = 'bc06eeb65139444aa73557a6e1928ac9';
 (0, _serializers.registerSerializable)(MapWrapper, {
   serializer: {
     *deSerialize(deSerialize, serializedValue, valueFactory) {
