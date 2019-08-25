@@ -2,15 +2,18 @@ import {deepSubscribeRule} from '../../deep-subscribe/deep-subscribe'
 import {cloneRule, RuleBuilder} from '../../deep-subscribe/RuleBuilder'
 import {ObservableObject} from '../ObservableObject'
 import {IWritableFieldOptions, ObservableObjectBuilder} from '../ObservableObjectBuilder'
+import {ValueKeys} from './contracts'
 
-export class ConnectorBuilder<TSource = ObservableObject>
+export class ConnectorBuilder<TSource = ObservableObject, TValueKeys extends string | number = ValueKeys>
 	extends ObservableObjectBuilder<ObservableObject>
 {
-	public buildSourceRule: <TObject extends ObservableObject>(builder: RuleBuilder<TObject>) => RuleBuilder<TSource>
+	public buildSourceRule: <TObject extends ObservableObject>(builder: RuleBuilder<TObject, TValueKeys>)
+		=> RuleBuilder<TSource, TValueKeys>
 
 	constructor(
 		object?: ObservableObject,
-		buildSourceRule?: <TObject extends ObservableObject>(builder: RuleBuilder<TObject>) => RuleBuilder<TSource>,
+		buildSourceRule?: <TObject extends ObservableObject>(builder: RuleBuilder<TObject, TValueKeys>)
+			=> RuleBuilder<TSource, TValueKeys>,
 	) {
 		super(object)
 		this.buildSourceRule = buildSourceRule
@@ -18,7 +21,7 @@ export class ConnectorBuilder<TSource = ObservableObject>
 
 	public connect<TValue, Name extends string | number>(
 		name: Name,
-		buildRule: (builder: RuleBuilder<TSource>) => RuleBuilder<TValue>,
+		buildRule: (builder: RuleBuilder<TSource, TValueKeys>) => RuleBuilder<TValue, TValueKeys>,
 		options?: IWritableFieldOptions,
 		initValue?: TValue,
 	): this & { object: { [newProp in Name]: TValue } } {
@@ -29,7 +32,7 @@ export class ConnectorBuilder<TSource = ObservableObject>
 
 		const {object, buildSourceRule} = this
 
-		let ruleBuilder = new RuleBuilder()
+		let ruleBuilder = new RuleBuilder<any, TValueKeys>()
 		if (buildSourceRule) {
 			ruleBuilder = buildSourceRule(ruleBuilder)
 		}
@@ -94,10 +97,10 @@ export function connector<
 	TSource extends ObservableObject,
 	TConnector,
 >(
-	build: (connectorBuilder: ConnectorBuilder<TSource>) => { object: TConnector },
+	build: (connectorBuilder: ConnectorBuilder<TSource>) => ConnectorBuilder<TConnector>,
 ): (source: TSource) => TConnector {
 	class Connector extends ConnectorBase<TSource> { }
-	const connectorBuilder = build(new ConnectorBuilder<TSource>(
+	build(new ConnectorBuilder<TSource>(
 		Connector.prototype,
 		b => b.path(o => o[CONNECTOR_SOURCE_PROPERTY_NAME]),
 	))

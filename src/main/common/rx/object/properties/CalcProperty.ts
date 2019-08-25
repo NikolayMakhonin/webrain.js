@@ -6,7 +6,6 @@ import {DeferredCalc, IDeferredCalcOptions} from '../../deferred-calc/DeferredCa
 import {ObservableObject} from '../ObservableObject'
 import {ObservableObjectBuilder} from '../ObservableObjectBuilder'
 import {IPropertyOptions, Property} from './property'
-import {RuleGetValueFunc} from "../../deep-subscribe/RuleBuilder";
 
 export type CalcPropertyFunc<TInput, TTarget, TSource>
 	= (input: TInput, valueProperty: Property<TTarget, TSource>) => ThenableOrValue<void>
@@ -107,5 +106,6 @@ export class CalcProperty<TInput, TValue, TMergeSource> extends ObservableObject
 new ObservableObjectBuilder(CalcProperty.prototype)
 	.writable('input')
 
-const x: RuleGetValueFunc<CalcProperty<any, { xxxx: { yyyy: 123 } }, any>, number> =
-	o => o['@last']['@last']['@last'].xxxx['@last']['@wait'].yyyy['@last']
+// Test:
+// const test: RuleGetValueFunc<CalcProperty<any, { test1: { test2: 123 } }, any>, number> =
+// 	o => o['@last']['@last']['@last'].test1['@last']['@wait'].test2['@last']

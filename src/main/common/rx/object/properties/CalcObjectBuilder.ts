@@ -3,22 +3,24 @@ import {RuleBuilder} from '../../deep-subscribe/RuleBuilder'
 import {IDeferredCalcOptions} from '../../deferred-calc/DeferredCalc'
 import {ObservableObject} from '../ObservableObject'
 import {IWritableFieldOptions, ObservableObjectBuilder} from '../ObservableObjectBuilder'
-import {CalcProperty, CalcPropertyFunc, ICalcProperty} from './CalcProperty'
+import {CalcProperty, CalcPropertyFunc} from './CalcProperty'
+import {ValueKeys} from './contracts'
 import {IPropertyOptions} from './property'
 
 export interface ICalcPropertyOptions<
 	TObject,
 	TInput,
 	TValue,
-	TMergeSource
+	TMergeSource,
+	TValueKeys extends string | number
 > extends IWritableFieldOptions {
-	dependencies: (inputRuleBuilder: RuleBuilder<TInput>) => void,
+	dependencies: (inputRuleBuilder: RuleBuilder<TInput, TValueKeys>) => void,
 	calcFunc: CalcPropertyFunc<TInput, TValue, TMergeSource>,
 	calcOptions?: IDeferredCalcOptions,
 	valuePropertyOptions?: IPropertyOptions<TValue, TMergeSource>,
 }
 
-export class CalcObjectBuilder<TObject extends ObservableObject>
+export class CalcObjectBuilder<TObject extends ObservableObject, TValueKeys extends string | number = ValueKeys>
 	extends ObservableObjectBuilder<TObject>
 {
 	public calc<
@@ -38,12 +40,11 @@ export class CalcObjectBuilder<TObject extends ObservableObject>
 			TObject,
 			TInput,
 			TValue,
-			TMergeSource
+			TMergeSource,
+			TValueKeys
 		>,
 		initValue?: TValue,
-	): this & {
-		object: TValue | CalcProperty<TInput, TValue, TMergeSource>,
-	} {
+	) {
 		return this.readable<CalcProperty<
 			TInput,
 			TValue,
@@ -56,18 +57,22 @@ export class CalcObjectBuilder<TObject extends ObservableObject>
 					: input
 
 				if (dependencies) {
-					deepSubscribe(property, () => {
+					deepSubscribe<
+						CalcProperty<TInput, TValue, TMergeSource>,
+						CalcProperty<TInput, TValue, TMergeSource>,
+						TValueKeys
+					>(property, () => {
 						property.invalidate()
 						return null
 					}, false, b => {
-						dependencies(b.path(o => o.input))
+						dependencies(b.path(o => (o as any).input))
 						return b
 					})
 				}
 
 				return property
 			},
-		}) as any
+		})
 	}
 }
 

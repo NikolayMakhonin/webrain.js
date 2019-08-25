@@ -1,4 +1,5 @@
 /* tslint:disable */
+import {ValueKeys} from '../object/properties/contracts'
 import {IUnsubscribe} from '../subjects/subject'
 import {IRule} from './contracts/rules'
 import {IRuleOrIterable, iterateRule, subscribeNextRule} from './iterate-rule'
@@ -121,6 +122,7 @@ function deepSubscribeRuleIterator<TValue>(
 					}, newPropertiesPath)
 				}
 
+				// noinspection JSUnusedLocalSymbols
 				const unsubscribeItem = (item, debugPropertyName: string) => {
 					unsubscribeNested(item, unsubscribers)
 				}
@@ -205,16 +207,16 @@ export function deepSubscribeRule<TValue>(
 	))
 }
 
-export function deepSubscribe<TObject, TValue>(
+export function deepSubscribe<TObject, TValue, TValueKeys extends string | number = never>(
 	object: TObject,
 	subscribeValue: ISubscribeValue<TValue>,
 	immediate: boolean,
-	ruleBuilder: (ruleBuilder: RuleBuilder<TObject>) => RuleBuilder<TValue>,
+	ruleBuilder: (ruleBuilder: RuleBuilder<TObject, TValueKeys>) => RuleBuilder<TValue, TValueKeys>,
 ): IUnsubscribe {
 	return toSingleCall(deepSubscribeRule(
 		object,
 		subscribeValue,
 		immediate,
-		ruleBuilder(new RuleBuilder<TObject>()).result
+		ruleBuilder(new RuleBuilder<TObject, TValueKeys>()).result
 	))
 }

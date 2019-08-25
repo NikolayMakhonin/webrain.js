@@ -19,7 +19,7 @@ export type TOnRejected<TResult = any>
 export type TResolve<TValue> = (value?: ThenableOrIteratorOrValue<TValue>) => void
 export type TReject = (error?: any) => void
 
-export interface Thenable<T> {
+export interface Thenable<T = any> {
 	then<TResult1 = T, TResult2 = never>(
 		onfulfilled?: TOnFulfilled<T, TResult1>,
 		onrejected?: TOnRejected<TResult2>,
