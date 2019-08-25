@@ -17,11 +17,13 @@ On development stage ...
 
 The main idea: 90% of the logic of almost any application can be represented as a single tree-like dynamic object that can be serialized, updated to a new version, merged with other versions.
 
-Almost all logic is contained in the computed properties of this object. Each computed property is an independent object. That is, despite the fact that the application logic is in one object, it is divided into very small, independent modules. These modules are connected to the tree-like object as microcircuits to the motherboard, and are interconnected by other mini-objects - connectors. You can draw a parallel with brain neurons, where each calculated property can be represented as a neuron that takes data from its dependencies (dendrites) and gives the result as a single value (axon).
+Almost all logic is contained in the computed properties of this object. Each computed property is an independent object. That is, despite the fact that the application logic is in one object, it is divided into very small, independent modules. These modules are connected to the tree-like object like as microcircuits to the motherboard, and are interconnected by other mini-objects - connectors. You can draw a parallel with brain neurons, where each calculated property can be represented as a neuron that takes data from its dependencies (dendrites) and gives the result as a one value (axon).
 
-Each computed property does its best to minimize the amount of computation, caches values, uses throttling, etc.
+The value can be anything, including lists, complex objects, etc.
 
-Dependency binding is extremely accurate, flexible, and well optimized.
+Each calculated property does its best to minimize the number of calculations, caches values, uses deferred and async calculations, time throttling, etc.
+
+Dependency binding is extremely accurate, flexible, and well optimized. With the only restriction that the binding is possible only down of the object tree, otherwise modularity would be violated.
 
 Such an architecture has already been successfully tested by me on a real C # project and is now redesigned using my experience and more powerful JavaScript and TypeScript features.
 
