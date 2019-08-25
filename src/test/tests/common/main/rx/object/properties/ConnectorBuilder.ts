@@ -9,67 +9,71 @@ declare const assert: any
 
 describe('common > main > rx > properties > ConnectorBuilder', function() {
 	it('connect', function() {
-		const source: any = createObject().observableObject
-		new ObservableObjectBuilder(source)
-			.writable('baseProp1')
-			.writable('baseProp2')
-			.writable('prop1')
-			.writable('prop2')
+		const source = new ObservableObjectBuilder(createObject().observableObject)
+			.writable<string, 'baseProp1'>('baseProp1')
+			.writable<string, 'baseProp2'>('baseProp2')
+			.writable<string, 'prop1'>('prop1')
+			.writable<string, 'prop2'>('prop2')
+			.object
 
 		source.baseProp1 = 'baseProp1_init_source'
 
 		class BaseClass1 extends ObservableObject {
 			public readonly source = source
-			public baseProp1
+			public baseProp1: string
 		}
 
 		class BaseClass2 extends BaseClass1 {
-			public baseProp2
+			public baseProp2: string
 		}
 
 		class Class1 extends BaseClass1 {
-			public prop1
+			public prop1: string
 		}
 
 		class Class2 extends BaseClass2 {
-			public prop2
+			public prop2: string
 		}
 
-		const baseBuilder1 = new ConnectorBuilder(BaseClass1.prototype as BaseClass1)
-			.connect('baseProp1', b => b.path(o => o.source
+		type ValueKeys = '@value_property'
+
+		new ConnectorBuilder<ObservableObject, BaseClass1, ValueKeys>(BaseClass1.prototype)
+			.connect('baseProp1',
+				b => b.path(o => o.source
 					.property['@value_property']
 					.observableMap['#observableList']
 					['#']
-					.baseProp1),
-				null,
-				'baseProp1_init')
+					.baseProp1))
 
-		const baseBuilder2 = new ConnectorBuilder(BaseClass2.prototype as BaseClass2)
-			.connect('baseProp2', {
-				buildRule: b => b.path(o => o.source
+		new ConnectorBuilder<BaseClass2, BaseClass2, ValueKeys>(BaseClass2.prototype)
+			.connect('baseProp2',
+				b => b.path(o => o['@value_property'].source
 					.property['@value_property']
 					.observableMap['#observableList']
 					['#']
 					.baseProp2),
-			}, 'baseProp2_init')
+				null,
+				'baseProp2_init')
 
-		const builder1 = new ConnectorBuilder(Class1.prototype as Class1)
-			.connect('prop1', {
-				buildRule: b => b.path(o => o.source
+		new ConnectorBuilder<Class1, Class1, ValueKeys>(Class1.prototype)
+			.connect('prop1',
+				b => b.path(o => o['@value_property'].source
 					.property['@value_property']
 					.observableMap['#observableList']
 					['#']
 					.prop1),
-			}, 'prop1_init')
+				null,
+				'prop1_init')
 
-		const builder2 = new ConnectorBuilder(Class2.prototype as Class2)
-			.connect('prop2', {
-				buildRule: b => b.path(o => o.source
+		new ConnectorBuilder<Class2, Class2, ValueKeys>(Class2.prototype)
+			.connect('prop2',
+				b => b.path(o => o['@value_property'].source
 					.property['@value_property']
 					.observableMap['#observableList']
 					['#']
 					.prop2),
-			}, 'prop2_init')
+				null,
+				'prop2_init')
 
 		const baseObject1 = new BaseClass1()
 		const baseObject2 = new BaseClass2()

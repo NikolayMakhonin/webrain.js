@@ -3,7 +3,7 @@
 import {ThenableOrValue} from '../../../../../../../main/common/async/async'
 import {ObservableObject} from '../../../../../../../main/common/rx/object/ObservableObject'
 import {CalcObjectBuilder} from '../../../../../../../main/common/rx/object/properties/CalcObjectBuilder'
-import {connector} from '../../../../../../../main/common/rx/object/properties/ConnectorBuilder'
+import {connector} from '../../../../../../../main/common/rx/object/properties/Connector'
 import {Property} from '../../../../../../../main/common/rx/object/properties/property'
 
 declare const assert: any

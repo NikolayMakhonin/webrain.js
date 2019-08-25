@@ -57,15 +57,11 @@ export class CalcObjectBuilder<TObject extends ObservableObject, TValueKeys exte
 					: input
 
 				if (dependencies) {
-					deepSubscribe<
-						CalcProperty<TInput, TValue, TMergeSource>,
-						CalcProperty<TInput, TValue, TMergeSource>,
-						TValueKeys
-					>(property, () => {
+					deepSubscribe(property, () => {
 						property.invalidate()
 						return null
-					}, false, b => {
-						dependencies(b.path(o => (o as any).input))
+					}, false, (b: any) => {
+						dependencies(b.path(o => o.input))
 						return b
 					})
 				}

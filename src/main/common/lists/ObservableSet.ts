@@ -228,7 +228,7 @@ registerSerializable(ObservableSet, {
 		): ThenableIterator<ObservableSet<T>> {
 			const innerSet = yield deSerialize<Set<T>>(serializedValue.set)
 			const value = valueFactory(innerSet)
-			value.deSerialize(deSerialize, serializedValue)
+			// value.deSerialize(deSerialize, serializedValue)
 			return value
 		},
 	},

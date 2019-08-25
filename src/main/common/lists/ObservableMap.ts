@@ -252,7 +252,7 @@ registerSerializable(ObservableMap, {
 		): ThenableIterator<ObservableMap<K, V>> {
 			const innerMap = yield deSerialize<Map<K, V>>(serializedValue.map)
 			const value = valueFactory(innerMap)
-			value.deSerialize(deSerialize, serializedValue)
+			// value.deSerialize(deSerialize, serializedValue)
 			return value
 		},
 	},

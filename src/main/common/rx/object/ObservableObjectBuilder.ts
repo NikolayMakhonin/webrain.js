@@ -66,7 +66,7 @@ export class ObservableObjectBuilder<TObject extends ObservableObject> {
 		name: Name,
 		options?: IReadableFieldOptions<T>,
 		initValue?: T,
-	): this & { object: { [newProp in Name]: T } } {
+	): this & { object: { readonly [newProp in Name]: T } } {
 		const hidden = options && options.hidden
 
 		const setOptions = {
@@ -153,7 +153,7 @@ export class ObservableObjectBuilder<TObject extends ObservableObject> {
 	}
 
 	public delete<Name extends string | number>(name: Name)
-		: this & { object: { [newProp in Name]: never } }
+		: this & { object: { readonly [newProp in Name]: never } }
 	{
 		const {object} = this
 		const oldValue = object[name as any]
@@ -180,14 +180,15 @@ export class ObservableObjectBuilder<TObject extends ObservableObject> {
 	}
 }
 
-export const obj = new ObservableObjectBuilder()
-	.writable<number, 'prop1'>('prop1')
-	.readable<string, 'prop2'>('prop2')
-	.readable<string, 'prop3'>('prop3')
-	.delete('prop3')
-	.object
-
-export const x = obj.prop1 + obj.prop2 + obj.propertyChanged + obj.prop3
+// Test:
+// export const obj = new ObservableObjectBuilder()
+// 	.writable<number, 'prop1'>('prop1')
+// 	.readable<string, 'prop2'>('prop2')
+// 	.readable<string, 'prop3'>('prop3')
+// 	.delete('prop3')
+// 	.object
+//
+// export const x = obj.prop1 + obj.prop2 + obj.propertyChanged + obj.prop3
 
 // const builder = new ObservableObjectBuilder(true as any)
 //

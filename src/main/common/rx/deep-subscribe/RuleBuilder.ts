@@ -1,6 +1,6 @@
-import {Thenable} from '../../async/async'
+import {AsyncValueOf, ThenableOrIterator} from '../../async/async'
 import {Diff} from '../../helpers/typescript'
-import {ANY_DISPLAY, COLLECTION_PREFIX, VALUE_PROPERTY_DEFAULT, VALUE_PROPERTY_PREFIX} from './contracts/constants'
+import {ANY, ANY_DISPLAY, COLLECTION_PREFIX, VALUE_PROPERTY_DEFAULT, VALUE_PROPERTY_PREFIX} from './contracts/constants'
 import {IRuleSubscribe} from './contracts/rule-subscribe'
 import {IRule} from './contracts/rules'
 import {getFuncPropertiesPath} from './helpers/func-properties-path'
@@ -14,62 +14,71 @@ const RuleSubscribeMapKeys = RuleSubscribeMap.bind(null, null)
 // const UNSUBSCRIBE_PROPERTY_PREFIX = Math.random().toString(36)
 // let nextUnsubscribePropertyId = 0
 
-export type MapValue<TMap>
+export type MapValueOf<TMap>
 	= TMap extends Map<any, infer TValue>
-		? Diff<TValue, Thenable>
+		? AsyncValueOf<TValue>
 		: never
-export type IterableValue<TIterable>
+export type IterableValueOf<TIterable>
 	= TIterable extends Iterable<infer TValue>
-		? Diff<TValue, Thenable>
+		? AsyncValueOf<TValue>
 		: never
-export type ObjectAnyValue<TObject>
+export type ObjectAnyValueOf<TObject>
 	= TObject extends { [key in keyof TObject]: infer TValue }
-		? Diff<TValue, Thenable>
+		? AsyncValueOf<TValue>
 		: never
-export type ObjectValue<TObject, TKeys extends string | number>
+export type ObjectValueOf<TObject, TKeys extends keyof TObject>
 	= TObject extends { [key in TKeys]: infer TValue }
-		? Diff<TValue, Thenable>
+		? AsyncValueOf<TValue>
 		: never
 
-export type ValuePropertyValue<TObject>
+export type PropertyValueOf<TObject>
 	= TObject extends { [VALUE_PROPERTY_DEFAULT]: infer TValue }
-		? Diff<TValue, Thenable>
+		? AsyncValueOf<TValue>
 		: TObject
-
-export type TRulePathObjectExclusive<TObject, TValueKeys extends string | number> =
-	TObject extends { [VALUE_PROPERTY_DEFAULT]: infer TValue }
-		? ({
-			[key in Diff<keyof Diff<TValue, Thenable>, TValueKeys>]
-				: TRulePathObjectExclusive<Diff<Diff<TValue, Thenable>[key], Thenable>, TValueKeys>
-		} & {
-			[key in TValueKeys]: TRulePathObjectExclusive<Diff<TValue, Thenable>, TValueKeys>
-		})
-		: {
-			[key in Diff<keyof TObject, TValueKeys>]: TRulePathObjectExclusive<Diff<TObject[key], Thenable>, TValueKeys>
-		} & {
-			[key in TValueKeys]: TRulePathObjectExclusive<TObject, TValueKeys>
-		}
 
 export type RULE_PATH_OBJECT_VALUE = '46007c49df234a768d312f74c892f0b1'
 
+export type TRulePathSubObject<TObject, TValueKeys extends string | number> =
+	TObject
+	& {
+		[key in TValueKeys]: TRulePathObject<TObject, TValueKeys>
+	}
+	& (TObject extends object
+		? {
+			[key in Diff<keyof TObject, TValueKeys>]
+				: TRulePathObject<
+					TObject[key] extends ThenableOrIterator<infer V> ? V : TObject[key],
+					TValueKeys
+				>
+		}
+		& {
+			[key in ANY]: TRulePathObject<AsyncValueOf<TObject[any]>, TValueKeys>
+		}
+		: {}
+	)
+	& (TObject extends Iterable<infer TItem>
+		? {
+			[key in COLLECTION_PREFIX]: TRulePathObject<AsyncValueOf<TItem>, TValueKeys>
+		} : {}
+	)
+	& (TObject extends Map<string | number, infer TItem>
+		? {
+			[key in Diff<any, TObject>]: TRulePathObject<AsyncValueOf<TItem>, TValueKeys>
+		} : {}
+	)
+
 export type TRulePathObject<TObject, TValueKeys extends string | number> =
 	(TObject extends { [VALUE_PROPERTY_DEFAULT]: infer TValue }
-		? (Diff<TValue, Thenable> & {
-			[key in Diff<keyof Diff<TValue, Thenable>, TValueKeys>]
-				: TRulePathObject<Diff<Diff<TValue, Thenable>[key], Thenable>, TValueKeys>
-		} & {
-			[key in TValueKeys]: TRulePathObject<Diff<TValue, Thenable>, TValueKeys>
-		})
-		: TObject & {
-			[key in Diff<keyof TObject, TValueKeys>]: TRulePathObject<Diff<TObject[key], Thenable>, TValueKeys>
-		} & {
-			[key in TValueKeys]: TRulePathObject<TObject, TValueKeys>
-		}) & {
-			[key in RULE_PATH_OBJECT_VALUE]: TObject
-		}
+		? TRulePathSubObject<AsyncValueOf<TValue>, TValueKeys>
+		: TRulePathSubObject<TObject, TValueKeys>)
+	& {
+		[key in RULE_PATH_OBJECT_VALUE]: TObject
+	}
 
-export type TRulePathObjectValue<TObject extends TRulePathObject<any, any>>
-	= TObject[RULE_PATH_OBJECT_VALUE]
+export type TRulePathObjectValueOf<TObject extends TRulePathObject<any, any>>
+	= TObject extends { [key in RULE_PATH_OBJECT_VALUE]: any }
+		? TObject[RULE_PATH_OBJECT_VALUE]
+		: never
 
 export type RuleGetValueFunc<TObject, TValue, TValueKeys extends string | number>
 	= (o: TRulePathObject<TObject, TValueKeys>) => TValue
@@ -138,7 +147,7 @@ export class RuleBuilder<TObject = any, TValueKeys extends string | number = nev
 	/**
 	 * Object property, Array index
 	 */
-	public valuePropertyName<TValue = ValuePropertyValue<TObject>>(propertyName: string): RuleBuilder<TValue, TValueKeys> {
+	public valuePropertyName<TValue = PropertyValueOf<TObject>>(propertyName: string): RuleBuilder<TValue, TValueKeys> {
 		return this.ruleSubscribe<TValue>(
 			new RuleSubscribeObjectValuePropertyNames(propertyName),
 			VALUE_PROPERTY_PREFIX + propertyName,
@@ -148,7 +157,7 @@ export class RuleBuilder<TObject = any, TValueKeys extends string | number = nev
 	/**
 	 * Object property, Array index
 	 */
-	public valuePropertyNames<TValue = ValuePropertyValue<TObject>>(
+	public valuePropertyNames<TValue = PropertyValueOf<TObject>>(
 		...propertiesNames: string[]
 	): RuleBuilder<TValue, TValueKeys> {
 		return this.ruleSubscribe<TValue>(
@@ -160,7 +169,7 @@ export class RuleBuilder<TObject = any, TValueKeys extends string | number = nev
 	/**
 	 * Object property, Array index
 	 */
-	public propertyName<TKeys extends string | number, TValue = ObjectValue<TObject, TKeys>>(
+	public propertyName<TKeys extends keyof TObject, TValue = ObjectValueOf<TObject, TKeys>>(
 		propertyName: TKeys,
 	): RuleBuilder<TValue, TValueKeys>
 	public propertyName<TValue>(propertyName: string): RuleBuilder<TValue, TValueKeys> {
@@ -173,7 +182,7 @@ export class RuleBuilder<TObject = any, TValueKeys extends string | number = nev
 	/**
 	 * Object property, Array index
 	 */
-	public propertyNames<TKeys extends string | number, TValue = ObjectValue<TObject, TKeys>>(
+	public propertyNames<TKeys extends keyof TObject, TValue = ObjectValueOf<TObject, TKeys>>(
 		...propertiesNames: TKeys[]
 	): RuleBuilder<TValue, TValueKeys>
 	public propertyNames<TValue>(...propertiesNames: string[]): RuleBuilder<TValue, TValueKeys> {
@@ -186,7 +195,7 @@ export class RuleBuilder<TObject = any, TValueKeys extends string | number = nev
 	/**
 	 * Object property, Array index
 	 */
-	public propertyAll<TValue = ObjectAnyValue<TObject>>(): RuleBuilder<TValue, TValueKeys> {
+	public propertyAll<TValue = ObjectAnyValueOf<TObject>>(): RuleBuilder<TValue, TValueKeys> {
 		return this.ruleSubscribe<TValue>(
 			new RuleSubscribeObjectPropertyNames(),
 			ANY_DISPLAY,
@@ -196,7 +205,7 @@ export class RuleBuilder<TObject = any, TValueKeys extends string | number = nev
 	/**
 	 * Object property, Array index
 	 */
-	public propertyPredicate<TValue = ObjectAnyValue<TObject>>(
+	public propertyPredicate<TValue = ObjectAnyValueOf<TObject>>(
 		predicate: (propertyName: string, object) => boolean,
 		description: string,
 	): RuleBuilder<TValue, TValueKeys> {
@@ -209,7 +218,7 @@ export class RuleBuilder<TObject = any, TValueKeys extends string | number = nev
 	/**
 	 * Object property, Array index
 	 */
-	public propertyRegexp<TValue = ObjectAnyValue<TObject>>(regexp: RegExp) {
+	public propertyRegexp<TValue = ObjectAnyValueOf<TObject>>(regexp: RegExp) {
 		if (!(regexp instanceof RegExp)) {
 			throw new Error(`regexp (${regexp}) is not instance of RegExp`)
 		}
@@ -223,7 +232,7 @@ export class RuleBuilder<TObject = any, TValueKeys extends string | number = nev
 	/**
 	 * IListChanged & Iterable, ISetChanged & Iterable, IMapChanged & Iterable, Iterable
 	 */
-	public collection<TValue = IterableValue<TObject>>(): RuleBuilder<TValue, TValueKeys> {
+	public collection<TValue = IterableValueOf<TObject>>(): RuleBuilder<TValue, TValueKeys> {
 		return this.ruleSubscribe<TValue>(
 			new RuleSubscribeCollection<any, TValue>(),
 			COLLECTION_PREFIX,
@@ -233,7 +242,7 @@ export class RuleBuilder<TObject = any, TValueKeys extends string | number = nev
 	/**
 	 * IMapChanged & Map, Map
 	 */
-	public mapKey<TKey, TValue = MapValue<TObject>>(key: TKey): RuleBuilder<TValue, TValueKeys> {
+	public mapKey<TKey, TValue = MapValueOf<TObject>>(key: TKey): RuleBuilder<TValue, TValueKeys> {
 		return this.ruleSubscribe<TValue>(
 			new RuleSubscribeMapKeys(key),
 			COLLECTION_PREFIX + key,
@@ -243,7 +252,7 @@ export class RuleBuilder<TObject = any, TValueKeys extends string | number = nev
 	/**
 	 * IMapChanged & Map, Map
 	 */
-	public mapKeys<TKey, TValue = MapValue<TObject>>(...keys: TKey[]): RuleBuilder<TValue, TValueKeys> {
+	public mapKeys<TKey, TValue = MapValueOf<TObject>>(...keys: TKey[]): RuleBuilder<TValue, TValueKeys> {
 		return this.ruleSubscribe<TValue>(
 			new RuleSubscribeMapKeys(...keys),
 			COLLECTION_PREFIX + keys.join('|'),
@@ -253,7 +262,7 @@ export class RuleBuilder<TObject = any, TValueKeys extends string | number = nev
 	/**
 	 * IMapChanged & Map, Map
 	 */
-	public mapAll<TValue = MapValue<TObject>>(): RuleBuilder<TValue, TValueKeys> {
+	public mapAll<TValue = MapValueOf<TObject>>(): RuleBuilder<TValue, TValueKeys> {
 		return this.ruleSubscribe<TValue>(
 			new RuleSubscribeMap() as any,
 			COLLECTION_PREFIX,
@@ -263,7 +272,7 @@ export class RuleBuilder<TObject = any, TValueKeys extends string | number = nev
 	/**
 	 * IMapChanged & Map, Map
 	 */
-	public mapPredicate<TKey, TValue = MapValue<TObject>>(
+	public mapPredicate<TKey, TValue = MapValueOf<TObject>>(
 		keyPredicate: (key: TKey, object) => boolean,
 		description: string,
 	): RuleBuilder<TValue, TValueKeys> {
@@ -276,7 +285,7 @@ export class RuleBuilder<TObject = any, TValueKeys extends string | number = nev
 	/**
 	 * IMapChanged & Map, Map
 	 */
-	public mapRegexp<TValue = MapValue<TObject>>(keyRegexp: RegExp) {
+	public mapRegexp<TValue = MapValueOf<TObject>>(keyRegexp: RegExp) {
 		if (!(keyRegexp instanceof RegExp)) {
 			throw new Error(`keyRegexp (${keyRegexp}) is not instance of RegExp`)
 		}
@@ -288,25 +297,25 @@ export class RuleBuilder<TObject = any, TValueKeys extends string | number = nev
 	}
 
 	public path<TValue>(getValueFunc: RuleGetValueFunc<TObject, TValue, TValueKeys>)
-		: RuleBuilder<TRulePathObjectValue<TValue>, TValueKeys>
+		: RuleBuilder<TRulePathObjectValueOf<TValue>, TValueKeys>
 	{
-		for (const propertyNames of getFuncPropertiesPath(getValueFunc)) {
+		for (const propertyNames of getFuncPropertiesPath(getValueFunc as any)) {
 			if (propertyNames.startsWith(COLLECTION_PREFIX)) {
 				const keys = propertyNames.substring(1)
 				if (keys === '') {
-					this.collection()
+					this.collection<any>()
 				} else {
-					this.mapKeys(...keys.split('|'))
+					this.mapKeys<any>(...keys.split('|'))
 				}
 			} else if (propertyNames.startsWith(VALUE_PROPERTY_PREFIX)) {
 				const valuePropertyNames = propertyNames.substring(1)
 				if (valuePropertyNames === '') {
 					throw new Error(`You should specify at least one value property name; path = ${getValueFunc}`)
 				} else {
-					this.valuePropertyNames(...valuePropertyNames.split('|'))
+					this.valuePropertyNames<any>(...valuePropertyNames.split('|'))
 				}
 			} else {
-				this.propertyNames(...propertyNames.split('|'))
+				this.propertyNames<any>(...propertyNames.split('|'))
 			}
 		}
 
@@ -394,5 +403,5 @@ export function cloneRule(rule: IRule) {
 }
 
 // Test:
-// export const test = new RuleBuilder<{ x: { y: number } }>()
-// 	.path(o => o.x.y)
+export const test = new RuleBuilder<{ x: { y: number } }>()
+	.path(o => o.x.y)

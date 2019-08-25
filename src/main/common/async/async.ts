@@ -1,8 +1,12 @@
 import {isIterator} from '../helpers/helpers'
 
-export type ThenableOrValue<T> = T|Thenable<T>
+export type ThenableOrValue<T> = T | Thenable<T>
 
-export type ThenableOrIteratorOrValue<T> = T | ThenableIterator<T> | ThenableOrIteratorOrValueNested<T>
+export type ThenableOrIterator<T> = ThenableIterator<T> | ThenableOrIteratorOrValueNested<T>
+
+export type ThenableOrIteratorOrValue<T> = T | ThenableOrIterator<T>
+
+export type AsyncValueOf<T> = T extends ThenableOrIterator<infer V>	? V : T
 
 export interface ThenableOrIteratorOrValueNested<T> extends Thenable<ThenableOrIteratorOrValue<T>>
 {}
