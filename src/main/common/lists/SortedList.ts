@@ -1324,7 +1324,7 @@ registerSerializable(SortedList, {
 			const options = yield deSerialize(serializedValue.options)
 			options.array = yield deSerialize(serializedValue.array)
 			const value = valueFactory(options)
-			value.deSerialize(deSerialize, serializedValue)
+			// value.deSerialize(deSerialize, serializedValue)
 			return value
 		},
 	},

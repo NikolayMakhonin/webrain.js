@@ -1,11 +1,11 @@
 import {IRule, IRuleAny, IRuleRepeat, RuleType} from './contracts/rules'
 
-export abstract class Rule implements IRule {
+export class Rule implements IRule {
 	public readonly type: RuleType
 	public next?: IRule
 	public description?: string
 
-	protected constructor(type: RuleType) {
+	public constructor(type: RuleType) {
 		this.type = type
 	}
 

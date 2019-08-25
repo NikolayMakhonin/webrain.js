@@ -112,6 +112,7 @@ export abstract class TestVariants<
 			= expandArray(optionsVariants.actions)
 		delete optionsVariants.actions
 
+		// tslint:disable-next-line:prefer-const
 		let variants = generateOptions({} as TOptionsVariant, optionsVariants, exclude)
 		// variants = Array.from(variants)
 

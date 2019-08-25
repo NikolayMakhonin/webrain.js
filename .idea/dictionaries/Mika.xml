@@ -6,6 +6,7 @@
       <w>callbackfn</w>
       <w>childs</w>
       <w>chokidar</w>
+      <w>coef</w>
       <w>coord</w>
       <w>cssnano</w>
       <w>deserialized</w>
@@ -20,6 +21,7 @@
       <w>multiremote</w>
       <w>necolas</w>
       <w>nycrc</w>
+      <w>onfulfill</w>
       <w>onfulfilled</w>
       <w>onreject</w>
       <w>onrejected</w>

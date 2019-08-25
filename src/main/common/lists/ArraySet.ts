@@ -195,7 +195,7 @@ registerSerializable(ArraySet, {
 		): ThenableIterator<ArraySet<T>> {
 			const innerSet = yield deSerialize(serializedValue.array, null, { arrayAsObject: true })
 			const value = valueFactory(innerSet)
-			value.deSerialize(deSerialize, serializedValue)
+			// value.deSerialize(deSerialize, serializedValue)
 			return value
 		},
 	},

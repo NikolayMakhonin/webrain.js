@@ -379,7 +379,7 @@ export class Tester<TObject, TValue> {
 
 	// endregion
 
-	// rergion Async
+	// region Async
 
 	public async subscribeAsync(
 		expectedSubscribed: TValue[]|((object: TObject) => TValue[]),

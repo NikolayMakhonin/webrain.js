@@ -170,7 +170,7 @@ registerSerializable(ObjectSet, {
 		): ThenableIterator<ObjectSet> {
 			const innerSet = yield deSerialize<object>(serializedValue.object)
 			const value = valueFactory(innerSet)
-			value.deSerialize(deSerialize, serializedValue)
+			// value.deSerialize(deSerialize, serializedValue)
 			return value
 		},
 	},

@@ -1,8 +1,6 @@
 /* tslint:disable:object-literal-key-quotes no-construct use-primitive-type */
 import {ThenableIterator} from '../../../../../../main/common/async/async'
 import {IMergeable, IMergeOptions, IMergeValue} from '../../../../../../main/common/extensions/merge/contracts'
-import {mergeMaps} from '../../../../../../main/common/extensions/merge/merge-maps'
-import {createMergeSetWrapper} from '../../../../../../main/common/extensions/merge/merge-sets'
 import {registerMergeable} from '../../../../../../main/common/extensions/merge/mergers'
 import {
 	IDeSerializeValue,

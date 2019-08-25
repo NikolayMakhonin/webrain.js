@@ -2,13 +2,12 @@ import {isIterable} from '../../helpers/helpers'
 import {IUnsubscribe} from '../subjects/subject'
 import {IRuleSubscribe} from './contracts/rule-subscribe'
 import {IRule, IRuleAction, IRuleAny, IRuleRepeat, RuleType} from './contracts/rules'
-import {PeekIterator} from './helpers/PeekIterator'
 
 type GetIterableFunction = () => Iterable<IRuleOrIterable>
-export type IRuleOrIterable = IRuleAction | IRuleIterable | GetIterableFunction
-export interface IRuleIterable extends Iterable<IRuleOrIterable> {
 
-}
+export type IRuleOrIterable = IRuleAction | IRuleIterable | GetIterableFunction
+export interface IRuleIterable extends Iterable<IRuleOrIterable> {}
+export type IRuleIterator = Iterator<IRuleOrIterable>
 
 export function *iterateRule(rule: IRule, next: () => IRuleIterable = null): IRuleIterable {
 	if (!rule) {
@@ -83,9 +82,9 @@ export function *iterateRule(rule: IRule, next: () => IRuleIterable = null): IRu
 }
 
 export function subscribeNextRule(
-	ruleIterator: PeekIterator<IRuleOrIterable>,
-	fork: (ruleIterator: PeekIterator<IRuleOrIterable>) => IUnsubscribe,
-	subscribeNode: (rule: IRuleSubscribe, getRuleIterator: () => PeekIterator<IRuleOrIterable>) => IUnsubscribe,
+	ruleIterator: IRuleIterator,
+	fork: (ruleIterator: IRuleIterator) => IUnsubscribe,
+	subscribeNode: (rule: IRuleSubscribe, getRuleIterator: () => IRuleIterator) => IUnsubscribe,
 	subscribeLeaf: () => IUnsubscribe,
 ): IUnsubscribe {
 	let iteration
@@ -111,7 +110,7 @@ export function subscribeNextRule(
 		// }
 
 		for (const ruleIterable of ruleOrIterable as Iterable<IRuleOrIterable>) {
-			const unsubscribe = fork(new PeekIterator(ruleIterable[Symbol.iterator]()))
+			const unsubscribe = fork(ruleIterable[Symbol.iterator]())
 			if (unsubscribe != null) {
 				if (!unsubscribers) {
 					unsubscribers = [unsubscribe]
@@ -137,7 +136,7 @@ export function subscribeNextRule(
 	return subscribeNode(
 		ruleOrIterable as IRuleSubscribe,
 		nextIterable
-			? () => new PeekIterator(nextIterable()[Symbol.iterator]())
+			? () => nextIterable()[Symbol.iterator]()
 			: null,
 	)
 }

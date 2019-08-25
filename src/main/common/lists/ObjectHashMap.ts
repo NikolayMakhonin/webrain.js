@@ -191,7 +191,7 @@ registerSerializable(ObjectHashMap, {
 		): ThenableIterator<ObjectHashMap<K, V>> {
 			const innerMap = yield deSerialize<{ [id: number]: [K, V] }>(serializedValue.object)
 			const value = valueFactory(innerMap)
-			value.deSerialize(deSerialize, serializedValue)
+			// value.deSerialize(deSerialize, serializedValue)
 			return value
 		},
 	},

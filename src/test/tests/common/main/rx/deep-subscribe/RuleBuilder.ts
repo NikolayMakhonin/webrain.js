@@ -13,7 +13,7 @@ import {
 import {IRule, RuleType} from '../../../../../../main/common/rx/deep-subscribe/contracts/rules'
 import {RuleBuilder} from '../../../../../../main/common/rx/deep-subscribe/RuleBuilder'
 import {ObservableObjectBuilder} from '../../../../../../main/common/rx/object/ObservableObjectBuilder'
-import {assert, AssertionError} from '../../../../../../main/common/test/Assert'
+import {assert} from '../../../../../../main/common/test/Assert'
 
 describe('common > main > rx > deep-subscribe > RuleBuilder', function() {
 	interface IObject {
@@ -808,7 +808,7 @@ describe('common > main > rx > deep-subscribe > RuleBuilder', function() {
 			description: ANY_DISPLAY,
 		})
 
-		const builder2 = builder.propertyNames<string>(ANY)
+		const builder2 = builder.propertyNames<ANY, string>(ANY)
 		checkType<string>(builder2)
 		assert.strictEqual(builder2 as any, builder)
 		assert.strictEqual(builder2.result, rule1)
@@ -826,7 +826,7 @@ describe('common > main > rx > deep-subscribe > RuleBuilder', function() {
 			},
 		})
 
-		const builder3 = builder.propertyNames<boolean>('prop1', ANY, 'prop2')
+		const builder3 = builder.propertyNames<'prop1' | ANY | 'prop2', boolean>('prop1', ANY, 'prop2')
 		checkType<boolean>(builder3)
 		assert.strictEqual(builder3 as any, builder)
 		assert.strictEqual(builder3.result, rule1)
@@ -871,7 +871,7 @@ describe('common > main > rx > deep-subscribe > RuleBuilder', function() {
 			description: 'prop1',
 		})
 
-		const builder2 = builder.propertyName<string>('prop2')
+		const builder2 = builder.propertyName<'prop2', string>('prop2')
 		checkType<string>(builder2)
 		assert.strictEqual(builder2 as any, builder)
 		assert.strictEqual(builder2.result, rule1)
@@ -889,7 +889,7 @@ describe('common > main > rx > deep-subscribe > RuleBuilder', function() {
 			},
 		})
 
-		const builder3 = builder.propertyNames<boolean>('prop3', 'prop4', 'prop5')
+		const builder3 = builder.propertyNames<any, boolean>('prop3', 'prop4', 'prop5')
 		checkType<boolean>(builder3)
 		assert.strictEqual(builder3 as any, builder)
 		assert.strictEqual(builder3.result, rule1)

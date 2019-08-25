@@ -6,7 +6,7 @@ import {
 } from '../../../../../../../main/common/extensions/serialization/contracts'
 import {
 	ObjectSerializer, registerSerializable,
-	registerSerializer,
+
 } from '../../../../../../../main/common/extensions/serialization/serializers'
 import {ArrayMap} from '../../../../../../../main/common/lists/ArrayMap'
 import {IMapChangedEvent, MapChangedType} from '../../../../../../../main/common/lists/contracts/IMapChanged'

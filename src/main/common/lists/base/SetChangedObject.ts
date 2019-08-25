@@ -1,8 +1,8 @@
 import {PropertyChangedObject} from '../../rx/object/PropertyChangedObject'
 import {HasSubscribersSubject, IHasSubscribersSubject} from '../../rx/subjects/hasSubscribers'
-import {ISetChangedEvent} from '../contracts/ISetChanged'
+import {ISetChangedEvent, ISetChangedObject} from '../contracts/ISetChanged'
 
-export class SetChangedObject<T> extends PropertyChangedObject {
+export class SetChangedObject<T> extends PropertyChangedObject implements ISetChangedObject<T> {
 	protected _setChanged?: IHasSubscribersSubject<ISetChangedEvent<T>>
 	public get setChanged(): IHasSubscribersSubject<ISetChangedEvent<T>> {
 		let {_setChanged} = this

@@ -3,8 +3,6 @@ import {
 	isThenable, ResolveResult, resolveValue,
 	ThenableIterator,
 	ThenableOrIteratorOrValue,
-	TOnFulfilled,
-	TOnRejected,
 	TReject,
 	TResolve,
 } from '../../../../../../main/common/async/async'

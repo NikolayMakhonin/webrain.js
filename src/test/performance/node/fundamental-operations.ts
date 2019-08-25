@@ -6,6 +6,7 @@
 
 import {calcPerformance} from 'rdtsc'
 import {SynchronousPromise} from 'synchronous-promise'
+import {resolveValue} from '../../../main/common/async/async'
 import {resolveAsync, ThenableSync} from '../../../main/common/async/ThenableSync'
 import {isIterable} from '../../../main/common/helpers/helpers'
 import {ArraySet} from '../../../main/common/lists/ArraySet'
@@ -13,7 +14,6 @@ import {binarySearch} from '../../../main/common/lists/helpers/array'
 import {freezeWithUniqueId, getObjectUniqueId} from '../../../main/common/lists/helpers/object-unique-id'
 import {SortedList} from '../../../main/common/lists/SortedList'
 import {createObject, Tester} from '../../tests/common/main/rx/deep-subscribe/helpers/Tester'
-import {resolveValue} from "../../../main/common/async/async";
 
 const SetNative = Set
 require('./src/SetPolyfill')

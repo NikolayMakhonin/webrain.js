@@ -1,46 +1,44 @@
 /* tslint:disable:no-shadowed-variable no-empty */
 /* eslint-disable no-useless-escape,computed-property-spacing */
-import {isIterable} from '../../../../../../main/common/helpers/helpers'
-import {IRule, RuleType} from '../../../../../../main/common/rx/deep-subscribe/contracts/rules'
-import {PeekIterator} from '../../../../../../main/common/rx/deep-subscribe/helpers/PeekIterator'
+import {RuleType} from '../../../../../../main/common/rx/deep-subscribe/contracts/rules'
 import {
-	IRuleIterable,
-	IRuleOrIterable,
+	IRuleIterator,
 	iterateRule,
 	subscribeNextRule,
 } from '../../../../../../main/common/rx/deep-subscribe/iterate-rule'
 import {RuleBuilder} from '../../../../../../main/common/rx/deep-subscribe/RuleBuilder'
+import {Rule} from '../../../../../../main/common/rx/deep-subscribe/rules'
 import {IUnsubscribe} from '../../../../../../main/common/rx/subjects/subject'
 import {assert} from '../../../../../../main/common/test/Assert'
 
 describe('common > main > rx > deep-subscribe > iterate-rule', function() {
-	function ruleToString(rule: IRule) {
-		if (!rule) {
-			return rule + ''
-		}
+	// function ruleToString(rule: IRule) {
+	// 	if (!rule) {
+	// 		return rule + ''
+	// 	}
+	//
+	// 	return `[${RuleType[rule.type]}]${rule.description ? ' ' + rule.description : ''}`
+	// }
 
-		return `[${RuleType[rule.type]}]${rule.description ? ' ' + rule.description : ''}`
-	}
+	// function *resolveRules(ruleOrIterable: IRuleOrIterable): Iterable<IRule> {
+	// 	if (!isIterable(ruleOrIterable)) {
+	// 		yield ruleOrIterable as IRule
+	// 		return
+	// 	}
+	// 	for (const rule of ruleOrIterable as IRuleIterable) {
+	// 		yield* resolveRules(rule)
+	// 	}
+	// }
 
-	function *resolveRules(ruleOrIterable: IRuleOrIterable): Iterable<IRule> {
-		if (!isIterable(ruleOrIterable)) {
-			yield ruleOrIterable as IRule
-			return
-		}
-		for (const rule of ruleOrIterable as IRuleIterable) {
-			yield* resolveRules(rule)
-		}
-	}
+	// function rulesToString(rules: IRuleOrIterable) {
+	// 	return Array
+	// 		.from(resolveRules(rules))
+	// 		.map(o => ruleToString(o)).join('\n')
+	// }
 
-	function rulesToString(rules: IRuleOrIterable) {
-		return Array
-			.from(resolveRules(rules))
-			.map(o => ruleToString(o)).join('\n')
-	}
+	// const endObject = { _end: true }
 
-	const endObject = { _end: true }
-
-	function rulesToObject(ruleIterator: PeekIterator<IRuleOrIterable>, obj: any = {}): IUnsubscribe {
+	function rulesToObject(ruleIterator: IRuleIterator, obj: any = {}): IUnsubscribe {
 		return subscribeNextRule(
 			ruleIterator,
 			nextRuleIterator => rulesToObject(nextRuleIterator, obj),
@@ -92,7 +90,7 @@ describe('common > main > rx > deep-subscribe > iterate-rule', function() {
 		const result = iterateRule(buildRule(new RuleBuilder<any>()).result)
 		assert.ok(result)
 		const object = {}
-		const unsubscribe = rulesToObject(new PeekIterator(result[Symbol.iterator]()), object)
+		const unsubscribe = rulesToObject(result[Symbol.iterator](), object)
 		// console.log(JSON.stringify(object, null, 4))
 		let paths = Array.from(objectToPaths(object, true))
 		assert.deepStrictEqual(paths.sort(), expectedPaths.sort(), JSON.stringify(paths, null, 4))
@@ -104,8 +102,6 @@ describe('common > main > rx > deep-subscribe > iterate-rule', function() {
 	}
 
 	it('path', function() {
-		const builder = new RuleBuilder<any>()
-
 		testIterateRule(
 			b => b
 				.path(o => o.a),
@@ -120,8 +116,6 @@ describe('common > main > rx > deep-subscribe > iterate-rule', function() {
 	})
 
 	it('any', function() {
-		const builder = new RuleBuilder<any>()
-
 		testIterateRule(
 			b => b
 				.any(
@@ -176,8 +170,6 @@ describe('common > main > rx > deep-subscribe > iterate-rule', function() {
 	})
 
 	it('path any', function() {
-		const builder = new RuleBuilder<any>()
-
 		testIterateRule(
 			b => b.path(o => o['a|b'].c),
 			'a|b.c',
@@ -192,8 +184,6 @@ describe('common > main > rx > deep-subscribe > iterate-rule', function() {
 	})
 
 	it('repeat', function() {
-		const builder = new RuleBuilder<any>()
-
 		testIterateRule(
 			b => b
 				.repeat(1, 1,
@@ -304,13 +294,9 @@ describe('common > main > rx > deep-subscribe > iterate-rule', function() {
 	})
 
 	it('throws', function() {
-		Array.from(iterateRule({
-			type: 0 as RuleType,
-		}))
+		Array.from(iterateRule(new Rule(0 as RuleType)))
 
-		assert.throws(() => Array.from(iterateRule({
-			type: -1 as RuleType,
-		})), Error)
+		assert.throws(() => Array.from(iterateRule(new Rule(-1 as RuleType)), Error))
 
 		assert.throws(() => new RuleBuilder().repeat(1, 2, b => b), Error)
 

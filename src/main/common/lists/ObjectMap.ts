@@ -168,7 +168,7 @@ registerSerializable(ObjectMap, {
 		): ThenableIterator<ObjectMap<V>> {
 			const innerMap = yield deSerialize<object>(serializedValue.object)
 			const value = valueFactory(innerMap)
-			value.deSerialize(deSerialize, serializedValue)
+			// value.deSerialize(deSerialize, serializedValue)
 			return value
 		},
 	},

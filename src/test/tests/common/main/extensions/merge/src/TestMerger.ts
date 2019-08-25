@@ -1,9 +1,9 @@
 /* tslint:disable:no-construct use-primitive-type */
 // import clone from 'clone'
-import {IMergeOptions, ITypeMetaMerger} from '../../../../../../../main/common/extensions/merge/contracts'
+import {ITypeMetaMerger} from '../../../../../../../main/common/extensions/merge/contracts'
 import {ObjectMerger, TypeMetaMergerCollection} from '../../../../../../../main/common/extensions/merge/mergers'
 import {TClass} from '../../../../../../../main/common/helpers/helpers'
-import {canHaveUniqueId, isFrozenWithoutUniqueId} from '../../../../../../../main/common/lists/helpers/object-unique-id'
+import {canHaveUniqueId} from '../../../../../../../main/common/lists/helpers/object-unique-id'
 import {SortedList} from '../../../../../../../main/common/lists/SortedList'
 import {Assert} from '../../../../../../../main/common/test/Assert'
 import {DeepCloneEqual, isPrimitiveDefault} from '../../../../../../../main/common/test/DeepCloneEqual'

@@ -6,7 +6,7 @@
     <working-directory>$PROJECT_DIR$</working-directory>
     <pass-parent-env>true</pass-parent-env>
     <ui>bdd</ui>
-    <extra-mocha-options>--opts ./env/mocha/mocha.babel.opts --watch</extra-mocha-options>
+    <extra-mocha-options>--opts ./env/mocha/mocha.babel.opts</extra-mocha-options>
     <test-kind>PATTERN</test-kind>
     <test-pattern>./src/test/tests/{common,node}/**/*.*</test-pattern>
     <method v="2" />

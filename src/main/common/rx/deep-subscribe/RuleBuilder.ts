@@ -182,7 +182,10 @@ export class RuleBuilder<TObject = any, TValueKeys extends string | number = nev
 	/**
 	 * Object property, Array index
 	 */
-	public propertyNames<TKeys extends keyof TObject, TValue = ObjectValueOf<TObject, TKeys>>(
+	public propertyNames<
+		TKeys extends keyof TObject | ANY,
+		TValue = ObjectValueOf<TObject, TKeys extends ANY ? any : TKeys>
+	>(
 		...propertiesNames: TKeys[]
 	): RuleBuilder<TValue, TValueKeys>
 	public propertyNames<TValue>(...propertiesNames: string[]): RuleBuilder<TValue, TValueKeys> {
@@ -403,5 +406,5 @@ export function cloneRule(rule: IRule) {
 }
 
 // Test:
-export const test = new RuleBuilder<{ x: { y: number } }>()
-	.path(o => o.x.y)
+// export const test = new RuleBuilder<{ x: { y: number } }>()
+// 	.path(o => o.x.y)

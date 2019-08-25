@@ -1,12 +1,11 @@
 /* tslint:disable */
 import {IUnsubscribe} from '../subjects/subject'
 import {IRule} from './contracts/rules'
-import {IRuleOrIterable, iterateRule, subscribeNextRule} from './iterate-rule'
-import {RuleBuilder} from "./RuleBuilder";
-import {PeekIterator} from "./helpers/PeekIterator";
-import {ISubscribeValue} from "./contracts/common";
-import {getObjectUniqueId} from "../../lists/helpers/object-unique-id";
-import {checkIsFuncOrNull, toSingleCall} from "../../helpers/helpers";
+import {IRuleIterator, iterateRule, subscribeNextRule} from './iterate-rule'
+import {RuleBuilder} from "./RuleBuilder"
+import {ISubscribeValue} from "./contracts/common"
+import {getObjectUniqueId} from "../../lists/helpers/object-unique-id"
+import {checkIsFuncOrNull, toSingleCall} from "../../helpers/helpers"
 
 // const UNSUBSCRIBE_PROPERTY_PREFIX = Math.random().toString(36)
 // let nextUnsubscribePropertyId = 0
@@ -15,7 +14,7 @@ function deepSubscribeRuleIterator<TValue>(
 	object: any,
 	subscribeValue: ISubscribeValue<TValue>,
 	immediate: boolean,
-	ruleIterator: PeekIterator<IRuleOrIterable>,
+	ruleIterator: IRuleIterator,
 	leafUnsubscribers?: IUnsubscribe[],
 	propertiesPath?: () => string,
 	debugPropertyName?: string,
@@ -202,7 +201,7 @@ export function deepSubscribeRule<TValue>(
 		object,
 		subscribeValue,
 		immediate,
-		new PeekIterator(iterateRule(rule)[Symbol.iterator]()),
+		iterateRule(rule)[Symbol.iterator](),
 	))
 }
 
