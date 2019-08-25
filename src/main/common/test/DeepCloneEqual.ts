@@ -105,7 +105,7 @@ export class DeepCloneEqual {
 					return result
 				}
 
-				if (id != null && cloned !== null) {
+				if (id != null && cloned != null) {
 					cache[id] = null
 				}
 			}

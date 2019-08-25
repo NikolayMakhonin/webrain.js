@@ -1,6 +1,6 @@
-import {DeferredCalc} from '../../deferred-calc/DeferredCalc'
-import {ObservableObject} from '../ObservableObject'
-import {Property} from './property'
+import {DeferredCalc} from '../../../../../../../src/main/common/rx/deferred-calc/DeferredCalc'
+import {ObservableObject} from '../../../../../../../src/main/common/rx/object/ObservableObject'
+import {Property} from '../../../../../../../src/main/common/rx/object/properties/property'
 
 export class DeferredCalcProperty<TValue> extends ObservableObject {
 	private readonly _deferredCalc: DeferredCalc

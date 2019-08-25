@@ -1,5 +1,5 @@
-const variablePattern = '([$A-Za-z_][$A-Za-z_]*)'
-const propertyPattern = variablePattern
+// const variablePattern = '([$A-Za-z_][$A-Za-z_]*)'
+// const propertyPattern = variablePattern
 
 export function parsePropertiesPathString(
 	getValueFunc: string | ((o) => any),

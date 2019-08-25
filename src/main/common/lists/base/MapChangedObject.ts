@@ -1,7 +1,6 @@
 import {PropertyChangedObject} from '../../rx/object/PropertyChangedObject'
 import {HasSubscribersSubject, IHasSubscribersSubject} from '../../rx/subjects/hasSubscribers'
 import {IMapChangedEvent, IMapChangedObject} from '../contracts/IMapChanged'
-import {IPropertyChangedObject} from '../contracts/IPropertyChanged'
 
 export class MapChangedObject<K, V> extends PropertyChangedObject implements IMapChangedObject<K, V> {
 	protected _mapChanged?: IHasSubscribersSubject<IMapChangedEvent<K, V>>

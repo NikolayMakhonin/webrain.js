@@ -6,15 +6,19 @@
       <w>callbackfn</w>
       <w>childs</w>
       <w>chokidar</w>
+      <w>coord</w>
       <w>cssnano</w>
       <w>deserialized</w>
       <w>fileuri</w>
+      <w>focusring</w>
+      <w>forin</w>
       <w>funcs</w>
       <w>hydratable</w>
       <w>intelli</w>
       <w>jsnext</w>
       <w>mergeable</w>
       <w>multiremote</w>
+      <w>necolas</w>
       <w>nycrc</w>
       <w>onfulfilled</w>
       <w>onreject</w>
@@ -24,6 +28,7 @@
       <w>samsung</w>
       <w>syntaxes</w>
       <w>systemjs</w>
+      <w>textfield</w>
       <w>throwed</w>
       <w>unhandledrejection</w>
       <w>unsubscriber</w>

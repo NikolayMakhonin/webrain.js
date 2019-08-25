@@ -134,7 +134,7 @@ export class ObservableSet<T> extends SetChangedObject<T> implements
 	}
 
 	public forEach(callbackfn: (value: T, value2: T, set: Set<T>) => void, thisArg?: any): void {
-		this._set.forEach((k, v, s) => callbackfn.call(thisArg, k, v, this))
+		this._set.forEach((k, v) => callbackfn.call(thisArg, k, v, this))
 	}
 
 	public has(value: T): boolean {
@@ -207,8 +207,8 @@ export class ObservableSet<T> extends SetChangedObject<T> implements
 	}
 
 	public deSerialize(
-		deSerialize: IDeSerializeValue,
-		serializedValue: ISerializedObject,
+		// deSerialize: IDeSerializeValue,
+		// serializedValue: ISerializedObject,
 	// tslint:disable-next-line:no-empty
 	): void {
 

@@ -1,5 +1,4 @@
 /* tslint:disable */
-import {ValueKeys} from '../object/properties/contracts'
 import {IUnsubscribe} from '../subjects/subject'
 import {IRule} from './contracts/rules'
 import {IRuleOrIterable, iterateRule, subscribeNextRule} from './iterate-rule'

@@ -1,9 +1,9 @@
-import {IListChanged, ListChangedType} from '../../../lists/contracts/IListChanged'
-import {IMapChanged} from '../../../lists/contracts/IMapChanged'
-import {IPropertyChanged} from '../../../lists/contracts/IPropertyChanged'
-import {ISetChanged} from '../../../lists/contracts/ISetChanged'
-import {IUnsubscribe} from '../../subjects/subject'
-import {ANY, ANY_DISPLAY} from '../contracts/constants'
+import {IListChanged, ListChangedType} from '../../../../../../../src/main/common/lists/contracts/IListChanged'
+import {IMapChanged} from '../../../../../../../src/main/common/lists/contracts/IMapChanged'
+import {IPropertyChanged} from '../../../../../../../src/main/common/lists/contracts/IPropertyChanged'
+import {ISetChanged} from '../../../../../../../src/main/common/lists/contracts/ISetChanged'
+import {IUnsubscribe} from '../../../../../../../src/main/common/rx/subjects/subject'
+import {ANY, ANY_DISPLAY} from '../../../../../../../src/main/common/rx/deep-subscribe/contracts/constants'
 
 interface ISubscribeChildOptions<TObject, TChild> {
 	object: TObject
@@ -145,7 +145,7 @@ function subscribeChildsMap<K, V>(
 
 // endregion
 
-// region subscribeChilds
+region subscribeChilds
 
 const childSubscribers: Array<ISubscribeChilds<any, any>> = [
 	subscribeChildsObject,
@@ -179,4 +179,4 @@ export function subscribeChilds(options: ISubscribeChildOptions<any, any>): IUns
 	}
 }
 
-// endregion
+endregion

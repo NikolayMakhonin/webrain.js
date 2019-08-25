@@ -1,5 +1,5 @@
 import {IUnsubscribe} from '../../subjects/subject'
-import {IRule, IRuleAction} from './rules'
+import {IRuleAction} from './rules'
 
 export type ISubscribeObject<TObject, TChild> = (
 	object: TObject,

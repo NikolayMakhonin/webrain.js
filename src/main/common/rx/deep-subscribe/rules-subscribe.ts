@@ -10,9 +10,11 @@ import {IRuleSubscribe, ISubscribeObject} from './contracts/rule-subscribe'
 import {RuleType} from './contracts/rules'
 import {Rule} from './rules'
 
-// function propertyPredicateAll(propertyName: string, object) {
-// 	return Object.prototype.hasOwnProperty.call(object, propertyName)
-// }
+function forEachSimple<TItem>(iterable: Iterable<TItem>, callbackfn: (item: TItem, debugPropertyName: string) => void) {
+	for (const item of iterable) {
+		callbackfn(item, COLLECTION_PREFIX)
+	}
+}
 
 // region subscribeObject
 
@@ -81,7 +83,7 @@ function subscribeObjectValue<TValue>(
 
 	if (propertyChanged) {
 		unsubscribe = checkIsFuncOrNull(propertyChanged
-			.subscribe(({name, oldValue, newValue}) => {
+			.subscribe(({name, oldValue}) => {
 				const newSubscribePropertyName = getSubscribePropertyName()
 
 				if (name === subscribePropertyName) {
@@ -286,14 +288,8 @@ function subscribeList<TItem>(
 			}))
 	}
 
-	const forEach = (callbackfn: (item: TItem, debugPropertyName: string) => void) => {
-		for (const item of object) {
-			callbackfn(item, COLLECTION_PREFIX)
-		}
-	}
-
 	if (immediateSubscribe) {
-		forEach(subscribeItem)
+		forEachSimple(object, subscribeItem)
 	} else if (unsubscribe == null) {
 		return null
 	}
@@ -303,7 +299,7 @@ function subscribeList<TItem>(
 			unsubscribe()
 			unsubscribe = null
 		}
-		forEach(unsubscribeItem)
+		forEachSimple(object, unsubscribeItem)
 	}
 }
 
@@ -343,14 +339,8 @@ function subscribeSet<TItem>(
 			}))
 	}
 
-	const forEach = (callbackfn: (item: TItem, debugPropertyName: string) => void) => {
-		for (const item of object) {
-			callbackfn(item, COLLECTION_PREFIX)
-		}
-	}
-
 	if (immediateSubscribe) {
-		forEach(subscribeItem)
+		forEachSimple(object, subscribeItem)
 	} else if (unsubscribe == null) {
 		return null
 	}
@@ -360,7 +350,7 @@ function subscribeSet<TItem>(
 			unsubscribe()
 			unsubscribe = null
 		}
-		forEach(unsubscribeItem)
+		forEachSimple(object, unsubscribeItem)
 	}
 }
 
@@ -498,7 +488,7 @@ function createPropertyPredicate(propertyNames: string[]) {
 			return null
 		}
 
-		return (propName: string, object) => {
+		return (propName: string) => {
 			return propName === propertyName
 		}
 	} else {
@@ -513,7 +503,7 @@ function createPropertyPredicate(propertyNames: string[]) {
 			propertyNamesMap[propertyName] = true
 		}
 
-		return (propName: string, object) => {
+		return (propName: string) => {
 			return !!propertyNamesMap[propName]
 		}
 	}
@@ -610,7 +600,7 @@ function createKeyPredicate<TKey>(keys: TKey[]) {
 			return null
 		}
 
-		return (k: TKey, object) => {
+		return (k: TKey) => {
 			return k === key
 		}
 	} else {
@@ -622,7 +612,7 @@ function createKeyPredicate<TKey>(keys: TKey[]) {
 			}
 		}
 
-		return (k: TKey, object) => {
+		return (k: TKey) => {
 			return keys.indexOf(k) >= 0
 		}
 	}

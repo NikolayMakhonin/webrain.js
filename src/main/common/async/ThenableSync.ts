@@ -128,8 +128,8 @@ export class ThenableSync<TValue = any> {
 
 		const result = resolveValue(
 			error,
-			(o, e) => { error = o },
-			(o, e) => { this._reject(o) },
+			o => { error = o },
+			o => { this._reject(o) },
 		)
 
 		if ((result & ResolveResult.Deferred) !== 0) {

@@ -51,7 +51,7 @@ export function *iterateRule(rule: IRule, next: () => IRuleIterable = null): IRu
 			break
 		case RuleType.Repeat: {
 			const {countMin, countMax, rule: subRule} = rule as IRuleRepeat
-			if (countMax < countMin || countMax <= 0 || rule == null) {
+			if (countMax < countMin || countMax <= 0) {
 				throw new Error(`RuleType.Repeat countMin=${countMin} countMax=${countMax} rule=${rule}`)
 			}
 

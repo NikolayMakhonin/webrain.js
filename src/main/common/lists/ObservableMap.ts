@@ -158,7 +158,7 @@ export class ObservableMap<K, V>
 	}
 
 	public forEach(callbackfn: (value: V, key: K, map: Map<K, V>) => void, thisArg?: any): void {
-		this._map.forEach((k, v, s) => callbackfn.call(thisArg, k, v, this))
+		this._map.forEach((k, v) => callbackfn.call(thisArg, k, v, this))
 	}
 
 	public has(key: K): boolean {
@@ -231,8 +231,8 @@ export class ObservableMap<K, V>
 	}
 
 	public deSerialize(
-		deSerialize: IDeSerializeValue,
-		serializedValue: ISerializedObject,
+		// deSerialize: IDeSerializeValue,
+		// serializedValue: ISerializedObject,
 	// tslint:disable-next-line:no-empty
 	): void {
 

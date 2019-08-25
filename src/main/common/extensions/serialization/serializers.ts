@@ -124,11 +124,7 @@ export class SerializerVisitor implements ISerializerVisitor {
 		value: TValue,
 		options?: ISerializeVisitorOptions<TValue>,
 	): ISerializedValue {
-		if (typeof value === 'undefined') {
-			return value
-		}
-
-		if (value === null
+		if (value == null
 			|| typeof value === 'number'
 			|| typeof value === 'string'
 			|| typeof value === 'boolean') {
@@ -175,6 +171,7 @@ export class DeSerializerVisitor implements IDeSerializerVisitor {
 			const object = _objects[id]
 			const uuid = _types[object.type]
 			const type = _typeMeta.getType(uuid)
+			// noinspection HtmlUnknownTag
 			return {
 				type: type == null ? `<Type not found: ${uuid}>` : type.name,
 				data: object.data,

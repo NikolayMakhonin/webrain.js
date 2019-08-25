@@ -1,4 +1,4 @@
-import {IMergeable, IMergeOptions, IMergeValue, IMergeVisitorOptions} from '../../../extensions/merge/contracts'
+import {IMergeable, IMergeValue, IMergeVisitorOptions} from '../../../extensions/merge/contracts'
 import {ObjectMerger, registerMergeable} from '../../../extensions/merge/mergers'
 import {
 	IDeSerializeValue,
@@ -192,7 +192,6 @@ export class Property<TValue, TMergeSource>
 		newer: Property<TValue|TMergeSource, any> | TValue | TMergeSource,
 		preferCloneOlder?: boolean,
 		preferCloneNewer?: boolean,
-		options?: IMergeOptions,
 	): boolean {
 		return this._mergeValue(
 			merge,

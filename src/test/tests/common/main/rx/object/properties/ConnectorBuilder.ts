@@ -36,13 +36,13 @@ describe('common > main > rx > properties > ConnectorBuilder', function() {
 		}
 
 		const baseBuilder1 = new ConnectorBuilder(BaseClass1.prototype as BaseClass1)
-			.connect('baseProp1', {
-				buildRule: b => b.path(o => o.source
+			.connect('baseProp1', b => b.path(o => o.source
 					.property['@value_property']
 					.observableMap['#observableList']
 					['#']
 					.baseProp1),
-			}, 'baseProp1_init')
+				null,
+				'baseProp1_init')
 
 		const baseBuilder2 = new ConnectorBuilder(BaseClass2.prototype as BaseClass2)
 			.connect('baseProp2', {

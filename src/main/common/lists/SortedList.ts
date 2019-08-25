@@ -27,7 +27,7 @@ function calcOptimalArraySize(desiredSize: number) {
 }
 
 export function getDefaultValue(value) {
-	if (value === null || typeof value === 'undefined') {
+	if (value == null) {
 		return value
 	}
 	if (typeof value === 'number') {
@@ -1240,8 +1240,8 @@ export class SortedList<T>
 	}
 
 	public deSerialize(
-		deSerialize: IDeSerializeValue,
-		serializedValue: ISerializedObject,
+		// deSerialize: IDeSerializeValue,
+		// serializedValue: ISerializedObject,
 	// tslint:disable-next-line:no-empty
 	): void {
 

@@ -1,352 +1,337 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
-    <component name="AnalysisUIOptions">
-        <option name="SPLITTER_PROPORTION" value="0.26758242"/>
-        <option name="SCOPE_TYPE" value="8"/>
-        <option name="CUSTOM_SCOPE_NAME" value="src-main"/>
-    </component>
-    <component name="ChangeListManager">
-        <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true"/>
-        <option name="SHOW_DIALOG" value="false"/>
-        <option name="HIGHLIGHT_CONFLICTS" value="true"/>
-        <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false"/>
-        <option name="LAST_RESOLUTION" value="IGNORE"/>
-    </component>
-    <component name="CoverageOptionsProvider">
-        <option name="myAddOrReplace" value="0"/>
-    </component>
-    <component name="ExportTestResults" outputFolder="$PROJECT_DIR$/tmp/test_results" openResultsInEditor="true"
-               userTempatePath=""/>
-    <component name="FavoritesManager">
-        <favorites_list name="tree-state-manager"/>
-    </component>
-    <component name="JsFlowSettings">
-        <service-enabled>true</service-enabled>
-        <exe-path/>
-        <other-services-enabled>true</other-services-enabled>
-        <auto-save>true</auto-save>
-    </component>
-    <component name="NamedScopeManager">
-        <scope name="src-main" pattern="file[base]:src/main//*"/>
-        <scope name="src-test" pattern="file[base]:src/test//*"/>
-    </component>
-    <component name="ProjectId" id="1PtsejVw06ohrapYkJyh68Uo1Ck"/>
-    <component name="ProjectLevelVcsManager">
-        <ConfirmationsSetting value="2" id="Add"/>
-    </component>
-    <component name="PropertiesComponent">
-        <property name="NewWatcherDialog.advanced.open" value="true"/>
-        <property name="WebServerToolWindowFactoryState" value="false"/>
-        <property name="auto.test.manager.delay" value="5000"/>
-        <property name="javascript.karma.karma_node_package_dir" value=""/>
-        <property name="last_opened_file_path" value="$PROJECT_DIR$/node_modules"/>
-        <property name="node.js.detected.package.eslint" value="true"/>
-        <property name="node.js.detected.package.standard" value="true"/>
-        <property name="node.js.detected.package.tslint" value="true"/>
-        <property name="node.js.path.for.package.eslint" value="node"/>
-        <property name="node.js.path.for.package.standard" value="node"/>
-        <property name="node.js.path.for.package.tslint" value="project"/>
-        <property name="node.js.selected.package.eslint"
-                  value="$PROJECT_DIR$/../../templates/nodejs-templates/node_modules/eslint"/>
-        <property name="node.js.selected.package.standard"
-                  value="L:\Work\_GIT\GitHub\NodeJs\templates\nodejs-templates\node_modules\eslint"/>
-        <property name="node.js.selected.package.tslint" value="$PROJECT_DIR$/node_modules/tslint"/>
-        <property name="nodejs.mocha.mocha_node_package_dir" value="$PROJECT_DIR$/node_modules/mocha"/>
-        <property name="nodejs_package_manager_path" value="npm"/>
-        <property name="restartRequiresConfirmation" value="false"/>
-        <property name="run.code.analysis.last.selected.profile" value="pProject Default"/>
-        <property name="settings.editor.selected.configurable" value="configurable.group.appearance"/>
-        <property name="ts.external.directory.path"
-                  value="L:\Work\_GIT\GitHub\NodeJs\modules\tree-state-manager\node_modules\typescript\lib"/>
-    </component>
-    <component name="RunManager" selected="Mocha.Watch Mocha">
-        <configuration name="Tests Dev" type="JavaScriptTestRunnerKarma">
-            <config-file value="$PROJECT_DIR$/env/karma/karma.conf.dev.js"/>
-            <karma-package-dir value="$PROJECT_DIR$/node_modules/karma"/>
-            <working-directory value="$PROJECT_DIR$"/>
-            <node-interpreter value="node"/>
-            <envs/>
-            <method v="2"/>
-        </configuration>
-        <configuration default="true" type="JavaScriptTestRunnerKarma">
-            <config-file value="$PROJECT_DIR$/env/karma/karma.conf.tests.js"/>
-            <karma-package-dir value="$PROJECT_DIR$/node_modules/karma"/>
-            <node-interpreter value="node"/>
-            <envs/>
-            <method v="2"/>
-        </configuration>
-        <configuration default="true" type="NodeJSConfigurationType" path-to-node="node"
-                       node-parameters="--max-old-space-size=4096" working-dir="$PROJECT_DIR$">
-            <method v="2"/>
-        </configuration>
-        <configuration name="Coverage Mocha Report" type="js.build_tools.npm">
-            <package-json value="$PROJECT_DIR$/package.json"/>
-            <command value="run"/>
-            <scripts>
-                <script value="coverage:dev"/>
-            </scripts>
-            <node-interpreter value="project"/>
-            <envs/>
-            <method v="2"/>
-        </configuration>
-        <configuration name="DeferredCalc (Coverage)" type="mocha-javascript-test-runner">
-            <node-interpreter>node</node-interpreter>
-            <node-options>--max-old-space-size=4096</node-options>
-            <mocha-package>$PROJECT_DIR$/node_modules/mocha</mocha-package>
-            <working-directory>$PROJECT_DIR$</working-directory>
-            <pass-parent-env>true</pass-parent-env>
-            <ui>bdd</ui>
-            <extra-mocha-options>--opts ./env/mocha/mocha.babel.opts</extra-mocha-options>
-            <test-kind>SUITE</test-kind>
-            <test-file>$PROJECT_DIR$/src/test/tests/common/main/rx/deferred-calc/DeferredCalc.ts</test-file>
-            <test-names>
-                <name value="common > main > rx > deferred-calc > DeferredCalc"/>
-            </test-names>
-            <method v="2"/>
-        </configuration>
-        <configuration name="Intern Export with rebuild" type="mocha-javascript-test-runner">
-            <node-interpreter>node</node-interpreter>
-            <node-options>--max-old-space-size=4096</node-options>
-            <mocha-package>$PROJECT_DIR$/node_modules/mocha</mocha-package>
-            <working-directory>$PROJECT_DIR$</working-directory>
-            <pass-parent-env>true</pass-parent-env>
-            <ui>bdd</ui>
-            <extra-mocha-options>--opts ./env/mocha/mocha.babel.opts</extra-mocha-options>
-            <test-kind>PATTERN</test-kind>
-            <test-pattern>./env/intern/mocha-export.js</test-pattern>
-            <method v="2"/>
-        </configuration>
-        <configuration name="Intern Export" type="mocha-javascript-test-runner">
-            <node-interpreter>node</node-interpreter>
-            <node-options>--max-old-space-size=4096</node-options>
-            <mocha-package>$PROJECT_DIR$/node_modules/mocha</mocha-package>
-            <working-directory>$PROJECT_DIR$</working-directory>
-            <pass-parent-env>true</pass-parent-env>
-            <ui>bdd</ui>
-            <extra-mocha-options>--opts ./env/mocha/mocha.babel.opts</extra-mocha-options>
-            <test-kind>PATTERN</test-kind>
-            <test-pattern>./env/intern/mocha-export.js</test-pattern>
-            <method v="2"/>
-        </configuration>
-        <configuration
-                name="L:\Work\_GIT\GitHub\NodeJs\modules\tree-state-manager\src\test\tests\common\main\rx\deep-subscribe\**\*.ts (Coverage)"
-                type="mocha-javascript-test-runner">
-            <node-interpreter>node</node-interpreter>
-            <node-options>--max-old-space-size=4096</node-options>
-            <mocha-package>$PROJECT_DIR$/node_modules/mocha</mocha-package>
-            <working-directory>$PROJECT_DIR$</working-directory>
-            <pass-parent-env>true</pass-parent-env>
-            <ui>bdd</ui>
-            <extra-mocha-options>--opts ./env/mocha/mocha.babel.opts</extra-mocha-options>
-            <test-kind>PATTERN</test-kind>
-            <test-pattern>$PROJECT_DIR$/src/test/tests/common/main/rx/deep-subscribe/**/*.ts</test-pattern>
-            <method v="2"/>
-        </configuration>
-        <configuration name="Performance Mocha" type="mocha-javascript-test-runner">
-            <node-interpreter>node</node-interpreter>
-            <node-options>--max-old-space-size=4096</node-options>
-            <mocha-package>$PROJECT_DIR$/node_modules/mocha</mocha-package>
-            <working-directory>$PROJECT_DIR$</working-directory>
-            <pass-parent-env>true</pass-parent-env>
-            <ui>bdd</ui>
-            <extra-mocha-options>--opts ./env/mocha/mocha.babel.opts</extra-mocha-options>
-            <test-kind>PATTERN</test-kind>
-            <test-pattern>./src/test/performance/{common,node}/**/*.*</test-pattern>
-            <method v="2"/>
-        </configuration>
-        <configuration default="true" type="mocha-javascript-test-runner">
-            <node-interpreter>node</node-interpreter>
-            <node-options>--max-old-space-size=4096</node-options>
-            <mocha-package>$PROJECT_DIR$/node_modules/mocha</mocha-package>
-            <working-directory>$PROJECT_DIR$</working-directory>
-            <pass-parent-env>true</pass-parent-env>
-            <ui>bdd</ui>
-            <extra-mocha-options>--opts ./env/mocha/mocha.babel.opts --watch</extra-mocha-options>
-            <test-kind>PATTERN</test-kind>
-            <test-pattern>./src/test/tests/{common,node}/**/*.*</test-pattern>
-            <method v="2"/>
-        </configuration>
-        <configuration name="common > main > rx > deferred-calc > DeferredCalc.calc only after invalidate"
-                       type="mocha-javascript-test-runner" temporary="true" nameIsGenerated="true">
-            <node-interpreter>node</node-interpreter>
-            <node-options>--max-old-space-size=4096</node-options>
-            <mocha-package>$PROJECT_DIR$/node_modules/mocha</mocha-package>
-            <working-directory>$PROJECT_DIR$</working-directory>
-            <pass-parent-env>true</pass-parent-env>
-            <ui>bdd</ui>
-            <extra-mocha-options>--opts ./env/mocha/mocha.babel.opts --watch</extra-mocha-options>
-            <test-kind>TEST</test-kind>
-            <test-file>$PROJECT_DIR$/src/test/tests/common/main/rx/deferred-calc/DeferredCalc.ts</test-file>
-            <test-names>
-                <name value="common > main > rx > deferred-calc > DeferredCalc"/>
-                <name value="calc only after invalidate"/>
-            </test-names>
-            <method v="2"/>
-        </configuration>
-        <configuration name="common > main > rx > observable-object-builder-prototype.writable"
-                       type="mocha-javascript-test-runner" temporary="true" nameIsGenerated="true">
-            <node-interpreter>node</node-interpreter>
-            <node-options>--max-old-space-size=4096</node-options>
-            <mocha-package>$PROJECT_DIR$/node_modules/mocha</mocha-package>
-            <working-directory>$PROJECT_DIR$</working-directory>
-            <pass-parent-env>true</pass-parent-env>
-            <ui>bdd</ui>
-            <extra-mocha-options>--opts ./env/mocha/mocha.babel.opts --watch</extra-mocha-options>
-            <test-kind>TEST</test-kind>
-            <test-file>$PROJECT_DIR$/src/test/tests/common/main/rx/object/observable-object-builder-prototype.ts
-            </test-file>
-            <test-names>
-                <name value="common > main > rx > observable-object-builder-prototype"/>
-                <name value="writable"/>
-            </test-names>
-            <method v="2"/>
-        </configuration>
-        <configuration name="common > main > rx > properties > ConnectorBuilder" type="mocha-javascript-test-runner"
-                       temporary="true" nameIsGenerated="true">
-            <node-interpreter>node</node-interpreter>
-            <node-options>--max-old-space-size=4096</node-options>
-            <mocha-package>$PROJECT_DIR$/node_modules/mocha</mocha-package>
-            <working-directory>$PROJECT_DIR$</working-directory>
-            <pass-parent-env>true</pass-parent-env>
-            <ui>bdd</ui>
-            <extra-mocha-options>--opts ./env/mocha/mocha.babel.opts --watch</extra-mocha-options>
-            <test-kind>SUITE</test-kind>
-            <test-file>$PROJECT_DIR$/src/test/tests/common/main/rx/object/properties/ConnectorBuilder.ts</test-file>
-            <test-names>
-                <name value="common > main > rx > properties > ConnectorBuilder"/>
-            </test-names>
-            <method v="2"/>
-        </configuration>
-        <configuration name="common > main > rx > properties > ConnectorBuilder.connect"
-                       type="mocha-javascript-test-runner" temporary="true" nameIsGenerated="true">
-            <node-interpreter>node</node-interpreter>
-            <node-options>--max-old-space-size=4096</node-options>
-            <mocha-package>$PROJECT_DIR$/node_modules/mocha</mocha-package>
-            <working-directory>$PROJECT_DIR$</working-directory>
-            <pass-parent-env>true</pass-parent-env>
-            <ui>bdd</ui>
-            <extra-mocha-options>--opts ./env/mocha/mocha.babel.opts --watch</extra-mocha-options>
-            <test-kind>TEST</test-kind>
-            <test-file>$PROJECT_DIR$/src/test/tests/common/main/rx/object/properties/ConnectorBuilder.ts</test-file>
-            <test-names>
-                <name value="common > main > rx > properties > ConnectorBuilder"/>
-                <name value="connect"/>
-            </test-names>
-            <method v="2"/>
-        </configuration>
-        <configuration name="deep-subscribe (Coverage)" type="mocha-javascript-test-runner">
-            <node-interpreter>node</node-interpreter>
-            <node-options>--max-old-space-size=4096</node-options>
-            <mocha-package>$PROJECT_DIR$/node_modules/mocha</mocha-package>
-            <working-directory>$PROJECT_DIR$</working-directory>
-            <pass-parent-env>true</pass-parent-env>
-            <ui>bdd</ui>
-            <extra-mocha-options>--opts ./env/mocha/mocha.babel.opts</extra-mocha-options>
-            <test-kind>TEST_FILE</test-kind>
-            <test-file>$PROJECT_DIR$/src/test/tests/common/main/rx/deep-subscribe/deep-subscribe.ts</test-file>
-            <method v="2"/>
-        </configuration>
-        <configuration name="fundamental-operations.decorators" type="mocha-javascript-test-runner" temporary="true"
-                       nameIsGenerated="true">
-            <node-interpreter>node</node-interpreter>
-            <node-options>--max-old-space-size=4096</node-options>
-            <mocha-package>$PROJECT_DIR$/node_modules/mocha</mocha-package>
-            <working-directory>$PROJECT_DIR$</working-directory>
-            <pass-parent-env>true</pass-parent-env>
-            <ui>bdd</ui>
-            <extra-mocha-options>--opts ./env/mocha/mocha.babel.opts</extra-mocha-options>
-            <test-kind>TEST</test-kind>
-            <test-file>$PROJECT_DIR$/src/test/performance/node/fundamental-operations.ts</test-file>
-            <test-names>
-                <name value="fundamental-operations"/>
-                <name value="decorators"/>
-            </test-names>
-            <method v="2"/>
-        </configuration>
-        <list>
-            <item itemvalue="Karma.Tests Dev"/>
-            <item itemvalue="Karma.CI Karma"/>
-            <item itemvalue="Karma.Coverage Karma"/>
-            <item itemvalue="Karma.Performance Karma"/>
-            <item itemvalue="Karma.Tests Karma"/>
-            <item itemvalue="Mocha.DeferredCalc (Coverage)"/>
-            <item itemvalue="Mocha.Intern Export with rebuild"/>
-            <item itemvalue="Mocha.Intern Export"/>
-            <item itemvalue="Mocha.L:\Work\_GIT\GitHub\NodeJs\modules\tree-state-manager\src\test\tests\common\main\rx\deep-subscribe\**\*.ts (Coverage)"/>
-            <item itemvalue="Mocha.Performance Mocha"/>
-            <item itemvalue="Mocha.deep-subscribe (Coverage)"/>
-            <item itemvalue="Mocha.Coverage Mocha"/>
-            <item itemvalue="Mocha.Watch Mocha"/>
-            <item itemvalue="Mocha.common > main > rx > deferred-calc > DeferredCalc.calc only after invalidate"/>
-            <item itemvalue="Mocha.common > main > rx > properties > ConnectorBuilder"/>
-            <item itemvalue="Mocha.common > main > rx > properties > ConnectorBuilder.connect"/>
-            <item itemvalue="Mocha.common > main > rx > observable-object-builder-prototype.writable"/>
-            <item itemvalue="Mocha.fundamental-operations.decorators"/>
-            <item itemvalue="npm.Coverage Mocha Report"/>
-        </list>
-        <recent_temporary>
-            <list>
-                <item itemvalue="Mocha.fundamental-operations.decorators"/>
-                <item itemvalue="Mocha.common > main > rx > observable-object-builder-prototype.writable"/>
-                <item itemvalue="Mocha.common > main > rx > properties > ConnectorBuilder.connect"/>
-                <item itemvalue="Mocha.common > main > rx > properties > ConnectorBuilder"/>
-                <item itemvalue="Mocha.common > main > rx > deferred-calc > DeferredCalc.calc only after invalidate"/>
-            </list>
-        </recent_temporary>
-    </component>
-    <component name="Vcs.Log.History.Properties">
-        <option name="COLUMN_ORDER">
-            <list>
-                <option value="0"/>
-                <option value="2"/>
-                <option value="3"/>
-                <option value="1"/>
-            </list>
-        </option>
-    </component>
-    <component name="Vcs.Log.Tabs.Properties">
-        <option name="TAB_STATES">
-            <map>
-                <entry key="MAIN">
-                    <value>
-                        <State>
-                            <option name="COLUMN_ORDER"/>
-                        </State>
-                    </value>
-                </entry>
-            </map>
-        </option>
-    </component>
-    <component name="VcsManagerConfiguration">
-        <option name="CHECK_CODE_SMELLS_BEFORE_PROJECT_COMMIT" value="false"/>
-        <option name="CHECK_NEW_TODO" value="false"/>
-        <option name="LAST_COMMIT_MESSAGE" value="Develop ObservableObject builders interface"/>
-        <MESSAGE value="ThenableSync improved. All tests OK."/>
-        <MESSAGE value="Delete trash"/>
-        <MESSAGE value="deepSubscribe: value property is completed and tested. All tests OK."/>
-        <MESSAGE value="Develop ConnectorBuilder. Before delete obsolete deepPropertyChanged."/>
-        <MESSAGE value="Develop ConnectorBuilder. After delete obsolete deepPropertyChanged."/>
-        <MESSAGE value="ConnectorBuilder completed"/>
-        <MESSAGE value="Disable eslint update until they fix the errors"/>
-        <MESSAGE value="Build OK"/>
-        <MESSAGE value="Improved ThenableSync."/>
-        <MESSAGE value="DeferredCalc refactoring."/>
-        <MESSAGE value="Small fix ConnectorBuilding tests"/>
-        <MESSAGE value="Small refactoring Property"/>
-        <MESSAGE value="Develop calc property"/>
-        <MESSAGE value="Subjects and PropertyChanged refactoring. All node tests OK."/>
-        <MESSAGE value="Develop calc property. Before improving DeferredCalc."/>
-        <MESSAGE value="Improving DeferredCalc."/>
-        <MESSAGE value="DeferredCalc improved. Build OK."/>
-        <MESSAGE
-                value="ObservableObject refactoring. Implemented deepSubscribe IRule.clone() and tested. Fix ConnectorBuilder using IRule.clone()."/>
-        <MESSAGE value="Develop TypeScript decorators for ObservableObject properties"/>
-        <MESSAGE
-                value="Cancel implementing decorators because I can use only babel decorators and even prototype decorators is slow - create object x13 times slower."/>
-        <MESSAGE value="Disabled rollup-plugin-typescript, use babel instead"/>
-        <MESSAGE value="Build OK."/>
-        <MESSAGE value="Replaced Math.random().toString(36) to UUID"/>
-        <MESSAGE value="Deleted dashes from UUIDs"/>
-        <MESSAGE value="Develop ObservableObject builders interface"/>
-    </component>
+  <component name="AnalysisUIOptions">
+    <option name="SPLITTER_PROPORTION" value="0.26758242" />
+    <option name="SCOPE_TYPE" value="8" />
+    <option name="CUSTOM_SCOPE_NAME" value="src-main" />
+  </component>
+  <component name="ChangeListManager">
+    <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
+    <option name="SHOW_DIALOG" value="false" />
+    <option name="HIGHLIGHT_CONFLICTS" value="true" />
+    <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
+    <option name="LAST_RESOLUTION" value="IGNORE" />
+  </component>
+  <component name="CoverageOptionsProvider">
+    <option name="myAddOrReplace" value="0" />
+  </component>
+  <component name="ExportTestResults" outputFolder="$PROJECT_DIR$/tmp/test_results" openResultsInEditor="true" userTempatePath="" />
+  <component name="FavoritesManager">
+    <favorites_list name="tree-state-manager" />
+  </component>
+  <component name="JsFlowSettings">
+    <service-enabled>true</service-enabled>
+    <exe-path />
+    <other-services-enabled>true</other-services-enabled>
+    <auto-save>true</auto-save>
+  </component>
+  <component name="NamedScopeManager">
+    <scope name="src-main" pattern="file[base]:src/main//*" />
+    <scope name="src-test" pattern="file[base]:src/test//*" />
+  </component>
+  <component name="ProjectId" id="1PtsejVw06ohrapYkJyh68Uo1Ck" />
+  <component name="ProjectLevelVcsManager">
+    <ConfirmationsSetting value="2" id="Add" />
+  </component>
+  <component name="PropertiesComponent">
+    <property name="NewWatcherDialog.advanced.open" value="true" />
+    <property name="WebServerToolWindowFactoryState" value="false" />
+    <property name="auto.test.manager.delay" value="5000" />
+    <property name="javascript.karma.karma_node_package_dir" value="" />
+    <property name="last_opened_file_path" value="$PROJECT_DIR$/node_modules" />
+    <property name="node.js.detected.package.eslint" value="true" />
+    <property name="node.js.detected.package.standard" value="true" />
+    <property name="node.js.detected.package.tslint" value="true" />
+    <property name="node.js.path.for.package.eslint" value="node" />
+    <property name="node.js.path.for.package.standard" value="node" />
+    <property name="node.js.path.for.package.tslint" value="project" />
+    <property name="node.js.selected.package.eslint" value="$PROJECT_DIR$/../../templates/nodejs-templates/node_modules/eslint" />
+    <property name="node.js.selected.package.standard" value="L:\Work\_GIT\GitHub\NodeJs\templates\nodejs-templates\node_modules\eslint" />
+    <property name="node.js.selected.package.tslint" value="$PROJECT_DIR$/node_modules/tslint" />
+    <property name="nodejs.mocha.mocha_node_package_dir" value="$PROJECT_DIR$/node_modules/mocha" />
+    <property name="nodejs_package_manager_path" value="npm" />
+    <property name="restartRequiresConfirmation" value="false" />
+    <property name="run.code.analysis.last.selected.profile" value="pProject Default" />
+    <property name="settings.editor.selected.configurable" value="configurable.group.appearance" />
+    <property name="ts.external.directory.path" value="L:\Work\_GIT\GitHub\NodeJs\modules\tree-state-manager\node_modules\typescript\lib" />
+  </component>
+  <component name="RunManager" selected="Mocha.Watch Mocha">
+    <configuration name="Tests Dev" type="JavaScriptTestRunnerKarma">
+      <config-file value="$PROJECT_DIR$/env/karma/karma.conf.dev.js" />
+      <karma-package-dir value="$PROJECT_DIR$/node_modules/karma" />
+      <working-directory value="$PROJECT_DIR$" />
+      <node-interpreter value="node" />
+      <envs />
+      <method v="2" />
+    </configuration>
+    <configuration default="true" type="JavaScriptTestRunnerKarma">
+      <config-file value="$PROJECT_DIR$/env/karma/karma.conf.tests.js" />
+      <karma-package-dir value="$PROJECT_DIR$/node_modules/karma" />
+      <node-interpreter value="node" />
+      <envs />
+      <method v="2" />
+    </configuration>
+    <configuration default="true" type="NodeJSConfigurationType" path-to-node="node" node-parameters="--max-old-space-size=4096" working-dir="$PROJECT_DIR$">
+      <method v="2" />
+    </configuration>
+    <configuration name="Coverage Mocha Report" type="js.build_tools.npm">
+      <package-json value="$PROJECT_DIR$/package.json" />
+      <command value="run" />
+      <scripts>
+        <script value="coverage:dev" />
+      </scripts>
+      <node-interpreter value="project" />
+      <envs />
+      <method v="2" />
+    </configuration>
+    <configuration name="DeferredCalc (Coverage)" type="mocha-javascript-test-runner">
+      <node-interpreter>node</node-interpreter>
+      <node-options>--max-old-space-size=4096</node-options>
+      <mocha-package>$PROJECT_DIR$/node_modules/mocha</mocha-package>
+      <working-directory>$PROJECT_DIR$</working-directory>
+      <pass-parent-env>true</pass-parent-env>
+      <ui>bdd</ui>
+      <extra-mocha-options>--opts ./env/mocha/mocha.babel.opts</extra-mocha-options>
+      <test-kind>SUITE</test-kind>
+      <test-file>$PROJECT_DIR$/src/test/tests/common/main/rx/deferred-calc/DeferredCalc.ts</test-file>
+      <test-names>
+        <name value="common &gt; main &gt; rx &gt; deferred-calc &gt; DeferredCalc" />
+      </test-names>
+      <method v="2" />
+    </configuration>
+    <configuration name="Intern Export with rebuild" type="mocha-javascript-test-runner">
+      <node-interpreter>node</node-interpreter>
+      <node-options>--max-old-space-size=4096</node-options>
+      <mocha-package>$PROJECT_DIR$/node_modules/mocha</mocha-package>
+      <working-directory>$PROJECT_DIR$</working-directory>
+      <pass-parent-env>true</pass-parent-env>
+      <ui>bdd</ui>
+      <extra-mocha-options>--opts ./env/mocha/mocha.babel.opts</extra-mocha-options>
+      <test-kind>PATTERN</test-kind>
+      <test-pattern>./env/intern/mocha-export.js</test-pattern>
+      <method v="2" />
+    </configuration>
+    <configuration name="Intern Export" type="mocha-javascript-test-runner">
+      <node-interpreter>node</node-interpreter>
+      <node-options>--max-old-space-size=4096</node-options>
+      <mocha-package>$PROJECT_DIR$/node_modules/mocha</mocha-package>
+      <working-directory>$PROJECT_DIR$</working-directory>
+      <pass-parent-env>true</pass-parent-env>
+      <ui>bdd</ui>
+      <extra-mocha-options>--opts ./env/mocha/mocha.babel.opts</extra-mocha-options>
+      <test-kind>PATTERN</test-kind>
+      <test-pattern>./env/intern/mocha-export.js</test-pattern>
+      <method v="2" />
+    </configuration>
+    <configuration name="L:\Work\_GIT\GitHub\NodeJs\modules\tree-state-manager\src\test\tests\common\main\rx\deep-subscribe\**\*.ts (Coverage)" type="mocha-javascript-test-runner">
+      <node-interpreter>node</node-interpreter>
+      <node-options>--max-old-space-size=4096</node-options>
+      <mocha-package>$PROJECT_DIR$/node_modules/mocha</mocha-package>
+      <working-directory>$PROJECT_DIR$</working-directory>
+      <pass-parent-env>true</pass-parent-env>
+      <ui>bdd</ui>
+      <extra-mocha-options>--opts ./env/mocha/mocha.babel.opts</extra-mocha-options>
+      <test-kind>PATTERN</test-kind>
+      <test-pattern>$PROJECT_DIR$/src/test/tests/common/main/rx/deep-subscribe/**/*.ts</test-pattern>
+      <method v="2" />
+    </configuration>
+    <configuration name="Performance Mocha" type="mocha-javascript-test-runner">
+      <node-interpreter>node</node-interpreter>
+      <node-options>--max-old-space-size=4096</node-options>
+      <mocha-package>$PROJECT_DIR$/node_modules/mocha</mocha-package>
+      <working-directory>$PROJECT_DIR$</working-directory>
+      <pass-parent-env>true</pass-parent-env>
+      <ui>bdd</ui>
+      <extra-mocha-options>--opts ./env/mocha/mocha.babel.opts</extra-mocha-options>
+      <test-kind>PATTERN</test-kind>
+      <test-pattern>./src/test/performance/{common,node}/**/*.*</test-pattern>
+      <method v="2" />
+    </configuration>
+    <configuration default="true" type="mocha-javascript-test-runner">
+      <node-interpreter>node</node-interpreter>
+      <node-options>--max-old-space-size=4096</node-options>
+      <mocha-package>$PROJECT_DIR$/node_modules/mocha</mocha-package>
+      <working-directory>$PROJECT_DIR$</working-directory>
+      <pass-parent-env>true</pass-parent-env>
+      <ui>bdd</ui>
+      <extra-mocha-options>--opts ./env/mocha/mocha.babel.opts --watch</extra-mocha-options>
+      <test-kind>PATTERN</test-kind>
+      <test-pattern>./src/test/tests/{common,node}/**/*.*</test-pattern>
+      <method v="2" />
+    </configuration>
+    <configuration name="common &gt; main &gt; rx &gt; deferred-calc &gt; DeferredCalc.calc only after invalidate" type="mocha-javascript-test-runner" temporary="true" nameIsGenerated="true">
+      <node-interpreter>node</node-interpreter>
+      <node-options>--max-old-space-size=4096</node-options>
+      <mocha-package>$PROJECT_DIR$/node_modules/mocha</mocha-package>
+      <working-directory>$PROJECT_DIR$</working-directory>
+      <pass-parent-env>true</pass-parent-env>
+      <ui>bdd</ui>
+      <extra-mocha-options>--opts ./env/mocha/mocha.babel.opts --watch</extra-mocha-options>
+      <test-kind>TEST</test-kind>
+      <test-file>$PROJECT_DIR$/src/test/tests/common/main/rx/deferred-calc/DeferredCalc.ts</test-file>
+      <test-names>
+        <name value="common &gt; main &gt; rx &gt; deferred-calc &gt; DeferredCalc" />
+        <name value="calc only after invalidate" />
+      </test-names>
+      <method v="2" />
+    </configuration>
+    <configuration name="common &gt; main &gt; rx &gt; observable-object-builder-prototype.writable" type="mocha-javascript-test-runner" temporary="true" nameIsGenerated="true">
+      <node-interpreter>node</node-interpreter>
+      <node-options>--max-old-space-size=4096</node-options>
+      <mocha-package>$PROJECT_DIR$/node_modules/mocha</mocha-package>
+      <working-directory>$PROJECT_DIR$</working-directory>
+      <pass-parent-env>true</pass-parent-env>
+      <ui>bdd</ui>
+      <extra-mocha-options>--opts ./env/mocha/mocha.babel.opts --watch</extra-mocha-options>
+      <test-kind>TEST</test-kind>
+      <test-file>$PROJECT_DIR$/src/test/tests/common/main/rx/object/observable-object-builder-prototype.ts</test-file>
+      <test-names>
+        <name value="common &gt; main &gt; rx &gt; observable-object-builder-prototype" />
+        <name value="writable" />
+      </test-names>
+      <method v="2" />
+    </configuration>
+    <configuration name="common &gt; main &gt; rx &gt; properties &gt; ConnectorBuilder" type="mocha-javascript-test-runner" temporary="true" nameIsGenerated="true">
+      <node-interpreter>node</node-interpreter>
+      <node-options>--max-old-space-size=4096</node-options>
+      <mocha-package>$PROJECT_DIR$/node_modules/mocha</mocha-package>
+      <working-directory>$PROJECT_DIR$</working-directory>
+      <pass-parent-env>true</pass-parent-env>
+      <ui>bdd</ui>
+      <extra-mocha-options>--opts ./env/mocha/mocha.babel.opts --watch</extra-mocha-options>
+      <test-kind>SUITE</test-kind>
+      <test-file>$PROJECT_DIR$/src/test/tests/common/main/rx/object/properties/ConnectorBuilder.ts</test-file>
+      <test-names>
+        <name value="common &gt; main &gt; rx &gt; properties &gt; ConnectorBuilder" />
+      </test-names>
+      <method v="2" />
+    </configuration>
+    <configuration name="common &gt; main &gt; rx &gt; properties &gt; ConnectorBuilder.connect" type="mocha-javascript-test-runner" temporary="true" nameIsGenerated="true">
+      <node-interpreter>node</node-interpreter>
+      <node-options>--max-old-space-size=4096</node-options>
+      <mocha-package>$PROJECT_DIR$/node_modules/mocha</mocha-package>
+      <working-directory>$PROJECT_DIR$</working-directory>
+      <pass-parent-env>true</pass-parent-env>
+      <ui>bdd</ui>
+      <extra-mocha-options>--opts ./env/mocha/mocha.babel.opts --watch</extra-mocha-options>
+      <test-kind>TEST</test-kind>
+      <test-file>$PROJECT_DIR$/src/test/tests/common/main/rx/object/properties/ConnectorBuilder.ts</test-file>
+      <test-names>
+        <name value="common &gt; main &gt; rx &gt; properties &gt; ConnectorBuilder" />
+        <name value="connect" />
+      </test-names>
+      <method v="2" />
+    </configuration>
+    <configuration name="deep-subscribe (Coverage)" type="mocha-javascript-test-runner">
+      <node-interpreter>node</node-interpreter>
+      <node-options>--max-old-space-size=4096</node-options>
+      <mocha-package>$PROJECT_DIR$/node_modules/mocha</mocha-package>
+      <working-directory>$PROJECT_DIR$</working-directory>
+      <pass-parent-env>true</pass-parent-env>
+      <ui>bdd</ui>
+      <extra-mocha-options>--opts ./env/mocha/mocha.babel.opts</extra-mocha-options>
+      <test-kind>TEST_FILE</test-kind>
+      <test-file>$PROJECT_DIR$/src/test/tests/common/main/rx/deep-subscribe/deep-subscribe.ts</test-file>
+      <method v="2" />
+    </configuration>
+    <configuration name="fundamental-operations.decorators" type="mocha-javascript-test-runner" temporary="true" nameIsGenerated="true">
+      <node-interpreter>node</node-interpreter>
+      <node-options>--max-old-space-size=4096</node-options>
+      <mocha-package>$PROJECT_DIR$/node_modules/mocha</mocha-package>
+      <working-directory>$PROJECT_DIR$</working-directory>
+      <pass-parent-env>true</pass-parent-env>
+      <ui>bdd</ui>
+      <extra-mocha-options>--opts ./env/mocha/mocha.babel.opts</extra-mocha-options>
+      <test-kind>TEST</test-kind>
+      <test-file>$PROJECT_DIR$/src/test/performance/node/fundamental-operations.ts</test-file>
+      <test-names>
+        <name value="fundamental-operations" />
+        <name value="decorators" />
+      </test-names>
+      <method v="2" />
+    </configuration>
+    <list>
+      <item itemvalue="Karma.Tests Dev" />
+      <item itemvalue="Karma.CI Karma" />
+      <item itemvalue="Karma.Coverage Karma" />
+      <item itemvalue="Karma.Performance Karma" />
+      <item itemvalue="Karma.Tests Karma" />
+      <item itemvalue="Mocha.DeferredCalc (Coverage)" />
+      <item itemvalue="Mocha.Intern Export with rebuild" />
+      <item itemvalue="Mocha.Intern Export" />
+      <item itemvalue="Mocha.L:\Work\_GIT\GitHub\NodeJs\modules\tree-state-manager\src\test\tests\common\main\rx\deep-subscribe\**\*.ts (Coverage)" />
+      <item itemvalue="Mocha.Performance Mocha" />
+      <item itemvalue="Mocha.deep-subscribe (Coverage)" />
+      <item itemvalue="Mocha.Coverage Mocha" />
+      <item itemvalue="Mocha.Watch Mocha" />
+      <item itemvalue="Mocha.common &gt; main &gt; rx &gt; deferred-calc &gt; DeferredCalc.calc only after invalidate" />
+      <item itemvalue="Mocha.common &gt; main &gt; rx &gt; properties &gt; ConnectorBuilder" />
+      <item itemvalue="Mocha.common &gt; main &gt; rx &gt; properties &gt; ConnectorBuilder.connect" />
+      <item itemvalue="Mocha.common &gt; main &gt; rx &gt; observable-object-builder-prototype.writable" />
+      <item itemvalue="Mocha.fundamental-operations.decorators" />
+      <item itemvalue="npm.Coverage Mocha Report" />
+    </list>
+    <recent_temporary>
+      <list>
+        <item itemvalue="Mocha.fundamental-operations.decorators" />
+        <item itemvalue="Mocha.common &gt; main &gt; rx &gt; observable-object-builder-prototype.writable" />
+        <item itemvalue="Mocha.common &gt; main &gt; rx &gt; properties &gt; ConnectorBuilder.connect" />
+        <item itemvalue="Mocha.common &gt; main &gt; rx &gt; properties &gt; ConnectorBuilder" />
+        <item itemvalue="Mocha.common &gt; main &gt; rx &gt; deferred-calc &gt; DeferredCalc.calc only after invalidate" />
+      </list>
+    </recent_temporary>
+  </component>
+  <component name="Vcs.Log.History.Properties">
+    <option name="COLUMN_ORDER">
+      <list>
+        <option value="0" />
+        <option value="2" />
+        <option value="3" />
+        <option value="1" />
+      </list>
+    </option>
+  </component>
+  <component name="Vcs.Log.Tabs.Properties">
+    <option name="TAB_STATES">
+      <map>
+        <entry key="MAIN">
+          <value>
+            <State>
+              <option name="COLUMN_ORDER" />
+            </State>
+          </value>
+        </entry>
+      </map>
+    </option>
+  </component>
+  <component name="VcsManagerConfiguration">
+    <option name="CHECK_CODE_SMELLS_BEFORE_PROJECT_COMMIT" value="false" />
+    <option name="CHECK_NEW_TODO" value="false" />
+    <option name="LAST_COMMIT_MESSAGE" value="Code inspection. Node tests OK." />
+    <MESSAGE value="Delete trash" />
+    <MESSAGE value="deepSubscribe: value property is completed and tested. All tests OK." />
+    <MESSAGE value="Develop ConnectorBuilder. Before delete obsolete deepPropertyChanged." />
+    <MESSAGE value="Develop ConnectorBuilder. After delete obsolete deepPropertyChanged." />
+    <MESSAGE value="ConnectorBuilder completed" />
+    <MESSAGE value="Disable eslint update until they fix the errors" />
+    <MESSAGE value="Build OK" />
+    <MESSAGE value="Improved ThenableSync." />
+    <MESSAGE value="DeferredCalc refactoring." />
+    <MESSAGE value="Small fix ConnectorBuilding tests" />
+    <MESSAGE value="Small refactoring Property" />
+    <MESSAGE value="Develop calc property" />
+    <MESSAGE value="Subjects and PropertyChanged refactoring. All node tests OK." />
+    <MESSAGE value="Develop calc property. Before improving DeferredCalc." />
+    <MESSAGE value="Improving DeferredCalc." />
+    <MESSAGE value="DeferredCalc improved. Build OK." />
+    <MESSAGE value="ObservableObject refactoring. Implemented deepSubscribe IRule.clone() and tested. Fix ConnectorBuilder using IRule.clone()." />
+    <MESSAGE value="Develop TypeScript decorators for ObservableObject properties" />
+    <MESSAGE value="Cancel implementing decorators because I can use only babel decorators and even prototype decorators is slow - create object x13 times slower." />
+    <MESSAGE value="Disabled rollup-plugin-typescript, use babel instead" />
+    <MESSAGE value="Build OK." />
+    <MESSAGE value="Replaced Math.random().toString(36) to UUID" />
+    <MESSAGE value="Deleted dashes from UUIDs" />
+    <MESSAGE value="Develop ObservableObject builders interface" />
+    <MESSAGE value="Code inspection. Node tests OK." />
+  </component>
 </project>
