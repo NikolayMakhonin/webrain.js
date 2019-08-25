@@ -11,9 +11,9 @@
 
 # Description
 
-On development stage ...
+On development stage ... 80% completed ...
 
-**NodeJS cross-platform and cross-browser business logic framework - Brain of your application.**
+**NodeJS cross-platform and cross-browser business logic framework - Brain of your web applications.**
 
 The main idea: 90% of the logic of almost any application can be represented as a single tree-like dynamic object that can be serialized, updated to a new version, merged with other versions.
 
