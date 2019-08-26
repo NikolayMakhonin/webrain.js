@@ -25,7 +25,7 @@ Each calculated property does its best to minimize the number of calculations, c
 
 Dependency binding is extremely accurate, flexible, and well optimized. With the only restriction that the binding is possible only down of the object tree, otherwise modularity would be violated. But this limitation can be easily circumvented by adding a link to the parent object in child elements.
 
-Such an architecture has already been successfully tested by me on a real C # project and is now redesigned using my experience and more powerful JavaScript and TypeScript features.
+Such an architecture has already been successfully tested by me on a real C# WPF project and is now redesigned using my experience and more powerful JavaScript and TypeScript features.
 
 <!--
 
