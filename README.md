@@ -52,14 +52,14 @@ Such an architecture has already been successfully tested by me on a real C# WPF
 
 [CC0-1.0](LICENSE)
 
-[npm-image]: https://img.shields.io/npm/v/tree-state-manager.svg
-[npm-url]: https://npmjs.org/package/tree-state-manager
-[node-version-image]: https://img.shields.io/node/v/tree-state-manager.svg
+[npm-image]: https://img.shields.io/npm/v/webrain.svg
+[npm-url]: https://npmjs.org/package/webrain
+[node-version-image]: https://img.shields.io/node/v/webrain.svg
 [node-version-url]: https://nodejs.org/en/download/
-[travis-image]: https://travis-ci.org/NikolayMakhonin/tree-state-manager.svg
-[travis-url]: https://travis-ci.org/NikolayMakhonin/tree-state-manager
-[coveralls-image]: https://coveralls.io/repos/github/NikolayMakhonin/tree-state-manager/badge.svg?branch=develop
-[coveralls-url]: https://coveralls.io/github/NikolayMakhonin/tree-state-manager?branch=develop
-[downloads-image]: https://img.shields.io/npm/dm/tree-state-manager.svg
-[downloads-url]: https://npmjs.org/package/tree-state-manager
-[npm-url]: https://npmjs.org/package/tree-state-manager
+[travis-image]: https://travis-ci.org/NikolayMakhonin/webrain.js.svg
+[travis-url]: https://travis-ci.org/NikolayMakhonin/webrain.js
+[coveralls-image]: https://coveralls.io/repos/github/NikolayMakhonin/webrain.js/badge.svg?branch=develop
+[coveralls-url]: https://coveralls.io/github/NikolayMakhonin/webrain.js?branch=develop
+[downloads-image]: https://img.shields.io/npm/dm/webrain.svg
+[downloads-url]: https://npmjs.org/package/webrain
+[npm-url]: https://npmjs.org/package/webrain
