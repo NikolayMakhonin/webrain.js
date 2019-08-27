@@ -10,8 +10,8 @@ export interface IDeferredCalcOptions {
 
 export class DeferredCalc {
 	private readonly _canBeCalcCallback: () => void
-	private readonly _calcCompletedCallback: () => void
-	private readonly _calcFunc: (done: () => void) => void
+	private readonly _calcFunc: (done: (value: any) => void) => void
+	private readonly _calcCompletedCallback: (value: any) => void
 
 	private _minTimeBetweenCalc?: number
 	private _throttleTime?: number
@@ -32,8 +32,8 @@ export class DeferredCalc {
 
 	constructor(
 		canBeCalcCallback: () => void,
-		calcFunc: (done: () => void) => void,
-		calcCompletedCallback: () => void,
+		calcFunc: (done: (value: any) => void) => void,
+		calcCompletedCallback: (value: any) => void,
 		options: IDeferredCalcOptions,
 	) {
 		this._canBeCalcCallback = canBeCalcCallback
@@ -140,9 +140,9 @@ export class DeferredCalc {
 		this._timeCalcEnd = null
 		this._pulse()
 
-		this._calcFunc.call(this, () => {
+		this._calcFunc.call(this, (value: any) => {
 			this._timeCalcEnd = this._timing.now()
-			this._calcCompletedCallback.call(this)
+			this._calcCompletedCallback.call(this, value)
 			this._pulse()
 		})
 	}
