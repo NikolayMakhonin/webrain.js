@@ -1,47 +1,48 @@
-import {RuleBuilder} from '../../deep-subscribe/RuleBuilder'
+import {deepSubscribeRule} from '../../deep-subscribe/deep-subscribe'
+import {IDeferredCalcOptions} from '../../deferred-calc/DeferredCalc'
 import {ObservableObject} from '../ObservableObject'
-import {CalcProperty} from './CalcProperty'
+import {CalcProperty, CalcPropertyFunc} from './CalcProperty'
+import {CalcPropertyDependenciesBuilder} from './CalcPropertyDependenciesBuilder'
 import {Connector} from './Connector'
 import {ValueKeys} from './contracts'
-import {DependenciesBuilder} from './DependenciesBuilder'
+import {IPropertyOptions} from './property'
 
-export class CalcPropertyDependenciesBuilder<
-	TTarget extends CalcProperty<TSource, any, any>,
-	TSource,
-	TValueKeys extends string | number = ValueKeys
-> extends DependenciesBuilder<TTarget, TSource, TValueKeys> {
-
-	public invalidateOn<TValue>(
-		buildRule: (inputRuleBuilder: RuleBuilder<TSource, TValueKeys>) => RuleBuilder<TValue, TValueKeys>,
-		predicate?: (value, parent) => boolean,
-	): this {
-		this.actionOn(buildRule, target => { target.invalidate() }, predicate)
-		return this
-	}
-
-	public clearOn<TValue>(
-		buildRule: (inputRuleBuilder: RuleBuilder<TSource, TValueKeys>) => RuleBuilder<TValue, TValueKeys>,
-		predicate?: (value, parent) => boolean,
-	): this {
-		this.actionOn(buildRule, target => { target.clear() }, predicate)
-		return this
-	}
-}
-
-export function connectorClass<
-	TSource extends ObservableObject,
-	TConnector extends ObservableObject,
+export function calcPropertyFactory<
+	TInput, TValue, TMergeSource,
+	TTarget extends CalcProperty<TInput, TValue, TMergeSource> = CalcProperty<TInput, TValue, TMergeSource>,
 >(
-	build: (connectorBuilder: ConnectorBuilder<ObservableObject, TSource>) => { object: TConnector },
-): new (source: TSource) => TConnector {
-	class NewConnector extends Connector<TSource> { }
+	calcFunc: CalcPropertyFunc<TInput, TValue, TMergeSource>,
+	calcOptions: IDeferredCalcOptions,
+	valueOptions?: IPropertyOptions<TValue, TMergeSource>,
+	initValue?: TValue,
+	buildDependencies?: (
+		dependenciesBuilder: CalcPropertyDependenciesBuilder<CalcProperty<TInput, TValue, TMergeSource>, TInput>
+	) => void,
+): () => CalcProperty<TInput, TValue, TMergeSource> {
+	let dependencies
+	if (buildDependencies) {
+		const dependenciesBuilder = new CalcPropertyDependenciesBuilder<TTarget, TInput>(
+			b => b.propertyName('input'),
+		)
+		buildDependencies(dependenciesBuilder)
+		dependencies = dependenciesBuilder.dependencies
+	}
 
-	build(new ConnectorBuilder<NewConnector, TSource>(
-		NewConnector.prototype,
-		b => b.propertyName('connectorSource'),
-	))
-
-	return NewConnector as unknown as new (source: TSource) => TConnector
+	return () => {
+		const calcProperty = new CalcProperty()
+		if (dependencies) {
+			for (let i = 0, len = dependencies.length; i < len; i++) {
+				const [rule, action] = dependencies[i]
+				deepSubscribeRule(
+					calcProperty,
+					(value, parent, propertyName)
+						=> action(calcProperty, value, parent, propertyName),
+					true,
+					rule
+				)
+			}
+		}
+	}
 }
 
 export function connectorFactory<

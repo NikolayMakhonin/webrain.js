@@ -22,6 +22,7 @@ export class CalcProperty<TInput, TValue, TMergeSource> extends ObservableObject
 	private readonly _deferredCalc: DeferredCalc
 	private _deferredValue: ThenableOrValue<TValue>
 	private _hasValue: boolean
+	private _initValue?: TValue
 
 	public input: TInput
 
@@ -37,6 +38,10 @@ export class CalcProperty<TInput, TValue, TMergeSource> extends ObservableObject
 			throw new Error(`calcFunc must be a function: ${calcFunc}`)
 		}
 
+		if (typeof initValue !== 'function') {
+			this._initValue = initValue
+		}
+
 		this._calcFunc = calcFunc
 		this._valueProperty = new Property(valueOptions, initValue)
 
@@ -44,21 +49,27 @@ export class CalcProperty<TInput, TValue, TMergeSource> extends ObservableObject
 			() => {
 				this.onValueChanged()
 			},
-			(done: () => void) => {
+			(done: (isChanged: boolean) => void) => {
+				const prevValue = this._valueProperty.value
 				this._deferredValue = resolveAsyncFunc(
 					() => this._calcFunc(this.input, this._valueProperty),
 					() => {
 						this._hasValue = true
 						const val = this._valueProperty.value
-						done()
+						done(prevValue !== val)
 						return val
 					},
-					done,
+					err => {
+						done(prevValue !== this._valueProperty.value)
+						return err
+					},
 					true,
 				)
 			},
-			() => {
-				this.onValueChanged()
+			isChanged => {
+				if (isChanged) {
+					this.onValueChanged()
+				}
 			},
 			calcOptions,
 		)
@@ -100,6 +111,13 @@ export class CalcProperty<TInput, TValue, TMergeSource> extends ObservableObject
 		return this._hasValue
 			? this._valueProperty.value
 			: this._deferredValue as TValue
+	}
+
+	public clear() {
+		if (this._valueProperty.value !== this._initValue) {
+			this._valueProperty.value = this._initValue
+			this.onValueChanged()
+		}
 	}
 }
 
