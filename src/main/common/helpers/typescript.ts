@@ -1,3 +1,4 @@
+/* tslint:disable:ban-types use-primitive-type */
 /**
  * @enumerable decorator that sets the enumerable property of a class field to false.
  * @param value true|false
@@ -37,5 +38,8 @@ export type Filter<T, U> = T extends U ? T : never
 // type T30 = Diff<'a' | 'b' | 'c' | 'd', 'a' | 'c' | 'f'>  // "b" | "d"
 // type T31 = Filter<'a' | 'b' | 'c' | 'd', 'a' | 'c' | 'f'>  // "a" | "c"
 
-// tslint:disable-next-line:ban-types
 export type NotFunction<T> = T extends Function ? never : T
+
+export type TPrimitiveNotNullable = boolean | number | string | null | undefined | symbol | bigint | void
+export type TPrimitiveNullable = Boolean | Number | String | Symbol | BigInt | Date
+export type TPrimitive = TPrimitiveNotNullable | TPrimitiveNullable

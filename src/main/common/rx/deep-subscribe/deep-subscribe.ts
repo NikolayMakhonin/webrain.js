@@ -1,4 +1,6 @@
 /* tslint:disable */
+import {isAsync, isThenable} from '../../async/async'
+import {resolveAsync} from '../../async/ThenableSync'
 import {IUnsubscribe} from '../subjects/subject'
 import {IRule} from './contracts/rules'
 import {IRuleIterator, iterateRule, subscribeNextRule} from './iterate-rule'
@@ -20,6 +22,10 @@ function deepSubscribeRuleIterator<TValue>(
 	debugPropertyName?: string,
 	debugParent?: any,
 ): IUnsubscribe {
+	if (!immediate) {
+		throw new Error('immediate == false is deprecated')
+	}
+
 	const subscribeNext = (object) => {
 		let unsubscribers: IUnsubscribe[]
 
@@ -162,20 +168,17 @@ function deepSubscribeRuleIterator<TValue>(
 
 	try {
 		// Resolve Promises
-		if (object != null && typeof object.then === 'function') {
+		if (isAsync(object)) {
 			let unsubscribe
-			Promise
-				.resolve(object)
-				.then(o => {
-					if (!unsubscribe) {
-						unsubscribe = subscribeNext(o)
-						// if (typeof unsubscribe !== 'function') {
-						// 	throw new Error(`unsubscribe is not a function: ${unsubscribe}`)
-						// }
-					}
-					return o
-				})
-				.catch(catchHandler)
+			resolveAsync(object, o => {
+				if (!unsubscribe) {
+					unsubscribe = subscribeNext(o)
+					// if (typeof unsubscribe !== 'function') {
+					// 	throw new Error(`unsubscribe is not a function: ${unsubscribe}`)
+					// }
+				}
+				return o
+			}, catchHandler)
 
 			return () => {
 				if (typeof unsubscribe === 'function') {

@@ -131,10 +131,14 @@ function subscribeObject<TValue>(
 		return null
 	}
 
+	const allowSubscribePrototype = true
+
 	let unsubscribe
 
 	if (propertyNames !== VALUE_PROPERTY_DEFAULT
-		&& Object.prototype.hasOwnProperty.call(object, VALUE_PROPERTY_DEFAULT)
+		&& (allowSubscribePrototype
+			? VALUE_PROPERTY_DEFAULT in object
+			: Object.prototype.hasOwnProperty.call(object, VALUE_PROPERTY_DEFAULT))
 		&& object.constructor !== Object
 		&& !Array.isArray(object)
 	) {
@@ -180,18 +184,22 @@ function subscribeObject<TValue>(
 			if (Array.isArray(propertyNames)) {
 				for (let i = 0, len = propertyNames.length; i < len; i++) {
 					const propertyName = propertyNames[i]
-					if (Object.prototype.hasOwnProperty.call(object, propertyName)) {
+					if (allowSubscribePrototype
+						? propertyName in object
+						: Object.prototype.hasOwnProperty.call(object, propertyName)) {
 						callbackfn(object[propertyName], propertyName)
 					}
 				}
 			} else {
-				if (Object.prototype.hasOwnProperty.call(object, propertyNames)) {
+				if (allowSubscribePrototype
+					? propertyNames in object
+					: Object.prototype.hasOwnProperty.call(object, propertyNames)) {
 					callbackfn(object[propertyNames], propertyNames)
 				}
 			}
 		} else {
 			for (const propertyName in object) {
-				if (Object.prototype.hasOwnProperty.call(object, propertyName)
+				if ((allowSubscribePrototype || Object.prototype.hasOwnProperty.call(object, propertyName))
 					&& (!propertyPredicate || propertyPredicate(propertyName, object))
 				) {
 					callbackfn(object[propertyName], propertyName)

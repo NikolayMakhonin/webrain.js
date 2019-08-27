@@ -60,7 +60,7 @@ export class CalcObjectBuilder<TObject extends ObservableObject, TValueKeys exte
 					deepSubscribe(property, () => {
 						property.invalidate()
 						return null
-					}, false, (b: any) => {
+					}, true, (b: any) => {
 						dependencies(b.path(o => o.input))
 						return b
 					})

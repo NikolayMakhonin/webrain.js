@@ -1,5 +1,5 @@
 import {AsyncValueOf, ThenableOrIterator} from '../../async/async'
-import {Diff} from '../../helpers/typescript'
+import {Diff, TPrimitive} from '../../helpers/typescript'
 import {ANY, ANY_DISPLAY, COLLECTION_PREFIX, VALUE_PROPERTY_DEFAULT, VALUE_PROPERTY_PREFIX} from './contracts/constants'
 import {IRuleSubscribe} from './contracts/rule-subscribe'
 import {IRule} from './contracts/rules'
@@ -43,8 +43,9 @@ export type TRulePathSubObject<TObject, TValueKeys extends string | number> =
 	& {
 		[key in TValueKeys]: TRulePathObject<TObject, TValueKeys>
 	}
-	& (TObject extends object
-		? {
+	& (TObject extends TPrimitive
+		? {}
+		: {
 			[key in Diff<keyof TObject, TValueKeys>]
 				: TRulePathObject<
 					TObject[key] extends ThenableOrIterator<infer V> ? V : TObject[key],
@@ -54,7 +55,6 @@ export type TRulePathSubObject<TObject, TValueKeys extends string | number> =
 		& {
 			[key in ANY]: TRulePathObject<AsyncValueOf<TObject[any]>, TValueKeys>
 		}
-		: {}
 	)
 	& (TObject extends Iterable<infer TItem>
 		? {
@@ -406,5 +406,13 @@ export function cloneRule(rule: IRule) {
 }
 
 // Test:
-// export const test = new RuleBuilder<{ x: { y: number } }>()
-// 	.path(o => o.x.y)
+// interface ITestInterface1 {
+// 	y: number
+// }
+//
+// interface ITestInterface2 {
+// 	x: ITestInterface1
+// }
+//
+// export const test = new RuleBuilder<ITestInterface2>()
+// 	.path(o => o.x)

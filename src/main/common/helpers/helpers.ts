@@ -51,3 +51,17 @@ export function toSingleCall<T extends TFunc<any>>(func: T, throwOnMultipleCall?
 		return func(...args)
 	}) as any
 }
+
+export function hideObjectProperty(object: object, propertyName: string) {
+	const descriptor = Object.getOwnPropertyDescriptor(object, propertyName)
+	if (descriptor) {
+		descriptor.enumerable = false
+		return
+	}
+
+	Object.defineProperty(object, propertyName, {
+		configurable: true,
+		enumerable: false,
+		value: object[propertyName],
+	})
+}

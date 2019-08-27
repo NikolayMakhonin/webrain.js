@@ -34,6 +34,10 @@ export function isThenable(value: any): boolean {
 	return value != null && typeof value.then === 'function'
 }
 
+export function isAsync(value: any): boolean {
+	return isThenable(value) || isIterator(value)
+}
+
 export enum ResolveResult {
 	None = 0,
 	Immediate = 1,
