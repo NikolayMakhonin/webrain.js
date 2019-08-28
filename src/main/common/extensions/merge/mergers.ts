@@ -256,6 +256,7 @@ class MergeState<TTarget, TSource> {
 	public refsNewer: any[]
 	public options: IMergeVisitorOptions<TTarget, TSource>
 
+	// noinspection DuplicatedCode
 	constructor(
 		mergerVisitor: MergerVisitor,
 		base: TTarget,

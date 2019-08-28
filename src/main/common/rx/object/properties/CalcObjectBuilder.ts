@@ -1,24 +1,8 @@
-import {deepSubscribe} from '../../deep-subscribe/deep-subscribe'
-import {RuleBuilder} from '../../deep-subscribe/RuleBuilder'
-import {IDeferredCalcOptions} from '../../deferred-calc/DeferredCalc'
+import {NotFunction} from '../../../helpers/typescript'
 import {ObservableObject} from '../ObservableObject'
-import {IWritableFieldOptions, ObservableObjectBuilder} from '../ObservableObjectBuilder'
-import {CalcProperty, CalcPropertyFunc} from './CalcProperty'
+import {ObservableObjectBuilder} from '../ObservableObjectBuilder'
+import {CalcProperty} from './CalcProperty'
 import {ValueKeys} from './contracts'
-import {IPropertyOptions} from './property'
-
-export interface ICalcPropertyOptions<
-	TObject,
-	TInput,
-	TValue,
-	TMergeSource,
-	TValueKeys extends string | number
-> extends IWritableFieldOptions {
-	dependencies: (inputRuleBuilder: RuleBuilder<TInput, TValueKeys>) => void,
-	calcFunc: CalcPropertyFunc<TInput, TValue, TMergeSource>,
-	calcOptions?: IDeferredCalcOptions,
-	valuePropertyOptions?: IPropertyOptions<TValue, TMergeSource>,
-}
 
 export class CalcObjectBuilder<TObject extends ObservableObject, TValueKeys extends string | number = ValueKeys>
 	extends ObservableObjectBuilder<TObject>
@@ -30,19 +14,8 @@ export class CalcObjectBuilder<TObject extends ObservableObject, TValueKeys exte
 		TMergeSource
 	>(
 		name: Name,
-		input: ((object: TObject) => TInput) | (TInput extends (() => void) ? never : TInput),
-		{
-			dependencies,
-			calcFunc,
-			calcOptions,
-			valuePropertyOptions,
-		}: ICalcPropertyOptions<
-			TObject,
-			TInput,
-			TValue,
-			TMergeSource,
-			TValueKeys
-		>,
+		inputOrFactory: ((source: TObject) => TInput) | NotFunction<TInput>,
+		calcPropertyFactory: (initValue?: TValue) => CalcProperty<TInput, TValue, TMergeSource>,
 		initValue?: TValue,
 	) {
 		return this.readable<CalcProperty<
@@ -51,20 +24,10 @@ export class CalcObjectBuilder<TObject extends ObservableObject, TValueKeys exte
 			TMergeSource
 		>, Name>(name, {
 			factory(this: TObject) {
-				const property = new CalcProperty(calcFunc, calcOptions, valuePropertyOptions, initValue)
-				property.input = typeof input === 'function'
-					? (input as (object: TObject) => TInput)(this)
-					: input
-
-				if (dependencies) {
-					deepSubscribe(property, () => {
-						property.invalidate()
-						return null
-					}, true, (b: any) => {
-						dependencies(b.path(o => o.input))
-						return b
-					})
-				}
+				const property = calcPropertyFactory(initValue)
+				property.input = typeof inputOrFactory === 'function'
+					? (inputOrFactory as (object: TObject) => TInput)(this)
+					: inputOrFactory
 
 				return property
 			},

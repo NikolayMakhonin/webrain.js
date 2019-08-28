@@ -15,7 +15,7 @@ import {SetChangedObject} from './base/SetChangedObject'
 import {IObservableSet, SetChangedType} from './contracts/ISetChanged'
 import {fillSet} from './helpers/set'
 
-export class ObservableSet<T> extends SetChangedObject<T> implements
+export class ObservableSet<T = any> extends SetChangedObject<T> implements
 	IObservableSet<T>,
 	IMergeable<ObservableSet<T>, T[] | Iterable<T>>,
 	ISerializable

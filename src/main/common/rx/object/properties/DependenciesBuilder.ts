@@ -1,12 +1,16 @@
 import {IRule} from '../../deep-subscribe/contracts/rules'
+import {deepSubscribeRule} from '../../deep-subscribe/deep-subscribe'
 import {RuleBuilder} from '../../deep-subscribe/RuleBuilder'
+import {IUnsubscribe} from '../../subjects/subject'
 import {ValueKeys} from './contracts'
 
 export type IDependencyAction<TTarget, TValue = any>
 	= (target: TTarget, value: TValue, parent: any, propertyName: string) => void
 
+export type IDependency<TTarget, TValue = any> = [IRule, IDependencyAction<TTarget, TValue>]
+
 export class DependenciesBuilder<TTarget, TSource, TValueKeys extends string | number = ValueKeys> {
-	public dependencies: Array<[IRule, IDependencyAction<TTarget>]> = []
+	public dependencies: Array<IDependency<TTarget>> = []
 
 	public buildSourceRule: (builder: RuleBuilder<any, TValueKeys>)
 		=> RuleBuilder<TSource, TValueKeys>
@@ -48,5 +52,31 @@ export class DependenciesBuilder<TTarget, TSource, TValueKeys extends string | n
 		])
 
 		return this
+	}
+}
+
+export function subscribeDependencies<TSubscribeObject, TActionTarget>(
+	subscribeObject: TSubscribeObject,
+	actionTarget: TActionTarget,
+	dependencies: Array<IDependency<TActionTarget>>,
+): IUnsubscribe {
+	const unsubscribers = []
+	for (let i = 0, len = dependencies.length; i < len; i++) {
+		const [rule, action] = dependencies[i]
+		unsubscribers.push(deepSubscribeRule(
+			subscribeObject,
+			(value, parent, propertyName) => {
+				action(actionTarget, value, parent, propertyName)
+				return null
+			},
+			true,
+			rule,
+		))
+	}
+
+	return () => {
+		for (let i = 0, len = unsubscribers.length; i < len; i++) {
+			unsubscribers[i]()
+		}
 	}
 }

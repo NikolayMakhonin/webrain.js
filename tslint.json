@@ -1,41 +1,81 @@
 {
-  "extends": [
-	"tslint:recommended",
-	"tslint-sonarts",
-	"tslint-clean-code",
-	"tslint-consistent-codestyle"
-  ],
-  "rules": {
-	"semicolon": [ true, "never" ],
-	"indent": [true, "tabs", 4],
-	"variable-name": [false],
-	"no-trailing-whitespace": [true, "ignore-blank-lines"],
-	"quotemark": [true, "single", "avoid-escape", "avoid-template"],
-	"object-literal-sort-keys": false,
-	"key-spacing": ["error", { "align": "colon" }],
-	"max-classes-per-file": false,
-	"interface-name": false,
-	"no-commented-code": false,
-	"max-union-size": false,
-	"member-ordering": false,
-	"bool-param-default": false,
-	"no-bitwise": false,
-	"cognitive-complexity": false,
-	"no-big-function": false,
-	"arrow-parens": [true, "ban-single-arg-parens"],
-	"prefer-for-of": false,
-	"one-line": [true, "check-catch", "check-finally", "check-else", "check-whitespace"],
-	"no-empty-interface": false,
-	"no-void-expression": true,
-	"return-undefined": true,
-
-	"use-type-alias": false,
-	"prefer-immediate-return": false,
-	"parameters-max-number": false,
-	"only-arrow-functions": false,
-	"no-console": false
-  },
-  "rulesDirectory": [
-	"node_modules/tslint-eslint-rules/dist/rules"
-  ]
+	"extends": [
+		"tslint:recommended",
+		"tslint-sonarts",
+		"tslint-clean-code",
+		"tslint-consistent-codestyle"
+	],
+	"rules": {
+		"semicolon": [
+			true,
+			"never"
+		],
+		"indent": [
+			true,
+			"tabs",
+			4
+		],
+		"variable-name": [
+			false
+		],
+		"no-trailing-whitespace": [
+			true,
+			"ignore-blank-lines"
+		],
+		"quotemark": [
+			true,
+			"single",
+			"avoid-escape",
+			"avoid-template"
+		],
+		"object-literal-sort-keys": false,
+		"key-spacing": [
+			"error",
+			{
+				"align": "colon"
+			}
+		],
+		"max-classes-per-file": false,
+		"interface-name": false,
+		"no-commented-code": false,
+		"max-union-size": false,
+		"member-ordering": false,
+		"bool-param-default": false,
+		"no-bitwise": false,
+		"cognitive-complexity": false,
+		"no-big-function": false,
+		"arrow-parens": [
+			true,
+			"ban-single-arg-parens"
+		],
+		"prefer-for-of": false,
+		"one-line": [
+			true,
+			"check-catch",
+			"check-finally",
+			"check-else",
+			"check-whitespace"
+		],
+		"no-empty-interface": false,
+		"no-void-expression": true,
+		"return-undefined": true,
+		"use-type-alias": false,
+		"prefer-immediate-return": false,
+		"parameters-max-number": false,
+		"only-arrow-functions": false,
+		"no-console": false
+	},
+	"rulesDirectory": [
+		"node_modules/tslint-eslint-rules/dist/rules"
+	],
+	"linterOptions": {
+		"exclude": [
+			"_trash",
+			"dist",
+			"docs",
+			"node_modules",
+			"tmp",
+			"**/*olyfill**"
+		]
+	}
 }

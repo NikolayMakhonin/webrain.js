@@ -1616,13 +1616,13 @@ describe('fundamental-operations', function() {
 			},
 
 			() => { // 157
-				return resolveValue(1, () => {}, () => {}, () => {})
+				return resolveValue(1, () => {}, () => {})
 			},
 			() => { // 767
-				return resolveValue(resolved, () => {}, () => {}, () => {})
+				return resolveValue(resolved, () => {}, () => {})
 			},
 			() => { // 835
-				return resolveValue(rejected, () => {}, () => {}, () => {})
+				return resolveValue(rejected, () => {}, () => {})
 			},
 
 			() => { // 563

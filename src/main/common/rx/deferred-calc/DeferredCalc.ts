@@ -32,8 +32,8 @@ export class DeferredCalc {
 
 	constructor(
 		canBeCalcCallback: () => void,
-		calcFunc: (done: (value: any) => void) => void,
-		calcCompletedCallback: (value: any) => void,
+		calcFunc: (done: (value?: any) => void) => void,
+		calcCompletedCallback: (value?: any) => void,
 		options: IDeferredCalcOptions,
 	) {
 		this._canBeCalcCallback = canBeCalcCallback

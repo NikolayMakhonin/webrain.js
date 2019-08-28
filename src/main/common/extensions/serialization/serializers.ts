@@ -1,4 +1,4 @@
-import {ThenableIterator, ThenableOrValue, TOnFulfilled} from '../../async/async'
+import {ThenableIterator, ThenableOrIteratorOrValue, ThenableOrValue, TOnFulfilled} from '../../async/async'
 import {ThenableSync} from '../../async/ThenableSync'
 import {TClass, typeToDebugString} from '../../helpers/helpers'
 import {getObjectUniqueId} from '../../lists/helpers/object-unique-id'
@@ -327,7 +327,7 @@ export class DeSerializerVisitor implements IDeSerializerVisitor {
 			}
 		}
 
-		const resolveValue = (value: TValue): ThenableOrValue<TValue> => {
+		const resolveValue = (value: TValue): ThenableOrIteratorOrValue<TValue> => {
 			if (id != null) {
 				if (!factory && instance !== value) {
 					throw new Error(`valueFactory instance !== return value in serializer for ${typeToDebugString(type)}`)

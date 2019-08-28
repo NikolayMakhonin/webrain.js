@@ -509,7 +509,7 @@ describe('common > main > rx > deep-subscribe > deep-subscribe', function() {
 				.path(o => o.value),
 		)
 			.subscribe([])
-			.change(o => o.observableObject.target = value,
+			.change(o => (o.observableObject as any).target = value,
 				[], [value])
 			.change(o => o.observableList.add(value as any),
 				[], [])
@@ -536,7 +536,7 @@ describe('common > main > rx > deep-subscribe > deep-subscribe', function() {
 				.path(o => o['#value']),
 		)
 			.subscribe([])
-			.change(o => o.observableObject.target = value,
+			.change(o => (o.observableObject as any).target = value,
 				[], [])
 			.change(o => o.observableList.add(value as any),
 				[], [])

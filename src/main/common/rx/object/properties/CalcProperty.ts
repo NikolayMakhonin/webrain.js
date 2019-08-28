@@ -1,4 +1,4 @@
-import {ThenableOrValue} from '../../../async/async'
+import {ThenableOrIteratorOrValue, ThenableOrValue} from '../../../async/async'
 import {resolveAsyncFunc} from '../../../async/ThenableSync'
 import {PropertyChangedEvent} from '../../../lists/contracts/IPropertyChanged'
 import {VALUE_PROPERTY_DEFAULT} from '../../deep-subscribe/contracts/constants'
@@ -8,7 +8,7 @@ import {ObservableObjectBuilder} from '../ObservableObjectBuilder'
 import {IPropertyOptions, Property} from './property'
 
 export type CalcPropertyFunc<TInput, TTarget, TSource>
-	= (input: TInput, valueProperty: Property<TTarget, TSource>) => ThenableOrValue<void>
+	= (input: TInput, valueProperty: Property<TTarget, TSource>) => ThenableOrIteratorOrValue<void>
 
 // export interface ICalcProperty<TInput, TValue, TMergeSource> {
 // 	['@last']: TValue
@@ -22,7 +22,7 @@ export class CalcProperty<TInput, TValue, TMergeSource> extends ObservableObject
 	private readonly _deferredCalc: DeferredCalc
 	private _deferredValue: ThenableOrValue<TValue>
 	private _hasValue: boolean
-	private _initValue?: TValue
+	private readonly _initValue?: TValue
 
 	public input: TInput
 

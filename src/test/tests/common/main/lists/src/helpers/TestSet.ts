@@ -248,7 +248,7 @@ export class TestSet<T> extends TestVariants<
 						staticSet.add(item)
 					}
 					set = staticSet as ObservableSet<T>
-					setInner = staticSetInner
+					setInner = staticSetInner as Set<T>
 				} else {
 					switch (options.innerSet) {
 						case 'ObjectSet':

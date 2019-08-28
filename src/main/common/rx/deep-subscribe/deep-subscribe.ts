@@ -1,5 +1,5 @@
 /* tslint:disable */
-import {isAsync, isThenable} from '../../async/async'
+import {isAsync} from '../../async/async'
 import {resolveAsync} from '../../async/ThenableSync'
 import {IUnsubscribe} from '../subjects/subject'
 import {IRule} from './contracts/rules'

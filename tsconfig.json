@@ -8,5 +8,16 @@
 	"experimentalDecorators": false,
 	"stripInternal": true,
 	"moduleResolution": "node"
-  }
+  },
+  "include": [
+  	"src/**/*",
+  	"env/**/*"
+  ],
+  "exclude": [
+    "_trash",
+    "dist",
+    "docs",
+    "node_modules",
+    "tmp"
+  ]
 }

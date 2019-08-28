@@ -1,4 +1,4 @@
-import {ThenableIterator, ThenableOrValue, TOnFulfilled} from '../../async/async'
+import {ThenableIterator, ThenableOrIteratorOrValue, ThenableOrValue, TOnFulfilled} from '../../async/async'
 import {TClass} from '../../helpers/helpers'
 import {ITypeMetaWithId, TypeMetaCollectionWithId} from '../TypeMeta'
 
@@ -89,7 +89,7 @@ export interface IValueSerializer<TValue = any> {
 		serializedValue: ISerializedTypedValue,
 		valueFactory: (...args) => TValue,
 		options?: IDeSerializeOptions,
-	): TValue|ThenableIterator<TValue>
+	): ThenableOrIteratorOrValue<TValue>
 }
 
 export interface ISerializer {
@@ -130,7 +130,9 @@ export interface ITypeMetaSerializerOverride<TValue = any> {
 }
 
 export interface ITypeMetaSerializerCollection extends TypeMetaCollectionWithId<ITypeMetaSerializer<any>> {
-
+	getMeta<TValue>(type: TClass<TValue>): ITypeMetaSerializer<TValue>
+	putType<TValue>(type: TClass<TValue>, meta: ITypeMetaSerializer<TValue>): ITypeMetaSerializer<TValue>
+	deleteType<TValue>(type: TClass<TValue>): ITypeMetaSerializer<TValue>
 }
 
 export interface IObjectSerializer extends ISerializer, IDeSerializer {

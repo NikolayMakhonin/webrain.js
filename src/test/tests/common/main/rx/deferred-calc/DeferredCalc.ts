@@ -592,24 +592,24 @@ describe('common > main > rx > deferred-calc > DeferredCalc', function() {
 
 		const deferredCalc = new DeferredCalc(
 			function() {
-			events.push({
-			time: timingDefault.now() - startTestTime,
-			type: EventType.CanBeCalc,
-			})
-			this.calc()
+				events.push({
+					time: timingDefault.now() - startTestTime,
+					type: EventType.CanBeCalc,
+				})
+				this.calc()
 			},
 			function(done) {
-			events.push({
-			time: timingDefault.now() - startTestTime,
-			type: EventType.Calc,
-			})
-			done()
+				events.push({
+					time: timingDefault.now() - startTestTime,
+					type: EventType.Calc,
+				})
+				done()
 			},
 			function() {
-			events.push({
-			time: timingDefault.now() - startTestTime,
-			type: EventType.Completed,
-			})
+				events.push({
+					time: timingDefault.now() - startTestTime,
+					type: EventType.Completed,
+				})
 			},
 			{
 				autoInvalidateInterval: 9 * timeCoef,
@@ -627,10 +627,10 @@ describe('common > main > rx > deferred-calc > DeferredCalc', function() {
 			assert.ok(events[i].time < 150 * timeCoef)
 		}
 
-		assertEvents(events.map(o => ({ type: o.type })), [
-			{ type: EventType.CanBeCalc },
-			{ type: EventType.Calc },
-			{ type: EventType.Completed },
+		assertEvents(events.map(o => ({type: o.type})), [
+			{type: EventType.CanBeCalc},
+			{type: EventType.Calc},
+			{type: EventType.Completed},
 		])
 		events = []
 
