@@ -4,7 +4,7 @@ import {ValueKeys} from './contracts'
 import {DependenciesBuilder} from './DependenciesBuilder'
 
 export class CalcPropertyDependenciesBuilder<
-	TTarget extends CalcProperty<TSource, any, any>,
+	TTarget extends CalcProperty<any, TSource, any>,
 	TSource,
 	TValueKeys extends string | number = ValueKeys
 > extends DependenciesBuilder<TTarget, TSource, TValueKeys> {

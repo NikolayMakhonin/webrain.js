@@ -1,9 +1,10 @@
 /* tslint:disable:no-duplicate-string */
 /* eslint-disable guard-for-in */
-import {ThenableOrIteratorOrValue, ThenableOrValue} from '../../../../../../../main/common/async/async'
+import {ThenableOrIteratorOrValue} from '../../../../../../../main/common/async/async'
 import {ThenableSync} from '../../../../../../../main/common/async/ThenableSync'
 import {ObservableObject} from '../../../../../../../main/common/rx/object/ObservableObject'
 import {CalcObjectBuilder} from '../../../../../../../main/common/rx/object/properties/CalcObjectBuilder'
+import {ICalcProperty} from '../../../../../../../main/common/rx/object/properties/CalcProperty'
 import {calcPropertyFactory} from '../../../../../../../main/common/rx/object/properties/CalcPropertyBuilder'
 import {connectorFactory} from '../../../../../../../main/common/rx/object/properties/ConnectorBuilder'
 import {Property} from '../../../../../../../main/common/rx/object/properties/property'
@@ -11,46 +12,56 @@ import {Property} from '../../../../../../../main/common/rx/object/properties/pr
 declare const assert: any
 
 describe('common > main > rx > properties > CalcObjectBuilder', function() {
-	class Class1 extends ObservableObject {
+	class ClassSync extends ObservableObject {
+		public prop1: ICalcProperty<Date>
 		public source: {
 			value: string,
 		}
 	}
 
-	const createObject = (async: boolean) => new CalcObjectBuilder(Class1.prototype)
+	class ClassAsync extends ClassSync {
+	
+	}
+
+	new CalcObjectBuilder(ClassSync.prototype)
 		.calc('prop1',
 			connectorFactory(c => c
 				.connect('connectValue1', b => b.path(o => o['@lastOrWait'].source['@wait']))),
-			calcPropertyFactory(async
-				? function *(input, valueProperty: Property<Date, number>): ThenableOrIteratorOrValue<void> {
-					yield new Promise(r => setTimeout(r, 100))
-					valueProperty.value = new Date(123)
-				}
-				: (input, valueProperty: Property<Date, number>): ThenableOrIteratorOrValue<void> => {
-					valueProperty.value = new Date(123)
-				}),
+			calcPropertyFactory((input, valueProperty: Property<Date, number>): ThenableOrIteratorOrValue<void> => {
+				valueProperty.value = new Date(123)
+				return ThenableSync.createResolved(null)
+			}),
 		)
-		.object
+
+	new CalcObjectBuilder(ClassAsync.prototype)
+		.calc('prop1',
+			connectorFactory(c => c
+				.connect('connectValue1', b => b.path(o => o['@lastOrWait'].source['@wait']))),
+			calcPropertyFactory(function *(input, valueProperty: Property<Date, number>): ThenableOrIteratorOrValue<void> {
+				yield new Promise(r => setTimeout(r, 100))
+				valueProperty.value = new Date(123)
+			}),
+		)
 
 	it('calc sync', function() {
-		let result: any = createObject(false).prop1.last
+		let result: any = new ClassSync().prop1.last
 		assert.deepStrictEqual(result, new Date(123))
 
-		result = createObject(false).prop1.wait
+		result = new ClassSync().prop1.wait
 		assert.deepStrictEqual(result, new Date(123))
 
-		result = createObject(false).prop1.lastOrWait
+		result = new ClassSync().prop1.lastOrWait
 		assert.deepStrictEqual(result, new Date(123))
 	})
 
 	it('calc async', async function() {
-		assert.deepStrictEqual(createObject(true).prop1.last, void 0)
+		assert.deepStrictEqual(new ClassAsync().prop1.last, void 0)
 
-		let object = createObject(true).prop1
+		let object = new ClassAsync().prop1
 		assert.deepStrictEqual(await object.wait, new Date(123))
 		assert.deepStrictEqual(object.last, new Date(123))
 
-		object = createObject(true).prop1
+		object = new ClassAsync().prop1
 		assert.deepStrictEqual(await object.lastOrWait, new Date(123))
 		assert.deepStrictEqual(object.last, new Date(123))
 	})

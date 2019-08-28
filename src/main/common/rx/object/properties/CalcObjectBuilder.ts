@@ -8,19 +8,19 @@ export class CalcObjectBuilder<TObject extends ObservableObject, TValueKeys exte
 	extends ObservableObjectBuilder<TObject>
 {
 	public calc<
-		TInput,
 		TValue,
-		Name extends string | number,
-		TMergeSource
+		TInput,
+		TMergeSource,
+		Name extends string | number
 	>(
 		name: Name,
 		inputOrFactory: ((source: TObject) => TInput) | NotFunction<TInput>,
-		calcPropertyFactory: (initValue?: TValue) => CalcProperty<TInput, TValue, TMergeSource>,
+		calcPropertyFactory: (initValue?: TValue) => CalcProperty<TValue, TInput, TMergeSource>,
 		initValue?: TValue,
 	) {
 		return this.readable<CalcProperty<
-			TInput,
 			TValue,
+			TInput,
 			TMergeSource
 		>, Name>(name, {
 			factory(this: TObject) {
