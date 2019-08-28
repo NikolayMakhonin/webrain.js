@@ -8,6 +8,7 @@ import {RuleBuilder} from "./RuleBuilder"
 import {ISubscribeValue} from "./contracts/common"
 import {getObjectUniqueId} from "../../lists/helpers/object-unique-id"
 import {checkIsFuncOrNull, toSingleCall} from "../../helpers/helpers"
+import {subscribeDefaultProperty} from './rules-subscribe'
 
 // const UNSUBSCRIBE_PROPERTY_PREFIX = Math.random().toString(36)
 // let nextUnsubscribePropertyId = 0
@@ -95,6 +96,17 @@ function deepSubscribeRuleIterator<TValue>(
 			}
 		}
 
+		const subscribeLeaf = (value) => {
+			if (subscribeNested(value,
+				() => subscribeValue(value, debugParent, debugPropertyName),
+				() => leafUnsubscribers)
+			) {
+				return () => {
+					unsubscribeNested(value, leafUnsubscribers)
+				}
+			}
+		}
+
 		return subscribeNextRule(
 			ruleIterator,
 			nextRuleIterator => deepSubscribeRuleIterator<TValue>(object, subscribeValue, immediate, nextRuleIterator, leafUnsubscribers, propertiesPath, debugPropertyName, debugParent),
@@ -138,17 +150,11 @@ function deepSubscribeRuleIterator<TValue>(
 					unsubscribeItem,
 				))
 			},
-			() => {
-				if (subscribeNested(object,
-					() => subscribeValue(object, debugParent, debugPropertyName),
-					() => leafUnsubscribers)
-				) {
-					return () => {
-						unsubscribeNested(object, leafUnsubscribers)
-					}
-				}
-				return null
-			},
+			() => subscribeDefaultProperty(
+				object,
+				immediate,
+				subscribeLeaf,
+			) || subscribeLeaf(object),
 		)
 	}
 

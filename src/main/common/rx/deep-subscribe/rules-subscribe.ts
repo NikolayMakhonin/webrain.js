@@ -119,6 +119,43 @@ function subscribeObjectValue<TValue>(
 
 // region subscribeObject
 
+const allowSubscribePrototype = true
+
+export function subscribeDefaultProperty<TValue>(
+	object: IPropertyChanged,
+	immediateSubscribe: boolean,
+	subscribeItem: (item: TValue, debugPropertyName: string) => IUnsubscribe,
+) {
+	if (!(object instanceof Object)) {
+		return null
+	}
+
+	let unsubscribe
+
+	if ((allowSubscribePrototype
+			? VALUE_PROPERTY_DEFAULT in object
+			: Object.prototype.hasOwnProperty.call(object, VALUE_PROPERTY_DEFAULT))
+		&& object.constructor !== Object
+		&& !Array.isArray(object)
+	) {
+		return subscribeObject<TValue>(
+			VALUE_PROPERTY_DEFAULT,
+			o => o === VALUE_PROPERTY_DEFAULT,
+			object,
+			immediateSubscribe,
+			(item, debugPropertyName) => {
+				unsubscribe = subscribeItem(item, debugPropertyName)
+			},
+			() => {
+				if (unsubscribe) {
+					unsubscribe()
+				}
+			})
+	}
+
+	return null
+}
+
 function subscribeObject<TValue>(
 	propertyNames: string|string[],
 	propertyPredicate: (propertyName, object) => boolean,
@@ -131,36 +168,23 @@ function subscribeObject<TValue>(
 		return null
 	}
 
-	const allowSubscribePrototype = true
-
 	let unsubscribe
-
-	if (propertyNames !== VALUE_PROPERTY_DEFAULT
-		&& (allowSubscribePrototype
-			? VALUE_PROPERTY_DEFAULT in object
-			: Object.prototype.hasOwnProperty.call(object, VALUE_PROPERTY_DEFAULT))
-		&& object.constructor !== Object
-		&& !Array.isArray(object)
-	) {
-		return subscribeObject(
-			VALUE_PROPERTY_DEFAULT,
-			o => o === VALUE_PROPERTY_DEFAULT,
+	if (propertyNames !== VALUE_PROPERTY_DEFAULT) {
+		unsubscribe = subscribeDefaultProperty(
 			object,
 			immediateSubscribe,
-			item => {
-				unsubscribe = subscribeObject(
-					propertyNames,
-					propertyPredicate,
-					item as any,
-					immediateSubscribe,
-					subscribeItem,
-					unsubscribeItem)
-			},
-			() => {
-				if (unsubscribe) {
-					unsubscribe()
-				}
-			})
+			item => subscribeObject(
+				propertyNames,
+				propertyPredicate,
+				item as any,
+				immediateSubscribe,
+				subscribeItem,
+				unsubscribeItem),
+		)
+
+		if (unsubscribe) {
+			return unsubscribe
+		}
 	}
 
 	const {propertyChanged} = object

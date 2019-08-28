@@ -17,8 +17,8 @@ describe('common > main > rx > deep-subscribe > deep-subscribe', function() {
 			},
 			b => b.path(o => o.observableObjectPrototype.observableObject.valueObject),
 			b => b.path(o => o.valueObject),
-			b => b.path(o => o.observableObject.valueObject),
-			b => b.path(o => o.observableObjectPrototype.observableObject.valueObject),
+			b => b.path(o => o.observableObject['@last'].valueObject),
+			b => b.path(o => o.observableObjectPrototype.observableObject.valueObject['@last']),
 			b => b.path(o => o.observableObject.observableObject.valueObject),
 		)
 			.subscribe(o => [o.valueObject])
@@ -354,6 +354,38 @@ describe('common > main > rx > deep-subscribe > deep-subscribe', function() {
 	})
 
 	it('value properties', async function() {
+		new Tester(
+			{
+				object: createObject().observableObject,
+				immediate: true,
+			},
+			b => b.path(o => o.property as any),
+		)
+			.subscribe(o => [o.observableObject])
+			.change(o => o.property[VALUE_PROPERTY_DEFAULT] = new Number(1) as any,
+				o => [o.observableObject], [new Number(1)])
+			.change(o => o.property = new Number(2) as any,
+				[new Number(1)], [new Number(2)])
+			.change(o => o.property = o.object.property,
+				[new Number(2)], [new Number(1)])
+			.unsubscribe([new Number(1)])
+
+		new Tester(
+			{
+				object: createObject().observableObject,
+				immediate: true,
+			},
+			b => b.path(o => o.property['@value_observableObject']),
+		)
+			.subscribe(o => [o.observableObject])
+			.change(o => o.property.value_observableObject = new Number(1) as any,
+				o => [o.observableObject], [new Number(1)])
+			.change(o => o.property = new Number(2) as any,
+				[new Number(1)], [new Number(2)])
+			.change(o => o.property = o.object.property,
+				[new Number(2)], [new Number(1)])
+			.unsubscribe([new Number(1)])
+
 		{
 			const object = createObject()
 			new ObservableObjectBuilder(object.property).delete(VALUE_PROPERTY_DEFAULT)
