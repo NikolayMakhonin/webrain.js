@@ -106,6 +106,7 @@ export class CalcProperty<TValue, TInput = any, TMergeSource = any>
 		if (propertyChangedIfCanEmit) {
 			const oldValue = this._valueProperty.value
 			propertyChangedIfCanEmit.onPropertyChanged(
+				new PropertyChangedEvent(VALUE_PROPERTY_DEFAULT, oldValue, () => this[VALUE_PROPERTY_DEFAULT]),
 				new PropertyChangedEvent('last', oldValue, () => this.last),
 				new PropertyChangedEvent('wait', oldValue, () => this.wait),
 				new PropertyChangedEvent('lastOrWait', oldValue, () => this.lastOrWait),
