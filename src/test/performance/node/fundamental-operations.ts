@@ -8,12 +8,13 @@ import {calcPerformance} from 'rdtsc'
 import {SynchronousPromise} from 'synchronous-promise'
 import {resolveValue} from '../../../main/common/async/async'
 import {resolveAsync, ThenableSync} from '../../../main/common/async/ThenableSync'
-import {isIterable} from '../../../main/common/helpers/helpers'
+import {createFunction, isIterable} from '../../../main/common/helpers/helpers'
 import {ArraySet} from '../../../main/common/lists/ArraySet'
 import {binarySearch} from '../../../main/common/lists/helpers/array'
 import {freezeWithUniqueId, getObjectUniqueId} from '../../../main/common/lists/helpers/object-unique-id'
 import {SortedList} from '../../../main/common/lists/SortedList'
 import {ObservableObject} from '../../../main/common/rx/object/ObservableObject'
+import {ObservableObjectBuilder} from '../../../main/common/rx/object/ObservableObjectBuilder'
 import {createObject, Tester} from '../../tests/common/main/rx/deep-subscribe/helpers/Tester'
 
 const SetNative = Set
@@ -1830,24 +1831,13 @@ describe('fundamental-operations', function() {
 		console.log(result)
 	})
 
-	it('ObservableObject properties', function() {
+	xit('ObservableObjectTest', function() {
 		this.timeout(300000)
 
 		const withOptimization = true
 		const optimizationAfter = 100
 
-		const optimizeCache = {}
-		// tslint:disable-next-line:ban-types
-		function createFunction(...args: string[]): Function {
-			const id = args[args.length - 1]
-			let func = optimizeCache[id]
-			if (!func) {
-				optimizeCache[id] = func = Function(...args)
-			}
-			return func
-		}
-
-		class ObservableObject {
+		class ObservableObjectTest {
 			public readonly __fields?: {
 				[key: string]: any;
 				[key: number]: any;
@@ -1895,11 +1885,11 @@ describe('fundamental-operations', function() {
 
 		const getValueBase = Function(function x(name, object) { return object.__fields[name] })
 
-		class ObservableObjectBuilder<TObject extends ObservableObject> {
+		class ObservableObjectBuilderTest<TObject extends ObservableObjectTest> {
 			public object: TObject
 
 			constructor(object?: TObject) {
-				this.object = object || new ObservableObject() as TObject
+				this.object = object || new ObservableObjectTest() as TObject
 			}
 
 			public writable<T, Name extends string | number>(
@@ -1907,26 +1897,26 @@ describe('fundamental-operations', function() {
 				// getValue: (o: { [newProp in Name]: T }) => T,
 				// setValue: (o: { [newProp in Name]: T }, v: T) => void,
 			): this & { object: { [newProp in Name]: T } } {
-				const getValue = createFunction('object', `return object.__fields["${name}"]`)
-				const setValue = createFunction('o', 'v', `o["${name}"] = v`)
+				const getValue = createFunction('o', `return o.__fields["${name}"]`)
+				const setValue = createFunction('o', 'v', `o.__fields["${name}"] = v`)
 				// let getValue = createGetFunction(name, o => { getValue = o as any }) as (o: { [newProp in Name]: T }) => T
 				// const getValue = getValueBase.bind(null, name)
 				// const setValue = createSetFunction(name) as (o: { [newProp in Name]: T }, v: T) => void
 				if (withOptimization) {
-					Object.defineProperty(ObservableObject.prototype, name, {
+					Object.defineProperty(ObservableObjectTest.prototype, name, {
 						configurable: true,
 						enumerable: true,
 						get() { return getValue(this) },
-						set(this: ObservableObject, newValue) { setValue(this.__fields, newValue) },
+						set(this: ObservableObjectTest, newValue) { setValue(this, newValue) },
 					})
 				} else {
-					Object.defineProperty(ObservableObject.prototype, name, {
+					Object.defineProperty(ObservableObjectTest.prototype, name, {
 						configurable: true,
 						enumerable: true,
-						get(this: ObservableObject) {
+						get(this: ObservableObjectTest) {
 							return this.__fields[name]
 						},
-						set(this: ObservableObject, newValue) {
+						set(this: ObservableObjectTest, newValue) {
 							this.__fields[name] = newValue
 						},
 					})
@@ -1936,49 +1926,106 @@ describe('fundamental-operations', function() {
 			}
 		}
 
-		new ObservableObjectBuilder(ObservableObject.prototype)
+		new ObservableObjectBuilderTest(ObservableObjectTest.prototype)
 			.writable('prop') // , o => o.prop, (o, v) => o.prop = v)
 			.writable('prop2') // , o => o.prop2, (o, v) => o.prop2 = v)
 
-		const observableObject1 = new ObservableObject() as any
-		const observableObject2 = new ObservableObject() as any
+		const observableObject1 = new ObservableObjectTest() as any
+		const observableObject2 = new ObservableObjectTest() as any
 
-		const object = { prop: void 0, prop2: void 0 }
+		const object1 = { prop: void 0, prop2: void 0 }
+		const object2 = { prop: void 0, prop2: void 0 }
 
-		object.prop = Math.random()
-		object.prop2 = Math.random()
-		observableObject1.prop = Math.random()
-		observableObject1.prop2 = Math.random()
-		observableObject2.prop = Math.random()
-		observableObject2.prop2 = Math.random()
+		let value = -2000000000
+		object1.prop = value++
+		object1.prop2 = value++
+		object2.prop = value++
+		object2.prop2 = value++
+		observableObject1.prop = value++
+		observableObject1.prop2 = value++
+		observableObject2.prop = value++
+		observableObject2.prop2 = value++
 
 		const result = calcPerformance(
 			20000,
 			() => {
 				// no operations
-				// Math.random()
+				value++
 			},
-			// () => {
-			// 	object.prop = Math.random()
-			// 	object.prop2 = Math.random()
-			// },
-			// () => {
-			// 	Math.random()
-			// 	return object.prop && object.prop2
-			// },
-			// () => {
-			// 	observableObject.prop = Math.random()
-			// 	observableObject.prop2 = Math.random()
-			// },
-			() => {
+			() => { // 8
+				object1.prop = value++
+				object1.prop2 = value++
+				object2.prop = value++
+				object2.prop2 = value++
+			},
+			() => { // 11
+ 				return object1.prop && object1.prop2 && object2.prop && object2.prop2
+			},
+			() => { // 27
+				observableObject1.prop = value++
+				observableObject1.prop2 = value++
+				observableObject2.prop = value++
+				observableObject2.prop2 = value++
+			},
+			() => { // 8
 				return observableObject1.prop && observableObject1.prop2 && observableObject1.prop && observableObject2.prop2
 			},
-			// () => {
-			// 	return createGetFunction(Math.random().toString())
-			// },
-			// () => {
-			// 	return createSetFunction(Math.random().toString())
-			// },
+		)
+
+		console.log(result)
+	})
+
+	it('ObservableObject', function() {
+		this.timeout(300000)
+
+		class Class extends ObservableObject {
+
+		}
+
+		new ObservableObjectBuilder(ObservableObject.prototype)
+			.writable('prop') // , o => o.prop, (o, v) => o.prop = v)
+			.writable('prop2') // , o => o.prop2, (o, v) => o.prop2 = v)
+
+		const observableObject1 = new Class() as any
+		const observableObject2 = new Class() as any
+
+		const object1 = { prop: void 0, prop2: void 0 }
+		const object2 = { prop: void 0, prop2: void 0 }
+
+		let value = -2000000000
+		object1.prop = value++
+		object1.prop2 = value++
+		object2.prop = value++
+		object2.prop2 = value++
+		observableObject1.prop = value++
+		observableObject1.prop2 = value++
+		observableObject2.prop = value++
+		observableObject2.prop2 = value++
+
+		const result = calcPerformance(
+			20000,
+			() => {
+				// no operations
+				value++
+			},
+			() => { // 12
+				object1.prop = value++
+				object1.prop2 = value++
+				object2.prop = value++
+				object2.prop2 = value++
+			},
+			() => { // 4
+ 				return object1.prop && object1.prop2 && object2.prop && object2.prop2
+			},
+			() => { // 8
+				observableObject1.prop = value++
+				observableObject1.prop2 = value++
+				observableObject2.prop = value++
+				observableObject2.prop2 = value++
+			},
+			() => { // 0
+				return observableObject1.prop && observableObject1.prop2 && observableObject1.prop && observableObject2.prop2
+			},
 		)
 
 		console.log(result)

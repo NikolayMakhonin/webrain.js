@@ -1,3 +1,4 @@
+import {createFunction} from '../../../helpers/helpers'
 import {deepSubscribeRule} from '../../deep-subscribe/deep-subscribe'
 import {cloneRule, RuleBuilder} from '../../deep-subscribe/RuleBuilder'
 import {ObservableObject} from '../ObservableObject'
@@ -45,6 +46,10 @@ export class ConnectorBuilder<
 
 		const setOptions = options && options.setOptions
 
+		// optimization
+		const getValue = createFunction('o', `return o.__fields["${name}"]`) as any
+		const setValue = createFunction('o', 'v', `o.__fields["${name}"] = v`) as any
+
 		return this.readable(
 			name,
 			{
@@ -52,7 +57,7 @@ export class ConnectorBuilder<
 				hidden: options && options.hidden,
 				// tslint:disable-next-line:no-shadowed-variable
 				factory(this: ObservableObject, initValue: TValue) {
-					let setValue = (value: TValue): void => {
+					let setVal = (value: TValue): void => {
 						if (typeof value !== 'undefined') {
 							initValue = value
 						}
@@ -61,7 +66,7 @@ export class ConnectorBuilder<
 					const unsubscribe = deepSubscribeRule<TValue>(
 						this,
 						value => {
-							setValue(value)
+							setVal(value)
 							return null
 						},
 						true,
@@ -72,9 +77,13 @@ export class ConnectorBuilder<
 
 					this._setUnsubscriber(name, unsubscribe)
 
-					setValue = value => {
-						this._set(name, value, setOptions)
-					}
+					setVal = setOptions
+						? value => {
+							this._setExt(name, value, getValue, setValue, setOptions)
+						}
+						: value => {
+							this._set(name, value, getValue, setValue)
+						}
 
 					return initValue
 				},

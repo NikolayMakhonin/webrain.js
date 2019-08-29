@@ -1,3 +1,4 @@
+import {createFunction} from '../../helpers/helpers'
 import {PropertyChangedEvent} from '../../lists/contracts/IPropertyChanged'
 import '../extensions/autoConnect'
 import {ISetOptions, ObservableObject} from './ObservableObject'
@@ -41,15 +42,23 @@ export class ObservableObjectBuilder<TObject extends ObservableObject> {
 			throw new Error("You can't set initValue for prototype writable property")
 		}
 
+		// optimization
+		const getValue = createFunction('o', `return o.__fields["${name}"]`) as any
+		const setValue = createFunction('o', 'v', `o.__fields["${name}"] = v`) as any
+
 		Object.defineProperty(object, name, {
 			configurable: true,
 			enumerable  : !hidden,
 			get(this: TObject) {
-				return this.__fields[name]
+				return getValue(this)
 			},
-			set(this: TObject, newValue) {
-				this._set(name, newValue, setOptions)
-			},
+			set: setOptions
+				? function(this: TObject, newValue) {
+					this._setExt(name, newValue, setOptions, getValue, setValue)
+				}
+				: function(this: TObject, newValue) {
+					this._set(name, newValue, getValue, setValue)
+				},
 		})
 
 		if (__fields && typeof initValue !== 'undefined') {
@@ -87,12 +96,16 @@ export class ObservableObjectBuilder<TObject extends ObservableObject> {
 			factory = o => o
 		}
 
+		// optimization
+		const getValue = createFunction('o', `return o.__fields["${name}"]`) as any
+		const setValue = createFunction('o', 'v', `o.__fields["${name}"] = v`) as any
+
 		const createInstanceProperty = instance => {
 			Object.defineProperty(instance, name, {
 				configurable: true,
 				enumerable: !hidden,
 				get(this: TObject) {
-					return this.__fields[name]
+					return getValue(this)
 				},
 			})
 		}
@@ -104,12 +117,11 @@ export class ObservableObjectBuilder<TObject extends ObservableObject> {
 				get(this: TObject) {
 					const factoryValue = factory.call(this, initValue)
 					createInstanceProperty(this)
-					const {__fields: fields} = this
 
-					if (fields && typeof factoryValue !== 'undefined') {
-						const oldValue = fields[name]
+					if (typeof factoryValue !== 'undefined') {
+						const oldValue = getValue(this)
 						if (factoryValue !== oldValue) {
-							this._set(name, factoryValue, setOptions)
+							this._setExt(name, factoryValue, getValue, setValue, setOptions)
 						}
 					}
 

@@ -30,21 +30,30 @@ export class ObservableObject extends PropertyChangedObject {
 	}
 
 	/** @internal */
-	public _set(name: string | number, newValue, options?: ISetOptions) {
-		const {__fields} = this
-		const oldValue = __fields[name]
+	public _setExt(
+		name: string | number,
+		newValue,
+		getValue: (o) => any,
+		setValue: (o, v) => void,
+		options?: ISetOptions,
+	) {
+		if (!options) {
+			return this._set(name, newValue, getValue, setValue)
+		}
 
-		const equalsFunc = options && options.equalsFunc
+		const oldValue = getValue ? getValue(this) : this.__fields[name]
+
+		const equalsFunc = options.equalsFunc
 		if (equalsFunc ? equalsFunc.call(this, oldValue, newValue) : oldValue === newValue) {
 			return false
 		}
 
-		const fillFunc = options && options.fillFunc
+		const fillFunc = options.fillFunc
 		if (fillFunc && oldValue != null && newValue != null && fillFunc.call(this, oldValue, newValue)) {
 			return false
 		}
 
-		const convertFunc = options && options.convertFunc
+		const convertFunc = options.convertFunc
 		if (convertFunc) {
 			newValue = convertFunc.call(this, newValue)
 		}
@@ -53,14 +62,18 @@ export class ObservableObject extends PropertyChangedObject {
 			return false
 		}
 
-		const beforeChange = options && options.beforeChange
+		const beforeChange = options.beforeChange
 		if (beforeChange) {
 			beforeChange.call(this, oldValue)
 		}
 
-		__fields[name] = newValue
+		if (setValue) {
+			setValue(this, newValue)
+		} else {
+			this.__fields[name] = newValue
+		}
 
-		const afterChange = options && options.afterChange
+		const afterChange = options.afterChange
 		if (afterChange) {
 			afterChange.call(this, newValue)
 		}
@@ -74,6 +87,33 @@ export class ObservableObject extends PropertyChangedObject {
 					newValue,
 				})
 			}
+		}
+
+		return true
+	}
+
+	/** @internal */
+	public _set(
+		name: string | number,
+		newValue,
+		getValue: (o) => any,
+		setValue: (o, v) => void,
+	) {
+		const oldValue = getValue(this)
+
+		if (oldValue === newValue) {
+			return false
+		}
+
+		setValue(this, newValue)
+
+		const {propertyChangedIfCanEmit} = this
+		if (propertyChangedIfCanEmit) {
+			propertyChangedIfCanEmit.onPropertyChanged({
+				name,
+				oldValue,
+				newValue,
+			})
 		}
 
 		return true

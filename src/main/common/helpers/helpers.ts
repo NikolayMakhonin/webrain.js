@@ -52,6 +52,17 @@ export function toSingleCall<T extends TFunc<any>>(func: T, throwOnMultipleCall?
 	}) as any
 }
 
+const createFunctionCache = {}
+// tslint:disable-next-line:ban-types
+export function createFunction(...args: string[]): Function {
+	const id = args[args.length - 1]
+	let func = createFunctionCache[id]
+	if (!func) {
+		createFunctionCache[id] = func = Function(...args)
+	}
+	return func
+}
+
 export function hideObjectProperty(object: object, propertyName: string) {
 	const descriptor = Object.getOwnPropertyDescriptor(object, propertyName)
 	if (descriptor) {
