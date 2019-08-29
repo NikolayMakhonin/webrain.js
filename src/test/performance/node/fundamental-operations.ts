@@ -13,6 +13,7 @@ import {ArraySet} from '../../../main/common/lists/ArraySet'
 import {binarySearch} from '../../../main/common/lists/helpers/array'
 import {freezeWithUniqueId, getObjectUniqueId} from '../../../main/common/lists/helpers/object-unique-id'
 import {SortedList} from '../../../main/common/lists/SortedList'
+import {deepSubscribe} from '../../../main/common/rx/deep-subscribe/deep-subscribe'
 import {ObservableObject} from '../../../main/common/rx/object/ObservableObject'
 import {ObservableObjectBuilder} from '../../../main/common/rx/object/ObservableObjectBuilder'
 import {createObject, Tester} from '../../tests/common/main/rx/deep-subscribe/helpers/Tester'
@@ -1968,65 +1969,6 @@ describe('fundamental-operations', function() {
 				observableObject2.prop2 = value++
 			},
 			() => { // 8
-				return observableObject1.prop && observableObject1.prop2 && observableObject1.prop && observableObject2.prop2
-			},
-		)
-
-		console.log(result)
-	})
-
-	it('ObservableObject', function() {
-		this.timeout(300000)
-
-		class Class extends ObservableObject {
-			public prop
-			public prop2
-		}
-
-		new ObservableObjectBuilder(ObservableObject.prototype)
-			.writable('prop') // , o => o.prop, (o, v) => o.prop = v)
-			.writable('prop2') // , o => o.prop2, (o, v) => o.prop2 = v)
-
-		const observableObject1 = new Class()
-		const observableObject2 = new Class()
-		observableObject1.propertyChanged.subscribe(v => { })
-		observableObject2.propertyChanged.subscribe(v => { })
-
-		const object1 = { prop: void 0, prop2: void 0 }
-		const object2 = { prop: void 0, prop2: void 0 }
-
-		let value = -2000000000
-		object1.prop = value++
-		object1.prop2 = value++
-		object2.prop = value++
-		object2.prop2 = value++
-		observableObject1.prop = value++
-		observableObject1.prop2 = value++
-		observableObject2.prop = value++
-		observableObject2.prop2 = value++
-
-		const result = calcPerformance(
-			20000,
-			() => {
-				// no operations
-				value++
-			},
-			() => { // 12
-				object1.prop = value++
-				object1.prop2 = value++
-				object2.prop = value++
-				object2.prop2 = value++
-			},
-			() => { // 4
- 				return object1.prop && object1.prop2 && object2.prop && object2.prop2
-			},
-			() => { // 8
-				observableObject1.prop = value++
-				observableObject1.prop2 = value++
-				observableObject2.prop = value++
-				observableObject2.prop2 = value++
-			},
-			() => { // 0
 				return observableObject1.prop && observableObject1.prop2 && observableObject1.prop && observableObject2.prop2
 			},
 		)
