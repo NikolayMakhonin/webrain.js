@@ -38,7 +38,10 @@ export function subject(base): any {
 				const index = _subscribers.indexOf(subscriber)
 
 				if (index >= 0) {
-					_subscribers.splice(index, 1)
+					for (let i = index + 1, len = _subscribers.length; i < len; i++) {
+						_subscribers[i - 1] = _subscribers[i]
+					}
+					_subscribers.length--
 				}
 
 				subscriber = null
@@ -46,15 +49,19 @@ export function subject(base): any {
 		}
 
 		public emit(value: T): this {
-			let {_subscribers} = this
+			const {_subscribers} = this
 			if (!_subscribers) {
 				return this
 			}
 
-			_subscribers = _subscribers.slice()
+			const len = _subscribers.length
+			const subscribers = new Array(len)
 
-			for (let i = 0, l = _subscribers.length; i < l; i++) {
-				_subscribers[i](value)
+			for (let i = 0; i < len; i++) {
+				subscribers[i] = _subscribers[i]
+			}
+			for (let i = 0; i < len; i++) {
+				subscribers[i](value)
 			}
 
 			return this

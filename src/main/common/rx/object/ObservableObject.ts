@@ -107,9 +107,9 @@ export class ObservableObject extends PropertyChangedObject {
 
 		setValue(this, newValue)
 
-		const {propertyChangedIfCanEmit} = this
-		if (propertyChangedIfCanEmit) {
-			propertyChangedIfCanEmit.onPropertyChanged({
+		const {propertyChangedDisabled, propertyChanged} = this.__meta
+		if (!propertyChangedDisabled && propertyChanged) {
+			propertyChanged.emit({
 				name,
 				oldValue,
 				newValue,

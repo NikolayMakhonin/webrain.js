@@ -1979,15 +1979,18 @@ describe('fundamental-operations', function() {
 		this.timeout(300000)
 
 		class Class extends ObservableObject {
-
+			public prop
+			public prop2
 		}
 
 		new ObservableObjectBuilder(ObservableObject.prototype)
 			.writable('prop') // , o => o.prop, (o, v) => o.prop = v)
 			.writable('prop2') // , o => o.prop2, (o, v) => o.prop2 = v)
 
-		const observableObject1 = new Class() as any
-		const observableObject2 = new Class() as any
+		const observableObject1 = new Class()
+		const observableObject2 = new Class()
+		observableObject1.propertyChanged.subscribe(v => { })
+		observableObject2.propertyChanged.subscribe(v => { })
 
 		const object1 = { prop: void 0, prop2: void 0 }
 		const object2 = { prop: void 0, prop2: void 0 }
