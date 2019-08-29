@@ -13,6 +13,7 @@ import {ArraySet} from '../../../main/common/lists/ArraySet'
 import {binarySearch} from '../../../main/common/lists/helpers/array'
 import {freezeWithUniqueId, getObjectUniqueId} from '../../../main/common/lists/helpers/object-unique-id'
 import {SortedList} from '../../../main/common/lists/SortedList'
+import {ObservableObject} from '../../../main/common/rx/object/ObservableObject'
 import {createObject, Tester} from '../../tests/common/main/rx/deep-subscribe/helpers/Tester'
 
 const SetNative = Set
@@ -1767,4 +1768,219 @@ describe('fundamental-operations', function() {
 	//
 	// 	console.log(result)
 	// })
+
+	xit('Resolve properties path', function() {
+		this.timeout(300000)
+
+		class ResolvePropertiesPath<TValue> {
+			public value: TValue
+			constructor(value: TValue) {
+				this.value = value
+			}
+
+			public get<TKey extends keyof TValue, TNextValue = TValue[TKey]>(key: TKey): ResolvePropertiesPath<TNextValue> {
+				let {value} = this
+				if (value != null) {
+					this.value = value = value[key] as any
+				}
+				return this as unknown as ResolvePropertiesPath<TNextValue>
+			}
+		}
+
+		type TGetPropertyValue<TValue> =
+			(<TNextValue>(getValue: (value: TValue) => TNextValue) => TGetPropertyValue<TNextValue>) & { value: TValue }
+
+		function get(getValue: (o) => any) {
+			(get as any).value = getValue((get as any).value)
+			return get
+		}
+
+		function resolvePropertiesPath<TValue>(value: TValue): TGetPropertyValue<TValue> {
+			(get as any).value = value
+			return get as any
+		}
+
+		const object = { a: { b: { c: { d: { e: {}, f: 1 } } } } }
+
+		const result = calcPerformance(
+			120000,
+			() => {
+				// no operations
+			},
+			() => { // 4
+				return object.a.b.c.d.e
+			},
+			() => { // 4
+				let value: any = object
+				value = value.a
+				value = value.b
+				value = value.c
+				value = value.d
+				value = value.e
+				return value
+			},
+			() => { // 307
+				return new ResolvePropertiesPath(object).get('a').get('b').get('c').get('d').get('e').value
+			},
+			() => { // 31
+				return resolvePropertiesPath(object)(o => o.a)(o => o.b)(o => o.c)(o => o.d)(o => o.e).value
+			},
+		)
+
+		console.log(result)
+	})
+
+	it('ObservableObject properties', function() {
+		this.timeout(300000)
+
+		const withOptimization = true
+		const optimizationAfter = 100
+
+		const optimizeCache = {}
+		// tslint:disable-next-line:ban-types
+		function createFunction(...args: string[]): Function {
+			const id = args[args.length - 1]
+			let func = optimizeCache[id]
+			if (!func) {
+				optimizeCache[id] = func = Function(...args)
+			}
+			return func
+		}
+
+		class ObservableObject {
+			public readonly __fields?: {
+				[key: string]: any;
+				[key: number]: any;
+			}
+
+			constructor() {
+				this.__fields = {}
+			}
+		}
+
+		function createGetFunction<Name extends string | number>(
+			propertyName: Name,
+			setOptimizedFunc: (optimizedFunc: (o: { [newProp in Name]: any }, v: any) => void) => void,
+		): (o: { [newProp in Name]: any }, v: any) => void
+		{
+			let count = 0
+			function func() {
+				if (++count > optimizationAfter) {
+					const newFunc = Function('return this.__fields["' + propertyName + '"]') as any
+					setOptimizedFunc(newFunc)
+					return newFunc.call(this)
+				}
+
+				return this.__fields[propertyName]
+			}
+
+			return function() { return func.call(this) }
+		}
+
+		function createSetFunction<Name extends string | number>(propertyName: Name)
+			: (o: { [newProp in Name]: any }, v: any) => void
+		{
+			let count = 0
+			let func = (o, v) => {
+				if (++count > optimizationAfter) {
+					func = Function('o', 'v', 'o["' + propertyName + '"] = v') as any
+					func(o, v)
+					return
+				}
+
+				o[propertyName] = v
+			}
+			return (o, v) => { func(o, v) }
+		}
+
+		const getValueBase = Function(function x(name, object) { return object.__fields[name] })
+
+		class ObservableObjectBuilder<TObject extends ObservableObject> {
+			public object: TObject
+
+			constructor(object?: TObject) {
+				this.object = object || new ObservableObject() as TObject
+			}
+
+			public writable<T, Name extends string | number>(
+				name: Name,
+				// getValue: (o: { [newProp in Name]: T }) => T,
+				// setValue: (o: { [newProp in Name]: T }, v: T) => void,
+			): this & { object: { [newProp in Name]: T } } {
+				const getValue = createFunction('object', `return object.__fields["${name}"]`)
+				const setValue = createFunction('o', 'v', `o["${name}"] = v`)
+				// let getValue = createGetFunction(name, o => { getValue = o as any }) as (o: { [newProp in Name]: T }) => T
+				// const getValue = getValueBase.bind(null, name)
+				// const setValue = createSetFunction(name) as (o: { [newProp in Name]: T }, v: T) => void
+				if (withOptimization) {
+					Object.defineProperty(ObservableObject.prototype, name, {
+						configurable: true,
+						enumerable: true,
+						get() { return getValue(this) },
+						set(this: ObservableObject, newValue) { setValue(this.__fields, newValue) },
+					})
+				} else {
+					Object.defineProperty(ObservableObject.prototype, name, {
+						configurable: true,
+						enumerable: true,
+						get(this: ObservableObject) {
+							return this.__fields[name]
+						},
+						set(this: ObservableObject, newValue) {
+							this.__fields[name] = newValue
+						},
+					})
+				}
+
+				return this as any
+			}
+		}
+
+		new ObservableObjectBuilder(ObservableObject.prototype)
+			.writable('prop') // , o => o.prop, (o, v) => o.prop = v)
+			.writable('prop2') // , o => o.prop2, (o, v) => o.prop2 = v)
+
+		const observableObject1 = new ObservableObject() as any
+		const observableObject2 = new ObservableObject() as any
+
+		const object = { prop: void 0, prop2: void 0 }
+
+		object.prop = Math.random()
+		object.prop2 = Math.random()
+		observableObject1.prop = Math.random()
+		observableObject1.prop2 = Math.random()
+		observableObject2.prop = Math.random()
+		observableObject2.prop2 = Math.random()
+
+		const result = calcPerformance(
+			20000,
+			() => {
+				// no operations
+				// Math.random()
+			},
+			// () => {
+			// 	object.prop = Math.random()
+			// 	object.prop2 = Math.random()
+			// },
+			// () => {
+			// 	Math.random()
+			// 	return object.prop && object.prop2
+			// },
+			// () => {
+			// 	observableObject.prop = Math.random()
+			// 	observableObject.prop2 = Math.random()
+			// },
+			() => {
+				return observableObject1.prop && observableObject1.prop2 && observableObject1.prop && observableObject2.prop2
+			},
+			// () => {
+			// 	return createGetFunction(Math.random().toString())
+			// },
+			// () => {
+			// 	return createSetFunction(Math.random().toString())
+			// },
+		)
+
+		console.log(result)
+	})
 })
