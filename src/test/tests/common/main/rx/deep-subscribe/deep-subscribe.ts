@@ -32,6 +32,24 @@ describe('common > main > rx > deep-subscribe > deep-subscribe', function() {
 			{
 				object: createObject().observableObject,
 				immediate: true,
+			},
+			b => b.path(o => o.observableObject['@last'].valueObject),
+			b => b.path(o => o.observableObject.observableObject.valueObject),
+			b => b.path(o => o.map['#observableObject'].observableObject.map['#object'].object.valueObject),
+		)
+			.subscribe(o => [o.valueObject])
+			.unsubscribe(o => [o.valueObject])
+			.subscribe(o => [o.valueObject])
+			.change(o => o.observableObject = new Number(1) as any,
+				[new String("value")], [])
+			.change(o => o.observableObject = o,
+				[], [new String("value")])
+			.unsubscribe([new String("value")])
+
+		new Tester(
+			{
+				object: createObject().observableObject,
+				immediate: true,
 				doNotSubscribeNonObjectValues: true,
 			},
 			b => b.path(o => o.observableObjectPrototype.valueObjectWritable),
@@ -185,22 +203,30 @@ describe('common > main > rx > deep-subscribe > deep-subscribe', function() {
 			)
 			.unsubscribe([])
 
-		new Tester(
-			{
-				object: createObject().observableObject,
-				immediate: true,
-			},
-			// b => b.path(o => o.object),
-			b => b.path(o => o.object.observableObject.object),
-			b => b.path(o => o.object.observableObject.object.observableObject.object),
-		)
-			.subscribe(o => [o.object])
-			.change(
-				o => o.object = new Number(1) as any,
-				o => [o.object],
-				o => [],
+		{
+			const object = createObject()
+			new Tester(
+				{
+					object: object.observableObject,
+					immediate: true,
+				},
+				// b => b.path(o => o.object),
+				b => b.path(o => o.object.observableObject.object),
+				b => b.path(o => o.object.observableObject.object.observableObject.object),
 			)
-			.unsubscribe([])
+				.subscribe([object])
+				.change(
+					o => o.object = new Number(1) as any,
+					[object],
+					[],
+				)
+				.change(
+					o => o.object = object,
+					[],
+					[object],
+				)
+				.unsubscribe([object])
+		}
 
 		const observableList = createObject().observableList
 		observableList.clear()

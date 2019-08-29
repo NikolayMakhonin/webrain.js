@@ -172,32 +172,43 @@ function deepSubscribeRuleIterator<TValue>(
 		throw ex
 	}
 
-	try {
-		// Resolve Promises
-		if (isAsync(object)) {
-			let unsubscribe
-			resolveAsync(object, o => {
-				if (!unsubscribe) {
-					unsubscribe = subscribeNext(o)
-					// if (typeof unsubscribe !== 'function') {
-					// 	throw new Error(`unsubscribe is not a function: ${unsubscribe}`)
-					// }
-				}
-				return o
-			}, catchHandler)
-
-			return () => {
-				if (typeof unsubscribe === 'function') {
-					unsubscribe()
-				}
-				unsubscribe = true
+	// Resolve Promises
+	if (isAsync(object)) {
+		let unsubscribe
+		resolveAsync(object, o => {
+			if (!unsubscribe) {
+				unsubscribe = subscribeNext(o)
+				// if (typeof unsubscribe !== 'function') {
+				// 	throw new Error(`unsubscribe is not a function: ${unsubscribe}`)
+				// }
 			}
-		}
+			return o
+		}, catchHandler)
 
-		return subscribeNext(object)
-	} catch (ex) {
-		catchHandler(ex)
+		return () => {
+			if (typeof unsubscribe === 'function') {
+				unsubscribe()
+			}
+			unsubscribe = true
+		}
 	}
+
+	let isError
+	const result = (() => {
+		try {
+			return subscribeNext(object)
+		} catch (err) {
+			isError = true
+			return err
+		}
+	})()
+
+	if (isError) {
+		catchHandler(result)
+		return null
+	}
+
+	return result
 }
 
 export function deepSubscribeRule<TValue>(
