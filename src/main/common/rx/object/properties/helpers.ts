@@ -33,7 +33,7 @@ type TGetPropertyValue<TValue> = (
 	& { value: ThenableOrValue<TValue> }
 
 function resolveValueProperty(value: any, getValue?: (value: any) => any) {
-	if (VALUE_PROPERTY_DEFAULT in value) {
+	if (typeof value === 'object' && VALUE_PROPERTY_DEFAULT in value) {
 		if (getValue) {
 			const newValue = getValue(value)
 			if (typeof newValue !== 'undefined') {
@@ -47,9 +47,9 @@ function resolveValueProperty(value: any, getValue?: (value: any) => any) {
 
 export function resolvePath<TValue>(value: ThenableOrIteratorOrValue<TValue>): TGetPropertyValue<TValue> {
 	const get: any = <TNextValue>(getValue, isValueProperty) => {
-		const customResolveValue = (!getValue || !isValueProperty)
-			? resolveValueProperty
-			: val => resolveValueProperty(val, getValue)
+		const customResolveValue = getValue && isValueProperty
+			? val => resolveValueProperty(val, getValue)
+			: resolveValueProperty
 
 		value = resolveAsync(
 			value as ThenableOrIteratorOrValue<HasDefaultOrValue<TValue>>,

@@ -1,4 +1,5 @@
 import {
+	isAsync,
 	isThenable,
 	ResolveResult,
 	resolveValue,
@@ -364,6 +365,19 @@ export function resolveAsync<TValue = any, TResult1 = TValue, TResult2 = never>(
 	dontThrowOnImmediateError?: boolean,
 	customResolveValue?: TResolveAsyncValue,
 ): ThenableOrValue<TResult1> {
+	// Optimization
+	if (!onfulfilled && !isAsync(input)) {
+		if (input != null && customResolveValue) {
+			const newInput = customResolveValue(input)
+			if (input === newInput) {
+				return input as any
+			}
+			input = newInput
+		} else {
+			return input as any
+		}
+	}
+
 	let result: ThenableOrValue<TResult1>
 	let isError: boolean
 	let onResult = (o: ThenableOrValue<TValue|TResult1>, e) => {
