@@ -53,9 +53,10 @@ export function toSingleCall<T extends TFunc<any>>(func: T, throwOnMultipleCall?
 }
 
 const createFunctionCache = {}
+export function createFunction<TFunction extends TFunc<any>>(func: TFunction): TFunction
 // tslint:disable-next-line:ban-types
 export function createFunction(...args: string[]): Function {
-	const id = args[args.length - 1]
+	const id = args[args.length - 1] + ''
 	let func = createFunctionCache[id]
 	if (!func) {
 		createFunctionCache[id] = func = Function(...args)
@@ -76,3 +77,8 @@ export function hideObjectProperty(object: object, propertyName: string) {
 		value: object[propertyName],
 	})
 }
+
+export const VALUE_PROPERTY_DEFAULT = ''
+export type VALUE_PROPERTY_DEFAULT = ''
+export interface HasDefaultValue<T> { [VALUE_PROPERTY_DEFAULT]: T }
+export type HasDefaultOrValue<T> = T | HasDefaultValue<T>

@@ -1,14 +1,11 @@
 /* tslint:disable:no-empty no-construct use-primitive-type */
-import {delay} from '../../../../../../../main/common/helpers/helpers'
+import {delay, VALUE_PROPERTY_DEFAULT} from '../../../../../../../main/common/helpers/helpers'
 import {IListChanged} from '../../../../../../../main/common/lists/contracts/IListChanged'
 import {IMapChanged} from '../../../../../../../main/common/lists/contracts/IMapChanged'
 import {ISetChanged} from '../../../../../../../main/common/lists/contracts/ISetChanged'
 import {ObservableMap} from '../../../../../../../main/common/lists/ObservableMap'
 import {ObservableSet} from '../../../../../../../main/common/lists/ObservableSet'
 import {SortedList} from '../../../../../../../main/common/lists/SortedList'
-import {
-	VALUE_PROPERTY_DEFAULT,
-} from '../../../../../../../main/common/rx/deep-subscribe/contracts/constants'
 import {deepSubscribe} from '../../../../../../../main/common/rx/deep-subscribe/deep-subscribe'
 import {RuleBuilder} from '../../../../../../../main/common/rx/deep-subscribe/RuleBuilder'
 import {ObservableObject} from '../../../../../../../main/common/rx/object/ObservableObject'

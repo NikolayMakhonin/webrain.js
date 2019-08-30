@@ -11,22 +11,28 @@ export function canHaveUniqueId(object: object): boolean {
 }
 
 export function getObjectUniqueId(object: object): number {
-	if (!canHaveUniqueId(object)) {
+	if (object == null) {
 		return null
 	}
 
-	if (!hasObjectUniqueId(object)) {
-		const uniqueId = nextObjectId++
-		Object.defineProperty(object, UNIQUE_ID_PROPERTY_NAME, {
-			enumerable: false,
-			configurable: false,
-			writable: false,
-			value: uniqueId,
-		})
-		return uniqueId
+	const id = object[UNIQUE_ID_PROPERTY_NAME]
+
+	if (id != null) {
+		return id
 	}
 
-	return object[UNIQUE_ID_PROPERTY_NAME]
+	if (Object.isFrozen(object)) {
+		return null
+	}
+
+	const uniqueId = nextObjectId++
+	Object.defineProperty(object, UNIQUE_ID_PROPERTY_NAME, {
+		enumerable: false,
+		configurable: false,
+		writable: false,
+		value: uniqueId,
+	})
+	return uniqueId
 }
 
 // tslint:disable-next-line:ban-types

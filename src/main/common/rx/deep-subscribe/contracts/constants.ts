@@ -6,5 +6,3 @@ export const COLLECTION_PREFIX = '#'
 export type COLLECTION_PREFIX = '#'
 
 export const VALUE_PROPERTY_PREFIX = '@'
-export const VALUE_PROPERTY_DEFAULT = ''
-export type VALUE_PROPERTY_DEFAULT = ''

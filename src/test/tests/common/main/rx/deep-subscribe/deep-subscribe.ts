@@ -1,6 +1,5 @@
 /* tslint:disable:no-construct use-primitive-type no-shadowed-variable no-duplicate-string no-empty max-line-length */
-import {delay} from '../../../../../../main/common/helpers/helpers'
-import {VALUE_PROPERTY_DEFAULT} from '../../../../../../main/common/rx/deep-subscribe/contracts/constants'
+import {delay, VALUE_PROPERTY_DEFAULT} from '../../../../../../main/common/helpers/helpers'
 import {RuleBuilder} from '../../../../../../main/common/rx/deep-subscribe/RuleBuilder'
 import {ObservableObjectBuilder} from '../../../../../../main/common/rx/object/ObservableObjectBuilder'
 import {createObject, IObject, Tester} from './helpers/Tester'

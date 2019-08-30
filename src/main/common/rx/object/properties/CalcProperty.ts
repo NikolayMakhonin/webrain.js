@@ -1,7 +1,10 @@
-import {ThenableOrIteratorOrValue, ThenableOrValue, TOnFulfilled, TOnRejected} from '../../../async/async'
-import {resolveAsync, resolveAsyncFunc} from '../../../async/ThenableSync'
+import {
+	ThenableOrIteratorOrValue,
+	ThenableOrValue,
+} from '../../../async/async'
+import {resolveAsyncFunc} from '../../../async/ThenableSync'
+import {VALUE_PROPERTY_DEFAULT} from '../../../helpers/helpers'
 import {PropertyChangedEvent} from '../../../lists/contracts/IPropertyChanged'
-import {VALUE_PROPERTY_DEFAULT} from '../../deep-subscribe/contracts/constants'
 import {DeferredCalc, IDeferredCalcOptions} from '../../deferred-calc/DeferredCalc'
 import {ObservableObject} from '../ObservableObject'
 import {ObservableObjectBuilder} from '../ObservableObjectBuilder'
@@ -21,18 +24,6 @@ export interface ICalcProperty<TValue> {
 	readonly last: TValue
 	readonly wait: ThenableOrValue<TValue>
 	readonly lastOrWait: ThenableOrValue<TValue>
-}
-
-export type ICalcPropertyOrAsyncValue<TValue> = ThenableOrIteratorOrValue<TValue> | ICalcProperty<TValue>
-
-export function resolveAsyncOrCalc<TValue = any, TResult1 = TValue, TResult2 = never>(
-	input: ThenableOrIteratorOrValue<TValue>,
-	onfulfilled?: TOnFulfilled<TValue, TResult1>,
-	onrejected?: TOnRejected<TResult2>,
-	dontThrowOnImmediateError?: boolean,
-): ThenableOrValue<TResult1> {
-	if (input)
-	return resolveAsync(input, onfulfilled, onrejected, dontThrowOnImmediateError)
 }
 
 export class CalcProperty<TValue, TInput = any, TMergeSource = any>
@@ -116,7 +107,7 @@ export class CalcProperty<TValue, TInput = any, TMergeSource = any>
 
 	public get [VALUE_PROPERTY_DEFAULT](): ThenableOrValue<TValue>
 	{
-		return this.lastOrWait as any
+		return this.wait as any
 	}
 
 	get last(): TValue {
