@@ -198,9 +198,10 @@ function _resolveValue<T>(
 			}
 		}
 
-		if (customResolveValue != null) {
+		if (value != null && customResolveValue != null) {
 			const newValue = customResolveValue(value as T)
 			if (newValue !== value) {
+				value = newValue
 				continue
 			}
 		}

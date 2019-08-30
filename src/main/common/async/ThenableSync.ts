@@ -24,7 +24,7 @@ export enum ThenableSyncStatus {
 
 export function createResolved<TValue = any>(
 	value: ThenableOrIteratorOrValue<TValue>,
-	customResolveValue: TResolveAsyncValue,
+	customResolveValue?: TResolveAsyncValue,
 ): ThenableSync<TValue> {
 	const thenable = new ThenableSync<TValue>(null, customResolveValue)
 	thenable.resolve(value)
@@ -33,7 +33,7 @@ export function createResolved<TValue = any>(
 
 export function createRejected<TValue = any>(
 	error: ThenableOrIteratorOrValue<any>,
-	customResolveValue: TResolveAsyncValue,
+	customResolveValue?: TResolveAsyncValue,
 ): ThenableSync<TValue> {
 	const thenable = new ThenableSync<TValue>(null, customResolveValue)
 	thenable.reject(error)
@@ -182,7 +182,7 @@ export class ThenableSync<TValue = any> implements Thenable<TValue> {
 				if (lastExpression) {
 					throw error
 				}
-				return ThenableSync.createRejected(error, customResolveValue || this._customResolveValue)
+				return ThenableSync.createRejected(error, customResolveValue)
 			}
 
 			let isError
@@ -195,11 +195,11 @@ export class ThenableSync<TValue = any> implements Thenable<TValue> {
 				}
 			})()
 
-			const result = resolveAsync(error, null, null, !lastExpression, customResolveValue || this._customResolveValue)
+			const result = resolveAsync(error, null, null, !lastExpression, customResolveValue)
 
 			if (isThenable(result)) {
 				return isError
-					? result.then(o => createRejected(o, customResolveValue || this._customResolveValue))
+					? result.then(o => createRejected(o, customResolveValue))
 					: result
 			}
 
@@ -211,8 +211,8 @@ export class ThenableSync<TValue = any> implements Thenable<TValue> {
 			}
 
 			return isError
-				? createRejected(result, customResolveValue || this._customResolveValue)
-				: createResolved(result, customResolveValue || this._customResolveValue)
+				? createRejected(result, customResolveValue)
+				: createResolved(result, customResolveValue)
 		}
 
 		switch (this._status) {
@@ -236,17 +236,17 @@ export class ThenableSync<TValue = any> implements Thenable<TValue> {
 
 				if (isError) {
 					const result = resolveAsync(_value as any, null, null, !lastExpression,
-						customResolveValue || this._customResolveValue)
+						customResolveValue)
 					if (isThenable(result)) {
 						return result.then(o => reject(o), onrejected)
 					}
 					return reject(result)
 				} else {
 					const result = resolveAsync(_value as any, null, onrejected, !lastExpression,
-						customResolveValue || this._customResolveValue)
+						customResolveValue)
 					return lastExpression || isThenable(result)
 						? result
-						: createResolved(result as TResult1, customResolveValue || this._customResolveValue)
+						: createResolved(result as TResult1, customResolveValue)
 				}
 			}
 			case ThenableSyncStatus.Rejected:
@@ -259,7 +259,7 @@ export class ThenableSync<TValue = any> implements Thenable<TValue> {
 					return this as any
 				}
 
-				const result = new ThenableSync<TResult1>(null, customResolveValue || this._customResolveValue)
+				const result = new ThenableSync<TResult1>(null, customResolveValue)
 
 				let {_onrejected} = this
 				if (!_onrejected) {
@@ -304,7 +304,7 @@ export class ThenableSync<TValue = any> implements Thenable<TValue> {
 							}
 						})()
 						if (isError) {
-							resolveValue(value, rejected, rejected, customResolveValue || this._customResolveValue)
+							resolveValue(value, rejected, rejected, customResolveValue)
 						} else {
 							result.resolve(value)
 						}
@@ -319,17 +319,27 @@ export class ThenableSync<TValue = any> implements Thenable<TValue> {
 	public then<TResult1 = TValue, TResult2 = never>(
 		onfulfilled?: TOnFulfilled<TValue, TResult1>,
 		onrejected?: TOnRejected<TResult2>,
-		customResolveValue?: TResolveAsyncValue,
+		customResolveValue?: TResolveAsyncValue | false,
 	): ThenableSync<TResult1> {
-		return this._then(onfulfilled, onrejected, false, customResolveValue) as ThenableSync<TResult1>
+		return this._then(
+			onfulfilled,
+			onrejected,
+			false,
+			customResolveValue === false ? null : (customResolveValue || this._customResolveValue),
+		) as ThenableSync<TResult1>
 	}
 
 	public thenLast<TResult1 = TValue, TResult2 = never>(
 		onfulfilled?: TOnFulfilled<TValue, TResult1>,
 		onrejected?: TOnRejected<TResult2>,
-		customResolveValue?: TResolveAsyncValue,
+		customResolveValue?: TResolveAsyncValue | false,
 	): ThenableOrValue<TResult1> {
-		return this._then(onfulfilled, onrejected, true, customResolveValue)
+		return this._then(
+			onfulfilled,
+			onrejected,
+			true,
+			customResolveValue === false ? null : (customResolveValue || this._customResolveValue),
+		)
 	}
 
 	// endregion

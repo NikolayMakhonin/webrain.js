@@ -1,13 +1,36 @@
-import {isThenable, Thenable, ThenableOrIteratorOrValue, ThenableOrValue} from '../../../async/async'
-import {resolveAsync} from '../../../async/ThenableSync'
-import {HasDefaultOrValue, VALUE_PROPERTY_DEFAULT} from '../../../helpers/helpers'
-import {ICalcProperty} from './CalcProperty'
+import {AsyncValueOf, isThenable, Thenable, ThenableOrIteratorOrValue, ThenableOrValue} from '../../../async/async'
+import {resolveAsync, ThenableSync} from '../../../async/ThenableSync'
+import {
+	AsyncHasDefaultValueOf,
+	HasDefaultOrValue,
+	HasDefaultValueOf,
+	VALUE_PROPERTY_DEFAULT,
+} from '../../../helpers/helpers'
 
-export type ICalcPropertyOrAsyncValue<TValue> = ThenableOrIteratorOrValue<TValue> | ICalcProperty<TValue>
+type TGetValue1<TValue> = (value: any) => ThenableOrIteratorOrValue<HasDefaultValueOf<TValue>>
+type TGetPropertyValueResult1<TValue> = TGetPropertyValue<HasDefaultValueOf<TValue>>
+type TGetPropertyValue1<TValue> = <TNextValue>(
+	getValue: TGetValue1<TValue>,
+	isValueProperty: true,
+) => TGetPropertyValueResult1<TValue>
 
-type TGetPropertyValue<TValue> =
-	(<TNextValue>(getValue: (value: TValue) => HasDefaultOrValue<TNextValue>) => TGetPropertyValue<TNextValue>)
-		& { value: ThenableOrValue<HasDefaultOrValue<TValue>> }
+type TGetValue2<TValue, TNextValue> = (value: HasDefaultValueOf<TValue>) => ThenableOrIteratorOrValue<TNextValue>
+type TGetPropertyValueResult2<TNextValue> = TGetPropertyValue<AsyncValueOf<TNextValue>>
+type TGetPropertyValue2<TValue> =
+	<TNextValue>(
+		getValue: TGetValue2<TValue, TNextValue>,
+		isValueProperty?: false,
+	) => TGetPropertyValueResult2<TNextValue>
+
+type TGetPropertyValueResult3<TValue> = ThenableOrValue<AsyncHasDefaultValueOf<TValue>>
+type TGetPropertyValue3<TValue> = () => TGetPropertyValueResult3<TValue>
+
+type TGetPropertyValue<TValue> = (
+	TGetPropertyValue1<TValue> &
+	TGetPropertyValue2<TValue> &
+	TGetPropertyValue3<TValue>
+)
+	& { value: ThenableOrValue<TValue> }
 
 function resolveValueProperty(value: any, getValue?: (value: any) => any) {
 	if (VALUE_PROPERTY_DEFAULT in value) {
@@ -22,30 +45,42 @@ function resolveValueProperty(value: any, getValue?: (value: any) => any) {
 	return value
 }
 
-function get<TValue, TNextValue>(
-	getValue: (value: TValue) => HasDefaultOrValue<TNextValue>,
-	isValueProperty?: boolean,
-): TGetPropertyValue<TNextValue> {
-	const customResolveValue = (!getValue || !isValueProperty)
-		? resolveValueProperty
-		: val => resolveValueProperty(val, getValue)
+export function resolvePath<TValue>(value: ThenableOrIteratorOrValue<TValue>): TGetPropertyValue<TValue> {
+	const get: any = <TNextValue>(getValue, isValueProperty) => {
+		const customResolveValue = (!getValue || !isValueProperty)
+			? resolveValueProperty
+			: val => resolveValueProperty(val, getValue)
 
-	const value = resolveAsync(
-		(get as TGetPropertyValue<TValue>).value as ThenableOrIteratorOrValue<HasDefaultOrValue<TValue>>,
-		null, null, null, customResolveValue) as ThenableOrValue<HasDefaultOrValue<TValue>>
+		value = resolveAsync(
+			value as ThenableOrIteratorOrValue<HasDefaultOrValue<TValue>>,
+			null, null, null, customResolveValue) as ThenableOrValue<TValue>
 
-	if (isValueProperty) {
-		(get as TGetPropertyValue<TNextValue>).value = value as any
-	} else {
-		(get as TGetPropertyValue<TNextValue>).value = isThenable(value)
-			? (value as Thenable<HasDefaultOrValue<TValue>>).then(getValue, customResolveValue)
-			: resolveAsync(getValue(value as TValue))
+		if (!getValue) {
+			return value as ThenableOrValue<TValue>
+		}
+
+		if (!isValueProperty) {
+			if (value instanceof ThenableSync) {
+				value = (value as ThenableSync<TValue>).then(
+					getValue,
+					null,
+					false,
+				)
+			} else if (isThenable(value)) {
+				value = (value as Thenable<TValue>).then(
+					getValue,
+				)
+			} else {
+				value = resolveAsync(getValue(value as TValue))
+			}
+		}
+
+		return get
 	}
 
-	return get as TGetPropertyValue<TNextValue>
+	return get
 }
 
-function resolvePath<TValue>(value: TValue): TGetPropertyValue<TValue> {
-	(get as TGetPropertyValue<TValue>).value = value
-	return get as any
-}
+// Test
+// const x: TGetPropertyValue<ICalcProperty<Date>>
+// const r = x(o => o, true)()
