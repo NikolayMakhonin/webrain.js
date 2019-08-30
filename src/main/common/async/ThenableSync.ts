@@ -378,6 +378,16 @@ export function resolveAsync<TValue = any, TResult1 = TValue, TResult2 = never>(
 		}
 	}
 
+	return _resolveAsync(input, onfulfilled, onrejected, dontThrowOnImmediateError, customResolveValue)
+}
+
+function _resolveAsync<TValue = any, TResult1 = TValue, TResult2 = never>(
+	input: ThenableOrIteratorOrValue<TValue>,
+	onfulfilled?: TOnFulfilled<TValue, TResult1>,
+	onrejected?: TOnRejected<TResult2>,
+	dontThrowOnImmediateError?: boolean,
+	customResolveValue?: TResolveAsyncValue,
+): ThenableOrValue<TResult1> {
 	let result: ThenableOrValue<TResult1>
 	let isError: boolean
 	let onResult = (o: ThenableOrValue<TValue|TResult1>, e) => {

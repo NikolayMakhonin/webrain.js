@@ -5,7 +5,7 @@ import {
 	IListChangedEvent,
 	ListChangedType,
 } from '../../../../../../../main/common/lists/contracts/IListChanged'
-import {IPropertyChangedEvent} from '../../../../../../../main/common/lists/contracts/IPropertyChanged'
+import {IPropertyChangedEvent} from '../../../../../../../main/common/rx/object/IPropertyChanged'
 import {compareFast} from '../../../../../../../main/common/lists/helpers/compare'
 import {SortedList} from '../../../../../../../main/common/lists/SortedList'
 import {Assert} from '../../../../../../../main/common/test/Assert'

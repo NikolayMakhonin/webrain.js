@@ -39,7 +39,7 @@ describe('resolvePath', function() {
 		const test = resolvePath(object)()
 
 		const result = calcPerformance(
-			120000,
+			20000,
 			() => { },
 			() => resolvePath(true)(),
 			() => resolvePath(object)(),

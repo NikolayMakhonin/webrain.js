@@ -1,10 +1,10 @@
+import {HasSubscribersSubject} from '../subjects/hasSubscribers'
+import {IUnsubscribe} from '../subjects/subject'
 import {
 	EventOrPropertyName,
 	IPropertyChangedEvent,
 	IPropertyChangedObject, IPropertyChangedSubject,
-} from '../../lists/contracts/IPropertyChanged'
-import {HasSubscribersSubject} from '../subjects/hasSubscribers'
-import {IUnsubscribe} from '../subjects/subject'
+} from './IPropertyChanged'
 
 // function expandAndDistinct(inputItems: any, output: string[] = [], map: any = {}): string[] {
 // 	if (inputItems == null) {

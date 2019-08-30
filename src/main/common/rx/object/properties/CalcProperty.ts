@@ -4,7 +4,7 @@ import {
 } from '../../../async/async'
 import {resolveAsyncFunc} from '../../../async/ThenableSync'
 import {VALUE_PROPERTY_DEFAULT} from '../../../helpers/helpers'
-import {PropertyChangedEvent} from '../../../lists/contracts/IPropertyChanged'
+import {PropertyChangedEvent} from '../IPropertyChanged'
 import {DeferredCalc, IDeferredCalcOptions} from '../../deferred-calc/DeferredCalc'
 import {ObservableObject} from '../ObservableObject'
 import {ObservableObjectBuilder} from '../ObservableObjectBuilder'

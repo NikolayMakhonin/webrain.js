@@ -1,5 +1,5 @@
 /* eslint-disable guard-for-in */
-import {IPropertyChangedEvent} from '../../../../../../main/common/lists/contracts/IPropertyChanged'
+import {IPropertyChangedEvent} from '../../../../../../main/common/rx/object/IPropertyChanged'
 import {ObservableObject} from '../../../../../../main/common/rx/object/ObservableObject'
 import {ObservableObjectBuilder} from '../../../../../../main/common/rx/object/ObservableObjectBuilder'
 

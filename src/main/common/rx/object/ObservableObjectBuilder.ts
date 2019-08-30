@@ -1,5 +1,5 @@
 import {createFunction} from '../../helpers/helpers'
-import {PropertyChangedEvent} from '../../lists/contracts/IPropertyChanged'
+import {PropertyChangedEvent} from './IPropertyChanged'
 import '../extensions/autoConnect'
 import {ISetOptions, ObservableObject} from './ObservableObject'
 

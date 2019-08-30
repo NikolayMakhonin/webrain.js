@@ -10,7 +10,7 @@ import {
 } from '../../../../../../../main/common/extensions/serialization/serializers'
 import {ArrayMap} from '../../../../../../../main/common/lists/ArrayMap'
 import {IMapChangedEvent, MapChangedType} from '../../../../../../../main/common/lists/contracts/IMapChanged'
-import {IPropertyChangedEvent} from '../../../../../../../main/common/lists/contracts/IPropertyChanged'
+import {IPropertyChangedEvent} from '../../../../../../../main/common/rx/object/IPropertyChanged'
 import {compareFast} from '../../../../../../../main/common/lists/helpers/compare'
 import {ObjectHashMap} from '../../../../../../../main/common/lists/ObjectHashMap'
 import {ObjectMap} from '../../../../../../../main/common/lists/ObjectMap'

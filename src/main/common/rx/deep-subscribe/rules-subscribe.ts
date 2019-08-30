@@ -2,7 +2,7 @@
 import {checkIsFuncOrNull, isIterable, VALUE_PROPERTY_DEFAULT} from '../../helpers/helpers'
 import {IListChanged, ListChangedType} from '../../lists/contracts/IListChanged'
 import {IMapChanged, MapChangedType} from '../../lists/contracts/IMapChanged'
-import {IPropertyChanged} from '../../lists/contracts/IPropertyChanged'
+import {IPropertyChanged} from '../object/IPropertyChanged'
 import {ISetChanged, SetChangedType} from '../../lists/contracts/ISetChanged'
 import {IUnsubscribe} from '../subjects/subject'
 import {ANY, COLLECTION_PREFIX, VALUE_PROPERTY_PREFIX} from './contracts/constants'

@@ -9,7 +9,7 @@ import {
 	ObjectSerializer, registerSerializable,
 } from '../../../../../../../main/common/extensions/serialization/serializers'
 import {ArraySet} from '../../../../../../../main/common/lists/ArraySet'
-import {IPropertyChangedEvent} from '../../../../../../../main/common/lists/contracts/IPropertyChanged'
+import {IPropertyChangedEvent} from '../../../../../../../main/common/rx/object/IPropertyChanged'
 import {
 	ISetChangedEvent,
 	SetChangedType,
