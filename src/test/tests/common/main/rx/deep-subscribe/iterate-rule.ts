@@ -8,6 +8,7 @@ import {
 } from '../../../../../../main/common/rx/deep-subscribe/iterate-rule'
 import {RuleBuilder} from '../../../../../../main/common/rx/deep-subscribe/RuleBuilder'
 import {Rule} from '../../../../../../main/common/rx/deep-subscribe/rules'
+import {subscribeDefaultProperty} from '../../../../../../main/common/rx/deep-subscribe/rules-subscribe'
 import {IUnsubscribe} from '../../../../../../main/common/rx/subjects/subject'
 import {assert} from '../../../../../../main/common/test/Assert'
 
@@ -39,8 +40,18 @@ describe('common > main > rx > deep-subscribe > iterate-rule', function() {
 	// const endObject = { _end: true }
 
 	function rulesToObject(ruleIterator: IRuleIterator, obj: any = {}): IUnsubscribe {
+		let iteration
+		if (!ruleIterator || (iteration = ruleIterator.next()).done) {
+			obj._end = true
+
+			return () => {
+				obj._end = false
+			}
+		}
+
 		return subscribeNextRule(
 			ruleIterator,
+			iteration,
 			nextRuleIterator => rulesToObject(nextRuleIterator, obj),
 			(rule, getRuleIterator) => {
 				const newObj = {}
@@ -50,13 +61,6 @@ describe('common > main > rx > deep-subscribe > iterate-rule', function() {
 						: null, newObj)
 				Object.assign(obj, {[rule.description]: newObj})
 				return unsubscribe
-			},
-			() => {
-				obj._end = true
-
-				return () => {
-					obj._end = false
-				}
 			},
 		)
 	}

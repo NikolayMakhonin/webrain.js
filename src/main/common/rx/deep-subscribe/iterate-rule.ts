@@ -83,15 +83,10 @@ export function *iterateRule(rule: IRule, next: () => IRuleIterable = null): IRu
 
 export function subscribeNextRule(
 	ruleIterator: IRuleIterator,
+	iteration: IteratorResult<IRuleOrIterable>,
 	fork: (ruleIterator: IRuleIterator) => IUnsubscribe,
 	subscribeNode: (rule: IRuleSubscribe, getRuleIterator: () => IRuleIterator) => IUnsubscribe,
-	subscribeLeaf: () => IUnsubscribe,
 ): IUnsubscribe {
-	let iteration
-	if (!ruleIterator || (iteration = ruleIterator.next()).done) {
-		return subscribeLeaf()
-	}
-
 	const ruleOrIterable = iteration.value
 
 	if (isIterable(ruleOrIterable)) {

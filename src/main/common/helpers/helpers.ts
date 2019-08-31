@@ -28,6 +28,7 @@ export function delay(timeMilliseconds) {
 }
 
 export function checkIsFuncOrNull<T extends TFunc<any>>(func: T): T {
+	// PROF: 66 - 0.1%
 	if (func != null && typeof func !== 'function') {
 		throw new Error(`Value is not a function or null/undefined: ${func}`)
 	}
@@ -55,7 +56,6 @@ export function toSingleCall<T extends TFunc<any>>(func: T, throwOnMultipleCall?
 }
 
 const createFunctionCache = {}
-export function createFunction<TFunction extends TFunc<any>>(func: TFunction): TFunction
 // tslint:disable-next-line:ban-types
 export function createFunction(...args: string[]): Function {
 	const id = args[args.length - 1] + ''

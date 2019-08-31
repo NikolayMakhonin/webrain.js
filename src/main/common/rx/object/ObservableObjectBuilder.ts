@@ -1,7 +1,7 @@
 import {createFunction} from '../../helpers/helpers'
 import {PropertyChangedEvent} from './IPropertyChanged'
 import '../extensions/autoConnect'
-import {ISetOptions, ObservableObject} from './ObservableObject'
+import {_set, _setExt, ISetOptions, ObservableObject} from './ObservableObject'
 
 export interface IFieldOptions {
 	hidden?: boolean,
@@ -45,6 +45,9 @@ export class ObservableObjectBuilder<TObject extends ObservableObject> {
 		// optimization
 		const getValue = createFunction('o', `return o.__fields["${name}"]`) as any
 		const setValue = createFunction('o', 'v', `o.__fields["${name}"] = v`) as any
+		const set = setOptions
+			? _setExt.bind(null, name, getValue, setValue, setOptions)
+			: _set.bind(null, name, getValue, setValue)
 
 		Object.defineProperty(object, name, {
 			configurable: true,
@@ -52,13 +55,9 @@ export class ObservableObjectBuilder<TObject extends ObservableObject> {
 			get(this: TObject) {
 				return getValue(this)
 			},
-			set: setOptions
-				? function(this: TObject, newValue) {
-					this._setExt(name, newValue, setOptions, getValue, setValue)
-				}
-				: function(this: TObject, newValue) {
-					this._set(name, newValue, getValue, setValue)
-				},
+			set(this: TObject, newValue) {
+				set(this, newValue)
+			},
 		})
 
 		if (__fields && typeof initValue !== 'undefined') {
@@ -98,7 +97,6 @@ export class ObservableObjectBuilder<TObject extends ObservableObject> {
 
 		// optimization
 		const getValue = createFunction('o', `return o.__fields["${name}"]`) as any
-		const setValue = createFunction('o', 'v', `o.__fields["${name}"] = v`) as any
 
 		const createInstanceProperty = instance => {
 			Object.defineProperty(instance, name, {
@@ -111,6 +109,12 @@ export class ObservableObjectBuilder<TObject extends ObservableObject> {
 		}
 
 		if (factory) {
+			// optimization
+			const setValue = createFunction('o', 'v', `o.__fields["${name}"] = v`) as any
+			const set = setOptions
+				? _setExt.bind(null, name, getValue, setValue, setOptions)
+				: _set.bind(null, name, getValue, setValue)
+
 			Object.defineProperty(object, name, {
 				configurable: true,
 				enumerable: !hidden,
@@ -121,7 +125,7 @@ export class ObservableObjectBuilder<TObject extends ObservableObject> {
 					if (typeof factoryValue !== 'undefined') {
 						const oldValue = getValue(this)
 						if (factoryValue !== oldValue) {
-							this._setExt(name, factoryValue, getValue, setValue, setOptions)
+							set(this, factoryValue)
 						}
 					}
 

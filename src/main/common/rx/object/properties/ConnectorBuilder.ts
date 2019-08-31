@@ -1,7 +1,7 @@
 import {createFunction} from '../../../helpers/helpers'
 import {deepSubscribeRule} from '../../deep-subscribe/deep-subscribe'
 import {cloneRule, RuleBuilder} from '../../deep-subscribe/RuleBuilder'
-import {ObservableObject} from '../ObservableObject'
+import {_set, _setExt, ObservableObject} from '../ObservableObject'
 import {IWritableFieldOptions, ObservableObjectBuilder} from '../ObservableObjectBuilder'
 import {Connector} from './Connector'
 import {ValueKeys} from './contracts'
@@ -49,6 +49,9 @@ export class ConnectorBuilder<
 		// optimization
 		const getValue = createFunction('o', `return o.__fields["${name}"]`) as any
 		const setValue = createFunction('o', 'v', `o.__fields["${name}"] = v`) as any
+		const set = setOptions
+			? _setExt.bind(null, name, getValue, setValue, setOptions)
+			: _set.bind(null, name, getValue, setValue)
 
 		return this.readable(
 			name,
@@ -57,7 +60,7 @@ export class ConnectorBuilder<
 				hidden: options && options.hidden,
 				// tslint:disable-next-line:no-shadowed-variable
 				factory(this: ObservableObject, initValue: TValue) {
-					let setVal = (value: TValue): void => {
+					let setVal = (obj, value: TValue): void => {
 						if (typeof value !== 'undefined') {
 							initValue = value
 						}
@@ -66,7 +69,7 @@ export class ConnectorBuilder<
 					const unsubscribe = deepSubscribeRule<TValue>(
 						this,
 						value => {
-							setVal(value)
+							setVal(this, value)
 							return null
 						},
 						true,
@@ -77,13 +80,7 @@ export class ConnectorBuilder<
 
 					this._setUnsubscriber(name, unsubscribe)
 
-					setVal = setOptions
-						? value => {
-							this._setExt(name, value, getValue, setValue, setOptions)
-						}
-						: value => {
-							this._set(name, value, getValue, setValue)
-						}
+					setVal = set
 
 					return initValue
 				},

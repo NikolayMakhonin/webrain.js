@@ -291,6 +291,7 @@ describe('ObservableObject', function() {
 		}).observableObject1
 		object.prop = 1
 		calcMemAllocate(CalcType.Min, 10000, () => {
+			// 48 bytes for create event
 			object.prop++
 		})
 	})
@@ -298,16 +299,21 @@ describe('ObservableObject', function() {
 	it('deepSubscribe memory', function() {
 		const object = createObject(observableObject => {
 			deepSubscribe(observableObject,
-				v => v != null && typeof v === 'object'
-					? () => {}
-					: null,
+				// v => v != null && typeof v === 'object'
+				// 	? () => {}
+				// 	: null,
+				v => null,
 				true,
 				b => b.path(o => o.prop),
 			)
 		}).observableObject1
-		const value = {}
+		const value1 = {}
+		const value2 = {}
+		object.prop = 1
 		calcMemAllocate(CalcType.Min, 10000, () => {
-			object.prop = object.prop ? null : value
+			// 48 bytes for create event
+			// 56 bytes for create unsubscribe function
+			object.prop = object.prop === value1 ? value2 : value1
 		})
 	})
 

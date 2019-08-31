@@ -11,6 +11,8 @@ export function canHaveUniqueId(object: object): boolean {
 }
 
 export function getObjectUniqueId(object: object): number {
+	// PROF: 129 - 0.3%
+
 	if (object == null) {
 		return null
 	}

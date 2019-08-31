@@ -121,39 +121,36 @@ function subscribeObjectValue<TValue>(
 
 const allowSubscribePrototype = true
 
+export function hasDefaultProperty(object: object) {
+	return object instanceof Object
+		&& (
+			allowSubscribePrototype
+				? VALUE_PROPERTY_DEFAULT in object
+				: Object.prototype.hasOwnProperty.call(object, VALUE_PROPERTY_DEFAULT)
+		)
+		&& object.constructor !== Object
+		&& !Array.isArray(object)
+}
+
 export function subscribeDefaultProperty<TValue>(
 	object: IPropertyChanged,
 	immediateSubscribe: boolean,
 	subscribeItem: (item: TValue, debugPropertyName: string) => IUnsubscribe,
 ) {
-	if (!(object instanceof Object)) {
-		return null
-	}
-
 	let unsubscribe
-
-	if ((allowSubscribePrototype
-			? VALUE_PROPERTY_DEFAULT in object
-			: Object.prototype.hasOwnProperty.call(object, VALUE_PROPERTY_DEFAULT))
-		&& object.constructor !== Object
-		&& !Array.isArray(object)
-	) {
-		return subscribeObject<TValue>(
-			VALUE_PROPERTY_DEFAULT,
-			o => o === VALUE_PROPERTY_DEFAULT,
-			object,
-			immediateSubscribe,
-			(item, debugPropertyName) => {
-				unsubscribe = subscribeItem(item, debugPropertyName)
-			},
-			() => {
-				if (unsubscribe) {
-					unsubscribe()
-				}
-			})
-	}
-
-	return null
+	return subscribeObject<TValue>(
+		VALUE_PROPERTY_DEFAULT,
+		o => o === VALUE_PROPERTY_DEFAULT,
+		object,
+		immediateSubscribe,
+		(item, debugPropertyName) => {
+			unsubscribe = subscribeItem(item, debugPropertyName)
+		},
+		() => {
+			if (unsubscribe) {
+				unsubscribe()
+			}
+		})
 }
 
 function subscribeObject<TValue>(
@@ -169,7 +166,7 @@ function subscribeObject<TValue>(
 	}
 
 	let unsubscribe
-	if (propertyNames !== VALUE_PROPERTY_DEFAULT) {
+	if (propertyNames !== VALUE_PROPERTY_DEFAULT && hasDefaultProperty(object)) {
 		unsubscribe = subscribeDefaultProperty(
 			object,
 			immediateSubscribe,
@@ -192,6 +189,7 @@ function subscribeObject<TValue>(
 	if (propertyChanged) {
 		unsubscribe = checkIsFuncOrNull(propertyChanged
 			.subscribe(({name, oldValue, newValue}) => {
+				 // PROF: 623 - 1.3%
 				if (!propertyPredicate || propertyPredicate(name, object)) {
 					if (typeof oldValue !== 'undefined') {
 						unsubscribeItem(oldValue, name + '')
@@ -521,6 +519,7 @@ function createPropertyPredicate(propertyNames: string[]) {
 		}
 
 		return (propName: string) => {
+			// PROF: 226 - 0.5%
 			return propName === propertyName
 		}
 	} else {
