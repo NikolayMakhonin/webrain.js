@@ -78,8 +78,8 @@ function unsubscribeNested(value: any, unsubscribers: IUnsubscribe[]): void {
 
 	const unsubscribe = unsubscribers[itemUniqueId]
 	if (unsubscribe) {
-		unsubscribers[itemUniqueId] = null // TODO: should be deleted later
-		// delete unsubscribers[itemUniqueId]
+		// unsubscribers[itemUniqueId] = null // faster but there is a danger of memory overflow with nulls
+		delete unsubscribers[itemUniqueId]
 		unsubscribe()
 	}
 }
@@ -125,8 +125,8 @@ function subscribeNext<TValue>(
 		const unsubscribe = () => {
 			// PROF: 371 - 0.8%
 			if (unsubscribeValue) {
-				leafUnsubscribers[itemUniqueId] = null // TODO: should be deleted later
-				// delete unsubscribers[itemUniqueId]
+				// leafUnsubscribers[itemUniqueId] = null // faster but there is a danger of memory overflow with nulls
+				delete unsubscribers[itemUniqueId]
 				const _unsubscribeValue = unsubscribeValue
 				unsubscribeValue = null
 				_unsubscribeValue()
