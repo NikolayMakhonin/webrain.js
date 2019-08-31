@@ -1,11 +1,11 @@
 {
   "name": "webrain",
   "version": "0.0.1",
-  "description": "TODO",
-  "author": "TODO",
-  "homepage": "TODO",
+  "description": "NodeJS cross-platform and cross-browser business logic framework - Brain of your web applications.",
+  "author": "Nikolay Makhonin",
+  "homepage": "https://github.com/NikolayMakhonin/webrain.js",
   "bugs": {
-    "url": "TODO"
+    "url": "https://github.com/NikolayMakhonin/webrain.js/issues"
   },
   "license": "CC0-1.0",
   "keywords": [],
