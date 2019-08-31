@@ -1,0 +1,1546 @@
+ .idea/workspace.xml                                | 477 ++++++++++++++++++++-
+ src/main/common/lists/ObservableMap.ts             |  30 +-
+ .../common/rx/deep-subscribe/rules-subscribe.ts    |   4 +-
+ src/main/common/rx/object/IPropertyChanged.ts      |  48 ++-
+ src/main/common/rx/object/ObservableObject.ts      |  12 +-
+ .../common/rx/object/ObservableObjectBuilder.ts    |  17 +-
+ src/main/common/rx/object/PropertyChangedObject.ts |  29 +-
+ .../rx/object/properties/ConnectorBuilder.ts       |  34 +-
+ src/main/common/rx/subjects/subject.ts             |   8 +-
+ src/test/performance/node/ObservableObject.ts      |  68 ++-
+ .../main/rx/deferred-calc/src/TestDeferred.ts      |  12 +-
+ .../object/observable-object-builder-prototype.ts  |  87 ++--
+ .../main/rx/object/observable-object-builder.ts    | 139 ++----
+ .../main/rx/object/properties/ConnectorBuilder.ts  |  26 +-
+ 14 files changed, 707 insertions(+), 284 deletions(-)
+
+diff --git a/.idea/workspace.xml b/.idea/workspace.xml
+index 54e361f..d13d34c 100644
+--- a/.idea/workspace.xml
++++ b/.idea/workspace.xml
+@@ -1 +1,476 @@
+-<?xml version="1.0" encoding="UTF-8"?><project version="4"><component name="AnalysisUIOptions"><option name="SPLITTER_PROPORTION" value="0.26758242"/><option name="SCOPE_TYPE" value="8"/><option name="CUSTOM_SCOPE_NAME" value="All Sources"/><option name="SHOW_STRUCTURE" value="true"/></component><component name="ChangeListManager"><option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true"/><option name="SHOW_DIALOG" value="false"/><option name="HIGHLIGHT_CONFLICTS" value="true"/><option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false"/><option name="LAST_RESOLUTION" value="IGNORE"/></component><component name="CoverageOptionsProvider"><option name="myAddOrReplace" value="0"/></component><component name="ExportTestResults" outputFolder="$PROJECT_DIR$/tmp/test_results" openResultsInEditor="true" userTempatePath=""/><component name="FavoritesManager"><favorites_list name="tree-state-manager"/></component><component name="JsFlowSettings"><service-enabled>true</service-enabled><exe-path/><other-services-enabled>true</other-services-enabled><auto-save>true</auto-save></component><component name="NamedScopeManager"><scope name="src-main" pattern="file[base]:src/main//*"/><scope name="src-test" pattern="file[base]:src/test//*"/><scope name="All Sources" pattern="file[base]:*/&amp;&amp;!file[base]:.idea//*&amp;&amp;!file[base]:_trash//*&amp;&amp;!file[base]:node_modules//*&amp;&amp;!file[base]:tmp//*&amp;&amp;!file[base]:dist//*&amp;&amp;!file[base]:docs//*&amp;&amp;!file[base]:env/polyfill//*&amp;&amp;!file:src/test/performance/node/src/SetPolyfill.js"/></component><component name="ProjectId" id="1PtsejVw06ohrapYkJyh68Uo1Ck"/><component name="ProjectLevelVcsManager"><ConfirmationsSetting value="2" id="Add"/></component><component name="PropertiesComponent"><property name="NewWatcherDialog.advanced.open" value="true"/><property name="SHARE_PROJECT_CONFIGURATION_FILES" value="true"/><property name="WebServerToolWindowFactoryState" value="false"/><property name="auto.test.manager.delay" value="5000"/><property name="javascript.karma.karma_node_package_dir" value=""/><property name="last_opened_file_path" value="$PROJECT_DIR$/isolate-000000000044C5D0-v8.log"/><property name="node.js.detected.package.eslint" value="true"/><property name="node.js.detected.package.standard" value="true"/><property name="node.js.detected.package.tslint" value="true"/><property name="node.js.path.for.package.eslint" value="node"/><property name="node.js.path.for.package.standard" value="node"/><property name="node.js.path.for.package.tslint" value="project"/><property name="node.js.selected.package.eslint" value="$PROJECT_DIR$/../../templates/nodejs-templates/node_modules/eslint"/><property name="node.js.selected.package.standard" value="L:\Work\_GIT\GitHub\NodeJs\templates\nodejs-templates\node_modules\eslint"/><property name="node.js.selected.package.tslint" value="$PROJECT_DIR$/node_modules/tslint"/><property name="nodejs.mocha.mocha_node_package_dir" value="$PROJECT_DIR$/node_modules/mocha"/><property name="nodejs_package_manager_path" value="npm"/><property name="restartRequiresConfirmation" value="false"/><property name="run.code.analysis.last.selected.profile" value="pProject Default"/><property name="settings.editor.selected.configurable" value="Errors"/><property name="ts.external.directory.path" value="L:\Work\_GIT\GitHub\NodeJs\modules\webrain\node_modules\typescript\lib"/></component><component name="RunManager" selected="Mocha.Watch Mocha"><configuration name="Tests Dev" type="JavaScriptTestRunnerKarma"><config-file value="$PROJECT_DIR$/env/karma/karma.conf.dev.js"/><karma-package-dir value="$PROJECT_DIR$/node_modules/karma"/><working-directory value="$PROJECT_DIR$"/><node-interpreter value="node"/><envs/><method v="2"/></configuration><configuration default="true" type="JavaScriptTestRunnerKarma"><config-file value="$PROJECT_DIR$/env/karma/karma.conf.tests.js"/><karma-package-dir value="$PROJECT_DIR$/node_modules/karma"/><node-interpreter value="node"/><envs/><method v="2"/></configuration><configuration default="true" type="NodeJSConfigurationType" path-to-node="node" node-parameters="--max-old-space-size=4096" working-dir="$PROJECT_DIR$"><method v="2"/></configuration><configuration name="Coverage Mocha Report" type="js.build_tools.npm"><package-json value="$PROJECT_DIR$/package.json"/><command value="run"/><scripts><script value="coverage:dev"/></scripts><node-interpreter value="project"/><envs/><method v="2"/></configuration><configuration name="DeferredCalc (Coverage)" type="mocha-javascript-test-runner"><node-interpreter>node</node-interpreter><node-options>--max-old-space-size=4096</node-options><mocha-package>$PROJECT_DIR$/node_modules/mocha</mocha-package><working-directory>$PROJECT_DIR$</working-directory><pass-parent-env>true</pass-parent-env><ui>bdd</ui><extra-mocha-options>--opts ./env/mocha/mocha.babel.opts</extra-mocha-options><test-kind>SUITE</test-kind><test-file>$PROJECT_DIR$/src/test/tests/common/main/rx/deferred-calc/DeferredCalc.ts</test-file><test-names><name value="common > main > rx > deferred-calc > DeferredCalc"/></test-names><method v="2"/></configuration><configuration name="Intern Export with rebuild" type="mocha-javascript-test-runner"><node-interpreter>node</node-interpreter><node-options>--max-old-space-size=4096</node-options><mocha-package>$PROJECT_DIR$/node_modules/mocha</mocha-package><working-directory>$PROJECT_DIR$</working-directory><pass-parent-env>true</pass-parent-env><ui>bdd</ui><extra-mocha-options>--opts ./env/mocha/mocha.babel.opts</extra-mocha-options><test-kind>PATTERN</test-kind><test-pattern>./env/intern/mocha-export.js</test-pattern><method v="2"/></configuration><configuration name="Intern Export" type="mocha-javascript-test-runner"><node-interpreter>node</node-interpreter><node-options>--max-old-space-size=4096</node-options><mocha-package>$PROJECT_DIR$/node_modules/mocha</mocha-package><working-directory>$PROJECT_DIR$</working-directory><pass-parent-env>true</pass-parent-env><ui>bdd</ui><extra-mocha-options>--opts ./env/mocha/mocha.babel.opts</extra-mocha-options><test-kind>PATTERN</test-kind><test-pattern>./env/intern/mocha-export.js</test-pattern><method v="2"/></configuration><configuration name="L:\Work\_GIT\GitHub\NodeJs\modules\tree-state-manager\src\test\tests\common\main\rx\deep-subscribe\**\*.ts (Coverage)" type="mocha-javascript-test-runner"><node-interpreter>node</node-interpreter><node-options>--max-old-space-size=4096</node-options><mocha-package>$PROJECT_DIR$/node_modules/mocha</mocha-package><working-directory>$PROJECT_DIR$</working-directory><pass-parent-env>true</pass-parent-env><ui>bdd</ui><extra-mocha-options>--opts ./env/mocha/mocha.babel.opts --watch</extra-mocha-options><test-kind>PATTERN</test-kind><test-pattern>$PROJECT_DIR$/src/test/tests/common/main/rx/deep-subscribe/**/*.ts</test-pattern><method v="2"/></configuration><configuration name="ObservableObject.deepSubscribe memory" type="mocha-javascript-test-runner" temporary="true" nameIsGenerated="true"><node-interpreter>node</node-interpreter><node-options>--max-old-space-size=4096</node-options><mocha-package>$PROJECT_DIR$/node_modules/mocha</mocha-package><working-directory>$PROJECT_DIR$</working-directory><pass-parent-env>true</pass-parent-env><ui>bdd</ui><extra-mocha-options>--opts ./env/mocha/mocha.babel.opts</extra-mocha-options><test-kind>TEST</test-kind><test-file>$PROJECT_DIR$/src/test/performance/node/ObservableObject.ts</test-file><test-names><name value="ObservableObject"/><name value="deepSubscribe memory"/></test-names><method v="2"/></configuration><configuration name="ObservableObject.deepSubscribe" type="mocha-javascript-test-runner" temporary="true" nameIsGenerated="true"><node-interpreter>node</node-interpreter><node-options>--max-old-space-size=4096 --prof</node-options><mocha-package>$PROJECT_DIR$/node_modules/mocha</mocha-package><working-directory>$PROJECT_DIR$</working-directory><pass-parent-env>true</pass-parent-env><ui>bdd</ui><extra-mocha-options>--opts ./env/mocha/mocha.babel.opts --watch</extra-mocha-options><test-kind>TEST</test-kind><test-file>$PROJECT_DIR$/src/test/performance/node/ObservableObject.ts</test-file><test-names><name value="ObservableObject"/><name value="deepSubscribe"/></test-names><method v="2"/></configuration><configuration name="ObservableObject.propertyChanged memory" type="mocha-javascript-test-runner" temporary="true" nameIsGenerated="true"><node-interpreter>node</node-interpreter><node-options>--max-old-space-size=4096</node-options><mocha-package>$PROJECT_DIR$/node_modules/mocha</mocha-package><working-directory>$PROJECT_DIR$</working-directory><pass-parent-env>true</pass-parent-env><ui>bdd</ui><extra-mocha-options>--opts ./env/mocha/mocha.babel.opts --watch</extra-mocha-options><test-kind>TEST</test-kind><test-file>$PROJECT_DIR$/src/test/performance/node/ObservableObject.ts</test-file><test-names><name value="ObservableObject"/><name value="propertyChanged memory"/></test-names><method v="2"/></configuration><configuration name="ObservableObject.propertyChanged" type="mocha-javascript-test-runner" temporary="true" nameIsGenerated="true"><node-interpreter>node</node-interpreter><node-options>--max-old-space-size=4096</node-options><mocha-package>$PROJECT_DIR$/node_modules/mocha</mocha-package><working-directory>$PROJECT_DIR$</working-directory><pass-parent-env>true</pass-parent-env><ui>bdd</ui><extra-mocha-options>--opts ./env/mocha/mocha.babel.opts</extra-mocha-options><test-kind>TEST</test-kind><test-file>$PROJECT_DIR$/src/test/performance/node/ObservableObject.ts</test-file><test-names><name value="ObservableObject"/><name value="propertyChanged"/></test-names><method v="2"/></configuration><configuration name="ObservableObject.test memory" type="mocha-javascript-test-runner" temporary="true" nameIsGenerated="true"><node-interpreter>node</node-interpreter><node-options>--max-old-space-size=4096</node-options><mocha-package>$PROJECT_DIR$/node_modules/mocha</mocha-package><working-directory>$PROJECT_DIR$</working-directory><pass-parent-env>true</pass-parent-env><ui>bdd</ui><extra-mocha-options>--opts ./env/mocha/mocha.babel.opts --watch</extra-mocha-options><test-kind>TEST</test-kind><test-file>$PROJECT_DIR$/src/test/performance/node/ObservableObject.ts</test-file><test-names><name value="ObservableObject"/><name value="test memory"/></test-names><method v="2"/></configuration><configuration name="Performance Mocha" type="mocha-javascript-test-runner"><node-interpreter>node</node-interpreter><node-options>--max-old-space-size=4096</node-options><mocha-package>$PROJECT_DIR$/node_modules/mocha</mocha-package><working-directory>$PROJECT_DIR$</working-directory><pass-parent-env>true</pass-parent-env><ui>bdd</ui><extra-mocha-options>--opts ./env/mocha/mocha.babel.opts</extra-mocha-options><test-kind>PATTERN</test-kind><test-pattern>./src/test/performance/{common,node}/**/*.*</test-pattern><method v="2"/></configuration><configuration default="true" type="mocha-javascript-test-runner"><node-interpreter>node</node-interpreter><node-options>--max-old-space-size=4096</node-options><mocha-package>$PROJECT_DIR$/node_modules/mocha</mocha-package><working-directory>$PROJECT_DIR$</working-directory><pass-parent-env>true</pass-parent-env><ui>bdd</ui><extra-mocha-options>--opts ./env/mocha/mocha.babel.opts --watch</extra-mocha-options><test-kind>PATTERN</test-kind><test-pattern>./src/test/tests/{common,node}/**/*.*</test-pattern><method v="2"/></configuration><configuration name="deep-subscribe (Coverage)" type="mocha-javascript-test-runner"><node-interpreter>node</node-interpreter><node-options>--max-old-space-size=4096</node-options><mocha-package>$PROJECT_DIR$/node_modules/mocha</mocha-package><working-directory>$PROJECT_DIR$</working-directory><pass-parent-env>true</pass-parent-env><ui>bdd</ui><extra-mocha-options>--opts ./env/mocha/mocha.babel.opts</extra-mocha-options><test-kind>TEST_FILE</test-kind><test-file>$PROJECT_DIR$/src/test/tests/common/main/rx/deep-subscribe/deep-subscribe.ts</test-file><method v="2"/></configuration><list><item itemvalue="Karma.Tests Dev"/><item itemvalue="Karma.CI Karma"/><item itemvalue="Karma.Coverage Karma"/><item itemvalue="Karma.Performance Karma"/><item itemvalue="Karma.Tests Karma"/><item itemvalue="Mocha.DeferredCalc (Coverage)"/><item itemvalue="Mocha.Intern Export with rebuild"/><item itemvalue="Mocha.Intern Export"/><item itemvalue="Mocha.L:\Work\_GIT\GitHub\NodeJs\modules\tree-state-manager\src\test\tests\common\main\rx\deep-subscribe\**\*.ts (Coverage)"/><item itemvalue="Mocha.Performance Mocha"/><item itemvalue="Mocha.deep-subscribe (Coverage)"/><item itemvalue="Mocha.Coverage Mocha"/><item itemvalue="Mocha.Watch Mocha"/><item itemvalue="Mocha.ObservableObject.propertyChanged"/><item itemvalue="Mocha.ObservableObject.deepSubscribe memory"/><item itemvalue="Mocha.ObservableObject.test memory"/><item itemvalue="Mocha.ObservableObject.deepSubscribe"/><item itemvalue="npm.Coverage Mocha Report"/><item itemvalue="Mocha.ObservableObject.propertyChanged memory"/></list><recent_temporary><list><item itemvalue="Mocha.ObservableObject.deepSubscribe"/><item itemvalue="Mocha.ObservableObject.deepSubscribe memory"/><item itemvalue="Mocha.ObservableObject.test memory"/><item itemvalue="Mocha.ObservableObject.propertyChanged memory"/><item itemvalue="Mocha.ObservableObject.propertyChanged"/></list></recent_temporary></component><component name="Vcs.Log.History.Properties"><option name="COLUMN_ORDER"><list><option value="0"/><option value="2"/><option value="3"/><option value="1"/></list></option></component><component name="Vcs.Log.Tabs.Properties"><option name="TAB_STATES"><map><entry key="1"><value><State><option name="SHOW_ONLY_AFFECTED_CHANGES" value="true"/><option name="FILTERS"><map><entry key="branch"><value><list><option value="HEAD"/></list></value></entry><entry key="roots"><value><list><option value="$PROJECT_DIR$"/></list></value></entry></map></option></State></value></entry><entry key="MAIN"><value><State><option name="COLUMN_ORDER"/></State></value></entry></map></option><option name="OPEN_TABS"><set><option value="1"/></set></option></component><component name="VcsManagerConfiguration"><option name="CHECK_CODE_SMELLS_BEFORE_PROJECT_COMMIT" value="false"/><option name="CHECK_NEW_TODO" value="false"/><option name="LAST_COMMIT_MESSAGE" value="Code Inspection"/><MESSAGE value="Code inspection. Node tests OK."/><MESSAGE value="Build should be OK."/><MESSAGE value="ReadMe"/><MESSAGE value="ObservableObject builders interface Completed"/><MESSAGE value="Fix ReadMe"/><MESSAGE value="Allow deep subscribe to prototype properties. Integrate resolveAsync to deepSubscribe, now it support any Thenable and Iterator as Thenable"/><MESSAGE value="Implemented DependenciesBuilder"/><MESSAGE value="Improved DeferredCalc"/><MESSAGE value="Develop CalcProperty"/><MESSAGE value="CalcProperty is completed"/><MESSAGE value="CalcProperty small refactoring"/><MESSAGE value="Fix deepSubscribe default property bug"/><MESSAGE value="Found optimize get[propertyName] solution using Function(...)"/><MESSAGE value="ObservableObject optimization"/><MESSAGE value="ObservableObject propertyChanged optimization"/><MESSAGE value="ObservableObject separated performance test"/><MESSAGE value="deepSubscribe little optimization and improved tests"/><MESSAGE value="Improved resolveAsync, now you can use customResolveValue function inside resolveAsync"/><MESSAGE value="Implemented resolvePath"/><MESSAGE value="deepSubscribe performance tests for optimization - delayed, problem with time estimation accuracy"/><MESSAGE value="resolvePath completed and tested"/><MESSAGE value="resolvePath performance test"/><MESSAGE value="deepSubscribe optimization in process..."/><MESSAGE value="deepSubscribe optimization is completed. Node Tests OK."/><MESSAGE value="Code Inspection"/></component><component name="com.intellij.coverage.CoverageDataManagerImpl"><SUITE FILE_PATH="coverage/webrain$L__Work__GIT_GitHub_NodeJs_modules_tree_state_manager_src_test_tests_common_main_rx_deep_subscribe______ts__Coverage_.dat" NAME="L:\Work\_GIT\GitHub\NodeJs\modules\tree-state-manager\src\test\tests\common\main\rx\deep-subscribe\**\*.ts (Coverage) Coverage Results" MODIFIED="1567218889155" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="MochaJavaScriptTestRunnerCoverage" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false"/><SUITE FILE_PATH="coverage/tree_state_manager$L__Work__GIT_GitHub_NodeJs_modules_tree_state_manager_src_test_tests_common_main_rx_deep_subscribe______ts__Coverage_.dat" NAME="L:\Work\_GIT\GitHub\NodeJs\modules\tree-state-manager\src\test\tests\common\main\rx\deep-subscribe\**\*.ts (Coverage) Coverage Results" MODIFIED="1566748268430" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="MochaJavaScriptTestRunnerCoverage" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false"/><SUITE FILE_PATH="coverage/webrain$ObservableObject_deepSubscribe_memory.dat" NAME="ObservableObject.deepSubscribe memory Coverage Results" MODIFIED="1567218911313" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="MochaJavaScriptTestRunnerCoverage" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false"/><SUITE FILE_PATH="coverage/webrain$fundamental_operations_ObservableObject.dat" NAME="fundamental-operations.ObservableObject Coverage Results" MODIFIED="1567092876402" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="MochaJavaScriptTestRunnerCoverage" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false"/><SUITE FILE_PATH="coverage/webrain$resolvePath.dat" NAME="resolvePath Coverage Results" MODIFIED="1567168357204" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="MochaJavaScriptTestRunnerCoverage" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false"/><SUITE FILE_PATH="coverage/webrain$ObservableObject_propertyChanged_memory.dat" NAME="ObservableObject.propertyChanged memory Coverage Results" MODIFIED="1567179257245" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="MochaJavaScriptTestRunnerCoverage" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false"/><SUITE FILE_PATH="coverage/webrain$ObservableObject_deepSubscribe.dat" NAME="ObservableObject.deepSubscribe Coverage Results" MODIFIED="1567141941071" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="MochaJavaScriptTestRunnerCoverage" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false"/></component></project>
+\ No newline at end of file
++<?xml version="1.0" encoding="UTF-8"?>
++<project version="4">
++  <component name="AnalysisUIOptions">
++    <option name="SPLITTER_PROPORTION" value="0.26758242" />
++    <option name="SCOPE_TYPE" value="8" />
++    <option name="CUSTOM_SCOPE_NAME" value="All Sources" />
++    <option name="SHOW_STRUCTURE" value="true" />
++  </component>
++  <component name="ChangeListManager">
++    <list default="true" id="35ed7bb2-ad2f-474b-977b-cc78fd6661a2" name="Default Changelist" comment="deepSubscribe: Used delete operator to prevent possibility of memory overflow">
++      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
++      <change beforePath="$PROJECT_DIR$/src/main/common/lists/ObservableMap.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/common/lists/ObservableMap.ts" afterDir="false" />
++      <change beforePath="$PROJECT_DIR$/src/main/common/rx/deep-subscribe/rules-subscribe.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/common/rx/deep-subscribe/rules-subscribe.ts" afterDir="false" />
++      <change beforePath="$PROJECT_DIR$/src/main/common/rx/object/IPropertyChanged.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/common/rx/object/IPropertyChanged.ts" afterDir="false" />
++      <change beforePath="$PROJECT_DIR$/src/main/common/rx/object/ObservableObject.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/common/rx/object/ObservableObject.ts" afterDir="false" />
++      <change beforePath="$PROJECT_DIR$/src/main/common/rx/object/ObservableObjectBuilder.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/common/rx/object/ObservableObjectBuilder.ts" afterDir="false" />
++      <change beforePath="$PROJECT_DIR$/src/main/common/rx/object/PropertyChangedObject.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/common/rx/object/PropertyChangedObject.ts" afterDir="false" />
++      <change beforePath="$PROJECT_DIR$/src/main/common/rx/object/properties/ConnectorBuilder.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/common/rx/object/properties/ConnectorBuilder.ts" afterDir="false" />
++      <change beforePath="$PROJECT_DIR$/src/main/common/rx/subjects/subject.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/common/rx/subjects/subject.ts" afterDir="false" />
++      <change beforePath="$PROJECT_DIR$/src/test/performance/node/ObservableObject.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/test/performance/node/ObservableObject.ts" afterDir="false" />
++      <change beforePath="$PROJECT_DIR$/src/test/tests/common/main/rx/deferred-calc/src/TestDeferred.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/test/tests/common/main/rx/deferred-calc/src/TestDeferred.ts" afterDir="false" />
++      <change beforePath="$PROJECT_DIR$/src/test/tests/common/main/rx/object/observable-object-builder-prototype.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/test/tests/common/main/rx/object/observable-object-builder-prototype.ts" afterDir="false" />
++      <change beforePath="$PROJECT_DIR$/src/test/tests/common/main/rx/object/observable-object-builder.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/test/tests/common/main/rx/object/observable-object-builder.ts" afterDir="false" />
++      <change beforePath="$PROJECT_DIR$/src/test/tests/common/main/rx/object/properties/ConnectorBuilder.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/test/tests/common/main/rx/object/properties/ConnectorBuilder.ts" afterDir="false" />
++    </list>
++    <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
++    <option name="SHOW_DIALOG" value="false" />
++    <option name="HIGHLIGHT_CONFLICTS" value="true" />
++    <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
++    <option name="LAST_RESOLUTION" value="IGNORE" />
++  </component>
++  <component name="CoverageOptionsProvider">
++    <option name="myAddOrReplace" value="0" />
++  </component>
++  <component name="CoverageViewManager">
++    <option name="myElementSize" value="328" />
++  </component>
++  <component name="ExportTestResults" outputFolder="$PROJECT_DIR$/tmp/test_results" openResultsInEditor="true" userTempatePath="" />
++  <component name="FavoritesManager">
++    <favorites_list name="tree-state-manager" />
++  </component>
++  <component name="Git.Settings">
++    <option name="PREVIEW_PUSH_PROTECTED_ONLY" value="true" />
++    <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
++  </component>
++  <component name="JsFlowSettings">
++    <service-enabled>true</service-enabled>
++    <exe-path />
++    <other-services-enabled>true</other-services-enabled>
++    <auto-save>true</auto-save>
++  </component>
++  <component name="NamedScopeManager">
++    <scope name="src-main" pattern="file[base]:src/main//*" />
++    <scope name="src-test" pattern="file[base]:src/test//*" />
++    <scope name="All Sources" pattern="file[base]:*/&amp;&amp;!file[base]:.idea//*&amp;&amp;!file[base]:_trash//*&amp;&amp;!file[base]:node_modules//*&amp;&amp;!file[base]:tmp//*&amp;&amp;!file[base]:dist//*&amp;&amp;!file[base]:docs//*&amp;&amp;!file[base]:env/polyfill//*&amp;&amp;!file:src/test/performance/node/src/SetPolyfill.js" />
++  </component>
++  <component name="ProjectId" id="1PtsejVw06ohrapYkJyh68Uo1Ck" />
++  <component name="ProjectLevelVcsManager">
++    <ConfirmationsSetting value="2" id="Add" />
++  </component>
++  <component name="PropertiesComponent">
++    <property name="NewWatcherDialog.advanced.open" value="true" />
++    <property name="SHARE_PROJECT_CONFIGURATION_FILES" value="true" />
++    <property name="WebServerToolWindowFactoryState" value="false" />
++    <property name="auto.test.manager.delay" value="5000" />
++    <property name="javascript.karma.karma_node_package_dir" value="" />
++    <property name="last_opened_file_path" value="$PROJECT_DIR$/../nodejs-webstorm-clean" />
++    <property name="node.js.detected.package.eslint" value="true" />
++    <property name="node.js.detected.package.standard" value="true" />
++    <property name="node.js.detected.package.tslint" value="true" />
++    <property name="node.js.path.for.package.eslint" value="node" />
++    <property name="node.js.path.for.package.standard" value="node" />
++    <property name="node.js.path.for.package.tslint" value="project" />
++    <property name="node.js.selected.package.eslint" value="$PROJECT_DIR$/../../templates/nodejs-templates/node_modules/eslint" />
++    <property name="node.js.selected.package.standard" value="L:\Work\_GIT\GitHub\NodeJs\templates\nodejs-templates\node_modules\eslint" />
++    <property name="node.js.selected.package.tslint" value="$PROJECT_DIR$/node_modules/tslint" />
++    <property name="nodejs.mocha.mocha_node_package_dir" value="$PROJECT_DIR$/node_modules/mocha" />
++    <property name="nodejs_package_manager_path" value="npm" />
++    <property name="restartRequiresConfirmation" value="false" />
++    <property name="run.code.analysis.last.selected.profile" value="pProject Default" />
++    <property name="settings.editor.selected.configurable" value="Errors" />
++    <property name="ts.external.directory.path" value="L:\Work\_GIT\GitHub\NodeJs\modules\webrain\node_modules\typescript\lib" />
++  </component>
++  <component name="RunDashboard">
++    <option name="ruleStates">
++      <list>
++        <RuleState>
++          <option name="name" value="ConfigurationTypeDashboardGroupingRule" />
++        </RuleState>
++        <RuleState>
++          <option name="name" value="StatusDashboardGroupingRule" />
++        </RuleState>
++      </list>
++    </option>
++  </component>
++  <component name="RunManager" selected="Mocha.ObservableObject.test event as object or arguments">
++    <configuration name="Tests Dev" type="JavaScriptTestRunnerKarma">
++      <config-file value="$PROJECT_DIR$/env/karma/karma.conf.dev.js" />
++      <karma-package-dir value="$PROJECT_DIR$/node_modules/karma" />
++      <working-directory value="$PROJECT_DIR$" />
++      <node-interpreter value="node" />
++      <envs />
++      <method v="2" />
++    </configuration>
++    <configuration default="true" type="JavaScriptTestRunnerKarma">
++      <config-file value="$PROJECT_DIR$/env/karma/karma.conf.tests.js" />
++      <karma-package-dir value="$PROJECT_DIR$/node_modules/karma" />
++      <node-interpreter value="node" />
++      <envs />
++      <method v="2" />
++    </configuration>
++    <configuration default="true" type="NodeJSConfigurationType" path-to-node="node" node-parameters="--max-old-space-size=4096" working-dir="$PROJECT_DIR$">
++      <method v="2" />
++    </configuration>
++    <configuration name="Coverage Mocha Report" type="js.build_tools.npm">
++      <package-json value="$PROJECT_DIR$/package.json" />
++      <command value="run" />
++      <scripts>
++        <script value="coverage:dev" />
++      </scripts>
++      <node-interpreter value="project" />
++      <envs />
++      <method v="2" />
++    </configuration>
++    <configuration name="DeferredCalc (Coverage)" type="mocha-javascript-test-runner">
++      <node-interpreter>node</node-interpreter>
++      <node-options>--max-old-space-size=4096</node-options>
++      <mocha-package>$PROJECT_DIR$/node_modules/mocha</mocha-package>
++      <working-directory>$PROJECT_DIR$</working-directory>
++      <pass-parent-env>true</pass-parent-env>
++      <ui>bdd</ui>
++      <extra-mocha-options>--opts ./env/mocha/mocha.babel.opts</extra-mocha-options>
++      <test-kind>SUITE</test-kind>
++      <test-file>$PROJECT_DIR$/src/test/tests/common/main/rx/deferred-calc/DeferredCalc.ts</test-file>
++      <test-names>
++        <name value="common &gt; main &gt; rx &gt; deferred-calc &gt; DeferredCalc" />
++      </test-names>
++      <method v="2" />
++    </configuration>
++    <configuration name="Intern Export with rebuild" type="mocha-javascript-test-runner">
++      <node-interpreter>node</node-interpreter>
++      <node-options>--max-old-space-size=4096</node-options>
++      <mocha-package>$PROJECT_DIR$/node_modules/mocha</mocha-package>
++      <working-directory>$PROJECT_DIR$</working-directory>
++      <pass-parent-env>true</pass-parent-env>
++      <ui>bdd</ui>
++      <extra-mocha-options>--opts ./env/mocha/mocha.babel.opts</extra-mocha-options>
++      <test-kind>PATTERN</test-kind>
++      <test-pattern>./env/intern/mocha-export.js</test-pattern>
++      <method v="2" />
++    </configuration>
++    <configuration name="Intern Export" type="mocha-javascript-test-runner">
++      <node-interpreter>node</node-interpreter>
++      <node-options>--max-old-space-size=4096</node-options>
++      <mocha-package>$PROJECT_DIR$/node_modules/mocha</mocha-package>
++      <working-directory>$PROJECT_DIR$</working-directory>
++      <pass-parent-env>true</pass-parent-env>
++      <ui>bdd</ui>
++      <extra-mocha-options>--opts ./env/mocha/mocha.babel.opts</extra-mocha-options>
++      <test-kind>PATTERN</test-kind>
++      <test-pattern>./env/intern/mocha-export.js</test-pattern>
++      <method v="2" />
++    </configuration>
++    <configuration name="L:\Work\_GIT\GitHub\NodeJs\modules\tree-state-manager\src\test\tests\common\main\rx\deep-subscribe\**\*.ts (Coverage)" type="mocha-javascript-test-runner">
++      <node-interpreter>node</node-interpreter>
++      <node-options>--max-old-space-size=4096</node-options>
++      <mocha-package>$PROJECT_DIR$/node_modules/mocha</mocha-package>
++      <working-directory>$PROJECT_DIR$</working-directory>
++      <pass-parent-env>true</pass-parent-env>
++      <ui>bdd</ui>
++      <extra-mocha-options>--opts ./env/mocha/mocha.babel.opts --watch</extra-mocha-options>
++      <test-kind>PATTERN</test-kind>
++      <test-pattern>$PROJECT_DIR$/src/test/tests/common/main/rx/deep-subscribe/**/*.ts</test-pattern>
++      <method v="2" />
++    </configuration>
++    <configuration name="ObservableObject.test event as object or arguments" type="mocha-javascript-test-runner" temporary="true" nameIsGenerated="true">
++      <node-interpreter>node</node-interpreter>
++      <node-options>--max-old-space-size=4096</node-options>
++      <mocha-package>$PROJECT_DIR$/node_modules/mocha</mocha-package>
++      <working-directory>$PROJECT_DIR$</working-directory>
++      <pass-parent-env>true</pass-parent-env>
++      <ui>bdd</ui>
++      <extra-mocha-options>--opts ./env/mocha/mocha.babel.opts --watch</extra-mocha-options>
++      <test-kind>TEST</test-kind>
++      <test-file>$PROJECT_DIR$/src/test/performance/node/ObservableObject.ts</test-file>
++      <test-names>
++        <name value="ObservableObject" />
++        <name value="test event as object or arguments" />
++      </test-names>
++      <method v="2" />
++    </configuration>
++    <configuration name="Performance Mocha" type="mocha-javascript-test-runner">
++      <node-interpreter>node</node-interpreter>
++      <node-options>--max-old-space-size=4096</node-options>
++      <mocha-package>$PROJECT_DIR$/node_modules/mocha</mocha-package>
++      <working-directory>$PROJECT_DIR$</working-directory>
++      <pass-parent-env>true</pass-parent-env>
++      <ui>bdd</ui>
++      <extra-mocha-options>--opts ./env/mocha/mocha.babel.opts</extra-mocha-options>
++      <test-kind>PATTERN</test-kind>
++      <test-pattern>./src/test/performance/{common,node}/**/*.*</test-pattern>
++      <method v="2" />
++    </configuration>
++    <configuration default="true" type="mocha-javascript-test-runner">
++      <node-interpreter>node</node-interpreter>
++      <node-options>--max-old-space-size=4096</node-options>
++      <mocha-package>$PROJECT_DIR$/node_modules/mocha</mocha-package>
++      <working-directory>$PROJECT_DIR$</working-directory>
++      <pass-parent-env>true</pass-parent-env>
++      <ui>bdd</ui>
++      <extra-mocha-options>--opts ./env/mocha/mocha.babel.opts --watch</extra-mocha-options>
++      <test-kind>PATTERN</test-kind>
++      <test-pattern>./src/test/tests/{common,node}/**/*.*</test-pattern>
++      <method v="2" />
++    </configuration>
++    <configuration name="common &gt; main &gt; rx &gt; observable-object-builder-prototype.writable" type="mocha-javascript-test-runner" temporary="true" nameIsGenerated="true">
++      <node-interpreter>node</node-interpreter>
++      <node-options>--max-old-space-size=4096</node-options>
++      <mocha-package>$PROJECT_DIR$/node_modules/mocha</mocha-package>
++      <working-directory>$PROJECT_DIR$</working-directory>
++      <pass-parent-env>true</pass-parent-env>
++      <ui>bdd</ui>
++      <extra-mocha-options>--opts ./env/mocha/mocha.babel.opts</extra-mocha-options>
++      <test-kind>TEST</test-kind>
++      <test-file>$PROJECT_DIR$/src/test/tests/common/main/rx/object/observable-object-builder-prototype.ts</test-file>
++      <test-names>
++        <name value="common &gt; main &gt; rx &gt; observable-object-builder-prototype" />
++        <name value="writable" />
++      </test-names>
++      <method v="2" />
++    </configuration>
++    <configuration name="common &gt; main &gt; rx &gt; observable-object-builder.onPropertyChanged" type="mocha-javascript-test-runner" temporary="true" nameIsGenerated="true">
++      <node-interpreter>node</node-interpreter>
++      <node-options>--max-old-space-size=4096</node-options>
++      <mocha-package>$PROJECT_DIR$/node_modules/mocha</mocha-package>
++      <working-directory>$PROJECT_DIR$</working-directory>
++      <pass-parent-env>true</pass-parent-env>
++      <ui>bdd</ui>
++      <extra-mocha-options>--opts ./env/mocha/mocha.babel.opts</extra-mocha-options>
++      <test-kind>TEST</test-kind>
++      <test-file>$PROJECT_DIR$/src/test/tests/common/main/rx/object/observable-object-builder.ts</test-file>
++      <test-names>
++        <name value="common &gt; main &gt; rx &gt; observable-object-builder" />
++        <name value="onPropertyChanged" />
++      </test-names>
++      <method v="2" />
++    </configuration>
++    <configuration name="common &gt; main &gt; rx &gt; properties &gt; ConnectorBuilder.connect" type="mocha-javascript-test-runner" temporary="true" nameIsGenerated="true">
++      <node-interpreter>node</node-interpreter>
++      <node-options>--max-old-space-size=4096</node-options>
++      <mocha-package>$PROJECT_DIR$/node_modules/mocha</mocha-package>
++      <working-directory>$PROJECT_DIR$</working-directory>
++      <pass-parent-env>true</pass-parent-env>
++      <ui>bdd</ui>
++      <extra-mocha-options>--opts ./env/mocha/mocha.babel.opts</extra-mocha-options>
++      <test-kind>TEST</test-kind>
++      <test-file>$PROJECT_DIR$/src/test/tests/common/main/rx/object/properties/ConnectorBuilder.ts</test-file>
++      <test-names>
++        <name value="common &gt; main &gt; rx &gt; properties &gt; ConnectorBuilder" />
++        <name value="connect" />
++      </test-names>
++      <method v="2" />
++    </configuration>
++    <configuration name="deep-subscribe (Coverage)" type="mocha-javascript-test-runner">
++      <node-interpreter>node</node-interpreter>
++      <node-options>--max-old-space-size=4096</node-options>
++      <mocha-package>$PROJECT_DIR$/node_modules/mocha</mocha-package>
++      <working-directory>$PROJECT_DIR$</working-directory>
++      <pass-parent-env>true</pass-parent-env>
++      <ui>bdd</ui>
++      <extra-mocha-options>--opts ./env/mocha/mocha.babel.opts</extra-mocha-options>
++      <test-kind>TEST_FILE</test-kind>
++      <test-file>$PROJECT_DIR$/src/test/tests/common/main/rx/deep-subscribe/deep-subscribe.ts</test-file>
++      <method v="2" />
++    </configuration>
++    <configuration name="src\test\performance\node\ObservableObject.ts" type="mocha-javascript-test-runner" temporary="true" nameIsGenerated="true">
++      <node-interpreter>node</node-interpreter>
++      <node-options>--max-old-space-size=4096</node-options>
++      <mocha-package>$PROJECT_DIR$/node_modules/mocha</mocha-package>
++      <working-directory>$PROJECT_DIR$</working-directory>
++      <pass-parent-env>true</pass-parent-env>
++      <ui>bdd</ui>
++      <extra-mocha-options>--opts ./env/mocha/mocha.babel.opts --watch</extra-mocha-options>
++      <test-kind>TEST_FILE</test-kind>
++      <test-file>$PROJECT_DIR$/src/test/performance/node/ObservableObject.ts</test-file>
++      <method v="2" />
++    </configuration>
++    <list>
++      <item itemvalue="Karma.Tests Dev" />
++      <item itemvalue="Karma.CI Karma" />
++      <item itemvalue="Karma.Coverage Karma" />
++      <item itemvalue="Karma.Performance Karma" />
++      <item itemvalue="Karma.Tests Karma" />
++      <item itemvalue="Mocha.DeferredCalc (Coverage)" />
++      <item itemvalue="Mocha.Intern Export with rebuild" />
++      <item itemvalue="Mocha.Intern Export" />
++      <item itemvalue="Mocha.L:\Work\_GIT\GitHub\NodeJs\modules\tree-state-manager\src\test\tests\common\main\rx\deep-subscribe\**\*.ts (Coverage)" />
++      <item itemvalue="Mocha.Performance Mocha" />
++      <item itemvalue="Mocha.deep-subscribe (Coverage)" />
++      <item itemvalue="Mocha.Coverage Mocha" />
++      <item itemvalue="Mocha.Watch Mocha" />
++      <item itemvalue="npm.Coverage Mocha Report" />
++      <item itemvalue="Mocha.src\test\performance\node\ObservableObject.ts" />
++      <item itemvalue="Mocha.common &gt; main &gt; rx &gt; observable-object-builder.onPropertyChanged" />
++      <item itemvalue="Mocha.common &gt; main &gt; rx &gt; properties &gt; ConnectorBuilder.connect" />
++      <item itemvalue="Mocha.common &gt; main &gt; rx &gt; observable-object-builder-prototype.writable" />
++      <item itemvalue="Mocha.ObservableObject.test event as object or arguments" />
++    </list>
++    <recent_temporary>
++      <list>
++        <item itemvalue="Mocha.ObservableObject.test event as object or arguments" />
++        <item itemvalue="Mocha.src\test\performance\node\ObservableObject.ts" />
++        <item itemvalue="Mocha.common &gt; main &gt; rx &gt; observable-object-builder-prototype.writable" />
++        <item itemvalue="Mocha.common &gt; main &gt; rx &gt; properties &gt; ConnectorBuilder.connect" />
++        <item itemvalue="Mocha.common &gt; main &gt; rx &gt; observable-object-builder.onPropertyChanged" />
++      </list>
++    </recent_temporary>
++  </component>
++  <component name="TaskManager">
++    <task active="true" id="Default" summary="Default task">
++      <changelist id="35ed7bb2-ad2f-474b-977b-cc78fd6661a2" name="Default Changelist" comment="" />
++      <created>1567247021682</created>
++      <option name="number" value="Default" />
++      <option name="presentableId" value="Default" />
++      <updated>1567247021682</updated>
++    </task>
++    <task id="LOCAL-00001" summary="Fill package info">
++      <created>1567247342072</created>
++      <option name="number" value="00001" />
++      <option name="presentableId" value="LOCAL-00001" />
++      <option name="project" value="LOCAL" />
++      <updated>1567247342072</updated>
++    </task>
++    <task id="LOCAL-00002" summary="deepSubscribe: Used delete operator to prevent possibility of memory overflow">
++      <created>1567247425246</created>
++      <option name="number" value="00002" />
++      <option name="presentableId" value="LOCAL-00002" />
++      <option name="project" value="LOCAL" />
++      <updated>1567247425246</updated>
++    </task>
++    <task id="LOCAL-00003" summary="deepSubscribe: Used delete operator to prevent possibility of memory overflow">
++      <created>1567249843197</created>
++      <option name="number" value="00003" />
++      <option name="presentableId" value="LOCAL-00003" />
++      <option name="project" value="LOCAL" />
++      <updated>1567249843197</updated>
++    </task>
++    <option name="localTasksCounter" value="4" />
++    <servers />
++  </component>
++  <component name="TypeScriptGeneratedFilesManager">
++    <option name="version" value="1" />
++  </component>
++  <component name="Vcs.Log.History.Properties">
++    <option name="COLUMN_ORDER">
++      <list>
++        <option value="0" />
++        <option value="2" />
++        <option value="3" />
++        <option value="1" />
++      </list>
++    </option>
++  </component>
++  <component name="Vcs.Log.Tabs.Properties">
++    <option name="TAB_STATES">
++      <map>
++        <entry key="1">
++          <value>
++            <State>
++              <option name="SHOW_ONLY_AFFECTED_CHANGES" value="true" />
++              <option name="FILTERS">
++                <map>
++                  <entry key="branch">
++                    <value>
++                      <list>
++                        <option value="HEAD" />
++                      </list>
++                    </value>
++                  </entry>
++                  <entry key="roots">
++                    <value>
++                      <list>
++                        <option value="$PROJECT_DIR$" />
++                      </list>
++                    </value>
++                  </entry>
++                </map>
++              </option>
++            </State>
++          </value>
++        </entry>
++        <entry key="MAIN">
++          <value>
++            <State>
++              <option name="COLUMN_ORDER" />
++            </State>
++          </value>
++        </entry>
++      </map>
++    </option>
++    <option name="OPEN_TABS">
++      <set>
++        <option value="1" />
++      </set>
++    </option>
++  </component>
++  <component name="VcsManagerConfiguration">
++    <option name="CHECK_CODE_SMELLS_BEFORE_PROJECT_COMMIT" value="false" />
++    <option name="CHECK_NEW_TODO" value="false" />
++    <MESSAGE value="ReadMe" />
++    <MESSAGE value="ObservableObject builders interface Completed" />
++    <MESSAGE value="Fix ReadMe" />
++    <MESSAGE value="Allow deep subscribe to prototype properties. Integrate resolveAsync to deepSubscribe, now it support any Thenable and Iterator as Thenable" />
++    <MESSAGE value="Implemented DependenciesBuilder" />
++    <MESSAGE value="Improved DeferredCalc" />
++    <MESSAGE value="Develop CalcProperty" />
++    <MESSAGE value="CalcProperty is completed" />
++    <MESSAGE value="CalcProperty small refactoring" />
++    <MESSAGE value="Fix deepSubscribe default property bug" />
++    <MESSAGE value="Found optimize get[propertyName] solution using Function(...)" />
++    <MESSAGE value="ObservableObject optimization" />
++    <MESSAGE value="ObservableObject propertyChanged optimization" />
++    <MESSAGE value="ObservableObject separated performance test" />
++    <MESSAGE value="deepSubscribe little optimization and improved tests" />
++    <MESSAGE value="Improved resolveAsync, now you can use customResolveValue function inside resolveAsync" />
++    <MESSAGE value="Implemented resolvePath" />
++    <MESSAGE value="deepSubscribe performance tests for optimization - delayed, problem with time estimation accuracy" />
++    <MESSAGE value="resolvePath completed and tested" />
++    <MESSAGE value="resolvePath performance test" />
++    <MESSAGE value="deepSubscribe optimization in process..." />
++    <MESSAGE value="deepSubscribe optimization is completed. Node Tests OK." />
++    <MESSAGE value="Code Inspection" />
++    <MESSAGE value="Fill package info" />
++    <MESSAGE value="deepSubscribe: Used delete operator to prevent possibility of memory overflow" />
++    <option name="LAST_COMMIT_MESSAGE" value="deepSubscribe: Used delete operator to prevent possibility of memory overflow" />
++  </component>
++  <component name="XDebuggerManager">
++    <breakpoint-manager>
++      <breakpoints>
++        <line-breakpoint enabled="true" type="javascript">
++          <url>file://$PROJECT_DIR$/src/test/tests/common/main/rx/object/properties/ConnectorBuilder.ts</url>
++          <line>120</line>
++          <properties lambdaOrdinal="-1" />
++          <option name="timeStamp" value="3" />
++        </line-breakpoint>
++        <line-breakpoint enabled="true" type="javascript">
++          <url>file://$PROJECT_DIR$/src/test/tests/common/main/rx/object/properties/ConnectorBuilder.ts</url>
++          <line>85</line>
++          <properties lambdaOrdinal="-1" />
++          <option name="timeStamp" value="4" />
++        </line-breakpoint>
++        <line-breakpoint enabled="true" type="javascript">
++          <url>file://$PROJECT_DIR$/src/test/tests/common/main/rx/object/properties/ConnectorBuilder.ts</url>
++          <line>118</line>
++          <properties lambdaOrdinal="-1" />
++          <option name="timeStamp" value="6" />
++        </line-breakpoint>
++        <line-breakpoint enabled="true" type="javascript">
++          <url>file://$PROJECT_DIR$/src/test/tests/common/main/rx/object/observable-object-builder-prototype.ts</url>
++          <line>89</line>
++          <properties lambdaOrdinal="-1" />
++          <option name="timeStamp" value="7" />
++        </line-breakpoint>
++      </breakpoints>
++    </breakpoint-manager>
++  </component>
++  <component name="com.intellij.coverage.CoverageDataManagerImpl">
++    <SUITE FILE_PATH="coverage/webrain$L__Work__GIT_GitHub_NodeJs_modules_tree_state_manager_src_test_tests_common_main_rx_deep_subscribe______ts__Coverage_.dat" NAME="L:\Work\_GIT\GitHub\NodeJs\modules\tree-state-manager\src\test\tests\common\main\rx\deep-subscribe\**\*.ts (Coverage) Coverage Results" MODIFIED="1567218889155" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="MochaJavaScriptTestRunnerCoverage" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" />
++    <SUITE FILE_PATH="coverage/tree_state_manager$L__Work__GIT_GitHub_NodeJs_modules_tree_state_manager_src_test_tests_common_main_rx_deep_subscribe______ts__Coverage_.dat" NAME="L:\Work\_GIT\GitHub\NodeJs\modules\tree-state-manager\src\test\tests\common\main\rx\deep-subscribe\**\*.ts (Coverage) Coverage Results" MODIFIED="1566748268430" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="MochaJavaScriptTestRunnerCoverage" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" />
++    <SUITE FILE_PATH="coverage/webrain$ObservableObject_deepSubscribe_memory.dat" NAME="ObservableObject.deepSubscribe memory Coverage Results" MODIFIED="1567250223332" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="MochaJavaScriptTestRunnerCoverage" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" />
++    <SUITE FILE_PATH="coverage/webrain$fundamental_operations_ObservableObject.dat" NAME="fundamental-operations.ObservableObject Coverage Results" MODIFIED="1567092876402" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="MochaJavaScriptTestRunnerCoverage" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" />
++    <SUITE FILE_PATH="coverage/webrain$resolvePath.dat" NAME="resolvePath Coverage Results" MODIFIED="1567168357204" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="MochaJavaScriptTestRunnerCoverage" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" />
++    <SUITE FILE_PATH="coverage/webrain$ObservableObject_propertyChanged_memory.dat" NAME="ObservableObject.propertyChanged memory Coverage Results" MODIFIED="1567179257245" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="MochaJavaScriptTestRunnerCoverage" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" />
++    <SUITE FILE_PATH="coverage/webrain$ObservableObject_deepSubscribe.dat" NAME="ObservableObject.deepSubscribe Coverage Results" MODIFIED="1567141941071" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="MochaJavaScriptTestRunnerCoverage" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" />
++  </component>
++</project>
+\ No newline at end of file
+diff --git a/src/main/common/lists/ObservableMap.ts b/src/main/common/lists/ObservableMap.ts
+index 68c771e..9993d1d 100644
+--- a/src/main/common/lists/ObservableMap.ts
++++ b/src/main/common/lists/ObservableMap.ts
+@@ -49,11 +49,11 @@ export class ObservableMap<K, V>
+ 
+ 			const {propertyChangedIfCanEmit} = this
+ 			if (propertyChangedIfCanEmit) {
+-				propertyChangedIfCanEmit.onPropertyChanged({
+-					name: 'size',
+-					oldValue: oldSize,
+-					newValue: size,
+-				})
++				propertyChangedIfCanEmit.onPropertyChanged(
++					'size',
++					size,
++					oldSize,
++				)
+ 			}
+ 		} else {
+ 			const {_mapChangedIfCanEmit} = this
+@@ -90,11 +90,11 @@ export class ObservableMap<K, V>
+ 
+ 			const {propertyChangedIfCanEmit} = this
+ 			if (propertyChangedIfCanEmit) {
+-				propertyChangedIfCanEmit.onPropertyChanged({
+-					name: 'size',
+-					oldValue: oldSize,
+-					newValue: size,
+-				})
++				propertyChangedIfCanEmit.onPropertyChanged(
++					'size',
++					size,
++					oldSize,
++				)
+ 			}
+ 
+ 			return true
+@@ -129,11 +129,11 @@ export class ObservableMap<K, V>
+ 
+ 		const {propertyChangedIfCanEmit} = this
+ 		if (propertyChangedIfCanEmit) {
+-			propertyChangedIfCanEmit.onPropertyChanged({
+-				name: 'size',
+-				oldValue: size,
+-				newValue: 0,
+-			})
++			propertyChangedIfCanEmit.onPropertyChanged(
++				'size',
++				0,
++				size,
++			)
+ 		}
+ 	}
+ 
+diff --git a/src/main/common/rx/deep-subscribe/rules-subscribe.ts b/src/main/common/rx/deep-subscribe/rules-subscribe.ts
+index 72d4dcc..f9f3198 100644
+--- a/src/main/common/rx/deep-subscribe/rules-subscribe.ts
++++ b/src/main/common/rx/deep-subscribe/rules-subscribe.ts
+@@ -83,7 +83,7 @@ function subscribeObjectValue<TValue>(
+ 
+ 	if (propertyChanged) {
+ 		unsubscribe = checkIsFuncOrNull(propertyChanged
+-			.subscribe(({name, oldValue}) => {
++			.subscribe((name, newValue, oldValue) => {
+ 				const newSubscribePropertyName = getSubscribePropertyName()
+ 
+ 				if (name === subscribePropertyName) {
+@@ -188,7 +188,7 @@ function subscribeObject<TValue>(
+ 
+ 	if (propertyChanged) {
+ 		unsubscribe = checkIsFuncOrNull(propertyChanged
+-			.subscribe(({name, oldValue, newValue}) => {
++			.subscribe((name, newValue, oldValue) => {
+ 				 // PROF: 623 - 1.3%
+ 				if (!propertyPredicate || propertyPredicate(name, object)) {
+ 					if (typeof oldValue !== 'undefined') {
+diff --git a/src/main/common/rx/object/IPropertyChanged.ts b/src/main/common/rx/object/IPropertyChanged.ts
+index e17efe0..ee75621 100644
+--- a/src/main/common/rx/object/IPropertyChanged.ts
++++ b/src/main/common/rx/object/IPropertyChanged.ts
+@@ -1,10 +1,10 @@
+ import {IHasSubscribersSubject} from '../subjects/hasSubscribers'
+ 
+-export interface IPropertyChangedEvent {
+-	name?: string | number,
+-	oldValue?: any,
+-	newValue?: any,
+-}
++// export interface IPropertyChangedEvent {
++// 	name?: string | number,
++// 	oldValue?: any,
++// 	newValue?: any,
++// }
+ 
+ // Is slower than simple object
+ // export class PropertyChangedEvent<TValue> implements IPropertyChangedEvent {
+@@ -19,27 +19,29 @@ export interface IPropertyChangedEvent {
+ // 	}
+ // }
+ 
+-export class PropertyChangedEvent<TValue> implements IPropertyChangedEvent {
+-	public name: string
+-	public oldValue: TValue
+-	private readonly _getNewValue: () => TValue
+-
+-	constructor(name, oldValue: TValue, getNewValue: () => TValue) {
+-		this.name = name
+-		this.oldValue = oldValue
+-		this._getNewValue = getNewValue
+-	}
+-
+-	get newValue() {
+-		return this._getNewValue()
+-	}
+-}
++// export class PropertyChangedEvent<TValue> implements IPropertyChangedEvent {
++// 	public name: string
++// 	public oldValue: TValue
++// 	private readonly _getNewValue: () => TValue
++//
++// 	constructor(name, oldValue: TValue, getNewValue: () => TValue) {
++// 		this.name = name
++// 		this.oldValue = oldValue
++// 		this._getNewValue = getNewValue
++// 	}
++//
++// 	get newValue() {
++// 		return this._getNewValue()
++// 	}
++// }
+ 
+-export type EventOrPropertyName = string | number | IPropertyChangedEvent
++// export type EventOrPropertyName = string | number | IPropertyChangedEvent
+ // export type EventsOrPropertyNames = EventOrPropertyName | Array<EventOrPropertyName | any>
+ 
+-export interface IPropertyChangedSubject extends IHasSubscribersSubject<IPropertyChangedEvent> {
+-	onPropertyChanged(...eventsOrPropertyNames: EventOrPropertyName[]): this
++export type TPropertyChangedEventArgs<T = any> = [string|number, T, T]
++
++export interface IPropertyChangedSubject extends IHasSubscribersSubject<any> {
++	onPropertyChanged(name: string|number, oldValue, newValue): this
+ }
+ 
+ export interface IPropertyChanged {
+diff --git a/src/main/common/rx/object/ObservableObject.ts b/src/main/common/rx/object/ObservableObject.ts
+index 7342975..a20aa37 100644
+--- a/src/main/common/rx/object/ObservableObject.ts
++++ b/src/main/common/rx/object/ObservableObject.ts
+@@ -83,11 +83,11 @@ export function _setExt(
+ 	if (!options || !options.suppressPropertyChanged) {
+ 		const {propertyChangedIfCanEmit} = object
+ 		if (propertyChangedIfCanEmit) {
+-			propertyChangedIfCanEmit.onPropertyChanged({
++			propertyChangedIfCanEmit.onPropertyChanged(
+ 				name,
+-				oldValue,
+ 				newValue,
+-			})
++				oldValue,
++			)
+ 		}
+ 	}
+ 
+@@ -112,11 +112,11 @@ export function _set(
+ 
+ 	const {propertyChangedDisabled, propertyChanged} = object.__meta
+ 	if (!propertyChangedDisabled && propertyChanged) {
+-		propertyChanged.emit({
++		propertyChanged.onPropertyChanged(
+ 			name,
+-			oldValue,
+ 			newValue,
+-		})
++			oldValue,
++		)
+ 	}
+ 
+ 	return true
+diff --git a/src/main/common/rx/object/ObservableObjectBuilder.ts b/src/main/common/rx/object/ObservableObjectBuilder.ts
+index b8090ae..052acac 100644
+--- a/src/main/common/rx/object/ObservableObjectBuilder.ts
++++ b/src/main/common/rx/object/ObservableObjectBuilder.ts
+@@ -138,11 +138,11 @@ export class ObservableObjectBuilder<TObject extends ObservableObject> {
+ 
+ 				const {propertyChangedIfCanEmit} = object
+ 				if (propertyChangedIfCanEmit) {
+-					propertyChangedIfCanEmit.onPropertyChanged(new PropertyChangedEvent(
++					propertyChangedIfCanEmit.onPropertyChanged(
+ 						name,
+-						oldValue,
+ 						() => object[name as any],
+-					))
++						oldValue,
++					)
+ 				}
+ 			}
+ 		} else {
+@@ -155,11 +155,11 @@ export class ObservableObjectBuilder<TObject extends ObservableObject> {
+ 					__fields[name] = initValue
+ 					const {propertyChangedIfCanEmit} = object
+ 					if (propertyChangedIfCanEmit) {
+-						propertyChangedIfCanEmit.onPropertyChanged({
++						propertyChangedIfCanEmit.onPropertyChanged(
+ 							name,
++							initValue,
+ 							oldValue,
+-							newValue: initValue,
+-						})
++						)
+ 					}
+ 				}
+ 			}
+@@ -184,10 +184,11 @@ export class ObservableObjectBuilder<TObject extends ObservableObject> {
+ 			if (typeof oldValue !== 'undefined') {
+ 				const {propertyChangedIfCanEmit} = object
+ 				if (propertyChangedIfCanEmit) {
+-					propertyChangedIfCanEmit.onPropertyChanged({
++					propertyChangedIfCanEmit.onPropertyChanged(
+ 						name,
++						void 0,
+ 						oldValue,
+-					})
++					)
+ 				}
+ 			}
+ 		}
+diff --git a/src/main/common/rx/object/PropertyChangedObject.ts b/src/main/common/rx/object/PropertyChangedObject.ts
+index 1db87ea..2de6cc5 100644
+--- a/src/main/common/rx/object/PropertyChangedObject.ts
++++ b/src/main/common/rx/object/PropertyChangedObject.ts
+@@ -1,8 +1,6 @@
+ import {HasSubscribersSubject} from '../subjects/hasSubscribers'
+ import {IUnsubscribe} from '../subjects/subject'
+ import {
+-	EventOrPropertyName,
+-	IPropertyChangedEvent,
+ 	IPropertyChangedObject, IPropertyChangedSubject,
+ } from './IPropertyChanged'
+ 
+@@ -27,7 +25,7 @@ import {
+ // }
+ 
+ export class PropertyChangedSubject
+-	extends HasSubscribersSubject<IPropertyChangedEvent>
++	extends HasSubscribersSubject<any>
+ 	implements IPropertyChangedSubject
+ {
+ 	private readonly _object
+@@ -37,30 +35,11 @@ export class PropertyChangedSubject
+ 		this._object = object
+ 	}
+ 
+-	public onPropertyChanged(...eventsOrPropertyNames: EventOrPropertyName[]): this {
+-		for (let i = 0, len = eventsOrPropertyNames.length; i < len; i++) {
+-			let event = eventsOrPropertyNames[i]
+-
+-			if (event == null) {
+-				event = {}
+-			}
+-
+-			if (typeof event !== 'object') {
+-				const value = this._object[event]
+-				event = {
+-					name    : event,
+-					oldValue: value,
+-					newValue: value,
+-				}
+-			}
+-
+-			this.emit(event)
+-		}
+-
+-		return this
+-	}
++	public onPropertyChanged(name: string|number, oldValue, newValue): this
+ }
+ 
++PropertyChangedSubject.prototype.onPropertyChanged = PropertyChangedSubject.prototype.emit
++
+ export class PropertyChangedObject implements IPropertyChangedObject {
+ 	/** @internal */
+ 	public readonly __meta: {
+diff --git a/src/main/common/rx/object/properties/ConnectorBuilder.ts b/src/main/common/rx/object/properties/ConnectorBuilder.ts
+index 1c073a0..914d467 100644
+--- a/src/main/common/rx/object/properties/ConnectorBuilder.ts
++++ b/src/main/common/rx/object/properties/ConnectorBuilder.ts
+@@ -66,19 +66,27 @@ export class ConnectorBuilder<
+ 						}
+ 					}
+ 
+-					const unsubscribe = deepSubscribeRule<TValue>(
+-						this,
+-						value => {
+-							setVal(this, value)
+-							return null
+-						},
+-						true,
+-						this === object
+-							? ruleBase
+-							: cloneRule(ruleBase),
+-					)
+-
+-					this._setUnsubscriber(name, unsubscribe)
++					const receiveValue = value => {
++						setVal(this, value)
++						return null
++					}
++
++					const rule = this === object
++						? ruleBase
++						: cloneRule(ruleBase)
++
++					this.propertyChanged.hasSubscribersObservable
++						.subscribe(hasSubscribers => {
++							this._setUnsubscriber(name, null)
++
++							if (hasSubscribers) {
++								const unsubscribe = deepSubscribeRule<TValue>(
++									this, receiveValue, true, rule,
++								)
++
++								this._setUnsubscriber(name, unsubscribe)
++							}
++						})
+ 
+ 					setVal = set
+ 
+diff --git a/src/main/common/rx/subjects/subject.ts b/src/main/common/rx/subjects/subject.ts
+index 3e749e7..44d3b31 100644
+--- a/src/main/common/rx/subjects/subject.ts
++++ b/src/main/common/rx/subjects/subject.ts
+@@ -2,11 +2,11 @@ import {IObservable, Observable} from './observable'
+ 
+ export interface ISubject<T> extends IObservable<T> {
+ 	readonly hasSubscribers: boolean
+-	emit(value: T): this
++	emit(...values: T[]): this
+ }
+ 
+ export type IUnsubscribe = () => void
+-export type ISubscriber<T> = (value: T) => void
++export type ISubscriber<T> = (...values: T[]) => void
+ 
+ export function subject(base): any {
+ 	// eslint-disable-next-line no-shadow
+@@ -64,7 +64,7 @@ export function subject(base): any {
+ 			}
+ 		}
+ 
+-		public emit(value: T): this {
++		public emit(...values: T[]): this {
+ 			const {_subscribers} = this
+ 			if (!_subscribers) {
+ 				return this
+@@ -75,7 +75,7 @@ export function subject(base): any {
+ 			}
+ 
+ 			for (let i = 0, len = _subscribers.length; i < len; i++) {
+-				_subscribers[i](value)
++				_subscribers[i](...values)
+ 			}
+ 
+ 			if (this._subscribersInProcess === _subscribers) {
+diff --git a/src/test/performance/node/ObservableObject.ts b/src/test/performance/node/ObservableObject.ts
+index 1155c51..b4da667 100644
+--- a/src/test/performance/node/ObservableObject.ts
++++ b/src/test/performance/node/ObservableObject.ts
+@@ -264,17 +264,17 @@ describe('ObservableObject', function() {
+ 		console.log(value.subtract(zero).toString())
+ 	}
+ 
+-	it('simple', function() {
++	it('simple', function() { // 173n | 184n
+ 		testPerformance(createObject())
+ 	})
+ 
+-	it('propertyChanged', function() {
++	it('propertyChanged', function() { // 721n | 682n
+ 		testPerformance(createObject(observableObject => {
+ 			observableObject.propertyChanged.subscribe(v => { })
+ 		}))
+ 	})
+ 
+-	it('deepSubscribe', function() {
++	it('deepSubscribe', function() { // 2162n | 1890n
+ 		let i = 0
+ 		testPerformance(createObject(observableObject => {
+ 			deepSubscribe(observableObject,
+@@ -285,7 +285,7 @@ describe('ObservableObject', function() {
+ 		}))
+ 	})
+ 
+-	it('propertyChanged memory', function() {
++	it('propertyChanged memory', function() { // 48 | 0
+ 		const object = createObject(observableObject => {
+ 			observableObject.propertyChanged.subscribe(v => { })
+ 		}).observableObject1
+@@ -296,7 +296,7 @@ describe('ObservableObject', function() {
+ 		})
+ 	})
+ 
+-	it('deepSubscribe memory', function() {
++	it('deepSubscribe memory', function() { // 48 | 0
+ 		const object = createObject(observableObject => {
+ 			deepSubscribe(observableObject,
+ 				// v => v != null && typeof v === 'object'
+@@ -327,4 +327,62 @@ describe('ObservableObject', function() {
+ 			return value
+ 		})
+ 	})
++
++	it('test event as object or arguments', function() {
++		let value1
++		let value2
++
++		let i = 0
++
++		function fakeThrow() {
++			if (i < 0) {
++				throw new Error(i + '')
++			}
++		}
++
++		const subscribers = [
++			(name, newValue, oldValue) => { fakeThrow(); value1 = newValue },
++			(name, newValue, oldValue) => { fakeThrow(); value2 = newValue },
++			({name, newValue, oldValue}) => { fakeThrow(); value1 = newValue },
++			({name, newValue, oldValue}) => { fakeThrow(); value2 = newValue },
++		] as any
++
++		function change1(name, newValue, oldValue) {
++			try {
++				subscribers[0](name, newValue, oldValue)
++				subscribers[1](name, newValue, oldValue)
++			} catch (ex) {
++				return newValue
++			}
++		}
++		function change2(event) {
++			try {
++				subscribers[2](event)
++				subscribers[3](event)
++			} catch (ex) {
++				return event
++			}
++		}
++
++		let heapUsed = process.memoryUsage().heapUsed
++		const result = calcPerformance(
++			1000,
++			() => change1('prop', i++, i++),
++			() => change2({name: 'prop', newValue: i++, oldValue: i++}),
++		)
++		heapUsed = process.memoryUsage().heapUsed - heapUsed
++
++		calcMemAllocate(CalcType.Min, 10000, () => {
++			change1('prop', i++, i++)
++		})
++
++		calcMemAllocate(CalcType.Min, 10000, () => {
++			change2({name: 'prop', newValue: i++, oldValue: i++})
++		})
++
++		console.log('value1: ', value1)
++		console.log('value2: ', value2)
++		console.log('Memory used: ', heapUsed)
++		console.log(result)
++	})
+ })
+diff --git a/src/test/tests/common/main/rx/deferred-calc/src/TestDeferred.ts b/src/test/tests/common/main/rx/deferred-calc/src/TestDeferred.ts
+index f9ad040..3e91ede 100644
+--- a/src/test/tests/common/main/rx/deferred-calc/src/TestDeferred.ts
++++ b/src/test/tests/common/main/rx/deferred-calc/src/TestDeferred.ts
+@@ -1,7 +1,6 @@
+ import {DeferredCalc} from '../../../../../../../main/common/rx/deferred-calc/DeferredCalc'
+ import {
+-	IPropertyChanged,
+-	IPropertyChangedEvent,
++	IPropertyChanged, TPropertyChangedEventArgs,
+ } from '../../../../../../../main/common/rx/object/IPropertyChanged'
+ import {assert} from '../../../../../../../main/common/test/Assert'
+ import {IOptionsVariant, IOptionsVariants, ITestCase, TestVariants, THIS} from '../../../src/helpers/TestVariants'
+@@ -37,7 +36,7 @@ interface IDeferredCalcExpected {
+ 	events?: IEvent[]
+ 	error?: new () => Error,
+ 	returnValue?: any,
+-	propertyChanged?: IPropertyChangedEvent[],
++	propertyChanged?: TPropertyChangedEventArgs[],
+ }
+ 
+ interface IDeferredCalcOptionsVariants extends IOptionsVariants {
+@@ -236,9 +235,10 @@ export class TestDeferredCalc extends TestVariants<
+ 
+ 				const propertyChangedEvents = []
+ 				if ((deferredCalc as unknown as IPropertyChanged).propertyChanged) {
+-					unsubscribePropertyChanged = (deferredCalc as unknown as IPropertyChanged).propertyChanged.subscribe(event => {
+-						propertyChangedEvents.push(event)
+-					})
++					unsubscribePropertyChanged = (deferredCalc as unknown as IPropertyChanged)
++						.propertyChanged.subscribe((...event) => {
++							propertyChangedEvents.push(event)
++						})
+ 				}
+ 
+ 				if (options.expected.error) {
+diff --git a/src/test/tests/common/main/rx/object/observable-object-builder-prototype.ts b/src/test/tests/common/main/rx/object/observable-object-builder-prototype.ts
+index e80c729..b7b36d2 100644
+--- a/src/test/tests/common/main/rx/object/observable-object-builder-prototype.ts
++++ b/src/test/tests/common/main/rx/object/observable-object-builder-prototype.ts
+@@ -1,17 +1,20 @@
+ /* eslint-disable guard-for-in */
+-import {IPropertyChangedEvent} from '../../../../../../main/common/rx/object/IPropertyChanged'
++import {
++	IPropertyChangedEvent,
++	TPropertyChangedEventArgs
++} from '../../../../../../main/common/rx/object/IPropertyChanged'
+ import {ObservableObject} from '../../../../../../main/common/rx/object/ObservableObject'
+ import {ObservableObjectBuilder} from '../../../../../../main/common/rx/object/ObservableObjectBuilder'
+ 
+ declare const assert: any
+ 
+ describe('common > main > rx > observable-object-builder-prototype', function() {
+-	function assertEvents(events: IPropertyChangedEvent[], check: IPropertyChangedEvent[]) {
+-		events = events && events.map(o => ({
+-			name: o.name,
+-			oldValue: o.oldValue,
+-			newValue: o.newValue,
+-		}))
++	function assertEvents(events: TPropertyChangedEventArgs[], check: TPropertyChangedEventArgs[]) {
++		// events = events && events.map(o => ({
++		// 	name: o.name,
++		// 	oldValue: o.oldValue,
++		// 	newValue: o.newValue,
++		// }))
+ 
+ 		assert.deepStrictEqual(events, check)
+ 	}
+@@ -52,25 +55,25 @@ describe('common > main > rx > observable-object-builder-prototype', function()
+ 
+ 		// eslint-disable-next-line prefer-const
+ 		let baseResults1 = []
+-		const baseSubscriber1 = value => {
++		const baseSubscriber1 = (...value) => {
+ 			baseResults1.push(value)
+ 		}
+ 
+ 		// eslint-disable-next-line prefer-const
+ 		let baseResults2 = []
+-		const baseSubscriber2 = value => {
++		const baseSubscriber2 = (...value) => {
+ 			baseResults2.push(value)
+ 		}
+ 
+ 		// eslint-disable-next-line prefer-const
+ 		let results1 = []
+-		const subscriber1 = value => {
++		const subscriber1 = (...value) => {
+ 			results1.push(value)
+ 		}
+ 
+ 		// eslint-disable-next-line prefer-const
+ 		let results2 = []
+-		const subscriber2 = value => {
++		const subscriber2 = (...value) => {
+ 			results2.push(value)
+ 		}
+ 
+@@ -86,11 +89,7 @@ describe('common > main > rx > observable-object-builder-prototype', function()
+ 
+ 		baseObject1.baseProp1 = '1'
+ 		assertEvents(baseResults1, [
+-			{
+-				name    : 'baseProp1',
+-				newValue: '1',
+-				oldValue: undefined,
+-			},
++			['baseProp1', '1', undefined],
+ 		])
+ 		baseResults1 = []
+ 		assertEvents(baseResults2, [])
+@@ -104,11 +103,7 @@ describe('common > main > rx > observable-object-builder-prototype', function()
+ 		baseObject2.baseProp1 = '2'
+ 		assertEvents(baseResults1, [])
+ 		assertEvents(baseResults2, [
+-			{
+-				name    : 'baseProp1',
+-				newValue: '2',
+-				oldValue: undefined,
+-			},
++			['baseProp1', '2', undefined],
+ 		])
+ 		baseResults2 = []
+ 		assertEvents(results1, [])
+@@ -121,11 +116,7 @@ describe('common > main > rx > observable-object-builder-prototype', function()
+ 		baseObject2.baseProp2 = '3'
+ 		assertEvents(baseResults1, [])
+ 		assertEvents(baseResults2, [
+-			{
+-				name    : 'baseProp2',
+-				newValue: '3',
+-				oldValue: undefined,
+-			},
++			['baseProp2', '3', undefined],
+ 		])
+ 		baseResults2 = []
+ 		assertEvents(results1, [])
+@@ -139,11 +130,7 @@ describe('common > main > rx > observable-object-builder-prototype', function()
+ 		assertEvents(baseResults1, [])
+ 		assertEvents(baseResults2, [])
+ 		assertEvents(results1, [
+-			{
+-				name    : 'baseProp1',
+-				newValue: '4',
+-				oldValue: undefined,
+-			},
++			['baseProp1', '4', undefined],
+ 		])
+ 		results1 = []
+ 		assertEvents(results2, [])
+@@ -157,11 +144,7 @@ describe('common > main > rx > observable-object-builder-prototype', function()
+ 		assertEvents(baseResults2, [])
+ 		assertEvents(results1, [])
+ 		assertEvents(results2, [
+-			{
+-				name    : 'baseProp1',
+-				newValue: '5',
+-				oldValue: undefined,
+-			},
++			['baseProp1', '5', undefined],
+ 		])
+ 		results2 = []
+ 		assert.deepStrictEqual(baseObject1.baseProp1, '1')
+@@ -174,11 +157,7 @@ describe('common > main > rx > observable-object-builder-prototype', function()
+ 		assertEvents(baseResults2, [])
+ 		assertEvents(results1, [])
+ 		assertEvents(results2, [
+-			{
+-				name    : 'baseProp2',
+-				newValue: '6',
+-				oldValue: undefined,
+-			},
++			['baseProp2', '6', undefined],
+ 		])
+ 		results2 = []
+ 		assert.deepStrictEqual((baseObject1 as any).baseProp2, undefined)
+@@ -193,11 +172,7 @@ describe('common > main > rx > observable-object-builder-prototype', function()
+ 		assertEvents(baseResults2, [])
+ 		assertEvents(results1, [])
+ 		assertEvents(results2, [
+-			{
+-				name    : 'baseProp1',
+-				newValue: '7',
+-				oldValue: '5',
+-			},
++			['baseProp1', '7', '5'],
+ 		])
+ 		results2 = []
+ 		assert.deepStrictEqual(baseObject1.baseProp1, '1')
+@@ -242,25 +217,25 @@ describe('common > main > rx > observable-object-builder-prototype', function()
+ 
+ 		// eslint-disable-next-line prefer-const
+ 		let baseResults1 = []
+-		const baseSubscriber1 = value => {
++		const baseSubscriber1 = (...value) => {
+ 			baseResults1.push(value)
+ 		}
+ 
+ 		// eslint-disable-next-line prefer-const
+ 		let baseResults2 = []
+-		const baseSubscriber2 = value => {
++		const baseSubscriber2 = (...value) => {
+ 			baseResults2.push(value)
+ 		}
+ 
+ 		// eslint-disable-next-line prefer-const
+ 		let results1 = []
+-		const subscriber1 = value => {
++		const subscriber1 = (...value) => {
+ 			results1.push(value)
+ 		}
+ 
+ 		// eslint-disable-next-line prefer-const
+ 		let results2 = []
+-		const subscriber2 = value => {
++		const subscriber2 = (...value) => {
+ 			results2.push(value)
+ 		}
+ 
+@@ -367,11 +342,7 @@ describe('common > main > rx > observable-object-builder-prototype', function()
+ 		assertEvents(baseResults2, [])
+ 		assertEvents(results1, [])
+ 		assertEvents(results2, [
+-			{
+-				name    : 'baseProp1',
+-				newValue: '7',
+-				oldValue: '5',
+-			},
++			['baseProp1', '7', '5'],
+ 		])
+ 		results2 = []
+ 		assert.deepStrictEqual(baseObject1.baseProp1, '1')
+@@ -386,11 +357,7 @@ describe('common > main > rx > observable-object-builder-prototype', function()
+ 		assertEvents(baseResults2, [])
+ 		assertEvents(results1, [])
+ 		assertEvents(results2, [
+-			{
+-				name    : 'baseProp2',
+-				newValue: '8',
+-				oldValue: '6',
+-			},
++			['baseProp2', '8', '6'],
+ 		])
+ 		results2 = []
+ 		assert.deepStrictEqual((baseObject1 as any).baseProp2, undefined)
+diff --git a/src/test/tests/common/main/rx/object/observable-object-builder.ts b/src/test/tests/common/main/rx/object/observable-object-builder.ts
+index eaaac22..7a43e12 100644
+--- a/src/test/tests/common/main/rx/object/observable-object-builder.ts
++++ b/src/test/tests/common/main/rx/object/observable-object-builder.ts
+@@ -1,26 +1,29 @@
+ /* eslint-disable guard-for-in */
+-import {IPropertyChangedEvent} from '../../../../../../main/common/rx/object/IPropertyChanged'
++import {
++	IPropertyChangedEvent,
++	TPropertyChangedEventArgs
++} from '../../../../../../main/common/rx/object/IPropertyChanged'
+ import {ObservableObject} from '../../../../../../main/common/rx/object/ObservableObject'
+ import {ObservableObjectBuilder} from '../../../../../../main/common/rx/object/ObservableObjectBuilder'
+ 
+ declare const assert: any
+ 
+ describe('common > main > rx > observable-object-builder', function() {
+-	function assertEvents(events: IPropertyChangedEvent[], check: IPropertyChangedEvent[]) {
+-		events = events && events.map(o => {
+-			const result: any = {}
+-			if ('name' in o) {
+-				result.name = o.name
+-			}
+-			if ('oldValue' in o) {
+-				result.oldValue = o.oldValue
+-			}
+-			if ('newValue' in o) {
+-				result.newValue = o.newValue
+-			}
+-
+-			return result
+-		})
++	function assertEvents(events: TPropertyChangedEventArgs[], check: TPropertyChangedEventArgs[]) {
++		// events = events && events.map(o => {
++		// 	const result: any = {}
++		// 	if ('name' in o) {
++		// 		result.name = o.name
++		// 	}
++		// 	if ('oldValue' in o) {
++		// 		result.oldValue = o.oldValue
++		// 	}
++		// 	if ('newValue' in o) {
++		// 		result.newValue = o.newValue
++		// 	}
++		//
++		// 	return result
++		// })
+ 
+ 		assert.deepStrictEqual(events, check)
+ 	}
+@@ -65,7 +68,7 @@ describe('common > main > rx > observable-object-builder', function() {
+ 		const {object} = new ObservableObjectBuilder()
+ 
+ 		let results = []
+-		const subscriber = value => {
++		const subscriber = (...value) => {
+ 			results.push(value)
+ 		}
+ 
+@@ -81,19 +84,16 @@ describe('common > main > rx > observable-object-builder', function() {
+ 		assert.ok(object.propertyChangedIfCanEmit)
+ 
+ 		assert.strictEqual(object.propertyChangedIfCanEmit.onPropertyChanged(), object.propertyChangedIfCanEmit)
+-		assertEvents(results, [])
++		assertEvents(results, [[]])
++		results = []
+ 
+ 		assert.strictEqual(object.propertyChangedIfCanEmit.onPropertyChanged(null), object.propertyChangedIfCanEmit)
+-		assertEvents(results, [{}])
++		assertEvents(results, [[null]])
+ 		results = []
+ 
+ 		assert.strictEqual(object.propertyChangedIfCanEmit.onPropertyChanged(''), object.propertyChangedIfCanEmit)
+ 		assertEvents(results, [
+-			{
+-				name    : '',
+-				newValue: undefined,
+-				oldValue: undefined,
+-			},
++			[''],
+ 		])
+ 		results = []
+ 
+@@ -115,32 +115,13 @@ describe('common > main > rx > observable-object-builder', function() {
+ 		assert.strictEqual(object.propertyChangedIfCanEmit
+ 			.onPropertyChanged(2, 'z', 'a', '1', 4), object.propertyChangedIfCanEmit)
+ 		assertEvents(results, [
+-			{
+-				name    : 2,
+-				newValue: undefined,
+-				oldValue: undefined,
+-			},
+-			{
+-				name    : 'z',
+-				newValue: 'zz',
+-				oldValue: 'zz',
+-			},
+-			{
+-				name    : 'a',
+-				newValue: undefined,
+-				oldValue: undefined,
+-			},
+-			{
+-				name    : '1',
+-				newValue: 11,
+-				oldValue: 11,
+-			},
+-			{
+-				name    : 4,
+-				newValue: null,
+-				oldValue: null,
+-			},
+-		])
++			2, 'z', 'a', '1', 4,
++			// [2],
++			// ['z', 'zz', 'zz'],
++			// ['a'],
++			// ['1', 11, 11],
++			// [4, null, null],
++		] as any)
+ 		results = []
+ 	})
+ 
+@@ -233,7 +214,7 @@ describe('common > main > rx > observable-object-builder', function() {
+ 		}
+ 
+ 		let results = []
+-		const subscriber = value => {
++		const subscriber = (...value) => {
+ 			results.push(value)
+ 		}
+ 
+@@ -262,11 +243,7 @@ describe('common > main > rx > observable-object-builder', function() {
+ 		assert.strictEqual(builder.readable('prop', null, null), builder)
+ 		assert.deepStrictEqual(hasSubscribers, [])
+ 		assertEvents(results, [
+-			{
+-				name    : 'prop',
+-				newValue: null,
+-				oldValue: undefined,
+-			},
++			['prop', null, undefined],
+ 		])
+ 		results = []
+ 		assert.strictEqual(object.prop, null)
+@@ -274,11 +251,7 @@ describe('common > main > rx > observable-object-builder', function() {
+ 		assert.strictEqual(builder.readable('prop', null, '1'), builder)
+ 		assert.deepStrictEqual(hasSubscribers, [])
+ 		assertEvents(results, [
+-			{
+-				name    : 'prop',
+-				newValue: '1',
+-				oldValue: null,
+-			},
++			['prop', '1', null],
+ 		])
+ 		results = []
+ 		assert.strictEqual(object.prop, '1')
+@@ -292,11 +265,7 @@ describe('common > main > rx > observable-object-builder', function() {
+ 		assert.strictEqual(valueCreated, false)
+ 		assert.deepStrictEqual(hasSubscribers, [])
+ 		assertEvents(results, [
+-			{
+-				name    : 'prop',
+-				newValue: '1',
+-				oldValue: '1',
+-			},
++			['prop', '1', 1],
+ 		])
+ 		results = []
+ 		assert.strictEqual(valueCreated, true)
+@@ -305,11 +274,7 @@ describe('common > main > rx > observable-object-builder', function() {
+ 		assert.strictEqual(builder.readable('prop', null, 1), builder)
+ 		assert.deepStrictEqual(hasSubscribers, [])
+ 		assertEvents(results, [
+-			{
+-				name    : 'prop',
+-				newValue: 1,
+-				oldValue: '1',
+-			},
++			['prop', 1, '1'],
+ 		])
+ 		results = []
+ 		assert.strictEqual(object.prop, 1)
+@@ -337,7 +302,7 @@ describe('common > main > rx > observable-object-builder', function() {
+ 		}
+ 
+ 		let results = []
+-		const subscriber = value => {
++		const subscriber = (...value) => {
+ 			results.push(value)
+ 		}
+ 
+@@ -366,11 +331,7 @@ describe('common > main > rx > observable-object-builder', function() {
+ 		assert.strictEqual(builder.writable('prop', null, null), builder)
+ 		assert.deepStrictEqual(hasSubscribers, [])
+ 		assertEvents(results, [
+-			{
+-				name    : 'prop',
+-				newValue: null,
+-				oldValue: undefined,
+-			},
++			['prop', null, undefined],
+ 		])
+ 		results = []
+ 		assert.strictEqual(object.prop, null)
+@@ -378,11 +339,7 @@ describe('common > main > rx > observable-object-builder', function() {
+ 		assert.strictEqual(builder.writable('prop', null, '1'), builder)
+ 		assert.deepStrictEqual(hasSubscribers, [])
+ 		assertEvents(results, [
+-			{
+-				name    : 'prop',
+-				newValue: '1',
+-				oldValue: null,
+-			},
++			['prop', '1', null],
+ 		])
+ 		results = []
+ 		assert.strictEqual(object.prop, '1')
+@@ -395,11 +352,7 @@ describe('common > main > rx > observable-object-builder', function() {
+ 		assert.strictEqual(builder.writable('prop', null, 1), builder)
+ 		assert.deepStrictEqual(hasSubscribers, [])
+ 		assertEvents(results, [
+-			{
+-				name    : 'prop',
+-				newValue: 1,
+-				oldValue: '1',
+-			},
++			['prop', 1, '1'],
+ 		])
+ 		results = []
+ 		assert.strictEqual(object.prop, 1)
+@@ -407,11 +360,7 @@ describe('common > main > rx > observable-object-builder', function() {
+ 		object.prop = '2'
+ 		assert.deepStrictEqual(hasSubscribers, [])
+ 		assertEvents(results, [
+-			{
+-				name    : 'prop',
+-				newValue: '2',
+-				oldValue: 1,
+-			},
++			['prop', '2', 1],
+ 		])
+ 		results = []
+ 		assert.strictEqual(object.prop, '2')
+@@ -424,11 +373,7 @@ describe('common > main > rx > observable-object-builder', function() {
+ 		object.prop = 2
+ 		assert.deepStrictEqual(hasSubscribers, [])
+ 		assertEvents(results, [
+-			{
+-				name    : 'prop',
+-				newValue: 2,
+-				oldValue: '2',
+-			},
++			['prop', 2, '2'],
+ 		])
+ 		results = []
+ 		assert.strictEqual(object.prop, 2)
+diff --git a/src/test/tests/common/main/rx/object/properties/ConnectorBuilder.ts b/src/test/tests/common/main/rx/object/properties/ConnectorBuilder.ts
+index e7e7df0..f058e75 100644
+--- a/src/test/tests/common/main/rx/object/properties/ConnectorBuilder.ts
++++ b/src/test/tests/common/main/rx/object/properties/ConnectorBuilder.ts
+@@ -82,25 +82,25 @@ describe('common > main > rx > properties > ConnectorBuilder', function() {
+ 
+ 		// eslint-disable-next-line prefer-const
+ 		let baseResults1 = []
+-		const baseSubscriber1 = value => {
++		const baseSubscriber1 = (...value) => {
+ 			baseResults1.push(value)
+ 		}
+ 
+ 		// eslint-disable-next-line prefer-const
+ 		let baseResults2 = []
+-		const baseSubscriber2 = value => {
++		const baseSubscriber2 = (...value) => {
+ 			baseResults2.push(value)
+ 		}
+ 
+ 		// eslint-disable-next-line prefer-const
+ 		const results1 = []
+-		const subscriber1 = value => {
++		const subscriber1 = (...value) => {
+ 			results1.push(value)
+ 		}
+ 
+ 		// eslint-disable-next-line prefer-const
+ 		let results2 = []
+-		const subscriber2 = value => {
++		const subscriber2 = (...value) => {
+ 			results2.push(value)
+ 		}
+ 
+@@ -120,11 +120,7 @@ describe('common > main > rx > properties > ConnectorBuilder', function() {
+ 
+ 		source.baseProp1 = '1'
+ 		assert.deepStrictEqual(baseResults1, [
+-			{
+-				name    : 'baseProp1',
+-				newValue: '1',
+-				oldValue: 'baseProp1_init_source',
+-			},
++			['baseProp1', '1', 'baseProp1_init_source'],
+ 		])
+ 		baseResults1 = []
+ 		assert.deepStrictEqual(baseResults2, [])
+@@ -140,11 +136,7 @@ describe('common > main > rx > properties > ConnectorBuilder', function() {
+ 		source.baseProp2 = '3'
+ 		assert.deepStrictEqual(baseResults1, [])
+ 		assert.deepStrictEqual(baseResults2, [
+-			{
+-				name    : 'baseProp2',
+-				newValue: '3',
+-				oldValue: 'baseProp2_init',
+-			},
++			['baseProp2', '3', 'baseProp2_init'],
+ 		])
+ 		baseResults2 = []
+ 		assert.deepStrictEqual(results1, [])
+@@ -161,11 +153,7 @@ describe('common > main > rx > properties > ConnectorBuilder', function() {
+ 		assert.deepStrictEqual(baseResults2, [])
+ 		assert.deepStrictEqual(results1, [])
+ 		assert.deepStrictEqual(results2, [
+-			{
+-				name    : 'baseProp1',
+-				newValue: '7',
+-				oldValue: '1',
+-			},
++			['baseProp1', '7', '1'],
+ 		])
+ 		results2 = []
+ 		assert.deepStrictEqual(baseObject1.baseProp1, '1')
