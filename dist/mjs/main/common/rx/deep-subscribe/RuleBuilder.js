@@ -8,7 +8,8 @@ function ownKeys(object, enumerableOnly) { var keys = Object.keys(object); if (O
 
 function _objectSpread(target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i] != null ? arguments[i] : {}; if (i % 2) { ownKeys(source, true).forEach(function (key) { _defineProperty(target, key, source[key]); }); } else if (Object.getOwnPropertyDescriptors) { Object.defineProperties(target, Object.getOwnPropertyDescriptors(source)); } else { ownKeys(source).forEach(function (key) { Object.defineProperty(target, key, Object.getOwnPropertyDescriptor(source, key)); }); } } return target; }
 
-import { ANY_DISPLAY, COLLECTION_PREFIX, VALUE_PROPERTY_DEFAULT, VALUE_PROPERTY_PREFIX } from './contracts/constants';
+import { VALUE_PROPERTY_DEFAULT } from '../../helpers/helpers';
+import { ANY_DISPLAY, COLLECTION_PREFIX, VALUE_PROPERTY_PREFIX } from './contracts/constants';
 import { getFuncPropertiesPath } from './helpers/func-properties-path';
 import { RuleAny, RuleNothing, RuleRepeat } from './rules';
 import { RuleSubscribeCollection, RuleSubscribeMap, RuleSubscribeObject, SubscribeObjectType } from './rules-subscribe';
@@ -359,5 +360,13 @@ export function cloneRule(rule) {
 
   return clone;
 } // Test:
-// export const test = new RuleBuilder<{ x: { y: number } }>()
-// 	.path(o => o.x.y)
+// interface ITestInterface1 {
+// 	y: number
+// }
+//
+// interface ITestInterface2 {
+// 	x: ITestInterface1
+// }
+//
+// export const test = new RuleBuilder<ITestInterface2>()
+// 	.path(o => o.x)

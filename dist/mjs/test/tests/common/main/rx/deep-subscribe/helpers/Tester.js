@@ -1,15 +1,17 @@
 import _regeneratorRuntime from "@babel/runtime/regenerator";
 import _asyncToGenerator from "@babel/runtime/helpers/asyncToGenerator";
-import _classCallCheck from "@babel/runtime/helpers/classCallCheck";
 import _createClass from "@babel/runtime/helpers/createClass";
 import _defineProperty from "@babel/runtime/helpers/defineProperty";
+import _classCallCheck from "@babel/runtime/helpers/classCallCheck";
+import _possibleConstructorReturn from "@babel/runtime/helpers/possibleConstructorReturn";
+import _getPrototypeOf from "@babel/runtime/helpers/getPrototypeOf";
+import _inherits from "@babel/runtime/helpers/inherits";
 
-/* tslint:disable:no-empty */
-import { delay } from '../../../../../../../main/common/helpers/helpers';
+/* tslint:disable:no-empty no-construct use-primitive-type */
+import { delay, VALUE_PROPERTY_DEFAULT } from '../../../../../../../main/common/helpers/helpers';
 import { ObservableMap } from '../../../../../../../main/common/lists/ObservableMap';
 import { ObservableSet } from '../../../../../../../main/common/lists/ObservableSet';
 import { SortedList } from '../../../../../../../main/common/lists/SortedList';
-import { VALUE_PROPERTY_DEFAULT } from '../../../../../../../main/common/rx/deep-subscribe/contracts/constants';
 import { deepSubscribe } from '../../../../../../../main/common/rx/deep-subscribe/deep-subscribe';
 import { ObservableObject } from '../../../../../../../main/common/rx/object/ObservableObject';
 import { ObservableObjectBuilder } from '../../../../../../../main/common/rx/object/ObservableObjectBuilder';
@@ -35,12 +37,28 @@ export function createObject() {
   });
   var set = new Set();
   var map = new Map();
+
+  var ObservableClass =
+  /*#__PURE__*/
+  function (_ObservableObject) {
+    _inherits(ObservableClass, _ObservableObject);
+
+    function ObservableClass() {
+      _classCallCheck(this, ObservableClass);
+
+      return _possibleConstructorReturn(this, _getPrototypeOf(ObservableClass).apply(this, arguments));
+    }
+
+    return ObservableClass;
+  }(ObservableObject);
+
+  var observableObjectPrototype = new ObservableClass();
   var observableObject = new ObservableObject();
   var observableList = new SortedList();
   var observableSet = new ObservableSet();
   var observableMap = new ObservableMap();
   var property = new ObservableObject();
-  Object.assign(object, (_Object$assign = {}, _defineProperty(_Object$assign, VALUE_PROPERTY_DEFAULT, 'nothing'), _defineProperty(_Object$assign, "observableObject", observableObject), _defineProperty(_Object$assign, "observableList", observableList), _defineProperty(_Object$assign, "observableSet", observableSet), _defineProperty(_Object$assign, "observableMap", observableMap), _defineProperty(_Object$assign, "object", object), _defineProperty(_Object$assign, "property", property), _defineProperty(_Object$assign, "list", list), _defineProperty(_Object$assign, "set", set), _defineProperty(_Object$assign, "map", map), _defineProperty(_Object$assign, "value", null), _defineProperty(_Object$assign, "promiseSync", {
+  Object.assign(object, (_Object$assign = {}, _defineProperty(_Object$assign, VALUE_PROPERTY_DEFAULT, 'nothing'), _defineProperty(_Object$assign, "observableObjectPrototype", observableObjectPrototype), _defineProperty(_Object$assign, "observableObject", observableObject), _defineProperty(_Object$assign, "observableList", observableList), _defineProperty(_Object$assign, "observableSet", observableSet), _defineProperty(_Object$assign, "observableMap", observableMap), _defineProperty(_Object$assign, "object", object), _defineProperty(_Object$assign, "property", property), _defineProperty(_Object$assign, "list", list), _defineProperty(_Object$assign, "set", set), _defineProperty(_Object$assign, "map", map), _defineProperty(_Object$assign, "value", 'value'), _defineProperty(_Object$assign, "valueObject", new String('value')), _defineProperty(_Object$assign, "promiseSync", {
     then: function then(resolve) {
       return resolve(observableObject);
     }
@@ -51,10 +69,11 @@ export function createObject() {
       }, 0);
     }
   }), _Object$assign));
+  var observableObjectBuilderPrototype = new ObservableObjectBuilder(ObservableClass.prototype);
   var observableObjectBuilder = new ObservableObjectBuilder(observableObject);
   var propertyBuilder = new ObservableObjectBuilder(property);
   Object.keys(object).forEach(function (key) {
-    if (key !== 'value') {
+    if (key !== 'value' && key !== 'valueObject') {
       list.add(object[key]);
       set.add(object[key]);
       map.set(key, object[key]);
@@ -64,10 +83,15 @@ export function createObject() {
     }
 
     if (key !== VALUE_PROPERTY_DEFAULT) {
+      if (key !== 'valueObjectWritable') {
+        observableObjectBuilderPrototype.readable(key, null, object[key]);
+      }
+
       observableObjectBuilder.writable(key, null, object[key]);
       propertyBuilder.writable('value_' + key, null, object[key]);
     }
   });
+  observableObjectBuilderPrototype.writable('valueObjectWritable');
   propertyBuilder.writable(VALUE_PROPERTY_DEFAULT, null, observableObject);
   return object;
 }

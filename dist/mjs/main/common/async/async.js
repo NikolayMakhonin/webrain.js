@@ -2,6 +2,9 @@ import { isIterator } from '../helpers/helpers';
 export function isThenable(value) {
   return value != null && typeof value.then === 'function';
 }
+export function isAsync(value) {
+  return isThenable(value) || isIterator(value);
+}
 export var ResolveResult;
 
 (function (ResolveResult) {
@@ -13,7 +16,7 @@ export var ResolveResult;
   ResolveResult[ResolveResult["DeferredError"] = 6] = "DeferredError";
 })(ResolveResult || (ResolveResult = {}));
 
-export function resolveIterator(iterator, isError, onImmediate, onDeferred) {
+export function resolveIterator(iterator, isError, onImmediate, onDeferred, customResolveValue) {
   if (!isIterator(iterator)) {
     return ResolveResult.None;
   }
@@ -40,7 +43,7 @@ export function resolveIterator(iterator, isError, onImmediate, onDeferred) {
           isThrow = nextIsError;
         }, function (o, nextIsError) {
           iterate(o, nextIsError, nextOnDeferred, nextOnDeferred);
-        });
+        }, customResolveValue);
 
         if ((result & ResolveResult.Deferred) !== 0) {
           return result;
@@ -84,7 +87,7 @@ export function resolveThenable(thenable, isError, onImmediate, onDeferred) {
   return result;
 }
 
-function _resolveValue(value, isError, onImmediate, onDeferred) {
+function _resolveValue(value, isError, onImmediate, onDeferred, customResolveValue) {
   var nextOnImmediate = function nextOnImmediate(o, nextIsError) {
     if (nextIsError) {
       isError = true;
@@ -94,7 +97,7 @@ function _resolveValue(value, isError, onImmediate, onDeferred) {
   };
 
   var nextOnDeferred = function nextOnDeferred(val, nextIsError) {
-    _resolveValue(val, isError || nextIsError, onDeferred, onDeferred);
+    _resolveValue(val, isError || nextIsError, onDeferred, onDeferred, customResolveValue);
   };
 
   while (true) {
@@ -110,7 +113,7 @@ function _resolveValue(value, isError, onImmediate, onDeferred) {
       }
     }
     {
-      var _result = resolveIterator(value, isError, nextOnImmediate, nextOnDeferred);
+      var _result = resolveIterator(value, isError, nextOnImmediate, nextOnDeferred, customResolveValue);
 
       if ((_result & ResolveResult.Deferred) !== 0) {
         return _result;
@@ -120,17 +123,27 @@ function _resolveValue(value, isError, onImmediate, onDeferred) {
         continue;
       }
     }
+
+    if (value != null && customResolveValue != null) {
+      var newValue = customResolveValue(value);
+
+      if (newValue !== value) {
+        value = newValue;
+        continue;
+      }
+    }
+
     onImmediate(value, isError);
     return isError ? ResolveResult.ImmediateError : ResolveResult.Immediate;
   }
 }
 
-export function resolveValue(value, onImmediate, onDeferred) {
-  return _resolveValue(value, false, onImmediate, onDeferred);
+export function resolveValue(value, onImmediate, onDeferred, customResolveValue) {
+  return _resolveValue(value, false, onImmediate, onDeferred, customResolveValue);
 }
-export function resolveValueFunc(func, onImmediate, onDeferred) {
+export function resolveValueFunc(func, onImmediate, onDeferred, customResolveValue) {
   try {
-    return resolveValue(func(), onImmediate, onDeferred);
+    return resolveValue(func(), onImmediate, onDeferred, customResolveValue);
   } catch (err) {
     onImmediate(err, true);
     return ResolveResult.ImmediateError;

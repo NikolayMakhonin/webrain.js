@@ -206,13 +206,7 @@ export function iterateRule(rule) {
     }
   }, _marked);
 }
-export function subscribeNextRule(ruleIterator, fork, subscribeNode, subscribeLeaf) {
-  var iteration;
-
-  if (!ruleIterator || (iteration = ruleIterator.next()).done) {
-    return subscribeLeaf();
-  }
-
+export function subscribeNextRule(ruleIterator, iteration, fork, subscribeNode) {
   var ruleOrIterable = iteration.value;
 
   if (isIterable(ruleOrIterable)) {

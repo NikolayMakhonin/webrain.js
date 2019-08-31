@@ -142,16 +142,16 @@ describe('common > main > rx > deep-subscribe > RuleBuilder', function () {
     for (var debugIteration = 0; debugIteration < 2; debugIteration++) {
       try {
         // region Non Observable
-        if (nonObservableObject) {
-          var unsubscribe = subscribe(nonObservableObject, false, subscribeItem, unsubscribeItem);
+        var testNonObservableObject = function testNonObservableObject(object) {
+          var unsubscribe = subscribe(object, false, subscribeItem, unsubscribeItem);
           assert.strictEqual(unsubscribe, null);
-          testNonSubscribeProperties(nonObservableObject);
-          unsubscribe = subscribe(nonObservableObject, true, subscribeItem, unsubscribeItem);
+          testNonSubscribeProperties(object);
+          unsubscribe = subscribe(object, true, subscribeItem, unsubscribeItem);
           assert.ok(unsubscribe);
           assert.strictEqual(_typeof(unsubscribe), 'function');
           assert.deepStrictEqual(subscribedItems, []);
           subscribedItems = [];
-          testNonSubscribeProperties(nonObservableObject);
+          testNonSubscribeProperties(object);
           var _iteratorNormalCompletion3 = true;
           var _didIteratorError3 = false;
           var _iteratorError3 = undefined;
@@ -159,11 +159,11 @@ describe('common > main > rx > deep-subscribe > RuleBuilder', function () {
           try {
             for (var _iterator3 = subscribeProperties[Symbol.iterator](), _step3; !(_iteratorNormalCompletion3 = (_step3 = _iterator3.next()).done); _iteratorNormalCompletion3 = true) {
               var _property2 = _step3.value;
-              add(nonObservableObject, _property2);
+              add(object, _property2);
               assert.deepStrictEqual(subscribedItems, []);
 
               if (change) {
-                change(nonObservableObject, _property2);
+                change(object, _property2);
                 assert.deepStrictEqual(subscribedItems, []);
               }
             }
@@ -182,20 +182,20 @@ describe('common > main > rx > deep-subscribe > RuleBuilder', function () {
             }
           }
 
-          testNonSubscribeProperties(nonObservableObject);
+          testNonSubscribeProperties(object);
           unsubscribe();
           assert.deepStrictEqual(subscribedItems.sort(), subscribeProperties.map(function (o) {
             return '-value_' + o;
           }).sort());
           subscribedItems = [];
-          unsubscribe = subscribe(nonObservableObject, true, subscribeItem, unsubscribeItem);
+          unsubscribe = subscribe(object, true, subscribeItem, unsubscribeItem);
           assert.ok(unsubscribe);
           assert.strictEqual(_typeof(unsubscribe), 'function');
           assert.deepStrictEqual(subscribedItems.sort(), subscribeProperties.map(function (o) {
             return '+value_' + o;
           }).sort());
           subscribedItems = [];
-          testNonSubscribeProperties(nonObservableObject);
+          testNonSubscribeProperties(object);
           var _iteratorNormalCompletion4 = true;
           var _didIteratorError4 = false;
           var _iteratorError4 = undefined;
@@ -203,7 +203,7 @@ describe('common > main > rx > deep-subscribe > RuleBuilder', function () {
           try {
             for (var _iterator4 = subscribeProperties[Symbol.iterator](), _step4; !(_iteratorNormalCompletion4 = (_step4 = _iterator4.next()).done); _iteratorNormalCompletion4 = true) {
               var _property3 = _step4.value;
-              remove(nonObservableObject, _property3, false);
+              remove(object, _property3, false);
               assert.deepStrictEqual(subscribedItems, []);
             }
           } catch (err) {
@@ -221,34 +221,31 @@ describe('common > main > rx > deep-subscribe > RuleBuilder', function () {
             }
           }
 
-          testNonSubscribeProperties(nonObservableObject);
+          testNonSubscribeProperties(object);
           unsubscribe();
           assert.deepStrictEqual(subscribedItems, []);
           subscribedItems = [];
-          unsubscribe = subscribe(nonObservableObject, false, subscribeItem, unsubscribeItem);
+          unsubscribe = subscribe(object, false, subscribeItem, unsubscribeItem);
           assert.strictEqual(unsubscribe, null);
           assert.deepStrictEqual(subscribedItems, []);
-        } // endregion
+        }; // endregion
         // region Observable
 
 
-        if (observableObject) {
-          var _unsubscribe = subscribe(observableObject, false, subscribeItem, unsubscribeItem);
-
-          assert.ok(_unsubscribe);
-          assert.strictEqual(_typeof(_unsubscribe), 'function');
-          testNonSubscribeProperties(observableObject);
-
-          _unsubscribe();
-
+        var testObservableObject = function testObservableObject(object) {
+          var unsubscribe = subscribe(object, false, subscribeItem, unsubscribeItem);
+          assert.ok(unsubscribe);
+          assert.strictEqual(_typeof(unsubscribe), 'function');
+          testNonSubscribeProperties(object);
+          unsubscribe();
           assert.deepStrictEqual(subscribedItems, []);
           subscribedItems = [];
-          _unsubscribe = subscribe(observableObject, true, subscribeItem, unsubscribeItem);
-          assert.ok(_unsubscribe);
-          assert.strictEqual(_typeof(_unsubscribe), 'function');
+          unsubscribe = subscribe(object, true, subscribeItem, unsubscribeItem);
+          assert.ok(unsubscribe);
+          assert.strictEqual(_typeof(unsubscribe), 'function');
           assert.deepStrictEqual(subscribedItems, []);
           subscribedItems = [];
-          testNonSubscribeProperties(observableObject);
+          testNonSubscribeProperties(object);
           var _iteratorNormalCompletion5 = true;
           var _didIteratorError5 = false;
           var _iteratorError5 = undefined;
@@ -256,13 +253,13 @@ describe('common > main > rx > deep-subscribe > RuleBuilder', function () {
           try {
             for (var _iterator5 = subscribeProperties[Symbol.iterator](), _step5; !(_iteratorNormalCompletion5 = (_step5 = _iterator5.next()).done); _iteratorNormalCompletion5 = true) {
               var _property4 = _step5.value;
-              add(observableObject, _property4);
+              add(object, _property4);
               assert.deepStrictEqual(subscribedItems, [// '-undefined',
               '+value_' + _property4]);
               subscribedItems = [];
 
               if (change) {
-                change(observableObject, _property4);
+                change(object, _property4);
                 assert.deepStrictEqual(subscribedItems, ['-value_' + _property4, '+value_' + _property4]);
                 subscribedItems = [];
               }
@@ -282,32 +279,28 @@ describe('common > main > rx > deep-subscribe > RuleBuilder', function () {
             }
           }
 
-          testNonSubscribeProperties(observableObject);
-
-          _unsubscribe();
-
+          testNonSubscribeProperties(object);
+          unsubscribe();
           assert.deepStrictEqual(subscribedItems.sort(), subscribeProperties.map(function (o) {
             return '-value_' + o;
           }).sort());
           subscribedItems = [];
-          _unsubscribe = subscribe(observableObject, false, subscribeItem, unsubscribeItem);
-          assert.ok(_unsubscribe);
-          assert.strictEqual(_typeof(_unsubscribe), 'function');
-
-          _unsubscribe();
-
+          unsubscribe = subscribe(object, false, subscribeItem, unsubscribeItem);
+          assert.ok(unsubscribe);
+          assert.strictEqual(_typeof(unsubscribe), 'function');
+          unsubscribe();
           assert.deepStrictEqual(subscribedItems.sort(), subscribeProperties.map(function (o) {
             return '-value_' + o;
           }).sort());
           subscribedItems = [];
-          _unsubscribe = subscribe(observableObject, true, subscribeItem, unsubscribeItem);
-          assert.ok(_unsubscribe);
-          assert.strictEqual(_typeof(_unsubscribe), 'function');
+          unsubscribe = subscribe(object, true, subscribeItem, unsubscribeItem);
+          assert.ok(unsubscribe);
+          assert.strictEqual(_typeof(unsubscribe), 'function');
           assert.deepStrictEqual(subscribedItems.sort(), subscribeProperties.map(function (o) {
             return '+value_' + o;
           }).sort());
           subscribedItems = [];
-          testNonSubscribeProperties(observableObject);
+          testNonSubscribeProperties(object);
           var _iteratorNormalCompletion6 = true;
           var _didIteratorError6 = false;
           var _iteratorError6 = undefined;
@@ -315,7 +308,7 @@ describe('common > main > rx > deep-subscribe > RuleBuilder', function () {
           try {
             for (var _iterator6 = subscribeProperties[Symbol.iterator](), _step6; !(_iteratorNormalCompletion6 = (_step6 = _iterator6.next()).done); _iteratorNormalCompletion6 = true) {
               var _property5 = _step6.value;
-              remove(observableObject, _property5, false);
+              remove(object, _property5, false);
               assert.deepStrictEqual(subscribedItems, ['-value_' + _property5]);
               subscribedItems = [];
             }
@@ -334,14 +327,21 @@ describe('common > main > rx > deep-subscribe > RuleBuilder', function () {
             }
           }
 
-          testNonSubscribeProperties(observableObject);
-
-          _unsubscribe();
-
+          testNonSubscribeProperties(object);
+          unsubscribe();
           assert.deepStrictEqual(subscribedItems, []);
           subscribedItems = [];
-        } // endregion
+        }; // endregion
 
+
+        if (observableObject) {
+          testObservableObject(observableObject);
+        }
+
+        if (nonObservableObject) {// Obsolete
+          // testNonObservableObject(nonObservableObject)
+          // testObservableObject(nonObservableObject)
+        }
       } catch (ex) {
         if (!lastError) {
           console.log(ex);
@@ -382,8 +382,11 @@ describe('common > main > rx > deep-subscribe > RuleBuilder', function () {
       }
     }
 
-    testSubscribe(false, true, _objectSpread({}, builder.object), builder.object, subscribe, [nonSubscribeProperty].concat(_toConsumableArray(properties === ANY ? [] : properties)), properties === ANY ? [nonSubscribeProperty, 'p1', 'p2', 'p3'] : properties, add, change, remove);
-    builder.writable('p1', null, 'value_p1').writable('p2', null, 'value_p2').writable('p3', null, 'value_p3');
+    testSubscribe(false, true, _objectSpread({}, builder.object), builder.object, subscribe, [nonSubscribeProperty].concat(_toConsumableArray(properties === ANY ? [] : properties)), properties === ANY ? [nonSubscribeProperty, 'p1', 'p2', 'p3'] : properties, add, change, remove); // builder
+    // 	.writable('p1', null, 'value_p1')
+    // 	.writable('p2', null, 'value_p2')
+    // 	.writable('p3', null, 'value_p3')
+
     testSubscribe(false, true, Object.create(_objectSpread({}, builder.object)), Object.create(builder.object), subscribe, [nonSubscribeProperty].concat(_toConsumableArray(properties === ANY ? [] : properties)), [], function (object, property) {
       Object.defineProperty(object, property, {
         configurable: true,

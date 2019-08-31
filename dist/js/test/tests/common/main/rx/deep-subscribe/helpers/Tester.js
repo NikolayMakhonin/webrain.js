@@ -14,8 +14,6 @@ var _ObservableSet = require("../../../../../../../main/common/lists/ObservableS
 
 var _SortedList = require("../../../../../../../main/common/lists/SortedList");
 
-var _constants = require("../../../../../../../main/common/rx/deep-subscribe/contracts/constants");
-
 var _deepSubscribe = require("../../../../../../../main/common/rx/deep-subscribe/deep-subscribe");
 
 var _ObservableObject = require("../../../../../../../main/common/rx/object/ObservableObject");
@@ -26,7 +24,7 @@ var _Assert = require("../../../../../../../main/common/test/Assert");
 
 var _DeepCloneEqual = require("../../../../../../../main/common/test/DeepCloneEqual");
 
-/* tslint:disable:no-empty */
+/* tslint:disable:no-empty no-construct use-primitive-type */
 const assert = new _Assert.Assert(new _DeepCloneEqual.DeepCloneEqual({
   commonOptions: {},
   equalOptions: {
@@ -46,13 +44,18 @@ function createObject() {
   });
   const set = new Set();
   const map = new Map();
+
+  class ObservableClass extends _ObservableObject.ObservableObject {}
+
+  const observableObjectPrototype = new ObservableClass();
   const observableObject = new _ObservableObject.ObservableObject();
   const observableList = new _SortedList.SortedList();
   const observableSet = new _ObservableSet.ObservableSet();
   const observableMap = new _ObservableMap.ObservableMap();
   const property = new _ObservableObject.ObservableObject();
   Object.assign(object, {
-    [_constants.VALUE_PROPERTY_DEFAULT]: 'nothing',
+    [_helpers.VALUE_PROPERTY_DEFAULT]: 'nothing',
+    observableObjectPrototype,
     observableObject,
     observableList,
     observableSet,
@@ -62,7 +65,8 @@ function createObject() {
     list,
     set,
     map,
-    value: null,
+    value: 'value',
+    valueObject: new String('value'),
     promiseSync: {
       then: resolve => resolve(observableObject)
     },
@@ -70,10 +74,11 @@ function createObject() {
       then: resolve => setTimeout(() => resolve(observableObject), 0)
     }
   });
+  const observableObjectBuilderPrototype = new _ObservableObjectBuilder.ObservableObjectBuilder(ObservableClass.prototype);
   const observableObjectBuilder = new _ObservableObjectBuilder.ObservableObjectBuilder(observableObject);
   const propertyBuilder = new _ObservableObjectBuilder.ObservableObjectBuilder(property);
   Object.keys(object).forEach(key => {
-    if (key !== 'value') {
+    if (key !== 'value' && key !== 'valueObject') {
       list.add(object[key]);
       set.add(object[key]);
       map.set(key, object[key]);
@@ -82,12 +87,17 @@ function createObject() {
       observableMap.set(key, object[key]);
     }
 
-    if (key !== _constants.VALUE_PROPERTY_DEFAULT) {
+    if (key !== _helpers.VALUE_PROPERTY_DEFAULT) {
+      if (key !== 'valueObjectWritable') {
+        observableObjectBuilderPrototype.readable(key, null, object[key]);
+      }
+
       observableObjectBuilder.writable(key, null, object[key]);
       propertyBuilder.writable('value_' + key, null, object[key]);
     }
   });
-  propertyBuilder.writable(_constants.VALUE_PROPERTY_DEFAULT, null, observableObject);
+  observableObjectBuilderPrototype.writable('valueObjectWritable');
+  propertyBuilder.writable(_helpers.VALUE_PROPERTY_DEFAULT, null, observableObject);
   return object;
 }
 

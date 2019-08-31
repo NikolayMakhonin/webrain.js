@@ -279,6 +279,7 @@ class ValueState {
 }
 
 class MergeState {
+  // noinspection DuplicatedCode
   constructor(mergerVisitor, base, older, newer, set, preferCloneBase, preferCloneOlder, preferCloneNewer, refsBase, refsOlder, refsNewer, options) {
     this.mergerVisitor = mergerVisitor;
     this.base = base;

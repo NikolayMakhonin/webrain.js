@@ -6,6 +6,8 @@ Object.defineProperty(exports, "__esModule", {
 exports.cloneRule = cloneRule;
 exports.RuleBuilder = void 0;
 
+var _helpers = require("../../helpers/helpers");
+
 var _constants = require("./contracts/constants");
 
 var _funcPropertiesPath = require("./helpers/func-properties-path");
@@ -292,5 +294,13 @@ function cloneRule(rule) {
 
   return clone;
 } // Test:
-// export const test = new RuleBuilder<{ x: { y: number } }>()
-// 	.path(o => o.x.y)
+// interface ITestInterface1 {
+// 	y: number
+// }
+//
+// interface ITestInterface2 {
+// 	x: ITestInterface1
+// }
+//
+// export const test = new RuleBuilder<ITestInterface2>()
+// 	.path(o => o.x)

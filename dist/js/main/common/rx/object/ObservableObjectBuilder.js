@@ -5,9 +5,11 @@ Object.defineProperty(exports, "__esModule", {
 });
 exports.ObservableObjectBuilder = void 0;
 
-var _IPropertyChanged = require("../../lists/contracts/IPropertyChanged");
+var _helpers = require("../../helpers/helpers");
 
 require("../extensions/autoConnect");
+
+var _IPropertyChanged = require("./IPropertyChanged");
 
 var _ObservableObject = require("./ObservableObject");
 
@@ -32,18 +34,22 @@ class ObservableObjectBuilder {
       __fields[name] = object[name];
     } else if (typeof initValue !== 'undefined') {
       throw new Error("You can't set initValue for prototype writable property");
-    }
+    } // optimization
 
+
+    const getValue = (0, _helpers.createFunction)('o', `return o.__fields["${name}"]`);
+    const setValue = (0, _helpers.createFunction)('o', 'v', `o.__fields["${name}"] = v`);
+    const set = setOptions ? _ObservableObject._setExt.bind(null, name, getValue, setValue, setOptions) : _ObservableObject._set.bind(null, name, getValue, setValue);
     Object.defineProperty(object, name, {
       configurable: true,
       enumerable: !hidden,
 
       get() {
-        return this.__fields[name];
+        return getValue(this);
       },
 
       set(newValue) {
-        this._set(name, newValue, setOptions);
+        set(this, newValue);
       }
 
     });
@@ -79,7 +85,10 @@ class ObservableObjectBuilder {
 
     if (!factory && !__fields && typeof initValue !== 'undefined') {
       factory = o => o;
-    }
+    } // optimization
+
+
+    const getValue = (0, _helpers.createFunction)('o', `return o.__fields["${name}"]`);
 
     const createInstanceProperty = instance => {
       Object.defineProperty(instance, name, {
@@ -87,13 +96,16 @@ class ObservableObjectBuilder {
         enumerable: !hidden,
 
         get() {
-          return this.__fields[name];
+          return getValue(this);
         }
 
       });
     };
 
     if (factory) {
+      // optimization
+      const setValue = (0, _helpers.createFunction)('o', 'v', `o.__fields["${name}"] = v`);
+      const set = setOptions ? _ObservableObject._setExt.bind(null, name, getValue, setValue, setOptions) : _ObservableObject._set.bind(null, name, getValue, setValue);
       Object.defineProperty(object, name, {
         configurable: true,
         enumerable: !hidden,
@@ -101,15 +113,12 @@ class ObservableObjectBuilder {
         get() {
           const factoryValue = factory.call(this, initValue);
           createInstanceProperty(this);
-          const {
-            __fields: fields
-          } = this;
 
-          if (fields && typeof factoryValue !== 'undefined') {
-            const oldValue = fields[name];
+          if (typeof factoryValue !== 'undefined') {
+            const oldValue = getValue(this);
 
             if (factoryValue !== oldValue) {
-              this._set(name, factoryValue, setOptions);
+              set(this, factoryValue);
             }
           }
 

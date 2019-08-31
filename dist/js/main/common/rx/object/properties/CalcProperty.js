@@ -7,11 +7,11 @@ exports.CalcProperty = void 0;
 
 var _ThenableSync = require("../../../async/ThenableSync");
 
-var _IPropertyChanged = require("../../../lists/contracts/IPropertyChanged");
-
-var _constants = require("../../deep-subscribe/contracts/constants");
+var _helpers = require("../../../helpers/helpers");
 
 var _DeferredCalc = require("../../deferred-calc/DeferredCalc");
+
+var _IPropertyChanged = require("../IPropertyChanged");
 
 var _ObservableObject = require("../ObservableObject");
 
@@ -19,11 +19,6 @@ var _ObservableObjectBuilder = require("../ObservableObjectBuilder");
 
 var _property = require("./property");
 
-// export interface ICalcProperty<TInput, TValue, TMergeSource> {
-// 	['@last']: TValue
-// 	['@wait']: TValue
-// 	['@lastOrWait']: TValue
-// }
 class CalcProperty extends _ObservableObject.ObservableObject {
   constructor(calcFunc, calcOptions, valueOptions, initValue) {
     super();
@@ -32,19 +27,29 @@ class CalcProperty extends _ObservableObject.ObservableObject {
       throw new Error(`calcFunc must be a function: ${calcFunc}`);
     }
 
+    if (typeof initValue !== 'function') {
+      this._initValue = initValue;
+    }
+
     this._calcFunc = calcFunc;
     this._valueProperty = new _property.Property(valueOptions, initValue);
     this._deferredCalc = new _DeferredCalc.DeferredCalc(() => {
       this.onValueChanged();
     }, done => {
+      const prevValue = this._valueProperty.value;
       this._deferredValue = (0, _ThenableSync.resolveAsyncFunc)(() => this._calcFunc(this.input, this._valueProperty), () => {
         this._hasValue = true;
         const val = this._valueProperty.value;
-        done();
+        done(prevValue !== val);
         return val;
-      }, done, true);
-    }, () => {
-      this.onValueChanged();
+      }, err => {
+        done(prevValue !== this._valueProperty.value);
+        return err;
+      }, true);
+    }, isChanged => {
+      if (isChanged) {
+        this.onValueChanged();
+      }
     }, calcOptions);
   }
 
@@ -59,12 +64,12 @@ class CalcProperty extends _ObservableObject.ObservableObject {
 
     if (propertyChangedIfCanEmit) {
       const oldValue = this._valueProperty.value;
-      propertyChangedIfCanEmit.onPropertyChanged(new _IPropertyChanged.PropertyChangedEvent('last', oldValue, () => this.last), new _IPropertyChanged.PropertyChangedEvent('wait', oldValue, () => this.wait), new _IPropertyChanged.PropertyChangedEvent('lastOrWait', oldValue, () => this.lastOrWait));
+      propertyChangedIfCanEmit.onPropertyChanged(new _IPropertyChanged.PropertyChangedEvent(_helpers.VALUE_PROPERTY_DEFAULT, oldValue, () => this[_helpers.VALUE_PROPERTY_DEFAULT]), new _IPropertyChanged.PropertyChangedEvent('last', oldValue, () => this.last), new _IPropertyChanged.PropertyChangedEvent('wait', oldValue, () => this.wait), new _IPropertyChanged.PropertyChangedEvent('lastOrWait', oldValue, () => this.lastOrWait));
     }
   }
 
-  get [_constants.VALUE_PROPERTY_DEFAULT]() {
-    return this.lastOrWait;
+  get [_helpers.VALUE_PROPERTY_DEFAULT]() {
+    return this.wait;
   }
 
   get last() {
@@ -83,6 +88,13 @@ class CalcProperty extends _ObservableObject.ObservableObject {
     this._deferredCalc.calc();
 
     return this._hasValue ? this._valueProperty.value : this._deferredValue;
+  }
+
+  clear() {
+    if (this._valueProperty.value !== this._initValue) {
+      this._valueProperty.value = this._initValue;
+      this.onValueChanged();
+    }
   }
 
 }

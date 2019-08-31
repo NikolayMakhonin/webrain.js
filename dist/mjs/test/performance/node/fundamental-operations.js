@@ -18,7 +18,7 @@ import { calcPerformance } from 'rdtsc';
 import { SynchronousPromise } from 'synchronous-promise';
 import { resolveValue } from '../../../main/common/async/async';
 import { resolveAsync, ThenableSync } from '../../../main/common/async/ThenableSync';
-import { isIterable } from '../../../main/common/helpers/helpers';
+import { createFunction, isIterable } from '../../../main/common/helpers/helpers';
 import { ArraySet } from '../../../main/common/lists/ArraySet';
 import { binarySearch } from '../../../main/common/lists/helpers/array';
 import { freezeWithUniqueId, getObjectUniqueId } from '../../../main/common/lists/helpers/object-unique-id';
@@ -805,7 +805,7 @@ describe('fundamental-operations', function () {
 
       try {
         for (var _iterator3 = getIterableValues()[Symbol.iterator](), _step3; !(_iteratorNormalCompletion3 = (_step3 = _iterator3.next()).done); _iteratorNormalCompletion3 = true) {
-          var value = _step3.value;
+          var _value = _step3.value;
         }
       } catch (err) {
         _didIteratorError3 = true;
@@ -1602,13 +1602,13 @@ describe('fundamental-operations', function () {
     var result = calcPerformance(120000, function () {// no operations
     }, function () {
       // 157
-      return resolveValue(1, function () {}, function () {}, function () {});
+      return resolveValue(1, function () {}, function () {});
     }, function () {
       // 767
-      return resolveValue(resolved, function () {}, function () {}, function () {});
+      return resolveValue(resolved, function () {}, function () {});
     }, function () {
       // 835
-      return resolveValue(rejected, function () {}, function () {}, function () {});
+      return resolveValue(rejected, function () {}, function () {});
     }, function () {
       // 563
       return resolveAsync(1, function () {}, function () {}, true);
@@ -1943,4 +1943,232 @@ describe('fundamental-operations', function () {
   //
   // 	console.log(result)
   // })
+
+  xit('Resolve properties path', function () {
+    this.timeout(300000);
+
+    var ResolvePropertiesPath =
+    /*#__PURE__*/
+    function () {
+      function ResolvePropertiesPath(value) {
+        _classCallCheck(this, ResolvePropertiesPath);
+
+        this.value = value;
+      }
+
+      _createClass(ResolvePropertiesPath, [{
+        key: "get",
+        value: function get(key) {
+          var value = this.value;
+
+          if (value != null) {
+            this.value = value = value[key];
+          }
+
+          return this;
+        }
+      }]);
+
+      return ResolvePropertiesPath;
+    }();
+
+    function get(getValue) {
+      get.value = getValue(get.value);
+      return get;
+    }
+
+    function resolvePropertiesPath(value) {
+      get.value = value;
+      return get;
+    }
+
+    var object = {
+      a: {
+        b: {
+          c: {
+            d: {
+              e: {},
+              f: 1
+            }
+          }
+        }
+      }
+    };
+    var result = calcPerformance(120000, function () {// no operations
+    }, function () {
+      // 4
+      return object.a.b.c.d.e;
+    }, function () {
+      // 4
+      var value = object;
+      value = value.a;
+      value = value.b;
+      value = value.c;
+      value = value.d;
+      value = value.e;
+      return value;
+    }, function () {
+      // 307
+      return new ResolvePropertiesPath(object).get('a').get('b').get('c').get('d').get('e').value;
+    }, function () {
+      // 31
+      return resolvePropertiesPath(object)(function (o) {
+        return o.a;
+      })(function (o) {
+        return o.b;
+      })(function (o) {
+        return o.c;
+      })(function (o) {
+        return o.d;
+      })(function (o) {
+        return o.e;
+      }).value;
+    });
+    console.log(result);
+  });
+  xit('ObservableObjectTest', function () {
+    this.timeout(300000);
+    var withOptimization = true;
+    var optimizationAfter = 100;
+
+    var ObservableObjectTest = function ObservableObjectTest() {
+      _classCallCheck(this, ObservableObjectTest);
+
+      this.__fields = {};
+    };
+
+    function createGetFunction(propertyName, setOptimizedFunc) {
+      var count = 0;
+
+      function func() {
+        if (++count > optimizationAfter) {
+          var newFunc = Function('return this.__fields["' + propertyName + '"]');
+          setOptimizedFunc(newFunc);
+          return newFunc.call(this);
+        }
+
+        return this.__fields[propertyName];
+      }
+
+      return function () {
+        return func.call(this);
+      };
+    }
+
+    function createSetFunction(propertyName) {
+      var count = 0;
+
+      var _func = function func(o, v) {
+        if (++count > optimizationAfter) {
+          _func = Function('o', 'v', 'o["' + propertyName + '"] = v');
+
+          _func(o, v);
+
+          return;
+        }
+
+        o[propertyName] = v;
+      };
+
+      return function (o, v) {
+        _func(o, v);
+      };
+    }
+
+    var getValueBase = Function('name', 'object', 'return object.__fields[name]');
+
+    var ObservableObjectBuilderTest =
+    /*#__PURE__*/
+    function () {
+      function ObservableObjectBuilderTest(object) {
+        _classCallCheck(this, ObservableObjectBuilderTest);
+
+        this.object = object || new ObservableObjectTest();
+      }
+
+      _createClass(ObservableObjectBuilderTest, [{
+        key: "writable",
+        value: function writable(name) {
+          var getValue = createFunction('o', "return o.__fields[\"".concat(name, "\"]"));
+          var setValue = createFunction('o', 'v', "o.__fields[\"".concat(name, "\"] = v")); // let getValue = createGetFunction(name, o => { getValue = o as any }) as (o: { [newProp in Name]: T }) => T
+          // const getValue = getValueBase.bind(null, name)
+          // const setValue = createSetFunction(name) as (o: { [newProp in Name]: T }, v: T) => void
+
+          if (withOptimization) {
+            Object.defineProperty(ObservableObjectTest.prototype, name, {
+              configurable: true,
+              enumerable: true,
+              get: function get() {
+                return getValue(this);
+              },
+              set: function set(newValue) {
+                setValue(this, newValue);
+              }
+            });
+          } else {
+            Object.defineProperty(ObservableObjectTest.prototype, name, {
+              configurable: true,
+              enumerable: true,
+              get: function get() {
+                return this.__fields[name];
+              },
+              set: function set(newValue) {
+                this.__fields[name] = newValue;
+              }
+            });
+          }
+
+          return this;
+        }
+      }]);
+
+      return ObservableObjectBuilderTest;
+    }();
+
+    new ObservableObjectBuilderTest(ObservableObjectTest.prototype).writable('prop') // , o => o.prop, (o, v) => o.prop = v)
+    .writable('prop2'); // , o => o.prop2, (o, v) => o.prop2 = v)
+
+    var observableObject1 = new ObservableObjectTest();
+    var observableObject2 = new ObservableObjectTest();
+    var object1 = {
+      prop: void 0,
+      prop2: void 0
+    };
+    var object2 = {
+      prop: void 0,
+      prop2: void 0
+    };
+    var value = -2000000000;
+    object1.prop = value++;
+    object1.prop2 = value++;
+    object2.prop = value++;
+    object2.prop2 = value++;
+    observableObject1.prop = value++;
+    observableObject1.prop2 = value++;
+    observableObject2.prop = value++;
+    observableObject2.prop2 = value++;
+    var result = calcPerformance(20000, function () {
+      // no operations
+      value++;
+    }, function () {
+      // 8
+      object1.prop = value++;
+      object1.prop2 = value++;
+      object2.prop = value++;
+      object2.prop2 = value++;
+    }, function () {
+      // 11
+      return object1.prop && object1.prop2 && object2.prop && object2.prop2;
+    }, function () {
+      // 27
+      observableObject1.prop = value++;
+      observableObject1.prop2 = value++;
+      observableObject2.prop = value++;
+      observableObject2.prop2 = value++;
+    }, function () {
+      // 8
+      return observableObject1.prop && observableObject1.prop2 && observableObject1.prop && observableObject2.prop2;
+    });
+    console.log(result);
+  });
 });

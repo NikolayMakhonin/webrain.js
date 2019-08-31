@@ -6,11 +6,11 @@ import _get from "@babel/runtime/helpers/get";
 import _inherits from "@babel/runtime/helpers/inherits";
 
 /* tslint:disable:no-identical-functions */
-import { checkIsFuncOrNull, isIterable } from '../../helpers/helpers';
+import { checkIsFuncOrNull, isIterable, VALUE_PROPERTY_DEFAULT } from '../../helpers/helpers';
 import { ListChangedType } from '../../lists/contracts/IListChanged';
 import { MapChangedType } from '../../lists/contracts/IMapChanged';
 import { SetChangedType } from '../../lists/contracts/ISetChanged';
-import { ANY, COLLECTION_PREFIX, VALUE_PROPERTY_DEFAULT, VALUE_PROPERTY_PREFIX } from './contracts/constants';
+import { ANY, COLLECTION_PREFIX, VALUE_PROPERTY_PREFIX } from './contracts/constants';
 import { RuleType } from './contracts/rules';
 import { Rule } from './rules';
 
@@ -138,6 +138,23 @@ function subscribeObjectValue(propertyNames, object, immediateSubscribe, subscri
 // region subscribeObject
 
 
+var allowSubscribePrototype = true;
+export function hasDefaultProperty(object) {
+  return object instanceof Object && (allowSubscribePrototype ? VALUE_PROPERTY_DEFAULT in object : Object.prototype.hasOwnProperty.call(object, VALUE_PROPERTY_DEFAULT)) && object.constructor !== Object && !Array.isArray(object);
+}
+export function subscribeDefaultProperty(object, immediateSubscribe, subscribeItem) {
+  var unsubscribe;
+  return subscribeObject(VALUE_PROPERTY_DEFAULT, function (o) {
+    return o === VALUE_PROPERTY_DEFAULT;
+  }, object, immediateSubscribe, function (item, debugPropertyName) {
+    unsubscribe = subscribeItem(item, debugPropertyName);
+  }, function () {
+    if (unsubscribe) {
+      unsubscribe();
+    }
+  });
+}
+
 function subscribeObject(propertyNames, propertyPredicate, object, immediateSubscribe, subscribeItem, unsubscribeItem) {
   if (!(object instanceof Object)) {
     return null;
@@ -145,16 +162,14 @@ function subscribeObject(propertyNames, propertyPredicate, object, immediateSubs
 
   var unsubscribe;
 
-  if (propertyNames !== VALUE_PROPERTY_DEFAULT && Object.prototype.hasOwnProperty.call(object, VALUE_PROPERTY_DEFAULT) && object.constructor !== Object && !Array.isArray(object)) {
-    return subscribeObject(VALUE_PROPERTY_DEFAULT, function (o) {
-      return o === VALUE_PROPERTY_DEFAULT;
-    }, object, immediateSubscribe, function (item) {
-      unsubscribe = subscribeObject(propertyNames, propertyPredicate, item, immediateSubscribe, subscribeItem, unsubscribeItem);
-    }, function () {
-      if (unsubscribe) {
-        unsubscribe();
-      }
+  if (propertyNames !== VALUE_PROPERTY_DEFAULT && hasDefaultProperty(object)) {
+    unsubscribe = subscribeDefaultProperty(object, immediateSubscribe, function (item) {
+      return subscribeObject(propertyNames, propertyPredicate, item, immediateSubscribe, subscribeItem, unsubscribeItem);
     });
+
+    if (unsubscribe) {
+      return unsubscribe;
+    }
   }
 
   var propertyChanged = object.propertyChanged;
@@ -165,6 +180,7 @@ function subscribeObject(propertyNames, propertyPredicate, object, immediateSubs
           oldValue = _ref2.oldValue,
           newValue = _ref2.newValue;
 
+      // PROF: 623 - 1.3%
       if (!propertyPredicate || propertyPredicate(name, object)) {
         if (typeof oldValue !== 'undefined') {
           unsubscribeItem(oldValue, name + '');
@@ -183,18 +199,18 @@ function subscribeObject(propertyNames, propertyPredicate, object, immediateSubs
         for (var i = 0, len = propertyNames.length; i < len; i++) {
           var _propertyName2 = propertyNames[i];
 
-          if (Object.prototype.hasOwnProperty.call(object, _propertyName2)) {
+          if (allowSubscribePrototype ? _propertyName2 in object : Object.prototype.hasOwnProperty.call(object, _propertyName2)) {
             callbackfn(object[_propertyName2], _propertyName2);
           }
         }
       } else {
-        if (Object.prototype.hasOwnProperty.call(object, propertyNames)) {
+        if (allowSubscribePrototype ? propertyNames in object : Object.prototype.hasOwnProperty.call(object, propertyNames)) {
           callbackfn(object[propertyNames], propertyNames);
         }
       }
     } else {
       for (var _propertyName3 in object) {
-        if (Object.prototype.hasOwnProperty.call(object, _propertyName3) && (!propertyPredicate || propertyPredicate(_propertyName3, object))) {
+        if ((allowSubscribePrototype || Object.prototype.hasOwnProperty.call(object, _propertyName3)) && (!propertyPredicate || propertyPredicate(_propertyName3, object))) {
           callbackfn(object[_propertyName3], _propertyName3);
         }
       }
@@ -527,6 +543,7 @@ function createPropertyPredicate(propertyNames) {
     }
 
     return function (propName) {
+      // PROF: 226 - 0.5%
       return propName === _propertyName4;
     };
   } else {

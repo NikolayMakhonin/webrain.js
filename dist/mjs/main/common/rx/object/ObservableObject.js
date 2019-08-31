@@ -1,5 +1,4 @@
 import _classCallCheck from "@babel/runtime/helpers/classCallCheck";
-import _createClass from "@babel/runtime/helpers/createClass";
 import _possibleConstructorReturn from "@babel/runtime/helpers/possibleConstructorReturn";
 import _getPrototypeOf from "@babel/runtime/helpers/getPrototypeOf";
 import _assertThisInitialized from "@babel/runtime/helpers/assertThisInitialized";
@@ -26,64 +25,92 @@ function (_PropertyChangedObjec) {
     });
     return _this;
   }
-  /** @internal */
-
-
-  _createClass(ObservableObject, [{
-    key: "_set",
-    value: function _set(name, newValue, options) {
-      var __fields = this.__fields;
-      var oldValue = __fields[name];
-      var equalsFunc = options && options.equalsFunc;
-
-      if (equalsFunc ? equalsFunc.call(this, oldValue, newValue) : oldValue === newValue) {
-        return false;
-      }
-
-      var fillFunc = options && options.fillFunc;
-
-      if (fillFunc && oldValue != null && newValue != null && fillFunc.call(this, oldValue, newValue)) {
-        return false;
-      }
-
-      var convertFunc = options && options.convertFunc;
-
-      if (convertFunc) {
-        newValue = convertFunc.call(this, newValue);
-      }
-
-      if (oldValue === newValue) {
-        return false;
-      }
-
-      var beforeChange = options && options.beforeChange;
-
-      if (beforeChange) {
-        beforeChange.call(this, oldValue);
-      }
-
-      __fields[name] = newValue;
-      var afterChange = options && options.afterChange;
-
-      if (afterChange) {
-        afterChange.call(this, newValue);
-      }
-
-      if (!options || !options.suppressPropertyChanged) {
-        var propertyChangedIfCanEmit = this.propertyChangedIfCanEmit;
-
-        if (propertyChangedIfCanEmit) {
-          propertyChangedIfCanEmit.onPropertyChanged({
-            name: name,
-            oldValue: oldValue,
-            newValue: newValue
-          });
-        }
-      }
-
-      return true;
-    }
-  }]);
 
   return ObservableObject;
 }(PropertyChangedObject);
+/** @internal */
+
+export function _setExt(name, getValue, setValue, options, object, newValue) {
+  if (!options) {
+    return _set(name, getValue, setValue, object, newValue);
+  }
+
+  var oldValue = getValue ? getValue(object) : object.__fields[name];
+  var equalsFunc = options.equalsFunc;
+
+  if (equalsFunc ? equalsFunc.call(object, oldValue, newValue) : oldValue === newValue) {
+    return false;
+  }
+
+  var fillFunc = options.fillFunc;
+
+  if (fillFunc && oldValue != null && newValue != null && fillFunc.call(object, oldValue, newValue)) {
+    return false;
+  }
+
+  var convertFunc = options.convertFunc;
+
+  if (convertFunc) {
+    newValue = convertFunc.call(object, newValue);
+  }
+
+  if (oldValue === newValue) {
+    return false;
+  }
+
+  var beforeChange = options.beforeChange;
+
+  if (beforeChange) {
+    beforeChange.call(object, oldValue);
+  }
+
+  if (setValue) {
+    setValue(object, newValue);
+  } else {
+    object.__fields[name] = newValue;
+  }
+
+  var afterChange = options.afterChange;
+
+  if (afterChange) {
+    afterChange.call(object, newValue);
+  }
+
+  if (!options || !options.suppressPropertyChanged) {
+    var propertyChangedIfCanEmit = object.propertyChangedIfCanEmit;
+
+    if (propertyChangedIfCanEmit) {
+      propertyChangedIfCanEmit.onPropertyChanged({
+        name: name,
+        oldValue: oldValue,
+        newValue: newValue
+      });
+    }
+  }
+
+  return true;
+}
+/** @internal */
+
+export function _set(name, getValue, setValue, object, newValue) {
+  var oldValue = getValue(object);
+
+  if (oldValue === newValue) {
+    return false;
+  }
+
+  setValue(object, newValue);
+  var _object$__meta = object.__meta,
+      propertyChangedDisabled = _object$__meta.propertyChangedDisabled,
+      propertyChanged = _object$__meta.propertyChanged;
+
+  if (!propertyChangedDisabled && propertyChanged) {
+    propertyChanged.emit({
+      name: name,
+      oldValue: oldValue,
+      newValue: newValue
+    });
+  }
+
+  return true;
+}

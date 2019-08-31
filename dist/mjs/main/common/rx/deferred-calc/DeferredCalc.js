@@ -55,10 +55,10 @@ function () {
 
       this._pulse();
 
-      this._calcFunc.call(this, function () {
+      this._calcFunc.call(this, function (value) {
         _this._timeCalcEnd = _this._timing.now();
 
-        _this._calcCompletedCallback.call(_this);
+        _this._calcCompletedCallback.call(_this, value);
 
         _this._pulse();
       });

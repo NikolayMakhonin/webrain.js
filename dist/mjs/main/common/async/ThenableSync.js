@@ -1,6 +1,6 @@
 import _classCallCheck from "@babel/runtime/helpers/classCallCheck";
 import _createClass from "@babel/runtime/helpers/createClass";
-import { isThenable, ResolveResult, resolveValue, resolveValueFunc } from './async';
+import { isAsync, isThenable, ResolveResult, resolveValue, resolveValueFunc } from './async';
 export var ThenableSyncStatus;
 
 (function (ThenableSyncStatus) {
@@ -9,21 +9,25 @@ export var ThenableSyncStatus;
   ThenableSyncStatus["Rejected"] = "Rejected";
 })(ThenableSyncStatus || (ThenableSyncStatus = {}));
 
-export function createResolved(value) {
-  var thenable = new ThenableSync();
+export function createResolved(value, customResolveValue) {
+  var thenable = new ThenableSync(null, customResolveValue);
   thenable.resolve(value);
   return thenable;
 }
-export function createRejected(error) {
-  var thenable = new ThenableSync();
+export function createRejected(error, customResolveValue) {
+  var thenable = new ThenableSync(null, customResolveValue);
   thenable.reject(error);
   return thenable;
 }
 export var ThenableSync =
 /*#__PURE__*/
 function () {
-  function ThenableSync(executor) {
+  function ThenableSync(executor, customResolveValue) {
     _classCallCheck(this, ThenableSync);
+
+    if (customResolveValue != null) {
+      this._customResolveValue = customResolveValue;
+    }
 
     if (executor) {
       try {
@@ -67,7 +71,7 @@ function () {
         } else {
           _this._resolve(o);
         }
-      });
+      }, this._customResolveValue);
 
       if ((result & ResolveResult.Deferred) !== 0) {
         this._status = ThenableSyncStatus.Resolving;
@@ -117,7 +121,7 @@ function () {
         error = o;
       }, function (o) {
         _this2._reject(o);
-      });
+      }, this._customResolveValue);
 
       if ((result & ResolveResult.Deferred) !== 0) {
         this._status = ThenableSyncStatus.Resolving;
@@ -141,14 +145,14 @@ function () {
 
   }, {
     key: "_then",
-    value: function _then(onfulfilled, onrejected, lastExpression) {
+    value: function _then(onfulfilled, onrejected, lastExpression, customResolveValue) {
       var reject = function reject(error) {
         if (!onrejected) {
           if (lastExpression) {
             throw error;
           }
 
-          return ThenableSync.createRejected(error);
+          return ThenableSync.createRejected(error, customResolveValue);
         }
 
         var isError;
@@ -162,11 +166,11 @@ function () {
           }
         }();
 
-        var result = resolveAsync(error, null, null, !lastExpression);
+        var result = resolveAsync(error, null, null, !lastExpression, customResolveValue);
 
         if (isThenable(result)) {
           return isError ? result.then(function (o) {
-            return createRejected(o);
+            return createRejected(o, customResolveValue);
           }) : result;
         }
 
@@ -178,7 +182,7 @@ function () {
           throw result;
         }
 
-        return isError ? createRejected(result) : createResolved(result);
+        return isError ? createRejected(result, customResolveValue) : createResolved(result, customResolveValue);
       };
 
       switch (this._status) {
@@ -202,7 +206,7 @@ function () {
             }();
 
             if (isError) {
-              var result = resolveAsync(_value, null, null, !lastExpression);
+              var result = resolveAsync(_value, null, null, !lastExpression, customResolveValue);
 
               if (isThenable(result)) {
                 return result.then(function (o) {
@@ -212,14 +216,14 @@ function () {
 
               return reject(result);
             } else {
-              var _result = resolveAsync(_value, null, onrejected, !lastExpression);
+              var _result = resolveAsync(_value, null, onrejected, !lastExpression, customResolveValue);
 
-              return lastExpression || isThenable(_result) ? _result : createResolved(_result);
+              return lastExpression || isThenable(_result) ? _result : createResolved(_result, customResolveValue);
             }
           }
 
         case ThenableSyncStatus.Rejected:
-          if (!onrejected && !lastExpression) {
+          if (!onrejected && !lastExpression && (!customResolveValue || customResolveValue === this._customResolveValue)) {
             return this;
           }
 
@@ -227,11 +231,11 @@ function () {
 
         default:
           {
-            if (!onfulfilled && !onrejected) {
+            if (!onfulfilled && !onrejected && (!customResolveValue || customResolveValue === this._customResolveValue)) {
               return this;
             }
 
-            var _result2 = new ThenableSync();
+            var _result2 = new ThenableSync(null, customResolveValue);
 
             var _onrejected = this._onrejected;
 
@@ -281,7 +285,7 @@ function () {
               }();
 
               if (isError) {
-                resolveValue(value, rejected, rejected);
+                resolveValue(value, rejected, rejected, customResolveValue);
               } else {
                 _result2.resolve(value);
               }
@@ -295,13 +299,13 @@ function () {
     }
   }, {
     key: "then",
-    value: function then(onfulfilled, onrejected) {
-      return this._then(onfulfilled, onrejected, false);
+    value: function then(onfulfilled, onrejected, customResolveValue) {
+      return this._then(onfulfilled, onrejected, false, customResolveValue === false ? null : customResolveValue || this._customResolveValue);
     }
   }, {
     key: "thenLast",
-    value: function thenLast(onfulfilled, onrejected) {
-      return this._then(onfulfilled, onrejected, true);
+    value: function thenLast(onfulfilled, onrejected, customResolveValue) {
+      return this._then(onfulfilled, onrejected, true, customResolveValue === false ? null : customResolveValue || this._customResolveValue);
     } // endregion
     // region static helpers
     // endregion
@@ -314,7 +318,26 @@ ThenableSync.createResolved = createResolved;
 ThenableSync.createRejected = createRejected;
 ThenableSync.isThenable = isThenable;
 ThenableSync.resolve = resolveAsync;
-export function resolveAsync(input, onfulfilled, onrejected, dontThrowOnImmediateError) {
+export function resolveAsync(input, onfulfilled, onrejected, dontThrowOnImmediateError, customResolveValue) {
+  // Optimization
+  if (!onfulfilled && !isAsync(input)) {
+    if (input != null && customResolveValue) {
+      var newInput = customResolveValue(input);
+
+      if (input === newInput) {
+        return input;
+      }
+
+      input = newInput;
+    } else {
+      return input;
+    }
+  }
+
+  return _resolveAsync(input, onfulfilled, onrejected, dontThrowOnImmediateError, customResolveValue);
+}
+
+function _resolveAsync(input, onfulfilled, onrejected, dontThrowOnImmediateError, customResolveValue) {
   var result;
   var isError;
 
@@ -335,7 +358,7 @@ export function resolveAsync(input, onfulfilled, onrejected, dontThrowOnImmediat
             resolve(o);
           }
         };
-      });
+      }, customResolveValue);
     }
 
     return thenable;
@@ -351,7 +374,7 @@ export function resolveAsync(input, onfulfilled, onrejected, dontThrowOnImmediat
         onResult(o2, e2);
       }, function (o2, e2) {
         onResult(o2, e2);
-      }) & ResolveResult.Deferred) !== 0) {
+      }, customResolveValue) & ResolveResult.Deferred) !== 0) {
         result = createThenable();
       }
     } else {
@@ -359,13 +382,13 @@ export function resolveAsync(input, onfulfilled, onrejected, dontThrowOnImmediat
     }
   };
 
-  if ((resolveValue(input, resolveOnResult, resolveOnResult) & ResolveResult.Deferred) !== 0) {
+  if ((resolveValue(input, resolveOnResult, resolveOnResult, customResolveValue) & ResolveResult.Deferred) !== 0) {
     return createThenable();
   }
 
   if (isError) {
     if (dontThrowOnImmediateError) {
-      return ThenableSync.createRejected(result);
+      return ThenableSync.createRejected(result, customResolveValue);
     }
 
     throw result;
@@ -373,10 +396,11 @@ export function resolveAsync(input, onfulfilled, onrejected, dontThrowOnImmediat
 
   return result;
 }
-export function resolveAsyncFunc(func, onfulfilled, onrejected, dontThrowOnImmediateReject) {
+
+export function resolveAsyncFunc(func, onfulfilled, onrejected, dontThrowOnImmediateReject, customResolveValue) {
   try {
-    return resolveAsync(func(), onfulfilled, onrejected, dontThrowOnImmediateReject);
+    return resolveAsync(func(), onfulfilled, onrejected, dontThrowOnImmediateReject, customResolveValue);
   } catch (err) {
-    return resolveAsync(err, onrejected, onrejected, dontThrowOnImmediateReject);
+    return resolveAsync(err, onrejected, onrejected, dontThrowOnImmediateReject, customResolveValue);
   }
 }

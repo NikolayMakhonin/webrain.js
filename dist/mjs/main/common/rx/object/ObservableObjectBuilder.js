@@ -6,9 +6,10 @@ function ownKeys(object, enumerableOnly) { var keys = Object.keys(object); if (O
 
 function _objectSpread(target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i] != null ? arguments[i] : {}; if (i % 2) { ownKeys(source, true).forEach(function (key) { _defineProperty(target, key, source[key]); }); } else if (Object.getOwnPropertyDescriptors) { Object.defineProperties(target, Object.getOwnPropertyDescriptors(source)); } else { ownKeys(source).forEach(function (key) { Object.defineProperty(target, key, Object.getOwnPropertyDescriptor(source, key)); }); } } return target; }
 
-import { PropertyChangedEvent } from '../../lists/contracts/IPropertyChanged';
+import { createFunction } from '../../helpers/helpers';
 import '../extensions/autoConnect';
-import { ObservableObject } from './ObservableObject';
+import { PropertyChangedEvent } from './IPropertyChanged';
+import { _set, _setExt, ObservableObject } from './ObservableObject';
 export var ObservableObjectBuilder =
 /*#__PURE__*/
 function () {
@@ -32,16 +33,22 @@ function () {
         __fields[name] = object[name];
       } else if (typeof initValue !== 'undefined') {
         throw new Error("You can't set initValue for prototype writable property");
-      }
+      } // optimization
+
+
+      var getValue = createFunction('o', "return o.__fields[\"".concat(name, "\"]"));
+      var setValue = createFunction('o', 'v', "o.__fields[\"".concat(name, "\"] = v"));
+
+      var _set2 = setOptions ? _setExt.bind(null, name, getValue, setValue, setOptions) : _set.bind(null, name, getValue, setValue);
 
       Object.defineProperty(object, name, {
         configurable: true,
         enumerable: !hidden,
         get: function get() {
-          return this.__fields[name];
+          return getValue(this);
         },
         set: function set(newValue) {
-          this._set(name, newValue, setOptions);
+          _set2(this, newValue);
         }
       });
 
@@ -77,32 +84,37 @@ function () {
         factory = function factory(o) {
           return o;
         };
-      }
+      } // optimization
+
+
+      var getValue = createFunction('o', "return o.__fields[\"".concat(name, "\"]"));
 
       var createInstanceProperty = function createInstanceProperty(instance) {
         Object.defineProperty(instance, name, {
           configurable: true,
           enumerable: !hidden,
           get: function get() {
-            return this.__fields[name];
+            return getValue(this);
           }
         });
       };
 
       if (factory) {
+        // optimization
+        var setValue = createFunction('o', 'v', "o.__fields[\"".concat(name, "\"] = v"));
+        var set = setOptions ? _setExt.bind(null, name, getValue, setValue, setOptions) : _set.bind(null, name, getValue, setValue);
         Object.defineProperty(object, name, {
           configurable: true,
           enumerable: !hidden,
           get: function get() {
             var factoryValue = factory.call(this, initValue);
             createInstanceProperty(this);
-            var fields = this.__fields;
 
-            if (fields && typeof factoryValue !== 'undefined') {
-              var oldValue = fields[name];
+            if (typeof factoryValue !== 'undefined') {
+              var oldValue = getValue(this);
 
               if (factoryValue !== oldValue) {
-                this._set(name, factoryValue, setOptions);
+                set(this, factoryValue);
               }
             }
 

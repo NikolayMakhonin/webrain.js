@@ -269,6 +269,7 @@ function () {
 var MergeState =
 /*#__PURE__*/
 function () {
+  // noinspection DuplicatedCode
   function MergeState(mergerVisitor, base, older, newer, set, preferCloneBase, preferCloneOlder, preferCloneNewer, refsBase, refsOlder, refsNewer, options) {
     _classCallCheck(this, MergeState);
 

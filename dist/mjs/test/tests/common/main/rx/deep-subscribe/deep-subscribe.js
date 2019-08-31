@@ -3,41 +3,108 @@ import _asyncToGenerator from "@babel/runtime/helpers/asyncToGenerator";
 import _toConsumableArray from "@babel/runtime/helpers/toConsumableArray";
 
 /* tslint:disable:no-construct use-primitive-type no-shadowed-variable no-duplicate-string no-empty max-line-length */
-import { delay } from '../../../../../../main/common/helpers/helpers';
-import { VALUE_PROPERTY_DEFAULT } from '../../../../../../main/common/rx/deep-subscribe/contracts/constants';
+import { delay, VALUE_PROPERTY_DEFAULT } from '../../../../../../main/common/helpers/helpers';
 import { ObservableObjectBuilder } from '../../../../../../main/common/rx/object/ObservableObjectBuilder';
 import { createObject, Tester } from './helpers/Tester';
 describe('common > main > rx > deep-subscribe > deep-subscribe', function () {
   var check = createObject();
   it('object', function () {
+    var object1 = createObject();
     new Tester({
-      object: createObject().object,
-      immediate: false
+      object: object1.observableObject,
+      immediate: true
     }, function (b) {
       return b.path(function (o) {
-        return o.object;
+        return o.observableObjectPrototype.observableObject.valueObject;
       });
     }, function (b) {
       return b.path(function (o) {
-        return o.object.object;
+        return o.valueObject;
       });
     }, function (b) {
       return b.path(function (o) {
-        return o.object.object.object;
+        return o.observableObject['@last'].valueObject;
       });
-    }).subscribe(null).change(function (o) {
-      return o.object = null;
-    }, [], []);
+    }, function (b) {
+      return b.path(function (o) {
+        return o.observableObjectPrototype.observableObject.valueObject['@last'];
+      });
+    }, function (b) {
+      return b.path(function (o) {
+        return o.observableObject.observableObject.valueObject;
+      });
+    }).subscribe(function (o) {
+      return [o.valueObject];
+    }).unsubscribe(function (o) {
+      return [o.valueObject];
+    }).subscribe(function (o) {
+      return [o.valueObject];
+    }).change(function (o) {
+      return o.valueObject = new Number(1);
+    }, [object1.valueObject], [new Number(1)]).unsubscribe([new Number(1)]);
     new Tester({
       object: createObject().observableObject,
-      immediate: false
+      immediate: true
+    }, function (b) {
+      return b.path(function (o) {
+        return o.observableObject['@last'].valueObject;
+      });
+    }, function (b) {
+      return b.path(function (o) {
+        return o.observableObject.observableObject.valueObject;
+      });
+    }, function (b) {
+      return b.path(function (o) {
+        return o.map['#observableObject'].observableObject.map['#object'].object.valueObject;
+      });
+    }).subscribe(function (o) {
+      return [o.valueObject];
+    }).unsubscribe(function (o) {
+      return [o.valueObject];
+    }).subscribe(function (o) {
+      return [o.valueObject];
+    }).change(function (o) {
+      return o.observableObject = new Number(1);
+    }, [new String("value")], []).change(function (o) {
+      return o.observableObject = o;
+    }, [], [new String("value")]).unsubscribe([new String("value")]);
+    new Tester({
+      object: createObject().observableObject,
+      immediate: true,
+      doNotSubscribeNonObjectValues: true
+    }, function (b) {
+      return b.path(function (o) {
+        return o.observableObjectPrototype.valueObjectWritable;
+      });
+    }, function (b) {
+      return b.path(function (o) {
+        return o.observableObject.observableObjectPrototype.valueObjectWritable;
+      });
+    }, function (b) {
+      return b.path(function (o) {
+        return o.observableObjectPrototype.observableObject.observableObjectPrototype.valueObjectWritable;
+      });
+    }, function (b) {
+      return b.path(function (o) {
+        return o.observableObject.observableObject.observableObjectPrototype.valueObjectWritable;
+      });
+    }).subscribe([]).unsubscribe([]).subscribe([]).change(function (o) {
+      return o.observableObjectPrototype.valueObjectWritable = new Number(1);
+    }, [], [new Number(1)]).unsubscribe([new Number(1)]);
+    new Tester({
+      object: createObject().object,
+      immediate: true
     }, function (b) {
       return b.path(function (o) {
         return o.object;
       });
-    }).subscribe([]).unsubscribe([]).subscribe([]).change(function (o) {
-      return o.object = new Number(1);
-    }, [], [new Number(1)]);
+    }).subscribe(function (o) {
+      return [o.object];
+    }).change(function (o) {
+      return o.object = null;
+    }, function (o) {
+      return [];
+    }, []);
     new Tester({
       object: createObject().object,
       immediate: true
@@ -156,21 +223,20 @@ describe('common > main > rx > deep-subscribe > deep-subscribe', function () {
       return o.observableObject.object = new Number(1);
     }, [], [new Number(1)]).change(function (o) {
       return o.observableObject.object = new Number(2);
-    }, [new Number(1)], [new Number(2)]).unsubscribe([new Number(2)]);
-    new Tester({
-      object: createObject().object,
-      immediate: false
-    }, function (b) {
-      return b.repeat(1, 3, function (b) {
-        return b.any(function (b) {
-          return b.propertyRegexp(/object|observableObject/);
-        }, function (b) {
-          return b.path(function (o) {
-            return o['list|set|map|observableList|observableSet|observableMap']['#'];
-          });
-        });
-      });
-    }).subscribe([]);
+    }, [new Number(1)], [new Number(2)]).unsubscribe([new Number(2)]); // new Tester(
+    // 	{
+    // 		object: createObject().object,
+    // 		immediate: false,
+    // 	},
+    // 	b => b
+    // 		.repeat(1, 3, b => b
+    // 			.any(
+    // 				b => b.propertyRegexp(/object|observableObject/),
+    // 				b => b.path(o => o['list|set|map|observableList|observableSet|observableMap']['#']),
+    // 			),
+    // 		),
+    // )
+    // 	.subscribe([])
   });
   it('chain of same objects', function () {
     new Tester({
@@ -194,27 +260,26 @@ describe('common > main > rx > deep-subscribe > deep-subscribe', function () {
     }, function (o) {
       return [];
     }).unsubscribe([]);
-    new Tester({
-      object: createObject().observableObject,
-      immediate: true
-    }, // b => b.path(o => o.object),
-    function (b) {
-      return b.path(function (o) {
-        return o.object.observableObject.object;
-      });
-    }, function (b) {
-      return b.path(function (o) {
-        return o.object.observableObject.object.observableObject.object;
-      });
-    }).subscribe(function (o) {
-      return [o.object];
-    }).change(function (o) {
-      return o.object = new Number(1);
-    }, function (o) {
-      return [o.object];
-    }, function (o) {
-      return [];
-    }).unsubscribe([]);
+    {
+      var object = createObject();
+      new Tester({
+        object: object.observableObject,
+        immediate: true
+      }, // b => b.path(o => o.object),
+      function (b) {
+        return b.path(function (o) {
+          return o.object.observableObject.object;
+        });
+      }, function (b) {
+        return b.path(function (o) {
+          return o.object.observableObject.object.observableObject.object;
+        });
+      }).subscribe([object]).change(function (o) {
+        return o.object = new Number(1);
+      }, [object], []).change(function (o) {
+        return o.object = object;
+      }, [], [object]).unsubscribe([object]);
+    }
     var observableList = createObject().observableList;
     observableList.clear();
     observableList.add(observableList);
@@ -408,6 +473,42 @@ describe('common > main > rx > deep-subscribe > deep-subscribe', function () {
       while (1) {
         switch (_context.prev = _context.next) {
           case 0:
+            new Tester({
+              object: createObject().observableObject,
+              immediate: true
+            }, function (b) {
+              return b.path(function (o) {
+                return o.property;
+              });
+            }).subscribe(function (o) {
+              return [o.observableObject];
+            }).change(function (o) {
+              return o.property[VALUE_PROPERTY_DEFAULT] = new Number(1);
+            }, function (o) {
+              return [o.observableObject];
+            }, [new Number(1)]).change(function (o) {
+              return o.property = new Number(2);
+            }, [new Number(1)], [new Number(2)]).change(function (o) {
+              return o.property = o.object.property;
+            }, [new Number(2)], [new Number(1)]).unsubscribe([new Number(1)]);
+            new Tester({
+              object: createObject().observableObject,
+              immediate: true
+            }, function (b) {
+              return b.path(function (o) {
+                return o.property['@value_observableObject'];
+              });
+            }).subscribe(function (o) {
+              return [o.observableObject];
+            }).change(function (o) {
+              return o.property.value_observableObject = new Number(1);
+            }, function (o) {
+              return [o.observableObject];
+            }, [new Number(1)]).change(function (o) {
+              return o.property = new Number(2);
+            }, [new Number(1)], [new Number(2)]).change(function (o) {
+              return o.property = o.object.property;
+            }, [new Number(2)], [new Number(1)]).unsubscribe([new Number(1)]);
             object = createObject();
             new ObservableObjectBuilder(object.property)["delete"](VALUE_PROPERTY_DEFAULT);
             new Tester({
@@ -600,7 +701,7 @@ describe('common > main > rx > deep-subscribe > deep-subscribe', function () {
               return [o.map, o.set];
             });
 
-          case 5:
+          case 7:
           case "end":
             return _context.stop();
         }
@@ -844,7 +945,7 @@ describe('common > main > rx > deep-subscribe > deep-subscribe', function () {
       delete b.result.description;
       delete b.result.next.next.description;
       return b;
-    }).subscribe([null], [null], Error, /unsubscribe function for non Object value/);
+    }).subscribe(["value"], ["value"], Error, /unsubscribe function for non Object value/);
   });
   it('throws incorrect Unsubscribe', function () {
     new Tester({
@@ -868,6 +969,6 @@ describe('common > main > rx > deep-subscribe > deep-subscribe', function () {
       return b.path(function (o) {
         return o.object.value;
       });
-    }).subscribe([null], [], Error, /Value is not a function or null\/undefined/);
+    }).subscribe(["value"], [], Error, /Value is not a function or null\/undefined/);
   });
 });

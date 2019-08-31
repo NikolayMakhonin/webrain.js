@@ -21,12 +21,12 @@ function subject(base) {
         return null;
       }
 
-      let {
+      const {
         _subscribers
       } = this;
 
       if (!_subscribers) {
-        this._subscribers = _subscribers = [subscriber];
+        this._subscribers = [subscriber];
       } else {
         _subscribers[_subscribers.length] = subscriber;
       }
@@ -34,12 +34,36 @@ function subject(base) {
       return () => {
         if (!subscriber) {
           return;
-        }
+        } // tslint:disable-next-line:no-shadowed-variable
+
+
+        const {
+          _subscribers
+        } = this;
+        const len = _subscribers.length;
 
         const index = _subscribers.indexOf(subscriber);
 
         if (index >= 0) {
-          _subscribers.splice(index, 1);
+          if (this._subscribersInProcess === _subscribers) {
+            const subscribers = new Array(len - 1);
+
+            for (let i = 0; i < index; i++) {
+              subscribers[i] = _subscribers[i];
+            }
+
+            for (let i = index + 1; i < len; i++) {
+              subscribers[i - 1] = _subscribers[i];
+            }
+
+            this._subscribers = subscribers;
+          } else {
+            for (let i = index + 1; i < len; i++) {
+              _subscribers[i - 1] = _subscribers[i];
+            }
+
+            _subscribers.length = len - 1;
+          }
         }
 
         subscriber = null;
@@ -47,7 +71,7 @@ function subject(base) {
     }
 
     emit(value) {
-      let {
+      const {
         _subscribers
       } = this;
 
@@ -55,10 +79,16 @@ function subject(base) {
         return this;
       }
 
-      _subscribers = _subscribers.slice();
+      if (this._subscribersInProcess !== _subscribers) {
+        this._subscribersInProcess = _subscribers;
+      }
 
-      for (let i = 0, l = _subscribers.length; i < l; i++) {
+      for (let i = 0, len = _subscribers.length; i < len; i++) {
         _subscribers[i](value);
+      }
+
+      if (this._subscribersInProcess === _subscribers) {
+        this._subscribersInProcess = null;
       }
 
       return this;

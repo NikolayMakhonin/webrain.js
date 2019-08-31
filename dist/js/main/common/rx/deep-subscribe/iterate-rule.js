@@ -99,13 +99,7 @@ function* iterateRule(rule, next = null) {
   }
 }
 
-function subscribeNextRule(ruleIterator, fork, subscribeNode, subscribeLeaf) {
-  let iteration;
-
-  if (!ruleIterator || (iteration = ruleIterator.next()).done) {
-    return subscribeLeaf();
-  }
-
+function subscribeNextRule(ruleIterator, iteration, fork, subscribeNode) {
   const ruleOrIterable = iteration.value;
 
   if ((0, _helpers.isIterable)(ruleOrIterable)) {

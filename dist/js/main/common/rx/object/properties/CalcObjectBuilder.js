@@ -5,34 +5,14 @@ Object.defineProperty(exports, "__esModule", {
 });
 exports.CalcObjectBuilder = void 0;
 
-var _deepSubscribe = require("../../deep-subscribe/deep-subscribe");
-
 var _ObservableObjectBuilder = require("../ObservableObjectBuilder");
 
-var _CalcProperty = require("./CalcProperty");
-
 class CalcObjectBuilder extends _ObservableObjectBuilder.ObservableObjectBuilder {
-  calc(name, input, {
-    dependencies,
-    calcFunc,
-    calcOptions,
-    valuePropertyOptions
-  }, initValue) {
+  calc(name, inputOrFactory, calcPropertyFactory, initValue) {
     return this.readable(name, {
       factory() {
-        const property = new _CalcProperty.CalcProperty(calcFunc, calcOptions, valuePropertyOptions, initValue);
-        property.input = typeof input === 'function' ? input(this) : input;
-
-        if (dependencies) {
-          (0, _deepSubscribe.deepSubscribe)(property, () => {
-            property.invalidate();
-            return null;
-          }, false, b => {
-            dependencies(b.path(o => o.input));
-            return b;
-          });
-        }
-
+        const property = calcPropertyFactory(initValue);
+        property.input = typeof inputOrFactory === 'function' ? inputOrFactory(this) : inputOrFactory;
         return property;
       }
 

@@ -115,10 +115,10 @@ class DeferredCalc {
 
     this._pulse();
 
-    this._calcFunc.call(this, () => {
+    this._calcFunc.call(this, value => {
       this._timeCalcEnd = this._timing.now();
 
-      this._calcCompletedCallback.call(this);
+      this._calcCompletedCallback.call(this, value);
 
       this._pulse();
     });

@@ -3,9 +3,7 @@ import _createClass from "@babel/runtime/helpers/createClass";
 import _possibleConstructorReturn from "@babel/runtime/helpers/possibleConstructorReturn";
 import _getPrototypeOf from "@babel/runtime/helpers/getPrototypeOf";
 import _inherits from "@babel/runtime/helpers/inherits";
-import { deepSubscribe } from '../../deep-subscribe/deep-subscribe';
 import { ObservableObjectBuilder } from '../ObservableObjectBuilder';
-import { CalcProperty } from './CalcProperty';
 export var CalcObjectBuilder =
 /*#__PURE__*/
 function (_ObservableObjectBuil) {
@@ -19,28 +17,11 @@ function (_ObservableObjectBuil) {
 
   _createClass(CalcObjectBuilder, [{
     key: "calc",
-    value: function calc(name, input, _ref, initValue) {
-      var dependencies = _ref.dependencies,
-          calcFunc = _ref.calcFunc,
-          calcOptions = _ref.calcOptions,
-          valuePropertyOptions = _ref.valuePropertyOptions;
+    value: function calc(name, inputOrFactory, calcPropertyFactory, initValue) {
       return this.readable(name, {
         factory: function factory() {
-          var property = new CalcProperty(calcFunc, calcOptions, valuePropertyOptions, initValue);
-          property.input = typeof input === 'function' ? input(this) : input;
-
-          if (dependencies) {
-            deepSubscribe(property, function () {
-              property.invalidate();
-              return null;
-            }, false, function (b) {
-              dependencies(b.path(function (o) {
-                return o.input;
-              }));
-              return b;
-            });
-          }
-
+          var property = calcPropertyFactory(initValue);
+          property.input = typeof inputOrFactory === 'function' ? inputOrFactory(this) : inputOrFactory;
           return property;
         }
       });

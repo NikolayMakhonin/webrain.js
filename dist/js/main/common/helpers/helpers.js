@@ -9,7 +9,9 @@ exports.typeToDebugString = typeToDebugString;
 exports.delay = delay;
 exports.checkIsFuncOrNull = checkIsFuncOrNull;
 exports.toSingleCall = toSingleCall;
-exports.EMPTY = void 0;
+exports.createFunction = createFunction;
+exports.hideObjectProperty = hideObjectProperty;
+exports.VALUE_PROPERTY_DEFAULT = exports.EMPTY = void 0;
 
 function isIterable(value) {
   return value != null && typeof value[Symbol.iterator] === 'function';
@@ -33,6 +35,7 @@ function delay(timeMilliseconds) {
 }
 
 function checkIsFuncOrNull(func) {
+  // PROF: 66 - 0.1%
   if (func != null && typeof func !== 'function') {
     throw new Error(`Value is not a function or null/undefined: ${func}`);
   }
@@ -60,3 +63,34 @@ function toSingleCall(func, throwOnMultipleCall) {
     return func(...args);
   };
 }
+
+const createFunctionCache = {}; // tslint:disable-next-line:ban-types
+
+function createFunction(...args) {
+  const id = args[args.length - 1] + '';
+  let func = createFunctionCache[id];
+
+  if (!func) {
+    createFunctionCache[id] = func = Function(...args);
+  }
+
+  return func;
+}
+
+function hideObjectProperty(object, propertyName) {
+  const descriptor = Object.getOwnPropertyDescriptor(object, propertyName);
+
+  if (descriptor) {
+    descriptor.enumerable = false;
+    return;
+  }
+
+  Object.defineProperty(object, propertyName, {
+    configurable: true,
+    enumerable: false,
+    value: object[propertyName]
+  });
+}
+
+const VALUE_PROPERTY_DEFAULT = '';
+exports.VALUE_PROPERTY_DEFAULT = VALUE_PROPERTY_DEFAULT;

@@ -3,6 +3,8 @@
 Object.defineProperty(exports, "__esModule", {
   value: true
 });
+exports._setExt = _setExt;
+exports._set = _set;
 exports.ObservableObject = void 0;
 
 require("../extensions/autoConnect");
@@ -20,66 +22,98 @@ class ObservableObject extends _PropertyChangedObject.PropertyChangedObject {
       value: {}
     });
   }
-  /** @internal */
-
-
-  _set(name, newValue, options) {
-    const {
-      __fields
-    } = this;
-    const oldValue = __fields[name];
-    const equalsFunc = options && options.equalsFunc;
-
-    if (equalsFunc ? equalsFunc.call(this, oldValue, newValue) : oldValue === newValue) {
-      return false;
-    }
-
-    const fillFunc = options && options.fillFunc;
-
-    if (fillFunc && oldValue != null && newValue != null && fillFunc.call(this, oldValue, newValue)) {
-      return false;
-    }
-
-    const convertFunc = options && options.convertFunc;
-
-    if (convertFunc) {
-      newValue = convertFunc.call(this, newValue);
-    }
-
-    if (oldValue === newValue) {
-      return false;
-    }
-
-    const beforeChange = options && options.beforeChange;
-
-    if (beforeChange) {
-      beforeChange.call(this, oldValue);
-    }
-
-    __fields[name] = newValue;
-    const afterChange = options && options.afterChange;
-
-    if (afterChange) {
-      afterChange.call(this, newValue);
-    }
-
-    if (!options || !options.suppressPropertyChanged) {
-      const {
-        propertyChangedIfCanEmit
-      } = this;
-
-      if (propertyChangedIfCanEmit) {
-        propertyChangedIfCanEmit.onPropertyChanged({
-          name,
-          oldValue,
-          newValue
-        });
-      }
-    }
-
-    return true;
-  }
 
 }
+/** @internal */
+
 
 exports.ObservableObject = ObservableObject;
+
+function _setExt(name, getValue, setValue, options, object, newValue) {
+  if (!options) {
+    return _set(name, getValue, setValue, object, newValue);
+  }
+
+  const oldValue = getValue ? getValue(object) : object.__fields[name];
+  const equalsFunc = options.equalsFunc;
+
+  if (equalsFunc ? equalsFunc.call(object, oldValue, newValue) : oldValue === newValue) {
+    return false;
+  }
+
+  const fillFunc = options.fillFunc;
+
+  if (fillFunc && oldValue != null && newValue != null && fillFunc.call(object, oldValue, newValue)) {
+    return false;
+  }
+
+  const convertFunc = options.convertFunc;
+
+  if (convertFunc) {
+    newValue = convertFunc.call(object, newValue);
+  }
+
+  if (oldValue === newValue) {
+    return false;
+  }
+
+  const beforeChange = options.beforeChange;
+
+  if (beforeChange) {
+    beforeChange.call(object, oldValue);
+  }
+
+  if (setValue) {
+    setValue(object, newValue);
+  } else {
+    object.__fields[name] = newValue;
+  }
+
+  const afterChange = options.afterChange;
+
+  if (afterChange) {
+    afterChange.call(object, newValue);
+  }
+
+  if (!options || !options.suppressPropertyChanged) {
+    const {
+      propertyChangedIfCanEmit
+    } = object;
+
+    if (propertyChangedIfCanEmit) {
+      propertyChangedIfCanEmit.onPropertyChanged({
+        name,
+        oldValue,
+        newValue
+      });
+    }
+  }
+
+  return true;
+}
+/** @internal */
+
+
+function _set(name, getValue, setValue, object, newValue) {
+  const oldValue = getValue(object);
+
+  if (oldValue === newValue) {
+    return false;
+  }
+
+  setValue(object, newValue);
+  const {
+    propertyChangedDisabled,
+    propertyChanged
+  } = object.__meta;
+
+  if (!propertyChangedDisabled && propertyChanged) {
+    propertyChanged.emit({
+      name,
+      oldValue,
+      newValue
+    });
+  }
+
+  return true;
+}

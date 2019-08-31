@@ -35,18 +35,22 @@ describe('common > main > rx > deep-subscribe > iterate-rule', function () {
   // }
   // const endObject = { _end: true }
   function rulesToObject(ruleIterator, obj = {}) {
-    return (0, _iterateRule.subscribeNextRule)(ruleIterator, nextRuleIterator => rulesToObject(nextRuleIterator, obj), (rule, getRuleIterator) => {
+    let iteration;
+
+    if (!ruleIterator || (iteration = ruleIterator.next()).done) {
+      obj._end = true;
+      return () => {
+        obj._end = false;
+      };
+    }
+
+    return (0, _iterateRule.subscribeNextRule)(ruleIterator, iteration, nextRuleIterator => rulesToObject(nextRuleIterator, obj), (rule, getRuleIterator) => {
       const newObj = {};
       const unsubscribe = rulesToObject(getRuleIterator ? getRuleIterator() : null, newObj);
       Object.assign(obj, {
         [rule.description]: newObj
       });
       return unsubscribe;
-    }, () => {
-      obj._end = true;
-      return () => {
-        obj._end = false;
-      };
     });
   }
 

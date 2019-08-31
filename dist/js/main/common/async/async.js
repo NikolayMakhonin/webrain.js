@@ -4,6 +4,7 @@ Object.defineProperty(exports, "__esModule", {
   value: true
 });
 exports.isThenable = isThenable;
+exports.isAsync = isAsync;
 exports.resolveIterator = resolveIterator;
 exports.resolveThenable = resolveThenable;
 exports.resolveValue = resolveValue;
@@ -14,6 +15,10 @@ var _helpers = require("../helpers/helpers");
 
 function isThenable(value) {
   return value != null && typeof value.then === 'function';
+}
+
+function isAsync(value) {
+  return isThenable(value) || (0, _helpers.isIterator)(value);
 }
 
 let ResolveResult;
@@ -28,7 +33,7 @@ exports.ResolveResult = ResolveResult;
   ResolveResult[ResolveResult["DeferredError"] = 6] = "DeferredError";
 })(ResolveResult || (exports.ResolveResult = ResolveResult = {}));
 
-function resolveIterator(iterator, isError, onImmediate, onDeferred) {
+function resolveIterator(iterator, isError, onImmediate, onDeferred, customResolveValue) {
   if (!(0, _helpers.isIterator)(iterator)) {
     return ResolveResult.None;
   }
@@ -55,7 +60,7 @@ function resolveIterator(iterator, isError, onImmediate, onDeferred) {
           isThrow = nextIsError;
         }, (o, nextIsError) => {
           iterate(o, nextIsError, nextOnDeferred, nextOnDeferred);
-        });
+        }, customResolveValue);
 
         if ((result & ResolveResult.Deferred) !== 0) {
           return result;
@@ -100,7 +105,7 @@ function resolveThenable(thenable, isError, onImmediate, onDeferred) {
   return result;
 }
 
-function _resolveValue(value, isError, onImmediate, onDeferred) {
+function _resolveValue(value, isError, onImmediate, onDeferred, customResolveValue) {
   const nextOnImmediate = (o, nextIsError) => {
     if (nextIsError) {
       isError = true;
@@ -110,7 +115,7 @@ function _resolveValue(value, isError, onImmediate, onDeferred) {
   };
 
   const nextOnDeferred = (val, nextIsError) => {
-    _resolveValue(val, isError || nextIsError, onDeferred, onDeferred);
+    _resolveValue(val, isError || nextIsError, onDeferred, onDeferred, customResolveValue);
   };
 
   while (true) {
@@ -126,7 +131,7 @@ function _resolveValue(value, isError, onImmediate, onDeferred) {
       }
     }
     {
-      const result = resolveIterator(value, isError, nextOnImmediate, nextOnDeferred);
+      const result = resolveIterator(value, isError, nextOnImmediate, nextOnDeferred, customResolveValue);
 
       if ((result & ResolveResult.Deferred) !== 0) {
         return result;
@@ -136,18 +141,28 @@ function _resolveValue(value, isError, onImmediate, onDeferred) {
         continue;
       }
     }
+
+    if (value != null && customResolveValue != null) {
+      const newValue = customResolveValue(value);
+
+      if (newValue !== value) {
+        value = newValue;
+        continue;
+      }
+    }
+
     onImmediate(value, isError);
     return isError ? ResolveResult.ImmediateError : ResolveResult.Immediate;
   }
 }
 
-function resolveValue(value, onImmediate, onDeferred) {
-  return _resolveValue(value, false, onImmediate, onDeferred);
+function resolveValue(value, onImmediate, onDeferred, customResolveValue) {
+  return _resolveValue(value, false, onImmediate, onDeferred, customResolveValue);
 }
 
-function resolveValueFunc(func, onImmediate, onDeferred) {
+function resolveValueFunc(func, onImmediate, onDeferred, customResolveValue) {
   try {
-    return resolveValue(func(), onImmediate, onDeferred);
+    return resolveValue(func(), onImmediate, onDeferred, customResolveValue);
   } catch (err) {
     onImmediate(err, true);
     return ResolveResult.ImmediateError;

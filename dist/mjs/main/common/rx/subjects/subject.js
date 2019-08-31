@@ -21,6 +21,8 @@ export function subject(base) {
       _createClass(Subject, [{
         key: "subscribe",
         value: function subscribe(subscriber) {
+          var _this = this;
+
           if (!subscriber) {
             return null;
           }
@@ -28,7 +30,7 @@ export function subject(base) {
           var _subscribers = this._subscribers;
 
           if (!_subscribers) {
-            this._subscribers = _subscribers = [subscriber];
+            this._subscribers = [subscriber];
           } else {
             _subscribers[_subscribers.length] = subscriber;
           }
@@ -36,12 +38,34 @@ export function subject(base) {
           return function () {
             if (!subscriber) {
               return;
-            }
+            } // tslint:disable-next-line:no-shadowed-variable
+
+
+            var _subscribers = _this._subscribers;
+            var len = _subscribers.length;
 
             var index = _subscribers.indexOf(subscriber);
 
             if (index >= 0) {
-              _subscribers.splice(index, 1);
+              if (_this._subscribersInProcess === _subscribers) {
+                var subscribers = new Array(len - 1);
+
+                for (var i = 0; i < index; i++) {
+                  subscribers[i] = _subscribers[i];
+                }
+
+                for (var _i = index + 1; _i < len; _i++) {
+                  subscribers[_i - 1] = _subscribers[_i];
+                }
+
+                _this._subscribers = subscribers;
+              } else {
+                for (var _i2 = index + 1; _i2 < len; _i2++) {
+                  _subscribers[_i2 - 1] = _subscribers[_i2];
+                }
+
+                _subscribers.length = len - 1;
+              }
             }
 
             subscriber = null;
@@ -56,10 +80,16 @@ export function subject(base) {
             return this;
           }
 
-          _subscribers = _subscribers.slice();
+          if (this._subscribersInProcess !== _subscribers) {
+            this._subscribersInProcess = _subscribers;
+          }
 
-          for (var i = 0, l = _subscribers.length; i < l; i++) {
+          for (var i = 0, len = _subscribers.length; i < len; i++) {
             _subscribers[i](value);
+          }
+
+          if (this._subscribersInProcess === _subscribers) {
+            this._subscribersInProcess = null;
           }
 
           return this;

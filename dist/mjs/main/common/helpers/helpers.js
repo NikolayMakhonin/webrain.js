@@ -15,6 +15,7 @@ export function delay(timeMilliseconds) {
   });
 }
 export function checkIsFuncOrNull(func) {
+  // PROF: 66 - 0.1%
   if (func != null && typeof func !== 'function') {
     throw new Error("Value is not a function or null/undefined: ".concat(func));
   }
@@ -41,3 +42,32 @@ export function toSingleCall(func, throwOnMultipleCall) {
     return func.apply(void 0, arguments);
   };
 }
+var createFunctionCache = {}; // tslint:disable-next-line:ban-types
+
+export function createFunction() {
+  var _ref;
+
+  var id = (_ref = arguments.length - 1, _ref < 0 || arguments.length <= _ref ? undefined : arguments[_ref]) + '';
+  var func = createFunctionCache[id];
+
+  if (!func) {
+    createFunctionCache[id] = func = Function.apply(void 0, arguments);
+  }
+
+  return func;
+}
+export function hideObjectProperty(object, propertyName) {
+  var descriptor = Object.getOwnPropertyDescriptor(object, propertyName);
+
+  if (descriptor) {
+    descriptor.enumerable = false;
+    return;
+  }
+
+  Object.defineProperty(object, propertyName, {
+    configurable: true,
+    enumerable: false,
+    value: object[propertyName]
+  });
+}
+export var VALUE_PROPERTY_DEFAULT = '';

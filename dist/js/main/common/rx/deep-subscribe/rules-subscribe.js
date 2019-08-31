@@ -3,6 +3,8 @@
 Object.defineProperty(exports, "__esModule", {
   value: true
 });
+exports.hasDefaultProperty = hasDefaultProperty;
+exports.subscribeDefaultProperty = subscribeDefaultProperty;
 exports.RuleSubscribeCollection = exports.RuleSubscribeMap = exports.RuleSubscribeObject = exports.RuleSubscribe = exports.SubscribeObjectType = void 0;
 
 var _helpers = require("../../helpers/helpers");
@@ -50,14 +52,14 @@ function subscribeObjectValue(propertyNames, object, immediateSubscribe, subscri
   let subscribePropertyName;
 
   const getSubscribePropertyName = () => {
-    if (!Object.prototype.hasOwnProperty.call(object, _constants.VALUE_PROPERTY_DEFAULT)) {
+    if (!Object.prototype.hasOwnProperty.call(object, _helpers.VALUE_PROPERTY_DEFAULT)) {
       return null;
     }
 
     const propertyName = getFirstExistProperty(object, propertyNames);
 
     if (propertyName == null) {
-      return _constants.VALUE_PROPERTY_DEFAULT;
+      return _helpers.VALUE_PROPERTY_DEFAULT;
     }
 
     return propertyName;
@@ -127,6 +129,23 @@ function subscribeObjectValue(propertyNames, object, immediateSubscribe, subscri
 // region subscribeObject
 
 
+const allowSubscribePrototype = true;
+
+function hasDefaultProperty(object) {
+  return object instanceof Object && (allowSubscribePrototype ? _helpers.VALUE_PROPERTY_DEFAULT in object : Object.prototype.hasOwnProperty.call(object, _helpers.VALUE_PROPERTY_DEFAULT)) && object.constructor !== Object && !Array.isArray(object);
+}
+
+function subscribeDefaultProperty(object, immediateSubscribe, subscribeItem) {
+  let unsubscribe;
+  return subscribeObject(_helpers.VALUE_PROPERTY_DEFAULT, o => o === _helpers.VALUE_PROPERTY_DEFAULT, object, immediateSubscribe, (item, debugPropertyName) => {
+    unsubscribe = subscribeItem(item, debugPropertyName);
+  }, () => {
+    if (unsubscribe) {
+      unsubscribe();
+    }
+  });
+}
+
 function subscribeObject(propertyNames, propertyPredicate, object, immediateSubscribe, subscribeItem, unsubscribeItem) {
   if (!(object instanceof Object)) {
     return null;
@@ -134,14 +153,12 @@ function subscribeObject(propertyNames, propertyPredicate, object, immediateSubs
 
   let unsubscribe;
 
-  if (propertyNames !== _constants.VALUE_PROPERTY_DEFAULT && Object.prototype.hasOwnProperty.call(object, _constants.VALUE_PROPERTY_DEFAULT) && object.constructor !== Object && !Array.isArray(object)) {
-    return subscribeObject(_constants.VALUE_PROPERTY_DEFAULT, o => o === _constants.VALUE_PROPERTY_DEFAULT, object, immediateSubscribe, item => {
-      unsubscribe = subscribeObject(propertyNames, propertyPredicate, item, immediateSubscribe, subscribeItem, unsubscribeItem);
-    }, () => {
-      if (unsubscribe) {
-        unsubscribe();
-      }
-    });
+  if (propertyNames !== _helpers.VALUE_PROPERTY_DEFAULT && hasDefaultProperty(object)) {
+    unsubscribe = subscribeDefaultProperty(object, immediateSubscribe, item => subscribeObject(propertyNames, propertyPredicate, item, immediateSubscribe, subscribeItem, unsubscribeItem));
+
+    if (unsubscribe) {
+      return unsubscribe;
+    }
   }
 
   const {
@@ -154,6 +171,7 @@ function subscribeObject(propertyNames, propertyPredicate, object, immediateSubs
       oldValue,
       newValue
     }) => {
+      // PROF: 623 - 1.3%
       if (!propertyPredicate || propertyPredicate(name, object)) {
         if (typeof oldValue !== 'undefined') {
           unsubscribeItem(oldValue, name + '');
@@ -172,18 +190,18 @@ function subscribeObject(propertyNames, propertyPredicate, object, immediateSubs
         for (let i = 0, len = propertyNames.length; i < len; i++) {
           const propertyName = propertyNames[i];
 
-          if (Object.prototype.hasOwnProperty.call(object, propertyName)) {
+          if (allowSubscribePrototype ? propertyName in object : Object.prototype.hasOwnProperty.call(object, propertyName)) {
             callbackfn(object[propertyName], propertyName);
           }
         }
       } else {
-        if (Object.prototype.hasOwnProperty.call(object, propertyNames)) {
+        if (allowSubscribePrototype ? propertyNames in object : Object.prototype.hasOwnProperty.call(object, propertyNames)) {
           callbackfn(object[propertyNames], propertyNames);
         }
       }
     } else {
       for (const propertyName in object) {
-        if (Object.prototype.hasOwnProperty.call(object, propertyName) && (!propertyPredicate || propertyPredicate(propertyName, object))) {
+        if ((allowSubscribePrototype || Object.prototype.hasOwnProperty.call(object, propertyName)) && (!propertyPredicate || propertyPredicate(propertyName, object))) {
           callbackfn(object[propertyName], propertyName);
         }
       }
@@ -481,6 +499,7 @@ function createPropertyPredicate(propertyNames) {
     }
 
     return propName => {
+      // PROF: 226 - 0.5%
       return propName === propertyName;
     };
   } else {
