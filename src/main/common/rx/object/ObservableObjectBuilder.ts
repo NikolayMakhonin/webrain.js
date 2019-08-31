@@ -1,6 +1,6 @@
 import {createFunction} from '../../helpers/helpers'
-import {PropertyChangedEvent} from './IPropertyChanged'
 import '../extensions/autoConnect'
+import {PropertyChangedEvent} from './IPropertyChanged'
 import {_set, _setExt, ISetOptions, ObservableObject} from './ObservableObject'
 
 export interface IFieldOptions {

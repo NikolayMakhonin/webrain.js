@@ -215,7 +215,7 @@ export function resolveValue<T>(
 	value: ThenableOrIteratorOrValue<T>,
 	onImmediate: (value: T, isError: boolean) => void,
 	onDeferred: (value: T, isError: boolean) => void,
-	customResolveValue: TResolveAsyncValue<T>,
+	customResolveValue?: TResolveAsyncValue<T>,
 ): ResolveResult {
 	return _resolveValue(
 		value,

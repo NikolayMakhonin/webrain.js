@@ -1,6 +1,6 @@
 /* tslint:disable:no-duplicate-string */
 /* eslint-disable guard-for-in */
-import {ThenableOrIteratorOrValue, ThenableOrValue} from '../../../../../../../main/common/async/async'
+import {ThenableOrIteratorOrValue} from '../../../../../../../main/common/async/async'
 import {ThenableSync} from '../../../../../../../main/common/async/ThenableSync'
 import {ObservableObject} from '../../../../../../../main/common/rx/object/ObservableObject'
 import {CalcObjectBuilder} from '../../../../../../../main/common/rx/object/properties/CalcObjectBuilder'

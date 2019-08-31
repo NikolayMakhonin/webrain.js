@@ -24,9 +24,9 @@ export function subject(base): any {
 				return null
 			}
 
-			let {_subscribers} = this
+			const {_subscribers} = this
 			if (!_subscribers) {
-				this._subscribers = _subscribers = [subscriber]
+				this._subscribers = [subscriber]
 			} else {
 				_subscribers[_subscribers.length] = subscriber
 			}
@@ -36,7 +36,8 @@ export function subject(base): any {
 					return
 				}
 
-				let {_subscribers} = this
+				// tslint:disable-next-line:no-shadowed-variable
+				const {_subscribers} = this
 				const len = _subscribers.length
 				const index = _subscribers.indexOf(subscriber)
 				if (index >= 0) {
@@ -50,7 +51,7 @@ export function subject(base): any {
 							subscribers[i - 1] = _subscribers[i]
 						}
 
-						this._subscribers = _subscribers = subscribers
+						this._subscribers = subscribers
 					} else {
 						for (let i = index + 1; i < len; i++) {
 							_subscribers[i - 1] = _subscribers[i]

@@ -9,7 +9,6 @@ import {
 	ObjectSerializer, registerSerializable,
 } from '../../../../../../../main/common/extensions/serialization/serializers'
 import {ArraySet} from '../../../../../../../main/common/lists/ArraySet'
-import {IPropertyChangedEvent} from '../../../../../../../main/common/rx/object/IPropertyChanged'
 import {
 	ISetChangedEvent,
 	SetChangedType,
@@ -17,6 +16,7 @@ import {
 import {compareFast} from '../../../../../../../main/common/lists/helpers/compare'
 import {ObjectSet} from '../../../../../../../main/common/lists/ObjectSet'
 import {ObservableSet} from '../../../../../../../main/common/lists/ObservableSet'
+import {IPropertyChangedEvent} from '../../../../../../../main/common/rx/object/IPropertyChanged'
 import {Assert} from '../../../../../../../main/common/test/Assert'
 import {DeepCloneEqual} from '../../../../../../../main/common/test/DeepCloneEqual'
 import {IOptionsVariant, IOptionsVariants, ITestCase, TestVariants, THIS} from '../../../src/helpers/TestVariants'

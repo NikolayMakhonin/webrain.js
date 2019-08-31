@@ -50,8 +50,8 @@ export class ThenableSync<TValue = any> implements Thenable<TValue> {
 	private readonly _customResolveValue: TResolveAsyncValue
 
 	constructor(
-		executor: TExecutor<TValue>,
-		customResolveValue: TResolveAsyncValue,
+		executor?: TExecutor<TValue>,
+		customResolveValue?: TResolveAsyncValue,
 	) {
 		if (customResolveValue != null) {
 			this._customResolveValue = customResolveValue

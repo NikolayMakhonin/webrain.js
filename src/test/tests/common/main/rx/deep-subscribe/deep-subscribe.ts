@@ -34,7 +34,7 @@ describe('common > main > rx > deep-subscribe > deep-subscribe', function() {
 			},
 			b => b.path(o => o.observableObject['@last'].valueObject),
 			b => b.path(o => o.observableObject.observableObject.valueObject),
-			b => b.path(o => o.map['#observableObject'].observableObject.map['#object'].object.valueObject),
+			b => b.path(o => (o.map['#observableObject'] as IObject).observableObject.map['#object'].object.valueObject),
 		)
 			.subscribe(o => [o.valueObject])
 			.unsubscribe(o => [o.valueObject])

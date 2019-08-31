@@ -1,8 +1,8 @@
+import {DeferredCalc} from '../../../../../../../main/common/rx/deferred-calc/DeferredCalc'
 import {
 	IPropertyChanged,
 	IPropertyChangedEvent,
 } from '../../../../../../../main/common/rx/object/IPropertyChanged'
-import {DeferredCalc} from '../../../../../../../main/common/rx/deferred-calc/DeferredCalc'
 import {assert} from '../../../../../../../main/common/test/Assert'
 import {IOptionsVariant, IOptionsVariants, ITestCase, TestVariants, THIS} from '../../../src/helpers/TestVariants'
 import {TestTiming} from './timing'

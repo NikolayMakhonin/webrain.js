@@ -1,5 +1,5 @@
-import {IHasSubscribersSubject} from '../../rx/subjects/hasSubscribers'
 import {IPropertyChangedObject} from '../../rx/object/IPropertyChanged'
+import {IHasSubscribersSubject} from '../../rx/subjects/hasSubscribers'
 
 export enum MapChangedType {
 	/**

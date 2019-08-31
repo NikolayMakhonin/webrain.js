@@ -1884,7 +1884,7 @@ describe('fundamental-operations', function() {
 			return (o, v) => { func(o, v) }
 		}
 
-		const getValueBase = Function(function x(name, object) { return object.__fields[name] })
+		const getValueBase = Function('name', 'object', 'return object.__fields[name]')
 
 		class ObservableObjectBuilderTest<TObject extends ObservableObjectTest> {
 			public object: TObject

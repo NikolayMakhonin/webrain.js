@@ -1,4 +1,4 @@
 0.0.1 / 2000-01-01
 ===================
 
-  * Frist version
+  * First version
