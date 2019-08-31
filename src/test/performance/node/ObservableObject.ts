@@ -340,33 +340,32 @@ describe('ObservableObject', function() {
 			}
 		}
 
-		const subscribers = [
-			(name, newValue, oldValue) => { fakeThrow(); value1 = newValue },
-			(name, newValue, oldValue) => { fakeThrow(); value2 = newValue },
-			({name, newValue, oldValue}) => { fakeThrow(); value1 = newValue },
-			({name, newValue, oldValue}) => { fakeThrow(); value2 = newValue },
-		] as any
+		const subscribers1 = [
+			(name, newValue, oldValue) => { value1 = newValue },
+			(name, newValue, oldValue) => { value2 = newValue },
+		]
+
+		const subscribers2 = [
+			({name, newValue, oldValue}) => { value1 = newValue },
+			({name, newValue, oldValue}) => { value2 = newValue },
+		]
 
 		function change1(name, newValue, oldValue) {
-			try {
-				subscribers[0](name, newValue, oldValue)
-				subscribers[1](name, newValue, oldValue)
-			} catch (ex) {
-				return newValue
+			for (let j = 0, len = subscribers1.length; j < len; j++) {
+				const subscriber = subscribers1[j]
+				subscriber(name, newValue, oldValue)
 			}
 		}
 		function change2(event) {
-			try {
-				subscribers[2](event)
-				subscribers[3](event)
-			} catch (ex) {
-				return event
+			for (let j = 0, len = subscribers1.length; j < len; j++) {
+				const subscriber = subscribers2[j]
+				subscriber(event)
 			}
 		}
 
 		let heapUsed = process.memoryUsage().heapUsed
 		const result = calcPerformance(
-			1000,
+			20000,
 			() => change1('prop', i++, i++),
 			() => change2({name: 'prop', newValue: i++, oldValue: i++}),
 		)
