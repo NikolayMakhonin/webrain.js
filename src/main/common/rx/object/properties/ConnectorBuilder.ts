@@ -66,19 +66,27 @@ export class ConnectorBuilder<
 						}
 					}
 
-					const unsubscribe = deepSubscribeRule<TValue>(
-						this,
-						value => {
-							setVal(this, value)
-							return null
-						},
-						true,
-						this === object
-							? ruleBase
-							: cloneRule(ruleBase),
-					)
+					const receiveValue = value => {
+						setVal(this, value)
+						return null
+					}
 
-					this._setUnsubscriber(name, unsubscribe)
+					const rule = this === object
+						? ruleBase
+						: cloneRule(ruleBase)
+
+					this.propertyChanged.hasSubscribersObservable
+						.subscribe(hasSubscribers => {
+							this._setUnsubscriber(name, null)
+
+							if (hasSubscribers) {
+								const unsubscribe = deepSubscribeRule<TValue>(
+									this, receiveValue, true, rule,
+								)
+
+								this._setUnsubscriber(name, unsubscribe)
+							}
+						})
 
 					setVal = set
 
