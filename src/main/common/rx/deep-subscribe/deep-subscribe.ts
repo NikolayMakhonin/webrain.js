@@ -126,7 +126,7 @@ function subscribeNext<TValue>(
 			// PROF: 371 - 0.8%
 			if (unsubscribeValue) {
 				// leafUnsubscribers[itemUniqueId] = null // faster but there is a danger of memory overflow with nulls
-				delete unsubscribers[itemUniqueId]
+				delete leafUnsubscribers[itemUniqueId]
 				const _unsubscribeValue = unsubscribeValue
 				unsubscribeValue = null
 				_unsubscribeValue()
