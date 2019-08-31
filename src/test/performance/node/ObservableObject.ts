@@ -264,17 +264,17 @@ describe('ObservableObject', function() {
 		console.log(value.subtract(zero).toString())
 	}
 
-	it('simple', function() {
+	it('simple', function() { // 173n | 184n
 		testPerformance(createObject())
 	})
 
-	it('propertyChanged', function() {
+	it('propertyChanged', function() { // 721n | 682n
 		testPerformance(createObject(observableObject => {
 			observableObject.propertyChanged.subscribe(v => { })
 		}))
 	})
 
-	it('deepSubscribe', function() {
+	it('deepSubscribe', function() { // 2162n | 1890n
 		let i = 0
 		testPerformance(createObject(observableObject => {
 			deepSubscribe(observableObject,
@@ -285,7 +285,7 @@ describe('ObservableObject', function() {
 		}))
 	})
 
-	it('propertyChanged memory', function() {
+	it('propertyChanged memory', function() { // 48 | 0
 		const object = createObject(observableObject => {
 			observableObject.propertyChanged.subscribe(v => { })
 		}).observableObject1
@@ -296,7 +296,7 @@ describe('ObservableObject', function() {
 		})
 	})
 
-	it('deepSubscribe memory', function() {
+	it('deepSubscribe memory', function() { // 48 | 0
 		const object = createObject(observableObject => {
 			deepSubscribe(observableObject,
 				// v => v != null && typeof v === 'object'
@@ -326,5 +326,63 @@ describe('ObservableObject', function() {
 			calcValue()
 			return value
 		})
+	})
+
+	it('test event as object or arguments', function() {
+		let value1
+		let value2
+
+		let i = 0
+
+		function fakeThrow() {
+			if (i < 0) {
+				throw new Error(i + '')
+			}
+		}
+
+		const subscribers = [
+			(name, newValue, oldValue) => { fakeThrow(); value1 = newValue },
+			(name, newValue, oldValue) => { fakeThrow(); value2 = newValue },
+			({name, newValue, oldValue}) => { fakeThrow(); value1 = newValue },
+			({name, newValue, oldValue}) => { fakeThrow(); value2 = newValue },
+		] as any
+
+		function change1(name, newValue, oldValue) {
+			try {
+				subscribers[0](name, newValue, oldValue)
+				subscribers[1](name, newValue, oldValue)
+			} catch (ex) {
+				return newValue
+			}
+		}
+		function change2(event) {
+			try {
+				subscribers[2](event)
+				subscribers[3](event)
+			} catch (ex) {
+				return event
+			}
+		}
+
+		let heapUsed = process.memoryUsage().heapUsed
+		const result = calcPerformance(
+			1000,
+			() => change1('prop', i++, i++),
+			() => change2({name: 'prop', newValue: i++, oldValue: i++}),
+		)
+		heapUsed = process.memoryUsage().heapUsed - heapUsed
+
+		calcMemAllocate(CalcType.Min, 10000, () => {
+			change1('prop', i++, i++)
+		})
+
+		calcMemAllocate(CalcType.Min, 10000, () => {
+			change2({name: 'prop', newValue: i++, oldValue: i++})
+		})
+
+		console.log('value1: ', value1)
+		console.log('value2: ', value2)
+		console.log('Memory used: ', heapUsed)
+		console.log(result)
 	})
 })
