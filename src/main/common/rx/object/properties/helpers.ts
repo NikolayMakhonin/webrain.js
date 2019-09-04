@@ -46,7 +46,7 @@ function resolveValueProperty(value: any, getValue?: (value: any) => any) {
 		}
 
 		if (value instanceof CalcPropertyValue) {
-			return (value as CalcPropertyValue<any>).get()
+			return value.get()
 		}
 	}
 

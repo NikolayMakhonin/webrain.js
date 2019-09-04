@@ -2,7 +2,7 @@ import {IDeferredCalcOptions} from '../../deferred-calc/DeferredCalc'
 import {CalcProperty, CalcPropertyFunc} from './CalcProperty'
 import {CalcPropertyDependenciesBuilder} from './CalcPropertyDependenciesBuilder'
 import {subscribeDependencies} from './DependenciesBuilder'
-import {IPropertyOptions} from './property'
+import {IPropertyOptions} from './Property'
 
 export function calcPropertyFactory<
 	TValue, TInput, TMergeSource,

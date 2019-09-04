@@ -8,7 +8,7 @@ import {DeferredCalc, IDeferredCalcOptions} from '../../deferred-calc/DeferredCa
 import {ObservableObject} from '../ObservableObject'
 import {ObservableObjectBuilder} from '../ObservableObjectBuilder'
 import {CalcObjectDebugger} from './CalcObjectDebugger'
-import {IPropertyOptions, Property} from './property'
+import {IPropertyOptions, Property} from './Property'
 
 export type CalcPropertyFunc<TInput, TTarget, TSource>
 	= (input: TInput, property: Property<TTarget, TSource>) => ThenableOrIteratorOrValue<void>
@@ -19,12 +19,6 @@ export class CalcPropertyValue<TValue, TInput = any, TMergeSource = any> {
 		this.get = () => property
 	}
 }
-
-// export interface ICalcProperty<TInput, TValue, TMergeSource> {
-// 	['@last']: TValue
-// 	['@wait']: TValue
-// 	['@lastOrWait']: TValue
-// }
 
 export interface ICalcProperty<TValue> {
 	readonly [VALUE_PROPERTY_DEFAULT]: ThenableOrValue<TValue>

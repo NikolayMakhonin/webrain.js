@@ -8,7 +8,7 @@ import {CalcObjectBuilder} from '../../../main/common/rx/object/properties/CalcO
 import {ICalcProperty} from '../../../main/common/rx/object/properties/CalcProperty'
 import {calcPropertyFactory} from '../../../main/common/rx/object/properties/CalcPropertyBuilder'
 import {resolvePath} from '../../../main/common/rx/object/properties/helpers'
-import {Property} from '../../../main/common/rx/object/properties/property'
+import {Property} from '../../../main/common/rx/object/properties/Property'
 
 describe('resolvePath', function() {
 	this.timeout(300000)

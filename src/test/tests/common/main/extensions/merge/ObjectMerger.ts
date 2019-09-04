@@ -17,7 +17,7 @@ import {ObjectSet} from '../../../../../../main/common/lists/ObjectSet'
 import {ObservableMap} from '../../../../../../main/common/lists/ObservableMap'
 import {ObservableSet} from '../../../../../../main/common/lists/ObservableSet'
 import {SortedList} from '../../../../../../main/common/lists/SortedList'
-import {Property} from '../../../../../../main/common/rx/object/properties/property'
+import {Property} from '../../../../../../main/common/rx/object/properties/Property'
 import {Assert} from '../../../../../../main/common/test/Assert'
 import {createComplexObject, createIterable, IComplexObjectOptions} from '../../src/helpers/helpers'
 import {

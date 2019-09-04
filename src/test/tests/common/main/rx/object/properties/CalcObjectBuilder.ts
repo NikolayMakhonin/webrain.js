@@ -8,7 +8,7 @@ import {ICalcProperty} from '../../../../../../../main/common/rx/object/properti
 import {calcPropertyFactory} from '../../../../../../../main/common/rx/object/properties/CalcPropertyBuilder'
 import {connectorFactory} from '../../../../../../../main/common/rx/object/properties/ConnectorBuilder'
 import {resolvePath} from '../../../../../../../main/common/rx/object/properties/helpers'
-import {Property} from '../../../../../../../main/common/rx/object/properties/property'
+import {Property} from '../../../../../../../main/common/rx/object/properties/Property'
 
 declare const assert: any
 

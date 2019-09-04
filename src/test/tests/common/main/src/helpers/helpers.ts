@@ -19,7 +19,7 @@ import {ObservableSet} from '../../../../../../main/common/lists/ObservableSet'
 import {SortedList} from '../../../../../../main/common/lists/SortedList'
 import {ObservableObject} from '../../../../../../main/common/rx/object/ObservableObject'
 import {ObservableObjectBuilder} from '../../../../../../main/common/rx/object/ObservableObjectBuilder'
-import {Property} from '../../../../../../main/common/rx/object/properties/property'
+import {Property} from '../../../../../../main/common/rx/object/properties/Property'
 
 export class CircularClass extends ObservableObject
 	implements ISerializable, IMergeable<CircularClass, any>

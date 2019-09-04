@@ -13,9 +13,9 @@
     "dist/**",
     "env/mocha/*"
   ],
-  "main": "dist/js/main/browser/main.js",
-  "jsnext:main": "dist/mjs/main/browser/main.js",
-  "module": "dist/mjs/main/browser/main.js",
+  "main": "src/main/browser/index.ts",
+  "jsnext:main": "src/main/browser/index.ts",
+  "module": "src/main/browser/index.ts",
   "engines": {
     "node": ">= 8.6.0"
   },
