@@ -2,6 +2,7 @@ import {IRule} from '../../deep-subscribe/contracts/rules'
 import {deepSubscribeRule} from '../../deep-subscribe/deep-subscribe'
 import {RuleBuilder} from '../../deep-subscribe/RuleBuilder'
 import {IUnsubscribe} from '../../subjects/subject'
+import {CalcObjectDebugger} from './CalcObjectDebugger'
 import {ValueKeys} from './contracts'
 
 export type IDependencyAction<TTarget, TValue = any>
@@ -66,6 +67,7 @@ export function subscribeDependencies<TSubscribeObject, TActionTarget>(
 		unsubscribers.push(deepSubscribeRule(
 			subscribeObject,
 			(value, parent, propertyName) => {
+				CalcObjectDebugger.Instance.onDependencyChanged(actionTarget, value, parent, propertyName)
 				action(actionTarget, value, parent, propertyName)
 				return null
 			},

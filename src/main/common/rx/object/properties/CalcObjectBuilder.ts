@@ -1,7 +1,9 @@
 import {NotFunction} from '../../../helpers/typescript'
+import {RuleBuilder} from '../../deep-subscribe/RuleBuilder'
 import {ObservableObject} from '../ObservableObject'
 import {ObservableObjectBuilder} from '../ObservableObjectBuilder'
 import {CalcProperty} from './CalcProperty'
+import {calcPropertyFactory} from './CalcPropertyBuilder'
 import {ValueKeys} from './contracts'
 
 export class CalcObjectBuilder<TObject extends ObservableObject, TValueKeys extends string | number = ValueKeys>
@@ -15,7 +17,7 @@ export class CalcObjectBuilder<TObject extends ObservableObject, TValueKeys exte
 	>(
 		name: Name,
 		inputOrFactory: ((source: TObject) => TInput) | NotFunction<TInput>,
-		calcPropertyFactory: (initValue?: TValue) => CalcProperty<TValue, TInput, TMergeSource>,
+		calcFactory: (initValue?: TValue) => CalcProperty<TValue, TInput, TMergeSource>,
 		initValue?: TValue,
 	) {
 		return this.readable<CalcProperty<
@@ -24,14 +26,31 @@ export class CalcObjectBuilder<TObject extends ObservableObject, TValueKeys exte
 			TMergeSource
 		>, Name>(name, {
 			factory(this: TObject) {
-				const property = calcPropertyFactory(initValue)
-				property.input = typeof inputOrFactory === 'function'
-					? (inputOrFactory as (object: TObject) => TInput)(this)
-					: inputOrFactory
+				const property = calcFactory(initValue)
+				if (typeof inputOrFactory !== 'undefined') {
+					property.input = typeof inputOrFactory === 'function'
+						? (inputOrFactory as (object: TObject) => TInput)(this)
+						: inputOrFactory
+				}
 
 				return property
 			},
 		})
+	}
+
+	public calcChanges<
+		Name extends string | number
+	>(
+		name: Name,
+		buildRule: (builder: RuleBuilder<TObject, TValueKeys>) => RuleBuilder<any, TValueKeys>,
+	) {
+		return this.calc(
+			name,
+			void 0,
+			calcPropertyFactory((input, property) => {
+				property.value++
+			}, null, null, 0, dependencies => dependencies.invalidateOn(buildRule)),
+		)
 	}
 }
 

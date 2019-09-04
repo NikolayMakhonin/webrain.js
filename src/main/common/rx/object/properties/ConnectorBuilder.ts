@@ -3,6 +3,7 @@ import {deepSubscribeRule} from '../../deep-subscribe/deep-subscribe'
 import {cloneRule, RuleBuilder} from '../../deep-subscribe/RuleBuilder'
 import {_set, _setExt, ObservableObject} from '../ObservableObject'
 import {IWritableFieldOptions, ObservableObjectBuilder} from '../ObservableObjectBuilder'
+import {CalcObjectDebugger} from './CalcObjectDebugger'
 import {Connector} from './Connector'
 import {ValueKeys} from './contracts'
 
@@ -66,7 +67,8 @@ export class ConnectorBuilder<
 						}
 					}
 
-					const receiveValue = value => {
+					const receiveValue = (value: TValue, parent: any, propertyName: string) => {
+						CalcObjectDebugger.Instance.onConnectorChanged(this, value, parent, propertyName)
 						setVal(this, value)
 						return null
 					}

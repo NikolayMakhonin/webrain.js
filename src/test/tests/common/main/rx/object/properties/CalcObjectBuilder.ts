@@ -28,8 +28,8 @@ describe('common > main > rx > properties > CalcObjectBuilder', function() {
 		.calc('prop1',
 			connectorFactory(c => c
 				.connect('connectValue1', b => b.path(o => o['@lastOrWait'].source['@wait']))),
-			calcPropertyFactory((input, valueProperty: Property<Date, number>): ThenableOrIteratorOrValue<void> => {
-				valueProperty.value = new Date(123)
+			calcPropertyFactory((input, property: Property<Date, number>): ThenableOrIteratorOrValue<void> => {
+				property.value = new Date(123)
 				return ThenableSync.createResolved(null)
 			}),
 		)
@@ -38,9 +38,9 @@ describe('common > main > rx > properties > CalcObjectBuilder', function() {
 		.calc('prop1',
 			connectorFactory(c => c
 				.connect('connectValue1', b => b.path(o => o['@lastOrWait'].source['@wait']))),
-			calcPropertyFactory(function *(input, valueProperty: Property<Date, number>): ThenableOrIteratorOrValue<void> {
+			calcPropertyFactory(function *(input, property: Property<Date, number>): ThenableOrIteratorOrValue<void> {
 				yield new Promise(r => setTimeout(r, 100))
-				valueProperty.value = new Date(123)
+				property.value = new Date(123)
 			}),
 		)
 
