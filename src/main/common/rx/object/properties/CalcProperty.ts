@@ -13,6 +13,13 @@ import {IPropertyOptions, Property} from './property'
 export type CalcPropertyFunc<TInput, TTarget, TSource>
 	= (input: TInput, valueProperty: Property<TTarget, TSource>) => ThenableOrIteratorOrValue<void>
 
+export class CalcPropertyValue<TValue, TInput = any, TMergeSource = any> {
+	public get: () => CalcProperty<TValue, TInput, TMergeSource>
+	constructor(property: CalcProperty<TValue, TInput, TMergeSource>) {
+		this.get = () => property
+	}
+}
+
 // export interface ICalcProperty<TInput, TValue, TMergeSource> {
 // 	['@last']: TValue
 // 	['@wait']: TValue
@@ -96,11 +103,12 @@ export class CalcProperty<TValue, TInput = any, TMergeSource = any>
 		const {propertyChangedIfCanEmit} = this
 		if (propertyChangedIfCanEmit) {
 			const oldValue = this._valueProperty.value
+			const newValue = new CalcPropertyValue(this)
 			propertyChangedIfCanEmit.onPropertyChanged(
-				new PropertyChangedEvent(VALUE_PROPERTY_DEFAULT, oldValue, () => this[VALUE_PROPERTY_DEFAULT]),
-				new PropertyChangedEvent('last', oldValue, () => this.last),
-				new PropertyChangedEvent('wait', oldValue, () => this.wait),
-				new PropertyChangedEvent('lastOrWait', oldValue, () => this.lastOrWait),
+				{name: VALUE_PROPERTY_DEFAULT, oldValue, newValue},
+				{name: 'last', oldValue, newValue},
+				{name: 'wait', oldValue, newValue},
+				{name: 'lastOrWait', oldValue, newValue},
 			)
 		}
 	}

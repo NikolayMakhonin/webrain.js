@@ -6,6 +6,7 @@ import {
 	HasDefaultValueOf,
 	VALUE_PROPERTY_DEFAULT,
 } from '../../../helpers/helpers'
+import {CalcPropertyValue} from './CalcProperty'
 
 type TGetValue1<TValue> = (value: any) => ThenableOrIteratorOrValue<HasDefaultValueOf<TValue>>
 type TGetPropertyValueResult1<TValue> = TGetPropertyValue<HasDefaultValueOf<TValue>>
@@ -33,15 +34,22 @@ type TGetPropertyValue<TValue> = (
 	& { value: ThenableOrValue<TValue> }
 
 function resolveValueProperty(value: any, getValue?: (value: any) => any) {
-	if (typeof value === 'object' && VALUE_PROPERTY_DEFAULT in value) {
-		if (getValue) {
-			const newValue = getValue(value)
-			if (typeof newValue !== 'undefined') {
-				return newValue
+	if (typeof value === 'object') {
+		if (VALUE_PROPERTY_DEFAULT in value) {
+			if (getValue) {
+				const newValue = getValue(value)
+				if (typeof newValue !== 'undefined') {
+					return newValue
+				}
 			}
+			return value[VALUE_PROPERTY_DEFAULT]
 		}
-		return value[VALUE_PROPERTY_DEFAULT]
+
+		if (value instanceof CalcPropertyValue) {
+			return (value as CalcPropertyValue<any>).get()
+		}
 	}
+
 	return value
 }
 
