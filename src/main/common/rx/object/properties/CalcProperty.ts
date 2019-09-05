@@ -1,13 +1,11 @@
-import {
-	ThenableOrIteratorOrValue,
-	ThenableOrValue,
-} from '../../../async/async'
+import {ThenableOrIteratorOrValue, ThenableOrValue} from '../../../async/async'
 import {resolveAsyncFunc} from '../../../async/ThenableSync'
-import {VALUE_PROPERTY_DEFAULT} from '../../../helpers/helpers'
+import {VALUE_PROPERTY_DEFAULT} from '../../../helpers/value-property'
 import {DeferredCalc, IDeferredCalcOptions} from '../../deferred-calc/DeferredCalc'
 import {ObservableObject} from '../ObservableObject'
 import {ObservableObjectBuilder} from '../ObservableObjectBuilder'
 import {CalcObjectDebugger} from './CalcObjectDebugger'
+import {ICalcProperty} from './contracts'
 import {IPropertyOptions, Property} from './Property'
 
 export type CalcPropertyFunc<TInput, TTarget, TSource>
@@ -18,13 +16,6 @@ export class CalcPropertyValue<TValue, TInput = any, TMergeSource = any> {
 	constructor(property: CalcProperty<TValue, TInput, TMergeSource>) {
 		this.get = () => property
 	}
-}
-
-export interface ICalcProperty<TValue> {
-	readonly [VALUE_PROPERTY_DEFAULT]: ThenableOrValue<TValue>
-	readonly last: TValue
-	readonly wait: ThenableOrValue<TValue>
-	readonly lastOrWait: ThenableOrValue<TValue>
 }
 
 export class CalcProperty<TValue, TInput = any, TMergeSource = any>

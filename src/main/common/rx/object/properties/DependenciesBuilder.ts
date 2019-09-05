@@ -1,7 +1,7 @@
 import {IRule} from '../../deep-subscribe/contracts/rules'
 import {deepSubscribeRule} from '../../deep-subscribe/deep-subscribe'
 import {RuleBuilder} from '../../deep-subscribe/RuleBuilder'
-import {IUnsubscribe} from '../../subjects/subject'
+import {IUnsubscribe} from '../../subjects/observable'
 import {CalcObjectDebugger} from './CalcObjectDebugger'
 import {ValueKeys} from './contracts'
 

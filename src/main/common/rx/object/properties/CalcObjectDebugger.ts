@@ -1,7 +1,7 @@
 import {IObservable} from '../../subjects/observable'
 import {ISubject, Subject} from '../../subjects/subject'
 import {ObservableObject} from '../ObservableObject'
-import {CalcProperty} from './CalcProperty'
+import {ICalcProperty} from './contracts'
 
 export interface IConnectorChangedEvent {
 	target: ObservableObject
@@ -11,25 +11,25 @@ export interface IConnectorChangedEvent {
 }
 
 export interface IDependencyChangedEvent {
-	target: CalcProperty<any>
+	target: ICalcProperty<any>
 	value: any
 	parent: any
 	propertyName: string
 }
 
 export interface IInvalidatedEvent {
-	target: CalcProperty<any>
+	target: ICalcProperty<any>
 	value: any
 }
 
 export interface ICalculatedEvent {
-	target: CalcProperty<any>
+	target: ICalcProperty<any>
 	newValue: any
 	oldValue: any
 }
 
 export interface IErrorEvent {
-	target: CalcProperty<any>
+	target: ICalcProperty<any>
 	newValue: any
 	oldValue: any
 	err: any
@@ -47,7 +47,7 @@ export class CalcObjectDebugger {
 		return this._dependencySubject
 	}
 
-	public onDependencyChanged(target: CalcProperty<any>, value: any, parent: any, propertyName: string) {
+	public onDependencyChanged(target: ICalcProperty<any>, value: any, parent: any, propertyName: string) {
 		if (this._dependencySubject.hasSubscribers) {
 			this._dependencySubject.emit({
 				target,
@@ -87,7 +87,7 @@ export class CalcObjectDebugger {
 		return this._invalidatedSubject
 	}
 
-	public onInvalidated(target: CalcProperty<any>, value: any) {
+	public onInvalidated(target: ICalcProperty<any>, value: any) {
 		if (this._invalidatedSubject.hasSubscribers) {
 			this._invalidatedSubject.emit({
 				target,
@@ -105,7 +105,7 @@ export class CalcObjectDebugger {
 		return this._calculatedSubject
 	}
 
-	public onCalculated(target: CalcProperty<any>, newValue: any, oldValue: any) {
+	public onCalculated(target: ICalcProperty<any>, newValue: any, oldValue: any) {
 		if (this._calculatedSubject.hasSubscribers) {
 			this._calculatedSubject.emit({
 				target,
@@ -124,7 +124,7 @@ export class CalcObjectDebugger {
 		return this._errorSubject
 	}
 
-	public onError(target: CalcProperty<any>, newValue: any, oldValue: any, err: any) {
+	public onError(target: ICalcProperty<any>, newValue: any, oldValue: any, err: any) {
 		if (this._errorSubject.hasSubscribers) {
 			this._errorSubject.emit({
 				target,

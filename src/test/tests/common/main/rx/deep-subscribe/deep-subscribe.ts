@@ -1,5 +1,6 @@
 /* tslint:disable:no-construct use-primitive-type no-shadowed-variable no-duplicate-string no-empty max-line-length */
-import {delay, VALUE_PROPERTY_DEFAULT} from '../../../../../../main/common/helpers/helpers'
+import {delay} from '../../../../../../main/common/helpers/helpers'
+import {VALUE_PROPERTY_DEFAULT} from '../../../../../../main/common/helpers/value-property'
 import {ObservableObjectBuilder} from '../../../../../../main/common/rx/object/ObservableObjectBuilder'
 import {createObject, IObject, Tester} from './helpers/Tester'
 

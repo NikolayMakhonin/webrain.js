@@ -1,6 +1,6 @@
 import {AsyncValueOf, ThenableOrIterator} from '../../async/async'
-import {VALUE_PROPERTY_DEFAULT} from '../../helpers/helpers'
 import {Diff, TPrimitive} from '../../helpers/typescript'
+import {VALUE_PROPERTY_DEFAULT} from '../../helpers/value-property'
 import {ANY, ANY_DISPLAY, COLLECTION_PREFIX, VALUE_PROPERTY_PREFIX} from './contracts/constants'
 import {IRuleSubscribe} from './contracts/rule-subscribe'
 import {IRule} from './contracts/rules'

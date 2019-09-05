@@ -1,5 +1,5 @@
 import {isIterable} from '../../helpers/helpers'
-import {IUnsubscribe} from '../subjects/subject'
+import {IUnsubscribe} from '../subjects/observable'
 import {IRuleSubscribe} from './contracts/rule-subscribe'
 import {IRule, IRuleAction, IRuleAny, IRuleRepeat, RuleType} from './contracts/rules'
 

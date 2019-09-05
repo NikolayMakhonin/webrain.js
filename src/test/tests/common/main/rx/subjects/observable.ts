@@ -1,5 +1,4 @@
-import {Observable} from '../../../../../../main/common/rx/subjects/observable'
-import {ISubscriber, IUnsubscribe} from '../../../../../../main/common/rx/subjects/subject'
+import {ISubscriber, IUnsubscribe, Observable} from '../../../../../../main/common/rx/subjects/observable'
 
 declare const assert: any
 

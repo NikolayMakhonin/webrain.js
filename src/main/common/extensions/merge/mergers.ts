@@ -4,9 +4,17 @@ import {canHaveUniqueId, getObjectUniqueId} from '../../lists/helpers/object-uni
 import {fillMap, fillSet} from '../../lists/helpers/set'
 import {TypeMetaCollection} from '../TypeMeta'
 import {
-	IMergeable, IMergeOptions,
-	IMergerVisitor, IMergeValue, IMergeVisitorOptions, IObjectMerger,
-	ITypeMetaMerger, ITypeMetaMergerCollection, IValueMerge, IValueMerger,
+	IMergeable,
+	IMergeOptions,
+	IMergerVisitor,
+	IMergeValue,
+	IMergeVisitorOptions,
+	IObjectMerger,
+	ITypeMetaMerger,
+	ITypeMetaMergerCollection,
+	IValueMerge,
+	IValueMerger,
+	TMergeableClass,
 } from './contracts'
 import {createMergeMapWrapper, mergeMaps} from './merge-maps'
 import {createMergeSetWrapper} from './merge-sets'
@@ -768,9 +776,6 @@ export class MergerVisitor implements IMergerVisitor {
 // endregion
 
 // region TypeMetaMergerCollection
-
-export type TMergeableClass<TObject extends IMergeable<TObject, TSource>, TSource = any>
-	= new (...args: any[]) => TObject
 
 export class TypeMetaMergerCollection
 	extends TypeMetaCollection<ITypeMetaMerger<any, any>>

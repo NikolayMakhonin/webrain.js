@@ -1,6 +1,5 @@
 import {TClass} from '../../helpers/helpers'
 import {ITypeMeta, ITypeMetaCollection} from '../TypeMeta'
-import {TMergeableClass} from './mergers'
 
 // region Mergers
 
@@ -63,6 +62,9 @@ export interface ITypeMetaMerger<TTarget = any, TSource = any> extends ITypeMeta
 	valueFactory?: (source: TTarget|TSource) => TTarget
 	merger?: IValueMerger<TTarget, TSource>
 }
+
+export type TMergeableClass<TObject extends IMergeable<TObject, TSource>, TSource = any>
+	= new (...args: any[]) => TObject
 
 export interface ITypeMetaMergerCollection extends ITypeMetaCollection<ITypeMetaMerger<any, any>> {
 	putType<TTarget, TSource>(

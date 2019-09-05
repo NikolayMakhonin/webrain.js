@@ -1,12 +1,9 @@
-import {IObservable, Observable} from './observable'
+import {IObservable, ISubscriber, IUnsubscribe, Observable} from './observable'
 
 export interface ISubject<T> extends IObservable<T> {
 	readonly hasSubscribers: boolean
 	emit(value: T): this
 }
-
-export type IUnsubscribe = () => void
-export type ISubscriber<T> = (value: T) => void
 
 export function subject(base): any {
 	// eslint-disable-next-line no-shadow

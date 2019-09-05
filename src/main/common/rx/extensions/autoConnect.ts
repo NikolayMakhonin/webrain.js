@@ -1,5 +1,4 @@
-import {Observable} from '../subjects/observable'
-import {IUnsubscribe} from '../subjects/subject'
+import {IUnsubscribe, Observable} from '../subjects/observable'
 
 declare module '../subjects/observable' {
 	interface Observable<T> {

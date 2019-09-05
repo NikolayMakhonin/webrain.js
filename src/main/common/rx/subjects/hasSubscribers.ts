@@ -1,6 +1,6 @@
 import {BehaviorSubject, IBehavior} from './behavior'
-import {IObservable} from './observable'
-import {ISubject, ISubscriber, IUnsubscribe, Subject} from './subject'
+import {IObservable, ISubscriber, IUnsubscribe} from './observable'
+import {ISubject, Subject} from './subject'
 
 export interface IHasSubscribers<T> {
 	readonly hasSubscribersObservable: IObservable<boolean>

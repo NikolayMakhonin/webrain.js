@@ -1,4 +1,5 @@
-import {ISubject, ISubscriber, IUnsubscribe, Subject} from './subject'
+import {ISubscriber, IUnsubscribe} from './observable'
+import {ISubject, Subject} from './subject'
 
 export interface IBehavior<T> {
 	value: T

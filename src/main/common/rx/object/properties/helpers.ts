@@ -5,7 +5,7 @@ import {
 	HasDefaultOrValue,
 	HasDefaultValueOf,
 	VALUE_PROPERTY_DEFAULT,
-} from '../../../helpers/helpers'
+} from '../../../helpers/value-property'
 import {CalcPropertyValue} from './CalcProperty'
 
 type TGetValue1<TValue> = (value: any) => ThenableOrIteratorOrValue<HasDefaultValueOf<TValue>>

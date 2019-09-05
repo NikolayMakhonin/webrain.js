@@ -1,5 +1,5 @@
 import {HasSubscribersSubject} from '../subjects/hasSubscribers'
-import {IUnsubscribe} from '../subjects/subject'
+import {IUnsubscribe} from '../subjects/observable'
 import {
 	EventOrPropertyName,
 	IPropertyChangedEvent,

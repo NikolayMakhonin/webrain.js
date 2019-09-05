@@ -4,9 +4,9 @@ import {ThenableOrIteratorOrValue} from '../../../../../../../main/common/async/
 import {ThenableSync} from '../../../../../../../main/common/async/ThenableSync'
 import {ObservableObject} from '../../../../../../../main/common/rx/object/ObservableObject'
 import {CalcObjectBuilder} from '../../../../../../../main/common/rx/object/properties/CalcObjectBuilder'
-import {ICalcProperty} from '../../../../../../../main/common/rx/object/properties/CalcProperty'
 import {calcPropertyFactory} from '../../../../../../../main/common/rx/object/properties/CalcPropertyBuilder'
 import {connectorFactory} from '../../../../../../../main/common/rx/object/properties/ConnectorBuilder'
+import {ICalcProperty} from '../../../../../../../main/common/rx/object/properties/contracts'
 import {resolvePath} from '../../../../../../../main/common/rx/object/properties/helpers'
 import {Property} from '../../../../../../../main/common/rx/object/properties/Property'
 

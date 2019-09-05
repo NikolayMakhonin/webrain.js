@@ -1,10 +1,11 @@
 /* tslint:disable:no-identical-functions */
-import {checkIsFuncOrNull, isIterable, VALUE_PROPERTY_DEFAULT} from '../../helpers/helpers'
+import {checkIsFuncOrNull, isIterable} from '../../helpers/helpers'
+import {VALUE_PROPERTY_DEFAULT} from '../../helpers/value-property'
 import {IListChanged, ListChangedType} from '../../lists/contracts/IListChanged'
 import {IMapChanged, MapChangedType} from '../../lists/contracts/IMapChanged'
 import {ISetChanged, SetChangedType} from '../../lists/contracts/ISetChanged'
 import {IPropertyChanged} from '../object/IPropertyChanged'
-import {IUnsubscribe} from '../subjects/subject'
+import {IUnsubscribe} from '../subjects/observable'
 import {ANY, COLLECTION_PREFIX, VALUE_PROPERTY_PREFIX} from './contracts/constants'
 import {IRuleSubscribe, ISubscribeObject} from './contracts/rule-subscribe'
 import {RuleType} from './contracts/rules'

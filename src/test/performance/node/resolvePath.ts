@@ -2,11 +2,11 @@
 import {calcPerformance} from 'rdtsc'
 import {ThenableOrIteratorOrValue} from '../../../main/common/async/async'
 import {ThenableSync} from '../../../main/common/async/ThenableSync'
-import {VALUE_PROPERTY_DEFAULT} from '../../../main/common/helpers/helpers'
+import {VALUE_PROPERTY_DEFAULT} from '../../../main/common/helpers/value-property'
 import {ObservableObject} from '../../../main/common/rx/object/ObservableObject'
 import {CalcObjectBuilder} from '../../../main/common/rx/object/properties/CalcObjectBuilder'
-import {ICalcProperty} from '../../../main/common/rx/object/properties/CalcProperty'
 import {calcPropertyFactory} from '../../../main/common/rx/object/properties/CalcPropertyBuilder'
+import {ICalcProperty} from '../../../main/common/rx/object/properties/contracts'
 import {resolvePath} from '../../../main/common/rx/object/properties/helpers'
 import {Property} from '../../../main/common/rx/object/properties/Property'
 

@@ -1,7 +1,7 @@
 /* tslint:disable */
 import {isThenable} from '../../async/async'
 import {resolveAsync} from '../../async/ThenableSync'
-import {IUnsubscribe} from '../subjects/subject'
+import {IUnsubscribe} from '../subjects/observable'
 import {IRule} from './contracts/rules'
 import {IRuleIterator, iterateRule, subscribeNextRule} from './iterate-rule'
 import {RuleBuilder} from "./RuleBuilder"

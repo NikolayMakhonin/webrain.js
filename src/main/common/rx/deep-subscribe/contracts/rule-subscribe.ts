@@ -1,4 +1,4 @@
-import {IUnsubscribe} from '../../subjects/subject'
+import {IUnsubscribe} from '../../subjects/observable'
 import {IRuleAction} from './rules'
 
 export type ISubscribeObject<TObject, TChild> = (

@@ -1,5 +1,6 @@
 {
 	"extends": [
+		"tslint-no-circular-imports",
 		"tslint:recommended",
 		"tslint-sonarts",
 		"tslint-clean-code",

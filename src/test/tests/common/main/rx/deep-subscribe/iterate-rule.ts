@@ -9,7 +9,7 @@ import {
 import {RuleBuilder} from '../../../../../../main/common/rx/deep-subscribe/RuleBuilder'
 import {Rule} from '../../../../../../main/common/rx/deep-subscribe/rules'
 import {subscribeDefaultProperty} from '../../../../../../main/common/rx/deep-subscribe/rules-subscribe'
-import {IUnsubscribe} from '../../../../../../main/common/rx/subjects/subject'
+import {IUnsubscribe} from '../../../../../../main/common/rx/subjects/observable'
 import {assert} from '../../../../../../main/common/test/Assert'
 
 describe('common > main > rx > deep-subscribe > iterate-rule', function() {

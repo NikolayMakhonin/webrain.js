@@ -7,8 +7,8 @@ export {connectorFactory} from './rx/object/properties/ConnectorBuilder'
 export {Property} from './rx/object/properties/Property'
 
 // Interfaces:
-import {ICalcProperty as _ICalcProperty} from './rx/object/properties/CalcProperty'
 import {ThenableOrIteratorOrValue as _ThenableOrIteratorOrValue} from './async/async'
+import {ICalcProperty as _ICalcProperty} from './rx/object/properties/contracts'
 
 export type ThenableOrIteratorOrValue<T> = _ThenableOrIteratorOrValue<T>
 export type ICalcProperty<TValue> = _ICalcProperty<TValue>
