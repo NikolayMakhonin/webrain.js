@@ -1,4 +1,5 @@
 import {RuleBuilder} from '../../deep-subscribe/RuleBuilder'
+import {CalcObjectDebugger} from './CalcObjectDebugger'
 import {CalcProperty} from './CalcProperty'
 import {ValueKeys} from './contracts'
 import {DependenciesBuilder} from './DependenciesBuilder'
@@ -19,7 +20,8 @@ export class CalcPropertyDependenciesBuilder<
 		buildRule: (inputRuleBuilder: RuleBuilder<TSource, TValueKeys>) => RuleBuilder<TValue, TValueKeys>,
 		predicate?: (value, parent) => boolean,
 	): this {
-		this.actionOn(buildRule, target => {
+		this.actionOn(buildRule, (target, value, parent, propertyName) => {
+			CalcObjectDebugger.Instance.onDependencyChanged(target, value, parent, propertyName)
 			target.invalidate()
 		}, predicate)
 		return this
@@ -29,7 +31,8 @@ export class CalcPropertyDependenciesBuilder<
 		buildRule: (inputRuleBuilder: RuleBuilder<TSource, TValueKeys>) => RuleBuilder<TValue, TValueKeys>,
 		predicate?: (value, parent) => boolean,
 	): this {
-		this.actionOn(buildRule, target => {
+		this.actionOn(buildRule, (target, value, parent, propertyName) => {
+			CalcObjectDebugger.Instance.onDependencyChanged(target, value, parent, propertyName)
 			target.clear()
 		}, predicate)
 		return this

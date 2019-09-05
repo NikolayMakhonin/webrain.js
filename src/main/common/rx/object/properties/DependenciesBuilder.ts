@@ -67,7 +67,6 @@ export function subscribeDependencies<TSubscribeObject, TActionTarget>(
 		unsubscribers.push(deepSubscribeRule(
 			subscribeObject,
 			(value, parent, propertyName) => {
-				CalcObjectDebugger.Instance.onDependencyChanged(actionTarget, value, parent, propertyName)
 				action(actionTarget, value, parent, propertyName)
 				return null
 			},
