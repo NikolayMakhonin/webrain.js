@@ -1,5 +1,4 @@
 const path = require('path')
-const typescript = require('rollup-plugin-typescript2')
 const {terser} = require('rollup-plugin-terser')
 const istanbul = require('rollup-plugin-istanbul')
 // const globals = require('rollup-plugin-node-globals')
@@ -11,8 +10,9 @@ const {fileExtensions} = require('../common/helpers')
 
 const babel = require('./babel')
 
+const dedupe = importee => /^(@babel|core-js[^\\/]*|regenerator-runtime)([\\/]|$)/.test(importee)
+
 const plugins = {
-	typescript: () => typescript(),
 	babel     : babel.rollup,
 	istanbul  : (options = {}) => istanbul({
 		...nycrc,
@@ -21,12 +21,13 @@ const plugins = {
 	// globals    : (options = {}) =>globals(options),
 	// builtins   : (options = {}) =>builtins(options),
 	resolve: (options = {}) => resolve({
-		extensions          : [...fileExtensions.js, ...fileExtensions.ts],
+		extensions: [...fileExtensions.js, ...fileExtensions.ts],
+		dedupe,
 		// preferBuiltins      : true,
-		customResolveOptions: {
-			moduleDirectory: 'node_modules',
-			paths          : [path.resolve(process.cwd(), 'node_modules')],
-		},
+		// customResolveOptions: {
+		// 	moduleDirectory: 'node_modules',
+		// 	paths          : [path.resolve(process.cwd(), 'node_modules')],
+		// },
 		...options
 	}),
 	commonjs: (options = {}) => commonjs({

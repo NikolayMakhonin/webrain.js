@@ -55,10 +55,10 @@ async function doRollup(file) {
 			// rollupPlugins.typescript(),
 			// rollupPlugins.globals(),
 			// rollupPlugins.builtins(),
-			rollupPlugins.babel(),
+			rollupPlugins.babel.minimal(),
 			rollupPlugins.resolve(),
 			rollupPlugins.commonjs(),
-			rollupPlugins.babel(),
+			rollupPlugins.babel.browser(),
 			addHeaderFooterPlugin({
 				include: file,
 				header : markStartEnd,

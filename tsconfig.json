@@ -1,14 +1,14 @@
 {
-  "compilerOptions": {
-    "declaration": true,
-    "emitDeclarationOnly": true,
-	"outDir": "dist/types",
-	"baseUrl": ".",
-	"target": "ESNext",
-	"lib": ["dom", "esnext"],
-	"skipLibCheck": true
-  },
-  "include": [
-  	"src/main/**/*.ts"
-  ]
+	"compilerOptions": {
+		"declaration": true,
+		"emitDeclarationOnly": true,
+		"outDir": "dist/types",
+		"baseUrl": ".",
+		"target": "ESNext",
+		"lib": ["dom", "esnext"],
+		"skipLibCheck": true
+	},
+	"include": [
+		"src/main/**/*.ts"
+	]
 }

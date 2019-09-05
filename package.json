@@ -23,8 +23,9 @@
   },
   "scripts": {
     "clean": "shx rm -rf {dist,tmp,__sapper__,*.log}",
-    "npm-check": "depcheck --ignores=\"@babel/*,@metahub/karma-rollup-preprocessor,karma-*,eslint-plugin-markdown,tslint-eslint-rules\" --ignore-dirs=_trash,dist,docs,tmp",
-    "precommit": "npm run npm-check && npm update && npm run test:all:coverage",
+    "npm:dep": "depcheck --ignores=\"@babel/*,@metahub/karma-rollup-preprocessor,karma-*,eslint-plugin-markdown,tslint-eslint-rules\" --ignore-dirs=_trash,dist,docs,tmp",
+    "npm:check": "npm run npm:dep",
+    "precommit": "npm run npm:check && npm update && npm run test:all:coverage",
     "prepare": "npm run build",
     "prepublishOnly": "npm run test:all",
     "build:types": "shx rm -rf dist/types/ && shx mkdir -p dist/types/ && tsc --outDir dist/types",
@@ -63,8 +64,6 @@
     "@babel/core": "^7.5.5",
     "@babel/plugin-proposal-class-properties": "^7.5.5",
     "@babel/plugin-proposal-decorators": "^7.4.4",
-    "@babel/plugin-proposal-export-default-from": "^7.5.2",
-    "@babel/plugin-proposal-export-namespace-from": "^7.5.2",
     "@babel/plugin-proposal-optional-chaining": "^7.2.0",
     "@babel/plugin-proposal-throw-expressions": "^7.2.0",
     "@babel/plugin-syntax-dynamic-import": "^7.2.0",
@@ -116,7 +115,6 @@
     "rollup-plugin-istanbul": "^2.0.1",
     "rollup-plugin-node-resolve": "^5.2.0",
     "rollup-plugin-terser": "^5.1.1",
-    "rollup-plugin-typescript2": "^0.24.0",
     "rollup-pluginutils": "^2.8.1",
     "shx": "^0.3.2",
     "synchronous-promise": "^2.0.9",
@@ -126,15 +124,13 @@
     "tslint-eslint-rules": "^5.4.0",
     "tslint-no-circular-imports": "^0.7.0",
     "tslint-sonarts": "^1.9.0",
-    "typescript": "^3.6.2"
-  },
-  "peerDependencies": {
+    "typescript": "^3.6.2",
     "@babel/runtime-corejs3": "^7.5.5",
     "core-js-pure": "^3.2.1",
     "regenerator-runtime": "^0.13.3",
     "assertion-error": "^1.1.0"
   },
-  "dependencies": {
+  "peerDependencies": {
     "@babel/runtime-corejs3": "^7.5.5",
     "core-js-pure": "^3.2.1",
     "regenerator-runtime": "^0.13.3",
