@@ -112,8 +112,8 @@ module.exports.configCommon = function (config) {
 					+ '})();\n'
 				)),
 				// Load polyfill
-				servedPattern(require.resolve('../polyfill/bundle')),
-				servedPattern(require.resolve('@babel/polyfill/dist/polyfill')), // For IE
+				// servedPattern(require.resolve('../../static/polyfill')),
+				// servedPattern(require.resolve('@babel/polyfill/dist/polyfill')), // For IE / PhantomJS
 				servedPattern(writeTextFile(
 					path.resolve('./tmp/karma/polyfill-after.js'),
 					"console.log('karma polyfill activated!');"
@@ -169,6 +169,9 @@ module.exports.configCommon = function (config) {
 			'E2E_Chromium44',
 			'E2E_ChromeLatest',
 		],
+
+		// Firefox:
+		// privacy.reduceTimerPrecision
 
 		customLaunchers: {
 			E2E_Chromium33: {

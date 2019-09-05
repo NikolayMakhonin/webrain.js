@@ -2,12 +2,14 @@
   <dictionary name="Mika">
     <words>
       <w>babelrc</w>
+      <w>browserslist</w>
       <w>browserstack</w>
       <w>callbackfn</w>
       <w>childs</w>
       <w>chokidar</w>
       <w>coef</w>
       <w>coord</w>
+      <w>corejs</w>
       <w>cssnano</w>
       <w>deserialized</w>
       <w>fileuri</w>

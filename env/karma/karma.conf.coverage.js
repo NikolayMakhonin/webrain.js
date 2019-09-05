@@ -1,6 +1,7 @@
-/* eslint-disable prefer-template,no-sync */
+/* eslint-disable prefer-template,no-sync,object-property-newline */
 // Karma configuration
 const helpers = require('./karma.conf.helpers')
+const {fileExtensions} = require('../common/helpers')
 
 module.exports = function (config) {
 	helpers.configCommon(config)
@@ -21,8 +22,8 @@ module.exports = function (config) {
 			helpers.servedPattern(helpers.writeTextFile('tmp/karma/chai.js', '"use strict"; var assert = chai.assert, expect = chai.expect, should = chai.should;')),
 			helpers.concatJsFiles(
 				'tmp/karma/tests.js',
-				'src/test/tests/{common,browser}/**/*{.es6,.es,.js,.mjs,.ts}',
-				'!*/**/src/**/*{.es6,.es,.js,.mjs,.ts}'
+				`src/test/tests/{common,browser}/**/*{${[...fileExtensions.js, ...fileExtensions.ts].join(',')}}`,
+				`!*/**/src/**/*{${[...fileExtensions.js, ...fileExtensions.ts].join(',')}}`
 			)
 		],
 
@@ -36,20 +37,9 @@ module.exports = function (config) {
 		},
 
 		rollupPreprocessor: {
-			plugins: [
-				// helpers.rollup.plugins.typescript(),
-				helpers.rollup.plugins.babel(),
-				helpers.rollup.plugins.istanbul(),
-				// helpers.rollup.plugins.globals(),
-				// helpers.rollup.plugins.builtins(),
-				helpers.rollup.plugins.nodeResolve(),
-				helpers.rollup.plugins.commonjs(),
-				helpers.rollup.plugins.babel(),
-				helpers.rollup.plugins.terser(),
-				helpers.rollup.plugins.prettier()
-			].filter(o => o),
-			output: {
-				format   : 'cjs',
+			plugins: helpers.rollup.plugins.karma({dev: true, legacy: true, coverage: true}),
+			output : {
+				format   : 'iife',
 				sourcemap: true // 'inline'
 			}
 		},

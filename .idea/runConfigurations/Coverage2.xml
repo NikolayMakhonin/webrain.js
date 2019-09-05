@@ -1,5 +1,5 @@
 <component name="ProjectRunConfigurationManager">
-  <configuration default="false" name="Coverage Mocha" type="mocha-javascript-test-runner">
+  <configuration default="false" name="Coverage" type="mocha-javascript-test-runner">
     <node-interpreter>node</node-interpreter>
     <node-options>--max-old-space-size=4096</node-options>
     <mocha-package>$PROJECT_DIR$/node_modules/mocha</mocha-package>

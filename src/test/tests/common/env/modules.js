@@ -1,8 +1,12 @@
-/* eslint-disable no-duplicate-imports */
+/* eslint-disable no-duplicate-imports,no-var */
 import {func1, var1} from './src/module1'
 import module1 from './src/module1'
 import {var2 as var22} from './src/module2'
 import module2 from './src/module2'
+
+// Test set window.location error. This happens if you use commonjs (cjs).
+// noinspection ES6ConvertVarToLetConst
+var location = 'http://fake-site.err'
 
 describe('common > env > modules', function () {
 	it('babel', function (done) {

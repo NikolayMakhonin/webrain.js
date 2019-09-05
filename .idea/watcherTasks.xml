@@ -21,7 +21,7 @@
       <option name="workingDir" value="$ProjectFileDir$" />
       <envs />
     </TaskOptions>
-    <TaskOptions isEnabled="true">
+    <TaskOptions isEnabled="false">
       <option name="arguments" value="env\js-transform-watcher.js $ProjectFileDir$\$FileRelativePath$ $ProjectFileDir$\tmp\watch\$FileRelativePath$" />
       <option name="checkSyntaxErrors" value="true" />
       <option name="description" />

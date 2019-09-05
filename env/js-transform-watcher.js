@@ -56,7 +56,7 @@ async function doRollup(file) {
 			// rollupPlugins.globals(),
 			// rollupPlugins.builtins(),
 			rollupPlugins.babel(),
-			rollupPlugins.nodeResolve(),
+			rollupPlugins.resolve(),
 			rollupPlugins.commonjs(),
 			rollupPlugins.babel(),
 			addHeaderFooterPlugin({
