@@ -2,7 +2,7 @@
   "compilerOptions": {
     "declaration": true,
     "emitDeclarationOnly": true,
-	"outDir": "dist/declarations",
+	"outDir": "dist/types",
 	"baseUrl": ".",
 	"target": "ESNext",
 	"lib": ["dom", "esnext"],
