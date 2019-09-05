@@ -174,6 +174,10 @@ export class RuleBuilder {
 
     return this.mapPredicate(name => keyRegexp.test(name), keyRegexp.toString());
   }
+  /**
+   * @deprecated because babel transform object.map property to unparseable code
+   */
+
 
   path(getValueFunc) {
     for (const propertyNames of getFuncPropertiesPath(getValueFunc)) {

@@ -1369,7 +1369,8 @@ registerMergeable(SortedList, {
 registerSerializable(SortedList, {
   serializer: {
     *deSerialize(deSerialize, serializedValue, valueFactory) {
-      const options = yield deSerialize(serializedValue.options);
+      const options = yield deSerialize(serializedValue.options); // @ts-ignore
+
       options.array = yield deSerialize(serializedValue.array);
       const value = valueFactory(options); // value.deSerialize(deSerialize, serializedValue)
 

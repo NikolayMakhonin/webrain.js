@@ -1,23 +1,14 @@
 {
   "compilerOptions": {
+    "declaration": true,
+    "emitDeclarationOnly": true,
+	"outDir": "dist/declarations",
 	"baseUrl": ".",
-	"paths": { "*": ["types/*"] },
 	"target": "ESNext",
-	"lib": ["es2015", "es2017", "es2018", "dom"],
-	"emitDecoratorMetadata": false,
-	"experimentalDecorators": false,
-	"stripInternal": true,
-	"moduleResolution": "node"
+	"lib": ["dom", "esnext"],
+	"skipLibCheck": true
   },
   "include": [
-  	"src/**/*",
-  	"env/**/*"
-  ],
-  "exclude": [
-    "_trash",
-    "dist",
-    "docs",
-    "node_modules",
-    "tmp"
+  	"src/main/**/*.ts"
   ]
 }

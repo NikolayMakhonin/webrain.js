@@ -300,6 +300,9 @@ export class RuleBuilder<TObject = any, TValueKeys extends string | number = nev
 		)
 	}
 
+	/**
+	 * @deprecated because babel transform object.map property to unparseable code
+	 */
 	public path<TValue>(getValueFunc: RuleGetValueFunc<TObject, TValue, TValueKeys>)
 		: RuleBuilder<TRulePathObjectValueOf<TValue>, TValueKeys>
 	{

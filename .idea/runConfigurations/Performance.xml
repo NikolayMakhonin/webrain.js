@@ -1,10 +1,14 @@
 <component name="ProjectRunConfigurationManager">
-  <configuration default="false" name="Performance" type="JavaScriptTestRunnerKarma">
-    <config-file value="$PROJECT_DIR$/env/karma/karma.conf.performance.js" />
-    <karma-package-dir value="$PROJECT_DIR$/node_modules/karma" />
-    <working-directory value="$PROJECT_DIR$" />
-    <node-interpreter value="node" />
-    <envs />
+  <configuration default="false" name="Performance" type="mocha-javascript-test-runner">
+    <node-interpreter>node</node-interpreter>
+    <node-options>--max-old-space-size=4096</node-options>
+    <mocha-package>$PROJECT_DIR$/node_modules/mocha</mocha-package>
+    <working-directory>$PROJECT_DIR$</working-directory>
+    <pass-parent-env>true</pass-parent-env>
+    <ui>bdd</ui>
+    <extra-mocha-options>--opts ./env/mocha/mocha.babel.opts</extra-mocha-options>
+    <test-kind>PATTERN</test-kind>
+    <test-pattern>./src/test/performance/{common,node}/**/*.*</test-pattern>
     <method v="2" />
   </configuration>
 </component>

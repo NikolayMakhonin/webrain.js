@@ -1322,6 +1322,7 @@ registerSerializable(SortedList, {
 			valueFactory: (...args) => SortedList<T>,
 		): ThenableIterator<SortedList<T>> {
 			const options = yield deSerialize(serializedValue.options)
+			// @ts-ignore
 			options.array = yield deSerialize(serializedValue.array)
 			const value = valueFactory(options)
 			// value.deSerialize(deSerialize, serializedValue)

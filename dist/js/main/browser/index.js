@@ -12,15 +12,15 @@ _Object$defineProperty(exports, "__esModule", {
   value: true
 });
 
-var _common = require("../common");
+var _index = require("../common/index");
 
-_forEachInstanceProperty(_context = _Object$keys(_common)).call(_context, function (key) {
+_forEachInstanceProperty(_context = _Object$keys(_index)).call(_context, function (key) {
   if (key === "default" || key === "__esModule") return;
 
   _Object$defineProperty(exports, key, {
     enumerable: true,
     get: function get() {
-      return _common[key];
+      return _index[key];
     }
   });
 });

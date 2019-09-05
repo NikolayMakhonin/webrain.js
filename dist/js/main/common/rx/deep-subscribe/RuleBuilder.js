@@ -277,6 +277,10 @@ function () {
         return keyRegexp.test(name);
       }, keyRegexp.toString());
     }
+    /**
+     * @deprecated because babel transform object.map property to unparseable code
+     */
+
   }, {
     key: "path",
     value: function path(getValueFunc) {
