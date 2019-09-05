@@ -16,13 +16,13 @@ var _async = require("../../../async/async");
 
 var _ThenableSync = require("../../../async/ThenableSync");
 
-var _helpers = require("../../../helpers/helpers");
+var _valueProperty = require("../../../helpers/value-property");
 
 var _CalcProperty = require("./CalcProperty");
 
 function resolveValueProperty(value, getValue) {
   if ((0, _typeof2.default)(value) === 'object') {
-    if (_helpers.VALUE_PROPERTY_DEFAULT in value) {
+    if (_valueProperty.VALUE_PROPERTY_DEFAULT in value) {
       if (getValue) {
         var newValue = getValue(value);
 
@@ -31,7 +31,7 @@ function resolveValueProperty(value, getValue) {
         }
       }
 
-      return value[_helpers.VALUE_PROPERTY_DEFAULT];
+      return value[_valueProperty.VALUE_PROPERTY_DEFAULT];
     }
 
     if (value instanceof _CalcProperty.CalcPropertyValue) {

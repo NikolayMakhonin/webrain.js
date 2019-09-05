@@ -24,7 +24,7 @@ var _classCallCheck2 = _interopRequireDefault(require("@babel/runtime-corejs3/he
 
 var _ThenableSync = require("../../../async/ThenableSync");
 
-var _helpers = require("../../../helpers/helpers");
+var _valueProperty = require("../../../helpers/value-property");
 
 var _DeferredCalc = require("../../deferred-calc/DeferredCalc");
 
@@ -111,7 +111,7 @@ function (_ObservableObject) {
         var oldValue = this._valueProperty.value;
         var newValue = new CalcPropertyValue(this);
         propertyChangedIfCanEmit.onPropertyChanged({
-          name: _helpers.VALUE_PROPERTY_DEFAULT,
+          name: _valueProperty.VALUE_PROPERTY_DEFAULT,
           oldValue: oldValue,
           newValue: newValue
         }, {
@@ -157,7 +157,7 @@ function (_ObservableObject) {
       }
     }
   }, {
-    key: _helpers.VALUE_PROPERTY_DEFAULT,
+    key: _valueProperty.VALUE_PROPERTY_DEFAULT,
     get: function get() {
       return this.wait;
     }

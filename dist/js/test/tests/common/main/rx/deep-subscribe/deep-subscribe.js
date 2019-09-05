@@ -16,6 +16,8 @@ var _repeat = _interopRequireDefault(require("@babel/runtime-corejs3/core-js-sta
 
 var _helpers = require("../../../../../../main/common/helpers/helpers");
 
+var _valueProperty = require("../../../../../../main/common/helpers/value-property");
+
 var _ObservableObjectBuilder = require("../../../../../../main/common/rx/object/ObservableObjectBuilder");
 
 var _Tester = require("./helpers/Tester");
@@ -500,7 +502,7 @@ describe('common > main > rx > deep-subscribe > deep-subscribe', function () {
             }).subscribe(function (o) {
               return [o.observableObject];
             }).change(function (o) {
-              return o.property[_helpers.VALUE_PROPERTY_DEFAULT] = new Number(1);
+              return o.property[_valueProperty.VALUE_PROPERTY_DEFAULT] = new Number(1);
             }, function (o) {
               return [o.observableObject];
             }, [new Number(1)]).change(function (o) {
@@ -527,7 +529,7 @@ describe('common > main > rx > deep-subscribe > deep-subscribe', function () {
               return o.property = o.object.property;
             }, [new Number(2)], [new Number(1)]).unsubscribe([new Number(1)]);
             object = (0, _Tester.createObject)();
-            new _ObservableObjectBuilder.ObservableObjectBuilder(object.property).delete(_helpers.VALUE_PROPERTY_DEFAULT);
+            new _ObservableObjectBuilder.ObservableObjectBuilder(object.property).delete(_valueProperty.VALUE_PROPERTY_DEFAULT);
             new _Tester.Tester({
               object: object,
               immediate: true,
@@ -539,7 +541,7 @@ describe('common > main > rx > deep-subscribe > deep-subscribe', function () {
             }).subscribe(function (o) {
               return [o.property];
             }).change(function (o) {
-              new _ObservableObjectBuilder.ObservableObjectBuilder(o.property).writable(_helpers.VALUE_PROPERTY_DEFAULT, null, null);
+              new _ObservableObjectBuilder.ObservableObjectBuilder(o.property).writable(_valueProperty.VALUE_PROPERTY_DEFAULT, null, null);
             }, function (o) {
               return [o.property];
             }, function (o) {
@@ -575,13 +577,13 @@ describe('common > main > rx > deep-subscribe > deep-subscribe', function () {
             }, function (o) {
               return [];
             }).change(function (o) {
-              o.property[_helpers.VALUE_PROPERTY_DEFAULT] = void 0;
+              o.property[_valueProperty.VALUE_PROPERTY_DEFAULT] = void 0;
             }, function (o) {
               return [];
             }, function (o) {
               return [];
             }).change(function (o) {
-              o.property[_helpers.VALUE_PROPERTY_DEFAULT] = o;
+              o.property[_valueProperty.VALUE_PROPERTY_DEFAULT] = o;
             }, function (o) {
               return [];
             }, function (o) {
@@ -605,7 +607,7 @@ describe('common > main > rx > deep-subscribe > deep-subscribe', function () {
             }, function (o) {
               return [o.list];
             }).change(function (o) {
-              new _ObservableObjectBuilder.ObservableObjectBuilder(o.property).delete(_helpers.VALUE_PROPERTY_DEFAULT);
+              new _ObservableObjectBuilder.ObservableObjectBuilder(o.property).delete(_valueProperty.VALUE_PROPERTY_DEFAULT);
             }, function (o) {
               return [o.list];
             }, function (o) {

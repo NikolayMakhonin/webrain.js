@@ -40,6 +40,8 @@ var _getIterator2 = _interopRequireDefault(require("@babel/runtime-corejs3/core-
 
 var _helpers = require("../../helpers/helpers");
 
+var _valueProperty = require("../../helpers/value-property");
+
 var _IListChanged = require("../../lists/contracts/IListChanged");
 
 var _IMapChanged = require("../../lists/contracts/IMapChanged");
@@ -103,14 +105,14 @@ function subscribeObjectValue(propertyNames, object, immediateSubscribe, subscri
   var subscribePropertyName;
 
   var getSubscribePropertyName = function getSubscribePropertyName() {
-    if (!Object.prototype.hasOwnProperty.call(object, _helpers.VALUE_PROPERTY_DEFAULT)) {
+    if (!Object.prototype.hasOwnProperty.call(object, _valueProperty.VALUE_PROPERTY_DEFAULT)) {
       return null;
     }
 
     var propertyName = getFirstExistProperty(object, propertyNames);
 
     if (propertyName == null) {
-      return _helpers.VALUE_PROPERTY_DEFAULT;
+      return _valueProperty.VALUE_PROPERTY_DEFAULT;
     }
 
     return propertyName;
@@ -180,13 +182,13 @@ function subscribeObjectValue(propertyNames, object, immediateSubscribe, subscri
 var allowSubscribePrototype = true;
 
 function hasDefaultProperty(object) {
-  return object instanceof Object && (allowSubscribePrototype ? _helpers.VALUE_PROPERTY_DEFAULT in object : Object.prototype.hasOwnProperty.call(object, _helpers.VALUE_PROPERTY_DEFAULT)) && object.constructor !== Object && !(0, _isArray.default)(object);
+  return object instanceof Object && (allowSubscribePrototype ? _valueProperty.VALUE_PROPERTY_DEFAULT in object : Object.prototype.hasOwnProperty.call(object, _valueProperty.VALUE_PROPERTY_DEFAULT)) && object.constructor !== Object && !(0, _isArray.default)(object);
 }
 
 function subscribeDefaultProperty(object, immediateSubscribe, subscribeItem) {
   var unsubscribe;
-  return subscribeObject(_helpers.VALUE_PROPERTY_DEFAULT, function (o) {
-    return o === _helpers.VALUE_PROPERTY_DEFAULT;
+  return subscribeObject(_valueProperty.VALUE_PROPERTY_DEFAULT, function (o) {
+    return o === _valueProperty.VALUE_PROPERTY_DEFAULT;
   }, object, immediateSubscribe, function (item, debugPropertyName) {
     unsubscribe = subscribeItem(item, debugPropertyName);
   }, function () {
@@ -203,7 +205,7 @@ function subscribeObject(propertyNames, propertyPredicate, object, immediateSubs
 
   var unsubscribe;
 
-  if (propertyNames !== _helpers.VALUE_PROPERTY_DEFAULT && hasDefaultProperty(object)) {
+  if (propertyNames !== _valueProperty.VALUE_PROPERTY_DEFAULT && hasDefaultProperty(object)) {
     unsubscribe = subscribeDefaultProperty(object, immediateSubscribe, function (item) {
       return subscribeObject(propertyNames, propertyPredicate, item, immediateSubscribe, subscribeItem, unsubscribeItem);
     });

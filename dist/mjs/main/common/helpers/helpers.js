@@ -66,4 +66,3 @@ export function hideObjectProperty(object, propertyName) {
     value: object[propertyName]
   });
 }
-export const VALUE_PROPERTY_DEFAULT = '';

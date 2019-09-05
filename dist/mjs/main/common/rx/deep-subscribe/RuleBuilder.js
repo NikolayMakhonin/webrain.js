@@ -1,4 +1,4 @@
-import { VALUE_PROPERTY_DEFAULT } from '../../helpers/helpers';
+import { VALUE_PROPERTY_DEFAULT } from '../../helpers/value-property';
 import { ANY_DISPLAY, COLLECTION_PREFIX, VALUE_PROPERTY_PREFIX } from './contracts/constants';
 import { getFuncPropertiesPath } from './helpers/func-properties-path';
 import { RuleAny, RuleNothing, RuleRepeat } from './rules';

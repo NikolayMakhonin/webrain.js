@@ -1,5 +1,5 @@
 import { resolveAsyncFunc } from '../../../async/ThenableSync';
-import { VALUE_PROPERTY_DEFAULT } from '../../../helpers/helpers';
+import { VALUE_PROPERTY_DEFAULT } from '../../../helpers/value-property';
 import { DeferredCalc } from '../../deferred-calc/DeferredCalc';
 import { ObservableObject } from '../ObservableObject';
 import { ObservableObjectBuilder } from '../ObservableObjectBuilder';

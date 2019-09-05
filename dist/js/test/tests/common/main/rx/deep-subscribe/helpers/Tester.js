@@ -47,6 +47,8 @@ var _defineProperty3 = _interopRequireDefault(require("@babel/runtime-corejs3/co
 
 var _helpers = require("../../../../../../../main/common/helpers/helpers");
 
+var _valueProperty = require("../../../../../../../main/common/helpers/value-property");
+
 var _ObservableMap = require("../../../../../../../main/common/lists/ObservableMap");
 
 var _ObservableSet = require("../../../../../../../main/common/lists/ObservableSet");
@@ -105,7 +107,7 @@ function createObject() {
   var observableSet = new _ObservableSet.ObservableSet();
   var observableMap = new _ObservableMap.ObservableMap();
   var property = new _ObservableObject2.ObservableObject();
-  (0, _assign.default)(object, (_Object$assign2 = {}, (0, _defineProperty2.default)(_Object$assign2, _helpers.VALUE_PROPERTY_DEFAULT, 'nothing'), (0, _defineProperty2.default)(_Object$assign2, "observableObjectPrototype", observableObjectPrototype), (0, _defineProperty2.default)(_Object$assign2, "observableObject", observableObject), (0, _defineProperty2.default)(_Object$assign2, "observableList", observableList), (0, _defineProperty2.default)(_Object$assign2, "observableSet", observableSet), (0, _defineProperty2.default)(_Object$assign2, "observableMap", observableMap), (0, _defineProperty2.default)(_Object$assign2, "object", object), (0, _defineProperty2.default)(_Object$assign2, "property", property), (0, _defineProperty2.default)(_Object$assign2, "list", list), (0, _defineProperty2.default)(_Object$assign2, "set", set), (0, _defineProperty2.default)(_Object$assign2, "map2", map2), (0, _defineProperty2.default)(_Object$assign2, "value", 'value'), (0, _defineProperty2.default)(_Object$assign2, "valueObject", new String('value')), (0, _defineProperty2.default)(_Object$assign2, "promiseSync", {
+  (0, _assign.default)(object, (_Object$assign2 = {}, (0, _defineProperty2.default)(_Object$assign2, _valueProperty.VALUE_PROPERTY_DEFAULT, 'nothing'), (0, _defineProperty2.default)(_Object$assign2, "observableObjectPrototype", observableObjectPrototype), (0, _defineProperty2.default)(_Object$assign2, "observableObject", observableObject), (0, _defineProperty2.default)(_Object$assign2, "observableList", observableList), (0, _defineProperty2.default)(_Object$assign2, "observableSet", observableSet), (0, _defineProperty2.default)(_Object$assign2, "observableMap", observableMap), (0, _defineProperty2.default)(_Object$assign2, "object", object), (0, _defineProperty2.default)(_Object$assign2, "property", property), (0, _defineProperty2.default)(_Object$assign2, "list", list), (0, _defineProperty2.default)(_Object$assign2, "set", set), (0, _defineProperty2.default)(_Object$assign2, "map2", map2), (0, _defineProperty2.default)(_Object$assign2, "value", 'value'), (0, _defineProperty2.default)(_Object$assign2, "valueObject", new String('value')), (0, _defineProperty2.default)(_Object$assign2, "promiseSync", {
     then: function then(resolve) {
       return resolve(observableObject);
     }
@@ -129,7 +131,7 @@ function createObject() {
       observableMap.set(key, object[key]);
     }
 
-    if (key !== _helpers.VALUE_PROPERTY_DEFAULT) {
+    if (key !== _valueProperty.VALUE_PROPERTY_DEFAULT) {
       if (key !== 'valueObjectWritable') {
         observableObjectBuilderPrototype.readable(key, null, object[key]);
       }
@@ -139,7 +141,7 @@ function createObject() {
     }
   });
   observableObjectBuilderPrototype.writable('valueObjectWritable');
-  propertyBuilder.writable(_helpers.VALUE_PROPERTY_DEFAULT, null, observableObject);
+  propertyBuilder.writable(_valueProperty.VALUE_PROPERTY_DEFAULT, null, observableObject);
   return object;
 }
 

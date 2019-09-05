@@ -1,6 +1,6 @@
 import { isThenable } from '../../../async/async';
 import { resolveAsync, ThenableSync } from '../../../async/ThenableSync';
-import { VALUE_PROPERTY_DEFAULT } from '../../../helpers/helpers';
+import { VALUE_PROPERTY_DEFAULT } from '../../../helpers/value-property';
 import { CalcPropertyValue } from './CalcProperty';
 
 function resolveValueProperty(value, getValue) {

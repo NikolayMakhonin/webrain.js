@@ -1,5 +1,6 @@
 /* tslint:disable:no-identical-functions */
-import { checkIsFuncOrNull, isIterable, VALUE_PROPERTY_DEFAULT } from '../../helpers/helpers';
+import { checkIsFuncOrNull, isIterable } from '../../helpers/helpers';
+import { VALUE_PROPERTY_DEFAULT } from '../../helpers/value-property';
 import { ListChangedType } from '../../lists/contracts/IListChanged';
 import { MapChangedType } from '../../lists/contracts/IMapChanged';
 import { SetChangedType } from '../../lists/contracts/ISetChanged';

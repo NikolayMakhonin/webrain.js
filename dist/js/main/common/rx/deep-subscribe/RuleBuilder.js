@@ -47,7 +47,7 @@ var _createClass2 = _interopRequireDefault(require("@babel/runtime-corejs3/helpe
 
 var _bind = _interopRequireDefault(require("@babel/runtime-corejs3/core-js-stable/instance/bind"));
 
-var _helpers = require("../../helpers/helpers");
+var _valueProperty = require("../../helpers/value-property");
 
 var _constants = require("./contracts/constants");
 

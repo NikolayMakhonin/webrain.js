@@ -16,7 +16,7 @@ exports.checkIsFuncOrNull = checkIsFuncOrNull;
 exports.toSingleCall = toSingleCall;
 exports.createFunction = createFunction;
 exports.hideObjectProperty = hideObjectProperty;
-exports.VALUE_PROPERTY_DEFAULT = exports.EMPTY = void 0;
+exports.EMPTY = void 0;
 
 var _defineProperty = _interopRequireDefault(require("@babel/runtime-corejs3/core-js-stable/object/define-property"));
 
@@ -110,6 +110,3 @@ function hideObjectProperty(object, propertyName) {
     value: object[propertyName]
   });
 }
-
-var VALUE_PROPERTY_DEFAULT = '';
-exports.VALUE_PROPERTY_DEFAULT = VALUE_PROPERTY_DEFAULT;

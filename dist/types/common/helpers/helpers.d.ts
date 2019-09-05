@@ -1,0 +1,11 @@
+export declare function isIterable(value: any): boolean;
+export declare function isIterator(value: any): boolean;
+export declare function typeToDebugString(type: any): any;
+export declare const EMPTY: any;
+export declare function delay(timeMilliseconds: any): Promise<unknown>;
+export declare type TClass<T> = new (...args: any[]) => T;
+export declare type TFunc<TResult> = (...args: any[]) => TResult;
+export declare function checkIsFuncOrNull<T extends TFunc<any>>(func: T): T;
+export declare function toSingleCall<T extends TFunc<any>>(func: T, throwOnMultipleCall?: boolean): T;
+export declare function createFunction(...args: string[]): Function;
+export declare function hideObjectProperty(object: object, propertyName: string): void;
