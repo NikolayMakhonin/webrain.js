@@ -1,4 +1,4 @@
-export var ListChangedType;
+export let ListChangedType;
 
 (function (ListChangedType) {
   ListChangedType[ListChangedType["Removed"] = 0] = "Removed";

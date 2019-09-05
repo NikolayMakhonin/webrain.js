@@ -1,12 +1,3 @@
-import _toConsumableArray from "@babel/runtime/helpers/toConsumableArray";
-import _defineProperty from "@babel/runtime/helpers/defineProperty";
-import _classCallCheck from "@babel/runtime/helpers/classCallCheck";
-import _createClass from "@babel/runtime/helpers/createClass";
-
-function ownKeys(object, enumerableOnly) { var keys = Object.keys(object); if (Object.getOwnPropertySymbols) { var symbols = Object.getOwnPropertySymbols(object); if (enumerableOnly) symbols = symbols.filter(function (sym) { return Object.getOwnPropertyDescriptor(object, sym).enumerable; }); keys.push.apply(keys, symbols); } return keys; }
-
-function _objectSpread(target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i] != null ? arguments[i] : {}; if (i % 2) { ownKeys(source, true).forEach(function (key) { _defineProperty(target, key, source[key]); }); } else if (Object.getOwnPropertyDescriptors) { Object.defineProperties(target, Object.getOwnPropertyDescriptors(source)); } else { ownKeys(source).forEach(function (key) { Object.defineProperty(target, key, Object.getOwnPropertyDescriptor(source, key)); }); } } return target; }
-
 /* tslint:disable:no-empty no-identical-functions max-line-length no-construct use-primitive-type */
 // @ts-ignore
 // noinspection ES6UnusedImports
@@ -25,17 +16,17 @@ import { ObjectSet } from '../../../../../../main/common/lists/ObjectSet';
 import { ObservableMap } from '../../../../../../main/common/lists/ObservableMap';
 import { ObservableSet } from '../../../../../../main/common/lists/ObservableSet';
 import { SortedList } from '../../../../../../main/common/lists/SortedList';
-import { Property } from '../../../../../../main/common/rx/object/properties/property';
+import { Property } from '../../../../../../main/common/rx/object/properties/Property';
 import { Assert } from '../../../../../../main/common/test/Assert';
 import { createComplexObject, createIterable } from '../../src/helpers/helpers';
 import { BASE, deepCloneEqual, isRefer, NEWER, NONE, OLDER, TestMerger } from './src/TestMerger';
-var assert = new Assert(deepCloneEqual);
+const assert = new Assert(deepCloneEqual);
 // declare function deepStrictEqual(a, b): boolean
 // declare function circularDeepStrictEqual(a, b): boolean
 // declare function deepCloneEqual.clone<T = any>(o: T): T
 describe('common > extensions > merge > ObjectMerger', function () {
   this.timeout(60000);
-  var testMerger = TestMerger.test;
+  const testMerger = TestMerger.test;
   after(function () {
     console.log('Total ObjectMerger tests >= ' + TestMerger.totalTests);
   });
@@ -71,53 +62,42 @@ describe('common > extensions > merge > ObjectMerger', function () {
     return !o.preferCloneBase && isObject(o.base) && (!deepCloneEqual.equal(o.base, o.newer) && isObject(o.newer) || deepCloneEqual.equal(o.base, o.newer) && !deepCloneEqual.equal(o.base, o.older) && isObject(o.older));
   }
 
-  var Class =
-  /*#__PURE__*/
-  function () {
-    function Class(value) {
-      _classCallCheck(this, Class);
-
+  class Class {
+    constructor(value) {
       this.value = value;
     }
 
-    _createClass(Class, [{
-      key: "_canMerge",
-      value: function _canMerge(source) {
-        if (source.constructor !== Class && source.constructor !== Object) {
-          return false;
-        }
-
-        return true;
+    _canMerge(source) {
+      if (source.constructor !== Class && source.constructor !== Object) {
+        return false;
       }
-    }, {
-      key: "_merge",
-      value: function _merge(merge, older, newer, preferCloneOlder, preferCloneNewer, options) {
-        var _this = this;
 
-        var changed = false;
-        changed = merge(this.value, older instanceof Class ? older.value : older, newer instanceof Class ? newer.value : newer, function (o) {
-          _this.value = o;
-        }, null, null, {
-          selfAsValueOlder: !(older instanceof Class),
-          selfAsValueNewer: !(newer instanceof Class)
-        }) || changed;
-        return changed;
-      }
-    }]);
+      return true;
+    }
 
-    return Class;
-  }();
+    _merge(merge, older, newer, preferCloneOlder, preferCloneNewer, options) {
+      let changed = false;
+      changed = merge(this.value, older instanceof Class ? older.value : older, newer instanceof Class ? newer.value : newer, o => {
+        this.value = o;
+      }, null, null, {
+        selfAsValueOlder: !(older instanceof Class),
+        selfAsValueNewer: !(newer instanceof Class)
+      }) || changed;
+      return changed;
+    }
+
+  }
 
   registerMergeable(Class);
   describe('combinations', function () {
-    var options = {
+    const options = {
       preferCloneOlderParam: [null, false, true],
       preferCloneNewerParam: [null, false, true],
       preferCloneMeta: [null, false, true],
       valueType: [null],
       valueFactory: [null],
       setFunc: [false, true],
-      exclude: function exclude(o) {
+      exclude: o => {
         // if (o.older.constructor === Object && o.newer.constructor === Object) {
         // 	return true
         // }
@@ -153,10 +133,8 @@ describe('common > extensions > merge > ObjectMerger', function () {
       },
       expected: {
         error: null,
-        returnValue: function returnValue(o) {
-          return mustBeSet(o) || mustBeFilled(o);
-        },
-        setValue: function setValue(o) {
+        returnValue: o => mustBeSet(o) || mustBeFilled(o),
+        setValue: o => {
           if (!mustBeSet(o)) {
             return NONE;
           }
@@ -222,9 +200,9 @@ describe('common > extensions > merge > ObjectMerger', function () {
       actions: null
     };
     it('complex objects', function () {
-      var complexObjectOptions = {
+      const complexObjectOptions = {
         undefined: true,
-        "function": true,
+        function: true,
         array: true,
         circular: true,
         circularClass: true,
@@ -239,9 +217,7 @@ describe('common > extensions > merge > ObjectMerger', function () {
         sortedList: true
       };
 
-      var createValues = function createValues() {
-        return [BASE, OLDER, NEWER, createComplexObject(complexObjectOptions)];
-      }; // testMerger({
+      const createValues = () => [BASE, OLDER, NEWER, createComplexObject(complexObjectOptions)]; // testMerger({
       // 	base: [OLDER],
       // 	older: createValues(),
       // 	newer: createValues(),
@@ -264,127 +240,115 @@ describe('common > extensions > merge > ObjectMerger', function () {
       // })
 
 
-      testMerger(_objectSpread({}, options, {
+      testMerger({ ...options,
         base: createValues(),
         older: createValues(),
         newer: createValues()
-      }));
+      });
     });
     it('primitives', function () {
-      var createValues = function createValues() {
-        return [BASE, OLDER, NEWER, null, void 0, 0, 1, false, true];
-      };
+      const createValues = () => [BASE, OLDER, NEWER, null, void 0, 0, 1, false, true];
 
-      testMerger(_objectSpread({}, options, {
+      testMerger({ ...options,
         base: createValues(),
         older: createValues(),
         newer: createValues()
-      }));
+      });
     });
     it('strings', function () {
-      var createValues = function createValues() {
-        return [BASE, OLDER, NEWER, void 0, 1, '', '1', '2'];
-      };
+      const createValues = () => [BASE, OLDER, NEWER, void 0, 1, '', '1', '2'];
 
-      testMerger(_objectSpread({}, options, {
+      testMerger({ ...options,
         base: createValues(),
         older: createValues(),
         newer: createValues()
-      }));
+      });
     });
     it('Strings', function () {
-      var createValues = function createValues() {
-        return [BASE, OLDER, NEWER, void 0, 1, new String(''), new String('1'), new String('2')];
-      };
+      const createValues = () => [BASE, OLDER, NEWER, void 0, 1, new String(''), new String('1'), new String('2')];
 
-      testMerger(_objectSpread({}, options, {
+      testMerger({ ...options,
         base: createValues(),
         older: createValues(),
         newer: createValues()
-      }));
+      });
     });
     it('date', function () {
-      var createValues = function createValues() {
-        return [BASE, OLDER, NEWER, void 0, '', {}, new Date(1), new Date(2), new Date(3)];
-      };
+      const createValues = () => [BASE, OLDER, NEWER, void 0, '', {}, new Date(1), new Date(2), new Date(3)];
 
-      testMerger(_objectSpread({}, options, {
+      testMerger({ ...options,
         base: createValues(),
         older: createValues(),
         newer: createValues()
-      }));
+      });
     });
     it('objects', function () {
-      var createValues = function createValues() {
-        return [BASE, OLDER, NEWER, null, {}, new Date(1),
-        /* new Class(new Date(1)), new Class({ a: {a: 1, b: 2}, b: 3 }), new Class(Object.freeze({ x: {y: 1} })), */
-        {
-          a: {
-            a: 1,
-            b: 2
-          },
-          b: 3
-        }, {
-          a: {
-            b: 4,
-            c: 5
-          },
-          c: 6
-        }, {
-          a: {
-            a: 7,
-            b: 8
-          },
-          d: 9
-        }, Object.freeze({
-          x: {
-            y: 1
-          }
-        })];
-      };
+      const createValues = () => [BASE, OLDER, NEWER, null, {}, new Date(1),
+      /* new Class(new Date(1)), new Class({ a: {a: 1, b: 2}, b: 3 }), new Class(Object.freeze({ x: {y: 1} })), */
+      {
+        a: {
+          a: 1,
+          b: 2
+        },
+        b: 3
+      }, {
+        a: {
+          b: 4,
+          c: 5
+        },
+        c: 6
+      }, {
+        a: {
+          a: 7,
+          b: 8
+        },
+        d: 9
+      }, Object.freeze({
+        x: {
+          y: 1
+        }
+      })];
 
-      testMerger(_objectSpread({}, options, {
+      testMerger({ ...options,
         base: createValues(),
         older: createValues(),
         newer: createValues()
-      }));
+      });
     });
     xit('full', function () {
       this.timeout(180000);
 
-      var createValues = function createValues() {
-        return [BASE, OLDER, NEWER, null, void 0, 0, 1, false, true, '', '1',
-        /* new Class(new Date(1)), new Class({ a: {a: 1, b: 2}, b: 3 }), new Class(Object.freeze({ x: {y: 1} })), */
-        {}, {
-          a: {
-            a: 1,
-            b: 2
-          },
-          b: 3
-        }, {
-          a: {
-            b: 4,
-            c: 5
-          },
-          c: 6
-        }, {
-          a: {
-            a: 7,
-            b: 8
-          },
-          d: 9
-        }, Object.freeze({
-          x: {
-            y: 1
-          }
-        }), new Date(1), new Date(2)];
-      };
+      const createValues = () => [BASE, OLDER, NEWER, null, void 0, 0, 1, false, true, '', '1',
+      /* new Class(new Date(1)), new Class({ a: {a: 1, b: 2}, b: 3 }), new Class(Object.freeze({ x: {y: 1} })), */
+      {}, {
+        a: {
+          a: 1,
+          b: 2
+        },
+        b: 3
+      }, {
+        a: {
+          b: 4,
+          c: 5
+        },
+        c: 6
+      }, {
+        a: {
+          a: 7,
+          b: 8
+        },
+        d: 9
+      }, Object.freeze({
+        x: {
+          y: 1
+        }
+      }), new Date(1), new Date(2)];
 
-      testMerger(_objectSpread({}, options, {
+      testMerger({ ...options,
         base: createValues(),
         older: createValues(),
         newer: createValues()
-      }));
+      });
     });
   });
   describe('base', function () {
@@ -416,10 +380,10 @@ describe('common > extensions > merge > ObjectMerger', function () {
         b: 3
       }))); // tslint:disable-next-line:use-primitive-type no-construct
 
-      var symbol = {
+      const symbol = {
         x: new String('SYMBOL')
       };
-      var symbolClone = deepCloneEqual.clone(symbol);
+      const symbolClone = deepCloneEqual.clone(symbol);
       assert.ok(deepCloneEqual.equal(symbol, symbolClone));
     });
     it('custom class', function () {
@@ -680,8 +644,8 @@ describe('common > extensions > merge > ObjectMerger', function () {
         preferCloneNewerParam: [null],
         preferCloneMeta: [null],
         valueType: [Class],
-        valueFactory: [null, function () {
-          var instance = new Class(null);
+        valueFactory: [null, () => {
+          const instance = new Class(null);
           instance.custom = true;
           return instance;
         }],
@@ -689,8 +653,8 @@ describe('common > extensions > merge > ObjectMerger', function () {
         expected: {
           error: null,
           returnValue: true,
-          setValue: function setValue(o) {
-            var value = new Class({
+          setValue: o => {
+            const value = new Class({
               a: {
                 a: 7,
                 b: 2
@@ -713,17 +677,17 @@ describe('common > extensions > merge > ObjectMerger', function () {
     });
   });
   describe('circular', function () {
-    var createValue = function createValue(value, circular) {
-      var obj = {
-        value: value
+    const createValue = (value, circular) => {
+      const obj = {
+        value
       };
       obj.obj = circular ? obj : {
-        value: value
+        value
       };
       return obj;
     };
 
-    var options = {
+    const options = {
       preferCloneOlderParam: [null],
       preferCloneNewerParam: [null],
       preferCloneMeta: [null],
@@ -732,10 +696,10 @@ describe('common > extensions > merge > ObjectMerger', function () {
       setFunc: [true],
       expected: {
         error: null,
-        returnValue: function returnValue(o) {
+        returnValue: o => {
           return !deepCloneEqual.equal(o.base, o.newer) || !deepCloneEqual.equal(o.base, o.older);
         },
-        setValue: function setValue(o) {
+        setValue: o => {
           if (deepCloneEqual.equal(o.base, o.newer) && deepCloneEqual.equal(o.base, o.older)) {
             return NONE;
           }
@@ -766,7 +730,7 @@ describe('common > extensions > merge > ObjectMerger', function () {
             return OLDER;
           }
         },
-        base: function base(o) {
+        base: o => {
           if (o.base && o.older && o.newer) {
             if (deepCloneEqual.equal(o.base, o.newer)) {
               return OLDER;
@@ -783,30 +747,30 @@ describe('common > extensions > merge > ObjectMerger', function () {
       actions: null
     };
     it('deepCloneEqual.clone circular', function () {
-      var TestClass = function TestClass(value) {
-        _classCallCheck(this, TestClass);
+      class TestClass {
+        constructor(value) {
+          this.value = value;
+        }
 
-        this.value = value;
-      };
+      }
 
-      var obj = {
+      const obj = {
         undefined: void 0,
-        "null": null,
+        null: null,
         String: new String('String'),
         Number: new Number(1),
         Boolean: new Boolean(true),
         error: new Error('test error'),
-        func: function func() {
-          return 'func';
-        }
+        func: () => 'func'
       };
       obj.circular = obj;
-      obj["class"] = new TestClass(obj);
-      obj.array = _toConsumableArray(Object.values(obj));
-      obj.nested = _objectSpread({}, obj);
-      var clone = deepCloneEqual.clone(obj);
+      obj.class = new TestClass(obj);
+      obj.array = [...Object.values(obj)];
+      obj.nested = { ...obj
+      };
+      const clone = deepCloneEqual.clone(obj);
 
-      var assertCloneValue = function assertCloneValue(cloneValue, value, message) {
+      const assertCloneValue = (cloneValue, value, message) => {
         if (deepCloneEqual.isPrimitive(value)) {
           assert.strictEqual(cloneValue, value, message);
         } else {
@@ -817,47 +781,47 @@ describe('common > extensions > merge > ObjectMerger', function () {
       deepCloneEqual.equal(clone, obj);
       assertCloneValue(clone, obj, 'root');
 
-      for (var key in obj) {
+      for (const key in obj) {
         if (Object.prototype.hasOwnProperty.call(obj, key)) {
           assertCloneValue(clone[key], obj[key], key);
           assertCloneValue(clone.nested[key], obj.nested[key], key);
         }
       }
 
-      for (var i = 0; i < obj.array.length; i++) {
-        assertCloneValue(clone.array[i], obj.array[i], "array[".concat(i, "]"));
+      for (let i = 0; i < obj.array.length; i++) {
+        assertCloneValue(clone.array[i], obj.array[i], `array[${i}]`);
       }
     });
     it('simple circular', function () {
-      testMerger(_objectSpread({}, options, {
+      testMerger({ ...options,
         base: [createValue(1, true)],
         older: [createValue(1, true)],
         newer: [createValue(1, true)]
-      }));
+      });
     });
     it('not circular', function () {
-      testMerger(_objectSpread({}, options, {
+      testMerger({ ...options,
         base: [createValue(1, false), createValue(2, false), createValue(3, false), null],
         older: [createValue(1, false), createValue(2, false), createValue(3, false), null],
         newer: [createValue(1, false), createValue(2, false), createValue(3, false), null]
-      }));
+      });
     });
     it('value type circular', function () {
-      var base = {
+      const base = {
         a: {
           a: 1,
           b: 2
         },
         b: 3
       };
-      var older = {
+      const older = {
         a: {
           a: 1,
           b: 2
         },
         b: 3
       };
-      var newer = {
+      const newer = {
         a: {
           a: 1,
           b: 2
@@ -900,43 +864,29 @@ describe('common > extensions > merge > ObjectMerger', function () {
     });
   });
   describe('collections', function () {
-    var func = function func() {
-      return 'func';
-    };
+    const func = () => 'func';
 
-    var func2 = function func2() {
-      return 'func2';
-    };
+    const func2 = () => 'func2';
 
-    var func3 = function func3() {
-      return 'func3';
-    };
+    const func3 = () => 'func3';
 
-    var func4 = function func4() {
-      return 'func4';
-    };
+    const func4 = () => 'func4';
 
-    var object = new Error('test error');
+    const object = new Error('test error');
     it('helpers', function () {
       assert.strictEqual(deepCloneEqual.clone(func), func); // assert.strictEqual(deepCloneEqual.clone(object), object)
 
-      var iterable = createIterable([1, 2, 3]);
+      const iterable = createIterable([1, 2, 3]);
       assert.ok(iterable[Symbol.iterator]);
       assert.deepStrictEqual(Array.from(iterable), [1, 2, 3]);
       assert.deepStrictEqual(Array.from(iterable), [1, 2, 3]);
     });
     describe('maps', function () {
-      var testMergeMaps = function testMergeMaps(targetFactories, sourceFactories, base, older, newer, result) {
+      const testMergeMaps = (targetFactories, sourceFactories, base, older, newer, result) => {
         testMerger({
-          base: _toConsumableArray(targetFactories.map(function (o) {
-            return o(base);
-          })),
-          older: [].concat(_toConsumableArray(sourceFactories.map(function (o) {
-            return o(older);
-          })), [older, createIterable(older)]),
-          newer: [].concat(_toConsumableArray(sourceFactories.map(function (o) {
-            return o(newer);
-          })), [newer, createIterable(newer)]),
+          base: [...targetFactories.map(o => o(base))],
+          older: [...sourceFactories.map(o => o(older)), older, createIterable(older)],
+          newer: [...sourceFactories.map(o => o(newer)), newer, createIterable(newer)],
           preferCloneOlderParam: [null],
           preferCloneNewerParam: [null],
           preferCloneMeta: [true],
@@ -956,15 +906,7 @@ describe('common > extensions > merge > ObjectMerger', function () {
       };
 
       it('Map', function () {
-        testMergeMaps([function (o) {
-          return fillMap(new Map(), o);
-        }, function (o) {
-          return fillMap(new ObservableMap(new Map()), o);
-        }], [function (o) {
-          return fillMap(new Map(), o);
-        }, function (o) {
-          return fillMap(new ObservableMap(new Map()), o);
-        }], [[0, null], [func, func], [void 0, {
+        testMergeMaps([o => fillMap(new Map(), o), o => fillMap(new ObservableMap(new Map()), o)], [o => fillMap(new Map(), o), o => fillMap(new ObservableMap(new Map()), o)], [[0, null], [func, func], [void 0, {
           a: 1,
           b: 2
         }], [object, {
@@ -992,27 +934,7 @@ describe('common > extensions > merge > ObjectMerger', function () {
         }], [null, null]]);
       });
       it('ArrayMap', function () {
-        testMergeMaps([function (o) {
-          return fillMap(new ArrayMap(), o);
-        }, function (o) {
-          return fillMap(new ObservableMap(new ArrayMap()), o);
-        }, function (o) {
-          return fillMap(new ObjectHashMap(), o);
-        }, function (o) {
-          return fillMap(new ObservableMap(new ObjectHashMap()), o);
-        }], [function (o) {
-          return fillMap(new Map(), o);
-        }, function (o) {
-          return fillMap(new ObservableMap(new Map()), o);
-        }, function (o) {
-          return fillMap(new ArrayMap(), o);
-        }, function (o) {
-          return fillMap(new ObservableMap(new ArrayMap()), o);
-        }, function (o) {
-          return fillMap(new ObjectHashMap(), o);
-        }, function (o) {
-          return fillMap(new ObservableMap(new ObjectHashMap()), o);
-        }], [[func2, null], [func, func], [func4, {
+        testMergeMaps([o => fillMap(new ArrayMap(), o), o => fillMap(new ObservableMap(new ArrayMap()), o), o => fillMap(new ObjectHashMap(), o), o => fillMap(new ObservableMap(new ObjectHashMap()), o)], [o => fillMap(new Map(), o), o => fillMap(new ObservableMap(new Map()), o), o => fillMap(new ArrayMap(), o), o => fillMap(new ObservableMap(new ArrayMap()), o), o => fillMap(new ObjectHashMap(), o), o => fillMap(new ObservableMap(new ObjectHashMap()), o)], [[func2, null], [func, func], [func4, {
           a: 1,
           b: 2
         }], [object, {
@@ -1040,21 +962,7 @@ describe('common > extensions > merge > ObjectMerger', function () {
         }], [func3, null]]);
       });
       it('ObjectMap', function () {
-        testMergeMaps([function (o) {
-          return fillMap(new ObjectMap(), o);
-        }, function (o) {
-          return fillMap(new ObservableMap(new ObjectMap()), o);
-        }], [function (o) {
-          return fillMap(new Map(), o);
-        }, function (o) {
-          return fillMap(new ObservableMap(new Map()), o);
-        }, function (o) {
-          return fillMap(new ObjectMap(), o);
-        }, function (o) {
-          return fillMap(new ObservableMap(new ObjectMap()), o);
-        }, function (o) {
-          return fillObject({}, o);
-        }], [['0', null], ['1', func], ['3', {
+        testMergeMaps([o => fillMap(new ObjectMap(), o), o => fillMap(new ObservableMap(new ObjectMap()), o)], [o => fillMap(new Map(), o), o => fillMap(new ObservableMap(new Map()), o), o => fillMap(new ObjectMap(), o), o => fillMap(new ObservableMap(new ObjectMap()), o), o => fillObject({}, o)], [['0', null], ['1', func], ['3', {
           a: 1,
           b: 2
         }], ['5', {
@@ -1083,17 +991,11 @@ describe('common > extensions > merge > ObjectMerger', function () {
       });
     });
     describe('sets', function () {
-      var testMergeSets = function testMergeSets(targetFactories, sourceFactories, base, older, newer, result) {
+      const testMergeSets = (targetFactories, sourceFactories, base, older, newer, result) => {
         testMerger({
-          base: _toConsumableArray(targetFactories.map(function (o) {
-            return o(base);
-          })),
-          older: [].concat(_toConsumableArray(sourceFactories.map(function (o) {
-            return o(older);
-          })), [older, createIterable(older)]),
-          newer: [].concat(_toConsumableArray(sourceFactories.map(function (o) {
-            return o(newer);
-          })), [newer, createIterable(newer)]),
+          base: [...targetFactories.map(o => o(base))],
+          older: [...sourceFactories.map(o => o(older)), older, createIterable(older)],
+          newer: [...sourceFactories.map(o => o(newer)), newer, createIterable(newer)],
           preferCloneOlderParam: [null],
           preferCloneNewerParam: [null],
           preferCloneMeta: [true],
@@ -1113,57 +1015,19 @@ describe('common > extensions > merge > ObjectMerger', function () {
       };
 
       it('Set', function () {
-        testMergeSets([function (o) {
-          return fillSet(new Set(), o);
-        }, function (o) {
-          return fillSet(new ObservableSet(new Set()), o);
-        }], [function (o) {
-          return fillSet(new Set(), o);
-        }, function (o) {
-          return fillSet(new ObservableSet(new Set()), o);
-        }], [0, func, void 0], [0, func, object], [0, 1, void 0, object], [0, 1, object]);
+        testMergeSets([o => fillSet(new Set(), o), o => fillSet(new ObservableSet(new Set()), o)], [o => fillSet(new Set(), o), o => fillSet(new ObservableSet(new Set()), o)], [0, func, void 0], [0, func, object], [0, 1, void 0, object], [0, 1, object]);
       });
       it('ArraySet', function () {
-        testMergeSets([function (o) {
-          return fillSet(new ArraySet(), o);
-        }, function (o) {
-          return fillSet(new ObservableSet(new ArraySet()), o);
-        }], [function (o) {
-          return fillSet(new Set(), o);
-        }, function (o) {
-          return fillSet(new ObservableSet(new Set()), o);
-        }, function (o) {
-          return fillSet(new ArraySet(), o);
-        }, function (o) {
-          return fillSet(new ObservableSet(new ArraySet()), o);
-        }], [func2, func, func4], [func2, func, object], [func2, func3, func4, object], [func2, func3, object]);
+        testMergeSets([o => fillSet(new ArraySet(), o), o => fillSet(new ObservableSet(new ArraySet()), o)], [o => fillSet(new Set(), o), o => fillSet(new ObservableSet(new Set()), o), o => fillSet(new ArraySet(), o), o => fillSet(new ObservableSet(new ArraySet()), o)], [func2, func, func4], [func2, func, object], [func2, func3, func4, object], [func2, func3, object]);
       });
       it('ObjectSet', function () {
-        testMergeSets([function (o) {
-          return fillSet(new ObjectSet(), o);
-        }, function (o) {
-          return fillSet(new ObservableSet(new ObjectSet()), o);
-        }, function (o) {
-          return fillSet(new SortedList({
-            autoSort: true,
-            notAddIfExists: true
-          }), o);
-        }], [function (o) {
-          return fillSet(new Set(), o);
-        }, function (o) {
-          return fillSet(new ObservableSet(new Set()), o);
-        }, function (o) {
-          return fillSet(new ObjectSet(), o);
-        }, function (o) {
-          return fillSet(new ObservableSet(new ObjectSet()), o);
-        }, function (o) {
-          return fillSet(new SortedList({
-            autoSort: true,
-            notAddIfExists: true
-          }), o);
-        }, function (o) {
-          return fillObjectKeys({}, o);
-        }], ['0', '2', '3'], ['0', '2', '4'], ['0', '1', '3', '4'], ['0', '1', '4']);
+        testMergeSets([o => fillSet(new ObjectSet(), o), o => fillSet(new ObservableSet(new ObjectSet()), o), o => fillSet(new SortedList({
+          autoSort: true,
+          notAddIfExists: true
+        }), o)], [o => fillSet(new Set(), o), o => fillSet(new ObservableSet(new Set()), o), o => fillSet(new ObjectSet(), o), o => fillSet(new ObservableSet(new ObjectSet()), o), o => fillSet(new SortedList({
+          autoSort: true,
+          notAddIfExists: true
+        }), o), o => fillObjectKeys({}, o)], ['0', '2', '3'], ['0', '2', '4'], ['0', '1', '3', '4'], ['0', '1', '4']);
       });
     });
   });

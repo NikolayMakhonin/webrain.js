@@ -1,22 +1,34 @@
 "use strict";
 
-Object.defineProperty(exports, "__esModule", {
+var _interopRequireDefault = require("@babel/runtime-corejs3/helpers/interopRequireDefault");
+
+var _Object$defineProperty2 = require("@babel/runtime-corejs3/core-js-stable/object/define-property");
+
+_Object$defineProperty2(exports, "__esModule", {
   value: true
 });
+
 exports.hasObjectUniqueId = hasObjectUniqueId;
 exports.canHaveUniqueId = canHaveUniqueId;
 exports.getObjectUniqueId = getObjectUniqueId;
 exports.freezeWithUniqueId = freezeWithUniqueId;
 exports.isFrozenWithoutUniqueId = isFrozenWithoutUniqueId;
-let nextObjectId = 1;
-const UNIQUE_ID_PROPERTY_NAME = 'uniqueId-22xvm5z032r';
+
+var _freeze = _interopRequireDefault(require("@babel/runtime-corejs3/core-js-stable/object/freeze"));
+
+var _defineProperty = _interopRequireDefault(require("@babel/runtime-corejs3/core-js-stable/object/define-property"));
+
+var _isFrozen = _interopRequireDefault(require("@babel/runtime-corejs3/core-js-stable/object/is-frozen"));
+
+var nextObjectId = 1;
+var UNIQUE_ID_PROPERTY_NAME = 'uniqueId-22xvm5z032r';
 
 function hasObjectUniqueId(object) {
   return object != null && Object.prototype.hasOwnProperty.call(object, UNIQUE_ID_PROPERTY_NAME);
 }
 
 function canHaveUniqueId(object) {
-  return !Object.isFrozen(object) || hasObjectUniqueId(object);
+  return !(0, _isFrozen.default)(object) || hasObjectUniqueId(object);
 }
 
 function getObjectUniqueId(object) {
@@ -25,18 +37,18 @@ function getObjectUniqueId(object) {
     return null;
   }
 
-  const id = object[UNIQUE_ID_PROPERTY_NAME];
+  var id = object[UNIQUE_ID_PROPERTY_NAME];
 
   if (id != null) {
     return id;
   }
 
-  if (Object.isFrozen(object)) {
+  if ((0, _isFrozen.default)(object)) {
     return null;
   }
 
-  const uniqueId = nextObjectId++;
-  Object.defineProperty(object, UNIQUE_ID_PROPERTY_NAME, {
+  var uniqueId = nextObjectId++;
+  (0, _defineProperty.default)(object, UNIQUE_ID_PROPERTY_NAME, {
     enumerable: false,
     configurable: false,
     writable: false,
@@ -48,10 +60,10 @@ function getObjectUniqueId(object) {
 
 function freezeWithUniqueId(object) {
   getObjectUniqueId(object);
-  return Object.freeze(object);
+  return (0, _freeze.default)(object);
 } // tslint:disable-next-line:ban-types
 
 
 function isFrozenWithoutUniqueId(object) {
-  return !object || Object.isFrozen(object) && !hasObjectUniqueId(object);
+  return !object || (0, _isFrozen.default)(object) && !hasObjectUniqueId(object);
 }

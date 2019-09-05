@@ -1,5 +1,27 @@
 "use strict";
 
+var _interopRequireDefault = require("@babel/runtime-corejs3/helpers/interopRequireDefault");
+
+var _repeat = _interopRequireDefault(require("@babel/runtime-corejs3/core-js-stable/instance/repeat"));
+
+var _stringify = _interopRequireDefault(require("@babel/runtime-corejs3/core-js-stable/json/stringify"));
+
+var _sort = _interopRequireDefault(require("@babel/runtime-corejs3/core-js-stable/instance/sort"));
+
+var _from = _interopRequireDefault(require("@babel/runtime-corejs3/core-js-stable/array/from"));
+
+var _getIterator2 = _interopRequireDefault(require("@babel/runtime-corejs3/core-js/get-iterator"));
+
+var _keys = _interopRequireDefault(require("@babel/runtime-corejs3/core-js-stable/instance/keys"));
+
+var _regenerator = _interopRequireDefault(require("@babel/runtime-corejs3/regenerator"));
+
+var _keys2 = _interopRequireDefault(require("@babel/runtime-corejs3/core-js-stable/object/keys"));
+
+var _defineProperty2 = _interopRequireDefault(require("@babel/runtime-corejs3/helpers/defineProperty"));
+
+var _assign = _interopRequireDefault(require("@babel/runtime-corejs3/core-js-stable/object/assign"));
+
 var _iterateRule = require("../../../../../../main/common/rx/deep-subscribe/iterate-rule");
 
 var _RuleBuilder = require("../../../../../../main/common/rx/deep-subscribe/RuleBuilder");
@@ -12,6 +34,10 @@ var _Assert = require("../../../../../../main/common/test/Assert");
 
 /* eslint-disable no-useless-escape,computed-property-spacing */
 describe('common > main > rx > deep-subscribe > iterate-rule', function () {
+  var _marked =
+  /*#__PURE__*/
+  _regenerator.default.mark(objectToPaths);
+
   // function ruleToString(rule: IRule) {
   // 	if (!rule) {
   // 		return rule + ''
@@ -34,106 +60,323 @@ describe('common > main > rx > deep-subscribe > iterate-rule', function () {
   // 		.map(o => ruleToString(o)).join('\n')
   // }
   // const endObject = { _end: true }
-  function rulesToObject(ruleIterator, obj = {}) {
-    let iteration;
+  function rulesToObject(ruleIterator) {
+    var obj = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : {};
+    var iteration;
 
     if (!ruleIterator || (iteration = ruleIterator.next()).done) {
       obj._end = true;
-      return () => {
+      return function () {
         obj._end = false;
       };
     }
 
-    return (0, _iterateRule.subscribeNextRule)(ruleIterator, iteration, nextRuleIterator => rulesToObject(nextRuleIterator, obj), (rule, getRuleIterator) => {
-      const newObj = {};
-      const unsubscribe = rulesToObject(getRuleIterator ? getRuleIterator() : null, newObj);
-      Object.assign(obj, {
-        [rule.description]: newObj
-      });
+    return (0, _iterateRule.subscribeNextRule)(ruleIterator, iteration, function (nextRuleIterator) {
+      return rulesToObject(nextRuleIterator, obj);
+    }, function (rule, getRuleIterator) {
+      var newObj = {};
+      var unsubscribe = rulesToObject(getRuleIterator ? getRuleIterator() : null, newObj);
+      (0, _assign.default)(obj, (0, _defineProperty2.default)({}, rule.description, newObj));
       return unsubscribe;
     });
   }
 
-  function* objectToPaths(obj, endValue, parentPath = '') {
-    _Assert.assert.ok(obj, parentPath);
+  function objectToPaths(obj, endValue) {
+    var parentPath,
+        keys,
+        count,
+        key,
+        _args = arguments;
+    return _regenerator.default.wrap(function objectToPaths$(_context) {
+      while (1) {
+        switch (_context.prev = _context.next) {
+          case 0:
+            parentPath = _args.length > 2 && _args[2] !== undefined ? _args[2] : '';
 
-    if (obj._end === endValue) {
-      yield parentPath;
-      const keys = Object.keys(obj);
+            _Assert.assert.ok(obj, parentPath);
 
-      if (keys.length === 1 && keys[0] === '_end') {
-        return;
+            if (!(obj._end === endValue)) {
+              _context.next = 8;
+              break;
+            }
+
+            _context.next = 5;
+            return parentPath;
+
+          case 5:
+            keys = (0, _keys2.default)(obj);
+
+            if (!(keys.length === 1 && keys[0] === '_end')) {
+              _context.next = 8;
+              break;
+            }
+
+            return _context.abrupt("return");
+
+          case 8:
+            count = 0;
+            _context.t0 = (0, _keys.default)(_regenerator.default).call(_regenerator.default, obj);
+
+          case 10:
+            if ((_context.t1 = _context.t0()).done) {
+              _context.next = 17;
+              break;
+            }
+
+            key = _context.t1.value;
+
+            if (!(key !== '_end' && Object.prototype.hasOwnProperty.call(obj, key))) {
+              _context.next = 15;
+              break;
+            }
+
+            count++;
+            return _context.delegateYield(objectToPaths(obj[key], endValue, (parentPath ? parentPath + '.' : '') + key), "t2", 15);
+
+          case 15:
+            _context.next = 10;
+            break;
+
+          case 17:
+            if (count) {
+              _context.next = 19;
+              break;
+            }
+
+            throw new Error(parentPath + ' is empty');
+
+          case 19:
+          case "end":
+            return _context.stop();
+        }
       }
-    }
-
-    let count = 0;
-
-    for (const key in obj) {
-      if (key !== '_end' && Object.prototype.hasOwnProperty.call(obj, key)) {
-        count++;
-        yield* objectToPaths(obj[key], endValue, (parentPath ? parentPath + '.' : '') + key);
-      }
-    }
-
-    if (!count) {
-      throw new Error(parentPath + ' is empty');
-    }
+    }, _marked);
   }
 
-  function testIterateRule(buildRule, ...expectedPaths) {
-    const result = (0, _iterateRule.iterateRule)(buildRule(new _RuleBuilder.RuleBuilder()).result);
+  function testIterateRule(buildRule) {
+    var result = (0, _iterateRule.iterateRule)(buildRule(new _RuleBuilder.RuleBuilder()).result);
 
     _Assert.assert.ok(result);
 
-    const object = {};
-    const unsubscribe = rulesToObject(result[Symbol.iterator](), object); // console.log(JSON.stringify(object, null, 4))
+    var object = {};
+    var unsubscribe = rulesToObject((0, _getIterator2.default)(result), object); // console.log(JSON.stringify(object, null, 4))
 
-    let paths = Array.from(objectToPaths(object, true));
+    var paths = (0, _from.default)(objectToPaths(object, true));
 
-    _Assert.assert.deepStrictEqual(paths.sort(), expectedPaths.sort(), JSON.stringify(paths, null, 4));
+    for (var _len = arguments.length, expectedPaths = new Array(_len > 1 ? _len - 1 : 0), _key = 1; _key < _len; _key++) {
+      expectedPaths[_key - 1] = arguments[_key];
+    }
+
+    _Assert.assert.deepStrictEqual((0, _sort.default)(paths).call(paths), (0, _sort.default)(expectedPaths).call(expectedPaths), (0, _stringify.default)(paths, null, 4));
 
     unsubscribe(); // console.log(JSON.stringify(object, null, 4))
 
-    paths = Array.from(objectToPaths(object, false));
+    paths = (0, _from.default)(objectToPaths(object, false));
 
-    _Assert.assert.deepStrictEqual(paths.sort(), expectedPaths.sort(), JSON.stringify(paths, null, 4));
+    _Assert.assert.deepStrictEqual((0, _sort.default)(paths).call(paths), (0, _sort.default)(expectedPaths).call(expectedPaths), (0, _stringify.default)(paths, null, 4));
   }
 
   it('path', function () {
-    testIterateRule(b => b.path(o => o.a), 'a');
-    testIterateRule(b => b.path(o => o.a.b.c), 'a.b.c');
+    testIterateRule(function (b) {
+      return b.path(function (o) {
+        return o.a;
+      });
+    }, 'a');
+    testIterateRule(function (b) {
+      return b.path(function (o) {
+        return o.a.b.c;
+      });
+    }, 'a.b.c');
   });
   it('any', function () {
-    testIterateRule(b => b.any(b => b.path(o => o.a), b => b.path(o => o.b)), 'a', 'b');
-    testIterateRule(b => b.any(b => b.path(o => o.a.b), b => b.path(o => o.c.d)), 'a.b', 'c.d');
-    testIterateRule(b => b.any(b => b.any(b => b.path(o => o.a.b), b => b.path(o => o.c.d)), b => b.path(o => o.e.f)), 'a.b', 'c.d', 'e.f');
-    testIterateRule(b => b.any(b => b.path(o => o.a.b).any(b => b.path(o => o.c.d), b => b.path(o => o.e.f)), b => b.path(o => o.g.h)).path(o => o.i), 'a.b.c.d.i', 'a.b.e.f.i', 'g.h.i');
+    testIterateRule(function (b) {
+      return b.any(function (b) {
+        return b.path(function (o) {
+          return o.a;
+        });
+      }, function (b) {
+        return b.path(function (o) {
+          return o.b;
+        });
+      });
+    }, 'a', 'b');
+    testIterateRule(function (b) {
+      return b.any(function (b) {
+        return b.path(function (o) {
+          return o.a.b;
+        });
+      }, function (b) {
+        return b.path(function (o) {
+          return o.c.d;
+        });
+      });
+    }, 'a.b', 'c.d');
+    testIterateRule(function (b) {
+      return b.any(function (b) {
+        return b.any(function (b) {
+          return b.path(function (o) {
+            return o.a.b;
+          });
+        }, function (b) {
+          return b.path(function (o) {
+            return o.c.d;
+          });
+        });
+      }, function (b) {
+        return b.path(function (o) {
+          return o.e.f;
+        });
+      });
+    }, 'a.b', 'c.d', 'e.f');
+    testIterateRule(function (b) {
+      return b.any(function (b) {
+        return b.path(function (o) {
+          return o.a.b;
+        }).any(function (b) {
+          return b.path(function (o) {
+            return o.c.d;
+          });
+        }, function (b) {
+          return b.path(function (o) {
+            return o.e.f;
+          });
+        });
+      }, function (b) {
+        return b.path(function (o) {
+          return o.g.h;
+        });
+      }).path(function (o) {
+        return o.i;
+      });
+    }, 'a.b.c.d.i', 'a.b.e.f.i', 'g.h.i');
   });
   it('path any', function () {
-    testIterateRule(b => b.path(o => o['a|b'].c), 'a|b.c');
-    testIterateRule(b => b.propertyRegexp(/[ab]/).path(o => o.c), '/[ab]/.c');
+    testIterateRule(function (b) {
+      return b.path(function (o) {
+        return o['a|b'].c;
+      });
+    }, 'a|b.c');
+    testIterateRule(function (b) {
+      return b.propertyRegexp(/[ab]/).path(function (o) {
+        return o.c;
+      });
+    }, '/[ab]/.c');
   });
   it('repeat', function () {
-    testIterateRule(b => b.repeat(1, 1, b => b.path(o => o.a)), 'a');
-    testIterateRule(b => b.repeat(2, 2, b => b.path(o => o.a)), 'a.a');
-    testIterateRule(b => b.repeat(1, 2, b => b.path(o => o.a)), 'a', 'a.a');
-    testIterateRule(b => b.repeat(0, 2, b => b.path(o => o.a)), '', 'a', 'a.a');
-    testIterateRule(b => b.repeat(0, 2, b => b.repeat(0, 2, b => b.path(o => o.a)).path(o => o.b)), '', 'b', 'a.b', 'a.a.b', 'b.b', 'b.a.b', 'b.a.a.b', 'a.b.b', 'a.b.a.b', 'a.b.a.a.b', 'a.a.b.b', 'a.a.b.a.b', 'a.a.b.a.a.b');
-    testIterateRule(b => b.repeat(1, 2, b => b.any(b => b.repeat(1, 2, b => b.path(o => o.a)), b => b.path(o => o.b.c))).path(o => o.d), 'a.d', 'a.a.d', 'b.c.d', // 'a.a.d',
+    testIterateRule(function (b) {
+      return (0, _repeat.default)(b).call(b, 1, 1, function (b) {
+        return b.path(function (o) {
+          return o.a;
+        });
+      });
+    }, 'a');
+    testIterateRule(function (b) {
+      return (0, _repeat.default)(b).call(b, 2, 2, function (b) {
+        return b.path(function (o) {
+          return o.a;
+        });
+      });
+    }, 'a.a');
+    testIterateRule(function (b) {
+      return (0, _repeat.default)(b).call(b, 1, 2, function (b) {
+        return b.path(function (o) {
+          return o.a;
+        });
+      });
+    }, 'a', 'a.a');
+    testIterateRule(function (b) {
+      return (0, _repeat.default)(b).call(b, 0, 2, function (b) {
+        return b.path(function (o) {
+          return o.a;
+        });
+      });
+    }, '', 'a', 'a.a');
+    testIterateRule(function (b) {
+      return (0, _repeat.default)(b).call(b, 0, 2, function (b) {
+        return (0, _repeat.default)(b).call(b, 0, 2, function (b) {
+          return b.path(function (o) {
+            return o.a;
+          });
+        }).path(function (o) {
+          return o.b;
+        });
+      });
+    }, '', 'b', 'a.b', 'a.a.b', 'b.b', 'b.a.b', 'b.a.a.b', 'a.b.b', 'a.b.a.b', 'a.b.a.a.b', 'a.a.b.b', 'a.a.b.a.b', 'a.a.b.a.a.b');
+    testIterateRule(function (b) {
+      return (0, _repeat.default)(b).call(b, 1, 2, function (b) {
+        return b.any(function (b) {
+          return (0, _repeat.default)(b).call(b, 1, 2, function (b) {
+            return b.path(function (o) {
+              return o.a;
+            });
+          });
+        }, function (b) {
+          return b.path(function (o) {
+            return o.b.c;
+          });
+        });
+      }).path(function (o) {
+        return o.d;
+      });
+    }, 'a.d', 'a.a.d', 'b.c.d', // 'a.a.d',
     'a.a.a.d', 'a.b.c.d', // 'a.a.a.d',
     'a.a.a.a.d', 'a.a.b.c.d', 'b.c.a.d', 'b.c.a.a.d', 'b.c.b.c.d');
-    testIterateRule(b => b.any(b => b.repeat(2, 2, b => b.any(b => b.path(o => o.a), b => b.path(o => o.b))), b => b.path(o => o.c)).path(o => o.d), 'a.a.d', 'a.b.d', 'b.a.d', 'b.b.d', 'c.d');
+    testIterateRule(function (b) {
+      return b.any(function (b) {
+        return (0, _repeat.default)(b).call(b, 2, 2, function (b) {
+          return b.any(function (b) {
+            return b.path(function (o) {
+              return o.a;
+            });
+          }, function (b) {
+            return b.path(function (o) {
+              return o.b;
+            });
+          });
+        });
+      }, function (b) {
+        return b.path(function (o) {
+          return o.c;
+        });
+      }).path(function (o) {
+        return o.d;
+      });
+    }, 'a.a.d', 'a.b.d', 'b.a.d', 'b.b.d', 'c.d');
   });
   it('throws', function () {
-    Array.from((0, _iterateRule.iterateRule)(new _rules.Rule(0)));
+    (0, _from.default)((0, _iterateRule.iterateRule)(new _rules.Rule(0)));
 
-    _Assert.assert.throws(() => Array.from((0, _iterateRule.iterateRule)(new _rules.Rule(-1)), Error));
+    _Assert.assert.throws(function () {
+      return (0, _from.default)((0, _iterateRule.iterateRule)(new _rules.Rule(-1)), Error);
+    });
 
-    _Assert.assert.throws(() => new _RuleBuilder.RuleBuilder().repeat(1, 2, b => b), Error);
+    _Assert.assert.throws(function () {
+      var _context2;
 
-    _Assert.assert.throws(() => new _RuleBuilder.RuleBuilder().any(), Error);
+      return (0, _repeat.default)(_context2 = new _RuleBuilder.RuleBuilder()).call(_context2, 1, 2, function (b) {
+        return b;
+      });
+    }, Error);
+
+    _Assert.assert.throws(function () {
+      return new _RuleBuilder.RuleBuilder().any();
+    }, Error);
   });
   it('specific', function () {
-    testIterateRule(b => b.any(b => b.path(o => o.a), b => b.repeat(0, 0, b => b.path(o => o.b)).path(o => o.c)), 'a', 'c');
+    testIterateRule(function (b) {
+      return b.any(function (b) {
+        return b.path(function (o) {
+          return o.a;
+        });
+      }, function (b) {
+        return (0, _repeat.default)(b).call(b, 0, 0, function (b) {
+          return b.path(function (o) {
+            return o.b;
+          });
+        }).path(function (o) {
+          return o.c;
+        });
+      });
+    }, 'a', 'c');
   });
 });

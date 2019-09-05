@@ -1,19 +1,42 @@
 "use strict";
 
+var _interopRequireDefault = require("@babel/runtime-corejs3/helpers/interopRequireDefault");
+
+var _possibleConstructorReturn2 = _interopRequireDefault(require("@babel/runtime-corejs3/helpers/possibleConstructorReturn"));
+
+var _getPrototypeOf2 = _interopRequireDefault(require("@babel/runtime-corejs3/helpers/getPrototypeOf"));
+
+var _inherits2 = _interopRequireDefault(require("@babel/runtime-corejs3/helpers/inherits"));
+
+var _classCallCheck2 = _interopRequireDefault(require("@babel/runtime-corejs3/helpers/classCallCheck"));
+
 var _TypeMeta = require("../../../../../main/common/extensions/TypeMeta");
 
 var _Assert = require("../../../../../main/common/test/Assert");
 
 describe('common > extensions > TypeMeta', function () {
   it('base', function () {
-    class Class1 {}
+    var Class1 = function Class1() {
+      (0, _classCallCheck2.default)(this, Class1);
+    };
 
-    class Class2 extends Class1 {}
+    var Class2 =
+    /*#__PURE__*/
+    function (_Class) {
+      (0, _inherits2.default)(Class2, _Class);
 
-    const typeMeta0 = new _TypeMeta.TypeMetaCollectionWithId();
-    const typeMeta1 = new _TypeMeta.TypeMetaCollectionWithId(typeMeta0);
-    const typeMeta2 = new _TypeMeta.TypeMetaCollectionWithId(typeMeta1);
-    const typeMeta3 = new _TypeMeta.TypeMetaCollectionWithId(typeMeta2); // region typeMeta0
+      function Class2() {
+        (0, _classCallCheck2.default)(this, Class2);
+        return (0, _possibleConstructorReturn2.default)(this, (0, _getPrototypeOf2.default)(Class2).apply(this, arguments));
+      }
+
+      return Class2;
+    }(Class1);
+
+    var typeMeta0 = new _TypeMeta.TypeMetaCollectionWithId();
+    var typeMeta1 = new _TypeMeta.TypeMetaCollectionWithId(typeMeta0);
+    var typeMeta2 = new _TypeMeta.TypeMetaCollectionWithId(typeMeta1);
+    var typeMeta3 = new _TypeMeta.TypeMetaCollectionWithId(typeMeta2); // region typeMeta0
 
     typeMeta0.putType(Class1, {
       uuid: 'class1'

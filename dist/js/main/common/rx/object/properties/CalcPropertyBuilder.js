@@ -1,8 +1,11 @@
 "use strict";
 
-Object.defineProperty(exports, "__esModule", {
+var _Object$defineProperty = require("@babel/runtime-corejs3/core-js-stable/object/define-property");
+
+_Object$defineProperty(exports, "__esModule", {
   value: true
 });
+
 exports.calcPropertyFactory = calcPropertyFactory;
 
 var _CalcProperty = require("./CalcProperty");
@@ -12,16 +15,19 @@ var _CalcPropertyDependenciesBuilder = require("./CalcPropertyDependenciesBuilde
 var _DependenciesBuilder = require("./DependenciesBuilder");
 
 function calcPropertyFactory(calcFunc, calcOptions, valueOptions, initValue, buildDependencies) {
-  let dependencies;
+  var dependencies;
 
   if (buildDependencies) {
-    const dependenciesBuilder = new _CalcPropertyDependenciesBuilder.CalcPropertyDependenciesBuilder(b => b.propertyName('input'));
-    buildDependencies(dependenciesBuilder);
-    dependencies = dependenciesBuilder.dependencies;
+    var _dependenciesBuilder = new _CalcPropertyDependenciesBuilder.CalcPropertyDependenciesBuilder(function (b) {
+      return b.propertyName('input');
+    });
+
+    buildDependencies(_dependenciesBuilder);
+    dependencies = _dependenciesBuilder.dependencies;
   }
 
-  return () => {
-    const calcProperty = new _CalcProperty.CalcProperty(calcFunc, calcOptions, valueOptions, initValue);
+  return function () {
+    var calcProperty = new _CalcProperty.CalcProperty(calcFunc, calcOptions, valueOptions, initValue);
 
     if (dependencies) {
       (0, _DependenciesBuilder.subscribeDependencies)(calcProperty, calcProperty, dependencies);

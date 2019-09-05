@@ -1,8 +1,13 @@
 "use strict";
 
-Object.defineProperty(exports, "__esModule", {
+var _interopRequireDefault = require("@babel/runtime-corejs3/helpers/interopRequireDefault");
+
+var _Object$defineProperty2 = require("@babel/runtime-corejs3/core-js-stable/object/define-property");
+
+_Object$defineProperty2(exports, "__esModule", {
   value: true
 });
+
 exports.isIterable = isIterable;
 exports.isIterator = isIterator;
 exports.typeToDebugString = typeToDebugString;
@@ -13,12 +18,22 @@ exports.createFunction = createFunction;
 exports.hideObjectProperty = hideObjectProperty;
 exports.VALUE_PROPERTY_DEFAULT = exports.EMPTY = void 0;
 
+var _defineProperty = _interopRequireDefault(require("@babel/runtime-corejs3/core-js-stable/object/define-property"));
+
+var _getOwnPropertyDescriptor = _interopRequireDefault(require("@babel/runtime-corejs3/core-js-stable/object/get-own-property-descriptor"));
+
+var _setTimeout2 = _interopRequireDefault(require("@babel/runtime-corejs3/core-js-stable/set-timeout"));
+
+var _promise = _interopRequireDefault(require("@babel/runtime-corejs3/core-js-stable/promise"));
+
+var _getIteratorMethod2 = _interopRequireDefault(require("@babel/runtime-corejs3/core-js/get-iterator-method"));
+
 function isIterable(value) {
-  return value != null && typeof value[Symbol.iterator] === 'function';
+  return value != null && typeof (0, _getIteratorMethod2.default)(value) === 'function';
 }
 
 function isIterator(value) {
-  return value != null && typeof value[Symbol.iterator] === 'function' && typeof value.next === 'function';
+  return value != null && typeof (0, _getIteratorMethod2.default)(value) === 'function' && typeof value.next === 'function';
 }
 
 function typeToDebugString(type) {
@@ -26,18 +41,20 @@ function typeToDebugString(type) {
 } // tslint:disable-next-line:no-empty no-shadowed-variable
 
 
-const EMPTY = function EMPTY() {};
+var EMPTY = function EMPTY() {};
 
 exports.EMPTY = EMPTY;
 
 function delay(timeMilliseconds) {
-  return new Promise(resolve => setTimeout(resolve, timeMilliseconds));
+  return new _promise.default(function (resolve) {
+    return (0, _setTimeout2.default)(resolve, timeMilliseconds);
+  });
 }
 
 function checkIsFuncOrNull(func) {
   // PROF: 66 - 0.1%
   if (func != null && typeof func !== 'function') {
-    throw new Error(`Value is not a function or null/undefined: ${func}`);
+    throw new Error("Value is not a function or null/undefined: ".concat(func));
   }
 
   return func;
@@ -49,48 +66,50 @@ function toSingleCall(func, throwOnMultipleCall) {
   }
 
   func = checkIsFuncOrNull(func);
-  let isCalled = false;
-  return (...args) => {
+  var isCalled = false;
+  return function () {
     if (isCalled) {
       if (throwOnMultipleCall) {
-        throw new Error(`Multiple call for single call function: ${func}`);
+        throw new Error("Multiple call for single call function: ".concat(func));
       }
 
       return;
     }
 
     isCalled = true;
-    return func(...args);
+    return func.apply(void 0, arguments);
   };
 }
 
-const createFunctionCache = {}; // tslint:disable-next-line:ban-types
+var createFunctionCache = {}; // tslint:disable-next-line:ban-types
 
-function createFunction(...args) {
-  const id = args[args.length - 1] + '';
-  let func = createFunctionCache[id];
+function createFunction() {
+  var _ref;
+
+  var id = (_ref = arguments.length - 1, _ref < 0 || arguments.length <= _ref ? undefined : arguments[_ref]) + '';
+  var func = createFunctionCache[id];
 
   if (!func) {
-    createFunctionCache[id] = func = Function(...args);
+    createFunctionCache[id] = func = Function.apply(void 0, arguments);
   }
 
   return func;
 }
 
 function hideObjectProperty(object, propertyName) {
-  const descriptor = Object.getOwnPropertyDescriptor(object, propertyName);
+  var descriptor = (0, _getOwnPropertyDescriptor.default)(object, propertyName);
 
   if (descriptor) {
     descriptor.enumerable = false;
     return;
   }
 
-  Object.defineProperty(object, propertyName, {
+  (0, _defineProperty.default)(object, propertyName, {
     configurable: true,
     enumerable: false,
     value: object[propertyName]
   });
 }
 
-const VALUE_PROPERTY_DEFAULT = '';
+var VALUE_PROPERTY_DEFAULT = '';
 exports.VALUE_PROPERTY_DEFAULT = VALUE_PROPERTY_DEFAULT;

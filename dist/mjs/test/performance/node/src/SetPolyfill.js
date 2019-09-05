@@ -1,11 +1,9 @@
-import _typeof3 from "@babel/runtime/helpers/typeof";
-
 /* eslint-disable */
 !function () {
   "use strict";
 
   var toString = {}.toString,
-      _cof = function _cof(it) {
+      _cof = function (it) {
     return toString.call(it).slice(8, -1);
   };
 
@@ -37,7 +35,7 @@ import _typeof3 from "@babel/runtime/helpers/typeof";
   }),
       id = 0,
       px = Math.random(),
-      _uid = function _uid(key) {
+      _uid = function (key) {
     return "Symbol(".concat(void 0 === key ? "" : key, ")_", (++id + px).toString(36));
   },
       _wks = createCommonjsModule(function (module) {
@@ -53,7 +51,7 @@ import _typeof3 from "@babel/runtime/helpers/typeof";
       ARG = "Arguments" == _cof(function () {
     return arguments;
   }()),
-      _classof = function _classof(it) {
+      _classof = function (it) {
     var O, T, B;
     return void 0 === it ? "Undefined" : null === it ? "Null" : "string" == typeof (T = function (it, key) {
       try {
@@ -63,31 +61,31 @@ import _typeof3 from "@babel/runtime/helpers/typeof";
   },
       _typeof_1 = createCommonjsModule(function (module) {
     function _typeof2(obj) {
-      return (_typeof2 = "function" == typeof Symbol && "symbol" == _typeof3(Symbol.iterator) ? function (obj) {
-        return _typeof3(obj);
+      return (_typeof2 = "function" == typeof Symbol && "symbol" == typeof Symbol.iterator ? function (obj) {
+        return typeof obj;
       } : function (obj) {
-        return obj && "function" == typeof Symbol && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : _typeof3(obj);
+        return obj && "function" == typeof Symbol && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj;
       })(obj);
     }
 
     function _typeof(obj) {
-      return "function" == typeof Symbol && "symbol" === _typeof2(Symbol.iterator) ? module.exports = _typeof = function _typeof(obj) {
+      return "function" == typeof Symbol && "symbol" === _typeof2(Symbol.iterator) ? module.exports = _typeof = function (obj) {
         return _typeof2(obj);
-      } : module.exports = _typeof = function _typeof(obj) {
+      } : module.exports = _typeof = function (obj) {
         return obj && "function" == typeof Symbol && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : _typeof2(obj);
       }, _typeof(obj);
     }
 
     module.exports = _typeof;
   }),
-      _isObject = function _isObject(it) {
+      _isObject = function (it) {
     return "object" === _typeof_1(it) ? null !== it : "function" == typeof it;
   },
-      _anObject = function _anObject(it) {
+      _anObject = function (it) {
     if (!_isObject(it)) throw TypeError(it + " is not an object!");
     return it;
   },
-      _fails = function _fails(exec) {
+      _fails = function (exec) {
     try {
       return !!exec();
     } catch (e) {
@@ -96,24 +94,24 @@ import _typeof3 from "@babel/runtime/helpers/typeof";
   },
       _descriptors = !_fails(function () {
     return 7 != Object.defineProperty({}, "a", {
-      get: function get() {
+      get: function () {
         return 7;
       }
     }).a;
   }),
       document = _global.document,
       is = _isObject(document) && _isObject(document.createElement),
-      _domCreate = function _domCreate(it) {
+      _domCreate = function (it) {
     return is ? document.createElement(it) : {};
   },
       _ie8DomDefine = !_descriptors && !_fails(function () {
     return 7 != Object.defineProperty(_domCreate("div"), "a", {
-      get: function get() {
+      get: function () {
         return 7;
       }
     }).a;
   }),
-      _toPrimitive = function _toPrimitive(it, S) {
+      _toPrimitive = function (it, S) {
     if (!_isObject(it)) return it;
     var fn, val;
     if (S && "function" == typeof (fn = it.toString) && !_isObject(val = fn.call(it))) return val;
@@ -131,7 +129,7 @@ import _typeof3 from "@babel/runtime/helpers/typeof";
       return "value" in Attributes && (O[P] = Attributes.value), O;
     }
   },
-      _propertyDesc = function _propertyDesc(bitmap, value) {
+      _propertyDesc = function (bitmap, value) {
     return {
       enumerable: !(1 & bitmap),
       configurable: !(2 & bitmap),
@@ -145,7 +143,7 @@ import _typeof3 from "@babel/runtime/helpers/typeof";
     return object[key] = value, object;
   },
       hasOwnProperty = {}.hasOwnProperty,
-      _has = function _has(it, key) {
+      _has = function (it, key) {
     return hasOwnProperty.call(it, key);
   },
       _functionToString = _shared("native-function-to-string", Function.toString),
@@ -170,14 +168,14 @@ import _typeof3 from "@babel/runtime/helpers/typeof";
 
   var ceil = Math.ceil,
       floor = Math.floor,
-      _toInteger = function _toInteger(it) {
+      _toInteger = function (it) {
     return isNaN(it = +it) ? 0 : (it > 0 ? floor : ceil)(it);
   },
-      _defined = function _defined(it) {
+      _defined = function (it) {
     if (null == it) throw TypeError("Can't call method on  " + it);
     return it;
   },
-      _ctx = function _ctx(fn, that, length) {
+      _ctx = function (fn, that, length) {
     if (function (it) {
       if ("function" != typeof it) throw TypeError(it + " is not a function!");
     }(fn), void 0 === that) return fn;
@@ -216,9 +214,7 @@ import _typeof3 from "@babel/runtime/helpers/typeof";
         exports = IS_GLOBAL ? _core : _core[name] || (_core[name] = {}),
         expProto = exports.prototype || (exports.prototype = {});
 
-    for (key in IS_GLOBAL && (source = name), source) {
-      out = ((own = !IS_FORCED && target && void 0 !== target[key]) ? target : source)[key], exp = IS_BIND && own ? _ctx(out, _global) : IS_PROTO && "function" == typeof out ? _ctx(Function.call, out) : out, target && _redefine(target, key, out, type & $export.U), exports[key] != out && _hide(exports, key, exp), IS_PROTO && expProto[key] != out && (expProto[key] = out);
-    }
+    for (key in IS_GLOBAL && (source = name), source) out = ((own = !IS_FORCED && target && void 0 !== target[key]) ? target : source)[key], exp = IS_BIND && own ? _ctx(out, _global) : IS_PROTO && "function" == typeof out ? _ctx(Function.call, out) : out, target && _redefine(target, key, out, type & $export.U), exports[key] != out && _hide(exports, key, exp), IS_PROTO && expProto[key] != out && (expProto[key] = out);
   };
 
   _global.core = _core, $export.F = 1, $export.G = 2, $export.S = 4, $export.P = 8, $export.B = 16, $export.W = 32, $export.U = 64, $export.R = 128;
@@ -229,17 +225,17 @@ import _typeof3 from "@babel/runtime/helpers/typeof";
       _iobject = Object("z").propertyIsEnumerable(0) ? Object : function (it) {
     return "String" == _cof(it) ? it.split("") : Object(it);
   },
-      _toIobject = function _toIobject(it) {
+      _toIobject = function (it) {
     return _iobject(_defined(it));
   },
       min = Math.min,
-      _toLength = function _toLength(it) {
+      _toLength = function (it) {
     return it > 0 ? min(_toInteger(it), 9007199254740991) : 0;
   },
       max = Math.max,
       min$1 = Math.min,
       shared = _shared("keys"),
-      _sharedKey = function _sharedKey(key) {
+      _sharedKey = function (key) {
     return shared[key] || (shared[key] = _uid(key));
   },
       arrayIndexOf = (IS_INCLUDES = !1, function ($this, el, fromIndex) {
@@ -251,12 +247,8 @@ import _typeof3 from "@babel/runtime/helpers/typeof";
     }(fromIndex, length);
 
     if (IS_INCLUDES && el != el) {
-      for (; length > index;) {
-        if ((value = O[index++]) != value) return !0;
-      }
-    } else for (; length > index; index++) {
-      if ((IS_INCLUDES || index in O) && O[index] === el) return IS_INCLUDES || index || 0;
-    }
+      for (; length > index;) if ((value = O[index++]) != value) return !0;
+    } else for (; length > index; index++) if ((IS_INCLUDES || index in O) && O[index] === el) return IS_INCLUDES || index || 0;
 
     return !IS_INCLUDES && -1;
   }),
@@ -269,13 +261,9 @@ import _typeof3 from "@babel/runtime/helpers/typeof";
           i = 0,
           result = [];
 
-      for (key in O) {
-        key != IE_PROTO && _has(O, key) && result.push(key);
-      }
+      for (key in O) key != IE_PROTO && _has(O, key) && result.push(key);
 
-      for (; names.length > i;) {
-        _has(O, key = names[i++]) && (~arrayIndexOf(result, key) || result.push(key));
-      }
+      for (; names.length > i;) _has(O, key = names[i++]) && (~arrayIndexOf(result, key) || result.push(key));
 
       return result;
     }(O, _enumBugKeys);
@@ -283,34 +271,30 @@ import _typeof3 from "@babel/runtime/helpers/typeof";
       _objectDps = _descriptors ? Object.defineProperties : function (O, Properties) {
     _anObject(O);
 
-    for (var P, keys = _objectKeys(Properties), length = keys.length, i = 0; length > i;) {
-      _objectDp.f(O, P = keys[i++], Properties[P]);
-    }
+    for (var P, keys = _objectKeys(Properties), length = keys.length, i = 0; length > i;) _objectDp.f(O, P = keys[i++], Properties[P]);
 
     return O;
   },
       document$1 = _global.document,
       _html = document$1 && document$1.documentElement,
       IE_PROTO$1 = _sharedKey("IE_PROTO"),
-      Empty = function Empty() {},
-      _createDict2 = function _createDict() {
+      Empty = function () {},
+      _createDict = function () {
     var iframeDocument,
         iframe = _domCreate("iframe"),
         i = _enumBugKeys.length;
 
-    for (iframe.style.display = "none", _html.appendChild(iframe), iframe.src = "javascript:", (iframeDocument = iframe.contentWindow.document).open(), iframeDocument.write("<script>document.F=Object<\/script>"), iframeDocument.close(), _createDict2 = iframeDocument.F; i--;) {
-      delete _createDict2.prototype[_enumBugKeys[i]];
-    }
+    for (iframe.style.display = "none", _html.appendChild(iframe), iframe.src = "javascript:", (iframeDocument = iframe.contentWindow.document).open(), iframeDocument.write("<script>document.F=Object<\/script>"), iframeDocument.close(), _createDict = iframeDocument.F; i--;) delete _createDict.prototype[_enumBugKeys[i]];
 
-    return _createDict2();
+    return _createDict();
   },
       _objectCreate = Object.create || function (O, Properties) {
     var result;
-    return null !== O ? (Empty.prototype = _anObject(O), result = new Empty(), Empty.prototype = null, result[IE_PROTO$1] = O) : result = _createDict2(), void 0 === Properties ? result : _objectDps(result, Properties);
+    return null !== O ? (Empty.prototype = _anObject(O), result = new Empty(), Empty.prototype = null, result[IE_PROTO$1] = O) : result = _createDict(), void 0 === Properties ? result : _objectDps(result, Properties);
   },
       def = _objectDp.f,
       TAG$1 = _wks("toStringTag"),
-      _setToStringTag = function _setToStringTag(it, tag, stat) {
+      _setToStringTag = function (it, tag, stat) {
     it && !_has(it = stat ? it : it.prototype, TAG$1) && def(it, TAG$1, {
       configurable: !0,
       value: tag
@@ -323,7 +307,7 @@ import _typeof3 from "@babel/runtime/helpers/typeof";
   });
 
   var TO_STRING,
-      _iterCreate = function _iterCreate(Constructor, NAME, next) {
+      _iterCreate = function (Constructor, NAME, next) {
     Constructor.prototype = _objectCreate(IteratorPrototype, {
       next: _propertyDesc(1, next)
     }), _setToStringTag(Constructor, NAME + " Iterator");
@@ -335,16 +319,16 @@ import _typeof3 from "@babel/runtime/helpers/typeof";
   },
       ITERATOR = _wks("iterator"),
       BUGGY = !([].keys && "next" in [].keys()),
-      returnThis = function returnThis() {
+      returnThis = function () {
     return this;
   },
-      _iterDefine = function _iterDefine(Base, NAME, Constructor, next, DEFAULT, IS_SET, FORCED) {
+      _iterDefine = function (Base, NAME, Constructor, next, DEFAULT, IS_SET, FORCED) {
     _iterCreate(Constructor, NAME, next);
 
     var methods,
         key,
         IteratorPrototype,
-        getMethod = function getMethod(kind) {
+        getMethod = function (kind) {
       if (!BUGGY && kind in proto) return proto[kind];
 
       switch (kind) {
@@ -368,15 +352,13 @@ import _typeof3 from "@babel/runtime/helpers/typeof";
         $entries = DEFAULT ? DEF_VALUES ? getMethod("entries") : $default : void 0,
         $anyNative = "Array" == NAME && proto.entries || $native;
 
-    if ($anyNative && (IteratorPrototype = _objectGpo($anyNative.call(new Base()))) !== Object.prototype && IteratorPrototype.next && (_setToStringTag(IteratorPrototype, TAG, !0), "function" != typeof IteratorPrototype[ITERATOR] && _hide(IteratorPrototype, ITERATOR, returnThis)), DEF_VALUES && $native && "values" !== $native.name && (VALUES_BUG = !0, $default = function $default() {
+    if ($anyNative && (IteratorPrototype = _objectGpo($anyNative.call(new Base()))) !== Object.prototype && IteratorPrototype.next && (_setToStringTag(IteratorPrototype, TAG, !0), "function" != typeof IteratorPrototype[ITERATOR] && _hide(IteratorPrototype, ITERATOR, returnThis)), DEF_VALUES && $native && "values" !== $native.name && (VALUES_BUG = !0, $default = function () {
       return $native.call(this);
     }), (BUGGY || VALUES_BUG || !proto[ITERATOR]) && _hide(proto, ITERATOR, $default), _iterators[NAME] = $default, _iterators[TAG] = returnThis, DEFAULT) if (methods = {
       values: DEF_VALUES ? $default : getMethod("values"),
       keys: IS_SET ? $default : getMethod("keys"),
       entries: $entries
-    }, FORCED) for (key in methods) {
-      key in proto || _redefine(proto, key, methods[key]);
-    } else _export(_export.P + _export.F * (BUGGY || VALUES_BUG), NAME, methods);
+    }, FORCED) for (key in methods) key in proto || _redefine(proto, key, methods[key]);else _export(_export.P + _export.F * (BUGGY || VALUES_BUG), NAME, methods);
     return methods;
   },
       $at = (TO_STRING = !0, function (that, pos) {
@@ -409,10 +391,10 @@ import _typeof3 from "@babel/runtime/helpers/typeof";
 
   null == ArrayProto[UNSCOPABLES] && _hide(ArrayProto, UNSCOPABLES, {});
 
-  var _addToUnscopables = function _addToUnscopables(key) {
+  var _addToUnscopables = function (key) {
     ArrayProto[UNSCOPABLES][key] = !0;
   },
-      _iterStep = function _iterStep(done, value) {
+      _iterStep = function (done, value) {
     return {
       value: value,
       done: !!done
@@ -467,27 +449,23 @@ import _typeof3 from "@babel/runtime/helpers/typeof";
         explicit = DOMIterables[NAME],
         Collection = _global[NAME],
         proto = Collection && Collection.prototype;
-    if (proto && (proto[ITERATOR$1] || _hide(proto, ITERATOR$1, ArrayValues), proto[TO_STRING_TAG] || _hide(proto, TO_STRING_TAG, NAME), _iterators[NAME] = ArrayValues, explicit)) for (key in es6_array_iterator) {
-      proto[key] || _redefine(proto, key, es6_array_iterator[key], !0);
-    }
+    if (proto && (proto[ITERATOR$1] || _hide(proto, ITERATOR$1, ArrayValues), proto[TO_STRING_TAG] || _hide(proto, TO_STRING_TAG, NAME), _iterators[NAME] = ArrayValues, explicit)) for (key in es6_array_iterator) proto[key] || _redefine(proto, key, es6_array_iterator[key], !0);
   }
 
-  var _redefineAll = function _redefineAll(target, src, safe) {
-    for (var key in src) {
-      _redefine(target, key, src[key], safe);
-    }
+  var _redefineAll = function (target, src, safe) {
+    for (var key in src) _redefine(target, key, src[key], safe);
 
     return target;
   },
-      _anInstance = function _anInstance(it, Constructor, name, forbiddenField) {
+      _anInstance = function (it, Constructor, name, forbiddenField) {
     if (!(it instanceof Constructor) || void 0 !== forbiddenField && forbiddenField in it) throw TypeError(name + ": incorrect invocation!");
     return it;
   },
-      _iterCall = function _iterCall(iterator, fn, value, entries) {
+      _iterCall = function (iterator, fn, value, entries) {
     try {
       return entries ? fn(_anObject(value)[0], value[1]) : fn(value);
     } catch (e) {
-      var ret = iterator["return"];
+      var ret = iterator.return;
       throw void 0 !== ret && _anObject(ret.call(iterator)), e;
     }
   },
@@ -515,12 +493,8 @@ import _typeof3 from "@babel/runtime/helpers/typeof";
       if ("function" != typeof iterFn) throw TypeError(iterable + " is not iterable!");
 
       if (void 0 === (it = iterFn) || _iterators.Array !== it && ArrayProto$1[ITERATOR$2] !== it) {
-        for (iterator = iterFn.call(iterable); !(step = iterator.next()).done;) {
-          if ((result = _iterCall(iterator, f, step.value, entries)) === BREAK || result === RETURN) return result;
-        }
-      } else for (length = _toLength(iterable.length); length > index; index++) {
-        if ((result = entries ? f(_anObject(step = iterable[index])[0], step[1]) : f(iterable[index])) === BREAK || result === RETURN) return result;
-      }
+        for (iterator = iterFn.call(iterable); !(step = iterator.next()).done;) if ((result = _iterCall(iterator, f, step.value, entries)) === BREAK || result === RETURN) return result;
+      } else for (length = _toLength(iterable.length); length > index; index++) if ((result = entries ? f(_anObject(step = iterable[index])[0], step[1]) : f(iterable[index])) === BREAK || result === RETURN) return result;
     };
 
     exports.BREAK = BREAK, exports.RETURN = RETURN;
@@ -536,7 +510,7 @@ import _typeof3 from "@babel/runtime/helpers/typeof";
         FREEZE = !_fails(function () {
       return isExtensible(Object.preventExtensions({}));
     }),
-        setMeta = function setMeta(it) {
+        setMeta = function (it) {
       setDesc(it, META, {
         value: {
           i: "O" + ++id,
@@ -547,7 +521,7 @@ import _typeof3 from "@babel/runtime/helpers/typeof";
         meta = module.exports = {
       KEY: META,
       NEED: !1,
-      fastKey: function fastKey(it, create) {
+      fastKey: function (it, create) {
         if (!_isObject(it)) return "symbol" == _typeof_1(it) ? it : ("string" == typeof it ? "S" : "P") + it;
 
         if (!_has(it, META)) {
@@ -558,7 +532,7 @@ import _typeof3 from "@babel/runtime/helpers/typeof";
 
         return it[META].i;
       },
-      getWeak: function getWeak(it, create) {
+      getWeak: function (it, create) {
         if (!_has(it, META)) {
           if (!isExtensible(it)) return !0;
           if (!create) return !1;
@@ -567,7 +541,7 @@ import _typeof3 from "@babel/runtime/helpers/typeof";
 
         return it[META].w;
       },
-      onFreeze: function onFreeze(it) {
+      onFreeze: function (it) {
         return FREEZE && meta.NEED && isExtensible(it) && !_has(it, META) && setMeta(it), it;
       }
     };
@@ -579,29 +553,25 @@ import _typeof3 from "@babel/runtime/helpers/typeof";
       dP$1 = _objectDp.f,
       fastKey = _meta.fastKey,
       SIZE = _descriptors ? "_s" : "size",
-      getEntry = function getEntry(that, key) {
+      getEntry = function (that, key) {
     var entry,
         index = fastKey(key);
     if ("F" !== index) return that._i[index];
 
-    for (entry = that._f; entry; entry = entry.n) {
-      if (entry.k == key) return entry;
-    }
+    for (entry = that._f; entry; entry = entry.n) if (entry.k == key) return entry;
   },
       _collectionStrong = {
-    getConstructor: function getConstructor(wrapper, NAME, IS_MAP, ADDER) {
+    getConstructor: function (wrapper, NAME, IS_MAP, ADDER) {
       var C = wrapper(function (that, iterable) {
         _anInstance(that, C, NAME, "_i"), that._t = NAME, that._i = _objectCreate(null), that._f = void 0, that._l = void 0, that[SIZE] = 0, null != iterable && _forOf(iterable, IS_MAP, that[ADDER], that);
       });
       return _redefineAll(C.prototype, {
-        clear: function clear() {
-          for (var that = _validateCollection(this, NAME), data = that._i, entry = that._f; entry; entry = entry.n) {
-            entry.r = !0, entry.p && (entry.p = entry.p.n = void 0), delete data[entry.i];
-          }
+        clear: function () {
+          for (var that = _validateCollection(this, NAME), data = that._i, entry = that._f; entry; entry = entry.n) entry.r = !0, entry.p && (entry.p = entry.p.n = void 0), delete data[entry.i];
 
           that._f = that._l = void 0, that[SIZE] = 0;
         },
-        "delete": function _delete(key) {
+        delete: function (key) {
           var that = _validateCollection(this, NAME),
               entry = getEntry(that, key);
 
@@ -613,25 +583,21 @@ import _typeof3 from "@babel/runtime/helpers/typeof";
 
           return !!entry;
         },
-        forEach: function forEach(callbackfn) {
+        forEach: function (callbackfn) {
           _validateCollection(this, NAME);
 
-          for (var entry, f = _ctx(callbackfn, arguments.length > 1 ? arguments[1] : void 0, 3); entry = entry ? entry.n : this._f;) {
-            for (f(entry.v, entry.k, this); entry && entry.r;) {
-              entry = entry.p;
-            }
-          }
+          for (var entry, f = _ctx(callbackfn, arguments.length > 1 ? arguments[1] : void 0, 3); entry = entry ? entry.n : this._f;) for (f(entry.v, entry.k, this); entry && entry.r;) entry = entry.p;
         },
-        has: function has(key) {
+        has: function (key) {
           return !!getEntry(_validateCollection(this, NAME), key);
         }
       }), _descriptors && dP$1(C.prototype, "size", {
-        get: function get() {
+        get: function () {
           return _validateCollection(this, NAME)[SIZE];
         }
       }), C;
     },
-    def: function def(that, key, value) {
+    def: function (that, key, value) {
       var prev,
           index,
           entry = getEntry(that, key);
@@ -645,20 +611,18 @@ import _typeof3 from "@babel/runtime/helpers/typeof";
       }, that._f || (that._f = entry), prev && (prev.n = entry), that[SIZE]++, "F" !== index && (that._i[index] = entry)), that;
     },
     getEntry: getEntry,
-    setStrong: function setStrong(C, NAME, IS_MAP) {
+    setStrong: function (C, NAME, IS_MAP) {
       _iterDefine(C, NAME, function (iterated, kind) {
         this._t = _validateCollection(iterated, NAME), this._k = kind, this._l = void 0;
       }, function () {
-        for (var kind = this._k, entry = this._l; entry && entry.r;) {
-          entry = entry.p;
-        }
+        for (var kind = this._k, entry = this._l; entry && entry.r;) entry = entry.p;
 
         return this._t && (this._l = entry = entry ? entry.n : this._t._f) ? _iterStep(0, "keys" == kind ? entry.k : "values" == kind ? entry.v : [entry.k, entry.v]) : (this._t = void 0, _iterStep(1));
       }, IS_MAP ? "entries" : "values", !IS_MAP, !0), function (KEY) {
         var C = _global[KEY];
         _descriptors && C && !C[SPECIES] && _objectDp.f(C, SPECIES, {
           configurable: !0,
-          get: function get() {
+          get: function () {
             return this;
           }
         });
@@ -669,7 +633,7 @@ import _typeof3 from "@babel/runtime/helpers/typeof";
       SAFE_CLOSING = !1;
 
   try {
-    [7][ITERATOR$4]()["return"] = function () {
+    [7][ITERATOR$4]().return = function () {
       SAFE_CLOSING = !0;
     };
   } catch (e) {}
@@ -686,7 +650,7 @@ import _typeof3 from "@babel/runtime/helpers/typeof";
       if (_has(O, P)) return _propertyDesc(!_objectPie.f.call(O, P), O[P]);
     }
   },
-      check = function check(O, proto) {
+      check = function (O, proto) {
     if (_anObject(O), !_isObject(proto) && null !== proto) throw TypeError(proto + ": can't set as prototype!");
   },
       setPrototypeOf = {
@@ -710,7 +674,7 @@ import _typeof3 from "@babel/runtime/helpers/typeof";
         ADDER = IS_MAP ? "set" : "add",
         proto = C && C.prototype,
         O = {},
-        fixMethod = function fixMethod(KEY) {
+        fixMethod = function (KEY) {
       var fn = proto[KEY];
 
       _redefine(proto, KEY, "delete" == KEY ? function (a) {
@@ -755,9 +719,7 @@ import _typeof3 from "@babel/runtime/helpers/typeof";
         new C(iter);
       }),
           BUGGY_ZERO = !IS_WEAK && _fails(function () {
-        for (var $instance = new C(), index = 5; index--;) {
-          $instance[ADDER](index, index);
-        }
+        for (var $instance = new C(), index = 5; index--;) $instance[ADDER](index, index);
 
         return !$instance.has(-0);
       });
@@ -781,7 +743,7 @@ import _typeof3 from "@babel/runtime/helpers/typeof";
       return get(this, arguments.length > 0 ? arguments[0] : void 0);
     };
   }, {
-    add: function add(value) {
+    add: function (value) {
       return _collectionStrong.def(_validateCollection(this, "SetPolyfill"), value = 0 === value ? 0 : value, value);
     }
   }, _collectionStrong), _core.SetPolyfill;

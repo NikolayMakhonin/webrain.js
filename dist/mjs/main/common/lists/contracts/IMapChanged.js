@@ -1,4 +1,4 @@
-export var MapChangedType;
+export let MapChangedType;
 
 (function (MapChangedType) {
   MapChangedType[MapChangedType["Removed"] = 0] = "Removed";

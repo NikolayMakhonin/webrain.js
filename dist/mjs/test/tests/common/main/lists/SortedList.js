@@ -7,12 +7,12 @@ import { allValues, generateArray, shuffle } from './src/helpers/common';
 import { assert, TestList } from './src/helpers/TestList';
 describe('common > main > lists > SortedList', function () {
   this.timeout(20000);
-  var testList = TestList.test;
+  const testList = TestList.test;
   after(function () {
     console.log('Total Sorted tests >= ' + TestList.totalListTests);
   });
   it('constructor', function () {
-    var list;
+    let list;
     list = new SortedList();
     assert.strictEqual(list.size, 0);
     assert.strictEqual(list.minAllocatedSize, undefined);
@@ -31,9 +31,9 @@ describe('common > main > lists > SortedList', function () {
     assert.strictEqual(list.autoSort, undefined);
     assert.strictEqual(list.notAddIfExists, undefined);
     assert.deepStrictEqual(list.toArray(), []);
-    var array = [0, 1, 2];
+    let array = [0, 1, 2];
     list = new SortedList({
-      array: array
+      array
     });
     assert.strictEqual(list.size, 3);
     assert.strictEqual(list.minAllocatedSize, undefined);
@@ -41,7 +41,7 @@ describe('common > main > lists > SortedList', function () {
     assert.strictEqual(list.compare, undefined);
     assert.strictEqual(list.autoSort, undefined);
     assert.strictEqual(list.notAddIfExists, undefined);
-    var toArray = list.toArray();
+    let toArray = list.toArray();
     assert.deepStrictEqual(toArray, [0, 1, 2]);
     assert.notStrictEqual(toArray, array);
     list = new SortedList({
@@ -107,9 +107,9 @@ describe('common > main > lists > SortedList', function () {
     assert.deepStrictEqual(list.toArray(), [1, 2, 3]);
   });
   it('size', function () {
-    var array = generateArray(31);
-    var list = new SortedList({
-      array: array,
+    const array = generateArray(31);
+    const list = new SortedList({
+      array,
       minAllocatedSize: 30
     });
     assert.strictEqual(list.size, 31);
@@ -161,13 +161,7 @@ describe('common > main > lists > SortedList', function () {
         returnValue: null,
         defaultValue: null
       },
-      actions: [function (list) {
-        return list.get(0);
-      }, function (list) {
-        return list.get(1);
-      }, function (list) {
-        return list.get(-1);
-      }]
+      actions: [list => list.get(0), list => list.get(1), list => list.get(-1)]
     });
     testList({
       array: [['0']],
@@ -176,15 +170,7 @@ describe('common > main > lists > SortedList', function () {
         returnValue: null,
         defaultValue: null
       },
-      actions: [function (list) {
-        return list.get(1);
-      }, function (list) {
-        return list.get(2);
-      }, function (list) {
-        return list.get(-2);
-      }, function (list) {
-        return list.get(-3);
-      }]
+      actions: [list => list.get(1), list => list.get(2), list => list.get(-2), list => list.get(-3)]
     });
     testList({
       array: [['4', '2', '3']],
@@ -195,20 +181,14 @@ describe('common > main > lists > SortedList', function () {
         defaultValue: null,
         countSorted: 3
       },
-      actions: [function (list) {
-        return list.get(1);
-      }, function (list) {
-        return list.get(-2);
-      }]
+      actions: [list => list.get(1), list => list.get(-2)]
     });
   });
   it('set', function () {
     function set(index, item) {
       return {
-        actions: [function (list) {
-          return list.set(index, item);
-        }],
-        description: "set(".concat(index, ", ").concat(JSON.stringify(item), ")\n")
+        actions: [list => list.set(index, item)],
+        description: `set(${index}, ${JSON.stringify(item)})\n`
       };
     }
 
@@ -376,22 +356,8 @@ describe('common > main > lists > SortedList', function () {
   it('add', function () {
     function add(item) {
       return {
-        actions: [function (list) {
-          return list.add(item);
-        }, function (list) {
-          return list.set(list.size, item);
-        }, function (list) {
-          return list.insert(list.size, item);
-        }, function (list) {
-          return list.addArray([item]);
-        }, function (list) {
-          return list.addIterable(createIterable([item]), 1);
-        }, function (list) {
-          return list.insertArray(list.size, [item]);
-        }, function (list) {
-          return list.insertIterable(list.size, createIterable([item]), 1);
-        }],
-        description: "add(".concat(JSON.stringify(item), ")\n")
+        actions: [list => list.add(item), list => list.set(list.size, item), list => list.insert(list.size, item), list => list.addArray([item]), list => list.addIterable(createIterable([item]), 1), list => list.insertArray(list.size, [item]), list => list.insertIterable(list.size, createIterable([item]), 1)],
+        description: `add(${JSON.stringify(item)})\n`
       };
     }
 
@@ -454,8 +420,8 @@ describe('common > main > lists > SortedList', function () {
   });
   it('addArray', function () {
     function addArray(sourceItems, sourceStart, sourceEnd) {
-      var start = sourceStart == null ? 0 : sourceStart;
-      var end = sourceEnd == null ? sourceItems.length : sourceEnd;
+      let start = sourceStart == null ? 0 : sourceStart;
+      let end = sourceEnd == null ? sourceItems.length : sourceEnd;
 
       if (start < 0) {
         start += sourceItems.length;
@@ -466,20 +432,8 @@ describe('common > main > lists > SortedList', function () {
       }
 
       return {
-        actions: [function (list) {
-          return list.addArray(sourceItems, sourceStart, sourceEnd);
-        }, function (list) {
-          return list.insertArray(list.size, sourceItems, sourceStart, sourceEnd);
-        }, [function (list) {
-          return list.addIterable(sourceItems.slice(start, end), end - start);
-        }, function (list) {
-          return list.addIterable(createIterable(sourceItems.slice(start, end)), end - start);
-        }, function (list) {
-          return list.insertIterable(list.size, sourceItems.slice(start, end), end - start);
-        }, function (list) {
-          return list.insertIterable(list.size, createIterable(sourceItems.slice(start, end)), end - start);
-        }]],
-        description: "arrArray(".concat(JSON.stringify(sourceItems), ", ").concat(sourceStart, ", ").concat(sourceEnd, ")\n")
+        actions: [list => list.addArray(sourceItems, sourceStart, sourceEnd), list => list.insertArray(list.size, sourceItems, sourceStart, sourceEnd), [list => list.addIterable(sourceItems.slice(start, end), end - start), list => list.addIterable(createIterable(sourceItems.slice(start, end)), end - start), list => list.insertIterable(list.size, sourceItems.slice(start, end), end - start), list => list.insertIterable(list.size, createIterable(sourceItems.slice(start, end)), end - start)]],
+        description: `arrArray(${JSON.stringify(sourceItems)}, ${sourceStart}, ${sourceEnd})\n`
       };
     }
 
@@ -569,14 +523,8 @@ describe('common > main > lists > SortedList', function () {
   it('insert', function () {
     function insert(index, item) {
       return {
-        actions: [function (list) {
-          return list.insert(index, item);
-        }, function (list) {
-          return list.insertArray(index, [item]);
-        }, function (list) {
-          return list.insertIterable(index, createIterable([item]), 1);
-        }],
-        description: "insert(".concat(index, ", ").concat(JSON.stringify(item), ")\n")
+        actions: [list => list.insert(index, item), list => list.insertArray(index, [item]), list => list.insertIterable(index, createIterable([item]), 1)],
+        description: `insert(${index}, ${JSON.stringify(item)})\n`
       };
     }
 
@@ -648,8 +596,8 @@ describe('common > main > lists > SortedList', function () {
   });
   it('insertArray', function () {
     function insertArray(index, sourceItems, sourceStart, sourceEnd) {
-      var start = sourceStart == null ? 0 : sourceStart;
-      var end = sourceEnd == null ? sourceItems.length : sourceEnd;
+      let start = sourceStart == null ? 0 : sourceStart;
+      let end = sourceEnd == null ? sourceItems.length : sourceEnd;
 
       if (start < 0) {
         start += sourceItems.length;
@@ -660,14 +608,8 @@ describe('common > main > lists > SortedList', function () {
       }
 
       return {
-        actions: [function (list) {
-          return list.insertArray(index, sourceItems, sourceStart, sourceEnd);
-        }, [function (list) {
-          return list.insertIterable(index, sourceItems.slice(start, end), end - start);
-        }, function (list) {
-          return list.insertIterable(index, createIterable(sourceItems.slice(start, end)), end - start);
-        }]],
-        description: "insertArray(".concat(index, ", ").concat(JSON.stringify(sourceItems), ", ").concat(sourceStart, ", ").concat(sourceEnd, ")\n")
+        actions: [list => list.insertArray(index, sourceItems, sourceStart, sourceEnd), [list => list.insertIterable(index, sourceItems.slice(start, end), end - start), list => list.insertIterable(index, createIterable(sourceItems.slice(start, end)), end - start)]],
+        description: `insertArray(${index}, ${JSON.stringify(sourceItems)}, ${sourceStart}, ${sourceEnd})\n`
       };
     }
 
@@ -770,8 +712,8 @@ describe('common > main > lists > SortedList', function () {
       },
       actions: [insertArray(0, ['4', '2']), insertArray(1, ['4', '2']), insertArray(2, ['4', '2']), insertArray(3, ['4', '2']), insertArray(4, ['4', '2']), insertArray(5, ['4', '2'])]
     });
-    var allValuesShuffle = shuffle(allValues);
-    var allValuesSort = allValuesShuffle.slice().sort();
+    const allValuesShuffle = shuffle(allValues);
+    const allValuesSort = allValuesShuffle.slice().sort();
     testList({
       array: [[]],
       autoSort: [true],
@@ -781,13 +723,11 @@ describe('common > main > lists > SortedList', function () {
         array: allValues.sort(compareFast),
         returnValue: true,
         defaultValue: null,
-        propertyChanged: allValuesShuffle.map(function (o, i) {
-          return {
-            name: 'size',
-            oldValue: i,
-            newValue: i + 1
-          };
-        })
+        propertyChanged: allValuesShuffle.map((o, i) => ({
+          name: 'size',
+          oldValue: i,
+          newValue: i + 1
+        }))
       },
       actions: [insertArray(0, allValuesShuffle.concat(allValuesShuffle))]
     });
@@ -799,21 +739,17 @@ describe('common > main > lists > SortedList', function () {
         array: allValuesShuffle,
         returnValue: true,
         defaultValue: null,
-        propertyChanged: allValuesShuffle.map(function (o, i) {
-          return {
-            name: 'size',
-            oldValue: i,
-            newValue: i + 1
-          };
-        }),
-        listChanged: allValuesShuffle.map(function (o, i) {
-          return {
-            type: ListChangedType.Added,
-            index: i,
-            newItems: [o],
-            shiftIndex: i
-          };
-        })
+        propertyChanged: allValuesShuffle.map((o, i) => ({
+          name: 'size',
+          oldValue: i,
+          newValue: i + 1
+        })),
+        listChanged: allValuesShuffle.map((o, i) => ({
+          type: ListChangedType.Added,
+          index: i,
+          newItems: [o],
+          shiftIndex: i
+        }))
       },
       actions: [insertArray(0, allValuesShuffle)]
     });
@@ -821,10 +757,8 @@ describe('common > main > lists > SortedList', function () {
   it('remove', function () {
     function remove(item) {
       return {
-        actions: [function (list) {
-          return list.remove(item);
-        }],
-        description: "remove(".concat(JSON.stringify(item), ")\n")
+        actions: [list => list.remove(item)],
+        description: `remove(${JSON.stringify(item)})\n`
       };
     }
 
@@ -941,10 +875,8 @@ describe('common > main > lists > SortedList', function () {
   it('removeAt', function () {
     function removeAt(index, withoutShift) {
       return {
-        actions: [function (list) {
-          return list.removeAt(index, withoutShift);
-        }],
-        description: "removeAt(".concat(index, ")\n")
+        actions: [list => list.removeAt(index, withoutShift)],
+        description: `removeAt(${index})\n`
       };
     }
 
@@ -1015,10 +947,8 @@ describe('common > main > lists > SortedList', function () {
   it('removeRange', function () {
     function removeRange(start, end, withoutShift) {
       return {
-        actions: [function (list) {
-          return list.removeRange(start, end, withoutShift);
-        }],
-        description: "removeRange(".concat(start, ", ").concat(end, ", ").concat(withoutShift, ")\n")
+        actions: [list => list.removeRange(start, end, withoutShift)],
+        description: `removeRange(${start}, ${end}, ${withoutShift})\n`
       };
     }
 
@@ -1096,9 +1026,7 @@ describe('common > main > lists > SortedList', function () {
     });
     testList({
       array: [[-5, -4, -3, -2, -1, undefined]],
-      compare: [function (o1, o2) {
-        return compareFast(o1 || 0, o2 || 0);
-      }],
+      compare: [(o1, o2) => compareFast(o1 || 0, o2 || 0)],
       expected: {
         array: [-5, -1, undefined],
         returnValue: true,
@@ -1145,8 +1073,8 @@ describe('common > main > lists > SortedList', function () {
   });
   it('removeArray', function () {
     function removeArray(sourceItems, sourceStart, sourceEnd) {
-      var start = sourceStart == null ? 0 : sourceStart;
-      var end = sourceEnd == null ? sourceItems.length : sourceEnd;
+      let start = sourceStart == null ? 0 : sourceStart;
+      let end = sourceEnd == null ? sourceItems.length : sourceEnd;
 
       if (start < 0) {
         start += sourceItems.length;
@@ -1157,14 +1085,8 @@ describe('common > main > lists > SortedList', function () {
       }
 
       return {
-        actions: [function (list) {
-          return list.removeArray(sourceItems, sourceStart, sourceEnd);
-        }, [function (list) {
-          return list.removeIterable(sourceItems.slice(start, end), end - start);
-        }, function (list) {
-          return list.removeIterable(createIterable(sourceItems.slice(start, end)), end - start);
-        }]],
-        description: "removeArray(".concat(JSON.stringify(sourceItems), ", ").concat(sourceStart, ", ").concat(sourceEnd, ")\n")
+        actions: [list => list.removeArray(sourceItems, sourceStart, sourceEnd), [list => list.removeIterable(sourceItems.slice(start, end), end - start), list => list.removeIterable(createIterable(sourceItems.slice(start, end)), end - start)]],
+        description: `removeArray(${JSON.stringify(sourceItems)}, ${sourceStart}, ${sourceEnd})\n`
       };
     }
 
@@ -1206,8 +1128,8 @@ describe('common > main > lists > SortedList', function () {
       },
       actions: [removeArray(['0', '3', '1', '4'], 1, 3)]
     });
-    var allValuesShuffle = shuffle(allValues.concat(allValues));
-    var allValuesSort = allValuesShuffle.slice().sort();
+    const allValuesShuffle = shuffle(allValues.concat(allValues));
+    const allValuesSort = allValuesShuffle.slice().sort();
     testList({
       array: [allValuesShuffle],
       autoSort: [false, true],
@@ -1217,13 +1139,11 @@ describe('common > main > lists > SortedList', function () {
         array: [],
         returnValue: true,
         defaultValue: getDefaultValue(allValuesShuffle[allValuesShuffle.length - 1]),
-        propertyChanged: allValuesShuffle.map(function (o, i) {
-          return {
-            name: 'size',
-            oldValue: allValuesShuffle.length - i,
-            newValue: allValuesShuffle.length - i - 1
-          };
-        })
+        propertyChanged: allValuesShuffle.map((o, i) => ({
+          name: 'size',
+          oldValue: allValuesShuffle.length - i,
+          newValue: allValuesShuffle.length - i - 1
+        }))
       },
       actions: [removeArray(allValuesShuffle)]
     });
@@ -1231,11 +1151,7 @@ describe('common > main > lists > SortedList', function () {
   it('clear', function () {
     function clear() {
       return {
-        actions: [function (list) {
-          return list.clear();
-        }, function (list) {
-          return list.removeRange(0, list.size);
-        }],
+        actions: [list => list.clear(), list => list.removeRange(0, list.size)],
         description: 'clear()\n'
       };
     }
@@ -1313,14 +1229,12 @@ describe('common > main > lists > SortedList', function () {
   it('toArray', function () {
     function toArray(start, end) {
       return {
-        actions: [function (list) {
-          return list.toArray(start, end);
-        }, function (list) {
-          var result = [];
+        actions: [list => list.toArray(start, end), list => {
+          const result = [];
           list.copyTo(result, null, start, end);
           return result;
         }],
-        description: "toArray(".concat(start, ", ").concat(end, ")\n")
+        description: `toArray(${start}, ${end})\n`
       };
     }
 
@@ -1373,11 +1287,11 @@ describe('common > main > lists > SortedList', function () {
   it('copyTo', function () {
     function copyTo(result, destArray, destIndex, start, end) {
       return {
-        actions: [function (list) {
+        actions: [list => {
           assert.strictEqual(list.copyTo(destArray, destIndex, start, end), result);
           return destArray;
         }],
-        description: "copyTo(".concat(JSON.stringify(destArray), ", ").concat(destIndex, ", ").concat(start, ", ").concat(end, ")\n")
+        description: `copyTo(${JSON.stringify(destArray)}, ${destIndex}, ${start}, ${end})\n`
       };
     }
 
@@ -1439,25 +1353,13 @@ describe('common > main > lists > SortedList', function () {
   it('indexOf', function () {
     testList({
       array: [['b', 'd', 'f', 'h', 'j', 'l']],
-      compare: [function (o1, o2) {
-        return compareFast(o1 + '', o2 + '');
-      }],
+      compare: [(o1, o2) => compareFast(o1 + '', o2 + '')],
       expected: {
         array: ['b', 'd', 'f', 'h', 'j', 'l'],
         returnValue: ~6,
         defaultValue: null
       },
-      actions: [function (list) {
-        return list.indexOf('a');
-      }, function (list) {
-        return list.indexOf('a', 0);
-      }, function (list) {
-        return list.indexOf('a', 0, 1);
-      }, function (list) {
-        return list.indexOf('a', 0, 1, -1);
-      }, function (list) {
-        return list.indexOf('a', 0, 1, 1);
-      }]
+      actions: [list => list.indexOf('a'), list => list.indexOf('a', 0), list => list.indexOf('a', 0, 1), list => list.indexOf('a', 0, 1, -1), list => list.indexOf('a', 0, 1, 1)]
     });
     testList({
       array: [[]],
@@ -1466,11 +1368,7 @@ describe('common > main > lists > SortedList', function () {
         returnValue: null,
         defaultValue: null
       },
-      actions: [function (list) {
-        return list.indexOf('a', -1);
-      }, function (list) {
-        return list.indexOf('a', null, 1);
-      }]
+      actions: [list => list.indexOf('a', -1), list => list.indexOf('a', null, 1)]
     });
     testList({
       array: [[false]],
@@ -1480,74 +1378,36 @@ describe('common > main > lists > SortedList', function () {
         returnValue: -2,
         defaultValue: false
       },
-      actions: [function (list) {
-        return list.indexOf('true');
-      }, function (list) {
-        return list.indexOf([]);
-      }, function (list) {
-        return list.indexOf({});
-      }, function (list) {
-        return list.indexOf(function () {
-          return 0;
-        });
-      }, function (list) {
-        return list.indexOf(NaN);
-      }]
+      actions: [list => list.indexOf('true'), list => list.indexOf([]), list => list.indexOf({}), list => list.indexOf(() => 0), list => list.indexOf(NaN)]
     });
     testList({
       array: [['b', 'd', 'd', 'd', 'd', 'd', 'j', 'l']],
-      compare: [function (o1, o2) {
-        return compareFast(o1 + '', o2 + '');
-      }],
+      compare: [(o1, o2) => compareFast(o1 + '', o2 + '')],
       notAddIfExists: [false],
       expected: {
         array: ['b', 'd', 'd', 'd', 'd', 'd', 'j', 'l'],
         returnValue: 1,
         defaultValue: null
       },
-      actions: [function (list) {
-        return list.indexOf('d');
-      }, function (list) {
-        return list.indexOf('d', 1);
-      }, function (list) {
-        return list.indexOf('d', 1, 2);
-      }, function (list) {
-        return list.indexOf('d', 1, 8, -1);
-      }, function (list) {
-        return list.indexOf('d', null, 2, 1);
-      }]
+      actions: [list => list.indexOf('d'), list => list.indexOf('d', 1), list => list.indexOf('d', 1, 2), list => list.indexOf('d', 1, 8, -1), list => list.indexOf('d', null, 2, 1)]
     });
     testList({
       array: [['b', 'd', 'd', 'd', 'd', 'd', 'j', 'l']],
-      compare: [function (o1, o2) {
-        return compareFast(o1 + '', o2 + '');
-      }],
+      compare: [(o1, o2) => compareFast(o1 + '', o2 + '')],
       notAddIfExists: [false],
       expected: {
         array: ['b', 'd', 'd', 'd', 'd', 'd', 'j', 'l'],
         returnValue: 5,
         defaultValue: null
       },
-      actions: [function (list) {
-        return list.indexOf('d', 5);
-      }, function (list) {
-        return list.indexOf('d', 5, 6);
-      }, function (list) {
-        return list.indexOf('d', 5, 8, 1);
-      }, function (list) {
-        return list.indexOf('d', null, null, 1);
-      }]
+      actions: [list => list.indexOf('d', 5), list => list.indexOf('d', 5, 6), list => list.indexOf('d', 5, 8, 1), list => list.indexOf('d', null, null, 1)]
     });
   });
   it('move', function () {
     function move(oldIndex, newIndex) {
       return {
-        actions: [function (list) {
-          return list.move(oldIndex, newIndex);
-        }, function (list) {
-          return list.moveRange(oldIndex, oldIndex + 1, newIndex);
-        }],
-        description: "move(".concat(oldIndex, ", ").concat(newIndex, ")\n")
+        actions: [list => list.move(oldIndex, newIndex), list => list.moveRange(oldIndex, oldIndex + 1, newIndex)],
+        description: `move(${oldIndex}, ${newIndex})\n`
       };
     }
 
@@ -1612,10 +1472,8 @@ describe('common > main > lists > SortedList', function () {
   it('moveRange', function () {
     function moveRange(start, end, moveIndex) {
       return {
-        actions: [function (list) {
-          return list.moveRange(start, end, moveIndex);
-        }],
-        description: "move(".concat(start, ", ").concat(end, ", ").concat(moveIndex, ")\n")
+        actions: [list => list.moveRange(start, end, moveIndex)],
+        description: `move(${start}, ${end}, ${moveIndex})\n`
       };
     }
 
@@ -1716,11 +1574,7 @@ describe('common > main > lists > SortedList', function () {
   it('sort', function () {
     function sort() {
       return {
-        actions: [function (list) {
-          return list.sort();
-        }, function (list) {
-          return list.reSort();
-        }],
+        actions: [list => list.sort(), list => list.reSort()],
         description: 'sort()\n'
       };
     }
@@ -1758,8 +1612,8 @@ describe('common > main > lists > SortedList', function () {
           type: ListChangedType.Resorted
         }]
       },
-      actions: [function (list) {
-        var countSorted = list.countSorted;
+      actions: [list => {
+        const countSorted = list.countSorted;
         list.autoSort = true;
         list.autoSort = false;
         return list.countSorted !== countSorted;
@@ -1769,9 +1623,7 @@ describe('common > main > lists > SortedList', function () {
   it('reSort', function () {
     function reSort() {
       return {
-        actions: [function (list) {
-          return list.reSort();
-        }],
+        actions: [list => list.reSort()],
         description: 'reSort()\n'
       };
     }
@@ -1815,10 +1667,8 @@ describe('common > main > lists > SortedList', function () {
   it('removeDuplicates', function () {
     function removeDuplicates(withoutShift) {
       return {
-        actions: [function (list) {
-          return list.removeDuplicates(withoutShift);
-        }],
-        description: "removeDuplicates(".concat(withoutShift, ")\n")
+        actions: [list => list.removeDuplicates(withoutShift)],
+        description: `removeDuplicates(${withoutShift})\n`
       };
     }
 

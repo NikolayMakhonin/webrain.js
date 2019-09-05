@@ -1,10 +1,19 @@
 "use strict";
 
-Object.defineProperty(exports, "__esModule", {
+var _interopRequireDefault = require("@babel/runtime-corejs3/helpers/interopRequireDefault");
+
+var _Object$defineProperty = require("@babel/runtime-corejs3/core-js-stable/object/define-property");
+
+_Object$defineProperty(exports, "__esModule", {
   value: true
 });
+
 exports.deepSubscribeRule = deepSubscribeRule;
 exports.deepSubscribe = deepSubscribe;
+
+var _getIterator2 = _interopRequireDefault(require("@babel/runtime-corejs3/core-js/get-iterator"));
+
+var _concat = _interopRequireDefault(require("@babel/runtime-corejs3/core-js-stable/instance/concat"));
 
 var _async = require("../../async/async");
 
@@ -28,15 +37,15 @@ function catchHandler(ex, propertiesPath) {
     throw ex;
   }
 
-  const propertiesPathStr = propertiesPath ? propertiesPath() : '';
+  var propertiesPathStr = propertiesPath ? propertiesPath() : '';
   ex.propertiesPath = propertiesPathStr;
-  ex.message += `\nObject property path: ${propertiesPathStr}`;
+  ex.message += "\nObject property path: ".concat(propertiesPathStr);
   throw ex;
 }
 
 function deepSubscribeAsync(object, subscribeValue, immediate, ruleIterator, leafUnsubscribers, propertiesPath, debugPropertyName, debugParent) {
-  let unsubscribe;
-  (0, _ThenableSync.resolveAsync)(object, o => {
+  var unsubscribe;
+  (0, _ThenableSync.resolveAsync)(object, function (o) {
     if (!unsubscribe) {
       unsubscribe = subscribeNext(o, subscribeValue, immediate, ruleIterator, leafUnsubscribers, propertiesPath, debugPropertyName, debugParent); // if (typeof unsubscribe !== 'function') {
       // 	throw new Error(`unsubscribe is not a function: ${unsubscribe}`)
@@ -44,8 +53,10 @@ function deepSubscribeAsync(object, subscribeValue, immediate, ruleIterator, lea
     }
 
     return o;
-  }, err => catchHandler(err, propertiesPath));
-  return () => {
+  }, function (err) {
+    return catchHandler(err, propertiesPath);
+  });
+  return function () {
     if (typeof unsubscribe === 'function') {
       unsubscribe();
     }
@@ -63,30 +74,30 @@ function unsubscribeNested(value, unsubscribers) {
     return;
   }
 
-  const itemUniqueId = (0, _objectUniqueId.getObjectUniqueId)(value);
-  const unsubscribe = unsubscribers[itemUniqueId];
+  var itemUniqueId = (0, _objectUniqueId.getObjectUniqueId)(value);
+  var unsubscribe = unsubscribers[itemUniqueId];
 
   if (unsubscribe) {
-    unsubscribers[itemUniqueId] = null; // TODO: should be deleted later
-    // delete unsubscribers[itemUniqueId]
-
+    // unsubscribers[itemUniqueId] = null // faster but there is a danger of memory overflow with nulls
+    delete unsubscribers[itemUniqueId];
     unsubscribe();
   }
 }
 
 function subscribeNext(object, subscribeValue, immediate, ruleIterator, leafUnsubscribers, propertiesPath, debugPropertyName, debugParent, ruleDescription) {
   function subscribeLeafDefaultProperty(value, debugPropertyName, debugParent, ruleDescription) {
-    return (0, _rulesSubscribe.subscribeDefaultProperty)(value, true, val => subscribeLeaf(val, debugPropertyName, debugParent, ruleDescription)) || subscribeLeaf(value, debugPropertyName, debugParent, ruleDescription);
+    return (0, _rulesSubscribe.subscribeDefaultProperty)(value, true, function (val) {
+      return subscribeLeaf(val, debugPropertyName, debugParent, ruleDescription);
+    }) || subscribeLeaf(value, debugPropertyName, debugParent, ruleDescription);
   }
 
   function setUnsubscribeLeaf(itemUniqueId, unsubscribeValue) {
-    const unsubscribe = () => {
+    var unsubscribe = function unsubscribe() {
       // PROF: 371 - 0.8%
       if (unsubscribeValue) {
-        leafUnsubscribers[itemUniqueId] = null; // TODO: should be deleted later
-        // delete unsubscribers[itemUniqueId]
-
-        const _unsubscribeValue = unsubscribeValue;
+        // leafUnsubscribers[itemUniqueId] = null // faster but there is a danger of memory overflow with nulls
+        delete leafUnsubscribers[itemUniqueId];
+        var _unsubscribeValue = unsubscribeValue;
         unsubscribeValue = null;
 
         _unsubscribeValue();
@@ -99,53 +110,66 @@ function subscribeNext(object, subscribeValue, immediate, ruleIterator, leafUnsu
 
   function subscribeLeaf(value, debugPropertyName, debugParent, ruleDescription) {
     if (!(value instanceof Object)) {
-      const unsubscribeValue = (0, _helpers.checkIsFuncOrNull)(subscribeValue(value, debugParent, debugPropertyName));
+      var _unsubscribeValue2 = (0, _helpers.checkIsFuncOrNull)(subscribeValue(value, debugParent, debugPropertyName));
 
-      if (unsubscribeValue) {
-        unsubscribeValue();
-        throw new Error(`You should not return unsubscribe function for non Object value.\n` + `For subscribe value types use their object wrappers: Number, Boolean, String classes.\n` + `Unsubscribe function: ${unsubscribeValue}\nValue: ${value}\n` + `Value property path: ${(propertiesPath ? propertiesPath() + '.' : '') + (debugPropertyName == null ? '' : debugPropertyName + '(' + ruleDescription + ')')}`);
+      if (_unsubscribeValue2) {
+        var _context;
+
+        _unsubscribeValue2();
+
+        throw new Error("You should not return unsubscribe function for non Object value.\n" + "For subscribe value types use their object wrappers: Number, Boolean, String classes.\n" + (0, _concat.default)(_context = "Unsubscribe function: ".concat(_unsubscribeValue2, "\nValue: ")).call(_context, value, "\n") + "Value property path: ".concat((propertiesPath ? propertiesPath() + '.' : '') + (debugPropertyName == null ? '' : debugPropertyName + '(' + ruleDescription + ')')));
       }
 
       return null;
     }
 
-    const itemUniqueId = (0, _objectUniqueId.getObjectUniqueId)(value);
-    let unsubscribe = leafUnsubscribers[itemUniqueId];
+    var itemUniqueId = (0, _objectUniqueId.getObjectUniqueId)(value);
+    var unsubscribe = leafUnsubscribers[itemUniqueId];
 
     if (unsubscribe) {
       return unsubscribe;
     }
 
-    let unsubscribeValue = (0, _helpers.checkIsFuncOrNull)(subscribeValue(value, debugParent, debugPropertyName));
+    var unsubscribeValue = (0, _helpers.checkIsFuncOrNull)(subscribeValue(value, debugParent, debugPropertyName));
 
     if (unsubscribeValue) {
       return setUnsubscribeLeaf(itemUniqueId, unsubscribeValue);
     }
   }
 
-  let unsubscribers;
-  let iteration;
+  var unsubscribers;
+  var iteration;
 
   if (!ruleIterator || (iteration = ruleIterator.next()).done) {
-    const subscribeLeafFunc = (0, _rulesSubscribe.hasDefaultProperty)(object) ? subscribeLeafDefaultProperty : subscribeLeaf;
+    var subscribeLeafFunc = (0, _rulesSubscribe.hasDefaultProperty)(object) ? subscribeLeafDefaultProperty : subscribeLeaf;
     return subscribeLeafFunc(object, debugPropertyName, object, ruleDescription);
   }
 
-  return (0, _iterateRule.subscribeNextRule)(ruleIterator, iteration, nextRuleIterator => deepSubscribeRuleIterator(object, subscribeValue, immediate, nextRuleIterator, leafUnsubscribers, propertiesPath, debugPropertyName, debugParent), (rule, getNextRuleIterator) => {
-    let deepSubscribeItem;
+  return (0, _iterateRule.subscribeNextRule)(ruleIterator, iteration, function (nextRuleIterator) {
+    return deepSubscribeRuleIterator(object, subscribeValue, immediate, nextRuleIterator, leafUnsubscribers, propertiesPath, debugPropertyName, debugParent);
+  }, function (rule, getNextRuleIterator) {
+    var deepSubscribeItem;
 
     if (getNextRuleIterator) {
-      deepSubscribeItem = (item, debugPropertyName) => deepSubscribeRuleIterator(item, subscribeValue, immediate, getNextRuleIterator(), leafUnsubscribers, () => (propertiesPath ? propertiesPath() + '.' : '') + (debugPropertyName == null ? '' : debugPropertyName + '(' + rule.description + ')'), debugPropertyName, object);
+      deepSubscribeItem = function deepSubscribeItem(item, debugPropertyName) {
+        return deepSubscribeRuleIterator(item, subscribeValue, immediate, getNextRuleIterator(), leafUnsubscribers, function () {
+          return (propertiesPath ? propertiesPath() + '.' : '') + (debugPropertyName == null ? '' : debugPropertyName + '(' + rule.description + ')');
+        }, debugPropertyName, object);
+      };
     } else {
-      const deepSubscribeItemAsync = (item, debugPropertyName) => {
-        return deepSubscribeAsync(item, subscribeValue, immediate, null, leafUnsubscribers, () => (propertiesPath ? propertiesPath() + '.' : '') + (debugPropertyName == null ? '' : debugPropertyName + '(' + rule.description + ')'), debugPropertyName, object);
+      var deepSubscribeItemAsync = function deepSubscribeItemAsync(item, debugPropertyName) {
+        return deepSubscribeAsync(item, subscribeValue, immediate, null, leafUnsubscribers, function () {
+          return (propertiesPath ? propertiesPath() + '.' : '') + (debugPropertyName == null ? '' : debugPropertyName + '(' + rule.description + ')');
+        }, debugPropertyName, object);
       };
 
-      const catchHandlerLeaf = (err, debugPropertyName) => {
-        catchHandler(err, () => (propertiesPath ? propertiesPath() + '.' : '') + (debugPropertyName == null ? '' : debugPropertyName + '(' + rule.description + ')'));
+      var catchHandlerLeaf = function catchHandlerLeaf(err, debugPropertyName) {
+        catchHandler(err, function () {
+          return (propertiesPath ? propertiesPath() + '.' : '') + (debugPropertyName == null ? '' : debugPropertyName + '(' + rule.description + ')');
+        });
       };
 
-      deepSubscribeItem = (item, debugPropertyName) => {
+      deepSubscribeItem = function deepSubscribeItem(item, debugPropertyName) {
         try {
           item = (0, _ThenableSync.resolveAsync)(item);
 
@@ -153,8 +177,9 @@ function subscribeNext(object, subscribeValue, immediate, ruleIterator, leafUnsu
             return deepSubscribeItemAsync(item, debugPropertyName);
           }
 
-          const subscribeLeafFunc = (0, _rulesSubscribe.hasDefaultProperty)(item) ? subscribeLeafDefaultProperty : subscribeLeaf;
-          return subscribeLeafFunc(item, debugPropertyName, object, rule.description);
+          var _subscribeLeafFunc = (0, _rulesSubscribe.hasDefaultProperty)(item) ? subscribeLeafDefaultProperty : subscribeLeaf;
+
+          return _subscribeLeafFunc(item, debugPropertyName, object, rule.description);
         } catch (err) {
           catchHandlerLeaf(err, debugPropertyName);
           return null;
@@ -162,10 +187,10 @@ function subscribeNext(object, subscribeValue, immediate, ruleIterator, leafUnsu
       };
     }
 
-    return (0, _helpers.checkIsFuncOrNull)(rule.subscribe(object, immediate, (item, debugPropertyName) => {
+    return (0, _helpers.checkIsFuncOrNull)(rule.subscribe(object, immediate, function (item, debugPropertyName) {
       // PROF: 1212 - 2.6%
-      let unsubscribe;
-      let itemUniqueId;
+      var unsubscribe;
+      var itemUniqueId;
 
       if (item instanceof Object) {
         if (!unsubscribers) {
@@ -183,15 +208,17 @@ function subscribeNext(object, subscribeValue, immediate, ruleIterator, leafUnsu
       unsubscribe = (0, _helpers.checkIsFuncOrNull)(deepSubscribeItem(item, debugPropertyName));
 
       if (unsubscribe) {
+        var _context2;
+
         if (item instanceof Object) {
           unsubscribers[itemUniqueId] = unsubscribe;
           return;
         }
 
         unsubscribe();
-        throw new Error(`You should not return unsubscribe function for non Object value.\n` + `For subscribe value types use their object wrappers: Number, Boolean, String classes.\n` + `Unsubscribe function: ${unsubscribe}\nValue: ${item}\n` + `Value property path: ${(propertiesPath ? propertiesPath() + '.' : '') + (debugPropertyName == null ? '' : debugPropertyName + '(' + rule.description + ')')}`);
+        throw new Error("You should not return unsubscribe function for non Object value.\n" + "For subscribe value types use their object wrappers: Number, Boolean, String classes.\n" + (0, _concat.default)(_context2 = "Unsubscribe function: ".concat(unsubscribe, "\nValue: ")).call(_context2, item, "\n") + "Value property path: ".concat((propertiesPath ? propertiesPath() + '.' : '') + (debugPropertyName == null ? '' : debugPropertyName + '(' + rule.description + ')')));
       }
-    }, (item, debugPropertyName) => {
+    }, function (item, debugPropertyName) {
       // PROF: 431 - 0.9%
       unsubscribeNested(item, unsubscribers);
     }));
@@ -210,7 +237,7 @@ function deepSubscribeRuleIterator(object, subscribeValue, immediate, ruleIterat
 
   try {
     object = (0, _ThenableSync.resolveAsync)(object);
-    const subscribeNextFunc = (0, _async.isThenable)(object) ? deepSubscribeAsync : subscribeNext;
+    var subscribeNextFunc = (0, _async.isThenable)(object) ? deepSubscribeAsync : subscribeNext;
     return subscribeNextFunc(object, subscribeValue, immediate, ruleIterator, leafUnsubscribers, propertiesPath, debugPropertyName, debugParent);
   } catch (err) {
     catchHandler(err, propertiesPath);
@@ -219,7 +246,7 @@ function deepSubscribeRuleIterator(object, subscribeValue, immediate, ruleIterat
 }
 
 function deepSubscribeRule(object, subscribeValue, immediate, rule) {
-  return (0, _helpers.toSingleCall)(deepSubscribeRuleIterator(object, subscribeValue, immediate, (0, _iterateRule.iterateRule)(rule)[Symbol.iterator]()));
+  return (0, _helpers.toSingleCall)(deepSubscribeRuleIterator(object, subscribeValue, immediate, (0, _getIterator2.default)((0, _iterateRule.iterateRule)(rule))));
 }
 
 function deepSubscribe(object, subscribeValue, immediate, ruleBuilder) {

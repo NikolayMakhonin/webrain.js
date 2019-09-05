@@ -1,53 +1,25 @@
 export function fillCollection(collection, arrayOrIterable, add) {
   if (Array.isArray(arrayOrIterable)) {
-    for (var i = 0, len = arrayOrIterable.length; i < len; i++) {
+    for (let i = 0, len = arrayOrIterable.length; i < len; i++) {
       add(collection, arrayOrIterable[i]);
     }
   } else {
-    var _iteratorNormalCompletion = true;
-    var _didIteratorError = false;
-    var _iteratorError = undefined;
-
-    try {
-      for (var _iterator = arrayOrIterable[Symbol.iterator](), _step; !(_iteratorNormalCompletion = (_step = _iterator.next()).done); _iteratorNormalCompletion = true) {
-        var _item = _step.value;
-        add(collection, _item);
-      }
-    } catch (err) {
-      _didIteratorError = true;
-      _iteratorError = err;
-    } finally {
-      try {
-        if (!_iteratorNormalCompletion && _iterator["return"] != null) {
-          _iterator["return"]();
-        }
-      } finally {
-        if (_didIteratorError) {
-          throw _iteratorError;
-        }
-      }
+    for (const item of arrayOrIterable) {
+      add(collection, item);
     }
   }
 
   return collection;
 }
 export function fillSet(set, arrayOrIterable) {
-  return fillCollection(set, arrayOrIterable, function (c, o) {
-    return c.add(o);
-  });
+  return fillCollection(set, arrayOrIterable, (c, o) => c.add(o));
 }
 export function fillMap(map, arrayOrIterable) {
-  return fillCollection(map, arrayOrIterable, function (c, o) {
-    return c.set.apply(c, o);
-  });
+  return fillCollection(map, arrayOrIterable, (c, o) => c.set.apply(c, o));
 }
 export function fillObject(object, arrayOrIterable) {
-  return fillCollection(object, arrayOrIterable, function (c, o) {
-    return c[o[0]] = o[1];
-  });
+  return fillCollection(object, arrayOrIterable, (c, o) => c[o[0]] = o[1]);
 }
 export function fillObjectKeys(object, arrayOrIterable) {
-  return fillCollection(object, arrayOrIterable, function (c, o) {
-    return c[o] = true;
-  });
+  return fillCollection(object, arrayOrIterable, (c, o) => c[o] = true);
 }

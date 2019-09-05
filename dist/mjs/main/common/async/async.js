@@ -5,7 +5,7 @@ export function isThenable(value) {
 export function isAsync(value) {
   return isThenable(value) || isIterator(value);
 }
-export var ResolveResult;
+export let ResolveResult;
 
 (function (ResolveResult) {
   ResolveResult[ResolveResult["None"] = 0] = "None";
@@ -22,13 +22,13 @@ export function resolveIterator(iterator, isError, onImmediate, onDeferred, cust
   }
 
   function iterate(nextValue, isThrow, nextOnImmediate, nextOnDeferred) {
-    var body = function body() {
+    const body = () => {
       while (true) {
-        var iteratorResult = void 0;
+        let iteratorResult;
 
         if (isThrow) {
           isThrow = false;
-          iteratorResult = iterator["throw"](nextValue);
+          iteratorResult = iterator.throw(nextValue);
         } else {
           iteratorResult = iterator.next(nextValue);
         }
@@ -38,10 +38,10 @@ export function resolveIterator(iterator, isError, onImmediate, onDeferred, cust
           return isError ? ResolveResult.ImmediateError : ResolveResult.Immediate;
         }
 
-        var result = _resolveValue(iteratorResult.value, isError, function (o, nextIsError) {
+        const result = _resolveValue(iteratorResult.value, isError, (o, nextIsError) => {
           nextValue = o;
           isThrow = nextIsError;
-        }, function (o, nextIsError) {
+        }, (o, nextIsError) => {
           iterate(o, nextIsError, nextOnDeferred, nextOnDeferred);
         }, customResolveValue);
 
@@ -66,16 +66,16 @@ export function resolveThenable(thenable, isError, onImmediate, onDeferred) {
     return ResolveResult.None;
   }
 
-  var result = isError ? ResolveResult.DeferredError : ResolveResult.Deferred;
-  var deferred;
-  (thenable.thenLast || thenable.then).call(thenable, function (value) {
+  let result = isError ? ResolveResult.DeferredError : ResolveResult.Deferred;
+  let deferred;
+  (thenable.thenLast || thenable.then).call(thenable, value => {
     if (deferred) {
       onDeferred(value, isError);
     } else {
       result = isError ? ResolveResult.ImmediateError : ResolveResult.Immediate;
       onImmediate(value, isError);
     }
-  }, function (err) {
+  }, err => {
     if (deferred) {
       onDeferred(err, true);
     } else {
@@ -88,7 +88,7 @@ export function resolveThenable(thenable, isError, onImmediate, onDeferred) {
 }
 
 function _resolveValue(value, isError, onImmediate, onDeferred, customResolveValue) {
-  var nextOnImmediate = function nextOnImmediate(o, nextIsError) {
+  const nextOnImmediate = (o, nextIsError) => {
     if (nextIsError) {
       isError = true;
     }
@@ -96,13 +96,13 @@ function _resolveValue(value, isError, onImmediate, onDeferred, customResolveVal
     value = o;
   };
 
-  var nextOnDeferred = function nextOnDeferred(val, nextIsError) {
+  const nextOnDeferred = (val, nextIsError) => {
     _resolveValue(val, isError || nextIsError, onDeferred, onDeferred, customResolveValue);
   };
 
   while (true) {
     {
-      var result = resolveThenable(value, isError, nextOnImmediate, nextOnDeferred);
+      const result = resolveThenable(value, isError, nextOnImmediate, nextOnDeferred);
 
       if ((result & ResolveResult.Deferred) !== 0) {
         return result;
@@ -113,19 +113,19 @@ function _resolveValue(value, isError, onImmediate, onDeferred, customResolveVal
       }
     }
     {
-      var _result = resolveIterator(value, isError, nextOnImmediate, nextOnDeferred, customResolveValue);
+      const result = resolveIterator(value, isError, nextOnImmediate, nextOnDeferred, customResolveValue);
 
-      if ((_result & ResolveResult.Deferred) !== 0) {
-        return _result;
+      if ((result & ResolveResult.Deferred) !== 0) {
+        return result;
       }
 
-      if ((_result & ResolveResult.Immediate) !== 0) {
+      if ((result & ResolveResult.Immediate) !== 0) {
         continue;
       }
     }
 
     if (value != null && customResolveValue != null) {
-      var newValue = customResolveValue(value);
+      const newValue = customResolveValue(value);
 
       if (newValue !== value) {
         value = newValue;

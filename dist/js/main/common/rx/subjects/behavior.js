@@ -1,68 +1,97 @@
 "use strict";
 
-Object.defineProperty(exports, "__esModule", {
+var _interopRequireDefault = require("@babel/runtime-corejs3/helpers/interopRequireDefault");
+
+var _Object$defineProperty = require("@babel/runtime-corejs3/core-js-stable/object/define-property");
+
+_Object$defineProperty(exports, "__esModule", {
   value: true
 });
+
 exports.behavior = behavior;
 exports.BehaviorSubject = void 0;
+
+var _classCallCheck2 = _interopRequireDefault(require("@babel/runtime-corejs3/helpers/classCallCheck"));
+
+var _createClass2 = _interopRequireDefault(require("@babel/runtime-corejs3/helpers/createClass"));
+
+var _possibleConstructorReturn2 = _interopRequireDefault(require("@babel/runtime-corejs3/helpers/possibleConstructorReturn"));
+
+var _getPrototypeOf2 = _interopRequireDefault(require("@babel/runtime-corejs3/helpers/getPrototypeOf"));
+
+var _get2 = _interopRequireDefault(require("@babel/runtime-corejs3/helpers/get"));
+
+var _inherits2 = _interopRequireDefault(require("@babel/runtime-corejs3/helpers/inherits"));
 
 var _subject = require("./subject");
 
 function behavior(base) {
-  return class Behavior extends base {
-    constructor(value) {
-      super();
+  return (
+    /*#__PURE__*/
+    function (_base) {
+      (0, _inherits2.default)(Behavior, _base);
 
-      if (typeof value !== 'undefined') {
-        this.value = value;
-      }
-    }
+      function Behavior(value) {
+        var _this;
 
-    subscribe(subscriber) {
-      if (!subscriber) {
-        return null;
-      }
+        (0, _classCallCheck2.default)(this, Behavior);
+        _this = (0, _possibleConstructorReturn2.default)(this, (0, _getPrototypeOf2.default)(Behavior).call(this));
 
-      let unsubscribe = super.subscribe(subscriber);
-      const {
-        value
-      } = this;
-
-      if (typeof value !== 'undefined') {
-        subscriber(value);
-      }
-
-      return () => {
-        if (!unsubscribe) {
-          return;
+        if (typeof value !== 'undefined') {
+          _this.value = value;
         }
 
-        try {
-          // eslint-disable-next-line no-shadow
-          // tslint:disable-next-line:no-shadowed-variable
-          const {
-            value,
-            unsubscribeValue
-          } = this;
+        return _this;
+      }
 
-          if (typeof unsubscribeValue !== 'undefined' && unsubscribeValue !== value) {
-            subscriber(unsubscribeValue);
+      (0, _createClass2.default)(Behavior, [{
+        key: "subscribe",
+        value: function subscribe(subscriber) {
+          var _this2 = this;
+
+          if (!subscriber) {
+            return null;
           }
-        } finally {
-          unsubscribe();
-          unsubscribe = null;
+
+          var unsubscribe = (0, _get2.default)((0, _getPrototypeOf2.default)(Behavior.prototype), "subscribe", this).call(this, subscriber);
+          var value = this.value;
+
+          if (typeof value !== 'undefined') {
+            subscriber(value);
+          }
+
+          return function () {
+            if (!unsubscribe) {
+              return;
+            }
+
+            try {
+              // eslint-disable-next-line no-shadow
+              // tslint:disable-next-line:no-shadowed-variable
+              var _value = _this2.value,
+                  unsubscribeValue = _this2.unsubscribeValue;
+
+              if (typeof unsubscribeValue !== 'undefined' && unsubscribeValue !== _value) {
+                subscriber(unsubscribeValue);
+              }
+            } finally {
+              unsubscribe();
+              unsubscribe = null;
+            }
+          };
         }
-      };
-    }
-
-    emit(value) {
-      this.value = value;
-      super.emit(value);
-      return this;
-    }
-
-  };
+      }, {
+        key: "emit",
+        value: function emit(value) {
+          this.value = value;
+          (0, _get2.default)((0, _getPrototypeOf2.default)(Behavior.prototype), "emit", this).call(this, value);
+          return this;
+        }
+      }]);
+      return Behavior;
+    }(base)
+  );
 }
 
-const BehaviorSubject = behavior(_subject.Subject);
+var BehaviorSubject = behavior(_subject.Subject);
 exports.BehaviorSubject = BehaviorSubject;

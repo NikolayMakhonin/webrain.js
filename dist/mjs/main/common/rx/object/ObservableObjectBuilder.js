@@ -1,192 +1,191 @@
-import _defineProperty from "@babel/runtime/helpers/defineProperty";
-import _classCallCheck from "@babel/runtime/helpers/classCallCheck";
-import _createClass from "@babel/runtime/helpers/createClass";
-
-function ownKeys(object, enumerableOnly) { var keys = Object.keys(object); if (Object.getOwnPropertySymbols) { var symbols = Object.getOwnPropertySymbols(object); if (enumerableOnly) symbols = symbols.filter(function (sym) { return Object.getOwnPropertyDescriptor(object, sym).enumerable; }); keys.push.apply(keys, symbols); } return keys; }
-
-function _objectSpread(target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i] != null ? arguments[i] : {}; if (i % 2) { ownKeys(source, true).forEach(function (key) { _defineProperty(target, key, source[key]); }); } else if (Object.getOwnPropertyDescriptors) { Object.defineProperties(target, Object.getOwnPropertyDescriptors(source)); } else { ownKeys(source).forEach(function (key) { Object.defineProperty(target, key, Object.getOwnPropertyDescriptor(source, key)); }); } } return target; }
-
 import { createFunction } from '../../helpers/helpers';
 import '../extensions/autoConnect';
 import { PropertyChangedEvent } from './IPropertyChanged';
 import { _set, _setExt, ObservableObject } from './ObservableObject';
-export var ObservableObjectBuilder =
-/*#__PURE__*/
-function () {
-  function ObservableObjectBuilder(object) {
-    _classCallCheck(this, ObservableObjectBuilder);
-
+export class ObservableObjectBuilder {
+  constructor(object) {
     this.object = object || new ObservableObject();
   }
 
-  _createClass(ObservableObjectBuilder, [{
-    key: "writable",
-    value: function writable(name, options, initValue) {
-      var _ref = options || {},
-          setOptions = _ref.setOptions,
-          hidden = _ref.hidden;
+  writable(name, options, initValue) {
+    const {
+      setOptions,
+      hidden
+    } = options || {};
+    const {
+      object
+    } = this;
+    const {
+      __fields
+    } = object;
 
-      var object = this.object;
-      var __fields = object.__fields;
-
-      if (__fields) {
-        __fields[name] = object[name];
-      } else if (typeof initValue !== 'undefined') {
-        throw new Error("You can't set initValue for prototype writable property");
-      } // optimization
+    if (__fields) {
+      __fields[name] = object[name];
+    } else if (typeof initValue !== 'undefined') {
+      throw new Error("You can't set initValue for prototype writable property");
+    } // optimization
 
 
-      var getValue = createFunction('o', "return o.__fields[\"".concat(name, "\"]"));
-      var setValue = createFunction('o', 'v', "o.__fields[\"".concat(name, "\"] = v"));
+    const getValue = createFunction('o', `return o.__fields["${name}"]`);
+    const setValue = createFunction('o', 'v', `o.__fields["${name}"] = v`);
+    const set = setOptions ? _setExt.bind(null, name, getValue, setValue, setOptions) : _set.bind(null, name, getValue, setValue);
+    Object.defineProperty(object, name, {
+      configurable: true,
+      enumerable: !hidden,
 
-      var _set2 = setOptions ? _setExt.bind(null, name, getValue, setValue, setOptions) : _set.bind(null, name, getValue, setValue);
+      get() {
+        return getValue(this);
+      },
 
+      set(newValue) {
+        set(this, newValue);
+      }
+
+    });
+
+    if (__fields && typeof initValue !== 'undefined') {
+      const value = __fields[name];
+
+      if (initValue !== value) {
+        object[name] = initValue;
+      }
+    }
+
+    return this;
+  }
+
+  readable(name, options, initValue) {
+    const hidden = options && options.hidden;
+    const setOptions = { ...(options && options.setOptions),
+      suppressPropertyChanged: true
+    };
+    const {
+      object
+    } = this;
+    const {
+      __fields
+    } = object;
+
+    if (__fields) {
+      __fields[name] = object[name];
+    }
+
+    let factory = options && options.factory;
+
+    if (!factory && !__fields && typeof initValue !== 'undefined') {
+      factory = o => o;
+    } // optimization
+
+
+    const getValue = createFunction('o', `return o.__fields["${name}"]`);
+
+    const createInstanceProperty = instance => {
+      Object.defineProperty(instance, name, {
+        configurable: true,
+        enumerable: !hidden,
+
+        get() {
+          return getValue(this);
+        }
+
+      });
+    };
+
+    if (factory) {
+      // optimization
+      const setValue = createFunction('o', 'v', `o.__fields["${name}"] = v`);
+      const set = setOptions ? _setExt.bind(null, name, getValue, setValue, setOptions) : _set.bind(null, name, getValue, setValue);
       Object.defineProperty(object, name, {
         configurable: true,
         enumerable: !hidden,
-        get: function get() {
-          return getValue(this);
-        },
-        set: function set(newValue) {
-          _set2(this, newValue);
+
+        get() {
+          const factoryValue = factory.call(this, initValue);
+          createInstanceProperty(this);
+
+          if (typeof factoryValue !== 'undefined') {
+            const oldValue = getValue(this);
+
+            if (factoryValue !== oldValue) {
+              set(this, factoryValue);
+            }
+          }
+
+          return factoryValue;
         }
+
       });
+
+      if (__fields) {
+        const oldValue = __fields[name];
+        const {
+          propertyChangedIfCanEmit
+        } = object;
+
+        if (propertyChangedIfCanEmit) {
+          propertyChangedIfCanEmit.onPropertyChanged(new PropertyChangedEvent(name, oldValue, () => object[name]));
+        }
+      }
+    } else {
+      createInstanceProperty(object);
 
       if (__fields && typeof initValue !== 'undefined') {
-        var value = __fields[name];
+        const oldValue = __fields[name];
 
-        if (initValue !== value) {
-          object[name] = initValue;
-        }
-      }
-
-      return this;
-    }
-  }, {
-    key: "readable",
-    value: function readable(name, options, initValue) {
-      var hidden = options && options.hidden;
-
-      var setOptions = _objectSpread({}, options && options.setOptions, {
-        suppressPropertyChanged: true
-      });
-
-      var object = this.object;
-      var __fields = object.__fields;
-
-      if (__fields) {
-        __fields[name] = object[name];
-      }
-
-      var factory = options && options.factory;
-
-      if (!factory && !__fields && typeof initValue !== 'undefined') {
-        factory = function factory(o) {
-          return o;
-        };
-      } // optimization
-
-
-      var getValue = createFunction('o', "return o.__fields[\"".concat(name, "\"]"));
-
-      var createInstanceProperty = function createInstanceProperty(instance) {
-        Object.defineProperty(instance, name, {
-          configurable: true,
-          enumerable: !hidden,
-          get: function get() {
-            return getValue(this);
-          }
-        });
-      };
-
-      if (factory) {
-        // optimization
-        var setValue = createFunction('o', 'v', "o.__fields[\"".concat(name, "\"] = v"));
-        var set = setOptions ? _setExt.bind(null, name, getValue, setValue, setOptions) : _set.bind(null, name, getValue, setValue);
-        Object.defineProperty(object, name, {
-          configurable: true,
-          enumerable: !hidden,
-          get: function get() {
-            var factoryValue = factory.call(this, initValue);
-            createInstanceProperty(this);
-
-            if (typeof factoryValue !== 'undefined') {
-              var oldValue = getValue(this);
-
-              if (factoryValue !== oldValue) {
-                set(this, factoryValue);
-              }
-            }
-
-            return factoryValue;
-          }
-        });
-
-        if (__fields) {
-          var oldValue = __fields[name];
-          var propertyChangedIfCanEmit = object.propertyChangedIfCanEmit;
-
-          if (propertyChangedIfCanEmit) {
-            propertyChangedIfCanEmit.onPropertyChanged(new PropertyChangedEvent(name, oldValue, function () {
-              return object[name];
-            }));
-          }
-        }
-      } else {
-        createInstanceProperty(object);
-
-        if (__fields && typeof initValue !== 'undefined') {
-          var _oldValue = __fields[name];
-
-          if (initValue !== _oldValue) {
-            __fields[name] = initValue;
-            var _propertyChangedIfCanEmit = object.propertyChangedIfCanEmit;
-
-            if (_propertyChangedIfCanEmit) {
-              _propertyChangedIfCanEmit.onPropertyChanged({
-                name: name,
-                oldValue: _oldValue,
-                newValue: initValue
-              });
-            }
-          }
-        }
-      }
-
-      return this;
-    }
-  }, {
-    key: "delete",
-    value: function _delete(name) {
-      var object = this.object;
-      var oldValue = object[name];
-
-      object._setUnsubscriber(name, null);
-
-      delete object[name];
-      var __fields = object.__fields;
-
-      if (__fields) {
-        delete __fields[name];
-
-        if (typeof oldValue !== 'undefined') {
-          var propertyChangedIfCanEmit = object.propertyChangedIfCanEmit;
+        if (initValue !== oldValue) {
+          __fields[name] = initValue;
+          const {
+            propertyChangedIfCanEmit
+          } = object;
 
           if (propertyChangedIfCanEmit) {
             propertyChangedIfCanEmit.onPropertyChanged({
-              name: name,
-              oldValue: oldValue
+              name,
+              oldValue,
+              newValue: initValue
             });
           }
         }
       }
-
-      return this;
     }
-  }]);
 
-  return ObservableObjectBuilder;
-}(); // Test:
+    return this;
+  }
+
+  delete(name) {
+    const {
+      object
+    } = this;
+    const oldValue = object[name];
+
+    object._setUnsubscriber(name, null);
+
+    delete object[name];
+    const {
+      __fields
+    } = object;
+
+    if (__fields) {
+      delete __fields[name];
+
+      if (typeof oldValue !== 'undefined') {
+        const {
+          propertyChangedIfCanEmit
+        } = object;
+
+        if (propertyChangedIfCanEmit) {
+          propertyChangedIfCanEmit.onPropertyChanged({
+            name,
+            oldValue
+          });
+        }
+      }
+    }
+
+    return this;
+  }
+
+} // Test:
 // export const obj = new ObservableObjectBuilder()
 // 	.writable<number, 'prop1'>('prop1')
 // 	.readable<string, 'prop2'>('prop2')

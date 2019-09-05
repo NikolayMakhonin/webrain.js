@@ -1,11 +1,42 @@
 "use strict";
 
-Object.defineProperty(exports, "__esModule", {
+var _interopRequireDefault = require("@babel/runtime-corejs3/helpers/interopRequireDefault");
+
+var _Object$defineProperty = require("@babel/runtime-corejs3/core-js-stable/object/define-property");
+
+_Object$defineProperty(exports, "__esModule", {
   value: true
 });
+
 exports.hasDefaultProperty = hasDefaultProperty;
 exports.subscribeDefaultProperty = subscribeDefaultProperty;
 exports.RuleSubscribeCollection = exports.RuleSubscribeMap = exports.RuleSubscribeObject = exports.RuleSubscribe = exports.SubscribeObjectType = void 0;
+
+var _indexOf = _interopRequireDefault(require("@babel/runtime-corejs3/core-js-stable/instance/index-of"));
+
+var _bind = _interopRequireDefault(require("@babel/runtime-corejs3/core-js-stable/instance/bind"));
+
+var _classCallCheck2 = _interopRequireDefault(require("@babel/runtime-corejs3/helpers/classCallCheck"));
+
+var _createClass2 = _interopRequireDefault(require("@babel/runtime-corejs3/helpers/createClass"));
+
+var _possibleConstructorReturn2 = _interopRequireDefault(require("@babel/runtime-corejs3/helpers/possibleConstructorReturn"));
+
+var _getPrototypeOf2 = _interopRequireDefault(require("@babel/runtime-corejs3/helpers/getPrototypeOf"));
+
+var _get2 = _interopRequireDefault(require("@babel/runtime-corejs3/helpers/get"));
+
+var _inherits2 = _interopRequireDefault(require("@babel/runtime-corejs3/helpers/inherits"));
+
+var _map = _interopRequireDefault(require("@babel/runtime-corejs3/core-js-stable/map"));
+
+var _set = _interopRequireDefault(require("@babel/runtime-corejs3/core-js-stable/set"));
+
+var _toStringTag = _interopRequireDefault(require("@babel/runtime-corejs3/core-js-stable/symbol/to-string-tag"));
+
+var _isArray = _interopRequireDefault(require("@babel/runtime-corejs3/core-js-stable/array/is-array"));
+
+var _getIterator2 = _interopRequireDefault(require("@babel/runtime-corejs3/core-js/get-iterator"));
 
 var _helpers = require("../../helpers/helpers");
 
@@ -23,18 +54,38 @@ var _rules2 = require("./rules");
 
 /* tslint:disable:no-identical-functions */
 function forEachSimple(iterable, callbackfn) {
-  for (const item of iterable) {
-    callbackfn(item, _constants.COLLECTION_PREFIX);
+  var _iteratorNormalCompletion = true;
+  var _didIteratorError = false;
+  var _iteratorError = undefined;
+
+  try {
+    for (var _iterator = (0, _getIterator2.default)(iterable), _step; !(_iteratorNormalCompletion = (_step = _iterator.next()).done); _iteratorNormalCompletion = true) {
+      var _item = _step.value;
+      callbackfn(_item, _constants.COLLECTION_PREFIX);
+    }
+  } catch (err) {
+    _didIteratorError = true;
+    _iteratorError = err;
+  } finally {
+    try {
+      if (!_iteratorNormalCompletion && _iterator.return != null) {
+        _iterator.return();
+      }
+    } finally {
+      if (_didIteratorError) {
+        throw _iteratorError;
+      }
+    }
   }
 } // region subscribeObject
 
 
 function getFirstExistProperty(object, propertyNames) {
-  for (let i = 0, len = propertyNames.length; i < len; i++) {
-    const propertyName = propertyNames[i];
+  for (var i = 0, len = propertyNames.length; i < len; i++) {
+    var _propertyName = propertyNames[i];
 
-    if (Object.prototype.hasOwnProperty.call(object, propertyName)) {
-      return propertyName;
+    if (Object.prototype.hasOwnProperty.call(object, _propertyName)) {
+      return _propertyName;
     }
   }
 
@@ -42,21 +93,21 @@ function getFirstExistProperty(object, propertyNames) {
 }
 
 function subscribeObjectValue(propertyNames, object, immediateSubscribe, subscribeItem, unsubscribeItem) {
-  if (!(object instanceof Object) || object.constructor === Object || Array.isArray(object)) {
+  if (!(object instanceof Object) || object.constructor === Object || (0, _isArray.default)(object)) {
     subscribeItem(object, null);
-    return () => {
+    return function () {
       unsubscribeItem(object, null);
     };
   }
 
-  let subscribePropertyName;
+  var subscribePropertyName;
 
-  const getSubscribePropertyName = () => {
+  var getSubscribePropertyName = function getSubscribePropertyName() {
     if (!Object.prototype.hasOwnProperty.call(object, _helpers.VALUE_PROPERTY_DEFAULT)) {
       return null;
     }
 
-    const propertyName = getFirstExistProperty(object, propertyNames);
+    var propertyName = getFirstExistProperty(object, propertyNames);
 
     if (propertyName == null) {
       return _helpers.VALUE_PROPERTY_DEFAULT;
@@ -65,7 +116,7 @@ function subscribeObjectValue(propertyNames, object, immediateSubscribe, subscri
     return propertyName;
   };
 
-  const subscribeProperty = propertyName => {
+  var subscribeProperty = function subscribeProperty(propertyName) {
     subscribePropertyName = propertyName;
 
     if (propertyName == null) {
@@ -75,7 +126,7 @@ function subscribeObjectValue(propertyNames, object, immediateSubscribe, subscri
     }
   };
 
-  const unsubscribeProperty = () => {
+  var unsubscribeProperty = function unsubscribeProperty() {
     if (subscribePropertyName == null) {
       unsubscribeItem(object, null);
     } else {
@@ -85,17 +136,14 @@ function subscribeObjectValue(propertyNames, object, immediateSubscribe, subscri
     subscribePropertyName = null;
   };
 
-  const {
-    propertyChanged
-  } = object;
-  let unsubscribe;
+  var propertyChanged = object.propertyChanged;
+  var unsubscribe;
 
   if (propertyChanged) {
-    unsubscribe = (0, _helpers.checkIsFuncOrNull)(propertyChanged.subscribe(({
-      name,
-      oldValue
-    }) => {
-      const newSubscribePropertyName = getSubscribePropertyName();
+    unsubscribe = (0, _helpers.checkIsFuncOrNull)(propertyChanged.subscribe(function (_ref) {
+      var name = _ref.name,
+          oldValue = _ref.oldValue;
+      var newSubscribePropertyName = getSubscribePropertyName();
 
       if (name === subscribePropertyName) {
         if (typeof oldValue !== 'undefined') {
@@ -117,7 +165,7 @@ function subscribeObjectValue(propertyNames, object, immediateSubscribe, subscri
     return null;
   }
 
-  return () => {
+  return function () {
     if (unsubscribe) {
       unsubscribe();
       unsubscribe = null;
@@ -129,17 +177,19 @@ function subscribeObjectValue(propertyNames, object, immediateSubscribe, subscri
 // region subscribeObject
 
 
-const allowSubscribePrototype = true;
+var allowSubscribePrototype = true;
 
 function hasDefaultProperty(object) {
-  return object instanceof Object && (allowSubscribePrototype ? _helpers.VALUE_PROPERTY_DEFAULT in object : Object.prototype.hasOwnProperty.call(object, _helpers.VALUE_PROPERTY_DEFAULT)) && object.constructor !== Object && !Array.isArray(object);
+  return object instanceof Object && (allowSubscribePrototype ? _helpers.VALUE_PROPERTY_DEFAULT in object : Object.prototype.hasOwnProperty.call(object, _helpers.VALUE_PROPERTY_DEFAULT)) && object.constructor !== Object && !(0, _isArray.default)(object);
 }
 
 function subscribeDefaultProperty(object, immediateSubscribe, subscribeItem) {
-  let unsubscribe;
-  return subscribeObject(_helpers.VALUE_PROPERTY_DEFAULT, o => o === _helpers.VALUE_PROPERTY_DEFAULT, object, immediateSubscribe, (item, debugPropertyName) => {
+  var unsubscribe;
+  return subscribeObject(_helpers.VALUE_PROPERTY_DEFAULT, function (o) {
+    return o === _helpers.VALUE_PROPERTY_DEFAULT;
+  }, object, immediateSubscribe, function (item, debugPropertyName) {
     unsubscribe = subscribeItem(item, debugPropertyName);
-  }, () => {
+  }, function () {
     if (unsubscribe) {
       unsubscribe();
     }
@@ -151,26 +201,26 @@ function subscribeObject(propertyNames, propertyPredicate, object, immediateSubs
     return null;
   }
 
-  let unsubscribe;
+  var unsubscribe;
 
   if (propertyNames !== _helpers.VALUE_PROPERTY_DEFAULT && hasDefaultProperty(object)) {
-    unsubscribe = subscribeDefaultProperty(object, immediateSubscribe, item => subscribeObject(propertyNames, propertyPredicate, item, immediateSubscribe, subscribeItem, unsubscribeItem));
+    unsubscribe = subscribeDefaultProperty(object, immediateSubscribe, function (item) {
+      return subscribeObject(propertyNames, propertyPredicate, item, immediateSubscribe, subscribeItem, unsubscribeItem);
+    });
 
     if (unsubscribe) {
       return unsubscribe;
     }
   }
 
-  const {
-    propertyChanged
-  } = object;
+  var propertyChanged = object.propertyChanged;
 
   if (propertyChanged) {
-    unsubscribe = (0, _helpers.checkIsFuncOrNull)(propertyChanged.subscribe(({
-      name,
-      oldValue,
-      newValue
-    }) => {
+    unsubscribe = (0, _helpers.checkIsFuncOrNull)(propertyChanged.subscribe(function (_ref2) {
+      var name = _ref2.name,
+          oldValue = _ref2.oldValue,
+          newValue = _ref2.newValue;
+
       // PROF: 623 - 1.3%
       if (!propertyPredicate || propertyPredicate(name, object)) {
         if (typeof oldValue !== 'undefined') {
@@ -184,14 +234,14 @@ function subscribeObject(propertyNames, propertyPredicate, object, immediateSubs
     }));
   }
 
-  const forEach = callbackfn => {
+  var forEach = function forEach(callbackfn) {
     if (propertyNames) {
-      if (Array.isArray(propertyNames)) {
-        for (let i = 0, len = propertyNames.length; i < len; i++) {
-          const propertyName = propertyNames[i];
+      if ((0, _isArray.default)(propertyNames)) {
+        for (var i = 0, len = propertyNames.length; i < len; i++) {
+          var _propertyName2 = propertyNames[i];
 
-          if (allowSubscribePrototype ? propertyName in object : Object.prototype.hasOwnProperty.call(object, propertyName)) {
-            callbackfn(object[propertyName], propertyName);
+          if (allowSubscribePrototype ? _propertyName2 in object : Object.prototype.hasOwnProperty.call(object, _propertyName2)) {
+            callbackfn(object[_propertyName2], _propertyName2);
           }
         }
       } else {
@@ -200,9 +250,9 @@ function subscribeObject(propertyNames, propertyPredicate, object, immediateSubs
         }
       }
     } else {
-      for (const propertyName in object) {
-        if ((allowSubscribePrototype || Object.prototype.hasOwnProperty.call(object, propertyName)) && (!propertyPredicate || propertyPredicate(propertyName, object))) {
-          callbackfn(object[propertyName], propertyName);
+      for (var _propertyName3 in object) {
+        if ((allowSubscribePrototype || Object.prototype.hasOwnProperty.call(object, _propertyName3)) && (!propertyPredicate || propertyPredicate(_propertyName3, object))) {
+          callbackfn(object[_propertyName3], _propertyName3);
         }
       }
     }
@@ -214,7 +264,7 @@ function subscribeObject(propertyNames, propertyPredicate, object, immediateSubs
     return null;
   }
 
-  return () => {
+  return function () {
     if (unsubscribe) {
       unsubscribe();
       unsubscribe = null;
@@ -231,9 +281,29 @@ function subscribeIterable(object, immediateSubscribe, subscribeItem, unsubscrib
     return null;
   }
 
-  const forEach = callbackfn => {
-    for (const item of object) {
-      callbackfn(item, _constants.COLLECTION_PREFIX);
+  var forEach = function forEach(callbackfn) {
+    var _iteratorNormalCompletion2 = true;
+    var _didIteratorError2 = false;
+    var _iteratorError2 = undefined;
+
+    try {
+      for (var _iterator2 = (0, _getIterator2.default)(object), _step2; !(_iteratorNormalCompletion2 = (_step2 = _iterator2.next()).done); _iteratorNormalCompletion2 = true) {
+        var _item2 = _step2.value;
+        callbackfn(_item2, _constants.COLLECTION_PREFIX);
+      }
+    } catch (err) {
+      _didIteratorError2 = true;
+      _iteratorError2 = err;
+    } finally {
+      try {
+        if (!_iteratorNormalCompletion2 && _iterator2.return != null) {
+          _iterator2.return();
+        }
+      } finally {
+        if (_didIteratorError2) {
+          throw _iteratorError2;
+        }
+      }
     }
   };
 
@@ -243,7 +313,7 @@ function subscribeIterable(object, immediateSubscribe, subscribeItem, unsubscrib
     return null;
   }
 
-  return () => {
+  return function () {
     forEach(unsubscribeItem);
   };
 } // endregion
@@ -251,25 +321,23 @@ function subscribeIterable(object, immediateSubscribe, subscribeItem, unsubscrib
 
 
 function subscribeList(object, immediateSubscribe, subscribeItem, unsubscribeItem) {
-  if (!object || object[Symbol.toStringTag] !== 'List') {
+  if (!object || object[_toStringTag.default] !== 'List') {
     return null;
   }
 
-  const {
-    listChanged
-  } = object;
-  let unsubscribe;
+  var listChanged = object.listChanged;
+  var unsubscribe;
 
   if (listChanged) {
-    unsubscribe = (0, _helpers.checkIsFuncOrNull)(listChanged.subscribe(({
-      type,
-      oldItems,
-      newItems
-    }) => {
+    unsubscribe = (0, _helpers.checkIsFuncOrNull)(listChanged.subscribe(function (_ref3) {
+      var type = _ref3.type,
+          oldItems = _ref3.oldItems,
+          newItems = _ref3.newItems;
+
       switch (type) {
         case _IListChanged.ListChangedType.Added:
           if (unsubscribe) {
-            for (let i = 0, len = newItems.length; i < len; i++) {
+            for (var i = 0, len = newItems.length; i < len; i++) {
               subscribeItem(newItems[i], _constants.COLLECTION_PREFIX);
             }
           }
@@ -277,8 +345,8 @@ function subscribeList(object, immediateSubscribe, subscribeItem, unsubscribeIte
           break;
 
         case _IListChanged.ListChangedType.Removed:
-          for (let i = 0, len = oldItems.length; i < len; i++) {
-            unsubscribeItem(oldItems[i], _constants.COLLECTION_PREFIX);
+          for (var _i = 0, _len = oldItems.length; _i < _len; _i++) {
+            unsubscribeItem(oldItems[_i], _constants.COLLECTION_PREFIX);
           }
 
           break;
@@ -301,7 +369,7 @@ function subscribeList(object, immediateSubscribe, subscribeItem, unsubscribeIte
     return null;
   }
 
-  return () => {
+  return function () {
     if (unsubscribe) {
       unsubscribe();
       unsubscribe = null;
@@ -314,25 +382,23 @@ function subscribeList(object, immediateSubscribe, subscribeItem, unsubscribeIte
 
 
 function subscribeSet(object, immediateSubscribe, subscribeItem, unsubscribeItem) {
-  if (!object || object[Symbol.toStringTag] !== 'Set' && !(object instanceof Set)) {
+  if (!object || object[_toStringTag.default] !== 'Set' && !(object instanceof _set.default)) {
     return null;
   }
 
-  const {
-    setChanged
-  } = object;
-  let unsubscribe;
+  var setChanged = object.setChanged;
+  var unsubscribe;
 
   if (setChanged) {
-    unsubscribe = (0, _helpers.checkIsFuncOrNull)(setChanged.subscribe(({
-      type,
-      oldItems,
-      newItems
-    }) => {
+    unsubscribe = (0, _helpers.checkIsFuncOrNull)(setChanged.subscribe(function (_ref4) {
+      var type = _ref4.type,
+          oldItems = _ref4.oldItems,
+          newItems = _ref4.newItems;
+
       switch (type) {
         case _ISetChanged.SetChangedType.Added:
           if (unsubscribe) {
-            for (let i = 0, len = newItems.length; i < len; i++) {
+            for (var i = 0, len = newItems.length; i < len; i++) {
               subscribeItem(newItems[i], _constants.COLLECTION_PREFIX);
             }
           }
@@ -340,8 +406,8 @@ function subscribeSet(object, immediateSubscribe, subscribeItem, unsubscribeItem
           break;
 
         case _ISetChanged.SetChangedType.Removed:
-          for (let i = 0, len = oldItems.length; i < len; i++) {
-            unsubscribeItem(oldItems[i], _constants.COLLECTION_PREFIX);
+          for (var _i2 = 0, _len2 = oldItems.length; _i2 < _len2; _i2++) {
+            unsubscribeItem(oldItems[_i2], _constants.COLLECTION_PREFIX);
           }
 
           break;
@@ -355,7 +421,7 @@ function subscribeSet(object, immediateSubscribe, subscribeItem, unsubscribeItem
     return null;
   }
 
-  return () => {
+  return function () {
     if (unsubscribe) {
       unsubscribe();
       unsubscribe = null;
@@ -368,22 +434,20 @@ function subscribeSet(object, immediateSubscribe, subscribeItem, unsubscribeItem
 
 
 function subscribeMap(keys, keyPredicate, object, immediateSubscribe, subscribeItem, unsubscribeItem) {
-  if (!object || object[Symbol.toStringTag] !== 'Map' && !(object instanceof Map)) {
+  if (!object || object[_toStringTag.default] !== 'Map' && !(object instanceof _map.default)) {
     return null;
   }
 
-  const {
-    mapChanged
-  } = object;
-  let unsubscribe;
+  var mapChanged = object.mapChanged;
+  var unsubscribe;
 
   if (mapChanged) {
-    unsubscribe = (0, _helpers.checkIsFuncOrNull)(mapChanged.subscribe(({
-      type,
-      key,
-      oldValue,
-      newValue
-    }) => {
+    unsubscribe = (0, _helpers.checkIsFuncOrNull)(mapChanged.subscribe(function (_ref5) {
+      var type = _ref5.type,
+          key = _ref5.key,
+          oldValue = _ref5.oldValue,
+          newValue = _ref5.newValue;
+
       if (!keyPredicate || keyPredicate(key, object)) {
         switch (type) {
           case _IMapChanged.MapChangedType.Added:
@@ -410,19 +474,40 @@ function subscribeMap(keys, keyPredicate, object, immediateSubscribe, subscribeI
     }));
   }
 
-  const forEach = callbackfn => {
+  var forEach = function forEach(callbackfn) {
     if (keys) {
-      for (let i = 0, len = keys.length; i < len; i++) {
-        const key = keys[i];
+      for (var i = 0, len = keys.length; i < len; i++) {
+        var _key = keys[i];
 
-        if (object.has(key)) {
-          callbackfn(object.get(key), _constants.COLLECTION_PREFIX + key);
+        if (object.has(_key)) {
+          callbackfn(object.get(_key), _constants.COLLECTION_PREFIX + _key);
         }
       }
     } else {
-      for (const entry of object) {
-        if (!keyPredicate || keyPredicate(entry[0], object)) {
-          callbackfn(entry[1], _constants.COLLECTION_PREFIX + entry[0]);
+      var _iteratorNormalCompletion3 = true;
+      var _didIteratorError3 = false;
+      var _iteratorError3 = undefined;
+
+      try {
+        for (var _iterator3 = (0, _getIterator2.default)(object), _step3; !(_iteratorNormalCompletion3 = (_step3 = _iterator3.next()).done); _iteratorNormalCompletion3 = true) {
+          var entry = _step3.value;
+
+          if (!keyPredicate || keyPredicate(entry[0], object)) {
+            callbackfn(entry[1], _constants.COLLECTION_PREFIX + entry[0]);
+          }
+        }
+      } catch (err) {
+        _didIteratorError3 = true;
+        _iteratorError3 = err;
+      } finally {
+        try {
+          if (!_iteratorNormalCompletion3 && _iterator3.return != null) {
+            _iterator3.return();
+          }
+        } finally {
+          if (_didIteratorError3) {
+            throw _iteratorError3;
+          }
         }
       }
     }
@@ -434,7 +519,7 @@ function subscribeMap(keys, keyPredicate, object, immediateSubscribe, subscribeI
     return null;
   }
 
-  return () => {
+  return function () {
     if (unsubscribe) {
       unsubscribe();
       unsubscribe = null;
@@ -451,10 +536,10 @@ function subscribeCollection(object, immediateSubscribe, subscribeItem, unsubscr
     return null;
   }
 
-  const unsubscribeList = subscribeList(object, immediateSubscribe, subscribeItem, unsubscribeItem);
-  const unsubscribeSet = subscribeSet(object, immediateSubscribe, subscribeItem, unsubscribeItem);
-  const unsubscribeMap = subscribeMap(null, null, object, immediateSubscribe, subscribeItem, unsubscribeItem);
-  let unsubscribeIterable;
+  var unsubscribeList = subscribeList(object, immediateSubscribe, subscribeItem, unsubscribeItem);
+  var unsubscribeSet = subscribeSet(object, immediateSubscribe, subscribeItem, unsubscribeItem);
+  var unsubscribeMap = subscribeMap(null, null, object, immediateSubscribe, subscribeItem, unsubscribeItem);
+  var unsubscribeIterable;
 
   if (!unsubscribeList && !unsubscribeSet && !unsubscribeMap) {
     unsubscribeIterable = subscribeIterable(object, immediateSubscribe, subscribeItem, unsubscribeItem);
@@ -464,7 +549,7 @@ function subscribeCollection(object, immediateSubscribe, subscribeItem, unsubscr
     }
   }
 
-  return () => {
+  return function () {
     if (unsubscribeList) {
       unsubscribeList();
     }
@@ -492,36 +577,36 @@ function createPropertyPredicate(propertyNames) {
   }
 
   if (propertyNames.length === 1) {
-    const propertyName = propertyNames[0] + '';
+    var _propertyName4 = propertyNames[0] + '';
 
-    if (propertyName === _constants.ANY) {
+    if (_propertyName4 === _constants.ANY) {
       return null;
     }
 
-    return propName => {
+    return function (propName) {
       // PROF: 226 - 0.5%
-      return propName === propertyName;
+      return propName === _propertyName4;
     };
   } else {
-    const propertyNamesMap = {};
+    var propertyNamesMap = {};
 
-    for (let i = 0, len = propertyNames.length; i < len; i++) {
-      const propertyName = propertyNames[i] + '';
+    for (var i = 0, len = propertyNames.length; i < len; i++) {
+      var _propertyName5 = propertyNames[i] + '';
 
-      if (propertyName === _constants.ANY) {
+      if (_propertyName5 === _constants.ANY) {
         return null;
       }
 
-      propertyNamesMap[propertyName] = true;
+      propertyNamesMap[_propertyName5] = true;
     }
 
-    return propName => {
+    return function (propName) {
       return !!propertyNamesMap[propName];
     };
   }
 }
 
-let SubscribeObjectType;
+var SubscribeObjectType;
 exports.SubscribeObjectType = SubscribeObjectType;
 
 (function (SubscribeObjectType) {
@@ -529,31 +614,48 @@ exports.SubscribeObjectType = SubscribeObjectType;
   SubscribeObjectType[SubscribeObjectType["ValueProperty"] = 1] = "ValueProperty";
 })(SubscribeObjectType || (exports.SubscribeObjectType = SubscribeObjectType = {}));
 
-class RuleSubscribe extends _rules2.Rule {
-  constructor() {
-    super(_rules.RuleType.Action);
+var RuleSubscribe =
+/*#__PURE__*/
+function (_Rule) {
+  (0, _inherits2.default)(RuleSubscribe, _Rule);
+
+  function RuleSubscribe() {
+    (0, _classCallCheck2.default)(this, RuleSubscribe);
+    return (0, _possibleConstructorReturn2.default)(this, (0, _getPrototypeOf2.default)(RuleSubscribe).call(this, _rules.RuleType.Action));
   }
 
-  clone() {
-    const clone = super.clone();
-    const {
-      subscribe
-    } = this;
+  (0, _createClass2.default)(RuleSubscribe, [{
+    key: "clone",
+    value: function clone() {
+      var clone = (0, _get2.default)((0, _getPrototypeOf2.default)(RuleSubscribe.prototype), "clone", this).call(this);
+      var subscribe = this.subscribe;
 
-    if (subscribe != null) {
-      clone.subscribe = subscribe;
+      if (subscribe != null) {
+        clone.subscribe = subscribe;
+      }
+
+      return clone;
     }
-
-    return clone;
-  }
-
-}
+  }]);
+  return RuleSubscribe;
+}(_rules2.Rule);
 
 exports.RuleSubscribe = RuleSubscribe;
 
-class RuleSubscribeObject extends RuleSubscribe {
-  constructor(type, propertyPredicate, ...propertyNames) {
-    super();
+var RuleSubscribeObject =
+/*#__PURE__*/
+function (_RuleSubscribe) {
+  (0, _inherits2.default)(RuleSubscribeObject, _RuleSubscribe);
+
+  function RuleSubscribeObject(type, propertyPredicate) {
+    var _this;
+
+    for (var _len3 = arguments.length, propertyNames = new Array(_len3 > 2 ? _len3 - 2 : 0), _key2 = 2; _key2 < _len3; _key2++) {
+      propertyNames[_key2 - 2] = arguments[_key2];
+    }
+
+    (0, _classCallCheck2.default)(this, RuleSubscribeObject);
+    _this = (0, _possibleConstructorReturn2.default)(this, (0, _getPrototypeOf2.default)(RuleSubscribeObject).call(this));
 
     if (propertyNames && !propertyNames.length) {
       propertyNames = null;
@@ -561,7 +663,7 @@ class RuleSubscribeObject extends RuleSubscribe {
 
     if (propertyPredicate) {
       if (typeof propertyPredicate !== 'function') {
-        throw new Error(`propertyPredicate (${propertyPredicate}) is not a function`);
+        throw new Error("propertyPredicate (".concat(propertyPredicate, ") is not a function"));
       }
     } else if (type === SubscribeObjectType.Property) {
       propertyPredicate = createPropertyPredicate(propertyNames);
@@ -573,19 +675,22 @@ class RuleSubscribeObject extends RuleSubscribe {
 
     switch (type) {
       case SubscribeObjectType.Property:
-        this.subscribe = subscribeObject.bind(null, propertyNames, propertyPredicate);
+        _this.subscribe = (0, _bind.default)(subscribeObject).call(subscribeObject, null, propertyNames, propertyPredicate);
         break;
 
       case SubscribeObjectType.ValueProperty:
-        this.subscribe = subscribeObjectValue.bind(null, propertyNames);
+        _this.subscribe = (0, _bind.default)(subscribeObjectValue).call(subscribeObjectValue, null, propertyNames);
         break;
 
       default:
-        throw new Error(`Unknown SubscribeObjectType: ${type}`);
+        throw new Error("Unknown SubscribeObjectType: ".concat(type));
     }
+
+    return _this;
   }
 
-} // endregion
+  return RuleSubscribeObject;
+}(RuleSubscribe); // endregion
 // region RuleSubscribeMap
 
 
@@ -597,33 +702,44 @@ function createKeyPredicate(keys) {
   }
 
   if (keys.length === 1) {
-    const key = keys[0]; // @ts-ignore
+    var _key3 = keys[0]; // @ts-ignore
 
-    if (key === _constants.ANY) {
+    if (_key3 === _constants.ANY) {
       return null;
     }
 
-    return k => {
-      return k === key;
+    return function (k) {
+      return k === _key3;
     };
   } else {
-    for (let i = 0, len = keys.length; i < len; i++) {
-      const key = keys[i]; // @ts-ignore
+    for (var i = 0, len = keys.length; i < len; i++) {
+      var _key4 = keys[i]; // @ts-ignore
 
-      if (key === _constants.ANY) {
+      if (_key4 === _constants.ANY) {
         return null;
       }
     }
 
-    return k => {
-      return keys.indexOf(k) >= 0;
+    return function (k) {
+      return (0, _indexOf.default)(keys).call(keys, k) >= 0;
     };
   }
 }
 
-class RuleSubscribeMap extends RuleSubscribe {
-  constructor(keyPredicate, ...keys) {
-    super();
+var RuleSubscribeMap =
+/*#__PURE__*/
+function (_RuleSubscribe2) {
+  (0, _inherits2.default)(RuleSubscribeMap, _RuleSubscribe2);
+
+  function RuleSubscribeMap(keyPredicate) {
+    var _this2;
+
+    for (var _len4 = arguments.length, keys = new Array(_len4 > 1 ? _len4 - 1 : 0), _key5 = 1; _key5 < _len4; _key5++) {
+      keys[_key5 - 1] = arguments[_key5];
+    }
+
+    (0, _classCallCheck2.default)(this, RuleSubscribeMap);
+    _this2 = (0, _possibleConstructorReturn2.default)(this, (0, _getPrototypeOf2.default)(RuleSubscribeMap).call(this));
 
     if (keys && !keys.length) {
       keys = null;
@@ -631,7 +747,7 @@ class RuleSubscribeMap extends RuleSubscribe {
 
     if (keyPredicate) {
       if (typeof keyPredicate !== 'function') {
-        throw new Error(`keyPredicate (${keyPredicate}) is not a function`);
+        throw new Error("keyPredicate (".concat(keyPredicate, ") is not a function"));
       }
     } else {
       keyPredicate = createKeyPredicate(keys);
@@ -641,22 +757,33 @@ class RuleSubscribeMap extends RuleSubscribe {
       }
     }
 
-    this.subscribe = subscribeMap.bind(null, keys, keyPredicate);
+    _this2.subscribe = (0, _bind.default)(subscribeMap).call(subscribeMap, null, keys, keyPredicate);
+    return _this2;
   }
 
-} // endregion
+  return RuleSubscribeMap;
+}(RuleSubscribe); // endregion
 // region RuleSubscribeCollection
 
 
 exports.RuleSubscribeMap = RuleSubscribeMap;
 
-class RuleSubscribeCollection extends RuleSubscribe {
-  constructor() {
-    super();
-    this.subscribe = subscribeCollection;
+var RuleSubscribeCollection =
+/*#__PURE__*/
+function (_RuleSubscribe3) {
+  (0, _inherits2.default)(RuleSubscribeCollection, _RuleSubscribe3);
+
+  function RuleSubscribeCollection() {
+    var _this3;
+
+    (0, _classCallCheck2.default)(this, RuleSubscribeCollection);
+    _this3 = (0, _possibleConstructorReturn2.default)(this, (0, _getPrototypeOf2.default)(RuleSubscribeCollection).call(this));
+    _this3.subscribe = subscribeCollection;
+    return _this3;
   }
 
-} // endregion
+  return RuleSubscribeCollection;
+}(RuleSubscribe); // endregion
 
 
 exports.RuleSubscribeCollection = RuleSubscribeCollection;

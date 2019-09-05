@@ -1,10 +1,3 @@
-import _typeof from "@babel/runtime/helpers/typeof";
-import _createClass from "@babel/runtime/helpers/createClass";
-import _classCallCheck from "@babel/runtime/helpers/classCallCheck";
-import _possibleConstructorReturn from "@babel/runtime/helpers/possibleConstructorReturn";
-import _getPrototypeOf from "@babel/runtime/helpers/getPrototypeOf";
-import _inherits from "@babel/runtime/helpers/inherits";
-
 /* tslint:disable:no-empty no-identical-functions */
 import { calcPerformance } from 'rdtsc';
 import { deepSubscribe } from '../../../main/common/rx/deep-subscribe/deep-subscribe';
@@ -14,40 +7,28 @@ describe('ObservableObject', function () {
   this.timeout(300000);
 
   function createObject(init) {
-    var Class =
-    /*#__PURE__*/
-    function (_ObservableObject) {
-      _inherits(Class, _ObservableObject);
-
-      function Class() {
-        _classCallCheck(this, Class);
-
-        return _possibleConstructorReturn(this, _getPrototypeOf(Class).apply(this, arguments));
-      }
-
-      return Class;
-    }(ObservableObject);
+    class Class extends ObservableObject {}
 
     new ObservableObjectBuilder(ObservableObject.prototype).writable('prop') // , o => o.prop, (o, v) => o.prop = v)
     .writable('prop2'); // , o => o.prop2, (o, v) => o.prop2 = v)
 
-    var observableObject1 = new Class();
-    var observableObject2 = new Class();
+    const observableObject1 = new Class();
+    const observableObject2 = new Class();
 
     if (init) {
       init(observableObject1);
       init(observableObject2);
     }
 
-    var object1 = {
+    const object1 = {
       prop: void 0,
       prop2: void 0
     };
-    var object2 = {
+    const object2 = {
       prop: void 0,
       prop2: void 0
     };
-    var value = 1;
+    let value = 1;
     object1.prop = value++;
     object1.prop2 = value++;
     object2.prop = value++;
@@ -57,22 +38,29 @@ describe('ObservableObject', function () {
     observableObject2.prop = value++;
     observableObject2.prop2 = value++;
     return {
-      object1: object1,
-      object2: object2,
-      observableObject1: observableObject1,
-      observableObject2: observableObject2
+      object1,
+      object2,
+      observableObject1,
+      observableObject2
     };
   }
 
-  function testPerformance(_ref) {
-    var object1 = _ref.object1,
-        object2 = _ref.object2,
-        observableObject1 = _ref.observableObject1,
-        observableObject2 = _ref.observableObject2;
-    var testFunc = Function('o1', 'o2', 'v', "{\n\t\t\to1.prop = v\n\t\t\to1.prop2 = v\n\t\t\to2.prop = v\n\t\t\to2.prop2 = v\n\t\t\treturn o1.prop + o1.prop2 + o2.prop + o2.prop2\n\t\t} // ".concat(Math.random())).bind(null, observableObject1, observableObject2);
-    var value = -2000000000; // calcStat(1000, 10, time => {
+  function testPerformance({
+    object1,
+    object2,
+    observableObject1,
+    observableObject2
+  }) {
+    const testFunc = Function('o1', 'o2', 'v', `{
+			o1.prop = v
+			o1.prop2 = v
+			o2.prop = v
+			o2.prop2 = v
+			return o1.prop + o1.prop2 + o2.prop + o2.prop2
+		} // ${Math.random()}`).bind(null, observableObject1, observableObject2);
+    let value = -2000000000; // calcStat(1000, 10, time => {
 
-    var result = calcPerformance(20000, // () => {
+    const result = calcPerformance(20000, // () => {
     // 	// no operations
     // 	value++
     // },
@@ -85,11 +73,9 @@ describe('ObservableObject', function () {
     // () => { // 4
     // 	return object1.prop && object1.prop2 && object2.prop && object2.prop2
     // },
-    function () {
-      return testFunc(value++ % 2 === 0 ? {
-        value: value
-      } : value);
-    } // () => { // 0
+    () => testFunc(value++ % 2 === 0 ? {
+      value
+    } : value) // () => { // 0
     // 	return observableObject1.prop && observableObject1.prop2 && observableObject1.prop && observableObject2.prop2
     // },
     );
@@ -97,65 +83,51 @@ describe('ObservableObject', function () {
     // })
   }
 
-  var CalcStatReport =
-  /*#__PURE__*/
-  function () {
-    function CalcStatReport(data) {
-      _classCallCheck(this, CalcStatReport);
-
+  class CalcStatReport {
+    constructor(data) {
       Object.assign(this, data);
     }
 
-    _createClass(CalcStatReport, [{
-      key: "clone",
-      value: function clone() {
-        return new CalcStatReport(this);
+    clone() {
+      return new CalcStatReport(this);
+    }
+
+    subtract(other) {
+      const result = this.clone();
+
+      for (let j = 0, len = this.averageValue.length; j < len; j++) {
+        result.averageValue[j] -= other.averageValue[j];
+        result.standardDeviation[j] += other.standardDeviation[j];
       }
-    }, {
-      key: "subtract",
-      value: function subtract(other) {
-        var result = this.clone();
 
-        for (var j = 0, len = this.averageValue.length; j < len; j++) {
-          result.averageValue[j] -= other.averageValue[j];
-          result.standardDeviation[j] += other.standardDeviation[j];
-        }
+      return result;
+    }
 
-        return result;
+    toString() {
+      const report = Array(this.averageValue.length);
+
+      for (let j = 0, len = this.averageValue.length; j < len; j++) {
+        report[j] = `${this.averageValue[j]} ±${2.5 * this.standardDeviation[j]} [${this.count}]`;
       }
-    }, {
-      key: "toString",
-      value: function toString() {
-        var report = Array(this.averageValue.length);
 
-        for (var j = 0, len = this.averageValue.length; j < len; j++) {
-          report[j] = "".concat(this.averageValue[j], " \xB1").concat(2.5 * this.standardDeviation[j], " [").concat(this.count, "]");
-        }
+      return report.join(', ');
+    }
 
-        return report.join(', ');
-      }
-    }]);
+  }
 
-    return CalcStatReport;
-  }();
-
-  var CalcType;
+  let CalcType;
 
   (function (CalcType) {
     CalcType[CalcType["Stat"] = 0] = "Stat";
     CalcType[CalcType["Min"] = 1] = "Min";
   })(CalcType || (CalcType = {}));
 
-  function calcMin(countTests, testFunc) {
-    for (var _len = arguments.length, args = new Array(_len > 2 ? _len - 2 : 0), _key = 2; _key < _len; _key++) {
-      args[_key - 2] = arguments[_key];
-    }
+  function calcMin(countTests, testFunc, ...args) {
+    let min;
+    let count = 0;
 
-    var min;
-    var count = 0;
-
-    for (var i = 0; i < countTests; i++) {
-      var result = testFunc.apply(void 0, args);
+    for (let i = 0; i < countTests; i++) {
+      const result = testFunc(...args);
 
       if (result == null) {
         i--;
@@ -165,41 +137,33 @@ describe('ObservableObject', function () {
       count++;
 
       if (min && i > 3) {
-        for (var j = 0, len = result.length; j < len; j++) {
-          var cycles = Number(result[j]);
+        for (let j = 0, len = result.length; j < len; j++) {
+          const cycles = Number(result[j]);
 
           if (cycles < min[j]) {
             min[j] = cycles;
           }
         }
       } else {
-        min = result.map(function (o) {
-          return Number(o);
-        });
+        min = result.map(o => Number(o));
         count = 1;
       }
     }
 
     return new CalcStatReport({
       averageValue: min,
-      standardDeviation: min.map(function () {
-        return 0;
-      }),
-      count: count
+      standardDeviation: min.map(() => 0),
+      count
     });
   }
 
-  function calcStat(countTests, testFunc) {
-    for (var _len2 = arguments.length, args = new Array(_len2 > 2 ? _len2 - 2 : 0), _key2 = 2; _key2 < _len2; _key2++) {
-      args[_key2 - 2] = arguments[_key2];
-    }
+  function calcStat(countTests, testFunc, ...args) {
+    let sum;
+    let sumSqr;
+    let count = 0;
 
-    var sum;
-    var sumSqr;
-    var count = 0;
-
-    for (var i = 0; i < countTests; i++) {
-      var result = testFunc.apply(void 0, args);
+    for (let i = 0; i < countTests; i++) {
+      const result = testFunc(...args);
 
       if (result == null) {
         i--;
@@ -209,134 +173,111 @@ describe('ObservableObject', function () {
       count++;
 
       if (sum && i > 3) {
-        for (var j = 0, len = result.length; j < len; j++) {
-          var cycles = Number(result[j]);
+        for (let j = 0, len = result.length; j < len; j++) {
+          const cycles = Number(result[j]);
           sum[j] += cycles;
           sumSqr[j] += cycles * cycles;
         }
       } else {
-        sum = result.map(function (o) {
-          return Number(o);
-        });
-        sumSqr = sum.map(function (o) {
-          return o * o;
-        });
+        sum = result.map(o => Number(o));
+        sumSqr = sum.map(o => o * o);
         count = 1;
       }
     }
 
-    var averageValue = Array(sum.length);
-    var standardDeviation = Array(sum.length);
+    const averageValue = Array(sum.length);
+    const standardDeviation = Array(sum.length);
 
-    for (var _j = 0, _len3 = sum.length; _j < _len3; _j++) {
-      standardDeviation[_j] = Math.sqrt(sumSqr[_j] / count - sum[_j] * sum[_j] / (count * count));
-      averageValue[_j] = sum[_j] / count;
+    for (let j = 0, len = sum.length; j < len; j++) {
+      standardDeviation[j] = Math.sqrt(sumSqr[j] / count - sum[j] * sum[j] / (count * count));
+      averageValue[j] = sum[j] / count;
     }
 
     return new CalcStatReport({
-      averageValue: averageValue,
-      standardDeviation: standardDeviation,
-      count: count
+      averageValue,
+      standardDeviation,
+      count
     });
   }
 
-  function calc(calcType, countTests, testFunc) {
-    for (var _len4 = arguments.length, args = new Array(_len4 > 3 ? _len4 - 3 : 0), _key3 = 3; _key3 < _len4; _key3++) {
-      args[_key3 - 3] = arguments[_key3];
-    }
-
+  function calc(calcType, countTests, testFunc, ...args) {
     switch (calcType) {
       case CalcType.Stat:
-        return calcStat.apply(void 0, [countTests, testFunc].concat(args));
+        return calcStat(countTests, testFunc, ...args);
 
       case CalcType.Min:
-        return calcMin.apply(void 0, [countTests, testFunc].concat(args));
+        return calcMin(countTests, testFunc, ...args);
 
       default:
         throw new Error('Unknown CalcType: ' + calcType);
     }
   }
 
-  function _calcMemAllocate(calcType, countTests, testFunc) {
-    for (var _len5 = arguments.length, testFuncArgs = new Array(_len5 > 3 ? _len5 - 3 : 0), _key4 = 3; _key4 < _len5; _key4++) {
-      testFuncArgs[_key4 - 3] = arguments[_key4];
-    }
-
-    return calc.apply(void 0, [calcType, countTests, function () {
-      var heapUsed = process.memoryUsage().heapUsed;
-      testFunc.apply(void 0, arguments);
+  function _calcMemAllocate(calcType, countTests, testFunc, ...testFuncArgs) {
+    return calc(calcType, countTests, (...args) => {
+      let heapUsed = process.memoryUsage().heapUsed;
+      testFunc(...args);
       heapUsed = process.memoryUsage().heapUsed - heapUsed;
       return heapUsed < 0 ? null : [heapUsed];
-    }].concat(testFuncArgs));
+    }, ...testFuncArgs);
   }
 
-  function calcMemAllocate(calcType, countTests, testFunc) {
-    for (var _len6 = arguments.length, testFuncArgs = new Array(_len6 > 3 ? _len6 - 3 : 0), _key5 = 3; _key5 < _len6; _key5++) {
-      testFuncArgs[_key5 - 3] = arguments[_key5];
-    }
+  function calcMemAllocate(calcType, countTests, testFunc, ...testFuncArgs) {
+    const zero = _calcMemAllocate(calcType, countTests, (...args) => {}, ...testFuncArgs);
 
-    var zero = _calcMemAllocate.apply(void 0, [calcType, countTests, function () {}].concat(testFuncArgs));
-
-    var value = _calcMemAllocate.apply(void 0, [calcType, countTests, testFunc].concat(testFuncArgs));
+    const value = _calcMemAllocate(calcType, countTests, testFunc, ...testFuncArgs);
 
     console.log(value.subtract(zero).toString());
   }
 
   it('simple', function () {
+    // 173n | 184n
     testPerformance(createObject());
   });
   it('propertyChanged', function () {
-    testPerformance(createObject(function (observableObject) {
-      observableObject.propertyChanged.subscribe(function (v) {});
+    // 721n | 682n
+    testPerformance(createObject(observableObject => {
+      observableObject.propertyChanged.subscribe(v => {});
     }));
   });
   it('deepSubscribe', function () {
-    var i = 0;
-    testPerformance(createObject(function (observableObject) {
-      deepSubscribe(observableObject, function (v) {
-        return _typeof(v) === 'object' && i++ % 3 === 0 ? function () {} : null;
-      }, true, function (b) {
-        return b.path(function (o) {
-          return o.prop;
-        });
-      });
+    // 2162n | 1890n
+    let i = 0;
+    testPerformance(createObject(observableObject => {
+      deepSubscribe(observableObject, v => typeof v === 'object' && i++ % 3 === 0 ? () => {} : null, true, b => b.path(o => o.prop));
     }));
   });
   it('propertyChanged memory', function () {
-    var object = createObject(function (observableObject) {
-      observableObject.propertyChanged.subscribe(function (v) {});
+    // 48 | 0
+    const object = createObject(observableObject => {
+      observableObject.propertyChanged.subscribe(v => {});
     }).observableObject1;
     object.prop = 1;
-    calcMemAllocate(CalcType.Min, 10000, function () {
+    calcMemAllocate(CalcType.Min, 10000, () => {
       // 48 bytes for create event
       object.prop++;
     });
   });
   it('deepSubscribe memory', function () {
-    var object = createObject(function (observableObject) {
+    // 48 | 0
+    const object = createObject(observableObject => {
       deepSubscribe(observableObject, // v => v != null && typeof v === 'object'
       // 	? () => {}
       // 	: null,
-      function (v) {
-        return null;
-      }, true, function (b) {
-        return b.path(function (o) {
-          return o.prop;
-        });
-      });
+      v => null, true, b => b.path(o => o.prop));
     }).observableObject1;
-    var value1 = {};
-    var value2 = {};
+    const value1 = {};
+    const value2 = {};
     object.prop = 1;
-    calcMemAllocate(CalcType.Min, 10000, function () {
+    calcMemAllocate(CalcType.Min, 10000, () => {
       // 48 bytes for create event
       // 56 bytes for create unsubscribe function
       object.prop = object.prop === value1 ? value2 : value1;
     });
   });
   it('test memory', function () {
-    calcMemAllocate(CalcType.Min, 10000, function () {
-      var value;
+    calcMemAllocate(CalcType.Min, 10000, () => {
+      let value;
 
       function calcValue() {
         value = 3;
@@ -345,5 +286,71 @@ describe('ObservableObject', function () {
       calcValue();
       return value;
     });
+  });
+  it('test event as object or arguments', function () {
+    let value1;
+    let value2;
+    let i = 0;
+
+    function fakeThrow() {
+      if (i < 0) {
+        throw new Error(i + '');
+      }
+    }
+
+    const subscribers1 = [(name, newValue, oldValue) => {
+      value1 = newValue;
+    }, (name, newValue, oldValue) => {
+      value2 = newValue;
+    }];
+    const subscribers2 = [({
+      name,
+      newValue,
+      oldValue
+    }) => {
+      value1 = newValue;
+    }, ({
+      name,
+      newValue,
+      oldValue
+    }) => {
+      value2 = newValue;
+    }];
+
+    function change1(name, newValue, oldValue) {
+      for (let j = 0, len = subscribers1.length; j < len; j++) {
+        const subscriber = subscribers1[j];
+        subscriber(name, newValue, oldValue);
+      }
+    }
+
+    function change2(event) {
+      for (let j = 0, len = subscribers1.length; j < len; j++) {
+        const subscriber = subscribers2[j];
+        subscriber(event);
+      }
+    }
+
+    let heapUsed = process.memoryUsage().heapUsed;
+    const result = calcPerformance(20000, () => change1('prop', i++, i++), () => change2({
+      name: 'prop',
+      newValue: i++,
+      oldValue: i++
+    }));
+    heapUsed = process.memoryUsage().heapUsed - heapUsed;
+    calcMemAllocate(CalcType.Min, 10000, () => {
+      change1('prop', i++, i++);
+    });
+    calcMemAllocate(CalcType.Min, 10000, () => {
+      change2({
+        name: 'prop',
+        newValue: i++,
+        oldValue: i++
+      });
+    });
+    console.log('value1: ', value1);
+    console.log('value2: ', value2);
+    console.log('Memory used: ', heapUsed);
+    console.log(result);
   });
 });

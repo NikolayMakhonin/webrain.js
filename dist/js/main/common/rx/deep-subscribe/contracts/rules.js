@@ -1,10 +1,13 @@
 "use strict";
 
-Object.defineProperty(exports, "__esModule", {
+var _Object$defineProperty = require("@babel/runtime-corejs3/core-js-stable/object/define-property");
+
+_Object$defineProperty(exports, "__esModule", {
   value: true
 });
+
 exports.RuleType = void 0;
-let RuleType;
+var RuleType;
 exports.RuleType = RuleType;
 
 (function (RuleType) {

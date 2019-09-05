@@ -1,28 +1,50 @@
 "use strict";
 
+var _interopRequireDefault = require("@babel/runtime-corejs3/helpers/interopRequireDefault");
+
+var _slice = _interopRequireDefault(require("@babel/runtime-corejs3/core-js-stable/instance/slice"));
+
+var _stringify = _interopRequireDefault(require("@babel/runtime-corejs3/core-js-stable/json/stringify"));
+
+var _fill = _interopRequireDefault(require("@babel/runtime-corejs3/core-js-stable/instance/fill"));
+
+var _map = _interopRequireDefault(require("@babel/runtime-corejs3/core-js-stable/instance/map"));
+
+var _padStart = _interopRequireDefault(require("@babel/runtime-corejs3/core-js-stable/instance/pad-start"));
+
 var _array = require("../../../../../../main/common/lists/helpers/array");
 
 describe('common > main > lists > helpers > array', function () {
   it('binarySearch full', function () {
+    var _context2, _context3;
+
     this.timeout(20000);
 
-    const indexToItem = index => `item${(index + 2).toString().padStart(3, '0')}`;
+    var indexToItem = function indexToItem(index) {
+      var _context;
 
-    const arr = new Array(51).fill(0).map((o, i) => indexToItem(i) + (i % 2 ? '_' : ''));
+      return "item".concat((0, _padStart.default)(_context = (index + 2).toString()).call(_context, 3, '0'));
+    };
 
-    for (let index = -2; index < arr.length + 2; index++) {
-      const item = indexToItem(index);
+    var arr = (0, _map.default)(_context2 = (0, _fill.default)(_context3 = new Array(51)).call(_context3, 0)).call(_context2, function (o, i) {
+      return indexToItem(i) + (i % 2 ? '_' : '');
+    });
 
-      for (let bound = -1; bound < 1; bound++) {
-        for (let start = -1; start <= Math.min(arr.length - 1, Math.max(0, index)); start++) {
-          for (let end = arr.length; end >= Math.min(arr.length, index + 1); end--) {
-            const result = (0, _array.binarySearch)(arr, item, start < 0 ? null : start, end >= arr.length ? null : end, // eslint-disable-next-line no-nested-ternary
-            index % 3 ? (o1, o2) => o1 > o2 ? 1 : o1 < o2 ? -1 : 0 : null, bound);
-            const log = JSON.stringify({
-              index,
-              start,
-              end,
-              bound
+    for (var index = -2; index < arr.length + 2; index++) {
+      var item = indexToItem(index);
+
+      for (var bound = -1; bound < 1; bound++) {
+        for (var start = -1; start <= Math.min(arr.length - 1, Math.max(0, index)); start++) {
+          for (var end = arr.length; end >= Math.min(arr.length, index + 1); end--) {
+            var result = (0, _array.binarySearch)(arr, item, start < 0 ? null : start, end >= arr.length ? null : end, // eslint-disable-next-line no-nested-ternary
+            index % 3 ? function (o1, o2) {
+              return o1 > o2 ? 1 : o1 < o2 ? -1 : 0;
+            } : null, bound);
+            var log = (0, _stringify.default)({
+              index: index,
+              start: start,
+              end: end,
+              bound: bound
             });
 
             if (index < 0) {
@@ -57,7 +79,7 @@ describe('common > main > lists > helpers > array', function () {
   });
   it('move', function () {
     function testMove(array, start, end, newIndex, expectedArray) {
-      array = array.slice();
+      array = (0, _slice.default)(array).call(array);
       (0, _array.move)(array, start, end, newIndex);
       assert.deepStrictEqual(array, expectedArray);
     }

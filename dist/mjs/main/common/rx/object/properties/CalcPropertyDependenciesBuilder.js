@@ -1,37 +1,24 @@
-import _classCallCheck from "@babel/runtime/helpers/classCallCheck";
-import _createClass from "@babel/runtime/helpers/createClass";
-import _possibleConstructorReturn from "@babel/runtime/helpers/possibleConstructorReturn";
-import _getPrototypeOf from "@babel/runtime/helpers/getPrototypeOf";
-import _inherits from "@babel/runtime/helpers/inherits";
+import { CalcObjectDebugger } from './CalcObjectDebugger';
 import { DependenciesBuilder } from './DependenciesBuilder';
-export var CalcPropertyDependenciesBuilder =
-/*#__PURE__*/
-function (_DependenciesBuilder) {
-  _inherits(CalcPropertyDependenciesBuilder, _DependenciesBuilder);
-
-  function CalcPropertyDependenciesBuilder(buildSourceRule) {
-    _classCallCheck(this, CalcPropertyDependenciesBuilder);
-
-    return _possibleConstructorReturn(this, _getPrototypeOf(CalcPropertyDependenciesBuilder).call(this, buildSourceRule));
+export class CalcPropertyDependenciesBuilder extends DependenciesBuilder {
+  constructor(buildSourceRule) {
+    super(buildSourceRule);
   }
 
-  _createClass(CalcPropertyDependenciesBuilder, [{
-    key: "invalidateOn",
-    value: function invalidateOn(buildRule, predicate) {
-      this.actionOn(buildRule, function (target) {
-        target.invalidate();
-      }, predicate);
-      return this;
-    }
-  }, {
-    key: "clearOn",
-    value: function clearOn(buildRule, predicate) {
-      this.actionOn(buildRule, function (target) {
-        target.clear();
-      }, predicate);
-      return this;
-    }
-  }]);
+  invalidateOn(buildRule, predicate) {
+    this.actionOn(buildRule, (target, value, parent, propertyName) => {
+      CalcObjectDebugger.Instance.onDependencyChanged(target, value, parent, propertyName);
+      target.invalidate();
+    }, predicate);
+    return this;
+  }
 
-  return CalcPropertyDependenciesBuilder;
-}(DependenciesBuilder);
+  clearOn(buildRule, predicate) {
+    this.actionOn(buildRule, (target, value, parent, propertyName) => {
+      CalcObjectDebugger.Instance.onDependencyChanged(target, value, parent, propertyName);
+      target.clear();
+    }, predicate);
+    return this;
+  }
+
+}

@@ -1,5 +1,19 @@
 "use strict";
 
+var _interopRequireDefault = require("@babel/runtime-corejs3/helpers/interopRequireDefault");
+
+var _indexOf = _interopRequireDefault(require("@babel/runtime-corejs3/core-js-stable/instance/index-of"));
+
+var _map = _interopRequireDefault(require("@babel/runtime-corejs3/core-js-stable/instance/map"));
+
+var _sort = _interopRequireDefault(require("@babel/runtime-corejs3/core-js-stable/instance/sort"));
+
+var _slice = _interopRequireDefault(require("@babel/runtime-corejs3/core-js-stable/instance/slice"));
+
+var _stringify = _interopRequireDefault(require("@babel/runtime-corejs3/core-js-stable/json/stringify"));
+
+var _concat = _interopRequireDefault(require("@babel/runtime-corejs3/core-js-stable/instance/concat"));
+
 var _IListChanged = require("../../../../../main/common/lists/contracts/IListChanged");
 
 var _compare = require("../../../../../main/common/lists/helpers/compare");
@@ -16,12 +30,12 @@ var _TestList = require("./src/helpers/TestList");
 
 describe('common > main > lists > SortedList', function () {
   this.timeout(20000);
-  const testList = _TestList.TestList.test;
+  var testList = _TestList.TestList.test;
   after(function () {
     console.log('Total Sorted tests >= ' + _TestList.TestList.totalListTests);
   });
   it('constructor', function () {
-    let list;
+    var list;
     list = new _SortedList.SortedList();
 
     _TestList.assert.strictEqual(list.size, 0);
@@ -56,9 +70,9 @@ describe('common > main > lists > SortedList', function () {
 
     _TestList.assert.deepStrictEqual(list.toArray(), []);
 
-    let array = [0, 1, 2];
+    var array = [0, 1, 2];
     list = new _SortedList.SortedList({
-      array
+      array: array
     });
 
     _TestList.assert.strictEqual(list.size, 3);
@@ -73,7 +87,7 @@ describe('common > main > lists > SortedList', function () {
 
     _TestList.assert.strictEqual(list.notAddIfExists, undefined);
 
-    let toArray = list.toArray();
+    var toArray = list.toArray();
 
     _TestList.assert.deepStrictEqual(toArray, [0, 1, 2]);
 
@@ -188,9 +202,9 @@ describe('common > main > lists > SortedList', function () {
     _TestList.assert.deepStrictEqual(list.toArray(), [1, 2, 3]);
   });
   it('size', function () {
-    const array = (0, _common.generateArray)(31);
-    const list = new _SortedList.SortedList({
-      array,
+    var array = (0, _common.generateArray)(31);
+    var list = new _SortedList.SortedList({
+      array: array,
       minAllocatedSize: 30
     });
 
@@ -282,7 +296,13 @@ describe('common > main > lists > SortedList', function () {
         returnValue: null,
         defaultValue: null
       },
-      actions: [list => list.get(0), list => list.get(1), list => list.get(-1)]
+      actions: [function (list) {
+        return list.get(0);
+      }, function (list) {
+        return list.get(1);
+      }, function (list) {
+        return list.get(-1);
+      }]
     });
     testList({
       array: [['0']],
@@ -291,7 +311,15 @@ describe('common > main > lists > SortedList', function () {
         returnValue: null,
         defaultValue: null
       },
-      actions: [list => list.get(1), list => list.get(2), list => list.get(-2), list => list.get(-3)]
+      actions: [function (list) {
+        return list.get(1);
+      }, function (list) {
+        return list.get(2);
+      }, function (list) {
+        return list.get(-2);
+      }, function (list) {
+        return list.get(-3);
+      }]
     });
     testList({
       array: [['4', '2', '3']],
@@ -302,14 +330,22 @@ describe('common > main > lists > SortedList', function () {
         defaultValue: null,
         countSorted: 3
       },
-      actions: [list => list.get(1), list => list.get(-2)]
+      actions: [function (list) {
+        return list.get(1);
+      }, function (list) {
+        return list.get(-2);
+      }]
     });
   });
   it('set', function () {
     function set(index, item) {
+      var _context;
+
       return {
-        actions: [list => list.set(index, item)],
-        description: `set(${index}, ${JSON.stringify(item)})\n`
+        actions: [function (list) {
+          return list.set(index, item);
+        }],
+        description: (0, _concat.default)(_context = "set(".concat(index, ", ")).call(_context, (0, _stringify.default)(item), ")\n")
       };
     }
 
@@ -477,8 +513,22 @@ describe('common > main > lists > SortedList', function () {
   it('add', function () {
     function add(item) {
       return {
-        actions: [list => list.add(item), list => list.set(list.size, item), list => list.insert(list.size, item), list => list.addArray([item]), list => list.addIterable((0, _helpers.createIterable)([item]), 1), list => list.insertArray(list.size, [item]), list => list.insertIterable(list.size, (0, _helpers.createIterable)([item]), 1)],
-        description: `add(${JSON.stringify(item)})\n`
+        actions: [function (list) {
+          return list.add(item);
+        }, function (list) {
+          return list.set(list.size, item);
+        }, function (list) {
+          return list.insert(list.size, item);
+        }, function (list) {
+          return list.addArray([item]);
+        }, function (list) {
+          return list.addIterable((0, _helpers.createIterable)([item]), 1);
+        }, function (list) {
+          return list.insertArray(list.size, [item]);
+        }, function (list) {
+          return list.insertIterable(list.size, (0, _helpers.createIterable)([item]), 1);
+        }],
+        description: "add(".concat((0, _stringify.default)(item), ")\n")
       };
     }
 
@@ -541,8 +591,10 @@ describe('common > main > lists > SortedList', function () {
   });
   it('addArray', function () {
     function addArray(sourceItems, sourceStart, sourceEnd) {
-      let start = sourceStart == null ? 0 : sourceStart;
-      let end = sourceEnd == null ? sourceItems.length : sourceEnd;
+      var _context2, _context3;
+
+      var start = sourceStart == null ? 0 : sourceStart;
+      var end = sourceEnd == null ? sourceItems.length : sourceEnd;
 
       if (start < 0) {
         start += sourceItems.length;
@@ -553,8 +605,20 @@ describe('common > main > lists > SortedList', function () {
       }
 
       return {
-        actions: [list => list.addArray(sourceItems, sourceStart, sourceEnd), list => list.insertArray(list.size, sourceItems, sourceStart, sourceEnd), [list => list.addIterable(sourceItems.slice(start, end), end - start), list => list.addIterable((0, _helpers.createIterable)(sourceItems.slice(start, end)), end - start), list => list.insertIterable(list.size, sourceItems.slice(start, end), end - start), list => list.insertIterable(list.size, (0, _helpers.createIterable)(sourceItems.slice(start, end)), end - start)]],
-        description: `arrArray(${JSON.stringify(sourceItems)}, ${sourceStart}, ${sourceEnd})\n`
+        actions: [function (list) {
+          return list.addArray(sourceItems, sourceStart, sourceEnd);
+        }, function (list) {
+          return list.insertArray(list.size, sourceItems, sourceStart, sourceEnd);
+        }, [function (list) {
+          return list.addIterable((0, _slice.default)(sourceItems).call(sourceItems, start, end), end - start);
+        }, function (list) {
+          return list.addIterable((0, _helpers.createIterable)((0, _slice.default)(sourceItems).call(sourceItems, start, end)), end - start);
+        }, function (list) {
+          return list.insertIterable(list.size, (0, _slice.default)(sourceItems).call(sourceItems, start, end), end - start);
+        }, function (list) {
+          return list.insertIterable(list.size, (0, _helpers.createIterable)((0, _slice.default)(sourceItems).call(sourceItems, start, end)), end - start);
+        }]],
+        description: (0, _concat.default)(_context2 = (0, _concat.default)(_context3 = "arrArray(".concat((0, _stringify.default)(sourceItems), ", ")).call(_context3, sourceStart, ", ")).call(_context2, sourceEnd, ")\n")
       };
     }
 
@@ -643,9 +707,17 @@ describe('common > main > lists > SortedList', function () {
   });
   it('insert', function () {
     function insert(index, item) {
+      var _context4;
+
       return {
-        actions: [list => list.insert(index, item), list => list.insertArray(index, [item]), list => list.insertIterable(index, (0, _helpers.createIterable)([item]), 1)],
-        description: `insert(${index}, ${JSON.stringify(item)})\n`
+        actions: [function (list) {
+          return list.insert(index, item);
+        }, function (list) {
+          return list.insertArray(index, [item]);
+        }, function (list) {
+          return list.insertIterable(index, (0, _helpers.createIterable)([item]), 1);
+        }],
+        description: (0, _concat.default)(_context4 = "insert(".concat(index, ", ")).call(_context4, (0, _stringify.default)(item), ")\n")
       };
     }
 
@@ -716,9 +788,13 @@ describe('common > main > lists > SortedList', function () {
     });
   });
   it('insertArray', function () {
+    var _context8;
+
     function insertArray(index, sourceItems, sourceStart, sourceEnd) {
-      let start = sourceStart == null ? 0 : sourceStart;
-      let end = sourceEnd == null ? sourceItems.length : sourceEnd;
+      var _context5, _context6, _context7;
+
+      var start = sourceStart == null ? 0 : sourceStart;
+      var end = sourceEnd == null ? sourceItems.length : sourceEnd;
 
       if (start < 0) {
         start += sourceItems.length;
@@ -729,8 +805,14 @@ describe('common > main > lists > SortedList', function () {
       }
 
       return {
-        actions: [list => list.insertArray(index, sourceItems, sourceStart, sourceEnd), [list => list.insertIterable(index, sourceItems.slice(start, end), end - start), list => list.insertIterable(index, (0, _helpers.createIterable)(sourceItems.slice(start, end)), end - start)]],
-        description: `insertArray(${index}, ${JSON.stringify(sourceItems)}, ${sourceStart}, ${sourceEnd})\n`
+        actions: [function (list) {
+          return list.insertArray(index, sourceItems, sourceStart, sourceEnd);
+        }, [function (list) {
+          return list.insertIterable(index, (0, _slice.default)(sourceItems).call(sourceItems, start, end), end - start);
+        }, function (list) {
+          return list.insertIterable(index, (0, _helpers.createIterable)((0, _slice.default)(sourceItems).call(sourceItems, start, end)), end - start);
+        }]],
+        description: (0, _concat.default)(_context5 = (0, _concat.default)(_context6 = (0, _concat.default)(_context7 = "insertArray(".concat(index, ", ")).call(_context7, (0, _stringify.default)(sourceItems), ", ")).call(_context6, sourceStart, ", ")).call(_context5, sourceEnd, ")\n")
       };
     }
 
@@ -833,24 +915,26 @@ describe('common > main > lists > SortedList', function () {
       },
       actions: [insertArray(0, ['4', '2']), insertArray(1, ['4', '2']), insertArray(2, ['4', '2']), insertArray(3, ['4', '2']), insertArray(4, ['4', '2']), insertArray(5, ['4', '2'])]
     });
-    const allValuesShuffle = (0, _common.shuffle)(_common.allValues);
-    const allValuesSort = allValuesShuffle.slice().sort();
+    var allValuesShuffle = (0, _common.shuffle)(_common.allValues);
+    var allValuesSort = (0, _sort.default)(_context8 = (0, _slice.default)(allValuesShuffle).call(allValuesShuffle)).call(_context8);
     testList({
       array: [[]],
       autoSort: [true],
       notAddIfExists: [true],
       useListChanged: [false],
       expected: {
-        array: _common.allValues.sort(_compare.compareFast),
+        array: (0, _sort.default)(_common.allValues).call(_common.allValues, _compare.compareFast),
         returnValue: true,
         defaultValue: null,
-        propertyChanged: allValuesShuffle.map((o, i) => ({
-          name: 'size',
-          oldValue: i,
-          newValue: i + 1
-        }))
+        propertyChanged: (0, _map.default)(allValuesShuffle).call(allValuesShuffle, function (o, i) {
+          return {
+            name: 'size',
+            oldValue: i,
+            newValue: i + 1
+          };
+        })
       },
-      actions: [insertArray(0, allValuesShuffle.concat(allValuesShuffle))]
+      actions: [insertArray(0, (0, _concat.default)(allValuesShuffle).call(allValuesShuffle, allValuesShuffle))]
     });
     testList({
       array: [[]],
@@ -860,17 +944,21 @@ describe('common > main > lists > SortedList', function () {
         array: allValuesShuffle,
         returnValue: true,
         defaultValue: null,
-        propertyChanged: allValuesShuffle.map((o, i) => ({
-          name: 'size',
-          oldValue: i,
-          newValue: i + 1
-        })),
-        listChanged: allValuesShuffle.map((o, i) => ({
-          type: _IListChanged.ListChangedType.Added,
-          index: i,
-          newItems: [o],
-          shiftIndex: i
-        }))
+        propertyChanged: (0, _map.default)(allValuesShuffle).call(allValuesShuffle, function (o, i) {
+          return {
+            name: 'size',
+            oldValue: i,
+            newValue: i + 1
+          };
+        }),
+        listChanged: (0, _map.default)(allValuesShuffle).call(allValuesShuffle, function (o, i) {
+          return {
+            type: _IListChanged.ListChangedType.Added,
+            index: i,
+            newItems: [o],
+            shiftIndex: i
+          };
+        })
       },
       actions: [insertArray(0, allValuesShuffle)]
     });
@@ -878,8 +966,10 @@ describe('common > main > lists > SortedList', function () {
   it('remove', function () {
     function remove(item) {
       return {
-        actions: [list => list.remove(item)],
-        description: `remove(${JSON.stringify(item)})\n`
+        actions: [function (list) {
+          return list.remove(item);
+        }],
+        description: "remove(".concat((0, _stringify.default)(item), ")\n")
       };
     }
 
@@ -996,8 +1086,10 @@ describe('common > main > lists > SortedList', function () {
   it('removeAt', function () {
     function removeAt(index, withoutShift) {
       return {
-        actions: [list => list.removeAt(index, withoutShift)],
-        description: `removeAt(${index})\n`
+        actions: [function (list) {
+          return list.removeAt(index, withoutShift);
+        }],
+        description: "removeAt(".concat(index, ")\n")
       };
     }
 
@@ -1067,9 +1159,13 @@ describe('common > main > lists > SortedList', function () {
   });
   it('removeRange', function () {
     function removeRange(start, end, withoutShift) {
+      var _context9, _context10;
+
       return {
-        actions: [list => list.removeRange(start, end, withoutShift)],
-        description: `removeRange(${start}, ${end}, ${withoutShift})\n`
+        actions: [function (list) {
+          return list.removeRange(start, end, withoutShift);
+        }],
+        description: (0, _concat.default)(_context9 = (0, _concat.default)(_context10 = "removeRange(".concat(start, ", ")).call(_context10, end, ", ")).call(_context9, withoutShift, ")\n")
       };
     }
 
@@ -1147,7 +1243,9 @@ describe('common > main > lists > SortedList', function () {
     });
     testList({
       array: [[-5, -4, -3, -2, -1, undefined]],
-      compare: [(o1, o2) => (0, _compare.compareFast)(o1 || 0, o2 || 0)],
+      compare: [function (o1, o2) {
+        return (0, _compare.compareFast)(o1 || 0, o2 || 0);
+      }],
       expected: {
         array: [-5, -1, undefined],
         returnValue: true,
@@ -1193,9 +1291,13 @@ describe('common > main > lists > SortedList', function () {
     });
   });
   it('removeArray', function () {
+    var _context13;
+
     function removeArray(sourceItems, sourceStart, sourceEnd) {
-      let start = sourceStart == null ? 0 : sourceStart;
-      let end = sourceEnd == null ? sourceItems.length : sourceEnd;
+      var _context11, _context12;
+
+      var start = sourceStart == null ? 0 : sourceStart;
+      var end = sourceEnd == null ? sourceItems.length : sourceEnd;
 
       if (start < 0) {
         start += sourceItems.length;
@@ -1206,8 +1308,14 @@ describe('common > main > lists > SortedList', function () {
       }
 
       return {
-        actions: [list => list.removeArray(sourceItems, sourceStart, sourceEnd), [list => list.removeIterable(sourceItems.slice(start, end), end - start), list => list.removeIterable((0, _helpers.createIterable)(sourceItems.slice(start, end)), end - start)]],
-        description: `removeArray(${JSON.stringify(sourceItems)}, ${sourceStart}, ${sourceEnd})\n`
+        actions: [function (list) {
+          return list.removeArray(sourceItems, sourceStart, sourceEnd);
+        }, [function (list) {
+          return list.removeIterable((0, _slice.default)(sourceItems).call(sourceItems, start, end), end - start);
+        }, function (list) {
+          return list.removeIterable((0, _helpers.createIterable)((0, _slice.default)(sourceItems).call(sourceItems, start, end)), end - start);
+        }]],
+        description: (0, _concat.default)(_context11 = (0, _concat.default)(_context12 = "removeArray(".concat((0, _stringify.default)(sourceItems), ", ")).call(_context12, sourceStart, ", ")).call(_context11, sourceEnd, ")\n")
       };
     }
 
@@ -1249,8 +1357,8 @@ describe('common > main > lists > SortedList', function () {
       },
       actions: [removeArray(['0', '3', '1', '4'], 1, 3)]
     });
-    const allValuesShuffle = (0, _common.shuffle)(_common.allValues.concat(_common.allValues));
-    const allValuesSort = allValuesShuffle.slice().sort();
+    var allValuesShuffle = (0, _common.shuffle)((0, _concat.default)(_common.allValues).call(_common.allValues, _common.allValues));
+    var allValuesSort = (0, _sort.default)(_context13 = (0, _slice.default)(allValuesShuffle).call(allValuesShuffle)).call(_context13);
     testList({
       array: [allValuesShuffle],
       autoSort: [false, true],
@@ -1260,11 +1368,13 @@ describe('common > main > lists > SortedList', function () {
         array: [],
         returnValue: true,
         defaultValue: (0, _SortedList.getDefaultValue)(allValuesShuffle[allValuesShuffle.length - 1]),
-        propertyChanged: allValuesShuffle.map((o, i) => ({
-          name: 'size',
-          oldValue: allValuesShuffle.length - i,
-          newValue: allValuesShuffle.length - i - 1
-        }))
+        propertyChanged: (0, _map.default)(allValuesShuffle).call(allValuesShuffle, function (o, i) {
+          return {
+            name: 'size',
+            oldValue: allValuesShuffle.length - i,
+            newValue: allValuesShuffle.length - i - 1
+          };
+        })
       },
       actions: [removeArray(allValuesShuffle)]
     });
@@ -1272,7 +1382,11 @@ describe('common > main > lists > SortedList', function () {
   it('clear', function () {
     function clear() {
       return {
-        actions: [list => list.clear(), list => list.removeRange(0, list.size)],
+        actions: [function (list) {
+          return list.clear();
+        }, function (list) {
+          return list.removeRange(0, list.size);
+        }],
         description: 'clear()\n'
       };
     }
@@ -1349,13 +1463,17 @@ describe('common > main > lists > SortedList', function () {
   });
   it('toArray', function () {
     function toArray(start, end) {
+      var _context14;
+
       return {
-        actions: [list => list.toArray(start, end), list => {
-          const result = [];
+        actions: [function (list) {
+          return list.toArray(start, end);
+        }, function (list) {
+          var result = [];
           list.copyTo(result, null, start, end);
           return result;
         }],
-        description: `toArray(${start}, ${end})\n`
+        description: (0, _concat.default)(_context14 = "toArray(".concat(start, ", ")).call(_context14, end, ")\n")
       };
     }
 
@@ -1407,13 +1525,15 @@ describe('common > main > lists > SortedList', function () {
   });
   it('copyTo', function () {
     function copyTo(result, destArray, destIndex, start, end) {
+      var _context15, _context16, _context17;
+
       return {
-        actions: [list => {
+        actions: [function (list) {
           _TestList.assert.strictEqual(list.copyTo(destArray, destIndex, start, end), result);
 
           return destArray;
         }],
-        description: `copyTo(${JSON.stringify(destArray)}, ${destIndex}, ${start}, ${end})\n`
+        description: (0, _concat.default)(_context15 = (0, _concat.default)(_context16 = (0, _concat.default)(_context17 = "copyTo(".concat((0, _stringify.default)(destArray), ", ")).call(_context17, destIndex, ", ")).call(_context16, start, ", ")).call(_context15, end, ")\n")
       };
     }
 
@@ -1475,13 +1595,25 @@ describe('common > main > lists > SortedList', function () {
   it('indexOf', function () {
     testList({
       array: [['b', 'd', 'f', 'h', 'j', 'l']],
-      compare: [(o1, o2) => (0, _compare.compareFast)(o1 + '', o2 + '')],
+      compare: [function (o1, o2) {
+        return (0, _compare.compareFast)(o1 + '', o2 + '');
+      }],
       expected: {
         array: ['b', 'd', 'f', 'h', 'j', 'l'],
         returnValue: ~6,
         defaultValue: null
       },
-      actions: [list => list.indexOf('a'), list => list.indexOf('a', 0), list => list.indexOf('a', 0, 1), list => list.indexOf('a', 0, 1, -1), list => list.indexOf('a', 0, 1, 1)]
+      actions: [function (list) {
+        return (0, _indexOf.default)(list).call(list, 'a');
+      }, function (list) {
+        return (0, _indexOf.default)(list).call(list, 'a', 0);
+      }, function (list) {
+        return (0, _indexOf.default)(list).call(list, 'a', 0, 1);
+      }, function (list) {
+        return (0, _indexOf.default)(list).call(list, 'a', 0, 1, -1);
+      }, function (list) {
+        return (0, _indexOf.default)(list).call(list, 'a', 0, 1, 1);
+      }]
     });
     testList({
       array: [[]],
@@ -1490,7 +1622,11 @@ describe('common > main > lists > SortedList', function () {
         returnValue: null,
         defaultValue: null
       },
-      actions: [list => list.indexOf('a', -1), list => list.indexOf('a', null, 1)]
+      actions: [function (list) {
+        return (0, _indexOf.default)(list).call(list, 'a', -1);
+      }, function (list) {
+        return (0, _indexOf.default)(list).call(list, 'a', null, 1);
+      }]
     });
     testList({
       array: [[false]],
@@ -1500,36 +1636,76 @@ describe('common > main > lists > SortedList', function () {
         returnValue: -2,
         defaultValue: false
       },
-      actions: [list => list.indexOf('true'), list => list.indexOf([]), list => list.indexOf({}), list => list.indexOf(() => 0), list => list.indexOf(NaN)]
+      actions: [function (list) {
+        return (0, _indexOf.default)(list).call(list, 'true');
+      }, function (list) {
+        return (0, _indexOf.default)(list).call(list, []);
+      }, function (list) {
+        return (0, _indexOf.default)(list).call(list, {});
+      }, function (list) {
+        return (0, _indexOf.default)(list).call(list, function () {
+          return 0;
+        });
+      }, function (list) {
+        return (0, _indexOf.default)(list).call(list, NaN);
+      }]
     });
     testList({
       array: [['b', 'd', 'd', 'd', 'd', 'd', 'j', 'l']],
-      compare: [(o1, o2) => (0, _compare.compareFast)(o1 + '', o2 + '')],
+      compare: [function (o1, o2) {
+        return (0, _compare.compareFast)(o1 + '', o2 + '');
+      }],
       notAddIfExists: [false],
       expected: {
         array: ['b', 'd', 'd', 'd', 'd', 'd', 'j', 'l'],
         returnValue: 1,
         defaultValue: null
       },
-      actions: [list => list.indexOf('d'), list => list.indexOf('d', 1), list => list.indexOf('d', 1, 2), list => list.indexOf('d', 1, 8, -1), list => list.indexOf('d', null, 2, 1)]
+      actions: [function (list) {
+        return (0, _indexOf.default)(list).call(list, 'd');
+      }, function (list) {
+        return (0, _indexOf.default)(list).call(list, 'd', 1);
+      }, function (list) {
+        return (0, _indexOf.default)(list).call(list, 'd', 1, 2);
+      }, function (list) {
+        return (0, _indexOf.default)(list).call(list, 'd', 1, 8, -1);
+      }, function (list) {
+        return (0, _indexOf.default)(list).call(list, 'd', null, 2, 1);
+      }]
     });
     testList({
       array: [['b', 'd', 'd', 'd', 'd', 'd', 'j', 'l']],
-      compare: [(o1, o2) => (0, _compare.compareFast)(o1 + '', o2 + '')],
+      compare: [function (o1, o2) {
+        return (0, _compare.compareFast)(o1 + '', o2 + '');
+      }],
       notAddIfExists: [false],
       expected: {
         array: ['b', 'd', 'd', 'd', 'd', 'd', 'j', 'l'],
         returnValue: 5,
         defaultValue: null
       },
-      actions: [list => list.indexOf('d', 5), list => list.indexOf('d', 5, 6), list => list.indexOf('d', 5, 8, 1), list => list.indexOf('d', null, null, 1)]
+      actions: [function (list) {
+        return (0, _indexOf.default)(list).call(list, 'd', 5);
+      }, function (list) {
+        return (0, _indexOf.default)(list).call(list, 'd', 5, 6);
+      }, function (list) {
+        return (0, _indexOf.default)(list).call(list, 'd', 5, 8, 1);
+      }, function (list) {
+        return (0, _indexOf.default)(list).call(list, 'd', null, null, 1);
+      }]
     });
   });
   it('move', function () {
     function move(oldIndex, newIndex) {
+      var _context18;
+
       return {
-        actions: [list => list.move(oldIndex, newIndex), list => list.moveRange(oldIndex, oldIndex + 1, newIndex)],
-        description: `move(${oldIndex}, ${newIndex})\n`
+        actions: [function (list) {
+          return list.move(oldIndex, newIndex);
+        }, function (list) {
+          return list.moveRange(oldIndex, oldIndex + 1, newIndex);
+        }],
+        description: (0, _concat.default)(_context18 = "move(".concat(oldIndex, ", ")).call(_context18, newIndex, ")\n")
       };
     }
 
@@ -1593,9 +1769,13 @@ describe('common > main > lists > SortedList', function () {
   });
   it('moveRange', function () {
     function moveRange(start, end, moveIndex) {
+      var _context19, _context20;
+
       return {
-        actions: [list => list.moveRange(start, end, moveIndex)],
-        description: `move(${start}, ${end}, ${moveIndex})\n`
+        actions: [function (list) {
+          return list.moveRange(start, end, moveIndex);
+        }],
+        description: (0, _concat.default)(_context19 = (0, _concat.default)(_context20 = "move(".concat(start, ", ")).call(_context20, end, ", ")).call(_context19, moveIndex, ")\n")
       };
     }
 
@@ -1696,7 +1876,11 @@ describe('common > main > lists > SortedList', function () {
   it('sort', function () {
     function sort() {
       return {
-        actions: [list => list.sort(), list => list.reSort()],
+        actions: [function (list) {
+          return (0, _sort.default)(list).call(list);
+        }, function (list) {
+          return list.reSort();
+        }],
         description: 'sort()\n'
       };
     }
@@ -1734,8 +1918,8 @@ describe('common > main > lists > SortedList', function () {
           type: _IListChanged.ListChangedType.Resorted
         }]
       },
-      actions: [list => {
-        const countSorted = list.countSorted;
+      actions: [function (list) {
+        var countSorted = list.countSorted;
         list.autoSort = true;
         list.autoSort = false;
         return list.countSorted !== countSorted;
@@ -1745,7 +1929,9 @@ describe('common > main > lists > SortedList', function () {
   it('reSort', function () {
     function reSort() {
       return {
-        actions: [list => list.reSort()],
+        actions: [function (list) {
+          return list.reSort();
+        }],
         description: 'reSort()\n'
       };
     }
@@ -1789,8 +1975,10 @@ describe('common > main > lists > SortedList', function () {
   it('removeDuplicates', function () {
     function removeDuplicates(withoutShift) {
       return {
-        actions: [list => list.removeDuplicates(withoutShift)],
-        description: `removeDuplicates(${withoutShift})\n`
+        actions: [function (list) {
+          return list.removeDuplicates(withoutShift);
+        }],
+        description: "removeDuplicates(".concat(withoutShift, ")\n")
       };
     }
 

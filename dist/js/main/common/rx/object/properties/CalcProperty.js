@@ -1,9 +1,26 @@
 "use strict";
 
-Object.defineProperty(exports, "__esModule", {
+var _interopRequireDefault = require("@babel/runtime-corejs3/helpers/interopRequireDefault");
+
+var _Object$defineProperty = require("@babel/runtime-corejs3/core-js-stable/object/define-property");
+
+_Object$defineProperty(exports, "__esModule", {
   value: true
 });
-exports.CalcProperty = void 0;
+
+exports.CalcProperty = exports.CalcPropertyValue = void 0;
+
+var _createClass2 = _interopRequireDefault(require("@babel/runtime-corejs3/helpers/createClass"));
+
+var _possibleConstructorReturn2 = _interopRequireDefault(require("@babel/runtime-corejs3/helpers/possibleConstructorReturn"));
+
+var _getPrototypeOf2 = _interopRequireDefault(require("@babel/runtime-corejs3/helpers/getPrototypeOf"));
+
+var _assertThisInitialized2 = _interopRequireDefault(require("@babel/runtime-corejs3/helpers/assertThisInitialized"));
+
+var _inherits2 = _interopRequireDefault(require("@babel/runtime-corejs3/helpers/inherits"));
+
+var _classCallCheck2 = _interopRequireDefault(require("@babel/runtime-corejs3/helpers/classCallCheck"));
 
 var _ThenableSync = require("../../../async/ThenableSync");
 
@@ -11,93 +28,163 @@ var _helpers = require("../../../helpers/helpers");
 
 var _DeferredCalc = require("../../deferred-calc/DeferredCalc");
 
-var _IPropertyChanged = require("../IPropertyChanged");
-
-var _ObservableObject = require("../ObservableObject");
+var _ObservableObject2 = require("../ObservableObject");
 
 var _ObservableObjectBuilder = require("../ObservableObjectBuilder");
 
-var _property = require("./property");
+var _CalcObjectDebugger = require("./CalcObjectDebugger");
 
-class CalcProperty extends _ObservableObject.ObservableObject {
-  constructor(calcFunc, calcOptions, valueOptions, initValue) {
-    super();
+var _Property = require("./Property");
+
+var CalcPropertyValue = function CalcPropertyValue(property) {
+  (0, _classCallCheck2.default)(this, CalcPropertyValue);
+
+  this.get = function () {
+    return property;
+  };
+};
+
+exports.CalcPropertyValue = CalcPropertyValue;
+
+var CalcProperty =
+/*#__PURE__*/
+function (_ObservableObject) {
+  (0, _inherits2.default)(CalcProperty, _ObservableObject);
+
+  function CalcProperty(calcFunc, calcOptions, valueOptions, initValue) {
+    var _this;
+
+    (0, _classCallCheck2.default)(this, CalcProperty);
+    _this = (0, _possibleConstructorReturn2.default)(this, (0, _getPrototypeOf2.default)(CalcProperty).call(this));
 
     if (typeof calcFunc !== 'function') {
-      throw new Error(`calcFunc must be a function: ${calcFunc}`);
+      throw new Error("calcFunc must be a function: ".concat(calcFunc));
     }
 
     if (typeof initValue !== 'function') {
-      this._initValue = initValue;
+      _this._initValue = initValue;
     }
 
-    this._calcFunc = calcFunc;
-    this._valueProperty = new _property.Property(valueOptions, initValue);
-    this._deferredCalc = new _DeferredCalc.DeferredCalc(() => {
-      this.onValueChanged();
-    }, done => {
-      const prevValue = this._valueProperty.value;
-      this._deferredValue = (0, _ThenableSync.resolveAsyncFunc)(() => this._calcFunc(this.input, this._valueProperty), () => {
-        this._hasValue = true;
-        const val = this._valueProperty.value;
+    _this._calcFunc = calcFunc;
+    _this._valueProperty = new _Property.Property(valueOptions, initValue);
+    _this._deferredCalc = new _DeferredCalc.DeferredCalc(function () {
+      _this.onInvalidated();
+    }, function (done) {
+      var prevValue = _this._valueProperty.value;
+      _this._deferredValue = (0, _ThenableSync.resolveAsyncFunc)(function () {
+        return _this._calcFunc(_this.input, _this._valueProperty);
+      }, function () {
+        _this._hasValue = true;
+        var val = _this._valueProperty.value;
+
+        _CalcObjectDebugger.CalcObjectDebugger.Instance.onCalculated((0, _assertThisInitialized2.default)(_this), val, prevValue);
+
         done(prevValue !== val);
         return val;
-      }, err => {
-        done(prevValue !== this._valueProperty.value);
+      }, function (err) {
+        _CalcObjectDebugger.CalcObjectDebugger.Instance.onError((0, _assertThisInitialized2.default)(_this), _this._valueProperty.value, prevValue, err);
+
+        done(prevValue !== _this._valueProperty.value);
         return err;
       }, true);
-    }, isChanged => {
+    }, function (isChanged) {
       if (isChanged) {
-        this.onValueChanged();
+        _this.onCalculated();
       }
     }, calcOptions);
+    return _this;
   }
 
-  invalidate() {
-    this._deferredCalc.invalidate();
-  }
-
-  onValueChanged() {
-    const {
-      propertyChangedIfCanEmit
-    } = this;
-
-    if (propertyChangedIfCanEmit) {
-      const oldValue = this._valueProperty.value;
-      propertyChangedIfCanEmit.onPropertyChanged(new _IPropertyChanged.PropertyChangedEvent(_helpers.VALUE_PROPERTY_DEFAULT, oldValue, () => this[_helpers.VALUE_PROPERTY_DEFAULT]), new _IPropertyChanged.PropertyChangedEvent('last', oldValue, () => this.last), new _IPropertyChanged.PropertyChangedEvent('wait', oldValue, () => this.wait), new _IPropertyChanged.PropertyChangedEvent('lastOrWait', oldValue, () => this.lastOrWait));
+  (0, _createClass2.default)(CalcProperty, [{
+    key: "invalidate",
+    value: function invalidate() {
+      this._deferredCalc.invalidate();
     }
-  }
+  }, {
+    key: "onInvalidated",
+    value: function onInvalidated() {
+      _CalcObjectDebugger.CalcObjectDebugger.Instance.onInvalidated(this, this._valueProperty.value);
 
-  get [_helpers.VALUE_PROPERTY_DEFAULT]() {
-    return this.wait;
-  }
+      var propertyChangedIfCanEmit = this.propertyChangedIfCanEmit;
 
-  get last() {
-    this._deferredCalc.calc();
-
-    return this._valueProperty.value;
-  }
-
-  get wait() {
-    this._deferredCalc.calc();
-
-    return this._deferredValue;
-  }
-
-  get lastOrWait() {
-    this._deferredCalc.calc();
-
-    return this._hasValue ? this._valueProperty.value : this._deferredValue;
-  }
-
-  clear() {
-    if (this._valueProperty.value !== this._initValue) {
-      this._valueProperty.value = this._initValue;
-      this.onValueChanged();
+      if (propertyChangedIfCanEmit) {
+        var oldValue = this._valueProperty.value;
+        var newValue = new CalcPropertyValue(this);
+        propertyChangedIfCanEmit.onPropertyChanged({
+          name: _helpers.VALUE_PROPERTY_DEFAULT,
+          oldValue: oldValue,
+          newValue: newValue
+        }, {
+          name: 'wait',
+          oldValue: oldValue,
+          newValue: newValue
+        }, {
+          name: 'last',
+          oldValue: oldValue,
+          newValue: newValue
+        }, {
+          name: 'lastOrWait',
+          oldValue: oldValue,
+          newValue: newValue
+        });
+      }
     }
-  }
+  }, {
+    key: "onCalculated",
+    value: function onCalculated() {
+      var propertyChangedIfCanEmit = this.propertyChangedIfCanEmit;
 
-}
+      if (propertyChangedIfCanEmit) {
+        var oldValue = this._valueProperty.value;
+        var newValue = new CalcPropertyValue(this);
+        propertyChangedIfCanEmit.onPropertyChanged({
+          name: 'last',
+          oldValue: oldValue,
+          newValue: newValue
+        }, {
+          name: 'lastOrWait',
+          oldValue: oldValue,
+          newValue: newValue
+        });
+      }
+    }
+  }, {
+    key: "clear",
+    value: function clear() {
+      if (this._valueProperty.value !== this._initValue) {
+        this._valueProperty.value = this._initValue;
+        this.invalidate();
+      }
+    }
+  }, {
+    key: _helpers.VALUE_PROPERTY_DEFAULT,
+    get: function get() {
+      return this.wait;
+    }
+  }, {
+    key: "wait",
+    get: function get() {
+      this._deferredCalc.calc();
+
+      return this._deferredValue;
+    }
+  }, {
+    key: "last",
+    get: function get() {
+      this._deferredCalc.calc();
+
+      return this._valueProperty.value;
+    }
+  }, {
+    key: "lastOrWait",
+    get: function get() {
+      this._deferredCalc.calc();
+
+      return this._hasValue ? this._valueProperty.value : this._deferredValue;
+    }
+  }]);
+  return CalcProperty;
+}(_ObservableObject2.ObservableObject);
 
 exports.CalcProperty = CalcProperty;
 new _ObservableObjectBuilder.ObservableObjectBuilder(CalcProperty.prototype).writable('input'); // Test:

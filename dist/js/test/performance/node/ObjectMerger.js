@@ -7,7 +7,7 @@ var _mergers = require("../../../main/common/extensions/merge/mergers");
 /* tslint:disable:no-empty no-identical-functions max-line-length no-construct use-primitive-type */
 describe('common > extensions > merge > ObjectMerger', function () {
   this.timeout(300000);
-  const merger = new _mergers.ObjectMerger();
+  var merger = new _mergers.ObjectMerger();
 
   function getRandomValue(values) {
     return values[Math.floor(Math.random() * values.length)];
@@ -48,26 +48,28 @@ describe('common > extensions > merge > ObjectMerger', function () {
     // 	{}, { a: {a: 1, b: 2}, b: 3 }, { a: {b: 4, c: 5}, c: 6 }, { a: {a: 7, b: 8}, d: 9 },
     // 	{}, { a: {a: 1, b: 2}, b: 3 }, { a: {b: 4, c: 5}, c: 6 }, { a: {a: 7, b: 8}, d: 9 },
     // ])
-    const result = (0, _rdtsc.calcPerformance)(120000, () => {// no operations
-    }, () => merger.merge({
-      a: {
-        a: 1,
-        b: 2
-      },
-      b: 3
-    }, {
-      a: {
-        b: 4,
-        c: 5
-      },
-      c: 6
-    }, {
-      a: {
-        a: 7,
-        b: 8
-      },
-      d: 9
-    }, o => {}, true, true));
+    var result = (0, _rdtsc.calcPerformance)(120000, function () {// no operations
+    }, function () {
+      return merger.merge({
+        a: {
+          a: 1,
+          b: 2
+        },
+        b: 3
+      }, {
+        a: {
+          b: 4,
+          c: 5
+        },
+        c: 6
+      }, {
+        a: {
+          a: 7,
+          b: 8
+        },
+        d: 9
+      }, function (o) {}, true, true);
+    });
     console.log(result);
   });
 });

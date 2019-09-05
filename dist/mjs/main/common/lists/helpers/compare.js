@@ -1,5 +1,3 @@
-import _typeof from "@babel/runtime/helpers/typeof";
-
 /* tslint:disable:use-isnan */
 import './object-unique-id';
 import { getObjectUniqueId } from './object-unique-id'; // noinspection DuplicatedCode
@@ -132,10 +130,8 @@ export function compareStrict(o1, o2) {
 
   o1 = o1.valueOf();
   o2 = o2.valueOf();
-
-  var t1 = _typeof(o1);
-
-  var t2 = _typeof(o2);
+  const t1 = typeof o1;
+  const t2 = typeof o2;
 
   if (t1 === t2) {
     // is NaN

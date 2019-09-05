@@ -1,8 +1,11 @@
 "use strict";
 
-Object.defineProperty(exports, "__esModule", {
+var _Object$defineProperty = require("@babel/runtime-corejs3/core-js-stable/object/define-property");
+
+_Object$defineProperty(exports, "__esModule", {
   value: true
 });
+
 exports.compileTest = compileTest;
 
 var _funcPropertiesPath = require("../../../../../../../../main/common/rx/deep-subscribe/helpers/func-properties-path");
@@ -14,9 +17,11 @@ function coverage() {
 }
 
 function compileTest() {
-  return [(0, _funcPropertiesPath.getFuncPropertiesPath)((o
+  return [(0, _funcPropertiesPath.getFuncPropertiesPath)(function (o
   /* comment */
-  ) => (coverage(), o.o["\`\"\'\\`'[]]"].o[0].o['\`\"\'\\`"][]'].o)), (0, _funcPropertiesPath.getFuncPropertiesPath)(function (o
+  ) {
+    return coverage(), o.o["\`\"\'\\`'[]]"].o[0].o['\`\"\'\\`"][]'].o;
+  }), (0, _funcPropertiesPath.getFuncPropertiesPath)(function (o
   /* comment */
   ) {
     return coverage(), o.o["\`\"\'\\`'[]]"].o[0].o['\`\"\'\\`"][]'].o;

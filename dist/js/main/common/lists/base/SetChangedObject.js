@@ -1,54 +1,73 @@
 "use strict";
 
-Object.defineProperty(exports, "__esModule", {
+var _interopRequireDefault = require("@babel/runtime-corejs3/helpers/interopRequireDefault");
+
+var _Object$defineProperty = require("@babel/runtime-corejs3/core-js-stable/object/define-property");
+
+_Object$defineProperty(exports, "__esModule", {
   value: true
 });
+
 exports.SetChangedObject = void 0;
+
+var _classCallCheck2 = _interopRequireDefault(require("@babel/runtime-corejs3/helpers/classCallCheck"));
+
+var _createClass2 = _interopRequireDefault(require("@babel/runtime-corejs3/helpers/createClass"));
+
+var _possibleConstructorReturn2 = _interopRequireDefault(require("@babel/runtime-corejs3/helpers/possibleConstructorReturn"));
+
+var _getPrototypeOf2 = _interopRequireDefault(require("@babel/runtime-corejs3/helpers/getPrototypeOf"));
+
+var _inherits2 = _interopRequireDefault(require("@babel/runtime-corejs3/helpers/inherits"));
 
 var _PropertyChangedObject = require("../../rx/object/PropertyChangedObject");
 
 var _hasSubscribers = require("../../rx/subjects/hasSubscribers");
 
-class SetChangedObject extends _PropertyChangedObject.PropertyChangedObject {
-  get setChanged() {
-    let {
-      _setChanged
-    } = this;
+var SetChangedObject =
+/*#__PURE__*/
+function (_PropertyChangedObjec) {
+  (0, _inherits2.default)(SetChangedObject, _PropertyChangedObjec);
 
-    if (!_setChanged) {
-      this._setChanged = _setChanged = new _hasSubscribers.HasSubscribersSubject();
-    }
-
-    return _setChanged;
+  function SetChangedObject() {
+    (0, _classCallCheck2.default)(this, SetChangedObject);
+    return (0, _possibleConstructorReturn2.default)(this, (0, _getPrototypeOf2.default)(SetChangedObject).apply(this, arguments));
   }
 
-  onSetChanged(event) {
-    const {
-      propertyChangedDisabled
-    } = this.__meta;
-    const {
-      _setChanged
-    } = this;
+  (0, _createClass2.default)(SetChangedObject, [{
+    key: "onSetChanged",
+    value: function onSetChanged(event) {
+      var propertyChangedDisabled = this.__meta.propertyChangedDisabled;
+      var _setChanged = this._setChanged;
 
-    if (propertyChangedDisabled || !_setChanged || !_setChanged.hasSubscribers) {
+      if (propertyChangedDisabled || !_setChanged || !_setChanged.hasSubscribers) {
+        return this;
+      }
+
+      _setChanged.emit(event);
+
       return this;
     }
+  }, {
+    key: "setChanged",
+    get: function get() {
+      var _setChanged = this._setChanged;
 
-    _setChanged.emit(event);
+      if (!_setChanged) {
+        this._setChanged = _setChanged = new _hasSubscribers.HasSubscribersSubject();
+      }
 
-    return this;
-  }
-
-  get _setChangedIfCanEmit() {
-    const {
-      propertyChangedDisabled
-    } = this.__meta;
-    const {
-      _setChanged
-    } = this;
-    return !propertyChangedDisabled && _setChanged && _setChanged.hasSubscribers ? _setChanged : null;
-  }
-
-}
+      return _setChanged;
+    }
+  }, {
+    key: "_setChangedIfCanEmit",
+    get: function get() {
+      var propertyChangedDisabled = this.__meta.propertyChangedDisabled;
+      var _setChanged = this._setChanged;
+      return !propertyChangedDisabled && _setChanged && _setChanged.hasSubscribers ? _setChanged : null;
+    }
+  }]);
+  return SetChangedObject;
+}(_PropertyChangedObject.PropertyChangedObject);
 
 exports.SetChangedObject = SetChangedObject;

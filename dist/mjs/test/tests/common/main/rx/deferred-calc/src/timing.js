@@ -1,6 +1,3 @@
-import _classCallCheck from "@babel/runtime/helpers/classCallCheck";
-import _createClass from "@babel/runtime/helpers/createClass";
-
 function compareHandlers(o1, o2) {
   if (o1.time > o2.time) {
     return 1;
@@ -21,78 +18,68 @@ function compareHandlers(o1, o2) {
   throw new Error('Duplicate timing handlers');
 }
 
-export var TestTiming =
-/*#__PURE__*/
-function () {
-  function TestTiming() {
-    _classCallCheck(this, TestTiming);
-
+export class TestTiming {
+  constructor() {
     this._handlers = [];
     this._now = 1;
     this._nextId = 0;
   }
 
-  _createClass(TestTiming, [{
-    key: "addTime",
-    value: function addTime(time) {
-      this.setTime(this._now + time);
+  addTime(time) {
+    this.setTime(this._now + time);
+  }
+
+  setTime(time) {
+    if (time <= 0) {
+      throw new Error(`time (${time} should be > 0)`);
     }
-  }, {
-    key: "setTime",
-    value: function setTime(time) {
-      if (time <= 0) {
-        throw new Error("time (".concat(time, " should be > 0)"));
-      }
 
-      var _handlers = this._handlers,
-          now = this._now;
+    const {
+      _handlers,
+      _now: now
+    } = this;
 
-      while (true) {
-        var minHandler = void 0;
+    while (true) {
+      let minHandler;
 
-        for (var id in _handlers) {
-          if (Object.prototype.hasOwnProperty.call(_handlers, id)) {
-            var handler = _handlers[id];
+      for (const id in _handlers) {
+        if (Object.prototype.hasOwnProperty.call(_handlers, id)) {
+          const handler = _handlers[id];
 
-            if (handler.time <= time && (!minHandler || compareHandlers(handler, minHandler) < 0)) {
-              minHandler = handler;
-            }
+          if (handler.time <= time && (!minHandler || compareHandlers(handler, minHandler) < 0)) {
+            minHandler = handler;
           }
         }
-
-        if (!minHandler) {
-          break;
-        }
-
-        delete _handlers[minHandler.id];
-        this._now = minHandler.time;
-        minHandler.handler();
       }
 
-      this._now = time;
-    }
-  }, {
-    key: "now",
-    value: function now() {
-      return this._now;
-    }
-  }, {
-    key: "setTimeout",
-    value: function setTimeout(handler, timeout) {
-      var id = this._nextId++;
-      this._handlers[id] = {
-        id: id,
-        time: this._now + timeout,
-        handler: handler
-      };
-      return id;
-    }
-  }, {
-    key: "clearTimeout",
-    value: function clearTimeout(handle) {
-      delete this._handlers[handle];
-    }
-  }]);
+      if (!minHandler) {
+        break;
+      }
 
-  return TestTiming;
-}();
+      delete _handlers[minHandler.id];
+      this._now = minHandler.time;
+      minHandler.handler();
+    }
+
+    this._now = time;
+  }
+
+  now() {
+    return this._now;
+  }
+
+  setTimeout(handler, timeout) {
+    const id = this._nextId++;
+    this._handlers[id] = {
+      id,
+      time: this._now + timeout,
+      handler
+    };
+    return id;
+  }
+
+  clearTimeout(handle) {
+    delete this._handlers[handle];
+  }
+
+}

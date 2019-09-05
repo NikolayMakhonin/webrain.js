@@ -1,33 +1,15 @@
-import _possibleConstructorReturn from "@babel/runtime/helpers/possibleConstructorReturn";
-import _getPrototypeOf from "@babel/runtime/helpers/getPrototypeOf";
-import _inherits from "@babel/runtime/helpers/inherits";
-import _classCallCheck from "@babel/runtime/helpers/classCallCheck";
 import { TypeMetaCollectionWithId } from '../../../../../main/common/extensions/TypeMeta';
 import { assert } from '../../../../../main/common/test/Assert';
 describe('common > extensions > TypeMeta', function () {
   it('base', function () {
-    var Class1 = function Class1() {
-      _classCallCheck(this, Class1);
-    };
+    class Class1 {}
 
-    var Class2 =
-    /*#__PURE__*/
-    function (_Class) {
-      _inherits(Class2, _Class);
+    class Class2 extends Class1 {}
 
-      function Class2() {
-        _classCallCheck(this, Class2);
-
-        return _possibleConstructorReturn(this, _getPrototypeOf(Class2).apply(this, arguments));
-      }
-
-      return Class2;
-    }(Class1);
-
-    var typeMeta0 = new TypeMetaCollectionWithId();
-    var typeMeta1 = new TypeMetaCollectionWithId(typeMeta0);
-    var typeMeta2 = new TypeMetaCollectionWithId(typeMeta1);
-    var typeMeta3 = new TypeMetaCollectionWithId(typeMeta2); // region typeMeta0
+    const typeMeta0 = new TypeMetaCollectionWithId();
+    const typeMeta1 = new TypeMetaCollectionWithId(typeMeta0);
+    const typeMeta2 = new TypeMetaCollectionWithId(typeMeta1);
+    const typeMeta3 = new TypeMetaCollectionWithId(typeMeta2); // region typeMeta0
 
     typeMeta0.putType(Class1, {
       uuid: 'class1'

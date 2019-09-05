@@ -1,13 +1,13 @@
 import { TestThenableSync, ValueType } from './src/TestThenableSync';
 describe('common > main > helpers > ThenableSync', function () {
   this.timeout(120000);
-  var testThenableSync = TestThenableSync.test;
+  const testThenableSync = TestThenableSync.test;
   after(function () {
     console.log('Total ThenableSync tests >= ' + TestThenableSync.totalTests);
   });
   it('variants', function () {
     testThenableSync({
-      exclude: function exclude(o) {
+      exclude: o => {
         if (o.thenValue0 === ValueType.IteratorThrow && o.thenValue1 === ValueType.IteratorThrow) {
           return true;
         }
@@ -19,7 +19,7 @@ describe('common > main > helpers > ThenableSync', function () {
         return false;
       },
       expected: {
-        value: function value(o) {
+        value: o => {
           return o.value;
         }
       },

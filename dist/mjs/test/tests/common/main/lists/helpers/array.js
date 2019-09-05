@@ -3,29 +3,23 @@ describe('common > main > lists > helpers > array', function () {
   it('binarySearch full', function () {
     this.timeout(20000);
 
-    var indexToItem = function indexToItem(index) {
-      return "item".concat((index + 2).toString().padStart(3, '0'));
-    };
+    const indexToItem = index => `item${(index + 2).toString().padStart(3, '0')}`;
 
-    var arr = new Array(51).fill(0).map(function (o, i) {
-      return indexToItem(i) + (i % 2 ? '_' : '');
-    });
+    const arr = new Array(51).fill(0).map((o, i) => indexToItem(i) + (i % 2 ? '_' : ''));
 
-    for (var index = -2; index < arr.length + 2; index++) {
-      var item = indexToItem(index);
+    for (let index = -2; index < arr.length + 2; index++) {
+      const item = indexToItem(index);
 
-      for (var bound = -1; bound < 1; bound++) {
-        for (var start = -1; start <= Math.min(arr.length - 1, Math.max(0, index)); start++) {
-          for (var end = arr.length; end >= Math.min(arr.length, index + 1); end--) {
-            var result = binarySearch(arr, item, start < 0 ? null : start, end >= arr.length ? null : end, // eslint-disable-next-line no-nested-ternary
-            index % 3 ? function (o1, o2) {
-              return o1 > o2 ? 1 : o1 < o2 ? -1 : 0;
-            } : null, bound);
-            var log = JSON.stringify({
-              index: index,
-              start: start,
-              end: end,
-              bound: bound
+      for (let bound = -1; bound < 1; bound++) {
+        for (let start = -1; start <= Math.min(arr.length - 1, Math.max(0, index)); start++) {
+          for (let end = arr.length; end >= Math.min(arr.length, index + 1); end--) {
+            const result = binarySearch(arr, item, start < 0 ? null : start, end >= arr.length ? null : end, // eslint-disable-next-line no-nested-ternary
+            index % 3 ? (o1, o2) => o1 > o2 ? 1 : o1 < o2 ? -1 : 0 : null, bound);
+            const log = JSON.stringify({
+              index,
+              start,
+              end,
+              bound
             });
 
             if (index < 0) {

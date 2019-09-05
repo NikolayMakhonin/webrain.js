@@ -1,16 +1,3 @@
-import _typeof from "@babel/runtime/helpers/typeof";
-import _defineProperty from "@babel/runtime/helpers/defineProperty";
-import _regeneratorRuntime from "@babel/runtime/regenerator";
-import _classCallCheck from "@babel/runtime/helpers/classCallCheck";
-import _createClass from "@babel/runtime/helpers/createClass";
-import _possibleConstructorReturn from "@babel/runtime/helpers/possibleConstructorReturn";
-import _getPrototypeOf from "@babel/runtime/helpers/getPrototypeOf";
-import _inherits from "@babel/runtime/helpers/inherits";
-
-var _marked =
-/*#__PURE__*/
-_regeneratorRuntime.mark(createIterableIterator);
-
 /* tslint:disable:object-literal-key-quotes no-construct use-primitive-type */
 import { registerMergeable } from '../../../../../../main/common/extensions/merge/mergers';
 import { registerSerializable } from '../../../../../../main/common/extensions/serialization/serializers';
@@ -24,175 +11,84 @@ import { ObservableSet } from '../../../../../../main/common/lists/ObservableSet
 import { SortedList } from '../../../../../../main/common/lists/SortedList';
 import { ObservableObject } from '../../../../../../main/common/rx/object/ObservableObject';
 import { ObservableObjectBuilder } from '../../../../../../main/common/rx/object/ObservableObjectBuilder';
-import { Property } from '../../../../../../main/common/rx/object/properties/property';
-export var CircularClass =
-/*#__PURE__*/
-function (_ObservableObject) {
-  _inherits(CircularClass, _ObservableObject);
-
-  function CircularClass(array, value) {
-    var _this;
-
-    _classCallCheck(this, CircularClass);
-
-    _this = _possibleConstructorReturn(this, _getPrototypeOf(CircularClass).call(this));
-    _this.array = array;
-    _this.value = value;
-    return _this;
+import { Property } from '../../../../../../main/common/rx/object/properties/Property';
+export class CircularClass extends ObservableObject {
+  constructor(array, value) {
+    super();
+    this.array = array;
+    this.value = value;
   } // region IMergeable
 
 
-  _createClass(CircularClass, [{
-    key: "_canMerge",
-    value: function _canMerge(source) {
-      if (source.constructor === CircularClass) {
-        return null;
-      }
-
-      return source.constructor === CircularClass; // || Array.isArray(source)
-      // || isIterable(source)
+  _canMerge(source) {
+    if (source.constructor === CircularClass) {
+      return null;
     }
-  }, {
-    key: "_merge",
-    value: function _merge(merge, older, newer, preferCloneOlder, preferCloneNewer, options) {
-      var _this2 = this;
 
-      var changed = false;
-      changed = merge(this.array, older.array, newer.array, function (o) {
-        _this2.array = o;
-      }) || changed;
-      changed = merge(this.value, older.value, newer.value, function (o) {
-        _this2.value = o;
-      }) || changed;
-      return changed;
-    } // endregion
-    // region ISerializable
+    return source.constructor === CircularClass; // || Array.isArray(source)
+    // || isIterable(source)
+  }
 
-  }, {
-    key: "serialize",
-    value: function serialize(_serialize) {
-      return {
-        array: _serialize(this.array),
-        value: _serialize(this.value)
-      };
-    }
-  }, {
-    key: "deSerialize",
-    value:
-    /*#__PURE__*/
-    _regeneratorRuntime.mark(function deSerialize(_deSerialize, serializedValue) {
-      return _regeneratorRuntime.wrap(function deSerialize$(_context) {
-        while (1) {
-          switch (_context.prev = _context.next) {
-            case 0:
-              _context.next = 2;
-              return _deSerialize(serializedValue.value);
+  _merge(merge, older, newer, preferCloneOlder, preferCloneNewer, options) {
+    let changed = false;
+    changed = merge(this.array, older.array, newer.array, o => {
+      this.array = o;
+    }) || changed;
+    changed = merge(this.value, older.value, newer.value, o => {
+      this.value = o;
+    }) || changed;
+    return changed;
+  } // endregion
+  // region ISerializable
 
-            case 2:
-              this.value = _context.sent;
 
-            case 3:
-            case "end":
-              return _context.stop();
-          }
-        }
-      }, deSerialize, this);
-    }) // endregion
+  serialize(serialize) {
+    return {
+      array: serialize(this.array),
+      value: serialize(this.value)
+    };
+  }
 
-  }]);
+  *deSerialize(deSerialize, serializedValue) {
+    this.value = yield deSerialize(serializedValue.value);
+  } // endregion
 
-  return CircularClass;
-}(ObservableObject);
+
+}
 CircularClass.uuid = 'e729e03fd0f449949f0f97da23c7bab8';
 registerMergeable(CircularClass);
 registerSerializable(CircularClass, {
   serializer: {
-    deSerialize: function (_deSerialize2) {
-      function deSerialize(_x, _x2, _x3) {
-        return _deSerialize2.apply(this, arguments);
-      }
+    *deSerialize(deSerialize, serializedValue, valueFactory) {
+      const array = yield deSerialize(serializedValue.array);
+      const value = valueFactory(array);
+      yield value.deSerialize(deSerialize, serializedValue);
+      return value;
+    }
 
-      deSerialize.toString = function () {
-        return _deSerialize2.toString();
-      };
-
-      return deSerialize;
-    }(function (deSerialize, serializedValue, valueFactory) {
-      return (
-        /*#__PURE__*/
-        _regeneratorRuntime.mark(function _callee() {
-          var array, value;
-          return _regeneratorRuntime.wrap(function _callee$(_context2) {
-            while (1) {
-              switch (_context2.prev = _context2.next) {
-                case 0:
-                  _context2.next = 2;
-                  return deSerialize(serializedValue.array);
-
-                case 2:
-                  array = _context2.sent;
-                  value = valueFactory(array);
-                  _context2.next = 6;
-                  return value.deSerialize(deSerialize, serializedValue);
-
-                case 6:
-                  return _context2.abrupt("return", value);
-
-                case 7:
-                case "end":
-                  return _context2.stop();
-              }
-            }
-          }, _callee);
-        })()
-      );
-    })
   }
 });
 new ObservableObjectBuilder(CircularClass.prototype).writable('array');
-export function createIterableIterator(iterable) {
-  var array, _i, _array, item;
+export function* createIterableIterator(iterable) {
+  const array = Array.from(iterable);
 
-  return _regeneratorRuntime.wrap(function createIterableIterator$(_context3) {
-    while (1) {
-      switch (_context3.prev = _context3.next) {
-        case 0:
-          array = Array.from(iterable);
-          _i = 0, _array = array;
-
-        case 2:
-          if (!(_i < _array.length)) {
-            _context3.next = 9;
-            break;
-          }
-
-          item = _array[_i];
-          _context3.next = 6;
-          return item;
-
-        case 6:
-          _i++;
-          _context3.next = 2;
-          break;
-
-        case 9:
-        case "end":
-          return _context3.stop();
-      }
-    }
-  }, _marked);
+  for (const item of array) {
+    yield item;
+  }
 }
 export function createIterable(iterable) {
-  var array = Array.from(iterable);
-  return _defineProperty({}, Symbol.iterator, function () {
-    return createIterableIterator(array);
-  });
+  const array = Array.from(iterable);
+  return {
+    [Symbol.iterator]() {
+      return createIterableIterator(array);
+    }
+
+  };
 }
-export function createComplexObject() {
-  var options = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : {};
-  var array = [];
-  var object = {};
-  var circularClass = new CircularClass(array);
+export function createComplexObject(options = {}) {
+  const array = [];
+  const object = {};
+  const circularClass = new CircularClass(array);
   circularClass.value = object;
   Object.assign(object, {
     _undefined: void 0,
@@ -200,7 +96,7 @@ export function createComplexObject() {
     _false: false,
     _stringEmpty: '',
     _zero: 0,
-    "true": true,
+    true: true,
     string: 'string',
     date: new Date(12345),
     number: 123.45,
@@ -224,19 +120,13 @@ export function createComplexObject() {
     map: options.map && new Map(),
     arrayMap: options.arrayMap && new ArrayMap(),
     objectMap: options.objectMap && new ObjectMap(),
-    iterable: options["function"] && createIterable(array),
+    iterable: options.function && createIterable(array),
     // iterator: options.function && toIterableIterator(array),
-    promiseSync: options["function"] && {
-      then: function then(resolve) {
-        return resolve(object);
-      }
+    promiseSync: options.function && {
+      then: resolve => resolve(object)
     },
-    promiseAsync: options["function"] && {
-      then: function then(resolve) {
-        return setTimeout(function () {
-          return resolve(object);
-        }, 0);
-      }
+    promiseAsync: options.function && {
+      then: resolve => setTimeout(() => resolve(object), 0)
     },
     property: new Property(null, object)
   });
@@ -247,13 +137,13 @@ export function createComplexObject() {
   object.arrayMapObservable = options.arrayMap && options.observableMap && new ObservableMap(object.arrayMap);
   object.objectMapObservable = options.objectMap && options.observableMap && new ObservableMap(object.objectMap);
 
-  var valueIsCollection = function valueIsCollection(value) {
+  const valueIsCollection = value => {
     return value && (isIterable(value) || value.constructor === Object);
   };
 
-  for (var key in object) {
+  for (const key in object) {
     if (Object.prototype.hasOwnProperty.call(object, key)) {
-      var value = object[key];
+      const value = object[key];
 
       if (!value && !key.startsWith('_')) {
         delete object[key];
@@ -280,51 +170,30 @@ export function createComplexObject() {
     }
   }
 
-  var _iteratorNormalCompletion = true;
-  var _didIteratorError = false;
-  var _iteratorError = undefined;
+  for (const key of Object.keys(object).reverse()) {
+    if (Object.prototype.hasOwnProperty.call(object, key)) {
+      const value = object[key];
 
-  try {
-    for (var _iterator = Object.keys(object).reverse()[Symbol.iterator](), _step; !(_iteratorNormalCompletion = (_step = _iterator.next()).done); _iteratorNormalCompletion = true) {
-      var _key = _step.value;
+      if (!options.undefined && typeof value === 'undefined') {
+        delete object[key];
+      }
 
-      if (Object.prototype.hasOwnProperty.call(object, _key)) {
-        var _value = object[_key];
-
-        if (!options.undefined && typeof _value === 'undefined') {
-          delete object[_key];
+      if (options.circular || !valueIsCollection(value)) {
+        if (object.arraySet && value && typeof value === 'object') {
+          object.arraySet.add(value);
         }
 
-        if (options.circular || !valueIsCollection(_value)) {
-          if (object.arraySet && _value && _typeof(_value) === 'object') {
-            object.arraySet.add(_value);
-          }
-
-          if (object.objectSet) {
-            object.objectSet.add(_key);
-          }
-
-          if (object.arrayMap && _value && _typeof(_value) === 'object') {
-            object.arrayMap.set(_value, _value);
-          }
-
-          if (object.objectMap) {
-            object.objectMap.set(_key, _value);
-          }
+        if (object.objectSet) {
+          object.objectSet.add(key);
         }
-      }
-    }
-  } catch (err) {
-    _didIteratorError = true;
-    _iteratorError = err;
-  } finally {
-    try {
-      if (!_iteratorNormalCompletion && _iterator["return"] != null) {
-        _iterator["return"]();
-      }
-    } finally {
-      if (_didIteratorError) {
-        throw _iteratorError;
+
+        if (object.arrayMap && value && typeof value === 'object') {
+          object.arrayMap.set(value, value);
+        }
+
+        if (object.objectMap) {
+          object.objectMap.set(key, value);
+        }
       }
     }
   }

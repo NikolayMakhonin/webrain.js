@@ -1,9 +1,68 @@
 "use strict";
 
-Object.defineProperty(exports, "__esModule", {
+var _interopRequireDefault = require("@babel/runtime-corejs3/helpers/interopRequireDefault");
+
+var _Object$defineProperty2 = require("@babel/runtime-corejs3/core-js-stable/object/define-property");
+
+_Object$defineProperty2(exports, "__esModule", {
   value: true
 });
+
 exports.compareDefault = compareDefault;
+
+var _asyncToGenerator2 = _interopRequireDefault(require("@babel/runtime-corejs3/helpers/asyncToGenerator"));
+
+var _now = _interopRequireDefault(require("@babel/runtime-corejs3/core-js-stable/date/now"));
+
+var _classCallCheck2 = _interopRequireDefault(require("@babel/runtime-corejs3/helpers/classCallCheck"));
+
+var _createClass2 = _interopRequireDefault(require("@babel/runtime-corejs3/helpers/createClass"));
+
+var _freeze = _interopRequireDefault(require("@babel/runtime-corejs3/core-js-stable/object/freeze"));
+
+var _keys = _interopRequireDefault(require("@babel/runtime-corejs3/core-js-stable/object/keys"));
+
+var _isIterable2 = _interopRequireDefault(require("@babel/runtime-corejs3/core-js/is-iterable"));
+
+var _getIteratorMethod2 = _interopRequireDefault(require("@babel/runtime-corejs3/core-js/get-iterator-method"));
+
+var _defineProperty2 = _interopRequireDefault(require("@babel/runtime-corejs3/helpers/defineProperty"));
+
+var _regenerator = _interopRequireDefault(require("@babel/runtime-corejs3/regenerator"));
+
+var _iterator4 = _interopRequireDefault(require("@babel/runtime-corejs3/core-js-stable/symbol/iterator"));
+
+var _defineProperty3 = _interopRequireDefault(require("@babel/runtime-corejs3/core-js-stable/object/define-property"));
+
+var _setTimeout2 = _interopRequireDefault(require("@babel/runtime-corejs3/core-js-stable/set-timeout"));
+
+var _repeat = _interopRequireDefault(require("@babel/runtime-corejs3/core-js-stable/instance/repeat"));
+
+var _create = _interopRequireDefault(require("@babel/runtime-corejs3/core-js-stable/object/create"));
+
+var _indexOf = _interopRequireDefault(require("@babel/runtime-corejs3/core-js-stable/instance/index-of"));
+
+var _values = _interopRequireDefault(require("@babel/runtime-corejs3/core-js-stable/object/values"));
+
+var _typeof2 = _interopRequireDefault(require("@babel/runtime-corejs3/helpers/typeof"));
+
+var _stringify = _interopRequireDefault(require("@babel/runtime-corejs3/core-js-stable/json/stringify"));
+
+var _concat = _interopRequireDefault(require("@babel/runtime-corejs3/core-js-stable/instance/concat"));
+
+var _sort = _interopRequireDefault(require("@babel/runtime-corejs3/core-js-stable/instance/sort"));
+
+var _map = _interopRequireDefault(require("@babel/runtime-corejs3/core-js-stable/instance/map"));
+
+var _splice = _interopRequireDefault(require("@babel/runtime-corejs3/core-js-stable/instance/splice"));
+
+var _slice = _interopRequireDefault(require("@babel/runtime-corejs3/core-js-stable/instance/slice"));
+
+var _getIterator2 = _interopRequireDefault(require("@babel/runtime-corejs3/core-js/get-iterator"));
+
+var _isArray = _interopRequireDefault(require("@babel/runtime-corejs3/core-js-stable/array/is-array"));
+
+var _set = _interopRequireDefault(require("@babel/runtime-corejs3/core-js-stable/set"));
 
 var _rdtsc = require("rdtsc");
 
@@ -34,7 +93,7 @@ var _Tester = require("../../tests/common/main/rx/deep-subscribe/helpers/Tester"
 /* eslint-disable no-empty,no-shadow,no-prototype-builtins,prefer-destructuring */
 
 /* eslint-disable prefer-rest-params,arrow-body-style */
-const SetNative = Set;
+var SetNative = _set.default;
 
 require('./src/SetPolyfill');
 
@@ -56,34 +115,34 @@ describe('fundamental-operations', function () {
   }
 
   Path.prototype.unshift = function (value) {
-    const item = new Path(value);
+    var item = new Path(value);
     item.next = this;
     return item;
   };
 
   xit('array add item', function () {
     this.timeout(300000);
-    const item = 'qweqweqweqweqwe';
-    let str = item;
-    let arr1 = [];
-    let arr2 = new Array(10);
-    let path = new Path(item);
-    const result = (0, _rdtsc.calcPerformance)(5000, () => {// no operations
-    }, () => {
+    var item = 'qweqweqweqweqwe';
+    var str = item;
+    var arr1 = [];
+    var arr2 = new Array(10);
+    var path = new Path(item);
+    var result = (0, _rdtsc.calcPerformance)(5000, function () {// no operations
+    }, function () {
       str = 'qweqweqweqweqwe';
-    }, () => {
+    }, function () {
       arr1 = new Array();
-    }, () => {
+    }, function () {
       arr2 = new Array(10);
-    }, () => {
+    }, function () {
       path = new Path(item);
-    }, () => {
+    }, function () {
       str += item;
-    }, () => {
+    }, function () {
       arr1[0] = item;
-    }, () => {
+    }, function () {
       arr2[0] = item;
-    }, () => {
+    }, function () {
       path = path.unshift(item);
     });
     console.log(str, result);
@@ -95,43 +154,71 @@ describe('fundamental-operations', function () {
       return args.length + 1;
     }
 
-    function f2(...args) {
-      return args.length + 2;
+    function f2() {
+      return arguments.length + 2;
     }
 
-    function passF1(...args) {
+    function passF1() {
+      for (var _len = arguments.length, args = new Array(_len), _key = 0; _key < _len; _key++) {
+        args[_key] = arguments[_key];
+      }
+
       f1(args);
     }
 
-    function passF2(...args) {
-      f2(...args);
+    function passF2() {
+      f2.apply(void 0, arguments);
     }
 
-    const result = (0, _rdtsc.calcPerformance)(5000, () => {// no operations
-    }, () => passF1(1, 2, 3, 4, 5, 6, 7, 8, 9), () => passF2(1, 2, 3, 4, 5, 6, 7, 8, 9));
+    var result = (0, _rdtsc.calcPerformance)(5000, function () {// no operations
+    }, function () {
+      return passF1(1, 2, 3, 4, 5, 6, 7, 8, 9);
+    }, function () {
+      return passF2(1, 2, 3, 4, 5, 6, 7, 8, 9);
+    });
     console.log(result);
   });
   xit('lambda vs function', function () {
     this.timeout(300000); // noinspection JSUnusedLocalSymbols
 
     function f1(args) {
-      const calc = () => {
+      var calc = function calc() {
         if (Math.random() + 1) {
           return 1;
         }
 
-        let inputItems;
-        let output;
-        let map;
-        let expandAndDistinct;
+        var inputItems;
+        var output;
+        var map;
+        var expandAndDistinct;
 
         if (inputItems == null) {
           return output;
         }
 
-        if (Array.isArray(inputItems)) {
-          for (const item of inputItems) {
-            expandAndDistinct(item, output, map);
+        if ((0, _isArray.default)(inputItems)) {
+          var _iteratorNormalCompletion = true;
+          var _didIteratorError = false;
+          var _iteratorError = undefined;
+
+          try {
+            for (var _iterator = (0, _getIterator2.default)(inputItems), _step; !(_iteratorNormalCompletion = (_step = _iterator.next()).done); _iteratorNormalCompletion = true) {
+              var item = _step.value;
+              expandAndDistinct(item, output, map);
+            }
+          } catch (err) {
+            _didIteratorError = true;
+            _iteratorError = err;
+          } finally {
+            try {
+              if (!_iteratorNormalCompletion && _iterator.return != null) {
+                _iterator.return();
+              }
+            } finally {
+              if (_didIteratorError) {
+                throw _iteratorError;
+              }
+            }
           }
 
           return output;
@@ -156,18 +243,38 @@ describe('fundamental-operations', function () {
           return 1;
         }
 
-        let inputItems;
-        let output;
-        let map;
-        let expandAndDistinct;
+        var inputItems;
+        var output;
+        var map;
+        var expandAndDistinct;
 
         if (inputItems == null) {
           return output;
         }
 
-        if (Array.isArray(inputItems)) {
-          for (const item of inputItems) {
-            expandAndDistinct(item, output, map);
+        if ((0, _isArray.default)(inputItems)) {
+          var _iteratorNormalCompletion2 = true;
+          var _didIteratorError2 = false;
+          var _iteratorError2 = undefined;
+
+          try {
+            for (var _iterator2 = (0, _getIterator2.default)(inputItems), _step2; !(_iteratorNormalCompletion2 = (_step2 = _iterator2.next()).done); _iteratorNormalCompletion2 = true) {
+              var item = _step2.value;
+              expandAndDistinct(item, output, map);
+            }
+          } catch (err) {
+            _didIteratorError2 = true;
+            _iteratorError2 = err;
+          } finally {
+            try {
+              if (!_iteratorNormalCompletion2 && _iterator2.return != null) {
+                _iterator2.return();
+              }
+            } finally {
+              if (_didIteratorError2) {
+                throw _iteratorError2;
+              }
+            }
           }
 
           return output;
@@ -182,8 +289,12 @@ describe('fundamental-operations', function () {
       }
     }
 
-    const result = (0, _rdtsc.calcPerformance)(30000, () => {// no operations
-    }, () => f1(1), () => f2(2));
+    var result = (0, _rdtsc.calcPerformance)(30000, function () {// no operations
+    }, function () {
+      return f1(1);
+    }, function () {
+      return f2(2);
+    });
     console.log(result);
   });
   xit('lazy function parameters', function () {
@@ -205,24 +316,36 @@ describe('fundamental-operations', function () {
       return arg2.x;
     }
 
-    const result = (0, _rdtsc.calcPerformance)(60000, () => {// no operations
-    }, () => f(false, {
-      x: [1, 2, 3],
-      y: 2,
-      z: 3
-    }), () => f(false, () => ({
-      x: [1, 2, 3],
-      y: 2,
-      z: 3
-    })), () => f(true, {
-      x: [1, 2, 3],
-      y: 2,
-      z: 3
-    }), () => f(true, () => ({
-      x: [1, 2, 3],
-      y: 2,
-      z: 3
-    })));
+    var result = (0, _rdtsc.calcPerformance)(60000, function () {// no operations
+    }, function () {
+      return f(false, {
+        x: [1, 2, 3],
+        y: 2,
+        z: 3
+      });
+    }, function () {
+      return f(false, function () {
+        return {
+          x: [1, 2, 3],
+          y: 2,
+          z: 3
+        };
+      });
+    }, function () {
+      return f(true, {
+        x: [1, 2, 3],
+        y: 2,
+        z: 3
+      });
+    }, function () {
+      return f(true, function () {
+        return {
+          x: [1, 2, 3],
+          y: 2,
+          z: 3
+        };
+      });
+    });
     console.log(result);
   });
 
@@ -235,15 +358,15 @@ describe('fundamental-operations', function () {
       index = 0;
     }
 
-    for (let i = index; i < len; i++) {
+    for (var i = index; i < len; i++) {
       dest[index + i] = source[i];
     }
   }
 
   function generateArray(size) {
-    const arr = [];
+    var arr = [];
 
-    for (let i = 0; i < size; i++) {
+    for (var i = 0; i < size; i++) {
       arr.push(i);
     }
 
@@ -252,99 +375,99 @@ describe('fundamental-operations', function () {
 
   xit('array decrease length', function () {
     this.timeout(300000);
-    const arr = generateArray(10000);
-    let arr2;
-    const result = (0, _rdtsc.calcPerformance)(60000, () => {// no operations
-    }, () => {
-      arr2 = arr.slice();
-    }, () => {
-      arr2.splice(arr2.length - 1, 1); // 1368
-    }, () => {
-      arr2 = arr.slice();
-    }, () => {
+    var arr = generateArray(10000);
+    var arr2;
+    var result = (0, _rdtsc.calcPerformance)(60000, function () {// no operations
+    }, function () {
+      arr2 = (0, _slice.default)(arr).call(arr);
+    }, function () {
+      (0, _splice.default)(arr2).call(arr2, arr2.length - 1, 1); // 1368
+    }, function () {
+      arr2 = (0, _slice.default)(arr).call(arr);
+    }, function () {
       arr2.length--; // 698
-    }, () => {
-      arr2 = arr.slice();
-    }, () => {
+    }, function () {
+      arr2 = (0, _slice.default)(arr).call(arr);
+    }, function () {
       delete arr2[arr2.length - 1]; // 291
     });
     console.log(result);
   });
   xit('array decrease length 100', function () {
     this.timeout(300000);
-    const arr = generateArray(10000);
-    let arr2;
-    const result = (0, _rdtsc.calcPerformance)(60000, () => {// no operations
-    }, () => {
-      arr2 = arr.slice();
-    }, () => {
-      arr2.splice(arr2.length - 100, 100); // 3465
-    }, () => {
-      arr2 = arr.slice();
-    }, () => {
+    var arr = generateArray(10000);
+    var arr2;
+    var result = (0, _rdtsc.calcPerformance)(60000, function () {// no operations
+    }, function () {
+      arr2 = (0, _slice.default)(arr).call(arr);
+    }, function () {
+      (0, _splice.default)(arr2).call(arr2, arr2.length - 100, 100); // 3465
+    }, function () {
+      arr2 = (0, _slice.default)(arr).call(arr);
+    }, function () {
       arr2.length -= 100; // 690
     });
     console.log(result);
   });
   xit('array increase length', function () {
     this.timeout(300000);
-    const arr = generateArray(10000);
-    let arr2;
-    const result = (0, _rdtsc.calcPerformance)(60000, () => {// no operations
-    }, () => {
-      arr2 = arr.slice();
-    }, () => {
+    var arr = generateArray(10000);
+    var arr2;
+    var result = (0, _rdtsc.calcPerformance)(60000, function () {// no operations
+    }, function () {
+      arr2 = (0, _slice.default)(arr).call(arr);
+    }, function () {
       // 80803
-      const clone = new Array(arr2.length + 1);
+      var clone = new Array(arr2.length + 1);
       copyToArray(arr2, clone);
       arr2 = clone;
-    }, () => {
-      arr2 = arr.slice();
-    }, () => {
+    }, function () {
+      arr2 = (0, _slice.default)(arr).call(arr);
+    }, function () {
       arr2[arr2.length] = arr2.length; // 34189
-    }, () => {
-      arr2 = arr.slice();
-    }, () => {
+    }, function () {
+      arr2 = (0, _slice.default)(arr).call(arr);
+    }, function () {
       arr2.push(arr2.length); // 34048
-    }, () => {
-      arr2 = arr.slice();
-    }, () => {
+    }, function () {
+      arr2 = (0, _slice.default)(arr).call(arr);
+    }, function () {
       arr2.length++; // 137850
-    }, () => {
-      arr2 = arr.slice();
-    }, () => {
-      arr2.splice(arr2.length, 0, arr2.length); // 138119
+    }, function () {
+      arr2 = (0, _slice.default)(arr).call(arr);
+    }, function () {
+      (0, _splice.default)(arr2).call(arr2, arr2.length, 0, arr2.length); // 138119
     });
     console.log(result);
   });
   xit('array increase length 100', function () {
     this.timeout(300000);
-    const arr = generateArray(10000);
-    let arr2;
-    const result = (0, _rdtsc.calcPerformance)(60000, () => {// no operations
-    }, () => {
-      arr2 = arr.slice();
-    }, () => {
+    var arr = generateArray(10000);
+    var arr2;
+    var result = (0, _rdtsc.calcPerformance)(60000, function () {// no operations
+    }, function () {
+      arr2 = (0, _slice.default)(arr).call(arr);
+    }, function () {
       // 81010
-      const clone = new Array(arr2.length + 100);
+      var clone = new Array(arr2.length + 100);
       copyToArray(arr2, clone);
       arr2 = clone;
-    }, () => {
-      arr2 = arr.slice();
-    }, () => {
+    }, function () {
+      arr2 = (0, _slice.default)(arr).call(arr);
+    }, function () {
       arr2.length += 100; // 137800
-    }, () => {
-      arr2 = arr.slice();
-    }, () => {
+    }, function () {
+      arr2 = (0, _slice.default)(arr).call(arr);
+    }, function () {
       // 35132
-      for (let i = 0; i < 100; i++) {
+      for (var i = 0; i < 100; i++) {
         arr2.push(0);
       }
-    }, () => {
-      arr2 = arr.slice();
-    }, () => {
+    }, function () {
+      arr2 = (0, _slice.default)(arr).call(arr);
+    }, function () {
       // 35581
-      for (let i = arr2.length, end = i + 100; i < end; i++) {
+      for (var i = arr2.length, end = i + 100; i < end; i++) {
         arr2[i] = 0;
       }
     });
@@ -352,96 +475,104 @@ describe('fundamental-operations', function () {
   });
   xit('array default value', function () {
     this.timeout(300000);
-    const arrNumbers = generateArray(10);
-    const arrStrings = arrNumbers.map(o => o.toString());
-    const arrFunctions = arrNumbers.map(o => () => o.toString());
-    const arrObjects = arrNumbers.map(o => ({
-      o
-    }));
-    const defaultNumber = 0;
-    const defaultString = '';
-    const defaultFunction = new Function();
-    const defaultObject = {};
-    let arr;
-    const result = (0, _rdtsc.calcPerformance)(180000, () => {// no operations
-    }, () => {
-      arr = arrNumbers.slice();
-    }, () => {
+    var arrNumbers = generateArray(10);
+    var arrStrings = (0, _map.default)(arrNumbers).call(arrNumbers, function (o) {
+      return o.toString();
+    });
+    var arrFunctions = (0, _map.default)(arrNumbers).call(arrNumbers, function (o) {
+      return function () {
+        return o.toString();
+      };
+    });
+    var arrObjects = (0, _map.default)(arrNumbers).call(arrNumbers, function (o) {
+      return {
+        o: o
+      };
+    });
+    var defaultNumber = 0;
+    var defaultString = '';
+    var defaultFunction = new Function();
+    var defaultObject = {};
+    var arr;
+    var result = (0, _rdtsc.calcPerformance)(180000, function () {// no operations
+    }, function () {
+      arr = (0, _slice.default)(arrNumbers).call(arrNumbers);
+    }, function () {
       // 31
       arr[arr.length - 1] = undefined;
-    }, () => {
-      arr = arrNumbers.slice();
-    }, () => {
+    }, function () {
+      arr = (0, _slice.default)(arrNumbers).call(arrNumbers);
+    }, function () {
       // 4
       arr[arr.length - 1] = null;
-    }, () => {
-      arr = arrNumbers.slice();
-    }, () => {
+    }, function () {
+      arr = (0, _slice.default)(arrNumbers).call(arrNumbers);
+    }, function () {
       // -11
       arr[arr.length - 1] = defaultNumber;
-    }, () => {
-      arr = arrNumbers.slice();
-    }, () => {
+    }, function () {
+      arr = (0, _slice.default)(arrNumbers).call(arrNumbers);
+    }, function () {
       // 35
       arr[arr.length - 1] = defaultString;
-    }, () => {
-      arr = arrStrings.slice();
-    }, () => {
+    }, function () {
+      arr = (0, _slice.default)(arrStrings).call(arrStrings);
+    }, function () {
       // 8
       arr[arr.length - 1] = undefined;
-    }, () => {
-      arr = arrStrings.slice();
-    }, () => {
+    }, function () {
+      arr = (0, _slice.default)(arrStrings).call(arrStrings);
+    }, function () {
       // -4
       arr[arr.length - 1] = null;
-    }, () => {
-      arr = arrStrings.slice();
-    }, () => {
+    }, function () {
+      arr = (0, _slice.default)(arrStrings).call(arrStrings);
+    }, function () {
       // 27
       arr[arr.length - 1] = defaultString;
-    }, () => {
-      arr = arrStrings.slice();
-    }, () => {
+    }, function () {
+      arr = (0, _slice.default)(arrStrings).call(arrStrings);
+    }, function () {
       // -7
       arr[arr.length - 1] = defaultNumber;
-    }, () => {
-      arr = arrFunctions.slice();
-    }, () => {
+    }, function () {
+      arr = (0, _slice.default)(arrFunctions).call(arrFunctions);
+    }, function () {
       // 4
       arr[arr.length - 1] = undefined;
-    }, () => {
-      arr = arrFunctions.slice();
-    }, () => {
+    }, function () {
+      arr = (0, _slice.default)(arrFunctions).call(arrFunctions);
+    }, function () {
       // -7
       arr[arr.length - 1] = null;
-    }, () => {
-      arr = arrFunctions.slice();
-    }, () => {
+    }, function () {
+      arr = (0, _slice.default)(arrFunctions).call(arrFunctions);
+    }, function () {
       // 11
       arr[arr.length - 1] = defaultFunction;
-    }, () => {
-      arr = arrFunctions.slice();
-    }, () => {
+    }, function () {
+      arr = (0, _slice.default)(arrFunctions).call(arrFunctions);
+    }, function () {
       // 27
       arr[arr.length - 1] = defaultNumber;
-    }, () => {
-      arr = arrObjects.slice();
-    }, () => {
+    }, function () {
+      arr = (0, _slice.default)(arrObjects).call(arrObjects);
+    }, function () {
       // 8
       arr[arr.length - 1] = undefined;
-    }, () => {
-      arr = arrObjects.slice();
-    }, () => {
+    }, function () {
+      arr = (0, _slice.default)(arrObjects).call(arrObjects);
+    }, function () {
       // 27
       arr[arr.length - 1] = null;
-    }, () => {
-      arr = arrObjects.slice();
-    }, () => {
+    }, function () {
+      arr = (0, _slice.default)(arrObjects).call(arrObjects);
+    }, function () {
       // 11
       arr[arr.length - 1] = defaultObject;
-    }, () => {
-      arr = arrObjects.slice();
-    }, () => {
+    }, function () {
+      arr = (0, _slice.default)(arrObjects).call(arrObjects);
+    }, function () {
       // 8
       arr[arr.length - 1] = defaultNumber;
     });
@@ -459,9 +590,9 @@ describe('fundamental-operations', function () {
         compare = defaultCompare;
       }
 
-      let i = 0;
-      const len = array.length;
-      let ind = -1;
+      var i = 0;
+      var len = array.length;
+      var ind = -1;
 
       while (i !== len) {
         if (compare(array[i], value)) {
@@ -479,7 +610,7 @@ describe('fundamental-operations', function () {
         compare = defaultCompare;
       }
 
-      let i = array.length;
+      var i = array.length;
 
       while (i !== 0) {
         if (compare(array[i], value)) {
@@ -492,9 +623,13 @@ describe('fundamental-operations', function () {
       return -1;
     }
 
-    const arr = generateArray(10000);
-    const result = (0, _rdtsc.calcPerformance)(10000, () => {// no operations
-    }, () => lastIndexOf1(arr, 5000), () => lastIndexOf2(arr, 5000));
+    var arr = generateArray(10000);
+    var result = (0, _rdtsc.calcPerformance)(10000, function () {// no operations
+    }, function () {
+      return lastIndexOf1(arr, 5000);
+    }, function () {
+      return lastIndexOf2(arr, 5000);
+    });
     console.log(result);
   }); // xit('array capacity', function () {
   // 	this.timeout(300000)
@@ -553,13 +688,13 @@ describe('fundamental-operations', function () {
 
   function calcSortCompareCount(array, size, addArray) {
     // array.length = size
-    let count = 0;
+    var count = 0;
 
-    for (let i = 0, len = addArray.length; i < len; i++) {
+    for (var i = 0, len = addArray.length; i < len; i++) {
       array[size++] = addArray[i];
     }
 
-    array.sort((o1, o2) => {
+    (0, _sort.default)(array).call(array, function (o1, o2) {
       count++;
       return compareDefault(o1, o2);
     }); // console.log(`${JSON.stringify(array)}`)
@@ -568,12 +703,12 @@ describe('fundamental-operations', function () {
   }
 
   function calcBinarySearchCount(array, size, addArray) {
-    let count = 0;
+    var count = 0;
 
-    for (let i = 0, addLen = addArray.length; i < addLen; i++) {
-      const addItem = addArray[i]; // eslint-disable-next-line no-loop-func
+    for (var i = 0, addLen = addArray.length; i < addLen; i++) {
+      var addItem = addArray[i]; // eslint-disable-next-line no-loop-func
 
-      let insertIndex = (0, _array.binarySearch)(array, addItem, null, size, (o1, o2) => {
+      var insertIndex = (0, _array.binarySearch)(array, addItem, null, size, function (o1, o2) {
         count++;
         return compareDefault(o1, o2);
       });
@@ -583,12 +718,12 @@ describe('fundamental-operations', function () {
       } // insert
 
 
-      for (let j = size - 1; j < size; j++) {
+      for (var j = size - 1; j < size; j++) {
         array[j + 1] = array[j];
       }
 
-      for (let j = size - 1; j > insertIndex; j--) {
-        array[j] = array[j - 1];
+      for (var _j = size - 1; _j > insertIndex; _j--) {
+        array[_j] = array[_j - 1];
       }
 
       array[insertIndex] = addItem;
@@ -600,72 +735,132 @@ describe('fundamental-operations', function () {
   }
 
   function printSortCompareCount(array, addArray) {
-    const sortCount = calcSortCompareCount(array, array.length, addArray);
-    const binarySearchCount = calcBinarySearchCount(array, array.length, addArray);
-    console.log(`${sortCount}\t${binarySearchCount}\t${JSON.stringify(array)}\t${JSON.stringify(addArray)}`);
+    var _context, _context2, _context3;
+
+    var sortCount = calcSortCompareCount(array, array.length, addArray);
+    var binarySearchCount = calcBinarySearchCount(array, array.length, addArray);
+    console.log((0, _concat.default)(_context = (0, _concat.default)(_context2 = (0, _concat.default)(_context3 = "".concat(sortCount, "\t")).call(_context3, binarySearchCount, "\t")).call(_context2, (0, _stringify.default)(array), "\t")).call(_context, (0, _stringify.default)(addArray)));
   }
 
   xit('sorted array add items', function () {
-    this.timeout(300000);
-    const array = [];
-    const addArray = generateArray(1000).sort((o1, o2) => Math.random() > 0.5 ? -1 : 1); // [-3, -1, -2, 1, 9, -4, 7, -6, 11]
+    var _context4;
 
-    let resultArray; // console.log(JSON.stringify(addArray))
+    this.timeout(300000);
+    var array = [];
+    var addArray = (0, _sort.default)(_context4 = generateArray(1000)).call(_context4, function (o1, o2) {
+      return Math.random() > 0.5 ? -1 : 1;
+    }); // [-3, -1, -2, 1, 9, -4, 7, -6, 11]
+
+    var resultArray; // console.log(JSON.stringify(addArray))
     // printSortCompareCount(array.slice(), addArray)
 
-    const result = (0, _rdtsc.calcPerformance)(10000, () => {// no operations
-    }, () => {
-      resultArray = array.slice().concat(addArray.map(o => 0));
-    }, () => calcSortCompareCount(resultArray, array.length, addArray), () => {
-      resultArray = array.slice().concat(addArray.map(o => 0));
-    }, () => calcBinarySearchCount(resultArray, array.length, addArray));
+    var result = (0, _rdtsc.calcPerformance)(10000, function () {// no operations
+    }, function () {
+      var _context5;
+
+      resultArray = (0, _concat.default)(_context5 = (0, _slice.default)(array).call(array)).call(_context5, (0, _map.default)(addArray).call(addArray, function (o) {
+        return 0;
+      }));
+    }, function () {
+      return calcSortCompareCount(resultArray, array.length, addArray);
+    }, function () {
+      var _context6;
+
+      resultArray = (0, _concat.default)(_context6 = (0, _slice.default)(array).call(array)).call(_context6, (0, _map.default)(addArray).call(addArray, function (o) {
+        return 0;
+      }));
+    }, function () {
+      return calcBinarySearchCount(resultArray, array.length, addArray);
+    });
     console.log(result);
   });
   xit('regexp', function () {
     this.timeout(300000);
-    const regexp = /qwe\/wer\/ert\/rty\/tyu/;
-    const path = 'qwe/wer/ert/rty/tyu';
-    const wrongPath = 'wwe/wer/ert/rty/tyu';
-    const checkPath = wrongPath.replace(/^w/, 'q');
-    const result = (0, _rdtsc.calcPerformance)(10000, // () => {
+    var regexp = /qwe\/wer\/ert\/rty\/tyu/;
+    var path = 'qwe/wer/ert/rty/tyu';
+    var wrongPath = 'wwe/wer/ert/rty/tyu';
+    var checkPath = wrongPath.replace(/^w/, 'q');
+    var result = (0, _rdtsc.calcPerformance)(10000, // () => {
     // 	// no operations
     // },
-    () => wrongPath === checkPath, () => path === checkPath, () => regexp.test(wrongPath), () => wrongPath.match(regexp), () => regexp.test(path), () => path.match(regexp));
+    function () {
+      return wrongPath === checkPath;
+    }, function () {
+      return path === checkPath;
+    }, function () {
+      return regexp.test(wrongPath);
+    }, function () {
+      return wrongPath.match(regexp);
+    }, function () {
+      return regexp.test(path);
+    }, function () {
+      return path.match(regexp);
+    });
     console.log(result);
   });
   xit('operations inside compare func', function () {
     this.timeout(300000);
 
-    const obj = () => {};
+    var obj = function obj() {};
 
-    const obj2 = {};
-    const result = (0, _rdtsc.calcPerformance)(60000, () => {// no operations
-    }, () => obj === obj2, // -11
-    () => typeof obj === 'undefined', // -7
-    () => obj === null, // -7
-    () => obj.valueOf(), // 16
-    () => typeof obj === 'number', // -7
-    () => typeof obj === 'boolean', // -8
-    () => typeof obj === 'string', // -7
-    () => typeof obj2 === 'function', // -7
-    () => typeof obj.valueOf() === 'number', // -7
-    () => typeof obj.valueOf() === 'boolean', // -8
-    () => typeof obj.valueOf() === 'string', // -7
-    () => typeof obj2.valueOf() === 'function', // -7
-    () => (0, _objectUniqueId.getObjectUniqueId)(obj), // -11
-    () => typeof obj === 'object', // 146
-    () => typeof obj === 'symbol' // 150
+    var obj2 = {};
+    var result = (0, _rdtsc.calcPerformance)(60000, function () {// no operations
+    }, function () {
+      return obj === obj2;
+    }, // -11
+    function () {
+      return typeof obj === 'undefined';
+    }, // -7
+    function () {
+      return obj === null;
+    }, // -7
+    function () {
+      return obj.valueOf();
+    }, // 16
+    function () {
+      return typeof obj === 'number';
+    }, // -7
+    function () {
+      return typeof obj === 'boolean';
+    }, // -8
+    function () {
+      return typeof obj === 'string';
+    }, // -7
+    function () {
+      return typeof obj2 === 'function';
+    }, // -7
+    function () {
+      return typeof obj.valueOf() === 'number';
+    }, // -7
+    function () {
+      return typeof obj.valueOf() === 'boolean';
+    }, // -8
+    function () {
+      return typeof obj.valueOf() === 'string';
+    }, // -7
+    function () {
+      return typeof obj2.valueOf() === 'function';
+    }, // -7
+    function () {
+      return (0, _objectUniqueId.getObjectUniqueId)(obj);
+    }, // -11
+    function () {
+      return (0, _typeof2.default)(obj) === 'object';
+    }, // 146
+    function () {
+      return (0, _typeof2.default)(obj) === 'symbol';
+    } // 150
     );
     console.log(result);
   });
   xit('Set', function () {
     this.timeout(300000);
-    assert.strictEqual(SetNative, Set);
-    assert.notStrictEqual(Set, SetPolyfill);
-    const countObject = 1000;
-    const objects = [];
+    assert.strictEqual(SetNative, _set.default);
+    assert.notStrictEqual(_set.default, SetPolyfill);
+    var countObject = 1000;
+    var objects = [];
 
-    for (let i = 0; i < countObject; i++) {
+    for (var i = 0; i < countObject; i++) {
       objects[i] = {
         value: i
       };
@@ -673,101 +868,172 @@ describe('fundamental-operations', function () {
     }
 
     function testSet(addObject, removeObject, getIterableValues) {
-      for (let i = 0; i < countObject; i++) {
-        addObject(objects[i]);
+      for (var _i = 0; _i < countObject; _i++) {
+        addObject(objects[_i]);
       }
 
-      for (let i = 0; i < countObject; i++) {
+      for (var _i2 = 0; _i2 < countObject; _i2++) {
         // for (let i = 99; i >= 0; i--) {
-        removeObject(objects[i]);
+        removeObject(objects[_i2]);
       }
 
-      for (const value of getIterableValues()) {}
+      var _iteratorNormalCompletion3 = true;
+      var _didIteratorError3 = false;
+      var _iteratorError3 = undefined;
+
+      try {
+        for (var _iterator3 = (0, _getIterator2.default)(getIterableValues()), _step3; !(_iteratorNormalCompletion3 = (_step3 = _iterator3.next()).done); _iteratorNormalCompletion3 = true) {
+          var _value = _step3.value;
+        }
+      } catch (err) {
+        _didIteratorError3 = true;
+        _iteratorError3 = err;
+      } finally {
+        try {
+          if (!_iteratorNormalCompletion3 && _iterator3.return != null) {
+            _iterator3.return();
+          }
+        } finally {
+          if (_didIteratorError3) {
+            throw _iteratorError3;
+          }
+        }
+      }
     } // const set1 = new Set()
     // const set2 = {}
     // const set3 = []
 
 
     function testSetNative() {
-      const set = new SetNative();
-      testSet(o => set.add(o), o => set.delete(o), () => set); // assert.strictEqual(set1.size, 0)
+      var set = new SetNative();
+      testSet(function (o) {
+        return set.add(o);
+      }, function (o) {
+        return set.delete(o);
+      }, function () {
+        return set;
+      }); // assert.strictEqual(set1.size, 0)
     }
 
     function testObject() {
-      const set = {};
-      testSet(o => set[(0, _objectUniqueId.getObjectUniqueId)(o)] = o, o => delete set[(0, _objectUniqueId.getObjectUniqueId)(o)], o => Object.values(set)); // assert.strictEqual(Object.keys(set).length, 0)
+      var set = {};
+      testSet(function (o) {
+        return set[(0, _objectUniqueId.getObjectUniqueId)(o)] = o;
+      }, function (o) {
+        return delete set[(0, _objectUniqueId.getObjectUniqueId)(o)];
+      }, function (o) {
+        return (0, _values.default)(set);
+      }); // assert.strictEqual(Object.keys(set).length, 0)
     }
 
     function testArrayHashTable() {
-      const set = [];
-      testSet(o => set[(0, _objectUniqueId.getObjectUniqueId)(o)] = o, o => delete set[(0, _objectUniqueId.getObjectUniqueId)(o)], o => set); // assert.strictEqual(set.length, 0)
+      var set = [];
+      testSet(function (o) {
+        return set[(0, _objectUniqueId.getObjectUniqueId)(o)] = o;
+      }, function (o) {
+        return delete set[(0, _objectUniqueId.getObjectUniqueId)(o)];
+      }, function (o) {
+        return set;
+      }); // assert.strictEqual(set.length, 0)
     }
 
     function testArraySplice() {
-      const set = [];
-      testSet(o => set[set.length] = o, o => {
-        const i = set.indexOf(o);
+      var set = [];
+      testSet(function (o) {
+        return set[set.length] = o;
+      }, function (o) {
+        var i = (0, _indexOf.default)(set).call(set, o);
 
         if (i >= 0) {
-          set.splice(i, 1);
+          (0, _splice.default)(set).call(set, i, 1);
         }
-      }, o => set); // assert.strictEqual(set.length, 0)
+      }, function (o) {
+        return set;
+      }); // assert.strictEqual(set.length, 0)
     }
 
     function testArray() {
-      const set = [];
-      testSet(o => set[set.length] = o, o => {
-        const i = set.indexOf(o);
+      var set = [];
+      testSet(function (o) {
+        return set[set.length] = o;
+      }, function (o) {
+        var i = (0, _indexOf.default)(set).call(set, o);
 
         if (i >= 0) {
           set[i] = set[set.length - 1];
           set.length--;
         }
-      }, o => set); // assert.strictEqual(set.length, 0)
+      }, function (o) {
+        return set;
+      }); // assert.strictEqual(set.length, 0)
     }
 
     function testArrayKeepOrder() {
-      const set = [];
-      testSet(o => set[set.length] = o, o => {
-        const i = set.indexOf(o);
+      var set = [];
+      testSet(function (o) {
+        return set[set.length] = o;
+      }, function (o) {
+        var i = (0, _indexOf.default)(set).call(set, o);
 
         if (i >= 0) {
-          const len = set.length;
+          var len = set.length;
 
-          for (let j = i + 1; j < len; j++) {
+          for (var j = i + 1; j < len; j++) {
             set[j - 1] = set[j];
           }
 
           set.length = len - 1;
         }
-      }, o => set); // assert.strictEqual(set.length, 0)
+      }, function (o) {
+        return set;
+      }); // assert.strictEqual(set.length, 0)
     }
 
     function testSortedList(options) {
-      const set = new _SortedList.SortedList(options);
-      testSet(o => set.add(o), o => set.remove(o), o => set); // set.clear()
+      var set = new _SortedList.SortedList(options);
+      testSet(function (o) {
+        return set.add(o);
+      }, function (o) {
+        return set.remove(o);
+      }, function (o) {
+        return set;
+      }); // set.clear()
       // assert.strictEqual(set.size, 0)
     }
 
     function testSetPolyfill() {
       // console.log(SetPolyfill.toString())
-      const set = new SetPolyfill();
-      testSet(o => set.add(o), o => set.delete(o), o => set); // assert.strictEqual(set.size, 0)
+      var set = new SetPolyfill();
+      testSet(function (o) {
+        return set.add(o);
+      }, function (o) {
+        return set.delete(o);
+      }, function (o) {
+        return set;
+      }); // assert.strictEqual(set.size, 0)
     }
 
     function testArraySet() {
       // console.log(ArraySet.toString())
-      const set = new _ArraySet.ArraySet();
-      testSet(o => set.add(o), o => set.delete(o), o => set); // assert.strictEqual(set.size, 0)
+      var set = new _ArraySet.ArraySet();
+      testSet(function (o) {
+        return set.add(o);
+      }, function (o) {
+        return set.delete(o);
+      }, function (o) {
+        return set;
+      }); // assert.strictEqual(set.size, 0)
     }
 
-    const result = (0, _rdtsc.calcPerformance)(10000, () => {// no operations
-    }, testSetNative, testObject, testArrayHashTable, testArraySplice, testArray, testArrayKeepOrder, testSetPolyfill, testArraySet, () => testSortedList({
-      autoSort: true,
-      notAddIfExists: true,
-      minAllocatedSize: 1000 // compare         : compareUniqueId
+    var result = (0, _rdtsc.calcPerformance)(10000, function () {// no operations
+    }, testSetNative, testObject, testArrayHashTable, testArraySplice, testArray, testArrayKeepOrder, testSetPolyfill, testArraySet, function () {
+      return testSortedList({
+        autoSort: true,
+        notAddIfExists: true,
+        minAllocatedSize: 1000 // compare         : compareUniqueId
 
-    }) // () => testSortedList({
+      });
+    } // () => testSortedList({
     // 	autoSort        : true,
     // 	notAddIfExists  : false,
     // 	minAllocatedSize: 1000
@@ -782,81 +1048,159 @@ describe('fundamental-operations', function () {
   });
   xit('Number toString', function () {
     this.timeout(300000);
-    const numInt = 123456789;
-    const numFloat = 1234.56789;
-    const str = '1234.56789_';
-    const result = (0, _rdtsc.calcPerformance)(60000, () => {// no operations
-    }, () => str + 99, () => numInt.toString(10), () => numInt.toString(16), () => numInt.toString(36), () => numFloat.toString(10), () => numFloat.toString(16), () => numFloat.toString(36));
+    var numInt = 123456789;
+    var numFloat = 1234.56789;
+    var str = '1234.56789_';
+    var result = (0, _rdtsc.calcPerformance)(60000, function () {// no operations
+    }, function () {
+      return str + 99;
+    }, function () {
+      return numInt.toString(10);
+    }, function () {
+      return numInt.toString(16);
+    }, function () {
+      return numInt.toString(36);
+    }, function () {
+      return numFloat.toString(10);
+    }, function () {
+      return numFloat.toString(16);
+    }, function () {
+      return numFloat.toString(36);
+    });
     console.log(result);
   });
   xit('hasOwnProperty', function () {
     this.timeout(300000);
-    const object = {
+    var object = {
       property: true
     };
-    const child = Object.create(object);
-    const result = (0, _rdtsc.calcPerformance)(60000, () => {// no operations
-    }, () => Object.prototype.hasOwnProperty.call(object, 'property'), () => object.hasOwnProperty('property'), () => Object.prototype.hasOwnProperty.call(child, 'property'), () => child.hasOwnProperty('property'));
+    var child = (0, _create.default)(object);
+    var result = (0, _rdtsc.calcPerformance)(60000, function () {// no operations
+    }, function () {
+      return Object.prototype.hasOwnProperty.call(object, 'property');
+    }, function () {
+      return object.hasOwnProperty('property');
+    }, function () {
+      return Object.prototype.hasOwnProperty.call(child, 'property');
+    }, function () {
+      return child.hasOwnProperty('property');
+    });
     console.log(result);
   });
   xit('deepSubscribe', function () {
     this.timeout(300000);
 
-    const createTester = (...propertyNames) => new _Tester.Tester({
-      object: (0, _Tester.createObject)().object,
-      immediate: true,
-      performanceTest: true
-    }, b => b.repeat(1, 3, b => b.any( // b => b.propertyRegexp(/object|observableObject/),
-    b => b.propertyNames('object', 'observableObject'), b => b.propertyNames(...propertyNames).path(o => o['#']))).path(o => o['#'])).subscribe([]).unsubscribe([]);
+    var createTester = function createTester() {
+      for (var _len2 = arguments.length, propertyNames = new Array(_len2), _key2 = 0; _key2 < _len2; _key2++) {
+        propertyNames[_key2] = arguments[_key2];
+      }
 
-    const testerList = createTester('list');
-    const testerSet = createTester('set');
-    const testerMap = createTester('map');
-    const testerObservableList = createTester('observableList');
-    const testerObservableSet = createTester('observableSet');
-    const testerObservableMap = createTester('observableMap');
-    const testerAll = createTester('list', 'set', 'map', 'observableList', 'observableSet', 'observableMap');
-    const result = (0, _rdtsc.calcPerformance)(10000, () => {// no operations
-    }, () => testerList.subscribe([]), () => testerList.unsubscribe([]), () => testerSet.subscribe([]), () => testerSet.unsubscribe([]), () => testerMap.subscribe([]), () => testerMap.unsubscribe([]), () => testerObservableList.subscribe([]), () => testerObservableList.unsubscribe([]), () => testerObservableSet.subscribe([]), () => testerObservableSet.unsubscribe([]), () => testerObservableMap.subscribe([]), () => testerObservableMap.unsubscribe([]), () => testerAll.subscribe([]), () => testerAll.unsubscribe([]));
+      return new _Tester.Tester({
+        object: (0, _Tester.createObject)().object,
+        immediate: true,
+        performanceTest: true
+      }, function (b) {
+        return (0, _repeat.default)(b).call(b, 1, 3, function (b) {
+          return b.any( // b => b.propertyRegexp(/object|observableObject/),
+          function (b) {
+            return b.propertyNames('object', 'observableObject');
+          }, function (b) {
+            return b.propertyNames.apply(b, propertyNames).path(function (o) {
+              return o['#'];
+            });
+          });
+        }).path(function (o) {
+          return o['#'];
+        });
+      }).subscribe([]).unsubscribe([]);
+    };
+
+    var testerList = createTester('list');
+    var testerSet = createTester('set');
+    var testerMap = createTester('map');
+    var testerObservableList = createTester('observableList');
+    var testerObservableSet = createTester('observableSet');
+    var testerObservableMap = createTester('observableMap');
+    var testerAll = createTester('list', 'set', 'map', 'observableList', 'observableSet', 'observableMap');
+    var result = (0, _rdtsc.calcPerformance)(10000, function () {// no operations
+    }, function () {
+      return testerList.subscribe([]);
+    }, function () {
+      return testerList.unsubscribe([]);
+    }, function () {
+      return testerSet.subscribe([]);
+    }, function () {
+      return testerSet.unsubscribe([]);
+    }, function () {
+      return testerMap.subscribe([]);
+    }, function () {
+      return testerMap.unsubscribe([]);
+    }, function () {
+      return testerObservableList.subscribe([]);
+    }, function () {
+      return testerObservableList.unsubscribe([]);
+    }, function () {
+      return testerObservableSet.subscribe([]);
+    }, function () {
+      return testerObservableSet.unsubscribe([]);
+    }, function () {
+      return testerObservableMap.subscribe([]);
+    }, function () {
+      return testerObservableMap.unsubscribe([]);
+    }, function () {
+      return testerAll.subscribe([]);
+    }, function () {
+      return testerAll.unsubscribe([]);
+    });
     console.log(result);
   });
   xit('setTimeout', function () {
     this.timeout(300000);
 
-    const func = () => {};
+    var func = function func() {};
 
-    let timerId;
-    const result = (0, _rdtsc.calcPerformance)(10000, () => {// no operations
-    }, () => timerId = setTimeout(func, 1000), () => clearTimeout(timerId));
+    var timerId;
+    var result = (0, _rdtsc.calcPerformance)(10000, function () {// no operations
+    }, function () {
+      return timerId = (0, _setTimeout2.default)(func, 1000);
+    }, function () {
+      return clearTimeout(timerId);
+    });
     console.log(result);
   });
   xit('Math.max()', function () {
+    var _this = this;
+
     this.timeout(300000);
 
-    const func = () => {};
+    var func = function func() {};
 
-    let timerId;
+    var timerId;
     this.value1 = 0;
     this.value2 = 1;
     this.value3 = 2;
-    const {
-      value1,
-      value2,
-      value3
-    } = this;
-    const result = (0, _rdtsc.calcPerformance)(10000, () => {// no operations
-    }, () => Math.max(this.value1, this.value2, this.value3), () => Math.max(value1, value2, value3));
+    var value1 = this.value1,
+        value2 = this.value2,
+        value3 = this.value3;
+    var result = (0, _rdtsc.calcPerformance)(10000, function () {// no operations
+    }, function () {
+      return Math.max(_this.value1, _this.value2, _this.value3);
+    }, function () {
+      return Math.max(value1, value2, value3);
+    });
     console.log(result);
   });
   xit('"out" vs "set func" params', function () {
+    var _this2 = this;
+
     this.timeout(300000);
 
-    const funcOut = (a, out) => {
+    var funcOut = function funcOut(a, out) {
       out[0] = a;
       return Math.random() !== 0.5;
     };
 
-    const funcSet = (a, set) => {
+    var funcSet = function funcSet(a, set) {
       if (Math.random() !== 0.5) {
         set(a);
       }
@@ -864,59 +1208,65 @@ describe('fundamental-operations', function () {
       return a;
     };
 
-    const out = [];
-    const result = (0, _rdtsc.calcPerformance)(120000, () => {// no operations
-    }, () => {
-      const out0 = [];
+    var out = [];
+    var result = (0, _rdtsc.calcPerformance)(120000, function () {// no operations
+    }, function () {
+      var out0 = [];
 
       if (funcOut(Math.random(), out0)) {
-        this.prop = out0[0];
+        _this2.prop = out0[0];
       }
-    }, () => {
+    }, function () {
       if (funcOut(Math.random(), out)) {
-        this.prop = out[0];
+        _this2.prop = out[0];
       }
-    }, () => {
-      funcSet(Math.random(), a => {
-        this.prop = a;
+    }, function () {
+      funcSet(Math.random(), function (a) {
+        _this2.prop = a;
       });
     });
     console.log(result);
   });
   xit('func params as object', function () {
+    var _arguments = arguments;
     this.timeout(300000);
 
-    const funcSimple = (param0, param1, param2, param3) => param0 || param1 || param2 || param3;
+    var funcSimple = function funcSimple(param0, param1, param2, param3) {
+      return param0 || param1 || param2 || param3;
+    };
 
-    const funcObjectParams = ({
-      param0,
-      param1,
-      param2,
-      param3
-    } = {}) => param0 || param1 || param2 || param3;
-
-    const funcObjectParamsBabel = () => {
-      // eslint-disable-next-line one-var
-      const _ref = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : {},
-            param0 = _ref.param0,
-            param1 = _ref.param1,
-            param2 = _ref.param2,
-            param3 = _ref.param3;
+    var funcObjectParams = function funcObjectParams() {
+      var _ref2 = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : {},
+          param0 = _ref2.param0,
+          param1 = _ref2.param1,
+          param2 = _ref2.param2,
+          param3 = _ref2.param3;
 
       return param0 || param1 || param2 || param3;
     };
 
-    const result = (0, _rdtsc.calcPerformance)(120000, () => {// no operations
-    }, () => {
+    var funcObjectParamsBabel = function funcObjectParamsBabel() {
+      // eslint-disable-next-line one-var
+      var _ref = _arguments.length > 0 && _arguments[0] !== undefined ? _arguments[0] : {},
+          param0 = _ref.param0,
+          param1 = _ref.param1,
+          param2 = _ref.param2,
+          param3 = _ref.param3;
+
+      return param0 || param1 || param2 || param3;
+    };
+
+    var result = (0, _rdtsc.calcPerformance)(120000, function () {// no operations
+    }, function () {
       funcSimple(Math.random() < 0.5, Math.random() < 0.5, Math.random() < 0.5, Math.random() < 0.5);
-    }, () => {
+    }, function () {
       funcObjectParams({
         param0: Math.random() < 0.5,
         param1: Math.random() < 0.5,
         param2: Math.random() < 0.5,
         param3: Math.random() < 0.5
       });
-    }, () => {
+    }, function () {
       // @ts-ignore
       funcObjectParamsBabel({
         param0: Math.random() < 0.5,
@@ -929,27 +1279,27 @@ describe('fundamental-operations', function () {
   });
   xit('new Array(size)', function () {
     this.timeout(300000);
-    const size = 1000;
-    const arrSimple = [];
-    const arrConstructor = new Array(size);
-    const arrConstructorFilled = new Array(size);
+    var size = 1000;
+    var arrSimple = [];
+    var arrConstructor = new Array(size);
+    var arrConstructorFilled = new Array(size);
 
-    for (let i = 0; i < size; i++) {
-      arrSimple[i] = undefined;
-      arrConstructorFilled[i] = undefined;
+    for (var _i3 = 0; _i3 < size; _i3++) {
+      arrSimple[_i3] = undefined;
+      arrConstructorFilled[_i3] = undefined;
     }
 
-    let i = size / 2 | 0;
-    const result = (0, _rdtsc.calcPerformance)(120000, () => {// no operations
-    }, () => {
+    var i = size / 2 | 0;
+    var result = (0, _rdtsc.calcPerformance)(120000, function () {// no operations
+    }, function () {
       arrSimple[i] = i;
       i = (i + 7) % size;
       return arrSimple[i];
-    }, () => {
+    }, function () {
       arrConstructorFilled[i] = i;
       i = (i + 7) % size;
       return arrConstructorFilled[i];
-    }, () => {
+    }, function () {
       arrConstructor[i] = i;
       i = (i + 7) % size;
       return arrConstructor[i];
@@ -959,7 +1309,7 @@ describe('fundamental-operations', function () {
 
   function defineProperty(obj, propertyName) {
     obj[propertyName] = 0;
-    Object.defineProperty(obj, propertyName, {
+    (0, _defineProperty3.default)(obj, propertyName, {
       configurable: true,
       enumerable: false,
       writable: true,
@@ -969,63 +1319,63 @@ describe('fundamental-operations', function () {
 
   function definePropertyGetSet(obj, propertyName) {
     obj[propertyName] = 0;
-    Object.defineProperty(obj, propertyName, {
+    (0, _defineProperty3.default)(obj, propertyName, {
       configurable: true,
       enumerable: false,
-      get: () => 0,
-
-      set(o) {}
-
+      get: function get() {
+        return 0;
+      },
+      set: function set(o) {}
     });
   }
 
   xit('delete property', function () {
     this.timeout(300000);
-    const hashTable = {};
+    var hashTable = {};
 
-    for (let i = 0; i < 10000; i++) {
+    for (var i = 0; i < 10000; i++) {
       hashTable[i] = i;
     }
 
-    const obj = {};
-    const result = (0, _rdtsc.calcPerformance)(20000, () => {// no operations
-    }, () => {
+    var obj = {};
+    var result = (0, _rdtsc.calcPerformance)(20000, function () {// no operations
+    }, function () {
       // 154
       obj.x = 0;
-    }, () => {
+    }, function () {
       // 46
       obj.x = void 0;
-    }, () => {
+    }, function () {
       // 108
       delete obj.x;
-    }, () => {
+    }, function () {
       // 92
       hashTable[Math.random() * 10000 | 0] = void 0;
-    }, () => {
+    }, function () {
       // 395
       delete hashTable[Math.random() * 10000 | 0];
-    }, () => {
+    }, function () {
       // 2320
       (0, _objectUniqueId.getObjectUniqueId)({});
-    }, () => {
+    }, function () {
       // 1507
       defineProperty(obj, 'x');
-    }, () => {
+    }, function () {
       // 58
       obj.x = void 0;
-    }, () => {
+    }, function () {
       // 108
       delete obj.x;
-    }, () => {
+    }, function () {
       // 1860
       definePropertyGetSet(obj, 'x');
-    }, () => {
+    }, function () {
       // 909
       obj.x = void 0;
-    }, () => {
+    }, function () {
       // 119
       delete obj.x;
-    }, () => {
+    }, function () {
       // 5
       return {};
     });
@@ -1033,74 +1383,115 @@ describe('fundamental-operations', function () {
   });
   xit('Promise sync', function () {
     this.timeout(300000);
-    const result = (0, _rdtsc.calcPerformance)(20000, () => {// no operations
-    }, () => {
-      let resolve;
-      new _synchronousPromise.SynchronousPromise(o => {
+    var result = (0, _rdtsc.calcPerformance)(20000, function () {// no operations
+    }, function () {
+      var resolve;
+      new _synchronousPromise.SynchronousPromise(function (o) {
         resolve = o;
-      }).then(o => true); // .then(o => true)
+      }).then(function (o) {
+        return true;
+      }); // .then(o => true)
 
       resolve(1);
-    }, () => {
-      let resolve;
-      new _ThenableSync.ThenableSync(o => {
+    }, function () {
+      var resolve;
+      new _ThenableSync.ThenableSync(function (o) {
         resolve = o;
-      }).then(o => true); // .then(o => true)
+      }).then(function (o) {
+        return true;
+      }); // .then(o => true)
 
       resolve(1);
-    }, () => {
-      let resolve;
-      let result;
-      new _synchronousPromise.SynchronousPromise(o => {
+    }, function () {
+      var resolve;
+      var result;
+      new _synchronousPromise.SynchronousPromise(function (o) {
         resolve = o;
-      }).then(o => true).then(o => result = o);
+      }).then(function (o) {
+        return true;
+      }).then(function (o) {
+        return result = o;
+      });
       resolve(1);
-    }, () => {
-      let resolve;
-      let result;
-      new _ThenableSync.ThenableSync(o => {
+    }, function () {
+      var resolve;
+      var result;
+      new _ThenableSync.ThenableSync(function (o) {
         resolve = o;
-      }).then(o => true).then(o => result = o);
+      }).then(function (o) {
+        return true;
+      }).then(function (o) {
+        return result = o;
+      });
       resolve(1);
     });
     console.log(result);
   });
   xit('is iterable', function () {
     this.timeout(300000);
-    const iterable = true;
-    const iterable2 = {
-      *[Symbol.iterator]() {
-        for (let i = 0; i < 100; i++) {
-          if (Math.random() > 1) {
-            return 2;
+    var iterable = true;
+    var iterable2 = (0, _defineProperty2.default)({}, _iterator4.default,
+    /*#__PURE__*/
+    _regenerator.default.mark(function _callee() {
+      var i;
+      return _regenerator.default.wrap(function _callee$(_context7) {
+        while (1) {
+          switch (_context7.prev = _context7.next) {
+            case 0:
+              i = 0;
+
+            case 1:
+              if (!(i < 100)) {
+                _context7.next = 7;
+                break;
+              }
+
+              if (!(Math.random() > 1)) {
+                _context7.next = 4;
+                break;
+              }
+
+              return _context7.abrupt("return", 2);
+
+            case 4:
+              i++;
+              _context7.next = 1;
+              break;
+
+            case 7:
+              _context7.next = 9;
+              return 1;
+
+            case 9:
+              return _context7.abrupt("return", 0);
+
+            case 10:
+            case "end":
+              return _context7.stop();
           }
         }
-
-        yield 1;
-        return 0;
-      }
-
-    };
-    const result = (0, _rdtsc.calcPerformance)(20000, () => {// no operations
+      }, _callee);
+    }));
+    var result = (0, _rdtsc.calcPerformance)(20000, function () {// no operations
     }, // () => {
     // 	return iterable && Symbol.iterator in iterable
     // },
     // () => {
     // 	return iterable != null && Symbol.iterator in iterable
     // },
-    () => {
+    function () {
       // 0
-      return iterable && typeof iterable[Symbol.iterator] === 'function';
-    }, () => {
+      return iterable && typeof (0, _getIteratorMethod2.default)(iterable) === 'function';
+    }, function () {
       // 0
-      return iterable != null && typeof iterable[Symbol.iterator] === 'function';
-    }, () => {
+      return iterable != null && typeof (0, _getIteratorMethod2.default)(iterable) === 'function';
+    }, function () {
       // 100
-      return iterable && Symbol.iterator in Object(iterable);
-    }, () => {
+      return iterable && (0, _isIterable2.default)(Object(iterable));
+    }, function () {
       // 100
-      return iterable != null && Symbol.iterator in Object(iterable);
-    }, () => {
+      return iterable != null && (0, _isIterable2.default)(Object(iterable));
+    }, function () {
       // 0
       return (0, _helpers.isIterable)(iterable);
     });
@@ -1108,95 +1499,100 @@ describe('fundamental-operations', function () {
   });
   xit('array is associative', function () {
     this.timeout(300000);
-    const arr = [];
+    var arr = [];
 
-    for (let i = 0; i < 1000; i++) {
+    for (var i = 0; i < 1000; i++) {
       arr[i] = i;
     }
 
-    const result = (0, _rdtsc.calcPerformance)(2000, () => {// no operations
-    }, () => {
-      return arr.length === Object.keys(arr).length;
+    var result = (0, _rdtsc.calcPerformance)(2000, function () {// no operations
+    }, function () {
+      return arr.length === (0, _keys.default)(arr).length;
     });
     console.log(result);
   });
   xit('Object.freeze', function () {
     this.timeout(300000);
-    const result = (0, _rdtsc.calcPerformance)(2000, // () => {
+    var result = (0, _rdtsc.calcPerformance)(2000, // () => {
     // 	// no operations
     // },
-    () => {
-      const x = {};
+    function () {
+      var x = {};
       return x;
-    }, () => {
-      const x = {};
-      Object.freeze(x);
-    }, () => {
-      const x = {};
+    }, function () {
+      var x = {};
+      (0, _freeze.default)(x);
+    }, function () {
+      var x = {};
       (0, _objectUniqueId.getObjectUniqueId)(x);
-      Object.freeze(x);
-    }, () => {
-      const x = {};
+      (0, _freeze.default)(x);
+    }, function () {
+      var x = {};
       (0, _objectUniqueId.freezeWithUniqueId)(x);
     });
     console.log(result);
   });
   xit('defineProperty', function () {
     this.timeout(300000);
-    const hashTable = {};
+    var hashTable = {};
 
-    for (let i = 0; i < 10000; i++) {
+    for (var i = 0; i < 10000; i++) {
       hashTable[i] = i;
     }
 
-    class Class {
-      get value() {
-        return this._field;
+    var Class =
+    /*#__PURE__*/
+    function () {
+      function Class() {
+        (0, _classCallCheck2.default)(this, Class);
       }
 
-      set value(value) {
-        this._field = value;
-      }
+      (0, _createClass2.default)(Class, [{
+        key: "value",
+        get: function get() {
+          return this._field;
+        },
+        set: function set(value) {
+          this._field = value;
+        }
+      }]);
+      return Class;
+    }();
 
-    }
-
-    const obj = new Class();
-    Object.defineProperty(obj, 'manual', {
+    var obj = new Class();
+    (0, _defineProperty3.default)(obj, 'manual', {
       configurable: true,
       enumerable: true,
-
-      get() {
+      get: function get() {
         return this._manual;
       },
-
-      set(value) {
+      set: function set(value) {
         this._manual = value;
       }
-
     });
-    Object.defineProperty(obj, 'hidden', {
+    (0, _defineProperty3.default)(obj, 'hidden', {
       configurable: true,
       enumerable: false,
       writable: true,
       value: 0
     });
-    const result = (0, _rdtsc.calcPerformance)(120000, () => {
+    var result = (0, _rdtsc.calcPerformance)(120000, function () {
       return Math.random() && 1;
-    }, () => {
+    }, function () {
       obj.x = Math.random(); // 0
-    }, () => {
+    }, function () {
       return Math.random() && obj.x; // 4
-    }, () => {
+    }, function () {
       obj.value = Math.random(); // 4
-    }, () => {
+    }, function () {
       return Math.random() && obj.value; // 11
-    }, () => {
+    }, function () {
       obj.manual = Math.random(); // 0
-    }, () => {
+    }, function () {
       return Math.random() && obj.manual; // 27
-    }, () => {
+    }, function () {
       obj.hidden = Math.random(); // 27
-    }, () => {
+    }, function () {
       return Math.random() && obj.hidden; // 27
     });
     console.log(result);
@@ -1205,7 +1601,7 @@ describe('fundamental-operations', function () {
     this.timeout(300000);
 
     function tryCatch(func, onValue, onError) {
-      let value;
+      var value;
 
       try {
         value = func();
@@ -1229,24 +1625,24 @@ describe('fundamental-operations', function () {
       return 1;
     }
 
-    const result = (0, _rdtsc.calcPerformance)(20000, // () => {
+    var result = (0, _rdtsc.calcPerformance)(20000, // () => {
     // 	// no operations
     // },
-    () => {
+    function () {
       if (Math.random() === 0) {
         return 0;
       }
 
       return 1;
-    }, () => {
+    }, function () {
       if (Math.random() === 0) {
         throw 0;
       }
 
       return 1;
-    }, () => {
+    }, function () {
       return func();
-    }, () => {
+    }, function () {
       try {
         if (Math.random() === 0) {
           throw 0;
@@ -1256,14 +1652,16 @@ describe('fundamental-operations', function () {
       } catch (e) {
         return e;
       }
-    }, () => {
+    }, function () {
       try {
         return func();
       } catch (e) {
         return e;
       }
-    }, () => {
-      if (tryCatch(() => func(), () => {}, () => {})) {
+    }, function () {
+      if (tryCatch(function () {
+        return func();
+      }, function () {}, function () {})) {
         return 0;
       }
     });
@@ -1272,114 +1670,307 @@ describe('fundamental-operations', function () {
   xit('ThenableSync', function () {
     this.timeout(300000);
 
-    const rejected = _ThenableSync.ThenableSync.createRejected(1);
+    var rejected = _ThenableSync.ThenableSync.createRejected(1);
 
-    const resolved = _ThenableSync.ThenableSync.createResolved(1);
+    var resolved = _ThenableSync.ThenableSync.createResolved(1);
 
-    const result = (0, _rdtsc.calcPerformance)(120000, () => {// no operations
-    }, () => {
+    var result = (0, _rdtsc.calcPerformance)(120000, function () {// no operations
+    }, function () {
       // 157
-      return (0, _async.resolveValue)(1, () => {}, () => {});
-    }, () => {
+      return (0, _async.resolveValue)(1, function () {}, function () {});
+    }, function () {
       // 767
-      return (0, _async.resolveValue)(resolved, () => {}, () => {});
-    }, () => {
+      return (0, _async.resolveValue)(resolved, function () {}, function () {});
+    }, function () {
       // 835
-      return (0, _async.resolveValue)(rejected, () => {}, () => {});
-    }, () => {
+      return (0, _async.resolveValue)(rejected, function () {}, function () {});
+    }, function () {
       // 563
-      return (0, _ThenableSync.resolveAsync)(1, () => {}, () => {}, true);
-    }, () => {
+      return (0, _ThenableSync.resolveAsync)(1, function () {}, function () {}, true);
+    }, function () {
       // 1192
-      return (0, _ThenableSync.resolveAsync)(resolved, () => {}, () => {}, true);
-    }, () => {
+      return (0, _ThenableSync.resolveAsync)(resolved, function () {}, function () {}, true);
+    }, function () {
       // 1192
-      return (0, _ThenableSync.resolveAsync)(rejected, () => {}, () => {}, true);
-    }, () => {
+      return (0, _ThenableSync.resolveAsync)(rejected, function () {}, function () {}, true);
+    }, function () {
       // 533
-      return resolved.then(() => {}, () => {});
-    }, () => {
+      return resolved.then(function () {}, function () {});
+    }, function () {
       // 636
-      return rejected.then(() => {}, () => {});
-    }, () => {
+      return rejected.then(function () {}, function () {});
+    }, function () {
       // 463
-      return resolved.thenLast(() => {}, () => {});
-    }, () => {
+      return resolved.thenLast(function () {}, function () {});
+    }, function () {
       // 494
-      return rejected.thenLast(() => {}, () => {});
+      return rejected.thenLast(function () {}, function () {});
     });
     console.log(result);
   });
 
-  function calcCountPerSecond(func, maxTime = 10000) {
-    let time0 = Date.now();
-    let time;
-    let count = 0;
-    let result = 0;
+  function calcCountPerSecond(func) {
+    var maxTime = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : 10000;
+    var time0 = (0, _now.default)();
+    var time;
+    var count = 0;
+    var result = 0;
 
     do {
       result += (0, _ThenableSync.resolveAsync)(func());
       count++;
-    } while ((time = Date.now() - time0) < maxTime);
+    } while ((time = (0, _now.default)() - time0) < maxTime);
 
     return count / (time / 1000);
   }
 
-  async function calcCountPerSecondAsync(func, maxTime = 10000) {
-    let time0 = Date.now();
-    let time;
-    let count = 0;
-    let result = 0;
-
-    do {
-      result += await func();
-      count++;
-    } while ((time = Date.now() - time0) < maxTime);
-
-    return count / (time / 1000);
+  function calcCountPerSecondAsync(_x) {
+    return _calcCountPerSecondAsync.apply(this, arguments);
   }
 
-  xit('ThenableSync 2', async function () {
-    this.timeout(300000);
+  function _calcCountPerSecondAsync() {
+    _calcCountPerSecondAsync = (0, _asyncToGenerator2.default)(
+    /*#__PURE__*/
+    _regenerator.default.mark(function _callee6(func) {
+      var maxTime,
+          time0,
+          time,
+          count,
+          result,
+          _args7 = arguments;
+      return _regenerator.default.wrap(function _callee6$(_context13) {
+        while (1) {
+          switch (_context13.prev = _context13.next) {
+            case 0:
+              maxTime = _args7.length > 1 && _args7[1] !== undefined ? _args7[1] : 10000;
+              time0 = (0, _now.default)();
+              count = 0;
+              result = 0;
 
-    async function nestedPromise() {
-      await 1;
-      await 2;
-      await 3;
-      await 4;
-      await 5;
-      await 6;
-    }
+            case 4:
+              _context13.t0 = result;
+              _context13.next = 7;
+              return func();
 
-    console.log('async/await: ', (await calcCountPerSecondAsync(async () => {
-      await 1;
-      await 2;
-      await 3;
-      await 4;
-      await 5;
-      await 6;
-      await nestedPromise();
-    })));
+            case 7:
+              result = _context13.t0 += _context13.sent;
+              count++;
 
-    function* nestedIterator() {
-      yield 1;
-      yield 2;
-      yield 3;
-      yield 4;
-      yield 5;
-      yield 6;
-    }
+            case 9:
+              if ((time = (0, _now.default)() - time0) < maxTime) {
+                _context13.next = 4;
+                break;
+              }
 
-    console.log('ThenableSync: ', calcCountPerSecond(function* () {
-      yield 1;
-      yield 2;
-      yield 3;
-      yield 4;
-      yield 5;
-      yield 6;
-      yield nestedIterator();
+            case 10:
+              return _context13.abrupt("return", count / (time / 1000));
+
+            case 11:
+            case "end":
+              return _context13.stop();
+          }
+        }
+      }, _callee6);
     }));
-  }); // xit('decorators', function() {
+    return _calcCountPerSecondAsync.apply(this, arguments);
+  }
+
+  xit('ThenableSync 2',
+  /*#__PURE__*/
+  (0, _asyncToGenerator2.default)(
+  /*#__PURE__*/
+  _regenerator.default.mark(function _callee5() {
+    var _marked, nestedPromise, _nestedPromise, nestedIterator;
+
+    return _regenerator.default.wrap(function _callee5$(_context12) {
+      while (1) {
+        switch (_context12.prev = _context12.next) {
+          case 0:
+            nestedIterator = function _ref7() {
+              return _regenerator.default.wrap(function nestedIterator$(_context9) {
+                while (1) {
+                  switch (_context9.prev = _context9.next) {
+                    case 0:
+                      _context9.next = 2;
+                      return 1;
+
+                    case 2:
+                      _context9.next = 4;
+                      return 2;
+
+                    case 4:
+                      _context9.next = 6;
+                      return 3;
+
+                    case 6:
+                      _context9.next = 8;
+                      return 4;
+
+                    case 8:
+                      _context9.next = 10;
+                      return 5;
+
+                    case 10:
+                      _context9.next = 12;
+                      return 6;
+
+                    case 12:
+                    case "end":
+                      return _context9.stop();
+                  }
+                }
+              }, _marked);
+            };
+
+            _nestedPromise = function _ref6() {
+              _nestedPromise = (0, _asyncToGenerator2.default)(
+              /*#__PURE__*/
+              _regenerator.default.mark(function _callee4() {
+                return _regenerator.default.wrap(function _callee4$(_context11) {
+                  while (1) {
+                    switch (_context11.prev = _context11.next) {
+                      case 0:
+                        _context11.next = 2;
+                        return 1;
+
+                      case 2:
+                        _context11.next = 4;
+                        return 2;
+
+                      case 4:
+                        _context11.next = 6;
+                        return 3;
+
+                      case 6:
+                        _context11.next = 8;
+                        return 4;
+
+                      case 8:
+                        _context11.next = 10;
+                        return 5;
+
+                      case 10:
+                        _context11.next = 12;
+                        return 6;
+
+                      case 12:
+                      case "end":
+                        return _context11.stop();
+                    }
+                  }
+                }, _callee4);
+              }));
+              return _nestedPromise.apply(this, arguments);
+            };
+
+            nestedPromise = function _ref5() {
+              return _nestedPromise.apply(this, arguments);
+            };
+
+            _marked =
+            /*#__PURE__*/
+            _regenerator.default.mark(nestedIterator);
+            this.timeout(300000);
+            _context12.t0 = console;
+            _context12.next = 8;
+            return calcCountPerSecondAsync(
+            /*#__PURE__*/
+            (0, _asyncToGenerator2.default)(
+            /*#__PURE__*/
+            _regenerator.default.mark(function _callee2() {
+              return _regenerator.default.wrap(function _callee2$(_context8) {
+                while (1) {
+                  switch (_context8.prev = _context8.next) {
+                    case 0:
+                      _context8.next = 2;
+                      return 1;
+
+                    case 2:
+                      _context8.next = 4;
+                      return 2;
+
+                    case 4:
+                      _context8.next = 6;
+                      return 3;
+
+                    case 6:
+                      _context8.next = 8;
+                      return 4;
+
+                    case 8:
+                      _context8.next = 10;
+                      return 5;
+
+                    case 10:
+                      _context8.next = 12;
+                      return 6;
+
+                    case 12:
+                      _context8.next = 14;
+                      return nestedPromise();
+
+                    case 14:
+                    case "end":
+                      return _context8.stop();
+                  }
+                }
+              }, _callee2);
+            })));
+
+          case 8:
+            _context12.t1 = _context12.sent;
+
+            _context12.t0.log.call(_context12.t0, 'async/await: ', _context12.t1);
+
+            console.log('ThenableSync: ', calcCountPerSecond(
+            /*#__PURE__*/
+            _regenerator.default.mark(function _callee3() {
+              return _regenerator.default.wrap(function _callee3$(_context10) {
+                while (1) {
+                  switch (_context10.prev = _context10.next) {
+                    case 0:
+                      _context10.next = 2;
+                      return 1;
+
+                    case 2:
+                      _context10.next = 4;
+                      return 2;
+
+                    case 4:
+                      _context10.next = 6;
+                      return 3;
+
+                    case 6:
+                      _context10.next = 8;
+                      return 4;
+
+                    case 8:
+                      _context10.next = 10;
+                      return 5;
+
+                    case 10:
+                      _context10.next = 12;
+                      return 6;
+
+                    case 12:
+                      _context10.next = 14;
+                      return nestedIterator();
+
+                    case 14:
+                    case "end":
+                      return _context10.stop();
+                  }
+                }
+              }, _callee3);
+            })));
+
+          case 11:
+          case "end":
+            return _context12.stop();
+        }
+      }
+    }, _callee5, this);
+  }))); // xit('decorators', function() {
   // 	this.timeout(300000)
   //
   // 	function decoratorOwn() {
@@ -1431,24 +2022,28 @@ describe('fundamental-operations', function () {
   xit('Resolve properties path', function () {
     this.timeout(300000);
 
-    class ResolvePropertiesPath {
-      constructor(value) {
+    var ResolvePropertiesPath =
+    /*#__PURE__*/
+    function () {
+      function ResolvePropertiesPath(value) {
+        (0, _classCallCheck2.default)(this, ResolvePropertiesPath);
         this.value = value;
       }
 
-      get(key) {
-        let {
-          value
-        } = this;
+      (0, _createClass2.default)(ResolvePropertiesPath, [{
+        key: "get",
+        value: function get(key) {
+          var value = this.value;
 
-        if (value != null) {
-          this.value = value = value[key];
+          if (value != null) {
+            this.value = value = value[key];
+          }
+
+          return this;
         }
-
-        return this;
-      }
-
-    }
+      }]);
+      return ResolvePropertiesPath;
+    }();
 
     function get(getValue) {
       get.value = getValue(get.value);
@@ -1460,7 +2055,7 @@ describe('fundamental-operations', function () {
       return get;
     }
 
-    const object = {
+    var object = {
       a: {
         b: {
           c: {
@@ -1472,46 +2067,54 @@ describe('fundamental-operations', function () {
         }
       }
     };
-    const result = (0, _rdtsc.calcPerformance)(120000, () => {// no operations
-    }, () => {
+    var result = (0, _rdtsc.calcPerformance)(120000, function () {// no operations
+    }, function () {
       // 4
       return object.a.b.c.d.e;
-    }, () => {
+    }, function () {
       // 4
-      let value = object;
+      var value = object;
       value = value.a;
       value = value.b;
       value = value.c;
       value = value.d;
       value = value.e;
       return value;
-    }, () => {
+    }, function () {
       // 307
       return new ResolvePropertiesPath(object).get('a').get('b').get('c').get('d').get('e').value;
-    }, () => {
+    }, function () {
       // 31
-      return resolvePropertiesPath(object)(o => o.a)(o => o.b)(o => o.c)(o => o.d)(o => o.e).value;
+      return resolvePropertiesPath(object)(function (o) {
+        return o.a;
+      })(function (o) {
+        return o.b;
+      })(function (o) {
+        return o.c;
+      })(function (o) {
+        return o.d;
+      })(function (o) {
+        return o.e;
+      }).value;
     });
     console.log(result);
   });
   xit('ObservableObjectTest', function () {
     this.timeout(300000);
-    const withOptimization = true;
-    const optimizationAfter = 100;
+    var withOptimization = true;
+    var optimizationAfter = 100;
 
-    class ObservableObjectTest {
-      constructor() {
-        this.__fields = {};
-      }
-
-    }
+    var ObservableObjectTest = function ObservableObjectTest() {
+      (0, _classCallCheck2.default)(this, ObservableObjectTest);
+      this.__fields = {};
+    };
 
     function createGetFunction(propertyName, setOptimizedFunc) {
-      let count = 0;
+      var count = 0;
 
       function func() {
         if (++count > optimizationAfter) {
-          const newFunc = Function('return this.__fields["' + propertyName + '"]');
+          var newFunc = Function('return this.__fields["' + propertyName + '"]');
           setOptimizedFunc(newFunc);
           return newFunc.call(this);
         }
@@ -1525,85 +2128,87 @@ describe('fundamental-operations', function () {
     }
 
     function createSetFunction(propertyName) {
-      let count = 0;
+      var count = 0;
 
-      let func = (o, v) => {
+      var _func = function func(o, v) {
         if (++count > optimizationAfter) {
-          func = Function('o', 'v', 'o["' + propertyName + '"] = v');
-          func(o, v);
+          _func = Function('o', 'v', 'o["' + propertyName + '"] = v');
+
+          _func(o, v);
+
           return;
         }
 
         o[propertyName] = v;
       };
 
-      return (o, v) => {
-        func(o, v);
+      return function (o, v) {
+        _func(o, v);
       };
     }
 
-    const getValueBase = Function('name', 'object', 'return object.__fields[name]');
+    var getValueBase = Function('name', 'object', 'return object.__fields[name]');
 
-    class ObservableObjectBuilderTest {
-      constructor(object) {
+    var ObservableObjectBuilderTest =
+    /*#__PURE__*/
+    function () {
+      function ObservableObjectBuilderTest(object) {
+        (0, _classCallCheck2.default)(this, ObservableObjectBuilderTest);
         this.object = object || new ObservableObjectTest();
       }
 
-      writable(name) {
-        const getValue = (0, _helpers.createFunction)('o', `return o.__fields["${name}"]`);
-        const setValue = (0, _helpers.createFunction)('o', 'v', `o.__fields["${name}"] = v`); // let getValue = createGetFunction(name, o => { getValue = o as any }) as (o: { [newProp in Name]: T }) => T
-        // const getValue = getValueBase.bind(null, name)
-        // const setValue = createSetFunction(name) as (o: { [newProp in Name]: T }, v: T) => void
+      (0, _createClass2.default)(ObservableObjectBuilderTest, [{
+        key: "writable",
+        value: function writable(name) {
+          var getValue = (0, _helpers.createFunction)('o', "return o.__fields[\"".concat(name, "\"]"));
+          var setValue = (0, _helpers.createFunction)('o', 'v', "o.__fields[\"".concat(name, "\"] = v")); // let getValue = createGetFunction(name, o => { getValue = o as any }) as (o: { [newProp in Name]: T }) => T
+          // const getValue = getValueBase.bind(null, name)
+          // const setValue = createSetFunction(name) as (o: { [newProp in Name]: T }, v: T) => void
 
-        if (withOptimization) {
-          Object.defineProperty(ObservableObjectTest.prototype, name, {
-            configurable: true,
-            enumerable: true,
+          if (withOptimization) {
+            (0, _defineProperty3.default)(ObservableObjectTest.prototype, name, {
+              configurable: true,
+              enumerable: true,
+              get: function get() {
+                return getValue(this);
+              },
+              set: function set(newValue) {
+                setValue(this, newValue);
+              }
+            });
+          } else {
+            (0, _defineProperty3.default)(ObservableObjectTest.prototype, name, {
+              configurable: true,
+              enumerable: true,
+              get: function get() {
+                return this.__fields[name];
+              },
+              set: function set(newValue) {
+                this.__fields[name] = newValue;
+              }
+            });
+          }
 
-            get() {
-              return getValue(this);
-            },
-
-            set(newValue) {
-              setValue(this, newValue);
-            }
-
-          });
-        } else {
-          Object.defineProperty(ObservableObjectTest.prototype, name, {
-            configurable: true,
-            enumerable: true,
-
-            get() {
-              return this.__fields[name];
-            },
-
-            set(newValue) {
-              this.__fields[name] = newValue;
-            }
-
-          });
+          return this;
         }
-
-        return this;
-      }
-
-    }
+      }]);
+      return ObservableObjectBuilderTest;
+    }();
 
     new ObservableObjectBuilderTest(ObservableObjectTest.prototype).writable('prop') // , o => o.prop, (o, v) => o.prop = v)
     .writable('prop2'); // , o => o.prop2, (o, v) => o.prop2 = v)
 
-    const observableObject1 = new ObservableObjectTest();
-    const observableObject2 = new ObservableObjectTest();
-    const object1 = {
+    var observableObject1 = new ObservableObjectTest();
+    var observableObject2 = new ObservableObjectTest();
+    var object1 = {
       prop: void 0,
       prop2: void 0
     };
-    const object2 = {
+    var object2 = {
       prop: void 0,
       prop2: void 0
     };
-    let value = -2000000000;
+    var value = -2000000000;
     object1.prop = value++;
     object1.prop2 = value++;
     object2.prop = value++;
@@ -1612,25 +2217,25 @@ describe('fundamental-operations', function () {
     observableObject1.prop2 = value++;
     observableObject2.prop = value++;
     observableObject2.prop2 = value++;
-    const result = (0, _rdtsc.calcPerformance)(20000, () => {
+    var result = (0, _rdtsc.calcPerformance)(20000, function () {
       // no operations
       value++;
-    }, () => {
+    }, function () {
       // 8
       object1.prop = value++;
       object1.prop2 = value++;
       object2.prop = value++;
       object2.prop2 = value++;
-    }, () => {
+    }, function () {
       // 11
       return object1.prop && object1.prop2 && object2.prop && object2.prop2;
-    }, () => {
+    }, function () {
       // 27
       observableObject1.prop = value++;
       observableObject1.prop2 = value++;
       observableObject2.prop = value++;
       observableObject2.prop2 = value++;
-    }, () => {
+    }, function () {
       // 8
       return observableObject1.prop && observableObject1.prop2 && observableObject1.prop && observableObject2.prop2;
     });

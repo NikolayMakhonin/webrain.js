@@ -1,4 +1,4 @@
-export var SetChangedType;
+export let SetChangedType;
 
 (function (SetChangedType) {
   SetChangedType[SetChangedType["Removed"] = 0] = "Removed";

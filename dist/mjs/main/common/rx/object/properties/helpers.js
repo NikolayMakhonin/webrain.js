@@ -1,29 +1,33 @@
-import _typeof from "@babel/runtime/helpers/typeof";
 import { isThenable } from '../../../async/async';
 import { resolveAsync, ThenableSync } from '../../../async/ThenableSync';
 import { VALUE_PROPERTY_DEFAULT } from '../../../helpers/helpers';
+import { CalcPropertyValue } from './CalcProperty';
 
 function resolveValueProperty(value, getValue) {
-  if (_typeof(value) === 'object' && VALUE_PROPERTY_DEFAULT in value) {
-    if (getValue) {
-      var newValue = getValue(value);
+  if (typeof value === 'object') {
+    if (VALUE_PROPERTY_DEFAULT in value) {
+      if (getValue) {
+        const newValue = getValue(value);
 
-      if (typeof newValue !== 'undefined') {
-        return newValue;
+        if (typeof newValue !== 'undefined') {
+          return newValue;
+        }
       }
+
+      return value[VALUE_PROPERTY_DEFAULT];
     }
 
-    return value[VALUE_PROPERTY_DEFAULT];
+    if (value instanceof CalcPropertyValue) {
+      return value.get();
+    }
   }
 
   return value;
 }
 
 export function resolvePath(value) {
-  var get = function get(getValue, isValueProperty) {
-    var customResolveValue = getValue && isValueProperty ? function (val) {
-      return resolveValueProperty(val, getValue);
-    } : resolveValueProperty;
+  const get = (getValue, isValueProperty) => {
+    const customResolveValue = getValue && isValueProperty ? val => resolveValueProperty(val, getValue) : resolveValueProperty;
     value = resolveAsync(value, null, null, null, customResolveValue);
 
     if (!getValue) {

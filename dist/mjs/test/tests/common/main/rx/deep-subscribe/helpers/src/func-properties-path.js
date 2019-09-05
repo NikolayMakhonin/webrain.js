@@ -7,11 +7,9 @@ function coverage() {
 }
 
 export function compileTest() {
-  return [getFuncPropertiesPath(function (o
+  return [getFuncPropertiesPath((o
   /* comment */
-  ) {
-    return coverage(), o.o["\`\"\'\\`'[]]"].o[0].o['\`\"\'\\`"][]'].o;
-  }), getFuncPropertiesPath(function (o
+  ) => (coverage(), o.o["\`\"\'\\`'[]]"].o[0].o['\`\"\'\\`"][]'].o)), getFuncPropertiesPath(function (o
   /* comment */
   ) {
     return coverage(), o.o["\`\"\'\\`'[]]"].o[0].o['\`\"\'\\`"][]'].o;

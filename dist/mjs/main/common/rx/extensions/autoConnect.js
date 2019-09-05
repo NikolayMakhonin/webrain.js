@@ -1,8 +1,8 @@
 import { Observable } from '../subjects/observable';
 
 Observable.prototype.autoConnect = function (connectPredicate, connectFunc) {
-  var disconnect;
-  return this.subscribe(function (value) {
+  let disconnect;
+  return this.subscribe(value => {
     if (connectPredicate && connectPredicate(value) || !connectPredicate && value) {
       if (!disconnect) {
         disconnect = connectFunc();

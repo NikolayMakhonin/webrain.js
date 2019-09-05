@@ -1,5 +1,17 @@
 "use strict";
 
+var _interopRequireDefault = require("@babel/runtime-corejs3/helpers/interopRequireDefault");
+
+var _map = _interopRequireDefault(require("@babel/runtime-corejs3/core-js-stable/instance/map"));
+
+var _stringify = _interopRequireDefault(require("@babel/runtime-corejs3/core-js-stable/json/stringify"));
+
+var _concat = _interopRequireDefault(require("@babel/runtime-corejs3/core-js-stable/instance/concat"));
+
+var _toConsumableArray2 = _interopRequireDefault(require("@babel/runtime-corejs3/helpers/toConsumableArray"));
+
+var _getIterator2 = _interopRequireDefault(require("@babel/runtime-corejs3/core-js/get-iterator"));
+
 var _IMapChanged = require("../../../../../main/common/lists/contracts/IMapChanged");
 
 var _ObservableMap = require("../../../../../main/common/lists/ObservableMap");
@@ -12,31 +24,56 @@ var _TestMap = require("./src/helpers/TestMap");
 
 describe('common > main > lists > ObservableMap', function () {
   this.timeout(20000);
-  const testMap = _TestMap.TestMap.test;
+  var testMap = _TestMap.TestMap.test;
   after(function () {
     console.log('Total Map tests >= ' + _TestMap.TestMap.totalMapTests);
   });
   it('constructor', function () {
-    let map;
+    var map;
     map = new _ObservableMap.ObservableMap();
 
     _TestMap.assert.strictEqual(map.size, 0);
   });
   it('set', function () {
-    function setArray(list, array) {
-      let result = false;
+    var _context2;
 
-      for (const item of array) {
-        result = list.set(...item) || result;
+    function setArray(list, array) {
+      var result = false;
+      var _iteratorNormalCompletion = true;
+      var _didIteratorError = false;
+      var _iteratorError = undefined;
+
+      try {
+        for (var _iterator = (0, _getIterator2.default)(array), _step; !(_iteratorNormalCompletion = (_step = _iterator.next()).done); _iteratorNormalCompletion = true) {
+          var item = _step.value;
+          result = list.set.apply(list, (0, _toConsumableArray2.default)(item)) || result;
+        }
+      } catch (err) {
+        _didIteratorError = true;
+        _iteratorError = err;
+      } finally {
+        try {
+          if (!_iteratorNormalCompletion && _iterator.return != null) {
+            _iterator.return();
+          }
+        } finally {
+          if (_didIteratorError) {
+            throw _iteratorError;
+          }
+        }
       }
 
       return result;
     }
 
     function set(key, value) {
+      var _context;
+
       return {
-        actions: [list => list.set(key, value)],
-        description: `set(${JSON.stringify(key)}, ${JSON.stringify(value)})\n`
+        actions: [function (list) {
+          return list.set(key, value);
+        }],
+        description: (0, _concat.default)(_context = "set(".concat((0, _stringify.default)(key), ", ")).call(_context, (0, _stringify.default)(value), ")\n")
       };
     }
 
@@ -80,41 +117,68 @@ describe('common > main > lists > ObservableMap', function () {
       },
       actions: [set('2', '3')]
     });
-
-    const entries = _common.allValues.map((o, i) => [o, _common.allValues[_common.allValues.length - 1 - i]]);
-
-    const entriesShuffle = (0, _common.shuffle)(entries);
+    var entries = (0, _map.default)(_common.allValues).call(_common.allValues, function (o, i) {
+      return [o, _common.allValues[_common.allValues.length - 1 - i]];
+    });
+    var entriesShuffle = (0, _common.shuffle)(entries);
     testMap({
       array: [[]],
       innerMap: ['Map', 'Map<Object>', 'ObjectHashMap', 'ArrayMap'],
       expected: {
         array: entries,
         returnValue: _TestVariants.THIS,
-        propertyChanged: entriesShuffle.map((o, i) => ({
-          name: 'size',
-          oldValue: i,
-          newValue: i + 1
-        })),
-        mapChanged: entriesShuffle.map((o, i) => ({
-          type: _IMapChanged.MapChangedType.Added,
-          key: o[0],
-          newValue: o[1]
-        })).concat(entriesShuffle.map((o, i) => ({
-          type: _IMapChanged.MapChangedType.Set,
-          key: o[0],
-          oldValue: o[1],
-          newValue: o[1]
-        })))
+        propertyChanged: (0, _map.default)(entriesShuffle).call(entriesShuffle, function (o, i) {
+          return {
+            name: 'size',
+            oldValue: i,
+            newValue: i + 1
+          };
+        }),
+        mapChanged: (0, _concat.default)(_context2 = (0, _map.default)(entriesShuffle).call(entriesShuffle, function (o, i) {
+          return {
+            type: _IMapChanged.MapChangedType.Added,
+            key: o[0],
+            newValue: o[1]
+          };
+        })).call(_context2, (0, _map.default)(entriesShuffle).call(entriesShuffle, function (o, i) {
+          return {
+            type: _IMapChanged.MapChangedType.Set,
+            key: o[0],
+            oldValue: o[1],
+            newValue: o[1]
+          };
+        }))
       },
-      actions: [list => setArray(list, entriesShuffle.concat(entriesShuffle))]
+      actions: [function (list) {
+        return setArray(list, (0, _concat.default)(entriesShuffle).call(entriesShuffle, entriesShuffle));
+      }]
     });
   });
   it('delete', function () {
     function removeArray(list, array) {
-      let result = false;
+      var result = false;
+      var _iteratorNormalCompletion2 = true;
+      var _didIteratorError2 = false;
+      var _iteratorError2 = undefined;
 
-      for (const key of array) {
-        result = list.delete(key) || result;
+      try {
+        for (var _iterator2 = (0, _getIterator2.default)(array), _step2; !(_iteratorNormalCompletion2 = (_step2 = _iterator2.next()).done); _iteratorNormalCompletion2 = true) {
+          var key = _step2.value;
+          result = list.delete(key) || result;
+        }
+      } catch (err) {
+        _didIteratorError2 = true;
+        _iteratorError2 = err;
+      } finally {
+        try {
+          if (!_iteratorNormalCompletion2 && _iterator2.return != null) {
+            _iterator2.return();
+          }
+        } finally {
+          if (_didIteratorError2) {
+            throw _iteratorError2;
+          }
+        }
       }
 
       return result;
@@ -122,8 +186,10 @@ describe('common > main > lists > ObservableMap', function () {
 
     function remove(key) {
       return {
-        actions: [list => list.delete(key)],
-        description: `delete(${JSON.stringify(key)})\n`
+        actions: [function (list) {
+          return list.delete(key);
+        }],
+        description: "delete(".concat((0, _stringify.default)(key), ")\n")
       };
     }
 
@@ -161,33 +227,43 @@ describe('common > main > lists > ObservableMap', function () {
       },
       actions: [remove('2')]
     });
-    const keys = (0, _common.shuffle)(_common.allValues);
-    const entries = keys.map((o, i) => [o, keys[keys.length - 1 - i]]);
-    const additional = [[[], {}], [{}, []]];
+    var keys = (0, _common.shuffle)(_common.allValues);
+    var entries = (0, _map.default)(keys).call(keys, function (o, i) {
+      return [o, keys[keys.length - 1 - i]];
+    });
+    var additional = [[[], {}], [{}, []]];
     testMap({
-      array: [entries.concat(additional)],
+      array: [(0, _concat.default)(entries).call(entries, additional)],
       innerMap: ['Map', 'Map<Object>', 'ObjectHashMap', 'ArrayMap'],
       expected: {
         array: additional,
         returnValue: true,
-        propertyChanged: keys.map((o, i) => ({
-          name: 'size',
-          oldValue: keys.length - i + 2,
-          newValue: keys.length - i + 1
-        })),
-        mapChanged: entries.map((o, i) => ({
-          type: _IMapChanged.MapChangedType.Removed,
-          key: o[0],
-          oldValue: o[1]
-        }))
+        propertyChanged: (0, _map.default)(keys).call(keys, function (o, i) {
+          return {
+            name: 'size',
+            oldValue: keys.length - i + 2,
+            newValue: keys.length - i + 1
+          };
+        }),
+        mapChanged: (0, _map.default)(entries).call(entries, function (o, i) {
+          return {
+            type: _IMapChanged.MapChangedType.Removed,
+            key: o[0],
+            oldValue: o[1]
+          };
+        })
       },
-      actions: [list => removeArray(list, keys.concat(keys))]
+      actions: [function (list) {
+        return removeArray(list, (0, _concat.default)(keys).call(keys, keys));
+      }]
     });
   });
   it('clear', function () {
     function clear() {
       return {
-        actions: [list => list.clear()],
+        actions: [function (list) {
+          return list.clear();
+        }],
         description: 'clear()\n'
       };
     }

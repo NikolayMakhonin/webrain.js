@@ -1,10 +1,13 @@
 "use strict";
 
-Object.defineProperty(exports, "__esModule", {
+var _Object$defineProperty = require("@babel/runtime-corejs3/core-js-stable/object/define-property");
+
+_Object$defineProperty(exports, "__esModule", {
   value: true
 });
+
 exports.MapChangedType = void 0;
-let MapChangedType;
+var MapChangedType;
 exports.MapChangedType = MapChangedType;
 
 (function (MapChangedType) {

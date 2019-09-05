@@ -1,35 +1,28 @@
-import _classCallCheck from "@babel/runtime/helpers/classCallCheck";
-import _createClass from "@babel/runtime/helpers/createClass";
-import _possibleConstructorReturn from "@babel/runtime/helpers/possibleConstructorReturn";
-import _getPrototypeOf from "@babel/runtime/helpers/getPrototypeOf";
-import _inherits from "@babel/runtime/helpers/inherits";
 import { ObservableObjectBuilder } from '../ObservableObjectBuilder';
-export var CalcObjectBuilder =
-/*#__PURE__*/
-function (_ObservableObjectBuil) {
-  _inherits(CalcObjectBuilder, _ObservableObjectBuil);
+import { calcPropertyFactory } from './CalcPropertyBuilder';
+export class CalcObjectBuilder extends ObservableObjectBuilder {
+  calc(name, inputOrFactory, calcFactory, initValue) {
+    return this.readable(name, {
+      factory() {
+        const property = calcFactory(initValue);
 
-  function CalcObjectBuilder() {
-    _classCallCheck(this, CalcObjectBuilder);
+        if (typeof inputOrFactory !== 'undefined') {
+          property.input = typeof inputOrFactory === 'function' ? inputOrFactory(this) : inputOrFactory;
+        }
 
-    return _possibleConstructorReturn(this, _getPrototypeOf(CalcObjectBuilder).apply(this, arguments));
+        return property;
+      }
+
+    });
   }
 
-  _createClass(CalcObjectBuilder, [{
-    key: "calc",
-    value: function calc(name, inputOrFactory, calcPropertyFactory, initValue) {
-      return this.readable(name, {
-        factory: function factory() {
-          var property = calcPropertyFactory(initValue);
-          property.input = typeof inputOrFactory === 'function' ? inputOrFactory(this) : inputOrFactory;
-          return property;
-        }
-      });
-    }
-  }]);
+  calcChanges(name, buildRule) {
+    return this.calc(name, void 0, calcPropertyFactory((input, property) => {
+      property.value++;
+    }, null, null, 0, dependencies => dependencies.invalidateOn(buildRule)));
+  }
 
-  return CalcObjectBuilder;
-}(ObservableObjectBuilder); // const builder = new CalcObjectBuilder(true as any)
+} // const builder = new CalcObjectBuilder(true as any)
 //
 // export function calc<
 // 	TObject extends ObservableObject,

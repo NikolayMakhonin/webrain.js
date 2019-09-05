@@ -4,13 +4,13 @@ var _TestThenableSync = require("./src/TestThenableSync");
 
 describe('common > main > helpers > ThenableSync', function () {
   this.timeout(120000);
-  const testThenableSync = _TestThenableSync.TestThenableSync.test;
+  var testThenableSync = _TestThenableSync.TestThenableSync.test;
   after(function () {
     console.log('Total ThenableSync tests >= ' + _TestThenableSync.TestThenableSync.totalTests);
   });
   it('variants', function () {
     testThenableSync({
-      exclude: o => {
+      exclude: function exclude(o) {
         if (o.thenValue0 === _TestThenableSync.ValueType.IteratorThrow && o.thenValue1 === _TestThenableSync.ValueType.IteratorThrow) {
           return true;
         }
@@ -22,7 +22,7 @@ describe('common > main > helpers > ThenableSync', function () {
         return false;
       },
       expected: {
-        value: o => {
+        value: function value(o) {
           return o.value;
         }
       },

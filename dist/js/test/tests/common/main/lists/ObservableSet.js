@@ -1,5 +1,15 @@
 "use strict";
 
+var _interopRequireDefault = require("@babel/runtime-corejs3/helpers/interopRequireDefault");
+
+var _concat = _interopRequireDefault(require("@babel/runtime-corejs3/core-js-stable/instance/concat"));
+
+var _map = _interopRequireDefault(require("@babel/runtime-corejs3/core-js-stable/instance/map"));
+
+var _stringify = _interopRequireDefault(require("@babel/runtime-corejs3/core-js-stable/json/stringify"));
+
+var _getIterator2 = _interopRequireDefault(require("@babel/runtime-corejs3/core-js/get-iterator"));
+
 var _ISetChanged = require("../../../../../main/common/lists/contracts/ISetChanged");
 
 var _ObservableSet = require("../../../../../main/common/lists/ObservableSet");
@@ -12,22 +22,41 @@ var _TestSet = require("./src/helpers/TestSet");
 
 describe('common > main > lists > ObservableSet', function () {
   this.timeout(20000);
-  const testSet = _TestSet.TestSet.test;
+  var testSet = _TestSet.TestSet.test;
   after(function () {
     console.log('Total Set tests >= ' + _TestSet.TestSet.totalSetTests);
   });
   it('constructor', function () {
-    let set;
+    var set;
     set = new _ObservableSet.ObservableSet();
 
     _TestSet.assert.strictEqual(set.size, 0);
   });
   it('add', function () {
     function addArray(list, array) {
-      let result = false;
+      var result = false;
+      var _iteratorNormalCompletion = true;
+      var _didIteratorError = false;
+      var _iteratorError = undefined;
 
-      for (const item of array) {
-        result = list.add(item) || result;
+      try {
+        for (var _iterator = (0, _getIterator2.default)(array), _step; !(_iteratorNormalCompletion = (_step = _iterator.next()).done); _iteratorNormalCompletion = true) {
+          var item = _step.value;
+          result = list.add(item) || result;
+        }
+      } catch (err) {
+        _didIteratorError = true;
+        _iteratorError = err;
+      } finally {
+        try {
+          if (!_iteratorNormalCompletion && _iterator.return != null) {
+            _iterator.return();
+          }
+        } finally {
+          if (_didIteratorError) {
+            throw _iteratorError;
+          }
+        }
       }
 
       return result;
@@ -35,8 +64,10 @@ describe('common > main > lists > ObservableSet', function () {
 
     function add(item) {
       return {
-        actions: [list => list.add(item)],
-        description: `add(${JSON.stringify(item)})\n`
+        actions: [function (list) {
+          return list.add(item);
+        }],
+        description: "add(".concat((0, _stringify.default)(item), ")\n")
       };
     }
 
@@ -72,32 +103,57 @@ describe('common > main > lists > ObservableSet', function () {
       },
       actions: [add('1')]
     });
-    const allValuesShuffle = (0, _common.shuffle)(_common.allValues);
+    var allValuesShuffle = (0, _common.shuffle)(_common.allValues);
     testSet({
       array: [[]],
       innerSet: ['Set', 'Set<Object>', 'ArraySet'],
       expected: {
         array: _common.allValues,
         returnValue: _TestVariants.THIS,
-        propertyChanged: allValuesShuffle.map((o, i) => ({
-          name: 'size',
-          oldValue: i,
-          newValue: i + 1
-        })),
-        setChanged: allValuesShuffle.map((o, i) => ({
-          type: _ISetChanged.SetChangedType.Added,
-          newItems: [o]
-        }))
+        propertyChanged: (0, _map.default)(allValuesShuffle).call(allValuesShuffle, function (o, i) {
+          return {
+            name: 'size',
+            oldValue: i,
+            newValue: i + 1
+          };
+        }),
+        setChanged: (0, _map.default)(allValuesShuffle).call(allValuesShuffle, function (o, i) {
+          return {
+            type: _ISetChanged.SetChangedType.Added,
+            newItems: [o]
+          };
+        })
       },
-      actions: [list => addArray(list, allValuesShuffle.concat(allValuesShuffle))]
+      actions: [function (list) {
+        return addArray(list, (0, _concat.default)(allValuesShuffle).call(allValuesShuffle, allValuesShuffle));
+      }]
     });
   });
   it('delete', function () {
     function removeArray(list, array) {
-      let result = false;
+      var result = false;
+      var _iteratorNormalCompletion2 = true;
+      var _didIteratorError2 = false;
+      var _iteratorError2 = undefined;
 
-      for (const item of array) {
-        result = list.delete(item) || result;
+      try {
+        for (var _iterator2 = (0, _getIterator2.default)(array), _step2; !(_iteratorNormalCompletion2 = (_step2 = _iterator2.next()).done); _iteratorNormalCompletion2 = true) {
+          var item = _step2.value;
+          result = list.delete(item) || result;
+        }
+      } catch (err) {
+        _didIteratorError2 = true;
+        _iteratorError2 = err;
+      } finally {
+        try {
+          if (!_iteratorNormalCompletion2 && _iterator2.return != null) {
+            _iterator2.return();
+          }
+        } finally {
+          if (_didIteratorError2) {
+            throw _iteratorError2;
+          }
+        }
       }
 
       return result;
@@ -105,8 +161,10 @@ describe('common > main > lists > ObservableSet', function () {
 
     function remove(item) {
       return {
-        actions: [list => list.delete(item)],
-        description: `delete(${JSON.stringify(item)})\n`
+        actions: [function (list) {
+          return list.delete(item);
+        }],
+        description: "delete(".concat((0, _stringify.default)(item), ")\n")
       };
     }
 
@@ -154,31 +212,39 @@ describe('common > main > lists > ObservableSet', function () {
       },
       actions: [remove('2')]
     });
-    const allValuesShuffle = (0, _common.shuffle)(_common.allValues);
-    const additional = [[[], {}], [{}, []]];
+    var allValuesShuffle = (0, _common.shuffle)(_common.allValues);
+    var additional = [[[], {}], [{}, []]];
     testSet({
-      array: [allValuesShuffle.concat(additional)],
+      array: [(0, _concat.default)(allValuesShuffle).call(allValuesShuffle, additional)],
       innerSet: ['Set', 'Set<Object>', 'ArraySet'],
       expected: {
         array: additional,
         returnValue: true,
-        propertyChanged: allValuesShuffle.map((o, i) => ({
-          name: 'size',
-          oldValue: allValuesShuffle.length - i + 2,
-          newValue: allValuesShuffle.length - i + 1
-        })),
-        setChanged: allValuesShuffle.map((o, i) => ({
-          type: _ISetChanged.SetChangedType.Removed,
-          oldItems: [o]
-        }))
+        propertyChanged: (0, _map.default)(allValuesShuffle).call(allValuesShuffle, function (o, i) {
+          return {
+            name: 'size',
+            oldValue: allValuesShuffle.length - i + 2,
+            newValue: allValuesShuffle.length - i + 1
+          };
+        }),
+        setChanged: (0, _map.default)(allValuesShuffle).call(allValuesShuffle, function (o, i) {
+          return {
+            type: _ISetChanged.SetChangedType.Removed,
+            oldItems: [o]
+          };
+        })
       },
-      actions: [list => removeArray(list, allValuesShuffle.concat(allValuesShuffle))]
+      actions: [function (list) {
+        return removeArray(list, (0, _concat.default)(allValuesShuffle).call(allValuesShuffle, allValuesShuffle));
+      }]
     });
   });
   it('clear', function () {
     function clear() {
       return {
-        actions: [list => list.clear()],
+        actions: [function (list) {
+          return list.clear();
+        }],
         description: 'clear()\n'
       };
     }

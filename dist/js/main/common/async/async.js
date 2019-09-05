@@ -1,8 +1,11 @@
 "use strict";
 
-Object.defineProperty(exports, "__esModule", {
+var _Object$defineProperty = require("@babel/runtime-corejs3/core-js-stable/object/define-property");
+
+_Object$defineProperty(exports, "__esModule", {
   value: true
 });
+
 exports.isThenable = isThenable;
 exports.isAsync = isAsync;
 exports.resolveIterator = resolveIterator;
@@ -21,7 +24,7 @@ function isAsync(value) {
   return isThenable(value) || (0, _helpers.isIterator)(value);
 }
 
-let ResolveResult;
+var ResolveResult;
 exports.ResolveResult = ResolveResult;
 
 (function (ResolveResult) {
@@ -39,9 +42,9 @@ function resolveIterator(iterator, isError, onImmediate, onDeferred, customResol
   }
 
   function iterate(nextValue, isThrow, nextOnImmediate, nextOnDeferred) {
-    const body = () => {
+    var body = function body() {
       while (true) {
-        let iteratorResult;
+        var iteratorResult = void 0;
 
         if (isThrow) {
           isThrow = false;
@@ -55,10 +58,10 @@ function resolveIterator(iterator, isError, onImmediate, onDeferred, customResol
           return isError ? ResolveResult.ImmediateError : ResolveResult.Immediate;
         }
 
-        const result = _resolveValue(iteratorResult.value, isError, (o, nextIsError) => {
+        var result = _resolveValue(iteratorResult.value, isError, function (o, nextIsError) {
           nextValue = o;
           isThrow = nextIsError;
-        }, (o, nextIsError) => {
+        }, function (o, nextIsError) {
           iterate(o, nextIsError, nextOnDeferred, nextOnDeferred);
         }, customResolveValue);
 
@@ -84,16 +87,16 @@ function resolveThenable(thenable, isError, onImmediate, onDeferred) {
     return ResolveResult.None;
   }
 
-  let result = isError ? ResolveResult.DeferredError : ResolveResult.Deferred;
-  let deferred;
-  (thenable.thenLast || thenable.then).call(thenable, value => {
+  var result = isError ? ResolveResult.DeferredError : ResolveResult.Deferred;
+  var deferred;
+  (thenable.thenLast || thenable.then).call(thenable, function (value) {
     if (deferred) {
       onDeferred(value, isError);
     } else {
       result = isError ? ResolveResult.ImmediateError : ResolveResult.Immediate;
       onImmediate(value, isError);
     }
-  }, err => {
+  }, function (err) {
     if (deferred) {
       onDeferred(err, true);
     } else {
@@ -106,7 +109,7 @@ function resolveThenable(thenable, isError, onImmediate, onDeferred) {
 }
 
 function _resolveValue(value, isError, onImmediate, onDeferred, customResolveValue) {
-  const nextOnImmediate = (o, nextIsError) => {
+  var nextOnImmediate = function nextOnImmediate(o, nextIsError) {
     if (nextIsError) {
       isError = true;
     }
@@ -114,13 +117,13 @@ function _resolveValue(value, isError, onImmediate, onDeferred, customResolveVal
     value = o;
   };
 
-  const nextOnDeferred = (val, nextIsError) => {
+  var nextOnDeferred = function nextOnDeferred(val, nextIsError) {
     _resolveValue(val, isError || nextIsError, onDeferred, onDeferred, customResolveValue);
   };
 
   while (true) {
     {
-      const result = resolveThenable(value, isError, nextOnImmediate, nextOnDeferred);
+      var result = resolveThenable(value, isError, nextOnImmediate, nextOnDeferred);
 
       if ((result & ResolveResult.Deferred) !== 0) {
         return result;
@@ -131,19 +134,19 @@ function _resolveValue(value, isError, onImmediate, onDeferred, customResolveVal
       }
     }
     {
-      const result = resolveIterator(value, isError, nextOnImmediate, nextOnDeferred, customResolveValue);
+      var _result = resolveIterator(value, isError, nextOnImmediate, nextOnDeferred, customResolveValue);
 
-      if ((result & ResolveResult.Deferred) !== 0) {
-        return result;
+      if ((_result & ResolveResult.Deferred) !== 0) {
+        return _result;
       }
 
-      if ((result & ResolveResult.Immediate) !== 0) {
+      if ((_result & ResolveResult.Immediate) !== 0) {
         continue;
       }
     }
 
     if (value != null && customResolveValue != null) {
-      const newValue = customResolveValue(value);
+      var newValue = customResolveValue(value);
 
       if (newValue !== value) {
         value = newValue;

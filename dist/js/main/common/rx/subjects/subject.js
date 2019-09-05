@@ -1,103 +1,130 @@
 "use strict";
 
-Object.defineProperty(exports, "__esModule", {
+var _interopRequireDefault = require("@babel/runtime-corejs3/helpers/interopRequireDefault");
+
+var _Object$defineProperty = require("@babel/runtime-corejs3/core-js-stable/object/define-property");
+
+_Object$defineProperty(exports, "__esModule", {
   value: true
 });
+
 exports.subject = subject;
 exports.Subject = void 0;
+
+var _indexOf = _interopRequireDefault(require("@babel/runtime-corejs3/core-js-stable/instance/index-of"));
+
+var _classCallCheck2 = _interopRequireDefault(require("@babel/runtime-corejs3/helpers/classCallCheck"));
+
+var _createClass2 = _interopRequireDefault(require("@babel/runtime-corejs3/helpers/createClass"));
+
+var _possibleConstructorReturn2 = _interopRequireDefault(require("@babel/runtime-corejs3/helpers/possibleConstructorReturn"));
+
+var _getPrototypeOf2 = _interopRequireDefault(require("@babel/runtime-corejs3/helpers/getPrototypeOf"));
+
+var _inherits2 = _interopRequireDefault(require("@babel/runtime-corejs3/helpers/inherits"));
 
 var _observable = require("./observable");
 
 function subject(base) {
   // eslint-disable-next-line no-shadow
   // tslint:disable-next-line:no-shadowed-variable
-  return class Subject extends base {
-    get hasSubscribers() {
-      return !!(this._subscribers && this._subscribers.length);
-    }
+  return (
+    /*#__PURE__*/
+    function (_base) {
+      (0, _inherits2.default)(Subject, _base);
 
-    subscribe(subscriber) {
-      if (!subscriber) {
-        return null;
+      function Subject() {
+        (0, _classCallCheck2.default)(this, Subject);
+        return (0, _possibleConstructorReturn2.default)(this, (0, _getPrototypeOf2.default)(Subject).apply(this, arguments));
       }
 
-      const {
-        _subscribers
-      } = this;
+      (0, _createClass2.default)(Subject, [{
+        key: "subscribe",
+        value: function subscribe(subscriber) {
+          var _this = this;
 
-      if (!_subscribers) {
-        this._subscribers = [subscriber];
-      } else {
-        _subscribers[_subscribers.length] = subscriber;
-      }
-
-      return () => {
-        if (!subscriber) {
-          return;
-        } // tslint:disable-next-line:no-shadowed-variable
-
-
-        const {
-          _subscribers
-        } = this;
-        const len = _subscribers.length;
-
-        const index = _subscribers.indexOf(subscriber);
-
-        if (index >= 0) {
-          if (this._subscribersInProcess === _subscribers) {
-            const subscribers = new Array(len - 1);
-
-            for (let i = 0; i < index; i++) {
-              subscribers[i] = _subscribers[i];
-            }
-
-            for (let i = index + 1; i < len; i++) {
-              subscribers[i - 1] = _subscribers[i];
-            }
-
-            this._subscribers = subscribers;
-          } else {
-            for (let i = index + 1; i < len; i++) {
-              _subscribers[i - 1] = _subscribers[i];
-            }
-
-            _subscribers.length = len - 1;
+          if (!subscriber) {
+            return null;
           }
+
+          var _subscribers = this._subscribers;
+
+          if (!_subscribers) {
+            this._subscribers = [subscriber];
+          } else {
+            _subscribers[_subscribers.length] = subscriber;
+          }
+
+          return function () {
+            if (!subscriber) {
+              return;
+            } // tslint:disable-next-line:no-shadowed-variable
+
+
+            var _subscribers = _this._subscribers;
+            var len = _subscribers.length;
+            var index = (0, _indexOf.default)(_subscribers).call(_subscribers, subscriber);
+
+            if (index >= 0) {
+              if (_this._subscribersInProcess === _subscribers) {
+                var subscribers = new Array(len - 1);
+
+                for (var i = 0; i < index; i++) {
+                  subscribers[i] = _subscribers[i];
+                }
+
+                for (var _i = index + 1; _i < len; _i++) {
+                  subscribers[_i - 1] = _subscribers[_i];
+                }
+
+                _this._subscribers = subscribers;
+              } else {
+                for (var _i2 = index + 1; _i2 < len; _i2++) {
+                  _subscribers[_i2 - 1] = _subscribers[_i2];
+                }
+
+                _subscribers.length = len - 1;
+              }
+            }
+
+            subscriber = null;
+          };
         }
+      }, {
+        key: "emit",
+        value: function emit(value) {
+          var _subscribers = this._subscribers;
 
-        subscriber = null;
-      };
-    }
+          if (!_subscribers) {
+            return this;
+          }
 
-    emit(value) {
-      const {
-        _subscribers
-      } = this;
+          if (this._subscribersInProcess !== _subscribers) {
+            this._subscribersInProcess = _subscribers;
+          }
 
-      if (!_subscribers) {
-        return this;
-      }
+          for (var i = 0, len = _subscribers.length; i < len; i++) {
+            _subscribers[i](value);
+          }
 
-      if (this._subscribersInProcess !== _subscribers) {
-        this._subscribersInProcess = _subscribers;
-      }
+          if (this._subscribersInProcess === _subscribers) {
+            this._subscribersInProcess = null;
+          }
 
-      for (let i = 0, len = _subscribers.length; i < len; i++) {
-        _subscribers[i](value);
-      }
-
-      if (this._subscribersInProcess === _subscribers) {
-        this._subscribersInProcess = null;
-      }
-
-      return this;
-    }
-
-  };
+          return this;
+        }
+      }, {
+        key: "hasSubscribers",
+        get: function get() {
+          return !!(this._subscribers && this._subscribers.length);
+        }
+      }]);
+      return Subject;
+    }(base)
+  );
 }
 
-const Subject = subject(_observable.Observable); // export function createSubjectClass(base, ...extensions) {
+var Subject = subject(_observable.Observable); // export function createSubjectClass(base, ...extensions) {
 // 	for (const extension of extensions) {
 // 		base = extension(base)
 // 	}

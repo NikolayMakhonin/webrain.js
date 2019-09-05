@@ -18,26 +18,26 @@ describe('common > main > lists > helpers > compare', function () {
     testCompare(false, '');
     testCompare('', {});
     testCompare([], {});
-    testCompare({}, function () {});
-    testCompare(function () {}, null);
+    testCompare({}, () => {});
+    testCompare(() => {}, null);
     testCompare(null, undefined);
     testCompare(Infinity, NaN);
     testCompare(Number.NEGATIVE_INFINITY, Infinity);
     testCompare(-Infinity, Number.POSITIVE_INFINITY);
     testCompare(Number.NEGATIVE_INFINITY, 0);
 
-    for (var i = 0; i < 100; i++) {
+    for (let i = 0; i < 100; i++) {
       testCompare([], []);
       testCompare({}, {});
-      testCompare(function () {}, function () {});
-      var array = shuffle(allValues);
+      testCompare(() => {}, () => {});
+      const array = shuffle(allValues);
       array.sort(compareStrict);
       assert.deepStrictEqual(array, [-Infinity, 0, 1, Infinity, NaN, false, true, '', '0', '1', 'NaN', 'false', 'null', 'true', 'undefined', [], {}, null, undefined]);
     }
   });
   it('fast', function () {
     function testCompare(obj1, obj2) {
-      var result = compareStrict(obj1, obj2);
+      const result = compareStrict(obj1, obj2);
       assert.ok(result === -1 || result === 1);
       assert.strictEqual(compareStrict(obj2, obj1), -result);
       assert.strictEqual(compareStrict(obj1, obj1), 0);
@@ -53,20 +53,20 @@ describe('common > main > lists > helpers > compare', function () {
     testCompare(false, '');
     testCompare('', {});
     testCompare([], {});
-    testCompare({}, function () {});
-    testCompare(function () {}, null);
+    testCompare({}, () => {});
+    testCompare(() => {}, null);
     testCompare(null, undefined);
     testCompare(Infinity, NaN);
     testCompare(Number.NEGATIVE_INFINITY, Infinity);
     testCompare(-Infinity, Number.POSITIVE_INFINITY);
     testCompare(Number.NEGATIVE_INFINITY, 0);
-    var arrayCheck = allValues.slice().sort(compareFast);
+    const arrayCheck = allValues.slice().sort(compareFast);
 
-    for (var i = 0; i < 100; i++) {
+    for (let i = 0; i < 100; i++) {
       testCompare([], []);
       testCompare({}, {});
-      testCompare(function () {}, function () {});
-      var array = shuffle(allValues);
+      testCompare(() => {}, () => {});
+      const array = shuffle(allValues);
       array.sort(compareFast); // console.log(array)
 
       assert.deepStrictEqual(array, arrayCheck);

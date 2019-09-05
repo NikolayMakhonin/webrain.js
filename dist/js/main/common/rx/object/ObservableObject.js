@@ -1,29 +1,55 @@
 "use strict";
 
-Object.defineProperty(exports, "__esModule", {
+var _interopRequireDefault = require("@babel/runtime-corejs3/helpers/interopRequireDefault");
+
+var _Object$defineProperty2 = require("@babel/runtime-corejs3/core-js-stable/object/define-property");
+
+_Object$defineProperty2(exports, "__esModule", {
   value: true
 });
+
 exports._setExt = _setExt;
 exports._set = _set;
 exports.ObservableObject = void 0;
+
+var _defineProperty = _interopRequireDefault(require("@babel/runtime-corejs3/core-js-stable/object/define-property"));
+
+var _classCallCheck2 = _interopRequireDefault(require("@babel/runtime-corejs3/helpers/classCallCheck"));
+
+var _possibleConstructorReturn2 = _interopRequireDefault(require("@babel/runtime-corejs3/helpers/possibleConstructorReturn"));
+
+var _getPrototypeOf2 = _interopRequireDefault(require("@babel/runtime-corejs3/helpers/getPrototypeOf"));
+
+var _assertThisInitialized2 = _interopRequireDefault(require("@babel/runtime-corejs3/helpers/assertThisInitialized"));
+
+var _inherits2 = _interopRequireDefault(require("@babel/runtime-corejs3/helpers/inherits"));
 
 require("../extensions/autoConnect");
 
 var _PropertyChangedObject = require("./PropertyChangedObject");
 
-class ObservableObject extends _PropertyChangedObject.PropertyChangedObject {
+var ObservableObject =
+/*#__PURE__*/
+function (_PropertyChangedObjec) {
+  (0, _inherits2.default)(ObservableObject, _PropertyChangedObjec);
+
   /** @internal */
-  constructor() {
-    super();
-    Object.defineProperty(this, '__fields', {
+  function ObservableObject() {
+    var _this;
+
+    (0, _classCallCheck2.default)(this, ObservableObject);
+    _this = (0, _possibleConstructorReturn2.default)(this, (0, _getPrototypeOf2.default)(ObservableObject).call(this));
+    (0, _defineProperty.default)((0, _assertThisInitialized2.default)(_this), '__fields', {
       configurable: false,
       enumerable: false,
       writable: false,
       value: {}
     });
+    return _this;
   }
 
-}
+  return ObservableObject;
+}(_PropertyChangedObject.PropertyChangedObject);
 /** @internal */
 
 
@@ -34,20 +60,20 @@ function _setExt(name, getValue, setValue, options, object, newValue) {
     return _set(name, getValue, setValue, object, newValue);
   }
 
-  const oldValue = getValue ? getValue(object) : object.__fields[name];
-  const equalsFunc = options.equalsFunc;
+  var oldValue = getValue ? getValue(object) : object.__fields[name];
+  var equalsFunc = options.equalsFunc;
 
   if (equalsFunc ? equalsFunc.call(object, oldValue, newValue) : oldValue === newValue) {
     return false;
   }
 
-  const fillFunc = options.fillFunc;
+  var fillFunc = options.fillFunc;
 
   if (fillFunc && oldValue != null && newValue != null && fillFunc.call(object, oldValue, newValue)) {
     return false;
   }
 
-  const convertFunc = options.convertFunc;
+  var convertFunc = options.convertFunc;
 
   if (convertFunc) {
     newValue = convertFunc.call(object, newValue);
@@ -57,7 +83,7 @@ function _setExt(name, getValue, setValue, options, object, newValue) {
     return false;
   }
 
-  const beforeChange = options.beforeChange;
+  var beforeChange = options.beforeChange;
 
   if (beforeChange) {
     beforeChange.call(object, oldValue);
@@ -69,22 +95,20 @@ function _setExt(name, getValue, setValue, options, object, newValue) {
     object.__fields[name] = newValue;
   }
 
-  const afterChange = options.afterChange;
+  var afterChange = options.afterChange;
 
   if (afterChange) {
     afterChange.call(object, newValue);
   }
 
   if (!options || !options.suppressPropertyChanged) {
-    const {
-      propertyChangedIfCanEmit
-    } = object;
+    var propertyChangedIfCanEmit = object.propertyChangedIfCanEmit;
 
     if (propertyChangedIfCanEmit) {
       propertyChangedIfCanEmit.onPropertyChanged({
-        name,
-        oldValue,
-        newValue
+        name: name,
+        oldValue: oldValue,
+        newValue: newValue
       });
     }
   }
@@ -95,23 +119,22 @@ function _setExt(name, getValue, setValue, options, object, newValue) {
 
 
 function _set(name, getValue, setValue, object, newValue) {
-  const oldValue = getValue(object);
+  var oldValue = getValue(object);
 
   if (oldValue === newValue) {
     return false;
   }
 
   setValue(object, newValue);
-  const {
-    propertyChangedDisabled,
-    propertyChanged
-  } = object.__meta;
+  var _object$__meta = object.__meta,
+      propertyChangedDisabled = _object$__meta.propertyChangedDisabled,
+      propertyChanged = _object$__meta.propertyChanged;
 
   if (!propertyChangedDisabled && propertyChanged) {
     propertyChanged.emit({
-      name,
-      oldValue,
-      newValue
+      name: name,
+      oldValue: oldValue,
+      newValue: newValue
     });
   }
 

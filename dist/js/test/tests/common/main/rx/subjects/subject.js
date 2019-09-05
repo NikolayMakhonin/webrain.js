@@ -1,25 +1,29 @@
 "use strict";
 
+var _interopRequireDefault = require("@babel/runtime-corejs3/helpers/interopRequireDefault");
+
+var _typeof2 = _interopRequireDefault(require("@babel/runtime-corejs3/helpers/typeof"));
+
 var _subject = require("../../../../../../main/common/rx/subjects/subject");
 
 describe('common > main > rx > subjects > subject', function () {
   it('Subject', function () {
-    const subject = new _subject.Subject();
+    var subject = new _subject.Subject();
     assert.strictEqual(subject.hasSubscribers, false);
     assert.strictEqual(subject.subscribe(null), null);
     assert.strictEqual(subject.subscribe(false), null);
     assert.strictEqual(subject.subscribe(''), null);
     assert.strictEqual(subject.subscribe(0), null);
     assert.strictEqual(subject.emit('1'), subject);
-    let results = [];
+    var results = [];
 
-    const subscriber = value => {
+    var subscriber = function subscriber(value) {
       results.push(value);
     };
 
     assert.strictEqual(subject.hasSubscribers, false);
-    const unsubscribe = [];
-    assert.strictEqual(typeof (unsubscribe[0] = subject.subscribe(subscriber)), 'function');
+    var unsubscribe = [];
+    assert.strictEqual((0, _typeof2.default)(unsubscribe[0] = subject.subscribe(subscriber)), 'function');
     assert.strictEqual(subject.hasSubscribers, true);
     assert.deepStrictEqual(results, []);
     assert.strictEqual(subject.emit('2'), subject);
@@ -42,9 +46,9 @@ describe('common > main > rx > subjects > subject', function () {
     assert.strictEqual(subject.emit('5'), subject);
     assert.strictEqual(subject.hasSubscribers, false);
     assert.deepStrictEqual(results, []);
-    assert.strictEqual(typeof (unsubscribe[0] = subject.subscribe(subscriber)), 'function');
+    assert.strictEqual((0, _typeof2.default)(unsubscribe[0] = subject.subscribe(subscriber)), 'function');
     assert.strictEqual(subject.hasSubscribers, true);
-    assert.strictEqual(typeof (unsubscribe[1] = subject.subscribe(subscriber)), 'function');
+    assert.strictEqual((0, _typeof2.default)(unsubscribe[1] = subject.subscribe(subscriber)), 'function');
     assert.strictEqual(subject.hasSubscribers, true);
     assert.strictEqual(subject.emit('6'), subject);
     assert.strictEqual(subject.hasSubscribers, true);

@@ -1,9 +1,3 @@
-import _typeof from "@babel/runtime/helpers/typeof";
-import _classCallCheck from "@babel/runtime/helpers/classCallCheck";
-import _possibleConstructorReturn from "@babel/runtime/helpers/possibleConstructorReturn";
-import _getPrototypeOf from "@babel/runtime/helpers/getPrototypeOf";
-import _inherits from "@babel/runtime/helpers/inherits";
-
 /* tslint:disable:no-duplicate-string */
 
 /* eslint-disable guard-for-in */
@@ -13,135 +7,67 @@ import { ConnectorBuilder } from '../../../../../../../main/common/rx/object/pro
 import { createObject } from '../../deep-subscribe/helpers/Tester';
 describe('common > main > rx > properties > ConnectorBuilder', function () {
   it('connect', function () {
-    var source = new ObservableObjectBuilder(createObject().observableObject).writable('baseProp1').writable('baseProp2').writable('prop1').writable('prop2').object;
+    const source = new ObservableObjectBuilder(createObject().observableObject).writable('baseProp1').writable('baseProp2').writable('prop1').writable('prop2').object;
     source.baseProp1 = 'baseProp1_init_source';
 
-    var BaseClass1 =
-    /*#__PURE__*/
-    function (_ObservableObject) {
-      _inherits(BaseClass1, _ObservableObject);
-
-      function BaseClass1() {
-        var _getPrototypeOf2;
-
-        var _this;
-
-        _classCallCheck(this, BaseClass1);
-
-        for (var _len = arguments.length, args = new Array(_len), _key = 0; _key < _len; _key++) {
-          args[_key] = arguments[_key];
-        }
-
-        _this = _possibleConstructorReturn(this, (_getPrototypeOf2 = _getPrototypeOf(BaseClass1)).call.apply(_getPrototypeOf2, [this].concat(args)));
-        _this.source = source;
-        return _this;
+    class BaseClass1 extends ObservableObject {
+      constructor(...args) {
+        super(...args);
+        this.source = source;
       }
 
-      return BaseClass1;
-    }(ObservableObject);
+    }
 
-    var BaseClass2 =
-    /*#__PURE__*/
-    function (_BaseClass) {
-      _inherits(BaseClass2, _BaseClass);
+    class BaseClass2 extends BaseClass1 {}
 
-      function BaseClass2() {
-        _classCallCheck(this, BaseClass2);
+    class Class1 extends BaseClass1 {}
 
-        return _possibleConstructorReturn(this, _getPrototypeOf(BaseClass2).apply(this, arguments));
-      }
+    class Class2 extends BaseClass2 {}
 
-      return BaseClass2;
-    }(BaseClass1);
+    new ConnectorBuilder(BaseClass1.prototype).connect('baseProp1', b => b.path(o => o.source.property['@value_property'].observableMap['#observableList']['#'].baseProp1));
+    new ConnectorBuilder(BaseClass2.prototype).connect('baseProp2', b => b.path(o => o['@value_property'].source.property['@value_property'].observableMap['#observableList']['#'].baseProp2), null, 'baseProp2_init');
+    new ConnectorBuilder(Class1.prototype).connect('prop1', b => b.path(o => o['@value_property'].source.property['@value_property'].observableMap['#observableList']['#'].prop1), null, 'prop1_init');
+    new ConnectorBuilder(Class2.prototype).connect('prop2', b => b.path(o => o['@value_property'].source.property['@value_property'].observableMap['#observableList']['#'].prop2), null, 'prop2_init');
+    const baseObject1 = new BaseClass1();
+    const baseObject2 = new BaseClass2();
+    const object1 = new Class1();
+    const object2 = new Class2(); // eslint-disable-next-line prefer-const
 
-    var Class1 =
-    /*#__PURE__*/
-    function (_BaseClass2) {
-      _inherits(Class1, _BaseClass2);
+    let baseResults1 = [];
 
-      function Class1() {
-        _classCallCheck(this, Class1);
-
-        return _possibleConstructorReturn(this, _getPrototypeOf(Class1).apply(this, arguments));
-      }
-
-      return Class1;
-    }(BaseClass1);
-
-    var Class2 =
-    /*#__PURE__*/
-    function (_BaseClass3) {
-      _inherits(Class2, _BaseClass3);
-
-      function Class2() {
-        _classCallCheck(this, Class2);
-
-        return _possibleConstructorReturn(this, _getPrototypeOf(Class2).apply(this, arguments));
-      }
-
-      return Class2;
-    }(BaseClass2);
-
-    new ConnectorBuilder(BaseClass1.prototype).connect('baseProp1', function (b) {
-      return b.path(function (o) {
-        return o.source.property['@value_property'].observableMap['#observableList']['#'].baseProp1;
-      });
-    });
-    new ConnectorBuilder(BaseClass2.prototype).connect('baseProp2', function (b) {
-      return b.path(function (o) {
-        return o['@value_property'].source.property['@value_property'].observableMap['#observableList']['#'].baseProp2;
-      });
-    }, null, 'baseProp2_init');
-    new ConnectorBuilder(Class1.prototype).connect('prop1', function (b) {
-      return b.path(function (o) {
-        return o['@value_property'].source.property['@value_property'].observableMap['#observableList']['#'].prop1;
-      });
-    }, null, 'prop1_init');
-    new ConnectorBuilder(Class2.prototype).connect('prop2', function (b) {
-      return b.path(function (o) {
-        return o['@value_property'].source.property['@value_property'].observableMap['#observableList']['#'].prop2;
-      });
-    }, null, 'prop2_init');
-    var baseObject1 = new BaseClass1();
-    var baseObject2 = new BaseClass2();
-    var object1 = new Class1();
-    var object2 = new Class2(); // eslint-disable-next-line prefer-const
-
-    var baseResults1 = [];
-
-    var baseSubscriber1 = function baseSubscriber1(value) {
+    const baseSubscriber1 = value => {
       baseResults1.push(value);
     }; // eslint-disable-next-line prefer-const
 
 
-    var baseResults2 = [];
+    let baseResults2 = [];
 
-    var baseSubscriber2 = function baseSubscriber2(value) {
+    const baseSubscriber2 = value => {
       baseResults2.push(value);
     }; // eslint-disable-next-line prefer-const
 
 
-    var results1 = [];
+    const results1 = [];
 
-    var subscriber1 = function subscriber1(value) {
+    const subscriber1 = value => {
       results1.push(value);
     }; // eslint-disable-next-line prefer-const
 
 
-    var results2 = [];
+    let results2 = [];
 
-    var subscriber2 = function subscriber2(value) {
+    const subscriber2 = value => {
       results2.push(value);
     };
 
-    var baseUnsubscribe1 = [];
-    var baseUnsubscribe2 = [];
-    var unsubscribe1 = [];
-    var unsubscribe2 = [];
-    assert.strictEqual(_typeof(baseUnsubscribe1[0] = baseObject1.propertyChanged.subscribe(baseSubscriber1)), 'function');
-    assert.strictEqual(_typeof(baseUnsubscribe2[0] = baseObject2.propertyChanged.subscribe(baseSubscriber2)), 'function');
-    assert.strictEqual(_typeof(unsubscribe1[0] = object1.propertyChanged.subscribe(subscriber1)), 'function');
-    assert.strictEqual(_typeof(unsubscribe2[0] = object2.propertyChanged.subscribe(subscriber2)), 'function');
+    const baseUnsubscribe1 = [];
+    const baseUnsubscribe2 = [];
+    const unsubscribe1 = [];
+    const unsubscribe2 = [];
+    assert.strictEqual(typeof (baseUnsubscribe1[0] = baseObject1.propertyChanged.subscribe(baseSubscriber1)), 'function');
+    assert.strictEqual(typeof (baseUnsubscribe2[0] = baseObject2.propertyChanged.subscribe(baseSubscriber2)), 'function');
+    assert.strictEqual(typeof (unsubscribe1[0] = object1.propertyChanged.subscribe(subscriber1)), 'function');
+    assert.strictEqual(typeof (unsubscribe2[0] = object2.propertyChanged.subscribe(subscriber2)), 'function');
     assert.strictEqual(baseObject1.baseProp1, 'baseProp1_init_source');
     source.baseProp1 = '1';
     assert.deepStrictEqual(baseResults1, [{

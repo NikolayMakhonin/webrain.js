@@ -1,8 +1,4 @@
-import _regeneratorRuntime from "@babel/runtime/regenerator";
-import _classCallCheck from "@babel/runtime/helpers/classCallCheck";
-import _createClass from "@babel/runtime/helpers/createClass";
-
-var _Symbol$toStringTag, _Symbol$iterator;
+let _Symbol$toStringTag, _Symbol$iterator;
 
 import { mergeMaps } from '../extensions/merge/merge-maps';
 import { createMergeSetWrapper } from '../extensions/merge/merge-sets';
@@ -12,197 +8,129 @@ import { isIterable } from '../helpers/helpers';
 import { fillObjectKeys } from './helpers/set';
 _Symbol$toStringTag = Symbol.toStringTag;
 _Symbol$iterator = Symbol.iterator;
-export var ObjectSet =
-/*#__PURE__*/
-function () {
-  function ObjectSet(object) {
-    _classCallCheck(this, ObjectSet);
-
+export class ObjectSet {
+  constructor(object) {
     this[_Symbol$toStringTag] = 'Set';
     this._object = object || {};
   }
 
-  _createClass(ObjectSet, [{
-    key: "add",
-    value: function add(value) {
-      this._object[value] = true;
-      return this;
+  add(value) {
+    this._object[value] = true;
+    return this;
+  }
+
+  delete(value) {
+    const {
+      _object
+    } = this;
+
+    if (!Object.prototype.hasOwnProperty.call(_object, value)) {
+      return false;
     }
-  }, {
-    key: "delete",
-    value: function _delete(value) {
-      var _object = this._object;
 
-      if (!Object.prototype.hasOwnProperty.call(_object, value)) {
-        return false;
-      }
+    delete _object[value];
+    return true;
+  }
 
-      delete _object[value];
-      return true;
-    }
-  }, {
-    key: "clear",
-    value: function clear() {
-      var _object = this._object;
+  clear() {
+    const {
+      _object
+    } = this;
 
-      for (var _value in _object) {
-        if (Object.prototype.hasOwnProperty.call(_object, _value)) {
-          delete _object[_value];
-        }
-      }
-
-      return this;
-    }
-  }, {
-    key: _Symbol$iterator,
-    value: function value() {
-      return Object.keys(this._object)[Symbol.iterator]();
-    }
-  }, {
-    key: "entries",
-    value:
-    /*#__PURE__*/
-    _regeneratorRuntime.mark(function entries() {
-      var _object, _value2;
-
-      return _regeneratorRuntime.wrap(function entries$(_context) {
-        while (1) {
-          switch (_context.prev = _context.next) {
-            case 0:
-              _object = this._object;
-              _context.t0 = _regeneratorRuntime.keys(_object);
-
-            case 2:
-              if ((_context.t1 = _context.t0()).done) {
-                _context.next = 9;
-                break;
-              }
-
-              _value2 = _context.t1.value;
-
-              if (!Object.prototype.hasOwnProperty.call(_object, _value2)) {
-                _context.next = 7;
-                break;
-              }
-
-              _context.next = 7;
-              return [_value2, _value2];
-
-            case 7:
-              _context.next = 2;
-              break;
-
-            case 9:
-            case "end":
-              return _context.stop();
-          }
-        }
-      }, entries, this);
-    })
-  }, {
-    key: "forEach",
-    value: function forEach(callbackfn, thisArg) {
-      var _object = this._object;
-
-      for (var _value3 in _object) {
-        if (Object.prototype.hasOwnProperty.call(_object, _value3)) {
-          callbackfn.call(thisArg, _value3, _value3, this);
-        }
+    for (const value in _object) {
+      if (Object.prototype.hasOwnProperty.call(_object, value)) {
+        delete _object[value];
       }
     }
-  }, {
-    key: "has",
-    value: function has(value) {
-      return Object.prototype.hasOwnProperty.call(this._object, value);
-    }
-  }, {
-    key: "keys",
-    value: function keys() {
-      return this[Symbol.iterator]();
-    }
-  }, {
-    key: "values",
-    value: function values() {
-      return this[Symbol.iterator]();
-    }
-  }, {
-    key: "_canMerge",
-    // region IMergeable
-    value: function _canMerge(source) {
-      if (source.constructor === ObjectSet && this._object === source._object) {
-        return null;
+
+    return this;
+  }
+
+  get size() {
+    return Object.keys(this._object).length;
+  }
+
+  [_Symbol$iterator]() {
+    return Object.keys(this._object)[Symbol.iterator]();
+  }
+
+  *entries() {
+    const {
+      _object
+    } = this;
+
+    for (const value in _object) {
+      if (Object.prototype.hasOwnProperty.call(_object, value)) {
+        yield [value, value];
       }
-
-      return source.constructor === Object || source[Symbol.toStringTag] === 'Set' || Array.isArray(source) || isIterable(source);
     }
-  }, {
-    key: "_merge",
-    value: function _merge(merge, older, newer, preferCloneOlder, preferCloneNewer, options) {
-      return mergeMaps(function (target, source) {
-        return createMergeSetWrapper(target, source, function (arrayOrIterable) {
-          return ObjectSet.from(arrayOrIterable);
-        });
-      }, merge, this, older, newer, preferCloneOlder, preferCloneNewer, options);
-    } // endregion
-    // region ISerializable
+  }
 
-  }, {
-    key: "serialize",
-    value: function serialize(_serialize) {
-      return {
-        object: _serialize(this._object, {
-          objectKeepUndefined: true
-        })
-      };
-    }
-  }, {
-    key: "deSerialize",
-    value: function deSerialize() {} // endregion
+  forEach(callbackfn, thisArg) {
+    const {
+      _object
+    } = this;
 
-  }, {
-    key: "size",
-    get: function get() {
-      return Object.keys(this._object).length;
+    for (const value in _object) {
+      if (Object.prototype.hasOwnProperty.call(_object, value)) {
+        callbackfn.call(thisArg, value, value, this);
+      }
     }
-  }], [{
-    key: "from",
-    value: function from(arrayOrIterable) {
-      return new ObjectSet(fillObjectKeys({}, arrayOrIterable));
-    }
-  }]);
+  }
 
-  return ObjectSet;
-}();
+  has(value) {
+    return Object.prototype.hasOwnProperty.call(this._object, value);
+  }
+
+  keys() {
+    return this[Symbol.iterator]();
+  }
+
+  values() {
+    return this[Symbol.iterator]();
+  }
+
+  static from(arrayOrIterable) {
+    return new ObjectSet(fillObjectKeys({}, arrayOrIterable));
+  } // region IMergeable
+
+
+  _canMerge(source) {
+    if (source.constructor === ObjectSet && this._object === source._object) {
+      return null;
+    }
+
+    return source.constructor === Object || source[Symbol.toStringTag] === 'Set' || Array.isArray(source) || isIterable(source);
+  }
+
+  _merge(merge, older, newer, preferCloneOlder, preferCloneNewer, options) {
+    return mergeMaps((target, source) => createMergeSetWrapper(target, source, arrayOrIterable => ObjectSet.from(arrayOrIterable)), merge, this, older, newer, preferCloneOlder, preferCloneNewer, options);
+  } // endregion
+  // region ISerializable
+
+
+  serialize(serialize) {
+    return {
+      object: serialize(this._object, {
+        objectKeepUndefined: true
+      })
+    };
+  }
+
+  deSerialize() {} // endregion
+
+
+}
 ObjectSet.uuid = '6988ebc9cd064a9b97a98415b8cf1dc4';
 registerMergeable(ObjectSet);
 registerSerializable(ObjectSet, {
   serializer: {
-    deSerialize: function deSerialize(_deSerialize, serializedValue, valueFactory) {
-      return (
-        /*#__PURE__*/
-        _regeneratorRuntime.mark(function _callee() {
-          var innerSet, value;
-          return _regeneratorRuntime.wrap(function _callee$(_context2) {
-            while (1) {
-              switch (_context2.prev = _context2.next) {
-                case 0:
-                  _context2.next = 2;
-                  return _deSerialize(serializedValue.object);
+    *deSerialize(deSerialize, serializedValue, valueFactory) {
+      const innerSet = yield deSerialize(serializedValue.object);
+      const value = valueFactory(innerSet); // value.deSerialize(deSerialize, serializedValue)
 
-                case 2:
-                  innerSet = _context2.sent;
-                  value = valueFactory(innerSet); // value.deSerialize(deSerialize, serializedValue)
-
-                  return _context2.abrupt("return", value);
-
-                case 5:
-                case "end":
-                  return _context2.stop();
-              }
-            }
-          }, _callee);
-        })()
-      );
+      return value;
     }
+
   }
 });

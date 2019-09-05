@@ -1,5 +1,5 @@
-var nextObjectId = 1;
-var UNIQUE_ID_PROPERTY_NAME = 'uniqueId-22xvm5z032r';
+let nextObjectId = 1;
+const UNIQUE_ID_PROPERTY_NAME = 'uniqueId-22xvm5z032r';
 export function hasObjectUniqueId(object) {
   return object != null && Object.prototype.hasOwnProperty.call(object, UNIQUE_ID_PROPERTY_NAME);
 }
@@ -12,7 +12,7 @@ export function getObjectUniqueId(object) {
     return null;
   }
 
-  var id = object[UNIQUE_ID_PROPERTY_NAME];
+  const id = object[UNIQUE_ID_PROPERTY_NAME];
 
   if (id != null) {
     return id;
@@ -22,7 +22,7 @@ export function getObjectUniqueId(object) {
     return null;
   }
 
-  var uniqueId = nextObjectId++;
+  const uniqueId = nextObjectId++;
   Object.defineProperty(object, UNIQUE_ID_PROPERTY_NAME, {
     enumerable: false,
     configurable: false,

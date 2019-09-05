@@ -1,11 +1,20 @@
 "use strict";
 
-Object.defineProperty(exports, "__esModule", {
+var _interopRequireDefault = require("@babel/runtime-corejs3/helpers/interopRequireDefault");
+
+var _Object$defineProperty = require("@babel/runtime-corejs3/core-js-stable/object/define-property");
+
+_Object$defineProperty(exports, "__esModule", {
   value: true
 });
+
 exports.compareFast = compareFast;
 exports.compareUniqueId = compareUniqueId;
 exports.compareStrict = compareStrict;
+
+var _isArray = _interopRequireDefault(require("@babel/runtime-corejs3/core-js-stable/array/is-array"));
+
+var _typeof2 = _interopRequireDefault(require("@babel/runtime-corejs3/helpers/typeof"));
 
 var _objectUniqueId = require("./object-unique-id");
 
@@ -141,8 +150,8 @@ function compareStrict(o1, o2) {
 
   o1 = o1.valueOf();
   o2 = o2.valueOf();
-  const t1 = typeof o1;
-  const t2 = typeof o2;
+  var t1 = (0, _typeof2.default)(o1);
+  var t2 = (0, _typeof2.default)(o2);
 
   if (t1 === t2) {
     // is NaN
@@ -198,11 +207,11 @@ function compareStrict(o1, o2) {
     return 1;
   }
 
-  if (Array.isArray(o1)) {
+  if ((0, _isArray.default)(o1)) {
     return -1;
   }
 
-  if (Array.isArray(o2)) {
+  if ((0, _isArray.default)(o2)) {
     return 1;
   }
 

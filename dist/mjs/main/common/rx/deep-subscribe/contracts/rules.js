@@ -1,4 +1,4 @@
-export var RuleType;
+export let RuleType;
 
 (function (RuleType) {
   RuleType[RuleType["Nothing"] = 0] = "Nothing";

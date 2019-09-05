@@ -5,40 +5,21 @@ import { allValues, shuffle } from './src/helpers/common';
 import { assert, TestSet } from './src/helpers/TestSet';
 describe('common > main > lists > ObservableSet', function () {
   this.timeout(20000);
-  var testSet = TestSet.test;
+  const testSet = TestSet.test;
   after(function () {
     console.log('Total Set tests >= ' + TestSet.totalSetTests);
   });
   it('constructor', function () {
-    var set;
+    let set;
     set = new ObservableSet();
     assert.strictEqual(set.size, 0);
   });
   it('add', function () {
     function addArray(list, array) {
-      var result = false;
-      var _iteratorNormalCompletion = true;
-      var _didIteratorError = false;
-      var _iteratorError = undefined;
+      let result = false;
 
-      try {
-        for (var _iterator = array[Symbol.iterator](), _step; !(_iteratorNormalCompletion = (_step = _iterator.next()).done); _iteratorNormalCompletion = true) {
-          var item = _step.value;
-          result = list.add(item) || result;
-        }
-      } catch (err) {
-        _didIteratorError = true;
-        _iteratorError = err;
-      } finally {
-        try {
-          if (!_iteratorNormalCompletion && _iterator["return"] != null) {
-            _iterator["return"]();
-          }
-        } finally {
-          if (_didIteratorError) {
-            throw _iteratorError;
-          }
-        }
+      for (const item of array) {
+        result = list.add(item) || result;
       }
 
       return result;
@@ -46,10 +27,8 @@ describe('common > main > lists > ObservableSet', function () {
 
     function add(item) {
       return {
-        actions: [function (list) {
-          return list.add(item);
-        }],
-        description: "add(".concat(JSON.stringify(item), ")\n")
+        actions: [list => list.add(item)],
+        description: `add(${JSON.stringify(item)})\n`
       };
     }
 
@@ -85,57 +64,32 @@ describe('common > main > lists > ObservableSet', function () {
       },
       actions: [add('1')]
     });
-    var allValuesShuffle = shuffle(allValues);
+    const allValuesShuffle = shuffle(allValues);
     testSet({
       array: [[]],
       innerSet: ['Set', 'Set<Object>', 'ArraySet'],
       expected: {
         array: allValues,
         returnValue: THIS,
-        propertyChanged: allValuesShuffle.map(function (o, i) {
-          return {
-            name: 'size',
-            oldValue: i,
-            newValue: i + 1
-          };
-        }),
-        setChanged: allValuesShuffle.map(function (o, i) {
-          return {
-            type: SetChangedType.Added,
-            newItems: [o]
-          };
-        })
+        propertyChanged: allValuesShuffle.map((o, i) => ({
+          name: 'size',
+          oldValue: i,
+          newValue: i + 1
+        })),
+        setChanged: allValuesShuffle.map((o, i) => ({
+          type: SetChangedType.Added,
+          newItems: [o]
+        }))
       },
-      actions: [function (list) {
-        return addArray(list, allValuesShuffle.concat(allValuesShuffle));
-      }]
+      actions: [list => addArray(list, allValuesShuffle.concat(allValuesShuffle))]
     });
   });
   it('delete', function () {
     function removeArray(list, array) {
-      var result = false;
-      var _iteratorNormalCompletion2 = true;
-      var _didIteratorError2 = false;
-      var _iteratorError2 = undefined;
+      let result = false;
 
-      try {
-        for (var _iterator2 = array[Symbol.iterator](), _step2; !(_iteratorNormalCompletion2 = (_step2 = _iterator2.next()).done); _iteratorNormalCompletion2 = true) {
-          var item = _step2.value;
-          result = list["delete"](item) || result;
-        }
-      } catch (err) {
-        _didIteratorError2 = true;
-        _iteratorError2 = err;
-      } finally {
-        try {
-          if (!_iteratorNormalCompletion2 && _iterator2["return"] != null) {
-            _iterator2["return"]();
-          }
-        } finally {
-          if (_didIteratorError2) {
-            throw _iteratorError2;
-          }
-        }
+      for (const item of array) {
+        result = list.delete(item) || result;
       }
 
       return result;
@@ -143,10 +97,8 @@ describe('common > main > lists > ObservableSet', function () {
 
     function remove(item) {
       return {
-        actions: [function (list) {
-          return list["delete"](item);
-        }],
-        description: "delete(".concat(JSON.stringify(item), ")\n")
+        actions: [list => list.delete(item)],
+        description: `delete(${JSON.stringify(item)})\n`
       };
     }
 
@@ -194,39 +146,31 @@ describe('common > main > lists > ObservableSet', function () {
       },
       actions: [remove('2')]
     });
-    var allValuesShuffle = shuffle(allValues);
-    var additional = [[[], {}], [{}, []]];
+    const allValuesShuffle = shuffle(allValues);
+    const additional = [[[], {}], [{}, []]];
     testSet({
       array: [allValuesShuffle.concat(additional)],
       innerSet: ['Set', 'Set<Object>', 'ArraySet'],
       expected: {
         array: additional,
         returnValue: true,
-        propertyChanged: allValuesShuffle.map(function (o, i) {
-          return {
-            name: 'size',
-            oldValue: allValuesShuffle.length - i + 2,
-            newValue: allValuesShuffle.length - i + 1
-          };
-        }),
-        setChanged: allValuesShuffle.map(function (o, i) {
-          return {
-            type: SetChangedType.Removed,
-            oldItems: [o]
-          };
-        })
+        propertyChanged: allValuesShuffle.map((o, i) => ({
+          name: 'size',
+          oldValue: allValuesShuffle.length - i + 2,
+          newValue: allValuesShuffle.length - i + 1
+        })),
+        setChanged: allValuesShuffle.map((o, i) => ({
+          type: SetChangedType.Removed,
+          oldItems: [o]
+        }))
       },
-      actions: [function (list) {
-        return removeArray(list, allValuesShuffle.concat(allValuesShuffle));
-      }]
+      actions: [list => removeArray(list, allValuesShuffle.concat(allValuesShuffle))]
     });
   });
   it('clear', function () {
     function clear() {
       return {
-        actions: [function (list) {
-          return list.clear();
-        }],
+        actions: [list => list.clear()],
         description: 'clear()\n'
       };
     }

@@ -1,9 +1,16 @@
 "use strict";
 
-Object.defineProperty(exports, "__esModule", {
+var _interopRequireDefault = require("@babel/runtime-corejs3/helpers/interopRequireDefault");
+
+var _Object$defineProperty = require("@babel/runtime-corejs3/core-js-stable/object/define-property");
+
+_Object$defineProperty(exports, "__esModule", {
   value: true
 });
+
 exports.resolvePath = resolvePath;
+
+var _typeof2 = _interopRequireDefault(require("@babel/runtime-corejs3/helpers/typeof"));
 
 var _async = require("../../../async/async");
 
@@ -11,25 +18,35 @@ var _ThenableSync = require("../../../async/ThenableSync");
 
 var _helpers = require("../../../helpers/helpers");
 
-function resolveValueProperty(value, getValue) {
-  if (typeof value === 'object' && _helpers.VALUE_PROPERTY_DEFAULT in value) {
-    if (getValue) {
-      const newValue = getValue(value);
+var _CalcProperty = require("./CalcProperty");
 
-      if (typeof newValue !== 'undefined') {
-        return newValue;
+function resolveValueProperty(value, getValue) {
+  if ((0, _typeof2.default)(value) === 'object') {
+    if (_helpers.VALUE_PROPERTY_DEFAULT in value) {
+      if (getValue) {
+        var newValue = getValue(value);
+
+        if (typeof newValue !== 'undefined') {
+          return newValue;
+        }
       }
+
+      return value[_helpers.VALUE_PROPERTY_DEFAULT];
     }
 
-    return value[_helpers.VALUE_PROPERTY_DEFAULT];
+    if (value instanceof _CalcProperty.CalcPropertyValue) {
+      return value.get();
+    }
   }
 
   return value;
 }
 
 function resolvePath(value) {
-  const get = (getValue, isValueProperty) => {
-    const customResolveValue = getValue && isValueProperty ? val => resolveValueProperty(val, getValue) : resolveValueProperty;
+  var get = function get(getValue, isValueProperty) {
+    var customResolveValue = getValue && isValueProperty ? function (val) {
+      return resolveValueProperty(val, getValue);
+    } : resolveValueProperty;
     value = (0, _ThenableSync.resolveAsync)(value, null, null, null, customResolveValue);
 
     if (!getValue) {

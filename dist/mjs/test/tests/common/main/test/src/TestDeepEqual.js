@@ -1,18 +1,7 @@
-import _classCallCheck from "@babel/runtime/helpers/classCallCheck";
-import _createClass from "@babel/runtime/helpers/createClass";
-import _possibleConstructorReturn from "@babel/runtime/helpers/possibleConstructorReturn";
-import _getPrototypeOf from "@babel/runtime/helpers/getPrototypeOf";
-import _inherits from "@babel/runtime/helpers/inherits";
-import _defineProperty from "@babel/runtime/helpers/defineProperty";
-
-function ownKeys(object, enumerableOnly) { var keys = Object.keys(object); if (Object.getOwnPropertySymbols) { var symbols = Object.getOwnPropertySymbols(object); if (enumerableOnly) symbols = symbols.filter(function (sym) { return Object.getOwnPropertyDescriptor(object, sym).enumerable; }); keys.push.apply(keys, symbols); } return keys; }
-
-function _objectSpread(target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i] != null ? arguments[i] : {}; if (i % 2) { ownKeys(source, true).forEach(function (key) { _defineProperty(target, key, source[key]); }); } else if (Object.getOwnPropertyDescriptors) { Object.defineProperties(target, Object.getOwnPropertyDescriptors(source)); } else { ownKeys(source).forEach(function (key) { Object.defineProperty(target, key, Object.getOwnPropertyDescriptor(source, key)); }); } } return target; }
-
 import { assert } from '../../../../../../main/common/test/Assert';
 import { DeepCloneEqual } from '../../../../../../main/common/test/DeepCloneEqual';
 import { TestVariants } from '../../src/helpers/TestVariants';
-export var deepCloneEqual = new DeepCloneEqual();
+export const deepCloneEqual = new DeepCloneEqual();
 
 function resolveValue(opts, value) {
   if (typeof value === 'function' && !(value instanceof Error)) {
@@ -23,9 +12,10 @@ function resolveValue(opts, value) {
 }
 
 function resolveOptions(optionsSource, optionsParams) {
-  var resolvedOptions = _objectSpread({}, optionsSource);
+  const resolvedOptions = { ...optionsSource
+  };
 
-  for (var key in resolvedOptions) {
+  for (const key in resolvedOptions) {
     if (Object.prototype.hasOwnProperty.call(resolvedOptions, key)) {
       resolvedOptions[key] = key === 'action' ? resolvedOptions[key] : resolveValue(optionsParams || resolvedOptions, resolvedOptions[key]);
     }
@@ -33,27 +23,19 @@ function resolveOptions(optionsSource, optionsParams) {
 
   resolvedOptions.expected = {};
 
-  for (var _key in optionsSource.expected) {
-    if (Object.prototype.hasOwnProperty.call(optionsSource.expected, _key)) {
-      resolvedOptions.expected[_key] = resolveValue(optionsParams || resolvedOptions, optionsSource.expected[_key]);
+  for (const key in optionsSource.expected) {
+    if (Object.prototype.hasOwnProperty.call(optionsSource.expected, key)) {
+      resolvedOptions.expected[key] = resolveValue(optionsParams || resolvedOptions, optionsSource.expected[key]);
     }
   }
 
   return resolvedOptions;
 }
 
-export var TestDeepEqual =
-/*#__PURE__*/
-function (_TestVariants) {
-  _inherits(TestDeepEqual, _TestVariants);
-
-  function TestDeepEqual() {
-    var _this;
-
-    _classCallCheck(this, TestDeepEqual);
-
-    _this = _possibleConstructorReturn(this, _getPrototypeOf(TestDeepEqual).call(this));
-    _this.baseOptionsVariants = {
+export class TestDeepEqual extends TestVariants {
+  constructor() {
+    super();
+    this.baseOptionsVariants = {
       circular: [false, true],
       noCrossReferences: [false, true],
       equalTypes: [false, true],
@@ -61,71 +43,61 @@ function (_TestVariants) {
       equalMapSetOrder: [false, true],
       strictEqualFunctions: [false, true]
     };
-    return _this;
   }
 
-  _createClass(TestDeepEqual, [{
-    key: "testVariant",
-    value: function testVariant(inputOptions) {
-      var error;
+  testVariant(inputOptions) {
+    let error;
 
-      for (var debugIteration = 0; debugIteration < 3; debugIteration++) {
-        try {
-          var _ret = function () {
-            var options = inputOptions = resolveOptions(inputOptions, null);
+    for (let debugIteration = 0; debugIteration < 3; debugIteration++) {
+      try {
+        const options = inputOptions = resolveOptions(inputOptions, null);
 
-            var action = function action() {
-              var result = deepCloneEqual.equal(options.value1, options.value2, {
-                circular: options.circular,
-                equalTypes: options.equalTypes,
-                noCrossReferences: options.noCrossReferences,
-                equalInnerReferences: options.equalInnerReferences,
-                equalMapSetOrder: options.equalMapSetOrder,
-                strictEqualFunctions: options.strictEqualFunctions
-              });
-              assert.strictEqual(result, options.expected.result);
-            };
+        const action = () => {
+          const result = deepCloneEqual.equal(options.value1, options.value2, {
+            circular: options.circular,
+            equalTypes: options.equalTypes,
+            noCrossReferences: options.noCrossReferences,
+            equalInnerReferences: options.equalInnerReferences,
+            equalMapSetOrder: options.equalMapSetOrder,
+            strictEqualFunctions: options.strictEqualFunctions
+          });
+          assert.strictEqual(result, options.expected.result);
+        };
 
-            if (options.expected.error) {
-              assert["throws"](action, options.expected.error);
-            } else {
-              action();
-            }
-
-            return "break";
-          }();
-
-          if (_ret === "break") break;
-        } catch (ex) {
-          if (!debugIteration) {
-            console.log("Test number: ".concat(TestDeepEqual.totalTests, "\r\nError in: ").concat(inputOptions.description, "\n"), inputOptions, // ${
-            // JSON.stringify(initialOptions, null, 4)
-            // }
-            "\n".concat(inputOptions.action.toString(), "\n").concat(ex.stack));
-            error = ex;
-          }
-        } finally {
-          TestDeepEqual.totalTests++;
+        if (options.expected.error) {
+          assert.throws(action, options.expected.error);
+        } else {
+          action();
         }
-      }
 
-      if (error) {
-        throw error;
+        break;
+      } catch (ex) {
+        if (!debugIteration) {
+          console.log(`Test number: ${TestDeepEqual.totalTests}\r\nError in: ${inputOptions.description}\n`, inputOptions, // ${
+          // JSON.stringify(initialOptions, null, 4)
+          // }
+          `\n${inputOptions.action.toString()}\n${ex.stack}`);
+          error = ex;
+        }
+      } finally {
+        TestDeepEqual.totalTests++;
       }
     }
-  }], [{
-    key: "test",
-    value: function test(testCases) {
-      if (!testCases.actions) {
-        // tslint:disable-next-line:no-empty
-        testCases.actions = [function () {}];
-      }
 
-      TestDeepEqual._instance.test(testCases);
+    if (error) {
+      throw error;
     }
-  }]);
+  }
 
-  return TestDeepEqual;
-}(TestVariants);
+  static test(testCases) {
+    if (!testCases.actions) {
+      // tslint:disable-next-line:no-empty
+      testCases.actions = [() => {}];
+    }
+
+    TestDeepEqual._instance.test(testCases);
+  }
+
+}
 TestDeepEqual.totalTests = 0;
 TestDeepEqual._instance = new TestDeepEqual();

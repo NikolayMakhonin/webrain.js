@@ -1,8 +1,11 @@
 "use strict";
 
-Object.defineProperty(exports, "__esModule", {
+var _Object$defineProperty = require("@babel/runtime-corejs3/core-js-stable/object/define-property");
+
+_Object$defineProperty(exports, "__esModule", {
   value: true
 });
+
 exports.defaultCompare = defaultCompare;
 exports.binarySearch = binarySearch;
 exports.move = move;
@@ -33,18 +36,18 @@ function binarySearch(array, item, start, end, compare, bound) {
     compare = defaultCompare;
   }
 
-  let from = start == null ? 0 : start;
-  let to = (end == null ? array.length : end) - 1;
+  var from = start == null ? 0 : start;
+  var to = (end == null ? array.length : end) - 1;
 
   if (to < from) {
     return ~from;
   }
 
-  let found = -1;
+  var found = -1;
 
   while (from <= to) {
-    const middle = from + to >>> 1;
-    const compareResult = compare(array[middle], item);
+    var middle = from + to >>> 1;
+    var compareResult = compare(array[middle], item);
 
     if (compareResult < 0) {
       from = middle + 1;
@@ -71,13 +74,13 @@ function move(array, start, end, moveIndex) {
     return false;
   }
 
-  const len = array.length;
+  var len = array.length;
 
   if (len === 0) {
     return false;
   }
 
-  const maxIndex = len - end + start;
+  var maxIndex = len - end + start;
 
   if (moveIndex > maxIndex) {
     moveIndex = maxIndex;
@@ -87,22 +90,22 @@ function move(array, start, end, moveIndex) {
     return false;
   }
 
-  const rangeLen = end - start;
-  const shiftIn = moveIndex - start;
-  const shiftOut = shiftIn > 0 ? -rangeLen : rangeLen;
-  let count = 0;
-  let startIndex = start;
+  var rangeLen = end - start;
+  var shiftIn = moveIndex - start;
+  var shiftOut = shiftIn > 0 ? -rangeLen : rangeLen;
+  var count = 0;
+  var startIndex = start;
 
   while (true) {
-    let index = startIndex;
-    let bufferItem = array[index];
+    var index = startIndex;
+    var bufferItem = array[index];
 
     while (true) {
       index = index >= start && index < end ? index + shiftIn : index + shiftOut;
       count++;
 
       if (index !== startIndex) {
-        const newBufferItem = array[index];
+        var newBufferItem = array[index];
         array[index] = bufferItem;
         bufferItem = newBufferItem;
       } else {

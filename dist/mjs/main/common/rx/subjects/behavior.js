@@ -1,80 +1,57 @@
-import _classCallCheck from "@babel/runtime/helpers/classCallCheck";
-import _createClass from "@babel/runtime/helpers/createClass";
-import _possibleConstructorReturn from "@babel/runtime/helpers/possibleConstructorReturn";
-import _getPrototypeOf from "@babel/runtime/helpers/getPrototypeOf";
-import _get from "@babel/runtime/helpers/get";
-import _inherits from "@babel/runtime/helpers/inherits";
 import { Subject } from './subject';
 export function behavior(base) {
-  return (
-    /*#__PURE__*/
-    function (_base) {
-      _inherits(Behavior, _base);
+  return class Behavior extends base {
+    constructor(value) {
+      super();
 
-      function Behavior(value) {
-        var _this;
+      if (typeof value !== 'undefined') {
+        this.value = value;
+      }
+    }
 
-        _classCallCheck(this, Behavior);
-
-        _this = _possibleConstructorReturn(this, _getPrototypeOf(Behavior).call(this));
-
-        if (typeof value !== 'undefined') {
-          _this.value = value;
-        }
-
-        return _this;
+    subscribe(subscriber) {
+      if (!subscriber) {
+        return null;
       }
 
-      _createClass(Behavior, [{
-        key: "subscribe",
-        value: function subscribe(subscriber) {
-          var _this2 = this;
+      let unsubscribe = super.subscribe(subscriber);
+      const {
+        value
+      } = this;
 
-          if (!subscriber) {
-            return null;
-          }
+      if (typeof value !== 'undefined') {
+        subscriber(value);
+      }
 
-          var unsubscribe = _get(_getPrototypeOf(Behavior.prototype), "subscribe", this).call(this, subscriber);
-
-          var value = this.value;
-
-          if (typeof value !== 'undefined') {
-            subscriber(value);
-          }
-
-          return function () {
-            if (!unsubscribe) {
-              return;
-            }
-
-            try {
-              // eslint-disable-next-line no-shadow
-              // tslint:disable-next-line:no-shadowed-variable
-              var _value = _this2.value,
-                  unsubscribeValue = _this2.unsubscribeValue;
-
-              if (typeof unsubscribeValue !== 'undefined' && unsubscribeValue !== _value) {
-                subscriber(unsubscribeValue);
-              }
-            } finally {
-              unsubscribe();
-              unsubscribe = null;
-            }
-          };
+      return () => {
+        if (!unsubscribe) {
+          return;
         }
-      }, {
-        key: "emit",
-        value: function emit(value) {
-          this.value = value;
 
-          _get(_getPrototypeOf(Behavior.prototype), "emit", this).call(this, value);
+        try {
+          // eslint-disable-next-line no-shadow
+          // tslint:disable-next-line:no-shadowed-variable
+          const {
+            value,
+            unsubscribeValue
+          } = this;
 
-          return this;
+          if (typeof unsubscribeValue !== 'undefined' && unsubscribeValue !== value) {
+            subscriber(unsubscribeValue);
+          }
+        } finally {
+          unsubscribe();
+          unsubscribe = null;
         }
-      }]);
+      };
+    }
 
-      return Behavior;
-    }(base)
-  );
+    emit(value) {
+      this.value = value;
+      super.emit(value);
+      return this;
+    }
+
+  };
 }
-export var BehaviorSubject = behavior(Subject);
+export const BehaviorSubject = behavior(Subject);
