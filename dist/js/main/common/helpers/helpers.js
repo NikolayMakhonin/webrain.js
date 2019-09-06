@@ -2,12 +2,7 @@
 
 var _interopRequireDefault = require("@babel/runtime-corejs3/helpers/interopRequireDefault");
 
-var _Object$defineProperty2 = require("@babel/runtime-corejs3/core-js-stable/object/define-property");
-
-_Object$defineProperty2(exports, "__esModule", {
-  value: true
-});
-
+exports.__esModule = true;
 exports.isIterable = isIterable;
 exports.isIterator = isIterator;
 exports.typeToDebugString = typeToDebugString;
@@ -54,7 +49,7 @@ function delay(timeMilliseconds) {
 function checkIsFuncOrNull(func) {
   // PROF: 66 - 0.1%
   if (func != null && typeof func !== 'function') {
-    throw new Error("Value is not a function or null/undefined: ".concat(func));
+    throw new Error("Value is not a function or null/undefined: " + func);
   }
 
   return func;
@@ -70,7 +65,7 @@ function toSingleCall(func, throwOnMultipleCall) {
   return function () {
     if (isCalled) {
       if (throwOnMultipleCall) {
-        throw new Error("Multiple call for single call function: ".concat(func));
+        throw new Error("Multiple call for single call function: " + func);
       }
 
       return;

@@ -2,15 +2,15 @@
 
 var _interopRequireDefault = require("@babel/runtime-corejs3/helpers/interopRequireDefault");
 
+var _concat = _interopRequireDefault(require("@babel/runtime-corejs3/core-js-stable/instance/concat"));
+
 var _map = _interopRequireDefault(require("@babel/runtime-corejs3/core-js-stable/instance/map"));
 
 var _stringify = _interopRequireDefault(require("@babel/runtime-corejs3/core-js-stable/json/stringify"));
 
-var _concat = _interopRequireDefault(require("@babel/runtime-corejs3/core-js-stable/instance/concat"));
-
-var _toConsumableArray2 = _interopRequireDefault(require("@babel/runtime-corejs3/helpers/toConsumableArray"));
-
 var _getIterator2 = _interopRequireDefault(require("@babel/runtime-corejs3/core-js/get-iterator"));
+
+var _isArray3 = _interopRequireDefault(require("@babel/runtime-corejs3/core-js-stable/array/is-array"));
 
 var _IMapChanged = require("../../../../../main/common/lists/contracts/IMapChanged");
 
@@ -35,45 +35,36 @@ describe('common > main > lists > ObservableMap', function () {
     _TestMap.assert.strictEqual(map.size, 0);
   });
   it('set', function () {
-    var _context2;
+    var _context;
 
     function setArray(list, array) {
       var result = false;
-      var _iteratorNormalCompletion = true;
-      var _didIteratorError = false;
-      var _iteratorError = undefined;
 
-      try {
-        for (var _iterator = (0, _getIterator2.default)(array), _step; !(_iteratorNormalCompletion = (_step = _iterator.next()).done); _iteratorNormalCompletion = true) {
-          var item = _step.value;
-          result = list.set.apply(list, (0, _toConsumableArray2.default)(item)) || result;
+      for (var _iterator = array, _isArray = (0, _isArray3.default)(_iterator), _i = 0, _iterator = _isArray ? _iterator : (0, _getIterator2.default)(_iterator);;) {
+        var _ref;
+
+        if (_isArray) {
+          if (_i >= _iterator.length) break;
+          _ref = _iterator[_i++];
+        } else {
+          _i = _iterator.next();
+          if (_i.done) break;
+          _ref = _i.value;
         }
-      } catch (err) {
-        _didIteratorError = true;
-        _iteratorError = err;
-      } finally {
-        try {
-          if (!_iteratorNormalCompletion && _iterator.return != null) {
-            _iterator.return();
-          }
-        } finally {
-          if (_didIteratorError) {
-            throw _iteratorError;
-          }
-        }
+
+        var item = _ref;
+        result = list.set.apply(list, item) || result;
       }
 
       return result;
     }
 
     function set(key, value) {
-      var _context;
-
       return {
         actions: [function (list) {
           return list.set(key, value);
         }],
-        description: (0, _concat.default)(_context = "set(".concat((0, _stringify.default)(key), ", ")).call(_context, (0, _stringify.default)(value), ")\n")
+        description: "set(" + (0, _stringify.default)(key) + ", " + (0, _stringify.default)(value) + ")\n"
       };
     }
 
@@ -134,13 +125,13 @@ describe('common > main > lists > ObservableMap', function () {
             newValue: i + 1
           };
         }),
-        mapChanged: (0, _concat.default)(_context2 = (0, _map.default)(entriesShuffle).call(entriesShuffle, function (o, i) {
+        mapChanged: (0, _concat.default)(_context = (0, _map.default)(entriesShuffle).call(entriesShuffle, function (o, i) {
           return {
             type: _IMapChanged.MapChangedType.Added,
             key: o[0],
             newValue: o[1]
           };
-        })).call(_context2, (0, _map.default)(entriesShuffle).call(entriesShuffle, function (o, i) {
+        })).call(_context, (0, _map.default)(entriesShuffle).call(entriesShuffle, function (o, i) {
           return {
             type: _IMapChanged.MapChangedType.Set,
             key: o[0],
@@ -157,28 +148,21 @@ describe('common > main > lists > ObservableMap', function () {
   it('delete', function () {
     function removeArray(list, array) {
       var result = false;
-      var _iteratorNormalCompletion2 = true;
-      var _didIteratorError2 = false;
-      var _iteratorError2 = undefined;
 
-      try {
-        for (var _iterator2 = (0, _getIterator2.default)(array), _step2; !(_iteratorNormalCompletion2 = (_step2 = _iterator2.next()).done); _iteratorNormalCompletion2 = true) {
-          var key = _step2.value;
-          result = list.delete(key) || result;
+      for (var _iterator2 = array, _isArray2 = (0, _isArray3.default)(_iterator2), _i2 = 0, _iterator2 = _isArray2 ? _iterator2 : (0, _getIterator2.default)(_iterator2);;) {
+        var _ref2;
+
+        if (_isArray2) {
+          if (_i2 >= _iterator2.length) break;
+          _ref2 = _iterator2[_i2++];
+        } else {
+          _i2 = _iterator2.next();
+          if (_i2.done) break;
+          _ref2 = _i2.value;
         }
-      } catch (err) {
-        _didIteratorError2 = true;
-        _iteratorError2 = err;
-      } finally {
-        try {
-          if (!_iteratorNormalCompletion2 && _iterator2.return != null) {
-            _iterator2.return();
-          }
-        } finally {
-          if (_didIteratorError2) {
-            throw _iteratorError2;
-          }
-        }
+
+        var key = _ref2;
+        result = list.delete(key) || result;
       }
 
       return result;
@@ -189,7 +173,7 @@ describe('common > main > lists > ObservableMap', function () {
         actions: [function (list) {
           return list.delete(key);
         }],
-        description: "delete(".concat((0, _stringify.default)(key), ")\n")
+        description: "delete(" + (0, _stringify.default)(key) + ")\n"
       };
     }
 

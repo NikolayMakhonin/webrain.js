@@ -2,47 +2,14 @@
 
 var _interopRequireDefault = require("@babel/runtime-corejs3/helpers/interopRequireDefault");
 
-var _Object$defineProperty2 = require("@babel/runtime-corejs3/core-js-stable/object/define-property");
-
-_Object$defineProperty2(exports, "__esModule", {
-  value: true
-});
-
+exports.__esModule = true;
 exports.TestThenableSync = exports.ITERATOR_GENERATOR = exports.ITERABLE = exports.FUNC = exports.THEN_LIKE = exports.OBJ = exports.ThenType = exports.ValueType = void 0;
-
-var _defineProperty2 = _interopRequireDefault(require("@babel/runtime-corejs3/core-js-stable/object/define-property"));
-
-var _defineProperties = _interopRequireDefault(require("@babel/runtime-corejs3/core-js-stable/object/define-properties"));
-
-var _getOwnPropertyDescriptors = _interopRequireDefault(require("@babel/runtime-corejs3/core-js-stable/object/get-own-property-descriptors"));
-
-var _forEach = _interopRequireDefault(require("@babel/runtime-corejs3/core-js-stable/instance/for-each"));
-
-var _getOwnPropertyDescriptor = _interopRequireDefault(require("@babel/runtime-corejs3/core-js-stable/object/get-own-property-descriptor"));
-
-var _filter = _interopRequireDefault(require("@babel/runtime-corejs3/core-js-stable/instance/filter"));
-
-var _getOwnPropertySymbols = _interopRequireDefault(require("@babel/runtime-corejs3/core-js-stable/object/get-own-property-symbols"));
-
-var _keys = _interopRequireDefault(require("@babel/runtime-corejs3/core-js-stable/object/keys"));
 
 var _stringify = _interopRequireDefault(require("@babel/runtime-corejs3/core-js-stable/json/stringify"));
 
-var _concat = _interopRequireDefault(require("@babel/runtime-corejs3/core-js-stable/instance/concat"));
-
 var _values = _interopRequireDefault(require("@babel/runtime-corejs3/core-js-stable/object/values"));
 
-var _classCallCheck2 = _interopRequireDefault(require("@babel/runtime-corejs3/helpers/classCallCheck"));
-
-var _createClass2 = _interopRequireDefault(require("@babel/runtime-corejs3/helpers/createClass"));
-
-var _possibleConstructorReturn2 = _interopRequireDefault(require("@babel/runtime-corejs3/helpers/possibleConstructorReturn"));
-
-var _getPrototypeOf2 = _interopRequireDefault(require("@babel/runtime-corejs3/helpers/getPrototypeOf"));
-
-var _inherits2 = _interopRequireDefault(require("@babel/runtime-corejs3/helpers/inherits"));
-
-var _slicedToArray2 = _interopRequireDefault(require("@babel/runtime-corejs3/helpers/slicedToArray"));
+var _inheritsLoose2 = _interopRequireDefault(require("@babel/runtime-corejs3/helpers/inheritsLoose"));
 
 var _bind = _interopRequireDefault(require("@babel/runtime-corejs3/core-js-stable/instance/bind"));
 
@@ -50,7 +17,7 @@ var _regenerator = _interopRequireDefault(require("@babel/runtime-corejs3/regene
 
 var _set = _interopRequireDefault(require("@babel/runtime-corejs3/core-js-stable/set"));
 
-var _defineProperty3 = _interopRequireDefault(require("@babel/runtime-corejs3/helpers/defineProperty"));
+var _extends2 = _interopRequireDefault(require("@babel/runtime-corejs3/helpers/extends"));
 
 var _async = require("../../../../../../main/common/async/async");
 
@@ -62,10 +29,7 @@ var _Assert = require("../../../../../../main/common/test/Assert");
 
 var _TestVariants2 = require("../../src/helpers/TestVariants");
 
-function ownKeys(object, enumerableOnly) { var keys = (0, _keys.default)(object); if (_getOwnPropertySymbols.default) { var symbols = (0, _getOwnPropertySymbols.default)(object); if (enumerableOnly) symbols = (0, _filter.default)(symbols).call(symbols, function (sym) { return (0, _getOwnPropertyDescriptor.default)(object, sym).enumerable; }); keys.push.apply(keys, symbols); } return keys; }
-
-function _objectSpread(target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i] != null ? arguments[i] : {}; if (i % 2) { var _context8; (0, _forEach.default)(_context8 = ownKeys(source, true)).call(_context8, function (key) { (0, _defineProperty3.default)(target, key, source[key]); }); } else if (_getOwnPropertyDescriptors.default) { (0, _defineProperties.default)(target, (0, _getOwnPropertyDescriptors.default)(source)); } else { var _context9; (0, _forEach.default)(_context9 = ownKeys(source)).call(_context9, function (key) { (0, _defineProperty2.default)(target, key, (0, _getOwnPropertyDescriptor.default)(source, key)); }); } } return target; }
-
+/* tslint:disable:no-empty no-identical-functions no-construct use-primitive-type */
 var ValueType;
 exports.ValueType = ValueType;
 
@@ -97,7 +61,7 @@ function resolveOptionValue(opts, value) {
 }
 
 function resolveOptions(optionsSource, optionsParams) {
-  var resolvedOptions = _objectSpread({}, optionsSource);
+  var resolvedOptions = (0, _extends2.default)({}, optionsSource);
 
   for (var key in resolvedOptions) {
     if (Object.prototype.hasOwnProperty.call(resolvedOptions, key)) {
@@ -436,10 +400,9 @@ function createValue(value, getValueType, addResolve, valueInfo) {
       case ValueType.ThenableResolved:
         {
           var _createThenable = createThenable(i % 2 === 0),
-              _createThenable2 = (0, _slicedToArray2.default)(_createThenable, 3),
-              thenable = _createThenable2[0],
-              _resolve = _createThenable2[1],
-              reject = _createThenable2[2];
+              thenable = _createThenable[0],
+              _resolve = _createThenable[1],
+              reject = _createThenable[2];
 
           _resolve(value);
 
@@ -449,11 +412,10 @@ function createValue(value, getValueType, addResolve, valueInfo) {
 
       case ValueType.ThenableRejected:
         {
-          var _createThenable3 = createThenable(i % 2 === 0),
-              _createThenable4 = (0, _slicedToArray2.default)(_createThenable3, 3),
-              _thenable2 = _createThenable4[0],
-              _resolve2 = _createThenable4[1],
-              _reject = _createThenable4[2];
+          var _createThenable2 = createThenable(i % 2 === 0),
+              _thenable2 = _createThenable2[0],
+              _resolve2 = _createThenable2[1],
+              _reject = _createThenable2[2];
 
           _reject(value);
 
@@ -476,11 +438,10 @@ function createValue(value, getValueType, addResolve, valueInfo) {
       case ValueType.ThenableResolve:
         {
           var _ret = function () {
-            var _createThenable5 = createThenable(i % 2 === 0),
-                _createThenable6 = (0, _slicedToArray2.default)(_createThenable5, 3),
-                thenable = _createThenable6[0],
-                resolve = _createThenable6[1],
-                reject = _createThenable6[2];
+            var _createThenable3 = createThenable(i % 2 === 0),
+                thenable = _createThenable3[0],
+                resolve = _createThenable3[1],
+                reject = _createThenable3[2];
 
             var val = value;
             addResolve(function () {
@@ -497,11 +458,10 @@ function createValue(value, getValueType, addResolve, valueInfo) {
       case ValueType.ThenableReject:
         {
           var _ret2 = function () {
-            var _createThenable7 = createThenable(i % 2 === 0),
-                _createThenable8 = (0, _slicedToArray2.default)(_createThenable7, 3),
-                thenable = _createThenable8[0],
-                resolve = _createThenable8[1],
-                reject = _createThenable8[2];
+            var _createThenable4 = createThenable(i % 2 === 0),
+                thenable = _createThenable4[0],
+                resolve = _createThenable4[1],
+                reject = _createThenable4[2];
 
             var val = value;
             addResolve(function () {
@@ -576,7 +536,7 @@ function createThen(valueInfo, getValueType, addResolve, getThenType, getThenThr
         break;
 
       default:
-        throw new Error("Unknown ResolveResult: ".concat(result));
+        throw new Error("Unknown ResolveResult: " + result);
     }
   };
 
@@ -719,7 +679,7 @@ function createThen(valueInfo, getValueType, addResolve, getThenType, getThenThr
       // 	break
 
       default:
-        throw new Error("Unknown ThenType: ".concat(getThenType(i)));
+        throw new Error("Unknown ThenType: " + getThenType(i));
     }
   }
 
@@ -729,13 +689,12 @@ function createThen(valueInfo, getValueType, addResolve, getThenType, getThenThr
 var TestThenableSync =
 /*#__PURE__*/
 function (_TestVariants) {
-  (0, _inherits2.default)(TestThenableSync, _TestVariants);
+  (0, _inheritsLoose2.default)(TestThenableSync, _TestVariants);
 
   function TestThenableSync() {
     var _this;
 
-    (0, _classCallCheck2.default)(this, TestThenableSync);
-    _this = (0, _possibleConstructorReturn2.default)(this, (0, _getPrototypeOf2.default)(TestThenableSync).call(this));
+    _this = _TestVariants.call(this) || this;
     _this.baseOptionsVariants = {
       value: ['v'],
       // , void 0, ITERABLE, ITERATOR_GENERATOR],
@@ -755,142 +714,139 @@ function (_TestVariants) {
     return _this;
   }
 
-  (0, _createClass2.default)(TestThenableSync, [{
-    key: "testVariant",
-    value: function testVariant(inputOptions) {
-      var error;
+  var _proto = TestThenableSync.prototype;
 
-      var _loop = function _loop(debugIteration) {
-        var valueInfo = void 0;
+  _proto.testVariant = function testVariant(inputOptions) {
+    var error;
 
-        try {
-          var options = resolveOptions(inputOptions, null);
+    var _loop = function _loop(debugIteration) {
+      var valueInfo = void 0;
 
-          var action = function action() {
-            var resolveList = [];
-            valueInfo = createValue(options.value, function (index) {
-              return options['createValue' + index];
-            }, function (resolve) {
-              return resolveList.push(resolve);
-            });
-            createThen(valueInfo, function (index) {
-              return options['thenValue' + index];
-            }, function (resolve) {
-              return resolveList.push(resolve);
-            }, function (index) {
-              return options['thenType' + index];
-            }, function (index) {
-              return options['thenThrow' + index];
-            }); // region Check
+      try {
+        var options = resolveOptions(inputOptions, null);
 
-            var queueSize = 0;
+        var action = function action() {
+          var resolveList = [];
+          valueInfo = createValue(options.value, function (index) {
+            return options['createValue' + index];
+          }, function (resolve) {
+            return resolveList.push(resolve);
+          });
+          createThen(valueInfo, function (index) {
+            return options['thenValue' + index];
+          }, function (resolve) {
+            return resolveList.push(resolve);
+          }, function (index) {
+            return options['thenType' + index];
+          }, function (index) {
+            return options['thenThrow' + index];
+          }); // region Check
 
-            var onResult = function onResult(o) {
-              _Assert.assert.ok(queueSize > 0);
+          var queueSize = 0;
 
-              queueSize--;
+          var onResult = function onResult(o) {
+            _Assert.assert.ok(queueSize > 0);
 
-              _Assert.assert.strictEqual(o, valueInfo.origValue);
-            };
+            queueSize--;
 
+            _Assert.assert.strictEqual(o, valueInfo.origValue);
+          };
+
+          if (valueInfo.useReject) {
+            queueSize++;
+
+            _ThenableSync.ThenableSync.resolve(valueInfo.value, null, onResult, true);
+          } else {
+            queueSize++;
+
+            _ThenableSync.ThenableSync.resolve(valueInfo.value, onResult, null, true);
+          }
+
+          if (!(0, _helpers.isIterator)(valueInfo.value)) {
             if (valueInfo.useReject) {
               queueSize++;
 
-              _ThenableSync.ThenableSync.resolve(valueInfo.value, null, onResult, true);
+              _ThenableSync.ThenableSync.resolve(_ThenableSync.ThenableSync.resolve(valueInfo.value, onResult, null, true), null, onResult, true);
             } else {
               queueSize++;
 
-              _ThenableSync.ThenableSync.resolve(valueInfo.value, onResult, null, true);
+              _ThenableSync.ThenableSync.resolve(_ThenableSync.ThenableSync.resolve(valueInfo.value, null, onResult, true), onResult, null, true);
             }
 
-            if (!(0, _helpers.isIterator)(valueInfo.value)) {
-              if (valueInfo.useReject) {
-                queueSize++;
+            queueSize++;
 
-                _ThenableSync.ThenableSync.resolve(_ThenableSync.ThenableSync.resolve(valueInfo.value, onResult, null, true), null, onResult, true);
-              } else {
-                queueSize++;
+            _ThenableSync.ThenableSync.resolve(_ThenableSync.ThenableSync.resolve(valueInfo.value, null, null, true), onResult, onResult, true);
+          }
 
-                _ThenableSync.ThenableSync.resolve(_ThenableSync.ThenableSync.resolve(valueInfo.value, null, onResult, true), onResult, null, true);
-              }
-
+          if ((0, _async.isThenable)(valueInfo.value)) {
+            if (valueInfo.useReject) {
               queueSize++;
-
-              _ThenableSync.ThenableSync.resolve(_ThenableSync.ThenableSync.resolve(valueInfo.value, null, null, true), onResult, onResult, true);
-            }
-
-            if ((0, _async.isThenable)(valueInfo.value)) {
-              if (valueInfo.useReject) {
-                queueSize++;
-                valueInfo.value.then(onResult, null).then(null, onResult);
-              } else {
-                queueSize++;
-                valueInfo.value.then(null, onResult).then(onResult, null);
-              }
-
-              queueSize++;
-              valueInfo.value.then(null, null).then(onResult, onResult);
-            }
-
-            if (valueInfo.immediate) {
-              _Assert.assert.strictEqual(queueSize, 0);
+              valueInfo.value.then(onResult, null).then(null, onResult);
             } else {
-              var checkQueueSize = queueSize;
+              queueSize++;
+              valueInfo.value.then(null, onResult).then(onResult, null);
+            }
 
-              while (resolveList.length) {
-                _Assert.assert.strictEqual(queueSize, checkQueueSize);
+            queueSize++;
+            valueInfo.value.then(null, null).then(onResult, onResult);
+          }
 
-                resolveList.shift()();
-              }
-
-              _Assert.assert.strictEqual(queueSize, 0);
-            } // endregion
-
-          };
-
-          if (options.expected.error) {
-            _Assert.assert.throws(action, options.expected.error);
+          if (valueInfo.immediate) {
+            _Assert.assert.strictEqual(queueSize, 0);
           } else {
-            action();
-          }
+            var checkQueueSize = queueSize;
 
-          return "break";
-        } catch (ex) {
-          if (!debugIteration) {
-            var _context6, _context7;
+            while (resolveList.length) {
+              _Assert.assert.strictEqual(queueSize, checkQueueSize);
 
-            console.log((0, _concat.default)(_context6 = "Test number: ".concat(TestThenableSync.totalTests, "\r\nError in: ")).call(_context6, inputOptions.description, "\n"), "".concat((0, _stringify.default)(valueInfo, null, 4), "\n"), inputOptions, // ${
-            // JSON.stringify(initialOptions, null, 4)
-            // }
-            (0, _concat.default)(_context7 = "\n".concat(inputOptions.action.toString(), "\n")).call(_context7, ex && ex.stack));
-            error = ex;
-          }
-        } finally {
-          TestThenableSync.totalTests++;
+              resolveList.shift()();
+            }
+
+            _Assert.assert.strictEqual(queueSize, 0);
+          } // endregion
+
+        };
+
+        if (options.expected.error) {
+          _Assert.assert.throws(action, options.expected.error);
+        } else {
+          action();
         }
-      };
 
-      for (var debugIteration = 0; debugIteration < 3; debugIteration++) {
-        var _ret3 = _loop(debugIteration);
-
-        if (_ret3 === "break") break;
+        return "break";
+      } catch (ex) {
+        if (!debugIteration) {
+          console.log("Test number: " + TestThenableSync.totalTests + "\r\nError in: " + inputOptions.description + "\n", (0, _stringify.default)(valueInfo, null, 4) + "\n", inputOptions, // ${
+          // JSON.stringify(initialOptions, null, 4)
+          // }
+          "\n" + inputOptions.action.toString() + "\n" + (ex && ex.stack));
+          error = ex;
+        }
+      } finally {
+        TestThenableSync.totalTests++;
       }
+    };
 
-      if (error) {
-        throw error;
-      }
+    for (var debugIteration = 0; debugIteration < 3; debugIteration++) {
+      var _ret3 = _loop(debugIteration);
+
+      if (_ret3 === "break") break;
     }
-  }], [{
-    key: "test",
-    value: function test(testCases) {
-      if (!testCases.actions) {
-        // tslint:disable-next-line:no-empty
-        testCases.actions = [function () {}];
-      }
 
-      TestThenableSync._instance.test(testCases);
+    if (error) {
+      throw error;
     }
-  }]);
+  };
+
+  TestThenableSync.test = function test(testCases) {
+    if (!testCases.actions) {
+      // tslint:disable-next-line:no-empty
+      testCases.actions = [function () {}];
+    }
+
+    TestThenableSync._instance.test(testCases);
+  };
+
   return TestThenableSync;
 }(_TestVariants2.TestVariants);
 

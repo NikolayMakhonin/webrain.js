@@ -24,7 +24,7 @@ describe('common > env > modules', function () {
     assert.strictEqual((0, _module.func1)('qwe'), 'qwe 3 0 1');
     assert.strictEqual((0, _module.func1)(), 'undefined undefined 0 0');
     assert.strictEqual((0, _module.func1)(null), 'null undefined 0 1');
-    assert.ok((0, _indexOf.default)(func1Str).call(func1Str, '.?') < 0, "babel is not worked 1:\r\n".concat(func1Str)); // assert.ok(func1Str.indexOf('arguments.length') >= 0, `babel is not worked 2:\r\n${func1Str}`)
+    assert.ok((0, _indexOf.default)(func1Str).call(func1Str, '.?') < 0, "babel is not worked 1:\r\n" + func1Str); // assert.ok(func1Str.indexOf('arguments.length') >= 0, `babel is not worked 2:\r\n${func1Str}`)
     // assert.ok(func1Str.match(/function func1\(p1\)|function *\((\w|p1)\)/), `babel is not worked 3:\r\n${func1Str}`)
     // console.log(func1.toString());
 

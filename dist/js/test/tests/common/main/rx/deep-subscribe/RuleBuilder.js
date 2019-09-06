@@ -2,33 +2,17 @@
 
 var _interopRequireDefault = require("@babel/runtime-corejs3/helpers/interopRequireDefault");
 
-var _defineProperties = _interopRequireDefault(require("@babel/runtime-corejs3/core-js-stable/object/define-properties"));
-
-var _getOwnPropertyDescriptors = _interopRequireDefault(require("@babel/runtime-corejs3/core-js-stable/object/get-own-property-descriptors"));
-
-var _forEach = _interopRequireDefault(require("@babel/runtime-corejs3/core-js-stable/instance/for-each"));
-
-var _getOwnPropertyDescriptor = _interopRequireDefault(require("@babel/runtime-corejs3/core-js-stable/object/get-own-property-descriptor"));
-
-var _filter = _interopRequireDefault(require("@babel/runtime-corejs3/core-js-stable/instance/filter"));
-
-var _getOwnPropertySymbols = _interopRequireDefault(require("@babel/runtime-corejs3/core-js-stable/object/get-own-property-symbols"));
-
-var _keys = _interopRequireDefault(require("@babel/runtime-corejs3/core-js-stable/object/keys"));
-
 var _maxSafeInteger = _interopRequireDefault(require("@babel/runtime-corejs3/core-js-stable/number/max-safe-integer"));
 
 var _repeat = _interopRequireDefault(require("@babel/runtime-corejs3/core-js-stable/instance/repeat"));
 
-var _defineProperty2 = _interopRequireDefault(require("@babel/runtime-corejs3/core-js-stable/object/define-property"));
+var _defineProperty = _interopRequireDefault(require("@babel/runtime-corejs3/core-js-stable/object/define-property"));
 
 var _create = _interopRequireDefault(require("@babel/runtime-corejs3/core-js-stable/object/create"));
 
 var _concat = _interopRequireDefault(require("@babel/runtime-corejs3/core-js-stable/instance/concat"));
 
-var _toConsumableArray2 = _interopRequireDefault(require("@babel/runtime-corejs3/helpers/toConsumableArray"));
-
-var _defineProperty3 = _interopRequireDefault(require("@babel/runtime-corejs3/helpers/defineProperty"));
+var _extends2 = _interopRequireDefault(require("@babel/runtime-corejs3/helpers/extends"));
 
 var _splice = _interopRequireDefault(require("@babel/runtime-corejs3/core-js-stable/instance/splice"));
 
@@ -40,9 +24,9 @@ var _sort = _interopRequireDefault(require("@babel/runtime-corejs3/core-js-stabl
 
 var _getIterator2 = _interopRequireDefault(require("@babel/runtime-corejs3/core-js/get-iterator"));
 
-var _trim = _interopRequireDefault(require("@babel/runtime-corejs3/core-js-stable/instance/trim"));
+var _isArray8 = _interopRequireDefault(require("@babel/runtime-corejs3/core-js-stable/array/is-array"));
 
-var _typeof2 = _interopRequireDefault(require("@babel/runtime-corejs3/helpers/typeof"));
+var _trim = _interopRequireDefault(require("@babel/runtime-corejs3/core-js-stable/instance/trim"));
 
 var _slice = _interopRequireDefault(require("@babel/runtime-corejs3/core-js-stable/instance/slice"));
 
@@ -66,10 +50,9 @@ var _ObservableObjectBuilder = require("../../../../../../main/common/rx/object/
 
 var _Assert = require("../../../../../../main/common/test/Assert");
 
-function ownKeys(object, enumerableOnly) { var keys = (0, _keys.default)(object); if (_getOwnPropertySymbols.default) { var symbols = (0, _getOwnPropertySymbols.default)(object); if (enumerableOnly) symbols = (0, _filter.default)(symbols).call(symbols, function (sym) { return (0, _getOwnPropertyDescriptor.default)(object, sym).enumerable; }); keys.push.apply(keys, symbols); } return keys; }
+/* tslint:disable:no-shadowed-variable no-duplicate-string */
 
-function _objectSpread(target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i] != null ? arguments[i] : {}; if (i % 2) { var _context20; (0, _forEach.default)(_context20 = ownKeys(source, true)).call(_context20, function (key) { (0, _defineProperty3.default)(target, key, source[key]); }); } else if (_getOwnPropertyDescriptors.default) { (0, _defineProperties.default)(target, (0, _getOwnPropertyDescriptors.default)(source)); } else { var _context21; (0, _forEach.default)(_context21 = ownKeys(source)).call(_context21, function (key) { (0, _defineProperty2.default)(target, key, (0, _getOwnPropertyDescriptor.default)(source, key)); }); } } return target; }
-
+/* eslint-disable no-useless-escape,computed-property-spacing */
 describe('common > main > rx > deep-subscribe > RuleBuilder', function () {
   // noinspection JSUnusedLocalSymbols
   function checkType(builder) {
@@ -85,31 +68,24 @@ describe('common > main > rx > deep-subscribe > RuleBuilder', function () {
 
   function testSubscribe(isCollection, isMap, nonObservableObject, observableObject, subscribe, properties, subscribeProperties, add, change, remove) {
     var nonSubscribeProperties = (0, _slice.default)(properties).call(properties);
-    var _iteratorNormalCompletion = true;
-    var _didIteratorError = false;
-    var _iteratorError = undefined;
 
-    try {
-      for (var _iterator = (0, _getIterator2.default)(subscribeProperties), _step; !(_iteratorNormalCompletion = (_step = _iterator.next()).done); _iteratorNormalCompletion = true) {
-        var _property6 = _step.value;
-        var index = void 0; // tslint:disable-next-line:no-conditional-assignment
+    for (var _iterator = subscribeProperties, _isArray = (0, _isArray8.default)(_iterator), _i = 0, _iterator = _isArray ? _iterator : (0, _getIterator2.default)(_iterator);;) {
+      var _ref;
 
-        while ((index = (0, _indexOf.default)(nonSubscribeProperties).call(nonSubscribeProperties, _property6)) >= 0) {
-          (0, _splice.default)(nonSubscribeProperties).call(nonSubscribeProperties, index, 1);
-        }
+      if (_isArray) {
+        if (_i >= _iterator.length) break;
+        _ref = _iterator[_i++];
+      } else {
+        _i = _iterator.next();
+        if (_i.done) break;
+        _ref = _i.value;
       }
-    } catch (err) {
-      _didIteratorError = true;
-      _iteratorError = err;
-    } finally {
-      try {
-        if (!_iteratorNormalCompletion && _iterator.return != null) {
-          _iterator.return();
-        }
-      } finally {
-        if (_didIteratorError) {
-          throw _iteratorError;
-        }
+
+      var _property6 = _ref;
+      var index = void 0; // tslint:disable-next-line:no-conditional-assignment
+
+      while ((index = (0, _indexOf.default)(nonSubscribeProperties).call(nonSubscribeProperties, _property6)) >= 0) {
+        (0, _splice.default)(nonSubscribeProperties).call(nonSubscribeProperties, index, 1);
       }
     }
 
@@ -134,7 +110,7 @@ describe('common > main > rx > deep-subscribe > RuleBuilder', function () {
     function subscribeItem(value, debugPropertyName) {
       _Assert.assert.ok(value);
 
-      _Assert.assert.strictEqual((0, _typeof2.default)(value), 'string', value);
+      _Assert.assert.strictEqual(typeof value, 'string', value);
 
       value = (0, _trim.default)(value).call(value);
       checkDebugPropertyName(value, debugPropertyName);
@@ -151,50 +127,42 @@ describe('common > main > rx > deep-subscribe > RuleBuilder', function () {
     }
 
     function testNonSubscribeProperties(object) {
-      var _iteratorNormalCompletion2 = true;
-      var _didIteratorError2 = false;
-      var _iteratorError2 = undefined;
+      for (var _iterator2 = nonSubscribeProperties, _isArray2 = (0, _isArray8.default)(_iterator2), _i2 = 0, _iterator2 = _isArray2 ? _iterator2 : (0, _getIterator2.default)(_iterator2);;) {
+        var _ref2;
 
-      try {
-        for (var _iterator2 = (0, _getIterator2.default)(nonSubscribeProperties), _step2; !(_iteratorNormalCompletion2 = (_step2 = _iterator2.next()).done); _iteratorNormalCompletion2 = true) {
-          var _property = _step2.value;
-          add(object, _property);
+        if (_isArray2) {
+          if (_i2 >= _iterator2.length) break;
+          _ref2 = _iterator2[_i2++];
+        } else {
+          _i2 = _iterator2.next();
+          if (_i2.done) break;
+          _ref2 = _i2.value;
+        }
+
+        var _property = _ref2;
+        add(object, _property);
+
+        _Assert.assert.deepStrictEqual(subscribedItems, []);
+
+        if (change) {
+          change(object, _property);
 
           _Assert.assert.deepStrictEqual(subscribedItems, []);
+        }
 
-          if (change) {
-            change(object, _property);
+        remove(object, _property, true);
 
-            _Assert.assert.deepStrictEqual(subscribedItems, []);
-          }
+        _Assert.assert.deepStrictEqual(subscribedItems, []);
 
-          remove(object, _property, true);
+        if (_property === nonSubscribeProperty) {
+          add(object, nonSubscribeProperty);
 
           _Assert.assert.deepStrictEqual(subscribedItems, []);
+        } // if (object === observableObject) {
+        // 	assert.deepStrictEqual(subscribedItems, ['+undefined'])
+        // 	subscribedItems = []
+        // }
 
-          if (_property === nonSubscribeProperty) {
-            add(object, nonSubscribeProperty);
-
-            _Assert.assert.deepStrictEqual(subscribedItems, []);
-          } // if (object === observableObject) {
-          // 	assert.deepStrictEqual(subscribedItems, ['+undefined'])
-          // 	subscribedItems = []
-          // }
-
-        }
-      } catch (err) {
-        _didIteratorError2 = true;
-        _iteratorError2 = err;
-      } finally {
-        try {
-          if (!_iteratorNormalCompletion2 && _iterator2.return != null) {
-            _iterator2.return();
-          }
-        } finally {
-          if (_didIteratorError2) {
-            throw _iteratorError2;
-          }
-        }
       }
     }
 
@@ -215,41 +183,34 @@ describe('common > main > rx > deep-subscribe > RuleBuilder', function () {
 
           _Assert.assert.ok(unsubscribe);
 
-          _Assert.assert.strictEqual((0, _typeof2.default)(unsubscribe), 'function');
+          _Assert.assert.strictEqual(typeof unsubscribe, 'function');
 
           _Assert.assert.deepStrictEqual(subscribedItems, []);
 
           subscribedItems = [];
           testNonSubscribeProperties(object);
-          var _iteratorNormalCompletion3 = true;
-          var _didIteratorError3 = false;
-          var _iteratorError3 = undefined;
 
-          try {
-            for (var _iterator3 = (0, _getIterator2.default)(subscribeProperties), _step3; !(_iteratorNormalCompletion3 = (_step3 = _iterator3.next()).done); _iteratorNormalCompletion3 = true) {
-              var _property2 = _step3.value;
-              add(object, _property2);
+          for (var _iterator3 = subscribeProperties, _isArray3 = (0, _isArray8.default)(_iterator3), _i3 = 0, _iterator3 = _isArray3 ? _iterator3 : (0, _getIterator2.default)(_iterator3);;) {
+            var _ref3;
+
+            if (_isArray3) {
+              if (_i3 >= _iterator3.length) break;
+              _ref3 = _iterator3[_i3++];
+            } else {
+              _i3 = _iterator3.next();
+              if (_i3.done) break;
+              _ref3 = _i3.value;
+            }
+
+            var _property2 = _ref3;
+            add(object, _property2);
+
+            _Assert.assert.deepStrictEqual(subscribedItems, []);
+
+            if (change) {
+              change(object, _property2);
 
               _Assert.assert.deepStrictEqual(subscribedItems, []);
-
-              if (change) {
-                change(object, _property2);
-
-                _Assert.assert.deepStrictEqual(subscribedItems, []);
-              }
-            }
-          } catch (err) {
-            _didIteratorError3 = true;
-            _iteratorError3 = err;
-          } finally {
-            try {
-              if (!_iteratorNormalCompletion3 && _iterator3.return != null) {
-                _iterator3.return();
-              }
-            } finally {
-              if (_didIteratorError3) {
-                throw _iteratorError3;
-              }
             }
           }
 
@@ -265,7 +226,7 @@ describe('common > main > rx > deep-subscribe > RuleBuilder', function () {
 
           _Assert.assert.ok(unsubscribe);
 
-          _Assert.assert.strictEqual((0, _typeof2.default)(unsubscribe), 'function');
+          _Assert.assert.strictEqual(typeof unsubscribe, 'function');
 
           _Assert.assert.deepStrictEqual((0, _sort.default)(subscribedItems).call(subscribedItems), (0, _sort.default)(_context2 = (0, _map.default)(subscribeProperties).call(subscribeProperties, function (o) {
             return '+value_' + o;
@@ -273,30 +234,23 @@ describe('common > main > rx > deep-subscribe > RuleBuilder', function () {
 
           subscribedItems = [];
           testNonSubscribeProperties(object);
-          var _iteratorNormalCompletion4 = true;
-          var _didIteratorError4 = false;
-          var _iteratorError4 = undefined;
 
-          try {
-            for (var _iterator4 = (0, _getIterator2.default)(subscribeProperties), _step4; !(_iteratorNormalCompletion4 = (_step4 = _iterator4.next()).done); _iteratorNormalCompletion4 = true) {
-              var _property3 = _step4.value;
-              remove(object, _property3, false);
+          for (var _iterator4 = subscribeProperties, _isArray4 = (0, _isArray8.default)(_iterator4), _i4 = 0, _iterator4 = _isArray4 ? _iterator4 : (0, _getIterator2.default)(_iterator4);;) {
+            var _ref4;
 
-              _Assert.assert.deepStrictEqual(subscribedItems, []);
+            if (_isArray4) {
+              if (_i4 >= _iterator4.length) break;
+              _ref4 = _iterator4[_i4++];
+            } else {
+              _i4 = _iterator4.next();
+              if (_i4.done) break;
+              _ref4 = _i4.value;
             }
-          } catch (err) {
-            _didIteratorError4 = true;
-            _iteratorError4 = err;
-          } finally {
-            try {
-              if (!_iteratorNormalCompletion4 && _iterator4.return != null) {
-                _iterator4.return();
-              }
-            } finally {
-              if (_didIteratorError4) {
-                throw _iteratorError4;
-              }
-            }
+
+            var _property3 = _ref4;
+            remove(object, _property3, false);
+
+            _Assert.assert.deepStrictEqual(subscribedItems, []);
           }
 
           testNonSubscribeProperties(object);
@@ -321,7 +275,7 @@ describe('common > main > rx > deep-subscribe > RuleBuilder', function () {
 
           _Assert.assert.ok(unsubscribe);
 
-          _Assert.assert.strictEqual((0, _typeof2.default)(unsubscribe), 'function');
+          _Assert.assert.strictEqual(typeof unsubscribe, 'function');
 
           testNonSubscribeProperties(object);
           unsubscribe();
@@ -333,46 +287,39 @@ describe('common > main > rx > deep-subscribe > RuleBuilder', function () {
 
           _Assert.assert.ok(unsubscribe);
 
-          _Assert.assert.strictEqual((0, _typeof2.default)(unsubscribe), 'function');
+          _Assert.assert.strictEqual(typeof unsubscribe, 'function');
 
           _Assert.assert.deepStrictEqual(subscribedItems, []);
 
           subscribedItems = [];
           testNonSubscribeProperties(object);
-          var _iteratorNormalCompletion5 = true;
-          var _didIteratorError5 = false;
-          var _iteratorError5 = undefined;
 
-          try {
-            for (var _iterator5 = (0, _getIterator2.default)(subscribeProperties), _step5; !(_iteratorNormalCompletion5 = (_step5 = _iterator5.next()).done); _iteratorNormalCompletion5 = true) {
-              var _property4 = _step5.value;
-              add(object, _property4);
+          for (var _iterator5 = subscribeProperties, _isArray5 = (0, _isArray8.default)(_iterator5), _i5 = 0, _iterator5 = _isArray5 ? _iterator5 : (0, _getIterator2.default)(_iterator5);;) {
+            var _ref5;
 
-              _Assert.assert.deepStrictEqual(subscribedItems, [// '-undefined',
-              '+value_' + _property4]);
+            if (_isArray5) {
+              if (_i5 >= _iterator5.length) break;
+              _ref5 = _iterator5[_i5++];
+            } else {
+              _i5 = _iterator5.next();
+              if (_i5.done) break;
+              _ref5 = _i5.value;
+            }
+
+            var _property4 = _ref5;
+            add(object, _property4);
+
+            _Assert.assert.deepStrictEqual(subscribedItems, [// '-undefined',
+            '+value_' + _property4]);
+
+            subscribedItems = [];
+
+            if (change) {
+              change(object, _property4);
+
+              _Assert.assert.deepStrictEqual(subscribedItems, ['-value_' + _property4, '+value_' + _property4]);
 
               subscribedItems = [];
-
-              if (change) {
-                change(object, _property4);
-
-                _Assert.assert.deepStrictEqual(subscribedItems, ['-value_' + _property4, '+value_' + _property4]);
-
-                subscribedItems = [];
-              }
-            }
-          } catch (err) {
-            _didIteratorError5 = true;
-            _iteratorError5 = err;
-          } finally {
-            try {
-              if (!_iteratorNormalCompletion5 && _iterator5.return != null) {
-                _iterator5.return();
-              }
-            } finally {
-              if (_didIteratorError5) {
-                throw _iteratorError5;
-              }
             }
           }
 
@@ -388,7 +335,7 @@ describe('common > main > rx > deep-subscribe > RuleBuilder', function () {
 
           _Assert.assert.ok(unsubscribe);
 
-          _Assert.assert.strictEqual((0, _typeof2.default)(unsubscribe), 'function');
+          _Assert.assert.strictEqual(typeof unsubscribe, 'function');
 
           unsubscribe();
 
@@ -401,7 +348,7 @@ describe('common > main > rx > deep-subscribe > RuleBuilder', function () {
 
           _Assert.assert.ok(unsubscribe);
 
-          _Assert.assert.strictEqual((0, _typeof2.default)(unsubscribe), 'function');
+          _Assert.assert.strictEqual(typeof unsubscribe, 'function');
 
           _Assert.assert.deepStrictEqual((0, _sort.default)(subscribedItems).call(subscribedItems), (0, _sort.default)(_context5 = (0, _map.default)(subscribeProperties).call(subscribeProperties, function (o) {
             return '+value_' + o;
@@ -409,32 +356,25 @@ describe('common > main > rx > deep-subscribe > RuleBuilder', function () {
 
           subscribedItems = [];
           testNonSubscribeProperties(object);
-          var _iteratorNormalCompletion6 = true;
-          var _didIteratorError6 = false;
-          var _iteratorError6 = undefined;
 
-          try {
-            for (var _iterator6 = (0, _getIterator2.default)(subscribeProperties), _step6; !(_iteratorNormalCompletion6 = (_step6 = _iterator6.next()).done); _iteratorNormalCompletion6 = true) {
-              var _property5 = _step6.value;
-              remove(object, _property5, false);
+          for (var _iterator6 = subscribeProperties, _isArray6 = (0, _isArray8.default)(_iterator6), _i6 = 0, _iterator6 = _isArray6 ? _iterator6 : (0, _getIterator2.default)(_iterator6);;) {
+            var _ref6;
 
-              _Assert.assert.deepStrictEqual(subscribedItems, ['-value_' + _property5]);
-
-              subscribedItems = [];
+            if (_isArray6) {
+              if (_i6 >= _iterator6.length) break;
+              _ref6 = _iterator6[_i6++];
+            } else {
+              _i6 = _iterator6.next();
+              if (_i6.done) break;
+              _ref6 = _i6.value;
             }
-          } catch (err) {
-            _didIteratorError6 = true;
-            _iteratorError6 = err;
-          } finally {
-            try {
-              if (!_iteratorNormalCompletion6 && _iterator6.return != null) {
-                _iterator6.return();
-              }
-            } finally {
-              if (_didIteratorError6) {
-                throw _iteratorError6;
-              }
-            }
+
+            var _property5 = _ref6;
+            remove(object, _property5, false);
+
+            _Assert.assert.deepStrictEqual(subscribedItems, ['-value_' + _property5]);
+
+            subscribedItems = [];
           }
 
           testNonSubscribeProperties(object);
@@ -496,13 +436,13 @@ describe('common > main > rx > deep-subscribe > RuleBuilder', function () {
       }
     }
 
-    testSubscribe(false, true, _objectSpread({}, builder.object), builder.object, subscribe, (0, _concat.default)(_context6 = [nonSubscribeProperty]).call(_context6, (0, _toConsumableArray2.default)(properties === _constants.ANY ? [] : properties)), properties === _constants.ANY ? [nonSubscribeProperty, 'p1', 'p2', 'p3'] : properties, add, change, remove); // builder
+    testSubscribe(false, true, (0, _extends2.default)({}, builder.object), builder.object, subscribe, (0, _concat.default)(_context6 = [nonSubscribeProperty]).call(_context6, properties === _constants.ANY ? [] : properties), properties === _constants.ANY ? [nonSubscribeProperty, 'p1', 'p2', 'p3'] : properties, add, change, remove); // builder
     // 	.writable('p1', null, 'value_p1')
     // 	.writable('p2', null, 'value_p2')
     // 	.writable('p3', null, 'value_p3')
 
-    testSubscribe(false, true, (0, _create.default)(_objectSpread({}, builder.object)), (0, _create.default)(builder.object), subscribe, (0, _concat.default)(_context7 = [nonSubscribeProperty]).call(_context7, (0, _toConsumableArray2.default)(properties === _constants.ANY ? [] : properties)), [], function (object, property) {
-      (0, _defineProperty2.default)(object, property, {
+    testSubscribe(false, true, (0, _create.default)((0, _extends2.default)({}, builder.object)), (0, _create.default)(builder.object), subscribe, (0, _concat.default)(_context7 = [nonSubscribeProperty]).call(_context7, properties === _constants.ANY ? [] : properties), [], function (object, property) {
+      (0, _defineProperty.default)(object, property, {
         configurable: true,
         writable: true,
         value: 'value_' + property
@@ -530,7 +470,7 @@ describe('common > main > rx > deep-subscribe > RuleBuilder', function () {
       delete object[property];
     }
 
-    testSubscribe(false, true, object, null, subscribe, (0, _concat.default)(_context8 = [nonSubscribeProperty]).call(_context8, (0, _toConsumableArray2.default)(properties === _constants.ANY ? [] : properties)), properties === _constants.ANY ? [nonSubscribeProperty] : properties, change, change, remove);
+    testSubscribe(false, true, object, null, subscribe, (0, _concat.default)(_context8 = [nonSubscribeProperty]).call(_context8, properties === _constants.ANY ? [] : properties), properties === _constants.ANY ? [nonSubscribeProperty] : properties, change, change, remove);
   }
 
   function testMap(properties, subscribe) {
@@ -552,7 +492,7 @@ describe('common > main > rx > deep-subscribe > RuleBuilder', function () {
       object.delete(property);
     }
 
-    testSubscribe(true, true, map, observableMap, subscribe, (0, _concat.default)(_context9 = [nonSubscribeProperty]).call(_context9, (0, _toConsumableArray2.default)(properties === _constants.ANY ? [] : properties)), properties === _constants.ANY ? [nonSubscribeProperty, 'p1', 'p2', 'p3'] : properties, change, change, remove);
+    testSubscribe(true, true, map, observableMap, subscribe, (0, _concat.default)(_context9 = [nonSubscribeProperty]).call(_context9, properties === _constants.ANY ? [] : properties), properties === _constants.ANY ? [nonSubscribeProperty, 'p1', 'p2', 'p3'] : properties, change, change, remove);
   }
 
   function testSet(properties, subscribe) {
@@ -614,7 +554,7 @@ describe('common > main > rx > deep-subscribe > RuleBuilder', function () {
       notAddIfExists: true
     }); // @ts-ignore
 
-    (0, _defineProperty2.default)(list, 'listChanged', {
+    (0, _defineProperty.default)(list, 'listChanged', {
       configurable: true,
       writable: true,
       value: null
@@ -654,8 +594,8 @@ describe('common > main > rx > deep-subscribe > RuleBuilder', function () {
   }
 
   function assertRuleParams(rule, expected) {
-    rule = _objectSpread({}, rule);
-    expected = _objectSpread({}, expected);
+    rule = (0, _extends2.default)({}, rule);
+    expected = (0, _extends2.default)({}, expected);
 
     if ('unsubscribers' in rule) {
       expected.unsubscribers = rule.unsubscribers;
@@ -690,56 +630,48 @@ describe('common > main > rx > deep-subscribe > RuleBuilder', function () {
 
       _Assert.assert.ok(rule.subscribe);
 
-      var _iteratorNormalCompletion7 = true;
-      var _didIteratorError7 = false;
-      var _iteratorError7 = undefined;
+      for (var _iterator7 = expected.objectTypes, _isArray7 = (0, _isArray8.default)(_iterator7), _i7 = 0, _iterator7 = _isArray7 ? _iterator7 : (0, _getIterator2.default)(_iterator7);;) {
+        var _ref7;
 
-      try {
-        for (var _iterator7 = (0, _getIterator2.default)(expected.objectTypes), _step7; !(_iteratorNormalCompletion7 = (_step7 = _iterator7.next()).done); _iteratorNormalCompletion7 = true) {
-          var objectType = _step7.value;
-
-          switch (objectType) {
-            case 'object':
-              testObject(expected.properties, rule.subscribe);
-              break;
-
-            case 'array':
-              testArray(expected.properties, rule.subscribe);
-              break;
-
-            case 'map':
-              testMap(expected.properties, rule.subscribe);
-              break;
-
-            case 'list':
-              testList(expected.properties, rule.subscribe);
-              break;
-
-            case 'iterable':
-              testIterable(expected.properties, rule.subscribe);
-              break;
-
-            case 'set':
-              testSet(expected.properties, rule.subscribe);
-              break;
-
-            default:
-              _Assert.assert.fail('Unknown objectType: ' + objectType);
-
-          }
+        if (_isArray7) {
+          if (_i7 >= _iterator7.length) break;
+          _ref7 = _iterator7[_i7++];
+        } else {
+          _i7 = _iterator7.next();
+          if (_i7.done) break;
+          _ref7 = _i7.value;
         }
-      } catch (err) {
-        _didIteratorError7 = true;
-        _iteratorError7 = err;
-      } finally {
-        try {
-          if (!_iteratorNormalCompletion7 && _iterator7.return != null) {
-            _iterator7.return();
-          }
-        } finally {
-          if (_didIteratorError7) {
-            throw _iteratorError7;
-          }
+
+        var objectType = _ref7;
+
+        switch (objectType) {
+          case 'object':
+            testObject(expected.properties, rule.subscribe);
+            break;
+
+          case 'array':
+            testArray(expected.properties, rule.subscribe);
+            break;
+
+          case 'map':
+            testMap(expected.properties, rule.subscribe);
+            break;
+
+          case 'list':
+            testList(expected.properties, rule.subscribe);
+            break;
+
+          case 'iterable':
+            testIterable(expected.properties, rule.subscribe);
+            break;
+
+          case 'set':
+            testSet(expected.properties, rule.subscribe);
+            break;
+
+          default:
+            _Assert.assert.fail('Unknown objectType: ' + objectType);
+
         }
       }
     } else {
@@ -1043,7 +975,7 @@ describe('common > main > rx > deep-subscribe > RuleBuilder', function () {
           type: _rules.RuleType.Action,
           objectTypes: ['object', 'array'],
           properties: _constants.ANY,
-          description: "prop1|".concat(_constants.ANY_DISPLAY, "|prop2")
+          description: "prop1|" + _constants.ANY_DISPLAY + "|prop2"
         }
       }
     }); // noinspection JSUnusedLocalSymbols
@@ -1200,8 +1132,6 @@ describe('common > main > rx > deep-subscribe > RuleBuilder', function () {
     var rule3 = builder3.result.next.next;
   });
   it('mapAll', function () {
-    var _context14, _context15;
-
     var builder = new _RuleBuilder.RuleBuilder();
 
     _Assert.assert.strictEqual(builder.result, undefined);
@@ -1257,7 +1187,7 @@ describe('common > main > rx > deep-subscribe > RuleBuilder', function () {
           type: _rules.RuleType.Action,
           objectTypes: ['map'],
           properties: _constants.ANY,
-          description: (0, _concat.default)(_context14 = "".concat(_constants.COLLECTION_PREFIX, "prop1|")).call(_context14, _constants.ANY_DISPLAY, "|prop2")
+          description: _constants.COLLECTION_PREFIX + "prop1|" + _constants.ANY_DISPLAY + "|prop2"
         }
       }
     });
@@ -1282,7 +1212,7 @@ describe('common > main > rx > deep-subscribe > RuleBuilder', function () {
           type: _rules.RuleType.Action,
           objectTypes: ['map'],
           properties: _constants.ANY,
-          description: (0, _concat.default)(_context15 = "".concat(_constants.COLLECTION_PREFIX, "prop1|")).call(_context15, _constants.ANY_DISPLAY, "|prop2"),
+          description: _constants.COLLECTION_PREFIX + "prop1|" + _constants.ANY_DISPLAY + "|prop2",
           next: {
             type: _rules.RuleType.Action,
             objectTypes: ['map'],
@@ -1422,7 +1352,7 @@ describe('common > main > rx > deep-subscribe > RuleBuilder', function () {
     var rule3 = builder3.result.next.next;
   });
   it('repeat', function () {
-    var _context16, _context17;
+    var _context14, _context15;
 
     var builder = new _RuleBuilder.RuleBuilder();
 
@@ -1442,27 +1372,27 @@ describe('common > main > rx > deep-subscribe > RuleBuilder', function () {
       });
     }, [Error, TypeError, ReferenceError]);
 
-    var builder1 = (0, _repeat.default)(_context16 = (0, _repeat.default)(_context17 = (0, _repeat.default)(builder).call(builder, null, null, function (b) {
-      var _context18, _context19;
+    var builder1 = (0, _repeat.default)(_context14 = (0, _repeat.default)(_context15 = (0, _repeat.default)(builder).call(builder, null, null, function (b) {
+      var _context16, _context17;
 
-      return (0, _repeat.default)(_context18 = (0, _repeat.default)(_context19 = (0, _repeat.default)(b).call(b, 1, null, function (b) {
+      return (0, _repeat.default)(_context16 = (0, _repeat.default)(_context17 = (0, _repeat.default)(b).call(b, 1, null, function (b) {
         return b.path(function (o) {
           return o.prop1;
         });
-      })).call(_context19, null, 2, function (b) {
+      })).call(_context17, null, 2, function (b) {
         return b.path(function (o) {
           return o["prop '2'"];
         });
-      })).call(_context18, 3, 4, function (b) {
+      })).call(_context16, 3, 4, function (b) {
         return b.path(function (o) {
           return o.prop4;
         });
       });
-    })).call(_context17, 5, 6, function (b) {
+    })).call(_context15, 5, 6, function (b) {
       return b.path(function (o) {
         return o.prop5;
       });
-    })).call(_context16, 7, 8, function (b) {
+    })).call(_context14, 7, 8, function (b) {
       return b.path(function (o) {
         return o.length;
       });

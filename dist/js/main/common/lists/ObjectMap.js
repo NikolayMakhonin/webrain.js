@@ -2,12 +2,7 @@
 
 var _interopRequireDefault = require("@babel/runtime-corejs3/helpers/interopRequireDefault");
 
-var _Object$defineProperty = require("@babel/runtime-corejs3/core-js-stable/object/define-property");
-
-_Object$defineProperty(exports, "__esModule", {
-  value: true
-});
-
+exports.__esModule = true;
 exports.ObjectMap = void 0;
 
 var _iterator = _interopRequireDefault(require("@babel/runtime-corejs3/core-js-stable/symbol/iterator"));
@@ -27,8 +22,6 @@ var _keys2 = _interopRequireDefault(require("@babel/runtime-corejs3/core-js-stab
 var _regenerator = _interopRequireDefault(require("@babel/runtime-corejs3/regenerator"));
 
 var _entries = _interopRequireDefault(require("@babel/runtime-corejs3/core-js-stable/instance/entries"));
-
-var _classCallCheck2 = _interopRequireDefault(require("@babel/runtime-corejs3/helpers/classCallCheck"));
 
 var _createClass2 = _interopRequireDefault(require("@babel/runtime-corejs3/helpers/createClass"));
 
@@ -51,156 +44,143 @@ var ObjectMap =
 /*#__PURE__*/
 function () {
   function ObjectMap(object) {
-    (0, _classCallCheck2.default)(this, ObjectMap);
     this[_Symbol$toStringTag] = 'Map';
     this._object = object || {};
   }
 
-  (0, _createClass2.default)(ObjectMap, [{
-    key: "set",
-    value: function set(key, value) {
-      this._object[key] = value;
-      return this;
-    }
-  }, {
-    key: "clear",
-    value: function clear() {
-      var _object = this._object;
+  var _proto = ObjectMap.prototype;
 
-      for (var _key in _object) {
-        if (Object.prototype.hasOwnProperty.call(_object, _key)) {
-          delete _object[_key];
-        }
+  _proto.set = function set(key, value) {
+    this._object[key] = value;
+    return this;
+  };
+
+  _proto.clear = function clear() {
+    var _object = this._object;
+
+    for (var _key in _object) {
+      if (Object.prototype.hasOwnProperty.call(_object, _key)) {
+        delete _object[_key];
       }
-
-      return this;
     }
-  }, {
-    key: "delete",
-    value: function _delete(key) {
-      var _object = this._object;
 
-      if (!Object.prototype.hasOwnProperty.call(_object, key)) {
-        return false;
-      }
+    return this;
+  };
 
-      delete _object[key];
-      return true;
+  _proto.delete = function _delete(key) {
+    var _object = this._object;
+
+    if (!Object.prototype.hasOwnProperty.call(_object, key)) {
+      return false;
     }
-  }, {
-    key: _Symbol$iterator,
-    value: function value() {
-      var _context;
 
-      return (0, _entries.default)(_context = this).call(_context);
-    }
-  }, {
-    key: "entries",
-    value:
-    /*#__PURE__*/
-    _regenerator.default.mark(function entries() {
-      var _object, _key2;
+    delete _object[key];
+    return true;
+  };
 
-      return _regenerator.default.wrap(function entries$(_context2) {
-        while (1) {
-          switch (_context2.prev = _context2.next) {
-            case 0:
-              _object = this._object;
-              _context2.t0 = (0, _keys2.default)(_regenerator.default).call(_regenerator.default, _object);
+  _proto[_Symbol$iterator] = function () {
+    var _context;
 
-            case 2:
-              if ((_context2.t1 = _context2.t0()).done) {
-                _context2.next = 9;
-                break;
-              }
+    return (0, _entries.default)(_context = this).call(_context);
+  };
 
-              _key2 = _context2.t1.value;
+  _proto.entries =
+  /*#__PURE__*/
+  _regenerator.default.mark(function entries() {
+    var _object, _key2;
 
-              if (!Object.prototype.hasOwnProperty.call(_object, _key2)) {
-                _context2.next = 7;
-                break;
-              }
+    return _regenerator.default.wrap(function entries$(_context2) {
+      while (1) {
+        switch (_context2.prev = _context2.next) {
+          case 0:
+            _object = this._object;
+            _context2.t0 = (0, _keys2.default)(_regenerator.default).call(_regenerator.default, _object);
 
-              _context2.next = 7;
-              return [_key2, _object[_key2]];
-
-            case 7:
-              _context2.next = 2;
+          case 2:
+            if ((_context2.t1 = _context2.t0()).done) {
+              _context2.next = 9;
               break;
+            }
 
-            case 9:
-            case "end":
-              return _context2.stop();
-          }
-        }
-      }, entries, this);
-    })
-  }, {
-    key: "forEach",
-    value: function forEach(callbackfn, thisArg) {
-      var _object = this._object;
+            _key2 = _context2.t1.value;
 
-      for (var _key3 in _object) {
-        if (Object.prototype.hasOwnProperty.call(_object, _key3)) {
-          callbackfn.call(thisArg, _object[_key3], _key3, this);
+            if (!Object.prototype.hasOwnProperty.call(_object, _key2)) {
+              _context2.next = 7;
+              break;
+            }
+
+            _context2.next = 7;
+            return [_key2, _object[_key2]];
+
+          case 7:
+            _context2.next = 2;
+            break;
+
+          case 9:
+          case "end":
+            return _context2.stop();
         }
       }
-    }
-  }, {
-    key: "get",
-    value: function get(key) {
-      return this._object[key];
-    }
-  }, {
-    key: "has",
-    value: function has(key) {
-      return Object.prototype.hasOwnProperty.call(this._object, key);
-    }
-  }, {
-    key: "keys",
-    value: function keys() {
-      return (0, _getIterator2.default)((0, _keys.default)(this._object));
-    }
-  }, {
-    key: "values",
-    value: function values() {
-      return (0, _getIterator2.default)((0, _values.default)(this._object));
-    } // region IMergeable
+    }, entries, this);
+  });
 
-  }, {
-    key: "_canMerge",
-    value: function _canMerge(source) {
-      if (source.constructor === ObjectMap && this._object === source._object) {
-        return null;
+  _proto.forEach = function forEach(callbackfn, thisArg) {
+    var _object = this._object;
+
+    for (var _key3 in _object) {
+      if (Object.prototype.hasOwnProperty.call(_object, _key3)) {
+        callbackfn.call(thisArg, _object[_key3], _key3, this);
       }
-
-      return source.constructor === Object || source[_toStringTag.default] === 'Map' || (0, _isArray.default)(source) || (0, _helpers.isIterable)(source);
     }
-  }, {
-    key: "_merge",
-    value: function _merge(merge, older, newer, preferCloneOlder, preferCloneNewer, options) {
-      return (0, _mergeMaps.mergeMaps)(function (target, source) {
-        return (0, _mergeMaps.createMergeMapWrapper)(target, source, function (arrayOrIterable) {
-          return (0, _set.fillMap)(new ObjectMap(), arrayOrIterable);
-        });
-      }, merge, this, older, newer, preferCloneOlder, preferCloneNewer, options);
-    } // endregion
-    // region ISerializable
+  };
 
-  }, {
-    key: "serialize",
-    value: function serialize(_serialize) {
-      return {
-        object: _serialize(this._object, {
-          objectKeepUndefined: true
-        })
-      };
+  _proto.get = function get(key) {
+    return this._object[key];
+  };
+
+  _proto.has = function has(key) {
+    return Object.prototype.hasOwnProperty.call(this._object, key);
+  };
+
+  _proto.keys = function keys() {
+    return (0, _getIterator2.default)((0, _keys.default)(this._object));
+  };
+
+  _proto.values = function values() {
+    return (0, _getIterator2.default)((0, _values.default)(this._object));
+  } // region IMergeable
+  ;
+
+  _proto._canMerge = function _canMerge(source) {
+    if (source.constructor === ObjectMap && this._object === source._object) {
+      return null;
     }
-  }, {
-    key: "deSerialize",
-    value: function deSerialize() {} // endregion
 
-  }, {
+    return source.constructor === Object || source[_toStringTag.default] === 'Map' || (0, _isArray.default)(source) || (0, _helpers.isIterable)(source);
+  };
+
+  _proto._merge = function _merge(merge, older, newer, preferCloneOlder, preferCloneNewer, options) {
+    return (0, _mergeMaps.mergeMaps)(function (target, source) {
+      return (0, _mergeMaps.createMergeMapWrapper)(target, source, function (arrayOrIterable) {
+        return (0, _set.fillMap)(new ObjectMap(), arrayOrIterable);
+      });
+    }, merge, this, older, newer, preferCloneOlder, preferCloneNewer, options);
+  } // endregion
+  // region ISerializable
+  ;
+
+  _proto.serialize = function serialize(_serialize) {
+    return {
+      object: _serialize(this._object, {
+        objectKeepUndefined: true
+      })
+    };
+  };
+
+  _proto.deSerialize = function deSerialize() {} // endregion
+  ;
+
+  (0, _createClass2.default)(ObjectMap, [{
     key: "size",
     get: function get() {
       return (0, _keys.default)(this._object).length;

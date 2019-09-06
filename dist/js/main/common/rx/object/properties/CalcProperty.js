@@ -2,25 +2,14 @@
 
 var _interopRequireDefault = require("@babel/runtime-corejs3/helpers/interopRequireDefault");
 
-var _Object$defineProperty = require("@babel/runtime-corejs3/core-js-stable/object/define-property");
-
-_Object$defineProperty(exports, "__esModule", {
-  value: true
-});
-
+exports.__esModule = true;
 exports.CalcProperty = exports.CalcPropertyValue = void 0;
 
 var _createClass2 = _interopRequireDefault(require("@babel/runtime-corejs3/helpers/createClass"));
 
-var _possibleConstructorReturn2 = _interopRequireDefault(require("@babel/runtime-corejs3/helpers/possibleConstructorReturn"));
-
-var _getPrototypeOf2 = _interopRequireDefault(require("@babel/runtime-corejs3/helpers/getPrototypeOf"));
-
 var _assertThisInitialized2 = _interopRequireDefault(require("@babel/runtime-corejs3/helpers/assertThisInitialized"));
 
-var _inherits2 = _interopRequireDefault(require("@babel/runtime-corejs3/helpers/inherits"));
-
-var _classCallCheck2 = _interopRequireDefault(require("@babel/runtime-corejs3/helpers/classCallCheck"));
+var _inheritsLoose2 = _interopRequireDefault(require("@babel/runtime-corejs3/helpers/inheritsLoose"));
 
 var _ThenableSync = require("../../../async/ThenableSync");
 
@@ -37,8 +26,6 @@ var _CalcObjectDebugger = require("./CalcObjectDebugger");
 var _Property = require("./Property");
 
 var CalcPropertyValue = function CalcPropertyValue(property) {
-  (0, _classCallCheck2.default)(this, CalcPropertyValue);
-
   this.get = function () {
     return property;
   };
@@ -49,16 +36,15 @@ exports.CalcPropertyValue = CalcPropertyValue;
 var CalcProperty =
 /*#__PURE__*/
 function (_ObservableObject) {
-  (0, _inherits2.default)(CalcProperty, _ObservableObject);
+  (0, _inheritsLoose2.default)(CalcProperty, _ObservableObject);
 
   function CalcProperty(calcFunc, calcOptions, valueOptions, initValue) {
     var _this;
 
-    (0, _classCallCheck2.default)(this, CalcProperty);
-    _this = (0, _possibleConstructorReturn2.default)(this, (0, _getPrototypeOf2.default)(CalcProperty).call(this));
+    _this = _ObservableObject.call(this) || this;
 
     if (typeof calcFunc !== 'function') {
-      throw new Error("calcFunc must be a function: ".concat(calcFunc));
+      throw new Error("calcFunc must be a function: " + calcFunc);
     }
 
     if (typeof initValue !== 'function') {
@@ -95,68 +81,66 @@ function (_ObservableObject) {
     return _this;
   }
 
+  var _proto = CalcProperty.prototype;
+
+  _proto.invalidate = function invalidate() {
+    this._deferredCalc.invalidate();
+  };
+
+  _proto.onInvalidated = function onInvalidated() {
+    _CalcObjectDebugger.CalcObjectDebugger.Instance.onInvalidated(this, this._valueProperty.value);
+
+    var propertyChangedIfCanEmit = this.propertyChangedIfCanEmit;
+
+    if (propertyChangedIfCanEmit) {
+      var oldValue = this._valueProperty.value;
+      var newValue = new CalcPropertyValue(this);
+      propertyChangedIfCanEmit.onPropertyChanged({
+        name: _valueProperty.VALUE_PROPERTY_DEFAULT,
+        oldValue: oldValue,
+        newValue: newValue
+      }, {
+        name: 'wait',
+        oldValue: oldValue,
+        newValue: newValue
+      }, {
+        name: 'last',
+        oldValue: oldValue,
+        newValue: newValue
+      }, {
+        name: 'lastOrWait',
+        oldValue: oldValue,
+        newValue: newValue
+      });
+    }
+  };
+
+  _proto.onCalculated = function onCalculated() {
+    var propertyChangedIfCanEmit = this.propertyChangedIfCanEmit;
+
+    if (propertyChangedIfCanEmit) {
+      var oldValue = this._valueProperty.value;
+      var newValue = new CalcPropertyValue(this);
+      propertyChangedIfCanEmit.onPropertyChanged({
+        name: 'last',
+        oldValue: oldValue,
+        newValue: newValue
+      }, {
+        name: 'lastOrWait',
+        oldValue: oldValue,
+        newValue: newValue
+      });
+    }
+  };
+
+  _proto.clear = function clear() {
+    if (this._valueProperty.value !== this._initValue) {
+      this._valueProperty.value = this._initValue;
+      this.invalidate();
+    }
+  };
+
   (0, _createClass2.default)(CalcProperty, [{
-    key: "invalidate",
-    value: function invalidate() {
-      this._deferredCalc.invalidate();
-    }
-  }, {
-    key: "onInvalidated",
-    value: function onInvalidated() {
-      _CalcObjectDebugger.CalcObjectDebugger.Instance.onInvalidated(this, this._valueProperty.value);
-
-      var propertyChangedIfCanEmit = this.propertyChangedIfCanEmit;
-
-      if (propertyChangedIfCanEmit) {
-        var oldValue = this._valueProperty.value;
-        var newValue = new CalcPropertyValue(this);
-        propertyChangedIfCanEmit.onPropertyChanged({
-          name: _valueProperty.VALUE_PROPERTY_DEFAULT,
-          oldValue: oldValue,
-          newValue: newValue
-        }, {
-          name: 'wait',
-          oldValue: oldValue,
-          newValue: newValue
-        }, {
-          name: 'last',
-          oldValue: oldValue,
-          newValue: newValue
-        }, {
-          name: 'lastOrWait',
-          oldValue: oldValue,
-          newValue: newValue
-        });
-      }
-    }
-  }, {
-    key: "onCalculated",
-    value: function onCalculated() {
-      var propertyChangedIfCanEmit = this.propertyChangedIfCanEmit;
-
-      if (propertyChangedIfCanEmit) {
-        var oldValue = this._valueProperty.value;
-        var newValue = new CalcPropertyValue(this);
-        propertyChangedIfCanEmit.onPropertyChanged({
-          name: 'last',
-          oldValue: oldValue,
-          newValue: newValue
-        }, {
-          name: 'lastOrWait',
-          oldValue: oldValue,
-          newValue: newValue
-        });
-      }
-    }
-  }, {
-    key: "clear",
-    value: function clear() {
-      if (this._valueProperty.value !== this._initValue) {
-        this._valueProperty.value = this._initValue;
-        this.invalidate();
-      }
-    }
-  }, {
     key: _valueProperty.VALUE_PROPERTY_DEFAULT,
     get: function get() {
       return this.wait;

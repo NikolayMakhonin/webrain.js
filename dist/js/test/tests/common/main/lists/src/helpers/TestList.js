@@ -2,30 +2,19 @@
 
 var _interopRequireDefault = require("@babel/runtime-corejs3/helpers/interopRequireDefault");
 
-var _Object$defineProperty = require("@babel/runtime-corejs3/core-js-stable/object/define-property");
-
-_Object$defineProperty(exports, "__esModule", {
-  value: true
-});
-
+exports.__esModule = true;
 exports.applyListChangedToArray = applyListChangedToArray;
 exports.TestList = exports.assert = void 0;
 
 var _getIterator2 = _interopRequireDefault(require("@babel/runtime-corejs3/core-js/get-iterator"));
 
+var _isArray2 = _interopRequireDefault(require("@babel/runtime-corejs3/core-js-stable/array/is-array"));
+
 var _stringify = _interopRequireDefault(require("@babel/runtime-corejs3/core-js-stable/json/stringify"));
 
 var _slice = _interopRequireDefault(require("@babel/runtime-corejs3/core-js-stable/instance/slice"));
 
-var _classCallCheck2 = _interopRequireDefault(require("@babel/runtime-corejs3/helpers/classCallCheck"));
-
-var _createClass2 = _interopRequireDefault(require("@babel/runtime-corejs3/helpers/createClass"));
-
-var _possibleConstructorReturn2 = _interopRequireDefault(require("@babel/runtime-corejs3/helpers/possibleConstructorReturn"));
-
-var _getPrototypeOf2 = _interopRequireDefault(require("@babel/runtime-corejs3/helpers/getPrototypeOf"));
-
-var _inherits2 = _interopRequireDefault(require("@babel/runtime-corejs3/helpers/inherits"));
+var _inheritsLoose2 = _interopRequireDefault(require("@babel/runtime-corejs3/helpers/inheritsLoose"));
 
 var _from = _interopRequireDefault(require("@babel/runtime-corejs3/core-js-stable/array/from"));
 
@@ -34,8 +23,6 @@ var _indexOf = _interopRequireDefault(require("@babel/runtime-corejs3/core-js-st
 var _sort = _interopRequireDefault(require("@babel/runtime-corejs3/core-js-stable/instance/sort"));
 
 var _concat = _interopRequireDefault(require("@babel/runtime-corejs3/core-js-stable/instance/concat"));
-
-var _toConsumableArray2 = _interopRequireDefault(require("@babel/runtime-corejs3/helpers/toConsumableArray"));
 
 var _splice = _interopRequireDefault(require("@babel/runtime-corejs3/core-js-stable/instance/splice"));
 
@@ -108,13 +95,13 @@ function applyListChangedToArray(event, array, compare) {
       if (event.moveIndex !== event.index) {
         var _spliceInstanceProper, _context;
 
-        (_spliceInstanceProper = (0, _splice.default)(array)).call.apply(_spliceInstanceProper, (0, _concat.default)(_context = [array, event.moveIndex, 0]).call(_context, (0, _toConsumableArray2.default)((0, _splice.default)(array).call(array, event.index, 1))));
+        (_spliceInstanceProper = (0, _splice.default)(array)).call.apply(_spliceInstanceProper, (0, _concat.default)(_context = [array, event.moveIndex, 0]).call(_context, (0, _splice.default)(array).call(array, event.index, 1)));
       }
 
       break;
 
     case _IListChanged.ListChangedType.Moved:
-      (_spliceInstanceProper2 = (0, _splice.default)(array)).call.apply(_spliceInstanceProper2, (0, _concat.default)(_context2 = [array, event.moveIndex, 0]).call(_context2, (0, _toConsumableArray2.default)((0, _splice.default)(array).call(array, event.index, event.moveSize))));
+      (_spliceInstanceProper2 = (0, _splice.default)(array)).call.apply(_spliceInstanceProper2, (0, _concat.default)(_context2 = [array, event.moveIndex, 0]).call(_context2, (0, _splice.default)(array).call(array, event.index, event.moveSize)));
 
       break;
 
@@ -166,13 +153,12 @@ var staticList = new _SortedList.SortedList({
 var TestList =
 /*#__PURE__*/
 function (_TestVariants) {
-  (0, _inherits2.default)(TestList, _TestVariants);
+  (0, _inheritsLoose2.default)(TestList, _TestVariants);
 
   function TestList() {
     var _this;
 
-    (0, _classCallCheck2.default)(this, TestList);
-    _this = (0, _possibleConstructorReturn2.default)(this, (0, _getPrototypeOf2.default)(TestList).call(this));
+    _this = _TestVariants.call(this) || this;
     _this.baseOptionsVariants = {
       notAddIfExists: [false, true],
       withCompare: [false, true],
@@ -182,244 +168,234 @@ function (_TestVariants) {
     return _this;
   }
 
-  (0, _createClass2.default)(TestList, [{
-    key: "testVariant",
-    value: function testVariant(options) {
-      var error;
+  var _proto = TestList.prototype;
 
-      for (var debugIteration = 0; debugIteration < 3; debugIteration++) {
-        var unsubscribeListChanged = void 0;
-        var unsubscribePropertyChanged = void 0;
+  _proto.testVariant = function testVariant(options) {
+    var error;
 
-        try {
-          var _ret = function () {
-            var _context3, _context4;
+    for (var debugIteration = 0; debugIteration < 3; debugIteration++) {
+      var unsubscribeListChanged = void 0;
+      var unsubscribePropertyChanged = void 0;
 
-            var array = (0, _slice.default)(_context3 = options.array).call(_context3); // assert.deepStrictEqual(array, array.slice().sort(compareFast))
+      try {
+        var _ret = function () {
+          var _context3, _context4;
 
-            var compare = options.compare || (options.withCompare ? _compare.compareFast : undefined);
-            var list = void 0;
+          var array = (0, _slice.default)(_context3 = options.array).call(_context3); // assert.deepStrictEqual(array, array.slice().sort(compareFast))
 
-            if (options.reuseListInstance) {
-              staticList.clear();
-              staticList.compare = compare;
-              staticList.notAddIfExists = false;
+          var compare = options.compare || (options.withCompare ? _compare.compareFast : undefined);
+          var list = void 0;
 
-              if (options.countSorted != null) {
-                staticList.autoSort = true;
+          if (options.reuseListInstance) {
+            staticList.clear();
+            staticList.compare = compare;
+            staticList.notAddIfExists = false;
 
-                for (var i = 0; i < options.countSorted; i++) {
-                  staticList.add(array[i]);
-                }
+            if (options.countSorted != null) {
+              staticList.autoSort = true;
 
-                staticList.autoSort = false;
-
-                for (var _i5 = options.countSorted; _i5 < array.length; _i5++) {
-                  staticList.add(array[_i5]);
-                }
-              } else {
-                staticList.autoSort = false;
-                staticList.addArray(array);
+              for (var i = 0; i < options.countSorted; i++) {
+                staticList.add(array[i]);
               }
 
-              staticList.autoSort = options.autoSort;
-              staticList.notAddIfExists = options.notAddIfExists;
-              list = staticList;
-              array = staticArray;
+              staticList.autoSort = false;
+
+              for (var _i5 = options.countSorted; _i5 < array.length; _i5++) {
+                staticList.add(array[_i5]);
+              }
             } else {
-              list = new _SortedList.SortedList({
-                array: array,
-                compare: compare,
-                autoSort: options.autoSort,
-                notAddIfExists: options.notAddIfExists,
-                countSorted: options.countSorted
-              });
+              staticList.autoSort = false;
+              staticList.addArray(array);
             }
 
-            assert.strictEqual(list.countSorted, options.countSorted || 0);
-            var arrayReplicate = options.autoSort ? (0, _sort.default)(_context4 = (0, _slice.default)(array).call(array, 0, list.size)).call(_context4, compare || _compare.compareFast) : (0, _slice.default)(array).call(array, 0, list.size); // assert.strictEqual(
-            // 	list.countSorted,
-            // 	options.autoSort ? list.size : options.countSorted || 0,
-            // )
-
-            var listChangedEvents = [];
-
-            if (options.useListChanged) {
-              unsubscribeListChanged = list.listChanged.subscribe(function (event) {
-                listChangedEvents.push(event);
-                applyListChangedToArray(event, arrayReplicate, compare || _compare.compareFast);
-
-                if (event.type !== _IListChanged.ListChangedType.Resorted) {
-                  assert.deepStrictEqual(arrayReplicate, (0, _slice.default)(array).call(array, 0, list.size));
-                }
-              });
-            }
-
-            var propertyChangedEvents = [];
-            unsubscribePropertyChanged = list.propertyChanged.subscribe(function (event) {
-              propertyChangedEvents.push(event);
+            staticList.autoSort = options.autoSort;
+            staticList.notAddIfExists = options.notAddIfExists;
+            list = staticList;
+            array = staticArray;
+          } else {
+            list = new _SortedList.SortedList({
+              array: array,
+              compare: compare,
+              autoSort: options.autoSort,
+              notAddIfExists: options.notAddIfExists,
+              countSorted: options.countSorted
             });
-            assert.strictEqual(list.minAllocatedSize, undefined); // if (!options.reuseListInstance) {
-            // 	assertList(list, array)
-            // }
+          }
 
-            if (options.expected.error) {
-              assert.throws(function () {
-                return options.action(list, array);
-              }, options.expected.error);
-              assert.strictEqual(list.countSorted, options.expected.countSorted == null ? options.autoSort ? list.size : options.countSorted || 0 : options.expected.countSorted);
-              assert.strictEqual(list.minAllocatedSize, undefined);
-              assertList(list, options.array);
-            } else {
-              assert.deepStrictEqual(options.action(list, array), options.expected.returnValue);
+          assert.strictEqual(list.countSorted, options.countSorted || 0);
+          var arrayReplicate = options.autoSort ? (0, _sort.default)(_context4 = (0, _slice.default)(array).call(array, 0, list.size)).call(_context4, compare || _compare.compareFast) : (0, _slice.default)(array).call(array, 0, list.size); // assert.strictEqual(
+          // 	list.countSorted,
+          // 	options.autoSort ? list.size : options.countSorted || 0,
+          // )
 
-              if (options.expected.countSorted != null) {
-                assert.strictEqual(list.countSorted, options.expected.countSorted);
+          var listChangedEvents = [];
+
+          if (options.useListChanged) {
+            unsubscribeListChanged = list.listChanged.subscribe(function (event) {
+              listChangedEvents.push(event);
+              applyListChangedToArray(event, arrayReplicate, compare || _compare.compareFast);
+
+              if (event.type !== _IListChanged.ListChangedType.Resorted) {
+                assert.deepStrictEqual(arrayReplicate, (0, _slice.default)(array).call(array, 0, list.size));
               }
+            });
+          }
 
-              assert.strictEqual(list.minAllocatedSize, undefined);
-              assertList(list, options.expected.array);
-            }
+          var propertyChangedEvents = [];
+          unsubscribePropertyChanged = list.propertyChanged.subscribe(function (event) {
+            propertyChangedEvents.push(event);
+          });
+          assert.strictEqual(list.minAllocatedSize, undefined); // if (!options.reuseListInstance) {
+          // 	assertList(list, array)
+          // }
 
-            if (!options.reuseListInstance) {
-              assert.deepStrictEqual((0, _slice.default)(array).call(array, 0, list.size), list.toArray());
-
-              for (var _i6 = list.size; _i6 < array.length; _i6++) {
-                assert.strictEqual(array[_i6], options.expected.defaultValue);
-              }
-            }
-
-            if (options.useListChanged) {
-              if (unsubscribeListChanged) {
-                unsubscribeListChanged();
-              }
-
-              assert.deepStrictEqual(listChangedEvents, options.expected.listChanged || []);
-              assert.deepStrictEqual(arrayReplicate, list.toArray());
-            }
-
-            if (unsubscribePropertyChanged) {
-              unsubscribePropertyChanged();
-            }
-
-            var expectedPropertyChanged = options.expected.propertyChanged;
-
-            if (!expectedPropertyChanged && !options.expected.error && options.array.length !== options.expected.array.length) {
-              expectedPropertyChanged = [{
-                name: 'size',
-                oldValue: options.array.length,
-                newValue: options.expected.array.length
-              }];
-            }
-
-            assert.deepStrictEqual(propertyChangedEvents, expectedPropertyChanged || []);
+          if (options.expected.error) {
+            assert.throws(function () {
+              return options.action(list, array);
+            }, options.expected.error);
+            assert.strictEqual(list.countSorted, options.expected.countSorted == null ? options.autoSort ? list.size : options.countSorted || 0 : options.expected.countSorted);
+            assert.strictEqual(list.minAllocatedSize, undefined);
+            assertList(list, options.array);
+          } else {
+            assert.deepStrictEqual(options.action(list, array), options.expected.returnValue);
 
             if (options.expected.countSorted != null) {
               assert.strictEqual(list.countSorted, options.expected.countSorted);
-            } else if (options.autoSort) {
-              assert.strictEqual(list.countSorted, list.size);
             }
 
-            return "break";
-          }();
-
-          if (_ret === "break") break;
-        } catch (ex) {
-          if (!debugIteration) {
-            var _context5, _context6, _context7;
-
-            console.log((0, _concat.default)(_context5 = (0, _concat.default)(_context6 = (0, _concat.default)(_context7 = "Error in: ".concat(options.description, "\n")).call(_context7, (0, _stringify.default)(options, null, 4), "\n")).call(_context6, options.action.toString(), "\n")).call(_context5, ex.stack));
-            error = ex;
+            assert.strictEqual(list.minAllocatedSize, undefined);
+            assertList(list, options.expected.array);
           }
-        } finally {
-          if (unsubscribeListChanged) {
-            unsubscribeListChanged();
+
+          if (!options.reuseListInstance) {
+            assert.deepStrictEqual((0, _slice.default)(array).call(array, 0, list.size), list.toArray());
+
+            for (var _i6 = list.size; _i6 < array.length; _i6++) {
+              assert.strictEqual(array[_i6], options.expected.defaultValue);
+            }
+          }
+
+          if (options.useListChanged) {
+            if (unsubscribeListChanged) {
+              unsubscribeListChanged();
+            }
+
+            assert.deepStrictEqual(listChangedEvents, options.expected.listChanged || []);
+            assert.deepStrictEqual(arrayReplicate, list.toArray());
           }
 
           if (unsubscribePropertyChanged) {
             unsubscribePropertyChanged();
           }
 
-          TestList.totalListTests++;
-        }
-      }
+          var expectedPropertyChanged = options.expected.propertyChanged;
 
-      if (error) {
-        throw error;
+          if (!expectedPropertyChanged && !options.expected.error && options.array.length !== options.expected.array.length) {
+            expectedPropertyChanged = [{
+              name: 'size',
+              oldValue: options.array.length,
+              newValue: options.expected.array.length
+            }];
+          }
+
+          assert.deepStrictEqual(propertyChangedEvents, expectedPropertyChanged || []);
+
+          if (options.expected.countSorted != null) {
+            assert.strictEqual(list.countSorted, options.expected.countSorted);
+          } else if (options.autoSort) {
+            assert.strictEqual(list.countSorted, list.size);
+          }
+
+          return "break";
+        }();
+
+        if (_ret === "break") break;
+      } catch (ex) {
+        if (!debugIteration) {
+          console.log("Error in: " + options.description + "\n" + (0, _stringify.default)(options, null, 4) + "\n" + options.action.toString() + "\n" + ex.stack);
+          error = ex;
+        }
+      } finally {
+        if (unsubscribeListChanged) {
+          unsubscribeListChanged();
+        }
+
+        if (unsubscribePropertyChanged) {
+          unsubscribePropertyChanged();
+        }
+
+        TestList.totalListTests++;
       }
     }
-  }], [{
-    key: "test",
-    value: function test(testCases) {
-      var maxArrayLength = 0;
 
-      if (testCases.array) {
-        for (var i = 0; i < testCases.array.length; i++) {
-          var _array = testCases.array[i];
-
-          if (_array.length > maxArrayLength) {
-            maxArrayLength = _array.length;
-          }
-        }
-      }
-
-      if (maxArrayLength <= 1 && !testCases.expected.error && (!testCases.expected.array || testCases.expected.array.length <= 1)) {
-        testCases.autoSort = [false, true];
-      }
-
-      if (!testCases.countSorted && maxArrayLength <= 1 && (!testCases.compare || testCases.compare.length <= 0)) {
-        var compare = testCases.compare && testCases.compare.length && testCases.compare[0] || _compare.compareFast;
-        var minCountSorted;
-        var _iteratorNormalCompletion = true;
-        var _didIteratorError = false;
-        var _iteratorError = undefined;
-
-        try {
-          for (var _iterator = (0, _getIterator2.default)(testCases.array), _step; !(_iteratorNormalCompletion = (_step = _iterator.next()).done); _iteratorNormalCompletion = true) {
-            var _array2 = _step.value;
-            var countSorted = 0;
-
-            for (var _i8 = 0; _i8 < _array2.length; _i8++) {
-              if (_i8 > 0 && compare(_array2[_i8 - 1], _array2[_i8]) > 0) {
-                break;
-              }
-
-              countSorted++;
-            }
-
-            if (minCountSorted == null || countSorted < minCountSorted) {
-              minCountSorted = countSorted;
-            }
-
-            if (minCountSorted === 0) {
-              break;
-            }
-          }
-        } catch (err) {
-          _didIteratorError = true;
-          _iteratorError = err;
-        } finally {
-          try {
-            if (!_iteratorNormalCompletion && _iterator.return != null) {
-              _iterator.return();
-            }
-          } finally {
-            if (_didIteratorError) {
-              throw _iteratorError;
-            }
-          }
-        }
-
-        testCases.countSorted = [undefined, 0];
-
-        for (var _i7 = 1; _i7 <= minCountSorted; _i7++) {
-          testCases.countSorted.push(_i7);
-        }
-      }
-
-      TestList._instance.test(testCases);
+    if (error) {
+      throw error;
     }
-  }]);
+  };
+
+  TestList.test = function test(testCases) {
+    var maxArrayLength = 0;
+
+    if (testCases.array) {
+      for (var i = 0; i < testCases.array.length; i++) {
+        var _array = testCases.array[i];
+
+        if (_array.length > maxArrayLength) {
+          maxArrayLength = _array.length;
+        }
+      }
+    }
+
+    if (maxArrayLength <= 1 && !testCases.expected.error && (!testCases.expected.array || testCases.expected.array.length <= 1)) {
+      testCases.autoSort = [false, true];
+    }
+
+    if (!testCases.countSorted && maxArrayLength <= 1 && (!testCases.compare || testCases.compare.length <= 0)) {
+      var compare = testCases.compare && testCases.compare.length && testCases.compare[0] || _compare.compareFast;
+      var minCountSorted;
+
+      for (var _iterator = testCases.array, _isArray = (0, _isArray2.default)(_iterator), _i7 = 0, _iterator = _isArray ? _iterator : (0, _getIterator2.default)(_iterator);;) {
+        var _ref;
+
+        if (_isArray) {
+          if (_i7 >= _iterator.length) break;
+          _ref = _iterator[_i7++];
+        } else {
+          _i7 = _iterator.next();
+          if (_i7.done) break;
+          _ref = _i7.value;
+        }
+
+        var _array2 = _ref;
+        var countSorted = 0;
+
+        for (var _i9 = 0; _i9 < _array2.length; _i9++) {
+          if (_i9 > 0 && compare(_array2[_i9 - 1], _array2[_i9]) > 0) {
+            break;
+          }
+
+          countSorted++;
+        }
+
+        if (minCountSorted == null || countSorted < minCountSorted) {
+          minCountSorted = countSorted;
+        }
+
+        if (minCountSorted === 0) {
+          break;
+        }
+      }
+
+      testCases.countSorted = [undefined, 0];
+
+      for (var _i8 = 1; _i8 <= minCountSorted; _i8++) {
+        testCases.countSorted.push(_i8);
+      }
+    }
+
+    TestList._instance.test(testCases);
+  };
+
   return TestList;
 }(_TestVariants2.TestVariants);
 

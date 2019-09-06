@@ -28,8 +28,6 @@ var _defineProperty = _interopRequireDefault(require("@babel/runtime-corejs3/cor
 
 var _iterator = _interopRequireDefault(require("@babel/runtime-corejs3/core-js-stable/symbol/iterator"));
 
-var _typeof4 = _interopRequireDefault(require("@babel/runtime-corejs3/helpers/typeof"));
-
 var _symbol = _interopRequireDefault(require("@babel/runtime-corejs3/core-js-stable/symbol"));
 
 var _slice = _interopRequireDefault(require("@babel/runtime-corejs3/core-js-stable/instance/slice"));
@@ -101,10 +99,10 @@ var _slice = _interopRequireDefault(require("@babel/runtime-corejs3/core-js-stab
   },
       _typeof_1 = createCommonjsModule(function (module) {
     function _typeof2(obj) {
-      return (_typeof2 = "function" == typeof _symbol.default && "symbol" == (0, _typeof4.default)(_iterator.default) ? function (obj) {
-        return (0, _typeof4.default)(obj);
+      return (_typeof2 = "function" == typeof _symbol.default && "symbol" == typeof _iterator.default ? function (obj) {
+        return typeof obj;
       } : function (obj) {
-        return obj && "function" == typeof _symbol.default && obj.constructor === _symbol.default && obj !== _symbol.default.prototype ? "symbol" : (0, _typeof4.default)(obj);
+        return obj && "function" == typeof _symbol.default && obj.constructor === _symbol.default && obj !== _symbol.default.prototype ? "symbol" : typeof obj;
       })(obj);
     }
 

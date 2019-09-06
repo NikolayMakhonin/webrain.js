@@ -2,12 +2,7 @@
 
 var _interopRequireDefault = require("@babel/runtime-corejs3/helpers/interopRequireDefault");
 
-var _Object$defineProperty2 = require("@babel/runtime-corejs3/core-js-stable/object/define-property");
-
-_Object$defineProperty2(exports, "__esModule", {
-  value: true
-});
-
+exports.__esModule = true;
 exports.hasObjectUniqueId = hasObjectUniqueId;
 exports.canHaveUniqueId = canHaveUniqueId;
 exports.getObjectUniqueId = getObjectUniqueId;

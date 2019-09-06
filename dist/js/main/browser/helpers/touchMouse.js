@@ -2,34 +2,29 @@
 
 var _interopRequireDefault = require("@babel/runtime-corejs3/helpers/interopRequireDefault");
 
-var _Object$defineProperty2 = require("@babel/runtime-corejs3/core-js-stable/object/define-property");
-
-_Object$defineProperty2(exports, "__esModule", {
-  value: true
-});
-
+exports.__esModule = true;
 exports.default = exports.TouchToMouse = void 0;
 
 var _defineProperty = _interopRequireDefault(require("@babel/runtime-corejs3/core-js-stable/object/define-property"));
 
 var _isFinite = _interopRequireDefault(require("@babel/runtime-corejs3/core-js-stable/number/is-finite"));
 
-var _classCallCheck2 = _interopRequireDefault(require("@babel/runtime-corejs3/helpers/classCallCheck"));
+var TouchToMouse = function TouchToMouse(container, actionsPrefix) {
+  if (actionsPrefix === void 0) {
+    actionsPrefix = '';
+  }
 
-var TouchToMouse = function TouchToMouse(container) {
-  var actionsPrefix = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : '';
-  (0, _classCallCheck2.default)(this, TouchToMouse);
-  var mouseUpName = "on".concat(actionsPrefix, "mouseup");
-  var mouseOutName = "on".concat(actionsPrefix, "mouseout");
-  var mouseEnterName = "on".concat(actionsPrefix, "mouseenter"); // bind touch
+  var mouseUpName = "on" + actionsPrefix + "mouseup";
+  var mouseOutName = "on" + actionsPrefix + "mouseout";
+  var mouseEnterName = "on" + actionsPrefix + "mouseenter"; // bind touch
 
-  addListenerWithCoord('touchstart', "on".concat(actionsPrefix, "mousedown"));
-  addListenerWithCoord('touchmove', "on".concat(actionsPrefix, "mousemove"));
+  addListenerWithCoord('touchstart', "on" + actionsPrefix + "mousedown");
+  addListenerWithCoord('touchmove', "on" + actionsPrefix + "mousemove");
   addListener('touchend', mouseUpName); // bind mouse
 
-  addListenerWithCoord('mousedown', "on".concat(actionsPrefix, "mousedown"));
-  addListenerWithCoord('mousemove', "on".concat(actionsPrefix, "mousemove"));
-  addListener('mouseup', "on".concat(actionsPrefix, "mouseup")); // prevent duplicate events
+  addListenerWithCoord('mousedown', "on" + actionsPrefix + "mousedown");
+  addListenerWithCoord('mousemove', "on" + actionsPrefix + "mousemove");
+  addListener('mouseup', "on" + actionsPrefix + "mouseup"); // prevent duplicate events
 
   preventEvents('mouseenter');
   preventEvents('mouseout');

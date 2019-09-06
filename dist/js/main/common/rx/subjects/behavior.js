@@ -2,26 +2,11 @@
 
 var _interopRequireDefault = require("@babel/runtime-corejs3/helpers/interopRequireDefault");
 
-var _Object$defineProperty = require("@babel/runtime-corejs3/core-js-stable/object/define-property");
-
-_Object$defineProperty(exports, "__esModule", {
-  value: true
-});
-
+exports.__esModule = true;
 exports.behavior = behavior;
 exports.BehaviorSubject = void 0;
 
-var _classCallCheck2 = _interopRequireDefault(require("@babel/runtime-corejs3/helpers/classCallCheck"));
-
-var _createClass2 = _interopRequireDefault(require("@babel/runtime-corejs3/helpers/createClass"));
-
-var _possibleConstructorReturn2 = _interopRequireDefault(require("@babel/runtime-corejs3/helpers/possibleConstructorReturn"));
-
-var _getPrototypeOf2 = _interopRequireDefault(require("@babel/runtime-corejs3/helpers/getPrototypeOf"));
-
-var _get2 = _interopRequireDefault(require("@babel/runtime-corejs3/helpers/get"));
-
-var _inherits2 = _interopRequireDefault(require("@babel/runtime-corejs3/helpers/inherits"));
+var _inheritsLoose2 = _interopRequireDefault(require("@babel/runtime-corejs3/helpers/inheritsLoose"));
 
 var _subject = require("./subject");
 
@@ -29,13 +14,12 @@ function behavior(base) {
   return (
     /*#__PURE__*/
     function (_base) {
-      (0, _inherits2.default)(Behavior, _base);
+      (0, _inheritsLoose2.default)(Behavior, _base);
 
       function Behavior(value) {
         var _this;
 
-        (0, _classCallCheck2.default)(this, Behavior);
-        _this = (0, _possibleConstructorReturn2.default)(this, (0, _getPrototypeOf2.default)(Behavior).call(this));
+        _this = _base.call(this) || this;
 
         if (typeof value !== 'undefined') {
           _this.value = value;
@@ -44,50 +28,52 @@ function behavior(base) {
         return _this;
       }
 
-      (0, _createClass2.default)(Behavior, [{
-        key: "subscribe",
-        value: function subscribe(subscriber) {
-          var _this2 = this;
+      var _proto = Behavior.prototype;
 
-          if (!subscriber) {
-            return null;
+      _proto.subscribe = function subscribe(subscriber) {
+        var _this2 = this;
+
+        if (!subscriber) {
+          return null;
+        }
+
+        var unsubscribe = _base.prototype.subscribe.call(this, subscriber);
+
+        var value = this.value;
+
+        if (typeof value !== 'undefined') {
+          subscriber(value);
+        }
+
+        return function () {
+          if (!unsubscribe) {
+            return;
           }
 
-          var unsubscribe = (0, _get2.default)((0, _getPrototypeOf2.default)(Behavior.prototype), "subscribe", this).call(this, subscriber);
-          var value = this.value;
+          try {
+            // eslint-disable-next-line no-shadow
+            // tslint:disable-next-line:no-shadowed-variable
+            var _value = _this2.value,
+                unsubscribeValue = _this2.unsubscribeValue;
 
-          if (typeof value !== 'undefined') {
-            subscriber(value);
+            if (typeof unsubscribeValue !== 'undefined' && unsubscribeValue !== _value) {
+              subscriber(unsubscribeValue);
+            }
+          } finally {
+            unsubscribe();
+            unsubscribe = null;
           }
+        };
+      };
 
-          return function () {
-            if (!unsubscribe) {
-              return;
-            }
+      _proto.emit = function emit(value) {
+        this.value = value;
 
-            try {
-              // eslint-disable-next-line no-shadow
-              // tslint:disable-next-line:no-shadowed-variable
-              var _value = _this2.value,
-                  unsubscribeValue = _this2.unsubscribeValue;
+        _base.prototype.emit.call(this, value);
 
-              if (typeof unsubscribeValue !== 'undefined' && unsubscribeValue !== _value) {
-                subscriber(unsubscribeValue);
-              }
-            } finally {
-              unsubscribe();
-              unsubscribe = null;
-            }
-          };
-        }
-      }, {
-        key: "emit",
-        value: function emit(value) {
-          this.value = value;
-          (0, _get2.default)((0, _getPrototypeOf2.default)(Behavior.prototype), "emit", this).call(this, value);
-          return this;
-        }
-      }]);
+        return this;
+      };
+
       return Behavior;
     }(base)
   );

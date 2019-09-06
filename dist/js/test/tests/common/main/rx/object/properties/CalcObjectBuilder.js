@@ -10,13 +10,7 @@ var _setTimeout2 = _interopRequireDefault(require("@babel/runtime-corejs3/core-j
 
 var _promise = _interopRequireDefault(require("@babel/runtime-corejs3/core-js-stable/promise"));
 
-var _classCallCheck2 = _interopRequireDefault(require("@babel/runtime-corejs3/helpers/classCallCheck"));
-
-var _possibleConstructorReturn2 = _interopRequireDefault(require("@babel/runtime-corejs3/helpers/possibleConstructorReturn"));
-
-var _getPrototypeOf2 = _interopRequireDefault(require("@babel/runtime-corejs3/helpers/getPrototypeOf"));
-
-var _inherits2 = _interopRequireDefault(require("@babel/runtime-corejs3/helpers/inherits"));
+var _inheritsLoose2 = _interopRequireDefault(require("@babel/runtime-corejs3/helpers/inheritsLoose"));
 
 var _ThenableSync = require("../../../../../../../main/common/async/ThenableSync");
 
@@ -37,11 +31,10 @@ describe('common > main > rx > properties > CalcObjectBuilder', function () {
   var ClassSync =
   /*#__PURE__*/
   function (_ObservableObject) {
-    (0, _inherits2.default)(ClassSync, _ObservableObject);
+    (0, _inheritsLoose2.default)(ClassSync, _ObservableObject);
 
     function ClassSync() {
-      (0, _classCallCheck2.default)(this, ClassSync);
-      return (0, _possibleConstructorReturn2.default)(this, (0, _getPrototypeOf2.default)(ClassSync).apply(this, arguments));
+      return _ObservableObject.apply(this, arguments) || this;
     }
 
     return ClassSync;
@@ -50,11 +43,10 @@ describe('common > main > rx > properties > CalcObjectBuilder', function () {
   var ClassAsync =
   /*#__PURE__*/
   function (_ClassSync) {
-    (0, _inherits2.default)(ClassAsync, _ClassSync);
+    (0, _inheritsLoose2.default)(ClassAsync, _ClassSync);
 
     function ClassAsync() {
-      (0, _classCallCheck2.default)(this, ClassAsync);
-      return (0, _possibleConstructorReturn2.default)(this, (0, _getPrototypeOf2.default)(ClassAsync).apply(this, arguments));
+      return _ClassSync.apply(this, arguments) || this;
     }
 
     return ClassAsync;

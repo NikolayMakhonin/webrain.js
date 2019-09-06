@@ -1,4 +1,3 @@
-const path = require('path')
 const {terser} = require('rollup-plugin-terser')
 const istanbul = require('rollup-plugin-istanbul')
 // const globals = require('rollup-plugin-node-globals')
@@ -13,8 +12,8 @@ const babel = require('./babel')
 const dedupe = importee => /^(@babel|core-js[^\\/]*|regenerator-runtime)([\\/]|$)/.test(importee)
 
 const plugins = {
-	babel     : babel.rollup,
-	istanbul  : (options = {}) => istanbul({
+	babel   : babel.rollup,
+	istanbul: (options = {}) => istanbul({
 		...nycrc,
 		...options
 	}),

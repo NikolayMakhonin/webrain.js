@@ -10,7 +10,7 @@ var _values = _interopRequireDefault(require("@babel/runtime-corejs3/core-js-sta
 
 var _from = _interopRequireDefault(require("@babel/runtime-corejs3/core-js-stable/array/from"));
 
-var _toConsumableArray2 = _interopRequireDefault(require("@babel/runtime-corejs3/helpers/toConsumableArray"));
+var _concat = _interopRequireDefault(require("@babel/runtime-corejs3/core-js-stable/instance/concat"));
 
 var _repeat = _interopRequireDefault(require("@babel/runtime-corejs3/core-js-stable/instance/repeat"));
 
@@ -314,7 +314,9 @@ describe('common > main > rx > deep-subscribe > deep-subscribe', function () {
         return o['#']['#']['#'];
       });
     }).subscribe(function (o) {
-      return (0, _toConsumableArray2.default)(o);
+      var _context2;
+
+      return (0, _concat.default)(_context2 = []).call(_context2, o);
     }).change(function (o) {
       return o.set(0, new Number(1));
     }, function (o) {
@@ -337,7 +339,9 @@ describe('common > main > rx > deep-subscribe > deep-subscribe', function () {
         return o['#']['#']['#'];
       });
     }).subscribe(function (o) {
-      return (0, _toConsumableArray2.default)(o);
+      var _context3;
+
+      return (0, _concat.default)(_context3 = []).call(_context3, o);
     }).change(function (o) {
       o.clear();
       o.add(new Number(1));
@@ -488,9 +492,9 @@ describe('common > main > rx > deep-subscribe > deep-subscribe', function () {
   /*#__PURE__*/
   _regenerator.default.mark(function _callee() {
     var object;
-    return _regenerator.default.wrap(function _callee$(_context2) {
+    return _regenerator.default.wrap(function _callee$(_context4) {
       while (1) {
-        switch (_context2.prev = _context2.next) {
+        switch (_context4.prev = _context4.next) {
           case 0:
             new _Tester.Tester({
               object: (0, _Tester.createObject)().observableObject,
@@ -722,7 +726,7 @@ describe('common > main > rx > deep-subscribe > deep-subscribe', function () {
 
           case 7:
           case "end":
-            return _context2.stop();
+            return _context4.stop();
         }
       }
     }, _callee);
@@ -733,9 +737,9 @@ describe('common > main > rx > deep-subscribe > deep-subscribe', function () {
   /*#__PURE__*/
   _regenerator.default.mark(function _callee2() {
     var object, tester;
-    return _regenerator.default.wrap(function _callee2$(_context3) {
+    return _regenerator.default.wrap(function _callee2$(_context5) {
       while (1) {
-        switch (_context3.prev = _context3.next) {
+        switch (_context5.prev = _context5.next) {
           case 0:
             object = (0, _Tester.createObject)();
             object.observableObject.value = new Number(1);
@@ -748,34 +752,34 @@ describe('common > main > rx > deep-subscribe > deep-subscribe', function () {
                 return o.promiseAsync.value;
               });
             });
-            _context3.next = 5;
+            _context5.next = 5;
             return tester.subscribeAsync([new Number(1)]);
 
           case 5:
-            _context3.next = 7;
+            _context5.next = 7;
             return (0, _helpers.delay)(20);
 
           case 7:
-            _context3.next = 9;
+            _context5.next = 9;
             return tester.changeAsync(function (o) {
               return object.observableObject.value = new Number(2);
             }, [new Number(1)], [new Number(2)]);
 
           case 9:
-            _context3.next = 11;
+            _context5.next = 11;
             return (0, _helpers.delay)(20);
 
           case 11:
-            _context3.next = 13;
+            _context5.next = 13;
             return tester.unsubscribe([new Number(2)]);
 
           case 13:
-            _context3.next = 15;
+            _context5.next = 15;
             return (0, _helpers.delay)(100);
 
           case 15:
           case "end":
-            return _context3.stop();
+            return _context5.stop();
         }
       }
     }, _callee2);
@@ -786,9 +790,9 @@ describe('common > main > rx > deep-subscribe > deep-subscribe', function () {
   /*#__PURE__*/
   _regenerator.default.mark(function _callee3() {
     var object, tester;
-    return _regenerator.default.wrap(function _callee3$(_context4) {
+    return _regenerator.default.wrap(function _callee3$(_context6) {
       while (1) {
-        switch (_context4.prev = _context4.next) {
+        switch (_context6.prev = _context6.next) {
           case 0:
             object = (0, _Tester.createObject)();
             object.observableObject.value = new Number(1);
@@ -802,34 +806,34 @@ describe('common > main > rx > deep-subscribe > deep-subscribe', function () {
                 return o.promiseAsync.value;
               });
             });
-            _context4.next = 5;
+            _context6.next = 5;
             return tester.subscribeAsync([new Number(1)]);
 
           case 5:
-            _context4.next = 7;
+            _context6.next = 7;
             return (0, _helpers.delay)(20);
 
           case 7:
-            _context4.next = 9;
+            _context6.next = 9;
             return tester.changeAsync(function (o) {
               return object.observableObject.value = new Number(2);
             }, [], [new Number(2)], Error, /Value is not a function or null\/undefined/);
 
           case 9:
-            _context4.next = 11;
+            _context6.next = 11;
             return (0, _helpers.delay)(20);
 
           case 11:
-            _context4.next = 13;
+            _context6.next = 13;
             return tester.unsubscribe([]);
 
           case 13:
-            _context4.next = 15;
+            _context6.next = 15;
             return (0, _helpers.delay)(100);
 
           case 15:
           case "end":
-            return _context4.stop();
+            return _context6.stop();
         }
       }
     }, _callee3);

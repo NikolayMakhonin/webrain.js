@@ -2,35 +2,9 @@
 
 var _interopRequireDefault = require("@babel/runtime-corejs3/helpers/interopRequireDefault");
 
-var _defineProperty2 = _interopRequireDefault(require("@babel/runtime-corejs3/core-js-stable/object/define-property"));
-
-var _defineProperties = _interopRequireDefault(require("@babel/runtime-corejs3/core-js-stable/object/define-properties"));
-
-var _getOwnPropertyDescriptors = _interopRequireDefault(require("@babel/runtime-corejs3/core-js-stable/object/get-own-property-descriptors"));
-
-var _forEach = _interopRequireDefault(require("@babel/runtime-corejs3/core-js-stable/instance/for-each"));
-
-var _getOwnPropertyDescriptor = _interopRequireDefault(require("@babel/runtime-corejs3/core-js-stable/object/get-own-property-descriptor"));
-
-var _filter = _interopRequireDefault(require("@babel/runtime-corejs3/core-js-stable/instance/filter"));
-
-var _getOwnPropertySymbols = _interopRequireDefault(require("@babel/runtime-corejs3/core-js-stable/object/get-own-property-symbols"));
-
-var _keys = _interopRequireDefault(require("@babel/runtime-corejs3/core-js-stable/object/keys"));
-
 var _regenerator = _interopRequireDefault(require("@babel/runtime-corejs3/regenerator"));
 
-var _get2 = _interopRequireDefault(require("@babel/runtime-corejs3/helpers/get"));
-
-var _createClass2 = _interopRequireDefault(require("@babel/runtime-corejs3/helpers/createClass"));
-
-var _possibleConstructorReturn2 = _interopRequireDefault(require("@babel/runtime-corejs3/helpers/possibleConstructorReturn"));
-
-var _getPrototypeOf2 = _interopRequireDefault(require("@babel/runtime-corejs3/helpers/getPrototypeOf"));
-
-var _inherits2 = _interopRequireDefault(require("@babel/runtime-corejs3/helpers/inherits"));
-
-var _classCallCheck2 = _interopRequireDefault(require("@babel/runtime-corejs3/helpers/classCallCheck"));
+var _inheritsLoose2 = _interopRequireDefault(require("@babel/runtime-corejs3/helpers/inheritsLoose"));
 
 var _set = _interopRequireDefault(require("@babel/runtime-corejs3/core-js-stable/set"));
 
@@ -38,7 +12,7 @@ var _map = _interopRequireDefault(require("@babel/runtime-corejs3/core-js-stable
 
 var _isNan = _interopRequireDefault(require("@babel/runtime-corejs3/core-js-stable/number/is-nan"));
 
-var _defineProperty3 = _interopRequireDefault(require("@babel/runtime-corejs3/helpers/defineProperty"));
+var _extends2 = _interopRequireDefault(require("@babel/runtime-corejs3/helpers/extends"));
 
 var _bind = _interopRequireDefault(require("@babel/runtime-corejs3/core-js-stable/instance/bind"));
 
@@ -52,10 +26,7 @@ var _DeepCloneEqual = require("../../../../../../main/common/test/DeepCloneEqual
 
 var _helpers = require("../../src/helpers/helpers");
 
-function ownKeys(object, enumerableOnly) { var keys = (0, _keys.default)(object); if (_getOwnPropertySymbols.default) { var symbols = (0, _getOwnPropertySymbols.default)(object); if (enumerableOnly) symbols = (0, _filter.default)(symbols).call(symbols, function (sym) { return (0, _getOwnPropertyDescriptor.default)(object, sym).enumerable; }); keys.push.apply(keys, symbols); } return keys; }
-
-function _objectSpread(target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i] != null ? arguments[i] : {}; if (i % 2) { var _context2; (0, _forEach.default)(_context2 = ownKeys(source, true)).call(_context2, function (key) { (0, _defineProperty3.default)(target, key, source[key]); }); } else if (_getOwnPropertyDescriptors.default) { (0, _defineProperties.default)(target, (0, _getOwnPropertyDescriptors.default)(source)); } else { var _context3; (0, _forEach.default)(_context3 = ownKeys(source)).call(_context3, function (key) { (0, _defineProperty2.default)(target, key, (0, _getOwnPropertyDescriptor.default)(source, key)); }); } } return target; }
-
+/* tslint:disable:no-duplicate-string no-shadowed-variable */
 var assert = new _Assert.Assert(new _DeepCloneEqual.DeepCloneEqual({
   commonOptions: {},
   equalOptions: {
@@ -139,11 +110,11 @@ describe('common > extensions > serialization > serializers', function () {
   deSerializeValue = (0, _bind.default)(deSerializeValue).call(deSerializeValue, _serializers.ObjectSerializer.default);
 
   function testComplexObject(options, prepare, log) {
-    var object = (0, _helpers.createComplexObject)(_objectSpread({
+    var object = (0, _helpers.createComplexObject)((0, _extends2.default)({
       array: true,
       undefined: true
     }, options));
-    var checkObject = (0, _helpers.createComplexObject)(_objectSpread({
+    var checkObject = (0, _helpers.createComplexObject)((0, _extends2.default)({
       array: true
     }, options, {
       undefined: false
@@ -249,9 +220,7 @@ describe('common > extensions > serialization > serializers', function () {
     assertDeepEqualExt(result, date);
   });
 
-  var Class1 = function Class1() {
-    (0, _classCallCheck2.default)(this, Class1);
-  };
+  var Class1 = function Class1() {};
 
   it('Class: Simple', function () {
     var obj1 = new Class1();
@@ -283,35 +252,33 @@ describe('common > extensions > serialization > serializers', function () {
   var Class2 =
   /*#__PURE__*/
   function (_Class) {
-    (0, _inherits2.default)(Class2, _Class);
+    (0, _inheritsLoose2.default)(Class2, _Class);
 
     function Class2(prop2) {
       var _this;
 
-      (0, _classCallCheck2.default)(this, Class2);
-      _this = (0, _possibleConstructorReturn2.default)(this, (0, _getPrototypeOf2.default)(Class2).call(this));
+      _this = _Class.call(this) || this;
       _this.prop3 = 'prop3';
       _this.prop2 = prop2;
       return _this;
     }
 
-    (0, _createClass2.default)(Class2, [{
-      key: "serialize",
-      value: function serialize(_serialize) {
-        return {
-          prop3: _serialize(this.prop3)
-        };
-      }
-    }, {
-      key: "deSerialize",
-      value: function deSerialize(_deSerialize, serializedValue) {
-        var _this2 = this;
+    var _proto = Class2.prototype;
 
-        _deSerialize(serializedValue.prop3, function (o) {
-          _this2.prop3 = o;
-        });
-      }
-    }]);
+    _proto.serialize = function serialize(_serialize) {
+      return {
+        prop3: _serialize(this.prop3)
+      };
+    };
+
+    _proto.deSerialize = function deSerialize(_deSerialize, serializedValue) {
+      var _this2 = this;
+
+      _deSerialize(serializedValue.prop3, function (o) {
+        _this2.prop3 = o;
+      });
+    };
+
     return Class2;
   }(Class1);
 
@@ -343,44 +310,42 @@ describe('common > extensions > serialization > serializers', function () {
   var Class3 =
   /*#__PURE__*/
   function (_Class2) {
-    (0, _inherits2.default)(Class3, _Class2);
+    (0, _inheritsLoose2.default)(Class3, _Class2);
 
     function Class3(prop2) {
-      (0, _classCallCheck2.default)(this, Class3);
-      return (0, _possibleConstructorReturn2.default)(this, (0, _getPrototypeOf2.default)(Class3).call(this, prop2));
+      return _Class2.call(this, prop2) || this;
     }
 
-    (0, _createClass2.default)(Class3, [{
-      key: "serialize",
-      value: function serialize(_serialize2) {
-        return _objectSpread({}, (0, _get2.default)((0, _getPrototypeOf2.default)(Class3.prototype), "serialize", this).call(this, _serialize2), {
-          prop4: _serialize2(this.prop4)
-        });
-      }
-    }, {
-      key: "deSerialize",
-      value:
-      /*#__PURE__*/
-      _regenerator.default.mark(function deSerialize(_deSerialize2, serializedValue) {
-        return _regenerator.default.wrap(function deSerialize$(_context) {
-          while (1) {
-            switch (_context.prev = _context.next) {
-              case 0:
-                (0, _get2.default)((0, _getPrototypeOf2.default)(Class3.prototype), "deSerialize", this).call(this, _deSerialize2, serializedValue);
-                _context.next = 3;
-                return _deSerialize2(serializedValue.prop4);
+    var _proto2 = Class3.prototype;
 
-              case 3:
-                this.prop4 = _context.sent;
+    _proto2.serialize = function serialize(_serialize2) {
+      return (0, _extends2.default)({}, _Class2.prototype.serialize.call(this, _serialize2), {
+        prop4: _serialize2(this.prop4)
+      });
+    };
 
-              case 4:
-              case "end":
-                return _context.stop();
-            }
+    _proto2.deSerialize =
+    /*#__PURE__*/
+    _regenerator.default.mark(function deSerialize(_deSerialize2, serializedValue) {
+      return _regenerator.default.wrap(function deSerialize$(_context) {
+        while (1) {
+          switch (_context.prev = _context.next) {
+            case 0:
+              _Class2.prototype.deSerialize.call(this, _deSerialize2, serializedValue);
+
+              _context.next = 3;
+              return _deSerialize2(serializedValue.prop4);
+
+            case 3:
+              this.prop4 = _context.sent;
+
+            case 4:
+            case "end":
+              return _context.stop();
           }
-        }, deSerialize, this);
-      })
-    }]);
+        }
+      }, deSerialize, this);
+    });
     return Class3;
   }(Class2);
 

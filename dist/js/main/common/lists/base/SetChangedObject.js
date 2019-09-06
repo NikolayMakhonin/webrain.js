@@ -2,23 +2,12 @@
 
 var _interopRequireDefault = require("@babel/runtime-corejs3/helpers/interopRequireDefault");
 
-var _Object$defineProperty = require("@babel/runtime-corejs3/core-js-stable/object/define-property");
-
-_Object$defineProperty(exports, "__esModule", {
-  value: true
-});
-
+exports.__esModule = true;
 exports.SetChangedObject = void 0;
-
-var _classCallCheck2 = _interopRequireDefault(require("@babel/runtime-corejs3/helpers/classCallCheck"));
 
 var _createClass2 = _interopRequireDefault(require("@babel/runtime-corejs3/helpers/createClass"));
 
-var _possibleConstructorReturn2 = _interopRequireDefault(require("@babel/runtime-corejs3/helpers/possibleConstructorReturn"));
-
-var _getPrototypeOf2 = _interopRequireDefault(require("@babel/runtime-corejs3/helpers/getPrototypeOf"));
-
-var _inherits2 = _interopRequireDefault(require("@babel/runtime-corejs3/helpers/inherits"));
+var _inheritsLoose2 = _interopRequireDefault(require("@babel/runtime-corejs3/helpers/inheritsLoose"));
 
 var _PropertyChangedObject = require("../../rx/object/PropertyChangedObject");
 
@@ -27,28 +16,28 @@ var _hasSubscribers = require("../../rx/subjects/hasSubscribers");
 var SetChangedObject =
 /*#__PURE__*/
 function (_PropertyChangedObjec) {
-  (0, _inherits2.default)(SetChangedObject, _PropertyChangedObjec);
+  (0, _inheritsLoose2.default)(SetChangedObject, _PropertyChangedObjec);
 
   function SetChangedObject() {
-    (0, _classCallCheck2.default)(this, SetChangedObject);
-    return (0, _possibleConstructorReturn2.default)(this, (0, _getPrototypeOf2.default)(SetChangedObject).apply(this, arguments));
+    return _PropertyChangedObjec.apply(this, arguments) || this;
   }
 
-  (0, _createClass2.default)(SetChangedObject, [{
-    key: "onSetChanged",
-    value: function onSetChanged(event) {
-      var propertyChangedDisabled = this.__meta.propertyChangedDisabled;
-      var _setChanged = this._setChanged;
+  var _proto = SetChangedObject.prototype;
 
-      if (propertyChangedDisabled || !_setChanged || !_setChanged.hasSubscribers) {
-        return this;
-      }
+  _proto.onSetChanged = function onSetChanged(event) {
+    var propertyChangedDisabled = this.__meta.propertyChangedDisabled;
+    var _setChanged = this._setChanged;
 
-      _setChanged.emit(event);
-
+    if (propertyChangedDisabled || !_setChanged || !_setChanged.hasSubscribers) {
       return this;
     }
-  }, {
+
+    _setChanged.emit(event);
+
+    return this;
+  };
+
+  (0, _createClass2.default)(SetChangedObject, [{
     key: "setChanged",
     get: function get() {
       var _setChanged = this._setChanged;

@@ -2,12 +2,7 @@
 
 var _interopRequireDefault = require("@babel/runtime-corejs3/helpers/interopRequireDefault");
 
-var _Object$defineProperty = require("@babel/runtime-corejs3/core-js-stable/object/define-property");
-
-_Object$defineProperty(exports, "__esModule", {
-  value: true
-});
-
+exports.__esModule = true;
 exports.applyMapChangedToArray = applyMapChangedToArray;
 exports.TestMap = exports.assert = void 0;
 
@@ -17,25 +12,17 @@ var _toStringTag = _interopRequireDefault(require("@babel/runtime-corejs3/core-j
 
 var _stringify = _interopRequireDefault(require("@babel/runtime-corejs3/core-js-stable/json/stringify"));
 
-var _concat = _interopRequireDefault(require("@babel/runtime-corejs3/core-js-stable/instance/concat"));
-
-var _toConsumableArray2 = _interopRequireDefault(require("@babel/runtime-corejs3/helpers/toConsumableArray"));
-
-var _possibleConstructorReturn2 = _interopRequireDefault(require("@babel/runtime-corejs3/helpers/possibleConstructorReturn"));
-
-var _getPrototypeOf2 = _interopRequireDefault(require("@babel/runtime-corejs3/helpers/getPrototypeOf"));
-
-var _inherits2 = _interopRequireDefault(require("@babel/runtime-corejs3/helpers/inherits"));
+var _inheritsLoose2 = _interopRequireDefault(require("@babel/runtime-corejs3/helpers/inheritsLoose"));
 
 var _regenerator = _interopRequireDefault(require("@babel/runtime-corejs3/regenerator"));
-
-var _classCallCheck2 = _interopRequireDefault(require("@babel/runtime-corejs3/helpers/classCallCheck"));
 
 var _createClass2 = _interopRequireDefault(require("@babel/runtime-corejs3/helpers/createClass"));
 
 var _map = _interopRequireDefault(require("@babel/runtime-corejs3/core-js-stable/map"));
 
 var _getIterator2 = _interopRequireDefault(require("@babel/runtime-corejs3/core-js/get-iterator"));
+
+var _isArray7 = _interopRequireDefault(require("@babel/runtime-corejs3/core-js-stable/array/is-array"));
 
 var _forEach = _interopRequireDefault(require("@babel/runtime-corejs3/core-js-stable/instance/for-each"));
 
@@ -152,29 +139,22 @@ function assertMap(map, expectedArray) {
   assert.deepStrictEqual((0, _sort.default)(_context5 = (0, _from.default)((0, _entries.default)(map).call(map))).call(_context5, compareEntries), expectedArray);
   assert.deepStrictEqual((0, _sort.default)(_context6 = (0, _from.default)((0, _entries.default)(map).call(map))).call(_context6, compareEntries), expectedArray);
   assert.strictEqual(map.size, expectedArray.length);
-  var _iteratorNormalCompletion = true;
-  var _didIteratorError = false;
-  var _iteratorError = undefined;
 
-  try {
-    for (var _iterator = (0, _getIterator2.default)(expectedArray), _step; !(_iteratorNormalCompletion = (_step = _iterator.next()).done); _iteratorNormalCompletion = true) {
-      var item = _step.value;
-      assert.strictEqual(map.has(item[0]), true);
-      assert.strictEqual(map.has(Math.random()), false);
+  for (var _iterator = expectedArray, _isArray = (0, _isArray7.default)(_iterator), _i = 0, _iterator = _isArray ? _iterator : (0, _getIterator2.default)(_iterator);;) {
+    var _ref;
+
+    if (_isArray) {
+      if (_i >= _iterator.length) break;
+      _ref = _iterator[_i++];
+    } else {
+      _i = _iterator.next();
+      if (_i.done) break;
+      _ref = _i.value;
     }
-  } catch (err) {
-    _didIteratorError = true;
-    _iteratorError = err;
-  } finally {
-    try {
-      if (!_iteratorNormalCompletion && _iterator.return != null) {
-        _iterator.return();
-      }
-    } finally {
-      if (_didIteratorError) {
-        throw _iteratorError;
-      }
-    }
+
+    var item = _ref;
+    assert.strictEqual(map.has(item[0]), true);
+    assert.strictEqual(map.has(Math.random()), false);
   }
 
   var forEachArray = [];
@@ -219,287 +199,236 @@ var MapWrapper =
 /*#__PURE__*/
 function () {
   function MapWrapper(map) {
-    (0, _classCallCheck2.default)(this, MapWrapper);
     this[_Symbol$toStringTag] = 'Map';
     this._map = map;
   }
 
+  var _proto = MapWrapper.prototype;
+  _proto[_Symbol$iterator] =
+  /*#__PURE__*/
+  _regenerator.default.mark(function _callee() {
+    var _iterator2, _isArray2, _i2, _ref2, item;
+
+    return _regenerator.default.wrap(function _callee$(_context8) {
+      while (1) {
+        switch (_context8.prev = _context8.next) {
+          case 0:
+            _iterator2 = this._map, _isArray2 = (0, _isArray7.default)(_iterator2), _i2 = 0, _iterator2 = _isArray2 ? _iterator2 : (0, _getIterator2.default)(_iterator2);
+
+          case 1:
+            if (!_isArray2) {
+              _context8.next = 7;
+              break;
+            }
+
+            if (!(_i2 >= _iterator2.length)) {
+              _context8.next = 4;
+              break;
+            }
+
+            return _context8.abrupt("break", 16);
+
+          case 4:
+            _ref2 = _iterator2[_i2++];
+            _context8.next = 11;
+            break;
+
+          case 7:
+            _i2 = _iterator2.next();
+
+            if (!_i2.done) {
+              _context8.next = 10;
+              break;
+            }
+
+            return _context8.abrupt("break", 16);
+
+          case 10:
+            _ref2 = _i2.value;
+
+          case 11:
+            item = _ref2;
+            _context8.next = 14;
+            return [item[0].value, item[1]];
+
+          case 14:
+            _context8.next = 1;
+            break;
+
+          case 16:
+          case "end":
+            return _context8.stop();
+        }
+      }
+    }, _callee, this);
+  });
+
+  _proto.clear = function clear() {
+    this._map.clear();
+  };
+
+  _proto.delete = function _delete(key) {
+    return this._map.delete((0, _common.convertToObject)(key));
+  };
+
+  _proto.entries =
+  /*#__PURE__*/
+  _regenerator.default.mark(function entries() {
+    var _iterator3, _isArray3, _i3, _context9, _ref3, entry;
+
+    return _regenerator.default.wrap(function entries$(_context10) {
+      while (1) {
+        switch (_context10.prev = _context10.next) {
+          case 0:
+            _iterator3 = (0, _entries.default)(_context9 = this._map).call(_context9), _isArray3 = (0, _isArray7.default)(_iterator3), _i3 = 0, _iterator3 = _isArray3 ? _iterator3 : (0, _getIterator2.default)(_iterator3);
+
+          case 1:
+            if (!_isArray3) {
+              _context10.next = 7;
+              break;
+            }
+
+            if (!(_i3 >= _iterator3.length)) {
+              _context10.next = 4;
+              break;
+            }
+
+            return _context10.abrupt("break", 16);
+
+          case 4:
+            _ref3 = _iterator3[_i3++];
+            _context10.next = 11;
+            break;
+
+          case 7:
+            _i3 = _iterator3.next();
+
+            if (!_i3.done) {
+              _context10.next = 10;
+              break;
+            }
+
+            return _context10.abrupt("break", 16);
+
+          case 10:
+            _ref3 = _i3.value;
+
+          case 11:
+            entry = _ref3;
+            _context10.next = 14;
+            return [entry[0].value, entry[1]];
+
+          case 14:
+            _context10.next = 1;
+            break;
+
+          case 16:
+          case "end":
+            return _context10.stop();
+        }
+      }
+    }, entries, this);
+  });
+
+  _proto.forEach = function forEach(callbackfn, thisArg) {
+    var _context11;
+
+    (0, _forEach.default)(_context11 = this._map).call(_context11, function (value, key) {
+      callbackfn(value, key.value, this);
+    }, thisArg);
+  };
+
+  _proto.get = function get(key) {
+    return this._map.get((0, _common.convertToObject)(key));
+  };
+
+  _proto.has = function has(key) {
+    return this._map.has((0, _common.convertToObject)(key));
+  };
+
+  _proto.keys =
+  /*#__PURE__*/
+  _regenerator.default.mark(function keys() {
+    var _iterator4, _isArray4, _i4, _context12, _ref4, item;
+
+    return _regenerator.default.wrap(function keys$(_context13) {
+      while (1) {
+        switch (_context13.prev = _context13.next) {
+          case 0:
+            _iterator4 = (0, _keys.default)(_context12 = this._map).call(_context12), _isArray4 = (0, _isArray7.default)(_iterator4), _i4 = 0, _iterator4 = _isArray4 ? _iterator4 : (0, _getIterator2.default)(_iterator4);
+
+          case 1:
+            if (!_isArray4) {
+              _context13.next = 7;
+              break;
+            }
+
+            if (!(_i4 >= _iterator4.length)) {
+              _context13.next = 4;
+              break;
+            }
+
+            return _context13.abrupt("break", 16);
+
+          case 4:
+            _ref4 = _iterator4[_i4++];
+            _context13.next = 11;
+            break;
+
+          case 7:
+            _i4 = _iterator4.next();
+
+            if (!_i4.done) {
+              _context13.next = 10;
+              break;
+            }
+
+            return _context13.abrupt("break", 16);
+
+          case 10:
+            _ref4 = _i4.value;
+
+          case 11:
+            item = _ref4;
+            _context13.next = 14;
+            return item.value;
+
+          case 14:
+            _context13.next = 1;
+            break;
+
+          case 16:
+          case "end":
+            return _context13.stop();
+        }
+      }
+    }, keys, this);
+  });
+
+  _proto.set = function set(key, value) {
+    this._map.set((0, _common.convertToObject)(key), value);
+
+    return this;
+  };
+
+  _proto.values = function values() {
+    var _context14;
+
+    return (0, _values.default)(_context14 = this._map).call(_context14);
+  } // region ISerializable
+  ;
+
+  _proto.serialize = function serialize(_serialize) {
+    return {
+      map: _serialize(this._map)
+    };
+  } // tslint:disable-next-line:no-empty
+  ;
+
+  _proto.deSerialize = function deSerialize(_deSerialize, serializedValue) {} // endregion
+  ;
+
   (0, _createClass2.default)(MapWrapper, [{
-    key: _Symbol$iterator,
-    value:
-    /*#__PURE__*/
-    _regenerator.default.mark(function value() {
-      var _iteratorNormalCompletion2, _didIteratorError2, _iteratorError2, _iterator2, _step2, item;
-
-      return _regenerator.default.wrap(function value$(_context8) {
-        while (1) {
-          switch (_context8.prev = _context8.next) {
-            case 0:
-              _iteratorNormalCompletion2 = true;
-              _didIteratorError2 = false;
-              _iteratorError2 = undefined;
-              _context8.prev = 3;
-              _iterator2 = (0, _getIterator2.default)(this._map);
-
-            case 5:
-              if (_iteratorNormalCompletion2 = (_step2 = _iterator2.next()).done) {
-                _context8.next = 12;
-                break;
-              }
-
-              item = _step2.value;
-              _context8.next = 9;
-              return [item[0].value, item[1]];
-
-            case 9:
-              _iteratorNormalCompletion2 = true;
-              _context8.next = 5;
-              break;
-
-            case 12:
-              _context8.next = 18;
-              break;
-
-            case 14:
-              _context8.prev = 14;
-              _context8.t0 = _context8["catch"](3);
-              _didIteratorError2 = true;
-              _iteratorError2 = _context8.t0;
-
-            case 18:
-              _context8.prev = 18;
-              _context8.prev = 19;
-
-              if (!_iteratorNormalCompletion2 && _iterator2.return != null) {
-                _iterator2.return();
-              }
-
-            case 21:
-              _context8.prev = 21;
-
-              if (!_didIteratorError2) {
-                _context8.next = 24;
-                break;
-              }
-
-              throw _iteratorError2;
-
-            case 24:
-              return _context8.finish(21);
-
-            case 25:
-              return _context8.finish(18);
-
-            case 26:
-            case "end":
-              return _context8.stop();
-          }
-        }
-      }, value, this, [[3, 14, 18, 26], [19,, 21, 25]]);
-    })
-  }, {
-    key: "clear",
-    value: function clear() {
-      this._map.clear();
-    }
-  }, {
-    key: "delete",
-    value: function _delete(key) {
-      return this._map.delete((0, _common.convertToObject)(key));
-    }
-  }, {
-    key: "entries",
-    value:
-    /*#__PURE__*/
-    _regenerator.default.mark(function entries() {
-      var _iteratorNormalCompletion3, _didIteratorError3, _iteratorError3, _iterator3, _step3, _context9, entry;
-
-      return _regenerator.default.wrap(function entries$(_context10) {
-        while (1) {
-          switch (_context10.prev = _context10.next) {
-            case 0:
-              _iteratorNormalCompletion3 = true;
-              _didIteratorError3 = false;
-              _iteratorError3 = undefined;
-              _context10.prev = 3;
-              _iterator3 = (0, _getIterator2.default)((0, _entries.default)(_context9 = this._map).call(_context9));
-
-            case 5:
-              if (_iteratorNormalCompletion3 = (_step3 = _iterator3.next()).done) {
-                _context10.next = 12;
-                break;
-              }
-
-              entry = _step3.value;
-              _context10.next = 9;
-              return [entry[0].value, entry[1]];
-
-            case 9:
-              _iteratorNormalCompletion3 = true;
-              _context10.next = 5;
-              break;
-
-            case 12:
-              _context10.next = 18;
-              break;
-
-            case 14:
-              _context10.prev = 14;
-              _context10.t0 = _context10["catch"](3);
-              _didIteratorError3 = true;
-              _iteratorError3 = _context10.t0;
-
-            case 18:
-              _context10.prev = 18;
-              _context10.prev = 19;
-
-              if (!_iteratorNormalCompletion3 && _iterator3.return != null) {
-                _iterator3.return();
-              }
-
-            case 21:
-              _context10.prev = 21;
-
-              if (!_didIteratorError3) {
-                _context10.next = 24;
-                break;
-              }
-
-              throw _iteratorError3;
-
-            case 24:
-              return _context10.finish(21);
-
-            case 25:
-              return _context10.finish(18);
-
-            case 26:
-            case "end":
-              return _context10.stop();
-          }
-        }
-      }, entries, this, [[3, 14, 18, 26], [19,, 21, 25]]);
-    })
-  }, {
-    key: "forEach",
-    value: function forEach(callbackfn, thisArg) {
-      var _context11;
-
-      (0, _forEach.default)(_context11 = this._map).call(_context11, function (value, key) {
-        callbackfn(value, key.value, this);
-      }, thisArg);
-    }
-  }, {
-    key: "get",
-    value: function get(key) {
-      return this._map.get((0, _common.convertToObject)(key));
-    }
-  }, {
-    key: "has",
-    value: function has(key) {
-      return this._map.has((0, _common.convertToObject)(key));
-    }
-  }, {
-    key: "keys",
-    value:
-    /*#__PURE__*/
-    _regenerator.default.mark(function keys() {
-      var _iteratorNormalCompletion4, _didIteratorError4, _iteratorError4, _iterator4, _step4, _context12, item;
-
-      return _regenerator.default.wrap(function keys$(_context13) {
-        while (1) {
-          switch (_context13.prev = _context13.next) {
-            case 0:
-              _iteratorNormalCompletion4 = true;
-              _didIteratorError4 = false;
-              _iteratorError4 = undefined;
-              _context13.prev = 3;
-              _iterator4 = (0, _getIterator2.default)((0, _keys.default)(_context12 = this._map).call(_context12));
-
-            case 5:
-              if (_iteratorNormalCompletion4 = (_step4 = _iterator4.next()).done) {
-                _context13.next = 12;
-                break;
-              }
-
-              item = _step4.value;
-              _context13.next = 9;
-              return item.value;
-
-            case 9:
-              _iteratorNormalCompletion4 = true;
-              _context13.next = 5;
-              break;
-
-            case 12:
-              _context13.next = 18;
-              break;
-
-            case 14:
-              _context13.prev = 14;
-              _context13.t0 = _context13["catch"](3);
-              _didIteratorError4 = true;
-              _iteratorError4 = _context13.t0;
-
-            case 18:
-              _context13.prev = 18;
-              _context13.prev = 19;
-
-              if (!_iteratorNormalCompletion4 && _iterator4.return != null) {
-                _iterator4.return();
-              }
-
-            case 21:
-              _context13.prev = 21;
-
-              if (!_didIteratorError4) {
-                _context13.next = 24;
-                break;
-              }
-
-              throw _iteratorError4;
-
-            case 24:
-              return _context13.finish(21);
-
-            case 25:
-              return _context13.finish(18);
-
-            case 26:
-            case "end":
-              return _context13.stop();
-          }
-        }
-      }, keys, this, [[3, 14, 18, 26], [19,, 21, 25]]);
-    })
-  }, {
-    key: "set",
-    value: function set(key, value) {
-      this._map.set((0, _common.convertToObject)(key), value);
-
-      return this;
-    }
-  }, {
-    key: "values",
-    value: function values() {
-      var _context14;
-
-      return (0, _values.default)(_context14 = this._map).call(_context14);
-    } // region ISerializable
-
-  }, {
-    key: "serialize",
-    value: function serialize(_serialize) {
-      return {
-        map: _serialize(this._map)
-      };
-    } // tslint:disable-next-line:no-empty
-
-  }, {
-    key: "deSerialize",
-    value: function deSerialize(_deSerialize, serializedValue) {} // endregion
-
-  }, {
     key: "size",
     get: function get() {
       return this._map.size;
@@ -541,13 +470,12 @@ MapWrapper.uuid = 'bc06eeb65139444aa73557a6e1928ac9';
 var TestMap =
 /*#__PURE__*/
 function (_TestVariants) {
-  (0, _inherits2.default)(TestMap, _TestVariants);
+  (0, _inheritsLoose2.default)(TestMap, _TestVariants);
 
   function TestMap() {
     var _this;
 
-    (0, _classCallCheck2.default)(this, TestMap);
-    _this = (0, _possibleConstructorReturn2.default)(this, (0, _getPrototypeOf2.default)(TestMap).call(this));
+    _this = _TestVariants.call(this) || this;
     _this.baseOptionsVariants = {
       reuseMapInstance: [false, true],
       useMapChanged: [false, true],
@@ -556,213 +484,195 @@ function (_TestVariants) {
     return _this;
   }
 
-  (0, _createClass2.default)(TestMap, [{
-    key: "testVariant",
-    value: function testVariant(options) {
-      var error;
+  var _proto2 = TestMap.prototype;
 
-      for (var debugIteration = 0; debugIteration < 3; debugIteration++) {
-        var unsubscribeMapChanged = void 0;
-        var unsubscribePropertyChanged = void 0;
+  _proto2.testVariant = function testVariant(options) {
+    var error;
 
-        try {
-          var _ret = function () {
-            var _context16, _context19, _context20;
+    for (var debugIteration = 0; debugIteration < 3; debugIteration++) {
+      var unsubscribeMapChanged = void 0;
+      var unsubscribePropertyChanged = void 0;
 
-            var array = (0, _map2.default)(_context16 = options.array).call(_context16, function (o) {
-              return (0, _slice.default)(o).call(o);
-            });
-            var map = void 0;
-            var mapInner = void 0;
+      try {
+        var _ret = function () {
+          var _context16, _context19, _context20;
 
-            if (options.reuseMapInstance) {
-              staticMap.clear();
-              var _iteratorNormalCompletion5 = true;
-              var _didIteratorError5 = false;
-              var _iteratorError5 = undefined;
+          var array = (0, _map2.default)(_context16 = options.array).call(_context16, function (o) {
+            return (0, _slice.default)(o).call(o);
+          });
+          var map = void 0;
+          var mapInner = void 0;
 
-              try {
-                for (var _iterator5 = (0, _getIterator2.default)(array), _step5; !(_iteratorNormalCompletion5 = (_step5 = _iterator5.next()).done); _iteratorNormalCompletion5 = true) {
-                  var item = _step5.value;
-                  staticMap.set.apply(staticMap, (0, _toConsumableArray2.default)(item));
-                }
-              } catch (err) {
-                _didIteratorError5 = true;
-                _iteratorError5 = err;
-              } finally {
-                try {
-                  if (!_iteratorNormalCompletion5 && _iterator5.return != null) {
-                    _iterator5.return();
-                  }
-                } finally {
-                  if (_didIteratorError5) {
-                    throw _iteratorError5;
-                  }
-                }
+          if (options.reuseMapInstance) {
+            staticMap.clear();
+
+            for (var _iterator5 = array, _isArray5 = (0, _isArray7.default)(_iterator5), _i5 = 0, _iterator5 = _isArray5 ? _iterator5 : (0, _getIterator2.default)(_iterator5);;) {
+              var _ref5;
+
+              if (_isArray5) {
+                if (_i5 >= _iterator5.length) break;
+                _ref5 = _iterator5[_i5++];
+              } else {
+                _i5 = _iterator5.next();
+                if (_i5.done) break;
+                _ref5 = _i5.value;
               }
 
-              map = staticMap;
-              mapInner = staticMapInner;
-            } else {
-              switch (options.innerMap) {
-                case 'ObjectMap':
-                  mapInner = new _ObjectMap.ObjectMap({});
-                  break;
+              var item = _ref5;
+              staticMap.set.apply(staticMap, item);
+            }
 
-                case 'ObjectHashMap':
-                  mapInner = new MapWrapper(new _ObjectHashMap.ObjectHashMap({}));
-                  break;
+            map = staticMap;
+            mapInner = staticMapInner;
+          } else {
+            switch (options.innerMap) {
+              case 'ObjectMap':
+                mapInner = new _ObjectMap.ObjectMap({});
+                break;
 
-                case 'ArrayMap':
-                  mapInner = new MapWrapper(new _ArrayMap.ArrayMap([]));
-                  break;
+              case 'ObjectHashMap':
+                mapInner = new MapWrapper(new _ObjectHashMap.ObjectHashMap({}));
+                break;
 
-                case 'Map<Object>':
-                  mapInner = new MapWrapper(new _map.default());
-                  break;
+              case 'ArrayMap':
+                mapInner = new MapWrapper(new _ArrayMap.ArrayMap([]));
+                break;
 
-                case 'Map':
-                  mapInner = new _map.default();
-                  break;
+              case 'Map<Object>':
+                mapInner = new MapWrapper(new _map.default());
+                break;
 
-                default:
-                  assert.fail('Unknown options.innerMap: ' + options.innerMap);
-                  break;
+              case 'Map':
+                mapInner = new _map.default();
+                break;
+
+              default:
+                assert.fail('Unknown options.innerMap: ' + options.innerMap);
+                break;
+            }
+
+            for (var _iterator6 = array, _isArray6 = (0, _isArray7.default)(_iterator6), _i6 = 0, _iterator6 = _isArray6 ? _iterator6 : (0, _getIterator2.default)(_iterator6);;) {
+              var _mapInner;
+
+              var _ref6;
+
+              if (_isArray6) {
+                if (_i6 >= _iterator6.length) break;
+                _ref6 = _iterator6[_i6++];
+              } else {
+                _i6 = _iterator6.next();
+                if (_i6.done) break;
+                _ref6 = _i6.value;
               }
 
-              var _iteratorNormalCompletion6 = true;
-              var _didIteratorError6 = false;
-              var _iteratorError6 = undefined;
+              var _item = _ref6;
 
-              try {
-                for (var _iterator6 = (0, _getIterator2.default)(array), _step6; !(_iteratorNormalCompletion6 = (_step6 = _iterator6.next()).done); _iteratorNormalCompletion6 = true) {
-                  var _mapInner;
-
-                  var _item = _step6.value;
-
-                  (_mapInner = mapInner).set.apply(_mapInner, (0, _toConsumableArray2.default)(_item));
-                }
-              } catch (err) {
-                _didIteratorError6 = true;
-                _iteratorError6 = err;
-              } finally {
-                try {
-                  if (!_iteratorNormalCompletion6 && _iterator6.return != null) {
-                    _iterator6.return();
-                  }
-                } finally {
-                  if (_didIteratorError6) {
-                    throw _iteratorError6;
-                  }
-                }
-              }
-
-              map = new _ObservableMap.ObservableMap(mapInner);
+              (_mapInner = mapInner).set.apply(_mapInner, _item);
             }
 
-            var arrayReplicate = (0, _map2.default)(array).call(array, function (o) {
-              return (0, _slice.default)(o).call(o);
-            });
-            var mapChangedEvents = [];
-
-            if (options.useMapChanged) {
-              unsubscribeMapChanged = map.mapChanged.subscribe(function (event) {
-                mapChangedEvents.push(event);
-                applyMapChangedToArray(event, arrayReplicate);
-
-                if (event.type !== _IMapChanged.MapChangedType.Removed || mapInner.size > 0) {
-                  var _context17, _context18;
-
-                  assert.deepStrictEqual((0, _sort.default)(_context17 = (0, _map2.default)(arrayReplicate).call(arrayReplicate, function (o) {
-                    return (0, _slice.default)(o).call(o);
-                  })).call(_context17, compareEntries), (0, _sort.default)(_context18 = (0, _from.default)((0, _entries.default)(mapInner).call(mapInner))).call(_context18, compareEntries));
-                }
-              });
-            }
-
-            var propertyChangedEvents = [];
-            unsubscribePropertyChanged = map.propertyChanged.subscribe(function (event) {
-              propertyChangedEvents.push(event);
-            });
-
-            if (!options.reuseMapInstance) {
-              assertMap(map, (0, _from.default)((0, _entries.default)(mapInner).call(mapInner)));
-            }
-
-            if (options.expected.error) {
-              assert.throws(function () {
-                return options.action(map);
-              }, options.expected.error);
-              assertMap(map, options.array);
-            } else {
-              assert.deepStrictEqual(options.action(map), options.expected.returnValue === _TestVariants2.THIS ? map : options.expected.returnValue);
-              assertMap(map, options.expected.array);
-            }
-
-            assert.deepStrictEqual((0, _sort.default)(_context19 = (0, _from.default)((0, _entries.default)(mapInner).call(mapInner))).call(_context19, compareEntries), (0, _sort.default)(_context20 = (0, _from.default)((0, _entries.default)(map).call(map))).call(_context20, compareEntries));
-
-            if (options.useMapChanged) {
-              var _context21, _context22;
-
-              if (unsubscribeMapChanged) {
-                unsubscribeMapChanged();
-              }
-
-              assert.deepStrictEqual(mapChangedEvents, options.expected.mapChanged || []);
-              assert.deepStrictEqual((0, _sort.default)(_context21 = (0, _map2.default)(arrayReplicate).call(arrayReplicate, function (o) {
-                return (0, _slice.default)(o).call(o);
-              })).call(_context21, compareEntries), (0, _sort.default)(_context22 = (0, _from.default)((0, _entries.default)(map).call(map))).call(_context22, compareEntries));
-            }
-
-            if (unsubscribePropertyChanged) {
-              unsubscribePropertyChanged();
-            }
-
-            var expectedPropertyChanged = options.expected.propertyChanged;
-
-            if (!expectedPropertyChanged && !options.expected.error && options.array.length !== options.expected.array.length) {
-              expectedPropertyChanged = [{
-                name: 'size',
-                oldValue: options.array.length,
-                newValue: options.expected.array.length
-              }];
-            }
-
-            assert.deepStrictEqual(propertyChangedEvents, expectedPropertyChanged || []);
-            return "break";
-          }();
-
-          if (_ret === "break") break;
-        } catch (ex) {
-          if (!debugIteration) {
-            var _context23, _context24, _context25;
-
-            console.log((0, _concat.default)(_context23 = (0, _concat.default)(_context24 = (0, _concat.default)(_context25 = "Error in: ".concat(options.description, "\n")).call(_context25, (0, _stringify.default)(options, null, 4), "\n")).call(_context24, options.action.toString(), "\n")).call(_context23, ex.stack));
-            error = ex;
+            map = new _ObservableMap.ObservableMap(mapInner);
           }
-        } finally {
-          if (unsubscribeMapChanged) {
-            unsubscribeMapChanged();
+
+          var arrayReplicate = (0, _map2.default)(array).call(array, function (o) {
+            return (0, _slice.default)(o).call(o);
+          });
+          var mapChangedEvents = [];
+
+          if (options.useMapChanged) {
+            unsubscribeMapChanged = map.mapChanged.subscribe(function (event) {
+              mapChangedEvents.push(event);
+              applyMapChangedToArray(event, arrayReplicate);
+
+              if (event.type !== _IMapChanged.MapChangedType.Removed || mapInner.size > 0) {
+                var _context17, _context18;
+
+                assert.deepStrictEqual((0, _sort.default)(_context17 = (0, _map2.default)(arrayReplicate).call(arrayReplicate, function (o) {
+                  return (0, _slice.default)(o).call(o);
+                })).call(_context17, compareEntries), (0, _sort.default)(_context18 = (0, _from.default)((0, _entries.default)(mapInner).call(mapInner))).call(_context18, compareEntries));
+              }
+            });
+          }
+
+          var propertyChangedEvents = [];
+          unsubscribePropertyChanged = map.propertyChanged.subscribe(function (event) {
+            propertyChangedEvents.push(event);
+          });
+
+          if (!options.reuseMapInstance) {
+            assertMap(map, (0, _from.default)((0, _entries.default)(mapInner).call(mapInner)));
+          }
+
+          if (options.expected.error) {
+            assert.throws(function () {
+              return options.action(map);
+            }, options.expected.error);
+            assertMap(map, options.array);
+          } else {
+            assert.deepStrictEqual(options.action(map), options.expected.returnValue === _TestVariants2.THIS ? map : options.expected.returnValue);
+            assertMap(map, options.expected.array);
+          }
+
+          assert.deepStrictEqual((0, _sort.default)(_context19 = (0, _from.default)((0, _entries.default)(mapInner).call(mapInner))).call(_context19, compareEntries), (0, _sort.default)(_context20 = (0, _from.default)((0, _entries.default)(map).call(map))).call(_context20, compareEntries));
+
+          if (options.useMapChanged) {
+            var _context21, _context22;
+
+            if (unsubscribeMapChanged) {
+              unsubscribeMapChanged();
+            }
+
+            assert.deepStrictEqual(mapChangedEvents, options.expected.mapChanged || []);
+            assert.deepStrictEqual((0, _sort.default)(_context21 = (0, _map2.default)(arrayReplicate).call(arrayReplicate, function (o) {
+              return (0, _slice.default)(o).call(o);
+            })).call(_context21, compareEntries), (0, _sort.default)(_context22 = (0, _from.default)((0, _entries.default)(map).call(map))).call(_context22, compareEntries));
           }
 
           if (unsubscribePropertyChanged) {
             unsubscribePropertyChanged();
           }
 
-          TestMap.totalMapTests++;
-        }
-      }
+          var expectedPropertyChanged = options.expected.propertyChanged;
 
-      if (error) {
-        throw error;
+          if (!expectedPropertyChanged && !options.expected.error && options.array.length !== options.expected.array.length) {
+            expectedPropertyChanged = [{
+              name: 'size',
+              oldValue: options.array.length,
+              newValue: options.expected.array.length
+            }];
+          }
+
+          assert.deepStrictEqual(propertyChangedEvents, expectedPropertyChanged || []);
+          return "break";
+        }();
+
+        if (_ret === "break") break;
+      } catch (ex) {
+        if (!debugIteration) {
+          console.log("Error in: " + options.description + "\n" + (0, _stringify.default)(options, null, 4) + "\n" + options.action.toString() + "\n" + ex.stack);
+          error = ex;
+        }
+      } finally {
+        if (unsubscribeMapChanged) {
+          unsubscribeMapChanged();
+        }
+
+        if (unsubscribePropertyChanged) {
+          unsubscribePropertyChanged();
+        }
+
+        TestMap.totalMapTests++;
       }
     }
-  }], [{
-    key: "test",
-    value: function test(testCases) {
-      TestMap._instance.test(testCases);
+
+    if (error) {
+      throw error;
     }
-  }]);
+  };
+
+  TestMap.test = function test(testCases) {
+    TestMap._instance.test(testCases);
+  };
+
   return TestMap;
 }(_TestVariants2.TestVariants);
 

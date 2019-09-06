@@ -1,18 +1,9 @@
 "use strict";
 
-var _interopRequireDefault = require("@babel/runtime-corejs3/helpers/interopRequireDefault");
-
-var _Object$defineProperty = require("@babel/runtime-corejs3/core-js-stable/object/define-property");
-
-_Object$defineProperty(exports, "__esModule", {
-  value: true
-});
-
+exports.__esModule = true;
 exports.parsePropertiesPathString = parsePropertiesPathString;
 exports.parsePropertiesPath = parsePropertiesPath;
 exports.getFuncPropertiesPath = getFuncPropertiesPath;
-
-var _concat = _interopRequireDefault(require("@babel/runtime-corejs3/core-js-stable/instance/concat"));
 
 // const variablePattern = '([$A-Za-z_][$A-Za-z_]*)'
 // const propertyPattern = variablePattern
@@ -27,7 +18,7 @@ function parsePropertiesPathString(getValueFunc) {
   var path = match && match[2];
 
   if (!path) {
-    throw new Error("Error parse getValueFunc:\n".concat(getValueFunc, "\n\n") + 'This parameter should be a function which simple return nested property value, like that:\n' + '(o) => o.o["/\\"\'"].o[0].o.o\n' + 'o => (o.o["/\\"\'"].o[0].o.o)\n' + '(o) => {return o.o["/\\"\'"].o[0].o.o}\n' + 'function (o) { return o.o["/\\"\'"].o[0].o.o }\n' + 'y(o) {\n' + '\t\treturn o.o["/\\"\'"].o[0].o.o\n' + '}');
+    throw new Error("Error parse getValueFunc:\n" + getValueFunc + "\n\n" + 'This parameter should be a function which simple return nested property value, like that:\n' + '(o) => o.o["/\\"\'"].o[0].o.o\n' + 'o => (o.o["/\\"\'"].o[0].o.o)\n' + '(o) => {return o.o["/\\"\'"].o[0].o.o}\n' + 'function (o) { return o.o["/\\"\'"].o[0].o.o }\n' + 'y(o) {\n' + '\t\treturn o.o["/\\"\'"].o[0].o.o\n' + '}');
   }
 
   return path;
@@ -45,9 +36,7 @@ function parsePropertiesPath(propertiesPathString) {
   });
 
   if (remains) {
-    var _context;
-
-    throw new Error((0, _concat.default)(_context = "Error parse properties path from:\n".concat(propertiesPathString, "\nerror in: ")).call(_context, remains));
+    throw new Error("Error parse properties path from:\n" + propertiesPathString + "\nerror in: " + remains);
   }
 
   return propertiesPath;

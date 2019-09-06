@@ -2,29 +2,13 @@
 
 var _interopRequireDefault = require("@babel/runtime-corejs3/helpers/interopRequireDefault");
 
-var _defineProperty2 = _interopRequireDefault(require("@babel/runtime-corejs3/core-js-stable/object/define-property"));
-
-var _defineProperties = _interopRequireDefault(require("@babel/runtime-corejs3/core-js-stable/object/define-properties"));
-
-var _getOwnPropertyDescriptors = _interopRequireDefault(require("@babel/runtime-corejs3/core-js-stable/object/get-own-property-descriptors"));
-
-var _forEach = _interopRequireDefault(require("@babel/runtime-corejs3/core-js-stable/instance/for-each"));
-
-var _getOwnPropertyDescriptor = _interopRequireDefault(require("@babel/runtime-corejs3/core-js-stable/object/get-own-property-descriptor"));
-
-var _filter = _interopRequireDefault(require("@babel/runtime-corejs3/core-js-stable/instance/filter"));
-
-var _getOwnPropertySymbols = _interopRequireDefault(require("@babel/runtime-corejs3/core-js-stable/object/get-own-property-symbols"));
-
-var _keys = _interopRequireDefault(require("@babel/runtime-corejs3/core-js-stable/object/keys"));
-
-var _typeof2 = _interopRequireDefault(require("@babel/runtime-corejs3/helpers/typeof"));
-
 var _getIterator2 = _interopRequireDefault(require("@babel/runtime-corejs3/core-js/get-iterator"));
+
+var _isArray3 = _interopRequireDefault(require("@babel/runtime-corejs3/core-js-stable/array/is-array"));
 
 var _set = _interopRequireDefault(require("@babel/runtime-corejs3/core-js-stable/set"));
 
-var _defineProperty3 = _interopRequireDefault(require("@babel/runtime-corejs3/helpers/defineProperty"));
+var _extends2 = _interopRequireDefault(require("@babel/runtime-corejs3/helpers/extends"));
 
 var _Assert = require("../../../../../main/common/test/Assert");
 
@@ -32,10 +16,7 @@ var _helpers = require("../src/helpers/helpers");
 
 var _TestDeepEqual = require("./src/TestDeepEqual");
 
-function ownKeys(object, enumerableOnly) { var keys = (0, _keys.default)(object); if (_getOwnPropertySymbols.default) { var symbols = (0, _getOwnPropertySymbols.default)(object); if (enumerableOnly) symbols = (0, _filter.default)(symbols).call(symbols, function (sym) { return (0, _getOwnPropertyDescriptor.default)(object, sym).enumerable; }); keys.push.apply(keys, symbols); } return keys; }
-
-function _objectSpread(target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i] != null ? arguments[i] : {}; if (i % 2) { var _context; (0, _forEach.default)(_context = ownKeys(source, true)).call(_context, function (key) { (0, _defineProperty3.default)(target, key, source[key]); }); } else if (_getOwnPropertyDescriptors.default) { (0, _defineProperties.default)(target, (0, _getOwnPropertyDescriptors.default)(source)); } else { var _context2; (0, _forEach.default)(_context2 = ownKeys(source)).call(_context2, function (key) { (0, _defineProperty2.default)(target, key, (0, _getOwnPropertyDescriptor.default)(source, key)); }); } } return target; }
-
+/* tslint:disable:no-construct use-primitive-type */
 describe('common > test > DeepCloneEqual', function () {
   this.timeout(60000);
   var _testDeepEqual = _TestDeepEqual.TestDeepEqual.test;
@@ -103,7 +84,7 @@ describe('common > test > DeepCloneEqual', function () {
   };
 
   var notCircularTest = function notCircularTest(equalMapSetOrder) {
-    var obj = (0, _helpers.createComplexObject)(_objectSpread({}, objectOptions, {
+    var obj = (0, _helpers.createComplexObject)((0, _extends2.default)({}, objectOptions, {
       arraySet: objectOptions.arraySet && !equalMapSetOrder,
       objectSet: objectOptions.objectSet && !equalMapSetOrder,
       arrayMap: objectOptions.arrayMap && !equalMapSetOrder,
@@ -130,7 +111,7 @@ describe('common > test > DeepCloneEqual', function () {
   };
 
   var circularTest = function circularTest(equalMapSetOrder) {
-    var obj = (0, _helpers.createComplexObject)(_objectSpread({}, objectOptions, {
+    var obj = (0, _helpers.createComplexObject)((0, _extends2.default)({}, objectOptions, {
       circular: true,
       arraySet: objectOptions.arraySet && !equalMapSetOrder,
       objectSet: objectOptions.objectSet && !equalMapSetOrder,
@@ -150,61 +131,45 @@ describe('common > test > DeepCloneEqual', function () {
 
     _Assert.assert.strictEqual(cache1.size, cache2.size);
 
-    var _iteratorNormalCompletion = true;
-    var _didIteratorError = false;
-    var _iteratorError = undefined;
+    for (var _iterator = cache1, _isArray = (0, _isArray3.default)(_iterator), _i = 0, _iterator = _isArray ? _iterator : (0, _getIterator2.default)(_iterator);;) {
+      var _ref;
 
-    try {
-      for (var _iterator = (0, _getIterator2.default)(cache1), _step; !(_iteratorNormalCompletion = (_step = _iterator.next()).done); _iteratorNormalCompletion = true) {
-        var value = _step.value;
-
-        if (value && (0, _typeof2.default)(value) === 'object') {
-          _Assert.assert.notOk(cache2.has(value));
-        } else {
-          _Assert.assert.ok(cache2.has(value));
-        }
+      if (_isArray) {
+        if (_i >= _iterator.length) break;
+        _ref = _iterator[_i++];
+      } else {
+        _i = _iterator.next();
+        if (_i.done) break;
+        _ref = _i.value;
       }
-    } catch (err) {
-      _didIteratorError = true;
-      _iteratorError = err;
-    } finally {
-      try {
-        if (!_iteratorNormalCompletion && _iterator.return != null) {
-          _iterator.return();
-        }
-      } finally {
-        if (_didIteratorError) {
-          throw _iteratorError;
-        }
+
+      var value = _ref;
+
+      if (value && typeof value === 'object') {
+        _Assert.assert.notOk(cache2.has(value));
+      } else {
+        _Assert.assert.ok(cache2.has(value));
       }
     }
 
-    var _iteratorNormalCompletion2 = true;
-    var _didIteratorError2 = false;
-    var _iteratorError2 = undefined;
+    for (var _iterator2 = cache2, _isArray2 = (0, _isArray3.default)(_iterator2), _i2 = 0, _iterator2 = _isArray2 ? _iterator2 : (0, _getIterator2.default)(_iterator2);;) {
+      var _ref2;
 
-    try {
-      for (var _iterator2 = (0, _getIterator2.default)(cache2), _step2; !(_iteratorNormalCompletion2 = (_step2 = _iterator2.next()).done); _iteratorNormalCompletion2 = true) {
-        var _value = _step2.value;
-
-        if (_value && (0, _typeof2.default)(_value) === 'object') {
-          _Assert.assert.notOk(cache1.has(_value));
-        } else {
-          _Assert.assert.ok(cache1.has(_value));
-        }
+      if (_isArray2) {
+        if (_i2 >= _iterator2.length) break;
+        _ref2 = _iterator2[_i2++];
+      } else {
+        _i2 = _iterator2.next();
+        if (_i2.done) break;
+        _ref2 = _i2.value;
       }
-    } catch (err) {
-      _didIteratorError2 = true;
-      _iteratorError2 = err;
-    } finally {
-      try {
-        if (!_iteratorNormalCompletion2 && _iterator2.return != null) {
-          _iterator2.return();
-        }
-      } finally {
-        if (_didIteratorError2) {
-          throw _iteratorError2;
-        }
+
+      var _value = _ref2;
+
+      if (_value && typeof _value === 'object') {
+        _Assert.assert.notOk(cache1.has(_value));
+      } else {
+        _Assert.assert.ok(cache1.has(_value));
       }
     }
 
@@ -251,7 +216,7 @@ describe('common > test > DeepCloneEqual', function () {
       });
       clone.array.length--;
       obj.array.length--;
-      obj.object = _objectSpread({}, obj.object);
+      obj.object = (0, _extends2.default)({}, obj.object);
       testDeepEqual([clone], [obj], {
         circular: true,
         equalMapSetOrder: equalMapSetOrder,

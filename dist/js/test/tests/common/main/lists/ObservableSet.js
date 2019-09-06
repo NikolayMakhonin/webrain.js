@@ -10,6 +10,8 @@ var _stringify = _interopRequireDefault(require("@babel/runtime-corejs3/core-js-
 
 var _getIterator2 = _interopRequireDefault(require("@babel/runtime-corejs3/core-js/get-iterator"));
 
+var _isArray3 = _interopRequireDefault(require("@babel/runtime-corejs3/core-js-stable/array/is-array"));
+
 var _ISetChanged = require("../../../../../main/common/lists/contracts/ISetChanged");
 
 var _ObservableSet = require("../../../../../main/common/lists/ObservableSet");
@@ -35,28 +37,21 @@ describe('common > main > lists > ObservableSet', function () {
   it('add', function () {
     function addArray(list, array) {
       var result = false;
-      var _iteratorNormalCompletion = true;
-      var _didIteratorError = false;
-      var _iteratorError = undefined;
 
-      try {
-        for (var _iterator = (0, _getIterator2.default)(array), _step; !(_iteratorNormalCompletion = (_step = _iterator.next()).done); _iteratorNormalCompletion = true) {
-          var item = _step.value;
-          result = list.add(item) || result;
+      for (var _iterator = array, _isArray = (0, _isArray3.default)(_iterator), _i = 0, _iterator = _isArray ? _iterator : (0, _getIterator2.default)(_iterator);;) {
+        var _ref;
+
+        if (_isArray) {
+          if (_i >= _iterator.length) break;
+          _ref = _iterator[_i++];
+        } else {
+          _i = _iterator.next();
+          if (_i.done) break;
+          _ref = _i.value;
         }
-      } catch (err) {
-        _didIteratorError = true;
-        _iteratorError = err;
-      } finally {
-        try {
-          if (!_iteratorNormalCompletion && _iterator.return != null) {
-            _iterator.return();
-          }
-        } finally {
-          if (_didIteratorError) {
-            throw _iteratorError;
-          }
-        }
+
+        var item = _ref;
+        result = list.add(item) || result;
       }
 
       return result;
@@ -67,7 +62,7 @@ describe('common > main > lists > ObservableSet', function () {
         actions: [function (list) {
           return list.add(item);
         }],
-        description: "add(".concat((0, _stringify.default)(item), ")\n")
+        description: "add(" + (0, _stringify.default)(item) + ")\n"
       };
     }
 
@@ -132,28 +127,21 @@ describe('common > main > lists > ObservableSet', function () {
   it('delete', function () {
     function removeArray(list, array) {
       var result = false;
-      var _iteratorNormalCompletion2 = true;
-      var _didIteratorError2 = false;
-      var _iteratorError2 = undefined;
 
-      try {
-        for (var _iterator2 = (0, _getIterator2.default)(array), _step2; !(_iteratorNormalCompletion2 = (_step2 = _iterator2.next()).done); _iteratorNormalCompletion2 = true) {
-          var item = _step2.value;
-          result = list.delete(item) || result;
+      for (var _iterator2 = array, _isArray2 = (0, _isArray3.default)(_iterator2), _i2 = 0, _iterator2 = _isArray2 ? _iterator2 : (0, _getIterator2.default)(_iterator2);;) {
+        var _ref2;
+
+        if (_isArray2) {
+          if (_i2 >= _iterator2.length) break;
+          _ref2 = _iterator2[_i2++];
+        } else {
+          _i2 = _iterator2.next();
+          if (_i2.done) break;
+          _ref2 = _i2.value;
         }
-      } catch (err) {
-        _didIteratorError2 = true;
-        _iteratorError2 = err;
-      } finally {
-        try {
-          if (!_iteratorNormalCompletion2 && _iterator2.return != null) {
-            _iterator2.return();
-          }
-        } finally {
-          if (_didIteratorError2) {
-            throw _iteratorError2;
-          }
-        }
+
+        var item = _ref2;
+        result = list.delete(item) || result;
       }
 
       return result;
@@ -164,7 +152,7 @@ describe('common > main > lists > ObservableSet', function () {
         actions: [function (list) {
           return list.delete(item);
         }],
-        description: "delete(".concat((0, _stringify.default)(item), ")\n")
+        description: "delete(" + (0, _stringify.default)(item) + ")\n"
       };
     }
 

@@ -4,15 +4,9 @@ var _interopRequireDefault = require("@babel/runtime-corejs3/helpers/interopRequ
 
 var _concat = _interopRequireDefault(require("@babel/runtime-corejs3/core-js-stable/instance/concat"));
 
-var _classCallCheck2 = _interopRequireDefault(require("@babel/runtime-corejs3/helpers/classCallCheck"));
-
-var _possibleConstructorReturn2 = _interopRequireDefault(require("@babel/runtime-corejs3/helpers/possibleConstructorReturn"));
-
-var _getPrototypeOf3 = _interopRequireDefault(require("@babel/runtime-corejs3/helpers/getPrototypeOf"));
-
 var _assertThisInitialized2 = _interopRequireDefault(require("@babel/runtime-corejs3/helpers/assertThisInitialized"));
 
-var _inherits2 = _interopRequireDefault(require("@babel/runtime-corejs3/helpers/inherits"));
+var _inheritsLoose2 = _interopRequireDefault(require("@babel/runtime-corejs3/helpers/inheritsLoose"));
 
 var _rdtsc = require("rdtsc");
 
@@ -33,20 +27,18 @@ describe('resolvePath', function () {
   var Class =
   /*#__PURE__*/
   function (_ObservableObject) {
-    (0, _inherits2.default)(Class, _ObservableObject);
+    (0, _inheritsLoose2.default)(Class, _ObservableObject);
 
     function Class() {
-      var _getPrototypeOf2, _context;
+      var _context;
 
       var _this;
-
-      (0, _classCallCheck2.default)(this, Class);
 
       for (var _len = arguments.length, args = new Array(_len), _key = 0; _key < _len; _key++) {
         args[_key] = arguments[_key];
       }
 
-      _this = (0, _possibleConstructorReturn2.default)(this, (_getPrototypeOf2 = (0, _getPrototypeOf3.default)(Class)).call.apply(_getPrototypeOf2, (0, _concat.default)(_context = [this]).call(_context, args)));
+      _this = _ObservableObject.call.apply(_ObservableObject, (0, _concat.default)(_context = [this]).call(_context, args)) || this;
       _this.simple = {
         value: (0, _assertThisInitialized2.default)(_this)
       };

@@ -18,8 +18,6 @@ var _regenerator = _interopRequireDefault(require("@babel/runtime-corejs3/regene
 
 var _keys2 = _interopRequireDefault(require("@babel/runtime-corejs3/core-js-stable/object/keys"));
 
-var _defineProperty2 = _interopRequireDefault(require("@babel/runtime-corejs3/helpers/defineProperty"));
-
 var _assign = _interopRequireDefault(require("@babel/runtime-corejs3/core-js-stable/object/assign"));
 
 var _iterateRule = require("../../../../../../main/common/rx/deep-subscribe/iterate-rule");
@@ -60,8 +58,11 @@ describe('common > main > rx > deep-subscribe > iterate-rule', function () {
   // 		.map(o => ruleToString(o)).join('\n')
   // }
   // const endObject = { _end: true }
-  function rulesToObject(ruleIterator) {
-    var obj = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : {};
+  function rulesToObject(ruleIterator, obj) {
+    if (obj === void 0) {
+      obj = {};
+    }
+
     var iteration;
 
     if (!ruleIterator || (iteration = ruleIterator.next()).done) {
@@ -74,24 +75,24 @@ describe('common > main > rx > deep-subscribe > iterate-rule', function () {
     return (0, _iterateRule.subscribeNextRule)(ruleIterator, iteration, function (nextRuleIterator) {
       return rulesToObject(nextRuleIterator, obj);
     }, function (rule, getRuleIterator) {
+      var _Object$assign2;
+
       var newObj = {};
       var unsubscribe = rulesToObject(getRuleIterator ? getRuleIterator() : null, newObj);
-      (0, _assign.default)(obj, (0, _defineProperty2.default)({}, rule.description, newObj));
+      (0, _assign.default)(obj, (_Object$assign2 = {}, _Object$assign2[rule.description] = newObj, _Object$assign2));
       return unsubscribe;
     });
   }
 
-  function objectToPaths(obj, endValue) {
-    var parentPath,
-        keys,
-        count,
-        key,
-        _args = arguments;
+  function objectToPaths(obj, endValue, parentPath) {
+    var keys, count, key;
     return _regenerator.default.wrap(function objectToPaths$(_context) {
       while (1) {
         switch (_context.prev = _context.next) {
           case 0:
-            parentPath = _args.length > 2 && _args[2] !== undefined ? _args[2] : '';
+            if (parentPath === void 0) {
+              parentPath = '';
+            }
 
             _Assert.assert.ok(obj, parentPath);
 

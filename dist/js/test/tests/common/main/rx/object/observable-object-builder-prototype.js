@@ -2,15 +2,7 @@
 
 var _interopRequireDefault = require("@babel/runtime-corejs3/helpers/interopRequireDefault");
 
-var _typeof2 = _interopRequireDefault(require("@babel/runtime-corejs3/helpers/typeof"));
-
-var _classCallCheck2 = _interopRequireDefault(require("@babel/runtime-corejs3/helpers/classCallCheck"));
-
-var _possibleConstructorReturn2 = _interopRequireDefault(require("@babel/runtime-corejs3/helpers/possibleConstructorReturn"));
-
-var _getPrototypeOf2 = _interopRequireDefault(require("@babel/runtime-corejs3/helpers/getPrototypeOf"));
-
-var _inherits2 = _interopRequireDefault(require("@babel/runtime-corejs3/helpers/inherits"));
+var _inheritsLoose2 = _interopRequireDefault(require("@babel/runtime-corejs3/helpers/inheritsLoose"));
 
 var _map = _interopRequireDefault(require("@babel/runtime-corejs3/core-js-stable/instance/map"));
 
@@ -35,11 +27,10 @@ describe('common > main > rx > observable-object-builder-prototype', function ()
     var BaseClass1 =
     /*#__PURE__*/
     function (_ObservableObject) {
-      (0, _inherits2.default)(BaseClass1, _ObservableObject);
+      (0, _inheritsLoose2.default)(BaseClass1, _ObservableObject);
 
       function BaseClass1() {
-        (0, _classCallCheck2.default)(this, BaseClass1);
-        return (0, _possibleConstructorReturn2.default)(this, (0, _getPrototypeOf2.default)(BaseClass1).apply(this, arguments));
+        return _ObservableObject.apply(this, arguments) || this;
       }
 
       return BaseClass1;
@@ -48,11 +39,10 @@ describe('common > main > rx > observable-object-builder-prototype', function ()
     var BaseClass2 =
     /*#__PURE__*/
     function (_BaseClass) {
-      (0, _inherits2.default)(BaseClass2, _BaseClass);
+      (0, _inheritsLoose2.default)(BaseClass2, _BaseClass);
 
       function BaseClass2() {
-        (0, _classCallCheck2.default)(this, BaseClass2);
-        return (0, _possibleConstructorReturn2.default)(this, (0, _getPrototypeOf2.default)(BaseClass2).apply(this, arguments));
+        return _BaseClass.apply(this, arguments) || this;
       }
 
       return BaseClass2;
@@ -61,11 +51,10 @@ describe('common > main > rx > observable-object-builder-prototype', function ()
     var Class1 =
     /*#__PURE__*/
     function (_BaseClass2) {
-      (0, _inherits2.default)(Class1, _BaseClass2);
+      (0, _inheritsLoose2.default)(Class1, _BaseClass2);
 
       function Class1() {
-        (0, _classCallCheck2.default)(this, Class1);
-        return (0, _possibleConstructorReturn2.default)(this, (0, _getPrototypeOf2.default)(Class1).apply(this, arguments));
+        return _BaseClass2.apply(this, arguments) || this;
       }
 
       return Class1;
@@ -74,11 +63,10 @@ describe('common > main > rx > observable-object-builder-prototype', function ()
     var Class2 =
     /*#__PURE__*/
     function (_BaseClass3) {
-      (0, _inherits2.default)(Class2, _BaseClass3);
+      (0, _inheritsLoose2.default)(Class2, _BaseClass3);
 
       function Class2() {
-        (0, _classCallCheck2.default)(this, Class2);
-        return (0, _possibleConstructorReturn2.default)(this, (0, _getPrototypeOf2.default)(Class2).apply(this, arguments));
+        return _BaseClass3.apply(this, arguments) || this;
       }
 
       return Class2;
@@ -124,10 +112,10 @@ describe('common > main > rx > observable-object-builder-prototype', function ()
     var baseUnsubscribe2 = [];
     var unsubscribe1 = [];
     var unsubscribe2 = [];
-    assert.strictEqual((0, _typeof2.default)(baseUnsubscribe1[0] = baseObject1.propertyChanged.subscribe(baseSubscriber1)), 'function');
-    assert.strictEqual((0, _typeof2.default)(baseUnsubscribe2[0] = baseObject2.propertyChanged.subscribe(baseSubscriber2)), 'function');
-    assert.strictEqual((0, _typeof2.default)(unsubscribe1[0] = object1.propertyChanged.subscribe(subscriber1)), 'function');
-    assert.strictEqual((0, _typeof2.default)(unsubscribe2[0] = object2.propertyChanged.subscribe(subscriber2)), 'function');
+    assert.strictEqual(typeof (baseUnsubscribe1[0] = baseObject1.propertyChanged.subscribe(baseSubscriber1)), 'function');
+    assert.strictEqual(typeof (baseUnsubscribe2[0] = baseObject2.propertyChanged.subscribe(baseSubscriber2)), 'function');
+    assert.strictEqual(typeof (unsubscribe1[0] = object1.propertyChanged.subscribe(subscriber1)), 'function');
+    assert.strictEqual(typeof (unsubscribe2[0] = object2.propertyChanged.subscribe(subscriber2)), 'function');
     baseObject1.baseProp1 = '1';
     assertEvents(baseResults1, [{
       name: 'baseProp1',
@@ -231,11 +219,10 @@ describe('common > main > rx > observable-object-builder-prototype', function ()
     var BaseClass1 =
     /*#__PURE__*/
     function (_ObservableObject2) {
-      (0, _inherits2.default)(BaseClass1, _ObservableObject2);
+      (0, _inheritsLoose2.default)(BaseClass1, _ObservableObject2);
 
       function BaseClass1() {
-        (0, _classCallCheck2.default)(this, BaseClass1);
-        return (0, _possibleConstructorReturn2.default)(this, (0, _getPrototypeOf2.default)(BaseClass1).apply(this, arguments));
+        return _ObservableObject2.apply(this, arguments) || this;
       }
 
       return BaseClass1;
@@ -244,11 +231,10 @@ describe('common > main > rx > observable-object-builder-prototype', function ()
     var BaseClass2 =
     /*#__PURE__*/
     function (_BaseClass4) {
-      (0, _inherits2.default)(BaseClass2, _BaseClass4);
+      (0, _inheritsLoose2.default)(BaseClass2, _BaseClass4);
 
       function BaseClass2() {
-        (0, _classCallCheck2.default)(this, BaseClass2);
-        return (0, _possibleConstructorReturn2.default)(this, (0, _getPrototypeOf2.default)(BaseClass2).apply(this, arguments));
+        return _BaseClass4.apply(this, arguments) || this;
       }
 
       return BaseClass2;
@@ -257,11 +243,10 @@ describe('common > main > rx > observable-object-builder-prototype', function ()
     var Class1 =
     /*#__PURE__*/
     function (_BaseClass5) {
-      (0, _inherits2.default)(Class1, _BaseClass5);
+      (0, _inheritsLoose2.default)(Class1, _BaseClass5);
 
       function Class1() {
-        (0, _classCallCheck2.default)(this, Class1);
-        return (0, _possibleConstructorReturn2.default)(this, (0, _getPrototypeOf2.default)(Class1).apply(this, arguments));
+        return _BaseClass5.apply(this, arguments) || this;
       }
 
       return Class1;
@@ -270,11 +255,10 @@ describe('common > main > rx > observable-object-builder-prototype', function ()
     var Class2 =
     /*#__PURE__*/
     function (_BaseClass6) {
-      (0, _inherits2.default)(Class2, _BaseClass6);
+      (0, _inheritsLoose2.default)(Class2, _BaseClass6);
 
       function Class2() {
-        (0, _classCallCheck2.default)(this, Class2);
-        return (0, _possibleConstructorReturn2.default)(this, (0, _getPrototypeOf2.default)(Class2).apply(this, arguments));
+        return _BaseClass6.apply(this, arguments) || this;
       }
 
       return Class2;
@@ -320,10 +304,10 @@ describe('common > main > rx > observable-object-builder-prototype', function ()
     var baseUnsubscribe2 = [];
     var unsubscribe1 = [];
     var unsubscribe2 = [];
-    assert.strictEqual((0, _typeof2.default)(baseUnsubscribe1[0] = baseObject1.propertyChanged.subscribe(baseSubscriber1)), 'function');
-    assert.strictEqual((0, _typeof2.default)(baseUnsubscribe2[0] = baseObject2.propertyChanged.subscribe(baseSubscriber2)), 'function');
-    assert.strictEqual((0, _typeof2.default)(unsubscribe1[0] = object1.propertyChanged.subscribe(subscriber1)), 'function');
-    assert.strictEqual((0, _typeof2.default)(unsubscribe2[0] = object2.propertyChanged.subscribe(subscriber2)), 'function');
+    assert.strictEqual(typeof (baseUnsubscribe1[0] = baseObject1.propertyChanged.subscribe(baseSubscriber1)), 'function');
+    assert.strictEqual(typeof (baseUnsubscribe2[0] = baseObject2.propertyChanged.subscribe(baseSubscriber2)), 'function');
+    assert.strictEqual(typeof (unsubscribe1[0] = object1.propertyChanged.subscribe(subscriber1)), 'function');
+    assert.strictEqual(typeof (unsubscribe2[0] = object2.propertyChanged.subscribe(subscriber2)), 'function');
     baseBuilder1.readable('baseProp1', null, '1');
     assertEvents(baseResults1, []);
     baseResults1 = [];

@@ -2,8 +2,6 @@
 
 var _interopRequireDefault = require("@babel/runtime-corejs3/helpers/interopRequireDefault");
 
-var _typeof2 = _interopRequireDefault(require("@babel/runtime-corejs3/helpers/typeof"));
-
 var _splice = _interopRequireDefault(require("@babel/runtime-corejs3/core-js-stable/instance/splice"));
 
 var _indexOf = _interopRequireDefault(require("@babel/runtime-corejs3/core-js-stable/instance/index-of"));
@@ -36,7 +34,7 @@ describe('common > main > rx > subjects > hasSubscribers', function () {
     };
 
     var hasSubscribersUnsubscribe = [];
-    assert.strictEqual((0, _typeof2.default)(hasSubscribersUnsubscribe[0] = subject.hasSubscribersObservable.subscribe(hasSubscribersSubscriber)), 'function');
+    assert.strictEqual(typeof (hasSubscribersUnsubscribe[0] = subject.hasSubscribersObservable.subscribe(hasSubscribersSubscriber)), 'function');
     assert.deepStrictEqual(hasSubscribers, [false]);
     hasSubscribers = [];
     assert.strictEqual(subject.hasSubscribers, false);
@@ -48,7 +46,7 @@ describe('common > main > rx > subjects > hasSubscribers', function () {
     };
 
     var unsubscribe = [];
-    assert.strictEqual((0, _typeof2.default)(unsubscribe[0] = subject.subscribe(subscriber)), 'function');
+    assert.strictEqual(typeof (unsubscribe[0] = subject.subscribe(subscriber)), 'function');
     assert.deepStrictEqual(results, []);
     assert.deepStrictEqual(hasSubscribers, [true]);
     hasSubscribers = [];
@@ -59,7 +57,7 @@ describe('common > main > rx > subjects > hasSubscribers', function () {
     assert.strictEqual(subject.emit('2'), subject);
     assert.deepStrictEqual(results, ['2']);
     results = [];
-    assert.strictEqual((0, _typeof2.default)(hasSubscribersUnsubscribe[0] = subject.hasSubscribersObservable.subscribe(hasSubscribersSubscriber)), 'function');
+    assert.strictEqual(typeof (hasSubscribersUnsubscribe[0] = subject.hasSubscribersObservable.subscribe(hasSubscribersSubscriber)), 'function');
     assert.deepStrictEqual(hasSubscribers, [true]);
     hasSubscribers = [];
     assert.strictEqual(subject.emit('3'), subject);
@@ -77,10 +75,10 @@ describe('common > main > rx > subjects > hasSubscribers', function () {
     assert.strictEqual(subject.emit('5'), subject);
     assert.deepStrictEqual(results, []);
     assert.deepStrictEqual(hasSubscribers, []);
-    assert.strictEqual((0, _typeof2.default)(unsubscribe[0] = subject.subscribe(subscriber)), 'function');
+    assert.strictEqual(typeof (unsubscribe[0] = subject.subscribe(subscriber)), 'function');
     assert.deepStrictEqual(hasSubscribers, [true]);
     hasSubscribers = [];
-    assert.strictEqual((0, _typeof2.default)(unsubscribe[1] = subject.subscribe(subscriber)), 'function');
+    assert.strictEqual(typeof (unsubscribe[1] = subject.subscribe(subscriber)), 'function');
     assert.deepStrictEqual(hasSubscribers, []);
     assert.strictEqual(hasSubscribersUnsubscribe[0](), undefined);
     assert.deepStrictEqual(hasSubscribers, [null]);

@@ -1,11 +1,6 @@
 "use strict";
 
-var _Object$defineProperty = require("@babel/runtime-corejs3/core-js-stable/object/define-property");
-
-_Object$defineProperty(exports, "__esModule", {
-  value: true
-});
-
+exports.__esModule = true;
 exports.VALUE_PROPERTY_PREFIX = exports.COLLECTION_PREFIX = exports.ANY_DISPLAY = exports.ANY = void 0;
 var ANY = '*';
 exports.ANY = ANY;

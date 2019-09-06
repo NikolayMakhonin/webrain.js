@@ -2,19 +2,12 @@
 
 var _interopRequireDefault = require("@babel/runtime-corejs3/helpers/interopRequireDefault");
 
-var _Object$defineProperty2 = require("@babel/runtime-corejs3/core-js-stable/object/define-property");
-
-_Object$defineProperty2(exports, "__esModule", {
-  value: true
-});
-
+exports.__esModule = true;
 exports.compareDefault = compareDefault;
 
 var _asyncToGenerator2 = _interopRequireDefault(require("@babel/runtime-corejs3/helpers/asyncToGenerator"));
 
 var _now = _interopRequireDefault(require("@babel/runtime-corejs3/core-js-stable/date/now"));
-
-var _classCallCheck2 = _interopRequireDefault(require("@babel/runtime-corejs3/helpers/classCallCheck"));
 
 var _createClass2 = _interopRequireDefault(require("@babel/runtime-corejs3/helpers/createClass"));
 
@@ -26,13 +19,11 @@ var _isIterable2 = _interopRequireDefault(require("@babel/runtime-corejs3/core-j
 
 var _getIteratorMethod2 = _interopRequireDefault(require("@babel/runtime-corejs3/core-js/get-iterator-method"));
 
-var _defineProperty2 = _interopRequireDefault(require("@babel/runtime-corejs3/helpers/defineProperty"));
-
 var _regenerator = _interopRequireDefault(require("@babel/runtime-corejs3/regenerator"));
 
 var _iterator4 = _interopRequireDefault(require("@babel/runtime-corejs3/core-js-stable/symbol/iterator"));
 
-var _defineProperty3 = _interopRequireDefault(require("@babel/runtime-corejs3/core-js-stable/object/define-property"));
+var _defineProperty = _interopRequireDefault(require("@babel/runtime-corejs3/core-js-stable/object/define-property"));
 
 var _setTimeout2 = _interopRequireDefault(require("@babel/runtime-corejs3/core-js-stable/set-timeout"));
 
@@ -44,11 +35,9 @@ var _indexOf = _interopRequireDefault(require("@babel/runtime-corejs3/core-js-st
 
 var _values = _interopRequireDefault(require("@babel/runtime-corejs3/core-js-stable/object/values"));
 
-var _typeof2 = _interopRequireDefault(require("@babel/runtime-corejs3/helpers/typeof"));
+var _concat = _interopRequireDefault(require("@babel/runtime-corejs3/core-js-stable/instance/concat"));
 
 var _stringify = _interopRequireDefault(require("@babel/runtime-corejs3/core-js-stable/json/stringify"));
-
-var _concat = _interopRequireDefault(require("@babel/runtime-corejs3/core-js-stable/instance/concat"));
 
 var _sort = _interopRequireDefault(require("@babel/runtime-corejs3/core-js-stable/instance/sort"));
 
@@ -60,7 +49,7 @@ var _slice = _interopRequireDefault(require("@babel/runtime-corejs3/core-js-stab
 
 var _getIterator2 = _interopRequireDefault(require("@babel/runtime-corejs3/core-js/get-iterator"));
 
-var _isArray = _interopRequireDefault(require("@babel/runtime-corejs3/core-js-stable/array/is-array"));
+var _isArray4 = _interopRequireDefault(require("@babel/runtime-corejs3/core-js-stable/array/is-array"));
 
 var _set = _interopRequireDefault(require("@babel/runtime-corejs3/core-js-stable/set"));
 
@@ -196,29 +185,21 @@ describe('fundamental-operations', function () {
           return output;
         }
 
-        if ((0, _isArray.default)(inputItems)) {
-          var _iteratorNormalCompletion = true;
-          var _didIteratorError = false;
-          var _iteratorError = undefined;
+        if ((0, _isArray4.default)(inputItems)) {
+          for (var _iterator = inputItems, _isArray = (0, _isArray4.default)(_iterator), _i = 0, _iterator = _isArray ? _iterator : (0, _getIterator2.default)(_iterator);;) {
+            var _ref2;
 
-          try {
-            for (var _iterator = (0, _getIterator2.default)(inputItems), _step; !(_iteratorNormalCompletion = (_step = _iterator.next()).done); _iteratorNormalCompletion = true) {
-              var item = _step.value;
-              expandAndDistinct(item, output, map);
+            if (_isArray) {
+              if (_i >= _iterator.length) break;
+              _ref2 = _iterator[_i++];
+            } else {
+              _i = _iterator.next();
+              if (_i.done) break;
+              _ref2 = _i.value;
             }
-          } catch (err) {
-            _didIteratorError = true;
-            _iteratorError = err;
-          } finally {
-            try {
-              if (!_iteratorNormalCompletion && _iterator.return != null) {
-                _iterator.return();
-              }
-            } finally {
-              if (_didIteratorError) {
-                throw _iteratorError;
-              }
-            }
+
+            var item = _ref2;
+            expandAndDistinct(item, output, map);
           }
 
           return output;
@@ -252,29 +233,21 @@ describe('fundamental-operations', function () {
           return output;
         }
 
-        if ((0, _isArray.default)(inputItems)) {
-          var _iteratorNormalCompletion2 = true;
-          var _didIteratorError2 = false;
-          var _iteratorError2 = undefined;
+        if ((0, _isArray4.default)(inputItems)) {
+          for (var _iterator2 = inputItems, _isArray2 = (0, _isArray4.default)(_iterator2), _i2 = 0, _iterator2 = _isArray2 ? _iterator2 : (0, _getIterator2.default)(_iterator2);;) {
+            var _ref3;
 
-          try {
-            for (var _iterator2 = (0, _getIterator2.default)(inputItems), _step2; !(_iteratorNormalCompletion2 = (_step2 = _iterator2.next()).done); _iteratorNormalCompletion2 = true) {
-              var item = _step2.value;
-              expandAndDistinct(item, output, map);
+            if (_isArray2) {
+              if (_i2 >= _iterator2.length) break;
+              _ref3 = _iterator2[_i2++];
+            } else {
+              _i2 = _iterator2.next();
+              if (_i2.done) break;
+              _ref3 = _i2.value;
             }
-          } catch (err) {
-            _didIteratorError2 = true;
-            _iteratorError2 = err;
-          } finally {
-            try {
-              if (!_iteratorNormalCompletion2 && _iterator2.return != null) {
-                _iterator2.return();
-              }
-            } finally {
-              if (_didIteratorError2) {
-                throw _iteratorError2;
-              }
-            }
+
+            var item = _ref3;
+            expandAndDistinct(item, output, map);
           }
 
           return output;
@@ -735,19 +708,17 @@ describe('fundamental-operations', function () {
   }
 
   function printSortCompareCount(array, addArray) {
-    var _context, _context2, _context3;
-
     var sortCount = calcSortCompareCount(array, array.length, addArray);
     var binarySearchCount = calcBinarySearchCount(array, array.length, addArray);
-    console.log((0, _concat.default)(_context = (0, _concat.default)(_context2 = (0, _concat.default)(_context3 = "".concat(sortCount, "\t")).call(_context3, binarySearchCount, "\t")).call(_context2, (0, _stringify.default)(array), "\t")).call(_context, (0, _stringify.default)(addArray)));
+    console.log(sortCount + "\t" + binarySearchCount + "\t" + (0, _stringify.default)(array) + "\t" + (0, _stringify.default)(addArray));
   }
 
   xit('sorted array add items', function () {
-    var _context4;
+    var _context;
 
     this.timeout(300000);
     var array = [];
-    var addArray = (0, _sort.default)(_context4 = generateArray(1000)).call(_context4, function (o1, o2) {
+    var addArray = (0, _sort.default)(_context = generateArray(1000)).call(_context, function (o1, o2) {
       return Math.random() > 0.5 ? -1 : 1;
     }); // [-3, -1, -2, 1, 9, -4, 7, -6, 11]
 
@@ -756,17 +727,17 @@ describe('fundamental-operations', function () {
 
     var result = (0, _rdtsc.calcPerformance)(10000, function () {// no operations
     }, function () {
-      var _context5;
+      var _context2;
 
-      resultArray = (0, _concat.default)(_context5 = (0, _slice.default)(array).call(array)).call(_context5, (0, _map.default)(addArray).call(addArray, function (o) {
+      resultArray = (0, _concat.default)(_context2 = (0, _slice.default)(array).call(array)).call(_context2, (0, _map.default)(addArray).call(addArray, function (o) {
         return 0;
       }));
     }, function () {
       return calcSortCompareCount(resultArray, array.length, addArray);
     }, function () {
-      var _context6;
+      var _context3;
 
-      resultArray = (0, _concat.default)(_context6 = (0, _slice.default)(array).call(array)).call(_context6, (0, _map.default)(addArray).call(addArray, function (o) {
+      resultArray = (0, _concat.default)(_context3 = (0, _slice.default)(array).call(array)).call(_context3, (0, _map.default)(addArray).call(addArray, function (o) {
         return 0;
       }));
     }, function () {
@@ -845,10 +816,10 @@ describe('fundamental-operations', function () {
       return (0, _objectUniqueId.getObjectUniqueId)(obj);
     }, // -11
     function () {
-      return (0, _typeof2.default)(obj) === 'object';
+      return typeof obj === 'object';
     }, // 146
     function () {
-      return (0, _typeof2.default)(obj) === 'symbol';
+      return typeof obj === 'symbol';
     } // 150
     );
     console.log(result);
@@ -868,36 +839,28 @@ describe('fundamental-operations', function () {
     }
 
     function testSet(addObject, removeObject, getIterableValues) {
-      for (var _i = 0; _i < countObject; _i++) {
-        addObject(objects[_i]);
+      for (var _i3 = 0; _i3 < countObject; _i3++) {
+        addObject(objects[_i3]);
       }
 
-      for (var _i2 = 0; _i2 < countObject; _i2++) {
+      for (var _i4 = 0; _i4 < countObject; _i4++) {
         // for (let i = 99; i >= 0; i--) {
-        removeObject(objects[_i2]);
+        removeObject(objects[_i4]);
       }
 
-      var _iteratorNormalCompletion3 = true;
-      var _didIteratorError3 = false;
-      var _iteratorError3 = undefined;
+      for (var _iterator3 = getIterableValues(), _isArray3 = (0, _isArray4.default)(_iterator3), _i5 = 0, _iterator3 = _isArray3 ? _iterator3 : (0, _getIterator2.default)(_iterator3);;) {
+        var _ref4;
 
-      try {
-        for (var _iterator3 = (0, _getIterator2.default)(getIterableValues()), _step3; !(_iteratorNormalCompletion3 = (_step3 = _iterator3.next()).done); _iteratorNormalCompletion3 = true) {
-          var _value = _step3.value;
+        if (_isArray3) {
+          if (_i5 >= _iterator3.length) break;
+          _ref4 = _iterator3[_i5++];
+        } else {
+          _i5 = _iterator3.next();
+          if (_i5.done) break;
+          _ref4 = _i5.value;
         }
-      } catch (err) {
-        _didIteratorError3 = true;
-        _iteratorError3 = err;
-      } finally {
-        try {
-          if (!_iteratorNormalCompletion3 && _iterator3.return != null) {
-            _iterator3.return();
-          }
-        } finally {
-          if (_didIteratorError3) {
-            throw _iteratorError3;
-          }
-        }
+
+        var _value = _ref4;
       }
     } // const set1 = new Set()
     // const set2 = {}
@@ -1235,12 +1198,12 @@ describe('fundamental-operations', function () {
       return param0 || param1 || param2 || param3;
     };
 
-    var funcObjectParams = function funcObjectParams() {
-      var _ref2 = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : {},
-          param0 = _ref2.param0,
-          param1 = _ref2.param1,
-          param2 = _ref2.param2,
-          param3 = _ref2.param3;
+    var funcObjectParams = function funcObjectParams(_temp) {
+      var _ref5 = _temp === void 0 ? {} : _temp,
+          param0 = _ref5.param0,
+          param1 = _ref5.param1,
+          param2 = _ref5.param2,
+          param3 = _ref5.param3;
 
       return param0 || param1 || param2 || param3;
     };
@@ -1284,9 +1247,9 @@ describe('fundamental-operations', function () {
     var arrConstructor = new Array(size);
     var arrConstructorFilled = new Array(size);
 
-    for (var _i3 = 0; _i3 < size; _i3++) {
-      arrSimple[_i3] = undefined;
-      arrConstructorFilled[_i3] = undefined;
+    for (var _i6 = 0; _i6 < size; _i6++) {
+      arrSimple[_i6] = undefined;
+      arrConstructorFilled[_i6] = undefined;
     }
 
     var i = size / 2 | 0;
@@ -1309,7 +1272,7 @@ describe('fundamental-operations', function () {
 
   function defineProperty(obj, propertyName) {
     obj[propertyName] = 0;
-    (0, _defineProperty3.default)(obj, propertyName, {
+    (0, _defineProperty.default)(obj, propertyName, {
       configurable: true,
       enumerable: false,
       writable: true,
@@ -1319,7 +1282,7 @@ describe('fundamental-operations', function () {
 
   function definePropertyGetSet(obj, propertyName) {
     obj[propertyName] = 0;
-    (0, _defineProperty3.default)(obj, propertyName, {
+    (0, _defineProperty.default)(obj, propertyName, {
       configurable: true,
       enumerable: false,
       get: function get() {
@@ -1428,50 +1391,52 @@ describe('fundamental-operations', function () {
     console.log(result);
   });
   xit('is iterable', function () {
+    var _iterable;
+
     this.timeout(300000);
     var iterable = true;
-    var iterable2 = (0, _defineProperty2.default)({}, _iterator4.default,
+    var iterable2 = (_iterable = {}, _iterable[_iterator4.default] =
     /*#__PURE__*/
     _regenerator.default.mark(function _callee() {
       var i;
-      return _regenerator.default.wrap(function _callee$(_context7) {
+      return _regenerator.default.wrap(function _callee$(_context4) {
         while (1) {
-          switch (_context7.prev = _context7.next) {
+          switch (_context4.prev = _context4.next) {
             case 0:
               i = 0;
 
             case 1:
               if (!(i < 100)) {
-                _context7.next = 7;
+                _context4.next = 7;
                 break;
               }
 
               if (!(Math.random() > 1)) {
-                _context7.next = 4;
+                _context4.next = 4;
                 break;
               }
 
-              return _context7.abrupt("return", 2);
+              return _context4.abrupt("return", 2);
 
             case 4:
               i++;
-              _context7.next = 1;
+              _context4.next = 1;
               break;
 
             case 7:
-              _context7.next = 9;
+              _context4.next = 9;
               return 1;
 
             case 9:
-              return _context7.abrupt("return", 0);
+              return _context4.abrupt("return", 0);
 
             case 10:
             case "end":
-              return _context7.stop();
+              return _context4.stop();
           }
         }
       }, _callee);
-    }));
+    }), _iterable);
     var result = (0, _rdtsc.calcPerformance)(20000, function () {// no operations
     }, // () => {
     // 	return iterable && Symbol.iterator in iterable
@@ -1543,9 +1508,7 @@ describe('fundamental-operations', function () {
     var Class =
     /*#__PURE__*/
     function () {
-      function Class() {
-        (0, _classCallCheck2.default)(this, Class);
-      }
+      function Class() {}
 
       (0, _createClass2.default)(Class, [{
         key: "value",
@@ -1560,7 +1523,7 @@ describe('fundamental-operations', function () {
     }();
 
     var obj = new Class();
-    (0, _defineProperty3.default)(obj, 'manual', {
+    (0, _defineProperty.default)(obj, 'manual', {
       configurable: true,
       enumerable: true,
       get: function get() {
@@ -1570,7 +1533,7 @@ describe('fundamental-operations', function () {
         this._manual = value;
       }
     });
-    (0, _defineProperty3.default)(obj, 'hidden', {
+    (0, _defineProperty.default)(obj, 'hidden', {
       configurable: true,
       enumerable: false,
       writable: true,
@@ -1709,8 +1672,11 @@ describe('fundamental-operations', function () {
     console.log(result);
   });
 
-  function calcCountPerSecond(func) {
-    var maxTime = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : 10000;
+  function calcCountPerSecond(func, maxTime) {
+    if (maxTime === void 0) {
+      maxTime = 10000;
+    }
+
     var time0 = (0, _now.default)();
     var time;
     var count = 0;
@@ -1724,50 +1690,48 @@ describe('fundamental-operations', function () {
     return count / (time / 1000);
   }
 
-  function calcCountPerSecondAsync(_x) {
+  function calcCountPerSecondAsync(_x, _x2) {
     return _calcCountPerSecondAsync.apply(this, arguments);
   }
 
   function _calcCountPerSecondAsync() {
     _calcCountPerSecondAsync = (0, _asyncToGenerator2.default)(
     /*#__PURE__*/
-    _regenerator.default.mark(function _callee6(func) {
-      var maxTime,
-          time0,
-          time,
-          count,
-          result,
-          _args7 = arguments;
-      return _regenerator.default.wrap(function _callee6$(_context13) {
+    _regenerator.default.mark(function _callee6(func, maxTime) {
+      var time0, time, count, result;
+      return _regenerator.default.wrap(function _callee6$(_context10) {
         while (1) {
-          switch (_context13.prev = _context13.next) {
+          switch (_context10.prev = _context10.next) {
             case 0:
-              maxTime = _args7.length > 1 && _args7[1] !== undefined ? _args7[1] : 10000;
+              if (maxTime === void 0) {
+                maxTime = 10000;
+              }
+
               time0 = (0, _now.default)();
               count = 0;
               result = 0;
 
             case 4:
-              _context13.t0 = result;
-              _context13.next = 7;
+              _context10.t0 = result;
+              _context10.next = 7;
               return func();
 
             case 7:
-              result = _context13.t0 += _context13.sent;
+              result = _context10.t0 += _context10.sent;
               count++;
 
             case 9:
               if ((time = (0, _now.default)() - time0) < maxTime) {
-                _context13.next = 4;
+                _context10.next = 4;
                 break;
               }
 
             case 10:
-              return _context13.abrupt("return", count / (time / 1000));
+              return _context10.abrupt("return", count / (time / 1000));
 
             case 11:
             case "end":
-              return _context13.stop();
+              return _context10.stop();
           }
         }
       }, _callee6);
@@ -1782,80 +1746,80 @@ describe('fundamental-operations', function () {
   _regenerator.default.mark(function _callee5() {
     var _marked, nestedPromise, _nestedPromise, nestedIterator;
 
-    return _regenerator.default.wrap(function _callee5$(_context12) {
+    return _regenerator.default.wrap(function _callee5$(_context9) {
       while (1) {
-        switch (_context12.prev = _context12.next) {
+        switch (_context9.prev = _context9.next) {
           case 0:
-            nestedIterator = function _ref7() {
-              return _regenerator.default.wrap(function nestedIterator$(_context9) {
+            nestedIterator = function _ref10() {
+              return _regenerator.default.wrap(function nestedIterator$(_context6) {
                 while (1) {
-                  switch (_context9.prev = _context9.next) {
+                  switch (_context6.prev = _context6.next) {
                     case 0:
-                      _context9.next = 2;
+                      _context6.next = 2;
                       return 1;
 
                     case 2:
-                      _context9.next = 4;
+                      _context6.next = 4;
                       return 2;
 
                     case 4:
-                      _context9.next = 6;
+                      _context6.next = 6;
                       return 3;
 
                     case 6:
-                      _context9.next = 8;
+                      _context6.next = 8;
                       return 4;
 
                     case 8:
-                      _context9.next = 10;
+                      _context6.next = 10;
                       return 5;
 
                     case 10:
-                      _context9.next = 12;
+                      _context6.next = 12;
                       return 6;
 
                     case 12:
                     case "end":
-                      return _context9.stop();
+                      return _context6.stop();
                   }
                 }
               }, _marked);
             };
 
-            _nestedPromise = function _ref6() {
+            _nestedPromise = function _ref9() {
               _nestedPromise = (0, _asyncToGenerator2.default)(
               /*#__PURE__*/
               _regenerator.default.mark(function _callee4() {
-                return _regenerator.default.wrap(function _callee4$(_context11) {
+                return _regenerator.default.wrap(function _callee4$(_context8) {
                   while (1) {
-                    switch (_context11.prev = _context11.next) {
+                    switch (_context8.prev = _context8.next) {
                       case 0:
-                        _context11.next = 2;
+                        _context8.next = 2;
                         return 1;
 
                       case 2:
-                        _context11.next = 4;
+                        _context8.next = 4;
                         return 2;
 
                       case 4:
-                        _context11.next = 6;
+                        _context8.next = 6;
                         return 3;
 
                       case 6:
-                        _context11.next = 8;
+                        _context8.next = 8;
                         return 4;
 
                       case 8:
-                        _context11.next = 10;
+                        _context8.next = 10;
                         return 5;
 
                       case 10:
-                        _context11.next = 12;
+                        _context8.next = 12;
                         return 6;
 
                       case 12:
                       case "end":
-                        return _context11.stop();
+                        return _context8.stop();
                     }
                   }
                 }, _callee4);
@@ -1863,7 +1827,7 @@ describe('fundamental-operations', function () {
               return _nestedPromise.apply(this, arguments);
             };
 
-            nestedPromise = function _ref5() {
+            nestedPromise = function _ref8() {
               return _nestedPromise.apply(this, arguments);
             };
 
@@ -1871,94 +1835,94 @@ describe('fundamental-operations', function () {
             /*#__PURE__*/
             _regenerator.default.mark(nestedIterator);
             this.timeout(300000);
-            _context12.t0 = console;
-            _context12.next = 8;
+            _context9.t0 = console;
+            _context9.next = 8;
             return calcCountPerSecondAsync(
             /*#__PURE__*/
             (0, _asyncToGenerator2.default)(
             /*#__PURE__*/
             _regenerator.default.mark(function _callee2() {
-              return _regenerator.default.wrap(function _callee2$(_context8) {
+              return _regenerator.default.wrap(function _callee2$(_context5) {
                 while (1) {
-                  switch (_context8.prev = _context8.next) {
+                  switch (_context5.prev = _context5.next) {
                     case 0:
-                      _context8.next = 2;
+                      _context5.next = 2;
                       return 1;
 
                     case 2:
-                      _context8.next = 4;
+                      _context5.next = 4;
                       return 2;
 
                     case 4:
-                      _context8.next = 6;
+                      _context5.next = 6;
                       return 3;
 
                     case 6:
-                      _context8.next = 8;
+                      _context5.next = 8;
                       return 4;
 
                     case 8:
-                      _context8.next = 10;
+                      _context5.next = 10;
                       return 5;
 
                     case 10:
-                      _context8.next = 12;
+                      _context5.next = 12;
                       return 6;
 
                     case 12:
-                      _context8.next = 14;
+                      _context5.next = 14;
                       return nestedPromise();
 
                     case 14:
                     case "end":
-                      return _context8.stop();
+                      return _context5.stop();
                   }
                 }
               }, _callee2);
             })));
 
           case 8:
-            _context12.t1 = _context12.sent;
+            _context9.t1 = _context9.sent;
 
-            _context12.t0.log.call(_context12.t0, 'async/await: ', _context12.t1);
+            _context9.t0.log.call(_context9.t0, 'async/await: ', _context9.t1);
 
             console.log('ThenableSync: ', calcCountPerSecond(
             /*#__PURE__*/
             _regenerator.default.mark(function _callee3() {
-              return _regenerator.default.wrap(function _callee3$(_context10) {
+              return _regenerator.default.wrap(function _callee3$(_context7) {
                 while (1) {
-                  switch (_context10.prev = _context10.next) {
+                  switch (_context7.prev = _context7.next) {
                     case 0:
-                      _context10.next = 2;
+                      _context7.next = 2;
                       return 1;
 
                     case 2:
-                      _context10.next = 4;
+                      _context7.next = 4;
                       return 2;
 
                     case 4:
-                      _context10.next = 6;
+                      _context7.next = 6;
                       return 3;
 
                     case 6:
-                      _context10.next = 8;
+                      _context7.next = 8;
                       return 4;
 
                     case 8:
-                      _context10.next = 10;
+                      _context7.next = 10;
                       return 5;
 
                     case 10:
-                      _context10.next = 12;
+                      _context7.next = 12;
                       return 6;
 
                     case 12:
-                      _context10.next = 14;
+                      _context7.next = 14;
                       return nestedIterator();
 
                     case 14:
                     case "end":
-                      return _context10.stop();
+                      return _context7.stop();
                   }
                 }
               }, _callee3);
@@ -1966,7 +1930,7 @@ describe('fundamental-operations', function () {
 
           case 11:
           case "end":
-            return _context12.stop();
+            return _context9.stop();
         }
       }
     }, _callee5, this);
@@ -2026,22 +1990,21 @@ describe('fundamental-operations', function () {
     /*#__PURE__*/
     function () {
       function ResolvePropertiesPath(value) {
-        (0, _classCallCheck2.default)(this, ResolvePropertiesPath);
         this.value = value;
       }
 
-      (0, _createClass2.default)(ResolvePropertiesPath, [{
-        key: "get",
-        value: function get(key) {
-          var value = this.value;
+      var _proto = ResolvePropertiesPath.prototype;
 
-          if (value != null) {
-            this.value = value = value[key];
-          }
+      _proto.get = function get(key) {
+        var value = this.value;
 
-          return this;
+        if (value != null) {
+          this.value = value = value[key];
         }
-      }]);
+
+        return this;
+      };
+
       return ResolvePropertiesPath;
     }();
 
@@ -2105,7 +2068,6 @@ describe('fundamental-operations', function () {
     var optimizationAfter = 100;
 
     var ObservableObjectTest = function ObservableObjectTest() {
-      (0, _classCallCheck2.default)(this, ObservableObjectTest);
       this.__fields = {};
     };
 
@@ -2153,45 +2115,44 @@ describe('fundamental-operations', function () {
     /*#__PURE__*/
     function () {
       function ObservableObjectBuilderTest(object) {
-        (0, _classCallCheck2.default)(this, ObservableObjectBuilderTest);
         this.object = object || new ObservableObjectTest();
       }
 
-      (0, _createClass2.default)(ObservableObjectBuilderTest, [{
-        key: "writable",
-        value: function writable(name) {
-          var getValue = (0, _helpers.createFunction)('o', "return o.__fields[\"".concat(name, "\"]"));
-          var setValue = (0, _helpers.createFunction)('o', 'v', "o.__fields[\"".concat(name, "\"] = v")); // let getValue = createGetFunction(name, o => { getValue = o as any }) as (o: { [newProp in Name]: T }) => T
-          // const getValue = getValueBase.bind(null, name)
-          // const setValue = createSetFunction(name) as (o: { [newProp in Name]: T }, v: T) => void
+      var _proto2 = ObservableObjectBuilderTest.prototype;
 
-          if (withOptimization) {
-            (0, _defineProperty3.default)(ObservableObjectTest.prototype, name, {
-              configurable: true,
-              enumerable: true,
-              get: function get() {
-                return getValue(this);
-              },
-              set: function set(newValue) {
-                setValue(this, newValue);
-              }
-            });
-          } else {
-            (0, _defineProperty3.default)(ObservableObjectTest.prototype, name, {
-              configurable: true,
-              enumerable: true,
-              get: function get() {
-                return this.__fields[name];
-              },
-              set: function set(newValue) {
-                this.__fields[name] = newValue;
-              }
-            });
-          }
+      _proto2.writable = function writable(name) {
+        var getValue = (0, _helpers.createFunction)('o', "return o.__fields[\"" + name + "\"]");
+        var setValue = (0, _helpers.createFunction)('o', 'v', "o.__fields[\"" + name + "\"] = v"); // let getValue = createGetFunction(name, o => { getValue = o as any }) as (o: { [newProp in Name]: T }) => T
+        // const getValue = getValueBase.bind(null, name)
+        // const setValue = createSetFunction(name) as (o: { [newProp in Name]: T }, v: T) => void
 
-          return this;
+        if (withOptimization) {
+          (0, _defineProperty.default)(ObservableObjectTest.prototype, name, {
+            configurable: true,
+            enumerable: true,
+            get: function get() {
+              return getValue(this);
+            },
+            set: function set(newValue) {
+              setValue(this, newValue);
+            }
+          });
+        } else {
+          (0, _defineProperty.default)(ObservableObjectTest.prototype, name, {
+            configurable: true,
+            enumerable: true,
+            get: function get() {
+              return this.__fields[name];
+            },
+            set: function set(newValue) {
+              this.__fields[name] = newValue;
+            }
+          });
         }
-      }]);
+
+        return this;
+      };
+
       return ObservableObjectBuilderTest;
     }();
 

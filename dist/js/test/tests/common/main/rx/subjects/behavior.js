@@ -1,9 +1,5 @@
 "use strict";
 
-var _interopRequireDefault = require("@babel/runtime-corejs3/helpers/interopRequireDefault");
-
-var _typeof2 = _interopRequireDefault(require("@babel/runtime-corejs3/helpers/typeof"));
-
 var _behavior = require("../../../../../../main/common/rx/subjects/behavior");
 
 var _TestSubject = require("../src/TestSubject");
@@ -23,29 +19,29 @@ describe('common > main > rx > subjects > behavior', function () {
     };
 
     var unsubscribe = [];
-    assert.strictEqual((0, _typeof2.default)(unsubscribe[0] = subject.subscribe(subscriber)), 'function');
+    assert.strictEqual(typeof (unsubscribe[0] = subject.subscribe(subscriber)), 'function');
     assert.deepStrictEqual(results, []);
     assert.strictEqual(unsubscribe[0](), undefined);
     assert.deepStrictEqual(results, []);
     assert.strictEqual(subject.emit('1'), subject);
-    assert.strictEqual((0, _typeof2.default)(unsubscribe[0] = subject.subscribe(subscriber)), 'function');
+    assert.strictEqual(typeof (unsubscribe[0] = subject.subscribe(subscriber)), 'function');
     assert.deepStrictEqual(results, ['1']);
     results = [];
     assert.strictEqual(unsubscribe[0](), undefined);
     assert.deepStrictEqual(results, []);
-    assert.strictEqual((0, _typeof2.default)(unsubscribe[0] = subject.subscribe(subscriber)), 'function');
+    assert.strictEqual(typeof (unsubscribe[0] = subject.subscribe(subscriber)), 'function');
     assert.deepStrictEqual(results, ['1']);
     results = [];
     assert.strictEqual(unsubscribe[0](), undefined);
     assert.deepStrictEqual(results, []);
     subject = new ((0, _behavior.behavior)(_TestSubject.TestSubject))(null);
-    assert.strictEqual((0, _typeof2.default)(unsubscribe[0] = subject.subscribe(subscriber)), 'function');
+    assert.strictEqual(typeof (unsubscribe[0] = subject.subscribe(subscriber)), 'function');
     assert.deepStrictEqual(results, [null]);
     results = [];
     assert.strictEqual(unsubscribe[0](), undefined);
     assert.deepStrictEqual(results, []);
     subject = new ((0, _behavior.behavior)(_TestSubject.TestSubject))('1');
-    assert.strictEqual((0, _typeof2.default)(unsubscribe[0] = subject.subscribe(subscriber)), 'function');
+    assert.strictEqual(typeof (unsubscribe[0] = subject.subscribe(subscriber)), 'function');
     assert.deepStrictEqual(results, ['1']);
     results = [];
     assert.strictEqual(subject.emit('2'), subject);
@@ -61,8 +57,8 @@ describe('common > main > rx > subjects > behavior', function () {
     assert.strictEqual(unsubscribe[0](), undefined);
     assert.strictEqual(subject.emit('5'), subject);
     assert.deepStrictEqual(results, []);
-    assert.strictEqual((0, _typeof2.default)(unsubscribe[0] = subject.subscribe(subscriber)), 'function');
-    assert.strictEqual((0, _typeof2.default)(unsubscribe[1] = subject.subscribe(subscriber)), 'function');
+    assert.strictEqual(typeof (unsubscribe[0] = subject.subscribe(subscriber)), 'function');
+    assert.strictEqual(typeof (unsubscribe[1] = subject.subscribe(subscriber)), 'function');
     assert.strictEqual(subject.emit('6'), subject);
     assert.deepStrictEqual(results, ['5', '5', '6', '6']);
     results = [];

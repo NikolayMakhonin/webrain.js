@@ -4,6 +4,8 @@ var _interopRequireDefault = require("@babel/runtime-corejs3/helpers/interopRequ
 
 var _indexOf = _interopRequireDefault(require("@babel/runtime-corejs3/core-js-stable/instance/index-of"));
 
+var _concat = _interopRequireDefault(require("@babel/runtime-corejs3/core-js-stable/instance/concat"));
+
 var _map = _interopRequireDefault(require("@babel/runtime-corejs3/core-js-stable/instance/map"));
 
 var _sort = _interopRequireDefault(require("@babel/runtime-corejs3/core-js-stable/instance/sort"));
@@ -11,8 +13,6 @@ var _sort = _interopRequireDefault(require("@babel/runtime-corejs3/core-js-stabl
 var _slice = _interopRequireDefault(require("@babel/runtime-corejs3/core-js-stable/instance/slice"));
 
 var _stringify = _interopRequireDefault(require("@babel/runtime-corejs3/core-js-stable/json/stringify"));
-
-var _concat = _interopRequireDefault(require("@babel/runtime-corejs3/core-js-stable/instance/concat"));
 
 var _IListChanged = require("../../../../../main/common/lists/contracts/IListChanged");
 
@@ -339,13 +339,11 @@ describe('common > main > lists > SortedList', function () {
   });
   it('set', function () {
     function set(index, item) {
-      var _context;
-
       return {
         actions: [function (list) {
           return list.set(index, item);
         }],
-        description: (0, _concat.default)(_context = "set(".concat(index, ", ")).call(_context, (0, _stringify.default)(item), ")\n")
+        description: "set(" + index + ", " + (0, _stringify.default)(item) + ")\n"
       };
     }
 
@@ -528,7 +526,7 @@ describe('common > main > lists > SortedList', function () {
         }, function (list) {
           return list.insertIterable(list.size, (0, _helpers.createIterable)([item]), 1);
         }],
-        description: "add(".concat((0, _stringify.default)(item), ")\n")
+        description: "add(" + (0, _stringify.default)(item) + ")\n"
       };
     }
 
@@ -591,8 +589,6 @@ describe('common > main > lists > SortedList', function () {
   });
   it('addArray', function () {
     function addArray(sourceItems, sourceStart, sourceEnd) {
-      var _context2, _context3;
-
       var start = sourceStart == null ? 0 : sourceStart;
       var end = sourceEnd == null ? sourceItems.length : sourceEnd;
 
@@ -618,7 +614,7 @@ describe('common > main > lists > SortedList', function () {
         }, function (list) {
           return list.insertIterable(list.size, (0, _helpers.createIterable)((0, _slice.default)(sourceItems).call(sourceItems, start, end)), end - start);
         }]],
-        description: (0, _concat.default)(_context2 = (0, _concat.default)(_context3 = "arrArray(".concat((0, _stringify.default)(sourceItems), ", ")).call(_context3, sourceStart, ", ")).call(_context2, sourceEnd, ")\n")
+        description: "arrArray(" + (0, _stringify.default)(sourceItems) + ", " + sourceStart + ", " + sourceEnd + ")\n"
       };
     }
 
@@ -707,8 +703,6 @@ describe('common > main > lists > SortedList', function () {
   });
   it('insert', function () {
     function insert(index, item) {
-      var _context4;
-
       return {
         actions: [function (list) {
           return list.insert(index, item);
@@ -717,7 +711,7 @@ describe('common > main > lists > SortedList', function () {
         }, function (list) {
           return list.insertIterable(index, (0, _helpers.createIterable)([item]), 1);
         }],
-        description: (0, _concat.default)(_context4 = "insert(".concat(index, ", ")).call(_context4, (0, _stringify.default)(item), ")\n")
+        description: "insert(" + index + ", " + (0, _stringify.default)(item) + ")\n"
       };
     }
 
@@ -788,11 +782,9 @@ describe('common > main > lists > SortedList', function () {
     });
   });
   it('insertArray', function () {
-    var _context8;
+    var _context;
 
     function insertArray(index, sourceItems, sourceStart, sourceEnd) {
-      var _context5, _context6, _context7;
-
       var start = sourceStart == null ? 0 : sourceStart;
       var end = sourceEnd == null ? sourceItems.length : sourceEnd;
 
@@ -812,7 +804,7 @@ describe('common > main > lists > SortedList', function () {
         }, function (list) {
           return list.insertIterable(index, (0, _helpers.createIterable)((0, _slice.default)(sourceItems).call(sourceItems, start, end)), end - start);
         }]],
-        description: (0, _concat.default)(_context5 = (0, _concat.default)(_context6 = (0, _concat.default)(_context7 = "insertArray(".concat(index, ", ")).call(_context7, (0, _stringify.default)(sourceItems), ", ")).call(_context6, sourceStart, ", ")).call(_context5, sourceEnd, ")\n")
+        description: "insertArray(" + index + ", " + (0, _stringify.default)(sourceItems) + ", " + sourceStart + ", " + sourceEnd + ")\n"
       };
     }
 
@@ -916,7 +908,7 @@ describe('common > main > lists > SortedList', function () {
       actions: [insertArray(0, ['4', '2']), insertArray(1, ['4', '2']), insertArray(2, ['4', '2']), insertArray(3, ['4', '2']), insertArray(4, ['4', '2']), insertArray(5, ['4', '2'])]
     });
     var allValuesShuffle = (0, _common.shuffle)(_common.allValues);
-    var allValuesSort = (0, _sort.default)(_context8 = (0, _slice.default)(allValuesShuffle).call(allValuesShuffle)).call(_context8);
+    var allValuesSort = (0, _sort.default)(_context = (0, _slice.default)(allValuesShuffle).call(allValuesShuffle)).call(_context);
     testList({
       array: [[]],
       autoSort: [true],
@@ -969,7 +961,7 @@ describe('common > main > lists > SortedList', function () {
         actions: [function (list) {
           return list.remove(item);
         }],
-        description: "remove(".concat((0, _stringify.default)(item), ")\n")
+        description: "remove(" + (0, _stringify.default)(item) + ")\n"
       };
     }
 
@@ -1089,7 +1081,7 @@ describe('common > main > lists > SortedList', function () {
         actions: [function (list) {
           return list.removeAt(index, withoutShift);
         }],
-        description: "removeAt(".concat(index, ")\n")
+        description: "removeAt(" + index + ")\n"
       };
     }
 
@@ -1159,13 +1151,11 @@ describe('common > main > lists > SortedList', function () {
   });
   it('removeRange', function () {
     function removeRange(start, end, withoutShift) {
-      var _context9, _context10;
-
       return {
         actions: [function (list) {
           return list.removeRange(start, end, withoutShift);
         }],
-        description: (0, _concat.default)(_context9 = (0, _concat.default)(_context10 = "removeRange(".concat(start, ", ")).call(_context10, end, ", ")).call(_context9, withoutShift, ")\n")
+        description: "removeRange(" + start + ", " + end + ", " + withoutShift + ")\n"
       };
     }
 
@@ -1291,11 +1281,9 @@ describe('common > main > lists > SortedList', function () {
     });
   });
   it('removeArray', function () {
-    var _context13;
+    var _context2;
 
     function removeArray(sourceItems, sourceStart, sourceEnd) {
-      var _context11, _context12;
-
       var start = sourceStart == null ? 0 : sourceStart;
       var end = sourceEnd == null ? sourceItems.length : sourceEnd;
 
@@ -1315,7 +1303,7 @@ describe('common > main > lists > SortedList', function () {
         }, function (list) {
           return list.removeIterable((0, _helpers.createIterable)((0, _slice.default)(sourceItems).call(sourceItems, start, end)), end - start);
         }]],
-        description: (0, _concat.default)(_context11 = (0, _concat.default)(_context12 = "removeArray(".concat((0, _stringify.default)(sourceItems), ", ")).call(_context12, sourceStart, ", ")).call(_context11, sourceEnd, ")\n")
+        description: "removeArray(" + (0, _stringify.default)(sourceItems) + ", " + sourceStart + ", " + sourceEnd + ")\n"
       };
     }
 
@@ -1358,7 +1346,7 @@ describe('common > main > lists > SortedList', function () {
       actions: [removeArray(['0', '3', '1', '4'], 1, 3)]
     });
     var allValuesShuffle = (0, _common.shuffle)((0, _concat.default)(_common.allValues).call(_common.allValues, _common.allValues));
-    var allValuesSort = (0, _sort.default)(_context13 = (0, _slice.default)(allValuesShuffle).call(allValuesShuffle)).call(_context13);
+    var allValuesSort = (0, _sort.default)(_context2 = (0, _slice.default)(allValuesShuffle).call(allValuesShuffle)).call(_context2);
     testList({
       array: [allValuesShuffle],
       autoSort: [false, true],
@@ -1463,8 +1451,6 @@ describe('common > main > lists > SortedList', function () {
   });
   it('toArray', function () {
     function toArray(start, end) {
-      var _context14;
-
       return {
         actions: [function (list) {
           return list.toArray(start, end);
@@ -1473,7 +1459,7 @@ describe('common > main > lists > SortedList', function () {
           list.copyTo(result, null, start, end);
           return result;
         }],
-        description: (0, _concat.default)(_context14 = "toArray(".concat(start, ", ")).call(_context14, end, ")\n")
+        description: "toArray(" + start + ", " + end + ")\n"
       };
     }
 
@@ -1525,15 +1511,13 @@ describe('common > main > lists > SortedList', function () {
   });
   it('copyTo', function () {
     function copyTo(result, destArray, destIndex, start, end) {
-      var _context15, _context16, _context17;
-
       return {
         actions: [function (list) {
           _TestList.assert.strictEqual(list.copyTo(destArray, destIndex, start, end), result);
 
           return destArray;
         }],
-        description: (0, _concat.default)(_context15 = (0, _concat.default)(_context16 = (0, _concat.default)(_context17 = "copyTo(".concat((0, _stringify.default)(destArray), ", ")).call(_context17, destIndex, ", ")).call(_context16, start, ", ")).call(_context15, end, ")\n")
+        description: "copyTo(" + (0, _stringify.default)(destArray) + ", " + destIndex + ", " + start + ", " + end + ")\n"
       };
     }
 
@@ -1697,15 +1681,13 @@ describe('common > main > lists > SortedList', function () {
   });
   it('move', function () {
     function move(oldIndex, newIndex) {
-      var _context18;
-
       return {
         actions: [function (list) {
           return list.move(oldIndex, newIndex);
         }, function (list) {
           return list.moveRange(oldIndex, oldIndex + 1, newIndex);
         }],
-        description: (0, _concat.default)(_context18 = "move(".concat(oldIndex, ", ")).call(_context18, newIndex, ")\n")
+        description: "move(" + oldIndex + ", " + newIndex + ")\n"
       };
     }
 
@@ -1769,13 +1751,11 @@ describe('common > main > lists > SortedList', function () {
   });
   it('moveRange', function () {
     function moveRange(start, end, moveIndex) {
-      var _context19, _context20;
-
       return {
         actions: [function (list) {
           return list.moveRange(start, end, moveIndex);
         }],
-        description: (0, _concat.default)(_context19 = (0, _concat.default)(_context20 = "move(".concat(start, ", ")).call(_context20, end, ", ")).call(_context19, moveIndex, ")\n")
+        description: "move(" + start + ", " + end + ", " + moveIndex + ")\n"
       };
     }
 
@@ -1978,7 +1958,7 @@ describe('common > main > lists > SortedList', function () {
         actions: [function (list) {
           return list.removeDuplicates(withoutShift);
         }],
-        description: "removeDuplicates(".concat(withoutShift, ")\n")
+        description: "removeDuplicates(" + withoutShift + ")\n"
       };
     }
 

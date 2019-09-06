@@ -2,15 +2,7 @@
 
 var _interopRequireDefault = require("@babel/runtime-corejs3/helpers/interopRequireDefault");
 
-var _classCallCheck2 = _interopRequireDefault(require("@babel/runtime-corejs3/helpers/classCallCheck"));
-
-var _createClass2 = _interopRequireDefault(require("@babel/runtime-corejs3/helpers/createClass"));
-
-var _possibleConstructorReturn2 = _interopRequireDefault(require("@babel/runtime-corejs3/helpers/possibleConstructorReturn"));
-
-var _getPrototypeOf2 = _interopRequireDefault(require("@babel/runtime-corejs3/helpers/getPrototypeOf"));
-
-var _inherits2 = _interopRequireDefault(require("@babel/runtime-corejs3/helpers/inherits"));
+var _inheritsLoose2 = _interopRequireDefault(require("@babel/runtime-corejs3/helpers/inheritsLoose"));
 
 var _observable = require("../../../../../../main/common/rx/subjects/observable");
 
@@ -19,19 +11,18 @@ describe('common > main > rx > subjects > observable', function () {
     var CustomObservable =
     /*#__PURE__*/
     function (_Observable) {
-      (0, _inherits2.default)(CustomObservable, _Observable);
+      (0, _inheritsLoose2.default)(CustomObservable, _Observable);
 
       function CustomObservable() {
-        (0, _classCallCheck2.default)(this, CustomObservable);
-        return (0, _possibleConstructorReturn2.default)(this, (0, _getPrototypeOf2.default)(CustomObservable).apply(this, arguments));
+        return _Observable.apply(this, arguments) || this;
       }
 
-      (0, _createClass2.default)(CustomObservable, [{
-        key: "subscribe",
-        value: function subscribe(subscriber) {
-          throw new Error('Not implemented');
-        }
-      }]);
+      var _proto = CustomObservable.prototype;
+
+      _proto.subscribe = function subscribe(subscriber) {
+        throw new Error('Not implemented');
+      };
+
       return CustomObservable;
     }(_observable.Observable);
 

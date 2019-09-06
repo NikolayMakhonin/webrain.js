@@ -2,27 +2,14 @@
 
 var _interopRequireDefault = require("@babel/runtime-corejs3/helpers/interopRequireDefault");
 
-var _Object$defineProperty2 = require("@babel/runtime-corejs3/core-js-stable/object/define-property");
-
-_Object$defineProperty2(exports, "__esModule", {
-  value: true
-});
-
+exports.__esModule = true;
 exports.PropertyChangedObject = exports.PropertyChangedSubject = void 0;
 
 var _defineProperty = _interopRequireDefault(require("@babel/runtime-corejs3/core-js-stable/object/define-property"));
 
-var _typeof2 = _interopRequireDefault(require("@babel/runtime-corejs3/helpers/typeof"));
-
-var _classCallCheck2 = _interopRequireDefault(require("@babel/runtime-corejs3/helpers/classCallCheck"));
-
 var _createClass2 = _interopRequireDefault(require("@babel/runtime-corejs3/helpers/createClass"));
 
-var _possibleConstructorReturn2 = _interopRequireDefault(require("@babel/runtime-corejs3/helpers/possibleConstructorReturn"));
-
-var _getPrototypeOf2 = _interopRequireDefault(require("@babel/runtime-corejs3/helpers/getPrototypeOf"));
-
-var _inherits2 = _interopRequireDefault(require("@babel/runtime-corejs3/helpers/inherits"));
+var _inheritsLoose2 = _interopRequireDefault(require("@babel/runtime-corejs3/helpers/inheritsLoose"));
 
 var _hasSubscribers = require("../subjects/hasSubscribers");
 
@@ -48,42 +35,41 @@ var _hasSubscribers = require("../subjects/hasSubscribers");
 var PropertyChangedSubject =
 /*#__PURE__*/
 function (_HasSubscribersSubjec) {
-  (0, _inherits2.default)(PropertyChangedSubject, _HasSubscribersSubjec);
+  (0, _inheritsLoose2.default)(PropertyChangedSubject, _HasSubscribersSubjec);
 
   function PropertyChangedSubject(object) {
     var _this;
 
-    (0, _classCallCheck2.default)(this, PropertyChangedSubject);
-    _this = (0, _possibleConstructorReturn2.default)(this, (0, _getPrototypeOf2.default)(PropertyChangedSubject).call(this));
+    _this = _HasSubscribersSubjec.call(this) || this;
     _this._object = object;
     return _this;
   }
 
-  (0, _createClass2.default)(PropertyChangedSubject, [{
-    key: "onPropertyChanged",
-    value: function onPropertyChanged() {
-      for (var i = 0, len = arguments.length; i < len; i++) {
-        var event = i < 0 || arguments.length <= i ? undefined : arguments[i];
+  var _proto = PropertyChangedSubject.prototype;
 
-        if (event == null) {
-          event = {};
-        }
+  _proto.onPropertyChanged = function onPropertyChanged() {
+    for (var i = 0, len = arguments.length; i < len; i++) {
+      var event = i < 0 || arguments.length <= i ? undefined : arguments[i];
 
-        if ((0, _typeof2.default)(event) !== 'object') {
-          var value = this._object[event];
-          event = {
-            name: event,
-            oldValue: value,
-            newValue: value
-          };
-        }
-
-        this.emit(event);
+      if (event == null) {
+        event = {};
       }
 
-      return this;
+      if (typeof event !== 'object') {
+        var value = this._object[event];
+        event = {
+          name: event,
+          oldValue: value,
+          newValue: value
+        };
+      }
+
+      this.emit(event);
     }
-  }]);
+
+    return this;
+  };
+
   return PropertyChangedSubject;
 }(_hasSubscribers.HasSubscribersSubject);
 
@@ -94,7 +80,6 @@ var PropertyChangedObject =
 function () {
   /** @internal */
   function PropertyChangedObject() {
-    (0, _classCallCheck2.default)(this, PropertyChangedObject);
     (0, _defineProperty.default)(this, '__meta', {
       configurable: false,
       enumerable: false,
@@ -105,30 +90,31 @@ function () {
   /** @internal */
 
 
+  var _proto2 = PropertyChangedObject.prototype;
+
+  _proto2._setUnsubscriber = function _setUnsubscriber(propertyName, unsubscribe) {
+    var __meta = this.__meta;
+    var unsubscribers = __meta.unsubscribers;
+
+    if (unsubscribers) {
+      var oldUnsubscribe = unsubscribers[propertyName];
+
+      if (oldUnsubscribe) {
+        oldUnsubscribe();
+      }
+    }
+
+    if (unsubscribe) {
+      if (!unsubscribers) {
+        __meta.unsubscribers = unsubscribers = {};
+      }
+
+      unsubscribers[propertyName] = unsubscribe;
+    }
+  } // region propertyChanged
+  ;
+
   (0, _createClass2.default)(PropertyChangedObject, [{
-    key: "_setUnsubscriber",
-    value: function _setUnsubscriber(propertyName, unsubscribe) {
-      var __meta = this.__meta;
-      var unsubscribers = __meta.unsubscribers;
-
-      if (unsubscribers) {
-        var oldUnsubscribe = unsubscribers[propertyName];
-
-        if (oldUnsubscribe) {
-          oldUnsubscribe();
-        }
-      }
-
-      if (unsubscribe) {
-        if (!unsubscribers) {
-          __meta.unsubscribers = unsubscribers = {};
-        }
-
-        unsubscribers[propertyName] = unsubscribe;
-      }
-    } // region propertyChanged
-
-  }, {
     key: "propertyChanged",
     get: function get() {
       var propertyChanged = this.__meta.propertyChanged;

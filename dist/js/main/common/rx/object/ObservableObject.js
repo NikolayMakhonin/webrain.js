@@ -2,27 +2,16 @@
 
 var _interopRequireDefault = require("@babel/runtime-corejs3/helpers/interopRequireDefault");
 
-var _Object$defineProperty2 = require("@babel/runtime-corejs3/core-js-stable/object/define-property");
-
-_Object$defineProperty2(exports, "__esModule", {
-  value: true
-});
-
+exports.__esModule = true;
 exports._setExt = _setExt;
 exports._set = _set;
 exports.ObservableObject = void 0;
 
 var _defineProperty = _interopRequireDefault(require("@babel/runtime-corejs3/core-js-stable/object/define-property"));
 
-var _classCallCheck2 = _interopRequireDefault(require("@babel/runtime-corejs3/helpers/classCallCheck"));
-
-var _possibleConstructorReturn2 = _interopRequireDefault(require("@babel/runtime-corejs3/helpers/possibleConstructorReturn"));
-
-var _getPrototypeOf2 = _interopRequireDefault(require("@babel/runtime-corejs3/helpers/getPrototypeOf"));
-
 var _assertThisInitialized2 = _interopRequireDefault(require("@babel/runtime-corejs3/helpers/assertThisInitialized"));
 
-var _inherits2 = _interopRequireDefault(require("@babel/runtime-corejs3/helpers/inherits"));
+var _inheritsLoose2 = _interopRequireDefault(require("@babel/runtime-corejs3/helpers/inheritsLoose"));
 
 require("../extensions/autoConnect");
 
@@ -31,14 +20,13 @@ var _PropertyChangedObject = require("./PropertyChangedObject");
 var ObservableObject =
 /*#__PURE__*/
 function (_PropertyChangedObjec) {
-  (0, _inherits2.default)(ObservableObject, _PropertyChangedObjec);
+  (0, _inheritsLoose2.default)(ObservableObject, _PropertyChangedObjec);
 
   /** @internal */
   function ObservableObject() {
     var _this;
 
-    (0, _classCallCheck2.default)(this, ObservableObject);
-    _this = (0, _possibleConstructorReturn2.default)(this, (0, _getPrototypeOf2.default)(ObservableObject).call(this));
+    _this = _PropertyChangedObjec.call(this) || this;
     (0, _defineProperty.default)((0, _assertThisInitialized2.default)(_this), '__fields', {
       configurable: false,
       enumerable: false,

@@ -2,18 +2,11 @@
 
 var _interopRequireDefault = require("@babel/runtime-corejs3/helpers/interopRequireDefault");
 
-var _Object$defineProperty = require("@babel/runtime-corejs3/core-js-stable/object/define-property");
-
-_Object$defineProperty(exports, "__esModule", {
-  value: true
-});
-
+exports.__esModule = true;
 exports.deepSubscribeRule = deepSubscribeRule;
 exports.deepSubscribe = deepSubscribe;
 
 var _getIterator2 = _interopRequireDefault(require("@babel/runtime-corejs3/core-js/get-iterator"));
-
-var _concat = _interopRequireDefault(require("@babel/runtime-corejs3/core-js-stable/instance/concat"));
 
 var _async = require("../../async/async");
 
@@ -39,7 +32,7 @@ function catchHandler(ex, propertiesPath) {
 
   var propertiesPathStr = propertiesPath ? propertiesPath() : '';
   ex.propertiesPath = propertiesPathStr;
-  ex.message += "\nObject property path: ".concat(propertiesPathStr);
+  ex.message += "\nObject property path: " + propertiesPathStr;
   throw ex;
 }
 
@@ -113,11 +106,9 @@ function subscribeNext(object, subscribeValue, immediate, ruleIterator, leafUnsu
       var _unsubscribeValue2 = (0, _helpers.checkIsFuncOrNull)(subscribeValue(value, debugParent, debugPropertyName));
 
       if (_unsubscribeValue2) {
-        var _context;
-
         _unsubscribeValue2();
 
-        throw new Error("You should not return unsubscribe function for non Object value.\n" + "For subscribe value types use their object wrappers: Number, Boolean, String classes.\n" + (0, _concat.default)(_context = "Unsubscribe function: ".concat(_unsubscribeValue2, "\nValue: ")).call(_context, value, "\n") + "Value property path: ".concat((propertiesPath ? propertiesPath() + '.' : '') + (debugPropertyName == null ? '' : debugPropertyName + '(' + ruleDescription + ')')));
+        throw new Error("You should not return unsubscribe function for non Object value.\n" + "For subscribe value types use their object wrappers: Number, Boolean, String classes.\n" + ("Unsubscribe function: " + _unsubscribeValue2 + "\nValue: " + value + "\n") + ("Value property path: " + ((propertiesPath ? propertiesPath() + '.' : '') + (debugPropertyName == null ? '' : debugPropertyName + '(' + ruleDescription + ')'))));
       }
 
       return null;
@@ -208,15 +199,13 @@ function subscribeNext(object, subscribeValue, immediate, ruleIterator, leafUnsu
       unsubscribe = (0, _helpers.checkIsFuncOrNull)(deepSubscribeItem(item, debugPropertyName));
 
       if (unsubscribe) {
-        var _context2;
-
         if (item instanceof Object) {
           unsubscribers[itemUniqueId] = unsubscribe;
           return;
         }
 
         unsubscribe();
-        throw new Error("You should not return unsubscribe function for non Object value.\n" + "For subscribe value types use their object wrappers: Number, Boolean, String classes.\n" + (0, _concat.default)(_context2 = "Unsubscribe function: ".concat(unsubscribe, "\nValue: ")).call(_context2, item, "\n") + "Value property path: ".concat((propertiesPath ? propertiesPath() + '.' : '') + (debugPropertyName == null ? '' : debugPropertyName + '(' + rule.description + ')')));
+        throw new Error("You should not return unsubscribe function for non Object value.\n" + "For subscribe value types use their object wrappers: Number, Boolean, String classes.\n" + ("Unsubscribe function: " + unsubscribe + "\nValue: " + item + "\n") + ("Value property path: " + ((propertiesPath ? propertiesPath() + '.' : '') + (debugPropertyName == null ? '' : debugPropertyName + '(' + rule.description + ')'))));
       }
     }, function (item, debugPropertyName) {
       // PROF: 431 - 0.9%

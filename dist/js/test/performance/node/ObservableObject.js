@@ -2,25 +2,15 @@
 
 var _interopRequireDefault = require("@babel/runtime-corejs3/helpers/interopRequireDefault");
 
-var _typeof2 = _interopRequireDefault(require("@babel/runtime-corejs3/helpers/typeof"));
+var _concat = _interopRequireDefault(require("@babel/runtime-corejs3/core-js-stable/instance/concat"));
 
 var _map = _interopRequireDefault(require("@babel/runtime-corejs3/core-js-stable/instance/map"));
 
-var _concat = _interopRequireDefault(require("@babel/runtime-corejs3/core-js-stable/instance/concat"));
-
 var _assign = _interopRequireDefault(require("@babel/runtime-corejs3/core-js-stable/object/assign"));
-
-var _createClass2 = _interopRequireDefault(require("@babel/runtime-corejs3/helpers/createClass"));
 
 var _bind = _interopRequireDefault(require("@babel/runtime-corejs3/core-js-stable/instance/bind"));
 
-var _classCallCheck2 = _interopRequireDefault(require("@babel/runtime-corejs3/helpers/classCallCheck"));
-
-var _possibleConstructorReturn2 = _interopRequireDefault(require("@babel/runtime-corejs3/helpers/possibleConstructorReturn"));
-
-var _getPrototypeOf2 = _interopRequireDefault(require("@babel/runtime-corejs3/helpers/getPrototypeOf"));
-
-var _inherits2 = _interopRequireDefault(require("@babel/runtime-corejs3/helpers/inherits"));
+var _inheritsLoose2 = _interopRequireDefault(require("@babel/runtime-corejs3/helpers/inheritsLoose"));
 
 var _rdtsc = require("rdtsc");
 
@@ -38,11 +28,10 @@ describe('ObservableObject', function () {
     var Class =
     /*#__PURE__*/
     function (_ObservableObject) {
-      (0, _inherits2.default)(Class, _ObservableObject);
+      (0, _inheritsLoose2.default)(Class, _ObservableObject);
 
       function Class() {
-        (0, _classCallCheck2.default)(this, Class);
-        return (0, _possibleConstructorReturn2.default)(this, (0, _getPrototypeOf2.default)(Class).apply(this, arguments));
+        return _ObservableObject.apply(this, arguments) || this;
       }
 
       return Class;
@@ -91,7 +80,7 @@ describe('ObservableObject', function () {
         object2 = _ref.object2,
         observableObject1 = _ref.observableObject1,
         observableObject2 = _ref.observableObject2;
-    var testFunc = (0, _bind.default)(_context = Function('o1', 'o2', 'v', "{\n\t\t\to1.prop = v\n\t\t\to1.prop2 = v\n\t\t\to2.prop = v\n\t\t\to2.prop2 = v\n\t\t\treturn o1.prop + o1.prop2 + o2.prop + o2.prop2\n\t\t} // ".concat(Math.random()))).call(_context, null, observableObject1, observableObject2);
+    var testFunc = (0, _bind.default)(_context = Function('o1', 'o2', 'v', "{\n\t\t\to1.prop = v\n\t\t\to1.prop2 = v\n\t\t\to2.prop = v\n\t\t\to2.prop2 = v\n\t\t\treturn o1.prop + o1.prop2 + o2.prop + o2.prop2\n\t\t} // " + Math.random())).call(_context, null, observableObject1, observableObject2);
     var value = -2000000000; // calcStat(1000, 10, time => {
 
     var result = (0, _rdtsc.calcPerformance)(20000, // () => {
@@ -123,41 +112,36 @@ describe('ObservableObject', function () {
   /*#__PURE__*/
   function () {
     function CalcStatReport(data) {
-      (0, _classCallCheck2.default)(this, CalcStatReport);
       (0, _assign.default)(this, data);
     }
 
-    (0, _createClass2.default)(CalcStatReport, [{
-      key: "clone",
-      value: function clone() {
-        return new CalcStatReport(this);
+    var _proto = CalcStatReport.prototype;
+
+    _proto.clone = function clone() {
+      return new CalcStatReport(this);
+    };
+
+    _proto.subtract = function subtract(other) {
+      var result = this.clone();
+
+      for (var j = 0, len = this.averageValue.length; j < len; j++) {
+        result.averageValue[j] -= other.averageValue[j];
+        result.standardDeviation[j] += other.standardDeviation[j];
       }
-    }, {
-      key: "subtract",
-      value: function subtract(other) {
-        var result = this.clone();
 
-        for (var j = 0, len = this.averageValue.length; j < len; j++) {
-          result.averageValue[j] -= other.averageValue[j];
-          result.standardDeviation[j] += other.standardDeviation[j];
-        }
+      return result;
+    };
 
-        return result;
+    _proto.toString = function toString() {
+      var report = Array(this.averageValue.length);
+
+      for (var j = 0, len = this.averageValue.length; j < len; j++) {
+        report[j] = this.averageValue[j] + " \xB1" + 2.5 * this.standardDeviation[j] + " [" + this.count + "]";
       }
-    }, {
-      key: "toString",
-      value: function toString() {
-        var report = Array(this.averageValue.length);
 
-        for (var j = 0, len = this.averageValue.length; j < len; j++) {
-          var _context2, _context3;
+      return report.join(', ');
+    };
 
-          report[j] = (0, _concat.default)(_context2 = (0, _concat.default)(_context3 = "".concat(this.averageValue[j], " \xB1")).call(_context3, 2.5 * this.standardDeviation[j], " [")).call(_context2, this.count, "]");
-        }
-
-        return report.join(', ');
-      }
-    }]);
     return CalcStatReport;
   }();
 
@@ -263,7 +247,7 @@ describe('ObservableObject', function () {
   }
 
   function calc(calcType, countTests, testFunc) {
-    var _context4, _context5;
+    var _context2, _context3;
 
     for (var _len4 = arguments.length, args = new Array(_len4 > 3 ? _len4 - 3 : 0), _key3 = 3; _key3 < _len4; _key3++) {
       args[_key3 - 3] = arguments[_key3];
@@ -271,10 +255,10 @@ describe('ObservableObject', function () {
 
     switch (calcType) {
       case CalcType.Stat:
-        return calcStat.apply(void 0, (0, _concat.default)(_context4 = [countTests, testFunc]).call(_context4, args));
+        return calcStat.apply(void 0, (0, _concat.default)(_context2 = [countTests, testFunc]).call(_context2, args));
 
       case CalcType.Min:
-        return calcMin.apply(void 0, (0, _concat.default)(_context5 = [countTests, testFunc]).call(_context5, args));
+        return calcMin.apply(void 0, (0, _concat.default)(_context3 = [countTests, testFunc]).call(_context3, args));
 
       default:
         throw new Error('Unknown CalcType: ' + calcType);
@@ -282,30 +266,30 @@ describe('ObservableObject', function () {
   }
 
   function _calcMemAllocate(calcType, countTests, testFunc) {
-    var _context6;
+    var _context4;
 
     for (var _len5 = arguments.length, testFuncArgs = new Array(_len5 > 3 ? _len5 - 3 : 0), _key4 = 3; _key4 < _len5; _key4++) {
       testFuncArgs[_key4 - 3] = arguments[_key4];
     }
 
-    return calc.apply(void 0, (0, _concat.default)(_context6 = [calcType, countTests, function () {
+    return calc.apply(void 0, (0, _concat.default)(_context4 = [calcType, countTests, function () {
       var heapUsed = process.memoryUsage().heapUsed;
       testFunc.apply(void 0, arguments);
       heapUsed = process.memoryUsage().heapUsed - heapUsed;
       return heapUsed < 0 ? null : [heapUsed];
-    }]).call(_context6, testFuncArgs));
+    }]).call(_context4, testFuncArgs));
   }
 
   function calcMemAllocate(calcType, countTests, testFunc) {
-    var _context7, _context8;
+    var _context5, _context6;
 
     for (var _len6 = arguments.length, testFuncArgs = new Array(_len6 > 3 ? _len6 - 3 : 0), _key5 = 3; _key5 < _len6; _key5++) {
       testFuncArgs[_key5 - 3] = arguments[_key5];
     }
 
-    var zero = _calcMemAllocate.apply(void 0, (0, _concat.default)(_context7 = [calcType, countTests, function () {}]).call(_context7, testFuncArgs));
+    var zero = _calcMemAllocate.apply(void 0, (0, _concat.default)(_context5 = [calcType, countTests, function () {}]).call(_context5, testFuncArgs));
 
-    var value = _calcMemAllocate.apply(void 0, (0, _concat.default)(_context8 = [calcType, countTests, testFunc]).call(_context8, testFuncArgs));
+    var value = _calcMemAllocate.apply(void 0, (0, _concat.default)(_context6 = [calcType, countTests, testFunc]).call(_context6, testFuncArgs));
 
     console.log(value.subtract(zero).toString());
   }
@@ -325,7 +309,7 @@ describe('ObservableObject', function () {
     var i = 0;
     testPerformance(createObject(function (observableObject) {
       (0, _deepSubscribe.deepSubscribe)(observableObject, function (v) {
-        return (0, _typeof2.default)(v) === 'object' && i++ % 3 === 0 ? function () {} : null;
+        return typeof v === 'object' && i++ % 3 === 0 ? function () {} : null;
       }, true, function (b) {
         return b.path(function (o) {
           return o.prop;

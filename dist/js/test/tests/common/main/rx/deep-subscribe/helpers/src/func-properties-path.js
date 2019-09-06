@@ -1,11 +1,6 @@
 "use strict";
 
-var _Object$defineProperty = require("@babel/runtime-corejs3/core-js-stable/object/define-property");
-
-_Object$defineProperty(exports, "__esModule", {
-  value: true
-});
-
+exports.__esModule = true;
 exports.compileTest = compileTest;
 
 var _funcPropertiesPath = require("../../../../../../../../main/common/rx/deep-subscribe/helpers/func-properties-path");

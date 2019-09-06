@@ -23,7 +23,7 @@ describe('common > main > lists > helpers > array', function () {
     var indexToItem = function indexToItem(index) {
       var _context;
 
-      return "item".concat((0, _padStart.default)(_context = (index + 2).toString()).call(_context, 3, '0'));
+      return "item" + (0, _padStart.default)(_context = (index + 2).toString()).call(_context, 3, '0');
     };
 
     var arr = (0, _map.default)(_context2 = (0, _fill.default)(_context3 = new Array(51)).call(_context3, 0)).call(_context2, function (o, i) {

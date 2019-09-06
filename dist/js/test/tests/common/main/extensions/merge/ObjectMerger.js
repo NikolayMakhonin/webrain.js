@@ -2,27 +2,9 @@
 
 var _interopRequireDefault = require("@babel/runtime-corejs3/helpers/interopRequireDefault");
 
-var _defineProperty2 = _interopRequireDefault(require("@babel/runtime-corejs3/core-js-stable/object/define-property"));
-
-var _defineProperties = _interopRequireDefault(require("@babel/runtime-corejs3/core-js-stable/object/define-properties"));
-
-var _getOwnPropertyDescriptors = _interopRequireDefault(require("@babel/runtime-corejs3/core-js-stable/object/get-own-property-descriptors"));
-
-var _forEach = _interopRequireDefault(require("@babel/runtime-corejs3/core-js-stable/instance/for-each"));
-
-var _getOwnPropertyDescriptor = _interopRequireDefault(require("@babel/runtime-corejs3/core-js-stable/object/get-own-property-descriptor"));
-
-var _filter = _interopRequireDefault(require("@babel/runtime-corejs3/core-js-stable/instance/filter"));
-
-var _getOwnPropertySymbols = _interopRequireDefault(require("@babel/runtime-corejs3/core-js-stable/object/get-own-property-symbols"));
-
-var _keys = _interopRequireDefault(require("@babel/runtime-corejs3/core-js-stable/object/keys"));
-
 var _set = _interopRequireDefault(require("@babel/runtime-corejs3/core-js-stable/set"));
 
 var _map = _interopRequireDefault(require("@babel/runtime-corejs3/core-js-stable/map"));
-
-var _concat = _interopRequireDefault(require("@babel/runtime-corejs3/core-js-stable/instance/concat"));
 
 var _map2 = _interopRequireDefault(require("@babel/runtime-corejs3/core-js-stable/instance/map"));
 
@@ -32,17 +14,13 @@ var _getIteratorMethod2 = _interopRequireDefault(require("@babel/runtime-corejs3
 
 var _values = _interopRequireDefault(require("@babel/runtime-corejs3/core-js-stable/object/values"));
 
-var _toConsumableArray2 = _interopRequireDefault(require("@babel/runtime-corejs3/helpers/toConsumableArray"));
+var _concat = _interopRequireDefault(require("@babel/runtime-corejs3/core-js-stable/instance/concat"));
 
 var _freeze = _interopRequireDefault(require("@babel/runtime-corejs3/core-js-stable/object/freeze"));
 
-var _defineProperty3 = _interopRequireDefault(require("@babel/runtime-corejs3/helpers/defineProperty"));
+var _extends2 = _interopRequireDefault(require("@babel/runtime-corejs3/helpers/extends"));
 
 var _isFrozen = _interopRequireDefault(require("@babel/runtime-corejs3/core-js-stable/object/is-frozen"));
-
-var _classCallCheck2 = _interopRequireDefault(require("@babel/runtime-corejs3/helpers/classCallCheck"));
-
-var _createClass2 = _interopRequireDefault(require("@babel/runtime-corejs3/helpers/createClass"));
 
 var _mergers = require("../../../../../../main/common/extensions/merge/mergers");
 
@@ -74,10 +52,13 @@ var _helpers = require("../../src/helpers/helpers");
 
 var _TestMerger = require("./src/TestMerger");
 
-function ownKeys(object, enumerableOnly) { var keys = (0, _keys.default)(object); if (_getOwnPropertySymbols.default) { var symbols = (0, _getOwnPropertySymbols.default)(object); if (enumerableOnly) symbols = (0, _filter.default)(symbols).call(symbols, function (sym) { return (0, _getOwnPropertyDescriptor.default)(object, sym).enumerable; }); keys.push.apply(keys, symbols); } return keys; }
-
-function _objectSpread(target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i] != null ? arguments[i] : {}; if (i % 2) { var _context5; (0, _forEach.default)(_context5 = ownKeys(source, true)).call(_context5, function (key) { (0, _defineProperty3.default)(target, key, source[key]); }); } else if (_getOwnPropertyDescriptors.default) { (0, _defineProperties.default)(target, (0, _getOwnPropertyDescriptors.default)(source)); } else { var _context6; (0, _forEach.default)(_context6 = ownKeys(source)).call(_context6, function (key) { (0, _defineProperty2.default)(target, key, (0, _getOwnPropertyDescriptor.default)(source, key)); }); } } return target; }
-
+/* tslint:disable:no-empty no-identical-functions max-line-length no-construct use-primitive-type */
+// @ts-ignore
+// noinspection ES6UnusedImports
+// import deepCloneEqual.clone from 'fast-copy'
+// import deepCloneEqual.clone from 'clone'
+// @ts-ignore
+// noinspection ES6UnusedImports
 var assert = new _Assert.Assert(_TestMerger.deepCloneEqual);
 // declare function deepStrictEqual(a, b): boolean
 // declare function circularDeepStrictEqual(a, b): boolean
@@ -124,34 +105,32 @@ describe('common > extensions > merge > ObjectMerger', function () {
   /*#__PURE__*/
   function () {
     function Class(value) {
-      (0, _classCallCheck2.default)(this, Class);
       this.value = value;
     }
 
-    (0, _createClass2.default)(Class, [{
-      key: "_canMerge",
-      value: function _canMerge(source) {
-        if (source.constructor !== Class && source.constructor !== Object) {
-          return false;
-        }
+    var _proto = Class.prototype;
 
-        return true;
+    _proto._canMerge = function _canMerge(source) {
+      if (source.constructor !== Class && source.constructor !== Object) {
+        return false;
       }
-    }, {
-      key: "_merge",
-      value: function _merge(merge, older, newer, preferCloneOlder, preferCloneNewer, options) {
-        var _this = this;
 
-        var changed = false;
-        changed = merge(this.value, older instanceof Class ? older.value : older, newer instanceof Class ? newer.value : newer, function (o) {
-          _this.value = o;
-        }, null, null, {
-          selfAsValueOlder: !(older instanceof Class),
-          selfAsValueNewer: !(newer instanceof Class)
-        }) || changed;
-        return changed;
-      }
-    }]);
+      return true;
+    };
+
+    _proto._merge = function _merge(merge, older, newer, preferCloneOlder, preferCloneNewer, options) {
+      var _this = this;
+
+      var changed = false;
+      changed = merge(this.value, older instanceof Class ? older.value : older, newer instanceof Class ? newer.value : newer, function (o) {
+        _this.value = o;
+      }, null, null, {
+        selfAsValueOlder: !(older instanceof Class),
+        selfAsValueNewer: !(newer instanceof Class)
+      }) || changed;
+      return changed;
+    };
+
     return Class;
   }();
 
@@ -311,7 +290,7 @@ describe('common > extensions > merge > ObjectMerger', function () {
       // })
 
 
-      testMerger(_objectSpread({}, options, {
+      testMerger((0, _extends2.default)({}, options, {
         base: createValues(),
         older: createValues(),
         newer: createValues()
@@ -322,7 +301,7 @@ describe('common > extensions > merge > ObjectMerger', function () {
         return [_TestMerger.BASE, _TestMerger.OLDER, _TestMerger.NEWER, null, void 0, 0, 1, false, true];
       };
 
-      testMerger(_objectSpread({}, options, {
+      testMerger((0, _extends2.default)({}, options, {
         base: createValues(),
         older: createValues(),
         newer: createValues()
@@ -333,7 +312,7 @@ describe('common > extensions > merge > ObjectMerger', function () {
         return [_TestMerger.BASE, _TestMerger.OLDER, _TestMerger.NEWER, void 0, 1, '', '1', '2'];
       };
 
-      testMerger(_objectSpread({}, options, {
+      testMerger((0, _extends2.default)({}, options, {
         base: createValues(),
         older: createValues(),
         newer: createValues()
@@ -344,7 +323,7 @@ describe('common > extensions > merge > ObjectMerger', function () {
         return [_TestMerger.BASE, _TestMerger.OLDER, _TestMerger.NEWER, void 0, 1, new String(''), new String('1'), new String('2')];
       };
 
-      testMerger(_objectSpread({}, options, {
+      testMerger((0, _extends2.default)({}, options, {
         base: createValues(),
         older: createValues(),
         newer: createValues()
@@ -355,7 +334,7 @@ describe('common > extensions > merge > ObjectMerger', function () {
         return [_TestMerger.BASE, _TestMerger.OLDER, _TestMerger.NEWER, void 0, '', {}, new Date(1), new Date(2), new Date(3)];
       };
 
-      testMerger(_objectSpread({}, options, {
+      testMerger((0, _extends2.default)({}, options, {
         base: createValues(),
         older: createValues(),
         newer: createValues()
@@ -390,7 +369,7 @@ describe('common > extensions > merge > ObjectMerger', function () {
         })];
       };
 
-      testMerger(_objectSpread({}, options, {
+      testMerger((0, _extends2.default)({}, options, {
         base: createValues(),
         older: createValues(),
         newer: createValues()
@@ -427,7 +406,7 @@ describe('common > extensions > merge > ObjectMerger', function () {
         }), new Date(1), new Date(2)];
       };
 
-      testMerger(_objectSpread({}, options, {
+      testMerger((0, _extends2.default)({}, options, {
         base: createValues(),
         older: createValues(),
         newer: createValues()
@@ -832,8 +811,9 @@ describe('common > extensions > merge > ObjectMerger', function () {
       actions: null
     };
     it('deepCloneEqual.clone circular', function () {
+      var _context;
+
       var TestClass = function TestClass(value) {
-        (0, _classCallCheck2.default)(this, TestClass);
         this.value = value;
       };
 
@@ -850,8 +830,8 @@ describe('common > extensions > merge > ObjectMerger', function () {
       };
       obj.circular = obj;
       obj.class = new TestClass(obj);
-      obj.array = (0, _toConsumableArray2.default)((0, _values.default)(obj));
-      obj.nested = _objectSpread({}, obj);
+      obj.array = (0, _concat.default)(_context = []).call(_context, (0, _values.default)(obj));
+      obj.nested = (0, _extends2.default)({}, obj);
 
       var clone = _TestMerger.deepCloneEqual.clone(obj);
 
@@ -875,18 +855,18 @@ describe('common > extensions > merge > ObjectMerger', function () {
       }
 
       for (var i = 0; i < obj.array.length; i++) {
-        assertCloneValue(clone.array[i], obj.array[i], "array[".concat(i, "]"));
+        assertCloneValue(clone.array[i], obj.array[i], "array[" + i + "]");
       }
     });
     it('simple circular', function () {
-      testMerger(_objectSpread({}, options, {
+      testMerger((0, _extends2.default)({}, options, {
         base: [createValue(1, true)],
         older: [createValue(1, true)],
         newer: [createValue(1, true)]
       }));
     });
     it('not circular', function () {
-      testMerger(_objectSpread({}, options, {
+      testMerger((0, _extends2.default)({}, options, {
         base: [createValue(1, false), createValue(2, false), createValue(3, false), null],
         older: [createValue(1, false), createValue(2, false), createValue(3, false), null],
         newer: [createValue(1, false), createValue(2, false), createValue(3, false), null]
@@ -977,18 +957,18 @@ describe('common > extensions > merge > ObjectMerger', function () {
     });
     describe('maps', function () {
       var testMergeMaps = function testMergeMaps(targetFactories, sourceFactories, base, older, newer, result) {
-        var _context, _context2;
+        var _context2, _context3, _context4;
 
         testMerger({
-          base: (0, _toConsumableArray2.default)((0, _map2.default)(targetFactories).call(targetFactories, function (o) {
+          base: (0, _concat.default)(_context2 = []).call(_context2, (0, _map2.default)(targetFactories).call(targetFactories, function (o) {
             return o(base);
           })),
-          older: (0, _concat.default)(_context = []).call(_context, (0, _toConsumableArray2.default)((0, _map2.default)(sourceFactories).call(sourceFactories, function (o) {
+          older: (0, _concat.default)(_context3 = []).call(_context3, (0, _map2.default)(sourceFactories).call(sourceFactories, function (o) {
             return o(older);
-          })), [older, (0, _helpers.createIterable)(older)]),
-          newer: (0, _concat.default)(_context2 = []).call(_context2, (0, _toConsumableArray2.default)((0, _map2.default)(sourceFactories).call(sourceFactories, function (o) {
+          }), [older, (0, _helpers.createIterable)(older)]),
+          newer: (0, _concat.default)(_context4 = []).call(_context4, (0, _map2.default)(sourceFactories).call(sourceFactories, function (o) {
             return o(newer);
-          })), [newer, (0, _helpers.createIterable)(newer)]),
+          }), [newer, (0, _helpers.createIterable)(newer)]),
           preferCloneOlderParam: [null],
           preferCloneNewerParam: [null],
           preferCloneMeta: [true],
@@ -1136,18 +1116,18 @@ describe('common > extensions > merge > ObjectMerger', function () {
     });
     describe('sets', function () {
       var testMergeSets = function testMergeSets(targetFactories, sourceFactories, base, older, newer, result) {
-        var _context3, _context4;
+        var _context5, _context6, _context7;
 
         testMerger({
-          base: (0, _toConsumableArray2.default)((0, _map2.default)(targetFactories).call(targetFactories, function (o) {
+          base: (0, _concat.default)(_context5 = []).call(_context5, (0, _map2.default)(targetFactories).call(targetFactories, function (o) {
             return o(base);
           })),
-          older: (0, _concat.default)(_context3 = []).call(_context3, (0, _toConsumableArray2.default)((0, _map2.default)(sourceFactories).call(sourceFactories, function (o) {
+          older: (0, _concat.default)(_context6 = []).call(_context6, (0, _map2.default)(sourceFactories).call(sourceFactories, function (o) {
             return o(older);
-          })), [older, (0, _helpers.createIterable)(older)]),
-          newer: (0, _concat.default)(_context4 = []).call(_context4, (0, _toConsumableArray2.default)((0, _map2.default)(sourceFactories).call(sourceFactories, function (o) {
+          }), [older, (0, _helpers.createIterable)(older)]),
+          newer: (0, _concat.default)(_context7 = []).call(_context7, (0, _map2.default)(sourceFactories).call(sourceFactories, function (o) {
             return o(newer);
-          })), [newer, (0, _helpers.createIterable)(newer)]),
+          }), [newer, (0, _helpers.createIterable)(newer)]),
           preferCloneOlderParam: [null],
           preferCloneNewerParam: [null],
           preferCloneMeta: [true],

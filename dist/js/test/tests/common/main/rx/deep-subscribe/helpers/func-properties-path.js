@@ -19,35 +19,35 @@ describe('common > main > rx > deep-subscribe > func-properties-path', function 
       _Assert.assert.strictEqual((0, _funcPropertiesPath.parsePropertiesPathString)(funcStr), path);
     }
 
-    testParse("(a) => a ".concat(path));
-    testParse("b => ( ( ( b ".concat(path, " ) ) ) "));
-    testParse("c =>  {  return c ".concat(path, " ; }"));
-    testParse("function  (d)  {  return d ".concat(path, "}"));
-    testParse("function funcName (e)  {  return e ".concat(path, "}"));
-    testParse(" funcName (f)  {  return f ".concat(path, "}"));
-    testParse(new Function('o', "return o".concat(path)));
-    testParse("(a /* comment */ ) => coverage(), coverage(), a ".concat(path));
-    testParse("b /* comment */ => coverage(), ( coverage(), coverage(), ( coverage(), ( coverage(), b ".concat(path, " ) ) ) "));
-    testParse("c /* comment */ =>  { coverage()\n return coverage(), c ".concat(path, " ; }"));
-    testParse("function  (d /* comment */ )  { coverage() \n return ( coverage(), ( coverage(), d ".concat(path, "} ) )"));
-    testParse("function funcName (e /*/** comment ***/ )  {  coverage() \n return ( coverage(), ( coverage(), e ".concat(path, "}"));
-    testParse(" funcName (f /* comment */ )  {  coverage()  return f ".concat(path, "}"));
-    testParse(new Function('o', "coverage() \n return o".concat(path)));
+    testParse("(a) => a " + path);
+    testParse("b => ( ( ( b " + path + " ) ) ) ");
+    testParse("c =>  {  return c " + path + " ; }");
+    testParse("function  (d)  {  return d " + path + "}");
+    testParse("function funcName (e)  {  return e " + path + "}");
+    testParse(" funcName (f)  {  return f " + path + "}");
+    testParse(new Function('o', "return o" + path));
+    testParse("(a /* comment */ ) => coverage(), coverage(), a " + path);
+    testParse("b /* comment */ => coverage(), ( coverage(), coverage(), ( coverage(), ( coverage(), b " + path + " ) ) ) ");
+    testParse("c /* comment */ =>  { coverage()\n return coverage(), c " + path + " ; }");
+    testParse("function  (d /* comment */ )  { coverage() \n return ( coverage(), ( coverage(), d " + path + "} ) )");
+    testParse("function funcName (e /*/** comment ***/ )  {  coverage() \n return ( coverage(), ( coverage(), e " + path + "}");
+    testParse(" funcName (f /* comment */ )  {  coverage()  return f " + path + "}");
+    testParse(new Function('o', "coverage() \n return o" + path));
 
     _Assert.assert.throws(function () {
       return (0, _funcPropertiesPath.parsePropertiesPathString)('');
     }, Error);
 
     _Assert.assert.throws(function () {
-      return (0, _funcPropertiesPath.parsePropertiesPathString)("(a) => b ".concat(path));
+      return (0, _funcPropertiesPath.parsePropertiesPathString)("(a) => b " + path);
     }, Error);
 
     _Assert.assert.throws(function () {
-      return (0, _funcPropertiesPath.parsePropertiesPathString)("b => ( ( c ".concat(path, " ) ) "));
+      return (0, _funcPropertiesPath.parsePropertiesPathString)("b => ( ( c " + path + " ) ) ");
     }, Error);
 
     _Assert.assert.throws(function () {
-      return (0, _funcPropertiesPath.parsePropertiesPathString)(new Function('w', "return o".concat(path)));
+      return (0, _funcPropertiesPath.parsePropertiesPathString)(new Function('w', "return o" + path));
     }, Error);
   });
   it('parsePropertiesPath', function () {
@@ -69,7 +69,7 @@ describe('common > main > rx > deep-subscribe > func-properties-path', function 
     }
 
     testParse(path);
-    testParseFunc(new Function('o', "return o".concat(path, " ; ")));
+    testParseFunc(new Function('o', "return o" + path + " ; "));
     testParseFunc(function (o) {
       return o.o["\`\"\'\\`'[]]"].o[0].o['\`\"\'\\`"][]'].o;
     });

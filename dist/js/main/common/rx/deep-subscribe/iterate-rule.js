@@ -2,18 +2,13 @@
 
 var _interopRequireDefault = require("@babel/runtime-corejs3/helpers/interopRequireDefault");
 
-var _Object$defineProperty = require("@babel/runtime-corejs3/core-js-stable/object/define-property");
-
-_Object$defineProperty(exports, "__esModule", {
-  value: true
-});
-
+exports.__esModule = true;
 exports.iterateRule = iterateRule;
 exports.subscribeNextRule = subscribeNextRule;
 
 var _getIterator2 = _interopRequireDefault(require("@babel/runtime-corejs3/core-js/get-iterator"));
 
-var _concat = _interopRequireDefault(require("@babel/runtime-corejs3/core-js-stable/instance/concat"));
+var _isArray2 = _interopRequireDefault(require("@babel/runtime-corejs3/core-js-stable/array/is-array"));
 
 var _regenerator = _interopRequireDefault(require("@babel/runtime-corejs3/regenerator"));
 
@@ -25,81 +20,71 @@ var _marked =
 /*#__PURE__*/
 _regenerator.default.mark(iterateRule);
 
-function iterateRule(rule) {
-  var next,
-      ruleNext,
-      _ref,
-      rules,
-      any,
-      _ref2,
-      countMin,
-      countMax,
-      subRule,
-      _context2,
-      _context3,
-      repeatNext,
-      _args3 = arguments;
+function iterateRule(rule, next) {
+  var ruleNext, _ref, rules, any, _ref2, countMin, countMax, subRule, repeatNext;
 
-  return _regenerator.default.wrap(function iterateRule$(_context5) {
+  return _regenerator.default.wrap(function iterateRule$(_context3) {
     while (1) {
-      switch (_context5.prev = _context5.next) {
+      switch (_context3.prev = _context3.next) {
         case 0:
-          next = _args3.length > 1 && _args3[1] !== undefined ? _args3[1] : null;
+          if (next === void 0) {
+            next = null;
+          }
 
           if (rule) {
-            _context5.next = 5;
+            _context3.next = 5;
             break;
           }
 
           if (!next) {
-            _context5.next = 4;
+            _context3.next = 4;
             break;
           }
 
-          return _context5.delegateYield(next(), "t0", 4);
+          return _context3.delegateYield(next(), "t0", 4);
 
         case 4:
-          return _context5.abrupt("return");
+          return _context3.abrupt("return");
 
         case 5:
           ruleNext = rule.next || next ? function () {
             return iterateRule(rule.next, next);
           } : null;
-          _context5.t1 = rule.type;
-          _context5.next = _context5.t1 === _rules.RuleType.Nothing ? 9 : _context5.t1 === _rules.RuleType.Action ? 12 : _context5.t1 === _rules.RuleType.Any ? 17 : _context5.t1 === _rules.RuleType.Repeat ? 24 : 30;
+          _context3.t1 = rule.type;
+          _context3.next = _context3.t1 === _rules.RuleType.Nothing ? 9 : _context3.t1 === _rules.RuleType.Action ? 12 : _context3.t1 === _rules.RuleType.Any ? 17 : _context3.t1 === _rules.RuleType.Repeat ? 24 : 30;
           break;
 
         case 9:
           if (!ruleNext) {
-            _context5.next = 11;
+            _context3.next = 11;
             break;
           }
 
-          return _context5.delegateYield(ruleNext(), "t2", 11);
+          return _context3.delegateYield(ruleNext(), "t2", 11);
 
         case 11:
-          return _context5.abrupt("break", 31);
+          return _context3.abrupt("break", 31);
 
         case 12:
-          _context5.next = 14;
+          _context3.next = 14;
           return rule;
 
         case 14:
-          _context5.next = 16;
+          _context3.next = 16;
           return ruleNext;
 
         case 16:
-          return _context5.abrupt("break", 31);
+          return _context3.abrupt("break", 31);
 
         case 17:
           _ref = rule, rules = _ref.rules;
 
           if (!(rules.length <= 1)) {
-            _context5.next = 20;
+            _context3.next = 20;
             break;
           }
 
-          throw new Error("RuleType.Any rules.length=".concat(rules.length));
+          throw new Error("RuleType.Any rules.length=" + rules.length);
 
         case 20:
           any =
@@ -125,7 +110,7 @@ function iterateRule(rule) {
                       break;
                     }
 
-                    throw new Error("RuleType.Any rule=".concat(subRule));
+                    throw new Error("RuleType.Any rule=" + subRule);
 
                   case 5:
                     _context.next = 7;
@@ -143,45 +128,45 @@ function iterateRule(rule) {
               }
             }, any);
           });
-          _context5.next = 23;
+          _context3.next = 23;
           return any();
 
         case 23:
-          return _context5.abrupt("break", 31);
+          return _context3.abrupt("break", 31);
 
         case 24:
           _ref2 = rule, countMin = _ref2.countMin, countMax = _ref2.countMax, subRule = _ref2.rule;
 
           if (!(countMax < countMin || countMax <= 0)) {
-            _context5.next = 27;
+            _context3.next = 27;
             break;
           }
 
-          throw new Error((0, _concat.default)(_context2 = (0, _concat.default)(_context3 = "RuleType.Repeat countMin=".concat(countMin, " countMax=")).call(_context3, countMax, " rule=")).call(_context2, rule));
+          throw new Error("RuleType.Repeat countMin=" + countMin + " countMax=" + countMax + " rule=" + rule);
 
         case 27:
           repeatNext =
           /*#__PURE__*/
           _regenerator.default.mark(function repeatNext(count) {
             var nextIteration;
-            return _regenerator.default.wrap(function repeatNext$(_context4) {
+            return _regenerator.default.wrap(function repeatNext$(_context2) {
               while (1) {
-                switch (_context4.prev = _context4.next) {
+                switch (_context2.prev = _context2.next) {
                   case 0:
                     if (!(count >= countMax)) {
-                      _context4.next = 4;
+                      _context2.next = 4;
                       break;
                     }
 
                     if (!ruleNext) {
-                      _context4.next = 3;
+                      _context2.next = 3;
                       break;
                     }
 
-                    return _context4.delegateYield(ruleNext(), "t0", 3);
+                    return _context2.delegateYield(ruleNext(), "t0", 3);
 
                   case 3:
-                    return _context4.abrupt("return");
+                    return _context2.abrupt("return");
 
                   case 4:
                     nextIteration = function nextIteration(newCount) {
@@ -191,38 +176,38 @@ function iterateRule(rule) {
                     };
 
                     if (!(count < countMin)) {
-                      _context4.next = 9;
+                      _context2.next = 9;
                       break;
                     }
 
-                    return _context4.delegateYield(nextIteration(count + 1), "t1", 7);
+                    return _context2.delegateYield(nextIteration(count + 1), "t1", 7);
 
                   case 7:
-                    _context4.next = 11;
+                    _context2.next = 11;
                     break;
 
                   case 9:
-                    _context4.next = 11;
+                    _context2.next = 11;
                     return [ruleNext ? ruleNext() : [], nextIteration(count + 1)];
 
                   case 11:
                   case "end":
-                    return _context4.stop();
+                    return _context2.stop();
                 }
               }
             }, repeatNext);
           });
-          return _context5.delegateYield(repeatNext(0), "t3", 29);
+          return _context3.delegateYield(repeatNext(0), "t3", 29);
 
         case 29:
-          return _context5.abrupt("break", 31);
+          return _context3.abrupt("break", 31);
 
         case 30:
           throw new Error('Unknown RuleType: ' + rule.type);
 
         case 31:
         case "end":
-          return _context5.stop();
+          return _context3.stop();
       }
     }
   }, _marked);
@@ -244,34 +229,26 @@ function subscribeNextRule(ruleIterator, iteration, fork, subscribeNode) {
     // 	}
     // }
 
-    var _iteratorNormalCompletion = true;
-    var _didIteratorError = false;
-    var _iteratorError = undefined;
+    for (var _iterator = ruleOrIterable, _isArray = (0, _isArray2.default)(_iterator), _i = 0, _iterator = _isArray ? _iterator : (0, _getIterator2.default)(_iterator);;) {
+      var _ref3;
 
-    try {
-      for (var _iterator = (0, _getIterator2.default)(ruleOrIterable), _step; !(_iteratorNormalCompletion = (_step = _iterator.next()).done); _iteratorNormalCompletion = true) {
-        var ruleIterable = _step.value;
-        var unsubscribe = fork((0, _getIterator2.default)(ruleIterable));
-
-        if (unsubscribe != null) {
-          if (!unsubscribers) {
-            unsubscribers = [unsubscribe];
-          } else {
-            unsubscribers.push(unsubscribe);
-          }
-        }
+      if (_isArray) {
+        if (_i >= _iterator.length) break;
+        _ref3 = _iterator[_i++];
+      } else {
+        _i = _iterator.next();
+        if (_i.done) break;
+        _ref3 = _i.value;
       }
-    } catch (err) {
-      _didIteratorError = true;
-      _iteratorError = err;
-    } finally {
-      try {
-        if (!_iteratorNormalCompletion && _iterator.return != null) {
-          _iterator.return();
-        }
-      } finally {
-        if (_didIteratorError) {
-          throw _iteratorError;
+
+      var ruleIterable = _ref3;
+      var unsubscribe = fork((0, _getIterator2.default)(ruleIterable));
+
+      if (unsubscribe != null) {
+        if (!unsubscribers) {
+          unsubscribers = [unsubscribe];
+        } else {
+          unsubscribers.push(unsubscribe);
         }
       }
     }

@@ -6,21 +6,11 @@ var _forEachInstanceProperty = require("@babel/runtime-corejs3/core-js-stable/in
 
 var _context;
 
-var _Object$defineProperty = require("@babel/runtime-corejs3/core-js-stable/object/define-property");
-
-_Object$defineProperty(exports, "__esModule", {
-  value: true
-});
+exports.__esModule = true;
 
 var _index = require("../common/index");
 
 _forEachInstanceProperty(_context = _Object$keys(_index)).call(_context, function (key) {
   if (key === "default" || key === "__esModule") return;
-
-  _Object$defineProperty(exports, key, {
-    enumerable: true,
-    get: function get() {
-      return _index[key];
-    }
-  });
+  exports[key] = _index[key];
 });

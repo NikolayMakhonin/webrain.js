@@ -2,32 +2,11 @@
 
 var _interopRequireDefault = require("@babel/runtime-corejs3/helpers/interopRequireDefault");
 
-var _Object$defineProperty2 = require("@babel/runtime-corejs3/core-js-stable/object/define-property");
-
-_Object$defineProperty2(exports, "__esModule", {
-  value: true
-});
-
+exports.__esModule = true;
 exports.registerMergeable = registerMergeable;
 exports.registerMerger = registerMerger;
 exports.registerMergerPrimitive = registerMergerPrimitive;
 exports.ObjectMerger = exports.TypeMetaMergerCollection = exports.MergerVisitor = void 0;
-
-var _defineProperty2 = _interopRequireDefault(require("@babel/runtime-corejs3/core-js-stable/object/define-property"));
-
-var _defineProperties = _interopRequireDefault(require("@babel/runtime-corejs3/core-js-stable/object/define-properties"));
-
-var _getOwnPropertyDescriptors = _interopRequireDefault(require("@babel/runtime-corejs3/core-js-stable/object/get-own-property-descriptors"));
-
-var _forEach = _interopRequireDefault(require("@babel/runtime-corejs3/core-js-stable/instance/for-each"));
-
-var _getOwnPropertyDescriptor = _interopRequireDefault(require("@babel/runtime-corejs3/core-js-stable/object/get-own-property-descriptor"));
-
-var _filter = _interopRequireDefault(require("@babel/runtime-corejs3/core-js-stable/instance/filter"));
-
-var _getOwnPropertySymbols = _interopRequireDefault(require("@babel/runtime-corejs3/core-js-stable/object/get-own-property-symbols"));
-
-var _keys = _interopRequireDefault(require("@babel/runtime-corejs3/core-js-stable/object/keys"));
 
 var _map = _interopRequireDefault(require("@babel/runtime-corejs3/core-js-stable/map"));
 
@@ -41,17 +20,9 @@ var _isFrozen = _interopRequireDefault(require("@babel/runtime-corejs3/core-js-s
 
 var _bind = _interopRequireDefault(require("@babel/runtime-corejs3/core-js-stable/instance/bind"));
 
-var _defineProperty3 = _interopRequireDefault(require("@babel/runtime-corejs3/helpers/defineProperty"));
+var _extends2 = _interopRequireDefault(require("@babel/runtime-corejs3/helpers/extends"));
 
-var _possibleConstructorReturn2 = _interopRequireDefault(require("@babel/runtime-corejs3/helpers/possibleConstructorReturn"));
-
-var _getPrototypeOf2 = _interopRequireDefault(require("@babel/runtime-corejs3/helpers/getPrototypeOf"));
-
-var _inherits2 = _interopRequireDefault(require("@babel/runtime-corejs3/helpers/inherits"));
-
-var _concat = _interopRequireDefault(require("@babel/runtime-corejs3/core-js-stable/instance/concat"));
-
-var _classCallCheck2 = _interopRequireDefault(require("@babel/runtime-corejs3/helpers/classCallCheck"));
+var _inheritsLoose2 = _interopRequireDefault(require("@babel/runtime-corejs3/helpers/inheritsLoose"));
 
 var _createClass2 = _interopRequireDefault(require("@babel/runtime-corejs3/helpers/createClass"));
 
@@ -67,16 +38,12 @@ var _mergeMaps = require("./merge-maps");
 
 var _mergeSets = require("./merge-sets");
 
-function ownKeys(object, enumerableOnly) { var keys = (0, _keys.default)(object); if (_getOwnPropertySymbols.default) { var symbols = (0, _getOwnPropertySymbols.default)(object); if (enumerableOnly) symbols = (0, _filter.default)(symbols).call(symbols, function (sym) { return (0, _getOwnPropertyDescriptor.default)(object, sym).enumerable; }); keys.push.apply(keys, symbols); } return keys; }
-
-function _objectSpread(target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i] != null ? arguments[i] : {}; if (i % 2) { var _context3; (0, _forEach.default)(_context3 = ownKeys(source, true)).call(_context3, function (key) { (0, _defineProperty3.default)(target, key, source[key]); }); } else if (_getOwnPropertyDescriptors.default) { (0, _defineProperties.default)(target, (0, _getOwnPropertyDescriptors.default)(source)); } else { var _context4; (0, _forEach.default)(_context4 = ownKeys(source)).call(_context4, function (key) { (0, _defineProperty2.default)(target, key, (0, _getOwnPropertyDescriptor.default)(source, key)); }); } } return target; }
-
+/* tslint:disable:no-nested-switch ban-types use-primitive-type */
 // region MergerVisitor
 var ValueState =
 /*#__PURE__*/
 function () {
   function ValueState(mergerState, target, preferClone, selfAsValue, refs) {
-    (0, _classCallCheck2.default)(this, ValueState);
     this.mergerState = mergerState;
     this.target = target;
     this.preferClone = preferClone;
@@ -86,87 +53,83 @@ function () {
     this.type = options && options.valueType || target.constructor;
   }
 
-  (0, _createClass2.default)(ValueState, [{
-    key: "resolveRef",
-    value: function resolveRef() {
-      if (this._isRef == null) {
-        if (this.selfAsValue) {
-          this._isRef = false;
+  var _proto = ValueState.prototype;
+
+  _proto.resolveRef = function resolveRef() {
+    if (this._isRef == null) {
+      if (this.selfAsValue) {
+        this._isRef = false;
+      } else {
+        var ref = this.getRef();
+
+        if (ref) {
+          this.target = ref;
+          this._isRef = true;
         } else {
-          var ref = this.getRef();
-
-          if (ref) {
-            this.target = ref;
-            this._isRef = true;
-          } else {
-            this._isRef = false;
-          }
+          this._isRef = false;
         }
       }
     }
-  }, {
-    key: "getRef",
-    value: function getRef() {
-      var refs = this.refs;
+  };
 
-      if (refs) {
-        var id = (0, _objectUniqueId.getObjectUniqueId)(this.target);
+  _proto.getRef = function getRef() {
+    var refs = this.refs;
 
-        if (id != null) {
-          var ref = refs[id];
-          return ref;
-        }
-      }
-
-      return null;
-    }
-  }, {
-    key: "setRef",
-    value: function setRef(refObj) {
+    if (refs) {
       var id = (0, _objectUniqueId.getObjectUniqueId)(this.target);
 
       if (id != null) {
-        var refs = this.refs;
-
-        if (refs == null) {
-          this.refs = refs = [];
-        }
-
-        refs[id] = refObj;
+        var ref = refs[id];
+        return ref;
       }
     }
-  }, {
-    key: "canMerge",
-    value: function canMerge(source, target) {
-      var canMerge = this.merger.canMerge;
 
-      if (canMerge) {
-        if (target == null) {
-          target = this.target;
+    return null;
+  };
 
-          if (this.isRef || source.isRef) {
-            return target === source.target ? null : false;
-          }
-        }
+  _proto.setRef = function setRef(refObj) {
+    var id = (0, _objectUniqueId.getObjectUniqueId)(this.target);
 
-        var result = canMerge(target, source.target);
+    if (id != null) {
+      var refs = this.refs;
 
-        if (result == null) {
-          return null;
-        }
-
-        if (typeof result !== 'boolean') {
-          var _context;
-
-          throw new Error((0, _concat.default)(_context = "Unknown canMerge() result (".concat(result.constructor.name, ") for ")).call(_context, this.type.name));
-        }
-
-        return result;
+      if (refs == null) {
+        this.refs = refs = [];
       }
 
-      return this.target.constructor === source.constructor;
+      refs[id] = refObj;
     }
-  }, {
+  };
+
+  _proto.canMerge = function canMerge(source, target) {
+    var canMerge = this.merger.canMerge;
+
+    if (canMerge) {
+      if (target == null) {
+        target = this.target;
+
+        if (this.isRef || source.isRef) {
+          return target === source.target ? null : false;
+        }
+      }
+
+      var result = canMerge(target, source.target);
+
+      if (result == null) {
+        return null;
+      }
+
+      if (typeof result !== 'boolean') {
+        throw new Error("Unknown canMerge() result (" + result.constructor.name + ") for " + this.type.name);
+      }
+
+      return result;
+    }
+
+    return this.target.constructor === source.constructor;
+  };
+
+  (0, _createClass2.default)(ValueState, [{
     key: "isRef",
     get: function get() {
       this.resolveRef();
@@ -181,7 +144,7 @@ function () {
         _meta = this.mergerState.mergerVisitor.typeMeta.getMeta(this.type);
 
         if (!_meta) {
-          throw new Error("Class (".concat(this.type && this.type.name, ") have no type meta"));
+          throw new Error("Class (" + (this.type && this.type.name) + ") have no type meta");
         }
 
         this._meta = _meta;
@@ -199,7 +162,7 @@ function () {
         _merger = meta.merger;
 
         if (!_merger) {
-          throw new Error("Class (".concat(this.type && this.type.name, ") type meta have no merger"));
+          throw new Error("Class (" + (this.type && this.type.name) + ") type meta have no merger");
         }
 
         this._merger = _merger;
@@ -213,7 +176,7 @@ function () {
       var merger = this.merger;
 
       if (!merger.merge) {
-        throw new Error("Class (".concat(this.type && this.type.name, ") merger have no merge method"));
+        throw new Error("Class (" + (this.type && this.type.name) + ") merger have no merge method");
       }
 
       return merger.merge;
@@ -254,15 +217,15 @@ function () {
         })(target);
 
         if (!_cloneInstance) {
-          throw new Error("Class (".concat((0, _helpers.typeToDebugString)(type), ") cannot be clone"));
+          throw new Error("Class (" + (0, _helpers.typeToDebugString)(type) + ") cannot be clone");
         }
 
         if (_cloneInstance === target) {
-          throw new Error("Clone result === Source for (".concat((0, _helpers.typeToDebugString)(type), ")"));
+          throw new Error("Clone result === Source for (" + (0, _helpers.typeToDebugString)(type) + ")");
         }
 
         if (_cloneInstance.constructor !== type) {
-          throw new Error("Clone type !== (".concat((0, _helpers.typeToDebugString)(type), ")"));
+          throw new Error("Clone type !== (" + (0, _helpers.typeToDebugString)(type) + ")");
         }
 
         this._cloneInstance = _cloneInstance;
@@ -297,13 +260,13 @@ function () {
               var preferClone = this.preferClone,
                   refs = this.refs;
               this.merge(mergerVisitor.getNextMerge(preferClone, preferClone, refs, refs, refs, options), _clone, target, target, function () {
-                throw new Error("Class (".concat(_this2.type.name, ") cannot be merged with clone"));
+                throw new Error("Class (" + _this2.type.name + ") cannot be merged with clone");
               }, preferClone, preferClone, options);
               break;
 
             case false:
               if (this.merger.merge) {
-                throw new Error("Class (".concat(this.type.name, ") cannot be merged with clone"));
+                throw new Error("Class (" + this.type.name + ") cannot be merged with clone");
               }
 
               break;
@@ -326,7 +289,6 @@ var MergeState =
 function () {
   // noinspection DuplicatedCode
   function MergeState(mergerVisitor, base, older, newer, set, preferCloneBase, preferCloneOlder, preferCloneNewer, refsBase, refsOlder, refsNewer, options) {
-    (0, _classCallCheck2.default)(this, MergeState);
     this.mergerVisitor = mergerVisitor;
     this.base = base;
     this.older = older;
@@ -341,91 +303,91 @@ function () {
     this.options = options;
   }
 
-  (0, _createClass2.default)(MergeState, [{
-    key: "fillOlderNewer",
-    value: function fillOlderNewer() {
-      var olderState = this.olderState,
-          newerState = this.newerState; // this.mergerVisitor.setStatus(olderState.clone, ObjectStatus.Merged)
-      // const idNewer = getObjectUniqueId(newerState.target as any)
+  var _proto2 = MergeState.prototype;
+
+  _proto2.fillOlderNewer = function fillOlderNewer() {
+    var olderState = this.olderState,
+        newerState = this.newerState; // this.mergerVisitor.setStatus(olderState.clone, ObjectStatus.Merged)
+    // const idNewer = getObjectUniqueId(newerState.target as any)
+    // if (idNewer != null) {
+    // 	refsNewer[idNewer] = olderState.clone
+    // }
+
+    var older = olderState.clone;
+    newerState.setRef(older);
+    var options = this.options,
+        set = this.set,
+        preferCloneNewer = this.preferCloneNewer,
+        refsOlder = this.refsOlder,
+        refsNewer = this.refsNewer;
+    var isSet;
+    var result = olderState.merge(this.mergerVisitor.getNextMerge(preferCloneNewer, preferCloneNewer, refsOlder, refsNewer, refsNewer, options), older, newerState.target, newerState.target, set ? function (o) {
       // if (idNewer != null) {
-      // 	refsNewer[idNewer] = olderState.clone
+      // 	refsNewer[idNewer] = o
       // }
+      set(o);
+      isSet = true;
+    } : function () {
+      throw new Error("Class " + olderState.type.name + " does not need cloning." + 'You should use "preferClone: false" in merger options for this class');
+    }, preferCloneNewer, preferCloneNewer, options);
 
-      var older = olderState.clone;
-      newerState.setRef(older);
-      var options = this.options,
-          set = this.set,
-          preferCloneNewer = this.preferCloneNewer,
-          refsOlder = this.refsOlder,
-          refsNewer = this.refsNewer;
-      var isSet;
-      var result = olderState.merge(this.mergerVisitor.getNextMerge(preferCloneNewer, preferCloneNewer, refsOlder, refsNewer, refsNewer, options), older, newerState.target, newerState.target, set ? function (o) {
-        // if (idNewer != null) {
-        // 	refsNewer[idNewer] = o
-        // }
-        set(o);
-        isSet = true;
-      } : function () {
-        throw new Error("Class ".concat(olderState.type.name, " does not need cloning.") + 'You should use "preferClone: false" in merger options for this class');
-      }, preferCloneNewer, preferCloneNewer, options);
-
-      if (isSet) {
-        return;
-      }
-
-      if (result || newerState.mustBeCloned) {
-        set(older);
-        return;
-      }
-
-      set(newerState.target);
+    if (isSet) {
+      return;
     }
-  }, {
-    key: "mergeWithBase",
-    value: function mergeWithBase(olderState, newerState) {
-      var baseState = this.baseState;
-      var base = baseState.clone; // baseState.setRef(base)
 
-      olderState.setRef(base);
-      newerState.setRef(base);
-      var options = this.options,
-          set = this.set;
-      var refsBase = baseState.refs;
-      var preferCloneOlder = olderState.preferClone,
-          refsOlder = olderState.refs;
-      var preferCloneNewer = newerState.preferClone,
-          refsNewer = newerState.refs;
-      var isSet;
-      var result = baseState.merge(this.mergerVisitor.getNextMerge(preferCloneOlder, preferCloneNewer, refsBase, refsOlder, refsNewer, options), base, olderState.target, newerState.target, // for String() etc., that cannot be changed
-      set ? function (o) {
-        baseState.setRef(o);
-        olderState.setRef(o);
-        newerState.setRef(o);
-        set(o);
-        isSet = true;
-      } : function () {
-        if (baseState.mustBeCloned) {
-          throw new Error("Class ".concat(baseState.type.name, " does not need cloning.") + 'You should use "preferClone: false" in merger options for this class');
-        } else {
-          isSet = true;
-        }
-      }, preferCloneOlder, preferCloneNewer, options);
+    if (result || newerState.mustBeCloned) {
+      set(older);
+      return;
+    }
 
-      if (isSet) {
-        return !!set;
-      }
+    set(newerState.target);
+  };
 
-      if (!result) {
-        return false;
-      }
+  _proto2.mergeWithBase = function mergeWithBase(olderState, newerState) {
+    var baseState = this.baseState;
+    var base = baseState.clone; // baseState.setRef(base)
 
+    olderState.setRef(base);
+    newerState.setRef(base);
+    var options = this.options,
+        set = this.set;
+    var refsBase = baseState.refs;
+    var preferCloneOlder = olderState.preferClone,
+        refsOlder = olderState.refs;
+    var preferCloneNewer = newerState.preferClone,
+        refsNewer = newerState.refs;
+    var isSet;
+    var result = baseState.merge(this.mergerVisitor.getNextMerge(preferCloneOlder, preferCloneNewer, refsBase, refsOlder, refsNewer, options), base, olderState.target, newerState.target, // for String() etc., that cannot be changed
+    set ? function (o) {
+      baseState.setRef(o);
+      olderState.setRef(o);
+      newerState.setRef(o);
+      set(o);
+      isSet = true;
+    } : function () {
       if (baseState.mustBeCloned) {
-        set(base);
+        throw new Error("Class " + baseState.type.name + " does not need cloning." + 'You should use "preferClone: false" in merger options for this class');
+      } else {
+        isSet = true;
       }
+    }, preferCloneOlder, preferCloneNewer, options);
 
-      return true;
+    if (isSet) {
+      return !!set;
     }
-  }, {
+
+    if (!result) {
+      return false;
+    }
+
+    if (baseState.mustBeCloned) {
+      set(base);
+    }
+
+    return true;
+  };
+
+  (0, _createClass2.default)(MergeState, [{
     key: "baseState",
     get: function get() {
       var _baseState = this._baseState;
@@ -494,261 +456,201 @@ var MergerVisitor =
 function () {
   // public refs: IRef[]
   function MergerVisitor(typeMeta) {
-    (0, _classCallCheck2.default)(this, MergerVisitor);
     this.typeMeta = typeMeta;
   }
 
-  (0, _createClass2.default)(MergerVisitor, [{
-    key: "getStatus",
-    value: function getStatus(object) {
-      var statuses = this.statuses;
+  var _proto3 = MergerVisitor.prototype;
 
-      if (!statuses) {
-        return null;
-      }
+  _proto3.getStatus = function getStatus(object) {
+    var statuses = this.statuses;
 
-      var id = (0, _objectUniqueId.getObjectUniqueId)(object);
-
-      if (id == null) {
-        throw new Error("object is primitive: ".concat(object));
-      }
-
-      return statuses[id];
+    if (!statuses) {
+      return null;
     }
-  }, {
-    key: "setStatus",
-    value: function setStatus(object, status) {
-      var statuses = this.statuses;
 
-      if (!statuses) {
-        this.statuses = statuses = [];
-      }
+    var id = (0, _objectUniqueId.getObjectUniqueId)(object);
 
-      var id = (0, _objectUniqueId.getObjectUniqueId)(object);
-
-      if (id == null) {
-        throw new Error("object is primitive: ".concat(object));
-      }
-
-      statuses[id] = status;
-      return object;
-    } // noinspection JSUnusedLocalSymbols
-
-  }, {
-    key: "getNextMerge",
-    value: function getNextMerge(preferCloneOlder, preferCloneNewer, refsBase, refsOlder, refsNewer, options) {
-      var _this3 = this;
-
-      return function (next_base, next_older, next_newer, next_set, next_preferCloneOlder, next_preferCloneNewer, next_options) {
-        return _this3.merge(next_base, next_older, next_newer, next_set, next_preferCloneOlder == null ? preferCloneOlder : next_preferCloneOlder, next_preferCloneNewer == null ? preferCloneNewer : next_preferCloneNewer, next_options, // next_options == null || next_options === options
-        // 	? options
-        // 	: (options == null ? next_options : {
-        // 		...options,
-        // 		...next_options,
-        // 	}),
-        refsBase, refsOlder, refsNewer);
-      };
+    if (id == null) {
+      throw new Error("object is primitive: " + object);
     }
-  }, {
-    key: "merge",
-    value: function merge(base, older, newer, set, preferCloneOlder, preferCloneNewer, options, refsBase, refsOlder, refsNewer) {
-      var preferCloneBase = null;
 
-      if (base === newer) {
-        if (base === older) {
-          return false;
-        }
+    return statuses[id];
+  };
 
-        preferCloneBase = preferCloneNewer;
-        preferCloneNewer = preferCloneOlder;
-        newer = older;
-      }
+  _proto3.setStatus = function setStatus(object, status) {
+    var statuses = this.statuses;
 
-      if (isPrimitive(newer)) {
-        if (set) {
-          set(newer);
-          return true;
-        }
+    if (!statuses) {
+      this.statuses = statuses = [];
+    }
 
+    var id = (0, _objectUniqueId.getObjectUniqueId)(object);
+
+    if (id == null) {
+      throw new Error("object is primitive: " + object);
+    }
+
+    statuses[id] = status;
+    return object;
+  } // noinspection JSUnusedLocalSymbols
+  ;
+
+  _proto3.getNextMerge = function getNextMerge(preferCloneOlder, preferCloneNewer, refsBase, refsOlder, refsNewer, options) {
+    var _this3 = this;
+
+    return function (next_base, next_older, next_newer, next_set, next_preferCloneOlder, next_preferCloneNewer, next_options) {
+      return _this3.merge(next_base, next_older, next_newer, next_set, next_preferCloneOlder == null ? preferCloneOlder : next_preferCloneOlder, next_preferCloneNewer == null ? preferCloneNewer : next_preferCloneNewer, next_options, // next_options == null || next_options === options
+      // 	? options
+      // 	: (options == null ? next_options : {
+      // 		...options,
+      // 		...next_options,
+      // 	}),
+      refsBase, refsOlder, refsNewer);
+    };
+  };
+
+  _proto3.merge = function merge(base, older, newer, set, preferCloneOlder, preferCloneNewer, options, refsBase, refsOlder, refsNewer) {
+    var preferCloneBase = null;
+
+    if (base === newer) {
+      if (base === older) {
         return false;
       }
 
-      if (base === older) {
-        preferCloneBase = preferCloneOlder = mergePreferClone(preferCloneBase, preferCloneOlder);
+      preferCloneBase = preferCloneNewer;
+      preferCloneNewer = preferCloneOlder;
+      newer = older;
+    }
+
+    if (isPrimitive(newer)) {
+      if (set) {
+        set(newer);
+        return true;
       }
 
-      if (older === newer) {
-        preferCloneOlder = preferCloneNewer = mergePreferClone(preferCloneOlder, preferCloneNewer);
-      }
+      return false;
+    }
 
-      var mergeState = new MergeState(this, base, older, newer, set, preferCloneBase, preferCloneOlder, preferCloneNewer, refsBase, refsOlder, refsNewer, options); // region refs
+    if (base === older) {
+      preferCloneBase = preferCloneOlder = mergePreferClone(preferCloneBase, preferCloneOlder);
+    }
 
-      if (!isPrimitive(base) && mergeState.baseState.isRef) {
-        mergeState.newerState.resolveRef();
+    if (older === newer) {
+      preferCloneOlder = preferCloneNewer = mergePreferClone(preferCloneOlder, preferCloneNewer);
+    }
 
-        if (mergeState.baseState.target === mergeState.newerState.target) {
-          if (!isPrimitive(older)) {
-            mergeState.olderState.resolveRef();
+    var mergeState = new MergeState(this, base, older, newer, set, preferCloneBase, preferCloneOlder, preferCloneNewer, refsBase, refsOlder, refsNewer, options); // region refs
 
-            if (mergeState.baseState.target === mergeState.olderState.target) {
-              return false;
-            }
-          }
+    if (!isPrimitive(base) && mergeState.baseState.isRef) {
+      mergeState.newerState.resolveRef();
 
-          mergeState.baseState = mergeState.newerState;
-          mergeState.newerState = mergeState.olderState;
-          newer = mergeState.newerState.target;
-        }
-
+      if (mergeState.baseState.target === mergeState.newerState.target) {
         if (!isPrimitive(older)) {
           mergeState.olderState.resolveRef();
 
           if (mergeState.baseState.target === mergeState.olderState.target) {
-            mergeState.olderState.preferClone = mergePreferClone(mergeState.baseState.preferClone, mergeState.olderState.preferClone);
-            mergeState.baseState = mergeState.olderState;
+            return false;
           }
-
-          older = mergeState.olderState.target;
         }
 
-        base = mergeState.baseState.target;
+        mergeState.baseState = mergeState.newerState;
+        mergeState.newerState = mergeState.olderState;
+        newer = mergeState.newerState.target;
       }
 
       if (!isPrimitive(older)) {
         mergeState.olderState.resolveRef();
-        mergeState.newerState.resolveRef();
 
-        if ((mergeState.olderState.isRef || mergeState.newerState.isRef) && mergeState.olderState.target === mergeState.newerState.target) {
-          mergeState.newerState.preferClone = mergePreferClone(mergeState.olderState.preferClone, mergeState.newerState.preferClone);
-          mergeState.olderState = mergeState.newerState;
+        if (mergeState.baseState.target === mergeState.olderState.target) {
+          mergeState.olderState.preferClone = mergePreferClone(mergeState.baseState.preferClone, mergeState.olderState.preferClone);
+          mergeState.baseState = mergeState.olderState;
         }
 
         older = mergeState.olderState.target;
-        newer = mergeState.newerState.target;
-      } // endregion
+      }
+
+      base = mergeState.baseState.target;
+    }
+
+    if (!isPrimitive(older)) {
+      mergeState.olderState.resolveRef();
+      mergeState.newerState.resolveRef();
+
+      if ((mergeState.olderState.isRef || mergeState.newerState.isRef) && mergeState.olderState.target === mergeState.newerState.target) {
+        mergeState.newerState.preferClone = mergePreferClone(mergeState.olderState.preferClone, mergeState.newerState.preferClone);
+        mergeState.olderState = mergeState.newerState;
+      }
+
+      older = mergeState.olderState.target;
+      newer = mergeState.newerState.target;
+    } // endregion
 
 
-      var fillOlderNewer = function fillOlderNewer() {
-        switch (mergeState.olderState.canMerge(mergeState.newerState)) {
-          case null:
-            if (mergeState.olderState.mustBeCloned) {
-              set(mergeState.newerState.clone);
-            } else {
-              if (mergeState.newerState.mustBeCloned) {
-                set(mergeState.olderState.target);
-              } else {
-                set(mergeState.newerState.target);
-              }
-            }
-
-            break;
-
-          case false:
-            set(mergeState.newerState.clone);
-            break;
-
-          case true:
-            mergeState.fillOlderNewer();
-            return true;
-        }
-      };
-
-      if (isPrimitive(base)) {
-        if (set) {
-          if (isPrimitive(older) || older === newer) {
+    var fillOlderNewer = function fillOlderNewer() {
+      switch (mergeState.olderState.canMerge(mergeState.newerState)) {
+        case null:
+          if (mergeState.olderState.mustBeCloned) {
             set(mergeState.newerState.clone);
           } else {
-            fillOlderNewer();
+            if (mergeState.newerState.mustBeCloned) {
+              set(mergeState.olderState.target);
+            } else {
+              set(mergeState.newerState.target);
+            }
           }
 
+          break;
+
+        case false:
+          set(mergeState.newerState.clone);
+          break;
+
+        case true:
+          mergeState.fillOlderNewer();
           return true;
+      }
+    };
+
+    if (isPrimitive(base)) {
+      if (set) {
+        if (isPrimitive(older) || older === newer) {
+          set(mergeState.newerState.clone);
+        } else {
+          fillOlderNewer();
         }
 
-        return false;
+        return true;
       }
 
-      if (!set && mergeState.baseState.mustBeCloned) {
-        return false;
-      }
+      return false;
+    }
 
-      if (isPrimitive(older)) {
-        switch (mergeState.baseState.canMerge(mergeState.newerState)) {
-          case null:
-            if (set) {
-              set(older);
-              return true;
-            }
+    if (!set && mergeState.baseState.mustBeCloned) {
+      return false;
+    }
 
-            break;
-
-          case false:
-            if (set) {
-              set(mergeState.newerState.clone);
-              return true;
-            }
-
-            break;
-
-          case true:
-            if (!mergeState.mergeWithBase(mergeState.newerState, mergeState.newerState)) {
-              if (set) {
-                set(older);
-                return true;
-              }
-
-              return false;
-            }
-
-            return true;
-        }
-
-        return false;
-      }
-
+    if (isPrimitive(older)) {
       switch (mergeState.baseState.canMerge(mergeState.newerState)) {
+        case null:
+          if (set) {
+            set(older);
+            return true;
+          }
+
+          break;
+
         case false:
           if (set) {
-            fillOlderNewer();
+            set(mergeState.newerState.clone);
             return true;
           }
 
-          return false;
+          break;
 
-        case null:
-          switch (mergeState.baseState.canMerge(mergeState.olderState)) {
-            case null:
-              return false;
-
-            case false:
-              if (set) {
-                set(mergeState.olderState.clone);
-                return true;
-              }
-
-              return false;
-
-            case true:
-              return mergeState.mergeWithBase(mergeState.olderState, mergeState.olderState);
-          }
-
-          throw new Error('Unreachable code');
-      }
-
-      switch (mergeState.baseState.canMerge(mergeState.olderState)) {
-        case null:
-          return mergeState.mergeWithBase(mergeState.newerState, mergeState.newerState);
-        // if (!mergeState.mergeWithBase(mergeState.newerState, mergeState.newerState)) {
-        // 	if (set) {
-        // 		throw new Error('base != newer; base == older; base == newer')
-        // 	}
-        // 	return false
-        // }
-        // return true
-
-        case false:
+        case true:
           if (!mergeState.mergeWithBase(mergeState.newerState, mergeState.newerState)) {
             if (set) {
-              set(mergeState.olderState.clone);
+              set(older);
               return true;
             }
 
@@ -756,14 +658,70 @@ function () {
           }
 
           return true;
-
-        case true:
-          return mergeState.mergeWithBase(mergeState.olderState, mergeState.newerState);
       }
 
-      throw new Error('Unreachable code');
+      return false;
     }
-  }]);
+
+    switch (mergeState.baseState.canMerge(mergeState.newerState)) {
+      case false:
+        if (set) {
+          fillOlderNewer();
+          return true;
+        }
+
+        return false;
+
+      case null:
+        switch (mergeState.baseState.canMerge(mergeState.olderState)) {
+          case null:
+            return false;
+
+          case false:
+            if (set) {
+              set(mergeState.olderState.clone);
+              return true;
+            }
+
+            return false;
+
+          case true:
+            return mergeState.mergeWithBase(mergeState.olderState, mergeState.olderState);
+        }
+
+        throw new Error('Unreachable code');
+    }
+
+    switch (mergeState.baseState.canMerge(mergeState.olderState)) {
+      case null:
+        return mergeState.mergeWithBase(mergeState.newerState, mergeState.newerState);
+      // if (!mergeState.mergeWithBase(mergeState.newerState, mergeState.newerState)) {
+      // 	if (set) {
+      // 		throw new Error('base != newer; base == older; base == newer')
+      // 	}
+      // 	return false
+      // }
+      // return true
+
+      case false:
+        if (!mergeState.mergeWithBase(mergeState.newerState, mergeState.newerState)) {
+          if (set) {
+            set(mergeState.olderState.clone);
+            return true;
+          }
+
+          return false;
+        }
+
+        return true;
+
+      case true:
+        return mergeState.mergeWithBase(mergeState.olderState, mergeState.newerState);
+    }
+
+    throw new Error('Unreachable code');
+  };
+
   return MergerVisitor;
 }(); // endregion
 // region TypeMetaMergerCollection
@@ -774,37 +732,35 @@ exports.MergerVisitor = MergerVisitor;
 var TypeMetaMergerCollection =
 /*#__PURE__*/
 function (_TypeMetaCollection) {
-  (0, _inherits2.default)(TypeMetaMergerCollection, _TypeMetaCollection);
+  (0, _inheritsLoose2.default)(TypeMetaMergerCollection, _TypeMetaCollection);
 
   function TypeMetaMergerCollection(proto) {
-    (0, _classCallCheck2.default)(this, TypeMetaMergerCollection);
-    return (0, _possibleConstructorReturn2.default)(this, (0, _getPrototypeOf2.default)(TypeMetaMergerCollection).call(this, proto || TypeMetaMergerCollection.default));
+    return _TypeMetaCollection.call(this, proto || TypeMetaMergerCollection.default) || this;
   }
 
-  (0, _createClass2.default)(TypeMetaMergerCollection, [{
-    key: "putMergeableType",
-    value: function putMergeableType(type, meta) {
-      return this.putType(type, TypeMetaMergerCollection.makeTypeMetaMerger(type, meta));
-    }
-  }], [{
-    key: "makeTypeMetaMerger",
-    value: function makeTypeMetaMerger(type, meta) {
-      return _objectSpread({
-        valueFactory: function valueFactory() {
-          return new type();
+  TypeMetaMergerCollection.makeTypeMetaMerger = function makeTypeMetaMerger(type, meta) {
+    return (0, _extends2.default)({
+      valueFactory: function valueFactory() {
+        return new type();
+      }
+    }, meta, {
+      merger: (0, _extends2.default)({
+        canMerge: function canMerge(target, source) {
+          return target._canMerge ? target._canMerge(source) : target.constructor === source.constructor;
+        },
+        merge: function merge(_merge, base, older, newer, set, preferCloneOlder, preferCloneNewer, options) {
+          return base._merge(_merge, older, newer, preferCloneOlder, preferCloneNewer, options);
         }
-      }, meta, {
-        merger: _objectSpread({
-          canMerge: function canMerge(target, source) {
-            return target._canMerge ? target._canMerge(source) : target.constructor === source.constructor;
-          },
-          merge: function merge(_merge, base, older, newer, set, preferCloneOlder, preferCloneNewer, options) {
-            return base._merge(_merge, older, newer, preferCloneOlder, preferCloneNewer, options);
-          }
-        }, meta ? meta.merger : {})
-      });
-    }
-  }]);
+      }, meta ? meta.merger : {})
+    });
+  };
+
+  var _proto4 = TypeMetaMergerCollection.prototype;
+
+  _proto4.putMergeableType = function putMergeableType(type, meta) {
+    return this.putType(type, TypeMetaMergerCollection.makeTypeMetaMerger(type, meta));
+  };
+
   return TypeMetaMergerCollection;
 }(_TypeMeta.TypeMetaCollection);
 
@@ -820,10 +776,10 @@ function registerMerger(type, meta) {
 }
 
 function registerMergerPrimitive(type, meta) {
-  registerMerger(type, _objectSpread({
+  registerMerger(type, (0, _extends2.default)({
     preferClone: false
   }, meta, {
-    merger: _objectSpread({
+    merger: (0, _extends2.default)({
       merge: function merge(_merge2, base, older, newer, set) {
         set(newer.valueOf());
         return true;
@@ -838,21 +794,20 @@ var ObjectMerger =
 /*#__PURE__*/
 function () {
   function ObjectMerger(typeMeta) {
-    var _context2;
+    var _context;
 
-    (0, _classCallCheck2.default)(this, ObjectMerger);
     this.typeMeta = new TypeMetaMergerCollection(typeMeta);
-    this.merge = (0, _bind.default)(_context2 = this.merge).call(_context2, this);
+    this.merge = (0, _bind.default)(_context = this.merge).call(_context, this);
   }
 
-  (0, _createClass2.default)(ObjectMerger, [{
-    key: "merge",
-    value: function merge(base, older, newer, set, preferCloneOlder, preferCloneNewer, options) {
-      var merger = new MergerVisitor(this.typeMeta);
-      var mergedValue = merger.merge(base, older, newer, set, preferCloneOlder, preferCloneNewer, options);
-      return mergedValue;
-    }
-  }]);
+  var _proto5 = ObjectMerger.prototype;
+
+  _proto5.merge = function merge(base, older, newer, set, preferCloneOlder, preferCloneNewer, options) {
+    var merger = new MergerVisitor(this.typeMeta);
+    var mergedValue = merger.merge(base, older, newer, set, preferCloneOlder, preferCloneNewer, options);
+    return mergedValue;
+  };
+
   return ObjectMerger;
 }(); // endregion
 // region Primitive Mergers
