@@ -9,7 +9,7 @@ import {IMergeable, IMergeOptions, IMergeValue} from '../../../../../../main/com
 import {registerMergeable} from '../../../../../../main/common/extensions/merge/mergers'
 import {ArrayMap} from '../../../../../../main/common/lists/ArrayMap'
 import {ArraySet} from '../../../../../../main/common/lists/ArraySet'
-import {canHaveUniqueId} from '../../../../../../main/common/lists/helpers/object-unique-id'
+import {canHaveUniqueId} from '../../../../../../main/common/helpers/object-unique-id'
 import {fillMap, fillObject, fillObjectKeys, fillSet} from '../../../../../../main/common/lists/helpers/set'
 import {ObjectHashMap} from '../../../../../../main/common/lists/ObjectHashMap'
 import {ObjectMap} from '../../../../../../main/common/lists/ObjectMap'

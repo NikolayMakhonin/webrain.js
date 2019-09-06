@@ -14,7 +14,7 @@ import { resolveAsync, ThenableSync } from '../../../main/common/async/ThenableS
 import { createFunction, isIterable } from '../../../main/common/helpers/helpers';
 import { ArraySet } from '../../../main/common/lists/ArraySet';
 import { binarySearch } from '../../../main/common/lists/helpers/array';
-import { freezeWithUniqueId, getObjectUniqueId } from '../../../main/common/lists/helpers/object-unique-id';
+import { freezeWithUniqueId, getObjectUniqueId } from '../../../main/common/helpers/object-unique-id';
 import { SortedList } from '../../../main/common/lists/SortedList';
 import { createObject, Tester } from '../../tests/common/main/rx/deep-subscribe/helpers/Tester';
 const SetNative = Set;

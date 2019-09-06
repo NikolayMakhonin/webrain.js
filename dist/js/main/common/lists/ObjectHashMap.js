@@ -31,7 +31,7 @@ var _serializers = require("../extensions/serialization/serializers");
 
 var _helpers = require("../helpers/helpers");
 
-var _objectUniqueId = require("./helpers/object-unique-id");
+var _objectUniqueId = require("../helpers/object-unique-id");
 
 var _set = require("./helpers/set");
 

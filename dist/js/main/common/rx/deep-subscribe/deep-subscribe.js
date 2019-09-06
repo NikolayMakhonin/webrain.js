@@ -16,7 +16,7 @@ var _iterateRule = require("./iterate-rule");
 
 var _RuleBuilder = require("./RuleBuilder");
 
-var _objectUniqueId = require("../../lists/helpers/object-unique-id");
+var _objectUniqueId = require("../../helpers/object-unique-id");
 
 var _helpers = require("../../helpers/helpers");
 

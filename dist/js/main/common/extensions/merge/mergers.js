@@ -34,7 +34,7 @@ var _createClass2 = _interopRequireDefault(require("@babel/runtime-corejs3/helpe
 
 var _helpers = require("../../helpers/helpers");
 
-var _objectUniqueId = require("../../lists/helpers/object-unique-id");
+var _objectUniqueId = require("../../helpers/object-unique-id");
 
 var _set2 = require("../../lists/helpers/set");
 

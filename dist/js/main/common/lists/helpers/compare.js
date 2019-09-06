@@ -9,7 +9,7 @@ exports.compareStrict = compareStrict;
 
 var _isArray = _interopRequireDefault(require("@babel/runtime-corejs3/core-js-stable/array/is-array"));
 
-var _objectUniqueId = require("./object-unique-id");
+var _objectUniqueId = require("../../helpers/object-unique-id");
 
 /* tslint:disable:use-isnan */
 // noinspection DuplicatedCode

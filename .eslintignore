@@ -1,8 +1,9 @@
 node_modules
 tmp
 dist
-**/_trash
+_trash
 __sapper__
-**/polyfills/**
-env/polyfill/bundle.js
+**/polyfill*/**
+src/assets/**/*
+static
 *.ts

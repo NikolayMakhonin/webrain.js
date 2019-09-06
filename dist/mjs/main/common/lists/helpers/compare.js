@@ -1,6 +1,6 @@
 /* tslint:disable:use-isnan */
-import './object-unique-id';
-import { getObjectUniqueId } from './object-unique-id'; // noinspection DuplicatedCode
+import '../../helpers/object-unique-id';
+import { getObjectUniqueId } from '../../helpers/object-unique-id'; // noinspection DuplicatedCode
 
 export function compareFast(o1, o2) {
   if (o1 === o2) {

@@ -1,6 +1,6 @@
 import { ThenableSync } from '../../async/ThenableSync';
 import { typeToDebugString } from '../../helpers/helpers';
-import { getObjectUniqueId } from '../../lists/helpers/object-unique-id';
+import { getObjectUniqueId } from '../../helpers/object-unique-id';
 import { TypeMetaCollectionWithId } from '../TypeMeta';
 // region SerializerVisitor
 export class SerializerVisitor {

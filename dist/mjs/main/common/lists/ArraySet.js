@@ -6,7 +6,7 @@ import { createMergeSetWrapper } from '../extensions/merge/merge-sets';
 import { registerMergeable } from '../extensions/merge/mergers';
 import { registerSerializable } from '../extensions/serialization/serializers';
 import { isIterable } from '../helpers/helpers';
-import { getObjectUniqueId } from './helpers/object-unique-id';
+import { getObjectUniqueId } from '../helpers/object-unique-id';
 import { fillSet } from './helpers/set';
 _Symbol$toStringTag = Symbol.toStringTag;
 _Symbol$iterator = Symbol.iterator;

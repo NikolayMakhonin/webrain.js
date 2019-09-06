@@ -1,7 +1,7 @@
 "use strict";
 
 exports.__esModule = true;
-exports.Property = exports.connectorFactory = exports.calcPropertyFactory = exports.CalcObjectBuilder = exports.ObservableObject = exports.ThenableSync = void 0;
+exports.createFunction = exports.Property = exports.connectorFactory = exports.calcPropertyFactory = exports.CalcObjectBuilder = exports.ObservableObject = exports.ThenableSync = void 0;
 
 var _ThenableSync = require("./async/ThenableSync");
 
@@ -26,3 +26,7 @@ exports.connectorFactory = _ConnectorBuilder.connectorFactory;
 var _Property = require("./rx/object/properties/Property");
 
 exports.Property = _Property.Property;
+
+var _helpers = require("./helpers/helpers");
+
+exports.createFunction = _helpers.createFunction;

@@ -6,7 +6,7 @@ import {IRule} from './contracts/rules'
 import {IRuleIterator, iterateRule, subscribeNextRule} from './iterate-rule'
 import {RuleBuilder} from "./RuleBuilder"
 import {ISubscribeValue} from "./contracts/common"
-import {getObjectUniqueId} from "../../lists/helpers/object-unique-id"
+import {getObjectUniqueId} from "../../helpers/object-unique-id"
 import {checkIsFuncOrNull, toSingleCall} from "../../helpers/helpers"
 import {hasDefaultProperty, subscribeDefaultProperty} from './rules-subscribe'
 

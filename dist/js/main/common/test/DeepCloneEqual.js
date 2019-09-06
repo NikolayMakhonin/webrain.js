@@ -28,7 +28,7 @@ var _getIterator2 = _interopRequireDefault(require("@babel/runtime-corejs3/core-
 
 var _isArray6 = _interopRequireDefault(require("@babel/runtime-corejs3/core-js-stable/array/is-array"));
 
-var _objectUniqueId = require("../lists/helpers/object-unique-id");
+var _objectUniqueId = require("../helpers/object-unique-id");
 
 var _marked =
 /*#__PURE__*/

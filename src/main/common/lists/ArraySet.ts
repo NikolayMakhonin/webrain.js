@@ -12,7 +12,7 @@ import {
 } from '../extensions/serialization/contracts'
 import {registerSerializable} from '../extensions/serialization/serializers'
 import {isIterable} from '../helpers/helpers'
-import {getObjectUniqueId} from './helpers/object-unique-id'
+import {getObjectUniqueId} from '../helpers/object-unique-id'
 import {fillSet} from './helpers/set'
 
 export class ArraySet<T extends Object> implements

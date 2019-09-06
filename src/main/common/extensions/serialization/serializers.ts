@@ -1,7 +1,7 @@
 import {ThenableIterator, ThenableOrIteratorOrValue, ThenableOrValue, TOnFulfilled} from '../../async/async'
 import {ThenableSync} from '../../async/ThenableSync'
 import {TClass, typeToDebugString} from '../../helpers/helpers'
-import {getObjectUniqueId} from '../../lists/helpers/object-unique-id'
+import {getObjectUniqueId} from '../../helpers/object-unique-id'
 import {TypeMetaCollectionWithId} from '../TypeMeta'
 import {
 	IDeSerializeOptions,

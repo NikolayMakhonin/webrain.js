@@ -69,7 +69,7 @@ var _ArraySet = require("../../../main/common/lists/ArraySet");
 
 var _array = require("../../../main/common/lists/helpers/array");
 
-var _objectUniqueId = require("../../../main/common/lists/helpers/object-unique-id");
+var _objectUniqueId = require("../../../main/common/helpers/object-unique-id");
 
 var _SortedList = require("../../../main/common/lists/SortedList");
 

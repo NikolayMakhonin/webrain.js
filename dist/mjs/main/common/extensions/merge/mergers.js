@@ -1,6 +1,6 @@
 /* tslint:disable:no-nested-switch ban-types use-primitive-type */
 import { isIterable, typeToDebugString } from '../../helpers/helpers';
-import { canHaveUniqueId, getObjectUniqueId } from '../../lists/helpers/object-unique-id';
+import { canHaveUniqueId, getObjectUniqueId } from '../../helpers/object-unique-id';
 import { fillMap, fillSet } from '../../lists/helpers/set';
 import { TypeMetaCollection } from '../TypeMeta';
 import { createMergeMapWrapper, mergeMaps } from './merge-maps';

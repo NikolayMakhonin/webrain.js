@@ -1,4 +1,4 @@
-import { getObjectUniqueId } from '../lists/helpers/object-unique-id';
+import { getObjectUniqueId } from '../helpers/object-unique-id';
 export function isPrimitiveDefault(value) {
   return value == null || typeof value === 'boolean' || typeof value === 'number' || typeof value === 'string' || typeof value === 'function' || value instanceof Error;
 }

@@ -4,7 +4,7 @@ import { createMergeMapWrapper, mergeMaps } from '../extensions/merge/merge-maps
 import { registerMergeable } from '../extensions/merge/mergers';
 import { registerSerializable } from '../extensions/serialization/serializers';
 import { isIterable } from '../helpers/helpers';
-import { getObjectUniqueId } from './helpers/object-unique-id';
+import { getObjectUniqueId } from '../helpers/object-unique-id';
 import { fillMap } from './helpers/set';
 _Symbol$toStringTag = Symbol.toStringTag;
 _Symbol$iterator = Symbol.iterator;

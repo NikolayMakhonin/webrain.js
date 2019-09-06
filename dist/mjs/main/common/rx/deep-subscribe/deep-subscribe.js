@@ -3,7 +3,7 @@ import { isThenable } from '../../async/async';
 import { resolveAsync } from '../../async/ThenableSync';
 import { iterateRule, subscribeNextRule } from './iterate-rule';
 import { RuleBuilder } from "./RuleBuilder";
-import { getObjectUniqueId } from "../../lists/helpers/object-unique-id";
+import { getObjectUniqueId } from "../../helpers/object-unique-id";
 import { checkIsFuncOrNull, toSingleCall } from "../../helpers/helpers";
 import { hasDefaultProperty, subscribeDefaultProperty } from './rules-subscribe'; // const UNSUBSCRIBE_PROPERTY_PREFIX = Math.random().toString(36)
 // let nextUnsubscribePropertyId = 0

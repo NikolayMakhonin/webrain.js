@@ -1,4 +1,4 @@
-import {getObjectUniqueId} from '../lists/helpers/object-unique-id'
+import {getObjectUniqueId} from '../helpers/object-unique-id'
 
 export interface IDeepCloneEqualOptions {
 	circular?: boolean

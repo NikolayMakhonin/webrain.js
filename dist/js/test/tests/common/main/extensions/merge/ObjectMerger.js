@@ -32,7 +32,7 @@ var _ArrayMap = require("../../../../../../main/common/lists/ArrayMap");
 
 var _ArraySet = require("../../../../../../main/common/lists/ArraySet");
 
-var _objectUniqueId = require("../../../../../../main/common/lists/helpers/object-unique-id");
+var _objectUniqueId = require("../../../../../../main/common/helpers/object-unique-id");
 
 var _set2 = require("../../../../../../main/common/lists/helpers/set");
 

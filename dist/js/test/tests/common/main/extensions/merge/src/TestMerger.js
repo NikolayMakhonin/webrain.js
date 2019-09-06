@@ -30,7 +30,7 @@ var _isFrozen = _interopRequireDefault(require("@babel/runtime-corejs3/core-js-s
 
 var _mergers = require("../../../../../../../main/common/extensions/merge/mergers");
 
-var _objectUniqueId = require("../../../../../../../main/common/lists/helpers/object-unique-id");
+var _objectUniqueId = require("../../../../../../../main/common/helpers/object-unique-id");
 
 var _SortedList = require("../../../../../../../main/common/lists/SortedList");
 
