@@ -23,7 +23,7 @@ module.exports = function (config) {
 			helpers.concatJsFiles(
 				'tmp/karma/tests.js',
 				`src/test/tests/{common,browser}/**/*{${[...fileExtensions.js, ...fileExtensions.ts].join(',')}}`,
-				`!*/**/src/**/*{${[...fileExtensions.js, ...fileExtensions.ts].join(',')}}`
+				`!*/**/{src,assets,js}/**/*{${[...fileExtensions.js, ...fileExtensions.ts].join(',')}}`
 			)
 		],
 

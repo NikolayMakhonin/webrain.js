@@ -34,7 +34,15 @@ var _from = _interopRequireDefault(require("@babel/runtime-corejs3/core-js-stabl
 
 var _regenerator = _interopRequireDefault(require("@babel/runtime-corejs3/regenerator"));
 
-var _inheritsLoose2 = _interopRequireDefault(require("@babel/runtime-corejs3/helpers/inheritsLoose"));
+var _classCallCheck2 = _interopRequireDefault(require("@babel/runtime-corejs3/helpers/classCallCheck"));
+
+var _createClass2 = _interopRequireDefault(require("@babel/runtime-corejs3/helpers/createClass"));
+
+var _possibleConstructorReturn2 = _interopRequireDefault(require("@babel/runtime-corejs3/helpers/possibleConstructorReturn"));
+
+var _getPrototypeOf2 = _interopRequireDefault(require("@babel/runtime-corejs3/helpers/getPrototypeOf"));
+
+var _inherits2 = _interopRequireDefault(require("@babel/runtime-corejs3/helpers/inherits"));
 
 var _mergers = require("../../../../../../main/common/extensions/merge/mergers");
 
@@ -69,72 +77,77 @@ _regenerator.default.mark(createIterableIterator);
 var CircularClass =
 /*#__PURE__*/
 function (_ObservableObject) {
-  (0, _inheritsLoose2.default)(CircularClass, _ObservableObject);
+  (0, _inherits2.default)(CircularClass, _ObservableObject);
 
   function CircularClass(array, value) {
     var _this;
 
-    _this = _ObservableObject.call(this) || this;
+    (0, _classCallCheck2.default)(this, CircularClass);
+    _this = (0, _possibleConstructorReturn2.default)(this, (0, _getPrototypeOf2.default)(CircularClass).call(this));
     _this.array = array;
     _this.value = value;
     return _this;
   } // region IMergeable
 
 
-  var _proto = CircularClass.prototype;
-
-  _proto._canMerge = function _canMerge(source) {
-    if (source.constructor === CircularClass) {
-      return null;
-    }
-
-    return source.constructor === CircularClass; // || Array.isArray(source)
-    // || isIterable(source)
-  };
-
-  _proto._merge = function _merge(merge, older, newer, preferCloneOlder, preferCloneNewer, options) {
-    var _this2 = this;
-
-    var changed = false;
-    changed = merge(this.array, older.array, newer.array, function (o) {
-      _this2.array = o;
-    }) || changed;
-    changed = merge(this.value, older.value, newer.value, function (o) {
-      _this2.value = o;
-    }) || changed;
-    return changed;
-  } // endregion
-  // region ISerializable
-  ;
-
-  _proto.serialize = function serialize(_serialize) {
-    return {
-      array: _serialize(this.array),
-      value: _serialize(this.value)
-    };
-  };
-
-  _proto.deSerialize =
-  /*#__PURE__*/
-  _regenerator.default.mark(function deSerialize(_deSerialize, serializedValue) {
-    return _regenerator.default.wrap(function deSerialize$(_context) {
-      while (1) {
-        switch (_context.prev = _context.next) {
-          case 0:
-            _context.next = 2;
-            return _deSerialize(serializedValue.value);
-
-          case 2:
-            this.value = _context.sent;
-
-          case 3:
-          case "end":
-            return _context.stop();
-        }
+  (0, _createClass2.default)(CircularClass, [{
+    key: "_canMerge",
+    value: function _canMerge(source) {
+      if (source.constructor === CircularClass) {
+        return null;
       }
-    }, deSerialize, this);
-  }) // endregion
-  ;
+
+      return source.constructor === CircularClass; // || Array.isArray(source)
+      // || isIterable(source)
+    }
+  }, {
+    key: "_merge",
+    value: function _merge(merge, older, newer, preferCloneOlder, preferCloneNewer, options) {
+      var _this2 = this;
+
+      var changed = false;
+      changed = merge(this.array, older.array, newer.array, function (o) {
+        _this2.array = o;
+      }) || changed;
+      changed = merge(this.value, older.value, newer.value, function (o) {
+        _this2.value = o;
+      }) || changed;
+      return changed;
+    } // endregion
+    // region ISerializable
+
+  }, {
+    key: "serialize",
+    value: function serialize(_serialize) {
+      return {
+        array: _serialize(this.array),
+        value: _serialize(this.value)
+      };
+    }
+  }, {
+    key: "deSerialize",
+    value:
+    /*#__PURE__*/
+    _regenerator.default.mark(function deSerialize(_deSerialize, serializedValue) {
+      return _regenerator.default.wrap(function deSerialize$(_context) {
+        while (1) {
+          switch (_context.prev = _context.next) {
+            case 0:
+              _context.next = 2;
+              return _deSerialize(serializedValue.value);
+
+            case 2:
+              this.value = _context.sent;
+
+            case 3:
+            case "end":
+              return _context.stop();
+          }
+        }
+      }, deSerialize, this);
+    }) // endregion
+
+  }]);
   return CircularClass;
 }(_ObservableObject2.ObservableObject);
 

@@ -5,6 +5,8 @@ var _interopRequireDefault = require("@babel/runtime-corejs3/helpers/interopRequ
 exports.__esModule = true;
 exports.PropertyChangedEvent = void 0;
 
+var _classCallCheck2 = _interopRequireDefault(require("@babel/runtime-corejs3/helpers/classCallCheck"));
+
 var _createClass2 = _interopRequireDefault(require("@babel/runtime-corejs3/helpers/createClass"));
 
 // Is slower than simple object
@@ -23,6 +25,7 @@ var PropertyChangedEvent =
 /*#__PURE__*/
 function () {
   function PropertyChangedEvent(name, oldValue, getNewValue) {
+    (0, _classCallCheck2.default)(this, PropertyChangedEvent);
     this.name = name;
     this.oldValue = oldValue;
     this._getNewValue = getNewValue;

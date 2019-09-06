@@ -8,9 +8,17 @@ var _map = _interopRequireDefault(require("@babel/runtime-corejs3/core-js-stable
 
 var _assign = _interopRequireDefault(require("@babel/runtime-corejs3/core-js-stable/object/assign"));
 
+var _createClass2 = _interopRequireDefault(require("@babel/runtime-corejs3/helpers/createClass"));
+
 var _bind = _interopRequireDefault(require("@babel/runtime-corejs3/core-js-stable/instance/bind"));
 
-var _inheritsLoose2 = _interopRequireDefault(require("@babel/runtime-corejs3/helpers/inheritsLoose"));
+var _classCallCheck2 = _interopRequireDefault(require("@babel/runtime-corejs3/helpers/classCallCheck"));
+
+var _possibleConstructorReturn2 = _interopRequireDefault(require("@babel/runtime-corejs3/helpers/possibleConstructorReturn"));
+
+var _getPrototypeOf2 = _interopRequireDefault(require("@babel/runtime-corejs3/helpers/getPrototypeOf"));
+
+var _inherits2 = _interopRequireDefault(require("@babel/runtime-corejs3/helpers/inherits"));
 
 var _rdtsc = require("rdtsc");
 
@@ -28,10 +36,11 @@ describe('ObservableObject', function () {
     var Class =
     /*#__PURE__*/
     function (_ObservableObject) {
-      (0, _inheritsLoose2.default)(Class, _ObservableObject);
+      (0, _inherits2.default)(Class, _ObservableObject);
 
       function Class() {
-        return _ObservableObject.apply(this, arguments) || this;
+        (0, _classCallCheck2.default)(this, Class);
+        return (0, _possibleConstructorReturn2.default)(this, (0, _getPrototypeOf2.default)(Class).apply(this, arguments));
       }
 
       return Class;
@@ -112,36 +121,39 @@ describe('ObservableObject', function () {
   /*#__PURE__*/
   function () {
     function CalcStatReport(data) {
+      (0, _classCallCheck2.default)(this, CalcStatReport);
       (0, _assign.default)(this, data);
     }
 
-    var _proto = CalcStatReport.prototype;
-
-    _proto.clone = function clone() {
-      return new CalcStatReport(this);
-    };
-
-    _proto.subtract = function subtract(other) {
-      var result = this.clone();
-
-      for (var j = 0, len = this.averageValue.length; j < len; j++) {
-        result.averageValue[j] -= other.averageValue[j];
-        result.standardDeviation[j] += other.standardDeviation[j];
+    (0, _createClass2.default)(CalcStatReport, [{
+      key: "clone",
+      value: function clone() {
+        return new CalcStatReport(this);
       }
+    }, {
+      key: "subtract",
+      value: function subtract(other) {
+        var result = this.clone();
 
-      return result;
-    };
+        for (var j = 0, len = this.averageValue.length; j < len; j++) {
+          result.averageValue[j] -= other.averageValue[j];
+          result.standardDeviation[j] += other.standardDeviation[j];
+        }
 
-    _proto.toString = function toString() {
-      var report = Array(this.averageValue.length);
-
-      for (var j = 0, len = this.averageValue.length; j < len; j++) {
-        report[j] = this.averageValue[j] + " \xB1" + 2.5 * this.standardDeviation[j] + " [" + this.count + "]";
+        return result;
       }
+    }, {
+      key: "toString",
+      value: function toString() {
+        var report = Array(this.averageValue.length);
 
-      return report.join(', ');
-    };
+        for (var j = 0, len = this.averageValue.length; j < len; j++) {
+          report[j] = this.averageValue[j] + " \xB1" + 2.5 * this.standardDeviation[j] + " [" + this.count + "]";
+        }
 
+        return report.join(', ');
+      }
+    }]);
     return CalcStatReport;
   }();
 

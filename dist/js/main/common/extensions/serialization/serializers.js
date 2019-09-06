@@ -28,7 +28,11 @@ var _regenerator = _interopRequireDefault(require("@babel/runtime-corejs3/regene
 
 var _extends2 = _interopRequireDefault(require("@babel/runtime-corejs3/helpers/extends"));
 
-var _inheritsLoose2 = _interopRequireDefault(require("@babel/runtime-corejs3/helpers/inheritsLoose"));
+var _possibleConstructorReturn2 = _interopRequireDefault(require("@babel/runtime-corejs3/helpers/possibleConstructorReturn"));
+
+var _getPrototypeOf2 = _interopRequireDefault(require("@babel/runtime-corejs3/helpers/getPrototypeOf"));
+
+var _inherits2 = _interopRequireDefault(require("@babel/runtime-corejs3/helpers/inherits"));
 
 var _construct2 = _interopRequireDefault(require("@babel/runtime-corejs3/helpers/construct"));
 
@@ -39,6 +43,10 @@ var _map2 = _interopRequireDefault(require("@babel/runtime-corejs3/core-js-stabl
 var _stringify = _interopRequireDefault(require("@babel/runtime-corejs3/core-js-stable/json/stringify"));
 
 var _bind = _interopRequireDefault(require("@babel/runtime-corejs3/core-js-stable/instance/bind"));
+
+var _classCallCheck2 = _interopRequireDefault(require("@babel/runtime-corejs3/helpers/classCallCheck"));
+
+var _createClass2 = _interopRequireDefault(require("@babel/runtime-corejs3/helpers/createClass"));
 
 var _ThenableSync = require("../../async/ThenableSync");
 
@@ -59,114 +67,119 @@ function () {
   function SerializerVisitor(typeMeta) {
     var _context;
 
+    (0, _classCallCheck2.default)(this, SerializerVisitor);
     this._typeMeta = typeMeta;
     this.serialize = (0, _bind.default)(_context = this.serialize).call(_context, this);
   }
 
-  var _proto = SerializerVisitor.prototype;
+  (0, _createClass2.default)(SerializerVisitor, [{
+    key: "addType",
+    value: function addType(uuid) {
+      // tslint:disable-next-line:prefer-const
+      var types = this.types,
+          typesMap = this.typesMap;
 
-  _proto.addType = function addType(uuid) {
-    // tslint:disable-next-line:prefer-const
-    var types = this.types,
-        typesMap = this.typesMap;
+      if (!typesMap) {
+        this.typesMap = typesMap = {};
+        this.types = types = [];
+      }
 
-    if (!typesMap) {
-      this.typesMap = typesMap = {};
-      this.types = types = [];
+      var typeIndex = typesMap[uuid];
+
+      if (typeIndex == null) {
+        typeIndex = types.length;
+        types[typeIndex] = uuid;
+        typesMap[uuid] = typeIndex;
+      }
+
+      return typeIndex;
     }
+  }, {
+    key: "addObject",
+    value: function addObject(object, serialize) {
+      // tslint:disable-next-line:prefer-const
+      var objects = this.objects,
+          objectsMap = this.objectsMap;
 
-    var typeIndex = typesMap[uuid];
+      if (!objectsMap) {
+        this.objectsMap = objectsMap = [];
+        this.objects = objects = [];
+      }
 
-    if (typeIndex == null) {
-      typeIndex = types.length;
-      types[typeIndex] = uuid;
-      typesMap[uuid] = typeIndex;
+      var id = (0, _objectUniqueId.getObjectUniqueId)(object);
+      var ref = objectsMap[id];
+
+      if (ref == null) {
+        var index = objects.length;
+        ref = {
+          id: index
+        };
+        objectsMap[id] = ref;
+        var data = {};
+        objects[index] = data;
+        serialize(data);
+      }
+
+      return ref;
     }
+  }, {
+    key: "serializeObject",
+    value: function serializeObject(out, value, options) {
+      var meta = this._typeMeta.getMeta(options && options.valueType || value.constructor);
 
-    return typeIndex;
-  };
+      if (!meta) {
+        throw new Error("Class (" + value.constructor.name + ") have no type meta");
+      }
 
-  _proto.addObject = function addObject(object, serialize) {
-    // tslint:disable-next-line:prefer-const
-    var objects = this.objects,
-        objectsMap = this.objectsMap;
+      var uuid = meta.uuid;
 
-    if (!objectsMap) {
-      this.objectsMap = objectsMap = [];
-      this.objects = objects = [];
-    }
+      if (!uuid) {
+        throw new Error("Class (" + value.constructor.name + ") type meta have no uuid");
+      }
 
-    var id = (0, _objectUniqueId.getObjectUniqueId)(object);
-    var ref = objectsMap[id];
+      var serializer = meta.serializer;
 
-    if (ref == null) {
-      var index = objects.length;
-      ref = {
-        id: index
+      if (!serializer) {
+        throw new Error("Class (" + value.constructor.name + ") type meta have no serializer");
+      }
+
+      if (!serializer.serialize) {
+        throw new Error("Class (" + value.constructor.name + ") serializer have no serialize method");
+      }
+
+      out.type = this.addType(uuid);
+      out.data = serializer.serialize(this.getNextSerialize(options), value, options);
+    } // noinspection JSUnusedLocalSymbols
+
+  }, {
+    key: "getNextSerialize",
+    value: function getNextSerialize(options) {
+      var _this = this;
+
+      return function (next_value, next_options) {
+        return _this.serialize(next_value, next_options // next_options == null || next_options === options
+        // 	? options
+        // 	: (options == null ? next_options : {
+        // 		...options,
+        // 		...next_options,
+        // 	}),
+        );
       };
-      objectsMap[id] = ref;
-      var data = {};
-      objects[index] = data;
-      serialize(data);
     }
+  }, {
+    key: "serialize",
+    value: function serialize(value, options) {
+      var _this2 = this;
 
-    return ref;
-  };
+      if (value == null || typeof value === 'number' || typeof value === 'string' || typeof value === 'boolean') {
+        return value;
+      }
 
-  _proto.serializeObject = function serializeObject(out, value, options) {
-    var meta = this._typeMeta.getMeta(options && options.valueType || value.constructor);
-
-    if (!meta) {
-      throw new Error("Class (" + value.constructor.name + ") have no type meta");
+      return this.addObject(value, function (out) {
+        _this2.serializeObject(out, value, options);
+      });
     }
-
-    var uuid = meta.uuid;
-
-    if (!uuid) {
-      throw new Error("Class (" + value.constructor.name + ") type meta have no uuid");
-    }
-
-    var serializer = meta.serializer;
-
-    if (!serializer) {
-      throw new Error("Class (" + value.constructor.name + ") type meta have no serializer");
-    }
-
-    if (!serializer.serialize) {
-      throw new Error("Class (" + value.constructor.name + ") serializer have no serialize method");
-    }
-
-    out.type = this.addType(uuid);
-    out.data = serializer.serialize(this.getNextSerialize(options), value, options);
-  } // noinspection JSUnusedLocalSymbols
-  ;
-
-  _proto.getNextSerialize = function getNextSerialize(options) {
-    var _this = this;
-
-    return function (next_value, next_options) {
-      return _this.serialize(next_value, next_options // next_options == null || next_options === options
-      // 	? options
-      // 	: (options == null ? next_options : {
-      // 		...options,
-      // 		...next_options,
-      // 	}),
-      );
-    };
-  };
-
-  _proto.serialize = function serialize(value, options) {
-    var _this2 = this;
-
-    if (value == null || typeof value === 'number' || typeof value === 'string' || typeof value === 'boolean') {
-      return value;
-    }
-
-    return this.addObject(value, function (out) {
-      _this2.serializeObject(out, value, options);
-    });
-  };
-
+  }]);
   return SerializerVisitor;
 }(); // tslint:disable-next-line:no-shadowed-variable no-empty
 
@@ -181,6 +194,7 @@ function () {
   function DeSerializerVisitor(typeMeta, types, objects) {
     var _context2;
 
+    (0, _classCallCheck2.default)(this, DeSerializerVisitor);
     this._countDeserialized = 0;
     this._typeMeta = typeMeta;
     this._types = types;
@@ -196,204 +210,206 @@ function () {
     this.deSerialize = (0, _bind.default)(_context2 = this.deSerialize).call(_context2, this);
   }
 
-  var _proto2 = DeSerializerVisitor.prototype;
+  (0, _createClass2.default)(DeSerializerVisitor, [{
+    key: "assertEnd",
+    value: function assertEnd() {
+      var _types = this._types,
+          _objects = this._objects,
+          _instances = this._instances,
+          _typeMeta = this._typeMeta;
 
-  _proto2.assertEnd = function assertEnd() {
-    var _types = this._types,
-        _objects = this._objects,
-        _instances = this._instances,
-        _typeMeta = this._typeMeta;
+      var getDebugObject = function getDebugObject(deserialized, id) {
+        var object = _objects[id];
+        var uuid = _types[object.type];
 
-    var getDebugObject = function getDebugObject(deserialized, id) {
-      var object = _objects[id];
-      var uuid = _types[object.type];
-
-      var type = _typeMeta.getType(uuid); // noinspection HtmlUnknownTag
+        var type = _typeMeta.getType(uuid); // noinspection HtmlUnknownTag
 
 
-      return {
-        type: type == null ? "<Type not found: " + uuid + ">" : type.name,
-        data: object.data,
-        deserialized: deserialized == null ? deserialized : deserialized.constructor.name
+        return {
+          type: type == null ? "<Type not found: " + uuid + ">" : type.name,
+          data: object.data,
+          deserialized: deserialized == null ? deserialized : deserialized.constructor.name
+        };
       };
-    };
 
-    if (this._countDeserialized !== _instances.length) {
-      var _context3, _context4;
+      if (this._countDeserialized !== _instances.length) {
+        var _context3, _context4;
 
-      throw new Error(_instances.length - this._countDeserialized + " instances is not deserialized\r\n" + (0, _stringify.default)((0, _map2.default)(_context3 = (0, _filter.default)(_context4 = (0, _map2.default)(_instances).call(_instances, function (o, i) {
-        return [o, i];
-      })).call(_context4, function (o) {
-        return !o[0] || o[0] === LOCKED || _ThenableSync.ThenableSync.isThenable(o[0]);
-      })).call(_context3, function (o) {
-        return getDebugObject(o[0], o[1]);
-      })));
-    }
-  } // noinspection JSUnusedLocalSymbols
-  ;
+        throw new Error(_instances.length - this._countDeserialized + " instances is not deserialized\r\n" + (0, _stringify.default)((0, _map2.default)(_context3 = (0, _filter.default)(_context4 = (0, _map2.default)(_instances).call(_instances, function (o, i) {
+          return [o, i];
+        })).call(_context4, function (o) {
+          return !o[0] || o[0] === LOCKED || _ThenableSync.ThenableSync.isThenable(o[0]);
+        })).call(_context3, function (o) {
+          return getDebugObject(o[0], o[1]);
+        })));
+      }
+    } // noinspection JSUnusedLocalSymbols
 
-  _proto2.getNextDeSerialize = function getNextDeSerialize(options) {
-    var _this3 = this;
+  }, {
+    key: "getNextDeSerialize",
+    value: function getNextDeSerialize(options) {
+      var _this3 = this;
 
-    return function (next_serializedValue, next_onfulfilled, next_options) {
-      return _this3.deSerialize(next_serializedValue, next_onfulfilled, next_options // next_options == null || next_options === options
-      // 	? options
-      // 	: (options == null ? next_options : {
-      // 		...options,
-      // 		...next_options,
-      // 	}),
-      );
-    };
-  };
-
-  _proto2.deSerialize = function deSerialize(serializedValue, _onfulfilled, options) {
-    var _this4 = this;
-
-    if (_onfulfilled) {
-      var input_onfulfilled = _onfulfilled;
-
-      _onfulfilled = function onfulfilled(value) {
-        var result = input_onfulfilled(value);
-        _onfulfilled = null;
-        return result;
+      return function (next_serializedValue, next_onfulfilled, next_options) {
+        return _this3.deSerialize(next_serializedValue, next_onfulfilled, next_options // next_options == null || next_options === options
+        // 	? options
+        // 	: (options == null ? next_options : {
+        // 		...options,
+        // 		...next_options,
+        // 	}),
+        );
       };
     }
+  }, {
+    key: "deSerialize",
+    value: function deSerialize(serializedValue, _onfulfilled, options) {
+      var _this4 = this;
 
-    if (serializedValue == null || typeof serializedValue === 'number' || typeof serializedValue === 'string' || typeof serializedValue === 'boolean') {
       if (_onfulfilled) {
-        return _ThenableSync.ThenableSync.resolve(_onfulfilled(serializedValue));
+        var input_onfulfilled = _onfulfilled;
+
+        _onfulfilled = function onfulfilled(value) {
+          var result = input_onfulfilled(value);
+          _onfulfilled = null;
+          return result;
+        };
       }
 
-      return serializedValue;
-    }
+      if (serializedValue == null || typeof serializedValue === 'number' || typeof serializedValue === 'string' || typeof serializedValue === 'boolean') {
+        if (_onfulfilled) {
+          return _ThenableSync.ThenableSync.resolve(_onfulfilled(serializedValue));
+        }
 
-    var id = serializedValue.id;
+        return serializedValue;
+      }
 
-    if (id != null) {
-      var cachedInstance = this._instances[id];
+      var id = serializedValue.id;
 
-      if (cachedInstance) {
-        if (cachedInstance === LOCKED) {
-          this._instances[id] = cachedInstance = new _ThenableSync.ThenableSync();
+      if (id != null) {
+        var cachedInstance = this._instances[id];
+
+        if (cachedInstance) {
+          if (cachedInstance === LOCKED) {
+            this._instances[id] = cachedInstance = new _ThenableSync.ThenableSync();
+          }
+
+          if (_onfulfilled) {
+            if (cachedInstance instanceof _ThenableSync.ThenableSync) {
+              cachedInstance.thenLast(_onfulfilled);
+            } else {
+              return _ThenableSync.ThenableSync.resolve(_onfulfilled(cachedInstance));
+            }
+          }
+
+          return cachedInstance;
+        }
+
+        this._instances[id] = LOCKED;
+        serializedValue = this._objects[id];
+      }
+
+      var type = options && options.valueType;
+
+      if (!type) {
+        var typeIndex = serializedValue.type;
+
+        if (typeof typeIndex !== 'number') {
+          throw new Error("Serialized value have no type field: " + (0, _stringify.default)(serializedValue, null, 4));
+        }
+
+        var _uuid = this._types[typeIndex];
+
+        if (typeof _uuid !== 'string') {
+          throw new Error("type uuid not found for index (" + typeIndex + "): " + (0, _stringify.default)(serializedValue, null, 4));
+        }
+
+        type = this._typeMeta.getType(_uuid);
+
+        if (!type) {
+          throw new Error("type not found for uuid (" + _uuid + "): " + (0, _stringify.default)(serializedValue, null, 4));
+        }
+      }
+
+      var meta = this._typeMeta.getMeta(type);
+
+      if (!meta) {
+        throw new Error("Class (" + (0, _helpers.typeToDebugString)(type) + ") have no type meta");
+      }
+
+      var serializer = meta.serializer;
+
+      if (!serializer) {
+        throw new Error("Class (" + (0, _helpers.typeToDebugString)(type) + ") type meta have no serializer");
+      }
+
+      if (!serializer.deSerialize) {
+        throw new Error("Class (" + (0, _helpers.typeToDebugString)(type) + ") serializer have no deSerialize method");
+      }
+
+      var factory = options && options.valueFactory || meta.valueFactory || function () {
+        for (var _len = arguments.length, args = new Array(_len), _key = 0; _key < _len; _key++) {
+          args[_key] = arguments[_key];
+        }
+
+        return (0, _construct2.default)(type, args);
+      };
+
+      if (id != null && !factory) {
+        throw new Error("valueFactory not found for " + (0, _helpers.typeToDebugString)(type) + ". " + 'Any object serializers should have valueFactory');
+      }
+
+      var instance;
+      var iteratorOrValue = serializer.deSerialize(this.getNextDeSerialize(options), serializedValue.data, function () {
+        if (!factory) {
+          throw new Error('Multiple call valueFactory is forbidden');
+        }
+
+        instance = factory.apply(void 0, arguments);
+        factory = null;
+        return instance;
+      }, options);
+
+      var resolveInstance = function resolveInstance(value) {
+        var cachedInstance = _this4._instances[id];
+        _this4._instances[id] = value;
+
+        if (cachedInstance instanceof _ThenableSync.ThenableSync) {
+          cachedInstance.resolve(value);
+        }
+      };
+
+      var resolveValue = function resolveValue(value) {
+        if (id != null) {
+          if (!factory && instance !== value) {
+            throw new Error("valueFactory instance !== return value in serializer for " + (0, _helpers.typeToDebugString)(type));
+          }
+
+          resolveInstance(value);
+          _this4._countDeserialized++;
         }
 
         if (_onfulfilled) {
-          if (cachedInstance instanceof _ThenableSync.ThenableSync) {
-            cachedInstance.thenLast(_onfulfilled);
-          } else {
-            return _ThenableSync.ThenableSync.resolve(_onfulfilled(cachedInstance));
-          }
+          return _ThenableSync.ThenableSync.resolve(_onfulfilled(value));
         }
 
-        return cachedInstance;
-      }
+        return value;
+      };
 
-      this._instances[id] = LOCKED;
-      serializedValue = this._objects[id];
-    }
+      var valueOrThenFunc = _ThenableSync.ThenableSync.resolve(iteratorOrValue, resolveValue);
 
-    var type = options && options.valueType;
+      if (id != null && !factory && _ThenableSync.ThenableSync.isThenable(valueOrThenFunc)) {
+        resolveInstance(instance);
 
-    if (!type) {
-      var typeIndex = serializedValue.type;
-
-      if (typeof typeIndex !== 'number') {
-        throw new Error("Serialized value have no type field: " + (0, _stringify.default)(serializedValue, null, 4));
-      }
-
-      var _uuid = this._types[typeIndex];
-
-      if (typeof _uuid !== 'string') {
-        throw new Error("type uuid not found for index (" + typeIndex + "): " + (0, _stringify.default)(serializedValue, null, 4));
-      }
-
-      type = this._typeMeta.getType(_uuid);
-
-      if (!type) {
-        throw new Error("type not found for uuid (" + _uuid + "): " + (0, _stringify.default)(serializedValue, null, 4));
-      }
-    }
-
-    var meta = this._typeMeta.getMeta(type);
-
-    if (!meta) {
-      throw new Error("Class (" + (0, _helpers.typeToDebugString)(type) + ") have no type meta");
-    }
-
-    var serializer = meta.serializer;
-
-    if (!serializer) {
-      throw new Error("Class (" + (0, _helpers.typeToDebugString)(type) + ") type meta have no serializer");
-    }
-
-    if (!serializer.deSerialize) {
-      throw new Error("Class (" + (0, _helpers.typeToDebugString)(type) + ") serializer have no deSerialize method");
-    }
-
-    var factory = options && options.valueFactory || meta.valueFactory || function () {
-      for (var _len = arguments.length, args = new Array(_len), _key = 0; _key < _len; _key++) {
-        args[_key] = arguments[_key];
-      }
-
-      return (0, _construct2.default)(type, args);
-    };
-
-    if (id != null && !factory) {
-      throw new Error("valueFactory not found for " + (0, _helpers.typeToDebugString)(type) + ". " + 'Any object serializers should have valueFactory');
-    }
-
-    var instance;
-    var iteratorOrValue = serializer.deSerialize(this.getNextDeSerialize(options), serializedValue.data, function () {
-      if (!factory) {
-        throw new Error('Multiple call valueFactory is forbidden');
-      }
-
-      instance = factory.apply(void 0, arguments);
-      factory = null;
-      return instance;
-    }, options);
-
-    var resolveInstance = function resolveInstance(value) {
-      var cachedInstance = _this4._instances[id];
-      _this4._instances[id] = value;
-
-      if (cachedInstance instanceof _ThenableSync.ThenableSync) {
-        cachedInstance.resolve(value);
-      }
-    };
-
-    var resolveValue = function resolveValue(value) {
-      if (id != null) {
-        if (!factory && instance !== value) {
-          throw new Error("valueFactory instance !== return value in serializer for " + (0, _helpers.typeToDebugString)(type));
+        if (_onfulfilled) {
+          return _ThenableSync.ThenableSync.resolve(_onfulfilled(instance));
         }
 
-        resolveInstance(value);
-        _this4._countDeserialized++;
+        return instance;
       }
 
-      if (_onfulfilled) {
-        return _ThenableSync.ThenableSync.resolve(_onfulfilled(value));
-      }
-
-      return value;
-    };
-
-    var valueOrThenFunc = _ThenableSync.ThenableSync.resolve(iteratorOrValue, resolveValue);
-
-    if (id != null && !factory && _ThenableSync.ThenableSync.isThenable(valueOrThenFunc)) {
-      resolveInstance(instance);
-
-      if (_onfulfilled) {
-        return _ThenableSync.ThenableSync.resolve(_onfulfilled(instance));
-      }
-
-      return instance;
+      return valueOrThenFunc;
     }
-
-    return valueOrThenFunc;
-  };
-
+  }]);
   return DeSerializerVisitor;
 }(); // endregion
 // region TypeMetaSerializerCollection
@@ -404,52 +420,54 @@ exports.DeSerializerVisitor = DeSerializerVisitor;
 var TypeMetaSerializerCollection =
 /*#__PURE__*/
 function (_TypeMetaCollectionWi) {
-  (0, _inheritsLoose2.default)(TypeMetaSerializerCollection, _TypeMetaCollectionWi);
+  (0, _inherits2.default)(TypeMetaSerializerCollection, _TypeMetaCollectionWi);
 
   function TypeMetaSerializerCollection(proto) {
-    return _TypeMetaCollectionWi.call(this, proto || TypeMetaSerializerCollection.default) || this;
+    (0, _classCallCheck2.default)(this, TypeMetaSerializerCollection);
+    return (0, _possibleConstructorReturn2.default)(this, (0, _getPrototypeOf2.default)(TypeMetaSerializerCollection).call(this, proto || TypeMetaSerializerCollection.default));
   }
 
-  TypeMetaSerializerCollection.makeTypeMetaSerializer = function makeTypeMetaSerializer(type, meta) {
-    return (0, _extends2.default)({
-      uuid: type.uuid
-    }, meta, {
-      serializer: (0, _extends2.default)({
-        serialize: function serialize(_serialize, value, options) {
-          return value.serialize(_serialize, options);
-        },
-        deSerialize:
-        /*#__PURE__*/
-        _regenerator.default.mark(function deSerialize(_deSerialize, serializedValue, valueFactory, options) {
-          var value;
-          return _regenerator.default.wrap(function deSerialize$(_context5) {
-            while (1) {
-              switch (_context5.prev = _context5.next) {
-                case 0:
-                  value = valueFactory();
-                  _context5.next = 3;
-                  return value.deSerialize(_deSerialize, serializedValue, options);
+  (0, _createClass2.default)(TypeMetaSerializerCollection, [{
+    key: "putSerializableType",
+    value: function putSerializableType(type, meta) {
+      return this.putType(type, TypeMetaSerializerCollection.makeTypeMetaSerializer(type, meta));
+    }
+  }], [{
+    key: "makeTypeMetaSerializer",
+    value: function makeTypeMetaSerializer(type, meta) {
+      return (0, _extends2.default)({
+        uuid: type.uuid
+      }, meta, {
+        serializer: (0, _extends2.default)({
+          serialize: function serialize(_serialize, value, options) {
+            return value.serialize(_serialize, options);
+          },
+          deSerialize:
+          /*#__PURE__*/
+          _regenerator.default.mark(function deSerialize(_deSerialize, serializedValue, valueFactory, options) {
+            var value;
+            return _regenerator.default.wrap(function deSerialize$(_context5) {
+              while (1) {
+                switch (_context5.prev = _context5.next) {
+                  case 0:
+                    value = valueFactory();
+                    _context5.next = 3;
+                    return value.deSerialize(_deSerialize, serializedValue, options);
 
-                case 3:
-                  return _context5.abrupt("return", value);
+                  case 3:
+                    return _context5.abrupt("return", value);
 
-                case 4:
-                case "end":
-                  return _context5.stop();
+                  case 4:
+                  case "end":
+                    return _context5.stop();
+                }
               }
-            }
-          }, deSerialize);
-        })
-      }, meta ? meta.serializer : {})
-    });
-  };
-
-  var _proto3 = TypeMetaSerializerCollection.prototype;
-
-  _proto3.putSerializableType = function putSerializableType(type, meta) {
-    return this.putType(type, TypeMetaSerializerCollection.makeTypeMetaSerializer(type, meta));
-  };
-
+            }, deSerialize);
+          })
+        }, meta ? meta.serializer : {})
+      });
+    }
+  }]);
   return TypeMetaSerializerCollection;
 }(_TypeMeta.TypeMetaCollectionWithId);
 
@@ -470,54 +488,56 @@ var ObjectSerializer =
 /*#__PURE__*/
 function () {
   function ObjectSerializer(typeMeta) {
+    (0, _classCallCheck2.default)(this, ObjectSerializer);
     this.typeMeta = new TypeMetaSerializerCollection(typeMeta);
   }
 
-  var _proto4 = ObjectSerializer.prototype;
+  (0, _createClass2.default)(ObjectSerializer, [{
+    key: "serialize",
+    value: function serialize(value, options) {
+      var serializer = new SerializerVisitor(this.typeMeta);
+      var serializedValue = serializer.serialize(value, options);
 
-  _proto4.serialize = function serialize(value, options) {
-    var serializer = new SerializerVisitor(this.typeMeta);
-    var serializedValue = serializer.serialize(value, options);
+      if (!serializedValue || typeof serializedValue !== 'object') {
+        return serializedValue;
+      }
 
-    if (!serializedValue || typeof serializedValue !== 'object') {
-      return serializedValue;
+      var serializedData = {
+        data: serializedValue
+      };
+
+      if (serializer.types) {
+        serializedData.types = serializer.types;
+      }
+
+      if (serializer.objects) {
+        serializedData.objects = serializer.objects;
+      }
+
+      return serializedData;
     }
+  }, {
+    key: "deSerialize",
+    value: function deSerialize(serializedValue, options) {
+      if (!serializedValue || typeof serializedValue !== 'object') {
+        return serializedValue;
+      }
 
-    var serializedData = {
-      data: serializedValue
-    };
+      var _ref = serializedValue,
+          types = _ref.types,
+          objects = _ref.objects,
+          data = _ref.data;
 
-    if (serializer.types) {
-      serializedData.types = serializer.types;
+      if (!(0, _isArray2.default)(types)) {
+        throw new Error("serialized value types field is not array: " + types);
+      }
+
+      var deSerializer = new DeSerializerVisitor(this.typeMeta, types, objects);
+      var value = deSerializer.deSerialize(data, null, options);
+      deSerializer.assertEnd();
+      return value;
     }
-
-    if (serializer.objects) {
-      serializedData.objects = serializer.objects;
-    }
-
-    return serializedData;
-  };
-
-  _proto4.deSerialize = function deSerialize(serializedValue, options) {
-    if (!serializedValue || typeof serializedValue !== 'object') {
-      return serializedValue;
-    }
-
-    var _ref = serializedValue,
-        types = _ref.types,
-        objects = _ref.objects,
-        data = _ref.data;
-
-    if (!(0, _isArray2.default)(types)) {
-      throw new Error("serialized value types field is not array: " + types);
-    }
-
-    var deSerializer = new DeSerializerVisitor(this.typeMeta, types, objects);
-    var value = deSerializer.deSerialize(data, null, options);
-    deSerializer.assertEnd();
-    return value;
-  };
-
+  }]);
   return ObjectSerializer;
 }(); // endregion
 // region Primitive Serializers

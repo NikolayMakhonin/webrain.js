@@ -25,7 +25,7 @@ module.exports = function (config) {
 			helpers.concatJsFiles(
 				'tmp/karma/performance.js',
 				`src/test/performance/{common,browser}/**/*{${[...fileExtensions.js, ...fileExtensions.ts].join(',')}}`,
-				`!*/**/src/**/*{${[...fileExtensions.js, ...fileExtensions.ts].join(',')}}`
+				`!*/**/{src,assets,js}/**/*{${[...fileExtensions.js, ...fileExtensions.ts].join(',')}}`
 			)
 		],
 

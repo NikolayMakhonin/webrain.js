@@ -5,7 +5,15 @@ var _interopRequireDefault = require("@babel/runtime-corejs3/helpers/interopRequ
 exports.__esModule = true;
 exports.TestDeepEqual = exports.deepCloneEqual = void 0;
 
-var _inheritsLoose2 = _interopRequireDefault(require("@babel/runtime-corejs3/helpers/inheritsLoose"));
+var _classCallCheck2 = _interopRequireDefault(require("@babel/runtime-corejs3/helpers/classCallCheck"));
+
+var _createClass2 = _interopRequireDefault(require("@babel/runtime-corejs3/helpers/createClass"));
+
+var _possibleConstructorReturn2 = _interopRequireDefault(require("@babel/runtime-corejs3/helpers/possibleConstructorReturn"));
+
+var _getPrototypeOf2 = _interopRequireDefault(require("@babel/runtime-corejs3/helpers/getPrototypeOf"));
+
+var _inherits2 = _interopRequireDefault(require("@babel/runtime-corejs3/helpers/inherits"));
 
 var _extends2 = _interopRequireDefault(require("@babel/runtime-corejs3/helpers/extends"));
 
@@ -49,12 +57,13 @@ function resolveOptions(optionsSource, optionsParams) {
 var TestDeepEqual =
 /*#__PURE__*/
 function (_TestVariants) {
-  (0, _inheritsLoose2.default)(TestDeepEqual, _TestVariants);
+  (0, _inherits2.default)(TestDeepEqual, _TestVariants);
 
   function TestDeepEqual() {
     var _this;
 
-    _this = _TestVariants.call(this) || this;
+    (0, _classCallCheck2.default)(this, TestDeepEqual);
+    _this = (0, _possibleConstructorReturn2.default)(this, (0, _getPrototypeOf2.default)(TestDeepEqual).call(this));
     _this.baseOptionsVariants = {
       circular: [false, true],
       noCrossReferences: [false, true],
@@ -66,66 +75,67 @@ function (_TestVariants) {
     return _this;
   }
 
-  var _proto = TestDeepEqual.prototype;
+  (0, _createClass2.default)(TestDeepEqual, [{
+    key: "testVariant",
+    value: function testVariant(inputOptions) {
+      var error;
 
-  _proto.testVariant = function testVariant(inputOptions) {
-    var error;
+      for (var debugIteration = 0; debugIteration < 3; debugIteration++) {
+        try {
+          var _ret = function () {
+            var options = inputOptions = resolveOptions(inputOptions, null);
 
-    for (var debugIteration = 0; debugIteration < 3; debugIteration++) {
-      try {
-        var _ret = function () {
-          var options = inputOptions = resolveOptions(inputOptions, null);
+            var action = function action() {
+              var result = deepCloneEqual.equal(options.value1, options.value2, {
+                circular: options.circular,
+                equalTypes: options.equalTypes,
+                noCrossReferences: options.noCrossReferences,
+                equalInnerReferences: options.equalInnerReferences,
+                equalMapSetOrder: options.equalMapSetOrder,
+                strictEqualFunctions: options.strictEqualFunctions
+              });
 
-          var action = function action() {
-            var result = deepCloneEqual.equal(options.value1, options.value2, {
-              circular: options.circular,
-              equalTypes: options.equalTypes,
-              noCrossReferences: options.noCrossReferences,
-              equalInnerReferences: options.equalInnerReferences,
-              equalMapSetOrder: options.equalMapSetOrder,
-              strictEqualFunctions: options.strictEqualFunctions
-            });
+              _Assert.assert.strictEqual(result, options.expected.result);
+            };
 
-            _Assert.assert.strictEqual(result, options.expected.result);
-          };
+            if (options.expected.error) {
+              _Assert.assert.throws(action, options.expected.error);
+            } else {
+              action();
+            }
 
-          if (options.expected.error) {
-            _Assert.assert.throws(action, options.expected.error);
-          } else {
-            action();
+            return "break";
+          }();
+
+          if (_ret === "break") break;
+        } catch (ex) {
+          if (!debugIteration) {
+            console.log("Test number: " + TestDeepEqual.totalTests + "\r\nError in: " + inputOptions.description + "\n", inputOptions, // ${
+            // JSON.stringify(initialOptions, null, 4)
+            // }
+            "\n" + inputOptions.action.toString() + "\n" + ex.stack);
+            error = ex;
           }
-
-          return "break";
-        }();
-
-        if (_ret === "break") break;
-      } catch (ex) {
-        if (!debugIteration) {
-          console.log("Test number: " + TestDeepEqual.totalTests + "\r\nError in: " + inputOptions.description + "\n", inputOptions, // ${
-          // JSON.stringify(initialOptions, null, 4)
-          // }
-          "\n" + inputOptions.action.toString() + "\n" + ex.stack);
-          error = ex;
+        } finally {
+          TestDeepEqual.totalTests++;
         }
-      } finally {
-        TestDeepEqual.totalTests++;
+      }
+
+      if (error) {
+        throw error;
       }
     }
+  }], [{
+    key: "test",
+    value: function test(testCases) {
+      if (!testCases.actions) {
+        // tslint:disable-next-line:no-empty
+        testCases.actions = [function () {}];
+      }
 
-    if (error) {
-      throw error;
+      TestDeepEqual._instance.test(testCases);
     }
-  };
-
-  TestDeepEqual.test = function test(testCases) {
-    if (!testCases.actions) {
-      // tslint:disable-next-line:no-empty
-      testCases.actions = [function () {}];
-    }
-
-    TestDeepEqual._instance.test(testCases);
-  };
-
+  }]);
   return TestDeepEqual;
 }(_TestVariants2.TestVariants);
 

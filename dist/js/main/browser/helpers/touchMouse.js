@@ -9,11 +9,14 @@ var _defineProperty = _interopRequireDefault(require("@babel/runtime-corejs3/cor
 
 var _isFinite = _interopRequireDefault(require("@babel/runtime-corejs3/core-js-stable/number/is-finite"));
 
+var _classCallCheck2 = _interopRequireDefault(require("@babel/runtime-corejs3/helpers/classCallCheck"));
+
 var TouchToMouse = function TouchToMouse(container, actionsPrefix) {
   if (actionsPrefix === void 0) {
     actionsPrefix = '';
   }
 
+  (0, _classCallCheck2.default)(this, TouchToMouse);
   var mouseUpName = "on" + actionsPrefix + "mouseup";
   var mouseOutName = "on" + actionsPrefix + "mouseout";
   var mouseEnterName = "on" + actionsPrefix + "mouseenter"; // bind touch

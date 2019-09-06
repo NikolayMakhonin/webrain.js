@@ -2,7 +2,13 @@
 
 var _interopRequireDefault = require("@babel/runtime-corejs3/helpers/interopRequireDefault");
 
-var _inheritsLoose2 = _interopRequireDefault(require("@babel/runtime-corejs3/helpers/inheritsLoose"));
+var _possibleConstructorReturn2 = _interopRequireDefault(require("@babel/runtime-corejs3/helpers/possibleConstructorReturn"));
+
+var _getPrototypeOf2 = _interopRequireDefault(require("@babel/runtime-corejs3/helpers/getPrototypeOf"));
+
+var _inherits2 = _interopRequireDefault(require("@babel/runtime-corejs3/helpers/inherits"));
+
+var _classCallCheck2 = _interopRequireDefault(require("@babel/runtime-corejs3/helpers/classCallCheck"));
 
 var _TypeMeta = require("../../../../../main/common/extensions/TypeMeta");
 
@@ -10,15 +16,18 @@ var _Assert = require("../../../../../main/common/test/Assert");
 
 describe('common > extensions > TypeMeta', function () {
   it('base', function () {
-    var Class1 = function Class1() {};
+    var Class1 = function Class1() {
+      (0, _classCallCheck2.default)(this, Class1);
+    };
 
     var Class2 =
     /*#__PURE__*/
     function (_Class) {
-      (0, _inheritsLoose2.default)(Class2, _Class);
+      (0, _inherits2.default)(Class2, _Class);
 
       function Class2() {
-        return _Class.apply(this, arguments) || this;
+        (0, _classCallCheck2.default)(this, Class2);
+        return (0, _possibleConstructorReturn2.default)(this, (0, _getPrototypeOf2.default)(Class2).apply(this, arguments));
       }
 
       return Class2;

@@ -22,6 +22,10 @@ var _extends2 = _interopRequireDefault(require("@babel/runtime-corejs3/helpers/e
 
 var _isFrozen = _interopRequireDefault(require("@babel/runtime-corejs3/core-js-stable/object/is-frozen"));
 
+var _classCallCheck2 = _interopRequireDefault(require("@babel/runtime-corejs3/helpers/classCallCheck"));
+
+var _createClass2 = _interopRequireDefault(require("@babel/runtime-corejs3/helpers/createClass"));
+
 var _mergers = require("../../../../../../main/common/extensions/merge/mergers");
 
 var _ArrayMap = require("../../../../../../main/common/lists/ArrayMap");
@@ -105,32 +109,34 @@ describe('common > extensions > merge > ObjectMerger', function () {
   /*#__PURE__*/
   function () {
     function Class(value) {
+      (0, _classCallCheck2.default)(this, Class);
       this.value = value;
     }
 
-    var _proto = Class.prototype;
+    (0, _createClass2.default)(Class, [{
+      key: "_canMerge",
+      value: function _canMerge(source) {
+        if (source.constructor !== Class && source.constructor !== Object) {
+          return false;
+        }
 
-    _proto._canMerge = function _canMerge(source) {
-      if (source.constructor !== Class && source.constructor !== Object) {
-        return false;
+        return true;
       }
+    }, {
+      key: "_merge",
+      value: function _merge(merge, older, newer, preferCloneOlder, preferCloneNewer, options) {
+        var _this = this;
 
-      return true;
-    };
-
-    _proto._merge = function _merge(merge, older, newer, preferCloneOlder, preferCloneNewer, options) {
-      var _this = this;
-
-      var changed = false;
-      changed = merge(this.value, older instanceof Class ? older.value : older, newer instanceof Class ? newer.value : newer, function (o) {
-        _this.value = o;
-      }, null, null, {
-        selfAsValueOlder: !(older instanceof Class),
-        selfAsValueNewer: !(newer instanceof Class)
-      }) || changed;
-      return changed;
-    };
-
+        var changed = false;
+        changed = merge(this.value, older instanceof Class ? older.value : older, newer instanceof Class ? newer.value : newer, function (o) {
+          _this.value = o;
+        }, null, null, {
+          selfAsValueOlder: !(older instanceof Class),
+          selfAsValueNewer: !(newer instanceof Class)
+        }) || changed;
+        return changed;
+      }
+    }]);
     return Class;
   }();
 
@@ -814,6 +820,7 @@ describe('common > extensions > merge > ObjectMerger', function () {
       var _context;
 
       var TestClass = function TestClass(value) {
+        (0, _classCallCheck2.default)(this, TestClass);
         this.value = value;
       };
 

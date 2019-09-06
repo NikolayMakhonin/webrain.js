@@ -19,5 +19,8 @@ module.exports = {
 				useESModules: true,
 			}
 		],
+
+		// preset/env no loose:
+		["@babel/plugin-transform-classes", { loose: false }]
 	]
 }

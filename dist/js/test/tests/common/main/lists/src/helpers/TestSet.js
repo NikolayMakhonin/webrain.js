@@ -14,9 +14,15 @@ var _stringify = _interopRequireDefault(require("@babel/runtime-corejs3/core-js-
 
 var _slice = _interopRequireDefault(require("@babel/runtime-corejs3/core-js-stable/instance/slice"));
 
-var _inheritsLoose2 = _interopRequireDefault(require("@babel/runtime-corejs3/helpers/inheritsLoose"));
+var _possibleConstructorReturn2 = _interopRequireDefault(require("@babel/runtime-corejs3/helpers/possibleConstructorReturn"));
+
+var _getPrototypeOf2 = _interopRequireDefault(require("@babel/runtime-corejs3/helpers/getPrototypeOf"));
+
+var _inherits2 = _interopRequireDefault(require("@babel/runtime-corejs3/helpers/inherits"));
 
 var _regenerator = _interopRequireDefault(require("@babel/runtime-corejs3/regenerator"));
+
+var _classCallCheck2 = _interopRequireDefault(require("@babel/runtime-corejs3/helpers/classCallCheck"));
 
 var _createClass2 = _interopRequireDefault(require("@babel/runtime-corejs3/helpers/createClass"));
 
@@ -187,284 +193,296 @@ var SetWrapper =
 /*#__PURE__*/
 function () {
   function SetWrapper(set) {
+    (0, _classCallCheck2.default)(this, SetWrapper);
     this[_Symbol$toStringTag] = 'Set';
     this._set = set;
   }
 
-  var _proto = SetWrapper.prototype;
-  _proto[_Symbol$iterator] =
-  /*#__PURE__*/
-  _regenerator.default.mark(function _callee() {
-    var _iterator4, _isArray4, _i4, _ref4, item;
-
-    return _regenerator.default.wrap(function _callee$(_context10) {
-      while (1) {
-        switch (_context10.prev = _context10.next) {
-          case 0:
-            _iterator4 = this._set, _isArray4 = (0, _isArray10.default)(_iterator4), _i4 = 0, _iterator4 = _isArray4 ? _iterator4 : (0, _getIterator2.default)(_iterator4);
-
-          case 1:
-            if (!_isArray4) {
-              _context10.next = 7;
-              break;
-            }
-
-            if (!(_i4 >= _iterator4.length)) {
-              _context10.next = 4;
-              break;
-            }
-
-            return _context10.abrupt("break", 16);
-
-          case 4:
-            _ref4 = _iterator4[_i4++];
-            _context10.next = 11;
-            break;
-
-          case 7:
-            _i4 = _iterator4.next();
-
-            if (!_i4.done) {
-              _context10.next = 10;
-              break;
-            }
-
-            return _context10.abrupt("break", 16);
-
-          case 10:
-            _ref4 = _i4.value;
-
-          case 11:
-            item = _ref4;
-            _context10.next = 14;
-            return item.value;
-
-          case 14:
-            _context10.next = 1;
-            break;
-
-          case 16:
-          case "end":
-            return _context10.stop();
-        }
-      }
-    }, _callee, this);
-  });
-
-  _proto.add = function add(value) {
-    this._set.add((0, _common.convertToObject)(value));
-
-    return this;
-  };
-
-  _proto.clear = function clear() {
-    this._set.clear();
-  };
-
-  _proto.delete = function _delete(value) {
-    return this._set.delete((0, _common.convertToObject)(value));
-  };
-
-  _proto.entries =
-  /*#__PURE__*/
-  _regenerator.default.mark(function entries() {
-    var _iterator5, _isArray5, _i5, _context11, _ref5, entry;
-
-    return _regenerator.default.wrap(function entries$(_context12) {
-      while (1) {
-        switch (_context12.prev = _context12.next) {
-          case 0:
-            _iterator5 = (0, _entries.default)(_context11 = this._set).call(_context11), _isArray5 = (0, _isArray10.default)(_iterator5), _i5 = 0, _iterator5 = _isArray5 ? _iterator5 : (0, _getIterator2.default)(_iterator5);
-
-          case 1:
-            if (!_isArray5) {
-              _context12.next = 7;
-              break;
-            }
-
-            if (!(_i5 >= _iterator5.length)) {
-              _context12.next = 4;
-              break;
-            }
-
-            return _context12.abrupt("break", 16);
-
-          case 4:
-            _ref5 = _iterator5[_i5++];
-            _context12.next = 11;
-            break;
-
-          case 7:
-            _i5 = _iterator5.next();
-
-            if (!_i5.done) {
-              _context12.next = 10;
-              break;
-            }
-
-            return _context12.abrupt("break", 16);
-
-          case 10:
-            _ref5 = _i5.value;
-
-          case 11:
-            entry = _ref5;
-            _context12.next = 14;
-            return [entry[0].value, entry[1].value];
-
-          case 14:
-            _context12.next = 1;
-            break;
-
-          case 16:
-          case "end":
-            return _context12.stop();
-        }
-      }
-    }, entries, this);
-  });
-
-  _proto.forEach = function forEach(callbackfn, thisArg) {
-    var _context13;
-
-    (0, _forEach.default)(_context13 = this._set).call(_context13, function (value, key) {
-      callbackfn(value.value, key.value, this);
-    }, thisArg);
-  };
-
-  _proto.has = function has(value) {
-    return this._set.has((0, _common.convertToObject)(value));
-  };
-
-  _proto.keys =
-  /*#__PURE__*/
-  _regenerator.default.mark(function keys() {
-    var _iterator6, _isArray6, _i6, _context14, _ref6, item;
-
-    return _regenerator.default.wrap(function keys$(_context15) {
-      while (1) {
-        switch (_context15.prev = _context15.next) {
-          case 0:
-            _iterator6 = (0, _keys.default)(_context14 = this._set).call(_context14), _isArray6 = (0, _isArray10.default)(_iterator6), _i6 = 0, _iterator6 = _isArray6 ? _iterator6 : (0, _getIterator2.default)(_iterator6);
-
-          case 1:
-            if (!_isArray6) {
-              _context15.next = 7;
-              break;
-            }
-
-            if (!(_i6 >= _iterator6.length)) {
-              _context15.next = 4;
-              break;
-            }
-
-            return _context15.abrupt("break", 16);
-
-          case 4:
-            _ref6 = _iterator6[_i6++];
-            _context15.next = 11;
-            break;
-
-          case 7:
-            _i6 = _iterator6.next();
-
-            if (!_i6.done) {
-              _context15.next = 10;
-              break;
-            }
-
-            return _context15.abrupt("break", 16);
-
-          case 10:
-            _ref6 = _i6.value;
-
-          case 11:
-            item = _ref6;
-            _context15.next = 14;
-            return item.value;
-
-          case 14:
-            _context15.next = 1;
-            break;
-
-          case 16:
-          case "end":
-            return _context15.stop();
-        }
-      }
-    }, keys, this);
-  });
-  _proto.values =
-  /*#__PURE__*/
-  _regenerator.default.mark(function values() {
-    var _iterator7, _isArray7, _i7, _context16, _ref7, item;
-
-    return _regenerator.default.wrap(function values$(_context17) {
-      while (1) {
-        switch (_context17.prev = _context17.next) {
-          case 0:
-            _iterator7 = (0, _values.default)(_context16 = this._set).call(_context16), _isArray7 = (0, _isArray10.default)(_iterator7), _i7 = 0, _iterator7 = _isArray7 ? _iterator7 : (0, _getIterator2.default)(_iterator7);
-
-          case 1:
-            if (!_isArray7) {
-              _context17.next = 7;
-              break;
-            }
-
-            if (!(_i7 >= _iterator7.length)) {
-              _context17.next = 4;
-              break;
-            }
-
-            return _context17.abrupt("break", 16);
-
-          case 4:
-            _ref7 = _iterator7[_i7++];
-            _context17.next = 11;
-            break;
-
-          case 7:
-            _i7 = _iterator7.next();
-
-            if (!_i7.done) {
-              _context17.next = 10;
-              break;
-            }
-
-            return _context17.abrupt("break", 16);
-
-          case 10:
-            _ref7 = _i7.value;
-
-          case 11:
-            item = _ref7;
-            _context17.next = 14;
-            return item.value;
-
-          case 14:
-            _context17.next = 1;
-            break;
-
-          case 16:
-          case "end":
-            return _context17.stop();
-        }
-      }
-    }, values, this);
-  }) // region ISerializable
-  ;
-
-  _proto.serialize = function serialize(_serialize) {
-    return {
-      set: _serialize(this._set)
-    };
-  } // tslint:disable-next-line:no-empty
-  ;
-
-  _proto.deSerialize = function deSerialize(_deSerialize, serializedValue) {} // endregion
-  ;
-
   (0, _createClass2.default)(SetWrapper, [{
+    key: _Symbol$iterator,
+    value:
+    /*#__PURE__*/
+    _regenerator.default.mark(function value() {
+      var _iterator4, _isArray4, _i4, _ref4, item;
+
+      return _regenerator.default.wrap(function value$(_context10) {
+        while (1) {
+          switch (_context10.prev = _context10.next) {
+            case 0:
+              _iterator4 = this._set, _isArray4 = (0, _isArray10.default)(_iterator4), _i4 = 0, _iterator4 = _isArray4 ? _iterator4 : (0, _getIterator2.default)(_iterator4);
+
+            case 1:
+              if (!_isArray4) {
+                _context10.next = 7;
+                break;
+              }
+
+              if (!(_i4 >= _iterator4.length)) {
+                _context10.next = 4;
+                break;
+              }
+
+              return _context10.abrupt("break", 16);
+
+            case 4:
+              _ref4 = _iterator4[_i4++];
+              _context10.next = 11;
+              break;
+
+            case 7:
+              _i4 = _iterator4.next();
+
+              if (!_i4.done) {
+                _context10.next = 10;
+                break;
+              }
+
+              return _context10.abrupt("break", 16);
+
+            case 10:
+              _ref4 = _i4.value;
+
+            case 11:
+              item = _ref4;
+              _context10.next = 14;
+              return item.value;
+
+            case 14:
+              _context10.next = 1;
+              break;
+
+            case 16:
+            case "end":
+              return _context10.stop();
+          }
+        }
+      }, value, this);
+    })
+  }, {
+    key: "add",
+    value: function add(value) {
+      this._set.add((0, _common.convertToObject)(value));
+
+      return this;
+    }
+  }, {
+    key: "clear",
+    value: function clear() {
+      this._set.clear();
+    }
+  }, {
+    key: "delete",
+    value: function _delete(value) {
+      return this._set.delete((0, _common.convertToObject)(value));
+    }
+  }, {
+    key: "entries",
+    value:
+    /*#__PURE__*/
+    _regenerator.default.mark(function entries() {
+      var _iterator5, _isArray5, _i5, _context11, _ref5, entry;
+
+      return _regenerator.default.wrap(function entries$(_context12) {
+        while (1) {
+          switch (_context12.prev = _context12.next) {
+            case 0:
+              _iterator5 = (0, _entries.default)(_context11 = this._set).call(_context11), _isArray5 = (0, _isArray10.default)(_iterator5), _i5 = 0, _iterator5 = _isArray5 ? _iterator5 : (0, _getIterator2.default)(_iterator5);
+
+            case 1:
+              if (!_isArray5) {
+                _context12.next = 7;
+                break;
+              }
+
+              if (!(_i5 >= _iterator5.length)) {
+                _context12.next = 4;
+                break;
+              }
+
+              return _context12.abrupt("break", 16);
+
+            case 4:
+              _ref5 = _iterator5[_i5++];
+              _context12.next = 11;
+              break;
+
+            case 7:
+              _i5 = _iterator5.next();
+
+              if (!_i5.done) {
+                _context12.next = 10;
+                break;
+              }
+
+              return _context12.abrupt("break", 16);
+
+            case 10:
+              _ref5 = _i5.value;
+
+            case 11:
+              entry = _ref5;
+              _context12.next = 14;
+              return [entry[0].value, entry[1].value];
+
+            case 14:
+              _context12.next = 1;
+              break;
+
+            case 16:
+            case "end":
+              return _context12.stop();
+          }
+        }
+      }, entries, this);
+    })
+  }, {
+    key: "forEach",
+    value: function forEach(callbackfn, thisArg) {
+      var _context13;
+
+      (0, _forEach.default)(_context13 = this._set).call(_context13, function (value, key) {
+        callbackfn(value.value, key.value, this);
+      }, thisArg);
+    }
+  }, {
+    key: "has",
+    value: function has(value) {
+      return this._set.has((0, _common.convertToObject)(value));
+    }
+  }, {
+    key: "keys",
+    value:
+    /*#__PURE__*/
+    _regenerator.default.mark(function keys() {
+      var _iterator6, _isArray6, _i6, _context14, _ref6, item;
+
+      return _regenerator.default.wrap(function keys$(_context15) {
+        while (1) {
+          switch (_context15.prev = _context15.next) {
+            case 0:
+              _iterator6 = (0, _keys.default)(_context14 = this._set).call(_context14), _isArray6 = (0, _isArray10.default)(_iterator6), _i6 = 0, _iterator6 = _isArray6 ? _iterator6 : (0, _getIterator2.default)(_iterator6);
+
+            case 1:
+              if (!_isArray6) {
+                _context15.next = 7;
+                break;
+              }
+
+              if (!(_i6 >= _iterator6.length)) {
+                _context15.next = 4;
+                break;
+              }
+
+              return _context15.abrupt("break", 16);
+
+            case 4:
+              _ref6 = _iterator6[_i6++];
+              _context15.next = 11;
+              break;
+
+            case 7:
+              _i6 = _iterator6.next();
+
+              if (!_i6.done) {
+                _context15.next = 10;
+                break;
+              }
+
+              return _context15.abrupt("break", 16);
+
+            case 10:
+              _ref6 = _i6.value;
+
+            case 11:
+              item = _ref6;
+              _context15.next = 14;
+              return item.value;
+
+            case 14:
+              _context15.next = 1;
+              break;
+
+            case 16:
+            case "end":
+              return _context15.stop();
+          }
+        }
+      }, keys, this);
+    })
+  }, {
+    key: "values",
+    value:
+    /*#__PURE__*/
+    _regenerator.default.mark(function values() {
+      var _iterator7, _isArray7, _i7, _context16, _ref7, item;
+
+      return _regenerator.default.wrap(function values$(_context17) {
+        while (1) {
+          switch (_context17.prev = _context17.next) {
+            case 0:
+              _iterator7 = (0, _values.default)(_context16 = this._set).call(_context16), _isArray7 = (0, _isArray10.default)(_iterator7), _i7 = 0, _iterator7 = _isArray7 ? _iterator7 : (0, _getIterator2.default)(_iterator7);
+
+            case 1:
+              if (!_isArray7) {
+                _context17.next = 7;
+                break;
+              }
+
+              if (!(_i7 >= _iterator7.length)) {
+                _context17.next = 4;
+                break;
+              }
+
+              return _context17.abrupt("break", 16);
+
+            case 4:
+              _ref7 = _iterator7[_i7++];
+              _context17.next = 11;
+              break;
+
+            case 7:
+              _i7 = _iterator7.next();
+
+              if (!_i7.done) {
+                _context17.next = 10;
+                break;
+              }
+
+              return _context17.abrupt("break", 16);
+
+            case 10:
+              _ref7 = _i7.value;
+
+            case 11:
+              item = _ref7;
+              _context17.next = 14;
+              return item.value;
+
+            case 14:
+              _context17.next = 1;
+              break;
+
+            case 16:
+            case "end":
+              return _context17.stop();
+          }
+        }
+      }, values, this);
+    }) // region ISerializable
+
+  }, {
+    key: "serialize",
+    value: function serialize(_serialize) {
+      return {
+        set: _serialize(this._set)
+      };
+    } // tslint:disable-next-line:no-empty
+
+  }, {
+    key: "deSerialize",
+    value: function deSerialize(_deSerialize, serializedValue) {} // endregion
+
+  }, {
     key: "size",
     get: function get() {
       return this._set.size;
@@ -506,12 +524,13 @@ SetWrapper.uuid = '5de4524d6cdb41e989689798ecedef5d';
 var TestSet =
 /*#__PURE__*/
 function (_TestVariants) {
-  (0, _inheritsLoose2.default)(TestSet, _TestVariants);
+  (0, _inherits2.default)(TestSet, _TestVariants);
 
   function TestSet() {
     var _this;
 
-    _this = _TestVariants.call(this) || this;
+    (0, _classCallCheck2.default)(this, TestSet);
+    _this = (0, _possibleConstructorReturn2.default)(this, (0, _getPrototypeOf2.default)(TestSet).call(this));
     _this.baseOptionsVariants = {
       reuseSetInstance: [false, true],
       useSetChanged: [false, true],
@@ -521,178 +540,179 @@ function (_TestVariants) {
     return _this;
   }
 
-  var _proto2 = TestSet.prototype;
+  (0, _createClass2.default)(TestSet, [{
+    key: "testVariant",
+    value: function testVariant(options) {
+      var error;
 
-  _proto2.testVariant = function testVariant(options) {
-    var error;
+      for (var debugIteration = 0; debugIteration < 3; debugIteration++) {
+        var unsubscribeSetChanged = void 0;
+        var unsubscribePropertyChanged = void 0;
 
-    for (var debugIteration = 0; debugIteration < 3; debugIteration++) {
-      var unsubscribeSetChanged = void 0;
-      var unsubscribePropertyChanged = void 0;
+        try {
+          var _ret = function () {
+            var _context19, _context20, _context23, _context24;
 
-      try {
-        var _ret = function () {
-          var _context19, _context20, _context23, _context24;
+            var array = (0, _slice.default)(_context19 = options.array).call(_context19);
+            var expectedArray = (0, _slice.default)(_context20 = options.expected.array).call(_context20);
+            var set = void 0;
+            var setInner = void 0;
 
-          var array = (0, _slice.default)(_context19 = options.array).call(_context19);
-          var expectedArray = (0, _slice.default)(_context20 = options.expected.array).call(_context20);
-          var set = void 0;
-          var setInner = void 0;
+            if (options.reuseSetInstance) {
+              staticSet.clear();
 
-          if (options.reuseSetInstance) {
-            staticSet.clear();
+              for (var _iterator8 = array, _isArray8 = (0, _isArray10.default)(_iterator8), _i8 = 0, _iterator8 = _isArray8 ? _iterator8 : (0, _getIterator2.default)(_iterator8);;) {
+                var _ref8;
 
-            for (var _iterator8 = array, _isArray8 = (0, _isArray10.default)(_iterator8), _i8 = 0, _iterator8 = _isArray8 ? _iterator8 : (0, _getIterator2.default)(_iterator8);;) {
-              var _ref8;
+                if (_isArray8) {
+                  if (_i8 >= _iterator8.length) break;
+                  _ref8 = _iterator8[_i8++];
+                } else {
+                  _i8 = _iterator8.next();
+                  if (_i8.done) break;
+                  _ref8 = _i8.value;
+                }
 
-              if (_isArray8) {
-                if (_i8 >= _iterator8.length) break;
-                _ref8 = _iterator8[_i8++];
-              } else {
-                _i8 = _iterator8.next();
-                if (_i8.done) break;
-                _ref8 = _i8.value;
+                var item = _ref8;
+                staticSet.add(item);
               }
 
-              var item = _ref8;
-              staticSet.add(item);
-            }
+              set = staticSet;
+              setInner = staticSetInner;
+            } else {
+              switch (options.innerSet) {
+                case 'ObjectSet':
+                  setInner = new _ObjectSet.ObjectSet({});
+                  break;
 
-            set = staticSet;
-            setInner = staticSetInner;
-          } else {
-            switch (options.innerSet) {
-              case 'ObjectSet':
-                setInner = new _ObjectSet.ObjectSet({});
-                break;
+                case 'ArraySet':
+                  setInner = new SetWrapper(new _ArraySet.ArraySet([]));
+                  break;
 
-              case 'ArraySet':
-                setInner = new SetWrapper(new _ArraySet.ArraySet([]));
-                break;
+                case 'Set<Object>':
+                  setInner = new SetWrapper(new _set.default());
+                  break;
 
-              case 'Set<Object>':
-                setInner = new SetWrapper(new _set.default());
-                break;
+                case 'Set':
+                  setInner = new _set.default();
+                  break;
 
-              case 'Set':
-                setInner = new _set.default();
-                break;
-
-              default:
-                assert.fail('Unknown options.innerSet: ' + options.innerSet);
-                break;
-            }
-
-            for (var _iterator9 = array, _isArray9 = (0, _isArray10.default)(_iterator9), _i9 = 0, _iterator9 = _isArray9 ? _iterator9 : (0, _getIterator2.default)(_iterator9);;) {
-              var _ref9;
-
-              if (_isArray9) {
-                if (_i9 >= _iterator9.length) break;
-                _ref9 = _iterator9[_i9++];
-              } else {
-                _i9 = _iterator9.next();
-                if (_i9.done) break;
-                _ref9 = _i9.value;
+                default:
+                  assert.fail('Unknown options.innerSet: ' + options.innerSet);
+                  break;
               }
 
-              var _item2 = _ref9;
-              setInner.add(_item2);
+              for (var _iterator9 = array, _isArray9 = (0, _isArray10.default)(_iterator9), _i9 = 0, _iterator9 = _isArray9 ? _iterator9 : (0, _getIterator2.default)(_iterator9);;) {
+                var _ref9;
+
+                if (_isArray9) {
+                  if (_i9 >= _iterator9.length) break;
+                  _ref9 = _iterator9[_i9++];
+                } else {
+                  _i9 = _iterator9.next();
+                  if (_i9.done) break;
+                  _ref9 = _i9.value;
+                }
+
+                var _item2 = _ref9;
+                setInner.add(_item2);
+              }
+
+              set = new _ObservableSet.ObservableSet(setInner);
             }
 
-            set = new _ObservableSet.ObservableSet(setInner);
-          }
+            var arrayReplicate = (0, _slice.default)(array).call(array, 0, set.size);
+            var setChangedEvents = [];
 
-          var arrayReplicate = (0, _slice.default)(array).call(array, 0, set.size);
-          var setChangedEvents = [];
+            if (options.useSetChanged) {
+              unsubscribeSetChanged = set.setChanged.subscribe(function (event) {
+                var _context21, _context22;
 
-          if (options.useSetChanged) {
-            unsubscribeSetChanged = set.setChanged.subscribe(function (event) {
-              var _context21, _context22;
+                setChangedEvents.push(event);
+                applySetChangedToArray(event, arrayReplicate);
+                assert.deepStrictEqual((0, _sort.default)(_context21 = (0, _slice.default)(arrayReplicate).call(arrayReplicate)).call(_context21, _compare.compareFast), (0, _sort.default)(_context22 = (0, _from.default)((0, _values.default)(setInner).call(setInner))).call(_context22, _compare.compareFast));
+              });
+            }
 
-              setChangedEvents.push(event);
-              applySetChangedToArray(event, arrayReplicate);
-              assert.deepStrictEqual((0, _sort.default)(_context21 = (0, _slice.default)(arrayReplicate).call(arrayReplicate)).call(_context21, _compare.compareFast), (0, _sort.default)(_context22 = (0, _from.default)((0, _values.default)(setInner).call(setInner))).call(_context22, _compare.compareFast));
+            var propertyChangedEvents = [];
+            unsubscribePropertyChanged = set.propertyChanged.subscribe(function (event) {
+              propertyChangedEvents.push(event);
             });
-          }
 
-          var propertyChangedEvents = [];
-          unsubscribePropertyChanged = set.propertyChanged.subscribe(function (event) {
-            propertyChangedEvents.push(event);
-          });
-
-          if (!options.reuseSetInstance) {
-            assertSet(set, (0, _from.default)((0, _values.default)(setInner).call(setInner)));
-          }
-
-          if (options.expected.error) {
-            assert.throws(function () {
-              return options.action(set);
-            }, options.expected.error);
-            assertSet(set, array);
-          } else {
-            assert.deepStrictEqual(options.action(set), options.expected.returnValue === _TestVariants2.THIS ? set : options.expected.returnValue);
-            assertSet(set, expectedArray);
-          }
-
-          assert.deepStrictEqual((0, _sort.default)(_context23 = (0, _from.default)((0, _values.default)(setInner).call(setInner))).call(_context23, _compare.compareFast), (0, _sort.default)(_context24 = (0, _from.default)((0, _values.default)(set).call(set))).call(_context24, _compare.compareFast));
-
-          if (options.useSetChanged) {
-            var _context25, _context26;
-
-            if (unsubscribeSetChanged) {
-              unsubscribeSetChanged();
+            if (!options.reuseSetInstance) {
+              assertSet(set, (0, _from.default)((0, _values.default)(setInner).call(setInner)));
             }
 
-            assert.deepStrictEqual(setChangedEvents, options.expected.setChanged || []);
-            assert.deepStrictEqual((0, _sort.default)(_context25 = (0, _slice.default)(arrayReplicate).call(arrayReplicate)).call(_context25, _compare.compareFast), (0, _sort.default)(_context26 = (0, _from.default)((0, _values.default)(set).call(set))).call(_context26, _compare.compareFast));
+            if (options.expected.error) {
+              assert.throws(function () {
+                return options.action(set);
+              }, options.expected.error);
+              assertSet(set, array);
+            } else {
+              assert.deepStrictEqual(options.action(set), options.expected.returnValue === _TestVariants2.THIS ? set : options.expected.returnValue);
+              assertSet(set, expectedArray);
+            }
+
+            assert.deepStrictEqual((0, _sort.default)(_context23 = (0, _from.default)((0, _values.default)(setInner).call(setInner))).call(_context23, _compare.compareFast), (0, _sort.default)(_context24 = (0, _from.default)((0, _values.default)(set).call(set))).call(_context24, _compare.compareFast));
+
+            if (options.useSetChanged) {
+              var _context25, _context26;
+
+              if (unsubscribeSetChanged) {
+                unsubscribeSetChanged();
+              }
+
+              assert.deepStrictEqual(setChangedEvents, options.expected.setChanged || []);
+              assert.deepStrictEqual((0, _sort.default)(_context25 = (0, _slice.default)(arrayReplicate).call(arrayReplicate)).call(_context25, _compare.compareFast), (0, _sort.default)(_context26 = (0, _from.default)((0, _values.default)(set).call(set))).call(_context26, _compare.compareFast));
+            }
+
+            if (unsubscribePropertyChanged) {
+              unsubscribePropertyChanged();
+            }
+
+            var expectedPropertyChanged = options.expected.propertyChanged;
+
+            if (!expectedPropertyChanged && !options.expected.error && array.length !== expectedArray.length) {
+              expectedPropertyChanged = [{
+                name: 'size',
+                oldValue: array.length,
+                newValue: expectedArray.length
+              }];
+            }
+
+            assert.deepStrictEqual(propertyChangedEvents, expectedPropertyChanged || []);
+            return "break";
+          }();
+
+          if (_ret === "break") break;
+        } catch (ex) {
+          if (!debugIteration) {
+            console.log("Error in: " + options.description + "\n" + (0, _stringify.default)(options, null, 4) + "\n" + options.action.toString() + "\n" + ex.stack);
+            error = ex;
+          }
+        } finally {
+          if (unsubscribeSetChanged) {
+            unsubscribeSetChanged();
           }
 
           if (unsubscribePropertyChanged) {
             unsubscribePropertyChanged();
           }
 
-          var expectedPropertyChanged = options.expected.propertyChanged;
-
-          if (!expectedPropertyChanged && !options.expected.error && array.length !== expectedArray.length) {
-            expectedPropertyChanged = [{
-              name: 'size',
-              oldValue: array.length,
-              newValue: expectedArray.length
-            }];
-          }
-
-          assert.deepStrictEqual(propertyChangedEvents, expectedPropertyChanged || []);
-          return "break";
-        }();
-
-        if (_ret === "break") break;
-      } catch (ex) {
-        if (!debugIteration) {
-          console.log("Error in: " + options.description + "\n" + (0, _stringify.default)(options, null, 4) + "\n" + options.action.toString() + "\n" + ex.stack);
-          error = ex;
+          TestSet.totalSetTests++;
         }
-      } finally {
-        if (unsubscribeSetChanged) {
-          unsubscribeSetChanged();
-        }
+      }
 
-        if (unsubscribePropertyChanged) {
-          unsubscribePropertyChanged();
-        }
-
-        TestSet.totalSetTests++;
+      if (error) {
+        throw error;
       }
     }
-
-    if (error) {
-      throw error;
+  }], [{
+    key: "test",
+    value: function test(testCases) {
+      TestSet._instance.test(testCases);
     }
-  };
-
-  TestSet.test = function test(testCases) {
-    TestSet._instance.test(testCases);
-  };
-
+  }]);
   return TestSet;
 }(_TestVariants2.TestVariants);
 

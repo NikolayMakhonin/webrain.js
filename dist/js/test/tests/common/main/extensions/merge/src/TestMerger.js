@@ -8,7 +8,17 @@ exports.TestMerger = exports.TypeMetaMergerCollectionMock = exports.NEWER = expo
 
 var _extends2 = _interopRequireDefault(require("@babel/runtime-corejs3/helpers/extends"));
 
-var _inheritsLoose2 = _interopRequireDefault(require("@babel/runtime-corejs3/helpers/inheritsLoose"));
+var _classCallCheck2 = _interopRequireDefault(require("@babel/runtime-corejs3/helpers/classCallCheck"));
+
+var _createClass2 = _interopRequireDefault(require("@babel/runtime-corejs3/helpers/createClass"));
+
+var _possibleConstructorReturn2 = _interopRequireDefault(require("@babel/runtime-corejs3/helpers/possibleConstructorReturn"));
+
+var _getPrototypeOf2 = _interopRequireDefault(require("@babel/runtime-corejs3/helpers/getPrototypeOf"));
+
+var _get2 = _interopRequireDefault(require("@babel/runtime-corejs3/helpers/get"));
+
+var _inherits2 = _interopRequireDefault(require("@babel/runtime-corejs3/helpers/inherits"));
 
 var _freeze = _interopRequireDefault(require("@babel/runtime-corejs3/core-js-stable/object/freeze"));
 
@@ -128,41 +138,42 @@ exports.NEWER = NEWER;
 var TypeMetaMergerCollectionMock =
 /*#__PURE__*/
 function (_TypeMetaMergerCollec) {
-  (0, _inheritsLoose2.default)(TypeMetaMergerCollectionMock, _TypeMetaMergerCollec);
+  (0, _inherits2.default)(TypeMetaMergerCollectionMock, _TypeMetaMergerCollec);
 
   function TypeMetaMergerCollectionMock() {
     var _this;
 
-    _this = _TypeMetaMergerCollec.call(this) || this;
+    (0, _classCallCheck2.default)(this, TypeMetaMergerCollectionMock);
+    _this = (0, _possibleConstructorReturn2.default)(this, (0, _getPrototypeOf2.default)(TypeMetaMergerCollectionMock).call(this));
     _this._resetFuncs = [];
     return _this;
   }
 
-  var _proto = TypeMetaMergerCollectionMock.prototype;
+  (0, _createClass2.default)(TypeMetaMergerCollectionMock, [{
+    key: "getMeta",
+    value: function getMeta(type) {
+      var meta = (0, _get2.default)((0, _getPrototypeOf2.default)(TypeMetaMergerCollectionMock.prototype), "getMeta", this).call(this, type); // assert.ok(meta, `Meta not found for type: ${typeToDebugString(type)}`)
 
-  _proto.getMeta = function getMeta(type) {
-    var meta = _TypeMetaMergerCollec.prototype.getMeta.call(this, type); // assert.ok(meta, `Meta not found for type: ${typeToDebugString(type)}`)
+      if (meta && this.changeMetaFunc) {
+        var resetFunc = this.changeMetaFunc(meta);
 
-
-    if (meta && this.changeMetaFunc) {
-      var resetFunc = this.changeMetaFunc(meta);
-
-      if (resetFunc) {
-        this._resetFuncs.push(resetFunc);
+        if (resetFunc) {
+          this._resetFuncs.push(resetFunc);
+        }
       }
+
+      return meta;
     }
+  }, {
+    key: "reset",
+    value: function reset() {
+      for (var i = 0, len = this._resetFuncs.length; i < len; i++) {
+        this._resetFuncs[i]();
+      }
 
-    return meta;
-  };
-
-  _proto.reset = function reset() {
-    for (var i = 0, len = this._resetFuncs.length; i < len; i++) {
-      this._resetFuncs[i]();
+      this._resetFuncs = [];
     }
-
-    this._resetFuncs = [];
-  };
-
+  }]);
   return TypeMetaMergerCollectionMock;
 }(_mergers.TypeMetaMergerCollection);
 
@@ -281,12 +292,13 @@ function isRefer(value) {
 var TestMerger =
 /*#__PURE__*/
 function (_TestVariants) {
-  (0, _inheritsLoose2.default)(TestMerger, _TestVariants);
+  (0, _inherits2.default)(TestMerger, _TestVariants);
 
   function TestMerger() {
     var _this2;
 
-    _this2 = _TestVariants.call(this) || this;
+    (0, _classCallCheck2.default)(this, TestMerger);
+    _this2 = (0, _possibleConstructorReturn2.default)(this, (0, _getPrototypeOf2.default)(TestMerger).call(this));
     _this2.baseOptionsVariants = {
       base: [],
       older: [],
@@ -301,152 +313,153 @@ function (_TestVariants) {
     return _this2;
   }
 
-  var _proto2 = TestMerger.prototype;
+  (0, _createClass2.default)(TestMerger, [{
+    key: "testVariant",
+    value: function testVariant(inputOptions) {
+      var error;
 
-  _proto2.testVariant = function testVariant(inputOptions) {
-    var error;
+      for (var debugIteration = 0; debugIteration < 3; debugIteration++) {
+        // if (TestMerger.totalTests >= 457) {
+        // 	new Date().getTime()
+        // }
+        var initialOptions = inputOptions;
+        var inputOptionsClone = deepCloneEqual.clone(inputOptions);
 
-    for (var debugIteration = 0; debugIteration < 3; debugIteration++) {
-      // if (TestMerger.totalTests >= 457) {
-      // 	new Date().getTime()
-      // }
-      var initialOptions = inputOptions;
-      var inputOptionsClone = deepCloneEqual.clone(inputOptions);
+        try {
+          var _ret = function () {
+            var options = resolveOptions(initialOptions, null, true, true, true); // options = resolveOptions(options, options, true, true, false)
 
-      try {
-        var _ret = function () {
-          var options = resolveOptions(initialOptions, null, true, true, true); // options = resolveOptions(options, options, true, true, false)
+            initialOptions = resolveOptions(initialOptions, options, true, false, true);
+            initialOptions.baseIsFrozen = (0, _isFrozen.default)(options.base);
+            initialOptions.olderIsFrozen = (0, _isFrozen.default)(options.older);
+            initialOptions.newerIsFrozen = (0, _isFrozen.default)(options.newer);
 
-          initialOptions = resolveOptions(initialOptions, options, true, false, true);
-          initialOptions.baseIsFrozen = (0, _isFrozen.default)(options.base);
-          initialOptions.olderIsFrozen = (0, _isFrozen.default)(options.older);
-          initialOptions.newerIsFrozen = (0, _isFrozen.default)(options.newer);
+            if (options.preferCloneMeta == null) {
+              TypeMetaMergerCollectionMock.default.changeMetaFunc = null;
+            } else {
+              TypeMetaMergerCollectionMock.default.changeMetaFunc = function (meta) {
+                if (!meta.isMocked) {
+                  var preferClone = meta.preferClone;
 
-          if (options.preferCloneMeta == null) {
-            TypeMetaMergerCollectionMock.default.changeMetaFunc = null;
-          } else {
-            TypeMetaMergerCollectionMock.default.changeMetaFunc = function (meta) {
-              if (!meta.isMocked) {
-                var preferClone = meta.preferClone;
+                  if (preferClone !== false) {
+                    meta.isMocked = true;
 
-                if (preferClone !== false) {
-                  meta.isMocked = true;
+                    if (typeof preferClone !== 'function') {
+                      meta.preferClone = options.preferCloneMeta;
+                    } else {
+                      meta.preferClone = function (target) {
+                        var calcPreferClone = preferClone(target);
 
-                  if (typeof preferClone !== 'function') {
-                    meta.preferClone = options.preferCloneMeta;
-                  } else {
-                    meta.preferClone = function (target) {
-                      var calcPreferClone = preferClone(target);
+                        if (calcPreferClone === false) {
+                          return calcPreferClone;
+                        }
 
-                      if (calcPreferClone === false) {
-                        return calcPreferClone;
-                      }
+                        return options.preferCloneMeta;
+                      };
+                    }
 
-                      return options.preferCloneMeta;
+                    return function () {
+                      meta.preferClone = preferClone;
+                      delete meta.isMocked;
                     };
                   }
-
-                  return function () {
-                    meta.preferClone = preferClone;
-                    delete meta.isMocked;
-                  };
-                }
-              }
-
-              return null;
-            };
-          }
-
-          var setValue = NONE;
-          var setCount = 0;
-          var returnValue = NONE;
-          var initialBase = isPreferClone(initialOptions, initialOptions.expected.base) ? deepCloneEqual.clone(options.expected.base) : options.expected.base;
-          var initialOlder = isPreferClone(initialOptions, initialOptions.expected.older) && !(options.older === options.base && !isPreferClone(initialOptions, initialOptions.expected.base)) ? deepCloneEqual.clone(options.expected.older) : options.expected.older;
-          var initialNewer = isPreferClone(initialOptions, initialOptions.expected.newer) && !(options.newer === options.base && !isPreferClone(initialOptions, initialOptions.expected.base)) ? deepCloneEqual.clone(options.expected.newer) : options.expected.newer;
-
-          var action = function action() {
-            returnValue = merger.merge(options.base, options.older, options.newer, options.setFunc && function (o) {
-              setValue = o;
-              setCount++;
-            }, options.preferCloneOlderParam, options.preferCloneNewerParam, options.valueType || options.valueFactory ? {
-              valueType: options.valueType,
-              valueFactory: options.valueFactory
-            } : void 0);
-          };
-
-          if (options.expected.error) {
-            assert.throws(action, options.expected.error);
-          } else {
-            action();
-
-            var assertValue = function assertValue(actual, expected, strict) {
-              if (expected && expected !== NONE && expected.constructor === String) {
-                expected = expected.valueOf();
-              }
-
-              if (actual && actual !== NONE && actual.constructor === String) {
-                actual = actual.valueOf();
-              }
-
-              if (strict) {
-                assert.strictEqual(actual, expected);
-              } else {
-                if (actual !== NONE && actual != null && typeof actual === 'object' && actual.constructor !== String && actual.constructor !== Number && actual.constructor !== Boolean && (0, _objectUniqueId.canHaveUniqueId)(actual) || typeof actual === 'function') {
-                  assert.notStrictEqual(actual, expected);
-                  assert.notStrictEqual(actual, options.base);
-                  assert.notStrictEqual(actual, options.older);
-                  assert.notStrictEqual(actual, options.newer);
                 }
 
-                deepCloneEqual.equal(actual, expected, {
-                  noCrossReferences: true
-                });
-              }
+                return null;
+              };
+            }
+
+            var setValue = NONE;
+            var setCount = 0;
+            var returnValue = NONE;
+            var initialBase = isPreferClone(initialOptions, initialOptions.expected.base) ? deepCloneEqual.clone(options.expected.base) : options.expected.base;
+            var initialOlder = isPreferClone(initialOptions, initialOptions.expected.older) && !(options.older === options.base && !isPreferClone(initialOptions, initialOptions.expected.base)) ? deepCloneEqual.clone(options.expected.older) : options.expected.older;
+            var initialNewer = isPreferClone(initialOptions, initialOptions.expected.newer) && !(options.newer === options.base && !isPreferClone(initialOptions, initialOptions.expected.base)) ? deepCloneEqual.clone(options.expected.newer) : options.expected.newer;
+
+            var action = function action() {
+              returnValue = merger.merge(options.base, options.older, options.newer, options.setFunc && function (o) {
+                setValue = o;
+                setCount++;
+              }, options.preferCloneOlderParam, options.preferCloneNewerParam, options.valueType || options.valueFactory ? {
+                valueType: options.valueType,
+                valueFactory: options.valueFactory
+              } : void 0);
             };
 
-            assertValue(setValue, options.expected.setValue, isPreferClone(initialOptions, initialOptions.expected.setValue) !== true);
-            assert.strictEqual(returnValue, options.expected.returnValue);
-            assert.strictEqual(setCount, options.expected.setValue !== NONE ? 1 : 0);
-            deepCloneEqual.equal(options.base, initialBase);
-            deepCloneEqual.equal(options.older, initialOlder);
-            deepCloneEqual.equal(options.newer, initialNewer); // assertValue(options.base, options.expected.base, isRefer(initialOptions.expected.base))
-            // assertValue(options.older, options.expected.older, isRefer(initialOptions.expected.older))
-            // assertValue(options.newer, options.expected.newer, isRefer(initialOptions.expected.newer))
+            if (options.expected.error) {
+              assert.throws(action, options.expected.error);
+            } else {
+              action();
+
+              var assertValue = function assertValue(actual, expected, strict) {
+                if (expected && expected !== NONE && expected.constructor === String) {
+                  expected = expected.valueOf();
+                }
+
+                if (actual && actual !== NONE && actual.constructor === String) {
+                  actual = actual.valueOf();
+                }
+
+                if (strict) {
+                  assert.strictEqual(actual, expected);
+                } else {
+                  if (actual !== NONE && actual != null && typeof actual === 'object' && actual.constructor !== String && actual.constructor !== Number && actual.constructor !== Boolean && (0, _objectUniqueId.canHaveUniqueId)(actual) || typeof actual === 'function') {
+                    assert.notStrictEqual(actual, expected);
+                    assert.notStrictEqual(actual, options.base);
+                    assert.notStrictEqual(actual, options.older);
+                    assert.notStrictEqual(actual, options.newer);
+                  }
+
+                  deepCloneEqual.equal(actual, expected, {
+                    noCrossReferences: true
+                  });
+                }
+              };
+
+              assertValue(setValue, options.expected.setValue, isPreferClone(initialOptions, initialOptions.expected.setValue) !== true);
+              assert.strictEqual(returnValue, options.expected.returnValue);
+              assert.strictEqual(setCount, options.expected.setValue !== NONE ? 1 : 0);
+              deepCloneEqual.equal(options.base, initialBase);
+              deepCloneEqual.equal(options.older, initialOlder);
+              deepCloneEqual.equal(options.newer, initialNewer); // assertValue(options.base, options.expected.base, isRefer(initialOptions.expected.base))
+              // assertValue(options.older, options.expected.older, isRefer(initialOptions.expected.older))
+              // assertValue(options.newer, options.expected.newer, isRefer(initialOptions.expected.newer))
+            }
+
+            assert.circularDeepStrictEqual(inputOptions, inputOptionsClone);
+            return "break";
+          }();
+
+          if (_ret === "break") break;
+        } catch (ex) {
+          if (!debugIteration) {
+            console.log("Test number: " + TestMerger.totalTests + "\r\nError in: " + initialOptions.description + "\n", initialOptions, // ${
+            // JSON.stringify(initialOptions, null, 4)
+            // }
+            "\n" + initialOptions.action.toString() + "\n" + ex.stack);
+            error = ex;
           }
-
-          assert.circularDeepStrictEqual(inputOptions, inputOptionsClone);
-          return "break";
-        }();
-
-        if (_ret === "break") break;
-      } catch (ex) {
-        if (!debugIteration) {
-          console.log("Test number: " + TestMerger.totalTests + "\r\nError in: " + initialOptions.description + "\n", initialOptions, // ${
-          // JSON.stringify(initialOptions, null, 4)
-          // }
-          "\n" + initialOptions.action.toString() + "\n" + ex.stack);
-          error = ex;
+        } finally {
+          TypeMetaMergerCollectionMock.default.reset();
+          TestMerger.totalTests++;
         }
-      } finally {
-        TypeMetaMergerCollectionMock.default.reset();
-        TestMerger.totalTests++;
+      }
+
+      if (error) {
+        throw error;
       }
     }
+  }], [{
+    key: "test",
+    value: function test(testCases) {
+      if (!testCases.actions) {
+        // tslint:disable-next-line:no-empty
+        testCases.actions = [function () {}];
+      }
 
-    if (error) {
-      throw error;
+      TestMerger._instance.test(testCases);
     }
-  };
-
-  TestMerger.test = function test(testCases) {
-    if (!testCases.actions) {
-      // tslint:disable-next-line:no-empty
-      testCases.actions = [function () {}];
-    }
-
-    TestMerger._instance.test(testCases);
-  };
-
+  }]);
   return TestMerger;
 }(_TestVariants2.TestVariants);
 

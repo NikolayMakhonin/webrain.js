@@ -5,9 +5,15 @@ var _interopRequireDefault = require("@babel/runtime-corejs3/helpers/interopRequ
 exports.__esModule = true;
 exports.MapChangedObject = void 0;
 
+var _classCallCheck2 = _interopRequireDefault(require("@babel/runtime-corejs3/helpers/classCallCheck"));
+
 var _createClass2 = _interopRequireDefault(require("@babel/runtime-corejs3/helpers/createClass"));
 
-var _inheritsLoose2 = _interopRequireDefault(require("@babel/runtime-corejs3/helpers/inheritsLoose"));
+var _possibleConstructorReturn2 = _interopRequireDefault(require("@babel/runtime-corejs3/helpers/possibleConstructorReturn"));
+
+var _getPrototypeOf2 = _interopRequireDefault(require("@babel/runtime-corejs3/helpers/getPrototypeOf"));
+
+var _inherits2 = _interopRequireDefault(require("@babel/runtime-corejs3/helpers/inherits"));
 
 var _PropertyChangedObject = require("../../rx/object/PropertyChangedObject");
 
@@ -16,27 +22,27 @@ var _hasSubscribers = require("../../rx/subjects/hasSubscribers");
 var MapChangedObject =
 /*#__PURE__*/
 function (_PropertyChangedObjec) {
-  (0, _inheritsLoose2.default)(MapChangedObject, _PropertyChangedObjec);
+  (0, _inherits2.default)(MapChangedObject, _PropertyChangedObjec);
 
   function MapChangedObject() {
-    return _PropertyChangedObjec.apply(this, arguments) || this;
+    (0, _classCallCheck2.default)(this, MapChangedObject);
+    return (0, _possibleConstructorReturn2.default)(this, (0, _getPrototypeOf2.default)(MapChangedObject).apply(this, arguments));
   }
 
-  var _proto = MapChangedObject.prototype;
+  (0, _createClass2.default)(MapChangedObject, [{
+    key: "onMapChanged",
+    value: function onMapChanged(event) {
+      var _mapChanged = this._mapChanged;
 
-  _proto.onMapChanged = function onMapChanged(event) {
-    var _mapChanged = this._mapChanged;
+      if (!_mapChanged || !_mapChanged.hasSubscribers) {
+        return this;
+      }
 
-    if (!_mapChanged || !_mapChanged.hasSubscribers) {
+      _mapChanged.emit(event);
+
       return this;
     }
-
-    _mapChanged.emit(event);
-
-    return this;
-  };
-
-  (0, _createClass2.default)(MapChangedObject, [{
+  }, {
     key: "mapChanged",
     get: function get() {
       var _mapChanged = this._mapChanged;

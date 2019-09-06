@@ -9,7 +9,15 @@ var _toStringTag = _interopRequireDefault(require("@babel/runtime-corejs3/core-j
 
 var _extends2 = _interopRequireDefault(require("@babel/runtime-corejs3/helpers/extends"));
 
-var _inheritsLoose2 = _interopRequireDefault(require("@babel/runtime-corejs3/helpers/inheritsLoose"));
+var _classCallCheck2 = _interopRequireDefault(require("@babel/runtime-corejs3/helpers/classCallCheck"));
+
+var _createClass2 = _interopRequireDefault(require("@babel/runtime-corejs3/helpers/createClass"));
+
+var _possibleConstructorReturn2 = _interopRequireDefault(require("@babel/runtime-corejs3/helpers/possibleConstructorReturn"));
+
+var _getPrototypeOf2 = _interopRequireDefault(require("@babel/runtime-corejs3/helpers/getPrototypeOf"));
+
+var _inherits2 = _interopRequireDefault(require("@babel/runtime-corejs3/helpers/inherits"));
 
 var _mergers = require("../../../extensions/merge/mergers");
 
@@ -26,12 +34,13 @@ _Symbol$toStringTag = _toStringTag.default;
 var Property =
 /*#__PURE__*/
 function (_ObservableObject) {
-  (0, _inheritsLoose2.default)(Property, _ObservableObject);
+  (0, _inherits2.default)(Property, _ObservableObject);
 
   function Property(options, initValue) {
     var _this;
 
-    _this = _ObservableObject.call(this) || this;
+    (0, _classCallCheck2.default)(this, Property);
+    _this = (0, _possibleConstructorReturn2.default)(this, (0, _getPrototypeOf2.default)(Property).call(this));
     _this[_Symbol$toStringTag] = 'Property';
 
     var _ref = options || {},
@@ -53,93 +62,101 @@ function (_ObservableObject) {
     return _this;
   }
 
-  var _proto = Property.prototype;
+  (0, _createClass2.default)(Property, [{
+    key: "set",
+    // region set / fill / merge
+    value: function set(value, clone, options) {
+      var result = this.mergeValue(void 0, value, value, clone, clone, options);
 
-  // region set / fill / merge
-  _proto.set = function set(value, clone, options) {
-    var result = this.mergeValue(void 0, value, value, clone, clone, options);
-
-    if (!result) {
-      this.value = void 0;
-    }
-
-    return result;
-  };
-
-  _proto.fill = function fill(value, preferClone, options) {
-    return this.mergeValue(this.value, value, value, preferClone, preferClone, options);
-  };
-
-  _proto.merge = function merge(older, newer, preferCloneOlder, preferCloneNewer, options) {
-    return this.mergeValue(this.value, older, newer, preferCloneOlder, preferCloneNewer, options);
-  } // endregion
-  // region merge helpers
-  ;
-
-  _proto.mergeValue = function mergeValue(base, older, newer, preferCloneOlder, preferCloneNewer, options) {
-    return this._mergeValue((this.merger || _mergers.ObjectMerger.default).merge, base, older, newer, preferCloneOlder, preferCloneNewer, options);
-  };
-
-  _proto._mergeValue = function _mergeValue(merge, base, older, newer, preferCloneOlder, preferCloneNewer, options) {
-    var _this2 = this;
-
-    if (older instanceof Property) {
-      older = older.value;
-    } else {
-      options = (0, _extends2.default)({}, options, {
-        selfAsValueOlder: true
-      });
-    }
-
-    if (newer instanceof Property) {
-      newer = newer.value;
-    } else {
-      if (!options) {
-        options = {};
+      if (!result) {
+        this.value = void 0;
       }
 
-      options.selfAsValueNewer = true;
+      return result;
     }
-
-    return merge(base, older, newer, function (o) {
-      _this2.value = o;
-    }, preferCloneOlder, preferCloneNewer, (0, _extends2.default)({}, this.mergeOptions, {}, options, {
-      selfAsValueOlder: !(older instanceof Property),
-      selfAsValueNewer: !(newer instanceof Property)
-    }));
-  } // endregion
-  // region IMergeable
-  ;
-
-  _proto._canMerge = function _canMerge(source) {
-    if (source.constructor === Property && this.value === source.value || this.value === source) {
-      return null;
+  }, {
+    key: "fill",
+    value: function fill(value, preferClone, options) {
+      return this.mergeValue(this.value, value, value, preferClone, preferClone, options);
     }
+  }, {
+    key: "merge",
+    value: function merge(older, newer, preferCloneOlder, preferCloneNewer, options) {
+      return this.mergeValue(this.value, older, newer, preferCloneOlder, preferCloneNewer, options);
+    } // endregion
+    // region merge helpers
 
-    return true;
-  };
+  }, {
+    key: "mergeValue",
+    value: function mergeValue(base, older, newer, preferCloneOlder, preferCloneNewer, options) {
+      return this._mergeValue((this.merger || _mergers.ObjectMerger.default).merge, base, older, newer, preferCloneOlder, preferCloneNewer, options);
+    }
+  }, {
+    key: "_mergeValue",
+    value: function _mergeValue(merge, base, older, newer, preferCloneOlder, preferCloneNewer, options) {
+      var _this2 = this;
 
-  _proto._merge = function _merge(merge, older, newer, preferCloneOlder, preferCloneNewer) {
-    return this._mergeValue(merge, this.value, older, newer, preferCloneOlder, preferCloneNewer);
-  } // endregion
-  // region ISerializable
-  ;
+      if (older instanceof Property) {
+        older = older.value;
+      } else {
+        options = (0, _extends2.default)({}, options, {
+          selfAsValueOlder: true
+        });
+      }
 
-  _proto.serialize = function serialize(_serialize) {
-    return {
-      value: _serialize(this.value)
-    };
-  };
+      if (newer instanceof Property) {
+        newer = newer.value;
+      } else {
+        if (!options) {
+          options = {};
+        }
 
-  _proto.deSerialize = function deSerialize(_deSerialize, serializedValue) {
-    var _this3 = this;
+        options.selfAsValueNewer = true;
+      }
 
-    _deSerialize(serializedValue.value, function (o) {
-      return _this3.value = o;
-    });
-  } // endregion
-  ;
+      return merge(base, older, newer, function (o) {
+        _this2.value = o;
+      }, preferCloneOlder, preferCloneNewer, (0, _extends2.default)({}, this.mergeOptions, {}, options, {
+        selfAsValueOlder: !(older instanceof Property),
+        selfAsValueNewer: !(newer instanceof Property)
+      }));
+    } // endregion
+    // region IMergeable
 
+  }, {
+    key: "_canMerge",
+    value: function _canMerge(source) {
+      if (source.constructor === Property && this.value === source.value || this.value === source) {
+        return null;
+      }
+
+      return true;
+    }
+  }, {
+    key: "_merge",
+    value: function _merge(merge, older, newer, preferCloneOlder, preferCloneNewer) {
+      return this._mergeValue(merge, this.value, older, newer, preferCloneOlder, preferCloneNewer);
+    } // endregion
+    // region ISerializable
+
+  }, {
+    key: "serialize",
+    value: function serialize(_serialize) {
+      return {
+        value: _serialize(this.value)
+      };
+    }
+  }, {
+    key: "deSerialize",
+    value: function deSerialize(_deSerialize, serializedValue) {
+      var _this3 = this;
+
+      _deSerialize(serializedValue.value, function (o) {
+        return _this3.value = o;
+      });
+    } // endregion
+
+  }]);
   return Property;
 }(_ObservableObject2.ObservableObject);
 

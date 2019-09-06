@@ -9,7 +9,15 @@ var _stringify = _interopRequireDefault(require("@babel/runtime-corejs3/core-js-
 
 var _values = _interopRequireDefault(require("@babel/runtime-corejs3/core-js-stable/object/values"));
 
-var _inheritsLoose2 = _interopRequireDefault(require("@babel/runtime-corejs3/helpers/inheritsLoose"));
+var _classCallCheck2 = _interopRequireDefault(require("@babel/runtime-corejs3/helpers/classCallCheck"));
+
+var _createClass2 = _interopRequireDefault(require("@babel/runtime-corejs3/helpers/createClass"));
+
+var _possibleConstructorReturn2 = _interopRequireDefault(require("@babel/runtime-corejs3/helpers/possibleConstructorReturn"));
+
+var _getPrototypeOf2 = _interopRequireDefault(require("@babel/runtime-corejs3/helpers/getPrototypeOf"));
+
+var _inherits2 = _interopRequireDefault(require("@babel/runtime-corejs3/helpers/inherits"));
 
 var _bind = _interopRequireDefault(require("@babel/runtime-corejs3/core-js-stable/instance/bind"));
 
@@ -689,12 +697,13 @@ function createThen(valueInfo, getValueType, addResolve, getThenType, getThenThr
 var TestThenableSync =
 /*#__PURE__*/
 function (_TestVariants) {
-  (0, _inheritsLoose2.default)(TestThenableSync, _TestVariants);
+  (0, _inherits2.default)(TestThenableSync, _TestVariants);
 
   function TestThenableSync() {
     var _this;
 
-    _this = _TestVariants.call(this) || this;
+    (0, _classCallCheck2.default)(this, TestThenableSync);
+    _this = (0, _possibleConstructorReturn2.default)(this, (0, _getPrototypeOf2.default)(TestThenableSync).call(this));
     _this.baseOptionsVariants = {
       value: ['v'],
       // , void 0, ITERABLE, ITERATOR_GENERATOR],
@@ -714,139 +723,140 @@ function (_TestVariants) {
     return _this;
   }
 
-  var _proto = TestThenableSync.prototype;
+  (0, _createClass2.default)(TestThenableSync, [{
+    key: "testVariant",
+    value: function testVariant(inputOptions) {
+      var error;
 
-  _proto.testVariant = function testVariant(inputOptions) {
-    var error;
+      var _loop = function _loop(debugIteration) {
+        var valueInfo = void 0;
 
-    var _loop = function _loop(debugIteration) {
-      var valueInfo = void 0;
+        try {
+          var options = resolveOptions(inputOptions, null);
 
-      try {
-        var options = resolveOptions(inputOptions, null);
+          var action = function action() {
+            var resolveList = [];
+            valueInfo = createValue(options.value, function (index) {
+              return options['createValue' + index];
+            }, function (resolve) {
+              return resolveList.push(resolve);
+            });
+            createThen(valueInfo, function (index) {
+              return options['thenValue' + index];
+            }, function (resolve) {
+              return resolveList.push(resolve);
+            }, function (index) {
+              return options['thenType' + index];
+            }, function (index) {
+              return options['thenThrow' + index];
+            }); // region Check
 
-        var action = function action() {
-          var resolveList = [];
-          valueInfo = createValue(options.value, function (index) {
-            return options['createValue' + index];
-          }, function (resolve) {
-            return resolveList.push(resolve);
-          });
-          createThen(valueInfo, function (index) {
-            return options['thenValue' + index];
-          }, function (resolve) {
-            return resolveList.push(resolve);
-          }, function (index) {
-            return options['thenType' + index];
-          }, function (index) {
-            return options['thenThrow' + index];
-          }); // region Check
+            var queueSize = 0;
 
-          var queueSize = 0;
+            var onResult = function onResult(o) {
+              _Assert.assert.ok(queueSize > 0);
 
-          var onResult = function onResult(o) {
-            _Assert.assert.ok(queueSize > 0);
+              queueSize--;
 
-            queueSize--;
+              _Assert.assert.strictEqual(o, valueInfo.origValue);
+            };
 
-            _Assert.assert.strictEqual(o, valueInfo.origValue);
+            if (valueInfo.useReject) {
+              queueSize++;
+
+              _ThenableSync.ThenableSync.resolve(valueInfo.value, null, onResult, true);
+            } else {
+              queueSize++;
+
+              _ThenableSync.ThenableSync.resolve(valueInfo.value, onResult, null, true);
+            }
+
+            if (!(0, _helpers.isIterator)(valueInfo.value)) {
+              if (valueInfo.useReject) {
+                queueSize++;
+
+                _ThenableSync.ThenableSync.resolve(_ThenableSync.ThenableSync.resolve(valueInfo.value, onResult, null, true), null, onResult, true);
+              } else {
+                queueSize++;
+
+                _ThenableSync.ThenableSync.resolve(_ThenableSync.ThenableSync.resolve(valueInfo.value, null, onResult, true), onResult, null, true);
+              }
+
+              queueSize++;
+
+              _ThenableSync.ThenableSync.resolve(_ThenableSync.ThenableSync.resolve(valueInfo.value, null, null, true), onResult, onResult, true);
+            }
+
+            if ((0, _async.isThenable)(valueInfo.value)) {
+              if (valueInfo.useReject) {
+                queueSize++;
+                valueInfo.value.then(onResult, null).then(null, onResult);
+              } else {
+                queueSize++;
+                valueInfo.value.then(null, onResult).then(onResult, null);
+              }
+
+              queueSize++;
+              valueInfo.value.then(null, null).then(onResult, onResult);
+            }
+
+            if (valueInfo.immediate) {
+              _Assert.assert.strictEqual(queueSize, 0);
+            } else {
+              var checkQueueSize = queueSize;
+
+              while (resolveList.length) {
+                _Assert.assert.strictEqual(queueSize, checkQueueSize);
+
+                resolveList.shift()();
+              }
+
+              _Assert.assert.strictEqual(queueSize, 0);
+            } // endregion
+
           };
 
-          if (valueInfo.useReject) {
-            queueSize++;
-
-            _ThenableSync.ThenableSync.resolve(valueInfo.value, null, onResult, true);
+          if (options.expected.error) {
+            _Assert.assert.throws(action, options.expected.error);
           } else {
-            queueSize++;
-
-            _ThenableSync.ThenableSync.resolve(valueInfo.value, onResult, null, true);
+            action();
           }
 
-          if (!(0, _helpers.isIterator)(valueInfo.value)) {
-            if (valueInfo.useReject) {
-              queueSize++;
-
-              _ThenableSync.ThenableSync.resolve(_ThenableSync.ThenableSync.resolve(valueInfo.value, onResult, null, true), null, onResult, true);
-            } else {
-              queueSize++;
-
-              _ThenableSync.ThenableSync.resolve(_ThenableSync.ThenableSync.resolve(valueInfo.value, null, onResult, true), onResult, null, true);
-            }
-
-            queueSize++;
-
-            _ThenableSync.ThenableSync.resolve(_ThenableSync.ThenableSync.resolve(valueInfo.value, null, null, true), onResult, onResult, true);
+          return "break";
+        } catch (ex) {
+          if (!debugIteration) {
+            console.log("Test number: " + TestThenableSync.totalTests + "\r\nError in: " + inputOptions.description + "\n", (0, _stringify.default)(valueInfo, null, 4) + "\n", inputOptions, // ${
+            // JSON.stringify(initialOptions, null, 4)
+            // }
+            "\n" + inputOptions.action.toString() + "\n" + (ex && ex.stack));
+            error = ex;
           }
-
-          if ((0, _async.isThenable)(valueInfo.value)) {
-            if (valueInfo.useReject) {
-              queueSize++;
-              valueInfo.value.then(onResult, null).then(null, onResult);
-            } else {
-              queueSize++;
-              valueInfo.value.then(null, onResult).then(onResult, null);
-            }
-
-            queueSize++;
-            valueInfo.value.then(null, null).then(onResult, onResult);
-          }
-
-          if (valueInfo.immediate) {
-            _Assert.assert.strictEqual(queueSize, 0);
-          } else {
-            var checkQueueSize = queueSize;
-
-            while (resolveList.length) {
-              _Assert.assert.strictEqual(queueSize, checkQueueSize);
-
-              resolveList.shift()();
-            }
-
-            _Assert.assert.strictEqual(queueSize, 0);
-          } // endregion
-
-        };
-
-        if (options.expected.error) {
-          _Assert.assert.throws(action, options.expected.error);
-        } else {
-          action();
+        } finally {
+          TestThenableSync.totalTests++;
         }
+      };
 
-        return "break";
-      } catch (ex) {
-        if (!debugIteration) {
-          console.log("Test number: " + TestThenableSync.totalTests + "\r\nError in: " + inputOptions.description + "\n", (0, _stringify.default)(valueInfo, null, 4) + "\n", inputOptions, // ${
-          // JSON.stringify(initialOptions, null, 4)
-          // }
-          "\n" + inputOptions.action.toString() + "\n" + (ex && ex.stack));
-          error = ex;
-        }
-      } finally {
-        TestThenableSync.totalTests++;
+      for (var debugIteration = 0; debugIteration < 3; debugIteration++) {
+        var _ret3 = _loop(debugIteration);
+
+        if (_ret3 === "break") break;
       }
-    };
 
-    for (var debugIteration = 0; debugIteration < 3; debugIteration++) {
-      var _ret3 = _loop(debugIteration);
-
-      if (_ret3 === "break") break;
+      if (error) {
+        throw error;
+      }
     }
+  }], [{
+    key: "test",
+    value: function test(testCases) {
+      if (!testCases.actions) {
+        // tslint:disable-next-line:no-empty
+        testCases.actions = [function () {}];
+      }
 
-    if (error) {
-      throw error;
+      TestThenableSync._instance.test(testCases);
     }
-  };
-
-  TestThenableSync.test = function test(testCases) {
-    if (!testCases.actions) {
-      // tslint:disable-next-line:no-empty
-      testCases.actions = [function () {}];
-    }
-
-    TestThenableSync._instance.test(testCases);
-  };
-
+  }]);
   return TestThenableSync;
 }(_TestVariants2.TestVariants);
 

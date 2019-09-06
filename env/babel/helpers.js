@@ -1,6 +1,8 @@
 const path = require('path')
 const registerBabel = require('@babel/register')
 const {fileExtensions} = require('../common/helpers')
+require('core-js/stable')
+require('@babel/runtime-corejs3/regenerator')
 
 function normalizePath(filepath) {
 	return path.relative(process.cwd(), filepath).replace(/\\/g, '/')

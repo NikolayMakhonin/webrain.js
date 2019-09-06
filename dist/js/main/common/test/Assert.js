@@ -13,7 +13,15 @@ var _isArray = _interopRequireDefault(require("@babel/runtime-corejs3/core-js-st
 
 var _extends2 = _interopRequireDefault(require("@babel/runtime-corejs3/helpers/extends"));
 
-var _inheritsLoose2 = _interopRequireDefault(require("@babel/runtime-corejs3/helpers/inheritsLoose"));
+var _createClass2 = _interopRequireDefault(require("@babel/runtime-corejs3/helpers/createClass"));
+
+var _classCallCheck2 = _interopRequireDefault(require("@babel/runtime-corejs3/helpers/classCallCheck"));
+
+var _possibleConstructorReturn2 = _interopRequireDefault(require("@babel/runtime-corejs3/helpers/possibleConstructorReturn"));
+
+var _getPrototypeOf2 = _interopRequireDefault(require("@babel/runtime-corejs3/helpers/getPrototypeOf"));
+
+var _inherits2 = _interopRequireDefault(require("@babel/runtime-corejs3/helpers/inherits"));
 
 var _wrapNativeSuper2 = _interopRequireDefault(require("@babel/runtime-corejs3/helpers/wrapNativeSuper"));
 
@@ -23,10 +31,11 @@ var _DeepCloneEqual = require("./DeepCloneEqual");
 var AssertionError = typeof require === 'function' ? require('assertion-error') :
 /*#__PURE__*/
 function (_Error) {
-  (0, _inheritsLoose2.default)(_class, _Error);
+  (0, _inherits2.default)(_class, _Error);
 
   function _class() {
-    return _Error.apply(this, arguments) || this;
+    (0, _classCallCheck2.default)(this, _class);
+    return (0, _possibleConstructorReturn2.default)(this, (0, _getPrototypeOf2.default)(_class).apply(this, arguments));
   }
 
   return _class;
@@ -38,116 +47,128 @@ var Assert =
 /*#__PURE__*/
 function () {
   function Assert(deepCloneEqual) {
+    (0, _classCallCheck2.default)(this, Assert);
     this.deepCloneEqual = deepCloneEqual || deepCloneEqualDefault;
   }
 
-  var _proto = Assert.prototype;
-
-  _proto.fail = function fail(message) {
-    this.throwAssertionError(null, null, message);
-  };
-
-  _proto.ok = function ok(value, message) {
-    if (!value) {
-      this.throwAssertionError(value, true, message);
+  (0, _createClass2.default)(Assert, [{
+    key: "fail",
+    value: function fail(message) {
+      this.throwAssertionError(null, null, message);
     }
-  };
-
-  _proto.notOk = function notOk(value, message) {
-    if (value) {
-      this.throwAssertionError(value, false, message);
-    }
-  };
-
-  _proto.strictEqual = function strictEqual(actual, expected, message) {
-    if (actual !== expected) {
-      this.throwAssertionError(actual, expected, message);
-    }
-  };
-
-  _proto.notStrictEqual = function notStrictEqual(actual, expected, message) {
-    if (actual === expected) {
-      this.throwAssertionError(actual, expected, message);
-    }
-  };
-
-  _proto.deepStrictEqual = function deepStrictEqual(actual, expected, message, options) {
-    if (!this.deepCloneEqual.equal(actual, expected, options)) {
-      this.throwAssertionError(actual, expected, message);
-    }
-  };
-
-  _proto.circularDeepStrictEqual = function circularDeepStrictEqual(actual, expected, message, options) {
-    if (!this.deepCloneEqual.equal(actual, expected, (0, _extends2.default)({}, options, {
-      circular: true
-    }))) {
-      this.throwAssertionError(actual, expected, message);
-    }
-  };
-
-  _proto.equal = function equal(actual, expected, message) {
-    // noinspection EqualityComparisonWithCoercionJS
-    if (actual != expected) {
-      this.throwAssertionError(actual, expected, message);
-    }
-  };
-
-  _proto.notEqual = function notEqual(actual, expected, message) {
-    // noinspection EqualityComparisonWithCoercionJS
-    if (actual == expected) {
-      this.throwAssertionError(actual, expected, message);
-    }
-  };
-
-  _proto.equalCustom = function equalCustom(actual, expected, check, message) {
-    if (!check(actual, expected)) {
-      this.throwAssertionError(actual, expected, message);
-    }
-  };
-
-  _proto.throws = function throws(fn, errType, regExp, message) {
-    var err;
-
-    try {
-      fn();
-    } catch (ex) {
-      err = ex;
-    }
-
-    this.ok(err);
-
-    if (errType) {
-      var actualErrType = err.constructor;
-
-      if ((0, _isArray.default)(errType)) {
-        if (!(0, _some.default)(errType).call(errType, function (o) {
-          return o === actualErrType;
-        })) {
-          this.throwAssertionError(actualErrType.name, (0, _map.default)(errType).call(errType, function (o) {
-            return o && o.name;
-          }), err ? (message || '') + '\r\n' + err + '\r\n' + err.stack : message);
-        }
-      } else {
-        if (actualErrType !== errType) {
-          this.throwAssertionError(actualErrType.name, errType.name, err ? (message || '') + '\r\n' + err + '\r\n' + err.stack : message);
-        }
+  }, {
+    key: "ok",
+    value: function ok(value, message) {
+      if (!value) {
+        this.throwAssertionError(value, true, message);
       }
     }
-
-    if (regExp) {
-      this.ok(regExp.test(err.message));
+  }, {
+    key: "notOk",
+    value: function notOk(value, message) {
+      if (value) {
+        this.throwAssertionError(value, false, message);
+      }
     }
-  } // noinspection JSMethodCanBeStatic
-  ;
+  }, {
+    key: "strictEqual",
+    value: function strictEqual(actual, expected, message) {
+      if (actual !== expected) {
+        this.throwAssertionError(actual, expected, message);
+      }
+    }
+  }, {
+    key: "notStrictEqual",
+    value: function notStrictEqual(actual, expected, message) {
+      if (actual === expected) {
+        this.throwAssertionError(actual, expected, message);
+      }
+    }
+  }, {
+    key: "deepStrictEqual",
+    value: function deepStrictEqual(actual, expected, message, options) {
+      if (!this.deepCloneEqual.equal(actual, expected, options)) {
+        this.throwAssertionError(actual, expected, message);
+      }
+    }
+  }, {
+    key: "circularDeepStrictEqual",
+    value: function circularDeepStrictEqual(actual, expected, message, options) {
+      if (!this.deepCloneEqual.equal(actual, expected, (0, _extends2.default)({}, options, {
+        circular: true
+      }))) {
+        this.throwAssertionError(actual, expected, message);
+      }
+    }
+  }, {
+    key: "equal",
+    value: function equal(actual, expected, message) {
+      // noinspection EqualityComparisonWithCoercionJS
+      if (actual != expected) {
+        this.throwAssertionError(actual, expected, message);
+      }
+    }
+  }, {
+    key: "notEqual",
+    value: function notEqual(actual, expected, message) {
+      // noinspection EqualityComparisonWithCoercionJS
+      if (actual == expected) {
+        this.throwAssertionError(actual, expected, message);
+      }
+    }
+  }, {
+    key: "equalCustom",
+    value: function equalCustom(actual, expected, check, message) {
+      if (!check(actual, expected)) {
+        this.throwAssertionError(actual, expected, message);
+      }
+    }
+  }, {
+    key: "throws",
+    value: function throws(fn, errType, regExp, message) {
+      var err;
 
-  _proto.throwAssertionError = function throwAssertionError(actual, expected, message) {
-    throw new AssertionError(message, {
-      actual: actual,
-      expected: expected,
-      showDiff: true
-    });
-  };
+      try {
+        fn();
+      } catch (ex) {
+        err = ex;
+      }
 
+      this.ok(err);
+
+      if (errType) {
+        var actualErrType = err.constructor;
+
+        if ((0, _isArray.default)(errType)) {
+          if (!(0, _some.default)(errType).call(errType, function (o) {
+            return o === actualErrType;
+          })) {
+            this.throwAssertionError(actualErrType.name, (0, _map.default)(errType).call(errType, function (o) {
+              return o && o.name;
+            }), err ? (message || '') + '\r\n' + err + '\r\n' + err.stack : message);
+          }
+        } else {
+          if (actualErrType !== errType) {
+            this.throwAssertionError(actualErrType.name, errType.name, err ? (message || '') + '\r\n' + err + '\r\n' + err.stack : message);
+          }
+        }
+      }
+
+      if (regExp) {
+        this.ok(regExp.test(err.message));
+      }
+    } // noinspection JSMethodCanBeStatic
+
+  }, {
+    key: "throwAssertionError",
+    value: function throwAssertionError(actual, expected, message) {
+      throw new AssertionError(message, {
+        actual: actual,
+        expected: expected,
+        showDiff: true
+      });
+    }
+  }]);
   return Assert;
 }();
 

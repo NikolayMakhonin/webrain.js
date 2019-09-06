@@ -4,7 +4,13 @@ var _interopRequireDefault = require("@babel/runtime-corejs3/helpers/interopRequ
 
 var _concat = _interopRequireDefault(require("@babel/runtime-corejs3/core-js-stable/instance/concat"));
 
-var _inheritsLoose2 = _interopRequireDefault(require("@babel/runtime-corejs3/helpers/inheritsLoose"));
+var _classCallCheck2 = _interopRequireDefault(require("@babel/runtime-corejs3/helpers/classCallCheck"));
+
+var _possibleConstructorReturn2 = _interopRequireDefault(require("@babel/runtime-corejs3/helpers/possibleConstructorReturn"));
+
+var _getPrototypeOf3 = _interopRequireDefault(require("@babel/runtime-corejs3/helpers/getPrototypeOf"));
+
+var _inherits2 = _interopRequireDefault(require("@babel/runtime-corejs3/helpers/inherits"));
 
 var _ObservableObject2 = require("../../../../../../../main/common/rx/object/ObservableObject");
 
@@ -25,18 +31,20 @@ describe('common > main > rx > properties > ConnectorBuilder', function () {
     var BaseClass1 =
     /*#__PURE__*/
     function (_ObservableObject) {
-      (0, _inheritsLoose2.default)(BaseClass1, _ObservableObject);
+      (0, _inherits2.default)(BaseClass1, _ObservableObject);
 
       function BaseClass1() {
-        var _context;
+        var _getPrototypeOf2, _context;
 
         var _this;
+
+        (0, _classCallCheck2.default)(this, BaseClass1);
 
         for (var _len = arguments.length, args = new Array(_len), _key = 0; _key < _len; _key++) {
           args[_key] = arguments[_key];
         }
 
-        _this = _ObservableObject.call.apply(_ObservableObject, (0, _concat.default)(_context = [this]).call(_context, args)) || this;
+        _this = (0, _possibleConstructorReturn2.default)(this, (_getPrototypeOf2 = (0, _getPrototypeOf3.default)(BaseClass1)).call.apply(_getPrototypeOf2, (0, _concat.default)(_context = [this]).call(_context, args)));
         _this.source = source;
         return _this;
       }
@@ -47,10 +55,11 @@ describe('common > main > rx > properties > ConnectorBuilder', function () {
     var BaseClass2 =
     /*#__PURE__*/
     function (_BaseClass) {
-      (0, _inheritsLoose2.default)(BaseClass2, _BaseClass);
+      (0, _inherits2.default)(BaseClass2, _BaseClass);
 
       function BaseClass2() {
-        return _BaseClass.apply(this, arguments) || this;
+        (0, _classCallCheck2.default)(this, BaseClass2);
+        return (0, _possibleConstructorReturn2.default)(this, (0, _getPrototypeOf3.default)(BaseClass2).apply(this, arguments));
       }
 
       return BaseClass2;
@@ -59,10 +68,11 @@ describe('common > main > rx > properties > ConnectorBuilder', function () {
     var Class1 =
     /*#__PURE__*/
     function (_BaseClass2) {
-      (0, _inheritsLoose2.default)(Class1, _BaseClass2);
+      (0, _inherits2.default)(Class1, _BaseClass2);
 
       function Class1() {
-        return _BaseClass2.apply(this, arguments) || this;
+        (0, _classCallCheck2.default)(this, Class1);
+        return (0, _possibleConstructorReturn2.default)(this, (0, _getPrototypeOf3.default)(Class1).apply(this, arguments));
       }
 
       return Class1;
@@ -71,10 +81,11 @@ describe('common > main > rx > properties > ConnectorBuilder', function () {
     var Class2 =
     /*#__PURE__*/
     function (_BaseClass3) {
-      (0, _inheritsLoose2.default)(Class2, _BaseClass3);
+      (0, _inherits2.default)(Class2, _BaseClass3);
 
       function Class2() {
-        return _BaseClass3.apply(this, arguments) || this;
+        (0, _classCallCheck2.default)(this, Class2);
+        return (0, _possibleConstructorReturn2.default)(this, (0, _getPrototypeOf3.default)(Class2).apply(this, arguments));
       }
 
       return Class2;

@@ -9,6 +9,8 @@ var _asyncToGenerator2 = _interopRequireDefault(require("@babel/runtime-corejs3/
 
 var _now = _interopRequireDefault(require("@babel/runtime-corejs3/core-js-stable/date/now"));
 
+var _classCallCheck2 = _interopRequireDefault(require("@babel/runtime-corejs3/helpers/classCallCheck"));
+
 var _createClass2 = _interopRequireDefault(require("@babel/runtime-corejs3/helpers/createClass"));
 
 var _freeze = _interopRequireDefault(require("@babel/runtime-corejs3/core-js-stable/object/freeze"));
@@ -1508,7 +1510,9 @@ describe('fundamental-operations', function () {
     var Class =
     /*#__PURE__*/
     function () {
-      function Class() {}
+      function Class() {
+        (0, _classCallCheck2.default)(this, Class);
+      }
 
       (0, _createClass2.default)(Class, [{
         key: "value",
@@ -1990,21 +1994,22 @@ describe('fundamental-operations', function () {
     /*#__PURE__*/
     function () {
       function ResolvePropertiesPath(value) {
+        (0, _classCallCheck2.default)(this, ResolvePropertiesPath);
         this.value = value;
       }
 
-      var _proto = ResolvePropertiesPath.prototype;
+      (0, _createClass2.default)(ResolvePropertiesPath, [{
+        key: "get",
+        value: function get(key) {
+          var value = this.value;
 
-      _proto.get = function get(key) {
-        var value = this.value;
+          if (value != null) {
+            this.value = value = value[key];
+          }
 
-        if (value != null) {
-          this.value = value = value[key];
+          return this;
         }
-
-        return this;
-      };
-
+      }]);
       return ResolvePropertiesPath;
     }();
 
@@ -2068,6 +2073,7 @@ describe('fundamental-operations', function () {
     var optimizationAfter = 100;
 
     var ObservableObjectTest = function ObservableObjectTest() {
+      (0, _classCallCheck2.default)(this, ObservableObjectTest);
       this.__fields = {};
     };
 
@@ -2115,44 +2121,45 @@ describe('fundamental-operations', function () {
     /*#__PURE__*/
     function () {
       function ObservableObjectBuilderTest(object) {
+        (0, _classCallCheck2.default)(this, ObservableObjectBuilderTest);
         this.object = object || new ObservableObjectTest();
       }
 
-      var _proto2 = ObservableObjectBuilderTest.prototype;
+      (0, _createClass2.default)(ObservableObjectBuilderTest, [{
+        key: "writable",
+        value: function writable(name) {
+          var getValue = (0, _helpers.createFunction)('o', "return o.__fields[\"" + name + "\"]");
+          var setValue = (0, _helpers.createFunction)('o', 'v', "o.__fields[\"" + name + "\"] = v"); // let getValue = createGetFunction(name, o => { getValue = o as any }) as (o: { [newProp in Name]: T }) => T
+          // const getValue = getValueBase.bind(null, name)
+          // const setValue = createSetFunction(name) as (o: { [newProp in Name]: T }, v: T) => void
 
-      _proto2.writable = function writable(name) {
-        var getValue = (0, _helpers.createFunction)('o', "return o.__fields[\"" + name + "\"]");
-        var setValue = (0, _helpers.createFunction)('o', 'v', "o.__fields[\"" + name + "\"] = v"); // let getValue = createGetFunction(name, o => { getValue = o as any }) as (o: { [newProp in Name]: T }) => T
-        // const getValue = getValueBase.bind(null, name)
-        // const setValue = createSetFunction(name) as (o: { [newProp in Name]: T }, v: T) => void
+          if (withOptimization) {
+            (0, _defineProperty.default)(ObservableObjectTest.prototype, name, {
+              configurable: true,
+              enumerable: true,
+              get: function get() {
+                return getValue(this);
+              },
+              set: function set(newValue) {
+                setValue(this, newValue);
+              }
+            });
+          } else {
+            (0, _defineProperty.default)(ObservableObjectTest.prototype, name, {
+              configurable: true,
+              enumerable: true,
+              get: function get() {
+                return this.__fields[name];
+              },
+              set: function set(newValue) {
+                this.__fields[name] = newValue;
+              }
+            });
+          }
 
-        if (withOptimization) {
-          (0, _defineProperty.default)(ObservableObjectTest.prototype, name, {
-            configurable: true,
-            enumerable: true,
-            get: function get() {
-              return getValue(this);
-            },
-            set: function set(newValue) {
-              setValue(this, newValue);
-            }
-          });
-        } else {
-          (0, _defineProperty.default)(ObservableObjectTest.prototype, name, {
-            configurable: true,
-            enumerable: true,
-            get: function get() {
-              return this.__fields[name];
-            },
-            set: function set(newValue) {
-              this.__fields[name] = newValue;
-            }
-          });
+          return this;
         }
-
-        return this;
-      };
-
+      }]);
       return ObservableObjectBuilderTest;
     }();
 

@@ -16,6 +16,10 @@ var _isArray2 = _interopRequireDefault(require("@babel/runtime-corejs3/core-js-s
 
 var _keys = _interopRequireDefault(require("@babel/runtime-corejs3/core-js-stable/instance/keys"));
 
+var _classCallCheck2 = _interopRequireDefault(require("@babel/runtime-corejs3/helpers/classCallCheck"));
+
+var _createClass2 = _interopRequireDefault(require("@babel/runtime-corejs3/helpers/createClass"));
+
 var _helpers = require("../../helpers/helpers");
 
 /* tslint:disable:no-identical-functions */
@@ -100,6 +104,7 @@ var MergeObjectWrapper =
 /*#__PURE__*/
 function () {
   function MergeObjectWrapper(object, keyAsValue) {
+    (0, _classCallCheck2.default)(this, MergeObjectWrapper);
     this._object = object;
 
     if (keyAsValue) {
@@ -107,34 +112,38 @@ function () {
     }
   }
 
-  var _proto = MergeObjectWrapper.prototype;
+  (0, _createClass2.default)(MergeObjectWrapper, [{
+    key: "delete",
+    value: function _delete(key) {
+      delete this._object[key];
+    }
+  }, {
+    key: "forEachKeys",
+    value: function forEachKeys(callbackfn) {
+      var _object = this._object;
 
-  _proto.delete = function _delete(key) {
-    delete this._object[key];
-  };
-
-  _proto.forEachKeys = function forEachKeys(callbackfn) {
-    var _object = this._object;
-
-    for (var _key in _object) {
-      if (Object.prototype.hasOwnProperty.call(_object, _key)) {
-        callbackfn(_key);
+      for (var _key in _object) {
+        if (Object.prototype.hasOwnProperty.call(_object, _key)) {
+          callbackfn(_key);
+        }
       }
     }
-  };
-
-  _proto.get = function get(key) {
-    return this._keyAsValue ? key : this._object[key];
-  };
-
-  _proto.has = function has(key) {
-    return Object.prototype.hasOwnProperty.call(this._object, key);
-  };
-
-  _proto.set = function set(key, value) {
-    this._object[key] = this._keyAsValue ? true : value;
-  };
-
+  }, {
+    key: "get",
+    value: function get(key) {
+      return this._keyAsValue ? key : this._object[key];
+    }
+  }, {
+    key: "has",
+    value: function has(key) {
+      return Object.prototype.hasOwnProperty.call(this._object, key);
+    }
+  }, {
+    key: "set",
+    value: function set(key, value) {
+      this._object[key] = this._keyAsValue ? true : value;
+    }
+  }]);
   return MergeObjectWrapper;
 }();
 
@@ -144,47 +153,52 @@ var MergeMapWrapper =
 /*#__PURE__*/
 function () {
   function MergeMapWrapper(map) {
+    (0, _classCallCheck2.default)(this, MergeMapWrapper);
     this._map = map;
   }
 
-  var _proto2 = MergeMapWrapper.prototype;
-
-  _proto2.delete = function _delete(key) {
-    this._map.delete(key);
-  };
-
-  _proto2.forEachKeys = function forEachKeys(callbackfn) {
-    for (var _iterator = (0, _keys.default)(_context = this._map).call(_context), _isArray = (0, _isArray2.default)(_iterator), _i2 = 0, _iterator = _isArray ? _iterator : (0, _getIterator2.default)(_iterator);;) {
-      var _context;
-
-      var _ref;
-
-      if (_isArray) {
-        if (_i2 >= _iterator.length) break;
-        _ref = _iterator[_i2++];
-      } else {
-        _i2 = _iterator.next();
-        if (_i2.done) break;
-        _ref = _i2.value;
-      }
-
-      var _key2 = _ref;
-      callbackfn(_key2);
+  (0, _createClass2.default)(MergeMapWrapper, [{
+    key: "delete",
+    value: function _delete(key) {
+      this._map.delete(key);
     }
-  };
+  }, {
+    key: "forEachKeys",
+    value: function forEachKeys(callbackfn) {
+      for (var _iterator = (0, _keys.default)(_context = this._map).call(_context), _isArray = (0, _isArray2.default)(_iterator), _i2 = 0, _iterator = _isArray ? _iterator : (0, _getIterator2.default)(_iterator);;) {
+        var _context;
 
-  _proto2.get = function get(key) {
-    return this._map.get(key);
-  };
+        var _ref;
 
-  _proto2.has = function has(key) {
-    return this._map.has(key);
-  };
+        if (_isArray) {
+          if (_i2 >= _iterator.length) break;
+          _ref = _iterator[_i2++];
+        } else {
+          _i2 = _iterator.next();
+          if (_i2.done) break;
+          _ref = _i2.value;
+        }
 
-  _proto2.set = function set(key, value) {
-    this._map.set(key, value);
-  };
-
+        var _key2 = _ref;
+        callbackfn(_key2);
+      }
+    }
+  }, {
+    key: "get",
+    value: function get(key) {
+      return this._map.get(key);
+    }
+  }, {
+    key: "has",
+    value: function has(key) {
+      return this._map.has(key);
+    }
+  }, {
+    key: "set",
+    value: function set(key, value) {
+      this._map.set(key, value);
+    }
+  }]);
   return MergeMapWrapper;
 }();
 

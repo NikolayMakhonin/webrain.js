@@ -5,9 +5,19 @@ var _interopRequireDefault = require("@babel/runtime-corejs3/helpers/interopRequ
 exports.__esModule = true;
 exports.TypeMetaCollectionWithId = exports.TypeMetaCollection = void 0;
 
-var _inheritsLoose2 = _interopRequireDefault(require("@babel/runtime-corejs3/helpers/inheritsLoose"));
+var _possibleConstructorReturn2 = _interopRequireDefault(require("@babel/runtime-corejs3/helpers/possibleConstructorReturn"));
+
+var _getPrototypeOf2 = _interopRequireDefault(require("@babel/runtime-corejs3/helpers/getPrototypeOf"));
+
+var _get2 = _interopRequireDefault(require("@babel/runtime-corejs3/helpers/get"));
+
+var _inherits2 = _interopRequireDefault(require("@babel/runtime-corejs3/helpers/inherits"));
 
 var _defineProperty = _interopRequireDefault(require("@babel/runtime-corejs3/core-js-stable/object/define-property"));
+
+var _classCallCheck2 = _interopRequireDefault(require("@babel/runtime-corejs3/helpers/classCallCheck"));
+
+var _createClass2 = _interopRequireDefault(require("@babel/runtime-corejs3/helpers/createClass"));
 
 var _helpers = require("../helpers/helpers");
 
@@ -19,6 +29,7 @@ var TypeMetaCollection =
 function () {
   // noinspection JSUnusedLocalSymbols
   function TypeMetaCollection(proto) {
+    (0, _classCallCheck2.default)(this, TypeMetaCollection);
     this._typeMetaPropertyName = typeMetaPropertyNameBase + typeMetaPropertyNameIndex++;
 
     if (proto) {
@@ -26,61 +37,63 @@ function () {
     }
   }
 
-  var _proto2 = TypeMetaCollection.prototype;
+  (0, _createClass2.default)(TypeMetaCollection, [{
+    key: "getMeta",
+    value: function getMeta(type) {
+      var meta;
+      var _typeMetaPropertyName = this._typeMetaPropertyName;
 
-  _proto2.getMeta = function getMeta(type) {
-    var meta;
-    var _typeMetaPropertyName = this._typeMetaPropertyName;
-
-    if (Object.prototype.hasOwnProperty.call(type, _typeMetaPropertyName)) {
-      meta = type[_typeMetaPropertyName];
-    }
-
-    if (typeof meta === 'undefined') {
-      var _proto = this._proto;
-
-      if (_proto) {
-        return _proto.getMeta(type);
+      if (Object.prototype.hasOwnProperty.call(type, _typeMetaPropertyName)) {
+        meta = type[_typeMetaPropertyName];
       }
+
+      if (typeof meta === 'undefined') {
+        var _proto = this._proto;
+
+        if (_proto) {
+          return _proto.getMeta(type);
+        }
+      }
+
+      return meta;
     }
+  }, {
+    key: "putType",
+    value: function putType(type, meta) {
+      if (!type || typeof type !== 'function') {
+        throw new Error("type (" + type + ") should be function");
+      }
 
-    return meta;
-  };
+      var _typeMetaPropertyName = this._typeMetaPropertyName;
+      var prevMeta;
 
-  _proto2.putType = function putType(type, meta) {
-    if (!type || typeof type !== 'function') {
-      throw new Error("type (" + type + ") should be function");
+      if (Object.prototype.hasOwnProperty.call(type, _typeMetaPropertyName)) {
+        prevMeta = type[_typeMetaPropertyName];
+        delete type[_typeMetaPropertyName];
+      }
+
+      (0, _defineProperty.default)(type, _typeMetaPropertyName, {
+        configurable: true,
+        enumerable: false,
+        writable: false,
+        value: meta
+      });
+      return prevMeta;
     }
+  }, {
+    key: "deleteType",
+    value: function deleteType(type) {
+      var _typeMetaPropertyName = this._typeMetaPropertyName;
+      var prevMeta;
 
-    var _typeMetaPropertyName = this._typeMetaPropertyName;
-    var prevMeta;
+      if (Object.prototype.hasOwnProperty.call(type, _typeMetaPropertyName)) {
+        prevMeta = type[_typeMetaPropertyName];
+        delete type[_typeMetaPropertyName];
+      }
 
-    if (Object.prototype.hasOwnProperty.call(type, _typeMetaPropertyName)) {
-      prevMeta = type[_typeMetaPropertyName];
-      delete type[_typeMetaPropertyName];
+      return prevMeta;
     }
-
-    (0, _defineProperty.default)(type, _typeMetaPropertyName, {
-      configurable: true,
-      enumerable: false,
-      writable: false,
-      value: meta
-    });
-    return prevMeta;
-  };
-
-  _proto2.deleteType = function deleteType(type) {
-    var _typeMetaPropertyName = this._typeMetaPropertyName;
-    var prevMeta;
-
-    if (Object.prototype.hasOwnProperty.call(type, _typeMetaPropertyName)) {
-      prevMeta = type[_typeMetaPropertyName];
-      delete type[_typeMetaPropertyName];
-    }
-
-    return prevMeta;
-  };
-
+  }]);
   return TypeMetaCollection;
 }();
 
@@ -89,73 +102,74 @@ exports.TypeMetaCollection = TypeMetaCollection;
 var TypeMetaCollectionWithId =
 /*#__PURE__*/
 function (_TypeMetaCollection) {
-  (0, _inheritsLoose2.default)(TypeMetaCollectionWithId, _TypeMetaCollection);
+  (0, _inherits2.default)(TypeMetaCollectionWithId, _TypeMetaCollection);
 
   function TypeMetaCollectionWithId(proto) {
     var _this;
 
-    _this = _TypeMetaCollection.call(this, proto) || this;
+    (0, _classCallCheck2.default)(this, TypeMetaCollectionWithId);
+    _this = (0, _possibleConstructorReturn2.default)(this, (0, _getPrototypeOf2.default)(TypeMetaCollectionWithId).call(this, proto));
     _this._typeMap = {};
     return _this;
   }
 
-  var _proto3 = TypeMetaCollectionWithId.prototype;
+  (0, _createClass2.default)(TypeMetaCollectionWithId, [{
+    key: "getType",
+    value: function getType(uuid) {
+      var type = this._typeMap[uuid];
 
-  _proto3.getType = function getType(uuid) {
-    var type = this._typeMap[uuid];
+      if (typeof type === 'undefined') {
+        var _proto = this._proto;
 
-    if (typeof type === 'undefined') {
-      var _proto = this._proto;
-
-      if (_proto) {
-        return _proto.getType(uuid);
+        if (_proto) {
+          return _proto.getType(uuid);
+        }
       }
+
+      return type;
     }
+  }, {
+    key: "putType",
+    value: function putType(type, meta) {
+      var uuid = meta && meta.uuid;
 
-    return type;
-  };
+      if (!uuid || typeof uuid !== 'string') {
+        throw new Error("meta.uuid (" + uuid + ") should be a string with length > 0");
+      }
 
-  _proto3.putType = function putType(type, meta) {
-    var uuid = meta && meta.uuid;
+      var prevType = this._typeMap[uuid];
 
-    if (!uuid || typeof uuid !== 'string') {
-      throw new Error("meta.uuid (" + uuid + ") should be a string with length > 0");
+      if (prevType && prevType !== type) {
+        throw new Error("Same uuid (" + uuid + ") used for different types: " + ((0, _helpers.typeToDebugString)(prevType) + ", " + (0, _helpers.typeToDebugString)(type)));
+      }
+
+      var prevMeta = (0, _get2.default)((0, _getPrototypeOf2.default)(TypeMetaCollectionWithId.prototype), "putType", this).call(this, type, meta);
+      this._typeMap[uuid] = type;
+      return prevMeta;
     }
+  }, {
+    key: "deleteType",
+    value: function deleteType(typeOrUuid) {
+      var uuid;
+      var type;
 
-    var prevType = this._typeMap[uuid];
+      if (typeof typeOrUuid === 'function') {
+        var _meta = this.getMeta(typeOrUuid);
 
-    if (prevType && prevType !== type) {
-      throw new Error("Same uuid (" + uuid + ") used for different types: " + ((0, _helpers.typeToDebugString)(prevType) + ", " + (0, _helpers.typeToDebugString)(type)));
+        uuid = _meta && _meta.uuid;
+        type = typeOrUuid;
+      } else if (typeof typeOrUuid === 'string') {
+        type = this.getType(typeOrUuid);
+        uuid = typeOrUuid;
+      } else {
+        throw new Error("typeOrUuid (" + (typeOrUuid == null ? typeOrUuid : typeof typeOrUuid) + ") is not a Function or String");
+      }
+
+      var prevMeta = (0, _get2.default)((0, _getPrototypeOf2.default)(TypeMetaCollectionWithId.prototype), "deleteType", this).call(this, type);
+      delete this._typeMap[uuid];
+      return prevMeta;
     }
-
-    var prevMeta = _TypeMetaCollection.prototype.putType.call(this, type, meta);
-
-    this._typeMap[uuid] = type;
-    return prevMeta;
-  };
-
-  _proto3.deleteType = function deleteType(typeOrUuid) {
-    var uuid;
-    var type;
-
-    if (typeof typeOrUuid === 'function') {
-      var _meta = this.getMeta(typeOrUuid);
-
-      uuid = _meta && _meta.uuid;
-      type = typeOrUuid;
-    } else if (typeof typeOrUuid === 'string') {
-      type = this.getType(typeOrUuid);
-      uuid = typeOrUuid;
-    } else {
-      throw new Error("typeOrUuid (" + (typeOrUuid == null ? typeOrUuid : typeof typeOrUuid) + ") is not a Function or String");
-    }
-
-    var prevMeta = _TypeMetaCollection.prototype.deleteType.call(this, type);
-
-    delete this._typeMap[uuid];
-    return prevMeta;
-  };
-
+  }]);
   return TypeMetaCollectionWithId;
 }(TypeMetaCollection);
 

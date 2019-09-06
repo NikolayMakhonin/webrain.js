@@ -31,5 +31,5 @@ function getComponentUrl(...concatPaths) {
 module.exports = {
 	getComponentName,
 	getComponentPath,
-	getComponentUrl
+	getComponentUrl,
 }

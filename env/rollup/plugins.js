@@ -1,3 +1,4 @@
+/* eslint-disable object-curly-newline */
 const {terser} = require('rollup-plugin-terser')
 const istanbul = require('rollup-plugin-istanbul')
 // const globals = require('rollup-plugin-node-globals')
@@ -64,6 +65,19 @@ module.exports = {
 			}),
 			plugins.commonjs(),
 			legacy && plugins.babel.browser(),
+			!dev && plugins.terser(),
+		]
+	},
+	watch({dev = false, legacy = true, coverage = false, getFileCodePlugins = []}) {
+		return [
+			plugins.babel.minimal(),
+			coverage && plugins.istanbul(),
+			plugins.resolve({
+				browser: true,
+			}),
+			plugins.commonjs(),
+			legacy && plugins.babel.browser(),
+			...getFileCodePlugins,
 			!dev && plugins.terser(),
 		]
 	},

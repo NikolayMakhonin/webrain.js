@@ -4,7 +4,17 @@ var _interopRequireDefault = require("@babel/runtime-corejs3/helpers/interopRequ
 
 var _regenerator = _interopRequireDefault(require("@babel/runtime-corejs3/regenerator"));
 
-var _inheritsLoose2 = _interopRequireDefault(require("@babel/runtime-corejs3/helpers/inheritsLoose"));
+var _get2 = _interopRequireDefault(require("@babel/runtime-corejs3/helpers/get"));
+
+var _createClass2 = _interopRequireDefault(require("@babel/runtime-corejs3/helpers/createClass"));
+
+var _possibleConstructorReturn2 = _interopRequireDefault(require("@babel/runtime-corejs3/helpers/possibleConstructorReturn"));
+
+var _getPrototypeOf2 = _interopRequireDefault(require("@babel/runtime-corejs3/helpers/getPrototypeOf"));
+
+var _inherits2 = _interopRequireDefault(require("@babel/runtime-corejs3/helpers/inherits"));
+
+var _classCallCheck2 = _interopRequireDefault(require("@babel/runtime-corejs3/helpers/classCallCheck"));
 
 var _set = _interopRequireDefault(require("@babel/runtime-corejs3/core-js-stable/set"));
 
@@ -220,7 +230,9 @@ describe('common > extensions > serialization > serializers', function () {
     assertDeepEqualExt(result, date);
   });
 
-  var Class1 = function Class1() {};
+  var Class1 = function Class1() {
+    (0, _classCallCheck2.default)(this, Class1);
+  };
 
   it('Class: Simple', function () {
     var obj1 = new Class1();
@@ -252,33 +264,35 @@ describe('common > extensions > serialization > serializers', function () {
   var Class2 =
   /*#__PURE__*/
   function (_Class) {
-    (0, _inheritsLoose2.default)(Class2, _Class);
+    (0, _inherits2.default)(Class2, _Class);
 
     function Class2(prop2) {
       var _this;
 
-      _this = _Class.call(this) || this;
+      (0, _classCallCheck2.default)(this, Class2);
+      _this = (0, _possibleConstructorReturn2.default)(this, (0, _getPrototypeOf2.default)(Class2).call(this));
       _this.prop3 = 'prop3';
       _this.prop2 = prop2;
       return _this;
     }
 
-    var _proto = Class2.prototype;
+    (0, _createClass2.default)(Class2, [{
+      key: "serialize",
+      value: function serialize(_serialize) {
+        return {
+          prop3: _serialize(this.prop3)
+        };
+      }
+    }, {
+      key: "deSerialize",
+      value: function deSerialize(_deSerialize, serializedValue) {
+        var _this2 = this;
 
-    _proto.serialize = function serialize(_serialize) {
-      return {
-        prop3: _serialize(this.prop3)
-      };
-    };
-
-    _proto.deSerialize = function deSerialize(_deSerialize, serializedValue) {
-      var _this2 = this;
-
-      _deSerialize(serializedValue.prop3, function (o) {
-        _this2.prop3 = o;
-      });
-    };
-
+        _deSerialize(serializedValue.prop3, function (o) {
+          _this2.prop3 = o;
+        });
+      }
+    }]);
     return Class2;
   }(Class1);
 
@@ -310,42 +324,44 @@ describe('common > extensions > serialization > serializers', function () {
   var Class3 =
   /*#__PURE__*/
   function (_Class2) {
-    (0, _inheritsLoose2.default)(Class3, _Class2);
+    (0, _inherits2.default)(Class3, _Class2);
 
     function Class3(prop2) {
-      return _Class2.call(this, prop2) || this;
+      (0, _classCallCheck2.default)(this, Class3);
+      return (0, _possibleConstructorReturn2.default)(this, (0, _getPrototypeOf2.default)(Class3).call(this, prop2));
     }
 
-    var _proto2 = Class3.prototype;
+    (0, _createClass2.default)(Class3, [{
+      key: "serialize",
+      value: function serialize(_serialize2) {
+        return (0, _extends2.default)({}, (0, _get2.default)((0, _getPrototypeOf2.default)(Class3.prototype), "serialize", this).call(this, _serialize2), {
+          prop4: _serialize2(this.prop4)
+        });
+      }
+    }, {
+      key: "deSerialize",
+      value:
+      /*#__PURE__*/
+      _regenerator.default.mark(function deSerialize(_deSerialize2, serializedValue) {
+        return _regenerator.default.wrap(function deSerialize$(_context) {
+          while (1) {
+            switch (_context.prev = _context.next) {
+              case 0:
+                (0, _get2.default)((0, _getPrototypeOf2.default)(Class3.prototype), "deSerialize", this).call(this, _deSerialize2, serializedValue);
+                _context.next = 3;
+                return _deSerialize2(serializedValue.prop4);
 
-    _proto2.serialize = function serialize(_serialize2) {
-      return (0, _extends2.default)({}, _Class2.prototype.serialize.call(this, _serialize2), {
-        prop4: _serialize2(this.prop4)
-      });
-    };
+              case 3:
+                this.prop4 = _context.sent;
 
-    _proto2.deSerialize =
-    /*#__PURE__*/
-    _regenerator.default.mark(function deSerialize(_deSerialize2, serializedValue) {
-      return _regenerator.default.wrap(function deSerialize$(_context) {
-        while (1) {
-          switch (_context.prev = _context.next) {
-            case 0:
-              _Class2.prototype.deSerialize.call(this, _deSerialize2, serializedValue);
-
-              _context.next = 3;
-              return _deSerialize2(serializedValue.prop4);
-
-            case 3:
-              this.prop4 = _context.sent;
-
-            case 4:
-            case "end":
-              return _context.stop();
+              case 4:
+              case "end":
+                return _context.stop();
+            }
           }
-        }
-      }, deSerialize, this);
-    });
+        }, deSerialize, this);
+      })
+    }]);
     return Class3;
   }(Class2);
 

@@ -11,7 +11,17 @@ var _indexOf = _interopRequireDefault(require("@babel/runtime-corejs3/core-js-st
 
 var _bind = _interopRequireDefault(require("@babel/runtime-corejs3/core-js-stable/instance/bind"));
 
-var _inheritsLoose2 = _interopRequireDefault(require("@babel/runtime-corejs3/helpers/inheritsLoose"));
+var _classCallCheck2 = _interopRequireDefault(require("@babel/runtime-corejs3/helpers/classCallCheck"));
+
+var _createClass2 = _interopRequireDefault(require("@babel/runtime-corejs3/helpers/createClass"));
+
+var _possibleConstructorReturn2 = _interopRequireDefault(require("@babel/runtime-corejs3/helpers/possibleConstructorReturn"));
+
+var _getPrototypeOf2 = _interopRequireDefault(require("@babel/runtime-corejs3/helpers/getPrototypeOf"));
+
+var _get2 = _interopRequireDefault(require("@babel/runtime-corejs3/helpers/get"));
+
+var _inherits2 = _interopRequireDefault(require("@babel/runtime-corejs3/helpers/inherits"));
 
 var _map = _interopRequireDefault(require("@babel/runtime-corejs3/core-js-stable/map"));
 
@@ -580,26 +590,26 @@ exports.SubscribeObjectType = SubscribeObjectType;
 var RuleSubscribe =
 /*#__PURE__*/
 function (_Rule) {
-  (0, _inheritsLoose2.default)(RuleSubscribe, _Rule);
+  (0, _inherits2.default)(RuleSubscribe, _Rule);
 
   function RuleSubscribe() {
-    return _Rule.call(this, _rules.RuleType.Action) || this;
+    (0, _classCallCheck2.default)(this, RuleSubscribe);
+    return (0, _possibleConstructorReturn2.default)(this, (0, _getPrototypeOf2.default)(RuleSubscribe).call(this, _rules.RuleType.Action));
   }
 
-  var _proto = RuleSubscribe.prototype;
+  (0, _createClass2.default)(RuleSubscribe, [{
+    key: "clone",
+    value: function clone() {
+      var clone = (0, _get2.default)((0, _getPrototypeOf2.default)(RuleSubscribe.prototype), "clone", this).call(this);
+      var subscribe = this.subscribe;
 
-  _proto.clone = function clone() {
-    var clone = _Rule.prototype.clone.call(this);
+      if (subscribe != null) {
+        clone.subscribe = subscribe;
+      }
 
-    var subscribe = this.subscribe;
-
-    if (subscribe != null) {
-      clone.subscribe = subscribe;
+      return clone;
     }
-
-    return clone;
-  };
-
+  }]);
   return RuleSubscribe;
 }(_rules2.Rule);
 
@@ -608,7 +618,7 @@ exports.RuleSubscribe = RuleSubscribe;
 var RuleSubscribeObject =
 /*#__PURE__*/
 function (_RuleSubscribe) {
-  (0, _inheritsLoose2.default)(RuleSubscribeObject, _RuleSubscribe);
+  (0, _inherits2.default)(RuleSubscribeObject, _RuleSubscribe);
 
   function RuleSubscribeObject(type, propertyPredicate) {
     var _this;
@@ -617,7 +627,8 @@ function (_RuleSubscribe) {
       propertyNames[_key2 - 2] = arguments[_key2];
     }
 
-    _this = _RuleSubscribe.call(this) || this;
+    (0, _classCallCheck2.default)(this, RuleSubscribeObject);
+    _this = (0, _possibleConstructorReturn2.default)(this, (0, _getPrototypeOf2.default)(RuleSubscribeObject).call(this));
 
     if (propertyNames && !propertyNames.length) {
       propertyNames = null;
@@ -691,7 +702,7 @@ function createKeyPredicate(keys) {
 var RuleSubscribeMap =
 /*#__PURE__*/
 function (_RuleSubscribe2) {
-  (0, _inheritsLoose2.default)(RuleSubscribeMap, _RuleSubscribe2);
+  (0, _inherits2.default)(RuleSubscribeMap, _RuleSubscribe2);
 
   function RuleSubscribeMap(keyPredicate) {
     var _this2;
@@ -700,7 +711,8 @@ function (_RuleSubscribe2) {
       keys[_key5 - 1] = arguments[_key5];
     }
 
-    _this2 = _RuleSubscribe2.call(this) || this;
+    (0, _classCallCheck2.default)(this, RuleSubscribeMap);
+    _this2 = (0, _possibleConstructorReturn2.default)(this, (0, _getPrototypeOf2.default)(RuleSubscribeMap).call(this));
 
     if (keys && !keys.length) {
       keys = null;
@@ -732,12 +744,13 @@ exports.RuleSubscribeMap = RuleSubscribeMap;
 var RuleSubscribeCollection =
 /*#__PURE__*/
 function (_RuleSubscribe3) {
-  (0, _inheritsLoose2.default)(RuleSubscribeCollection, _RuleSubscribe3);
+  (0, _inherits2.default)(RuleSubscribeCollection, _RuleSubscribe3);
 
   function RuleSubscribeCollection() {
     var _this3;
 
-    _this3 = _RuleSubscribe3.call(this) || this;
+    (0, _classCallCheck2.default)(this, RuleSubscribeCollection);
+    _this3 = (0, _possibleConstructorReturn2.default)(this, (0, _getPrototypeOf2.default)(RuleSubscribeCollection).call(this));
     _this3.subscribe = subscribeCollection;
     return _this3;
   }

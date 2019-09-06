@@ -1,4 +1,4 @@
-/* eslint-disable no-shadow,global-require */
+/* eslint-disable no-shadow,global-require,no-unused-vars */
 const files = process.argv.slice(2)
 const fileInput = files[0]
 const fileOutput = files[1]
@@ -51,26 +51,22 @@ async function doRollup(file) {
 
 	const bundle = await rollup.rollup({
 		input  : file,
-		plugins: [
-			// rollupPlugins.typescript(),
-			// rollupPlugins.globals(),
-			// rollupPlugins.builtins(),
-			rollupPlugins.babel.minimal(),
-			rollupPlugins.resolve(),
-			rollupPlugins.commonjs(),
-			rollupPlugins.babel.browser(),
-			addHeaderFooterPlugin({
-				include: file,
-				header : markStartEnd,
-				footer : markStartEnd
-			}),
-			getCodeBetweenHeaderFooterPlugin({
-				header: markStartEnd,
-				footer: markStartEnd
-			}),
-			// rollupPlugins.terser(),
-			// rollupPlugins.prettier()
-		]
+		plugins: rollupPlugins.watch({
+			dev               : true,
+			legacy            : true,
+			coverage          : false,
+			getFileCodePlugins: [
+				addHeaderFooterPlugin({
+					include: file,
+					header : markStartEnd,
+					footer : markStartEnd
+				}),
+				getCodeBetweenHeaderFooterPlugin({
+					header: markStartEnd,
+					footer: markStartEnd
+				}),
+			]
+		}),
 	})
 
 	const {code} = (await bundle.generate({
@@ -109,7 +105,7 @@ if (!relativeOutput.match(/^tmp[\\/]/)) {
 console.log(`js watcher transform: ${relativeInput} => ${relativeOutput}`)
 
 async function transform(fileInput, fileOutput) {
-	const content = await doBabel(fileInput)
+	const content = await doRollup(fileInput)
 
 	if (!content) {
 		throw new Error('transformed content is empty')

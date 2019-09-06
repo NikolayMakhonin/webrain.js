@@ -7,7 +7,17 @@ exports.RuleRepeat = exports.RuleAny = exports.RuleNothing = exports.Rule = void
 
 var _map = _interopRequireDefault(require("@babel/runtime-corejs3/core-js-stable/instance/map"));
 
-var _inheritsLoose2 = _interopRequireDefault(require("@babel/runtime-corejs3/helpers/inheritsLoose"));
+var _get2 = _interopRequireDefault(require("@babel/runtime-corejs3/helpers/get"));
+
+var _possibleConstructorReturn2 = _interopRequireDefault(require("@babel/runtime-corejs3/helpers/possibleConstructorReturn"));
+
+var _getPrototypeOf2 = _interopRequireDefault(require("@babel/runtime-corejs3/helpers/getPrototypeOf"));
+
+var _inherits2 = _interopRequireDefault(require("@babel/runtime-corejs3/helpers/inherits"));
+
+var _classCallCheck2 = _interopRequireDefault(require("@babel/runtime-corejs3/helpers/classCallCheck"));
+
+var _createClass2 = _interopRequireDefault(require("@babel/runtime-corejs3/helpers/createClass"));
 
 var _rules = require("./contracts/rules");
 
@@ -15,27 +25,28 @@ var Rule =
 /*#__PURE__*/
 function () {
   function Rule(type) {
+    (0, _classCallCheck2.default)(this, Rule);
     this.type = type;
   }
 
-  var _proto = Rule.prototype;
+  (0, _createClass2.default)(Rule, [{
+    key: "clone",
+    value: function clone() {
+      var type = this.type,
+          next = this.next,
+          description = this.description;
+      var clone = {
+        type: type,
+        description: description
+      };
 
-  _proto.clone = function clone() {
-    var type = this.type,
-        next = this.next,
-        description = this.description;
-    var clone = {
-      type: type,
-      description: description
-    };
+      if (next != null) {
+        clone.next = next.clone();
+      }
 
-    if (next != null) {
-      clone.next = next.clone();
+      return clone;
     }
-
-    return clone;
-  };
-
+  }]);
   return Rule;
 }();
 
@@ -44,12 +55,13 @@ exports.Rule = Rule;
 var RuleNothing =
 /*#__PURE__*/
 function (_Rule) {
-  (0, _inheritsLoose2.default)(RuleNothing, _Rule);
+  (0, _inherits2.default)(RuleNothing, _Rule);
 
   function RuleNothing() {
     var _this;
 
-    _this = _Rule.call(this, _rules.RuleType.Nothing) || this;
+    (0, _classCallCheck2.default)(this, RuleNothing);
+    _this = (0, _possibleConstructorReturn2.default)(this, (0, _getPrototypeOf2.default)(RuleNothing).call(this, _rules.RuleType.Nothing));
     _this.description = 'nothing';
     return _this;
   }
@@ -62,29 +74,29 @@ exports.RuleNothing = RuleNothing;
 var RuleAny =
 /*#__PURE__*/
 function (_Rule2) {
-  (0, _inheritsLoose2.default)(RuleAny, _Rule2);
+  (0, _inherits2.default)(RuleAny, _Rule2);
 
   function RuleAny(rules) {
     var _this2;
 
-    _this2 = _Rule2.call(this, _rules.RuleType.Any) || this;
+    (0, _classCallCheck2.default)(this, RuleAny);
+    _this2 = (0, _possibleConstructorReturn2.default)(this, (0, _getPrototypeOf2.default)(RuleAny).call(this, _rules.RuleType.Any));
     _this2.rules = rules;
     return _this2;
   }
 
-  var _proto2 = RuleAny.prototype;
+  (0, _createClass2.default)(RuleAny, [{
+    key: "clone",
+    value: function clone() {
+      var _context;
 
-  _proto2.clone = function clone() {
-    var _context;
-
-    var clone = _Rule2.prototype.clone.call(this);
-
-    clone.rules = (0, _map.default)(_context = this.rules).call(_context, function (o) {
-      return o.clone();
-    });
-    return clone;
-  };
-
+      var clone = (0, _get2.default)((0, _getPrototypeOf2.default)(RuleAny.prototype), "clone", this).call(this);
+      clone.rules = (0, _map.default)(_context = this.rules).call(_context, function (o) {
+        return o.clone();
+      });
+      return clone;
+    }
+  }]);
   return RuleAny;
 }(Rule);
 
@@ -93,29 +105,29 @@ exports.RuleAny = RuleAny;
 var RuleRepeat =
 /*#__PURE__*/
 function (_Rule3) {
-  (0, _inheritsLoose2.default)(RuleRepeat, _Rule3);
+  (0, _inherits2.default)(RuleRepeat, _Rule3);
 
   function RuleRepeat(countMin, countMax, rule) {
     var _this3;
 
-    _this3 = _Rule3.call(this, _rules.RuleType.Repeat) || this;
+    (0, _classCallCheck2.default)(this, RuleRepeat);
+    _this3 = (0, _possibleConstructorReturn2.default)(this, (0, _getPrototypeOf2.default)(RuleRepeat).call(this, _rules.RuleType.Repeat));
     _this3.countMin = countMin;
     _this3.countMax = countMax;
     _this3.rule = rule;
     return _this3;
   }
 
-  var _proto3 = RuleRepeat.prototype;
-
-  _proto3.clone = function clone() {
-    var clone = _Rule3.prototype.clone.call(this);
-
-    clone.rule = this.rule.clone();
-    clone.countMin = this.countMin;
-    clone.countMax = this.countMax;
-    return clone;
-  };
-
+  (0, _createClass2.default)(RuleRepeat, [{
+    key: "clone",
+    value: function clone() {
+      var clone = (0, _get2.default)((0, _getPrototypeOf2.default)(RuleRepeat.prototype), "clone", this).call(this);
+      clone.rule = this.rule.clone();
+      clone.countMin = this.countMin;
+      clone.countMax = this.countMax;
+      return clone;
+    }
+  }]);
   return RuleRepeat;
 }(Rule);
 

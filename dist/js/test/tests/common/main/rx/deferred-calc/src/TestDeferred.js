@@ -12,7 +12,15 @@ var _splice = _interopRequireDefault(require("@babel/runtime-corejs3/core-js-sta
 
 var _slice = _interopRequireDefault(require("@babel/runtime-corejs3/core-js-stable/instance/slice"));
 
-var _inheritsLoose2 = _interopRequireDefault(require("@babel/runtime-corejs3/helpers/inheritsLoose"));
+var _classCallCheck2 = _interopRequireDefault(require("@babel/runtime-corejs3/helpers/classCallCheck"));
+
+var _createClass2 = _interopRequireDefault(require("@babel/runtime-corejs3/helpers/createClass"));
+
+var _possibleConstructorReturn2 = _interopRequireDefault(require("@babel/runtime-corejs3/helpers/possibleConstructorReturn"));
+
+var _getPrototypeOf2 = _interopRequireDefault(require("@babel/runtime-corejs3/helpers/getPrototypeOf"));
+
+var _inherits2 = _interopRequireDefault(require("@babel/runtime-corejs3/helpers/inherits"));
 
 var _extends2 = _interopRequireDefault(require("@babel/runtime-corejs3/helpers/extends"));
 
@@ -107,12 +115,13 @@ function assertEvents(events, excepted) {
 var TestDeferredCalc =
 /*#__PURE__*/
 function (_TestVariants) {
-  (0, _inheritsLoose2.default)(TestDeferredCalc, _TestVariants);
+  (0, _inherits2.default)(TestDeferredCalc, _TestVariants);
 
   function TestDeferredCalc() {
     var _this;
 
-    _this = _TestVariants.call(this) || this;
+    (0, _classCallCheck2.default)(this, TestDeferredCalc);
+    _this = (0, _possibleConstructorReturn2.default)(this, (0, _getPrototypeOf2.default)(TestDeferredCalc).call(this));
     _this.baseOptionsVariants = {
       calcTime: [0],
       throttleTime: [null],
@@ -125,152 +134,153 @@ function (_TestVariants) {
     return _this;
   }
 
-  var _proto = TestDeferredCalc.prototype;
+  (0, _createClass2.default)(TestDeferredCalc, [{
+    key: "testVariant",
+    value: function testVariant(options) {
+      var error;
 
-  _proto.testVariant = function testVariant(options) {
-    var error;
+      for (var debugIteration = 0; debugIteration < 3; debugIteration++) {
+        var unsubscribePropertyChanged = void 0;
 
-    for (var debugIteration = 0; debugIteration < 3; debugIteration++) {
-      var unsubscribePropertyChanged = void 0;
+        try {
+          var _ret = function () {
+            var _context;
 
-      try {
-        var _ret = function () {
-          var _context;
+            var expectedEvents = (0, _slice.default)(_context = options.expected.events).call(_context);
+            var events = void 0;
+            var deferredCalc = void 0;
 
-          var expectedEvents = (0, _slice.default)(_context = options.expected.events).call(_context);
-          var events = void 0;
-          var deferredCalc = void 0;
+            if (options.reuseInstance) {
+              staticCalcTime = 0;
+              staticAutoCalc = false;
+              staticDeferredCalc.minTimeBetweenCalc = null;
+              staticDeferredCalc.throttleTime = null;
+              staticDeferredCalc.maxThrottleTime = null;
+              staticDeferredCalc.autoInvalidateInterval = null;
+              staticDeferredCalc.calc();
+              timing.addTime(options.minTimeBetweenCalc);
+              testStartTime = timing.now();
+              events = staticEvents = [];
+              deferredCalc = staticDeferredCalc;
+              staticAutoCalc = options.autoCalc;
+              staticCalcTime = options.calcTime;
+              staticDeferredCalc.minTimeBetweenCalc = options.minTimeBetweenCalc;
+              staticDeferredCalc.throttleTime = options.throttleTime;
+              staticDeferredCalc.maxThrottleTime = options.maxThrottleTime;
+              staticDeferredCalc.autoInvalidateInterval = options.autoInvalidateInterval;
+              staticDeferredCalc.invalidate();
+            } else {
+              testStartTime = timing.now();
+              events = [];
+              var autoCalc = options.autoCalc;
+              var calcTime = options.calcTime;
+              deferredCalc = new _DeferredCalc.DeferredCalc(function () {
+                if (deferredCalc) {
+                  _Assert.assert.strictEqual(this, deferredCalc);
+                } else {
+                  _Assert.assert.ok(this);
+                }
 
-          if (options.reuseInstance) {
-            staticCalcTime = 0;
-            staticAutoCalc = false;
-            staticDeferredCalc.minTimeBetweenCalc = null;
-            staticDeferredCalc.throttleTime = null;
-            staticDeferredCalc.maxThrottleTime = null;
-            staticDeferredCalc.autoInvalidateInterval = null;
-            staticDeferredCalc.calc();
-            timing.addTime(options.minTimeBetweenCalc);
-            testStartTime = timing.now();
-            events = staticEvents = [];
-            deferredCalc = staticDeferredCalc;
-            staticAutoCalc = options.autoCalc;
-            staticCalcTime = options.calcTime;
-            staticDeferredCalc.minTimeBetweenCalc = options.minTimeBetweenCalc;
-            staticDeferredCalc.throttleTime = options.throttleTime;
-            staticDeferredCalc.maxThrottleTime = options.maxThrottleTime;
-            staticDeferredCalc.autoInvalidateInterval = options.autoInvalidateInterval;
-            staticDeferredCalc.invalidate();
-          } else {
-            testStartTime = timing.now();
-            events = [];
-            var autoCalc = options.autoCalc;
-            var calcTime = options.calcTime;
-            deferredCalc = new _DeferredCalc.DeferredCalc(function () {
-              if (deferredCalc) {
-                _Assert.assert.strictEqual(this, deferredCalc);
-              } else {
-                _Assert.assert.ok(this);
-              }
+                events.push({
+                  time: timing.now() - testStartTime,
+                  type: EventType.CanBeCalc
+                });
 
-              events.push({
-                time: timing.now() - testStartTime,
-                type: EventType.CanBeCalc
+                if (autoCalc) {
+                  this.calc();
+                }
+              }, function (done) {
+                if (deferredCalc) {
+                  _Assert.assert.strictEqual(this, deferredCalc);
+                } else {
+                  _Assert.assert.ok(this);
+                }
+
+                events.push({
+                  time: timing.now() - testStartTime,
+                  type: EventType.Calc
+                });
+
+                if (!calcTime) {
+                  done();
+                } else {
+                  timing.setTimeout(done, calcTime);
+                }
+              }, function () {
+                if (deferredCalc) {
+                  _Assert.assert.strictEqual(this, deferredCalc);
+                } else {
+                  _Assert.assert.ok(this);
+                }
+
+                events.push({
+                  time: timing.now() - testStartTime,
+                  type: EventType.Completed
+                });
+              }, {
+                timing: timing,
+                minTimeBetweenCalc: options.minTimeBetweenCalc,
+                throttleTime: options.throttleTime,
+                maxThrottleTime: options.maxThrottleTime,
+                autoInvalidateInterval: options.autoInvalidateInterval
               });
+            }
 
-              if (autoCalc) {
-                this.calc();
-              }
-            }, function (done) {
-              if (deferredCalc) {
-                _Assert.assert.strictEqual(this, deferredCalc);
-              } else {
-                _Assert.assert.ok(this);
-              }
+            var propertyChangedEvents = [];
 
-              events.push({
-                time: timing.now() - testStartTime,
-                type: EventType.Calc
+            if (deferredCalc.propertyChanged) {
+              unsubscribePropertyChanged = deferredCalc.propertyChanged.subscribe(function (event) {
+                propertyChangedEvents.push(event);
               });
+            }
 
-              if (!calcTime) {
-                done();
-              } else {
-                timing.setTimeout(done, calcTime);
-              }
-            }, function () {
-              if (deferredCalc) {
-                _Assert.assert.strictEqual(this, deferredCalc);
-              } else {
-                _Assert.assert.ok(this);
-              }
+            if (options.expected.error) {
+              _Assert.assert.throws(function () {
+                return options.action(deferredCalc);
+              }, options.expected.error);
+            } else {
+              _Assert.assert.deepStrictEqual(options.action(deferredCalc), options.expected.returnValue === _TestVariants2.THIS ? deferredCalc : options.expected.returnValue);
+            }
 
-              events.push({
-                time: timing.now() - testStartTime,
-                type: EventType.Completed
-              });
-            }, {
-              timing: timing,
-              minTimeBetweenCalc: options.minTimeBetweenCalc,
-              throttleTime: options.throttleTime,
-              maxThrottleTime: options.maxThrottleTime,
-              autoInvalidateInterval: options.autoInvalidateInterval
-            });
+            assertEvents(events, expectedEvents);
+            (0, _splice.default)(events).call(events, 0, events.length);
+            timing.addTime(Math.max(options.throttleTime || 0, options.maxThrottleTime || 0, options.minTimeBetweenCalc || 0, options.autoInvalidateInterval || 0) + options.calcTime + 1);
+            assertEvents(events, []);
+
+            if (unsubscribePropertyChanged) {
+              unsubscribePropertyChanged();
+            }
+
+            _Assert.assert.deepStrictEqual(propertyChangedEvents, options.expected.propertyChanged || []);
+
+            return "break";
+          }();
+
+          if (_ret === "break") break;
+        } catch (ex) {
+          if (!debugIteration) {
+            console.log("Error in: " + options.description + "\n" + (0, _stringify.default)(options, null, 4) + "\n" + options.action.toString() + "\n" + ex.stack);
+            error = ex;
           }
-
-          var propertyChangedEvents = [];
-
-          if (deferredCalc.propertyChanged) {
-            unsubscribePropertyChanged = deferredCalc.propertyChanged.subscribe(function (event) {
-              propertyChangedEvents.push(event);
-            });
-          }
-
-          if (options.expected.error) {
-            _Assert.assert.throws(function () {
-              return options.action(deferredCalc);
-            }, options.expected.error);
-          } else {
-            _Assert.assert.deepStrictEqual(options.action(deferredCalc), options.expected.returnValue === _TestVariants2.THIS ? deferredCalc : options.expected.returnValue);
-          }
-
-          assertEvents(events, expectedEvents);
-          (0, _splice.default)(events).call(events, 0, events.length);
-          timing.addTime(Math.max(options.throttleTime || 0, options.maxThrottleTime || 0, options.minTimeBetweenCalc || 0, options.autoInvalidateInterval || 0) + options.calcTime + 1);
-          assertEvents(events, []);
-
+        } finally {
           if (unsubscribePropertyChanged) {
             unsubscribePropertyChanged();
           }
 
-          _Assert.assert.deepStrictEqual(propertyChangedEvents, options.expected.propertyChanged || []);
-
-          return "break";
-        }();
-
-        if (_ret === "break") break;
-      } catch (ex) {
-        if (!debugIteration) {
-          console.log("Error in: " + options.description + "\n" + (0, _stringify.default)(options, null, 4) + "\n" + options.action.toString() + "\n" + ex.stack);
-          error = ex;
+          TestDeferredCalc.totalTests++;
         }
-      } finally {
-        if (unsubscribePropertyChanged) {
-          unsubscribePropertyChanged();
-        }
+      }
 
-        TestDeferredCalc.totalTests++;
+      if (error) {
+        throw error;
       }
     }
-
-    if (error) {
-      throw error;
+  }], [{
+    key: "test",
+    value: function test(testCases) {
+      TestDeferredCalc._instance.test(testCases);
     }
-  };
-
-  TestDeferredCalc.test = function test(testCases) {
-    TestDeferredCalc._instance.test(testCases);
-  };
-
+  }]);
   return TestDeferredCalc;
 }(_TestVariants2.TestVariants);
 

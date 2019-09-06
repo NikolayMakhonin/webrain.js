@@ -12,6 +12,8 @@ var _asyncToGenerator2 = _interopRequireDefault(require("@babel/runtime-corejs3/
 
 var _map = _interopRequireDefault(require("@babel/runtime-corejs3/core-js-stable/instance/map"));
 
+var _createClass2 = _interopRequireDefault(require("@babel/runtime-corejs3/helpers/createClass"));
+
 var _stringify = _interopRequireDefault(require("@babel/runtime-corejs3/core-js-stable/json/stringify"));
 
 var _keys = _interopRequireDefault(require("@babel/runtime-corejs3/core-js-stable/object/keys"));
@@ -22,7 +24,13 @@ var _setTimeout2 = _interopRequireDefault(require("@babel/runtime-corejs3/core-j
 
 var _assign = _interopRequireDefault(require("@babel/runtime-corejs3/core-js-stable/object/assign"));
 
-var _inheritsLoose2 = _interopRequireDefault(require("@babel/runtime-corejs3/helpers/inheritsLoose"));
+var _classCallCheck2 = _interopRequireDefault(require("@babel/runtime-corejs3/helpers/classCallCheck"));
+
+var _possibleConstructorReturn2 = _interopRequireDefault(require("@babel/runtime-corejs3/helpers/possibleConstructorReturn"));
+
+var _getPrototypeOf2 = _interopRequireDefault(require("@babel/runtime-corejs3/helpers/getPrototypeOf"));
+
+var _inherits2 = _interopRequireDefault(require("@babel/runtime-corejs3/helpers/inherits"));
 
 var _map2 = _interopRequireDefault(require("@babel/runtime-corejs3/core-js-stable/map"));
 
@@ -76,10 +84,11 @@ function createObject() {
   var ObservableClass =
   /*#__PURE__*/
   function (_ObservableObject) {
-    (0, _inheritsLoose2.default)(ObservableClass, _ObservableObject);
+    (0, _inherits2.default)(ObservableClass, _ObservableObject);
 
     function ObservableClass() {
-      return _ObservableObject.apply(this, arguments) || this;
+      (0, _classCallCheck2.default)(this, ObservableClass);
+      return (0, _possibleConstructorReturn2.default)(this, (0, _getPrototypeOf2.default)(ObservableClass).apply(this, arguments));
     }
 
     return ObservableClass;
@@ -165,6 +174,7 @@ function () {
         performanceTest = _ref.performanceTest,
         doNotSubscribeNonObjectValues = _ref.doNotSubscribeNonObjectValues,
         useIncorrectUnsubscribe = _ref.useIncorrectUnsubscribe;
+    (0, _classCallCheck2.default)(this, Tester);
     this._object = object;
     this._immediate = immediate;
     this._ignoreSubscribeCount = ignoreSubscribeCount;
@@ -191,465 +201,466 @@ function () {
     }
   }
 
-  var _proto = Tester.prototype;
+  (0, _createClass2.default)(Tester, [{
+    key: "checkSubscribes",
+    value: function checkSubscribes(subscribes, expectedSubscribes) {
+      if (typeof expectedSubscribes === 'function') {
+        expectedSubscribes = expectedSubscribes(this._object);
+      }
 
-  _proto.checkSubscribes = function checkSubscribes(subscribes, expectedSubscribes) {
-    if (typeof expectedSubscribes === 'function') {
-      expectedSubscribes = expectedSubscribes(this._object);
-    }
-
-    if (!this._ignoreSubscribeCount) {
-      assert.circularDeepStrictEqual(subscribes, expectedSubscribes);
-      return;
-    }
-
-    if (!expectedSubscribes.length) {
-      assert.strictEqual(subscribes.length, 0);
-      return;
-    }
-
-    for (var i = 0; i < subscribes.length; i++) {
-      assert.equal(subscribes[i], expectedSubscribes[0]);
-    }
-  };
-
-  _proto.subscribePrivate = function subscribePrivate(ruleBuilder, i) {
-    var _this = this;
-
-    this._unsubscribe[i] = (0, _deepSubscribe.deepSubscribe)(this._object, function (value) {
-      if (_this._doNotSubscribeNonObjectValues && !(value instanceof Object)) {
+      if (!this._ignoreSubscribeCount) {
+        assert.circularDeepStrictEqual(subscribes, expectedSubscribes);
         return;
       }
 
-      if (_this._performanceTest) {
-        return function () {};
+      if (!expectedSubscribes.length) {
+        assert.strictEqual(subscribes.length, 0);
+        return;
       }
 
-      _this._subscribed[i].push(value);
-
-      if (_this._useIncorrectUnsubscribe) {
-        return 'Test Incorrect Unsubscribe';
+      for (var i = 0; i < subscribes.length; i++) {
+        assert.equal(subscribes[i], expectedSubscribes[0]);
       }
-
-      return function () {
-        _this._unsubscribed[i].push(value);
-      };
-    }, this._immediate, Math.random() > 0.5 ? function (o) {
-      return ruleBuilder(o).clone();
-    } : ruleBuilder);
-  } // region Sync
-  ;
-
-  _proto.subscribe = function subscribe(expectedSubscribed, expectedUnsubscribed, errorType, errorRegExp) {
-    var _this2 = this;
-
-    if (this._performanceTest) {
-      for (var i = 0; i < this._ruleBuilders.length; i++) {
-        var _ruleBuilder = this._ruleBuilders[i];
-        this.subscribePrivate(_ruleBuilder, i);
-      }
-
-      return this;
     }
+  }, {
+    key: "subscribePrivate",
+    value: function subscribePrivate(ruleBuilder, i) {
+      var _this = this;
 
-    var _loop = function _loop(_i) {
-      var ruleBuilder = _this2._ruleBuilders[_i];
-      assert.ok(_this2._unsubscribe[_i] == null);
-      assert.deepStrictEqual(_this2._subscribed[_i], []);
-      assert.deepStrictEqual(_this2._unsubscribed[_i], []);
+      this._unsubscribe[i] = (0, _deepSubscribe.deepSubscribe)(this._object, function (value) {
+        if (_this._doNotSubscribeNonObjectValues && !(value instanceof Object)) {
+          return;
+        }
 
-      if (errorType) {
-        assert.throws(function () {
-          return _this2.subscribePrivate(ruleBuilder, _i);
-        }, errorType, errorRegExp);
-      } else {
-        _this2.subscribePrivate(ruleBuilder, _i);
+        if (_this._performanceTest) {
+          return function () {};
+        }
 
-        expectedUnsubscribed = [];
+        _this._subscribed[i].push(value);
+
+        if (_this._useIncorrectUnsubscribe) {
+          return 'Test Incorrect Unsubscribe';
+        }
+
+        return function () {
+          _this._unsubscribed[i].push(value);
+        };
+      }, this._immediate, Math.random() > 0.5 ? function (o) {
+        return ruleBuilder(o).clone();
+      } : ruleBuilder);
+    } // region Sync
+
+  }, {
+    key: "subscribe",
+    value: function subscribe(expectedSubscribed, expectedUnsubscribed, errorType, errorRegExp) {
+      var _this2 = this;
+
+      if (this._performanceTest) {
+        for (var i = 0; i < this._ruleBuilders.length; i++) {
+          var _ruleBuilder = this._ruleBuilders[i];
+          this.subscribePrivate(_ruleBuilder, i);
+        }
+
+        return this;
       }
 
-      _this2.checkSubscribes(_this2._unsubscribed[_i], expectedUnsubscribed);
-
-      if (!expectedSubscribed) {
-        assert.strictEqual(_this2._unsubscribe[_i], null);
+      var _loop = function _loop(_i) {
+        var ruleBuilder = _this2._ruleBuilders[_i];
+        assert.ok(_this2._unsubscribe[_i] == null);
         assert.deepStrictEqual(_this2._subscribed[_i], []);
-      } else {
-        _this2.checkSubscribes(_this2._subscribed[_i], expectedSubscribed);
+        assert.deepStrictEqual(_this2._unsubscribed[_i], []);
 
-        _this2._subscribed[_i] = [];
+        if (errorType) {
+          assert.throws(function () {
+            return _this2.subscribePrivate(ruleBuilder, _i);
+          }, errorType, errorRegExp);
+        } else {
+          _this2.subscribePrivate(ruleBuilder, _i);
+
+          expectedUnsubscribed = [];
+        }
+
+        _this2.checkSubscribes(_this2._unsubscribed[_i], expectedUnsubscribed);
+
+        if (!expectedSubscribed) {
+          assert.strictEqual(_this2._unsubscribe[_i], null);
+          assert.deepStrictEqual(_this2._subscribed[_i], []);
+        } else {
+          _this2.checkSubscribes(_this2._subscribed[_i], expectedSubscribed);
+
+          _this2._subscribed[_i] = [];
+        }
+      };
+
+      for (var _i = 0; _i < this._ruleBuilders.length; _i++) {
+        _loop(_i);
       }
-    };
 
-    for (var _i = 0; _i < this._ruleBuilders.length; _i++) {
-      _loop(_i);
-    }
-
-    return this;
-  };
-
-  _proto.change = function change(changeFunc, expectedUnsubscribed, expectedSubscribed, errorType, errorRegExp) {
-    var _this3 = this;
-
-    if (this._performanceTest) {
-      changeFunc(this._object);
       return this;
     }
+  }, {
+    key: "change",
+    value: function change(changeFunc, expectedUnsubscribed, expectedSubscribed, errorType, errorRegExp) {
+      var _this3 = this;
 
-    for (var i = 0; i < this._ruleBuilders.length; i++) {
-      assert.deepStrictEqual(this._subscribed[i], []);
-      assert.deepStrictEqual(this._unsubscribed[i], []);
-    }
+      if (this._performanceTest) {
+        changeFunc(this._object);
+        return this;
+      }
 
-    if (typeof expectedUnsubscribed === 'function') {
-      expectedUnsubscribed = expectedUnsubscribed(this._object);
-    }
-
-    if (errorType) {
-      assert.throws(function () {
-        return changeFunc(_this3._object);
-      }, errorType, errorRegExp);
-    } else {
-      changeFunc(this._object);
-    }
-
-    for (var _i2 = 0; _i2 < this._ruleBuilders.length; _i2++) {
-      this.checkSubscribes(this._unsubscribed[_i2], expectedUnsubscribed);
-      this.checkSubscribes(this._subscribed[_i2], expectedSubscribed);
-      this._unsubscribed[_i2] = [];
-      this._subscribed[_i2] = [];
-    }
-
-    return this;
-  };
-
-  _proto.unsubscribe = function unsubscribe(expectedUnsubscribed, errorType, errorRegExp) {
-    var _this4 = this;
-
-    if (this._performanceTest) {
       for (var i = 0; i < this._ruleBuilders.length; i++) {
-        this._unsubscribe[i]();
+        assert.deepStrictEqual(this._subscribed[i], []);
+        assert.deepStrictEqual(this._unsubscribed[i], []);
       }
 
-      return this;
-    }
-
-    var _loop2 = function _loop2(_i3) {
-      assert.ok(_this4._unsubscribe[_i3]);
-      assert.deepStrictEqual(_this4._subscribed[_i3], []);
-      assert.deepStrictEqual(_this4._unsubscribed[_i3], []);
+      if (typeof expectedUnsubscribed === 'function') {
+        expectedUnsubscribed = expectedUnsubscribed(this._object);
+      }
 
       if (errorType) {
         assert.throws(function () {
-          return _this4._unsubscribe[_i3]();
+          return changeFunc(_this3._object);
         }, errorType, errorRegExp);
+      } else {
+        changeFunc(this._object);
+      }
+
+      for (var _i2 = 0; _i2 < this._ruleBuilders.length; _i2++) {
+        this.checkSubscribes(this._unsubscribed[_i2], expectedUnsubscribed);
+        this.checkSubscribes(this._subscribed[_i2], expectedSubscribed);
+        this._unsubscribed[_i2] = [];
+        this._subscribed[_i2] = [];
+      }
+
+      return this;
+    }
+  }, {
+    key: "unsubscribe",
+    value: function unsubscribe(expectedUnsubscribed, errorType, errorRegExp) {
+      var _this4 = this;
+
+      if (this._performanceTest) {
+        for (var i = 0; i < this._ruleBuilders.length; i++) {
+          this._unsubscribe[i]();
+        }
+
+        return this;
+      }
+
+      var _loop2 = function _loop2(_i3) {
+        assert.ok(_this4._unsubscribe[_i3]);
         assert.deepStrictEqual(_this4._subscribed[_i3], []);
         assert.deepStrictEqual(_this4._unsubscribed[_i3], []);
-      } else {
-        _this4._unsubscribe[_i3]();
 
-        _this4._unsubscribe[_i3]();
+        if (errorType) {
+          assert.throws(function () {
+            return _this4._unsubscribe[_i3]();
+          }, errorType, errorRegExp);
+          assert.deepStrictEqual(_this4._subscribed[_i3], []);
+          assert.deepStrictEqual(_this4._unsubscribed[_i3], []);
+        } else {
+          _this4._unsubscribe[_i3]();
 
-        _this4._unsubscribe[_i3]();
+          _this4._unsubscribe[_i3]();
 
-        _this4._unsubscribe[_i3] = null;
+          _this4._unsubscribe[_i3]();
 
-        _this4.checkSubscribes(_this4._unsubscribed[_i3], expectedUnsubscribed);
+          _this4._unsubscribe[_i3] = null;
 
-        assert.deepStrictEqual(_this4._subscribed[_i3], []);
-        _this4._unsubscribed[_i3] = [];
+          _this4.checkSubscribes(_this4._unsubscribed[_i3], expectedUnsubscribed);
+
+          assert.deepStrictEqual(_this4._subscribed[_i3], []);
+          _this4._unsubscribed[_i3] = [];
+        }
+      };
+
+      for (var _i3 = 0; _i3 < this._ruleBuilders.length; _i3++) {
+        _loop2(_i3);
       }
-    };
 
-    for (var _i3 = 0; _i3 < this._ruleBuilders.length; _i3++) {
-      _loop2(_i3);
-    }
+      return this;
+    } // endregion
+    // region Async
 
-    return this;
-  } // endregion
-  // region Async
-  ;
+  }, {
+    key: "subscribeAsync",
+    value: function () {
+      var _subscribeAsync = (0, _asyncToGenerator2.default)(
+      /*#__PURE__*/
+      _regenerator.default.mark(function _callee(expectedSubscribed, expectedUnsubscribed, errorType, errorRegExp) {
+        var _this5 = this;
 
-  _proto.subscribeAsync =
-  /*#__PURE__*/
-  function () {
-    var _subscribeAsync = (0, _asyncToGenerator2.default)(
-    /*#__PURE__*/
-    _regenerator.default.mark(function _callee(expectedSubscribed, expectedUnsubscribed, errorType, errorRegExp) {
-      var _this5 = this;
+        var i, _ruleBuilder2, _loop3, _i4;
 
-      var i, _ruleBuilder2, _loop3, _i4;
+        return _regenerator.default.wrap(function _callee$(_context3) {
+          while (1) {
+            switch (_context3.prev = _context3.next) {
+              case 0:
+                if (!this._performanceTest) {
+                  _context3.next = 3;
+                  break;
+                }
 
-      return _regenerator.default.wrap(function _callee$(_context3) {
-        while (1) {
-          switch (_context3.prev = _context3.next) {
-            case 0:
-              if (!this._performanceTest) {
-                _context3.next = 3;
-                break;
-              }
+                for (i = 0; i < this._ruleBuilders.length; i++) {
+                  _ruleBuilder2 = this._ruleBuilders[i];
+                  this.subscribePrivate(_ruleBuilder2, i);
+                }
 
-              for (i = 0; i < this._ruleBuilders.length; i++) {
-                _ruleBuilder2 = this._ruleBuilders[i];
-                this.subscribePrivate(_ruleBuilder2, i);
-              }
+                return _context3.abrupt("return", this);
 
-              return _context3.abrupt("return", this);
-
-            case 3:
-              _loop3 =
-              /*#__PURE__*/
-              _regenerator.default.mark(function _loop3(_i4) {
-                var ruleBuilder;
-                return _regenerator.default.wrap(function _loop3$(_context2) {
-                  while (1) {
-                    switch (_context2.prev = _context2.next) {
-                      case 0:
-                        ruleBuilder = _this5._ruleBuilders[_i4];
-                        assert.ok(_this5._unsubscribe[_i4] == null);
-                        assert.deepStrictEqual(_this5._subscribed[_i4], []);
-                        assert.deepStrictEqual(_this5._unsubscribed[_i4], []);
-
-                        if (errorType) {
-                          assert.throws(function () {
-                            return _this5.subscribePrivate(ruleBuilder, _i4);
-                          }, errorType, errorRegExp);
-                        } else {
-                          _this5.subscribePrivate(ruleBuilder, _i4);
-
-                          expectedUnsubscribed = [];
-                        }
-
-                        _context2.next = 7;
-                        return (0, _helpers.delay)(10);
-
-                      case 7:
-                        _this5.checkSubscribes(_this5._unsubscribed[_i4], expectedUnsubscribed);
-
-                        if (!expectedSubscribed) {
-                          assert.strictEqual(_this5._unsubscribe[_i4], null);
+              case 3:
+                _loop3 =
+                /*#__PURE__*/
+                _regenerator.default.mark(function _loop3(_i4) {
+                  var ruleBuilder;
+                  return _regenerator.default.wrap(function _loop3$(_context2) {
+                    while (1) {
+                      switch (_context2.prev = _context2.next) {
+                        case 0:
+                          ruleBuilder = _this5._ruleBuilders[_i4];
+                          assert.ok(_this5._unsubscribe[_i4] == null);
                           assert.deepStrictEqual(_this5._subscribed[_i4], []);
-                        } else {
-                          _this5.checkSubscribes(_this5._subscribed[_i4], expectedSubscribed);
+                          assert.deepStrictEqual(_this5._unsubscribed[_i4], []);
 
-                          _this5._subscribed[_i4] = [];
-                        }
+                          if (errorType) {
+                            assert.throws(function () {
+                              return _this5.subscribePrivate(ruleBuilder, _i4);
+                            }, errorType, errorRegExp);
+                          } else {
+                            _this5.subscribePrivate(ruleBuilder, _i4);
 
-                      case 9:
-                      case "end":
-                        return _context2.stop();
+                            expectedUnsubscribed = [];
+                          }
+
+                          _context2.next = 7;
+                          return (0, _helpers.delay)(10);
+
+                        case 7:
+                          _this5.checkSubscribes(_this5._unsubscribed[_i4], expectedUnsubscribed);
+
+                          if (!expectedSubscribed) {
+                            assert.strictEqual(_this5._unsubscribe[_i4], null);
+                            assert.deepStrictEqual(_this5._subscribed[_i4], []);
+                          } else {
+                            _this5.checkSubscribes(_this5._subscribed[_i4], expectedSubscribed);
+
+                            _this5._subscribed[_i4] = [];
+                          }
+
+                        case 9:
+                        case "end":
+                          return _context2.stop();
+                      }
                     }
-                  }
-                }, _loop3);
-              });
-              _i4 = 0;
+                  }, _loop3);
+                });
+                _i4 = 0;
 
-            case 5:
-              if (!(_i4 < this._ruleBuilders.length)) {
-                _context3.next = 10;
+              case 5:
+                if (!(_i4 < this._ruleBuilders.length)) {
+                  _context3.next = 10;
+                  break;
+                }
+
+                return _context3.delegateYield(_loop3(_i4), "t0", 7);
+
+              case 7:
+                _i4++;
+                _context3.next = 5;
                 break;
-              }
 
-              return _context3.delegateYield(_loop3(_i4), "t0", 7);
+              case 10:
+                return _context3.abrupt("return", this);
 
-            case 7:
-              _i4++;
-              _context3.next = 5;
-              break;
-
-            case 10:
-              return _context3.abrupt("return", this);
-
-            case 11:
-            case "end":
-              return _context3.stop();
+              case 11:
+              case "end":
+                return _context3.stop();
+            }
           }
-        }
-      }, _callee, this);
-    }));
+        }, _callee, this);
+      }));
 
-    function subscribeAsync(_x, _x2, _x3, _x4) {
-      return _subscribeAsync.apply(this, arguments);
-    }
+      function subscribeAsync(_x, _x2, _x3, _x4) {
+        return _subscribeAsync.apply(this, arguments);
+      }
 
-    return subscribeAsync;
-  }();
+      return subscribeAsync;
+    }()
+  }, {
+    key: "changeAsync",
+    value: function () {
+      var _changeAsync = (0, _asyncToGenerator2.default)(
+      /*#__PURE__*/
+      _regenerator.default.mark(function _callee2(changeFunc, expectedUnsubscribed, expectedSubscribed, errorType, errorRegExp) {
+        var _this6 = this;
 
-  _proto.changeAsync =
-  /*#__PURE__*/
-  function () {
-    var _changeAsync = (0, _asyncToGenerator2.default)(
-    /*#__PURE__*/
-    _regenerator.default.mark(function _callee2(changeFunc, expectedUnsubscribed, expectedSubscribed, errorType, errorRegExp) {
-      var _this6 = this;
+        var i, _i5;
 
-      var i, _i5;
+        return _regenerator.default.wrap(function _callee2$(_context4) {
+          while (1) {
+            switch (_context4.prev = _context4.next) {
+              case 0:
+                if (!this._performanceTest) {
+                  _context4.next = 3;
+                  break;
+                }
 
-      return _regenerator.default.wrap(function _callee2$(_context4) {
-        while (1) {
-          switch (_context4.prev = _context4.next) {
-            case 0:
-              if (!this._performanceTest) {
-                _context4.next = 3;
-                break;
-              }
-
-              changeFunc(this._object);
-              return _context4.abrupt("return", this);
-
-            case 3:
-              for (i = 0; i < this._ruleBuilders.length; i++) {
-                assert.deepStrictEqual(this._subscribed[i], []);
-                assert.deepStrictEqual(this._unsubscribed[i], []);
-              }
-
-              if (typeof expectedUnsubscribed === 'function') {
-                expectedUnsubscribed = expectedUnsubscribed(this._object);
-              }
-
-              if (errorType) {
-                assert.throws(function () {
-                  return changeFunc(_this6._object);
-                }, errorType, errorRegExp);
-              } else {
                 changeFunc(this._object);
-              }
+                return _context4.abrupt("return", this);
 
-              _context4.next = 8;
-              return (0, _helpers.delay)(10);
+              case 3:
+                for (i = 0; i < this._ruleBuilders.length; i++) {
+                  assert.deepStrictEqual(this._subscribed[i], []);
+                  assert.deepStrictEqual(this._unsubscribed[i], []);
+                }
 
-            case 8:
-              for (_i5 = 0; _i5 < this._ruleBuilders.length; _i5++) {
-                this.checkSubscribes(this._unsubscribed[_i5], expectedUnsubscribed);
-                this.checkSubscribes(this._subscribed[_i5], expectedSubscribed);
-                this._unsubscribed[_i5] = [];
-                this._subscribed[_i5] = [];
-              }
+                if (typeof expectedUnsubscribed === 'function') {
+                  expectedUnsubscribed = expectedUnsubscribed(this._object);
+                }
 
-              return _context4.abrupt("return", this);
+                if (errorType) {
+                  assert.throws(function () {
+                    return changeFunc(_this6._object);
+                  }, errorType, errorRegExp);
+                } else {
+                  changeFunc(this._object);
+                }
 
-            case 10:
-            case "end":
-              return _context4.stop();
+                _context4.next = 8;
+                return (0, _helpers.delay)(10);
+
+              case 8:
+                for (_i5 = 0; _i5 < this._ruleBuilders.length; _i5++) {
+                  this.checkSubscribes(this._unsubscribed[_i5], expectedUnsubscribed);
+                  this.checkSubscribes(this._subscribed[_i5], expectedSubscribed);
+                  this._unsubscribed[_i5] = [];
+                  this._subscribed[_i5] = [];
+                }
+
+                return _context4.abrupt("return", this);
+
+              case 10:
+              case "end":
+                return _context4.stop();
+            }
           }
-        }
-      }, _callee2, this);
-    }));
+        }, _callee2, this);
+      }));
 
-    function changeAsync(_x5, _x6, _x7, _x8, _x9) {
-      return _changeAsync.apply(this, arguments);
-    }
+      function changeAsync(_x5, _x6, _x7, _x8, _x9) {
+        return _changeAsync.apply(this, arguments);
+      }
 
-    return changeAsync;
-  }();
+      return changeAsync;
+    }()
+  }, {
+    key: "unsubscribeAsync",
+    value: function () {
+      var _unsubscribeAsync = (0, _asyncToGenerator2.default)(
+      /*#__PURE__*/
+      _regenerator.default.mark(function _callee3(expectedUnsubscribed, errorType, errorRegExp) {
+        var _this7 = this;
 
-  _proto.unsubscribeAsync =
-  /*#__PURE__*/
-  function () {
-    var _unsubscribeAsync = (0, _asyncToGenerator2.default)(
-    /*#__PURE__*/
-    _regenerator.default.mark(function _callee3(expectedUnsubscribed, errorType, errorRegExp) {
-      var _this7 = this;
+        var i, _loop4, _i6;
 
-      var i, _loop4, _i6;
+        return _regenerator.default.wrap(function _callee3$(_context6) {
+          while (1) {
+            switch (_context6.prev = _context6.next) {
+              case 0:
+                if (!this._performanceTest) {
+                  _context6.next = 3;
+                  break;
+                }
 
-      return _regenerator.default.wrap(function _callee3$(_context6) {
-        while (1) {
-          switch (_context6.prev = _context6.next) {
-            case 0:
-              if (!this._performanceTest) {
-                _context6.next = 3;
-                break;
-              }
+                for (i = 0; i < this._ruleBuilders.length; i++) {
+                  this._unsubscribe[i]();
+                }
 
-              for (i = 0; i < this._ruleBuilders.length; i++) {
-                this._unsubscribe[i]();
-              }
+                return _context6.abrupt("return", this);
 
-              return _context6.abrupt("return", this);
+              case 3:
+                _loop4 =
+                /*#__PURE__*/
+                _regenerator.default.mark(function _loop4(_i6) {
+                  return _regenerator.default.wrap(function _loop4$(_context5) {
+                    while (1) {
+                      switch (_context5.prev = _context5.next) {
+                        case 0:
+                          assert.ok(_this7._unsubscribe[_i6]);
+                          assert.deepStrictEqual(_this7._subscribed[_i6], []);
+                          assert.deepStrictEqual(_this7._unsubscribed[_i6], []);
 
-            case 3:
-              _loop4 =
-              /*#__PURE__*/
-              _regenerator.default.mark(function _loop4(_i6) {
-                return _regenerator.default.wrap(function _loop4$(_context5) {
-                  while (1) {
-                    switch (_context5.prev = _context5.next) {
-                      case 0:
-                        assert.ok(_this7._unsubscribe[_i6]);
-                        assert.deepStrictEqual(_this7._subscribed[_i6], []);
-                        assert.deepStrictEqual(_this7._unsubscribed[_i6], []);
+                          if (!errorType) {
+                            _context5.next = 9;
+                            break;
+                          }
 
-                        if (!errorType) {
-                          _context5.next = 9;
+                          assert.throws(function () {
+                            return _this7._unsubscribe[_i6]();
+                          }, errorType, errorRegExp);
+                          assert.deepStrictEqual(_this7._subscribed[_i6], []);
+                          assert.deepStrictEqual(_this7._unsubscribed[_i6], []);
+                          _context5.next = 18;
                           break;
-                        }
 
-                        assert.throws(function () {
-                          return _this7._unsubscribe[_i6]();
-                        }, errorType, errorRegExp);
-                        assert.deepStrictEqual(_this7._subscribed[_i6], []);
-                        assert.deepStrictEqual(_this7._unsubscribed[_i6], []);
-                        _context5.next = 18;
-                        break;
+                        case 9:
+                          _this7._unsubscribe[_i6]();
 
-                      case 9:
-                        _this7._unsubscribe[_i6]();
+                          _this7._unsubscribe[_i6]();
 
-                        _this7._unsubscribe[_i6]();
+                          _this7._unsubscribe[_i6]();
 
-                        _this7._unsubscribe[_i6]();
+                          _this7._unsubscribe[_i6] = null;
+                          _context5.next = 15;
+                          return (0, _helpers.delay)(10);
 
-                        _this7._unsubscribe[_i6] = null;
-                        _context5.next = 15;
-                        return (0, _helpers.delay)(10);
+                        case 15:
+                          _this7.checkSubscribes(_this7._unsubscribed[_i6], expectedUnsubscribed);
 
-                      case 15:
-                        _this7.checkSubscribes(_this7._unsubscribed[_i6], expectedUnsubscribed);
+                          assert.deepStrictEqual(_this7._subscribed[_i6], []);
+                          _this7._unsubscribed[_i6] = [];
 
-                        assert.deepStrictEqual(_this7._subscribed[_i6], []);
-                        _this7._unsubscribed[_i6] = [];
-
-                      case 18:
-                      case "end":
-                        return _context5.stop();
+                        case 18:
+                        case "end":
+                          return _context5.stop();
+                      }
                     }
-                  }
-                }, _loop4);
-              });
-              _i6 = 0;
+                  }, _loop4);
+                });
+                _i6 = 0;
 
-            case 5:
-              if (!(_i6 < this._ruleBuilders.length)) {
-                _context6.next = 10;
+              case 5:
+                if (!(_i6 < this._ruleBuilders.length)) {
+                  _context6.next = 10;
+                  break;
+                }
+
+                return _context6.delegateYield(_loop4(_i6), "t0", 7);
+
+              case 7:
+                _i6++;
+                _context6.next = 5;
                 break;
-              }
 
-              return _context6.delegateYield(_loop4(_i6), "t0", 7);
+              case 10:
+                return _context6.abrupt("return", this);
 
-            case 7:
-              _i6++;
-              _context6.next = 5;
-              break;
-
-            case 10:
-              return _context6.abrupt("return", this);
-
-            case 11:
-            case "end":
-              return _context6.stop();
+              case 11:
+              case "end":
+                return _context6.stop();
+            }
           }
-        }
-      }, _callee3, this);
-    }));
+        }, _callee3, this);
+      }));
 
-    function unsubscribeAsync(_x10, _x11, _x12) {
-      return _unsubscribeAsync.apply(this, arguments);
-    }
+      function unsubscribeAsync(_x10, _x11, _x12) {
+        return _unsubscribeAsync.apply(this, arguments);
+      }
 
-    return unsubscribeAsync;
-  }() // endregion
-  ;
+      return unsubscribeAsync;
+    }() // endregion
 
+  }]);
   return Tester;
 }();
 

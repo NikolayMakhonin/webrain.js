@@ -2,7 +2,13 @@
 
 var _interopRequireDefault = require("@babel/runtime-corejs3/helpers/interopRequireDefault");
 
-var _inheritsLoose2 = _interopRequireDefault(require("@babel/runtime-corejs3/helpers/inheritsLoose"));
+var _classCallCheck2 = _interopRequireDefault(require("@babel/runtime-corejs3/helpers/classCallCheck"));
+
+var _possibleConstructorReturn2 = _interopRequireDefault(require("@babel/runtime-corejs3/helpers/possibleConstructorReturn"));
+
+var _getPrototypeOf2 = _interopRequireDefault(require("@babel/runtime-corejs3/helpers/getPrototypeOf"));
+
+var _inherits2 = _interopRequireDefault(require("@babel/runtime-corejs3/helpers/inherits"));
 
 var _map = _interopRequireDefault(require("@babel/runtime-corejs3/core-js-stable/instance/map"));
 
@@ -27,10 +33,11 @@ describe('common > main > rx > observable-object-builder-prototype', function ()
     var BaseClass1 =
     /*#__PURE__*/
     function (_ObservableObject) {
-      (0, _inheritsLoose2.default)(BaseClass1, _ObservableObject);
+      (0, _inherits2.default)(BaseClass1, _ObservableObject);
 
       function BaseClass1() {
-        return _ObservableObject.apply(this, arguments) || this;
+        (0, _classCallCheck2.default)(this, BaseClass1);
+        return (0, _possibleConstructorReturn2.default)(this, (0, _getPrototypeOf2.default)(BaseClass1).apply(this, arguments));
       }
 
       return BaseClass1;
@@ -39,10 +46,11 @@ describe('common > main > rx > observable-object-builder-prototype', function ()
     var BaseClass2 =
     /*#__PURE__*/
     function (_BaseClass) {
-      (0, _inheritsLoose2.default)(BaseClass2, _BaseClass);
+      (0, _inherits2.default)(BaseClass2, _BaseClass);
 
       function BaseClass2() {
-        return _BaseClass.apply(this, arguments) || this;
+        (0, _classCallCheck2.default)(this, BaseClass2);
+        return (0, _possibleConstructorReturn2.default)(this, (0, _getPrototypeOf2.default)(BaseClass2).apply(this, arguments));
       }
 
       return BaseClass2;
@@ -51,10 +59,11 @@ describe('common > main > rx > observable-object-builder-prototype', function ()
     var Class1 =
     /*#__PURE__*/
     function (_BaseClass2) {
-      (0, _inheritsLoose2.default)(Class1, _BaseClass2);
+      (0, _inherits2.default)(Class1, _BaseClass2);
 
       function Class1() {
-        return _BaseClass2.apply(this, arguments) || this;
+        (0, _classCallCheck2.default)(this, Class1);
+        return (0, _possibleConstructorReturn2.default)(this, (0, _getPrototypeOf2.default)(Class1).apply(this, arguments));
       }
 
       return Class1;
@@ -63,10 +72,11 @@ describe('common > main > rx > observable-object-builder-prototype', function ()
     var Class2 =
     /*#__PURE__*/
     function (_BaseClass3) {
-      (0, _inheritsLoose2.default)(Class2, _BaseClass3);
+      (0, _inherits2.default)(Class2, _BaseClass3);
 
       function Class2() {
-        return _BaseClass3.apply(this, arguments) || this;
+        (0, _classCallCheck2.default)(this, Class2);
+        return (0, _possibleConstructorReturn2.default)(this, (0, _getPrototypeOf2.default)(Class2).apply(this, arguments));
       }
 
       return Class2;
@@ -219,10 +229,11 @@ describe('common > main > rx > observable-object-builder-prototype', function ()
     var BaseClass1 =
     /*#__PURE__*/
     function (_ObservableObject2) {
-      (0, _inheritsLoose2.default)(BaseClass1, _ObservableObject2);
+      (0, _inherits2.default)(BaseClass1, _ObservableObject2);
 
       function BaseClass1() {
-        return _ObservableObject2.apply(this, arguments) || this;
+        (0, _classCallCheck2.default)(this, BaseClass1);
+        return (0, _possibleConstructorReturn2.default)(this, (0, _getPrototypeOf2.default)(BaseClass1).apply(this, arguments));
       }
 
       return BaseClass1;
@@ -231,10 +242,11 @@ describe('common > main > rx > observable-object-builder-prototype', function ()
     var BaseClass2 =
     /*#__PURE__*/
     function (_BaseClass4) {
-      (0, _inheritsLoose2.default)(BaseClass2, _BaseClass4);
+      (0, _inherits2.default)(BaseClass2, _BaseClass4);
 
       function BaseClass2() {
-        return _BaseClass4.apply(this, arguments) || this;
+        (0, _classCallCheck2.default)(this, BaseClass2);
+        return (0, _possibleConstructorReturn2.default)(this, (0, _getPrototypeOf2.default)(BaseClass2).apply(this, arguments));
       }
 
       return BaseClass2;
@@ -243,10 +255,11 @@ describe('common > main > rx > observable-object-builder-prototype', function ()
     var Class1 =
     /*#__PURE__*/
     function (_BaseClass5) {
-      (0, _inheritsLoose2.default)(Class1, _BaseClass5);
+      (0, _inherits2.default)(Class1, _BaseClass5);
 
       function Class1() {
-        return _BaseClass5.apply(this, arguments) || this;
+        (0, _classCallCheck2.default)(this, Class1);
+        return (0, _possibleConstructorReturn2.default)(this, (0, _getPrototypeOf2.default)(Class1).apply(this, arguments));
       }
 
       return Class1;
@@ -255,10 +268,11 @@ describe('common > main > rx > observable-object-builder-prototype', function ()
     var Class2 =
     /*#__PURE__*/
     function (_BaseClass6) {
-      (0, _inheritsLoose2.default)(Class2, _BaseClass6);
+      (0, _inherits2.default)(Class2, _BaseClass6);
 
       function Class2() {
-        return _BaseClass6.apply(this, arguments) || this;
+        (0, _classCallCheck2.default)(this, Class2);
+        return (0, _possibleConstructorReturn2.default)(this, (0, _getPrototypeOf2.default)(Class2).apply(this, arguments));
       }
 
       return Class2;

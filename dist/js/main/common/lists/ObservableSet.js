@@ -27,9 +27,15 @@ var _from = _interopRequireDefault(require("@babel/runtime-corejs3/core-js-stabl
 
 var _set2 = _interopRequireDefault(require("@babel/runtime-corejs3/core-js-stable/set"));
 
+var _classCallCheck2 = _interopRequireDefault(require("@babel/runtime-corejs3/helpers/classCallCheck"));
+
 var _createClass2 = _interopRequireDefault(require("@babel/runtime-corejs3/helpers/createClass"));
 
-var _inheritsLoose2 = _interopRequireDefault(require("@babel/runtime-corejs3/helpers/inheritsLoose"));
+var _possibleConstructorReturn2 = _interopRequireDefault(require("@babel/runtime-corejs3/helpers/possibleConstructorReturn"));
+
+var _getPrototypeOf2 = _interopRequireDefault(require("@babel/runtime-corejs3/helpers/getPrototypeOf"));
+
+var _inherits2 = _interopRequireDefault(require("@babel/runtime-corejs3/helpers/inherits"));
 
 var _mergeMaps = require("../extensions/merge/merge-maps");
 
@@ -55,67 +61,108 @@ _Symbol$iterator = _iterator.default;
 var ObservableSet =
 /*#__PURE__*/
 function (_SetChangedObject) {
-  (0, _inheritsLoose2.default)(ObservableSet, _SetChangedObject);
+  (0, _inherits2.default)(ObservableSet, _SetChangedObject);
 
   function ObservableSet(set) {
     var _this;
 
-    _this = _SetChangedObject.call(this) || this;
+    (0, _classCallCheck2.default)(this, ObservableSet);
+    _this = (0, _possibleConstructorReturn2.default)(this, (0, _getPrototypeOf2.default)(ObservableSet).call(this));
     _this[_Symbol$toStringTag] = 'Set';
     _this._set = set || new _set2.default();
     return _this;
   }
 
-  var _proto = ObservableSet.prototype;
+  (0, _createClass2.default)(ObservableSet, [{
+    key: "add",
+    value: function add(value) {
+      var _set = this._set;
+      var oldSize = _set.size;
 
-  _proto.add = function add(value) {
-    var _set = this._set;
-    var oldSize = _set.size;
+      this._set.add(value);
 
-    this._set.add(value);
+      var size = _set.size;
 
-    var size = _set.size;
+      if (size > oldSize) {
+        var _setChangedIfCanEmit = this._setChangedIfCanEmit;
 
-    if (size > oldSize) {
-      var _setChangedIfCanEmit = this._setChangedIfCanEmit;
+        if (_setChangedIfCanEmit) {
+          _setChangedIfCanEmit.emit({
+            type: _ISetChanged.SetChangedType.Added,
+            newItems: [value]
+          });
+        }
 
-      if (_setChangedIfCanEmit) {
-        _setChangedIfCanEmit.emit({
-          type: _ISetChanged.SetChangedType.Added,
-          newItems: [value]
-        });
+        var propertyChangedIfCanEmit = this.propertyChangedIfCanEmit;
+
+        if (propertyChangedIfCanEmit) {
+          propertyChangedIfCanEmit.onPropertyChanged({
+            name: 'size',
+            oldValue: oldSize,
+            newValue: size
+          });
+        }
       }
 
-      var propertyChangedIfCanEmit = this.propertyChangedIfCanEmit;
-
-      if (propertyChangedIfCanEmit) {
-        propertyChangedIfCanEmit.onPropertyChanged({
-          name: 'size',
-          oldValue: oldSize,
-          newValue: size
-        });
-      }
+      return this;
     }
+  }, {
+    key: "delete",
+    value: function _delete(value) {
+      var _set = this._set;
+      var oldSize = _set.size;
 
-    return this;
-  };
+      this._set.delete(value);
 
-  _proto.delete = function _delete(value) {
-    var _set = this._set;
-    var oldSize = _set.size;
+      var size = _set.size;
 
-    this._set.delete(value);
+      if (size < oldSize) {
+        var _setChangedIfCanEmit = this._setChangedIfCanEmit;
 
-    var size = _set.size;
+        if (_setChangedIfCanEmit) {
+          _setChangedIfCanEmit.emit({
+            type: _ISetChanged.SetChangedType.Removed,
+            oldItems: [value]
+          });
+        }
 
-    if (size < oldSize) {
+        var propertyChangedIfCanEmit = this.propertyChangedIfCanEmit;
+
+        if (propertyChangedIfCanEmit) {
+          propertyChangedIfCanEmit.onPropertyChanged({
+            name: 'size',
+            oldValue: oldSize,
+            newValue: size
+          });
+        }
+
+        return true;
+      }
+
+      return false;
+    }
+  }, {
+    key: "clear",
+    value: function clear() {
+      var size = this.size;
+
+      if (size === 0) {
+        return;
+      }
+
       var _setChangedIfCanEmit = this._setChangedIfCanEmit;
 
       if (_setChangedIfCanEmit) {
+        var oldItems = (0, _from.default)(this);
+
+        this._set.clear();
+
         _setChangedIfCanEmit.emit({
           type: _ISetChanged.SetChangedType.Removed,
-          oldItems: [value]
+          oldItems: oldItems
         });
+      } else {
+        this._set.clear();
       }
 
       var propertyChangedIfCanEmit = this.propertyChangedIfCanEmit;
@@ -123,124 +170,95 @@ function (_SetChangedObject) {
       if (propertyChangedIfCanEmit) {
         propertyChangedIfCanEmit.onPropertyChanged({
           name: 'size',
-          oldValue: oldSize,
-          newValue: size
+          oldValue: size,
+          newValue: 0
         });
       }
+    } // region Unchanged Set methods
 
-      return true;
+  }, {
+    key: _Symbol$iterator,
+    value: function value() {
+      return (0, _getIterator2.default)(this._set);
     }
+  }, {
+    key: "entries",
+    value: function entries() {
+      var _context;
 
-    return false;
-  };
-
-  _proto.clear = function clear() {
-    var size = this.size;
-
-    if (size === 0) {
-      return;
+      return (0, _entries.default)(_context = this._set).call(_context);
     }
+  }, {
+    key: "forEach",
+    value: function forEach(callbackfn, thisArg) {
+      var _context2,
+          _this2 = this;
 
-    var _setChangedIfCanEmit = this._setChangedIfCanEmit;
-
-    if (_setChangedIfCanEmit) {
-      var oldItems = (0, _from.default)(this);
-
-      this._set.clear();
-
-      _setChangedIfCanEmit.emit({
-        type: _ISetChanged.SetChangedType.Removed,
-        oldItems: oldItems
-      });
-    } else {
-      this._set.clear();
-    }
-
-    var propertyChangedIfCanEmit = this.propertyChangedIfCanEmit;
-
-    if (propertyChangedIfCanEmit) {
-      propertyChangedIfCanEmit.onPropertyChanged({
-        name: 'size',
-        oldValue: size,
-        newValue: 0
+      (0, _forEach.default)(_context2 = this._set).call(_context2, function (k, v) {
+        return callbackfn.call(thisArg, k, v, _this2);
       });
     }
-  } // region Unchanged Set methods
-  ;
-
-  _proto[_Symbol$iterator] = function () {
-    return (0, _getIterator2.default)(this._set);
-  };
-
-  _proto.entries = function entries() {
-    var _context;
-
-    return (0, _entries.default)(_context = this._set).call(_context);
-  };
-
-  _proto.forEach = function forEach(callbackfn, thisArg) {
-    var _context2,
-        _this2 = this;
-
-    (0, _forEach.default)(_context2 = this._set).call(_context2, function (k, v) {
-      return callbackfn.call(thisArg, k, v, _this2);
-    });
-  };
-
-  _proto.has = function has(value) {
-    return this._set.has(value);
-  };
-
-  _proto.keys = function keys() {
-    var _context3;
-
-    return (0, _keys.default)(_context3 = this._set).call(_context3);
-  };
-
-  _proto.values = function values() {
-    var _context4;
-
-    return (0, _values.default)(_context4 = this._set).call(_context4);
-  } // endregion
-  // region IMergeable
-  ;
-
-  _proto._canMerge = function _canMerge(source) {
-    var _set = this._set;
-
-    if (_set.canMerge) {
-      return _set.canMerge(source);
+  }, {
+    key: "has",
+    value: function has(value) {
+      return this._set.has(value);
     }
+  }, {
+    key: "keys",
+    value: function keys() {
+      var _context3;
 
-    if (source.constructor === ObservableSet && this._set === source._set) {
-      return null;
+      return (0, _keys.default)(_context3 = this._set).call(_context3);
     }
+  }, {
+    key: "values",
+    value: function values() {
+      var _context4;
 
-    return source.constructor === Object || source[_toStringTag.default] === 'Set' || (0, _isArray.default)(source) || (0, _helpers.isIterable)(source);
-  };
+      return (0, _values.default)(_context4 = this._set).call(_context4);
+    } // endregion
+    // region IMergeable
 
-  _proto._merge = function _merge(merge, older, newer, preferCloneOlder, preferCloneNewer, options) {
-    var _this3 = this;
+  }, {
+    key: "_canMerge",
+    value: function _canMerge(source) {
+      var _set = this._set;
 
-    return (0, _mergeMaps.mergeMaps)(function (target, source) {
-      return (0, _mergeSets.createMergeSetWrapper)(target, source, function (arrayOrIterable) {
-        return (0, _set3.fillSet)(new _this3._set.constructor(), arrayOrIterable);
-      });
-    }, merge, this, older, newer, preferCloneOlder, preferCloneNewer, options);
-  } // endregion
-  // region ISerializable
-  ;
+      if (_set.canMerge) {
+        return _set.canMerge(source);
+      }
 
-  _proto.serialize = function serialize(_serialize) {
-    return {
-      set: _serialize(this._set)
-    };
-  };
+      if (source.constructor === ObservableSet && this._set === source._set) {
+        return null;
+      }
 
-  _proto.deSerialize = function deSerialize() {} // endregion
-  ;
+      return source.constructor === Object || source[_toStringTag.default] === 'Set' || (0, _isArray.default)(source) || (0, _helpers.isIterable)(source);
+    }
+  }, {
+    key: "_merge",
+    value: function _merge(merge, older, newer, preferCloneOlder, preferCloneNewer, options) {
+      var _this3 = this;
 
-  (0, _createClass2.default)(ObservableSet, [{
+      return (0, _mergeMaps.mergeMaps)(function (target, source) {
+        return (0, _mergeSets.createMergeSetWrapper)(target, source, function (arrayOrIterable) {
+          return (0, _set3.fillSet)(new _this3._set.constructor(), arrayOrIterable);
+        });
+      }, merge, this, older, newer, preferCloneOlder, preferCloneNewer, options);
+    } // endregion
+    // region ISerializable
+
+  }, {
+    key: "serialize",
+    value: function serialize(_serialize) {
+      return {
+        set: _serialize(this._set)
+      };
+    }
+  }, {
+    key: "deSerialize",
+    value: function deSerialize() {} // endregion
+
+  }, {
     key: "size",
     get: function get() {
       return this._set.size;

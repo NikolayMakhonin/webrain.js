@@ -6,6 +6,10 @@ exports.__esModule = true;
 exports.expandArray = expandArray;
 exports.TestVariants = exports.THIS = void 0;
 
+var _classCallCheck2 = _interopRequireDefault(require("@babel/runtime-corejs3/helpers/classCallCheck"));
+
+var _createClass2 = _interopRequireDefault(require("@babel/runtime-corejs3/helpers/createClass"));
+
 var _keys = _interopRequireDefault(require("@babel/runtime-corejs3/core-js-stable/instance/keys"));
 
 var _regenerator = _interopRequireDefault(require("@babel/runtime-corejs3/regenerator"));
@@ -154,79 +158,81 @@ function generateOptions(base, optionsVariants, exclude) {
 var TestVariants =
 /*#__PURE__*/
 function () {
-  function TestVariants() {}
+  function TestVariants() {
+    (0, _classCallCheck2.default)(this, TestVariants);
+  }
 
-  var _proto = TestVariants.prototype;
+  (0, _createClass2.default)(TestVariants, [{
+    key: "test",
+    value: function test(testCases) {
+      var optionsVariants = (0, _extends3.default)({}, this.baseOptionsVariants, {}, testCases);
+      var expected = testCases.expected;
+      var exclude = testCases.exclude;
+      delete optionsVariants.expected;
+      delete optionsVariants.exclude;
+      var actionsWithDescriptions = expandArray(optionsVariants.actions);
+      delete optionsVariants.actions; // tslint:disable-next-line:prefer-const
 
-  _proto.test = function test(testCases) {
-    var optionsVariants = (0, _extends3.default)({}, this.baseOptionsVariants, {}, testCases);
-    var expected = testCases.expected;
-    var exclude = testCases.exclude;
-    delete optionsVariants.expected;
-    delete optionsVariants.exclude;
-    var actionsWithDescriptions = expandArray(optionsVariants.actions);
-    delete optionsVariants.actions; // tslint:disable-next-line:prefer-const
+      var variants = generateOptions({}, optionsVariants, exclude); // variants = Array.from(variants)
 
-    var variants = generateOptions({}, optionsVariants, exclude); // variants = Array.from(variants)
+      for (var _iterator3 = actionsWithDescriptions, _isArray3 = (0, _isArray6.default)(_iterator3), _i3 = 0, _iterator3 = _isArray3 ? _iterator3 : (0, _getIterator2.default)(_iterator3);;) {
+        var _ref3;
 
-    for (var _iterator3 = actionsWithDescriptions, _isArray3 = (0, _isArray6.default)(_iterator3), _i3 = 0, _iterator3 = _isArray3 ? _iterator3 : (0, _getIterator2.default)(_iterator3);;) {
-      var _ref3;
-
-      if (_isArray3) {
-        if (_i3 >= _iterator3.length) break;
-        _ref3 = _iterator3[_i3++];
-      } else {
-        _i3 = _iterator3.next();
-        if (_i3.done) break;
-        _ref3 = _i3.value;
-      }
-
-      var actionsWithDescription = _ref3;
-      var actions = actionsWithDescription.actions,
-          description = actionsWithDescription.description;
-
-      if (typeof actionsWithDescription === 'function') {
-        actions = [actionsWithDescription];
-        description = '';
-      }
-
-      for (var _iterator4 = expandArray(actions), _isArray4 = (0, _isArray6.default)(_iterator4), _i4 = 0, _iterator4 = _isArray4 ? _iterator4 : (0, _getIterator2.default)(_iterator4);;) {
-        var _ref4;
-
-        if (_isArray4) {
-          if (_i4 >= _iterator4.length) break;
-          _ref4 = _iterator4[_i4++];
+        if (_isArray3) {
+          if (_i3 >= _iterator3.length) break;
+          _ref3 = _iterator3[_i3++];
         } else {
-          _i4 = _iterator4.next();
-          if (_i4.done) break;
-          _ref4 = _i4.value;
+          _i3 = _iterator3.next();
+          if (_i3.done) break;
+          _ref3 = _i3.value;
         }
 
-        var action = _ref4;
+        var actionsWithDescription = _ref3;
+        var actions = actionsWithDescription.actions,
+            description = actionsWithDescription.description;
 
-        for (var _iterator5 = variants, _isArray5 = (0, _isArray6.default)(_iterator5), _i5 = 0, _iterator5 = _isArray5 ? _iterator5 : (0, _getIterator2.default)(_iterator5);;) {
-          var _ref5;
+        if (typeof actionsWithDescription === 'function') {
+          actions = [actionsWithDescription];
+          description = '';
+        }
 
-          if (_isArray5) {
-            if (_i5 >= _iterator5.length) break;
-            _ref5 = _iterator5[_i5++];
+        for (var _iterator4 = expandArray(actions), _isArray4 = (0, _isArray6.default)(_iterator4), _i4 = 0, _iterator4 = _isArray4 ? _iterator4 : (0, _getIterator2.default)(_iterator4);;) {
+          var _ref4;
+
+          if (_isArray4) {
+            if (_i4 >= _iterator4.length) break;
+            _ref4 = _iterator4[_i4++];
           } else {
-            _i5 = _iterator5.next();
-            if (_i5.done) break;
-            _ref5 = _i5.value;
+            _i4 = _iterator4.next();
+            if (_i4.done) break;
+            _ref4 = _i4.value;
           }
 
-          var _variant2 = _ref5;
-          this.testVariant((0, _extends3.default)({}, _variant2, {
-            action: action,
-            description: description,
-            expected: expected
-          }));
+          var action = _ref4;
+
+          for (var _iterator5 = variants, _isArray5 = (0, _isArray6.default)(_iterator5), _i5 = 0, _iterator5 = _isArray5 ? _iterator5 : (0, _getIterator2.default)(_iterator5);;) {
+            var _ref5;
+
+            if (_isArray5) {
+              if (_i5 >= _iterator5.length) break;
+              _ref5 = _iterator5[_i5++];
+            } else {
+              _i5 = _iterator5.next();
+              if (_i5.done) break;
+              _ref5 = _i5.value;
+            }
+
+            var _variant2 = _ref5;
+            this.testVariant((0, _extends3.default)({}, _variant2, {
+              action: action,
+              description: description,
+              expected: expected
+            }));
+          }
         }
       }
     }
-  };
-
+  }]);
   return TestVariants;
 }();
 
