@@ -1018,7 +1018,9 @@ describe('common > extensions > merge > ObjectMerger', function () {
         testMergeSets([o => fillSet(new Set(), o), o => fillSet(new ObservableSet(new Set()), o)], [o => fillSet(new Set(), o), o => fillSet(new ObservableSet(new Set()), o)], [0, func, void 0], [0, func, object], [0, 1, void 0, object], [0, 1, object]);
       });
       it('ArraySet', function () {
-        testMergeSets([o => fillSet(new ArraySet(), o), o => fillSet(new ObservableSet(new ArraySet()), o)], [o => fillSet(new Set(), o), o => fillSet(new ObservableSet(new Set()), o), o => fillSet(new ArraySet(), o), o => fillSet(new ObservableSet(new ArraySet()), o)], [func2, func, func4], [func2, func, object], [func2, func3, func4, object], [func2, func3, object]);
+        testMergeSets([o => fillSet(new ArraySet(), o), o => fillSet(new ObservableSet(new ArraySet()), o) // o => fillSet(new ObjectHashSet(), o), o => fillSet(new ObservableSet(new ObjectHashSet()), o),
+        ], [o => fillSet(new Set(), o), o => fillSet(new ObservableSet(new Set()), o), o => fillSet(new ArraySet(), o), o => fillSet(new ObservableSet(new ArraySet()), o) // o => fillSet(new ObjectHashSet(), o), o => fillSet(new ObservableSet(new ObjectHashSet()), o),
+        ], [func2, func, func4], [func2, func, object], [func2, func3, func4, object], [func2, func3, object]);
       });
       it('ObjectSet', function () {
         testMergeSets([o => fillSet(new ObjectSet(), o), o => fillSet(new ObservableSet(new ObjectSet()), o), o => fillSet(new SortedList({

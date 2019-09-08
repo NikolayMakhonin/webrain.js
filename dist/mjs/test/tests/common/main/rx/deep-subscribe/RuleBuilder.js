@@ -190,7 +190,8 @@ describe('common > main > rx > deep-subscribe > RuleBuilder', function () {
 
           for (const property of subscribeProperties) {
             remove(object, property, false);
-            assert.deepStrictEqual(subscribedItems, ['-value_' + property]);
+            assert.deepStrictEqual(subscribedItems, ['-value_' + property // '+undefined',
+            ]);
             subscribedItems = [];
           }
 

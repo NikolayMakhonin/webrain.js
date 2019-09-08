@@ -2,7 +2,6 @@ import { ThenableSync } from '../../async/ThenableSync';
 import { typeToDebugString } from '../../helpers/helpers';
 import { getObjectUniqueId } from '../../helpers/object-unique-id';
 import { TypeMetaCollectionWithId } from '../TypeMeta';
-// region SerializerVisitor
 export class SerializerVisitor {
   constructor(typeMeta) {
     this._typeMeta = typeMeta;
@@ -524,9 +523,9 @@ export function deSerializePrimitiveAsObject(deSerialize, serializedValue, value
 }
 const primitiveAsObjectSerializer = {
   serialize: serializePrimitiveAsObject,
-  deSerialize: deSerializePrimitiveAsObject // @ts-ignore
+  deSerialize: deSerializePrimitiveAsObject
+}; // @ts-ignore
 
-};
 registerSerializer(String, {
   uuid: '96104fd7d6f84a32b8f2feaa4f3666d8',
   serializer: primitiveAsObjectSerializer

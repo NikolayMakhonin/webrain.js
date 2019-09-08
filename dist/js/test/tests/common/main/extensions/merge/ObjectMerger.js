@@ -1169,7 +1169,8 @@ describe('common > extensions > merge > ObjectMerger', function () {
           return (0, _set2.fillSet)(new _ArraySet.ArraySet(), o);
         }, function (o) {
           return (0, _set2.fillSet)(new _ObservableSet.ObservableSet(new _ArraySet.ArraySet()), o);
-        }], [function (o) {
+        } // o => fillSet(new ObjectHashSet(), o), o => fillSet(new ObservableSet(new ObjectHashSet()), o),
+        ], [function (o) {
           return (0, _set2.fillSet)(new _set.default(), o);
         }, function (o) {
           return (0, _set2.fillSet)(new _ObservableSet.ObservableSet(new _set.default()), o);
@@ -1177,7 +1178,8 @@ describe('common > extensions > merge > ObjectMerger', function () {
           return (0, _set2.fillSet)(new _ArraySet.ArraySet(), o);
         }, function (o) {
           return (0, _set2.fillSet)(new _ObservableSet.ObservableSet(new _ArraySet.ArraySet()), o);
-        }], [func2, func, func4], [func2, func, object], [func2, func3, func4, object], [func2, func3, object]);
+        } // o => fillSet(new ObjectHashSet(), o), o => fillSet(new ObservableSet(new ObjectHashSet()), o),
+        ], [func2, func, func4], [func2, func, object], [func2, func3, func4, object], [func2, func3, object]);
       });
       it('ObjectSet', function () {
         testMergeSets([function (o) {

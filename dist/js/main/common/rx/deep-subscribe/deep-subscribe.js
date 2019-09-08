@@ -23,8 +23,6 @@ var _helpers = require("../../helpers/helpers");
 var _rulesSubscribe = require("./rules-subscribe");
 
 /* tslint:disable */
-// const UNSUBSCRIBE_PROPERTY_PREFIX = Math.random().toString(36)
-// let nextUnsubscribePropertyId = 0
 function catchHandler(ex, propertiesPath) {
   if (ex.propertiesPath) {
     throw ex;

@@ -392,9 +392,9 @@ describe('common > extensions > serialization > serializers', function () {
     sortedList.add(sortedList);
     var serialized = serializeValue(sortedList);
     var result = deSerializeValue(serialized);
-    assert.notStrictEqual(result, sortedList);
-    console.log(sortedList);
-    console.log(result);
+    assert.notStrictEqual(result, sortedList); // console.log(sortedList)
+    // console.log(result)
+
     assertDeepEqualExt(result, sortedList);
   });
   it('complex object', function () {

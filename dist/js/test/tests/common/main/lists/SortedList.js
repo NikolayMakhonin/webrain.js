@@ -1957,7 +1957,15 @@ describe('common > main > lists > SortedList', function () {
       return {
         actions: [function (list) {
           return list.removeDuplicates(withoutShift);
-        }],
+        } // !withoutShift && (list => {
+        // 	list.notAddIfExists = true
+        // 	const size = list.size
+        // 	for (let i = size - 1; i >= 0; i--) {
+        // 		list.set(i, list.get(i))
+        // 	}
+        // 	return size - list.size
+        // }),
+        ],
         description: "removeDuplicates(" + withoutShift + ")\n"
       };
     }

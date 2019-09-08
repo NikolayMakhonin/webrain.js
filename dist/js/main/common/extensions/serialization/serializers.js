@@ -60,7 +60,6 @@ var _marked =
 /*#__PURE__*/
 _regenerator.default.mark(deSerializeIterableOrdered);
 
-// region SerializerVisitor
 var SerializerVisitor =
 /*#__PURE__*/
 function () {
@@ -730,9 +729,9 @@ function deSerializePrimitiveAsObject(deSerialize, serializedValue, valueFactory
 
 var primitiveAsObjectSerializer = {
   serialize: serializePrimitiveAsObject,
-  deSerialize: deSerializePrimitiveAsObject // @ts-ignore
+  deSerialize: deSerializePrimitiveAsObject
+}; // @ts-ignore
 
-};
 registerSerializer(String, {
   uuid: '96104fd7d6f84a32b8f2feaa4f3666d8',
   serializer: primitiveAsObjectSerializer

@@ -1,23 +1,4 @@
 import { HasSubscribersSubject } from '../subjects/hasSubscribers';
-// function expandAndDistinct(inputItems: any, output: string[] = [], map: any = {}): string[] {
-// 	if (inputItems == null) {
-// 		return output
-// 	}
-//
-// 	if (Array.isArray(inputItems)) {
-// 		for (const item of inputItems) {
-// 			expandAndDistinct(item, output, map)
-// 		}
-// 		return output
-// 	}
-//
-// 	if (!map[inputItems]) {
-// 		map[inputItems] = true
-// 		output[output.length] = inputItems
-// 	}
-//
-// 	return output
-// }
 export class PropertyChangedSubject extends HasSubscribersSubject {
   constructor(object) {
     super();

@@ -372,7 +372,8 @@ describe('common > main > rx > deep-subscribe > RuleBuilder', function () {
             var _property5 = _ref6;
             remove(object, _property5, false);
 
-            _Assert.assert.deepStrictEqual(subscribedItems, ['-value_' + _property5]);
+            _Assert.assert.deepStrictEqual(subscribedItems, ['-value_' + _property5 // '+undefined',
+            ]);
 
             subscribedItems = [];
           }
