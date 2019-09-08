@@ -135,6 +135,7 @@ module.exports.configCommon = function (config) {
 			'karma-edge-launcher',
 			'karma-ie-launcher',
 			'karma-phantomjs-launcher',
+			'karma-electron',
 
 			'karma-mocha',
 			'karma-rollup-preprocessor',
@@ -168,6 +169,7 @@ module.exports.configCommon = function (config) {
 			'E2E_Chromium39',
 			'E2E_Chromium44',
 			'E2E_ChromeLatest',
+			'Electron',
 		],
 
 		// Firefox:
@@ -302,6 +304,7 @@ function configDetectBrowsers(config) {
 
 						return availableBrowser
 					})
+					.concat('Electron')
 			}
 		},
 
