@@ -1,6 +1,6 @@
 <component name="ProjectRunConfigurationManager">
   <configuration default="false" name="Tests" type="JavaScriptTestRunnerKarma">
-    <config-file value="$PROJECT_DIR$/env/karma/karma.conf.tests.js" />
+    <config-file value="$PROJECT_DIR$/env/karma/configs/tests.js" />
     <karma-package-dir value="$PROJECT_DIR$/node_modules/karma" />
     <working-directory value="$PROJECT_DIR$" />
     <node-interpreter value="node" />

@@ -1,7 +1,7 @@
 /* eslint-disable prefer-template,no-sync,object-property-newline */
 // Karma configuration
-const helpers = require('./karma.conf.helpers')
-const {fileExtensions} = require('../common/helpers')
+const helpers = require('../helpers')
+const {fileExtensions} = require('../../common/helpers')
 
 module.exports = function (config) {
 	helpers.configCommon(config)

@@ -1,6 +1,6 @@
 const babel = require('rollup-plugin-babel')
-const babelConfigMinimal = require('../babel/.babelrc-minimal')
-const babelConfigBrowser = require('../babel/.babelrc-browser')
+const babelConfigMinimal = require('../babel/configs/minimal')
+const babelConfigBrowser = require('../babel/configs/browser')
 const {fileExtensions} = require('../common/helpers')
 
 const babelCommon = {

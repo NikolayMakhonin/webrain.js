@@ -1,20 +1,12 @@
 /* eslint-disable prefer-template,no-sync,object-property-newline */
 // Karma configuration
-const helpers = require('./karma.conf.helpers')
-const {fileExtensions} = require('../common/helpers')
+const helpers = require('../helpers')
+const {fileExtensions} = require('../../common/helpers')
 
 module.exports = function (config) {
 	helpers.configCommon(config)
 
 	config.set({
-		browsers: [
-			// 'E2E_Chromium33',
-			// 'E2E_Chromium39',
-			// 'E2E_Chromium44',
-			// 'E2E_ChromeLatest',
-			'ChromeDev',
-		],
-
 		browserNoActivityTimeout: 300000,
 		browserDisconnectTimeout: 300000,
 		// browserSocketTimeout: 900000,

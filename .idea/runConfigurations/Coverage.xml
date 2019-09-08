@@ -1,6 +1,6 @@
 <component name="ProjectRunConfigurationManager">
   <configuration default="false" name="Coverage" type="JavaScriptTestRunnerKarma">
-    <config-file value="$PROJECT_DIR$/env/karma/karma.conf.coverage.js" />
+    <config-file value="$PROJECT_DIR$/env/karma/configs/coverage.js" />
     <karma-package-dir value="$PROJECT_DIR$/node_modules/karma" />
     <working-directory value="$PROJECT_DIR$" />
     <node-interpreter value="node" />
