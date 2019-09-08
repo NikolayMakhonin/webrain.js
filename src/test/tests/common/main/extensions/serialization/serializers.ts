@@ -339,8 +339,8 @@ describe('common > extensions > serialization > serializers', function() {
 		const result = deSerializeValue(serialized)
 
 		assert.notStrictEqual(result, sortedList)
-		console.log(sortedList)
-		console.log(result)
+		// console.log(sortedList)
+		// console.log(result)
 		assertDeepEqualExt(result, sortedList)
 	})
 
