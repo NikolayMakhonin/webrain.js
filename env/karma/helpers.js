@@ -91,7 +91,7 @@ module.exports.configCommon = function (config) {
 			...[
 				// Check if polyfill load first and fix Uint8Array bug
 				servedPattern(writeTextFile(
-					path.resolve('./tmp/karma/polyfill-before.js'),
+					'tmp/karma/polyfill-before.js',
 					"'use strict'; \n"
 					+ '(function () {\n'
 					// + "\tif (typeof _babelPolyfill !== 'undefined') return;\n"
@@ -115,7 +115,7 @@ module.exports.configCommon = function (config) {
 				// servedPattern(require.resolve('../../static/polyfill')),
 				// servedPattern(require.resolve('@babel/polyfill/dist/polyfill')), // For IE / PhantomJS
 				servedPattern(writeTextFile(
-					path.resolve('./tmp/karma/polyfill-after.js'),
+					'tmp/karma/polyfill-after.js',
 					"console.log('karma polyfill activated!');"
 				))
 			]
