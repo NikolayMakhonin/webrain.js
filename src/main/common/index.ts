@@ -10,6 +10,8 @@ export {createFunction} from './helpers/helpers'
 // Interfaces:
 import {ThenableOrIteratorOrValue as _ThenableOrIteratorOrValue} from './async/async'
 import {ICalcProperty as _ICalcProperty} from './rx/object/properties/contracts'
+import {IPropertyChangedSubject as _IPropertyChangedSubject} from './rx/object/IPropertyChanged'
 
+export type IPropertyChangedSubject = _IPropertyChangedSubject
 export type ThenableOrIteratorOrValue<T> = _ThenableOrIteratorOrValue<T>
 export type ICalcProperty<TValue> = _ICalcProperty<TValue>

@@ -13,7 +13,7 @@
     "dist/**",
     "env/mocha/*"
   ],
-  "types": "dist/types/main/browser/index.d.ts",
+  "types": "dist/types/browser/index.d.ts",
   "main": "dist/js/main/browser/index.js",
   "jsnext:main": "dist/mjs/main/browser/index.js",
   "module": "dist/mjs/main/browser/index.js",
