@@ -81,7 +81,7 @@ module.exports.watchPatterns = function (...globbyPatterns) {
 module.exports.configCommon = function (config) {
 	config.set({
 		// base path that will be used to resolve all patterns (eg. files, exclude)
-		basePath: '../..',
+		basePath: process.cwd(),
 
 		// frameworks to use
 		// available frameworks: https://npmjs.org/browse/keyword/karma-adapter
