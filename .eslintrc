@@ -1,5 +1,9 @@
 {
 	"extends": ["pro"],
+	"rules": {
+		"object-curly-newline": "off",
+		"function-paren-newline": "off"
+	},
 
 	"env": {
 		"node": true,
