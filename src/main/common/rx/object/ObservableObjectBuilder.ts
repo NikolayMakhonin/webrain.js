@@ -15,6 +15,11 @@ export interface IReadableFieldOptions<T> extends IWritableFieldOptions {
 	factory?: (initValue: T) => T
 }
 
+export interface IUpdatableFieldOptions<T> extends IWritableFieldOptions {
+	factory?: (initValue: T) => T
+	update?: (currentValue: T, value: any) => T|void
+}
+
 export class ObservableObjectBuilder<TObject extends ObservableObject> {
 	public object: TObject
 
@@ -75,12 +80,15 @@ export class ObservableObjectBuilder<TObject extends ObservableObject> {
 		options?: IReadableFieldOptions<T>,
 		initValue?: T,
 	): this & { object: { readonly [newProp in Name]: T } } {
-		const hidden = options && options.hidden
+		return this.updatable(name, options, initValue)
+	}
 
-		const setOptions = {
-			...(options && options.setOptions),
-			suppressPropertyChanged: true,
-		}
+	public updatable<T, Name extends string | number>(
+		name: Name,
+		options?: IUpdatableFieldOptions<T>,
+		initValue?: T,
+	): this & { object: { [newProp in Name]: T } } {
+		const hidden = options && options.hidden
 
 		const {object} = this
 
@@ -95,43 +103,88 @@ export class ObservableObjectBuilder<TObject extends ObservableObject> {
 			factory = o => o
 		}
 
+		const update = options && options.update
+
 		// optimization
 		const getValue = createFunction('o', `return o.__fields["${name}"]`) as any
+		let setValue
+		if (update || factory) {
+			setValue = createFunction('o', 'v', `o.__fields["${name}"] = v`) as any
+		}
+
+		let setOnUpdate
+		if (update) {
+			const setOptions = options && options.setOptions
+			setOnUpdate = setOptions
+				? _setExt.bind(null, name, getValue, setValue, setOptions)
+				: _set.bind(null, name, getValue, setValue)
+		}
+
+		let setOnInit
+		if (factory) {
+			const setOptions = {
+				...(options && options.setOptions),
+				suppressPropertyChanged: true,
+			}
+			setOnInit = setOptions
+				? _setExt.bind(null, name, getValue, setValue, setOptions)
+				: _set.bind(null, name, getValue, setValue)
+		}
 
 		const createInstanceProperty = instance => {
-			Object.defineProperty(instance, name, {
+			const attributes: any = {
 				configurable: true,
 				enumerable: !hidden,
 				get(this: TObject) {
 					return getValue(this)
 				},
-			})
+			}
+			if (update) {
+				attributes.set = function(value) {
+					const currentValue = getValue(this)
+					const newValue = update.call(this, currentValue, value)
+					if (typeof newValue !== 'undefined') {
+						setOnUpdate(this, newValue)
+					}
+				}
+			}
+			Object.defineProperty(instance, name, attributes)
 		}
 
 		if (factory) {
-			// optimization
-			const setValue = createFunction('o', 'v', `o.__fields["${name}"] = v`) as any
-			const set = setOptions
-				? _setExt.bind(null, name, getValue, setValue, setOptions)
-				: _set.bind(null, name, getValue, setValue)
+			const init = function() {
+				const factoryValue = factory.call(this, initValue)
+				createInstanceProperty(this)
+				return factoryValue
+			}
 
-			Object.defineProperty(object, name, {
+			const initAttributes: any = {
 				configurable: true,
 				enumerable: !hidden,
-				get(this: TObject) {
-					const factoryValue = factory.call(this, initValue)
-					createInstanceProperty(this)
-
+				get() {
+					const factoryValue = init.call(this)
 					if (typeof factoryValue !== 'undefined') {
 						const oldValue = getValue(this)
 						if (factoryValue !== oldValue) {
-							set(this, factoryValue)
+							setOnInit(this, factoryValue)
 						}
 					}
-
 					return factoryValue
 				},
-			})
+			}
+			if (update) {
+				initAttributes.set = function(this: TObject, value) {
+					const factoryValue = init.call(this)
+					const newValue = update.call(this, factoryValue, value)
+					if (typeof newValue !== 'undefined') {
+						const oldValue = getValue(this)
+						if (newValue !== oldValue) {
+							setOnInit(this, newValue)
+						}
+					}
+				}
+			}
+			Object.defineProperty(object, name, initAttributes)
 
 			if (__fields) {
 				const oldValue = __fields[name]

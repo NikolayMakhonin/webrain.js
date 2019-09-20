@@ -6,6 +6,7 @@ export {calcPropertyFactory} from './rx/object/properties/CalcPropertyBuilder'
 export {connectorFactory} from './rx/object/properties/ConnectorBuilder'
 export {Property} from './rx/object/properties/Property'
 export {createFunction} from './helpers/helpers'
+export {CalcObjectDebugger} from './rx/object/properties/CalcObjectDebugger'
 
 // Interfaces:
 import {ThenableOrIteratorOrValue as _ThenableOrIteratorOrValue} from './async/async'

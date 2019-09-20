@@ -168,6 +168,15 @@ export class RuleBuilder<TObject = any, TValueKeys extends string | number = nev
 	}
 
 	/**
+	 * valuePropertyNames - Object property, Array index
+	 */
+	public v<TValue = PropertyValueOf<TObject>>(
+		...propertiesNames: string[]
+	): RuleBuilder<TValue, TValueKeys> {
+		return this.valuePropertyNames<TValue>(...propertiesNames)
+	}
+
+	/**
 	 * Object property, Array index
 	 */
 	public propertyName<TKeys extends keyof TObject, TValue = ObjectValueOf<TObject, TKeys>>(
@@ -194,6 +203,20 @@ export class RuleBuilder<TObject = any, TValueKeys extends string | number = nev
 			new RuleSubscribeObjectPropertyNames(...propertiesNames),
 			propertiesNames.join('|'),
 		)
+	}
+
+	/**
+	 * propertyNames
+	 * @param propertiesNames
+	 */
+	public p<
+		TKeys extends keyof TObject | ANY,
+		TValue = ObjectValueOf<TObject, TKeys extends ANY ? any : TKeys>
+	>(
+		...propertiesNames: TKeys[]
+	): RuleBuilder<TValue, TValueKeys>
+	public p<TValue>(...propertiesNames: string[]): RuleBuilder<TValue, TValueKeys> {
+		return this.propertyNames(...propertiesNames as any)
 	}
 
 	/**
