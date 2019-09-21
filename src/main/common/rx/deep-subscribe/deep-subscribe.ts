@@ -201,7 +201,7 @@ function subscribeNext<TValue>(
 					+ `Value property path: ${(propertiesPath ? propertiesPath() + '.' : '')
 						+ (debugPropertyName == null ? '' : debugPropertyName + '(' + ruleDescription + ')')}`)
 			}
-			return null
+			return null // TODO: return () => subscribeValue(void 0, null, debugPropertyName)
 		}
 
 		const itemUniqueId = getObjectUniqueId(value as any)

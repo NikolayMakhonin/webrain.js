@@ -20,7 +20,8 @@ describe('common > main > rx > properties > CalcObjectBuilder', function() {
 		public valuePrototype: string
 		public calc1: ICalcProperty<Date>
 		public calc2: ClassSync
-		public source: any = 123
+		public source1: any = 123
+		public source2: any
 	}
 
 	class ClassAsync extends ClassSync {
@@ -30,10 +31,11 @@ describe('common > main > rx > properties > CalcObjectBuilder', function() {
 	ClassSync.prototype.valuePrototype = 'Value Prototype'
 
 	new CalcObjectBuilder(ClassSync.prototype)
-		.writable('source')
+		.writable('source1')
+		.writable('source2')
 		.calc('calc1',
 			connectorFactory(c => c
-				.connect('connectValue1', b => b.path(o => o['@lastOrWait'].source['@wait']))),
+				.connect('connectValue1', b => b.path(o => o['@lastOrWait'].source1['@wait']))),
 			calcPropertyFactory(
 				d => d.invalidateOn(b => b.propertyAll()),
 				(input, property: Property<Date, number>): ThenableOrIteratorOrValue<void> => {
@@ -43,7 +45,8 @@ describe('common > main > rx > properties > CalcObjectBuilder', function() {
 			),
 		)
 		.calc('calc2',
-			connectorFactory(c => c),
+			connectorFactory(c => c
+				.connect('connectValue1', b => b.path(o => o['@lastOrWait'].source2['@wait']))),
 			calcPropertyFactory(
 				d => d.invalidateOn(b => b.propertyAll()),
 				(input, property: Property<ClassSync>): ThenableOrIteratorOrValue<void> => {
@@ -56,7 +59,7 @@ describe('common > main > rx > properties > CalcObjectBuilder', function() {
 	new CalcObjectBuilder(ClassAsync.prototype)
 		.calc('calc1',
 			connectorFactory(c => c
-				.connect('connectValue1', b => b.path(o => o['@lastOrWait'].source['@wait']))),
+				.connect('connectValue1', b => b.path(o => o['@lastOrWait'].source1['@wait']))),
 			calcPropertyFactory(
 				d => d.invalidateOn(b => b.propertyAll()),
 				function *(input, property: Property<Date, number>): ThenableOrIteratorOrValue<void> {
@@ -66,7 +69,8 @@ describe('common > main > rx > properties > CalcObjectBuilder', function() {
 			),
 		)
 		.calc('calc2',
-			connectorFactory(c => c),
+			connectorFactory(c => c
+				.connect('connectValue1', b => b.path(o => o['@lastOrWait'].source2['@wait']))),
 			calcPropertyFactory(
 				d => d.invalidateOn(b => b.propertyAll()),
 				function *(input, property: Property<ClassSync>): ThenableOrIteratorOrValue<void> {
@@ -239,8 +243,13 @@ describe('common > main > rx > properties > CalcObjectBuilder', function() {
 		assert.deepStrictEqual(values, [new Date(123)])
 		values = []
 
-		object.source = 234
+		object.source1 = 234
 		assert.deepStrictEqual(values, [new Date(234)])
+		values = []
+
+		object.source2 = 1
+		object.source1 = 345
+		assert.deepStrictEqual(values, [new Date(345)])
 	})
 
 	it('deepSubscribe calc circular async', async function() {
@@ -256,7 +265,7 @@ describe('common > main > rx > properties > CalcObjectBuilder', function() {
 		assert.deepStrictEqual(values, [new Date(123)])
 		values = []
 
-		object.source = 234
+		object.source1 = 234
 		assert.deepStrictEqual(values.length, 1)
 		assert.deepStrictEqual(await values[0], new Date(234))
 	})

@@ -7,6 +7,25 @@ import {createObject, IObject, Tester} from './helpers/Tester'
 describe('common > main > rx > deep-subscribe > deep-subscribe', function() {
 	const check = createObject()
 
+	it('simple', function() {
+		const object1 = createObject()
+		new Tester(
+			{
+				object: object1.observableObject,
+				immediate: true,
+			},
+			b => b.any(
+				b2 => b2.p('valueObject'),
+				b2 => b2.mapKey('valueObject'),
+			),
+		)
+			.subscribe(o => [o.valueObject])
+			.unsubscribe(o => [o.valueObject])
+			.subscribe(o => [o.valueObject])
+			.change(o => delete o.valueObject, [], [])
+			.unsubscribe([object1.valueObject])
+	})
+
 	it('object', function() {
 		const object1 = createObject()
 		new Tester(
