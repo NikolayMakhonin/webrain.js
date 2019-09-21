@@ -22,7 +22,10 @@ function forEachSimple<TItem>(iterable: Iterable<TItem>, callbackfn: (item: TIte
 function getFirstExistProperty(object: object, propertyNames: string[]) {
 	for (let i = 0, len = propertyNames.length; i < len; i++) {
 		const propertyName = propertyNames[i]
-		if (Object.prototype.hasOwnProperty.call(object, propertyName)) {
+		if (allowSubscribePrototype
+			? propertyName in object
+			: Object.prototype.hasOwnProperty.call(object, propertyName)
+		) {
 			return propertyName
 		}
 	}
@@ -36,8 +39,12 @@ function subscribeObjectValue<TValue>(
 	subscribeItem: (item: TValue, debugPropertyName: string) => void,
 	unsubscribeItem: (item: TValue, debugPropertyName: string) => void,
 ): IUnsubscribe {
-	if (!(object instanceof Object)
-		|| object.constructor === Object
+	if (!(object instanceof Object)) {
+		subscribeItem(object as any, null)
+		return null
+	}
+
+	if (object.constructor === Object
 		|| Array.isArray(object)
 	) {
 		subscribeItem(object as any, null)
@@ -49,7 +56,10 @@ function subscribeObjectValue<TValue>(
 	let subscribePropertyName
 
 	const getSubscribePropertyName = () => {
-		if (!Object.prototype.hasOwnProperty.call(object, VALUE_PROPERTY_DEFAULT)) {
+		if (allowSubscribePrototype
+			? !(VALUE_PROPERTY_DEFAULT in object)
+			: !Object.prototype.hasOwnProperty.call(object, VALUE_PROPERTY_DEFAULT)
+		) {
 			return null
 		}
 
@@ -167,23 +177,23 @@ function subscribeObject<TValue>(
 	}
 
 	let unsubscribe
-	if (propertyNames !== VALUE_PROPERTY_DEFAULT && hasDefaultProperty(object)) {
-		unsubscribe = subscribeDefaultProperty(
-			object,
-			immediateSubscribe,
-			item => subscribeObject(
-				propertyNames,
-				propertyPredicate,
-				item as any,
-				immediateSubscribe,
-				subscribeItem,
-				unsubscribeItem),
-		)
-
-		if (unsubscribe) {
-			return unsubscribe
-		}
-	}
+	// if (propertyNames !== VALUE_PROPERTY_DEFAULT && hasDefaultProperty(object)) {
+	// 	unsubscribe = subscribeDefaultProperty(
+	// 		object,
+	// 		immediateSubscribe,
+	// 		item => subscribeObject(
+	// 			propertyNames,
+	// 			propertyPredicate,
+	// 			item as any,
+	// 			immediateSubscribe,
+	// 			subscribeItem,
+	// 			unsubscribeItem),
+	// 	)
+	//
+	// 	if (unsubscribe) {
+	// 		return unsubscribe
+	// 	}
+	// }
 
 	const {propertyChanged} = object
 

@@ -8,18 +8,18 @@ export function calcPropertyFactory<
 	TValue, TInput, TMergeSource,
 	TTarget extends CalcProperty<TValue, TInput, TMergeSource> = CalcProperty<TValue, TInput, TMergeSource>,
 >(
+	buildDependencies: null | ((
+		dependenciesBuilder: CalcPropertyDependenciesBuilder<CalcProperty<TValue, TInput, TMergeSource>, TInput>,
+	) => void),
 	calcFunc: CalcPropertyFunc<TInput, TValue, TMergeSource>,
 	calcOptions?: IDeferredCalcOptions,
 	valueOptions?: IPropertyOptions<TValue, TMergeSource>,
 	initValue?: TValue,
-	buildDependencies?: (
-		dependenciesBuilder: CalcPropertyDependenciesBuilder<CalcProperty<TValue, TInput, TMergeSource>, TInput>,
-	) => void,
 ): () => CalcProperty<TValue, TInput, TMergeSource> {
 	let dependencies
 	if (buildDependencies) {
 		const dependenciesBuilder = new CalcPropertyDependenciesBuilder<TTarget, TInput>(
-			b => b.propertyName('input'),
+			b => b.valuePropertyName('input'),
 		)
 		buildDependencies(dependenciesBuilder)
 		dependencies = dependenciesBuilder.dependencies

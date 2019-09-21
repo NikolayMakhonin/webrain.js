@@ -89,7 +89,9 @@ export class ConnectorBuilder<
 				hidden: options && options.hidden,
 				// tslint:disable-next-line:no-shadowed-variable
 				factory(this: ObservableObject, initValue: TValue) {
-					baseSetValue.call(this, {value: initValue, parent: null, propertyName: null})
+					if (writable) {
+						baseSetValue.call(this, {value: initValue, parent: null, propertyName: null})
+					}
 
 					let setVal = (obj, value: TValue): void => {
 						if (typeof value !== 'undefined') {
