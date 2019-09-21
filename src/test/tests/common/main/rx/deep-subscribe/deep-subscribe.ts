@@ -7,7 +7,7 @@ import {createObject, IObject, Tester} from './helpers/Tester'
 describe('common > main > rx > deep-subscribe > deep-subscribe', function() {
 	const check = createObject()
 
-	it('simple', function() {
+	it('unsubscribe leaf', function() {
 		const object1 = createObject()
 		new Tester(
 			{
@@ -16,13 +16,58 @@ describe('common > main > rx > deep-subscribe > deep-subscribe', function() {
 			},
 			b => b.any(
 				b2 => b2.p('valueObject'),
-				b2 => b2.mapKey('valueObject'),
+				b2 => b2.p('map2').mapKey('valueObject'),
 			),
 		)
 			.subscribe(o => [o.valueObject])
 			.unsubscribe(o => [o.valueObject])
 			.subscribe(o => [o.valueObject])
-			.change(o => delete o.valueObject, [], [])
+			.change(o => o.valueObject = void 0, [], [])
+			.unsubscribe([object1.valueObject])
+	})
+
+	it('unsubscribe repeat', function() {
+		new Tester(
+			{
+				object: createObject().object,
+				immediate: true,
+			},
+			b => b
+				.path(o => o.object.object.observableObject.object),
+		)
+			.subscribe([check.object])
+			.unsubscribe([check.object])
+
+		new Tester(
+			{
+				object: createObject().object,
+				immediate: true,
+			},
+			b => b
+				.repeat(2, 2, b => b
+					.path(o => o.object))
+				.path(o => o.observableObject.object),
+		)
+			.subscribe([check.object])
+			.unsubscribe([check.object])
+	})
+
+	it('unsubscribe middle', function() {
+		const object1 = createObject()
+		new Tester(
+			{
+				object: object1.observableObject,
+				immediate: true,
+			},
+			b => b.any(
+				b2 => b2.p('object'),
+				b2 => b2.p('map2').mapKey('object'),
+			).p('valueObject'),
+		)
+			.subscribe(o => [o.valueObject])
+			.unsubscribe(o => [o.valueObject])
+			.subscribe(o => [o.valueObject])
+			.change(o => o.object = void 0, [], [])
 			.unsubscribe([object1.valueObject])
 	})
 

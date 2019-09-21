@@ -137,6 +137,7 @@ export class RuleBuilder<TObject = any, TValueKeys extends string | number = nev
 		// })
 
 		ruleSubscribe.unsubscribers = [] // UNSUBSCRIBE_PROPERTY_PREFIX + (nextUnsubscribePropertyId++)
+		ruleSubscribe.unsubscribersCount = []
 
 		return this.rule<TValue>(ruleSubscribe)
 	}
@@ -420,9 +421,12 @@ export function cloneRule(rule: IRule) {
 		...rule,
 	}
 
-	const {unsubscribers, next} = rule as any
+	const {unsubscribers, unsubscribersCount, next} = rule as any
 	if (unsubscribers != null) {
 		(clone as any).unsubscribers = []
+	}
+	if (unsubscribersCount != null) {
+		(clone as any).unsubscribersCount = []
 	}
 
 	if (next != null) {

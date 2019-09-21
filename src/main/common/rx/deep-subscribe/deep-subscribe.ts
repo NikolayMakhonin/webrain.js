@@ -27,7 +27,7 @@ function catchHandler(ex, propertiesPath?: () => string) {
 	throw ex
 }
 
-function unsubscribeNested(value: any, unsubscribers: IUnsubscribe[]): void {
+function unsubscribeNested(value: any, unsubscribers: IUnsubscribe[], unsubscribersCount: number[]): void {
 	if (!(value instanceof Object)) {
 		return
 	}
@@ -38,12 +38,21 @@ function unsubscribeNested(value: any, unsubscribers: IUnsubscribe[]): void {
 
 	const itemUniqueId = getObjectUniqueId(value)
 
-	const unsubscribe = unsubscribers[itemUniqueId]
-	if (unsubscribe) {
+	const unsubscribeCount = unsubscribersCount[itemUniqueId]
+	if (!unsubscribeCount) {
+		return
+	}
+
+	// TODO uncomment this
+	// if (unsubscribeCount > 1) {
+	// 	unsubscribersCount[itemUniqueId] = unsubscribeCount - 1
+	// } else {
+		const unsubscribe = unsubscribers[itemUniqueId]
 		// unsubscribers[itemUniqueId] = null // faster but there is a danger of memory overflow with nulls
 		delete unsubscribers[itemUniqueId]
+		delete unsubscribersCount[itemUniqueId]
 		unsubscribe()
-	}
+	// }
 }
 
 function subscribeNext<TValue>(
@@ -218,6 +227,7 @@ function subscribeNext<TValue>(
 	}
 
 	let unsubscribers: IUnsubscribe[]
+	let unsubscribersCount: number[]
 
 	if (!iteration || iteration.done) {
 		return subscribeLeaf(
@@ -283,10 +293,12 @@ function subscribeNext<TValue>(
 				if (item instanceof Object) {
 					if (!unsubscribers) {
 						unsubscribers = rule.unsubscribers // + '_' + (nextUnsubscribePropertyId++)
+						unsubscribersCount = rule.unsubscribersCount
 					}
 					itemUniqueId = getObjectUniqueId(item)
 					unsubscribe = unsubscribers[itemUniqueId]
 					if (unsubscribe) {
+						unsubscribersCount[itemUniqueId]++
 						return
 					}
 				}
@@ -299,6 +311,7 @@ function subscribeNext<TValue>(
 				if (unsubscribe) {
 					if (item instanceof Object) {
 						unsubscribers[itemUniqueId] = unsubscribe
+						unsubscribersCount[itemUniqueId] = 1
 						return
 					}
 					unsubscribe()
@@ -312,7 +325,7 @@ function subscribeNext<TValue>(
 			},
 			(item, debugPropertyName: string) => {
 				// PROF: 431 - 0.9%
-				unsubscribeNested(item, unsubscribers)
+				unsubscribeNested(item, unsubscribers, unsubscribersCount)
 			},
 		))
 	}

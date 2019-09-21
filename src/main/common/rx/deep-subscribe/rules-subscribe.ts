@@ -103,6 +103,8 @@ function subscribeObjectValue<TValue>(
 					}
 				} else if (subscribePropertyName !== newSubscribePropertyName) {
 					unsubscribeProperty()
+				} else {
+					return
 				}
 
 				if (unsubscribe != null) {

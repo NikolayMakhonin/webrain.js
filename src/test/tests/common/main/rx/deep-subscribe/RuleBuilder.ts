@@ -534,6 +534,7 @@ describe('common > main > rx > deep-subscribe > RuleBuilder', function() {
 		expected = {...expected}
 		if ('unsubscribers' in rule) {
 			expected.unsubscribers = rule.unsubscribers
+			expected.unsubscribersCount = rule.unsubscribersCount
 		}
 
 		delete rule.subscribe
