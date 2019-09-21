@@ -95,29 +95,6 @@ function subscribeNext<TValue>(
 	debugParent: any,
 	ruleDescription?: string,
 ) {
-	function subscribeLeafDefaultProperty(
-		value,
-		debugPropertyName: string,
-		debugParent: any,
-		ruleDescription: string,
-	) {
-		return subscribeDefaultProperty<TValue>(
-			value,
-			true,
-			(val) => subscribeLeaf(
-				val,
-				debugPropertyName,
-				debugParent,
-				ruleDescription,
-			),
-		) || subscribeLeaf(
-			value,
-			debugPropertyName,
-			debugParent,
-			ruleDescription,
-		)
-	}
-
 	function setUnsubscribeLeaf(
 		itemUniqueId: number,
 		unsubscribeValue: IUnsubscribe,
@@ -143,7 +120,47 @@ function subscribeNext<TValue>(
 		debugPropertyName: string,
 		debugParent: any,
 		ruleDescription: string,
+		catchHandlerLeaf: (err: Error, debugPropertyName: string) => void,
 	) {
+		value = resolveAsync(value) as any
+		if (isThenable(value)) {
+			let unsubscribe
+			resolveAsync(object, o => {
+				if (!unsubscribe) {
+					unsubscribe = subscribeLeaf(
+						o,
+						debugPropertyName,
+						debugParent,
+						ruleDescription,
+						catchHandlerLeaf,
+					)
+					// if (typeof unsubscribe !== 'function') {
+					// 	throw new Error(`unsubscribe is not a function: ${unsubscribe}`)
+					// }
+				}
+				return o
+			}, err => catchHandlerLeaf(err, debugPropertyName))
+
+			return () => {
+				if (typeof unsubscribe === 'function') {
+					unsubscribe()
+				}
+				unsubscribe = true
+			}
+		}
+
+		if (hasDefaultProperty(value as any)) {
+			const result = subscribeDefaultProperty<TValue>(
+				value as any,
+				true,
+				(item: TValue, debugPropertyName: string) =>
+					subscribeLeaf(item, debugPropertyName, debugParent, ruleDescription, catchHandlerLeaf),
+			)
+			if (result) {
+				return result
+			}
+		}
+
 		if (!(value instanceof Object)) {
 			const unsubscribeValue = checkIsFuncOrNull(subscribeValue(value, debugParent, debugPropertyName))
 			if (unsubscribeValue) {
@@ -175,15 +192,12 @@ function subscribeNext<TValue>(
 
 	let iteration
 	if (!ruleIterator || (iteration = ruleIterator.next()).done) {
-		const subscribeLeafFunc = hasDefaultProperty(object)
-			? subscribeLeafDefaultProperty
-			: subscribeLeaf
-
-		return subscribeLeafFunc(
+		return subscribeLeaf(
 			object,
 			debugPropertyName,
 			object,
 			ruleDescription,
+			err => catchHandler(err, propertiesPath),
 		)
 	}
 
@@ -206,20 +220,6 @@ function subscribeNext<TValue>(
 					object,
 				)
 			} else {
-				const deepSubscribeItemAsync = (item, debugPropertyName: string) => {
-					return deepSubscribeAsync(
-						item,
-						subscribeValue,
-						immediate,
-						null,
-						leafUnsubscribers,
-						() => (propertiesPath ? propertiesPath() + '.' : '')
-							+ (debugPropertyName == null ? '' : debugPropertyName + '(' + rule.description + ')'),
-						debugPropertyName,
-						object,
-					)
-				}
-
 				const catchHandlerLeaf = (err, debugPropertyName: string) => {
 					catchHandler(err, () => (propertiesPath ? propertiesPath() + '.' : '')
 						+ (debugPropertyName == null ? '' : debugPropertyName + '(' + rule.description + ')'))
@@ -227,20 +227,12 @@ function subscribeNext<TValue>(
 
 				deepSubscribeItem = (item, debugPropertyName: string) => {
 					try {
-						item = resolveAsync(item)
-						if (isThenable(item)) {
-							return deepSubscribeItemAsync(item, debugPropertyName)
-						}
-
-						const subscribeLeafFunc = hasDefaultProperty(item)
-							? subscribeLeafDefaultProperty
-							: subscribeLeaf
-
-						return subscribeLeafFunc(
+						return subscribeLeaf(
 							item,
 							debugPropertyName,
 							object,
 							rule.description,
+							catchHandlerLeaf,
 						)
 					} catch (err) {
 						catchHandlerLeaf(err, debugPropertyName)
