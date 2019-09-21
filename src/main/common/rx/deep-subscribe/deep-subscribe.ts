@@ -97,29 +97,29 @@ function subscribeNext<TValue>(
 			}
 		}
 
-		// if (hasDefaultProperty(object as any)
-		// 	&& iteration.value.subType !== SubscribeObjectType.ValueProperty
-		// ) {
-		// 	const result = subscribeDefaultProperty<TValue>(
-		// 		object as any,
-		// 		true,
-		// 		(item: TValue) => subscribeNext<TValue>(
-		// 			item,
-		// 			subscribeValue,
-		// 			immediate,
-		// 			ruleIterator,
-		// 			leafUnsubscribers,
-		// 			propertiesPath,
-		// 			debugPropertyName,
-		// 			debugParent,
-		// 			ruleDescription,
-		//          iteration,
-		// 		),
-		// 	)
-		// 	if (result) {
-		// 		return result
-		// 	}
-		// }
+		if (hasDefaultProperty(object as any)
+			&& iteration.value.subType !== SubscribeObjectType.ValueProperty
+		) {
+			const result = subscribeDefaultProperty<TValue>(
+				object as any,
+				true,
+				(item: TValue) => subscribeNext<TValue>(
+					item,
+					subscribeValue,
+					immediate,
+					ruleIterator,
+					leafUnsubscribers,
+					propertiesPath,
+					debugPropertyName,
+					debugParent,
+					ruleDescription,
+		         iteration,
+				),
+			)
+			if (result) {
+				return result
+			}
+		}
 	}
 
 	// endregion
