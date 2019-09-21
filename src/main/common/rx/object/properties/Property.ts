@@ -15,7 +15,7 @@ export interface IPropertyOptions<TTarget, TSource> {
 	mergeOptions?: IMergeVisitorOptions<TTarget, TSource>,
 }
 
-export class Property<TValue, TMergeSource>
+export class Property<TValue, TMergeSource = TValue>
 	extends ObservableObject
 	implements
 		IMergeable<Property<TValue, TMergeSource>, any>,

@@ -169,9 +169,9 @@ export function connectorClass<
 
 export function connectorFactory<
 	TSource extends ObservableObject,
-	TConnector extends ObservableObject,
+	TConnector extends Connector<TSource>,
 >(
-	build: (connectorBuilder: ConnectorBuilder<ObservableObject, TSource>) => { object: TConnector },
+	build: (connectorBuilder: ConnectorBuilder<Connector<TSource>, TSource>) => { object: TConnector },
 	baseClass?: new (source: TSource) => Connector<TSource>,
 ): (source: TSource) => TConnector {
 	const NewConnector = connectorClass(build, baseClass)
