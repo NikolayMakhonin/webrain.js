@@ -203,7 +203,15 @@ function subscribeObject<TValue>(
 	}
 
 	const forEach = (callbackfn: (item: TValue, debugPropertyName: string) => void) => {
-		if (propertyNames) {
+		if (propertyNames == null) {
+			for (const propertyName in object) {
+				if ((allowSubscribePrototype || Object.prototype.hasOwnProperty.call(object, propertyName))
+					&& (!propertyPredicate || propertyPredicate(propertyName, object))
+				) {
+					callbackfn(object[propertyName], propertyName)
+				}
+			}
+		} else {
 			if (Array.isArray(propertyNames)) {
 				for (let i = 0, len = propertyNames.length; i < len; i++) {
 					const propertyName = propertyNames[i]
@@ -218,14 +226,6 @@ function subscribeObject<TValue>(
 					? propertyNames in object
 					: Object.prototype.hasOwnProperty.call(object, propertyNames)) {
 					callbackfn(object[propertyNames], propertyNames)
-				}
-			}
-		} else {
-			for (const propertyName in object) {
-				if ((allowSubscribePrototype || Object.prototype.hasOwnProperty.call(object, propertyName))
-					&& (!propertyPredicate || propertyPredicate(propertyName, object))
-				) {
-					callbackfn(object[propertyName], propertyName)
 				}
 			}
 		}
