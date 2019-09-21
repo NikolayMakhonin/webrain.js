@@ -460,17 +460,17 @@ describe('common > main > rx > observable-object-builder', function() {
 		assert.deepStrictEqual(hasSubscribers, [true])
 		hasSubscribers = []
 
-		assert.strictEqual(builder.updatable('prop', {update: (o, v) => v}), builder)
+		assert.strictEqual(builder.updatable('prop', {update: v => v}), builder)
 		assert.deepStrictEqual(hasSubscribers, [])
 		assertEvents(results, [])
 		assert.strictEqual(object.prop, undefined)
 
-		assert.strictEqual(builder.updatable('prop', {update: (o, v) => v}, undefined), builder)
+		assert.strictEqual(builder.updatable('prop', {update: v => v}, undefined), builder)
 		assert.deepStrictEqual(hasSubscribers, [])
 		assertEvents(results, [])
 		assert.strictEqual(object.prop, undefined)
 
-		assert.strictEqual(builder.updatable('prop', {update: (o, v) => v}, null), builder)
+		assert.strictEqual(builder.updatable('prop', {update: v => v}, null), builder)
 		assert.deepStrictEqual(hasSubscribers, [])
 		assertEvents(results, [
 			{
@@ -483,7 +483,7 @@ describe('common > main > rx > observable-object-builder', function() {
 		assert.strictEqual(object.prop, null)
 
 		unsubscribe[0]()
-		assert.strictEqual(builder.updatable('prop', {update: (o, v) => v, factory: () => '1'}, '2'), builder)
+		assert.strictEqual(builder.updatable('prop', {update: v => v, factory: () => '1'}, '2'), builder)
 		assert.strictEqual(typeof (unsubscribe[0] = object.propertyChanged.subscribe(subscriber)), 'function')
 		assertEvents(results, [])
 		assert.deepStrictEqual(hasSubscribers, [false, true])
@@ -495,12 +495,12 @@ describe('common > main > rx > observable-object-builder', function() {
 		results = []
 		assert.strictEqual(object.prop, '3')
 
-		assert.strictEqual(builder.updatable('prop', {update: (o, v) => v}, '3'), builder)
+		assert.strictEqual(builder.updatable('prop', {update: v => v}, '3'), builder)
 		assert.deepStrictEqual(hasSubscribers, [])
 		assertEvents(results, [])
 		assert.strictEqual(object.prop, '3')
 
-		assert.strictEqual(builder.updatable('prop', {update: (o, v) => v, factory: () => 3}), builder)
+		assert.strictEqual(builder.updatable('prop', {update: v => v, factory: () => 3}), builder)
 		assert.deepStrictEqual(hasSubscribers, [])
 		assertEvents(results, [
 			{

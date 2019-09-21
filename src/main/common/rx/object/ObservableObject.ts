@@ -33,8 +33,8 @@ export class ObservableObject extends PropertyChangedObject {
 /** @internal */
 export function _setExt(
 	name: string | number,
-	getValue: (o) => any,
-	setValue: (o, v) => void,
+	getValue: () => any,
+	setValue: (v) => void,
 	options: ISetOptions,
 	object: ObservableObject,
 	newValue,
@@ -43,7 +43,7 @@ export function _setExt(
 		return _set(name, getValue, setValue, object, newValue)
 	}
 
-	const oldValue = getValue ? getValue(object) : object.__fields[name]
+	const oldValue = getValue ? getValue.call(object) : object.__fields[name]
 
 	const equalsFunc = options.equalsFunc
 	if (equalsFunc ? equalsFunc.call(object, oldValue, newValue) : oldValue === newValue) {
@@ -70,7 +70,7 @@ export function _setExt(
 	}
 
 	if (setValue) {
-		setValue(object, newValue)
+		setValue.call(object, newValue)
 	} else {
 		object.__fields[name] = newValue
 	}
@@ -97,18 +97,18 @@ export function _setExt(
 /** @internal */
 export function _set(
 	name: string | number,
-	getValue: (o) => any,
-	setValue: (o, v) => void,
+	getValue: () => any,
+	setValue: (v) => void,
 	object: ObservableObject,
 	newValue,
 ) {
-	const oldValue = getValue(object)
+	const oldValue = getValue.call(object)
 
 	if (oldValue === newValue) {
 		return false
 	}
 
-	setValue(object, newValue)
+	setValue.call(object, newValue)
 
 	const {propertyChangedDisabled, propertyChanged} = object.__meta
 	if (!propertyChangedDisabled && propertyChanged) {

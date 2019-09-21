@@ -5,6 +5,8 @@ import {_set, _setExt, ISetOptions, ObservableObject} from './ObservableObject'
 
 export interface IFieldOptions {
 	hidden?: boolean,
+	getValue?: () => any
+	setValue?: (value: any) => void
 }
 
 export interface IWritableFieldOptions extends IFieldOptions {
@@ -17,7 +19,7 @@ export interface IReadableFieldOptions<T> extends IWritableFieldOptions {
 
 export interface IUpdatableFieldOptions<T> extends IWritableFieldOptions {
 	factory?: (initValue: T) => T
-	update?: (currentValue: T, value: any) => T|void
+	update?: (value: any) => T|void
 }
 
 export class ObservableObjectBuilder<TObject extends ObservableObject> {
@@ -48,8 +50,8 @@ export class ObservableObjectBuilder<TObject extends ObservableObject> {
 		}
 
 		// optimization
-		const getValue = createFunction('o', `return o.__fields["${name}"]`) as any
-		const setValue = createFunction('o', 'v', `o.__fields["${name}"] = v`) as any
+		const getValue = options && options.getValue || createFunction(`return this.__fields["${name}"]`) as any
+		const setValue = options && options.setValue || createFunction('v', `this.__fields["${name}"] = v`) as any
 		const set = setOptions
 			? _setExt.bind(null, name, getValue, setValue, setOptions)
 			: _set.bind(null, name, getValue, setValue)
@@ -58,7 +60,7 @@ export class ObservableObjectBuilder<TObject extends ObservableObject> {
 			configurable: true,
 			enumerable  : !hidden,
 			get(this: TObject) {
-				return getValue(this)
+				return getValue.call(this)
 			},
 			set(this: TObject, newValue) {
 				set(this, newValue)
@@ -106,10 +108,10 @@ export class ObservableObjectBuilder<TObject extends ObservableObject> {
 		const update = options && options.update
 
 		// optimization
-		const getValue = createFunction('o', `return o.__fields["${name}"]`) as any
+		const getValue = options && options.getValue || createFunction(`return this.__fields["${name}"]`) as any
 		let setValue
 		if (update || factory) {
-			setValue = createFunction('o', 'v', `o.__fields["${name}"] = v`) as any
+			setValue = options && options.setValue || createFunction('v', `this.__fields["${name}"] = v`) as any
 		}
 
 		let setOnUpdate
@@ -136,13 +138,12 @@ export class ObservableObjectBuilder<TObject extends ObservableObject> {
 				configurable: true,
 				enumerable: !hidden,
 				get(this: TObject) {
-					return getValue(this)
+					return getValue.call(this)
 				},
 			}
 			if (update) {
 				attributes.set = function(value) {
-					const currentValue = getValue(this)
-					const newValue = update.call(this, currentValue, value)
+					const newValue = update.call(this, value)
 					if (typeof newValue !== 'undefined') {
 						setOnUpdate(this, newValue)
 					}
@@ -152,7 +153,7 @@ export class ObservableObjectBuilder<TObject extends ObservableObject> {
 		}
 
 		if (factory) {
-			const init = function() {
+			const init = function(this: TObject) {
 				const factoryValue = factory.call(this, initValue)
 				createInstanceProperty(this)
 				return factoryValue
@@ -161,10 +162,10 @@ export class ObservableObjectBuilder<TObject extends ObservableObject> {
 			const initAttributes: any = {
 				configurable: true,
 				enumerable: !hidden,
-				get() {
+				get(this: TObject) {
 					const factoryValue = init.call(this)
 					if (typeof factoryValue !== 'undefined') {
-						const oldValue = getValue(this)
+						const oldValue = getValue.call(this)
 						if (factoryValue !== oldValue) {
 							setOnInit(this, factoryValue)
 						}
@@ -175,9 +176,9 @@ export class ObservableObjectBuilder<TObject extends ObservableObject> {
 			if (update) {
 				initAttributes.set = function(this: TObject, value) {
 					const factoryValue = init.call(this)
-					const newValue = update.call(this, factoryValue, value)
+					const newValue = update.call(this, value)
 					if (typeof newValue !== 'undefined') {
-						const oldValue = getValue(this)
+						const oldValue = getValue.call(this)
 						if (newValue !== oldValue) {
 							setOnInit(this, newValue)
 						}
