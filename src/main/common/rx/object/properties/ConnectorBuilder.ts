@@ -64,12 +64,6 @@ export class ConnectorBuilder<
 			throw new Error('buildRule() return null or not initialized RuleBuilder')
 		}
 
-		const resolveValue = value => {
-			return value instanceof WritableValue
-				? value.value
-				: value
-		}
-
 		const setOptions = options && options.setOptions
 
 		// optimization
