@@ -25,10 +25,13 @@ describe('resolvePath', function() {
 		.writable('observable')
 		.calc('calc',
 			simple,
-			calcPropertyFactory((input, property: Property<Class, any>): ThenableOrIteratorOrValue<void> => {
-				property.value = input.value
-				return ThenableSync.createResolved(null)
-			}),
+			calcPropertyFactory(
+				null,
+				(input, property: Property<Class, any>): ThenableOrIteratorOrValue<void> => {
+					property.value = input.value
+					return ThenableSync.createResolved(null)
+				},
+			),
 		)
 
 	const object = new Class()

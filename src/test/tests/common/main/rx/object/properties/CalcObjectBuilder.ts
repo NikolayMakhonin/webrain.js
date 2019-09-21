@@ -20,9 +20,7 @@ describe('common > main > rx > properties > CalcObjectBuilder', function() {
 		public valuePrototype: string
 		public calc1: ICalcProperty<Date>
 		public calc2: ClassSync
-		public source: {
-			value: string,
-		}
+		public source: any = 123
 	}
 
 	class ClassAsync extends ClassSync {
@@ -32,37 +30,50 @@ describe('common > main > rx > properties > CalcObjectBuilder', function() {
 	ClassSync.prototype.valuePrototype = 'Value Prototype'
 
 	new CalcObjectBuilder(ClassSync.prototype)
+		.writable('source')
 		.calc('calc1',
 			connectorFactory(c => c
 				.connect('connectValue1', b => b.path(o => o['@lastOrWait'].source['@wait']))),
-			calcPropertyFactory((input, property: Property<Date, number>): ThenableOrIteratorOrValue<void> => {
-				property.value = new Date(123)
-				return ThenableSync.createResolved(null)
-			}),
+			calcPropertyFactory(
+				d => d.invalidateOn(b => b.propertyAll()),
+				(input, property: Property<Date, number>): ThenableOrIteratorOrValue<void> => {
+					property.value = new Date(input.connectValue1)
+					return ThenableSync.createResolved(null)
+				},
+			),
 		)
 		.calc('calc2',
 			connectorFactory(c => c),
-			calcPropertyFactory((input, property: Property<ClassSync>): ThenableOrIteratorOrValue<void> => {
-				property.value = input.connectorSource
-				return ThenableSync.createResolved(null)
-			}),
+			calcPropertyFactory(
+				d => d.invalidateOn(b => b.propertyAll()),
+				(input, property: Property<ClassSync>): ThenableOrIteratorOrValue<void> => {
+					property.value = input.connectorSource
+					return ThenableSync.createResolved(null)
+				},
+			),
 		)
 
 	new CalcObjectBuilder(ClassAsync.prototype)
 		.calc('calc1',
 			connectorFactory(c => c
 				.connect('connectValue1', b => b.path(o => o['@lastOrWait'].source['@wait']))),
-			calcPropertyFactory(function *(input, property: Property<Date, number>): ThenableOrIteratorOrValue<void> {
-				yield new Promise(r => setTimeout(r, 100))
-				property.value = new Date(123)
-			}),
+			calcPropertyFactory(
+				d => d.invalidateOn(b => b.propertyAll()),
+				function *(input, property: Property<Date, number>): ThenableOrIteratorOrValue<void> {
+					yield new Promise(r => setTimeout(r, 100))
+					property.value = new Date(input.connectValue1)
+				},
+			),
 		)
 		.calc('calc2',
 			connectorFactory(c => c),
-			calcPropertyFactory(function *(input, property: Property<ClassSync>): ThenableOrIteratorOrValue<void> {
-				yield new Promise(r => setTimeout(r, 100))
-				property.value = input.connectorSource
-			}),
+			calcPropertyFactory(
+				d => d.invalidateOn(b => b.propertyAll()),
+				function *(input, property: Property<ClassSync>): ThenableOrIteratorOrValue<void> {
+					yield new Promise(r => setTimeout(r, 100))
+					property.value = input.connectorSource
+				},
+			),
 		)
 
 	it('calc sync', function() {
@@ -196,7 +207,7 @@ describe('common > main > rx > properties > CalcObjectBuilder', function() {
 	})
 
 	it('deepSubscribe calc async', async function() {
-		const object = new ClassAsync()
+		let object = new ClassAsync()
 		let values = []
 		deepSubscribe(object, value => {
 			values.push(value)
@@ -206,6 +217,7 @@ describe('common > main > rx > properties > CalcObjectBuilder', function() {
 		await delay(500)
 		assert.deepStrictEqual(values, [new Date(123)])
 
+		object = new ClassAsync()
 		values = []
 		deepSubscribe(object, value => {
 			values.push(value)
@@ -214,5 +226,38 @@ describe('common > main > rx > properties > CalcObjectBuilder', function() {
 		assert.deepStrictEqual(values, [])
 		await delay(500)
 		assert.deepStrictEqual(values, [Date.prototype.getTime])
+	})
+
+	it('deepSubscribe calc circular sync', async function() {
+		const object = new ClassSync()
+		let values = []
+		deepSubscribe(object, value => {
+			value = resolvePath(value)()
+			values.push(value)
+			return null
+		}, true, b => b.p('calc2').p('calc2').p('calc2').p('calc1'))
+		assert.deepStrictEqual(values, [new Date(123)])
+		values = []
+
+		object.source = 234
+		assert.deepStrictEqual(values, [new Date(234)])
+	})
+
+	it('deepSubscribe calc circular async', async function() {
+		const object = new ClassAsync()
+		let values = []
+		deepSubscribe(object, value => {
+			value = resolvePath(value)()
+			values.push(value)
+			return null
+		}, true, b => b.p('calc2').p('calc2').p('calc2').p('calc1'))
+		assert.deepStrictEqual(values, [])
+		await delay(500)
+		assert.deepStrictEqual(values, [new Date(123)])
+		values = []
+
+		object.source = 234
+		assert.deepStrictEqual(values.length, 1)
+		assert.deepStrictEqual(await values[0], new Date(234))
 	})
 })
