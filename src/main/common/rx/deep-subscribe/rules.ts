@@ -2,6 +2,7 @@ import {IRule, IRuleAny, IRuleRepeat, RuleType} from './contracts/rules'
 
 export class Rule implements IRule {
 	public readonly type: RuleType
+	public subType?: any
 	public next?: IRule
 	public description?: string
 

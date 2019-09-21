@@ -604,6 +604,7 @@ export class RuleSubscribeObject<TObject, TValue>
 				)
 				break
 			case SubscribeObjectType.ValueProperty:
+				this.subType = type
 				this.subscribe = subscribeObjectValue.bind(
 					null,
 					propertyNames,

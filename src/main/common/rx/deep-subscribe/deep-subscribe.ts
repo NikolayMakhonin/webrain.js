@@ -8,7 +8,7 @@ import {RuleBuilder} from "./RuleBuilder"
 import {ISubscribeValue} from "./contracts/common"
 import {getObjectUniqueId} from "../../helpers/object-unique-id"
 import {checkIsFuncOrNull, toSingleCall} from "../../helpers/helpers"
-import {hasDefaultProperty, subscribeDefaultProperty} from './rules-subscribe'
+import {hasDefaultProperty, subscribeDefaultProperty, SubscribeObjectType} from './rules-subscribe'
 
 // const UNSUBSCRIBE_PROPERTY_PREFIX = Math.random().toString(36)
 // let nextUnsubscribePropertyId = 0
@@ -95,6 +95,66 @@ function subscribeNext<TValue>(
 	debugParent: any,
 	ruleDescription?: string,
 ) {
+	// region resolve value
+
+	{
+		object = resolveAsync(object) as any
+		if (isThenable(object)) {
+			let unsubscribe
+			resolveAsync(object, o => {
+				if (!unsubscribe) {
+					unsubscribe = subscribeNext<TValue>(
+						o,
+						subscribeValue,
+						immediate,
+						ruleIterator,
+						leafUnsubscribers,
+						propertiesPath,
+						debugPropertyName,
+						debugParent,
+						ruleDescription,
+					)
+					// if (typeof unsubscribe !== 'function') {
+					// 	throw new Error(`unsubscribe is not a function: ${unsubscribe}`)
+					// }
+				}
+				return o
+			}, err => catchHandler(err, propertiesPath))
+
+			return () => {
+				if (typeof unsubscribe === 'function') {
+					unsubscribe()
+				}
+				unsubscribe = true
+			}
+		}
+
+		// if (hasDefaultProperty(object as any)
+		// 	&& iteration.value.subType !== SubscribeObjectType.ValueProperty
+		// ) {
+		// 	const result = subscribeDefaultProperty<TValue>(
+		// 		object as any,
+		// 		true,
+		// 		(item: TValue) => subscribeNext<TValue>(
+		// 			item,
+		// 			subscribeValue,
+		// 			immediate,
+		// 			ruleIterator,
+		// 			leafUnsubscribers,
+		// 			propertiesPath,
+		// 			debugPropertyName,
+		// 			debugParent,
+		// 			ruleDescription,
+		// 		),
+		// 	)
+		// 	if (result) {
+		// 		return result
+		// 	}
+		// }
+	}
+
+	// endregion
+
 	function setUnsubscribeLeaf(
 		itemUniqueId: number,
 		unsubscribeValue: IUnsubscribe,
@@ -125,7 +185,7 @@ function subscribeNext<TValue>(
 		value = resolveAsync(value) as any
 		if (isThenable(value)) {
 			let unsubscribe
-			resolveAsync(object, o => {
+			resolveAsync(value, o => {
 				if (!unsubscribe) {
 					unsubscribe = subscribeLeaf(
 						o,
@@ -153,7 +213,7 @@ function subscribeNext<TValue>(
 			const result = subscribeDefaultProperty<TValue>(
 				value as any,
 				true,
-				(item: TValue, debugPropertyName: string) =>
+				(item: TValue) =>
 					subscribeLeaf(item, debugPropertyName, debugParent, ruleDescription, catchHandlerLeaf),
 			)
 			if (result) {
@@ -201,90 +261,99 @@ function subscribeNext<TValue>(
 		)
 	}
 
+	function subscribeNode(rule, getNextRuleIterator) {
+		let deepSubscribeItem: (item, debugPropertyName: string) => () => void
+		const catchHandlerItem = (err, debugPropertyName: string) => {
+			catchHandler(err, () => (propertiesPath ? propertiesPath() + '.' : '')
+				+ (debugPropertyName == null ? '' : debugPropertyName + '(' + rule.description + ')'))
+		}
+
+		if (getNextRuleIterator) {
+			deepSubscribeItem = (item, debugPropertyName: string) => {
+				try {
+					return subscribeNext(
+						item,
+						subscribeValue,
+						immediate,
+						getNextRuleIterator(),
+						leafUnsubscribers,
+						() => (propertiesPath ? propertiesPath() + '.' : '')
+							+ (debugPropertyName == null ? '' : debugPropertyName + '(' + rule.description + ')'),
+						debugPropertyName,
+						object,
+					)
+				} catch (err) {
+					catchHandlerItem(err, debugPropertyName)
+					return null
+				}
+			}
+		} else {
+			deepSubscribeItem = (item, debugPropertyName: string) => {
+				try {
+					return subscribeLeaf(
+						item,
+						debugPropertyName,
+						object,
+						rule.description,
+						catchHandlerItem,
+					)
+				} catch (err) {
+					catchHandlerItem(err, debugPropertyName)
+					return null
+				}
+			}
+		}
+
+		return checkIsFuncOrNull(rule.subscribe(
+			object,
+			immediate,
+			(item, debugPropertyName: string) => {
+				// PROF: 1212 - 2.6%
+				let unsubscribe: IUnsubscribe
+				let itemUniqueId: number
+
+				if (item instanceof Object) {
+					if (!unsubscribers) {
+						unsubscribers = rule.unsubscribers // + '_' + (nextUnsubscribePropertyId++)
+					}
+					itemUniqueId = getObjectUniqueId(item)
+					unsubscribe = unsubscribers[itemUniqueId]
+					if (unsubscribe) {
+						return
+					}
+				}
+
+				unsubscribe = checkIsFuncOrNull(deepSubscribeItem(
+					item,
+					debugPropertyName,
+				))
+
+				if (unsubscribe) {
+					if (item instanceof Object) {
+						unsubscribers[itemUniqueId] = unsubscribe
+						return
+					}
+					unsubscribe()
+
+					throw new Error(`You should not return unsubscribe function for non Object value.\n`
+						+ `For subscribe value types use their object wrappers: Number, Boolean, String classes.\n`
+						+ `Unsubscribe function: ${unsubscribe}\nValue: ${item}\n`
+						+ `Value property path: ${(propertiesPath ? propertiesPath() + '.' : '')
+							+ (debugPropertyName == null ? '' : debugPropertyName + '(' + rule.description + ')')}`)
+				}
+			},
+			(item, debugPropertyName: string) => {
+				// PROF: 431 - 0.9%
+				unsubscribeNested(item, unsubscribers)
+			},
+		))
+	}
+
 	return subscribeNextRule(
 		ruleIterator,
 		iteration,
 		nextRuleIterator => deepSubscribeRuleIterator(object, subscribeValue, immediate, nextRuleIterator, leafUnsubscribers, propertiesPath, debugPropertyName, debugParent),
-		(rule, getNextRuleIterator) => {
-			let deepSubscribeItem: (item, debugPropertyName: string) => () => void
-			if (getNextRuleIterator) {
-				deepSubscribeItem = (item, debugPropertyName: string) => deepSubscribeRuleIterator(
-					item,
-					subscribeValue,
-					immediate,
-					getNextRuleIterator(),
-					leafUnsubscribers,
-					() => (propertiesPath ? propertiesPath() + '.' : '')
-						+ (debugPropertyName == null ? '' : debugPropertyName + '(' + rule.description + ')'),
-					debugPropertyName,
-					object,
-				)
-			} else {
-				const catchHandlerLeaf = (err, debugPropertyName: string) => {
-					catchHandler(err, () => (propertiesPath ? propertiesPath() + '.' : '')
-						+ (debugPropertyName == null ? '' : debugPropertyName + '(' + rule.description + ')'))
-				}
-
-				deepSubscribeItem = (item, debugPropertyName: string) => {
-					try {
-						return subscribeLeaf(
-							item,
-							debugPropertyName,
-							object,
-							rule.description,
-							catchHandlerLeaf,
-						)
-					} catch (err) {
-						catchHandlerLeaf(err, debugPropertyName)
-						return null
-					}
-				}
-			}
-
-			return checkIsFuncOrNull(rule.subscribe(
-				object,
-				immediate,
-				(item, debugPropertyName: string) => {
-					// PROF: 1212 - 2.6%
-					let unsubscribe: IUnsubscribe
-					let itemUniqueId: number
-
-					if (item instanceof Object) {
-						if (!unsubscribers) {
-							unsubscribers = rule.unsubscribers // + '_' + (nextUnsubscribePropertyId++)
-						}
-						itemUniqueId = getObjectUniqueId(item)
-						unsubscribe = unsubscribers[itemUniqueId]
-						if (unsubscribe) {
-							return
-						}
-					}
-
-					unsubscribe = checkIsFuncOrNull(deepSubscribeItem(
-						item,
-						debugPropertyName,
-					))
-
-					if (unsubscribe) {
-						if (item instanceof Object) {
-							unsubscribers[itemUniqueId] = unsubscribe
-							return
-						}
-						unsubscribe()
-
-						throw new Error(`You should not return unsubscribe function for non Object value.\n`
-							+ `For subscribe value types use their object wrappers: Number, Boolean, String classes.\n`
-							+ `Unsubscribe function: ${unsubscribe}\nValue: ${item}\n`
-							+ `Value property path: ${(propertiesPath ? propertiesPath() + '.' : '')
-								+ (debugPropertyName == null ? '' : debugPropertyName + '(' + rule.description + ')')}`)
-					}
-				},
-				(item, debugPropertyName: string) => {
-       				// PROF: 431 - 0.9%
-					unsubscribeNested(item, unsubscribers)
-				},
-			))
-		},
+		subscribeNode,
 	)
 }
 
