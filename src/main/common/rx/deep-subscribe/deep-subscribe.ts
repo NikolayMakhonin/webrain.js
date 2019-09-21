@@ -3,7 +3,7 @@ import {isThenable} from '../../async/async'
 import {resolveAsync} from '../../async/ThenableSync'
 import {IUnsubscribe} from '../subjects/observable'
 import {IRule} from './contracts/rules'
-import {IRuleIterator, iterateRule, subscribeNextRule} from './iterate-rule'
+import {IRuleIterator, IRuleOrIterable, iterateRule, subscribeNextRule} from './iterate-rule'
 import {RuleBuilder} from "./RuleBuilder"
 import {ISubscribeValue} from "./contracts/common"
 import {getObjectUniqueId} from "../../helpers/object-unique-id"
@@ -25,44 +25,6 @@ function catchHandler(ex, propertiesPath?: () => string) {
 	ex.message += `\nObject property path: ${propertiesPathStr}`
 
 	throw ex
-}
-
-function deepSubscribeAsync<TValue>(
-	object: any,
-	subscribeValue: ISubscribeValue<TValue>,
-	immediate: boolean,
-	ruleIterator: IRuleIterator,
-	leafUnsubscribers: IUnsubscribe[],
-	propertiesPath: () => string,
-	debugPropertyName: string,
-	debugParent: any
-) {
-	let unsubscribe
-	resolveAsync(object, o => {
-		if (!unsubscribe) {
-			unsubscribe = subscribeNext(
-				o,
-				subscribeValue,
-				immediate,
-				ruleIterator,
-				leafUnsubscribers,
-				propertiesPath,
-				debugPropertyName,
-				debugParent,
-			)
-			// if (typeof unsubscribe !== 'function') {
-			// 	throw new Error(`unsubscribe is not a function: ${unsubscribe}`)
-			// }
-		}
-		return o
-	}, err => catchHandler(err, propertiesPath))
-
-	return () => {
-		if (typeof unsubscribe === 'function') {
-			unsubscribe()
-		}
-		unsubscribe = true
-	}
 }
 
 function unsubscribeNested(value: any, unsubscribers: IUnsubscribe[]): void {
@@ -94,7 +56,12 @@ function subscribeNext<TValue>(
 	debugPropertyName: string,
 	debugParent: any,
 	ruleDescription?: string,
+	iteration?: IteratorResult<IRuleOrIterable>,
 ) {
+	if (!iteration && ruleIterator) {
+		iteration = ruleIterator.next()
+	}
+
 	// region resolve value
 
 	{
@@ -113,6 +80,7 @@ function subscribeNext<TValue>(
 						debugPropertyName,
 						debugParent,
 						ruleDescription,
+						iteration,
 					)
 					// if (typeof unsubscribe !== 'function') {
 					// 	throw new Error(`unsubscribe is not a function: ${unsubscribe}`)
@@ -145,6 +113,7 @@ function subscribeNext<TValue>(
 		// 			debugPropertyName,
 		// 			debugParent,
 		// 			ruleDescription,
+		//          iteration,
 		// 		),
 		// 	)
 		// 	if (result) {
@@ -250,8 +219,7 @@ function subscribeNext<TValue>(
 
 	let unsubscribers: IUnsubscribe[]
 
-	let iteration
-	if (!ruleIterator || (iteration = ruleIterator.next()).done) {
+	if (!iteration || iteration.done) {
 		return subscribeLeaf(
 			object,
 			debugPropertyName,
@@ -378,12 +346,7 @@ function deepSubscribeRuleIterator<TValue>(
 	}
 
 	try {
-		object = resolveAsync(object)
-		const subscribeNextFunc = isThenable(object)
-			? deepSubscribeAsync
-			: subscribeNext
-
-		return subscribeNextFunc(
+		return subscribeNext(
 			object,
 			subscribeValue,
 			immediate,
