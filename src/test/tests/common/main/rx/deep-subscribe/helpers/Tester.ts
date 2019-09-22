@@ -1,4 +1,4 @@
-/* tslint:disable:no-empty no-construct use-primitive-type */
+/* tslint:disable:no-empty no-construct use-primitive-type no-duplicate-string */
 import {delay} from '../../../../../../../main/common/helpers/helpers'
 import {VALUE_PROPERTY_DEFAULT} from '../../../../../../../main/common/helpers/value-property'
 import {IListChanged} from '../../../../../../../main/common/lists/contracts/IListChanged'
@@ -132,13 +132,13 @@ export function createObject() {
 
 	Object.keys(object).forEach(key => {
 		// if (key !== 'value' && key !== 'valueObject') {
-			list.add(object[key])
-			set.add(object[key])
-			map2.set(key, object[key])
+		list.add(object[key])
+		set.add(object[key])
+		map2.set(key, object[key])
 
-			observableList.add(object[key])
-			observableSet.add(object[key])
-			observableMap.set(key, object[key])
+		observableList.add(object[key])
+		observableSet.add(object[key])
+		observableMap.set(key, object[key])
 		// }
 
 		if (key !== VALUE_PROPERTY_DEFAULT) {
@@ -222,6 +222,38 @@ export class Tester<TObject, TValue> {
 			this._unsubscribed = ruleBuilders.map(o => [])
 			this._lastValue = ruleBuilders.map(o => [])
 		}
+	}
+
+	private getDefaultExpectedLastValue(
+		expectedSubscribed: TValue[]|((object: TObject) => TValue[]),
+		expectedUnsubscribed: TValue[]|((object: TObject) => TValue[]),
+	): TValue[]|((object: TObject) => TValue[]) {
+		if (expectedUnsubscribed && expectedUnsubscribed.length) {
+			if (expectedSubscribed && expectedSubscribed.length) {
+				return typeof expectedSubscribed === 'function'
+					? o => {
+						const values = expectedSubscribed(o)
+						return values && values.length
+							? [void 0, values[values.length - 1]]
+							: [void 0]
+					}
+					: [void 0, expectedSubscribed[expectedSubscribed.length - 1]]
+			}
+			return [void 0]
+		}
+
+		if (expectedSubscribed && expectedSubscribed.length) {
+				return typeof expectedSubscribed === 'function'
+					? o => {
+						const values = expectedSubscribed(o)
+						return values && values.length
+							? [values[values.length - 1]]
+							: []
+					}
+					: [expectedSubscribed[expectedSubscribed.length - 1]]
+		}
+
+		return []
 	}
 
 	private checkSubscribes(
@@ -310,6 +342,10 @@ export class Tester<TObject, TValue> {
 			return this
 		}
 
+		if (!expectedLastValue) {
+			expectedLastValue = this.getDefaultExpectedLastValue(expectedSubscribed, expectedUnsubscribed)
+		}
+
 		for (let i = 0; i < this._ruleBuilders.length; i++) {
 			const ruleBuilder = this._ruleBuilders[i]
 
@@ -335,7 +371,7 @@ export class Tester<TObject, TValue> {
 				this._subscribed[i] = []
 			}
 
-			this.checkSubscribes(this._lastValue[i], expectedLastValue || expectedSubscribed, 'lastValue[]')
+			this.checkSubscribes(this._lastValue[i], expectedLastValue, 'lastValue[]')
 			this._lastValue[i] = []
 		}
 
@@ -366,13 +402,7 @@ export class Tester<TObject, TValue> {
 		}
 
 		if (!expectedLastValue) {
-			if (expectedSubscribed && expectedSubscribed.length) {
-				expectedLastValue = expectedSubscribed
-			} else if (expectedUnsubscribed  && expectedSubscribed.length) {
-				expectedLastValue = [void 0]
-			} else {
-				throw new Error('You should specify expectedLastValue')
-			}
+			expectedLastValue = this.getDefaultExpectedLastValue(expectedSubscribed, expectedUnsubscribed)
 		}
 
 		if (errorType) {
@@ -395,6 +425,7 @@ export class Tester<TObject, TValue> {
 
 	public unsubscribe(
 		expectedUnsubscribed: TValue[]|((object: TObject) => TValue[]),
+		expectedLastValue?: TValue[]|((object: TObject) => TValue[]),
 		errorType?: new () => Error,
 		errorRegExp?: RegExp,
 	): this {
@@ -404,6 +435,10 @@ export class Tester<TObject, TValue> {
 			}
 
 			return this
+		}
+
+		if (!expectedLastValue) {
+			expectedLastValue = this.getDefaultExpectedLastValue(null, expectedUnsubscribed)
 		}
 
 		for (let i = 0; i < this._ruleBuilders.length; i++) {
@@ -425,7 +460,7 @@ export class Tester<TObject, TValue> {
 
 				this.checkSubscribes(this._unsubscribed[i], expectedUnsubscribed, 'unsubscribed[]')
 				assert.deepStrictEqual(this._subscribed[i], [], 'subscribed[]')
-				assert.deepStrictEqual(this._lastValue[i], [void 0], 'lastValue[]')
+				this.checkSubscribes(this._lastValue[i], expectedLastValue, 'lastValue[]')
 				this._unsubscribed[i] = []
 				this._lastValue[i] = []
 			}
@@ -455,13 +490,7 @@ export class Tester<TObject, TValue> {
 		}
 
 		if (!expectedLastValue) {
-			if (expectedSubscribed && expectedSubscribed.length) {
-				expectedLastValue = expectedSubscribed
-			} else if (expectedUnsubscribed  && expectedSubscribed.length) {
-				expectedLastValue = [void 0]
-			} else {
-				throw new Error('You should specify expectedLastValue')
-			}
+			expectedLastValue = this.getDefaultExpectedLastValue(expectedSubscribed, expectedUnsubscribed)
 		}
 
 		for (let i = 0; i < this._ruleBuilders.length; i++) {
@@ -481,7 +510,7 @@ export class Tester<TObject, TValue> {
 
 			await delay(10)
 
-			this.checkSubscribes(this._unsubscribed[i], expectedUnsubscribed)
+			this.checkSubscribes(this._unsubscribed[i], expectedUnsubscribed, 'unsubscribed[]')
 
 			if (!expectedSubscribed) {
 				assert.strictEqual(this._unsubscribe[i], null, 'unsubscribe()')
@@ -491,7 +520,7 @@ export class Tester<TObject, TValue> {
 				this._subscribed[i] = []
 			}
 
-			this.checkSubscribes(this._lastValue[i], expectedLastValue || expectedSubscribed, 'lastValue[]')
+			this.checkSubscribes(this._lastValue[i], expectedLastValue, 'lastValue[]')
 			this._lastValue[i] = []
 		}
 
@@ -521,6 +550,10 @@ export class Tester<TObject, TValue> {
 			expectedUnsubscribed = expectedUnsubscribed(this._object)
 		}
 
+		if (!expectedLastValue) {
+			expectedLastValue = this.getDefaultExpectedLastValue(expectedSubscribed, expectedUnsubscribed)
+		}
+
 		if (errorType) {
 			assert.throws(() => changeFunc(this._object), errorType, errorRegExp)
 		} else {
@@ -530,9 +563,9 @@ export class Tester<TObject, TValue> {
 		await delay(10)
 
 		for (let i = 0; i < this._ruleBuilders.length; i++) {
-			this.checkSubscribes(this._unsubscribed[i], expectedUnsubscribed)
-			this.checkSubscribes(this._subscribed[i], expectedSubscribed)
-			this.checkSubscribes(this._lastValue[i], expectedLastValue)
+			this.checkSubscribes(this._unsubscribed[i], expectedUnsubscribed, 'unsubscribed[]')
+			this.checkSubscribes(this._subscribed[i], expectedSubscribed, 'subscribed[]')
+			this.checkSubscribes(this._lastValue[i], expectedLastValue, 'lastValue[]')
 			this._unsubscribed[i] = []
 			this._subscribed[i] = []
 			this._lastValue[i] = []
@@ -543,6 +576,7 @@ export class Tester<TObject, TValue> {
 
 	public async unsubscribeAsync(
 		expectedUnsubscribed: TValue[]|((object: TObject) => TValue[]),
+		expectedLastValue?: TValue[]|((object: TObject) => TValue[]),
 		errorType?: new () => Error,
 		errorRegExp?: RegExp,
 	): Promise<this> {
@@ -552,6 +586,10 @@ export class Tester<TObject, TValue> {
 			}
 
 			return this
+		}
+
+		if (!expectedLastValue) {
+			expectedLastValue = this.getDefaultExpectedLastValue(null, expectedUnsubscribed)
 		}
 
 		for (let i = 0; i < this._ruleBuilders.length; i++) {
@@ -575,7 +613,7 @@ export class Tester<TObject, TValue> {
 
 				this.checkSubscribes(this._unsubscribed[i], expectedUnsubscribed, 'unsubscribed[]')
 				assert.deepStrictEqual(this._subscribed[i], [], 'subscribed[]')
-				assert.deepStrictEqual(this._lastValue[i], [void 0], 'lastValue[]')
+				this.checkSubscribes(this._lastValue[i], expectedLastValue, 'lastValue[]')
 				this._unsubscribed[i] = []
 				this._lastValue[i] = []
 			}

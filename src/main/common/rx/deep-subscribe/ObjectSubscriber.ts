@@ -66,10 +66,19 @@ export class ObjectSubscriber<TObject> implements IValueSubscriber<TObject> {
 			if (!_subscribedValues) {
 				this._subscribedValues = _subscribedValues = []
 			}
-			_subscribedValues.push(value)
-			if (_subscribedValues.length === 1
-				&& _subscribedValues[_subscribedValues.length - 2] !== value
-			) {
+			const index = _subscribedValues.lastIndexOf(value)
+			if (index >= 0) {
+				const len = _subscribedValues.length
+				if (index < len - 1) {
+					for (let i = len - 1; i > index; i--) {
+						_subscribedValues[i + 1] = _subscribedValues[i]
+					}
+					_subscribedValues[index + 1] = value
+				} else {
+					_subscribedValues.push(value)
+				}
+			} else {
+				_subscribedValues.push(value)
 				this._lastValue(value, parent, propertyName)
 			}
 		}
@@ -132,8 +141,8 @@ export class ObjectSubscriber<TObject> implements IValueSubscriber<TObject> {
 						if (index !== len - 2) {
 							_subscribedValues[index] = _subscribedValues[len - 2]
 						}
-
 						_subscribedValues[len - 2] = _subscribedValues[len - 1]
+						_subscribedValues.length = len - 1
 					}
 				}
 			}

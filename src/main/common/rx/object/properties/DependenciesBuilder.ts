@@ -66,8 +66,11 @@ export function subscribeDependencies<TSubscribeObject, TActionTarget>(
 		const [rule, action] = dependencies[i]
 		unsubscribers.push(deepSubscribeRule({
 			object: subscribeObject,
-			lastValue(value, parent, propertyName) {
+			subscribeValue(value, parent, propertyName) {
 				action(actionTarget, value, parent, propertyName)
+			},
+			unsubscribeValue(value, parent, propertyName) {
+				action(actionTarget, void 0, parent, propertyName)
 			},
 			rule,
 		}))
