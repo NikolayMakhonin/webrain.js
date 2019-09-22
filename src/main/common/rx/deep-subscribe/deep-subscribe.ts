@@ -1,11 +1,12 @@
-/* tslint:disable */
+/* tslint:disable */ // TODO fix lint
 import {isThenable} from '../../async/async'
 import {resolveAsync} from '../../async/ThenableSync'
 import {IUnsubscribe} from '../subjects/observable'
 import {IRule} from './contracts/rules'
 import {IRuleIterator, IRuleOrIterable, iterateRule, subscribeNextRule} from './iterate-rule'
+import {ObjectSubscriber} from './ObjectSubscriber'
 import {RuleBuilder} from "./RuleBuilder"
-import {ISubscribeValue} from "./contracts/common"
+import {ISubscribeValue, IValueSubscriber} from './contracts/common'
 import {getObjectUniqueId} from "../../helpers/object-unique-id"
 import {checkIsFuncOrNull, toSingleCall} from "../../helpers/helpers"
 import {hasDefaultProperty, subscribeDefaultProperty, SubscribeObjectType} from './rules-subscribe'
@@ -27,7 +28,7 @@ function catchHandler(ex, propertiesPath?: () => string) {
 	throw ex
 }
 
-function unsubscribeNested(value: any, unsubscribers: IUnsubscribe[], unsubscribersCount: number[]): void {
+function unsubscribeNested(value: any, unsubscribers: Array<IUnsubscribe|IUnsubscribe[]>, unsubscribersCount: number[]): void {
 	if (!(value instanceof Object)) {
 		return
 	}
@@ -63,7 +64,7 @@ function unsubscribeNested(value: any, unsubscribers: IUnsubscribe[], unsubscrib
 
 function subscribeNext<TValue>(
 	object: any,
-	subscribeValue: ISubscribeValue<TValue>,
+	valueSubscriber: IValueSubscriber<TValue>,
 	immediate: boolean,
 	ruleIterator: IRuleIterator,
 	leafUnsubscribers: IUnsubscribe[],
@@ -88,7 +89,7 @@ function subscribeNext<TValue>(
 				if (!unsubscribe) {
 					unsubscribe = subscribeNext<TValue>(
 						o,
-						subscribeValue,
+						valueSubscriber,
 						immediate,
 						ruleIterator,
 						leafUnsubscribers,
@@ -122,7 +123,7 @@ function subscribeNext<TValue>(
 				true,
 				(item: TValue) => subscribeNext<TValue>(
 					item,
-					subscribeValue,
+					valueSubscriber,
 					immediate,
 					ruleIterator,
 					leafUnsubscribers,
@@ -141,38 +142,6 @@ function subscribeNext<TValue>(
 	}
 
 	// endregion
-
-	function setUnsubscribeLeaf(
-		itemUniqueId: number,
-		unsubscribeValue: IUnsubscribe,
-	): IUnsubscribe {
-		const unsubscribe = () => {
-			const leafUnsubscribeCount = leafUnsubscribersCount[itemUniqueId]
-			if (!leafUnsubscribeCount) {
-				return
-			}
-
-			if (leafUnsubscribeCount > 1) {
-				leafUnsubscribersCount[itemUniqueId] = leafUnsubscribeCount - 1
-			} else {
-				// leafUnsubscribers[itemUniqueId] = null // faster but there is a danger of memory overflow with nulls
-				delete leafUnsubscribers[itemUniqueId]
-				delete leafUnsubscribersCount[itemUniqueId]
-
-				// PROF: 371 - 0.8%
-				if (unsubscribeValue) {
-					const _unsubscribeValue = unsubscribeValue
-					unsubscribeValue = null
-					_unsubscribeValue()
-				}
-			}
-		}
-
-		leafUnsubscribers[itemUniqueId] = unsubscribe
-		leafUnsubscribersCount[itemUniqueId] = 1
-
-		return unsubscribe
-	}
 
 	function subscribeLeaf(
 		value: TValue,
@@ -220,32 +189,7 @@ function subscribeNext<TValue>(
 			}
 		}
 
-		if (!(value instanceof Object)) {
-			const unsubscribeValue = checkIsFuncOrNull(subscribeValue(value, debugParent, debugPropertyName))
-			if (unsubscribeValue) {
-				unsubscribeValue()
-
-				throw new Error(`You should not return unsubscribe function for non Object value.\n`
-					+ `For subscribe value types use their object wrappers: Number, Boolean, String classes.\n`
-					+ `Unsubscribe function: ${unsubscribeValue}\nValue: ${value}\n`
-					+ `Value property path: ${(propertiesPath ? propertiesPath() + '.' : '')
-						+ (debugPropertyName == null ? '' : debugPropertyName + '(' + ruleDescription + ')')}`)
-			}
-			return null // TODO: return () => subscribeValue(void 0, null, debugPropertyName)
-		}
-
-		const itemUniqueId = getObjectUniqueId(value as any)
-
-		let unsubscribe: IUnsubscribe = leafUnsubscribers[itemUniqueId]
-		if (unsubscribe) {
-			leafUnsubscribersCount[itemUniqueId]++
-			return unsubscribe
-		}
-
-		let unsubscribeValue = checkIsFuncOrNull(subscribeValue(value, debugParent, debugPropertyName))
-		if (unsubscribeValue) {
-			return setUnsubscribeLeaf(itemUniqueId, unsubscribeValue)
-		}
+		return valueSubscriber.subscribe(value, debugParent, debugPropertyName, propertiesPath, ruleDescription)
 	}
 
 	let unsubscribers: Array<IUnsubscribe|Array<IUnsubscribe>>
@@ -273,7 +217,7 @@ function subscribeNext<TValue>(
 				try {
 					return subscribeNext(
 						item,
-						subscribeValue,
+						valueSubscriber,
 						immediate,
 						getNextRuleIterator(),
 						leafUnsubscribers,
@@ -367,7 +311,7 @@ function subscribeNext<TValue>(
 		iteration,
 		nextRuleIterator => deepSubscribeRuleIterator(
 			object,
-			subscribeValue,
+			valueSubscriber,
 			immediate,
 			nextRuleIterator,
 			leafUnsubscribers,
@@ -382,7 +326,7 @@ function subscribeNext<TValue>(
 
 function deepSubscribeRuleIterator<TValue>(
 	object: any,
-	subscribeValue: ISubscribeValue<TValue>,
+	valueSubscriber: IValueSubscriber<TValue>,
 	immediate: boolean,
 	ruleIterator: IRuleIterator,
 	leafUnsubscribers?: IUnsubscribe[],
@@ -408,7 +352,7 @@ function deepSubscribeRuleIterator<TValue>(
 	try {
 		return subscribeNext(
 			object,
-			subscribeValue,
+			valueSubscriber,
 			immediate,
 			ruleIterator,
 			leafUnsubscribers,
@@ -425,13 +369,15 @@ function deepSubscribeRuleIterator<TValue>(
 
 export function deepSubscribeRule<TValue>(
 	object: any,
-	subscribeValue: ISubscribeValue<TValue>,
+	valueSubscriber: IValueSubscriber<TValue>|ISubscribeValue<TValue>,
 	immediate: boolean,
 	rule: IRule,
 ): IUnsubscribe {
 	return toSingleCall(deepSubscribeRuleIterator<TValue>(
 		object,
-		subscribeValue,
+		typeof valueSubscriber === 'function'
+			? new ObjectSubscriber(valueSubscriber)
+			: valueSubscriber,
 		immediate,
 		iterateRule(rule)[Symbol.iterator](),
 	))
@@ -439,13 +385,13 @@ export function deepSubscribeRule<TValue>(
 
 export function deepSubscribe<TObject, TValue, TValueKeys extends string | number = never>(
 	object: TObject,
-	subscribeValue: ISubscribeValue<TValue>,
+	valueSubscriber: IValueSubscriber<TValue>,
 	immediate: boolean,
 	ruleBuilder: (ruleBuilder: RuleBuilder<TObject, TValueKeys>) => RuleBuilder<TValue, TValueKeys>,
 ): IUnsubscribe {
 	return toSingleCall(deepSubscribeRule(
 		object,
-		subscribeValue,
+		valueSubscriber,
 		immediate,
 		ruleBuilder(new RuleBuilder<TObject, TValueKeys>()).result
 	))

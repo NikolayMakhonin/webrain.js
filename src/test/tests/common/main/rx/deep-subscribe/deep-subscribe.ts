@@ -7,6 +7,22 @@ import {createObject, IObject, Tester} from './helpers/Tester'
 describe('common > main > rx > deep-subscribe > deep-subscribe', function() {
 	const check = createObject()
 
+	it('unsubscribe leaf non object', function() {
+		const object1 = createObject()
+		new Tester(
+			{
+				object: object1.observableObject,
+				immediate: true,
+				doNotSubscribeNonObjectValues: true,
+			},
+			b => b.p('value'),
+		)
+			.subscribe(o => [o.value])
+			.unsubscribe(o => [o.value])
+			.subscribe(o => [o.value])
+			.unsubscribe(o => [o.value])
+	})
+
 	it('unsubscribe leaf', function() {
 		const object1 = createObject()
 		new Tester(
@@ -18,7 +34,7 @@ describe('common > main > rx > deep-subscribe > deep-subscribe', function() {
 				b2 => b2.p('valueObject'),
 				b2 => b2.p('map2').mapKey('valueObject'),
 			),
-			// b => b.p('map2').mapKey('valueObject'),
+			b => b.p('map2').mapKey('valueObject'),
 		)
 			.subscribe(o => [o.valueObject])
 			.unsubscribe(o => [o.valueObject])
