@@ -43,16 +43,22 @@ function unsubscribeNested(value: any, unsubscribers: IUnsubscribe[], unsubscrib
 		return
 	}
 
-	// TODO uncomment this
-	// if (unsubscribeCount > 1) {
-	// 	unsubscribersCount[itemUniqueId] = unsubscribeCount - 1
-	// } else {
+	if (unsubscribeCount > 1) {
+		unsubscribersCount[itemUniqueId] = unsubscribeCount - 1
+	} else {
 		const unsubscribe = unsubscribers[itemUniqueId]
 		// unsubscribers[itemUniqueId] = null // faster but there is a danger of memory overflow with nulls
 		delete unsubscribers[itemUniqueId]
 		delete unsubscribersCount[itemUniqueId]
-		unsubscribe()
-	// }
+
+		if (Array.isArray(unsubscribe)) {
+			for (let i = 0, len = unsubscribe.length; i < len; i++) {
+				unsubscribe[i]()
+			}
+		} else {
+			unsubscribe()
+		}
+	}
 }
 
 function subscribeNext<TValue>(
@@ -61,6 +67,7 @@ function subscribeNext<TValue>(
 	immediate: boolean,
 	ruleIterator: IRuleIterator,
 	leafUnsubscribers: IUnsubscribe[],
+	leafUnsubscribersCount: number[],
 	propertiesPath: () => string,
 	debugPropertyName: string,
 	debugParent: any,
@@ -85,6 +92,7 @@ function subscribeNext<TValue>(
 						immediate,
 						ruleIterator,
 						leafUnsubscribers,
+						leafUnsubscribersCount,
 						propertiesPath,
 						debugPropertyName,
 						debugParent,
@@ -118,6 +126,7 @@ function subscribeNext<TValue>(
 					immediate,
 					ruleIterator,
 					leafUnsubscribers,
+					leafUnsubscribersCount,
 					propertiesPath,
 					debugPropertyName,
 					debugParent,
@@ -138,17 +147,29 @@ function subscribeNext<TValue>(
 		unsubscribeValue: IUnsubscribe,
 	): IUnsubscribe {
 		const unsubscribe = () => {
-			// PROF: 371 - 0.8%
-			if (unsubscribeValue) {
+			const leafUnsubscribeCount = leafUnsubscribersCount[itemUniqueId]
+			if (!leafUnsubscribeCount) {
+				return
+			}
+
+			if (leafUnsubscribeCount > 1) {
+				leafUnsubscribersCount[itemUniqueId] = leafUnsubscribeCount - 1
+			} else {
 				// leafUnsubscribers[itemUniqueId] = null // faster but there is a danger of memory overflow with nulls
 				delete leafUnsubscribers[itemUniqueId]
-				const _unsubscribeValue = unsubscribeValue
-				unsubscribeValue = null
-				_unsubscribeValue()
+				delete leafUnsubscribersCount[itemUniqueId]
+
+				// PROF: 371 - 0.8%
+				if (unsubscribeValue) {
+					const _unsubscribeValue = unsubscribeValue
+					unsubscribeValue = null
+					_unsubscribeValue()
+				}
 			}
 		}
 
 		leafUnsubscribers[itemUniqueId] = unsubscribe
+		leafUnsubscribersCount[itemUniqueId] = 1
 
 		return unsubscribe
 	}
@@ -217,6 +238,7 @@ function subscribeNext<TValue>(
 
 		let unsubscribe: IUnsubscribe = leafUnsubscribers[itemUniqueId]
 		if (unsubscribe) {
+			leafUnsubscribersCount[itemUniqueId]++
 			return unsubscribe
 		}
 
@@ -226,7 +248,7 @@ function subscribeNext<TValue>(
 		}
 	}
 
-	let unsubscribers: IUnsubscribe[]
+	let unsubscribers: Array<IUnsubscribe|Array<IUnsubscribe>>
 	let unsubscribersCount: number[]
 
 	if (!iteration || iteration.done) {
@@ -255,6 +277,7 @@ function subscribeNext<TValue>(
 						immediate,
 						getNextRuleIterator(),
 						leafUnsubscribers,
+						leafUnsubscribersCount,
 						() => (propertiesPath ? propertiesPath() + '.' : '')
 							+ (debugPropertyName == null ? '' : debugPropertyName + '(' + rule.description + ')'),
 						debugPropertyName,
@@ -287,7 +310,7 @@ function subscribeNext<TValue>(
 			immediate,
 			(item, debugPropertyName: string) => {
 				// PROF: 1212 - 2.6%
-				let unsubscribe: IUnsubscribe
+				let unsubscribe: IUnsubscribe|Array<IUnsubscribe>
 				let itemUniqueId: number
 
 				if (item instanceof Object) {
@@ -310,7 +333,16 @@ function subscribeNext<TValue>(
 
 				if (unsubscribe) {
 					if (item instanceof Object) {
-						unsubscribers[itemUniqueId] = unsubscribe
+						let chainUnsubscribe = unsubscribers[itemUniqueId]
+						if (chainUnsubscribe) {
+							if (Array.isArray(chainUnsubscribe)) {
+								chainUnsubscribe.push(unsubscribe)
+								return
+							}
+							unsubscribers[itemUniqueId] = [chainUnsubscribe, unsubscribe]
+						} else {
+							unsubscribers[itemUniqueId] = unsubscribe
+						}
 						unsubscribersCount[itemUniqueId] = 1
 						return
 					}
@@ -333,7 +365,17 @@ function subscribeNext<TValue>(
 	return subscribeNextRule(
 		ruleIterator,
 		iteration,
-		nextRuleIterator => deepSubscribeRuleIterator(object, subscribeValue, immediate, nextRuleIterator, leafUnsubscribers, propertiesPath, debugPropertyName, debugParent),
+		nextRuleIterator => deepSubscribeRuleIterator(
+			object,
+			subscribeValue,
+			immediate,
+			nextRuleIterator,
+			leafUnsubscribers,
+			leafUnsubscribersCount,
+			propertiesPath,
+			debugPropertyName,
+			debugParent,
+		),
 		subscribeNode,
 	)
 }
@@ -344,6 +386,7 @@ function deepSubscribeRuleIterator<TValue>(
 	immediate: boolean,
 	ruleIterator: IRuleIterator,
 	leafUnsubscribers?: IUnsubscribe[],
+	leafUnsubscribersCount?: number[],
 	propertiesPath?: () => string,
 	debugPropertyName?: string,
 	debugParent?: any,
@@ -358,6 +401,10 @@ function deepSubscribeRuleIterator<TValue>(
 		leafUnsubscribers = []
 	}
 
+	if (!leafUnsubscribersCount) {
+		leafUnsubscribersCount = []
+	}
+
 	try {
 		return subscribeNext(
 			object,
@@ -365,6 +412,7 @@ function deepSubscribeRuleIterator<TValue>(
 			immediate,
 			ruleIterator,
 			leafUnsubscribers,
+			leafUnsubscribersCount,
 			propertiesPath,
 			debugPropertyName,
 			debugParent,

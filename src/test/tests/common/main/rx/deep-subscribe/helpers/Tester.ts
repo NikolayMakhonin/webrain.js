@@ -128,7 +128,7 @@ export function createObject() {
 	const propertyBuilder = new ObservableObjectBuilder(property)
 
 	Object.keys(object).forEach(key => {
-		if (key !== 'value' && key !== 'valueObject') {
+		// if (key !== 'value' && key !== 'valueObject') {
 			list.add(object[key])
 			set.add(object[key])
 			map2.set(key, object[key])
@@ -136,7 +136,7 @@ export function createObject() {
 			observableList.add(object[key])
 			observableSet.add(object[key])
 			observableMap.set(key, object[key])
-		}
+		// }
 
 		if (key !== VALUE_PROPERTY_DEFAULT) {
 			if (key !== 'valueObjectWritable') {

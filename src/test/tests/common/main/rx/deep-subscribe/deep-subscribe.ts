@@ -18,6 +18,7 @@ describe('common > main > rx > deep-subscribe > deep-subscribe', function() {
 				b2 => b2.p('valueObject'),
 				b2 => b2.p('map2').mapKey('valueObject'),
 			),
+			// b => b.p('map2').mapKey('valueObject'),
 		)
 			.subscribe(o => [o.valueObject])
 			.unsubscribe(o => [o.valueObject])
@@ -26,7 +27,7 @@ describe('common > main > rx > deep-subscribe > deep-subscribe', function() {
 			.unsubscribe([object1.valueObject])
 	})
 
-	it('unsubscribe repeat', function() {
+	it('unsubscribe repeat 2', function() {
 		new Tester(
 			{
 				object: createObject().object,
@@ -45,6 +46,21 @@ describe('common > main > rx > deep-subscribe > deep-subscribe', function() {
 			},
 			b => b
 				.repeat(2, 2, b => b
+					.path(o => o.object))
+				.path(o => o.observableObject.object),
+		)
+			.subscribe([check.object])
+			.unsubscribe([check.object])
+	})
+
+	it('unsubscribe repeat 0..5', function() {
+		new Tester(
+			{
+				object: createObject().object,
+				immediate: true,
+			},
+			b => b
+				.repeat(0, 5, b => b
 					.path(o => o.object))
 				.path(o => o.observableObject.object),
 		)
@@ -426,7 +442,7 @@ describe('common > main > rx > deep-subscribe > deep-subscribe', function() {
 		)
 			.subscribe(o => [o, o.map2, o.set])
 			.change(o => { o.set = o.observableObject as any }, o => [o.set], o => [])
-			.unsubscribe(o => [o, o.map2])
+			.unsubscribe(o => [o.map2, o])
 
 		// new Tester(
 		// 	{
