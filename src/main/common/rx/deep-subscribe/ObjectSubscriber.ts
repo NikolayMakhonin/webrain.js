@@ -42,22 +42,58 @@ export class ObjectSubscriber<TObject> implements IValueSubscriber<TObject> {
 			const unsubscribe: IUnsubscribe = _unsubscribers[itemUniqueId]
 			if (unsubscribe) {
 				_unsubscribersCount[itemUniqueId]++
-				return unsubscribe
+				return () => this.unsubscribe(value, parent, propertyName)
 			}
 		}
 
 		{
 			const unsubscribeValue = checkIsFuncOrNull(this._subscribe(value, parent, propertyName))
 			if (unsubscribeValue) {
-				return this.setUnsubscribe(itemUniqueId, unsubscribeValue)
+				this._unsubscribers[itemUniqueId] = unsubscribeValue
+				this._unsubscribersCount[itemUniqueId] = 1
+				return () => this.unsubscribe(value, parent, propertyName)
+				// return this._setUnsubscribeObject(itemUniqueId, unsubscribeValue)
 			}
 		}
 	}
 
 	public unsubscribe(value: TObject, parent: any, propertyName: string) {
+		if (!(value instanceof Object)) {
+			return
+		}
+
+		const {_unsubscribersCount} = this
+		if (!_unsubscribersCount) {
+			return
+		}
+
+		const itemUniqueId = getObjectUniqueId(value)
+
+		const unsubscribeCount = _unsubscribersCount[itemUniqueId]
+		if (!unsubscribeCount) {
+			return
+		}
+
+		if (unsubscribeCount > 1) {
+			_unsubscribersCount[itemUniqueId] = unsubscribeCount - 1
+		} else {
+			const {_unsubscribers} = this
+			const unsubscribe = _unsubscribers[itemUniqueId]
+			// unsubscribers[itemUniqueId] = null // faster but there is a danger of memory overflow with nulls
+			delete _unsubscribers[itemUniqueId]
+			delete _unsubscribersCount[itemUniqueId]
+
+			if (Array.isArray(unsubscribe)) {
+				for (let i = 0, len = unsubscribe.length; i < len; i++) {
+					unsubscribe[i]()
+				}
+			} else {
+				unsubscribe()
+			}
+		}
 	}
 
-	private setUnsubscribe(
+	private _setUnsubscribeObject(
 		itemUniqueId: number,
 		unsubscribeValue: IUnsubscribe,
 	): IUnsubscribe {
@@ -79,12 +115,11 @@ export class ObjectSubscriber<TObject> implements IValueSubscriber<TObject> {
 				delete this._unsubscribers[itemUniqueId]
 				delete _unsubscribersCount[itemUniqueId]
 
-				// PROF: 371 - 0.8%
-				if (unsubscribeValue) {
-					const _unsubscribeValue = unsubscribeValue
-					unsubscribeValue = null
-					_unsubscribeValue()
-				}
+				// if (unsubscribeValue) {
+				const _unsubscribeValue = unsubscribeValue
+				unsubscribeValue = null
+				_unsubscribeValue()
+				// }
 			}
 		}
 

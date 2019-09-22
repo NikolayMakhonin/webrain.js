@@ -17,10 +17,12 @@ describe('common > main > rx > deep-subscribe > deep-subscribe', function() {
 			},
 			b => b.p('value'),
 		)
-			.subscribe(o => [o.value])
-			.unsubscribe(o => [o.value])
-			.subscribe(o => [o.value])
-			.unsubscribe(o => [o.value])
+			.subscribe(o => [])
+			.unsubscribe(o => [])
+			// .subscribe(o => [o.value])
+			// .unsubscribe(o => [o.value])
+			// .subscribe(o => [o.value])
+			// .unsubscribe(o => [o.value])
 	})
 
 	it('unsubscribe leaf', function() {
@@ -41,6 +43,18 @@ describe('common > main > rx > deep-subscribe > deep-subscribe', function() {
 			.subscribe(o => [o.valueObject])
 			.change(o => o.valueObject = void 0, [], [])
 			.unsubscribe([object1.valueObject])
+	})
+
+	it('rule nothing', function() {
+		new Tester(
+			{
+				object: createObject().object,
+				immediate: true,
+			},
+			b => b.nothing(),
+		)
+			.subscribe([check.object])
+			.unsubscribe([check.object])
 	})
 
 	it('unsubscribe repeat 2', function() {

@@ -10,5 +10,12 @@ export interface IValueSubscriber<TValue> {
 		propertiesPath: () => string,
 		ruleDescription: string,
 	): IUnsubscribe|void
-	unsubscribe(value: TValue, parent: any, propertyName: string): void
+
+	unsubscribe(
+		value: TValue,
+		parent: any,
+		propertyName: string,
+		// propertiesPath: () => string,
+		// ruleDescription: string,
+	): void
 }

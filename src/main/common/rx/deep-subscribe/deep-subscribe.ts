@@ -1,14 +1,14 @@
-/* tslint:disable */ // TODO fix lint
+/* tslint:disable:no-shadowed-variable */
 import {isThenable} from '../../async/async'
 import {resolveAsync} from '../../async/ThenableSync'
+import {checkIsFuncOrNull, toSingleCall} from '../../helpers/helpers'
+import {getObjectUniqueId} from '../../helpers/object-unique-id'
 import {IUnsubscribe} from '../subjects/observable'
+import {ISubscribeValue, IValueSubscriber} from './contracts/common'
 import {IRule} from './contracts/rules'
 import {IRuleIterator, IRuleOrIterable, iterateRule, subscribeNextRule} from './iterate-rule'
 import {ObjectSubscriber} from './ObjectSubscriber'
-import {RuleBuilder} from "./RuleBuilder"
-import {ISubscribeValue, IValueSubscriber} from './contracts/common'
-import {getObjectUniqueId} from "../../helpers/object-unique-id"
-import {checkIsFuncOrNull, toSingleCall} from "../../helpers/helpers"
+import {RuleBuilder} from './RuleBuilder'
 import {hasDefaultProperty, subscribeDefaultProperty, SubscribeObjectType} from './rules-subscribe'
 
 // const UNSUBSCRIBE_PROPERTY_PREFIX = Math.random().toString(36)
@@ -28,7 +28,11 @@ function catchHandler(ex, propertiesPath?: () => string) {
 	throw ex
 }
 
-function unsubscribeNested(value: any, unsubscribers: Array<IUnsubscribe|IUnsubscribe[]>, unsubscribersCount: number[]): void {
+function unsubscribeNested(
+	value: any,
+	unsubscribers: Array<IUnsubscribe|IUnsubscribe[]>,
+	unsubscribersCount: number[],
+): void {
 	if (!(value instanceof Object)) {
 		return
 	}
@@ -132,7 +136,7 @@ function subscribeNext<TValue>(
 					debugPropertyName,
 					debugParent,
 					ruleDescription,
-		         iteration,
+					iteration,
 				),
 			)
 			if (result) {
@@ -192,7 +196,7 @@ function subscribeNext<TValue>(
 		return valueSubscriber.subscribe(value, debugParent, debugPropertyName, propertiesPath, ruleDescription)
 	}
 
-	let unsubscribers: Array<IUnsubscribe|Array<IUnsubscribe>>
+	let unsubscribers: Array<IUnsubscribe|IUnsubscribe[]>
 	let unsubscribersCount: number[]
 
 	if (!iteration || iteration.done) {
@@ -253,8 +257,15 @@ function subscribeNext<TValue>(
 			object,
 			immediate,
 			(item, debugPropertyName: string) => {
-				// PROF: 1212 - 2.6%
-				let unsubscribe: IUnsubscribe|Array<IUnsubscribe>
+				if (!getNextRuleIterator && !(item instanceof Object)) {
+					checkIsFuncOrNull(deepSubscribeItem(
+						item,
+						debugPropertyName,
+					))
+					return
+				}
+
+				let unsubscribe: IUnsubscribe|IUnsubscribe[]
 				let itemUniqueId: number
 
 				if (item instanceof Object) {
@@ -277,7 +288,7 @@ function subscribeNext<TValue>(
 
 				if (unsubscribe) {
 					if (item instanceof Object) {
-						let chainUnsubscribe = unsubscribers[itemUniqueId]
+						const chainUnsubscribe = unsubscribers[itemUniqueId]
 						if (chainUnsubscribe) {
 							if (Array.isArray(chainUnsubscribe)) {
 								chainUnsubscribe.push(unsubscribe)
@@ -292,16 +303,19 @@ function subscribeNext<TValue>(
 					}
 					unsubscribe()
 
-					throw new Error(`You should not return unsubscribe function for non Object value.\n`
-						+ `For subscribe value types use their object wrappers: Number, Boolean, String classes.\n`
+					throw new Error('You should not return unsubscribe function for non Object value.\n'
+						+ 'For subscribe value types use their object wrappers: Number, Boolean, String classes.\n'
 						+ `Unsubscribe function: ${unsubscribe}\nValue: ${item}\n`
 						+ `Value property path: ${(propertiesPath ? propertiesPath() + '.' : '')
 							+ (debugPropertyName == null ? '' : debugPropertyName + '(' + rule.description + ')')}`)
 				}
 			},
 			(item, debugPropertyName: string) => {
-				// PROF: 431 - 0.9%
-				unsubscribeNested(item, unsubscribers, unsubscribersCount)
+				if (!getNextRuleIterator && !(item instanceof Object)) {
+					valueSubscriber.unsubscribe(item, object, debugPropertyName)
+				} else {
+					unsubscribeNested(item, unsubscribers, unsubscribersCount)
+				}
 			},
 		))
 	}
@@ -335,8 +349,6 @@ function deepSubscribeRuleIterator<TValue>(
 	debugPropertyName?: string,
 	debugParent?: any,
 ): IUnsubscribe {
-	// PROF: 1158 - 2.4%
-
 	if (!immediate) {
 		throw new Error('immediate == false is deprecated')
 	}
@@ -393,6 +405,6 @@ export function deepSubscribe<TObject, TValue, TValueKeys extends string | numbe
 		object,
 		valueSubscriber,
 		immediate,
-		ruleBuilder(new RuleBuilder<TObject, TValueKeys>()).result
+		ruleBuilder(new RuleBuilder<TObject, TValueKeys>()).result,
 	))
 }
