@@ -564,6 +564,7 @@ export abstract class RuleSubscribe<TObject = any, TChild = any>
 {
 	public subscribe: ISubscribeObject<TObject, TChild>
 	public readonly unsubscribers: IUnsubscribe[]
+	public readonly unsubscribersCount: number[]
 
 	protected constructor() {
 		super(RuleType.Action)

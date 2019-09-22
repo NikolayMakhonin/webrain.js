@@ -1,14 +1,19 @@
 import {checkIsFuncOrNull} from '../../helpers/helpers'
 import {getObjectUniqueId} from '../../helpers/object-unique-id'
 import {IUnsubscribe} from '../subjects/observable'
-import {ISubscribeValue, IValueSubscriber} from './contracts/common'
+import {ISubscribeValue, IUnsubscribeValue, IValueSubscriber} from './contracts/common'
 
 export class ObjectSubscriber<TObject> implements IValueSubscriber<TObject> {
 	private readonly _subscribe: ISubscribeValue<TObject>
+	private readonly _unsubscribe: IUnsubscribeValue<TObject>
 	private _unsubscribers: IUnsubscribe[]
 	private _unsubscribersCount: number[]
-	constructor(subscribe: ISubscribeValue<TObject>) {
+	constructor(
+		subscribe: ISubscribeValue<TObject>,
+		unsubscribe: IUnsubscribeValue<TObject>,
+	) {
 		this._subscribe = subscribe
+		this._unsubscribe = unsubscribe
 	}
 
 	public subscribe(
@@ -18,6 +23,10 @@ export class ObjectSubscriber<TObject> implements IValueSubscriber<TObject> {
 		propertiesPath: () => string,
 		ruleDescription: string,
 	): IUnsubscribe {
+		// if (typeof value === 'undefined') {
+		// 	return
+		// }
+
 		if (!(value instanceof Object)) {
 			const unsubscribeValue = checkIsFuncOrNull(this._subscribe(value, parent, propertyName))
 			if (unsubscribeValue) {
@@ -29,47 +38,49 @@ export class ObjectSubscriber<TObject> implements IValueSubscriber<TObject> {
 					+ `Value property path: ${(propertiesPath ? propertiesPath() + '.' : '')
 						+ (propertyName == null ? '' : propertyName + '(' + ruleDescription + ')')}`)
 			}
-			return null
-		}
-
-		const itemUniqueId = getObjectUniqueId(value as any)
-
-		let {_unsubscribers, _unsubscribersCount} = this
-		if (!_unsubscribers) {
-			this._unsubscribers = _unsubscribers = []
-			this._unsubscribersCount = _unsubscribersCount = []
 		} else {
-			const unsubscribe: IUnsubscribe = _unsubscribers[itemUniqueId]
-			if (unsubscribe) {
+			const itemUniqueId = getObjectUniqueId(value as any)
+
+			let {_unsubscribers, _unsubscribersCount} = this
+			if (_unsubscribers && _unsubscribers[itemUniqueId]) {
 				_unsubscribersCount[itemUniqueId]++
-				return () => this.unsubscribe(value, parent, propertyName)
+			} else {
+				if (!_unsubscribers) {
+					this._unsubscribers = _unsubscribers = []
+					this._unsubscribersCount = _unsubscribersCount = []
+				}
+
+				const unsubscribeValue = checkIsFuncOrNull(this._subscribe(value, parent, propertyName))
+				if (unsubscribeValue) {
+					this._unsubscribers[itemUniqueId] = unsubscribeValue
+					this._unsubscribersCount[itemUniqueId] = 1
+					// return this._setUnsubscribeObject(itemUniqueId, unsubscribeValue)
+				}
 			}
 		}
 
-		{
-			const unsubscribeValue = checkIsFuncOrNull(this._subscribe(value, parent, propertyName))
-			if (unsubscribeValue) {
-				this._unsubscribers[itemUniqueId] = unsubscribeValue
-				this._unsubscribersCount[itemUniqueId] = 1
-				return () => this.unsubscribe(value, parent, propertyName)
-				// return this._setUnsubscribeObject(itemUniqueId, unsubscribeValue)
-			}
-		}
+		return () => this.unsubscribe(value, parent, propertyName)
 	}
 
 	public unsubscribe(value: TObject, parent: any, propertyName: string) {
 		if (!(value instanceof Object)) {
+			this._unsubscribe(value, parent, propertyName)
 			return
 		}
 
 		const {_unsubscribersCount} = this
 		if (!_unsubscribersCount) {
+			this._unsubscribe(value, parent, propertyName)
 			return
 		}
 
-		const itemUniqueId = getObjectUniqueId(value)
+		const itemUniqueId = getObjectUniqueId(value as any)
 
 		const unsubscribeCount = _unsubscribersCount[itemUniqueId]
+		if (unsubscribeCount == null) {
+			this._unsubscribe(value, parent, propertyName)
+			return
+		}
 		if (!unsubscribeCount) {
 			return
 		}

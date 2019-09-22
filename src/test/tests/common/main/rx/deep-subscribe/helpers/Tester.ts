@@ -39,6 +39,7 @@ export interface IObject {
 	set: ISet
 	map2: IMap
 	value: any
+	valueUndefined: any
 	valueObject: any
 	valueObjectWritable: any
 	promiseSync: { then(value: any): any }
@@ -77,6 +78,7 @@ interface IProperty extends ObservableObject {
 	value_list: IList
 	value_set: ISet
 	value_map2: IMap
+	value_valueUndefined: any
 	value_value: any
 	value_promiseSync: { then(value: any): any }
 	value_promiseAsync: { then(value: any): any }
@@ -117,6 +119,7 @@ export function createObject() {
 		list,
 		set,
 		map2,
+		valueUndefined: void 0,
 		value: 'value',
 		valueObject: new String('value'),
 		promiseSync: { then: resolve => resolve(observableObject) },
@@ -247,6 +250,7 @@ export class Tester<TObject, TValue> {
 			this._object,
 			(value: TValue) => {
 				if (this._doNotSubscribeNonObjectValues && !(value instanceof Object)) {
+					this._subscribed[i].push(value)
 					return
 				}
 
@@ -263,6 +267,13 @@ export class Tester<TObject, TValue> {
 				return () => {
 					this._unsubscribed[i].push(value)
 				}
+			},
+			(value: TValue) => {
+				if (this._performanceTest) {
+					return () => {}
+				}
+
+				this._unsubscribed[i].push(value)
 			},
 			this._immediate,
 			Math.random() > 0.5

@@ -279,6 +279,7 @@ describe('ObservableObject', function() {
 		testPerformance(createObject(observableObject => {
 			deepSubscribe(observableObject,
 				v => typeof v === 'object' && i++ % 3 === 0 ? () => {} : null,
+				v => {},
 				true,
 				b => b.path(o => o.prop),
 			)
@@ -303,6 +304,7 @@ describe('ObservableObject', function() {
 				// 	? () => {}
 				// 	: null,
 				v => null,
+				v => {},
 				true,
 				b => b.path(o => o.prop),
 			)

@@ -4,7 +4,7 @@ import {resolveAsync} from '../../async/ThenableSync'
 import {checkIsFuncOrNull, toSingleCall} from '../../helpers/helpers'
 import {getObjectUniqueId} from '../../helpers/object-unique-id'
 import {IUnsubscribe} from '../subjects/observable'
-import {ISubscribeValue, IValueSubscriber} from './contracts/common'
+import {ISubscribeValue, IUnsubscribeValue, IValueSubscriber} from './contracts/common'
 import {IRule} from './contracts/rules'
 import {IRuleIterator, IRuleOrIterable, iterateRule, subscribeNextRule} from './iterate-rule'
 import {ObjectSubscriber} from './ObjectSubscriber'
@@ -257,6 +257,9 @@ function subscribeNext<TValue>(
 			object,
 			immediate,
 			(item, debugPropertyName: string) => {
+				if (typeof item === 'undefined') {
+					return
+				}
 				if (!getNextRuleIterator && !(item instanceof Object)) {
 					checkIsFuncOrNull(deepSubscribeItem(
 						item,
@@ -311,6 +314,9 @@ function subscribeNext<TValue>(
 				}
 			},
 			(item, debugPropertyName: string) => {
+				if (typeof item === 'undefined') {
+					return
+				}
 				if (!getNextRuleIterator && !(item instanceof Object)) {
 					valueSubscriber.unsubscribe(item, object, debugPropertyName)
 				} else {
@@ -381,15 +387,14 @@ function deepSubscribeRuleIterator<TValue>(
 
 export function deepSubscribeRule<TValue>(
 	object: any,
-	valueSubscriber: IValueSubscriber<TValue>|ISubscribeValue<TValue>,
+	subscribeValue: ISubscribeValue<TValue>,
+	unsubscribeValue: IUnsubscribeValue<TValue>,
 	immediate: boolean,
 	rule: IRule,
 ): IUnsubscribe {
 	return toSingleCall(deepSubscribeRuleIterator<TValue>(
 		object,
-		typeof valueSubscriber === 'function'
-			? new ObjectSubscriber(valueSubscriber)
-			: valueSubscriber,
+		new ObjectSubscriber(subscribeValue, unsubscribeValue),
 		immediate,
 		iterateRule(rule)[Symbol.iterator](),
 	))
@@ -397,13 +402,15 @@ export function deepSubscribeRule<TValue>(
 
 export function deepSubscribe<TObject, TValue, TValueKeys extends string | number = never>(
 	object: TObject,
-	valueSubscriber: IValueSubscriber<TValue>,
+	subscribeValue: ISubscribeValue<TValue>,
+	unsubscribeValue: IUnsubscribeValue<TValue>,
 	immediate: boolean,
 	ruleBuilder: (ruleBuilder: RuleBuilder<TObject, TValueKeys>) => RuleBuilder<TValue, TValueKeys>,
 ): IUnsubscribe {
 	return toSingleCall(deepSubscribeRule(
 		object,
-		valueSubscriber,
+		subscribeValue,
+		unsubscribeValue,
 		immediate,
 		ruleBuilder(new RuleBuilder<TObject, TValueKeys>()).result,
 	))

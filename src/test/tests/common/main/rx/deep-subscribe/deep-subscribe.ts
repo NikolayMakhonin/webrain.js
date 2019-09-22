@@ -17,12 +17,10 @@ describe('common > main > rx > deep-subscribe > deep-subscribe', function() {
 			},
 			b => b.p('value'),
 		)
-			.subscribe(o => [])
-			.unsubscribe(o => [])
-			// .subscribe(o => [o.value])
-			// .unsubscribe(o => [o.value])
-			// .subscribe(o => [o.value])
-			// .unsubscribe(o => [o.value])
+			.subscribe(o => [o.value])
+			.unsubscribe(o => [o.value])
+			.subscribe(o => [o.value])
+			.unsubscribe(o => [o.value])
 	})
 
 	it('unsubscribe leaf', function() {
@@ -33,7 +31,7 @@ describe('common > main > rx > deep-subscribe > deep-subscribe', function() {
 				immediate: true,
 			},
 			b => b.any(
-				b2 => b2.p('valueObject'),
+				b2 => b2.p('observableMap').mapKey('valueObject'),
 				b2 => b2.p('map2').mapKey('valueObject'),
 			),
 			b => b.p('map2').mapKey('valueObject'),
@@ -41,7 +39,7 @@ describe('common > main > rx > deep-subscribe > deep-subscribe', function() {
 			.subscribe(o => [o.valueObject])
 			.unsubscribe(o => [o.valueObject])
 			.subscribe(o => [o.valueObject])
-			.change(o => o.valueObject = void 0, [], [])
+			.change(o => o.observableMap.delete('valueObject'), [], [])
 			.unsubscribe([object1.valueObject])
 	})
 
@@ -223,9 +221,9 @@ describe('common > main > rx > deep-subscribe > deep-subscribe', function() {
 		)
 			.subscribe([check.object])
 			.change(o => o.observableObject.object = 1 as any,
-				o => [o.object], [])
+				o => [o.object], [1])
 			.change(o => o.observableObject.object = new Number(1) as any,
-				[], [new Number(1) as any])
+				[1], [new Number(1) as any])
 			.change(o => o.observableObject.object = new Number(2) as any,
 				[new Number(1) as any], [new Number(2) as any])
 			.unsubscribe([new Number(2) as any])
@@ -269,9 +267,9 @@ describe('common > main > rx > deep-subscribe > deep-subscribe', function() {
 				check.object,
 			])
 			.change(o => o.observableObject.object = 1 as any,
-				o => [o.object], [])
+				o => [o.object], [1])
 			.change(o => o.observableObject.object = new Number(1) as any,
-				[], [new Number(1) as any])
+				[1], [new Number(1) as any])
 			.change(o => o.observableObject.object = new Number(2) as any,
 				[new Number(1) as any], [new Number(2) as any])
 			.unsubscribe([
@@ -437,8 +435,9 @@ describe('common > main > rx > deep-subscribe > deep-subscribe', function() {
 			b => b
 				.path((o: any) => o['object|observableObject'].value),
 		)
-			.subscribe([])
+			.subscribe(['value', 'value'])
 			.change(o => {}, [], [])
+			.unsubscribe(['value', 'value'])
 
 		new Tester(
 			{
@@ -534,15 +533,15 @@ describe('common > main > rx > deep-subscribe > deep-subscribe', function() {
 			)
 				.subscribe(o => [o.property])
 				.change(o => {new ObservableObjectBuilder(o.property).writable(VALUE_PROPERTY_DEFAULT, null, null) }, o => [o.property], o => [o.map2])
-				.change(o => { o.property.value_map2 = null }, o => [o.map2], o => [])
-				.change(o => { new ObservableObjectBuilder(o.property).delete('value_map2') }, o => [], o => [o.set])
+				.change(o => { o.property.value_map2 = 1 as any }, o => [o.map2], o => [1])
+				.change(o => { new ObservableObjectBuilder(o.property).delete('value_map2') }, o => [1], o => [o.set])
 				.change(o => { new ObservableObjectBuilder(o.property).delete('value_set') }, o => [o.set], o => [o.list])
 				.change(o => { o.property.value_list = o.map2 as any }, o => [o.list], o => [o.map2])
-				.change(o => { new ObservableObjectBuilder(o.property).delete('value_list') }, o => [o.map2], o => [])
-				.change(o => { o.property[VALUE_PROPERTY_DEFAULT] = void 0 }, o => [], o => [])
+				.change(o => { new ObservableObjectBuilder(o.property).delete('value_list') }, o => [o.map2], o => [null])
+				.change(o => { o.property[VALUE_PROPERTY_DEFAULT] = void 0 }, o => [null], o => [])
 				.change(o => { o.property[VALUE_PROPERTY_DEFAULT] = o as any }, o => [], o => [o])
-				.change(o => { new ObservableObjectBuilder(o.property).writable('value_map2', null, null) }, o => [o], o => [])
-				.change(o => { new ObservableObjectBuilder(o.property).delete('value_map2') }, o => [], o => [o])
+				.change(o => { new ObservableObjectBuilder(o.property).writable('value_map2', null, 2) }, o => [o], o => [2])
+				.change(o => { new ObservableObjectBuilder(o.property).delete('value_map2') }, o => [2], o => [o])
 				.change(o => { new ObservableObjectBuilder(o.property).writable('value_list', null, o.list) }, o => [o], o => [o.list])
 				.change(o => { new ObservableObjectBuilder(o.property).delete(VALUE_PROPERTY_DEFAULT) }, o => [o.list], o => [o.property])
 				.unsubscribe(o => [o.property])
@@ -557,13 +556,13 @@ describe('common > main > rx > deep-subscribe > deep-subscribe', function() {
 			b => b.path((o: any) => o.property['@value_map2|value_set|value_list']),
 		)
 			.subscribe(o => [o.map2])
-			.change(o => { o.property.value_map2 = null }, o => [o.map2], o => [])
-			.change(o => { new ObservableObjectBuilder(o.property).delete('value_map2') }, o => [], o => [o.set])
+			.change(o => { o.property.value_map2 = 0 as any }, o => [o.map2], o => [0])
+			.change(o => { new ObservableObjectBuilder(o.property).delete('value_map2') }, o => [0], o => [o.set])
 			.change(o => { new ObservableObjectBuilder(o.property).delete('value_set') }, o => [o.set], o => [o.list])
 			.change(o => { o.property.value_list = o.map2 as any }, o => [o.list], o => [o.map2])
 			.change(o => { new ObservableObjectBuilder(o.property).delete('value_list') }, o => [o.map2], o => [o])
-			.change(o => { new ObservableObjectBuilder(o.property).writable('value_map2', null, null) }, o => [o], o => [])
-			.change(o => { new ObservableObjectBuilder(o.property).delete('value_map2') }, o => [], o => [o])
+			.change(o => { new ObservableObjectBuilder(o.property).writable('value_map2', null, null) }, o => [o], o => [null])
+			.change(o => { new ObservableObjectBuilder(o.property).delete('value_map2') }, o => [null], o => [o])
 			.change(o => { new ObservableObjectBuilder(o.property).writable('value_list', null, o.list) }, o => [o], o => [o.list])
 			.unsubscribe(o => [o.list])
 
@@ -673,10 +672,10 @@ describe('common > main > rx > deep-subscribe > deep-subscribe', function() {
 						b => b.path(o => o['list|set|map2|observableList|observableSet|observableMap']['#']),
 					),
 				)
-				.path(o => o.value),
+				.path(o => o.valueUndefined),
 		)
 			.subscribe([])
-			.change(o => (o.observableObject as any).target = value,
+			.change(o => (o.observableObject as any).valueUndefined = value,
 				[], [value])
 			.change(o => o.observableList.add(value as any),
 				[], [])
@@ -700,7 +699,7 @@ describe('common > main > rx > deep-subscribe > deep-subscribe', function() {
 						b => b.path(o => o['list|set|map2|observableList|observableSet|observableMap']['#']),
 					),
 				)
-				.path(o => o['#value']),
+				.path(o => o['#valueUndefined']),
 		)
 			.subscribe([])
 			.change(o => (o.observableObject as any).target = value,
