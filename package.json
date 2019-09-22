@@ -80,6 +80,7 @@
     "@babel/runtime-corejs3": "^7.6.0",
     "@metahub/karma-rollup-preprocessor": "^4.1.0",
     "@theintern/leadfoot": "^2.2.12",
+    "@types/mocha": "^5.2.7",
     "assertion-error": "^1.1.0",
     "babel-eslint": "^10.0.3",
     "chai": "^4.2.0",

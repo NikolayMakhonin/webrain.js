@@ -25,7 +25,7 @@ export function delay(timeMilliseconds) {
 export type TClass<T> = new (...args: any[]) => T
 export type TFunc<TResult> = (...args: any[]) => TResult
 
-export function checkIsFuncOrNull<T extends TFunc<any>>(func: T): T {
+export function checkIsFuncOrNull<T extends TFunc<any>|void>(func: T): T {
 	// PROF: 66 - 0.1%
 	if (func != null && typeof func !== 'function') {
 		throw new Error(`Value is not a function or null/undefined: ${func}`)

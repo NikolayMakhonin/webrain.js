@@ -64,15 +64,13 @@ export function subscribeDependencies<TSubscribeObject, TActionTarget>(
 	const unsubscribers = []
 	for (let i = 0, len = dependencies.length; i < len; i++) {
 		const [rule, action] = dependencies[i]
-		unsubscribers.push(deepSubscribeRule(
-			subscribeObject,
-			(value, parent, propertyName) => {
+		unsubscribers.push(deepSubscribeRule({
+			object: subscribeObject,
+			lastValue(value, parent, propertyName) {
 				action(actionTarget, value, parent, propertyName)
-				return null
 			},
-			true,
 			rule,
-		))
+		}))
 	}
 
 	return () => {

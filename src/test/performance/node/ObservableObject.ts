@@ -277,12 +277,11 @@ describe('ObservableObject', function() {
 	it('deepSubscribe', function() { // 2162n | 1890n
 		let i = 0
 		testPerformance(createObject(observableObject => {
-			deepSubscribe(observableObject,
-				v => typeof v === 'object' && i++ % 3 === 0 ? () => {} : null,
-				v => {},
-				true,
-				b => b.path(o => o.prop),
-			)
+			deepSubscribe({
+				object: observableObject,
+				lastValue: v => typeof v === 'object' && i++ % 3 === 0 ? () => {} : null,
+				ruleBuilder: b => b.path(o => o.prop),
+			})
 		}))
 	})
 
@@ -299,15 +298,14 @@ describe('ObservableObject', function() {
 
 	it('deepSubscribe memory', function() { // 48 | 0
 		const object = createObject(observableObject => {
-			deepSubscribe(observableObject,
+			deepSubscribe({
+				object: observableObject,
 				// v => v != null && typeof v === 'object'
 				// 	? () => {}
 				// 	: null,
-				v => null,
-				v => {},
-				true,
-				b => b.path(o => o.prop),
-			)
+				lastValue: v => null,
+				ruleBuilder: b => b.path(o => o.prop),
+			})
 		}).observableObject1
 		const value1 = {}
 		const value2 = {}

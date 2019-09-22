@@ -221,9 +221,9 @@ describe('common > main > rx > deep-subscribe > deep-subscribe', function() {
 		)
 			.subscribe([check.object])
 			.change(o => o.observableObject.object = 1 as any,
-				o => [o.object], [1])
+				o => [o.object], [1 as any])
 			.change(o => o.observableObject.object = new Number(1) as any,
-				[1], [new Number(1) as any])
+				[1 as any], [new Number(1) as any])
 			.change(o => o.observableObject.object = new Number(2) as any,
 				[new Number(1) as any], [new Number(2) as any])
 			.unsubscribe([new Number(2) as any])
@@ -267,9 +267,9 @@ describe('common > main > rx > deep-subscribe > deep-subscribe', function() {
 				check.object,
 			])
 			.change(o => o.observableObject.object = 1 as any,
-				o => [o.object], [1])
+				o => [o.object], [1 as any])
 			.change(o => o.observableObject.object = new Number(1) as any,
-				[1], [new Number(1) as any])
+				[1 as any], [new Number(1) as any])
 			.change(o => o.observableObject.object = new Number(2) as any,
 				[new Number(1) as any], [new Number(2) as any])
 			.unsubscribe([
@@ -644,6 +644,7 @@ describe('common > main > rx > deep-subscribe > deep-subscribe', function() {
 			o => object.observableObject.value = new Number(2) as any,
 			[],
 			[new Number(2)],
+			null,
 			Error,
 			/Value is not a function or null\/undefined/,
 		)
@@ -760,6 +761,7 @@ describe('common > main > rx > deep-subscribe > deep-subscribe', function() {
 				o => o.object = 1 as any,
 				o => [o.object, 1 as any],
 				o => [1 as any],
+				null,
 				Error,
 				/unsubscribe function for non Object value/,
 			)
@@ -781,7 +783,7 @@ describe('common > main > rx > deep-subscribe > deep-subscribe', function() {
 			},
 		)
 			.subscribe(
-				["value"], ["value"],
+				["value"], ["value"], null,
 				Error,
 				/unsubscribe function for non Object value/,
 			)
@@ -799,7 +801,7 @@ describe('common > main > rx > deep-subscribe > deep-subscribe', function() {
 				.path((o: any) => o.object),
 		)
 			.subscribe(
-				o => [o.object], [],
+				o => [o.object], [], null,
 				Error,
 				/Value is not a function or null\/undefined/,
 			)
@@ -815,7 +817,7 @@ describe('common > main > rx > deep-subscribe > deep-subscribe', function() {
 				.path((o: any) => o.object.value),
 		)
 			.subscribe(
-				["value"], [],
+				["value"], [], null,
 				Error,
 				/Value is not a function or null\/undefined/,
 			)

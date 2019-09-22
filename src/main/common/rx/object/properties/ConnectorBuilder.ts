@@ -125,9 +125,11 @@ export class ConnectorBuilder<
 							this._setUnsubscriber(name, null)
 
 							if (hasSubscribers) {
-								const unsubscribe = deepSubscribeRule<TValue>(
-									this, receiveValue, true, rule,
-								)
+								const unsubscribe = deepSubscribeRule<TValue>({
+									object: this,
+									lastValue: receiveValue,
+									rule,
+								})
 
 								this._setUnsubscriber(name, unsubscribe)
 							}
