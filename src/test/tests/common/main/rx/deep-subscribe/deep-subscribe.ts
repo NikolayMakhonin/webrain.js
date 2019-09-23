@@ -160,9 +160,9 @@ describe('common > main > rx > deep-subscribe > deep-subscribe', function() {
 				doNotSubscribeNonObjectValues: true,
 			},
 			b => b.path(o => o.observableObjectPrototype.valueObjectWritable),
-			b => b.path(o => o.observableObject.observableObjectPrototype.valueObjectWritable),
-			b => b.path(o => o.observableObjectPrototype.observableObject.observableObjectPrototype.valueObjectWritable),
-			b => b.path(o => o.observableObject.observableObject.observableObjectPrototype.valueObjectWritable),
+			// b => b.path(o => o.observableObject.observableObjectPrototype.valueObjectWritable),
+			// b => b.path(o => o.observableObjectPrototype.observableObject.observableObjectPrototype.valueObjectWritable),
+			// b => b.path(o => o.observableObject.observableObject.observableObjectPrototype.valueObjectWritable),
 		)
 			.subscribe([])
 			.unsubscribe([])

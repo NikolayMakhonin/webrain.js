@@ -257,9 +257,9 @@ function subscribeNext<TValue>(
 			object,
 			immediate,
 			(item, debugPropertyName: string) => {
-				// if (typeof item === 'undefined') {
-				// 	return
-				// }
+				if (getNextRuleIterator && typeof item === 'undefined') {
+					return
+				}
 				if (!getNextRuleIterator && !(item instanceof Object)) {
 					checkIsFuncOrNull(deepSubscribeItem(
 						item,
@@ -314,9 +314,9 @@ function subscribeNext<TValue>(
 				}
 			},
 			(item, debugPropertyName: string) => {
-				// if (typeof item === 'undefined') {
-				// 	return
-				// }
+				if (getNextRuleIterator && typeof item === 'undefined') {
+					return
+				}
 				if (!getNextRuleIterator && !(item instanceof Object)) {
 					valueSubscriber.unsubscribe(item, object, debugPropertyName)
 				} else {

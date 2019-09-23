@@ -76,7 +76,11 @@ function subscribeObjectValue<TValue>(
 		if (propertyName == null) {
 			subscribeItem(object as any, null)
 		} else {
-			subscribeItem(object[propertyName], VALUE_PROPERTY_PREFIX + propertyName)
+			const value = object[propertyName]
+			if (typeof value !== 'undefined') {
+				subscribeItem(value, VALUE_PROPERTY_PREFIX + propertyName)
+			}
+			subscribeItem(void 0, VALUE_PROPERTY_PREFIX + propertyName)
 		}
 	}
 
@@ -84,7 +88,11 @@ function subscribeObjectValue<TValue>(
 		if (subscribePropertyName == null) {
 			unsubscribeItem(object as any, null)
 		} else {
-			unsubscribeItem(object[subscribePropertyName], VALUE_PROPERTY_PREFIX + subscribePropertyName)
+			unsubscribeItem(void 0, VALUE_PROPERTY_PREFIX + subscribePropertyName)
+			const value = object[subscribePropertyName]
+			if (typeof value !== 'undefined') {
+				unsubscribeItem(object[subscribePropertyName], VALUE_PROPERTY_PREFIX + subscribePropertyName)
+			}
 		}
 		subscribePropertyName = null
 	}
@@ -214,7 +222,7 @@ function subscribeObject<TValue>(
 			}))
 	}
 
-	const forEach = (callbackfn: (item: TValue, debugPropertyName: string) => void, allowUndefined: boolean) => {
+	const forEach = (callbackfn: (item: TValue, debugPropertyName: string) => void, isSubscribe: boolean) => {
 		if (propertyNames == null) {
 			for (const propertyName in object) {
 				if ((allowSubscribePrototype || Object.prototype.hasOwnProperty.call(object, propertyName))
@@ -227,20 +235,38 @@ function subscribeObject<TValue>(
 			if (Array.isArray(propertyNames)) {
 				for (let i = 0, len = propertyNames.length; i < len; i++) {
 					const propertyName = propertyNames[i]
-					// if (allowUndefined || (allowSubscribePrototype
-					// 	? propertyName in object
-					// 	: Object.prototype.hasOwnProperty.call(object, propertyName))
-					// ) {
-					callbackfn(object[propertyName], propertyName)
-					// }
+					if (!isSubscribe) {
+						callbackfn(void 0, propertyName)
+					}
+					if ((allowSubscribePrototype
+						? propertyName in object
+						: Object.prototype.hasOwnProperty.call(object, propertyName))
+					) {
+						const value = object[propertyName]
+						if (typeof value !== 'undefined') {
+							callbackfn(value, propertyName)
+						}
+					}
+					if (isSubscribe) {
+						callbackfn(void 0, propertyName)
+					}
 				}
 			} else {
-				// if (allowUndefined || (allowSubscribePrototype
-				// 	? propertyNames in object
-				// 	: Object.prototype.hasOwnProperty.call(object, propertyNames))
-				// ) {
-				callbackfn(object[propertyNames], propertyNames)
-				// }
+				if (!isSubscribe) {
+					callbackfn(void 0, propertyNames)
+				}
+				if ((allowSubscribePrototype
+					? propertyNames in object
+					: Object.prototype.hasOwnProperty.call(object, propertyNames))
+				) {
+					const value = object[propertyNames]
+					if (typeof value !== 'undefined') {
+						callbackfn(value, propertyNames)
+					}
+				}
+				if (isSubscribe) {
+					callbackfn(void 0, propertyNames)
+				}
 			}
 		}
 	}
@@ -442,13 +468,19 @@ function subscribeMap<K, V>(
 			}))
 	}
 
-	const forEach = (callbackfn: (item: V, debugPropertyName: string) => void, allowUndefined: boolean) => {
+	const forEach = (callbackfn: (item: V, debugPropertyName: string) => void, isSubscribe: boolean) => {
 		if (keys) {
 			for (let i = 0, len = keys.length; i < len; i++) {
 				const key = keys[i]
-				// if (allowUndefined || object.has(key)) {
-				callbackfn(object.get(key), COLLECTION_PREFIX + key)
-				// }
+				if (!isSubscribe) {
+					callbackfn(void 0, COLLECTION_PREFIX + key)
+				}
+				if (object.has(key)) {
+					callbackfn(object.get(key), COLLECTION_PREFIX + key)
+				}
+				if (isSubscribe) {
+					callbackfn(void 0, COLLECTION_PREFIX + key)
+				}
 			}
 		} else {
 			for (const entry of object) {

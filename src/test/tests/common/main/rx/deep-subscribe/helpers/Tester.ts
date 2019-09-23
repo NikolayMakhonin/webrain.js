@@ -308,7 +308,9 @@ export class Tester<TObject, TValue> {
 			object: this._object,
 			subscribeValue: (value: TValue, parent, propertyName) => {
 				if (this._doNotSubscribeNonObjectValues && !(value instanceof Object)) {
-					if (this._subscribersCount[i] === 0) {
+					if (typeof this._expectedLastValue[i][this._expectedLastValue[i].length - 1] === 'undefined'
+						|| this._subscribersCount[i] === 0
+					) {
 						this._expectedLastValue[i].push(value)
 					}
 					this._subscribersCount[i]++
@@ -322,7 +324,9 @@ export class Tester<TObject, TValue> {
 					return () => {}
 				}
 
-				if (this._subscribersCount[i] === 0) {
+				if (typeof this._expectedLastValue[i][this._expectedLastValue[i].length - 1] === 'undefined'
+					|| this._subscribersCount[i] === 0
+				) {
 					this._expectedLastValue[i].push(value)
 				}
 				this._subscribersCount[i]++
@@ -348,6 +352,10 @@ export class Tester<TObject, TValue> {
 				this._subscribersCount[i]--
 				if (this._subscribersCount[i] === 0) {
 					this._expectedLastValue[i].push(void 0) // parent.constructor.name + '.' + propertyName)
+				}
+				if (this._subscribersCount[i] < 0) {
+					assert.strictEqual(typeof value, 'undefined')
+					this._subscribersCount[i] = 0
 				}
 
 				if (typeof value !== 'undefined' && !isUnsubscribed) {
@@ -550,7 +558,6 @@ export class Tester<TObject, TValue> {
 			await delay(10)
 
 			this.checkSubscribes(this._unsubscribed[i], expectedUnsubscribed, 'unsubscribed[]')
-			assert.strictEqual(this._subscribersCount[i], 0, 'subscribersCount')
 
 			if (!expectedSubscribed) {
 				assert.strictEqual(this._unsubscribe[i], null, 'unsubscribe()')
@@ -636,6 +643,7 @@ export class Tester<TObject, TValue> {
 
 			if (errorType) {
 				assert.throws(() => this._unsubscribe[i](), errorType, errorRegExp)
+				assert.strictEqual(this._subscribersCount[i], 0, 'subscribersCount')
 				assert.deepStrictEqual(this._subscribed[i], [], 'subscribed[]')
 				assert.deepStrictEqual(this._unsubscribed[i], [], 'unsubscribed[]')
 				assert.deepStrictEqual(this._lastValue[i], [], 'lastValue[]')

@@ -167,7 +167,7 @@ export class ObjectSubscriber<TObject> implements IValueSubscriber<TObject> {
 		if (this._lastValue) {
 			const {_subscribedValues, _subscribedParents, _subscribedPropertyNames} = this
 			if (_subscribedValues) {
-				let index
+				let index = -1
 				const len = _subscribedValues.length
 				for (let i = 0; i < len; i++) {
 					if ((typeof _subscribedValues[i] === 'undefined') === (typeof value === 'undefined')
@@ -180,7 +180,9 @@ export class ObjectSubscriber<TObject> implements IValueSubscriber<TObject> {
 				}
 
 				if (index < 0) {
-					throw new Error(`subscribedValue not found: ${parent.constructor.name}.${propertyName} = ${value}`)
+					if (typeof value !== 'undefined') {
+						throw new Error(`subscribedValue no found: ${parent.constructor.name}.${propertyName} = ${value}`)
+					}
 				} else {
 					if (index === len - 1) {
 						_subscribedValues.length = len - 1
@@ -193,7 +195,7 @@ export class ObjectSubscriber<TObject> implements IValueSubscriber<TObject> {
 								_subscribedPropertyNames[len - 2],
 							)
 						} else {
-							this._lastValue(void 0, parent, propertyName)
+							this._lastValue(void 0, null, null)
 						}
 					} else {
 						if (index !== len - 2) {
