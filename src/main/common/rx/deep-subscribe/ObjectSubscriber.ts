@@ -10,6 +10,8 @@ export class ObjectSubscriber<TObject> implements IValueSubscriber<TObject> {
 	private _unsubscribers: IUnsubscribe[]
 	private _unsubscribersCount: number[]
 	private _subscribedValues: TObject[]
+	private _subscribedParents: any[]
+	private _subscribedPropertyNames: string[]
 	constructor(
 		subscribe?: ISubscribeValue<TObject>,
 		unsubscribe?: IUnsubscribeValue<TObject>,
@@ -27,7 +29,7 @@ export class ObjectSubscriber<TObject> implements IValueSubscriber<TObject> {
 		propertiesPath: () => string,
 		ruleDescription: string,
 	): IUnsubscribe {
-		if (this._subscribe) {
+		if (this._subscribe) { // && typeof value !== 'undefined') {
 			if (!(value instanceof Object)) {
 				const unsubscribeValue = checkIsFuncOrNull(this._subscribe(value, parent, propertyName))
 				if (unsubscribeValue) {
@@ -62,24 +64,59 @@ export class ObjectSubscriber<TObject> implements IValueSubscriber<TObject> {
 		}
 
 		if (this._lastValue) {
-			let {_subscribedValues} = this
+			let {_subscribedValues, _subscribedParents, _subscribedPropertyNames} = this
 			if (!_subscribedValues) {
 				this._subscribedValues = _subscribedValues = []
+				this._subscribedParents = _subscribedParents = []
+				this._subscribedPropertyNames = _subscribedPropertyNames = []
 			}
-			const index = _subscribedValues.lastIndexOf(value)
+			let index
+			const len = _subscribedValues.length
+			for (let i = len - 1; i >= 0; i--) {
+				if ((typeof _subscribedValues[i] === 'undefined') === (typeof value === 'undefined')
+					&& _subscribedParents[i] === parent
+					&& _subscribedPropertyNames[i] === propertyName
+				) {
+					index = i
+					break
+				}
+			}
+
 			if (index >= 0) {
-				const len = _subscribedValues.length
 				if (index < len - 1) {
 					for (let i = len - 1; i > index; i--) {
 						_subscribedValues[i + 1] = _subscribedValues[i]
+						_subscribedParents[i + 1] = _subscribedParents[i]
+						_subscribedPropertyNames[i + 1] = _subscribedPropertyNames[i]
 					}
 					_subscribedValues[index + 1] = value
+					_subscribedParents[index + 1] = parent
+					_subscribedPropertyNames[index + 1] = propertyName
 				} else {
 					_subscribedValues.push(value)
+					_subscribedParents.push(parent)
+					_subscribedPropertyNames.push(propertyName)
 				}
 			} else {
-				_subscribedValues.push(value)
-				this._lastValue(value, parent, propertyName)
+				if (len > 0 && (typeof value === 'undefined' || typeof _subscribedValues[len - 1] !== 'undefined')) {
+					if (typeof value === 'undefined') {
+						_subscribedValues.unshift(value)
+						_subscribedParents.unshift(parent)
+						_subscribedPropertyNames.unshift(propertyName)
+					} else {
+						_subscribedValues[len] = _subscribedValues[len - 1]
+						_subscribedParents[len] = _subscribedParents[len - 1]
+						_subscribedPropertyNames[len] = _subscribedPropertyNames[len - 1]
+						_subscribedValues[len - 1] = value
+						_subscribedParents[len - 1] = parent
+						_subscribedPropertyNames[len - 1] = propertyName
+					}
+				} else {
+					_subscribedValues.push(value)
+					_subscribedParents.push(parent)
+					_subscribedPropertyNames.push(propertyName)
+					this._lastValue(value, parent, propertyName)
+				}
 			}
 		}
 
@@ -87,8 +124,9 @@ export class ObjectSubscriber<TObject> implements IValueSubscriber<TObject> {
 	}
 
 	public unsubscribe(value: TObject, parent: any, propertyName: string) {
-		if (this._subscribe) {
-			let isUnsubscribed
+		if (this._subscribe) { //  && typeof value !== 'undefined') {
+			let unsubscribed
+			let unsubscribedLast
 			if (value instanceof Object) {
 				const {_unsubscribersCount} = this
 				if (_unsubscribersCount) {
@@ -112,37 +150,63 @@ export class ObjectSubscriber<TObject> implements IValueSubscriber<TObject> {
 								} else {
 									unsubscribe()
 								}
+
+								unsubscribedLast = true
 							}
 						}
-						isUnsubscribed = true
+						unsubscribed = true
 					}
 				}
 			}
 
-			if (this._unsubscribe && !isUnsubscribed) {
-				this._unsubscribe(value, parent, propertyName)
+			if (this._unsubscribe && (unsubscribedLast || !unsubscribed)) {
+				this._unsubscribe(value, parent, propertyName, unsubscribedLast)
 			}
 		}
 
 		if (this._lastValue) {
-			const {_subscribedValues} = this
+			const {_subscribedValues, _subscribedParents, _subscribedPropertyNames} = this
 			if (_subscribedValues) {
-				const index = _subscribedValues.indexOf(value)
-				if (index >= 0) {
-					const len = _subscribedValues.length
+				let index
+				const len = _subscribedValues.length
+				for (let i = 0; i < len; i++) {
+					if ((typeof _subscribedValues[i] === 'undefined') === (typeof value === 'undefined')
+						&& _subscribedParents[i] === parent
+						&& _subscribedPropertyNames[i] === propertyName
+					) {
+						index = i
+						break
+					}
+				}
+
+				if (index < 0) {
+					throw new Error(`subscribedValue not found: ${parent.constructor.name}.${propertyName} = ${value}`)
+				} else {
 					if (index === len - 1) {
 						_subscribedValues.length = len - 1
+						_subscribedParents.length = len - 1
+						_subscribedPropertyNames.length = len - 1
 						if (len > 1) {
-							this._lastValue(_subscribedValues[len - 2], parent, propertyName)
+							this._lastValue(
+								_subscribedValues[len - 2],
+								_subscribedParents[len - 2],
+								_subscribedPropertyNames[len - 2],
+							)
 						} else {
 							this._lastValue(void 0, parent, propertyName)
 						}
 					} else {
 						if (index !== len - 2) {
 							_subscribedValues[index] = _subscribedValues[len - 2]
+							_subscribedParents[index] = _subscribedParents[len - 2]
+							_subscribedPropertyNames[index] = _subscribedPropertyNames[len - 2]
 						}
 						_subscribedValues[len - 2] = _subscribedValues[len - 1]
+						_subscribedParents[len - 2] = _subscribedParents[len - 1]
+						_subscribedPropertyNames[len - 2] = _subscribedPropertyNames[len - 1]
 						_subscribedValues.length = len - 1
+						_subscribedParents.length = len - 1
+						_subscribedPropertyNames.length = len - 1
 					}
 				}
 			}

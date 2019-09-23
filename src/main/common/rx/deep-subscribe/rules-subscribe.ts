@@ -214,7 +214,7 @@ function subscribeObject<TValue>(
 			}))
 	}
 
-	const forEach = (callbackfn: (item: TValue, debugPropertyName: string) => void) => {
+	const forEach = (callbackfn: (item: TValue, debugPropertyName: string) => void, allowUndefined: boolean) => {
 		if (propertyNames == null) {
 			for (const propertyName in object) {
 				if ((allowSubscribePrototype || Object.prototype.hasOwnProperty.call(object, propertyName))
@@ -227,24 +227,26 @@ function subscribeObject<TValue>(
 			if (Array.isArray(propertyNames)) {
 				for (let i = 0, len = propertyNames.length; i < len; i++) {
 					const propertyName = propertyNames[i]
-					if (allowSubscribePrototype
-						? propertyName in object
-						: Object.prototype.hasOwnProperty.call(object, propertyName)) {
-						callbackfn(object[propertyName], propertyName)
-					}
+					// if (allowUndefined || (allowSubscribePrototype
+					// 	? propertyName in object
+					// 	: Object.prototype.hasOwnProperty.call(object, propertyName))
+					// ) {
+					callbackfn(object[propertyName], propertyName)
+					// }
 				}
 			} else {
-				if (allowSubscribePrototype
-					? propertyNames in object
-					: Object.prototype.hasOwnProperty.call(object, propertyNames)) {
-					callbackfn(object[propertyNames], propertyNames)
-				}
+				// if (allowUndefined || (allowSubscribePrototype
+				// 	? propertyNames in object
+				// 	: Object.prototype.hasOwnProperty.call(object, propertyNames))
+				// ) {
+				callbackfn(object[propertyNames], propertyNames)
+				// }
 			}
 		}
 	}
 	
 	if (immediateSubscribe) {
-		forEach(subscribeItem)
+		forEach(subscribeItem, true)
 	} else if (unsubscribe == null) {
 		return null
 	}
@@ -254,7 +256,7 @@ function subscribeObject<TValue>(
 			unsubscribe()
 			unsubscribe = null
 		}
-		forEach(unsubscribeItem)
+		forEach(unsubscribeItem, false)
 	}
 }
 
@@ -440,13 +442,13 @@ function subscribeMap<K, V>(
 			}))
 	}
 
-	const forEach = (callbackfn: (item: V, debugPropertyName: string) => void) => {
+	const forEach = (callbackfn: (item: V, debugPropertyName: string) => void, allowUndefined: boolean) => {
 		if (keys) {
 			for (let i = 0, len = keys.length; i < len; i++) {
 				const key = keys[i]
-				if (object.has(key)) {
-					callbackfn(object.get(key), COLLECTION_PREFIX + key)
-				}
+				// if (allowUndefined || object.has(key)) {
+				callbackfn(object.get(key), COLLECTION_PREFIX + key)
+				// }
 			}
 		} else {
 			for (const entry of object) {
@@ -458,7 +460,7 @@ function subscribeMap<K, V>(
 	}
 
 	if (immediateSubscribe) {
-		forEach(subscribeItem)
+		forEach(subscribeItem, true)
 	} else if (unsubscribe == null) {
 		return null
 	}
@@ -468,7 +470,7 @@ function subscribeMap<K, V>(
 			unsubscribe()
 			unsubscribe = null
 		}
-		forEach(unsubscribeItem)
+		forEach(unsubscribeItem, false)
 	}
 }
 

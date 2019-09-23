@@ -85,6 +85,10 @@ describe('common > main > rx > deep-subscribe > RuleBuilder', function() {
 		let subscribedItems = []
 
 		function subscribeItem(value: string, debugPropertyName: string) {
+			if (typeof value === 'undefined') {
+				return
+			}
+
 			assert.ok(value)
 			assert.strictEqual(typeof value, 'string', value)
 			value = value.trim()
@@ -94,6 +98,10 @@ describe('common > main > rx > deep-subscribe > RuleBuilder', function() {
 
 		// tslint:disable-next-line:no-identical-functions
 		function unsubscribeItem(value: string, debugPropertyName: string) {
+			if (typeof value === 'undefined') {
+				return
+			}
+
 			assert.ok(value)
 			value = value.trim()
 			checkDebugPropertyName(value, debugPropertyName)
