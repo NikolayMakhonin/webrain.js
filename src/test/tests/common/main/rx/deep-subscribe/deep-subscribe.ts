@@ -487,6 +487,24 @@ describe('common > main > rx > deep-subscribe > deep-subscribe', function() {
 		// 	.unsubscribe(o => [o, o.map2, o.observableMap])
 	})
 
+	it('value properties not exist', async function() {
+		new Tester(
+			{
+				object: createObject().observableObject,
+				immediate: true,
+				doNotSubscribeNonObjectValues: true,
+			},
+			// b => b.path(o => o['@lastOrWait'].source1['@wait'])),
+			b => b.p('value').v('wait'),
+		)
+			.subscribe(['value'])
+			.unsubscribe(['value'])
+			.subscribe(['value'])
+			.change(o => o.value = 1, ['value'], [1])
+			.change(o => o.value = 2, [1], [2])
+			.subscribe([2])
+	})
+
 	it('value properties', async function() {
 		new Tester(
 			{
