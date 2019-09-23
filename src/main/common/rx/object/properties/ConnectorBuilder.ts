@@ -144,7 +144,7 @@ export class ConnectorBuilder<
 					if (baseValue.parent != null) {
 						baseValue.parent[baseValue.propertyName] = value
 					}
-					return value
+					// return value
 				},
 				getValue,
 				setValue,

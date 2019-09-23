@@ -40,17 +40,17 @@ describe('common > main > rx > properties > ConnectorBuilder', function() {
 		new ConnectorBuilder<ObservableObject, BaseClass1, ValueKeys>(BaseClass1.prototype)
 			.connect('baseProp1',
 				b => b.path(o => o.source
-					// .property['@value_property']
-					// .observableMap['#observableList']
-					// ['#']
+					.property['@value_property']
+					.observableMap['#observableList']
+					['#']
 					.baseProp1))
 
 		new ConnectorBuilder<BaseClass2, BaseClass2, ValueKeys>(BaseClass2.prototype)
 			.connectWritable('baseProp2',
 				b => b.path(o => o['@value_property'].source
-					// .property['@value_property']
-					// .observableMap['#observableList']
-					// ['#']
+					.property['@value_property']
+					.observableMap['#observableList']
+					['#']
 					.baseProp2),
 				null,
 				'baseProp2_init')
@@ -58,9 +58,9 @@ describe('common > main > rx > properties > ConnectorBuilder', function() {
 		new ConnectorBuilder<Class1, Class1, ValueKeys>(Class1.prototype)
 			.connect('prop1',
 				b => b.path(o => o['@value_property'].source
-					// .property['@value_property']
-					// .observableMap['#observableList']
-					// ['#']
+					.property['@value_property']
+					.observableMap['#observableList']
+					['#']
 					.prop1),
 				null,
 				'prop1_init')
@@ -68,9 +68,9 @@ describe('common > main > rx > properties > ConnectorBuilder', function() {
 		new ConnectorBuilder<Class2, Class2, ValueKeys>(Class2.prototype)
 			.connectWritable('prop2',
 				b => b.path(o => o['@value_property'].source
-					// .property['@value_property']
-					// .observableMap['#observableList']
-					// ['#']
+					.property['@value_property']
+					.observableMap['#observableList']
+					['#']
 					.prop2),
 				null,
 				'prop2_init')
@@ -122,13 +122,8 @@ describe('common > main > rx > properties > ConnectorBuilder', function() {
 		assert.deepStrictEqual(baseResults1, [
 			{
 				name    : 'baseProp1',
-				newValue: void 0,
-				oldValue: 'baseProp1_init_source',
-			},
-			{
-				name    : 'baseProp1',
 				newValue: '1',
-				oldValue: void 0,
+				oldValue: 'baseProp1_init_source',
 			},
 		])
 		baseResults1 = []
@@ -143,6 +138,7 @@ describe('common > main > rx > properties > ConnectorBuilder', function() {
 		assert.strictEqual(baseObject2.baseProp2, 'baseProp2_init')
 
 		baseObject2.baseProp2 = '1'
+		assert.deepStrictEqual(source.baseProp2, '1')
 		assert.deepStrictEqual(baseResults1, [])
 		assert.deepStrictEqual(baseResults2, [
 			{
@@ -164,13 +160,8 @@ describe('common > main > rx > properties > ConnectorBuilder', function() {
 		assert.deepStrictEqual(baseResults2, [
 			{
 				name    : 'baseProp2',
-				newValue: void 0,
-				oldValue: '1',
-			},
-			{
-				name    : 'baseProp2',
 				newValue: '2',
-				oldValue: void 0,
+				oldValue: '1',
 			},
 		])
 		baseResults2 = []
@@ -178,13 +169,8 @@ describe('common > main > rx > properties > ConnectorBuilder', function() {
 		assert.deepStrictEqual(results2, [
 			{
 				name    : 'baseProp2',
-				newValue: void 0,
-				oldValue: '1',
-			},
-			{
-				name    : 'baseProp2',
 				newValue: '2',
-				oldValue: void 0,
+				oldValue: '1',
 			},
 		])
 		results2 = []
@@ -198,13 +184,8 @@ describe('common > main > rx > properties > ConnectorBuilder', function() {
 		assert.deepStrictEqual(baseResults2, [
 			{
 				name    : 'baseProp2',
-				newValue: void 0,
-				oldValue: '2',
-			},
-			{
-				name    : 'baseProp2',
 				newValue: '3',
-				oldValue: void 0,
+				oldValue: '2',
 			},
 		])
 		baseResults2 = []
@@ -212,13 +193,8 @@ describe('common > main > rx > properties > ConnectorBuilder', function() {
 		assert.deepStrictEqual(results2, [
 			{
 				name    : 'baseProp2',
-				newValue: void 0,
-				oldValue: '2',
-			},
-			{
-				name    : 'baseProp2',
 				newValue: '3',
-				oldValue: void 0,
+				oldValue: '2',
 			},
 		])
 		results2 = []

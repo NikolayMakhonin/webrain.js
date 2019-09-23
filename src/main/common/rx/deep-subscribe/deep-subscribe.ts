@@ -74,8 +74,8 @@ function subscribeNext<TValue>(
 	leafUnsubscribers: IUnsubscribe[],
 	leafUnsubscribersCount: number[],
 	propertiesPath: () => string,
-	debugPropertyName: string,
-	debugParent: any,
+	propertyName: string,
+	parent: any,
 	ruleDescription?: string,
 	iteration?: IteratorResult<IRuleOrIterable>,
 ) {
@@ -99,8 +99,8 @@ function subscribeNext<TValue>(
 						leafUnsubscribers,
 						leafUnsubscribersCount,
 						propertiesPath,
-						debugPropertyName,
-						debugParent,
+						propertyName,
+						parent,
 						ruleDescription,
 						iteration,
 					)
@@ -125,7 +125,7 @@ function subscribeNext<TValue>(
 			const result = subscribeDefaultProperty<TValue>(
 				object as any,
 				true,
-				(item: TValue, debugPropertyName) => subscribeNext<TValue>(
+				(item: TValue, nextPropertyName) => subscribeNext<TValue>(
 					item,
 					valueSubscriber,
 					immediate,
@@ -133,8 +133,8 @@ function subscribeNext<TValue>(
 					leafUnsubscribers,
 					leafUnsubscribersCount,
 					propertiesPath,
-					debugPropertyName,
-					object,
+					nextPropertyName != null ? nextPropertyName : propertyName,
+					nextPropertyName != null ? object : parent,
 					null,
 					iteration,
 				),
@@ -149,10 +149,10 @@ function subscribeNext<TValue>(
 
 	function subscribeLeaf(
 		value: TValue,
-		debugPropertyName: string,
-		debugParent: any,
+		propertyName: string,
+		parent: any,
 		ruleDescription: string,
-		catchHandlerLeaf: (err: Error, debugPropertyName: string) => void,
+		catchHandlerLeaf: (err: Error, propertyName: string) => void,
 	) {
 		value = resolveAsync(value) as any
 		if (isThenable(value)) {
@@ -161,8 +161,8 @@ function subscribeNext<TValue>(
 				if (!unsubscribe) {
 					unsubscribe = subscribeLeaf(
 						o,
-						debugPropertyName,
-						debugParent,
+						propertyName,
+						parent,
 						ruleDescription,
 						catchHandlerLeaf,
 					)
@@ -171,7 +171,7 @@ function subscribeNext<TValue>(
 					// }
 				}
 				return o
-			}, err => catchHandlerLeaf(err, debugPropertyName))
+			}, err => catchHandlerLeaf(err, propertyName))
 
 			return () => {
 				if (typeof unsubscribe === 'function') {
@@ -185,15 +185,27 @@ function subscribeNext<TValue>(
 			const result = subscribeDefaultProperty<TValue>(
 				value as any,
 				true,
-				(item: TValue, debugPropertyName) =>
-					subscribeLeaf(item, debugPropertyName, value, null, catchHandlerLeaf),
+				(item: TValue, nextPropertyName) =>
+					subscribeLeaf(
+						item,
+						nextPropertyName != null ? nextPropertyName : propertyName,
+						nextPropertyName != null ? value : parent,
+						null,
+						catchHandlerLeaf,
+					),
 			)
 			if (result) {
 				return result
 			}
 		}
 
-		return valueSubscriber.subscribe(value, debugParent, debugPropertyName, propertiesPath, ruleDescription)
+		return valueSubscriber.subscribe(
+			value,
+			parent,
+			propertyName,
+			propertiesPath,
+			ruleDescription,
+		)
 	}
 
 	let unsubscribers: Array<IUnsubscribe|IUnsubscribe[]>
@@ -202,7 +214,7 @@ function subscribeNext<TValue>(
 	if (!iteration || iteration.done) {
 		return subscribeLeaf(
 			object,
-			debugPropertyName,
+			propertyName,
 			object,
 			ruleDescription,
 			err => catchHandler(err, propertiesPath),
@@ -210,14 +222,14 @@ function subscribeNext<TValue>(
 	}
 
 	function subscribeNode(rule, getNextRuleIterator) {
-		let deepSubscribeItem: (item, debugPropertyName: string) => () => void
-		const catchHandlerItem = (err, debugPropertyName: string) => {
+		let deepSubscribeItem: (item, propertyName: string, parent: any) => () => void
+		const catchHandlerItem = (err, propertyName: string) => {
 			catchHandler(err, () => (propertiesPath ? propertiesPath() + '.' : '')
-				+ (debugPropertyName == null ? '' : debugPropertyName + '(' + rule.description + ')'))
+				+ (propertyName == null ? '' : propertyName + '(' + rule.description + ')'))
 		}
 
 		if (getNextRuleIterator) {
-			deepSubscribeItem = (item, debugPropertyName: string) => {
+			deepSubscribeItem = (item, propertyName: string, parent: any) => {
 				try {
 					return subscribeNext(
 						item,
@@ -227,27 +239,27 @@ function subscribeNext<TValue>(
 						leafUnsubscribers,
 						leafUnsubscribersCount,
 						() => (propertiesPath ? propertiesPath() + '.' : '')
-							+ (debugPropertyName == null ? '' : debugPropertyName + '(' + rule.description + ')'),
-						debugPropertyName,
-						object,
+							+ (propertyName == null ? '' : propertyName + '(' + rule.description + ')'),
+						propertyName,
+						parent,
 					)
 				} catch (err) {
-					catchHandlerItem(err, debugPropertyName)
+					catchHandlerItem(err, propertyName)
 					return null
 				}
 			}
 		} else {
-			deepSubscribeItem = (item, debugPropertyName: string) => {
+			deepSubscribeItem = (item, propertyName: string, parent: any) => {
 				try {
 					return subscribeLeaf(
 						item,
-						debugPropertyName,
-						object,
+						propertyName,
+						parent,
 						rule.description,
 						catchHandlerItem,
 					)
 				} catch (err) {
-					catchHandlerItem(err, debugPropertyName)
+					catchHandlerItem(err, propertyName)
 					return null
 				}
 			}
@@ -256,14 +268,22 @@ function subscribeNext<TValue>(
 		return checkIsFuncOrNull(rule.subscribe(
 			object,
 			immediate,
-			(item, debugPropertyName: string) => {
+			(item, nextPropertyName: string) => {
 				if (getNextRuleIterator && typeof item === 'undefined') {
 					return
 				}
+
+				let nextParent = object
+				if (nextPropertyName == null) {
+					nextPropertyName = propertyName
+					nextParent = parent
+				}
+
 				if (!getNextRuleIterator && !(item instanceof Object)) {
 					checkIsFuncOrNull(deepSubscribeItem(
 						item,
-						debugPropertyName,
+						nextPropertyName,
+						nextParent,
 					))
 					return
 				}
@@ -286,7 +306,8 @@ function subscribeNext<TValue>(
 
 				unsubscribe = checkIsFuncOrNull(deepSubscribeItem(
 					item,
-					debugPropertyName,
+					nextPropertyName,
+					nextParent,
 				))
 
 				if (unsubscribe) {
@@ -310,15 +331,22 @@ function subscribeNext<TValue>(
 						+ 'For subscribe value types use their object wrappers: Number, Boolean, String classes.\n'
 						+ `Unsubscribe function: ${unsubscribe}\nValue: ${item}\n`
 						+ `Value property path: ${(propertiesPath ? propertiesPath() + '.' : '')
-							+ (debugPropertyName == null ? '' : debugPropertyName + '(' + rule.description + ')')}`)
+							+ (nextPropertyName == null ? '' : nextPropertyName + '(' + rule.description + ')')}`)
 				}
 			},
-			(item, debugPropertyName: string) => {
+			(item, nextPropertyName: string) => {
 				if (getNextRuleIterator && typeof item === 'undefined') {
 					return
 				}
+
+				let nextParent = object
+				if (nextPropertyName == null) {
+					nextPropertyName = propertyName
+					nextParent = parent
+				}
+
 				if (!getNextRuleIterator && !(item instanceof Object)) {
-					valueSubscriber.unsubscribe(item, object, debugPropertyName)
+					valueSubscriber.unsubscribe(item, nextParent, nextPropertyName)
 				} else {
 					unsubscribeNested(item, unsubscribers, unsubscribersCount)
 				}
@@ -337,8 +365,8 @@ function subscribeNext<TValue>(
 			leafUnsubscribers,
 			leafUnsubscribersCount,
 			propertiesPath,
-			debugPropertyName,
-			debugParent,
+			propertyName,
+			parent,
 		),
 		subscribeNode,
 	)
@@ -352,8 +380,8 @@ function deepSubscribeRuleIterator<TValue>(
 	leafUnsubscribers?: IUnsubscribe[],
 	leafUnsubscribersCount?: number[],
 	propertiesPath?: () => string,
-	debugPropertyName?: string,
-	debugParent?: any,
+	propertyName?: string,
+	parent?: any,
 ): IUnsubscribe {
 	if (!immediate) {
 		throw new Error('immediate == false is deprecated')
@@ -376,8 +404,8 @@ function deepSubscribeRuleIterator<TValue>(
 			leafUnsubscribers,
 			leafUnsubscribersCount,
 			propertiesPath,
-			debugPropertyName,
-			debugParent,
+			propertyName,
+			parent,
 		)
 	} catch (err) {
 		catchHandler(err, propertiesPath)
