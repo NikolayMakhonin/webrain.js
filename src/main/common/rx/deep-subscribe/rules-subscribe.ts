@@ -71,7 +71,7 @@ function subscribeObjectValue<TValue>(
 		return propertyName
 	}
 
-	const subscribeProperty = propertyName => {
+	const subscribeProperty = (propertyName, isFirst: boolean) => {
 		subscribePropertyName = propertyName
 		if (propertyName == null) {
 			subscribeItem(object as any, null)
@@ -80,15 +80,19 @@ function subscribeObjectValue<TValue>(
 			if (typeof value !== 'undefined') {
 				subscribeItem(value, VALUE_PROPERTY_PREFIX + propertyName)
 			}
-			subscribeItem(void 0, VALUE_PROPERTY_PREFIX + propertyName)
+			if (isFirst) {
+				subscribeItem(void 0, VALUE_PROPERTY_PREFIX + propertyName)
+			}
 		}
 	}
 
-	const unsubscribeProperty = () => {
+	const unsubscribeProperty = (isLast: boolean) => {
 		if (subscribePropertyName == null) {
 			unsubscribeItem(object as any, null)
 		} else {
-			unsubscribeItem(void 0, VALUE_PROPERTY_PREFIX + subscribePropertyName)
+			if (isLast) {
+				unsubscribeItem(void 0, VALUE_PROPERTY_PREFIX + subscribePropertyName)
+			}
 			const value = object[subscribePropertyName]
 			if (typeof value !== 'undefined') {
 				unsubscribeItem(object[subscribePropertyName], VALUE_PROPERTY_PREFIX + subscribePropertyName)
@@ -110,19 +114,19 @@ function subscribeObjectValue<TValue>(
 						unsubscribeItem(oldValue, VALUE_PROPERTY_PREFIX + subscribePropertyName)
 					}
 				} else if (subscribePropertyName !== newSubscribePropertyName) {
-					unsubscribeProperty()
+					unsubscribeProperty(false)
 				} else {
 					return
 				}
 
 				if (unsubscribe != null) {
-					subscribeProperty(newSubscribePropertyName)
+					subscribeProperty(newSubscribePropertyName, false)
 				}
 			}))
 	}
 
 	if (immediateSubscribe) {
-		subscribeProperty(getSubscribePropertyName())
+		subscribeProperty(getSubscribePropertyName(), true)
 	} else if (unsubscribe == null) {
 		return null
 	}
@@ -132,7 +136,7 @@ function subscribeObjectValue<TValue>(
 			unsubscribe()
 			unsubscribe = null
 		}
-		unsubscribeProperty()
+		unsubscribeProperty(true)
 	}
 }
 
@@ -165,17 +169,20 @@ export function subscribeDefaultProperty<TValue>(
 		object,
 		immediateSubscribe,
 		(item, debugPropertyName) => {
-			if (!unsubscribers) {
-				unsubscribers = []
+			const unsubscriber = subscribeItem(item, debugPropertyName)
+			if (unsubscriber) {
+				if (!unsubscribers) {
+					unsubscribers = []
+				}
+				unsubscribers.push(unsubscriber)
 			}
-			unsubscribers.push(subscribeItem(item, debugPropertyName))
 		},
 		() => {
 			if (unsubscribers) {
-				for (let i = 0, len = unsubscribers.length; i < len; i++) {
-					if (unsubscribers[i]) {
-						unsubscribers[i]()
-					}
+				const _unsubscribers = unsubscribers
+				unsubscribers = null
+				for (let i = 0, len = _unsubscribers.length; i < len; i++) {
+					_unsubscribers[i]()
 				}
 			}
 		})

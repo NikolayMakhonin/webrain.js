@@ -125,7 +125,7 @@ function subscribeNext<TValue>(
 			const result = subscribeDefaultProperty<TValue>(
 				object as any,
 				true,
-				(item: TValue) => subscribeNext<TValue>(
+				(item: TValue, debugPropertyName) => subscribeNext<TValue>(
 					item,
 					valueSubscriber,
 					immediate,
@@ -134,8 +134,8 @@ function subscribeNext<TValue>(
 					leafUnsubscribersCount,
 					propertiesPath,
 					debugPropertyName,
-					debugParent,
-					ruleDescription,
+					object,
+					null,
 					iteration,
 				),
 			)
@@ -185,8 +185,8 @@ function subscribeNext<TValue>(
 			const result = subscribeDefaultProperty<TValue>(
 				value as any,
 				true,
-				(item: TValue) =>
-					subscribeLeaf(item, debugPropertyName, debugParent, ruleDescription, catchHandlerLeaf),
+				(item: TValue, debugPropertyName) =>
+					subscribeLeaf(item, debugPropertyName, value, null, catchHandlerLeaf),
 			)
 			if (result) {
 				return result

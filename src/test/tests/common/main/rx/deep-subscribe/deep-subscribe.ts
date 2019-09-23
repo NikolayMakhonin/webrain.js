@@ -512,12 +512,28 @@ describe('common > main > rx > deep-subscribe > deep-subscribe', function() {
 			b => b.path(o => o.property['@value_observableObject']),
 		)
 			.subscribe(o => [o.observableObject])
+			.unsubscribe(o => [o.observableObject])
+			.subscribe(o => [o.observableObject])
+			.change(o => o.property = new Number(2) as any,
+				o => [o], [new Number(2)])
+			.unsubscribe([new Number(2)])
+
+		new Tester(
+			{
+				object: createObject().observableObject,
+				immediate: true,
+			},
+			b => b.path(o => o.property['@value_observableObject']),
+		)
+			.subscribe(o => [o.observableObject])
+			.unsubscribe(o => [o.observableObject])
+			.subscribe(o => [o.observableObject])
 			.change(o => o.property.value_observableObject = new Number(1) as any,
 				o => [o.observableObject], [new Number(1)])
-			.change(o => o.property = new Number(2) as any,
-				[new Number(1)], [new Number(2)])
-			.change(o => o.property = o.object.property,
-				[new Number(2)], [new Number(1)])
+			// .change(o => o.property = new Number(2) as any,
+			// 	[new Number(1)], [new Number(2)])
+			// .change(o => o.property = o.object.property,
+			// 	[new Number(2)], [new Number(1)])
 			.unsubscribe([new Number(1)])
 
 		{
