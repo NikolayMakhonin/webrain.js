@@ -34,7 +34,7 @@ describe('common > main > rx > deep-subscribe > deep-subscribe', function() {
 				b2 => b2.p('map2').mapKey('valueObject'),
 				b2 => b2.p('observableMap').mapKey('valueObject'),
 			),
-			// b => b.p('map2').mapKey('valueObject'),
+			b => b.p('map2').mapKey('valueObject'),
 		)
 			.subscribe(o => [o.valueObject])
 			.unsubscribe(o => [o.valueObject])
@@ -160,9 +160,9 @@ describe('common > main > rx > deep-subscribe > deep-subscribe', function() {
 				doNotSubscribeNonObjectValues: true,
 			},
 			b => b.path(o => o.observableObjectPrototype.valueObjectWritable),
-			// b => b.path(o => o.observableObject.observableObjectPrototype.valueObjectWritable),
-			// b => b.path(o => o.observableObjectPrototype.observableObject.observableObjectPrototype.valueObjectWritable),
-			// b => b.path(o => o.observableObject.observableObject.observableObjectPrototype.valueObjectWritable),
+			b => b.path(o => o.observableObject.observableObjectPrototype.valueObjectWritable),
+			b => b.path(o => o.observableObjectPrototype.observableObject.observableObjectPrototype.valueObjectWritable),
+			b => b.path(o => o.observableObject.observableObject.observableObjectPrototype.valueObjectWritable),
 		)
 			.subscribe([])
 			.unsubscribe([])
@@ -177,8 +177,8 @@ describe('common > main > rx > deep-subscribe > deep-subscribe', function() {
 				immediate: true,
 			},
 			b => b.path(o => o.object),
-			// b => b.path(o => o.object.object),
-			// b => b.path(o => o.object.object.object),
+			b => b.path(o => o.object.object),
+			b => b.path(o => o.object.object.object),
 		)
 			.subscribe(o => [o.object])
 			.change(o => o.object = null, o => [], [])
@@ -299,7 +299,7 @@ describe('common > main > rx > deep-subscribe > deep-subscribe', function() {
 				immediate: true,
 			},
 			// b => b.path(o => o.observableObject),
-			// b => b.path(o => o.observableObject.observableObject),
+			b => b.path(o => o.observableObject.observableObject),
 			b => b.path(o => o.observableObject.observableObject.observableObject),
 		)
 			.subscribe(o => [o.observableObject])

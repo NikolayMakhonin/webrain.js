@@ -351,7 +351,7 @@ export class Tester<TObject, TValue> {
 
 				this._subscribersCount[i]--
 				if (this._subscribersCount[i] === 0) {
-					this._expectedLastValue[i].push(void 0) // parent.constructor.name + '.' + propertyName)
+					this._expectedLastValue[i].push(void 0)
 				}
 				if (this._subscribersCount[i] < 0) {
 					assert.strictEqual(typeof value, 'undefined')
@@ -368,10 +368,6 @@ export class Tester<TObject, TValue> {
 				}
 
 				this._lastValue[i].push(value)
-				// 	typeof value === 'undefined'
-				// 		? parent.constructor.name + '.' + propertyName
-				// 		: value,
-				// )
 			},
 			immediate: this._immediate,
 			ruleBuilder: Math.random() > 0.5
