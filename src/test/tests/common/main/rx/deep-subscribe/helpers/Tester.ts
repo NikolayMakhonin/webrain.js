@@ -190,6 +190,7 @@ export class Tester<TObject, TValue> {
 	private readonly _doNotSubscribeNonObjectValues: boolean
 	private readonly _useIncorrectUnsubscribe: boolean
 	private readonly _ruleBuilders: Array<(ruleBuilder: RuleBuilder<TObject>) => RuleBuilder<TValue>>
+	private readonly _asyncDelay: number
 
 	constructor(
 		{
@@ -199,6 +200,7 @@ export class Tester<TObject, TValue> {
 			performanceTest,
 			doNotSubscribeNonObjectValues,
 			useIncorrectUnsubscribe,
+			asyncDelay = 10,
 		}:
 			{
 				object: TObject,
@@ -207,6 +209,7 @@ export class Tester<TObject, TValue> {
 				performanceTest?: boolean,
 				doNotSubscribeNonObjectValues?: boolean,
 				useIncorrectUnsubscribe?: boolean,
+				asyncDelay?: number,
 			},
 		...ruleBuilders: Array<(ruleBuilder: RuleBuilder<TObject>) => RuleBuilder<TValue>>
 	) {
@@ -218,6 +221,7 @@ export class Tester<TObject, TValue> {
 		this._ruleBuilders = ruleBuilders
 		this._useIncorrectUnsubscribe = useIncorrectUnsubscribe
 		this._unsubscribe = ruleBuilders.map(o => null)
+		this._asyncDelay = asyncDelay
 
 		if (!performanceTest) {
 			this._subscribed = ruleBuilders.map(o => [])
@@ -551,7 +555,7 @@ export class Tester<TObject, TValue> {
 				expectedUnsubscribed = []
 			}
 
-			await delay(10)
+			await delay(this._asyncDelay)
 
 			this.checkSubscribes(this._unsubscribed[i], expectedUnsubscribed, 'unsubscribed[]')
 
@@ -601,7 +605,7 @@ export class Tester<TObject, TValue> {
 			changeFunc(this._object)
 		}
 
-		await delay(10)
+		await delay(this._asyncDelay)
 
 		for (let i = 0; i < this._ruleBuilders.length; i++) {
 			this.checkSubscribes(this._unsubscribed[i], expectedUnsubscribed, 'unsubscribed[]')
@@ -649,7 +653,7 @@ export class Tester<TObject, TValue> {
 				this._unsubscribe[i]()
 				this._unsubscribe[i] = null
 
-				await delay(10)
+				await delay(this._asyncDelay)
 
 				this.checkSubscribes(this._unsubscribed[i], expectedUnsubscribed, 'unsubscribed[]')
 				assert.deepStrictEqual(this._subscribed[i], [], 'subscribed[]')

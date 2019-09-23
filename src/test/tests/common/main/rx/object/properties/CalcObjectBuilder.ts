@@ -16,6 +16,8 @@ import {createObject, Tester} from '../../deep-subscribe/helpers/Tester'
 declare const assert: any
 
 describe('common > main > rx > properties > CalcObjectBuilder', function() {
+	this.timeout(30000)
+
 	class ClassSync extends ObservableObject {
 		public value = 'Value'
 		public valuePrototype: string
@@ -199,191 +201,92 @@ describe('common > main > rx > properties > CalcObjectBuilder', function() {
 	})
 
 	it('deepSubscribe calc sync', async function() {
-		const object = new ClassSync()
-		let subscribeValues = []
-		let unsubscribeValues = []
-		let lastValues = []
-		deepSubscribe({
-			object,
-			subscribeValue: value => {
-				subscribeValues.push(value)
+		new Tester(
+			{
+				object: new ClassSync(),
+				immediate: true,
+				doNotSubscribeNonObjectValues: true,
 			},
-			unsubscribeValue: value => {
-				unsubscribeValues.push(value)
-			},
-			lastValue: value => {
-				lastValues.push(value)
-			},
-			ruleBuilder: b => b.p('calc1'),
-		})
-		assert.deepStrictEqual(subscribeValues, [new Date(123)])
-		assert.deepStrictEqual(unsubscribeValues, [])
-		assert.deepStrictEqual(lastValues, [])
-		subscribeValues = []
-		unsubscribeValues = []
-		lastValues = []
+			b => b.p('calc1'),
+		)
+			.subscribe([new Date(123)])
+			.unsubscribe([new Date(123)])
 
-		deepSubscribe({
-			object,
-			subscribeValue: value => {
-				subscribeValues.push(value)
+		new Tester(
+			{
+				object: new ClassSync(),
+				immediate: true,
+				doNotSubscribeNonObjectValues: true,
 			},
-			unsubscribeValue: value => {
-				unsubscribeValues.push(value)
-			},
-			lastValue: value => {
-				lastValues.push(value)
-			},
-			ruleBuilder: b => b.p('calc1').p('getTime'),
-		})
-		assert.deepStrictEqual(subscribeValues, [Date.prototype.getTime])
-		assert.deepStrictEqual(unsubscribeValues, [])
-		assert.deepStrictEqual(lastValues, [])
-		subscribeValues = []
-		unsubscribeValues = []
-		lastValues = []
+			b => b.p('calc1').p('getTime'),
+		)
+			.subscribe([Date.prototype.getTime])
+			.unsubscribe([Date.prototype.getTime])
 	})
 
 	it('deepSubscribe calc async', async function() {
-		let object = new ClassAsync()
-		let subscribeValues = []
-		let unsubscribeValues = []
-		let lastValues = []
-		deepSubscribe({
-			object,
-			subscribeValue: value => {
-				subscribeValues.push(value)
+		let tester = new Tester(
+			{
+				object: new ClassAsync(),
+				immediate: true,
+				doNotSubscribeNonObjectValues: true,
+				asyncDelay: 500,
 			},
-			unsubscribeValue: value => {
-				unsubscribeValues.push(value)
-			},
-			lastValue: value => {
-				lastValues.push(value)
-			},
-			ruleBuilder: b => b.p('calc1'),
-		})
-		assert.deepStrictEqual(subscribeValues, [])
-		assert.deepStrictEqual(unsubscribeValues, [])
-		assert.deepStrictEqual(lastValues, [])
-		await delay(500)
-		assert.deepStrictEqual(subscribeValues, [new Date(123)])
-		assert.deepStrictEqual(unsubscribeValues, [])
-		assert.deepStrictEqual(lastValues, [])
-		subscribeValues = []
-		unsubscribeValues = []
-		lastValues = []
+			b => b.p('calc1'),
+		)
 
-		object = new ClassAsync()
-		deepSubscribe({
-			object,
-			subscribeValue: value => {
-				subscribeValues.push(value)
+		await tester.subscribeAsync([new Date(123)])
+		await tester.unsubscribeAsync([new Date(123)])
+
+		tester = new Tester(
+			{
+				object: new ClassAsync(),
+				immediate: true,
+				doNotSubscribeNonObjectValues: true,
+				asyncDelay: 500,
 			},
-			unsubscribeValue: value => {
-				unsubscribeValues.push(value)
-			},
-			lastValue: value => {
-				lastValues.push(value)
-			},
-			ruleBuilder: b => b.p('calc1').p('getTime'),
-		})
-		assert.deepStrictEqual(subscribeValues, [])
-		assert.deepStrictEqual(unsubscribeValues, [])
-		assert.deepStrictEqual(lastValues, [])
-		await delay(500)
-		assert.deepStrictEqual(subscribeValues, [Date.prototype.getTime])
-		assert.deepStrictEqual(unsubscribeValues, [])
-		assert.deepStrictEqual(lastValues, [])
-		subscribeValues = []
-		unsubscribeValues = []
-		lastValues = []
+			b => b.p('calc1').p('getTime'),
+		)
+
+		await tester.subscribeAsync([Date.prototype.getTime])
+		await tester.unsubscribeAsync([Date.prototype.getTime])
 	})
 
 	it('deepSubscribe calc circular sync', async function() {
-		const object = new ClassSync()
-		let subscribeValues = []
-		let unsubscribeValues = []
-		let lastValues = []
-		deepSubscribe({
-			object,
-			subscribeValue: value => {
-				value = resolvePath(value)()
-				subscribeValues.push(value)
+		new Tester(
+			{
+				object: new ClassSync(),
+				immediate: true,
+				doNotSubscribeNonObjectValues: true,
 			},
-			unsubscribeValue: value => {
-				value = resolvePath(value)()
-				unsubscribeValues.push(value)
-			},
-			lastValue: value => {
-				value = resolvePath(value)()
-				lastValues.push(value)
-			},
-			ruleBuilder: b => b.p('calc2').p('calc2').p('calc2').p('calc1'),
-		})
-		assert.deepStrictEqual(subscribeValues, [new Date(123)])
-		assert.deepStrictEqual(unsubscribeValues, [])
-		assert.deepStrictEqual(lastValues, [])
-		subscribeValues = []
-		unsubscribeValues = []
-		lastValues = []
-
-		object.source1 = 234
-		assert.deepStrictEqual(subscribeValues, [new Date(234)])
-		assert.deepStrictEqual(unsubscribeValues, [])
-		assert.deepStrictEqual(lastValues, [])
-		subscribeValues = []
-		unsubscribeValues = []
-		lastValues = []
-
-		object.source2 = 1
-		object.source1 = 345
-		assert.deepStrictEqual(subscribeValues, [new Date(345)])
-		assert.deepStrictEqual(unsubscribeValues, [])
-		assert.deepStrictEqual(lastValues, [])
-		subscribeValues = []
-		unsubscribeValues = []
-		lastValues = []
+			b => b.p('calc2').p('calc2').p('calc2').p('calc1'),
+		)
+			.subscribe([new Date(123)])
+			.unsubscribe([new Date(123)])
+			.subscribe([new Date(123)])
+			.change(o => o.source1 = 234, [new Date(123)], [new Date(234)])
+			.change(o => o.source2 = 1, [], [])
+			.change(o => o.source1 = 345, [new Date(345)], [new Date(345)])
+			.subscribe([new Date(345)])
 	})
 
 	it('deepSubscribe calc circular async', async function() {
-		const object = new ClassAsync()
-		let subscribeValues = []
-		let unsubscribeValues = []
-		let lastValues = []
-		deepSubscribe({
-			object,
-			subscribeValue: value => {
-				value = resolvePath(value)()
-				subscribeValues.push(value)
+		const tester = new Tester(
+			{
+				object: new ClassSync(),
+				immediate: true,
+				doNotSubscribeNonObjectValues: true,
+				asyncDelay: 500,
 			},
-			unsubscribeValue: value => {
-				value = resolvePath(value)()
-				unsubscribeValues.push(value)
-			},
-			lastValue: value => {
-				value = resolvePath(value)()
-				lastValues.push(value)
-			},
-			ruleBuilder: b => b.p('calc2').p('calc2').p('calc2').p('calc1'),
-		})
-		assert.deepStrictEqual(subscribeValues, [])
-		assert.deepStrictEqual(unsubscribeValues, [])
-		assert.deepStrictEqual(lastValues, [])
-		await delay(500)
-		assert.deepStrictEqual(subscribeValues, [new Date(123)])
-		assert.deepStrictEqual(unsubscribeValues, [])
-		assert.deepStrictEqual(lastValues, [])
-		subscribeValues = []
-		unsubscribeValues = []
-		lastValues = []
+			b => b.p('calc2').p('calc2').p('calc2').p('calc1'),
+		)
 
-		object.source1 = 234
-		assert.deepStrictEqual(subscribeValues.length, 1)
-		assert.deepStrictEqual(await subscribeValues[0], new Date(234))
-		assert.deepStrictEqual(unsubscribeValues, [])
-		assert.deepStrictEqual(lastValues, [])
-		subscribeValues = []
-		unsubscribeValues = []
-		lastValues = []
+		await tester.subscribe([new Date(123)])
+		await tester.unsubscribe([new Date(123)])
+		await tester.subscribe([new Date(123)])
+		await tester.change(o => o.source1 = 234, [new Date(123)], [new Date(234)])
+		await tester.change(o => o.source2 = 1, [], [])
+		await tester.change(o => o.source1 = 345, [new Date(345)], [new Date(345)])
+		await tester.subscribe([new Date(345)])
 	})
 })
