@@ -357,10 +357,11 @@ export class Tester<TObject, TValue> {
 				if (this._subscribersCount[i] === 0) {
 					this._expectedLastValue[i].push(void 0)
 				}
-				if (this._subscribersCount[i] < 0) {
-					assert.strictEqual(typeof value, 'undefined')
-					this._subscribersCount[i] = 0
-				}
+				assert.ok(this._subscribersCount[i] >= 0)
+				// if (this._subscribersCount[i] < 0) {
+				// 	assert.strictEqual(typeof value, 'undefined')
+				// 	this._subscribersCount[i] = 0
+				// }
 
 				if (typeof value !== 'undefined' && !isUnsubscribed) {
 					this._unsubscribed[i].push(value)
