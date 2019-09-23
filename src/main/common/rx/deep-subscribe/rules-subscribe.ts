@@ -158,18 +158,25 @@ export function subscribeDefaultProperty<TValue>(
 	immediateSubscribe: boolean,
 	subscribeItem: (item: TValue, debugPropertyName: string) => IUnsubscribe,
 ) {
-	let unsubscribe
+	let unsubscribers
 	return subscribeObject<TValue>(
 		VALUE_PROPERTY_DEFAULT,
 		o => o === VALUE_PROPERTY_DEFAULT,
 		object,
 		immediateSubscribe,
 		(item, debugPropertyName) => {
-			unsubscribe = subscribeItem(item, debugPropertyName)
+			if (!unsubscribers) {
+				unsubscribers = []
+			}
+			unsubscribers.push(subscribeItem(item, debugPropertyName))
 		},
 		() => {
-			if (unsubscribe) {
-				unsubscribe()
+			if (unsubscribers) {
+				for (let i = 0, len = unsubscribers.length; i < len; i++) {
+					if (unsubscribers[i]) {
+						unsubscribers[i]()
+					}
+				}
 			}
 		})
 }
