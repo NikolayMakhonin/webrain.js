@@ -11,6 +11,7 @@ import {connectorFactory} from '../../../../../../../main/common/rx/object/prope
 import {ICalcProperty} from '../../../../../../../main/common/rx/object/properties/contracts'
 import {resolvePath} from '../../../../../../../main/common/rx/object/properties/helpers'
 import {Property} from '../../../../../../../main/common/rx/object/properties/Property'
+import {createObject, Tester} from '../../deep-subscribe/helpers/Tester'
 
 declare const assert: any
 
@@ -174,46 +175,27 @@ describe('common > main > rx > properties > CalcObjectBuilder', function() {
 	})
 
 	it('deepSubscribe simple', async function() {
-		const object = new ClassSync()
-		let subscribeValues = []
-		let unsubscribeValues = []
-		let lastValues = []
+		new Tester(
+			{
+				object: new ClassSync(),
+				immediate: true,
+				doNotSubscribeNonObjectValues: true,
+			},
+			b => b.p('value'),
+		)
+			.subscribe(o => ['Value'])
+			.unsubscribe(['Value'])
 
-		deepSubscribe({
-			object,
-			subscribeValue: value => {
-				subscribeValues.push(value)
+		new Tester(
+			{
+				object: new ClassSync(),
+				immediate: true,
+				doNotSubscribeNonObjectValues: true,
 			},
-			unsubscribeValue: value => {
-				unsubscribeValues.push(value)
-			},
-			lastValue: value => {
-				lastValues.push(value)
-			},
-			ruleBuilder: b => b.p('value'),
-		})
-		assert.deepStrictEqual(subscribeValues, ['Value'])
-		subscribeValues = []
-		unsubscribeValues = []
-		lastValues = []
-
-		deepSubscribe({
-			object,
-			subscribeValue: value => {
-				subscribeValues.push(value)
-			},
-			unsubscribeValue: value => {
-				unsubscribeValues.push(value)
-			},
-			lastValue: value => {
-				lastValues.push(value)
-			},
-			ruleBuilder: b => b.p('valuePrototype'),
-		})
-		assert.deepStrictEqual(subscribeValues, ['Value Prototype'])
-		subscribeValues = []
-		unsubscribeValues = []
-		lastValues = []
+			b => b.p('valuePrototype'),
+		)
+			.subscribe(o => ['Value Prototype'])
+			.unsubscribe(['Value Prototype'])
 	})
 
 	it('deepSubscribe calc sync', async function() {
