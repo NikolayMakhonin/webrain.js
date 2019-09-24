@@ -8,7 +8,6 @@ import {
 } from '../../../../../../main/common/rx/deep-subscribe/iterate-rule'
 import {RuleBuilder} from '../../../../../../main/common/rx/deep-subscribe/RuleBuilder'
 import {Rule} from '../../../../../../main/common/rx/deep-subscribe/rules'
-import {subscribeDefaultProperty} from '../../../../../../main/common/rx/deep-subscribe/rules-subscribe'
 import {IUnsubscribe} from '../../../../../../main/common/rx/subjects/observable'
 import {assert} from '../../../../../../main/common/test/Assert'
 
@@ -39,6 +38,8 @@ describe('common > main > rx > deep-subscribe > iterate-rule', function() {
 
 	// const endObject = { _end: true }
 
+	const testObject = {}
+
 	function rulesToObject(ruleIterator: IRuleIterator, obj: any = {}): IUnsubscribe {
 		let iteration
 		if (!ruleIterator || (iteration = ruleIterator.next()).done) {
@@ -50,6 +51,7 @@ describe('common > main > rx > deep-subscribe > iterate-rule', function() {
 		}
 
 		return subscribeNextRule(
+			testObject,
 			ruleIterator,
 			iteration,
 			nextRuleIterator => rulesToObject(nextRuleIterator, obj),
@@ -91,7 +93,7 @@ describe('common > main > rx > deep-subscribe > iterate-rule', function() {
 	}
 
 	function testIterateRule(buildRule: (builder: RuleBuilder<any>) => RuleBuilder<any>, ...expectedPaths: string[]) {
-		const result = iterateRule(buildRule(new RuleBuilder<any>()).result)
+		const result = iterateRule(testObject, buildRule(new RuleBuilder<any>()).result)
 		assert.ok(result)
 		const object = {}
 		const unsubscribe = rulesToObject(result[Symbol.iterator](), object)
@@ -298,9 +300,9 @@ describe('common > main > rx > deep-subscribe > iterate-rule', function() {
 	})
 
 	it('throws', function() {
-		Array.from(iterateRule(new Rule(0 as RuleType)))
+		Array.from(iterateRule(testObject, new Rule(0 as RuleType)))
 
-		assert.throws(() => Array.from(iterateRule(new Rule(-1 as RuleType)), Error))
+		assert.throws(() => Array.from(iterateRule(testObject, new Rule(-1 as RuleType)), Error))
 
 		assert.throws(() => new RuleBuilder().repeat(1, 2, b => b), Error)
 

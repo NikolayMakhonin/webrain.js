@@ -355,6 +355,7 @@ function subscribeNext<TValue>(
 	}
 
 	return subscribeNextRule(
+		object,
 		ruleIterator,
 		iteration,
 		nextRuleIterator => deepSubscribeRuleIterator(
@@ -433,7 +434,7 @@ export function deepSubscribeRule<TValue>({
 		object,
 		new ObjectSubscriber(subscribeValue, unsubscribeValue, lastValue),
 		immediate,
-		iterateRule(rule)[Symbol.iterator](),
+		iterateRule(object, rule)[Symbol.iterator](),
 	))
 }
 

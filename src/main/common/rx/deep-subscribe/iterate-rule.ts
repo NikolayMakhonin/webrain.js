@@ -3,28 +3,30 @@ import {IUnsubscribe} from '../subjects/observable'
 import {IRuleSubscribe} from './contracts/rule-subscribe'
 import {IRule, IRuleAction, IRuleAny, IRuleRepeat, RuleType} from './contracts/rules'
 
-type GetIterableFunction = () => Iterable<IRuleOrIterable>
+type GetIterableFunction = (object: any) => IRuleIterable
 
 export type IRuleOrIterable = IRuleAction | IRuleIterable | GetIterableFunction
 export interface IRuleIterable extends Iterable<IRuleOrIterable> {}
 export type IRuleIterator = Iterator<IRuleOrIterable>
 
-export function *iterateRule(rule: IRule, next: () => IRuleIterable = null): IRuleIterable {
+type INextRule = (object: any) => IRuleIterable
+
+export function *iterateRule(object: any, rule: IRule, next: INextRule = null): IRuleIterable {
 	if (!rule) {
 		if (next) {
-			yield* next()
+			yield* next(object)
 		}
 		return
 	}
 
-	const ruleNext = rule.next || next
-		? () => iterateRule(rule.next, next)
+	const ruleNext: INextRule = rule.next || next
+		? (nextObject: any) => iterateRule(nextObject, rule.next, next)
 		: null
 
 	switch (rule.type) {
 		case RuleType.Nothing:
 			if (ruleNext) {
-				yield* ruleNext()
+				yield* ruleNext(object)
 			}
 			break
 		case RuleType.Action:
@@ -43,7 +45,7 @@ export function *iterateRule(rule: IRule, next: () => IRuleIterable = null): IRu
 					if (!subRule) {
 						throw new Error(`RuleType.Any rule=${subRule}`)
 					}
-					yield iterateRule(subRule, ruleNext)
+					yield iterateRule(object, subRule, ruleNext)
 				}
 			}
 			yield any()
@@ -54,26 +56,26 @@ export function *iterateRule(rule: IRule, next: () => IRuleIterable = null): IRu
 				throw new Error(`RuleType.Repeat countMin=${countMin} countMax=${countMax} rule=${rule}`)
 			}
 
-			const repeatNext = function*(count) {
+			const repeatNext = function*(nextObject: any, count: number): IRuleIterable {
 				if (count >= countMax) {
 					if (ruleNext) {
-						yield* ruleNext()
+						yield* ruleNext(nextObject)
 					}
 					return
 				}
 
-				const nextIteration = newCount => {
-					return iterateRule(subRule, () => repeatNext(newCount))
+				const nextIteration = (newCount: number): IRuleIterable => {
+					return iterateRule(nextObject, subRule, nextIterationObject => repeatNext(nextIterationObject, newCount))
 				}
 
 				if (count < countMin) {
 					yield* nextIteration(count + 1)
 				} else {
-					yield [ruleNext ? ruleNext() : [], nextIteration(count + 1)]
+					yield [ruleNext ? ruleNext(nextObject) : [], nextIteration(count + 1)]
 				}
 			}
 
-			yield* repeatNext(0)
+			yield* repeatNext(object, 0)
 			break
 		}
 		default:
@@ -82,8 +84,9 @@ export function *iterateRule(rule: IRule, next: () => IRuleIterable = null): IRu
 }
 
 export function subscribeNextRule(
+	object: any,
 	ruleIterator: IRuleIterator,
-	iteration: IteratorResult<IRuleOrIterable>,
+	iteration: IteratorResult<IRuleOrIterable, null>,
 	fork: (ruleIterator: IRuleIterator) => IUnsubscribe,
 	subscribeNode: (rule: IRuleSubscribe, getRuleIterator: () => IRuleIterator) => IUnsubscribe,
 ): IUnsubscribe {
@@ -131,7 +134,7 @@ export function subscribeNextRule(
 	return subscribeNode(
 		ruleOrIterable as IRuleSubscribe,
 		nextIterable
-			? () => nextIterable()[Symbol.iterator]()
+			? () => nextIterable(object)[Symbol.iterator]()
 			: null,
 	)
 }
