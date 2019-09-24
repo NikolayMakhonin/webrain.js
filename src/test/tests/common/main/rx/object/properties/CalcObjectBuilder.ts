@@ -267,7 +267,7 @@ describe('common > main > rx > properties > CalcObjectBuilder', function() {
 			.change(o => o.source1 = 234, [new Date(123)], [new Date(234)])
 			.change(o => o.source2 = 1, [], [])
 			.change(o => o.source1 = 345, [new Date(345)], [new Date(345)])
-			.subscribe([new Date(345)])
+			.unsubscribe([new Date(345)])
 	})
 
 	it('deepSubscribe calc circular async', async function() {
@@ -287,6 +287,6 @@ describe('common > main > rx > properties > CalcObjectBuilder', function() {
 		await tester.change(o => o.source1 = 234, [new Date(123)], [new Date(234)])
 		await tester.change(o => o.source2 = 1, [], [])
 		await tester.change(o => o.source1 = 345, [new Date(345)], [new Date(345)])
-		await tester.subscribe([new Date(345)])
+		await tester.unsubscribe([new Date(345)])
 	})
 })

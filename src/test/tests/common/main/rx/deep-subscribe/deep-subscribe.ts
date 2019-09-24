@@ -494,15 +494,19 @@ describe('common > main > rx > deep-subscribe > deep-subscribe', function() {
 				immediate: true,
 				doNotSubscribeNonObjectValues: true,
 			},
-			// b => b.path(o => o['@lastOrWait'].source1['@wait'])),
+			b => b.p('value'),
+			b => b.v('lastOrWait').p('value'),
 			b => b.p('value').v('wait'),
+			b => b.p('value').v('wait').v('wait'),
+			b => b.v('lastOrWait').p('value').v('wait'),
+			b => b.v('lastOrWait').v('lastOrWait').p('value').v('wait').v('wait').v('wait'),
 		)
 			.subscribe(['value'])
 			.unsubscribe(['value'])
 			.subscribe(['value'])
 			.change(o => o.value = 1, ['value'], [1])
 			.change(o => o.value = 2, [1], [2])
-			.subscribe([2])
+			.unsubscribe([2])
 	})
 
 	it('value properties', async function() {
