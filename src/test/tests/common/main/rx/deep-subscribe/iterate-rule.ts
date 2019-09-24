@@ -51,15 +51,14 @@ describe('common > main > rx > deep-subscribe > iterate-rule', function() {
 		}
 
 		return subscribeNextRule(
-			testObject,
 			ruleIterator,
 			iteration,
 			nextRuleIterator => rulesToObject(nextRuleIterator, obj),
-			(rule, getRuleIterator) => {
+			(rule, getRuleIterable) => {
 				const newObj = {}
 				const unsubscribe = rulesToObject(
-					getRuleIterator
-						? getRuleIterator()
+					getRuleIterable
+						? getRuleIterable(testObject)[Symbol.iterator]()
 						: null, newObj)
 				Object.assign(obj, {[rule.description]: newObj})
 				return unsubscribe

@@ -7,6 +7,21 @@ import {createObject, IObject, Tester} from './helpers/Tester'
 describe('common > main > rx > deep-subscribe > deep-subscribe', function() {
 	const check = createObject()
 
+	it('RuleIf simple', function() {
+		new Tester(
+			{
+				object: createObject().observableObject,
+				immediate: true,
+				doNotSubscribeNonObjectValues: true,
+			},
+			b => b.propertyAll().if([o => Array.isArray(o), b => b.p('1')], b => b.p('qwe')),
+		)
+			.subscribe(o => ['value2'])
+			.unsubscribe(o => ['value2'])
+			.subscribe(o => ['value2'])
+			.unsubscribe(o => ['value2'])
+	})
+
 	it('unsubscribe leaf non object', function() {
 		const object1 = createObject()
 		new Tester(

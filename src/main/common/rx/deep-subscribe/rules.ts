@@ -1,4 +1,4 @@
-import {IRule, IRuleAny, IRuleRepeat, RuleType} from './contracts/rules'
+import {IConditionRule, IRule, IRuleAny, IRuleIf, IRuleRepeat, RuleType} from './contracts/rules'
 
 export class Rule implements IRule {
 	public readonly type: RuleType
@@ -27,6 +27,24 @@ export class RuleNothing extends Rule {
 	constructor() {
 		super(RuleType.Nothing)
 		this.description = 'nothing'
+	}
+}
+
+export class RuleIf<TValue> extends Rule implements IRuleIf<TValue> {
+	public readonly conditionRules: Array<IConditionRule<TValue>>
+
+	constructor(conditionRules: Array<IConditionRule<TValue>>) {
+		super(RuleType.If)
+		this.conditionRules = conditionRules
+	}
+
+	public clone(): IRuleIf<TValue> {
+		const clone = super.clone() as IRuleIf<TValue>
+		(clone as any).conditionRules = this.conditionRules
+			.map(o => Array.isArray(o)
+				? [ o[0], o[1].clone() ]
+				: o.clone())
+		return clone
 	}
 }
 

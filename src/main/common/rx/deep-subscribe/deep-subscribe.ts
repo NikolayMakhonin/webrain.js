@@ -5,8 +5,15 @@ import {checkIsFuncOrNull, toSingleCall} from '../../helpers/helpers'
 import {getObjectUniqueId} from '../../helpers/object-unique-id'
 import {IUnsubscribe} from '../subjects/observable'
 import {ILastValue, ISubscribeValue, IUnsubscribeValue, IValueSubscriber} from './contracts/common'
+import {IRuleSubscribe} from './contracts/rule-subscribe'
 import {IRule} from './contracts/rules'
-import {IRuleIterator, IRuleOrIterable, iterateRule, subscribeNextRule} from './iterate-rule'
+import {
+	INextRuleIterable,
+	IRuleIterator,
+	IRuleOrIterable,
+	iterateRule,
+	subscribeNextRule,
+} from './iterate-rule'
 import {ObjectSubscriber} from './ObjectSubscriber'
 import {RuleBuilder} from './RuleBuilder'
 import {hasDefaultProperty, subscribeDefaultProperty, SubscribeObjectType} from './rules-subscribe'
@@ -221,21 +228,21 @@ function subscribeNext<TValue>(
 		)
 	}
 
-	function subscribeNode(rule, getNextRuleIterator) {
+	function subscribeNode(rule: IRuleSubscribe, getNextRuleIterable: INextRuleIterable) {
 		let deepSubscribeItem: (item, propertyName: string, parent: any) => () => void
 		const catchHandlerItem = (err, propertyName: string) => {
 			catchHandler(err, () => (propertiesPath ? propertiesPath() + '.' : '')
 				+ (propertyName == null ? '' : propertyName + '(' + rule.description + ')'))
 		}
 
-		if (getNextRuleIterator) {
+		if (getNextRuleIterable) {
 			deepSubscribeItem = (item, propertyName: string, parent: any) => {
 				try {
 					return subscribeNext(
 						item,
 						valueSubscriber,
 						immediate,
-						getNextRuleIterator(),
+						getNextRuleIterable(item)[Symbol.iterator](),
 						leafUnsubscribers,
 						leafUnsubscribersCount,
 						() => (propertiesPath ? propertiesPath() + '.' : '')
@@ -269,7 +276,7 @@ function subscribeNext<TValue>(
 			object,
 			immediate,
 			(item, nextPropertyName: string) => {
-				if (getNextRuleIterator && typeof item === 'undefined') {
+				if (getNextRuleIterable && typeof item === 'undefined') {
 					return
 				}
 
@@ -279,7 +286,7 @@ function subscribeNext<TValue>(
 					nextParent = parent
 				}
 
-				if (!getNextRuleIterator && !(item instanceof Object)) {
+				if (!getNextRuleIterable && !(item instanceof Object)) {
 					checkIsFuncOrNull(deepSubscribeItem(
 						item,
 						nextPropertyName,
@@ -335,7 +342,7 @@ function subscribeNext<TValue>(
 				}
 			},
 			(item, nextPropertyName: string) => {
-				if (getNextRuleIterator && typeof item === 'undefined') {
+				if (getNextRuleIterable && typeof item === 'undefined') {
 					return
 				}
 
@@ -345,7 +352,7 @@ function subscribeNext<TValue>(
 					nextParent = parent
 				}
 
-				if (!getNextRuleIterator && !(item instanceof Object)) {
+				if (!getNextRuleIterable && !(item instanceof Object)) {
 					valueSubscriber.unsubscribe(item, nextParent, nextPropertyName)
 				} else {
 					unsubscribeNested(item, unsubscribers, unsubscribersCount)
@@ -355,7 +362,6 @@ function subscribeNext<TValue>(
 	}
 
 	return subscribeNextRule(
-		object,
 		ruleIterator,
 		iteration,
 		nextRuleIterator => deepSubscribeRuleIterator(

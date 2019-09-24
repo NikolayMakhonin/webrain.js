@@ -1,17 +1,14 @@
 import {isIterable} from '../../helpers/helpers'
 import {IUnsubscribe} from '../subjects/observable'
 import {IRuleSubscribe} from './contracts/rule-subscribe'
-import {IRule, IRuleAction, IRuleAny, IRuleRepeat, RuleType} from './contracts/rules'
+import {IRule, IRuleAction, IRuleAny, IRuleIf, IRuleRepeat, RuleType} from './contracts/rules'
 
-type GetIterableFunction = (object: any) => IRuleIterable
-
-export type IRuleOrIterable = IRuleAction | IRuleIterable | GetIterableFunction
+export type INextRuleIterable = (object: any) => IRuleIterable
+export type IRuleOrIterable = IRuleAction | IRuleIterable | INextRuleIterable
 export interface IRuleIterable extends Iterable<IRuleOrIterable> {}
 export type IRuleIterator = Iterator<IRuleOrIterable>
 
-type INextRule = (object: any) => IRuleIterable
-
-export function *iterateRule(object: any, rule: IRule, next: INextRule = null): IRuleIterable {
+export function *iterateRule(object: any, rule: IRule, next: INextRuleIterable = null): IRuleIterable {
 	if (!rule) {
 		if (next) {
 			yield* next(object)
@@ -19,16 +16,9 @@ export function *iterateRule(object: any, rule: IRule, next: INextRule = null): 
 		return
 	}
 
-	const ruleNext: INextRule = rule.next || next
+	const ruleNext: INextRuleIterable = rule.next || next
 		? (nextObject: any) => iterateRule(nextObject, rule.next, next)
 		: null
-
-	if (rule.condition && !rule.condition(object)) {
-		if (ruleNext) {
-			yield* ruleNext(object)
-		}
-		return
-	}
 
 	switch (rule.type) {
 		case RuleType.Nothing:
@@ -40,10 +30,38 @@ export function *iterateRule(object: any, rule: IRule, next: INextRule = null): 
 			yield rule
 			yield ruleNext
 			break
+		case RuleType.If: {
+			const {conditionRules} = (rule as IRuleIf)
+			const len = conditionRules.length
+			let i = 0
+			for (; i < len; i++) {
+				const conditionRule = conditionRules[i]
+				if (Array.isArray(conditionRule)) {
+					if (conditionRule[0](object)) {
+						yield conditionRule[1]
+						yield ruleNext
+						break
+					}
+				} else {
+					yield conditionRule
+					yield ruleNext
+					break
+				}
+			}
+
+			if (i === len && ruleNext) {
+				yield* ruleNext(object)
+			}
+			break
+		}
 		case RuleType.Any:
 			const {rules} = (rule as IRuleAny)
 			if (rules.length <= 1) {
-				throw new Error(`RuleType.Any rules.length=${rules.length}`)
+				if (ruleNext) {
+					yield* ruleNext(object)
+				}
+				break
+				// throw new Error(`RuleType.Any rules.length=${rules.length}`)
 			}
 
 			const any = function *() {
@@ -60,7 +78,11 @@ export function *iterateRule(object: any, rule: IRule, next: INextRule = null): 
 		case RuleType.Repeat: {
 			const {countMin, countMax, rule: subRule} = rule as IRuleRepeat
 			if (countMax < countMin || countMax <= 0) {
-				throw new Error(`RuleType.Repeat countMin=${countMin} countMax=${countMax} rule=${rule}`)
+				if (ruleNext) {
+					yield* ruleNext(object)
+				}
+				break
+				// throw new Error(`RuleType.Repeat countMin=${countMin} countMax=${countMax} rule=${rule}`)
 			}
 
 			const repeatNext = function*(nextObject: any, count: number): IRuleIterable {
@@ -91,11 +113,10 @@ export function *iterateRule(object: any, rule: IRule, next: INextRule = null): 
 }
 
 export function subscribeNextRule(
-	object: any,
 	ruleIterator: IRuleIterator,
 	iteration: IteratorResult<IRuleOrIterable, null>,
 	fork: (ruleIterator: IRuleIterator) => IUnsubscribe,
-	subscribeNode: (rule: IRuleSubscribe, getRuleIterator: () => IRuleIterator) => IUnsubscribe,
+	subscribeNode: (rule: IRuleSubscribe, getRuleIterable: INextRuleIterable) => IUnsubscribe,
 ): IUnsubscribe {
 	const ruleOrIterable = iteration.value
 
@@ -136,12 +157,12 @@ export function subscribeNextRule(
 		}
 	}
 
-	const nextIterable = ruleIterator.next().value as GetIterableFunction
+	const nextIterable = ruleIterator.next().value as INextRuleIterable
 
 	return subscribeNode(
 		ruleOrIterable as IRuleSubscribe,
-		nextIterable
-			? () => nextIterable(object)[Symbol.iterator]()
-			: null,
+		nextIterable,
+			// ? () => nextIterable(object)[Symbol.iterator]()
+			// : null,
 	)
 }

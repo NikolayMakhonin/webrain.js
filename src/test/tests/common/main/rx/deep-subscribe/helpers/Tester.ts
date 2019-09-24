@@ -39,6 +39,7 @@ export interface IObject {
 	set: ISet
 	map2: IMap
 	value: any
+	valueArray: any[]
 	valueUndefined: any
 	valueObject: any
 	valueObjectWritable: any
@@ -121,6 +122,7 @@ export function createObject() {
 		map2,
 		valueUndefined: void 0,
 		value: 'value',
+		valueArray: ['value1', 'value2'],
 		valueObject: new String('value'),
 		promiseSync: { then: resolve => resolve(observableObject) },
 		promiseAsync: { then: resolve => setTimeout(() => resolve(observableObject), 0) }	,

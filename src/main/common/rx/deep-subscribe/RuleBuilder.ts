@@ -3,9 +3,9 @@ import {Diff, TPrimitive} from '../../helpers/typescript'
 import {VALUE_PROPERTY_DEFAULT} from '../../helpers/value-property'
 import {ANY, ANY_DISPLAY, COLLECTION_PREFIX, VALUE_PROPERTY_PREFIX} from './contracts/constants'
 import {IRuleSubscribe} from './contracts/rule-subscribe'
-import {IRule} from './contracts/rules'
+import {IConditionRule, IRule} from './contracts/rules'
 import {getFuncPropertiesPath} from './helpers/func-properties-path'
-import {RuleAny, RuleNothing, RuleRepeat} from './rules'
+import {RuleAny, RuleIf, RuleNothing, RuleRepeat} from './rules'
 import {RuleSubscribeCollection, RuleSubscribeMap, RuleSubscribeObject, SubscribeObjectType} from './rules-subscribe'
 
 const RuleSubscribeObjectPropertyNames = RuleSubscribeObject.bind(null, SubscribeObjectType.Property, null)
@@ -14,6 +14,9 @@ const RuleSubscribeMapKeys = RuleSubscribeMap.bind(null, null)
 
 // const UNSUBSCRIBE_PROPERTY_PREFIX = Math.random().toString(36)
 // let nextUnsubscribePropertyId = 0
+
+export type IRuleFactory<TObject, TValue, TValueKeys extends string | number>
+	= (builder: RuleBuilder<TObject, TValueKeys>) => RuleBuilder<TValue, TValueKeys>
 
 export type MapValueOf<TMap>
 	= TMap extends Map<any, infer TValue>
@@ -347,8 +350,29 @@ export class RuleBuilder<TObject = any, TValueKeys extends string | number = nev
 		return this as any
 	}
 
+	public if<TValue>(
+		...exclusiveConditionRules: Array<[
+			(value: TValue) => boolean,
+			IRuleFactory<TObject, TValue, TValueKeys>
+		] | IRuleFactory<TObject, TValue, TValueKeys>>
+	): RuleBuilder<TValue, TValueKeys> {
+		if (exclusiveConditionRules.length === 0) {
+			throw new Error('if() parameters is empty')
+		}
+
+		const rule = new RuleIf<TValue>(exclusiveConditionRules.map(o => {
+			if (Array.isArray(o)) {
+				return [ o[0], o[1](new RuleBuilder<TObject, TValueKeys>()).result ]
+			} else {
+				return o(new RuleBuilder<TObject, TValueKeys>()).result
+			}
+		}))
+
+		return this.rule<TValue>(rule)
+	}
+
 	public any<TValue>(
-		...getChilds: Array<(builder: RuleBuilder<TObject, TValueKeys>) => RuleBuilder<TValue, TValueKeys>>
+		...getChilds: Array<IRuleFactory<TObject, TValue, TValueKeys>>
 	): RuleBuilder<TValue, TValueKeys> {
 		if (getChilds.length === 0) {
 			throw new Error('any() parameters is empty')
@@ -368,7 +392,7 @@ export class RuleBuilder<TObject = any, TValueKeys extends string | number = nev
 	public repeat<TValue>(
 		countMin: number,
 		countMax: number,
-		getChild: (builder: RuleBuilder<TObject, TValueKeys>) => RuleBuilder<TValue, TValueKeys>,
+		getChild: IRuleFactory<TObject, TValue, TValueKeys>,
 	): RuleBuilder<TValue, TValueKeys> {
 		const subRule = getChild(new RuleBuilder<TObject, TValueKeys>()).result
 		if (!subRule) {
