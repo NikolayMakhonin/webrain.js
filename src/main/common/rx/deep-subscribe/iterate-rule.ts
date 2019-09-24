@@ -38,13 +38,11 @@ export function *iterateRule(object: any, rule: IRule, next: INextRuleIterable =
 				const conditionRule = conditionRules[i]
 				if (Array.isArray(conditionRule)) {
 					if (conditionRule[0](object)) {
-						yield conditionRule[1]
-						yield ruleNext
+						yield* iterateRule(object, conditionRule[1], ruleNext)
 						break
 					}
 				} else {
-					yield conditionRule
-					yield ruleNext
+					yield* iterateRule(object, conditionRule, ruleNext)
 					break
 				}
 			}
@@ -76,8 +74,8 @@ export function *iterateRule(object: any, rule: IRule, next: INextRuleIterable =
 			yield any()
 			break
 		case RuleType.Repeat: {
-			const {countMin, countMax, rule: subRule} = rule as IRuleRepeat
-			if (countMax < countMin || countMax <= 0) {
+			const {countMin, countMax, condition, rule: subRule} = rule as IRuleRepeat
+			if (countMax < countMin || countMax <= 0 || condition && !condition(object)) {
 				if (ruleNext) {
 					yield* ruleNext(object)
 				}
@@ -94,7 +92,12 @@ export function *iterateRule(object: any, rule: IRule, next: INextRuleIterable =
 				}
 
 				const nextIteration = (newCount: number): IRuleIterable => {
-					return iterateRule(nextObject, subRule, nextIterationObject => repeatNext(nextIterationObject, newCount))
+					return iterateRule(nextObject, subRule, nextIterationObject => {
+						if (condition && !condition(object)) {
+							return ruleNext && ruleNext(nextObject)
+						}
+						return repeatNext(nextIterationObject, newCount)
+					})
 				}
 
 				if (count < countMin) {

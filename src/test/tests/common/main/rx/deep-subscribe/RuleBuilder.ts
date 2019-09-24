@@ -40,7 +40,9 @@ describe('common > main > rx > deep-subscribe > RuleBuilder', function() {
 	}
 
 	it('constructor', function() {
-		const builder = new RuleBuilder()
+		const builder = new RuleBuilder({
+			autoInsertValuePropertyDefault: false,
+		})
 
 		assert.strictEqual(builder.result, undefined)
 	})
@@ -625,7 +627,9 @@ describe('common > main > rx > deep-subscribe > RuleBuilder', function() {
 	}
 
 	it('path', function() {
-		const builder = new RuleBuilder<IObject>()
+		const builder = new RuleBuilder<IObject>({
+			autoInsertValuePropertyDefault: false,
+		})
 		assert.strictEqual(builder.result, undefined)
 
 		const builder1 = builder.path(o => o.prop1)
@@ -695,7 +699,9 @@ describe('common > main > rx > deep-subscribe > RuleBuilder', function() {
 	})
 
 	it('path complex', function() {
-		const builder = new RuleBuilder<IObject>()
+		const builder = new RuleBuilder<IObject>({
+			autoInsertValuePropertyDefault: false,
+		})
 		assert.strictEqual(builder.result, undefined)
 
 		const builder1 = builder.path(o => o['prop1|prop2']['#prop3']['#prop4||prop5']['*']['#']['#*'])
@@ -741,7 +747,9 @@ describe('common > main > rx > deep-subscribe > RuleBuilder', function() {
 	})
 
 	it('property', function() {
-		const builder = new RuleBuilder<IObject>()
+		const builder = new RuleBuilder<IObject>({
+			autoInsertValuePropertyDefault: false,
+		})
 		assert.strictEqual(builder.result, undefined)
 
 		// @ts-ignore
@@ -813,7 +821,9 @@ describe('common > main > rx > deep-subscribe > RuleBuilder', function() {
 	})
 
 	it('propertyAny', function() {
-		const builder = new RuleBuilder<IObject>()
+		const builder = new RuleBuilder<IObject>({
+			autoInsertValuePropertyDefault: false,
+		})
 		assert.strictEqual(builder.result, undefined)
 
 		const builder1 = builder.propertyAny()
@@ -874,7 +884,9 @@ describe('common > main > rx > deep-subscribe > RuleBuilder', function() {
 	})
 
 	it('propertyNames', function() {
-		const builder = new RuleBuilder<IObject>()
+		const builder = new RuleBuilder<IObject>({
+			autoInsertValuePropertyDefault: false,
+		})
 		assert.strictEqual(builder.result, undefined)
 
 		assert.strictEqual(builder.result, undefined)
@@ -937,7 +949,9 @@ describe('common > main > rx > deep-subscribe > RuleBuilder', function() {
 	})
 
 	it('map', function() {
-		const builder = new RuleBuilder<IObject>()
+		const builder = new RuleBuilder<IObject>({
+			autoInsertValuePropertyDefault: false,
+		})
 		assert.strictEqual(builder.result, undefined)
 
 		// @ts-ignore
@@ -1009,7 +1023,9 @@ describe('common > main > rx > deep-subscribe > RuleBuilder', function() {
 	})
 
 	it('mapAny', function() {
-		const builder = new RuleBuilder<IObject>()
+		const builder = new RuleBuilder<IObject>({
+			autoInsertValuePropertyDefault: false,
+		})
 		assert.strictEqual(builder.result, undefined)
 
 		const builder1 = builder.mapAny()
@@ -1097,7 +1113,9 @@ describe('common > main > rx > deep-subscribe > RuleBuilder', function() {
 	})
 
 	it('mapKeys', function() {
-		const builder = new RuleBuilder<IObject>()
+		const builder = new RuleBuilder<IObject>({
+			autoInsertValuePropertyDefault: false,
+		})
 		assert.strictEqual(builder.result, undefined)
 
 		assert.strictEqual(builder.result, undefined)
@@ -1160,7 +1178,9 @@ describe('common > main > rx > deep-subscribe > RuleBuilder', function() {
 	})
 
 	it('collection', function() {
-		const builder = new RuleBuilder<IObject>()
+		const builder = new RuleBuilder<IObject>({
+			autoInsertValuePropertyDefault: false,
+		})
 		assert.strictEqual(builder.result, undefined)
 
 		const builder1 = builder.collection()
@@ -1221,7 +1241,9 @@ describe('common > main > rx > deep-subscribe > RuleBuilder', function() {
 	})
 
 	it('repeat', function() {
-		const builder = new RuleBuilder<IObject>()
+		const builder = new RuleBuilder<IObject>({
+			autoInsertValuePropertyDefault: false,
+		})
 		assert.strictEqual(builder.result, undefined)
 
 		assert.throws(() => builder.repeat(1, 1, null, b => null), [Error, TypeError, ReferenceError])
@@ -1311,7 +1333,9 @@ describe('common > main > rx > deep-subscribe > RuleBuilder', function() {
 	})
 
 	it('any', function() {
-		const builder = new RuleBuilder<IObject>()
+		const builder = new RuleBuilder<IObject>({
+			autoInsertValuePropertyDefault: false,
+		})
 		assert.strictEqual(builder.result, undefined)
 
 		assert.throws(() => builder.any(), [Error, TypeError, ReferenceError])

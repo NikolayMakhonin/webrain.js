@@ -153,7 +153,7 @@ export class ObjectSubscriber<TObject> implements IValueSubscriber<TObject> {
 		}
 
 		if (this._lastValue) {
-			this.insertSubscribed({value, parent, propertyName, isOwnProperty: propertyName in parent})
+			this.insertSubscribed({value, parent, propertyName, isOwnProperty: parent != null && propertyName in parent})
 			// let {_subscribedValues, _subscribedParents, _subscribedPropertyNames} = this
 			// if (!_subscribedValues) {
 			// 	this._subscribedValues = _subscribedValues = []

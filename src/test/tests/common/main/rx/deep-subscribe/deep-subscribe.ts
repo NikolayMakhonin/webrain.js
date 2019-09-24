@@ -15,6 +15,9 @@ describe('common > main > rx > deep-subscribe > deep-subscribe', function() {
 				doNotSubscribeNonObjectValues: true,
 			},
 			b => b.propertyAny().if([o => Array.isArray(o), b => b.p('1')], b => b.p('qwe')),
+			// // b => b.propertyAny().if([o => Array.isArray(o), b => b.p('1')], b => b.nothing()),
+			// b => b.p('value').nothing(),
+			// // b => b.propertyAny().repeat(1, 1, o => Array.isArray(o), b => b.p('1')),
 		)
 			.subscribe(o => ['value2'])
 			.unsubscribe(o => ['value2'])

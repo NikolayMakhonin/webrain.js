@@ -127,7 +127,7 @@ function subscribeNext<TValue>(
 		}
 
 		if (hasDefaultProperty(object as any)
-			&& iteration.value.subType !== SubscribeObjectType.ValueProperty
+			&& (!iteration || iteration.value == null || iteration.value.subType !== SubscribeObjectType.ValueProperty)
 		) {
 			const result = subscribeDefaultProperty<TValue>(
 				object as any,
@@ -222,7 +222,7 @@ function subscribeNext<TValue>(
 		return subscribeLeaf(
 			object,
 			propertyName,
-			object,
+			parent,
 			ruleDescription,
 			err => catchHandler(err, propertiesPath),
 		)
