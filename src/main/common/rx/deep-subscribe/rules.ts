@@ -63,15 +63,17 @@ export class RuleAny extends Rule implements IRuleAny {
 	}
 }
 
-export class RuleRepeat extends Rule implements IRuleRepeat {
+export class RuleRepeat<TValue = any> extends Rule implements IRuleRepeat {
 	public readonly countMin: number
 	public readonly countMax: number
+	public readonly condition?: (value: TValue) => boolean
 	public readonly rule: IRule
 
-	constructor(countMin: number, countMax: number, rule: IRule) {
+	constructor(countMin: number, countMax: number, condition: (value: TValue) => boolean, rule: IRule) {
 		super(RuleType.Repeat)
 		this.countMin = countMin
 		this.countMax = countMax
+		this.condition = condition
 		this.rule = rule
 	}
 
@@ -79,7 +81,8 @@ export class RuleRepeat extends Rule implements IRuleRepeat {
 		const clone = super.clone() as IRuleAny
 		(clone as any).rule = this.rule.clone();
 		(clone as any).countMin = this.countMin;
-		(clone as any).countMax = this.countMax
+		(clone as any).countMax = this.countMax;
+		(clone as any).condition = this.condition
 		return clone
 	}
 }

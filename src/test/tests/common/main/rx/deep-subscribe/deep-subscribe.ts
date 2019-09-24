@@ -88,7 +88,7 @@ describe('common > main > rx > deep-subscribe > deep-subscribe', function() {
 				immediate: true,
 			},
 			b => b
-				.repeat(2, 2, b => b
+				.repeat(2, 2, null, b => b
 					.path(o => o.object))
 				.path(o => o.observableObject.object),
 		)
@@ -103,7 +103,7 @@ describe('common > main > rx > deep-subscribe > deep-subscribe', function() {
 				immediate: true,
 			},
 			b => b
-				.repeat(0, 5, b => b
+				.repeat(0, 5, null, b => b
 					.path(o => o.object))
 				.path(o => o.observableObject.object),
 		)
@@ -228,9 +228,9 @@ describe('common > main > rx > deep-subscribe > deep-subscribe', function() {
 			// b => b.path(o => o.object.observableObject.object.object),
 			// b => b.path(o => o.object.object.observableObject.object.object),
 			// b => b
-			// 	.repeat(3, 3, b => b
+			// 	.repeat(3, 3, null, b => b
 			// 		.path(o => o.object)
-			// 		.repeat(3, 3, b => b
+			// 		.repeat(3, 3, null, b => b
 			// 			.path(o => o.observableObject)))
 			// 	.path(o => o.observableObject.object),
 		)
@@ -252,9 +252,9 @@ describe('common > main > rx > deep-subscribe > deep-subscribe', function() {
 			b => b.path(o => o.object.observableObject.object.object),
 			b => b.path(o => o.object.object.observableObject.object.object),
 			b => b
-				.repeat(3, 3, b => b
+				.repeat(3, 3, null, b => b
 					.path(o => o.object)
-					.repeat(3, 3, b => b
+					.repeat(3, 3, null, b => b
 						.path(o => o.observableObject)))
 				.path(o => o.object.object),
 		)
@@ -274,7 +274,7 @@ describe('common > main > rx > deep-subscribe > deep-subscribe', function() {
 				doNotSubscribeNonObjectValues: true,
 			},
 			b => b
-				.repeat(0, 2, b => b
+				.repeat(0, 2, null, b => b
 					.path(o => o.object))
 				.path(o => o.observableObject.object),
 		)
@@ -297,7 +297,7 @@ describe('common > main > rx > deep-subscribe > deep-subscribe', function() {
 		// 		immediate: false,
 		// 	},
 		// 	b => b
-		// 		.repeat(1, 3, b => b
+		// 		.repeat(1, 3, null, b => b
 		// 			.any(
 		// 				b => b.propertyRegexp(/object|observableObject/),
 		// 				b => b.path(o => o['list|set|map2|observableList|observableSet|observableMap']['#']),
@@ -720,7 +720,7 @@ describe('common > main > rx > deep-subscribe > deep-subscribe', function() {
 				doNotSubscribeNonObjectValues: true,
 			},
 			b => b
-				.repeat(1, 3, b => b
+				.repeat(1, 3, null, b => b
 					.any(
 						b => b.propertyRegexp(/object|observableObject/),
 						b => b.path(o => o['list|set|map2|observableList|observableSet|observableMap']['#']),
@@ -747,7 +747,7 @@ describe('common > main > rx > deep-subscribe > deep-subscribe', function() {
 				doNotSubscribeNonObjectValues: true,
 			},
 			b => b
-				.repeat(1, 3, b => b
+				.repeat(1, 3, null, b => b
 					.any(
 						b => b.propertyRegexp(/object|observableObject/),
 						b => b.path(o => o['list|set|map2|observableList|observableSet|observableMap']['#']),
@@ -773,7 +773,7 @@ describe('common > main > rx > deep-subscribe > deep-subscribe', function() {
 		// 		ignoreSubscribeCount: true,
 		// 	},
 		// 	b => b
-		// 		.repeat(1, 3, b => b
+		// 		.repeat(1, 3, null, b => b
 		// 			.any(
 		// 				b => b.propertyRegexp(/object|observableObject/),
 		// 				b => b.path(o => o['list|set|map2|observableList|observableSet|observableMap']['#']),

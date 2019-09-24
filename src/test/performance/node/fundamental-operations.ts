@@ -1002,7 +1002,7 @@ describe('fundamental-operations', function() {
 				performanceTest: true,
 			},
 			b => b
-				.repeat(1, 3, b => b
+				.repeat(1, 3, null, b => b
 					.any(
 						// b => b.propertyRegexp(/object|observableObject/),
 						b => b.propertyNames('object', 'observableObject'),

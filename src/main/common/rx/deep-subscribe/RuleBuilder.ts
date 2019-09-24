@@ -3,10 +3,16 @@ import {Diff, TPrimitive} from '../../helpers/typescript'
 import {VALUE_PROPERTY_DEFAULT} from '../../helpers/value-property'
 import {ANY, ANY_DISPLAY, COLLECTION_PREFIX, VALUE_PROPERTY_PREFIX} from './contracts/constants'
 import {IRuleSubscribe} from './contracts/rule-subscribe'
-import {IConditionRule, IRule} from './contracts/rules'
+import {IRule} from './contracts/rules'
 import {getFuncPropertiesPath} from './helpers/func-properties-path'
 import {RuleAny, RuleIf, RuleNothing, RuleRepeat} from './rules'
-import {RuleSubscribeCollection, RuleSubscribeMap, RuleSubscribeObject, SubscribeObjectType} from './rules-subscribe'
+import {
+	hasDefaultProperty,
+	RuleSubscribeCollection,
+	RuleSubscribeMap,
+	RuleSubscribeObject,
+	SubscribeObjectType,
+} from './rules-subscribe'
 
 const RuleSubscribeObjectPropertyNames = RuleSubscribeObject.bind(null, SubscribeObjectType.Property, null)
 const RuleSubscribeObjectValuePropertyNames = RuleSubscribeObject.bind(null, SubscribeObjectType.ValueProperty, null)
@@ -105,6 +111,11 @@ export class RuleBuilder<TObject = any, TValueKeys extends string | number = nev
 		}
 	}
 
+	public valuePropertyDefault<TValue>(): RuleBuilder<TValue, TValueKeys> {
+		return this as any
+			// .if([(o: any) => hasDefaultProperty(o), b => b.propertyName(VALUE_PROPERTY_DEFAULT as any)])
+	}
+
 	public rule<TValue>(rule: IRule): RuleBuilder<TValue, TValueKeys> {
 		const {_ruleLast: ruleLast} = this
 
@@ -121,7 +132,6 @@ export class RuleBuilder<TObject = any, TValueKeys extends string | number = nev
 
 	public ruleSubscribe<TValue>(
 		ruleSubscribe: IRuleSubscribe<TObject, TValue>,
-		// condition?: (object: any) => boolean,
 		description?: string,
 	): RuleBuilder<TValue, TValueKeys> {
 		if (description) {
@@ -134,7 +144,6 @@ export class RuleBuilder<TObject = any, TValueKeys extends string | number = nev
 
 		ruleSubscribe.unsubscribers = []
 		ruleSubscribe.unsubscribersCount = []
-		// ruleSubscribe.condition = condition
 
 		return this.rule<TValue>(ruleSubscribe)
 	}
@@ -147,10 +156,19 @@ export class RuleBuilder<TObject = any, TValueKeys extends string | number = nev
 	 * Object property, Array index
 	 */
 	public valuePropertyName<TValue = PropertyValueOf<TObject>>(propertyName: string): RuleBuilder<TValue, TValueKeys> {
-		return this.ruleSubscribe<TValue>(
-			new RuleSubscribeObjectValuePropertyNames(propertyName),
-			VALUE_PROPERTY_PREFIX + propertyName,
-		)
+		return this
+			.ruleSubscribe<TValue>(
+				new RuleSubscribeObjectValuePropertyNames(propertyName),
+				VALUE_PROPERTY_PREFIX + propertyName,
+			)
+			// .if([
+			// 	o => (o instanceof Object) && o.constructor !== Object && !Array.isArray(o),
+			// 	b => b.ruleSubscribe<TValue>(
+			// 		new RuleSubscribeObjectValuePropertyNames(propertyName),
+			// 		VALUE_PROPERTY_PREFIX + propertyName,
+			// 	),
+			// ])
+
 	}
 
 	/**
@@ -159,10 +177,18 @@ export class RuleBuilder<TObject = any, TValueKeys extends string | number = nev
 	public valuePropertyNames<TValue = PropertyValueOf<TObject>>(
 		...propertiesNames: string[]
 	): RuleBuilder<TValue, TValueKeys> {
-		return this.ruleSubscribe<TValue>(
-			new RuleSubscribeObjectValuePropertyNames(...propertiesNames),
-			VALUE_PROPERTY_PREFIX + propertiesNames.join('|'),
-		)
+		return this
+			.ruleSubscribe<TValue>(
+				new RuleSubscribeObjectValuePropertyNames(...propertiesNames),
+				VALUE_PROPERTY_PREFIX + propertiesNames.join('|'),
+			)
+			// .if([
+			// 	o => (o instanceof Object) && o.constructor !== Object && !Array.isArray(o),
+			// 	b => b.ruleSubscribe<TValue>(
+			// 		new RuleSubscribeObjectValuePropertyNames(...propertiesNames),
+			// 		VALUE_PROPERTY_PREFIX + propertiesNames.join('|'),
+			// 	),
+			// ])
 	}
 
 	/**
@@ -181,10 +207,12 @@ export class RuleBuilder<TObject = any, TValueKeys extends string | number = nev
 		propertyName: TKeys,
 	): RuleBuilder<TValue, TValueKeys>
 	public propertyName<TValue>(propertyName: string): RuleBuilder<TValue, TValueKeys> {
-		return this.ruleSubscribe<TValue>(
-			new RuleSubscribeObjectPropertyNames(propertyName),
-			propertyName,
-		)
+		return this
+			.valuePropertyDefault()
+			.ruleSubscribe<TValue>(
+				new RuleSubscribeObjectPropertyNames(propertyName),
+				propertyName,
+			)
 	}
 
 	/**
@@ -197,10 +225,12 @@ export class RuleBuilder<TObject = any, TValueKeys extends string | number = nev
 		...propertiesNames: TKeys[]
 	): RuleBuilder<TValue, TValueKeys>
 	public propertyNames<TValue>(...propertiesNames: string[]): RuleBuilder<TValue, TValueKeys> {
-		return this.ruleSubscribe<TValue>(
-			new RuleSubscribeObjectPropertyNames(...propertiesNames),
-			propertiesNames.join('|'),
-		)
+		return this
+			.valuePropertyDefault()
+			.ruleSubscribe<TValue>(
+				new RuleSubscribeObjectPropertyNames(...propertiesNames),
+				propertiesNames.join('|'),
+			)
 	}
 
 	/**
@@ -221,10 +251,12 @@ export class RuleBuilder<TObject = any, TValueKeys extends string | number = nev
 	 * Object property, Array index
 	 */
 	public propertyAny<TValue = ObjectAnyValueOf<TObject>>(): RuleBuilder<TValue, TValueKeys> {
-		return this.ruleSubscribe<TValue>(
-			new RuleSubscribeObjectPropertyNames(),
-			ANY_DISPLAY,
-		)
+		return this
+			.valuePropertyDefault()
+			.ruleSubscribe<TValue>(
+				new RuleSubscribeObjectPropertyNames(),
+				ANY_DISPLAY,
+			)
 	}
 
 	/**
@@ -234,10 +266,12 @@ export class RuleBuilder<TObject = any, TValueKeys extends string | number = nev
 		predicate: (propertyName: string, object) => boolean,
 		description: string,
 	): RuleBuilder<TValue, TValueKeys> {
-		return this.ruleSubscribe<TValue>(
-			new RuleSubscribeObject(SubscribeObjectType.Property, predicate),
-			description,
-		)
+		return this
+			.valuePropertyDefault()
+			.ruleSubscribe<TValue>(
+				new RuleSubscribeObject(SubscribeObjectType.Property, predicate),
+				description,
+			)
 	}
 
 	/**
@@ -258,40 +292,48 @@ export class RuleBuilder<TObject = any, TValueKeys extends string | number = nev
 	 * IListChanged & Iterable, ISetChanged & Iterable, IMapChanged & Iterable, Iterable
 	 */
 	public collection<TValue = IterableValueOf<TObject>>(): RuleBuilder<TValue, TValueKeys> {
-		return this.ruleSubscribe<TValue>(
-			new RuleSubscribeCollection<any, TValue>(),
-			COLLECTION_PREFIX,
-		)
+		return this
+			.valuePropertyDefault()
+			.ruleSubscribe<TValue>(
+				new RuleSubscribeCollection<any, TValue>(),
+				COLLECTION_PREFIX,
+			)
 	}
 
 	/**
 	 * IMapChanged & Map, Map
 	 */
 	public mapKey<TKey, TValue = MapValueOf<TObject>>(key: TKey): RuleBuilder<TValue, TValueKeys> {
-		return this.ruleSubscribe<TValue>(
-			new RuleSubscribeMapKeys(key),
-			COLLECTION_PREFIX + key,
-		)
+		return this
+			.valuePropertyDefault()
+			.ruleSubscribe<TValue>(
+				new RuleSubscribeMapKeys(key),
+				COLLECTION_PREFIX + key,
+			)
 	}
 
 	/**
 	 * IMapChanged & Map, Map
 	 */
 	public mapKeys<TKey, TValue = MapValueOf<TObject>>(...keys: TKey[]): RuleBuilder<TValue, TValueKeys> {
-		return this.ruleSubscribe<TValue>(
-			new RuleSubscribeMapKeys(...keys),
-			COLLECTION_PREFIX + keys.join('|'),
-		)
+		return this
+			.valuePropertyDefault()
+			.ruleSubscribe<TValue>(
+				new RuleSubscribeMapKeys(...keys),
+				COLLECTION_PREFIX + keys.join('|'),
+			)
 	}
 
 	/**
 	 * IMapChanged & Map, Map
 	 */
 	public mapAny<TValue = MapValueOf<TObject>>(): RuleBuilder<TValue, TValueKeys> {
-		return this.ruleSubscribe<TValue>(
-			new RuleSubscribeMap() as any,
-			COLLECTION_PREFIX,
-		)
+		return this
+			.valuePropertyDefault()
+			.ruleSubscribe<TValue>(
+				new RuleSubscribeMap() as any,
+				COLLECTION_PREFIX,
+			)
 	}
 
 	/**
@@ -301,10 +343,12 @@ export class RuleBuilder<TObject = any, TValueKeys extends string | number = nev
 		keyPredicate: (key: TKey, object) => boolean,
 		description: string,
 	): RuleBuilder<TValue, TValueKeys> {
-		return this.ruleSubscribe<TValue>(
-			new RuleSubscribeMap(keyPredicate) as any,
-			description,
-		)
+		return this
+			.valuePropertyDefault()
+			.ruleSubscribe<TValue>(
+				new RuleSubscribeMap(keyPredicate) as any,
+				description,
+			)
 	}
 
 	/**
@@ -392,6 +436,7 @@ export class RuleBuilder<TObject = any, TValueKeys extends string | number = nev
 	public repeat<TValue>(
 		countMin: number,
 		countMax: number,
+		condition: (value: TValue) => boolean,
 		getChild: IRuleFactory<TObject, TValue, TValueKeys>,
 	): RuleBuilder<TValue, TValueKeys> {
 		const subRule = getChild(new RuleBuilder<TObject, TValueKeys>()).result
@@ -418,6 +463,7 @@ export class RuleBuilder<TObject = any, TValueKeys extends string | number = nev
 			rule = new RuleRepeat(
 				countMin,
 				countMax,
+				condition,
 				getChild(new RuleBuilder<TObject, TValueKeys>()).result,
 			)
 		}

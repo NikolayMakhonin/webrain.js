@@ -1224,19 +1224,19 @@ describe('common > main > rx > deep-subscribe > RuleBuilder', function() {
 		const builder = new RuleBuilder<IObject>()
 		assert.strictEqual(builder.result, undefined)
 
-		assert.throws(() => builder.repeat(1, 1, b => null), [Error, TypeError, ReferenceError])
-		assert.throws(() => builder.repeat(1, 1, b => ({rule: null} as any)), [Error, TypeError, ReferenceError])
+		assert.throws(() => builder.repeat(1, 1, null, b => null), [Error, TypeError, ReferenceError])
+		assert.throws(() => builder.repeat(1, 1, null, b => ({rule: null} as any)), [Error, TypeError, ReferenceError])
 
 		const builder1 = builder
 			.repeat(
-				null, null,
+				null, null, null,
 				b => b
-					.repeat(1, null, b => b.path(o => o.prop1))
-					.repeat(null, 2, b => b.path(o => o["prop '2'"]))
-					.repeat(3, 4, b => b.path(o => o.prop4)),
+					.repeat(1, null, null, b => b.path(o => o.prop1))
+					.repeat(null, 2, null, b => b.path(o => o["prop '2'"]))
+					.repeat(3, 4, null, b => b.path(o => o.prop4)),
 			)
-			.repeat(5, 6, b => b.path(o => o.prop5))
-			.repeat(7, 8, b => b.path(o => o.length))
+			.repeat(5, 6, null, b => b.path(o => o.prop5))
+			.repeat(7, 8, null, b => b.path(o => o.length))
 
 		checkType<number>(builder1)
 
@@ -1246,10 +1246,12 @@ describe('common > main > rx > deep-subscribe > RuleBuilder', function() {
 			type: RuleType.Repeat,
 			countMin: 0,
 			countMax: Number.MAX_SAFE_INTEGER,
+    		condition: null,
 			rule: {
 				type: RuleType.Repeat,
 				countMin: 1,
 				countMax: Number.MAX_SAFE_INTEGER,
+    			condition: null,
 				rule: {
 					type: RuleType.Action,
 					objectTypes: ['object', 'array'],
@@ -1260,6 +1262,7 @@ describe('common > main > rx > deep-subscribe > RuleBuilder', function() {
 					type: RuleType.Repeat,
 					countMin: 0,
 					countMax: 2,
+    				condition: null,
 					rule: {
 						type: RuleType.Action,
 						objectTypes: ['object', 'array'],
@@ -1270,6 +1273,7 @@ describe('common > main > rx > deep-subscribe > RuleBuilder', function() {
 						type: RuleType.Repeat,
 						countMin: 3,
 						countMax: 4,
+    					condition: null,
 						rule: {
 							type: RuleType.Action,
 							objectTypes: ['object', 'array'],
@@ -1283,6 +1287,7 @@ describe('common > main > rx > deep-subscribe > RuleBuilder', function() {
 				type: RuleType.Repeat,
 				countMin: 5,
 				countMax: 6,
+    			condition: null,
 				rule: {
 					type: RuleType.Action,
 					objectTypes: ['object', 'array'],
@@ -1293,6 +1298,7 @@ describe('common > main > rx > deep-subscribe > RuleBuilder', function() {
 					type: RuleType.Repeat,
 					countMin: 7,
 					countMax: 8,
+    				condition: null,
 					rule: {
 						type: RuleType.Action,
 						objectTypes: ['object', 'array'],
