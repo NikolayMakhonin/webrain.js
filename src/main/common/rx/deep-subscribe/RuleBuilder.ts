@@ -118,7 +118,8 @@ export class RuleBuilder<TObject = any, TValueKeys extends string | number = nev
 
 	public ruleSubscribe<TValue>(
 		ruleSubscribe: IRuleSubscribe<TObject, TValue>,
-		description: string,
+		// condition?: (object: any) => boolean,
+		description?: string,
 	): RuleBuilder<TValue, TValueKeys> {
 		if (description) {
 			ruleSubscribe.description = description
@@ -128,16 +129,9 @@ export class RuleBuilder<TObject = any, TValueKeys extends string | number = nev
 			throw new Error('You should not add duplicate IRuleSubscribe instances. Clone rule before add.')
 		}
 
-		// !Warning defineProperty is slow
-		// Object.defineProperty(ruleSubscribe, 'unsubscribePropertyName', {
-		// 	configurable: true,
-		// 	enumerable: false,
-		// 	writable: false,
-		// 	value: UNSUBSCRIBE_PROPERTY_PREFIX + (nextUnsubscribePropertyId++),
-		// })
-
-		ruleSubscribe.unsubscribers = [] // UNSUBSCRIBE_PROPERTY_PREFIX + (nextUnsubscribePropertyId++)
+		ruleSubscribe.unsubscribers = []
 		ruleSubscribe.unsubscribersCount = []
+		// ruleSubscribe.condition = condition
 
 		return this.rule<TValue>(ruleSubscribe)
 	}

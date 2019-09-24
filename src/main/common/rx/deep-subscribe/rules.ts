@@ -5,6 +5,7 @@ export class Rule implements IRule {
 	public subType?: any
 	public next?: IRule
 	public description?: string
+	public condition?: (object: any) => boolean
 
 	public constructor(type: RuleType) {
 		this.type = type

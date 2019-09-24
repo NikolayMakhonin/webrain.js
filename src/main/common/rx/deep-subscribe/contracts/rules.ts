@@ -10,6 +10,7 @@ export interface IRule {
 	next?: IRule
 	description?: string
 	clone(): IRule
+	condition?: (object: any) => boolean
 }
 
 // tslint:disable-next-line:no-empty-interface

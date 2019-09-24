@@ -23,6 +23,13 @@ export function *iterateRule(object: any, rule: IRule, next: INextRule = null): 
 		? (nextObject: any) => iterateRule(nextObject, rule.next, next)
 		: null
 
+	if (rule.condition && !rule.condition(object)) {
+		if (ruleNext) {
+			yield* ruleNext(object)
+		}
+		return
+	}
+
 	switch (rule.type) {
 		case RuleType.Nothing:
 			if (ruleNext) {
