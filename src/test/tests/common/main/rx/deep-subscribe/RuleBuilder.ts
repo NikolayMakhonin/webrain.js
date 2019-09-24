@@ -1246,12 +1246,12 @@ describe('common > main > rx > deep-subscribe > RuleBuilder', function() {
 			type: RuleType.Repeat,
 			countMin: 0,
 			countMax: Number.MAX_SAFE_INTEGER,
-    		condition: null,
+			condition: null,
 			rule: {
 				type: RuleType.Repeat,
 				countMin: 1,
 				countMax: Number.MAX_SAFE_INTEGER,
-    			condition: null,
+				condition: null,
 				rule: {
 					type: RuleType.Action,
 					objectTypes: ['object', 'array'],
@@ -1262,7 +1262,7 @@ describe('common > main > rx > deep-subscribe > RuleBuilder', function() {
 					type: RuleType.Repeat,
 					countMin: 0,
 					countMax: 2,
-    				condition: null,
+					condition: null,
 					rule: {
 						type: RuleType.Action,
 						objectTypes: ['object', 'array'],
@@ -1273,7 +1273,7 @@ describe('common > main > rx > deep-subscribe > RuleBuilder', function() {
 						type: RuleType.Repeat,
 						countMin: 3,
 						countMax: 4,
-    					condition: null,
+						condition: null,
 						rule: {
 							type: RuleType.Action,
 							objectTypes: ['object', 'array'],
@@ -1287,7 +1287,7 @@ describe('common > main > rx > deep-subscribe > RuleBuilder', function() {
 				type: RuleType.Repeat,
 				countMin: 5,
 				countMax: 6,
-    			condition: null,
+				condition: null,
 				rule: {
 					type: RuleType.Action,
 					objectTypes: ['object', 'array'],
@@ -1298,7 +1298,7 @@ describe('common > main > rx > deep-subscribe > RuleBuilder', function() {
 					type: RuleType.Repeat,
 					countMin: 7,
 					countMax: 8,
-    				condition: null,
+					condition: null,
 					rule: {
 						type: RuleType.Action,
 						objectTypes: ['object', 'array'],
