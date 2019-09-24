@@ -812,11 +812,11 @@ describe('common > main > rx > deep-subscribe > RuleBuilder', function() {
 		const rule3 = builder3.result.next.next as IRuleSubscribe
 	})
 
-	it('propertyAll', function() {
+	it('propertyAny', function() {
 		const builder = new RuleBuilder<IObject>()
 		assert.strictEqual(builder.result, undefined)
 
-		const builder1 = builder.propertyAll()
+		const builder1 = builder.propertyAny()
 		const rule1 = builder1.result as IRuleSubscribe
 		assert.strictEqual(builder1 as any, builder)
 
@@ -1008,11 +1008,11 @@ describe('common > main > rx > deep-subscribe > RuleBuilder', function() {
 		const rule3 = builder3.result.next.next as IRuleSubscribe
 	})
 
-	it('mapAll', function() {
+	it('mapAny', function() {
 		const builder = new RuleBuilder<IObject>()
 		assert.strictEqual(builder.result, undefined)
 
-		const builder1 = builder.mapAll()
+		const builder1 = builder.mapAny()
 		const rule1 = builder1.result as IRuleSubscribe
 		assert.strictEqual(builder1 as any, builder)
 

@@ -40,7 +40,7 @@ describe('common > main > rx > properties > CalcObjectBuilder', function() {
 			connectorFactory(c => c
 				.connect('connectValue1', b => b.path(o => o['@lastOrWait'].source1['@wait']))),
 			calcPropertyFactory(
-				d => d.invalidateOn(b => b.propertyAll()),
+				d => d.invalidateOn(b => b.propertyAny()),
 				(input, property: Property<Date, number>): ThenableOrIteratorOrValue<void> => {
 					property.value = new Date(input.connectValue1)
 					return ThenableSync.createResolved(null)
@@ -51,7 +51,7 @@ describe('common > main > rx > properties > CalcObjectBuilder', function() {
 			connectorFactory(c => c
 				.connect('connectValue1', b => b.path(o => o['@lastOrWait'].source2['@wait']))),
 			calcPropertyFactory(
-				d => d.invalidateOn(b => b.propertyAll()),
+				d => d.invalidateOn(b => b.propertyAny()),
 				(input, property: Property<ClassSync>): ThenableOrIteratorOrValue<void> => {
 					property.value = input.connectorSource
 					return ThenableSync.createResolved(null)
@@ -64,7 +64,7 @@ describe('common > main > rx > properties > CalcObjectBuilder', function() {
 			connectorFactory(c => c
 				.connect('connectValue1', b => b.path(o => o['@lastOrWait'].source1['@wait']))),
 			calcPropertyFactory(
-				d => d.invalidateOn(b => b.propertyAll()),
+				d => d.invalidateOn(b => b.propertyAny()),
 				function *(input, property: Property<Date, number>): ThenableOrIteratorOrValue<void> {
 					yield new Promise(r => setTimeout(r, 100))
 					property.value = new Date(input.connectValue1)
@@ -75,7 +75,7 @@ describe('common > main > rx > properties > CalcObjectBuilder', function() {
 			connectorFactory(c => c
 				.connect('connectValue1', b => b.path(o => o['@lastOrWait'].source2['@wait']))),
 			calcPropertyFactory(
-				d => d.invalidateOn(b => b.propertyAll()),
+				d => d.invalidateOn(b => b.propertyAny()),
 				function *(input, property: Property<ClassSync>): ThenableOrIteratorOrValue<void> {
 					yield new Promise(r => setTimeout(r, 100))
 					property.value = input.connectorSource

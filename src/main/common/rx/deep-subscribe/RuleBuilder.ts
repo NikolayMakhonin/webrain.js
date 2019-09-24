@@ -220,7 +220,7 @@ export class RuleBuilder<TObject = any, TValueKeys extends string | number = nev
 	/**
 	 * Object property, Array index
 	 */
-	public propertyAll<TValue = ObjectAnyValueOf<TObject>>(): RuleBuilder<TValue, TValueKeys> {
+	public propertyAny<TValue = ObjectAnyValueOf<TObject>>(): RuleBuilder<TValue, TValueKeys> {
 		return this.ruleSubscribe<TValue>(
 			new RuleSubscribeObjectPropertyNames(),
 			ANY_DISPLAY,
@@ -287,7 +287,7 @@ export class RuleBuilder<TObject = any, TValueKeys extends string | number = nev
 	/**
 	 * IMapChanged & Map, Map
 	 */
-	public mapAll<TValue = MapValueOf<TObject>>(): RuleBuilder<TValue, TValueKeys> {
+	public mapAny<TValue = MapValueOf<TObject>>(): RuleBuilder<TValue, TValueKeys> {
 		return this.ruleSubscribe<TValue>(
 			new RuleSubscribeMap() as any,
 			COLLECTION_PREFIX,
