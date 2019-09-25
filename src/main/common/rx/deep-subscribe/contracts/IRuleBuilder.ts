@@ -70,6 +70,10 @@ export type RuleGetValueFunc<TObject, TValue, TValueKeys extends string | number
 	= (o: TRulePathObject<TObject, TValueKeys>) => TValue
 
 export interface IRuleBuilder<TObject = any, TValueKeys extends string | number = never> {
+	ruleFirst: IRule
+
+	ruleLast: IRule
+
 	result(): IRule
 
 	valuePropertyDefault<TValue>(): IRuleBuilder<TValue, TValueKeys>

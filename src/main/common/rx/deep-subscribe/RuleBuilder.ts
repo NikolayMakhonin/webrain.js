@@ -31,8 +31,8 @@ const RuleSubscribeMapKeys = RuleSubscribeMap.bind(null, null)
 export class RuleBuilder<TObject = any, TValueKeys extends string | number = never>
 	implements IRuleBuilder<TObject, TValueKeys>
 {
-	private _ruleFirst: IRule
-	private _ruleLast: IRule
+	public ruleFirst: IRule
+	public ruleLast: IRule
 	public autoInsertValuePropertyDefault: boolean
 
 	constructor({
@@ -44,7 +44,7 @@ export class RuleBuilder<TObject = any, TValueKeys extends string | number = nev
 	} = {}) {
 		this.autoInsertValuePropertyDefault = autoInsertValuePropertyDefault
 		if (rule != null) {
-			this._ruleFirst = rule
+			this.ruleFirst = rule
 
 			let ruleLast
 			do {
@@ -52,14 +52,14 @@ export class RuleBuilder<TObject = any, TValueKeys extends string | number = nev
 				rule = rule.next
 			} while (rule != null)
 
-			this._ruleLast = ruleLast
+			this.ruleLast = ruleLast
 		}
 	}
 
 	public result(): IRule {
 		return (this.autoInsertValuePropertyDefault
 			? this.valuePropertyDefault()
-			: this)._ruleFirst
+			: this).ruleFirst
 	}
 
 	public valuePropertyDefault<TValue>(): RuleBuilder<TValue, TValueKeys> {
@@ -75,15 +75,15 @@ export class RuleBuilder<TObject = any, TValueKeys extends string | number = nev
 	}
 
 	public rule<TValue>(rule: IRule): RuleBuilder<TValue, TValueKeys> {
-		const {_ruleLast: ruleLast} = this
+		const {ruleLast} = this
 
 		if (ruleLast) {
 			ruleLast.next = rule
 		} else {
-			this._ruleFirst = rule
+			this.ruleFirst = rule
 		}
 
-		this._ruleLast = rule
+		this.ruleLast = rule
 
 		return this as unknown as RuleBuilder<TValue, TValueKeys>
 	}
@@ -373,9 +373,9 @@ export class RuleBuilder<TObject = any, TValueKeys extends string | number = nev
 
 		const rule = new RuleIf<TValue>(exclusiveConditionRules.map(o => {
 			if (Array.isArray(o)) {
-				return [o[0], o[1](this.clone(true))._ruleFirst]
+				return [o[0], o[1](this.clone(true)).ruleFirst]
 			} else {
-				return o(this.clone(true))._ruleFirst
+				return o(this.clone(true)).ruleFirst
 			}
 		}))
 
@@ -406,7 +406,7 @@ export class RuleBuilder<TObject = any, TValueKeys extends string | number = nev
 		condition: (value: TValue, index: number) => RuleRepeatAction,
 		getChild: IRuleFactory<TObject, TValue, TValueKeys>,
 	): RuleBuilder<TValue, TValueKeys> {
-		const subRule = getChild(this.clone(true))._ruleFirst
+		const subRule = getChild(this.clone(true)).ruleFirst
 		if (!subRule) {
 			throw new Error(`getChild(...).rule = ${subRule}`)
 		}
@@ -431,7 +431,7 @@ export class RuleBuilder<TObject = any, TValueKeys extends string | number = nev
 				countMin,
 				countMax,
 				condition,
-				getChild(this.clone(true))._ruleFirst,
+				getChild(this.clone(true)).ruleFirst,
 			)
 		}
 
@@ -440,9 +440,9 @@ export class RuleBuilder<TObject = any, TValueKeys extends string | number = nev
 
 	public clone(optionsOnly?: boolean) {
 		return new RuleBuilder<TObject, TValueKeys>({
-			rule: optionsOnly || !this._ruleFirst
+			rule: optionsOnly || !this.ruleFirst
 				? null
-				: this._ruleFirst.clone(),
+				: this.ruleFirst.clone(),
 			autoInsertValuePropertyDefault: this.autoInsertValuePropertyDefault,
 		})
 	}

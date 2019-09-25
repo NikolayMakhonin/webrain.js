@@ -912,8 +912,8 @@ describe('common > main > rx > deep-subscribe > deep-subscribe', function() {
 			b => b.path(o => (o.observableList['#'] as IObject).observableList['#'].observableList['#'].value),
 			b => {
 				b = b.path(o => o.object.object.object.value)
-				delete b._ruleFirst.description
-				delete b._ruleFirst.next.next.description
+				delete b.ruleFirst.description
+				delete b.ruleFirst.next.next.description
 				return b
 			},
 		)
