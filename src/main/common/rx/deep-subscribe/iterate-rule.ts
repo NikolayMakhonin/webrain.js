@@ -64,7 +64,7 @@ export function *iterateRule(object: any, rule: IRule, next: INextRuleIterable =
 				// throw new Error(`RuleType.Any rules.length=${rules.length}`)
 			}
 			if (rules.length === 1) {
-				yield iterateRule(object, rules[0], ruleNext)
+				yield [iterateRule(object, rules[0], ruleNext)]
 			}
 
 			const any = function *() {

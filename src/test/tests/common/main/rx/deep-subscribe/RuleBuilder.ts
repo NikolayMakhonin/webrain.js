@@ -44,7 +44,7 @@ describe('common > main > rx > deep-subscribe > RuleBuilder', function() {
 			autoInsertValuePropertyDefault: false,
 		})
 
-		assert.strictEqual(builder.result, undefined)
+		assert.strictEqual(builder.result(), undefined)
 	})
 
 	const nonSubscribeProperty = Math.random().toString(36)
@@ -630,10 +630,10 @@ describe('common > main > rx > deep-subscribe > RuleBuilder', function() {
 		const builder = new RuleBuilder<IObject>({
 			autoInsertValuePropertyDefault: false,
 		})
-		assert.strictEqual(builder.result, undefined)
+		assert.strictEqual(builder.result(), undefined)
 
 		const builder1 = builder.path(o => o.prop1)
-		const rule1 = builder1.result
+		const rule1 = builder1.result()
 		assert.strictEqual(builder1 as any, builder)
 
 		assertRule(rule1, {
@@ -646,7 +646,7 @@ describe('common > main > rx > deep-subscribe > RuleBuilder', function() {
 		const builder3 = builder1.path(o => o["prop '2'"].prop3)
 		checkType<string>(builder3)
 		assert.strictEqual(builder3 as any, builder)
-		assert.strictEqual(builder3.result, rule1)
+		assert.strictEqual(builder3.result(), rule1)
 
 		assertRule(rule1, {
 			type: RuleType.Action,
@@ -670,7 +670,7 @@ describe('common > main > rx > deep-subscribe > RuleBuilder', function() {
 		const builder4 = builder3.path(o => o.length)
 		checkType<number>(builder4)
 		assert.strictEqual(builder4 as any, builder)
-		assert.strictEqual(builder4.result, rule1)
+		assert.strictEqual(builder4.result(), rule1)
 
 		assertRule(rule1, {
 			type: RuleType.Action,
@@ -702,10 +702,10 @@ describe('common > main > rx > deep-subscribe > RuleBuilder', function() {
 		const builder = new RuleBuilder<IObject>({
 			autoInsertValuePropertyDefault: false,
 		})
-		assert.strictEqual(builder.result, undefined)
+		assert.strictEqual(builder.result(), undefined)
 
 		const builder1 = builder.path(o => o['prop1|prop2']['#prop3']['#prop4||prop5']['*']['#']['#*'])
-		const rule1 = builder1.result
+		const rule1 = builder1.result()
 		assert.strictEqual(builder1 as any, builder)
 
 		assertRule(rule1, {
@@ -750,7 +750,7 @@ describe('common > main > rx > deep-subscribe > RuleBuilder', function() {
 		const builder = new RuleBuilder<IObject>({
 			autoInsertValuePropertyDefault: false,
 		})
-		assert.strictEqual(builder.result, undefined)
+		assert.strictEqual(builder.result(), undefined)
 
 		// @ts-ignore
 		assert.throws(() => builder.propertyRegexp(), Error)
@@ -761,10 +761,10 @@ describe('common > main > rx > deep-subscribe > RuleBuilder', function() {
 		// @ts-ignore
 		assert.throws(() => builder.propertyPredicate('string'), Error)
 
-		assert.strictEqual(builder.result, undefined)
+		assert.strictEqual(builder.result(), undefined)
 
 		const builder1 = builder.propertyRegexp(/prop1|prop2/)
-		const rule1 = builder1.result as IRuleSubscribe
+		const rule1 = builder1.result() as IRuleSubscribe
 		assert.strictEqual(builder1 as any, builder)
 
 		assertRule(rule1, {
@@ -777,7 +777,7 @@ describe('common > main > rx > deep-subscribe > RuleBuilder', function() {
 		const builder2 = builder.propertyRegexp<string>(/prop2|prop3/)
 		checkType<string>(builder2)
 		assert.strictEqual(builder2 as any, builder)
-		assert.strictEqual(builder2.result, rule1)
+		assert.strictEqual(builder2.result(), rule1)
 
 		assertRule(rule1, {
 			type: RuleType.Action,
@@ -795,7 +795,7 @@ describe('common > main > rx > deep-subscribe > RuleBuilder', function() {
 		const builder3 = builder.propertyRegexp<boolean>(/prop3|prop4/)
 		checkType<boolean>(builder3)
 		assert.strictEqual(builder3 as any, builder)
-		assert.strictEqual(builder3.result, rule1)
+		assert.strictEqual(builder3.result(), rule1)
 
 		assertRule(rule1, {
 			type: RuleType.Action,
@@ -817,17 +817,17 @@ describe('common > main > rx > deep-subscribe > RuleBuilder', function() {
 		})
 
 		// noinspection JSUnusedLocalSymbols
-		const rule3 = builder3.result.next.next as IRuleSubscribe
+		const rule3 = builder3.result().next.next as IRuleSubscribe
 	})
 
 	it('propertyAny', function() {
 		const builder = new RuleBuilder<IObject>({
 			autoInsertValuePropertyDefault: false,
 		})
-		assert.strictEqual(builder.result, undefined)
+		assert.strictEqual(builder.result(), undefined)
 
 		const builder1 = builder.propertyAny()
-		const rule1 = builder1.result as IRuleSubscribe
+		const rule1 = builder1.result() as IRuleSubscribe
 		assert.strictEqual(builder1 as any, builder)
 
 		assertRule(rule1, {
@@ -840,7 +840,7 @@ describe('common > main > rx > deep-subscribe > RuleBuilder', function() {
 		const builder2 = builder.propertyNames<ANY, string>(ANY)
 		checkType<string>(builder2)
 		assert.strictEqual(builder2 as any, builder)
-		assert.strictEqual(builder2.result, rule1)
+		assert.strictEqual(builder2.result(), rule1)
 
 		assertRule(rule1, {
 			type: RuleType.Action,
@@ -858,7 +858,7 @@ describe('common > main > rx > deep-subscribe > RuleBuilder', function() {
 		const builder3 = builder.propertyNames<'prop1' | ANY | 'prop2', boolean>('prop1', ANY, 'prop2')
 		checkType<boolean>(builder3)
 		assert.strictEqual(builder3 as any, builder)
-		assert.strictEqual(builder3.result, rule1)
+		assert.strictEqual(builder3.result(), rule1)
 
 		assertRule(rule1, {
 			type: RuleType.Action,
@@ -880,19 +880,19 @@ describe('common > main > rx > deep-subscribe > RuleBuilder', function() {
 		})
 
 		// noinspection JSUnusedLocalSymbols
-		const rule3 = builder3.result.next.next as IRuleSubscribe
+		const rule3 = builder3.result().next.next as IRuleSubscribe
 	})
 
 	it('propertyNames', function() {
 		const builder = new RuleBuilder<IObject>({
 			autoInsertValuePropertyDefault: false,
 		})
-		assert.strictEqual(builder.result, undefined)
+		assert.strictEqual(builder.result(), undefined)
 
-		assert.strictEqual(builder.result, undefined)
+		assert.strictEqual(builder.result(), undefined)
 
 		const builder1 = builder.propertyNames('prop1')
-		const rule1 = builder1.result as IRuleSubscribe
+		const rule1 = builder1.result() as IRuleSubscribe
 		assert.strictEqual(builder1 as any, builder)
 
 		assertRule(rule1, {
@@ -905,7 +905,7 @@ describe('common > main > rx > deep-subscribe > RuleBuilder', function() {
 		const builder2 = builder.propertyName<'prop2', string>('prop2')
 		checkType<string>(builder2)
 		assert.strictEqual(builder2 as any, builder)
-		assert.strictEqual(builder2.result, rule1)
+		assert.strictEqual(builder2.result(), rule1)
 
 		assertRule(rule1, {
 			type: RuleType.Action,
@@ -923,7 +923,7 @@ describe('common > main > rx > deep-subscribe > RuleBuilder', function() {
 		const builder3 = builder.propertyNames<any, boolean>('prop3', 'prop4', 'prop5')
 		checkType<boolean>(builder3)
 		assert.strictEqual(builder3 as any, builder)
-		assert.strictEqual(builder3.result, rule1)
+		assert.strictEqual(builder3.result(), rule1)
 
 		assertRule(rule1, {
 			type: RuleType.Action,
@@ -945,14 +945,14 @@ describe('common > main > rx > deep-subscribe > RuleBuilder', function() {
 		})
 
 		// noinspection JSUnusedLocalSymbols
-		const rule3 = builder3.result.next.next as IRuleSubscribe
+		const rule3 = builder3.result().next.next as IRuleSubscribe
 	})
 
 	it('map', function() {
 		const builder = new RuleBuilder<IObject>({
 			autoInsertValuePropertyDefault: false,
 		})
-		assert.strictEqual(builder.result, undefined)
+		assert.strictEqual(builder.result(), undefined)
 
 		// @ts-ignore
 		assert.throws(() => builder.mapRegexp(), Error)
@@ -963,10 +963,10 @@ describe('common > main > rx > deep-subscribe > RuleBuilder', function() {
 		// @ts-ignore
 		assert.throws(() => builder.mapPredicate('string'), Error)
 
-		assert.strictEqual(builder.result, undefined)
+		assert.strictEqual(builder.result(), undefined)
 
 		const builder1 = builder.mapRegexp(/prop1|prop2/)
-		const rule1 = builder1.result as IRuleSubscribe
+		const rule1 = builder1.result() as IRuleSubscribe
 		assert.strictEqual(builder1 as any, builder)
 
 		assertRule(rule1, {
@@ -979,7 +979,7 @@ describe('common > main > rx > deep-subscribe > RuleBuilder', function() {
 		const builder2 = builder.mapRegexp<string>(/prop2|prop3/)
 		checkType<string>(builder2)
 		assert.strictEqual(builder2 as any, builder)
-		assert.strictEqual(builder2.result, rule1)
+		assert.strictEqual(builder2.result(), rule1)
 
 		assertRule(rule1, {
 			type: RuleType.Action,
@@ -997,7 +997,7 @@ describe('common > main > rx > deep-subscribe > RuleBuilder', function() {
 		const builder3 = builder.mapRegexp<boolean>(/prop3|prop4/)
 		checkType<boolean>(builder3)
 		assert.strictEqual(builder3 as any, builder)
-		assert.strictEqual(builder3.result, rule1)
+		assert.strictEqual(builder3.result(), rule1)
 
 		assertRule(rule1, {
 			type: RuleType.Action,
@@ -1019,17 +1019,17 @@ describe('common > main > rx > deep-subscribe > RuleBuilder', function() {
 		})
 
 		// noinspection JSUnusedLocalSymbols
-		const rule3 = builder3.result.next.next as IRuleSubscribe
+		const rule3 = builder3.result().next.next as IRuleSubscribe
 	})
 
 	it('mapAny', function() {
 		const builder = new RuleBuilder<IObject>({
 			autoInsertValuePropertyDefault: false,
 		})
-		assert.strictEqual(builder.result, undefined)
+		assert.strictEqual(builder.result(), undefined)
 
 		const builder1 = builder.mapAny()
-		const rule1 = builder1.result as IRuleSubscribe
+		const rule1 = builder1.result() as IRuleSubscribe
 		assert.strictEqual(builder1 as any, builder)
 
 		assertRule(rule1, {
@@ -1042,7 +1042,7 @@ describe('common > main > rx > deep-subscribe > RuleBuilder', function() {
 		const builder2 = builder.mapKeys<string, string>()
 		checkType<string>(builder2)
 		assert.strictEqual(builder2 as any, builder)
-		assert.strictEqual(builder2.result, rule1)
+		assert.strictEqual(builder2.result(), rule1)
 
 		assertRule(rule1, {
 			type: RuleType.Action,
@@ -1060,7 +1060,7 @@ describe('common > main > rx > deep-subscribe > RuleBuilder', function() {
 		const builder3 = builder.mapKeys<string, boolean>('prop1', ANY, 'prop2')
 		checkType<boolean>(builder3)
 		assert.strictEqual(builder3 as any, builder)
-		assert.strictEqual(builder3.result, rule1)
+		assert.strictEqual(builder3.result(), rule1)
 
 		assertRule(rule1, {
 			type: RuleType.Action,
@@ -1084,7 +1084,7 @@ describe('common > main > rx > deep-subscribe > RuleBuilder', function() {
 		const builder4 = builder.mapKeys<string, boolean[]>(ANY)
 		checkType<boolean[]>(builder4)
 		assert.strictEqual(builder4 as any, builder)
-		assert.strictEqual(builder4.result, rule1)
+		assert.strictEqual(builder4.result(), rule1)
 
 		assertRule(rule1, {
 			type: RuleType.Action,
@@ -1116,12 +1116,12 @@ describe('common > main > rx > deep-subscribe > RuleBuilder', function() {
 		const builder = new RuleBuilder<IObject>({
 			autoInsertValuePropertyDefault: false,
 		})
-		assert.strictEqual(builder.result, undefined)
+		assert.strictEqual(builder.result(), undefined)
 
-		assert.strictEqual(builder.result, undefined)
+		assert.strictEqual(builder.result(), undefined)
 
 		const builder1 = builder.mapKeys('prop1')
-		const rule1 = builder1.result as IRuleSubscribe
+		const rule1 = builder1.result() as IRuleSubscribe
 		assert.strictEqual(builder1 as any, builder)
 
 		assertRule(rule1, {
@@ -1134,7 +1134,7 @@ describe('common > main > rx > deep-subscribe > RuleBuilder', function() {
 		const builder2 = builder.mapKey<string, string>('prop2')
 		checkType<string>(builder2)
 		assert.strictEqual(builder2 as any, builder)
-		assert.strictEqual(builder2.result, rule1)
+		assert.strictEqual(builder2.result(), rule1)
 
 		assertRule(rule1, {
 			type: RuleType.Action,
@@ -1152,7 +1152,7 @@ describe('common > main > rx > deep-subscribe > RuleBuilder', function() {
 		const builder3 = builder.mapKeys<string, boolean>('prop3', 'prop4', 'prop5')
 		checkType<boolean>(builder3)
 		assert.strictEqual(builder3 as any, builder)
-		assert.strictEqual(builder3.result, rule1)
+		assert.strictEqual(builder3.result(), rule1)
 
 		assertRule(rule1, {
 			type: RuleType.Action,
@@ -1174,17 +1174,17 @@ describe('common > main > rx > deep-subscribe > RuleBuilder', function() {
 		})
 
 		// noinspection JSUnusedLocalSymbols
-		const rule3 = builder3.result.next.next as IRuleSubscribe
+		const rule3 = builder3.result().next.next as IRuleSubscribe
 	})
 
 	it('collection', function() {
 		const builder = new RuleBuilder<IObject>({
 			autoInsertValuePropertyDefault: false,
 		})
-		assert.strictEqual(builder.result, undefined)
+		assert.strictEqual(builder.result(), undefined)
 
 		const builder1 = builder.collection()
-		const rule1 = builder1.result as IRuleSubscribe
+		const rule1 = builder1.result() as IRuleSubscribe
 		assert.strictEqual(builder1 as any, builder)
 
 		assertRule(rule1, {
@@ -1197,7 +1197,7 @@ describe('common > main > rx > deep-subscribe > RuleBuilder', function() {
 		const builder2 = builder.collection<string>()
 		checkType<string>(builder2)
 		assert.strictEqual(builder2 as any, builder)
-		assert.strictEqual(builder2.result, rule1)
+		assert.strictEqual(builder2.result(), rule1)
 
 		assertRule(rule1, {
 			type: RuleType.Action,
@@ -1215,7 +1215,7 @@ describe('common > main > rx > deep-subscribe > RuleBuilder', function() {
 		const builder3 = builder.collection<boolean>()
 		checkType<boolean>(builder3)
 		assert.strictEqual(builder3 as any, builder)
-		assert.strictEqual(builder3.result, rule1)
+		assert.strictEqual(builder3.result(), rule1)
 
 		assertRule(rule1, {
 			type: RuleType.Action,
@@ -1237,14 +1237,14 @@ describe('common > main > rx > deep-subscribe > RuleBuilder', function() {
 		})
 
 		// noinspection JSUnusedLocalSymbols
-		const rule3 = builder3.result.next.next as IRuleSubscribe
+		const rule3 = builder3.result().next.next as IRuleSubscribe
 	})
 
 	it('repeat', function() {
 		const builder = new RuleBuilder<IObject>({
 			autoInsertValuePropertyDefault: false,
 		})
-		assert.strictEqual(builder.result, undefined)
+		assert.strictEqual(builder.result(), undefined)
 
 		assert.throws(() => builder.repeat(1, 1, null, b => null), [Error, TypeError, ReferenceError])
 		assert.throws(() => builder.repeat(1, 1, null, b => ({rule: null} as any)), [Error, TypeError, ReferenceError])
@@ -1264,7 +1264,7 @@ describe('common > main > rx > deep-subscribe > RuleBuilder', function() {
 
 		assert.strictEqual(builder1 as any, builder)
 
-		assertRule(builder1.result, {
+		assertRule(builder1.result(), {
 			type: RuleType.Repeat,
 			countMin: 0,
 			countMax: Number.MAX_SAFE_INTEGER,
@@ -1336,7 +1336,7 @@ describe('common > main > rx > deep-subscribe > RuleBuilder', function() {
 		const builder = new RuleBuilder<IObject>({
 			autoInsertValuePropertyDefault: false,
 		})
-		assert.strictEqual(builder.result, undefined)
+		assert.strictEqual(builder.result(), undefined)
 
 		assert.throws(() => builder.any(), [Error, TypeError, ReferenceError])
 		assert.throws(() => builder.any(null), [Error, TypeError, ReferenceError])
@@ -1367,7 +1367,7 @@ describe('common > main > rx > deep-subscribe > RuleBuilder', function() {
 
 		assert.strictEqual(builder1 as any, builder)
 
-		assertRule(builder1.result, {
+		assertRule(builder1.result(), {
 			type: RuleType.Any,
 			rules: [{
 				type: RuleType.Action,

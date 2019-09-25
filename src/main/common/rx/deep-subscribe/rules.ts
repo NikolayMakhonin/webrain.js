@@ -5,15 +5,14 @@ export class Rule implements IRule {
 	public subType?: any
 	public next?: IRule
 	public description?: string
-	public condition?: (object: any) => boolean
 
 	public constructor(type: RuleType) {
 		this.type = type
 	}
 
 	public clone(): IRule {
-		const {type, next, description} = this
-		const clone = {type, description} as IRule
+		const {type, subType, description, next} = this
+		const clone = {type, subType, description} as IRule
 
 		if (next != null) {
 			clone.next = next.clone()
@@ -31,7 +30,7 @@ export class RuleNothing extends Rule {
 }
 
 export class RuleNever extends Rule {
-	public static instance = new RuleNever()
+	public static instance = Object.freeze(new RuleNever())
 	private constructor() {
 		super(RuleType.Never)
 		this.description = 'never'

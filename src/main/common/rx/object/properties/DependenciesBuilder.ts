@@ -35,7 +35,7 @@ export class DependenciesBuilder<TTarget, TSource, TValueKeys extends string | n
 		}
 		ruleBuilder = buildRule(ruleBuilder as any)
 
-		const ruleBase = ruleBuilder && ruleBuilder.result
+		const ruleBase = ruleBuilder && ruleBuilder.result()
 		if (ruleBase == null) {
 			throw new Error('buildRule() return null or not initialized RuleBuilder')
 		}

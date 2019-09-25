@@ -1,5 +1,5 @@
 /* tslint:disable:no-construct use-primitive-type no-shadowed-variable no-duplicate-string no-empty max-line-length */
-import {ObservableObject} from '../../../../../../main/common'
+import {ObservableObject} from '../../../../../../main/common/rx/object/ObservableObject'
 import {delay} from '../../../../../../main/common/helpers/helpers'
 import {VALUE_PROPERTY_DEFAULT} from '../../../../../../main/common/helpers/value-property'
 import {ObservableObjectBuilder} from '../../../../../../main/common/rx/object/ObservableObjectBuilder'
@@ -895,8 +895,8 @@ describe('common > main > rx > deep-subscribe > deep-subscribe', function() {
 			b => b.path(o => (o.observableList['#'] as IObject).observableList['#'].observableList['#'].value),
 			b => {
 				b = b.path(o => o.object.object.object.value)
-				delete b.result.description
-				delete b.result.next.next.description
+				delete b._ruleFirst.description
+				delete b._ruleFirst.next.next.description
 				return b
 			},
 		)

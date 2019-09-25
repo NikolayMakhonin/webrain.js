@@ -94,7 +94,7 @@ export type RuleGetValueFunc<TObject, TValue, TValueKeys extends string | number
 	= (o: TRulePathObject<TObject, TValueKeys>) => TValue
 
 export class RuleBuilder<TObject = any, TValueKeys extends string | number = never> {
-	public result: IRule
+	private _ruleFirst: IRule
 	private _ruleLast: IRule
 	public autoInsertValuePropertyDefault: boolean
 
@@ -107,7 +107,7 @@ export class RuleBuilder<TObject = any, TValueKeys extends string | number = nev
 	} = {}) {
 		this.autoInsertValuePropertyDefault = autoInsertValuePropertyDefault
 		if (rule != null) {
-			this.result = rule
+			this._ruleFirst = rule
 
 			let ruleLast
 			do {
@@ -117,6 +117,13 @@ export class RuleBuilder<TObject = any, TValueKeys extends string | number = nev
 
 			this._ruleLast = ruleLast
 		}
+	}
+
+	public result(): IRule {
+		// return this._ruleFirst
+		return (this.autoInsertValuePropertyDefault
+			? this.valuePropertyDefault()
+			: this)._ruleFirst
 	}
 
 	public valuePropertyDefault<TValue>(): RuleBuilder<TValue, TValueKeys> {
@@ -133,7 +140,7 @@ export class RuleBuilder<TObject = any, TValueKeys extends string | number = nev
 		if (ruleLast) {
 			ruleLast.next = rule
 		} else {
-			this.result = rule
+			this._ruleFirst = rule
 		}
 
 		this._ruleLast = rule
@@ -163,7 +170,7 @@ export class RuleBuilder<TObject = any, TValueKeys extends string | number = nev
 		return this.rule<TObject>(new RuleNothing())
 	}
 
-	public never(): RuleBuilder<TObject, TValueKeys> {
+	public never(): RuleBuilder<any, TValueKeys> {
 		return this.rule<TObject>(RuleNever.instance)
 	}
 
@@ -172,17 +179,20 @@ export class RuleBuilder<TObject = any, TValueKeys extends string | number = nev
 	 */
 	public valuePropertyName<TValue = PropertyValueOf<TObject>>(propertyName: string): RuleBuilder<TValue, TValueKeys> {
 		return this
-			.ruleSubscribe<TValue>(
-				new RuleSubscribeObjectValuePropertyNames(propertyName),
-				VALUE_PROPERTY_PREFIX + propertyName,
-			)
-			// .if([
-			// 	o => (o instanceof Object) && o.constructor !== Object && !Array.isArray(o),
-			// 	b => b.ruleSubscribe<TValue>(
-			// 		new RuleSubscribeObjectValuePropertyNames(propertyName),
-			// 		VALUE_PROPERTY_PREFIX + propertyName,
-			// 	),
-			// ])
+			// .ruleSubscribe<TValue>(
+			// 	new RuleSubscribeObjectValuePropertyNames(propertyName),
+			// 	VALUE_PROPERTY_PREFIX + propertyName,
+			// )
+			.if([
+				o => typeof o === 'undefined',
+				b => b.never(),
+			], [
+				o => (o instanceof Object) && o.constructor !== Object && !Array.isArray(o),
+				b => b.ruleSubscribe<TValue>(
+					new RuleSubscribeObjectValuePropertyNames(propertyName),
+					VALUE_PROPERTY_PREFIX + propertyName,
+				),
+			])
 
 	}
 
@@ -193,17 +203,20 @@ export class RuleBuilder<TObject = any, TValueKeys extends string | number = nev
 		...propertiesNames: string[]
 	): RuleBuilder<TValue, TValueKeys> {
 		return this
-			.ruleSubscribe<TValue>(
-				new RuleSubscribeObjectValuePropertyNames(...propertiesNames),
-				VALUE_PROPERTY_PREFIX + propertiesNames.join('|'),
-			)
-			// .if([
-			// 	o => (o instanceof Object) && o.constructor !== Object && !Array.isArray(o),
-			// 	b => b.ruleSubscribe<TValue>(
-			// 		new RuleSubscribeObjectValuePropertyNames(...propertiesNames),
-			// 		VALUE_PROPERTY_PREFIX + propertiesNames.join('|'),
-			// 	),
-			// ])
+			// .ruleSubscribe<TValue>(
+			// 	new RuleSubscribeObjectValuePropertyNames(...propertiesNames),
+			// 	VALUE_PROPERTY_PREFIX + propertiesNames.join('|'),
+			// )
+			.if([
+				o => typeof o === 'undefined',
+				b => b.never(),
+			], [
+				o => (o instanceof Object) && o.constructor !== Object && !Array.isArray(o),
+				b => b.ruleSubscribe<TValue>(
+					new RuleSubscribeObjectValuePropertyNames(...propertiesNames),
+					VALUE_PROPERTY_PREFIX + propertiesNames.join('|'),
+				),
+			])
 	}
 
 	/**
@@ -432,9 +445,9 @@ export class RuleBuilder<TObject = any, TValueKeys extends string | number = nev
 
 		const rule = new RuleIf<TValue>(exclusiveConditionRules.map(o => {
 			if (Array.isArray(o)) {
-				return [ o[0], o[1](this.clone(true)).result ]
+				return [ o[0], o[1](this.clone(true))._ruleFirst ]
 			} else {
-				return o(this.clone(true)).result
+				return o(this.clone(true))._ruleFirst
 			}
 		}))
 
@@ -449,7 +462,7 @@ export class RuleBuilder<TObject = any, TValueKeys extends string | number = nev
 		}
 
 		const rule = new RuleAny(getChilds.map((o: any) => {
-			const subRule = o(this.clone(true)).result
+			const subRule = o(this.clone(true)).result()
 			if (!subRule) {
 				throw new Error(`Any subRule=${rule}`)
 			}
@@ -465,7 +478,7 @@ export class RuleBuilder<TObject = any, TValueKeys extends string | number = nev
 		condition: (value: TValue) => boolean,
 		getChild: IRuleFactory<TObject, TValue, TValueKeys>,
 	): RuleBuilder<TValue, TValueKeys> {
-		const subRule = getChild(this.clone(true)).result
+		const subRule = getChild(this.clone(true))._ruleFirst
 		if (!subRule) {
 			throw new Error(`getChild(...).rule = ${subRule}`)
 		}
@@ -490,7 +503,7 @@ export class RuleBuilder<TObject = any, TValueKeys extends string | number = nev
 				countMin,
 				countMax,
 				condition,
-				getChild(this.clone(true)).result,
+				getChild(this.clone(true))._ruleFirst,
 			)
 		}
 
@@ -499,34 +512,12 @@ export class RuleBuilder<TObject = any, TValueKeys extends string | number = nev
 
 	public clone(optionsOnly?: boolean) {
 		return new RuleBuilder<TObject, TValueKeys>({
-			rule: optionsOnly ? null : cloneRule(this.result),
+			rule: optionsOnly || !this._ruleFirst
+				? null
+				: this._ruleFirst.clone(),
 			autoInsertValuePropertyDefault: this.autoInsertValuePropertyDefault,
 		})
 	}
-}
-
-export function cloneRule(rule: IRule) {
-	if (rule == null) {
-		return rule
-	}
-
-	const clone = {
-		...rule,
-	}
-
-	const {unsubscribers, unsubscribersCount, next} = rule as any
-	if (unsubscribers != null) {
-		(clone as any).unsubscribers = []
-	}
-	if (unsubscribersCount != null) {
-		(clone as any).unsubscribersCount = []
-	}
-
-	if (next != null) {
-		clone.next = cloneRule(next)
-	}
-
-	return clone
 }
 
 // Test:

@@ -1,6 +1,6 @@
 import {createFunction} from '../../../helpers/helpers'
 import {deepSubscribeRule} from '../../deep-subscribe/deep-subscribe'
-import {cloneRule, RuleBuilder} from '../../deep-subscribe/RuleBuilder'
+import {RuleBuilder} from '../../deep-subscribe/RuleBuilder'
 import {_set, _setExt, ObservableObject} from '../ObservableObject'
 import {IWritableFieldOptions, ObservableObjectBuilder} from '../ObservableObjectBuilder'
 import {CalcObjectDebugger} from './CalcObjectDebugger'
@@ -59,7 +59,7 @@ export class ConnectorBuilder<
 		}
 		ruleBuilder = buildRule(ruleBuilder as any)
 
-		const ruleBase = ruleBuilder && ruleBuilder.result
+		const ruleBase = ruleBuilder && ruleBuilder.result()
 		if (ruleBase == null) {
 			throw new Error('buildRule() return null or not initialized RuleBuilder')
 		}
@@ -118,7 +118,7 @@ export class ConnectorBuilder<
 
 					const rule = this === object
 						? ruleBase
-						: cloneRule(ruleBase)
+						: ruleBase.clone()
 
 					this.propertyChanged.hasSubscribersObservable
 						.subscribe(hasSubscribers => {

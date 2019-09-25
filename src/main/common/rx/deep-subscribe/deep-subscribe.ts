@@ -508,6 +508,6 @@ export function deepSubscribe<TObject, TValue, TValueKeys extends string | numbe
 		unsubscribeValue,
 		lastValue,
 		immediate,
-		rule: ruleBuilder(new RuleBuilder<TObject, TValueKeys>()).result,
+		rule: ruleBuilder(new RuleBuilder<TObject, TValueKeys>()).result(),
 	}))
 }

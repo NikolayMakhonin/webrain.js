@@ -92,7 +92,9 @@ describe('common > main > rx > deep-subscribe > iterate-rule', function() {
 	}
 
 	function testIterateRule(buildRule: (builder: RuleBuilder<any>) => RuleBuilder<any>, ...expectedPaths: string[]) {
-		const result = iterateRule(testObject, buildRule(new RuleBuilder<any>()).result)
+		const result = iterateRule(testObject, buildRule(new RuleBuilder<any>({
+			autoInsertValuePropertyDefault: false,
+		})).result())
 		assert.ok(result)
 		const object = {}
 		const unsubscribe = rulesToObject(result[Symbol.iterator](), object)
@@ -303,9 +305,13 @@ describe('common > main > rx > deep-subscribe > iterate-rule', function() {
 
 		assert.throws(() => Array.from(iterateRule(testObject, new Rule(-1 as RuleType)), Error))
 
-		assert.throws(() => new RuleBuilder().repeat(1, 2, null, b => b), Error)
+		assert.throws(() => new RuleBuilder({
+			autoInsertValuePropertyDefault: false,
+		}).repeat(1, 2, null, b => b), Error)
 
-		assert.throws(() => new RuleBuilder().any<any>(), Error)
+		assert.throws(() => new RuleBuilder({
+			autoInsertValuePropertyDefault: false,
+		}).any<any>(), Error)
 	})
 
 	it('specific', function() {

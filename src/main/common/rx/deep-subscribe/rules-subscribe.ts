@@ -17,7 +17,7 @@ function forEachSimple<TItem>(iterable: Iterable<TItem>, callbackfn: (item: TIte
 	}
 }
 
-// region subscribeObject
+// region subscribeObjectValue
 
 function getFirstExistProperty(object: object, propertyNames: string[]) {
 	for (let i = 0, len = propertyNames.length; i < len; i++) {
@@ -610,7 +610,7 @@ export abstract class RuleSubscribe<TObject = any, TChild = any>
 	extends Rule
 	implements IRuleSubscribe<TObject, TChild>
 {
-	public subscribe: ISubscribeObject<TObject, TChild>
+	public readonly subscribe: ISubscribeObject<TObject, TChild>
 	public readonly unsubscribers: IUnsubscribe[]
 	public readonly unsubscribersCount: number[]
 
@@ -624,6 +624,12 @@ export abstract class RuleSubscribe<TObject = any, TChild = any>
 
 		if (subscribe != null) {
 			(clone as any).subscribe = subscribe
+		}
+		if (this.unsubscribers) {
+			(clone as any).unsubscribers = []
+		}
+		if (this.unsubscribersCount) {
+			(clone as any).unsubscribersCount = []
 		}
 
 		return clone

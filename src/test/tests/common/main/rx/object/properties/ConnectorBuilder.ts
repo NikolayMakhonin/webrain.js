@@ -116,6 +116,7 @@ describe('common > main > rx > properties > ConnectorBuilder', function() {
 		assert.strictEqual(typeof (unsubscribe1[0] = object1.propertyChanged.subscribe(subscriber1)), 'function')
 		assert.strictEqual(typeof (unsubscribe2[0] = object2.propertyChanged.subscribe(subscriber2)), 'function')
 
+		// assert.strictEqual(baseObject2.baseProp1, void 0)
 		assert.strictEqual(baseObject1.baseProp1, 'baseProp1_init_source')
 
 		source.baseProp1 = '1'
