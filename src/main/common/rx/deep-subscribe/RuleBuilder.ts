@@ -1,7 +1,14 @@
-import {AsyncValueOf, ThenableOrIterator} from '../../async/async'
-import {Diff, TPrimitive} from '../../helpers/typescript'
 import {VALUE_PROPERTY_DEFAULT} from '../../helpers/value-property'
 import {ANY, ANY_DISPLAY, COLLECTION_PREFIX, VALUE_PROPERTY_PREFIX} from './contracts/constants'
+import {
+	IRuleBuilder,
+	IRuleFactory,
+	IterableValueOf,
+	MapValueOf,
+	ObjectAnyValueOf,
+	ObjectValueOf,
+	PropertyValueOf,
+} from './contracts/IRuleBuilder'
 import {IRuleSubscribe} from './contracts/rule-subscribe'
 import {IRule, RuleRepeatAction} from './contracts/rules'
 import {getFuncPropertiesPath} from './helpers/func-properties-path'
@@ -21,79 +28,9 @@ const RuleSubscribeMapKeys = RuleSubscribeMap.bind(null, null)
 // const UNSUBSCRIBE_PROPERTY_PREFIX = Math.random().toString(36)
 // let nextUnsubscribePropertyId = 0
 
-export type IRuleFactory<TObject, TValue, TValueKeys extends string | number>
-	= (builder: RuleBuilder<TObject, TValueKeys>) => RuleBuilder<TValue, TValueKeys>
-
-export type MapValueOf<TMap>
-	= TMap extends Map<any, infer TValue>
-		? AsyncValueOf<TValue>
-		: never
-export type IterableValueOf<TIterable>
-	= TIterable extends Iterable<infer TValue>
-		? AsyncValueOf<TValue>
-		: never
-export type ObjectAnyValueOf<TObject>
-	= TObject extends { [key in keyof TObject]: infer TValue }
-		? AsyncValueOf<TValue>
-		: never
-export type ObjectValueOf<TObject, TKeys extends keyof TObject>
-	= TObject extends { [key in TKeys]: infer TValue }
-		? AsyncValueOf<TValue>
-		: never
-
-export type PropertyValueOf<TObject>
-	= TObject extends { [VALUE_PROPERTY_DEFAULT]: infer TValue }
-		? AsyncValueOf<TValue>
-		: TObject
-
-export type RULE_PATH_OBJECT_VALUE = '46007c49df234a768d312f74c892f0b1'
-
-export type TRulePathSubObject<TObject, TValueKeys extends string | number> =
-	TObject
-	& {
-		[key in TValueKeys]: TRulePathObject<TObject, TValueKeys>
-	}
-	& (TObject extends TPrimitive
-		? {}
-		: {
-			[key in Diff<keyof TObject, TValueKeys>]
-				: TRulePathObject<
-					TObject[key] extends ThenableOrIterator<infer V> ? V : TObject[key],
-					TValueKeys
-				>
-		}
-		& {
-			[key in ANY]: TRulePathObject<AsyncValueOf<TObject[any]>, TValueKeys>
-		}
-	)
-	& (TObject extends Iterable<infer TItem>
-		? {
-			[key in COLLECTION_PREFIX]: TRulePathObject<AsyncValueOf<TItem>, TValueKeys>
-		} : {}
-	)
-	& (TObject extends Map<string | number, infer TItem>
-		? {
-			[key in Diff<any, TObject>]: TRulePathObject<AsyncValueOf<TItem>, TValueKeys>
-		} : {}
-	)
-
-export type TRulePathObject<TObject, TValueKeys extends string | number> =
-	(TObject extends { [VALUE_PROPERTY_DEFAULT]: infer TValue }
-		? TRulePathSubObject<AsyncValueOf<TValue>, TValueKeys>
-		: TRulePathSubObject<TObject, TValueKeys>)
-	& {
-		[key in RULE_PATH_OBJECT_VALUE]: TObject
-	}
-
-export type TRulePathObjectValueOf<TObject extends TRulePathObject<any, any>>
-	= TObject extends { [key in RULE_PATH_OBJECT_VALUE]: any }
-		? TObject[RULE_PATH_OBJECT_VALUE]
-		: never
-
-export type RuleGetValueFunc<TObject, TValue, TValueKeys extends string | number>
-	= (o: TRulePathObject<TObject, TValueKeys>) => TValue
-
-export class RuleBuilder<TObject = any, TValueKeys extends string | number = never> {
+export class RuleBuilder<TObject = any, TValueKeys extends string | number = never>
+	implements IRuleBuilder<TObject, TValueKeys>
+{
 	private _ruleFirst: IRule
 	private _ruleLast: IRule
 	public autoInsertValuePropertyDefault: boolean
@@ -242,10 +179,8 @@ export class RuleBuilder<TObject = any, TValueKeys extends string | number = nev
 	/**
 	 * Object property, Array index
 	 */
-	public propertyNames<
-		TKeys extends keyof TObject | ANY,
-		TValue = ObjectValueOf<TObject, TKeys extends ANY ? any : TKeys>
-	>(
+	public propertyNames<TKeys extends keyof TObject | ANY,
+		TValue = ObjectValueOf<TObject, TKeys extends ANY ? any : TKeys>>(
 		...propertiesNames: TKeys[]
 	): RuleBuilder<TValue, TValueKeys>
 	public propertyNames<TValue>(...propertiesNames: string[]): RuleBuilder<TValue, TValueKeys> {
@@ -262,10 +197,8 @@ export class RuleBuilder<TObject = any, TValueKeys extends string | number = nev
 	 * propertyNames
 	 * @param propertiesNames
 	 */
-	public p<
-		TKeys extends keyof TObject | ANY,
-		TValue = ObjectValueOf<TObject, TKeys extends ANY ? any : TKeys>
-	>(
+	public p<TKeys extends keyof TObject | ANY,
+		TValue = ObjectValueOf<TObject, TKeys extends ANY ? any : TKeys>>(
 		...propertiesNames: TKeys[]
 	): RuleBuilder<TValue, TValueKeys>
 	public p<TValue>(...propertiesNames: string[]): RuleBuilder<TValue, TValueKeys> {
@@ -440,7 +373,7 @@ export class RuleBuilder<TObject = any, TValueKeys extends string | number = nev
 
 		const rule = new RuleIf<TValue>(exclusiveConditionRules.map(o => {
 			if (Array.isArray(o)) {
-				return [ o[0], o[1](this.clone(true))._ruleFirst ]
+				return [o[0], o[1](this.clone(true))._ruleFirst]
 			} else {
 				return o(this.clone(true))._ruleFirst
 			}
