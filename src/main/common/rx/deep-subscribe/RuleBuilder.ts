@@ -3,7 +3,7 @@ import {Diff, TPrimitive} from '../../helpers/typescript'
 import {VALUE_PROPERTY_DEFAULT} from '../../helpers/value-property'
 import {ANY, ANY_DISPLAY, COLLECTION_PREFIX, VALUE_PROPERTY_PREFIX} from './contracts/constants'
 import {IRuleSubscribe} from './contracts/rule-subscribe'
-import {IRule} from './contracts/rules'
+import {IRule, RuleRepeatAction} from './contracts/rules'
 import {getFuncPropertiesPath} from './helpers/func-properties-path'
 import {RuleAny, RuleIf, RuleNever, RuleNothing, RuleRepeat} from './rules'
 import {
@@ -100,7 +100,7 @@ export class RuleBuilder<TObject = any, TValueKeys extends string | number = nev
 
 	constructor({
 		rule,
-		autoInsertValuePropertyDefault = false, // TODO - should be true
+		autoInsertValuePropertyDefault = true, // TODO - should be true
 	}: {
 		rule?: IRule,
 		autoInsertValuePropertyDefault?: boolean,
@@ -120,7 +120,6 @@ export class RuleBuilder<TObject = any, TValueKeys extends string | number = nev
 	}
 
 	public result(): IRule {
-		// return this._ruleFirst
 		return (this.autoInsertValuePropertyDefault
 			? this.valuePropertyDefault()
 			: this)._ruleFirst
@@ -128,10 +127,14 @@ export class RuleBuilder<TObject = any, TValueKeys extends string | number = nev
 
 	public valuePropertyDefault<TValue>(): RuleBuilder<TValue, TValueKeys> {
 		return this
-			.repeat(0, 10, (o: any) => hasDefaultProperty(o), b => b.ruleSubscribe<TValue>(
-				new RuleSubscribeObjectPropertyNames(VALUE_PROPERTY_DEFAULT as any),
-				VALUE_PROPERTY_DEFAULT as any,
-			))
+			.repeat(
+				0,
+				10,
+				(o: any) => hasDefaultProperty(o) ? RuleRepeatAction.Next : RuleRepeatAction.Fork,
+				b => b.ruleSubscribe<TValue>(
+					new RuleSubscribeObjectPropertyNames(VALUE_PROPERTY_DEFAULT as any),
+					VALUE_PROPERTY_DEFAULT as any,
+				))
 	}
 
 	public rule<TValue>(rule: IRule): RuleBuilder<TValue, TValueKeys> {
@@ -179,10 +182,6 @@ export class RuleBuilder<TObject = any, TValueKeys extends string | number = nev
 	 */
 	public valuePropertyName<TValue = PropertyValueOf<TObject>>(propertyName: string): RuleBuilder<TValue, TValueKeys> {
 		return this
-			// .ruleSubscribe<TValue>(
-			// 	new RuleSubscribeObjectValuePropertyNames(propertyName),
-			// 	VALUE_PROPERTY_PREFIX + propertyName,
-			// )
 			.if([
 				o => typeof o === 'undefined',
 				b => b.never(),
@@ -203,10 +202,6 @@ export class RuleBuilder<TObject = any, TValueKeys extends string | number = nev
 		...propertiesNames: string[]
 	): RuleBuilder<TValue, TValueKeys> {
 		return this
-			// .ruleSubscribe<TValue>(
-			// 	new RuleSubscribeObjectValuePropertyNames(...propertiesNames),
-			// 	VALUE_PROPERTY_PREFIX + propertiesNames.join('|'),
-			// )
 			.if([
 				o => typeof o === 'undefined',
 				b => b.never(),
@@ -475,7 +470,7 @@ export class RuleBuilder<TObject = any, TValueKeys extends string | number = nev
 	public repeat<TValue>(
 		countMin: number,
 		countMax: number,
-		condition: (value: TValue) => boolean,
+		condition: (value: TValue, index: number) => RuleRepeatAction,
 		getChild: IRuleFactory<TObject, TValue, TValueKeys>,
 	): RuleBuilder<TValue, TValueKeys> {
 		const subRule = getChild(this.clone(true))._ruleFirst
@@ -491,9 +486,9 @@ export class RuleBuilder<TObject = any, TValueKeys extends string | number = nev
 			countMin = 0
 		}
 
-		if (countMax < countMin || countMax <= 0) {
-			return this as unknown as RuleBuilder<TValue, TValueKeys>
-		}
+		// if (countMax < countMin || countMax <= 0) {
+		// 	return this as unknown as RuleBuilder<TValue, TValueKeys>
+		// }
 
 		let rule: IRule
 		if (countMax === countMin && countMax === 1 && !condition) {

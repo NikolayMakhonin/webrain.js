@@ -16,8 +16,6 @@ import {
 } from './iterate-rule'
 import {ObjectSubscriber} from './ObjectSubscriber'
 import {RuleBuilder} from './RuleBuilder'
-import {RuleNever} from './rules'
-import {hasDefaultProperty, subscribeDefaultProperty, SubscribeObjectType} from './rules-subscribe'
 
 // const UNSUBSCRIBE_PROPERTY_PREFIX = Math.random().toString(36)
 // let nextUnsubscribePropertyId = 0
@@ -131,30 +129,30 @@ function subscribeNext<TValue>(
 			}
 		}
 
-		if (hasDefaultProperty(object as any)
-			&& (!iteration || iteration.value == null || iteration.value.subType !== SubscribeObjectType.ValueProperty)
-		) {
-			const result = subscribeDefaultProperty<TValue>(
-				object as any,
-				true,
-				(item: TValue, nextPropertyName) => subscribeNext<TValue>(
-					item,
-					valueSubscriber,
-					immediate,
-					ruleIterator,
-					leafUnsubscribers,
-					leafUnsubscribersCount,
-					propertiesPath,
-					nextPropertyName != null ? nextPropertyName : propertyName,
-					nextPropertyName != null ? object : parent,
-					null,
-					iteration,
-				),
-			)
-			if (result) {
-				return result
-			}
-		}
+		// if (hasDefaultProperty(object as any)
+		// 	&& (!iteration || iteration.value == null || iteration.value.subType !== SubscribeObjectType.ValueProperty)
+		// ) {
+		// 	const result = subscribeDefaultProperty<TValue>(
+		// 		object as any,
+		// 		true,
+		// 		(item: TValue, nextPropertyName) => subscribeNext<TValue>(
+		// 			item,
+		// 			valueSubscriber,
+		// 			immediate,
+		// 			ruleIterator,
+		// 			leafUnsubscribers,
+		// 			leafUnsubscribersCount,
+		// 			propertiesPath,
+		// 			nextPropertyName != null ? nextPropertyName : propertyName,
+		// 			nextPropertyName != null ? object : parent,
+		// 			null,
+		// 			iteration,
+		// 		),
+		// 	)
+		// 	if (result) {
+		// 		return result
+		// 	}
+		// }
 	}
 
 	// endregion
@@ -193,23 +191,23 @@ function subscribeNext<TValue>(
 			}
 		}
 
-		if (hasDefaultProperty(value as any)) {
-			const result = subscribeDefaultProperty<TValue>(
-				value as any,
-				true,
-				(item: TValue, nextPropertyName) =>
-					subscribeLeaf(
-						item,
-						nextPropertyName != null ? nextPropertyName : propertyName,
-						nextPropertyName != null ? value : parent,
-						null,
-						catchHandlerLeaf,
-					),
-			)
-			if (result) {
-				return result
-			}
-		}
+		// if (hasDefaultProperty(value as any)) {
+		// 	const result = subscribeDefaultProperty<TValue>(
+		// 		value as any,
+		// 		true,
+		// 		(item: TValue, nextPropertyName) =>
+		// 			subscribeLeaf(
+		// 				item,
+		// 				nextPropertyName != null ? nextPropertyName : propertyName,
+		// 				nextPropertyName != null ? value : parent,
+		// 				null,
+		// 				catchHandlerLeaf,
+		// 			),
+		// 	)
+		// 	if (result) {
+		// 		return result
+		// 	}
+		// }
 
 		return valueSubscriber.subscribe(
 			value,

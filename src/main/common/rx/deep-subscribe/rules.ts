@@ -1,4 +1,4 @@
-import {IConditionRule, IRule, IRuleAny, IRuleIf, IRuleRepeat, RuleType} from './contracts/rules'
+import {IConditionRule, IRule, IRuleAny, IRuleIf, IRuleRepeat, RuleRepeatAction, RuleType} from './contracts/rules'
 
 export class Rule implements IRule {
 	public readonly type: RuleType
@@ -83,10 +83,15 @@ export class RuleAny extends Rule implements IRuleAny {
 export class RuleRepeat<TValue = any> extends Rule implements IRuleRepeat {
 	public readonly countMin: number
 	public readonly countMax: number
-	public readonly condition?: (value: TValue) => boolean
+	public readonly condition?: (value: TValue, index: number) => RuleRepeatAction
 	public readonly rule: IRule
 
-	constructor(countMin: number, countMax: number, condition: (value: TValue) => boolean, rule: IRule) {
+	constructor(
+		countMin: number,
+		countMax: number,
+		condition: (value: TValue, index: number) => RuleRepeatAction,
+		rule: IRule,
+	) {
 		super(RuleType.Repeat)
 		this.countMin = countMin
 		this.countMax = countMax

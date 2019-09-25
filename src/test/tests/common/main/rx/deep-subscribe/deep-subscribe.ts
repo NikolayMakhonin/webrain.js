@@ -1,7 +1,8 @@
 /* tslint:disable:no-construct use-primitive-type no-shadowed-variable no-duplicate-string no-empty max-line-length */
-import {ObservableObject} from '../../../../../../main/common/rx/object/ObservableObject'
 import {delay} from '../../../../../../main/common/helpers/helpers'
 import {VALUE_PROPERTY_DEFAULT} from '../../../../../../main/common/helpers/value-property'
+import {RuleRepeatAction} from '../../../../../../main/common/rx/deep-subscribe/contracts/rules'
+import {ObservableObject} from '../../../../../../main/common/rx/object/ObservableObject'
 import {ObservableObjectBuilder} from '../../../../../../main/common/rx/object/ObservableObjectBuilder'
 import {createObject, IObject, Tester} from './helpers/Tester'
 
@@ -16,7 +17,9 @@ describe('common > main > rx > deep-subscribe > deep-subscribe', function() {
 				doNotSubscribeNonObjectValues: true,
 			},
 			b => b.propertyAny().if([o => Array.isArray(o), b => b.p('1')], b => b.never()),
-			b => b.propertyAny().repeat(1, 1, o => Array.isArray(o), b => b.p('1')),
+			b => b.propertyAny().repeat(1, 1,
+				o => Array.isArray(o) ? RuleRepeatAction.Next : RuleRepeatAction.Fork,
+				b => b.p('1')),
 		)
 			.subscribe(o => ['value2'])
 			.unsubscribe(o => ['value2'])
@@ -34,23 +37,37 @@ describe('common > main > rx > deep-subscribe > deep-subscribe', function() {
 			b => b
 				.propertyAny()
 				.propertyRegexp(/^[a-z]/)
-				.repeat(1, 1, o => Array.isArray(o), b => b.p('1')),
+				.repeat(1, 1,
+					o => Array.isArray(o) ? RuleRepeatAction.Next : RuleRepeatAction.Fork,
+					b => b.p('1')),
 			b => b
 				.propertyAny()
 				.repeat(1, 1, null, b => b.propertyRegexp(/^[a-z]/))
-				.repeat(1, 1, o => Array.isArray(o), b => b.p('1')),
+				.repeat(1, 1,
+					o => Array.isArray(o) ? RuleRepeatAction.Next : RuleRepeatAction.Fork,
+					b => b.p('1')),
 			// b => b
 			// 	.propertyRegexp(/^[a-z]/)
-			// 	.repeat(0, 1, o => o && o.constructor === ObservableObject, b => b.propertyRegexp(/^[a-z]/))
-			// 	.repeat(1, 1, o => Array.isArray(o), b => b.p('1')),
+			// 	.repeat(0, 1, o => o && o.constructor === ObservableObject
+			// 		? RuleRepeatAction.Next
+			// 		: RuleRepeatAction.Fork, b => b.propertyRegexp(/^[a-z]/))
+			// 	.repeat(1, 1,
+			// 		o => Array.isArray(o) ? RuleRepeatAction.Next : RuleRepeatAction.Fork,
+			// 		b => b.p('1')),
 			b => b
 				.propertyAny()
 				.repeat(0, 0, null, b => b.propertyRegexp(/^[a-z]/))
-				.repeat(1, 1, o => Array.isArray(o), b => b.p('1')),
+				.repeat(1, 1,
+					o => Array.isArray(o) ? RuleRepeatAction.Next : RuleRepeatAction.Fork,
+					b => b.p('1')),
 			b => b
 				.propertyAny()
-				.repeat(2, 3, o => o && o.constructor === ObservableObject, b => b.propertyRegexp(/^[a-z]/))
-				.repeat(1, 1, o => Array.isArray(o), b => b.p('1')),
+				.repeat(2, 3,
+					o => o && o.constructor === ObservableObject ? RuleRepeatAction.Next : RuleRepeatAction.Fork,
+					b => b.propertyRegexp(/^[a-z]/))
+				.repeat(1, 1,
+					o => Array.isArray(o) ? RuleRepeatAction.Next : RuleRepeatAction.Fork,
+					b => b.p('1')),
 		)
 			.subscribe(o => ['value2'])
 			.unsubscribe(o => ['value2'])

@@ -29,9 +29,16 @@ export interface IRuleIf<TValue = any> extends IRule {
 	readonly conditionRules: Array<IConditionRule<TValue>>
 }
 
+export enum RuleRepeatAction {
+	Never,
+	Next,
+	Fork,
+	All = Next | Fork,
+}
+
 export interface IRuleRepeat<TValue = any> extends IRule {
 	readonly countMin: number
 	readonly countMax: number
-	readonly condition?: (value: TValue) => boolean
+	readonly condition?: (value: TValue, index: number) => RuleRepeatAction
 	readonly rule: IRule
 }

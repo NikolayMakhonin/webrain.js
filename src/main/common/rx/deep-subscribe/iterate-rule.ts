@@ -1,7 +1,7 @@
 import {isIterable} from '../../helpers/helpers'
 import {IUnsubscribe, IUnsubscribeOrVoid} from '../subjects/observable'
 import {IRuleSubscribe} from './contracts/rule-subscribe'
-import {IRule, IRuleAction, IRuleAny, IRuleIf, IRuleRepeat, RuleType} from './contracts/rules'
+import {IRule, IRuleAction, IRuleAny, IRuleIf, IRuleRepeat, RuleRepeatAction, RuleType} from './contracts/rules'
 import {RuleNever} from './rules'
 
 export type INextRuleIterable = (object: any) => IRuleIterable
@@ -81,47 +81,50 @@ export function *iterateRule(object: any, rule: IRule, next: INextRuleIterable =
 		case RuleType.Repeat: {
 			const {countMin, countMax, condition, rule: subRule} = rule as IRuleRepeat
 
-			if (countMax < countMin || countMax <= 0) {
+			// if (countMin === 0 && countMin === countMax) {
+			// 	// == RuleType.Nothing
+			// 	if (ruleNext) {
+			// 		yield* ruleNext(object)
+			// 	}
+			// 	break
+			// }
+
+			if (countMax < countMin || countMax < 0) {
+				// == RuleType.Never
 				yield RuleNever.instance
 				break
-				// throw new Error(`RuleType.Repeat countMin=${countMin} countMax=${countMax} rule=${rule}`)
 			}
 
-			if (condition && !condition(object)) {
-				if (countMin > 0) {
-					yield RuleNever.instance
-					break
+			const repeatNext = function*(nextObject: any, index: number): IRuleIterable {
+				let repeatAction = condition ? condition(nextObject, index) : RuleRepeatAction.All
+				if (index < countMin) {
+					repeatAction = repeatAction & ~RuleRepeatAction.Fork
 				}
-				if (ruleNext) {
-					yield* ruleNext(object)
+				if (index >= countMax) {
+					repeatAction = repeatAction & ~RuleRepeatAction.Next
 				}
-				break
-			}
 
-			const repeatNext = function*(nextObject: any, count: number): IRuleIterable {
-				if (count >= countMax) {
+				if ((repeatAction & RuleRepeatAction.Fork) === 0) {
+					if ((repeatAction & RuleRepeatAction.Next) === 0) {
+						yield RuleNever.instance
+						return
+					}
+					yield* nextIteration(index + 1)
+					return
+				}
+
+				if ((repeatAction & RuleRepeatAction.Next) === 0) {
 					if (ruleNext) {
 						yield* ruleNext(nextObject)
 					}
 					return
 				}
 
-				const nextIteration = (newCount: number): IRuleIterable => {
-					return iterateRule(nextObject, subRule, nextIterationObject => {
-						if (newCount < countMax && condition && !condition(nextIterationObject)) {
-							if (newCount < countMin) {
-								return [RuleNever.instance]
-							}
-							return ruleNext ? ruleNext(nextIterationObject) : []
-						}
-						return repeatNext(nextIterationObject, newCount)
-					})
-				}
+				yield [ruleNext ? ruleNext(nextObject) : [], nextIteration(index + 1)]
 
-				if (count < countMin) {
-					yield* nextIteration(count + 1)
-				} else {
-					yield [ruleNext ? ruleNext(nextObject) : [], nextIteration(count + 1)]
+				function nextIteration(newCount: number): IRuleIterable {
+					return iterateRule(nextObject, subRule, nextIterationObject =>
+						repeatNext(nextIterationObject, newCount))
 				}
 			}
 
