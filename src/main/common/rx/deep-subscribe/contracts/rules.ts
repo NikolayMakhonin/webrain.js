@@ -1,5 +1,6 @@
 export enum RuleType {
 	Nothing,
+	Never,
 	Action,
 	If,
 	Any,

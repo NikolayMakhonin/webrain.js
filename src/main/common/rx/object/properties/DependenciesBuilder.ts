@@ -1,8 +1,7 @@
 import {IRule} from '../../deep-subscribe/contracts/rules'
 import {deepSubscribeRule} from '../../deep-subscribe/deep-subscribe'
 import {RuleBuilder} from '../../deep-subscribe/RuleBuilder'
-import {IUnsubscribe} from '../../subjects/observable'
-import {CalcObjectDebugger} from './CalcObjectDebugger'
+import {IUnsubscribeOrVoid} from '../../subjects/observable'
 import {ValueKeys} from './contracts'
 
 export type IDependencyAction<TTarget, TValue = any>
@@ -60,7 +59,7 @@ export function subscribeDependencies<TSubscribeObject, TActionTarget>(
 	subscribeObject: TSubscribeObject,
 	actionTarget: TActionTarget,
 	dependencies: Array<IDependency<TActionTarget>>,
-): IUnsubscribe {
+): IUnsubscribeOrVoid {
 	const unsubscribers = []
 	for (let i = 0, len = dependencies.length; i < len; i++) {
 		const [rule, action] = dependencies[i]

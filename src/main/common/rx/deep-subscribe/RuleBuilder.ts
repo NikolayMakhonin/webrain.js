@@ -5,7 +5,7 @@ import {ANY, ANY_DISPLAY, COLLECTION_PREFIX, VALUE_PROPERTY_PREFIX} from './cont
 import {IRuleSubscribe} from './contracts/rule-subscribe'
 import {IRule} from './contracts/rules'
 import {getFuncPropertiesPath} from './helpers/func-properties-path'
-import {RuleAny, RuleIf, RuleNothing, RuleRepeat} from './rules'
+import {RuleAny, RuleIf, RuleNever, RuleNothing, RuleRepeat} from './rules'
 import {
 	hasDefaultProperty,
 	RuleSubscribeCollection,
@@ -161,6 +161,10 @@ export class RuleBuilder<TObject = any, TValueKeys extends string | number = nev
 
 	public nothing(): RuleBuilder<TObject, TValueKeys> {
 		return this.rule<TObject>(new RuleNothing())
+	}
+
+	public never(): RuleBuilder<TObject, TValueKeys> {
+		return this.rule<TObject>(RuleNever.instance)
 	}
 
 	/**
@@ -388,8 +392,10 @@ export class RuleBuilder<TObject = any, TValueKeys extends string | number = nev
 	/**
 	 * @deprecated because babel transform object.map property to unparseable code
 	 */
-	public path<TValue>(getValueFunc: RuleGetValueFunc<TObject, TValue, TValueKeys>)
-		: RuleBuilder<TRulePathObjectValueOf<TValue>, TValueKeys>
+	public path<TValue>(getValueFunc: (o: TObject) => TValue)
+		: RuleBuilder<any, TValueKeys>
+	// public path<TValue>(getValueFunc: RuleGetValueFunc<TObject, TValue, TValueKeys>)
+	// 	: RuleBuilder<TRulePathObjectValueOf<TValue>, TValueKeys>
 	{
 		for (const propertyNames of getFuncPropertiesPath(getValueFunc as any)) {
 			if (propertyNames.startsWith(COLLECTION_PREFIX)) {

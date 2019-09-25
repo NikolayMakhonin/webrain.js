@@ -33,7 +33,7 @@ export function checkIsFuncOrNull<T extends TFunc<any>|void>(func: T): T {
 	return func
 }
 
-export function toSingleCall<T extends TFunc<any>>(func: T, throwOnMultipleCall?: boolean): T {
+export function toSingleCall<T extends TFunc<any>|void>(func: T, throwOnMultipleCall?: boolean): T {
 	if (func == null) {
 		return func
 	}
@@ -49,7 +49,7 @@ export function toSingleCall<T extends TFunc<any>>(func: T, throwOnMultipleCall?
 			return
 		}
 		isCalled = true
-		return func(...args)
+		return (func as TFunc<any>)(...args)
 	}) as any
 }
 

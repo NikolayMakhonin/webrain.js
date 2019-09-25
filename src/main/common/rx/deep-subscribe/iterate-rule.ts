@@ -1,7 +1,8 @@
 import {isIterable} from '../../helpers/helpers'
-import {IUnsubscribe} from '../subjects/observable'
+import {IUnsubscribe, IUnsubscribeOrVoid} from '../subjects/observable'
 import {IRuleSubscribe} from './contracts/rule-subscribe'
 import {IRule, IRuleAction, IRuleAny, IRuleIf, IRuleRepeat, RuleType} from './contracts/rules'
+import {RuleNever} from './rules'
 
 export type INextRuleIterable = (object: any) => IRuleIterable
 export type IRuleOrIterable = IRuleAction | IRuleIterable | INextRuleIterable
@@ -25,6 +26,9 @@ export function *iterateRule(object: any, rule: IRule, next: INextRuleIterable =
 			if (ruleNext) {
 				yield* ruleNext(object)
 			}
+			break
+		case RuleType.Never:
+			yield rule
 			break
 		case RuleType.Action:
 			yield rule
@@ -54,12 +58,13 @@ export function *iterateRule(object: any, rule: IRule, next: INextRuleIterable =
 		}
 		case RuleType.Any:
 			const {rules} = (rule as IRuleAny)
-			if (rules.length <= 1) {
-				if (ruleNext) {
-					yield* ruleNext(object)
-				}
+			if (!rules.length) {
+				yield RuleNever.instance
 				break
 				// throw new Error(`RuleType.Any rules.length=${rules.length}`)
+			}
+			if (rules.length === 1) {
+				yield iterateRule(object, rules[0], ruleNext)
 			}
 
 			const any = function *() {
@@ -75,12 +80,22 @@ export function *iterateRule(object: any, rule: IRule, next: INextRuleIterable =
 			break
 		case RuleType.Repeat: {
 			const {countMin, countMax, condition, rule: subRule} = rule as IRuleRepeat
-			if (countMax < countMin || countMax <= 0 || condition && !condition(object)) {
+
+			if (countMax < countMin || countMax <= 0) {
+				yield RuleNever.instance
+				break
+				// throw new Error(`RuleType.Repeat countMin=${countMin} countMax=${countMax} rule=${rule}`)
+			}
+
+			if (condition && !condition(object)) {
+				if (countMin > 0) {
+					yield RuleNever.instance
+					break
+				}
 				if (ruleNext) {
 					yield* ruleNext(object)
 				}
 				break
-				// throw new Error(`RuleType.Repeat countMin=${countMin} countMax=${countMax} rule=${rule}`)
 			}
 
 			const repeatNext = function*(nextObject: any, count: number): IRuleIterable {
@@ -93,8 +108,11 @@ export function *iterateRule(object: any, rule: IRule, next: INextRuleIterable =
 
 				const nextIteration = (newCount: number): IRuleIterable => {
 					return iterateRule(nextObject, subRule, nextIterationObject => {
-						if (condition && !condition(object)) {
-							return ruleNext && ruleNext(nextObject)
+						if (newCount < countMax && condition && !condition(nextIterationObject)) {
+							if (newCount < countMin) {
+								return [RuleNever.instance]
+							}
+							return ruleNext ? ruleNext(nextIterationObject) : []
 						}
 						return repeatNext(nextIterationObject, newCount)
 					})
@@ -118,9 +136,9 @@ export function *iterateRule(object: any, rule: IRule, next: INextRuleIterable =
 export function subscribeNextRule(
 	ruleIterator: IRuleIterator,
 	iteration: IteratorResult<IRuleOrIterable, null>,
-	fork: (ruleIterator: IRuleIterator) => IUnsubscribe,
-	subscribeNode: (rule: IRuleSubscribe, getRuleIterable: INextRuleIterable) => IUnsubscribe,
-): IUnsubscribe {
+	fork: (ruleIterator: IRuleIterator) => IUnsubscribeOrVoid,
+	subscribeNode: (rule: IRuleSubscribe, getRuleIterable: INextRuleIterable) => IUnsubscribeOrVoid,
+): IUnsubscribeOrVoid {
 	const ruleOrIterable = iteration.value
 
 	if (isIterable(ruleOrIterable)) {
@@ -140,7 +158,7 @@ export function subscribeNextRule(
 
 		for (const ruleIterable of ruleOrIterable as Iterable<IRuleOrIterable>) {
 			const unsubscribe = fork(ruleIterable[Symbol.iterator]())
-			if (unsubscribe != null) {
+			if (unsubscribe) {
 				if (!unsubscribers) {
 					unsubscribers = [unsubscribe]
 				} else {

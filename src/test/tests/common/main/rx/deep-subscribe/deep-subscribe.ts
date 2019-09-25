@@ -1,4 +1,5 @@
 /* tslint:disable:no-construct use-primitive-type no-shadowed-variable no-duplicate-string no-empty max-line-length */
+import {ObservableObject} from '../../../../../../main/common'
 import {delay} from '../../../../../../main/common/helpers/helpers'
 import {VALUE_PROPERTY_DEFAULT} from '../../../../../../main/common/helpers/value-property'
 import {ObservableObjectBuilder} from '../../../../../../main/common/rx/object/ObservableObjectBuilder'
@@ -14,10 +15,42 @@ describe('common > main > rx > deep-subscribe > deep-subscribe', function() {
 				immediate: true,
 				doNotSubscribeNonObjectValues: true,
 			},
-			b => b.propertyAny().if([o => Array.isArray(o), b => b.p('1')], b => b.p('qwe')),
-			// // b => b.propertyAny().if([o => Array.isArray(o), b => b.p('1')], b => b.nothing()),
-			// b => b.p('value').nothing(),
-			// // b => b.propertyAny().repeat(1, 1, o => Array.isArray(o), b => b.p('1')),
+			b => b.propertyAny().if([o => Array.isArray(o), b => b.p('1')], b => b.never()),
+			b => b.propertyAny().repeat(1, 1, o => Array.isArray(o), b => b.p('1')),
+		)
+			.subscribe(o => ['value2'])
+			.unsubscribe(o => ['value2'])
+			.subscribe(o => ['value2'])
+			.unsubscribe(o => ['value2'])
+	})
+
+	it('repeat with condition', function() {
+		new Tester(
+			{
+				object: createObject().observableObject,
+				immediate: true,
+				doNotSubscribeNonObjectValues: true,
+			},
+			b => b
+				.propertyAny()
+				.propertyRegexp(/^[a-z]/)
+				.repeat(1, 1, o => Array.isArray(o), b => b.p('1')),
+			b => b
+				.propertyAny()
+				.repeat(1, 1, null, b => b.propertyRegexp(/^[a-z]/))
+				.repeat(1, 1, o => Array.isArray(o), b => b.p('1')),
+			// b => b
+			// 	.propertyRegexp(/^[a-z]/)
+			// 	.repeat(0, 1, o => o && o.constructor === ObservableObject, b => b.propertyRegexp(/^[a-z]/))
+			// 	.repeat(1, 1, o => Array.isArray(o), b => b.p('1')),
+			b => b
+				.propertyAny()
+				.repeat(0, 0, null, b => b.propertyRegexp(/^[a-z]/))
+				.repeat(1, 1, o => Array.isArray(o), b => b.p('1')),
+			b => b
+				.propertyAny()
+				.repeat(2, 3, o => o && o.constructor === ObservableObject, b => b.propertyRegexp(/^[a-z]/))
+				.repeat(1, 1, o => Array.isArray(o), b => b.p('1')),
 		)
 			.subscribe(o => ['value2'])
 			.unsubscribe(o => ['value2'])
@@ -66,11 +99,40 @@ describe('common > main > rx > deep-subscribe > deep-subscribe', function() {
 			{
 				object: createObject().object,
 				immediate: true,
+				doNotSubscribeNonObjectValues: true,
+			},
+			b => b.p('value').nothing(),
+		)
+			.subscribe(['value'])
+			.unsubscribe(['value'])
+
+		new Tester(
+			{
+				object: createObject().object,
+				immediate: true,
 			},
 			b => b.nothing(),
 		)
 			.subscribe([check.object])
 			.unsubscribe([check.object])
+	})
+
+	it('rule never', function() {
+		new Tester(
+			{
+				object: createObject().object,
+				immediate: true,
+				doNotSubscribeNonObjectValues: true,
+				shouldNeverSubscribe: true,
+			},
+			b => b.never(),
+			b => b.never().p('value'),
+			b => b.never().nothing().p('value'),
+			b => b.never().p('valueObject'),
+			b => b.never().nothing().p('valueObject'),
+		)
+			.subscribe([])
+			.unsubscribe([])
 	})
 
 	it('unsubscribe repeat 2', function() {

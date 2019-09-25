@@ -82,27 +82,29 @@ export class ObjectSubscriber<TObject> implements IValueSubscriber<TObject> {
 
 		if (_subscribedValues) {
 			let index = binarySearch(_subscribedValues, subscribedValue, null, null, compareSubscribed, -1)
-			const len = _subscribedValues.length
-			for (; index < len; index++) {
-				if (_subscribedValues[index].value === subscribedValue.value
-					&& _subscribedValues[index].parent === subscribedValue.parent
-					&& _subscribedValues[index].propertyName === subscribedValue.propertyName
-				) {
-					break
+			if (index >= 0) {
+				const len = _subscribedValues.length
+				for (; index < len; index++) {
+					if (_subscribedValues[index].value === subscribedValue.value
+						&& _subscribedValues[index].parent === subscribedValue.parent
+						&& _subscribedValues[index].propertyName === subscribedValue.propertyName
+					) {
+						break
+					}
 				}
-			}
-			if (index >= 0 && index < len) {
-				for (let i = index + 1; i < len; i++) {
-					_subscribedValues[i - 1] = _subscribedValues[i]
+				if (index >= 0 && index < len) {
+					for (let i = index + 1; i < len; i++) {
+						_subscribedValues[i - 1] = _subscribedValues[i]
+					}
+					_subscribedValues.length = len - 1
+					if (len === 1) {
+						this._lastValue(void 0, null, null)
+					} else if (index === len - 1) {
+						const nextSubscribedValue = _subscribedValues[len - 2]
+						this._lastValue(nextSubscribedValue.value, nextSubscribedValue.parent, nextSubscribedValue.propertyName)
+					}
+					return
 				}
-				_subscribedValues.length = len - 1
-				if (len === 1) {
-					this._lastValue(void 0, null, null)
-				} else if (index === len - 1) {
-					const nextSubscribedValue = _subscribedValues[len - 2]
-					this._lastValue(nextSubscribedValue.value, nextSubscribedValue.parent, nextSubscribedValue.propertyName)
-				}
-				return
 			}
 		}
 

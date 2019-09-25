@@ -1,8 +1,9 @@
-import {IUnsubscribe} from '../../subjects/observable'
+import {IUnsubscribe, IUnsubscribeOrVoid} from '../../subjects/observable'
 
-export type ISubscribeValue<TValue> = (value: TValue, parent: any, propertyName: string) => IUnsubscribe|void
-export type IUnsubscribeValue<TValue> = (value: TValue, parent: any, propertyName: string,
-	isUnsubscribed: boolean) => void
+export type ISubscribeValue<TValue> = (value: TValue, parent: any, propertyName: string) => IUnsubscribeOrVoid
+export type IUnsubscribeValue<TValue> = (
+	value: TValue, parent: any, propertyName: string, isUnsubscribed: boolean,
+) => void
 export type ILastValue<TValue> = (value: TValue, parent: any, propertyName: string) => void
 
 export interface IValueSubscriber<TValue> {
@@ -12,7 +13,7 @@ export interface IValueSubscriber<TValue> {
 		propertyName: string,
 		propertiesPath: () => string,
 		ruleDescription: string,
-	): IUnsubscribe|void
+	): IUnsubscribe
 
 	unsubscribe(
 		value: TValue,

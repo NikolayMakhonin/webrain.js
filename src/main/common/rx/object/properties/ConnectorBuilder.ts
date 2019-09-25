@@ -131,7 +131,9 @@ export class ConnectorBuilder<
 									rule,
 								})
 
-								this._setUnsubscriber(name, unsubscribe)
+								if (unsubscribe) {
+									this._setUnsubscriber(name, unsubscribe)
+								}
 							}
 						})
 

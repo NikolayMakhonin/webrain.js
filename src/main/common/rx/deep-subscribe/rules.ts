@@ -30,6 +30,24 @@ export class RuleNothing extends Rule {
 	}
 }
 
+export class RuleNever extends Rule {
+	public static instance = new RuleNever()
+	private constructor() {
+		super(RuleType.Never)
+		this.description = 'never'
+	}
+
+	public get next(): IRule {
+		return null
+	}
+	// tslint:disable-next-line:no-empty
+	public set next(value: IRule) {	}
+
+	public clone() {
+		return this
+	}
+}
+
 export class RuleIf<TValue> extends Rule implements IRuleIf<TValue> {
 	public readonly conditionRules: Array<IConditionRule<TValue>>
 

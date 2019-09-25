@@ -191,6 +191,7 @@ export class Tester<TObject, TValue> {
 	private readonly _performanceTest: boolean
 	private readonly _doNotSubscribeNonObjectValues: boolean
 	private readonly _useIncorrectUnsubscribe: boolean
+	private readonly _shouldNeverSubscribe: boolean
 	private readonly _ruleBuilders: Array<(ruleBuilder: RuleBuilder<TObject>) => RuleBuilder<TValue>>
 	private readonly _asyncDelay: number
 
@@ -202,6 +203,7 @@ export class Tester<TObject, TValue> {
 			performanceTest,
 			doNotSubscribeNonObjectValues,
 			useIncorrectUnsubscribe,
+			shouldNeverSubscribe,
 			asyncDelay = 10,
 		}:
 			{
@@ -211,6 +213,7 @@ export class Tester<TObject, TValue> {
 				performanceTest?: boolean,
 				doNotSubscribeNonObjectValues?: boolean,
 				useIncorrectUnsubscribe?: boolean,
+				shouldNeverSubscribe?: boolean,
 				asyncDelay?: number,
 			},
 		...ruleBuilders: Array<(ruleBuilder: RuleBuilder<TObject>) => RuleBuilder<TValue>>
@@ -222,6 +225,7 @@ export class Tester<TObject, TValue> {
 		this._doNotSubscribeNonObjectValues = doNotSubscribeNonObjectValues
 		this._ruleBuilders = ruleBuilders
 		this._useIncorrectUnsubscribe = useIncorrectUnsubscribe
+		this._shouldNeverSubscribe = shouldNeverSubscribe
 		this._unsubscribe = ruleBuilders.map(o => null)
 		this._asyncDelay = asyncDelay
 
@@ -493,7 +497,11 @@ export class Tester<TObject, TValue> {
 		}
 
 		for (let i = 0; i < this._ruleBuilders.length; i++) {
-			assert.ok(this._unsubscribe[i], 'unsubscribe()')
+			if (this._shouldNeverSubscribe) {
+				assert.ok(this._unsubscribe[i] == null, 'unsubscribe()')
+			} else {
+				assert.ok(this._unsubscribe[i], 'unsubscribe()')
+			}
 			assert.deepStrictEqual(this._subscribed[i], [], 'subscribed[]')
 			assert.deepStrictEqual(this._unsubscribed[i], [], 'unsubscribed[]')
 			assert.deepStrictEqual(this._lastValue[i], [], 'lastValue[]')
@@ -504,10 +512,12 @@ export class Tester<TObject, TValue> {
 				assert.deepStrictEqual(this._unsubscribed[i], [], 'unsubscribed[]')
 				assert.deepStrictEqual(this._lastValue[i], [], 'lastValue[]')
 			} else {
-				this._unsubscribe[i]()
-				this._unsubscribe[i]()
-				this._unsubscribe[i]()
-				this._unsubscribe[i] = null
+				if (!this._shouldNeverSubscribe) {
+					this._unsubscribe[i]()
+					this._unsubscribe[i]()
+					this._unsubscribe[i]()
+					this._unsubscribe[i] = null
+				}
 
 				this.checkSubscribes(this._unsubscribed[i], expectedUnsubscribed, 'unsubscribed[]')
 				assert.strictEqual(this._subscribersCount[i], 0, 'subscribersCount')
@@ -639,7 +649,11 @@ export class Tester<TObject, TValue> {
 		}
 
 		for (let i = 0; i < this._ruleBuilders.length; i++) {
-			assert.ok(this._unsubscribe[i], 'unsubscribe()')
+			if (this._shouldNeverSubscribe) {
+				assert.ok(this._unsubscribe[i] == null, 'unsubscribe()')
+			} else {
+				assert.ok(this._unsubscribe[i], 'unsubscribe()')
+			}
 			assert.deepStrictEqual(this._subscribed[i], [], 'subscribed[]')
 			assert.deepStrictEqual(this._unsubscribed[i], [], 'unsubscribed[]')
 			assert.deepStrictEqual(this._lastValue[i], [], 'lastValue[]')
@@ -651,10 +665,12 @@ export class Tester<TObject, TValue> {
 				assert.deepStrictEqual(this._unsubscribed[i], [], 'unsubscribed[]')
 				assert.deepStrictEqual(this._lastValue[i], [], 'lastValue[]')
 			} else {
-				this._unsubscribe[i]()
-				this._unsubscribe[i]()
-				this._unsubscribe[i]()
-				this._unsubscribe[i] = null
+				if (!this._shouldNeverSubscribe) {
+					this._unsubscribe[i]()
+					this._unsubscribe[i]()
+					this._unsubscribe[i]()
+					this._unsubscribe[i] = null
+				}
 
 				await delay(this._asyncDelay)
 

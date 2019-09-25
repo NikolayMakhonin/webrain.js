@@ -1,4 +1,5 @@
 export type IUnsubscribe = () => void
+export type IUnsubscribeOrVoid = IUnsubscribe | void
 export type ISubscriber<T> = (value: T) => void
 
 export interface IObservable<T> {

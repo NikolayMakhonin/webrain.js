@@ -5,7 +5,7 @@ import {IListChanged, ListChangedType} from '../../lists/contracts/IListChanged'
 import {IMapChanged, MapChangedType} from '../../lists/contracts/IMapChanged'
 import {ISetChanged, SetChangedType} from '../../lists/contracts/ISetChanged'
 import {IPropertyChanged} from '../object/IPropertyChanged'
-import {IUnsubscribe} from '../subjects/observable'
+import {IUnsubscribe, IUnsubscribeOrVoid} from '../subjects/observable'
 import {ANY, COLLECTION_PREFIX, VALUE_PROPERTY_PREFIX} from './contracts/constants'
 import {IRuleSubscribe, ISubscribeObject} from './contracts/rule-subscribe'
 import {RuleType} from './contracts/rules'
@@ -38,7 +38,7 @@ function subscribeObjectValue<TValue>(
 	immediateSubscribe: boolean,
 	subscribeItem: (item: TValue, debugPropertyName: string) => void,
 	unsubscribeItem: (item: TValue, debugPropertyName: string) => void,
-): IUnsubscribe {
+): IUnsubscribeOrVoid {
 	if (!(object instanceof Object)) {
 		subscribeItem(object as any, null)
 		return null
@@ -160,9 +160,9 @@ export function hasDefaultProperty(object: object) {
 export function subscribeDefaultProperty<TValue>(
 	object: IPropertyChanged,
 	immediateSubscribe: boolean,
-	subscribeItem: (item: TValue, debugPropertyName: string) => IUnsubscribe,
+	subscribeItem: (item: TValue, debugPropertyName: string) => IUnsubscribeOrVoid,
 ) {
-	let unsubscribers
+	let unsubscribers: IUnsubscribe[]
 	return subscribeObject<TValue>(
 		VALUE_PROPERTY_DEFAULT,
 		o => o === VALUE_PROPERTY_DEFAULT,
@@ -195,7 +195,7 @@ function subscribeObject<TValue>(
 	immediateSubscribe: boolean,
 	subscribeItem: (item: TValue, debugPropertyName: string) => void,
 	unsubscribeItem: (item: TValue, debugPropertyName: string) => void,
-): IUnsubscribe {
+): IUnsubscribeOrVoid {
 	if (!(object instanceof Object)) {
 		return null
 	}
@@ -309,7 +309,7 @@ function subscribeIterable<TItem>(
 	immediateSubscribe: boolean,
 	subscribeItem: (item: TItem, debugPropertyName: string) => void,
 	unsubscribeItem: (item: TItem, debugPropertyName: string) => void,
-): IUnsubscribe {
+): IUnsubscribeOrVoid {
 	if (!object || !isIterable(object)) {
 		return null
 	}
@@ -340,7 +340,7 @@ function subscribeList<TItem>(
 	immediateSubscribe: boolean,
 	subscribeItem: (item: TItem, debugPropertyName: string) => void,
 	unsubscribeItem: (item: TItem, debugPropertyName: string) => void,
-): IUnsubscribe {
+): IUnsubscribeOrVoid {
 	if (!object || object[Symbol.toStringTag] !== 'List') {
 		return null
 	}
@@ -397,7 +397,7 @@ function subscribeSet<TItem>(
 	immediateSubscribe: boolean,
 	subscribeItem: (item: TItem, debugPropertyName: string) => void,
 	unsubscribeItem: (item: TItem, debugPropertyName: string) => void,
-): IUnsubscribe {
+): IUnsubscribeOrVoid {
 	if (!object || object[Symbol.toStringTag] !== 'Set' && !(object instanceof Set)) {
 		return null
 	}
@@ -450,7 +450,7 @@ function subscribeMap<K, V>(
 	immediateSubscribe: boolean,
 	subscribeItem: (item: V, debugPropertyName: string) => void,
 	unsubscribeItem: (item: V, debugPropertyName: string) => void,
-): IUnsubscribe {
+): IUnsubscribeOrVoid {
 	if (!object || object[Symbol.toStringTag] !== 'Map' && !(object instanceof Map)) {
 		return null
 	}
@@ -529,7 +529,7 @@ function subscribeCollection<TItem>(
 	immediateSubscribe: boolean,
 	subscribeItem: (item: TItem, debugPropertyName: string) => void,
 	unsubscribeItem: (item: TItem, debugPropertyName: string) => void,
-): IUnsubscribe {
+): IUnsubscribeOrVoid {
 	if (!object) {
 		return null
 	}
