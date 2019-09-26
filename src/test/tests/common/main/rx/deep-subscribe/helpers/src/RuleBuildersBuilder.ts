@@ -1,4 +1,4 @@
-import {ANY} from '../../../../../../../main/common/rx/deep-subscribe/contracts/constants'
+import {ANY} from '../../../../../../../../main/common/rx/deep-subscribe/contracts/constants'
 import {
 	IRuleBuilder,
 	IRuleFactory,
@@ -7,14 +7,12 @@ import {
 	ObjectAnyValueOf,
 	ObjectValueOf,
 	PropertyValueOf,
-} from '../../../../../../../main/common/rx/deep-subscribe/contracts/IRuleBuilder'
-import {IRuleSubscribe} from '../../../../../../../main/common/rx/deep-subscribe/contracts/rule-subscribe'
+} from '../../../../../../../../main/common/rx/deep-subscribe/contracts/IRuleBuilder'
 import {
 	IRepeatCondition,
 	IRule,
-	RuleRepeatAction,
-} from '../../../../../../../main/common/rx/deep-subscribe/contracts/rules'
-import {IArrayTree, iterablesToArrays, treeToSequenceVariants} from '../../../../../../../main/common/test/Variants'
+} from '../../../../../../../../main/common/rx/deep-subscribe/contracts/rules'
+import {IArrayTree, iterablesToArrays, treeToSequenceVariants} from '../../../../../../../../main/common/test/Variants'
 
 // export interface IRuleBuildersBuilder<TObject = any, TValueKeys extends string | number = never>
 // 	extends IRuleBuilder<TObject, TValueKeys>
@@ -22,7 +20,7 @@ import {IArrayTree, iterablesToArrays, treeToSequenceVariants} from '../../../..
 // 	ruleFactoriesTree: IArrayTree<IRuleFactory<any, any, TValueKeys>>
 // }
 
-export type IRuleBuildersBuilder<TObject, TValueKeys> = RuleBuildersBuilder<TObject, TValueKeys>
+export type IRuleBuildersBuilder<TObject, TValueKeys extends string | number> = RuleBuildersBuilder<TObject, TValueKeys>
 
 export type IRulesFactory<TObject, TValue, TValueKeys extends string | number>
 	= (builder: IRuleBuildersBuilder<TObject, TValueKeys>) => IRuleBuildersBuilder<TValue, TValueKeys>
@@ -47,18 +45,24 @@ function chunkArray<T>(array: T[], chunkSize: number) {
 	return chunks
 }
 
+export type IGetRuleFactory<TObject, TValue, TValueKeys extends string | number = never>
+	= (index) => [IRuleFactory<TObject, TValue, TValueKeys>, number]
+
 export class RuleBuildersBuilder<TObject = any, TValueKeys extends string | number = never>
 	// implements IRuleBuildersBuilder<TObject, TValueKeys>
 {
-	public ruleFactoriesTree: IArrayTree<IRuleFactory<any, any, TValueKeys>> = []
-	public ruleFirst: IRule
-	public ruleLast: IRule
-	public result: () => IRule
+	public ruleFactoriesTree: IArrayTree<IGetRuleFactory<any, any, TValueKeys>> = []
 
-	public ruleFactory<TValue>(ruleFactory: IRuleFactory<TObject, TValue, TValueKeys>)
+	public ruleFactory<TValue>(
+		ruleFactory: IRuleFactory<TObject, TValue, TValueKeys>,
+		prevRuleFactoryIndex?: number,
+	)
 		: RuleBuildersBuilder<TValue, TValueKeys>
 	{
-		this.ruleFactoriesTree.push(ruleFactory)
+		this.ruleFactoriesTree.push(function _ruleFactory(index) {
+			return [ruleFactory, index + 1]
+		})
+
 		return this as any
 	}
 
@@ -82,51 +86,74 @@ export class RuleBuildersBuilder<TObject = any, TValueKeys extends string | numb
 		return this as any
 	}
 
-	public any<TValue>(...getChilds: Array<IRulesFactory<TObject, TValue, TValueKeys>>)
+	public _any<TValue>(...getChilds: Array<IRulesFactory<TObject, TValue, TValueKeys>>)
 		: IRuleBuildersBuilder<TValue, TValueKeys>
 	{
-		const getChildsIndexes = getChilds.map(getChild => {
-			getChild(this)
-			return this.ruleFactoriesTree.length - 1
+		const len = getChilds.length
+		const ruleIndex = this.ruleFactoriesTree.length - 1
+		this.ruleFactoriesTree.push(function any(index: number)
+			: [IRuleFactory<TObject, TValue, TValueKeys>, number]
+		{
+			index++
+			const args = []
+			for (let i = 0; i < len; i++) {
+				const [ ruleFactory, indexNext ] = this[index](index)
+				index = indexNext
+				args.push(ruleFactory)
+			}
+
+			return [b => b.any(...args), index]
 		})
 
-		return this.ruleFactory(function any(
-			builder: IRuleBuilder<TObject, TValueKeys>,
-		): IRuleBuilder<TValue, TValueKeys> {
-			const variant = getChildsIndexes
-				.map(getChildsIndex => this[getChildsIndex])
-			return builder.any(...variant)
-		})
+		for (let i = 0; i < len; i++) {
+			getChilds[i](this)
+		}
+
+		return this as any
+	}
+
+	public any<TValue>(...getChilds: Array<ArrayOrValue<IRulesFactory<TObject, TValue, TValueKeys>>>)
+		: IRuleBuildersBuilder<TValue, TValueKeys>
+	{
+		const variants = iterablesToArrays(treeToSequenceVariants(getChilds))
+		return this.variants(...variants.map(args => b => b._any(...args)))
 	}
 
 	private _if<TValue>(
 		...exclusiveConditionRules: Array<[
 			((value: TValue) => boolean),
-			IRuleFactory<TObject, TValue, TValueKeys>
-		] | IRuleFactory<TObject, TValue, TValueKeys>>
+			IRulesFactory<TObject, TValue, TValueKeys>
+		] | IRulesFactory<TObject, TValue, TValueKeys>>
 	): IRuleBuildersBuilder<TValue, TValueKeys> {
-		const conditionRulesIndexes = exclusiveConditionRules.map(conditionRule => {
+		const len = exclusiveConditionRules.length
+		const ruleIndex = this.ruleFactoriesTree.length - 1
+		this.ruleFactoriesTree.push(function If(index: number)
+			: [IRuleFactory<TObject, TValue, TValueKeys>, number]
+		{
+			index++
+			const args = []
+			for (let i = 0; i < len; i++) {
+				const conditionRule = exclusiveConditionRules[i]
+				const [ ruleFactory, indexNext ] = this[index](index)
+				index = indexNext
+				args.push(Array.isArray(conditionRule)
+					? [conditionRule[0], ruleFactory]
+					: ruleFactory)
+			}
+
+			return [b => b.if(...args), index]
+		})
+
+		for (let i = 0; i < len; i++) {
+			const conditionRule = exclusiveConditionRules[i]
 			if (Array.isArray(conditionRule)) {
 				conditionRule[1](this)
 			} else {
 				conditionRule(this)
 			}
-			return this.ruleFactoriesTree.length - 1
-		})
+		}
 
-		return this.ruleFactory(function If(
-			builder: IRuleBuilder<TObject, TValueKeys>,
-		): IRuleBuilder<TValue, TValueKeys> {
-			const variant = exclusiveConditionRules
-				.map((conditionRule, index) => {
-					if (Array.isArray(conditionRule)) {
-						return [conditionRule[0], this[conditionRulesIndexes[index]]]
-					} else {
-						return this[conditionRulesIndexes[index]]
-					}
-				})
-			return builder.if(...variant)
-		})
+		return this as any
 	}
 
 	public if<TValue>(
@@ -149,15 +176,20 @@ export class RuleBuildersBuilder<TObject = any, TValueKeys extends string | numb
 		condition: IRepeatCondition<TValue>,
 		getChild: IRulesFactory<TObject, TValue, TValueKeys>,
 	): IRuleBuildersBuilder<TValue, TValueKeys> {
-		getChild(this)
-		const getChildsIndex = this.ruleFactoriesTree.length - 1
+		const ruleIndex = this.ruleFactoriesTree.length - 1
+		this.ruleFactoriesTree.push(function repeat(index: number)
+			: [IRuleFactory<TObject, TValue, TValueKeys>, number]
+		{
+			index++
+			const [ ruleFactory, indexNext ] = this[index](index)
+			index = indexNext
 
-		return this.ruleFactory(function repeat(
-			builder: IRuleBuilder<TObject, TValueKeys>,
-		): IRuleBuilder<TValue, TValueKeys> {
-			const variant = this[getChildsIndex]
-			return builder.repeat(countMin, countMax, condition, variant)
+			return [b => b.repeat(countMin, countMax, condition, ruleFactory), index]
 		})
+
+		getChild(this)
+
+		return this as any
 	}
 
 	public repeat<TValue>(
@@ -241,7 +273,7 @@ export class RuleBuildersBuilder<TObject = any, TValueKeys extends string | numb
 		TValue = ObjectValueOf<TObject, TKeys extends ANY ? any : TKeys>
 	>(...propertiesNames: Array<ArrayOrValue<TKeys>>): IRuleBuildersBuilder<TValue, TValueKeys>
 	public propertyNames<TValue>(...propertiesNames: Array<ArrayOrValue<string>>): IRuleBuildersBuilder<TValue, TValueKeys>
-	public propertyNames<TValue>(...propertiesNames): IRuleBuildersBuilder<TValue, TValueKeys> {
+	public propertyNames<TValue>(...propertiesNames: string[]): IRuleBuildersBuilder<TValue, TValueKeys> {
 		const variants = iterablesToArrays(treeToSequenceVariants(propertiesNames))
 		return this.variants(...variants.map(args => bb => bb
 			.ruleFactory(function propertyNames(b) { return b.propertyNames(...args) })))
@@ -252,32 +284,38 @@ export class RuleBuildersBuilder<TObject = any, TValueKeys extends string | numb
 		TValue = ObjectValueOf<TObject, TKeys extends ANY ? any : TKeys>
 	>(...propertiesNames: Array<ArrayOrValue<TKeys>>): IRuleBuildersBuilder<TValue, TValueKeys>
 	public p<TValue>(...propertiesNames: Array<ArrayOrValue<string>>): IRuleBuildersBuilder<TValue, TValueKeys>
-	public p<TValue>(...propertiesNames): IRuleBuildersBuilder<TValue, TValueKeys> {
+	public p<TValue>(...propertiesNames: string[]): IRuleBuildersBuilder<TValue, TValueKeys> {
 		const variants = iterablesToArrays(treeToSequenceVariants(propertiesNames))
 		return this.variants(...variants.map(args => bb => bb
 			.ruleFactory(function p(b) { return b.p(...args) })))
 	}
 
 	public propertyPredicate<TValue = ObjectAnyValueOf<TObject>>(
-		predicate: (propertyName: string, object) => boolean,
-		description: string,
+		predicate: ArrayOrValue<(propertyName: string, object) => boolean>,
+		description: ArrayOrValue<string>,
 	): IRuleBuildersBuilder<TValue, TValueKeys> {
-		return this.ruleFactory(function collection(b) { return b.collection() })
+		const variants = iterablesToArrays(treeToSequenceVariants([predicate, description]))
+		return this.variants(...variants.map(args => bb => bb
+			.ruleFactory(function propertyPredicate(b) { return b.propertyPredicate(...args) })))
 	}
 
-	public propertyRegexp<TValue = ObjectAnyValueOf<TObject>>(regexp: RegExp): IRuleBuildersBuilder<TValue, TValueKeys> {
-		return this.ruleFactory(function collection(b) { return b.collection() })
-	}
-
-	public rule<TValue>(rule: IRule): IRuleBuildersBuilder<TValue, TValueKeys> {
-		return this.ruleFactory(function collection(b) { return b.collection() })
-	}
-
-	public ruleSubscribe<TValue>(ruleSubscribe: IRuleSubscribe<TObject, TValue>, description?: string)
+	public propertyRegexp<TValue = ObjectAnyValueOf<TObject>>(regexp: ArrayOrValue<RegExp>)
 		: IRuleBuildersBuilder<TValue, TValueKeys>
 	{
-		return this.ruleFactory(function collection(b) { return b.collection() })
+		const variants = iterablesToArrays(treeToSequenceVariants([regexp]))
+		return this.variants(...variants.map(args => bb => bb
+			.ruleFactory(function propertyRegexp(b) { return b.propertyRegexp(...args) })))
 	}
+
+	// public rule<TValue>(rule: IRule): IRuleBuildersBuilder<TValue, TValueKeys> {
+	// 	return this.ruleFactory(function collection(b) { return b.collection() })
+	// }
+
+	// public ruleSubscribe<TValue>(ruleSubscribe: IRuleSubscribe<TObject, TValue>, description?: string)
+	// 	: IRuleBuildersBuilder<TValue, TValueKeys>
+	// {
+	// 	return this.ruleFactory(function collection(b) { return b.collection() })
+	// }
 
 	public valuePropertyDefault<TValue>(): IRuleBuildersBuilder<TValue, TValueKeys> {
 		return this.ruleFactory(function valuePropertyDefault(b) { return b.valuePropertyDefault() })
@@ -315,4 +353,37 @@ export class RuleBuildersBuilder<TObject = any, TValueKeys extends string | numb
 		}
 		return clone
 	}
+}
+
+export function applyRuleFactories<TObject, TValue, TValueKeys extends string | number>(
+	ruleFactories: Array<IGetRuleFactory<any, any, TValueKeys>>,
+	builder: IRuleBuilder<TObject, TValueKeys>,
+): IRuleBuilder<TValue, TValueKeys> {
+	const len = ruleFactories.length
+	let index = 0
+	while (index < len) {
+		const [ ruleFactory, indexNext ] = ruleFactories[index](index)
+		builder = ruleFactory(builder)
+		index = indexNext
+	}
+
+	return builder as any
+}
+
+export function ruleFactoriesVariants<TObject, TValue, TValueKeys extends string | number>(
+	...variants: Array<IRulesFactory<TObject, TValue, TValueKeys>>
+): Array<IRuleFactory<TObject, TValue, TValueKeys>> {
+	const ruleFactoriesTree = new RuleBuildersBuilder<TObject, TValueKeys>()
+		.variants<TValue>(...variants)
+		.ruleFactoriesTree
+
+	const factoriesVariants = treeToSequenceVariants(ruleFactoriesTree)
+
+	const factories = []
+	for (const factoriesVariant of factoriesVariants) {
+		const factoriesVariantArray = Array.from(factoriesVariant)
+		factories.push(b => applyRuleFactories(factoriesVariantArray, b))
+	}
+
+	return factories
 }

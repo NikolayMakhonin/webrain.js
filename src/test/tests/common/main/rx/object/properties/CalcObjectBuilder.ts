@@ -11,7 +11,7 @@ import {connectorFactory} from '../../../../../../../main/common/rx/object/prope
 import {ICalcProperty} from '../../../../../../../main/common/rx/object/properties/contracts'
 import {resolvePath} from '../../../../../../../main/common/rx/object/properties/helpers'
 import {Property} from '../../../../../../../main/common/rx/object/properties/Property'
-import {createObject, Tester} from '../../deep-subscribe/helpers/Tester'
+import {createObject, TestDeepSubscribe} from '../../deep-subscribe/helpers/src/TestDeepSubscribe'
 
 declare const assert: any
 
@@ -177,7 +177,7 @@ describe('common > main > rx > properties > CalcObjectBuilder', function() {
 	})
 
 	it('deepSubscribe simple', async function() {
-		new Tester(
+		new TestDeepSubscribe(
 			{
 				object: new ClassSync(),
 				immediate: true,
@@ -188,7 +188,7 @@ describe('common > main > rx > properties > CalcObjectBuilder', function() {
 			.subscribe(o => ['Value'])
 			.unsubscribe(['Value'])
 
-		new Tester(
+		new TestDeepSubscribe(
 			{
 				object: new ClassSync(),
 				immediate: true,
@@ -201,7 +201,7 @@ describe('common > main > rx > properties > CalcObjectBuilder', function() {
 	})
 
 	it('deepSubscribe calc sync', async function() {
-		new Tester(
+		new TestDeepSubscribe(
 			{
 				object: new ClassSync(),
 				immediate: true,
@@ -212,7 +212,7 @@ describe('common > main > rx > properties > CalcObjectBuilder', function() {
 			.subscribe([new Date(123)])
 			.unsubscribe([new Date(123)])
 
-		new Tester(
+		new TestDeepSubscribe(
 			{
 				object: new ClassSync(),
 				immediate: true,
@@ -225,7 +225,7 @@ describe('common > main > rx > properties > CalcObjectBuilder', function() {
 	})
 
 	it('deepSubscribe calc async', async function() {
-		let tester = new Tester(
+		let tester = new TestDeepSubscribe(
 			{
 				object: new ClassAsync(),
 				immediate: true,
@@ -238,7 +238,7 @@ describe('common > main > rx > properties > CalcObjectBuilder', function() {
 		await tester.subscribeAsync([new Date(123)])
 		await tester.unsubscribeAsync([new Date(123)])
 
-		tester = new Tester(
+		tester = new TestDeepSubscribe(
 			{
 				object: new ClassAsync(),
 				immediate: true,
@@ -253,7 +253,7 @@ describe('common > main > rx > properties > CalcObjectBuilder', function() {
 	})
 
 	it('deepSubscribe calc circular sync', async function() {
-		new Tester(
+		new TestDeepSubscribe(
 			{
 				object: new ClassSync(),
 				immediate: true,
@@ -271,7 +271,7 @@ describe('common > main > rx > properties > CalcObjectBuilder', function() {
 	})
 
 	it('deepSubscribe calc circular async', async function() {
-		const tester = new Tester(
+		const tester = new TestDeepSubscribe(
 			{
 				object: new ClassSync(),
 				immediate: true,

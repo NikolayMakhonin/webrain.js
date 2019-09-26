@@ -16,7 +16,7 @@ import {SortedList} from '../../../main/common/lists/SortedList'
 import {deepSubscribe} from '../../../main/common/rx/deep-subscribe/deep-subscribe'
 import {ObservableObject} from '../../../main/common/rx/object/ObservableObject'
 import {ObservableObjectBuilder} from '../../../main/common/rx/object/ObservableObjectBuilder'
-import {createObject, Tester} from '../../tests/common/main/rx/deep-subscribe/helpers/Tester'
+import {createObject, TestDeepSubscribe} from '../../tests/common/main/rx/deep-subscribe/helpers/src/TestDeepSubscribe'
 
 const SetNative = Set
 require('./src/SetPolyfill')
@@ -995,7 +995,7 @@ describe('fundamental-operations', function() {
 	xit('deepSubscribe', function() {
 		this.timeout(300000)
 
-		const createTester = (...propertyNames) => new Tester(
+		const createTester = (...propertyNames) => new TestDeepSubscribe(
 			{
 				object         : createObject().object,
 				immediate      : true,

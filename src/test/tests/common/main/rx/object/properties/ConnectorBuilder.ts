@@ -3,7 +3,7 @@
 import {ObservableObject} from '../../../../../../../main/common/rx/object/ObservableObject'
 import {ObservableObjectBuilder} from '../../../../../../../main/common/rx/object/ObservableObjectBuilder'
 import {ConnectorBuilder} from '../../../../../../../main/common/rx/object/properties/ConnectorBuilder'
-import {createObject} from '../../deep-subscribe/helpers/Tester'
+import {createObject} from '../../deep-subscribe/helpers/src/TestDeepSubscribe'
 
 declare const assert: any
 

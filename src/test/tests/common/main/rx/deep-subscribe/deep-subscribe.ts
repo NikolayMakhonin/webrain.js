@@ -4,13 +4,13 @@ import {VALUE_PROPERTY_DEFAULT} from '../../../../../../main/common/helpers/valu
 import {RuleRepeatAction} from '../../../../../../main/common/rx/deep-subscribe/contracts/rules'
 import {ObservableObject} from '../../../../../../main/common/rx/object/ObservableObject'
 import {ObservableObjectBuilder} from '../../../../../../main/common/rx/object/ObservableObjectBuilder'
-import {createObject, IObject, Tester} from './helpers/Tester'
+import {createObject, IObject, TestDeepSubscribe} from './helpers/src/TestDeepSubscribe'
 
 describe('common > main > rx > deep-subscribe > deep-subscribe', function() {
 	const check = createObject()
 
 	it('RuleIf simple', function() {
-		new Tester(
+		new TestDeepSubscribe(
 			{
 				object: createObject().observableObject,
 				immediate: true,
@@ -28,7 +28,7 @@ describe('common > main > rx > deep-subscribe > deep-subscribe', function() {
 	})
 
 	it('repeat with condition', function() {
-		new Tester(
+		new TestDeepSubscribe(
 			{
 				object: createObject().observableObject,
 				immediate: true,
@@ -77,7 +77,7 @@ describe('common > main > rx > deep-subscribe > deep-subscribe', function() {
 
 	it('unsubscribe leaf non object', function() {
 		const object1 = createObject()
-		new Tester(
+		new TestDeepSubscribe(
 			{
 				object: object1.observableObject,
 				immediate: true,
@@ -93,7 +93,7 @@ describe('common > main > rx > deep-subscribe > deep-subscribe', function() {
 
 	it('unsubscribe leaf', function() {
 		const object1 = createObject()
-		new Tester(
+		new TestDeepSubscribe(
 			{
 				object: object1.observableObject,
 				immediate: true,
@@ -112,7 +112,7 @@ describe('common > main > rx > deep-subscribe > deep-subscribe', function() {
 	})
 
 	it('rule nothing', function() {
-		new Tester(
+		new TestDeepSubscribe(
 			{
 				object: createObject().object,
 				immediate: true,
@@ -123,7 +123,7 @@ describe('common > main > rx > deep-subscribe > deep-subscribe', function() {
 			.subscribe(['value'])
 			.unsubscribe(['value'])
 
-		new Tester(
+		new TestDeepSubscribe(
 			{
 				object: createObject().object,
 				immediate: true,
@@ -135,7 +135,7 @@ describe('common > main > rx > deep-subscribe > deep-subscribe', function() {
 	})
 
 	it('rule never', function() {
-		new Tester(
+		new TestDeepSubscribe(
 			{
 				object: createObject().object,
 				immediate: true,
@@ -153,7 +153,7 @@ describe('common > main > rx > deep-subscribe > deep-subscribe', function() {
 	})
 
 	it('unsubscribe repeat 2', function() {
-		new Tester(
+		new TestDeepSubscribe(
 			{
 				object: createObject().object,
 				immediate: true,
@@ -164,7 +164,7 @@ describe('common > main > rx > deep-subscribe > deep-subscribe', function() {
 			.subscribe([check.object])
 			.unsubscribe([check.object])
 
-		new Tester(
+		new TestDeepSubscribe(
 			{
 				object: createObject().object,
 				immediate: true,
@@ -179,7 +179,7 @@ describe('common > main > rx > deep-subscribe > deep-subscribe', function() {
 	})
 
 	it('unsubscribe repeat 0..5', function() {
-		new Tester(
+		new TestDeepSubscribe(
 			{
 				object: createObject().object,
 				immediate: true,
@@ -195,7 +195,7 @@ describe('common > main > rx > deep-subscribe > deep-subscribe', function() {
 
 	it('unsubscribe middle', function() {
 		const object1 = createObject()
-		new Tester(
+		new TestDeepSubscribe(
 			{
 				object: object1.observableObject,
 				immediate: true,
@@ -214,7 +214,7 @@ describe('common > main > rx > deep-subscribe > deep-subscribe', function() {
 
 	it('object', function() {
 		const object1 = createObject()
-		new Tester(
+		new TestDeepSubscribe(
 			{
 				object: object1.observableObject,
 				immediate: true,
@@ -232,7 +232,7 @@ describe('common > main > rx > deep-subscribe > deep-subscribe', function() {
 				[object1.valueObject], [new Number(1) as any])
 			.unsubscribe([new Number(1) as any])
 
-		new Tester(
+		new TestDeepSubscribe(
 			{
 				object: createObject().observableObject,
 				immediate: true,
@@ -250,7 +250,7 @@ describe('common > main > rx > deep-subscribe > deep-subscribe', function() {
 				[], [new String("value")])
 			.unsubscribe([new String("value")])
 
-		new Tester(
+		new TestDeepSubscribe(
 			{
 				object: createObject().observableObject,
 				immediate: true,
@@ -268,7 +268,7 @@ describe('common > main > rx > deep-subscribe > deep-subscribe', function() {
 				[], [new Number(1) as any])
 			.unsubscribe([new Number(1) as any])
 
-		new Tester(
+		new TestDeepSubscribe(
 			{
 				object: createObject().object,
 				immediate: true,
@@ -280,7 +280,7 @@ describe('common > main > rx > deep-subscribe > deep-subscribe', function() {
 			.subscribe(o => [o.object])
 			.change(o => o.object = null, o => [], [])
 
-		new Tester(
+		new TestDeepSubscribe(
 			{
 				object: createObject().object,
 				immediate: true,
@@ -298,7 +298,7 @@ describe('common > main > rx > deep-subscribe > deep-subscribe', function() {
 			.subscribe([check.object])
 			.unsubscribe([check.object])
 
-		new Tester(
+		new TestDeepSubscribe(
 			{
 				object: createObject().object,
 				immediate: true,
@@ -325,7 +325,7 @@ describe('common > main > rx > deep-subscribe > deep-subscribe', function() {
 				[new Number(1) as any], [new Number(2) as any])
 			.unsubscribe([new Number(2) as any])
 
-		new Tester(
+		new TestDeepSubscribe(
 			{
 				object: createObject().object,
 				immediate: true,
@@ -349,7 +349,7 @@ describe('common > main > rx > deep-subscribe > deep-subscribe', function() {
 				[], [])
 			.unsubscribe([])
 
-		new Tester(
+		new TestDeepSubscribe(
 			{
 				object: createObject().object,
 				immediate: true,
@@ -390,7 +390,7 @@ describe('common > main > rx > deep-subscribe > deep-subscribe', function() {
 	})
 
 	it('chain of same objects', function() {
-		new Tester(
+		new TestDeepSubscribe(
 			{
 				object: createObject().observableObject,
 				immediate: true,
@@ -409,7 +409,7 @@ describe('common > main > rx > deep-subscribe > deep-subscribe', function() {
 
 		{
 			const object = createObject()
-			new Tester(
+			new TestDeepSubscribe(
 				{
 					object: object.observableObject,
 					immediate: true,
@@ -435,7 +435,7 @@ describe('common > main > rx > deep-subscribe > deep-subscribe', function() {
 		const observableList = createObject().observableList
 		observableList.clear()
 		observableList.add(observableList)
-		new Tester(
+		new TestDeepSubscribe(
 			{
 				object: observableList,
 				immediate: true,
@@ -454,7 +454,7 @@ describe('common > main > rx > deep-subscribe > deep-subscribe', function() {
 		const observableSet = createObject().observableSet
 		observableSet.clear()
 		observableSet.add(observableSet)
-		new Tester(
+		new TestDeepSubscribe(
 			{
 				object: observableSet,
 				immediate: true,
@@ -473,7 +473,7 @@ describe('common > main > rx > deep-subscribe > deep-subscribe', function() {
 			)
 			.unsubscribe([])
 
-		new Tester(
+		new TestDeepSubscribe(
 			{
 				object: createObject().observableMap,
 				immediate: true,
@@ -489,7 +489,7 @@ describe('common > main > rx > deep-subscribe > deep-subscribe', function() {
 			)
 			.unsubscribe([])
 
-		new Tester(
+		new TestDeepSubscribe(
 			{
 				object: createObject().observableMap,
 				immediate: true,
@@ -505,7 +505,7 @@ describe('common > main > rx > deep-subscribe > deep-subscribe', function() {
 			)
 			.unsubscribe([])
 
-		new Tester(
+		new TestDeepSubscribe(
 			{
 				object: createObject().observableObject,
 				immediate: true,
@@ -523,7 +523,7 @@ describe('common > main > rx > deep-subscribe > deep-subscribe', function() {
 	})
 
 	it('any', function() {
-		new Tester(
+		new TestDeepSubscribe(
 			{
 				object: createObject().object,
 				immediate: true,
@@ -536,7 +536,7 @@ describe('common > main > rx > deep-subscribe > deep-subscribe', function() {
 			.change(o => {}, [], [])
 			.unsubscribe(['value', 'value'])
 
-		new Tester(
+		new TestDeepSubscribe(
 			{
 				object: createObject().observableObject,
 				immediate: true,
@@ -553,7 +553,7 @@ describe('common > main > rx > deep-subscribe > deep-subscribe', function() {
 			.change(o => { o.set = o.observableObject as any }, o => [o.set], o => [o.observableObject], o => [])
 			.unsubscribe(o => [o.map2, o.set])
 
-		new Tester(
+		new TestDeepSubscribe(
 			{
 				object: createObject().observableObject,
 				immediate: true,
@@ -585,7 +585,7 @@ describe('common > main > rx > deep-subscribe > deep-subscribe', function() {
 	})
 
 	it('value properties not exist', async function() {
-		new Tester(
+		new TestDeepSubscribe(
 			{
 				object: createObject().observableObject,
 				immediate: true,
@@ -607,7 +607,7 @@ describe('common > main > rx > deep-subscribe > deep-subscribe', function() {
 	})
 
 	it('value properties', async function() {
-		new Tester(
+		new TestDeepSubscribe(
 			{
 				object: createObject().observableObject,
 				immediate: true,
@@ -623,7 +623,7 @@ describe('common > main > rx > deep-subscribe > deep-subscribe', function() {
 				[new Number(2)], [new Number(1)])
 			.unsubscribe([new Number(1)])
 
-		new Tester(
+		new TestDeepSubscribe(
 			{
 				object: createObject().observableObject,
 				immediate: true,
@@ -637,7 +637,7 @@ describe('common > main > rx > deep-subscribe > deep-subscribe', function() {
 				o => [o], [new Number(2)])
 			.unsubscribe([new Number(2)])
 
-		new Tester(
+		new TestDeepSubscribe(
 			{
 				object: createObject().observableObject,
 				immediate: true,
@@ -658,7 +658,7 @@ describe('common > main > rx > deep-subscribe > deep-subscribe', function() {
 		{
 			const object = createObject()
 			new ObservableObjectBuilder(object.property).delete(VALUE_PROPERTY_DEFAULT)
-			new Tester(
+			new TestDeepSubscribe(
 				{
 					object,
 					immediate: true,
@@ -682,7 +682,7 @@ describe('common > main > rx > deep-subscribe > deep-subscribe', function() {
 				.unsubscribe(o => [o.property])
 		}
 
-		new Tester(
+		new TestDeepSubscribe(
 			{
 				object: createObject().observableObject,
 				immediate: true,
@@ -701,7 +701,7 @@ describe('common > main > rx > deep-subscribe > deep-subscribe', function() {
 			.change(o => { new ObservableObjectBuilder(o.property).writable('value_list', null, o.list) }, o => [o], o => [o.list])
 			.unsubscribe(o => [o.list])
 
-		new Tester(
+		new TestDeepSubscribe(
 			{
 				object: createObject().observableObject,
 				immediate: true,
@@ -729,7 +729,7 @@ describe('common > main > rx > deep-subscribe > deep-subscribe', function() {
 		const object = createObject()
 		object.observableObject.value = new Number(1)
 
-		const tester = new Tester(
+		const tester = new TestDeepSubscribe(
 			{
 				object: object.promiseSync as any,
 				immediate: true,
@@ -760,7 +760,7 @@ describe('common > main > rx > deep-subscribe > deep-subscribe', function() {
 		const object = createObject()
 		object.observableObject.value = new Number(1)
 
-		const tester = new Tester(
+		const tester = new TestDeepSubscribe(
 			{
 				object: object.promiseSync as any,
 				immediate: true,
@@ -794,7 +794,7 @@ describe('common > main > rx > deep-subscribe > deep-subscribe', function() {
 	it('lists', function() {
 		const value = new Number(1)
 
-		new Tester(
+		new TestDeepSubscribe(
 			{
 				object: createObject().object,
 				immediate: true,
@@ -821,7 +821,7 @@ describe('common > main > rx > deep-subscribe > deep-subscribe', function() {
 				[], [])
 			.unsubscribe([value])
 
-		new Tester(
+		new TestDeepSubscribe(
 			{
 				object: createObject().object,
 				immediate: true,
@@ -884,7 +884,7 @@ describe('common > main > rx > deep-subscribe > deep-subscribe', function() {
 	})
 
 	it('throws', function() {
-		new Tester(
+		new TestDeepSubscribe(
 			{
 				object: createObject().observableObject,
 				immediate: true,
@@ -901,7 +901,7 @@ describe('common > main > rx > deep-subscribe > deep-subscribe', function() {
 				/unsubscribe function for non Object value/,
 			)
 
-		new Tester(
+		new TestDeepSubscribe(
 			{
 				object: createObject().object,
 				immediate: true,
@@ -925,7 +925,7 @@ describe('common > main > rx > deep-subscribe > deep-subscribe', function() {
 	})
 
 	it('throws incorrect Unsubscribe', function() {
-		new Tester(
+		new TestDeepSubscribe(
 			{
 				object: createObject().object,
 				immediate: true,
@@ -941,7 +941,7 @@ describe('common > main > rx > deep-subscribe > deep-subscribe', function() {
 				/Value is not a function or null\/undefined/,
 			)
 
-		new Tester(
+		new TestDeepSubscribe(
 			{
 				object: createObject().object,
 				immediate: true,

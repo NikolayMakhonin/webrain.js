@@ -1,19 +1,20 @@
 /* tslint:disable:no-empty no-construct use-primitive-type no-duplicate-string */
-import {delay} from '../../../../../../../main/common/helpers/helpers'
-import {VALUE_PROPERTY_DEFAULT} from '../../../../../../../main/common/helpers/value-property'
-import {IListChanged} from '../../../../../../../main/common/lists/contracts/IListChanged'
-import {IMapChanged} from '../../../../../../../main/common/lists/contracts/IMapChanged'
-import {ISetChanged} from '../../../../../../../main/common/lists/contracts/ISetChanged'
-import {ObservableMap} from '../../../../../../../main/common/lists/ObservableMap'
-import {ObservableSet} from '../../../../../../../main/common/lists/ObservableSet'
-import {SortedList} from '../../../../../../../main/common/lists/SortedList'
-import {deepSubscribe} from '../../../../../../../main/common/rx/deep-subscribe/deep-subscribe'
-import {RuleBuilder} from '../../../../../../../main/common/rx/deep-subscribe/RuleBuilder'
-import {ObservableObject} from '../../../../../../../main/common/rx/object/ObservableObject'
-import {ObservableObjectBuilder} from '../../../../../../../main/common/rx/object/ObservableObjectBuilder'
-import {IUnsubscribe, IUnsubscribeOrVoid} from '../../../../../../../main/common/rx/subjects/observable'
-import {Assert} from '../../../../../../../main/common/test/Assert'
-import {DeepCloneEqual} from '../../../../../../../main/common/test/DeepCloneEqual'
+import {delay} from '../../../../../../../../main/common/helpers/helpers'
+import {VALUE_PROPERTY_DEFAULT} from '../../../../../../../../main/common/helpers/value-property'
+import {IListChanged} from '../../../../../../../../main/common/lists/contracts/IListChanged'
+import {IMapChanged} from '../../../../../../../../main/common/lists/contracts/IMapChanged'
+import {ISetChanged} from '../../../../../../../../main/common/lists/contracts/ISetChanged'
+import {ObservableMap} from '../../../../../../../../main/common/lists/ObservableMap'
+import {ObservableSet} from '../../../../../../../../main/common/lists/ObservableSet'
+import {SortedList} from '../../../../../../../../main/common/lists/SortedList'
+import {IRuleFactory} from '../../../../../../../../main/common/rx/deep-subscribe/contracts/IRuleBuilder'
+import {deepSubscribe} from '../../../../../../../../main/common/rx/deep-subscribe/deep-subscribe'
+import {ObservableObject} from '../../../../../../../../main/common/rx/object/ObservableObject'
+import {ObservableObjectBuilder} from '../../../../../../../../main/common/rx/object/ObservableObjectBuilder'
+import {IUnsubscribe, IUnsubscribeOrVoid} from '../../../../../../../../main/common/rx/subjects/observable'
+import {Assert} from '../../../../../../../../main/common/test/Assert'
+import {DeepCloneEqual} from '../../../../../../../../main/common/test/DeepCloneEqual'
+import {IRulesFactory, ruleFactoriesVariants} from './RuleBuildersBuilder'
 
 const assert = new Assert(new DeepCloneEqual({
 	commonOptions: {
@@ -178,7 +179,18 @@ function firstOrEmpty(array) {
 	return [array[0]]
 }
 
-export class Tester<TObject, TValue> {
+export interface TestDeepSubscribeOptions<TObject> {
+	object: TObject,
+	immediate: boolean,
+	ignoreSubscribeCount?: boolean,
+	performanceTest?: boolean,
+	doNotSubscribeNonObjectValues?: boolean,
+	useIncorrectUnsubscribe?: boolean,
+	shouldNeverSubscribe?: boolean,
+	asyncDelay?: number,
+}
+
+export class TestDeepSubscribe<TObject, TValue> {
 	private readonly _subscribed: TValue[][]
 	private readonly _unsubscribed: TValue[][]
 	private readonly _lastValue: Array<Array<TValue|string>>
@@ -192,8 +204,9 @@ export class Tester<TObject, TValue> {
 	private readonly _doNotSubscribeNonObjectValues: boolean
 	private readonly _useIncorrectUnsubscribe: boolean
 	private readonly _shouldNeverSubscribe: boolean
-	private readonly _ruleBuilders: Array<(ruleBuilder: RuleBuilder<TObject>) => RuleBuilder<TValue>>
+	private readonly _ruleBuilders: Array<IRuleFactory<TObject, TValue, any>>
 	private readonly _asyncDelay: number
+	public static totalTests: number = 0
 
 	constructor(
 		{
@@ -205,18 +218,8 @@ export class Tester<TObject, TValue> {
 			useIncorrectUnsubscribe,
 			shouldNeverSubscribe,
 			asyncDelay = 10,
-		}:
-			{
-				object: TObject,
-				immediate: boolean,
-				ignoreSubscribeCount?: boolean,
-				performanceTest?: boolean,
-				doNotSubscribeNonObjectValues?: boolean,
-				useIncorrectUnsubscribe?: boolean,
-				shouldNeverSubscribe?: boolean,
-				asyncDelay?: number,
-			},
-		...ruleBuilders: Array<(ruleBuilder: RuleBuilder<TObject>) => RuleBuilder<TValue>>
+		}: TestDeepSubscribeOptions<TObject>,
+		...ruleBuilders: Array<IRuleFactory<TObject, TValue, any>>
 	) {
 		this._object = object
 		this._immediate = immediate
@@ -230,6 +233,7 @@ export class Tester<TObject, TValue> {
 		this._asyncDelay = asyncDelay
 
 		if (!performanceTest) {
+			TestDeepSubscribe.totalTests += ruleBuilders.length
 			this._subscribed = ruleBuilders.map(o => [])
 			this._unsubscribed = ruleBuilders.map(o => [])
 			this._lastValue = ruleBuilders.map(o => [])
@@ -688,6 +692,17 @@ export class Tester<TObject, TValue> {
 	}
 
 	// endregion
+}
+
+export class TestDeepSubscribeVariants<TObject, TValue>
+	extends TestDeepSubscribe<TObject, TValue>
+{
+	constructor(
+		options: TestDeepSubscribeOptions<TObject>,
+		...variants: Array<IRulesFactory<TObject, TValue, any>>
+	) {
+		super(options, ...ruleFactoriesVariants(...variants))
+	}
 }
 
 function repeat<TValue>(value: TValue, count): TValue[] {
