@@ -1,3 +1,4 @@
+/* tslint:disable:no-shadowed-variable */
 import {ANY} from '../../../../../../../../main/common/rx/deep-subscribe/contracts/constants'
 import {
 	IRuleBuilder,
@@ -9,10 +10,11 @@ import {
 	PropertyValueOf,
 } from '../../../../../../../../main/common/rx/deep-subscribe/contracts/IRuleBuilder'
 import {
-	IRepeatCondition,
-	IRule,
+	IRepeatCondition, RuleRepeatAction,
 } from '../../../../../../../../main/common/rx/deep-subscribe/contracts/rules'
 import {IArrayTree, iterablesToArrays, treeToSequenceVariants} from '../../../../../../../../main/common/test/Variants'
+
+// region helpres
 
 // export interface IRuleBuildersBuilder<TObject = any, TValueKeys extends string | number = never>
 // 	extends IRuleBuilder<TObject, TValueKeys>
@@ -48,9 +50,13 @@ function chunkArray<T>(array: T[], chunkSize: number) {
 export type IGetRuleFactory<TObject, TValue, TValueKeys extends string | number = never>
 	= (index) => [IRuleFactory<TObject, TValue, TValueKeys>, number]
 
+// endregion
+
 export class RuleBuildersBuilder<TObject = any, TValueKeys extends string | number = never>
 	// implements IRuleBuildersBuilder<TObject, TValueKeys>
 {
+	// region base
+
 	public ruleFactoriesTree: IArrayTree<IGetRuleFactory<any, any, TValueKeys>> = []
 
 	public ruleFactory<TValue>(
@@ -78,10 +84,14 @@ export class RuleBuildersBuilder<TObject = any, TValueKeys extends string | numb
 			return this as any
 		}
 
-		const variants = getVariants.map(getVariant =>
-			getVariant(this.clone(true)).ruleFactoriesTree)
+		const variants = getVariants
+			.map(getVariant =>
+				getVariant(this.clone(true)).ruleFactoriesTree)
+			.filter(o => o.length)
 
-		this.ruleFactoriesTree.push(variants)
+		if (variants.length) {
+			this.ruleFactoriesTree.push(variants)
+		}
 
 		return this as any
 	}
@@ -353,7 +363,45 @@ export class RuleBuildersBuilder<TObject = any, TValueKeys extends string | numb
 		}
 		return clone
 	}
+
+	// endregion
+
+	// variants
+
+	public nothingVariants(beforeValueProperty?: boolean): IRuleBuildersBuilder<any, TValueKeys> {
+		return this.variants(
+			b => b,
+			b => b.nothing(),
+			b => b.if([o => false, b => b.never()]),
+			b => b.if([o => false, b => b.never()], [null, b => b.nothing()]),
+			b => b.repeat(0, 2, [(o, i) => i === 1 ? RuleRepeatAction.Fork : RuleRepeatAction.Next], b => b.nothing()),
+			b => b.any(
+				b => b.nothing(),
+				b => b.repeat([1, 2], [0, 2], [null, o => RuleRepeatAction.All], b => b.never()),
+			),
+			...beforeValueProperty ? [] : [
+				b => b.valuePropertyDefault(),
+				b => b.v('notExistProperty'),
+			],
+		)
+	}
+
+	public neverVariants(): IRuleBuildersBuilder<any, TValueKeys> {
+		return this.variants(
+			b => b,
+			b => b.never(),
+			b => b.if([o => true, b => b.never()]),
+			b => b.if([o => false, b => b.nothing()], [null, b => b.never()]),
+			b => b.any(
+				b => b.repeat([1, 2], [0, 2], [null, o => RuleRepeatAction.All], b => b.never()),
+			),
+		)
+	}
+
+	// endregion
 }
+
+// region ruleFactoriesVariants
 
 export function applyRuleFactories<TObject, TValue, TValueKeys extends string | number>(
 	ruleFactories: Array<IGetRuleFactory<any, any, TValueKeys>>,
@@ -387,3 +435,5 @@ export function ruleFactoriesVariants<TObject, TValue, TValueKeys extends string
 
 	return factories
 }
+
+// endregion

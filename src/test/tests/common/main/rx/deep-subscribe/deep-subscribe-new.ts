@@ -9,6 +9,8 @@ import {ruleFactoriesVariants} from './helpers/src/RuleBuildersBuilder'
 import {createObject, IObject, TestDeepSubscribe, TestDeepSubscribeVariants} from './helpers/src/TestDeepSubscribe'
 
 describe('common > main > rx > deep-subscribe > deep-subscribe new', function() {
+	this.timeout(300000)
+
 	const check = createObject()
 
 	after(function() {
@@ -29,8 +31,10 @@ describe('common > main > rx > deep-subscribe > deep-subscribe new', function() 
 						b => b.never(),
 						b => b.if([o => false, b => b.nothing()], [null, b => b.never()]),
 					),
+					b => b.neverVariants(),
 				)
 				.variants()
+				.nothingVariants()
 				.variants(
 					b => b.if([o => false, b => b.never()], [null, b => b.nothing()]),
 					b => b.p(['observableObject', 'object']),
