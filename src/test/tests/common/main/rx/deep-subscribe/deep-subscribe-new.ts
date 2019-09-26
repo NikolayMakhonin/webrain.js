@@ -33,7 +33,9 @@ describe('common > main > rx > deep-subscribe > deep-subscribe new', function() 
 				.variants()
 				.variants(
 					b => b.if([o => false, b => b.never()], [null, b => b.nothing()]),
-					b => b.p('observableObject'),
+					b => b.p(['observableObject', 'object']),
+					b => b.propertyName(['observableObject', 'object']),
+					b => b.propertyNames(['observableObject', 'object']),
 					b => b.repeat(1, 1, null, [
 						b => b.p('observableObject'),
 						b => b.p('object'),
@@ -41,6 +43,23 @@ describe('common > main > rx > deep-subscribe > deep-subscribe new', function() 
 					b => b.valuePropertyDefault(),
 					b => b.nothing(),
 					b => b.p('observableList').collection().p('observableObject'),
+					b => b.p('observableMap').mapAny().p('observableObject'),
+					b => b.p('observableMap').mapKey(['observableObject', 'object']),
+					b => b.p('observableMap').mapKeys(['observableObject', 'object']),
+					b => b.p('observableMap').mapPredicate([
+						key => key === 'observableObject',
+						key => key === 'object',
+					], ['desc1', 'desc2']),
+					b => b.p('observableMap').mapRegexp([/^observableObject$/, /^object$/]),
+					b => b.propertyAny().p('observableObject'),
+					b => b.propertyPredicate([
+						key => key === 'observableObject',
+						key => key === 'object',
+					], ['desc1', 'desc2']),
+					b => b.propertyRegexp([/^observableObject$/, /^object$/]),
+					b => b.p('property').v(['@value_observableObject', '@value_object']),
+					b => b.p('property').valuePropertyName(['@value_observableObject', '@value_object']),
+					b => b.p('property').valuePropertyNames(['@value_observableObject', '@value_object']),
 				)
 				.p('value'),
 		)
