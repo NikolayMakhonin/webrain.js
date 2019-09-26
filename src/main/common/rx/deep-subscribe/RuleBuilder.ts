@@ -10,7 +10,7 @@ import {
 	PropertyValueOf,
 } from './contracts/IRuleBuilder'
 import {IRuleSubscribe} from './contracts/rule-subscribe'
-import {IRule, RuleRepeatAction} from './contracts/rules'
+import {IRepeatCondition, IRule, RuleRepeatAction} from './contracts/rules'
 import {getFuncPropertiesPath} from './helpers/func-properties-path'
 import {RuleAny, RuleIf, RuleNever, RuleNothing, RuleRepeat} from './rules'
 import {
@@ -403,7 +403,7 @@ export class RuleBuilder<TObject = any, TValueKeys extends string | number = nev
 	public repeat<TValue>(
 		countMin: number,
 		countMax: number,
-		condition: (value: TValue, index: number) => RuleRepeatAction,
+		condition: IRepeatCondition<TValue>,
 		getChild: IRuleFactory<TObject, TValue, TValueKeys>,
 	): RuleBuilder<TValue, TValueKeys> {
 		const subRule = getChild(this.clone(true)).ruleFirst

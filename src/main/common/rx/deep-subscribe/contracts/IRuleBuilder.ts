@@ -3,7 +3,7 @@ import {Diff, TPrimitive} from '../../../helpers/typescript'
 import {VALUE_PROPERTY_DEFAULT} from '../../../helpers/value-property'
 import {ANY, COLLECTION_PREFIX} from './constants'
 import {IRuleSubscribe} from './rule-subscribe'
-import {IRule, RuleRepeatAction} from './rules'
+import {IRepeatCondition, IRule} from './rules'
 
 export type IRuleFactory<TObject, TValue, TValueKeys extends string | number>
 	= (builder: IRuleBuilder<TObject, TValueKeys>) => IRuleBuilder<TValue, TValueKeys>
@@ -209,7 +209,7 @@ export interface IRuleBuilder<TObject = any, TValueKeys extends string | number 
 	repeat<TValue>(
 		countMin: number,
 		countMax: number,
-		condition: (value: TValue, index: number) => RuleRepeatAction,
+		condition: IRepeatCondition<TValue>,
 		getChild: IRuleFactory<TObject, TValue, TValueKeys>,
 	): IRuleBuilder<TValue, TValueKeys>
 

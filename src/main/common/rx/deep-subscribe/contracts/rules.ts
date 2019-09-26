@@ -36,9 +36,11 @@ export enum RuleRepeatAction {
 	All = Next | Fork,
 }
 
+export type IRepeatCondition<TValue> = (value: TValue, index: number) => RuleRepeatAction
+
 export interface IRuleRepeat<TValue = any> extends IRule {
 	readonly countMin: number
 	readonly countMax: number
-	readonly condition?: (value: TValue, index: number) => RuleRepeatAction
+	readonly condition?: IRepeatCondition<TValue>
 	readonly rule: IRule
 }
