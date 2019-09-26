@@ -92,7 +92,7 @@ export class CalcProperty<TValue, TInput = any, TMergeSource = any>
 		const {propertyChangedIfCanEmit} = this
 		if (propertyChangedIfCanEmit) {
 			const oldValue = this._valueProperty.value
-			const newValue = new CalcPropertyValue(this)
+			const newValue = this.last // new CalcPropertyValue(this)
 			propertyChangedIfCanEmit.onPropertyChanged(
 				{name: VALUE_PROPERTY_DEFAULT, oldValue, newValue},
 				{name: 'wait', oldValue, newValue},
@@ -106,7 +106,7 @@ export class CalcProperty<TValue, TInput = any, TMergeSource = any>
 		const {propertyChangedIfCanEmit} = this
 		if (propertyChangedIfCanEmit) {
 			const oldValue = this._valueProperty.value
-			const newValue = new CalcPropertyValue(this)
+			const newValue = this.last // new CalcPropertyValue(this)
 			propertyChangedIfCanEmit.onPropertyChanged(
 				{name: 'last', oldValue, newValue},
 				{name: 'lastOrWait', oldValue, newValue},

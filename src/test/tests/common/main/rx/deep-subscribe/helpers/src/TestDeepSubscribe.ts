@@ -82,6 +82,7 @@ interface IProperty extends ObservableObject {
 	value_map2: IMap
 	value_valueUndefined: any
 	value_value: any
+	value_valueObject: any
 	value_promiseSync: { then(value: any): any }
 	value_promiseAsync: { then(value: any): any }
 }

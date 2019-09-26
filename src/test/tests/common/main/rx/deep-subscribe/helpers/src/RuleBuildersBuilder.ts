@@ -375,10 +375,10 @@ export class RuleBuildersBuilder<TObject = any, TValueKeys extends string | numb
 			b => b.if([o => false, b => b.never()]),
 			b => b.if([o => false, b => b.never()], [null, b => b.nothing()]),
 			b => b.repeat(0, 2, [(o, i) => i === 1 ? RuleRepeatAction.Fork : RuleRepeatAction.Next], b => b.nothing()),
-			b => b.any(
-				b => b.nothing(),
-				b => b.repeat([1, 2], [0, 2], [null, o => RuleRepeatAction.All], b => b.never()),
-			),
+			// b => b.any(
+			// 	b => b.nothing(),
+			// 	b => b.repeat([1, 2], [0, 2], [null, o => RuleRepeatAction.All], b => b.never()),
+			// ),
 			...beforeValueProperty ? [] : [
 				b => b.valuePropertyDefault(),
 				b => b.v('notExistProperty'),

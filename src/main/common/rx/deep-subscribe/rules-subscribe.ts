@@ -106,7 +106,11 @@ function subscribeObjectValue<TValue>(
 
 	if (propertyChanged) {
 		unsubscribe = checkIsFuncOrNull(propertyChanged
-			.subscribe(({name, oldValue}) => {
+			.subscribe(({name, oldValue, newValue}) => {
+				if (!unsubscribe && oldValue === newValue) {
+					return
+				}
+
 				const newSubscribePropertyName = getSubscribePropertyName()
 
 				if (name === subscribePropertyName) {
@@ -224,6 +228,10 @@ function subscribeObject<TValue>(
 	if (propertyChanged) {
 		unsubscribe = checkIsFuncOrNull(propertyChanged
 			.subscribe(({name, oldValue, newValue}) => {
+				if (!unsubscribe && oldValue === newValue) {
+					return
+				}
+
 				 // PROF: 623 - 1.3%
 				if (!propertyPredicate || propertyPredicate(name, object)) {
 					if (typeof oldValue !== 'undefined') {
@@ -364,7 +372,9 @@ function subscribeList<TItem>(
 						}
 						break
 					case ListChangedType.Set:
-						unsubscribeItem(oldItems[0], COLLECTION_PREFIX)
+						if (unsubscribe || oldItems[0] !== newItems[0]) {
+							unsubscribeItem(oldItems[0], COLLECTION_PREFIX)
+						}
 						if (unsubscribe) {
 							subscribeItem(newItems[0], COLLECTION_PREFIX)
 						}
@@ -461,6 +471,10 @@ function subscribeMap<K, V>(
 	if (mapChanged) {
 		unsubscribe = checkIsFuncOrNull(mapChanged
 			.subscribe(({type, key, oldValue, newValue}) => {
+				if (!unsubscribe && oldValue === newValue) {
+					return
+				}
+
 				if (!keyPredicate || keyPredicate(key, object)) {
 					switch (type) {
 						case MapChangedType.Added:
