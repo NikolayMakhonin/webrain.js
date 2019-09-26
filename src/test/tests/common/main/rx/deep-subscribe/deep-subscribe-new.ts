@@ -216,24 +216,26 @@ describe('common > main > rx > deep-subscribe > deep-subscribe new', function() 
 			)
 			.unsubscribe(o => [new String('value')])
 
-		new TestDeepSubscribeVariants(
-			{
-				object: createObject().observableObject,
-				immediate: true,
-			},
-			b => b.p('observableList').collection().collection().p('valueObject'),
-		)
-			.subscribe(o => [new String('value')])
-			.change(
-				o => o.observableList.listChanged.emit({
-					type: ListChangedType.Set,
-					index: o.observableList.indexOf(o.observableList),
-					oldItems: [o.observableList],
-					newItems: [o.observableList],
-				}),
-				o => [new String('value')],
-				o => [new String('value')],
-			)
-			.unsubscribe(o => [new String('value')])
+		// new TestDeepSubscribeVariants(
+		// 	{
+		// 		object: createObject().observableObject,
+		// 		immediate: true,
+		// 	},
+		// 	b => b.p('observableList').collection()
+		// 		.p('observableList').collection()
+		// 		.p('valueObject'),
+		// )
+		// 	.subscribe(o => [new String('value')])
+		// 	.change(
+		// 		o => o.observableList.listChanged.emit({
+		// 			type: ListChangedType.Set,
+		// 			index: o.observableList.indexOf(o.observableList),
+		// 			oldItems: [o.observableList],
+		// 			newItems: [o.observableList],
+		// 		}),
+		// 		o => [new String('value')],
+		// 		o => [new String('value')],
+		// 	)
+		// 	.unsubscribe(o => [new String('value')])
 	})
 })

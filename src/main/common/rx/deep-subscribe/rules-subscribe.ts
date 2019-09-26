@@ -318,7 +318,7 @@ function subscribeIterable<TItem>(
 	subscribeItem: (item: TItem, debugPropertyName: string) => void,
 	unsubscribeItem: (item: TItem, debugPropertyName: string) => void,
 ): IUnsubscribeOrVoid {
-	if (!object || !isIterable(object)) {
+	if (!object || typeof object === 'string' || !isIterable(object)) {
 		return null
 	}
 
