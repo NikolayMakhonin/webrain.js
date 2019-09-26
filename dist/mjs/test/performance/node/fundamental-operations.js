@@ -12,11 +12,11 @@ import { SynchronousPromise } from 'synchronous-promise';
 import { resolveValue } from '../../../main/common/async/async';
 import { resolveAsync, ThenableSync } from '../../../main/common/async/ThenableSync';
 import { createFunction, isIterable } from '../../../main/common/helpers/helpers';
+import { freezeWithUniqueId, getObjectUniqueId } from '../../../main/common/helpers/object-unique-id';
 import { ArraySet } from '../../../main/common/lists/ArraySet';
 import { binarySearch } from '../../../main/common/lists/helpers/array';
-import { freezeWithUniqueId, getObjectUniqueId } from '../../../main/common/helpers/object-unique-id';
 import { SortedList } from '../../../main/common/lists/SortedList';
-import { createObject, Tester } from '../../tests/common/main/rx/deep-subscribe/helpers/Tester';
+import { createObject, TestDeepSubscribe } from '../../tests/common/main/rx/deep-subscribe/helpers/src/TestDeepSubscribe';
 const SetNative = Set;
 
 require('./src/SetPolyfill');
@@ -784,11 +784,11 @@ describe('fundamental-operations', function () {
   xit('deepSubscribe', function () {
     this.timeout(300000);
 
-    const createTester = (...propertyNames) => new Tester({
+    const createTester = (...propertyNames) => new TestDeepSubscribe({
       object: createObject().object,
       immediate: true,
       performanceTest: true
-    }, b => b.repeat(1, 3, b => b.any( // b => b.propertyRegexp(/object|observableObject/),
+    }, b => b.repeat(1, 3, null, b => b.any( // b => b.propertyRegexp(/object|observableObject/),
     b => b.propertyNames('object', 'observableObject'), b => b.propertyNames(...propertyNames).path(o => o['#']))).path(o => o['#'])).subscribe([]).unsubscribe([]);
 
     const testerList = createTester('list');

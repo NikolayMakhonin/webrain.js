@@ -26,15 +26,15 @@ export class ObservableObjectBuilder {
     } // optimization
 
 
-    const getValue = createFunction('o', `return o.__fields["${name}"]`);
-    const setValue = createFunction('o', 'v', `o.__fields["${name}"] = v`);
+    const getValue = options && options.getValue || createFunction(`return this.__fields["${name}"]`);
+    const setValue = options && options.setValue || createFunction('v', `this.__fields["${name}"] = v`);
     const set = setOptions ? _setExt.bind(null, name, getValue, setValue, setOptions) : _set.bind(null, name, getValue, setValue);
     Object.defineProperty(object, name, {
       configurable: true,
       enumerable: !hidden,
 
       get() {
-        return getValue(this);
+        return getValue.call(this);
       },
 
       set(newValue) {
@@ -55,10 +55,11 @@ export class ObservableObjectBuilder {
   }
 
   readable(name, options, initValue) {
+    return this.updatable(name, options, initValue);
+  }
+
+  updatable(name, options, initValue) {
     const hidden = options && options.hidden;
-    const setOptions = { ...(options && options.setOptions),
-      suppressPropertyChanged: true
-    };
     const {
       object
     } = this;
@@ -74,47 +75,102 @@ export class ObservableObjectBuilder {
 
     if (!factory && !__fields && typeof initValue !== 'undefined') {
       factory = o => o;
-    } // optimization
+    }
 
+    const update = options && options.update; // optimization
 
-    const getValue = createFunction('o', `return o.__fields["${name}"]`);
+    const getValue = options && options.getValue || createFunction(`return this.__fields["${name}"]`);
+    let setValue;
+
+    if (update || factory) {
+      setValue = options && options.setValue || createFunction('v', `this.__fields["${name}"] = v`);
+    }
+
+    let setOnUpdate;
+
+    if (update) {
+      // tslint:disable-next-line
+      const setOptions = options && options.setOptions;
+      setOnUpdate = setOptions ? _setExt.bind(null, name, getValue, setValue, setOptions) : _set.bind(null, name, getValue, setValue);
+    }
+
+    let setOnInit;
+
+    if (factory) {
+      const setOptions = { ...(options && options.setOptions),
+        suppressPropertyChanged: true
+      };
+      setOnInit = setOptions ? _setExt.bind(null, name, getValue, setValue, setOptions) : _set.bind(null, name, getValue, setValue);
+    }
 
     const createInstanceProperty = instance => {
-      Object.defineProperty(instance, name, {
+      const attributes = {
         configurable: true,
         enumerable: !hidden,
 
         get() {
-          return getValue(this);
+          return getValue.call(this);
         }
 
-      });
+      };
+
+      if (update) {
+        attributes.set = function (value) {
+          const newValue = update.call(this, value);
+
+          if (typeof newValue !== 'undefined') {
+            setOnUpdate(this, newValue);
+          }
+        };
+      }
+
+      Object.defineProperty(instance, name, attributes);
     };
 
     if (factory) {
-      // optimization
-      const setValue = createFunction('o', 'v', `o.__fields["${name}"] = v`);
-      const set = setOptions ? _setExt.bind(null, name, getValue, setValue, setOptions) : _set.bind(null, name, getValue, setValue);
-      Object.defineProperty(object, name, {
+      const init = function () {
+        const factoryValue = factory.call(this, initValue);
+        createInstanceProperty(this);
+        return factoryValue;
+      };
+
+      const initAttributes = {
         configurable: true,
         enumerable: !hidden,
 
         get() {
-          const factoryValue = factory.call(this, initValue);
-          createInstanceProperty(this);
+          const factoryValue = init.call(this);
 
           if (typeof factoryValue !== 'undefined') {
-            const oldValue = getValue(this);
+            const oldValue = getValue.call(this);
 
             if (factoryValue !== oldValue) {
-              set(this, factoryValue);
+              setOnInit(this, factoryValue);
             }
           }
 
           return factoryValue;
         }
 
-      });
+      };
+
+      if (update) {
+        initAttributes.set = function (value) {
+          // tslint:disable:no-dead-store
+          const factoryValue = init.call(this);
+          const newValue = update.call(this, value);
+
+          if (typeof newValue !== 'undefined') {
+            const oldValue = getValue.call(this);
+
+            if (newValue !== oldValue) {
+              setOnInit(this, newValue);
+            }
+          }
+        };
+      }
+
+      Object.defineProperty(object, name, initAttributes);
 
       if (__fields) {
         const oldValue = __fields[name];

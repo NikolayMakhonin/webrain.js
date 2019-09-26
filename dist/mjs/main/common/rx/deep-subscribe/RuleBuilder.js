@@ -1,17 +1,24 @@
 import { VALUE_PROPERTY_DEFAULT } from '../../helpers/value-property';
 import { ANY_DISPLAY, COLLECTION_PREFIX, VALUE_PROPERTY_PREFIX } from './contracts/constants';
+import { RuleRepeatAction } from './contracts/rules';
 import { getFuncPropertiesPath } from './helpers/func-properties-path';
-import { RuleAny, RuleNothing, RuleRepeat } from './rules';
-import { RuleSubscribeCollection, RuleSubscribeMap, RuleSubscribeObject, SubscribeObjectType } from './rules-subscribe';
+import { RuleAny, RuleIf, RuleNever, RuleNothing, RuleRepeat } from './rules';
+import { hasDefaultProperty, RuleSubscribeCollection, RuleSubscribeMap, RuleSubscribeObject, SubscribeObjectType } from './rules-subscribe';
 const RuleSubscribeObjectPropertyNames = RuleSubscribeObject.bind(null, SubscribeObjectType.Property, null);
 const RuleSubscribeObjectValuePropertyNames = RuleSubscribeObject.bind(null, SubscribeObjectType.ValueProperty, null);
 const RuleSubscribeMapKeys = RuleSubscribeMap.bind(null, null); // const UNSUBSCRIBE_PROPERTY_PREFIX = Math.random().toString(36)
 // let nextUnsubscribePropertyId = 0
 
 export class RuleBuilder {
-  constructor(rule) {
+  constructor({
+    rule,
+    autoInsertValuePropertyDefault = true // TODO - should be true
+
+  } = {}) {
+    this.autoInsertValuePropertyDefault = autoInsertValuePropertyDefault;
+
     if (rule != null) {
-      this.result = rule;
+      this.ruleFirst = rule;
       let ruleLast;
 
       do {
@@ -19,22 +26,30 @@ export class RuleBuilder {
         rule = rule.next;
       } while (rule != null);
 
-      this._ruleLast = ruleLast;
+      this.ruleLast = ruleLast;
     }
+  }
+
+  result() {
+    return (this.autoInsertValuePropertyDefault ? this.valuePropertyDefault() : this).ruleFirst;
+  }
+
+  valuePropertyDefault() {
+    return this.repeat(0, 10, o => hasDefaultProperty(o) ? RuleRepeatAction.Next : RuleRepeatAction.Fork, b => b.ruleSubscribe(new RuleSubscribeObjectPropertyNames(VALUE_PROPERTY_DEFAULT), VALUE_PROPERTY_DEFAULT));
   }
 
   rule(rule) {
     const {
-      _ruleLast: ruleLast
+      ruleLast
     } = this;
 
     if (ruleLast) {
       ruleLast.next = rule;
     } else {
-      this.result = rule;
+      this.ruleFirst = rule;
     }
 
-    this._ruleLast = rule;
+    this.ruleLast = rule;
     return this;
   }
 
@@ -45,22 +60,19 @@ export class RuleBuilder {
 
     if (ruleSubscribe.unsubscribers) {
       throw new Error('You should not add duplicate IRuleSubscribe instances. Clone rule before add.');
-    } // !Warning defineProperty is slow
-    // Object.defineProperty(ruleSubscribe, 'unsubscribePropertyName', {
-    // 	configurable: true,
-    // 	enumerable: false,
-    // 	writable: false,
-    // 	value: UNSUBSCRIBE_PROPERTY_PREFIX + (nextUnsubscribePropertyId++),
-    // })
+    }
 
-
-    ruleSubscribe.unsubscribers = []; // UNSUBSCRIBE_PROPERTY_PREFIX + (nextUnsubscribePropertyId++)
-
+    ruleSubscribe.unsubscribers = [];
+    ruleSubscribe.unsubscribersCount = [];
     return this.rule(ruleSubscribe);
   }
 
   nothing() {
     return this.rule(new RuleNothing());
+  }
+
+  never() {
+    return this.rule(RuleNever.instance);
   }
   /**
    * Object property, Array index
@@ -68,7 +80,7 @@ export class RuleBuilder {
 
 
   valuePropertyName(propertyName) {
-    return this.ruleSubscribe(new RuleSubscribeObjectValuePropertyNames(propertyName), VALUE_PROPERTY_PREFIX + propertyName);
+    return this.if([o => typeof o === 'undefined', b => b.never()], [o => o instanceof Object && o.constructor !== Object && !Array.isArray(o), b => b.ruleSubscribe(new RuleSubscribeObjectValuePropertyNames(propertyName), VALUE_PROPERTY_PREFIX + propertyName)]);
   }
   /**
    * Object property, Array index
@@ -76,7 +88,15 @@ export class RuleBuilder {
 
 
   valuePropertyNames(...propertiesNames) {
-    return this.ruleSubscribe(new RuleSubscribeObjectValuePropertyNames(...propertiesNames), VALUE_PROPERTY_PREFIX + propertiesNames.join('|'));
+    return this.if([o => typeof o === 'undefined', b => b.never()], [o => o instanceof Object && o.constructor !== Object && !Array.isArray(o), b => b.ruleSubscribe(new RuleSubscribeObjectValuePropertyNames(...propertiesNames), VALUE_PROPERTY_PREFIX + propertiesNames.join('|'))]);
+  }
+  /**
+   * valuePropertyNames - Object property, Array index
+   */
+
+
+  v(...propertiesNames) {
+    return this.valuePropertyNames(...propertiesNames);
   }
   /**
    * Object property, Array index
@@ -84,7 +104,7 @@ export class RuleBuilder {
 
 
   propertyName(propertyName) {
-    return this.ruleSubscribe(new RuleSubscribeObjectPropertyNames(propertyName), propertyName);
+    return (this.autoInsertValuePropertyDefault ? this.valuePropertyDefault() : this).ruleSubscribe(new RuleSubscribeObjectPropertyNames(propertyName), propertyName);
   }
   /**
    * Object property, Array index
@@ -92,15 +112,24 @@ export class RuleBuilder {
 
 
   propertyNames(...propertiesNames) {
-    return this.ruleSubscribe(new RuleSubscribeObjectPropertyNames(...propertiesNames), propertiesNames.join('|'));
+    return (this.autoInsertValuePropertyDefault ? this.valuePropertyDefault() : this).ruleSubscribe(new RuleSubscribeObjectPropertyNames(...propertiesNames), propertiesNames.join('|'));
+  }
+  /**
+   * propertyNames
+   * @param propertiesNames
+   */
+
+
+  p(...propertiesNames) {
+    return this.propertyNames(...propertiesNames);
   }
   /**
    * Object property, Array index
    */
 
 
-  propertyAll() {
-    return this.ruleSubscribe(new RuleSubscribeObjectPropertyNames(), ANY_DISPLAY);
+  propertyAny() {
+    return (this.autoInsertValuePropertyDefault ? this.valuePropertyDefault() : this).ruleSubscribe(new RuleSubscribeObjectPropertyNames(), ANY_DISPLAY);
   }
   /**
    * Object property, Array index
@@ -108,7 +137,7 @@ export class RuleBuilder {
 
 
   propertyPredicate(predicate, description) {
-    return this.ruleSubscribe(new RuleSubscribeObject(SubscribeObjectType.Property, predicate), description);
+    return (this.autoInsertValuePropertyDefault ? this.valuePropertyDefault() : this).ruleSubscribe(new RuleSubscribeObject(SubscribeObjectType.Property, predicate), description);
   }
   /**
    * Object property, Array index
@@ -128,7 +157,7 @@ export class RuleBuilder {
 
 
   collection() {
-    return this.ruleSubscribe(new RuleSubscribeCollection(), COLLECTION_PREFIX);
+    return (this.autoInsertValuePropertyDefault ? this.valuePropertyDefault() : this).ruleSubscribe(new RuleSubscribeCollection(), COLLECTION_PREFIX);
   }
   /**
    * IMapChanged & Map, Map
@@ -136,7 +165,7 @@ export class RuleBuilder {
 
 
   mapKey(key) {
-    return this.ruleSubscribe(new RuleSubscribeMapKeys(key), COLLECTION_PREFIX + key);
+    return (this.autoInsertValuePropertyDefault ? this.valuePropertyDefault() : this).ruleSubscribe(new RuleSubscribeMapKeys(key), COLLECTION_PREFIX + key);
   }
   /**
    * IMapChanged & Map, Map
@@ -144,15 +173,15 @@ export class RuleBuilder {
 
 
   mapKeys(...keys) {
-    return this.ruleSubscribe(new RuleSubscribeMapKeys(...keys), COLLECTION_PREFIX + keys.join('|'));
+    return (this.autoInsertValuePropertyDefault ? this.valuePropertyDefault() : this).ruleSubscribe(new RuleSubscribeMapKeys(...keys), COLLECTION_PREFIX + keys.join('|'));
   }
   /**
    * IMapChanged & Map, Map
    */
 
 
-  mapAll() {
-    return this.ruleSubscribe(new RuleSubscribeMap(), COLLECTION_PREFIX);
+  mapAny() {
+    return (this.autoInsertValuePropertyDefault ? this.valuePropertyDefault() : this).ruleSubscribe(new RuleSubscribeMap(), COLLECTION_PREFIX);
   }
   /**
    * IMapChanged & Map, Map
@@ -160,7 +189,7 @@ export class RuleBuilder {
 
 
   mapPredicate(keyPredicate, description) {
-    return this.ruleSubscribe(new RuleSubscribeMap(keyPredicate), description);
+    return (this.autoInsertValuePropertyDefault ? this.valuePropertyDefault() : this).ruleSubscribe(new RuleSubscribeMap(keyPredicate), description);
   }
   /**
    * IMapChanged & Map, Map
@@ -179,7 +208,9 @@ export class RuleBuilder {
    */
 
 
-  path(getValueFunc) {
+  path(getValueFunc) // public path<TValue>(getValueFunc: RuleGetValueFunc<TObject, TValue, TValueKeys>)
+  // 	: RuleBuilder<TRulePathObjectValueOf<TValue>, TValueKeys>
+  {
     for (const propertyNames of getFuncPropertiesPath(getValueFunc)) {
       if (propertyNames.startsWith(COLLECTION_PREFIX)) {
         const keys = propertyNames.substring(1);
@@ -205,13 +236,28 @@ export class RuleBuilder {
     return this;
   }
 
+  if(...exclusiveConditionRules) {
+    if (exclusiveConditionRules.length === 0) {
+      throw new Error('if() parameters is empty');
+    }
+
+    const rule = new RuleIf(exclusiveConditionRules.map(o => {
+      if (Array.isArray(o)) {
+        return [o[0], o[1](this.clone(true)).ruleFirst];
+      } else {
+        return o(this.clone(true)).ruleFirst;
+      }
+    }));
+    return this.rule(rule);
+  }
+
   any(...getChilds) {
     if (getChilds.length === 0) {
       throw new Error('any() parameters is empty');
     }
 
     const rule = new RuleAny(getChilds.map(o => {
-      const subRule = o(new RuleBuilder()).result;
+      const subRule = o(this.clone(true)).result();
 
       if (!subRule) {
         throw new Error(`Any subRule=${rule}`);
@@ -222,8 +268,8 @@ export class RuleBuilder {
     return this.rule(rule);
   }
 
-  repeat(countMin, countMax, getChild) {
-    const subRule = getChild(new RuleBuilder()).result;
+  repeat(countMin, countMax, condition, getChild) {
+    const subRule = getChild(this.clone(true)).ruleFirst;
 
     if (!subRule) {
       throw new Error(`getChild(...).rule = ${subRule}`);
@@ -235,49 +281,29 @@ export class RuleBuilder {
 
     if (countMin == null) {
       countMin = 0;
-    }
+    } // if (countMax < countMin || countMax <= 0) {
+    // 	return this as unknown as RuleBuilder<TValue, TValueKeys>
+    // }
 
-    if (countMax < countMin || countMax <= 0) {
-      return this;
-    }
 
     let rule;
 
-    if (countMax === countMin && countMax === 1) {
+    if (countMax === countMin && countMax === 1 && !condition) {
       rule = subRule;
     } else {
-      rule = new RuleRepeat(countMin, countMax, getChild(new RuleBuilder()).result);
+      rule = new RuleRepeat(countMin, countMax, condition, getChild(this.clone(true)).ruleFirst);
     }
 
     return this.rule(rule);
   }
 
-  clone() {
-    return new RuleBuilder(cloneRule(this.result));
+  clone(optionsOnly) {
+    return new RuleBuilder({
+      rule: optionsOnly || !this.ruleFirst ? null : this.ruleFirst.clone(),
+      autoInsertValuePropertyDefault: this.autoInsertValuePropertyDefault
+    });
   }
 
-}
-export function cloneRule(rule) {
-  if (rule == null) {
-    return rule;
-  }
-
-  const clone = { ...rule
-  };
-  const {
-    unsubscribers,
-    next
-  } = rule;
-
-  if (unsubscribers != null) {
-    clone.unsubscribers = [];
-  }
-
-  if (next != null) {
-    clone.next = cloneRule(next);
-  }
-
-  return clone;
 } // Test:
 // interface ITestInterface1 {
 // 	y: number

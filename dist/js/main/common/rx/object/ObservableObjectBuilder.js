@@ -48,8 +48,8 @@ function () {
       } // optimization
 
 
-      var getValue = (0, _helpers.createFunction)('o', "return o.__fields[\"" + name + "\"]");
-      var setValue = (0, _helpers.createFunction)('o', 'v', "o.__fields[\"" + name + "\"] = v");
+      var getValue = options && options.getValue || (0, _helpers.createFunction)("return this.__fields[\"" + name + "\"]");
+      var setValue = options && options.setValue || (0, _helpers.createFunction)('v', "this.__fields[\"" + name + "\"] = v");
 
       var _set2 = setOptions ? (0, _bind.default)(_ObservableObject._setExt).call(_ObservableObject._setExt, null, name, getValue, setValue, setOptions) : (0, _bind.default)(_ObservableObject._set).call(_ObservableObject._set, null, name, getValue, setValue);
 
@@ -57,7 +57,7 @@ function () {
         configurable: true,
         enumerable: !hidden,
         get: function get() {
-          return getValue(this);
+          return getValue.call(this);
         },
         set: function set(newValue) {
           _set2(this, newValue);
@@ -65,9 +65,9 @@ function () {
       });
 
       if (__fields && typeof initValue !== 'undefined') {
-        var value = __fields[name];
+        var _value = __fields[name];
 
-        if (initValue !== value) {
+        if (initValue !== _value) {
           object[name] = initValue;
         }
       }
@@ -77,10 +77,12 @@ function () {
   }, {
     key: "readable",
     value: function readable(name, options, initValue) {
+      return this.updatable(name, options, initValue);
+    }
+  }, {
+    key: "updatable",
+    value: function updatable(name, options, initValue) {
       var hidden = options && options.hidden;
-      var setOptions = (0, _extends2.default)({}, options && options.setOptions, {
-        suppressPropertyChanged: true
-      });
       var object = this.object;
       var __fields = object.__fields;
 
@@ -94,43 +96,99 @@ function () {
         factory = function factory(o) {
           return o;
         };
-      } // optimization
+      }
 
+      var update = options && options.update; // optimization
 
-      var getValue = (0, _helpers.createFunction)('o', "return o.__fields[\"" + name + "\"]");
+      var getValue = options && options.getValue || (0, _helpers.createFunction)("return this.__fields[\"" + name + "\"]");
+      var setValue;
+
+      if (update || factory) {
+        setValue = options && options.setValue || (0, _helpers.createFunction)('v', "this.__fields[\"" + name + "\"] = v");
+      }
+
+      var setOnUpdate;
+
+      if (update) {
+        // tslint:disable-next-line
+        var setOptions = options && options.setOptions;
+        setOnUpdate = setOptions ? (0, _bind.default)(_ObservableObject._setExt).call(_ObservableObject._setExt, null, name, getValue, setValue, setOptions) : (0, _bind.default)(_ObservableObject._set).call(_ObservableObject._set, null, name, getValue, setValue);
+      }
+
+      var setOnInit;
+
+      if (factory) {
+        var _setOptions = (0, _extends2.default)({}, options && options.setOptions, {
+          suppressPropertyChanged: true
+        });
+
+        setOnInit = _setOptions ? (0, _bind.default)(_ObservableObject._setExt).call(_ObservableObject._setExt, null, name, getValue, setValue, _setOptions) : (0, _bind.default)(_ObservableObject._set).call(_ObservableObject._set, null, name, getValue, setValue);
+      }
 
       var createInstanceProperty = function createInstanceProperty(instance) {
-        (0, _defineProperty.default)(instance, name, {
+        var attributes = {
           configurable: true,
           enumerable: !hidden,
           get: function get() {
-            return getValue(this);
+            return getValue.call(this);
           }
-        });
+        };
+
+        if (update) {
+          attributes.set = function (value) {
+            var newValue = update.call(this, value);
+
+            if (typeof newValue !== 'undefined') {
+              setOnUpdate(this, newValue);
+            }
+          };
+        }
+
+        (0, _defineProperty.default)(instance, name, attributes);
       };
 
       if (factory) {
-        // optimization
-        var setValue = (0, _helpers.createFunction)('o', 'v', "o.__fields[\"" + name + "\"] = v");
-        var set = setOptions ? (0, _bind.default)(_ObservableObject._setExt).call(_ObservableObject._setExt, null, name, getValue, setValue, setOptions) : (0, _bind.default)(_ObservableObject._set).call(_ObservableObject._set, null, name, getValue, setValue);
-        (0, _defineProperty.default)(object, name, {
+        var init = function init() {
+          var factoryValue = factory.call(this, initValue);
+          createInstanceProperty(this);
+          return factoryValue;
+        };
+
+        var initAttributes = {
           configurable: true,
           enumerable: !hidden,
           get: function get() {
-            var factoryValue = factory.call(this, initValue);
-            createInstanceProperty(this);
+            var factoryValue = init.call(this);
 
             if (typeof factoryValue !== 'undefined') {
-              var oldValue = getValue(this);
+              var oldValue = getValue.call(this);
 
               if (factoryValue !== oldValue) {
-                set(this, factoryValue);
+                setOnInit(this, factoryValue);
               }
             }
 
             return factoryValue;
           }
-        });
+        };
+
+        if (update) {
+          initAttributes.set = function (value) {
+            // tslint:disable:no-dead-store
+            var factoryValue = init.call(this);
+            var newValue = update.call(this, value);
+
+            if (typeof newValue !== 'undefined') {
+              var oldValue = getValue.call(this);
+
+              if (newValue !== oldValue) {
+                setOnInit(this, newValue);
+              }
+            }
+          };
+        }
+
+        (0, _defineProperty.default)(object, name, initAttributes);
 
         if (__fields) {
           var oldValue = __fields[name];

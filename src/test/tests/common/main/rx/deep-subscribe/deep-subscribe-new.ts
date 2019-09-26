@@ -125,7 +125,7 @@ describe('common > main > rx > deep-subscribe > deep-subscribe new', function() 
 		await tester.unsubscribeAsync(o => ['value2'], [void 0])
 	})
 
-	it('last nothing sync', function() {
+	xit('last nothing sync', function() {
 		new TestDeepSubscribeVariants(
 			{
 				object: createObject().observableObject,

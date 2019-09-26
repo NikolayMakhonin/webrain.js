@@ -5,4 +5,5 @@ export { CalcObjectBuilder } from './rx/object/properties/CalcObjectBuilder';
 export { calcPropertyFactory } from './rx/object/properties/CalcPropertyBuilder';
 export { connectorFactory } from './rx/object/properties/ConnectorBuilder';
 export { Property } from './rx/object/properties/Property';
-export { createFunction } from './helpers/helpers'; // Interfaces:
+export { createFunction } from './helpers/helpers';
+export { CalcObjectDebugger } from './rx/object/properties/CalcObjectDebugger'; // Interfaces:

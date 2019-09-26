@@ -50,6 +50,16 @@ function (_ObservableObjectBuil) {
   (0, _createClass2.default)(ConnectorBuilder, [{
     key: "connect",
     value: function connect(name, buildRule, options, initValue) {
+      return this._connect(false, name, buildRule, options, initValue);
+    }
+  }, {
+    key: "connectWritable",
+    value: function connectWritable(name, buildRule, options, initValue) {
+      return this._connect(true, name, buildRule, options, initValue);
+    }
+  }, {
+    key: "_connect",
+    value: function _connect(writable, name, buildRule, options, initValue) {
       var object = this.object,
           buildSourceRule = this.buildSourceRule;
       var ruleBuilder = new _RuleBuilder.RuleBuilder();
@@ -59,7 +69,7 @@ function (_ObservableObjectBuil) {
       }
 
       ruleBuilder = buildRule(ruleBuilder);
-      var ruleBase = ruleBuilder && ruleBuilder.result;
+      var ruleBase = ruleBuilder && ruleBuilder.result();
 
       if (ruleBase == null) {
         throw new Error('buildRule() return null or not initialized RuleBuilder');
@@ -67,15 +77,30 @@ function (_ObservableObjectBuil) {
 
       var setOptions = options && options.setOptions; // optimization
 
-      var getValue = (0, _helpers.createFunction)('o', "return o.__fields[\"" + name + "\"]");
-      var setValue = (0, _helpers.createFunction)('o', 'v', "o.__fields[\"" + name + "\"] = v");
+      var baseGetValue = options && options.getValue || (0, _helpers.createFunction)("return this.__fields[\"" + name + "\"]");
+      var baseSetValue = options && options.setValue || (0, _helpers.createFunction)('v', "this.__fields[\"" + name + "\"] = v");
+      var getValue = !writable ? baseGetValue : function () {
+        return baseGetValue.call(this).value;
+      };
+      var setValue = !writable ? baseSetValue : function (value) {
+        var baseValue = baseGetValue.call(this);
+        baseValue.value = value;
+      };
       var set = setOptions ? (0, _bind.default)(_ObservableObject._setExt).call(_ObservableObject._setExt, null, name, getValue, setValue, setOptions) : (0, _bind.default)(_ObservableObject._set).call(_ObservableObject._set, null, name, getValue, setValue);
-      return this.readable(name, {
+      return this.updatable(name, {
         setOptions: setOptions,
         hidden: options && options.hidden,
         // tslint:disable-next-line:no-shadowed-variable
         factory: function factory(initValue) {
           var _this2 = this;
+
+          if (writable) {
+            baseSetValue.call(this, {
+              value: initValue,
+              parent: null,
+              propertyName: null
+            });
+          }
 
           var setVal = function setVal(obj, value) {
             if (typeof value !== 'undefined') {
@@ -83,26 +108,49 @@ function (_ObservableObjectBuil) {
             }
           };
 
-          var receiveValue = function receiveValue(value, parent, propertyName) {
+          var receiveValue = writable ? function (value, parent, propertyName) {
+            _CalcObjectDebugger.CalcObjectDebugger.Instance.onConnectorChanged(_this2, value, parent, propertyName);
+
+            var baseValue = baseGetValue.call(_this2);
+            baseValue.parent = parent;
+            baseValue.propertyName = propertyName;
+            setVal(_this2, value);
+            return null;
+          } : function (value, parent, propertyName) {
             _CalcObjectDebugger.CalcObjectDebugger.Instance.onConnectorChanged(_this2, value, parent, propertyName);
 
             setVal(_this2, value);
             return null;
           };
-
-          var rule = this === object ? ruleBase : (0, _RuleBuilder.cloneRule)(ruleBase);
+          var rule = this === object ? ruleBase : ruleBase.clone();
           this.propertyChanged.hasSubscribersObservable.subscribe(function (hasSubscribers) {
             _this2._setUnsubscriber(name, null);
 
             if (hasSubscribers) {
-              var unsubscribe = (0, _deepSubscribe.deepSubscribeRule)(_this2, receiveValue, true, rule);
+              var unsubscribe = (0, _deepSubscribe.deepSubscribeRule)({
+                object: _this2,
+                lastValue: receiveValue,
+                rule: rule
+              });
 
-              _this2._setUnsubscriber(name, unsubscribe);
+              if (unsubscribe) {
+                _this2._setUnsubscriber(name, unsubscribe);
+              }
             }
           });
           setVal = set;
           return initValue;
-        }
+        },
+        update: writable && function (value) {
+          var baseValue = baseGetValue.call(this);
+
+          if (baseValue.parent != null) {
+            baseValue.parent[baseValue.propertyName] = value;
+          } // return value
+
+        },
+        getValue: getValue,
+        setValue: setValue
       }, initValue);
     }
   }]);

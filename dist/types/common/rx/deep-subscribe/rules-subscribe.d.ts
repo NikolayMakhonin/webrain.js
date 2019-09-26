@@ -1,16 +1,15 @@
-import { IPropertyChanged } from '../object/IPropertyChanged';
 import { IUnsubscribe } from '../subjects/observable';
 import { IRuleSubscribe, ISubscribeObject } from './contracts/rule-subscribe';
 import { Rule } from './rules';
 export declare function hasDefaultProperty(object: object): boolean;
-export declare function subscribeDefaultProperty<TValue>(object: IPropertyChanged, immediateSubscribe: boolean, subscribeItem: (item: TValue, debugPropertyName: string) => IUnsubscribe): IUnsubscribe;
 export declare enum SubscribeObjectType {
     Property = 0,
     ValueProperty = 1
 }
 export declare abstract class RuleSubscribe<TObject = any, TChild = any> extends Rule implements IRuleSubscribe<TObject, TChild> {
-    subscribe: ISubscribeObject<TObject, TChild>;
+    readonly subscribe: ISubscribeObject<TObject, TChild>;
     readonly unsubscribers: IUnsubscribe[];
+    readonly unsubscribersCount: number[];
     protected constructor();
     clone(): IRuleSubscribe<TObject, TChild>;
 }

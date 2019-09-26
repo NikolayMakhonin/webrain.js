@@ -59,7 +59,8 @@ export class CalcProperty extends ObservableObject {
 
     if (propertyChangedIfCanEmit) {
       const oldValue = this._valueProperty.value;
-      const newValue = new CalcPropertyValue(this);
+      const newValue = this.last; // new CalcPropertyValue(this)
+
       propertyChangedIfCanEmit.onPropertyChanged({
         name: VALUE_PROPERTY_DEFAULT,
         oldValue,
@@ -87,7 +88,8 @@ export class CalcProperty extends ObservableObject {
 
     if (propertyChangedIfCanEmit) {
       const oldValue = this._valueProperty.value;
-      const newValue = new CalcPropertyValue(this);
+      const newValue = this.last; // new CalcPropertyValue(this)
+
       propertyChangedIfCanEmit.onPropertyChanged({
         name: 'last',
         oldValue,

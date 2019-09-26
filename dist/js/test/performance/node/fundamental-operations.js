@@ -65,15 +65,15 @@ var _ThenableSync = require("../../../main/common/async/ThenableSync");
 
 var _helpers = require("../../../main/common/helpers/helpers");
 
+var _objectUniqueId = require("../../../main/common/helpers/object-unique-id");
+
 var _ArraySet = require("../../../main/common/lists/ArraySet");
 
 var _array = require("../../../main/common/lists/helpers/array");
 
-var _objectUniqueId = require("../../../main/common/helpers/object-unique-id");
-
 var _SortedList = require("../../../main/common/lists/SortedList");
 
-var _Tester = require("../../tests/common/main/rx/deep-subscribe/helpers/Tester");
+var _TestDeepSubscribe = require("../../tests/common/main/rx/deep-subscribe/helpers/src/TestDeepSubscribe");
 
 /* tslint:disable:prefer-const no-identical-functions no-empty no-shadowed-variable no-conditional-assignment */
 
@@ -1060,12 +1060,12 @@ describe('fundamental-operations', function () {
         propertyNames[_key2] = arguments[_key2];
       }
 
-      return new _Tester.Tester({
-        object: (0, _Tester.createObject)().object,
+      return new _TestDeepSubscribe.TestDeepSubscribe({
+        object: (0, _TestDeepSubscribe.createObject)().object,
         immediate: true,
         performanceTest: true
       }, function (b) {
-        return (0, _repeat.default)(b).call(b, 1, 3, function (b) {
+        return (0, _repeat.default)(b).call(b, 1, 3, null, function (b) {
           return b.any( // b => b.propertyRegexp(/object|observableObject/),
           function (b) {
             return b.propertyNames('object', 'observableObject');

@@ -8,7 +8,7 @@ export declare class CalcObjectBuilder<TObject extends ObservableObject, TValueK
     calc<TValue, TInput, TMergeSource, Name extends string | number>(name: Name, inputOrFactory: ((source: TObject) => TInput) | NotFunction<TInput>, calcFactory: (initValue?: TValue) => CalcProperty<TValue, TInput, TMergeSource>, initValue?: TValue): this & {
         object: { readonly [newProp in Name]: CalcProperty<TValue, TInput, TMergeSource>; };
     };
-    calcChanges<Name extends string | number>(name: Name, buildRule: (builder: RuleBuilder<TObject, TValueKeys>) => RuleBuilder<any, TValueKeys>): this & {
-        object: { readonly [newProp in Name]: CalcProperty<number, any, unknown>; };
+    calcChanges<TInput, Name extends string | number>(name: Name, buildRule: (builder: RuleBuilder<TInput, ValueKeys>) => RuleBuilder<any, ValueKeys>): this & {
+        object: { readonly [newProp in Name]: CalcProperty<number, TInput, any>; };
     };
 }

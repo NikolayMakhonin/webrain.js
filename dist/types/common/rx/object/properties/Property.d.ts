@@ -6,7 +6,7 @@ export interface IPropertyOptions<TTarget, TSource> {
     merger?: ObjectMerger;
     mergeOptions?: IMergeVisitorOptions<TTarget, TSource>;
 }
-export declare class Property<TValue, TMergeSource> extends ObservableObject implements IMergeable<Property<TValue, TMergeSource>, any>, ISerializable {
+export declare class Property<TValue, TMergeSource = TValue> extends ObservableObject implements IMergeable<Property<TValue, TMergeSource>, any>, ISerializable {
     protected merger?: ObjectMerger;
     protected mergeOptions?: IMergeVisitorOptions<TValue, TMergeSource>;
     constructor(options?: IPropertyOptions<TValue, TMergeSource>, initValue?: TValue);

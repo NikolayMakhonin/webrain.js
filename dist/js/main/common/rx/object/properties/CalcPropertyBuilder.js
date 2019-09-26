@@ -9,12 +9,12 @@ var _CalcPropertyDependenciesBuilder = require("./CalcPropertyDependenciesBuilde
 
 var _DependenciesBuilder = require("./DependenciesBuilder");
 
-function calcPropertyFactory(calcFunc, calcOptions, valueOptions, initValue, buildDependencies) {
+function calcPropertyFactory(buildDependencies, calcFunc, calcOptions, valueOptions, initValue) {
   var dependencies;
 
   if (buildDependencies) {
     var _dependenciesBuilder = new _CalcPropertyDependenciesBuilder.CalcPropertyDependenciesBuilder(function (b) {
-      return b.propertyName('input');
+      return b.valuePropertyName('input');
     });
 
     buildDependencies(_dependenciesBuilder);

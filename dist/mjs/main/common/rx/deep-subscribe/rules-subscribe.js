@@ -12,14 +12,14 @@ function forEachSimple(iterable, callbackfn) {
   for (const item of iterable) {
     callbackfn(item, COLLECTION_PREFIX);
   }
-} // region subscribeObject
+} // region subscribeObjectValue
 
 
 function getFirstExistProperty(object, propertyNames) {
   for (let i = 0, len = propertyNames.length; i < len; i++) {
     const propertyName = propertyNames[i];
 
-    if (Object.prototype.hasOwnProperty.call(object, propertyName)) {
+    if (allowSubscribePrototype ? propertyName in object : Object.prototype.hasOwnProperty.call(object, propertyName)) {
       return propertyName;
     }
   }
@@ -28,7 +28,12 @@ function getFirstExistProperty(object, propertyNames) {
 }
 
 function subscribeObjectValue(propertyNames, object, immediateSubscribe, subscribeItem, unsubscribeItem) {
-  if (!(object instanceof Object) || object.constructor === Object || Array.isArray(object)) {
+  if (!(object instanceof Object)) {
+    subscribeItem(object, null);
+    return null;
+  }
+
+  if (object.constructor === Object || Array.isArray(object)) {
     subscribeItem(object, null);
     return () => {
       unsubscribeItem(object, null);
@@ -38,7 +43,7 @@ function subscribeObjectValue(propertyNames, object, immediateSubscribe, subscri
   let subscribePropertyName;
 
   const getSubscribePropertyName = () => {
-    if (!Object.prototype.hasOwnProperty.call(object, VALUE_PROPERTY_DEFAULT)) {
+    if (allowSubscribePrototype ? !(VALUE_PROPERTY_DEFAULT in object) : !Object.prototype.hasOwnProperty.call(object, VALUE_PROPERTY_DEFAULT)) {
       return null;
     }
 
@@ -51,21 +56,37 @@ function subscribeObjectValue(propertyNames, object, immediateSubscribe, subscri
     return propertyName;
   };
 
-  const subscribeProperty = propertyName => {
+  const subscribeProperty = (propertyName, isFirst) => {
     subscribePropertyName = propertyName;
 
     if (propertyName == null) {
       subscribeItem(object, null);
     } else {
-      subscribeItem(object[propertyName], VALUE_PROPERTY_PREFIX + propertyName);
+      const value = object[propertyName];
+
+      if (typeof value !== 'undefined') {
+        subscribeItem(value, VALUE_PROPERTY_PREFIX + propertyName);
+      }
+
+      if (isFirst) {
+        subscribeItem(void 0, VALUE_PROPERTY_PREFIX + propertyName);
+      }
     }
   };
 
-  const unsubscribeProperty = () => {
+  const unsubscribeProperty = isLast => {
     if (subscribePropertyName == null) {
       unsubscribeItem(object, null);
     } else {
-      unsubscribeItem(object[subscribePropertyName], VALUE_PROPERTY_PREFIX + subscribePropertyName);
+      if (isLast) {
+        unsubscribeItem(void 0, VALUE_PROPERTY_PREFIX + subscribePropertyName);
+      }
+
+      const value = object[subscribePropertyName];
+
+      if (typeof value !== 'undefined') {
+        unsubscribeItem(object[subscribePropertyName], VALUE_PROPERTY_PREFIX + subscribePropertyName);
+      }
     }
 
     subscribePropertyName = null;
@@ -79,8 +100,13 @@ function subscribeObjectValue(propertyNames, object, immediateSubscribe, subscri
   if (propertyChanged) {
     unsubscribe = checkIsFuncOrNull(propertyChanged.subscribe(({
       name,
-      oldValue
+      oldValue,
+      newValue
     }) => {
+      if (!unsubscribe && oldValue === newValue) {
+        return;
+      }
+
       const newSubscribePropertyName = getSubscribePropertyName();
 
       if (name === subscribePropertyName) {
@@ -88,17 +114,19 @@ function subscribeObjectValue(propertyNames, object, immediateSubscribe, subscri
           unsubscribeItem(oldValue, VALUE_PROPERTY_PREFIX + subscribePropertyName);
         }
       } else if (subscribePropertyName !== newSubscribePropertyName) {
-        unsubscribeProperty();
+        unsubscribeProperty(false);
+      } else {
+        return;
       }
 
       if (unsubscribe != null) {
-        subscribeProperty(newSubscribePropertyName);
+        subscribeProperty(newSubscribePropertyName, false);
       }
     }));
   }
 
   if (immediateSubscribe) {
-    subscribeProperty(getSubscribePropertyName());
+    subscribeProperty(getSubscribePropertyName(), true);
   } else if (unsubscribe == null) {
     return null;
   }
@@ -109,7 +137,7 @@ function subscribeObjectValue(propertyNames, object, immediateSubscribe, subscri
       unsubscribe = null;
     }
 
-    unsubscribeProperty();
+    unsubscribeProperty(true);
   };
 } // endregion
 // region subscribeObject
@@ -118,32 +146,59 @@ function subscribeObjectValue(propertyNames, object, immediateSubscribe, subscri
 const allowSubscribePrototype = true;
 export function hasDefaultProperty(object) {
   return object instanceof Object && (allowSubscribePrototype ? VALUE_PROPERTY_DEFAULT in object : Object.prototype.hasOwnProperty.call(object, VALUE_PROPERTY_DEFAULT)) && object.constructor !== Object && !Array.isArray(object);
-}
-export function subscribeDefaultProperty(object, immediateSubscribe, subscribeItem) {
-  let unsubscribe;
-  return subscribeObject(VALUE_PROPERTY_DEFAULT, o => o === VALUE_PROPERTY_DEFAULT, object, immediateSubscribe, (item, debugPropertyName) => {
-    unsubscribe = subscribeItem(item, debugPropertyName);
-  }, () => {
-    if (unsubscribe) {
-      unsubscribe();
-    }
-  });
-}
+} // export function subscribeDefaultProperty<TValue>(
+// 	object: IPropertyChanged,
+// 	immediateSubscribe: boolean,
+// 	subscribeItem: (item: TValue, debugPropertyName: string) => IUnsubscribeOrVoid,
+// ) {
+// 	let unsubscribers: IUnsubscribe[]
+// 	return subscribeObject<TValue>(
+// 		VALUE_PROPERTY_DEFAULT,
+// 		o => o === VALUE_PROPERTY_DEFAULT,
+// 		object,
+// 		immediateSubscribe,
+// 		(item, debugPropertyName) => {
+// 			const unsubscriber = subscribeItem(item, debugPropertyName)
+// 			if (unsubscriber) {
+// 				if (!unsubscribers) {
+// 					unsubscribers = []
+// 				}
+// 				unsubscribers.push(unsubscriber)
+// 			}
+// 		},
+// 		() => {
+// 			if (unsubscribers) {
+// 				const _unsubscribers = unsubscribers
+// 				unsubscribers = null
+// 				for (let i = 0, len = _unsubscribers.length; i < len; i++) {
+// 					_unsubscribers[i]()
+// 				}
+// 			}
+// 		})
+// }
 
 function subscribeObject(propertyNames, propertyPredicate, object, immediateSubscribe, subscribeItem, unsubscribeItem) {
   if (!(object instanceof Object)) {
     return null;
   }
 
-  let unsubscribe;
-
-  if (propertyNames !== VALUE_PROPERTY_DEFAULT && hasDefaultProperty(object)) {
-    unsubscribe = subscribeDefaultProperty(object, immediateSubscribe, item => subscribeObject(propertyNames, propertyPredicate, item, immediateSubscribe, subscribeItem, unsubscribeItem));
-
-    if (unsubscribe) {
-      return unsubscribe;
-    }
-  }
+  let unsubscribe; // if (propertyNames !== VALUE_PROPERTY_DEFAULT && hasDefaultProperty(object)) {
+  // 	unsubscribe = subscribeDefaultProperty(
+  // 		object,
+  // 		immediateSubscribe,
+  // 		item => subscribeObject(
+  // 			propertyNames,
+  // 			propertyPredicate,
+  // 			item as any,
+  // 			immediateSubscribe,
+  // 			subscribeItem,
+  // 			unsubscribeItem),
+  // 	)
+  //
+  // 	if (unsubscribe) {
+  // 		return unsubscribe
+  // 	}
+  // }
 
   const {
     propertyChanged
@@ -155,7 +210,11 @@ function subscribeObject(propertyNames, propertyPredicate, object, immediateSubs
       oldValue,
       newValue
     }) => {
-      // PROF: 623 - 1.3%
+      if (!unsubscribe && oldValue === newValue) {
+        return;
+      } // PROF: 623 - 1.3%
+
+
       if (!propertyPredicate || propertyPredicate(name, object)) {
         if (typeof oldValue !== 'undefined') {
           unsubscribeItem(oldValue, name + '');
@@ -168,32 +227,56 @@ function subscribeObject(propertyNames, propertyPredicate, object, immediateSubs
     }));
   }
 
-  const forEach = callbackfn => {
-    if (propertyNames) {
+  const forEach = (callbackfn, isSubscribe) => {
+    if (propertyNames == null) {
+      for (const propertyName in object) {
+        if ((allowSubscribePrototype || Object.prototype.hasOwnProperty.call(object, propertyName)) && (!propertyPredicate || propertyPredicate(propertyName, object))) {
+          callbackfn(object[propertyName], propertyName);
+        }
+      }
+    } else {
       if (Array.isArray(propertyNames)) {
         for (let i = 0, len = propertyNames.length; i < len; i++) {
           const propertyName = propertyNames[i];
 
+          if (!isSubscribe) {
+            callbackfn(void 0, propertyName);
+          }
+
           if (allowSubscribePrototype ? propertyName in object : Object.prototype.hasOwnProperty.call(object, propertyName)) {
-            callbackfn(object[propertyName], propertyName);
+            const value = object[propertyName];
+
+            if (typeof value !== 'undefined') {
+              callbackfn(value, propertyName);
+            }
+          }
+
+          if (isSubscribe) {
+            callbackfn(void 0, propertyName);
           }
         }
       } else {
-        if (allowSubscribePrototype ? propertyNames in object : Object.prototype.hasOwnProperty.call(object, propertyNames)) {
-          callbackfn(object[propertyNames], propertyNames);
+        if (!isSubscribe) {
+          callbackfn(void 0, propertyNames);
         }
-      }
-    } else {
-      for (const propertyName in object) {
-        if ((allowSubscribePrototype || Object.prototype.hasOwnProperty.call(object, propertyName)) && (!propertyPredicate || propertyPredicate(propertyName, object))) {
-          callbackfn(object[propertyName], propertyName);
+
+        if (allowSubscribePrototype ? propertyNames in object : Object.prototype.hasOwnProperty.call(object, propertyNames)) {
+          const value = object[propertyNames];
+
+          if (typeof value !== 'undefined') {
+            callbackfn(value, propertyNames);
+          }
+        }
+
+        if (isSubscribe) {
+          callbackfn(void 0, propertyNames);
         }
       }
     }
   };
 
   if (immediateSubscribe) {
-    forEach(subscribeItem);
+    forEach(subscribeItem, true);
   } else if (unsubscribe == null) {
     return null;
   }
@@ -204,14 +287,14 @@ function subscribeObject(propertyNames, propertyPredicate, object, immediateSubs
       unsubscribe = null;
     }
 
-    forEach(unsubscribeItem);
+    forEach(unsubscribeItem, false);
   };
 } // endregion
 // region subscribeIterable
 
 
 function subscribeIterable(object, immediateSubscribe, subscribeItem, unsubscribeItem) {
-  if (!object || !isIterable(object)) {
+  if (!object || typeof object === 'string' || !isIterable(object)) {
     return null;
   }
 
@@ -268,7 +351,9 @@ function subscribeList(object, immediateSubscribe, subscribeItem, unsubscribeIte
           break;
 
         case ListChangedType.Set:
-          unsubscribeItem(oldItems[0], COLLECTION_PREFIX);
+          if (unsubscribe || oldItems[0] !== newItems[0]) {
+            unsubscribeItem(oldItems[0], COLLECTION_PREFIX);
+          }
 
           if (unsubscribe) {
             subscribeItem(newItems[0], COLLECTION_PREFIX);
@@ -368,6 +453,10 @@ function subscribeMap(keys, keyPredicate, object, immediateSubscribe, subscribeI
       oldValue,
       newValue
     }) => {
+      if (!unsubscribe && oldValue === newValue) {
+        return;
+      }
+
       if (!keyPredicate || keyPredicate(key, object)) {
         switch (type) {
           case MapChangedType.Added:
@@ -394,13 +483,21 @@ function subscribeMap(keys, keyPredicate, object, immediateSubscribe, subscribeI
     }));
   }
 
-  const forEach = callbackfn => {
+  const forEach = (callbackfn, isSubscribe) => {
     if (keys) {
       for (let i = 0, len = keys.length; i < len; i++) {
         const key = keys[i];
 
+        if (!isSubscribe) {
+          callbackfn(void 0, COLLECTION_PREFIX + key);
+        }
+
         if (object.has(key)) {
           callbackfn(object.get(key), COLLECTION_PREFIX + key);
+        }
+
+        if (isSubscribe) {
+          callbackfn(void 0, COLLECTION_PREFIX + key);
         }
       }
     } else {
@@ -413,7 +510,7 @@ function subscribeMap(keys, keyPredicate, object, immediateSubscribe, subscribeI
   };
 
   if (immediateSubscribe) {
-    forEach(subscribeItem);
+    forEach(subscribeItem, true);
   } else if (unsubscribe == null) {
     return null;
   }
@@ -424,7 +521,7 @@ function subscribeMap(keys, keyPredicate, object, immediateSubscribe, subscribeI
       unsubscribe = null;
     }
 
-    forEach(unsubscribeItem);
+    forEach(unsubscribeItem, false);
   };
 } // endregion
 // region subscribeCollection
@@ -527,6 +624,14 @@ export class RuleSubscribe extends Rule {
       clone.subscribe = subscribe;
     }
 
+    if (this.unsubscribers) {
+      clone.unsubscribers = [];
+    }
+
+    if (this.unsubscribersCount) {
+      clone.unsubscribersCount = [];
+    }
+
     return clone;
   }
 
@@ -553,10 +658,13 @@ export class RuleSubscribeObject extends RuleSubscribe {
 
     switch (type) {
       case SubscribeObjectType.Property:
+        // @ts-ignore
         this.subscribe = subscribeObject.bind(null, propertyNames, propertyPredicate);
         break;
 
       case SubscribeObjectType.ValueProperty:
+        this.subType = type; // @ts-ignore
+
         this.subscribe = subscribeObjectValue.bind(null, propertyNames);
         break;
 
@@ -616,7 +724,8 @@ export class RuleSubscribeMap extends RuleSubscribe {
       if (!keyPredicate) {
         keys = null;
       }
-    }
+    } // @ts-ignore
+
 
     this.subscribe = subscribeMap.bind(null, keys, keyPredicate);
   }
@@ -626,7 +735,8 @@ export class RuleSubscribeMap extends RuleSubscribe {
 
 export class RuleSubscribeCollection extends RuleSubscribe {
   constructor() {
-    super();
+    super(); // @ts-ignore
+
     this.subscribe = subscribeCollection;
   }
 

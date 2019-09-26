@@ -17,9 +17,9 @@ export class CalcObjectBuilder extends ObservableObjectBuilder {
   }
 
   calcChanges(name, buildRule) {
-    return this.calc(name, void 0, calcPropertyFactory((input, property) => {
+    return this.calc(name, void 0, calcPropertyFactory(dependencies => dependencies.invalidateOn(buildRule), (input, property) => {
       property.value++;
-    }, null, null, 0, dependencies => dependencies.invalidateOn(buildRule)));
+    }, null, null, 0));
   }
 
 } // const builder = new CalcObjectBuilder(true as any)

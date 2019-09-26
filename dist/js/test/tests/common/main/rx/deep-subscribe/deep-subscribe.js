@@ -14,20 +14,251 @@ var _concat = _interopRequireDefault(require("@babel/runtime-corejs3/core-js-sta
 
 var _repeat = _interopRequireDefault(require("@babel/runtime-corejs3/core-js-stable/instance/repeat"));
 
+var _isArray = _interopRequireDefault(require("@babel/runtime-corejs3/core-js-stable/array/is-array"));
+
 var _helpers = require("../../../../../../main/common/helpers/helpers");
 
 var _valueProperty = require("../../../../../../main/common/helpers/value-property");
 
+var _rules = require("../../../../../../main/common/rx/deep-subscribe/contracts/rules");
+
+var _ObservableObject = require("../../../../../../main/common/rx/object/ObservableObject");
+
 var _ObservableObjectBuilder = require("../../../../../../main/common/rx/object/ObservableObjectBuilder");
 
-var _Tester = require("./helpers/Tester");
+var _TestDeepSubscribe = require("./helpers/src/TestDeepSubscribe");
 
 /* tslint:disable:no-construct use-primitive-type no-shadowed-variable no-duplicate-string no-empty max-line-length */
 describe('common > main > rx > deep-subscribe > deep-subscribe', function () {
-  var check = (0, _Tester.createObject)();
+  var check = (0, _TestDeepSubscribe.createObject)();
+  it('RuleIf simple', function () {
+    new _TestDeepSubscribe.TestDeepSubscribe({
+      object: (0, _TestDeepSubscribe.createObject)().observableObject,
+      immediate: true,
+      doNotSubscribeNonObjectValues: true
+    }, function (b) {
+      return b.propertyAny().if([function (o) {
+        return (0, _isArray.default)(o);
+      }, function (b) {
+        return b.p('1');
+      }], function (b) {
+        return b.never();
+      });
+    }, function (b) {
+      var _context;
+
+      return (0, _repeat.default)(_context = b.propertyAny()).call(_context, 1, 1, function (o) {
+        return (0, _isArray.default)(o) ? _rules.RuleRepeatAction.Next : _rules.RuleRepeatAction.Fork;
+      }, function (b) {
+        return b.p('1');
+      });
+    }).subscribe(function (o) {
+      return ['value2'];
+    }).unsubscribe(function (o) {
+      return ['value2'];
+    }).subscribe(function (o) {
+      return ['value2'];
+    }).unsubscribe(function (o) {
+      return ['value2'];
+    });
+  });
+  it('repeat with condition', function () {
+    new _TestDeepSubscribe.TestDeepSubscribe({
+      object: (0, _TestDeepSubscribe.createObject)().observableObject,
+      immediate: true,
+      doNotSubscribeNonObjectValues: true
+    }, function (b) {
+      var _context2;
+
+      return (0, _repeat.default)(_context2 = b.propertyAny().propertyRegexp(/^[a-z]/)).call(_context2, 1, 1, function (o) {
+        return (0, _isArray.default)(o) ? _rules.RuleRepeatAction.Next : _rules.RuleRepeatAction.Fork;
+      }, function (b) {
+        return b.p('1');
+      });
+    }, function (b) {
+      var _context3, _context4;
+
+      return (0, _repeat.default)(_context3 = (0, _repeat.default)(_context4 = b.propertyAny()).call(_context4, 1, 1, null, function (b) {
+        return b.propertyRegexp(/^[a-z]/);
+      })).call(_context3, 1, 1, function (o) {
+        return (0, _isArray.default)(o) ? _rules.RuleRepeatAction.Next : _rules.RuleRepeatAction.Fork;
+      }, function (b) {
+        return b.p('1');
+      });
+    }, // b => b
+    // 	.propertyRegexp(/^[a-z]/)
+    // 	.repeat(0, 1, o => o && o.constructor === ObservableObject
+    // 		? RuleRepeatAction.Next
+    // 		: RuleRepeatAction.Fork, b => b.propertyRegexp(/^[a-z]/))
+    // 	.repeat(1, 1,
+    // 		o => Array.isArray(o) ? RuleRepeatAction.Next : RuleRepeatAction.Fork,
+    // 		b => b.p('1')),
+    function (b) {
+      var _context5, _context6;
+
+      return (0, _repeat.default)(_context5 = (0, _repeat.default)(_context6 = b.propertyAny()).call(_context6, 0, 0, null, function (b) {
+        return b.propertyRegexp(/^[a-z]/);
+      })).call(_context5, 1, 1, function (o) {
+        return (0, _isArray.default)(o) ? _rules.RuleRepeatAction.Next : _rules.RuleRepeatAction.Fork;
+      }, function (b) {
+        return b.p('1');
+      });
+    }, function (b) {
+      var _context7, _context8;
+
+      return (0, _repeat.default)(_context7 = (0, _repeat.default)(_context8 = b.propertyAny()).call(_context8, 2, 3, function (o) {
+        return o && o.constructor === _ObservableObject.ObservableObject ? _rules.RuleRepeatAction.Next : _rules.RuleRepeatAction.Fork;
+      }, function (b) {
+        return b.propertyRegexp(/^[a-z]/);
+      })).call(_context7, 1, 1, function (o) {
+        return (0, _isArray.default)(o) ? _rules.RuleRepeatAction.Next : _rules.RuleRepeatAction.Fork;
+      }, function (b) {
+        return b.p('1');
+      });
+    }).subscribe(function (o) {
+      return ['value2'];
+    }).unsubscribe(function (o) {
+      return ['value2'];
+    }).subscribe(function (o) {
+      return ['value2'];
+    }).unsubscribe(function (o) {
+      return ['value2'];
+    });
+  });
+  it('unsubscribe leaf non object', function () {
+    var object1 = (0, _TestDeepSubscribe.createObject)();
+    new _TestDeepSubscribe.TestDeepSubscribe({
+      object: object1.observableObject,
+      immediate: true,
+      doNotSubscribeNonObjectValues: true
+    }, function (b) {
+      return b.p('value');
+    }).subscribe(function (o) {
+      return [o.value];
+    }).unsubscribe(function (o) {
+      return [o.value];
+    }).subscribe(function (o) {
+      return [o.value];
+    }).unsubscribe(function (o) {
+      return [o.value];
+    });
+  });
+  it('unsubscribe leaf', function () {
+    var object1 = (0, _TestDeepSubscribe.createObject)();
+    new _TestDeepSubscribe.TestDeepSubscribe({
+      object: object1.observableObject,
+      immediate: true
+    }, function (b) {
+      return b.any(function (b2) {
+        return b2.p('map2').mapKey('valueObject');
+      }, function (b2) {
+        return b2.p('observableMap').mapKey('valueObject');
+      });
+    }, function (b) {
+      return b.p('map2').mapKey('valueObject');
+    }).subscribe(function (o) {
+      return [o.valueObject];
+    }).unsubscribe(function (o) {
+      return [o.valueObject];
+    }).subscribe(function (o) {
+      return [o.valueObject];
+    }).change(function (o) {
+      return o.observableMap.delete('valueObject');
+    }, [], []).unsubscribe([object1.valueObject]);
+  });
+  it('rule nothing', function () {
+    new _TestDeepSubscribe.TestDeepSubscribe({
+      object: (0, _TestDeepSubscribe.createObject)().object,
+      immediate: true,
+      doNotSubscribeNonObjectValues: true
+    }, function (b) {
+      return b.p('value').nothing();
+    }).subscribe(['value']).unsubscribe(['value']);
+    new _TestDeepSubscribe.TestDeepSubscribe({
+      object: (0, _TestDeepSubscribe.createObject)().object,
+      immediate: true
+    }, function (b) {
+      return b.nothing();
+    }).subscribe([check.object]).unsubscribe([check.object]);
+  });
+  it('rule never', function () {
+    new _TestDeepSubscribe.TestDeepSubscribe({
+      object: (0, _TestDeepSubscribe.createObject)().object,
+      immediate: true,
+      doNotSubscribeNonObjectValues: true,
+      shouldNeverSubscribe: true
+    }, function (b) {
+      return b.never();
+    }, function (b) {
+      return b.never().p('value');
+    }, function (b) {
+      return b.never().nothing().p('value');
+    }, function (b) {
+      return b.never().p('valueObject');
+    }, function (b) {
+      return b.never().nothing().p('valueObject');
+    }).subscribe([]).unsubscribe([]);
+  });
+  it('unsubscribe repeat 2', function () {
+    new _TestDeepSubscribe.TestDeepSubscribe({
+      object: (0, _TestDeepSubscribe.createObject)().object,
+      immediate: true
+    }, function (b) {
+      return b.path(function (o) {
+        return o.object.object.observableObject.object;
+      });
+    }).subscribe([check.object]).unsubscribe([check.object]);
+    new _TestDeepSubscribe.TestDeepSubscribe({
+      object: (0, _TestDeepSubscribe.createObject)().object,
+      immediate: true
+    }, function (b) {
+      return (0, _repeat.default)(b).call(b, 2, 2, null, function (b) {
+        return b.path(function (o) {
+          return o.object;
+        });
+      }).path(function (o) {
+        return o.observableObject.object;
+      });
+    }).subscribe([check.object]).unsubscribe([check.object]);
+  });
+  it('unsubscribe repeat 0..5', function () {
+    new _TestDeepSubscribe.TestDeepSubscribe({
+      object: (0, _TestDeepSubscribe.createObject)().object,
+      immediate: true
+    }, function (b) {
+      return (0, _repeat.default)(b).call(b, 0, 5, null, function (b) {
+        return b.path(function (o) {
+          return o.object;
+        });
+      }).path(function (o) {
+        return o.observableObject.object;
+      });
+    }).subscribe([check.object]).unsubscribe([check.object]);
+  });
+  it('unsubscribe middle', function () {
+    var object1 = (0, _TestDeepSubscribe.createObject)();
+    new _TestDeepSubscribe.TestDeepSubscribe({
+      object: object1.observableObject,
+      immediate: true
+    }, function (b) {
+      return b.any(function (b2) {
+        return b2.p('object');
+      }, function (b2) {
+        return b2.p('map2').mapKey('object');
+      }).p('valueObject');
+    }).subscribe(function (o) {
+      return [o.valueObject];
+    }).unsubscribe(function (o) {
+      return [o.valueObject];
+    }).subscribe(function (o) {
+      return [o.valueObject];
+    }).change(function (o) {
+      return o.object = void 0;
+    }, [], []).unsubscribe([object1.valueObject]);
+  });
   it('object', function () {
-    var object1 = (0, _Tester.createObject)();
-    new _Tester.Tester({
+    var object1 = (0, _TestDeepSubscribe.createObject)();
+    new _TestDeepSubscribe.TestDeepSubscribe({
       object: object1.observableObject,
       immediate: true
     }, function (b) {
@@ -59,8 +290,8 @@ describe('common > main > rx > deep-subscribe > deep-subscribe', function () {
     }).change(function (o) {
       return o.valueObject = new Number(1);
     }, [object1.valueObject], [new Number(1)]).unsubscribe([new Number(1)]);
-    new _Tester.Tester({
-      object: (0, _Tester.createObject)().observableObject,
+    new _TestDeepSubscribe.TestDeepSubscribe({
+      object: (0, _TestDeepSubscribe.createObject)().observableObject,
       immediate: true
     }, function (b) {
       return b.path(function (o) {
@@ -85,8 +316,8 @@ describe('common > main > rx > deep-subscribe > deep-subscribe', function () {
     }, [new String("value")], []).change(function (o) {
       return o.observableObject = o;
     }, [], [new String("value")]).unsubscribe([new String("value")]);
-    new _Tester.Tester({
-      object: (0, _Tester.createObject)().observableObject,
+    new _TestDeepSubscribe.TestDeepSubscribe({
+      object: (0, _TestDeepSubscribe.createObject)().observableObject,
       immediate: true,
       doNotSubscribeNonObjectValues: true
     }, function (b) {
@@ -108,12 +339,20 @@ describe('common > main > rx > deep-subscribe > deep-subscribe', function () {
     }).subscribe([]).unsubscribe([]).subscribe([]).change(function (o) {
       return o.observableObjectPrototype.valueObjectWritable = new Number(1);
     }, [], [new Number(1)]).unsubscribe([new Number(1)]);
-    new _Tester.Tester({
-      object: (0, _Tester.createObject)().object,
+    new _TestDeepSubscribe.TestDeepSubscribe({
+      object: (0, _TestDeepSubscribe.createObject)().object,
       immediate: true
     }, function (b) {
       return b.path(function (o) {
         return o.object;
+      });
+    }, function (b) {
+      return b.path(function (o) {
+        return o.object.object;
+      });
+    }, function (b) {
+      return b.path(function (o) {
+        return o.object.object.object;
       });
     }).subscribe(function (o) {
       return [o.object];
@@ -122,8 +361,8 @@ describe('common > main > rx > deep-subscribe > deep-subscribe', function () {
     }, function (o) {
       return [];
     }, []);
-    new _Tester.Tester({
-      object: (0, _Tester.createObject)().object,
+    new _TestDeepSubscribe.TestDeepSubscribe({
+      object: (0, _TestDeepSubscribe.createObject)().object,
       immediate: true
     }, function (b) {
       return b.nothing();
@@ -162,8 +401,8 @@ describe('common > main > rx > deep-subscribe > deep-subscribe', function () {
         return o.object.object.object;
       });
     }).subscribe([check.object]).unsubscribe([check.object]);
-    new _Tester.Tester({
-      object: (0, _Tester.createObject)().object,
+    new _TestDeepSubscribe.TestDeepSubscribe({
+      object: (0, _TestDeepSubscribe.createObject)().object,
       immediate: true,
       doNotSubscribeNonObjectValues: true
     }, function (b) {
@@ -182,13 +421,13 @@ describe('common > main > rx > deep-subscribe > deep-subscribe', function () {
       return o.observableObject.object = 1;
     }, function (o) {
       return [o.object];
-    }, []).change(function (o) {
+    }, [1]).change(function (o) {
       return o.observableObject.object = new Number(1);
-    }, [], [new Number(1)]).change(function (o) {
+    }, [1], [new Number(1)]).change(function (o) {
       return o.observableObject.object = new Number(2);
     }, [new Number(1)], [new Number(2)]).unsubscribe([new Number(2)]);
-    new _Tester.Tester({
-      object: (0, _Tester.createObject)().object,
+    new _TestDeepSubscribe.TestDeepSubscribe({
+      object: (0, _TestDeepSubscribe.createObject)().object,
       immediate: true,
       doNotSubscribeNonObjectValues: true
     }, function (b) {
@@ -200,12 +439,12 @@ describe('common > main > rx > deep-subscribe > deep-subscribe', function () {
         return o.object.object.observableObject.object.object;
       });
     }, function (b) {
-      return (0, _repeat.default)(b).call(b, 3, 3, function (b) {
-        var _context;
+      return (0, _repeat.default)(b).call(b, 3, 3, null, function (b) {
+        var _context9;
 
-        return (0, _repeat.default)(_context = b.path(function (o) {
+        return (0, _repeat.default)(_context9 = b.path(function (o) {
           return o.object;
-        })).call(_context, 3, 3, function (b) {
+        })).call(_context9, 3, 3, null, function (b) {
           return b.path(function (o) {
             return o.observableObject;
           });
@@ -222,12 +461,12 @@ describe('common > main > rx > deep-subscribe > deep-subscribe', function () {
     }, [], []).change(function (o) {
       return o.observableObject.object = new Number(2);
     }, [], []).unsubscribe([]);
-    new _Tester.Tester({
-      object: (0, _Tester.createObject)().object,
+    new _TestDeepSubscribe.TestDeepSubscribe({
+      object: (0, _TestDeepSubscribe.createObject)().object,
       immediate: true,
       doNotSubscribeNonObjectValues: true
     }, function (b) {
-      return (0, _repeat.default)(b).call(b, 0, 2, function (b) {
+      return (0, _repeat.default)(b).call(b, 0, 2, null, function (b) {
         return b.path(function (o) {
           return o.object;
         });
@@ -238,9 +477,9 @@ describe('common > main > rx > deep-subscribe > deep-subscribe', function () {
       return o.observableObject.object = 1;
     }, function (o) {
       return [o.object];
-    }, []).change(function (o) {
+    }, [1]).change(function (o) {
       return o.observableObject.object = new Number(1);
-    }, [], [new Number(1)]).change(function (o) {
+    }, [1], [new Number(1)]).change(function (o) {
       return o.observableObject.object = new Number(2);
     }, [new Number(1)], [new Number(2)]).unsubscribe([new Number(2)]); // new Tester(
     // 	{
@@ -248,7 +487,7 @@ describe('common > main > rx > deep-subscribe > deep-subscribe', function () {
     // 		immediate: false,
     // 	},
     // 	b => b
-    // 		.repeat(1, 3, b => b
+    // 		.repeat(1, 3, null, b => b
     // 			.any(
     // 				b => b.propertyRegexp(/object|observableObject/),
     // 				b => b.path(o => o['list|set|map2|observableList|observableSet|observableMap']['#']),
@@ -258,8 +497,8 @@ describe('common > main > rx > deep-subscribe > deep-subscribe', function () {
     // 	.subscribe([])
   });
   it('chain of same objects', function () {
-    new _Tester.Tester({
-      object: (0, _Tester.createObject)().observableObject,
+    new _TestDeepSubscribe.TestDeepSubscribe({
+      object: (0, _TestDeepSubscribe.createObject)().observableObject,
       immediate: true
     }, // b => b.path(o => o.observableObject),
     function (b) {
@@ -280,8 +519,8 @@ describe('common > main > rx > deep-subscribe > deep-subscribe', function () {
       return [];
     }).unsubscribe([]);
     {
-      var object = (0, _Tester.createObject)();
-      new _Tester.Tester({
+      var object = (0, _TestDeepSubscribe.createObject)();
+      new _TestDeepSubscribe.TestDeepSubscribe({
         object: object.observableObject,
         immediate: true
       }, // b => b.path(o => o.object),
@@ -299,10 +538,10 @@ describe('common > main > rx > deep-subscribe > deep-subscribe', function () {
         return o.object = object;
       }, [], [object]).unsubscribe([object]);
     }
-    var observableList = (0, _Tester.createObject)().observableList;
+    var observableList = (0, _TestDeepSubscribe.createObject)().observableList;
     observableList.clear();
     observableList.add(observableList);
-    new _Tester.Tester({
+    new _TestDeepSubscribe.TestDeepSubscribe({
       object: observableList,
       immediate: true
     }, function (b) {
@@ -314,9 +553,9 @@ describe('common > main > rx > deep-subscribe > deep-subscribe', function () {
         return o['#']['#']['#'];
       });
     }).subscribe(function (o) {
-      var _context2;
+      var _context10;
 
-      return (0, _concat.default)(_context2 = []).call(_context2, o);
+      return (0, _concat.default)(_context10 = []).call(_context10, o);
     }).change(function (o) {
       return o.set(0, new Number(1));
     }, function (o) {
@@ -324,10 +563,10 @@ describe('common > main > rx > deep-subscribe > deep-subscribe', function () {
     }, function (o) {
       return [];
     }).unsubscribe([]);
-    var observableSet = (0, _Tester.createObject)().observableSet;
+    var observableSet = (0, _TestDeepSubscribe.createObject)().observableSet;
     observableSet.clear();
     observableSet.add(observableSet);
-    new _Tester.Tester({
+    new _TestDeepSubscribe.TestDeepSubscribe({
       object: observableSet,
       immediate: true
     }, function (b) {
@@ -339,9 +578,9 @@ describe('common > main > rx > deep-subscribe > deep-subscribe', function () {
         return o['#']['#']['#'];
       });
     }).subscribe(function (o) {
-      var _context3;
+      var _context11;
 
-      return (0, _concat.default)(_context3 = []).call(_context3, o);
+      return (0, _concat.default)(_context11 = []).call(_context11, o);
     }).change(function (o) {
       o.clear();
       o.add(new Number(1));
@@ -350,8 +589,8 @@ describe('common > main > rx > deep-subscribe > deep-subscribe', function () {
     }, function (o) {
       return [];
     }).unsubscribe([]);
-    new _Tester.Tester({
-      object: (0, _Tester.createObject)().observableMap,
+    new _TestDeepSubscribe.TestDeepSubscribe({
+      object: (0, _TestDeepSubscribe.createObject)().observableMap,
       immediate: true
     }, function (b) {
       return b.path(function (o) {
@@ -370,8 +609,8 @@ describe('common > main > rx > deep-subscribe > deep-subscribe', function () {
     }, function (o) {
       return [];
     }).unsubscribe([]);
-    new _Tester.Tester({
-      object: (0, _Tester.createObject)().observableMap,
+    new _TestDeepSubscribe.TestDeepSubscribe({
+      object: (0, _TestDeepSubscribe.createObject)().observableMap,
       immediate: true
     }, function (b) {
       return b.path(function (o) {
@@ -390,8 +629,8 @@ describe('common > main > rx > deep-subscribe > deep-subscribe', function () {
     }, function (o) {
       return [];
     }).unsubscribe([]);
-    new _Tester.Tester({
-      object: (0, _Tester.createObject)().observableObject,
+    new _TestDeepSubscribe.TestDeepSubscribe({
+      object: (0, _TestDeepSubscribe.createObject)().observableObject,
       immediate: true
     }, function (b) {
       return b.path(function (o) {
@@ -412,17 +651,17 @@ describe('common > main > rx > deep-subscribe > deep-subscribe', function () {
     }).unsubscribe([new Number(1)]);
   });
   it('any', function () {
-    new _Tester.Tester({
-      object: (0, _Tester.createObject)().object,
+    new _TestDeepSubscribe.TestDeepSubscribe({
+      object: (0, _TestDeepSubscribe.createObject)().object,
       immediate: true,
       doNotSubscribeNonObjectValues: true
     }, function (b) {
       return b.path(function (o) {
         return o['object|observableObject'].value;
       });
-    }).subscribe([]).change(function (o) {}, [], []);
-    new _Tester.Tester({
-      object: (0, _Tester.createObject)().observableObject,
+    }).subscribe(['value', 'value']).change(function (o) {}, [], []).unsubscribe(['value', 'value']);
+    new _TestDeepSubscribe.TestDeepSubscribe({
+      object: (0, _TestDeepSubscribe.createObject)().observableObject,
       immediate: true,
       doNotSubscribeNonObjectValues: true
     }, function (b) {
@@ -441,17 +680,21 @@ describe('common > main > rx > deep-subscribe > deep-subscribe', function () {
       });
     }).subscribe(function (o) {
       return [o.map2, o.set];
+    }, null, function (o) {
+      return [o.map2];
     }).change(function (o) {
       o.set = o.observableObject;
     }, function (o) {
       return [o.set];
     }, function (o) {
       return [o.observableObject];
+    }, function (o) {
+      return [];
     }).unsubscribe(function (o) {
       return [o.map2, o.set];
     });
-    new _Tester.Tester({
-      object: (0, _Tester.createObject)().observableObject,
+    new _TestDeepSubscribe.TestDeepSubscribe({
+      object: (0, _TestDeepSubscribe.createObject)().observableObject,
       immediate: true,
       doNotSubscribeNonObjectValues: true
     }, function (b) {
@@ -465,14 +708,18 @@ describe('common > main > rx > deep-subscribe > deep-subscribe', function () {
       });
     }).subscribe(function (o) {
       return [o, o.map2, o.set];
+    }, null, function (o) {
+      return [o];
     }).change(function (o) {
       o.set = o.observableObject;
     }, function (o) {
       return [o.set];
     }, function (o) {
       return [];
+    }, function (o) {
+      return [];
     }).unsubscribe(function (o) {
-      return [o, o.map2];
+      return [o.map2, o];
     }); // new Tester(
     // 	{
     // 		object: createObject().observableObject,
@@ -486,18 +733,56 @@ describe('common > main > rx > deep-subscribe > deep-subscribe', function () {
     // 	.change(o => { o.set = o.observableMap as any }, o => [o.set], o => [o.observableMap])
     // 	.unsubscribe(o => [o, o.map2, o.observableMap])
   });
-  it('value properties',
+  it('value properties not exist',
   /*#__PURE__*/
   (0, _asyncToGenerator2.default)(
   /*#__PURE__*/
   _regenerator.default.mark(function _callee() {
-    var object;
-    return _regenerator.default.wrap(function _callee$(_context4) {
+    return _regenerator.default.wrap(function _callee$(_context12) {
       while (1) {
-        switch (_context4.prev = _context4.next) {
+        switch (_context12.prev = _context12.next) {
           case 0:
-            new _Tester.Tester({
-              object: (0, _Tester.createObject)().observableObject,
+            new _TestDeepSubscribe.TestDeepSubscribe({
+              object: (0, _TestDeepSubscribe.createObject)().observableObject,
+              immediate: true,
+              doNotSubscribeNonObjectValues: true
+            }, function (b) {
+              return b.p('value');
+            }, function (b) {
+              return b.v('lastOrWait').p('value');
+            }, function (b) {
+              return b.p('value').v('wait');
+            }, function (b) {
+              return b.p('value').v('wait').v('wait');
+            }, function (b) {
+              return b.v('lastOrWait').p('value').v('wait');
+            }, function (b) {
+              return b.v('lastOrWait').v('lastOrWait').p('value').v('wait').v('wait').v('wait');
+            }).subscribe(['value']).unsubscribe(['value']).subscribe(['value']).change(function (o) {
+              return o.value = 1;
+            }, ['value'], [1]).change(function (o) {
+              return o.value = 2;
+            }, [1], [2]).unsubscribe([2]);
+
+          case 1:
+          case "end":
+            return _context12.stop();
+        }
+      }
+    }, _callee);
+  })));
+  it('value properties',
+  /*#__PURE__*/
+  (0, _asyncToGenerator2.default)(
+  /*#__PURE__*/
+  _regenerator.default.mark(function _callee2() {
+    var object;
+    return _regenerator.default.wrap(function _callee2$(_context13) {
+      while (1) {
+        switch (_context13.prev = _context13.next) {
+          case 0:
+            new _TestDeepSubscribe.TestDeepSubscribe({
+              object: (0, _TestDeepSubscribe.createObject)().observableObject,
               immediate: true
             }, function (b) {
               return b.path(function (o) {
@@ -514,8 +799,8 @@ describe('common > main > rx > deep-subscribe > deep-subscribe', function () {
             }, [new Number(1)], [new Number(2)]).change(function (o) {
               return o.property = o.object.property;
             }, [new Number(2)], [new Number(1)]).unsubscribe([new Number(1)]);
-            new _Tester.Tester({
-              object: (0, _Tester.createObject)().observableObject,
+            new _TestDeepSubscribe.TestDeepSubscribe({
+              object: (0, _TestDeepSubscribe.createObject)().observableObject,
               immediate: true
             }, function (b) {
               return b.path(function (o) {
@@ -523,18 +808,40 @@ describe('common > main > rx > deep-subscribe > deep-subscribe', function () {
               });
             }).subscribe(function (o) {
               return [o.observableObject];
+            }).unsubscribe(function (o) {
+              return [o.observableObject];
+            }).subscribe(function (o) {
+              return [o.observableObject];
+            }).change(function (o) {
+              return o.property = new Number(2);
+            }, function (o) {
+              return [o];
+            }, [new Number(2)]).unsubscribe([new Number(2)]);
+            new _TestDeepSubscribe.TestDeepSubscribe({
+              object: (0, _TestDeepSubscribe.createObject)().observableObject,
+              immediate: true
+            }, function (b) {
+              return b.path(function (o) {
+                return o.property['@value_observableObject'];
+              });
+            }).subscribe(function (o) {
+              return [o.observableObject];
+            }).unsubscribe(function (o) {
+              return [o.observableObject];
+            }).subscribe(function (o) {
+              return [o.observableObject];
             }).change(function (o) {
               return o.property.value_observableObject = new Number(1);
             }, function (o) {
               return [o.observableObject];
-            }, [new Number(1)]).change(function (o) {
-              return o.property = new Number(2);
-            }, [new Number(1)], [new Number(2)]).change(function (o) {
-              return o.property = o.object.property;
-            }, [new Number(2)], [new Number(1)]).unsubscribe([new Number(1)]);
-            object = (0, _Tester.createObject)();
+            }, [new Number(1)]) // .change(o => o.property = new Number(2) as any,
+            // 	[new Number(1)], [new Number(2)])
+            // .change(o => o.property = o.object.property,
+            // 	[new Number(2)], [new Number(1)])
+            .unsubscribe([new Number(1)]);
+            object = (0, _TestDeepSubscribe.createObject)();
             new _ObservableObjectBuilder.ObservableObjectBuilder(object.property).delete(_valueProperty.VALUE_PROPERTY_DEFAULT);
-            new _Tester.Tester({
+            new _TestDeepSubscribe.TestDeepSubscribe({
               object: object,
               immediate: true,
               doNotSubscribeNonObjectValues: true
@@ -551,15 +858,15 @@ describe('common > main > rx > deep-subscribe > deep-subscribe', function () {
             }, function (o) {
               return [o.map2];
             }).change(function (o) {
-              o.property.value_map2 = null;
+              o.property.value_map2 = 1;
             }, function (o) {
               return [o.map2];
             }, function (o) {
-              return [];
+              return [1];
             }).change(function (o) {
               new _ObservableObjectBuilder.ObservableObjectBuilder(o.property).delete('value_map2');
             }, function (o) {
-              return [];
+              return [1];
             }, function (o) {
               return [o.set];
             }).change(function (o) {
@@ -579,11 +886,11 @@ describe('common > main > rx > deep-subscribe > deep-subscribe', function () {
             }, function (o) {
               return [o.map2];
             }, function (o) {
-              return [];
+              return [null];
             }).change(function (o) {
               o.property[_valueProperty.VALUE_PROPERTY_DEFAULT] = void 0;
             }, function (o) {
-              return [];
+              return [null];
             }, function (o) {
               return [];
             }).change(function (o) {
@@ -593,15 +900,15 @@ describe('common > main > rx > deep-subscribe > deep-subscribe', function () {
             }, function (o) {
               return [o];
             }).change(function (o) {
-              new _ObservableObjectBuilder.ObservableObjectBuilder(o.property).writable('value_map2', null, null);
+              new _ObservableObjectBuilder.ObservableObjectBuilder(o.property).writable('value_map2', null, 2);
             }, function (o) {
               return [o];
             }, function (o) {
-              return [];
+              return [2];
             }).change(function (o) {
               new _ObservableObjectBuilder.ObservableObjectBuilder(o.property).delete('value_map2');
             }, function (o) {
-              return [];
+              return [2];
             }, function (o) {
               return [o];
             }).change(function (o) {
@@ -619,8 +926,8 @@ describe('common > main > rx > deep-subscribe > deep-subscribe', function () {
             }).unsubscribe(function (o) {
               return [o.property];
             });
-            new _Tester.Tester({
-              object: (0, _Tester.createObject)().observableObject,
+            new _TestDeepSubscribe.TestDeepSubscribe({
+              object: (0, _TestDeepSubscribe.createObject)().observableObject,
               immediate: true,
               doNotSubscribeNonObjectValues: true
             }, function (b) {
@@ -630,15 +937,15 @@ describe('common > main > rx > deep-subscribe > deep-subscribe', function () {
             }).subscribe(function (o) {
               return [o.map2];
             }).change(function (o) {
-              o.property.value_map2 = null;
+              o.property.value_map2 = 0;
             }, function (o) {
               return [o.map2];
             }, function (o) {
-              return [];
+              return [0];
             }).change(function (o) {
               new _ObservableObjectBuilder.ObservableObjectBuilder(o.property).delete('value_map2');
             }, function (o) {
-              return [];
+              return [0];
             }, function (o) {
               return [o.set];
             }).change(function (o) {
@@ -664,11 +971,11 @@ describe('common > main > rx > deep-subscribe > deep-subscribe', function () {
             }, function (o) {
               return [o];
             }, function (o) {
-              return [];
+              return [null];
             }).change(function (o) {
               new _ObservableObjectBuilder.ObservableObjectBuilder(o.property).delete('value_map2');
             }, function (o) {
-              return [];
+              return [null];
             }, function (o) {
               return [o];
             }).change(function (o) {
@@ -680,8 +987,8 @@ describe('common > main > rx > deep-subscribe > deep-subscribe', function () {
             }).unsubscribe(function (o) {
               return [o.list];
             });
-            new _Tester.Tester({
-              object: (0, _Tester.createObject)().observableObject,
+            new _TestDeepSubscribe.TestDeepSubscribe({
+              object: (0, _TestDeepSubscribe.createObject)().observableObject,
               immediate: true,
               doNotSubscribeNonObjectValues: true
             }, function (b) {
@@ -714,36 +1021,40 @@ describe('common > main > rx > deep-subscribe > deep-subscribe', function () {
               });
             }).subscribe(function (o) {
               return [o.map2, o.set];
+            }, null, function (o) {
+              return [o.map2];
             }).change(function (o) {
               o.set = o.observableObject;
             }, function (o) {
               return [o.set];
             }, function (o) {
               return [o.observableObject];
+            }, function (o) {
+              return [];
             }).unsubscribe(function (o) {
               return [o.map2, o.set];
             });
 
-          case 7:
+          case 8:
           case "end":
-            return _context4.stop();
+            return _context13.stop();
         }
       }
-    }, _callee);
+    }, _callee2);
   })));
   it('promises',
   /*#__PURE__*/
   (0, _asyncToGenerator2.default)(
   /*#__PURE__*/
-  _regenerator.default.mark(function _callee2() {
+  _regenerator.default.mark(function _callee3() {
     var object, tester;
-    return _regenerator.default.wrap(function _callee2$(_context5) {
+    return _regenerator.default.wrap(function _callee3$(_context14) {
       while (1) {
-        switch (_context5.prev = _context5.next) {
+        switch (_context14.prev = _context14.next) {
           case 0:
-            object = (0, _Tester.createObject)();
+            object = (0, _TestDeepSubscribe.createObject)();
             object.observableObject.value = new Number(1);
-            tester = new _Tester.Tester({
+            tester = new _TestDeepSubscribe.TestDeepSubscribe({
               object: object.promiseSync,
               immediate: true,
               doNotSubscribeNonObjectValues: true
@@ -752,51 +1063,51 @@ describe('common > main > rx > deep-subscribe > deep-subscribe', function () {
                 return o.promiseAsync.value;
               });
             });
-            _context5.next = 5;
+            _context14.next = 5;
             return tester.subscribeAsync([new Number(1)]);
 
           case 5:
-            _context5.next = 7;
+            _context14.next = 7;
             return (0, _helpers.delay)(20);
 
           case 7:
-            _context5.next = 9;
+            _context14.next = 9;
             return tester.changeAsync(function (o) {
               return object.observableObject.value = new Number(2);
             }, [new Number(1)], [new Number(2)]);
 
           case 9:
-            _context5.next = 11;
+            _context14.next = 11;
             return (0, _helpers.delay)(20);
 
           case 11:
-            _context5.next = 13;
+            _context14.next = 13;
             return tester.unsubscribe([new Number(2)]);
 
           case 13:
-            _context5.next = 15;
+            _context14.next = 15;
             return (0, _helpers.delay)(100);
 
           case 15:
           case "end":
-            return _context5.stop();
+            return _context14.stop();
         }
       }
-    }, _callee2);
+    }, _callee3);
   })));
   xit('promises throw',
   /*#__PURE__*/
   (0, _asyncToGenerator2.default)(
   /*#__PURE__*/
-  _regenerator.default.mark(function _callee3() {
+  _regenerator.default.mark(function _callee4() {
     var object, tester;
-    return _regenerator.default.wrap(function _callee3$(_context6) {
+    return _regenerator.default.wrap(function _callee4$(_context15) {
       while (1) {
-        switch (_context6.prev = _context6.next) {
+        switch (_context15.prev = _context15.next) {
           case 0:
-            object = (0, _Tester.createObject)();
+            object = (0, _TestDeepSubscribe.createObject)();
             object.observableObject.value = new Number(1);
-            tester = new _Tester.Tester({
+            tester = new _TestDeepSubscribe.TestDeepSubscribe({
               object: object.promiseSync,
               immediate: true,
               doNotSubscribeNonObjectValues: true,
@@ -806,47 +1117,47 @@ describe('common > main > rx > deep-subscribe > deep-subscribe', function () {
                 return o.promiseAsync.value;
               });
             });
-            _context6.next = 5;
+            _context15.next = 5;
             return tester.subscribeAsync([new Number(1)]);
 
           case 5:
-            _context6.next = 7;
+            _context15.next = 7;
             return (0, _helpers.delay)(20);
 
           case 7:
-            _context6.next = 9;
+            _context15.next = 9;
             return tester.changeAsync(function (o) {
               return object.observableObject.value = new Number(2);
-            }, [], [new Number(2)], Error, /Value is not a function or null\/undefined/);
+            }, [], [new Number(2)], null, Error, /Value is not a function or null\/undefined/);
 
           case 9:
-            _context6.next = 11;
+            _context15.next = 11;
             return (0, _helpers.delay)(20);
 
           case 11:
-            _context6.next = 13;
+            _context15.next = 13;
             return tester.unsubscribe([]);
 
           case 13:
-            _context6.next = 15;
+            _context15.next = 15;
             return (0, _helpers.delay)(100);
 
           case 15:
           case "end":
-            return _context6.stop();
+            return _context15.stop();
         }
       }
-    }, _callee3);
+    }, _callee4);
   })));
   it('lists', function () {
     var value = new Number(1);
-    new _Tester.Tester({
-      object: (0, _Tester.createObject)().object,
+    new _TestDeepSubscribe.TestDeepSubscribe({
+      object: (0, _TestDeepSubscribe.createObject)().object,
       immediate: true,
       ignoreSubscribeCount: true,
       doNotSubscribeNonObjectValues: true
     }, function (b) {
-      return (0, _repeat.default)(b).call(b, 1, 3, function (b) {
+      return (0, _repeat.default)(b).call(b, 1, 3, null, function (b) {
         return b.any(function (b) {
           return b.propertyRegexp(/object|observableObject/);
         }, function (b) {
@@ -855,24 +1166,24 @@ describe('common > main > rx > deep-subscribe > deep-subscribe', function () {
           });
         });
       }).path(function (o) {
-        return o.value;
+        return o.valueUndefined;
       });
-    }).subscribe([]).change(function (o) {
-      return o.observableObject.target = value;
-    }, [], [value]).change(function (o) {
+    }).subscribe([void 0]).change(function (o) {
+      return o.observableObject.valueUndefined = value;
+    }, [void 0], [value], [value]).change(function (o) {
       return o.observableList.add(value);
     }, [], []).change(function (o) {
       return o.observableSet.add(value);
     }, [], []).change(function (o) {
       return o.observableMap.set('value', value);
     }, [], []).unsubscribe([value]);
-    new _Tester.Tester({
-      object: (0, _Tester.createObject)().object,
+    new _TestDeepSubscribe.TestDeepSubscribe({
+      object: (0, _TestDeepSubscribe.createObject)().object,
       immediate: true,
       ignoreSubscribeCount: true,
       doNotSubscribeNonObjectValues: true
     }, function (b) {
-      return (0, _repeat.default)(b).call(b, 1, 3, function (b) {
+      return (0, _repeat.default)(b).call(b, 1, 3, null, function (b) {
         return b.any(function (b) {
           return b.propertyRegexp(/object|observableObject/);
         }, function (b) {
@@ -881,9 +1192,9 @@ describe('common > main > rx > deep-subscribe > deep-subscribe', function () {
           });
         });
       }).path(function (o) {
-        return o['#value'];
+        return o['#valueUndefined'];
       });
-    }).subscribe([]).change(function (o) {
+    }).subscribe([], null).change(function (o) {
       return o.observableObject.target = value;
     }, [], []).change(function (o) {
       return o.observableList.add(value);
@@ -898,7 +1209,7 @@ describe('common > main > rx > deep-subscribe > deep-subscribe', function () {
     // 		ignoreSubscribeCount: true,
     // 	},
     // 	b => b
-    // 		.repeat(1, 3, b => b
+    // 		.repeat(1, 3, null, b => b
     // 			.any(
     // 				b => b.propertyRegexp(/object|observableObject/),
     // 				b => b.path(o => o['list|set|map2|observableList|observableSet|observableMap']['#']),
@@ -926,8 +1237,8 @@ describe('common > main > rx > deep-subscribe > deep-subscribe', function () {
     // .unsubscribe([value])
   });
   it('throws', function () {
-    new _Tester.Tester({
-      object: (0, _Tester.createObject)().observableObject,
+    new _TestDeepSubscribe.TestDeepSubscribe({
+      object: (0, _TestDeepSubscribe.createObject)().observableObject,
       immediate: true
     }, function (b) {
       return b.path(function (o) {
@@ -941,9 +1252,9 @@ describe('common > main > rx > deep-subscribe > deep-subscribe', function () {
       return [o.object, 1];
     }, function (o) {
       return [1];
-    }, Error, /unsubscribe function for non Object value/);
-    new _Tester.Tester({
-      object: (0, _Tester.createObject)().object,
+    }, [void 0], Error, /unsubscribe function for non Object value/);
+    new _TestDeepSubscribe.TestDeepSubscribe({
+      object: (0, _TestDeepSubscribe.createObject)().object,
       immediate: true
     }, function (b) {
       return b.path(function (o) {
@@ -965,14 +1276,14 @@ describe('common > main > rx > deep-subscribe > deep-subscribe', function () {
       b = b.path(function (o) {
         return o.object.object.object.value;
       });
-      delete b.result.description;
-      delete b.result.next.next.description;
+      delete b.ruleFirst.description;
+      delete b.ruleFirst.next.next.description;
       return b;
-    }).subscribe(["value"], ["value"], Error, /unsubscribe function for non Object value/);
+    }).subscribe(["value"], ["value"], [], Error, /unsubscribe function for non Object value/);
   });
   it('throws incorrect Unsubscribe', function () {
-    new _Tester.Tester({
-      object: (0, _Tester.createObject)().object,
+    new _TestDeepSubscribe.TestDeepSubscribe({
+      object: (0, _TestDeepSubscribe.createObject)().object,
       immediate: true,
       doNotSubscribeNonObjectValues: true,
       useIncorrectUnsubscribe: true
@@ -982,9 +1293,9 @@ describe('common > main > rx > deep-subscribe > deep-subscribe', function () {
       });
     }).subscribe(function (o) {
       return [o.object];
-    }, [], Error, /Value is not a function or null\/undefined/);
-    new _Tester.Tester({
-      object: (0, _Tester.createObject)().object,
+    }, [], [], Error, /Value is not a function or null\/undefined/);
+    new _TestDeepSubscribe.TestDeepSubscribe({
+      object: (0, _TestDeepSubscribe.createObject)().object,
       immediate: true,
       // doNotSubscribeNonObjectValues: true,
       useIncorrectUnsubscribe: true
@@ -992,6 +1303,6 @@ describe('common > main > rx > deep-subscribe > deep-subscribe', function () {
       return b.path(function (o) {
         return o.object.value;
       });
-    }).subscribe(["value"], [], Error, /Value is not a function or null\/undefined/);
+    }).subscribe(["value"], [], [], Error, /Value is not a function or null\/undefined/);
   });
 });

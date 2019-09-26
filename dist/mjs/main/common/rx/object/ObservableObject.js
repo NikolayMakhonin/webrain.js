@@ -20,7 +20,7 @@ export function _setExt(name, getValue, setValue, options, object, newValue) {
     return _set(name, getValue, setValue, object, newValue);
   }
 
-  const oldValue = getValue ? getValue(object) : object.__fields[name];
+  const oldValue = getValue ? getValue.call(object) : object.__fields[name];
   const equalsFunc = options.equalsFunc;
 
   if (equalsFunc ? equalsFunc.call(object, oldValue, newValue) : oldValue === newValue) {
@@ -50,7 +50,7 @@ export function _setExt(name, getValue, setValue, options, object, newValue) {
   }
 
   if (setValue) {
-    setValue(object, newValue);
+    setValue.call(object, newValue);
   } else {
     object.__fields[name] = newValue;
   }
@@ -80,13 +80,13 @@ export function _setExt(name, getValue, setValue, options, object, newValue) {
 /** @internal */
 
 export function _set(name, getValue, setValue, object, newValue) {
-  const oldValue = getValue(object);
+  const oldValue = getValue.call(object);
 
   if (oldValue === newValue) {
     return false;
   }
 
-  setValue(object, newValue);
+  setValue.call(object, newValue);
   const {
     propertyChangedDisabled,
     propertyChanged

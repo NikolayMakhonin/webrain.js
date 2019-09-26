@@ -104,7 +104,8 @@ function (_ObservableObject) {
 
       if (propertyChangedIfCanEmit) {
         var oldValue = this._valueProperty.value;
-        var newValue = new CalcPropertyValue(this);
+        var newValue = this.last; // new CalcPropertyValue(this)
+
         propertyChangedIfCanEmit.onPropertyChanged({
           name: _valueProperty.VALUE_PROPERTY_DEFAULT,
           oldValue: oldValue,
@@ -131,7 +132,8 @@ function (_ObservableObject) {
 
       if (propertyChangedIfCanEmit) {
         var oldValue = this._valueProperty.value;
-        var newValue = new CalcPropertyValue(this);
+        var newValue = this.last; // new CalcPropertyValue(this)
+
         propertyChangedIfCanEmit.onPropertyChanged({
           name: 'last',
           oldValue: oldValue,

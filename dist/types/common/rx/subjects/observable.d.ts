@@ -1,4 +1,5 @@
 export declare type IUnsubscribe = () => void;
+export declare type IUnsubscribeOrVoid = IUnsubscribe | void;
 export declare type ISubscriber<T> = (value: T) => void;
 export interface IObservable<T> {
     subscribe(subscriber: ISubscriber<T>): IUnsubscribe;

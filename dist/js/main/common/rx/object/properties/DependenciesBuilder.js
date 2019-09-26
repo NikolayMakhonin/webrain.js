@@ -34,7 +34,7 @@ function () {
       }
 
       ruleBuilder = buildRule(ruleBuilder);
-      var ruleBase = ruleBuilder && ruleBuilder.result;
+      var ruleBase = ruleBuilder && ruleBuilder.result();
 
       if (ruleBase == null) {
         throw new Error('buildRule() return null or not initialized RuleBuilder');
@@ -60,10 +60,16 @@ function subscribeDependencies(subscribeObject, actionTarget, dependencies) {
     var _dependencies$i = dependencies[i],
         rule = _dependencies$i[0],
         action = _dependencies$i[1];
-    unsubscribers.push((0, _deepSubscribe.deepSubscribeRule)(subscribeObject, function (value, parent, propertyName) {
-      action(actionTarget, value, parent, propertyName);
-      return null;
-    }, true, rule));
+    unsubscribers.push((0, _deepSubscribe.deepSubscribeRule)({
+      object: subscribeObject,
+      subscribeValue: function subscribeValue(value, parent, propertyName) {
+        action(actionTarget, value, parent, propertyName);
+      },
+      unsubscribeValue: function unsubscribeValue(value, parent, propertyName) {
+        action(actionTarget, void 0, parent, propertyName);
+      },
+      rule: rule
+    }));
   };
 
   for (var i = 0, len = dependencies.length; i < len; i++) {

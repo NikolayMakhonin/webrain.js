@@ -17,6 +17,6 @@ export declare class ObservableObject extends PropertyChangedObject {
     constructor();
 }
 /** @internal */
-export declare function _setExt(name: string | number, getValue: (o: any) => any, setValue: (o: any, v: any) => void, options: ISetOptions, object: ObservableObject, newValue: any): boolean;
+export declare function _setExt(name: string | number, getValue: () => any, setValue: (v: any) => void, options: ISetOptions, object: ObservableObject, newValue: any): boolean;
 /** @internal */
-export declare function _set(name: string | number, getValue: (o: any) => any, setValue: (o: any, v: any) => void, object: ObservableObject, newValue: any): boolean;
+export declare function _set(name: string | number, getValue: () => any, setValue: (v: any) => void, object: ObservableObject, newValue: any): boolean;

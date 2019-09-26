@@ -47,11 +47,11 @@ function (_ObservableObjectBuil) {
   }, {
     key: "calcChanges",
     value: function calcChanges(name, buildRule) {
-      return this.calc(name, void 0, (0, _CalcPropertyBuilder.calcPropertyFactory)(function (input, property) {
-        property.value++;
-      }, null, null, 0, function (dependencies) {
+      return this.calc(name, void 0, (0, _CalcPropertyBuilder.calcPropertyFactory)(function (dependencies) {
         return dependencies.invalidateOn(buildRule);
-      }));
+      }, function (input, property) {
+        property.value++;
+      }, null, null, 0));
     }
   }]);
   return CalcObjectBuilder;

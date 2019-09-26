@@ -28,6 +28,8 @@ describe('common > main > rx > deep-subscribe > iterate-rule', function () {
   // 		.map(o => ruleToString(o)).join('\n')
   // }
   // const endObject = { _end: true }
+  const testObject = {};
+
   function rulesToObject(ruleIterator, obj = {}) {
     let iteration;
 
@@ -38,9 +40,9 @@ describe('common > main > rx > deep-subscribe > iterate-rule', function () {
       };
     }
 
-    return subscribeNextRule(ruleIterator, iteration, nextRuleIterator => rulesToObject(nextRuleIterator, obj), (rule, getRuleIterator) => {
+    return subscribeNextRule(ruleIterator, iteration, nextRuleIterator => rulesToObject(nextRuleIterator, obj), (rule, getRuleIterable) => {
       const newObj = {};
-      const unsubscribe = rulesToObject(getRuleIterator ? getRuleIterator() : null, newObj);
+      const unsubscribe = rulesToObject(getRuleIterable ? getRuleIterable(testObject)[Symbol.iterator]() : null, newObj);
       Object.assign(obj, {
         [rule.description]: newObj
       });
@@ -75,7 +77,9 @@ describe('common > main > rx > deep-subscribe > iterate-rule', function () {
   }
 
   function testIterateRule(buildRule, ...expectedPaths) {
-    const result = iterateRule(buildRule(new RuleBuilder()).result);
+    const result = iterateRule(testObject, buildRule(new RuleBuilder({
+      autoInsertValuePropertyDefault: false
+    })).result());
     assert.ok(result);
     const object = {};
     const unsubscribe = rulesToObject(result[Symbol.iterator](), object); // console.log(JSON.stringify(object, null, 4))
@@ -103,23 +107,27 @@ describe('common > main > rx > deep-subscribe > iterate-rule', function () {
     testIterateRule(b => b.propertyRegexp(/[ab]/).path(o => o.c), '/[ab]/.c');
   });
   it('repeat', function () {
-    testIterateRule(b => b.repeat(1, 1, b => b.path(o => o.a)), 'a');
-    testIterateRule(b => b.repeat(2, 2, b => b.path(o => o.a)), 'a.a');
-    testIterateRule(b => b.repeat(1, 2, b => b.path(o => o.a)), 'a', 'a.a');
-    testIterateRule(b => b.repeat(0, 2, b => b.path(o => o.a)), '', 'a', 'a.a');
-    testIterateRule(b => b.repeat(0, 2, b => b.repeat(0, 2, b => b.path(o => o.a)).path(o => o.b)), '', 'b', 'a.b', 'a.a.b', 'b.b', 'b.a.b', 'b.a.a.b', 'a.b.b', 'a.b.a.b', 'a.b.a.a.b', 'a.a.b.b', 'a.a.b.a.b', 'a.a.b.a.a.b');
-    testIterateRule(b => b.repeat(1, 2, b => b.any(b => b.repeat(1, 2, b => b.path(o => o.a)), b => b.path(o => o.b.c))).path(o => o.d), 'a.d', 'a.a.d', 'b.c.d', // 'a.a.d',
+    testIterateRule(b => b.repeat(1, 1, null, b => b.path(o => o.a)), 'a');
+    testIterateRule(b => b.repeat(2, 2, null, b => b.path(o => o.a)), 'a.a');
+    testIterateRule(b => b.repeat(1, 2, null, b => b.path(o => o.a)), 'a', 'a.a');
+    testIterateRule(b => b.repeat(0, 2, null, b => b.path(o => o.a)), '', 'a', 'a.a');
+    testIterateRule(b => b.repeat(0, 2, null, b => b.repeat(0, 2, null, b => b.path(o => o.a)).path(o => o.b)), '', 'b', 'a.b', 'a.a.b', 'b.b', 'b.a.b', 'b.a.a.b', 'a.b.b', 'a.b.a.b', 'a.b.a.a.b', 'a.a.b.b', 'a.a.b.a.b', 'a.a.b.a.a.b');
+    testIterateRule(b => b.repeat(1, 2, null, b => b.any(b => b.repeat(1, 2, null, b => b.path(o => o.a)), b => b.path(o => o.b.c))).path(o => o.d), 'a.d', 'a.a.d', 'b.c.d', // 'a.a.d',
     'a.a.a.d', 'a.b.c.d', // 'a.a.a.d',
     'a.a.a.a.d', 'a.a.b.c.d', 'b.c.a.d', 'b.c.a.a.d', 'b.c.b.c.d');
-    testIterateRule(b => b.any(b => b.repeat(2, 2, b => b.any(b => b.path(o => o.a), b => b.path(o => o.b))), b => b.path(o => o.c)).path(o => o.d), 'a.a.d', 'a.b.d', 'b.a.d', 'b.b.d', 'c.d');
+    testIterateRule(b => b.any(b => b.repeat(2, 2, null, b => b.any(b => b.path(o => o.a), b => b.path(o => o.b))), b => b.path(o => o.c)).path(o => o.d), 'a.a.d', 'a.b.d', 'b.a.d', 'b.b.d', 'c.d');
   });
   it('throws', function () {
-    Array.from(iterateRule(new Rule(0)));
-    assert.throws(() => Array.from(iterateRule(new Rule(-1)), Error));
-    assert.throws(() => new RuleBuilder().repeat(1, 2, b => b), Error);
-    assert.throws(() => new RuleBuilder().any(), Error);
+    Array.from(iterateRule(testObject, new Rule(0)));
+    assert.throws(() => Array.from(iterateRule(testObject, new Rule(-1)), Error));
+    assert.throws(() => new RuleBuilder({
+      autoInsertValuePropertyDefault: false
+    }).repeat(1, 2, null, b => b), Error);
+    assert.throws(() => new RuleBuilder({
+      autoInsertValuePropertyDefault: false
+    }).any(), Error);
   });
   it('specific', function () {
-    testIterateRule(b => b.any(b => b.path(o => o.a), b => b.repeat(0, 0, b => b.path(o => o.b)).path(o => o.c)), 'a', 'c');
+    testIterateRule(b => b.any(b => b.path(o => o.a), b => b.repeat(0, 0, null, b => b.path(o => o.b)).path(o => o.c)), 'a', 'c');
   });
 });

@@ -1,6 +1,22 @@
-import { IUnsubscribe } from '../subjects/observable';
+import { IUnsubscribeOrVoid } from '../subjects/observable';
+import { ILastValue, ISubscribeValue, IUnsubscribeValue } from './contracts/common';
 import { IRule } from './contracts/rules';
-import { RuleBuilder } from "./RuleBuilder";
-import { ISubscribeValue } from "./contracts/common";
-export declare function deepSubscribeRule<TValue>(object: any, subscribeValue: ISubscribeValue<TValue>, immediate: boolean, rule: IRule): IUnsubscribe;
-export declare function deepSubscribe<TObject, TValue, TValueKeys extends string | number = never>(object: TObject, subscribeValue: ISubscribeValue<TValue>, immediate: boolean, ruleBuilder: (ruleBuilder: RuleBuilder<TObject, TValueKeys>) => RuleBuilder<TValue, TValueKeys>): IUnsubscribe;
+import { RuleBuilder } from './RuleBuilder';
+export declare function deepSubscribeRule<TValue>({ object, subscribeValue, unsubscribeValue, lastValue, immediate, rule, }: {
+    object: any;
+    subscribeValue?: ISubscribeValue<TValue>;
+    unsubscribeValue?: IUnsubscribeValue<TValue>;
+    lastValue?: ILastValue<TValue>;
+    /** @deprecated Not implemented - always true */
+    immediate?: boolean;
+    rule: IRule;
+}): IUnsubscribeOrVoid;
+export declare function deepSubscribe<TObject, TValue, TValueKeys extends string | number = never>({ object, subscribeValue, unsubscribeValue, lastValue, immediate, ruleBuilder, }: {
+    object: TObject;
+    subscribeValue?: ISubscribeValue<TValue>;
+    unsubscribeValue?: IUnsubscribeValue<TValue>;
+    lastValue?: ILastValue<TValue>;
+    /** @deprecated Not implemented - always true */
+    immediate?: boolean;
+    ruleBuilder: (ruleBuilder: RuleBuilder<TObject, TValueKeys>) => RuleBuilder<TValue, TValueKeys>;
+}): IUnsubscribeOrVoid;

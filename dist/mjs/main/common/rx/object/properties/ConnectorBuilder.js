@@ -1,6 +1,6 @@
 import { createFunction } from '../../../helpers/helpers';
 import { deepSubscribeRule } from '../../deep-subscribe/deep-subscribe';
-import { cloneRule, RuleBuilder } from '../../deep-subscribe/RuleBuilder';
+import { RuleBuilder } from '../../deep-subscribe/RuleBuilder';
 import { _set, _setExt } from '../ObservableObject';
 import { ObservableObjectBuilder } from '../ObservableObjectBuilder';
 import { CalcObjectDebugger } from './CalcObjectDebugger';
@@ -12,6 +12,14 @@ export class ConnectorBuilder extends ObservableObjectBuilder {
   }
 
   connect(name, buildRule, options, initValue) {
+    return this._connect(false, name, buildRule, options, initValue);
+  }
+
+  connectWritable(name, buildRule, options, initValue) {
+    return this._connect(true, name, buildRule, options, initValue);
+  }
+
+  _connect(writable, name, buildRule, options, initValue) {
     const {
       object,
       buildSourceRule
@@ -23,7 +31,7 @@ export class ConnectorBuilder extends ObservableObjectBuilder {
     }
 
     ruleBuilder = buildRule(ruleBuilder);
-    const ruleBase = ruleBuilder && ruleBuilder.result;
+    const ruleBase = ruleBuilder && ruleBuilder.result();
 
     if (ruleBase == null) {
       throw new Error('buildRule() return null or not initialized RuleBuilder');
@@ -31,41 +39,78 @@ export class ConnectorBuilder extends ObservableObjectBuilder {
 
     const setOptions = options && options.setOptions; // optimization
 
-    const getValue = createFunction('o', `return o.__fields["${name}"]`);
-    const setValue = createFunction('o', 'v', `o.__fields["${name}"] = v`);
+    const baseGetValue = options && options.getValue || createFunction(`return this.__fields["${name}"]`);
+    const baseSetValue = options && options.setValue || createFunction('v', `this.__fields["${name}"] = v`);
+    const getValue = !writable ? baseGetValue : function () {
+      return baseGetValue.call(this).value;
+    };
+    const setValue = !writable ? baseSetValue : function (value) {
+      const baseValue = baseGetValue.call(this);
+      baseValue.value = value;
+    };
     const set = setOptions ? _setExt.bind(null, name, getValue, setValue, setOptions) : _set.bind(null, name, getValue, setValue);
-    return this.readable(name, {
+    return this.updatable(name, {
       setOptions,
       hidden: options && options.hidden,
 
       // tslint:disable-next-line:no-shadowed-variable
       factory(initValue) {
+        if (writable) {
+          baseSetValue.call(this, {
+            value: initValue,
+            parent: null,
+            propertyName: null
+          });
+        }
+
         let setVal = (obj, value) => {
           if (typeof value !== 'undefined') {
             initValue = value;
           }
         };
 
-        const receiveValue = (value, parent, propertyName) => {
+        const receiveValue = writable ? (value, parent, propertyName) => {
+          CalcObjectDebugger.Instance.onConnectorChanged(this, value, parent, propertyName);
+          const baseValue = baseGetValue.call(this);
+          baseValue.parent = parent;
+          baseValue.propertyName = propertyName;
+          setVal(this, value);
+          return null;
+        } : (value, parent, propertyName) => {
           CalcObjectDebugger.Instance.onConnectorChanged(this, value, parent, propertyName);
           setVal(this, value);
           return null;
         };
-
-        const rule = this === object ? ruleBase : cloneRule(ruleBase);
+        const rule = this === object ? ruleBase : ruleBase.clone();
         this.propertyChanged.hasSubscribersObservable.subscribe(hasSubscribers => {
           this._setUnsubscriber(name, null);
 
           if (hasSubscribers) {
-            const unsubscribe = deepSubscribeRule(this, receiveValue, true, rule);
+            const unsubscribe = deepSubscribeRule({
+              object: this,
+              lastValue: receiveValue,
+              rule
+            });
 
-            this._setUnsubscriber(name, unsubscribe);
+            if (unsubscribe) {
+              this._setUnsubscriber(name, unsubscribe);
+            }
           }
         });
         setVal = set;
         return initValue;
-      }
+      },
 
+      update: writable && function (value) {
+        const baseValue = baseGetValue.call(this);
+
+        if (baseValue.parent != null) {
+          baseValue.parent[baseValue.propertyName] = value;
+        } // return value
+
+      },
+      getValue,
+      setValue
     }, initValue);
   }
 

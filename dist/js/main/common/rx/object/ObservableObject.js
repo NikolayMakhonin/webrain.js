@@ -55,7 +55,7 @@ function _setExt(name, getValue, setValue, options, object, newValue) {
     return _set(name, getValue, setValue, object, newValue);
   }
 
-  var oldValue = getValue ? getValue(object) : object.__fields[name];
+  var oldValue = getValue ? getValue.call(object) : object.__fields[name];
   var equalsFunc = options.equalsFunc;
 
   if (equalsFunc ? equalsFunc.call(object, oldValue, newValue) : oldValue === newValue) {
@@ -85,7 +85,7 @@ function _setExt(name, getValue, setValue, options, object, newValue) {
   }
 
   if (setValue) {
-    setValue(object, newValue);
+    setValue.call(object, newValue);
   } else {
     object.__fields[name] = newValue;
   }
@@ -114,13 +114,13 @@ function _setExt(name, getValue, setValue, options, object, newValue) {
 
 
 function _set(name, getValue, setValue, object, newValue) {
-  var oldValue = getValue(object);
+  var oldValue = getValue.call(object);
 
   if (oldValue === newValue) {
     return false;
   }
 
-  setValue(object, newValue);
+  setValue.call(object, newValue);
   var _object$__meta = object.__meta,
       propertyChangedDisabled = _object$__meta.propertyChangedDisabled,
       propertyChanged = _object$__meta.propertyChanged;

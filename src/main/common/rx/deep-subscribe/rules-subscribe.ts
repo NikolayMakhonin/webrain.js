@@ -161,36 +161,36 @@ export function hasDefaultProperty(object: object) {
 		&& !Array.isArray(object)
 }
 
-export function subscribeDefaultProperty<TValue>(
-	object: IPropertyChanged,
-	immediateSubscribe: boolean,
-	subscribeItem: (item: TValue, debugPropertyName: string) => IUnsubscribeOrVoid,
-) {
-	let unsubscribers: IUnsubscribe[]
-	return subscribeObject<TValue>(
-		VALUE_PROPERTY_DEFAULT,
-		o => o === VALUE_PROPERTY_DEFAULT,
-		object,
-		immediateSubscribe,
-		(item, debugPropertyName) => {
-			const unsubscriber = subscribeItem(item, debugPropertyName)
-			if (unsubscriber) {
-				if (!unsubscribers) {
-					unsubscribers = []
-				}
-				unsubscribers.push(unsubscriber)
-			}
-		},
-		() => {
-			if (unsubscribers) {
-				const _unsubscribers = unsubscribers
-				unsubscribers = null
-				for (let i = 0, len = _unsubscribers.length; i < len; i++) {
-					_unsubscribers[i]()
-				}
-			}
-		})
-}
+// export function subscribeDefaultProperty<TValue>(
+// 	object: IPropertyChanged,
+// 	immediateSubscribe: boolean,
+// 	subscribeItem: (item: TValue, debugPropertyName: string) => IUnsubscribeOrVoid,
+// ) {
+// 	let unsubscribers: IUnsubscribe[]
+// 	return subscribeObject<TValue>(
+// 		VALUE_PROPERTY_DEFAULT,
+// 		o => o === VALUE_PROPERTY_DEFAULT,
+// 		object,
+// 		immediateSubscribe,
+// 		(item, debugPropertyName) => {
+// 			const unsubscriber = subscribeItem(item, debugPropertyName)
+// 			if (unsubscriber) {
+// 				if (!unsubscribers) {
+// 					unsubscribers = []
+// 				}
+// 				unsubscribers.push(unsubscriber)
+// 			}
+// 		},
+// 		() => {
+// 			if (unsubscribers) {
+// 				const _unsubscribers = unsubscribers
+// 				unsubscribers = null
+// 				for (let i = 0, len = _unsubscribers.length; i < len; i++) {
+// 					_unsubscribers[i]()
+// 				}
+// 			}
+// 		})
+// }
 
 function subscribeObject<TValue>(
 	propertyNames: string|string[],
@@ -678,6 +678,7 @@ export class RuleSubscribeObject<TObject, TValue>
 
 		switch (type) {
 			case SubscribeObjectType.Property:
+				// @ts-ignore
 				this.subscribe = subscribeObject.bind(
 					null,
 					propertyNames,
@@ -686,6 +687,7 @@ export class RuleSubscribeObject<TObject, TValue>
 				break
 			case SubscribeObjectType.ValueProperty:
 				this.subType = type
+				// @ts-ignore
 				this.subscribe = subscribeObjectValue.bind(
 					null,
 					propertyNames,
@@ -757,6 +759,7 @@ export class RuleSubscribeMap<TObject extends Map<K, V>, K, V>
 			}
 		}
 
+		// @ts-ignore
 		this.subscribe = subscribeMap.bind(
 			null,
 			keys,
@@ -776,6 +779,7 @@ export class RuleSubscribeCollection<TObject extends Iterable<TItem>, TItem>
 	constructor() {
 		super()
 
+		// @ts-ignore
 		this.subscribe = subscribeCollection
 	}
 }

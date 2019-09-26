@@ -60,9 +60,11 @@ describe('common > main > rx > deep-subscribe > RuleBuilder', function () {
   }
 
   it('constructor', function () {
-    var builder = new _RuleBuilder.RuleBuilder();
+    var builder = new _RuleBuilder.RuleBuilder({
+      autoInsertValuePropertyDefault: false
+    });
 
-    _Assert.assert.strictEqual(builder.result, undefined);
+    _Assert.assert.strictEqual(builder.result(), undefined);
   });
   var nonSubscribeProperty = Math.random().toString(36);
 
@@ -108,6 +110,10 @@ describe('common > main > rx > deep-subscribe > RuleBuilder', function () {
     var subscribedItems = [];
 
     function subscribeItem(value, debugPropertyName) {
+      if (typeof value === 'undefined') {
+        return;
+      }
+
       _Assert.assert.ok(value);
 
       _Assert.assert.strictEqual(typeof value, 'string', value);
@@ -119,6 +125,10 @@ describe('common > main > rx > deep-subscribe > RuleBuilder', function () {
 
 
     function unsubscribeItem(value, debugPropertyName) {
+      if (typeof value === 'undefined') {
+        return;
+      }
+
       _Assert.assert.ok(value);
 
       value = (0, _trim.default)(value).call(value);
@@ -600,6 +610,7 @@ describe('common > main > rx > deep-subscribe > RuleBuilder', function () {
 
     if ('unsubscribers' in rule) {
       expected.unsubscribers = rule.unsubscribers;
+      expected.unsubscribersCount = rule.unsubscribersCount;
     }
 
     delete rule.subscribe;
@@ -709,14 +720,16 @@ describe('common > main > rx > deep-subscribe > RuleBuilder', function () {
   }
 
   it('path', function () {
-    var builder = new _RuleBuilder.RuleBuilder();
+    var builder = new _RuleBuilder.RuleBuilder({
+      autoInsertValuePropertyDefault: false
+    });
 
-    _Assert.assert.strictEqual(builder.result, undefined);
+    _Assert.assert.strictEqual(builder.result(), undefined);
 
     var builder1 = builder.path(function (o) {
       return o.prop1;
     });
-    var rule1 = builder1.result;
+    var rule1 = builder1.result();
 
     _Assert.assert.strictEqual(builder1, builder);
 
@@ -733,7 +746,7 @@ describe('common > main > rx > deep-subscribe > RuleBuilder', function () {
 
     _Assert.assert.strictEqual(builder3, builder);
 
-    _Assert.assert.strictEqual(builder3.result, rule1);
+    _Assert.assert.strictEqual(builder3.result(), rule1);
 
     assertRule(rule1, {
       type: _rules.RuleType.Action,
@@ -760,7 +773,7 @@ describe('common > main > rx > deep-subscribe > RuleBuilder', function () {
 
     _Assert.assert.strictEqual(builder4, builder);
 
-    _Assert.assert.strictEqual(builder4.result, rule1);
+    _Assert.assert.strictEqual(builder4.result(), rule1);
 
     assertRule(rule1, {
       type: _rules.RuleType.Action,
@@ -788,14 +801,16 @@ describe('common > main > rx > deep-subscribe > RuleBuilder', function () {
     });
   });
   it('path complex', function () {
-    var builder = new _RuleBuilder.RuleBuilder();
+    var builder = new _RuleBuilder.RuleBuilder({
+      autoInsertValuePropertyDefault: false
+    });
 
-    _Assert.assert.strictEqual(builder.result, undefined);
+    _Assert.assert.strictEqual(builder.result(), undefined);
 
     var builder1 = builder.path(function (o) {
       return o['prop1|prop2']['#prop3']['#prop4||prop5']['*']['#']['#*'];
     });
-    var rule1 = builder1.result;
+    var rule1 = builder1.result();
 
     _Assert.assert.strictEqual(builder1, builder);
 
@@ -837,9 +852,11 @@ describe('common > main > rx > deep-subscribe > RuleBuilder', function () {
     });
   });
   it('property', function () {
-    var builder = new _RuleBuilder.RuleBuilder();
+    var builder = new _RuleBuilder.RuleBuilder({
+      autoInsertValuePropertyDefault: false
+    });
 
-    _Assert.assert.strictEqual(builder.result, undefined); // @ts-ignore
+    _Assert.assert.strictEqual(builder.result(), undefined); // @ts-ignore
 
 
     _Assert.assert.throws(function () {
@@ -860,10 +877,10 @@ describe('common > main > rx > deep-subscribe > RuleBuilder', function () {
       return builder.propertyPredicate('string');
     }, Error);
 
-    _Assert.assert.strictEqual(builder.result, undefined);
+    _Assert.assert.strictEqual(builder.result(), undefined);
 
     var builder1 = builder.propertyRegexp(/prop1|prop2/);
-    var rule1 = builder1.result;
+    var rule1 = builder1.result();
 
     _Assert.assert.strictEqual(builder1, builder);
 
@@ -878,7 +895,7 @@ describe('common > main > rx > deep-subscribe > RuleBuilder', function () {
 
     _Assert.assert.strictEqual(builder2, builder);
 
-    _Assert.assert.strictEqual(builder2.result, rule1);
+    _Assert.assert.strictEqual(builder2.result(), rule1);
 
     assertRule(rule1, {
       type: _rules.RuleType.Action,
@@ -897,7 +914,7 @@ describe('common > main > rx > deep-subscribe > RuleBuilder', function () {
 
     _Assert.assert.strictEqual(builder3, builder);
 
-    _Assert.assert.strictEqual(builder3.result, rule1);
+    _Assert.assert.strictEqual(builder3.result(), rule1);
 
     assertRule(rule1, {
       type: _rules.RuleType.Action,
@@ -918,15 +935,17 @@ describe('common > main > rx > deep-subscribe > RuleBuilder', function () {
       }
     }); // noinspection JSUnusedLocalSymbols
 
-    var rule3 = builder3.result.next.next;
+    var rule3 = builder3.result().next.next;
   });
-  it('propertyAll', function () {
-    var builder = new _RuleBuilder.RuleBuilder();
+  it('propertyAny', function () {
+    var builder = new _RuleBuilder.RuleBuilder({
+      autoInsertValuePropertyDefault: false
+    });
 
-    _Assert.assert.strictEqual(builder.result, undefined);
+    _Assert.assert.strictEqual(builder.result(), undefined);
 
-    var builder1 = builder.propertyAll();
-    var rule1 = builder1.result;
+    var builder1 = builder.propertyAny();
+    var rule1 = builder1.result();
 
     _Assert.assert.strictEqual(builder1, builder);
 
@@ -941,7 +960,7 @@ describe('common > main > rx > deep-subscribe > RuleBuilder', function () {
 
     _Assert.assert.strictEqual(builder2, builder);
 
-    _Assert.assert.strictEqual(builder2.result, rule1);
+    _Assert.assert.strictEqual(builder2.result(), rule1);
 
     assertRule(rule1, {
       type: _rules.RuleType.Action,
@@ -960,7 +979,7 @@ describe('common > main > rx > deep-subscribe > RuleBuilder', function () {
 
     _Assert.assert.strictEqual(builder3, builder);
 
-    _Assert.assert.strictEqual(builder3.result, rule1);
+    _Assert.assert.strictEqual(builder3.result(), rule1);
 
     assertRule(rule1, {
       type: _rules.RuleType.Action,
@@ -981,17 +1000,19 @@ describe('common > main > rx > deep-subscribe > RuleBuilder', function () {
       }
     }); // noinspection JSUnusedLocalSymbols
 
-    var rule3 = builder3.result.next.next;
+    var rule3 = builder3.result().next.next;
   });
   it('propertyNames', function () {
-    var builder = new _RuleBuilder.RuleBuilder();
+    var builder = new _RuleBuilder.RuleBuilder({
+      autoInsertValuePropertyDefault: false
+    });
 
-    _Assert.assert.strictEqual(builder.result, undefined);
+    _Assert.assert.strictEqual(builder.result(), undefined);
 
-    _Assert.assert.strictEqual(builder.result, undefined);
+    _Assert.assert.strictEqual(builder.result(), undefined);
 
     var builder1 = builder.propertyNames('prop1');
-    var rule1 = builder1.result;
+    var rule1 = builder1.result();
 
     _Assert.assert.strictEqual(builder1, builder);
 
@@ -1006,7 +1027,7 @@ describe('common > main > rx > deep-subscribe > RuleBuilder', function () {
 
     _Assert.assert.strictEqual(builder2, builder);
 
-    _Assert.assert.strictEqual(builder2.result, rule1);
+    _Assert.assert.strictEqual(builder2.result(), rule1);
 
     assertRule(rule1, {
       type: _rules.RuleType.Action,
@@ -1025,7 +1046,7 @@ describe('common > main > rx > deep-subscribe > RuleBuilder', function () {
 
     _Assert.assert.strictEqual(builder3, builder);
 
-    _Assert.assert.strictEqual(builder3.result, rule1);
+    _Assert.assert.strictEqual(builder3.result(), rule1);
 
     assertRule(rule1, {
       type: _rules.RuleType.Action,
@@ -1046,12 +1067,14 @@ describe('common > main > rx > deep-subscribe > RuleBuilder', function () {
       }
     }); // noinspection JSUnusedLocalSymbols
 
-    var rule3 = builder3.result.next.next;
+    var rule3 = builder3.result().next.next;
   });
   it('map', function () {
-    var builder = new _RuleBuilder.RuleBuilder();
+    var builder = new _RuleBuilder.RuleBuilder({
+      autoInsertValuePropertyDefault: false
+    });
 
-    _Assert.assert.strictEqual(builder.result, undefined); // @ts-ignore
+    _Assert.assert.strictEqual(builder.result(), undefined); // @ts-ignore
 
 
     _Assert.assert.throws(function () {
@@ -1072,10 +1095,10 @@ describe('common > main > rx > deep-subscribe > RuleBuilder', function () {
       return builder.mapPredicate('string');
     }, Error);
 
-    _Assert.assert.strictEqual(builder.result, undefined);
+    _Assert.assert.strictEqual(builder.result(), undefined);
 
     var builder1 = builder.mapRegexp(/prop1|prop2/);
-    var rule1 = builder1.result;
+    var rule1 = builder1.result();
 
     _Assert.assert.strictEqual(builder1, builder);
 
@@ -1090,7 +1113,7 @@ describe('common > main > rx > deep-subscribe > RuleBuilder', function () {
 
     _Assert.assert.strictEqual(builder2, builder);
 
-    _Assert.assert.strictEqual(builder2.result, rule1);
+    _Assert.assert.strictEqual(builder2.result(), rule1);
 
     assertRule(rule1, {
       type: _rules.RuleType.Action,
@@ -1109,7 +1132,7 @@ describe('common > main > rx > deep-subscribe > RuleBuilder', function () {
 
     _Assert.assert.strictEqual(builder3, builder);
 
-    _Assert.assert.strictEqual(builder3.result, rule1);
+    _Assert.assert.strictEqual(builder3.result(), rule1);
 
     assertRule(rule1, {
       type: _rules.RuleType.Action,
@@ -1130,15 +1153,17 @@ describe('common > main > rx > deep-subscribe > RuleBuilder', function () {
       }
     }); // noinspection JSUnusedLocalSymbols
 
-    var rule3 = builder3.result.next.next;
+    var rule3 = builder3.result().next.next;
   });
-  it('mapAll', function () {
-    var builder = new _RuleBuilder.RuleBuilder();
+  it('mapAny', function () {
+    var builder = new _RuleBuilder.RuleBuilder({
+      autoInsertValuePropertyDefault: false
+    });
 
-    _Assert.assert.strictEqual(builder.result, undefined);
+    _Assert.assert.strictEqual(builder.result(), undefined);
 
-    var builder1 = builder.mapAll();
-    var rule1 = builder1.result;
+    var builder1 = builder.mapAny();
+    var rule1 = builder1.result();
 
     _Assert.assert.strictEqual(builder1, builder);
 
@@ -1153,7 +1178,7 @@ describe('common > main > rx > deep-subscribe > RuleBuilder', function () {
 
     _Assert.assert.strictEqual(builder2, builder);
 
-    _Assert.assert.strictEqual(builder2.result, rule1);
+    _Assert.assert.strictEqual(builder2.result(), rule1);
 
     assertRule(rule1, {
       type: _rules.RuleType.Action,
@@ -1172,7 +1197,7 @@ describe('common > main > rx > deep-subscribe > RuleBuilder', function () {
 
     _Assert.assert.strictEqual(builder3, builder);
 
-    _Assert.assert.strictEqual(builder3.result, rule1);
+    _Assert.assert.strictEqual(builder3.result(), rule1);
 
     assertRule(rule1, {
       type: _rules.RuleType.Action,
@@ -1197,7 +1222,7 @@ describe('common > main > rx > deep-subscribe > RuleBuilder', function () {
 
     _Assert.assert.strictEqual(builder4, builder);
 
-    _Assert.assert.strictEqual(builder4.result, rule1);
+    _Assert.assert.strictEqual(builder4.result(), rule1);
 
     assertRule(rule1, {
       type: _rules.RuleType.Action,
@@ -1225,14 +1250,16 @@ describe('common > main > rx > deep-subscribe > RuleBuilder', function () {
     });
   });
   it('mapKeys', function () {
-    var builder = new _RuleBuilder.RuleBuilder();
+    var builder = new _RuleBuilder.RuleBuilder({
+      autoInsertValuePropertyDefault: false
+    });
 
-    _Assert.assert.strictEqual(builder.result, undefined);
+    _Assert.assert.strictEqual(builder.result(), undefined);
 
-    _Assert.assert.strictEqual(builder.result, undefined);
+    _Assert.assert.strictEqual(builder.result(), undefined);
 
     var builder1 = builder.mapKeys('prop1');
-    var rule1 = builder1.result;
+    var rule1 = builder1.result();
 
     _Assert.assert.strictEqual(builder1, builder);
 
@@ -1247,7 +1274,7 @@ describe('common > main > rx > deep-subscribe > RuleBuilder', function () {
 
     _Assert.assert.strictEqual(builder2, builder);
 
-    _Assert.assert.strictEqual(builder2.result, rule1);
+    _Assert.assert.strictEqual(builder2.result(), rule1);
 
     assertRule(rule1, {
       type: _rules.RuleType.Action,
@@ -1266,7 +1293,7 @@ describe('common > main > rx > deep-subscribe > RuleBuilder', function () {
 
     _Assert.assert.strictEqual(builder3, builder);
 
-    _Assert.assert.strictEqual(builder3.result, rule1);
+    _Assert.assert.strictEqual(builder3.result(), rule1);
 
     assertRule(rule1, {
       type: _rules.RuleType.Action,
@@ -1287,15 +1314,17 @@ describe('common > main > rx > deep-subscribe > RuleBuilder', function () {
       }
     }); // noinspection JSUnusedLocalSymbols
 
-    var rule3 = builder3.result.next.next;
+    var rule3 = builder3.result().next.next;
   });
   it('collection', function () {
-    var builder = new _RuleBuilder.RuleBuilder();
+    var builder = new _RuleBuilder.RuleBuilder({
+      autoInsertValuePropertyDefault: false
+    });
 
-    _Assert.assert.strictEqual(builder.result, undefined);
+    _Assert.assert.strictEqual(builder.result(), undefined);
 
     var builder1 = builder.collection();
-    var rule1 = builder1.result;
+    var rule1 = builder1.result();
 
     _Assert.assert.strictEqual(builder1, builder);
 
@@ -1310,7 +1339,7 @@ describe('common > main > rx > deep-subscribe > RuleBuilder', function () {
 
     _Assert.assert.strictEqual(builder2, builder);
 
-    _Assert.assert.strictEqual(builder2.result, rule1);
+    _Assert.assert.strictEqual(builder2.result(), rule1);
 
     assertRule(rule1, {
       type: _rules.RuleType.Action,
@@ -1329,7 +1358,7 @@ describe('common > main > rx > deep-subscribe > RuleBuilder', function () {
 
     _Assert.assert.strictEqual(builder3, builder);
 
-    _Assert.assert.strictEqual(builder3.result, rule1);
+    _Assert.assert.strictEqual(builder3.result(), rule1);
 
     assertRule(rule1, {
       type: _rules.RuleType.Action,
@@ -1350,50 +1379,52 @@ describe('common > main > rx > deep-subscribe > RuleBuilder', function () {
       }
     }); // noinspection JSUnusedLocalSymbols
 
-    var rule3 = builder3.result.next.next;
+    var rule3 = builder3.result().next.next;
   });
   it('repeat', function () {
     var _context14, _context15;
 
-    var builder = new _RuleBuilder.RuleBuilder();
+    var builder = new _RuleBuilder.RuleBuilder({
+      autoInsertValuePropertyDefault: false
+    });
 
-    _Assert.assert.strictEqual(builder.result, undefined);
+    _Assert.assert.strictEqual(builder.result(), undefined);
 
     _Assert.assert.throws(function () {
-      return (0, _repeat.default)(builder).call(builder, 1, 1, function (b) {
+      return (0, _repeat.default)(builder).call(builder, 1, 1, null, function (b) {
         return null;
       });
     }, [Error, TypeError, ReferenceError]);
 
     _Assert.assert.throws(function () {
-      return (0, _repeat.default)(builder).call(builder, 1, 1, function (b) {
+      return (0, _repeat.default)(builder).call(builder, 1, 1, null, function (b) {
         return {
           rule: null
         };
       });
     }, [Error, TypeError, ReferenceError]);
 
-    var builder1 = (0, _repeat.default)(_context14 = (0, _repeat.default)(_context15 = (0, _repeat.default)(builder).call(builder, null, null, function (b) {
+    var builder1 = (0, _repeat.default)(_context14 = (0, _repeat.default)(_context15 = (0, _repeat.default)(builder).call(builder, null, null, null, function (b) {
       var _context16, _context17;
 
-      return (0, _repeat.default)(_context16 = (0, _repeat.default)(_context17 = (0, _repeat.default)(b).call(b, 1, null, function (b) {
+      return (0, _repeat.default)(_context16 = (0, _repeat.default)(_context17 = (0, _repeat.default)(b).call(b, 1, null, null, function (b) {
         return b.path(function (o) {
           return o.prop1;
         });
-      })).call(_context17, null, 2, function (b) {
+      })).call(_context17, null, 2, null, function (b) {
         return b.path(function (o) {
           return o["prop '2'"];
         });
-      })).call(_context16, 3, 4, function (b) {
+      })).call(_context16, 3, 4, null, function (b) {
         return b.path(function (o) {
           return o.prop4;
         });
       });
-    })).call(_context15, 5, 6, function (b) {
+    })).call(_context15, 5, 6, null, function (b) {
       return b.path(function (o) {
         return o.prop5;
       });
-    })).call(_context14, 7, 8, function (b) {
+    })).call(_context14, 7, 8, null, function (b) {
       return b.path(function (o) {
         return o.length;
       });
@@ -1402,14 +1433,16 @@ describe('common > main > rx > deep-subscribe > RuleBuilder', function () {
 
     _Assert.assert.strictEqual(builder1, builder);
 
-    assertRule(builder1.result, {
+    assertRule(builder1.result(), {
       type: _rules.RuleType.Repeat,
       countMin: 0,
       countMax: _maxSafeInteger.default,
+      condition: null,
       rule: {
         type: _rules.RuleType.Repeat,
         countMin: 1,
         countMax: _maxSafeInteger.default,
+        condition: null,
         rule: {
           type: _rules.RuleType.Action,
           objectTypes: ['object', 'array'],
@@ -1420,6 +1453,7 @@ describe('common > main > rx > deep-subscribe > RuleBuilder', function () {
           type: _rules.RuleType.Repeat,
           countMin: 0,
           countMax: 2,
+          condition: null,
           rule: {
             type: _rules.RuleType.Action,
             objectTypes: ['object', 'array'],
@@ -1430,6 +1464,7 @@ describe('common > main > rx > deep-subscribe > RuleBuilder', function () {
             type: _rules.RuleType.Repeat,
             countMin: 3,
             countMax: 4,
+            condition: null,
             rule: {
               type: _rules.RuleType.Action,
               objectTypes: ['object', 'array'],
@@ -1443,6 +1478,7 @@ describe('common > main > rx > deep-subscribe > RuleBuilder', function () {
         type: _rules.RuleType.Repeat,
         countMin: 5,
         countMax: 6,
+        condition: null,
         rule: {
           type: _rules.RuleType.Action,
           objectTypes: ['object', 'array'],
@@ -1453,6 +1489,7 @@ describe('common > main > rx > deep-subscribe > RuleBuilder', function () {
           type: _rules.RuleType.Repeat,
           countMin: 7,
           countMax: 8,
+          condition: null,
           rule: {
             type: _rules.RuleType.Action,
             objectTypes: ['object', 'array'],
@@ -1464,9 +1501,11 @@ describe('common > main > rx > deep-subscribe > RuleBuilder', function () {
     });
   });
   it('any', function () {
-    var builder = new _RuleBuilder.RuleBuilder();
+    var builder = new _RuleBuilder.RuleBuilder({
+      autoInsertValuePropertyDefault: false
+    });
 
-    _Assert.assert.strictEqual(builder.result, undefined);
+    _Assert.assert.strictEqual(builder.result(), undefined);
 
     _Assert.assert.throws(function () {
       return builder.any();
@@ -1541,7 +1580,7 @@ describe('common > main > rx > deep-subscribe > RuleBuilder', function () {
 
     _Assert.assert.strictEqual(builder1, builder);
 
-    assertRule(builder1.result, {
+    assertRule(builder1.result(), {
       type: _rules.RuleType.Any,
       rules: [{
         type: _rules.RuleType.Action,

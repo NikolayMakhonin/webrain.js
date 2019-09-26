@@ -165,7 +165,7 @@ function subscribeNext<TValue>(
 		ruleDescription: string,
 		catchHandlerLeaf: (err: Error, propertyName: string) => void,
 	): IUnsubscribeOrVoid {
-		// tslint:disable-next-line
+		// @ts-ignore
 		value = resolveAsync(value)
 		if (isThenable(value)) {
 			let unsubscribe
