@@ -153,8 +153,8 @@ export function calcMemAllocate(
 	testFunc: (...args: any[]) => void,
 	...testFuncArgs: any[]
 ): void {
-	const zero = _calcMemAllocate(calcType, countTests, (...args) => {
-	}, ...testFuncArgs)
+	// tslint:disable-next-line:no-empty
+	const zero = _calcMemAllocate(calcType, countTests, (...args) => {}, ...testFuncArgs)
 	const value = _calcMemAllocate(calcType, countTests, testFunc, ...testFuncArgs)
 
 	console.log(value.subtract(zero).toString())

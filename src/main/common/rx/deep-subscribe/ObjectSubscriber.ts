@@ -1,3 +1,4 @@
+/* tslint:disable:no-array-delete*/
 import {checkIsFuncOrNull} from '../../helpers/helpers'
 import {getObjectUniqueId} from '../../helpers/object-unique-id'
 import {binarySearch} from '../../lists/helpers/array'
@@ -146,8 +147,8 @@ export class ObjectSubscriber<TObject> implements IValueSubscriber<TObject> {
 
 					const unsubscribeValue = checkIsFuncOrNull(this._subscribe(value, parent, propertyName))
 					if (unsubscribeValue) {
-						this._unsubscribers[itemUniqueId] = unsubscribeValue
-						this._unsubscribersCount[itemUniqueId] = 1
+						_unsubscribers[itemUniqueId] = unsubscribeValue
+						_unsubscribersCount[itemUniqueId] = 1
 						// return this._setUnsubscribeObject(itemUniqueId, unsubscribeValue)
 					}
 				}
@@ -212,7 +213,7 @@ export class ObjectSubscriber<TObject> implements IValueSubscriber<TObject> {
 			// }
 		}
 
-		return () => this.unsubscribe(value, parent, propertyName)
+		return () => { this.unsubscribe(value, parent, propertyName) }
 	}
 
 	public unsubscribe(value: TObject, parent: any, propertyName: string) {
@@ -306,41 +307,5 @@ export class ObjectSubscriber<TObject> implements IValueSubscriber<TObject> {
 			// 	}
 			// }
 		}
-	}
-
-	private _setUnsubscribeObject(
-		itemUniqueId: number,
-		unsubscribeValue: IUnsubscribe,
-	): IUnsubscribe {
-		const unsubscribe = () => {
-			const {_unsubscribersCount} = this
-			if (!_unsubscribersCount) {
-				return
-			}
-
-			const unsubscribeCount = _unsubscribersCount[itemUniqueId]
-			if (!unsubscribeCount) {
-				return
-			}
-
-			if (unsubscribeCount > 1) {
-				_unsubscribersCount[itemUniqueId] = unsubscribeCount - 1
-			} else {
-				// leafUnsubscribers[itemUniqueId] = null // faster but there is a danger of memory overflow with nulls
-				delete this._unsubscribers[itemUniqueId]
-				delete _unsubscribersCount[itemUniqueId]
-
-				// if (unsubscribeValue) {
-				const _unsubscribeValue = unsubscribeValue
-				unsubscribeValue = null
-				_unsubscribeValue()
-				// }
-			}
-		}
-
-		this._unsubscribers[itemUniqueId] = unsubscribe
-		this._unsubscribersCount[itemUniqueId] = 1
-
-		return unsubscribe
 	}
 }

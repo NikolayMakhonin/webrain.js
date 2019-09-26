@@ -116,6 +116,7 @@ export class ObservableObjectBuilder<TObject extends ObservableObject> {
 
 		let setOnUpdate
 		if (update) {
+			// tslint:disable-next-line
 			const setOptions = options && options.setOptions
 			setOnUpdate = setOptions
 				? _setExt.bind(null, name, getValue, setValue, setOptions)
@@ -175,6 +176,7 @@ export class ObservableObjectBuilder<TObject extends ObservableObject> {
 			}
 			if (update) {
 				initAttributes.set = function(this: TObject, value) {
+					// tslint:disable:no-dead-store
 					const factoryValue = init.call(this)
 					const newValue = update.call(this, value)
 					if (typeof newValue !== 'undefined') {

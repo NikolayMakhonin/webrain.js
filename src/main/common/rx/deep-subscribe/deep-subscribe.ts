@@ -1,4 +1,4 @@
-/* tslint:disable:no-shadowed-variable */
+/* tslint:disable:no-shadowed-variable no-array-delete*/
 import {isThenable} from '../../async/async'
 import {resolveAsync} from '../../async/ThenableSync'
 import {checkIsFuncOrNull, toSingleCall} from '../../helpers/helpers'
@@ -90,13 +90,14 @@ function subscribeNext<TValue>(
 	}
 	const isLeaf = !iteration || iteration.done
 	if (!isLeaf && iteration.value.type === RuleType.Never) {
-		return
+		return null
 	}
 
 	// region resolve value
 
 	{
-		object = resolveAsync(object) as any
+		// tslint:disable-next-line
+		object = resolveAsync(object)
 		if (isThenable(object)) {
 			let unsubscribe
 			resolveAsync(object, o => {
@@ -119,7 +120,7 @@ function subscribeNext<TValue>(
 					// }
 				}
 				return o
-			}, err => catchHandler(err, propertiesPath))
+			}, err => { catchHandler(err, propertiesPath) })
 
 			return () => {
 				if (typeof unsubscribe === 'function') {
@@ -164,7 +165,8 @@ function subscribeNext<TValue>(
 		ruleDescription: string,
 		catchHandlerLeaf: (err: Error, propertyName: string) => void,
 	): IUnsubscribeOrVoid {
-		value = resolveAsync(value) as any
+		// tslint:disable-next-line
+		value = resolveAsync(value)
 		if (isThenable(value)) {
 			let unsubscribe
 			resolveAsync(value, o => {
@@ -181,8 +183,9 @@ function subscribeNext<TValue>(
 					// }
 				}
 				return o
-			}, err => catchHandlerLeaf(err, propertyName))
+			}, err => { catchHandlerLeaf(err, propertyName) })
 
+			// tslint:disable-next-line:no-identical-functions
 			return () => {
 				if (typeof unsubscribe === 'function') {
 					unsubscribe()
@@ -227,7 +230,7 @@ function subscribeNext<TValue>(
 			propertyName,
 			parent,
 			ruleDescription,
-			err => catchHandler(err, propertiesPath),
+			err => { catchHandler(err, propertiesPath) },
 		)
 	}
 

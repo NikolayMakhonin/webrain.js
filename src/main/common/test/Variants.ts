@@ -55,7 +55,7 @@ export class TreeToSequenceVariants<T> {
 		if (Array.isArray(subTree)) {
 			for (const subSequenceTree of subTree) {
 				if (Array.isArray(subSequenceTree)) {
-					const subSequenceVariants = treeToSequenceVariants(subSequenceTree as IArrayTree<T>)
+					const subSequenceVariants = treeToSequenceVariants(subSequenceTree)
 					for (const subSequenceVariant of subSequenceVariants) {
 						yield* treeToSequenceVariants(
 							this.tree,
