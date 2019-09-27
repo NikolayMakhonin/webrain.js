@@ -70,17 +70,19 @@ describe('common > main > rx > deep-subscribe > RuleBuilder', function() {
 			}
 		}
 
-		function checkDebugPropertyName(value: string, debugPropertyName: string) {
-			assert.ok(debugPropertyName)
-			assert.ok(debugPropertyName.length)
-
-			if (isCollection) {
-				assert.strictEqual(debugPropertyName[0], COLLECTION_PREFIX)
-				debugPropertyName = debugPropertyName.substring(1)
-			}
-
+		function checkDebugPropertyName(value: string, key: string, keyType: ItemKeyType) {
 			if (isMap) {
-				assert.strictEqual('value_' + debugPropertyName, value)
+				assert.ok(typeof key, 'string')
+				assert.strictEqual('value_' + key, value)
+				assert.strictEqual(keyType, ItemKeyType.MapKey)
+			} else if (isCollection) {
+				assert.strictEqual(key, null)
+				assert.strictEqual(keyType, ItemKeyType.CollectionAny)
+			} else {
+				assert.ok(typeof key, 'string')
+				assert.ok(key)
+				assert.ok(key.length)
+				assert.strictEqual(keyType, ItemKeyType.Property)
 			}
 		}
 
@@ -94,7 +96,7 @@ describe('common > main > rx > deep-subscribe > RuleBuilder', function() {
 
 				assert.ok(oldValue)
 				oldValue = oldValue.trim()
-				checkDebugPropertyName(oldValue, key)
+				checkDebugPropertyName(oldValue, key, keyType)
 				subscribedItems.push('-' + oldValue)
 			}
 
@@ -106,7 +108,7 @@ describe('common > main > rx > deep-subscribe > RuleBuilder', function() {
 				assert.ok(newValue)
 				assert.strictEqual(typeof newValue, 'string', newValue)
 				newValue = newValue.trim()
-				checkDebugPropertyName(newValue, key)
+				checkDebugPropertyName(newValue, key, keyType)
 				subscribedItems.push('+' + newValue)
 			}
 		}
@@ -311,7 +313,7 @@ describe('common > main > rx > deep-subscribe > RuleBuilder', function() {
 		}
 
 		testSubscribe(
-			false, true,
+			false, false,
 			{...builder.object},
 			builder.object,
 			subscribe,
