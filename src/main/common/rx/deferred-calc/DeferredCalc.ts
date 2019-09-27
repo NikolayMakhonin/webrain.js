@@ -32,8 +32,8 @@ export class DeferredCalc {
 
 	constructor(
 		canBeCalcCallback: () => void,
-		calcFunc: (done: (value?: any) => void) => void,
-		calcCompletedCallback: (value?: any) => void,
+		calcFunc: (done: (...args: any[]) => void) => void,
+		calcCompletedCallback: (...doneArgs: any[]) => void,
 		options: IDeferredCalcOptions,
 	) {
 		this._canBeCalcCallback = canBeCalcCallback
@@ -140,9 +140,9 @@ export class DeferredCalc {
 		this._timeCalcEnd = null
 		this._pulse()
 
-		this._calcFunc.call(this, (value: any) => {
+		this._calcFunc.call(this, (...args: any[]) => {
 			this._timeCalcEnd = this._timing.now()
-			this._calcCompletedCallback.call(this, value)
+			this._calcCompletedCallback.apply(this, args)
 			this._pulse()
 		})
 	}
