@@ -38,6 +38,10 @@ function compareSubscribed(o1: ISubscribedValue, o2: ISubscribedValue): number {
 	return 0
 }
 
+function valuesEqual(v1, v2) {
+	return v1 === v2 || Number.isNaN(v1) && Number.isNaN(v2)
+}
+
 export class ObjectSubscriber<TObject> implements IValueSubscriber<TObject> {
 	private readonly _subscribe: ISubscribeValue<TObject>
 	private readonly _unsubscribe: IUnsubscribeValue<TObject>
@@ -86,7 +90,7 @@ export class ObjectSubscriber<TObject> implements IValueSubscriber<TObject> {
 			if (index >= 0) {
 				const len = _subscribedValues.length
 				for (; index < len; index++) {
-					if (_subscribedValues[index].value === subscribedValue.value
+					if (valuesEqual(_subscribedValues[index].value, subscribedValue.value)
 						&& _subscribedValues[index].parent === subscribedValue.parent
 						&& _subscribedValues[index].propertyName === subscribedValue.propertyName
 					) {
