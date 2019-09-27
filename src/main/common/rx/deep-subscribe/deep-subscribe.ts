@@ -5,7 +5,7 @@ import {checkIsFuncOrNull, toSingleCall} from '../../helpers/helpers'
 import {getObjectUniqueId} from '../../helpers/object-unique-id'
 import {IUnsubscribe, IUnsubscribeOrVoid} from '../subjects/observable'
 import {ILastValue, ISubscribeValue, IUnsubscribeValue, IValueSubscriber} from './contracts/common'
-import {IRuleSubscribe} from './contracts/rule-subscribe'
+import {IRuleSubscribe, ItemChangeType, ItemKeyType} from './contracts/rule-subscribe'
 import {IRule, RuleType} from './contracts/rules'
 import {
 	INextRuleIterable,
@@ -300,105 +300,108 @@ function subscribeNext<TValue>(
 		return checkIsFuncOrNull(rule.subscribe(
 			object,
 			immediate,
-			(item, nextPropertyName: string) => {
-				const iterator = getNextRuleIterable && getNextRuleIterable(item)[Symbol.iterator]()
-				const iteration = iterator && iterator.next()
-				const isLeaf = !iteration || iteration.done
-				if (!isLeaf && iteration.value.type === RuleType.Never) {
-					return
+			(key, oldItem, newItem, changeType, keyType) => {
+				if ((changeType & ItemChangeType.Unsubscribe) !== 0) {
+					const iterator = getNextRuleIterable && getNextRuleIterable(oldItem)[Symbol.iterator]()
+					const iteration = iterator && iterator.next()
+					const isLeaf = !iteration || iteration.done
+					if (!isLeaf && iteration.value.type === RuleType.Never) {
+						return
+					}
+
+					if (!isLeaf && typeof oldItem === 'undefined') {
+						return
+					}
+
+					if (isLeaf && !(oldItem instanceof Object)) {
+						let nextParent = object
+						if (keyType == null) {
+							key = propertyName
+							nextParent = parent
+						}
+
+						valueSubscriber.unsubscribe(oldItem, nextParent, key)
+					} else {
+						unsubscribeNested(oldItem, unsubscribers, unsubscribersCount)
+					}
 				}
 
-				if (!isLeaf && typeof item === 'undefined') {
-					return
-				}
+				if ((changeType & ItemChangeType.Subscribe) !== 0) {
+					const iterator = getNextRuleIterable && getNextRuleIterable(newItem)[Symbol.iterator]()
+					const iteration = iterator && iterator.next()
+					const isLeaf = !iteration || iteration.done
+					if (!isLeaf && iteration.value.type === RuleType.Never) {
+						return
+					}
 
-				let nextParent = object
-				if (nextPropertyName == null) {
-					nextPropertyName = propertyName
-					nextParent = parent
-				}
+					if (!isLeaf && typeof newItem === 'undefined') {
+						return
+					}
 
-				if (isLeaf && !(item instanceof Object)) {
-					checkIsFuncOrNull(deepSubscribeItem(
-						item,
-						nextPropertyName,
+					let nextParent = object
+					if (keyType == null) {
+						key = propertyName
+						nextParent = parent
+					}
+
+					if (isLeaf && !(newItem instanceof Object)) {
+						checkIsFuncOrNull(deepSubscribeItem(
+							newItem,
+							key,
+							nextParent,
+							iterator,
+							iteration,
+						))
+						return
+					}
+
+					let unsubscribe: IUnsubscribeOrVoid | IUnsubscribe[]
+					let itemUniqueId: number
+
+					if (newItem instanceof Object) {
+						if (!unsubscribers) {
+							unsubscribers = rule.unsubscribers // + '_' + (nextUnsubscribePropertyId++)
+							unsubscribersCount = rule.unsubscribersCount
+						}
+						itemUniqueId = getObjectUniqueId(newItem)
+						unsubscribe = unsubscribers[itemUniqueId]
+						if (unsubscribe) {
+							unsubscribersCount[itemUniqueId]++
+							return
+						}
+					}
+
+					unsubscribe = checkIsFuncOrNull(deepSubscribeItem(
+						newItem,
+						key,
 						nextParent,
 						iterator,
 						iteration,
 					))
-					return
-				}
 
-				let unsubscribe: IUnsubscribeOrVoid|IUnsubscribe[]
-				let itemUniqueId: number
-
-				if (item instanceof Object) {
-					if (!unsubscribers) {
-						unsubscribers = rule.unsubscribers // + '_' + (nextUnsubscribePropertyId++)
-						unsubscribersCount = rule.unsubscribersCount
-					}
-					itemUniqueId = getObjectUniqueId(item)
-					unsubscribe = unsubscribers[itemUniqueId]
 					if (unsubscribe) {
-						unsubscribersCount[itemUniqueId]++
-						return
-					}
-				}
-
-				unsubscribe = checkIsFuncOrNull(deepSubscribeItem(
-					item,
-					nextPropertyName,
-					nextParent,
-					iterator,
-					iteration,
-				))
-
-				if (unsubscribe) {
-					if (item instanceof Object) {
-						const chainUnsubscribe = unsubscribers[itemUniqueId]
-						if (chainUnsubscribe) {
-							if (Array.isArray(chainUnsubscribe)) {
-								chainUnsubscribe.push(unsubscribe)
-								return
+						if (newItem instanceof Object) {
+							const chainUnsubscribe = unsubscribers[itemUniqueId]
+							if (chainUnsubscribe) {
+								if (Array.isArray(chainUnsubscribe)) {
+									chainUnsubscribe.push(unsubscribe)
+									return
+								}
+								unsubscribers[itemUniqueId] = [chainUnsubscribe, unsubscribe]
+							} else {
+								unsubscribers[itemUniqueId] = unsubscribe
 							}
-							unsubscribers[itemUniqueId] = [chainUnsubscribe, unsubscribe]
-						} else {
-							unsubscribers[itemUniqueId] = unsubscribe
+							unsubscribersCount[itemUniqueId] = 1
+							return
 						}
-						unsubscribersCount[itemUniqueId] = 1
-						return
+						unsubscribe()
+
+						throw new Error('You should not return unsubscribe function for non Object value.\n'
+							+ 'For subscribe value types use their object wrappers: Number, Boolean, String classes.\n'
+							+ `Unsubscribe function: ${unsubscribe}\nValue: ${newItem}\n`
+							+ `Value property path: ${(propertiesPath ? propertiesPath() + '.' : '')
+							+ (key + '(' + rule.description + ')')}`)
 					}
-					unsubscribe()
-
-					throw new Error('You should not return unsubscribe function for non Object value.\n'
-						+ 'For subscribe value types use their object wrappers: Number, Boolean, String classes.\n'
-						+ `Unsubscribe function: ${unsubscribe}\nValue: ${item}\n`
-						+ `Value property path: ${(propertiesPath ? propertiesPath() + '.' : '')
-							+ (nextPropertyName == null ? '' : nextPropertyName + '(' + rule.description + ')')}`)
-				}
-			},
-			(item, nextPropertyName: string) => {
-				const iterator = getNextRuleIterable && getNextRuleIterable(item)[Symbol.iterator]()
-				const iteration = iterator && iterator.next()
-				const isLeaf = !iteration || iteration.done
-				if (!isLeaf && iteration.value.type === RuleType.Never) {
-					return
-				}
-
-				if (!isLeaf && typeof item === 'undefined') {
-					return
-				}
-
-				if (isLeaf && !(item instanceof Object)) {
-					let nextParent = object
-					if (nextPropertyName == null) {
-						nextPropertyName = propertyName
-						nextParent = parent
-					}
-
-					valueSubscriber.unsubscribe(item, nextParent, nextPropertyName)
-				} else {
-					unsubscribeNested(item, unsubscribers, unsubscribersCount)
 				}
 			},
 		))
