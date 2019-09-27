@@ -31,6 +31,7 @@ export class CalcProperty<TValue, TInput = any, TMergeSource = any>
 	private readonly _initValue?: TValue
 
 	public input: TInput
+	public name: string
 
 	constructor(
 		calcFunc: CalcPropertyFunc<TInput, TValue, TMergeSource>,
