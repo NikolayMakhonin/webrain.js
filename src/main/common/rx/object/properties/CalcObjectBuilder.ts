@@ -27,7 +27,9 @@ export class CalcObjectBuilder<TObject extends ObservableObject, TValueKeys exte
 		>, Name>(name, {
 			factory(this: TObject) {
 				const property = calcFactory(initValue)
-				property.name = `${this.constructor.name}.${name}`
+				if (property.name == null) {
+					property.name = `${this.constructor.name}.${name}`
+				}
 				return property
 			},
 			init(property) {
