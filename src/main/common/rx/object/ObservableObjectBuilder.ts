@@ -15,10 +15,10 @@ export interface IWritableFieldOptions extends IFieldOptions {
 
 export interface IReadableFieldOptions<T> extends IWritableFieldOptions {
 	factory?: (initValue: T) => T
+	init?: (initValue: T) => void
 }
 
-export interface IUpdatableFieldOptions<T> extends IWritableFieldOptions {
-	factory?: (initValue: T) => T
+export interface IUpdatableFieldOptions<T> extends IReadableFieldOptions<T> {
 	update?: (value: any) => T|void
 }
 
@@ -153,10 +153,14 @@ export class ObservableObjectBuilder<TObject extends ObservableObject> {
 			Object.defineProperty(instance, name, attributes)
 		}
 
+		const initializeValue = options && options.init
 		if (factory) {
 			const init = function(this: TObject) {
 				const factoryValue = factory.call(this, initValue)
 				createInstanceProperty(this)
+				if (initializeValue) {
+					initializeValue.call(this, factoryValue)
+				}
 				return factoryValue
 			}
 
@@ -206,6 +210,10 @@ export class ObservableObjectBuilder<TObject extends ObservableObject> {
 
 			if (__fields && typeof initValue !== 'undefined') {
 				const oldValue = __fields[name]
+
+				if (initializeValue) {
+					initializeValue.call(this, initValue)
+				}
 
 				if (initValue !== oldValue) {
 					__fields[name] = initValue

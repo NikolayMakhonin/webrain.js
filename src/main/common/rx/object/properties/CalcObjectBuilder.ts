@@ -27,13 +27,14 @@ export class CalcObjectBuilder<TObject extends ObservableObject, TValueKeys exte
 		>, Name>(name, {
 			factory(this: TObject) {
 				const property = calcFactory(initValue)
+				return property
+			},
+			init(property) {
 				if (typeof inputOrFactory !== 'undefined') {
 					property.input = typeof inputOrFactory === 'function'
 						? (inputOrFactory as (object: TObject) => TInput)(this)
 						: inputOrFactory
 				}
-
-				return property
 			},
 		})
 	}
