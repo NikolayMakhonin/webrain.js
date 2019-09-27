@@ -301,25 +301,26 @@ function subscribeNext<TValue>(
 			object,
 			immediate,
 			(key, oldItem, newItem, changeType, keyType) => {
+				const item = changeType & ItemChangeType.Subscribe ? newItem : oldItem
+				const iterator = getNextRuleIterable && getNextRuleIterable(item)[Symbol.iterator]()
+				const iteration = iterator && iterator.next()
+				const isLeaf = !iteration || iteration.done
+				if (!isLeaf && iteration.value.type === RuleType.Never) {
+					return
+				}
+
+				if (!isLeaf && typeof item === 'undefined') {
+					return
+				}
+
+				let nextParent = object
+				if (keyType == null) {
+					key = propertyName
+					nextParent = parent
+				}
+
 				if ((changeType & ItemChangeType.Unsubscribe) !== 0) {
-					const iterator = getNextRuleIterable && getNextRuleIterable(oldItem)[Symbol.iterator]()
-					const iteration = iterator && iterator.next()
-					const isLeaf = !iteration || iteration.done
-					if (!isLeaf && iteration.value.type === RuleType.Never) {
-						return
-					}
-
-					if (!isLeaf && typeof oldItem === 'undefined') {
-						return
-					}
-
 					if (isLeaf && !(oldItem instanceof Object)) {
-						let nextParent = object
-						if (keyType == null) {
-							key = propertyName
-							nextParent = parent
-						}
-
 						valueSubscriber.unsubscribe(oldItem, nextParent, key)
 					} else {
 						unsubscribeNested(oldItem, unsubscribers, unsubscribersCount)
@@ -327,23 +328,6 @@ function subscribeNext<TValue>(
 				}
 
 				if ((changeType & ItemChangeType.Subscribe) !== 0) {
-					const iterator = getNextRuleIterable && getNextRuleIterable(newItem)[Symbol.iterator]()
-					const iteration = iterator && iterator.next()
-					const isLeaf = !iteration || iteration.done
-					if (!isLeaf && iteration.value.type === RuleType.Never) {
-						return
-					}
-
-					if (!isLeaf && typeof newItem === 'undefined') {
-						return
-					}
-
-					let nextParent = object
-					if (keyType == null) {
-						key = propertyName
-						nextParent = parent
-					}
-
 					if (isLeaf && !(newItem instanceof Object)) {
 						checkIsFuncOrNull(deepSubscribeItem(
 							newItem,
