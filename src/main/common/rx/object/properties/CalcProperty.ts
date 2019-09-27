@@ -58,7 +58,12 @@ export class CalcProperty<TValue, TInput = any, TMergeSource = any>
 			(done: (isChanged: boolean) => void) => {
 				const prevValue = this._valueProperty.value
 				this._deferredValue = resolveAsyncFunc(
-					() => this._calcFunc(this.input, this._valueProperty),
+					() => {
+						if (typeof this.input === 'undefined') {
+							return false
+						}
+						return this._calcFunc(this.input, this._valueProperty)
+					},
 					valueChanged => {
 						this._hasValue = true
 						const val = this._valueProperty.value
