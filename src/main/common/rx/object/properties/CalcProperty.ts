@@ -1,4 +1,4 @@
-import {ThenableOrIteratorOrValue, ThenableOrValue} from '../../../async/async'
+import {isAsync, ThenableOrIteratorOrValue, ThenableOrValue} from '../../../async/async'
 import {resolveAsyncFunc, ThenableSync} from '../../../async/ThenableSync'
 import {VALUE_PROPERTY_DEFAULT} from '../../../helpers/value-property'
 import {DeferredCalc, IDeferredCalcOptions} from '../../deferred-calc/DeferredCalc'
@@ -67,9 +67,10 @@ export class CalcProperty<TValue, TInput = any, TMergeSource = any>
 			() => {
 				this.onInvalidated()
 			},
-			(done: (isChanged: boolean) => void) => {
+			(done: (isChanged: boolean, oldValue: TValue, newValue: TValue) => void) => {
 				const prevValue = this._valueProperty.value
-				this._deferredValue = resolveAsyncFunc(
+
+				const deferredValue = resolveAsyncFunc(
 					() => {
 						if (typeof this.input === 'undefined') {
 							return false
@@ -82,24 +83,60 @@ export class CalcProperty<TValue, TInput = any, TMergeSource = any>
 						CalcObjectDebugger.Instance.onCalculated(this, val, prevValue)
 						done(valueChanged != null
 							? valueChanged as boolean
-							: prevValue !== val)
+							: prevValue !== val, prevValue, val)
 						return val
 					},
 					err => {
 						CalcObjectDebugger.Instance.onError(this, this._valueProperty.value, prevValue, err)
-						done(prevValue !== this._valueProperty.value)
+						const val = this._valueProperty.value
+						done(prevValue !== val, prevValue, val)
 						return ThenableSync.createRejected(err)
 					},
 					true,
 				)
+
+				if (isAsync(deferredValue)) {
+					this.setDeferredValue(deferredValue)
+				}
 			},
-			isChanged => {
+			(isChanged, oldValue, newValue) => {
 				if (isChanged) {
-					this.onCalculated()
+					this.setDeferredValue(newValue)
+					this.onValueChanged(oldValue, newValue)
 				}
 			},
 			calcOptions,
 		)
+	}
+
+	private setDeferredValue(newValue) {
+		const oldValue = this._deferredValue
+		if (newValue === oldValue) {
+			return
+		}
+
+		this._deferredValue = newValue
+
+		const {propertyChangedIfCanEmit} = this
+		if (propertyChangedIfCanEmit) {
+			propertyChangedIfCanEmit.onPropertyChanged(
+				{name: VALUE_PROPERTY_DEFAULT, oldValue, newValue},
+				{name: 'wait', oldValue, newValue},
+			)
+		}
+	}
+
+	private onValueChanged(oldValue, newValue) {
+		if (newValue === oldValue) {
+			return
+		}
+
+		const {propertyChangedIfCanEmit} = this
+		if (propertyChangedIfCanEmit) {
+			propertyChangedIfCanEmit.onPropertyChanged(
+				{name: 'last', oldValue, newValue},
+			)
+		}
 	}
 
 	public invalidate(): void {
@@ -111,26 +148,7 @@ export class CalcProperty<TValue, TInput = any, TMergeSource = any>
 
 		const {propertyChangedIfCanEmit} = this
 		if (propertyChangedIfCanEmit) {
-			const oldValue = this._valueProperty.value
-			const newValue = this.last // new CalcPropertyValue(this)
-			propertyChangedIfCanEmit.onPropertyChanged(
-				{name: VALUE_PROPERTY_DEFAULT, oldValue, newValue},
-				{name: 'wait', oldValue, newValue},
-				{name: 'last', oldValue, newValue},
-				{name: 'lastOrWait', oldValue, newValue},
-			)
-		}
-	}
-
-	public onCalculated() {
-		const {propertyChangedIfCanEmit} = this
-		if (propertyChangedIfCanEmit) {
-			const oldValue = this._valueProperty.value
-			const newValue = this.last // new CalcPropertyValue(this)
-			propertyChangedIfCanEmit.onPropertyChanged(
-				{name: 'last', oldValue, newValue},
-				{name: 'lastOrWait', oldValue, newValue},
-			)
+			this._deferredCalc.calc()
 		}
 	}
 
@@ -158,7 +176,13 @@ export class CalcProperty<TValue, TInput = any, TMergeSource = any>
 
 	public clear() {
 		if (this._valueProperty.value !== this._initValue) {
-			this._valueProperty.value = this._initValue
+			const oldValue = this._valueProperty.value
+			const newValue = this._initValue
+			this._valueProperty.value = newValue
+
+			this.onValueChanged(oldValue, newValue)
+			this.setDeferredValue(newValue)
+
 			this.invalidate()
 		}
 	}

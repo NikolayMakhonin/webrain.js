@@ -54,9 +54,9 @@ describe('common > main > rx > properties > CalcObjectBuilder', function() {
 				.connect('connectValue1', b => b.path(o => o['@lastOrWait'].source2['@wait']))),
 			calcPropertyFactory({
 				dependencies: d => d.invalidateOn(b => b.propertyAny()),
-				calcFunc(input, property: Property<ClassSync>): ThenableOrIteratorOrValue<void> {
+				calcFunc(input, property: Property<ClassSync>): ThenableOrIteratorOrValue<boolean> {
 					property.value = input.connectorSource
-					return ThenableSync.createResolved(null)
+					return ThenableSync.createResolved(true)
 				},
 			}),
 		)
@@ -78,9 +78,10 @@ describe('common > main > rx > properties > CalcObjectBuilder', function() {
 				.connect('connectValue1', b => b.path(o => o['@lastOrWait'].source2['@wait']))),
 			calcPropertyFactory({
 				dependencies: d => d.invalidateOn(b => b.propertyAny()),
-				*calcFunc(input, property: Property<ClassSync>): ThenableOrIteratorOrValue<void> {
+				*calcFunc(input, property: Property<ClassSync>): ThenableOrIteratorOrValue<boolean> {
 					yield new Promise(r => setTimeout(r, 100))
 					property.value = input.connectorSource
+					return true
 				},
 			}),
 		)
@@ -271,12 +272,13 @@ describe('common > main > rx > properties > CalcObjectBuilder', function() {
 			// .unsubscribe([new Date(123)])
 			.subscribe([new Date(123)])
 			.change(o => o.source1 = 234, [new Date(123)], [new Date(234)])
-			.change(o => o.source2 = 1, [date234], [date234])
+			.change(o => o.source2 = 1, [], [])
 			.change(o => o.source1 = 345, [new Date(234)], [new Date(345)])
 			.unsubscribe([new Date(345)])
 	})
 
 	it('deepSubscribe calc circular async', async function() {
+		const date234 = new Date(234)
 		const tester = new TestDeepSubscribe(
 			{
 				object: new ClassSync(),
@@ -291,7 +293,7 @@ describe('common > main > rx > properties > CalcObjectBuilder', function() {
 		await tester.unsubscribe([new Date(123)])
 		await tester.subscribe([new Date(123)])
 		await tester.change(o => o.source1 = 234, [new Date(123)], [new Date(234)])
-		await tester.change(o => o.source2 = 1, [new Date(234)], [new Date(234)])
+		await tester.change(o => o.source2 = 1, [], [])
 		await tester.change(o => o.source1 = 345, [new Date(234)], [new Date(345)])
 		await tester.unsubscribe([new Date(345)])
 	})
