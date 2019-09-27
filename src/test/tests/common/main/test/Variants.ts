@@ -17,7 +17,7 @@ describe('common > test > Variants', function() {
 	function testTree<T>(tree: IArrayTree<T>, resultArrays: T[][]) {
 		const iterables = treeToSequenceVariants(tree)
 		let arrays = iterablesToArrays(iterables)
-		console.log(iterablesToString(arrays))
+		// console.log(iterablesToString(arrays))
 		assert.deepStrictEqual(arrays, resultArrays)
 		arrays = iterablesToArrays(iterables)
 		assert.deepStrictEqual(arrays, resultArrays)
