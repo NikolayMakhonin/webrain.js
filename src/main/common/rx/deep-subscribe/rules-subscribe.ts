@@ -103,11 +103,11 @@ function subscribeObjectValue<TValue>(
 
 	const {propertyChanged} = object
 	let unsubscribe
-
+	let subscribed
 	if (propertyChanged) {
 		unsubscribe = checkIsFuncOrNull(propertyChanged
 			.subscribe(({name, oldValue, newValue}) => {
-				if (!unsubscribe && oldValue === newValue) {
+				if (!subscribed || !unsubscribe && oldValue === newValue) {
 					return
 				}
 
@@ -134,6 +134,8 @@ function subscribeObjectValue<TValue>(
 	} else if (unsubscribe == null) {
 		return null
 	}
+
+	subscribed = true
 
 	return () => {
 		if (unsubscribe) {
@@ -204,31 +206,13 @@ function subscribeObject<TValue>(
 		return null
 	}
 
-	let unsubscribe
-	// if (propertyNames !== VALUE_PROPERTY_DEFAULT && hasDefaultProperty(object)) {
-	// 	unsubscribe = subscribeDefaultProperty(
-	// 		object,
-	// 		immediateSubscribe,
-	// 		item => subscribeObject(
-	// 			propertyNames,
-	// 			propertyPredicate,
-	// 			item as any,
-	// 			immediateSubscribe,
-	// 			subscribeItem,
-	// 			unsubscribeItem),
-	// 	)
-	//
-	// 	if (unsubscribe) {
-	// 		return unsubscribe
-	// 	}
-	// }
-
 	const {propertyChanged} = object
-
+	let unsubscribe
+	let subscribed
 	if (propertyChanged) {
 		unsubscribe = checkIsFuncOrNull(propertyChanged
 			.subscribe(({name, oldValue, newValue}) => {
-				if (!unsubscribe && oldValue === newValue) {
+				if (!subscribed || !unsubscribe && oldValue === newValue) {
 					return
 				}
 
@@ -292,12 +276,14 @@ function subscribeObject<TValue>(
 			}
 		}
 	}
-	
+
 	if (immediateSubscribe) {
 		forEach(subscribeItem, true)
 	} else if (unsubscribe == null) {
 		return null
 	}
+
+	subscribed = true
 
 	return () => {
 		if (unsubscribe) {
@@ -355,9 +341,14 @@ function subscribeList<TItem>(
 
 	const {listChanged} = object
 	let unsubscribe
+	let subscribed
 	if (listChanged) {
 		unsubscribe = checkIsFuncOrNull(listChanged
 			.subscribe(({type, oldItems, newItems}) => {
+				if (!subscribed) {
+					return
+				}
+
 				switch (type) {
 					case ListChangedType.Added:
 						if (unsubscribe) {
@@ -389,6 +380,8 @@ function subscribeList<TItem>(
 		return null
 	}
 
+	subscribed = true
+
 	return () => {
 		if (unsubscribe) {
 			unsubscribe()
@@ -414,9 +407,14 @@ function subscribeSet<TItem>(
 
 	const {setChanged} = object
 	let unsubscribe
+	let subscribed
 	if (setChanged) {
 		unsubscribe = checkIsFuncOrNull(setChanged
 			.subscribe(({type, oldItems, newItems}) => {
+				if (!subscribed) {
+					return
+				}
+
 				switch (type) {
 					case SetChangedType.Added:
 						if (unsubscribe) {
@@ -439,6 +437,8 @@ function subscribeSet<TItem>(
 	} else if (unsubscribe == null) {
 		return null
 	}
+
+	subscribed = true
 
 	return () => {
 		if (unsubscribe) {
@@ -467,11 +467,11 @@ function subscribeMap<K, V>(
 
 	const {mapChanged} = object
 	let unsubscribe
-
+	let subscribed
 	if (mapChanged) {
 		unsubscribe = checkIsFuncOrNull(mapChanged
 			.subscribe(({type, key, oldValue, newValue}) => {
-				if (!unsubscribe && oldValue === newValue) {
+				if (!subscribed || !unsubscribe && oldValue === newValue) {
 					return
 				}
 
@@ -524,6 +524,8 @@ function subscribeMap<K, V>(
 	} else if (unsubscribe == null) {
 		return null
 	}
+
+	subscribed = true
 
 	return () => {
 		if (unsubscribe) {
