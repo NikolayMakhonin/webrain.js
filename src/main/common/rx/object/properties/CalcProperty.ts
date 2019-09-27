@@ -1,5 +1,5 @@
 import {ThenableOrIteratorOrValue, ThenableOrValue} from '../../../async/async'
-import {resolveAsyncFunc} from '../../../async/ThenableSync'
+import {resolveAsyncFunc, ThenableSync} from '../../../async/ThenableSync'
 import {VALUE_PROPERTY_DEFAULT} from '../../../helpers/value-property'
 import {DeferredCalc, IDeferredCalcOptions} from '../../deferred-calc/DeferredCalc'
 import {ObservableObject} from '../ObservableObject'
@@ -77,7 +77,7 @@ export class CalcProperty<TValue, TInput = any, TMergeSource = any>
 					err => {
 						CalcObjectDebugger.Instance.onError(this, this._valueProperty.value, prevValue, err)
 						done(prevValue !== this._valueProperty.value)
-						return err
+						return ThenableSync.createRejected(err)
 					},
 					true,
 				)
