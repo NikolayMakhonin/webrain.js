@@ -8,8 +8,9 @@ import {CalcObjectDebugger} from './CalcObjectDebugger'
 import {ICalcProperty} from './contracts'
 import {IPropertyOptions, Property} from './Property'
 
+/** @return true: value changed; false: value not changed; null - auto */
 export type CalcPropertyFunc<TInput, TTarget, TSource>
-	= (input: TInput, property: Property<TTarget, TSource>) => ThenableOrIteratorOrValue<void>
+	= (input: TInput, property: Property<TTarget, TSource>) => ThenableOrIteratorOrValue<boolean|void>
 
 export class CalcPropertyValue<TValue, TInput = any, TMergeSource = any> {
 	public get: () => CalcProperty<TValue, TInput, TMergeSource>
@@ -58,11 +59,13 @@ export class CalcProperty<TValue, TInput = any, TMergeSource = any>
 				const prevValue = this._valueProperty.value
 				this._deferredValue = resolveAsyncFunc(
 					() => this._calcFunc(this.input, this._valueProperty),
-					() => {
+					valueChanged => {
 						this._hasValue = true
 						const val = this._valueProperty.value
 						CalcObjectDebugger.Instance.onCalculated(this, val, prevValue)
-						done(prevValue !== val)
+						done(valueChanged != null
+							? valueChanged as boolean
+							: prevValue !== val)
 						return val
 					},
 					err => {
