@@ -64,10 +64,14 @@ function () {
 
       this._pulse();
 
-      this._calcFunc.call(this, function (value) {
+      this._calcFunc.call(this, function () {
         _this._timeCalcEnd = _this._timing.now();
 
-        _this._calcCompletedCallback.call(_this, value);
+        for (var _len = arguments.length, args = new Array(_len), _key = 0; _key < _len; _key++) {
+          args[_key] = arguments[_key];
+        }
+
+        _this._calcCompletedCallback.apply(_this, args);
 
         _this._pulse();
       });

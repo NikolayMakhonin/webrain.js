@@ -1,10 +1,13 @@
-import { resolveAsyncFunc } from '../../../async/ThenableSync';
+import { isAsync } from '../../../async/async';
+import { resolveAsyncFunc, ThenableSync } from '../../../async/ThenableSync';
 import { VALUE_PROPERTY_DEFAULT } from '../../../helpers/value-property';
 import { DeferredCalc } from '../../deferred-calc/DeferredCalc';
 import { ObservableObject } from '../ObservableObject';
 import { ObservableObjectBuilder } from '../ObservableObjectBuilder';
 import { CalcObjectDebugger } from './CalcObjectDebugger';
 import { Property } from './Property';
+/** @return true: value changed; false: value not changed; null - auto */
+
 export class CalcPropertyValue {
   constructor(property) {
     this.get = () => property;
@@ -12,7 +15,13 @@ export class CalcPropertyValue {
 
 }
 export class CalcProperty extends ObservableObject {
-  constructor(calcFunc, calcOptions, valueOptions, initValue) {
+  constructor({
+    calcFunc,
+    name,
+    calcOptions,
+    valueOptions,
+    initValue
+  }) {
     super();
 
     if (typeof calcFunc !== 'function') {
@@ -23,28 +32,87 @@ export class CalcProperty extends ObservableObject {
       this._initValue = initValue;
     }
 
+    if (typeof name !== 'undefined') {
+      this.name = name;
+    }
+
     this._calcFunc = calcFunc;
     this._valueProperty = new Property(valueOptions, initValue);
     this._deferredCalc = new DeferredCalc(() => {
       this.onInvalidated();
     }, done => {
       const prevValue = this._valueProperty.value;
-      this._deferredValue = resolveAsyncFunc(() => this._calcFunc(this.input, this._valueProperty), () => {
+      const deferredValue = resolveAsyncFunc(() => {
+        if (typeof this.input === 'undefined') {
+          return false;
+        }
+
+        return this._calcFunc(this.input, this._valueProperty);
+      }, valueChanged => {
         this._hasValue = true;
         const val = this._valueProperty.value;
         CalcObjectDebugger.Instance.onCalculated(this, val, prevValue);
-        done(prevValue !== val);
+        done(valueChanged != null ? valueChanged : prevValue !== val, prevValue, val);
         return val;
       }, err => {
         CalcObjectDebugger.Instance.onError(this, this._valueProperty.value, prevValue, err);
-        done(prevValue !== this._valueProperty.value);
-        return err;
+        const val = this._valueProperty.value;
+        done(prevValue !== val, prevValue, val);
+        return ThenableSync.createRejected(err);
       }, true);
-    }, isChanged => {
+
+      if (isAsync(deferredValue)) {
+        this.setDeferredValue(deferredValue);
+      }
+    }, (isChanged, oldValue, newValue) => {
       if (isChanged) {
-        this.onCalculated();
+        this.setDeferredValue(newValue);
+        this.onValueChanged(oldValue, newValue);
       }
     }, calcOptions);
+  }
+
+  setDeferredValue(newValue) {
+    const oldValue = this._deferredValue;
+
+    if (newValue === oldValue) {
+      return;
+    }
+
+    this._deferredValue = newValue;
+    const {
+      propertyChangedIfCanEmit
+    } = this;
+
+    if (propertyChangedIfCanEmit) {
+      propertyChangedIfCanEmit.onPropertyChanged({
+        name: VALUE_PROPERTY_DEFAULT,
+        oldValue,
+        newValue
+      }, {
+        name: 'wait',
+        oldValue,
+        newValue
+      });
+    }
+  }
+
+  onValueChanged(oldValue, newValue) {
+    if (newValue === oldValue) {
+      return;
+    }
+
+    const {
+      propertyChangedIfCanEmit
+    } = this;
+
+    if (propertyChangedIfCanEmit) {
+      propertyChangedIfCanEmit.onPropertyChanged({
+        name: 'last',
+        oldValue,
+        newValue
+      });
+    }
   }
 
   invalidate() {
@@ -58,47 +126,7 @@ export class CalcProperty extends ObservableObject {
     } = this;
 
     if (propertyChangedIfCanEmit) {
-      const oldValue = this._valueProperty.value;
-      const newValue = this.last; // new CalcPropertyValue(this)
-
-      propertyChangedIfCanEmit.onPropertyChanged({
-        name: VALUE_PROPERTY_DEFAULT,
-        oldValue,
-        newValue
-      }, {
-        name: 'wait',
-        oldValue,
-        newValue
-      }, {
-        name: 'last',
-        oldValue,
-        newValue
-      }, {
-        name: 'lastOrWait',
-        oldValue,
-        newValue
-      });
-    }
-  }
-
-  onCalculated() {
-    const {
-      propertyChangedIfCanEmit
-    } = this;
-
-    if (propertyChangedIfCanEmit) {
-      const oldValue = this._valueProperty.value;
-      const newValue = this.last; // new CalcPropertyValue(this)
-
-      propertyChangedIfCanEmit.onPropertyChanged({
-        name: 'last',
-        oldValue,
-        newValue
-      }, {
-        name: 'lastOrWait',
-        oldValue,
-        newValue
-      });
+      this._deferredCalc.calc();
     }
   }
 
@@ -126,7 +154,11 @@ export class CalcProperty extends ObservableObject {
 
   clear() {
     if (this._valueProperty.value !== this._initValue) {
-      this._valueProperty.value = this._initValue;
+      const oldValue = this._valueProperty.value;
+      const newValue = this._initValue;
+      this._valueProperty.value = newValue;
+      this.onValueChanged(oldValue, newValue);
+      this.setDeferredValue(newValue);
       this.invalidate();
     }
   }

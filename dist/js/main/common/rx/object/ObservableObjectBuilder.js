@@ -147,10 +147,17 @@ function () {
         (0, _defineProperty.default)(instance, name, attributes);
       };
 
+      var initializeValue = options && options.init;
+
       if (factory) {
         var init = function init() {
           var factoryValue = factory.call(this, initValue);
           createInstanceProperty(this);
+
+          if (initializeValue) {
+            initializeValue.call(this, factoryValue);
+          }
+
           return factoryValue;
         };
 
@@ -205,6 +212,10 @@ function () {
 
         if (__fields && typeof initValue !== 'undefined') {
           var _oldValue = __fields[name];
+
+          if (initializeValue) {
+            initializeValue.call(this, initValue);
+          }
 
           if (initValue !== _oldValue) {
             __fields[name] = initValue;

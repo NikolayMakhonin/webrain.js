@@ -24,6 +24,11 @@ export class DependenciesBuilder {
     }
 
     this.dependencies.push([ruleBase, predicate ? (target, value, parent, propertyName) => {
+      // prevent circular self dependency
+      if (target === parent) {
+        return;
+      }
+
       if (predicate(value, parent)) {
         action(target, value, parent, propertyName);
       }

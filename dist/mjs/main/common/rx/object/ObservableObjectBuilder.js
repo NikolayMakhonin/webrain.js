@@ -127,10 +127,17 @@ export class ObservableObjectBuilder {
       Object.defineProperty(instance, name, attributes);
     };
 
+    const initializeValue = options && options.init;
+
     if (factory) {
       const init = function () {
         const factoryValue = factory.call(this, initValue);
         createInstanceProperty(this);
+
+        if (initializeValue) {
+          initializeValue.call(this, factoryValue);
+        }
+
         return factoryValue;
       };
 
@@ -187,6 +194,10 @@ export class ObservableObjectBuilder {
 
       if (__fields && typeof initValue !== 'undefined') {
         const oldValue = __fields[name];
+
+        if (initializeValue) {
+          initializeValue.call(this, initValue);
+        }
 
         if (initValue !== oldValue) {
           __fields[name] = initValue;

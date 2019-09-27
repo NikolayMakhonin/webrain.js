@@ -10,8 +10,8 @@ describe('common > test > Variants', function () {
 
   function testTree(tree, resultArrays) {
     const iterables = treeToSequenceVariants(tree);
-    let arrays = iterablesToArrays(iterables);
-    console.log(iterablesToString(arrays));
+    let arrays = iterablesToArrays(iterables); // console.log(iterablesToString(arrays))
+
     assert.deepStrictEqual(arrays, resultArrays);
     arrays = iterablesToArrays(iterables);
     assert.deepStrictEqual(arrays, resultArrays);

@@ -22,8 +22,7 @@ describe('common > test > Variants', function () {
 
   function testTree(tree, resultArrays) {
     var iterables = (0, _Variants.treeToSequenceVariants)(tree);
-    var arrays = (0, _Variants.iterablesToArrays)(iterables);
-    console.log(iterablesToString(arrays));
+    var arrays = (0, _Variants.iterablesToArrays)(iterables); // console.log(iterablesToString(arrays))
 
     _Assert.assert.deepStrictEqual(arrays, resultArrays);
 

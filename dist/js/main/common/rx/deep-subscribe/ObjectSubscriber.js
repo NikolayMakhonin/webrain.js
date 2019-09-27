@@ -11,6 +11,8 @@ var _classCallCheck2 = _interopRequireDefault(require("@babel/runtime-corejs3/he
 
 var _createClass2 = _interopRequireDefault(require("@babel/runtime-corejs3/helpers/createClass"));
 
+var _isNan = _interopRequireDefault(require("@babel/runtime-corejs3/core-js-stable/number/is-nan"));
+
 var _helpers = require("../../helpers/helpers");
 
 var _objectUniqueId = require("../../helpers/object-unique-id");
@@ -46,6 +48,10 @@ function compareSubscribed(o1, o2) {
   }
 
   return 0;
+}
+
+function valuesEqual(v1, v2) {
+  return v1 === v2 || (0, _isNan.default)(v1) && (0, _isNan.default)(v2);
 }
 
 var ObjectSubscriber =
@@ -100,7 +106,7 @@ function () {
           var len = _subscribedValues.length;
 
           for (; index < len; index++) {
-            if (_subscribedValues[index].value === subscribedValue.value && _subscribedValues[index].parent === subscribedValue.parent && _subscribedValues[index].propertyName === subscribedValue.propertyName) {
+            if (valuesEqual(_subscribedValues[index].value, subscribedValue.value) && _subscribedValues[index].parent === subscribedValue.parent && _subscribedValues[index].propertyName === subscribedValue.propertyName) {
               break;
             }
           }

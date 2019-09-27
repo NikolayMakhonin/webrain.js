@@ -19,9 +19,14 @@ describe('resolvePath', function () {
   }
 
   const simple = {};
-  new CalcObjectBuilder(Class.prototype).writable('observable').calc('calc', simple, calcPropertyFactory(null, (input, property) => {
-    property.value = input.value;
-    return ThenableSync.createResolved(null);
+  new CalcObjectBuilder(Class.prototype).writable('observable').calc('calc', simple, calcPropertyFactory({
+    dependencies: null,
+
+    calcFunc(input, property) {
+      property.value = input.value;
+      return ThenableSync.createResolved(null);
+    }
+
   }));
   const object = new Class();
   object.simple = simple;

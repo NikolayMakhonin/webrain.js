@@ -33,6 +33,10 @@ function compareSubscribed(o1, o2) {
   return 0;
 }
 
+function valuesEqual(v1, v2) {
+  return v1 === v2 || Number.isNaN(v1) && Number.isNaN(v2);
+}
+
 export class ObjectSubscriber {
   constructor(subscribe, unsubscribe, lastValue) {
     this._subscribe = subscribe;
@@ -83,7 +87,7 @@ export class ObjectSubscriber {
         const len = _subscribedValues.length;
 
         for (; index < len; index++) {
-          if (_subscribedValues[index].value === subscribedValue.value && _subscribedValues[index].parent === subscribedValue.parent && _subscribedValues[index].propertyName === subscribedValue.propertyName) {
+          if (valuesEqual(_subscribedValues[index].value, subscribedValue.value) && _subscribedValues[index].parent === subscribedValue.parent && _subscribedValues[index].propertyName === subscribedValue.propertyName) {
             break;
           }
         }

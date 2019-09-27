@@ -36,22 +36,31 @@ function (_ObservableObjectBuil) {
         factory: function factory() {
           var property = calcFactory(initValue);
 
-          if (typeof inputOrFactory !== 'undefined') {
-            property.input = typeof inputOrFactory === 'function' ? inputOrFactory(this) : inputOrFactory;
+          if (property.name == null) {
+            property.name = this.constructor.name + "." + name;
           }
 
           return property;
+        },
+        init: function init(property) {
+          if (typeof inputOrFactory !== 'undefined') {
+            property.input = typeof inputOrFactory === 'function' ? inputOrFactory(this) : inputOrFactory;
+          }
         }
       });
     }
   }, {
     key: "calcChanges",
     value: function calcChanges(name, buildRule) {
-      return this.calc(name, void 0, (0, _CalcPropertyBuilder.calcPropertyFactory)(function (dependencies) {
-        return dependencies.invalidateOn(buildRule);
-      }, function (input, property) {
-        property.value++;
-      }, null, null, 0));
+      return this.calc(name, void 0, (0, _CalcPropertyBuilder.calcPropertyFactory)({
+        dependencies: function dependencies(_dependencies) {
+          return _dependencies.invalidateOn(buildRule);
+        },
+        calcFunc: function calcFunc(input, property) {
+          property.value++;
+        },
+        initValue: 0
+      }));
     }
   }]);
   return CalcObjectBuilder;

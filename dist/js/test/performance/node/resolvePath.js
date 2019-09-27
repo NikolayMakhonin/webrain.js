@@ -57,9 +57,12 @@ describe('resolvePath', function () {
   }(_ObservableObject2.ObservableObject);
 
   var simple = {};
-  new _CalcObjectBuilder.CalcObjectBuilder(Class.prototype).writable('observable').calc('calc', simple, (0, _CalcPropertyBuilder.calcPropertyFactory)(null, function (input, property) {
-    property.value = input.value;
-    return _ThenableSync.ThenableSync.createResolved(null);
+  new _CalcObjectBuilder.CalcObjectBuilder(Class.prototype).writable('observable').calc('calc', simple, (0, _CalcPropertyBuilder.calcPropertyFactory)({
+    dependencies: null,
+    calcFunc: function calcFunc(input, property) {
+      property.value = input.value;
+      return _ThenableSync.ThenableSync.createResolved(null);
+    }
   }));
   var object = new Class();
   object.simple = simple;

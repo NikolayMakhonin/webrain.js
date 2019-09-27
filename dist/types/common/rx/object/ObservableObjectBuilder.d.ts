@@ -10,9 +10,9 @@ export interface IWritableFieldOptions extends IFieldOptions {
 }
 export interface IReadableFieldOptions<T> extends IWritableFieldOptions {
     factory?: (initValue: T) => T;
+    init?: (initValue: T) => void;
 }
-export interface IUpdatableFieldOptions<T> extends IWritableFieldOptions {
-    factory?: (initValue: T) => T;
+export interface IUpdatableFieldOptions<T> extends IReadableFieldOptions<T> {
     update?: (value: any) => T | void;
 }
 export declare class ObservableObjectBuilder<TObject extends ObservableObject> {

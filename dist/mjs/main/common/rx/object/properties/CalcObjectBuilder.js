@@ -6,20 +6,32 @@ export class CalcObjectBuilder extends ObservableObjectBuilder {
       factory() {
         const property = calcFactory(initValue);
 
-        if (typeof inputOrFactory !== 'undefined') {
-          property.input = typeof inputOrFactory === 'function' ? inputOrFactory(this) : inputOrFactory;
+        if (property.name == null) {
+          property.name = `${this.constructor.name}.${name}`;
         }
 
         return property;
+      },
+
+      init(property) {
+        if (typeof inputOrFactory !== 'undefined') {
+          property.input = typeof inputOrFactory === 'function' ? inputOrFactory(this) : inputOrFactory;
+        }
       }
 
     });
   }
 
   calcChanges(name, buildRule) {
-    return this.calc(name, void 0, calcPropertyFactory(dependencies => dependencies.invalidateOn(buildRule), (input, property) => {
-      property.value++;
-    }, null, null, 0));
+    return this.calc(name, void 0, calcPropertyFactory({
+      dependencies: dependencies => dependencies.invalidateOn(buildRule),
+
+      calcFunc(input, property) {
+        property.value++;
+      },
+
+      initValue: 0
+    }));
   }
 
 } // const builder = new CalcObjectBuilder(true as any)

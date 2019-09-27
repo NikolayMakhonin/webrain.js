@@ -85,26 +85,32 @@ describe('common > main > rx > properties > CalcObjectBuilder', function () {
     });
   }), // .connect('connectValue1', b => b.p('source1'))),
   // b.path(o => o['@lastOrWait'].source1['@wait']))),
-  (0, _CalcPropertyBuilder.calcPropertyFactory)(function (d) {
-    return d.invalidateOn(function (b) {
-      return b.propertyAny();
-    });
-  }, function (input, property) {
-    property.value = input.connectValue1 && new Date(input.connectValue1);
-    return _ThenableSync.ThenableSync.createResolved(null);
+  (0, _CalcPropertyBuilder.calcPropertyFactory)({
+    dependencies: function dependencies(d) {
+      return d.invalidateOn(function (b) {
+        return b.propertyAny();
+      });
+    },
+    calcFunc: function calcFunc(input, property) {
+      property.value = input.connectValue1 && new Date(input.connectValue1);
+      return _ThenableSync.ThenableSync.createResolved(null);
+    }
   })).calc('calc2', (0, _ConnectorBuilder.connectorFactory)(function (c) {
     return c.connect('connectValue1', function (b) {
       return b.path(function (o) {
         return o['@lastOrWait'].source2['@wait'];
       });
     });
-  }), (0, _CalcPropertyBuilder.calcPropertyFactory)(function (d) {
-    return d.invalidateOn(function (b) {
-      return b.propertyAny();
-    });
-  }, function (input, property) {
-    property.value = input.connectorSource;
-    return _ThenableSync.ThenableSync.createResolved(null);
+  }), (0, _CalcPropertyBuilder.calcPropertyFactory)({
+    dependencies: function dependencies(d) {
+      return d.invalidateOn(function (b) {
+        return b.propertyAny();
+      });
+    },
+    calcFunc: function calcFunc(input, property) {
+      property.value = input.connectorSource;
+      return _ThenableSync.ThenableSync.createResolved(true);
+    }
   }));
   new _CalcObjectBuilder.CalcObjectBuilder(ClassAsync.prototype).calc('calc1', (0, _ConnectorBuilder.connectorFactory)(function (c) {
     return c.connect('connectValue1', function (b) {
@@ -112,63 +118,70 @@ describe('common > main > rx > properties > CalcObjectBuilder', function () {
         return o['@lastOrWait'].source1['@wait'];
       });
     });
-  }), (0, _CalcPropertyBuilder.calcPropertyFactory)(function (d) {
-    return d.invalidateOn(function (b) {
-      return b.propertyAny();
-    });
-  },
-  /*#__PURE__*/
-  _regenerator.default.mark(function _callee(input, property) {
-    return _regenerator.default.wrap(function _callee$(_context2) {
-      while (1) {
-        switch (_context2.prev = _context2.next) {
-          case 0:
-            _context2.next = 2;
-            return new _promise.default(function (r) {
-              return (0, _setTimeout2.default)(r, 100);
-            });
+  }), (0, _CalcPropertyBuilder.calcPropertyFactory)({
+    dependencies: function dependencies(d) {
+      return d.invalidateOn(function (b) {
+        return b.propertyAny();
+      });
+    },
+    calcFunc:
+    /*#__PURE__*/
+    _regenerator.default.mark(function calcFunc(input, property) {
+      return _regenerator.default.wrap(function calcFunc$(_context2) {
+        while (1) {
+          switch (_context2.prev = _context2.next) {
+            case 0:
+              _context2.next = 2;
+              return new _promise.default(function (r) {
+                return (0, _setTimeout2.default)(r, 100);
+              });
 
-          case 2:
-            property.value = new Date(input.connectValue1);
+            case 2:
+              property.value = new Date(input.connectValue1);
 
-          case 3:
-          case "end":
-            return _context2.stop();
+            case 3:
+            case "end":
+              return _context2.stop();
+          }
         }
-      }
-    }, _callee);
-  }))).calc('calc2', (0, _ConnectorBuilder.connectorFactory)(function (c) {
+      }, calcFunc);
+    })
+  })).calc('calc2', (0, _ConnectorBuilder.connectorFactory)(function (c) {
     return c.connect('connectValue1', function (b) {
       return b.path(function (o) {
         return o['@lastOrWait'].source2['@wait'];
       });
     });
-  }), (0, _CalcPropertyBuilder.calcPropertyFactory)(function (d) {
-    return d.invalidateOn(function (b) {
-      return b.propertyAny();
-    });
-  },
-  /*#__PURE__*/
-  _regenerator.default.mark(function _callee2(input, property) {
-    return _regenerator.default.wrap(function _callee2$(_context3) {
-      while (1) {
-        switch (_context3.prev = _context3.next) {
-          case 0:
-            _context3.next = 2;
-            return new _promise.default(function (r) {
-              return (0, _setTimeout2.default)(r, 100);
-            });
+  }), (0, _CalcPropertyBuilder.calcPropertyFactory)({
+    dependencies: function dependencies(d) {
+      return d.invalidateOn(function (b) {
+        return b.propertyAny();
+      });
+    },
+    calcFunc:
+    /*#__PURE__*/
+    _regenerator.default.mark(function calcFunc(input, property) {
+      return _regenerator.default.wrap(function calcFunc$(_context3) {
+        while (1) {
+          switch (_context3.prev = _context3.next) {
+            case 0:
+              _context3.next = 2;
+              return new _promise.default(function (r) {
+                return (0, _setTimeout2.default)(r, 100);
+              });
 
-          case 2:
-            property.value = input.connectorSource;
+            case 2:
+              property.value = input.connectorSource;
+              return _context3.abrupt("return", true);
 
-          case 3:
-          case "end":
-            return _context3.stop();
+            case 4:
+            case "end":
+              return _context3.stop();
+          }
         }
-      }
-    }, _callee2);
-  })));
+      }, calcFunc);
+    })
+  }));
   it('calc sync', function () {
     var result = new ClassSync().calc1.last;
     assert.deepStrictEqual(result, new Date(123));
@@ -232,9 +245,9 @@ describe('common > main > rx > properties > CalcObjectBuilder', function () {
   /*#__PURE__*/
   (0, _asyncToGenerator2.default)(
   /*#__PURE__*/
-  _regenerator.default.mark(function _callee3() {
+  _regenerator.default.mark(function _callee() {
     var object;
-    return _regenerator.default.wrap(function _callee3$(_context4) {
+    return _regenerator.default.wrap(function _callee$(_context4) {
       while (1) {
         switch (_context4.prev = _context4.next) {
           case 0:
@@ -269,15 +282,15 @@ describe('common > main > rx > properties > CalcObjectBuilder', function () {
             return _context4.stop();
         }
       }
-    }, _callee3);
+    }, _callee);
   })));
   it('calc async resolve',
   /*#__PURE__*/
   (0, _asyncToGenerator2.default)(
   /*#__PURE__*/
-  _regenerator.default.mark(function _callee4() {
+  _regenerator.default.mark(function _callee2() {
     var val, object, obj;
-    return _regenerator.default.wrap(function _callee4$(_context5) {
+    return _regenerator.default.wrap(function _callee2$(_context5) {
       while (1) {
         switch (_context5.prev = _context5.next) {
           case 0:
@@ -407,15 +420,15 @@ describe('common > main > rx > properties > CalcObjectBuilder', function () {
             return _context5.stop();
         }
       }
-    }, _callee4);
+    }, _callee2);
   })));
   it('circular calc sync',
   /*#__PURE__*/
   (0, _asyncToGenerator2.default)(
   /*#__PURE__*/
-  _regenerator.default.mark(function _callee5() {
+  _regenerator.default.mark(function _callee3() {
     var object, value, value2;
-    return _regenerator.default.wrap(function _callee5$(_context6) {
+    return _regenerator.default.wrap(function _callee3$(_context6) {
       while (1) {
         switch (_context6.prev = _context6.next) {
           case 0:
@@ -450,15 +463,15 @@ describe('common > main > rx > properties > CalcObjectBuilder', function () {
             return _context6.stop();
         }
       }
-    }, _callee5);
+    }, _callee3);
   })));
   it('circular calc async',
   /*#__PURE__*/
   (0, _asyncToGenerator2.default)(
   /*#__PURE__*/
-  _regenerator.default.mark(function _callee6() {
+  _regenerator.default.mark(function _callee4() {
     var object, value, value2;
-    return _regenerator.default.wrap(function _callee6$(_context7) {
+    return _regenerator.default.wrap(function _callee4$(_context7) {
       while (1) {
         switch (_context7.prev = _context7.next) {
           case 0:
@@ -519,14 +532,14 @@ describe('common > main > rx > properties > CalcObjectBuilder', function () {
             return _context7.stop();
         }
       }
-    }, _callee6);
+    }, _callee4);
   })));
   it('deepSubscribe simple',
   /*#__PURE__*/
   (0, _asyncToGenerator2.default)(
   /*#__PURE__*/
-  _regenerator.default.mark(function _callee7() {
-    return _regenerator.default.wrap(function _callee7$(_context8) {
+  _regenerator.default.mark(function _callee5() {
+    return _regenerator.default.wrap(function _callee5$(_context8) {
       while (1) {
         switch (_context8.prev = _context8.next) {
           case 0:
@@ -554,14 +567,14 @@ describe('common > main > rx > properties > CalcObjectBuilder', function () {
             return _context8.stop();
         }
       }
-    }, _callee7);
+    }, _callee5);
   })));
   it('deepSubscribe calc sync',
   /*#__PURE__*/
   (0, _asyncToGenerator2.default)(
   /*#__PURE__*/
-  _regenerator.default.mark(function _callee8() {
-    return _regenerator.default.wrap(function _callee8$(_context9) {
+  _regenerator.default.mark(function _callee6() {
+    return _regenerator.default.wrap(function _callee6$(_context9) {
       while (1) {
         switch (_context9.prev = _context9.next) {
           case 0:
@@ -585,15 +598,15 @@ describe('common > main > rx > properties > CalcObjectBuilder', function () {
             return _context9.stop();
         }
       }
-    }, _callee8);
+    }, _callee6);
   })));
   it('deepSubscribe calc async',
   /*#__PURE__*/
   (0, _asyncToGenerator2.default)(
   /*#__PURE__*/
-  _regenerator.default.mark(function _callee9() {
+  _regenerator.default.mark(function _callee7() {
     var tester;
-    return _regenerator.default.wrap(function _callee9$(_context10) {
+    return _regenerator.default.wrap(function _callee7$(_context10) {
       while (1) {
         switch (_context10.prev = _context10.next) {
           case 0:
@@ -633,15 +646,15 @@ describe('common > main > rx > properties > CalcObjectBuilder', function () {
             return _context10.stop();
         }
       }
-    }, _callee9);
+    }, _callee7);
   })));
   it('deepSubscribe calc circular sync',
   /*#__PURE__*/
   (0, _asyncToGenerator2.default)(
   /*#__PURE__*/
-  _regenerator.default.mark(function _callee10() {
+  _regenerator.default.mark(function _callee8() {
     var date234;
-    return _regenerator.default.wrap(function _callee10$(_context11) {
+    return _regenerator.default.wrap(function _callee8$(_context11) {
       while (1) {
         switch (_context11.prev = _context11.next) {
           case 0:
@@ -659,7 +672,7 @@ describe('common > main > rx > properties > CalcObjectBuilder', function () {
               return o.source1 = 234;
             }, [new Date(123)], [new Date(234)]).change(function (o) {
               return o.source2 = 1;
-            }, [date234], [date234]).change(function (o) {
+            }, [], []).change(function (o) {
               return o.source1 = 345;
             }, [new Date(234)], [new Date(345)]).unsubscribe([new Date(345)]);
 
@@ -668,18 +681,19 @@ describe('common > main > rx > properties > CalcObjectBuilder', function () {
             return _context11.stop();
         }
       }
-    }, _callee10);
+    }, _callee8);
   })));
   it('deepSubscribe calc circular async',
   /*#__PURE__*/
   (0, _asyncToGenerator2.default)(
   /*#__PURE__*/
-  _regenerator.default.mark(function _callee11() {
-    var tester;
-    return _regenerator.default.wrap(function _callee11$(_context12) {
+  _regenerator.default.mark(function _callee9() {
+    var date234, tester;
+    return _regenerator.default.wrap(function _callee9$(_context12) {
       while (1) {
         switch (_context12.prev = _context12.next) {
           case 0:
+            date234 = new Date(234);
             tester = new _TestDeepSubscribe.TestDeepSubscribe({
               object: new ClassSync(),
               immediate: true,
@@ -688,44 +702,44 @@ describe('common > main > rx > properties > CalcObjectBuilder', function () {
             }, function (b) {
               return b.p('calc2').p('calc2').p('calc2').p('calc1');
             });
-            _context12.next = 3;
+            _context12.next = 4;
             return tester.subscribe([new Date(123)]);
 
-          case 3:
-            _context12.next = 5;
+          case 4:
+            _context12.next = 6;
             return tester.unsubscribe([new Date(123)]);
 
-          case 5:
-            _context12.next = 7;
+          case 6:
+            _context12.next = 8;
             return tester.subscribe([new Date(123)]);
 
-          case 7:
-            _context12.next = 9;
+          case 8:
+            _context12.next = 10;
             return tester.change(function (o) {
               return o.source1 = 234;
             }, [new Date(123)], [new Date(234)]);
 
-          case 9:
-            _context12.next = 11;
+          case 10:
+            _context12.next = 12;
             return tester.change(function (o) {
               return o.source2 = 1;
-            }, [new Date(234)], [new Date(234)]);
+            }, [], []);
 
-          case 11:
-            _context12.next = 13;
+          case 12:
+            _context12.next = 14;
             return tester.change(function (o) {
               return o.source1 = 345;
             }, [new Date(234)], [new Date(345)]);
 
-          case 13:
-            _context12.next = 15;
+          case 14:
+            _context12.next = 16;
             return tester.unsubscribe([new Date(345)]);
 
-          case 15:
+          case 16:
           case "end":
             return _context12.stop();
         }
       }
-    }, _callee11);
+    }, _callee9);
   })));
 });

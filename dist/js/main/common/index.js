@@ -1,7 +1,7 @@
 "use strict";
 
 exports.__esModule = true;
-exports.CalcObjectDebugger = exports.createFunction = exports.Property = exports.connectorFactory = exports.calcPropertyFactory = exports.CalcObjectBuilder = exports.ObservableObject = exports.ThenableSync = void 0;
+exports.resolvePath = exports.deepSubscribe = exports.ObservableMap = exports.ObservableSet = exports.ArrayMap = exports.ArraySet = exports.getObjectUniqueId = exports.CalcObjectDebugger = exports.createFunction = exports.Property = exports.connectorFactory = exports.calcPropertyFactory = exports.CalcObjectBuilder = exports.ObservableObject = exports.ThenableSync = void 0;
 
 var _ThenableSync = require("./async/ThenableSync");
 
@@ -34,3 +34,31 @@ exports.createFunction = _helpers.createFunction;
 var _CalcObjectDebugger = require("./rx/object/properties/CalcObjectDebugger");
 
 exports.CalcObjectDebugger = _CalcObjectDebugger.CalcObjectDebugger;
+
+var _objectUniqueId = require("./helpers/object-unique-id");
+
+exports.getObjectUniqueId = _objectUniqueId.getObjectUniqueId;
+
+var _ArraySet = require("./lists/ArraySet");
+
+exports.ArraySet = _ArraySet.ArraySet;
+
+var _ArrayMap = require("./lists/ArrayMap");
+
+exports.ArrayMap = _ArrayMap.ArrayMap;
+
+var _ObservableSet = require("./lists/ObservableSet");
+
+exports.ObservableSet = _ObservableSet.ObservableSet;
+
+var _ObservableMap = require("./lists/ObservableMap");
+
+exports.ObservableMap = _ObservableMap.ObservableMap;
+
+var _deepSubscribe = require("./rx/deep-subscribe/deep-subscribe");
+
+exports.deepSubscribe = _deepSubscribe.deepSubscribe;
+
+var _helpers2 = require("./rx/object/properties/helpers");
+
+exports.resolvePath = _helpers2.resolvePath;

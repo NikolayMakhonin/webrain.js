@@ -17,6 +17,8 @@ var _inherits2 = _interopRequireDefault(require("@babel/runtime-corejs3/helpers/
 
 var _classCallCheck2 = _interopRequireDefault(require("@babel/runtime-corejs3/helpers/classCallCheck"));
 
+var _async = require("../../../async/async");
+
 var _ThenableSync = require("../../../async/ThenableSync");
 
 var _valueProperty = require("../../../helpers/value-property");
@@ -46,9 +48,14 @@ var CalcProperty =
 function (_ObservableObject) {
   (0, _inherits2.default)(CalcProperty, _ObservableObject);
 
-  function CalcProperty(calcFunc, calcOptions, valueOptions, initValue) {
+  function CalcProperty(_ref) {
     var _this;
 
+    var calcFunc = _ref.calcFunc,
+        name = _ref.name,
+        calcOptions = _ref.calcOptions,
+        valueOptions = _ref.valueOptions,
+        initValue = _ref.initValue;
     (0, _classCallCheck2.default)(this, CalcProperty);
     _this = (0, _possibleConstructorReturn2.default)(this, (0, _getPrototypeOf2.default)(CalcProperty).call(this));
 
@@ -60,37 +67,93 @@ function (_ObservableObject) {
       _this._initValue = initValue;
     }
 
+    if (typeof name !== 'undefined') {
+      _this.name = name;
+    }
+
     _this._calcFunc = calcFunc;
     _this._valueProperty = new _Property.Property(valueOptions, initValue);
     _this._deferredCalc = new _DeferredCalc.DeferredCalc(function () {
       _this.onInvalidated();
     }, function (done) {
       var prevValue = _this._valueProperty.value;
-      _this._deferredValue = (0, _ThenableSync.resolveAsyncFunc)(function () {
+      var deferredValue = (0, _ThenableSync.resolveAsyncFunc)(function () {
+        if (typeof _this.input === 'undefined') {
+          return false;
+        }
+
         return _this._calcFunc(_this.input, _this._valueProperty);
-      }, function () {
+      }, function (valueChanged) {
         _this._hasValue = true;
         var val = _this._valueProperty.value;
 
         _CalcObjectDebugger.CalcObjectDebugger.Instance.onCalculated((0, _assertThisInitialized2.default)(_this), val, prevValue);
 
-        done(prevValue !== val);
+        done(valueChanged != null ? valueChanged : prevValue !== val, prevValue, val);
         return val;
       }, function (err) {
         _CalcObjectDebugger.CalcObjectDebugger.Instance.onError((0, _assertThisInitialized2.default)(_this), _this._valueProperty.value, prevValue, err);
 
-        done(prevValue !== _this._valueProperty.value);
-        return err;
+        var val = _this._valueProperty.value;
+        done(prevValue !== val, prevValue, val);
+        return _ThenableSync.ThenableSync.createRejected(err);
       }, true);
-    }, function (isChanged) {
+
+      if ((0, _async.isAsync)(deferredValue)) {
+        _this.setDeferredValue(deferredValue);
+      }
+    }, function (isChanged, oldValue, newValue) {
       if (isChanged) {
-        _this.onCalculated();
+        _this.setDeferredValue(newValue);
+
+        _this.onValueChanged(oldValue, newValue);
       }
     }, calcOptions);
     return _this;
   }
 
   (0, _createClass2.default)(CalcProperty, [{
+    key: "setDeferredValue",
+    value: function setDeferredValue(newValue) {
+      var oldValue = this._deferredValue;
+
+      if (newValue === oldValue) {
+        return;
+      }
+
+      this._deferredValue = newValue;
+      var propertyChangedIfCanEmit = this.propertyChangedIfCanEmit;
+
+      if (propertyChangedIfCanEmit) {
+        propertyChangedIfCanEmit.onPropertyChanged({
+          name: _valueProperty.VALUE_PROPERTY_DEFAULT,
+          oldValue: oldValue,
+          newValue: newValue
+        }, {
+          name: 'wait',
+          oldValue: oldValue,
+          newValue: newValue
+        });
+      }
+    }
+  }, {
+    key: "onValueChanged",
+    value: function onValueChanged(oldValue, newValue) {
+      if (newValue === oldValue) {
+        return;
+      }
+
+      var propertyChangedIfCanEmit = this.propertyChangedIfCanEmit;
+
+      if (propertyChangedIfCanEmit) {
+        propertyChangedIfCanEmit.onPropertyChanged({
+          name: 'last',
+          oldValue: oldValue,
+          newValue: newValue
+        });
+      }
+    }
+  }, {
     key: "invalidate",
     value: function invalidate() {
       this._deferredCalc.invalidate();
@@ -103,53 +166,18 @@ function (_ObservableObject) {
       var propertyChangedIfCanEmit = this.propertyChangedIfCanEmit;
 
       if (propertyChangedIfCanEmit) {
-        var oldValue = this._valueProperty.value;
-        var newValue = this.last; // new CalcPropertyValue(this)
-
-        propertyChangedIfCanEmit.onPropertyChanged({
-          name: _valueProperty.VALUE_PROPERTY_DEFAULT,
-          oldValue: oldValue,
-          newValue: newValue
-        }, {
-          name: 'wait',
-          oldValue: oldValue,
-          newValue: newValue
-        }, {
-          name: 'last',
-          oldValue: oldValue,
-          newValue: newValue
-        }, {
-          name: 'lastOrWait',
-          oldValue: oldValue,
-          newValue: newValue
-        });
-      }
-    }
-  }, {
-    key: "onCalculated",
-    value: function onCalculated() {
-      var propertyChangedIfCanEmit = this.propertyChangedIfCanEmit;
-
-      if (propertyChangedIfCanEmit) {
-        var oldValue = this._valueProperty.value;
-        var newValue = this.last; // new CalcPropertyValue(this)
-
-        propertyChangedIfCanEmit.onPropertyChanged({
-          name: 'last',
-          oldValue: oldValue,
-          newValue: newValue
-        }, {
-          name: 'lastOrWait',
-          oldValue: oldValue,
-          newValue: newValue
-        });
+        this._deferredCalc.calc();
       }
     }
   }, {
     key: "clear",
     value: function clear() {
       if (this._valueProperty.value !== this._initValue) {
-        this._valueProperty.value = this._initValue;
+        var _oldValue = this._valueProperty.value;
+        var _newValue = this._initValue;
+        this._valueProperty.value = _newValue;
+        this.onValueChanged(_oldValue, _newValue);
+        this.setDeferredValue(_newValue);
         this.invalidate();
       }
     }

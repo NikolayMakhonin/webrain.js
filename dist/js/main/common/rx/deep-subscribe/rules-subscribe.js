@@ -147,6 +147,7 @@ function subscribeObjectValue(propertyNames, object, immediateSubscribe, subscri
 
   var propertyChanged = object.propertyChanged;
   var unsubscribe;
+  var subscribed;
 
   if (propertyChanged) {
     unsubscribe = (0, _helpers.checkIsFuncOrNull)(propertyChanged.subscribe(function (_ref2) {
@@ -154,7 +155,7 @@ function subscribeObjectValue(propertyNames, object, immediateSubscribe, subscri
           oldValue = _ref2.oldValue,
           newValue = _ref2.newValue;
 
-      if (!unsubscribe && oldValue === newValue) {
+      if (!subscribed || !unsubscribe && oldValue === newValue) {
         return;
       }
 
@@ -182,6 +183,7 @@ function subscribeObjectValue(propertyNames, object, immediateSubscribe, subscri
     return null;
   }
 
+  subscribed = true;
   return function () {
     if (unsubscribe) {
       unsubscribe();
@@ -235,25 +237,9 @@ function subscribeObject(propertyNames, propertyPredicate, object, immediateSubs
     return null;
   }
 
-  var unsubscribe; // if (propertyNames !== VALUE_PROPERTY_DEFAULT && hasDefaultProperty(object)) {
-  // 	unsubscribe = subscribeDefaultProperty(
-  // 		object,
-  // 		immediateSubscribe,
-  // 		item => subscribeObject(
-  // 			propertyNames,
-  // 			propertyPredicate,
-  // 			item as any,
-  // 			immediateSubscribe,
-  // 			subscribeItem,
-  // 			unsubscribeItem),
-  // 	)
-  //
-  // 	if (unsubscribe) {
-  // 		return unsubscribe
-  // 	}
-  // }
-
   var propertyChanged = object.propertyChanged;
+  var unsubscribe;
+  var subscribed;
 
   if (propertyChanged) {
     unsubscribe = (0, _helpers.checkIsFuncOrNull)(propertyChanged.subscribe(function (_ref3) {
@@ -261,7 +247,7 @@ function subscribeObject(propertyNames, propertyPredicate, object, immediateSubs
           oldValue = _ref3.oldValue,
           newValue = _ref3.newValue;
 
-      if (!unsubscribe && oldValue === newValue) {
+      if (!subscribed || !unsubscribe && oldValue === newValue) {
         return;
       } // PROF: 623 - 1.3%
 
@@ -332,6 +318,7 @@ function subscribeObject(propertyNames, propertyPredicate, object, immediateSubs
     return null;
   }
 
+  subscribed = true;
   return function () {
     if (unsubscribe) {
       unsubscribe();
@@ -387,12 +374,17 @@ function subscribeList(object, immediateSubscribe, subscribeItem, unsubscribeIte
 
   var listChanged = object.listChanged;
   var unsubscribe;
+  var subscribed;
 
   if (listChanged) {
     unsubscribe = (0, _helpers.checkIsFuncOrNull)(listChanged.subscribe(function (_ref5) {
       var type = _ref5.type,
           oldItems = _ref5.oldItems,
           newItems = _ref5.newItems;
+
+      if (!subscribed) {
+        return;
+      }
 
       switch (type) {
         case _IListChanged.ListChangedType.Added:
@@ -431,6 +423,7 @@ function subscribeList(object, immediateSubscribe, subscribeItem, unsubscribeIte
     return null;
   }
 
+  subscribed = true;
   return function () {
     if (unsubscribe) {
       unsubscribe();
@@ -450,12 +443,17 @@ function subscribeSet(object, immediateSubscribe, subscribeItem, unsubscribeItem
 
   var setChanged = object.setChanged;
   var unsubscribe;
+  var subscribed;
 
   if (setChanged) {
     unsubscribe = (0, _helpers.checkIsFuncOrNull)(setChanged.subscribe(function (_ref6) {
       var type = _ref6.type,
           oldItems = _ref6.oldItems,
           newItems = _ref6.newItems;
+
+      if (!subscribed) {
+        return;
+      }
 
       switch (type) {
         case _ISetChanged.SetChangedType.Added:
@@ -483,6 +481,7 @@ function subscribeSet(object, immediateSubscribe, subscribeItem, unsubscribeItem
     return null;
   }
 
+  subscribed = true;
   return function () {
     if (unsubscribe) {
       unsubscribe();
@@ -502,6 +501,7 @@ function subscribeMap(keys, keyPredicate, object, immediateSubscribe, subscribeI
 
   var mapChanged = object.mapChanged;
   var unsubscribe;
+  var subscribed;
 
   if (mapChanged) {
     unsubscribe = (0, _helpers.checkIsFuncOrNull)(mapChanged.subscribe(function (_ref7) {
@@ -510,7 +510,7 @@ function subscribeMap(keys, keyPredicate, object, immediateSubscribe, subscribeI
           oldValue = _ref7.oldValue,
           newValue = _ref7.newValue;
 
-      if (!unsubscribe && oldValue === newValue) {
+      if (!subscribed || !unsubscribe && oldValue === newValue) {
         return;
       }
 
@@ -585,6 +585,7 @@ function subscribeMap(keys, keyPredicate, object, immediateSubscribe, subscribeI
     return null;
   }
 
+  subscribed = true;
   return function () {
     if (unsubscribe) {
       unsubscribe();

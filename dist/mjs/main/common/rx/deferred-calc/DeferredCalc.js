@@ -107,10 +107,10 @@ export class DeferredCalc {
 
     this._pulse();
 
-    this._calcFunc.call(this, value => {
+    this._calcFunc.call(this, (...args) => {
       this._timeCalcEnd = this._timing.now();
 
-      this._calcCompletedCallback.call(this, value);
+      this._calcCompletedCallback.apply(this, args);
 
       this._pulse();
     });

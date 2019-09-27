@@ -9,7 +9,13 @@ var _CalcPropertyDependenciesBuilder = require("./CalcPropertyDependenciesBuilde
 
 var _DependenciesBuilder = require("./DependenciesBuilder");
 
-function calcPropertyFactory(buildDependencies, calcFunc, calcOptions, valueOptions, initValue) {
+function calcPropertyFactory(_ref) {
+  var buildDependencies = _ref.dependencies,
+      calcFunc = _ref.calcFunc,
+      name = _ref.name,
+      calcOptions = _ref.calcOptions,
+      valueOptions = _ref.valueOptions,
+      initValue = _ref.initValue;
   var dependencies;
 
   if (buildDependencies) {
@@ -22,7 +28,13 @@ function calcPropertyFactory(buildDependencies, calcFunc, calcOptions, valueOpti
   }
 
   return function () {
-    var calcProperty = new _CalcProperty.CalcProperty(calcFunc, calcOptions, valueOptions, initValue);
+    var calcProperty = new _CalcProperty.CalcProperty({
+      calcFunc: calcFunc,
+      name: name,
+      calcOptions: calcOptions,
+      valueOptions: valueOptions,
+      initValue: initValue
+    });
 
     if (dependencies) {
       (0, _DependenciesBuilder.subscribeDependencies)(calcProperty, calcProperty, dependencies);
