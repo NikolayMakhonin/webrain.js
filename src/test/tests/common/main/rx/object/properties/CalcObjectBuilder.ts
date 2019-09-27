@@ -41,48 +41,48 @@ describe('common > main > rx > properties > CalcObjectBuilder', function() {
 				.connect('connectValue1', b => b.v('lastOrWait').p('source1').v('wait'))),
 				// .connect('connectValue1', b => b.p('source1'))),
 				// b.path(o => o['@lastOrWait'].source1['@wait']))),
-			calcPropertyFactory(
-				d => d.invalidateOn(b => b.propertyAny()),
-				(input, property: Property<Date, number>): ThenableOrIteratorOrValue<void> => {
+			calcPropertyFactory({
+				dependencies: d => d.invalidateOn(b => b.propertyAny()),
+				calcFunc(input, property: Property<Date, number>): ThenableOrIteratorOrValue<void> {
 					property.value = input.connectValue1 && new Date(input.connectValue1)
 					return ThenableSync.createResolved(null)
 				},
-			),
+			}),
 		)
 		.calc('calc2',
 			connectorFactory(c => c
 				.connect('connectValue1', b => b.path(o => o['@lastOrWait'].source2['@wait']))),
-			calcPropertyFactory(
-				d => d.invalidateOn(b => b.propertyAny()),
-				(input, property: Property<ClassSync>): ThenableOrIteratorOrValue<void> => {
+			calcPropertyFactory({
+				dependencies: d => d.invalidateOn(b => b.propertyAny()),
+				calcFunc(input, property: Property<ClassSync>): ThenableOrIteratorOrValue<void> {
 					property.value = input.connectorSource
 					return ThenableSync.createResolved(null)
 				},
-			),
+			}),
 		)
 
 	new CalcObjectBuilder(ClassAsync.prototype)
 		.calc('calc1',
 			connectorFactory(c => c
 				.connect('connectValue1', b => b.path(o => o['@lastOrWait'].source1['@wait']))),
-			calcPropertyFactory(
-				d => d.invalidateOn(b => b.propertyAny()),
-				function *(input, property: Property<Date, number>): ThenableOrIteratorOrValue<void> {
+			calcPropertyFactory({
+				dependencies: d => d.invalidateOn(b => b.propertyAny()),
+				*calcFunc(input, property: Property<Date, number>): ThenableOrIteratorOrValue<void> {
 					yield new Promise(r => setTimeout(r, 100))
 					property.value = new Date(input.connectValue1)
 				},
-			),
+			}),
 		)
 		.calc('calc2',
 			connectorFactory(c => c
 				.connect('connectValue1', b => b.path(o => o['@lastOrWait'].source2['@wait']))),
-			calcPropertyFactory(
-				d => d.invalidateOn(b => b.propertyAny()),
-				function *(input, property: Property<ClassSync>): ThenableOrIteratorOrValue<void> {
+			calcPropertyFactory({
+				dependencies: d => d.invalidateOn(b => b.propertyAny()),
+				*calcFunc(input, property: Property<ClassSync>): ThenableOrIteratorOrValue<void> {
 					yield new Promise(r => setTimeout(r, 100))
 					property.value = input.connectorSource
 				},
-			),
+			}),
 		)
 
 	it('calc sync', function() {

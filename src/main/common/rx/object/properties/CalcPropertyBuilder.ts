@@ -7,15 +7,23 @@ import {IPropertyOptions} from './Property'
 export function calcPropertyFactory<
 	TValue, TInput, TMergeSource,
 	TTarget extends CalcProperty<TValue, TInput, TMergeSource> = CalcProperty<TValue, TInput, TMergeSource>,
->(
-	buildDependencies: null | ((
+>({
+	dependencies: buildDependencies,
+	calcFunc,
+	name,
+	calcOptions,
+	valueOptions,
+	initValue,
+}: {
+	dependencies: null | ((
 		dependenciesBuilder: CalcPropertyDependenciesBuilder<CalcProperty<TValue, TInput, TMergeSource>, TInput>,
 	) => void),
 	calcFunc: CalcPropertyFunc<TInput, TValue, TMergeSource>,
+	name?: string,
 	calcOptions?: IDeferredCalcOptions,
 	valueOptions?: IPropertyOptions<TValue, TMergeSource>,
 	initValue?: TValue,
-): () => CalcProperty<TValue, TInput, TMergeSource> {
+}): () => CalcProperty<TValue, TInput, TMergeSource> {
 	let dependencies
 	if (buildDependencies) {
 		const dependenciesBuilder = new CalcPropertyDependenciesBuilder<TTarget, TInput>(
@@ -26,7 +34,13 @@ export function calcPropertyFactory<
 	}
 
 	return () => {
-		const calcProperty = new CalcProperty(calcFunc, calcOptions, valueOptions, initValue)
+		const calcProperty = new CalcProperty({
+			calcFunc,
+			name,
+			calcOptions,
+			valueOptions,
+			initValue,
+		})
 		if (dependencies) {
 			subscribeDependencies(calcProperty, calcProperty, dependencies)
 		}

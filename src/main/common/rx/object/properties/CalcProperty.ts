@@ -33,12 +33,19 @@ export class CalcProperty<TValue, TInput = any, TMergeSource = any>
 	public input: TInput
 	public name: string
 
-	constructor(
+	constructor({
+		calcFunc,
+		name,
+		calcOptions,
+		valueOptions,
+		initValue,
+	}: {
 		calcFunc: CalcPropertyFunc<TInput, TValue, TMergeSource>,
+		name?: string,
 		calcOptions: IDeferredCalcOptions,
 		valueOptions?: IPropertyOptions<TValue, TMergeSource>,
 		initValue?: TValue,
-	) {
+	}) {
 		super()
 
 		if (typeof calcFunc !== 'function') {
@@ -47,6 +54,10 @@ export class CalcProperty<TValue, TInput = any, TMergeSource = any>
 
 		if (typeof initValue !== 'function') {
 			this._initValue = initValue
+		}
+
+		if (typeof name !== 'undefined') {
+			this.name = name
 		}
 
 		this._calcFunc = calcFunc

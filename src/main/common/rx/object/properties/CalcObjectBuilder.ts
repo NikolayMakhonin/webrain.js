@@ -52,13 +52,13 @@ export class CalcObjectBuilder<TObject extends ObservableObject, TValueKeys exte
 		return this.calc<number, TInput, any, Name>(
 			name,
 			void 0,
-			calcPropertyFactory(
-				dependencies => dependencies.invalidateOn(buildRule),
-				(input, property) => {
+			calcPropertyFactory({
+				dependencies: dependencies => dependencies.invalidateOn(buildRule),
+				calcFunc(input, property) {
 					property.value++
 				},
-				null, null, 0,
-			),
+				initValue: 0,
+			}),
 		)
 	}
 }
