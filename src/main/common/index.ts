@@ -13,6 +13,7 @@ export {ArrayMap} from './lists/ArrayMap'
 export {ObservableSet} from './lists/ObservableSet'
 export {ObservableMap} from './lists/ObservableMap'
 export {deepSubscribe} from './rx/deep-subscribe/deep-subscribe'
+export {resolvePath} from './rx/object/properties/helpers'
 
 // Interfaces:
 import {ThenableOrIteratorOrValue as _ThenableOrIteratorOrValue} from './async/async'
