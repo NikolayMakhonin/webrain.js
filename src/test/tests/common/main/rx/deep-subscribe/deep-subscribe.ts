@@ -751,7 +751,7 @@ describe('common > main > rx > deep-subscribe > deep-subscribe', function() {
 
 		await delay(20)
 
-		await tester.unsubscribe([new Number(2)])
+		await tester.unsubscribeAsync([new Number(2)])
 
 		await delay(100)
 	})

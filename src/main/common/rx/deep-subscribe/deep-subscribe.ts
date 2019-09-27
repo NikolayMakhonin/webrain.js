@@ -1,5 +1,5 @@
 /* tslint:disable:no-shadowed-variable no-array-delete*/
-import {isAsync} from '../../async/async'
+import {isThenable} from '../../async/async'
 import {resolveAsync} from '../../async/ThenableSync'
 import {checkIsFuncOrNull, toSingleCall} from '../../helpers/helpers'
 import {getObjectUniqueId} from '../../helpers/object-unique-id'
@@ -52,11 +52,11 @@ function subscribeNext<TValue>(
 	{
 		// tslint:disable-next-line
 		object = resolveAsync(object)
-		if (isAsync(object)) {
+		if (isThenable(object)) {
 			let unsubscribe
 			resolveAsync(object, o => {
 				if (!unsubscribe) {
-					unsubscribe = subscribeNext<TValue>(
+					unsubscribe = checkIsFuncOrNull(subscribeNext<TValue>(
 						o,
 						valueSubscriber,
 						immediate,
@@ -66,10 +66,7 @@ function subscribeNext<TValue>(
 						parent,
 						ruleDescription,
 						iteration,
-					)
-					// if (typeof unsubscribe !== 'function') {
-					// 	throw new Error(`unsubscribe is not a function: ${unsubscribe}`)
-					// }
+					))
 				}
 				return o
 			}, err => { catchHandler(err, propertiesPath) })
@@ -81,29 +78,6 @@ function subscribeNext<TValue>(
 				unsubscribe = true
 			}
 		}
-
-		// if (hasDefaultProperty(object as any)
-		// 	&& (!iteration || iteration.value == null || iteration.value.subType !== SubscribeObjectType.ValueProperty)
-		// ) {
-		// 	const result = subscribeDefaultProperty<TValue>(
-		// 		object as any,
-		// 		true,
-		// 		(item: TValue, nextPropertyName) => subscribeNext<TValue>(
-		// 			item,
-		// 			valueSubscriber,
-		// 			immediate,
-		// 			ruleIterator,
-		// 			propertiesPath,
-		// 			nextPropertyName != null ? nextPropertyName : propertyName,
-		// 			nextPropertyName != null ? object : parent,
-		// 			null,
-		// 			iteration,
-		// 		),
-		// 	)
-		// 	if (result) {
-		// 		return result
-		// 	}
-		// }
 	}
 
 	// endregion
@@ -117,7 +91,7 @@ function subscribeNext<TValue>(
 	): IUnsubscribeOrVoid {
 		// @ts-ignore
 		value = resolveAsync(value)
-		if (isAsync(value)) {
+		if (isThenable(value)) {
 			let unsubscribe
 			resolveAsync(value, o => {
 				if (!unsubscribe) {
@@ -199,7 +173,7 @@ function subscribeNext<TValue>(
 			parent: any,
 			iterator?: IRuleIterator,
 			iteration?: IteratorResult<IRuleOrIterable>,
-		): IUnsubscribeOrVoid => {
+		): void => {
 			if ((changeType & ItemChangeType.Unsubscribe) !== 0) {
 				if (!(oldItem instanceof Object)) {
 					return
@@ -266,7 +240,7 @@ function subscribeNext<TValue>(
 					))
 				} catch (err) {
 					catchHandlerItem(err, key)
-					return null
+					return
 				}
 
 				if (unsubscribe) {
@@ -302,14 +276,14 @@ function subscribeNext<TValue>(
 			changeType: ItemChangeType,
 			keyType: ItemKeyType,
 			parent: any,
-		): IUnsubscribeOrVoid => {
+		): void => {
 			if ((changeType & ItemChangeType.Unsubscribe) !== 0) {
 				valueSubscriber.unsubscribe(oldItem, parent, key)
 			}
 
 			if ((changeType & ItemChangeType.Subscribe) !== 0) {
 				try {
-					return checkIsFuncOrNull(subscribeLeaf(
+					checkIsFuncOrNull(subscribeLeaf(
 						newItem,
 						key,
 						parent,
@@ -318,7 +292,6 @@ function subscribeNext<TValue>(
 					))
 				} catch (err) {
 					catchHandlerItem(err, key)
-					return null
 				}
 			}
 		}
@@ -329,14 +302,7 @@ function subscribeNext<TValue>(
 			newItem: any,
 			changeType: ItemChangeType,
 			keyType: ItemKeyType,
-		): IUnsubscribeOrVoid => {
-			// TODO: resolve values
-			// oldItem = resolveAsync(oldItem)
-			// newItem = resolveAsync(newItem)
-			// if (isAsync(oldItem)) {
-			//
-			// }
-
+		): void => {
 			const item = changeType & ItemChangeType.Subscribe ? newItem : oldItem
 			const itemIterator = getNextRuleIterable && getNextRuleIterable(item)[Symbol.iterator]()
 			const itemIteration = itemIterator && itemIterator.next()
@@ -356,9 +322,9 @@ function subscribeNext<TValue>(
 			}
 
 			if (isLeaf && !(item instanceof Object)) {
-				return changeLeaf(key, oldItem, newItem, changeType, keyType, itemParent)
+				changeLeaf(key, oldItem, newItem, changeType, keyType, itemParent)
 			} else {
-				return changeNext(key, oldItem, newItem, changeType, keyType, itemParent, itemIterator, itemIteration)
+				changeNext(key, oldItem, newItem, changeType, keyType, itemParent, itemIterator, itemIteration)
 			}
 		}
 
@@ -366,7 +332,23 @@ function subscribeNext<TValue>(
 			object,
 			immediate,
 			(key, oldItem, newItem, changeType, keyType) => {
-				changeItem(key, oldItem, newItem, changeType, keyType)
+				oldItem = resolveAsync(oldItem)
+				newItem = resolveAsync(newItem)
+				if (!isThenable(oldItem) && !isThenable(newItem)) {
+					changeItem(key, oldItem, newItem, changeType, keyType)
+					return
+				}
+
+				resolveAsync(
+					resolveAsync(oldItem, o => {
+						oldItem = o
+						return newItem
+					}, null, true),
+					o => {
+						newItem = o
+						changeItem(key, oldItem, newItem, changeType, keyType)
+					},
+					err => catchHandlerItem(err, key))
 			},
 		))
 	}
