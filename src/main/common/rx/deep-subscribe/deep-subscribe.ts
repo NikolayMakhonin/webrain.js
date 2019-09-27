@@ -34,44 +34,6 @@ function catchHandler(ex, propertiesPath?: () => string) {
 	throw ex
 }
 
-function unsubscribeNested(
-	value: any,
-	unsubscribers: Array<IUnsubscribe|IUnsubscribe[]>,
-	unsubscribersCount: number[],
-): void {
-	if (!(value instanceof Object)) {
-		return
-	}
-
-	if (!unsubscribers) {
-		return
-	}
-
-	const itemUniqueId = getObjectUniqueId(value)
-
-	const unsubscribeCount = unsubscribersCount[itemUniqueId]
-	if (!unsubscribeCount) {
-		return
-	}
-
-	if (unsubscribeCount > 1) {
-		unsubscribersCount[itemUniqueId] = unsubscribeCount - 1
-	} else {
-		const unsubscribe = unsubscribers[itemUniqueId]
-		// unsubscribers[itemUniqueId] = null // faster but there is a danger of memory overflow with nulls
-		delete unsubscribers[itemUniqueId]
-		delete unsubscribersCount[itemUniqueId]
-
-		if (Array.isArray(unsubscribe)) {
-			for (let i = 0, len = unsubscribe.length; i < len; i++) {
-				unsubscribe[i]()
-			}
-		} else {
-			unsubscribe()
-		}
-	}
-}
-
 function subscribeNext<TValue>(
 	object: any,
 	valueSubscriber: IValueSubscriber<TValue>,
@@ -238,6 +200,44 @@ function subscribeNext<TValue>(
 		const catchHandlerItem = (err, propertyName: string) => {
 			catchHandler(err, () => (propertiesPath ? propertiesPath() + '.' : '')
 				+ (propertyName == null ? '' : propertyName + '(' + rule.description + ')'))
+		}
+
+		const unsubscribeNested = (
+			value: any,
+			unsubscribers: Array<IUnsubscribe|IUnsubscribe[]>,
+			unsubscribersCount: number[],
+		): void => {
+			if (!(value instanceof Object)) {
+				return
+			}
+
+			if (!unsubscribers) {
+				return
+			}
+
+			const itemUniqueId = getObjectUniqueId(value)
+
+			const unsubscribeCount = unsubscribersCount[itemUniqueId]
+			if (!unsubscribeCount) {
+				return
+			}
+
+			if (unsubscribeCount > 1) {
+				unsubscribersCount[itemUniqueId] = unsubscribeCount - 1
+			} else {
+				const unsubscribe = unsubscribers[itemUniqueId]
+				// unsubscribers[itemUniqueId] = null // faster but there is a danger of memory overflow with nulls
+				delete unsubscribers[itemUniqueId]
+				delete unsubscribersCount[itemUniqueId]
+
+				if (Array.isArray(unsubscribe)) {
+					for (let i = 0, len = unsubscribe.length; i < len; i++) {
+						unsubscribe[i]()
+					}
+				} else {
+					unsubscribe()
+				}
+			}
 		}
 
 		const deepSubscribeItemNext = (
