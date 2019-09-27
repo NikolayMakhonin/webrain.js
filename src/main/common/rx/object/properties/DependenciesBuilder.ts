@@ -44,6 +44,10 @@ export class DependenciesBuilder<TTarget, TSource, TValueKeys extends string | n
 			ruleBase,
 			predicate
 				? (target, value, parent, propertyName) => {
+					// prevent circular self dependency
+					if (target === parent) {
+						return
+					}
 					if (predicate(value, parent)) {
 						action(target, value, parent, propertyName)
 					}
