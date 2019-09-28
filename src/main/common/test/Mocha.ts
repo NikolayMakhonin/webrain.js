@@ -1,4 +1,4 @@
-import {assert} from './Assert'
+import {Assert, assert} from './Assert'
 import {globalScope} from './helpers'
 
 export const { xit, xdescribe } = globalScope
@@ -17,24 +17,36 @@ function isFuncWithoutParameters(func) {
 export function it(name, func) {
 	return globalScope.it.call(this, name, isFuncWithoutParameters(func)
 		? function() {
-			const result = func.call(this)
+			try {
+				const result = func.call(this)
 
-			if (result && typeof result.then === 'function') {
+				if (result && typeof result.then === 'function') {
+					return result
+						.then(o => {
+							assert.assertNotHandledErrors()
+							return o
+						})
+						.catch(err => {
+							assert.assertNotHandledErrors()
+							throw err
+						})
+				}
+
+				assert.assertNotHandledErrors()
 				return result
-					.then(o => {
-						assert.assertNotHandledErrors()
-						return o
-					})
+			} finally {
+				assert.assertNotHandledErrors()
 			}
-
-			assert.assertNotHandledErrors()
-			return result
 		}
 		: function(done) {
-			return func.call(this, err => {
+			try {
+				return func.call(this, err => {
+					assert.assertNotHandledErrors()
+					done(err)
+				})
+			} finally {
 				assert.assertNotHandledErrors()
-				done(err)
-			})
+			}
 		})
 }
 Object.assign(it, globalScope.it)

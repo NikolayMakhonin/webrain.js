@@ -381,7 +381,7 @@ export class TestDeepSubscribe<TObject, TValue> {
 
 		this._unsubscribe[i] = deepSubscribe({
 			object: this._object,
-			changeValue(key, oldValue, newValue, parent, changeType, keyType, isUnsubscribed) {
+			changeValue(key, oldValue: TValue, newValue: TValue, parent, changeType, keyType, isUnsubscribed) {
 				if ((changeType & ValueChangeType.Unsubscribe) !== 0) {
 					unsubscribeValue(oldValue, parent, key, isUnsubscribed)
 				}
@@ -390,8 +390,6 @@ export class TestDeepSubscribe<TObject, TValue> {
 					return subscribeValue(newValue, parent, key)
 				}
 			},
-			subscribeValue,
-			unsubscribeValue,
 			lastValue: (value: TValue, parent, propertyName) => {
 				if (this._performanceTest) {
 					return () => {}
