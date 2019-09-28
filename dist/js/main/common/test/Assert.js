@@ -5,11 +5,19 @@ var _interopRequireDefault = require("@babel/runtime-corejs3/helpers/interopRequ
 exports.__esModule = true;
 exports.assert = exports.Assert = exports.AssertionError = void 0;
 
+var _regenerator = _interopRequireDefault(require("@babel/runtime-corejs3/regenerator"));
+
+var _asyncToGenerator2 = _interopRequireDefault(require("@babel/runtime-corejs3/helpers/asyncToGenerator"));
+
 var _map = _interopRequireDefault(require("@babel/runtime-corejs3/core-js-stable/instance/map"));
 
 var _some = _interopRequireDefault(require("@babel/runtime-corejs3/core-js-stable/instance/some"));
 
 var _isArray = _interopRequireDefault(require("@babel/runtime-corejs3/core-js-stable/array/is-array"));
+
+var _splice = _interopRequireDefault(require("@babel/runtime-corejs3/core-js-stable/instance/splice"));
+
+var _indexOf = _interopRequireDefault(require("@babel/runtime-corejs3/core-js-stable/instance/index-of"));
 
 var _extends2 = _interopRequireDefault(require("@babel/runtime-corejs3/helpers/extends"));
 
@@ -124,17 +132,16 @@ function () {
       }
     }
   }, {
-    key: "throws",
-    value: function throws(fn, errType, regExp, message) {
-      var err;
-
-      try {
-        fn();
-      } catch (ex) {
-        err = ex;
-      }
-
+    key: "assertError",
+    value: function assertError(err, errType, regExp, message) {
       this.ok(err);
+
+      if (err instanceof AssertionError) {
+        var _context, _context2;
+
+        var index = (0, _indexOf.default)(_context = Assert.errors).call(_context, err);
+        (0, _splice.default)(_context2 = Assert.errors).call(_context2, index, 1);
+      }
 
       if (errType) {
         var actualErrType = err.constructor;
@@ -157,21 +164,93 @@ function () {
       if (regExp) {
         this.ok(regExp.test(err.message));
       }
-    } // noinspection JSMethodCanBeStatic
+    }
+  }, {
+    key: "throwsAsync",
+    value: function () {
+      var _throwsAsync = (0, _asyncToGenerator2.default)(
+      /*#__PURE__*/
+      _regenerator.default.mark(function _callee(fn, errType, regExp, message) {
+        var err;
+        return _regenerator.default.wrap(function _callee$(_context3) {
+          while (1) {
+            switch (_context3.prev = _context3.next) {
+              case 0:
+                _context3.prev = 0;
+                _context3.next = 3;
+                return fn();
 
+              case 3:
+                _context3.next = 8;
+                break;
+
+              case 5:
+                _context3.prev = 5;
+                _context3.t0 = _context3["catch"](0);
+                err = _context3.t0;
+
+              case 8:
+                this.assertError(err);
+
+              case 9:
+              case "end":
+                return _context3.stop();
+            }
+          }
+        }, _callee, this, [[0, 5]]);
+      }));
+
+      function throwsAsync(_x, _x2, _x3, _x4) {
+        return _throwsAsync.apply(this, arguments);
+      }
+
+      return throwsAsync;
+    }()
+  }, {
+    key: "throws",
+    value: function throws(fn, errType, regExp, message) {
+      var err;
+
+      try {
+        fn();
+      } catch (ex) {
+        err = ex;
+      }
+
+      this.assertError(err);
+    }
+  }, {
+    key: "assertNotHandledErrors",
+    value: function assertNotHandledErrors() {
+      if (Assert.errors.length) {
+        throw Assert.errors[0];
+      }
+    }
   }, {
     key: "throwAssertionError",
+    // noinspection JSMethodCanBeStatic
     value: function throwAssertionError(actual, expected, message) {
-      throw new AssertionError(message, {
+      console.debug('actual: ', actual);
+      console.debug('expected: ', expected);
+      var error = new AssertionError(message, {
         actual: actual,
         expected: expected,
         showDiff: true
       });
+
+      if (!Assert.errors) {
+        Assert.errors = [error];
+      } else {
+        Assert.errors.push(error);
+      }
+
+      throw error;
     }
   }]);
   return Assert;
 }();
 
 exports.Assert = Assert;
+Assert.errors = [];
 var assert = new Assert();
 exports.assert = assert;

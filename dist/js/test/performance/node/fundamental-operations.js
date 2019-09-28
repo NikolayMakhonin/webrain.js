@@ -73,6 +73,10 @@ var _array = require("../../../main/common/lists/helpers/array");
 
 var _SortedList = require("../../../main/common/lists/SortedList");
 
+var _Assert = require("../../../main/common/test/Assert");
+
+var _Mocha = require("../../../main/common/test/Mocha");
+
 var _TestDeepSubscribe = require("../../tests/common/main/rx/deep-subscribe/helpers/src/TestDeepSubscribe");
 
 /* tslint:disable:prefer-const no-identical-functions no-empty no-shadowed-variable no-conditional-assignment */
@@ -100,7 +104,7 @@ function compareDefault(o1, o2) {
   return 0;
 }
 
-describe('fundamental-operations', function () {
+(0, _Mocha.describe)('fundamental-operations', function () {
   function Path(value) {
     this.value = value;
   }
@@ -111,7 +115,7 @@ describe('fundamental-operations', function () {
     return item;
   };
 
-  xit('array add item', function () {
+  (0, _Mocha.xit)('array add item', function () {
     this.timeout(300000);
     var item = 'qweqweqweqweqwe';
     var str = item;
@@ -138,7 +142,7 @@ describe('fundamental-operations', function () {
     });
     console.log(str, result);
   });
-  xit('pass arguments', function () {
+  (0, _Mocha.xit)('pass arguments', function () {
     this.timeout(300000);
 
     function f1(args) {
@@ -169,7 +173,7 @@ describe('fundamental-operations', function () {
     });
     console.log(result);
   });
-  xit('lambda vs function', function () {
+  (0, _Mocha.xit)('lambda vs function', function () {
     this.timeout(300000); // noinspection JSUnusedLocalSymbols
 
     function f1(args) {
@@ -272,7 +276,7 @@ describe('fundamental-operations', function () {
     });
     console.log(result);
   });
-  xit('lazy function parameters', function () {
+  (0, _Mocha.xit)('lazy function parameters', function () {
     this.timeout(300000);
 
     function f(arg1, arg2) {
@@ -348,7 +352,7 @@ describe('fundamental-operations', function () {
     return arr;
   }
 
-  xit('array decrease length', function () {
+  (0, _Mocha.xit)('array decrease length', function () {
     this.timeout(300000);
     var arr = generateArray(10000);
     var arr2;
@@ -368,7 +372,7 @@ describe('fundamental-operations', function () {
     });
     console.log(result);
   });
-  xit('array decrease length 100', function () {
+  (0, _Mocha.xit)('array decrease length 100', function () {
     this.timeout(300000);
     var arr = generateArray(10000);
     var arr2;
@@ -384,7 +388,7 @@ describe('fundamental-operations', function () {
     });
     console.log(result);
   });
-  xit('array increase length', function () {
+  (0, _Mocha.xit)('array increase length', function () {
     this.timeout(300000);
     var arr = generateArray(10000);
     var arr2;
@@ -415,7 +419,7 @@ describe('fundamental-operations', function () {
     });
     console.log(result);
   });
-  xit('array increase length 100', function () {
+  (0, _Mocha.xit)('array increase length 100', function () {
     this.timeout(300000);
     var arr = generateArray(10000);
     var arr2;
@@ -448,7 +452,7 @@ describe('fundamental-operations', function () {
     });
     console.log(result);
   });
-  xit('array default value', function () {
+  (0, _Mocha.xit)('array default value', function () {
     this.timeout(300000);
     var arrNumbers = generateArray(10);
     var arrStrings = (0, _map.default)(arrNumbers).call(arrNumbers, function (o) {
@@ -553,7 +557,7 @@ describe('fundamental-operations', function () {
     });
     console.log(result);
   });
-  xit('array last index', function () {
+  (0, _Mocha.xit)('array last index', function () {
     this.timeout(300000);
 
     function defaultCompare(o1, o2) {
@@ -715,7 +719,7 @@ describe('fundamental-operations', function () {
     console.log(sortCount + "\t" + binarySearchCount + "\t" + (0, _stringify.default)(array) + "\t" + (0, _stringify.default)(addArray));
   }
 
-  xit('sorted array add items', function () {
+  (0, _Mocha.xit)('sorted array add items', function () {
     var _context;
 
     this.timeout(300000);
@@ -747,7 +751,7 @@ describe('fundamental-operations', function () {
     });
     console.log(result);
   });
-  xit('regexp', function () {
+  (0, _Mocha.xit)('regexp', function () {
     this.timeout(300000);
     var regexp = /qwe\/wer\/ert\/rty\/tyu/;
     var path = 'qwe/wer/ert/rty/tyu';
@@ -771,7 +775,7 @@ describe('fundamental-operations', function () {
     });
     console.log(result);
   });
-  xit('operations inside compare func', function () {
+  (0, _Mocha.xit)('operations inside compare func', function () {
     this.timeout(300000);
 
     var obj = function obj() {};
@@ -826,10 +830,13 @@ describe('fundamental-operations', function () {
     );
     console.log(result);
   });
-  xit('Set', function () {
+  (0, _Mocha.xit)('Set', function () {
     this.timeout(300000);
-    assert.strictEqual(SetNative, _set.default);
-    assert.notStrictEqual(_set.default, SetPolyfill);
+
+    _Assert.assert.strictEqual(SetNative, _set.default);
+
+    _Assert.assert.notStrictEqual(_set.default, SetPolyfill);
+
     var countObject = 1000;
     var objects = [];
 
@@ -1011,7 +1018,7 @@ describe('fundamental-operations', function () {
     );
     console.log(result);
   });
-  xit('Number toString', function () {
+  (0, _Mocha.xit)('Number toString', function () {
     this.timeout(300000);
     var numInt = 123456789;
     var numFloat = 1234.56789;
@@ -1034,7 +1041,7 @@ describe('fundamental-operations', function () {
     });
     console.log(result);
   });
-  xit('hasOwnProperty', function () {
+  (0, _Mocha.xit)('hasOwnProperty', function () {
     this.timeout(300000);
     var object = {
       property: true
@@ -1052,7 +1059,7 @@ describe('fundamental-operations', function () {
     });
     console.log(result);
   });
-  xit('deepSubscribe', function () {
+  (0, _Mocha.xit)('deepSubscribe', function () {
     this.timeout(300000);
 
     var createTester = function createTester() {
@@ -1119,7 +1126,7 @@ describe('fundamental-operations', function () {
     });
     console.log(result);
   });
-  xit('setTimeout', function () {
+  (0, _Mocha.xit)('setTimeout', function () {
     this.timeout(300000);
 
     var func = function func() {};
@@ -1133,7 +1140,7 @@ describe('fundamental-operations', function () {
     });
     console.log(result);
   });
-  xit('Math.max()', function () {
+  (0, _Mocha.xit)('Math.max()', function () {
     var _this = this;
 
     this.timeout(300000);
@@ -1155,7 +1162,7 @@ describe('fundamental-operations', function () {
     });
     console.log(result);
   });
-  xit('"out" vs "set func" params', function () {
+  (0, _Mocha.xit)('"out" vs "set func" params', function () {
     var _this2 = this;
 
     this.timeout(300000);
@@ -1192,7 +1199,7 @@ describe('fundamental-operations', function () {
     });
     console.log(result);
   });
-  xit('func params as object', function () {
+  (0, _Mocha.xit)('func params as object', function () {
     var _arguments = arguments;
     this.timeout(300000);
 
@@ -1242,7 +1249,7 @@ describe('fundamental-operations', function () {
     });
     console.log(result);
   });
-  xit('new Array(size)', function () {
+  (0, _Mocha.xit)('new Array(size)', function () {
     this.timeout(300000);
     var size = 1000;
     var arrSimple = [];
@@ -1294,7 +1301,7 @@ describe('fundamental-operations', function () {
     });
   }
 
-  xit('delete property', function () {
+  (0, _Mocha.xit)('delete property', function () {
     this.timeout(300000);
     var hashTable = {};
 
@@ -1346,7 +1353,7 @@ describe('fundamental-operations', function () {
     });
     console.log(result);
   });
-  xit('Promise sync', function () {
+  (0, _Mocha.xit)('Promise sync', function () {
     this.timeout(300000);
     var result = (0, _rdtsc.calcPerformance)(20000, function () {// no operations
     }, function () {
@@ -1392,7 +1399,7 @@ describe('fundamental-operations', function () {
     });
     console.log(result);
   });
-  xit('is iterable', function () {
+  (0, _Mocha.xit)('is iterable', function () {
     var _iterable;
 
     this.timeout(300000);
@@ -1464,7 +1471,7 @@ describe('fundamental-operations', function () {
     });
     console.log(result);
   });
-  xit('array is associative', function () {
+  (0, _Mocha.xit)('array is associative', function () {
     this.timeout(300000);
     var arr = [];
 
@@ -1478,7 +1485,7 @@ describe('fundamental-operations', function () {
     });
     console.log(result);
   });
-  xit('Object.freeze', function () {
+  (0, _Mocha.xit)('Object.freeze', function () {
     this.timeout(300000);
     var result = (0, _rdtsc.calcPerformance)(2000, // () => {
     // 	// no operations
@@ -1499,7 +1506,7 @@ describe('fundamental-operations', function () {
     });
     console.log(result);
   });
-  xit('defineProperty', function () {
+  (0, _Mocha.xit)('defineProperty', function () {
     this.timeout(300000);
     var hashTable = {};
 
@@ -1564,7 +1571,7 @@ describe('fundamental-operations', function () {
     });
     console.log(result);
   });
-  xit('try catch', function () {
+  (0, _Mocha.xit)('try catch', function () {
     this.timeout(300000);
 
     function tryCatch(func, onValue, onError) {
@@ -1634,7 +1641,7 @@ describe('fundamental-operations', function () {
     });
     console.log(result);
   });
-  xit('ThenableSync', function () {
+  (0, _Mocha.xit)('ThenableSync', function () {
     this.timeout(300000);
 
     var rejected = _ThenableSync.ThenableSync.createRejected(1);
@@ -1743,7 +1750,7 @@ describe('fundamental-operations', function () {
     return _calcCountPerSecondAsync.apply(this, arguments);
   }
 
-  xit('ThenableSync 2',
+  (0, _Mocha.xit)('ThenableSync 2',
   /*#__PURE__*/
   (0, _asyncToGenerator2.default)(
   /*#__PURE__*/
@@ -1987,7 +1994,7 @@ describe('fundamental-operations', function () {
   // 	console.log(result)
   // })
 
-  xit('Resolve properties path', function () {
+  (0, _Mocha.xit)('Resolve properties path', function () {
     this.timeout(300000);
 
     var ResolvePropertiesPath =
@@ -2067,7 +2074,7 @@ describe('fundamental-operations', function () {
     });
     console.log(result);
   });
-  xit('ObservableObjectTest', function () {
+  (0, _Mocha.xit)('ObservableObjectTest', function () {
     this.timeout(300000);
     var withOptimization = true;
     var optimizationAfter = 100;

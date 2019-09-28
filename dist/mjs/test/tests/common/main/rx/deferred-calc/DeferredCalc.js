@@ -2,6 +2,7 @@
 import { DeferredCalc } from '../../../../../../main/common/rx/deferred-calc/DeferredCalc';
 import { timingDefault } from '../../../../../../main/common/rx/deferred-calc/timing';
 import { assert } from '../../../../../../main/common/test/Assert';
+import { describe, it } from '../../../../../../main/common/test/Mocha';
 import { assertEvents, EventType, TestDeferredCalc, timing } from './src/TestDeferred';
 import { TestTiming } from './src/timing';
 describe('common > main > rx > deferred-calc > DeferredCalc', function () {

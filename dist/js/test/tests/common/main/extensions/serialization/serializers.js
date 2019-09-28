@@ -34,6 +34,8 @@ var _Assert = require("../../../../../../main/common/test/Assert");
 
 var _DeepCloneEqual = require("../../../../../../main/common/test/DeepCloneEqual");
 
+var _Mocha = require("../../../../../../main/common/test/Mocha");
+
 var _helpers = require("../../src/helpers/helpers");
 
 /* tslint:disable:no-duplicate-string no-shadowed-variable */
@@ -59,7 +61,7 @@ var assertDeepEqualExt = function assertDeepEqualExt(o1, o2) {
   });
 };
 
-describe('common > extensions > serialization > serializers', function () {
+(0, _Mocha.describe)('common > extensions > serialization > serializers', function () {
   // function testSerializer(
   // 	type: TClass,
   // 	constructorProps: string[],
@@ -147,7 +149,7 @@ describe('common > extensions > serialization > serializers', function () {
     assertDeepEqualExt(result, checkObject);
   }
 
-  it('primitives', function () {
+  (0, _Mocha.it)('primitives', function () {
     function testPrimitive(value) {
       assert.strictEqual(deSerializeValue(serializeValue(value)), value);
     }
@@ -179,7 +181,7 @@ describe('common > extensions > serialization > serializers', function () {
   // // obj.p9 = obj
   // obj.p10 = Object.values(obj)
 
-  it('simple circular', function () {
+  (0, _Mocha.it)('simple circular', function () {
     var array = [];
     var object = new _helpers.CircularClass(array);
     array[0] = object;
@@ -189,15 +191,15 @@ describe('common > extensions > serialization > serializers', function () {
     assert.notStrictEqual(result.array, object.array);
     assertDeepEqualExt(result, object);
   });
-  it('Object', function () {
+  (0, _Mocha.it)('Object', function () {
     testComplexObject({});
   });
-  it('Array', function () {
+  (0, _Mocha.it)('Array', function () {
     testComplexObject({}, function (o) {
       return o.array;
     });
   });
-  it('Map', function () {
+  (0, _Mocha.it)('Map', function () {
     var map = new _map.default();
     var arr = (0, _helpers.createComplexObject)({
       array: true
@@ -212,7 +214,7 @@ describe('common > extensions > serialization > serializers', function () {
     assert.notStrictEqual(result, map);
     assertDeepEqualExt(result, map);
   });
-  it('Set', function () {
+  (0, _Mocha.it)('Set', function () {
     var arr = (0, _helpers.createComplexObject)({
       array: true
     }).array;
@@ -222,7 +224,7 @@ describe('common > extensions > serialization > serializers', function () {
     assert.notStrictEqual(result, set);
     assertDeepEqualExt(result, set);
   });
-  it('Date', function () {
+  (0, _Mocha.it)('Date', function () {
     var date = new Date();
     var serialized = serializeValue(date);
     var result = deSerializeValue(serialized);
@@ -234,7 +236,7 @@ describe('common > extensions > serialization > serializers', function () {
     (0, _classCallCheck2.default)(this, Class1);
   };
 
-  it('Class: Simple', function () {
+  (0, _Mocha.it)('Class: Simple', function () {
     var obj1 = new Class1();
     obj1.prop1 = 'p1';
     assert.throws(function () {
@@ -297,7 +299,7 @@ describe('common > extensions > serialization > serializers', function () {
   }(Class1);
 
   Class2.uuid = '3cd346429e194a0d8a57ff526b445100';
-  it('Class: Serializable', function () {
+  (0, _Mocha.it)('Class: Serializable', function () {
     var obj2 = new Class2('p_2');
     obj2.prop1 = 'p1';
     obj2.prop2 = 'p2';
@@ -366,7 +368,7 @@ describe('common > extensions > serialization > serializers', function () {
   }(Class2);
 
   Class3.uuid = 'c2a26bc91cc542499f10f8e087fd6a1b';
-  it('Class: Serializable inherit', function () {
+  (0, _Mocha.it)('Class: Serializable inherit', function () {
     var obj3 = new Class3('prop2');
     obj3.prop1 = 'p1';
     obj3.prop2 = 'p2';
@@ -387,7 +389,7 @@ describe('common > extensions > serialization > serializers', function () {
     assert.notStrictEqual(result, obj3);
     assertDeepEqualExt(result, obj3);
   });
-  it('SortedList circular', function () {
+  (0, _Mocha.it)('SortedList circular', function () {
     var sortedList = new _SortedList.SortedList();
     sortedList.add(sortedList);
     var serialized = serializeValue(sortedList);
@@ -397,7 +399,7 @@ describe('common > extensions > serialization > serializers', function () {
 
     assertDeepEqualExt(result, sortedList);
   });
-  it('complex object', function () {
+  (0, _Mocha.it)('complex object', function () {
     testComplexObject({
       circular: true,
       circularClass: true,

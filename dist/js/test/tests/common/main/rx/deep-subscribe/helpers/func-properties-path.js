@@ -8,11 +8,13 @@ var _funcPropertiesPath = require("../../../../../../../main/common/rx/deep-subs
 
 var _Assert = require("../../../../../../../main/common/test/Assert");
 
+var _Mocha = require("../../../../../../../main/common/test/Mocha");
+
 var _funcPropertiesPath2 = require("./src/func-properties-path");
 
 /* eslint-disable no-useless-escape,computed-property-spacing */
-describe('common > main > rx > deep-subscribe > func-properties-path', function () {
-  it('parsePropertiesPathString', function () {
+(0, _Mocha.describe)('common > main > rx > deep-subscribe > func-properties-path', function () {
+  (0, _Mocha.it)('parsePropertiesPathString', function () {
     var path = '. o[ "\\`\\"\\\'\\\\`\'[]]" ] . o [ 0 ] . o [ \'\\`\\"\\\'\\\\`"][]\' ] . o';
 
     function testParse(funcStr) {
@@ -50,7 +52,7 @@ describe('common > main > rx > deep-subscribe > func-properties-path', function 
       return (0, _funcPropertiesPath.parsePropertiesPathString)(new Function('w', "return o" + path));
     }, Error);
   });
-  it('parsePropertiesPath', function () {
+  (0, _Mocha.it)('parsePropertiesPath', function () {
     var _context;
 
     var path = '. o[ "\\`\\"\\\'\\\\`\'[]]" ] // [0]\r\n/*\r\n*/ . o [ 0 ] . o [ \'\\`\\"\\\'\\\\`"][]\' ] . o';

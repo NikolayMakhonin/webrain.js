@@ -18,18 +18,20 @@ var _timing = require("../../../../../../main/common/rx/deferred-calc/timing");
 
 var _Assert = require("../../../../../../main/common/test/Assert");
 
+var _Mocha = require("../../../../../../main/common/test/Mocha");
+
 var _TestDeferred = require("./src/TestDeferred");
 
 var _timing2 = require("./src/timing");
 
 /* tslint:disable:no-empty no-identical-functions */
-describe('common > main > rx > deferred-calc > DeferredCalc', function () {
+(0, _Mocha.describe)('common > main > rx > deferred-calc > DeferredCalc', function () {
   this.timeout(20000);
   var testDeferredCalc = _TestDeferred.TestDeferredCalc.test;
   after(function () {
     console.log('Total DeferredCalc tests >= ' + _TestDeferred.TestDeferredCalc.totalTests);
   });
-  it('init', function () {
+  (0, _Mocha.it)('init', function () {
     testDeferredCalc({
       calcTime: [0, 1, 10],
       throttleTime: [null, 0],
@@ -61,7 +63,7 @@ describe('common > main > rx > deferred-calc > DeferredCalc', function () {
       }]
     });
   });
-  it('calc only after invalidate', function () {
+  (0, _Mocha.it)('calc only after invalidate', function () {
     testDeferredCalc({
       calcTime: [5],
       throttleTime: [null, 0],
@@ -154,7 +156,7 @@ describe('common > main > rx > deferred-calc > DeferredCalc', function () {
       }]
     });
   });
-  it('throttleTime', function () {
+  (0, _Mocha.it)('throttleTime', function () {
     testDeferredCalc({
       calcTime: [0],
       throttleTime: [null, 0],
@@ -274,7 +276,7 @@ describe('common > main > rx > deferred-calc > DeferredCalc', function () {
       }]
     });
   });
-  it('maxThrottleTime', function () {
+  (0, _Mocha.it)('maxThrottleTime', function () {
     testDeferredCalc({
       calcTime: [0],
       throttleTime: [10],
@@ -390,7 +392,7 @@ describe('common > main > rx > deferred-calc > DeferredCalc', function () {
       }]
     });
   });
-  it('minTimeBetweenCalc', function () {
+  (0, _Mocha.it)('minTimeBetweenCalc', function () {
     testDeferredCalc({
       calcTime: [0],
       throttleTime: [0],
@@ -444,7 +446,7 @@ describe('common > main > rx > deferred-calc > DeferredCalc', function () {
       }]
     });
   });
-  it('autoInvalidateInterval', function () {
+  (0, _Mocha.it)('autoInvalidateInterval', function () {
     testDeferredCalc({
       calcTime: [5],
       throttleTime: [0],
@@ -563,7 +565,7 @@ describe('common > main > rx > deferred-calc > DeferredCalc', function () {
       }]
     });
   });
-  it('real timing',
+  (0, _Mocha.it)('real timing',
   /*#__PURE__*/
   (0, _asyncToGenerator2.default)(
   /*#__PURE__*/
@@ -645,7 +647,7 @@ describe('common > main > rx > deferred-calc > DeferredCalc', function () {
       }
     }, _callee);
   })));
-  it('properties',
+  (0, _Mocha.it)('properties',
   /*#__PURE__*/
   (0, _asyncToGenerator2.default)(
   /*#__PURE__*/

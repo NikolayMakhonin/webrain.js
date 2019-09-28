@@ -22,19 +22,21 @@ var _SortedList = require("../../../../../main/common/lists/SortedList");
 
 var _Assert = require("../../../../../main/common/test/Assert");
 
+var _Mocha = require("../../../../../main/common/test/Mocha");
+
 var _helpers = require("../src/helpers/helpers");
 
 var _common = require("./src/helpers/common");
 
 var _TestList = require("./src/helpers/TestList");
 
-describe('common > main > lists > SortedList', function () {
+(0, _Mocha.describe)('common > main > lists > SortedList', function () {
   this.timeout(20000);
   var testList = _TestList.TestList.test;
   after(function () {
     console.log('Total Sorted tests >= ' + _TestList.TestList.totalListTests);
   });
-  it('constructor', function () {
+  (0, _Mocha.it)('constructor', function () {
     var list;
     list = new _SortedList.SortedList();
 
@@ -201,7 +203,7 @@ describe('common > main > lists > SortedList', function () {
 
     _TestList.assert.deepStrictEqual(list.toArray(), [1, 2, 3]);
   });
-  it('size', function () {
+  (0, _Mocha.it)('size', function () {
     var array = (0, _common.generateArray)(31);
     var list = new _SortedList.SortedList({
       array: array,
@@ -288,7 +290,7 @@ describe('common > main > lists > SortedList', function () {
 
     _TestList.assert.strictEqual(list.allocatedSize, 4);
   });
-  it('get', function () {
+  (0, _Mocha.it)('get', function () {
     testList({
       array: [[]],
       expected: {
@@ -337,7 +339,7 @@ describe('common > main > lists > SortedList', function () {
       }]
     });
   });
-  it('set', function () {
+  (0, _Mocha.it)('set', function () {
     function set(index, item) {
       return {
         actions: [function (list) {
@@ -508,7 +510,7 @@ describe('common > main > lists > SortedList', function () {
       actions: [set(2, '5'), set(-4, '5')]
     });
   });
-  it('add', function () {
+  (0, _Mocha.it)('add', function () {
     function add(item) {
       return {
         actions: [function (list) {
@@ -587,7 +589,7 @@ describe('common > main > lists > SortedList', function () {
       actions: [add('0'), add('2'), add('3')]
     });
   });
-  it('addArray', function () {
+  (0, _Mocha.it)('addArray', function () {
     function addArray(sourceItems, sourceStart, sourceEnd) {
       var start = sourceStart == null ? 0 : sourceStart;
       var end = sourceEnd == null ? sourceItems.length : sourceEnd;
@@ -701,7 +703,7 @@ describe('common > main > lists > SortedList', function () {
       actions: [addArray(['1', '2', '3'], 1, null), addArray(['1', '2', '3'], -2, null), addArray(['1', '2', '3'], 1, -1), addArray(['1', '2', '3'], -2, -1), addArray(['1', '2', '3'], 1, 3), addArray(['1', '2', '3'], -2, 3)]
     });
   });
-  it('insert', function () {
+  (0, _Mocha.it)('insert', function () {
     function insert(index, item) {
       return {
         actions: [function (list) {
@@ -781,7 +783,7 @@ describe('common > main > lists > SortedList', function () {
       actions: [insert(1, '5'), insert(-5, '5')]
     });
   });
-  it('insertArray', function () {
+  (0, _Mocha.it)('insertArray', function () {
     var _context;
 
     function insertArray(index, sourceItems, sourceStart, sourceEnd) {
@@ -955,7 +957,7 @@ describe('common > main > lists > SortedList', function () {
       actions: [insertArray(0, allValuesShuffle)]
     });
   });
-  it('remove', function () {
+  (0, _Mocha.it)('remove', function () {
     function remove(item) {
       return {
         actions: [function (list) {
@@ -1075,7 +1077,7 @@ describe('common > main > lists > SortedList', function () {
       actions: [remove(true)]
     });
   });
-  it('removeAt', function () {
+  (0, _Mocha.it)('removeAt', function () {
     function removeAt(index, withoutShift) {
       return {
         actions: [function (list) {
@@ -1149,7 +1151,7 @@ describe('common > main > lists > SortedList', function () {
       actions: [removeAt(1, true), removeAt(-3, true)]
     });
   });
-  it('removeRange', function () {
+  (0, _Mocha.it)('removeRange', function () {
     function removeRange(start, end, withoutShift) {
       return {
         actions: [function (list) {
@@ -1280,7 +1282,7 @@ describe('common > main > lists > SortedList', function () {
       actions: [removeRange(2, 5, false)]
     });
   });
-  it('removeArray', function () {
+  (0, _Mocha.it)('removeArray', function () {
     var _context2;
 
     function removeArray(sourceItems, sourceStart, sourceEnd) {
@@ -1367,7 +1369,7 @@ describe('common > main > lists > SortedList', function () {
       actions: [removeArray(allValuesShuffle)]
     });
   });
-  it('clear', function () {
+  (0, _Mocha.it)('clear', function () {
     function clear() {
       return {
         actions: [function (list) {
@@ -1449,7 +1451,7 @@ describe('common > main > lists > SortedList', function () {
       actions: [clear()]
     });
   });
-  it('toArray', function () {
+  (0, _Mocha.it)('toArray', function () {
     function toArray(start, end) {
       return {
         actions: [function (list) {
@@ -1509,7 +1511,7 @@ describe('common > main > lists > SortedList', function () {
       actions: [toArray(1, 3), toArray(-3, 3), toArray(1, -2), toArray(-3, -2)]
     });
   });
-  it('copyTo', function () {
+  (0, _Mocha.it)('copyTo', function () {
     function copyTo(result, destArray, destIndex, start, end) {
       return {
         actions: [function (list) {
@@ -1576,7 +1578,7 @@ describe('common > main > lists > SortedList', function () {
       actions: [copyTo(false, ['0', '1', '2', '3'], 3, 1, null)]
     });
   });
-  it('indexOf', function () {
+  (0, _Mocha.it)('indexOf', function () {
     testList({
       array: [['b', 'd', 'f', 'h', 'j', 'l']],
       compare: [function (o1, o2) {
@@ -1679,7 +1681,7 @@ describe('common > main > lists > SortedList', function () {
       }]
     });
   });
-  it('move', function () {
+  (0, _Mocha.it)('move', function () {
     function move(oldIndex, newIndex) {
       return {
         actions: [function (list) {
@@ -1749,7 +1751,7 @@ describe('common > main > lists > SortedList', function () {
       actions: [move(1, 3), move(-4, -2)]
     });
   });
-  it('moveRange', function () {
+  (0, _Mocha.it)('moveRange', function () {
     function moveRange(start, end, moveIndex) {
       return {
         actions: [function (list) {
@@ -1853,7 +1855,7 @@ describe('common > main > lists > SortedList', function () {
       actions: [moveRange(1, 3, 1), moveRange(1, 3, -3), moveRange(0, 4, 2), moveRange(0, 4, 3), moveRange(0, 4, -1)]
     });
   });
-  it('sort', function () {
+  (0, _Mocha.it)('sort', function () {
     function sort() {
       return {
         actions: [function (list) {
@@ -1906,7 +1908,7 @@ describe('common > main > lists > SortedList', function () {
       }]
     });
   });
-  it('reSort', function () {
+  (0, _Mocha.it)('reSort', function () {
     function reSort() {
       return {
         actions: [function (list) {
@@ -1952,7 +1954,7 @@ describe('common > main > lists > SortedList', function () {
       actions: [reSort()]
     });
   });
-  it('removeDuplicates', function () {
+  (0, _Mocha.it)('removeDuplicates', function () {
     function removeDuplicates(withoutShift) {
       return {
         actions: [function (list) {

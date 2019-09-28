@@ -10,11 +10,13 @@ var _rdtsc = require("rdtsc");
 
 var _Calc = require("../../../main/common/test/Calc");
 
+var _Mocha = require("../../../main/common/test/Mocha");
+
 var _Variants = require("../../../main/common/test/Variants");
 
 /* tslint:disable:no-empty no-identical-functions max-line-length no-construct use-primitive-type */
 // @ts-ignore
-describe('common > performance > Variants', function () {
+(0, _Mocha.describe)('common > performance > Variants', function () {
   this.timeout(300000);
   var tree = [1, [2, 3], [4, 5, [6, 7]]];
 
@@ -50,12 +52,12 @@ describe('common > performance > Variants', function () {
     }
   }
 
-  it('mem', function () {
+  (0, _Mocha.it)('mem', function () {
     (0, _Calc.calcMemAllocate)(_Calc.CalcType.Min, 10000, function () {
       iterateIterables((0, _Variants.treeToSequenceVariants)(tree));
     });
   });
-  it('perf', function () {
+  (0, _Mocha.it)('perf', function () {
     var result = (0, _rdtsc.calcPerformance)(10000, function () {// no operations
     }, function () {
       return iterateIterables((0, _Variants.treeToSequenceVariants)(tree));

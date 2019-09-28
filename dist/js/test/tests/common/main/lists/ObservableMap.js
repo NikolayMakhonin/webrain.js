@@ -16,25 +16,27 @@ var _IMapChanged = require("../../../../../main/common/lists/contracts/IMapChang
 
 var _ObservableMap = require("../../../../../main/common/lists/ObservableMap");
 
+var _Mocha = require("../../../../../main/common/test/Mocha");
+
 var _TestVariants = require("../src/helpers/TestVariants");
 
 var _common = require("./src/helpers/common");
 
 var _TestMap = require("./src/helpers/TestMap");
 
-describe('common > main > lists > ObservableMap', function () {
+(0, _Mocha.describe)('common > main > lists > ObservableMap', function () {
   this.timeout(20000);
   var testMap = _TestMap.TestMap.test;
   after(function () {
     console.log('Total Map tests >= ' + _TestMap.TestMap.totalMapTests);
   });
-  it('constructor', function () {
+  (0, _Mocha.it)('constructor', function () {
     var map;
     map = new _ObservableMap.ObservableMap();
 
     _TestMap.assert.strictEqual(map.size, 0);
   });
-  it('set', function () {
+  (0, _Mocha.it)('set', function () {
     var _context;
 
     function setArray(list, array) {
@@ -145,7 +147,7 @@ describe('common > main > lists > ObservableMap', function () {
       }]
     });
   });
-  it('delete', function () {
+  (0, _Mocha.it)('delete', function () {
     function removeArray(list, array) {
       var result = false;
 
@@ -242,7 +244,7 @@ describe('common > main > lists > ObservableMap', function () {
       }]
     });
   });
-  it('clear', function () {
+  (0, _Mocha.it)('clear', function () {
     function clear() {
       return {
         actions: [function (list) {

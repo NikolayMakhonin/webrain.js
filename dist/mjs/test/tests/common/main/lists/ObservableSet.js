@@ -1,5 +1,6 @@
 import { SetChangedType } from '../../../../../main/common/lists/contracts/ISetChanged';
 import { ObservableSet } from '../../../../../main/common/lists/ObservableSet';
+import { describe, it } from '../../../../../main/common/test/Mocha';
 import { THIS } from '../src/helpers/TestVariants';
 import { allValues, shuffle } from './src/helpers/common';
 import { assert, TestSet } from './src/helpers/TestSet';

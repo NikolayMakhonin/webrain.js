@@ -28,10 +28,12 @@ var _rules = require("../../../../../../main/common/rx/deep-subscribe/rules");
 
 var _Assert = require("../../../../../../main/common/test/Assert");
 
+var _Mocha = require("../../../../../../main/common/test/Mocha");
+
 /* tslint:disable:no-shadowed-variable no-empty */
 
 /* eslint-disable no-useless-escape,computed-property-spacing */
-describe('common > main > rx > deep-subscribe > iterate-rule', function () {
+(0, _Mocha.describe)('common > main > rx > deep-subscribe > iterate-rule', function () {
   var _marked =
   /*#__PURE__*/
   _regenerator.default.mark(objectToPaths);
@@ -181,7 +183,7 @@ describe('common > main > rx > deep-subscribe > iterate-rule', function () {
     _Assert.assert.deepStrictEqual((0, _sort.default)(paths).call(paths), (0, _sort.default)(expectedPaths).call(expectedPaths), (0, _stringify.default)(paths, null, 4));
   }
 
-  it('path', function () {
+  (0, _Mocha.it)('path', function () {
     testIterateRule(function (b) {
       return b.path(function (o) {
         return o.a;
@@ -193,7 +195,7 @@ describe('common > main > rx > deep-subscribe > iterate-rule', function () {
       });
     }, 'a.b.c');
   });
-  it('any', function () {
+  (0, _Mocha.it)('any', function () {
     testIterateRule(function (b) {
       return b.any(function (b) {
         return b.path(function (o) {
@@ -255,7 +257,7 @@ describe('common > main > rx > deep-subscribe > iterate-rule', function () {
       });
     }, 'a.b.c.d.i', 'a.b.e.f.i', 'g.h.i');
   });
-  it('path any', function () {
+  (0, _Mocha.it)('path any', function () {
     testIterateRule(function (b) {
       return b.path(function (o) {
         return o['a|b'].c;
@@ -267,7 +269,7 @@ describe('common > main > rx > deep-subscribe > iterate-rule', function () {
       });
     }, '/[ab]/.c');
   });
-  it('repeat', function () {
+  (0, _Mocha.it)('repeat', function () {
     testIterateRule(function (b) {
       return (0, _repeat.default)(b).call(b, 1, 1, null, function (b) {
         return b.path(function (o) {
@@ -348,7 +350,7 @@ describe('common > main > rx > deep-subscribe > iterate-rule', function () {
       });
     }, 'a.a.d', 'a.b.d', 'b.a.d', 'b.b.d', 'c.d');
   });
-  it('throws', function () {
+  (0, _Mocha.it)('throws', function () {
     (0, _from.default)((0, _iterateRule.iterateRule)(testObject, new _rules.Rule(0)));
 
     _Assert.assert.throws(function () {
@@ -371,7 +373,7 @@ describe('common > main > rx > deep-subscribe > iterate-rule', function () {
       }).any();
     }, Error);
   });
-  it('specific', function () {
+  (0, _Mocha.it)('specific', function () {
     testIterateRule(function (b) {
       return b.any(function (b) {
         return b.path(function (o) {

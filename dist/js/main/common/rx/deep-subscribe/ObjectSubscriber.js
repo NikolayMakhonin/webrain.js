@@ -19,6 +19,8 @@ var _objectUniqueId = require("../../helpers/object-unique-id");
 
 var _array = require("../../lists/helpers/array");
 
+var _common = require("./contracts/common");
+
 /* tslint:disable:no-array-delete*/
 function compareSubscribed(o1, o2) {
   if (typeof o1.value !== 'undefined') {
@@ -57,8 +59,9 @@ function valuesEqual(v1, v2) {
 var ObjectSubscriber =
 /*#__PURE__*/
 function () {
-  function ObjectSubscriber(subscribe, unsubscribe, lastValue) {
+  function ObjectSubscriber(subscribe, unsubscribe, lastValue, change) {
     (0, _classCallCheck2.default)(this, ObjectSubscriber);
+    this._change = change;
     this._subscribe = subscribe;
     this._unsubscribe = unsubscribe;
     this._lastValue = lastValue;
@@ -133,6 +136,17 @@ function () {
 
       if (typeof subscribedValue.value !== 'undefined') {
         throw new Error("subscribedValue no found: " + subscribedValue.parent.constructor.name + "." + subscribedValue.propertyName + " = " + subscribedValue.value);
+      }
+    }
+  }, {
+    key: "change",
+    value: function change(key, oldItem, newItem, parent, changeType, keyType, propertiesPath, ruleDescription) {
+      if ((changeType & _common.ValueChangeType.Unsubscribe) !== 0) {
+        this.unsubscribe(oldItem, parent, key);
+      }
+
+      if ((changeType & _common.ValueChangeType.Subscribe) !== 0) {
+        return this.subscribe(newItem, parent, key, propertiesPath, ruleDescription);
       }
     }
   }, {

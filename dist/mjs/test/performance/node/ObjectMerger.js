@@ -1,6 +1,7 @@
 /* tslint:disable:no-empty no-identical-functions max-line-length no-construct use-primitive-type */
 import { calcPerformance } from 'rdtsc';
 import { ObjectMerger } from '../../../main/common/extensions/merge/mergers';
+import { describe, it } from '../../../main/common/test/Mocha';
 describe('common > extensions > merge > ObjectMerger', function () {
   this.timeout(300000);
   const merger = new ObjectMerger();

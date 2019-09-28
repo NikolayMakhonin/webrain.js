@@ -4,6 +4,7 @@ import { VALUE_PROPERTY_DEFAULT } from '../../../../../../main/common/helpers/va
 import { RuleRepeatAction } from '../../../../../../main/common/rx/deep-subscribe/contracts/rules';
 import { ObservableObject } from '../../../../../../main/common/rx/object/ObservableObject';
 import { ObservableObjectBuilder } from '../../../../../../main/common/rx/object/ObservableObjectBuilder';
+import { describe, it, xit } from '../../../../../../main/common/test/Mocha';
 import { createObject, TestDeepSubscribe } from './helpers/src/TestDeepSubscribe';
 describe('common > main > rx > deep-subscribe > deep-subscribe', function () {
   const check = createObject();
@@ -313,7 +314,7 @@ describe('common > main > rx > deep-subscribe > deep-subscribe', function () {
     await delay(20);
     await tester.changeAsync(o => object.observableObject.value = new Number(2), [new Number(1)], [new Number(2)]);
     await delay(20);
-    await tester.unsubscribe([new Number(2)]);
+    await tester.unsubscribeAsync([new Number(2)]);
     await delay(100);
   });
   xit('promises throw', async function () {
@@ -325,11 +326,11 @@ describe('common > main > rx > deep-subscribe > deep-subscribe', function () {
       doNotSubscribeNonObjectValues: true,
       useIncorrectUnsubscribe: true
     }, b => b.path(o => o.promiseAsync.value));
-    await tester.subscribeAsync([new Number(1)]);
+    await tester.subscribeAsync([new Number(1)], [], []);
     await delay(20);
     await tester.changeAsync(o => object.observableObject.value = new Number(2), [], [new Number(2)], null, Error, /Value is not a function or null\/undefined/);
     await delay(20);
-    await tester.unsubscribe([]);
+    await tester.unsubscribeAsync([]);
     await delay(100);
   });
   it('lists', function () {

@@ -10,9 +10,10 @@ var _inherits2 = _interopRequireDefault(require("@babel/runtime-corejs3/helpers/
 
 var _classCallCheck2 = _interopRequireDefault(require("@babel/runtime-corejs3/helpers/classCallCheck"));
 
-/* eslint-disable no-new,new-cap */
-describe('common > env > modules', function () {
-  it('class', function () {
+var _Mocha = require("../../../../main/common/test/Mocha");
+
+(0, _Mocha.describe)('common > env > modules', function () {
+  (0, _Mocha.it)('class', function () {
     var x = function x() {
       (0, _classCallCheck2.default)(this, x);
     };

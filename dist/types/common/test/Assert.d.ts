@@ -14,7 +14,11 @@ export declare class Assert {
     equal(actual: any, expected: any, message?: string): void;
     notEqual(actual: any, expected: any, message?: string): void;
     equalCustom(actual: any, expected: any, check: any, message?: string): void;
+    private assertError;
+    throwsAsync(fn: () => Promise<void>, errType?: TClass<any> | Array<TClass<any>>, regExp?: RegExp, message?: string): Promise<void>;
     throws(fn: () => void, errType?: TClass<any> | Array<TClass<any>>, regExp?: RegExp, message?: string): void;
+    assertNotHandledErrors(): void;
+    static errors: Error[];
     throwAssertionError(actual: any, expected: any, message?: string): void;
 }
 export declare const assert: Assert;

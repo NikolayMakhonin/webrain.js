@@ -1,6 +1,5 @@
 {
 	"env": {
-		"mocha": true,
 		"browser": false,
 		"node": false
 	},
@@ -14,9 +13,8 @@
 		"no-process-env" : "off"
 	},
 	"globals": {
-		"assert": true,
-		"expect": true,
-		"should": true,
+		"xdescribe": true,
+		"xit": true,
 		"console": true
 	}
 }

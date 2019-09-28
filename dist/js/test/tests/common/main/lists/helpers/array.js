@@ -14,8 +14,12 @@ var _padStart = _interopRequireDefault(require("@babel/runtime-corejs3/core-js-s
 
 var _array = require("../../../../../../main/common/lists/helpers/array");
 
-describe('common > main > lists > helpers > array', function () {
-  it('binarySearch full', function () {
+var _Assert = require("../../../../../../main/common/test/Assert");
+
+var _Mocha = require("../../../../../../main/common/test/Mocha");
+
+(0, _Mocha.describe)('common > main > lists > helpers > array', function () {
+  (0, _Mocha.it)('binarySearch full', function () {
     var _context2, _context3;
 
     this.timeout(20000);
@@ -48,40 +52,54 @@ describe('common > main > lists > helpers > array', function () {
             });
 
             if (index < 0) {
-              assert.strictEqual(result, ~0, log);
+              _Assert.assert.strictEqual(result, ~0, log);
             } else if (index >= arr.length) {
-              assert.strictEqual(result, ~arr.length, log);
+              _Assert.assert.strictEqual(result, ~arr.length, log);
             } else if (index % 2) {
-              assert.strictEqual(result, ~index, log);
+              _Assert.assert.strictEqual(result, ~index, log);
             } else {
-              assert.strictEqual(result, index, log);
+              _Assert.assert.strictEqual(result, index, log);
             }
           }
         }
       }
     }
   });
-  it('binarySearch specific', function () {
-    assert.strictEqual((0, _array.binarySearch)([], 0), ~0);
-    assert.strictEqual((0, _array.binarySearch)([1], 0), ~0);
-    assert.strictEqual((0, _array.binarySearch)([-1], 0), ~1);
-    assert.strictEqual((0, _array.binarySearch)([0], 0), 0);
-    assert.strictEqual((0, _array.binarySearch)([0, 1, 1, 1, 2], 1, null, null, null, -1), 1);
-    assert.strictEqual((0, _array.binarySearch)([0, 1, 1, 1, 2], 1, null, null, null, 1), 3);
-    assert.strictEqual((0, _array.binarySearch)([0, 0, 1, 1, 1, 2], 1, null, null, null, -1), 2);
-    assert.strictEqual((0, _array.binarySearch)([0, 0, 1, 1, 1, 2], 1, null, null, null, 1), 4);
-    assert.strictEqual((0, _array.binarySearch)([0, 0, 1, 1, 1], 1, null, null, null, -1), 2);
-    assert.strictEqual((0, _array.binarySearch)([0, 0, 1, 1, 1], 1, null, null, null, 1), 4);
-    assert.strictEqual((0, _array.binarySearch)([1, 1, 1], 1, null, null, null, -1), 0);
-    assert.strictEqual((0, _array.binarySearch)([1, 1, 1], 1, null, null, null, 1), 2);
-    assert.strictEqual((0, _array.binarySearch)([0], 0, 0, 0), ~0);
-    assert.strictEqual((0, _array.binarySearch)([0], 0, 0, 1), 0);
+  (0, _Mocha.it)('binarySearch specific', function () {
+    _Assert.assert.strictEqual((0, _array.binarySearch)([], 0), ~0);
+
+    _Assert.assert.strictEqual((0, _array.binarySearch)([1], 0), ~0);
+
+    _Assert.assert.strictEqual((0, _array.binarySearch)([-1], 0), ~1);
+
+    _Assert.assert.strictEqual((0, _array.binarySearch)([0], 0), 0);
+
+    _Assert.assert.strictEqual((0, _array.binarySearch)([0, 1, 1, 1, 2], 1, null, null, null, -1), 1);
+
+    _Assert.assert.strictEqual((0, _array.binarySearch)([0, 1, 1, 1, 2], 1, null, null, null, 1), 3);
+
+    _Assert.assert.strictEqual((0, _array.binarySearch)([0, 0, 1, 1, 1, 2], 1, null, null, null, -1), 2);
+
+    _Assert.assert.strictEqual((0, _array.binarySearch)([0, 0, 1, 1, 1, 2], 1, null, null, null, 1), 4);
+
+    _Assert.assert.strictEqual((0, _array.binarySearch)([0, 0, 1, 1, 1], 1, null, null, null, -1), 2);
+
+    _Assert.assert.strictEqual((0, _array.binarySearch)([0, 0, 1, 1, 1], 1, null, null, null, 1), 4);
+
+    _Assert.assert.strictEqual((0, _array.binarySearch)([1, 1, 1], 1, null, null, null, -1), 0);
+
+    _Assert.assert.strictEqual((0, _array.binarySearch)([1, 1, 1], 1, null, null, null, 1), 2);
+
+    _Assert.assert.strictEqual((0, _array.binarySearch)([0], 0, 0, 0), ~0);
+
+    _Assert.assert.strictEqual((0, _array.binarySearch)([0], 0, 0, 1), 0);
   });
-  it('move', function () {
+  (0, _Mocha.it)('move', function () {
     function testMove(array, start, end, newIndex, expectedArray) {
       array = (0, _slice.default)(array).call(array);
       (0, _array.move)(array, start, end, newIndex);
-      assert.deepStrictEqual(array, expectedArray);
+
+      _Assert.assert.deepStrictEqual(array, expectedArray);
     }
 
     testMove([0, 1], 1, 2, 0, [1, 0]);

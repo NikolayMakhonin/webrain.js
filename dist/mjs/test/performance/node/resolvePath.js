@@ -5,6 +5,7 @@ import { ObservableObject } from '../../../main/common/rx/object/ObservableObjec
 import { CalcObjectBuilder } from '../../../main/common/rx/object/properties/CalcObjectBuilder';
 import { calcPropertyFactory } from '../../../main/common/rx/object/properties/CalcPropertyBuilder';
 import { resolvePath } from '../../../main/common/rx/object/properties/helpers';
+import { describe, it } from '../../../main/common/test/Mocha';
 describe('resolvePath', function () {
   this.timeout(300000);
 

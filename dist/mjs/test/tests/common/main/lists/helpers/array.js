@@ -1,4 +1,6 @@
 import { binarySearch, move } from '../../../../../../main/common/lists/helpers/array';
+import { assert } from '../../../../../../main/common/test/Assert';
+import { describe, it } from '../../../../../../main/common/test/Mocha';
 describe('common > main > lists > helpers > array', function () {
   it('binarySearch full', function () {
     this.timeout(20000);

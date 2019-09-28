@@ -32,12 +32,16 @@ var _ConnectorBuilder = require("../../../../../../../main/common/rx/object/prop
 
 var _helpers = require("../../../../../../../main/common/rx/object/properties/helpers");
 
+var _Assert = require("../../../../../../../main/common/test/Assert");
+
+var _Mocha = require("../../../../../../../main/common/test/Mocha");
+
 var _TestDeepSubscribe = require("../../deep-subscribe/helpers/src/TestDeepSubscribe");
 
 /* tslint:disable:no-duplicate-string */
 
 /* eslint-disable guard-for-in */
-describe('common > main > rx > properties > CalcObjectBuilder', function () {
+(0, _Mocha.describe)('common > main > rx > properties > CalcObjectBuilder', function () {
   this.timeout(30000);
 
   var ClassSync =
@@ -182,31 +186,42 @@ describe('common > main > rx > properties > CalcObjectBuilder', function () {
       }, calcFunc);
     })
   }));
-  it('calc sync', function () {
+  (0, _Mocha.it)('calc sync', function () {
     var result = new ClassSync().calc1.last;
-    assert.deepStrictEqual(result, new Date(123));
+
+    _Assert.assert.deepStrictEqual(result, new Date(123));
+
     result = new ClassSync().calc1.wait;
-    assert.deepStrictEqual(result, new Date(123));
+
+    _Assert.assert.deepStrictEqual(result, new Date(123));
+
     result = new ClassSync().calc1.lastOrWait;
-    assert.deepStrictEqual(result, new Date(123));
+
+    _Assert.assert.deepStrictEqual(result, new Date(123));
   });
-  it('calc sync resolve', function () {
+  (0, _Mocha.it)('calc sync resolve', function () {
     var val = (0, _helpers.resolvePath)(new ClassSync())(function (o) {
       return o.calc1;
     })();
-    assert.deepStrictEqual(val, new Date(123));
+
+    _Assert.assert.deepStrictEqual(val, new Date(123));
+
     val = (0, _helpers.resolvePath)(new ClassSync())(function (o) {
       return o.calc1;
     })(function (o) {
       return o.last;
     }, true)();
-    assert.deepStrictEqual(val, new Date(123));
+
+    _Assert.assert.deepStrictEqual(val, new Date(123));
+
     val = (0, _helpers.resolvePath)(new ClassSync())(function (o) {
       return o.calc1.wait;
     })(function (o) {
       return o.last;
     }, true)();
-    assert.deepStrictEqual(val, new Date(123));
+
+    _Assert.assert.deepStrictEqual(val, new Date(123));
+
     val = (0, _helpers.resolvePath)(new ClassSync())(function (o) {
       return o.calc1;
     })(function (o) {
@@ -214,7 +229,9 @@ describe('common > main > rx > properties > CalcObjectBuilder', function () {
     }, true)(function (o) {
       return o.last;
     }, true)();
-    assert.deepStrictEqual(val, new Date(123));
+
+    _Assert.assert.deepStrictEqual(val, new Date(123));
+
     val = (0, _helpers.resolvePath)(new ClassSync())(function (o) {
       return o.wait;
     }, true)(function (o) {
@@ -224,24 +241,31 @@ describe('common > main > rx > properties > CalcObjectBuilder', function () {
     }, true)(function (o) {
       return o.last;
     }, true)();
-    assert.deepStrictEqual(val, new Date(123));
+
+    _Assert.assert.deepStrictEqual(val, new Date(123));
+
     var object = new ClassSync();
     var obj = (0, _helpers.resolvePath)(object)();
-    assert.deepStrictEqual(obj, object);
+
+    _Assert.assert.deepStrictEqual(obj, object);
+
     object = new ClassSync();
     obj = (0, _helpers.resolvePath)(object)(function (o) {
       return o.wait;
     }, true)();
-    assert.deepStrictEqual(obj, object);
+
+    _Assert.assert.deepStrictEqual(obj, object);
+
     object = new ClassSync();
     obj = (0, _helpers.resolvePath)(object)(function (o) {
       return o.wait;
     }, true)(function (o) {
       return o.last;
     }, true)();
-    assert.deepStrictEqual(obj, object);
+
+    _Assert.assert.deepStrictEqual(obj, object);
   });
-  it('calc async',
+  (0, _Mocha.it)('calc async',
   /*#__PURE__*/
   (0, _asyncToGenerator2.default)(
   /*#__PURE__*/
@@ -251,9 +275,10 @@ describe('common > main > rx > properties > CalcObjectBuilder', function () {
       while (1) {
         switch (_context4.prev = _context4.next) {
           case 0:
-            assert.deepStrictEqual(new ClassAsync().calc1.last, void 0);
+            _Assert.assert.deepStrictEqual(new ClassAsync().calc1.last, void 0);
+
             object = new ClassAsync().calc1;
-            _context4.t0 = assert;
+            _context4.t0 = _Assert.assert;
             _context4.next = 5;
             return object.wait;
 
@@ -263,9 +288,10 @@ describe('common > main > rx > properties > CalcObjectBuilder', function () {
 
             _context4.t0.deepStrictEqual.call(_context4.t0, _context4.t1, _context4.t2);
 
-            assert.deepStrictEqual(object.last, new Date(123));
+            _Assert.assert.deepStrictEqual(object.last, new Date(123));
+
             object = new ClassAsync().calc1;
-            _context4.t3 = assert;
+            _context4.t3 = _Assert.assert;
             _context4.next = 13;
             return object.lastOrWait;
 
@@ -275,7 +301,7 @@ describe('common > main > rx > properties > CalcObjectBuilder', function () {
 
             _context4.t3.deepStrictEqual.call(_context4.t3, _context4.t4, _context4.t5);
 
-            assert.deepStrictEqual(object.last, new Date(123));
+            _Assert.assert.deepStrictEqual(object.last, new Date(123));
 
           case 17:
           case "end":
@@ -284,7 +310,7 @@ describe('common > main > rx > properties > CalcObjectBuilder', function () {
       }
     }, _callee);
   })));
-  it('calc async resolve',
+  (0, _Mocha.it)('calc async resolve',
   /*#__PURE__*/
   (0, _asyncToGenerator2.default)(
   /*#__PURE__*/
@@ -297,7 +323,7 @@ describe('common > main > rx > properties > CalcObjectBuilder', function () {
             val = (0, _helpers.resolvePath)(new ClassAsync())(function (o) {
               return o.calc1;
             })();
-            _context5.t0 = assert;
+            _context5.t0 = _Assert.assert;
             _context5.next = 4;
             return val;
 
@@ -312,7 +338,7 @@ describe('common > main > rx > properties > CalcObjectBuilder', function () {
             })(function (o) {
               return o.last;
             }, true)();
-            _context5.t3 = assert;
+            _context5.t3 = _Assert.assert;
             _context5.next = 11;
             return val;
 
@@ -327,7 +353,7 @@ describe('common > main > rx > properties > CalcObjectBuilder', function () {
             })(function (o) {
               return o.last;
             }, true)();
-            _context5.t6 = assert;
+            _context5.t6 = _Assert.assert;
             _context5.next = 18;
             return val;
 
@@ -344,7 +370,7 @@ describe('common > main > rx > properties > CalcObjectBuilder', function () {
             }, true)(function (o) {
               return o.last;
             }, true)();
-            _context5.t9 = assert;
+            _context5.t9 = _Assert.assert;
             _context5.next = 25;
             return val;
 
@@ -363,7 +389,7 @@ describe('common > main > rx > properties > CalcObjectBuilder', function () {
             }, true)(function (o) {
               return o.last;
             }, true)();
-            _context5.t12 = assert;
+            _context5.t12 = _Assert.assert;
             _context5.next = 32;
             return val;
 
@@ -375,7 +401,7 @@ describe('common > main > rx > properties > CalcObjectBuilder', function () {
 
             object = new ClassAsync();
             obj = (0, _helpers.resolvePath)(object)();
-            _context5.t15 = assert;
+            _context5.t15 = _Assert.assert;
             _context5.next = 40;
             return obj;
 
@@ -389,7 +415,7 @@ describe('common > main > rx > properties > CalcObjectBuilder', function () {
             obj = (0, _helpers.resolvePath)(object)(function (o) {
               return o.wait;
             }, true)();
-            _context5.t18 = assert;
+            _context5.t18 = _Assert.assert;
             _context5.next = 48;
             return obj;
 
@@ -405,7 +431,7 @@ describe('common > main > rx > properties > CalcObjectBuilder', function () {
             }, true)(function (o) {
               return o.last;
             }, true)();
-            _context5.t21 = assert;
+            _context5.t21 = _Assert.assert;
             _context5.next = 56;
             return obj;
 
@@ -422,7 +448,7 @@ describe('common > main > rx > properties > CalcObjectBuilder', function () {
       }
     }, _callee2);
   })));
-  it('circular calc sync',
+  (0, _Mocha.it)('circular calc sync',
   /*#__PURE__*/
   (0, _asyncToGenerator2.default)(
   /*#__PURE__*/
@@ -436,7 +462,9 @@ describe('common > main > rx > properties > CalcObjectBuilder', function () {
             value = (0, _helpers.resolvePath)(object)(function (o) {
               return o.calc2;
             })();
-            assert.strictEqual(value, object);
+
+            _Assert.assert.strictEqual(value, object);
+
             value = (0, _helpers.resolvePath)(object)(function (o) {
               return o.calc2;
             })(function (o) {
@@ -446,7 +474,9 @@ describe('common > main > rx > properties > CalcObjectBuilder', function () {
             })(function (o) {
               return o.calc2;
             })();
-            assert.strictEqual(value, object);
+
+            _Assert.assert.strictEqual(value, object);
+
             value2 = (0, _helpers.resolvePath)(object)(function (o) {
               return o.calc2;
             })(function (o) {
@@ -456,7 +486,8 @@ describe('common > main > rx > properties > CalcObjectBuilder', function () {
             })(function (o) {
               return o.calc1;
             })();
-            assert.deepStrictEqual(value2, new Date(123));
+
+            _Assert.assert.deepStrictEqual(value2, new Date(123));
 
           case 7:
           case "end":
@@ -465,7 +496,7 @@ describe('common > main > rx > properties > CalcObjectBuilder', function () {
       }
     }, _callee3);
   })));
-  it('circular calc async',
+  (0, _Mocha.it)('circular calc async',
   /*#__PURE__*/
   (0, _asyncToGenerator2.default)(
   /*#__PURE__*/
@@ -479,7 +510,7 @@ describe('common > main > rx > properties > CalcObjectBuilder', function () {
             value = (0, _helpers.resolvePath)(object)(function (o) {
               return o.calc2;
             })();
-            _context7.t0 = assert;
+            _context7.t0 = _Assert.assert;
             _context7.next = 5;
             return value;
 
@@ -498,7 +529,7 @@ describe('common > main > rx > properties > CalcObjectBuilder', function () {
             })(function (o) {
               return o.calc2;
             })();
-            _context7.t3 = assert;
+            _context7.t3 = _Assert.assert;
             _context7.next = 12;
             return value;
 
@@ -517,7 +548,7 @@ describe('common > main > rx > properties > CalcObjectBuilder', function () {
             })(function (o) {
               return o.calc1;
             })();
-            _context7.t6 = assert;
+            _context7.t6 = _Assert.assert;
             _context7.next = 19;
             return value2;
 
@@ -534,7 +565,7 @@ describe('common > main > rx > properties > CalcObjectBuilder', function () {
       }
     }, _callee4);
   })));
-  it('deepSubscribe simple',
+  (0, _Mocha.it)('deepSubscribe simple',
   /*#__PURE__*/
   (0, _asyncToGenerator2.default)(
   /*#__PURE__*/
@@ -569,7 +600,7 @@ describe('common > main > rx > properties > CalcObjectBuilder', function () {
       }
     }, _callee5);
   })));
-  it('deepSubscribe calc sync',
+  (0, _Mocha.it)('deepSubscribe calc sync',
   /*#__PURE__*/
   (0, _asyncToGenerator2.default)(
   /*#__PURE__*/
@@ -600,7 +631,7 @@ describe('common > main > rx > properties > CalcObjectBuilder', function () {
       }
     }, _callee6);
   })));
-  it('deepSubscribe calc async',
+  (0, _Mocha.it)('deepSubscribe calc async',
   /*#__PURE__*/
   (0, _asyncToGenerator2.default)(
   /*#__PURE__*/
@@ -648,7 +679,7 @@ describe('common > main > rx > properties > CalcObjectBuilder', function () {
       }
     }, _callee7);
   })));
-  it('deepSubscribe calc circular sync',
+  (0, _Mocha.it)('deepSubscribe calc circular sync',
   /*#__PURE__*/
   (0, _asyncToGenerator2.default)(
   /*#__PURE__*/
@@ -683,7 +714,7 @@ describe('common > main > rx > properties > CalcObjectBuilder', function () {
       }
     }, _callee8);
   })));
-  it('deepSubscribe calc circular async',
+  (0, _Mocha.it)('deepSubscribe calc circular async',
   /*#__PURE__*/
   (0, _asyncToGenerator2.default)(
   /*#__PURE__*/
@@ -703,37 +734,37 @@ describe('common > main > rx > properties > CalcObjectBuilder', function () {
               return b.p('calc2').p('calc2').p('calc2').p('calc1');
             });
             _context12.next = 4;
-            return tester.subscribe([new Date(123)]);
+            return tester.subscribeAsync([new Date(123)]);
 
           case 4:
             _context12.next = 6;
-            return tester.unsubscribe([new Date(123)]);
+            return tester.unsubscribeAsync([new Date(123)]);
 
           case 6:
             _context12.next = 8;
-            return tester.subscribe([new Date(123)]);
+            return tester.subscribeAsync([new Date(123)]);
 
           case 8:
             _context12.next = 10;
-            return tester.change(function (o) {
+            return tester.changeAsync(function (o) {
               return o.source1 = 234;
             }, [new Date(123)], [new Date(234)]);
 
           case 10:
             _context12.next = 12;
-            return tester.change(function (o) {
+            return tester.changeAsync(function (o) {
               return o.source2 = 1;
             }, [], []);
 
           case 12:
             _context12.next = 14;
-            return tester.change(function (o) {
+            return tester.changeAsync(function (o) {
               return o.source1 = 345;
             }, [new Date(234)], [new Date(345)]);
 
           case 14:
             _context12.next = 16;
-            return tester.unsubscribe([new Date(345)]);
+            return tester.unsubscribeAsync([new Date(345)]);
 
           case 16:
           case "end":

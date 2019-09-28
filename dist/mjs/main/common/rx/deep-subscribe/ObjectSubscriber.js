@@ -2,6 +2,7 @@
 import { checkIsFuncOrNull } from '../../helpers/helpers';
 import { getObjectUniqueId } from '../../helpers/object-unique-id';
 import { binarySearch } from '../../lists/helpers/array';
+import { ValueChangeType } from './contracts/common';
 
 function compareSubscribed(o1, o2) {
   if (typeof o1.value !== 'undefined') {
@@ -38,7 +39,8 @@ function valuesEqual(v1, v2) {
 }
 
 export class ObjectSubscriber {
-  constructor(subscribe, unsubscribe, lastValue) {
+  constructor(subscribe, unsubscribe, lastValue, change) {
+    this._change = change;
     this._subscribe = subscribe;
     this._unsubscribe = unsubscribe;
     this._lastValue = lastValue;
@@ -114,6 +116,16 @@ export class ObjectSubscriber {
 
     if (typeof subscribedValue.value !== 'undefined') {
       throw new Error(`subscribedValue no found: ${subscribedValue.parent.constructor.name}.${subscribedValue.propertyName} = ${subscribedValue.value}`);
+    }
+  }
+
+  change(key, oldItem, newItem, parent, changeType, keyType, propertiesPath, ruleDescription) {
+    if ((changeType & ValueChangeType.Unsubscribe) !== 0) {
+      this.unsubscribe(oldItem, parent, key);
+    }
+
+    if ((changeType & ValueChangeType.Subscribe) !== 0) {
+      return this.subscribe(newItem, parent, key, propertiesPath, ruleDescription);
     }
   }
 

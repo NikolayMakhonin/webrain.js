@@ -4,6 +4,8 @@
 import { ObservableObject } from '../../../../../../../main/common/rx/object/ObservableObject';
 import { ObservableObjectBuilder } from '../../../../../../../main/common/rx/object/ObservableObjectBuilder';
 import { ConnectorBuilder } from '../../../../../../../main/common/rx/object/properties/ConnectorBuilder';
+import { assert } from '../../../../../../../main/common/test/Assert';
+import { describe, it } from '../../../../../../../main/common/test/Mocha';
 import { createObject } from '../../deep-subscribe/helpers/src/TestDeepSubscribe';
 describe('common > main > rx > properties > ConnectorBuilder', function () {
   it('connect', function () {

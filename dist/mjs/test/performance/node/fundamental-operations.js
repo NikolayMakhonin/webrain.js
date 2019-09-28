@@ -16,6 +16,8 @@ import { freezeWithUniqueId, getObjectUniqueId } from '../../../main/common/help
 import { ArraySet } from '../../../main/common/lists/ArraySet';
 import { binarySearch } from '../../../main/common/lists/helpers/array';
 import { SortedList } from '../../../main/common/lists/SortedList';
+import { assert } from '../../../main/common/test/Assert';
+import { describe, xit } from '../../../main/common/test/Mocha';
 import { createObject, TestDeepSubscribe } from '../../tests/common/main/rx/deep-subscribe/helpers/src/TestDeepSubscribe';
 const SetNative = Set;
 

@@ -8,10 +8,12 @@ var _from = _interopRequireDefault(require("@babel/runtime-corejs3/core-js-stabl
 
 var _Assert = require("../../../../../main/common/test/Assert");
 
+var _Mocha = require("../../../../../main/common/test/Mocha");
+
 var _Variants = require("../../../../../main/common/test/Variants");
 
 /* tslint:disable:no-construct use-primitive-type */
-describe('common > test > Variants', function () {
+(0, _Mocha.describe)('common > test > Variants', function () {
   function iterablesToString(iterables) {
     var iterablesArray = (0, _from.default)(iterables);
     var str = (0, _map.default)(iterablesArray).call(iterablesArray, function (iterable) {
@@ -31,7 +33,7 @@ describe('common > test > Variants', function () {
     _Assert.assert.deepStrictEqual(arrays, resultArrays);
   }
 
-  it('simple', function () {
+  (0, _Mocha.it)('simple', function () {
     testTree([1], [[1]]);
     testTree([[1, 2]], [[1], [2]]);
     testTree([1, 2], [[1, 2]]);
@@ -39,7 +41,7 @@ describe('common > test > Variants', function () {
     testTree([1, [2, 3]], [[1, 2], [1, 3]]);
     testTree([1, [2, 3], [4, 5]], [[1, 2, 4], [1, 2, 5], [1, 3, 4], [1, 3, 5]]);
   });
-  it('base', function () {
+  (0, _Mocha.it)('base', function () {
     testTree([1, [2, 3], [4, 5, [6, [7, 8]]]], [[1, 2, 4], [1, 2, 5], [1, 2, 6, 7], [1, 2, 6, 8], [1, 3, 4], [1, 3, 5], [1, 3, 6, 7], [1, 3, 6, 8]]);
   });
 });

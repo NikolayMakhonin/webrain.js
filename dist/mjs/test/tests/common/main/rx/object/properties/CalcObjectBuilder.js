@@ -7,6 +7,8 @@ import { CalcObjectBuilder } from '../../../../../../../main/common/rx/object/pr
 import { calcPropertyFactory } from '../../../../../../../main/common/rx/object/properties/CalcPropertyBuilder';
 import { connectorFactory } from '../../../../../../../main/common/rx/object/properties/ConnectorBuilder';
 import { resolvePath } from '../../../../../../../main/common/rx/object/properties/helpers';
+import { assert } from '../../../../../../../main/common/test/Assert';
+import { describe, it } from '../../../../../../../main/common/test/Mocha';
 import { TestDeepSubscribe } from '../../deep-subscribe/helpers/src/TestDeepSubscribe';
 describe('common > main > rx > properties > CalcObjectBuilder', function () {
   this.timeout(30000);
@@ -198,12 +200,12 @@ describe('common > main > rx > properties > CalcObjectBuilder', function () {
       doNotSubscribeNonObjectValues: true,
       asyncDelay: 500
     }, b => b.p('calc2').p('calc2').p('calc2').p('calc1'));
-    await tester.subscribe([new Date(123)]);
-    await tester.unsubscribe([new Date(123)]);
-    await tester.subscribe([new Date(123)]);
-    await tester.change(o => o.source1 = 234, [new Date(123)], [new Date(234)]);
-    await tester.change(o => o.source2 = 1, [], []);
-    await tester.change(o => o.source1 = 345, [new Date(234)], [new Date(345)]);
-    await tester.unsubscribe([new Date(345)]);
+    await tester.subscribeAsync([new Date(123)]);
+    await tester.unsubscribeAsync([new Date(123)]);
+    await tester.subscribeAsync([new Date(123)]);
+    await tester.changeAsync(o => o.source1 = 234, [new Date(123)], [new Date(234)]);
+    await tester.changeAsync(o => o.source2 = 1, [], []);
+    await tester.changeAsync(o => o.source1 = 345, [new Date(234)], [new Date(345)]);
+    await tester.unsubscribeAsync([new Date(345)]);
   });
 });

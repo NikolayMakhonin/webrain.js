@@ -2,10 +2,12 @@
 
 var _Assert = require("../../../../../../main/common/test/Assert");
 
+var _Mocha = require("../../../../../../main/common/test/Mocha");
+
 var _timing = require("./src/timing");
 
-describe('common > main > rx > deferred-calc > timing', function () {
-  it('base', function () {
+(0, _Mocha.describe)('common > main > rx > deferred-calc > timing', function () {
+  (0, _Mocha.it)('base', function () {
     var timing = new _timing.TestTiming();
     var results = [];
 

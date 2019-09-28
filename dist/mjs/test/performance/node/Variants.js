@@ -2,6 +2,7 @@
 // @ts-ignore
 import { calcPerformance } from 'rdtsc';
 import { calcMemAllocate, CalcType } from '../../../main/common/test/Calc';
+import { describe, it } from '../../../main/common/test/Mocha';
 import { treeToSequenceVariants } from '../../../main/common/test/Variants';
 describe('common > performance > Variants', function () {
   this.timeout(300000);

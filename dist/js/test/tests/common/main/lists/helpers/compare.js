@@ -8,15 +8,22 @@ var _sort = _interopRequireDefault(require("@babel/runtime-corejs3/core-js-stabl
 
 var _compare = require("../../../../../../main/common/lists/helpers/compare");
 
+var _Assert = require("../../../../../../main/common/test/Assert");
+
+var _Mocha = require("../../../../../../main/common/test/Mocha");
+
 var _common = require("../src/helpers/common");
 
-describe('common > main > lists > helpers > compare', function () {
-  it('strict', function () {
+(0, _Mocha.describe)('common > main > lists > helpers > compare', function () {
+  (0, _Mocha.it)('strict', function () {
     function testCompare(obj1, obj2) {
-      assert.strictEqual((0, _compare.compareStrict)(obj1, obj2), -1);
-      assert.strictEqual((0, _compare.compareStrict)(obj2, obj1), 1);
-      assert.strictEqual((0, _compare.compareStrict)(obj1, obj1), 0);
-      assert.strictEqual((0, _compare.compareStrict)(obj2, obj2), 0);
+      _Assert.assert.strictEqual((0, _compare.compareStrict)(obj1, obj2), -1);
+
+      _Assert.assert.strictEqual((0, _compare.compareStrict)(obj2, obj1), 1);
+
+      _Assert.assert.strictEqual((0, _compare.compareStrict)(obj1, obj1), 0);
+
+      _Assert.assert.strictEqual((0, _compare.compareStrict)(obj2, obj2), 0);
     }
 
     testCompare(-Infinity, -1);
@@ -42,18 +49,23 @@ describe('common > main > lists > helpers > compare', function () {
       testCompare(function () {}, function () {});
       var array = (0, _common.shuffle)(_common.allValues);
       (0, _sort.default)(array).call(array, _compare.compareStrict);
-      assert.deepStrictEqual(array, [-Infinity, 0, 1, Infinity, NaN, false, true, '', '0', '1', 'NaN', 'false', 'null', 'true', 'undefined', [], {}, null, undefined]);
+
+      _Assert.assert.deepStrictEqual(array, [-Infinity, 0, 1, Infinity, NaN, false, true, '', '0', '1', 'NaN', 'false', 'null', 'true', 'undefined', [], {}, null, undefined]);
     }
   });
-  it('fast', function () {
+  (0, _Mocha.it)('fast', function () {
     var _context;
 
     function testCompare(obj1, obj2) {
       var result = (0, _compare.compareStrict)(obj1, obj2);
-      assert.ok(result === -1 || result === 1);
-      assert.strictEqual((0, _compare.compareStrict)(obj2, obj1), -result);
-      assert.strictEqual((0, _compare.compareStrict)(obj1, obj1), 0);
-      assert.strictEqual((0, _compare.compareStrict)(obj2, obj2), 0);
+
+      _Assert.assert.ok(result === -1 || result === 1);
+
+      _Assert.assert.strictEqual((0, _compare.compareStrict)(obj2, obj1), -result);
+
+      _Assert.assert.strictEqual((0, _compare.compareStrict)(obj1, obj1), 0);
+
+      _Assert.assert.strictEqual((0, _compare.compareStrict)(obj2, obj2), 0);
     }
 
     testCompare(-Infinity, -1);
@@ -81,7 +93,7 @@ describe('common > main > lists > helpers > compare', function () {
       var array = (0, _common.shuffle)(_common.allValues);
       (0, _sort.default)(array).call(array, _compare.compareFast); // console.log(array)
 
-      assert.deepStrictEqual(array, arrayCheck);
+      _Assert.assert.deepStrictEqual(array, arrayCheck);
     }
   });
 });

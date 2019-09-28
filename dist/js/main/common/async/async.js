@@ -53,7 +53,7 @@ function resolveIterator(iterator, isError, onImmediate, onDeferred, customResol
           return isError ? ResolveResult.ImmediateError : ResolveResult.Immediate;
         }
 
-        var result = _resolveValue(iteratorResult.value, isError, function (o, nextIsError) {
+        var result = _resolveValue(iteratorResult.value, false, function (o, nextIsError) {
           nextValue = o;
           isThrow = nextIsError;
         }, function (o, nextIsError) {

@@ -1,9 +1,11 @@
 "use strict";
 
+var _Mocha = require("../../../../../../../main/common/test/Mocha");
+
 /* tslint:disable:no-duplicate-string */
 
 /* eslint-disable guard-for-in */
-xdescribe('common > main > rx > properties > CalcProperty', function () {// it('connect', function() {
+(0, _Mocha.xdescribe)('common > main > rx > properties > CalcProperty', function () {// it('connect', function() {
   // 	const source: any = createObject().observableObject
   // 	new ObservableObjectBuilder(source)
   // 		.writable('baseProp1')

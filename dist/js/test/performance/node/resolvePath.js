@@ -26,8 +26,10 @@ var _CalcPropertyBuilder = require("../../../main/common/rx/object/properties/Ca
 
 var _helpers = require("../../../main/common/rx/object/properties/helpers");
 
+var _Mocha = require("../../../main/common/test/Mocha");
+
 /* tslint:disable:no-empty */
-describe('resolvePath', function () {
+(0, _Mocha.describe)('resolvePath', function () {
   this.timeout(300000);
 
   var Class =
@@ -67,7 +69,7 @@ describe('resolvePath', function () {
   var object = new Class();
   object.simple = simple;
   simple.value = object;
-  it('simple', function () {
+  (0, _Mocha.it)('simple', function () {
     var test = (0, _helpers.resolvePath)(object)();
     var result = (0, _rdtsc.calcPerformance)(20000, function () {}, function () {
       return (0, _helpers.resolvePath)(true)();

@@ -1,5 +1,7 @@
 /* eslint-disable class-methods-use-this */
 import { hasSubscribers as toHasSubscribers } from '../../../../../../main/common/rx/subjects/hasSubscribers';
+import { assert } from '../../../../../../main/common/test/Assert';
+import { describe, it } from '../../../../../../main/common/test/Mocha';
 import { TestSubject } from '../src/TestSubject';
 describe('common > main > rx > subjects > hasSubscribers', function () {
   function deleteFromArray(array, item) {

@@ -14,8 +14,12 @@ var _inherits2 = _interopRequireDefault(require("@babel/runtime-corejs3/helpers/
 
 var _observable = require("../../../../../../main/common/rx/subjects/observable");
 
-describe('common > main > rx > subjects > observable', function () {
-  it('Observable', function () {
+var _Assert = require("../../../../../../main/common/test/Assert");
+
+var _Mocha = require("../../../../../../main/common/test/Mocha");
+
+(0, _Mocha.describe)('common > main > rx > subjects > observable', function () {
+  (0, _Mocha.it)('Observable', function () {
     var CustomObservable =
     /*#__PURE__*/
     function (_Observable) {
@@ -41,7 +45,9 @@ describe('common > main > rx > subjects > observable', function () {
       arg = o;
       return 'result';
     });
-    assert.strictEqual(arg, observable);
-    assert.strictEqual(result, 'result');
+
+    _Assert.assert.strictEqual(arg, observable);
+
+    _Assert.assert.strictEqual(result, 'result');
   });
 });

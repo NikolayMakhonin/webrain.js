@@ -38,7 +38,7 @@ export function resolveIterator(iterator, isError, onImmediate, onDeferred, cust
           return isError ? ResolveResult.ImmediateError : ResolveResult.Immediate;
         }
 
-        const result = _resolveValue(iteratorResult.value, isError, (o, nextIsError) => {
+        const result = _resolveValue(iteratorResult.value, false, (o, nextIsError) => {
           nextValue = o;
           isThrow = nextIsError;
         }, (o, nextIsError) => {

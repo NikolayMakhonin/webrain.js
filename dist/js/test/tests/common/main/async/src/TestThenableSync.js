@@ -822,6 +822,8 @@ function (_TestVariants) {
             action();
           }
 
+          _Assert.assert.assertNotHandledErrors();
+
           return "break";
         } catch (ex) {
           if (!debugIteration) {

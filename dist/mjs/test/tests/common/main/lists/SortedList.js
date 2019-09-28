@@ -2,6 +2,7 @@ import { ListChangedType } from '../../../../../main/common/lists/contracts/ILis
 import { compareFast } from '../../../../../main/common/lists/helpers/compare';
 import { getDefaultValue, SortedList } from '../../../../../main/common/lists/SortedList';
 import { AssertionError } from '../../../../../main/common/test/Assert';
+import { describe, it } from '../../../../../main/common/test/Mocha';
 import { createIterable } from '../src/helpers/helpers';
 import { allValues, generateArray, shuffle } from './src/helpers/common';
 import { assert, TestList } from './src/helpers/TestList';

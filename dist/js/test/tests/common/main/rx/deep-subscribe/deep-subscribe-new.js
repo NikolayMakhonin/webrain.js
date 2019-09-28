@@ -10,16 +10,18 @@ var _repeat = _interopRequireDefault(require("@babel/runtime-corejs3/core-js-sta
 
 var _IMapChanged = require("../../../../../../main/common/lists/contracts/IMapChanged");
 
+var _Mocha = require("../../../../../../main/common/test/Mocha");
+
 var _TestDeepSubscribe = require("./helpers/src/TestDeepSubscribe");
 
 /* tslint:disable:no-construct use-primitive-type no-shadowed-variable no-duplicate-string no-empty max-line-length */
-describe('common > main > rx > deep-subscribe > deep-subscribe new', function () {
+(0, _Mocha.describe)('common > main > rx > deep-subscribe > deep-subscribe new', function () {
   this.timeout(300000);
   var check = (0, _TestDeepSubscribe.createObject)();
   after(function () {
     console.log('Total ObjectMerger tests >= ' + _TestDeepSubscribe.TestDeepSubscribe.totalTests);
   });
-  it('ruleFactoriesVariants self sync', function () {
+  (0, _Mocha.it)('ruleFactoriesVariants self sync', function () {
     new _TestDeepSubscribe.TestDeepSubscribeVariants({
       object: (0, _TestDeepSubscribe.createObject)().observableObject,
       immediate: true,
@@ -108,7 +110,7 @@ describe('common > main > rx > deep-subscribe > deep-subscribe new', function ()
       return ['value2'];
     }, [void 0]);
   });
-  it('ruleFactoriesVariants self async',
+  (0, _Mocha.it)('ruleFactoriesVariants self async',
   /*#__PURE__*/
   (0, _asyncToGenerator2.default)(
   /*#__PURE__*/
@@ -206,7 +208,7 @@ describe('common > main > rx > deep-subscribe > deep-subscribe new', function ()
 
           case 3:
             _context.next = 5;
-            return tester.change(function (o) {
+            return tester.changeAsync(function (o) {
               return o.value = 'value2';
             }, ['value'], ['value2'], ['value2']);
 
@@ -223,7 +225,7 @@ describe('common > main > rx > deep-subscribe > deep-subscribe new', function ()
       }
     }, _callee);
   })));
-  xit('last nothing sync', function () {
+  (0, _Mocha.xit)('last nothing sync', function () {
     new _TestDeepSubscribe.TestDeepSubscribeVariants({
       object: (0, _TestDeepSubscribe.createObject)().observableObject,
       immediate: true,
@@ -243,7 +245,7 @@ describe('common > main > rx > deep-subscribe > deep-subscribe new', function ()
       return ['value2'];
     }, [void 0]);
   });
-  it('property value sync', function () {
+  (0, _Mocha.it)('property value sync', function () {
     new _TestDeepSubscribe.TestDeepSubscribeVariants({
       object: (0, _TestDeepSubscribe.createObject)().observableObject,
       immediate: true,
@@ -262,7 +264,7 @@ describe('common > main > rx > deep-subscribe > deep-subscribe new', function ()
       return ['value2'];
     }, [void 0]);
   });
-  it('chain of same objects: propertyChanged with oldValue === newValue', function () {
+  (0, _Mocha.it)('chain of same objects: propertyChanged with oldValue === newValue', function () {
     new _TestDeepSubscribe.TestDeepSubscribeVariants({
       object: (0, _TestDeepSubscribe.createObject)().observableObject,
       immediate: true

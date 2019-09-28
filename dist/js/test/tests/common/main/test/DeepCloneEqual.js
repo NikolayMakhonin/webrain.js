@@ -12,12 +12,14 @@ var _extends2 = _interopRequireDefault(require("@babel/runtime-corejs3/helpers/e
 
 var _Assert = require("../../../../../main/common/test/Assert");
 
+var _Mocha = require("../../../../../main/common/test/Mocha");
+
 var _helpers = require("../src/helpers/helpers");
 
 var _TestDeepEqual = require("./src/TestDeepEqual");
 
 /* tslint:disable:no-construct use-primitive-type */
-describe('common > test > DeepCloneEqual', function () {
+(0, _Mocha.describe)('common > test > DeepCloneEqual', function () {
   this.timeout(60000);
   var _testDeepEqual = _TestDeepEqual.TestDeepEqual.test;
   after(function () {
@@ -248,7 +250,7 @@ describe('common > test > DeepCloneEqual', function () {
     }
   };
 
-  it('noCrossReferences', function () {
+  (0, _Mocha.it)('noCrossReferences', function () {
     var obj = {
       a: {}
     };
@@ -275,16 +277,16 @@ describe('common > test > DeepCloneEqual', function () {
       equalInnerReferences: true
     });
   });
-  it('not circular', function () {
+  (0, _Mocha.it)('not circular', function () {
     notCircularTest(true);
   });
-  it('not circular not equalMapSetOrder', function () {
+  (0, _Mocha.it)('not circular not equalMapSetOrder', function () {
     notCircularTest(false);
   });
-  it('circular', function () {
+  (0, _Mocha.it)('circular', function () {
     circularTest(true);
   });
-  it('circular not equalMapSetOrder', function () {
+  (0, _Mocha.it)('circular not equalMapSetOrder', function () {
     circularTest(false);
   });
 });

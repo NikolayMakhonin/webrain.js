@@ -4,8 +4,10 @@ var _rdtsc = require("rdtsc");
 
 var _mergers = require("../../../main/common/extensions/merge/mergers");
 
+var _Mocha = require("../../../main/common/test/Mocha");
+
 /* tslint:disable:no-empty no-identical-functions max-line-length no-construct use-primitive-type */
-describe('common > extensions > merge > ObjectMerger', function () {
+(0, _Mocha.describe)('common > extensions > merge > ObjectMerger', function () {
   this.timeout(300000);
   var merger = new _mergers.ObjectMerger();
 
@@ -42,7 +44,7 @@ describe('common > extensions > merge > ObjectMerger', function () {
   // })
 
 
-  it('objects', function () {
+  (0, _Mocha.it)('objects', function () {
     // perfTest('objects', [
     // 	{}, { a: {a: 1, b: 2}, b: 3 }, { a: {b: 4, c: 5}, c: 6 }, { a: {a: 7, b: 8}, d: 9 },
     // 	{}, { a: {a: 1, b: 2}, b: 3 }, { a: {b: 4, c: 5}, c: 6 }, { a: {a: 7, b: 8}, d: 9 },

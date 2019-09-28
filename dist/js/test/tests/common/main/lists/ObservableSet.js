@@ -16,25 +16,27 @@ var _ISetChanged = require("../../../../../main/common/lists/contracts/ISetChang
 
 var _ObservableSet = require("../../../../../main/common/lists/ObservableSet");
 
+var _Mocha = require("../../../../../main/common/test/Mocha");
+
 var _TestVariants = require("../src/helpers/TestVariants");
 
 var _common = require("./src/helpers/common");
 
 var _TestSet = require("./src/helpers/TestSet");
 
-describe('common > main > lists > ObservableSet', function () {
+(0, _Mocha.describe)('common > main > lists > ObservableSet', function () {
   this.timeout(20000);
   var testSet = _TestSet.TestSet.test;
   after(function () {
     console.log('Total Set tests >= ' + _TestSet.TestSet.totalSetTests);
   });
-  it('constructor', function () {
+  (0, _Mocha.it)('constructor', function () {
     var set;
     set = new _ObservableSet.ObservableSet();
 
     _TestSet.assert.strictEqual(set.size, 0);
   });
-  it('add', function () {
+  (0, _Mocha.it)('add', function () {
     function addArray(list, array) {
       var result = false;
 
@@ -124,7 +126,7 @@ describe('common > main > lists > ObservableSet', function () {
       }]
     });
   });
-  it('delete', function () {
+  (0, _Mocha.it)('delete', function () {
     function removeArray(list, array) {
       var result = false;
 
@@ -227,7 +229,7 @@ describe('common > main > lists > ObservableSet', function () {
       }]
     });
   });
-  it('clear', function () {
+  (0, _Mocha.it)('clear', function () {
     function clear() {
       return {
         actions: [function (list) {

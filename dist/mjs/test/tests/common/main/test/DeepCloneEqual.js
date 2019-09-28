@@ -1,5 +1,6 @@
 /* tslint:disable:no-construct use-primitive-type */
 import { assert } from '../../../../../main/common/test/Assert';
+import { describe, it } from '../../../../../main/common/test/Mocha';
 import { createComplexObject } from '../src/helpers/helpers';
 import { deepCloneEqual, TestDeepEqual } from './src/TestDeepEqual';
 describe('common > test > DeepCloneEqual', function () {

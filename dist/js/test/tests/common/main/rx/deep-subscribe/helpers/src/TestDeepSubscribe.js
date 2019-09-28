@@ -179,7 +179,7 @@ function () {
         useIncorrectUnsubscribe = _ref.useIncorrectUnsubscribe,
         shouldNeverSubscribe = _ref.shouldNeverSubscribe,
         _ref$asyncDelay = _ref.asyncDelay,
-        asyncDelay = _ref$asyncDelay === void 0 ? 10 : _ref$asyncDelay;
+        asyncDelay = _ref$asyncDelay === void 0 ? 30 : _ref$asyncDelay;
     (0, _classCallCheck2.default)(this, TestDeepSubscribe);
     this._object = object;
     this._immediate = immediate;

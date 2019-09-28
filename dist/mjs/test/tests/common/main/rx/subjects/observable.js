@@ -1,4 +1,6 @@
 import { Observable } from '../../../../../../main/common/rx/subjects/observable';
+import { assert } from '../../../../../../main/common/test/Assert';
+import { describe, it } from '../../../../../../main/common/test/Mocha';
 describe('common > main > rx > subjects > observable', function () {
   it('Observable', function () {
     class CustomObservable extends Observable {

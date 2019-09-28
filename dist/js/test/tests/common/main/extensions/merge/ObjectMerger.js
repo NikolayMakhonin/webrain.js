@@ -28,11 +28,11 @@ var _createClass2 = _interopRequireDefault(require("@babel/runtime-corejs3/helpe
 
 var _mergers = require("../../../../../../main/common/extensions/merge/mergers");
 
+var _objectUniqueId = require("../../../../../../main/common/helpers/object-unique-id");
+
 var _ArrayMap = require("../../../../../../main/common/lists/ArrayMap");
 
 var _ArraySet = require("../../../../../../main/common/lists/ArraySet");
-
-var _objectUniqueId = require("../../../../../../main/common/helpers/object-unique-id");
 
 var _set2 = require("../../../../../../main/common/lists/helpers/set");
 
@@ -52,6 +52,8 @@ var _Property = require("../../../../../../main/common/rx/object/properties/Prop
 
 var _Assert = require("../../../../../../main/common/test/Assert");
 
+var _Mocha = require("../../../../../../main/common/test/Mocha");
+
 var _helpers = require("../../src/helpers/helpers");
 
 var _TestMerger = require("./src/TestMerger");
@@ -67,7 +69,7 @@ var assert = new _Assert.Assert(_TestMerger.deepCloneEqual);
 // declare function deepStrictEqual(a, b): boolean
 // declare function circularDeepStrictEqual(a, b): boolean
 // declare function deepCloneEqual.clone<T = any>(o: T): T
-describe('common > extensions > merge > ObjectMerger', function () {
+(0, _Mocha.describe)('common > extensions > merge > ObjectMerger', function () {
   this.timeout(60000);
   var testMerger = _TestMerger.TestMerger.test;
   after(function () {
@@ -141,7 +143,7 @@ describe('common > extensions > merge > ObjectMerger', function () {
   }();
 
   (0, _mergers.registerMergeable)(Class);
-  describe('combinations', function () {
+  (0, _Mocha.describe)('combinations', function () {
     var options = {
       preferCloneOlderParam: [null, false, true],
       preferCloneNewerParam: [null, false, true],
@@ -253,7 +255,7 @@ describe('common > extensions > merge > ObjectMerger', function () {
       },
       actions: null
     };
-    it('complex objects', function () {
+    (0, _Mocha.it)('complex objects', function () {
       var complexObjectOptions = {
         undefined: true,
         function: true,
@@ -302,7 +304,7 @@ describe('common > extensions > merge > ObjectMerger', function () {
         newer: createValues()
       }));
     });
-    it('primitives', function () {
+    (0, _Mocha.it)('primitives', function () {
       var createValues = function createValues() {
         return [_TestMerger.BASE, _TestMerger.OLDER, _TestMerger.NEWER, null, void 0, 0, 1, false, true];
       };
@@ -313,7 +315,7 @@ describe('common > extensions > merge > ObjectMerger', function () {
         newer: createValues()
       }));
     });
-    it('strings', function () {
+    (0, _Mocha.it)('strings', function () {
       var createValues = function createValues() {
         return [_TestMerger.BASE, _TestMerger.OLDER, _TestMerger.NEWER, void 0, 1, '', '1', '2'];
       };
@@ -324,7 +326,7 @@ describe('common > extensions > merge > ObjectMerger', function () {
         newer: createValues()
       }));
     });
-    it('Strings', function () {
+    (0, _Mocha.it)('Strings', function () {
       var createValues = function createValues() {
         return [_TestMerger.BASE, _TestMerger.OLDER, _TestMerger.NEWER, void 0, 1, new String(''), new String('1'), new String('2')];
       };
@@ -335,7 +337,7 @@ describe('common > extensions > merge > ObjectMerger', function () {
         newer: createValues()
       }));
     });
-    it('date', function () {
+    (0, _Mocha.it)('date', function () {
       var createValues = function createValues() {
         return [_TestMerger.BASE, _TestMerger.OLDER, _TestMerger.NEWER, void 0, '', {}, new Date(1), new Date(2), new Date(3)];
       };
@@ -346,7 +348,7 @@ describe('common > extensions > merge > ObjectMerger', function () {
         newer: createValues()
       }));
     });
-    it('objects', function () {
+    (0, _Mocha.it)('objects', function () {
       var createValues = function createValues() {
         return [_TestMerger.BASE, _TestMerger.OLDER, _TestMerger.NEWER, null, {}, new Date(1),
         /* new Class(new Date(1)), new Class({ a: {a: 1, b: 2}, b: 3 }), new Class(Object.freeze({ x: {y: 1} })), */
@@ -381,7 +383,7 @@ describe('common > extensions > merge > ObjectMerger', function () {
         newer: createValues()
       }));
     });
-    xit('full', function () {
+    (0, _Mocha.xit)('full', function () {
       this.timeout(180000);
 
       var createValues = function createValues() {
@@ -419,8 +421,8 @@ describe('common > extensions > merge > ObjectMerger', function () {
       }));
     });
   });
-  describe('base', function () {
-    it('base', function () {
+  (0, _Mocha.describe)('base', function () {
+    (0, _Mocha.it)('base', function () {
       assert.ok(_TestMerger.deepCloneEqual.equal(new Class({
         a: {
           a: 1,
@@ -456,7 +458,7 @@ describe('common > extensions > merge > ObjectMerger', function () {
 
       assert.ok(_TestMerger.deepCloneEqual.equal(symbol, symbolClone));
     });
-    it('custom class', function () {
+    (0, _Mocha.it)('custom class', function () {
       testMerger({
         base: [new Class({
           a: {
@@ -515,7 +517,7 @@ describe('common > extensions > merge > ObjectMerger', function () {
         actions: null
       });
     });
-    it('strings', function () {
+    (0, _Mocha.it)('strings', function () {
       testMerger({
         base: ['', '1', '2', new String('1')],
         older: ['2', new String('2')],
@@ -537,7 +539,7 @@ describe('common > extensions > merge > ObjectMerger', function () {
         actions: null
       });
     });
-    it('number / boolean', function () {
+    (0, _Mocha.it)('number / boolean', function () {
       testMerger({
         base: [new Number(1)],
         older: [2, new Number(2)],
@@ -579,7 +581,7 @@ describe('common > extensions > merge > ObjectMerger', function () {
         actions: null
       });
     });
-    it('merge 3 objects', function () {
+    (0, _Mocha.it)('merge 3 objects', function () {
       testMerger({
         base: [{
           a: {
@@ -626,7 +628,7 @@ describe('common > extensions > merge > ObjectMerger', function () {
         actions: null
       });
     });
-    it('array as primitive', function () {
+    (0, _Mocha.it)('array as primitive', function () {
       testMerger({
         base: [[], [1], [2]],
         older: [[], [1], [2]],
@@ -648,7 +650,7 @@ describe('common > extensions > merge > ObjectMerger', function () {
         actions: null
       });
     });
-    it('value type', function () {
+    (0, _Mocha.it)('value type', function () {
       testMerger({
         base: [{
           a: {
@@ -746,7 +748,7 @@ describe('common > extensions > merge > ObjectMerger', function () {
       });
     });
   });
-  describe('circular', function () {
+  (0, _Mocha.describe)('circular', function () {
     var createValue = function createValue(value, circular) {
       var obj = {
         value: value
@@ -816,7 +818,7 @@ describe('common > extensions > merge > ObjectMerger', function () {
       },
       actions: null
     };
-    it('deepCloneEqual.clone circular', function () {
+    (0, _Mocha.it)('deepCloneEqual.clone circular', function () {
       var _context;
 
       var TestClass = function TestClass(value) {
@@ -865,21 +867,21 @@ describe('common > extensions > merge > ObjectMerger', function () {
         assertCloneValue(clone.array[i], obj.array[i], "array[" + i + "]");
       }
     });
-    it('simple circular', function () {
+    (0, _Mocha.it)('simple circular', function () {
       testMerger((0, _extends2.default)({}, options, {
         base: [createValue(1, true)],
         older: [createValue(1, true)],
         newer: [createValue(1, true)]
       }));
     });
-    it('not circular', function () {
+    (0, _Mocha.it)('not circular', function () {
       testMerger((0, _extends2.default)({}, options, {
         base: [createValue(1, false), createValue(2, false), createValue(3, false), null],
         older: [createValue(1, false), createValue(2, false), createValue(3, false), null],
         newer: [createValue(1, false), createValue(2, false), createValue(3, false), null]
       }));
     });
-    it('value type circular', function () {
+    (0, _Mocha.it)('value type circular', function () {
       var base = {
         a: {
           a: 1,
@@ -936,7 +938,7 @@ describe('common > extensions > merge > ObjectMerger', function () {
       });
     });
   });
-  describe('collections', function () {
+  (0, _Mocha.describe)('collections', function () {
     var func = function func() {
       return 'func';
     };
@@ -954,7 +956,7 @@ describe('common > extensions > merge > ObjectMerger', function () {
     };
 
     var object = new Error('test error');
-    it('helpers', function () {
+    (0, _Mocha.it)('helpers', function () {
       assert.strictEqual(_TestMerger.deepCloneEqual.clone(func), func); // assert.strictEqual(deepCloneEqual.clone(object), object)
 
       var iterable = (0, _helpers.createIterable)([1, 2, 3]);
@@ -962,7 +964,7 @@ describe('common > extensions > merge > ObjectMerger', function () {
       assert.deepStrictEqual((0, _from.default)(iterable), [1, 2, 3]);
       assert.deepStrictEqual((0, _from.default)(iterable), [1, 2, 3]);
     });
-    describe('maps', function () {
+    (0, _Mocha.describe)('maps', function () {
       var testMergeMaps = function testMergeMaps(targetFactories, sourceFactories, base, older, newer, result) {
         var _context2, _context3, _context4;
 
@@ -994,7 +996,7 @@ describe('common > extensions > merge > ObjectMerger', function () {
         });
       };
 
-      it('Map', function () {
+      (0, _Mocha.it)('Map', function () {
         testMergeMaps([function (o) {
           return (0, _set2.fillMap)(new _map.default(), o);
         }, function (o) {
@@ -1030,7 +1032,7 @@ describe('common > extensions > merge > ObjectMerger', function () {
           c: 11
         }], [null, null]]);
       });
-      it('ArrayMap', function () {
+      (0, _Mocha.it)('ArrayMap', function () {
         testMergeMaps([function (o) {
           return (0, _set2.fillMap)(new _ArrayMap.ArrayMap(), o);
         }, function (o) {
@@ -1078,7 +1080,7 @@ describe('common > extensions > merge > ObjectMerger', function () {
           c: 11
         }], [func3, null]]);
       });
-      it('ObjectMap', function () {
+      (0, _Mocha.it)('ObjectMap', function () {
         testMergeMaps([function (o) {
           return (0, _set2.fillMap)(new _ObjectMap.ObjectMap(), o);
         }, function (o) {
@@ -1121,7 +1123,7 @@ describe('common > extensions > merge > ObjectMerger', function () {
         }], ['6', null]]);
       });
     });
-    describe('sets', function () {
+    (0, _Mocha.describe)('sets', function () {
       var testMergeSets = function testMergeSets(targetFactories, sourceFactories, base, older, newer, result) {
         var _context5, _context6, _context7;
 
@@ -1153,7 +1155,7 @@ describe('common > extensions > merge > ObjectMerger', function () {
         });
       };
 
-      it('Set', function () {
+      (0, _Mocha.it)('Set', function () {
         testMergeSets([function (o) {
           return (0, _set2.fillSet)(new _set.default(), o);
         }, function (o) {
@@ -1164,7 +1166,7 @@ describe('common > extensions > merge > ObjectMerger', function () {
           return (0, _set2.fillSet)(new _ObservableSet.ObservableSet(new _set.default()), o);
         }], [0, func, void 0], [0, func, object], [0, 1, void 0, object], [0, 1, object]);
       });
-      it('ArraySet', function () {
+      (0, _Mocha.it)('ArraySet', function () {
         testMergeSets([function (o) {
           return (0, _set2.fillSet)(new _ArraySet.ArraySet(), o);
         }, function (o) {
@@ -1181,7 +1183,7 @@ describe('common > extensions > merge > ObjectMerger', function () {
         } // o => fillSet(new ObjectHashSet(), o), o => fillSet(new ObservableSet(new ObjectHashSet()), o),
         ], [func2, func, func4], [func2, func, object], [func2, func3, func4, object], [func2, func3, object]);
       });
-      it('ObjectSet', function () {
+      (0, _Mocha.it)('ObjectSet', function () {
         testMergeSets([function (o) {
           return (0, _set2.fillSet)(new _ObjectSet.ObjectSet(), o);
         }, function (o) {

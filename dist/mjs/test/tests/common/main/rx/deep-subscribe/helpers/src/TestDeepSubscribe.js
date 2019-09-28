@@ -121,7 +121,7 @@ export class TestDeepSubscribe {
     doNotSubscribeNonObjectValues,
     useIncorrectUnsubscribe,
     shouldNeverSubscribe,
-    asyncDelay = 10
+    asyncDelay = 30
   }, ...ruleBuilders) {
     this._object = object;
     this._immediate = immediate;

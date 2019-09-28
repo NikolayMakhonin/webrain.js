@@ -16,8 +16,12 @@ var _ObservableObject3 = require("../../../../../../main/common/rx/object/Observ
 
 var _ObservableObjectBuilder = require("../../../../../../main/common/rx/object/ObservableObjectBuilder");
 
+var _Assert = require("../../../../../../main/common/test/Assert");
+
+var _Mocha = require("../../../../../../main/common/test/Mocha");
+
 /* eslint-disable guard-for-in */
-describe('common > main > rx > observable-object-builder-prototype', function () {
+(0, _Mocha.describe)('common > main > rx > observable-object-builder-prototype', function () {
   function assertEvents(events, check) {
     events = events && (0, _map.default)(events).call(events, function (o) {
       return {
@@ -26,10 +30,11 @@ describe('common > main > rx > observable-object-builder-prototype', function ()
         newValue: o.newValue
       };
     });
-    assert.deepStrictEqual(events, check);
+
+    _Assert.assert.deepStrictEqual(events, check);
   }
 
-  it('writable', function () {
+  (0, _Mocha.it)('writable', function () {
     var BaseClass1 =
     /*#__PURE__*/
     function (_ObservableObject) {
@@ -122,10 +127,15 @@ describe('common > main > rx > observable-object-builder-prototype', function ()
     var baseUnsubscribe2 = [];
     var unsubscribe1 = [];
     var unsubscribe2 = [];
-    assert.strictEqual(typeof (baseUnsubscribe1[0] = baseObject1.propertyChanged.subscribe(baseSubscriber1)), 'function');
-    assert.strictEqual(typeof (baseUnsubscribe2[0] = baseObject2.propertyChanged.subscribe(baseSubscriber2)), 'function');
-    assert.strictEqual(typeof (unsubscribe1[0] = object1.propertyChanged.subscribe(subscriber1)), 'function');
-    assert.strictEqual(typeof (unsubscribe2[0] = object2.propertyChanged.subscribe(subscriber2)), 'function');
+
+    _Assert.assert.strictEqual(typeof (baseUnsubscribe1[0] = baseObject1.propertyChanged.subscribe(baseSubscriber1)), 'function');
+
+    _Assert.assert.strictEqual(typeof (baseUnsubscribe2[0] = baseObject2.propertyChanged.subscribe(baseSubscriber2)), 'function');
+
+    _Assert.assert.strictEqual(typeof (unsubscribe1[0] = object1.propertyChanged.subscribe(subscriber1)), 'function');
+
+    _Assert.assert.strictEqual(typeof (unsubscribe2[0] = object2.propertyChanged.subscribe(subscriber2)), 'function');
+
     baseObject1.baseProp1 = '1';
     assertEvents(baseResults1, [{
       name: 'baseProp1',
@@ -136,10 +146,15 @@ describe('common > main > rx > observable-object-builder-prototype', function ()
     assertEvents(baseResults2, []);
     assertEvents(results1, []);
     assertEvents(results2, []);
-    assert.deepStrictEqual(baseObject1.baseProp1, '1');
-    assert.deepStrictEqual(baseObject2.baseProp1, undefined);
-    assert.deepStrictEqual(object1.baseProp1, undefined);
-    assert.deepStrictEqual(object2.baseProp1, undefined);
+
+    _Assert.assert.deepStrictEqual(baseObject1.baseProp1, '1');
+
+    _Assert.assert.deepStrictEqual(baseObject2.baseProp1, undefined);
+
+    _Assert.assert.deepStrictEqual(object1.baseProp1, undefined);
+
+    _Assert.assert.deepStrictEqual(object2.baseProp1, undefined);
+
     baseObject2.baseProp1 = '2';
     assertEvents(baseResults1, []);
     assertEvents(baseResults2, [{
@@ -150,10 +165,15 @@ describe('common > main > rx > observable-object-builder-prototype', function ()
     baseResults2 = [];
     assertEvents(results1, []);
     assertEvents(results2, []);
-    assert.deepStrictEqual(baseObject1.baseProp1, '1');
-    assert.deepStrictEqual(baseObject2.baseProp1, '2');
-    assert.deepStrictEqual(object1.baseProp1, undefined);
-    assert.deepStrictEqual(object2.baseProp1, undefined);
+
+    _Assert.assert.deepStrictEqual(baseObject1.baseProp1, '1');
+
+    _Assert.assert.deepStrictEqual(baseObject2.baseProp1, '2');
+
+    _Assert.assert.deepStrictEqual(object1.baseProp1, undefined);
+
+    _Assert.assert.deepStrictEqual(object2.baseProp1, undefined);
+
     baseObject2.baseProp2 = '3';
     assertEvents(baseResults1, []);
     assertEvents(baseResults2, [{
@@ -164,10 +184,15 @@ describe('common > main > rx > observable-object-builder-prototype', function ()
     baseResults2 = [];
     assertEvents(results1, []);
     assertEvents(results2, []);
-    assert.deepStrictEqual(baseObject1.baseProp2, undefined);
-    assert.deepStrictEqual(baseObject2.baseProp2, '3');
-    assert.deepStrictEqual(object1.baseProp2, undefined);
-    assert.deepStrictEqual(object2.baseProp2, undefined);
+
+    _Assert.assert.deepStrictEqual(baseObject1.baseProp2, undefined);
+
+    _Assert.assert.deepStrictEqual(baseObject2.baseProp2, '3');
+
+    _Assert.assert.deepStrictEqual(object1.baseProp2, undefined);
+
+    _Assert.assert.deepStrictEqual(object2.baseProp2, undefined);
+
     object1.baseProp1 = '4';
     assertEvents(baseResults1, []);
     assertEvents(baseResults2, []);
@@ -178,10 +203,15 @@ describe('common > main > rx > observable-object-builder-prototype', function ()
     }]);
     results1 = [];
     assertEvents(results2, []);
-    assert.deepStrictEqual(baseObject1.baseProp1, '1');
-    assert.deepStrictEqual(baseObject2.baseProp1, '2');
-    assert.deepStrictEqual(object1.baseProp1, '4');
-    assert.deepStrictEqual(object2.baseProp1, undefined);
+
+    _Assert.assert.deepStrictEqual(baseObject1.baseProp1, '1');
+
+    _Assert.assert.deepStrictEqual(baseObject2.baseProp1, '2');
+
+    _Assert.assert.deepStrictEqual(object1.baseProp1, '4');
+
+    _Assert.assert.deepStrictEqual(object2.baseProp1, undefined);
+
     object2.baseProp1 = '5';
     assertEvents(baseResults1, []);
     assertEvents(baseResults2, []);
@@ -192,10 +222,15 @@ describe('common > main > rx > observable-object-builder-prototype', function ()
       oldValue: undefined
     }]);
     results2 = [];
-    assert.deepStrictEqual(baseObject1.baseProp1, '1');
-    assert.deepStrictEqual(baseObject2.baseProp1, '2');
-    assert.deepStrictEqual(object1.baseProp1, '4');
-    assert.deepStrictEqual(object2.baseProp1, '5');
+
+    _Assert.assert.deepStrictEqual(baseObject1.baseProp1, '1');
+
+    _Assert.assert.deepStrictEqual(baseObject2.baseProp1, '2');
+
+    _Assert.assert.deepStrictEqual(object1.baseProp1, '4');
+
+    _Assert.assert.deepStrictEqual(object2.baseProp1, '5');
+
     object2.baseProp2 = '6';
     assertEvents(baseResults1, []);
     assertEvents(baseResults2, []);
@@ -206,10 +241,15 @@ describe('common > main > rx > observable-object-builder-prototype', function ()
       oldValue: undefined
     }]);
     results2 = [];
-    assert.deepStrictEqual(baseObject1.baseProp2, undefined);
-    assert.deepStrictEqual(baseObject2.baseProp2, '3');
-    assert.deepStrictEqual(object1.baseProp2, undefined);
-    assert.deepStrictEqual(object2.baseProp2, '6');
+
+    _Assert.assert.deepStrictEqual(baseObject1.baseProp2, undefined);
+
+    _Assert.assert.deepStrictEqual(baseObject2.baseProp2, '3');
+
+    _Assert.assert.deepStrictEqual(object1.baseProp2, undefined);
+
+    _Assert.assert.deepStrictEqual(object2.baseProp2, '6');
+
     new _ObservableObjectBuilder.ObservableObjectBuilder(object2).readable('baseProp1', null, '7');
     assertEvents(baseResults1, []);
     assertEvents(baseResults2, []);
@@ -220,12 +260,16 @@ describe('common > main > rx > observable-object-builder-prototype', function ()
       oldValue: '5'
     }]);
     results2 = [];
-    assert.deepStrictEqual(baseObject1.baseProp1, '1');
-    assert.deepStrictEqual(baseObject2.baseProp1, '2');
-    assert.deepStrictEqual(object1.baseProp1, '4');
-    assert.deepStrictEqual(object2.baseProp1, '7');
+
+    _Assert.assert.deepStrictEqual(baseObject1.baseProp1, '1');
+
+    _Assert.assert.deepStrictEqual(baseObject2.baseProp1, '2');
+
+    _Assert.assert.deepStrictEqual(object1.baseProp1, '4');
+
+    _Assert.assert.deepStrictEqual(object2.baseProp1, '7');
   });
-  it('readable', function () {
+  (0, _Mocha.it)('readable', function () {
     var BaseClass1 =
     /*#__PURE__*/
     function (_ObservableObject2) {
@@ -318,20 +362,30 @@ describe('common > main > rx > observable-object-builder-prototype', function ()
     var baseUnsubscribe2 = [];
     var unsubscribe1 = [];
     var unsubscribe2 = [];
-    assert.strictEqual(typeof (baseUnsubscribe1[0] = baseObject1.propertyChanged.subscribe(baseSubscriber1)), 'function');
-    assert.strictEqual(typeof (baseUnsubscribe2[0] = baseObject2.propertyChanged.subscribe(baseSubscriber2)), 'function');
-    assert.strictEqual(typeof (unsubscribe1[0] = object1.propertyChanged.subscribe(subscriber1)), 'function');
-    assert.strictEqual(typeof (unsubscribe2[0] = object2.propertyChanged.subscribe(subscriber2)), 'function');
+
+    _Assert.assert.strictEqual(typeof (baseUnsubscribe1[0] = baseObject1.propertyChanged.subscribe(baseSubscriber1)), 'function');
+
+    _Assert.assert.strictEqual(typeof (baseUnsubscribe2[0] = baseObject2.propertyChanged.subscribe(baseSubscriber2)), 'function');
+
+    _Assert.assert.strictEqual(typeof (unsubscribe1[0] = object1.propertyChanged.subscribe(subscriber1)), 'function');
+
+    _Assert.assert.strictEqual(typeof (unsubscribe2[0] = object2.propertyChanged.subscribe(subscriber2)), 'function');
+
     baseBuilder1.readable('baseProp1', null, '1');
     assertEvents(baseResults1, []);
     baseResults1 = [];
     assertEvents(baseResults2, []);
     assertEvents(results1, []);
     assertEvents(results2, []);
-    assert.deepStrictEqual(baseObject1.baseProp1, '1');
-    assert.deepStrictEqual(baseObject2.baseProp1, '1');
-    assert.deepStrictEqual(object1.baseProp1, '1');
-    assert.deepStrictEqual(object2.baseProp1, '1');
+
+    _Assert.assert.deepStrictEqual(baseObject1.baseProp1, '1');
+
+    _Assert.assert.deepStrictEqual(baseObject2.baseProp1, '1');
+
+    _Assert.assert.deepStrictEqual(object1.baseProp1, '1');
+
+    _Assert.assert.deepStrictEqual(object2.baseProp1, '1');
+
     baseBuilder2.readable('baseProp1', {
       factory: function factory() {
         return '2';
@@ -342,10 +396,15 @@ describe('common > main > rx > observable-object-builder-prototype', function ()
     baseResults2 = [];
     assertEvents(results1, []);
     assertEvents(results2, []);
-    assert.deepStrictEqual(baseObject1.baseProp1, '1');
-    assert.deepStrictEqual(baseObject2.baseProp1, '1');
-    assert.deepStrictEqual(object1.baseProp1, '1');
-    assert.deepStrictEqual(object2.baseProp1, '1');
+
+    _Assert.assert.deepStrictEqual(baseObject1.baseProp1, '1');
+
+    _Assert.assert.deepStrictEqual(baseObject2.baseProp1, '1');
+
+    _Assert.assert.deepStrictEqual(object1.baseProp1, '1');
+
+    _Assert.assert.deepStrictEqual(object2.baseProp1, '1');
+
     delete baseObject1.baseProp1;
     delete baseObject2.baseProp1;
     delete object1.baseProp1;
@@ -355,20 +414,30 @@ describe('common > main > rx > observable-object-builder-prototype', function ()
     baseResults2 = [];
     assertEvents(results1, []);
     assertEvents(results2, []);
-    assert.deepStrictEqual(baseObject1.baseProp1, '1');
-    assert.deepStrictEqual(baseObject2.baseProp1, '2');
-    assert.deepStrictEqual(object1.baseProp1, '1');
-    assert.deepStrictEqual(object2.baseProp1, '2');
+
+    _Assert.assert.deepStrictEqual(baseObject1.baseProp1, '1');
+
+    _Assert.assert.deepStrictEqual(baseObject2.baseProp1, '2');
+
+    _Assert.assert.deepStrictEqual(object1.baseProp1, '1');
+
+    _Assert.assert.deepStrictEqual(object2.baseProp1, '2');
+
     baseBuilder2.readable('baseProp2', null, '3');
     assertEvents(baseResults1, []);
     assertEvents(baseResults2, []);
     baseResults2 = [];
     assertEvents(results1, []);
     assertEvents(results2, []);
-    assert.deepStrictEqual(baseObject1.baseProp2, undefined);
-    assert.deepStrictEqual(baseObject2.baseProp2, '3');
-    assert.deepStrictEqual(object1.baseProp2, undefined);
-    assert.deepStrictEqual(object2.baseProp2, '3');
+
+    _Assert.assert.deepStrictEqual(baseObject1.baseProp2, undefined);
+
+    _Assert.assert.deepStrictEqual(baseObject2.baseProp2, '3');
+
+    _Assert.assert.deepStrictEqual(object1.baseProp2, undefined);
+
+    _Assert.assert.deepStrictEqual(object2.baseProp2, '3');
+
     builder1.readable('baseProp1', {
       factory: function factory() {
         return '4';
@@ -379,24 +448,38 @@ describe('common > main > rx > observable-object-builder-prototype', function ()
     assertEvents(results1, []);
     results1 = [];
     assertEvents(results2, []);
-    assert.deepStrictEqual(baseObject1.baseProp1, '1');
-    assert.deepStrictEqual(baseObject2.baseProp1, '2');
-    assert.deepStrictEqual(object1.baseProp1, '1');
+
+    _Assert.assert.deepStrictEqual(baseObject1.baseProp1, '1');
+
+    _Assert.assert.deepStrictEqual(baseObject2.baseProp1, '2');
+
+    _Assert.assert.deepStrictEqual(object1.baseProp1, '1');
+
     delete object1.baseProp1;
-    assert.deepStrictEqual(object1.baseProp1, '4');
-    assert.deepStrictEqual(object2.baseProp1, '2');
+
+    _Assert.assert.deepStrictEqual(object1.baseProp1, '4');
+
+    _Assert.assert.deepStrictEqual(object2.baseProp1, '2');
+
     builder2.readable('baseProp1', null, '5');
     assertEvents(baseResults1, []);
     assertEvents(baseResults2, []);
     assertEvents(results1, []);
     assertEvents(results2, []);
     results2 = [];
-    assert.deepStrictEqual(baseObject1.baseProp1, '1');
-    assert.deepStrictEqual(baseObject2.baseProp1, '2');
-    assert.deepStrictEqual(object1.baseProp1, '4');
-    assert.deepStrictEqual(object2.baseProp1, '2');
+
+    _Assert.assert.deepStrictEqual(baseObject1.baseProp1, '1');
+
+    _Assert.assert.deepStrictEqual(baseObject2.baseProp1, '2');
+
+    _Assert.assert.deepStrictEqual(object1.baseProp1, '4');
+
+    _Assert.assert.deepStrictEqual(object2.baseProp1, '2');
+
     delete object2.baseProp1;
-    assert.deepStrictEqual(object2.baseProp1, '5');
+
+    _Assert.assert.deepStrictEqual(object2.baseProp1, '5');
+
     builder2.readable('baseProp2', {
       factory: function factory() {
         return '6';
@@ -407,12 +490,19 @@ describe('common > main > rx > observable-object-builder-prototype', function ()
     assertEvents(results1, []);
     assertEvents(results2, []);
     results2 = [];
-    assert.deepStrictEqual(baseObject1.baseProp2, undefined);
-    assert.deepStrictEqual(baseObject2.baseProp2, '3');
-    assert.deepStrictEqual(object1.baseProp2, undefined);
-    assert.deepStrictEqual(object2.baseProp2, '3');
+
+    _Assert.assert.deepStrictEqual(baseObject1.baseProp2, undefined);
+
+    _Assert.assert.deepStrictEqual(baseObject2.baseProp2, '3');
+
+    _Assert.assert.deepStrictEqual(object1.baseProp2, undefined);
+
+    _Assert.assert.deepStrictEqual(object2.baseProp2, '3');
+
     delete object2.baseProp2;
-    assert.deepStrictEqual(object2.baseProp2, '6');
+
+    _Assert.assert.deepStrictEqual(object2.baseProp2, '6');
+
     new _ObservableObjectBuilder.ObservableObjectBuilder(object2).readable('baseProp1', null, '7');
     assertEvents(baseResults1, []);
     assertEvents(baseResults2, []);
@@ -423,10 +513,15 @@ describe('common > main > rx > observable-object-builder-prototype', function ()
       oldValue: '5'
     }]);
     results2 = [];
-    assert.deepStrictEqual(baseObject1.baseProp1, '1');
-    assert.deepStrictEqual(baseObject2.baseProp1, '2');
-    assert.deepStrictEqual(object1.baseProp1, '4');
-    assert.deepStrictEqual(object2.baseProp1, '7');
+
+    _Assert.assert.deepStrictEqual(baseObject1.baseProp1, '1');
+
+    _Assert.assert.deepStrictEqual(baseObject2.baseProp1, '2');
+
+    _Assert.assert.deepStrictEqual(object1.baseProp1, '4');
+
+    _Assert.assert.deepStrictEqual(object2.baseProp1, '7');
+
     new _ObservableObjectBuilder.ObservableObjectBuilder(object2).readable('baseProp2', {
       factory: function factory() {
         return '8';
@@ -441,9 +536,13 @@ describe('common > main > rx > observable-object-builder-prototype', function ()
       oldValue: '6'
     }]);
     results2 = [];
-    assert.deepStrictEqual(baseObject1.baseProp2, undefined);
-    assert.deepStrictEqual(baseObject2.baseProp2, '3');
-    assert.deepStrictEqual(object1.baseProp2, undefined);
-    assert.deepStrictEqual(object2.baseProp2, '8');
+
+    _Assert.assert.deepStrictEqual(baseObject1.baseProp2, undefined);
+
+    _Assert.assert.deepStrictEqual(baseObject2.baseProp2, '3');
+
+    _Assert.assert.deepStrictEqual(object1.baseProp2, undefined);
+
+    _Assert.assert.deepStrictEqual(object2.baseProp2, '8');
   });
 });

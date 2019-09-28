@@ -1,6 +1,8 @@
 /* eslint-disable guard-for-in */
 import { ObservableObject } from '../../../../../../main/common/rx/object/ObservableObject';
 import { ObservableObjectBuilder } from '../../../../../../main/common/rx/object/ObservableObjectBuilder';
+import { assert } from '../../../../../../main/common/test/Assert';
+import { describe, it } from '../../../../../../main/common/test/Mocha';
 describe('common > main > rx > observable-object-builder', function () {
   function assertEvents(events, check) {
     events = events && events.map(o => {

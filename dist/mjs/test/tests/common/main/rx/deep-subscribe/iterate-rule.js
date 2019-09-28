@@ -5,6 +5,7 @@ import { iterateRule, subscribeNextRule } from '../../../../../../main/common/rx
 import { RuleBuilder } from '../../../../../../main/common/rx/deep-subscribe/RuleBuilder';
 import { Rule } from '../../../../../../main/common/rx/deep-subscribe/rules';
 import { assert } from '../../../../../../main/common/test/Assert';
+import { describe, it } from '../../../../../../main/common/test/Mocha';
 describe('common > main > rx > deep-subscribe > iterate-rule', function () {
   // function ruleToString(rule: IRule) {
   // 	if (!rule) {

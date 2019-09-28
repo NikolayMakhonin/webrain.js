@@ -40,6 +40,8 @@ var _ObservableSet = require("../../../../../../main/common/lists/ObservableSet"
 
 var _SortedList = require("../../../../../../main/common/lists/SortedList");
 
+var _common = require("../../../../../../main/common/rx/deep-subscribe/contracts/common");
+
 var _constants = require("../../../../../../main/common/rx/deep-subscribe/contracts/constants");
 
 var _rules = require("../../../../../../main/common/rx/deep-subscribe/contracts/rules");
@@ -50,16 +52,18 @@ var _ObservableObjectBuilder = require("../../../../../../main/common/rx/object/
 
 var _Assert = require("../../../../../../main/common/test/Assert");
 
+var _Mocha = require("../../../../../../main/common/test/Mocha");
+
 /* tslint:disable:no-shadowed-variable no-duplicate-string */
 
 /* eslint-disable no-useless-escape,computed-property-spacing */
-describe('common > main > rx > deep-subscribe > RuleBuilder', function () {
+(0, _Mocha.describe)('common > main > rx > deep-subscribe > RuleBuilder', function () {
   // noinspection JSUnusedLocalSymbols
   function checkType(builder) {
     return true;
   }
 
-  it('constructor', function () {
+  (0, _Mocha.it)('constructor', function () {
     var builder = new _RuleBuilder.RuleBuilder({
       autoInsertValuePropertyDefault: false
     });
@@ -91,49 +95,56 @@ describe('common > main > rx > deep-subscribe > RuleBuilder', function () {
       }
     }
 
-    function checkDebugPropertyName(value, debugPropertyName) {
-      _Assert.assert.ok(debugPropertyName);
-
-      _Assert.assert.ok(debugPropertyName.length);
-
-      if (isCollection) {
-        _Assert.assert.strictEqual(debugPropertyName[0], _constants.COLLECTION_PREFIX);
-
-        debugPropertyName = debugPropertyName.substring(1);
-      }
-
+    function checkDebugPropertyName(value, key, keyType) {
       if (isMap) {
-        _Assert.assert.strictEqual('value_' + debugPropertyName, value);
+        _Assert.assert.ok(typeof key, 'string');
+
+        _Assert.assert.strictEqual('value_' + key, value);
+
+        _Assert.assert.strictEqual(keyType, _common.ValueKeyType.MapKey);
+      } else if (isCollection) {
+        _Assert.assert.strictEqual(key, null);
+
+        _Assert.assert.strictEqual(keyType, _common.ValueKeyType.CollectionAny);
+      } else {
+        _Assert.assert.ok(typeof key, 'string');
+
+        _Assert.assert.ok(key);
+
+        _Assert.assert.ok(key.length);
+
+        _Assert.assert.strictEqual(keyType, _common.ValueKeyType.Property);
       }
     }
 
     var subscribedItems = [];
 
-    function subscribeItem(value, debugPropertyName) {
-      if (typeof value === 'undefined') {
-        return;
+    function changeItem(key, oldValue, newValue, changeType, keyType) {
+      if ((changeType & _common.ValueChangeType.Unsubscribe) !== 0) {
+        if (typeof oldValue === 'undefined') {
+          return;
+        }
+
+        _Assert.assert.ok(oldValue);
+
+        oldValue = (0, _trim.default)(oldValue).call(oldValue);
+        checkDebugPropertyName(oldValue, key, keyType);
+        subscribedItems.push('-' + oldValue);
       }
 
-      _Assert.assert.ok(value);
+      if ((changeType & _common.ValueChangeType.Subscribe) !== 0) {
+        if (typeof newValue === 'undefined') {
+          return;
+        }
 
-      _Assert.assert.strictEqual(typeof value, 'string', value);
+        _Assert.assert.ok(newValue);
 
-      value = (0, _trim.default)(value).call(value);
-      checkDebugPropertyName(value, debugPropertyName);
-      subscribedItems.push('+' + value);
-    } // tslint:disable-next-line:no-identical-functions
+        _Assert.assert.strictEqual(typeof newValue, 'string', newValue);
 
-
-    function unsubscribeItem(value, debugPropertyName) {
-      if (typeof value === 'undefined') {
-        return;
+        newValue = (0, _trim.default)(newValue).call(newValue);
+        checkDebugPropertyName(newValue, key, keyType);
+        subscribedItems.push('+' + newValue);
       }
-
-      _Assert.assert.ok(value);
-
-      value = (0, _trim.default)(value).call(value);
-      checkDebugPropertyName(value, debugPropertyName);
-      subscribedItems.push('-' + value);
     }
 
     function testNonSubscribeProperties(object) {
@@ -184,12 +195,12 @@ describe('common > main > rx > deep-subscribe > RuleBuilder', function () {
         var testNonObservableObject = function testNonObservableObject(object) {
           var _context, _context2;
 
-          var unsubscribe = subscribe(object, false, subscribeItem, unsubscribeItem);
+          var unsubscribe = subscribe(object, false, changeItem);
 
           _Assert.assert.strictEqual(unsubscribe, null);
 
           testNonSubscribeProperties(object);
-          unsubscribe = subscribe(object, true, subscribeItem, unsubscribeItem);
+          unsubscribe = subscribe(object, true, changeItem);
 
           _Assert.assert.ok(unsubscribe);
 
@@ -232,7 +243,7 @@ describe('common > main > rx > deep-subscribe > RuleBuilder', function () {
           })).call(_context));
 
           subscribedItems = [];
-          unsubscribe = subscribe(object, true, subscribeItem, unsubscribeItem);
+          unsubscribe = subscribe(object, true, changeItem);
 
           _Assert.assert.ok(unsubscribe);
 
@@ -269,7 +280,7 @@ describe('common > main > rx > deep-subscribe > RuleBuilder', function () {
           _Assert.assert.deepStrictEqual(subscribedItems, []);
 
           subscribedItems = [];
-          unsubscribe = subscribe(object, false, subscribeItem, unsubscribeItem);
+          unsubscribe = subscribe(object, false, changeItem);
 
           _Assert.assert.strictEqual(unsubscribe, null);
 
@@ -281,7 +292,7 @@ describe('common > main > rx > deep-subscribe > RuleBuilder', function () {
         var testObservableObject = function testObservableObject(object) {
           var _context3, _context4, _context5;
 
-          var unsubscribe = subscribe(object, false, subscribeItem, unsubscribeItem);
+          var unsubscribe = subscribe(object, false, changeItem);
 
           _Assert.assert.ok(unsubscribe);
 
@@ -293,7 +304,7 @@ describe('common > main > rx > deep-subscribe > RuleBuilder', function () {
           _Assert.assert.deepStrictEqual(subscribedItems, []);
 
           subscribedItems = [];
-          unsubscribe = subscribe(object, true, subscribeItem, unsubscribeItem);
+          unsubscribe = subscribe(object, true, changeItem);
 
           _Assert.assert.ok(unsubscribe);
 
@@ -341,7 +352,7 @@ describe('common > main > rx > deep-subscribe > RuleBuilder', function () {
           })).call(_context3));
 
           subscribedItems = [];
-          unsubscribe = subscribe(object, false, subscribeItem, unsubscribeItem);
+          unsubscribe = subscribe(object, false, changeItem);
 
           _Assert.assert.ok(unsubscribe);
 
@@ -354,7 +365,7 @@ describe('common > main > rx > deep-subscribe > RuleBuilder', function () {
           })).call(_context4));
 
           subscribedItems = [];
-          unsubscribe = subscribe(object, true, subscribeItem, unsubscribeItem);
+          unsubscribe = subscribe(object, true, changeItem);
 
           _Assert.assert.ok(unsubscribe);
 
@@ -447,7 +458,7 @@ describe('common > main > rx > deep-subscribe > RuleBuilder', function () {
       }
     }
 
-    testSubscribe(false, true, (0, _extends2.default)({}, builder.object), builder.object, subscribe, (0, _concat.default)(_context6 = [nonSubscribeProperty]).call(_context6, properties === _constants.ANY ? [] : properties), properties === _constants.ANY ? [nonSubscribeProperty, 'p1', 'p2', 'p3'] : properties, add, change, remove); // builder
+    testSubscribe(false, false, (0, _extends2.default)({}, builder.object), builder.object, subscribe, (0, _concat.default)(_context6 = [nonSubscribeProperty]).call(_context6, properties === _constants.ANY ? [] : properties), properties === _constants.ANY ? [nonSubscribeProperty, 'p1', 'p2', 'p3'] : properties, add, change, remove); // builder
     // 	.writable('p1', null, 'value_p1')
     // 	.writable('p2', null, 'value_p2')
     // 	.writable('p3', null, 'value_p3')
@@ -719,7 +730,7 @@ describe('common > main > rx > deep-subscribe > RuleBuilder', function () {
     }
   }
 
-  it('path', function () {
+  (0, _Mocha.it)('path', function () {
     var builder = new _RuleBuilder.RuleBuilder({
       autoInsertValuePropertyDefault: false
     });
@@ -800,7 +811,7 @@ describe('common > main > rx > deep-subscribe > RuleBuilder', function () {
       }
     });
   });
-  it('path complex', function () {
+  (0, _Mocha.it)('path complex', function () {
     var builder = new _RuleBuilder.RuleBuilder({
       autoInsertValuePropertyDefault: false
     });
@@ -851,7 +862,7 @@ describe('common > main > rx > deep-subscribe > RuleBuilder', function () {
       }
     });
   });
-  it('property', function () {
+  (0, _Mocha.it)('property', function () {
     var builder = new _RuleBuilder.RuleBuilder({
       autoInsertValuePropertyDefault: false
     });
@@ -937,7 +948,7 @@ describe('common > main > rx > deep-subscribe > RuleBuilder', function () {
 
     var rule3 = builder3.result().next.next;
   });
-  it('propertyAny', function () {
+  (0, _Mocha.it)('propertyAny', function () {
     var builder = new _RuleBuilder.RuleBuilder({
       autoInsertValuePropertyDefault: false
     });
@@ -1002,7 +1013,7 @@ describe('common > main > rx > deep-subscribe > RuleBuilder', function () {
 
     var rule3 = builder3.result().next.next;
   });
-  it('propertyNames', function () {
+  (0, _Mocha.it)('propertyNames', function () {
     var builder = new _RuleBuilder.RuleBuilder({
       autoInsertValuePropertyDefault: false
     });
@@ -1069,7 +1080,7 @@ describe('common > main > rx > deep-subscribe > RuleBuilder', function () {
 
     var rule3 = builder3.result().next.next;
   });
-  it('map', function () {
+  (0, _Mocha.it)('map', function () {
     var builder = new _RuleBuilder.RuleBuilder({
       autoInsertValuePropertyDefault: false
     });
@@ -1155,7 +1166,7 @@ describe('common > main > rx > deep-subscribe > RuleBuilder', function () {
 
     var rule3 = builder3.result().next.next;
   });
-  it('mapAny', function () {
+  (0, _Mocha.it)('mapAny', function () {
     var builder = new _RuleBuilder.RuleBuilder({
       autoInsertValuePropertyDefault: false
     });
@@ -1249,7 +1260,7 @@ describe('common > main > rx > deep-subscribe > RuleBuilder', function () {
       }
     });
   });
-  it('mapKeys', function () {
+  (0, _Mocha.it)('mapKeys', function () {
     var builder = new _RuleBuilder.RuleBuilder({
       autoInsertValuePropertyDefault: false
     });
@@ -1316,7 +1327,7 @@ describe('common > main > rx > deep-subscribe > RuleBuilder', function () {
 
     var rule3 = builder3.result().next.next;
   });
-  it('collection', function () {
+  (0, _Mocha.it)('collection', function () {
     var builder = new _RuleBuilder.RuleBuilder({
       autoInsertValuePropertyDefault: false
     });
@@ -1381,7 +1392,7 @@ describe('common > main > rx > deep-subscribe > RuleBuilder', function () {
 
     var rule3 = builder3.result().next.next;
   });
-  it('repeat', function () {
+  (0, _Mocha.it)('repeat', function () {
     var _context14, _context15;
 
     var builder = new _RuleBuilder.RuleBuilder({
@@ -1500,7 +1511,7 @@ describe('common > main > rx > deep-subscribe > RuleBuilder', function () {
       }
     });
   });
-  it('any', function () {
+  (0, _Mocha.it)('any', function () {
     var builder = new _RuleBuilder.RuleBuilder({
       autoInsertValuePropertyDefault: false
     });

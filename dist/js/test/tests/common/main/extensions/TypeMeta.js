@@ -14,8 +14,10 @@ var _TypeMeta = require("../../../../../main/common/extensions/TypeMeta");
 
 var _Assert = require("../../../../../main/common/test/Assert");
 
-describe('common > extensions > TypeMeta', function () {
-  it('base', function () {
+var _Mocha = require("../../../../../main/common/test/Mocha");
+
+(0, _Mocha.describe)('common > extensions > TypeMeta', function () {
+  (0, _Mocha.it)('base', function () {
     var Class1 = function Class1() {
       (0, _classCallCheck2.default)(this, Class1);
     };

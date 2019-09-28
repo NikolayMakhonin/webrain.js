@@ -18,13 +18,17 @@ var _ObservableObjectBuilder = require("../../../../../../../main/common/rx/obje
 
 var _ConnectorBuilder = require("../../../../../../../main/common/rx/object/properties/ConnectorBuilder");
 
+var _Assert = require("../../../../../../../main/common/test/Assert");
+
+var _Mocha = require("../../../../../../../main/common/test/Mocha");
+
 var _TestDeepSubscribe = require("../../deep-subscribe/helpers/src/TestDeepSubscribe");
 
 /* tslint:disable:no-duplicate-string */
 
 /* eslint-disable guard-for-in */
-describe('common > main > rx > properties > ConnectorBuilder', function () {
-  it('connect', function () {
+(0, _Mocha.describe)('common > main > rx > properties > ConnectorBuilder', function () {
+  (0, _Mocha.it)('connect', function () {
     var source = new _ObservableObjectBuilder.ObservableObjectBuilder((0, _TestDeepSubscribe.createObject)().observableObject).writable('baseProp1').writable('baseProp2').writable('prop1').writable('prop2').object;
     source.baseProp1 = 'baseProp1_init_source';
 
@@ -147,93 +151,152 @@ describe('common > main > rx > properties > ConnectorBuilder', function () {
     var baseUnsubscribe2 = [];
     var unsubscribe1 = [];
     var unsubscribe2 = [];
-    assert.strictEqual(typeof (baseUnsubscribe1[0] = baseObject1.propertyChanged.subscribe(baseSubscriber1)), 'function');
-    assert.strictEqual(typeof (baseUnsubscribe2[0] = baseObject2.propertyChanged.subscribe(baseSubscriber2)), 'function');
-    assert.strictEqual(typeof (unsubscribe1[0] = object1.propertyChanged.subscribe(subscriber1)), 'function');
-    assert.strictEqual(typeof (unsubscribe2[0] = object2.propertyChanged.subscribe(subscriber2)), 'function'); // assert.strictEqual(baseObject2.baseProp1, void 0)
 
-    assert.strictEqual(baseObject1.baseProp1, 'baseProp1_init_source');
+    _Assert.assert.strictEqual(typeof (baseUnsubscribe1[0] = baseObject1.propertyChanged.subscribe(baseSubscriber1)), 'function');
+
+    _Assert.assert.strictEqual(typeof (baseUnsubscribe2[0] = baseObject2.propertyChanged.subscribe(baseSubscriber2)), 'function');
+
+    _Assert.assert.strictEqual(typeof (unsubscribe1[0] = object1.propertyChanged.subscribe(subscriber1)), 'function');
+
+    _Assert.assert.strictEqual(typeof (unsubscribe2[0] = object2.propertyChanged.subscribe(subscriber2)), 'function'); // assert.strictEqual(baseObject2.baseProp1, void 0)
+
+
+    _Assert.assert.strictEqual(baseObject1.baseProp1, 'baseProp1_init_source');
+
     source.baseProp1 = '1';
-    assert.deepStrictEqual(baseResults1, [{
+
+    _Assert.assert.deepStrictEqual(baseResults1, [{
       name: 'baseProp1',
       newValue: '1',
       oldValue: 'baseProp1_init_source'
     }]);
+
     baseResults1 = [];
-    assert.deepStrictEqual(baseResults2, []);
-    assert.deepStrictEqual(results1, []);
-    assert.deepStrictEqual(results2, []);
-    assert.deepStrictEqual(baseObject1.baseProp1, '1');
-    assert.deepStrictEqual(baseObject2.baseProp1, '1');
-    assert.deepStrictEqual(object1.baseProp1, '1');
-    assert.deepStrictEqual(object2.baseProp1, '1');
-    assert.strictEqual(baseObject2.baseProp2, 'baseProp2_init');
+
+    _Assert.assert.deepStrictEqual(baseResults2, []);
+
+    _Assert.assert.deepStrictEqual(results1, []);
+
+    _Assert.assert.deepStrictEqual(results2, []);
+
+    _Assert.assert.deepStrictEqual(baseObject1.baseProp1, '1');
+
+    _Assert.assert.deepStrictEqual(baseObject2.baseProp1, '1');
+
+    _Assert.assert.deepStrictEqual(object1.baseProp1, '1');
+
+    _Assert.assert.deepStrictEqual(object2.baseProp1, '1');
+
+    _Assert.assert.strictEqual(baseObject2.baseProp2, 'baseProp2_init');
+
     baseObject2.baseProp2 = '1';
-    assert.deepStrictEqual(source.baseProp2, '1');
-    assert.deepStrictEqual(baseResults1, []);
-    assert.deepStrictEqual(baseResults2, [{
+
+    _Assert.assert.deepStrictEqual(source.baseProp2, '1');
+
+    _Assert.assert.deepStrictEqual(baseResults1, []);
+
+    _Assert.assert.deepStrictEqual(baseResults2, [{
       name: 'baseProp2',
       newValue: '1',
       oldValue: 'baseProp2_init'
     }]);
+
     baseResults2 = [];
-    assert.deepStrictEqual(results1, []);
-    assert.deepStrictEqual(results2, []);
-    assert.deepStrictEqual(baseObject1.baseProp2, undefined);
-    assert.deepStrictEqual(baseObject2.baseProp2, '1');
-    assert.deepStrictEqual(object1.baseProp2, undefined);
-    assert.deepStrictEqual(object2.baseProp2, '1');
+
+    _Assert.assert.deepStrictEqual(results1, []);
+
+    _Assert.assert.deepStrictEqual(results2, []);
+
+    _Assert.assert.deepStrictEqual(baseObject1.baseProp2, undefined);
+
+    _Assert.assert.deepStrictEqual(baseObject2.baseProp2, '1');
+
+    _Assert.assert.deepStrictEqual(object1.baseProp2, undefined);
+
+    _Assert.assert.deepStrictEqual(object2.baseProp2, '1');
+
     object2.baseProp2 = '2';
-    assert.deepStrictEqual(baseResults1, []);
-    assert.deepStrictEqual(baseResults2, [{
+
+    _Assert.assert.deepStrictEqual(baseResults1, []);
+
+    _Assert.assert.deepStrictEqual(baseResults2, [{
       name: 'baseProp2',
       newValue: '2',
       oldValue: '1'
     }]);
+
     baseResults2 = [];
-    assert.deepStrictEqual(results1, []);
-    assert.deepStrictEqual(results2, [{
+
+    _Assert.assert.deepStrictEqual(results1, []);
+
+    _Assert.assert.deepStrictEqual(results2, [{
       name: 'baseProp2',
       newValue: '2',
       oldValue: '1'
     }]);
+
     results2 = [];
-    assert.deepStrictEqual(baseObject1.baseProp2, undefined);
-    assert.deepStrictEqual(baseObject2.baseProp2, '2');
-    assert.deepStrictEqual(object1.baseProp2, undefined);
-    assert.deepStrictEqual(object2.baseProp2, '2');
+
+    _Assert.assert.deepStrictEqual(baseObject1.baseProp2, undefined);
+
+    _Assert.assert.deepStrictEqual(baseObject2.baseProp2, '2');
+
+    _Assert.assert.deepStrictEqual(object1.baseProp2, undefined);
+
+    _Assert.assert.deepStrictEqual(object2.baseProp2, '2');
+
     source.baseProp2 = '3';
-    assert.deepStrictEqual(baseResults1, []);
-    assert.deepStrictEqual(baseResults2, [{
+
+    _Assert.assert.deepStrictEqual(baseResults1, []);
+
+    _Assert.assert.deepStrictEqual(baseResults2, [{
       name: 'baseProp2',
       newValue: '3',
       oldValue: '2'
     }]);
+
     baseResults2 = [];
-    assert.deepStrictEqual(results1, []);
-    assert.deepStrictEqual(results2, [{
+
+    _Assert.assert.deepStrictEqual(results1, []);
+
+    _Assert.assert.deepStrictEqual(results2, [{
       name: 'baseProp2',
       newValue: '3',
       oldValue: '2'
     }]);
+
     results2 = [];
-    assert.deepStrictEqual(baseObject1.baseProp2, undefined);
-    assert.deepStrictEqual(baseObject2.baseProp2, '3');
-    assert.deepStrictEqual(object1.baseProp2, undefined);
-    assert.deepStrictEqual(object2.baseProp2, '3');
+
+    _Assert.assert.deepStrictEqual(baseObject1.baseProp2, undefined);
+
+    _Assert.assert.deepStrictEqual(baseObject2.baseProp2, '3');
+
+    _Assert.assert.deepStrictEqual(object1.baseProp2, undefined);
+
+    _Assert.assert.deepStrictEqual(object2.baseProp2, '3');
+
     new _ConnectorBuilder.ConnectorBuilder(object2).readable('baseProp1', null, '7');
-    assert.deepStrictEqual(baseResults1, []);
-    assert.deepStrictEqual(baseResults2, []);
-    assert.deepStrictEqual(results1, []);
-    assert.deepStrictEqual(results2, [{
+
+    _Assert.assert.deepStrictEqual(baseResults1, []);
+
+    _Assert.assert.deepStrictEqual(baseResults2, []);
+
+    _Assert.assert.deepStrictEqual(results1, []);
+
+    _Assert.assert.deepStrictEqual(results2, [{
       name: 'baseProp1',
       newValue: '7',
       oldValue: '1'
     }]);
+
     results2 = [];
-    assert.deepStrictEqual(baseObject1.baseProp1, '1');
-    assert.deepStrictEqual(baseObject2.baseProp1, '1');
-    assert.deepStrictEqual(object1.baseProp1, '1');
-    assert.deepStrictEqual(object2.baseProp1, '7');
+
+    _Assert.assert.deepStrictEqual(baseObject1.baseProp1, '1');
+
+    _Assert.assert.deepStrictEqual(baseObject2.baseProp1, '1');
+
+    _Assert.assert.deepStrictEqual(object1.baseProp1, '1');
+
+    _Assert.assert.deepStrictEqual(object2.baseProp1, '7');
   });
 });

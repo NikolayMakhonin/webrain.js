@@ -69,16 +69,13 @@ export class Assert {
     }
   }
 
-  throws(fn, errType, regExp, message) {
-    let err;
-
-    try {
-      fn();
-    } catch (ex) {
-      err = ex;
-    }
-
+  assertError(err, errType, regExp, message) {
     this.ok(err);
+
+    if (err instanceof AssertionError) {
+      const index = Assert.errors.indexOf(err);
+      Assert.errors.splice(index, 1);
+    }
 
     if (errType) {
       const actualErrType = err.constructor;
@@ -97,16 +94,57 @@ export class Assert {
     if (regExp) {
       this.ok(regExp.test(err.message));
     }
-  } // noinspection JSMethodCanBeStatic
+  }
 
+  async throwsAsync(fn, errType, regExp, message) {
+    let err;
 
+    try {
+      await fn();
+    } catch (ex) {
+      err = ex;
+    }
+
+    this.assertError(err);
+  }
+
+  throws(fn, errType, regExp, message) {
+    let err;
+
+    try {
+      fn();
+    } catch (ex) {
+      err = ex;
+    }
+
+    this.assertError(err);
+  }
+
+  assertNotHandledErrors() {
+    if (Assert.errors.length) {
+      throw Assert.errors[0];
+    }
+  }
+
+  // noinspection JSMethodCanBeStatic
   throwAssertionError(actual, expected, message) {
-    throw new AssertionError(message, {
+    console.debug('actual: ', actual);
+    console.debug('expected: ', expected);
+    const error = new AssertionError(message, {
       actual,
       expected,
       showDiff: true
     });
+
+    if (!Assert.errors) {
+      Assert.errors = [error];
+    } else {
+      Assert.errors.push(error);
+    }
+
+    throw error;
   }
 
 }
+Assert.errors = [];
 export const assert = new Assert();

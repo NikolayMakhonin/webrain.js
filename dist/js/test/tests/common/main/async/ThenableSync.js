@@ -1,14 +1,16 @@
 "use strict";
 
+var _Mocha = require("../../../../../main/common/test/Mocha");
+
 var _TestThenableSync = require("./src/TestThenableSync");
 
-describe('common > main > helpers > ThenableSync', function () {
+(0, _Mocha.describe)('common > main > helpers > ThenableSync', function () {
   this.timeout(120000);
   var testThenableSync = _TestThenableSync.TestThenableSync.test;
   after(function () {
     console.log('Total ThenableSync tests >= ' + _TestThenableSync.TestThenableSync.totalTests);
   });
-  it('variants', function () {
+  (0, _Mocha.it)('variants', function () {
     testThenableSync({
       exclude: function exclude(o) {
         if (o.thenValue0 === _TestThenableSync.ValueType.IteratorThrow && o.thenValue1 === _TestThenableSync.ValueType.IteratorThrow) {

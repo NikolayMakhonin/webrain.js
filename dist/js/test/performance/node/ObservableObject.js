@@ -22,9 +22,11 @@ var _ObservableObjectBuilder = require("../../../main/common/rx/object/Observabl
 
 var _Calc = require("../../../main/common/test/Calc");
 
+var _Mocha = require("../../../main/common/test/Mocha");
+
 /* tslint:disable:no-empty no-identical-functions */
 // @ts-ignore
-describe('ObservableObject', function () {
+(0, _Mocha.describe)('ObservableObject', function () {
   this.timeout(300000);
 
   function createObject(init) {
@@ -112,17 +114,17 @@ describe('ObservableObject', function () {
     // })
   }
 
-  it('simple', function () {
+  (0, _Mocha.it)('simple', function () {
     // 173n | 184n
     testPerformance(createObject());
   });
-  it('propertyChanged', function () {
+  (0, _Mocha.it)('propertyChanged', function () {
     // 721n | 682n
     testPerformance(createObject(function (observableObject) {
       observableObject.propertyChanged.subscribe(function (v) {});
     }));
   });
-  it('deepSubscribe', function () {
+  (0, _Mocha.it)('deepSubscribe', function () {
     // 2162n | 1890n
     var i = 0;
     testPerformance(createObject(function (observableObject) {
@@ -139,7 +141,7 @@ describe('ObservableObject', function () {
       });
     }));
   });
-  it('propertyChanged memory', function () {
+  (0, _Mocha.it)('propertyChanged memory', function () {
     // 48 | 0
     var object = createObject(function (observableObject) {
       observableObject.propertyChanged.subscribe(function (v) {});
@@ -150,7 +152,7 @@ describe('ObservableObject', function () {
       object.prop++;
     });
   });
-  it('deepSubscribe memory', function () {
+  (0, _Mocha.it)('deepSubscribe memory', function () {
     // 48 | 0
     var object = createObject(function (observableObject) {
       (0, _deepSubscribe.deepSubscribe)({
@@ -177,7 +179,7 @@ describe('ObservableObject', function () {
       object.prop = object.prop === value1 ? value2 : value1;
     });
   });
-  it('test memory', function () {
+  (0, _Mocha.it)('test memory', function () {
     (0, _Calc.calcMemAllocate)(_Calc.CalcType.Min, 10000, function () {
       var value;
 
@@ -189,7 +191,7 @@ describe('ObservableObject', function () {
       return value;
     });
   });
-  it('test event as object or arguments', function () {
+  (0, _Mocha.it)('test event as object or arguments', function () {
     var value1;
     var value2;
     var i = 0;

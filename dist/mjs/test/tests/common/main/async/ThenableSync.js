@@ -1,3 +1,4 @@
+import { describe, it } from '../../../../../main/common/test/Mocha';
 import { TestThenableSync, ValueType } from './src/TestThenableSync';
 describe('common > main > helpers > ThenableSync', function () {
   this.timeout(120000);
