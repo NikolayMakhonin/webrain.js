@@ -1,7 +1,7 @@
 import { createFunction } from '../../../helpers/helpers';
 import { deepSubscribeRule } from '../../deep-subscribe/deep-subscribe';
 import { RuleBuilder } from '../../deep-subscribe/RuleBuilder';
-import { _set, _setExt } from '../ObservableObject';
+import { _set, _setExt } from '../ObservableClass';
 import { ObservableObjectBuilder } from '../ObservableObjectBuilder';
 import { CalcObjectDebugger } from './CalcObjectDebugger';
 import { Connector } from './Connector';
@@ -71,7 +71,7 @@ export class ConnectorBuilder extends ObservableObjectBuilder {
         };
 
         const receiveValue = writable ? (value, parent, key, keyType) => {
-          CalcObjectDebugger.Instance.onConnectorChanged(this, value, parent, key, keyType);
+          CalcObjectDebugger.Instance.onConnectorChanged(this, name, value, parent, key, keyType);
           const baseValue = baseGetValue.call(this);
           baseValue.parent = parent;
           baseValue.key = key;
@@ -79,7 +79,7 @@ export class ConnectorBuilder extends ObservableObjectBuilder {
           setVal(this, value);
           return null;
         } : (value, parent, key, keyType) => {
-          CalcObjectDebugger.Instance.onConnectorChanged(this, value, parent, key, keyType);
+          CalcObjectDebugger.Instance.onConnectorChanged(this, name, value, parent, key, keyType);
           setVal(this, value);
           return null;
         };
@@ -129,7 +129,7 @@ export function connectorFactory(build, baseClass) {
   return source => new NewConnector(source);
 } // const builder = new ConnectorBuilder(true as any)
 //
-// export function connect<TObject extends ObservableObject, TValue = any>(
+// export function connect<TObject extends ObservableClass, TValue = any>(
 // 	options?: IConnectFieldOptions<TObject, TValue>,
 // 	initValue?: TValue,
 // ) {
@@ -138,7 +138,7 @@ export function connectorFactory(build, baseClass) {
 // 		builder.connect(propertyKey, options, initValue)
 // 	}
 // }
-// class Class1 extends ObservableObject {
+// class Class1 extends ObservableClass {
 // }
 // class Class extends Class1 {
 // 	@connect()

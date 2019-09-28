@@ -1,104 +1,34 @@
+import { mergeMaps, MergeObjectWrapper } from '../../extensions/merge/merge-maps';
+import { registerMerger } from '../../extensions/merge/mergers';
+import { deSerializeObject, registerSerializer, serializeObject } from '../../extensions/serialization/serializers';
 import '../extensions/autoConnect';
-import { PropertyChangedObject } from './PropertyChangedObject';
-export class ObservableObject extends PropertyChangedObject {
-  /** @internal */
-  constructor() {
-    super();
-    Object.defineProperty(this, '__fields', {
-      configurable: false,
-      enumerable: false,
-      writable: false,
-      value: {}
-    });
-  }
+import { ObservableClass } from './ObservableClass';
+export class ObservableObject extends ObservableClass {}
+registerMerger(ObservableObject, {
+  merger: {
+    canMerge(target, source) {
+      return source instanceof Object;
+    },
 
-}
-/** @internal */
-
-export function _setExt(name, getValue, setValue, options, object, newValue) {
-  if (!options) {
-    return _set(name, getValue, setValue, object, newValue);
-  }
-
-  const oldValue = getValue ? getValue.call(object) : object.__fields[name];
-  const equalsFunc = options.equalsFunc;
-
-  if (equalsFunc ? equalsFunc.call(object, oldValue, newValue) : oldValue === newValue) {
-    return false;
-  }
-
-  const fillFunc = options.fillFunc;
-
-  if (fillFunc && oldValue != null && newValue != null && fillFunc.call(object, oldValue, newValue)) {
-    return false;
-  }
-
-  const convertFunc = options.convertFunc;
-
-  if (convertFunc) {
-    newValue = convertFunc.call(object, newValue);
-  }
-
-  if (oldValue === newValue) {
-    return false;
-  }
-
-  const beforeChange = options.beforeChange;
-
-  if (beforeChange) {
-    beforeChange.call(object, oldValue);
-  }
-
-  if (setValue) {
-    setValue.call(object, newValue);
-  } else {
-    object.__fields[name] = newValue;
-  }
-
-  const afterChange = options.afterChange;
-
-  if (afterChange) {
-    afterChange.call(object, newValue);
-  }
-
-  if (!options || !options.suppressPropertyChanged) {
-    const {
-      propertyChangedIfCanEmit
-    } = object;
-
-    if (propertyChangedIfCanEmit) {
-      propertyChangedIfCanEmit.onPropertyChanged({
-        name,
-        oldValue,
-        newValue
-      });
+    merge(merge, base, older, newer, set, preferCloneOlder, preferCloneNewer, options) {
+      return mergeMaps((target, source) => new MergeObjectWrapper(source), merge, base, older, newer, preferCloneOlder, preferCloneNewer, options);
     }
-  }
 
-  return true;
-}
-/** @internal */
+  },
+  preferClone: o => Object.isFrozen(o) ? true : null
+});
+registerSerializer(ObservableObject, {
+  uuid: '1380d053394748e58406c1c0e62a2be9',
+  serializer: {
+    serialize(serialize, value, options) {
+      return serializeObject(serialize, value, options);
+    },
 
-export function _set(name, getValue, setValue, object, newValue) {
-  const oldValue = getValue.call(object);
+    deSerialize(deSerialize, serializedValue, valueFactory) {
+      const value = valueFactory();
+      return deSerializeObject(deSerialize, serializedValue, value);
+    }
 
-  if (oldValue === newValue) {
-    return false;
-  }
-
-  setValue.call(object, newValue);
-  const {
-    propertyChangedDisabled,
-    propertyChanged
-  } = object.__meta;
-
-  if (!propertyChangedDisabled && propertyChanged) {
-    propertyChanged.emit({
-      name,
-      oldValue,
-      newValue
-    });
-  }
-
-  return true;
-}
+  },
+  valueFactory: () => new ObservableObject()
+});

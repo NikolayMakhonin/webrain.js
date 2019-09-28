@@ -9,10 +9,10 @@ import { ObjectSet } from '../../../../../../main/common/lists/ObjectSet';
 import { ObservableMap } from '../../../../../../main/common/lists/ObservableMap';
 import { ObservableSet } from '../../../../../../main/common/lists/ObservableSet';
 import { SortedList } from '../../../../../../main/common/lists/SortedList';
-import { ObservableObject } from '../../../../../../main/common/rx/object/ObservableObject';
+import { ObservableClass } from '../../../../../../main/common/rx/object/ObservableClass';
 import { ObservableObjectBuilder } from '../../../../../../main/common/rx/object/ObservableObjectBuilder';
 import { Property } from '../../../../../../main/common/rx/object/properties/Property';
-export class CircularClass extends ObservableObject {
+export class CircularClass extends ObservableClass {
   constructor(array, value) {
     super();
     this.array = array;

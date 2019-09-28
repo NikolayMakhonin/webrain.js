@@ -2,11 +2,11 @@
 // 	IPropertyChanged,
 // 	IPropertyChangedEvent,
 // } from '../../../../../../../main/common/lists/contracts/IPropertyChanged'
-// import {ObservableObject} from '../../../../../../../main/common/rx/object/ObservableObject'
+// import {ObservableClass} from '../../../../../../../main/common/rx/object/ObservableClass'
 // import {ObservableObjectBuilder} from '../../../../../../../main/common/rx/object/ObservableObjectBuilder';
 // import {IOptionsVariant, IOptionsVariants, ITestCase, TestVariants, THIS} from '../../../helpers/TestVariants'
 //
-// export type IObservableObjectAction = (set: ObservableObject) => any
+// export type IObservableObjectAction = (set: ObservableClass) => any
 //
 // export enum PropertyType {
 // 	None,
@@ -62,7 +62,7 @@
 // 	proto: IClass
 // }
 //
-// export class BaseClass1 extends ObservableObject implements IClass {
+// export class BaseClass1 extends ObservableClass implements IClass {
 // 	public builder = new ObservableObjectBuilder(this)
 // 	public proto: IClass = BaseClass1.prototype
 // }
@@ -94,7 +94,7 @@
 // }
 //
 // let staticObservableObject
-// staticObservableObject = new ObservableObject()
+// staticObservableObject = new ObservableClass()
 //
 // export function assertEvents(events: IEvent[], excepted: IEvent[]) {
 // 	events = eventsToDisplay(events)
@@ -133,7 +133,7 @@
 // 			try {
 // 				let expectedEvents: IEvent[] = options.expected.events.slice()
 // 				let events: IEvent[]
-// 				let observableObject: ObservableObject
+// 				let observableObject: ObservableClass
 //
 // 				if (options.reuseSetInstance) {
 // 					staticCalcTime = 0
@@ -160,7 +160,7 @@
 // 					events = []
 // 					const autoCalc = options.autoCalc
 // 					const calcTime = options.calcTime
-// 					observableObject = new ObservableObject({
+// 					observableObject = new ObservableClass({
 // 						timing,
 // 						canBeCalcCallback() {
 // 							if (observableObject) {

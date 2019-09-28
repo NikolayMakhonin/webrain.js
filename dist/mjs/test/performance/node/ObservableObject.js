@@ -2,17 +2,17 @@
 // @ts-ignore
 import { calcPerformance } from 'rdtsc';
 import { deepSubscribe } from '../../../main/common/rx/deep-subscribe/deep-subscribe';
-import { ObservableObject } from '../../../main/common/rx/object/ObservableObject';
+import { ObservableClass } from '../../../main/common/rx/object/ObservableClass';
 import { ObservableObjectBuilder } from '../../../main/common/rx/object/ObservableObjectBuilder';
 import { calcMemAllocate, CalcType } from '../../../main/common/test/Calc';
 import { describe, it } from '../../../main/common/test/Mocha';
-describe('ObservableObject', function () {
+describe('ObservableClass', function () {
   this.timeout(300000);
 
   function createObject(init) {
-    class Class extends ObservableObject {}
+    class Class extends ObservableClass {}
 
-    new ObservableObjectBuilder(ObservableObject.prototype).writable('prop') // , o => o.prop, (o, v) => o.prop = v)
+    new ObservableObjectBuilder(ObservableClass.prototype).writable('prop') // , o => o.prop, (o, v) => o.prop = v)
     .writable('prop2'); // , o => o.prop2, (o, v) => o.prop2 = v)
 
     const observableObject1 = new Class();

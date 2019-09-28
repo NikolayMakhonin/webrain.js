@@ -2,7 +2,7 @@
 import { delay } from '../../../../../../main/common/helpers/helpers';
 import { VALUE_PROPERTY_DEFAULT } from '../../../../../../main/common/helpers/value-property';
 import { RuleRepeatAction } from '../../../../../../main/common/rx/deep-subscribe/contracts/rules';
-import { ObservableObject } from '../../../../../../main/common/rx/object/ObservableObject';
+import { ObservableClass } from '../../../../../../main/common/rx/object/ObservableClass';
 import { ObservableObjectBuilder } from '../../../../../../main/common/rx/object/ObservableObjectBuilder';
 import { describe, it, xit } from '../../../../../../main/common/test/Mocha';
 import { createObject, TestDeepSubscribe } from './helpers/src/TestDeepSubscribe';
@@ -22,13 +22,13 @@ describe('common > main > rx > deep-subscribe > deep-subscribe', function () {
       doNotSubscribeNonObjectValues: true
     }, b => b.propertyAny().propertyRegexp(/^[a-z]/).repeat(1, 1, o => Array.isArray(o) ? RuleRepeatAction.Next : RuleRepeatAction.Fork, b => b.p('1')), b => b.propertyAny().repeat(1, 1, null, b => b.propertyRegexp(/^[a-z]/)).repeat(1, 1, o => Array.isArray(o) ? RuleRepeatAction.Next : RuleRepeatAction.Fork, b => b.p('1')), // b => b
     // 	.propertyRegexp(/^[a-z]/)
-    // 	.repeat(0, 1, o => o && o.constructor === ObservableObject
+    // 	.repeat(0, 1, o => o && o.constructor === ObservableClass
     // 		? RuleRepeatAction.Next
     // 		: RuleRepeatAction.Fork, b => b.propertyRegexp(/^[a-z]/))
     // 	.repeat(1, 1,
     // 		o => Array.isArray(o) ? RuleRepeatAction.Next : RuleRepeatAction.Fork,
     // 		b => b.p('1')),
-    b => b.propertyAny().repeat(0, 0, null, b => b.propertyRegexp(/^[a-z]/)).repeat(1, 1, o => Array.isArray(o) ? RuleRepeatAction.Next : RuleRepeatAction.Fork, b => b.p('1')), b => b.propertyAny().repeat(2, 3, o => o && o.constructor === ObservableObject ? RuleRepeatAction.Next : RuleRepeatAction.Fork, b => b.propertyRegexp(/^[a-z]/)).repeat(1, 1, o => Array.isArray(o) ? RuleRepeatAction.Next : RuleRepeatAction.Fork, b => b.p('1'))).subscribe(o => ['value2']).unsubscribe(o => ['value2']).subscribe(o => ['value2']).unsubscribe(o => ['value2']);
+    b => b.propertyAny().repeat(0, 0, null, b => b.propertyRegexp(/^[a-z]/)).repeat(1, 1, o => Array.isArray(o) ? RuleRepeatAction.Next : RuleRepeatAction.Fork, b => b.p('1')), b => b.propertyAny().repeat(2, 3, o => o && o.constructor === ObservableClass ? RuleRepeatAction.Next : RuleRepeatAction.Fork, b => b.propertyRegexp(/^[a-z]/)).repeat(1, 1, o => Array.isArray(o) ? RuleRepeatAction.Next : RuleRepeatAction.Fork, b => b.p('1'))).subscribe(o => ['value2']).unsubscribe(o => ['value2']).subscribe(o => ['value2']).unsubscribe(o => ['value2']);
   });
   it('unsubscribe leaf non object', function () {
     const object1 = createObject();

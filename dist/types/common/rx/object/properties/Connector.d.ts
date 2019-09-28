@@ -1,5 +1,5 @@
-import { ObservableObject } from '../ObservableObject';
-export declare class Connector<TSource> extends ObservableObject {
+import { ObservableClass } from '../ObservableClass';
+export declare class Connector<TSource> extends ObservableClass {
     connectorSource: TSource;
     constructor(connectorSource: TSource);
 }

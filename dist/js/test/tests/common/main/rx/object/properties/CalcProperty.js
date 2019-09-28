@@ -15,7 +15,7 @@ var _Mocha = require("../../../../../../../main/common/test/Mocha");
   //
   // 	source.baseProp1 = 'baseProp1_init_source'
   //
-  // 	class BaseClass1 extends ObservableObject {
+  // 	class BaseClass1 extends ObservableClass {
   // 		public readonly source = source
   // 		public baseProp1
   // 	}

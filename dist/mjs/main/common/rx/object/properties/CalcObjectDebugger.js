@@ -31,10 +31,11 @@ export class CalcObjectDebugger {
     return this._connectorSubject;
   }
 
-  onConnectorChanged(target, value, parent, key, keyType) {
+  onConnectorChanged(target, targetKey, value, parent, key, keyType) {
     if (this._connectorSubject.hasSubscribers) {
       this._connectorSubject.emit({
         target,
+        targetKey,
         value,
         parent,
         key,

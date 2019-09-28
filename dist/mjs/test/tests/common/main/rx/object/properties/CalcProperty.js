@@ -12,7 +12,7 @@ xdescribe('common > main > rx > properties > CalcProperty', function () {// it('
   //
   // 	source.baseProp1 = 'baseProp1_init_source'
   //
-  // 	class BaseClass1 extends ObservableObject {
+  // 	class BaseClass1 extends ObservableClass {
   // 		public readonly source = source
   // 		public baseProp1
   // 	}

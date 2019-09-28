@@ -2,7 +2,7 @@
 
 /* eslint-disable guard-for-in */
 import { ThenableSync } from '../../../../../../../main/common/async/ThenableSync';
-import { ObservableObject } from '../../../../../../../main/common/rx/object/ObservableObject';
+import { ObservableClass } from '../../../../../../../main/common/rx/object/ObservableClass';
 import { CalcObjectBuilder } from '../../../../../../../main/common/rx/object/properties/CalcObjectBuilder';
 import { calcPropertyFactory } from '../../../../../../../main/common/rx/object/properties/CalcPropertyBuilder';
 import { connectorFactory } from '../../../../../../../main/common/rx/object/properties/ConnectorBuilder';
@@ -13,7 +13,7 @@ import { TestDeepSubscribe } from '../../deep-subscribe/helpers/src/TestDeepSubs
 describe('common > main > rx > properties > CalcObjectBuilder', function () {
   this.timeout(30000);
 
-  class ClassSync extends ObservableObject {
+  class ClassSync extends ObservableClass {
     constructor(...args) {
       super(...args);
       this.value = 'Value';

@@ -23,7 +23,7 @@ var _mergers = require("../../../extensions/merge/mergers");
 
 var _serializers = require("../../../extensions/serialization/serializers");
 
-var _ObservableObject2 = require("../ObservableObject");
+var _ObservableClass2 = require("../ObservableClass");
 
 var _ObservableObjectBuilder = require("../ObservableObjectBuilder");
 
@@ -33,8 +33,8 @@ _Symbol$toStringTag = _toStringTag.default;
 
 var Property =
 /*#__PURE__*/
-function (_ObservableObject) {
-  (0, _inherits2.default)(Property, _ObservableObject);
+function (_ObservableClass) {
+  (0, _inherits2.default)(Property, _ObservableClass);
 
   function Property(options, initValue) {
     var _this;
@@ -158,7 +158,7 @@ function (_ObservableObject) {
 
   }]);
   return Property;
-}(_ObservableObject2.ObservableObject);
+}(_ObservableClass2.ObservableClass);
 
 exports.Property = Property;
 Property.uuid = '6f2c51ccd8654baa9a93226e3374ccaf';

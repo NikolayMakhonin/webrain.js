@@ -1,11 +1,15 @@
 "use strict";
 
 exports.__esModule = true;
-exports.resolvePath = exports.deepSubscribe = exports.ObservableMap = exports.ObservableSet = exports.ArrayMap = exports.ArraySet = exports.getObjectUniqueId = exports.CalcObjectDebugger = exports.createFunction = exports.Property = exports.connectorFactory = exports.calcPropertyFactory = exports.CalcObjectBuilder = exports.ObservableObject = exports.ThenableSync = void 0;
+exports.ObjectMerger = exports.ValueKeyType = exports.CalcProperty = exports.ObjectSet = exports.ObjectMap = exports.resolvePath = exports.deepSubscribe = exports.ObservableMap = exports.ObservableSet = exports.ArrayMap = exports.ArraySet = exports.getObjectUniqueId = exports.CalcObjectDebugger = exports.createFunction = exports.Property = exports.connectorFactory = exports.calcPropertyFactory = exports.CalcObjectBuilder = exports.ObservableObject = exports.ObservableClass = exports.ThenableSync = void 0;
 
 var _ThenableSync = require("./async/ThenableSync");
 
 exports.ThenableSync = _ThenableSync.ThenableSync;
+
+var _ObservableClass = require("./rx/object/ObservableClass");
+
+exports.ObservableClass = _ObservableClass.ObservableClass;
 
 var _ObservableObject = require("./rx/object/ObservableObject");
 
@@ -62,3 +66,23 @@ exports.deepSubscribe = _deepSubscribe.deepSubscribe;
 var _helpers2 = require("./rx/object/properties/helpers");
 
 exports.resolvePath = _helpers2.resolvePath;
+
+var _ObjectMap = require("./lists/ObjectMap");
+
+exports.ObjectMap = _ObjectMap.ObjectMap;
+
+var _ObjectSet = require("./lists/ObjectSet");
+
+exports.ObjectSet = _ObjectSet.ObjectSet;
+
+var _CalcProperty = require("./rx/object/properties/CalcProperty");
+
+exports.CalcProperty = _CalcProperty.CalcProperty;
+
+var _common = require("./rx/deep-subscribe/contracts/common");
+
+exports.ValueKeyType = _common.ValueKeyType;
+
+var _mergers = require("./extensions/merge/mergers");
+
+exports.ObjectMerger = _mergers.ObjectMerger;

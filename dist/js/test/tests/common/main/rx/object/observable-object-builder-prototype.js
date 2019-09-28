@@ -12,7 +12,7 @@ var _inherits2 = _interopRequireDefault(require("@babel/runtime-corejs3/helpers/
 
 var _map = _interopRequireDefault(require("@babel/runtime-corejs3/core-js-stable/instance/map"));
 
-var _ObservableObject3 = require("../../../../../../main/common/rx/object/ObservableObject");
+var _ObservableClass3 = require("../../../../../../main/common/rx/object/ObservableClass");
 
 var _ObservableObjectBuilder = require("../../../../../../main/common/rx/object/ObservableObjectBuilder");
 
@@ -37,8 +37,8 @@ var _Mocha = require("../../../../../../main/common/test/Mocha");
   (0, _Mocha.it)('writable', function () {
     var BaseClass1 =
     /*#__PURE__*/
-    function (_ObservableObject) {
-      (0, _inherits2.default)(BaseClass1, _ObservableObject);
+    function (_ObservableClass) {
+      (0, _inherits2.default)(BaseClass1, _ObservableClass);
 
       function BaseClass1() {
         (0, _classCallCheck2.default)(this, BaseClass1);
@@ -46,7 +46,7 @@ var _Mocha = require("../../../../../../main/common/test/Mocha");
       }
 
       return BaseClass1;
-    }(_ObservableObject3.ObservableObject);
+    }(_ObservableClass3.ObservableClass);
 
     var BaseClass2 =
     /*#__PURE__*/
@@ -272,8 +272,8 @@ var _Mocha = require("../../../../../../main/common/test/Mocha");
   (0, _Mocha.it)('readable', function () {
     var BaseClass1 =
     /*#__PURE__*/
-    function (_ObservableObject2) {
-      (0, _inherits2.default)(BaseClass1, _ObservableObject2);
+    function (_ObservableClass2) {
+      (0, _inherits2.default)(BaseClass1, _ObservableClass2);
 
       function BaseClass1() {
         (0, _classCallCheck2.default)(this, BaseClass1);
@@ -281,7 +281,7 @@ var _Mocha = require("../../../../../../main/common/test/Mocha");
       }
 
       return BaseClass1;
-    }(_ObservableObject3.ObservableObject);
+    }(_ObservableClass3.ObservableClass);
 
     var BaseClass2 =
     /*#__PURE__*/

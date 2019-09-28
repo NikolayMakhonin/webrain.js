@@ -21,14 +21,14 @@ require("../extensions/autoConnect");
 
 var _IPropertyChanged = require("./IPropertyChanged");
 
-var _ObservableObject = require("./ObservableObject");
+var _ObservableClass = require("./ObservableClass");
 
 var ObservableObjectBuilder =
 /*#__PURE__*/
 function () {
   function ObservableObjectBuilder(object) {
     (0, _classCallCheck2.default)(this, ObservableObjectBuilder);
-    this.object = object || new _ObservableObject.ObservableObject();
+    this.object = object || new _ObservableClass.ObservableClass();
   }
 
   (0, _createClass2.default)(ObservableObjectBuilder, [{
@@ -51,7 +51,7 @@ function () {
       var getValue = options && options.getValue || (0, _helpers.createFunction)("return this.__fields[\"" + name + "\"]");
       var setValue = options && options.setValue || (0, _helpers.createFunction)('v', "this.__fields[\"" + name + "\"] = v");
 
-      var _set2 = setOptions ? (0, _bind.default)(_ObservableObject._setExt).call(_ObservableObject._setExt, null, name, getValue, setValue, setOptions) : (0, _bind.default)(_ObservableObject._set).call(_ObservableObject._set, null, name, getValue, setValue);
+      var _set2 = setOptions ? (0, _bind.default)(_ObservableClass._setExt).call(_ObservableClass._setExt, null, name, getValue, setValue, setOptions) : (0, _bind.default)(_ObservableClass._set).call(_ObservableClass._set, null, name, getValue, setValue);
 
       (0, _defineProperty.default)(object, name, {
         configurable: true,
@@ -112,7 +112,7 @@ function () {
       if (update) {
         // tslint:disable-next-line
         var setOptions = options && options.setOptions;
-        setOnUpdate = setOptions ? (0, _bind.default)(_ObservableObject._setExt).call(_ObservableObject._setExt, null, name, getValue, setValue, setOptions) : (0, _bind.default)(_ObservableObject._set).call(_ObservableObject._set, null, name, getValue, setValue);
+        setOnUpdate = setOptions ? (0, _bind.default)(_ObservableClass._setExt).call(_ObservableClass._setExt, null, name, getValue, setValue, setOptions) : (0, _bind.default)(_ObservableClass._set).call(_ObservableClass._set, null, name, getValue, setValue);
       }
 
       var setOnInit;
@@ -122,7 +122,7 @@ function () {
           suppressPropertyChanged: true
         });
 
-        setOnInit = _setOptions ? (0, _bind.default)(_ObservableObject._setExt).call(_ObservableObject._setExt, null, name, getValue, setValue, _setOptions) : (0, _bind.default)(_ObservableObject._set).call(_ObservableObject._set, null, name, getValue, setValue);
+        setOnInit = _setOptions ? (0, _bind.default)(_ObservableClass._setExt).call(_ObservableClass._setExt, null, name, getValue, setValue, _setOptions) : (0, _bind.default)(_ObservableClass._set).call(_ObservableClass._set, null, name, getValue, setValue);
       }
 
       var createInstanceProperty = function createInstanceProperty(instance) {
@@ -279,7 +279,7 @@ function () {
 // 	options?: IWritableFieldOptions,
 // 	initValue?: T,
 // ) {
-// 	return (target: ObservableObject, propertyKey: string, descriptor: PropertyDescriptor) => {
+// 	return (target: ObservableClass, propertyKey: string, descriptor: PropertyDescriptor) => {
 // 		builder.object = target
 // 		builder.writable(propertyKey, options, initValue)
 // 	}
@@ -289,12 +289,12 @@ function () {
 // 	options?: IReadableFieldOptions<T>,
 // 	initValue?: T,
 // ) {
-// 	return (target: ObservableObject, propertyKey: string) => {
+// 	return (target: ObservableClass, propertyKey: string) => {
 // 		builder.object = target
 // 		builder.readable(propertyKey, options, initValue)
 // 	}
 // }
-// class Class extends ObservableObject {
+// class Class extends ObservableClass {
 // 	@writable()
 // 	public prop: number
 //

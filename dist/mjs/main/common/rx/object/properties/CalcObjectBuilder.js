@@ -37,7 +37,7 @@ export class CalcObjectBuilder extends ObservableObjectBuilder {
 } // const builder = new CalcObjectBuilder(true as any)
 //
 // export function calc<
-// 	TObject extends ObservableObject,
+// 	TObject extends ObservableClass,
 // 	TInput extends new (object: TObject) => any | NotFunction<any>,
 // 	TValue = any,
 // 	TMergeSource = any
@@ -50,7 +50,7 @@ export class CalcObjectBuilder extends ObservableObjectBuilder {
 // 		builder.calc(propertyKey, options, initValue)
 // 	}
 // }
-// class Class1 extends ObservableObject {
+// class Class1 extends ObservableClass {
 // }
 // class Class extends Class1 {
 // 	@calc()

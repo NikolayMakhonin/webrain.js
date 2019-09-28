@@ -22,7 +22,7 @@ var _valueProperty = require("../../../../../../main/common/helpers/value-proper
 
 var _rules = require("../../../../../../main/common/rx/deep-subscribe/contracts/rules");
 
-var _ObservableObject = require("../../../../../../main/common/rx/object/ObservableObject");
+var _ObservableClass = require("../../../../../../main/common/rx/object/ObservableClass");
 
 var _ObservableObjectBuilder = require("../../../../../../main/common/rx/object/ObservableObjectBuilder");
 
@@ -89,7 +89,7 @@ var _TestDeepSubscribe = require("./helpers/src/TestDeepSubscribe");
       });
     }, // b => b
     // 	.propertyRegexp(/^[a-z]/)
-    // 	.repeat(0, 1, o => o && o.constructor === ObservableObject
+    // 	.repeat(0, 1, o => o && o.constructor === ObservableClass
     // 		? RuleRepeatAction.Next
     // 		: RuleRepeatAction.Fork, b => b.propertyRegexp(/^[a-z]/))
     // 	.repeat(1, 1,
@@ -109,7 +109,7 @@ var _TestDeepSubscribe = require("./helpers/src/TestDeepSubscribe");
       var _context7, _context8;
 
       return (0, _repeat.default)(_context7 = (0, _repeat.default)(_context8 = b.propertyAny()).call(_context8, 2, 3, function (o) {
-        return o && o.constructor === _ObservableObject.ObservableObject ? _rules.RuleRepeatAction.Next : _rules.RuleRepeatAction.Fork;
+        return o && o.constructor === _ObservableClass.ObservableClass ? _rules.RuleRepeatAction.Next : _rules.RuleRepeatAction.Fork;
       }, function (b) {
         return b.propertyRegexp(/^[a-z]/);
       })).call(_context7, 1, 1, function (o) {

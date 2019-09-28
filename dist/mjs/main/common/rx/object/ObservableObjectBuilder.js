@@ -1,10 +1,10 @@
 import { createFunction } from '../../helpers/helpers';
 import '../extensions/autoConnect';
 import { PropertyChangedEvent } from './IPropertyChanged';
-import { _set, _setExt, ObservableObject } from './ObservableObject';
+import { _set, _setExt, ObservableClass } from './ObservableClass';
 export class ObservableObjectBuilder {
   constructor(object) {
-    this.object = object || new ObservableObject();
+    this.object = object || new ObservableClass();
   }
 
   writable(name, options, initValue) {
@@ -267,7 +267,7 @@ export class ObservableObjectBuilder {
 // 	options?: IWritableFieldOptions,
 // 	initValue?: T,
 // ) {
-// 	return (target: ObservableObject, propertyKey: string, descriptor: PropertyDescriptor) => {
+// 	return (target: ObservableClass, propertyKey: string, descriptor: PropertyDescriptor) => {
 // 		builder.object = target
 // 		builder.writable(propertyKey, options, initValue)
 // 	}
@@ -277,12 +277,12 @@ export class ObservableObjectBuilder {
 // 	options?: IReadableFieldOptions<T>,
 // 	initValue?: T,
 // ) {
-// 	return (target: ObservableObject, propertyKey: string) => {
+// 	return (target: ObservableClass, propertyKey: string) => {
 // 		builder.object = target
 // 		builder.readable(propertyKey, options, initValue)
 // 	}
 // }
-// class Class extends ObservableObject {
+// class Class extends ObservableClass {
 // 	@writable()
 // 	public prop: number
 //

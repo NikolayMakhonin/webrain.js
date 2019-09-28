@@ -18,7 +18,7 @@ var _rdtsc = require("rdtsc");
 
 var _ThenableSync = require("../../../main/common/async/ThenableSync");
 
-var _ObservableObject2 = require("../../../main/common/rx/object/ObservableObject");
+var _ObservableClass2 = require("../../../main/common/rx/object/ObservableClass");
 
 var _CalcObjectBuilder = require("../../../main/common/rx/object/properties/CalcObjectBuilder");
 
@@ -34,8 +34,8 @@ var _Mocha = require("../../../main/common/test/Mocha");
 
   var Class =
   /*#__PURE__*/
-  function (_ObservableObject) {
-    (0, _inherits2.default)(Class, _ObservableObject);
+  function (_ObservableClass) {
+    (0, _inherits2.default)(Class, _ObservableClass);
 
     function Class() {
       var _getPrototypeOf2, _context;
@@ -56,7 +56,7 @@ var _Mocha = require("../../../main/common/test/Mocha");
     }
 
     return Class;
-  }(_ObservableObject2.ObservableObject);
+  }(_ObservableClass2.ObservableClass);
 
   var simple = {};
   new _CalcObjectBuilder.CalcObjectBuilder(Class.prototype).writable('observable').calc('calc', simple, (0, _CalcPropertyBuilder.calcPropertyFactory)({

@@ -1,7 +1,7 @@
 /* tslint:disable:no-duplicate-string */
 
 /* eslint-disable guard-for-in */
-import { ObservableObject } from '../../../../../../../main/common/rx/object/ObservableObject';
+import { ObservableClass } from '../../../../../../../main/common/rx/object/ObservableClass';
 import { ObservableObjectBuilder } from '../../../../../../../main/common/rx/object/ObservableObjectBuilder';
 import { ConnectorBuilder } from '../../../../../../../main/common/rx/object/properties/ConnectorBuilder';
 import { assert } from '../../../../../../../main/common/test/Assert';
@@ -12,7 +12,7 @@ describe('common > main > rx > properties > ConnectorBuilder', function () {
     const source = new ObservableObjectBuilder(createObject().observableObject).writable('baseProp1').writable('baseProp2').writable('prop1').writable('prop2').object;
     source.baseProp1 = 'baseProp1_init_source';
 
-    class BaseClass1 extends ObservableObject {
+    class BaseClass1 extends ObservableClass {
       constructor(...args) {
         super(...args);
         this.source = source;

@@ -8,7 +8,7 @@ var _keys = _interopRequireDefault(require("@babel/runtime-corejs3/core-js-stabl
 
 var _map = _interopRequireDefault(require("@babel/runtime-corejs3/core-js-stable/instance/map"));
 
-var _ObservableObject = require("../../../../../../main/common/rx/object/ObservableObject");
+var _ObservableClass = require("../../../../../../main/common/rx/object/ObservableClass");
 
 var _ObservableObjectBuilder = require("../../../../../../main/common/rx/object/ObservableObjectBuilder");
 
@@ -165,7 +165,7 @@ var _Mocha = require("../../../../../../main/common/test/Mocha");
     var _ref3 = new _ObservableObjectBuilder.ObservableObjectBuilder(),
         object = _ref3.object;
 
-    _Assert.assert.ok(object instanceof _ObservableObject.ObservableObject);
+    _Assert.assert.ok(object instanceof _ObservableClass.ObservableClass);
 
     var builder = new _ObservableObjectBuilder.ObservableObjectBuilder(object);
 
@@ -203,7 +203,7 @@ var _Mocha = require("../../../../../../main/common/test/Mocha");
     var _ref4 = new _ObservableObjectBuilder.ObservableObjectBuilder(),
         object = _ref4.object;
 
-    _Assert.assert.ok(object instanceof _ObservableObject.ObservableObject);
+    _Assert.assert.ok(object instanceof _ObservableClass.ObservableClass);
 
     var builder = new _ObservableObjectBuilder.ObservableObjectBuilder(object);
 
@@ -232,7 +232,7 @@ var _Mocha = require("../../../../../../main/common/test/Mocha");
     var _ref5 = new _ObservableObjectBuilder.ObservableObjectBuilder(),
         object = _ref5.object;
 
-    _Assert.assert.ok(object instanceof _ObservableObject.ObservableObject);
+    _Assert.assert.ok(object instanceof _ObservableClass.ObservableClass);
 
     var builder = new _ObservableObjectBuilder.ObservableObjectBuilder(object);
 

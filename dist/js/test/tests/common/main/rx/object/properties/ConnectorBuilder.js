@@ -12,7 +12,7 @@ var _getPrototypeOf3 = _interopRequireDefault(require("@babel/runtime-corejs3/he
 
 var _inherits2 = _interopRequireDefault(require("@babel/runtime-corejs3/helpers/inherits"));
 
-var _ObservableObject2 = require("../../../../../../../main/common/rx/object/ObservableObject");
+var _ObservableClass2 = require("../../../../../../../main/common/rx/object/ObservableClass");
 
 var _ObservableObjectBuilder = require("../../../../../../../main/common/rx/object/ObservableObjectBuilder");
 
@@ -34,8 +34,8 @@ var _TestDeepSubscribe = require("../../deep-subscribe/helpers/src/TestDeepSubsc
 
     var BaseClass1 =
     /*#__PURE__*/
-    function (_ObservableObject) {
-      (0, _inherits2.default)(BaseClass1, _ObservableObject);
+    function (_ObservableClass) {
+      (0, _inherits2.default)(BaseClass1, _ObservableClass);
 
       function BaseClass1() {
         var _getPrototypeOf2, _context;
@@ -54,7 +54,7 @@ var _TestDeepSubscribe = require("../../deep-subscribe/helpers/src/TestDeepSubsc
       }
 
       return BaseClass1;
-    }(_ObservableObject2.ObservableObject);
+    }(_ObservableClass2.ObservableClass);
 
     var BaseClass2 =
     /*#__PURE__*/

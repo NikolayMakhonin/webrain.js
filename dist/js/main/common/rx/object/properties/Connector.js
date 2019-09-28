@@ -13,14 +13,14 @@ var _getPrototypeOf2 = _interopRequireDefault(require("@babel/runtime-corejs3/he
 
 var _inherits2 = _interopRequireDefault(require("@babel/runtime-corejs3/helpers/inherits"));
 
-var _ObservableObject2 = require("../ObservableObject");
+var _ObservableClass2 = require("../ObservableClass");
 
 var _ObservableObjectBuilder = require("../ObservableObjectBuilder");
 
 var Connector =
 /*#__PURE__*/
-function (_ObservableObject) {
-  (0, _inherits2.default)(Connector, _ObservableObject);
+function (_ObservableClass) {
+  (0, _inherits2.default)(Connector, _ObservableClass);
 
   function Connector(connectorSource) {
     var _this;
@@ -32,7 +32,7 @@ function (_ObservableObject) {
   }
 
   return Connector;
-}(_ObservableObject2.ObservableObject);
+}(_ObservableClass2.ObservableClass);
 
 exports.Connector = Connector;
 new _ObservableObjectBuilder.ObservableObjectBuilder(Connector.prototype).writable('connectorSource', {

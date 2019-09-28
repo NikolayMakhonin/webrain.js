@@ -1,7 +1,7 @@
 import { ThenableOrIteratorOrValue, ThenableOrValue } from '../../../async/async';
 import { VALUE_PROPERTY_DEFAULT } from '../../../helpers/value-property';
 import { IDeferredCalcOptions } from '../../deferred-calc/DeferredCalc';
-import { ObservableObject } from '../ObservableObject';
+import { ObservableClass } from '../ObservableClass';
 import { ICalcProperty } from './contracts';
 import { IPropertyOptions, Property } from './Property';
 /** @return true: value changed; false: value not changed; null - auto */
@@ -10,7 +10,7 @@ export declare class CalcPropertyValue<TValue, TInput = any, TMergeSource = any>
     get: () => CalcProperty<TValue, TInput, TMergeSource>;
     constructor(property: CalcProperty<TValue, TInput, TMergeSource>);
 }
-export declare class CalcProperty<TValue, TInput = any, TMergeSource = any> extends ObservableObject implements ICalcProperty<TValue> {
+export declare class CalcProperty<TValue, TInput = any, TMergeSource = any> extends ObservableClass implements ICalcProperty<TValue> {
     private readonly _calcFunc;
     private readonly _valueProperty;
     private readonly _deferredCalc;

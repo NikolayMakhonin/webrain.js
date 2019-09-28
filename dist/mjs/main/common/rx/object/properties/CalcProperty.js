@@ -2,7 +2,7 @@ import { isAsync } from '../../../async/async';
 import { resolveAsyncFunc, ThenableSync } from '../../../async/ThenableSync';
 import { VALUE_PROPERTY_DEFAULT } from '../../../helpers/value-property';
 import { DeferredCalc } from '../../deferred-calc/DeferredCalc';
-import { ObservableObject } from '../ObservableObject';
+import { ObservableClass } from '../ObservableClass';
 import { ObservableObjectBuilder } from '../ObservableObjectBuilder';
 import { CalcObjectDebugger } from './CalcObjectDebugger';
 import { Property } from './Property';
@@ -14,7 +14,7 @@ export class CalcPropertyValue {
   }
 
 }
-export class CalcProperty extends ObservableObject {
+export class CalcProperty extends ObservableClass {
   constructor({
     calcFunc,
     name,

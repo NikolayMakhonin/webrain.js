@@ -16,7 +16,7 @@ var _rdtsc = require("rdtsc");
 
 var _deepSubscribe = require("../../../main/common/rx/deep-subscribe/deep-subscribe");
 
-var _ObservableObject2 = require("../../../main/common/rx/object/ObservableObject");
+var _ObservableClass2 = require("../../../main/common/rx/object/ObservableClass");
 
 var _ObservableObjectBuilder = require("../../../main/common/rx/object/ObservableObjectBuilder");
 
@@ -26,14 +26,14 @@ var _Mocha = require("../../../main/common/test/Mocha");
 
 /* tslint:disable:no-empty no-identical-functions */
 // @ts-ignore
-(0, _Mocha.describe)('ObservableObject', function () {
+(0, _Mocha.describe)('ObservableClass', function () {
   this.timeout(300000);
 
   function createObject(init) {
     var Class =
     /*#__PURE__*/
-    function (_ObservableObject) {
-      (0, _inherits2.default)(Class, _ObservableObject);
+    function (_ObservableClass) {
+      (0, _inherits2.default)(Class, _ObservableClass);
 
       function Class() {
         (0, _classCallCheck2.default)(this, Class);
@@ -41,9 +41,9 @@ var _Mocha = require("../../../main/common/test/Mocha");
       }
 
       return Class;
-    }(_ObservableObject2.ObservableObject);
+    }(_ObservableClass2.ObservableClass);
 
-    new _ObservableObjectBuilder.ObservableObjectBuilder(_ObservableObject2.ObservableObject.prototype).writable('prop') // , o => o.prop, (o, v) => o.prop = v)
+    new _ObservableObjectBuilder.ObservableObjectBuilder(_ObservableClass2.ObservableClass.prototype).writable('prop') // , o => o.prop, (o, v) => o.prop = v)
     .writable('prop2'); // , o => o.prop2, (o, v) => o.prop2 = v)
 
     var observableObject1 = new Class();

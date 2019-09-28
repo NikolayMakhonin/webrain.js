@@ -6,7 +6,7 @@ import { ObservableSet } from '../../../../../../../../main/common/lists/Observa
 import { SortedList } from '../../../../../../../../main/common/lists/SortedList';
 import { ValueChangeType } from '../../../../../../../../main/common/rx/deep-subscribe/contracts/common';
 import { deepSubscribe } from '../../../../../../../../main/common/rx/deep-subscribe/deep-subscribe';
-import { ObservableObject } from '../../../../../../../../main/common/rx/object/ObservableObject';
+import { ObservableClass } from '../../../../../../../../main/common/rx/object/ObservableClass';
 import { ObservableObjectBuilder } from '../../../../../../../../main/common/rx/object/ObservableObjectBuilder';
 import { Assert } from '../../../../../../../../main/common/test/Assert';
 import { DeepCloneEqual } from '../../../../../../../../main/common/test/DeepCloneEqual';
@@ -30,14 +30,14 @@ export function createObject() {
   const set = new Set();
   const map2 = new Map();
 
-  class ObservableClass extends ObservableObject {}
+  class ObservableClasss extends ObservableClass {}
 
-  const observableObjectPrototype = new ObservableClass();
-  const observableObject = new ObservableObject();
+  const observableObjectPrototype = new ObservableClasss();
+  const observableObject = new ObservableClass();
   const observableList = new SortedList();
   const observableSet = new ObservableSet();
   const observableMap = new ObservableMap();
-  const property = new ObservableObject();
+  const property = new ObservableClass();
   Object.assign(object, {
     [VALUE_PROPERTY_DEFAULT]: 'nothing',
     observableObjectPrototype,
@@ -61,7 +61,7 @@ export function createObject() {
       then: resolve => setTimeout(() => resolve(observableObject), 0)
     }
   });
-  const observableObjectBuilderPrototype = new ObservableObjectBuilder(ObservableClass.prototype);
+  const observableObjectBuilderPrototype = new ObservableObjectBuilder(ObservableClasss.prototype);
   const observableObjectBuilder = new ObservableObjectBuilder(observableObject);
   const propertyBuilder = new ObservableObjectBuilder(property);
   Object.keys(object).forEach(key => {

@@ -25,7 +25,7 @@ var _valueProperty = require("../../../helpers/value-property");
 
 var _DeferredCalc = require("../../deferred-calc/DeferredCalc");
 
-var _ObservableObject2 = require("../ObservableObject");
+var _ObservableClass2 = require("../ObservableClass");
 
 var _ObservableObjectBuilder = require("../ObservableObjectBuilder");
 
@@ -45,8 +45,8 @@ exports.CalcPropertyValue = CalcPropertyValue;
 
 var CalcProperty =
 /*#__PURE__*/
-function (_ObservableObject) {
-  (0, _inherits2.default)(CalcProperty, _ObservableObject);
+function (_ObservableClass) {
+  (0, _inherits2.default)(CalcProperty, _ObservableClass);
 
   function CalcProperty(_ref) {
     var _this;
@@ -209,7 +209,7 @@ function (_ObservableObject) {
     }
   }]);
   return CalcProperty;
-}(_ObservableObject2.ObservableObject);
+}(_ObservableClass2.ObservableClass);
 
 exports.CalcProperty = CalcProperty;
 new _ObservableObjectBuilder.ObservableObjectBuilder(CalcProperty.prototype).writable('input'); // Test:

@@ -41,10 +41,11 @@ function () {
 
   }, {
     key: "onConnectorChanged",
-    value: function onConnectorChanged(target, value, parent, key, keyType) {
+    value: function onConnectorChanged(target, targetKey, value, parent, key, keyType) {
       if (this._connectorSubject.hasSubscribers) {
         this._connectorSubject.emit({
           target: target,
+          targetKey: targetKey,
           value: value,
           parent: parent,
           key: key,

@@ -64,7 +64,7 @@ var _ObservableSet = require("../../../../../../main/common/lists/ObservableSet"
 
 var _SortedList = require("../../../../../../main/common/lists/SortedList");
 
-var _ObservableObject2 = require("../../../../../../main/common/rx/object/ObservableObject");
+var _ObservableClass2 = require("../../../../../../main/common/rx/object/ObservableClass");
 
 var _ObservableObjectBuilder = require("../../../../../../main/common/rx/object/ObservableObjectBuilder");
 
@@ -76,8 +76,8 @@ _regenerator.default.mark(createIterableIterator);
 
 var CircularClass =
 /*#__PURE__*/
-function (_ObservableObject) {
-  (0, _inherits2.default)(CircularClass, _ObservableObject);
+function (_ObservableClass) {
+  (0, _inherits2.default)(CircularClass, _ObservableClass);
 
   function CircularClass(array, value) {
     var _this;
@@ -149,7 +149,7 @@ function (_ObservableObject) {
 
   }]);
   return CircularClass;
-}(_ObservableObject2.ObservableObject);
+}(_ObservableClass2.ObservableClass);
 
 exports.CircularClass = CircularClass;
 CircularClass.uuid = 'e729e03fd0f449949f0f97da23c7bab8';

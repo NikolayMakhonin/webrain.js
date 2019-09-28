@@ -54,7 +54,7 @@ var _common = require("../../../../../../../../main/common/rx/deep-subscribe/con
 
 var _deepSubscribe = require("../../../../../../../../main/common/rx/deep-subscribe/deep-subscribe");
 
-var _ObservableObject2 = require("../../../../../../../../main/common/rx/object/ObservableObject");
+var _ObservableClass2 = require("../../../../../../../../main/common/rx/object/ObservableClass");
 
 var _ObservableObjectBuilder = require("../../../../../../../../main/common/rx/object/ObservableObjectBuilder");
 
@@ -87,25 +87,25 @@ function createObject() {
   var set = new _set.default();
   var map2 = new _map2.default();
 
-  var ObservableClass =
+  var ObservableClasss =
   /*#__PURE__*/
-  function (_ObservableObject) {
-    (0, _inherits2.default)(ObservableClass, _ObservableObject);
+  function (_ObservableClass) {
+    (0, _inherits2.default)(ObservableClasss, _ObservableClass);
 
-    function ObservableClass() {
-      (0, _classCallCheck2.default)(this, ObservableClass);
-      return (0, _possibleConstructorReturn2.default)(this, (0, _getPrototypeOf3.default)(ObservableClass).apply(this, arguments));
+    function ObservableClasss() {
+      (0, _classCallCheck2.default)(this, ObservableClasss);
+      return (0, _possibleConstructorReturn2.default)(this, (0, _getPrototypeOf3.default)(ObservableClasss).apply(this, arguments));
     }
 
-    return ObservableClass;
-  }(_ObservableObject2.ObservableObject);
+    return ObservableClasss;
+  }(_ObservableClass2.ObservableClass);
 
-  var observableObjectPrototype = new ObservableClass();
-  var observableObject = new _ObservableObject2.ObservableObject();
+  var observableObjectPrototype = new ObservableClasss();
+  var observableObject = new _ObservableClass2.ObservableClass();
   var observableList = new _SortedList.SortedList();
   var observableSet = new _ObservableSet.ObservableSet();
   var observableMap = new _ObservableMap.ObservableMap();
-  var property = new _ObservableObject2.ObservableObject();
+  var property = new _ObservableClass2.ObservableClass();
   (0, _assign.default)(object, (_Object$assign2 = {}, _Object$assign2[_valueProperty.VALUE_PROPERTY_DEFAULT] = 'nothing', _Object$assign2.observableObjectPrototype = observableObjectPrototype, _Object$assign2.observableObject = observableObject, _Object$assign2.observableList = observableList, _Object$assign2.observableSet = observableSet, _Object$assign2.observableMap = observableMap, _Object$assign2.object = object, _Object$assign2.property = property, _Object$assign2.list = list, _Object$assign2.set = set, _Object$assign2.map2 = map2, _Object$assign2.valueUndefined = void 0, _Object$assign2.value = 'value', _Object$assign2.valueArray = ['value1', 'value2'], _Object$assign2.valueObject = new String('value'), _Object$assign2.promiseSync = {
     then: function then(resolve) {
       return resolve(observableObject);
@@ -117,7 +117,7 @@ function createObject() {
       }, 0);
     }
   }, _Object$assign2));
-  var observableObjectBuilderPrototype = new _ObservableObjectBuilder.ObservableObjectBuilder(ObservableClass.prototype);
+  var observableObjectBuilderPrototype = new _ObservableObjectBuilder.ObservableObjectBuilder(ObservableClasss.prototype);
   var observableObjectBuilder = new _ObservableObjectBuilder.ObservableObjectBuilder(observableObject);
   var propertyBuilder = new _ObservableObjectBuilder.ObservableObjectBuilder(property);
   (0, _forEach.default)(_context = (0, _keys.default)(object)).call(_context, function (key) {
