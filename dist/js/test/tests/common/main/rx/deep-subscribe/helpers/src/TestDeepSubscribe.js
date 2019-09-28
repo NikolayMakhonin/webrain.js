@@ -50,6 +50,8 @@ var _ObservableSet = require("../../../../../../../../main/common/lists/Observab
 
 var _SortedList = require("../../../../../../../../main/common/lists/SortedList");
 
+var _common = require("../../../../../../../../main/common/rx/deep-subscribe/contracts/common");
+
 var _deepSubscribe = require("../../../../../../../../main/common/rx/deep-subscribe/deep-subscribe");
 
 var _ObservableObject2 = require("../../../../../../../../main/common/rx/object/ObservableObject");
@@ -284,65 +286,78 @@ function () {
     value: function subscribePrivate(ruleBuilder, i) {
       var _this = this;
 
-      this._unsubscribe[i] = (0, _deepSubscribe.deepSubscribe)({
-        object: this._object,
-        subscribeValue: function subscribeValue(value, parent, propertyName) {
-          if (_this._doNotSubscribeNonObjectValues && !(value instanceof Object)) {
-            if (typeof _this._expectedLastValue[i][_this._expectedLastValue[i].length - 1] === 'undefined' || _this._subscribersCount[i] === 0) {
-              _this._expectedLastValue[i].push(value);
-            }
-
-            _this._subscribersCount[i]++;
-
-            if (typeof value !== 'undefined') {
-              _this._subscribed[i].push(value);
-            }
-
-            return;
-          }
-
-          if (_this._performanceTest) {
-            return function () {};
-          }
-
+      var subscribeValue = function subscribeValue(newValue, parent, key) {
+        if (_this._doNotSubscribeNonObjectValues && !(newValue instanceof Object)) {
           if (typeof _this._expectedLastValue[i][_this._expectedLastValue[i].length - 1] === 'undefined' || _this._subscribersCount[i] === 0) {
-            _this._expectedLastValue[i].push(value);
+            _this._expectedLastValue[i].push(newValue);
           }
 
           _this._subscribersCount[i]++;
 
-          if (typeof value !== 'undefined') {
-            _this._subscribed[i].push(value);
+          if (typeof newValue !== 'undefined') {
+            _this._subscribed[i].push(newValue);
           }
 
-          if (_this._useIncorrectUnsubscribe) {
-            return 'Test Incorrect Unsubscribe';
+          return;
+        }
+
+        if (_this._performanceTest) {
+          return function () {};
+        }
+
+        if (typeof _this._expectedLastValue[i][_this._expectedLastValue[i].length - 1] === 'undefined' || _this._subscribersCount[i] === 0) {
+          _this._expectedLastValue[i].push(newValue);
+        }
+
+        _this._subscribersCount[i]++;
+
+        if (typeof newValue !== 'undefined') {
+          _this._subscribed[i].push(newValue);
+        }
+
+        if (_this._useIncorrectUnsubscribe) {
+          return 'Test Incorrect Unsubscribe';
+        }
+
+        return typeof newValue !== 'undefined' ? function () {
+          _this._unsubscribed[i].push(newValue);
+        } : null;
+      };
+
+      var unsubscribeValue = function unsubscribeValue(oldValue, parent, key, isUnsubscribed) {
+        if (_this._performanceTest) {
+          return;
+        }
+
+        _this._subscribersCount[i]--;
+
+        if (_this._subscribersCount[i] === 0) {
+          _this._expectedLastValue[i].push(void 0);
+        }
+
+        assert.ok(_this._subscribersCount[i] >= 0); // if (this._subscribersCount[i] < 0) {
+        // 	assert.strictEqual(typeof value, 'undefined')
+        // 	this._subscribersCount[i] = 0
+        // }
+
+        if (typeof oldValue !== 'undefined' && !isUnsubscribed) {
+          _this._unsubscribed[i].push(oldValue);
+        }
+      };
+
+      this._unsubscribe[i] = (0, _deepSubscribe.deepSubscribe)({
+        object: this._object,
+        changeValue: function changeValue(key, oldValue, newValue, parent, changeType, keyType, isUnsubscribed) {
+          if ((changeType & _common.ValueChangeType.Unsubscribe) !== 0) {
+            unsubscribeValue(oldValue, parent, key, isUnsubscribed);
           }
 
-          return typeof value !== 'undefined' ? function () {
-            _this._unsubscribed[i].push(value);
-          } : null;
+          if ((changeType & _common.ValueChangeType.Subscribe) !== 0) {
+            return subscribeValue(newValue, parent, key);
+          }
         },
-        unsubscribeValue: function unsubscribeValue(value, parent, propertyName, isUnsubscribed) {
-          if (_this._performanceTest) {
-            return;
-          }
-
-          _this._subscribersCount[i]--;
-
-          if (_this._subscribersCount[i] === 0) {
-            _this._expectedLastValue[i].push(void 0);
-          }
-
-          assert.ok(_this._subscribersCount[i] >= 0); // if (this._subscribersCount[i] < 0) {
-          // 	assert.strictEqual(typeof value, 'undefined')
-          // 	this._subscribersCount[i] = 0
-          // }
-
-          if (typeof value !== 'undefined' && !isUnsubscribed) {
-            _this._unsubscribed[i].push(value);
-          }
-        },
+        subscribeValue: subscribeValue,
+        unsubscribeValue: unsubscribeValue,
         lastValue: function lastValue(value, parent, propertyName) {
           if (_this._performanceTest) {
             return function () {};

@@ -40,14 +40,14 @@ function () {
         throw new Error('buildRule() return null or not initialized RuleBuilder');
       }
 
-      this.dependencies.push([ruleBase, predicate ? function (target, value, parent, propertyName) {
+      this.dependencies.push([ruleBase, predicate ? function (target, value, parent, key, keyType) {
         // prevent circular self dependency
         if (target === parent) {
           return;
         }
 
-        if (predicate(value, parent)) {
-          action(target, value, parent, propertyName);
+        if (predicate(value, parent, key, keyType)) {
+          action(target, value, parent, key, keyType);
         }
       } : action]);
       return this;
@@ -67,11 +67,8 @@ function subscribeDependencies(subscribeObject, actionTarget, dependencies) {
         action = _dependencies$i[1];
     unsubscribers.push((0, _deepSubscribe.deepSubscribeRule)({
       object: subscribeObject,
-      subscribeValue: function subscribeValue(value, parent, propertyName) {
-        action(actionTarget, value, parent, propertyName);
-      },
-      unsubscribeValue: function unsubscribeValue(value, parent, propertyName) {
-        action(actionTarget, void 0, parent, propertyName);
+      changeValue: function changeValue(key, oldValue, newValue, parent, changeType, keyType) {
+        action(actionTarget, newValue, parent, key, keyType);
       },
       rule: rule
     }));

@@ -23,14 +23,14 @@ export class DependenciesBuilder {
       throw new Error('buildRule() return null or not initialized RuleBuilder');
     }
 
-    this.dependencies.push([ruleBase, predicate ? (target, value, parent, propertyName) => {
+    this.dependencies.push([ruleBase, predicate ? (target, value, parent, key, keyType) => {
       // prevent circular self dependency
       if (target === parent) {
         return;
       }
 
-      if (predicate(value, parent)) {
-        action(target, value, parent, propertyName);
+      if (predicate(value, parent, key, keyType)) {
+        action(target, value, parent, key, keyType);
       }
     } : action]);
     return this;
@@ -45,12 +45,8 @@ export function subscribeDependencies(subscribeObject, actionTarget, dependencie
     unsubscribers.push(deepSubscribeRule({
       object: subscribeObject,
 
-      subscribeValue(value, parent, propertyName) {
-        action(actionTarget, value, parent, propertyName);
-      },
-
-      unsubscribeValue(value, parent, propertyName) {
-        action(actionTarget, void 0, parent, propertyName);
+      changeValue(key, oldValue, newValue, parent, changeType, keyType) {
+        action(actionTarget, newValue, parent, key, keyType);
       },
 
       rule

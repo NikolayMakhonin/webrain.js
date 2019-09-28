@@ -14,7 +14,7 @@ export declare enum ValueKeyType {
     MapKey = 2,
     CollectionAny = 3
 }
-export declare type ChangeValue<TValue> = (key: any, oldItem: TValue, newItem: TValue, changeType: ValueChangeType, keyType: ValueKeyType) => IUnsubscribeOrVoid;
+export declare type IChangeValue<TValue> = (key: any, oldValue: TValue, newValue: TValue, parent: any, changeType: ValueChangeType, keyType: ValueKeyType, isUnsubscribed?: boolean) => IUnsubscribeOrVoid;
 export interface IValueSubscriber<TValue> {
     change(key: any, oldValue: TValue, newValue: TValue, parent: any, changeType: ValueChangeType, keyType: ValueKeyType, propertiesPath: () => string, ruleDescription: string): IUnsubscribeOrVoid;
 }

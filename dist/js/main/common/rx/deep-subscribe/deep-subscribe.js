@@ -257,27 +257,24 @@ function deepSubscribeRuleIterator(object, valueSubscriber, immediate, ruleItera
 
 function deepSubscribeRule(_ref) {
   var object = _ref.object,
-      subscribeValue = _ref.subscribeValue,
-      unsubscribeValue = _ref.unsubscribeValue,
+      changeValue = _ref.changeValue,
       lastValue = _ref.lastValue,
       _ref$immediate = _ref.immediate,
       immediate = _ref$immediate === void 0 ? true : _ref$immediate,
       rule = _ref.rule;
-  return (0, _helpers.toSingleCall)(deepSubscribeRuleIterator(object, new _ObjectSubscriber.ObjectSubscriber(subscribeValue, unsubscribeValue, lastValue), immediate, (0, _getIterator2.default)((0, _iterateRule.iterateRule)(object, rule))));
+  return (0, _helpers.toSingleCall)(deepSubscribeRuleIterator(object, new _ObjectSubscriber.ObjectSubscriber(changeValue, lastValue), immediate, (0, _getIterator2.default)((0, _iterateRule.iterateRule)(object, rule))));
 }
 
 function deepSubscribe(_ref2) {
   var object = _ref2.object,
-      subscribeValue = _ref2.subscribeValue,
-      unsubscribeValue = _ref2.unsubscribeValue,
+      changeValue = _ref2.changeValue,
       lastValue = _ref2.lastValue,
       _ref2$immediate = _ref2.immediate,
       immediate = _ref2$immediate === void 0 ? true : _ref2$immediate,
       ruleBuilder = _ref2.ruleBuilder;
   return (0, _helpers.toSingleCall)(deepSubscribeRule({
     object: object,
-    subscribeValue: subscribeValue,
-    unsubscribeValue: unsubscribeValue,
+    changeValue: changeValue,
     lastValue: lastValue,
     immediate: immediate,
     rule: ruleBuilder(new _RuleBuilder.RuleBuilder()).result()

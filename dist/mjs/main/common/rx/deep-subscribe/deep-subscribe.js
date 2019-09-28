@@ -228,26 +228,23 @@ function deepSubscribeRuleIterator(object, valueSubscriber, immediate, ruleItera
 
 export function deepSubscribeRule({
   object,
-  subscribeValue,
-  unsubscribeValue,
+  changeValue,
   lastValue,
   immediate = true,
   rule
 }) {
-  return toSingleCall(deepSubscribeRuleIterator(object, new ObjectSubscriber(subscribeValue, unsubscribeValue, lastValue), immediate, iterateRule(object, rule)[Symbol.iterator]()));
+  return toSingleCall(deepSubscribeRuleIterator(object, new ObjectSubscriber(changeValue, lastValue), immediate, iterateRule(object, rule)[Symbol.iterator]()));
 }
 export function deepSubscribe({
   object,
-  subscribeValue,
-  unsubscribeValue,
+  changeValue,
   lastValue,
   immediate = true,
   ruleBuilder
 }) {
   return toSingleCall(deepSubscribeRule({
     object,
-    subscribeValue,
-    unsubscribeValue,
+    changeValue,
     lastValue,
     immediate,
     rule: ruleBuilder(new RuleBuilder()).result()
