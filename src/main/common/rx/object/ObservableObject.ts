@@ -1,5 +1,5 @@
 import {IMergeOptions, IMergeValue} from '../../extensions/merge/contracts'
-import {createMergeMapWrapper, mergeMaps} from '../../extensions/merge/merge-maps'
+import {mergeMaps, MergeObjectWrapper} from '../../extensions/merge/merge-maps'
 import {registerMerger} from '../../extensions/merge/mergers'
 import {
 	IDeSerializeValue,
@@ -32,7 +32,7 @@ registerMerger<ObservableObject, object>(ObservableObject, {
 			options?: IMergeOptions,
 		): boolean {
 			return mergeMaps(
-				createMergeMapWrapper,
+				(target, source) => new MergeObjectWrapper(source),
 				merge,
 				base,
 				older,
