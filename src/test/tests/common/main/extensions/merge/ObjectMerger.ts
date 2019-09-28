@@ -19,7 +19,7 @@ import {ObservableSet} from '../../../../../../main/common/lists/ObservableSet'
 import {SortedList} from '../../../../../../main/common/lists/SortedList'
 import {Property} from '../../../../../../main/common/rx/object/properties/Property'
 import {Assert} from '../../../../../../main/common/test/Assert'
-import {describe, it} from '../../../../../../main/common/test/Mocha'
+import {describe, it, xit} from '../../../../../../main/common/test/Mocha'
 import {createComplexObject, createIterable, IComplexObjectOptions} from '../../src/helpers/helpers'
 import {
 	BASE,

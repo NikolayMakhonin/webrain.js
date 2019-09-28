@@ -2,8 +2,15 @@
 import {checkIsFuncOrNull} from '../../helpers/helpers'
 import {getObjectUniqueId} from '../../helpers/object-unique-id'
 import {binarySearch} from '../../lists/helpers/array'
-import {IUnsubscribe} from '../subjects/observable'
-import {ILastValue, ISubscribeValue, IUnsubscribeValue, IValueSubscriber} from './contracts/common'
+import {IUnsubscribe, IUnsubscribeOrVoid} from '../subjects/observable'
+import {
+	ChangeValue,
+	ILastValue,
+	ISubscribeValue,
+	IUnsubscribeValue,
+	IValueSubscriber,
+	ValueChangeType, ValueKeyType,
+} from './contracts/common'
 
 interface ISubscribedValue {
 	value: any
@@ -43,6 +50,7 @@ function valuesEqual(v1, v2) {
 }
 
 export class ObjectSubscriber<TObject> implements IValueSubscriber<TObject> {
+	private readonly _change: ChangeValue<TObject>
 	private readonly _subscribe: ISubscribeValue<TObject>
 	private readonly _unsubscribe: IUnsubscribeValue<TObject>
 	private readonly _lastValue: ILastValue<TObject>
@@ -53,7 +61,9 @@ export class ObjectSubscriber<TObject> implements IValueSubscriber<TObject> {
 		subscribe?: ISubscribeValue<TObject>,
 		unsubscribe?: IUnsubscribeValue<TObject>,
 		lastValue?: ILastValue<TObject>,
+		change?: ChangeValue<TObject>,
 	) {
+		this._change = change
 		this._subscribe = subscribe
 		this._unsubscribe = unsubscribe
 		this._lastValue = lastValue
@@ -118,7 +128,26 @@ export class ObjectSubscriber<TObject> implements IValueSubscriber<TObject> {
 		}
 	}
 
-	public subscribe(
+	public change(
+		key: any,
+		oldItem: TObject,
+		newItem: TObject,
+		parent: any,
+		changeType: ValueChangeType,
+		keyType: ValueKeyType,
+		propertiesPath: () => string,
+		ruleDescription: string,
+	): IUnsubscribeOrVoid {
+		if ((changeType & ValueChangeType.Unsubscribe) !== 0) {
+			this.unsubscribe(oldItem, parent, key)
+		}
+
+		if ((changeType & ValueChangeType.Subscribe) !== 0) {
+			return this.subscribe(newItem, parent, key, propertiesPath, ruleDescription)
+		}
+	}
+
+	private subscribe(
 		value: TObject,
 		parent: any,
 		propertyName: string,
@@ -220,7 +249,7 @@ export class ObjectSubscriber<TObject> implements IValueSubscriber<TObject> {
 		return () => { this.unsubscribe(value, parent, propertyName) }
 	}
 
-	public unsubscribe(value: TObject, parent: any, propertyName: string) {
+	private unsubscribe(value: TObject, parent: any, propertyName: string) {
 		if (this._subscribe) { //  && typeof value !== 'undefined') {
 			let unsubscribed
 			let unsubscribedLast

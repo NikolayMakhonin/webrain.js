@@ -1,6 +1,7 @@
-/// <reference types="./Mocha" />
 import {assert} from './Assert'
 import {globalScope} from './helpers'
+
+export const { xit, xdescribe } = globalScope
 
 export function describe(name, func) {
 	return globalScope.describe.call(this, name, function() {

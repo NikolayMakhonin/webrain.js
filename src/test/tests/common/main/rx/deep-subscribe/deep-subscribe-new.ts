@@ -2,7 +2,7 @@
 import {ListChangedType} from '../../../../../../main/common/lists/contracts/IListChanged'
 import {MapChangedType} from '../../../../../../main/common/lists/contracts/IMapChanged'
 import {assert} from '../../../../../../main/common/test/Assert'
-import {describe, it} from '../../../../../../main/common/test/Mocha'
+import {describe, it, xit} from '../../../../../../main/common/test/Mocha'
 import {createObject, TestDeepSubscribe, TestDeepSubscribeVariants} from './helpers/src/TestDeepSubscribe'
 
 describe('common > main > rx > deep-subscribe > deep-subscribe new', function() {
@@ -156,7 +156,7 @@ describe('common > main > rx > deep-subscribe > deep-subscribe new', function() 
 			b => b
 				.v('notExistProperty')
 				.p('property')
-				.v('value_value')
+				.v<string>('value_value')
 				// .any(b => b.nothing())
 				// .repeat(0, 1, null, b => b.nothing())
 				// .repeat(0, 3, (o, i) => i === 3 ? RuleRepeatAction.Fork : RuleRepeatAction.Next, b => b.nothing())

@@ -5,7 +5,7 @@ import {RuleRepeatAction} from '../../../../../../main/common/rx/deep-subscribe/
 import {ObservableObject} from '../../../../../../main/common/rx/object/ObservableObject'
 import {ObservableObjectBuilder} from '../../../../../../main/common/rx/object/ObservableObjectBuilder'
 import {assert} from '../../../../../../main/common/test/Assert'
-import {describe, it} from '../../../../../../main/common/test/Mocha'
+import {describe, it, xit} from '../../../../../../main/common/test/Mocha'
 import {createObject, IObject, TestDeepSubscribe} from './helpers/src/TestDeepSubscribe'
 
 describe('common > main > rx > deep-subscribe > deep-subscribe', function() {
@@ -773,7 +773,7 @@ describe('common > main > rx > deep-subscribe > deep-subscribe', function() {
 				.path((o: any) => o.promiseAsync.value),
 		)
 
-		await tester.subscribeAsync([new Number(1)])
+		await tester.subscribeAsync([new Number(1)], [], [])
 
 		await delay(20)
 

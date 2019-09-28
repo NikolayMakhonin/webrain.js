@@ -5,10 +5,11 @@ import {ObjectSet} from '../../../../../../main/common/lists/ObjectSet'
 import {ObservableMap} from '../../../../../../main/common/lists/ObservableMap'
 import {ObservableSet} from '../../../../../../main/common/lists/ObservableSet'
 import {SortedList} from '../../../../../../main/common/lists/SortedList'
+import {ValueChangeType, ValueKeyType} from '../../../../../../main/common/rx/deep-subscribe/contracts/common'
 import {ANY, ANY_DISPLAY, COLLECTION_PREFIX} from '../../../../../../main/common/rx/deep-subscribe/contracts/constants'
 import {
 	IRuleSubscribe,
-	ISubscribeObject, ItemChangeType, ItemKeyType,
+	ISubscribeObject,
 } from '../../../../../../main/common/rx/deep-subscribe/contracts/rule-subscribe'
 import {IRule, RuleType} from '../../../../../../main/common/rx/deep-subscribe/contracts/rules'
 import {RuleBuilder} from '../../../../../../main/common/rx/deep-subscribe/RuleBuilder'
@@ -71,26 +72,26 @@ describe('common > main > rx > deep-subscribe > RuleBuilder', function() {
 			}
 		}
 
-		function checkDebugPropertyName(value: string, key: string, keyType: ItemKeyType) {
+		function checkDebugPropertyName(value: string, key: string, keyType: ValueKeyType) {
 			if (isMap) {
 				assert.ok(typeof key, 'string')
 				assert.strictEqual('value_' + key, value)
-				assert.strictEqual(keyType, ItemKeyType.MapKey)
+				assert.strictEqual(keyType, ValueKeyType.MapKey)
 			} else if (isCollection) {
 				assert.strictEqual(key, null)
-				assert.strictEqual(keyType, ItemKeyType.CollectionAny)
+				assert.strictEqual(keyType, ValueKeyType.CollectionAny)
 			} else {
 				assert.ok(typeof key, 'string')
 				assert.ok(key)
 				assert.ok(key.length)
-				assert.strictEqual(keyType, ItemKeyType.Property)
+				assert.strictEqual(keyType, ValueKeyType.Property)
 			}
 		}
 
 		let subscribedItems = []
 
-		function changeItem(key: any, oldValue: string, newValue: string, changeType: ItemChangeType, keyType: ItemKeyType) {
-			if ((changeType & ItemChangeType.Unsubscribe) !== 0) {
+		function changeItem(key: any, oldValue: string, newValue: string, changeType: ValueChangeType, keyType: ValueKeyType) {
+			if ((changeType & ValueChangeType.Unsubscribe) !== 0) {
 				if (typeof oldValue === 'undefined') {
 					return
 				}
@@ -101,7 +102,7 @@ describe('common > main > rx > deep-subscribe > RuleBuilder', function() {
 				subscribedItems.push('-' + oldValue)
 			}
 
-			if ((changeType & ItemChangeType.Subscribe) !== 0) {
+			if ((changeType & ValueChangeType.Subscribe) !== 0) {
 				if (typeof newValue === 'undefined') {
 					return
 				}

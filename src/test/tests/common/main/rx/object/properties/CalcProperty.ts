@@ -4,7 +4,7 @@ import {ObservableObject} from '../../../../../../../main/common/rx/object/Obser
 import {ObservableObjectBuilder} from '../../../../../../../main/common/rx/object/ObservableObjectBuilder'
 import {ConnectorBuilder} from '../../../../../../../main/common/rx/object/properties/ConnectorBuilder'
 import {assert} from '../../../../../../../main/common/test/Assert'
-import {describe, it} from '../../../../../../../main/common/test/Mocha'
+import {describe, it, xdescribe} from '../../../../../../../main/common/test/Mocha'
 import {createObject} from '../../deep-subscribe/helpers/src/TestDeepSubscribe'
 
 xdescribe('common > main > rx > properties > CalcProperty', function() {

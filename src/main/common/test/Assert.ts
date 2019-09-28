@@ -78,14 +78,7 @@ export class Assert {
 		}
 	}
 
-	public throws(fn: () => void, errType?: TClass<any>|Array<TClass<any>>, regExp?: RegExp, message?: string): void {
-		let err
-		try {
-			fn()
-		} catch (ex) {
-			err = ex
-		}
-
+	private assertError(err: Error, errType?: TClass<any>|Array<TClass<any>>, regExp?: RegExp, message?: string) {
 		this.ok(err)
 
 		if (err instanceof AssertionError) {
@@ -117,6 +110,36 @@ export class Assert {
 		}
 	}
 
+	public async throwsAsync(
+		fn: () => Promise<void>,
+		errType?: TClass<any>|Array<TClass<any>>,
+		regExp?: RegExp, message?: string,
+	): Promise<void> {
+		let err
+		try {
+			await fn()
+		} catch (ex) {
+			err = ex
+		}
+
+		this.assertError(err)
+	}
+
+	public throws(
+		fn: () => void,
+		errType?: TClass<any>|Array<TClass<any>>,
+		regExp?: RegExp, message?: string,
+	): void {
+		let err
+		try {
+			fn()
+		} catch (ex) {
+			err = ex
+		}
+
+		this.assertError(err)
+	}
+
 	public assertNotHandledErrors() {
 		if (Assert.errors.length) {
 			throw Assert.errors[0]
@@ -127,8 +150,8 @@ export class Assert {
 
 	// noinspection JSMethodCanBeStatic
 	public throwAssertionError(actual, expected, message?: string) {
-		console.error('actual: ', actual)
-		console.error('expected: ', expected)
+		console.debug('actual: ', actual)
+		console.debug('expected: ', expected)
 		const error = new AssertionError(message, {
 			actual,
 			expected,

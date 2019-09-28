@@ -4,8 +4,15 @@ import {resolveAsync} from '../../async/ThenableSync'
 import {checkIsFuncOrNull, toSingleCall} from '../../helpers/helpers'
 import {getObjectUniqueId} from '../../helpers/object-unique-id'
 import {IUnsubscribe, IUnsubscribeOrVoid} from '../subjects/observable'
-import {ILastValue, ISubscribeValue, IUnsubscribeValue, IValueSubscriber} from './contracts/common'
-import {IRuleSubscribe, ItemChangeType, ItemKeyType} from './contracts/rule-subscribe'
+import {
+	ILastValue,
+	ISubscribeValue,
+	IUnsubscribeValue,
+	IValueSubscriber,
+	ValueChangeType,
+	ValueKeyType,
+} from './contracts/common'
+import {IRuleSubscribe} from './contracts/rule-subscribe'
 import {IRule, RuleType} from './contracts/rules'
 import {INextRuleIterable, IRuleIterator, IRuleOrIterable, iterateRule, subscribeNextRule} from './iterate-rule'
 import {ObjectSubscriber} from './ObjectSubscriber'
@@ -82,79 +89,19 @@ function subscribeNext<TValue>(
 
 	// endregion
 
-	function subscribeLeaf(
-		value: TValue,
-		propertyName: string,
-		parent: any,
-		ruleDescription: string,
-		catchHandlerLeaf: (err: Error, propertyName: string) => void,
-	): IUnsubscribeOrVoid {
-		// @ts-ignore
-		value = resolveAsync(value)
-		if (isThenable(value)) {
-			let unsubscribe
-			resolveAsync(value, o => {
-				if (!unsubscribe) {
-					unsubscribe = subscribeLeaf(
-						o,
-						propertyName,
-						parent,
-						ruleDescription,
-						catchHandlerLeaf,
-					)
-					// if (typeof unsubscribe !== 'function') {
-					// 	throw new Error(`unsubscribe is not a function: ${unsubscribe}`)
-					// }
-				}
-				return o
-			}, err => { catchHandlerLeaf(err, propertyName) })
-
-			// tslint:disable-next-line:no-identical-functions
-			return () => {
-				if (typeof unsubscribe === 'function') {
-					unsubscribe()
-				}
-				unsubscribe = true
-			}
-		}
-
-		// if (hasDefaultProperty(value as any)) {
-		// 	const result = subscribeDefaultProperty<TValue>(
-		// 		value as any,
-		// 		true,
-		// 		(item: TValue, nextPropertyName) =>
-		// 			subscribeLeaf(
-		// 				item,
-		// 				nextPropertyName != null ? nextPropertyName : propertyName,
-		// 				nextPropertyName != null ? value : parent,
-		// 				null,
-		// 				catchHandlerLeaf,
-		// 			),
-		// 	)
-		// 	if (result) {
-		// 		return result
-		// 	}
-		// }
-
-		return valueSubscriber.subscribe(
-			value,
-			parent,
-			propertyName,
-			propertiesPath,
-			ruleDescription,
-		)
-	}
-
 	let unsubscribers: Array<IUnsubscribe|IUnsubscribe[]>
 	let unsubscribersCount: number[]
 
 	if (isLeaf) {
-		return subscribeLeaf(
-			object,
+		return valueSubscriber.change(
 			propertyName,
+			void 0,
+			object,
 			parent,
+			ValueChangeType.Subscribe,
+			null,
+			propertiesPath,
 			ruleDescription,
-			err => { catchHandler(err, propertiesPath) },
 		)
 	}
 
@@ -168,13 +115,13 @@ function subscribeNext<TValue>(
 			key: any,
 			oldItem: any,
 			newItem: any,
-			changeType: ItemChangeType,
-			keyType: ItemKeyType,
+			changeType: ValueChangeType,
+			keyType: ValueKeyType,
 			parent: any,
 			iterator?: IRuleIterator,
 			iteration?: IteratorResult<IRuleOrIterable>,
 		): void => {
-			if ((changeType & ItemChangeType.Unsubscribe) !== 0) {
+			if ((changeType & ValueChangeType.Unsubscribe) !== 0) {
 				if (!(oldItem instanceof Object)) {
 					return
 				}
@@ -208,7 +155,7 @@ function subscribeNext<TValue>(
 				}
 			}
 
-			if ((changeType & ItemChangeType.Subscribe) !== 0) {
+			if ((changeType & ValueChangeType.Subscribe) !== 0) {
 				let unsubscribe: IUnsubscribeOrVoid | IUnsubscribe[]
 				let itemUniqueId: number
 
@@ -225,23 +172,18 @@ function subscribeNext<TValue>(
 					}
 				}
 
-				try {
-					unsubscribe = checkIsFuncOrNull(subscribeNext(
-						newItem,
-						valueSubscriber,
-						immediate,
-						iterator,
-						() => (propertiesPath ? propertiesPath() + '.' : '')
-							+ (key + '(' + rule.description + ')'),
-						key,
-						parent,
-						rule.description,
-						iteration,
-					))
-				} catch (err) {
-					catchHandlerItem(err, key)
-					return
-				}
+				unsubscribe = checkIsFuncOrNull(subscribeNext(
+					newItem,
+					valueSubscriber,
+					immediate,
+					iterator,
+					() => (propertiesPath ? propertiesPath() + '.' : '')
+						+ (key + '(' + rule.description + ')'),
+					key,
+					parent,
+					rule.description,
+					iteration,
+				))
 
 				if (unsubscribe) {
 					if (newItem instanceof Object) {
@@ -273,37 +215,31 @@ function subscribeNext<TValue>(
 			key: any,
 			oldItem: any,
 			newItem: any,
-			changeType: ItemChangeType,
-			keyType: ItemKeyType,
+			changeType: ValueChangeType,
+			keyType: ValueKeyType,
 			parent: any,
 		): void => {
-			if ((changeType & ItemChangeType.Unsubscribe) !== 0) {
-				valueSubscriber.unsubscribe(oldItem, parent, key)
-			}
-
-			if ((changeType & ItemChangeType.Subscribe) !== 0) {
-				try {
-					checkIsFuncOrNull(subscribeLeaf(
-						newItem,
-						key,
-						parent,
-						rule.description,
-						catchHandlerItem,
-					))
-				} catch (err) {
-					catchHandlerItem(err, key)
-				}
-			}
+			checkIsFuncOrNull(valueSubscriber.change(
+				key,
+				oldItem,
+				newItem,
+				parent,
+				changeType,
+				keyType,
+				() => (propertiesPath ? propertiesPath() + '.' : '')
+					+ (propertyName == null ? '' : propertyName + '(' + rule.description + ')'),
+				rule.description,
+			))
 		}
 
 		const changeItem = (
 			key: any,
 			oldItem: any,
 			newItem: any,
-			changeType: ItemChangeType,
-			keyType: ItemKeyType,
+			changeType: ValueChangeType,
+			keyType: ValueKeyType,
 		): void => {
-			const item = changeType & ItemChangeType.Subscribe ? newItem : oldItem
+			const item = changeType & ValueChangeType.Subscribe ? newItem : oldItem
 			const itemIterator = getNextRuleIterable && getNextRuleIterable(item)[Symbol.iterator]()
 			const itemIteration = itemIterator && itemIterator.next()
 			const isLeaf = !itemIteration || itemIteration.done
@@ -335,7 +271,11 @@ function subscribeNext<TValue>(
 				oldItem = resolveAsync(oldItem)
 				newItem = resolveAsync(newItem)
 				if (!isThenable(oldItem) && !isThenable(newItem)) {
-					changeItem(key, oldItem, newItem, changeType, keyType)
+					try {
+						changeItem(key, oldItem, newItem, changeType, keyType)
+					} catch (err) {
+						catchHandlerItem(err, key)
+					}
 					return
 				}
 
