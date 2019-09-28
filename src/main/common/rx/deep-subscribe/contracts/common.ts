@@ -21,12 +21,14 @@ export enum ValueKeyType {
 	CollectionAny,
 }
 
-export type ChangeValue<TValue> = (
+export type IChangeValue<TValue> = (
 	key: any,
-	oldItem: TValue,
-	newItem: TValue,
+	oldValue: TValue,
+	newValue: TValue,
+	parent: any,
 	changeType: ValueChangeType,
 	keyType: ValueKeyType,
+	isUnsubscribed?: boolean,
 ) => IUnsubscribeOrVoid
 
 export interface IValueSubscriber<TValue> {

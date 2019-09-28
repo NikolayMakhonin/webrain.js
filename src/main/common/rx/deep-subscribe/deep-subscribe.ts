@@ -5,6 +5,7 @@ import {checkIsFuncOrNull, toSingleCall} from '../../helpers/helpers'
 import {getObjectUniqueId} from '../../helpers/object-unique-id'
 import {IUnsubscribe, IUnsubscribeOrVoid} from '../subjects/observable'
 import {
+	IChangeValue,
 	ILastValue,
 	ISubscribeValue,
 	IUnsubscribeValue,
@@ -340,15 +341,13 @@ function deepSubscribeRuleIterator<TValue>(
 
 export function deepSubscribeRule<TValue>({
 	object,
-	subscribeValue,
-	unsubscribeValue,
+	changeValue,
 	lastValue,
 	immediate = true,
 	rule,
 }: {
 	object: any,
-	subscribeValue?: ISubscribeValue<TValue>,
-	unsubscribeValue?: IUnsubscribeValue<TValue>,
+	changeValue?: IChangeValue<TValue>,
 	lastValue?: ILastValue<TValue>,
 	/** @deprecated Not implemented - always true */
 	immediate?: boolean,
@@ -356,7 +355,7 @@ export function deepSubscribeRule<TValue>({
 }): IUnsubscribeOrVoid {
 	return toSingleCall(deepSubscribeRuleIterator<TValue>(
 		object,
-		new ObjectSubscriber(subscribeValue, unsubscribeValue, lastValue),
+		new ObjectSubscriber(changeValue, lastValue),
 		immediate,
 		iterateRule(object, rule)[Symbol.iterator](),
 	))
@@ -364,15 +363,13 @@ export function deepSubscribeRule<TValue>({
 
 export function deepSubscribe<TObject, TValue, TValueKeys extends string | number = never>({
 	object,
-	subscribeValue,
-	unsubscribeValue,
+	changeValue,
 	lastValue,
 	immediate = true,
 	ruleBuilder,
 }: {
 	object: TObject,
-	subscribeValue?: ISubscribeValue<TValue>,
-	unsubscribeValue?: IUnsubscribeValue<TValue>,
+	changeValue?: IChangeValue<TValue>,
 	lastValue?: ILastValue<TValue>,
 	/** @deprecated Not implemented - always true */
 	immediate?: boolean,
@@ -380,8 +377,7 @@ export function deepSubscribe<TObject, TValue, TValueKeys extends string | numbe
 }): IUnsubscribeOrVoid {
 	return toSingleCall(deepSubscribeRule({
 		object,
-		subscribeValue,
-		unsubscribeValue,
+		changeValue,
 		lastValue,
 		immediate,
 		rule: ruleBuilder(new RuleBuilder<TObject, TValueKeys>()).result(),

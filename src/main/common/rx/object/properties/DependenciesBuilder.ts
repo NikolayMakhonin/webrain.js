@@ -1,3 +1,4 @@
+import {ValueChangeType, ValueKeyType} from '../../deep-subscribe/contracts/common'
 import {IRule} from '../../deep-subscribe/contracts/rules'
 import {deepSubscribeRule} from '../../deep-subscribe/deep-subscribe'
 import {RuleBuilder} from '../../deep-subscribe/RuleBuilder'
@@ -5,7 +6,10 @@ import {IUnsubscribeOrVoid} from '../../subjects/observable'
 import {ValueKeys} from './contracts'
 
 export type IDependencyAction<TTarget, TValue = any>
-	= (target: TTarget, value: TValue, parent: any, propertyName: string) => void
+	= (target: TTarget, value: TValue, parent: any, key: any, keyType: ValueKeyType) => void
+
+export type IDependencyPredicate<TValue = any>
+	= (value: TValue, parent: any, key: any, keyType: ValueKeyType) => boolean
 
 export type IDependency<TTarget, TValue = any> = [IRule, IDependencyAction<TTarget, TValue>]
 
@@ -25,7 +29,7 @@ export class DependenciesBuilder<TTarget, TSource, TValueKeys extends string | n
 	public actionOn<TValue>(
 		buildRule: (inputRuleBuilder: RuleBuilder<TSource, TValueKeys>) => RuleBuilder<TValue, TValueKeys>,
 		action: IDependencyAction<TTarget, TValue>,
-		predicate?: (value, parent) => boolean,
+		predicate?: IDependencyPredicate<TValue>,
 	): this {
 		const {buildSourceRule} = this
 
@@ -43,13 +47,13 @@ export class DependenciesBuilder<TTarget, TSource, TValueKeys extends string | n
 		this.dependencies.push([
 			ruleBase,
 			predicate
-				? (target, value, parent, propertyName) => {
+				? (target, value, parent, key, keyType) => {
 					// prevent circular self dependency
 					if (target === parent) {
 						return
 					}
-					if (predicate(value, parent)) {
-						action(target, value, parent, propertyName)
+					if (predicate(value, parent, key, keyType)) {
+						action(target, value, parent, key, keyType)
 					}
 				}
 				: action,
@@ -69,11 +73,8 @@ export function subscribeDependencies<TSubscribeObject, TActionTarget>(
 		const [rule, action] = dependencies[i]
 		unsubscribers.push(deepSubscribeRule({
 			object: subscribeObject,
-			subscribeValue(value, parent, propertyName) {
-				action(actionTarget, value, parent, propertyName)
-			},
-			unsubscribeValue(value, parent, propertyName) {
-				action(actionTarget, void 0, parent, propertyName)
+			changeValue(key, oldValue, newValue, parent, changeType, keyType) {
+				action(actionTarget, newValue, parent, key, keyType)
 			},
 			rule,
 		}))
