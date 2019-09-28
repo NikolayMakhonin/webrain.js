@@ -6,16 +6,16 @@ export class CalcPropertyDependenciesBuilder extends DependenciesBuilder {
   }
 
   invalidateOn(buildRule, predicate) {
-    this.actionOn(buildRule, (target, value, parent, propertyName) => {
-      CalcObjectDebugger.Instance.onDependencyChanged(target, value, parent, propertyName);
+    this.actionOn(buildRule, (target, value, parent, key, keyType) => {
+      CalcObjectDebugger.Instance.onDependencyChanged(target, value, parent, key, keyType);
       target.invalidate();
     }, predicate);
     return this;
   }
 
   clearOn(buildRule, predicate) {
-    this.actionOn(buildRule, (target, value, parent, propertyName) => {
-      CalcObjectDebugger.Instance.onDependencyChanged(target, value, parent, propertyName);
+    this.actionOn(buildRule, (target, value, parent, key, keyType) => {
+      CalcObjectDebugger.Instance.onDependencyChanged(target, value, parent, key, keyType);
       target.clear();
     }, predicate);
     return this;

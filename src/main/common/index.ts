@@ -14,6 +14,8 @@ export {ObservableSet} from './lists/ObservableSet'
 export {ObservableMap} from './lists/ObservableMap'
 export {deepSubscribe} from './rx/deep-subscribe/deep-subscribe'
 export {resolvePath} from './rx/object/properties/helpers'
+export {ObjectMap} from './lists/ObjectMap'
+export {ObjectSet} from './lists/ObjectSet'
 
 // Interfaces:
 import {ThenableOrIteratorOrValue as _ThenableOrIteratorOrValue} from './async/async'

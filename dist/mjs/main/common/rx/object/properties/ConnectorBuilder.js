@@ -59,7 +59,8 @@ export class ConnectorBuilder extends ObservableObjectBuilder {
           baseSetValue.call(this, {
             value: initValue,
             parent: null,
-            propertyName: null
+            key: null,
+            keyType: null
           });
         }
 
@@ -69,15 +70,16 @@ export class ConnectorBuilder extends ObservableObjectBuilder {
           }
         };
 
-        const receiveValue = writable ? (value, parent, propertyName) => {
-          CalcObjectDebugger.Instance.onConnectorChanged(this, value, parent, propertyName);
+        const receiveValue = writable ? (value, parent, key, keyType) => {
+          CalcObjectDebugger.Instance.onConnectorChanged(this, value, parent, key, keyType);
           const baseValue = baseGetValue.call(this);
           baseValue.parent = parent;
-          baseValue.propertyName = propertyName;
+          baseValue.key = key;
+          baseValue.keyType = keyType;
           setVal(this, value);
           return null;
-        } : (value, parent, propertyName) => {
-          CalcObjectDebugger.Instance.onConnectorChanged(this, value, parent, propertyName);
+        } : (value, parent, key, keyType) => {
+          CalcObjectDebugger.Instance.onConnectorChanged(this, value, parent, key, keyType);
           setVal(this, value);
           return null;
         };
@@ -105,7 +107,8 @@ export class ConnectorBuilder extends ObservableObjectBuilder {
         const baseValue = baseGetValue.call(this);
 
         if (baseValue.parent != null) {
-          baseValue.parent[baseValue.propertyName] = value;
+          // TODO implement set value for different keyTypes
+          baseValue.parent[baseValue.key] = value;
         } // return value
 
       },
@@ -118,7 +121,7 @@ export class ConnectorBuilder extends ObservableObjectBuilder {
 export function connectorClass(build, baseClass) {
   class NewConnector extends (baseClass || Connector) {}
 
-  build(new ConnectorBuilder(NewConnector.prototype, b => b.propertyName('connectorSource')));
+  build(new ConnectorBuilder(NewConnector.prototype, b => b.p('connectorSource')));
   return NewConnector;
 }
 export function connectorFactory(build, baseClass) {

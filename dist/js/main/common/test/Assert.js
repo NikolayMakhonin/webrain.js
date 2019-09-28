@@ -223,7 +223,9 @@ function () {
     key: "assertNotHandledErrors",
     value: function assertNotHandledErrors() {
       if (Assert.errors.length) {
-        throw Assert.errors[0];
+        var firstError = Assert.errors[0];
+        Assert.errors = [];
+        throw firstError;
       }
     }
   }, {

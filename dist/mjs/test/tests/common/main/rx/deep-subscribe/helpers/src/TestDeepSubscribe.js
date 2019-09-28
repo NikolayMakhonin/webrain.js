@@ -275,8 +275,6 @@ export class TestDeepSubscribe {
         }
       },
 
-      subscribeValue,
-      unsubscribeValue,
       lastValue: (value, parent, propertyName) => {
         if (this._performanceTest) {
           return () => {};

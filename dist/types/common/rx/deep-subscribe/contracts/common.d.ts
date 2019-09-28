@@ -1,7 +1,5 @@
 import { IUnsubscribeOrVoid } from '../../subjects/observable';
-export declare type ISubscribeValue<TValue> = (value: TValue, parent: any, propertyName: string) => IUnsubscribeOrVoid;
-export declare type IUnsubscribeValue<TValue> = (value: TValue, parent: any, propertyName: string, isUnsubscribed: boolean) => void;
-export declare type ILastValue<TValue> = (value: TValue, parent: any, propertyName: string) => void;
+export declare type ILastValue<TValue> = (value: TValue, parent: any, key: any, keyType: ValueKeyType) => void;
 export declare enum ValueChangeType {
     None = 0,
     Unsubscribe = 1,

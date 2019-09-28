@@ -26,13 +26,14 @@ function () {
 
   (0, _createClass2.default)(CalcObjectDebugger, [{
     key: "onDependencyChanged",
-    value: function onDependencyChanged(target, value, parent, propertyName) {
+    value: function onDependencyChanged(target, value, parent, key, keyType) {
       if (this._dependencySubject.hasSubscribers) {
         this._dependencySubject.emit({
           target: target,
           value: value,
           parent: parent,
-          propertyName: propertyName
+          key: key,
+          keyType: keyType
         });
       }
     } // endregion
@@ -40,13 +41,14 @@ function () {
 
   }, {
     key: "onConnectorChanged",
-    value: function onConnectorChanged(target, value, parent, propertyName) {
+    value: function onConnectorChanged(target, value, parent, key, keyType) {
       if (this._connectorSubject.hasSubscribers) {
         this._connectorSubject.emit({
           target: target,
           value: value,
           parent: parent,
-          propertyName: propertyName
+          key: key,
+          keyType: keyType
         });
       }
     } // endregion

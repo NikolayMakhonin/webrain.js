@@ -356,8 +356,6 @@ function () {
             return subscribeValue(newValue, parent, key);
           }
         },
-        subscribeValue: subscribeValue,
-        unsubscribeValue: unsubscribeValue,
         lastValue: function lastValue(value, parent, propertyName) {
           if (_this._performanceTest) {
             return function () {};

@@ -32,25 +32,37 @@ function isFuncWithoutParameters(func) {
 
 function it(name, func) {
   return _helpers.globalScope.it.call(this, name, isFuncWithoutParameters(func) ? function () {
-    var result = func.call(this);
+    try {
+      var result = func.call(this);
 
-    if (result && typeof result.then === 'function') {
-      return result.then(function (o) {
-        _Assert.assert.assertNotHandledErrors();
+      if (result && typeof result.then === 'function') {
+        return result.then(function (o) {
+          _Assert.assert.assertNotHandledErrors();
 
-        return o;
-      });
-    }
+          return o;
+        }).catch(function (err) {
+          _Assert.assert.assertNotHandledErrors();
 
-    _Assert.assert.assertNotHandledErrors();
+          throw err;
+        });
+      }
 
-    return result;
-  } : function (done) {
-    return func.call(this, function (err) {
       _Assert.assert.assertNotHandledErrors();
 
-      done(err);
-    });
+      return result;
+    } finally {
+      _Assert.assert.assertNotHandledErrors();
+    }
+  } : function (done) {
+    try {
+      return func.call(this, function (err) {
+        _Assert.assert.assertNotHandledErrors();
+
+        done(err);
+      });
+    } finally {
+      _Assert.assert.assertNotHandledErrors();
+    }
   });
 }
 

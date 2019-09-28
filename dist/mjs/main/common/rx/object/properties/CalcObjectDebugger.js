@@ -13,13 +13,14 @@ export class CalcObjectDebugger {
     return this._dependencySubject;
   }
 
-  onDependencyChanged(target, value, parent, propertyName) {
+  onDependencyChanged(target, value, parent, key, keyType) {
     if (this._dependencySubject.hasSubscribers) {
       this._dependencySubject.emit({
         target,
         value,
         parent,
-        propertyName
+        key,
+        keyType
       });
     }
   } // endregion
@@ -30,13 +31,14 @@ export class CalcObjectDebugger {
     return this._connectorSubject;
   }
 
-  onConnectorChanged(target, value, parent, propertyName) {
+  onConnectorChanged(target, value, parent, key, keyType) {
     if (this._connectorSubject.hasSubscribers) {
       this._connectorSubject.emit({
         target,
         value,
         parent,
-        propertyName
+        key,
+        keyType
       });
     }
   } // endregion

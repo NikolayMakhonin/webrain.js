@@ -1,3 +1,4 @@
+import { ValueKeyType } from '../../deep-subscribe/contracts/common';
 import { IObservable } from '../../subjects/observable';
 import { ObservableObject } from '../ObservableObject';
 import { ICalcProperty } from './contracts';
@@ -5,13 +6,15 @@ export interface IConnectorChangedEvent {
     target: ObservableObject;
     value: any;
     parent: any;
-    propertyName: string;
+    key: any;
+    keyType: ValueKeyType;
 }
 export interface IDependencyChangedEvent {
     target: ICalcProperty<any>;
     value: any;
     parent: any;
-    propertyName: string;
+    key: any;
+    keyType: ValueKeyType;
 }
 export interface IInvalidatedEvent {
     target: ICalcProperty<any>;
@@ -33,10 +36,10 @@ export declare class CalcObjectDebugger {
     private constructor();
     private _dependencySubject;
     readonly dependencyObservable: IObservable<IDependencyChangedEvent>;
-    onDependencyChanged(target: ICalcProperty<any>, value: any, parent: any, propertyName: string): void;
+    onDependencyChanged(target: ICalcProperty<any>, value: any, parent: any, key: any, keyType: ValueKeyType): void;
     private _connectorSubject;
     readonly connectorObservable: IObservable<IConnectorChangedEvent>;
-    onConnectorChanged(target: ObservableObject, value: any, parent: any, propertyName: string): void;
+    onConnectorChanged(target: ObservableObject, value: any, parent: any, key: any, keyType: ValueKeyType): void;
     private _invalidatedSubject;
     readonly invalidatedObservable: IObservable<IInvalidatedEvent>;
     onInvalidated(target: ICalcProperty<any>, value: any): void;

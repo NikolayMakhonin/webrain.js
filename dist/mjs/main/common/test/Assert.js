@@ -122,7 +122,9 @@ export class Assert {
 
   assertNotHandledErrors() {
     if (Assert.errors.length) {
-      throw Assert.errors[0];
+      const firstError = Assert.errors[0];
+      Assert.errors = [];
+      throw firstError;
     }
   }
 

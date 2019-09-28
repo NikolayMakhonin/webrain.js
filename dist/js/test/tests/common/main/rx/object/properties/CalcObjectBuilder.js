@@ -63,6 +63,7 @@ var _TestDeepSubscribe = require("../../deep-subscribe/helpers/src/TestDeepSubsc
       _this = (0, _possibleConstructorReturn2.default)(this, (_getPrototypeOf2 = (0, _getPrototypeOf3.default)(ClassSync)).call.apply(_getPrototypeOf2, (0, _concat.default)(_context = [this]).call(_context, args)));
       _this.value = 'Value';
       _this.source1 = 123;
+      _this.source2 = 0;
       return _this;
     }
 
@@ -112,7 +113,9 @@ var _TestDeepSubscribe = require("../../deep-subscribe/helpers/src/TestDeepSubsc
       });
     },
     calcFunc: function calcFunc(input, property) {
-      property.value = input.connectorSource;
+      property.value = {
+        value: input.connectorSource
+      };
       return _ThenableSync.ThenableSync.createResolved(true);
     }
   }));
@@ -175,7 +178,9 @@ var _TestDeepSubscribe = require("../../deep-subscribe/helpers/src/TestDeepSubsc
               });
 
             case 2:
-              property.value = input.connectorSource;
+              property.value = {
+                value: input.connectorSource
+              };
               return _context3.abrupt("return", true);
 
             case 4:
@@ -461,6 +466,8 @@ var _TestDeepSubscribe = require("../../deep-subscribe/helpers/src/TestDeepSubsc
             object = new ClassSync();
             value = (0, _helpers.resolvePath)(object)(function (o) {
               return o.calc2;
+            })(function (o) {
+              return o.value;
             })();
 
             _Assert.assert.strictEqual(value, object);
@@ -468,11 +475,19 @@ var _TestDeepSubscribe = require("../../deep-subscribe/helpers/src/TestDeepSubsc
             value = (0, _helpers.resolvePath)(object)(function (o) {
               return o.calc2;
             })(function (o) {
-              return o.calc2;
+              return o.value;
             })(function (o) {
               return o.calc2;
             })(function (o) {
+              return o.value;
+            })(function (o) {
               return o.calc2;
+            })(function (o) {
+              return o.value;
+            })(function (o) {
+              return o.calc2;
+            })(function (o) {
+              return o.value;
             })();
 
             _Assert.assert.strictEqual(value, object);
@@ -480,9 +495,15 @@ var _TestDeepSubscribe = require("../../deep-subscribe/helpers/src/TestDeepSubsc
             value2 = (0, _helpers.resolvePath)(object)(function (o) {
               return o.calc2;
             })(function (o) {
-              return o.calc2;
+              return o.value;
             })(function (o) {
               return o.calc2;
+            })(function (o) {
+              return o.value;
+            })(function (o) {
+              return o.calc2;
+            })(function (o) {
+              return o.value;
             })(function (o) {
               return o.calc1;
             })();
@@ -509,6 +530,8 @@ var _TestDeepSubscribe = require("../../deep-subscribe/helpers/src/TestDeepSubsc
             object = new ClassSync();
             value = (0, _helpers.resolvePath)(object)(function (o) {
               return o.calc2;
+            })(function (o) {
+              return o.value;
             })();
             _context7.t0 = _Assert.assert;
             _context7.next = 5;
@@ -523,11 +546,19 @@ var _TestDeepSubscribe = require("../../deep-subscribe/helpers/src/TestDeepSubsc
             value = (0, _helpers.resolvePath)(object)(function (o) {
               return o.calc2;
             })(function (o) {
-              return o.calc2;
+              return o.value;
             })(function (o) {
               return o.calc2;
             })(function (o) {
+              return o.value;
+            })(function (o) {
               return o.calc2;
+            })(function (o) {
+              return o.value;
+            })(function (o) {
+              return o.calc2;
+            })(function (o) {
+              return o.value;
             })();
             _context7.t3 = _Assert.assert;
             _context7.next = 12;
@@ -542,9 +573,15 @@ var _TestDeepSubscribe = require("../../deep-subscribe/helpers/src/TestDeepSubsc
             value2 = (0, _helpers.resolvePath)(object)(function (o) {
               return o.calc2;
             })(function (o) {
-              return o.calc2;
+              return o.value;
             })(function (o) {
               return o.calc2;
+            })(function (o) {
+              return o.value;
+            })(function (o) {
+              return o.calc2;
+            })(function (o) {
+              return o.value;
             })(function (o) {
               return o.calc1;
             })();
@@ -615,14 +652,18 @@ var _TestDeepSubscribe = require("../../deep-subscribe/helpers/src/TestDeepSubsc
               doNotSubscribeNonObjectValues: true
             }, function (b) {
               return b.p('calc1');
-            }).subscribe([new Date(123)]).unsubscribe([new Date(123)]);
+            }).subscribe([new Date(123)]).change(function (o) {
+              return o.source1 = 234;
+            }, [new Date(123)], [new Date(234)]).unsubscribe([new Date(234)]);
             new _TestDeepSubscribe.TestDeepSubscribe({
               object: new ClassSync(),
               immediate: true,
               doNotSubscribeNonObjectValues: true
             }, function (b) {
               return b.p('calc1').p('getTime');
-            }).subscribe([Date.prototype.getTime]).unsubscribe([Date.prototype.getTime]);
+            }).subscribe([Date.prototype.getTime]).change(function (o) {
+              return o.source1 = 234;
+            }, [Date.prototype.getTime], [Date.prototype.getTime]).unsubscribe([Date.prototype.getTime]);
 
           case 2:
           case "end":
@@ -636,11 +677,12 @@ var _TestDeepSubscribe = require("../../deep-subscribe/helpers/src/TestDeepSubsc
   (0, _asyncToGenerator2.default)(
   /*#__PURE__*/
   _regenerator.default.mark(function _callee7() {
-    var tester;
+    var date234, tester;
     return _regenerator.default.wrap(function _callee7$(_context10) {
       while (1) {
         switch (_context10.prev = _context10.next) {
           case 0:
+            date234 = new Date(234);
             tester = new _TestDeepSubscribe.TestDeepSubscribe({
               object: new ClassAsync(),
               immediate: true,
@@ -649,14 +691,20 @@ var _TestDeepSubscribe = require("../../deep-subscribe/helpers/src/TestDeepSubsc
             }, function (b) {
               return b.p('calc1');
             });
-            _context10.next = 3;
+            _context10.next = 4;
             return tester.subscribeAsync([new Date(123)]);
 
-          case 3:
-            _context10.next = 5;
-            return tester.unsubscribeAsync([new Date(123)]);
+          case 4:
+            _context10.next = 6;
+            return tester.changeAsync(function (o) {
+              return o.source1 = 234;
+            }, [new Date(123), date234, date234], [date234, date234, new Date(234)]);
 
-          case 5:
+          case 6:
+            _context10.next = 8;
+            return tester.unsubscribeAsync([new Date(234)]);
+
+          case 8:
             tester = new _TestDeepSubscribe.TestDeepSubscribe({
               object: new ClassAsync(),
               immediate: true,
@@ -665,14 +713,20 @@ var _TestDeepSubscribe = require("../../deep-subscribe/helpers/src/TestDeepSubsc
             }, function (b) {
               return b.p('calc1').p('getTime');
             });
-            _context10.next = 8;
+            _context10.next = 11;
             return tester.subscribeAsync([Date.prototype.getTime]);
 
-          case 8:
-            _context10.next = 10;
+          case 11:
+            _context10.next = 13;
+            return tester.changeAsync(function (o) {
+              return o.source1 = 234;
+            }, [Date.prototype.getTime, Date.prototype.getTime, Date.prototype.getTime], [Date.prototype.getTime, Date.prototype.getTime, Date.prototype.getTime]);
+
+          case 13:
+            _context10.next = 15;
             return tester.unsubscribeAsync([Date.prototype.getTime]);
 
-          case 10:
+          case 15:
           case "end":
             return _context10.stop();
         }
@@ -694,16 +748,16 @@ var _TestDeepSubscribe = require("../../deep-subscribe/helpers/src/TestDeepSubsc
               object: new ClassSync(),
               immediate: true,
               doNotSubscribeNonObjectValues: true
-            }, // b => b.p('calc2').p('calc2').p('calc2').p('calc1'),
+            }, // b => b.p('calc2').p('value').p('calc2').p('value').p('calc1'),
             function (b) {
-              return b.p('calc2').p('calc2').p('calc1');
-            }). // .subscribe([new Date(123)])
+              return b.p('calc2').p('value').p('calc1');
+            }) // .subscribe([new Date(123)])
             // .unsubscribe([new Date(123)])
-            subscribe([new Date(123)]).change(function (o) {
+            .subscribe([new Date(123)]).change(function (o) {
               return o.source1 = 234;
             }, [new Date(123)], [new Date(234)]).change(function (o) {
-              return o.source2 = 1;
-            }, [], []).change(function (o) {
+              return o.source2++;
+            }, [date234, date234], [date234, date234]).change(function (o) {
               return o.source1 = 345;
             }, [new Date(234)], [new Date(345)]).unsubscribe([new Date(345)]);
 
@@ -731,7 +785,7 @@ var _TestDeepSubscribe = require("../../deep-subscribe/helpers/src/TestDeepSubsc
               doNotSubscribeNonObjectValues: true,
               asyncDelay: 500
             }, function (b) {
-              return b.p('calc2').p('calc2').p('calc2').p('calc1');
+              return b.p('calc2').p('value').p('calc2').p('value').p('calc2').p('value').p('calc1');
             });
             _context12.next = 4;
             return tester.subscribeAsync([new Date(123)]);
@@ -753,8 +807,8 @@ var _TestDeepSubscribe = require("../../deep-subscribe/helpers/src/TestDeepSubsc
           case 10:
             _context12.next = 12;
             return tester.changeAsync(function (o) {
-              return o.source2 = 1;
-            }, [], []);
+              return o.source2++;
+            }, [date234, date234], [date234, date234]);
 
           case 12:
             _context12.next = 14;

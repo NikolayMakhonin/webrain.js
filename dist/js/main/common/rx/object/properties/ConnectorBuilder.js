@@ -98,7 +98,8 @@ function (_ObservableObjectBuil) {
             baseSetValue.call(this, {
               value: initValue,
               parent: null,
-              propertyName: null
+              key: null,
+              keyType: null
             });
           }
 
@@ -108,16 +109,17 @@ function (_ObservableObjectBuil) {
             }
           };
 
-          var receiveValue = writable ? function (value, parent, propertyName) {
-            _CalcObjectDebugger.CalcObjectDebugger.Instance.onConnectorChanged(_this2, value, parent, propertyName);
+          var receiveValue = writable ? function (value, parent, key, keyType) {
+            _CalcObjectDebugger.CalcObjectDebugger.Instance.onConnectorChanged(_this2, value, parent, key, keyType);
 
             var baseValue = baseGetValue.call(_this2);
             baseValue.parent = parent;
-            baseValue.propertyName = propertyName;
+            baseValue.key = key;
+            baseValue.keyType = keyType;
             setVal(_this2, value);
             return null;
-          } : function (value, parent, propertyName) {
-            _CalcObjectDebugger.CalcObjectDebugger.Instance.onConnectorChanged(_this2, value, parent, propertyName);
+          } : function (value, parent, key, keyType) {
+            _CalcObjectDebugger.CalcObjectDebugger.Instance.onConnectorChanged(_this2, value, parent, key, keyType);
 
             setVal(_this2, value);
             return null;
@@ -145,7 +147,8 @@ function (_ObservableObjectBuil) {
           var baseValue = baseGetValue.call(this);
 
           if (baseValue.parent != null) {
-            baseValue.parent[baseValue.propertyName] = value;
+            // TODO implement set value for different keyTypes
+            baseValue.parent[baseValue.key] = value;
           } // return value
 
         },
@@ -174,7 +177,7 @@ function connectorClass(build, baseClass) {
   }(baseClass || _Connector.Connector);
 
   build(new ConnectorBuilder(NewConnector.prototype, function (b) {
-    return b.propertyName('connectorSource');
+    return b.p('connectorSource');
   }));
   return NewConnector;
 }

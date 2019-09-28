@@ -17,22 +17,33 @@ function isFuncWithoutParameters(func) {
 
 export function it(name, func) {
   return globalScope.it.call(this, name, isFuncWithoutParameters(func) ? function () {
-    const result = func.call(this);
+    try {
+      const result = func.call(this);
 
-    if (result && typeof result.then === 'function') {
-      return result.then(o => {
-        assert.assertNotHandledErrors();
-        return o;
-      });
-    }
+      if (result && typeof result.then === 'function') {
+        return result.then(o => {
+          assert.assertNotHandledErrors();
+          return o;
+        }).catch(err => {
+          assert.assertNotHandledErrors();
+          throw err;
+        });
+      }
 
-    assert.assertNotHandledErrors();
-    return result;
-  } : function (done) {
-    return func.call(this, err => {
       assert.assertNotHandledErrors();
-      done(err);
-    });
+      return result;
+    } finally {
+      assert.assertNotHandledErrors();
+    }
+  } : function (done) {
+    try {
+      return func.call(this, err => {
+        assert.assertNotHandledErrors();
+        done(err);
+      });
+    } finally {
+      assert.assertNotHandledErrors();
+    }
   });
 }
 Object.assign(it, globalScope.it);

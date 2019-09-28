@@ -62,7 +62,7 @@ export class ObjectSubscriber {
       if (index === len) {
         _subscribedValues.push(subscribedValue);
 
-        this._lastValue(subscribedValue.value, subscribedValue.parent, subscribedValue.propertyName);
+        this._lastValue(subscribedValue.value, subscribedValue.parent, subscribedValue.key, subscribedValue.keyType);
 
         return;
       }
@@ -87,7 +87,7 @@ export class ObjectSubscriber {
         const len = _subscribedValues.length;
 
         for (; index < len; index++) {
-          if (valuesEqual(_subscribedValues[index].value, subscribedValue.value) && _subscribedValues[index].parent === subscribedValue.parent && _subscribedValues[index].propertyName === subscribedValue.propertyName) {
+          if (valuesEqual(_subscribedValues[index].value, subscribedValue.value) && _subscribedValues[index].parent === subscribedValue.parent && _subscribedValues[index].keyType === subscribedValue.keyType && _subscribedValues[index].key === subscribedValue.key) {
             break;
           }
         }
@@ -100,11 +100,11 @@ export class ObjectSubscriber {
           _subscribedValues.length = len - 1;
 
           if (len === 1) {
-            this._lastValue(void 0, null, null);
+            this._lastValue(void 0, null, null, null);
           } else if (index === len - 1) {
             const nextSubscribedValue = _subscribedValues[len - 2];
 
-            this._lastValue(nextSubscribedValue.value, nextSubscribedValue.parent, nextSubscribedValue.propertyName);
+            this._lastValue(nextSubscribedValue.value, nextSubscribedValue.parent, nextSubscribedValue.key, nextSubscribedValue.keyType);
           }
 
           return;
@@ -113,7 +113,7 @@ export class ObjectSubscriber {
     }
 
     if (typeof subscribedValue.value !== 'undefined') {
-      throw new Error(`subscribedValue no found: ${subscribedValue.parent.constructor.name}.${subscribedValue.propertyName} = ${subscribedValue.value}`);
+      throw new Error(`subscribedValue no found: ${subscribedValue.parent.constructor.name}.${subscribedValue.key} = ${subscribedValue.value}`);
     }
   }
 
@@ -212,7 +212,8 @@ export class ObjectSubscriber {
         this.removeSubscribed({
           value: oldValue,
           parent,
-          propertyName: key
+          key,
+          keyType
         });
       }
 
@@ -220,7 +221,8 @@ export class ObjectSubscriber {
         this.insertSubscribed({
           value: newValue,
           parent,
-          propertyName: key,
+          key,
+          keyType,
           isOwnProperty: parent != null && key in parent
         });
       }
