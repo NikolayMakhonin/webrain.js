@@ -1,4 +1,5 @@
 import {createFunction} from '../../../helpers/helpers'
+import {ValueKeyType} from '../../deep-subscribe/contracts/common'
 import {deepSubscribeRule} from '../../deep-subscribe/deep-subscribe'
 import {RuleBuilder} from '../../deep-subscribe/RuleBuilder'
 import {_set, _setExt, ObservableObject} from '../ObservableObject'
@@ -90,7 +91,7 @@ export class ConnectorBuilder<
 				// tslint:disable-next-line:no-shadowed-variable
 				factory(this: ObservableObject, initValue: TValue) {
 					if (writable) {
-						baseSetValue.call(this, {value: initValue, parent: null, propertyName: null})
+						baseSetValue.call(this, {value: initValue, parent: null, key: null, keyType: null})
 					}
 
 					let setVal = (obj, value: TValue): void => {
@@ -100,18 +101,19 @@ export class ConnectorBuilder<
 					}
 
 					const receiveValue = writable
-						? (value: TValue, parent: any, propertyName: string) => {
-							CalcObjectDebugger.Instance.onConnectorChanged(this, value, parent, propertyName)
+						? (value: TValue, parent: any, key: any, keyType: ValueKeyType) => {
+							CalcObjectDebugger.Instance.onConnectorChanged(this, value, parent, key, keyType)
 
 							const baseValue = baseGetValue.call(this)
 							baseValue.parent = parent
-							baseValue.propertyName = propertyName
+							baseValue.key = key
+							baseValue.keyType = keyType
 
 							setVal(this, value)
 							return null
 						}
-						: (value: TValue, parent: any, propertyName: string) => {
-							CalcObjectDebugger.Instance.onConnectorChanged(this, value, parent, propertyName)
+						: (value: TValue, parent: any, key: any, keyType: ValueKeyType) => {
+							CalcObjectDebugger.Instance.onConnectorChanged(this, value, parent, key, keyType)
 							setVal(this, value)
 							return null
 						}
@@ -144,7 +146,8 @@ export class ConnectorBuilder<
 				update: writable && function(value: any): TValue|void {
 					const baseValue = baseGetValue.call(this)
 					if (baseValue.parent != null) {
-						baseValue.parent[baseValue.propertyName] = value
+						// TODO implement set value for different keyTypes
+						baseValue.parent[baseValue.key] = value
 					}
 					// return value
 				},
@@ -167,7 +170,7 @@ export function connectorClass<
 
 	build(new ConnectorBuilder<NewConnector, TSource>(
 		NewConnector.prototype,
-		b => b.propertyName('connectorSource'),
+		b => b.p('connectorSource'),
 	))
 
 	return NewConnector as unknown as new (source: TSource) => TConnector

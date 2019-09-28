@@ -1,11 +1,6 @@
-import {IUnsubscribe, IUnsubscribeOrVoid} from '../../subjects/observable'
+import {IUnsubscribeOrVoid} from '../../subjects/observable'
 
-// export type IChangeValue<TValue> = (value: TValue, parent: any, propertyName: string) => IUnsubscribeOrVoid
-export type ISubscribeValue<TValue> = (value: TValue, parent: any, propertyName: string) => IUnsubscribeOrVoid
-export type IUnsubscribeValue<TValue> = (
-	value: TValue, parent: any, propertyName: string, isUnsubscribed: boolean,
-) => void
-export type ILastValue<TValue> = (value: TValue, parent: any, propertyName: string) => void
+export type ILastValue<TValue> = (value: TValue, parent: any, key: any, keyType: ValueKeyType) => void
 
 export enum ValueChangeType {
 	None = 0,

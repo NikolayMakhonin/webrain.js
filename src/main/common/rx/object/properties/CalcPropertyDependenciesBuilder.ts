@@ -1,3 +1,4 @@
+import {ValueKeyType} from '../../deep-subscribe/contracts/common'
 import {RuleBuilder} from '../../deep-subscribe/RuleBuilder'
 import {CalcObjectDebugger} from './CalcObjectDebugger'
 import {CalcProperty} from './CalcProperty'
@@ -20,8 +21,8 @@ export class CalcPropertyDependenciesBuilder<
 		buildRule: (inputRuleBuilder: RuleBuilder<TSource, TValueKeys>) => RuleBuilder<TValue, TValueKeys>,
 		predicate?: IDependencyPredicate<TValue>,
 	): this {
-		this.actionOn(buildRule, (target, value, parent, propertyName) => {
-			CalcObjectDebugger.Instance.onDependencyChanged(target, value, parent, propertyName)
+		this.actionOn(buildRule, (target, value, parent, key: any, keyType: ValueKeyType) => {
+			CalcObjectDebugger.Instance.onDependencyChanged(target, value, parent, key, keyType)
 			target.invalidate()
 		}, predicate)
 		return this
@@ -31,8 +32,8 @@ export class CalcPropertyDependenciesBuilder<
 		buildRule: (inputRuleBuilder: RuleBuilder<TSource, TValueKeys>) => RuleBuilder<TValue, TValueKeys>,
 		predicate?: IDependencyPredicate<TValue>,
 	): this {
-		this.actionOn(buildRule, (target, value, parent, propertyName) => {
-			CalcObjectDebugger.Instance.onDependencyChanged(target, value, parent, propertyName)
+		this.actionOn(buildRule, (target, value, parent, key: any, keyType: ValueKeyType) => {
+			CalcObjectDebugger.Instance.onDependencyChanged(target, value, parent, key, keyType)
 			target.clear()
 		}, predicate)
 		return this

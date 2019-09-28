@@ -1,3 +1,4 @@
+import {ValueKeyType} from '../../deep-subscribe/contracts/common'
 import {IObservable} from '../../subjects/observable'
 import {ISubject, Subject} from '../../subjects/subject'
 import {ObservableObject} from '../ObservableObject'
@@ -7,14 +8,16 @@ export interface IConnectorChangedEvent {
 	target: ObservableObject
 	value: any
 	parent: any
-	propertyName: string
+	key: any
+	keyType: ValueKeyType
 }
 
 export interface IDependencyChangedEvent {
 	target: ICalcProperty<any>
 	value: any
 	parent: any
-	propertyName: string
+	key: any
+	keyType: ValueKeyType
 }
 
 export interface IInvalidatedEvent {
@@ -47,13 +50,20 @@ export class CalcObjectDebugger {
 		return this._dependencySubject
 	}
 
-	public onDependencyChanged(target: ICalcProperty<any>, value: any, parent: any, propertyName: string) {
+	public onDependencyChanged(
+		target: ICalcProperty<any>,
+		value: any,
+		parent: any,
+		key: any,
+		keyType: ValueKeyType,
+	) {
 		if (this._dependencySubject.hasSubscribers) {
 			this._dependencySubject.emit({
 				target,
 				value,
 				parent,
-				propertyName,
+				key,
+				keyType,
 			})
 		}
 	}
@@ -67,13 +77,20 @@ export class CalcObjectDebugger {
 		return this._connectorSubject
 	}
 
-	public onConnectorChanged(target: ObservableObject, value: any, parent: any, propertyName: string) {
+	public onConnectorChanged(
+		target: ObservableObject,
+		value: any,
+		parent: any,
+		key: any,
+		keyType: ValueKeyType,
+	) {
 		if (this._connectorSubject.hasSubscribers) {
 			this._connectorSubject.emit({
 				target,
 				value,
 				parent,
-				propertyName,
+				key,
+				keyType,
 			})
 		}
 	}

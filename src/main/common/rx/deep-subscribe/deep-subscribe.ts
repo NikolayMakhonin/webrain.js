@@ -7,8 +7,6 @@ import {IUnsubscribe, IUnsubscribeOrVoid} from '../subjects/observable'
 import {
 	IChangeValue,
 	ILastValue,
-	ISubscribeValue,
-	IUnsubscribeValue,
 	IValueSubscriber,
 	ValueChangeType,
 	ValueKeyType,
