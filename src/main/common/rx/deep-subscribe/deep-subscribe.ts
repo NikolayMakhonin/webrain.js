@@ -348,7 +348,7 @@ function subscribeNext<TValue>(
 						newItem = o
 						changeItem(key, oldItem, newItem, changeType, keyType)
 					},
-					err => catchHandlerItem(err, key))
+					err => { catchHandlerItem(err, key) })
 			},
 		))
 	}

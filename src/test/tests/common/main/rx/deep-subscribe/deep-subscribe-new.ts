@@ -121,7 +121,7 @@ describe('common > main > rx > deep-subscribe > deep-subscribe new', function() 
 		)
 
 		await tester.subscribeAsync(o => ['value'], [void 0], ['value'])
-		await tester.change(o => o.value = 'value2', ['value'], ['value2'], ['value2'])
+		await tester.changeAsync(o => o.value = 'value2', ['value'], ['value2'], ['value2'])
 		await tester.unsubscribeAsync(o => ['value2'], [void 0])
 	})
 

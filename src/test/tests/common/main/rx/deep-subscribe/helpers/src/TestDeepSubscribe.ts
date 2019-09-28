@@ -218,7 +218,7 @@ export class TestDeepSubscribe<TObject, TValue> {
 			doNotSubscribeNonObjectValues,
 			useIncorrectUnsubscribe,
 			shouldNeverSubscribe,
-			asyncDelay = 10,
+			asyncDelay = 30,
 		}: TestDeepSubscribeOptions<TObject>,
 		...ruleBuilders: Array<IRuleFactory<TObject, TValue, any>>
 	) {
