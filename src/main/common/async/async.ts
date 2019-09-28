@@ -85,7 +85,7 @@ export function resolveIterator<T>(
 
 				const result = _resolveValue(
 					iteratorResult.value,
-					isError,
+					false,
 					(o, nextIsError) => {
 						nextValue = o
 						isThrow = nextIsError

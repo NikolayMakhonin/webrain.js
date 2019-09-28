@@ -547,6 +547,10 @@ export class TestThenableSync extends TestVariants<
 					action()
 				}
 
+				if (assert.errors) {
+					throw assert.errors[0]
+				}
+
 				break
 			} catch (ex) {
 				if (!debugIteration) {
