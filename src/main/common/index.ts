@@ -20,6 +20,8 @@ export {ObjectSet} from './lists/ObjectSet'
 export {CalcProperty} from './rx/object/properties/CalcProperty'
 export {ValueKeyType} from './rx/deep-subscribe/contracts/common'
 export {ObjectMerger} from './extensions/merge/mergers'
+export {PropertyChangedObject} from './rx/object/PropertyChangedObject'
+export {Connector} from './rx/object/properties/Connector'
 
 // Interfaces:
 import {ThenableOrIteratorOrValue as _ThenableOrIteratorOrValue} from './async/async'
