@@ -1,6 +1,6 @@
 /* tslint:disable:no-duplicate-string */
 /* eslint-disable guard-for-in */
-import {ObservableObject} from '../../../../../../../main/common/rx/object/ObservableObject'
+import {ObservableClass} from '../../../../../../../main/common/rx/object/ObservableClass'
 import {ObservableObjectBuilder} from '../../../../../../../main/common/rx/object/ObservableObjectBuilder'
 import {ConnectorBuilder} from '../../../../../../../main/common/rx/object/properties/ConnectorBuilder'
 import {assert} from '../../../../../../../main/common/test/Assert'
@@ -18,7 +18,7 @@ describe('common > main > rx > properties > ConnectorBuilder', function() {
 
 		source.baseProp1 = 'baseProp1_init_source'
 
-		class BaseClass1 extends ObservableObject {
+		class BaseClass1 extends ObservableClass {
 			public readonly source = source
 			public baseProp1: string
 		}
@@ -37,7 +37,7 @@ describe('common > main > rx > properties > ConnectorBuilder', function() {
 
 		type ValueKeys = '@value_property'
 
-		new ConnectorBuilder<ObservableObject, BaseClass1, ValueKeys>(BaseClass1.prototype)
+		new ConnectorBuilder<ObservableClass, BaseClass1, ValueKeys>(BaseClass1.prototype)
 			.connect('baseProp1',
 				b => b.path(o => o.source
 					.property['@value_property']

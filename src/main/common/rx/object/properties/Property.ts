@@ -7,7 +7,7 @@ import {
 	ISerializeValue,
 } from '../../../extensions/serialization/contracts'
 import {registerSerializable} from '../../../extensions/serialization/serializers'
-import {ObservableObject} from '../ObservableObject'
+import {ObservableClass} from '../ObservableClass'
 import {ObservableObjectBuilder} from '../ObservableObjectBuilder'
 
 export interface IPropertyOptions<TTarget, TSource> {
@@ -16,7 +16,7 @@ export interface IPropertyOptions<TTarget, TSource> {
 }
 
 export class Property<TValue, TMergeSource = TValue>
-	extends ObservableObject
+	extends ObservableClass
 	implements
 		IMergeable<Property<TValue, TMergeSource>, any>,
 		ISerializable

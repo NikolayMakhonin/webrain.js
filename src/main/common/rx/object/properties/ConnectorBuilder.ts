@@ -2,14 +2,14 @@ import {createFunction} from '../../../helpers/helpers'
 import {ValueKeyType} from '../../deep-subscribe/contracts/common'
 import {deepSubscribeRule} from '../../deep-subscribe/deep-subscribe'
 import {RuleBuilder} from '../../deep-subscribe/RuleBuilder'
-import {_set, _setExt, ObservableObject} from '../ObservableObject'
+import {_set, _setExt, ObservableClass} from '../ObservableClass'
 import {IWritableFieldOptions, ObservableObjectBuilder} from '../ObservableObjectBuilder'
 import {CalcObjectDebugger} from './CalcObjectDebugger'
 import {Connector} from './Connector'
 import {ValueKeys} from './contracts'
 
 export class ConnectorBuilder<
-	TObject extends ObservableObject,
+	TObject extends ObservableClass,
 	TSource = TObject,
 	TValueKeys extends string | number = ValueKeys
 >
@@ -89,7 +89,7 @@ export class ConnectorBuilder<
 				setOptions,
 				hidden: options && options.hidden,
 				// tslint:disable-next-line:no-shadowed-variable
-				factory(this: ObservableObject, initValue: TValue) {
+				factory(this: ObservableClass, initValue: TValue) {
 					if (writable) {
 						baseSetValue.call(this, {value: initValue, parent: null, key: null, keyType: null})
 					}
@@ -160,10 +160,10 @@ export class ConnectorBuilder<
 }
 
 export function connectorClass<
-	TSource extends ObservableObject,
-	TConnector extends ObservableObject,
+	TSource extends ObservableClass,
+	TConnector extends ObservableClass,
 >(
-	build: (connectorBuilder: ConnectorBuilder<ObservableObject, TSource>) => { object: TConnector },
+	build: (connectorBuilder: ConnectorBuilder<ObservableClass, TSource>) => { object: TConnector },
 	baseClass?: new (source: TSource) => Connector<TSource>,
 ): new (source: TSource) => TConnector {
 	class NewConnector extends (baseClass || Connector) implements Connector<TSource> { }
@@ -177,7 +177,7 @@ export function connectorClass<
 }
 
 export function connectorFactory<
-	TSource extends ObservableObject,
+	TSource extends ObservableClass,
 	TConnector extends Connector<TSource>,
 >(
 	build: (connectorBuilder: ConnectorBuilder<Connector<TSource>, TSource>) => { object: TConnector },
@@ -189,7 +189,7 @@ export function connectorFactory<
 
 // const builder = new ConnectorBuilder(true as any)
 //
-// export function connect<TObject extends ObservableObject, TValue = any>(
+// export function connect<TObject extends ObservableClass, TValue = any>(
 // 	options?: IConnectFieldOptions<TObject, TValue>,
 // 	initValue?: TValue,
 // ) {
@@ -199,7 +199,7 @@ export function connectorFactory<
 // 	}
 // }
 
-// class Class1 extends ObservableObject {
+// class Class1 extends ObservableClass {
 // }
 // class Class extends Class1 {
 // 	@connect()

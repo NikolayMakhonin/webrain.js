@@ -4,7 +4,7 @@ import {ThenableOrIteratorOrValue} from '../../../../../../../main/common/async/
 import {ThenableSync} from '../../../../../../../main/common/async/ThenableSync'
 import {delay} from '../../../../../../../main/common/helpers/helpers'
 import {deepSubscribe} from '../../../../../../../main/common/rx/deep-subscribe/deep-subscribe'
-import {ObservableObject} from '../../../../../../../main/common/rx/object/ObservableObject'
+import {ObservableClass} from '../../../../../../../main/common/rx/object/ObservableClass'
 import {CalcObjectBuilder} from '../../../../../../../main/common/rx/object/properties/CalcObjectBuilder'
 import {calcPropertyFactory} from '../../../../../../../main/common/rx/object/properties/CalcPropertyBuilder'
 import {connectorFactory} from '../../../../../../../main/common/rx/object/properties/ConnectorBuilder'
@@ -18,7 +18,7 @@ import {createObject, TestDeepSubscribe} from '../../deep-subscribe/helpers/src/
 describe('common > main > rx > properties > CalcObjectBuilder', function() {
 	this.timeout(30000)
 
-	class ClassSync extends ObservableObject {
+	class ClassSync extends ObservableClass {
 		public value = 'Value'
 		public valuePrototype: string
 		public calc1: ICalcProperty<Date>

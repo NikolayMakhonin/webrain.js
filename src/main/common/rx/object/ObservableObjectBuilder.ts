@@ -1,7 +1,7 @@
 import {createFunction} from '../../helpers/helpers'
 import '../extensions/autoConnect'
 import {PropertyChangedEvent} from './IPropertyChanged'
-import {_set, _setExt, ISetOptions, ObservableObject} from './ObservableObject'
+import {_set, _setExt, ISetOptions, ObservableClass} from './ObservableClass'
 
 export interface IFieldOptions {
 	hidden?: boolean,
@@ -22,11 +22,11 @@ export interface IUpdatableFieldOptions<T> extends IReadableFieldOptions<T> {
 	update?: (value: any) => T|void
 }
 
-export class ObservableObjectBuilder<TObject extends ObservableObject> {
+export class ObservableObjectBuilder<TObject extends ObservableClass> {
 	public object: TObject
 
 	constructor(object?: TObject) {
-		this.object = object || new ObservableObject() as TObject
+		this.object = object || new ObservableClass() as TObject
 	}
 
 	public writable<T, Name extends string | number>(
@@ -276,7 +276,7 @@ export class ObservableObjectBuilder<TObject extends ObservableObject> {
 // 	options?: IWritableFieldOptions,
 // 	initValue?: T,
 // ) {
-// 	return (target: ObservableObject, propertyKey: string, descriptor: PropertyDescriptor) => {
+// 	return (target: ObservableClass, propertyKey: string, descriptor: PropertyDescriptor) => {
 // 		builder.object = target
 // 		builder.writable(propertyKey, options, initValue)
 // 	}
@@ -286,13 +286,13 @@ export class ObservableObjectBuilder<TObject extends ObservableObject> {
 // 	options?: IReadableFieldOptions<T>,
 // 	initValue?: T,
 // ) {
-// 	return (target: ObservableObject, propertyKey: string) => {
+// 	return (target: ObservableClass, propertyKey: string) => {
 // 		builder.object = target
 // 		builder.readable(propertyKey, options, initValue)
 // 	}
 // }
 
-// class Class extends ObservableObject {
+// class Class extends ObservableClass {
 // 	@writable()
 // 	public prop: number
 //

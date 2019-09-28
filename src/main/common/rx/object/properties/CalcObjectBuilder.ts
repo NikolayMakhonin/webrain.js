@@ -1,12 +1,12 @@
 import {NotFunction} from '../../../helpers/typescript'
 import {RuleBuilder} from '../../deep-subscribe/RuleBuilder'
-import {ObservableObject} from '../ObservableObject'
+import {ObservableClass} from '../ObservableClass'
 import {ObservableObjectBuilder} from '../ObservableObjectBuilder'
 import {CalcProperty} from './CalcProperty'
 import {calcPropertyFactory} from './CalcPropertyBuilder'
 import {ValueKeys} from './contracts'
 
-export class CalcObjectBuilder<TObject extends ObservableObject, TValueKeys extends string | number = ValueKeys>
+export class CalcObjectBuilder<TObject extends ObservableClass, TValueKeys extends string | number = ValueKeys>
 	extends ObservableObjectBuilder<TObject>
 {
 	public calc<
@@ -66,7 +66,7 @@ export class CalcObjectBuilder<TObject extends ObservableObject, TValueKeys exte
 // const builder = new CalcObjectBuilder(true as any)
 //
 // export function calc<
-// 	TObject extends ObservableObject,
+// 	TObject extends ObservableClass,
 // 	TInput extends new (object: TObject) => any | NotFunction<any>,
 // 	TValue = any,
 // 	TMergeSource = any
@@ -80,7 +80,7 @@ export class CalcObjectBuilder<TObject extends ObservableObject, TValueKeys exte
 // 	}
 // }
 
-// class Class1 extends ObservableObject {
+// class Class1 extends ObservableClass {
 // }
 // class Class extends Class1 {
 // 	@calc()

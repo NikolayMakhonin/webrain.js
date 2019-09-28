@@ -2,13 +2,13 @@
 // @ts-ignore
 import {calcPerformance} from 'rdtsc'
 import {deepSubscribe} from '../../../main/common/rx/deep-subscribe/deep-subscribe'
-import {ObservableObject} from '../../../main/common/rx/object/ObservableObject'
+import {ObservableClass} from '../../../main/common/rx/object/ObservableClass'
 import {ObservableObjectBuilder} from '../../../main/common/rx/object/ObservableObjectBuilder'
 import {assert} from '../../../main/common/test/Assert'
 import {calcMemAllocate, CalcType} from '../../../main/common/test/Calc'
 import {describe, it} from '../../../main/common/test/Mocha'
 
-describe('ObservableObject', function() {
+describe('ObservableClass', function() {
 	this.timeout(300000)
 
 	interface IClass {
@@ -16,7 +16,7 @@ describe('ObservableObject', function() {
 		prop2: any
 	}
 
-	interface IObservableClass extends IClass, ObservableObject {
+	interface IObservableClass extends IClass, ObservableClass {
 	}
 
 	interface IObject {
@@ -27,12 +27,12 @@ describe('ObservableObject', function() {
 	}
 
 	function createObject(init?: (observableObject: IObservableClass) => void): IObject {
-		class Class extends ObservableObject implements IObservableClass {
+		class Class extends ObservableClass implements IObservableClass {
 			public prop
 			public prop2
 		}
 
-		new ObservableObjectBuilder(ObservableObject.prototype)
+		new ObservableObjectBuilder(ObservableClass.prototype)
 			.writable('prop') // , o => o.prop, (o, v) => o.prop = v)
 			.writable('prop2') // , o => o.prop2, (o, v) => o.prop2 = v)
 

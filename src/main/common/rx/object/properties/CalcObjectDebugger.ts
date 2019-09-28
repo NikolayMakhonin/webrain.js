@@ -1,11 +1,11 @@
 import {ValueKeyType} from '../../deep-subscribe/contracts/common'
 import {IObservable} from '../../subjects/observable'
 import {ISubject, Subject} from '../../subjects/subject'
-import {ObservableObject} from '../ObservableObject'
+import {ObservableClass} from '../ObservableClass'
 import {ICalcProperty} from './contracts'
 
 export interface IConnectorChangedEvent {
-	target: ObservableObject
+	target: ObservableClass
 	targetKey: string|number
 	value: any
 	parent: any
@@ -79,7 +79,7 @@ export class CalcObjectDebugger {
 	}
 
 	public onConnectorChanged(
-		target: ObservableObject,
+		target: ObservableClass,
 		targetKey: string|number,
 		value: any,
 		parent: any,

@@ -1,7 +1,7 @@
-import {ObservableObject} from '../ObservableObject'
+import {ObservableClass} from '../ObservableClass'
 import {ObservableObjectBuilder} from '../ObservableObjectBuilder'
 
-export class Connector<TSource> extends ObservableObject {
+export class Connector<TSource> extends ObservableClass {
 	public connectorSource: TSource
 
 	constructor(connectorSource: TSource) {

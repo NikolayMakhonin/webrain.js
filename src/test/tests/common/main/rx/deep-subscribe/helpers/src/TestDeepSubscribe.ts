@@ -10,7 +10,7 @@ import {SortedList} from '../../../../../../../../main/common/lists/SortedList'
 import {ValueChangeType} from '../../../../../../../../main/common/rx/deep-subscribe/contracts/common'
 import {IRuleFactory} from '../../../../../../../../main/common/rx/deep-subscribe/contracts/IRuleBuilder'
 import {deepSubscribe} from '../../../../../../../../main/common/rx/deep-subscribe/deep-subscribe'
-import {ObservableObject} from '../../../../../../../../main/common/rx/object/ObservableObject'
+import {ObservableClass} from '../../../../../../../../main/common/rx/object/ObservableClass'
 import {ObservableObjectBuilder} from '../../../../../../../../main/common/rx/object/ObservableObjectBuilder'
 import {IUnsubscribe, IUnsubscribeOrVoid} from '../../../../../../../../main/common/rx/subjects/observable'
 import {Assert} from '../../../../../../../../main/common/test/Assert'
@@ -58,7 +58,7 @@ interface ISet extends Set<IAny> {
 interface IMap extends Map<string, IAny> {
 }
 
-interface IObservableObject extends IObject, ObservableObject {
+interface IObservableObject extends IObject, ObservableClass {
 }
 
 interface IObservableList extends IList, IListChanged<IAny> {
@@ -70,7 +70,7 @@ interface IObservableSet extends ISet, ISetChanged<IAny> {
 interface IObservableMap extends IMap, IMapChanged<string, IAny> {
 }
 
-interface IProperty extends ObservableObject {
+interface IProperty extends ObservableClass {
 	[VALUE_PROPERTY_DEFAULT]: IObservableObject
 	value_observableObject: IObservableObject
 	value_observableList: IObservableList
@@ -100,16 +100,16 @@ export function createObject() {
 	const set: ISet = new Set() as any
 	const map2: IMap = new Map() as any
 
-	class ObservableClass extends ObservableObject {
+	class ObservableClasss extends ObservableClass {
 	}
 
-	const observableObjectPrototype: IObservableObject = new ObservableClass() as any
-	const observableObject: IObservableObject = new ObservableObject() as any
+	const observableObjectPrototype: IObservableObject = new ObservableClasss() as any
+	const observableObject: IObservableObject = new ObservableClass() as any
 	const observableList: IObservableList = new SortedList() as any
 	const observableSet: IObservableSet = new ObservableSet() as any
 	const observableMap: IObservableMap = new ObservableMap() as any
 
-	const property: IObservableObject = new ObservableObject() as any
+	const property: IObservableObject = new ObservableClass() as any
 
 	Object.assign(object, {
 		[VALUE_PROPERTY_DEFAULT]: 'nothing',
@@ -131,7 +131,7 @@ export function createObject() {
 		promiseAsync: { then: resolve => setTimeout(() => resolve(observableObject), 0) }	,
 	})
 
-	const observableObjectBuilderPrototype = new ObservableObjectBuilder(ObservableClass.prototype)
+	const observableObjectBuilderPrototype = new ObservableObjectBuilder(ObservableClasss.prototype)
 	const observableObjectBuilder = new ObservableObjectBuilder(observableObject)
 	const propertyBuilder = new ObservableObjectBuilder(property)
 

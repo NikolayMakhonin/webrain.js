@@ -2,7 +2,7 @@
 import {delay} from '../../../../../../main/common/helpers/helpers'
 import {VALUE_PROPERTY_DEFAULT} from '../../../../../../main/common/helpers/value-property'
 import {RuleRepeatAction} from '../../../../../../main/common/rx/deep-subscribe/contracts/rules'
-import {ObservableObject} from '../../../../../../main/common/rx/object/ObservableObject'
+import {ObservableClass} from '../../../../../../main/common/rx/object/ObservableClass'
 import {ObservableObjectBuilder} from '../../../../../../main/common/rx/object/ObservableObjectBuilder'
 import {assert} from '../../../../../../main/common/test/Assert'
 import {describe, it, xit} from '../../../../../../main/common/test/Mocha'
@@ -50,7 +50,7 @@ describe('common > main > rx > deep-subscribe > deep-subscribe', function() {
 					b => b.p('1')),
 			// b => b
 			// 	.propertyRegexp(/^[a-z]/)
-			// 	.repeat(0, 1, o => o && o.constructor === ObservableObject
+			// 	.repeat(0, 1, o => o && o.constructor === ObservableClass
 			// 		? RuleRepeatAction.Next
 			// 		: RuleRepeatAction.Fork, b => b.propertyRegexp(/^[a-z]/))
 			// 	.repeat(1, 1,
@@ -65,7 +65,7 @@ describe('common > main > rx > deep-subscribe > deep-subscribe', function() {
 			b => b
 				.propertyAny()
 				.repeat(2, 3,
-					o => o && o.constructor === ObservableObject ? RuleRepeatAction.Next : RuleRepeatAction.Fork,
+					o => o && o.constructor === ObservableClass ? RuleRepeatAction.Next : RuleRepeatAction.Fork,
 					b => b.propertyRegexp(/^[a-z]/))
 				.repeat(1, 1,
 					o => Array.isArray(o) ? RuleRepeatAction.Next : RuleRepeatAction.Fork,

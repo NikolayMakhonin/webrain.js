@@ -1,6 +1,6 @@
 /* tslint:disable:no-duplicate-string */
 /* eslint-disable guard-for-in */
-import {ObservableObject} from '../../../../../../../main/common/rx/object/ObservableObject'
+import {ObservableClass} from '../../../../../../../main/common/rx/object/ObservableClass'
 import {ObservableObjectBuilder} from '../../../../../../../main/common/rx/object/ObservableObjectBuilder'
 import {ConnectorBuilder} from '../../../../../../../main/common/rx/object/properties/ConnectorBuilder'
 import {assert} from '../../../../../../../main/common/test/Assert'
@@ -18,7 +18,7 @@ xdescribe('common > main > rx > properties > CalcProperty', function() {
 	//
 	// 	source.baseProp1 = 'baseProp1_init_source'
 	//
-	// 	class BaseClass1 extends ObservableObject {
+	// 	class BaseClass1 extends ObservableClass {
 	// 		public readonly source = source
 	// 		public baseProp1
 	// 	}

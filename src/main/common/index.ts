@@ -1,7 +1,7 @@
 /* tslint:disable:ordered-imports */
 export {ThenableSync} from './async/ThenableSync'
-export {ObservableObject} from './rx/object/ObservableObject'
 export {ObservableClass} from './rx/object/ObservableClass'
+export {ObservableObject} from './rx/object/ObservableObject'
 export {CalcObjectBuilder} from './rx/object/properties/CalcObjectBuilder'
 export {calcPropertyFactory} from './rx/object/properties/CalcPropertyBuilder'
 export {connectorFactory} from './rx/object/properties/ConnectorBuilder'
@@ -23,7 +23,6 @@ export {ObjectMerger} from './extensions/merge/mergers'
 
 // Interfaces:
 import {ThenableOrIteratorOrValue as _ThenableOrIteratorOrValue} from './async/async'
-import {ObservableClass} from './rx/object/ObservableClass'
 import {ICalcProperty as _ICalcProperty} from './rx/object/properties/contracts'
 import {IPropertyChangedSubject as _IPropertyChangedSubject} from './rx/object/IPropertyChanged'
 

@@ -2,7 +2,7 @@ import {isAsync, ThenableOrIteratorOrValue, ThenableOrValue} from '../../../asyn
 import {resolveAsyncFunc, ThenableSync} from '../../../async/ThenableSync'
 import {VALUE_PROPERTY_DEFAULT} from '../../../helpers/value-property'
 import {DeferredCalc, IDeferredCalcOptions} from '../../deferred-calc/DeferredCalc'
-import {ObservableObject} from '../ObservableObject'
+import {ObservableClass} from '../ObservableClass'
 import {ObservableObjectBuilder} from '../ObservableObjectBuilder'
 import {CalcObjectDebugger} from './CalcObjectDebugger'
 import {ICalcProperty} from './contracts'
@@ -20,7 +20,7 @@ export class CalcPropertyValue<TValue, TInput = any, TMergeSource = any> {
 }
 
 export class CalcProperty<TValue, TInput = any, TMergeSource = any>
-	extends ObservableObject
+	extends ObservableClass
 	implements ICalcProperty<TValue>
 {
 	private readonly _calcFunc: CalcPropertyFunc<TInput, TValue, TMergeSource>
