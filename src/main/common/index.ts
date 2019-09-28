@@ -16,6 +16,9 @@ export {deepSubscribe} from './rx/deep-subscribe/deep-subscribe'
 export {resolvePath} from './rx/object/properties/helpers'
 export {ObjectMap} from './lists/ObjectMap'
 export {ObjectSet} from './lists/ObjectSet'
+export {CalcProperty} from './rx/object/properties/CalcProperty'
+export {ValueKeyType} from './rx/deep-subscribe/contracts/common'
+export {ObjectMerger} from './extensions/merge/mergers'
 
 // Interfaces:
 import {ThenableOrIteratorOrValue as _ThenableOrIteratorOrValue} from './async/async'

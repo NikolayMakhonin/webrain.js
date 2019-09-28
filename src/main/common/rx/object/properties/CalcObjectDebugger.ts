@@ -6,6 +6,7 @@ import {ICalcProperty} from './contracts'
 
 export interface IConnectorChangedEvent {
 	target: ObservableObject
+	targetKey: string|number
 	value: any
 	parent: any
 	key: any
@@ -79,6 +80,7 @@ export class CalcObjectDebugger {
 
 	public onConnectorChanged(
 		target: ObservableObject,
+		targetKey: string|number,
 		value: any,
 		parent: any,
 		key: any,
@@ -87,6 +89,7 @@ export class CalcObjectDebugger {
 		if (this._connectorSubject.hasSubscribers) {
 			this._connectorSubject.emit({
 				target,
+				targetKey,
 				value,
 				parent,
 				key,

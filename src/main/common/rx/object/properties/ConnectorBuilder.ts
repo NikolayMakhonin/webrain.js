@@ -102,7 +102,7 @@ export class ConnectorBuilder<
 
 					const receiveValue = writable
 						? (value: TValue, parent: any, key: any, keyType: ValueKeyType) => {
-							CalcObjectDebugger.Instance.onConnectorChanged(this, value, parent, key, keyType)
+							CalcObjectDebugger.Instance.onConnectorChanged(this, name, value, parent, key, keyType)
 
 							const baseValue = baseGetValue.call(this)
 							baseValue.parent = parent
@@ -113,7 +113,7 @@ export class ConnectorBuilder<
 							return null
 						}
 						: (value: TValue, parent: any, key: any, keyType: ValueKeyType) => {
-							CalcObjectDebugger.Instance.onConnectorChanged(this, value, parent, key, keyType)
+							CalcObjectDebugger.Instance.onConnectorChanged(this, name, value, parent, key, keyType)
 							setVal(this, value)
 							return null
 						}
