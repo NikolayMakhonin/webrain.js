@@ -1,8 +1,10 @@
 /* tslint:disable:no-empty no-identical-functions max-line-length no-construct use-primitive-type */
 // @ts-ignore
 import {calcPerformance} from 'rdtsc'
+import {assert} from '../../../main/common/test/Assert'
 import {calcMemAllocate, CalcType} from '../../../main/common/test/Calc'
-import {iterablesToArrays, treeToSequenceVariants, treeToSequenceVariants2} from '../../../main/common/test/Variants'
+import {describe, it} from '../../../main/common/test/Mocha'
+import {treeToSequenceVariants} from '../../../main/common/test/Variants'
 
 declare const after
 declare const babelGetFileCode

@@ -13,6 +13,7 @@ import {
 import {SortedList} from '../../../../../../main/common/lists/SortedList'
 import {Assert} from '../../../../../../main/common/test/Assert'
 import {DeepCloneEqual} from '../../../../../../main/common/test/DeepCloneEqual'
+import {describe, it} from '../../../../../../main/common/test/Mocha'
 import {CircularClass, createComplexObject, IComplexObjectOptions} from '../../src/helpers/helpers'
 
 const assert = new Assert(new DeepCloneEqual({

@@ -1,6 +1,6 @@
 import {ISubscriber, IUnsubscribe, Observable} from '../../../../../../main/common/rx/subjects/observable'
-
-declare const assert: any
+import {assert} from '../../../../../../main/common/test/Assert'
+import {describe, it} from '../../../../../../main/common/test/Mocha'
 
 describe('common > main > rx > subjects > observable', function() {
 	it('Observable', function() {

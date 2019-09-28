@@ -1,6 +1,8 @@
 /* tslint:disable:no-empty no-identical-functions max-line-length no-construct use-primitive-type */
 import {calcPerformance} from 'rdtsc'
 import {ObjectMerger} from '../../../main/common/extensions/merge/mergers'
+import {assert} from '../../../main/common/test/Assert'
+import {describe, it} from '../../../main/common/test/Mocha'
 
 declare const after
 declare const babelGetFileCode

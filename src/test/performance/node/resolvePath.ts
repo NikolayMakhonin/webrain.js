@@ -9,6 +9,8 @@ import {calcPropertyFactory} from '../../../main/common/rx/object/properties/Cal
 import {ICalcProperty} from '../../../main/common/rx/object/properties/contracts'
 import {resolvePath} from '../../../main/common/rx/object/properties/helpers'
 import {Property} from '../../../main/common/rx/object/properties/Property'
+import {assert} from '../../../main/common/test/Assert'
+import {describe, it} from '../../../main/common/test/Mocha'
 
 describe('resolvePath', function() {
 	this.timeout(300000)

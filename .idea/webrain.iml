@@ -11,7 +11,6 @@
     </content>
     <orderEntry type="inheritedJdk" />
     <orderEntry type="sourceFolder" forTests="false" />
-    <orderEntry type="library" name="@types/mocha" level="application" />
     <orderEntry type="library" name="@types/chai" level="application" />
   </component>
 </module>

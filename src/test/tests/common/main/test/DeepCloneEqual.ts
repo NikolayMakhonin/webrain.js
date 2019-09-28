@@ -1,6 +1,7 @@
 /* tslint:disable:no-construct use-primitive-type */
 import {assert} from '../../../../../main/common/test/Assert'
 import {IDeepCloneOptions, IDeepEqualOptions} from '../../../../../main/common/test/DeepCloneEqual'
+import {describe, it} from '../../../../../main/common/test/Mocha'
 import {createComplexObject, IComplexObjectOptions} from '../src/helpers/helpers'
 import {deepCloneEqual, TestDeepEqual} from './src/TestDeepEqual'
 

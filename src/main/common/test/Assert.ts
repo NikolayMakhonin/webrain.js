@@ -88,6 +88,11 @@ export class Assert {
 
 		this.ok(err)
 
+		if (err instanceof AssertionError) {
+			const index = Assert.errors.indexOf(err)
+			Assert.errors.splice(index, 1)
+		}
+
 		if (errType) {
 			const actualErrType = err.constructor
 			if (Array.isArray(errType)) {
@@ -112,13 +117,31 @@ export class Assert {
 		}
 	}
 
+	public assertNotHandledErrors() {
+		if (Assert.errors.length) {
+			throw Assert.errors[0]
+		}
+	}
+
+	public static errors: Error[] = []
+
 	// noinspection JSMethodCanBeStatic
 	public throwAssertionError(actual, expected, message?: string) {
-		throw new AssertionError(message, {
+		console.error('actual: ', actual)
+		console.error('expected: ', expected)
+		const error = new AssertionError(message, {
 			actual,
 			expected,
 			showDiff: true,
 		})
+
+		if (!Assert.errors) {
+			Assert.errors = [error]
+		} else {
+			Assert.errors.push(error)
+		}
+
+		throw error
 	}
 }
 

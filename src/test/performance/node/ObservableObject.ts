@@ -4,7 +4,9 @@ import {calcPerformance} from 'rdtsc'
 import {deepSubscribe} from '../../../main/common/rx/deep-subscribe/deep-subscribe'
 import {ObservableObject} from '../../../main/common/rx/object/ObservableObject'
 import {ObservableObjectBuilder} from '../../../main/common/rx/object/ObservableObjectBuilder'
+import {assert} from '../../../main/common/test/Assert'
 import {calcMemAllocate, CalcType} from '../../../main/common/test/Calc'
+import {describe, it} from '../../../main/common/test/Mocha'
 
 describe('ObservableObject', function() {
 	this.timeout(300000)

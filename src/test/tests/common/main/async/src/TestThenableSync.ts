@@ -547,9 +547,7 @@ export class TestThenableSync extends TestVariants<
 					action()
 				}
 
-				if (assert.errors) {
-					throw assert.errors[0]
-				}
+				assert.assertNotHandledErrors()
 
 				break
 			} catch (ex) {

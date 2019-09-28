@@ -1,4 +1,6 @@
 /* eslint-disable no-duplicate-imports,no-var */
+import {assert} from '../../../../main/common/test/Assert'
+import {describe, it} from '../../../../main/common/test/Mocha'
 import {func1, var1} from './src/module1'
 import module1 from './src/module1'
 import {var2 as var22} from './src/module2'

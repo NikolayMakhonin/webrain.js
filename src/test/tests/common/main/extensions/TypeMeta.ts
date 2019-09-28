@@ -1,5 +1,6 @@
 import {TypeMetaCollectionWithId} from '../../../../../main/common/extensions/TypeMeta'
 import {assert} from '../../../../../main/common/test/Assert'
+import {describe, it} from '../../../../../main/common/test/Mocha'
 
 describe('common > extensions > TypeMeta', function() {
 	it('base', function() {

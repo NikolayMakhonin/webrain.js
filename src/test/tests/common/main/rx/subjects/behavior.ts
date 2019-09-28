@@ -1,8 +1,8 @@
 /* eslint-disable class-methods-use-this */
 import {behavior} from '../../../../../../main/common/rx/subjects/behavior'
+import {assert} from '../../../../../../main/common/test/Assert'
+import {describe, it} from '../../../../../../main/common/test/Mocha'
 import {TestSubject} from '../src/TestSubject'
-
-declare const assert: any
 
 describe('common > main > rx > subjects > behavior', function() {
 	it('behavior', function() {

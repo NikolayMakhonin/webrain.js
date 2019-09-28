@@ -16,11 +16,12 @@ import {SortedList} from '../../../main/common/lists/SortedList'
 import {deepSubscribe} from '../../../main/common/rx/deep-subscribe/deep-subscribe'
 import {ObservableObject} from '../../../main/common/rx/object/ObservableObject'
 import {ObservableObjectBuilder} from '../../../main/common/rx/object/ObservableObjectBuilder'
+import {assert} from '../../../main/common/test/Assert'
+import {describe, it} from '../../../main/common/test/Mocha'
 import {createObject, TestDeepSubscribe} from '../../tests/common/main/rx/deep-subscribe/helpers/src/TestDeepSubscribe'
 
 const SetNative = Set
 require('./src/SetPolyfill')
-declare const assert: any
 declare const SetPolyfill: any
 
 export function compareDefault(o1, o2) {

@@ -11,9 +11,9 @@ import {connectorFactory} from '../../../../../../../main/common/rx/object/prope
 import {ICalcProperty} from '../../../../../../../main/common/rx/object/properties/contracts'
 import {resolvePath} from '../../../../../../../main/common/rx/object/properties/helpers'
 import {Property} from '../../../../../../../main/common/rx/object/properties/Property'
+import {assert} from '../../../../../../../main/common/test/Assert'
+import {describe, it} from '../../../../../../../main/common/test/Mocha'
 import {createObject, TestDeepSubscribe} from '../../deep-subscribe/helpers/src/TestDeepSubscribe'
-
-declare const assert: any
 
 describe('common > main > rx > properties > CalcObjectBuilder', function() {
 	this.timeout(30000)

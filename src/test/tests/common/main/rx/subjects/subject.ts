@@ -1,6 +1,6 @@
 import {Subject} from '../../../../../../main/common/rx/subjects/subject'
-
-declare const assert: any
+import {assert} from '../../../../../../main/common/test/Assert'
+import {describe, it} from '../../../../../../main/common/test/Mocha'
 
 describe('common > main > rx > subjects > subject', function() {
 	it('Subject', function() {

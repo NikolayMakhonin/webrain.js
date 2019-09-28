@@ -10,6 +10,7 @@ import {RuleBuilder} from '../../../../../../main/common/rx/deep-subscribe/RuleB
 import {Rule} from '../../../../../../main/common/rx/deep-subscribe/rules'
 import {IUnsubscribe} from '../../../../../../main/common/rx/subjects/observable'
 import {assert} from '../../../../../../main/common/test/Assert'
+import {describe, it} from '../../../../../../main/common/test/Mocha'
 
 describe('common > main > rx > deep-subscribe > iterate-rule', function() {
 	// function ruleToString(rule: IRule) {

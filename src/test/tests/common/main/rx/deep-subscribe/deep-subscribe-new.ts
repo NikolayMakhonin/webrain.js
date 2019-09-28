@@ -1,6 +1,8 @@
 /* tslint:disable:no-construct use-primitive-type no-shadowed-variable no-duplicate-string no-empty max-line-length */
 import {ListChangedType} from '../../../../../../main/common/lists/contracts/IListChanged'
 import {MapChangedType} from '../../../../../../main/common/lists/contracts/IMapChanged'
+import {assert} from '../../../../../../main/common/test/Assert'
+import {describe, it} from '../../../../../../main/common/test/Mocha'
 import {createObject, TestDeepSubscribe, TestDeepSubscribeVariants} from './helpers/src/TestDeepSubscribe'
 
 describe('common > main > rx > deep-subscribe > deep-subscribe new', function() {

@@ -2,8 +2,8 @@
 import {IPropertyChangedEvent} from '../../../../../../main/common/rx/object/IPropertyChanged'
 import {ObservableObject} from '../../../../../../main/common/rx/object/ObservableObject'
 import {ObservableObjectBuilder} from '../../../../../../main/common/rx/object/ObservableObjectBuilder'
-
-declare const assert: any
+import {assert} from '../../../../../../main/common/test/Assert'
+import {describe, it} from '../../../../../../main/common/test/Mocha'
 
 describe('common > main > rx > observable-object-builder', function() {
 	function assertEvents(events: IPropertyChangedEvent[], check: IPropertyChangedEvent[]) {

@@ -14,6 +14,7 @@ import {IRule, RuleType} from '../../../../../../main/common/rx/deep-subscribe/c
 import {RuleBuilder} from '../../../../../../main/common/rx/deep-subscribe/RuleBuilder'
 import {ObservableObjectBuilder} from '../../../../../../main/common/rx/object/ObservableObjectBuilder'
 import {assert} from '../../../../../../main/common/test/Assert'
+import {describe, it} from '../../../../../../main/common/test/Mocha'
 
 describe('common > main > rx > deep-subscribe > RuleBuilder', function() {
 	interface IObject {

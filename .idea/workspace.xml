@@ -7,78 +7,80 @@
     <option name="SHOW_STRUCTURE" value="true" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="69b2ee16-521b-4efd-b473-8e19e3df4d09" name="Default Changelist" comment="Implementing deepSubscribe full-fledged tests...">
+    <list default="true" id="69b2ee16-521b-4efd-b473-8e19e3df4d09" name="Default Changelist" comment="CalcProperty refactoring. Tests OK.">
+      <change afterPath="$PROJECT_DIR$/src/main/common/test/Mocha.d.ts" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/common/test/Mocha.ts" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/common/test/helpers.ts" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/common/test/unhandledErrors.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/jsLibraryMappings.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/jsLibraryMappings.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/runConfigurations/Watch.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/runConfigurations/Watch.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/webrain.iml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/webrain.iml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/dist/js/main/common/index.js" beforeDir="false" afterPath="$PROJECT_DIR$/dist/js/main/common/index.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/dist/js/main/common/rx/deep-subscribe/RuleBuilder.js" beforeDir="false" afterPath="$PROJECT_DIR$/dist/js/main/common/rx/deep-subscribe/RuleBuilder.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/dist/js/main/common/rx/deep-subscribe/contracts/rules.js" beforeDir="false" afterPath="$PROJECT_DIR$/dist/js/main/common/rx/deep-subscribe/contracts/rules.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/dist/js/main/common/rx/deep-subscribe/contracts/rule-subscribe.js" beforeDir="false" afterPath="$PROJECT_DIR$/dist/js/main/common/rx/deep-subscribe/contracts/rule-subscribe.js" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/dist/js/main/common/rx/deep-subscribe/deep-subscribe.js" beforeDir="false" afterPath="$PROJECT_DIR$/dist/js/main/common/rx/deep-subscribe/deep-subscribe.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/dist/js/main/common/rx/deep-subscribe/helpers/func-properties-path.js" beforeDir="false" afterPath="$PROJECT_DIR$/dist/js/main/common/rx/deep-subscribe/helpers/func-properties-path.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/dist/js/main/common/rx/deep-subscribe/iterate-rule.js" beforeDir="false" afterPath="$PROJECT_DIR$/dist/js/main/common/rx/deep-subscribe/iterate-rule.js" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/dist/js/main/common/rx/deep-subscribe/rules-subscribe.js" beforeDir="false" afterPath="$PROJECT_DIR$/dist/js/main/common/rx/deep-subscribe/rules-subscribe.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/dist/js/main/common/rx/deep-subscribe/rules.js" beforeDir="false" afterPath="$PROJECT_DIR$/dist/js/main/common/rx/deep-subscribe/rules.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/dist/js/main/common/rx/object/ObservableObject.js" beforeDir="false" afterPath="$PROJECT_DIR$/dist/js/main/common/rx/object/ObservableObject.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/dist/js/main/common/rx/object/ObservableObjectBuilder.js" beforeDir="false" afterPath="$PROJECT_DIR$/dist/js/main/common/rx/object/ObservableObjectBuilder.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/dist/js/main/common/rx/object/properties/CalcObjectBuilder.js" beforeDir="false" afterPath="$PROJECT_DIR$/dist/js/main/common/rx/object/properties/CalcObjectBuilder.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/dist/js/main/common/rx/object/properties/CalcProperty.js" beforeDir="false" afterPath="$PROJECT_DIR$/dist/js/main/common/rx/object/properties/CalcProperty.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/dist/js/main/common/rx/object/properties/CalcPropertyBuilder.js" beforeDir="false" afterPath="$PROJECT_DIR$/dist/js/main/common/rx/object/properties/CalcPropertyBuilder.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/dist/js/main/common/rx/object/properties/ConnectorBuilder.js" beforeDir="false" afterPath="$PROJECT_DIR$/dist/js/main/common/rx/object/properties/ConnectorBuilder.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/dist/js/main/common/rx/object/properties/DependenciesBuilder.js" beforeDir="false" afterPath="$PROJECT_DIR$/dist/js/main/common/rx/object/properties/DependenciesBuilder.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/dist/js/test/performance/node/ObservableObject.js" beforeDir="false" afterPath="$PROJECT_DIR$/dist/js/test/performance/node/ObservableObject.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/dist/js/test/performance/node/fundamental-operations.js" beforeDir="false" afterPath="$PROJECT_DIR$/dist/js/test/performance/node/fundamental-operations.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/dist/js/test/performance/node/resolvePath.js" beforeDir="false" afterPath="$PROJECT_DIR$/dist/js/test/performance/node/resolvePath.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/dist/js/main/common/test/Assert.js" beforeDir="false" afterPath="$PROJECT_DIR$/dist/js/main/common/test/Assert.js" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/dist/js/test/tests/common/main/rx/deep-subscribe/RuleBuilder.js" beforeDir="false" afterPath="$PROJECT_DIR$/dist/js/test/tests/common/main/rx/deep-subscribe/RuleBuilder.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/dist/js/test/tests/common/main/rx/deep-subscribe/deep-subscribe-new.js" beforeDir="false" afterPath="$PROJECT_DIR$/dist/js/test/tests/common/main/rx/deep-subscribe/deep-subscribe-new.js" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/dist/js/test/tests/common/main/rx/deep-subscribe/deep-subscribe.js" beforeDir="false" afterPath="$PROJECT_DIR$/dist/js/test/tests/common/main/rx/deep-subscribe/deep-subscribe.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/dist/js/test/tests/common/main/rx/deep-subscribe/helpers/Tester.js" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/dist/js/test/tests/common/main/rx/deep-subscribe/iterate-rule.js" beforeDir="false" afterPath="$PROJECT_DIR$/dist/js/test/tests/common/main/rx/deep-subscribe/iterate-rule.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/dist/js/test/tests/common/main/rx/object/observable-object-builder.js" beforeDir="false" afterPath="$PROJECT_DIR$/dist/js/test/tests/common/main/rx/object/observable-object-builder.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/dist/js/test/tests/common/main/rx/deep-subscribe/helpers/src/TestDeepSubscribe.js" beforeDir="false" afterPath="$PROJECT_DIR$/dist/js/test/tests/common/main/rx/deep-subscribe/helpers/src/TestDeepSubscribe.js" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/dist/js/test/tests/common/main/rx/object/properties/CalcObjectBuilder.js" beforeDir="false" afterPath="$PROJECT_DIR$/dist/js/test/tests/common/main/rx/object/properties/CalcObjectBuilder.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/dist/js/test/tests/common/main/rx/object/properties/ConnectorBuilder.js" beforeDir="false" afterPath="$PROJECT_DIR$/dist/js/test/tests/common/main/rx/object/properties/ConnectorBuilder.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/dist/mjs/main/common/index.js" beforeDir="false" afterPath="$PROJECT_DIR$/dist/mjs/main/common/index.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/dist/mjs/main/common/rx/deep-subscribe/RuleBuilder.js" beforeDir="false" afterPath="$PROJECT_DIR$/dist/mjs/main/common/rx/deep-subscribe/RuleBuilder.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/dist/mjs/main/common/rx/deep-subscribe/contracts/rules.js" beforeDir="false" afterPath="$PROJECT_DIR$/dist/mjs/main/common/rx/deep-subscribe/contracts/rules.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/dist/mjs/main/common/rx/deep-subscribe/contracts/rule-subscribe.js" beforeDir="false" afterPath="$PROJECT_DIR$/dist/mjs/main/common/rx/deep-subscribe/contracts/rule-subscribe.js" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/dist/mjs/main/common/rx/deep-subscribe/deep-subscribe.js" beforeDir="false" afterPath="$PROJECT_DIR$/dist/mjs/main/common/rx/deep-subscribe/deep-subscribe.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/dist/mjs/main/common/rx/deep-subscribe/iterate-rule.js" beforeDir="false" afterPath="$PROJECT_DIR$/dist/mjs/main/common/rx/deep-subscribe/iterate-rule.js" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/dist/mjs/main/common/rx/deep-subscribe/rules-subscribe.js" beforeDir="false" afterPath="$PROJECT_DIR$/dist/mjs/main/common/rx/deep-subscribe/rules-subscribe.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/dist/mjs/main/common/rx/deep-subscribe/rules.js" beforeDir="false" afterPath="$PROJECT_DIR$/dist/mjs/main/common/rx/deep-subscribe/rules.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/dist/mjs/main/common/rx/object/ObservableObject.js" beforeDir="false" afterPath="$PROJECT_DIR$/dist/mjs/main/common/rx/object/ObservableObject.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/dist/mjs/main/common/rx/object/ObservableObjectBuilder.js" beforeDir="false" afterPath="$PROJECT_DIR$/dist/mjs/main/common/rx/object/ObservableObjectBuilder.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/dist/mjs/main/common/rx/object/properties/CalcObjectBuilder.js" beforeDir="false" afterPath="$PROJECT_DIR$/dist/mjs/main/common/rx/object/properties/CalcObjectBuilder.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/dist/mjs/main/common/rx/object/properties/CalcProperty.js" beforeDir="false" afterPath="$PROJECT_DIR$/dist/mjs/main/common/rx/object/properties/CalcProperty.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/dist/mjs/main/common/rx/object/properties/CalcPropertyBuilder.js" beforeDir="false" afterPath="$PROJECT_DIR$/dist/mjs/main/common/rx/object/properties/CalcPropertyBuilder.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/dist/mjs/main/common/rx/object/properties/ConnectorBuilder.js" beforeDir="false" afterPath="$PROJECT_DIR$/dist/mjs/main/common/rx/object/properties/ConnectorBuilder.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/dist/mjs/main/common/rx/object/properties/DependenciesBuilder.js" beforeDir="false" afterPath="$PROJECT_DIR$/dist/mjs/main/common/rx/object/properties/DependenciesBuilder.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/dist/mjs/test/performance/node/ObservableObject.js" beforeDir="false" afterPath="$PROJECT_DIR$/dist/mjs/test/performance/node/ObservableObject.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/dist/mjs/test/performance/node/fundamental-operations.js" beforeDir="false" afterPath="$PROJECT_DIR$/dist/mjs/test/performance/node/fundamental-operations.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/dist/mjs/test/performance/node/resolvePath.js" beforeDir="false" afterPath="$PROJECT_DIR$/dist/mjs/test/performance/node/resolvePath.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/dist/mjs/main/common/test/Assert.js" beforeDir="false" afterPath="$PROJECT_DIR$/dist/mjs/main/common/test/Assert.js" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/dist/mjs/test/tests/common/main/rx/deep-subscribe/RuleBuilder.js" beforeDir="false" afterPath="$PROJECT_DIR$/dist/mjs/test/tests/common/main/rx/deep-subscribe/RuleBuilder.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/dist/mjs/test/tests/common/main/rx/deep-subscribe/deep-subscribe-new.js" beforeDir="false" afterPath="$PROJECT_DIR$/dist/mjs/test/tests/common/main/rx/deep-subscribe/deep-subscribe-new.js" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/dist/mjs/test/tests/common/main/rx/deep-subscribe/deep-subscribe.js" beforeDir="false" afterPath="$PROJECT_DIR$/dist/mjs/test/tests/common/main/rx/deep-subscribe/deep-subscribe.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/dist/mjs/test/tests/common/main/rx/deep-subscribe/helpers/Tester.js" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/dist/mjs/test/tests/common/main/rx/deep-subscribe/iterate-rule.js" beforeDir="false" afterPath="$PROJECT_DIR$/dist/mjs/test/tests/common/main/rx/deep-subscribe/iterate-rule.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/dist/mjs/test/tests/common/main/rx/object/observable-object-builder.js" beforeDir="false" afterPath="$PROJECT_DIR$/dist/mjs/test/tests/common/main/rx/object/observable-object-builder.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/dist/mjs/test/tests/common/main/rx/deep-subscribe/helpers/src/TestDeepSubscribe.js" beforeDir="false" afterPath="$PROJECT_DIR$/dist/mjs/test/tests/common/main/rx/deep-subscribe/helpers/src/TestDeepSubscribe.js" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/dist/mjs/test/tests/common/main/rx/object/properties/CalcObjectBuilder.js" beforeDir="false" afterPath="$PROJECT_DIR$/dist/mjs/test/tests/common/main/rx/object/properties/CalcObjectBuilder.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/dist/mjs/test/tests/common/main/rx/object/properties/ConnectorBuilder.js" beforeDir="false" afterPath="$PROJECT_DIR$/dist/mjs/test/tests/common/main/rx/object/properties/ConnectorBuilder.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/dist/types/common/helpers/helpers.d.ts" beforeDir="false" afterPath="$PROJECT_DIR$/dist/types/common/helpers/helpers.d.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/dist/types/common/index.d.ts" beforeDir="false" afterPath="$PROJECT_DIR$/dist/types/common/index.d.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/dist/types/common/rx/deep-subscribe/RuleBuilder.d.ts" beforeDir="false" afterPath="$PROJECT_DIR$/dist/types/common/rx/deep-subscribe/RuleBuilder.d.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/dist/types/common/rx/deep-subscribe/contracts/common.d.ts" beforeDir="false" afterPath="$PROJECT_DIR$/dist/types/common/rx/deep-subscribe/contracts/common.d.ts" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/dist/types/common/rx/deep-subscribe/contracts/rule-subscribe.d.ts" beforeDir="false" afterPath="$PROJECT_DIR$/dist/types/common/rx/deep-subscribe/contracts/rule-subscribe.d.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/dist/types/common/rx/deep-subscribe/contracts/rules.d.ts" beforeDir="false" afterPath="$PROJECT_DIR$/dist/types/common/rx/deep-subscribe/contracts/rules.d.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/dist/types/common/rx/deep-subscribe/deep-subscribe.d.ts" beforeDir="false" afterPath="$PROJECT_DIR$/dist/types/common/rx/deep-subscribe/deep-subscribe.d.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/dist/types/common/rx/deep-subscribe/iterate-rule.d.ts" beforeDir="false" afterPath="$PROJECT_DIR$/dist/types/common/rx/deep-subscribe/iterate-rule.d.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/dist/types/common/rx/deep-subscribe/rules-subscribe.d.ts" beforeDir="false" afterPath="$PROJECT_DIR$/dist/types/common/rx/deep-subscribe/rules-subscribe.d.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/dist/types/common/rx/deep-subscribe/rules.d.ts" beforeDir="false" afterPath="$PROJECT_DIR$/dist/types/common/rx/deep-subscribe/rules.d.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/dist/types/common/rx/object/ObservableObject.d.ts" beforeDir="false" afterPath="$PROJECT_DIR$/dist/types/common/rx/object/ObservableObject.d.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/dist/types/common/rx/object/ObservableObjectBuilder.d.ts" beforeDir="false" afterPath="$PROJECT_DIR$/dist/types/common/rx/object/ObservableObjectBuilder.d.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/dist/types/common/rx/object/properties/CalcObjectBuilder.d.ts" beforeDir="false" afterPath="$PROJECT_DIR$/dist/types/common/rx/object/properties/CalcObjectBuilder.d.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/dist/types/common/rx/object/properties/CalcPropertyBuilder.d.ts" beforeDir="false" afterPath="$PROJECT_DIR$/dist/types/common/rx/object/properties/CalcPropertyBuilder.d.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/dist/types/common/rx/object/properties/ConnectorBuilder.d.ts" beforeDir="false" afterPath="$PROJECT_DIR$/dist/types/common/rx/object/properties/ConnectorBuilder.d.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/dist/types/common/rx/object/properties/DependenciesBuilder.d.ts" beforeDir="false" afterPath="$PROJECT_DIR$/dist/types/common/rx/object/properties/DependenciesBuilder.d.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/dist/types/common/rx/object/properties/Property.d.ts" beforeDir="false" afterPath="$PROJECT_DIR$/dist/types/common/rx/object/properties/Property.d.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/dist/types/common/rx/subjects/observable.d.ts" beforeDir="false" afterPath="$PROJECT_DIR$/dist/types/common/rx/subjects/observable.d.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/common/rx/deep-subscribe/deep-subscribe.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/common/rx/deep-subscribe/deep-subscribe.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/common/rx/deep-subscribe/rules-subscribe.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/common/rx/deep-subscribe/rules-subscribe.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/env/mocha/configs/babel/register.js" beforeDir="false" afterPath="$PROJECT_DIR$/env/mocha/configs/babel/register.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/env/mocha/configs/no-babel/register.js" beforeDir="false" afterPath="$PROJECT_DIR$/env/mocha/configs/no-babel/register.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/env/mocha/register-tests.js" beforeDir="false" afterPath="$PROJECT_DIR$/env/mocha/register-tests.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/package.json" beforeDir="false" afterPath="$PROJECT_DIR$/package.json" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/common/test/Assert.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/common/test/Assert.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/test/.eslintrc" beforeDir="false" afterPath="$PROJECT_DIR$/src/test/.eslintrc" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/test/performance/node/ObjectMerger.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/test/performance/node/ObjectMerger.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/test/performance/node/ObservableObject.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/test/performance/node/ObservableObject.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/test/performance/node/Variants.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/test/performance/node/Variants.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/test/performance/node/fundamental-operations.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/test/performance/node/fundamental-operations.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/test/performance/node/resolvePath.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/test/performance/node/resolvePath.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/test/tests/browser/index.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/test/tests/browser/index.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/test/tests/browser/isBrowser.js" beforeDir="false" afterPath="$PROJECT_DIR$/src/test/tests/browser/isBrowser.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/test/tests/common/env/class.js" beforeDir="false" afterPath="$PROJECT_DIR$/src/test/tests/common/env/class.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/test/tests/common/env/modules.js" beforeDir="false" afterPath="$PROJECT_DIR$/src/test/tests/common/env/modules.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/test/tests/common/main/async/ThenableSync.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/test/tests/common/main/async/ThenableSync.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/test/tests/common/main/async/src/TestThenableSync.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/test/tests/common/main/async/src/TestThenableSync.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/test/tests/common/main/extensions/TypeMeta.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/test/tests/common/main/extensions/TypeMeta.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/test/tests/common/main/extensions/merge/ObjectMerger.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/test/tests/common/main/extensions/merge/ObjectMerger.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/test/tests/common/main/extensions/serialization/serializers.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/test/tests/common/main/extensions/serialization/serializers.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/test/tests/common/main/index.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/test/tests/common/main/index.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/test/tests/common/main/lists/ObservableMap.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/test/tests/common/main/lists/ObservableMap.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/test/tests/common/main/lists/ObservableSet.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/test/tests/common/main/lists/ObservableSet.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/test/tests/common/main/lists/SortedList.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/test/tests/common/main/lists/SortedList.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/test/tests/common/main/lists/helpers/array.js" beforeDir="false" afterPath="$PROJECT_DIR$/src/test/tests/common/main/lists/helpers/array.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/test/tests/common/main/lists/helpers/compare.js" beforeDir="false" afterPath="$PROJECT_DIR$/src/test/tests/common/main/lists/helpers/compare.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/test/tests/common/main/rx/deep-subscribe/RuleBuilder.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/test/tests/common/main/rx/deep-subscribe/RuleBuilder.ts" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/test/tests/common/main/rx/deep-subscribe/deep-subscribe-new.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/test/tests/common/main/rx/deep-subscribe/deep-subscribe-new.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/test/tests/common/main/rx/deep-subscribe/deep-subscribe.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/test/tests/common/main/rx/deep-subscribe/deep-subscribe.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/test/tests/common/main/rx/deep-subscribe/helpers/func-properties-path.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/test/tests/common/main/rx/deep-subscribe/helpers/func-properties-path.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/test/tests/common/main/rx/deep-subscribe/iterate-rule.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/test/tests/common/main/rx/deep-subscribe/iterate-rule.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/test/tests/common/main/rx/deferred-calc/DeferredCalc.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/test/tests/common/main/rx/deferred-calc/DeferredCalc.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/test/tests/common/main/rx/deferred-calc/timing.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/test/tests/common/main/rx/deferred-calc/timing.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/test/tests/common/main/rx/object/observable-object-builder-prototype.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/test/tests/common/main/rx/object/observable-object-builder-prototype.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/test/tests/common/main/rx/object/observable-object-builder.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/test/tests/common/main/rx/object/observable-object-builder.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/test/tests/common/main/rx/object/properties/CalcObjectBuilder.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/test/tests/common/main/rx/object/properties/CalcObjectBuilder.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/test/tests/common/main/rx/object/properties/CalcProperty.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/test/tests/common/main/rx/object/properties/CalcProperty.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/test/tests/common/main/rx/object/properties/ConnectorBuilder.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/test/tests/common/main/rx/object/properties/ConnectorBuilder.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/test/tests/common/main/rx/subjects/behavior.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/test/tests/common/main/rx/subjects/behavior.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/test/tests/common/main/rx/subjects/hasSubscribers.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/test/tests/common/main/rx/subjects/hasSubscribers.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/test/tests/common/main/rx/subjects/observable.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/test/tests/common/main/rx/subjects/observable.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/test/tests/common/main/rx/subjects/subject.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/test/tests/common/main/rx/subjects/subject.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/test/tests/common/main/test/DeepCloneEqual.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/test/tests/common/main/test/DeepCloneEqual.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/test/tests/common/main/test/Variants.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/test/tests/common/main/test/Variants.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/test/tests/node/index.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/test/tests/node/index.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/test/tests/node/isNode.js" beforeDir="false" afterPath="$PROJECT_DIR$/src/test/tests/node/isNode.js" afterDir="false" />
     </list>
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
     <option name="SHOW_DIALOG" value="false" />
@@ -121,7 +123,7 @@
     <property name="WebServerToolWindowFactoryState" value="false" />
     <property name="auto.test.manager.delay" value="5000" />
     <property name="javascript.karma.karma_node_package_dir" value="" />
-    <property name="last_opened_file_path" value="$PROJECT_DIR$/src/test/tests/common/main/rx/deep-subscribe" />
+    <property name="last_opened_file_path" value="$PROJECT_DIR$/src/main/common/test/helpers.ts" />
     <property name="node.js.detected.package.eslint" value="true" />
     <property name="node.js.detected.package.standard" value="true" />
     <property name="node.js.detected.package.tslint" value="true" />
@@ -136,28 +138,28 @@
     <property name="prettierjs.PrettierConfiguration.Package" value="L:\Work\_GIT\GitHub\NodeJs\modules\webrain\node_modules\prettier" />
     <property name="restartRequiresConfirmation" value="false" />
     <property name="run.code.analysis.last.selected.profile" value="pProject Default" />
-    <property name="settings.editor.selected.configurable" value="reference.settings.ide.settings.file-colors" />
+    <property name="settings.editor.selected.configurable" value="JavaScript.Libraries" />
     <property name="ts.external.directory.path" value="L:\Work\_GIT\GitHub\NodeJs\modules\webrain\node_modules\typescript\lib" />
   </component>
   <component name="RecentsManager">
-    <key name="CopyFile.RECENT_KEYS">
-      <recent name="L:\Work\_GIT\GitHub\NodeJs\modules\webrain\src\test\tests\common\main\rx\deep-subscribe" />
-      <recent name="L:\Work\_GIT\GitHub\NodeJs\modules\webrain\src\test\performance\node" />
-      <recent name="L:\Work\_GIT\GitHub\NodeJs\modules\webrain\src\test\tests\common\main\test" />
-    </key>
-    <key name="es6.move.members.recent.items">
-      <recent name="L:\Work\_GIT\GitHub\NodeJs\modules\webrain\src\main\common\test\Calc.ts" />
-      <recent name="L:\Work\_GIT\GitHub\NodeJs\modules\webrain\src\main\common\test\Variants.ts" />
-      <recent name="L:\Work\_GIT\GitHub\NodeJs\modules\webrain\src\main\common\rx\deep-subscribe\contracts\IRuleBuilder.ts" />
-      <recent name="L:\Work\_GIT\GitHub\NodeJs\modules\webrain\src\main\common\rx\subjects\observable.ts" />
-      <recent name="L:\Work\_GIT\GitHub\NodeJs\modules\webrain\src\main\common\rx\object\properties\contracts.ts" />
-    </key>
     <key name="MoveFile.RECENT_KEYS">
       <recent name="L:\Work\_GIT\GitHub\NodeJs\modules\webrain\src\test\tests\common\main\rx\deep-subscribe\helpers\src" />
       <recent name="L:\Work\_GIT\GitHub\NodeJs\modules\webrain\env\mocha\configs\no-babel" />
       <recent name="L:\Work\_GIT\GitHub\NodeJs\modules\webrain\env\mocha\configs\babel" />
       <recent name="L:\Work\_GIT\GitHub\NodeJs\modules\webrain\env\karma" />
       <recent name="L:\Work\_GIT\GitHub\NodeJs\modules\webrain\env\karma\configs" />
+    </key>
+    <key name="es6.move.members.recent.items">
+      <recent name="L:\Work\_GIT\GitHub\NodeJs\modules\webrain\src\main\common\test\helpers.ts" />
+      <recent name="L:\Work\_GIT\GitHub\NodeJs\modules\webrain\src\main\common\test\Calc.ts" />
+      <recent name="L:\Work\_GIT\GitHub\NodeJs\modules\webrain\src\main\common\test\Variants.ts" />
+      <recent name="L:\Work\_GIT\GitHub\NodeJs\modules\webrain\src\main\common\rx\deep-subscribe\contracts\IRuleBuilder.ts" />
+      <recent name="L:\Work\_GIT\GitHub\NodeJs\modules\webrain\src\main\common\rx\subjects\observable.ts" />
+    </key>
+    <key name="CopyFile.RECENT_KEYS">
+      <recent name="L:\Work\_GIT\GitHub\NodeJs\modules\webrain\src\test\tests\common\main\rx\deep-subscribe" />
+      <recent name="L:\Work\_GIT\GitHub\NodeJs\modules\webrain\src\test\performance\node" />
+      <recent name="L:\Work\_GIT\GitHub\NodeJs\modules\webrain\src\test\tests\common\main\test" />
     </key>
   </component>
   <component name="RunDashboard">
@@ -172,12 +174,25 @@
       </list>
     </option>
   </component>
-  <component name="RunManager" selected="Mocha.common &gt; main &gt; rx &gt; deep-subscribe &gt; deep-subscribe new.chain of same objects: propertyChanged with oldValue === newValue">
+  <component name="RunManager" selected="Mocha.common &gt; main &gt; rx &gt; deep-subscribe &gt; deep-subscribe new.ruleFactoriesVariants self async">
     <configuration default="true" type="JavaScriptTestRunnerKarma">
-      <config-file value="$PROJECT_DIR$/env/karma/karma.conf.tests.js" />
+      <config-file value="$PROJECT_DIR$/env/karma/configs/dev.js" />
       <karma-package-dir value="$PROJECT_DIR$/node_modules/karma" />
       <node-interpreter value="node" />
       <envs />
+      <method v="2" />
+    </configuration>
+    <configuration name="common &gt; main &gt; rx &gt; deep-subscribe &gt; deep-subscribe new.ruleFactoriesVariants self async" type="JavaScriptTestRunnerKarma" temporary="true" nameIsGenerated="true">
+      <config-file value="$PROJECT_DIR$/env/karma/configs/dev.js" />
+      <karma-package-dir value="$PROJECT_DIR$/node_modules/karma" />
+      <working-directory value="$PROJECT_DIR$" />
+      <node-interpreter value="node" />
+      <envs />
+      <scope-kind value="TEST" />
+      <test-names>
+        <test-name value="common &gt; main &gt; rx &gt; deep-subscribe &gt; deep-subscribe new" />
+        <test-name value="ruleFactoriesVariants self async" />
+      </test-names>
       <method v="2" />
     </configuration>
     <configuration default="true" type="NodeJSConfigurationType" path-to-node="node" node-parameters="--max-old-space-size=4096" working-dir="$PROJECT_DIR$">
@@ -210,6 +225,18 @@
       <test-pattern>$PROJECT_DIR$/src/test/tests/common/main/rx/deep-subscribe/**/*.ts</test-pattern>
       <method v="2" />
     </configuration>
+    <configuration name="RX - Tests" type="mocha-javascript-test-runner">
+      <node-interpreter>node</node-interpreter>
+      <node-options>--max-old-space-size=4096</node-options>
+      <mocha-package>$PROJECT_DIR$/node_modules/mocha</mocha-package>
+      <working-directory>$PROJECT_DIR$</working-directory>
+      <pass-parent-env>true</pass-parent-env>
+      <ui>bdd</ui>
+      <extra-mocha-options>--opts ./env/mocha/configs/babel/mocha.opts --watch</extra-mocha-options>
+      <test-kind>PATTERN</test-kind>
+      <test-pattern>$PROJECT_DIR$/src/test/tests/common/main/rx/**/*.{ts,js}</test-pattern>
+      <method v="2" />
+    </configuration>
     <configuration default="true" type="mocha-javascript-test-runner">
       <node-interpreter>node</node-interpreter>
       <node-options>--max-old-space-size=4096</node-options>
@@ -222,22 +249,7 @@
       <test-pattern>./src/test/tests/{common,node}/**/*.*</test-pattern>
       <method v="2" />
     </configuration>
-    <configuration name="common &gt; main &gt; rx &gt; deep-subscribe &gt; deep-subscribe new" type="mocha-javascript-test-runner" temporary="true" nameIsGenerated="true">
-      <node-interpreter>node</node-interpreter>
-      <node-options>--max-old-space-size=4096</node-options>
-      <mocha-package>$PROJECT_DIR$/node_modules/mocha</mocha-package>
-      <working-directory>$PROJECT_DIR$</working-directory>
-      <pass-parent-env>true</pass-parent-env>
-      <ui>bdd</ui>
-      <extra-mocha-options>--opts ./env/mocha/configs/babel/mocha.opts --watch</extra-mocha-options>
-      <test-kind>SUITE</test-kind>
-      <test-file>$PROJECT_DIR$/src/test/tests/common/main/rx/deep-subscribe/deep-subscribe-new.ts</test-file>
-      <test-names>
-        <name value="common &gt; main &gt; rx &gt; deep-subscribe &gt; deep-subscribe new" />
-      </test-names>
-      <method v="2" />
-    </configuration>
-    <configuration name="common &gt; main &gt; rx &gt; deep-subscribe &gt; deep-subscribe new.chain of same objects: propertyChanged with oldValue === newValue" type="mocha-javascript-test-runner" temporary="true" nameIsGenerated="true">
+    <configuration name="common &gt; env &gt; modules.class" type="mocha-javascript-test-runner" temporary="true" nameIsGenerated="true">
       <node-interpreter>node</node-interpreter>
       <node-options>--max-old-space-size=4096</node-options>
       <mocha-package>$PROJECT_DIR$/node_modules/mocha</mocha-package>
@@ -246,58 +258,59 @@
       <ui>bdd</ui>
       <extra-mocha-options>--opts ./env/mocha/configs/babel/mocha.opts --watch</extra-mocha-options>
       <test-kind>TEST</test-kind>
+      <test-file>$PROJECT_DIR$/src/test/tests/common/env/class.js</test-file>
+      <test-names>
+        <name value="common &gt; env &gt; modules" />
+        <name value="class" />
+      </test-names>
+      <method v="2" />
+    </configuration>
+    <configuration name="common &gt; extensions &gt; merge &gt; ObjectMerger.combinations.strings" type="mocha-javascript-test-runner" temporary="true" nameIsGenerated="true">
+      <node-interpreter>node</node-interpreter>
+      <node-options>--max-old-space-size=4096</node-options>
+      <mocha-package>$PROJECT_DIR$/node_modules/mocha</mocha-package>
+      <working-directory>$PROJECT_DIR$</working-directory>
+      <pass-parent-env>true</pass-parent-env>
+      <ui>bdd</ui>
+      <extra-mocha-options>--opts ./env/mocha/configs/babel/mocha.opts --watch</extra-mocha-options>
+      <test-kind>TEST</test-kind>
+      <test-file>$PROJECT_DIR$/src/test/tests/common/main/extensions/merge/ObjectMerger.ts</test-file>
+      <test-names>
+        <name value="common &gt; extensions &gt; merge &gt; ObjectMerger" />
+        <name value="combinations" />
+        <name value="strings" />
+      </test-names>
+      <method v="2" />
+    </configuration>
+    <configuration name="common &gt; main &gt; helpers &gt; ThenableSync.variants" type="mocha-javascript-test-runner" temporary="true" nameIsGenerated="true">
+      <node-interpreter>node</node-interpreter>
+      <node-options>--max-old-space-size=4096</node-options>
+      <mocha-package>$PROJECT_DIR$/node_modules/mocha</mocha-package>
+      <working-directory>$PROJECT_DIR$</working-directory>
+      <pass-parent-env>true</pass-parent-env>
+      <ui>bdd</ui>
+      <extra-mocha-options>--opts ./env/mocha/configs/babel/mocha.opts --watch</extra-mocha-options>
+      <test-kind>TEST</test-kind>
+      <test-file>$PROJECT_DIR$/src/test/tests/common/main/async/ThenableSync.ts</test-file>
+      <test-names>
+        <name value="common &gt; main &gt; helpers &gt; ThenableSync" />
+        <name value="variants" />
+      </test-names>
+      <method v="2" />
+    </configuration>
+    <configuration name="common &gt; main &gt; rx &gt; deep-subscribe &gt; deep-subscribe new.ruleFactoriesVariants self async" type="mocha-javascript-test-runner" temporary="true" nameIsGenerated="true">
+      <node-interpreter>node</node-interpreter>
+      <node-options>--max-old-space-size=4096</node-options>
+      <mocha-package>$PROJECT_DIR$/node_modules/mocha</mocha-package>
+      <working-directory>$PROJECT_DIR$</working-directory>
+      <pass-parent-env>true</pass-parent-env>
+      <ui>bdd</ui>
+      <extra-mocha-options>--opts ./env/mocha/configs/babel/mocha.opts --watch</extra-mocha-options>
+      <test-kind>TEST</test-kind>
       <test-file>$PROJECT_DIR$/src/test/tests/common/main/rx/deep-subscribe/deep-subscribe-new.ts</test-file>
       <test-names>
         <name value="common &gt; main &gt; rx &gt; deep-subscribe &gt; deep-subscribe new" />
-        <name value="chain of same objects: propertyChanged with oldValue === newValue" />
-      </test-names>
-      <method v="2" />
-    </configuration>
-    <configuration name="common &gt; main &gt; rx &gt; deep-subscribe &gt; deep-subscribe.chain of same objects" type="mocha-javascript-test-runner" temporary="true" nameIsGenerated="true">
-      <node-interpreter>node</node-interpreter>
-      <node-options>--max-old-space-size=4096</node-options>
-      <mocha-package>$PROJECT_DIR$/node_modules/mocha</mocha-package>
-      <working-directory>$PROJECT_DIR$</working-directory>
-      <pass-parent-env>true</pass-parent-env>
-      <ui>bdd</ui>
-      <extra-mocha-options>--opts ./env/mocha/configs/babel/mocha.opts</extra-mocha-options>
-      <test-kind>TEST</test-kind>
-      <test-file>$PROJECT_DIR$/src/test/tests/common/main/rx/deep-subscribe/deep-subscribe.ts</test-file>
-      <test-names>
-        <name value="common &gt; main &gt; rx &gt; deep-subscribe &gt; deep-subscribe" />
-        <name value="chain of same objects" />
-      </test-names>
-      <method v="2" />
-    </configuration>
-    <configuration name="common &gt; main &gt; rx &gt; properties &gt; CalcObjectBuilder.deepSubscribe calc circular async" type="mocha-javascript-test-runner" temporary="true" nameIsGenerated="true">
-      <node-interpreter>node</node-interpreter>
-      <node-options>--max-old-space-size=4096</node-options>
-      <mocha-package>$PROJECT_DIR$/node_modules/mocha</mocha-package>
-      <working-directory>$PROJECT_DIR$</working-directory>
-      <pass-parent-env>true</pass-parent-env>
-      <ui>bdd</ui>
-      <extra-mocha-options>--opts ./env/mocha/configs/babel/mocha.opts</extra-mocha-options>
-      <test-kind>TEST</test-kind>
-      <test-file>$PROJECT_DIR$/src/test/tests/common/main/rx/object/properties/CalcObjectBuilder.ts</test-file>
-      <test-names>
-        <name value="common &gt; main &gt; rx &gt; properties &gt; CalcObjectBuilder" />
-        <name value="deepSubscribe calc circular async" />
-      </test-names>
-      <method v="2" />
-    </configuration>
-    <configuration name="common &gt; main &gt; rx &gt; properties &gt; CalcObjectBuilder.deepSubscribe calc circular sync" type="mocha-javascript-test-runner" temporary="true" nameIsGenerated="true">
-      <node-interpreter>node</node-interpreter>
-      <node-options>--max-old-space-size=4096</node-options>
-      <mocha-package>$PROJECT_DIR$/node_modules/mocha</mocha-package>
-      <working-directory>$PROJECT_DIR$</working-directory>
-      <pass-parent-env>true</pass-parent-env>
-      <ui>bdd</ui>
-      <extra-mocha-options>--opts ./env/mocha/configs/babel/mocha.opts</extra-mocha-options>
-      <test-kind>TEST</test-kind>
-      <test-file>$PROJECT_DIR$/src/test/tests/common/main/rx/object/properties/CalcObjectBuilder.ts</test-file>
-      <test-names>
-        <name value="common &gt; main &gt; rx &gt; properties &gt; CalcObjectBuilder" />
-        <name value="deepSubscribe calc circular sync" />
+        <name value="ruleFactoriesVariants self async" />
       </test-names>
       <method v="2" />
     </configuration>
@@ -319,25 +332,26 @@
       <item itemvalue="Karma.CI" />
       <item itemvalue="Karma.Coverage" />
       <item itemvalue="Karma.Tests" />
+      <item itemvalue="Karma.common &gt; main &gt; rx &gt; deep-subscribe &gt; deep-subscribe new.ruleFactoriesVariants self async" />
       <item itemvalue="Mocha.DeferredCalc (Coverage)" />
       <item itemvalue="Mocha.L:\Work\_GIT\GitHub\NodeJs\modules\tree-state-manager\src\test\tests\common\main\rx\deep-subscribe\**\*.ts (Coverage)" />
       <item itemvalue="Mocha.Performance" />
       <item itemvalue="Mocha.deep-subscribe (Coverage)" />
       <item itemvalue="Mocha.Watch" />
-      <item itemvalue="Mocha.common &gt; main &gt; rx &gt; deep-subscribe &gt; deep-subscribe new" />
+      <item itemvalue="Mocha.RX - Tests" />
+      <item itemvalue="Mocha.common &gt; main &gt; helpers &gt; ThenableSync.variants" />
+      <item itemvalue="Mocha.common &gt; extensions &gt; merge &gt; ObjectMerger.combinations.strings" />
+      <item itemvalue="Mocha.common &gt; env &gt; modules.class" />
       <item itemvalue="npm.Coverage Mocha Report" />
-      <item itemvalue="Mocha.common &gt; main &gt; rx &gt; properties &gt; CalcObjectBuilder.deepSubscribe calc circular sync" />
-      <item itemvalue="Mocha.common &gt; main &gt; rx &gt; properties &gt; CalcObjectBuilder.deepSubscribe calc circular async" />
-      <item itemvalue="Mocha.common &gt; main &gt; rx &gt; deep-subscribe &gt; deep-subscribe.chain of same objects" />
-      <item itemvalue="Mocha.common &gt; main &gt; rx &gt; deep-subscribe &gt; deep-subscribe new.chain of same objects: propertyChanged with oldValue === newValue" />
+      <item itemvalue="Mocha.common &gt; main &gt; rx &gt; deep-subscribe &gt; deep-subscribe new.ruleFactoriesVariants self async" />
     </list>
     <recent_temporary>
       <list>
-        <item itemvalue="Mocha.common &gt; main &gt; rx &gt; deep-subscribe &gt; deep-subscribe new.chain of same objects: propertyChanged with oldValue === newValue" />
-        <item itemvalue="Mocha.common &gt; main &gt; rx &gt; deep-subscribe &gt; deep-subscribe new" />
-        <item itemvalue="Mocha.common &gt; main &gt; rx &gt; properties &gt; CalcObjectBuilder.deepSubscribe calc circular sync" />
-        <item itemvalue="Mocha.common &gt; main &gt; rx &gt; deep-subscribe &gt; deep-subscribe.chain of same objects" />
-        <item itemvalue="Mocha.common &gt; main &gt; rx &gt; properties &gt; CalcObjectBuilder.deepSubscribe calc circular async" />
+        <item itemvalue="Mocha.common &gt; main &gt; rx &gt; deep-subscribe &gt; deep-subscribe new.ruleFactoriesVariants self async" />
+        <item itemvalue="Karma.common &gt; main &gt; rx &gt; deep-subscribe &gt; deep-subscribe new.ruleFactoriesVariants self async" />
+        <item itemvalue="Mocha.common &gt; env &gt; modules.class" />
+        <item itemvalue="Mocha.common &gt; extensions &gt; merge &gt; ObjectMerger.combinations.strings" />
+        <item itemvalue="Mocha.common &gt; main &gt; helpers &gt; ThenableSync.variants" />
       </list>
     </recent_temporary>
   </component>
@@ -348,174 +362,6 @@
       <option name="number" value="Default" />
       <option name="presentableId" value="Default" />
       <updated>1567687848586</updated>
-    </task>
-    <task id="LOCAL-00020" summary="connectWritable in process...">
-      <created>1569040255146</created>
-      <option name="number" value="00020" />
-      <option name="presentableId" value="LOCAL-00020" />
-      <option name="project" value="LOCAL" />
-      <updated>1569040255146</updated>
-    </task>
-    <task id="LOCAL-00021" summary="connectWritable completed and tested">
-      <created>1569042847550</created>
-      <option name="number" value="00021" />
-      <option name="presentableId" value="LOCAL-00021" />
-      <option name="project" value="LOCAL" />
-      <updated>1569042847550</updated>
-    </task>
-    <task id="LOCAL-00022" summary="Fix subscribeObject bug">
-      <created>1569054832339</created>
-      <option name="number" value="00022" />
-      <option name="presentableId" value="LOCAL-00022" />
-      <option name="project" value="LOCAL" />
-      <updated>1569054832339</updated>
-    </task>
-    <task id="LOCAL-00023" summary="Small fixes">
-      <created>1569054852417</created>
-      <option name="number" value="00023" />
-      <option name="presentableId" value="LOCAL-00023" />
-      <option name="project" value="LOCAL" />
-      <updated>1569054852417</updated>
-    </task>
-    <task id="LOCAL-00024" summary="CalcObjectBuilder tests">
-      <created>1569054873813</created>
-      <option name="number" value="00024" />
-      <option name="presentableId" value="LOCAL-00024" />
-      <option name="project" value="LOCAL" />
-      <updated>1569054873813</updated>
-    </task>
-    <task id="LOCAL-00025" summary="subscribeLeaf refactoring">
-      <created>1569054899266</created>
-      <option name="number" value="00025" />
-      <option name="presentableId" value="LOCAL-00025" />
-      <option name="project" value="LOCAL" />
-      <updated>1569054899266</updated>
-    </task>
-    <task id="LOCAL-00026" summary="deepSubscribe refactoring, Tests OK.">
-      <created>1569061399382</created>
-      <option name="number" value="00026" />
-      <option name="presentableId" value="LOCAL-00026" />
-      <option name="project" value="LOCAL" />
-      <updated>1569061399382</updated>
-    </task>
-    <task id="LOCAL-00027" summary="deepSubscribe refactoring, Tests OK.">
-      <created>1569061747929</created>
-      <option name="number" value="00027" />
-      <option name="presentableId" value="LOCAL-00027" />
-      <option name="project" value="LOCAL" />
-      <updated>1569061747929</updated>
-    </task>
-    <task id="LOCAL-00028" summary="deepSubscribe refactoring, Tests OK.">
-      <created>1569061843477</created>
-      <option name="number" value="00028" />
-      <option name="presentableId" value="LOCAL-00028" />
-      <option name="project" value="LOCAL" />
-      <updated>1569061843477</updated>
-    </task>
-    <task id="LOCAL-00029" summary="Small fixes">
-      <created>1569068357436</created>
-      <option name="number" value="00029" />
-      <option name="presentableId" value="LOCAL-00029" />
-      <option name="project" value="LOCAL" />
-      <updated>1569068357436</updated>
-    </task>
-    <task id="LOCAL-00030" summary="CalcProperty tests in process... Mocha Test OK.">
-      <created>1569069100180</created>
-      <option name="number" value="00030" />
-      <option name="presentableId" value="LOCAL-00030" />
-      <option name="project" value="LOCAL" />
-      <updated>1569069100180</updated>
-    </task>
-    <task id="LOCAL-00031" summary="deepSubscribe debugging, Tests OK.">
-      <created>1569076418592</created>
-      <option name="number" value="00031" />
-      <option name="presentableId" value="LOCAL-00031" />
-      <option name="project" value="LOCAL" />
-      <updated>1569076418592</updated>
-    </task>
-    <task id="LOCAL-00032" summary="deepSubscribe debugging, Old tests OK.">
-      <created>1569091591303</created>
-      <option name="number" value="00032" />
-      <option name="presentableId" value="LOCAL-00032" />
-      <option name="project" value="LOCAL" />
-      <updated>1569091591303</updated>
-    </task>
-    <task id="LOCAL-00033" summary="deepSubscribe debugging, New Tests OK.">
-      <created>1569129032230</created>
-      <option name="number" value="00033" />
-      <option name="presentableId" value="LOCAL-00033" />
-      <option name="project" value="LOCAL" />
-      <updated>1569129032230</updated>
-    </task>
-    <task id="LOCAL-00034" summary="deepSubscribe refactoring: extract ObjectSubscriber, Tests OK.">
-      <created>1569135663497</created>
-      <option name="number" value="00034" />
-      <option name="presentableId" value="LOCAL-00034" />
-      <option name="project" value="LOCAL" />
-      <updated>1569135663497</updated>
-    </task>
-    <task id="LOCAL-00035" summary="deepSubscribe refactoring">
-      <created>1569151373600</created>
-      <option name="number" value="00035" />
-      <option name="presentableId" value="LOCAL-00035" />
-      <option name="project" value="LOCAL" />
-      <updated>1569151373600</updated>
-    </task>
-    <task id="LOCAL-00036" summary="deepSubscribe: develop lastValue event">
-      <created>1569160551658</created>
-      <option name="number" value="00036" />
-      <option name="presentableId" value="LOCAL-00036" />
-      <option name="project" value="LOCAL" />
-      <updated>1569160551658</updated>
-    </task>
-    <task id="LOCAL-00037" summary="deepSubscribe: implemented lastValue event and tested">
-      <created>1569166445928</created>
-      <option name="number" value="00037" />
-      <option name="presentableId" value="LOCAL-00037" />
-      <option name="project" value="LOCAL" />
-      <updated>1569166445928</updated>
-    </task>
-    <task id="LOCAL-00038" summary="deepSubscribe debugging">
-      <created>1569219000705</created>
-      <option name="number" value="00038" />
-      <option name="presentableId" value="LOCAL-00038" />
-      <option name="project" value="LOCAL" />
-      <updated>1569219000705</updated>
-    </task>
-    <task id="LOCAL-00039" summary="deepSubscribe debugging">
-      <created>1569223402851</created>
-      <option name="number" value="00039" />
-      <option name="presentableId" value="LOCAL-00039" />
-      <option name="project" value="LOCAL" />
-      <updated>1569223402851</updated>
-    </task>
-    <task id="LOCAL-00040" summary="deepSubscribe debugging. Tests OK except VALUE_PROPERTY_DEFAULT">
-      <created>1569235498465</created>
-      <option name="number" value="00040" />
-      <option name="presentableId" value="LOCAL-00040" />
-      <option name="project" value="LOCAL" />
-      <updated>1569235498465</updated>
-    </task>
-    <task id="LOCAL-00041" summary="deepSubscribe debugging. Tests OK except VALUE_PROPERTY_DEFAULT">
-      <created>1569236257460</created>
-      <option name="number" value="00041" />
-      <option name="presentableId" value="LOCAL-00041" />
-      <option name="project" value="LOCAL" />
-      <updated>1569236257460</updated>
-    </task>
-    <task id="LOCAL-00042" summary="deepSubscribe debugging. Tests OK.">
-      <created>1569237721364</created>
-      <option name="number" value="00042" />
-      <option name="presentableId" value="LOCAL-00042" />
-      <option name="project" value="LOCAL" />
-      <updated>1569237721364</updated>
-    </task>
-    <task id="LOCAL-00043" summary="deepSubscribe debugging">
-      <created>1569240630722</created>
-      <option name="number" value="00043" />
-      <option name="presentableId" value="LOCAL-00043" />
-      <option name="project" value="LOCAL" />
-      <updated>1569240630722</updated>
     </task>
     <task id="LOCAL-00044" summary="deepSubscribe debugging. All tests OK.">
       <created>1569253005114</created>
@@ -692,11 +538,185 @@
       <option name="project" value="LOCAL" />
       <updated>1569516145007</updated>
     </task>
-    <option name="localTasksCounter" value="69" />
+    <task id="LOCAL-00069" summary="Build OK.">
+      <created>1569521205111</created>
+      <option name="number" value="00069" />
+      <option name="presentableId" value="LOCAL-00069" />
+      <option name="project" value="LOCAL" />
+      <updated>1569521205111</updated>
+    </task>
+    <task id="LOCAL-00070" summary="Fix error with deepSubscribe NaN">
+      <created>1569562371576</created>
+      <option name="number" value="00070" />
+      <option name="presentableId" value="LOCAL-00070" />
+      <option name="project" value="LOCAL" />
+      <updated>1569562371576</updated>
+    </task>
+    <task id="LOCAL-00071" summary="DependencyBuilder: prevent circular self dependency">
+      <created>1569562421908</created>
+      <option name="number" value="00071" />
+      <option name="presentableId" value="LOCAL-00071" />
+      <option name="project" value="LOCAL" />
+      <updated>1569562421909</updated>
+    </task>
+    <task id="LOCAL-00072" summary="Improved CalcPropertyFunc - added return value">
+      <created>1569562481010</created>
+      <option name="number" value="00072" />
+      <option name="presentableId" value="LOCAL-00072" />
+      <option name="project" value="LOCAL" />
+      <updated>1569562481010</updated>
+    </task>
+    <task id="LOCAL-00073" summary="Removed unnecessary console.log from tests">
+      <created>1569562518344</created>
+      <option name="number" value="00073" />
+      <option name="presentableId" value="LOCAL-00073" />
+      <option name="project" value="LOCAL" />
+      <updated>1569562518344</updated>
+    </task>
+    <task id="LOCAL-00074" summary="Facade changes">
+      <created>1569562572268</created>
+      <option name="number" value="00074" />
+      <option name="presentableId" value="LOCAL-00074" />
+      <option name="project" value="LOCAL" />
+      <updated>1569562572268</updated>
+    </task>
+    <task id="LOCAL-00075" summary="Fix recursive looping during create object calc property with self dependency. Tests OK.">
+      <created>1569562714008</created>
+      <option name="number" value="00075" />
+      <option name="presentableId" value="LOCAL-00075" />
+      <option name="project" value="LOCAL" />
+      <updated>1569562714008</updated>
+    </task>
+    <task id="LOCAL-00076" summary="CalcProperty: prevent calc if input is undefined. Tests OK.">
+      <created>1569563146771</created>
+      <option name="number" value="00076" />
+      <option name="presentableId" value="LOCAL-00076" />
+      <option name="project" value="LOCAL" />
+      <updated>1569563146771</updated>
+    </task>
+    <task id="LOCAL-00077" summary="CalcProperty: added name property for debug and visualize webrain">
+      <created>1569563674700</created>
+      <option name="number" value="00077" />
+      <option name="presentableId" value="LOCAL-00077" />
+      <option name="project" value="LOCAL" />
+      <updated>1569563674700</updated>
+    </task>
+    <task id="LOCAL-00078" summary="CalcProperty: fix error handling">
+      <created>1569564737679</created>
+      <option name="number" value="00078" />
+      <option name="presentableId" value="LOCAL-00078" />
+      <option name="project" value="LOCAL" />
+      <updated>1569564737679</updated>
+    </task>
+    <task id="LOCAL-00079" summary="CalcProperty: improved constructor interface. Tests OK.">
+      <created>1569570662179</created>
+      <option name="number" value="00079" />
+      <option name="presentableId" value="LOCAL-00079" />
+      <option name="project" value="LOCAL" />
+      <updated>1569570662181</updated>
+    </task>
+    <task id="LOCAL-00080" summary="Fix deepSubscribe bug - subscribe propertyChanged before forEach items but prevent events while forEach completed">
+      <created>1569586270813</created>
+      <option name="number" value="00080" />
+      <option name="presentableId" value="LOCAL-00080" />
+      <option name="project" value="LOCAL" />
+      <updated>1569586270813</updated>
+    </task>
+    <task id="LOCAL-00081" summary="Small improvement of DeferredCalc interface">
+      <created>1569586310729</created>
+      <option name="number" value="00081" />
+      <option name="presentableId" value="LOCAL-00081" />
+      <option name="project" value="LOCAL" />
+      <updated>1569586310729</updated>
+    </task>
+    <task id="LOCAL-00082" summary="Facade changes">
+      <created>1569586519334</created>
+      <option name="number" value="00082" />
+      <option name="presentableId" value="LOCAL-00082" />
+      <option name="project" value="LOCAL" />
+      <updated>1569586519334</updated>
+    </task>
+    <task id="LOCAL-00083" summary="CalcProperty refactoring. Tests OK.">
+      <created>1569587848364</created>
+      <option name="number" value="00083" />
+      <option name="presentableId" value="LOCAL-00083" />
+      <option name="project" value="LOCAL" />
+      <updated>1569587848364</updated>
+    </task>
+    <task id="LOCAL-00084" summary="deepSubscribe refactoring in process... Tests OK.">
+      <created>1569592366874</created>
+      <option name="number" value="00084" />
+      <option name="presentableId" value="LOCAL-00084" />
+      <option name="project" value="LOCAL" />
+      <updated>1569592366875</updated>
+    </task>
+    <task id="LOCAL-00085" summary="deepSubscribe refactoring in process... Tests OK.">
+      <created>1569594696260</created>
+      <option name="number" value="00085" />
+      <option name="presentableId" value="LOCAL-00085" />
+      <option name="project" value="LOCAL" />
+      <updated>1569594696260</updated>
+    </task>
+    <task id="LOCAL-00086" summary="deepSubscribe refactoring in process... Tests OK.">
+      <created>1569595521074</created>
+      <option name="number" value="00086" />
+      <option name="presentableId" value="LOCAL-00086" />
+      <option name="project" value="LOCAL" />
+      <updated>1569595521074</updated>
+    </task>
+    <task id="LOCAL-00087" summary="Fix tests. Tests OK.">
+      <created>1569597040706</created>
+      <option name="number" value="00087" />
+      <option name="presentableId" value="LOCAL-00087" />
+      <option name="project" value="LOCAL" />
+      <updated>1569597040706</updated>
+    </task>
+    <task id="LOCAL-00088" summary="deepSubscribe refactoring in process... Tests OK.">
+      <created>1569597061486</created>
+      <option name="number" value="00088" />
+      <option name="presentableId" value="LOCAL-00088" />
+      <option name="project" value="LOCAL" />
+      <updated>1569597061486</updated>
+    </task>
+    <task id="LOCAL-00089" summary="deepSubscribe refactoring in process... Tests OK.">
+      <created>1569600798676</created>
+      <option name="number" value="00089" />
+      <option name="presentableId" value="LOCAL-00089" />
+      <option name="project" value="LOCAL" />
+      <updated>1569600798676</updated>
+    </task>
+    <task id="LOCAL-00090" summary="deepSubscribe refactoring in process... Added resolve async items. Tests OK.">
+      <created>1569602430320</created>
+      <option name="number" value="00090" />
+      <option name="presentableId" value="LOCAL-00090" />
+      <option name="project" value="LOCAL" />
+      <updated>1569602430321</updated>
+    </task>
+    <task id="LOCAL-00091" summary="Fix resolveAsync error and tests">
+      <created>1569638966891</created>
+      <option name="number" value="00091" />
+      <option name="presentableId" value="LOCAL-00091" />
+      <option name="project" value="LOCAL" />
+      <updated>1569638966892</updated>
+    </task>
+    <task id="LOCAL-00092" summary="Fix deepSubscribe tests">
+      <created>1569639048378</created>
+      <option name="number" value="00092" />
+      <option name="presentableId" value="LOCAL-00092" />
+      <option name="project" value="LOCAL" />
+      <updated>1569639048378</updated>
+    </task>
+    <option name="localTasksCounter" value="93" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
     <option name="version" value="1" />
+    <option name="exactExcludedFiles">
+      <list>
+        <option value="$PROJECT_DIR$/src/main/common/test/Mocha.d.ts" />
+        <option value="$PROJECT_DIR$/../../apps/alertpoint-electron/node_modules/webrain/src/main/common/test/Mocha.d.ts" />
+      </list>
+    </option>
   </component>
   <component name="Vcs.Log.History.Properties">
     <option name="COLUMN_ORDER">
@@ -754,159 +774,55 @@
   <component name="VcsManagerConfiguration">
     <option name="CHECK_CODE_SMELLS_BEFORE_PROJECT_COMMIT" value="false" />
     <option name="CHECK_NEW_TODO" value="false" />
-    <MESSAGE value="deepSubscribe refactoring: extract ObjectSubscriber, Tests OK." />
-    <MESSAGE value="deepSubscribe refactoring" />
-    <MESSAGE value="deepSubscribe: develop lastValue event" />
-    <MESSAGE value="deepSubscribe: implemented lastValue event and tested" />
-    <MESSAGE value="deepSubscribe debugging. Tests OK except VALUE_PROPERTY_DEFAULT" />
-    <MESSAGE value="deepSubscribe debugging. Tests OK." />
-    <MESSAGE value="deepSubscribe debugging" />
-    <MESSAGE value="deepSubscribe debugging. All tests OK." />
-    <MESSAGE value="Debugging CalcProperty deepSubscribe... All tests OK except deepSubscribe calc circular" />
-    <MESSAGE value="Test for bug 'value properties not exist'" />
-    <MESSAGE value="Small improvement of deepSubscribe Tester" />
-    <MESSAGE value="deepSubscribe debugging. Old tests OK. Before refactoring rule iterator." />
-    <MESSAGE value="iterateRule refactoring: added object parameter. Tests OK." />
-    <MESSAGE value="iterateRule refactoring... RuleIf completed and simple tested. Tests OK." />
-    <MESSAGE value="RuleBuilder: rename propertyAll, mapAll to propertyAny, mapAny. Tests OK." />
-    <MESSAGE value="RuleBuilder refactoring... Tests OK." />
-    <MESSAGE value="iterateRule refactoring... Tests OK." />
-    <MESSAGE value="Preparing deepSubscribe full-fledged tests... Tests OK." />
-    <MESSAGE value="Variants iterator completed and tested. Implementing RuleBuildersBuilder ..." />
     <MESSAGE value="RuleBuildersBuilder completed and almost tested. Tests OK." />
     <MESSAGE value="RuleBuildersBuilder completed and tested. Tests OK." />
     <MESSAGE value="Implementing deepSubscribe full-fledged tests..." />
     <MESSAGE value="Debug deepSubscribe, almost all Tests OK." />
     <MESSAGE value="Debug deepSubscribe stage 1 completed, ready to integrate" />
     <MESSAGE value="Lint fixes. Tests OK." />
-    <option name="LAST_COMMIT_MESSAGE" value="Lint fixes. Tests OK." />
+    <MESSAGE value="Build OK." />
+    <MESSAGE value="Fix error with deepSubscribe NaN" />
+    <MESSAGE value="DependencyBuilder: prevent circular self dependency" />
+    <MESSAGE value="Improved CalcPropertyFunc - added return value" />
+    <MESSAGE value="Removed unnecessary console.log from tests" />
+    <MESSAGE value="Fix recursive looping during create object calc property with self dependency. Tests OK." />
+    <MESSAGE value="CalcProperty: prevent calc if input is undefined. Tests OK." />
+    <MESSAGE value="CalcProperty: added name property for debug and visualize webrain" />
+    <MESSAGE value="CalcProperty: fix error handling" />
+    <MESSAGE value="CalcProperty: improved constructor interface. Tests OK." />
+    <MESSAGE value="Fix deepSubscribe bug - subscribe propertyChanged before forEach items but prevent events while forEach completed" />
+    <MESSAGE value="Small improvement of DeferredCalc interface" />
+    <MESSAGE value="Facade changes" />
+    <MESSAGE value="CalcProperty refactoring. Tests OK." />
+    <MESSAGE value="Fix tests. Tests OK." />
+    <MESSAGE value="deepSubscribe refactoring in process... Tests OK." />
+    <MESSAGE value="deepSubscribe refactoring in process... Added resolve async items. Tests OK." />
+    <MESSAGE value="Fix resolveAsync error and tests" />
+    <MESSAGE value="Fix deepSubscribe tests" />
+    <option name="LAST_COMMIT_MESSAGE" value="Fix deepSubscribe tests" />
   </component>
   <component name="XDebuggerManager">
     <breakpoint-manager>
       <breakpoints>
         <line-breakpoint enabled="true" type="javascript">
-          <url>file://$PROJECT_DIR$/src/test/tests/common/main/rx/deep-subscribe/deep-subscribe.ts</url>
-          <line>117</line>
-          <option name="timeStamp" value="458" />
+          <url>file://$PROJECT_DIR$/src/test/tests/common/main/async/ThenableSync.ts</url>
+          <line>7</line>
+          <option name="timeStamp" value="767" />
         </line-breakpoint>
         <line-breakpoint enabled="true" type="javascript">
-          <url>file://$PROJECT_DIR$/src/test/tests/common/main/rx/deep-subscribe/deep-subscribe.ts</url>
-          <line>675</line>
-          <option name="timeStamp" value="478" />
-        </line-breakpoint>
-        <line-breakpoint enabled="true" type="javascript">
-          <url>file://$PROJECT_DIR$/src/test/tests/common/main/rx/deep-subscribe/deep-subscribe.ts</url>
-          <line>684</line>
-          <option name="timeStamp" value="489" />
-        </line-breakpoint>
-        <line-breakpoint enabled="true" type="javascript">
-          <url>file://$PROJECT_DIR$/src/test/tests/common/main/rx/object/properties/ConnectorBuilder.ts</url>
-          <line>138</line>
-          <option name="timeStamp" value="520" />
-        </line-breakpoint>
-        <line-breakpoint enabled="true" type="javascript">
-          <url>file://$PROJECT_DIR$/src/test/tests/common/main/rx/object/properties/ConnectorBuilder.ts</url>
-          <line>133</line>
-          <option name="timeStamp" value="536" />
-        </line-breakpoint>
-        <line-breakpoint enabled="true" type="javascript">
-          <url>file://$PROJECT_DIR$/src/test/tests/common/main/rx/object/properties/ConnectorBuilder.ts</url>
-          <line>134</line>
-          <option name="timeStamp" value="539" />
-        </line-breakpoint>
-        <line-breakpoint enabled="true" type="javascript">
-          <url>file://$PROJECT_DIR$/src/test/tests/common/main/rx/deep-subscribe/iterate-rule.ts</url>
-          <line>69</line>
-          <option name="timeStamp" value="549" />
-        </line-breakpoint>
-        <line-breakpoint enabled="true" type="javascript">
-          <url>file://$PROJECT_DIR$/src/main/common/test/Assert.ts</url>
-          <line>116</line>
-          <option name="timeStamp" value="552" />
-        </line-breakpoint>
-        <line-breakpoint enabled="true" type="javascript">
-          <url>file://$PROJECT_DIR$/src/test/tests/common/main/rx/deep-subscribe/deep-subscribe.ts</url>
-          <line>609</line>
-          <option name="timeStamp" value="561" />
-        </line-breakpoint>
-        <line-breakpoint enabled="true" type="javascript">
-          <url>file://$PROJECT_DIR$/src/test/tests/common/main/rx/deep-subscribe/helpers/src/RuleBuildersBuilder.ts</url>
-          <line>168</line>
-          <option name="timeStamp" value="584" />
-        </line-breakpoint>
-        <line-breakpoint enabled="true" type="javascript">
-          <url>file://$PROJECT_DIR$/src/main/common/rx/deep-subscribe/deep-subscribe.ts</url>
-          <line>372</line>
+          <url>file://$PROJECT_DIR$/src/main/common/test/Mocha.ts</url>
+          <line>23</line>
           <properties lambdaOrdinal="-1" />
-          <option name="timeStamp" value="597" />
+          <option name="timeStamp" value="768" />
         </line-breakpoint>
         <line-breakpoint enabled="true" type="javascript">
-          <url>file://$PROJECT_DIR$/src/main/common/rx/deep-subscribe/iterate-rule.ts</url>
-          <line>70</line>
+          <url>file://$PROJECT_DIR$/src/main/common/test/Mocha.ts</url>
+          <line>20</line>
           <properties lambdaOrdinal="-1" />
-          <option name="timeStamp" value="598" />
-        </line-breakpoint>
-        <line-breakpoint enabled="true" type="javascript">
-          <url>file://$PROJECT_DIR$/src/main/common/rx/deep-subscribe/iterate-rule.ts</url>
-          <line>162</line>
-          <properties lambdaOrdinal="-1" />
-          <option name="timeStamp" value="602" />
-        </line-breakpoint>
-        <line-breakpoint enabled="true" type="javascript">
-          <url>file://$PROJECT_DIR$/src/test/tests/common/main/rx/object/properties/CalcObjectBuilder.ts</url>
-          <line>273</line>
-          <properties lambdaOrdinal="-1" />
-          <option name="timeStamp" value="613" />
-        </line-breakpoint>
-        <line-breakpoint enabled="true" type="javascript">
-          <url>file://$PROJECT_DIR$/src/main/common/rx/object/properties/CalcProperty.ts</url>
-          <line>95</line>
-          <properties lambdaOrdinal="-1" />
-          <option name="timeStamp" value="629" />
-        </line-breakpoint>
-        <line-breakpoint enabled="true" type="javascript">
-          <url>file://$PROJECT_DIR$/src/test/tests/common/main/rx/deep-subscribe/deep-subscribe.ts</url>
-          <line>391</line>
-          <properties lambdaOrdinal="-1" />
-          <option name="timeStamp" value="651" />
-        </line-breakpoint>
-        <line-breakpoint enabled="true" type="javascript">
-          <url>file://$PROJECT_DIR$/src/test/tests/common/main/rx/deep-subscribe/deep-subscribe-new.ts</url>
-          <line>229</line>
-          <properties lambdaOrdinal="0" />
-          <option name="timeStamp" value="659" />
-        </line-breakpoint>
-        <line-breakpoint enabled="true" type="javascript">
-          <url>file://$PROJECT_DIR$/src/main/common/rx/deep-subscribe/rules-subscribe.ts</url>
-          <line>360</line>
-          <properties lambdaOrdinal="-1" />
-          <option name="timeStamp" value="660" />
-        </line-breakpoint>
-        <line-breakpoint enabled="true" type="javascript">
-          <url>file://$PROJECT_DIR$/src/main/common/rx/deep-subscribe/rules-subscribe.ts</url>
-          <line>374</line>
-          <properties lambdaOrdinal="-1" />
-          <option name="timeStamp" value="661" />
-        </line-breakpoint>
-        <line-breakpoint enabled="true" type="javascript">
-          <url>file://$PROJECT_DIR$/src/main/common/rx/deep-subscribe/rules-subscribe.ts</url>
-          <line>377</line>
-          <properties lambdaOrdinal="-1" />
-          <option name="timeStamp" value="662" />
+          <option name="timeStamp" value="770" />
         </line-breakpoint>
       </breakpoints>
     </breakpoint-manager>
-    <watches-manager>
-      <configuration name="mocha-javascript-test-runner">
-        <watch expression="actual[0].getTime()" language="TypeScript" />
-        <watch expression="item.getTime()" language="TypeScript" />
-        <watch expression="actual[1].getTime()" language="TypeScript" />
-        <watch expression="expected[0].getTime()" language="TypeScript" />
-        <watch expression="expected[1].getTime()" language="TypeScript" />
-        <watch expression="object._calcFunc + ''" language="TypeScript" />
-        <watch expression="keyPredicate" language="TypeScript" />
-      </configuration>
-    </watches-manager>
   </component>
   <component name="com.intellij.coverage.CoverageDataManagerImpl">
     <SUITE FILE_PATH="coverage/webrain$common___main___rx___deep_subscribe___deep_subscribe_promises.dat" NAME="common &gt; main &gt; rx &gt; deep-subscribe &gt; deep-subscribe.promises Coverage Results" MODIFIED="1569061851443" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="MochaJavaScriptTestRunnerCoverage" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" />
@@ -916,8 +832,8 @@
     <SUITE FILE_PATH="coverage/webrain$common___main___rx___properties___ConnectorBuilder.dat" NAME="common &gt; main &gt; rx &gt; properties &gt; ConnectorBuilder Coverage Results" MODIFIED="1569042769612" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="MochaJavaScriptTestRunnerCoverage" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" />
     <SUITE FILE_PATH="coverage/webrain$common___main___rx___deep_subscribe___deep_subscribe_unsubscribe_leaf.dat" NAME="common &gt; main &gt; rx &gt; deep-subscribe &gt; deep-subscribe.unsubscribe leaf Coverage Results" MODIFIED="1569219462512" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="MochaJavaScriptTestRunnerCoverage" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" />
     <SUITE FILE_PATH="coverage/webrain$L__Work__GIT_GitHub_NodeJs_modules_tree_state_manager_src_test_tests_common_main_rx_deep_subscribe______ts__Coverage_.dat" NAME="L:\Work\_GIT\GitHub\NodeJs\modules\tree-state-manager\src\test\tests\common\main\rx\deep-subscribe\**\*.ts (Coverage) Coverage Results" MODIFIED="1567218889155" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="MochaJavaScriptTestRunnerCoverage" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" />
-    <SUITE FILE_PATH="coverage/webrain$Watch.dat" NAME="Watch Coverage Results" MODIFIED="1569061947573" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="MochaJavaScriptTestRunnerCoverage" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" />
     <SUITE FILE_PATH="coverage/webrain$common___main___rx___deep_subscribe.dat" NAME="common &gt; main &gt; rx &gt; deep-subscribe Coverage Results" MODIFIED="1569314944753" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="MochaJavaScriptTestRunnerCoverage" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" />
+    <SUITE FILE_PATH="coverage/webrain$Watch.dat" NAME="Watch Coverage Results" MODIFIED="1569642521533" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="MochaJavaScriptTestRunnerCoverage" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" />
     <SUITE FILE_PATH="coverage/tree_state_manager$L__Work__GIT_GitHub_NodeJs_modules_tree_state_manager_src_test_tests_common_main_rx_deep_subscribe______ts__Coverage_.dat" NAME="L:\Work\_GIT\GitHub\NodeJs\modules\tree-state-manager\src\test\tests\common\main\rx\deep-subscribe\**\*.ts (Coverage) Coverage Results" MODIFIED="1566748268430" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="MochaJavaScriptTestRunnerCoverage" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" />
     <SUITE FILE_PATH="coverage/webrain$fundamental_operations_ObservableObject.dat" NAME="fundamental-operations.ObservableObject Coverage Results" MODIFIED="1567092876402" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="MochaJavaScriptTestRunnerCoverage" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" />
     <SUITE FILE_PATH="coverage/webrain$resolvePath.dat" NAME="resolvePath Coverage Results" MODIFIED="1567168357204" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="MochaJavaScriptTestRunnerCoverage" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" />

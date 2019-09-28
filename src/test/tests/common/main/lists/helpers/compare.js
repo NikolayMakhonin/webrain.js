@@ -1,4 +1,6 @@
 import {compareStrict, compareFast} from '../../../../../../main/common/lists/helpers/compare'
+import {assert} from '../../../../../../main/common/test/Assert'
+import {describe, it} from '../../../../../../main/common/test/Mocha'
 import {allValues, shuffle} from '../src/helpers/common'
 
 describe('common > main > lists > helpers > compare', function () {

@@ -5,6 +5,7 @@ import {
 	parsePropertiesPathString,
 } from '../../../../../../../main/common/rx/deep-subscribe/helpers/func-properties-path'
 import {assert} from '../../../../../../../main/common/test/Assert'
+import {describe, it} from '../../../../../../../main/common/test/Mocha'
 import {compileTest} from './src/func-properties-path'
 
 describe('common > main > rx > deep-subscribe > func-properties-path', function() {

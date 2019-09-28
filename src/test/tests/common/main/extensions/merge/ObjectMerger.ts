@@ -7,9 +7,9 @@
 // noinspection ES6UnusedImports
 import {IMergeable, IMergeOptions, IMergeValue} from '../../../../../../main/common/extensions/merge/contracts'
 import {registerMergeable} from '../../../../../../main/common/extensions/merge/mergers'
+import {canHaveUniqueId} from '../../../../../../main/common/helpers/object-unique-id'
 import {ArrayMap} from '../../../../../../main/common/lists/ArrayMap'
 import {ArraySet} from '../../../../../../main/common/lists/ArraySet'
-import {canHaveUniqueId} from '../../../../../../main/common/helpers/object-unique-id'
 import {fillMap, fillObject, fillObjectKeys, fillSet} from '../../../../../../main/common/lists/helpers/set'
 import {ObjectHashMap} from '../../../../../../main/common/lists/ObjectHashMap'
 import {ObjectMap} from '../../../../../../main/common/lists/ObjectMap'
@@ -19,6 +19,7 @@ import {ObservableSet} from '../../../../../../main/common/lists/ObservableSet'
 import {SortedList} from '../../../../../../main/common/lists/SortedList'
 import {Property} from '../../../../../../main/common/rx/object/properties/Property'
 import {Assert} from '../../../../../../main/common/test/Assert'
+import {describe, it} from '../../../../../../main/common/test/Mocha'
 import {createComplexObject, createIterable, IComplexObjectOptions} from '../../src/helpers/helpers'
 import {
 	BASE,

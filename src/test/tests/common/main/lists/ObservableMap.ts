@@ -2,6 +2,7 @@ import {
 	MapChangedType,
 } from '../../../../../main/common/lists/contracts/IMapChanged'
 import {ObservableMap} from '../../../../../main/common/lists/ObservableMap'
+import {describe, it} from '../../../../../main/common/test/Mocha'
 import {ITestActionsWithDescription, THIS} from '../src/helpers/TestVariants'
 import {allValues, shuffle} from './src/helpers/common'
 import {
