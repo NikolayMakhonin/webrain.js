@@ -15,10 +15,10 @@ export interface ThenableIterator<T> extends Iterator<ThenableOrIteratorOrValue<
 {}
 
 export type TOnFulfilled<TValue = any, TResult = any>
-	= (value: TValue) => ThenableOrIteratorOrValue<TResult>
+	= (value: TValue) => ThenableOrIteratorOrValue<TResult> | PromiseLike<TResult>
 
 export type TOnRejected<TResult = any>
-	= (error: any) => ThenableOrIteratorOrValue<TResult>
+	= (error: any) => ThenableOrIteratorOrValue<TResult> | PromiseLike<TResult>
 
 export type TResolve<TValue> = (value?: ThenableOrIteratorOrValue<TValue>) => void
 export type TReject = (error?: any) => void
