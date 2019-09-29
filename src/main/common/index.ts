@@ -22,12 +22,17 @@ export {ValueKeyType} from './rx/deep-subscribe/contracts/common'
 export {ObjectMerger} from './extensions/merge/mergers'
 export {PropertyChangedObject} from './rx/object/PropertyChangedObject'
 export {Connector} from './rx/object/properties/Connector'
+export {Subject} from './rx/subjects/subject'
 
 // Interfaces:
 import {ThenableOrIteratorOrValue as _ThenableOrIteratorOrValue} from './async/async'
 import {ICalcProperty as _ICalcProperty} from './rx/object/properties/contracts'
 import {IPropertyChangedSubject as _IPropertyChangedSubject} from './rx/object/IPropertyChanged'
+import {IObservable as _IObservable} from './rx/subjects/observable'
+import {ISubject as _ISubject} from './rx/subjects/subject'
 
+export type IObservable<T> = _IObservable<T>
+export type ISubject<T> = _ISubject<T>
 export type IPropertyChangedSubject = _IPropertyChangedSubject
 export type ThenableOrIteratorOrValue<T> = _ThenableOrIteratorOrValue<T>
 export type ICalcProperty<TValue> = _ICalcProperty<TValue>
