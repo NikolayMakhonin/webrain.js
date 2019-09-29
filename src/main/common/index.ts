@@ -23,9 +23,16 @@ export {ObjectMerger} from './extensions/merge/mergers'
 export {PropertyChangedObject} from './rx/object/PropertyChangedObject'
 export {Connector} from './rx/object/properties/Connector'
 export {Subject} from './rx/subjects/subject'
+export {registerMergeable, registerMerger} from './extensions/merge/mergers'
+export {registerSerializable, registerSerializer} from './extensions/serialization/serializers'
 
 // Interfaces:
 import {ThenableOrIteratorOrValue as _ThenableOrIteratorOrValue} from './async/async'
+import {
+	IMergeable as _IMergeable,
+	IMergeOptions as _IMergeOptions,
+	IMergeValue as _IMergeValue,
+} from './extensions/merge/contracts'
 import {IObservableMap as _IObservableMap} from './lists/contracts/IMapChanged'
 import {IObservableSet as _IObservableSet} from './lists/contracts/ISetChanged'
 import {ICalcProperty as _ICalcProperty} from './rx/object/properties/contracts'
@@ -33,6 +40,9 @@ import {IPropertyChangedSubject as _IPropertyChangedSubject} from './rx/object/I
 import {IObservable as _IObservable} from './rx/subjects/observable'
 import {ISubject as _ISubject} from './rx/subjects/subject'
 
+export type IMergeOptions = _IMergeOptions
+export type IMergeValue = _IMergeValue
+export type IMergeable<TTarget, TSource = any> = _IMergeable<TTarget, TSource>
 export type IObservableMap<K, V> = _IObservableMap<K, V>
 export type IObservableSet<T> = _IObservableSet<T>
 export type IObservable<T> = _IObservable<T>
