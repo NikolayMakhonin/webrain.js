@@ -10,7 +10,11 @@ import {IPropertyOptions, Property} from './Property'
 
 /** @return true: value changed; false: value not changed; null - auto */
 export type CalcPropertyFunc<TInput, TTarget, TSource>
-	= (input: TInput, property: Property<TTarget, TSource>) => ThenableOrIteratorOrValue<boolean|void>
+	= (
+		input: TInput,
+		property: Property<TTarget, TSource>,
+		calcOptions: IDeferredCalcOptions,
+	) => ThenableOrIteratorOrValue<boolean|void>
 
 export class CalcPropertyValue<TValue, TInput = any, TMergeSource = any> {
 	public get: () => CalcProperty<TValue, TInput, TMergeSource>
@@ -75,7 +79,7 @@ export class CalcProperty<TValue, TInput = any, TMergeSource = any>
 						if (typeof this.input === 'undefined') {
 							return false
 						}
-						return this._calcFunc(this.input, this._valueProperty)
+						return this._calcFunc(this.input, this._valueProperty, calcOptions)
 					},
 					valueChanged => {
 						this._hasValue = true
