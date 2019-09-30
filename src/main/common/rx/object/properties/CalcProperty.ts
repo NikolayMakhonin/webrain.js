@@ -94,7 +94,8 @@ export class CalcProperty<TValue, TInput = any, TMergeSource = any>
 						CalcObjectDebugger.Instance.onError(this, this._valueProperty.value, prevValue, err)
 						const val = this._valueProperty.value
 						done(prevValue !== val, prevValue, val)
-						return ThenableSync.createRejected(err)
+						console.error(err)
+						return val // ThenableSync.createRejected(err)
 					},
 					true,
 				)

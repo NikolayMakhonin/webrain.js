@@ -13,13 +13,13 @@ export interface IWritableFieldOptions extends IFieldOptions {
 	setOptions?: ISetOptions,
 }
 
-export interface IReadableFieldOptions<T> extends IWritableFieldOptions {
-	factory?: (initValue: T) => T
-	init?: (initValue: T) => void
+export interface IReadableFieldOptions<TObject, T> extends IWritableFieldOptions {
+	factory?: (this: TObject, initValue: T) => T
+	init?: (this: TObject, initValue: T) => void
 }
 
-export interface IUpdatableFieldOptions<T> extends IReadableFieldOptions<T> {
-	update?: (value: any) => T|void
+export interface IUpdatableFieldOptions<TObject, T> extends IReadableFieldOptions<TObject, T> {
+	update?: (this: TObject, value: any) => T|void
 }
 
 export class ObservableObjectBuilder<TObject extends ObservableClass> {
@@ -79,7 +79,7 @@ export class ObservableObjectBuilder<TObject extends ObservableClass> {
 
 	public readable<T, Name extends string | number>(
 		name: Name,
-		options?: IReadableFieldOptions<T>,
+		options?: IReadableFieldOptions<TObject, T>,
 		initValue?: T,
 	): this & { object: { readonly [newProp in Name]: T } } {
 		return this.updatable(name, options, initValue)
@@ -87,7 +87,7 @@ export class ObservableObjectBuilder<TObject extends ObservableClass> {
 
 	public updatable<T, Name extends string | number>(
 		name: Name,
-		options?: IUpdatableFieldOptions<T>,
+		options?: IUpdatableFieldOptions<TObject, T>,
 		initValue?: T,
 	): this & { object: { [newProp in Name]: T } } {
 		const hidden = options && options.hidden
