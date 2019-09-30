@@ -14,22 +14,22 @@ export interface ThenableOrIteratorOrValueNested<T> extends Thenable<ThenableOrI
 export interface ThenableIterator<T> extends Iterator<ThenableOrIteratorOrValue<T|any>>
 {}
 
+export type TResolve<TValue> = (value?: ThenableOrIteratorOrValue<TValue>) => void
+export type TReject = (error?: any) => void
+
+export type TResolveAsyncValue<TValue = any, TResult = any> = (value: TValue) => ThenableOrIteratorOrValue<TResult>
+
 export type TOnFulfilled<TValue = any, TResult = any>
 	= (value: TValue) => ThenableOrIteratorOrValue<TResult> | PromiseLike<TResult>
 
 export type TOnRejected<TResult = any>
 	= (error: any) => ThenableOrIteratorOrValue<TResult> | PromiseLike<TResult>
 
-export type TResolve<TValue> = (value?: ThenableOrIteratorOrValue<TValue>) => void
-export type TReject = (error?: any) => void
-
-export type TResolveAsyncValue<TValue = any, TResult = any> = (value: TValue) => ThenableOrIteratorOrValue<TResult>
-
-export interface Thenable<T = any> {
+export interface Thenable<T = any> extends PromiseLike<T> {
 	then<TResult1 = T, TResult2 = never>(
 		onfulfilled?: TOnFulfilled<T, TResult1>,
 		onrejected?: TOnRejected<TResult2>,
-	): Thenable<TResult1 | TResult2>
+	): Thenable<TResult1 | TResult2>,
 }
 
 export function isThenable(value: any): boolean {
