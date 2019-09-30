@@ -36,7 +36,7 @@ import {
 import {IObservableMap as _IObservableMap} from './lists/contracts/IMapChanged'
 import {IObservableSet as _IObservableSet} from './lists/contracts/ISetChanged'
 import {ICalcProperty as _ICalcProperty} from './rx/object/properties/contracts'
-import {IPropertyChangedSubject as _IPropertyChangedSubject} from './rx/object/IPropertyChanged'
+import {IPropertyChangedObject as _IPropertyChangedObject} from './rx/object/IPropertyChanged'
 import {IObservable as _IObservable} from './rx/subjects/observable'
 import {ISubject as _ISubject} from './rx/subjects/subject'
 
@@ -47,6 +47,6 @@ export type IObservableMap<K, V> = _IObservableMap<K, V>
 export type IObservableSet<T> = _IObservableSet<T>
 export type IObservable<T> = _IObservable<T>
 export type ISubject<T> = _ISubject<T>
-export type IPropertyChangedSubject = _IPropertyChangedSubject
+export type IPropertyChangedObject = _IPropertyChangedObject
 export type ThenableOrIteratorOrValue<T> = _ThenableOrIteratorOrValue<T>
 export type ICalcProperty<TValue, TInput> = _ICalcProperty<TValue, TInput>
