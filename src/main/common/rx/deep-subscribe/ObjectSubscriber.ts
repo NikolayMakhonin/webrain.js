@@ -218,7 +218,7 @@ export class ObjectSubscriber<TObject> implements IValueSubscriber<TObject> {
 							newValue,
 							parent,
 							nextChangeType,
-							key,
+							keyType,
 							unsubscribedLast,
 						)
 
@@ -253,7 +253,7 @@ export class ObjectSubscriber<TObject> implements IValueSubscriber<TObject> {
 					newValue,
 					parent,
 					nextChangeType,
-					key,
+					keyType,
 					unsubscribedLast,
 				)
 			}

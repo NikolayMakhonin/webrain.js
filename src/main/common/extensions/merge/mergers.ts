@@ -230,7 +230,7 @@ class ValueState<TTarget, TSource> {
 							},
 							preferClone,
 							preferClone,
-							options,
+							// options,
 						)
 						break
 					case false:
@@ -389,7 +389,7 @@ class MergeState<TTarget, TSource> {
 				},
 			preferCloneNewer,
 			preferCloneNewer,
-			options,
+			// options,
 		)
 
 		if (isSet) {
@@ -445,7 +445,7 @@ class MergeState<TTarget, TSource> {
 				},
 			preferCloneOlder,
 			preferCloneNewer,
-			options,
+			// options,
 		)
 
 		if (isSet) {
