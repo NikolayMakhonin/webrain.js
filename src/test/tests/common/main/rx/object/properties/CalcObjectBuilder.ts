@@ -37,8 +37,10 @@ describe('common > main > rx > properties > CalcObjectBuilder', function() {
 		.writable('source1')
 		.writable('source2')
 		.calc('calc1',
-			connectorFactory(c => c
-				.connect('connectValue1', b => b.v('lastOrWait').p('source1').v('wait'))),
+			connectorFactory({
+				buildRule: c => c
+					.connect('connectValue1', b => b.v('lastOrWait').p('source1').v('wait')),
+			}),
 				// .connect('connectValue1', b => b.p('source1'))),
 				// b.path(o => o['@lastOrWait'].source1['@wait']))),
 			calcPropertyFactory({
@@ -50,8 +52,10 @@ describe('common > main > rx > properties > CalcObjectBuilder', function() {
 			}),
 		)
 		.calc('calc2',
-			connectorFactory(c => c
-				.connect('connectValue1', b => b.path(o => o['@lastOrWait'].source2['@wait']))),
+			connectorFactory({
+				buildRule: c => c
+					.connect('connectValue1', b => b.path(o => o['@lastOrWait'].source2['@wait'])),
+			}),
 			calcPropertyFactory({
 				dependencies: d => d.invalidateOn(b => b.propertyAny()),
 				calcFunc(state): ThenableOrIteratorOrValue<boolean> {
@@ -63,8 +67,10 @@ describe('common > main > rx > properties > CalcObjectBuilder', function() {
 
 	new CalcObjectBuilder(ClassAsync.prototype)
 		.calc('calc1',
-			connectorFactory(c => c
-				.connect('connectValue1', b => b.path(o => o['@lastOrWait'].source1['@wait']))),
+			connectorFactory({
+				buildRule: c => c
+					.connect('connectValue1', b => b.path(o => o['@lastOrWait'].source1['@wait'])),
+			}),
 			calcPropertyFactory({
 				dependencies: d => d.invalidateOn(b => b.propertyAny()),
 				*calcFunc(state): ThenableOrIteratorOrValue<void> {
@@ -74,8 +80,10 @@ describe('common > main > rx > properties > CalcObjectBuilder', function() {
 			}),
 		)
 		.calc('calc2',
-			connectorFactory(c => c
-				.connect('connectValue1', b => b.path(o => o['@lastOrWait'].source2['@wait']))),
+			connectorFactory({
+				buildRule: c => c
+					.connect('connectValue1', b => b.path(o => o['@lastOrWait'].source2['@wait'])),
+			}),
 			calcPropertyFactory({
 				dependencies: d => d.invalidateOn(b => b.propertyAny()),
 				*calcFunc(state): ThenableOrIteratorOrValue<boolean> {

@@ -19,6 +19,7 @@ export class CalcPropertyState<TValue, TInput = any>
 	implements ICalcPropertyState<TValue, TInput>
 {
 	public readonly calcOptions: IDeferredCalcOptions
+	public name: string
 
 	constructor(
 		calcOptions: IDeferredCalcOptions,
@@ -49,7 +50,6 @@ export class CalcProperty<TValue, TInput = any>
 	private readonly _initValue?: TValue
 
 	public readonly state: ICalcPropertyState<TValue, TInput>
-	public name: string
 
 	constructor({
 		calcFunc,

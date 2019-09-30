@@ -15,7 +15,7 @@ export class CalcObjectBuilder<TObject extends ObservableClass, TValueKeys exten
 		Name extends keyof TObject,
 	>(
 		name: Name,
-		inputOrFactory: ((source: TObject) => TInput) | NotFunction<TInput>,
+		inputOrFactory: ((source: TObject, name?: string) => TInput) | NotFunction<TInput>,
 		calcFactory: (initValue?: TObject[Name]) => CalcProperty<TObject[Name], TInput>,
 		initValue?: TObject[Name],
 	) {
@@ -25,15 +25,15 @@ export class CalcObjectBuilder<TObject extends ObservableClass, TValueKeys exten
 		>>(name as Extract<Name, string|number>, {
 			factory(this: TObject) {
 				const property = calcFactory(initValue)
-				if (property.name == null) {
-					property.name = `${this.constructor.name}.${name}`
+				if (property.state.name == null) {
+					property.state.name = `${this.constructor.name}.${name}`
 				}
 				return property
 			},
 			init(property) {
 				if (typeof inputOrFactory !== 'undefined') {
 					property.state.input = typeof inputOrFactory === 'function'
-						? (inputOrFactory as (object: TObject) => TInput)(this)
+						? (inputOrFactory as (object: TObject, name?: string) => TInput)(this, property.state.name)
 						: inputOrFactory
 				}
 			},

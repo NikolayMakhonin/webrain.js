@@ -166,14 +166,17 @@ export class ConnectorBuilder<
 
 export function connectorClass<
 	TSource extends ObservableClass,
-	TConnector extends ObservableClass,
->(
-	build: (connectorBuilder: ConnectorBuilder<ObservableClass, TSource>) => { object: TConnector },
+	TConnector extends Connector<TSource>,
+>({
+	buildRule,
+	baseClass,
+}: {
+	buildRule: (connectorBuilder: ConnectorBuilder<Connector<TSource>, TSource>) => { object: TConnector },
 	baseClass?: new (source: TSource) => Connector<TSource>,
-): new (source: TSource) => TConnector {
+}): new (source: TSource, name?: string) => TConnector {
 	class NewConnector extends (baseClass || Connector) implements Connector<TSource> { }
 
-	build(new ConnectorBuilder<NewConnector, TSource>(
+	buildRule(new ConnectorBuilder<NewConnector, TSource>(
 		NewConnector.prototype,
 	))
 
@@ -183,12 +186,17 @@ export function connectorClass<
 export function connectorFactory<
 	TSource extends ObservableClass,
 	TConnector extends Connector<TSource>,
->(
-	build: (connectorBuilder: ConnectorBuilder<Connector<TSource>, TSource>) => { object: TConnector },
-	baseClass?: new (source: TSource) => Connector<TSource>,
-): (source: TSource) => TConnector {
-	const NewConnector = connectorClass(build, baseClass)
-	return source => new NewConnector(source) as unknown as TConnector
+>({
+	name,
+	buildRule,
+	baseClass,
+}: {
+	name?: string,
+	buildRule: (connectorBuilder: ConnectorBuilder<Connector<TSource>, TSource>) => { object: TConnector },
+	baseClass?: new (source: TSource, name?: string) => Connector<TSource>,
+}): (source: TSource, name?: string) => TConnector {
+	const NewConnector = connectorClass({buildRule, baseClass})
+	return (source, sourceName) => new NewConnector(source, name || sourceName) as unknown as TConnector
 }
 
 // const builder = new ConnectorBuilder(true as any)

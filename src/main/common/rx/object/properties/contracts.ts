@@ -16,6 +16,7 @@ export interface ICalcPropertyState<TValue, TInput> {
 	value: TValue
 	input: TInput
 	readonly calcOptions: IDeferredCalcOptions,
+	name: string
 }
 
 /** @return true: value changed; false: value not changed; null - auto */
