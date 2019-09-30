@@ -33,7 +33,7 @@ export class CalcObjectBuilder<TObject extends ObservableClass, TValueKeys exten
 			init(property) {
 				if (typeof inputOrFactory !== 'undefined') {
 					property.state.input = typeof inputOrFactory === 'function'
-						? (inputOrFactory as (object: TObject, name?: string) => TInput)(this, property.state.name)
+						? (inputOrFactory as (object: TObject, name?: string) => TInput)(this, this.constructor.name)
 						: inputOrFactory
 				}
 			},

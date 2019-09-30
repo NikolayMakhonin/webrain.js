@@ -25,6 +25,7 @@ export {Connector} from './rx/object/properties/Connector'
 export {Subject} from './rx/subjects/subject'
 export {registerMergeable, registerMerger} from './extensions/merge/mergers'
 export {registerSerializable, registerSerializer} from './extensions/serialization/serializers'
+export {isIterable} from './helpers/helpers'
 
 // Interfaces:
 import {ThenableOrIteratorOrValue as _ThenableOrIteratorOrValue} from './async/async'

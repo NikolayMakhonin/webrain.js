@@ -72,16 +72,16 @@ export class CalcProperty<TValue, TInput = any>
 			this._initValue = initValue
 		}
 
-		if (typeof name !== 'undefined') {
-			this.name = name
-		}
-
 		if (!calcOptions) {
 			calcOptions = {}
 		}
 
 		this._calcFunc = calcFunc
 		this.state = new CalcPropertyState(calcOptions, initValue)
+
+		if (typeof name !== 'undefined') {
+			this.state.name = name
+		}
 
 		this._deferredCalc = new DeferredCalc(
 			() => {
@@ -103,7 +103,7 @@ export class CalcProperty<TValue, TInput = any>
 						CalcObjectDebugger.Instance.onCalculated(this, val, prevValue)
 						done(valueChanged != null
 							? valueChanged as boolean
-							: prevValue !== val, prevValue, val)
+							: (prevValue !== val ? true : null), prevValue, val)
 						return val
 					},
 					err => {
@@ -122,18 +122,18 @@ export class CalcProperty<TValue, TInput = any>
 				}
 			},
 			(isChanged, oldValue, newValue) => {
-				if (isChanged) {
-					this.setDeferredValue(newValue)
-					this.onValueChanged(oldValue, newValue)
+				if (isChanged !== false) {
+					this.setDeferredValue(newValue, isChanged)
+					this.onValueChanged(oldValue, newValue, isChanged)
 				}
 			},
 			calcOptions,
 		)
 	}
 
-	private setDeferredValue(newValue) {
+	private setDeferredValue(newValue, force?: boolean) {
 		const oldValue = this._deferredValue
-		if (newValue === oldValue) {
+		if (!force && newValue === oldValue) {
 			return
 		}
 
@@ -148,8 +148,8 @@ export class CalcProperty<TValue, TInput = any>
 		}
 	}
 
-	private onValueChanged(oldValue, newValue) {
-		if (newValue === oldValue) {
+	private onValueChanged(oldValue, newValue, force?: boolean) {
+		if (!force && newValue === oldValue) {
 			return
 		}
 
