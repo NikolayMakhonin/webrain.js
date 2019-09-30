@@ -36,7 +36,7 @@ export interface IErrorEvent {
 	target: ICalcProperty<any>
 	newValue: any
 	oldValue: any
-	err: any
+	error: any
 }
 
 export class CalcObjectDebugger {
@@ -150,7 +150,7 @@ export class CalcObjectDebugger {
 				target,
 				newValue,
 				oldValue,
-				err,
+				error: err,
 			})
 		}
 	}

@@ -10,10 +10,10 @@ import {createObject} from '../../deep-subscribe/helpers/src/TestDeepSubscribe'
 describe('common > main > rx > properties > ConnectorBuilder', function() {
 	it('connect', function() {
 		const source = new ObservableObjectBuilder(createObject().observableObject)
-			.writable<string, 'baseProp1'>('baseProp1')
-			.writable<string, 'baseProp2'>('baseProp2')
-			.writable<string, 'prop1'>('prop1')
-			.writable<string, 'prop2'>('prop2')
+			.writable<'baseProp1', string>('baseProp1')
+			.writable<'baseProp2', string>('baseProp2')
+			.writable<'prop1', string>('prop1')
+			.writable<'prop2', string>('prop2')
 			.object
 
 		source.baseProp1 = 'baseProp1_init_source'

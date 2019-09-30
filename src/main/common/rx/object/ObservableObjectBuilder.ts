@@ -29,7 +29,10 @@ export class ObservableObjectBuilder<TObject extends ObservableClass> {
 		this.object = object || new ObservableClass() as TObject
 	}
 
-	public writable<T, Name extends string | number>(
+	public writable<
+		Name extends string | number = Extract<keyof TObject, string|number>,
+		T = Name extends keyof TObject ? TObject[Name] : any,
+	>(
 		name: Name,
 		options?: IWritableFieldOptions,
 		initValue?: T,
@@ -77,7 +80,10 @@ export class ObservableObjectBuilder<TObject extends ObservableClass> {
 		return this as any
 	}
 
-	public readable<T, Name extends string | number>(
+	public readable<
+		Name extends string | number = Extract<keyof TObject, string|number>,
+		T = Name extends keyof TObject ? TObject[Name] : any,
+	>(
 		name: Name,
 		options?: IReadableFieldOptions<TObject, T>,
 		initValue?: T,
@@ -232,7 +238,9 @@ export class ObservableObjectBuilder<TObject extends ObservableClass> {
 		return this as any
 	}
 
-	public delete<Name extends string | number>(name: Name)
+	public delete<
+		Name extends string | number = Extract<keyof TObject, string|number>
+	>(name: Name)
 		: this & { object: { readonly [newProp in Name]: never } }
 	{
 		const {object} = this

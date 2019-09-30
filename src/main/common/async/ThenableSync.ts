@@ -412,7 +412,7 @@ function _resolveAsync<TValue = any, TResult1 = TValue, TResult2 = never>(
 	}
 
 	const resolveOnResult = (o, e) => {
-		const handler = e ? onrejected : onfulfilled
+		const handler: any = e ? onrejected : onfulfilled
 
 		if (handler) {
 			if ((resolveValueFunc<TResult1|TResult2>(

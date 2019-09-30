@@ -32,6 +32,7 @@ export class CalcProperty<TValue, TInput = any, TMergeSource = any>
 	private readonly _deferredCalc: DeferredCalc
 	private _deferredValue: ThenableOrValue<TValue>
 	private _hasValue: boolean
+	private _error: Error
 	private readonly _initValue?: TValue
 
 	public input: TInput
@@ -91,10 +92,11 @@ export class CalcProperty<TValue, TInput = any, TMergeSource = any>
 						return val
 					},
 					err => {
+						this._error = err
+						console.error(err)
 						CalcObjectDebugger.Instance.onError(this, this._valueProperty.value, prevValue, err)
 						const val = this._valueProperty.value
 						done(prevValue !== val, prevValue, val)
-						console.error(err)
 						return val // ThenableSync.createRejected(err)
 					},
 					true,
@@ -145,7 +147,9 @@ export class CalcProperty<TValue, TInput = any, TMergeSource = any>
 	}
 
 	public invalidate(): void {
-		this._deferredCalc.invalidate()
+		if (!this._error) {
+			this._deferredCalc.invalidate()
+		}
 	}
 
 	public onInvalidated() {

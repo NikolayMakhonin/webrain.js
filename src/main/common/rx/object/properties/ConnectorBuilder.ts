@@ -27,7 +27,10 @@ export class ConnectorBuilder<
 		this.buildSourceRule = buildSourceRule
 	}
 
-	public connect<TValue, Name extends string | number>(
+	public connect<
+		Name extends string | number = Extract<keyof TObject, string|number>,
+		TValue = Name extends keyof TObject ? TObject[Name] : any,
+	>(
 		name: Name,
 		buildRule: (builder: RuleBuilder<TSource, TValueKeys>) => RuleBuilder<TValue, TValueKeys>,
 		options?: IWritableFieldOptions,
@@ -36,7 +39,10 @@ export class ConnectorBuilder<
 		return this._connect(false, name, buildRule, options, initValue)
 	}
 
-	public connectWritable<TValue, Name extends string | number>(
+	public connectWritable<
+		Name extends string | number = Extract<keyof TObject, string|number>,
+		TValue = Name extends keyof TObject ? TObject[Name] : any,
+	>(
 		name: Name,
 		buildRule: (builder: RuleBuilder<TSource, TValueKeys>) => RuleBuilder<TValue, TValueKeys>,
 		options?: IWritableFieldOptions,
@@ -45,7 +51,10 @@ export class ConnectorBuilder<
 		return this._connect(true, name, buildRule, options, initValue)
 	}
 
-	private _connect<TValue, Name extends string | number>(
+	private _connect<
+		Name extends string | number = Extract<keyof TObject, string|number>,
+		TValue = Name extends keyof TObject ? TObject[Name] : any,
+	>(
 		writable: boolean,
 		name: Name,
 		buildRule: (builder: RuleBuilder<TSource, TValueKeys>) => RuleBuilder<TValue, TValueKeys>,
