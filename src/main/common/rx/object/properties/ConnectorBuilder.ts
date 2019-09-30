@@ -5,26 +5,24 @@ import {RuleBuilder} from '../../deep-subscribe/RuleBuilder'
 import {_set, _setExt, ObservableClass} from '../ObservableClass'
 import {IWritableFieldOptions, ObservableObjectBuilder} from '../ObservableObjectBuilder'
 import {CalcObjectDebugger} from './CalcObjectDebugger'
-import {Connector} from './Connector'
+import {Connector, ConnectorState} from './Connector'
 import {ValueKeys} from './contracts'
 
+const buildSourceRule: <TSource, TValueKeys extends string | number = ValueKeys>
+	(builder: RuleBuilder<ConnectorState<TSource>, TValueKeys>)
+		=> RuleBuilder<TSource, TValueKeys> = b => b.p('connectorSource')
+
 export class ConnectorBuilder<
-	TObject extends ObservableClass,
+	TObject extends Connector<TSource>,
 	TSource = TObject,
 	TValueKeys extends string | number = ValueKeys
 >
 	extends ObservableObjectBuilder<TObject>
 {
-	public buildSourceRule: (builder: RuleBuilder<TObject, TValueKeys>)
-		=> RuleBuilder<TSource, TValueKeys>
-
 	constructor(
 		object?: TObject,
-		buildSourceRule?: (builder: RuleBuilder<TObject, TValueKeys>)
-			=> RuleBuilder<TSource, TValueKeys>,
 	) {
 		super(object)
-		this.buildSourceRule = buildSourceRule
 	}
 
 	public connect<
@@ -61,12 +59,10 @@ export class ConnectorBuilder<
 		options?: IWritableFieldOptions,
 		initValue?: TValue,
 	): this & { object: { [newProp in Name]: TValue } } {
-		const {object, buildSourceRule} = this
+		const {object} = this
 
 		let ruleBuilder = new RuleBuilder<TValue, TValueKeys>()
-		if (buildSourceRule) {
-			ruleBuilder = buildSourceRule(ruleBuilder as any) as any
-		}
+		ruleBuilder = buildSourceRule(ruleBuilder as any) as any
 		ruleBuilder = buildRule(ruleBuilder as any)
 
 		const ruleBase = ruleBuilder && ruleBuilder.result()
@@ -98,7 +94,7 @@ export class ConnectorBuilder<
 				setOptions,
 				hidden: options && options.hidden,
 				// tslint:disable-next-line:no-shadowed-variable
-				factory(this: ObservableClass, initValue: TValue) {
+				factory(this: Connector<TSource>, initValue: TValue) {
 					if (writable) {
 						baseSetValue.call(this, {value: initValue, parent: null, key: null, keyType: null})
 					}
@@ -137,7 +133,7 @@ export class ConnectorBuilder<
 
 							if (hasSubscribers) {
 								const unsubscribe = deepSubscribeRule<TValue>({
-									object: this,
+									object: this.connectorState,
 									lastValue: receiveValue,
 									rule,
 								})
@@ -179,7 +175,6 @@ export function connectorClass<
 
 	build(new ConnectorBuilder<NewConnector, TSource>(
 		NewConnector.prototype,
-		b => b.p('connectorSource'),
 	))
 
 	return NewConnector as unknown as new (source: TSource) => TConnector

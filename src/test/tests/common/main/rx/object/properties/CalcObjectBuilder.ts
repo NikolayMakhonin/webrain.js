@@ -55,7 +55,7 @@ describe('common > main > rx > properties > CalcObjectBuilder', function() {
 			calcPropertyFactory({
 				dependencies: d => d.invalidateOn(b => b.propertyAny()),
 				calcFunc(state): ThenableOrIteratorOrValue<boolean> {
-					state.value = { value: state.input.connectorSource }
+					state.value = { value: state.input.connectorState.connectorSource }
 					return ThenableSync.createResolved(true)
 				},
 			}),
@@ -80,7 +80,7 @@ describe('common > main > rx > properties > CalcObjectBuilder', function() {
 				dependencies: d => d.invalidateOn(b => b.propertyAny()),
 				*calcFunc(state): ThenableOrIteratorOrValue<boolean> {
 					yield new Promise(r => setTimeout(r, 100))
-					state.value = { value: state.input.connectorSource }
+					state.value = { value: state.input.connectorState.connectorSource }
 					return true
 				},
 			}),
@@ -159,7 +159,7 @@ describe('common > main > rx > properties > CalcObjectBuilder', function() {
 		assert.deepStrictEqual(await obj, object)
 	})
 
-	it('circular calc sync', async function() {
+	it('circular calc sync', function() {
 		const object = new ClassSync()
 		let value = resolvePath(object)(o => o.calc2)(o => o.value)()
 		assert.strictEqual(value, object)
@@ -183,7 +183,7 @@ describe('common > main > rx > properties > CalcObjectBuilder', function() {
 		assert.deepStrictEqual(await value2, new Date(123))
 	})
 
-	it('deepSubscribe simple', async function() {
+	it('deepSubscribe simple', function() {
 		new TestDeepSubscribe(
 			{
 				object: new ClassSync(),
@@ -207,7 +207,7 @@ describe('common > main > rx > properties > CalcObjectBuilder', function() {
 			.unsubscribe(['Value Prototype'])
 	})
 
-	it('deepSubscribe calc sync', async function() {
+	it('deepSubscribe calc sync', function() {
 		new TestDeepSubscribe(
 			{
 				object: new ClassSync(),
@@ -264,7 +264,7 @@ describe('common > main > rx > properties > CalcObjectBuilder', function() {
 		await tester.unsubscribeAsync([Date.prototype.getTime])
 	})
 
-	it('deepSubscribe calc circular sync', async function() {
+	it('deepSubscribe calc circular sync', function() {
 		const date234 = new Date(234)
 		new TestDeepSubscribe(
 			{

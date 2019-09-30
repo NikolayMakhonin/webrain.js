@@ -1,17 +1,27 @@
 import {ObservableClass} from '../ObservableClass'
 import {ObservableObjectBuilder} from '../ObservableObjectBuilder'
 
-export class Connector<TSource> extends ObservableClass {
+export class ConnectorState<TSource>  extends ObservableClass {
 	public connectorSource: TSource
+}
+
+new ObservableObjectBuilder(ConnectorState.prototype)
+	.writable('connectorSource')
+
+export class Connector<TSource> extends ObservableClass {
 	public name: string
+	public readonly connectorState: ConnectorState<TSource>
 
 	constructor(connectorSource: TSource) {
 		super()
-		this.connectorSource = connectorSource
+		this.connectorState.connectorSource = connectorSource
 	}
 }
 
 new ObservableObjectBuilder(Connector.prototype)
-	.writable('connectorSource', {
+	.readable('connectorState', {
 		hidden: true,
+		factory() {
+			return new ConnectorState()
+		},
 	})
