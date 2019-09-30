@@ -6,7 +6,7 @@ import {ValueKeys} from './contracts'
 import {DependenciesBuilder, IDependencyPredicate} from './DependenciesBuilder'
 
 export class CalcPropertyDependenciesBuilder<
-	TTarget extends CalcProperty<any, TSource, any>,
+	TTarget extends CalcProperty<any, TSource>,
 	TSource,
 	TValueKeys extends string | number = ValueKeys
 > extends DependenciesBuilder<TTarget, TSource, TValueKeys> {

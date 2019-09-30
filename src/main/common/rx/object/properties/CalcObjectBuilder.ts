@@ -16,13 +16,12 @@ export class CalcObjectBuilder<TObject extends ObservableClass, TValueKeys exten
 	>(
 		name: Name,
 		inputOrFactory: ((source: TObject) => TInput) | NotFunction<TInput>,
-		calcFactory: (initValue?: TObject[Name]) => CalcProperty<TObject[Name], TInput, TMergeSource>,
+		calcFactory: (initValue?: TObject[Name]) => CalcProperty<TObject[Name], TInput>,
 		initValue?: TObject[Name],
 	) {
 		return this.readable<Extract<Name, string|number>, CalcProperty<
 			TObject[Name],
-			TInput,
-			TMergeSource
+			TInput
 		>>(name as Extract<Name, string|number>, {
 			factory(this: TObject) {
 				const property = calcFactory(initValue)
@@ -33,7 +32,7 @@ export class CalcObjectBuilder<TObject extends ObservableClass, TValueKeys exten
 			},
 			init(property) {
 				if (typeof inputOrFactory !== 'undefined') {
-					property.input = typeof inputOrFactory === 'function'
+					property.state.input = typeof inputOrFactory === 'function'
 						? (inputOrFactory as (object: TObject) => TInput)(this)
 						: inputOrFactory
 				}
@@ -53,8 +52,8 @@ export class CalcObjectBuilder<TObject extends ObservableClass, TValueKeys exten
 			void 0,
 			calcPropertyFactory({
 				dependencies: dependencies => dependencies.invalidateOn(buildRule),
-				calcFunc(input, property) {
-					property.value++
+				calcFunc(state) {
+					state.value++
 				},
 				initValue: 0 as any,
 			}),

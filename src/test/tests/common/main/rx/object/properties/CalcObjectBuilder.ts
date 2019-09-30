@@ -21,7 +21,7 @@ describe('common > main > rx > properties > CalcObjectBuilder', function() {
 	class ClassSync extends ObservableClass {
 		public value = 'Value'
 		public valuePrototype: string
-		public calc1: ICalcProperty<Date>
+		public calc1: Date
 		public calc2: { value: ClassSync }
 		public source1: any = 123
 		public source2: any = 0
@@ -43,8 +43,8 @@ describe('common > main > rx > properties > CalcObjectBuilder', function() {
 				// b.path(o => o['@lastOrWait'].source1['@wait']))),
 			calcPropertyFactory({
 				dependencies: d => d.invalidateOn(b => b.propertyAny()),
-				calcFunc(input, property: Property<Date, number>): ThenableOrIteratorOrValue<void> {
-					property.value = input.connectValue1 && new Date(input.connectValue1)
+				calcFunc(state): ThenableOrIteratorOrValue<void> {
+					state.value = state.input.connectValue1 && new Date(state.input.connectValue1)
 					return ThenableSync.createResolved(null)
 				},
 			}),
@@ -54,8 +54,8 @@ describe('common > main > rx > properties > CalcObjectBuilder', function() {
 				.connect('connectValue1', b => b.path(o => o['@lastOrWait'].source2['@wait']))),
 			calcPropertyFactory({
 				dependencies: d => d.invalidateOn(b => b.propertyAny()),
-				calcFunc(input, property: Property<{ value: ClassSync }>): ThenableOrIteratorOrValue<boolean> {
-					property.value = { value: input.connectorSource }
+				calcFunc(state): ThenableOrIteratorOrValue<boolean> {
+					state.value = { value: state.input.connectorSource }
 					return ThenableSync.createResolved(true)
 				},
 			}),
@@ -67,9 +67,9 @@ describe('common > main > rx > properties > CalcObjectBuilder', function() {
 				.connect('connectValue1', b => b.path(o => o['@lastOrWait'].source1['@wait']))),
 			calcPropertyFactory({
 				dependencies: d => d.invalidateOn(b => b.propertyAny()),
-				*calcFunc(input, property: Property<Date, number>): ThenableOrIteratorOrValue<void> {
+				*calcFunc(state): ThenableOrIteratorOrValue<void> {
 					yield new Promise(r => setTimeout(r, 100))
-					property.value = new Date(input.connectValue1)
+					state.value = new Date(state.input.connectValue1)
 				},
 			}),
 		)
@@ -78,9 +78,9 @@ describe('common > main > rx > properties > CalcObjectBuilder', function() {
 				.connect('connectValue1', b => b.path(o => o['@lastOrWait'].source2['@wait']))),
 			calcPropertyFactory({
 				dependencies: d => d.invalidateOn(b => b.propertyAny()),
-				*calcFunc(input, property: Property<{ value: ClassSync }>): ThenableOrIteratorOrValue<boolean> {
+				*calcFunc(state): ThenableOrIteratorOrValue<boolean> {
 					yield new Promise(r => setTimeout(r, 100))
-					property.value = { value: input.connectorSource }
+					state.value = { value: state.input.connectorSource }
 					return true
 				},
 			}),

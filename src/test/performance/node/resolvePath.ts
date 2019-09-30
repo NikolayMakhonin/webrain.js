@@ -29,8 +29,8 @@ describe('resolvePath', function() {
 			simple,
 			calcPropertyFactory({
 				dependencies: null,
-				calcFunc(input, property: Property<Class, any>): ThenableOrIteratorOrValue<void> {
-					property.value = input.value
+				calcFunc(state): ThenableOrIteratorOrValue<void> {
+					state.value = state.input.value
 					return ThenableSync.createResolved(null)
 				},
 			}),

@@ -1,33 +1,31 @@
 import {IDeferredCalcOptions} from '../../deferred-calc/DeferredCalc'
-import {CalcProperty, CalcPropertyFunc} from './CalcProperty'
+import {CalcProperty} from './CalcProperty'
 import {CalcPropertyDependenciesBuilder} from './CalcPropertyDependenciesBuilder'
+import {CalcPropertyFunc} from './contracts'
 import {subscribeDependencies} from './DependenciesBuilder'
-import {IPropertyOptions} from './Property'
 
 export function calcPropertyFactory<
-	TValue, TInput, TMergeSource,
-	TTarget extends CalcProperty<TValue, TInput, TMergeSource> = CalcProperty<TValue, TInput, TMergeSource>,
+	TValue, TInput,
+	TTarget extends CalcProperty<TValue, TInput> = CalcProperty<TValue, TInput>,
 >({
 	dependencies: buildDependencies,
 	calcFunc,
 	name,
 	calcOptions,
-	valueOptions,
 	initValue,
 }: {
 	dependencies: null | ((
-		dependenciesBuilder: CalcPropertyDependenciesBuilder<CalcProperty<TValue, TInput, TMergeSource>, TInput>,
+		dependenciesBuilder: CalcPropertyDependenciesBuilder<CalcProperty<TValue, TInput>, TInput>,
 	) => void),
-	calcFunc: CalcPropertyFunc<TInput, TValue, TMergeSource>,
+	calcFunc: CalcPropertyFunc<TValue, TInput>,
 	name?: string,
 	calcOptions?: IDeferredCalcOptions,
-	valueOptions?: IPropertyOptions<TValue, TMergeSource>,
 	initValue?: TValue,
-}): () => CalcProperty<TValue, TInput, TMergeSource> {
+}): () => CalcProperty<TValue, TInput> {
 	let dependencies
 	if (buildDependencies) {
 		const dependenciesBuilder = new CalcPropertyDependenciesBuilder<TTarget, TInput>(
-			b => b.valuePropertyName('input'),
+			b => b.propertyName('input'),
 		)
 		buildDependencies(dependenciesBuilder)
 		dependencies = dependenciesBuilder.dependencies
@@ -38,11 +36,10 @@ export function calcPropertyFactory<
 			calcFunc,
 			name,
 			calcOptions,
-			valueOptions,
 			initValue,
 		})
 		if (dependencies) {
-			subscribeDependencies(calcProperty, calcProperty, dependencies)
+			subscribeDependencies(calcProperty.state, calcProperty, dependencies)
 		}
 		return calcProperty
 	}

@@ -49,4 +49,4 @@ export type IObservable<T> = _IObservable<T>
 export type ISubject<T> = _ISubject<T>
 export type IPropertyChangedSubject = _IPropertyChangedSubject
 export type ThenableOrIteratorOrValue<T> = _ThenableOrIteratorOrValue<T>
-export type ICalcProperty<TValue> = _ICalcProperty<TValue>
+export type ICalcProperty<TValue, TInput> = _ICalcProperty<TValue, TInput>
