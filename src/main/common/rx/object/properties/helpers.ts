@@ -55,31 +55,36 @@ function resolveValueProperty(value: any, getValue?: (value: any) => any) {
 
 export function resolvePath<TValue>(value: ThenableOrIteratorOrValue<TValue>): TGetPropertyValue<TValue> {
 	const get: any = <TNextValue>(getValue, isValueProperty) => {
-		const customResolveValue = getValue && isValueProperty
-			? val => resolveValueProperty(val, getValue)
+		const _getValue = getValue && (val =>
+			val != null && typeof val === 'object' || typeof val === 'string'
+				? getValue(val)
+				: void 0)
+
+		const customResolveValue = _getValue && isValueProperty
+			? val => resolveValueProperty(val, _getValue)
 			: resolveValueProperty
 
 		value = resolveAsync(
 			value as ThenableOrIteratorOrValue<HasDefaultOrValue<TValue>>,
 			null, null, null, customResolveValue)
 
-		if (!getValue) {
+		if (!_getValue) {
 			return value as ThenableOrValue<TValue>
 		}
 
 		if (!isValueProperty) {
 			if (value instanceof ThenableSync) {
 				value = (value as ThenableSync<TValue>).then(
-					getValue,
+					_getValue,
 					null,
 					false,
 				)
 			} else if (isThenable(value)) {
 				value = (value as Thenable<TValue>).then(
-					getValue,
+					_getValue,
 				)
 			} else {
-				value = resolveAsync(getValue(value as TValue))
+				value = resolveAsync(_getValue(value as TValue))
 			}
 		}
 

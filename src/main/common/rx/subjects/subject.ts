@@ -16,6 +16,10 @@ export function subject(base): any {
 			return !!(this._subscribers && this._subscribers.length)
 		}
 
+		get subscribersCount() {
+			return this._subscribers && this._subscribers.length
+		}
+
 		public subscribe(subscriber: ISubscriber<T>): IUnsubscribe {
 			if (!subscriber) {
 				return null

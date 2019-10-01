@@ -212,9 +212,6 @@ export class CalcProperty<TValue, TInput = any>
 	}
 }
 
-new ObservableObjectBuilder(CalcProperty.prototype)
-	.writable('input')
-
 // Test:
 // const test: RuleGetValueFunc<CalcProperty<any, { test1: { test2: 123 } }, any>, number> =
 // 	o => o['@last']['@last']['@last'].test1['@last']['@wait'].test2['@last']

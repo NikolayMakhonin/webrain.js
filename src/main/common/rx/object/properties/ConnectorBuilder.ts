@@ -10,7 +10,7 @@ import {ValueKeys} from './contracts'
 
 const buildSourceRule: <TSource, TValueKeys extends string | number = ValueKeys>
 	(builder: RuleBuilder<ConnectorState<TSource>, TValueKeys>)
-		=> RuleBuilder<TSource, TValueKeys> = b => b.p('connectorSource')
+		=> RuleBuilder<TSource, TValueKeys> = b => b.p('source')
 
 export class ConnectorBuilder<
 	TObject extends Connector<TSource>,

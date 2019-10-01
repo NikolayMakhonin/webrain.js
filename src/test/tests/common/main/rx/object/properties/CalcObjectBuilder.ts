@@ -59,7 +59,7 @@ describe('common > main > rx > properties > CalcObjectBuilder', function() {
 			calcPropertyFactory({
 				dependencies: d => d.invalidateOn(b => b.propertyAny()),
 				calcFunc(state): ThenableOrIteratorOrValue<boolean> {
-					state.value = { value: state.input.connectorState.connectorSource }
+					state.value = { value: state.input.connectorState.source }
 					return ThenableSync.createResolved(true)
 				},
 			}),
@@ -88,7 +88,7 @@ describe('common > main > rx > properties > CalcObjectBuilder', function() {
 				dependencies: d => d.invalidateOn(b => b.propertyAny()),
 				*calcFunc(state): ThenableOrIteratorOrValue<boolean> {
 					yield new Promise(r => setTimeout(r, 100))
-					state.value = { value: state.input.connectorState.connectorSource }
+					state.value = { value: state.input.connectorState.source }
 					return true
 				},
 			}),
