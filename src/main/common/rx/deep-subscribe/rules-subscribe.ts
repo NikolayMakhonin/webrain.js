@@ -103,7 +103,7 @@ function subscribeObjectValue<TValue>(
 			}
 			const value = object[subscribePropertyName]
 			if (typeof value !== 'undefined') {
-				changeItem(subscribePropertyName, object[subscribePropertyName], void 0,
+				changeItem(subscribePropertyName, value, void 0,
 					ValueChangeType.Unsubscribe, ValueKeyType.ValueProperty)
 			}
 		}
@@ -123,6 +123,20 @@ function subscribeObjectValue<TValue>(
 				const newSubscribePropertyName = getSubscribePropertyName()
 
 				if (name === subscribePropertyName) {
+					if (subscribePropertyName === newSubscribePropertyName
+						&& subscribePropertyName != null
+						&& unsubscribe != null
+						&& typeof oldValue !== 'undefined'
+						&& typeof newValue !== 'undefined'
+					) {
+						changeItem(subscribePropertyName, oldValue, newValue,
+							ValueChangeType.Unsubscribe,
+							ValueKeyType.ValueProperty)
+						changeItem(subscribePropertyName, oldValue, newValue,
+							ValueChangeType.Subscribe,
+							ValueKeyType.ValueProperty)
+						return
+					}
 					if (typeof oldValue !== 'undefined') {
 						changeItem(subscribePropertyName, oldValue, void 0, ValueChangeType.Unsubscribe, ValueKeyType.ValueProperty)
 					}
