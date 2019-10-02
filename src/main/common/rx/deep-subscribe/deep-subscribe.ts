@@ -231,16 +231,32 @@ function subscribeNext<TValue>(
 			changeType: ValueChangeType,
 			keyType: ValueKeyType,
 		): void => {
-			const item = (changeType & ValueChangeType.Subscribe) !== 0 ? newItem : oldItem
-			const itemIterator = getNextRuleIterable && getNextRuleIterable(item)[Symbol.iterator]()
-			const itemIteration = itemIterator && itemIterator.next()
-			const isLeaf = !itemIteration || itemIteration.done
-			if (!isLeaf && itemIteration.value.type === RuleType.Never) {
-				return
+			let oldIsLeaf
+			if ((changeType & ValueChangeType.Unsubscribe) !== 0) {
+				const oldItemIterator = getNextRuleIterable && getNextRuleIterable(oldItem)[Symbol.iterator]()
+				const oldItemIteration = oldItemIterator && oldItemIterator.next()
+				const isLeaf = !oldItemIteration || oldItemIteration.done
+				if (isLeaf
+					|| oldItemIteration.value.type !== RuleType.Never
+						&& typeof oldItem !== 'undefined'
+				) {
+					oldIsLeaf = isLeaf && !(oldItem instanceof Object)
+				}
 			}
 
-			if (!isLeaf && typeof item === 'undefined') {
-				return
+			let newIsLeaf
+			let newItemIterator
+			let newItemIteration
+			if ((changeType & ValueChangeType.Subscribe) !== 0) {
+				newItemIterator = getNextRuleIterable && getNextRuleIterable(newItem)[Symbol.iterator]()
+				newItemIteration = newItemIterator && newItemIterator.next()
+				const isLeaf = !newItemIteration || newItemIteration.done
+				if (isLeaf
+					|| newItemIteration.value.type !== RuleType.Never
+						&& typeof newItem !== 'undefined'
+				) {
+					newIsLeaf = isLeaf && !(newItem instanceof Object)
+				}
 			}
 
 			let itemParent = object
@@ -249,10 +265,31 @@ function subscribeNext<TValue>(
 				itemParent = parent
 			}
 
-			if (isLeaf && !(item instanceof Object)) {
-				changeLeaf(key, oldItem, newItem, changeType, keyType, itemParent)
+			if (oldIsLeaf === newIsLeaf) {
+				if (newIsLeaf != null) {
+					if (newIsLeaf) {
+						changeLeaf(key, oldItem, newItem, changeType, keyType, itemParent)
+					} else {
+						changeNext(key, oldItem, newItem, changeType, keyType, itemParent, newItemIterator, newItemIteration)
+					}
+				}
 			} else {
-				changeNext(key, oldItem, newItem, changeType, keyType, itemParent, itemIterator, itemIteration)
+				if (oldIsLeaf != null) {
+					if (oldIsLeaf) {
+						changeLeaf(key, oldItem, void 0, ValueChangeType.Unsubscribe, keyType, itemParent)
+					} else {
+						changeNext(key, oldItem, void 0, ValueChangeType.Unsubscribe, keyType, itemParent,
+							newItemIterator, newItemIteration)
+					}
+				}
+				if (newIsLeaf != null) {
+					if (newIsLeaf) {
+						changeLeaf(key, void 0, newItem, ValueChangeType.Subscribe, keyType, itemParent)
+					} else {
+						changeNext(key, void 0, newItem, ValueChangeType.Subscribe, keyType, itemParent,
+							newItemIterator, newItemIteration)
+					}
+				}
 			}
 		}
 

@@ -97,13 +97,11 @@ export class CalcProperty<TValue, TInput = any>
 						}
 						return this._calcFunc(this.state)
 					},
-					valueChanged => {
+					isChangedForce => {
 						this._hasValue = true
 						const val = this.state.value
 						CalcObjectDebugger.Instance.onCalculated(this, val, prevValue)
-						done(valueChanged != null
-							? valueChanged as boolean
-							: (prevValue !== val ? true : null), prevValue, val)
+						done(isChangedForce, prevValue, val)
 						return val
 					},
 					err => {
@@ -121,10 +119,14 @@ export class CalcProperty<TValue, TInput = any>
 					this.setDeferredValue(deferredValue)
 				}
 			},
-			(isChanged, oldValue, newValue) => {
-				if (isChanged !== false) {
-					this.setDeferredValue(newValue, isChanged)
-					this.onValueChanged(oldValue, newValue, isChanged)
+			(isChangedForce, oldValue, newValue) => {
+				if (isChangedForce || oldValue !== newValue) {
+					if (!isChangedForce && isAsync(this._deferredValue)) {
+						this._deferredValue = newValue
+					} else {
+						this.setDeferredValue(newValue, isChangedForce)
+					}
+					this.onValueChanged(oldValue, newValue, isChangedForce)
 				}
 			},
 			calcOptions,

@@ -130,10 +130,7 @@ function subscribeObjectValue<TValue>(
 						&& typeof newValue !== 'undefined'
 					) {
 						changeItem(subscribePropertyName, oldValue, newValue,
-							ValueChangeType.Unsubscribe,
-							ValueKeyType.ValueProperty)
-						changeItem(subscribePropertyName, oldValue, newValue,
-							ValueChangeType.Subscribe,
+							ValueChangeType.Changed,
 							ValueKeyType.ValueProperty)
 						return
 					}
@@ -209,11 +206,20 @@ function subscribeObject<TValue>(
 
 				 // PROF: 623 - 1.3%
 				if (!propertyPredicate || propertyPredicate(name, object)) {
-					if (typeof oldValue !== 'undefined') {
-						changeItem(name, oldValue, void 0, ValueChangeType.Unsubscribe, ValueKeyType.Property)
-					}
-					if (unsubscribe && typeof newValue !== 'undefined') {
-						changeItem(name, void 0, newValue, ValueChangeType.Subscribe, ValueKeyType.Property)
+					if (unsubscribe
+						&& typeof oldValue !== 'undefined'
+						&& typeof newValue !== 'undefined'
+					) {
+						changeItem(name, oldValue, newValue,
+							ValueChangeType.Changed,
+							ValueKeyType.Property)
+					} else {
+						if (typeof oldValue !== 'undefined') {
+							changeItem(name, oldValue, void 0, ValueChangeType.Unsubscribe, ValueKeyType.Property)
+						}
+						if (unsubscribe && typeof newValue !== 'undefined') {
+							changeItem(name, void 0, newValue, ValueChangeType.Subscribe, ValueKeyType.Property)
+						}
 					}
 				}
 			}))

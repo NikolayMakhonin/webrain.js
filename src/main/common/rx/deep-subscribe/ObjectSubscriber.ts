@@ -19,6 +19,15 @@ interface ISubscribedValue {
 	isOwnProperty?: boolean
 }
 
+const undefinedSubscribedValue: ISubscribedValue = {
+	value: void 0,
+	parent: null,
+	key: null,
+	keyType: null,
+}
+
+// TODO subscribedValue equal func
+
 function compareSubscribed(o1: ISubscribedValue, o2: ISubscribedValue): number {
 	if (typeof o1.value !== 'undefined') {
 		if (typeof o2.value !== 'undefined') {
@@ -63,7 +72,7 @@ export class ObjectSubscriber<TObject> implements IValueSubscriber<TObject> {
 		this._lastValue = lastValue
 	}
 
-	private insertSubscribed(subscribedValue: ISubscribedValue) {
+	private insertSubscribed(subscribedValue: ISubscribedValue): ISubscribedValue {
 		let {_subscribedValues} = this
 		if (!_subscribedValues) {
 			this._subscribedValues = _subscribedValues = []
@@ -75,13 +84,7 @@ export class ObjectSubscriber<TObject> implements IValueSubscriber<TObject> {
 			index = ~index
 			if (index === len) {
 				_subscribedValues.push(subscribedValue)
-				this._lastValue(
-					subscribedValue.value,
-					subscribedValue.parent,
-					subscribedValue.key,
-					subscribedValue.keyType,
-				)
-				return
+				return subscribedValue
 			}
 		}
 
@@ -91,7 +94,7 @@ export class ObjectSubscriber<TObject> implements IValueSubscriber<TObject> {
 		_subscribedValues[index] = subscribedValue
 	}
 
-	private removeSubscribed(subscribedValue: ISubscribedValue) {
+	private removeSubscribed(subscribedValue: ISubscribedValue): ISubscribedValue {
 		const {_subscribedValues} = this
 
 		if (_subscribedValues) {
@@ -113,15 +116,10 @@ export class ObjectSubscriber<TObject> implements IValueSubscriber<TObject> {
 					}
 					_subscribedValues.length = len - 1
 					if (len === 1) {
-						this._lastValue(void 0, null, null, null)
+						return undefinedSubscribedValue
 					} else if (index === len - 1) {
 						const nextSubscribedValue = _subscribedValues[len - 2]
-						this._lastValue(
-							nextSubscribedValue.value,
-							nextSubscribedValue.parent,
-							nextSubscribedValue.key,
-							nextSubscribedValue.keyType,
-						)
+						return nextSubscribedValue
 					}
 					return
 				}
@@ -260,18 +258,30 @@ export class ObjectSubscriber<TObject> implements IValueSubscriber<TObject> {
 		}
 
 		if (this._lastValue) {
+			let unsubscribedValue
 			if ((changeType & ValueChangeType.Unsubscribe) !== 0) {
-				this.removeSubscribed({value: oldValue, parent, key, keyType})
+				unsubscribedValue = this.removeSubscribed({value: oldValue, parent, key, keyType})
 			}
 
+			let subscribedValue
 			if ((changeType & ValueChangeType.Subscribe) !== 0) {
-				this.insertSubscribed({
+				subscribedValue = this.insertSubscribed({
 					value: newValue,
 					parent,
 					key,
 					keyType,
 					isOwnProperty: parent != null && key in parent,
 				})
+			}
+
+			const lastValue = subscribedValue || unsubscribedValue
+			if (lastValue) {
+				this._lastValue(
+					lastValue.value,
+					lastValue.parent,
+					lastValue.key,
+					lastValue.keyType,
+				)
 			}
 		}
 

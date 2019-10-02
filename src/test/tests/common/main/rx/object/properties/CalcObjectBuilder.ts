@@ -254,7 +254,7 @@ describe('common > main > rx > properties > CalcObjectBuilder', function() {
 		)
 
 		await tester.subscribeAsync([new Date(123)])
-		await tester.changeAsync(o => o.source1 = 234, [new Date(123), date234, date234], [date234, date234, new Date(234)])
+		await tester.changeAsync(o => o.source1 = 234, [new Date(123)], [new Date(234)])
 		await tester.unsubscribeAsync([new Date(234)])
 
 		tester = new TestDeepSubscribe(
@@ -268,7 +268,7 @@ describe('common > main > rx > properties > CalcObjectBuilder', function() {
 		)
 
 		await tester.subscribeAsync([Date.prototype.getTime])
-		await tester.changeAsync(o => o.source1 = 234, [Date.prototype.getTime, Date.prototype.getTime, Date.prototype.getTime], [Date.prototype.getTime, Date.prototype.getTime, Date.prototype.getTime])
+		await tester.changeAsync(o => o.source1 = 234, [Date.prototype.getTime], [Date.prototype.getTime])
 		await tester.unsubscribeAsync([Date.prototype.getTime])
 	})
 
@@ -287,7 +287,7 @@ describe('common > main > rx > properties > CalcObjectBuilder', function() {
 			// .unsubscribe([new Date(123)])
 			.subscribe([new Date(123)])
 			.change(o => o.source1 = 234, [new Date(123)], [new Date(234)])
-			.change(o => o.source2++, [date234, date234], [date234, date234])
+			.change(o => o.source2++, [new Date(234)], [new Date(234)])
 			.change(o => o.source1 = 345, [new Date(234)], [new Date(345)])
 			.unsubscribe([new Date(345)])
 	})
@@ -308,7 +308,7 @@ describe('common > main > rx > properties > CalcObjectBuilder', function() {
 		await tester.unsubscribeAsync([new Date(123)])
 		await tester.subscribeAsync([new Date(123)])
 		await tester.changeAsync(o => o.source1 = 234, [new Date(123)], [new Date(234)])
-		await tester.changeAsync(o => o.source2++, [date234, date234], [date234, date234])
+		await tester.changeAsync(o => o.source2++, [new Date(234)], [new Date(234)])
 		await tester.changeAsync(o => o.source1 = 345, [new Date(234)], [new Date(345)])
 		await tester.unsubscribeAsync([new Date(345)])
 	})
