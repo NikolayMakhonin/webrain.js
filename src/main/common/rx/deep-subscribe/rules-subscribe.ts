@@ -364,11 +364,12 @@ function subscribeList<TItem>(
 						}
 						break
 					case ListChangedType.Set:
-						if (unsubscribe || oldItems[0] !== newItems[0]) {
-							changeItem(null, oldItems[0], void 0, ValueChangeType.Unsubscribe, ValueKeyType.CollectionAny)
-						}
 						if (unsubscribe) {
-							changeItem(null, void 0, newItems[0], ValueChangeType.Subscribe, ValueKeyType.CollectionAny)
+							changeItem(null, oldItems[0], newItems[0],
+								ValueChangeType.Changed,
+								ValueKeyType.CollectionAny)
+						} else if (oldItems[0] !== newItems[0]) {
+							changeItem(null, oldItems[0], void 0, ValueChangeType.Unsubscribe, ValueKeyType.CollectionAny)
 						}
 						break
 				}
@@ -485,9 +486,10 @@ function subscribeMap<K, V>(
 							changeItem(key, oldValue, void 0, ValueChangeType.Unsubscribe, ValueKeyType.MapKey)
 							break
 						case MapChangedType.Set:
-							changeItem(key, oldValue, void 0, ValueChangeType.Unsubscribe, ValueKeyType.MapKey)
 							if (unsubscribe) {
-								changeItem(key, void 0, newValue, ValueChangeType.Subscribe, ValueKeyType.MapKey)
+								changeItem(key, oldValue, newValue, ValueChangeType.Changed, ValueKeyType.MapKey)
+							} else {
+								changeItem(key, oldValue, void 0, ValueChangeType.Unsubscribe, ValueKeyType.MapKey)
 							}
 							break
 					}
