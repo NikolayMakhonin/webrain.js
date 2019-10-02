@@ -37,7 +37,7 @@ export class RuleBuilder<TObject = any, TValueKeys extends string | number = nev
 
 	constructor({
 		rule,
-		autoInsertValuePropertyDefault = true, // TODO - should be true
+		autoInsertValuePropertyDefault = true,
 	}: {
 		rule?: IRule,
 		autoInsertValuePropertyDefault?: boolean,

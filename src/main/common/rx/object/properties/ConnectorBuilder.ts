@@ -1,6 +1,7 @@
 import {createFunction} from '../../../helpers/helpers'
 import {ValueKeyType} from '../../deep-subscribe/contracts/common'
 import {deepSubscribeRule} from '../../deep-subscribe/deep-subscribe'
+import {setObjectValue} from '../../deep-subscribe/helpers/common'
 import {RuleBuilder} from '../../deep-subscribe/RuleBuilder'
 import {_set, _setExt, ObservableClass} from '../ObservableClass'
 import {IWritableFieldOptions, ObservableObjectBuilder} from '../ObservableObjectBuilder'
@@ -151,8 +152,7 @@ export class ConnectorBuilder<
 				update: writable && function(value: any): TValue|void {
 					const baseValue = baseGetValue.call(this)
 					if (baseValue.parent != null) {
-						// TODO implement set value for different keyTypes
-						baseValue.parent[baseValue.key] = value
+						setObjectValue(baseValue.parent, baseValue.key, baseValue.keyType, value)
 					}
 					// return value
 				},
