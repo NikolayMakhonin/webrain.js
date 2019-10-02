@@ -26,7 +26,22 @@ const undefinedSubscribedValue: ISubscribedValue = {
 	keyType: null,
 }
 
-// TODO subscribedValue equal func
+function valuesEqual(v1, v2) {
+	return v1 === v2 || Number.isNaN(v1) && Number.isNaN(v2)
+}
+
+function subscribedValueEquals(o1: ISubscribedValue, o2: ISubscribedValue): boolean {
+	if (o1 === o2) {
+		return true
+	}
+	if (!o1 || !o2) {
+		return false
+	}
+	return valuesEqual(o1.value, o2.value)
+		&& o1.parent === o2.parent
+		&& o1.keyType === o2.keyType
+		&& o1.key === o2.key
+}
 
 function compareSubscribed(o1: ISubscribedValue, o2: ISubscribedValue): number {
 	if (typeof o1.value !== 'undefined') {
@@ -52,10 +67,6 @@ function compareSubscribed(o1: ISubscribedValue, o2: ISubscribedValue): number {
 	}
 
 	return 0
-}
-
-function valuesEqual(v1, v2) {
-	return v1 === v2 || Number.isNaN(v1) && Number.isNaN(v2)
 }
 
 export class ObjectSubscriber<TObject> implements IValueSubscriber<TObject> {
@@ -102,11 +113,7 @@ export class ObjectSubscriber<TObject> implements IValueSubscriber<TObject> {
 			if (index >= 0) {
 				const len = _subscribedValues.length
 				for (; index < len; index++) {
-					if (valuesEqual(_subscribedValues[index].value, subscribedValue.value)
-						&& _subscribedValues[index].parent === subscribedValue.parent
-						&& _subscribedValues[index].keyType === subscribedValue.keyType
-						&& _subscribedValues[index].key === subscribedValue.key
-					) {
+					if (subscribedValueEquals(_subscribedValues[index], subscribedValue)) {
 						break
 					}
 				}
@@ -274,14 +281,16 @@ export class ObjectSubscriber<TObject> implements IValueSubscriber<TObject> {
 				})
 			}
 
-			const lastValue = subscribedValue || unsubscribedValue
-			if (lastValue) {
-				this._lastValue(
-					lastValue.value,
-					lastValue.parent,
-					lastValue.key,
-					lastValue.keyType,
-				)
+			if (!subscribedValueEquals(subscribedValue, unsubscribedValue)) {
+				const lastValue = subscribedValue || unsubscribedValue
+				if (lastValue) {
+					this._lastValue(
+						lastValue.value,
+						lastValue.parent,
+						lastValue.key,
+						lastValue.keyType,
+					)
+				}
 			}
 		}
 
