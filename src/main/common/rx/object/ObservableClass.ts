@@ -1,12 +1,12 @@
 import '../extensions/autoConnect'
 import {PropertyChangedObject} from './PropertyChangedObject'
 
-export interface ISetOptions {
-	equalsFunc?: (oldValue, newValue) => boolean,
-	fillFunc?: (oldValue, newValue) => boolean,
-	convertFunc?: (newValue) => any,
-	beforeChange?: (oldValue) => void,
-	afterChange?: (newValue) => void,
+export interface ISetOptions<TObject, TValue> {
+	equalsFunc?: (this: TObject, oldValue: TValue, newValue: TValue) => boolean,
+	fillFunc?: (this: TObject, oldValue: TValue, newValue: TValue) => boolean,
+	convertFunc?: (this: TObject, newValue: TValue) => any,
+	beforeChange?: (this: TObject, oldValue: TValue) => void,
+	afterChange?: (this: TObject, newValue: TValue) => void,
 	suppressPropertyChanged?: boolean,
 }
 

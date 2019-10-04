@@ -32,7 +32,7 @@ export class ConnectorBuilder<
 	>(
 		name: Name,
 		buildRule: (builder: RuleBuilder<TSource, TValueKeys>) => RuleBuilder<TValue, TValueKeys>,
-		options?: IWritableFieldOptions,
+		options?: IWritableFieldOptions<TObject, TValue>,
 		initValue?: TValue,
 	): this & { object: { readonly [newProp in Name]: TValue } } {
 		return this._connect(false, name, buildRule, options, initValue)
@@ -44,7 +44,7 @@ export class ConnectorBuilder<
 	>(
 		name: Name,
 		buildRule: (builder: RuleBuilder<TSource, TValueKeys>) => RuleBuilder<TValue, TValueKeys>,
-		options?: IWritableFieldOptions,
+		options?: IWritableFieldOptions<TObject, TValue>,
 		initValue?: TValue,
 	): this & { object: { readonly [newProp in Name]: TValue } } {
 		return this._connect(true, name, buildRule, options, initValue)
@@ -57,7 +57,7 @@ export class ConnectorBuilder<
 		writable: boolean,
 		name: Name,
 		buildRule: (builder: RuleBuilder<TSource, TValueKeys>) => RuleBuilder<TValue, TValueKeys>,
-		options?: IWritableFieldOptions,
+		options?: IWritableFieldOptions<TObject, TValue>,
 		initValue?: TValue,
 	): this & { object: { [newProp in Name]: TValue } } {
 		const {object} = this

@@ -9,17 +9,17 @@ export interface IFieldOptions {
 	setValue?: (value: any) => void
 }
 
-export interface IWritableFieldOptions extends IFieldOptions {
-	setOptions?: ISetOptions,
+export interface IWritableFieldOptions<TObject, TValue> extends IFieldOptions {
+	setOptions?: ISetOptions<TObject, TValue>,
 }
 
-export interface IReadableFieldOptions<TObject, T> extends IWritableFieldOptions {
-	factory?: (this: TObject, initValue: T) => T
-	init?: (this: TObject, initValue: T) => void
+export interface IReadableFieldOptions<TObject, TValue> extends IWritableFieldOptions<TObject, TValue> {
+	factory?: (this: TObject, initValue: TValue) => TValue
+	init?: (this: TObject, initValue: TValue) => void
 }
 
-export interface IUpdatableFieldOptions<TObject, T> extends IReadableFieldOptions<TObject, T> {
-	update?: (this: TObject, value: any) => T|void
+export interface IUpdatableFieldOptions<TObject, TValue> extends IReadableFieldOptions<TObject, TValue> {
+	update?: (this: TObject, value: any) => TValue|void
 }
 
 export class ObservableObjectBuilder<TObject extends ObservableClass> {
@@ -31,12 +31,12 @@ export class ObservableObjectBuilder<TObject extends ObservableClass> {
 
 	public writable<
 		Name extends string | number = Extract<keyof TObject, string|number>,
-		T = Name extends keyof TObject ? TObject[Name] : any,
+		TValue = Name extends keyof TObject ? TObject[Name] : any,
 	>(
 		name: Name,
-		options?: IWritableFieldOptions,
-		initValue?: T,
-	): this & { object: { [newProp in Name]: T } } {
+		options?: IWritableFieldOptions<TObject, TValue>,
+		initValue?: TValue,
+	): this & { object: { [newProp in Name]: TValue } } {
 		const {
 			setOptions,
 			hidden,
@@ -82,20 +82,20 @@ export class ObservableObjectBuilder<TObject extends ObservableClass> {
 
 	public readable<
 		Name extends string | number = Extract<keyof TObject, string|number>,
-		T = Name extends keyof TObject ? TObject[Name] : any,
+		TValue = Name extends keyof TObject ? TObject[Name] : any,
 	>(
 		name: Name,
-		options?: IReadableFieldOptions<TObject, T>,
-		initValue?: T,
-	): this & { object: { readonly [newProp in Name]: T } } {
+		options?: IReadableFieldOptions<TObject, TValue>,
+		initValue?: TValue,
+	): this & { object: { readonly [newProp in Name]: TValue } } {
 		return this.updatable(name, options, initValue)
 	}
 
-	public updatable<T, Name extends string | number>(
+	public updatable<TValue, Name extends string | number>(
 		name: Name,
-		options?: IUpdatableFieldOptions<TObject, T>,
-		initValue?: T,
-	): this & { object: { [newProp in Name]: T } } {
+		options?: IUpdatableFieldOptions<TObject, TValue>,
+		initValue?: TValue,
+	): this & { object: { [newProp in Name]: TValue } } {
 		const hidden = options && options.hidden
 
 		const {object} = this
