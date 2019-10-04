@@ -1,3 +1,4 @@
+import {webrainOptions} from '../../helpers/webrainOptions'
 import '../extensions/autoConnect'
 import {PropertyChangedObject} from './PropertyChangedObject'
 
@@ -45,7 +46,7 @@ export function _setExt(
 
 	const oldValue = getValue ? getValue.call(object) : object.__fields[name]
 
-	const equalsFunc = options.equalsFunc
+	const equalsFunc = options.equalsFunc || webrainOptions.equalsFunc
 	if (equalsFunc ? equalsFunc.call(object, oldValue, newValue) : oldValue === newValue) {
 		return false
 	}
@@ -104,7 +105,7 @@ export function _set(
 ) {
 	const oldValue = getValue.call(object)
 
-	if (oldValue === newValue) {
+	if (webrainOptions.equalsFunc ? webrainOptions.equalsFunc.call(object, oldValue, newValue) : oldValue === newValue) {
 		return false
 	}
 

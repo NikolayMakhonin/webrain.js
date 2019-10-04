@@ -7,6 +7,7 @@ import {
 	ISerializeValue,
 } from '../../../extensions/serialization/contracts'
 import {registerSerializable} from '../../../extensions/serialization/serializers'
+import {webrainOptions} from '../../../helpers/webrainOptions'
 import {ObservableClass} from '../ObservableClass'
 import {ObservableObjectBuilder} from '../ObservableObjectBuilder'
 
@@ -176,8 +177,10 @@ export class Property<TValue, TMergeSource = TValue>
 	// region IMergeable
 
 	public _canMerge(source: Property<TValue, TMergeSource>|TValue|TMergeSource): boolean {
-		if (source.constructor === Property
-			&& this.value === (source as Property<TValue, TMergeSource>).value
+		if (webrainOptions.equalsFunc
+			? source.constructor === Property && webrainOptions.equalsFunc.call(this, this.value, (source as Property<TValue, TMergeSource>).value)
+				|| webrainOptions.equalsFunc.call(this, this.value, source)
+			: source.constructor === Property && this.value === (source as Property<TValue, TMergeSource>).value
 				|| this.value === source
 		) {
 			return null

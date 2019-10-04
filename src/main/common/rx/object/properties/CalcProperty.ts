@@ -1,6 +1,7 @@
 import {isAsync, ThenableOrValue} from '../../../async/async'
 import {resolveAsyncFunc} from '../../../async/ThenableSync'
 import {VALUE_PROPERTY_DEFAULT} from '../../../helpers/value-property'
+import {webrainOptions} from '../../../helpers/webrainOptions'
 import {DeferredCalc, IDeferredCalcOptions} from '../../deferred-calc/DeferredCalc'
 import {ObservableClass} from '../ObservableClass'
 import {ObservableObjectBuilder} from '../ObservableObjectBuilder'
@@ -99,7 +100,10 @@ export class CalcProperty<TValue, TInput = any>
 					},
 					isChangedForce => {
 						this._hasValue = true
-						const val = this.state.value
+						let val = this.state.value
+						if (webrainOptions.equalsFunc.call(this.state, prevValue, this.state.value)) {
+							this.state.value = val = prevValue
+						}
 						CalcObjectDebugger.Instance.onCalculated(this, val, prevValue)
 						done(isChangedForce, prevValue, val)
 						return val
@@ -108,7 +112,10 @@ export class CalcProperty<TValue, TInput = any>
 						this._error = err
 						console.error(err)
 						CalcObjectDebugger.Instance.onError(this, this.state.value, prevValue, err)
-						const val = this.state.value
+						let val = this.state.value
+						if (webrainOptions.equalsFunc.call(this.state, prevValue, this.state.value)) {
+							this.state.value = val = prevValue
+						}
 						done(prevValue !== val, prevValue, val)
 						return val // ThenableSync.createRejected(err)
 					},
@@ -135,7 +142,10 @@ export class CalcProperty<TValue, TInput = any>
 
 	private setDeferredValue(newValue, force?: boolean) {
 		const oldValue = this._deferredValue
-		if (!force && newValue === oldValue) {
+		if (!force && (webrainOptions.equalsFunc
+			? webrainOptions.equalsFunc.call(this, oldValue, newValue)
+			: oldValue === newValue)
+		) {
 			return
 		}
 
@@ -151,7 +161,10 @@ export class CalcProperty<TValue, TInput = any>
 	}
 
 	private onValueChanged(oldValue, newValue, force?: boolean) {
-		if (!force && newValue === oldValue) {
+		if (!force && (webrainOptions.equalsFunc
+			? webrainOptions.equalsFunc.call(this, oldValue, newValue)
+			: oldValue === newValue)
+		) {
 			return
 		}
 
@@ -201,7 +214,10 @@ export class CalcProperty<TValue, TInput = any>
 	}
 
 	public clear() {
-		if (this.state.value !== this._initValue) {
+		if ((webrainOptions.equalsFunc
+			? !webrainOptions.equalsFunc.call(this, this.state.value, this._initValue)
+			: this.state.value !== this._initValue)
+		) {
 			const oldValue = this.state.value
 			const newValue = this._initValue
 			this.state.value = newValue

@@ -77,3 +77,19 @@ export function hideObjectProperty(object: object, propertyName: string) {
 		value: object[propertyName],
 	})
 }
+
+export function equalsObjects(o1, o2) {
+	if (o1 === o2) {
+		return true
+	}
+
+	if (o1 && typeof o1 === 'object' && typeof o1.equals === 'function') {
+		return o1.equals(o2)
+	}
+
+	if (o2 && typeof o2 === 'object' && typeof o2.equals === 'function') {
+		return o2.equals(o1)
+	}
+
+	return false
+}

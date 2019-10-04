@@ -28,6 +28,7 @@ export {registerSerializable, registerSerializer} from './extensions/serializati
 export {isIterable} from './helpers/helpers'
 export {DependenciesBuilder} from './rx/object/properties/DependenciesBuilder'
 export {subscribeDependencies} from './rx/object/properties/DependenciesBuilder'
+export {webrainOptions} from './helpers/webrainOptions'
 
 // Interfaces:
 import {ThenableOrIteratorOrValue as _ThenableOrIteratorOrValue} from './async/async'
