@@ -71,36 +71,26 @@ function subscribeNext(object, valueSubscriber, immediate, ruleIterator, propert
     };
 
     const changeNext = (key, oldItem, newItem, changeType, keyType, parent, iterator, iteration) => {
-      if ((changeType & ValueChangeType.Unsubscribe) !== 0) {
-        if (!(oldItem instanceof Object)) {
-          return;
-        }
-
-        if (!unsubscribers) {
-          return;
-        }
-
+      if ((changeType & ValueChangeType.Unsubscribe) !== 0 && oldItem instanceof Object && unsubscribers) {
         const itemUniqueId = getObjectUniqueId(oldItem);
         const unsubscribeCount = unsubscribersCount[itemUniqueId];
 
-        if (!unsubscribeCount) {
-          return;
-        }
-
-        if (unsubscribeCount > 1) {
-          unsubscribersCount[itemUniqueId] = unsubscribeCount - 1;
-        } else {
-          const unsubscribe = unsubscribers[itemUniqueId]; // unsubscribers[itemUniqueId] = null // faster but there is a danger of memory overflow with nulls
-
-          delete unsubscribers[itemUniqueId];
-          delete unsubscribersCount[itemUniqueId];
-
-          if (Array.isArray(unsubscribe)) {
-            for (let i = 0, len = unsubscribe.length; i < len; i++) {
-              unsubscribe[i]();
-            }
+        if (unsubscribeCount) {
+          if (unsubscribeCount > 1) {
+            unsubscribersCount[itemUniqueId] = unsubscribeCount - 1;
           } else {
-            unsubscribe();
+            const unsubscribe = unsubscribers[itemUniqueId]; // unsubscribers[itemUniqueId] = null // faster but there is a danger of memory overflow with nulls
+
+            delete unsubscribers[itemUniqueId];
+            delete unsubscribersCount[itemUniqueId];
+
+            if (Array.isArray(unsubscribe)) {
+              for (let i = 0, len = unsubscribe.length; i < len; i++) {
+                unsubscribe[i]();
+              }
+            } else {
+              unsubscribe();
+            }
           }
         }
       }
@@ -118,36 +108,33 @@ function subscribeNext(object, valueSubscriber, immediate, ruleIterator, propert
 
           itemUniqueId = getObjectUniqueId(newItem);
           unsubscribe = unsubscribers[itemUniqueId];
-
-          if (unsubscribe) {
-            unsubscribersCount[itemUniqueId]++;
-            return;
-          }
         }
 
-        unsubscribe = checkIsFuncOrNull(subscribeNext(newItem, valueSubscriber, immediate, iterator, () => (propertiesPath ? propertiesPath() + '.' : '') + (key + '(' + rule.description + ')'), key, parent, rule.description, iteration));
-
         if (unsubscribe) {
-          if (newItem instanceof Object) {
-            const chainUnsubscribe = unsubscribers[itemUniqueId];
+          unsubscribersCount[itemUniqueId]++;
+        } else {
+          unsubscribe = checkIsFuncOrNull(subscribeNext(newItem, valueSubscriber, immediate, iterator, () => (propertiesPath ? propertiesPath() + '.' : '') + (key + '(' + rule.description + ')'), key, parent, rule.description, iteration));
 
-            if (chainUnsubscribe) {
-              if (Array.isArray(chainUnsubscribe)) {
-                chainUnsubscribe.push(unsubscribe);
-                return;
-              }
-
-              unsubscribers[itemUniqueId] = [chainUnsubscribe, unsubscribe];
+          if (unsubscribe) {
+            if (!(newItem instanceof Object)) {
+              unsubscribe();
+              throw new Error('You should not return unsubscribe function for non Object value.\n' + 'For subscribe value types use their object wrappers: Number, Boolean, String classes.\n' + `Unsubscribe function: ${unsubscribe}\nValue: ${newItem}\n` + `Value property path: ${(propertiesPath ? propertiesPath() + '.' : '') + (key + '(' + rule.description + ')')}`);
             } else {
-              unsubscribers[itemUniqueId] = unsubscribe;
+              const chainUnsubscribe = unsubscribers[itemUniqueId];
+
+              if (!chainUnsubscribe) {
+                unsubscribers[itemUniqueId] = unsubscribe;
+                unsubscribersCount[itemUniqueId] = 1;
+              } else {
+                if (Array.isArray(chainUnsubscribe)) {
+                  chainUnsubscribe.push(unsubscribe);
+                } else {
+                  unsubscribers[itemUniqueId] = [chainUnsubscribe, unsubscribe];
+                  unsubscribersCount[itemUniqueId] = 1;
+                }
+              }
             }
-
-            unsubscribersCount[itemUniqueId] = 1;
-            return;
           }
-
-          unsubscribe();
-          throw new Error('You should not return unsubscribe function for non Object value.\n' + 'For subscribe value types use their object wrappers: Number, Boolean, String classes.\n' + `Unsubscribe function: ${unsubscribe}\nValue: ${newItem}\n` + `Value property path: ${(propertiesPath ? propertiesPath() + '.' : '') + (key + '(' + rule.description + ')')}`);
         }
       }
     };
@@ -157,17 +144,30 @@ function subscribeNext(object, valueSubscriber, immediate, ruleIterator, propert
     };
 
     const changeItem = (key, oldItem, newItem, changeType, keyType) => {
-      const item = changeType & ValueChangeType.Subscribe ? newItem : oldItem;
-      const itemIterator = getNextRuleIterable && getNextRuleIterable(item)[Symbol.iterator]();
-      const itemIteration = itemIterator && itemIterator.next();
-      const isLeaf = !itemIteration || itemIteration.done;
+      let oldIsLeaf;
 
-      if (!isLeaf && itemIteration.value.type === RuleType.Never) {
-        return;
+      if ((changeType & ValueChangeType.Unsubscribe) !== 0) {
+        const oldItemIterator = getNextRuleIterable && getNextRuleIterable(oldItem)[Symbol.iterator]();
+        const oldItemIteration = oldItemIterator && oldItemIterator.next();
+        const isLeaf = !oldItemIteration || oldItemIteration.done;
+
+        if (isLeaf || oldItemIteration.value.type !== RuleType.Never && typeof oldItem !== 'undefined') {
+          oldIsLeaf = isLeaf && !(oldItem instanceof Object);
+        }
       }
 
-      if (!isLeaf && typeof item === 'undefined') {
-        return;
+      let newIsLeaf;
+      let newItemIterator;
+      let newItemIteration;
+
+      if ((changeType & ValueChangeType.Subscribe) !== 0) {
+        newItemIterator = getNextRuleIterable && getNextRuleIterable(newItem)[Symbol.iterator]();
+        newItemIteration = newItemIterator && newItemIterator.next();
+        const isLeaf = !newItemIteration || newItemIteration.done;
+
+        if (isLeaf || newItemIteration.value.type !== RuleType.Never && typeof newItem !== 'undefined') {
+          newIsLeaf = isLeaf && !(newItem instanceof Object);
+        }
       }
 
       let itemParent = object;
@@ -177,10 +177,30 @@ function subscribeNext(object, valueSubscriber, immediate, ruleIterator, propert
         itemParent = parent;
       }
 
-      if (isLeaf && !(item instanceof Object)) {
-        changeLeaf(key, oldItem, newItem, changeType, keyType, itemParent);
+      if (oldIsLeaf === newIsLeaf) {
+        if (newIsLeaf != null) {
+          if (newIsLeaf) {
+            changeLeaf(key, oldItem, newItem, changeType, keyType, itemParent);
+          } else {
+            changeNext(key, oldItem, newItem, changeType, keyType, itemParent, newItemIterator, newItemIteration);
+          }
+        }
       } else {
-        changeNext(key, oldItem, newItem, changeType, keyType, itemParent, itemIterator, itemIteration);
+        if (oldIsLeaf != null) {
+          if (oldIsLeaf) {
+            changeLeaf(key, oldItem, void 0, ValueChangeType.Unsubscribe, keyType, itemParent);
+          } else {
+            changeNext(key, oldItem, void 0, ValueChangeType.Unsubscribe, keyType, itemParent, newItemIterator, newItemIteration);
+          }
+        }
+
+        if (newIsLeaf != null) {
+          if (newIsLeaf) {
+            changeLeaf(key, void 0, newItem, ValueChangeType.Subscribe, keyType, itemParent);
+          } else {
+            changeNext(key, void 0, newItem, ValueChangeType.Subscribe, keyType, itemParent, newItemIterator, newItemIteration);
+          }
+        }
       }
     };
 

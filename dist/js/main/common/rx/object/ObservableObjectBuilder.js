@@ -17,6 +17,8 @@ var _createClass2 = _interopRequireDefault(require("@babel/runtime-corejs3/helpe
 
 var _helpers = require("../../helpers/helpers");
 
+var _webrainOptions = require("../../helpers/webrainOptions");
+
 require("../extensions/autoConnect");
 
 var _IPropertyChanged = require("./IPropertyChanged");
@@ -67,7 +69,7 @@ function () {
       if (__fields && typeof initValue !== 'undefined') {
         var _value = __fields[name];
 
-        if (initValue !== _value) {
+        if (_webrainOptions.webrainOptions.equalsFunc ? !_webrainOptions.webrainOptions.equalsFunc.call(object, _value, initValue) : _value !== initValue) {
           object[name] = initValue;
         }
       }
@@ -170,7 +172,7 @@ function () {
             if (typeof factoryValue !== 'undefined') {
               var oldValue = getValue.call(this);
 
-              if (factoryValue !== oldValue) {
+              if (_webrainOptions.webrainOptions.equalsFunc ? !_webrainOptions.webrainOptions.equalsFunc.call(this, oldValue, factoryValue) : oldValue !== factoryValue) {
                 setOnInit(this, factoryValue);
               }
             }
@@ -188,7 +190,7 @@ function () {
             if (typeof newValue !== 'undefined') {
               var oldValue = getValue.call(this);
 
-              if (newValue !== oldValue) {
+              if (_webrainOptions.webrainOptions.equalsFunc ? !_webrainOptions.webrainOptions.equalsFunc.call(this, oldValue, newValue) : oldValue !== newValue) {
                 setOnInit(this, newValue);
               }
             }
@@ -217,7 +219,7 @@ function () {
             initializeValue.call(this, initValue);
           }
 
-          if (initValue !== _oldValue) {
+          if (_webrainOptions.webrainOptions.equalsFunc ? !_webrainOptions.webrainOptions.equalsFunc.call(object, _oldValue, initValue) : _oldValue !== initValue) {
             __fields[name] = initValue;
             var _propertyChangedIfCanEmit = object.propertyChangedIfCanEmit;
 

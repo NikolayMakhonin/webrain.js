@@ -23,8 +23,8 @@ describe('resolvePath', function () {
   new CalcObjectBuilder(Class.prototype).writable('observable').calc('calc', simple, calcPropertyFactory({
     dependencies: null,
 
-    calcFunc(input, property) {
-      property.value = input.value;
+    calcFunc(state) {
+      state.value = state.input.value;
       return ThenableSync.createResolved(null);
     }
 

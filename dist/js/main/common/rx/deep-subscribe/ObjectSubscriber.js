@@ -22,6 +22,29 @@ var _array = require("../../lists/helpers/array");
 var _common = require("./contracts/common");
 
 /* tslint:disable:no-array-delete*/
+var undefinedSubscribedValue = {
+  value: void 0,
+  parent: null,
+  key: null,
+  keyType: null
+};
+
+function valuesEqual(v1, v2) {
+  return v1 === v2 || (0, _isNan.default)(v1) && (0, _isNan.default)(v2);
+}
+
+function subscribedValueEquals(o1, o2) {
+  if (o1 === o2) {
+    return true;
+  }
+
+  if (!o1 || !o2) {
+    return false;
+  }
+
+  return valuesEqual(o1.value, o2.value) && o1.parent === o2.parent && o1.keyType === o2.keyType && o1.key === o2.key;
+}
+
 function compareSubscribed(o1, o2) {
   if (typeof o1.value !== 'undefined') {
     if (typeof o2.value !== 'undefined') {
@@ -52,10 +75,6 @@ function compareSubscribed(o1, o2) {
   return 0;
 }
 
-function valuesEqual(v1, v2) {
-  return v1 === v2 || (0, _isNan.default)(v1) && (0, _isNan.default)(v2);
-}
-
 var ObjectSubscriber =
 /*#__PURE__*/
 function () {
@@ -83,9 +102,7 @@ function () {
         if (index === len) {
           _subscribedValues.push(subscribedValue);
 
-          this._lastValue(subscribedValue.value, subscribedValue.parent, subscribedValue.key, subscribedValue.keyType);
-
-          return;
+          return subscribedValue;
         }
       }
 
@@ -107,7 +124,7 @@ function () {
           var len = _subscribedValues.length;
 
           for (; index < len; index++) {
-            if (valuesEqual(_subscribedValues[index].value, subscribedValue.value) && _subscribedValues[index].parent === subscribedValue.parent && _subscribedValues[index].keyType === subscribedValue.keyType && _subscribedValues[index].key === subscribedValue.key) {
+            if (subscribedValueEquals(_subscribedValues[index], subscribedValue)) {
               break;
             }
           }
@@ -120,14 +137,13 @@ function () {
             _subscribedValues.length = len - 1;
 
             if (len === 1) {
-              this._lastValue(void 0, null, null, null);
+              return undefinedSubscribedValue;
             } else if (index === len - 1) {
               var nextSubscribedValue = _subscribedValues[len - 2];
-
-              this._lastValue(nextSubscribedValue.value, nextSubscribedValue.parent, nextSubscribedValue.key, nextSubscribedValue.keyType);
+              return nextSubscribedValue;
             }
 
-            return;
+            return null;
           }
         }
       }
@@ -203,7 +219,7 @@ function () {
                 _unsubscribersCount2 = this._unsubscribersCount;
 
             if (_unsubscribers2 && _unsubscribers2[_itemUniqueId]) {
-              this._changeValue(key, oldValue, newValue, parent, nextChangeType, key, unsubscribedLast);
+              this._changeValue(key, oldValue, newValue, parent, nextChangeType, keyType, unsubscribedLast);
 
               _unsubscribersCount2[_itemUniqueId]++;
             } else {
@@ -221,13 +237,15 @@ function () {
             }
           }
         } else {
-          this._changeValue(key, oldValue, newValue, parent, nextChangeType, key, unsubscribedLast);
+          this._changeValue(key, oldValue, newValue, parent, nextChangeType, keyType, unsubscribedLast);
         }
       }
 
       if (this._lastValue) {
+        var unsubscribedValue;
+
         if ((changeType & _common.ValueChangeType.Unsubscribe) !== 0) {
-          this.removeSubscribed({
+          unsubscribedValue = this.removeSubscribed({
             value: oldValue,
             parent: parent,
             key: key,
@@ -235,14 +253,24 @@ function () {
           });
         }
 
+        var subscribedValue;
+
         if ((changeType & _common.ValueChangeType.Subscribe) !== 0) {
-          this.insertSubscribed({
+          subscribedValue = this.insertSubscribed({
             value: newValue,
             parent: parent,
             key: key,
             keyType: keyType,
             isOwnProperty: parent != null && key in parent
           });
+        }
+
+        if (!subscribedValueEquals(subscribedValue, unsubscribedValue)) {
+          var lastValue = subscribedValue || unsubscribedValue;
+
+          if (lastValue) {
+            this._lastValue(lastValue.value, lastValue.parent, lastValue.key, lastValue.keyType);
+          }
         }
       }
 

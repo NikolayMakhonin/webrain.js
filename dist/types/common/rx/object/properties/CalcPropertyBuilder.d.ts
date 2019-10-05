@@ -1,12 +1,11 @@
 import { IDeferredCalcOptions } from '../../deferred-calc/DeferredCalc';
-import { CalcProperty, CalcPropertyFunc } from './CalcProperty';
+import { CalcProperty } from './CalcProperty';
 import { CalcPropertyDependenciesBuilder } from './CalcPropertyDependenciesBuilder';
-import { IPropertyOptions } from './Property';
-export declare function calcPropertyFactory<TValue, TInput, TMergeSource, TTarget extends CalcProperty<TValue, TInput, TMergeSource> = CalcProperty<TValue, TInput, TMergeSource>>({ dependencies: buildDependencies, calcFunc, name, calcOptions, valueOptions, initValue, }: {
-    dependencies: null | ((dependenciesBuilder: CalcPropertyDependenciesBuilder<CalcProperty<TValue, TInput, TMergeSource>, TInput>) => void);
-    calcFunc: CalcPropertyFunc<TInput, TValue, TMergeSource>;
+import { CalcPropertyFunc } from './contracts';
+export declare function calcPropertyFactory<TValue, TInput, TTarget extends CalcProperty<TValue, TInput> = CalcProperty<TValue, TInput>>({ dependencies: buildDependencies, calcFunc, name, calcOptions, initValue, }: {
+    dependencies: null | ((dependenciesBuilder: CalcPropertyDependenciesBuilder<CalcProperty<TValue, TInput>, TInput>) => void);
+    calcFunc: CalcPropertyFunc<TValue, TInput>;
     name?: string;
     calcOptions?: IDeferredCalcOptions;
-    valueOptions?: IPropertyOptions<TValue, TMergeSource>;
     initValue?: TValue;
-}): () => CalcProperty<TValue, TInput, TMergeSource>;
+}): () => CalcProperty<TValue, TInput>;

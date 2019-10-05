@@ -1,5 +1,5 @@
-import {webrainOptions} from '../../helpers/webrainOptions'
 import {createFunction} from '../../helpers/helpers'
+import {webrainOptions} from '../../helpers/webrainOptions'
 import '../extensions/autoConnect'
 import {PropertyChangedEvent} from './IPropertyChanged'
 import {_set, _setExt, ISetOptions, ObservableClass} from './ObservableClass'
@@ -195,7 +195,10 @@ export class ObservableObjectBuilder<TObject extends ObservableClass> {
 					const newValue = update.call(this, value)
 					if (typeof newValue !== 'undefined') {
 						const oldValue = getValue.call(this)
-						if (webrainOptions.equalsFunc ? !webrainOptions.equalsFunc.call(this, oldValue, newValue) : oldValue !== newValue) {
+						if (webrainOptions.equalsFunc
+							? !webrainOptions.equalsFunc.call(this, oldValue, newValue)
+							: oldValue !== newValue
+						) {
 							setOnInit(this, newValue)
 						}
 					}

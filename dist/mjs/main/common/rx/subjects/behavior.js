@@ -24,9 +24,13 @@ export function behavior(base) {
       }
 
       return () => {
-        if (!unsubscribe) {
+        const _unsubscribe = unsubscribe;
+
+        if (!_unsubscribe) {
           return;
         }
+
+        unsubscribe = null;
 
         try {
           // eslint-disable-next-line no-shadow
@@ -40,8 +44,7 @@ export function behavior(base) {
             subscriber(unsubscribeValue);
           }
         } finally {
-          unsubscribe();
-          unsubscribe = null;
+          _unsubscribe();
         }
       };
     }

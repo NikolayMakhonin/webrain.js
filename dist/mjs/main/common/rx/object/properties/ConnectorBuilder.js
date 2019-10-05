@@ -1,14 +1,17 @@
 import { createFunction } from '../../../helpers/helpers';
 import { deepSubscribeRule } from '../../deep-subscribe/deep-subscribe';
+import { setObjectValue } from '../../deep-subscribe/helpers/common';
 import { RuleBuilder } from '../../deep-subscribe/RuleBuilder';
 import { _set, _setExt } from '../ObservableClass';
 import { ObservableObjectBuilder } from '../ObservableObjectBuilder';
 import { CalcObjectDebugger } from './CalcObjectDebugger';
 import { Connector } from './Connector';
+
+const buildSourceRule = b => b.p('source');
+
 export class ConnectorBuilder extends ObservableObjectBuilder {
-  constructor(object, buildSourceRule) {
+  constructor(object) {
     super(object);
-    this.buildSourceRule = buildSourceRule;
   }
 
   connect(name, buildRule, options, initValue) {
@@ -21,15 +24,10 @@ export class ConnectorBuilder extends ObservableObjectBuilder {
 
   _connect(writable, name, buildRule, options, initValue) {
     const {
-      object,
-      buildSourceRule
+      object
     } = this;
     let ruleBuilder = new RuleBuilder();
-
-    if (buildSourceRule) {
-      ruleBuilder = buildSourceRule(ruleBuilder);
-    }
-
+    ruleBuilder = buildSourceRule(ruleBuilder);
     ruleBuilder = buildRule(ruleBuilder);
     const ruleBase = ruleBuilder && ruleBuilder.result();
 
@@ -89,7 +87,7 @@ export class ConnectorBuilder extends ObservableObjectBuilder {
 
           if (hasSubscribers) {
             const unsubscribe = deepSubscribeRule({
-              object: this,
+              object: this.connectorState,
               lastValue: receiveValue,
               rule
             });
@@ -107,8 +105,7 @@ export class ConnectorBuilder extends ObservableObjectBuilder {
         const baseValue = baseGetValue.call(this);
 
         if (baseValue.parent != null) {
-          // TODO implement set value for different keyTypes
-          baseValue.parent[baseValue.key] = value;
+          setObjectValue(baseValue.parent, baseValue.key, baseValue.keyType, value);
         } // return value
 
       },
@@ -118,15 +115,25 @@ export class ConnectorBuilder extends ObservableObjectBuilder {
   }
 
 }
-export function connectorClass(build, baseClass) {
+export function connectorClass({
+  buildRule,
+  baseClass
+}) {
   class NewConnector extends (baseClass || Connector) {}
 
-  build(new ConnectorBuilder(NewConnector.prototype, b => b.p('connectorSource')));
+  buildRule(new ConnectorBuilder(NewConnector.prototype));
   return NewConnector;
 }
-export function connectorFactory(build, baseClass) {
-  const NewConnector = connectorClass(build, baseClass);
-  return source => new NewConnector(source);
+export function connectorFactory({
+  name,
+  buildRule,
+  baseClass
+}) {
+  const NewConnector = connectorClass({
+    buildRule,
+    baseClass
+  });
+  return (source, sourceName) => new NewConnector(source, name || sourceName);
 } // const builder = new ConnectorBuilder(true as any)
 //
 // export function connect<TObject extends ObservableClass, TValue = any>(

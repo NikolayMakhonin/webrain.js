@@ -30,7 +30,7 @@ export interface IErrorEvent {
     target: ICalcProperty<any>;
     newValue: any;
     oldValue: any;
-    err: any;
+    error: any;
 }
 export declare class CalcObjectDebugger {
     static Instance: CalcObjectDebugger;
@@ -46,7 +46,7 @@ export declare class CalcObjectDebugger {
     onInvalidated(target: ICalcProperty<any>, value: any): void;
     private _calculatedSubject;
     readonly calculatedObservable: IObservable<ICalculatedEvent>;
-    onCalculated(target: ICalcProperty<any>, newValue: any, oldValue: any): void;
+    onCalculated(target: ICalcProperty<any>, oldValue: any, newValue: any): void;
     private _errorSubject;
     readonly errorObservable: IObservable<IErrorEvent>;
     onError(target: ICalcProperty<any>, newValue: any, oldValue: any, err: any): void;

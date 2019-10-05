@@ -2,6 +2,7 @@ let _Symbol$toStringTag;
 
 import { ObjectMerger, registerMergeable } from '../../../extensions/merge/mergers';
 import { registerSerializable } from '../../../extensions/serialization/serializers';
+import { webrainOptions } from '../../../helpers/webrainOptions';
 import { ObservableClass } from '../ObservableClass';
 import { ObservableObjectBuilder } from '../ObservableObjectBuilder';
 _Symbol$toStringTag = Symbol.toStringTag;
@@ -83,7 +84,7 @@ export class Property extends ObservableClass {
 
 
   _canMerge(source) {
-    if (source.constructor === Property && this.value === source.value || this.value === source) {
+    if (webrainOptions.equalsFunc ? source.constructor === Property && webrainOptions.equalsFunc.call(this, this.value, source.value) || webrainOptions.equalsFunc.call(this, this.value, source) : source.constructor === Property && this.value === source.value || this.value === source) {
       return null;
     }
 

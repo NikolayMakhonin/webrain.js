@@ -120,11 +120,7 @@ var _Mocha = require("../../../../../../main/common/test/Mocha");
     var subscribedItems = [];
 
     function changeItem(key, oldValue, newValue, changeType, keyType) {
-      if ((changeType & _common.ValueChangeType.Unsubscribe) !== 0) {
-        if (typeof oldValue === 'undefined') {
-          return;
-        }
-
+      if ((changeType & _common.ValueChangeType.Unsubscribe) !== 0 && typeof oldValue !== 'undefined') {
         _Assert.assert.ok(oldValue);
 
         oldValue = (0, _trim.default)(oldValue).call(oldValue);
@@ -132,11 +128,7 @@ var _Mocha = require("../../../../../../main/common/test/Mocha");
         subscribedItems.push('-' + oldValue);
       }
 
-      if ((changeType & _common.ValueChangeType.Subscribe) !== 0) {
-        if (typeof newValue === 'undefined') {
-          return;
-        }
-
+      if ((changeType & _common.ValueChangeType.Subscribe) !== 0 && typeof newValue !== 'undefined') {
         _Assert.assert.ok(newValue);
 
         _Assert.assert.strictEqual(typeof newValue, 'string', newValue);

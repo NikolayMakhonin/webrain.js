@@ -19,6 +19,8 @@ var _assertThisInitialized2 = _interopRequireDefault(require("@babel/runtime-cor
 
 var _inherits2 = _interopRequireDefault(require("@babel/runtime-corejs3/helpers/inherits"));
 
+var _webrainOptions = require("../../helpers/webrainOptions");
+
 require("../extensions/autoConnect");
 
 var _PropertyChangedObject = require("./PropertyChangedObject");
@@ -56,7 +58,7 @@ function _setExt(name, getValue, setValue, options, object, newValue) {
   }
 
   var oldValue = getValue ? getValue.call(object) : object.__fields[name];
-  var equalsFunc = options.equalsFunc;
+  var equalsFunc = options.equalsFunc || _webrainOptions.webrainOptions.equalsFunc;
 
   if (equalsFunc ? equalsFunc.call(object, oldValue, newValue) : oldValue === newValue) {
     return false;
@@ -72,11 +74,10 @@ function _setExt(name, getValue, setValue, options, object, newValue) {
 
   if (convertFunc) {
     newValue = convertFunc.call(object, newValue);
-  }
+  } // if (oldValue === newValue) {
+  // 	return false
+  // }
 
-  if (oldValue === newValue) {
-    return false;
-  }
 
   var beforeChange = options.beforeChange;
 
@@ -116,7 +117,7 @@ function _setExt(name, getValue, setValue, options, object, newValue) {
 function _set(name, getValue, setValue, object, newValue) {
   var oldValue = getValue.call(object);
 
-  if (oldValue === newValue) {
+  if (_webrainOptions.webrainOptions.equalsFunc ? _webrainOptions.webrainOptions.equalsFunc.call(object, oldValue, newValue) : oldValue === newValue) {
     return false;
   }
 

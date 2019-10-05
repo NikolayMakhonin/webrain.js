@@ -36,15 +36,15 @@ function (_ObservableObjectBuil) {
         factory: function factory() {
           var property = calcFactory(initValue);
 
-          if (property.name == null) {
-            property.name = this.constructor.name + "." + name;
+          if (property.state.name == null) {
+            property.state.name = this.constructor.name + "." + name;
           }
 
           return property;
         },
         init: function init(property) {
           if (typeof inputOrFactory !== 'undefined') {
-            property.input = typeof inputOrFactory === 'function' ? inputOrFactory(this) : inputOrFactory;
+            property.state.input = typeof inputOrFactory === 'function' ? inputOrFactory(this, this.constructor.name) : inputOrFactory;
           }
         }
       });
@@ -56,8 +56,8 @@ function (_ObservableObjectBuil) {
         dependencies: function dependencies(_dependencies) {
           return _dependencies.invalidateOn(buildRule);
         },
-        calcFunc: function calcFunc(input, property) {
-          property.value++;
+        calcFunc: function calcFunc(state) {
+          state.value++;
         },
         initValue: 0
       }));

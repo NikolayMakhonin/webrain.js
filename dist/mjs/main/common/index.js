@@ -19,4 +19,13 @@ export { ObjectMap } from './lists/ObjectMap';
 export { ObjectSet } from './lists/ObjectSet';
 export { CalcProperty } from './rx/object/properties/CalcProperty';
 export { ValueKeyType } from './rx/deep-subscribe/contracts/common';
-export { ObjectMerger } from './extensions/merge/mergers'; // Interfaces:
+export { ObjectMerger } from './extensions/merge/mergers';
+export { PropertyChangedObject } from './rx/object/PropertyChangedObject';
+export { Connector } from './rx/object/properties/Connector';
+export { Subject } from './rx/subjects/subject';
+export { registerMergeable, registerMerger } from './extensions/merge/mergers';
+export { registerSerializable, registerSerializer } from './extensions/serialization/serializers';
+export { isIterable } from './helpers/helpers';
+export { DependenciesBuilder } from './rx/object/properties/DependenciesBuilder';
+export { subscribeDependencies } from './rx/object/properties/DependenciesBuilder';
+export { webrainOptions } from './helpers/webrainOptions'; // Interfaces:

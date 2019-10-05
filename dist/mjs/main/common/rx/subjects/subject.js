@@ -7,6 +7,10 @@ export function subject(base) {
       return !!(this._subscribers && this._subscribers.length);
     }
 
+    get subscribersCount() {
+      return this._subscribers && this._subscribers.length;
+    }
+
     subscribe(subscriber) {
       if (!subscriber) {
         return null;

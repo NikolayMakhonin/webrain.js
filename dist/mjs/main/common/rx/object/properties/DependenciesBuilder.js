@@ -49,7 +49,7 @@ export function subscribeDependencies(subscribeObject, actionTarget, dependencie
         action(actionTarget, newValue, parent, key, keyType);
       },
 
-      rule
+      rule: rule.clone()
     }));
   }
 

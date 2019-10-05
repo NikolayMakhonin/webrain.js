@@ -65,7 +65,7 @@ export class CalcObjectDebugger {
     return this._calculatedSubject;
   }
 
-  onCalculated(target, newValue, oldValue) {
+  onCalculated(target, oldValue, newValue) {
     if (this._calculatedSubject.hasSubscribers) {
       this._calculatedSubject.emit({
         target,
@@ -87,7 +87,7 @@ export class CalcObjectDebugger {
         target,
         newValue,
         oldValue,
-        err
+        error: err
       });
     }
   } // endregion

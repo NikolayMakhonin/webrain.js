@@ -35,22 +35,26 @@ function resolveValueProperty(value, getValue) {
 
 function resolvePath(value) {
   var get = function get(getValue, isValueProperty) {
-    var customResolveValue = getValue && isValueProperty ? function (val) {
-      return resolveValueProperty(val, getValue);
+    var _getValue = getValue && function (val) {
+      return val != null && typeof val === 'object' || typeof val === 'string' ? getValue(val) : void 0;
+    };
+
+    var customResolveValue = _getValue && isValueProperty ? function (val) {
+      return resolveValueProperty(val, _getValue);
     } : resolveValueProperty;
     value = (0, _ThenableSync.resolveAsync)(value, null, null, null, customResolveValue);
 
-    if (!getValue) {
+    if (!_getValue) {
       return value;
     }
 
     if (!isValueProperty) {
       if (value instanceof _ThenableSync.ThenableSync) {
-        value = value.then(getValue, null, false);
+        value = value.then(_getValue, null, false);
       } else if ((0, _async.isThenable)(value)) {
-        value = value.then(getValue);
+        value = value.then(_getValue);
       } else {
-        value = (0, _ThenableSync.resolveAsync)(getValue(value));
+        value = (0, _ThenableSync.resolveAsync)(_getValue(value));
       }
     }
 

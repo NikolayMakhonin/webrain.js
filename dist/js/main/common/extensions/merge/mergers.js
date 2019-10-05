@@ -269,7 +269,8 @@ function () {
                   refs = this.refs;
               this.merge(mergerVisitor.getNextMerge(preferClone, preferClone, refs, refs, refs, options), _clone, target, target, function () {
                 throw new Error("Class (" + _this2.type.name + ") cannot be merged with clone");
-              }, preferClone, preferClone, options);
+              }, preferClone, preferClone // options,
+              );
               break;
 
             case false:
@@ -338,7 +339,8 @@ function () {
         isSet = true;
       } : function () {
         throw new Error("Class " + olderState.type.name + " does not need cloning." + 'You should use "preferClone: false" in merger options for this class');
-      }, preferCloneNewer, preferCloneNewer, options);
+      }, preferCloneNewer, preferCloneNewer // options,
+      );
 
       if (isSet) {
         return;
@@ -380,7 +382,8 @@ function () {
         } else {
           isSet = true;
         }
-      }, preferCloneOlder, preferCloneNewer, options);
+      }, preferCloneOlder, preferCloneNewer // options,
+      );
 
       if (isSet) {
         return !!set;

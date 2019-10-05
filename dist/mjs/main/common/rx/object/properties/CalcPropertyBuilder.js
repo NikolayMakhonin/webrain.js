@@ -6,13 +6,12 @@ export function calcPropertyFactory({
   calcFunc,
   name,
   calcOptions,
-  valueOptions,
   initValue
 }) {
   let dependencies;
 
   if (buildDependencies) {
-    const dependenciesBuilder = new CalcPropertyDependenciesBuilder(b => b.valuePropertyName('input'));
+    const dependenciesBuilder = new CalcPropertyDependenciesBuilder(b => b.propertyName('input'));
     buildDependencies(dependenciesBuilder);
     dependencies = dependenciesBuilder.dependencies;
   }
@@ -22,12 +21,11 @@ export function calcPropertyFactory({
       calcFunc,
       name,
       calcOptions,
-      valueOptions,
       initValue
     });
 
     if (dependencies) {
-      subscribeDependencies(calcProperty, calcProperty, dependencies);
+      subscribeDependencies(calcProperty.state, calcProperty, dependencies);
     }
 
     return calcProperty;

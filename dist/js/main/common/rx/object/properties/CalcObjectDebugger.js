@@ -69,7 +69,7 @@ function () {
 
   }, {
     key: "onCalculated",
-    value: function onCalculated(target, newValue, oldValue) {
+    value: function onCalculated(target, oldValue, newValue) {
       if (this._calculatedSubject.hasSubscribers) {
         this._calculatedSubject.emit({
           target: target,
@@ -88,7 +88,7 @@ function () {
           target: target,
           newValue: newValue,
           oldValue: oldValue,
-          err: err
+          error: err
         });
       }
     } // endregion

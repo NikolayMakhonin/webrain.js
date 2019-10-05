@@ -61,8 +61,8 @@ var _Mocha = require("../../../main/common/test/Mocha");
   var simple = {};
   new _CalcObjectBuilder.CalcObjectBuilder(Class.prototype).writable('observable').calc('calc', simple, (0, _CalcPropertyBuilder.calcPropertyFactory)({
     dependencies: null,
-    calcFunc: function calcFunc(input, property) {
-      property.value = input.value;
+    calcFunc: function calcFunc(state) {
+      state.value = state.input.value;
       return _ThenableSync.ThenableSync.createResolved(null);
     }
   }));

@@ -1,4 +1,5 @@
 import { createFunction } from '../../helpers/helpers';
+import { webrainOptions } from '../../helpers/webrainOptions';
 import '../extensions/autoConnect';
 import { PropertyChangedEvent } from './IPropertyChanged';
 import { _set, _setExt, ObservableClass } from './ObservableClass';
@@ -46,7 +47,7 @@ export class ObservableObjectBuilder {
     if (__fields && typeof initValue !== 'undefined') {
       const value = __fields[name];
 
-      if (initValue !== value) {
+      if (webrainOptions.equalsFunc ? !webrainOptions.equalsFunc.call(object, value, initValue) : value !== initValue) {
         object[name] = initValue;
       }
     }
@@ -151,7 +152,7 @@ export class ObservableObjectBuilder {
           if (typeof factoryValue !== 'undefined') {
             const oldValue = getValue.call(this);
 
-            if (factoryValue !== oldValue) {
+            if (webrainOptions.equalsFunc ? !webrainOptions.equalsFunc.call(this, oldValue, factoryValue) : oldValue !== factoryValue) {
               setOnInit(this, factoryValue);
             }
           }
@@ -170,7 +171,7 @@ export class ObservableObjectBuilder {
           if (typeof newValue !== 'undefined') {
             const oldValue = getValue.call(this);
 
-            if (newValue !== oldValue) {
+            if (webrainOptions.equalsFunc ? !webrainOptions.equalsFunc.call(this, oldValue, newValue) : oldValue !== newValue) {
               setOnInit(this, newValue);
             }
           }
@@ -199,7 +200,7 @@ export class ObservableObjectBuilder {
           initializeValue.call(this, initValue);
         }
 
-        if (initValue !== oldValue) {
+        if (webrainOptions.equalsFunc ? !webrainOptions.equalsFunc.call(object, oldValue, initValue) : oldValue !== initValue) {
           __fields[name] = initValue;
           const {
             propertyChangedIfCanEmit

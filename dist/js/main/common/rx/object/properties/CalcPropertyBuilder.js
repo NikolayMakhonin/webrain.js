@@ -14,13 +14,12 @@ function calcPropertyFactory(_ref) {
       calcFunc = _ref.calcFunc,
       name = _ref.name,
       calcOptions = _ref.calcOptions,
-      valueOptions = _ref.valueOptions,
       initValue = _ref.initValue;
   var dependencies;
 
   if (buildDependencies) {
     var _dependenciesBuilder = new _CalcPropertyDependenciesBuilder.CalcPropertyDependenciesBuilder(function (b) {
-      return b.valuePropertyName('input');
+      return b.propertyName('input');
     });
 
     buildDependencies(_dependenciesBuilder);
@@ -32,12 +31,11 @@ function calcPropertyFactory(_ref) {
       calcFunc: calcFunc,
       name: name,
       calcOptions: calcOptions,
-      valueOptions: valueOptions,
       initValue: initValue
     });
 
     if (dependencies) {
-      (0, _DependenciesBuilder.subscribeDependencies)(calcProperty, calcProperty, dependencies);
+      (0, _DependenciesBuilder.subscribeDependencies)(calcProperty.state, calcProperty, dependencies);
     }
 
     return calcProperty;

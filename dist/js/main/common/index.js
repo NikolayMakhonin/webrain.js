@@ -1,7 +1,7 @@
 "use strict";
 
 exports.__esModule = true;
-exports.ObjectMerger = exports.ValueKeyType = exports.CalcProperty = exports.ObjectSet = exports.ObjectMap = exports.resolvePath = exports.deepSubscribe = exports.ObservableMap = exports.ObservableSet = exports.ArrayMap = exports.ArraySet = exports.getObjectUniqueId = exports.CalcObjectDebugger = exports.createFunction = exports.Property = exports.connectorFactory = exports.calcPropertyFactory = exports.CalcObjectBuilder = exports.ObservableObject = exports.ObservableClass = exports.ThenableSync = void 0;
+exports.webrainOptions = exports.subscribeDependencies = exports.DependenciesBuilder = exports.isIterable = exports.registerSerializer = exports.registerSerializable = exports.registerMerger = exports.registerMergeable = exports.Subject = exports.Connector = exports.PropertyChangedObject = exports.ObjectMerger = exports.ValueKeyType = exports.CalcProperty = exports.ObjectSet = exports.ObjectMap = exports.resolvePath = exports.deepSubscribe = exports.ObservableMap = exports.ObservableSet = exports.ArrayMap = exports.ArraySet = exports.getObjectUniqueId = exports.CalcObjectDebugger = exports.createFunction = exports.Property = exports.connectorFactory = exports.calcPropertyFactory = exports.CalcObjectBuilder = exports.ObservableObject = exports.ObservableClass = exports.ThenableSync = void 0;
 
 var _ThenableSync = require("./async/ThenableSync");
 
@@ -34,6 +34,7 @@ exports.Property = _Property.Property;
 var _helpers = require("./helpers/helpers");
 
 exports.createFunction = _helpers.createFunction;
+exports.isIterable = _helpers.isIterable;
 
 var _CalcObjectDebugger = require("./rx/object/properties/CalcObjectDebugger");
 
@@ -86,3 +87,31 @@ exports.ValueKeyType = _common.ValueKeyType;
 var _mergers = require("./extensions/merge/mergers");
 
 exports.ObjectMerger = _mergers.ObjectMerger;
+exports.registerMergeable = _mergers.registerMergeable;
+exports.registerMerger = _mergers.registerMerger;
+
+var _PropertyChangedObject = require("./rx/object/PropertyChangedObject");
+
+exports.PropertyChangedObject = _PropertyChangedObject.PropertyChangedObject;
+
+var _Connector = require("./rx/object/properties/Connector");
+
+exports.Connector = _Connector.Connector;
+
+var _subject = require("./rx/subjects/subject");
+
+exports.Subject = _subject.Subject;
+
+var _serializers = require("./extensions/serialization/serializers");
+
+exports.registerSerializable = _serializers.registerSerializable;
+exports.registerSerializer = _serializers.registerSerializer;
+
+var _DependenciesBuilder = require("./rx/object/properties/DependenciesBuilder");
+
+exports.DependenciesBuilder = _DependenciesBuilder.DependenciesBuilder;
+exports.subscribeDependencies = _DependenciesBuilder.subscribeDependencies;
+
+var _webrainOptions = require("./helpers/webrainOptions");
+
+exports.webrainOptions = _webrainOptions.webrainOptions;

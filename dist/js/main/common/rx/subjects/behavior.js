@@ -56,9 +56,13 @@ function behavior(base) {
           }
 
           return function () {
-            if (!unsubscribe) {
+            var _unsubscribe = unsubscribe;
+
+            if (!_unsubscribe) {
               return;
             }
+
+            unsubscribe = null;
 
             try {
               // eslint-disable-next-line no-shadow
@@ -70,8 +74,7 @@ function behavior(base) {
                 subscriber(unsubscribeValue);
               }
             } finally {
-              unsubscribe();
-              unsubscribe = null;
+              _unsubscribe();
             }
           };
         }

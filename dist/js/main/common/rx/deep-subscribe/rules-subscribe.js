@@ -145,7 +145,7 @@ function subscribeObjectValue(propertyNames, object, immediateSubscribe, changeI
       var value = object[subscribePropertyName];
 
       if (typeof value !== 'undefined') {
-        changeItem(subscribePropertyName, object[subscribePropertyName], void 0, _common.ValueChangeType.Unsubscribe, _common.ValueKeyType.ValueProperty);
+        changeItem(subscribePropertyName, value, void 0, _common.ValueChangeType.Unsubscribe, _common.ValueKeyType.ValueProperty);
       }
     }
 
@@ -169,6 +169,11 @@ function subscribeObjectValue(propertyNames, object, immediateSubscribe, changeI
       var newSubscribePropertyName = getSubscribePropertyName();
 
       if (name === subscribePropertyName) {
+        if (subscribePropertyName === newSubscribePropertyName && subscribePropertyName != null && unsubscribe != null && typeof oldValue !== 'undefined' && typeof newValue !== 'undefined') {
+          changeItem(subscribePropertyName, oldValue, newValue, _common.ValueChangeType.Changed, _common.ValueKeyType.ValueProperty);
+          return;
+        }
+
         if (typeof oldValue !== 'undefined') {
           changeItem(subscribePropertyName, oldValue, void 0, _common.ValueChangeType.Unsubscribe, _common.ValueKeyType.ValueProperty);
         }
@@ -230,12 +235,16 @@ function subscribeObject(propertyNames, propertyPredicate, object, immediateSubs
 
 
       if (!propertyPredicate || propertyPredicate(name, object)) {
-        if (typeof oldValue !== 'undefined') {
-          changeItem(name, oldValue, void 0, _common.ValueChangeType.Unsubscribe, _common.ValueKeyType.Property);
-        }
+        if (unsubscribe && typeof oldValue !== 'undefined' && typeof newValue !== 'undefined') {
+          changeItem(name, oldValue, newValue, _common.ValueChangeType.Changed, _common.ValueKeyType.Property);
+        } else {
+          if (typeof oldValue !== 'undefined') {
+            changeItem(name, oldValue, void 0, _common.ValueChangeType.Unsubscribe, _common.ValueKeyType.Property);
+          }
 
-        if (unsubscribe && typeof newValue !== 'undefined') {
-          changeItem(name, void 0, newValue, _common.ValueChangeType.Subscribe, _common.ValueKeyType.Property);
+          if (unsubscribe && typeof newValue !== 'undefined') {
+            changeItem(name, void 0, newValue, _common.ValueChangeType.Subscribe, _common.ValueKeyType.Property);
+          }
         }
       }
     }));
@@ -375,12 +384,10 @@ function subscribeList(object, immediateSubscribe, changeItem) {
           break;
 
         case _IListChanged.ListChangedType.Set:
-          if (unsubscribe || oldItems[0] !== newItems[0]) {
-            changeItem(null, oldItems[0], void 0, _common.ValueChangeType.Unsubscribe, _common.ValueKeyType.CollectionAny);
-          }
-
           if (unsubscribe) {
-            changeItem(null, void 0, newItems[0], _common.ValueChangeType.Subscribe, _common.ValueKeyType.CollectionAny);
+            changeItem(null, oldItems[0], newItems[0], _common.ValueChangeType.Changed, _common.ValueKeyType.CollectionAny);
+          } else if (oldItems[0] !== newItems[0]) {
+            changeItem(null, oldItems[0], void 0, _common.ValueChangeType.Unsubscribe, _common.ValueKeyType.CollectionAny);
           }
 
           break;
@@ -499,10 +506,10 @@ function subscribeMap(keys, keyPredicate, object, immediateSubscribe, changeItem
             break;
 
           case _IMapChanged.MapChangedType.Set:
-            changeItem(key, oldValue, void 0, _common.ValueChangeType.Unsubscribe, _common.ValueKeyType.MapKey);
-
             if (unsubscribe) {
-              changeItem(key, void 0, newValue, _common.ValueChangeType.Subscribe, _common.ValueKeyType.MapKey);
+              changeItem(key, oldValue, newValue, _common.ValueChangeType.Changed, _common.ValueKeyType.MapKey);
+            } else {
+              changeItem(key, oldValue, void 0, _common.ValueChangeType.Unsubscribe, _common.ValueKeyType.MapKey);
             }
 
             break;

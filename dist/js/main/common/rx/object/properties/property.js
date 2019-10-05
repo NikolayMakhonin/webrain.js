@@ -23,6 +23,8 @@ var _mergers = require("../../../extensions/merge/mergers");
 
 var _serializers = require("../../../extensions/serialization/serializers");
 
+var _webrainOptions = require("../../../helpers/webrainOptions");
+
 var _ObservableClass2 = require("../ObservableClass");
 
 var _ObservableObjectBuilder = require("../ObservableObjectBuilder");
@@ -126,7 +128,7 @@ function (_ObservableClass) {
   }, {
     key: "_canMerge",
     value: function _canMerge(source) {
-      if (source.constructor === Property && this.value === source.value || this.value === source) {
+      if (_webrainOptions.webrainOptions.equalsFunc ? source.constructor === Property && _webrainOptions.webrainOptions.equalsFunc.call(this, this.value, source.value) || _webrainOptions.webrainOptions.equalsFunc.call(this, this.value, source) : source.constructor === Property && this.value === source.value || this.value === source) {
         return null;
       }
 

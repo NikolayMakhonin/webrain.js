@@ -9,3 +9,4 @@ export declare function checkIsFuncOrNull<T extends TFunc<any> | void>(func: T):
 export declare function toSingleCall<T extends TFunc<any> | void>(func: T, throwOnMultipleCall?: boolean): T;
 export declare function createFunction(...args: string[]): Function;
 export declare function hideObjectProperty(object: object, propertyName: string): void;
+export declare function equalsObjects(o1: any, o2: any): any;

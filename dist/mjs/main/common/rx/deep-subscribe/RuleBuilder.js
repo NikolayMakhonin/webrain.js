@@ -12,8 +12,7 @@ const RuleSubscribeMapKeys = RuleSubscribeMap.bind(null, null); // const UNSUBSC
 export class RuleBuilder {
   constructor({
     rule,
-    autoInsertValuePropertyDefault = true // TODO - should be true
-
+    autoInsertValuePropertyDefault = true
   } = {}) {
     this.autoInsertValuePropertyDefault = autoInsertValuePropertyDefault;
 

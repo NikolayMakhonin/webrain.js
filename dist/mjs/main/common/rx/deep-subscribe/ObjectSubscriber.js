@@ -3,6 +3,28 @@ import { checkIsFuncOrNull } from '../../helpers/helpers';
 import { getObjectUniqueId } from '../../helpers/object-unique-id';
 import { binarySearch } from '../../lists/helpers/array';
 import { ValueChangeType } from './contracts/common';
+const undefinedSubscribedValue = {
+  value: void 0,
+  parent: null,
+  key: null,
+  keyType: null
+};
+
+function valuesEqual(v1, v2) {
+  return v1 === v2 || Number.isNaN(v1) && Number.isNaN(v2);
+}
+
+function subscribedValueEquals(o1, o2) {
+  if (o1 === o2) {
+    return true;
+  }
+
+  if (!o1 || !o2) {
+    return false;
+  }
+
+  return valuesEqual(o1.value, o2.value) && o1.parent === o2.parent && o1.keyType === o2.keyType && o1.key === o2.key;
+}
 
 function compareSubscribed(o1, o2) {
   if (typeof o1.value !== 'undefined') {
@@ -34,10 +56,6 @@ function compareSubscribed(o1, o2) {
   return 0;
 }
 
-function valuesEqual(v1, v2) {
-  return v1 === v2 || Number.isNaN(v1) && Number.isNaN(v2);
-}
-
 export class ObjectSubscriber {
   constructor(changeValue, lastValue) {
     this._changeValue = changeValue;
@@ -62,9 +80,7 @@ export class ObjectSubscriber {
       if (index === len) {
         _subscribedValues.push(subscribedValue);
 
-        this._lastValue(subscribedValue.value, subscribedValue.parent, subscribedValue.key, subscribedValue.keyType);
-
-        return;
+        return subscribedValue;
       }
     }
 
@@ -87,7 +103,7 @@ export class ObjectSubscriber {
         const len = _subscribedValues.length;
 
         for (; index < len; index++) {
-          if (valuesEqual(_subscribedValues[index].value, subscribedValue.value) && _subscribedValues[index].parent === subscribedValue.parent && _subscribedValues[index].keyType === subscribedValue.keyType && _subscribedValues[index].key === subscribedValue.key) {
+          if (subscribedValueEquals(_subscribedValues[index], subscribedValue)) {
             break;
           }
         }
@@ -100,14 +116,13 @@ export class ObjectSubscriber {
           _subscribedValues.length = len - 1;
 
           if (len === 1) {
-            this._lastValue(void 0, null, null, null);
+            return undefinedSubscribedValue;
           } else if (index === len - 1) {
             const nextSubscribedValue = _subscribedValues[len - 2];
-
-            this._lastValue(nextSubscribedValue.value, nextSubscribedValue.parent, nextSubscribedValue.key, nextSubscribedValue.keyType);
+            return nextSubscribedValue;
           }
 
-          return;
+          return null;
         }
       }
     }
@@ -185,7 +200,7 @@ export class ObjectSubscriber {
           } = this;
 
           if (_unsubscribers && _unsubscribers[itemUniqueId]) {
-            this._changeValue(key, oldValue, newValue, parent, nextChangeType, key, unsubscribedLast);
+            this._changeValue(key, oldValue, newValue, parent, nextChangeType, keyType, unsubscribedLast);
 
             _unsubscribersCount[itemUniqueId]++;
           } else {
@@ -203,13 +218,15 @@ export class ObjectSubscriber {
           }
         }
       } else {
-        this._changeValue(key, oldValue, newValue, parent, nextChangeType, key, unsubscribedLast);
+        this._changeValue(key, oldValue, newValue, parent, nextChangeType, keyType, unsubscribedLast);
       }
     }
 
     if (this._lastValue) {
+      let unsubscribedValue;
+
       if ((changeType & ValueChangeType.Unsubscribe) !== 0) {
-        this.removeSubscribed({
+        unsubscribedValue = this.removeSubscribed({
           value: oldValue,
           parent,
           key,
@@ -217,14 +234,24 @@ export class ObjectSubscriber {
         });
       }
 
+      let subscribedValue;
+
       if ((changeType & ValueChangeType.Subscribe) !== 0) {
-        this.insertSubscribed({
+        subscribedValue = this.insertSubscribed({
           value: newValue,
           parent,
           key,
           keyType,
           isOwnProperty: parent != null && key in parent
         });
+      }
+
+      if (!subscribedValueEquals(subscribedValue, unsubscribedValue)) {
+        const lastValue = subscribedValue || unsubscribedValue;
+
+        if (lastValue) {
+          this._lastValue(lastValue.value, lastValue.parent, lastValue.key, lastValue.keyType);
+        }
       }
     }
 

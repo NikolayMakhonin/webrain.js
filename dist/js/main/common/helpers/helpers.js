@@ -11,6 +11,7 @@ exports.checkIsFuncOrNull = checkIsFuncOrNull;
 exports.toSingleCall = toSingleCall;
 exports.createFunction = createFunction;
 exports.hideObjectProperty = hideObjectProperty;
+exports.equalsObjects = equalsObjects;
 exports.EMPTY = void 0;
 
 var _defineProperty = _interopRequireDefault(require("@babel/runtime-corejs3/core-js-stable/object/define-property"));
@@ -104,4 +105,20 @@ function hideObjectProperty(object, propertyName) {
     enumerable: false,
     value: object[propertyName]
   });
+}
+
+function equalsObjects(o1, o2) {
+  if (o1 === o2) {
+    return true;
+  }
+
+  if (o1 && typeof o1 === 'object' && typeof o1.equals === 'function') {
+    return o1.equals(o2);
+  }
+
+  if (o2 && typeof o2 === 'object' && typeof o2.equals === 'function') {
+    return o2.equals(o1);
+  }
+
+  return false;
 }

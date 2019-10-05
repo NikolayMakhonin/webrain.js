@@ -27,20 +27,22 @@ function resolveValueProperty(value, getValue) {
 
 export function resolvePath(value) {
   const get = (getValue, isValueProperty) => {
-    const customResolveValue = getValue && isValueProperty ? val => resolveValueProperty(val, getValue) : resolveValueProperty;
+    const _getValue = getValue && (val => val != null && typeof val === 'object' || typeof val === 'string' ? getValue(val) : void 0);
+
+    const customResolveValue = _getValue && isValueProperty ? val => resolveValueProperty(val, _getValue) : resolveValueProperty;
     value = resolveAsync(value, null, null, null, customResolveValue);
 
-    if (!getValue) {
+    if (!_getValue) {
       return value;
     }
 
     if (!isValueProperty) {
       if (value instanceof ThenableSync) {
-        value = value.then(getValue, null, false);
+        value = value.then(_getValue, null, false);
       } else if (isThenable(value)) {
-        value = value.then(getValue);
+        value = value.then(_getValue);
       } else {
-        value = resolveAsync(getValue(value));
+        value = resolveAsync(_getValue(value));
       }
     }
 

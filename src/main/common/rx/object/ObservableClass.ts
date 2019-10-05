@@ -36,7 +36,7 @@ export function _setExt(
 	name: string | number,
 	getValue: () => any,
 	setValue: (v) => void,
-	options: ISetOptions,
+	options: ISetOptions<any, any>,
 	object: ObservableClass,
 	newValue,
 ) {
@@ -61,9 +61,9 @@ export function _setExt(
 		newValue = convertFunc.call(object, newValue)
 	}
 
-	if (oldValue === newValue) {
-		return false
-	}
+	// if (oldValue === newValue) {
+	// 	return false
+	// }
 
 	const beforeChange = options.beforeChange
 	if (beforeChange) {

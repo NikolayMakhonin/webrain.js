@@ -5,35 +5,35 @@ export interface IFieldOptions {
     getValue?: () => any;
     setValue?: (value: any) => void;
 }
-export interface IWritableFieldOptions extends IFieldOptions {
-    setOptions?: ISetOptions;
+export interface IWritableFieldOptions<TObject, TValue> extends IFieldOptions {
+    setOptions?: ISetOptions<TObject, TValue>;
 }
-export interface IReadableFieldOptions<T> extends IWritableFieldOptions {
-    factory?: (initValue: T) => T;
-    init?: (initValue: T) => void;
+export interface IReadableFieldOptions<TObject, TValue> extends IWritableFieldOptions<TObject, TValue> {
+    factory?: (this: TObject, initValue: TValue) => TValue;
+    init?: (this: TObject, initValue: TValue) => void;
 }
-export interface IUpdatableFieldOptions<T> extends IReadableFieldOptions<T> {
-    update?: (value: any) => T | void;
+export interface IUpdatableFieldOptions<TObject, TValue> extends IReadableFieldOptions<TObject, TValue> {
+    update?: (this: TObject, value: any) => TValue | void;
 }
 export declare class ObservableObjectBuilder<TObject extends ObservableClass> {
     object: TObject;
     constructor(object?: TObject);
-    writable<T, Name extends string | number>(name: Name, options?: IWritableFieldOptions, initValue?: T): this & {
+    writable<Name extends string | number = Extract<keyof TObject, string | number>, TValue = Name extends keyof TObject ? TObject[Name] : any>(name: Name, options?: IWritableFieldOptions<TObject, TValue>, initValue?: TValue): this & {
         object: {
-            [newProp in Name]: T;
+            [newProp in Name]: TValue;
         };
     };
-    readable<T, Name extends string | number>(name: Name, options?: IReadableFieldOptions<T>, initValue?: T): this & {
+    readable<Name extends string | number = Extract<keyof TObject, string | number>, TValue = Name extends keyof TObject ? TObject[Name] : any>(name: Name, options?: IReadableFieldOptions<TObject, TValue>, initValue?: TValue): this & {
         object: {
-            readonly [newProp in Name]: T;
+            readonly [newProp in Name]: TValue;
         };
     };
-    updatable<T, Name extends string | number>(name: Name, options?: IUpdatableFieldOptions<T>, initValue?: T): this & {
+    updatable<TValue, Name extends string | number>(name: Name, options?: IUpdatableFieldOptions<TObject, TValue>, initValue?: TValue): this & {
         object: {
-            [newProp in Name]: T;
+            [newProp in Name]: TValue;
         };
     };
-    delete<Name extends string | number>(name: Name): this & {
+    delete<Name extends string | number = Extract<keyof TObject, string | number>>(name: Name): this & {
         object: {
             readonly [newProp in Name]: never;
         };

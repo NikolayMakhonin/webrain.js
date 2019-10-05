@@ -128,7 +128,7 @@ export class ObjectSubscriber<TObject> implements IValueSubscriber<TObject> {
 						const nextSubscribedValue = _subscribedValues[len - 2]
 						return nextSubscribedValue
 					}
-					return
+					return null
 				}
 			}
 		}

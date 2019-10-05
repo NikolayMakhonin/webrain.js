@@ -98,13 +98,13 @@ export class CalcProperty<TValue, TInput = any>
 						}
 						return this._calcFunc(this.state)
 					},
-					isChangedForce => {
+					(isChangedForce: boolean) => {
 						this._hasValue = true
 						let val = this.state.value
 						if (webrainOptions.equalsFunc.call(this.state, prevValue, this.state.value)) {
 							this.state.value = val = prevValue
 						}
-						CalcObjectDebugger.Instance.onCalculated(this, val, prevValue)
+						CalcObjectDebugger.Instance.onCalculated(this, prevValue, val)
 						done(isChangedForce, prevValue, val)
 						return val
 					},

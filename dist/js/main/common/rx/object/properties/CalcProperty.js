@@ -3,15 +3,15 @@
 var _interopRequireDefault = require("@babel/runtime-corejs3/helpers/interopRequireDefault");
 
 exports.__esModule = true;
-exports.CalcProperty = exports.CalcPropertyValue = void 0;
+exports.CalcProperty = exports.CalcPropertyState = exports.CalcPropertyValue = void 0;
 
 var _createClass2 = _interopRequireDefault(require("@babel/runtime-corejs3/helpers/createClass"));
+
+var _assertThisInitialized2 = _interopRequireDefault(require("@babel/runtime-corejs3/helpers/assertThisInitialized"));
 
 var _possibleConstructorReturn2 = _interopRequireDefault(require("@babel/runtime-corejs3/helpers/possibleConstructorReturn"));
 
 var _getPrototypeOf2 = _interopRequireDefault(require("@babel/runtime-corejs3/helpers/getPrototypeOf"));
-
-var _assertThisInitialized2 = _interopRequireDefault(require("@babel/runtime-corejs3/helpers/assertThisInitialized"));
 
 var _inherits2 = _interopRequireDefault(require("@babel/runtime-corejs3/helpers/inherits"));
 
@@ -23,15 +23,15 @@ var _ThenableSync = require("../../../async/ThenableSync");
 
 var _valueProperty = require("../../../helpers/value-property");
 
+var _webrainOptions = require("../../../helpers/webrainOptions");
+
 var _DeferredCalc = require("../../deferred-calc/DeferredCalc");
 
-var _ObservableClass2 = require("../ObservableClass");
+var _ObservableClass3 = require("../ObservableClass");
 
 var _ObservableObjectBuilder = require("../ObservableObjectBuilder");
 
 var _CalcObjectDebugger = require("./CalcObjectDebugger");
-
-var _Property = require("./Property");
 
 var CalcPropertyValue = function CalcPropertyValue(property) {
   (0, _classCallCheck2.default)(this, CalcPropertyValue);
@@ -43,81 +43,122 @@ var CalcPropertyValue = function CalcPropertyValue(property) {
 
 exports.CalcPropertyValue = CalcPropertyValue;
 
-var CalcProperty =
+var CalcPropertyState =
 /*#__PURE__*/
 function (_ObservableClass) {
-  (0, _inherits2.default)(CalcProperty, _ObservableClass);
+  (0, _inherits2.default)(CalcPropertyState, _ObservableClass);
+
+  function CalcPropertyState(calcOptions, initValue) {
+    var _this;
+
+    (0, _classCallCheck2.default)(this, CalcPropertyState);
+    _this = (0, _possibleConstructorReturn2.default)(this, (0, _getPrototypeOf2.default)(CalcPropertyState).call(this));
+    _this.calcOptions = calcOptions;
+    _this.value = initValue;
+    return _this;
+  }
+
+  return CalcPropertyState;
+}(_ObservableClass3.ObservableClass);
+
+exports.CalcPropertyState = CalcPropertyState;
+new _ObservableObjectBuilder.ObservableObjectBuilder(CalcPropertyState.prototype).writable('input').writable('value');
+
+var CalcProperty =
+/*#__PURE__*/
+function (_ObservableClass2) {
+  (0, _inherits2.default)(CalcProperty, _ObservableClass2);
 
   function CalcProperty(_ref) {
-    var _this;
+    var _this2;
 
     var calcFunc = _ref.calcFunc,
         name = _ref.name,
         calcOptions = _ref.calcOptions,
-        valueOptions = _ref.valueOptions,
         initValue = _ref.initValue;
     (0, _classCallCheck2.default)(this, CalcProperty);
-    _this = (0, _possibleConstructorReturn2.default)(this, (0, _getPrototypeOf2.default)(CalcProperty).call(this));
+    _this2 = (0, _possibleConstructorReturn2.default)(this, (0, _getPrototypeOf2.default)(CalcProperty).call(this));
 
     if (typeof calcFunc !== 'function') {
       throw new Error("calcFunc must be a function: " + calcFunc);
     }
 
     if (typeof initValue !== 'function') {
-      _this._initValue = initValue;
+      _this2._initValue = initValue;
     }
+
+    if (!calcOptions) {
+      calcOptions = {};
+    }
+
+    _this2._calcFunc = calcFunc;
+    _this2.state = new CalcPropertyState(calcOptions, initValue);
 
     if (typeof name !== 'undefined') {
-      _this.name = name;
+      _this2.state.name = name;
     }
 
-    _this._calcFunc = calcFunc;
-    _this._valueProperty = new _Property.Property(valueOptions, initValue);
-    _this._deferredCalc = new _DeferredCalc.DeferredCalc(function () {
-      _this.onInvalidated();
+    _this2._deferredCalc = new _DeferredCalc.DeferredCalc(function () {
+      _this2.onInvalidated();
     }, function (done) {
-      var prevValue = _this._valueProperty.value;
+      var prevValue = _this2.state.value;
       var deferredValue = (0, _ThenableSync.resolveAsyncFunc)(function () {
-        if (typeof _this.input === 'undefined') {
+        if (typeof _this2.state.input === 'undefined') {
           return false;
         }
 
-        return _this._calcFunc(_this.input, _this._valueProperty);
-      }, function (valueChanged) {
-        _this._hasValue = true;
-        var val = _this._valueProperty.value;
+        return _this2._calcFunc(_this2.state);
+      }, function (isChangedForce) {
+        _this2._hasValue = true;
+        var val = _this2.state.value;
 
-        _CalcObjectDebugger.CalcObjectDebugger.Instance.onCalculated((0, _assertThisInitialized2.default)(_this), val, prevValue);
+        if (_webrainOptions.webrainOptions.equalsFunc.call(_this2.state, prevValue, _this2.state.value)) {
+          _this2.state.value = val = prevValue;
+        }
 
-        done(valueChanged != null ? valueChanged : prevValue !== val, prevValue, val);
+        _CalcObjectDebugger.CalcObjectDebugger.Instance.onCalculated((0, _assertThisInitialized2.default)(_this2), prevValue, val);
+
+        done(isChangedForce, prevValue, val);
         return val;
       }, function (err) {
-        _CalcObjectDebugger.CalcObjectDebugger.Instance.onError((0, _assertThisInitialized2.default)(_this), _this._valueProperty.value, prevValue, err);
+        _this2._error = err;
+        console.error(err);
 
-        var val = _this._valueProperty.value;
+        _CalcObjectDebugger.CalcObjectDebugger.Instance.onError((0, _assertThisInitialized2.default)(_this2), _this2.state.value, prevValue, err);
+
+        var val = _this2.state.value;
+
+        if (_webrainOptions.webrainOptions.equalsFunc.call(_this2.state, prevValue, _this2.state.value)) {
+          _this2.state.value = val = prevValue;
+        }
+
         done(prevValue !== val, prevValue, val);
-        return _ThenableSync.ThenableSync.createRejected(err);
+        return val; // ThenableSync.createRejected(err)
       }, true);
 
       if ((0, _async.isAsync)(deferredValue)) {
-        _this.setDeferredValue(deferredValue);
+        _this2.setDeferredValue(deferredValue);
       }
-    }, function (isChanged, oldValue, newValue) {
-      if (isChanged) {
-        _this.setDeferredValue(newValue);
+    }, function (isChangedForce, oldValue, newValue) {
+      if (isChangedForce || oldValue !== newValue) {
+        if (!isChangedForce && (0, _async.isAsync)(_this2._deferredValue)) {
+          _this2._deferredValue = newValue;
+        } else {
+          _this2.setDeferredValue(newValue, isChangedForce);
+        }
 
-        _this.onValueChanged(oldValue, newValue);
+        _this2.onValueChanged(oldValue, newValue, isChangedForce);
       }
     }, calcOptions);
-    return _this;
+    return _this2;
   }
 
   (0, _createClass2.default)(CalcProperty, [{
     key: "setDeferredValue",
-    value: function setDeferredValue(newValue) {
+    value: function setDeferredValue(newValue, force) {
       var oldValue = this._deferredValue;
 
-      if (newValue === oldValue) {
+      if (!force && (_webrainOptions.webrainOptions.equalsFunc ? _webrainOptions.webrainOptions.equalsFunc.call(this, oldValue, newValue) : oldValue === newValue)) {
         return;
       }
 
@@ -138,8 +179,8 @@ function (_ObservableClass) {
     }
   }, {
     key: "onValueChanged",
-    value: function onValueChanged(oldValue, newValue) {
-      if (newValue === oldValue) {
+    value: function onValueChanged(oldValue, newValue, force) {
+      if (!force && (_webrainOptions.webrainOptions.equalsFunc ? _webrainOptions.webrainOptions.equalsFunc.call(this, oldValue, newValue) : oldValue === newValue)) {
         return;
       }
 
@@ -156,12 +197,14 @@ function (_ObservableClass) {
   }, {
     key: "invalidate",
     value: function invalidate() {
-      this._deferredCalc.invalidate();
+      if (!this._error) {
+        this._deferredCalc.invalidate();
+      }
     }
   }, {
     key: "onInvalidated",
     value: function onInvalidated() {
-      _CalcObjectDebugger.CalcObjectDebugger.Instance.onInvalidated(this, this._valueProperty.value);
+      _CalcObjectDebugger.CalcObjectDebugger.Instance.onInvalidated(this, this.state.value);
 
       var propertyChangedIfCanEmit = this.propertyChangedIfCanEmit;
 
@@ -172,10 +215,10 @@ function (_ObservableClass) {
   }, {
     key: "clear",
     value: function clear() {
-      if (this._valueProperty.value !== this._initValue) {
-        var _oldValue = this._valueProperty.value;
+      if (_webrainOptions.webrainOptions.equalsFunc ? !_webrainOptions.webrainOptions.equalsFunc.call(this, this.state.value, this._initValue) : this.state.value !== this._initValue) {
+        var _oldValue = this.state.value;
         var _newValue = this._initValue;
-        this._valueProperty.value = _newValue;
+        this.state.value = _newValue;
         this.onValueChanged(_oldValue, _newValue);
         this.setDeferredValue(_newValue);
         this.invalidate();
@@ -198,20 +241,20 @@ function (_ObservableClass) {
     get: function get() {
       this._deferredCalc.calc();
 
-      return this._valueProperty.value;
+      return this.state.value;
     }
   }, {
     key: "lastOrWait",
     get: function get() {
       this._deferredCalc.calc();
 
-      return this._hasValue ? this._valueProperty.value : this._deferredValue;
+      return this._hasValue ? this.state.value : this._deferredValue;
     }
   }]);
   return CalcProperty;
-}(_ObservableClass2.ObservableClass);
-
-exports.CalcProperty = CalcProperty;
-new _ObservableObjectBuilder.ObservableObjectBuilder(CalcProperty.prototype).writable('input'); // Test:
+}(_ObservableClass3.ObservableClass); // Test:
 // const test: RuleGetValueFunc<CalcProperty<any, { test1: { test2: 123 } }, any>, number> =
 // 	o => o['@last']['@last']['@last'].test1['@last']['@wait'].test2['@last']
+
+
+exports.CalcProperty = CalcProperty;

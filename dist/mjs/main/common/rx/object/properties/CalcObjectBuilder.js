@@ -6,8 +6,8 @@ export class CalcObjectBuilder extends ObservableObjectBuilder {
       factory() {
         const property = calcFactory(initValue);
 
-        if (property.name == null) {
-          property.name = `${this.constructor.name}.${name}`;
+        if (property.state.name == null) {
+          property.state.name = `${this.constructor.name}.${name}`;
         }
 
         return property;
@@ -15,7 +15,7 @@ export class CalcObjectBuilder extends ObservableObjectBuilder {
 
       init(property) {
         if (typeof inputOrFactory !== 'undefined') {
-          property.input = typeof inputOrFactory === 'function' ? inputOrFactory(this) : inputOrFactory;
+          property.state.input = typeof inputOrFactory === 'function' ? inputOrFactory(this, this.constructor.name) : inputOrFactory;
         }
       }
 
@@ -26,8 +26,8 @@ export class CalcObjectBuilder extends ObservableObjectBuilder {
     return this.calc(name, void 0, calcPropertyFactory({
       dependencies: dependencies => dependencies.invalidateOn(buildRule),
 
-      calcFunc(input, property) {
-        property.value++;
+      calcFunc(state) {
+        state.value++;
       },
 
       initValue: 0

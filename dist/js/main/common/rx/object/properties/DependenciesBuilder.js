@@ -70,7 +70,7 @@ function subscribeDependencies(subscribeObject, actionTarget, dependencies) {
       changeValue: function changeValue(key, oldValue, newValue, parent, changeType, keyType) {
         action(actionTarget, newValue, parent, key, keyType);
       },
-      rule: rule
+      rule: rule.clone()
     }));
   };
 

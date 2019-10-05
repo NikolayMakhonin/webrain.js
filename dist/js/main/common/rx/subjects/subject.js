@@ -113,6 +113,11 @@ function subject(base) {
         get: function get() {
           return !!(this._subscribers && this._subscribers.length);
         }
+      }, {
+        key: "subscribersCount",
+        get: function get() {
+          return this._subscribers && this._subscribers.length;
+        }
       }]);
       return Subject;
     }(base)

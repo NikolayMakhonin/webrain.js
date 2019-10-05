@@ -57,22 +57,14 @@ describe('common > main > rx > deep-subscribe > RuleBuilder', function () {
     let subscribedItems = [];
 
     function changeItem(key, oldValue, newValue, changeType, keyType) {
-      if ((changeType & ValueChangeType.Unsubscribe) !== 0) {
-        if (typeof oldValue === 'undefined') {
-          return;
-        }
-
+      if ((changeType & ValueChangeType.Unsubscribe) !== 0 && typeof oldValue !== 'undefined') {
         assert.ok(oldValue);
         oldValue = oldValue.trim();
         checkDebugPropertyName(oldValue, key, keyType);
         subscribedItems.push('-' + oldValue);
       }
 
-      if ((changeType & ValueChangeType.Subscribe) !== 0) {
-        if (typeof newValue === 'undefined') {
-          return;
-        }
-
+      if ((changeType & ValueChangeType.Subscribe) !== 0 && typeof newValue !== 'undefined') {
         assert.ok(newValue);
         assert.strictEqual(typeof newValue, 'string', newValue);
         newValue = newValue.trim();

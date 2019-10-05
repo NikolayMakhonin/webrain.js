@@ -125,7 +125,7 @@ export class CalcObjectDebugger {
 		return this._calculatedSubject
 	}
 
-	public onCalculated(target: ICalcProperty<any>, newValue: any, oldValue: any) {
+	public onCalculated(target: ICalcProperty<any>, oldValue: any, newValue: any) {
 		if (this._calculatedSubject.hasSubscribers) {
 			this._calculatedSubject.emit({
 				target,

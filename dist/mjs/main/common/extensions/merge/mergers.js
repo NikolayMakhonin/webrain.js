@@ -240,7 +240,8 @@ class ValueState {
             } = this;
             this.merge(mergerVisitor.getNextMerge(preferClone, preferClone, refs, refs, refs, options), _clone, target, target, () => {
               throw new Error(`Class (${this.type.name}) cannot be merged with clone`);
-            }, preferClone, preferClone, options);
+            }, preferClone, preferClone // options,
+            );
             break;
 
           case false:
@@ -364,7 +365,8 @@ class MergeState {
       isSet = true;
     } : () => {
       throw new Error(`Class ${olderState.type.name} does not need cloning.` + 'You should use "preferClone: false" in merger options for this class');
-    }, preferCloneNewer, preferCloneNewer, options);
+    }, preferCloneNewer, preferCloneNewer // options,
+    );
 
     if (isSet) {
       return;
@@ -415,7 +417,8 @@ class MergeState {
       } else {
         isSet = true;
       }
-    }, preferCloneOlder, preferCloneNewer, options);
+    }, preferCloneOlder, preferCloneNewer // options,
+    );
 
     if (isSet) {
       return !!set;

@@ -1,11 +1,11 @@
 import '../extensions/autoConnect';
 import { PropertyChangedObject } from './PropertyChangedObject';
-export interface ISetOptions {
-    equalsFunc?: (oldValue: any, newValue: any) => boolean;
-    fillFunc?: (oldValue: any, newValue: any) => boolean;
-    convertFunc?: (newValue: any) => any;
-    beforeChange?: (oldValue: any) => void;
-    afterChange?: (newValue: any) => void;
+export interface ISetOptions<TObject, TValue> {
+    equalsFunc?: (this: TObject, oldValue: TValue, newValue: TValue) => boolean;
+    fillFunc?: (this: TObject, oldValue: TValue, newValue: TValue) => boolean;
+    convertFunc?: (this: TObject, newValue: TValue) => any;
+    beforeChange?: (this: TObject, oldValue: TValue) => void;
+    afterChange?: (this: TObject, newValue: TValue) => void;
     suppressPropertyChanged?: boolean;
 }
 export declare class ObservableClass extends PropertyChangedObject {
@@ -17,6 +17,6 @@ export declare class ObservableClass extends PropertyChangedObject {
     constructor();
 }
 /** @internal */
-export declare function _setExt(name: string | number, getValue: () => any, setValue: (v: any) => void, options: ISetOptions, object: ObservableClass, newValue: any): boolean;
+export declare function _setExt(name: string | number, getValue: () => any, setValue: (v: any) => void, options: ISetOptions<any, any>, object: ObservableClass, newValue: any): boolean;
 /** @internal */
 export declare function _set(name: string | number, getValue: () => any, setValue: (v: any) => void, object: ObservableClass, newValue: any): boolean;
