@@ -5,7 +5,7 @@ import {webrainOptions} from '../../../helpers/webrainOptions'
 import {DeferredCalc, IDeferredCalcOptions} from '../../deferred-calc/DeferredCalc'
 import {ObservableClass} from '../ObservableClass'
 import {ObservableObjectBuilder} from '../ObservableObjectBuilder'
-import {CalcObjectDebugger} from './CalcObjectDebugger'
+import {Debugger} from '../../Debugger'
 import {CalcPropertyFunc, ICalcProperty, ICalcPropertyState} from './contracts'
 
 export class CalcPropertyValue<TValue, TInput = any> {
@@ -104,14 +104,14 @@ export class CalcProperty<TValue, TInput = any>
 						if (webrainOptions.equalsFunc.call(this.state, prevValue, this.state.value)) {
 							this.state.value = val = prevValue
 						}
-						CalcObjectDebugger.Instance.onCalculated(this, prevValue, val)
+						Debugger.Instance.onCalculated(this, prevValue, val)
 						done(isChangedForce, prevValue, val)
 						return val
 					},
 					err => {
 						this._error = err
 						console.error(err)
-						CalcObjectDebugger.Instance.onError(this, this.state.value, prevValue, err)
+						Debugger.Instance.onError(this, this.state.value, prevValue, err)
 						let val = this.state.value
 						if (webrainOptions.equalsFunc.call(this.state, prevValue, this.state.value)) {
 							this.state.value = val = prevValue
@@ -183,7 +183,7 @@ export class CalcProperty<TValue, TInput = any>
 	}
 
 	public onInvalidated() {
-		CalcObjectDebugger.Instance.onInvalidated(this, this.state.value)
+		Debugger.Instance.onInvalidated(this, this.state.value)
 
 		const {propertyChangedIfCanEmit} = this
 		if (propertyChangedIfCanEmit) {

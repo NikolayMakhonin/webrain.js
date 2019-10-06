@@ -5,7 +5,7 @@ import {setObjectValue} from '../../deep-subscribe/helpers/common'
 import {RuleBuilder} from '../../deep-subscribe/RuleBuilder'
 import {_set, _setExt, ObservableClass} from '../ObservableClass'
 import {IWritableFieldOptions, ObservableObjectBuilder} from '../ObservableObjectBuilder'
-import {CalcObjectDebugger} from './CalcObjectDebugger'
+import {Debugger} from '../../Debugger'
 import {Connector, ConnectorState} from './Connector'
 import {ValueKeys} from './contracts'
 
@@ -108,7 +108,7 @@ export class ConnectorBuilder<
 
 					const receiveValue = writable
 						? (value: TValue, parent: any, key: any, keyType: ValueKeyType) => {
-							CalcObjectDebugger.Instance.onConnectorChanged(this, name, value, parent, key, keyType)
+							Debugger.Instance.onConnectorChanged(this, name, value, parent, key, keyType)
 
 							const baseValue = baseGetValue.call(this)
 							baseValue.parent = parent
@@ -119,7 +119,7 @@ export class ConnectorBuilder<
 							return null
 						}
 						: (value: TValue, parent: any, key: any, keyType: ValueKeyType) => {
-							CalcObjectDebugger.Instance.onConnectorChanged(this, name, value, parent, key, keyType)
+							Debugger.Instance.onConnectorChanged(this, name, value, parent, key, keyType)
 							setVal(this, value)
 							return null
 						}

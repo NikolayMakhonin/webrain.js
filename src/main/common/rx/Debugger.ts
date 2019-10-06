@@ -1,8 +1,8 @@
-import {ValueKeyType} from '../../deep-subscribe/contracts/common'
-import {IObservable} from '../../subjects/observable'
-import {ISubject, Subject} from '../../subjects/subject'
-import {ObservableClass} from '../ObservableClass'
-import {ICalcProperty} from './contracts'
+import {ValueKeyType} from './deep-subscribe/contracts/common'
+import {IObservable} from './subjects/observable'
+import {ISubject, Subject} from './subjects/subject'
+import {ObservableClass} from './object/ObservableClass'
+import {ICalcProperty} from './object/properties/contracts'
 
 export interface IConnectorChangedEvent {
 	target: ObservableClass
@@ -39,8 +39,8 @@ export interface IErrorEvent {
 	error: any
 }
 
-export class CalcObjectDebugger {
-	public static Instance = new CalcObjectDebugger()
+export class Debugger {
+	public static Instance = new Debugger()
 
 	private constructor() { }
 
@@ -136,6 +136,25 @@ export class CalcObjectDebugger {
 	}
 
 	// endregion
+
+	// // region onDeepSubscribe
+	//
+	// private _deepSubscribeSubject: ISubject<IDeepSubscribeEvent> = new Subject<IDeepSubscribeEvent>()
+	// public get deepSubscribeObservable(): IObservable<IDeepSubscribeEvent> {
+	// 	return this._deepSubscribeSubject
+	// }
+	//
+	// public onDeepSubscribe(target: ICalcProperty<any>, oldValue: any, newValue: any) {
+	// 	if (this._deepSubscribeSubject.hasSubscribers) {
+	// 		this._deepSubscribeSubject.emit({
+	// 			target,
+	// 			newValue,
+	// 			oldValue,
+	// 		})
+	// 	}
+	// }
+	//
+	// // endregion
 
 	// region onError
 
