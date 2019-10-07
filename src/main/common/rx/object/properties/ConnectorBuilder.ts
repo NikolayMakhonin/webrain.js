@@ -1,11 +1,11 @@
 import {createFunction} from '../../../helpers/helpers'
+import {Debugger} from '../../Debugger'
 import {ValueKeyType} from '../../deep-subscribe/contracts/common'
 import {deepSubscribeRule} from '../../deep-subscribe/deep-subscribe'
 import {setObjectValue} from '../../deep-subscribe/helpers/common'
 import {RuleBuilder} from '../../deep-subscribe/RuleBuilder'
 import {_set, _setExt, ObservableClass} from '../ObservableClass'
 import {IWritableFieldOptions, ObservableObjectBuilder} from '../ObservableObjectBuilder'
-import {Debugger} from '../../Debugger'
 import {Connector, ConnectorState} from './Connector'
 import {ValueKeys} from './contracts'
 
@@ -136,6 +136,7 @@ export class ConnectorBuilder<
 								const unsubscribe = deepSubscribeRule<TValue>({
 									object: this.connectorState,
 									lastValue: receiveValue,
+									debugTarget: this,
 									rule,
 								})
 

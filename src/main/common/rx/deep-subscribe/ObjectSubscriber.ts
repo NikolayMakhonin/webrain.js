@@ -2,6 +2,7 @@
 import {checkIsFuncOrNull} from '../../helpers/helpers'
 import {getObjectUniqueId} from '../../helpers/object-unique-id'
 import {binarySearch} from '../../lists/helpers/array'
+import {Debugger} from '../Debugger'
 import {IUnsubscribe, IUnsubscribeOrVoid} from '../subjects/observable'
 import {
 	IChangeValue,
@@ -11,7 +12,7 @@ import {
 	ValueKeyType,
 } from './contracts/common'
 
-interface ISubscribedValue {
+export interface ISubscribedValue {
 	value: any
 	parent: any
 	key: any,
@@ -70,6 +71,7 @@ function compareSubscribed(o1: ISubscribedValue, o2: ISubscribedValue): number {
 }
 
 export class ObjectSubscriber<TObject> implements IValueSubscriber<TObject> {
+	public readonly debugTarget: any
 	private readonly _changeValue: IChangeValue<TObject>
 	private readonly _lastValue: ILastValue<TObject>
 	private _unsubscribers: IUnsubscribe[]
@@ -78,9 +80,11 @@ export class ObjectSubscriber<TObject> implements IValueSubscriber<TObject> {
 	constructor(
 		changeValue?: IChangeValue<TObject>,
 		lastValue?: ILastValue<TObject>,
+		debugTarget?: any,
 	) {
 		this._changeValue = changeValue
 		this._lastValue = lastValue
+		this.debugTarget = debugTarget
 	}
 
 	private insertSubscribed(subscribedValue: ISubscribedValue): ISubscribedValue {
@@ -264,13 +268,13 @@ export class ObjectSubscriber<TObject> implements IValueSubscriber<TObject> {
 			}
 		}
 
-		if (this._lastValue) {
-			let unsubscribedValue
+		if (this._lastValue || Debugger.Instance.deepSubscribeLastValueHasSubscribers) {
+			let unsubscribedValue: ISubscribedValue
 			if ((changeType & ValueChangeType.Unsubscribe) !== 0) {
 				unsubscribedValue = this.removeSubscribed({value: oldValue, parent, key, keyType})
 			}
 
-			let subscribedValue
+			let subscribedValue: ISubscribedValue
 			if ((changeType & ValueChangeType.Subscribe) !== 0) {
 				subscribedValue = this.insertSubscribed({
 					value: newValue,
@@ -284,12 +288,20 @@ export class ObjectSubscriber<TObject> implements IValueSubscriber<TObject> {
 			if (!subscribedValueEquals(subscribedValue, unsubscribedValue)) {
 				const lastValue = subscribedValue || unsubscribedValue
 				if (lastValue) {
-					this._lastValue(
-						lastValue.value,
-						lastValue.parent,
-						lastValue.key,
-						lastValue.keyType,
+					Debugger.Instance.onDeepSubscribeLastValue(
+						unsubscribedValue,
+						subscribedValue,
+						this.debugTarget,
 					)
+
+					if (this._lastValue) {
+						this._lastValue(
+							lastValue.value,
+							lastValue.parent,
+							lastValue.key,
+							lastValue.keyType,
+						)
+					}
 				}
 			}
 		}

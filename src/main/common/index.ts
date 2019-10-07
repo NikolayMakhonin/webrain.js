@@ -29,6 +29,9 @@ export {isIterable} from './helpers/helpers'
 export {DependenciesBuilder} from './rx/object/properties/DependenciesBuilder'
 export {subscribeDependencies} from './rx/object/properties/DependenciesBuilder'
 export {webrainOptions} from './helpers/webrainOptions'
+export {CalcPropertyState} from './rx/object/properties/CalcProperty'
+export {ConnectorState} from './rx/object/properties/Connector'
+export {ValueChangeType} from './rx/deep-subscribe/contracts/common'
 
 // Interfaces:
 import {ThenableOrIteratorOrValue as _ThenableOrIteratorOrValue} from './async/async'

@@ -27,6 +27,7 @@ export type IChangeValue<TValue> = (
 ) => IUnsubscribeOrVoid
 
 export interface IValueSubscriber<TValue> {
+	debugTarget: any
 	change(
 		key: any,
 		oldValue: TValue,

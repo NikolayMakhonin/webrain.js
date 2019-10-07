@@ -3,6 +3,7 @@ import {isThenable} from '../../async/async'
 import {resolveAsync} from '../../async/ThenableSync'
 import {checkIsFuncOrNull, toSingleCall} from '../../helpers/helpers'
 import {getObjectUniqueId} from '../../helpers/object-unique-id'
+import {Debugger} from '../Debugger'
 import {IUnsubscribe, IUnsubscribeOrVoid} from '../subjects/observable'
 import {
 	IChangeValue,
@@ -117,6 +118,7 @@ function subscribeNext<TValue>(
 			changeType: ValueChangeType,
 			keyType: ValueKeyType,
 			parent: any,
+			newPropertiesPath: () => string,
 			iterator?: IRuleIterator,
 			iteration?: IteratorResult<IRuleOrIterable>,
 		): void => {
@@ -167,8 +169,7 @@ function subscribeNext<TValue>(
 						valueSubscriber,
 						immediate,
 						iterator,
-						() => (propertiesPath ? propertiesPath() + '.' : '')
-							+ (key + '(' + rule.description + ')'),
+						newPropertiesPath,
 						key,
 						parent,
 						rule.description,
@@ -210,6 +211,7 @@ function subscribeNext<TValue>(
 			changeType: ValueChangeType,
 			keyType: ValueKeyType,
 			parent: any,
+			newPropertiesPath: () => string,
 		): void => {
 			checkIsFuncOrNull(valueSubscriber.change(
 				key,
@@ -218,8 +220,7 @@ function subscribeNext<TValue>(
 				parent,
 				changeType,
 				keyType,
-				() => (propertiesPath ? propertiesPath() + '.' : '')
-					+ (propertyName == null ? '' : propertyName + '(' + rule.description + ')'),
+				newPropertiesPath,
 				rule.description,
 			))
 		}
@@ -231,6 +232,7 @@ function subscribeNext<TValue>(
 			changeType: ValueChangeType,
 			keyType: ValueKeyType,
 		): void => {
+			let debugOldIsLeaf
 			let oldIsLeaf
 			if ((changeType & ValueChangeType.Unsubscribe) !== 0) {
 				const oldItemIterator = getNextRuleIterable && getNextRuleIterable(oldItem)[Symbol.iterator]()
@@ -240,10 +242,12 @@ function subscribeNext<TValue>(
 					|| oldItemIteration.value.type !== RuleType.Never
 						&& typeof oldItem !== 'undefined'
 				) {
+					debugOldIsLeaf = isLeaf
 					oldIsLeaf = isLeaf && !(oldItem instanceof Object)
 				}
 			}
 
+			let debugNewIsLeaf
 			let newIsLeaf
 			let newItemIterator
 			let newItemIteration
@@ -255,6 +259,7 @@ function subscribeNext<TValue>(
 					|| newItemIteration.value.type !== RuleType.Never
 						&& typeof newItem !== 'undefined'
 				) {
+					debugNewIsLeaf = isLeaf
 					newIsLeaf = isLeaf && !(newItem instanceof Object)
 				}
 			}
@@ -265,29 +270,47 @@ function subscribeNext<TValue>(
 				itemParent = parent
 			}
 
+			const newPropertiesPath = () => (propertiesPath ? propertiesPath() + '.' : '')
+				+ (key + '(' + rule.description + ')')
+
+			Debugger.Instance.onDeepSubscribe(
+				key,
+				oldItem,
+				newItem,
+				itemParent,
+				changeType,
+				keyType,
+				newPropertiesPath,
+				rule,
+				debugOldIsLeaf,
+				debugNewIsLeaf,
+				valueSubscriber.debugTarget,
+			)
+
 			if (oldIsLeaf === newIsLeaf) {
 				if (newIsLeaf != null) {
 					if (newIsLeaf) {
-						changeLeaf(key, oldItem, newItem, changeType, keyType, itemParent)
+						changeLeaf(key, oldItem, newItem, changeType, keyType, itemParent, newPropertiesPath)
 					} else {
-						changeNext(key, oldItem, newItem, changeType, keyType, itemParent, newItemIterator, newItemIteration)
+						changeNext(key, oldItem, newItem, changeType, keyType, itemParent, newPropertiesPath,
+							newItemIterator, newItemIteration)
 					}
 				}
 			} else {
 				if (oldIsLeaf != null) {
 					if (oldIsLeaf) {
-						changeLeaf(key, oldItem, void 0, ValueChangeType.Unsubscribe, keyType, itemParent)
+						changeLeaf(key, oldItem, void 0, ValueChangeType.Unsubscribe, keyType, itemParent, newPropertiesPath)
 					} else {
 						changeNext(key, oldItem, void 0, ValueChangeType.Unsubscribe, keyType, itemParent,
-							newItemIterator, newItemIteration)
+							newPropertiesPath, newItemIterator, newItemIteration)
 					}
 				}
 				if (newIsLeaf != null) {
 					if (newIsLeaf) {
-						changeLeaf(key, void 0, newItem, ValueChangeType.Subscribe, keyType, itemParent)
+						changeLeaf(key, void 0, newItem, ValueChangeType.Subscribe, keyType, itemParent, newPropertiesPath)
 					} else {
 						changeNext(key, void 0, newItem, ValueChangeType.Subscribe, keyType, itemParent,
-							newItemIterator, newItemIteration)
+							newPropertiesPath, newItemIterator, newItemIteration)
 					}
 				}
 			}
@@ -371,19 +394,21 @@ export function deepSubscribeRule<TValue>({
 	object,
 	changeValue,
 	lastValue,
+	debugTarget,
 	immediate = true,
 	rule,
 }: {
 	object: any,
 	changeValue?: IChangeValue<TValue>,
 	lastValue?: ILastValue<TValue>,
+	debugTarget?: any,
 	/** @deprecated Not implemented - always true */
 	immediate?: boolean,
 	rule: IRule,
 }): IUnsubscribeOrVoid {
 	return toSingleCall(deepSubscribeRuleIterator<TValue>(
 		object,
-		new ObjectSubscriber(changeValue, lastValue),
+		new ObjectSubscriber(changeValue, lastValue, debugTarget),
 		immediate,
 		iterateRule(object, rule)[Symbol.iterator](),
 	))
@@ -393,12 +418,14 @@ export function deepSubscribe<TObject, TValue, TValueKeys extends string | numbe
 	object,
 	changeValue,
 	lastValue,
+	debugTarget,
 	immediate = true,
 	ruleBuilder,
 }: {
 	object: TObject,
 	changeValue?: IChangeValue<TValue>,
 	lastValue?: ILastValue<TValue>,
+	debugTarget?: any,
 	/** @deprecated Not implemented - always true */
 	immediate?: boolean,
 	ruleBuilder: (ruleBuilder: RuleBuilder<TObject, TValueKeys>) => RuleBuilder<TValue, TValueKeys>,
@@ -407,6 +434,7 @@ export function deepSubscribe<TObject, TValue, TValueKeys extends string | numbe
 		object,
 		changeValue,
 		lastValue,
+		debugTarget,
 		immediate,
 		rule: ruleBuilder(new RuleBuilder<TObject, TValueKeys>()).result(),
 	}))

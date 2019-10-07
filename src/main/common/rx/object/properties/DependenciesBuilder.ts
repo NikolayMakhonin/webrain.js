@@ -77,6 +77,7 @@ export function subscribeDependencies<TSubscribeObject, TActionTarget>(
 				action(actionTarget, newValue, parent, key, keyType)
 			},
 			rule: rule.clone(),
+			debugTarget: actionTarget,
 		}))
 	}
 

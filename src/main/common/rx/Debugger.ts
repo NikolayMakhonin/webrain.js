@@ -1,8 +1,10 @@
-import {ValueKeyType} from './deep-subscribe/contracts/common'
-import {IObservable} from './subjects/observable'
-import {ISubject, Subject} from './subjects/subject'
+import {ValueChangeType, ValueKeyType} from './deep-subscribe/contracts/common'
+import {IRule} from './deep-subscribe/contracts/rules'
+import {ISubscribedValue} from './deep-subscribe/ObjectSubscriber'
 import {ObservableClass} from './object/ObservableClass'
 import {ICalcProperty} from './object/properties/contracts'
+import {IObservable} from './subjects/observable'
+import {ISubject, Subject} from './subjects/subject'
 
 export interface IConnectorChangedEvent {
 	target: ObservableClass
@@ -30,6 +32,26 @@ export interface ICalculatedEvent {
 	target: ICalcProperty<any>
 	newValue: any
 	oldValue: any
+}
+
+export interface IDeepSubscribeEvent {
+	key: any,
+	oldValue: any,
+	newValue: any,
+	parent: any,
+	changeType: ValueChangeType,
+	keyType: ValueKeyType,
+	propertiesPath: () => string,
+	rule: IRule,
+	oldIsLeaf: boolean,
+	newIsLeaf: boolean,
+	target: any,
+}
+
+export interface IDeepSubscribeLastValueEvent {
+	unsubscribedValue: ISubscribedValue
+	subscribedValue: ISubscribedValue
+	target: any
 }
 
 export interface IErrorEvent {
@@ -137,24 +159,71 @@ export class Debugger {
 
 	// endregion
 
-	// // region onDeepSubscribe
-	//
-	// private _deepSubscribeSubject: ISubject<IDeepSubscribeEvent> = new Subject<IDeepSubscribeEvent>()
-	// public get deepSubscribeObservable(): IObservable<IDeepSubscribeEvent> {
-	// 	return this._deepSubscribeSubject
-	// }
-	//
-	// public onDeepSubscribe(target: ICalcProperty<any>, oldValue: any, newValue: any) {
-	// 	if (this._deepSubscribeSubject.hasSubscribers) {
-	// 		this._deepSubscribeSubject.emit({
-	// 			target,
-	// 			newValue,
-	// 			oldValue,
-	// 		})
-	// 	}
-	// }
-	//
-	// // endregion
+	// region onDeepSubscribe
+
+	private _deepSubscribeSubject: ISubject<IDeepSubscribeEvent> = new Subject<IDeepSubscribeEvent>()
+	public get deepSubscribeObservable(): IObservable<IDeepSubscribeEvent> {
+		return this._deepSubscribeSubject
+	}
+
+	public onDeepSubscribe(
+		key: any,
+		oldValue: any,
+		newValue: any,
+		parent: any,
+		changeType: ValueChangeType,
+		keyType: ValueKeyType,
+		propertiesPath: () => string,
+		rule: IRule,
+		oldIsLeaf: boolean,
+		newIsLeaf: boolean,
+		target: any,
+	) {
+		if (this._deepSubscribeSubject.hasSubscribers) {
+			this._deepSubscribeSubject.emit({
+				key,
+				oldValue,
+				newValue,
+				parent,
+				changeType,
+				keyType,
+				propertiesPath,
+				rule,
+				oldIsLeaf,
+				newIsLeaf,
+				target,
+			})
+		}
+	}
+
+	// endregion
+
+	// region onDeepSubscribeLastValue
+
+	private _deepSubscribeLastValueSubject: ISubject<IDeepSubscribeLastValueEvent>
+		= new Subject<IDeepSubscribeLastValueEvent>()
+	public get deepSubscribeLastValueHasSubscribers(): boolean {
+		return this._deepSubscribeLastValueSubject.hasSubscribers
+	}
+	public get deepSubscribeLastValueObservable(): IObservable<IDeepSubscribeLastValueEvent> {
+		return this._deepSubscribeLastValueSubject
+	}
+
+	public onDeepSubscribeLastValue(
+		unsubscribedValue: ISubscribedValue,
+		subscribedValue: ISubscribedValue,
+		target: any,
+	) {
+		if (this._deepSubscribeLastValueSubject.hasSubscribers) {
+			this._deepSubscribeLastValueSubject.emit({
+				unsubscribedValue,
+				subscribedValue,
+				target,
+			})
+		}
+	}
+
+	// endregion
 
 	// region onError
 
