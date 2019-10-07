@@ -49,6 +49,7 @@ import {IPropertyChangedObject as _IPropertyChangedObject} from './rx/object/IPr
 import {IObservable as _IObservable} from './rx/subjects/observable'
 import {ISubject as _ISubject} from './rx/subjects/subject'
 
+export type TClass<T> = _TClass<T>
 export type IMergeOptions = _IMergeOptions
 export type IMergeValue = _IMergeValue
 export type IMergeable<TTarget, TSource = any> = _IMergeable<TTarget, TSource>
