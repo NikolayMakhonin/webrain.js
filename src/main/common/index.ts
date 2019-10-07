@@ -32,6 +32,7 @@ export {webrainOptions} from './helpers/webrainOptions'
 export {CalcPropertyState} from './rx/object/properties/CalcProperty'
 export {ConnectorState} from './rx/object/properties/Connector'
 export {ValueChangeType} from './rx/deep-subscribe/contracts/common'
+export {resolveAsyncAll, resolveAsyncAny} from './async/ThenableSync'
 
 // Interfaces:
 import {ThenableOrIteratorOrValue as _ThenableOrIteratorOrValue} from './async/async'
@@ -40,6 +41,7 @@ import {
 	IMergeOptions as _IMergeOptions,
 	IMergeValue as _IMergeValue,
 } from './extensions/merge/contracts'
+import {TClass as _TClass} from './helpers/helpers'
 import {IObservableMap as _IObservableMap} from './lists/contracts/IMapChanged'
 import {IObservableSet as _IObservableSet} from './lists/contracts/ISetChanged'
 import {ICalcProperty as _ICalcProperty} from './rx/object/properties/contracts'

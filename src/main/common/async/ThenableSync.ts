@@ -460,3 +460,74 @@ export function resolveAsyncFunc<TValue = any, TResult1 = TValue, TResult2 = nev
 		return resolveAsync(err, onrejected as any, onrejected, dontThrowOnImmediateReject, customResolveValue)
 	}
 }
+
+function *_resolveAsyncAll<TValue>(
+	inputPrepared: Array<ThenableOrIteratorOrValue<TValue>>,
+): Iterable<TValue[]> {
+	const len = inputPrepared.length
+	for (let i = 0; i < len; i++) {
+		inputPrepared[i] = yield inputPrepared[i] as any
+	}
+	return inputPrepared
+}
+
+export function resolveAsyncAll<TValue = any, TResult1 = TValue, TResult2 = never>(
+	input: Array<ThenableOrIteratorOrValue<TValue>>,
+	onfulfilled?: TOnFulfilled<TValue[], TResult1[]>,
+	onrejected?: TOnRejected<TResult2>,
+	dontThrowOnImmediateError?: boolean,
+	customResolveValue?: TResolveAsyncValue,
+): ThenableOrValue<TResult1[]> {
+	let resolved = true
+	const inputPrepared = input.map(o => {
+		const item = resolveAsync(o, null, null, true, customResolveValue)
+		if (resolved && isThenable(item)) {
+			resolved = false
+		}
+		return item
+	})
+
+	return resolveAsync<TValue[], TResult1[], TResult2>(
+		resolved
+			? inputPrepared as any
+			: _resolveAsyncAll(inputPrepared)[Symbol.iterator](),
+		onfulfilled,
+		onrejected,
+		dontThrowOnImmediateError,
+		customResolveValue,
+	)
+}
+
+export function resolveAsyncAny<TValue = any, TResult1 = TValue, TResult2 = never>(
+	input: Array<ThenableOrIteratorOrValue<TValue>>,
+	onfulfilled?: TOnFulfilled<TValue, TResult1>,
+	onrejected?: TOnRejected<TResult2>,
+	dontThrowOnImmediateError?: boolean,
+	customResolveValue?: TResolveAsyncValue,
+): ThenableOrValue<TResult1> {
+	const len = input.length
+	const inputPrepared = new Array(len)
+	for (let i = 0; i < len; i++) {
+		const item = resolveAsync(input[i], null, null, true, customResolveValue)
+		if (!isThenable(item)) {
+			return resolveAsync<TValue, TResult1, TResult2>(
+				item,
+				onfulfilled,
+				onrejected,
+				dontThrowOnImmediateError,
+				customResolveValue,
+			)
+		}
+		inputPrepared[i] = item
+	}
+
+	return resolveAsync<TValue, TResult1, TResult2>(
+		new ThenableSync((resolve, reject) => {
+			inputPrepared.map(o => o.then(resolve, reject))
+		}),
+		onfulfilled,
+		onrejected,
+		dontThrowOnImmediateError,
+		customResolveValue,
+	)
+}
