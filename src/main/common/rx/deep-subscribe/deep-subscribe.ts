@@ -41,7 +41,8 @@ function subscribeNext<TValue>(
 	immediate: boolean,
 	ruleIterator: IRuleIterator,
 	propertiesPath: () => string,
-	propertyName: string,
+	objectKey: string,
+	objectKeyType: ValueKeyType,
 	parent: any,
 	ruleDescription?: string,
 	iteration?: IteratorResult<IRuleOrIterable>,
@@ -69,7 +70,8 @@ function subscribeNext<TValue>(
 						immediate,
 						ruleIterator,
 						propertiesPath,
-						propertyName,
+						objectKey,
+						objectKeyType,
 						parent,
 						ruleDescription,
 						iteration,
@@ -94,12 +96,12 @@ function subscribeNext<TValue>(
 
 	if (isLeaf) {
 		return valueSubscriber.change(
-			propertyName,
+			objectKey,
 			void 0,
 			object,
 			parent,
 			ValueChangeType.Subscribe,
-			null,
+			objectKeyType,
 			propertiesPath,
 			ruleDescription,
 		)
@@ -171,6 +173,7 @@ function subscribeNext<TValue>(
 						iterator,
 						newPropertiesPath,
 						key,
+						keyType,
 						parent,
 						rule.description,
 						iteration,
@@ -266,7 +269,7 @@ function subscribeNext<TValue>(
 
 			let itemParent = object
 			if (keyType == null) {
-				key = propertyName
+				key = objectKey
 				itemParent = parent
 			}
 
@@ -354,7 +357,7 @@ function subscribeNext<TValue>(
 			immediate,
 			nextRuleIterator,
 			propertiesPath,
-			propertyName,
+			objectKey,
 			parent,
 		),
 		subscribeNode,
@@ -367,7 +370,8 @@ function deepSubscribeRuleIterator<TValue>(
 	immediate: boolean,
 	ruleIterator: IRuleIterator,
 	propertiesPath?: () => string,
-	propertyName?: string,
+	objectKey?: string,
+	objectKeyType?: ValueKeyType,
 	parent?: any,
 ): IUnsubscribeOrVoid {
 	if (!immediate) {
@@ -381,7 +385,8 @@ function deepSubscribeRuleIterator<TValue>(
 			immediate,
 			ruleIterator,
 			propertiesPath,
-			propertyName,
+			objectKey,
+			objectKeyType,
 			parent,
 		)
 	} catch (err) {
