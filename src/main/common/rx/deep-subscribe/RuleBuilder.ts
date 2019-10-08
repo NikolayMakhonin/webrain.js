@@ -179,7 +179,7 @@ export class RuleBuilder<TObject = any, TValueKeys extends string | number = nev
 	/**
 	 * Object property, Array index
 	 */
-	public propertyNames<TKeys extends keyof TObject | ANY,
+	public propertyNames<TKeys extends (keyof TObject) | ANY,
 		TValue = ObjectValueOf<TObject, TKeys extends ANY ? any : TKeys>>(
 		...propertiesNames: TKeys[]
 	): RuleBuilder<TValue, TValueKeys>
@@ -197,7 +197,7 @@ export class RuleBuilder<TObject = any, TValueKeys extends string | number = nev
 	 * propertyNames
 	 * @param propertiesNames
 	 */
-	public p<TKeys extends keyof TObject | ANY,
+	public p<TKeys extends (keyof TObject) | ANY,
 		TValue = ObjectValueOf<TObject, TKeys extends ANY ? any : TKeys>>(
 		...propertiesNames: TKeys[]
 	): RuleBuilder<TValue, TValueKeys>

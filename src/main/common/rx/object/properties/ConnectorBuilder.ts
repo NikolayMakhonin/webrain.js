@@ -14,7 +14,7 @@ const buildSourceRule: <TSource, TValueKeys extends string | number = ValueKeys>
 		=> RuleBuilder<TSource, TValueKeys> = b => b.p('source')
 
 export class ConnectorBuilder<
-	TObject extends Connector<TSource>,
+	TObject extends Connector<TSource> | ObservableClass,
 	TSource = TObject,
 	TValueKeys extends string | number = ValueKeys
 >
@@ -63,7 +63,9 @@ export class ConnectorBuilder<
 		const {object} = this
 
 		let ruleBuilder = new RuleBuilder<TValue, TValueKeys>()
-		ruleBuilder = buildSourceRule(ruleBuilder as any) as any
+		if (object instanceof Connector) {
+			ruleBuilder = buildSourceRule(ruleBuilder as any) as any
+		}
 		ruleBuilder = buildRule(ruleBuilder as any)
 
 		const ruleBase = ruleBuilder && ruleBuilder.result()
@@ -95,7 +97,7 @@ export class ConnectorBuilder<
 				setOptions,
 				hidden: options && options.hidden,
 				// tslint:disable-next-line:no-shadowed-variable
-				factory(this: Connector<TSource>, initValue: TValue) {
+				factory(this: Connector<TSource> | ObservableClass, initValue: TValue) {
 					if (writable) {
 						baseSetValue.call(this, {value: initValue, parent: null, key: null, keyType: null})
 					}
@@ -134,7 +136,7 @@ export class ConnectorBuilder<
 
 							if (hasSubscribers) {
 								const unsubscribe = deepSubscribeRule<TValue>({
-									object: this.connectorState,
+									object: this instanceof Connector ? this.connectorState : this,
 									lastValue: receiveValue,
 									debugTarget: this,
 									rule,

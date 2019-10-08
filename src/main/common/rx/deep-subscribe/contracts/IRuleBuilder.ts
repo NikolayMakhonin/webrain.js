@@ -120,7 +120,7 @@ export interface IRuleBuilder<TObject = any, TValueKeys extends string | number 
 	/**
 	 * Object property, Array index
 	 */
-	propertyNames<TKeys extends keyof TObject | ANY,
+	propertyNames<TKeys extends (keyof TObject) | ANY,
 		TValue = ObjectValueOf<TObject, TKeys extends ANY ? any : TKeys>>(
 		...propertiesNames: TKeys[]
 	): IRuleBuilder<TValue, TValueKeys>
@@ -131,7 +131,7 @@ export interface IRuleBuilder<TObject = any, TValueKeys extends string | number 
 	 * propertyNames
 	 * @param propertiesNames
 	 */
-	p<TKeys extends keyof TObject | ANY,
+	p<TKeys extends (keyof TObject) | ANY,
 		TValue = ObjectValueOf<TObject, TKeys extends ANY ? any : TKeys>>(
 		...propertiesNames: TKeys[]
 	): IRuleBuilder<TValue, TValueKeys>

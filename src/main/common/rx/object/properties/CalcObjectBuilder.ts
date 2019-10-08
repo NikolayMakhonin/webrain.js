@@ -4,10 +4,11 @@ import {ObservableClass} from '../ObservableClass'
 import {ObservableObjectBuilder} from '../ObservableObjectBuilder'
 import {CalcProperty} from './CalcProperty'
 import {calcPropertyFactory} from './CalcPropertyBuilder'
+import {ConnectorBuilder} from './ConnectorBuilder'
 import {ValueKeys} from './contracts'
 
 export class CalcObjectBuilder<TObject extends ObservableClass, TValueKeys extends string | number = ValueKeys>
-	extends ObservableObjectBuilder<TObject>
+	extends ConnectorBuilder<TObject, TObject>
 {
 	public calc<
 		TInput,

@@ -87,3 +87,13 @@ export function subscribeDependencies<TSubscribeObject, TActionTarget>(
 		}
 	}
 }
+
+export function dependenciesSubscriber<TTarget, TSource, TValue, TValueKeys extends string | number = ValueKeys>(
+	buildRule: (inputRuleBuilder: RuleBuilder<TSource, TValueKeys>) => RuleBuilder<TValue, TValueKeys>,
+	action: IDependencyAction<TTarget, TValue>,
+	predicate?: IDependencyPredicate<TValue>,
+) {
+	const {dependencies} = new DependenciesBuilder<TTarget, TSource, TValueKeys>()
+		.actionOn(buildRule, action)
+	return (source, target) => subscribeDependencies(source, target, dependencies)
+}
