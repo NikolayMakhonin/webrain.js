@@ -1,8 +1,7 @@
 /* tslint:disable:no-duplicate-string */
-import {Connector} from '../../../../../../../main/common'
 /* eslint-disable guard-for-in */
-import {ObservableClass} from '../../../../../../../main/common/rx/object/ObservableClass'
 import {ObservableObjectBuilder} from '../../../../../../../main/common/rx/object/ObservableObjectBuilder'
+import {Connector} from '../../../../../../../main/common/rx/object/properties/Connector'
 import {ConnectorBuilder} from '../../../../../../../main/common/rx/object/properties/ConnectorBuilder'
 import {assert} from '../../../../../../../main/common/test/Assert'
 import {describe, it} from '../../../../../../../main/common/test/Mocha'
