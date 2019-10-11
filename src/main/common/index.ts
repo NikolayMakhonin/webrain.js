@@ -34,6 +34,7 @@ export {ConnectorState} from './rx/object/properties/Connector'
 export {ValueChangeType} from './rx/deep-subscribe/contracts/common'
 export {resolveAsyncAll, resolveAsyncAny} from './async/ThenableSync'
 export {dependenciesSubscriber} from './rx/object/properties/DependenciesBuilder'
+export {CalcStat} from './helpers/CalcStat'
 
 // Interfaces:
 import {ThenableOrIteratorOrValue as _ThenableOrIteratorOrValue} from './async/async'

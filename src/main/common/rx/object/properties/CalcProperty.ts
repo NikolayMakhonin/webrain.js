@@ -1,11 +1,13 @@
 import {isAsync, ThenableOrValue} from '../../../async/async'
 import {resolveAsyncFunc} from '../../../async/ThenableSync'
+import {CalcStat} from '../../../helpers/CalcStat'
+import {now} from '../../../helpers/performance'
 import {VALUE_PROPERTY_DEFAULT} from '../../../helpers/value-property'
 import {webrainOptions} from '../../../helpers/webrainOptions'
+import {Debugger} from '../../Debugger'
 import {DeferredCalc, IDeferredCalcOptions} from '../../deferred-calc/DeferredCalc'
 import {ObservableClass} from '../ObservableClass'
 import {ObservableObjectBuilder} from '../ObservableObjectBuilder'
-import {Debugger} from '../../Debugger'
 import {CalcPropertyFunc, ICalcProperty, ICalcPropertyState} from './contracts'
 
 export class CalcPropertyValue<TValue, TInput = any> {
@@ -50,6 +52,12 @@ export class CalcProperty<TValue, TInput = any>
 	private _error: Error
 	private readonly _initValue?: TValue
 
+	public readonly timeSyncStat: CalcStat
+	public readonly timeAsyncStat: CalcStat
+	public readonly timeDebuggerStat: CalcStat
+	public readonly timeEmitEventsStat: CalcStat
+	public readonly timeTotalStat: CalcStat
+
 	public readonly state: ICalcPropertyState<TValue, TInput>
 
 	constructor({
@@ -84,6 +92,12 @@ export class CalcProperty<TValue, TInput = any>
 			this.state.name = name
 		}
 
+		this.timeSyncStat = new CalcStat()
+		this.timeAsyncStat = new CalcStat()
+		this.timeDebuggerStat = new CalcStat()
+		this.timeEmitEventsStat = new CalcStat()
+		this.timeTotalStat = new CalcStat()
+
 		this._deferredCalc = new DeferredCalc(
 			() => {
 				this.onInvalidated()
@@ -91,12 +105,19 @@ export class CalcProperty<TValue, TInput = any>
 			(done: (isChanged: boolean, oldValue: TValue, newValue: TValue) => void) => {
 				const prevValue = this.state.value
 
+				const timeStart = now()
+				let timeSync
+				let timeAsync
+				let timeDebugger
+				let timeEmitEvents
 				const deferredValue = resolveAsyncFunc(
 					() => {
 						if (typeof this.state.input === 'undefined') {
 							return false
 						}
-						return this._calcFunc(this.state)
+						const result = this._calcFunc(this.state)
+						timeSync = now()
+						return result
 					},
 					(isChangedForce: boolean) => {
 						this._hasValue = true
@@ -104,19 +125,39 @@ export class CalcProperty<TValue, TInput = any>
 						if (webrainOptions.equalsFunc.call(this.state, prevValue, this.state.value)) {
 							this.state.value = val = prevValue
 						}
+						timeAsync = now()
 						Debugger.Instance.onCalculated(this, prevValue, val)
+						timeDebugger = now()
 						done(isChangedForce, prevValue, val)
+						timeEmitEvents = now()
+
+						this.timeSyncStat.add(timeSync - timeStart)
+						this.timeAsyncStat.add(timeAsync - timeStart)
+						this.timeDebuggerStat.add(timeDebugger - timeAsync)
+						this.timeEmitEventsStat.add(timeEmitEvents - timeDebugger)
+						this.timeTotalStat.add(timeEmitEvents - timeStart)
+
 						return val
 					},
 					err => {
 						this._error = err
+						timeAsync = now()
 						console.error(err)
 						Debugger.Instance.onError(this, this.state.value, prevValue, err)
+						timeDebugger = now()
 						let val = this.state.value
 						if (webrainOptions.equalsFunc.call(this.state, prevValue, this.state.value)) {
 							this.state.value = val = prevValue
 						}
 						done(prevValue !== val, prevValue, val)
+						timeEmitEvents = now()
+
+						this.timeSyncStat.add(timeSync - timeStart)
+						this.timeAsyncStat.add(timeAsync - timeStart)
+						this.timeDebuggerStat.add(timeDebugger - timeAsync)
+						this.timeEmitEventsStat.add(timeEmitEvents - timeDebugger)
+						this.timeTotalStat.add(timeEmitEvents - timeStart)
+
 						return val // ThenableSync.createRejected(err)
 					},
 					true,
