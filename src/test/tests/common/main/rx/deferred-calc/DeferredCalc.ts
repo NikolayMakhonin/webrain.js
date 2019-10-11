@@ -432,6 +432,104 @@ describe('common > main > rx > deferred-calc > DeferredCalc', function() {
 	it('autoInvalidateInterval', function() {
 		testDeferredCalc({
 			calcTime: [5],
+			throttleTime: [10],
+			maxThrottleTime: [20],
+			minTimeBetweenCalc: [40],
+			autoInvalidateInterval: [100],
+			autoCalc: [true],
+			expected: {
+				events: [
+					{
+						time: 10,
+						type: EventType.CanBeCalc,
+					},
+					{
+						time: 10,
+						type: EventType.Calc,
+					},
+					{
+						time: 15,
+						type: EventType.Completed,
+					},
+
+					{
+						time: 120,
+						type: EventType.CanBeCalc,
+					},
+					{
+						time: 120,
+						type: EventType.Calc,
+					},
+					{
+						time: 125,
+						type: EventType.Completed,
+					},
+
+					{
+						time: 230,
+						type: EventType.CanBeCalc,
+					},
+					{
+						time: 230,
+						type: EventType.Calc,
+					},
+					{
+						time: 235,
+						type: EventType.Completed,
+					},
+
+					{
+						time: 275,
+						type: EventType.CanBeCalc,
+					},
+					{
+						time: 275,
+						type: EventType.Calc,
+					},
+					{
+						time: 280,
+						type: EventType.Completed,
+					},
+
+					{
+						time: 385,
+						type: EventType.CanBeCalc,
+					},
+					{
+						time: 385,
+						type: EventType.Calc,
+					},
+					{
+						time: 390,
+						type: EventType.Completed,
+					},
+
+					{
+						time: 495,
+						type: EventType.CanBeCalc,
+					},
+					{
+						time: 495,
+						type: EventType.Calc,
+					},
+					{
+						time: 500,
+						type: EventType.Completed,
+					},
+				],
+			},
+			actions: [
+				deferredCalc => {
+					timing.addTime(250)
+					deferredCalc.invalidate()
+					timing.addTime(250)
+					deferredCalc.autoInvalidateInterval = null
+				},
+			],
+		})
+
+		testDeferredCalc({
+			calcTime: [5],
 			throttleTime: [0],
 			maxThrottleTime: [0],
 			minTimeBetweenCalc: [20],

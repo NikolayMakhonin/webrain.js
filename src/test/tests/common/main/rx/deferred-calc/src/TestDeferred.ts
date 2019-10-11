@@ -51,6 +51,7 @@ interface IDeferredCalcOptionsVariants extends IOptionsVariants {
 }
 
 export const timing = new TestTiming()
+timing.addTime(1000)
 let staticAutoCalc
 let staticCalcTime
 let testStartTime

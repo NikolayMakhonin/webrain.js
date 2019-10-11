@@ -190,7 +190,7 @@ export class DeferredCalc {
 
 			if (autoInvalidateTime <= now) {
 				this._invalidate()
-			} else if (autoInvalidateTime > timeNextPulse) {
+			} else if (timeNextPulse <= now || autoInvalidateTime < timeNextPulse) {
 				timeNextPulse = autoInvalidateTime
 			}
 		}
@@ -209,7 +209,7 @@ export class DeferredCalc {
 				this._canBeCalc()
 				this._pulse()
 				return
-			} else if (canBeCalcTime > timeNextPulse) {
+			} else if (timeNextPulse <= now || canBeCalcTime < timeNextPulse) {
 				timeNextPulse = canBeCalcTime
 			}
 		}
@@ -223,7 +223,7 @@ export class DeferredCalc {
 			if (calcTime <= now) {
 				this._calc()
 				return
-			} else if (calcTime > timeNextPulse) {
+			} else if (timeNextPulse <= now || calcTime < timeNextPulse) {
 				timeNextPulse = calcTime
 			}
 		}
