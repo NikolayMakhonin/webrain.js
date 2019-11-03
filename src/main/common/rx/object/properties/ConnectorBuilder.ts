@@ -46,7 +46,7 @@ export class ConnectorBuilder<
 		buildRule: (builder: RuleBuilder<TSource, TValueKeys>) => RuleBuilder<TValue, TValueKeys>,
 		options?: IWritableFieldOptions<TObject, TValue>,
 		initValue?: TValue,
-	): this & { object: { readonly [newProp in Name]: TValue } } {
+	): this & { object: { [newProp in Name]: TValue } } {
 		return this._connect(true, name, buildRule, options, initValue)
 	}
 
