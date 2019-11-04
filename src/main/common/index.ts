@@ -35,6 +35,7 @@ export {ValueChangeType} from './rx/deep-subscribe/contracts/common'
 export {resolveAsyncAll, resolveAsyncAny} from './async/ThenableSync'
 export {dependenciesSubscriber} from './rx/object/properties/DependenciesBuilder'
 export {CalcStat} from './helpers/CalcStat'
+export {VALUE_PROPERTY_DEFAULT} from './helpers/value-property'
 
 // Interfaces:
 import {ThenableOrIteratorOrValue as _ThenableOrIteratorOrValue} from './async/async'
@@ -44,6 +45,7 @@ import {
 	IMergeValue as _IMergeValue,
 } from './extensions/merge/contracts'
 import {TClass as _TClass} from './helpers/helpers'
+import {HasDefaultOrValue as _HasDefaultOrValue} from './helpers/value-property'
 import {IObservableMap as _IObservableMap} from './lists/contracts/IMapChanged'
 import {IObservableSet as _IObservableSet} from './lists/contracts/ISetChanged'
 import {ICalcProperty as _ICalcProperty} from './rx/object/properties/contracts'
@@ -62,3 +64,4 @@ export type ISubject<T> = _ISubject<T>
 export type IPropertyChangedObject = _IPropertyChangedObject
 export type ThenableOrIteratorOrValue<T> = _ThenableOrIteratorOrValue<T>
 export type ICalcProperty<TValue, TInput> = _ICalcProperty<TValue, TInput>
+export type HasDefaultOrValue<T> = _HasDefaultOrValue<T>
