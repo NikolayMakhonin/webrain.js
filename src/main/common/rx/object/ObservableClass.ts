@@ -76,11 +76,6 @@ export function _setExt(
 		object.__fields[name] = newValue
 	}
 
-	const afterChange = options.afterChange
-	if (afterChange) {
-		afterChange.call(object, newValue)
-	}
-
 	if (!options || !options.suppressPropertyChanged) {
 		const {propertyChangedIfCanEmit} = object
 		if (propertyChangedIfCanEmit) {
@@ -90,6 +85,11 @@ export function _setExt(
 				newValue,
 			})
 		}
+	}
+
+	const afterChange = options.afterChange
+	if (afterChange) {
+		afterChange.call(object, newValue)
 	}
 
 	return true
