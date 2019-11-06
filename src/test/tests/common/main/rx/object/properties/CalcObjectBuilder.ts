@@ -19,6 +19,16 @@ describe('common > main > rx > properties > CalcObjectBuilder', function() {
 	this.timeout(30000)
 
 	class ClassSync extends ObservableClass {
+		constructor() {
+			super()
+
+			deepSubscribe({
+				object: this,
+				changeValue: () => {},
+				ruleBuilder: b => b.propertyAny(),
+			})
+		}
+
 		public value = 'Value'
 		public valuePrototype: string
 		public calc1: Date

@@ -38,9 +38,25 @@ export function calcPropertyFactory<
 			calcOptions,
 			initValue,
 		})
+
 		if (dependencies) {
-			subscribeDependencies(calcProperty.state, calcProperty, dependencies)
+			// subscribeDependencies(calcProperty.state, calcProperty, dependencies)
+			let unsubscribe
+			calcProperty
+				.propertyChanged
+				.hasSubscribersObservable
+				.subscribe(hasSubscribers => {
+					if (unsubscribe) {
+						unsubscribe()
+						unsubscribe = null
+					}
+
+					if (hasSubscribers) {
+						unsubscribe = subscribeDependencies(calcProperty.state, calcProperty, dependencies)
+					}
+				}, `CalcProperty.${calcProperty.state.name}.hasSubscribersObservable for subscribeDependencies`)
 		}
+
 		return calcProperty
 	}
 }

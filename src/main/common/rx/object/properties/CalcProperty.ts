@@ -219,6 +219,7 @@ export class CalcProperty<TValue, TInput = any>
 
 	public invalidate(): void {
 		if (!this._error) {
+			// console.log('invalidate: ' + this.state.name)
 			this._deferredCalc.invalidate()
 		}
 	}
