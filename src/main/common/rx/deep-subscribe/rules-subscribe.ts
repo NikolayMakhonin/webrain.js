@@ -1,7 +1,6 @@
 /* tslint:disable:no-identical-functions */
 import {checkIsFuncOrNull, isIterable} from '../../helpers/helpers'
 import {VALUE_PROPERTY_DEFAULT} from '../../helpers/value-property'
-import {webrainOptions} from '../../helpers/webrainOptions'
 import {IListChanged, ListChangedType} from '../../lists/contracts/IListChanged'
 import {IMapChanged, MapChangedType} from '../../lists/contracts/IMapChanged'
 import {ISetChanged, SetChangedType} from '../../lists/contracts/ISetChanged'
@@ -47,7 +46,8 @@ function subscribeObjectValue<TValue>(
 	object: IPropertyChanged,
 	immediateSubscribe: boolean,
 	changeItem: IChangeItem<TValue>,
-	description: string,
+	propertiesPath: () => string,
+	ruleDescription?: string,
 ): IUnsubscribeOrVoid {
 	if (!(object instanceof Object)) {
 		changeItem(null, void 0, object as any, ValueChangeType.Subscribe, null)
@@ -148,7 +148,7 @@ function subscribeObjectValue<TValue>(
 				if (unsubscribe != null) {
 					subscribeProperty(newSubscribePropertyName, false)
 				}
-			}, description))
+			}, { propertiesPath, ruleDescription }))
 	}
 
 	if (immediateSubscribe) {
@@ -191,7 +191,8 @@ function subscribeObject<TValue>(
 	object: IPropertyChanged,
 	immediateSubscribe: boolean,
 	changeItem: IChangeItem<TValue>,
-	description: string,
+	propertiesPath: () => string,
+	ruleDescription?: string,
 ): IUnsubscribeOrVoid {
 	if (!(object instanceof Object)) {
 		return null
@@ -225,7 +226,7 @@ function subscribeObject<TValue>(
 						}
 					}
 				}
-			}, description))
+			}, { propertiesPath, ruleDescription }))
 	}
 
 	const forEach = (isSubscribe: boolean) => {
@@ -338,7 +339,8 @@ function subscribeList<TItem>(
 	object: IListChanged<TItem> & Iterable<TItem>,
 	immediateSubscribe: boolean,
 	changeItem: IChangeItem<TItem>,
-	description: string,
+	propertiesPath: () => string,
+	ruleDescription?: string,
 ): IUnsubscribeOrVoid {
 	if (!object || object[Symbol.toStringTag] !== 'List') {
 		return null
@@ -377,7 +379,7 @@ function subscribeList<TItem>(
 						}
 						break
 				}
-			}, description))
+			}, { propertiesPath, ruleDescription }))
 	}
 
 	if (immediateSubscribe) {
@@ -405,7 +407,8 @@ function subscribeSet<TItem>(
 	object: ISetChanged<TItem> & Iterable<TItem>,
 	immediateSubscribe: boolean,
 	changeItem: IChangeItem<TItem>,
-	description: string,
+	propertiesPath: () => string,
+	ruleDescription?: string,
 ): IUnsubscribeOrVoid {
 	if (!object || object[Symbol.toStringTag] !== 'Set' && !(object instanceof Set)) {
 		return null
@@ -435,7 +438,7 @@ function subscribeSet<TItem>(
 						}
 						break
 				}
-			}, description))
+			}, { propertiesPath, ruleDescription }))
 	}
 
 	if (immediateSubscribe) {
@@ -465,7 +468,8 @@ function subscribeMap<K, V>(
 	object: IMapChanged<K, V> & Map<K, V>,
 	immediateSubscribe: boolean,
 	changeItem: IChangeItem<V>,
-	description: string,
+	propertiesPath: () => string,
+	ruleDescription?: string,
 ): IUnsubscribeOrVoid {
 	if (!object || object[Symbol.toStringTag] !== 'Map' && !(object instanceof Map)) {
 		return null
@@ -500,7 +504,7 @@ function subscribeMap<K, V>(
 							break
 					}
 				}
-			}, description))
+			}, { propertiesPath, ruleDescription }))
 	}
 
 	const forEach = (isSubscribe: boolean) => {
@@ -559,15 +563,16 @@ function subscribeCollection<TItem>(
 	object: Iterable<TItem>,
 	immediateSubscribe: boolean,
 	changeItem: IChangeItem<TItem>,
-	description: string,
+	propertiesPath: () => string,
+	ruleDescription?: string,
 ): IUnsubscribeOrVoid {
 	if (!object) {
 		return null
 	}
 
-	const unsubscribeList = subscribeList(object as any, immediateSubscribe, changeItem, description)
-	const unsubscribeSet = subscribeSet(object as any, immediateSubscribe, changeItem, description)
-	const unsubscribeMap = subscribeMap(null, null, object as any, immediateSubscribe, changeItem, description)
+	const unsubscribeList = subscribeList(object as any, immediateSubscribe, changeItem, propertiesPath, ruleDescription)
+	const unsubscribeSet = subscribeSet(object as any, immediateSubscribe, changeItem, propertiesPath, ruleDescription)
+	const unsubscribeMap = subscribeMap(null, null, object as any, immediateSubscribe, changeItem, propertiesPath, ruleDescription)
 	let unsubscribeIterable
 	if (!unsubscribeList && !unsubscribeSet && !unsubscribeMap) {
 		unsubscribeIterable = subscribeIterable(object as any, immediateSubscribe, changeItem)
@@ -714,13 +719,6 @@ export class RuleSubscribeObject<TObject, TValue>
 			default:
 				throw new Error(`Unknown SubscribeObjectType: ${type}`)
 		}
-
-		if (webrainOptions.debugInfo) {
-			if (this.description != null) {
-				(this.subscribe as any).description = this.description
-			}
-			(this.subscribe as any).rule = this
-		}
 	}
 }
 
@@ -791,13 +789,6 @@ export class RuleSubscribeMap<TObject extends Map<K, V>, K, V>
 			keys,
 			keyPredicate,
 		)
-
-		if (webrainOptions.debugInfo) {
-			if (this.description != null) {
-				(this.subscribe as any).description = this.description
-			}
-			(this.subscribe as any).rule = this
-		}
 	}
 }
 
@@ -814,12 +805,6 @@ export class RuleSubscribeCollection<TObject extends Iterable<TItem>, TItem>
 
 		// @ts-ignore
 		this.subscribe = subscribeCollection
-		if (webrainOptions.debugInfo) {
-			if (this.description != null) {
-				(this.subscribe as any).description = this.description
-			}
-			(this.subscribe as any).rule = this
-		}
 	}
 }
 

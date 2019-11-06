@@ -20,7 +20,7 @@ export function subject(base): any {
 			return this._subscribers && this._subscribers.length
 		}
 
-		public subscribe(subscriber: ISubscriber<T>, description?: string): IUnsubscribe {
+		public subscribe(subscriber: ISubscriber<T>, description?: any): IUnsubscribe {
 			if (!subscriber) {
 				return null
 			}

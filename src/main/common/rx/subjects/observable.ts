@@ -3,7 +3,7 @@ export type IUnsubscribeOrVoid = IUnsubscribe | void
 export type ISubscriber<T> = (value: T) => void
 
 export interface IObservable<T> {
-	subscribe(subscriber: ISubscriber<T>, description?: string): IUnsubscribe
+	subscribe(subscriber: ISubscriber<T>, description?: any): IUnsubscribe
 }
 
 export abstract class Observable<T = any> implements IObservable<T> {
@@ -11,5 +11,5 @@ export abstract class Observable<T = any> implements IObservable<T> {
 		return func(this)
 	}
 
-	public abstract subscribe(subscriber: ISubscriber<T>, description?: string): IUnsubscribe
+	public abstract subscribe(subscriber: ISubscriber<T>, description?: any): IUnsubscribe
 }

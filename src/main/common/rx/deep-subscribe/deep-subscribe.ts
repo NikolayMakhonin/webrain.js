@@ -345,6 +345,8 @@ function subscribeNext<TValue>(
 					},
 					err => { catchHandlerItem(err, key) })
 			},
+			propertiesPath,
+			rule.description,
 		))
 	}
 

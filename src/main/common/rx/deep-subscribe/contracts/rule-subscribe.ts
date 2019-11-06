@@ -13,6 +13,8 @@ export type ISubscribeObject<TObject, TChild> = (
 	object: TObject,
 	immediateSubscribe: boolean,
 	changeItem: IChangeItem<TChild>,
+	propertiesPath?: () => string,
+	ruleDescription?: string,
 ) => IUnsubscribeOrVoid
 
 export interface IRuleSubscribe<TObject = any, TChild = any> extends IRuleAction {
