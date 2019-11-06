@@ -160,11 +160,17 @@ function subscribeObjectValue<TValue>(
 	subscribed = true
 
 	return () => {
+		let _unsubscribe
 		if (unsubscribe) {
-			unsubscribe()
+			_unsubscribe = unsubscribe
 			unsubscribe = null
 		}
+
 		unsubscribeProperty(true)
+
+		if (_unsubscribe) {
+			_unsubscribe()
+		}
 	}
 }
 
@@ -299,11 +305,17 @@ function subscribeObject<TValue>(
 	subscribed = true
 
 	return () => {
+		let _unsubscribe
 		if (unsubscribe) {
-			unsubscribe()
+			_unsubscribe = unsubscribe
 			unsubscribe = null
 		}
+
 		forEach(false)
+
+		if (_unsubscribe) {
+			_unsubscribe()
+		}
 	}
 }
 
@@ -391,11 +403,17 @@ function subscribeList<TItem>(
 	subscribed = true
 
 	return () => {
+		let _unsubscribe
 		if (unsubscribe) {
-			unsubscribe()
+			_unsubscribe = unsubscribe
 			unsubscribe = null
 		}
+
 		forEachCollection(object, changeItem, false)
+
+		if (_unsubscribe) {
+			_unsubscribe()
+		}
 	}
 }
 
@@ -450,11 +468,17 @@ function subscribeSet<TItem>(
 	subscribed = true
 
 	return () => {
+		let _unsubscribe
 		if (unsubscribe) {
-			unsubscribe()
+			_unsubscribe = unsubscribe
 			unsubscribe = null
 		}
+
 		forEachCollection(object, changeItem, false)
+
+		if (_unsubscribe) {
+			_unsubscribe()
+		}
 	}
 }
 
@@ -547,11 +571,17 @@ function subscribeMap<K, V>(
 	subscribed = true
 
 	return () => {
+		let _unsubscribe
 		if (unsubscribe) {
-			unsubscribe()
+			_unsubscribe = unsubscribe
 			unsubscribe = null
 		}
+
 		forEach(false)
+
+		if (_unsubscribe) {
+			_unsubscribe()
+		}
 	}
 }
 
@@ -572,7 +602,8 @@ function subscribeCollection<TItem>(
 
 	const unsubscribeList = subscribeList(object as any, immediateSubscribe, changeItem, propertiesPath, ruleDescription)
 	const unsubscribeSet = subscribeSet(object as any, immediateSubscribe, changeItem, propertiesPath, ruleDescription)
-	const unsubscribeMap = subscribeMap(null, null, object as any, immediateSubscribe, changeItem, propertiesPath, ruleDescription)
+	const unsubscribeMap = subscribeMap(null, null, object as any,
+		immediateSubscribe, changeItem, propertiesPath, ruleDescription)
 	let unsubscribeIterable
 	if (!unsubscribeList && !unsubscribeSet && !unsubscribeMap) {
 		unsubscribeIterable = subscribeIterable(object as any, immediateSubscribe, changeItem)
