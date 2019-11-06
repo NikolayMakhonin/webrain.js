@@ -56,6 +56,11 @@ export class RuleBuilder<TObject = any, TValueKeys extends string | number = nev
 		}
 	}
 
+	public noAutoRules(): this {
+		this.autoInsertValuePropertyDefault = false
+		return this
+	}
+
 	public result(): IRule {
 		return (this.autoInsertValuePropertyDefault
 			? this.valuePropertyDefault()
