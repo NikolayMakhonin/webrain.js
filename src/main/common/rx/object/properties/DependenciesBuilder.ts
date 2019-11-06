@@ -68,13 +68,15 @@ export function subscribeDependencies<TSubscribeObject, TActionTarget>(
 	actionTarget: TActionTarget,
 	dependencies: Array<IDependency<TActionTarget>>,
 ): IUnsubscribeOrVoid {
-	const unsubscribers = []
+	let unsubscribers = []
 	for (let i = 0, len = dependencies.length; i < len; i++) {
 		const [rule, action] = dependencies[i]
 		unsubscribers.push(deepSubscribeRule({
 			object: subscribeObject,
 			changeValue(key, oldValue, newValue, parent, changeType, keyType) {
-				action(actionTarget, newValue, parent, key, keyType)
+				if (unsubscribers) {
+					action(actionTarget, newValue, parent, key, keyType)
+				}
 			},
 			rule: rule.clone(),
 			debugTarget: actionTarget,
@@ -82,8 +84,13 @@ export function subscribeDependencies<TSubscribeObject, TActionTarget>(
 	}
 
 	return () => {
-		for (let i = 0, len = unsubscribers.length; i < len; i++) {
-			unsubscribers[i]()
+		if (unsubscribers) {
+			const _unsubscribers = unsubscribers
+			unsubscribers = null
+
+			for (let i = 0, len = _unsubscribers.length; i < len; i++) {
+				_unsubscribers[i]()
+			}
 		}
 	}
 }
