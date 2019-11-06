@@ -1,4 +1,4 @@
-/* tslint:disable:no-duplicate-string */
+/* tslint:disable:no-duplicate-string no-empty */
 /* eslint-disable guard-for-in */
 import {ThenableOrIteratorOrValue} from '../../../../../../../main/common/async/async'
 import {ThenableSync} from '../../../../../../../main/common/async/ThenableSync'

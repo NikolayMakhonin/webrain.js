@@ -15,8 +15,11 @@ export class Rule implements IRule {
 	public next?: IRule
 	public description?: string
 
-	public constructor(type: RuleType) {
+	public constructor(type: RuleType, description?: string) {
 		this.type = type
+		if (description != null) {
+			this.description = description
+		}
 	}
 
 	public clone(): IRule {

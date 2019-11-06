@@ -7,4 +7,6 @@ export const webrainOptions = {
 		}
 		return equalsObjects(oldValue, newValue)
 	},
+
+	debugInfo: true,
 }

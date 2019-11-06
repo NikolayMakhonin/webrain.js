@@ -130,7 +130,8 @@ export class ConnectorBuilder<
 						? ruleBase
 						: ruleBase.clone()
 
-					this.propertyChanged.hasSubscribersObservable
+					this.propertyChanged
+						.hasSubscribersObservable
 						.subscribe(hasSubscribers => {
 							this._setUnsubscriber(name, null)
 
@@ -146,7 +147,7 @@ export class ConnectorBuilder<
 									this._setUnsubscriber(name, unsubscribe)
 								}
 							}
-						})
+						}, `Connector.${name}.hasSubscribersObservable for deepSubscribe`)
 
 					setVal = set
 

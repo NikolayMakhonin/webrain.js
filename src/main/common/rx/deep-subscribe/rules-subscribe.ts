@@ -1,13 +1,14 @@
 /* tslint:disable:no-identical-functions */
 import {checkIsFuncOrNull, isIterable} from '../../helpers/helpers'
 import {VALUE_PROPERTY_DEFAULT} from '../../helpers/value-property'
+import {webrainOptions} from '../../helpers/webrainOptions'
 import {IListChanged, ListChangedType} from '../../lists/contracts/IListChanged'
 import {IMapChanged, MapChangedType} from '../../lists/contracts/IMapChanged'
 import {ISetChanged, SetChangedType} from '../../lists/contracts/ISetChanged'
 import {IPropertyChanged} from '../object/IPropertyChanged'
 import {IUnsubscribe, IUnsubscribeOrVoid} from '../subjects/observable'
 import {ValueChangeType, ValueKeyType} from './contracts/common'
-import {ANY, COLLECTION_PREFIX} from './contracts/constants'
+import {ANY} from './contracts/constants'
 import {IChangeItem, IRuleSubscribe, ISubscribeObject} from './contracts/rule-subscribe'
 import {RuleType} from './contracts/rules'
 import {Rule} from './rules'
@@ -46,6 +47,7 @@ function subscribeObjectValue<TValue>(
 	object: IPropertyChanged,
 	immediateSubscribe: boolean,
 	changeItem: IChangeItem<TValue>,
+	description: string,
 ): IUnsubscribeOrVoid {
 	if (!(object instanceof Object)) {
 		changeItem(null, void 0, object as any, ValueChangeType.Subscribe, null)
@@ -146,7 +148,7 @@ function subscribeObjectValue<TValue>(
 				if (unsubscribe != null) {
 					subscribeProperty(newSubscribePropertyName, false)
 				}
-			}))
+			}, description))
 	}
 
 	if (immediateSubscribe) {
@@ -189,6 +191,7 @@ function subscribeObject<TValue>(
 	object: IPropertyChanged,
 	immediateSubscribe: boolean,
 	changeItem: IChangeItem<TValue>,
+	description: string,
 ): IUnsubscribeOrVoid {
 	if (!(object instanceof Object)) {
 		return null
@@ -222,7 +225,7 @@ function subscribeObject<TValue>(
 						}
 					}
 				}
-			}))
+			}, description))
 	}
 
 	const forEach = (isSubscribe: boolean) => {
@@ -335,6 +338,7 @@ function subscribeList<TItem>(
 	object: IListChanged<TItem> & Iterable<TItem>,
 	immediateSubscribe: boolean,
 	changeItem: IChangeItem<TItem>,
+	description: string,
 ): IUnsubscribeOrVoid {
 	if (!object || object[Symbol.toStringTag] !== 'List') {
 		return null
@@ -373,7 +377,7 @@ function subscribeList<TItem>(
 						}
 						break
 				}
-			}))
+			}, description))
 	}
 
 	if (immediateSubscribe) {
@@ -401,6 +405,7 @@ function subscribeSet<TItem>(
 	object: ISetChanged<TItem> & Iterable<TItem>,
 	immediateSubscribe: boolean,
 	changeItem: IChangeItem<TItem>,
+	description: string,
 ): IUnsubscribeOrVoid {
 	if (!object || object[Symbol.toStringTag] !== 'Set' && !(object instanceof Set)) {
 		return null
@@ -430,7 +435,7 @@ function subscribeSet<TItem>(
 						}
 						break
 				}
-			}))
+			}, description))
 	}
 
 	if (immediateSubscribe) {
@@ -460,6 +465,7 @@ function subscribeMap<K, V>(
 	object: IMapChanged<K, V> & Map<K, V>,
 	immediateSubscribe: boolean,
 	changeItem: IChangeItem<V>,
+	description: string,
 ): IUnsubscribeOrVoid {
 	if (!object || object[Symbol.toStringTag] !== 'Map' && !(object instanceof Map)) {
 		return null
@@ -494,7 +500,7 @@ function subscribeMap<K, V>(
 							break
 					}
 				}
-			}))
+			}, description))
 	}
 
 	const forEach = (isSubscribe: boolean) => {
@@ -553,14 +559,15 @@ function subscribeCollection<TItem>(
 	object: Iterable<TItem>,
 	immediateSubscribe: boolean,
 	changeItem: IChangeItem<TItem>,
+	description: string,
 ): IUnsubscribeOrVoid {
 	if (!object) {
 		return null
 	}
 
-	const unsubscribeList = subscribeList(object as any, immediateSubscribe, changeItem)
-	const unsubscribeSet = subscribeSet(object as any, immediateSubscribe, changeItem)
-	const unsubscribeMap = subscribeMap(null, null, object as any, immediateSubscribe, changeItem)
+	const unsubscribeList = subscribeList(object as any, immediateSubscribe, changeItem, description)
+	const unsubscribeSet = subscribeSet(object as any, immediateSubscribe, changeItem, description)
+	const unsubscribeMap = subscribeMap(null, null, object as any, immediateSubscribe, changeItem, description)
 	let unsubscribeIterable
 	if (!unsubscribeList && !unsubscribeSet && !unsubscribeMap) {
 		unsubscribeIterable = subscribeIterable(object as any, immediateSubscribe, changeItem)
@@ -638,8 +645,8 @@ export abstract class RuleSubscribe<TObject = any, TChild = any>
 	public readonly unsubscribers: IUnsubscribe[]
 	public readonly unsubscribersCount: number[]
 
-	protected constructor() {
-		super(RuleType.Action)
+	protected constructor(description: string) {
+		super(RuleType.Action, description)
 	}
 
 	public clone(): IRuleSubscribe<TObject, TChild> {
@@ -666,10 +673,11 @@ export class RuleSubscribeObject<TObject, TValue>
 {
 	constructor(
 		type: SubscribeObjectType,
-		propertyPredicate?: (propertyName: string, object) => boolean,
+		propertyPredicate: (propertyName: string, object) => boolean,
+		description: string,
 		...propertyNames: string[]
 	) {
-		super()
+		super(description)
 
 		if (propertyNames && !propertyNames.length) {
 			propertyNames = null
@@ -705,6 +713,13 @@ export class RuleSubscribeObject<TObject, TValue>
 				break
 			default:
 				throw new Error(`Unknown SubscribeObjectType: ${type}`)
+		}
+
+		if (webrainOptions.debugInfo) {
+			if (this.description != null) {
+				(this.subscribe as any).description = this.description
+			}
+			(this.subscribe as any).rule = this
 		}
 	}
 }
@@ -749,10 +764,11 @@ export class RuleSubscribeMap<TObject extends Map<K, V>, K, V>
 	implements IRuleSubscribe<TObject, V>
 {
 	constructor(
-		keyPredicate?: (key: K, object) => boolean,
+		keyPredicate: (key: K, object) => boolean,
+		description: string,
 		...keys: K[]
 	) {
-		super()
+		super(description)
 
 		if (keys && !keys.length) {
 			keys = null
@@ -775,6 +791,13 @@ export class RuleSubscribeMap<TObject extends Map<K, V>, K, V>
 			keys,
 			keyPredicate,
 		)
+
+		if (webrainOptions.debugInfo) {
+			if (this.description != null) {
+				(this.subscribe as any).description = this.description
+			}
+			(this.subscribe as any).rule = this
+		}
 	}
 }
 
@@ -786,11 +809,17 @@ export class RuleSubscribeCollection<TObject extends Iterable<TItem>, TItem>
 	extends RuleSubscribe<TObject, TItem>
 	implements IRuleSubscribe<TObject, TItem>
 {
-	constructor() {
-		super()
+	constructor(description: string) {
+		super(description)
 
 		// @ts-ignore
 		this.subscribe = subscribeCollection
+		if (webrainOptions.debugInfo) {
+			if (this.description != null) {
+				(this.subscribe as any).description = this.description
+			}
+			(this.subscribe as any).rule = this
+		}
 	}
 }
 

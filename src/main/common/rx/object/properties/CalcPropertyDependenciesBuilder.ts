@@ -1,6 +1,6 @@
+import {Debugger} from '../../Debugger'
 import {ValueKeyType} from '../../deep-subscribe/contracts/common'
 import {RuleBuilder} from '../../deep-subscribe/RuleBuilder'
-import {Debugger} from '../../Debugger'
 import {CalcProperty} from './CalcProperty'
 import {ValueKeys} from './contracts'
 import {DependenciesBuilder, IDependencyPredicate} from './DependenciesBuilder'

@@ -4,7 +4,7 @@ import {ISubject, Subject} from './subject'
 export interface IBehavior<T> {
 	value: T
 	unsubscribeValue: T
-	subscribe(subscriber: ISubscriber<T>): IUnsubscribe
+	subscribe(subscriber: ISubscriber<T>, description?: string): IUnsubscribe
 	emit(value: T): this
 }
 
@@ -20,9 +20,13 @@ export function behavior<TBase>(base): any {
 			}
 		}
 
-		public subscribe(subscriber: ISubscriber<T>): IUnsubscribe {
+		public subscribe(subscriber: ISubscriber<T>, description?: string): IUnsubscribe {
 			if (!subscriber) {
 				return null
+			}
+
+			if (description) {
+				(subscriber as any).description = description
 			}
 
 			let unsubscribe = super.subscribe(subscriber)

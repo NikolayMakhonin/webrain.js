@@ -4,7 +4,7 @@ import {ISubject, Subject} from './subject'
 
 export interface IHasSubscribers<T> {
 	readonly hasSubscribersObservable: IObservable<boolean>
-	subscribe(subscriber: ISubscriber<T>): IUnsubscribe
+	subscribe(subscriber: ISubscriber<T>, description?: string): IUnsubscribe
 }
 
 // eslint-disable-next-line no-shadow
@@ -17,9 +17,13 @@ function createHasSubscribersSubjectDefault(hasSubscribers: boolean): ISubject<b
 
 export function hasSubscribers(base, createHasSubscribersSubject = createHasSubscribersSubjectDefault): any {
 	return class HasSubscribers<T> extends base implements IHasSubscribers<T> {
-		public subscribe(subscriber: ISubscriber<T>): IUnsubscribe {
+		public subscribe(subscriber: ISubscriber<T>, description?: string): IUnsubscribe {
 			if (!subscriber) {
 				return null
+			}
+
+			if (description) {
+				(subscriber as any).description = description
 			}
 
 			// eslint-disable-next-line no-shadow
