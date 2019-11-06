@@ -1,10 +1,11 @@
 import {NotFunction} from '../../../helpers/typescript'
 import {RuleBuilder} from '../../deep-subscribe/RuleBuilder'
 import {ObservableClass} from '../ObservableClass'
-import {ObservableObjectBuilder} from '../ObservableObjectBuilder'
+import {IWritableFieldOptions, ObservableObjectBuilder} from '../ObservableObjectBuilder'
 import {CalcProperty} from './CalcProperty'
 import {calcPropertyFactory} from './CalcPropertyBuilder'
-import {ConnectorBuilder} from './ConnectorBuilder'
+import {Connector} from './Connector'
+import {ConnectorBuilder, connectorFactory} from './ConnectorBuilder'
 import {ValueKeys} from './contracts'
 
 export class CalcObjectBuilder<TObject extends ObservableClass, TValueKeys extends string | number = ValueKeys>
@@ -12,7 +13,6 @@ export class CalcObjectBuilder<TObject extends ObservableClass, TValueKeys exten
 {
 	public calc<
 		TInput,
-		TMergeSource,
 		Name extends keyof TObject,
 	>(
 		name: Name,
@@ -48,7 +48,7 @@ export class CalcObjectBuilder<TObject extends ObservableClass, TValueKeys exten
 		name: Name,
 		buildRule: (builder: RuleBuilder<TInput, ValueKeys>) => RuleBuilder<any, ValueKeys>,
 	) {
-		return this.calc<TInput, any, Name>(
+		return this.calc<TInput, Name>(
 			name,
 			void 0,
 			calcPropertyFactory({
@@ -57,6 +57,33 @@ export class CalcObjectBuilder<TObject extends ObservableClass, TValueKeys exten
 					state.value++
 				},
 				initValue: 0 as any,
+			}),
+		)
+	}
+
+	// @ts-ignore
+	public connect<
+		Name extends keyof TObject,
+	>(
+		name: Name,
+		buildRule: (builder: RuleBuilder<TObject, ValueKeys>) => RuleBuilder<TObject[Name], ValueKeys>,
+		options?: IWritableFieldOptions<TObject, TObject[Name]>,
+		initValue?: TObject[Name],
+	) {
+		return this.calc<
+			Connector<TObject> & { readonly value: TObject[Name] },
+			Name
+		>(
+			name,
+			connectorFactory({
+				buildRule: c => c
+					.connect('value', buildRule),
+			}),
+			calcPropertyFactory({
+				dependencies: d => d.invalidateOn(b => b.p('value')),
+				calcFunc(state) {
+					state.value = state.input.value
+				},
 			}),
 		)
 	}
