@@ -1,7 +1,7 @@
 import {NotFunction} from '../../../helpers/typescript'
 import {RuleBuilder} from '../../deep-subscribe/RuleBuilder'
 import {ObservableClass} from '../ObservableClass'
-import {IWritableFieldOptions, ObservableObjectBuilder} from '../ObservableObjectBuilder'
+import {IReadableFieldOptions, IWritableFieldOptions} from '../ObservableObjectBuilder'
 import {CalcProperty} from './CalcProperty'
 import {calcPropertyFactory} from './CalcPropertyBuilder'
 import {Connector} from './Connector'
@@ -11,6 +11,28 @@ import {ValueKeys} from './contracts'
 export class CalcObjectBuilder<TObject extends ObservableClass, TValueKeys extends string | number = ValueKeys>
 	extends ConnectorBuilder<TObject, TObject>
 {
+	// @ts-ignore
+	public writable<
+		Name extends keyof TObject,
+	>(
+		name: Name,
+		options?: IWritableFieldOptions<TObject, TObject[Name]>,
+		initValue?: TObject[Name],
+	): this {
+		return super.writable(name as any, options, initValue)
+	}
+
+	// @ts-ignore
+	public readable<
+		Name extends keyof TObject,
+	>(
+		name: Name,
+		options?: IReadableFieldOptions<TObject, TObject[Name]>,
+		initValue?: TObject[Name],
+	): this {
+		return super.readable(name as any, options, initValue)
+	}
+
 	public calc<
 		TInput,
 		Name extends keyof TObject,
@@ -19,8 +41,8 @@ export class CalcObjectBuilder<TObject extends ObservableClass, TValueKeys exten
 		inputOrFactory: ((source: TObject, name?: string) => TInput) | NotFunction<TInput>,
 		calcFactory: (initValue?: TObject[Name]) => CalcProperty<TObject[Name], TInput>,
 		initValue?: TObject[Name],
-	) {
-		return this.readable<Extract<Name, string|number>, CalcProperty<
+	): this {
+		return super.readable<Extract<Name, string|number>, CalcProperty<
 			TObject[Name],
 			TInput
 		>>(name as Extract<Name, string|number>, {
@@ -47,7 +69,7 @@ export class CalcObjectBuilder<TObject extends ObservableClass, TValueKeys exten
 	>(
 		name: Name,
 		buildRule: (builder: RuleBuilder<TInput, ValueKeys>) => RuleBuilder<any, ValueKeys>,
-	) {
+	): this {
 		return this.calc<TInput, Name>(
 			name,
 			void 0,
@@ -69,7 +91,7 @@ export class CalcObjectBuilder<TObject extends ObservableClass, TValueKeys exten
 		buildRule: (builder: RuleBuilder<TObject, ValueKeys>) => RuleBuilder<TObject[Name], ValueKeys>,
 		options?: IWritableFieldOptions<TObject, TObject[Name]>,
 		initValue?: TObject[Name],
-	) {
+	): this {
 		return this.calc<
 			Connector<TObject> & { readonly value: TObject[Name] },
 			Name
