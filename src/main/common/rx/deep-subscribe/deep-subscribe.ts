@@ -5,15 +5,10 @@ import {checkIsFuncOrNull, toSingleCall} from '../../helpers/helpers'
 import {getObjectUniqueId} from '../../helpers/object-unique-id'
 import {Debugger} from '../Debugger'
 import {IUnsubscribe, IUnsubscribeOrVoid} from '../subjects/observable'
-import {
-	IChangeValue,
-	ILastValue,
-	IValueSubscriber,
-	ValueChangeType,
-	ValueKeyType,
-} from './contracts/common'
+import {IChangeValue, ILastValue, IValueSubscriber, ValueChangeType, ValueKeyType} from './contracts/common'
 import {IRuleSubscribe} from './contracts/rule-subscribe'
 import {IRule, RuleType} from './contracts/rules'
+import {PropertiesPath} from './helpers/PropertiesPath'
 import {INextRuleIterable, IRuleIterator, IRuleOrIterable, iterateRule, subscribeNextRule} from './iterate-rule'
 import {ObjectSubscriber} from './ObjectSubscriber'
 import {RuleBuilder} from './RuleBuilder'
@@ -21,14 +16,12 @@ import {RuleBuilder} from './RuleBuilder'
 // const UNSUBSCRIBE_PROPERTY_PREFIX = Math.random().toString(36)
 // let nextUnsubscribePropertyId = 0
 
-function catchHandler(ex, propertiesPath?: () => string) {
+function catchHandler(ex, propertiesPath?: PropertiesPath) {
 	if (ex.propertiesPath) {
 		throw ex
 	}
 
-	const propertiesPathStr = propertiesPath
-		? propertiesPath()
-		: ''
+	const propertiesPathStr = propertiesPath + ''
 	ex.propertiesPath = propertiesPathStr
 	ex.message += `\nObject property path: ${propertiesPathStr}`
 
@@ -40,11 +33,11 @@ function subscribeNext<TValue>(
 	valueSubscriber: IValueSubscriber<TValue>,
 	immediate: boolean,
 	ruleIterator: IRuleIterator,
-	propertiesPath: () => string,
+	propertiesPath: PropertiesPath,
 	objectKey: string,
 	objectKeyType: ValueKeyType,
 	parent: any,
-	ruleDescription?: string,
+	rule?: IRule,
 	iteration?: IteratorResult<IRuleOrIterable>,
 ): IUnsubscribeOrVoid {
 	if (!iteration && ruleIterator) {
@@ -73,7 +66,7 @@ function subscribeNext<TValue>(
 						objectKey,
 						objectKeyType,
 						parent,
-						ruleDescription,
+						rule,
 						iteration,
 					))
 				}
@@ -103,14 +96,19 @@ function subscribeNext<TValue>(
 			ValueChangeType.Subscribe,
 			objectKeyType,
 			propertiesPath,
-			ruleDescription,
+			rule,
 		)
 	}
 
 	function subscribeNode(rule: IRuleSubscribe, getNextRuleIterable: INextRuleIterable): IUnsubscribeOrVoid {
-		const catchHandlerItem = (err, propertyName: string) => {
-			catchHandler(err, () => (propertiesPath ? propertiesPath() + '.' : '')
-				+ (propertyName == null ? '' : propertyName + '(' + rule.description + ')'))
+		const catchHandlerItem = (err, value: any, key: any, keyType: ValueKeyType) => {
+			catchHandler(err, new PropertiesPath(
+				value,
+				propertiesPath,
+				key,
+				keyType,
+				rule,
+			))
 		}
 
 		const changeNext = (
@@ -120,7 +118,7 @@ function subscribeNext<TValue>(
 			changeType: ValueChangeType,
 			keyType: ValueKeyType,
 			parent: any,
-			newPropertiesPath: () => string,
+			newPropertiesPath: PropertiesPath,
 			iterator?: IRuleIterator,
 			iteration?: IteratorResult<IRuleOrIterable>,
 		): void => {
@@ -175,7 +173,7 @@ function subscribeNext<TValue>(
 						key,
 						keyType,
 						parent,
-						rule.description,
+						rule,
 						iteration,
 					))
 
@@ -186,8 +184,7 @@ function subscribeNext<TValue>(
 							throw new Error('You should not return unsubscribe function for non Object value.\n'
 								+ 'For subscribe value types use their object wrappers: Number, Boolean, String classes.\n'
 								+ `Unsubscribe function: ${unsubscribe}\nValue: ${newItem}\n`
-								+ `Value property path: ${(propertiesPath ? propertiesPath() + '.' : '')
-								+ (key + '(' + rule.description + ')')}`)
+								+ `Value property path: ${new PropertiesPath(newItem, propertiesPath, key, keyType, rule)}`)
 						} else {
 							const chainUnsubscribe = unsubscribers[itemUniqueId]
 							if (!chainUnsubscribe) {
@@ -214,7 +211,7 @@ function subscribeNext<TValue>(
 			changeType: ValueChangeType,
 			keyType: ValueKeyType,
 			parent: any,
-			newPropertiesPath: () => string,
+			newPropertiesPath: PropertiesPath,
 		): void => {
 			checkIsFuncOrNull(valueSubscriber.change(
 				key,
@@ -224,7 +221,7 @@ function subscribeNext<TValue>(
 				changeType,
 				keyType,
 				newPropertiesPath,
-				rule.description,
+				rule,
 			))
 		}
 
@@ -273,8 +270,7 @@ function subscribeNext<TValue>(
 				itemParent = parent
 			}
 
-			const newPropertiesPath = () => (propertiesPath ? propertiesPath() + '.' : '')
-				+ (key + '(' + rule.description + ')')
+			const newPropertiesPath = new PropertiesPath(newItem, propertiesPath, key, keyType, rule)
 
 			Debugger.Instance.onDeepSubscribe(
 				key,
@@ -329,7 +325,7 @@ function subscribeNext<TValue>(
 					try {
 						changeItem(key, oldItem, newItem, changeType, keyType)
 					} catch (err) {
-						catchHandlerItem(err, key)
+						catchHandlerItem(err, newItem, key, keyType)
 					}
 					return
 				}
@@ -343,10 +339,10 @@ function subscribeNext<TValue>(
 						newItem = o
 						changeItem(key, oldItem, newItem, changeType, keyType)
 					},
-					err => { catchHandlerItem(err, key) })
+					err => { catchHandlerItem(err, newItem, key, keyType) })
 			},
 			propertiesPath,
-			rule.description,
+			rule,
 		))
 	}
 
@@ -371,7 +367,7 @@ function deepSubscribeRuleIterator<TValue>(
 	valueSubscriber: IValueSubscriber<TValue>,
 	immediate: boolean,
 	ruleIterator: IRuleIterator,
-	propertiesPath?: () => string,
+	propertiesPath?: PropertiesPath,
 	objectKey?: string,
 	objectKeyType?: ValueKeyType,
 	parent?: any,
@@ -418,6 +414,8 @@ export function deepSubscribeRule<TValue>({
 		new ObjectSubscriber(changeValue, lastValue, debugTarget),
 		immediate,
 		iterateRule(object, rule)[Symbol.iterator](),
+		// @ts-ignore
+		new PropertiesPath(object),
 	))
 }
 

@@ -41,18 +41,19 @@ export function calcPropertyFactory<
 
 		if (dependencies) {
 			// subscribeDependencies(calcProperty.state, calcProperty, dependencies)
+			let states
 			let unsubscribe
 			calcProperty
 				.propertyChanged
 				.hasSubscribersObservable
 				.subscribe(hasSubscribers => {
 					if (unsubscribe) {
-						unsubscribe()
+						states = unsubscribe()
 						unsubscribe = null
 					}
 
 					if (hasSubscribers) {
-						unsubscribe = subscribeDependencies(calcProperty.state, calcProperty, dependencies)
+						unsubscribe = subscribeDependencies(calcProperty.state, calcProperty, dependencies, states)
 					}
 				}, `CalcProperty.${calcProperty.state.name}.hasSubscribersObservable for subscribeDependencies`)
 		}

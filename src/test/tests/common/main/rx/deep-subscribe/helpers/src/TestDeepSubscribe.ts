@@ -320,7 +320,7 @@ export class TestDeepSubscribe<TObject, TValue> {
 	}
 
 	private subscribePrivate(ruleBuilder, i) {
-		const subscribeValue = (newValue: TValue, parent, key) => {
+		const subscribeValue = (newValue: TValue, parent, key, propertiesPath, rule) => {
 			if (this._doNotSubscribeNonObjectValues && !(newValue instanceof Object)) {
 				if (typeof this._expectedLastValue[i][this._expectedLastValue[i].length - 1] === 'undefined'
 					|| this._subscribersCount[i] === 0
@@ -359,7 +359,7 @@ export class TestDeepSubscribe<TObject, TValue> {
 				: null
 		}
 
-		const unsubscribeValue = (oldValue: TValue, parent, key, isUnsubscribed) => {
+		const unsubscribeValue = (oldValue: TValue, parent, key, propertiesPath, rule, isUnsubscribed) => {
 			if (this._performanceTest) {
 				return
 			}
@@ -381,13 +381,16 @@ export class TestDeepSubscribe<TObject, TValue> {
 
 		this._unsubscribe[i] = deepSubscribe({
 			object: this._object,
-			changeValue(key, oldValue: TValue, newValue: TValue, parent, changeType, keyType, isUnsubscribed) {
+			changeValue(
+				key, oldValue: TValue, newValue: TValue, parent, changeType, keyType,
+				propertiesPath, rule, isUnsubscribed,
+			) {
 				if ((changeType & ValueChangeType.Unsubscribe) !== 0) {
-					unsubscribeValue(oldValue, parent, key, isUnsubscribed)
+					unsubscribeValue(oldValue, parent, key, propertiesPath, rule, isUnsubscribed)
 				}
 
 				if ((changeType & ValueChangeType.Subscribe) !== 0) {
-					return subscribeValue(newValue, parent, key)
+					return subscribeValue(newValue, parent, key, propertiesPath, rule)
 				}
 			},
 			lastValue: (value: TValue, parent, propertyName) => {

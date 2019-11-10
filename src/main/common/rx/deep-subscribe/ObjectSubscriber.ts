@@ -11,6 +11,8 @@ import {
 	ValueChangeType,
 	ValueKeyType,
 } from './contracts/common'
+import {IRule} from './contracts/rules'
+import {PropertiesPath} from './helpers/PropertiesPath'
 
 export interface ISubscribedValue {
 	value: any
@@ -149,8 +151,8 @@ export class ObjectSubscriber<TObject> implements IValueSubscriber<TObject> {
 		parent: any,
 		changeType: ValueChangeType,
 		keyType: ValueKeyType,
-		propertiesPath: () => string,
-		ruleDescription: string,
+		propertiesPath: PropertiesPath,
+		rule: IRule,
 	): IUnsubscribeOrVoid {
 		let unsubscribedLast
 		let nextChangeType = ValueChangeType.None
@@ -204,6 +206,8 @@ export class ObjectSubscriber<TObject> implements IValueSubscriber<TObject> {
 						parent,
 						nextChangeType | ValueChangeType.Subscribe,
 						keyType,
+						propertiesPath,
+						rule,
 						unsubscribedLast,
 					))
 
@@ -213,8 +217,7 @@ export class ObjectSubscriber<TObject> implements IValueSubscriber<TObject> {
 						throw new Error('You should not return unsubscribe function for non Object value.\n'
 							+ 'For subscribe value types use their object wrappers: Number, Boolean, String classes.\n'
 							+ `Unsubscribe function: ${unsubscribeValue}\nValue: ${newValue}\n`
-							+ `Value property path: ${(propertiesPath ? propertiesPath() + '.' : '')
-							+ (key == null ? '' : key + '(' + ruleDescription + ')')}`)
+							+ `Value property path: ${new PropertiesPath(newValue, propertiesPath, key, keyType, rule)}`)
 					}
 				} else {
 					const itemUniqueId = getObjectUniqueId(newValue as any)
@@ -228,6 +231,8 @@ export class ObjectSubscriber<TObject> implements IValueSubscriber<TObject> {
 							parent,
 							nextChangeType,
 							keyType,
+							propertiesPath,
+							rule,
 							unsubscribedLast,
 						)
 
@@ -245,6 +250,8 @@ export class ObjectSubscriber<TObject> implements IValueSubscriber<TObject> {
 							parent,
 							nextChangeType | ValueChangeType.Subscribe,
 							keyType,
+							propertiesPath,
+							rule,
 							unsubscribedLast,
 						))
 
@@ -263,6 +270,8 @@ export class ObjectSubscriber<TObject> implements IValueSubscriber<TObject> {
 					parent,
 					nextChangeType,
 					keyType,
+					propertiesPath,
+					rule,
 					unsubscribedLast,
 				)
 			}
@@ -316,7 +325,7 @@ export class ObjectSubscriber<TObject> implements IValueSubscriber<TObject> {
 					ValueChangeType.Unsubscribe,
 					keyType,
 					propertiesPath,
-					ruleDescription,
+					rule,
 				)
 			}
 		}

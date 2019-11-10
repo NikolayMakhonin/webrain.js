@@ -1,4 +1,4 @@
-/* tslint:disable:no-duplicate-string no-empty */
+/* tslint:disable:no-duplicate-string no-empty no-statements-same-line */
 /* eslint-disable guard-for-in */
 import {ThenableOrIteratorOrValue} from '../../../../../../../main/common/async/async'
 import {ThenableSync} from '../../../../../../../main/common/async/ThenableSync'
@@ -11,6 +11,7 @@ import {connectorFactory} from '../../../../../../../main/common/rx/object/prope
 import {ICalcProperty} from '../../../../../../../main/common/rx/object/properties/contracts'
 import {resolvePath} from '../../../../../../../main/common/rx/object/properties/helpers'
 import {Property} from '../../../../../../../main/common/rx/object/properties/Property'
+import {IUnsubscribeOrVoid} from '../../../../../../../main/common/rx/subjects/observable'
 import {assert} from '../../../../../../../main/common/test/Assert'
 import {describe, it} from '../../../../../../../main/common/test/Mocha'
 import {createObject, TestDeepSubscribe} from '../../deep-subscribe/helpers/src/TestDeepSubscribe'
@@ -18,45 +19,101 @@ import {createObject, TestDeepSubscribe} from '../../deep-subscribe/helpers/src/
 describe('common > main > rx > properties > CalcObjectBuilder', function() {
 	this.timeout(30000)
 
-	class ClassSync extends ObservableClass {
-		constructor() {
+	class ValueObject extends ObservableClass {
+		public value: number
+		constructor(value: number) {
 			super()
+			this.value = value
+		}
+	}
+	new CalcObjectBuilder(ValueObject.prototype)
+		.writable('value')
 
-			deepSubscribe({
-				object: this,
-				changeValue: () => {},
-				ruleBuilder: b => b.propertyAny(),
-			})
+	class ClassSync extends ObservableClass {
+		constructor({
+			subscribed = true,
+			addCalcCount = false,
+		}: {
+			subscribed?: boolean,
+			addCalcCount?: boolean,
+		} = {}) {
+			super()
+			this.addCalcCount = addCalcCount
+			this.subscribed = subscribed
 		}
 
+		public addCalcCount: boolean
 		public value = 'Value'
 		public valuePrototype: string
 		public calc1: Date
 		public calc2: { value: ClassSync }
-		public source1: any = 123
-		public source2: any = 0
+		public source1 = new ValueObject(100)
+		public source2 = new ValueObject(0)
+		public source1_: ValueObject
+		public source2_: ValueObject
+
+		private _unsubscribe: IUnsubscribeOrVoid
+		public get subscribed(): boolean {
+			return !!this._unsubscribe
+		}
+		public set subscribed(value: boolean) {
+			const {_unsubscribe} = this
+			if (value) {
+				if (!_unsubscribe) {
+					this._unsubscribe = deepSubscribe({
+						object: this,
+						changeValue: () => {},
+						ruleBuilder: b => b.propertyAny(),
+					})
+				}
+			} else {
+				if (_unsubscribe) {
+					this._unsubscribe = null
+					_unsubscribe()
+				}
+			}
+		}
 	}
 
 	class ClassAsync extends ClassSync {
-	
+		constructor({
+			subscribed = true,
+			addCalcCount = false,
+		}: {
+			subscribed?: boolean,
+			addCalcCount?: boolean,
+		} = {}) {
+			super({subscribed, addCalcCount})
+		}
 	}
 
 	ClassSync.prototype.valuePrototype = 'Value Prototype'
 
+	let calcCount = 0
+
 	new CalcObjectBuilder(ClassSync.prototype)
 		.writable('source1')
 		.writable('source2')
+		.writable('source1_')
+		.writable('source2_')
 		.calc('calc1',
 			connectorFactory({
 				buildRule: c => c
-					.connect('connectValue1', b => b.v('lastOrWait').p('source1').v('wait')),
+					.connect('connectValue1', b => b.v('lastOrWait').p('source1', 'source1_').v('wait'))
+					.connect('addCalcCount', b => b.p('addCalcCount')),
 			}),
 				// .connect('connectValue1', b => b.p('source1'))),
 				// b.path(o => o['@lastOrWait'].source1['@wait']))),
 			calcPropertyFactory({
-				dependencies: d => d.invalidateOn(b => b.propertyAny()),
+				dependencies: d => d.invalidateOn(b => b.p('connectValue1').p('value')),
 				calcFunc(state): ThenableOrIteratorOrValue<void> {
-					state.value = state.input.connectValue1 && new Date(state.input.connectValue1)
+					let connectValue1 = state.input.connectValue1 && state.input.connectValue1.value
+					if (connectValue1 && state.input.addCalcCount) {
+						calcCount++
+						connectValue1 += calcCount
+					}
+
+					state.value = connectValue1 && new Date(connectValue1)
 					return ThenableSync.createResolved(null)
 				},
 			}),
@@ -64,10 +121,11 @@ describe('common > main > rx > properties > CalcObjectBuilder', function() {
 		.calc('calc2',
 			connectorFactory({
 				buildRule: c => c
-					.connect('connectValue1', b => b.path(o => o['@lastOrWait'].source2['@wait'])),
+					.connect('connectValue1', b => b.path(o => o['@lastOrWait']['source2|source2_']['@wait']))
+					.connect('addCalcCount', b => b.p('addCalcCount')),
 			}),
 			calcPropertyFactory({
-				dependencies: d => d.invalidateOn(b => b.propertyAny()),
+				dependencies: d => d.invalidateOn(b => b.p('connectValue1').p('value')),
 				calcFunc(state): ThenableOrIteratorOrValue<boolean> {
 					state.value = { value: state.input.connectorState.source }
 					return ThenableSync.createResolved(true)
@@ -79,25 +137,34 @@ describe('common > main > rx > properties > CalcObjectBuilder', function() {
 		.calc('calc1',
 			connectorFactory({
 				buildRule: c => c
-					.connect('connectValue1', b => b.path(o => o['@lastOrWait'].source1['@wait'])),
+					.connect('connectValue1', b => b.path(o => o['@lastOrWait']['source1|source1_']['@wait']))
+					.connect('addCalcCount', b => b.p('addCalcCount')),
 			}),
 			calcPropertyFactory({
-				dependencies: d => d.invalidateOn(b => b.propertyAny()),
+				dependencies: d => d.invalidateOn(b => b.p('connectValue1').p('value')),
 				*calcFunc(state): ThenableOrIteratorOrValue<void> {
-					yield new Promise(r => setTimeout(r, 100))
-					state.value = new Date(state.input.connectValue1)
+					yield new Promise(r => setTimeout(r, 10))
+
+					let connectValue1 = state.input.connectValue1 && state.input.connectValue1.value
+					if (connectValue1 && state.input.addCalcCount) {
+						calcCount++
+						connectValue1 += calcCount
+					}
+
+					state.value = connectValue1 && new Date(connectValue1)
 				},
 			}),
 		)
 		.calc('calc2',
 			connectorFactory({
 				buildRule: c => c
-					.connect('connectValue1', b => b.path(o => o['@lastOrWait'].source2['@wait'])),
+					.connect('connectValue1', b => b.path(o => o['@lastOrWait']['source2|source2_']['@wait']))
+					.connect('addCalcCount', b => b.p('addCalcCount')),
 			}),
 			calcPropertyFactory({
-				dependencies: d => d.invalidateOn(b => b.propertyAny()),
+				dependencies: d => d.invalidateOn(b => b.p('connectValue1').p('value')),
 				*calcFunc(state): ThenableOrIteratorOrValue<boolean> {
-					yield new Promise(r => setTimeout(r, 100))
+					yield new Promise(r => setTimeout(r, 10))
 					state.value = { value: state.input.connectorState.source }
 					return true
 				},
@@ -105,27 +172,27 @@ describe('common > main > rx > properties > CalcObjectBuilder', function() {
 		)
 
 	it('calc sync', function() {
-		let result: any = new ClassSync().calc1.last
-		assert.deepStrictEqual(result, new Date(123))
+		let result: any = (new ClassSync().calc1 as any).last
+		assert.deepStrictEqual(result, new Date(100))
 
-		result = new ClassSync().calc1.wait
-		assert.deepStrictEqual(result, new Date(123))
+		result = (new ClassSync().calc1 as any).wait
+		assert.deepStrictEqual(result, new Date(100))
 
-		result = new ClassSync().calc1.lastOrWait
-		assert.deepStrictEqual(result, new Date(123))
+		result = (new ClassSync().calc1 as any).lastOrWait
+		assert.deepStrictEqual(result, new Date(100))
 	})
 
 	it('calc sync resolve', function() {
 		let val = resolvePath(new ClassSync())(o => o.calc1)()
-		assert.deepStrictEqual(val, new Date(123))
+		assert.deepStrictEqual(val, new Date(100))
 		val = resolvePath(new ClassSync())(o => o.calc1)(o => o.last, true)()
-		assert.deepStrictEqual(val, new Date(123))
-		val = resolvePath(new ClassSync())(o => o.calc1.wait)(o => o.last, true)()
-		assert.deepStrictEqual(val, new Date(123))
+		assert.deepStrictEqual(val, new Date(100))
+		val = resolvePath(new ClassSync())(o => (o.calc1 as any).wait)(o => o.last, true)()
+		assert.deepStrictEqual(val, new Date(100))
 		val = resolvePath(new ClassSync())(o => o.calc1)(o => o.wait, true)(o => o.last, true)()
-		assert.deepStrictEqual(val, new Date(123))
+		assert.deepStrictEqual(val, new Date(100))
 		val = resolvePath(new ClassSync())(o => o.wait, true)(o => o.calc1)(o => o.wait, true)(o => o.last, true)()
-		assert.deepStrictEqual(val, new Date(123))
+		assert.deepStrictEqual(val, new Date(100))
 
 		let object = new ClassSync()
 		let obj = resolvePath(object)()
@@ -141,28 +208,28 @@ describe('common > main > rx > properties > CalcObjectBuilder', function() {
 	})
 
 	it('calc async', async function() {
-		assert.deepStrictEqual(new ClassAsync().calc1.last, void 0)
+		assert.deepStrictEqual((new ClassAsync().calc1 as any).last, void 0)
 
 		let object = new ClassAsync().calc1
-		assert.deepStrictEqual(await object.wait, new Date(123))
-		assert.deepStrictEqual(object.last, new Date(123))
+		assert.deepStrictEqual(await (object as any).wait, new Date(100))
+		assert.deepStrictEqual((object as any).last, new Date(100))
 
 		object = new ClassAsync().calc1
-		assert.deepStrictEqual(await object.lastOrWait, new Date(123))
-		assert.deepStrictEqual(object.last, new Date(123))
+		assert.deepStrictEqual(await (object as any).lastOrWait, new Date(100))
+		assert.deepStrictEqual((object as any).last, new Date(100))
 	})
 
 	it('calc async resolve', async function() {
 		let val = resolvePath(new ClassAsync())(o => o.calc1)()
-		assert.deepStrictEqual(await val, new Date(123))
+		assert.deepStrictEqual(await val, new Date(100))
 		val = resolvePath(new ClassAsync())(o => o.calc1)(o => o.last, true)()
-		assert.deepStrictEqual(await val, new Date(123))
-		val = resolvePath(new ClassAsync())(o => o.calc1.wait)(o => o.last, true)()
-		assert.deepStrictEqual(await val, new Date(123))
+		assert.deepStrictEqual(await val, new Date(100))
+		val = resolvePath(new ClassAsync())(o => (o.calc1 as any).wait)(o => o.last, true)()
+		assert.deepStrictEqual(await val, new Date(100))
 		val = resolvePath(new ClassAsync())(o => o.calc1)(o => o.wait, true)(o => o.last, true)()
-		assert.deepStrictEqual(await val, new Date(123))
+		assert.deepStrictEqual(await val, new Date(100))
 		val = resolvePath(new ClassAsync())(o => o.wait, true)(o => o.calc1)(o => o.wait, true)(o => o.last, true)()
-		assert.deepStrictEqual(await val, new Date(123))
+		assert.deepStrictEqual(await val, new Date(100))
 
 		let object = new ClassAsync()
 		let obj = resolvePath(object)()
@@ -186,7 +253,7 @@ describe('common > main > rx > properties > CalcObjectBuilder', function() {
 		assert.strictEqual(value, object)
 		const value2 = resolvePath(object)(o => o.calc2)(o => o.value)(o => o.calc2)(o => o.value)
 			(o => o.calc2)(o => o.value)(o => o.calc1)()
-		assert.deepStrictEqual(value2, new Date(123))
+		assert.deepStrictEqual(value2, new Date(100))
 	})
 
 	it('circular calc async', async function() {
@@ -198,7 +265,7 @@ describe('common > main > rx > properties > CalcObjectBuilder', function() {
 		assert.strictEqual(await value, object)
 		const value2 = resolvePath(object)(o => o.calc2)(o => o.value)(o => o.calc2)(o => o.value)
 			(o => o.calc2)(o => o.value)(o => o.calc1)()
-		assert.deepStrictEqual(await value2, new Date(123))
+		assert.deepStrictEqual(await value2, new Date(100))
 	})
 
 	it('deepSubscribe simple', function() {
@@ -226,100 +293,167 @@ describe('common > main > rx > properties > CalcObjectBuilder', function() {
 	})
 
 	it('deepSubscribe calc sync', function() {
-		new TestDeepSubscribe(
-			{
-				object: new ClassSync(),
-				immediate: true,
-				doNotSubscribeNonObjectValues: true,
-			},
-			b => b.p('calc1'),
-		)
-			.subscribe([new Date(123)])
-			.change(o => o.source1 = 234, [new Date(123)], [new Date(234)])
-			.unsubscribe([new Date(234)])
+		for (let subscribed = 1; subscribed >= 0; subscribed--) {
+			console.log('subscribed: ' + !!subscribed)
+			calcCount = 0
+			new TestDeepSubscribe(
+				{
+					object: new ClassSync({subscribed: !!subscribed, addCalcCount: true}),
+					immediate: true,
+					doNotSubscribeNonObjectValues: true,
+				},
+				b => b.p('calc1'),
+			)
+				.subscribe([new Date(101)])
+				.unsubscribe([new Date(101)])
+				.subscribe([new Date(101)])
 
-		new TestDeepSubscribe(
-			{
-				object: new ClassSync(),
-				immediate: true,
-				doNotSubscribeNonObjectValues: true,
-			},
-			b => b.p('calc1').p('getTime'),
-		)
-			.subscribe([Date.prototype.getTime])
-			.change(o => o.source1 = 234, [Date.prototype.getTime], [Date.prototype.getTime])
-			.unsubscribe([Date.prototype.getTime])
+				.unsubscribe([new Date(101)])
+				.change(o => calcCount -= subscribed ? 2 : 3, [], [])
+				.change(o => o.source1 = new ValueObject(100), [], [])
+				.subscribe([new Date(101)])
+
+				.unsubscribe([new Date(101)])
+				// .change(o => calcCount -= subscribed, [], [])
+				.change(o => { o.source1_ = o.source1; o.source1 = void 0 }, [], [])
+				.subscribe([new Date(101)])
+
+				.change(o => o.source1_.value = 200, [new Date(101)], [new Date(202)])
+				.unsubscribe([new Date(202)])
+
+			new TestDeepSubscribe(
+				{
+					object: new ClassSync({subscribed: !!subscribed, addCalcCount: true}),
+					immediate: true,
+					doNotSubscribeNonObjectValues: true,
+				},
+				b => b.p('calc1').p('getTime'),
+			)
+				.subscribe([Date.prototype.getTime])
+				.change(o => o.source1.value = 200, [Date.prototype.getTime], [Date.prototype.getTime])
+				.unsubscribe([Date.prototype.getTime])
+		}
 	})
 
 	it('deepSubscribe calc async', async function() {
-		const date234 = new Date(234)
-		let tester = new TestDeepSubscribe(
-			{
-				object: new ClassAsync(),
-				immediate: true,
-				doNotSubscribeNonObjectValues: true,
-				asyncDelay: 500,
-			},
-			b => b.p('calc1'),
-		)
+		const date200 = new Date(200)
+		for (let subscribed = 1; subscribed >= 0; subscribed--) {
+			console.log('subscribed: ' + !!subscribed)
+			calcCount = 0
+			let tester = new TestDeepSubscribe(
+				{
+					object: new ClassAsync({subscribed: !!subscribed, addCalcCount: true}),
+					immediate: true,
+					doNotSubscribeNonObjectValues: true,
+					asyncDelay: 500,
+				},
+				b => b.p('calc1'),
+			)
 
-		await tester.subscribeAsync([new Date(123)])
-		await tester.changeAsync(o => o.source1 = 234, [new Date(123)], [new Date(234)])
-		await tester.unsubscribeAsync([new Date(234)])
+			await tester.subscribeAsync([new Date(101)])
+			await tester.unsubscribeAsync([new Date(101)])
+			await tester.subscribeAsync([new Date(101)])
 
-		tester = new TestDeepSubscribe(
-			{
-				object: new ClassAsync(),
-				immediate: true,
-				doNotSubscribeNonObjectValues: true,
-				asyncDelay: 500,
-			},
-			b => b.p('calc1').p('getTime'),
-		)
+			await tester.unsubscribeAsync([new Date(101)])
+			await tester.changeAsync(o => calcCount -= subscribed ? 2 : 1, [], [])
+			await tester.changeAsync(o => o.source1 = new ValueObject(100), [], [])
+			await tester.subscribeAsync([new Date(101)])
 
-		await tester.subscribeAsync([Date.prototype.getTime])
-		await tester.changeAsync(o => o.source1 = 234, [Date.prototype.getTime], [Date.prototype.getTime])
-		await tester.unsubscribeAsync([Date.prototype.getTime])
+			await tester.unsubscribeAsync([new Date(101)])
+			// await tester.changeAsync(o => calcCount -= subscribed, [], [])
+			await tester.changeAsync(o => { o.source1_ = o.source1; o.source1 = void 0 }, [], [])
+			await tester.subscribeAsync([new Date(101)])
+
+			await tester.changeAsync(o => o.source1_.value = 200, [new Date(101)], [new Date(202)])
+			await tester.unsubscribeAsync([new Date(202)])
+
+			tester = new TestDeepSubscribe(
+				{
+					object: new ClassAsync({subscribed: !!subscribed, addCalcCount: true}),
+					immediate: true,
+					doNotSubscribeNonObjectValues: true,
+					asyncDelay: 200,
+				},
+				b => b.p('calc1').p('getTime'),
+			)
+
+			await tester.subscribeAsync([Date.prototype.getTime as any])
+			await tester.changeAsync(o => o.source1.value = 200,
+				[Date.prototype.getTime as any], [Date.prototype.getTime as any])
+			await tester.unsubscribeAsync([Date.prototype.getTime as any])
+		}
 	})
 
 	it('deepSubscribe calc circular sync', function() {
-		const date234 = new Date(234)
-		new TestDeepSubscribe(
-			{
-				object: new ClassSync(),
-				immediate: true,
-				doNotSubscribeNonObjectValues: true,
-			},
-			// b => b.p('calc2').p('value').p('calc2').p('value').p('calc1'),
-			b => b.p('calc2').p('value').p('calc1'),
-		)
-			// .subscribe([new Date(123)])
-			// .unsubscribe([new Date(123)])
-			.subscribe([new Date(123)])
-			.change(o => o.source1 = 234, [new Date(123)], [new Date(234)])
-			.change(o => o.source2++, [new Date(234)], [new Date(234)])
-			.change(o => o.source1 = 345, [new Date(234)], [new Date(345)])
-			.unsubscribe([new Date(345)])
+		const date200 = new Date(200)
+		for (let subscribed = 1; subscribed >= 0; subscribed--) {
+			console.log('subscribed: ' + !!subscribed)
+			calcCount = 0
+			new TestDeepSubscribe(
+				{
+					object: new ClassSync({subscribed: !!subscribed, addCalcCount: true}),
+					immediate: true,
+					doNotSubscribeNonObjectValues: true,
+				},
+				// b => b.p('calc2').p('value').p('calc2').p('value').p('calc1'),
+				b => b.p('calc2').p('value').p('calc1'),
+			)
+			// .subscribe([new Date(100)])
+			// .unsubscribe([new Date(100)])
+				.subscribe([new Date(101)])
+				.unsubscribe([new Date(101)])
+				.subscribe([new Date(101)])
+
+				.unsubscribe([new Date(101)])
+				.change(o => calcCount -= subscribed ? 2 : 3, [], [])
+				.change(o => o.source1 = new ValueObject(100), [], [])
+				.subscribe([new Date(101)])
+
+				.unsubscribe([new Date(101)])
+				// .change(o => calcCount -= subscribed, [], [])
+				.change(o => { o.source1_ = o.source1; o.source1 = void 0 }, [], [])
+				.subscribe([new Date(101)])
+
+				.change(o => o.source1_.value = 200, [new Date(101)], [new Date(202)])
+				.change(o => o.source2.value += 10, [new Date(202)], [new Date(202)])
+				.change(o => o.source1_.value = 300, [new Date(202)], [new Date(303)])
+				.unsubscribe([new Date(303)])
+		}
 	})
 
 	it('deepSubscribe calc circular async', async function() {
-		const date234 = new Date(234)
-		const tester = new TestDeepSubscribe(
-			{
-				object: new ClassSync(),
-				immediate: true,
-				doNotSubscribeNonObjectValues: true,
-				asyncDelay: 500,
-			},
-			b => b.p('calc2').p('value').p('calc2').p('value').p('calc2').p('value').p('calc1'),
-		)
+		const date200 = new Date(200)
+		for (let subscribed = 1; subscribed >= 0; subscribed--) {
+			console.log('subscribed: ' + !!subscribed)
+			calcCount = 0
+			const tester = new TestDeepSubscribe(
+				{
+					object: new ClassSync({subscribed: !!subscribed, addCalcCount: true}), // TODO replace to ClassAsync
+					immediate: true,
+					doNotSubscribeNonObjectValues: true,
+					asyncDelay: 200,
+				},
+				b => b.p('calc2').p('value').p('calc2').p('value').p('calc2').p('value').p('calc1'),
+			)
 
-		await tester.subscribeAsync([new Date(123)])
-		await tester.unsubscribeAsync([new Date(123)])
-		await tester.subscribeAsync([new Date(123)])
-		await tester.changeAsync(o => o.source1 = 234, [new Date(123)], [new Date(234)])
-		await tester.changeAsync(o => o.source2++, [new Date(234)], [new Date(234)])
-		await tester.changeAsync(o => o.source1 = 345, [new Date(234)], [new Date(345)])
-		await tester.unsubscribeAsync([new Date(345)])
+			await tester.subscribeAsync([new Date(101)])
+			await tester.unsubscribeAsync([new Date(101)])
+			await tester.subscribeAsync([new Date(101)])
+
+			await tester.unsubscribeAsync([new Date(101)])
+			await tester.changeAsync(o => calcCount -= subscribed ? 2 : 3, [], [])
+			await tester.changeAsync(o => o.source1 = new ValueObject(100), [], [])
+			await tester.subscribeAsync([new Date(101)])
+
+			await tester.unsubscribeAsync([new Date(101)])
+			// await tester.changeAsync(o => calcCount -= subscribed, [], [])
+			await tester.changeAsync(o => { o.source1_ = o.source1; o.source1 = void 0 }, [], [])
+			await tester.subscribeAsync([new Date(101)])
+
+			await tester.changeAsync(o => o.source1_.value = 200, [new Date(101)], [new Date(202)])
+			await tester.changeAsync(o => o.source2.value += 10, [new Date(202)], [new Date(202)])
+			await tester.changeAsync(o => o.source1_.value = 300, [new Date(202)], [new Date(303)])
+			await tester.unsubscribeAsync([new Date(303)])
+		}
 	})
 })
