@@ -525,6 +525,52 @@ describe('common > main > rx > deep-subscribe > deep-subscribe', function() {
 	})
 
 	it('any', function() {
+		// new TestDeepSubscribe(
+		// 	{
+		// 		object: createObject(),
+		// 		immediate: true,
+		// 		doNotSubscribeNonObjectValues: true,
+		// 	},
+		// 	b => b
+		// 		.p('value')
+		// 		.any(
+		// 			o => o.nothing(),
+		// 		),
+		// )
+		// 	.subscribe(o => [], null, o => [])
+		// 	.unsubscribe(o => [])
+
+		new TestDeepSubscribe(
+			{
+				object: createObject().observableObject,
+				immediate: true,
+				doNotSubscribeNonObjectValues: true,
+			},
+			b => b
+				.any(
+					o => o.p<any>('map2', 'set'),
+				),
+		)
+			.subscribe(o => [o.map2, o.set], null, o => [o.map2])
+			.change(o => { o.set = o.observableObject as any }, o => [o.set], o => [o.observableObject], o => [])
+			.unsubscribe(o => [o.map2, o.observableObject])
+
+		new TestDeepSubscribe(
+			{
+				object: createObject().observableObject,
+				immediate: true,
+				doNotSubscribeNonObjectValues: true,
+			},
+			b => b
+				.any(
+					o => o.nothing(),
+					o => o.p<any>('map2', 'set'),
+				),
+		)
+			.subscribe(o => [o, o.map2, o.set], null, o => [o])
+			.change(o => { o.set = o.observableObject as any }, o => [o.set], o => [], o => [])
+			.unsubscribe(o => [o.map2, o])
+
 		new TestDeepSubscribe(
 			{
 				object: createObject().object,
@@ -726,6 +772,31 @@ describe('common > main > rx > deep-subscribe > deep-subscribe', function() {
 			.change(o => { o.set = o.observableObject as any }, o => [o.set], o => [o.observableObject], o => [])
 			.unsubscribe(o => [o.map2, o.set])
 	})
+
+	// it('value properties null', async function() {
+	// 	const object = createObject().observableObject
+	// 	const property = object.property
+	// 	object.property = null
+	//
+	// 	new TestDeepSubscribe(
+	// 		{
+	// 			object: object,
+	// 			immediate: true,
+	// 			doNotSubscribeNonObjectValues: true,
+	// 		},
+	// 		b => b.p('property'),
+	// 	)
+	// 		.subscribe(o => [null])
+	// 		.change(o => o.property = property as any,
+	// 			o => [null], o => [o.observableObject])
+	// 		.change(o => o.property[VALUE_PROPERTY_DEFAULT] = new Number(1) as any,
+	// 			o => [o.observableObject], [new Number(1)])
+	// 		.change(o => o.property = null as any,
+	// 			[new Number(1)], [null])
+	// 		.change(o => o.property = o.object.property,
+	// 			[null], [new Number(1)])
+	// 		.unsubscribe([new Number(1)])
+	// })
 
 	it('promises', async function() {
 		const object = createObject()

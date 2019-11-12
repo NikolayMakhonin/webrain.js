@@ -1,13 +1,41 @@
-import {
-	IConditionRule,
-	IRepeatCondition,
-	IRule,
-	IRuleAny,
-	IRuleIf,
-	IRuleRepeat,
-	RuleRepeatAction,
-	RuleType,
-} from './contracts/rules'
+import {IConditionRule, IRepeatCondition, IRule, IRuleAny, IRuleIf, IRuleRepeat, RuleType,} from './contracts/rules'
+
+export function ruleTypeToString(ruleType: RuleType) {
+	switch(ruleType) {
+		case RuleType.Never:
+			return 'Never'
+		case RuleType.Action:
+			return 'Action'
+		case RuleType.Any:
+			return 'Any'
+		case RuleType.If:
+			return 'If'
+		case RuleType.Nothing:
+			return 'Nothing'
+		case RuleType.Repeat:
+			return 'Repeat'
+		default:
+			throw new Error('Unknown RuleType: ' + ruleType)
+	}
+}
+
+export const RULE_STRING_SEPARATOR = ' > '
+
+function ruleToString(
+	rule: IRule,
+	customDescription?: string,
+	nestedRulesStr?: string,
+): string {
+	const description = customDescription || this.description || ruleTypeToString(this.type)
+	
+	return `${
+		description
+	}${
+		nestedRulesStr ? '(' + nestedRulesStr + ')' : ''
+	}${
+		this.next ? ' > ' + this.next : ''
+	}`
+}
 
 export class Rule implements IRule {
 	public readonly type: RuleType
@@ -23,14 +51,18 @@ export class Rule implements IRule {
 	}
 
 	public clone(): IRule {
-		const {type, subType, description, next} = this
-		const clone = {type, subType, description} as IRule
+		const {type, subType, description, next, toString} = this
+		const clone = {type, subType, description, toString} as IRule
 
 		if (next != null) {
 			clone.next = next.clone()
 		}
 
 		return clone
+	}
+
+	public toString() {
+		return ruleToString(this)
 	}
 }
 
@@ -65,6 +97,7 @@ export class RuleIf<TValue> extends Rule implements IRuleIf<TValue> {
 	constructor(conditionRules: Array<IConditionRule<TValue>>) {
 		super(RuleType.If)
 		this.conditionRules = conditionRules
+		this.description = '<if>'
 	}
 
 	public clone(): IRuleIf<TValue> {
@@ -83,6 +116,7 @@ export class RuleAny extends Rule implements IRuleAny {
 	constructor(rules: IRule[]) {
 		super(RuleType.Any)
 		this.rules = rules
+		this.description = '<any>'
 	}
 
 	public clone(): IRuleAny {
@@ -109,6 +143,7 @@ export class RuleRepeat<TValue = any> extends Rule implements IRuleRepeat {
 		this.countMax = countMax
 		this.condition = condition
 		this.rule = rule
+		this.description = '<repeat>'
 	}
 
 	public clone(): IRuleAny {

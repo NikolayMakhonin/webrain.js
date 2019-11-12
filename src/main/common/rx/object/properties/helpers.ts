@@ -34,7 +34,7 @@ type TGetPropertyValue<TValue> = (
 	& { value: ThenableOrValue<TValue> }
 
 function resolveValueProperty(value: any, getValue?: (value: any) => any) {
-	if (typeof value === 'object') {
+	if (value != null && typeof value === 'object') {
 		if (VALUE_PROPERTY_DEFAULT in value) {
 			if (getValue) {
 				const newValue = getValue(value)

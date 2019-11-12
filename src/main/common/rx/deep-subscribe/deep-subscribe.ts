@@ -1,7 +1,7 @@
 /* tslint:disable:no-shadowed-variable no-array-delete*/
 import {isThenable} from '../../async/async'
 import {resolveAsync} from '../../async/ThenableSync'
-import {checkIsFuncOrNull, toSingleCall} from '../../helpers/helpers'
+import {checkIsFuncOrNull, isIterator, toSingleCall} from '../../helpers/helpers'
 import {getObjectUniqueId} from '../../helpers/object-unique-id'
 import {Debugger} from '../Debugger'
 import {IUnsubscribe, IUnsubscribeOrVoid} from '../subjects/observable'

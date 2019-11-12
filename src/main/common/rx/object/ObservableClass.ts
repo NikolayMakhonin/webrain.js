@@ -47,7 +47,7 @@ export function _setExt(
 	const oldValue = getValue ? getValue.call(object) : object.__fields[name]
 
 	const equalsFunc = options.equalsFunc || webrainOptions.equalsFunc
-	if (equalsFunc ? equalsFunc.call(object, oldValue, newValue) : oldValue === newValue) {
+	if (oldValue === newValue || equalsFunc && equalsFunc.call(object, oldValue, newValue)) {
 		return false
 	}
 
@@ -105,7 +105,7 @@ export function _set(
 ) {
 	const oldValue = getValue.call(object)
 
-	if (webrainOptions.equalsFunc ? webrainOptions.equalsFunc.call(object, oldValue, newValue) : oldValue === newValue) {
+	if (oldValue === newValue || webrainOptions.equalsFunc && webrainOptions.equalsFunc.call(object, oldValue, newValue)) {
 		return false
 	}
 
