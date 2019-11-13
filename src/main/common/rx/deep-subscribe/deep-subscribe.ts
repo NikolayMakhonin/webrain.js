@@ -16,6 +16,16 @@ import {RuleBuilder} from './RuleBuilder'
 // const UNSUBSCRIBE_PROPERTY_PREFIX = Math.random().toString(36)
 // let nextUnsubscribePropertyId = 0
 
+function getRuleType(iteration) {
+	return iteration && (
+		iteration.done
+		? null
+		: (Array.isArray(iteration.value)
+			? (iteration.value.length ? iteration.value[0].type : null)
+			: iteration.value.type)
+	)
+}
+
 function catchHandler(ex, propertiesPath?: PropertiesPath) {
 	if (ex.propertiesPath) {
 		throw ex
@@ -42,10 +52,9 @@ function subscribeNext<TValue>(
 ): IUnsubscribeOrVoid {
 	if (!iteration && ruleIterator) {
 		iteration = ruleIterator.next()
-		if (isIterator(iteration.value)) {
-			Date.now()
-			// throw new Error('deepSubscribe internal error: iteration.value is iterator')
-		}
+		// if (isIterator(iteration.value)) {
+		// 	throw new Error('deepSubscribe internal error: iteration.value is iterator')
+		// }
 	}
 	const isLeaf = !iteration || iteration.done
 	if (!isLeaf && iteration.value.type === RuleType.Never) {
@@ -242,18 +251,13 @@ function subscribeNext<TValue>(
 				const oldItemIterator = getNextRuleIterable && getNextRuleIterable(oldItem)[Symbol.iterator]()
 				const oldItemIteration = oldItemIterator && oldItemIterator.next()
 
-				if (isIterator(oldItemIteration.value)) {
-					Date.now()
-					// throw new Error('deepSubscribe internal error: oldItemIteration.value is iterator')
-				}
-
-				const isLeaf = !oldItemIteration || oldItemIteration.done
-				if (isLeaf
-					|| oldItemIteration.value.type !== RuleType.Never
+				const nextRuleType = getRuleType(oldItemIteration)
+				if (nextRuleType == null
+					|| nextRuleType !== RuleType.Never
 						&& typeof oldItem !== 'undefined'
 				) {
-					debugOldIsLeaf = isLeaf
-					oldIsLeaf = isLeaf && !(oldItem instanceof Object)
+					debugOldIsLeaf = nextRuleType == null
+					oldIsLeaf = nextRuleType == null && !(oldItem instanceof Object)
 				}
 			}
 
@@ -265,18 +269,13 @@ function subscribeNext<TValue>(
 				newItemIterator = getNextRuleIterable && getNextRuleIterable(newItem)[Symbol.iterator]()
 				newItemIteration = newItemIterator && newItemIterator.next()
 
-				if (isIterator(newItemIteration.value)) {
-					Date.now()
-					// throw new Error('deepSubscribe internal error: newItemIterator.value is iterator')
-				}
-
-				const isLeaf = !newItemIteration || newItemIteration.done
-				if (isLeaf
-					|| newItemIteration.value.type !== RuleType.Never
+				const nextRuleType = getRuleType(newItemIteration)
+				if (nextRuleType == null
+					|| nextRuleType !== RuleType.Never
 						&& typeof newItem !== 'undefined'
 				) {
-					debugNewIsLeaf = isLeaf
-					newIsLeaf = isLeaf && !(newItem instanceof Object)
+					debugNewIsLeaf = nextRuleType == null
+					newIsLeaf = nextRuleType == null && !(newItem instanceof Object)
 				}
 			}
 

@@ -47,6 +47,7 @@ describe('common > main > rx > properties > CalcObjectBuilder', function() {
 		public valuePrototype: string
 		public calc1: Date
 		public calc2: { value: ClassSync }
+		public calcWithAnyRule: Date
 		public source1 = new ValueObject(100)
 		public source2 = new ValueObject(0)
 		public source1_: ValueObject
@@ -129,6 +130,22 @@ describe('common > main > rx > properties > CalcObjectBuilder', function() {
 				calcFunc(state): ThenableOrIteratorOrValue<boolean> {
 					state.value = { value: state.input.connectorState.source }
 					return ThenableSync.createResolved(true)
+				},
+			}),
+		)
+		.calc('calcWithAnyRule',
+			connectorFactory({
+				buildRule: c => c,
+			}),
+			calcPropertyFactory({
+				dependencies: d => d.invalidateOn(b => b
+					.any(
+						b2 => b2.p('prop1'),
+						b2 => b2.p('prop2'),
+					),
+				),
+				calcFunc(state): ThenableOrIteratorOrValue<void> {
+					state.value = new Date(1)
 				},
 			}),
 		)
@@ -290,6 +307,22 @@ describe('common > main > rx > properties > CalcObjectBuilder', function() {
 		)
 			.subscribe(o => ['Value Prototype'])
 			.unsubscribe(['Value Prototype'])
+	})
+
+	it('deepSubscribe calcWithAnyRule sync', function() {
+		calcCount = 0
+		new TestDeepSubscribe(
+			{
+				object: new ClassSync({subscribed: false}),
+				immediate: true,
+				doNotSubscribeNonObjectValues: true,
+			},
+			b => b.p('calcWithAnyRule'),
+		)
+			.subscribe([new Date(1)])
+			.unsubscribe([new Date(1)])
+			.subscribe([new Date(1)])
+			.unsubscribe([new Date(1)])
 	})
 
 	it('deepSubscribe calc sync', function() {
