@@ -1,4 +1,5 @@
 /* tslint:disable:no-shadowed-variable no-empty */
+import {isIterable} from '../../../../../../main/common'
 /* eslint-disable no-useless-escape,computed-property-spacing */
 import {RuleType} from '../../../../../../main/common/rx/deep-subscribe/contracts/rules'
 import {
@@ -41,7 +42,7 @@ describe('common > main > rx > deep-subscribe > iterate-rule', function() {
 
 	const testObject = {}
 
-	function rulesToObject(ruleIterator: IRuleIterator, obj: any = {}): IUnsubscribe {
+	function rulesToObject(ruleIterator: IRuleIterator, obj: any = {}, prevIsFork?: boolean): IUnsubscribe {
 		let iteration
 		if (!ruleIterator || (iteration = ruleIterator.next()).done) {
 			obj._end = true
@@ -51,16 +52,21 @@ describe('common > main > rx > deep-subscribe > iterate-rule', function() {
 			}
 		}
 
+		const isFork = isIterable(iteration.value)
+		if (prevIsFork) {
+			assert.notOk(isFork)
+		}
+
 		return subscribeNextRule(
 			ruleIterator,
 			iteration,
-			nextRuleIterator => rulesToObject(nextRuleIterator, obj),
+			nextRuleIterator => rulesToObject(nextRuleIterator, obj, isFork),
 			(rule, getRuleIterable) => {
 				const newObj = {}
 				const unsubscribe = rulesToObject(
 					getRuleIterable
 						? getRuleIterable(testObject)[Symbol.iterator]()
-						: null, newObj)
+						: null, newObj, isFork)
 				Object.assign(obj, {[rule.description]: newObj})
 				return unsubscribe
 			},

@@ -9,7 +9,161 @@ export type IRuleOrIterable = IRuleAction | IRuleIterable | INextRuleIterable
 export interface IRuleIterable extends Iterable<IRuleOrIterable> {}
 export type IRuleIterator = Iterator<IRuleOrIterable>
 
-export function *iterateRule(object: any, rule: IRule, next: INextRuleIterable = null): IRuleIterable {
+export function *iterateRuleFork(
+	object: any,
+	ruleOrIterable: IRuleOrIterable,
+	next: INextRuleIterable = null,
+): IRuleIterable {
+	if (!ruleOrIterable) {
+		return
+	}
+	if (typeof ruleOrIterable === 'function') {
+		ruleOrIterable = (ruleOrIterable as INextRuleIterable)(object)
+	}
+	if (isIterable(ruleOrIterable)) {
+		for (const item of ruleOrIterable as IRuleIterable) {
+			yield* iterateRuleFork(object, item, next)
+		}
+	} else {
+		switch ((ruleOrIterable as IRule).type) {
+			case RuleType.Nothing:
+				yield ruleOrIterable
+				break
+			case RuleType.Never:
+				yield ruleOrIterable // TODO change this behavior to RuleNothing
+				break
+			case RuleType.Action:
+				yield _iterateRule(object, ruleOrIterable as IRule, next)
+				break
+			default:
+				yield* iterateRuleFork(object, _iterateRule(object, ruleOrIterable as IRule, next, true), next)
+				break
+		}
+	}
+}
+
+export function ruleForkToArray(
+	object: any,
+	ruleIterable: IRuleIterable,
+	next: INextRuleIterable = null,
+): IRuleOrIterable {
+	let array: IRuleOrIterable[]
+	let nothing: boolean
+	for (let item of ruleIterable) {
+		if (!isIterable(item)) {
+			// if ((item as IRule).type === RuleType.Action) {
+			// 	item = _iterateRule(object, item as IRule, next)
+			// } else
+			// if (!nothing) {
+				if ((item as IRule).type === RuleType.Nothing) {
+					nothing = true
+				} else if ((item as IRule).type === RuleType.Never) { // TODO change this behavior to RuleNothing
+
+				} else {
+					throw new Error('Unexpected rule type: ' + RuleType[(item as IRule).type])
+				}
+			// }
+			continue
+		}
+
+		if (!array) {
+			array = [item]
+		} else {
+			array.push(item)
+		}
+	}
+
+	if (array) {
+		if (nothing) {
+			array.unshift([])
+		}
+		return array
+	} else {
+		if (nothing) {
+			return null
+		} else {
+			return [RuleNever.instance] // TODO change this behavior to RuleNothing
+		}
+	}
+}
+
+const COMPRESS_FORKS_DISABLED = false
+
+function *iterateFork(fork: Iterable<IRuleOrIterable>): Iterable<IRuleOrIterable> {
+	for (const ruleIterable of fork as Iterable<IRuleOrIterable>) {
+		if (isIterable(ruleIterable)) {
+			if (COMPRESS_FORKS_DISABLED) {
+				yield compressForks(ruleIterable as Iterable<IRuleOrIterable>)
+			} else {
+				const iterator = ruleIterable[Symbol.iterator]()
+				const iteration = iterator.next()
+				if (!iteration.done) {
+					if (isIterable(iteration.value)) {
+						yield* iterateFork(iteration.value)
+					} else {
+						yield compressForks(ruleIterable as Iterable<IRuleOrIterable>, iterator, iteration)
+					}
+				} else {
+					yield []
+				}
+			}
+		} else {
+			yield ruleIterable as IRule
+		}
+	}
+}
+
+export function *compressForks(
+	ruleOrForkIterable: IRuleIterable,
+	iterator?: IRuleIterator,
+	iteration?: IteratorResult<IRuleOrIterable, null>,
+): IRuleIterable {
+	if (!iterator) {
+		iterator = ruleOrForkIterable[Symbol.iterator]()
+	}
+	if (!iteration) {
+		iteration = iterator.next()
+	}
+
+	if (iteration.done) {
+		return
+	}
+
+	const ruleOrFork = iteration.value
+	if (isIterable(ruleOrFork)) {
+		const fork = iterateFork(ruleOrFork as Iterable<IRuleOrIterable>)
+
+		// if (isInFork) {
+		// 	yield fork
+		// } else {
+			const array = Array.from(fork) // TODO optimize this array
+			yield array
+		// }
+		return
+	} else {
+		yield ruleOrFork as IRule
+	}
+
+	iteration = iterator.next()
+	const nextIterable = iteration.value as INextRuleIterable
+	if (nextIterable) {
+		yield (nextObject: any) => compressForks(nextIterable(nextObject))
+	}
+}
+
+export function iterateRule(
+	object: any,
+	rule: IRule,
+	next: INextRuleIterable = null,
+): IRuleIterable {
+	return compressForks(_iterateRule(object, rule, next))
+}
+
+function *_iterateRule(
+	object: any,
+	rule: IRule,
+	next: INextRuleIterable,
+): IRuleIterable {
 	if (!rule) {
 		if (next) {
 			yield* next(object)
@@ -18,7 +172,7 @@ export function *iterateRule(object: any, rule: IRule, next: INextRuleIterable =
 	}
 
 	const ruleNext: INextRuleIterable = rule.next || next
-		? (nextObject: any) => iterateRule(nextObject, rule.next, next)
+		? (nextObject: any) => _iterateRule(nextObject, rule.next, next)
 		: null
 
 	switch (rule.type) {
@@ -42,11 +196,11 @@ export function *iterateRule(object: any, rule: IRule, next: INextRuleIterable =
 				const conditionRule = conditionRules[i]
 				if (Array.isArray(conditionRule)) {
 					if (conditionRule[0](object)) {
-						yield* iterateRule(object, conditionRule[1], ruleNext)
+						yield* _iterateRule(object, conditionRule[1], ruleNext)
 						break
 					}
 				} else {
-					yield* iterateRule(object, conditionRule, ruleNext)
+					yield* _iterateRule(object, conditionRule, ruleNext)
 					break
 				}
 			}
@@ -64,7 +218,7 @@ export function *iterateRule(object: any, rule: IRule, next: INextRuleIterable =
 				// throw new Error(`RuleType.Any rules.length=${rules.length}`)
 			}
 			if (rules.length === 1) {
-				yield [iterateRule(object, rules[0], ruleNext)]
+				yield [_iterateRule(object, rules[0], ruleNext)]
 			}
 
 			const any = function *() {
@@ -73,7 +227,7 @@ export function *iterateRule(object: any, rule: IRule, next: INextRuleIterable =
 					if (!subRule) {
 						throw new Error(`RuleType.Any rule=${subRule}`)
 					}
-					yield iterateRule(object, subRule, ruleNext)
+					yield _iterateRule(object, subRule, ruleNext)
 				}
 			}
 			yield any()
@@ -123,7 +277,7 @@ export function *iterateRule(object: any, rule: IRule, next: INextRuleIterable =
 				yield [ruleNext ? ruleNext(nextObject) : [], nextIteration(index + 1)]
 
 				function nextIteration(newCount: number): IRuleIterable {
-					return iterateRule(nextObject, subRule, nextIterationObject =>
+					return _iterateRule(nextObject, subRule, nextIterationObject =>
 						repeatNext(nextIterationObject, newCount))
 				}
 			}

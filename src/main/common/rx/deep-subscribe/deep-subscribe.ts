@@ -42,6 +42,10 @@ function subscribeNext<TValue>(
 ): IUnsubscribeOrVoid {
 	if (!iteration && ruleIterator) {
 		iteration = ruleIterator.next()
+		if (isIterator(iteration.value)) {
+			Date.now()
+			// throw new Error('deepSubscribe internal error: iteration.value is iterator')
+		}
 	}
 	const isLeaf = !iteration || iteration.done
 	if (!isLeaf && iteration.value.type === RuleType.Never) {
@@ -237,6 +241,12 @@ function subscribeNext<TValue>(
 			if ((changeType & ValueChangeType.Unsubscribe) !== 0) {
 				const oldItemIterator = getNextRuleIterable && getNextRuleIterable(oldItem)[Symbol.iterator]()
 				const oldItemIteration = oldItemIterator && oldItemIterator.next()
+
+				if (isIterator(oldItemIteration.value)) {
+					Date.now()
+					// throw new Error('deepSubscribe internal error: oldItemIteration.value is iterator')
+				}
+
 				const isLeaf = !oldItemIteration || oldItemIteration.done
 				if (isLeaf
 					|| oldItemIteration.value.type !== RuleType.Never
@@ -254,6 +264,12 @@ function subscribeNext<TValue>(
 			if ((changeType & ValueChangeType.Subscribe) !== 0) {
 				newItemIterator = getNextRuleIterable && getNextRuleIterable(newItem)[Symbol.iterator]()
 				newItemIteration = newItemIterator && newItemIterator.next()
+
+				if (isIterator(newItemIteration.value)) {
+					Date.now()
+					// throw new Error('deepSubscribe internal error: newItemIterator.value is iterator')
+				}
+
 				const isLeaf = !newItemIteration || newItemIteration.done
 				if (isLeaf
 					|| newItemIteration.value.type !== RuleType.Never
