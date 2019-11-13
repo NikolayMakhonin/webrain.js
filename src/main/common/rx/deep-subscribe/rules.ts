@@ -67,6 +67,7 @@ export class Rule implements IRule {
 }
 
 export class RuleNothing extends Rule {
+	public static instance = Object.freeze(new RuleNothing())
 	constructor() {
 		super(RuleType.Nothing)
 		this.description = 'nothing'

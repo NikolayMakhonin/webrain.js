@@ -9,81 +9,48 @@ export type IRuleOrIterable = IRuleAction | IRuleIterable | INextRuleIterable
 export interface IRuleIterable extends Iterable<IRuleOrIterable> {}
 export type IRuleIterator = Iterator<IRuleOrIterable>
 
-export function *iterateRuleFork(
-	object: any,
-	ruleOrIterable: IRuleOrIterable,
-	next: INextRuleIterable = null,
-): IRuleIterable {
-	if (!ruleOrIterable) {
-		return
-	}
-	if (typeof ruleOrIterable === 'function') {
-		ruleOrIterable = (ruleOrIterable as INextRuleIterable)(object)
-	}
-	if (isIterable(ruleOrIterable)) {
-		for (const item of ruleOrIterable as IRuleIterable) {
-			yield* iterateRuleFork(object, item, next)
-		}
-	} else {
-		switch ((ruleOrIterable as IRule).type) {
-			case RuleType.Nothing:
-				yield ruleOrIterable
-				break
-			case RuleType.Never:
-				yield ruleOrIterable // TODO change this behavior to RuleNothing
-				break
-			case RuleType.Action:
-				yield _iterateRule(object, ruleOrIterable as IRule, next)
-				break
-			default:
-				yield* iterateRuleFork(object, _iterateRule(object, ruleOrIterable as IRule, next, true), next)
-				break
-		}
-	}
-}
+const ARRAY_EMPTY = []
 
-export function ruleForkToArray(
-	object: any,
-	ruleIterable: IRuleIterable,
-	next: INextRuleIterable = null,
-): IRuleOrIterable {
+function forkToArray(ruleIterable: IRuleIterable): IRuleOrIterable {
 	let array: IRuleOrIterable[]
 	let nothing: boolean
-	for (let item of ruleIterable) {
-		if (!isIterable(item)) {
-			// if ((item as IRule).type === RuleType.Action) {
-			// 	item = _iterateRule(object, item as IRule, next)
-			// } else
-			// if (!nothing) {
-				if ((item as IRule).type === RuleType.Nothing) {
+	let never: boolean
+	for (const item of ruleIterable) {
+		if (isIterable(item)) {
+			const itemArray = Array.from(item as IRuleIterable)
+			if (!itemArray.length) {
+				if (!nothing) {
+					if (!array) {
+						array = [itemArray]
+					} else {
+						array.unshift(itemArray)
+					}
 					nothing = true
-				} else if ((item as IRule).type === RuleType.Never) { // TODO change this behavior to RuleNothing
-
-				} else {
-					throw new Error('Unexpected rule type: ' + RuleType[(item as IRule).type])
 				}
-			// }
-			continue
-		}
+				continue
+			}
 
-		if (!array) {
-			array = [item]
+			if (!array) {
+				array = [itemArray]
+			} else {
+				array.push(itemArray)
+			}
 		} else {
-			array.push(item)
+			if ((item as IRule).type === RuleType.Never) {
+				never = true
+			} else {
+				throw new Error('Unexpected rule type: ' + RuleType[(item as IRule).type])
+			}
 		}
 	}
 
 	if (array) {
-		if (nothing) {
-			array.unshift([])
-		}
 		return array
 	} else {
-		if (nothing) {
-			return null
-		} else {
-			return [RuleNever.instance] // TODO change this behavior to RuleNothing
+		if (never) {
+			return RuleNever.instance
 		}
+		return ARRAY_EMPTY
 	}
 }
 
@@ -101,10 +68,14 @@ function *iterateFork(fork: Iterable<IRuleOrIterable>): Iterable<IRuleOrIterable
 					if (isIterable(iteration.value)) {
 						yield* iterateFork(iteration.value)
 					} else {
-						yield compressForks(ruleIterable as Iterable<IRuleOrIterable>, iterator, iteration)
+						if ((iteration.value as IRule).type === RuleType.Never) {
+							yield iteration.value
+						} else {
+							yield compressForks(ruleIterable as Iterable<IRuleOrIterable>, iterator, iteration)
+						}
 					}
 				} else {
-					yield []
+					yield ARRAY_EMPTY
 				}
 			}
 		} else {
@@ -132,13 +103,8 @@ export function *compressForks(
 	const ruleOrFork = iteration.value
 	if (isIterable(ruleOrFork)) {
 		const fork = iterateFork(ruleOrFork as Iterable<IRuleOrIterable>)
-
-		// if (isInFork) {
-		// 	yield fork
-		// } else {
-			const array = Array.from(fork) // TODO optimize this array
-			yield array
-		// }
+		const array = forkToArray(fork) // TODO optimize this array
+		yield array
 		return
 	} else {
 		yield ruleOrFork as IRule
@@ -274,7 +240,7 @@ function *_iterateRule(
 					return
 				}
 
-				yield [ruleNext ? ruleNext(nextObject) : [], nextIteration(index + 1)]
+				yield [ruleNext ? ruleNext(nextObject) : ARRAY_EMPTY, nextIteration(index + 1)]
 
 				function nextIteration(newCount: number): IRuleIterable {
 					return _iterateRule(nextObject, subRule, nextIterationObject =>
