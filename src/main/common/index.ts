@@ -24,7 +24,7 @@ export {PropertyChangedObject} from './rx/object/PropertyChangedObject'
 export {Connector} from './rx/object/properties/Connector'
 export {Subject} from './rx/subjects/subject'
 export {registerMergeable, registerMerger} from './extensions/merge/mergers'
-export {registerSerializable, registerSerializer} from './extensions/serialization/serializers'
+export {registerSerializable, registerSerializer, ObjectSerializer} from './extensions/serialization/serializers'
 export {isIterable} from './helpers/helpers'
 export {DependenciesBuilder} from './rx/object/properties/DependenciesBuilder'
 export {subscribeDependencies} from './rx/object/properties/DependenciesBuilder'
@@ -36,6 +36,9 @@ export {resolveAsyncAll, resolveAsyncAny} from './async/ThenableSync'
 export {dependenciesSubscriber} from './rx/object/properties/DependenciesBuilder'
 export {CalcStat} from './helpers/CalcStat'
 export {VALUE_PROPERTY_DEFAULT} from './helpers/value-property'
+export {delay} from './helpers/helpers'
+export {DeferredCalc} from './rx/deferred-calc/DeferredCalc'
+export {RuleBuilder} from './rx/deep-subscribe/RuleBuilder'
 
 // Interfaces:
 import {ThenableOrIteratorOrValue as _ThenableOrIteratorOrValue} from './async/async'
@@ -44,15 +47,31 @@ import {
 	IMergeOptions as _IMergeOptions,
 	IMergeValue as _IMergeValue,
 } from './extensions/merge/contracts'
+import {
+	IDeSerializeValue as _IDeSerializeValue,
+	ISerializable as _ISerializable,
+	ISerializedObject as _ISerializedObject,
+	ISerializeValue as _ISerializeValue,
+} from './extensions/serialization/contracts'
 import {TClass as _TClass} from './helpers/helpers'
 import {HasDefaultOrValue as _HasDefaultOrValue} from './helpers/value-property'
 import {IObservableMap as _IObservableMap} from './lists/contracts/IMapChanged'
 import {IObservableSet as _IObservableSet} from './lists/contracts/ISetChanged'
 import {ICalcProperty as _ICalcProperty} from './rx/object/properties/contracts'
 import {IPropertyChangedObject as _IPropertyChangedObject} from './rx/object/IPropertyChanged'
-import {IObservable as _IObservable} from './rx/subjects/observable'
+import {
+	IObservable as _IObservable,
+	IUnsubscribe as _IUnsubscribe,
+	IUnsubscribeOrVoid as _IUnsubscribeOrVoid,
+} from './rx/subjects/observable'
 import {ISubject as _ISubject} from './rx/subjects/subject'
 
+export type IUnsubscribe = _IUnsubscribe
+export type IUnsubscribeOrVoid = _IUnsubscribeOrVoid
+export type IDeSerializeValue = _IDeSerializeValue
+export type ISerializable = _ISerializable
+export type ISerializedObject = _ISerializedObject
+export type ISerializeValue = _ISerializeValue
 export type TClass<T> = _TClass<T>
 export type IMergeOptions = _IMergeOptions
 export type IMergeValue = _IMergeValue
