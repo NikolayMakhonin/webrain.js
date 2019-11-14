@@ -61,11 +61,13 @@ import {ICalcProperty as _ICalcProperty} from './rx/object/properties/contracts'
 import {IPropertyChangedObject as _IPropertyChangedObject} from './rx/object/IPropertyChanged'
 import {
 	IObservable as _IObservable,
+	ISubscriber as _ISubscriber,
 	IUnsubscribe as _IUnsubscribe,
 	IUnsubscribeOrVoid as _IUnsubscribeOrVoid,
 } from './rx/subjects/observable'
 import {ISubject as _ISubject} from './rx/subjects/subject'
 
+export type ISubscriber<T> = _ISubscriber<T>
 export type IUnsubscribe = _IUnsubscribe
 export type IUnsubscribeOrVoid = _IUnsubscribeOrVoid
 export type IDeSerializeValue = _IDeSerializeValue
