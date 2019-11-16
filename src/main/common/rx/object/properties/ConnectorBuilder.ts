@@ -1,4 +1,5 @@
 import {createFunction} from '../../../helpers/helpers'
+import {webrainOptions} from '../../../helpers/webrainOptions'
 import {Debugger} from '../../Debugger'
 import {ValueKeyType} from '../../deep-subscribe/contracts/common'
 import {deepSubscribeRule} from '../../deep-subscribe/deep-subscribe'
@@ -76,8 +77,10 @@ export class ConnectorBuilder<
 		const setOptions = options && options.setOptions
 
 		// optimization
-		const baseGetValue = options && options.getValue || createFunction(`return this.__fields["${name}"]`) as any
-		const baseSetValue = options && options.setValue || createFunction('v', `this.__fields["${name}"] = v`) as any
+		const baseGetValue = options && options.getValue
+			|| createFunction(() => (function() { return this.__fields[name] }), `return this.__fields["${name}"]`) as any
+		const baseSetValue = options && options.setValue
+			|| createFunction(() => (function(v) { this.__fields[name] = v }), 'v', `this.__fields["${name}"] = v`) as any
 
 		const getValue = !writable ? baseGetValue : function(): TValue {
 			return baseGetValue.call(this).value

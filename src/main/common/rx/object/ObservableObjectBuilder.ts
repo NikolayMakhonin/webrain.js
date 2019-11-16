@@ -54,8 +54,10 @@ export class ObservableObjectBuilder<TObject extends ObservableClass> {
 		}
 
 		// optimization
-		const getValue = options && options.getValue || createFunction(`return this.__fields["${name}"]`) as any
-		const setValue = options && options.setValue || createFunction('v', `this.__fields["${name}"] = v`) as any
+		const getValue = options && options.getValue
+			|| createFunction(() => (function() { return this.__fields[name] }), `return this.__fields["${name}"]`) as any
+		const setValue = options && options.setValue
+			|| createFunction(() => (function(v) { this.__fields[name] = v }), 'v', `this.__fields["${name}"] = v`) as any
 		const set = setOptions
 			? _setExt.bind(null, name, getValue, setValue, setOptions)
 			: _set.bind(null, name, getValue, setValue)
@@ -115,10 +117,12 @@ export class ObservableObjectBuilder<TObject extends ObservableClass> {
 		const update = options && options.update
 
 		// optimization
-		const getValue = options && options.getValue || createFunction(`return this.__fields["${name}"]`) as any
+		const getValue = options && options.getValue
+			|| createFunction(() => (function() { return this.__fields[name] }), `return this.__fields["${name}"]`) as any
 		let setValue
 		if (update || factory) {
-			setValue = options && options.setValue || createFunction('v', `this.__fields["${name}"] = v`) as any
+			setValue = options && options.setValue
+				|| createFunction(() => (function(v) { this.__fields[name] = v }), 'v', `this.__fields["${name}"] = v`) as any
 		}
 
 		let setOnUpdate
