@@ -33,15 +33,19 @@ export class RuleBuilder<TObject = any, TValueKeys extends string | number = nev
 {
 	public ruleFirst: IRule
 	public ruleLast: IRule
+	public valuePropertyDefaultName: string
 	public autoInsertValuePropertyDefault: boolean
 
 	constructor({
 		rule,
+		valuePropertyDefaultName = VALUE_PROPERTY_DEFAULT,
 		autoInsertValuePropertyDefault = true,
 	}: {
 		rule?: IRule,
+		valuePropertyDefaultName?: string,
 		autoInsertValuePropertyDefault?: boolean,
 	} = {}) {
+		this.valuePropertyDefaultName = valuePropertyDefaultName
 		this.autoInsertValuePropertyDefault = autoInsertValuePropertyDefault
 		if (rule != null) {
 			this.ruleFirst = rule
@@ -74,7 +78,11 @@ export class RuleBuilder<TObject = any, TValueKeys extends string | number = nev
 				10,
 				(o: any) => hasDefaultProperty(o) ? RuleRepeatAction.Next : RuleRepeatAction.Fork,
 				b => b.ruleSubscribe<TValue>(
-					new RuleSubscribeObjectPropertyNames(VALUE_PROPERTY_PREFIX, VALUE_PROPERTY_DEFAULT as any),
+					this.valuePropertyDefaultName === VALUE_PROPERTY_DEFAULT
+						? new RuleSubscribeObjectPropertyNames(VALUE_PROPERTY_PREFIX, VALUE_PROPERTY_DEFAULT as any)
+						: new RuleSubscribeObjectValuePropertyNames(
+							VALUE_PROPERTY_PREFIX + this.valuePropertyDefaultName, this.valuePropertyDefaultName,
+						),
 				))
 	}
 
@@ -431,6 +439,7 @@ export class RuleBuilder<TObject = any, TValueKeys extends string | number = nev
 			rule: optionsOnly || !this.ruleFirst
 				? null
 				: this.ruleFirst.clone(),
+			valuePropertyDefaultName: this.valuePropertyDefaultName,
 			autoInsertValuePropertyDefault: this.autoInsertValuePropertyDefault,
 		})
 	}

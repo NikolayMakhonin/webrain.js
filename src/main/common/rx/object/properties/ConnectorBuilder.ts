@@ -63,7 +63,9 @@ export class ConnectorBuilder<
 	): this & { object: { [newProp in Name]: TValue } } {
 		const {object} = this
 
-		let ruleBuilder = new RuleBuilder<TValue, TValueKeys>()
+		let ruleBuilder = new RuleBuilder<TValue, TValueKeys>({
+			valuePropertyDefaultName: 'last',
+		})
 		if (object instanceof Connector) {
 			ruleBuilder = buildSourceRule(ruleBuilder as any) as any
 		}
