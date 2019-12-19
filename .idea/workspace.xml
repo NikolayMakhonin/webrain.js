@@ -7,12 +7,13 @@
     <option name="SHOW_STRUCTURE" value="true" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="69b2ee16-521b-4efd-b473-8e19e3df4d09" name="Default Changelist" comment="Refactoring deepSubscribe fork iterations completed and tested. Tests OK.">
+    <list default="true" id="69b2ee16-521b-4efd-b473-8e19e3df4d09" name="Default Changelist" comment="Improved createFunction - disable it if CSP is not allowed &quot;new Function(...)&quot;. Tests OK.">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/common/helpers/helpers.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/common/helpers/helpers.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/common/helpers/object-unique-id.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/common/helpers/object-unique-id.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/common/index.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/common/index.ts" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/common/rx/object/ObservableObjectBuilder.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/common/rx/object/ObservableObjectBuilder.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/common/rx/object/properties/ConnectorBuilder.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/common/rx/object/properties/ConnectorBuilder.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/test/performance/node/fundamental-operations.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/test/performance/node/fundamental-operations.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/common/rx/object/properties/CalcProperty.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/common/rx/object/properties/CalcProperty.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/test/tests/common/main/rx/object/observable-object-builder.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/test/tests/common/main/rx/object/observable-object-builder.ts" afterDir="false" />
     </list>
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
     <option name="SHOW_DIALOG" value="false" />
@@ -74,12 +75,12 @@
     <property name="ts.external.directory.path" value="L:\Work\_GIT\GitHub\NodeJs\modules\webrain\node_modules\typescript\lib" />
   </component>
   <component name="RecentsManager">
-    <key name="CopyFile.RECENT_KEYS">
-      <recent name="L:\Work\_GIT\GitHub\NodeJs\modules\webrain\src\test\tests\common\main\rx\object\properties" />
-      <recent name="L:\Work\_GIT\GitHub\NodeJs\modules\webrain\src\test\tests\common\main\helpers" />
-      <recent name="L:\Work\_GIT\GitHub\NodeJs\modules\webrain\src\main\common\rx\object" />
-      <recent name="L:\Work\_GIT\GitHub\NodeJs\modules\webrain\src\test\tests\common\main\rx\deep-subscribe" />
-      <recent name="L:\Work\_GIT\GitHub\NodeJs\modules\webrain\src\test\performance\node" />
+    <key name="MoveFile.RECENT_KEYS">
+      <recent name="L:\Work\_GIT\GitHub\NodeJs\modules\webrain\src\main\common\rx" />
+      <recent name="L:\Work\_GIT\GitHub\NodeJs\modules\webrain\src\test\tests\common\main\rx\deep-subscribe\helpers\src" />
+      <recent name="L:\Work\_GIT\GitHub\NodeJs\modules\webrain\env\mocha\configs\no-babel" />
+      <recent name="L:\Work\_GIT\GitHub\NodeJs\modules\webrain\env\mocha\configs\babel" />
+      <recent name="L:\Work\_GIT\GitHub\NodeJs\modules\webrain\env\karma" />
     </key>
     <key name="es6.move.members.recent.items">
       <recent name="L:\Work\_GIT\GitHub\NodeJs\modules\webrain\src\main\common\rx\deep-subscribe\helpers\PropertiesPath.ts" />
@@ -88,12 +89,12 @@
       <recent name="L:\Work\_GIT\GitHub\NodeJs\modules\webrain\src\main\common\rx\deep-subscribe\contracts\rule-subscribe.ts" />
       <recent name="L:\Work\_GIT\GitHub\NodeJs\modules\webrain\src\main\common\rx\deep-subscribe\contracts\common.ts" />
     </key>
-    <key name="MoveFile.RECENT_KEYS">
-      <recent name="L:\Work\_GIT\GitHub\NodeJs\modules\webrain\src\main\common\rx" />
-      <recent name="L:\Work\_GIT\GitHub\NodeJs\modules\webrain\src\test\tests\common\main\rx\deep-subscribe\helpers\src" />
-      <recent name="L:\Work\_GIT\GitHub\NodeJs\modules\webrain\env\mocha\configs\no-babel" />
-      <recent name="L:\Work\_GIT\GitHub\NodeJs\modules\webrain\env\mocha\configs\babel" />
-      <recent name="L:\Work\_GIT\GitHub\NodeJs\modules\webrain\env\karma" />
+    <key name="CopyFile.RECENT_KEYS">
+      <recent name="L:\Work\_GIT\GitHub\NodeJs\modules\webrain\src\test\tests\common\main\rx\object\properties" />
+      <recent name="L:\Work\_GIT\GitHub\NodeJs\modules\webrain\src\test\tests\common\main\helpers" />
+      <recent name="L:\Work\_GIT\GitHub\NodeJs\modules\webrain\src\main\common\rx\object" />
+      <recent name="L:\Work\_GIT\GitHub\NodeJs\modules\webrain\src\test\tests\common\main\rx\deep-subscribe" />
+      <recent name="L:\Work\_GIT\GitHub\NodeJs\modules\webrain\src\test\performance\node" />
     </key>
   </component>
   <component name="RunDashboard">
@@ -108,7 +109,7 @@
       </list>
     </option>
   </component>
-  <component name="RunManager" selected="Mocha.common &gt; main &gt; rx &gt; properties &gt; ConnectorBuilder.connect">
+  <component name="RunManager" selected="Mocha.Watch">
     <configuration default="true" type="JavaScriptTestRunnerKarma">
       <config-file value="$PROJECT_DIR$/env/karma/configs/dev.js" />
       <karma-package-dir value="$PROJECT_DIR$/node_modules/karma" />
@@ -277,8 +278,8 @@
       <item itemvalue="Mocha.common &gt; main &gt; rx &gt; deep-subscribe &gt; iterate-rule.any" />
       <item itemvalue="Mocha.common &gt; main &gt; rx &gt; deep-subscribe &gt; iterate-rule" />
       <item itemvalue="Mocha.common &gt; main &gt; rx &gt; deep-subscribe &gt; iterate-rule.nothing" />
-      <item itemvalue="npm.Coverage Mocha Report" />
       <item itemvalue="Mocha.common &gt; main &gt; rx &gt; properties &gt; ConnectorBuilder.connect" />
+      <item itemvalue="npm.Coverage Mocha Report" />
     </list>
     <recent_temporary>
       <list>
@@ -297,13 +298,6 @@
       <option name="number" value="Default" />
       <option name="presentableId" value="Default" />
       <updated>1567687848586</updated>
-    </task>
-    <task id="LOCAL-00115" summary="Fix merger and deepSubscribe small errors">
-      <created>1569847664607</created>
-      <option name="number" value="00115" />
-      <option name="presentableId" value="LOCAL-00115" />
-      <option name="project" value="LOCAL" />
-      <updated>1569847664607</updated>
     </task>
     <task id="LOCAL-00116" summary="CalcProperty interface refactoring. Tests OK.">
       <created>1569851345852</created>
@@ -641,7 +635,14 @@
       <option name="project" value="LOCAL" />
       <updated>1573718521622</updated>
     </task>
-    <option name="localTasksCounter" value="164" />
+    <task id="LOCAL-00164" summary="Improved createFunction - disable it if CSP is not allowed &quot;new Function(...)&quot;. Tests OK.">
+      <created>1573896967079</created>
+      <option name="number" value="00164" />
+      <option name="presentableId" value="LOCAL-00164" />
+      <option name="project" value="LOCAL" />
+      <updated>1573896967080</updated>
+    </task>
+    <option name="localTasksCounter" value="165" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -709,7 +710,6 @@
   <component name="VcsManagerConfiguration">
     <option name="CHECK_CODE_SMELLS_BEFORE_PROJECT_COMMIT" value="false" />
     <option name="CHECK_NEW_TODO" value="false" />
-    <MESSAGE value="Build OK." />
     <MESSAGE value="Rename CalcObjectDebugger to Debugger" />
     <MESSAGE value="Improved Debugger" />
     <MESSAGE value="Implemented resolveAsyncAll, resolveAsyncAny but not tested" />
@@ -734,7 +734,8 @@
     <MESSAGE value="Refactoring deepSubscribe fork iterations in process ... Tests OK." />
     <MESSAGE value="Refactoring deepSubscribe fork iterations completed and tested. Tests OK." />
     <MESSAGE value="Facade changes" />
-    <option name="LAST_COMMIT_MESSAGE" value="Facade changes" />
+    <MESSAGE value="Improved createFunction - disable it if CSP is not allowed &quot;new Function(...)&quot;. Tests OK." />
+    <option name="LAST_COMMIT_MESSAGE" value="Improved createFunction - disable it if CSP is not allowed &quot;new Function(...)&quot;. Tests OK." />
   </component>
   <component name="XDebuggerManager">
     <breakpoint-manager>
@@ -769,19 +770,16 @@
         <line-breakpoint enabled="true" type="javascript">
           <url>file://$PROJECT_DIR$/src/main/common/rx/object/properties/ConnectorBuilder.ts</url>
           <line>79</line>
-          <properties lambdaOrdinal="-1" />
           <option name="timeStamp" value="259" />
         </line-breakpoint>
         <line-breakpoint enabled="true" type="javascript">
           <url>file://$PROJECT_DIR$/src/main/common/rx/object/ObservableObjectBuilder.ts</url>
           <line>56</line>
-          <properties lambdaOrdinal="-1" />
           <option name="timeStamp" value="260" />
         </line-breakpoint>
         <line-breakpoint enabled="true" type="javascript">
           <url>file://$PROJECT_DIR$/src/main/common/helpers/helpers.ts</url>
           <line>70</line>
-          <properties lambdaOrdinal="-1" />
           <option name="timeStamp" value="262" />
         </line-breakpoint>
       </breakpoints>

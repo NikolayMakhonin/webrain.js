@@ -4,13 +4,13 @@ import '../extensions/autoConnect'
 import {PropertyChangedEvent} from './IPropertyChanged'
 import {_set, _setExt, ISetOptions, ObservableClass} from './ObservableClass'
 
-export interface IFieldOptions {
+export interface IFieldOptions<TObject, TValue> {
 	hidden?: boolean,
-	getValue?: () => any
-	setValue?: (value: any) => void
+	getValue?: (this: TObject) => TValue
+	setValue?: (this: TObject, value: TValue) => void
 }
 
-export interface IWritableFieldOptions<TObject, TValue> extends IFieldOptions {
+export interface IWritableFieldOptions<TObject, TValue> extends IFieldOptions<TObject, TValue> {
 	setOptions?: ISetOptions<TObject, TValue>,
 }
 

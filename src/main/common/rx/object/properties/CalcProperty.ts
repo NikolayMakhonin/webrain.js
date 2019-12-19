@@ -197,6 +197,7 @@ export class CalcProperty<TValue, TInput = any>
 			propertyChangedIfCanEmit.onPropertyChanged(
 				{name: VALUE_PROPERTY_DEFAULT, oldValue, newValue},
 				{name: 'wait', oldValue, newValue},
+				// this._hasValue ? null : {name: 'lastOrWait', oldValue, newValue},
 			)
 		}
 	}
@@ -213,6 +214,7 @@ export class CalcProperty<TValue, TInput = any>
 		if (propertyChangedIfCanEmit) {
 			propertyChangedIfCanEmit.onPropertyChanged(
 				{name: 'last', oldValue, newValue},
+				// {name: 'lastOrWait', oldValue, newValue},
 			)
 		}
 	}
@@ -248,6 +250,7 @@ export class CalcProperty<TValue, TInput = any>
 		return this.state.value
 	}
 
+	/** @deprecated not needed and not implemented. Use 'last' instead. */
 	get lastOrWait(): ThenableOrValue<TValue> {
 		this._deferredCalc.calc()
 		return this._hasValue

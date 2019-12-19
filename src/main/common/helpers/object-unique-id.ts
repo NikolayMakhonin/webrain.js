@@ -1,6 +1,6 @@
 let nextObjectId: number = 1
 
-const UNIQUE_ID_PROPERTY_NAME = '458d5769-52bc-489a-b45e-98ac7f296fd9'
+const UNIQUE_ID_PROPERTY_NAME = '458d576952bc489ab45e98ac7f296fd9'
 
 export function hasObjectUniqueId(object: object): boolean {
 	return object != null && Object.prototype.hasOwnProperty.call(object, UNIQUE_ID_PROPERTY_NAME)
