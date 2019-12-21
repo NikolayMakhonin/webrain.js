@@ -83,8 +83,7 @@ export class CalcObjectBuilder<TObject extends ObservableClass, TValueKeys exten
 		)
 	}
 
-	// @ts-ignore
-	public connect<
+	public calcConnect<
 		Name extends keyof TObject,
 	>(
 		name: Name,
