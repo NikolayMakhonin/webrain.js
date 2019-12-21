@@ -94,7 +94,7 @@ class ValueState<TTarget, TSource> {
 	public get meta(): ITypeMetaMerger<TTarget, TSource> {
 		let { _meta } = this
 		if (!_meta) {
-			_meta = this.mergerState.mergerVisitor.typeMeta.getMeta(this.type)
+			_meta = this.mergerState.mergerVisitor.getMeta(this.type)
 			if (!_meta) {
 				throw new Error(`Class (${this.type && this.type.name}) have no type meta`)
 			}
@@ -477,12 +477,12 @@ enum ObjectStatus {
 }
 
 export class MergerVisitor implements IMergerVisitor {
-	public readonly typeMeta: ITypeMetaMergerCollection
+	public readonly getMeta: (type: TClass<any>) => ITypeMetaMerger<any, any>
 	// public refs: IRef[]
 	public statuses: ObjectStatus[]
 
-	constructor(typeMeta: ITypeMetaMergerCollection) {
-		this.typeMeta = typeMeta
+	constructor(getMeta: (type: TClass<any>) => ITypeMetaMerger<any, any>) {
+		this.getMeta = getMeta
 	}
 
 	public getStatus(object: any): ObjectStatus {
@@ -779,10 +779,23 @@ export class MergerVisitor implements IMergerVisitor {
 
 export class TypeMetaMergerCollection
 	extends TypeMetaCollection<ITypeMetaMerger<any, any>>
-	implements ITypeMetaMergerCollection {
-	
-	constructor(proto?: ITypeMetaMergerCollection) {
+	implements ITypeMetaMergerCollection
+{
+	public customMeta: (type) => ITypeMetaMerger<any, any>
+
+	constructor({
+		proto,
+		customMeta,
+	}: {
+		proto?: ITypeMetaMergerCollection,
+		customMeta?: (type) => ITypeMetaMerger<any, any>,
+	} = {}) {
 		super(proto || TypeMetaMergerCollection.default)
+		this.customMeta = customMeta
+	}
+
+	public getMeta(type: TClass<any>): ITypeMetaMerger<any, any> {
+		return this.customMeta && this.customMeta(type) || super.getMeta(type)
 	}
 
 	public static default: TypeMetaMergerCollection = new TypeMetaMergerCollection()
@@ -846,19 +859,18 @@ export function registerMerger<TTarget = any, TSource = any>(
 	TypeMetaMergerCollection.default.putType(type, meta)
 }
 
-export function registerMergerPrimitive<TTarget = any, TSource = any>(
-	type: TClass<TTarget>,
+function createPrimitiveTypeMetaMerger<TTarget = any, TSource = any>(
 	meta?: ITypeMetaMerger<TTarget, TSource>,
 ) {
-	registerMerger(type, {
+	return {
 		preferClone: false,
 		...meta,
 		merger: {
 			merge(
 				merge: IMergeValue,
 				base: TTarget,
-				older: TTarget|TSource,
-				newer: TTarget|TSource,
+				older: TTarget | TSource,
+				newer: TTarget | TSource,
 				set?: (value: any) => void,
 				// preferCloneOlder?: boolean,
 				// preferCloneNewer?: boolean,
@@ -869,22 +881,46 @@ export function registerMergerPrimitive<TTarget = any, TSource = any>(
 			},
 			...(meta ? meta.merger : {}),
 		},
-	})
+	}
+}
+
+export function registerMergerPrimitive<TTarget = any, TSource = any>(
+	type: TClass<TTarget>,
+	meta?: ITypeMetaMerger<TTarget, TSource>,
+) {
+	registerMerger(type, createPrimitiveTypeMetaMerger(meta))
 }
 
 // endregion
 
 // region ObjectMerger
 
+const primitiveTypeMetaMerger = createPrimitiveTypeMetaMerger()
+const observableObjectProperties = ['propertyChanged']
+
 export class ObjectMerger implements IObjectMerger {
 	public typeMeta: ITypeMetaMergerCollection
 
 	constructor(typeMeta?: ITypeMetaMergerCollection) {
-		this.typeMeta = new TypeMetaMergerCollection(typeMeta)
+		this.typeMeta = new TypeMetaMergerCollection({
+			proto: typeMeta,
+		})
 		this.merge = this.merge.bind(this)
 	}
 
 	public static default: ObjectMerger = new ObjectMerger()
+	public static observableOnly: ObjectMerger = new ObjectMerger(new TypeMetaMergerCollection({
+		customMeta: type => {
+			const prototype = type.prototype
+			for (let i = 0, len = observableObjectProperties.length; i < len; i++) {
+				if (Object.prototype.hasOwnProperty.call(prototype, observableObjectProperties[i])) {
+					return primitiveTypeMetaMerger
+				}
+			}
+
+			return null
+		},
+	}))
 
 	public merge<TTarget = any, TSource = any>(
 		base: TTarget,
@@ -895,7 +931,7 @@ export class ObjectMerger implements IObjectMerger {
 		preferCloneNewer?: boolean,
 		options?: IMergeVisitorOptions<TTarget, TSource>,
 	): boolean {
-		const merger = new MergerVisitor(this.typeMeta)
+		const merger = new MergerVisitor(type => this.typeMeta.getMeta(type))
 		const mergedValue = merger.merge(
 			base,
 			older,
