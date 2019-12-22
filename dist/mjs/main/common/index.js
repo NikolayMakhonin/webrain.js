@@ -39,4 +39,7 @@ export { CalcStat } from './helpers/CalcStat';
 export { VALUE_PROPERTY_DEFAULT } from './helpers/value-property';
 export { delay } from './helpers/helpers';
 export { DeferredCalc } from './rx/deferred-calc/DeferredCalc';
-export { RuleBuilder } from './rx/deep-subscribe/RuleBuilder'; // Interfaces:
+export { RuleBuilder } from './rx/deep-subscribe/RuleBuilder';
+export * from './test/Assert';
+export * from './test/Mocha';
+export * from './test/unhandledErrors'; // Interfaces:
