@@ -5,15 +5,18 @@ import { IRepeatCondition, IRule } from './contracts/rules';
 export declare class RuleBuilder<TObject = any, TValueKeys extends string | number = never> implements IRuleBuilder<TObject, TValueKeys> {
     ruleFirst: IRule;
     ruleLast: IRule;
+    valuePropertyDefaultName: string;
     autoInsertValuePropertyDefault: boolean;
-    constructor({ rule, autoInsertValuePropertyDefault, }?: {
+    constructor({ rule, valuePropertyDefaultName, autoInsertValuePropertyDefault, }?: {
         rule?: IRule;
+        valuePropertyDefaultName?: string;
         autoInsertValuePropertyDefault?: boolean;
     });
+    noAutoRules(): this;
     result(): IRule;
     valuePropertyDefault<TValue>(): RuleBuilder<TValue, TValueKeys>;
     rule<TValue>(rule: IRule): RuleBuilder<TValue, TValueKeys>;
-    ruleSubscribe<TValue>(ruleSubscribe: IRuleSubscribe<TObject, TValue>, description?: string): RuleBuilder<TValue, TValueKeys>;
+    ruleSubscribe<TValue>(ruleSubscribe: IRuleSubscribe<TObject, TValue>): RuleBuilder<TValue, TValueKeys>;
     nothing(): RuleBuilder<TObject, TValueKeys>;
     never(): RuleBuilder<any, TValueKeys>;
     /**
@@ -35,12 +38,12 @@ export declare class RuleBuilder<TObject = any, TValueKeys extends string | numb
     /**
      * Object property, Array index
      */
-    propertyNames<TKeys extends keyof TObject | ANY, TValue = ObjectValueOf<TObject, TKeys extends ANY ? any : TKeys>>(...propertiesNames: TKeys[]): RuleBuilder<TValue, TValueKeys>;
+    propertyNames<TKeys extends (keyof TObject) | ANY, TValue = ObjectValueOf<TObject, TKeys extends ANY ? any : TKeys>>(...propertiesNames: TKeys[]): RuleBuilder<TValue, TValueKeys>;
     /**
      * propertyNames
      * @param propertiesNames
      */
-    p<TKeys extends keyof TObject | ANY, TValue = ObjectValueOf<TObject, TKeys extends ANY ? any : TKeys>>(...propertiesNames: TKeys[]): RuleBuilder<TValue, TValueKeys>;
+    p<TKeys extends (keyof TObject) | ANY, TValue = ObjectValueOf<TObject, TKeys extends ANY ? any : TKeys>>(...propertiesNames: TKeys[]): RuleBuilder<TValue, TValueKeys>;
     /**
      * Object property, Array index
      */

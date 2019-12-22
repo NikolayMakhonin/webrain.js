@@ -16,7 +16,7 @@ var _defineProperty = _interopRequireDefault(require("@babel/runtime-corejs3/cor
 var _isFrozen = _interopRequireDefault(require("@babel/runtime-corejs3/core-js-stable/object/is-frozen"));
 
 var nextObjectId = 1;
-var UNIQUE_ID_PROPERTY_NAME = '458d5769-52bc-489a-b45e-98ac7f296fd9';
+var UNIQUE_ID_PROPERTY_NAME = '458d576952bc489ab45e98ac7f296fd9';
 
 function hasObjectUniqueId(object) {
   return object != null && Object.prototype.hasOwnProperty.call(object, UNIQUE_ID_PROPERTY_NAME);

@@ -286,7 +286,7 @@ function () {
     value: function subscribePrivate(ruleBuilder, i) {
       var _this = this;
 
-      var subscribeValue = function subscribeValue(newValue, parent, key) {
+      var subscribeValue = function subscribeValue(newValue, parent, key, propertiesPath, rule) {
         if (_this._doNotSubscribeNonObjectValues && !(newValue instanceof Object)) {
           if (typeof _this._expectedLastValue[i][_this._expectedLastValue[i].length - 1] === 'undefined' || _this._subscribersCount[i] === 0) {
             _this._expectedLastValue[i].push(newValue);
@@ -324,7 +324,7 @@ function () {
         } : null;
       };
 
-      var unsubscribeValue = function unsubscribeValue(oldValue, parent, key, isUnsubscribed) {
+      var unsubscribeValue = function unsubscribeValue(oldValue, parent, key, propertiesPath, rule, isUnsubscribed) {
         if (_this._performanceTest) {
           return;
         }
@@ -347,13 +347,13 @@ function () {
 
       this._unsubscribe[i] = (0, _deepSubscribe.deepSubscribe)({
         object: this._object,
-        changeValue: function changeValue(key, oldValue, newValue, parent, changeType, keyType, isUnsubscribed) {
+        changeValue: function changeValue(key, oldValue, newValue, parent, changeType, keyType, propertiesPath, rule, isUnsubscribed) {
           if ((changeType & _common.ValueChangeType.Unsubscribe) !== 0) {
-            unsubscribeValue(oldValue, parent, key, isUnsubscribed);
+            unsubscribeValue(oldValue, parent, key, propertiesPath, rule, isUnsubscribed);
           }
 
           if ((changeType & _common.ValueChangeType.Subscribe) !== 0) {
-            return subscribeValue(newValue, parent, key);
+            return subscribeValue(newValue, parent, key, propertiesPath, rule);
           }
         },
         lastValue: function lastValue(value, parent, propertyName) {

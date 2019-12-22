@@ -9,7 +9,7 @@ export declare class ObservableMap<K, V> extends MapChangedObject<K, V> implemen
     delete(key: K): boolean;
     clear(): void;
     readonly [Symbol.toStringTag]: string;
-    readonly size: number;
+    get size(): number;
     [Symbol.iterator](): IterableIterator<[K, V]>;
     get(key: K): V | undefined;
     entries(): IterableIterator<[K, V]>;

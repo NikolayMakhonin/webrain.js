@@ -50,8 +50,16 @@ function () {
       } // optimization
 
 
-      var getValue = options && options.getValue || (0, _helpers.createFunction)("return this.__fields[\"" + name + "\"]");
-      var setValue = options && options.setValue || (0, _helpers.createFunction)('v', "this.__fields[\"" + name + "\"] = v");
+      var getValue = options && options.getValue || (0, _helpers.createFunction)(function () {
+        return function () {
+          return this.__fields[name];
+        };
+      }, "return this.__fields[\"" + name + "\"]");
+      var setValue = options && options.setValue || (0, _helpers.createFunction)(function () {
+        return function (v) {
+          this.__fields[name] = v;
+        };
+      }, 'v', "this.__fields[\"" + name + "\"] = v");
 
       var _set2 = setOptions ? (0, _bind.default)(_ObservableClass._setExt).call(_ObservableClass._setExt, null, name, getValue, setValue, setOptions) : (0, _bind.default)(_ObservableClass._set).call(_ObservableClass._set, null, name, getValue, setValue);
 
@@ -102,11 +110,19 @@ function () {
 
       var update = options && options.update; // optimization
 
-      var getValue = options && options.getValue || (0, _helpers.createFunction)("return this.__fields[\"" + name + "\"]");
+      var getValue = options && options.getValue || (0, _helpers.createFunction)(function () {
+        return function () {
+          return this.__fields[name];
+        };
+      }, "return this.__fields[\"" + name + "\"]");
       var setValue;
 
       if (update || factory) {
-        setValue = options && options.setValue || (0, _helpers.createFunction)('v', "this.__fields[\"" + name + "\"] = v");
+        setValue = options && options.setValue || (0, _helpers.createFunction)(function () {
+          return function (v) {
+            this.__fields[name] = v;
+          };
+        }, 'v', "this.__fields[\"" + name + "\"] = v");
       }
 
       var setOnUpdate;

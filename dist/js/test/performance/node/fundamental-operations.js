@@ -2135,8 +2135,16 @@ function compareDefault(o1, o2) {
       (0, _createClass2.default)(ObservableObjectBuilderTest, [{
         key: "writable",
         value: function writable(name) {
-          var getValue = (0, _helpers.createFunction)('o', "return o.__fields[\"" + name + "\"]");
-          var setValue = (0, _helpers.createFunction)('o', 'v', "o.__fields[\"" + name + "\"] = v"); // let getValue = createGetFunction(name, o => { getValue = o as any }) as (o: { [newProp in Name]: T }) => T
+          var getValue = (0, _helpers.createFunction)(function () {
+            return function () {
+              return this.__fields[name];
+            };
+          }, 'o', "return o.__fields[\"" + name + "\"]");
+          var setValue = (0, _helpers.createFunction)(function () {
+            return function (v) {
+              this.__fields[name] = v;
+            };
+          }, 'o', 'v', "o.__fields[\"" + name + "\"] = v"); // let getValue = createGetFunction(name, o => { getValue = o as any }) as (o: { [newProp in Name]: T }) => T
           // const getValue = getValueBase.bind(null, name)
           // const setValue = createSetFunction(name) as (o: { [newProp in Name]: T }, v: T) => void
 

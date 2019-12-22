@@ -1,19 +1,24 @@
 import { IConditionRule, IRepeatCondition, IRule, IRuleAny, IRuleIf, IRuleRepeat, RuleType } from './contracts/rules';
+export declare function ruleTypeToString(ruleType: RuleType): "Never" | "Action" | "Any" | "If" | "Nothing" | "Repeat";
+export declare const RULE_STRING_SEPARATOR = " > ";
 export declare class Rule implements IRule {
     readonly type: RuleType;
     subType?: any;
     next?: IRule;
     description?: string;
-    constructor(type: RuleType);
+    constructor(type: RuleType, description?: string);
     clone(): IRule;
+    toString(): string;
 }
 export declare class RuleNothing extends Rule {
+    static instance: Readonly<RuleNothing>;
     constructor();
 }
 export declare class RuleNever extends Rule {
     static instance: Readonly<RuleNever>;
     private constructor();
-    next: IRule;
+    get next(): IRule;
+    set next(value: IRule);
     clone(): this;
 }
 export declare class RuleIf<TValue> extends Rule implements IRuleIf<TValue> {

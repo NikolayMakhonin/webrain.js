@@ -4,13 +4,20 @@ var _interopRequireDefault = require("@babel/runtime-corejs3/helpers/interopRequ
 
 exports.__esModule = true;
 exports.subscribeDependencies = subscribeDependencies;
+exports.dependenciesSubscriber = dependenciesSubscriber;
 exports.DependenciesBuilder = void 0;
+
+var _map = _interopRequireDefault(require("@babel/runtime-corejs3/core-js-stable/instance/map"));
 
 var _classCallCheck2 = _interopRequireDefault(require("@babel/runtime-corejs3/helpers/classCallCheck"));
 
 var _createClass2 = _interopRequireDefault(require("@babel/runtime-corejs3/helpers/createClass"));
 
+var _webrainOptions = require("../../../helpers/webrainOptions");
+
 var _deepSubscribe = require("../../deep-subscribe/deep-subscribe");
+
+var _PropertiesPath = require("../../deep-subscribe/helpers/PropertiesPath");
 
 var _RuleBuilder = require("../../deep-subscribe/RuleBuilder");
 
@@ -40,14 +47,14 @@ function () {
         throw new Error('buildRule() return null or not initialized RuleBuilder');
       }
 
-      this.dependencies.push([ruleBase, predicate ? function (target, value, parent, key, keyType) {
+      this.dependencies.push([ruleBase, predicate ? function (target, value, parent, key, keyType, propertiesPath, rule) {
         // prevent circular self dependency
         if (target === parent) {
           return;
         }
 
-        if (predicate(value, parent, key, keyType)) {
-          action(target, value, parent, key, keyType);
+        if (predicate(value, parent, key, keyType, propertiesPath, rule)) {
+          action(target, value, parent, key, keyType, propertiesPath, rule);
         }
       } : action]);
       return this;
@@ -58,20 +65,75 @@ function () {
 
 exports.DependenciesBuilder = DependenciesBuilder;
 
-function subscribeDependencies(subscribeObject, actionTarget, dependencies) {
+function subscribeDependencies(subscribeObject, actionTarget, dependencies, states) {
   var unsubscribers = [];
 
   var _loop = function _loop(i, len) {
     var _dependencies$i = dependencies[i],
-        rule = _dependencies$i[0],
+        _rule = _dependencies$i[0],
         action = _dependencies$i[1];
-    unsubscribers.push((0, _deepSubscribe.deepSubscribeRule)({
+    var subscribed = void 0;
+    var state = states && states[i];
+    var subscribeState = state && state[i] && {};
+    var unsubscribeState = void 0;
+    var unsubscribe = (0, _deepSubscribe.deepSubscribeRule)({
       object: subscribeObject,
-      changeValue: function changeValue(key, oldValue, newValue, parent, changeType, keyType) {
-        action(actionTarget, newValue, parent, key, keyType);
+      changeValue: function changeValue(key, oldValue, newValue, parent, changeType, keyType, propertiesPath, rule) {
+        if (!subscribed && state) {
+          var newPropertiesPath = new _PropertiesPath.PropertiesPath(newValue, propertiesPath, key, keyType, rule);
+          var id = newPropertiesPath.id;
+
+          if (Object.prototype.hasOwnProperty.call(state, id)) {
+            if (!subscribeState) {
+              var _subscribeState;
+
+              subscribeState = (_subscribeState = {}, _subscribeState[id] = true, _subscribeState);
+            } else if (typeof newValue === 'undefined' && subscribeState[id]) {
+              return;
+            } else {
+              subscribeState[id] = true;
+            }
+
+            var stateValue = state[id].value;
+
+            if (_webrainOptions.webrainOptions.equalsFunc(stateValue, newValue)) {
+              return;
+            } // action(actionTarget, stateValue, parent, key, keyType, propertiesPath, rule)
+
+          }
+        }
+
+        if (unsubscribeState) {
+          var _newPropertiesPath = new _PropertiesPath.PropertiesPath(oldValue, propertiesPath, key, keyType, rule);
+
+          var _id = _newPropertiesPath.id;
+          unsubscribeState[_id] = _newPropertiesPath;
+        } else {
+          action(actionTarget, newValue, parent, key, keyType, propertiesPath, rule);
+        }
       },
-      rule: rule.clone()
-    }));
+      rule: _rule.clone(),
+      debugTarget: actionTarget
+    });
+    unsubscribers.push(unsubscribe && function () {
+      unsubscribeState = {};
+      unsubscribe();
+      return unsubscribeState;
+    });
+
+    if (state) {
+      for (var id in state) {
+        if (Object.prototype.hasOwnProperty.call(state, id) && (!subscribeState || !Object.prototype.hasOwnProperty.call(subscribeState, id))) {
+          var _propertiesPath = state[id];
+          action(actionTarget, void 0, _propertiesPath.parent && _propertiesPath.parent.value, _propertiesPath.key, _propertiesPath.keyType, _propertiesPath.parent, _propertiesPath.rule);
+          break;
+        }
+      }
+    } else {
+      state = null;
+    }
+
+    subscribed = true;
   };
 
   for (var i = 0, len = dependencies.length; i < len; i++) {
@@ -79,8 +141,21 @@ function subscribeDependencies(subscribeObject, actionTarget, dependencies) {
   }
 
   return function () {
-    for (var i = 0, len = unsubscribers.length; i < len; i++) {
-      unsubscribers[i]();
+    if (unsubscribers) {
+      var _unsubscribers = unsubscribers;
+      unsubscribers = null;
+      return (0, _map.default)(_unsubscribers).call(_unsubscribers, function (o) {
+        return o && o();
+      });
     }
+  };
+}
+
+function dependenciesSubscriber(buildRule, action, predicate) {
+  var _actionOn = new DependenciesBuilder().actionOn(buildRule, action, predicate),
+      dependencies = _actionOn.dependencies;
+
+  return function (source, target) {
+    return subscribeDependencies(source, target, dependencies);
   };
 }

@@ -3,7 +3,8 @@
 var _interopRequireDefault = require("@babel/runtime-corejs3/helpers/interopRequireDefault");
 
 exports.__esModule = true;
-exports.RuleRepeat = exports.RuleAny = exports.RuleIf = exports.RuleNever = exports.RuleNothing = exports.Rule = void 0;
+exports.ruleTypeToString = ruleTypeToString;
+exports.RuleRepeat = exports.RuleAny = exports.RuleIf = exports.RuleNever = exports.RuleNothing = exports.Rule = exports.RULE_STRING_SEPARATOR = void 0;
 
 var _freeze = _interopRequireDefault(require("@babel/runtime-corejs3/core-js-stable/object/freeze"));
 
@@ -25,12 +26,49 @@ var _createClass2 = _interopRequireDefault(require("@babel/runtime-corejs3/helpe
 
 var _rules = require("./contracts/rules");
 
+function ruleTypeToString(ruleType) {
+  switch (ruleType) {
+    case _rules.RuleType.Never:
+      return 'Never';
+
+    case _rules.RuleType.Action:
+      return 'Action';
+
+    case _rules.RuleType.Any:
+      return 'Any';
+
+    case _rules.RuleType.If:
+      return 'If';
+
+    case _rules.RuleType.Nothing:
+      return 'Nothing';
+
+    case _rules.RuleType.Repeat:
+      return 'Repeat';
+
+    default:
+      throw new Error('Unknown RuleType: ' + ruleType);
+  }
+}
+
+var RULE_STRING_SEPARATOR = ' > ';
+exports.RULE_STRING_SEPARATOR = RULE_STRING_SEPARATOR;
+
+function ruleToString(rule, customDescription, nestedRulesStr) {
+  var description = customDescription || this.description || ruleTypeToString(this.type);
+  return "" + description + (nestedRulesStr ? '(' + nestedRulesStr + ')' : '') + (this.next ? ' > ' + this.next : '');
+}
+
 var Rule =
 /*#__PURE__*/
 function () {
-  function Rule(type) {
+  function Rule(type, description) {
     (0, _classCallCheck2.default)(this, Rule);
     this.type = type;
+
+    if (description != null) {
+      this.description = description;
+    }
   }
 
   (0, _createClass2.default)(Rule, [{
@@ -39,11 +77,13 @@ function () {
       var type = this.type,
           subType = this.subType,
           description = this.description,
-          next = this.next;
+          next = this.next,
+          toString = this.toString;
       var clone = {
         type: type,
         subType: subType,
-        description: description
+        description: description,
+        toString: toString
       };
 
       if (next != null) {
@@ -51,6 +91,11 @@ function () {
       }
 
       return clone;
+    }
+  }, {
+    key: "toString",
+    value: function toString() {
+      return ruleToString(this);
     }
   }]);
   return Rule;
@@ -76,6 +121,7 @@ function (_Rule) {
 }(Rule);
 
 exports.RuleNothing = RuleNothing;
+RuleNothing.instance = (0, _freeze.default)(new RuleNothing());
 
 var RuleNever =
 /*#__PURE__*/
@@ -121,6 +167,7 @@ function (_Rule3) {
     (0, _classCallCheck2.default)(this, RuleIf);
     _this3 = (0, _possibleConstructorReturn2.default)(this, (0, _getPrototypeOf2.default)(RuleIf).call(this, _rules.RuleType.If));
     _this3.conditionRules = conditionRules;
+    _this3.description = '<if>';
     return _this3;
   }
 
@@ -152,6 +199,7 @@ function (_Rule4) {
     (0, _classCallCheck2.default)(this, RuleAny);
     _this4 = (0, _possibleConstructorReturn2.default)(this, (0, _getPrototypeOf2.default)(RuleAny).call(this, _rules.RuleType.Any));
     _this4.rules = rules;
+    _this4.description = '<any>';
     return _this4;
   }
 
@@ -186,6 +234,7 @@ function (_Rule5) {
     _this5.countMax = countMax;
     _this5.condition = condition;
     _this5.rule = rule;
+    _this5.description = '<repeat>';
     return _this5;
   }
 

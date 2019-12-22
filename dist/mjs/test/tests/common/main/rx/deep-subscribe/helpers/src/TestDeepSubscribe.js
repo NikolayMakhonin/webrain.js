@@ -203,7 +203,7 @@ export class TestDeepSubscribe {
   }
 
   subscribePrivate(ruleBuilder, i) {
-    const subscribeValue = (newValue, parent, key) => {
+    const subscribeValue = (newValue, parent, key, propertiesPath, rule) => {
       if (this._doNotSubscribeNonObjectValues && !(newValue instanceof Object)) {
         if (typeof this._expectedLastValue[i][this._expectedLastValue[i].length - 1] === 'undefined' || this._subscribersCount[i] === 0) {
           this._expectedLastValue[i].push(newValue);
@@ -241,7 +241,7 @@ export class TestDeepSubscribe {
       } : null;
     };
 
-    const unsubscribeValue = (oldValue, parent, key, isUnsubscribed) => {
+    const unsubscribeValue = (oldValue, parent, key, propertiesPath, rule, isUnsubscribed) => {
       if (this._performanceTest) {
         return;
       }
@@ -265,13 +265,13 @@ export class TestDeepSubscribe {
     this._unsubscribe[i] = deepSubscribe({
       object: this._object,
 
-      changeValue(key, oldValue, newValue, parent, changeType, keyType, isUnsubscribed) {
+      changeValue(key, oldValue, newValue, parent, changeType, keyType, propertiesPath, rule, isUnsubscribed) {
         if ((changeType & ValueChangeType.Unsubscribe) !== 0) {
-          unsubscribeValue(oldValue, parent, key, isUnsubscribed);
+          unsubscribeValue(oldValue, parent, key, propertiesPath, rule, isUnsubscribed);
         }
 
         if ((changeType & ValueChangeType.Subscribe) !== 0) {
-          return subscribeValue(newValue, parent, key);
+          return subscribeValue(newValue, parent, key, propertiesPath, rule);
         }
       },
 

@@ -24,7 +24,7 @@ export function _setExt(name, getValue, setValue, options, object, newValue) {
   const oldValue = getValue ? getValue.call(object) : object.__fields[name];
   const equalsFunc = options.equalsFunc || webrainOptions.equalsFunc;
 
-  if (equalsFunc ? equalsFunc.call(object, oldValue, newValue) : oldValue === newValue) {
+  if (oldValue === newValue || equalsFunc && equalsFunc.call(object, oldValue, newValue)) {
     return false;
   }
 
@@ -55,12 +55,6 @@ export function _setExt(name, getValue, setValue, options, object, newValue) {
     object.__fields[name] = newValue;
   }
 
-  const afterChange = options.afterChange;
-
-  if (afterChange) {
-    afterChange.call(object, newValue);
-  }
-
   if (!options || !options.suppressPropertyChanged) {
     const {
       propertyChangedIfCanEmit
@@ -75,6 +69,12 @@ export function _setExt(name, getValue, setValue, options, object, newValue) {
     }
   }
 
+  const afterChange = options.afterChange;
+
+  if (afterChange) {
+    afterChange.call(object, newValue);
+  }
+
   return true;
 }
 /** @internal */
@@ -82,7 +82,7 @@ export function _setExt(name, getValue, setValue, options, object, newValue) {
 export function _set(name, getValue, setValue, object, newValue) {
   const oldValue = getValue.call(object);
 
-  if (webrainOptions.equalsFunc ? webrainOptions.equalsFunc.call(object, oldValue, newValue) : oldValue === newValue) {
+  if (oldValue === newValue || webrainOptions.equalsFunc && webrainOptions.equalsFunc.call(object, oldValue, newValue)) {
     return false;
   }
 

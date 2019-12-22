@@ -211,6 +211,7 @@ export class Property<TValue, TMergeSource = TValue>
 
 	// region ISerializable
 
+	// noinspection SpellCheckingInspection
 	public static uuid: string = '6f2c51ccd8654baa9a93226e3374ccaf'
 
 	public serialize(serialize: ISerializeValue): ISerializedObject {

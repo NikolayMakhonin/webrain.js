@@ -106,6 +106,7 @@ export class ObjectMap {
     return mergeMaps((target, source) => createMergeMapWrapper(target, source, arrayOrIterable => fillMap(new ObjectMap(), arrayOrIterable)), merge, this, older, newer, preferCloneOlder, preferCloneNewer, options);
   } // endregion
   // region ISerializable
+  // noinspection SpellCheckingInspection
 
 
   serialize(serialize) {

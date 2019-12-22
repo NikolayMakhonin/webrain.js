@@ -40,14 +40,24 @@ export function toSingleCall(func, throwOnMultipleCall) {
     return func(...args);
   };
 }
+
+const allowCreateFunction = (() => {
+  try {
+    const func = new Function('a', 'b', 'return a + b');
+    return !!func;
+  } catch (err) {
+    return false;
+  }
+})();
+
 const createFunctionCache = {}; // tslint:disable-next-line:ban-types
 
-export function createFunction(...args) {
+export function createFunction(alternativeFuncFactory, ...args) {
   const id = args[args.length - 1] + '';
   let func = createFunctionCache[id];
 
   if (!func) {
-    createFunctionCache[id] = func = Function(...args);
+    createFunctionCache[id] = func = allowCreateFunction ? Function(...args) : alternativeFuncFactory();
   }
 
   return func;

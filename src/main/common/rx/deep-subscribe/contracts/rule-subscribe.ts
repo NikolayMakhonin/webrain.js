@@ -1,6 +1,5 @@
 import {IUnsubscribe, IUnsubscribeOrVoid} from '../../subjects/observable'
-import {PropertiesPath} from '../helpers/PropertiesPath'
-import {ValueChangeType, ValueKeyType} from './common'
+import {IPropertiesPath, ValueChangeType, ValueKeyType} from './common'
 import {IRule, IRuleAction} from './rules'
 
 export type IChangeItem<TItem> = (
@@ -14,7 +13,7 @@ export type ISubscribeObject<TObject, TChild> = (
 	object: TObject,
 	immediateSubscribe: boolean,
 	changeItem: IChangeItem<TChild>,
-	propertiesPath?: PropertiesPath,
+	propertiesPath?: IPropertiesPath,
 	rule?: IRule,
 ) => IUnsubscribeOrVoid
 

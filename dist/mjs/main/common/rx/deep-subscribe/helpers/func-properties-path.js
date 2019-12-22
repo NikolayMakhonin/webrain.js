@@ -28,6 +28,7 @@ export function parsePropertiesPath(propertiesPathString) {
   });
 
   if (remains) {
+    // noinspection SpellCheckingInspection
     throw new Error(`Error parse properties path from:\n${propertiesPathString}\nerror in: ${remains}`);
   }
 

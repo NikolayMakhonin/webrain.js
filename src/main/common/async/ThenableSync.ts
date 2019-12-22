@@ -523,7 +523,7 @@ export function resolveAsyncAny<TValue = any, TResult1 = TValue, TResult2 = neve
 
 	return resolveAsync<TValue, TResult1, TResult2>(
 		new ThenableSync((resolve, reject) => {
-			inputPrepared.map(o => o.then(resolve, reject))
+			inputPrepared.forEach(o => o.then(resolve, reject))
 		}),
 		onfulfilled,
 		onrejected,

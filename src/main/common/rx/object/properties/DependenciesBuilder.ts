@@ -1,20 +1,20 @@
 import {webrainOptions} from '../../../helpers/webrainOptions'
-import {ValueChangeType, ValueKeyType} from '../../deep-subscribe/contracts/common'
+import {IPropertiesPath, ValueKeyType} from '../../deep-subscribe/contracts/common'
 import {IRule} from '../../deep-subscribe/contracts/rules'
 import {deepSubscribeRule} from '../../deep-subscribe/deep-subscribe'
 import {PropertiesPath} from '../../deep-subscribe/helpers/PropertiesPath'
 import {RuleBuilder} from '../../deep-subscribe/RuleBuilder'
-import {IUnsubscribeOrVoid} from '../../subjects/observable'
 import {ValueKeys} from './contracts'
 
 export type IDependencyAction<TTarget, TValue = any>
 	= (
 		target: TTarget, value: TValue, parent: any, key: any, keyType: ValueKeyType,
-		propertiesPath: PropertiesPath, rule: IRule,
+		propertiesPath: IPropertiesPath, rule: IRule,
 	) => void
 
 export type IDependencyPredicate<TValue = any>
-	= (value: TValue, parent: any, key: any, keyType: ValueKeyType, propertiesPath: PropertiesPath, rule: IRule) => boolean
+	= (value: TValue, parent: any, key: any, keyType: ValueKeyType,
+		  propertiesPath: IPropertiesPath, rule: IRule) => boolean
 
 export type IDependency<TTarget, TValue = any> = [IRule, IDependencyAction<TTarget, TValue>]
 

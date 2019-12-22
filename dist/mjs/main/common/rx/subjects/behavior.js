@@ -9,9 +9,13 @@ export function behavior(base) {
       }
     }
 
-    subscribe(subscriber) {
+    subscribe(subscriber, description) {
       if (!subscriber) {
         return null;
+      }
+
+      if (description) {
+        subscriber.description = description;
       }
 
       let unsubscribe = super.subscribe(subscriber);

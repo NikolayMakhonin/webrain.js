@@ -11,6 +11,7 @@ export let EventType;
 })(EventType || (EventType = {}));
 
 export const timing = new TestTiming();
+timing.addTime(1000);
 let staticAutoCalc;
 let staticCalcTime;
 let testStartTime;

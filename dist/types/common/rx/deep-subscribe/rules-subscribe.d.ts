@@ -10,15 +10,15 @@ export declare abstract class RuleSubscribe<TObject = any, TChild = any> extends
     readonly subscribe: ISubscribeObject<TObject, TChild>;
     readonly unsubscribers: IUnsubscribe[];
     readonly unsubscribersCount: number[];
-    protected constructor();
+    protected constructor(description: string);
     clone(): IRuleSubscribe<TObject, TChild>;
 }
 export declare class RuleSubscribeObject<TObject, TValue> extends RuleSubscribe<TObject, TValue> implements IRuleSubscribe<TObject, TValue> {
-    constructor(type: SubscribeObjectType, propertyPredicate?: (propertyName: string, object: any) => boolean, ...propertyNames: string[]);
+    constructor(type: SubscribeObjectType, propertyPredicate: (propertyName: string, object: any) => boolean, description: string, ...propertyNames: string[]);
 }
 export declare class RuleSubscribeMap<TObject extends Map<K, V>, K, V> extends RuleSubscribe<TObject, V> implements IRuleSubscribe<TObject, V> {
-    constructor(keyPredicate?: (key: K, object: any) => boolean, ...keys: K[]);
+    constructor(keyPredicate: (key: K, object: any) => boolean, description: string, ...keys: K[]);
 }
 export declare class RuleSubscribeCollection<TObject extends Iterable<TItem>, TItem> extends RuleSubscribe<TObject, TItem> implements IRuleSubscribe<TObject, TItem> {
-    constructor();
+    constructor(description: string);
 }

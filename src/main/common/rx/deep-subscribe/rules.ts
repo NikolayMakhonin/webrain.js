@@ -1,7 +1,15 @@
-import {IConditionRule, IRepeatCondition, IRule, IRuleAny, IRuleIf, IRuleRepeat, RuleType,} from './contracts/rules'
+import {
+	IConditionRule,
+	IRepeatCondition,
+	IRule,
+	IRuleAny,
+	IRuleIf,
+	IRuleRepeat,
+	RuleType,
+} from './contracts/rules'
 
 export function ruleTypeToString(ruleType: RuleType) {
-	switch(ruleType) {
+	switch (ruleType) {
 		case RuleType.Never:
 			return 'Never'
 		case RuleType.Action:

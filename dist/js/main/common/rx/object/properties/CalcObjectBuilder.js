@@ -13,16 +13,18 @@ var _possibleConstructorReturn2 = _interopRequireDefault(require("@babel/runtime
 
 var _getPrototypeOf2 = _interopRequireDefault(require("@babel/runtime-corejs3/helpers/getPrototypeOf"));
 
-var _inherits2 = _interopRequireDefault(require("@babel/runtime-corejs3/helpers/inherits"));
+var _get2 = _interopRequireDefault(require("@babel/runtime-corejs3/helpers/get"));
 
-var _ObservableObjectBuilder = require("../ObservableObjectBuilder");
+var _inherits2 = _interopRequireDefault(require("@babel/runtime-corejs3/helpers/inherits"));
 
 var _CalcPropertyBuilder = require("./CalcPropertyBuilder");
 
+var _ConnectorBuilder2 = require("./ConnectorBuilder");
+
 var CalcObjectBuilder =
 /*#__PURE__*/
-function (_ObservableObjectBuil) {
-  (0, _inherits2.default)(CalcObjectBuilder, _ObservableObjectBuil);
+function (_ConnectorBuilder) {
+  (0, _inherits2.default)(CalcObjectBuilder, _ConnectorBuilder);
 
   function CalcObjectBuilder() {
     (0, _classCallCheck2.default)(this, CalcObjectBuilder);
@@ -30,9 +32,21 @@ function (_ObservableObjectBuil) {
   }
 
   (0, _createClass2.default)(CalcObjectBuilder, [{
+    key: "writable",
+    // @ts-ignore
+    value: function writable(name, options, initValue) {
+      return (0, _get2.default)((0, _getPrototypeOf2.default)(CalcObjectBuilder.prototype), "writable", this).call(this, name, options, initValue);
+    } // @ts-ignore
+
+  }, {
+    key: "readable",
+    value: function readable(name, options, initValue) {
+      return (0, _get2.default)((0, _getPrototypeOf2.default)(CalcObjectBuilder.prototype), "readable", this).call(this, name, options, initValue);
+    }
+  }, {
     key: "calc",
     value: function calc(name, inputOrFactory, calcFactory, initValue) {
-      return this.readable(name, {
+      return (0, _get2.default)((0, _getPrototypeOf2.default)(CalcObjectBuilder.prototype), "readable", this).call(this, name, {
         factory: function factory() {
           var property = calcFactory(initValue);
 
@@ -62,9 +76,27 @@ function (_ObservableObjectBuil) {
         initValue: 0
       }));
     }
+  }, {
+    key: "calcConnect",
+    value: function calcConnect(name, _buildRule, options, initValue) {
+      return this.calc(name, (0, _ConnectorBuilder2.connectorFactory)({
+        buildRule: function buildRule(c) {
+          return c.connect('value', _buildRule);
+        }
+      }), (0, _CalcPropertyBuilder.calcPropertyFactory)({
+        dependencies: function dependencies(d) {
+          return d.invalidateOn(function (b) {
+            return b.p('value');
+          });
+        },
+        calcFunc: function calcFunc(state) {
+          state.value = state.input.value;
+        }
+      }));
+    }
   }]);
   return CalcObjectBuilder;
-}(_ObservableObjectBuilder.ObservableObjectBuilder); // const builder = new CalcObjectBuilder(true as any)
+}(_ConnectorBuilder2.ConnectorBuilder); // const builder = new CalcObjectBuilder(true as any)
 //
 // export function calc<
 // 	TObject extends ObservableClass,

@@ -1,4 +1,4 @@
-import {Assert, assert} from './Assert'
+import {assert} from './Assert'
 import {globalScope} from './helpers'
 
 export const { xit, xdescribe } = globalScope

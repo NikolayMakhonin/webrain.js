@@ -3,9 +3,9 @@
 <!-- https://daringfireball.net/projects/markdown/basics -->
 <!-- https://daringfireball.net/projects/markdown/syntax -->
 
-<!-- [![NPM Version][npm-image]][npm-url] -->
-<!-- [![NPM Downloads][downloads-image]][downloads-url] -->
-<!-- [![Node.js Version][node-version-image]][node-version-url] -->
+[![NPM Version][npm-image]][npm-url]
+[![NPM Downloads][downloads-image]][downloads-url]
+[![Node.js Version][node-version-image]][node-version-url]
 [![Build Status][travis-image]][travis-url]
 [![Test Coverage][coveralls-image]][coveralls-url]
 
@@ -13,7 +13,7 @@
 
 # Description
 
-On development stage ... 80% completed ...
+**Status:** integration and debugging on real production project (90% completed)
 
 This is the first and open-source framework for internal application logic. It is a new architecture that will allow you to implement application logic in a brain-like structure and solve many architectural problems and development difficulties.
 
@@ -34,7 +34,7 @@ Such an architecture has already been successfully tested by me on a real C# WPF
 
 Основная идея: 90% логики практически любого приложения можно представить в виде одного древовидного динамического объекта, который можно сериализовать, обновить до новой версии, слить с другими версиями.
 
-Практически вся логика содержится в вычисляемых свойствах этого объекта. Каждое вычисляемое свойство является независимым объектом. Т.е не смотря на то, что логика приложения находится в одном объекте, она разбита на очень мелкие не зависимые модули. Эти модули подключены к древовидному объекту как микросхемы к материнской плате, и связаны между собой другими мини объектами - коннекторами. Можно провести параллель с нейронами мозга, где каждое вычисляемое свойство можно представить в виде нейрона, которое берет данные из своих зависимостей (дендритов) и выдает результат в виде одного значения (аксона).
+Практически вся логика содержится в вычисляемых свойствах этого объекта. Каждое вычисляемое свойство является независимым объектом. Т.е не смотря на то, что логика приложения находится в одном объекте, она разбита на очень мелкие независимые модули. Эти модули подключены к древовидному объекту как микросхемы к материнской плате, и связаны между собой другими мини объектами - коннекторами. Можно провести параллель с нейронами мозга, где каждое вычисляемое свойство можно представить в виде нейрона, которое берет данные из своих зависимостей (дендритов) и выдает результат в виде одного значения (аксона).
 
 Каждое вычисляемое свойство делает все возможное чтобы минимизировать количество вычислений, кэширует значения, использует throttling, и т.д.
 

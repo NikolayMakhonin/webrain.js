@@ -7,20 +7,14 @@ import {IUnsubscribe, IUnsubscribeOrVoid} from '../subjects/observable'
 import {
 	IChangeValue,
 	ILastValue,
+	IPropertiesPath,
 	IValueSubscriber,
 	ValueChangeType,
 	ValueKeyType,
 } from './contracts/common'
+import {ISubscribedValue} from './contracts/deep-subscribe'
 import {IRule} from './contracts/rules'
 import {PropertiesPath} from './helpers/PropertiesPath'
-
-export interface ISubscribedValue {
-	value: any
-	parent: any
-	key: any,
-	keyType: ValueKeyType,
-	isOwnProperty?: boolean
-}
 
 const undefinedSubscribedValue: ISubscribedValue = {
 	value: void 0,
@@ -151,7 +145,7 @@ export class ObjectSubscriber<TObject> implements IValueSubscriber<TObject> {
 		parent: any,
 		changeType: ValueChangeType,
 		keyType: ValueKeyType,
-		propertiesPath: PropertiesPath,
+		propertiesPath: IPropertiesPath,
 		rule: IRule,
 	): IUnsubscribeOrVoid {
 		let unsubscribedLast

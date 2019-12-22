@@ -3,14 +3,165 @@
   <component name="AnalysisUIOptions">
     <option name="SPLITTER_PROPORTION" value="0.26758242" />
     <option name="SCOPE_TYPE" value="8" />
-    <option name="CUSTOM_SCOPE_NAME" value="All Sources" />
+    <option name="CUSTOM_SCOPE_NAME" value="src-main" />
     <option name="SHOW_STRUCTURE" value="true" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="69b2ee16-521b-4efd-b473-8e19e3df4d09" name="Default Changelist" comment="">
+    <list default="true" id="69b2ee16-521b-4efd-b473-8e19e3df4d09" name="Default Changelist" comment="Improved RuleBuilder and connect property. Tests OK.">
+      <change afterPath="$PROJECT_DIR$/src/main/common/rx/deep-subscribe/contracts/deep-subscribe.ts" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/common/rx/deep-subscribe/RuleBuilder.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/common/rx/deep-subscribe/RuleBuilder.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/README.md" beforeDir="false" afterPath="$PROJECT_DIR$/README.md" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/dist/js/main/common/async/ThenableSync.js" beforeDir="false" afterPath="$PROJECT_DIR$/dist/js/main/common/async/ThenableSync.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/dist/js/main/common/extensions/TypeMeta.js" beforeDir="false" afterPath="$PROJECT_DIR$/dist/js/main/common/extensions/TypeMeta.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/dist/js/main/common/extensions/merge/mergers.js" beforeDir="false" afterPath="$PROJECT_DIR$/dist/js/main/common/extensions/merge/mergers.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/dist/js/main/common/extensions/serialization/serializers.js" beforeDir="false" afterPath="$PROJECT_DIR$/dist/js/main/common/extensions/serialization/serializers.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/dist/js/main/common/helpers/helpers.js" beforeDir="false" afterPath="$PROJECT_DIR$/dist/js/main/common/helpers/helpers.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/dist/js/main/common/helpers/object-unique-id.js" beforeDir="false" afterPath="$PROJECT_DIR$/dist/js/main/common/helpers/object-unique-id.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/dist/js/main/common/helpers/webrainOptions.js" beforeDir="false" afterPath="$PROJECT_DIR$/dist/js/main/common/helpers/webrainOptions.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/dist/js/main/common/index.js" beforeDir="false" afterPath="$PROJECT_DIR$/dist/js/main/common/index.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/dist/js/main/common/lists/ObjectHashMap.js" beforeDir="false" afterPath="$PROJECT_DIR$/dist/js/main/common/lists/ObjectHashMap.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/dist/js/main/common/lists/ObjectMap.js" beforeDir="false" afterPath="$PROJECT_DIR$/dist/js/main/common/lists/ObjectMap.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/dist/js/main/common/lists/ObservableMap.js" beforeDir="false" afterPath="$PROJECT_DIR$/dist/js/main/common/lists/ObservableMap.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/dist/js/main/common/lists/ObservableSet.js" beforeDir="false" afterPath="$PROJECT_DIR$/dist/js/main/common/lists/ObservableSet.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/dist/js/main/common/rx/deep-subscribe/ObjectSubscriber.js" beforeDir="false" afterPath="$PROJECT_DIR$/dist/js/main/common/rx/deep-subscribe/ObjectSubscriber.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/dist/js/main/common/rx/deep-subscribe/RuleBuilder.js" beforeDir="false" afterPath="$PROJECT_DIR$/dist/js/main/common/rx/deep-subscribe/RuleBuilder.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/dist/js/main/common/rx/deep-subscribe/deep-subscribe.js" beforeDir="false" afterPath="$PROJECT_DIR$/dist/js/main/common/rx/deep-subscribe/deep-subscribe.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/dist/js/main/common/rx/deep-subscribe/helpers/func-properties-path.js" beforeDir="false" afterPath="$PROJECT_DIR$/dist/js/main/common/rx/deep-subscribe/helpers/func-properties-path.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/dist/js/main/common/rx/deep-subscribe/iterate-rule.js" beforeDir="false" afterPath="$PROJECT_DIR$/dist/js/main/common/rx/deep-subscribe/iterate-rule.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/dist/js/main/common/rx/deep-subscribe/rules-subscribe.js" beforeDir="false" afterPath="$PROJECT_DIR$/dist/js/main/common/rx/deep-subscribe/rules-subscribe.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/dist/js/main/common/rx/deep-subscribe/rules.js" beforeDir="false" afterPath="$PROJECT_DIR$/dist/js/main/common/rx/deep-subscribe/rules.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/dist/js/main/common/rx/deferred-calc/DeferredCalc.js" beforeDir="false" afterPath="$PROJECT_DIR$/dist/js/main/common/rx/deferred-calc/DeferredCalc.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/dist/js/main/common/rx/object/ObservableClass.js" beforeDir="false" afterPath="$PROJECT_DIR$/dist/js/main/common/rx/object/ObservableClass.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/dist/js/main/common/rx/object/ObservableObjectBuilder.js" beforeDir="false" afterPath="$PROJECT_DIR$/dist/js/main/common/rx/object/ObservableObjectBuilder.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/dist/js/main/common/rx/object/PropertyChangedObject.js" beforeDir="false" afterPath="$PROJECT_DIR$/dist/js/main/common/rx/object/PropertyChangedObject.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/dist/js/main/common/rx/object/properties/CalcObjectBuilder.js" beforeDir="false" afterPath="$PROJECT_DIR$/dist/js/main/common/rx/object/properties/CalcObjectBuilder.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/dist/js/main/common/rx/object/properties/CalcObjectDebugger.js" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/dist/js/main/common/rx/object/properties/CalcProperty.js" beforeDir="false" afterPath="$PROJECT_DIR$/dist/js/main/common/rx/object/properties/CalcProperty.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/dist/js/main/common/rx/object/properties/CalcPropertyBuilder.js" beforeDir="false" afterPath="$PROJECT_DIR$/dist/js/main/common/rx/object/properties/CalcPropertyBuilder.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/dist/js/main/common/rx/object/properties/CalcPropertyDependenciesBuilder.js" beforeDir="false" afterPath="$PROJECT_DIR$/dist/js/main/common/rx/object/properties/CalcPropertyDependenciesBuilder.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/dist/js/main/common/rx/object/properties/ConnectorBuilder.js" beforeDir="false" afterPath="$PROJECT_DIR$/dist/js/main/common/rx/object/properties/ConnectorBuilder.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/dist/js/main/common/rx/object/properties/DependenciesBuilder.js" beforeDir="false" afterPath="$PROJECT_DIR$/dist/js/main/common/rx/object/properties/DependenciesBuilder.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/dist/js/main/common/rx/object/properties/helpers.js" beforeDir="false" afterPath="$PROJECT_DIR$/dist/js/main/common/rx/object/properties/helpers.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/dist/js/main/common/rx/object/properties/property.js" beforeDir="false" afterPath="$PROJECT_DIR$/dist/js/main/common/rx/object/properties/property.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/dist/js/main/common/rx/subjects/behavior.js" beforeDir="false" afterPath="$PROJECT_DIR$/dist/js/main/common/rx/subjects/behavior.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/dist/js/main/common/rx/subjects/hasSubscribers.js" beforeDir="false" afterPath="$PROJECT_DIR$/dist/js/main/common/rx/subjects/hasSubscribers.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/dist/js/main/common/rx/subjects/subject.js" beforeDir="false" afterPath="$PROJECT_DIR$/dist/js/main/common/rx/subjects/subject.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/dist/js/test/performance/node/fundamental-operations.js" beforeDir="false" afterPath="$PROJECT_DIR$/dist/js/test/performance/node/fundamental-operations.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/dist/js/test/tests/common/main/rx/deep-subscribe/RuleBuilder.js" beforeDir="false" afterPath="$PROJECT_DIR$/dist/js/test/tests/common/main/rx/deep-subscribe/RuleBuilder.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/dist/js/test/tests/common/main/rx/deep-subscribe/deep-subscribe.js" beforeDir="false" afterPath="$PROJECT_DIR$/dist/js/test/tests/common/main/rx/deep-subscribe/deep-subscribe.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/dist/js/test/tests/common/main/rx/deep-subscribe/helpers/src/TestDeepSubscribe.js" beforeDir="false" afterPath="$PROJECT_DIR$/dist/js/test/tests/common/main/rx/deep-subscribe/helpers/src/TestDeepSubscribe.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/dist/js/test/tests/common/main/rx/deep-subscribe/iterate-rule.js" beforeDir="false" afterPath="$PROJECT_DIR$/dist/js/test/tests/common/main/rx/deep-subscribe/iterate-rule.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/dist/js/test/tests/common/main/rx/deferred-calc/DeferredCalc.js" beforeDir="false" afterPath="$PROJECT_DIR$/dist/js/test/tests/common/main/rx/deferred-calc/DeferredCalc.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/dist/js/test/tests/common/main/rx/deferred-calc/src/TestDeferred.js" beforeDir="false" afterPath="$PROJECT_DIR$/dist/js/test/tests/common/main/rx/deferred-calc/src/TestDeferred.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/dist/js/test/tests/common/main/rx/object/properties/CalcObjectBuilder.js" beforeDir="false" afterPath="$PROJECT_DIR$/dist/js/test/tests/common/main/rx/object/properties/CalcObjectBuilder.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/dist/js/test/tests/common/main/rx/object/properties/ConnectorBuilder.js" beforeDir="false" afterPath="$PROJECT_DIR$/dist/js/test/tests/common/main/rx/object/properties/ConnectorBuilder.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/dist/mjs/main/common/async/ThenableSync.js" beforeDir="false" afterPath="$PROJECT_DIR$/dist/mjs/main/common/async/ThenableSync.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/dist/mjs/main/common/extensions/TypeMeta.js" beforeDir="false" afterPath="$PROJECT_DIR$/dist/mjs/main/common/extensions/TypeMeta.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/dist/mjs/main/common/extensions/merge/mergers.js" beforeDir="false" afterPath="$PROJECT_DIR$/dist/mjs/main/common/extensions/merge/mergers.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/dist/mjs/main/common/extensions/serialization/serializers.js" beforeDir="false" afterPath="$PROJECT_DIR$/dist/mjs/main/common/extensions/serialization/serializers.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/dist/mjs/main/common/helpers/helpers.js" beforeDir="false" afterPath="$PROJECT_DIR$/dist/mjs/main/common/helpers/helpers.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/dist/mjs/main/common/helpers/object-unique-id.js" beforeDir="false" afterPath="$PROJECT_DIR$/dist/mjs/main/common/helpers/object-unique-id.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/dist/mjs/main/common/helpers/webrainOptions.js" beforeDir="false" afterPath="$PROJECT_DIR$/dist/mjs/main/common/helpers/webrainOptions.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/dist/mjs/main/common/index.js" beforeDir="false" afterPath="$PROJECT_DIR$/dist/mjs/main/common/index.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/dist/mjs/main/common/lists/ObjectHashMap.js" beforeDir="false" afterPath="$PROJECT_DIR$/dist/mjs/main/common/lists/ObjectHashMap.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/dist/mjs/main/common/lists/ObjectMap.js" beforeDir="false" afterPath="$PROJECT_DIR$/dist/mjs/main/common/lists/ObjectMap.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/dist/mjs/main/common/lists/ObservableMap.js" beforeDir="false" afterPath="$PROJECT_DIR$/dist/mjs/main/common/lists/ObservableMap.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/dist/mjs/main/common/lists/ObservableSet.js" beforeDir="false" afterPath="$PROJECT_DIR$/dist/mjs/main/common/lists/ObservableSet.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/dist/mjs/main/common/rx/deep-subscribe/ObjectSubscriber.js" beforeDir="false" afterPath="$PROJECT_DIR$/dist/mjs/main/common/rx/deep-subscribe/ObjectSubscriber.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/dist/mjs/main/common/rx/deep-subscribe/RuleBuilder.js" beforeDir="false" afterPath="$PROJECT_DIR$/dist/mjs/main/common/rx/deep-subscribe/RuleBuilder.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/dist/mjs/main/common/rx/deep-subscribe/deep-subscribe.js" beforeDir="false" afterPath="$PROJECT_DIR$/dist/mjs/main/common/rx/deep-subscribe/deep-subscribe.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/dist/mjs/main/common/rx/deep-subscribe/helpers/func-properties-path.js" beforeDir="false" afterPath="$PROJECT_DIR$/dist/mjs/main/common/rx/deep-subscribe/helpers/func-properties-path.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/dist/mjs/main/common/rx/deep-subscribe/iterate-rule.js" beforeDir="false" afterPath="$PROJECT_DIR$/dist/mjs/main/common/rx/deep-subscribe/iterate-rule.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/dist/mjs/main/common/rx/deep-subscribe/rules-subscribe.js" beforeDir="false" afterPath="$PROJECT_DIR$/dist/mjs/main/common/rx/deep-subscribe/rules-subscribe.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/dist/mjs/main/common/rx/deep-subscribe/rules.js" beforeDir="false" afterPath="$PROJECT_DIR$/dist/mjs/main/common/rx/deep-subscribe/rules.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/dist/mjs/main/common/rx/deferred-calc/DeferredCalc.js" beforeDir="false" afterPath="$PROJECT_DIR$/dist/mjs/main/common/rx/deferred-calc/DeferredCalc.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/dist/mjs/main/common/rx/object/ObservableClass.js" beforeDir="false" afterPath="$PROJECT_DIR$/dist/mjs/main/common/rx/object/ObservableClass.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/dist/mjs/main/common/rx/object/ObservableObjectBuilder.js" beforeDir="false" afterPath="$PROJECT_DIR$/dist/mjs/main/common/rx/object/ObservableObjectBuilder.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/dist/mjs/main/common/rx/object/PropertyChangedObject.js" beforeDir="false" afterPath="$PROJECT_DIR$/dist/mjs/main/common/rx/object/PropertyChangedObject.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/dist/mjs/main/common/rx/object/properties/CalcObjectBuilder.js" beforeDir="false" afterPath="$PROJECT_DIR$/dist/mjs/main/common/rx/object/properties/CalcObjectBuilder.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/dist/mjs/main/common/rx/object/properties/CalcObjectDebugger.js" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/dist/mjs/main/common/rx/object/properties/CalcProperty.js" beforeDir="false" afterPath="$PROJECT_DIR$/dist/mjs/main/common/rx/object/properties/CalcProperty.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/dist/mjs/main/common/rx/object/properties/CalcPropertyBuilder.js" beforeDir="false" afterPath="$PROJECT_DIR$/dist/mjs/main/common/rx/object/properties/CalcPropertyBuilder.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/dist/mjs/main/common/rx/object/properties/CalcPropertyDependenciesBuilder.js" beforeDir="false" afterPath="$PROJECT_DIR$/dist/mjs/main/common/rx/object/properties/CalcPropertyDependenciesBuilder.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/dist/mjs/main/common/rx/object/properties/ConnectorBuilder.js" beforeDir="false" afterPath="$PROJECT_DIR$/dist/mjs/main/common/rx/object/properties/ConnectorBuilder.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/dist/mjs/main/common/rx/object/properties/DependenciesBuilder.js" beforeDir="false" afterPath="$PROJECT_DIR$/dist/mjs/main/common/rx/object/properties/DependenciesBuilder.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/dist/mjs/main/common/rx/object/properties/helpers.js" beforeDir="false" afterPath="$PROJECT_DIR$/dist/mjs/main/common/rx/object/properties/helpers.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/dist/mjs/main/common/rx/object/properties/property.js" beforeDir="false" afterPath="$PROJECT_DIR$/dist/mjs/main/common/rx/object/properties/property.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/dist/mjs/main/common/rx/subjects/behavior.js" beforeDir="false" afterPath="$PROJECT_DIR$/dist/mjs/main/common/rx/subjects/behavior.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/dist/mjs/main/common/rx/subjects/hasSubscribers.js" beforeDir="false" afterPath="$PROJECT_DIR$/dist/mjs/main/common/rx/subjects/hasSubscribers.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/dist/mjs/main/common/rx/subjects/subject.js" beforeDir="false" afterPath="$PROJECT_DIR$/dist/mjs/main/common/rx/subjects/subject.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/dist/mjs/test/performance/node/fundamental-operations.js" beforeDir="false" afterPath="$PROJECT_DIR$/dist/mjs/test/performance/node/fundamental-operations.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/dist/mjs/test/tests/common/main/rx/deep-subscribe/RuleBuilder.js" beforeDir="false" afterPath="$PROJECT_DIR$/dist/mjs/test/tests/common/main/rx/deep-subscribe/RuleBuilder.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/dist/mjs/test/tests/common/main/rx/deep-subscribe/deep-subscribe.js" beforeDir="false" afterPath="$PROJECT_DIR$/dist/mjs/test/tests/common/main/rx/deep-subscribe/deep-subscribe.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/dist/mjs/test/tests/common/main/rx/deep-subscribe/helpers/src/TestDeepSubscribe.js" beforeDir="false" afterPath="$PROJECT_DIR$/dist/mjs/test/tests/common/main/rx/deep-subscribe/helpers/src/TestDeepSubscribe.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/dist/mjs/test/tests/common/main/rx/deep-subscribe/iterate-rule.js" beforeDir="false" afterPath="$PROJECT_DIR$/dist/mjs/test/tests/common/main/rx/deep-subscribe/iterate-rule.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/dist/mjs/test/tests/common/main/rx/deferred-calc/DeferredCalc.js" beforeDir="false" afterPath="$PROJECT_DIR$/dist/mjs/test/tests/common/main/rx/deferred-calc/DeferredCalc.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/dist/mjs/test/tests/common/main/rx/deferred-calc/src/TestDeferred.js" beforeDir="false" afterPath="$PROJECT_DIR$/dist/mjs/test/tests/common/main/rx/deferred-calc/src/TestDeferred.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/dist/mjs/test/tests/common/main/rx/object/properties/CalcObjectBuilder.js" beforeDir="false" afterPath="$PROJECT_DIR$/dist/mjs/test/tests/common/main/rx/object/properties/CalcObjectBuilder.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/dist/mjs/test/tests/common/main/rx/object/properties/ConnectorBuilder.js" beforeDir="false" afterPath="$PROJECT_DIR$/dist/mjs/test/tests/common/main/rx/object/properties/ConnectorBuilder.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/dist/types/common/async/ThenableSync.d.ts" beforeDir="false" afterPath="$PROJECT_DIR$/dist/types/common/async/ThenableSync.d.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/dist/types/common/extensions/merge/mergers.d.ts" beforeDir="false" afterPath="$PROJECT_DIR$/dist/types/common/extensions/merge/mergers.d.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/dist/types/common/helpers/helpers.d.ts" beforeDir="false" afterPath="$PROJECT_DIR$/dist/types/common/helpers/helpers.d.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/dist/types/common/helpers/webrainOptions.d.ts" beforeDir="false" afterPath="$PROJECT_DIR$/dist/types/common/helpers/webrainOptions.d.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/dist/types/common/index.d.ts" beforeDir="false" afterPath="$PROJECT_DIR$/dist/types/common/index.d.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/dist/types/common/lists/ArrayMap.d.ts" beforeDir="false" afterPath="$PROJECT_DIR$/dist/types/common/lists/ArrayMap.d.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/dist/types/common/lists/ArraySet.d.ts" beforeDir="false" afterPath="$PROJECT_DIR$/dist/types/common/lists/ArraySet.d.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/dist/types/common/lists/ObjectHashMap.d.ts" beforeDir="false" afterPath="$PROJECT_DIR$/dist/types/common/lists/ObjectHashMap.d.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/dist/types/common/lists/ObjectMap.d.ts" beforeDir="false" afterPath="$PROJECT_DIR$/dist/types/common/lists/ObjectMap.d.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/dist/types/common/lists/ObjectSet.d.ts" beforeDir="false" afterPath="$PROJECT_DIR$/dist/types/common/lists/ObjectSet.d.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/dist/types/common/lists/ObservableMap.d.ts" beforeDir="false" afterPath="$PROJECT_DIR$/dist/types/common/lists/ObservableMap.d.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/dist/types/common/lists/ObservableSet.d.ts" beforeDir="false" afterPath="$PROJECT_DIR$/dist/types/common/lists/ObservableSet.d.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/dist/types/common/lists/SortedList.d.ts" beforeDir="false" afterPath="$PROJECT_DIR$/dist/types/common/lists/SortedList.d.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/dist/types/common/lists/base/ListChangedObject.d.ts" beforeDir="false" afterPath="$PROJECT_DIR$/dist/types/common/lists/base/ListChangedObject.d.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/dist/types/common/lists/base/MapChangedObject.d.ts" beforeDir="false" afterPath="$PROJECT_DIR$/dist/types/common/lists/base/MapChangedObject.d.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/dist/types/common/lists/base/SetChangedObject.d.ts" beforeDir="false" afterPath="$PROJECT_DIR$/dist/types/common/lists/base/SetChangedObject.d.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/dist/types/common/rx/deep-subscribe/ObjectSubscriber.d.ts" beforeDir="false" afterPath="$PROJECT_DIR$/dist/types/common/rx/deep-subscribe/ObjectSubscriber.d.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/dist/types/common/rx/deep-subscribe/RuleBuilder.d.ts" beforeDir="false" afterPath="$PROJECT_DIR$/dist/types/common/rx/deep-subscribe/RuleBuilder.d.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/dist/types/common/rx/deep-subscribe/contracts/IRuleBuilder.d.ts" beforeDir="false" afterPath="$PROJECT_DIR$/dist/types/common/rx/deep-subscribe/contracts/IRuleBuilder.d.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/dist/types/common/rx/deep-subscribe/contracts/common.d.ts" beforeDir="false" afterPath="$PROJECT_DIR$/dist/types/common/rx/deep-subscribe/contracts/common.d.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/dist/types/common/rx/deep-subscribe/contracts/rule-subscribe.d.ts" beforeDir="false" afterPath="$PROJECT_DIR$/dist/types/common/rx/deep-subscribe/contracts/rule-subscribe.d.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/dist/types/common/rx/deep-subscribe/deep-subscribe.d.ts" beforeDir="false" afterPath="$PROJECT_DIR$/dist/types/common/rx/deep-subscribe/deep-subscribe.d.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/dist/types/common/rx/deep-subscribe/iterate-rule.d.ts" beforeDir="false" afterPath="$PROJECT_DIR$/dist/types/common/rx/deep-subscribe/iterate-rule.d.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/dist/types/common/rx/deep-subscribe/rules-subscribe.d.ts" beforeDir="false" afterPath="$PROJECT_DIR$/dist/types/common/rx/deep-subscribe/rules-subscribe.d.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/dist/types/common/rx/deep-subscribe/rules.d.ts" beforeDir="false" afterPath="$PROJECT_DIR$/dist/types/common/rx/deep-subscribe/rules.d.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/dist/types/common/rx/deferred-calc/DeferredCalc.d.ts" beforeDir="false" afterPath="$PROJECT_DIR$/dist/types/common/rx/deferred-calc/DeferredCalc.d.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/dist/types/common/rx/object/IPropertyChanged.d.ts" beforeDir="false" afterPath="$PROJECT_DIR$/dist/types/common/rx/object/IPropertyChanged.d.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/dist/types/common/rx/object/ObservableObjectBuilder.d.ts" beforeDir="false" afterPath="$PROJECT_DIR$/dist/types/common/rx/object/ObservableObjectBuilder.d.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/dist/types/common/rx/object/PropertyChangedObject.d.ts" beforeDir="false" afterPath="$PROJECT_DIR$/dist/types/common/rx/object/PropertyChangedObject.d.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/dist/types/common/rx/object/properties/CalcObjectBuilder.d.ts" beforeDir="false" afterPath="$PROJECT_DIR$/dist/types/common/rx/object/properties/CalcObjectBuilder.d.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/dist/types/common/rx/object/properties/CalcObjectDebugger.d.ts" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/dist/types/common/rx/object/properties/CalcProperty.d.ts" beforeDir="false" afterPath="$PROJECT_DIR$/dist/types/common/rx/object/properties/CalcProperty.d.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/dist/types/common/rx/object/properties/ConnectorBuilder.d.ts" beforeDir="false" afterPath="$PROJECT_DIR$/dist/types/common/rx/object/properties/ConnectorBuilder.d.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/dist/types/common/rx/object/properties/DependenciesBuilder.d.ts" beforeDir="false" afterPath="$PROJECT_DIR$/dist/types/common/rx/object/properties/DependenciesBuilder.d.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/dist/types/common/rx/subjects/behavior.d.ts" beforeDir="false" afterPath="$PROJECT_DIR$/dist/types/common/rx/subjects/behavior.d.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/dist/types/common/rx/subjects/hasSubscribers.d.ts" beforeDir="false" afterPath="$PROJECT_DIR$/dist/types/common/rx/subjects/hasSubscribers.d.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/dist/types/common/rx/subjects/observable.d.ts" beforeDir="false" afterPath="$PROJECT_DIR$/dist/types/common/rx/subjects/observable.d.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/dist/types/common/test/Variants.d.ts" beforeDir="false" afterPath="$PROJECT_DIR$/dist/types/common/test/Variants.d.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/package.json" beforeDir="false" afterPath="$PROJECT_DIR$/package.json" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/common/async/ThenableSync.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/common/async/ThenableSync.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/common/extensions/TypeMeta.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/common/extensions/TypeMeta.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/common/extensions/serialization/serializers.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/common/extensions/serialization/serializers.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/common/lists/ObjectHashMap.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/common/lists/ObjectHashMap.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/common/lists/ObjectMap.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/common/lists/ObjectMap.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/common/lists/ObservableMap.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/common/lists/ObservableMap.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/common/lists/ObservableSet.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/common/lists/ObservableSet.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/common/rx/Debugger.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/common/rx/Debugger.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/common/rx/deep-subscribe/ObjectSubscriber.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/common/rx/deep-subscribe/ObjectSubscriber.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/common/rx/deep-subscribe/contracts/common.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/common/rx/deep-subscribe/contracts/common.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/common/rx/deep-subscribe/contracts/rule-subscribe.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/common/rx/deep-subscribe/contracts/rule-subscribe.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/common/rx/deep-subscribe/deep-subscribe.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/common/rx/deep-subscribe/deep-subscribe.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/common/rx/deep-subscribe/helpers/PropertiesPath.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/common/rx/deep-subscribe/helpers/PropertiesPath.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/common/rx/deep-subscribe/helpers/func-properties-path.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/common/rx/deep-subscribe/helpers/func-properties-path.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/common/rx/deep-subscribe/iterate-rule.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/common/rx/deep-subscribe/iterate-rule.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/common/rx/deep-subscribe/rules-subscribe.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/common/rx/deep-subscribe/rules-subscribe.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/common/rx/deep-subscribe/rules.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/common/rx/deep-subscribe/rules.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/common/rx/object/PropertyChangedObject.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/common/rx/object/PropertyChangedObject.ts" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/common/rx/object/properties/ConnectorBuilder.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/common/rx/object/properties/ConnectorBuilder.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/common/rx/object/properties/DependenciesBuilder.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/common/rx/object/properties/DependenciesBuilder.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/common/rx/object/properties/Property.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/common/rx/object/properties/Property.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/common/test/Mocha.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/common/test/Mocha.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/common/test/Variants.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/common/test/Variants.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/test/tests/common/main/rx/object/properties/CalcObjectBuilder.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/test/tests/common/main/rx/object/properties/CalcObjectBuilder.ts" afterDir="false" />
     </list>
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
     <option name="SHOW_DIALOG" value="false" />
@@ -53,7 +204,7 @@
     <property name="WebServerToolWindowFactoryState" value="false" />
     <property name="auto.test.manager.delay" value="5000" />
     <property name="javascript.karma.karma_node_package_dir" value="" />
-    <property name="last_opened_file_path" value="$PROJECT_DIR$/../../apps/alertpoint-electron/__sapper__/debug/server/app-cbc21984.js" />
+    <property name="last_opened_file_path" value="$PROJECT_DIR$/src/main/common/rx/deep-subscribe/contracts/common.ts" />
     <property name="node.js.detected.package.eslint" value="true" />
     <property name="node.js.detected.package.standard" value="true" />
     <property name="node.js.detected.package.tslint" value="true" />
@@ -72,26 +223,26 @@
     <property name="ts.external.directory.path" value="L:\Work\_GIT\GitHub\NodeJs\modules\webrain\node_modules\typescript\lib" />
   </component>
   <component name="RecentsManager">
-    <key name="MoveFile.RECENT_KEYS">
-      <recent name="L:\Work\_GIT\GitHub\NodeJs\modules\webrain\src\main\common\rx" />
-      <recent name="L:\Work\_GIT\GitHub\NodeJs\modules\webrain\src\test\tests\common\main\rx\deep-subscribe\helpers\src" />
-      <recent name="L:\Work\_GIT\GitHub\NodeJs\modules\webrain\env\mocha\configs\no-babel" />
-      <recent name="L:\Work\_GIT\GitHub\NodeJs\modules\webrain\env\mocha\configs\babel" />
-      <recent name="L:\Work\_GIT\GitHub\NodeJs\modules\webrain\env\karma" />
-    </key>
-    <key name="es6.move.members.recent.items">
-      <recent name="L:\Work\_GIT\GitHub\NodeJs\modules\webrain\src\main\common\rx\deep-subscribe\helpers\PropertiesPath.ts" />
-      <recent name="L:\Work\_GIT\GitHub\NodeJs\modules\webrain\src\main\common\helpers\helpers.ts" />
-      <recent name="L:\Work\_GIT\GitHub\NodeJs\modules\webrain\src\main\common\rx\object\properties\contracts.ts" />
-      <recent name="L:\Work\_GIT\GitHub\NodeJs\modules\webrain\src\main\common\rx\deep-subscribe\contracts\rule-subscribe.ts" />
-      <recent name="L:\Work\_GIT\GitHub\NodeJs\modules\webrain\src\main\common\rx\deep-subscribe\contracts\common.ts" />
-    </key>
     <key name="CopyFile.RECENT_KEYS">
       <recent name="L:\Work\_GIT\GitHub\NodeJs\modules\webrain\src\test\tests\common\main\rx\object\properties" />
       <recent name="L:\Work\_GIT\GitHub\NodeJs\modules\webrain\src\test\tests\common\main\helpers" />
       <recent name="L:\Work\_GIT\GitHub\NodeJs\modules\webrain\src\main\common\rx\object" />
       <recent name="L:\Work\_GIT\GitHub\NodeJs\modules\webrain\src\test\tests\common\main\rx\deep-subscribe" />
       <recent name="L:\Work\_GIT\GitHub\NodeJs\modules\webrain\src\test\performance\node" />
+    </key>
+    <key name="es6.move.members.recent.items">
+      <recent name="L:\Work\_GIT\GitHub\NodeJs\modules\webrain\src\main\common\rx\deep-subscribe\contracts\deep-subscribe.ts" />
+      <recent name="L:\Work\_GIT\GitHub\NodeJs\modules\webrain\src\main\common\rx\deep-subscribe\helpers\PropertiesPath.ts" />
+      <recent name="L:\Work\_GIT\GitHub\NodeJs\modules\webrain\src\main\common\helpers\helpers.ts" />
+      <recent name="L:\Work\_GIT\GitHub\NodeJs\modules\webrain\src\main\common\rx\object\properties\contracts.ts" />
+      <recent name="L:\Work\_GIT\GitHub\NodeJs\modules\webrain\src\main\common\rx\deep-subscribe\contracts\rule-subscribe.ts" />
+    </key>
+    <key name="MoveFile.RECENT_KEYS">
+      <recent name="L:\Work\_GIT\GitHub\NodeJs\modules\webrain\src\main\common\rx" />
+      <recent name="L:\Work\_GIT\GitHub\NodeJs\modules\webrain\src\test\tests\common\main\rx\deep-subscribe\helpers\src" />
+      <recent name="L:\Work\_GIT\GitHub\NodeJs\modules\webrain\env\mocha\configs\no-babel" />
+      <recent name="L:\Work\_GIT\GitHub\NodeJs\modules\webrain\env\mocha\configs\babel" />
+      <recent name="L:\Work\_GIT\GitHub\NodeJs\modules\webrain\env\karma" />
     </key>
   </component>
   <component name="RunDashboard">
@@ -199,22 +350,6 @@
       </test-names>
       <method v="2" />
     </configuration>
-    <configuration name="common &gt; main &gt; rx &gt; deep-subscribe &gt; iterate-rule.any" type="mocha-javascript-test-runner" temporary="true" nameIsGenerated="true">
-      <node-interpreter>node</node-interpreter>
-      <node-options>--max-old-space-size=4096</node-options>
-      <mocha-package>$PROJECT_DIR$/node_modules/mocha</mocha-package>
-      <working-directory>$PROJECT_DIR$</working-directory>
-      <pass-parent-env>true</pass-parent-env>
-      <ui>bdd</ui>
-      <extra-mocha-options>--opts ./env/mocha/configs/babel/mocha.opts --watch</extra-mocha-options>
-      <test-kind>TEST</test-kind>
-      <test-file>$PROJECT_DIR$/src/test/tests/common/main/rx/deep-subscribe/iterate-rule.ts</test-file>
-      <test-names>
-        <name value="common &gt; main &gt; rx &gt; deep-subscribe &gt; iterate-rule" />
-        <name value="any" />
-      </test-names>
-      <method v="2" />
-    </configuration>
     <configuration name="common &gt; main &gt; rx &gt; deep-subscribe &gt; iterate-rule.nothing" type="mocha-javascript-test-runner" temporary="true" nameIsGenerated="true">
       <node-interpreter>node</node-interpreter>
       <node-options>--max-old-space-size=4096</node-options>
@@ -228,6 +363,22 @@
       <test-names>
         <name value="common &gt; main &gt; rx &gt; deep-subscribe &gt; iterate-rule" />
         <name value="nothing" />
+      </test-names>
+      <method v="2" />
+    </configuration>
+    <configuration name="common &gt; main &gt; rx &gt; properties &gt; CalcObjectBuilder.deepSubscribe calc async" type="mocha-javascript-test-runner" temporary="true" nameIsGenerated="true">
+      <node-interpreter>node</node-interpreter>
+      <node-options>--max-old-space-size=4096</node-options>
+      <mocha-package>$PROJECT_DIR$/node_modules/mocha</mocha-package>
+      <working-directory>$PROJECT_DIR$</working-directory>
+      <pass-parent-env>true</pass-parent-env>
+      <ui>bdd</ui>
+      <extra-mocha-options>--opts ./env/mocha/configs/babel/mocha.opts --watch</extra-mocha-options>
+      <test-kind>TEST</test-kind>
+      <test-file>$PROJECT_DIR$/src/test/tests/common/main/rx/object/properties/CalcObjectBuilder.ts</test-file>
+      <test-names>
+        <name value="common &gt; main &gt; rx &gt; properties &gt; CalcObjectBuilder" />
+        <name value="deepSubscribe calc async" />
       </test-names>
       <method v="2" />
     </configuration>
@@ -272,19 +423,19 @@
       <item itemvalue="Mocha.Watch" />
       <item itemvalue="Mocha.RX - Tests" />
       <item itemvalue="Mocha.common &gt; main &gt; rx &gt; deep-subscribe &gt; deep-subscribe.any" />
-      <item itemvalue="Mocha.common &gt; main &gt; rx &gt; deep-subscribe &gt; iterate-rule.any" />
       <item itemvalue="Mocha.common &gt; main &gt; rx &gt; deep-subscribe &gt; iterate-rule" />
       <item itemvalue="Mocha.common &gt; main &gt; rx &gt; deep-subscribe &gt; iterate-rule.nothing" />
       <item itemvalue="Mocha.common &gt; main &gt; rx &gt; properties &gt; ConnectorBuilder.connect" />
       <item itemvalue="npm.Coverage Mocha Report" />
+      <item itemvalue="Mocha.common &gt; main &gt; rx &gt; properties &gt; CalcObjectBuilder.deepSubscribe calc async" />
     </list>
     <recent_temporary>
       <list>
+        <item itemvalue="Mocha.common &gt; main &gt; rx &gt; properties &gt; CalcObjectBuilder.deepSubscribe calc async" />
         <item itemvalue="Mocha.common &gt; main &gt; rx &gt; properties &gt; ConnectorBuilder.connect" />
         <item itemvalue="Mocha.common &gt; main &gt; rx &gt; deep-subscribe &gt; deep-subscribe.any" />
         <item itemvalue="Mocha.common &gt; main &gt; rx &gt; deep-subscribe &gt; iterate-rule" />
         <item itemvalue="Mocha.common &gt; main &gt; rx &gt; deep-subscribe &gt; iterate-rule.nothing" />
-        <item itemvalue="Mocha.common &gt; main &gt; rx &gt; deep-subscribe &gt; iterate-rule.any" />
       </list>
     </recent_temporary>
   </component>
@@ -295,27 +446,6 @@
       <option name="number" value="Default" />
       <option name="presentableId" value="Default" />
       <updated>1567687848586</updated>
-    </task>
-    <task id="LOCAL-00117" summary="Fix CalcProperty async interface">
-      <created>1569852823846</created>
-      <option name="number" value="00117" />
-      <option name="presentableId" value="LOCAL-00117" />
-      <option name="project" value="LOCAL" />
-      <updated>1569852823846</updated>
-    </task>
-    <task id="LOCAL-00118" summary="Facade changes">
-      <created>1569852835421</created>
-      <option name="number" value="00118" />
-      <option name="presentableId" value="LOCAL-00118" />
-      <option name="project" value="LOCAL" />
-      <updated>1569852835421</updated>
-    </task>
-    <task id="LOCAL-00119" summary="Fix behavior subject unsubscribe">
-      <created>1569860059281</created>
-      <option name="number" value="00119" />
-      <option name="presentableId" value="LOCAL-00119" />
-      <option name="project" value="LOCAL" />
-      <updated>1569860059281</updated>
     </task>
     <task id="LOCAL-00120" summary="Connector builder refactoring">
       <created>1569860090419</created>
@@ -639,7 +769,28 @@
       <option name="project" value="LOCAL" />
       <updated>1576755684898</updated>
     </task>
-    <option name="localTasksCounter" value="166" />
+    <task id="LOCAL-00166" summary="Improved RuleBuilder and connect property. Tests OK.">
+      <created>1576756851625</created>
+      <option name="number" value="00166" />
+      <option name="presentableId" value="LOCAL-00166" />
+      <option name="project" value="LOCAL" />
+      <updated>1576756851625</updated>
+    </task>
+    <task id="LOCAL-00167" summary="Renamed CalcObjectBuilder.connect -&gt; calcConnect">
+      <created>1576935503881</created>
+      <option name="number" value="00167" />
+      <option name="presentableId" value="LOCAL-00167" />
+      <option name="project" value="LOCAL" />
+      <updated>1576935503881</updated>
+    </task>
+    <task id="LOCAL-00168" summary="Added ObjectMerger.observableOnly">
+      <created>1576935804862</created>
+      <option name="number" value="00168" />
+      <option name="presentableId" value="LOCAL-00168" />
+      <option name="project" value="LOCAL" />
+      <updated>1576935804862</updated>
+    </task>
+    <option name="localTasksCounter" value="169" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -707,9 +858,6 @@
   <component name="VcsManagerConfiguration">
     <option name="CHECK_CODE_SMELLS_BEFORE_PROJECT_COMMIT" value="false" />
     <option name="CHECK_NEW_TODO" value="false" />
-    <MESSAGE value="Improved Debugger" />
-    <MESSAGE value="Implemented resolveAsyncAll, resolveAsyncAny but not tested" />
-    <MESSAGE value="Fix deep-subscribe bug: keyType == null" />
     <MESSAGE value="Improved connector tests. Tests OK." />
     <MESSAGE value="Small fix. Tests OK." />
     <MESSAGE value="Fix DeferredCalc autoInvalidateInterval, and tested. Tests OK." />
@@ -732,7 +880,10 @@
     <MESSAGE value="Facade changes" />
     <MESSAGE value="Improved createFunction - disable it if CSP is not allowed &quot;new Function(...)&quot;. Tests OK." />
     <MESSAGE value="Before improve RuleBuilder" />
-    <option name="LAST_COMMIT_MESSAGE" value="Before improve RuleBuilder" />
+    <MESSAGE value="Improved RuleBuilder and connect property. Tests OK." />
+    <MESSAGE value="Renamed CalcObjectBuilder.connect -&gt; calcConnect" />
+    <MESSAGE value="Added ObjectMerger.observableOnly" />
+    <option name="LAST_COMMIT_MESSAGE" value="Added ObjectMerger.observableOnly" />
   </component>
   <component name="XDebuggerManager">
     <breakpoint-manager>
@@ -740,7 +891,7 @@
         <line-breakpoint enabled="true" type="javascript">
           <condition expression="!rule.subscribe" language="TypeScript" />
           <url>file://$PROJECT_DIR$/src/main/common/rx/deep-subscribe/deep-subscribe.ts</url>
-          <line>332</line>
+          <line>339</line>
           <option name="timeStamp" value="115" />
         </line-breakpoint>
         <line-breakpoint enabled="true" type="javascript">
@@ -766,7 +917,7 @@
         </line-breakpoint>
         <line-breakpoint enabled="true" type="javascript">
           <url>file://$PROJECT_DIR$/src/main/common/rx/object/properties/ConnectorBuilder.ts</url>
-          <line>81</line>
+          <line>80</line>
           <option name="timeStamp" value="259" />
         </line-breakpoint>
         <line-breakpoint enabled="true" type="javascript">

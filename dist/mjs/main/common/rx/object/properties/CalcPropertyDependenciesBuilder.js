@@ -1,4 +1,4 @@
-import { CalcObjectDebugger } from './CalcObjectDebugger';
+import { Debugger } from '../../Debugger';
 import { DependenciesBuilder } from './DependenciesBuilder';
 export class CalcPropertyDependenciesBuilder extends DependenciesBuilder {
   constructor(buildSourceRule) {
@@ -7,7 +7,7 @@ export class CalcPropertyDependenciesBuilder extends DependenciesBuilder {
 
   invalidateOn(buildRule, predicate) {
     this.actionOn(buildRule, (target, value, parent, key, keyType) => {
-      CalcObjectDebugger.Instance.onDependencyChanged(target, value, parent, key, keyType);
+      Debugger.Instance.onDependencyChanged(target, value, parent, key, keyType);
       target.invalidate();
     }, predicate);
     return this;
@@ -15,7 +15,7 @@ export class CalcPropertyDependenciesBuilder extends DependenciesBuilder {
 
   clearOn(buildRule, predicate) {
     this.actionOn(buildRule, (target, value, parent, key, keyType) => {
-      CalcObjectDebugger.Instance.onDependencyChanged(target, value, parent, key, keyType);
+      Debugger.Instance.onDependencyChanged(target, value, parent, key, keyType);
       target.clear();
     }, predicate);
     return this;

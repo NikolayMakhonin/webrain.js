@@ -140,6 +140,7 @@ function (_ObservableClass) {
       return this._mergeValue(merge, this.value, older, newer, preferCloneOlder, preferCloneNewer);
     } // endregion
     // region ISerializable
+    // noinspection SpellCheckingInspection
 
   }, {
     key: "serialize",

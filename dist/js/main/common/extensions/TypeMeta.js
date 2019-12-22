@@ -21,6 +21,7 @@ var _createClass2 = _interopRequireDefault(require("@babel/runtime-corejs3/helpe
 
 var _helpers = require("../helpers/helpers");
 
+// noinspection SpellCheckingInspection
 var typeMetaPropertyNameBase = '043a558080e94cbda1add09753c28772';
 var typeMetaPropertyNameIndex = 0;
 

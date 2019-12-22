@@ -19,6 +19,6 @@ export declare class PropertyChangedObject implements IPropertyChangedObject {
     constructor();
     /** @internal */
     _setUnsubscriber(propertyName: string | number, unsubscribe: IUnsubscribe): void;
-    readonly propertyChanged: IPropertyChangedSubject;
-    readonly propertyChangedIfCanEmit: IPropertyChangedSubject;
+    get propertyChanged(): IPropertyChangedSubject;
+    get propertyChangedIfCanEmit(): IPropertyChangedSubject;
 }

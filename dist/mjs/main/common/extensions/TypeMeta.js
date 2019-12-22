@@ -1,4 +1,5 @@
 import { typeToDebugString } from '../helpers/helpers';
+// noinspection SpellCheckingInspection
 const typeMetaPropertyNameBase = '043a558080e94cbda1add09753c28772';
 let typeMetaPropertyNameIndex = 0;
 export class TypeMetaCollection {

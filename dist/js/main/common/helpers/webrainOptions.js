@@ -12,6 +12,7 @@ var webrainOptions = {
     }
 
     return (0, _helpers.equalsObjects)(oldValue, newValue);
-  }
+  },
+  debugInfo: true
 };
 exports.webrainOptions = webrainOptions;

@@ -1,11 +1,18 @@
 /* tslint:disable:no-shadowed-variable no-array-delete*/
 import {isThenable} from '../../async/async'
 import {resolveAsync} from '../../async/ThenableSync'
-import {checkIsFuncOrNull, isIterator, toSingleCall} from '../../helpers/helpers'
+import {checkIsFuncOrNull, toSingleCall} from '../../helpers/helpers'
 import {getObjectUniqueId} from '../../helpers/object-unique-id'
 import {Debugger} from '../Debugger'
 import {IUnsubscribe, IUnsubscribeOrVoid} from '../subjects/observable'
-import {IChangeValue, ILastValue, IValueSubscriber, ValueChangeType, ValueKeyType} from './contracts/common'
+import {
+	IChangeValue,
+	ILastValue,
+	IPropertiesPath,
+	IValueSubscriber,
+	ValueChangeType,
+	ValueKeyType,
+} from './contracts/common'
 import {IRuleSubscribe} from './contracts/rule-subscribe'
 import {IRule, RuleType} from './contracts/rules'
 import {PropertiesPath} from './helpers/PropertiesPath'
@@ -26,7 +33,7 @@ function getRuleType(iteration) {
 	)
 }
 
-function catchHandler(ex, propertiesPath?: PropertiesPath) {
+function catchHandler(ex, propertiesPath?: IPropertiesPath) {
 	if (ex.propertiesPath) {
 		throw ex
 	}
@@ -43,7 +50,7 @@ function subscribeNext<TValue>(
 	valueSubscriber: IValueSubscriber<TValue>,
 	immediate: boolean,
 	ruleIterator: IRuleIterator,
-	propertiesPath: PropertiesPath,
+	propertiesPath: IPropertiesPath,
 	objectKey: string,
 	objectKeyType: ValueKeyType,
 	parent: any,
@@ -131,7 +138,7 @@ function subscribeNext<TValue>(
 			changeType: ValueChangeType,
 			keyType: ValueKeyType,
 			parent: any,
-			newPropertiesPath: PropertiesPath,
+			newPropertiesPath: IPropertiesPath,
 			iterator?: IRuleIterator,
 			iteration?: IteratorResult<IRuleOrIterable>,
 		): void => {
@@ -224,7 +231,7 @@ function subscribeNext<TValue>(
 			changeType: ValueChangeType,
 			keyType: ValueKeyType,
 			parent: any,
-			newPropertiesPath: PropertiesPath,
+			newPropertiesPath: IPropertiesPath,
 		): void => {
 			checkIsFuncOrNull(valueSubscriber.change(
 				key,
@@ -382,7 +389,7 @@ function deepSubscribeRuleIterator<TValue>(
 	valueSubscriber: IValueSubscriber<TValue>,
 	immediate: boolean,
 	ruleIterator: IRuleIterator,
-	propertiesPath?: PropertiesPath,
+	propertiesPath?: IPropertiesPath,
 	objectKey?: string,
 	objectKeyType?: ValueKeyType,
 	parent?: any,

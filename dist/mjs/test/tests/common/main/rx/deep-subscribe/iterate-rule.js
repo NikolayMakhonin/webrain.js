@@ -1,6 +1,8 @@
 /* tslint:disable:no-shadowed-variable no-empty */
-
+import { isIterable } from '../../../../../../main/common';
 /* eslint-disable no-useless-escape,computed-property-spacing */
+
+import { RuleType } from '../../../../../../main/common/rx/deep-subscribe/contracts/rules';
 import { iterateRule, subscribeNextRule } from '../../../../../../main/common/rx/deep-subscribe/iterate-rule';
 import { RuleBuilder } from '../../../../../../main/common/rx/deep-subscribe/RuleBuilder';
 import { Rule } from '../../../../../../main/common/rx/deep-subscribe/rules';
@@ -31,7 +33,25 @@ describe('common > main > rx > deep-subscribe > iterate-rule', function () {
   // const endObject = { _end: true }
   const testObject = {};
 
-  function rulesToObject(ruleIterator, obj = {}) {
+  function mergeObjects(dest, source) {
+    if (!dest) {
+      return source;
+    }
+
+    if (!source) {
+      return dest;
+    }
+
+    for (const key in source) {
+      if (Object.prototype.hasOwnProperty.call(source, key)) {
+        dest[key] = mergeObjects(dest[key], source[key]);
+      }
+    }
+
+    return dest;
+  }
+
+  function rulesToObject(ruleIterator, obj = {}, prevIsFork) {
     let iteration;
 
     if (!ruleIterator || (iteration = ruleIterator.next()).done) {
@@ -41,10 +61,34 @@ describe('common > main > rx > deep-subscribe > iterate-rule', function () {
       };
     }
 
-    return subscribeNextRule(ruleIterator, iteration, nextRuleIterator => rulesToObject(nextRuleIterator, obj), (rule, getRuleIterable) => {
+    const isFork = isIterable(iteration.value);
+
+    if (isFork) {
+      assert.notOk(prevIsFork);
+      assert.ok(Array.isArray(iteration.value));
+
+      if (iteration.value.length > 0) {
+        for (let i = 0; i < iteration.value.length; i++) {
+          const item = iteration.value[i];
+
+          if (i > 0) {
+            assert.ok(!Array.isArray(item) || item.length > 0);
+            assert.ok(item.type == null || item.type === RuleType.Action);
+          } else {
+            assert.ok(item.type == null || item.type === RuleType.Action || item.type === RuleType.Never);
+          }
+        }
+      }
+    }
+
+    return subscribeNextRule(ruleIterator, iteration, nextRuleIterator => rulesToObject(nextRuleIterator, obj, isFork), (rule, getRuleIterable) => {
+      if (rule.type === RuleType.Never) {
+        return null;
+      }
+
       const newObj = {};
-      const unsubscribe = rulesToObject(getRuleIterable ? getRuleIterable(testObject)[Symbol.iterator]() : null, newObj);
-      Object.assign(obj, {
+      const unsubscribe = rulesToObject(getRuleIterable ? getRuleIterable(testObject)[Symbol.iterator]() : null, newObj, isFork);
+      mergeObjects(obj, {
         [rule.description]: newObj
       });
       return unsubscribe;
@@ -70,11 +114,10 @@ describe('common > main > rx > deep-subscribe > iterate-rule', function () {
         count++;
         yield* objectToPaths(obj[key], endValue, (parentPath ? parentPath + '.' : '') + key);
       }
-    }
+    } // if (!count) {
+    // 	throw new Error(parentPath + ' is empty')
+    // }
 
-    if (!count) {
-      throw new Error(parentPath + ' is empty');
-    }
   }
 
   function testIterateRule(buildRule, ...expectedPaths) {
@@ -87,7 +130,14 @@ describe('common > main > rx > deep-subscribe > iterate-rule', function () {
 
     let paths = Array.from(objectToPaths(object, true));
     assert.deepStrictEqual(paths.sort(), expectedPaths.sort(), JSON.stringify(paths, null, 4));
-    unsubscribe(); // console.log(JSON.stringify(object, null, 4))
+
+    if (expectedPaths.length) {
+      assert.ok(unsubscribe);
+      unsubscribe();
+    } else {
+      assert.notOk(unsubscribe);
+    } // console.log(JSON.stringify(object, null, 4))
+
 
     paths = Array.from(objectToPaths(object, false));
     assert.deepStrictEqual(paths.sort(), expectedPaths.sort(), JSON.stringify(paths, null, 4));
@@ -97,11 +147,27 @@ describe('common > main > rx > deep-subscribe > iterate-rule', function () {
     testIterateRule(b => b.path(o => o.a), 'a');
     testIterateRule(b => b.path(o => o.a.b.c), 'a.b.c');
   });
+  it('never', function () {
+    testIterateRule(b => b.any(b => b.never(), b => b.never().p('a')).any(b => b.never(), b => b.never().p('a')).p('a'));
+    testIterateRule(b => b.any(b => b.never(), b => b.p('a')).p('a'), 'a.a');
+    testIterateRule(b => b.any(b => b.never(), b => b.nothing()).p('a'), 'a');
+    testIterateRule(b => b.repeat(0, 3, null, b => b.any(b => b.never(), b => b.nothing())).p('a'), 'a');
+    testIterateRule(b => b.repeat(1, 3, null, b => b.any(b => b.never(), b => b.never().p('a'))).p('b'));
+  });
+  it('nothing', function () {
+    testIterateRule(b => b.any(b => b.any(b => b.nothing()), b => b.any(b => b.nothing())).any(b => b.p('a'), b => b.nothing()).any(b => b.p('a'), b => b.nothing(), b => b.p('a'), b => b.nothing(), b => b.any(b => b.p('a'), b => b.nothing())).p('c'), 'a.a.c', 'a.c', 'c');
+    testIterateRule(b => b.p('a').any(b => b.p('b'), b => b.nothing()).p('c'), 'a.b.c', 'a.c');
+    testIterateRule(b => b.any(b => b.p('a'), b => b.nothing()).any(b => b.p('b'), b => b.nothing()).p('c'), 'a.b.c', 'a.c', 'b.c', 'c');
+    testIterateRule(b => b.any(b => b.p('a'), b => b.nothing()).p('b'), 'a.b', 'b');
+    testIterateRule(b => b.repeat(0, 3, null, b => b.any(b => b.p('a'), b => b.nothing())).p('b'), 'a.a.a.b', 'a.a.b', 'a.b', 'b');
+  });
   it('any', function () {
+    testIterateRule(b => b.any(b => b.never(), b => b.never().p('a')).p('a'));
     testIterateRule(b => b.any(b => b.path(o => o.a), b => b.path(o => o.b)), 'a', 'b');
     testIterateRule(b => b.any(b => b.path(o => o.a.b), b => b.path(o => o.c.d)), 'a.b', 'c.d');
     testIterateRule(b => b.any(b => b.any(b => b.path(o => o.a.b), b => b.path(o => o.c.d)), b => b.path(o => o.e.f)), 'a.b', 'c.d', 'e.f');
-    testIterateRule(b => b.any(b => b.path(o => o.a.b).any(b => b.path(o => o.c.d), b => b.path(o => o.e.f)), b => b.path(o => o.g.h)).path(o => o.i), 'a.b.c.d.i', 'a.b.e.f.i', 'g.h.i');
+    testIterateRule(b => b.any(b => b.path(o => o.a.b).any(b => b.path(o => o.c.d), b => b.path(o => o.e.f), b => b.any(b => b.never(), b => b.never())), b => b.path(o => o.g.h)).path(o => o.i), 'a.b.c.d.i', 'a.b.e.f.i', 'g.h.i');
+    testIterateRule(b => b.any(b => b.never(), b => b.path(o => o.a), b => b.nothing(), b => b.path(o => o.b)), '', 'a', 'b');
   });
   it('path any', function () {
     testIterateRule(b => b.path(o => o['a|b'].c), 'a|b.c');

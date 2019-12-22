@@ -1,8 +1,18 @@
-import { ObservableObjectBuilder } from '../ObservableObjectBuilder';
 import { calcPropertyFactory } from './CalcPropertyBuilder';
-export class CalcObjectBuilder extends ObservableObjectBuilder {
+import { ConnectorBuilder, connectorFactory } from './ConnectorBuilder';
+export class CalcObjectBuilder extends ConnectorBuilder {
+  // @ts-ignore
+  writable(name, options, initValue) {
+    return super.writable(name, options, initValue);
+  } // @ts-ignore
+
+
+  readable(name, options, initValue) {
+    return super.readable(name, options, initValue);
+  }
+
   calc(name, inputOrFactory, calcFactory, initValue) {
-    return this.readable(name, {
+    return super.readable(name, {
       factory() {
         const property = calcFactory(initValue);
 
@@ -31,6 +41,19 @@ export class CalcObjectBuilder extends ObservableObjectBuilder {
       },
 
       initValue: 0
+    }));
+  }
+
+  calcConnect(name, buildRule, options, initValue) {
+    return this.calc(name, connectorFactory({
+      buildRule: c => c.connect('value', buildRule)
+    }), calcPropertyFactory({
+      dependencies: d => d.invalidateOn(b => b.p('value')),
+
+      calcFunc(state) {
+        state.value = state.input.value;
+      }
+
     }));
   }
 

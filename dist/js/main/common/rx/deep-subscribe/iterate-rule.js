@@ -3,14 +3,17 @@
 var _interopRequireDefault = require("@babel/runtime-corejs3/helpers/interopRequireDefault");
 
 exports.__esModule = true;
+exports.compressForks = compressForks;
 exports.iterateRule = iterateRule;
 exports.subscribeNextRule = subscribeNextRule;
 
-var _getIterator2 = _interopRequireDefault(require("@babel/runtime-corejs3/core-js/get-iterator"));
-
 var _regenerator = _interopRequireDefault(require("@babel/runtime-corejs3/regenerator"));
 
-var _isArray2 = _interopRequireDefault(require("@babel/runtime-corejs3/core-js-stable/array/is-array"));
+var _from = _interopRequireDefault(require("@babel/runtime-corejs3/core-js-stable/array/from"));
+
+var _getIterator2 = _interopRequireDefault(require("@babel/runtime-corejs3/core-js/get-iterator"));
+
+var _isArray4 = _interopRequireDefault(require("@babel/runtime-corejs3/core-js-stable/array/is-array"));
 
 var _helpers = require("../../helpers/helpers");
 
@@ -20,199 +23,463 @@ var _rules2 = require("./rules");
 
 var _marked =
 /*#__PURE__*/
-_regenerator.default.mark(iterateRule);
+_regenerator.default.mark(iterateFork),
+    _marked2 =
+/*#__PURE__*/
+_regenerator.default.mark(compressForks),
+    _marked3 =
+/*#__PURE__*/
+_regenerator.default.mark(_iterateRule);
 
-function iterateRule(object, rule, next) {
-  var ruleNext, _ref, conditionRules, len, i, conditionRule, _ref2, rules, any, _ref3, countMin, countMax, condition, subRule, repeatNext;
+var ARRAY_EMPTY = [];
 
-  return _regenerator.default.wrap(function iterateRule$(_context3) {
-    while (1) {
-      switch (_context3.prev = _context3.next) {
-        case 0:
-          if (next === void 0) {
-            next = null;
+function forkToArray(ruleIterable) {
+  var array;
+  var nothing;
+  var never;
+
+  for (var _iterator = ruleIterable, _isArray = (0, _isArray4.default)(_iterator), _i = 0, _iterator = _isArray ? _iterator : (0, _getIterator2.default)(_iterator);;) {
+    var _ref;
+
+    if (_isArray) {
+      if (_i >= _iterator.length) break;
+      _ref = _iterator[_i++];
+    } else {
+      _i = _iterator.next();
+      if (_i.done) break;
+      _ref = _i.value;
+    }
+
+    var item = _ref;
+
+    if ((0, _helpers.isIterable)(item)) {
+      var itemArray = (0, _from.default)(item);
+
+      if (!itemArray.length) {
+        if (!nothing) {
+          if (!array) {
+            array = [itemArray];
+          } else {
+            array.unshift(itemArray);
           }
 
+          nothing = true;
+        }
+
+        continue;
+      }
+
+      if (!array) {
+        array = [itemArray];
+      } else {
+        array.push(itemArray);
+      }
+    } else {
+      if (item.type === _rules.RuleType.Never) {
+        never = true;
+      } else {
+        throw new Error('Unexpected rule type: ' + _rules.RuleType[item.type]);
+      }
+    }
+  }
+
+  if (array) {
+    return array;
+  } else {
+    if (never) {
+      return _rules2.RuleNever.instance;
+    }
+
+    return ARRAY_EMPTY;
+  }
+}
+
+var COMPRESS_FORKS_DISABLED = false;
+
+function iterateFork(fork) {
+  var _iterator2, _isArray2, _i2, _ref2, ruleIterable, iterator, iteration;
+
+  return _regenerator.default.wrap(function iterateFork$(_context) {
+    while (1) {
+      switch (_context.prev = _context.next) {
+        case 0:
+          _iterator2 = fork, _isArray2 = (0, _isArray4.default)(_iterator2), _i2 = 0, _iterator2 = _isArray2 ? _iterator2 : (0, _getIterator2.default)(_iterator2);
+
+        case 1:
+          if (!_isArray2) {
+            _context.next = 7;
+            break;
+          }
+
+          if (!(_i2 >= _iterator2.length)) {
+            _context.next = 4;
+            break;
+          }
+
+          return _context.abrupt("break", 42);
+
+        case 4:
+          _ref2 = _iterator2[_i2++];
+          _context.next = 11;
+          break;
+
+        case 7:
+          _i2 = _iterator2.next();
+
+          if (!_i2.done) {
+            _context.next = 10;
+            break;
+          }
+
+          return _context.abrupt("break", 42);
+
+        case 10:
+          _ref2 = _i2.value;
+
+        case 11:
+          ruleIterable = _ref2;
+
+          if (!(0, _helpers.isIterable)(ruleIterable)) {
+            _context.next = 38;
+            break;
+          }
+
+          if (!COMPRESS_FORKS_DISABLED) {
+            _context.next = 18;
+            break;
+          }
+
+          _context.next = 16;
+          return compressForks(ruleIterable);
+
+        case 16:
+          _context.next = 36;
+          break;
+
+        case 18:
+          iterator = (0, _getIterator2.default)(ruleIterable);
+          iteration = iterator.next();
+
+          if (iteration.done) {
+            _context.next = 34;
+            break;
+          }
+
+          if (!(0, _helpers.isIterable)(iteration.value)) {
+            _context.next = 25;
+            break;
+          }
+
+          return _context.delegateYield(iterateFork(iteration.value), "t0", 23);
+
+        case 23:
+          _context.next = 32;
+          break;
+
+        case 25:
+          if (!(iteration.value.type === _rules.RuleType.Never)) {
+            _context.next = 30;
+            break;
+          }
+
+          _context.next = 28;
+          return iteration.value;
+
+        case 28:
+          _context.next = 32;
+          break;
+
+        case 30:
+          _context.next = 32;
+          return compressForks(ruleIterable, iterator, iteration);
+
+        case 32:
+          _context.next = 36;
+          break;
+
+        case 34:
+          _context.next = 36;
+          return ARRAY_EMPTY;
+
+        case 36:
+          _context.next = 40;
+          break;
+
+        case 38:
+          _context.next = 40;
+          return ruleIterable;
+
+        case 40:
+          _context.next = 1;
+          break;
+
+        case 42:
+        case "end":
+          return _context.stop();
+      }
+    }
+  }, _marked);
+}
+
+function compressForks(ruleOrForkIterable, iterator, iteration) {
+  var ruleOrFork, fork, array, nextIterable;
+  return _regenerator.default.wrap(function compressForks$(_context2) {
+    while (1) {
+      switch (_context2.prev = _context2.next) {
+        case 0:
+          if (!iterator) {
+            iterator = (0, _getIterator2.default)(ruleOrForkIterable);
+          }
+
+          if (!iteration) {
+            iteration = iterator.next();
+          }
+
+          if (!iteration.done) {
+            _context2.next = 4;
+            break;
+          }
+
+          return _context2.abrupt("return");
+
+        case 4:
+          ruleOrFork = iteration.value;
+
+          if (!(0, _helpers.isIterable)(ruleOrFork)) {
+            _context2.next = 13;
+            break;
+          }
+
+          fork = iterateFork(ruleOrFork);
+          array = forkToArray(fork); // TODO optimize this array
+
+          _context2.next = 10;
+          return array;
+
+        case 10:
+          return _context2.abrupt("return");
+
+        case 13:
+          _context2.next = 15;
+          return ruleOrFork;
+
+        case 15:
+          iteration = iterator.next();
+          nextIterable = iteration.value;
+
+          if (!nextIterable) {
+            _context2.next = 20;
+            break;
+          }
+
+          _context2.next = 20;
+          return function (nextObject) {
+            return compressForks(nextIterable(nextObject));
+          };
+
+        case 20:
+        case "end":
+          return _context2.stop();
+      }
+    }
+  }, _marked2);
+}
+
+function iterateRule(object, rule, next) {
+  if (next === void 0) {
+    next = null;
+  }
+
+  return compressForks(_iterateRule(object, rule, next));
+}
+
+function _iterateRule(object, rule, next) {
+  var ruleNext, _ref3, conditionRules, len, i, conditionRule, _ref4, rules, any, _ref5, countMin, countMax, condition, subRule, repeatNext;
+
+  return _regenerator.default.wrap(function _iterateRule$(_context5) {
+    while (1) {
+      switch (_context5.prev = _context5.next) {
+        case 0:
           if (rule) {
-            _context3.next = 5;
+            _context5.next = 4;
             break;
           }
 
           if (!next) {
-            _context3.next = 4;
+            _context5.next = 3;
             break;
           }
 
-          return _context3.delegateYield(next(object), "t0", 4);
+          return _context5.delegateYield(next(object), "t0", 3);
+
+        case 3:
+          return _context5.abrupt("return");
 
         case 4:
-          return _context3.abrupt("return");
-
-        case 5:
           ruleNext = rule.next || next ? function (nextObject) {
-            return iterateRule(nextObject, rule.next, next);
+            return _iterateRule(nextObject, rule.next, next);
           } : null;
-          _context3.t1 = rule.type;
-          _context3.next = _context3.t1 === _rules.RuleType.Nothing ? 9 : _context3.t1 === _rules.RuleType.Never ? 12 : _context3.t1 === _rules.RuleType.Action ? 15 : _context3.t1 === _rules.RuleType.If ? 20 : _context3.t1 === _rules.RuleType.Any ? 39 : _context3.t1 === _rules.RuleType.Repeat ? 51 : 59;
+          _context5.t1 = rule.type;
+          _context5.next = _context5.t1 === _rules.RuleType.Nothing ? 8 : _context5.t1 === _rules.RuleType.Never ? 11 : _context5.t1 === _rules.RuleType.Action ? 14 : _context5.t1 === _rules.RuleType.If ? 19 : _context5.t1 === _rules.RuleType.Any ? 38 : _context5.t1 === _rules.RuleType.Repeat ? 50 : 58;
           break;
 
-        case 9:
+        case 8:
           if (!ruleNext) {
-            _context3.next = 11;
+            _context5.next = 10;
             break;
           }
 
-          return _context3.delegateYield(ruleNext(object), "t2", 11);
+          return _context5.delegateYield(ruleNext(object), "t2", 10);
+
+        case 10:
+          return _context5.abrupt("break", 59);
 
         case 11:
-          return _context3.abrupt("break", 60);
-
-        case 12:
-          _context3.next = 14;
+          _context5.next = 13;
           return rule;
+
+        case 13:
+          return _context5.abrupt("break", 59);
 
         case 14:
-          return _context3.abrupt("break", 60);
-
-        case 15:
-          _context3.next = 17;
+          _context5.next = 16;
           return rule;
 
-        case 17:
-          _context3.next = 19;
+        case 16:
+          _context5.next = 18;
           return ruleNext;
 
-        case 19:
-          return _context3.abrupt("break", 60);
+        case 18:
+          return _context5.abrupt("break", 59);
 
-        case 20:
-          _ref = rule, conditionRules = _ref.conditionRules;
+        case 19:
+          _ref3 = rule, conditionRules = _ref3.conditionRules;
           len = conditionRules.length;
           i = 0;
 
-        case 23:
+        case 22:
           if (!(i < len)) {
-            _context3.next = 36;
+            _context5.next = 35;
             break;
           }
 
           conditionRule = conditionRules[i];
 
-          if (!(0, _isArray2.default)(conditionRule)) {
-            _context3.next = 31;
+          if (!(0, _isArray4.default)(conditionRule)) {
+            _context5.next = 30;
             break;
           }
 
           if (!conditionRule[0](object)) {
-            _context3.next = 29;
+            _context5.next = 28;
             break;
           }
 
-          return _context3.delegateYield(iterateRule(object, conditionRule[1], ruleNext), "t3", 28);
+          return _context5.delegateYield(_iterateRule(object, conditionRule[1], ruleNext), "t3", 27);
+
+        case 27:
+          return _context5.abrupt("break", 35);
 
         case 28:
-          return _context3.abrupt("break", 36);
-
-        case 29:
-          _context3.next = 33;
+          _context5.next = 32;
           break;
+
+        case 30:
+          return _context5.delegateYield(_iterateRule(object, conditionRule, ruleNext), "t4", 31);
 
         case 31:
-          return _context3.delegateYield(iterateRule(object, conditionRule, ruleNext), "t4", 32);
+          return _context5.abrupt("break", 35);
 
         case 32:
-          return _context3.abrupt("break", 36);
-
-        case 33:
           i++;
-          _context3.next = 23;
+          _context5.next = 22;
           break;
 
-        case 36:
+        case 35:
           if (!(i === len && ruleNext)) {
-            _context3.next = 38;
+            _context5.next = 37;
             break;
           }
 
-          return _context3.delegateYield(ruleNext(object), "t5", 38);
+          return _context5.delegateYield(ruleNext(object), "t5", 37);
+
+        case 37:
+          return _context5.abrupt("break", 59);
 
         case 38:
-          return _context3.abrupt("break", 60);
-
-        case 39:
-          _ref2 = rule, rules = _ref2.rules;
+          _ref4 = rule, rules = _ref4.rules;
 
           if (rules.length) {
-            _context3.next = 44;
+            _context5.next = 43;
             break;
           }
 
-          _context3.next = 43;
+          _context5.next = 42;
           return _rules2.RuleNever.instance;
 
-        case 43:
-          return _context3.abrupt("break", 60);
+        case 42:
+          return _context5.abrupt("break", 59);
 
-        case 44:
+        case 43:
           if (!(rules.length === 1)) {
-            _context3.next = 47;
+            _context5.next = 46;
             break;
           }
 
-          _context3.next = 47;
-          return [iterateRule(object, rules[0], ruleNext)];
+          _context5.next = 46;
+          return [_iterateRule(object, rules[0], ruleNext)];
 
-        case 47:
+        case 46:
           any =
           /*#__PURE__*/
           _regenerator.default.mark(function any() {
-            var _i, _len, subRule;
+            var _i3, _len, subRule;
 
-            return _regenerator.default.wrap(function any$(_context) {
+            return _regenerator.default.wrap(function any$(_context3) {
               while (1) {
-                switch (_context.prev = _context.next) {
+                switch (_context3.prev = _context3.next) {
                   case 0:
-                    _i = 0, _len = rules.length;
+                    _i3 = 0, _len = rules.length;
 
                   case 1:
-                    if (!(_i < _len)) {
-                      _context.next = 10;
+                    if (!(_i3 < _len)) {
+                      _context3.next = 10;
                       break;
                     }
 
-                    subRule = rules[_i];
+                    subRule = rules[_i3];
 
                     if (subRule) {
-                      _context.next = 5;
+                      _context3.next = 5;
                       break;
                     }
 
                     throw new Error("RuleType.Any rule=" + subRule);
 
                   case 5:
-                    _context.next = 7;
-                    return iterateRule(object, subRule, ruleNext);
+                    _context3.next = 7;
+                    return _iterateRule(object, subRule, ruleNext);
 
                   case 7:
-                    _i++;
-                    _context.next = 1;
+                    _i3++;
+                    _context3.next = 1;
                     break;
 
                   case 10:
                   case "end":
-                    return _context.stop();
+                    return _context3.stop();
                 }
               }
             }, any);
           });
-          _context3.next = 50;
+          _context5.next = 49;
           return any();
 
-        case 50:
-          return _context3.abrupt("break", 60);
+        case 49:
+          return _context5.abrupt("break", 59);
 
-        case 51:
-          _ref3 = rule, countMin = _ref3.countMin, countMax = _ref3.countMax, condition = _ref3.condition, subRule = _ref3.rule; // if (countMin === 0 && countMin === countMax) {
+        case 50:
+          _ref5 = rule, countMin = _ref5.countMin, countMax = _ref5.countMax, condition = _ref5.condition, subRule = _ref5.rule; // if (countMin === 0 && countMin === countMax) {
           // 	// == RuleType.Nothing
           // 	if (ruleNext) {
           // 		yield* ruleNext(object)
@@ -221,27 +488,27 @@ function iterateRule(object, rule, next) {
           // }
 
           if (!(countMax < countMin || countMax < 0)) {
-            _context3.next = 56;
+            _context5.next = 55;
             break;
           }
 
-          _context3.next = 55;
+          _context5.next = 54;
           return _rules2.RuleNever.instance;
 
-        case 55:
-          return _context3.abrupt("break", 60);
+        case 54:
+          return _context5.abrupt("break", 59);
 
-        case 56:
+        case 55:
           repeatNext =
           /*#__PURE__*/
           _regenerator.default.mark(function repeatNext(nextObject, index) {
             var repeatAction, nextIteration;
-            return _regenerator.default.wrap(function repeatNext$(_context2) {
+            return _regenerator.default.wrap(function repeatNext$(_context4) {
               while (1) {
-                switch (_context2.prev = _context2.next) {
+                switch (_context4.prev = _context4.next) {
                   case 0:
-                    nextIteration = function _ref4(newCount) {
-                      return iterateRule(nextObject, subRule, function (nextIterationObject) {
+                    nextIteration = function _ref6(newCount) {
+                      return _iterateRule(nextObject, subRule, function (nextIterationObject) {
                         return repeatNext(nextIterationObject, newCount);
                       });
                     };
@@ -257,68 +524,68 @@ function iterateRule(object, rule, next) {
                     }
 
                     if (!((repeatAction & _rules.RuleRepeatAction.Fork) === 0)) {
-                      _context2.next = 11;
+                      _context4.next = 11;
                       break;
                     }
 
                     if (!((repeatAction & _rules.RuleRepeatAction.Next) === 0)) {
-                      _context2.next = 9;
+                      _context4.next = 9;
                       break;
                     }
 
-                    _context2.next = 8;
+                    _context4.next = 8;
                     return _rules2.RuleNever.instance;
 
                   case 8:
-                    return _context2.abrupt("return");
+                    return _context4.abrupt("return");
 
                   case 9:
-                    return _context2.delegateYield(nextIteration(index + 1), "t0", 10);
+                    return _context4.delegateYield(nextIteration(index + 1), "t0", 10);
 
                   case 10:
-                    return _context2.abrupt("return");
+                    return _context4.abrupt("return");
 
                   case 11:
                     if (!((repeatAction & _rules.RuleRepeatAction.Next) === 0)) {
-                      _context2.next = 15;
+                      _context4.next = 15;
                       break;
                     }
 
                     if (!ruleNext) {
-                      _context2.next = 14;
+                      _context4.next = 14;
                       break;
                     }
 
-                    return _context2.delegateYield(ruleNext(nextObject), "t1", 14);
+                    return _context4.delegateYield(ruleNext(nextObject), "t1", 14);
 
                   case 14:
-                    return _context2.abrupt("return");
+                    return _context4.abrupt("return");
 
                   case 15:
-                    _context2.next = 17;
-                    return [ruleNext ? ruleNext(nextObject) : [], nextIteration(index + 1)];
+                    _context4.next = 17;
+                    return [ruleNext ? ruleNext(nextObject) : ARRAY_EMPTY, nextIteration(index + 1)];
 
                   case 17:
                   case "end":
-                    return _context2.stop();
+                    return _context4.stop();
                 }
               }
             }, repeatNext);
           });
-          return _context3.delegateYield(repeatNext(object, 0), "t6", 58);
+          return _context5.delegateYield(repeatNext(object, 0), "t6", 57);
+
+        case 57:
+          return _context5.abrupt("break", 59);
 
         case 58:
-          return _context3.abrupt("break", 60);
-
-        case 59:
           throw new Error('Unknown RuleType: ' + rule.type);
 
-        case 60:
+        case 59:
         case "end":
-          return _context3.stop();
+          return _context5.stop();
       }
     }
-  }, _marked);
+  }, _marked3);
 }
 
 function subscribeNextRule(ruleIterator, iteration, fork, subscribeNode) {
@@ -337,19 +604,19 @@ function subscribeNextRule(ruleIterator, iteration, fork, subscribeNode) {
     // 	}
     // }
 
-    for (var _iterator = ruleOrIterable, _isArray = (0, _isArray2.default)(_iterator), _i2 = 0, _iterator = _isArray ? _iterator : (0, _getIterator2.default)(_iterator);;) {
-      var _ref5;
+    for (var _iterator3 = ruleOrIterable, _isArray3 = (0, _isArray4.default)(_iterator3), _i4 = 0, _iterator3 = _isArray3 ? _iterator3 : (0, _getIterator2.default)(_iterator3);;) {
+      var _ref7;
 
-      if (_isArray) {
-        if (_i2 >= _iterator.length) break;
-        _ref5 = _iterator[_i2++];
+      if (_isArray3) {
+        if (_i4 >= _iterator3.length) break;
+        _ref7 = _iterator3[_i4++];
       } else {
-        _i2 = _iterator.next();
-        if (_i2.done) break;
-        _ref5 = _i2.value;
+        _i4 = _iterator3.next();
+        if (_i4.done) break;
+        _ref7 = _i4.value;
       }
 
-      var ruleIterable = _ref5;
+      var ruleIterable = _ref7;
       var unsubscribe = fork((0, _getIterator2.default)(ruleIterable));
 
       if (unsubscribe) {

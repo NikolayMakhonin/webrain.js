@@ -9,7 +9,7 @@ export declare class ObservableSet<T = any> extends SetChangedObject<T> implemen
     delete(value: T): boolean;
     clear(): void;
     readonly [Symbol.toStringTag]: string;
-    readonly size: number;
+    get size(): number;
     [Symbol.iterator](): IterableIterator<T>;
     entries(): IterableIterator<[T, T]>;
     forEach(callbackfn: (value: T, value2: T, set: Set<T>) => void, thisArg?: any): void;

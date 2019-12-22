@@ -11,9 +11,13 @@ function createHasSubscribersSubjectDefault(hasSubscribers) {
 
 export function hasSubscribers(base, createHasSubscribersSubject = createHasSubscribersSubjectDefault) {
   return class HasSubscribers extends base {
-    subscribe(subscriber) {
+    subscribe(subscriber, description) {
       if (!subscriber) {
         return null;
+      }
+
+      if (description) {
+        subscriber.description = description;
       } // eslint-disable-next-line no-shadow
       // tslint:disable-next-line:no-shadowed-variable
 

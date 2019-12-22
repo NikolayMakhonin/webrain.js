@@ -11,9 +11,13 @@ export function subject(base) {
       return this._subscribers && this._subscribers.length;
     }
 
-    subscribe(subscriber) {
+    subscribe(subscriber, description) {
       if (!subscriber) {
         return null;
+      }
+
+      if (description) {
+        subscriber.description = description;
       }
 
       const {

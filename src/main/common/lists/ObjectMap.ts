@@ -138,6 +138,7 @@ export class ObjectMap<V> implements
 
 	// region ISerializable
 
+	// noinspection SpellCheckingInspection
 	public static uuid: string = '62388f07b21a47788b3858f225cdbd42'
 
 	public serialize(serialize: ISerializeValue): ISerializedObject {

@@ -45,6 +45,7 @@ exports.EventType = EventType;
 
 var timing = new _timing.TestTiming();
 exports.timing = timing;
+timing.addTime(1000);
 var staticAutoCalc;
 var staticCalcTime;
 var testStartTime;

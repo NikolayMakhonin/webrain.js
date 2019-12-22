@@ -7,7 +7,7 @@ export declare class ObjectSet implements Set<string>, IMergeable<ObjectSet, str
     delete(value: string): boolean;
     clear(): this;
     readonly [Symbol.toStringTag]: string;
-    readonly size: number;
+    get size(): number;
     [Symbol.iterator](): IterableIterator<string>;
     entries(): IterableIterator<[string, string]>;
     forEach(callbackfn: (value: string, key: string, set: Set<string>) => void, thisArg?: any): void;

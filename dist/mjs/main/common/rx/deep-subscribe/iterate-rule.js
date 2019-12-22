@@ -1,7 +1,124 @@
 import { isIterable } from '../../helpers/helpers';
 import { RuleRepeatAction, RuleType } from './contracts/rules';
 import { RuleNever } from './rules';
-export function* iterateRule(object, rule, next = null) {
+const ARRAY_EMPTY = [];
+
+function forkToArray(ruleIterable) {
+  let array;
+  let nothing;
+  let never;
+
+  for (const item of ruleIterable) {
+    if (isIterable(item)) {
+      const itemArray = Array.from(item);
+
+      if (!itemArray.length) {
+        if (!nothing) {
+          if (!array) {
+            array = [itemArray];
+          } else {
+            array.unshift(itemArray);
+          }
+
+          nothing = true;
+        }
+
+        continue;
+      }
+
+      if (!array) {
+        array = [itemArray];
+      } else {
+        array.push(itemArray);
+      }
+    } else {
+      if (item.type === RuleType.Never) {
+        never = true;
+      } else {
+        throw new Error('Unexpected rule type: ' + RuleType[item.type]);
+      }
+    }
+  }
+
+  if (array) {
+    return array;
+  } else {
+    if (never) {
+      return RuleNever.instance;
+    }
+
+    return ARRAY_EMPTY;
+  }
+}
+
+const COMPRESS_FORKS_DISABLED = false;
+
+function* iterateFork(fork) {
+  for (const ruleIterable of fork) {
+    if (isIterable(ruleIterable)) {
+      if (COMPRESS_FORKS_DISABLED) {
+        yield compressForks(ruleIterable);
+      } else {
+        const iterator = ruleIterable[Symbol.iterator]();
+        const iteration = iterator.next();
+
+        if (!iteration.done) {
+          if (isIterable(iteration.value)) {
+            yield* iterateFork(iteration.value);
+          } else {
+            if (iteration.value.type === RuleType.Never) {
+              yield iteration.value;
+            } else {
+              yield compressForks(ruleIterable, iterator, iteration);
+            }
+          }
+        } else {
+          yield ARRAY_EMPTY;
+        }
+      }
+    } else {
+      yield ruleIterable;
+    }
+  }
+}
+
+export function* compressForks(ruleOrForkIterable, iterator, iteration) {
+  if (!iterator) {
+    iterator = ruleOrForkIterable[Symbol.iterator]();
+  }
+
+  if (!iteration) {
+    iteration = iterator.next();
+  }
+
+  if (iteration.done) {
+    return;
+  }
+
+  const ruleOrFork = iteration.value;
+
+  if (isIterable(ruleOrFork)) {
+    const fork = iterateFork(ruleOrFork);
+    const array = forkToArray(fork); // TODO optimize this array
+
+    yield array;
+    return;
+  } else {
+    yield ruleOrFork;
+  }
+
+  iteration = iterator.next();
+  const nextIterable = iteration.value;
+
+  if (nextIterable) {
+    yield nextObject => compressForks(nextIterable(nextObject));
+  }
+}
+export function iterateRule(object, rule, next = null) {
+  return compressForks(_iterateRule(object, rule, next));
+}
+
+function* _iterateRule(object, rule, next) {
   if (!rule) {
     if (next) {
       yield* next(object);
@@ -10,7 +127,7 @@ export function* iterateRule(object, rule, next = null) {
     return;
   }
 
-  const ruleNext = rule.next || next ? nextObject => iterateRule(nextObject, rule.next, next) : null;
+  const ruleNext = rule.next || next ? nextObject => _iterateRule(nextObject, rule.next, next) : null;
 
   switch (rule.type) {
     case RuleType.Nothing:
@@ -42,11 +159,11 @@ export function* iterateRule(object, rule, next = null) {
 
           if (Array.isArray(conditionRule)) {
             if (conditionRule[0](object)) {
-              yield* iterateRule(object, conditionRule[1], ruleNext);
+              yield* _iterateRule(object, conditionRule[1], ruleNext);
               break;
             }
           } else {
-            yield* iterateRule(object, conditionRule, ruleNext);
+            yield* _iterateRule(object, conditionRule, ruleNext);
             break;
           }
         }
@@ -69,7 +186,7 @@ export function* iterateRule(object, rule, next = null) {
       }
 
       if (rules.length === 1) {
-        yield [iterateRule(object, rules[0], ruleNext)];
+        yield [_iterateRule(object, rules[0], ruleNext)];
       }
 
       const any = function* () {
@@ -80,7 +197,7 @@ export function* iterateRule(object, rule, next = null) {
             throw new Error(`RuleType.Any rule=${subRule}`);
           }
 
-          yield iterateRule(object, subRule, ruleNext);
+          yield _iterateRule(object, subRule, ruleNext);
         }
       };
 
@@ -137,10 +254,10 @@ export function* iterateRule(object, rule, next = null) {
             return;
           }
 
-          yield [ruleNext ? ruleNext(nextObject) : [], nextIteration(index + 1)];
+          yield [ruleNext ? ruleNext(nextObject) : ARRAY_EMPTY, nextIteration(index + 1)];
 
           function nextIteration(newCount) {
-            return iterateRule(nextObject, subRule, nextIterationObject => repeatNext(nextIterationObject, newCount));
+            return _iterateRule(nextObject, subRule, nextIterationObject => repeatNext(nextIterationObject, newCount));
           }
         };
 
@@ -152,6 +269,7 @@ export function* iterateRule(object, rule, next = null) {
       throw new Error('Unknown RuleType: ' + rule.type);
   }
 }
+
 export function subscribeNextRule(ruleIterator, iteration, fork, subscribeNode) {
   const ruleOrIterable = iteration.value;
 

@@ -21,17 +21,21 @@ var _async = require("../../../async/async");
 
 var _ThenableSync = require("../../../async/ThenableSync");
 
+var _CalcStat = require("../../../helpers/CalcStat");
+
+var _performance = require("../../../helpers/performance");
+
 var _valueProperty = require("../../../helpers/value-property");
 
 var _webrainOptions = require("../../../helpers/webrainOptions");
+
+var _Debugger = require("../../Debugger");
 
 var _DeferredCalc = require("../../deferred-calc/DeferredCalc");
 
 var _ObservableClass3 = require("../ObservableClass");
 
 var _ObservableObjectBuilder = require("../ObservableObjectBuilder");
-
-var _CalcObjectDebugger = require("./CalcObjectDebugger");
 
 var CalcPropertyValue = function CalcPropertyValue(property) {
   (0, _classCallCheck2.default)(this, CalcPropertyValue);
@@ -98,16 +102,29 @@ function (_ObservableClass2) {
       _this2.state.name = name;
     }
 
+    _this2.timeSyncStat = new _CalcStat.CalcStat();
+    _this2.timeAsyncStat = new _CalcStat.CalcStat();
+    _this2.timeDebuggerStat = new _CalcStat.CalcStat();
+    _this2.timeEmitEventsStat = new _CalcStat.CalcStat();
+    _this2.timeTotalStat = new _CalcStat.CalcStat();
     _this2._deferredCalc = new _DeferredCalc.DeferredCalc(function () {
       _this2.onInvalidated();
     }, function (done) {
       var prevValue = _this2.state.value;
+      var timeStart = (0, _performance.now)();
+      var timeSync;
+      var timeAsync;
+      var timeDebugger;
+      var timeEmitEvents;
       var deferredValue = (0, _ThenableSync.resolveAsyncFunc)(function () {
         if (typeof _this2.state.input === 'undefined') {
           return false;
         }
 
-        return _this2._calcFunc(_this2.state);
+        var result = _this2._calcFunc(_this2.state);
+
+        timeSync = (0, _performance.now)();
+        return result;
       }, function (isChangedForce) {
         _this2._hasValue = true;
         var val = _this2.state.value;
@@ -116,16 +133,33 @@ function (_ObservableClass2) {
           _this2.state.value = val = prevValue;
         }
 
-        _CalcObjectDebugger.CalcObjectDebugger.Instance.onCalculated((0, _assertThisInitialized2.default)(_this2), prevValue, val);
+        timeAsync = (0, _performance.now)();
 
+        _Debugger.Debugger.Instance.onCalculated((0, _assertThisInitialized2.default)(_this2), prevValue, val);
+
+        timeDebugger = (0, _performance.now)();
         done(isChangedForce, prevValue, val);
+        timeEmitEvents = (0, _performance.now)();
+
+        _this2.timeSyncStat.add(timeSync - timeStart);
+
+        _this2.timeAsyncStat.add(timeAsync - timeStart);
+
+        _this2.timeDebuggerStat.add(timeDebugger - timeAsync);
+
+        _this2.timeEmitEventsStat.add(timeEmitEvents - timeDebugger);
+
+        _this2.timeTotalStat.add(timeEmitEvents - timeStart);
+
         return val;
       }, function (err) {
         _this2._error = err;
+        timeAsync = (0, _performance.now)();
         console.error(err);
 
-        _CalcObjectDebugger.CalcObjectDebugger.Instance.onError((0, _assertThisInitialized2.default)(_this2), _this2.state.value, prevValue, err);
+        _Debugger.Debugger.Instance.onError((0, _assertThisInitialized2.default)(_this2), _this2.state.value, prevValue, err);
 
+        timeDebugger = (0, _performance.now)();
         var val = _this2.state.value;
 
         if (_webrainOptions.webrainOptions.equalsFunc.call(_this2.state, prevValue, _this2.state.value)) {
@@ -133,6 +167,18 @@ function (_ObservableClass2) {
         }
 
         done(prevValue !== val, prevValue, val);
+        timeEmitEvents = (0, _performance.now)();
+
+        _this2.timeSyncStat.add(timeSync - timeStart);
+
+        _this2.timeAsyncStat.add(timeAsync - timeStart);
+
+        _this2.timeDebuggerStat.add(timeDebugger - timeAsync);
+
+        _this2.timeEmitEventsStat.add(timeEmitEvents - timeDebugger);
+
+        _this2.timeTotalStat.add(timeEmitEvents - timeStart);
+
         return val; // ThenableSync.createRejected(err)
       }, true);
 
@@ -174,7 +220,8 @@ function (_ObservableClass2) {
           name: 'wait',
           oldValue: oldValue,
           newValue: newValue
-        });
+        } // this._hasValue ? null : {name: 'lastOrWait', oldValue, newValue},
+        );
       }
     }
   }, {
@@ -191,20 +238,22 @@ function (_ObservableClass2) {
           name: 'last',
           oldValue: oldValue,
           newValue: newValue
-        });
+        } // {name: 'lastOrWait', oldValue, newValue},
+        );
       }
     }
   }, {
     key: "invalidate",
     value: function invalidate() {
       if (!this._error) {
+        // console.log('invalidate: ' + this.state.name)
         this._deferredCalc.invalidate();
       }
     }
   }, {
     key: "onInvalidated",
     value: function onInvalidated() {
-      _CalcObjectDebugger.CalcObjectDebugger.Instance.onInvalidated(this, this.state.value);
+      _Debugger.Debugger.Instance.onInvalidated(this, this.state.value);
 
       var propertyChangedIfCanEmit = this.propertyChangedIfCanEmit;
 
@@ -243,6 +292,8 @@ function (_ObservableClass2) {
 
       return this.state.value;
     }
+    /** @deprecated not needed and not implemented. Use 'last' instead. */
+
   }, {
     key: "lastOrWait",
     get: function get() {

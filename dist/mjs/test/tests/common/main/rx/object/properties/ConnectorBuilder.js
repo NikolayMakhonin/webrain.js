@@ -1,8 +1,8 @@
 /* tslint:disable:no-duplicate-string */
-import { Connector } from '../../../../../../../main/common';
-/* eslint-disable guard-for-in */
 
+/* eslint-disable guard-for-in */
 import { ObservableObjectBuilder } from '../../../../../../../main/common/rx/object/ObservableObjectBuilder';
+import { Connector } from '../../../../../../../main/common/rx/object/properties/Connector';
 import { ConnectorBuilder } from '../../../../../../../main/common/rx/object/properties/ConnectorBuilder';
 import { assert } from '../../../../../../../main/common/test/Assert';
 import { describe, it } from '../../../../../../../main/common/test/Mocha';
@@ -148,5 +148,45 @@ describe('common > main > rx > properties > ConnectorBuilder', function () {
     assert.deepStrictEqual(baseObject2.baseProp1, '1');
     assert.deepStrictEqual(object1.baseProp1, '1');
     assert.deepStrictEqual(object2.baseProp1, '7');
+    unsubscribe1[0]();
+    assert.deepStrictEqual(baseResults1, []);
+    assert.deepStrictEqual(baseResults2, []);
+    assert.deepStrictEqual(results1, []);
+    assert.deepStrictEqual(results2, []);
+    results2 = [];
+    assert.deepStrictEqual(baseObject1.baseProp1, '1');
+    assert.deepStrictEqual(baseObject2.baseProp1, '1');
+    assert.deepStrictEqual(object1.baseProp1, void 0);
+    assert.deepStrictEqual(object2.baseProp1, '7');
+    unsubscribe2[0]();
+    assert.deepStrictEqual(baseResults1, []);
+    assert.deepStrictEqual(baseResults2, []);
+    assert.deepStrictEqual(results1, []);
+    assert.deepStrictEqual(results2, []);
+    results2 = [];
+    assert.deepStrictEqual(baseObject1.baseProp1, '1');
+    assert.deepStrictEqual(baseObject2.baseProp1, '1');
+    assert.deepStrictEqual(object1.baseProp1, void 0);
+    assert.deepStrictEqual(object2.baseProp1, void 0);
+    baseUnsubscribe1[0]();
+    assert.deepStrictEqual(baseResults1, []);
+    assert.deepStrictEqual(baseResults2, []);
+    assert.deepStrictEqual(results1, []);
+    assert.deepStrictEqual(results2, []);
+    results2 = [];
+    assert.deepStrictEqual(baseObject1.baseProp1, void 0);
+    assert.deepStrictEqual(baseObject2.baseProp1, '1');
+    assert.deepStrictEqual(object1.baseProp1, void 0);
+    assert.deepStrictEqual(object2.baseProp1, void 0);
+    baseUnsubscribe2[0]();
+    assert.deepStrictEqual(baseResults1, []);
+    assert.deepStrictEqual(baseResults2, []);
+    assert.deepStrictEqual(results1, []);
+    assert.deepStrictEqual(results2, []);
+    results2 = [];
+    assert.deepStrictEqual(baseObject1.baseProp1, void 0);
+    assert.deepStrictEqual(baseObject2.baseProp1, void 0);
+    assert.deepStrictEqual(object1.baseProp1, void 0);
+    assert.deepStrictEqual(object2.baseProp1, void 0);
   });
 });

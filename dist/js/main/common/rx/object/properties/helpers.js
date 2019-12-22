@@ -12,7 +12,7 @@ var _valueProperty = require("../../../helpers/value-property");
 var _CalcProperty = require("./CalcProperty");
 
 function resolveValueProperty(value, getValue) {
-  if (typeof value === 'object') {
+  if (value != null && typeof value === 'object') {
     if (_valueProperty.VALUE_PROPERTY_DEFAULT in value) {
       if (getValue) {
         var newValue = getValue(value);

@@ -1,7 +1,6 @@
-import {ValueChangeType, ValueKeyType} from './deep-subscribe/contracts/common'
+import {IPropertiesPath, ValueChangeType, ValueKeyType} from './deep-subscribe/contracts/common'
+import {ISubscribedValue} from './deep-subscribe/contracts/deep-subscribe'
 import {IRule} from './deep-subscribe/contracts/rules'
-import {PropertiesPath} from './deep-subscribe/helpers/PropertiesPath'
-import {ISubscribedValue} from './deep-subscribe/ObjectSubscriber'
 import {ObservableClass} from './object/ObservableClass'
 import {ICalcProperty} from './object/properties/contracts'
 import {IObservable} from './subjects/observable'
@@ -42,7 +41,7 @@ export interface IDeepSubscribeEvent {
 	parent: any,
 	changeType: ValueChangeType,
 	keyType: ValueKeyType,
-	propertiesPath: PropertiesPath,
+	propertiesPath: IPropertiesPath,
 	rule: IRule,
 	oldIsLeaf: boolean,
 	newIsLeaf: boolean,
@@ -174,7 +173,7 @@ export class Debugger {
 		parent: any,
 		changeType: ValueChangeType,
 		keyType: ValueKeyType,
-		propertiesPath: PropertiesPath,
+		propertiesPath: IPropertiesPath,
 		rule: IRule,
 		oldIsLeaf: boolean,
 		newIsLeaf: boolean,

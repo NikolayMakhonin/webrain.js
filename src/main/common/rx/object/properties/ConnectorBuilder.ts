@@ -1,5 +1,4 @@
 import {createFunction} from '../../../helpers/helpers'
-import {webrainOptions} from '../../../helpers/webrainOptions'
 import {Debugger} from '../../Debugger'
 import {ValueKeyType} from '../../deep-subscribe/contracts/common'
 import {deepSubscribeRule} from '../../deep-subscribe/deep-subscribe'

@@ -8,7 +8,7 @@ export declare class ArraySet<T extends Object> implements Set<T>, IMergeable<Ar
     delete(value: T): boolean;
     clear(): this;
     readonly [Symbol.toStringTag]: string;
-    readonly size: number;
+    get size(): number;
     [Symbol.iterator](): IterableIterator<T>;
     entries(): IterableIterator<[T, T]>;
     forEach(callbackfn: (value: T, key: T, set: Set<T>) => void, thisArg?: any): void;

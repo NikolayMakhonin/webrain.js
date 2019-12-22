@@ -3,7 +3,7 @@ import { IObservable, ISubscriber, IUnsubscribe } from './observable';
 import { ISubject } from './subject';
 export interface IHasSubscribers<T> {
     readonly hasSubscribersObservable: IObservable<boolean>;
-    subscribe(subscriber: ISubscriber<T>): IUnsubscribe;
+    subscribe(subscriber: ISubscriber<T>, description?: any): IUnsubscribe;
 }
 declare function createHasSubscribersSubjectDefault(hasSubscribers: boolean): ISubject<boolean>;
 export declare function hasSubscribers(base: any, createHasSubscribersSubject?: typeof createHasSubscribersSubjectDefault): any;

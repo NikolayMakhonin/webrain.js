@@ -27,8 +27,12 @@ export class ObservableObjectBuilder {
     } // optimization
 
 
-    const getValue = options && options.getValue || createFunction(`return this.__fields["${name}"]`);
-    const setValue = options && options.setValue || createFunction('v', `this.__fields["${name}"] = v`);
+    const getValue = options && options.getValue || createFunction(() => function () {
+      return this.__fields[name];
+    }, `return this.__fields["${name}"]`);
+    const setValue = options && options.setValue || createFunction(() => function (v) {
+      this.__fields[name] = v;
+    }, 'v', `this.__fields["${name}"] = v`);
     const set = setOptions ? _setExt.bind(null, name, getValue, setValue, setOptions) : _set.bind(null, name, getValue, setValue);
     Object.defineProperty(object, name, {
       configurable: true,
@@ -80,11 +84,15 @@ export class ObservableObjectBuilder {
 
     const update = options && options.update; // optimization
 
-    const getValue = options && options.getValue || createFunction(`return this.__fields["${name}"]`);
+    const getValue = options && options.getValue || createFunction(() => function () {
+      return this.__fields[name];
+    }, `return this.__fields["${name}"]`);
     let setValue;
 
     if (update || factory) {
-      setValue = options && options.setValue || createFunction('v', `this.__fields["${name}"] = v`);
+      setValue = options && options.setValue || createFunction(() => function (v) {
+        this.__fields[name] = v;
+      }, 'v', `this.__fields["${name}"] = v`);
     }
 
     let setOnUpdate;

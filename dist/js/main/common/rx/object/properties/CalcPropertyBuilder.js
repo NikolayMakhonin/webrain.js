@@ -35,7 +35,19 @@ function calcPropertyFactory(_ref) {
     });
 
     if (dependencies) {
-      (0, _DependenciesBuilder.subscribeDependencies)(calcProperty.state, calcProperty, dependencies);
+      // subscribeDependencies(calcProperty.state, calcProperty, dependencies)
+      var states;
+      var unsubscribe;
+      calcProperty.propertyChanged.hasSubscribersObservable.subscribe(function (hasSubscribers) {
+        if (unsubscribe) {
+          states = unsubscribe();
+          unsubscribe = null;
+        }
+
+        if (hasSubscribers) {
+          unsubscribe = (0, _DependenciesBuilder.subscribeDependencies)(calcProperty.state, calcProperty, dependencies, states);
+        }
+      }, "CalcProperty." + calcProperty.state.name + ".hasSubscribersObservable for subscribeDependencies");
     }
 
     return calcProperty;

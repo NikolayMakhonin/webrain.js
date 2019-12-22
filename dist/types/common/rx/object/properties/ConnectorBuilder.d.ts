@@ -3,7 +3,7 @@ import { ObservableClass } from '../ObservableClass';
 import { IWritableFieldOptions, ObservableObjectBuilder } from '../ObservableObjectBuilder';
 import { Connector } from './Connector';
 import { ValueKeys } from './contracts';
-export declare class ConnectorBuilder<TObject extends Connector<TSource>, TSource = TObject, TValueKeys extends string | number = ValueKeys> extends ObservableObjectBuilder<TObject> {
+export declare class ConnectorBuilder<TObject extends Connector<TSource> | ObservableClass, TSource = TObject, TValueKeys extends string | number = ValueKeys> extends ObservableObjectBuilder<TObject> {
     constructor(object?: TObject);
     connect<Name extends string | number = Extract<keyof TObject, string | number>, TValue = Name extends keyof TObject ? TObject[Name] : any>(name: Name, buildRule: (builder: RuleBuilder<TSource, TValueKeys>) => RuleBuilder<TValue, TValueKeys>, options?: IWritableFieldOptions<TObject, TValue>, initValue?: TValue): this & {
         object: {
@@ -12,7 +12,7 @@ export declare class ConnectorBuilder<TObject extends Connector<TSource>, TSourc
     };
     connectWritable<Name extends string | number = Extract<keyof TObject, string | number>, TValue = Name extends keyof TObject ? TObject[Name] : any>(name: Name, buildRule: (builder: RuleBuilder<TSource, TValueKeys>) => RuleBuilder<TValue, TValueKeys>, options?: IWritableFieldOptions<TObject, TValue>, initValue?: TValue): this & {
         object: {
-            readonly [newProp in Name]: TValue;
+            [newProp in Name]: TValue;
         };
     };
     private _connect;

@@ -24,10 +24,14 @@ export declare class DeferredCalc {
     private _timeCalcStart?;
     private _timeCalcEnd?;
     constructor(canBeCalcCallback: () => void, calcFunc: (done: (...args: any[]) => void) => void, calcCompletedCallback: (...doneArgs: any[]) => void, options: IDeferredCalcOptions);
-    minTimeBetweenCalc: number;
-    throttleTime: number;
-    maxThrottleTime: number;
-    autoInvalidateInterval: number;
+    get minTimeBetweenCalc(): number;
+    set minTimeBetweenCalc(value: number);
+    get throttleTime(): number;
+    set throttleTime(value: number);
+    get maxThrottleTime(): number;
+    set maxThrottleTime(value: number);
+    get autoInvalidateInterval(): number;
+    set autoInvalidateInterval(value: number);
     private _calc;
     private _canBeCalc;
     private _getNextCalcTime;

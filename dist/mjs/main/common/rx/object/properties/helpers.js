@@ -4,7 +4,7 @@ import { VALUE_PROPERTY_DEFAULT } from '../../../helpers/value-property';
 import { CalcPropertyValue } from './CalcProperty';
 
 function resolveValueProperty(value, getValue) {
-  if (typeof value === 'object') {
+  if (value != null && typeof value === 'object') {
     if (VALUE_PROPERTY_DEFAULT in value) {
       if (getValue) {
         const newValue = getValue(value);

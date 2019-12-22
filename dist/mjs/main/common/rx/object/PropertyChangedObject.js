@@ -46,24 +46,25 @@ export class PropertyChangedObject {
     const {
       __meta
     } = this;
-    let {
+    const {
       unsubscribers
     } = __meta;
 
     if (unsubscribers) {
       const oldUnsubscribe = unsubscribers[propertyName];
 
-      if (oldUnsubscribe) {
-        oldUnsubscribe();
+      if (unsubscribe !== oldUnsubscribe) {
+        if (oldUnsubscribe) {
+          unsubscribers[propertyName] = unsubscribe;
+          oldUnsubscribe();
+        } else if (unsubscribe) {
+          unsubscribers[propertyName] = unsubscribe;
+        }
       }
-    }
-
-    if (unsubscribe) {
-      if (!unsubscribers) {
-        __meta.unsubscribers = unsubscribers = {};
-      }
-
-      unsubscribers[propertyName] = unsubscribe;
+    } else if (unsubscribe) {
+      __meta.unsubscribers = {
+        [propertyName]: unsubscribe
+      };
     }
   } // region propertyChanged
 

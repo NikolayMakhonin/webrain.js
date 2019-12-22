@@ -19,7 +19,11 @@ var _objectUniqueId = require("../../helpers/object-unique-id");
 
 var _array = require("../../lists/helpers/array");
 
+var _Debugger = require("../Debugger");
+
 var _common = require("./contracts/common");
+
+var _PropertiesPath = require("./helpers/PropertiesPath");
 
 /* tslint:disable:no-array-delete*/
 var undefinedSubscribedValue = {
@@ -78,10 +82,11 @@ function compareSubscribed(o1, o2) {
 var ObjectSubscriber =
 /*#__PURE__*/
 function () {
-  function ObjectSubscriber(changeValue, lastValue) {
+  function ObjectSubscriber(changeValue, lastValue, debugTarget) {
     (0, _classCallCheck2.default)(this, ObjectSubscriber);
     this._changeValue = changeValue;
     this._lastValue = lastValue;
+    this.debugTarget = debugTarget;
   }
 
   (0, _createClass2.default)(ObjectSubscriber, [{
@@ -154,7 +159,7 @@ function () {
     }
   }, {
     key: "change",
-    value: function change(key, oldValue, newValue, parent, changeType, keyType, propertiesPath, ruleDescription) {
+    value: function change(key, oldValue, newValue, parent, changeType, keyType, propertiesPath, rule) {
       var _this = this;
 
       var unsubscribedLast;
@@ -206,11 +211,11 @@ function () {
 
         if ((changeType & _common.ValueChangeType.Subscribe) !== 0) {
           if (!(newValue instanceof Object)) {
-            var unsubscribeValue = (0, _helpers.checkIsFuncOrNull)(this._changeValue(key, oldValue, newValue, parent, nextChangeType | _common.ValueChangeType.Subscribe, keyType, unsubscribedLast));
+            var unsubscribeValue = (0, _helpers.checkIsFuncOrNull)(this._changeValue(key, oldValue, newValue, parent, nextChangeType | _common.ValueChangeType.Subscribe, keyType, propertiesPath, rule, unsubscribedLast));
 
             if (unsubscribeValue) {
               unsubscribeValue();
-              throw new Error('You should not return unsubscribe function for non Object value.\n' + 'For subscribe value types use their object wrappers: Number, Boolean, String classes.\n' + ("Unsubscribe function: " + unsubscribeValue + "\nValue: " + newValue + "\n") + ("Value property path: " + ((propertiesPath ? propertiesPath() + '.' : '') + (key == null ? '' : key + '(' + ruleDescription + ')'))));
+              throw new Error('You should not return unsubscribe function for non Object value.\n' + 'For subscribe value types use their object wrappers: Number, Boolean, String classes.\n' + ("Unsubscribe function: " + unsubscribeValue + "\nValue: " + newValue + "\n") + ("Value property path: " + new _PropertiesPath.PropertiesPath(newValue, propertiesPath, key, keyType, rule)));
             }
           } else {
             var _itemUniqueId = (0, _objectUniqueId.getObjectUniqueId)(newValue);
@@ -219,7 +224,7 @@ function () {
                 _unsubscribersCount2 = this._unsubscribersCount;
 
             if (_unsubscribers2 && _unsubscribers2[_itemUniqueId]) {
-              this._changeValue(key, oldValue, newValue, parent, nextChangeType, keyType, unsubscribedLast);
+              this._changeValue(key, oldValue, newValue, parent, nextChangeType, keyType, propertiesPath, rule, unsubscribedLast);
 
               _unsubscribersCount2[_itemUniqueId]++;
             } else {
@@ -228,7 +233,7 @@ function () {
                 this._unsubscribersCount = _unsubscribersCount2 = [];
               }
 
-              var _unsubscribeValue = (0, _helpers.checkIsFuncOrNull)(this._changeValue(key, oldValue, newValue, parent, nextChangeType | _common.ValueChangeType.Subscribe, keyType, unsubscribedLast));
+              var _unsubscribeValue = (0, _helpers.checkIsFuncOrNull)(this._changeValue(key, oldValue, newValue, parent, nextChangeType | _common.ValueChangeType.Subscribe, keyType, propertiesPath, rule, unsubscribedLast));
 
               if (_unsubscribeValue) {
                 _unsubscribers2[_itemUniqueId] = _unsubscribeValue;
@@ -237,11 +242,11 @@ function () {
             }
           }
         } else {
-          this._changeValue(key, oldValue, newValue, parent, nextChangeType, keyType, unsubscribedLast);
+          this._changeValue(key, oldValue, newValue, parent, nextChangeType, keyType, propertiesPath, rule, unsubscribedLast);
         }
       }
 
-      if (this._lastValue) {
+      if (this._lastValue || _Debugger.Debugger.Instance.deepSubscribeLastValueHasSubscribers) {
         var unsubscribedValue;
 
         if ((changeType & _common.ValueChangeType.Unsubscribe) !== 0) {
@@ -269,14 +274,18 @@ function () {
           var lastValue = subscribedValue || unsubscribedValue;
 
           if (lastValue) {
-            this._lastValue(lastValue.value, lastValue.parent, lastValue.key, lastValue.keyType);
+            _Debugger.Debugger.Instance.onDeepSubscribeLastValue(unsubscribedValue, subscribedValue, this.debugTarget);
+
+            if (this._lastValue) {
+              this._lastValue(lastValue.value, lastValue.parent, lastValue.key, lastValue.keyType);
+            }
           }
         }
       }
 
       if ((changeType & _common.ValueChangeType.Subscribe) !== 0) {
         return function () {
-          _this.change(key, newValue, void 0, parent, _common.ValueChangeType.Unsubscribe, keyType, propertiesPath, ruleDescription);
+          _this.change(key, newValue, void 0, parent, _common.ValueChangeType.Unsubscribe, keyType, propertiesPath, rule);
         };
       }
     }

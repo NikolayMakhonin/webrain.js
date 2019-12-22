@@ -127,7 +127,7 @@ function () {
 
         if (autoInvalidateTime <= now) {
           this._invalidate();
-        } else if (autoInvalidateTime > timeNextPulse) {
+        } else if (timeNextPulse <= now || autoInvalidateTime < timeNextPulse) {
           timeNextPulse = autoInvalidateTime;
         }
       } // endregion
@@ -143,7 +143,7 @@ function () {
           this._pulse();
 
           return;
-        } else if (canBeCalcTime > timeNextPulse) {
+        } else if (timeNextPulse <= now || canBeCalcTime < timeNextPulse) {
           timeNextPulse = canBeCalcTime;
         }
       } // endregion
@@ -157,7 +157,7 @@ function () {
           this._calc();
 
           return;
-        } else if (calcTime > timeNextPulse) {
+        } else if (timeNextPulse <= now || calcTime < timeNextPulse) {
           timeNextPulse = calcTime;
         }
       } // endregion

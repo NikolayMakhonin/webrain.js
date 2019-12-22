@@ -1,11 +1,13 @@
 import { isAsync } from '../../../async/async';
 import { resolveAsyncFunc } from '../../../async/ThenableSync';
+import { CalcStat } from '../../../helpers/CalcStat';
+import { now } from '../../../helpers/performance';
 import { VALUE_PROPERTY_DEFAULT } from '../../../helpers/value-property';
 import { webrainOptions } from '../../../helpers/webrainOptions';
+import { Debugger } from '../../Debugger';
 import { DeferredCalc } from '../../deferred-calc/DeferredCalc';
 import { ObservableClass } from '../ObservableClass';
 import { ObservableObjectBuilder } from '../ObservableObjectBuilder';
-import { CalcObjectDebugger } from './CalcObjectDebugger';
 export class CalcPropertyValue {
   constructor(property) {
     this.get = () => property;
@@ -49,16 +51,29 @@ export class CalcProperty extends ObservableClass {
       this.state.name = name;
     }
 
+    this.timeSyncStat = new CalcStat();
+    this.timeAsyncStat = new CalcStat();
+    this.timeDebuggerStat = new CalcStat();
+    this.timeEmitEventsStat = new CalcStat();
+    this.timeTotalStat = new CalcStat();
     this._deferredCalc = new DeferredCalc(() => {
       this.onInvalidated();
     }, done => {
       const prevValue = this.state.value;
+      const timeStart = now();
+      let timeSync;
+      let timeAsync;
+      let timeDebugger;
+      let timeEmitEvents;
       const deferredValue = resolveAsyncFunc(() => {
         if (typeof this.state.input === 'undefined') {
           return false;
         }
 
-        return this._calcFunc(this.state);
+        const result = this._calcFunc(this.state);
+
+        timeSync = now();
+        return result;
       }, isChangedForce => {
         this._hasValue = true;
         let val = this.state.value;
@@ -67,13 +82,23 @@ export class CalcProperty extends ObservableClass {
           this.state.value = val = prevValue;
         }
 
-        CalcObjectDebugger.Instance.onCalculated(this, prevValue, val);
+        timeAsync = now();
+        Debugger.Instance.onCalculated(this, prevValue, val);
+        timeDebugger = now();
         done(isChangedForce, prevValue, val);
+        timeEmitEvents = now();
+        this.timeSyncStat.add(timeSync - timeStart);
+        this.timeAsyncStat.add(timeAsync - timeStart);
+        this.timeDebuggerStat.add(timeDebugger - timeAsync);
+        this.timeEmitEventsStat.add(timeEmitEvents - timeDebugger);
+        this.timeTotalStat.add(timeEmitEvents - timeStart);
         return val;
       }, err => {
         this._error = err;
+        timeAsync = now();
         console.error(err);
-        CalcObjectDebugger.Instance.onError(this, this.state.value, prevValue, err);
+        Debugger.Instance.onError(this, this.state.value, prevValue, err);
+        timeDebugger = now();
         let val = this.state.value;
 
         if (webrainOptions.equalsFunc.call(this.state, prevValue, this.state.value)) {
@@ -81,6 +106,12 @@ export class CalcProperty extends ObservableClass {
         }
 
         done(prevValue !== val, prevValue, val);
+        timeEmitEvents = now();
+        this.timeSyncStat.add(timeSync - timeStart);
+        this.timeAsyncStat.add(timeAsync - timeStart);
+        this.timeDebuggerStat.add(timeDebugger - timeAsync);
+        this.timeEmitEventsStat.add(timeEmitEvents - timeDebugger);
+        this.timeTotalStat.add(timeEmitEvents - timeStart);
         return val; // ThenableSync.createRejected(err)
       }, true);
 
@@ -121,7 +152,8 @@ export class CalcProperty extends ObservableClass {
         name: 'wait',
         oldValue,
         newValue
-      });
+      } // this._hasValue ? null : {name: 'lastOrWait', oldValue, newValue},
+      );
     }
   }
 
@@ -139,18 +171,20 @@ export class CalcProperty extends ObservableClass {
         name: 'last',
         oldValue,
         newValue
-      });
+      } // {name: 'lastOrWait', oldValue, newValue},
+      );
     }
   }
 
   invalidate() {
     if (!this._error) {
+      // console.log('invalidate: ' + this.state.name)
       this._deferredCalc.invalidate();
     }
   }
 
   onInvalidated() {
-    CalcObjectDebugger.Instance.onInvalidated(this, this.state.value);
+    Debugger.Instance.onInvalidated(this, this.state.value);
     const {
       propertyChangedIfCanEmit
     } = this;
@@ -175,6 +209,8 @@ export class CalcProperty extends ObservableClass {
 
     return this.state.value;
   }
+  /** @deprecated not needed and not implemented. Use 'last' instead. */
+
 
   get lastOrWait() {
     this._deferredCalc.calc();

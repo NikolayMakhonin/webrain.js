@@ -60,7 +60,7 @@ function _setExt(name, getValue, setValue, options, object, newValue) {
   var oldValue = getValue ? getValue.call(object) : object.__fields[name];
   var equalsFunc = options.equalsFunc || _webrainOptions.webrainOptions.equalsFunc;
 
-  if (equalsFunc ? equalsFunc.call(object, oldValue, newValue) : oldValue === newValue) {
+  if (oldValue === newValue || equalsFunc && equalsFunc.call(object, oldValue, newValue)) {
     return false;
   }
 
@@ -91,12 +91,6 @@ function _setExt(name, getValue, setValue, options, object, newValue) {
     object.__fields[name] = newValue;
   }
 
-  var afterChange = options.afterChange;
-
-  if (afterChange) {
-    afterChange.call(object, newValue);
-  }
-
   if (!options || !options.suppressPropertyChanged) {
     var propertyChangedIfCanEmit = object.propertyChangedIfCanEmit;
 
@@ -109,6 +103,12 @@ function _setExt(name, getValue, setValue, options, object, newValue) {
     }
   }
 
+  var afterChange = options.afterChange;
+
+  if (afterChange) {
+    afterChange.call(object, newValue);
+  }
+
   return true;
 }
 /** @internal */
@@ -117,7 +117,7 @@ function _setExt(name, getValue, setValue, options, object, newValue) {
 function _set(name, getValue, setValue, object, newValue) {
   var oldValue = getValue.call(object);
 
-  if (_webrainOptions.webrainOptions.equalsFunc ? _webrainOptions.webrainOptions.equalsFunc.call(object, oldValue, newValue) : oldValue === newValue) {
+  if (oldValue === newValue || _webrainOptions.webrainOptions.equalsFunc && _webrainOptions.webrainOptions.equalsFunc.call(object, oldValue, newValue)) {
     return false;
   }
 

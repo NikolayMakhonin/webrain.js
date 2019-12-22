@@ -12,8 +12,10 @@ const RuleSubscribeMapKeys = RuleSubscribeMap.bind(null, null); // const UNSUBSC
 export class RuleBuilder {
   constructor({
     rule,
+    valuePropertyDefaultName = VALUE_PROPERTY_DEFAULT,
     autoInsertValuePropertyDefault = true
   } = {}) {
+    this.valuePropertyDefaultName = valuePropertyDefaultName;
     this.autoInsertValuePropertyDefault = autoInsertValuePropertyDefault;
 
     if (rule != null) {
@@ -29,12 +31,17 @@ export class RuleBuilder {
     }
   }
 
+  noAutoRules() {
+    this.autoInsertValuePropertyDefault = false;
+    return this;
+  }
+
   result() {
     return (this.autoInsertValuePropertyDefault ? this.valuePropertyDefault() : this).ruleFirst;
   }
 
   valuePropertyDefault() {
-    return this.repeat(0, 10, o => hasDefaultProperty(o) ? RuleRepeatAction.Next : RuleRepeatAction.Fork, b => b.ruleSubscribe(new RuleSubscribeObjectPropertyNames(VALUE_PROPERTY_DEFAULT), VALUE_PROPERTY_DEFAULT));
+    return this.repeat(0, 10, o => hasDefaultProperty(o) ? RuleRepeatAction.Next : RuleRepeatAction.Fork, b => b.ruleSubscribe(this.valuePropertyDefaultName === VALUE_PROPERTY_DEFAULT ? new RuleSubscribeObjectPropertyNames(VALUE_PROPERTY_PREFIX, VALUE_PROPERTY_DEFAULT) : new RuleSubscribeObjectValuePropertyNames(VALUE_PROPERTY_PREFIX + this.valuePropertyDefaultName, this.valuePropertyDefaultName)));
   }
 
   rule(rule) {
@@ -52,11 +59,7 @@ export class RuleBuilder {
     return this;
   }
 
-  ruleSubscribe(ruleSubscribe, description) {
-    if (description) {
-      ruleSubscribe.description = description;
-    }
-
+  ruleSubscribe(ruleSubscribe) {
     if (ruleSubscribe.unsubscribers) {
       throw new Error('You should not add duplicate IRuleSubscribe instances. Clone rule before add.');
     }
@@ -79,7 +82,7 @@ export class RuleBuilder {
 
 
   valuePropertyName(propertyName) {
-    return this.if([o => typeof o === 'undefined', b => b.never()], [o => o instanceof Object && o.constructor !== Object && !Array.isArray(o), b => b.ruleSubscribe(new RuleSubscribeObjectValuePropertyNames(propertyName), VALUE_PROPERTY_PREFIX + propertyName)]);
+    return this.if([o => typeof o === 'undefined', b => b.never()], [o => o instanceof Object && o.constructor !== Object && !Array.isArray(o), b => b.ruleSubscribe(new RuleSubscribeObjectValuePropertyNames(VALUE_PROPERTY_PREFIX + propertyName, propertyName))]);
   }
   /**
    * Object property, Array index
@@ -87,7 +90,7 @@ export class RuleBuilder {
 
 
   valuePropertyNames(...propertiesNames) {
-    return this.if([o => typeof o === 'undefined', b => b.never()], [o => o instanceof Object && o.constructor !== Object && !Array.isArray(o), b => b.ruleSubscribe(new RuleSubscribeObjectValuePropertyNames(...propertiesNames), VALUE_PROPERTY_PREFIX + propertiesNames.join('|'))]);
+    return this.if([o => typeof o === 'undefined', b => b.never()], [o => o instanceof Object && o.constructor !== Object && !Array.isArray(o), b => b.ruleSubscribe(new RuleSubscribeObjectValuePropertyNames(VALUE_PROPERTY_PREFIX + propertiesNames.join('|'), ...propertiesNames))]);
   }
   /**
    * valuePropertyNames - Object property, Array index
@@ -103,7 +106,7 @@ export class RuleBuilder {
 
 
   propertyName(propertyName) {
-    return (this.autoInsertValuePropertyDefault ? this.valuePropertyDefault() : this).ruleSubscribe(new RuleSubscribeObjectPropertyNames(propertyName), propertyName);
+    return (this.autoInsertValuePropertyDefault ? this.valuePropertyDefault() : this).ruleSubscribe(new RuleSubscribeObjectPropertyNames(propertyName, propertyName));
   }
   /**
    * Object property, Array index
@@ -111,7 +114,7 @@ export class RuleBuilder {
 
 
   propertyNames(...propertiesNames) {
-    return (this.autoInsertValuePropertyDefault ? this.valuePropertyDefault() : this).ruleSubscribe(new RuleSubscribeObjectPropertyNames(...propertiesNames), propertiesNames.join('|'));
+    return (this.autoInsertValuePropertyDefault ? this.valuePropertyDefault() : this).ruleSubscribe(new RuleSubscribeObjectPropertyNames(propertiesNames.join('|'), ...propertiesNames));
   }
   /**
    * propertyNames
@@ -128,7 +131,7 @@ export class RuleBuilder {
 
 
   propertyAny() {
-    return (this.autoInsertValuePropertyDefault ? this.valuePropertyDefault() : this).ruleSubscribe(new RuleSubscribeObjectPropertyNames(), ANY_DISPLAY);
+    return (this.autoInsertValuePropertyDefault ? this.valuePropertyDefault() : this).ruleSubscribe(new RuleSubscribeObjectPropertyNames(ANY_DISPLAY));
   }
   /**
    * Object property, Array index
@@ -136,7 +139,7 @@ export class RuleBuilder {
 
 
   propertyPredicate(predicate, description) {
-    return (this.autoInsertValuePropertyDefault ? this.valuePropertyDefault() : this).ruleSubscribe(new RuleSubscribeObject(SubscribeObjectType.Property, predicate), description);
+    return (this.autoInsertValuePropertyDefault ? this.valuePropertyDefault() : this).ruleSubscribe(new RuleSubscribeObject(SubscribeObjectType.Property, predicate, description));
   }
   /**
    * Object property, Array index
@@ -156,7 +159,7 @@ export class RuleBuilder {
 
 
   collection() {
-    return (this.autoInsertValuePropertyDefault ? this.valuePropertyDefault() : this).ruleSubscribe(new RuleSubscribeCollection(), COLLECTION_PREFIX);
+    return (this.autoInsertValuePropertyDefault ? this.valuePropertyDefault() : this).ruleSubscribe(new RuleSubscribeCollection(COLLECTION_PREFIX));
   }
   /**
    * IMapChanged & Map, Map
@@ -164,7 +167,7 @@ export class RuleBuilder {
 
 
   mapKey(key) {
-    return (this.autoInsertValuePropertyDefault ? this.valuePropertyDefault() : this).ruleSubscribe(new RuleSubscribeMapKeys(key), COLLECTION_PREFIX + key);
+    return (this.autoInsertValuePropertyDefault ? this.valuePropertyDefault() : this).ruleSubscribe(new RuleSubscribeMapKeys(COLLECTION_PREFIX + key, key));
   }
   /**
    * IMapChanged & Map, Map
@@ -172,7 +175,7 @@ export class RuleBuilder {
 
 
   mapKeys(...keys) {
-    return (this.autoInsertValuePropertyDefault ? this.valuePropertyDefault() : this).ruleSubscribe(new RuleSubscribeMapKeys(...keys), COLLECTION_PREFIX + keys.join('|'));
+    return (this.autoInsertValuePropertyDefault ? this.valuePropertyDefault() : this).ruleSubscribe(new RuleSubscribeMapKeys(COLLECTION_PREFIX + keys.join('|'), ...keys));
   }
   /**
    * IMapChanged & Map, Map
@@ -180,7 +183,7 @@ export class RuleBuilder {
 
 
   mapAny() {
-    return (this.autoInsertValuePropertyDefault ? this.valuePropertyDefault() : this).ruleSubscribe(new RuleSubscribeMap(), COLLECTION_PREFIX);
+    return (this.autoInsertValuePropertyDefault ? this.valuePropertyDefault() : this).ruleSubscribe(new RuleSubscribeMap(null, COLLECTION_PREFIX));
   }
   /**
    * IMapChanged & Map, Map
@@ -188,7 +191,7 @@ export class RuleBuilder {
 
 
   mapPredicate(keyPredicate, description) {
-    return (this.autoInsertValuePropertyDefault ? this.valuePropertyDefault() : this).ruleSubscribe(new RuleSubscribeMap(keyPredicate), description);
+    return (this.autoInsertValuePropertyDefault ? this.valuePropertyDefault() : this).ruleSubscribe(new RuleSubscribeMap(keyPredicate, description));
   }
   /**
    * IMapChanged & Map, Map
@@ -299,6 +302,7 @@ export class RuleBuilder {
   clone(optionsOnly) {
     return new RuleBuilder({
       rule: optionsOnly || !this.ruleFirst ? null : this.ruleFirst.clone(),
+      valuePropertyDefaultName: this.valuePropertyDefaultName,
       autoInsertValuePropertyDefault: this.autoInsertValuePropertyDefault
     });
   }

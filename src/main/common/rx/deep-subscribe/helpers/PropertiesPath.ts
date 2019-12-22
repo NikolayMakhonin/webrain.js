@@ -1,15 +1,15 @@
 import {getObjectUniqueId} from '../../../helpers/object-unique-id'
-import {ValueKeyType} from '../contracts/common'
+import {IPropertiesPath, ValueKeyType} from '../contracts/common'
 import {IRule} from '../contracts/rules'
 
-export class PropertiesPath {
+export class PropertiesPath implements IPropertiesPath {
 	public value: any
-	public parent: PropertiesPath
+	public parent: IPropertiesPath
 	public key: any
 	public keyType: ValueKeyType
 	public rule: IRule
 
-	constructor(value: any, parent: PropertiesPath, key: any, keyType: ValueKeyType, rule: IRule) {
+	constructor(value: any, parent: IPropertiesPath, key: any, keyType: ValueKeyType, rule: IRule) {
 		this.value = value
 		this.parent = parent
 		this.key = key

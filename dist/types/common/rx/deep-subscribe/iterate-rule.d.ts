@@ -6,5 +6,6 @@ export declare type IRuleOrIterable = IRuleAction | IRuleIterable | INextRuleIte
 export interface IRuleIterable extends Iterable<IRuleOrIterable> {
 }
 export declare type IRuleIterator = Iterator<IRuleOrIterable>;
+export declare function compressForks(ruleOrForkIterable: IRuleIterable, iterator?: IRuleIterator, iteration?: IteratorResult<IRuleOrIterable, null>): IRuleIterable;
 export declare function iterateRule(object: any, rule: IRule, next?: INextRuleIterable): IRuleIterable;
 export declare function subscribeNextRule(ruleIterator: IRuleIterator, iteration: IteratorResult<IRuleOrIterable, null>, fork: (ruleIterator: IRuleIterator) => IUnsubscribeOrVoid, subscribeNode: (rule: IRuleSubscribe, getRuleIterable: INextRuleIterable) => IUnsubscribeOrVoid): IUnsubscribeOrVoid;

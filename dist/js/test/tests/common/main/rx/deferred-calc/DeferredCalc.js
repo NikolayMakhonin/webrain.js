@@ -449,6 +449,80 @@ var _timing2 = require("./src/timing");
   (0, _Mocha.it)('autoInvalidateInterval', function () {
     testDeferredCalc({
       calcTime: [5],
+      throttleTime: [10],
+      maxThrottleTime: [20],
+      minTimeBetweenCalc: [40],
+      autoInvalidateInterval: [100],
+      autoCalc: [true],
+      expected: {
+        events: [{
+          time: 10,
+          type: _TestDeferred.EventType.CanBeCalc
+        }, {
+          time: 10,
+          type: _TestDeferred.EventType.Calc
+        }, {
+          time: 15,
+          type: _TestDeferred.EventType.Completed
+        }, {
+          time: 120,
+          type: _TestDeferred.EventType.CanBeCalc
+        }, {
+          time: 120,
+          type: _TestDeferred.EventType.Calc
+        }, {
+          time: 125,
+          type: _TestDeferred.EventType.Completed
+        }, {
+          time: 230,
+          type: _TestDeferred.EventType.CanBeCalc
+        }, {
+          time: 230,
+          type: _TestDeferred.EventType.Calc
+        }, {
+          time: 235,
+          type: _TestDeferred.EventType.Completed
+        }, {
+          time: 275,
+          type: _TestDeferred.EventType.CanBeCalc
+        }, {
+          time: 275,
+          type: _TestDeferred.EventType.Calc
+        }, {
+          time: 280,
+          type: _TestDeferred.EventType.Completed
+        }, {
+          time: 385,
+          type: _TestDeferred.EventType.CanBeCalc
+        }, {
+          time: 385,
+          type: _TestDeferred.EventType.Calc
+        }, {
+          time: 390,
+          type: _TestDeferred.EventType.Completed
+        }, {
+          time: 495,
+          type: _TestDeferred.EventType.CanBeCalc
+        }, {
+          time: 495,
+          type: _TestDeferred.EventType.Calc
+        }, {
+          time: 500,
+          type: _TestDeferred.EventType.Completed
+        }]
+      },
+      actions: [function (deferredCalc) {
+        _TestDeferred.timing.addTime(250);
+
+        deferredCalc.invalidate();
+
+        _TestDeferred.timing.addTime(250);
+
+        deferredCalc.autoInvalidateInterval = null;
+      }]
+    });
+    testDeferredCalc({
+      calcTime: [5],
       throttleTime: [0],
       maxThrottleTime: [0],
       minTimeBetweenCalc: [20],

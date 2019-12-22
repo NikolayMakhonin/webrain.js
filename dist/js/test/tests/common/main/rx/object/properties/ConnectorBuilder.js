@@ -10,9 +10,9 @@ var _getPrototypeOf2 = _interopRequireDefault(require("@babel/runtime-corejs3/he
 
 var _inherits2 = _interopRequireDefault(require("@babel/runtime-corejs3/helpers/inherits"));
 
-var _common = require("../../../../../../../main/common");
-
 var _ObservableObjectBuilder = require("../../../../../../../main/common/rx/object/ObservableObjectBuilder");
+
+var _Connector2 = require("../../../../../../../main/common/rx/object/properties/Connector");
 
 var _ConnectorBuilder = require("../../../../../../../main/common/rx/object/properties/ConnectorBuilder");
 
@@ -23,6 +23,8 @@ var _Mocha = require("../../../../../../../main/common/test/Mocha");
 var _TestDeepSubscribe = require("../../deep-subscribe/helpers/src/TestDeepSubscribe");
 
 /* tslint:disable:no-duplicate-string */
+
+/* eslint-disable guard-for-in */
 (0, _Mocha.describe)('common > main > rx > properties > ConnectorBuilder', function () {
   (0, _Mocha.it)('connect', function () {
     var source = new _ObservableObjectBuilder.ObservableObjectBuilder((0, _TestDeepSubscribe.createObject)().observableObject).writable('baseProp1').writable('baseProp2').writable('prop1').writable('prop2').object;
@@ -39,7 +41,7 @@ var _TestDeepSubscribe = require("../../deep-subscribe/helpers/src/TestDeepSubsc
       }
 
       return BaseClass1;
-    }(_common.Connector);
+    }(_Connector2.Connector);
 
     var BaseClass2 =
     /*#__PURE__*/
@@ -283,5 +285,85 @@ var _TestDeepSubscribe = require("../../deep-subscribe/helpers/src/TestDeepSubsc
     _Assert.assert.deepStrictEqual(object1.baseProp1, '1');
 
     _Assert.assert.deepStrictEqual(object2.baseProp1, '7');
+
+    unsubscribe1[0]();
+
+    _Assert.assert.deepStrictEqual(baseResults1, []);
+
+    _Assert.assert.deepStrictEqual(baseResults2, []);
+
+    _Assert.assert.deepStrictEqual(results1, []);
+
+    _Assert.assert.deepStrictEqual(results2, []);
+
+    results2 = [];
+
+    _Assert.assert.deepStrictEqual(baseObject1.baseProp1, '1');
+
+    _Assert.assert.deepStrictEqual(baseObject2.baseProp1, '1');
+
+    _Assert.assert.deepStrictEqual(object1.baseProp1, void 0);
+
+    _Assert.assert.deepStrictEqual(object2.baseProp1, '7');
+
+    unsubscribe2[0]();
+
+    _Assert.assert.deepStrictEqual(baseResults1, []);
+
+    _Assert.assert.deepStrictEqual(baseResults2, []);
+
+    _Assert.assert.deepStrictEqual(results1, []);
+
+    _Assert.assert.deepStrictEqual(results2, []);
+
+    results2 = [];
+
+    _Assert.assert.deepStrictEqual(baseObject1.baseProp1, '1');
+
+    _Assert.assert.deepStrictEqual(baseObject2.baseProp1, '1');
+
+    _Assert.assert.deepStrictEqual(object1.baseProp1, void 0);
+
+    _Assert.assert.deepStrictEqual(object2.baseProp1, void 0);
+
+    baseUnsubscribe1[0]();
+
+    _Assert.assert.deepStrictEqual(baseResults1, []);
+
+    _Assert.assert.deepStrictEqual(baseResults2, []);
+
+    _Assert.assert.deepStrictEqual(results1, []);
+
+    _Assert.assert.deepStrictEqual(results2, []);
+
+    results2 = [];
+
+    _Assert.assert.deepStrictEqual(baseObject1.baseProp1, void 0);
+
+    _Assert.assert.deepStrictEqual(baseObject2.baseProp1, '1');
+
+    _Assert.assert.deepStrictEqual(object1.baseProp1, void 0);
+
+    _Assert.assert.deepStrictEqual(object2.baseProp1, void 0);
+
+    baseUnsubscribe2[0]();
+
+    _Assert.assert.deepStrictEqual(baseResults1, []);
+
+    _Assert.assert.deepStrictEqual(baseResults2, []);
+
+    _Assert.assert.deepStrictEqual(results1, []);
+
+    _Assert.assert.deepStrictEqual(results2, []);
+
+    results2 = [];
+
+    _Assert.assert.deepStrictEqual(baseObject1.baseProp1, void 0);
+
+    _Assert.assert.deepStrictEqual(baseObject2.baseProp1, void 0);
+
+    _Assert.assert.deepStrictEqual(object1.baseProp1, void 0);
+
+    _Assert.assert.deepStrictEqual(object2.baseProp1, void 0);
   });
 });

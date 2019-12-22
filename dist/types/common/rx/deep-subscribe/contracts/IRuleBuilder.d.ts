@@ -66,13 +66,13 @@ export interface IRuleBuilder<TObject = any, TValueKeys extends string | number 
     /**
      * Object property, Array index
      */
-    propertyNames<TKeys extends keyof TObject | ANY, TValue = ObjectValueOf<TObject, TKeys extends ANY ? any : TKeys>>(...propertiesNames: TKeys[]): IRuleBuilder<TValue, TValueKeys>;
+    propertyNames<TKeys extends (keyof TObject) | ANY, TValue = ObjectValueOf<TObject, TKeys extends ANY ? any : TKeys>>(...propertiesNames: TKeys[]): IRuleBuilder<TValue, TValueKeys>;
     propertyNames<TValue>(...propertiesNames: string[]): IRuleBuilder<TValue, TValueKeys>;
     /**
      * propertyNames
      * @param propertiesNames
      */
-    p<TKeys extends keyof TObject | ANY, TValue = ObjectValueOf<TObject, TKeys extends ANY ? any : TKeys>>(...propertiesNames: TKeys[]): IRuleBuilder<TValue, TValueKeys>;
+    p<TKeys extends (keyof TObject) | ANY, TValue = ObjectValueOf<TObject, TKeys extends ANY ? any : TKeys>>(...propertiesNames: TKeys[]): IRuleBuilder<TValue, TValueKeys>;
     p<TValue>(...propertiesNames: string[]): IRuleBuilder<TValue, TValueKeys>;
     /**
      * Object property, Array index

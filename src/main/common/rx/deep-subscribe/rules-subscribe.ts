@@ -6,11 +6,10 @@ import {IMapChanged, MapChangedType} from '../../lists/contracts/IMapChanged'
 import {ISetChanged, SetChangedType} from '../../lists/contracts/ISetChanged'
 import {IPropertyChanged} from '../object/IPropertyChanged'
 import {IUnsubscribe, IUnsubscribeOrVoid} from '../subjects/observable'
-import {ValueChangeType, ValueKeyType} from './contracts/common'
+import {IPropertiesPath, ValueChangeType, ValueKeyType} from './contracts/common'
 import {ANY} from './contracts/constants'
 import {IChangeItem, IRuleSubscribe, ISubscribeObject} from './contracts/rule-subscribe'
 import {IRule, RuleType} from './contracts/rules'
-import {PropertiesPath} from './helpers/PropertiesPath'
 import {Rule} from './rules'
 
 function forEachCollection<TItem>(
@@ -47,7 +46,7 @@ function subscribeObjectValue<TValue>(
 	object: IPropertyChanged,
 	immediateSubscribe: boolean,
 	changeItem: IChangeItem<TValue>,
-	propertiesPath: PropertiesPath,
+	propertiesPath: IPropertiesPath,
 	rule?: IRule,
 ): IUnsubscribeOrVoid {
 	if (!(object instanceof Object)) {
@@ -198,7 +197,7 @@ function subscribeObject<TValue>(
 	object: IPropertyChanged,
 	immediateSubscribe: boolean,
 	changeItem: IChangeItem<TValue>,
-	propertiesPath: PropertiesPath,
+	propertiesPath: IPropertiesPath,
 	rule?: IRule,
 ): IUnsubscribeOrVoid {
 	if (!(object instanceof Object)) {
@@ -352,7 +351,7 @@ function subscribeList<TItem>(
 	object: IListChanged<TItem> & Iterable<TItem>,
 	immediateSubscribe: boolean,
 	changeItem: IChangeItem<TItem>,
-	propertiesPath: PropertiesPath,
+	propertiesPath: IPropertiesPath,
 	rule?: IRule,
 ): IUnsubscribeOrVoid {
 	if (!object || object[Symbol.toStringTag] !== 'List') {
@@ -426,7 +425,7 @@ function subscribeSet<TItem>(
 	object: ISetChanged<TItem> & Iterable<TItem>,
 	immediateSubscribe: boolean,
 	changeItem: IChangeItem<TItem>,
-	propertiesPath: PropertiesPath,
+	propertiesPath: IPropertiesPath,
 	rule?: IRule,
 ): IUnsubscribeOrVoid {
 	if (!object || object[Symbol.toStringTag] !== 'Set' && !(object instanceof Set)) {
@@ -493,7 +492,7 @@ function subscribeMap<K, V>(
 	object: IMapChanged<K, V> & Map<K, V>,
 	immediateSubscribe: boolean,
 	changeItem: IChangeItem<V>,
-	propertiesPath: PropertiesPath,
+	propertiesPath: IPropertiesPath,
 	rule?: IRule,
 ): IUnsubscribeOrVoid {
 	if (!object || object[Symbol.toStringTag] !== 'Map' && !(object instanceof Map)) {
@@ -594,7 +593,7 @@ function subscribeCollection<TItem>(
 	object: Iterable<TItem>,
 	immediateSubscribe: boolean,
 	changeItem: IChangeItem<TItem>,
-	propertiesPath: PropertiesPath,
+	propertiesPath: IPropertiesPath,
 	rule?: IRule,
 ): IUnsubscribeOrVoid {
 	if (!object) {

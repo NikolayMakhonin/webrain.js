@@ -2,7 +2,9 @@
 import { checkIsFuncOrNull } from '../../helpers/helpers';
 import { getObjectUniqueId } from '../../helpers/object-unique-id';
 import { binarySearch } from '../../lists/helpers/array';
+import { Debugger } from '../Debugger';
 import { ValueChangeType } from './contracts/common';
+import { PropertiesPath } from './helpers/PropertiesPath';
 const undefinedSubscribedValue = {
   value: void 0,
   parent: null,
@@ -57,9 +59,10 @@ function compareSubscribed(o1, o2) {
 }
 
 export class ObjectSubscriber {
-  constructor(changeValue, lastValue) {
+  constructor(changeValue, lastValue, debugTarget) {
     this._changeValue = changeValue;
     this._lastValue = lastValue;
+    this.debugTarget = debugTarget;
   }
 
   insertSubscribed(subscribedValue) {
@@ -132,7 +135,7 @@ export class ObjectSubscriber {
     }
   }
 
-  change(key, oldValue, newValue, parent, changeType, keyType, propertiesPath, ruleDescription) {
+  change(key, oldValue, newValue, parent, changeType, keyType, propertiesPath, rule) {
     let unsubscribedLast;
     let nextChangeType = ValueChangeType.None;
 
@@ -186,11 +189,11 @@ export class ObjectSubscriber {
 
       if ((changeType & ValueChangeType.Subscribe) !== 0) {
         if (!(newValue instanceof Object)) {
-          const unsubscribeValue = checkIsFuncOrNull(this._changeValue(key, oldValue, newValue, parent, nextChangeType | ValueChangeType.Subscribe, keyType, unsubscribedLast));
+          const unsubscribeValue = checkIsFuncOrNull(this._changeValue(key, oldValue, newValue, parent, nextChangeType | ValueChangeType.Subscribe, keyType, propertiesPath, rule, unsubscribedLast));
 
           if (unsubscribeValue) {
             unsubscribeValue();
-            throw new Error('You should not return unsubscribe function for non Object value.\n' + 'For subscribe value types use their object wrappers: Number, Boolean, String classes.\n' + `Unsubscribe function: ${unsubscribeValue}\nValue: ${newValue}\n` + `Value property path: ${(propertiesPath ? propertiesPath() + '.' : '') + (key == null ? '' : key + '(' + ruleDescription + ')')}`);
+            throw new Error('You should not return unsubscribe function for non Object value.\n' + 'For subscribe value types use their object wrappers: Number, Boolean, String classes.\n' + `Unsubscribe function: ${unsubscribeValue}\nValue: ${newValue}\n` + `Value property path: ${new PropertiesPath(newValue, propertiesPath, key, keyType, rule)}`);
           }
         } else {
           const itemUniqueId = getObjectUniqueId(newValue);
@@ -200,7 +203,7 @@ export class ObjectSubscriber {
           } = this;
 
           if (_unsubscribers && _unsubscribers[itemUniqueId]) {
-            this._changeValue(key, oldValue, newValue, parent, nextChangeType, keyType, unsubscribedLast);
+            this._changeValue(key, oldValue, newValue, parent, nextChangeType, keyType, propertiesPath, rule, unsubscribedLast);
 
             _unsubscribersCount[itemUniqueId]++;
           } else {
@@ -209,7 +212,7 @@ export class ObjectSubscriber {
               this._unsubscribersCount = _unsubscribersCount = [];
             }
 
-            const unsubscribeValue = checkIsFuncOrNull(this._changeValue(key, oldValue, newValue, parent, nextChangeType | ValueChangeType.Subscribe, keyType, unsubscribedLast));
+            const unsubscribeValue = checkIsFuncOrNull(this._changeValue(key, oldValue, newValue, parent, nextChangeType | ValueChangeType.Subscribe, keyType, propertiesPath, rule, unsubscribedLast));
 
             if (unsubscribeValue) {
               _unsubscribers[itemUniqueId] = unsubscribeValue;
@@ -218,11 +221,11 @@ export class ObjectSubscriber {
           }
         }
       } else {
-        this._changeValue(key, oldValue, newValue, parent, nextChangeType, keyType, unsubscribedLast);
+        this._changeValue(key, oldValue, newValue, parent, nextChangeType, keyType, propertiesPath, rule, unsubscribedLast);
       }
     }
 
-    if (this._lastValue) {
+    if (this._lastValue || Debugger.Instance.deepSubscribeLastValueHasSubscribers) {
       let unsubscribedValue;
 
       if ((changeType & ValueChangeType.Unsubscribe) !== 0) {
@@ -250,14 +253,18 @@ export class ObjectSubscriber {
         const lastValue = subscribedValue || unsubscribedValue;
 
         if (lastValue) {
-          this._lastValue(lastValue.value, lastValue.parent, lastValue.key, lastValue.keyType);
+          Debugger.Instance.onDeepSubscribeLastValue(unsubscribedValue, subscribedValue, this.debugTarget);
+
+          if (this._lastValue) {
+            this._lastValue(lastValue.value, lastValue.parent, lastValue.key, lastValue.keyType);
+          }
         }
       }
     }
 
     if ((changeType & ValueChangeType.Subscribe) !== 0) {
       return () => {
-        this.change(key, newValue, void 0, parent, ValueChangeType.Unsubscribe, keyType, propertiesPath, ruleDescription);
+        this.change(key, newValue, void 0, parent, ValueChangeType.Unsubscribe, keyType, propertiesPath, rule);
       };
     }
   }

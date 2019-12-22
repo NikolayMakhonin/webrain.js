@@ -7,7 +7,7 @@ export declare class ObjectMap<V> implements Map<string, V>, IMergeable<ObjectMa
     clear(): this;
     delete(key: string): boolean;
     readonly [Symbol.toStringTag]: string;
-    readonly size: number;
+    get size(): number;
     [Symbol.iterator](): IterableIterator<[string, V]>;
     entries(): IterableIterator<[string, V]>;
     forEach(callbackfn: (value: V, key: string, map: Map<string, V>) => void, thisArg?: any): void;

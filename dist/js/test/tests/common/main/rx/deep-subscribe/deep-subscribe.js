@@ -654,6 +654,183 @@ var _TestDeepSubscribe = require("./helpers/src/TestDeepSubscribe");
   });
   (0, _Mocha.it)('any', function () {
     new _TestDeepSubscribe.TestDeepSubscribe({
+      object: (0, _TestDeepSubscribe.createObject)(),
+      immediate: true,
+      doNotSubscribeNonObjectValues: true
+    }, function (b) {
+      return b.p('value').any(function (o) {
+        return o.nothing();
+      }, function (o) {
+        return o.any(function (o) {
+          return o.nothing();
+        }, function (o) {
+          return o.any(function (o) {
+            return o.nothing();
+          });
+        });
+      });
+    }).subscribe(function (o) {
+      return ['value'];
+    }, null, function (o) {
+      return ['value'];
+    }).unsubscribe(function (o) {
+      return ['value'];
+    });
+    new _TestDeepSubscribe.TestDeepSubscribe({
+      object: (0, _TestDeepSubscribe.createObject)().observableObject,
+      immediate: true,
+      doNotSubscribeNonObjectValues: true
+    }, function (b) {
+      return b.p('value').p('prop');
+    }).change(function (o) {
+      o.value = null;
+    }, function (o) {
+      return [];
+    }, function (o) {
+      return [];
+    }, function (o) {
+      return [];
+    }).subscribe(function (o) {
+      return [];
+    }, null, function (o) {
+      return [];
+    }).change(function (o) {
+      o.value = {
+        prop: 'prop'
+      };
+    }, function (o) {
+      return [];
+    }, function (o) {
+      return ['prop'];
+    }, function (o) {
+      return ['prop'];
+    }).change(function (o) {
+      o.value = 123;
+    }, function (o) {
+      return ['prop'];
+    }, function (o) {
+      return [];
+    }, function (o) {
+      return [void 0];
+    }).change(function (o) {
+      o.value = null;
+    }, function (o) {
+      return [];
+    }, function (o) {
+      return [];
+    }, function (o) {
+      return [];
+    }).unsubscribe(function (o) {
+      return [];
+    });
+    new _TestDeepSubscribe.TestDeepSubscribe({
+      object: (0, _TestDeepSubscribe.createObject)().observableObject,
+      immediate: true,
+      doNotSubscribeNonObjectValues: true
+    }, function (b) {
+      return b.p('observableList').collection().p('value').p('prop');
+    }).change(function (o) {
+      o.value = null;
+    }, function (o) {
+      return [];
+    }, function (o) {
+      return [];
+    }, function (o) {
+      return [];
+    }).subscribe(function (o) {
+      return [];
+    }, null, function (o) {
+      return [];
+    }).change(function (o) {
+      o.value = {
+        prop: 'prop'
+      };
+    }, function (o) {
+      return [];
+    }, function (o) {
+      return ['prop'];
+    }, function (o) {
+      return ['prop'];
+    }).change(function (o) {
+      o.value = null;
+    }, function (o) {
+      return ['prop'];
+    }, function (o) {
+      return [];
+    }, function (o) {
+      return [void 0];
+    }).change(function (o) {
+      o.observableObject.observableList.insert(0, {
+        value: {
+          prop: 'prop'
+        }
+      });
+    }, function (o) {
+      return [];
+    }, function (o) {
+      return ['prop'];
+    }, function (o) {
+      return ['prop'];
+    }).change(function (o) {
+      o.observableObject.observableList.set(0, 123);
+    }, function (o) {
+      return ['prop'];
+    }, function (o) {
+      return [];
+    }, function (o) {
+      return [void 0];
+    }).unsubscribe(function (o) {
+      return [];
+    });
+    new _TestDeepSubscribe.TestDeepSubscribe({
+      object: (0, _TestDeepSubscribe.createObject)().observableObject,
+      immediate: true,
+      doNotSubscribeNonObjectValues: true
+    }, function (b) {
+      return b.any(function (o) {
+        return o.p('map2', 'set');
+      });
+    }).subscribe(function (o) {
+      return [o.map2, o.set];
+    }, null, function (o) {
+      return [o.map2];
+    }).change(function (o) {
+      o.set = o.observableObject;
+    }, function (o) {
+      return [o.set];
+    }, function (o) {
+      return [o.observableObject];
+    }, function (o) {
+      return [];
+    }).unsubscribe(function (o) {
+      return [o.map2, o.observableObject];
+    });
+    new _TestDeepSubscribe.TestDeepSubscribe({
+      object: (0, _TestDeepSubscribe.createObject)().observableObject,
+      immediate: true,
+      doNotSubscribeNonObjectValues: true
+    }, function (b) {
+      return b.any(function (o) {
+        return o.nothing();
+      }, function (o) {
+        return o.p('map2', 'set');
+      });
+    }).subscribe(function (o) {
+      return [o, o.map2, o.set];
+    }, null, function (o) {
+      return [o];
+    }).change(function (o) {
+      o.set = o.observableObject;
+    }, function (o) {
+      return [o.set];
+    }, function (o) {
+      return [];
+    }, function (o) {
+      return [];
+    }).unsubscribe(function (o) {
+      return [o.map2, o];
+    });
+    new _TestDeepSubscribe.TestDeepSubscribe({
       object: (0, _TestDeepSubscribe.createObject)().object,
       immediate: true,
       doNotSubscribeNonObjectValues: true
@@ -675,11 +852,8 @@ var _TestDeepSubscribe = require("./helpers/src/TestDeepSubscribe");
         return o.path(function (o) {
           return o['map2|set'];
         });
-      }, function (o) {
-        return o.path(function (o) {
-          return o['map2|set'].object.observableObject;
-        });
-      });
+      } // o => o.path((o: any) => o['map2|set'].object.observableObject),
+      );
     }).subscribe(function (o) {
       return [o.map2, o.set];
     }, null, function (o) {
@@ -1016,11 +1190,8 @@ var _TestDeepSubscribe = require("./helpers/src/TestDeepSubscribe");
                 return o.path(function (o) {
                   return o.property['map2|set'];
                 });
-              }, function (o) {
-                return o.path(function (o) {
-                  return o.property['map2|set'].object.observableObject;
-                });
-              });
+              } // o => o.path((o: any) => o.property['map2|set'].object.observableObject),
+              );
             }).subscribe(function (o) {
               return [o.map2, o.set];
             }, null, function (o) {
@@ -1043,7 +1214,31 @@ var _TestDeepSubscribe = require("./helpers/src/TestDeepSubscribe");
         }
       }
     }, _callee2);
-  })));
+  }))); // it('value properties null', async function() {
+  // 	const object = createObject().observableObject
+  // 	const property = object.property
+  // 	object.property = null
+  //
+  // 	new TestDeepSubscribe(
+  // 		{
+  // 			object: object,
+  // 			immediate: true,
+  // 			doNotSubscribeNonObjectValues: true,
+  // 		},
+  // 		b => b.p('property'),
+  // 	)
+  // 		.subscribe(o => [null])
+  // 		.change(o => o.property = property as any,
+  // 			o => [null], o => [o.observableObject])
+  // 		.change(o => o.property[VALUE_PROPERTY_DEFAULT] = new Number(1) as any,
+  // 			o => [o.observableObject], [new Number(1)])
+  // 		.change(o => o.property = null as any,
+  // 			[new Number(1)], [null])
+  // 		.change(o => o.property = o.object.property,
+  // 			[null], [new Number(1)])
+  // 		.unsubscribe([new Number(1)])
+  // })
+
   (0, _Mocha.it)('promises',
   /*#__PURE__*/
   (0, _asyncToGenerator2.default)(

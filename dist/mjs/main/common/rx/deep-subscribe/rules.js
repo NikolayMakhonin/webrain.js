@@ -1,7 +1,42 @@
 import { RuleType } from './contracts/rules';
+export function ruleTypeToString(ruleType) {
+  switch (ruleType) {
+    case RuleType.Never:
+      return 'Never';
+
+    case RuleType.Action:
+      return 'Action';
+
+    case RuleType.Any:
+      return 'Any';
+
+    case RuleType.If:
+      return 'If';
+
+    case RuleType.Nothing:
+      return 'Nothing';
+
+    case RuleType.Repeat:
+      return 'Repeat';
+
+    default:
+      throw new Error('Unknown RuleType: ' + ruleType);
+  }
+}
+export const RULE_STRING_SEPARATOR = ' > ';
+
+function ruleToString(rule, customDescription, nestedRulesStr) {
+  const description = customDescription || this.description || ruleTypeToString(this.type);
+  return `${description}${nestedRulesStr ? '(' + nestedRulesStr + ')' : ''}${this.next ? ' > ' + this.next : ''}`;
+}
+
 export class Rule {
-  constructor(type) {
+  constructor(type, description) {
     this.type = type;
+
+    if (description != null) {
+      this.description = description;
+    }
   }
 
   clone() {
@@ -9,12 +44,14 @@ export class Rule {
       type,
       subType,
       description,
-      next
+      next,
+      toString
     } = this;
     const clone = {
       type,
       subType,
-      description
+      description,
+      toString
     };
 
     if (next != null) {
@@ -22,6 +59,10 @@ export class Rule {
     }
 
     return clone;
+  }
+
+  toString() {
+    return ruleToString(this);
   }
 
 }
@@ -32,6 +73,7 @@ export class RuleNothing extends Rule {
   }
 
 }
+RuleNothing.instance = Object.freeze(new RuleNothing());
 export class RuleNever extends Rule {
   constructor() {
     super(RuleType.Never);
@@ -55,6 +97,7 @@ export class RuleIf extends Rule {
   constructor(conditionRules) {
     super(RuleType.If);
     this.conditionRules = conditionRules;
+    this.description = '<if>';
   }
 
   clone() {
@@ -68,6 +111,7 @@ export class RuleAny extends Rule {
   constructor(rules) {
     super(RuleType.Any);
     this.rules = rules;
+    this.description = '<any>';
   }
 
   clone() {
@@ -84,6 +128,7 @@ export class RuleRepeat extends Rule {
     this.countMax = countMax;
     this.condition = condition;
     this.rule = rule;
+    this.description = '<repeat>';
   }
 
   clone() {

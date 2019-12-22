@@ -26,6 +26,8 @@ var _possibleConstructorReturn2 = _interopRequireDefault(require("@babel/runtime
 
 var _getPrototypeOf2 = _interopRequireDefault(require("@babel/runtime-corejs3/helpers/getPrototypeOf"));
 
+var _get2 = _interopRequireDefault(require("@babel/runtime-corejs3/helpers/get"));
+
 var _inherits2 = _interopRequireDefault(require("@babel/runtime-corejs3/helpers/inherits"));
 
 var _classCallCheck2 = _interopRequireDefault(require("@babel/runtime-corejs3/helpers/classCallCheck"));
@@ -149,7 +151,7 @@ function () {
       var _meta = this._meta;
 
       if (!_meta) {
-        _meta = this.mergerState.mergerVisitor.typeMeta.getMeta(this.type);
+        _meta = this.mergerState.mergerVisitor.getMeta(this.type);
 
         if (!_meta) {
           throw new Error("Class (" + (this.type && this.type.name) + ") have no type meta");
@@ -217,23 +219,23 @@ function () {
 
       if (_cloneInstance == null) {
         var target = this.target,
-            type = this.type;
+            _type = this.type;
         var options = this.mergerState.options;
 
         _cloneInstance = (options && options.valueFactory || this.meta.valueFactory || function () {
-          return (!options || !options.valueType || _this.target.constructor === (options && options.valueType)) && new type();
+          return (!options || !options.valueType || _this.target.constructor === (options && options.valueType)) && new _type();
         })(target);
 
         if (!_cloneInstance) {
-          throw new Error("Class (" + (0, _helpers.typeToDebugString)(type) + ") cannot be clone");
+          throw new Error("Class (" + (0, _helpers.typeToDebugString)(_type) + ") cannot be clone");
         }
 
         if (_cloneInstance === target) {
-          throw new Error("Clone result === Source for (" + (0, _helpers.typeToDebugString)(type) + ")");
+          throw new Error("Clone result === Source for (" + (0, _helpers.typeToDebugString)(_type) + ")");
         }
 
-        if (_cloneInstance.constructor !== type) {
-          throw new Error("Clone type !== (" + (0, _helpers.typeToDebugString)(type) + ")");
+        if (_cloneInstance.constructor !== _type) {
+          throw new Error("Clone type !== (" + (0, _helpers.typeToDebugString)(_type) + ")");
         }
 
         this._cloneInstance = _cloneInstance;
@@ -467,9 +469,9 @@ var MergerVisitor =
 /*#__PURE__*/
 function () {
   // public refs: IRef[]
-  function MergerVisitor(typeMeta) {
+  function MergerVisitor(getMeta) {
     (0, _classCallCheck2.default)(this, MergerVisitor);
-    this.typeMeta = typeMeta;
+    this.getMeta = getMeta;
   }
 
   (0, _createClass2.default)(MergerVisitor, [{
@@ -750,12 +752,25 @@ var TypeMetaMergerCollection =
 function (_TypeMetaCollection) {
   (0, _inherits2.default)(TypeMetaMergerCollection, _TypeMetaCollection);
 
-  function TypeMetaMergerCollection(proto) {
+  function TypeMetaMergerCollection(_temp) {
+    var _this4;
+
+    var _ref = _temp === void 0 ? {} : _temp,
+        proto = _ref.proto,
+        customMeta = _ref.customMeta;
+
     (0, _classCallCheck2.default)(this, TypeMetaMergerCollection);
-    return (0, _possibleConstructorReturn2.default)(this, (0, _getPrototypeOf2.default)(TypeMetaMergerCollection).call(this, proto || TypeMetaMergerCollection.default));
+    _this4 = (0, _possibleConstructorReturn2.default)(this, (0, _getPrototypeOf2.default)(TypeMetaMergerCollection).call(this, proto || TypeMetaMergerCollection.default));
+    _this4.customMeta = customMeta;
+    return _this4;
   }
 
   (0, _createClass2.default)(TypeMetaMergerCollection, [{
+    key: "getMeta",
+    value: function getMeta(type) {
+      return this.customMeta && this.customMeta(type) || (0, _get2.default)((0, _getPrototypeOf2.default)(TypeMetaMergerCollection.prototype), "getMeta", this).call(this, type);
+    }
+  }, {
     key: "putMergeableType",
     value: function putMergeableType(type, meta) {
       return this.putType(type, TypeMetaMergerCollection.makeTypeMetaMerger(type, meta));
@@ -793,8 +808,8 @@ function registerMerger(type, meta) {
   TypeMetaMergerCollection.default.putType(type, meta);
 }
 
-function registerMergerPrimitive(type, meta) {
-  registerMerger(type, (0, _extends2.default)({
+function createPrimitiveTypeMetaMerger(meta) {
+  return (0, _extends2.default)({
     preferClone: false
   }, meta, {
     merger: (0, _extends2.default)({
@@ -803,10 +818,17 @@ function registerMergerPrimitive(type, meta) {
         return true;
       }
     }, meta ? meta.merger : {})
-  }));
+  });
+}
+
+function registerMergerPrimitive(type, meta) {
+  registerMerger(type, createPrimitiveTypeMetaMerger(meta));
 } // endregion
 // region ObjectMerger
 
+
+var primitiveTypeMetaMerger = createPrimitiveTypeMetaMerger();
+var observableObjectProperties = ['propertyChanged'];
 
 var ObjectMerger =
 /*#__PURE__*/
@@ -815,14 +837,20 @@ function () {
     var _context;
 
     (0, _classCallCheck2.default)(this, ObjectMerger);
-    this.typeMeta = new TypeMetaMergerCollection(typeMeta);
+    this.typeMeta = new TypeMetaMergerCollection({
+      proto: typeMeta
+    });
     this.merge = (0, _bind.default)(_context = this.merge).call(_context, this);
   }
 
   (0, _createClass2.default)(ObjectMerger, [{
     key: "merge",
     value: function merge(base, older, newer, set, preferCloneOlder, preferCloneNewer, options) {
-      var merger = new MergerVisitor(this.typeMeta);
+      var _this5 = this;
+
+      var merger = new MergerVisitor(function (type) {
+        return _this5.typeMeta.getMeta(type);
+      });
       var mergedValue = merger.merge(base, older, newer, set, preferCloneOlder, preferCloneNewer, options);
       return mergedValue;
     }
@@ -835,6 +863,19 @@ function () {
 
 exports.ObjectMerger = ObjectMerger;
 ObjectMerger.default = new ObjectMerger();
+ObjectMerger.observableOnly = new ObjectMerger(new TypeMetaMergerCollection({
+  customMeta: function customMeta(type) {
+    var prototype = type.prototype;
+
+    for (var i = 0, len = observableObjectProperties.length; i < len; i++) {
+      if (Object.prototype.hasOwnProperty.call(prototype, observableObjectProperties[i])) {
+        return primitiveTypeMetaMerger;
+      }
+    }
+
+    return null;
+  }
+}));
 
 function isPrimitive(value) {
   return !(0, _objectUniqueId.canHaveUniqueId)(value) || typeof value === 'function'; // value == null

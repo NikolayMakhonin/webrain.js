@@ -212,6 +212,7 @@ export class ObservableMap extends MapChangedObject {
     return mergeMaps((target, source) => createMergeMapWrapper(target, source, arrayOrIterable => fillMap(new this._map.constructor(), arrayOrIterable)), merge, this, older, newer, preferCloneOlder, preferCloneNewer, options);
   } // endregion
   // region ISerializable
+  // noinspection SpellCheckingInspection
 
 
   serialize(serialize) {

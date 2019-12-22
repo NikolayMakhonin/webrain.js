@@ -1,4 +1,5 @@
 import { ThenableOrValue } from '../../../async/async';
+import { CalcStat } from '../../../helpers/CalcStat';
 import { VALUE_PROPERTY_DEFAULT } from '../../../helpers/value-property';
 import { IDeferredCalcOptions } from '../../deferred-calc/DeferredCalc';
 import { ObservableClass } from '../ObservableClass';
@@ -21,6 +22,11 @@ export declare class CalcProperty<TValue, TInput = any> extends ObservableClass 
     private _hasValue;
     private _error;
     private readonly _initValue?;
+    readonly timeSyncStat: CalcStat;
+    readonly timeAsyncStat: CalcStat;
+    readonly timeDebuggerStat: CalcStat;
+    readonly timeEmitEventsStat: CalcStat;
+    readonly timeTotalStat: CalcStat;
     readonly state: ICalcPropertyState<TValue, TInput>;
     constructor({ calcFunc, name, calcOptions, initValue, }: {
         calcFunc: CalcPropertyFunc<TValue, TInput>;
@@ -32,9 +38,10 @@ export declare class CalcProperty<TValue, TInput = any> extends ObservableClass 
     private onValueChanged;
     invalidate(): void;
     onInvalidated(): void;
-    readonly [VALUE_PROPERTY_DEFAULT]: ThenableOrValue<TValue>;
-    readonly wait: ThenableOrValue<TValue>;
-    readonly last: TValue;
-    readonly lastOrWait: ThenableOrValue<TValue>;
+    get [VALUE_PROPERTY_DEFAULT](): ThenableOrValue<TValue>;
+    get wait(): ThenableOrValue<TValue>;
+    get last(): TValue;
+    /** @deprecated not needed and not implemented. Use 'last' instead. */
+    get lastOrWait(): ThenableOrValue<TValue>;
     clear(): void;
 }

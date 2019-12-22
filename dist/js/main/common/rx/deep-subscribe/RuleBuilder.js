@@ -13,6 +13,8 @@ var _startsWith = _interopRequireDefault(require("@babel/runtime-corejs3/core-js
 
 var _getIterator2 = _interopRequireDefault(require("@babel/runtime-corejs3/core-js/get-iterator"));
 
+var _concat = _interopRequireDefault(require("@babel/runtime-corejs3/core-js-stable/instance/concat"));
+
 var _construct2 = _interopRequireDefault(require("@babel/runtime-corejs3/helpers/construct"));
 
 var _isArray2 = _interopRequireDefault(require("@babel/runtime-corejs3/core-js-stable/array/is-array"));
@@ -48,10 +50,13 @@ function () {
   function RuleBuilder(_temp) {
     var _ref = _temp === void 0 ? {} : _temp,
         rule = _ref.rule,
+        _ref$valuePropertyDef = _ref.valuePropertyDefaultName,
+        valuePropertyDefaultName = _ref$valuePropertyDef === void 0 ? _valueProperty.VALUE_PROPERTY_DEFAULT : _ref$valuePropertyDef,
         _ref$autoInsertValueP = _ref.autoInsertValuePropertyDefault,
         autoInsertValuePropertyDefault = _ref$autoInsertValueP === void 0 ? true : _ref$autoInsertValueP;
 
     (0, _classCallCheck2.default)(this, RuleBuilder);
+    this.valuePropertyDefaultName = valuePropertyDefaultName;
     this.autoInsertValuePropertyDefault = autoInsertValuePropertyDefault;
 
     if (rule != null) {
@@ -68,6 +73,12 @@ function () {
   }
 
   (0, _createClass2.default)(RuleBuilder, [{
+    key: "noAutoRules",
+    value: function noAutoRules() {
+      this.autoInsertValuePropertyDefault = false;
+      return this;
+    }
+  }, {
     key: "result",
     value: function result() {
       return (this.autoInsertValuePropertyDefault ? this.valuePropertyDefault() : this).ruleFirst;
@@ -75,12 +86,13 @@ function () {
   }, {
     key: "valuePropertyDefault",
     value: function valuePropertyDefault() {
-      var _context;
+      var _context,
+          _this = this;
 
       return (0, _repeat.default)(_context = this).call(_context, 0, 10, function (o) {
         return (0, _rulesSubscribe.hasDefaultProperty)(o) ? _rules.RuleRepeatAction.Next : _rules.RuleRepeatAction.Fork;
       }, function (b) {
-        return b.ruleSubscribe(new RuleSubscribeObjectPropertyNames(_valueProperty.VALUE_PROPERTY_DEFAULT), _valueProperty.VALUE_PROPERTY_DEFAULT);
+        return b.ruleSubscribe(_this.valuePropertyDefaultName === _valueProperty.VALUE_PROPERTY_DEFAULT ? new RuleSubscribeObjectPropertyNames(_constants.VALUE_PROPERTY_PREFIX, _valueProperty.VALUE_PROPERTY_DEFAULT) : new RuleSubscribeObjectValuePropertyNames(_constants.VALUE_PROPERTY_PREFIX + _this.valuePropertyDefaultName, _this.valuePropertyDefaultName));
       });
     }
   }, {
@@ -99,11 +111,7 @@ function () {
     }
   }, {
     key: "ruleSubscribe",
-    value: function ruleSubscribe(_ruleSubscribe, description) {
-      if (description) {
-        _ruleSubscribe.description = description;
-      }
-
+    value: function ruleSubscribe(_ruleSubscribe) {
       if (_ruleSubscribe.unsubscribers) {
         throw new Error('You should not add duplicate IRuleSubscribe instances. Clone rule before add.');
       }
@@ -136,7 +144,7 @@ function () {
       }], [function (o) {
         return o instanceof Object && o.constructor !== Object && !(0, _isArray2.default)(o);
       }, function (b) {
-        return b.ruleSubscribe(new RuleSubscribeObjectValuePropertyNames(propertyName), _constants.VALUE_PROPERTY_PREFIX + propertyName);
+        return b.ruleSubscribe(new RuleSubscribeObjectValuePropertyNames(_constants.VALUE_PROPERTY_PREFIX + propertyName, propertyName));
       }]);
     }
     /**
@@ -157,7 +165,9 @@ function () {
       }], [function (o) {
         return o instanceof Object && o.constructor !== Object && !(0, _isArray2.default)(o);
       }, function (b) {
-        return b.ruleSubscribe((0, _construct2.default)(RuleSubscribeObjectValuePropertyNames, propertiesNames), _constants.VALUE_PROPERTY_PREFIX + propertiesNames.join('|'));
+        var _context2;
+
+        return b.ruleSubscribe((0, _construct2.default)(RuleSubscribeObjectValuePropertyNames, (0, _concat.default)(_context2 = [_constants.VALUE_PROPERTY_PREFIX + propertiesNames.join('|')]).call(_context2, propertiesNames)));
       }]);
     }
     /**
@@ -186,7 +196,7 @@ function () {
 
       return propertyName;
     }(function (propertyName) {
-      return (this.autoInsertValuePropertyDefault ? this.valuePropertyDefault() : this).ruleSubscribe(new RuleSubscribeObjectPropertyNames(propertyName), propertyName);
+      return (this.autoInsertValuePropertyDefault ? this.valuePropertyDefault() : this).ruleSubscribe(new RuleSubscribeObjectPropertyNames(propertyName, propertyName));
     })
     /**
      * Object property, Array index
@@ -195,11 +205,13 @@ function () {
   }, {
     key: "propertyNames",
     value: function propertyNames() {
+      var _context3;
+
       for (var _len2 = arguments.length, propertiesNames = new Array(_len2), _key2 = 0; _key2 < _len2; _key2++) {
         propertiesNames[_key2] = arguments[_key2];
       }
 
-      return (this.autoInsertValuePropertyDefault ? this.valuePropertyDefault() : this).ruleSubscribe((0, _construct2.default)(RuleSubscribeObjectPropertyNames, propertiesNames), propertiesNames.join('|'));
+      return (this.autoInsertValuePropertyDefault ? this.valuePropertyDefault() : this).ruleSubscribe((0, _construct2.default)(RuleSubscribeObjectPropertyNames, (0, _concat.default)(_context3 = [propertiesNames.join('|')]).call(_context3, propertiesNames)));
     }
     /**
      * propertyNames
@@ -222,7 +234,7 @@ function () {
   }, {
     key: "propertyAny",
     value: function propertyAny() {
-      return (this.autoInsertValuePropertyDefault ? this.valuePropertyDefault() : this).ruleSubscribe(new RuleSubscribeObjectPropertyNames(), _constants.ANY_DISPLAY);
+      return (this.autoInsertValuePropertyDefault ? this.valuePropertyDefault() : this).ruleSubscribe(new RuleSubscribeObjectPropertyNames(_constants.ANY_DISPLAY));
     }
     /**
      * Object property, Array index
@@ -231,7 +243,7 @@ function () {
   }, {
     key: "propertyPredicate",
     value: function propertyPredicate(predicate, description) {
-      return (this.autoInsertValuePropertyDefault ? this.valuePropertyDefault() : this).ruleSubscribe(new _rulesSubscribe.RuleSubscribeObject(_rulesSubscribe.SubscribeObjectType.Property, predicate), description);
+      return (this.autoInsertValuePropertyDefault ? this.valuePropertyDefault() : this).ruleSubscribe(new _rulesSubscribe.RuleSubscribeObject(_rulesSubscribe.SubscribeObjectType.Property, predicate, description));
     }
     /**
      * Object property, Array index
@@ -255,7 +267,7 @@ function () {
   }, {
     key: "collection",
     value: function collection() {
-      return (this.autoInsertValuePropertyDefault ? this.valuePropertyDefault() : this).ruleSubscribe(new _rulesSubscribe.RuleSubscribeCollection(), _constants.COLLECTION_PREFIX);
+      return (this.autoInsertValuePropertyDefault ? this.valuePropertyDefault() : this).ruleSubscribe(new _rulesSubscribe.RuleSubscribeCollection(_constants.COLLECTION_PREFIX));
     }
     /**
      * IMapChanged & Map, Map
@@ -264,7 +276,7 @@ function () {
   }, {
     key: "mapKey",
     value: function mapKey(key) {
-      return (this.autoInsertValuePropertyDefault ? this.valuePropertyDefault() : this).ruleSubscribe(new RuleSubscribeMapKeys(key), _constants.COLLECTION_PREFIX + key);
+      return (this.autoInsertValuePropertyDefault ? this.valuePropertyDefault() : this).ruleSubscribe(new RuleSubscribeMapKeys(_constants.COLLECTION_PREFIX + key, key));
     }
     /**
      * IMapChanged & Map, Map
@@ -273,11 +285,13 @@ function () {
   }, {
     key: "mapKeys",
     value: function mapKeys() {
+      var _context4;
+
       for (var _len4 = arguments.length, keys = new Array(_len4), _key4 = 0; _key4 < _len4; _key4++) {
         keys[_key4] = arguments[_key4];
       }
 
-      return (this.autoInsertValuePropertyDefault ? this.valuePropertyDefault() : this).ruleSubscribe((0, _construct2.default)(RuleSubscribeMapKeys, keys), _constants.COLLECTION_PREFIX + keys.join('|'));
+      return (this.autoInsertValuePropertyDefault ? this.valuePropertyDefault() : this).ruleSubscribe((0, _construct2.default)(RuleSubscribeMapKeys, (0, _concat.default)(_context4 = [_constants.COLLECTION_PREFIX + keys.join('|')]).call(_context4, keys)));
     }
     /**
      * IMapChanged & Map, Map
@@ -286,7 +300,7 @@ function () {
   }, {
     key: "mapAny",
     value: function mapAny() {
-      return (this.autoInsertValuePropertyDefault ? this.valuePropertyDefault() : this).ruleSubscribe(new _rulesSubscribe.RuleSubscribeMap(), _constants.COLLECTION_PREFIX);
+      return (this.autoInsertValuePropertyDefault ? this.valuePropertyDefault() : this).ruleSubscribe(new _rulesSubscribe.RuleSubscribeMap(null, _constants.COLLECTION_PREFIX));
     }
     /**
      * IMapChanged & Map, Map
@@ -295,7 +309,7 @@ function () {
   }, {
     key: "mapPredicate",
     value: function mapPredicate(keyPredicate, description) {
-      return (this.autoInsertValuePropertyDefault ? this.valuePropertyDefault() : this).ruleSubscribe(new _rulesSubscribe.RuleSubscribeMap(keyPredicate), description);
+      return (this.autoInsertValuePropertyDefault ? this.valuePropertyDefault() : this).ruleSubscribe(new _rulesSubscribe.RuleSubscribeMap(keyPredicate, description));
     }
     /**
      * IMapChanged & Map, Map
@@ -361,7 +375,7 @@ function () {
   }, {
     key: "if",
     value: function _if() {
-      var _this = this;
+      var _this2 = this;
 
       for (var _len5 = arguments.length, exclusiveConditionRules = new Array(_len5), _key5 = 0; _key5 < _len5; _key5++) {
         exclusiveConditionRules[_key5] = arguments[_key5];
@@ -373,9 +387,9 @@ function () {
 
       var rule = new _rules2.RuleIf((0, _map.default)(exclusiveConditionRules).call(exclusiveConditionRules, function (o) {
         if ((0, _isArray2.default)(o)) {
-          return [o[0], o[1](_this.clone(true)).ruleFirst];
+          return [o[0], o[1](_this2.clone(true)).ruleFirst];
         } else {
-          return o(_this.clone(true)).ruleFirst;
+          return o(_this2.clone(true)).ruleFirst;
         }
       }));
       return this.rule(rule);
@@ -383,7 +397,7 @@ function () {
   }, {
     key: "any",
     value: function any() {
-      var _this2 = this;
+      var _this3 = this;
 
       for (var _len6 = arguments.length, getChilds = new Array(_len6), _key6 = 0; _key6 < _len6; _key6++) {
         getChilds[_key6] = arguments[_key6];
@@ -394,7 +408,7 @@ function () {
       }
 
       var rule = new _rules2.RuleAny((0, _map.default)(getChilds).call(getChilds, function (o) {
-        var subRule = o(_this2.clone(true)).result();
+        var subRule = o(_this3.clone(true)).result();
 
         if (!subRule) {
           throw new Error("Any subRule=" + rule);
@@ -439,6 +453,7 @@ function () {
     value: function clone(optionsOnly) {
       return new RuleBuilder({
         rule: optionsOnly || !this.ruleFirst ? null : this.ruleFirst.clone(),
+        valuePropertyDefaultName: this.valuePropertyDefaultName,
         autoInsertValuePropertyDefault: this.autoInsertValuePropertyDefault
       });
     }

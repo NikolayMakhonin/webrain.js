@@ -7,7 +7,7 @@ export { calcPropertyFactory } from './rx/object/properties/CalcPropertyBuilder'
 export { connectorFactory } from './rx/object/properties/ConnectorBuilder';
 export { Property } from './rx/object/properties/Property';
 export { createFunction } from './helpers/helpers';
-export { CalcObjectDebugger } from './rx/object/properties/CalcObjectDebugger';
+export { Debugger } from './rx/Debugger';
 export { getObjectUniqueId } from './helpers/object-unique-id';
 export { ArraySet } from './lists/ArraySet';
 export { ArrayMap } from './lists/ArrayMap';
@@ -23,9 +23,20 @@ export { ObjectMerger } from './extensions/merge/mergers';
 export { PropertyChangedObject } from './rx/object/PropertyChangedObject';
 export { Connector } from './rx/object/properties/Connector';
 export { Subject } from './rx/subjects/subject';
+export { BehaviorSubject } from './rx/subjects/behavior';
 export { registerMergeable, registerMerger } from './extensions/merge/mergers';
-export { registerSerializable, registerSerializer } from './extensions/serialization/serializers';
+export { registerSerializable, registerSerializer, ObjectSerializer } from './extensions/serialization/serializers';
 export { isIterable } from './helpers/helpers';
 export { DependenciesBuilder } from './rx/object/properties/DependenciesBuilder';
 export { subscribeDependencies } from './rx/object/properties/DependenciesBuilder';
-export { webrainOptions } from './helpers/webrainOptions'; // Interfaces:
+export { webrainOptions } from './helpers/webrainOptions';
+export { CalcPropertyState } from './rx/object/properties/CalcProperty';
+export { ConnectorState } from './rx/object/properties/Connector';
+export { ValueChangeType } from './rx/deep-subscribe/contracts/common';
+export { resolveAsyncAll, resolveAsyncAny } from './async/ThenableSync';
+export { dependenciesSubscriber } from './rx/object/properties/DependenciesBuilder';
+export { CalcStat } from './helpers/CalcStat';
+export { VALUE_PROPERTY_DEFAULT } from './helpers/value-property';
+export { delay } from './helpers/helpers';
+export { DeferredCalc } from './rx/deferred-calc/DeferredCalc';
+export { RuleBuilder } from './rx/deep-subscribe/RuleBuilder'; // Interfaces:

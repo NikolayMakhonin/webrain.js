@@ -679,7 +679,8 @@ function deSerializeObject(deSerialize, serializedValue, value) {
   }
 
   return value;
-}
+} // noinspection SpellCheckingInspection
+
 
 registerSerializer(Object, {
   uuid: '88968a59178c4e73a99f801e8cdfc37d',
@@ -731,6 +732,7 @@ var primitiveAsObjectSerializer = {
   serialize: serializePrimitiveAsObject,
   deSerialize: deSerializePrimitiveAsObject
 }; // @ts-ignore
+// noinspection SpellCheckingInspection
 
 registerSerializer(String, {
   uuid: '96104fd7d6f84a32b8f2feaa4f3666d8',

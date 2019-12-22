@@ -260,6 +260,7 @@ function () {
       }, merge, this, older, newer, preferCloneOlder, preferCloneNewer, options);
     } // endregion
     // region ISerializable
+    // noinspection SpellCheckingInspection
 
   }, {
     key: "serialize",

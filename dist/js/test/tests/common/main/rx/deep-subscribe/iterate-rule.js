@@ -16,23 +16,25 @@ var _regenerator = _interopRequireDefault(require("@babel/runtime-corejs3/regene
 
 var _keys2 = _interopRequireDefault(require("@babel/runtime-corejs3/core-js-stable/object/keys"));
 
-var _assign = _interopRequireDefault(require("@babel/runtime-corejs3/core-js-stable/object/assign"));
-
 var _getIterator2 = _interopRequireDefault(require("@babel/runtime-corejs3/core-js/get-iterator"));
+
+var _isArray = _interopRequireDefault(require("@babel/runtime-corejs3/core-js-stable/array/is-array"));
+
+var _common = require("../../../../../../main/common");
+
+var _rules = require("../../../../../../main/common/rx/deep-subscribe/contracts/rules");
 
 var _iterateRule = require("../../../../../../main/common/rx/deep-subscribe/iterate-rule");
 
 var _RuleBuilder = require("../../../../../../main/common/rx/deep-subscribe/RuleBuilder");
 
-var _rules = require("../../../../../../main/common/rx/deep-subscribe/rules");
+var _rules2 = require("../../../../../../main/common/rx/deep-subscribe/rules");
 
 var _Assert = require("../../../../../../main/common/test/Assert");
 
 var _Mocha = require("../../../../../../main/common/test/Mocha");
 
 /* tslint:disable:no-shadowed-variable no-empty */
-
-/* eslint-disable no-useless-escape,computed-property-spacing */
 (0, _Mocha.describe)('common > main > rx > deep-subscribe > iterate-rule', function () {
   var _marked =
   /*#__PURE__*/
@@ -62,7 +64,25 @@ var _Mocha = require("../../../../../../main/common/test/Mocha");
   // const endObject = { _end: true }
   var testObject = {};
 
-  function rulesToObject(ruleIterator, obj) {
+  function mergeObjects(dest, source) {
+    if (!dest) {
+      return source;
+    }
+
+    if (!source) {
+      return dest;
+    }
+
+    for (var key in source) {
+      if (Object.prototype.hasOwnProperty.call(source, key)) {
+        dest[key] = mergeObjects(dest[key], source[key]);
+      }
+    }
+
+    return dest;
+  }
+
+  function rulesToObject(ruleIterator, obj, prevIsFork) {
     if (obj === void 0) {
       obj = {};
     }
@@ -76,14 +96,40 @@ var _Mocha = require("../../../../../../main/common/test/Mocha");
       };
     }
 
+    var isFork = (0, _common.isIterable)(iteration.value);
+
+    if (isFork) {
+      _Assert.assert.notOk(prevIsFork);
+
+      _Assert.assert.ok((0, _isArray.default)(iteration.value));
+
+      if (iteration.value.length > 0) {
+        for (var i = 0; i < iteration.value.length; i++) {
+          var item = iteration.value[i];
+
+          if (i > 0) {
+            _Assert.assert.ok(!(0, _isArray.default)(item) || item.length > 0);
+
+            _Assert.assert.ok(item.type == null || item.type === _rules.RuleType.Action);
+          } else {
+            _Assert.assert.ok(item.type == null || item.type === _rules.RuleType.Action || item.type === _rules.RuleType.Never);
+          }
+        }
+      }
+    }
+
     return (0, _iterateRule.subscribeNextRule)(ruleIterator, iteration, function (nextRuleIterator) {
-      return rulesToObject(nextRuleIterator, obj);
+      return rulesToObject(nextRuleIterator, obj, isFork);
     }, function (rule, getRuleIterable) {
-      var _Object$assign2;
+      var _mergeObjects;
+
+      if (rule.type === _rules.RuleType.Never) {
+        return null;
+      }
 
       var newObj = {};
-      var unsubscribe = rulesToObject(getRuleIterable ? (0, _getIterator2.default)(getRuleIterable(testObject)) : null, newObj);
-      (0, _assign.default)(obj, (_Object$assign2 = {}, _Object$assign2[rule.description] = newObj, _Object$assign2));
+      var unsubscribe = rulesToObject(getRuleIterable ? (0, _getIterator2.default)(getRuleIterable(testObject)) : null, newObj, isFork);
+      mergeObjects(obj, (_mergeObjects = {}, _mergeObjects[rule.description] = newObj, _mergeObjects));
       return unsubscribe;
     });
   }
@@ -143,14 +189,6 @@ var _Mocha = require("../../../../../../main/common/test/Mocha");
             break;
 
           case 17:
-            if (count) {
-              _context.next = 19;
-              break;
-            }
-
-            throw new Error(parentPath + ' is empty');
-
-          case 19:
           case "end":
             return _context.stop();
         }
@@ -176,7 +214,14 @@ var _Mocha = require("../../../../../../main/common/test/Mocha");
 
     _Assert.assert.deepStrictEqual((0, _sort.default)(paths).call(paths), (0, _sort.default)(expectedPaths).call(expectedPaths), (0, _stringify.default)(paths, null, 4));
 
-    unsubscribe(); // console.log(JSON.stringify(object, null, 4))
+    if (expectedPaths.length) {
+      _Assert.assert.ok(unsubscribe);
+
+      unsubscribe();
+    } else {
+      _Assert.assert.notOk(unsubscribe);
+    } // console.log(JSON.stringify(object, null, 4))
+
 
     paths = (0, _from.default)(objectToPaths(object, false));
 
@@ -195,7 +240,124 @@ var _Mocha = require("../../../../../../main/common/test/Mocha");
       });
     }, 'a.b.c');
   });
+  (0, _Mocha.it)('never', function () {
+    testIterateRule(function (b) {
+      return b.any(function (b) {
+        return b.never();
+      }, function (b) {
+        return b.never().p('a');
+      }).any(function (b) {
+        return b.never();
+      }, function (b) {
+        return b.never().p('a');
+      }).p('a');
+    });
+    testIterateRule(function (b) {
+      return b.any(function (b) {
+        return b.never();
+      }, function (b) {
+        return b.p('a');
+      }).p('a');
+    }, 'a.a');
+    testIterateRule(function (b) {
+      return b.any(function (b) {
+        return b.never();
+      }, function (b) {
+        return b.nothing();
+      }).p('a');
+    }, 'a');
+    testIterateRule(function (b) {
+      return (0, _repeat.default)(b).call(b, 0, 3, null, function (b) {
+        return b.any(function (b) {
+          return b.never();
+        }, function (b) {
+          return b.nothing();
+        });
+      }).p('a');
+    }, 'a');
+    testIterateRule(function (b) {
+      return (0, _repeat.default)(b).call(b, 1, 3, null, function (b) {
+        return b.any(function (b) {
+          return b.never();
+        }, function (b) {
+          return b.never().p('a');
+        });
+      }).p('b');
+    });
+  });
+  (0, _Mocha.it)('nothing', function () {
+    testIterateRule(function (b) {
+      return b.any(function (b) {
+        return b.any(function (b) {
+          return b.nothing();
+        });
+      }, function (b) {
+        return b.any(function (b) {
+          return b.nothing();
+        });
+      }).any(function (b) {
+        return b.p('a');
+      }, function (b) {
+        return b.nothing();
+      }).any(function (b) {
+        return b.p('a');
+      }, function (b) {
+        return b.nothing();
+      }, function (b) {
+        return b.p('a');
+      }, function (b) {
+        return b.nothing();
+      }, function (b) {
+        return b.any(function (b) {
+          return b.p('a');
+        }, function (b) {
+          return b.nothing();
+        });
+      }).p('c');
+    }, 'a.a.c', 'a.c', 'c');
+    testIterateRule(function (b) {
+      return b.p('a').any(function (b) {
+        return b.p('b');
+      }, function (b) {
+        return b.nothing();
+      }).p('c');
+    }, 'a.b.c', 'a.c');
+    testIterateRule(function (b) {
+      return b.any(function (b) {
+        return b.p('a');
+      }, function (b) {
+        return b.nothing();
+      }).any(function (b) {
+        return b.p('b');
+      }, function (b) {
+        return b.nothing();
+      }).p('c');
+    }, 'a.b.c', 'a.c', 'b.c', 'c');
+    testIterateRule(function (b) {
+      return b.any(function (b) {
+        return b.p('a');
+      }, function (b) {
+        return b.nothing();
+      }).p('b');
+    }, 'a.b', 'b');
+    testIterateRule(function (b) {
+      return (0, _repeat.default)(b).call(b, 0, 3, null, function (b) {
+        return b.any(function (b) {
+          return b.p('a');
+        }, function (b) {
+          return b.nothing();
+        });
+      }).p('b');
+    }, 'a.a.a.b', 'a.a.b', 'a.b', 'b');
+  });
   (0, _Mocha.it)('any', function () {
+    testIterateRule(function (b) {
+      return b.any(function (b) {
+        return b.never();
+      }, function (b) {
+        return b.never().p('a');
+      }).p('a');
+    });
     testIterateRule(function (b) {
       return b.any(function (b) {
         return b.path(function (o) {
@@ -247,6 +409,12 @@ var _Mocha = require("../../../../../../main/common/test/Mocha");
           return b.path(function (o) {
             return o.e.f;
           });
+        }, function (b) {
+          return b.any(function (b) {
+            return b.never();
+          }, function (b) {
+            return b.never();
+          });
         });
       }, function (b) {
         return b.path(function (o) {
@@ -256,6 +424,21 @@ var _Mocha = require("../../../../../../main/common/test/Mocha");
         return o.i;
       });
     }, 'a.b.c.d.i', 'a.b.e.f.i', 'g.h.i');
+    testIterateRule(function (b) {
+      return b.any(function (b) {
+        return b.never();
+      }, function (b) {
+        return b.path(function (o) {
+          return o.a;
+        });
+      }, function (b) {
+        return b.nothing();
+      }, function (b) {
+        return b.path(function (o) {
+          return o.b;
+        });
+      });
+    }, '', 'a', 'b');
   });
   (0, _Mocha.it)('path any', function () {
     testIterateRule(function (b) {
@@ -351,10 +534,10 @@ var _Mocha = require("../../../../../../main/common/test/Mocha");
     }, 'a.a.d', 'a.b.d', 'b.a.d', 'b.b.d', 'c.d');
   });
   (0, _Mocha.it)('throws', function () {
-    (0, _from.default)((0, _iterateRule.iterateRule)(testObject, new _rules.Rule(0)));
+    (0, _from.default)((0, _iterateRule.iterateRule)(testObject, new _rules2.Rule(0)));
 
     _Assert.assert.throws(function () {
-      return (0, _from.default)((0, _iterateRule.iterateRule)(testObject, new _rules.Rule(-1)), Error);
+      return (0, _from.default)((0, _iterateRule.iterateRule)(testObject, new _rules2.Rule(-1)), Error);
     });
 
     _Assert.assert.throws(function () {

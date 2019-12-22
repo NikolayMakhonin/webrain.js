@@ -7,7 +7,17 @@ exports.createResolved = createResolved;
 exports.createRejected = createRejected;
 exports.resolveAsync = resolveAsync;
 exports.resolveAsyncFunc = resolveAsyncFunc;
+exports.resolveAsyncAll = resolveAsyncAll;
+exports.resolveAsyncAny = resolveAsyncAny;
 exports.ThenableSync = exports.ThenableSyncStatus = void 0;
+
+var _forEach = _interopRequireDefault(require("@babel/runtime-corejs3/core-js-stable/instance/for-each"));
+
+var _getIterator2 = _interopRequireDefault(require("@babel/runtime-corejs3/core-js/get-iterator"));
+
+var _map = _interopRequireDefault(require("@babel/runtime-corejs3/core-js-stable/instance/map"));
+
+var _regenerator = _interopRequireDefault(require("@babel/runtime-corejs3/regenerator"));
 
 var _bind = _interopRequireDefault(require("@babel/runtime-corejs3/core-js-stable/instance/bind"));
 
@@ -16,6 +26,10 @@ var _classCallCheck2 = _interopRequireDefault(require("@babel/runtime-corejs3/he
 var _createClass2 = _interopRequireDefault(require("@babel/runtime-corejs3/helpers/createClass"));
 
 var _async = require("./async");
+
+var _marked =
+/*#__PURE__*/
+_regenerator.default.mark(_resolveAsyncAll);
 
 var ThenableSyncStatus;
 exports.ThenableSyncStatus = ThenableSyncStatus;
@@ -426,4 +440,76 @@ function resolveAsyncFunc(func, onfulfilled, onrejected, dontThrowOnImmediateRej
   } catch (err) {
     return resolveAsync(err, onrejected, onrejected, dontThrowOnImmediateReject, customResolveValue);
   }
+}
+
+function _resolveAsyncAll(inputPrepared) {
+  var len, i;
+  return _regenerator.default.wrap(function _resolveAsyncAll$(_context3) {
+    while (1) {
+      switch (_context3.prev = _context3.next) {
+        case 0:
+          len = inputPrepared.length;
+          i = 0;
+
+        case 2:
+          if (!(i < len)) {
+            _context3.next = 9;
+            break;
+          }
+
+          _context3.next = 5;
+          return inputPrepared[i];
+
+        case 5:
+          inputPrepared[i] = _context3.sent;
+
+        case 6:
+          i++;
+          _context3.next = 2;
+          break;
+
+        case 9:
+          return _context3.abrupt("return", inputPrepared);
+
+        case 10:
+        case "end":
+          return _context3.stop();
+      }
+    }
+  }, _marked);
+}
+
+function resolveAsyncAll(input, onfulfilled, onrejected, dontThrowOnImmediateError, customResolveValue) {
+  var resolved = true;
+  var inputPrepared = (0, _map.default)(input).call(input, function (o) {
+    var item = resolveAsync(o, null, null, true, customResolveValue);
+
+    if (resolved && (0, _async.isThenable)(item)) {
+      resolved = false;
+    }
+
+    return item;
+  });
+  return resolveAsync(resolved ? inputPrepared : (0, _getIterator2.default)(_resolveAsyncAll(inputPrepared)), onfulfilled, onrejected, dontThrowOnImmediateError, customResolveValue);
+}
+
+function resolveAsyncAny(input, onfulfilled, onrejected, dontThrowOnImmediateError, customResolveValue) {
+  var len = input.length;
+  var inputPrepared = new Array(len);
+
+  for (var i = 0; i < len; i++) {
+    var item = resolveAsync(input[i], null, null, true, customResolveValue);
+
+    if (!(0, _async.isThenable)(item)) {
+      return resolveAsync(item, onfulfilled, onrejected, dontThrowOnImmediateError, customResolveValue);
+    }
+
+    inputPrepared[i] = item;
+  }
+
+  return resolveAsync(new ThenableSync(function (resolve, reject) {
+    (0, _forEach.default)(inputPrepared).call(inputPrepared, function (o) {
+      return o.then(resolve, reject);
+    });
+  }), onfulfilled, onrejected, dontThrowOnImmediateError, customResolveValue);
 }

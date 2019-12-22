@@ -41,11 +41,15 @@ function behavior(base) {
 
       (0, _createClass2.default)(Behavior, [{
         key: "subscribe",
-        value: function subscribe(subscriber) {
+        value: function subscribe(subscriber, description) {
           var _this2 = this;
 
           if (!subscriber) {
             return null;
+          }
+
+          if (description) {
+            subscriber.description = description;
           }
 
           var unsubscribe = (0, _get2.default)((0, _getPrototypeOf2.default)(Behavior.prototype), "subscribe", this).call(this, subscriber);

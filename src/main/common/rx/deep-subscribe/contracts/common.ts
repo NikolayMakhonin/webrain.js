@@ -1,5 +1,4 @@
 import {IUnsubscribeOrVoid} from '../../subjects/observable'
-import {PropertiesPath} from '../helpers/PropertiesPath'
 import {IRule} from './rules'
 
 export type ILastValue<TValue> = (value: TValue, parent: any, key: any, keyType: ValueKeyType) => void
@@ -25,10 +24,21 @@ export type IChangeValue<TValue> = (
 	parent: any,
 	changeType: ValueChangeType,
 	keyType: ValueKeyType,
-	propertiesPath: PropertiesPath,
+	propertiesPath: IPropertiesPath,
 	rule: IRule,
 	isUnsubscribed?: boolean,
 ) => IUnsubscribeOrVoid
+
+export interface IPropertiesPath {
+	value: any
+	parent: IPropertiesPath
+	key: any
+	keyType: ValueKeyType
+	rule: IRule
+	readonly id: string
+
+	toString(): string
+}
 
 export interface IValueSubscriber<TValue> {
 	debugTarget: any
@@ -39,7 +49,7 @@ export interface IValueSubscriber<TValue> {
 		parent: any,
 		changeType: ValueChangeType,
 		keyType: ValueKeyType,
-		propertiesPath: PropertiesPath,
+		propertiesPath: IPropertiesPath,
 		rule: IRule,
 	): IUnsubscribeOrVoid
 }

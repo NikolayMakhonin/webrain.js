@@ -19,6 +19,7 @@ export interface ITypeMetaCollectionWithId<TMeta extends ITypeMetaWithId>
 	deleteType(typeOrUuid: TClass<any>|string): TMeta
 }
 
+// noinspection SpellCheckingInspection
 const typeMetaPropertyNameBase: string = '043a558080e94cbda1add09753c28772'
 let typeMetaPropertyNameIndex: number = 0
 

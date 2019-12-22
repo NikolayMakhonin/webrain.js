@@ -29,9 +29,9 @@ class NextVariantItems<T> {
 }
 
 export class TreeToSequenceVariants<T> {
-	private tree: IArrayTree<T>
-	private startIndex: number
-	private variant: Iterable<T>
+	private readonly tree: IArrayTree<T>
+	private readonly startIndex: number
+	private readonly variant: Iterable<T>
 
 	constructor(
 		tree: IArrayTree<T>,

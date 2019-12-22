@@ -88,17 +88,18 @@ function () {
       if (unsubscribers) {
         var oldUnsubscribe = unsubscribers[propertyName];
 
-        if (oldUnsubscribe) {
-          oldUnsubscribe();
+        if (unsubscribe !== oldUnsubscribe) {
+          if (oldUnsubscribe) {
+            unsubscribers[propertyName] = unsubscribe;
+            oldUnsubscribe();
+          } else if (unsubscribe) {
+            unsubscribers[propertyName] = unsubscribe;
+          }
         }
-      }
+      } else if (unsubscribe) {
+        var _meta$unsubscribers;
 
-      if (unsubscribe) {
-        if (!unsubscribers) {
-          __meta.unsubscribers = unsubscribers = {};
-        }
-
-        unsubscribers[propertyName] = unsubscribe;
+        __meta.unsubscribers = (_meta$unsubscribers = {}, _meta$unsubscribers[propertyName] = unsubscribe, _meta$unsubscribers);
       }
     } // region propertyChanged
 

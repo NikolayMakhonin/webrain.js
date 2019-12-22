@@ -32,7 +32,7 @@ function getFirstExistProperty(object, propertyNames) {
   return null;
 }
 
-function subscribeObjectValue(propertyNames, object, immediateSubscribe, changeItem) {
+function subscribeObjectValue(propertyNames, object, immediateSubscribe, changeItem, propertiesPath, rule) {
   if (!(object instanceof Object)) {
     changeItem(null, void 0, object, ValueChangeType.Subscribe, null);
     return null;
@@ -133,6 +133,9 @@ function subscribeObjectValue(propertyNames, object, immediateSubscribe, changeI
       if (unsubscribe != null) {
         subscribeProperty(newSubscribePropertyName, false);
       }
+    }, {
+      propertiesPath,
+      rule
     }));
   }
 
@@ -144,12 +147,18 @@ function subscribeObjectValue(propertyNames, object, immediateSubscribe, changeI
 
   subscribed = true;
   return () => {
+    let _unsubscribe;
+
     if (unsubscribe) {
-      unsubscribe();
+      _unsubscribe = unsubscribe;
       unsubscribe = null;
     }
 
     unsubscribeProperty(true);
+
+    if (_unsubscribe) {
+      _unsubscribe();
+    }
   };
 } // endregion
 // region subscribeObject
@@ -160,7 +169,7 @@ export function hasDefaultProperty(object) {
   return object instanceof Object && (allowSubscribePrototype ? VALUE_PROPERTY_DEFAULT in object : Object.prototype.hasOwnProperty.call(object, VALUE_PROPERTY_DEFAULT)) && object.constructor !== Object && !Array.isArray(object);
 }
 
-function subscribeObject(propertyNames, propertyPredicate, object, immediateSubscribe, changeItem) {
+function subscribeObject(propertyNames, propertyPredicate, object, immediateSubscribe, changeItem, propertiesPath, rule) {
   if (!(object instanceof Object)) {
     return null;
   }
@@ -195,6 +204,9 @@ function subscribeObject(propertyNames, propertyPredicate, object, immediateSubs
           }
         }
       }
+    }, {
+      propertiesPath,
+      rule
     }));
   }
 
@@ -266,12 +278,18 @@ function subscribeObject(propertyNames, propertyPredicate, object, immediateSubs
 
   subscribed = true;
   return () => {
+    let _unsubscribe;
+
     if (unsubscribe) {
-      unsubscribe();
+      _unsubscribe = unsubscribe;
       unsubscribe = null;
     }
 
     forEach(false);
+
+    if (_unsubscribe) {
+      _unsubscribe();
+    }
   };
 } // endregion
 // region subscribeIterable
@@ -295,7 +313,7 @@ function subscribeIterable(object, immediateSubscribe, changeItem) {
 // region subscribeList
 
 
-function subscribeList(object, immediateSubscribe, changeItem) {
+function subscribeList(object, immediateSubscribe, changeItem, propertiesPath, rule) {
   if (!object || object[Symbol.toStringTag] !== 'List') {
     return null;
   }
@@ -342,6 +360,9 @@ function subscribeList(object, immediateSubscribe, changeItem) {
 
           break;
       }
+    }, {
+      propertiesPath,
+      rule
     }));
   }
 
@@ -353,18 +374,24 @@ function subscribeList(object, immediateSubscribe, changeItem) {
 
   subscribed = true;
   return () => {
+    let _unsubscribe;
+
     if (unsubscribe) {
-      unsubscribe();
+      _unsubscribe = unsubscribe;
       unsubscribe = null;
     }
 
     forEachCollection(object, changeItem, false);
+
+    if (_unsubscribe) {
+      _unsubscribe();
+    }
   };
 } // endregion
 // region subscribeSet
 
 
-function subscribeSet(object, immediateSubscribe, changeItem) {
+function subscribeSet(object, immediateSubscribe, changeItem, propertiesPath, rule) {
   if (!object || object[Symbol.toStringTag] !== 'Set' && !(object instanceof Set)) {
     return null;
   }
@@ -402,6 +429,9 @@ function subscribeSet(object, immediateSubscribe, changeItem) {
 
           break;
       }
+    }, {
+      propertiesPath,
+      rule
     }));
   }
 
@@ -413,18 +443,24 @@ function subscribeSet(object, immediateSubscribe, changeItem) {
 
   subscribed = true;
   return () => {
+    let _unsubscribe;
+
     if (unsubscribe) {
-      unsubscribe();
+      _unsubscribe = unsubscribe;
       unsubscribe = null;
     }
 
     forEachCollection(object, changeItem, false);
+
+    if (_unsubscribe) {
+      _unsubscribe();
+    }
   };
 } // endregion
 // region subscribeMap
 
 
-function subscribeMap(keys, keyPredicate, object, immediateSubscribe, changeItem) {
+function subscribeMap(keys, keyPredicate, object, immediateSubscribe, changeItem, propertiesPath, rule) {
   if (!object || object[Symbol.toStringTag] !== 'Map' && !(object instanceof Map)) {
     return null;
   }
@@ -469,6 +505,9 @@ function subscribeMap(keys, keyPredicate, object, immediateSubscribe, changeItem
             break;
         }
       }
+    }, {
+      propertiesPath,
+      rule
     }));
   }
 
@@ -514,25 +553,31 @@ function subscribeMap(keys, keyPredicate, object, immediateSubscribe, changeItem
 
   subscribed = true;
   return () => {
+    let _unsubscribe;
+
     if (unsubscribe) {
-      unsubscribe();
+      _unsubscribe = unsubscribe;
       unsubscribe = null;
     }
 
     forEach(false);
+
+    if (_unsubscribe) {
+      _unsubscribe();
+    }
   };
 } // endregion
 // region subscribeCollection
 
 
-function subscribeCollection(object, immediateSubscribe, changeItem) {
+function subscribeCollection(object, immediateSubscribe, changeItem, propertiesPath, rule) {
   if (!object) {
     return null;
   }
 
-  const unsubscribeList = subscribeList(object, immediateSubscribe, changeItem);
-  const unsubscribeSet = subscribeSet(object, immediateSubscribe, changeItem);
-  const unsubscribeMap = subscribeMap(null, null, object, immediateSubscribe, changeItem);
+  const unsubscribeList = subscribeList(object, immediateSubscribe, changeItem, propertiesPath, rule);
+  const unsubscribeSet = subscribeSet(object, immediateSubscribe, changeItem, propertiesPath, rule);
+  const unsubscribeMap = subscribeMap(null, null, object, immediateSubscribe, changeItem, propertiesPath, rule);
   let unsubscribeIterable;
 
   if (!unsubscribeList && !unsubscribeSet && !unsubscribeMap) {
@@ -608,8 +653,8 @@ export let SubscribeObjectType;
 })(SubscribeObjectType || (SubscribeObjectType = {}));
 
 export class RuleSubscribe extends Rule {
-  constructor() {
-    super(RuleType.Action);
+  constructor(description) {
+    super(RuleType.Action, description);
   }
 
   clone() {
@@ -635,8 +680,8 @@ export class RuleSubscribe extends Rule {
 
 }
 export class RuleSubscribeObject extends RuleSubscribe {
-  constructor(type, propertyPredicate, ...propertyNames) {
-    super();
+  constructor(type, propertyPredicate, description, ...propertyNames) {
+    super(description);
 
     if (propertyNames && !propertyNames.length) {
       propertyNames = null;
@@ -705,8 +750,8 @@ function createKeyPredicate(keys) {
 }
 
 export class RuleSubscribeMap extends RuleSubscribe {
-  constructor(keyPredicate, ...keys) {
-    super();
+  constructor(keyPredicate, description, ...keys) {
+    super(description);
 
     if (keys && !keys.length) {
       keys = null;
@@ -732,8 +777,8 @@ export class RuleSubscribeMap extends RuleSubscribe {
 // region RuleSubscribeCollection
 
 export class RuleSubscribeCollection extends RuleSubscribe {
-  constructor() {
-    super(); // @ts-ignore
+  constructor(description) {
+    super(description); // @ts-ignore
 
     this.subscribe = subscribeCollection;
   }

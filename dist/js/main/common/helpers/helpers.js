@@ -77,16 +77,27 @@ function toSingleCall(func, throwOnMultipleCall) {
   };
 }
 
+var allowCreateFunction = function () {
+  try {
+    var func = new Function('a', 'b', 'return a + b');
+    return !!func;
+  } catch (err) {
+    return false;
+  }
+}();
+
 var createFunctionCache = {}; // tslint:disable-next-line:ban-types
 
-function createFunction() {
-  var _ref;
+function createFunction(alternativeFuncFactory) {
+  for (var _len = arguments.length, args = new Array(_len > 1 ? _len - 1 : 0), _key = 1; _key < _len; _key++) {
+    args[_key - 1] = arguments[_key];
+  }
 
-  var id = (_ref = arguments.length - 1, _ref < 0 || arguments.length <= _ref ? undefined : arguments[_ref]) + '';
+  var id = args[args.length - 1] + '';
   var func = createFunctionCache[id];
 
   if (!func) {
-    createFunctionCache[id] = func = Function.apply(void 0, arguments);
+    createFunctionCache[id] = func = allowCreateFunction ? Function.apply(void 0, args) : alternativeFuncFactory();
   }
 
   return func;

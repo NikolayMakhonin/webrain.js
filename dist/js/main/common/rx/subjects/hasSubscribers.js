@@ -47,11 +47,15 @@ function hasSubscribers(base, createHasSubscribersSubject) {
 
       (0, _createClass2.default)(HasSubscribers, [{
         key: "subscribe",
-        value: function subscribe(subscriber) {
+        value: function subscribe(subscriber, description) {
           var _this = this;
 
           if (!subscriber) {
             return null;
+          }
+
+          if (description) {
+            subscriber.description = description;
           } // eslint-disable-next-line no-shadow
           // tslint:disable-next-line:no-shadowed-variable
 

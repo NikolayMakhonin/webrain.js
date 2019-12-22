@@ -1441,11 +1441,13 @@ var _Mocha = require("../../../../../../main/common/test/Mocha");
       countMin: 0,
       countMax: _maxSafeInteger.default,
       condition: null,
+      description: '<repeat>',
       rule: {
         type: _rules.RuleType.Repeat,
         countMin: 1,
         countMax: _maxSafeInteger.default,
         condition: null,
+        description: '<repeat>',
         rule: {
           type: _rules.RuleType.Action,
           objectTypes: ['object', 'array'],
@@ -1457,6 +1459,7 @@ var _Mocha = require("../../../../../../main/common/test/Mocha");
           countMin: 0,
           countMax: 2,
           condition: null,
+          description: '<repeat>',
           rule: {
             type: _rules.RuleType.Action,
             objectTypes: ['object', 'array'],
@@ -1468,6 +1471,7 @@ var _Mocha = require("../../../../../../main/common/test/Mocha");
             countMin: 3,
             countMax: 4,
             condition: null,
+            description: '<repeat>',
             rule: {
               type: _rules.RuleType.Action,
               objectTypes: ['object', 'array'],
@@ -1482,6 +1486,7 @@ var _Mocha = require("../../../../../../main/common/test/Mocha");
         countMin: 5,
         countMax: 6,
         condition: null,
+        description: '<repeat>',
         rule: {
           type: _rules.RuleType.Action,
           objectTypes: ['object', 'array'],
@@ -1493,6 +1498,7 @@ var _Mocha = require("../../../../../../main/common/test/Mocha");
           countMin: 7,
           countMax: 8,
           condition: null,
+          description: '<repeat>',
           rule: {
             type: _rules.RuleType.Action,
             objectTypes: ['object', 'array'],
@@ -1585,6 +1591,7 @@ var _Mocha = require("../../../../../../main/common/test/Mocha");
 
     assertRule(builder1.result(), {
       type: _rules.RuleType.Any,
+      description: '<any>',
       rules: [{
         type: _rules.RuleType.Action,
         objectTypes: ['object', 'array'],
@@ -1593,6 +1600,7 @@ var _Mocha = require("../../../../../../main/common/test/Mocha");
       }],
       next: {
         type: _rules.RuleType.Any,
+        description: '<any>',
         rules: [{
           type: _rules.RuleType.Action,
           objectTypes: ['object', 'array'],
@@ -1601,8 +1609,10 @@ var _Mocha = require("../../../../../../main/common/test/Mocha");
         }],
         next: {
           type: _rules.RuleType.Any,
+          description: '<any>',
           rules: [{
             type: _rules.RuleType.Any,
+            description: '<any>',
             rules: [{
               type: _rules.RuleType.Action,
               objectTypes: ['object', 'array'],
@@ -1611,6 +1621,7 @@ var _Mocha = require("../../../../../../main/common/test/Mocha");
             }]
           }, {
             type: _rules.RuleType.Any,
+            description: '<any>',
             rules: [{
               type: _rules.RuleType.Action,
               objectTypes: ['object', 'array'],
@@ -1624,6 +1635,7 @@ var _Mocha = require("../../../../../../main/common/test/Mocha");
             }]
           }, {
             type: _rules.RuleType.Any,
+            description: '<any>',
             rules: [{
               type: _rules.RuleType.Action,
               objectTypes: ['object', 'array'],
@@ -1643,6 +1655,7 @@ var _Mocha = require("../../../../../../main/common/test/Mocha");
           }],
           next: {
             type: _rules.RuleType.Any,
+            description: '<any>',
             rules: [{
               type: _rules.RuleType.Action,
               objectTypes: ['object', 'array'],
@@ -1651,6 +1664,7 @@ var _Mocha = require("../../../../../../main/common/test/Mocha");
             }],
             next: {
               type: _rules.RuleType.Any,
+              description: '<any>',
               rules: [{
                 type: _rules.RuleType.Action,
                 objectTypes: ['object', 'array'],

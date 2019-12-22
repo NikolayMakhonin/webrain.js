@@ -9,7 +9,7 @@ export declare class PropertyChangedEvent<TValue> implements IPropertyChangedEve
     oldValue: TValue;
     private readonly _getNewValue;
     constructor(name: any, oldValue: TValue, getNewValue: () => TValue);
-    readonly newValue: TValue;
+    get newValue(): TValue;
 }
 export declare type EventOrPropertyName = string | number | IPropertyChangedEvent;
 export interface IPropertyChangedSubject extends IHasSubscribersSubject<IPropertyChangedEvent> {

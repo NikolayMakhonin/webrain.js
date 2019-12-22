@@ -390,3 +390,45 @@ export function resolveAsyncFunc(func, onfulfilled, onrejected, dontThrowOnImmed
     return resolveAsync(err, onrejected, onrejected, dontThrowOnImmediateReject, customResolveValue);
   }
 }
+
+function* _resolveAsyncAll(inputPrepared) {
+  const len = inputPrepared.length;
+
+  for (let i = 0; i < len; i++) {
+    inputPrepared[i] = yield inputPrepared[i];
+  }
+
+  return inputPrepared;
+}
+
+export function resolveAsyncAll(input, onfulfilled, onrejected, dontThrowOnImmediateError, customResolveValue) {
+  let resolved = true;
+  const inputPrepared = input.map(o => {
+    const item = resolveAsync(o, null, null, true, customResolveValue);
+
+    if (resolved && isThenable(item)) {
+      resolved = false;
+    }
+
+    return item;
+  });
+  return resolveAsync(resolved ? inputPrepared : _resolveAsyncAll(inputPrepared)[Symbol.iterator](), onfulfilled, onrejected, dontThrowOnImmediateError, customResolveValue);
+}
+export function resolveAsyncAny(input, onfulfilled, onrejected, dontThrowOnImmediateError, customResolveValue) {
+  const len = input.length;
+  const inputPrepared = new Array(len);
+
+  for (let i = 0; i < len; i++) {
+    const item = resolveAsync(input[i], null, null, true, customResolveValue);
+
+    if (!isThenable(item)) {
+      return resolveAsync(item, onfulfilled, onrejected, dontThrowOnImmediateError, customResolveValue);
+    }
+
+    inputPrepared[i] = item;
+  }
+
+  return resolveAsync(new ThenableSync((resolve, reject) => {
+    inputPrepared.forEach(o => o.then(resolve, reject));
+  }), onfulfilled, onrejected, dontThrowOnImmediateError, customResolveValue);
+}

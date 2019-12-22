@@ -368,7 +368,7 @@ describe('common > main > rx > properties > CalcObjectBuilder', function() {
 		}
 	})
 
-	it('deepSubscribe calc async', async function() {
+	xit('deepSubscribe calc async', async function() {
 		const date200 = new Date(200)
 		for (let subscribed = 1; subscribed >= 0; subscribed--) {
 			console.log('subscribed: ' + !!subscribed)

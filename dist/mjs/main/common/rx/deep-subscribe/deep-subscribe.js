@@ -3,27 +3,35 @@ import { isThenable } from '../../async/async';
 import { resolveAsync } from '../../async/ThenableSync';
 import { checkIsFuncOrNull, toSingleCall } from '../../helpers/helpers';
 import { getObjectUniqueId } from '../../helpers/object-unique-id';
+import { Debugger } from '../Debugger';
 import { ValueChangeType } from './contracts/common';
 import { RuleType } from './contracts/rules';
+import { PropertiesPath } from './helpers/PropertiesPath';
 import { iterateRule, subscribeNextRule } from './iterate-rule';
 import { ObjectSubscriber } from './ObjectSubscriber';
 import { RuleBuilder } from './RuleBuilder'; // const UNSUBSCRIBE_PROPERTY_PREFIX = Math.random().toString(36)
 // let nextUnsubscribePropertyId = 0
+
+function getRuleType(iteration) {
+  return iteration && (iteration.done ? null : Array.isArray(iteration.value) ? iteration.value.length ? iteration.value[0].type : null : iteration.value.type);
+}
 
 function catchHandler(ex, propertiesPath) {
   if (ex.propertiesPath) {
     throw ex;
   }
 
-  const propertiesPathStr = propertiesPath ? propertiesPath() : '';
+  const propertiesPathStr = propertiesPath + '';
   ex.propertiesPath = propertiesPathStr;
   ex.message += `\nObject property path: ${propertiesPathStr}`;
   throw ex;
 }
 
-function subscribeNext(object, valueSubscriber, immediate, ruleIterator, propertiesPath, propertyName, parent, ruleDescription, iteration) {
+function subscribeNext(object, valueSubscriber, immediate, ruleIterator, propertiesPath, objectKey, objectKeyType, parent, rule, iteration) {
   if (!iteration && ruleIterator) {
-    iteration = ruleIterator.next();
+    iteration = ruleIterator.next(); // if (isIterator(iteration.value)) {
+    // 	throw new Error('deepSubscribe internal error: iteration.value is iterator')
+    // }
   }
 
   const isLeaf = !iteration || iteration.done;
@@ -41,7 +49,7 @@ function subscribeNext(object, valueSubscriber, immediate, ruleIterator, propert
       let unsubscribe;
       resolveAsync(object, o => {
         if (!unsubscribe) {
-          unsubscribe = checkIsFuncOrNull(subscribeNext(o, valueSubscriber, immediate, ruleIterator, propertiesPath, propertyName, parent, ruleDescription, iteration));
+          unsubscribe = checkIsFuncOrNull(subscribeNext(o, valueSubscriber, immediate, ruleIterator, propertiesPath, objectKey, objectKeyType, parent, rule, iteration));
         }
 
         return o;
@@ -62,15 +70,15 @@ function subscribeNext(object, valueSubscriber, immediate, ruleIterator, propert
   let unsubscribersCount;
 
   if (isLeaf) {
-    return valueSubscriber.change(propertyName, void 0, object, parent, ValueChangeType.Subscribe, null, propertiesPath, ruleDescription);
+    return valueSubscriber.change(objectKey, void 0, object, parent, ValueChangeType.Subscribe, objectKeyType, propertiesPath, rule);
   }
 
   function subscribeNode(rule, getNextRuleIterable) {
-    const catchHandlerItem = (err, propertyName) => {
-      catchHandler(err, () => (propertiesPath ? propertiesPath() + '.' : '') + (propertyName == null ? '' : propertyName + '(' + rule.description + ')'));
+    const catchHandlerItem = (err, value, key, keyType) => {
+      catchHandler(err, new PropertiesPath(value, propertiesPath, key, keyType, rule));
     };
 
-    const changeNext = (key, oldItem, newItem, changeType, keyType, parent, iterator, iteration) => {
+    const changeNext = (key, oldItem, newItem, changeType, keyType, parent, newPropertiesPath, iterator, iteration) => {
       if ((changeType & ValueChangeType.Unsubscribe) !== 0 && oldItem instanceof Object && unsubscribers) {
         const itemUniqueId = getObjectUniqueId(oldItem);
         const unsubscribeCount = unsubscribersCount[itemUniqueId];
@@ -113,12 +121,12 @@ function subscribeNext(object, valueSubscriber, immediate, ruleIterator, propert
         if (unsubscribe) {
           unsubscribersCount[itemUniqueId]++;
         } else {
-          unsubscribe = checkIsFuncOrNull(subscribeNext(newItem, valueSubscriber, immediate, iterator, () => (propertiesPath ? propertiesPath() + '.' : '') + (key + '(' + rule.description + ')'), key, parent, rule.description, iteration));
+          unsubscribe = checkIsFuncOrNull(subscribeNext(newItem, valueSubscriber, immediate, iterator, newPropertiesPath, key, keyType, parent, rule, iteration));
 
           if (unsubscribe) {
             if (!(newItem instanceof Object)) {
               unsubscribe();
-              throw new Error('You should not return unsubscribe function for non Object value.\n' + 'For subscribe value types use their object wrappers: Number, Boolean, String classes.\n' + `Unsubscribe function: ${unsubscribe}\nValue: ${newItem}\n` + `Value property path: ${(propertiesPath ? propertiesPath() + '.' : '') + (key + '(' + rule.description + ')')}`);
+              throw new Error('You should not return unsubscribe function for non Object value.\n' + 'For subscribe value types use their object wrappers: Number, Boolean, String classes.\n' + `Unsubscribe function: ${unsubscribe}\nValue: ${newItem}\n` + `Value property path: ${new PropertiesPath(newItem, propertiesPath, key, keyType, rule)}`);
             } else {
               const chainUnsubscribe = unsubscribers[itemUniqueId];
 
@@ -139,23 +147,26 @@ function subscribeNext(object, valueSubscriber, immediate, ruleIterator, propert
       }
     };
 
-    const changeLeaf = (key, oldItem, newItem, changeType, keyType, parent) => {
-      checkIsFuncOrNull(valueSubscriber.change(key, oldItem, newItem, parent, changeType, keyType, () => (propertiesPath ? propertiesPath() + '.' : '') + (propertyName == null ? '' : propertyName + '(' + rule.description + ')'), rule.description));
+    const changeLeaf = (key, oldItem, newItem, changeType, keyType, parent, newPropertiesPath) => {
+      checkIsFuncOrNull(valueSubscriber.change(key, oldItem, newItem, parent, changeType, keyType, newPropertiesPath, rule));
     };
 
     const changeItem = (key, oldItem, newItem, changeType, keyType) => {
+      let debugOldIsLeaf;
       let oldIsLeaf;
 
       if ((changeType & ValueChangeType.Unsubscribe) !== 0) {
         const oldItemIterator = getNextRuleIterable && getNextRuleIterable(oldItem)[Symbol.iterator]();
         const oldItemIteration = oldItemIterator && oldItemIterator.next();
-        const isLeaf = !oldItemIteration || oldItemIteration.done;
+        const nextRuleType = getRuleType(oldItemIteration);
 
-        if (isLeaf || oldItemIteration.value.type !== RuleType.Never && typeof oldItem !== 'undefined') {
-          oldIsLeaf = isLeaf && !(oldItem instanceof Object);
+        if (nextRuleType == null || nextRuleType !== RuleType.Never && typeof oldItem !== 'undefined') {
+          debugOldIsLeaf = nextRuleType == null;
+          oldIsLeaf = nextRuleType == null && !(oldItem instanceof Object);
         }
       }
 
+      let debugNewIsLeaf;
       let newIsLeaf;
       let newItemIterator;
       let newItemIteration;
@@ -163,42 +174,46 @@ function subscribeNext(object, valueSubscriber, immediate, ruleIterator, propert
       if ((changeType & ValueChangeType.Subscribe) !== 0) {
         newItemIterator = getNextRuleIterable && getNextRuleIterable(newItem)[Symbol.iterator]();
         newItemIteration = newItemIterator && newItemIterator.next();
-        const isLeaf = !newItemIteration || newItemIteration.done;
+        const nextRuleType = getRuleType(newItemIteration);
 
-        if (isLeaf || newItemIteration.value.type !== RuleType.Never && typeof newItem !== 'undefined') {
-          newIsLeaf = isLeaf && !(newItem instanceof Object);
+        if (nextRuleType == null || nextRuleType !== RuleType.Never && typeof newItem !== 'undefined') {
+          debugNewIsLeaf = nextRuleType == null;
+          newIsLeaf = nextRuleType == null && !(newItem instanceof Object);
         }
       }
 
       let itemParent = object;
 
       if (keyType == null) {
-        key = propertyName;
+        key = objectKey;
         itemParent = parent;
       }
+
+      const newPropertiesPath = new PropertiesPath(newItem, propertiesPath, key, keyType, rule);
+      Debugger.Instance.onDeepSubscribe(key, oldItem, newItem, itemParent, changeType, keyType, newPropertiesPath, rule, debugOldIsLeaf, debugNewIsLeaf, valueSubscriber.debugTarget);
 
       if (oldIsLeaf === newIsLeaf) {
         if (newIsLeaf != null) {
           if (newIsLeaf) {
-            changeLeaf(key, oldItem, newItem, changeType, keyType, itemParent);
+            changeLeaf(key, oldItem, newItem, changeType, keyType, itemParent, newPropertiesPath);
           } else {
-            changeNext(key, oldItem, newItem, changeType, keyType, itemParent, newItemIterator, newItemIteration);
+            changeNext(key, oldItem, newItem, changeType, keyType, itemParent, newPropertiesPath, newItemIterator, newItemIteration);
           }
         }
       } else {
         if (oldIsLeaf != null) {
           if (oldIsLeaf) {
-            changeLeaf(key, oldItem, void 0, ValueChangeType.Unsubscribe, keyType, itemParent);
+            changeLeaf(key, oldItem, void 0, ValueChangeType.Unsubscribe, keyType, itemParent, newPropertiesPath);
           } else {
-            changeNext(key, oldItem, void 0, ValueChangeType.Unsubscribe, keyType, itemParent, newItemIterator, newItemIteration);
+            changeNext(key, oldItem, void 0, ValueChangeType.Unsubscribe, keyType, itemParent, newPropertiesPath, newItemIterator, newItemIteration);
           }
         }
 
         if (newIsLeaf != null) {
           if (newIsLeaf) {
-            changeLeaf(key, void 0, newItem, ValueChangeType.Subscribe, keyType, itemParent);
+            changeLeaf(key, void 0, newItem, ValueChangeType.Subscribe, keyType, itemParent, newPropertiesPath);
           } else {
-            changeNext(key, void 0, newItem, ValueChangeType.Subscribe, keyType, itemParent, newItemIterator, newItemIteration);
+            changeNext(key, void 0, newItem, ValueChangeType.Subscribe, keyType, itemParent, newPropertiesPath, newItemIterator, newItemIteration);
           }
         }
       }
@@ -212,7 +227,7 @@ function subscribeNext(object, valueSubscriber, immediate, ruleIterator, propert
         try {
           changeItem(key, oldItem, newItem, changeType, keyType);
         } catch (err) {
-          catchHandlerItem(err, key);
+          catchHandlerItem(err, newItem, key, keyType);
         }
 
         return;
@@ -225,21 +240,21 @@ function subscribeNext(object, valueSubscriber, immediate, ruleIterator, propert
         newItem = o;
         changeItem(key, oldItem, newItem, changeType, keyType);
       }, err => {
-        catchHandlerItem(err, key);
+        catchHandlerItem(err, newItem, key, keyType);
       });
-    }));
+    }, propertiesPath, rule));
   }
 
-  return subscribeNextRule(ruleIterator, iteration, nextRuleIterator => deepSubscribeRuleIterator(object, valueSubscriber, immediate, nextRuleIterator, propertiesPath, propertyName, parent), subscribeNode);
+  return subscribeNextRule(ruleIterator, iteration, nextRuleIterator => deepSubscribeRuleIterator(object, valueSubscriber, immediate, nextRuleIterator, propertiesPath, objectKey, parent), subscribeNode);
 }
 
-function deepSubscribeRuleIterator(object, valueSubscriber, immediate, ruleIterator, propertiesPath, propertyName, parent) {
+function deepSubscribeRuleIterator(object, valueSubscriber, immediate, ruleIterator, propertiesPath, objectKey, objectKeyType, parent) {
   if (!immediate) {
     throw new Error('immediate == false is deprecated');
   }
 
   try {
-    return subscribeNext(object, valueSubscriber, immediate, ruleIterator, propertiesPath, propertyName, parent);
+    return subscribeNext(object, valueSubscriber, immediate, ruleIterator, propertiesPath, objectKey, objectKeyType, parent);
   } catch (err) {
     catchHandler(err, propertiesPath);
     return null;
@@ -250,15 +265,18 @@ export function deepSubscribeRule({
   object,
   changeValue,
   lastValue,
+  debugTarget,
   immediate = true,
   rule
 }) {
-  return toSingleCall(deepSubscribeRuleIterator(object, new ObjectSubscriber(changeValue, lastValue), immediate, iterateRule(object, rule)[Symbol.iterator]()));
+  return toSingleCall(deepSubscribeRuleIterator(object, new ObjectSubscriber(changeValue, lastValue, debugTarget), immediate, iterateRule(object, rule)[Symbol.iterator](), // @ts-ignore
+  new PropertiesPath(object)));
 }
 export function deepSubscribe({
   object,
   changeValue,
   lastValue,
+  debugTarget,
   immediate = true,
   ruleBuilder
 }) {
@@ -266,6 +284,7 @@ export function deepSubscribe({
     object,
     changeValue,
     lastValue,
+    debugTarget,
     immediate,
     rule: ruleBuilder(new RuleBuilder()).result()
   }));

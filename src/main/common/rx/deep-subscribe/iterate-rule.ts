@@ -57,7 +57,7 @@ function forkToArray(ruleIterable: IRuleIterable): IRuleOrIterable {
 const COMPRESS_FORKS_DISABLED = false
 
 function *iterateFork(fork: Iterable<IRuleOrIterable>): Iterable<IRuleOrIterable> {
-	for (const ruleIterable of fork as Iterable<IRuleOrIterable>) {
+	for (const ruleIterable of fork) {
 		if (isIterable(ruleIterable)) {
 			if (COMPRESS_FORKS_DISABLED) {
 				yield compressForks(ruleIterable as Iterable<IRuleOrIterable>)

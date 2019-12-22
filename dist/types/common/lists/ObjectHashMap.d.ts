@@ -10,7 +10,7 @@ export declare class ObjectHashMap<K extends object, V> implements Map<K, V>, IM
     clear(): this;
     delete(key: K): boolean;
     readonly [Symbol.toStringTag]: string;
-    readonly size: number;
+    get size(): number;
     [Symbol.iterator](): IterableIterator<[K, V]>;
     entries(): IterableIterator<[K, V]>;
     forEach(callbackfn: (value: V, key: K, map: Map<K, V>) => void, thisArg?: any): void;
