@@ -1,9 +1,7 @@
 import { assert } from './Assert';
 import { globalScope } from './helpers';
-export const {
-  xit,
-  xdescribe
-} = globalScope;
+export const xit = globalScope.xit;
+export const xdescribe = globalScope.xdescribe;
 export function describe(name, func) {
   return globalScope.describe.call(this, name, function () {
     return func.call(this);

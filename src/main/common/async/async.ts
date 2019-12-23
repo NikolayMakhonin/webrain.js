@@ -8,7 +8,15 @@ export type ThenableOrIteratorOrValue<T> = T | ThenableOrIterator<T>
 
 export type AsyncValueOf<T> = T extends ThenableOrIterator<infer V>	? V : T
 
-export interface ThenableOrIteratorOrValueNested<T> extends Thenable<ThenableOrIteratorOrValue<T>>
+export type ThenableOrIteratorOrValueNested<T>
+	= IThenableOrIteratorOrValueNested<T> | IPromiseLikeOrIteratorOrValueNested<T>
+
+// tslint:disable-next-line:class-name
+export interface IThenableOrIteratorOrValueNested<T> extends IThenable<ThenableOrIteratorOrValue<T>>
+{}
+
+// tslint:disable-next-line:class-name
+export interface IPromiseLikeOrIteratorOrValueNested<T> extends PromiseLike<ThenableOrIteratorOrValue<T>>
 {}
 
 export interface ThenableIterator<T> extends Iterator<ThenableOrIteratorOrValue<T|any>>
@@ -20,17 +28,20 @@ export type TReject = (error?: any) => void
 export type TResolveAsyncValue<TValue = any, TResult = any> = (value: TValue) => ThenableOrIteratorOrValue<TResult>
 
 export type TOnFulfilled<TValue = any, TResult = any>
-	= (value: TValue) => ThenableOrIteratorOrValue<TResult> | PromiseLike<TResult>
+	= (value: TValue) => ThenableOrIteratorOrValue<TResult>
 
 export type TOnRejected<TResult = any>
-	= (error: any) => ThenableOrIteratorOrValue<TResult> | PromiseLike<TResult>
+	= (error: any) => ThenableOrIteratorOrValue<TResult>
 
-export interface Thenable<T = any> extends PromiseLike<T> {
+// tslint:disable-next-line:class-name
+export interface IThenable<T = any> extends PromiseLike<T> {
 	then<TResult1 = T, TResult2 = never>(
 		onfulfilled?: TOnFulfilled<T, TResult1>,
 		onrejected?: TOnRejected<TResult2>,
 	): Thenable<TResult1 | TResult2>,
 }
+
+export type Thenable<T = any> = IThenable<T> | PromiseLike<T>
 
 export function isThenable(value: any): boolean {
 	return value != null && typeof value.then === 'function'

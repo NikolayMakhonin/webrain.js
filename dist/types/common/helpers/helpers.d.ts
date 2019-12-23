@@ -2,7 +2,6 @@ export declare function isIterable(value: any): boolean;
 export declare function isIterator(value: any): boolean;
 export declare function typeToDebugString(type: any): any;
 export declare const EMPTY: any;
-export declare function delay(timeMilliseconds: any): Promise<unknown>;
 export declare type TClass<T> = new (...args: any[]) => T;
 export declare type TFunc<TResult> = (...args: any[]) => TResult;
 export declare function checkIsFuncOrNull<T extends TFunc<any> | void>(func: T): T;

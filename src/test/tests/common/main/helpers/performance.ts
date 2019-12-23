@@ -1,5 +1,5 @@
 /* eslint-disable class-methods-use-this */
-import {delay} from '../../../../../main/common/helpers/helpers'
+import {delay} from '../../../../../main/common'
 import {now} from '../../../../../main/common/helpers/performance'
 import {assert} from '../../../../../main/common/test/Assert'
 import {describe, it} from '../../../../../main/common/test/Mocha'

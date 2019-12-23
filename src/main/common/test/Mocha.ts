@@ -1,9 +1,17 @@
 import {assert} from './Assert'
 import {globalScope} from './helpers'
 
-export const { xit, xdescribe } = globalScope
+export const xit: (name, func: (this: {
+	timeout(time: number),
+}) => any) => void = globalScope.xit
 
-export function describe(name, func) {
+export const xdescribe: (name, func: (this: {
+	timeout(time: number),
+}) => any) => void = globalScope.xdescribe
+
+export function describe(name, func: (this: {
+	timeout(time: number),
+}) => any) {
 	return globalScope.describe.call(this, name, function() {
 		return func.call(this)
 	})
@@ -14,7 +22,9 @@ function isFuncWithoutParameters(func) {
 	return /^(async\s+)?(function)?\s*?\*?\s*?(\s+\w+)?\(\s*\)/s.test(func.toString())
 }
 
-export function it(name, func) {
+export function it(name, func: (this: {
+	timeout(time: number),
+}) => any) {
 	return globalScope.it.call(this, name, isFuncWithoutParameters(func)
 		? function() {
 			try {

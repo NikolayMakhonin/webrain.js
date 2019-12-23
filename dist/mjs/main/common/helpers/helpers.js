@@ -9,9 +9,6 @@ export function typeToDebugString(type) {
 } // tslint:disable-next-line:no-empty no-shadowed-variable
 
 export const EMPTY = function EMPTY() {};
-export function delay(timeMilliseconds) {
-  return new Promise(resolve => setTimeout(resolve, timeMilliseconds));
-}
 export function checkIsFuncOrNull(func) {
   // PROF: 66 - 0.1%
   if (func != null && typeof func !== 'function') {

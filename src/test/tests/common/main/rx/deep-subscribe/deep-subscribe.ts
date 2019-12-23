@@ -1,5 +1,5 @@
 /* tslint:disable:no-construct use-primitive-type no-shadowed-variable no-duplicate-string no-empty max-line-length */
-import {delay} from '../../../../../../main/common/helpers/helpers'
+import {delay} from '../../../../../../main/common'
 import {VALUE_PROPERTY_DEFAULT} from '../../../../../../main/common/helpers/value-property'
 import {RuleRepeatAction} from '../../../../../../main/common/rx/deep-subscribe/contracts/rules'
 import {ObservableClass} from '../../../../../../main/common/rx/object/ObservableClass'

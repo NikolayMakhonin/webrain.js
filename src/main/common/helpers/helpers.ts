@@ -18,10 +18,6 @@ export function typeToDebugString(type) {
 // tslint:disable-next-line:no-empty no-shadowed-variable
 export const EMPTY: any = function EMPTY() {}
 
-export function delay(timeMilliseconds) {
-	return new Promise(resolve => setTimeout(resolve, timeMilliseconds))
-}
-
 export type TClass<T> = new (...args: any[]) => T
 export type TFunc<TResult> = (...args: any[]) => TResult
 

@@ -1,6 +1,4 @@
 /* tslint:disable:no-duplicate-string no-empty no-statements-same-line */
-
-/* eslint-disable guard-for-in */
 import { ThenableSync } from '../../../../../../../main/common/async/ThenableSync';
 import { deepSubscribe } from '../../../../../../../main/common/rx/deep-subscribe/deep-subscribe';
 import { ObservableClass } from '../../../../../../../main/common/rx/object/ObservableClass';

@@ -1,8 +1,8 @@
 /* tslint:disable:no-duplicate-string no-empty no-statements-same-line */
+import {delay} from '../../../../../../../main/common'
 /* eslint-disable guard-for-in */
 import {ThenableOrIteratorOrValue} from '../../../../../../../main/common/async/async'
 import {ThenableSync} from '../../../../../../../main/common/async/ThenableSync'
-import {delay} from '../../../../../../../main/common/helpers/helpers'
 import {deepSubscribe} from '../../../../../../../main/common/rx/deep-subscribe/deep-subscribe'
 import {ObservableClass} from '../../../../../../../main/common/rx/object/ObservableClass'
 import {CalcObjectBuilder} from '../../../../../../../main/common/rx/object/properties/CalcObjectBuilder'

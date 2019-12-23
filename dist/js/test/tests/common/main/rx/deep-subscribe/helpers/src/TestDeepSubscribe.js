@@ -40,7 +40,7 @@ var _set = _interopRequireDefault(require("@babel/runtime-corejs3/core-js-stable
 
 var _defineProperty = _interopRequireDefault(require("@babel/runtime-corejs3/core-js-stable/object/define-property"));
 
-var _helpers = require("../../../../../../../../main/common/helpers/helpers");
+var _common = require("../../../../../../../../main/common");
 
 var _valueProperty = require("../../../../../../../../main/common/helpers/value-property");
 
@@ -50,7 +50,7 @@ var _ObservableSet = require("../../../../../../../../main/common/lists/Observab
 
 var _SortedList = require("../../../../../../../../main/common/lists/SortedList");
 
-var _common = require("../../../../../../../../main/common/rx/deep-subscribe/contracts/common");
+var _common2 = require("../../../../../../../../main/common/rx/deep-subscribe/contracts/common");
 
 var _deepSubscribe = require("../../../../../../../../main/common/rx/deep-subscribe/deep-subscribe");
 
@@ -348,11 +348,11 @@ function () {
       this._unsubscribe[i] = (0, _deepSubscribe.deepSubscribe)({
         object: this._object,
         changeValue: function changeValue(key, oldValue, newValue, parent, changeType, keyType, propertiesPath, rule, isUnsubscribed) {
-          if ((changeType & _common.ValueChangeType.Unsubscribe) !== 0) {
+          if ((changeType & _common2.ValueChangeType.Unsubscribe) !== 0) {
             unsubscribeValue(oldValue, parent, key, propertiesPath, rule, isUnsubscribed);
           }
 
-          if ((changeType & _common.ValueChangeType.Subscribe) !== 0) {
+          if ((changeType & _common2.ValueChangeType.Subscribe) !== 0) {
             return subscribeValue(newValue, parent, key, propertiesPath, rule);
           }
         },
@@ -579,7 +579,7 @@ function () {
                           }
 
                           _context2.next = 8;
-                          return (0, _helpers.delay)(_this5._asyncDelay);
+                          return (0, _common.delay)(_this5._asyncDelay);
 
                         case 8:
                           _this5.checkSubscribes(_this5._unsubscribed[_i4], expectedUnsubscribed, 'unsubscribed[]');
@@ -679,7 +679,7 @@ function () {
                 }
 
                 _context4.next = 8;
-                return (0, _helpers.delay)(this._asyncDelay);
+                return (0, _common.delay)(this._asyncDelay);
 
               case 8:
                 for (_i5 = 0; _i5 < this._ruleBuilders.length; _i5++) {
@@ -778,7 +778,7 @@ function () {
                           }
 
                           _context5.next = 15;
-                          return (0, _helpers.delay)(_this7._asyncDelay);
+                          return (0, _common.delay)(_this7._asyncDelay);
 
                         case 15:
                           _this7.checkSubscribes(_this7._unsubscribed[_i6], expectedUnsubscribed, 'unsubscribed[]');

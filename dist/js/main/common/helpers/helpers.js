@@ -6,7 +6,6 @@ exports.__esModule = true;
 exports.isIterable = isIterable;
 exports.isIterator = isIterator;
 exports.typeToDebugString = typeToDebugString;
-exports.delay = delay;
 exports.checkIsFuncOrNull = checkIsFuncOrNull;
 exports.toSingleCall = toSingleCall;
 exports.createFunction = createFunction;
@@ -17,10 +16,6 @@ exports.EMPTY = void 0;
 var _defineProperty = _interopRequireDefault(require("@babel/runtime-corejs3/core-js-stable/object/define-property"));
 
 var _getOwnPropertyDescriptor = _interopRequireDefault(require("@babel/runtime-corejs3/core-js-stable/object/get-own-property-descriptor"));
-
-var _setTimeout2 = _interopRequireDefault(require("@babel/runtime-corejs3/core-js-stable/set-timeout"));
-
-var _promise = _interopRequireDefault(require("@babel/runtime-corejs3/core-js-stable/promise"));
 
 var _getIteratorMethod2 = _interopRequireDefault(require("@babel/runtime-corejs3/core-js/get-iterator-method"));
 
@@ -40,12 +35,6 @@ function typeToDebugString(type) {
 var EMPTY = function EMPTY() {};
 
 exports.EMPTY = EMPTY;
-
-function delay(timeMilliseconds) {
-  return new _promise.default(function (resolve) {
-    return (0, _setTimeout2.default)(resolve, timeMilliseconds);
-  });
-}
 
 function checkIsFuncOrNull(func) {
   // PROF: 66 - 0.1%

@@ -6,7 +6,7 @@ var _regenerator = _interopRequireDefault(require("@babel/runtime-corejs3/regene
 
 var _asyncToGenerator2 = _interopRequireDefault(require("@babel/runtime-corejs3/helpers/asyncToGenerator"));
 
-var _helpers = require("../../../../../main/common/helpers/helpers");
+var _common = require("../../../../../main/common");
 
 var _performance = require("../../../../../main/common/helpers/performance");
 
@@ -36,24 +36,24 @@ _regenerator.default.mark(function _callee2() {
                   case 0:
                     interval = 200;
                     _context.next = 3;
-                    return (0, _helpers.delay)(interval);
+                    return (0, _common.delay)(interval);
 
                   case 3:
                     start = (0, _performance.now)();
                     _context.next = 6;
-                    return (0, _helpers.delay)(interval);
+                    return (0, _common.delay)(interval);
 
                   case 6:
                     _Assert.assert.equal(Math.round(((0, _performance.now)() - start) / interval), 1);
 
                     _context.next = 9;
-                    return (0, _helpers.delay)(interval);
+                    return (0, _common.delay)(interval);
 
                   case 9:
                     _Assert.assert.equal(Math.round(((0, _performance.now)() - start) / interval), 2);
 
                     _context.next = 12;
-                    return (0, _helpers.delay)(interval);
+                    return (0, _common.delay)(interval);
 
                   case 12:
                     _Assert.assert.equal(Math.round(((0, _performance.now)() - start) / interval), 3);

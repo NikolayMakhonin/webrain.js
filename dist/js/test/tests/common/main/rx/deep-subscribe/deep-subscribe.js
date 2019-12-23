@@ -16,7 +16,7 @@ var _repeat = _interopRequireDefault(require("@babel/runtime-corejs3/core-js-sta
 
 var _isArray = _interopRequireDefault(require("@babel/runtime-corejs3/core-js-stable/array/is-array"));
 
-var _helpers = require("../../../../../../main/common/helpers/helpers");
+var _common = require("../../../../../../main/common");
 
 var _valueProperty = require("../../../../../../main/common/helpers/value-property");
 
@@ -1265,7 +1265,7 @@ var _TestDeepSubscribe = require("./helpers/src/TestDeepSubscribe");
 
           case 5:
             _context14.next = 7;
-            return (0, _helpers.delay)(20);
+            return (0, _common.delay)(20);
 
           case 7:
             _context14.next = 9;
@@ -1275,7 +1275,7 @@ var _TestDeepSubscribe = require("./helpers/src/TestDeepSubscribe");
 
           case 9:
             _context14.next = 11;
-            return (0, _helpers.delay)(20);
+            return (0, _common.delay)(20);
 
           case 11:
             _context14.next = 13;
@@ -1283,7 +1283,7 @@ var _TestDeepSubscribe = require("./helpers/src/TestDeepSubscribe");
 
           case 13:
             _context14.next = 15;
-            return (0, _helpers.delay)(100);
+            return (0, _common.delay)(100);
 
           case 15:
           case "end":
@@ -1319,7 +1319,7 @@ var _TestDeepSubscribe = require("./helpers/src/TestDeepSubscribe");
 
           case 5:
             _context15.next = 7;
-            return (0, _helpers.delay)(20);
+            return (0, _common.delay)(20);
 
           case 7:
             _context15.next = 9;
@@ -1329,7 +1329,7 @@ var _TestDeepSubscribe = require("./helpers/src/TestDeepSubscribe");
 
           case 9:
             _context15.next = 11;
-            return (0, _helpers.delay)(20);
+            return (0, _common.delay)(20);
 
           case 11:
             _context15.next = 13;
@@ -1337,7 +1337,7 @@ var _TestDeepSubscribe = require("./helpers/src/TestDeepSubscribe");
 
           case 13:
             _context15.next = 15;
-            return (0, _helpers.delay)(100);
+            return (0, _common.delay)(100);
 
           case 15:
           case "end":

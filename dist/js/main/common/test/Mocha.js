@@ -13,10 +13,10 @@ var _Assert = require("./Assert");
 
 var _helpers = require("./helpers");
 
-var xit = _helpers.globalScope.xit,
-    xdescribe = _helpers.globalScope.xdescribe;
-exports.xdescribe = xdescribe;
+var xit = _helpers.globalScope.xit;
 exports.xit = xit;
+var xdescribe = _helpers.globalScope.xdescribe;
+exports.xdescribe = xdescribe;
 
 function describe(name, func) {
   return _helpers.globalScope.describe.call(this, name, function () {

@@ -1,4 +1,4 @@
-import { isThenable, Thenable, ThenableOrIteratorOrValue, ThenableOrValue, TOnFulfilled, TOnRejected, TReject, TResolve, TResolveAsyncValue } from './async';
+import { isThenable, IThenable, ThenableOrIteratorOrValue, ThenableOrValue, TOnFulfilled, TOnRejected, TReject, TResolve, TResolveAsyncValue } from './async';
 export declare type TExecutor<TValue = any> = (resolve: TResolve<TValue>, reject: TReject) => void;
 export declare enum ThenableSyncStatus {
     Resolving = "Resolving",
@@ -7,7 +7,7 @@ export declare enum ThenableSyncStatus {
 }
 export declare function createResolved<TValue = any>(value: ThenableOrIteratorOrValue<TValue>, customResolveValue?: TResolveAsyncValue): ThenableSync<TValue>;
 export declare function createRejected<TValue = any>(error: ThenableOrIteratorOrValue<any>, customResolveValue?: TResolveAsyncValue): ThenableSync<TValue>;
-export declare class ThenableSync<TValue = any> implements Thenable<TValue> {
+export declare class ThenableSync<TValue = any> implements IThenable<TValue> {
     private _onfulfilled;
     private _onrejected;
     private _value;
@@ -29,5 +29,5 @@ export declare class ThenableSync<TValue = any> implements Thenable<TValue> {
 }
 export declare function resolveAsync<TValue = any, TResult1 = TValue, TResult2 = never>(input: ThenableOrIteratorOrValue<TValue>, onfulfilled?: TOnFulfilled<TValue, TResult1>, onrejected?: TOnRejected<TResult2>, dontThrowOnImmediateError?: boolean, customResolveValue?: TResolveAsyncValue): ThenableOrValue<TResult1>;
 export declare function resolveAsyncFunc<TValue = any, TResult1 = TValue, TResult2 = never>(func: () => ThenableOrIteratorOrValue<TValue>, onfulfilled?: TOnFulfilled<TValue, TResult1>, onrejected?: TOnRejected<TResult2>, dontThrowOnImmediateReject?: boolean, customResolveValue?: TResolveAsyncValue): ThenableOrValue<TResult1>;
-export declare function resolveAsyncAll<TValue = any, TResult1 = TValue, TResult2 = never>(input: Array<ThenableOrIteratorOrValue<TValue>>, onfulfilled?: TOnFulfilled<TValue[], TResult1[]>, onrejected?: TOnRejected<TResult2>, dontThrowOnImmediateError?: boolean, customResolveValue?: TResolveAsyncValue): ThenableOrValue<TResult1[]>;
+export declare function resolveAsyncAll<TValue = any, TResult1 = TValue, TResult2 = never>(input: Array<ThenableOrIteratorOrValue<TValue>>, onfulfilled?: TOnFulfilled<TValue[], TResult1>, onrejected?: TOnRejected<TResult2>, dontThrowOnImmediateError?: boolean, customResolveValue?: TResolveAsyncValue): ThenableOrValue<TResult1>;
 export declare function resolveAsyncAny<TValue = any, TResult1 = TValue, TResult2 = never>(input: Array<ThenableOrIteratorOrValue<TValue>>, onfulfilled?: TOnFulfilled<TValue, TResult1>, onrejected?: TOnRejected<TResult2>, dontThrowOnImmediateError?: boolean, customResolveValue?: TResolveAsyncValue): ThenableOrValue<TResult1>;

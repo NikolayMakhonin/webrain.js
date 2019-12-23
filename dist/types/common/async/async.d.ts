@@ -2,18 +2,22 @@ export declare type ThenableOrValue<T> = T | Thenable<T>;
 export declare type ThenableOrIterator<T> = ThenableIterator<T> | ThenableOrIteratorOrValueNested<T>;
 export declare type ThenableOrIteratorOrValue<T> = T | ThenableOrIterator<T>;
 export declare type AsyncValueOf<T> = T extends ThenableOrIterator<infer V> ? V : T;
-export interface ThenableOrIteratorOrValueNested<T> extends Thenable<ThenableOrIteratorOrValue<T>> {
+export declare type ThenableOrIteratorOrValueNested<T> = IThenableOrIteratorOrValueNested<T> | IPromiseLikeOrIteratorOrValueNested<T>;
+export interface IThenableOrIteratorOrValueNested<T> extends IThenable<ThenableOrIteratorOrValue<T>> {
+}
+export interface IPromiseLikeOrIteratorOrValueNested<T> extends PromiseLike<ThenableOrIteratorOrValue<T>> {
 }
 export interface ThenableIterator<T> extends Iterator<ThenableOrIteratorOrValue<T | any>> {
 }
 export declare type TResolve<TValue> = (value?: ThenableOrIteratorOrValue<TValue>) => void;
 export declare type TReject = (error?: any) => void;
 export declare type TResolveAsyncValue<TValue = any, TResult = any> = (value: TValue) => ThenableOrIteratorOrValue<TResult>;
-export declare type TOnFulfilled<TValue = any, TResult = any> = (value: TValue) => ThenableOrIteratorOrValue<TResult> | PromiseLike<TResult>;
-export declare type TOnRejected<TResult = any> = (error: any) => ThenableOrIteratorOrValue<TResult> | PromiseLike<TResult>;
-export interface Thenable<T = any> extends PromiseLike<T> {
+export declare type TOnFulfilled<TValue = any, TResult = any> = (value: TValue) => ThenableOrIteratorOrValue<TResult>;
+export declare type TOnRejected<TResult = any> = (error: any) => ThenableOrIteratorOrValue<TResult>;
+export interface IThenable<T = any> extends PromiseLike<T> {
     then<TResult1 = T, TResult2 = never>(onfulfilled?: TOnFulfilled<T, TResult1>, onrejected?: TOnRejected<TResult2>): Thenable<TResult1 | TResult2>;
 }
+export declare type Thenable<T = any> = IThenable<T> | PromiseLike<T>;
 export declare function isThenable(value: any): boolean;
 export declare function isAsync(value: any): boolean;
 export declare enum ResolveResult {

@@ -1,9 +1,9 @@
 import {
 	isAsync,
-	isThenable,
+	isThenable, IThenable,
 	ResolveResult,
 	resolveValue,
-	resolveValueFunc, Thenable,
+	resolveValueFunc,
 	ThenableOrIteratorOrValue,
 	ThenableOrValue,
 	TOnFulfilled,
@@ -41,7 +41,7 @@ export function createRejected<TValue = any>(
 	return thenable
 }
 
-export class ThenableSync<TValue = any> implements Thenable<TValue> {
+export class ThenableSync<TValue = any> implements IThenable<TValue> {
 	private _onfulfilled: Array<TOnFulfilled<TValue, any>>
 	private _onrejected: Array<TOnRejected<TValue>>
 	private _value: TValue
@@ -473,11 +473,11 @@ function *_resolveAsyncAll<TValue>(
 
 export function resolveAsyncAll<TValue = any, TResult1 = TValue, TResult2 = never>(
 	input: Array<ThenableOrIteratorOrValue<TValue>>,
-	onfulfilled?: TOnFulfilled<TValue[], TResult1[]>,
+	onfulfilled?: TOnFulfilled<TValue[], TResult1>,
 	onrejected?: TOnRejected<TResult2>,
 	dontThrowOnImmediateError?: boolean,
 	customResolveValue?: TResolveAsyncValue,
-): ThenableOrValue<TResult1[]> {
+): ThenableOrValue<TResult1> {
 	let resolved = true
 	const inputPrepared = input.map(o => {
 		const item = resolveAsync(o, null, null, true, customResolveValue)
@@ -487,7 +487,7 @@ export function resolveAsyncAll<TValue = any, TResult1 = TValue, TResult2 = neve
 		return item
 	})
 
-	return resolveAsync<TValue[], TResult1[], TResult2>(
+	return resolveAsync<TValue[], TResult1, TResult2>(
 		resolved
 			? inputPrepared as any
 			: _resolveAsyncAll(inputPrepared)[Symbol.iterator](),

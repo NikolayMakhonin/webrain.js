@@ -37,9 +37,11 @@ export { resolveAsyncAll, resolveAsyncAny } from './async/ThenableSync';
 export { dependenciesSubscriber } from './rx/object/properties/DependenciesBuilder';
 export { CalcStat } from './helpers/CalcStat';
 export { VALUE_PROPERTY_DEFAULT } from './helpers/value-property';
-export { delay } from './helpers/helpers';
 export { DeferredCalc } from './rx/deferred-calc/DeferredCalc';
 export { RuleBuilder } from './rx/deep-subscribe/RuleBuilder';
 export * from './test/Assert';
 export * from './test/Mocha';
-export * from './test/unhandledErrors'; // Interfaces:
+export * from './test/unhandledErrors';
+export { delay } from './time/helpers';
+export { TimeLimit } from './time/TimeLimit';
+export { TimeLimits } from './time/TimeLimits'; // Interfaces:

@@ -1,5 +1,5 @@
 /* tslint:disable:no-empty no-construct use-primitive-type no-duplicate-string */
-import { delay } from '../../../../../../../../main/common/helpers/helpers';
+import { delay } from '../../../../../../../../main/common';
 import { VALUE_PROPERTY_DEFAULT } from '../../../../../../../../main/common/helpers/value-property';
 import { ObservableMap } from '../../../../../../../../main/common/lists/ObservableMap';
 import { ObservableSet } from '../../../../../../../../main/common/lists/ObservableSet';

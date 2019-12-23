@@ -1,4 +1,10 @@
-import {AsyncValueOf, isThenable, Thenable, ThenableOrIteratorOrValue, ThenableOrValue} from '../../../async/async'
+import {
+	AsyncValueOf,
+	isThenable,
+	IThenable,
+	ThenableOrIteratorOrValue,
+	ThenableOrValue,
+} from '../../../async/async'
 import {resolveAsync, ThenableSync} from '../../../async/ThenableSync'
 import {
 	AsyncHasDefaultValueOf,
@@ -80,7 +86,7 @@ export function resolvePath<TValue>(value: ThenableOrIteratorOrValue<TValue>): T
 					false,
 				)
 			} else if (isThenable(value)) {
-				value = (value as Thenable<TValue>).then(
+				value = (value as IThenable<TValue>).then(
 					_getValue,
 				)
 			} else {

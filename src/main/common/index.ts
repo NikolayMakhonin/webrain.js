@@ -37,12 +37,14 @@ export {resolveAsyncAll, resolveAsyncAny} from './async/ThenableSync'
 export {dependenciesSubscriber} from './rx/object/properties/DependenciesBuilder'
 export {CalcStat} from './helpers/CalcStat'
 export {VALUE_PROPERTY_DEFAULT} from './helpers/value-property'
-export {delay} from './helpers/helpers'
 export {DeferredCalc} from './rx/deferred-calc/DeferredCalc'
 export {RuleBuilder} from './rx/deep-subscribe/RuleBuilder'
 export * from './test/Assert'
 export * from './test/Mocha'
 export * from './test/unhandledErrors'
+export {delay} from './time/helpers'
+export {TimeLimit} from './time/TimeLimit'
+export {TimeLimits} from './time/TimeLimits'
 
 // Interfaces:
 import {ThenableOrIteratorOrValue as _ThenableOrIteratorOrValue} from './async/async'
@@ -70,6 +72,8 @@ import {
 	IUnsubscribeOrVoid as _IUnsubscribeOrVoid,
 } from './rx/subjects/observable'
 import {ISubject as _ISubject} from './rx/subjects/subject'
+import {ITimeLimit as _ITimeLimit} from './time/TimeLimit'
+import {ITimeLimits as _ITimeLimits} from './time/TimeLimits'
 
 export type ISubscriber<T> = _ISubscriber<T>
 export type IUnsubscribe = _IUnsubscribe
@@ -90,3 +94,5 @@ export type IPropertyChangedObject = _IPropertyChangedObject
 export type ThenableOrIteratorOrValue<T> = _ThenableOrIteratorOrValue<T>
 export type ICalcProperty<TValue, TInput> = _ICalcProperty<TValue, TInput>
 export type HasDefaultOrValue<T> = _HasDefaultOrValue<T>
+export type ITimeLimit = _ITimeLimit
+export type ITimeLimits = _ITimeLimits
