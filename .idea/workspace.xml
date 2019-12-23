@@ -7,8 +7,15 @@
     <option name="SHOW_STRUCTURE" value="true" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="69b2ee16-521b-4efd-b473-8e19e3df4d09" name="Default Changelist" comment="">
+    <list default="true" id="69b2ee16-521b-4efd-b473-8e19e3df4d09" name="Default Changelist" comment="Disa TimeLimits browser tests">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/HISTORY.md" beforeDir="false" afterPath="$PROJECT_DIR$/HISTORY.md" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/dist/js/test/tests/common/main/time/time-limits.js" beforeDir="false" afterPath="$PROJECT_DIR$/dist/js/test/tests/common/main/time/time-limits.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/dist/mjs/test/tests/common/main/time/time-limits.js" beforeDir="false" afterPath="$PROJECT_DIR$/dist/mjs/test/tests/common/main/time/time-limits.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/dist/types/common/index.d.ts" beforeDir="false" afterPath="$PROJECT_DIR$/dist/types/common/index.d.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/package.json" beforeDir="false" afterPath="$PROJECT_DIR$/package.json" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/common/index.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/common/index.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/test/tests/common/main/time/time-limits.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/test/tests/common/main/time/time-limits.ts" afterDir="false" />
     </list>
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
     <option name="SHOW_DIALOG" value="false" />
@@ -51,7 +58,7 @@
     <property name="WebServerToolWindowFactoryState" value="false" />
     <property name="auto.test.manager.delay" value="5000" />
     <property name="javascript.karma.karma_node_package_dir" value="" />
-    <property name="last_opened_file_path" value="$PROJECT_DIR$/src/main/common/time/helpers.ts" />
+    <property name="last_opened_file_path" value="$USER_HOME$/AppData/Roaming/npm-cache/_logs/2019-12-23T13_18_33_422Z-debug.log" />
     <property name="node.js.detected.package.eslint" value="true" />
     <property name="node.js.detected.package.standard" value="true" />
     <property name="node.js.detected.package.tslint" value="true" />
@@ -113,7 +120,7 @@
       <method v="2" />
     </configuration>
     <configuration name="time-limits" type="JavaScriptTestRunnerKarma" nameIsGenerated="true">
-      <config-file value="$PROJECT_DIR$/env/karma/configs/dev.js" />
+      <config-file value="$PROJECT_DIR$/env/karma/configs/ci.js" />
       <karma-package-dir value="$PROJECT_DIR$/node_modules/karma" />
       <working-directory value="$PROJECT_DIR$" />
       <node-interpreter value="node" />
@@ -274,6 +281,7 @@
       <item itemvalue="Karma.CI" />
       <item itemvalue="Karma.Coverage" />
       <item itemvalue="Karma.Tests" />
+      <item itemvalue="Karma.time-limits" />
       <item itemvalue="Mocha.DeferredCalc" />
       <item itemvalue="Mocha.L:\Work\_GIT\GitHub\NodeJs\modules\tree-state-manager\src\test\tests\common\main\rx\deep-subscribe\**\*.ts (Coverage)" />
       <item itemvalue="Mocha.Performance" />
@@ -284,9 +292,8 @@
       <item itemvalue="Mocha.common &gt; main &gt; rx &gt; deep-subscribe &gt; iterate-rule" />
       <item itemvalue="Mocha.common &gt; main &gt; rx &gt; properties &gt; ConnectorBuilder.connect" />
       <item itemvalue="Mocha.common &gt; main &gt; rx &gt; properties &gt; CalcObjectBuilder.deepSubscribe calc async" />
-      <item itemvalue="npm.Coverage Mocha Report" />
       <item itemvalue="Mocha.time-limits" />
-      <item itemvalue="Karma.time-limits" />
+      <item itemvalue="npm.Coverage Mocha Report" />
     </list>
     <recent_temporary>
       <list>
@@ -305,13 +312,6 @@
       <option name="number" value="Default" />
       <option name="presentableId" value="Default" />
       <updated>1567687848586</updated>
-    </task>
-    <task id="LOCAL-00124" summary="Small fixes. Tests OK.">
-      <created>1569954883157</created>
-      <option name="number" value="00124" />
-      <option name="presentableId" value="LOCAL-00124" />
-      <option name="project" value="LOCAL" />
-      <updated>1569954883157</updated>
     </task>
     <task id="LOCAL-00125" summary="deepSubscribe refactoring in process... Tests OK.">
       <created>1569958001309</created>
@@ -649,7 +649,14 @@
       <option name="project" value="LOCAL" />
       <updated>1577087737196</updated>
     </task>
-    <option name="localTasksCounter" value="173" />
+    <task id="LOCAL-00173" summary="Fixed TimeLimits browser tests">
+      <created>1577095093872</created>
+      <option name="number" value="00173" />
+      <option name="presentableId" value="LOCAL-00173" />
+      <option name="project" value="LOCAL" />
+      <updated>1577095093872</updated>
+    </task>
+    <option name="localTasksCounter" value="174" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -711,7 +718,6 @@
   <component name="VcsManagerConfiguration">
     <option name="CHECK_CODE_SMELLS_BEFORE_PROJECT_COMMIT" value="false" />
     <option name="CHECK_NEW_TODO" value="false" />
-    <MESSAGE value="Added time statistic for CalcProperty" />
     <MESSAGE value="Small interface fix" />
     <MESSAGE value="Small fixes" />
     <MESSAGE value="Improved debug info" />
@@ -736,7 +742,8 @@
     <MESSAGE value="Publish to npm v0.0.1. Precommit tests OK." />
     <MESSAGE value="v0.0.3. Published." />
     <MESSAGE value="v0.0.5. Published." />
-    <option name="LAST_COMMIT_MESSAGE" value="v0.0.5. Published." />
+    <MESSAGE value="Fixed TimeLimits browser tests" />
+    <option name="LAST_COMMIT_MESSAGE" value="Fixed TimeLimits browser tests" />
   </component>
   <component name="XDebuggerManager">
     <breakpoint-manager>

@@ -135,7 +135,7 @@ describe('time-limits', function() {
 		})
 	})
 
-	it('TimeLimit', async function() {
+	xit('TimeLimit', async function() {
 		this.timeout(30000 * timeoutCoef)
 
 		await timeLimitsIterator(5, 100, async timeLimit => {

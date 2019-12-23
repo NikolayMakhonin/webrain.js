@@ -55,6 +55,7 @@ import { ICalcProperty as _ICalcProperty } from './rx/object/properties/contract
 import { IPropertyChangedObject as _IPropertyChangedObject } from './rx/object/IPropertyChanged';
 import { IObservable as _IObservable, ISubscriber as _ISubscriber, IUnsubscribe as _IUnsubscribe, IUnsubscribeOrVoid as _IUnsubscribeOrVoid } from './rx/subjects/observable';
 import { ISubject as _ISubject } from './rx/subjects/subject';
+import { ITimeLimitBase as _ITimeLimitBase } from './time/TimeLimit';
 import { ITimeLimit as _ITimeLimit } from './time/TimeLimit';
 import { ITimeLimits as _ITimeLimits } from './time/TimeLimits';
 export declare type ISubscriber<T> = _ISubscriber<T>;
@@ -76,5 +77,6 @@ export declare type IPropertyChangedObject = _IPropertyChangedObject;
 export declare type ThenableOrIteratorOrValue<T> = _ThenableOrIteratorOrValue<T>;
 export declare type ICalcProperty<TValue, TInput> = _ICalcProperty<TValue, TInput>;
 export declare type HasDefaultOrValue<T> = _HasDefaultOrValue<T>;
+export declare type ITimeLimitBase = _ITimeLimitBase;
 export declare type ITimeLimit = _ITimeLimit;
 export declare type ITimeLimits = _ITimeLimits;
