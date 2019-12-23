@@ -7,14 +7,8 @@
     <option name="SHOW_STRUCTURE" value="true" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="69b2ee16-521b-4efd-b473-8e19e3df4d09" name="Default Changelist" comment="Disa TimeLimits browser tests">
+    <list default="true" id="69b2ee16-521b-4efd-b473-8e19e3df4d09" name="Default Changelist" comment="">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/HISTORY.md" beforeDir="false" afterPath="$PROJECT_DIR$/HISTORY.md" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/dist/js/test/tests/common/main/time/time-limits.js" beforeDir="false" afterPath="$PROJECT_DIR$/dist/js/test/tests/common/main/time/time-limits.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/dist/mjs/test/tests/common/main/time/time-limits.js" beforeDir="false" afterPath="$PROJECT_DIR$/dist/mjs/test/tests/common/main/time/time-limits.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/dist/types/common/index.d.ts" beforeDir="false" afterPath="$PROJECT_DIR$/dist/types/common/index.d.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/package.json" beforeDir="false" afterPath="$PROJECT_DIR$/package.json" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/common/index.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/common/index.ts" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/test/tests/common/main/time/time-limits.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/test/tests/common/main/time/time-limits.ts" afterDir="false" />
     </list>
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
@@ -312,13 +306,6 @@
       <option name="number" value="Default" />
       <option name="presentableId" value="Default" />
       <updated>1567687848586</updated>
-    </task>
-    <task id="LOCAL-00125" summary="deepSubscribe refactoring in process... Tests OK.">
-      <created>1569958001309</created>
-      <option name="number" value="00125" />
-      <option name="presentableId" value="LOCAL-00125" />
-      <option name="project" value="LOCAL" />
-      <updated>1569958001309</updated>
     </task>
     <task id="LOCAL-00126" summary="deepSubscribe refactoring in process... Tests OK.">
       <created>1569997647613</created>
@@ -656,7 +643,14 @@
       <option name="project" value="LOCAL" />
       <updated>1577095093872</updated>
     </task>
-    <option name="localTasksCounter" value="174" />
+    <task id="LOCAL-00174" summary="Disabled TimeLimits browser tests">
+      <created>1577107206050</created>
+      <option name="number" value="00174" />
+      <option name="presentableId" value="LOCAL-00174" />
+      <option name="project" value="LOCAL" />
+      <updated>1577107206052</updated>
+    </task>
+    <option name="localTasksCounter" value="175" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -718,7 +712,6 @@
   <component name="VcsManagerConfiguration">
     <option name="CHECK_CODE_SMELLS_BEFORE_PROJECT_COMMIT" value="false" />
     <option name="CHECK_NEW_TODO" value="false" />
-    <MESSAGE value="Small interface fix" />
     <MESSAGE value="Small fixes" />
     <MESSAGE value="Improved debug info" />
     <MESSAGE value="CalcProperty lazy calc (only if hasSubscribers)" />
@@ -743,7 +736,8 @@
     <MESSAGE value="v0.0.3. Published." />
     <MESSAGE value="v0.0.5. Published." />
     <MESSAGE value="Fixed TimeLimits browser tests" />
-    <option name="LAST_COMMIT_MESSAGE" value="Fixed TimeLimits browser tests" />
+    <MESSAGE value="Disabled TimeLimits browser tests" />
+    <option name="LAST_COMMIT_MESSAGE" value="Disabled TimeLimits browser tests" />
   </component>
   <component name="XDebuggerManager">
     <breakpoint-manager>
