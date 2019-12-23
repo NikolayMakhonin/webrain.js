@@ -1,7 +1,7 @@
 /* tslint:disable:no-empty */
 import { assert } from '../../../../../main/common/test/Assert';
-import { describe, it } from '../../../../../main/common/test/Mocha';
-describe('async behavior', function () {
+import { it, xdescribe } from '../../../../../main/common/test/Mocha';
+xdescribe('async behavior', function () {
   it('base', async function () {
     this.timeout(10000);
 

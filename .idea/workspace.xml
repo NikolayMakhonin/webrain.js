@@ -8,8 +8,10 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="69b2ee16-521b-4efd-b473-8e19e3df4d09" name="Default Changelist" comment="">
-      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/test/tests/common/main/time/time-limits.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/test/tests/common/main/time/time-limits.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/dist/js/test/tests/common/main/time/async-behavior.js" beforeDir="false" afterPath="$PROJECT_DIR$/dist/js/test/tests/common/main/time/async-behavior.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/dist/js/test/tests/common/main/time/time-limits.js" beforeDir="false" afterPath="$PROJECT_DIR$/dist/js/test/tests/common/main/time/time-limits.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/dist/mjs/test/tests/common/main/time/async-behavior.js" beforeDir="false" afterPath="$PROJECT_DIR$/dist/mjs/test/tests/common/main/time/async-behavior.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/dist/mjs/test/tests/common/main/time/time-limits.js" beforeDir="false" afterPath="$PROJECT_DIR$/dist/mjs/test/tests/common/main/time/time-limits.js" afterDir="false" />
     </list>
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
     <option name="SHOW_DIALOG" value="false" />
@@ -306,13 +308,6 @@
       <option name="number" value="Default" />
       <option name="presentableId" value="Default" />
       <updated>1567687848586</updated>
-    </task>
-    <task id="LOCAL-00126" summary="deepSubscribe refactoring in process... Tests OK.">
-      <created>1569997647613</created>
-      <option name="number" value="00126" />
-      <option name="presentableId" value="LOCAL-00126" />
-      <option name="project" value="LOCAL" />
-      <updated>1569997647614</updated>
     </task>
     <task id="LOCAL-00127" summary="deepSubscribe refactoring in process... Tests OK.">
       <created>1569997922423</created>
@@ -650,7 +645,14 @@
       <option name="project" value="LOCAL" />
       <updated>1577107206052</updated>
     </task>
-    <option name="localTasksCounter" value="175" />
+    <task id="LOCAL-00175" summary="Disabled TimeLimits browser tests">
+      <created>1577108623014</created>
+      <option name="number" value="00175" />
+      <option name="presentableId" value="LOCAL-00175" />
+      <option name="project" value="LOCAL" />
+      <updated>1577108623014</updated>
+    </task>
+    <option name="localTasksCounter" value="176" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">

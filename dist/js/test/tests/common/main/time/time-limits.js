@@ -24,7 +24,7 @@ var _TimeLimit = require("../../../../../main/common/time/TimeLimit");
 
 var _TimeLimits = require("../../../../../main/common/time/TimeLimits");
 
-(0, _Mocha.describe)('time-limits', function () {
+(0, _Mocha.xdescribe)('time-limits', function () {
   (0, _Mocha.it)('TimeLimit: constructor',
   /*#__PURE__*/
   (0, _asyncToGenerator2.default)(
@@ -362,7 +362,7 @@ var _TimeLimits = require("../../../../../main/common/time/TimeLimits");
       }
     }, _callee7, this);
   })));
-  (0, _Mocha.xit)('TimeLimit',
+  (0, _Mocha.it)('TimeLimit',
   /*#__PURE__*/
   (0, _asyncToGenerator2.default)(
   /*#__PURE__*/

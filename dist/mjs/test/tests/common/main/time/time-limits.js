@@ -1,10 +1,10 @@
 import { isAsync } from '../../../../../main/common/async/async';
 import { assert } from '../../../../../main/common/test/Assert';
-import { describe, it, xit } from '../../../../../main/common/test/Mocha';
+import { it, xdescribe } from '../../../../../main/common/test/Mocha';
 import { delay } from '../../../../../main/common/time/helpers';
 import { TimeLimit } from '../../../../../main/common/time/TimeLimit';
 import { TimeLimits } from '../../../../../main/common/time/TimeLimits';
-describe('time-limits', function () {
+xdescribe('time-limits', function () {
   it('TimeLimit: constructor', async function () {
     const timeLimit = new TimeLimit(5, 0.1);
     assert.strictEqual(timeLimit.count, 5);
@@ -113,7 +113,7 @@ describe('time-limits', function () {
       assert.strictEqual(countActive, 0);
     });
   });
-  xit('TimeLimit', async function () {
+  it('TimeLimit', async function () {
     this.timeout(30000 * timeoutCoef);
     await timeLimitsIterator(5, 100, async timeLimit => {
       let callCount = 0;

@@ -15,7 +15,7 @@ var _Assert = require("../../../../../main/common/test/Assert");
 var _Mocha = require("../../../../../main/common/test/Mocha");
 
 /* tslint:disable:no-empty */
-(0, _Mocha.describe)('async behavior', function () {
+(0, _Mocha.xdescribe)('async behavior', function () {
   (0, _Mocha.it)('base',
   /*#__PURE__*/
   (0, _asyncToGenerator2.default)(
