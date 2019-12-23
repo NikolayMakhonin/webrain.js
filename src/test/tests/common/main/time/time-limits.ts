@@ -144,7 +144,7 @@ describe('time-limits', function() {
 				return callCount++
 			}
 
-			const EPSILON = 5
+			const EPSILON = 20
 
 			let nextTestNumber = 0
 			const test = async (checkTimeFrom, checkTimeTo) => {

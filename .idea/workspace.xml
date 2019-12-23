@@ -8,43 +8,7 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="69b2ee16-521b-4efd-b473-8e19e3df4d09" name="Default Changelist" comment="">
-      <change afterPath="$PROJECT_DIR$/src/main/common/time/TimeLimit.ts" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/common/time/TimeLimits.ts" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/common/time/helpers.ts" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/test/tests/common/main/time/async-behavior.ts" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/test/tests/common/main/time/time-limits.ts" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/HISTORY.md" beforeDir="false" afterPath="$PROJECT_DIR$/HISTORY.md" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/dist/js/main/common/helpers/helpers.js" beforeDir="false" afterPath="$PROJECT_DIR$/dist/js/main/common/helpers/helpers.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/dist/js/main/common/index.js" beforeDir="false" afterPath="$PROJECT_DIR$/dist/js/main/common/index.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/dist/js/main/common/test/Mocha.js" beforeDir="false" afterPath="$PROJECT_DIR$/dist/js/main/common/test/Mocha.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/dist/js/test/tests/common/main/helpers/performance.js" beforeDir="false" afterPath="$PROJECT_DIR$/dist/js/test/tests/common/main/helpers/performance.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/dist/js/test/tests/common/main/rx/deep-subscribe/deep-subscribe.js" beforeDir="false" afterPath="$PROJECT_DIR$/dist/js/test/tests/common/main/rx/deep-subscribe/deep-subscribe.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/dist/js/test/tests/common/main/rx/deep-subscribe/helpers/src/TestDeepSubscribe.js" beforeDir="false" afterPath="$PROJECT_DIR$/dist/js/test/tests/common/main/rx/deep-subscribe/helpers/src/TestDeepSubscribe.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/dist/js/test/tests/common/main/rx/object/properties/CalcObjectBuilder.js" beforeDir="false" afterPath="$PROJECT_DIR$/dist/js/test/tests/common/main/rx/object/properties/CalcObjectBuilder.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/dist/mjs/main/common/helpers/helpers.js" beforeDir="false" afterPath="$PROJECT_DIR$/dist/mjs/main/common/helpers/helpers.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/dist/mjs/main/common/index.js" beforeDir="false" afterPath="$PROJECT_DIR$/dist/mjs/main/common/index.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/dist/mjs/main/common/test/Mocha.js" beforeDir="false" afterPath="$PROJECT_DIR$/dist/mjs/main/common/test/Mocha.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/dist/mjs/test/tests/common/main/helpers/performance.js" beforeDir="false" afterPath="$PROJECT_DIR$/dist/mjs/test/tests/common/main/helpers/performance.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/dist/mjs/test/tests/common/main/rx/deep-subscribe/deep-subscribe.js" beforeDir="false" afterPath="$PROJECT_DIR$/dist/mjs/test/tests/common/main/rx/deep-subscribe/deep-subscribe.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/dist/mjs/test/tests/common/main/rx/deep-subscribe/helpers/src/TestDeepSubscribe.js" beforeDir="false" afterPath="$PROJECT_DIR$/dist/mjs/test/tests/common/main/rx/deep-subscribe/helpers/src/TestDeepSubscribe.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/dist/mjs/test/tests/common/main/rx/object/properties/CalcObjectBuilder.js" beforeDir="false" afterPath="$PROJECT_DIR$/dist/mjs/test/tests/common/main/rx/object/properties/CalcObjectBuilder.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/dist/types/common/async/ThenableSync.d.ts" beforeDir="false" afterPath="$PROJECT_DIR$/dist/types/common/async/ThenableSync.d.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/dist/types/common/async/async.d.ts" beforeDir="false" afterPath="$PROJECT_DIR$/dist/types/common/async/async.d.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/dist/types/common/helpers/helpers.d.ts" beforeDir="false" afterPath="$PROJECT_DIR$/dist/types/common/helpers/helpers.d.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/dist/types/common/index.d.ts" beforeDir="false" afterPath="$PROJECT_DIR$/dist/types/common/index.d.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/dist/types/common/test/Mocha.d.ts" beforeDir="false" afterPath="$PROJECT_DIR$/dist/types/common/test/Mocha.d.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/package.json" beforeDir="false" afterPath="$PROJECT_DIR$/package.json" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/common/async/ThenableSync.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/common/async/ThenableSync.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/common/async/async.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/common/async/async.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/common/helpers/helpers.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/common/helpers/helpers.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/common/index.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/common/index.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/common/rx/object/properties/helpers.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/common/rx/object/properties/helpers.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/common/test/Mocha.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/common/test/Mocha.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/test/tests/common/main/helpers/performance.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/test/tests/common/main/helpers/performance.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/test/tests/common/main/rx/deep-subscribe/deep-subscribe.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/test/tests/common/main/rx/deep-subscribe/deep-subscribe.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/test/tests/common/main/rx/deep-subscribe/helpers/src/TestDeepSubscribe.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/test/tests/common/main/rx/deep-subscribe/helpers/src/TestDeepSubscribe.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/test/tests/common/main/rx/object/properties/CalcObjectBuilder.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/test/tests/common/main/rx/object/properties/CalcObjectBuilder.ts" afterDir="false" />
     </list>
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
     <option name="SHOW_DIALOG" value="false" />
@@ -140,12 +104,24 @@
       </list>
     </option>
   </component>
-  <component name="RunManager" selected="Mocha.time-limits">
+  <component name="RunManager" selected="Karma.time-limits">
     <configuration default="true" type="JavaScriptTestRunnerKarma">
       <config-file value="$PROJECT_DIR$/env/karma/configs/dev.js" />
       <karma-package-dir value="$PROJECT_DIR$/node_modules/karma" />
       <node-interpreter value="node" />
       <envs />
+      <method v="2" />
+    </configuration>
+    <configuration name="time-limits" type="JavaScriptTestRunnerKarma" nameIsGenerated="true">
+      <config-file value="$PROJECT_DIR$/env/karma/configs/dev.js" />
+      <karma-package-dir value="$PROJECT_DIR$/node_modules/karma" />
+      <working-directory value="$PROJECT_DIR$" />
+      <node-interpreter value="node" />
+      <envs />
+      <scope-kind value="SUITE" />
+      <test-names>
+        <test-name value="time-limits" />
+      </test-names>
       <method v="2" />
     </configuration>
     <configuration default="true" type="NodeJSConfigurationType" path-to-node="node" node-parameters="--max-old-space-size=4096" working-dir="$PROJECT_DIR$">
@@ -310,6 +286,7 @@
       <item itemvalue="Mocha.common &gt; main &gt; rx &gt; properties &gt; CalcObjectBuilder.deepSubscribe calc async" />
       <item itemvalue="npm.Coverage Mocha Report" />
       <item itemvalue="Mocha.time-limits" />
+      <item itemvalue="Karma.time-limits" />
     </list>
     <recent_temporary>
       <list>
@@ -328,13 +305,6 @@
       <option name="number" value="Default" />
       <option name="presentableId" value="Default" />
       <updated>1567687848586</updated>
-    </task>
-    <task id="LOCAL-00123" summary="Fix subscribeDependencies bug. Tests OK.">
-      <created>1569901991929</created>
-      <option name="number" value="00123" />
-      <option name="presentableId" value="LOCAL-00123" />
-      <option name="project" value="LOCAL" />
-      <updated>1569901991929</updated>
     </task>
     <task id="LOCAL-00124" summary="Small fixes. Tests OK.">
       <created>1569954883157</created>
@@ -672,7 +642,14 @@
       <option name="project" value="LOCAL" />
       <updated>1577022161811</updated>
     </task>
-    <option name="localTasksCounter" value="172" />
+    <task id="LOCAL-00172" summary="v0.0.5. Published.">
+      <created>1577087737196</created>
+      <option name="number" value="00172" />
+      <option name="presentableId" value="LOCAL-00172" />
+      <option name="project" value="LOCAL" />
+      <updated>1577087737196</updated>
+    </task>
+    <option name="localTasksCounter" value="173" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -734,7 +711,6 @@
   <component name="VcsManagerConfiguration">
     <option name="CHECK_CODE_SMELLS_BEFORE_PROJECT_COMMIT" value="false" />
     <option name="CHECK_NEW_TODO" value="false" />
-    <MESSAGE value="Fix DeferredCalc autoInvalidateInterval, and tested. Tests OK." />
     <MESSAGE value="Added time statistic for CalcProperty" />
     <MESSAGE value="Small interface fix" />
     <MESSAGE value="Small fixes" />
@@ -759,7 +735,8 @@
     <MESSAGE value="Added ObjectMerger.observableOnly" />
     <MESSAGE value="Publish to npm v0.0.1. Precommit tests OK." />
     <MESSAGE value="v0.0.3. Published." />
-    <option name="LAST_COMMIT_MESSAGE" value="v0.0.3. Published." />
+    <MESSAGE value="v0.0.5. Published." />
+    <option name="LAST_COMMIT_MESSAGE" value="v0.0.5. Published." />
   </component>
   <component name="XDebuggerManager">
     <breakpoint-manager>
