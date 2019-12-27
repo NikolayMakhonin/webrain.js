@@ -8,10 +8,10 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="69b2ee16-521b-4efd-b473-8e19e3df4d09" name="Default Changelist" comment="">
-      <change beforePath="$PROJECT_DIR$/dist/js/test/tests/common/main/time/async-behavior.js" beforeDir="false" afterPath="$PROJECT_DIR$/dist/js/test/tests/common/main/time/async-behavior.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/dist/js/test/tests/common/main/time/time-limits.js" beforeDir="false" afterPath="$PROJECT_DIR$/dist/js/test/tests/common/main/time/time-limits.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/dist/mjs/test/tests/common/main/time/async-behavior.js" beforeDir="false" afterPath="$PROJECT_DIR$/dist/mjs/test/tests/common/main/time/async-behavior.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/dist/mjs/test/tests/common/main/time/time-limits.js" beforeDir="false" afterPath="$PROJECT_DIR$/dist/mjs/test/tests/common/main/time/time-limits.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/common/index.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/common/index.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/common/rx/deferred-calc/DeferredCalc.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/common/rx/deferred-calc/DeferredCalc.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/common/rx/object/properties/CalcProperty.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/common/rx/object/properties/CalcProperty.ts" afterDir="false" />
     </list>
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
     <option name="SHOW_DIALOG" value="false" />
@@ -107,7 +107,7 @@
       </list>
     </option>
   </component>
-  <component name="RunManager" selected="Karma.time-limits">
+  <component name="RunManager" selected="Mocha.Watch">
     <configuration default="true" type="JavaScriptTestRunnerKarma">
       <config-file value="$PROJECT_DIR$/env/karma/configs/dev.js" />
       <karma-package-dir value="$PROJECT_DIR$/node_modules/karma" />
@@ -308,13 +308,6 @@
       <option name="number" value="Default" />
       <option name="presentableId" value="Default" />
       <updated>1567687848586</updated>
-    </task>
-    <task id="LOCAL-00127" summary="deepSubscribe refactoring in process... Tests OK.">
-      <created>1569997922423</created>
-      <option name="number" value="00127" />
-      <option name="presentableId" value="LOCAL-00127" />
-      <option name="project" value="LOCAL" />
-      <updated>1569997922423</updated>
     </task>
     <task id="LOCAL-00128" summary="deepSubscribe refactoring is completed. Tests OK.">
       <created>1569998692875</created>
@@ -652,7 +645,14 @@
       <option name="project" value="LOCAL" />
       <updated>1577108623014</updated>
     </task>
-    <option name="localTasksCounter" value="176" />
+    <task id="LOCAL-00176" summary="Disabled TimeLimits browser tests">
+      <created>1577111610128</created>
+      <option name="number" value="00176" />
+      <option name="presentableId" value="LOCAL-00176" />
+      <option name="project" value="LOCAL" />
+      <updated>1577111610128</updated>
+    </task>
+    <option name="localTasksCounter" value="177" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">

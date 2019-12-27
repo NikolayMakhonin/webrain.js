@@ -47,7 +47,10 @@ export {TimeLimit} from './time/TimeLimit'
 export {TimeLimits} from './time/TimeLimits'
 
 // Interfaces:
-import {ThenableOrIteratorOrValue as _ThenableOrIteratorOrValue} from './async/async'
+import {
+	ThenableOrIteratorOrValue as _ThenableOrIteratorOrValue,
+	ThenableOrValue as _ThenableOrValue,
+} from './async/async'
 import {
 	IMergeable as _IMergeable,
 	IMergeOptions as _IMergeOptions,
@@ -93,6 +96,7 @@ export type IObservable<T> = _IObservable<T>
 export type ISubject<T> = _ISubject<T>
 export type IPropertyChangedObject = _IPropertyChangedObject
 export type ThenableOrIteratorOrValue<T> = _ThenableOrIteratorOrValue<T>
+export type ThenableOrValue<T> = _ThenableOrValue<T>
 export type ICalcProperty<TValue, TInput> = _ICalcProperty<TValue, TInput>
 export type HasDefaultOrValue<T> = _HasDefaultOrValue<T>
 export type ITimeLimitBase = _ITimeLimitBase

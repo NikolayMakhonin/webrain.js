@@ -13,10 +13,7 @@ export class DeferredCalc {
 	private readonly _calcFunc: (done: (value: any) => void) => void
 	private readonly _calcCompletedCallback: (value: any) => void
 
-	private _minTimeBetweenCalc?: number
-	private _throttleTime?: number
-	private _maxThrottleTime?: number
-	private _autoInvalidateInterval?: number
+	private readonly _options: IDeferredCalcOptions
 
 	private readonly _timing: ITiming
 
@@ -39,28 +36,8 @@ export class DeferredCalc {
 		this._canBeCalcCallback = canBeCalcCallback
 		this._calcFunc = calcFunc
 		this._calcCompletedCallback = calcCompletedCallback
-
-		if (options) {
-			if (options.minTimeBetweenCalc) {
-				this._minTimeBetweenCalc = options.minTimeBetweenCalc
-			}
-
-			if (options.throttleTime) {
-				this._throttleTime = options.throttleTime
-			}
-
-			if (options.maxThrottleTime != null) {
-				this._maxThrottleTime = options.maxThrottleTime
-			}
-
-			if (options.autoInvalidateInterval != null) {
-				this._autoInvalidateInterval = options.autoInvalidateInterval
-			}
-
-			this._timing = options.timing || timingDefault
-		} else {
-			this._timing = timingDefault
-		}
+		this._options = options || {}
+		this._timing = this._options.timing || timingDefault
 
 		this.invalidate()
 	}
@@ -70,13 +47,13 @@ export class DeferredCalc {
 	// region minTimeBetweenCalc
 
 	public get minTimeBetweenCalc(): number {
-		return this._minTimeBetweenCalc
+		return this._options.minTimeBetweenCalc
 	}
 	public set minTimeBetweenCalc(value: number) {
-		if (this._minTimeBetweenCalc === value) {
+		if (this._options.minTimeBetweenCalc === value) {
 			return
 		}
-		this._minTimeBetweenCalc = value
+		this._options.minTimeBetweenCalc = value
 		this._pulse()
 	}
 
@@ -85,13 +62,13 @@ export class DeferredCalc {
 	// region throttleTime
 
 	public get throttleTime(): number {
-		return this._throttleTime
+		return this._options.throttleTime
 	}
 	public set throttleTime(value: number) {
-		if (this._throttleTime === value) {
+		if (this._options.throttleTime === value) {
 			return
 		}
-		this._throttleTime = value
+		this._options.throttleTime = value
 		this._pulse()
 	}
 
@@ -100,13 +77,13 @@ export class DeferredCalc {
 	// region maxThrottleTime
 
 	public get maxThrottleTime(): number {
-		return this._maxThrottleTime
+		return this._options.maxThrottleTime
 	}
 	public set maxThrottleTime(value: number) {
-		if (this._maxThrottleTime === value) {
+		if (this._options.maxThrottleTime === value) {
 			return
 		}
-		this._maxThrottleTime = value
+		this._options.maxThrottleTime = value
 		this._pulse()
 	}
 
@@ -115,13 +92,13 @@ export class DeferredCalc {
 	// region autoInvalidateInterval
 
 	public get autoInvalidateInterval(): number {
-		return this._autoInvalidateInterval
+		return this._options.autoInvalidateInterval
 	}
 	public set autoInvalidateInterval(value: number) {
-		if (this._autoInvalidateInterval === value) {
+		if (this._options.autoInvalidateInterval === value) {
 			return
 		}
-		this._autoInvalidateInterval = value
+		this._options.autoInvalidateInterval = value
 		this._pulse()
 	}
 
@@ -153,13 +130,13 @@ export class DeferredCalc {
 	}
 
 	private _getNextCalcTime() {
-		const {_throttleTime, _maxThrottleTime} = this
-		let nextCalcTime = this._timeInvalidateLast + (_throttleTime || 0)
-		if (_maxThrottleTime != null) {
-			nextCalcTime = Math.min(nextCalcTime, this._timeInvalidateFirst + (_maxThrottleTime || 0))
+		const {throttleTime, maxThrottleTime, minTimeBetweenCalc} = this._options
+		let nextCalcTime = this._timeInvalidateLast + (throttleTime || 0)
+		if (maxThrottleTime != null) {
+			nextCalcTime = Math.min(nextCalcTime, this._timeInvalidateFirst + (maxThrottleTime || 0))
 		}
 		if (this._timeCalcEnd) {
-			nextCalcTime = Math.max(nextCalcTime, this._timeCalcEnd + (this._minTimeBetweenCalc || 0))
+			nextCalcTime = Math.max(nextCalcTime, this._timeCalcEnd + (minTimeBetweenCalc || 0))
 		}
 		return nextCalcTime
 	}
@@ -181,11 +158,11 @@ export class DeferredCalc {
 
 		// region Auto invalidate
 
-		const {_autoInvalidateInterval} = this
-		if (_autoInvalidateInterval != null) {
+		const {autoInvalidateInterval} = this._options
+		if (autoInvalidateInterval != null) {
 			const autoInvalidateTime = Math.max(
-				(this._timeCalcStart || 0) + _autoInvalidateInterval,
-				(this._timeInvalidateLast || 0) + _autoInvalidateInterval,
+				(this._timeCalcStart || 0) + autoInvalidateInterval,
+				(this._timeInvalidateLast || 0) + autoInvalidateInterval,
 				now)
 
 			if (autoInvalidateTime <= now) {

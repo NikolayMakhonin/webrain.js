@@ -85,18 +85,19 @@ export class CalcProperty<TValue, TInput = any>
 			calcOptions = {}
 		}
 
-		this._calcFunc = calcFunc
-		this.state = new CalcPropertyState(calcOptions, initValue)
-
-		if (typeof name !== 'undefined') {
-			this.state.name = name
-		}
-
 		this.timeSyncStat = new CalcStat()
 		this.timeAsyncStat = new CalcStat()
 		this.timeDebuggerStat = new CalcStat()
 		this.timeEmitEventsStat = new CalcStat()
 		this.timeTotalStat = new CalcStat()
+
+		this._calcFunc = calcFunc
+
+		this.state = new CalcPropertyState(calcOptions, initValue)
+
+		if (typeof name !== 'undefined') {
+			this.state.name = name
+		}
 
 		this._deferredCalc = new DeferredCalc(
 			() => {
