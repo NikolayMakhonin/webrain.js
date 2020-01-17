@@ -8,7 +8,7 @@ export enum RuleType {
 }
 
 export interface IRule {
-	id: string
+	id: number
 	readonly type: RuleType
 	subType?: any
 	next?: IRule

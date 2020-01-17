@@ -47,10 +47,13 @@ function catchHandler(ex, propertiesPath?: IPropertiesPath) {
 
 function getCacheId(
 	object: any,
+	rule: IRule,
 	immediate: boolean,
 ) {
-
+	return `${getObjectUniqueId(object)}_${rule.id}_${immediate}`
 }
+
+const cache = {}
 
 function subscribeNext<TValue>(
 	object: any,
@@ -109,8 +112,17 @@ function subscribeNext<TValue>(
 		}
 	}
 
-	// TODO cache subscribe
-	// ignore objectKey, objectKeyType
+	// if (!isLeaf) {
+	// 	const cacheId = getCacheId(object, iteration.value, immediate)
+	// 	const cacheItem = cache[cacheId]
+	// 	if (cacheItem) {
+	// 		if (cacheItem !== valueSubscriber) {
+	// 			return cacheItem.attach(valueSubscriber)
+	// 		}
+	// 	} else {
+	// 		cache[cacheId] = valueSubscriber
+	// 	}
+	// }
 
 	// endregion
 

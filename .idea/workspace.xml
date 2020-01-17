@@ -7,18 +7,15 @@
     <option name="SHOW_STRUCTURE" value="true" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="69b2ee16-521b-4efd-b473-8e19e3df4d09" name="Default Changelist" comment="Fix DeferredCalc &amp; CalcProperty">
+    <list default="true" id="69b2ee16-521b-4efd-b473-8e19e3df4d09" name="Default Changelist" comment="">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/common/rx/deep-subscribe/ObjectSubscriber.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/common/rx/deep-subscribe/ObjectSubscriber.ts" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/common/rx/deep-subscribe/contracts/common.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/common/rx/deep-subscribe/contracts/common.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/common/rx/deep-subscribe/contracts/rules.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/common/rx/deep-subscribe/contracts/rules.ts" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/common/rx/deep-subscribe/deep-subscribe.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/common/rx/deep-subscribe/deep-subscribe.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/test/tests/common/main/helpers/performance.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/test/tests/common/main/helpers/performance.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/test/tests/common/main/index.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/test/tests/common/main/index.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/common/rx/deep-subscribe/rules-subscribe.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/common/rx/deep-subscribe/rules-subscribe.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/common/rx/deep-subscribe/rules.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/common/rx/deep-subscribe/rules.ts" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/test/tests/common/main/rx/deep-subscribe/RuleBuilder.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/test/tests/common/main/rx/deep-subscribe/RuleBuilder.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/test/tests/common/main/rx/deep-subscribe/deep-subscribe.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/test/tests/common/main/rx/deep-subscribe/deep-subscribe.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/test/tests/common/main/rx/deep-subscribe/helpers/src/TestDeepSubscribe.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/test/tests/common/main/rx/deep-subscribe/helpers/src/TestDeepSubscribe.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/test/tests/common/main/rx/deep-subscribe/iterate-rule.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/test/tests/common/main/rx/deep-subscribe/iterate-rule.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/test/tests/common/main/rx/object/properties/CalcObjectBuilder.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/test/tests/common/main/rx/object/properties/CalcObjectBuilder.ts" afterDir="false" />
     </list>
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
     <option name="SHOW_DIALOG" value="false" />
@@ -204,18 +201,19 @@
       </test-names>
       <method v="2" />
     </configuration>
-    <configuration name="common &gt; main &gt; rx &gt; deep-subscribe &gt; iterate-rule" type="mocha-javascript-test-runner" temporary="true" nameIsGenerated="true">
+    <configuration name="common &gt; main &gt; rx &gt; deep-subscribe &gt; deep-subscribe.unsubscribe leaf" type="mocha-javascript-test-runner" temporary="true" nameIsGenerated="true">
       <node-interpreter>node</node-interpreter>
       <node-options>--max-old-space-size=4096</node-options>
       <mocha-package>$PROJECT_DIR$/node_modules/mocha</mocha-package>
       <working-directory>$PROJECT_DIR$</working-directory>
       <pass-parent-env>true</pass-parent-env>
       <ui>bdd</ui>
-      <extra-mocha-options>--opts ./env/mocha/configs/babel/mocha.opts</extra-mocha-options>
-      <test-kind>SUITE</test-kind>
-      <test-file>$PROJECT_DIR$/src/test/tests/common/main/rx/deep-subscribe/iterate-rule.ts</test-file>
+      <extra-mocha-options>--opts ./env/mocha/configs/babel/mocha.opts --watch</extra-mocha-options>
+      <test-kind>TEST</test-kind>
+      <test-file>$PROJECT_DIR$/src/test/tests/common/main/rx/deep-subscribe/deep-subscribe.ts</test-file>
       <test-names>
-        <name value="common &gt; main &gt; rx &gt; deep-subscribe &gt; iterate-rule" />
+        <name value="common &gt; main &gt; rx &gt; deep-subscribe &gt; deep-subscribe" />
+        <name value="unsubscribe leaf" />
       </test-names>
       <method v="2" />
     </configuration>
@@ -258,7 +256,7 @@
       <working-directory>$PROJECT_DIR$</working-directory>
       <pass-parent-env>true</pass-parent-env>
       <ui>bdd</ui>
-      <extra-mocha-options>--opts ./env/mocha/configs/babel/mocha.opts</extra-mocha-options>
+      <extra-mocha-options>--opts ./env/mocha/configs/babel/mocha.opts --watch</extra-mocha-options>
       <test-kind>TEST_FILE</test-kind>
       <test-file>$PROJECT_DIR$/src/test/tests/common/main/rx/deep-subscribe/deep-subscribe.ts</test-file>
       <method v="2" />
@@ -292,19 +290,19 @@
       <item itemvalue="Mocha.Watch" />
       <item itemvalue="Mocha.RX - Tests" />
       <item itemvalue="Mocha.common &gt; main &gt; rx &gt; deep-subscribe &gt; deep-subscribe.any" />
-      <item itemvalue="Mocha.common &gt; main &gt; rx &gt; deep-subscribe &gt; iterate-rule" />
       <item itemvalue="Mocha.common &gt; main &gt; rx &gt; properties &gt; ConnectorBuilder.connect" />
       <item itemvalue="Mocha.common &gt; main &gt; rx &gt; properties &gt; CalcObjectBuilder.deepSubscribe calc async" />
       <item itemvalue="Mocha.time-limits" />
+      <item itemvalue="Mocha.common &gt; main &gt; rx &gt; deep-subscribe &gt; deep-subscribe.unsubscribe leaf" />
       <item itemvalue="npm.Coverage Mocha Report" />
     </list>
     <recent_temporary>
       <list>
+        <item itemvalue="Mocha.common &gt; main &gt; rx &gt; deep-subscribe &gt; deep-subscribe.unsubscribe leaf" />
         <item itemvalue="Mocha.time-limits" />
         <item itemvalue="Mocha.common &gt; main &gt; rx &gt; properties &gt; CalcObjectBuilder.deepSubscribe calc async" />
         <item itemvalue="Mocha.common &gt; main &gt; rx &gt; properties &gt; ConnectorBuilder.connect" />
         <item itemvalue="Mocha.common &gt; main &gt; rx &gt; deep-subscribe &gt; deep-subscribe.any" />
-        <item itemvalue="Mocha.common &gt; main &gt; rx &gt; deep-subscribe &gt; iterate-rule" />
       </list>
     </recent_temporary>
   </component>
@@ -315,13 +313,6 @@
       <option name="number" value="Default" />
       <option name="presentableId" value="Default" />
       <updated>1567687848586</updated>
-    </task>
-    <task id="LOCAL-00132" summary="Build OK.">
-      <created>1570252514783</created>
-      <option name="number" value="00132" />
-      <option name="presentableId" value="LOCAL-00132" />
-      <option name="project" value="LOCAL" />
-      <updated>1570252514783</updated>
     </task>
     <task id="LOCAL-00133" summary="Build OK.">
       <created>1570351186921</created>
@@ -659,7 +650,14 @@
       <option name="project" value="LOCAL" />
       <updated>1579252557895</updated>
     </task>
-    <option name="localTasksCounter" value="181" />
+    <task id="LOCAL-00181" summary="deepSubscribe caching in process">
+      <created>1579265731737</created>
+      <option name="number" value="00181" />
+      <option name="presentableId" value="LOCAL-00181" />
+      <option name="project" value="LOCAL" />
+      <updated>1579265731737</updated>
+    </task>
+    <option name="localTasksCounter" value="182" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -721,7 +719,6 @@
   <component name="VcsManagerConfiguration">
     <option name="CHECK_CODE_SMELLS_BEFORE_PROJECT_COMMIT" value="false" />
     <option name="CHECK_NEW_TODO" value="false" />
-    <MESSAGE value="Small refactoring _setUnsubscriber method" />
     <MESSAGE value="Fix deep-subscribe debug info" />
     <MESSAGE value="Fix deepSubscribe unsubscribe order" />
     <MESSAGE value="Fix: no invalidate CalcProperty if unsubscribe" />
@@ -746,17 +743,12 @@
     <MESSAGE value="Facade changes" />
     <MESSAGE value="Random helpers" />
     <MESSAGE value="deepSubscribe caching in process: added rules unique id" />
-    <option name="LAST_COMMIT_MESSAGE" value="deepSubscribe caching in process: added rules unique id" />
+    <MESSAGE value="deepSubscribe caching in process" />
+    <option name="LAST_COMMIT_MESSAGE" value="deepSubscribe caching in process" />
   </component>
   <component name="XDebuggerManager">
     <breakpoint-manager>
       <breakpoints>
-        <line-breakpoint enabled="true" type="javascript">
-          <condition expression="!rule.subscribe" language="TypeScript" />
-          <url>file://$PROJECT_DIR$/src/main/common/rx/deep-subscribe/deep-subscribe.ts</url>
-          <line>349</line>
-          <option name="timeStamp" value="115" />
-        </line-breakpoint>
         <line-breakpoint enabled="true" type="javascript">
           <condition expression="item.type == RuleType.Never" language="TypeScript" />
           <url>file://$PROJECT_DIR$/src/test/tests/common/main/rx/deep-subscribe/iterate-rule.ts</url>
@@ -772,6 +764,26 @@
           <url>file://$PROJECT_DIR$/src/main/common/rx/deep-subscribe/iterate-rule.ts</url>
           <line>52</line>
           <option name="timeStamp" value="256" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" type="javascript">
+          <url>file://$PROJECT_DIR$/src/main/common/rx/deep-subscribe/ObjectSubscriber.ts</url>
+          <line>119</line>
+          <option name="timeStamp" value="269" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" type="javascript">
+          <url>file://$PROJECT_DIR$/src/main/common/rx/deep-subscribe/ObjectSubscriber.ts</url>
+          <line>430</line>
+          <option name="timeStamp" value="271" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" type="javascript">
+          <url>file://$PROJECT_DIR$/src/main/common/rx/deep-subscribe/ObjectSubscriber.ts</url>
+          <line>188</line>
+          <option name="timeStamp" value="272" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" type="javascript">
+          <url>file://$PROJECT_DIR$/src/main/common/rx/deep-subscribe/ObjectSubscriber.ts</url>
+          <line>185</line>
+          <option name="timeStamp" value="273" />
         </line-breakpoint>
       </breakpoints>
     </breakpoint-manager>

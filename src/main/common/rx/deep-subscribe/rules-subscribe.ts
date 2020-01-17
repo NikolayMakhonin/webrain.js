@@ -1,6 +1,5 @@
 /* tslint:disable:no-identical-functions */
 import {checkIsFuncOrNull, isIterable} from '../../helpers/helpers'
-import {getObjectUniqueId} from '../../helpers/object-unique-id'
 import {VALUE_PROPERTY_DEFAULT} from '../../helpers/value-property'
 import {IListChanged, ListChangedType} from '../../lists/contracts/IListChanged'
 import {IMapChanged, MapChangedType} from '../../lists/contracts/IMapChanged'
@@ -761,14 +760,6 @@ export class RuleSubscribeObject<TObject, TValue>
 				throw new Error(`Unknown SubscribeObjectType: ${type}`)
 		}
 	}
-
-	protected getId(): string {
-		return `${super.getId()}_${
-			getObjectUniqueId(this._propertyPredicate)
-		}[(${
-			this._propertyNames ? this._propertyNames.join(')(') : ''
-		})]`
-	}
 }
 
 // endregion
@@ -846,14 +837,6 @@ export class RuleSubscribeMap<TObject extends Map<K, V>, K, V>
 			keys,
 			keyPredicate,
 		)
-	}
-
-	protected getId(): string {
-		return `${super.getId()}_${
-			getObjectUniqueId(this._keyPredicate)
-		}[(${
-			this._keys ? this._keys.join(')(') : ''
-		})]`
 	}
 }
 

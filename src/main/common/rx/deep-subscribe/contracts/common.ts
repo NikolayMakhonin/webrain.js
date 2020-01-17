@@ -52,6 +52,5 @@ export interface IValueSubscriber<TValue> {
 		propertiesPath: IPropertiesPath,
 		rule: IRule,
 	): IUnsubscribeOrVoid
-	// attach(valueSubscriber: IValueSubscriber<TValue>): void
-	// detach(valueSubscriber: IValueSubscriber<TValue>): void
+	attach(valueSubscriber: IValueSubscriber<TValue>): IUnsubscribeOrVoid
 }

@@ -558,7 +558,7 @@ describe('common > main > rx > deep-subscribe > RuleBuilder', function() {
 		delete rule.next
 		delete rule.rule
 		delete rule.rules
-		delete rule._id
+		delete rule.id
 		delete rule._propertyNames
 		delete rule._propertyPredicate
 		delete rule._keys
@@ -568,7 +568,7 @@ describe('common > main > rx > deep-subscribe > RuleBuilder', function() {
 		delete expected.next
 		delete expected.rule
 		delete expected.rules
-		delete expected._id
+		delete expected.id
 		delete expected._propertyNames
 		delete expected._propertyPredicate
 		delete expected._keys
