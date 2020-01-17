@@ -1,5 +1,5 @@
 import {VALUE_PROPERTY_DEFAULT} from '../../helpers/value-property'
-import {ANY, ANY_DISPLAY, COLLECTION_PREFIX, VALUE_PROPERTY_PREFIX} from './contracts/constants'
+import {ANY, ANY_DISPLAY, CHANGE_COUNT_PREFIX, COLLECTION_PREFIX, VALUE_PROPERTY_PREFIX} from './contracts/constants'
 import {
 	IRuleBuilder,
 	IRuleFactory,
@@ -14,7 +14,7 @@ import {IRepeatCondition, IRule, RuleRepeatAction} from './contracts/rules'
 import {getFuncPropertiesPath} from './helpers/func-properties-path'
 import {RuleAny, RuleIf, RuleNever, RuleNothing, RuleRepeat} from './rules'
 import {
-	hasDefaultProperty,
+	hasDefaultProperty, RuleSubscribeChange,
 	RuleSubscribeCollection,
 	RuleSubscribeMap,
 	RuleSubscribeObject,
@@ -258,6 +258,15 @@ export class RuleBuilder<TObject = any, TValueKeys extends string | number = nev
 			: this)
 			.ruleSubscribe<TValue>(
 				new RuleSubscribeCollection<any, TValue>(COLLECTION_PREFIX),
+			)
+	}
+
+	public change(): RuleBuilder<number, TValueKeys> {
+		return (this.autoInsertValuePropertyDefault
+			? this.valuePropertyDefault()
+			: this)
+			.ruleSubscribe<number>(
+				new RuleSubscribeChange<any>(CHANGE_COUNT_PREFIX),
 			)
 	}
 

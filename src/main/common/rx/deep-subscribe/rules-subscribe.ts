@@ -630,6 +630,68 @@ function subscribeCollection<TItem>(
 
 // endregion
 
+// region subscribeChange
+
+let _changeId = 0
+export function getChangeId(): number {
+	return ++_changeId
+}
+
+function subscribeChange(
+	object: any,
+	immediateSubscribe: boolean,
+	changeItem: IChangeItem<number>,
+	propertiesPath: IPropertiesPath,
+	rule?: IRule,
+): IUnsubscribeOrVoid {
+	if (!object) {
+		return null
+	}
+
+	const {propertyChanged, listChanged, setChanged, mapChanged} = object
+
+	if (!propertyChanged && !listChanged && !setChanged && !mapChanged) {
+		return null
+	}
+
+	let changeId
+
+	const onChange = () => {
+		if (changeId != null) {
+			const oldValue = changeId
+			changeId = getChangeId()
+			changeItem(null, oldValue, changeId, ValueChangeType.Changed, ValueKeyType.ChangeCount)
+		}
+	}
+
+	const unsubscribeObject = propertyChanged && propertyChanged.subscribe(onChange)
+	const unsubscribeList = listChanged && listChanged.subscribe(onChange)
+	const unsubscribeSet = setChanged && setChanged.subscribe(onChange)
+	const unsubscribeMap = mapChanged && mapChanged.subscribe(onChange)
+
+	changeId = getChangeId()
+	changeItem(null, void 0, changeId, ValueChangeType.Subscribe, ValueKeyType.ChangeCount)
+
+	return () => {
+		if (unsubscribeObject) {
+			unsubscribeObject()
+		}
+		if (unsubscribeList) {
+			unsubscribeList()
+		}
+		if (unsubscribeSet) {
+			unsubscribeSet()
+		}
+		if (unsubscribeMap) {
+			unsubscribeMap()
+		}
+
+		changeItem(null, changeId, void 0, ValueChangeType.Unsubscribe, ValueKeyType.ChangeCount)
+	}
+}
+
+// endregion
+
 // endregion
 
 // region RuleSubscribeObject
@@ -836,6 +898,22 @@ export class RuleSubscribeCollection<TObject extends Iterable<TItem>, TItem>
 
 		// @ts-ignore
 		this.subscribe = subscribeCollection
+	}
+}
+
+// endregion
+
+// region RuleSubscribeChange
+
+export class RuleSubscribeChange<TObject>
+	extends RuleSubscribe<TObject, number>
+	implements IRuleSubscribe<TObject, number>
+{
+	constructor(description: string) {
+		super(description)
+
+		// @ts-ignore
+		this.subscribe = subscribeChange
 	}
 }
 
