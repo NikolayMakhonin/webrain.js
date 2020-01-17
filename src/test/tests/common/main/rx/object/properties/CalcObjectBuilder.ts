@@ -1,5 +1,4 @@
 /* tslint:disable:no-duplicate-string no-empty no-statements-same-line */
-import {delay} from '../../../../../../../main/common'
 /* eslint-disable guard-for-in */
 import {ThenableOrIteratorOrValue} from '../../../../../../../main/common/async/async'
 import {ThenableSync} from '../../../../../../../main/common/async/ThenableSync'
@@ -14,6 +13,7 @@ import {Property} from '../../../../../../../main/common/rx/object/properties/Pr
 import {IUnsubscribeOrVoid} from '../../../../../../../main/common/rx/subjects/observable'
 import {assert} from '../../../../../../../main/common/test/Assert'
 import {describe, it} from '../../../../../../../main/common/test/Mocha'
+import {delay} from '../../../../../../../main/common/time/helpers'
 import {createObject, TestDeepSubscribe} from '../../deep-subscribe/helpers/src/TestDeepSubscribe'
 
 describe('common > main > rx > properties > CalcObjectBuilder', function() {

@@ -1,4 +1,4 @@
-import {ObservableClass} from '../../../../main/common'
+import {ObservableClass} from '../../../../main/common/rx/object/ObservableClass'
 import {assert} from '../../../../main/common/test/Assert'
 import {describe, it} from '../../../../main/common/test/Mocha'
 

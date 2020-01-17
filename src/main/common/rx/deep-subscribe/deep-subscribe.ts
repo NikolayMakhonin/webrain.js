@@ -45,6 +45,13 @@ function catchHandler(ex, propertiesPath?: IPropertiesPath) {
 	throw ex
 }
 
+function getCacheId(
+	object: any,
+	immediate: boolean,
+) {
+
+}
+
 function subscribeNext<TValue>(
 	object: any,
 	valueSubscriber: IValueSubscriber<TValue>,
@@ -101,6 +108,9 @@ function subscribeNext<TValue>(
 			}
 		}
 	}
+
+	// TODO cache subscribe
+	// ignore objectKey, objectKeyType
 
 	// endregion
 
@@ -415,6 +425,108 @@ function deepSubscribeRuleIterator<TValue>(
 	}
 }
 
+// interface IDeepSubscribeRuleArgs<TValue> {
+// 	object: any,
+// 	changeValue?: IChangeValue<TValue>,
+// 	lastValue?: ILastValue<TValue>,
+// 	debugTarget?: any,
+// 	/** @deprecated Not implemented - always true */
+// 	immediate?: boolean,
+// 	rule: IRule,
+// }
+//
+// interface IDeepSubscribeRuleCacheItem<TValue> {
+// 	object: any,
+// 	changeValue?: Array<IChangeValue<TValue>>,
+// 	lastValue?: Array<ILastValue<TValue>>,
+// 	debugTarget?: any,
+// 	/** @deprecated Not implemented - always true */
+// 	immediate?: boolean,
+// 	rule: IRule,
+// }
+//
+// function getDeepSubscribeRuleId({
+// 	object,
+// 	changeValue,
+// 	lastValue,
+// 	rule,
+// }: IDeepSubscribeRuleArgs<any>) {
+// 	return `${getObjectUniqueId(object)}_${!!changeValue}_${!!lastValue}_${rule.id}`
+// }
+//
+// const _deepSubscribeRuleCache: {
+// 	[key: string]: IDeepSubscribeRuleCacheItem<any>,
+// } = {}
+//
+// class SubscribeCacheItem {
+// 	public unsubscribe: IUnsubscribeOrVoid
+// 	constructor(unsubscribe: IUnsubscribeOrVoid) {
+// 		this.unsubscribe = unsubscribe
+// 	}
+// }
+//
+// function subscribeCached<
+// 	TArgs,
+// 	TCachedArgs extends { unsubscribe: IUnsubscribeOrVoid },
+// >(
+// 	getId: (args: TArgs) => string,
+// 	createCacheItem: (args: TArgs, unsubscribe: IUnsubscribeOrVoid) => TCachedArgs,
+// 	addArgs: (cached: TCachedArgs, args: TArgs) => TCachedArgs,
+// 	cache: { [key: string]: TCachedArgs },
+// 	subscribe: (args: TCachedArgs) => IUnsubscribeOrVoid,
+// 	args: TArgs,
+// ): IUnsubscribeOrVoid {
+// 	const id = getId(args)
+// 	let cached = cache[id]
+//
+// 	let unsubscribe
+// 	if (!cached) {
+// 		unsubscribe = subscribe(cached)
+// 		if (!unsubscribe) {
+// 			return null
+// 		}
+// 		cached = fillCachedArgs(args)
+// 		cached.unsubscribe = unsubscribe
+// 		cache[id] = cached
+// 	} else {
+// 		fillCachedArgs(args, cached)
+// 	}
+//
+// 	if (!unsubscribe) {
+// 		delete cache[id]
+// 		return null
+// 	}
+//
+// 	return () => {
+// 		delete cache[id]
+// 		unsubscribe()
+// 	}
+// }
+
+// if (args.changeValue) {
+// 	if (cached.changeValue) {
+// 		cached.changeValue.push(args.changeValue)
+// 	} else {
+// 		cached.changeValue = [args.changeValue]
+// 	}
+// }
+// if (args.lastValue) {
+// 	if (cached.lastValue) {
+// 		cached.lastValue.push(args.lastValue)
+// 	} else {
+// 		cached.lastValue = [args.lastValue]
+// 	}
+// }
+
+// {
+// 			object: args.object,
+// 			changeValue: args.changeValue ? [args.changeValue] : null,
+// 			lastValue: args.lastValue ? [args.lastValue] : null,
+// 			debugTarget: args.debugTarget,
+// 			immediate: args.immediate,
+// 			rule: args.rule,
+// 		}
+
 export function deepSubscribeRule<TValue>({
 	object,
 	changeValue,
@@ -431,6 +543,7 @@ export function deepSubscribeRule<TValue>({
 	immediate?: boolean,
 	rule: IRule,
 }): IUnsubscribeOrVoid {
+
 	return toSingleCall(deepSubscribeRuleIterator<TValue>(
 		object,
 		new ObjectSubscriber(changeValue, lastValue, debugTarget),

@@ -1,5 +1,5 @@
 /* tslint:disable:no-empty no-construct use-primitive-type no-duplicate-string */
-import {delay} from '../../../../../../../../main/common'
+import {delay} from '../../../../../../../../main/common/time/helpers'
 import {VALUE_PROPERTY_DEFAULT} from '../../../../../../../../main/common/helpers/value-property'
 import {IListChanged} from '../../../../../../../../main/common/lists/contracts/IListChanged'
 import {IMapChanged} from '../../../../../../../../main/common/lists/contracts/IMapChanged'

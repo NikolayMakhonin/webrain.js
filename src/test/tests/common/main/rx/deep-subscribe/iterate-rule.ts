@@ -1,5 +1,5 @@
 /* tslint:disable:no-shadowed-variable no-empty */
-import {isIterable} from '../../../../../../main/common'
+import {isIterable} from '../../../../../../main/common/helpers/helpers'
 /* eslint-disable no-useless-escape,computed-property-spacing */
 import {RuleType} from '../../../../../../main/common/rx/deep-subscribe/contracts/rules'
 import {

@@ -66,11 +66,21 @@ function compareSubscribed(o1: ISubscribedValue, o2: ISubscribedValue): number {
 	return 0
 }
 
+interface ILastChangeValue<TValue> {
+	key: any,
+	newValue: TValue,
+	parent: any,
+	keyType: ValueKeyType,
+	propertiesPath: IPropertiesPath,
+	rule: IRule,
+}
+
 export class ObjectSubscriber<TObject> implements IValueSubscriber<TObject> {
 	public readonly debugTarget: any
-	private readonly _changeValue: IChangeValue<TObject>
-	private readonly _lastValue: ILastValue<TObject>
-	private _unsubscribers: IUnsubscribe[]
+	private readonly _changeValue: Array<IChangeValue<TObject>>
+	private readonly _lastValue: Array<ILastValue<TObject>>
+	private _lastChangeValue: ILastChangeValue<TObject>
+	private _unsubscribers: Array<IUnsubscribe|IUnsubscribe[]>
 	private _unsubscribersCount: number[]
 	private _subscribedValues: ISubscribedValue[]
 	constructor(
@@ -78,10 +88,147 @@ export class ObjectSubscriber<TObject> implements IValueSubscriber<TObject> {
 		lastValue?: ILastValue<TObject>,
 		debugTarget?: any,
 	) {
-		this._changeValue = changeValue
-		this._lastValue = lastValue
+		this._changeValue = changeValue && [changeValue]
+		this._lastValue = lastValue && [lastValue]
 		this.debugTarget = debugTarget
 	}
+
+	private assertAttached(valueSubscriber: IValueSubscriber<TObject>): void {
+		// region assert common
+
+		if (!(valueSubscriber instanceof ObjectSubscriber)) {
+			throw new Error('valueSubscriber is not instanceof ObjectSubscriber: '
+				+ valueSubscriber && valueSubscriber.constructor && valueSubscriber.constructor.name)
+		}
+
+		// endregion
+
+		// region assert lastValue
+
+		if (!valueSubscriber._lastValue) {
+			if (this._lastValue) {
+				throw new Error('valueSubscriber._lastValue == null but this._lastValue != null')
+			}
+			return
+		}
+
+		if (!this._lastValue) {
+			throw new Error('valueSubscriber._lastValue != null but this._lastValue == null')
+		}
+
+		if (valueSubscriber._lastValue.length !== 1) {
+			throw new Error('valueSubscriber._lastValue.length !== 1')
+		}
+
+		// endregion
+
+		// region assert changeValue
+
+		if (!valueSubscriber._changeValue) {
+			if (this._changeValue) {
+				throw new Error('valueSubscriber._changeValue == null but this._changeValue != null')
+			}
+			return
+		}
+
+		if (!this._changeValue) {
+			throw new Error('valueSubscriber._changeValue != null but this._changeValue == null')
+		}
+
+		if (valueSubscriber._changeValue.length !== 1) {
+			throw new Error('valueSubscriber._changeValue.length !== 1')
+		}
+
+		// endregion
+	}
+
+	// public attach(valueSubscriber: IValueSubscriber<TObject>): void {
+	// 	this.assertAttached(valueSubscriber)
+	//
+	// 	const _changeValue = (valueSubscriber as ObjectSubscriber<TObject>)._changeValue[0]
+	// 	if (_changeValue) {
+	// 		this._changeValue.push(_changeValue)
+	//
+	// 		if (!this._lastChangeValue) {
+	// 			throw new Error('!this._lastChangeValue')
+	// 		}
+	//
+	// 		// TODO
+	// 	}
+	//
+	// 	const _lastValue = (valueSubscriber as ObjectSubscriber<TObject>)._lastValue[0]
+	// 	if (_lastValue) {
+	// 		this._lastValue.push(_lastValue)
+	//
+	// 		if (!this._subscribedValues || !this._subscribedValues.length) {
+	// 			throw new Error('!this._subscribedValues || !this._subscribedValues.length')
+	// 		}
+	//
+	// 		const lastValue = this._subscribedValues[this._subscribedValues.length - 1]
+	// 		_lastValue(
+	// 			lastValue.value,
+	// 			lastValue.parent,
+	// 			lastValue.key,
+	// 			lastValue.keyType,
+	// 		)
+	// 	}
+	// }
+	//
+	// public detach(valueSubscriber: IValueSubscriber<TObject>): boolean {
+	// 	this.assertAttached(valueSubscriber)
+	//
+	// 	const _changeValue = (valueSubscriber as ObjectSubscriber<TObject>)._changeValue[0]
+	// 	if (_changeValue) {
+	// 		const index = this._changeValue.indexOf(_changeValue)
+	// 		if (index < 0) {
+	// 			throw new Error('_changeValue not found in this._changeValue')
+	// 		}
+	//
+	// 		for (let i = index + 1, len = this._changeValue.length; i < len; i++) {
+	// 			this._changeValue[i - 1] = this._changeValue[i]
+	// 		}
+	//
+	// 		if (!this._lastChangeValue) {
+	// 			throw new Error('!this._lastChangeValue')
+	// 		}
+	//
+	// 		_changeValue(
+	// 			this._lastChangeValue.key,
+	// 			void 0,
+	// 			this._lastChangeValue.newValue,
+	// 			this._lastChangeValue.parent,
+	// 			ValueChangeType.Unsubscribe,
+	// 			this._lastChangeValue.keyType,
+	// 			this._lastChangeValue.propertiesPath,
+	// 			this._lastChangeValue.rule,
+	// 			null,
+	// 		)
+	// 	}
+	//
+	// 	const _lastValue = (valueSubscriber as ObjectSubscriber<TObject>)._lastValue[0]
+	// 	if (_lastValue) {
+	// 		const index = this._lastValue.indexOf(_lastValue)
+	// 		if (index < 0) {
+	// 			throw new Error('_lastValue not found in this._lastValue')
+	// 		}
+	//
+	// 		for (let i = index + 1, len = this._lastValue.length; i < len; i++) {
+	// 			this._lastValue[i - 1] = this._lastValue[i]
+	// 		}
+	//
+	// 		if (!this._subscribedValues || !this._subscribedValues.length) {
+	// 			throw new Error('!this._subscribedValues || !this._subscribedValues.length')
+	// 		}
+	//
+	// 		const lastValue = this._subscribedValues[0]
+	// 		_lastValue(
+	// 			lastValue.value,
+	// 			lastValue.parent,
+	// 			lastValue.key,
+	// 			lastValue.keyType,
+	// 		)
+	// 	}
+	// }
 
 	private insertSubscribed(subscribedValue: ISubscribedValue): ISubscribedValue {
 		let {_subscribedValues} = this
@@ -152,92 +299,64 @@ export class ObjectSubscriber<TObject> implements IValueSubscriber<TObject> {
 		let nextChangeType = ValueChangeType.None
 
 		if (this._changeValue) {
-			if ((changeType & ValueChangeType.Unsubscribe) !== 0) {
-				let unsubscribed
-				if (oldValue instanceof Object) {
-					const {_unsubscribersCount} = this
-					if (_unsubscribersCount) {
-						const itemUniqueId = getObjectUniqueId(oldValue as any)
-						const unsubscribeCount = _unsubscribersCount[itemUniqueId]
-						if (unsubscribeCount != null) {
-							if (unsubscribeCount) {
-								if (unsubscribeCount > 1) {
-									_unsubscribersCount[itemUniqueId] = unsubscribeCount - 1
-								} else {
-									const {_unsubscribers} = this
-									const unsubscribe = _unsubscribers[itemUniqueId]
-									// unsubscribers[itemUniqueId] = null // faster but there is a danger of memory overflow with nulls
-									delete _unsubscribers[itemUniqueId]
-									delete _unsubscribersCount[itemUniqueId]
+			for (
+				let changeValueIndex = 0, changeValueLength = this._changeValue.length;
+				changeValueIndex < changeValueLength;
+				changeValueIndex++
+			) {
+				const changeValue = this._changeValue[changeValueIndex]
 
-									if (Array.isArray(unsubscribe)) {
-										for (let i = 0, len = unsubscribe.length; i < len; i++) {
-											unsubscribe[i]()
-										}
+				if ((changeType & ValueChangeType.Unsubscribe) !== 0) {
+					let unsubscribed
+					if (oldValue instanceof Object) {
+						const {_unsubscribersCount} = this
+						if (_unsubscribersCount) {
+							const itemUniqueId = getObjectUniqueId(oldValue as any)
+							const unsubscribeCount = _unsubscribersCount[itemUniqueId]
+							if (unsubscribeCount != null) {
+								if (unsubscribeCount) {
+									if (unsubscribeCount > 1) {
+										_unsubscribersCount[itemUniqueId] = unsubscribeCount - 1
 									} else {
-										unsubscribe()
-									}
+										const {_unsubscribers} = this
+										const unsubscribe = _unsubscribers[itemUniqueId]
+										// unsubscribers[itemUniqueId] = null // faster but there is a danger of memory overflow with nulls
+										delete _unsubscribers[itemUniqueId]
+										delete _unsubscribersCount[itemUniqueId]
 
-									unsubscribedLast = true
+										if (Array.isArray(unsubscribe)) {
+											for (let i = 0, len = unsubscribe.length; i < len; i++) {
+												unsubscribe[i]()
+											}
+										} else {
+											unsubscribe()
+										}
+
+										unsubscribedLast = true
+									}
 								}
+								unsubscribed = true
 							}
-							unsubscribed = true
 						}
+					}
+
+					if (unsubscribedLast || !unsubscribed) {
+						nextChangeType |= ValueChangeType.Unsubscribe
 					}
 				}
 
-				if (unsubscribedLast || !unsubscribed) {
-					nextChangeType |= ValueChangeType.Unsubscribe
-				}
-			}
-
-			if ((changeType & ValueChangeType.Subscribe) !== 0) {
-				if (!(newValue instanceof Object)) {
-					const unsubscribeValue = checkIsFuncOrNull(this._changeValue(
+				if ((changeType & ValueChangeType.Subscribe) !== 0) {
+					this._lastChangeValue = {
 						key,
-						oldValue,
 						newValue,
 						parent,
-						nextChangeType | ValueChangeType.Subscribe,
 						keyType,
 						propertiesPath,
 						rule,
-						unsubscribedLast,
-					))
-
-					if (unsubscribeValue) {
-						unsubscribeValue()
-
-						throw new Error('You should not return unsubscribe function for non Object value.\n'
-							+ 'For subscribe value types use their object wrappers: Number, Boolean, String classes.\n'
-							+ `Unsubscribe function: ${unsubscribeValue}\nValue: ${newValue}\n`
-							+ `Value property path: ${new PropertiesPath(newValue, propertiesPath, key, keyType, rule)}`)
 					}
-				} else {
-					const itemUniqueId = getObjectUniqueId(newValue as any)
 
-					let {_unsubscribers, _unsubscribersCount} = this
-					if (_unsubscribers && _unsubscribers[itemUniqueId]) {
-						this._changeValue(
-							key,
-							oldValue,
-							newValue,
-							parent,
-							nextChangeType,
-							keyType,
-							propertiesPath,
-							rule,
-							unsubscribedLast,
-						)
-
-						_unsubscribersCount[itemUniqueId]++
-					} else {
-						if (!_unsubscribers) {
-							this._unsubscribers = _unsubscribers = []
-							this._unsubscribersCount = _unsubscribersCount = []
-						}
-
-						const unsubscribeValue = checkIsFuncOrNull(this._changeValue(
+					if (!(newValue instanceof Object)) {
+						const unsubscribeValue = checkIsFuncOrNull(changeValue(
 							key,
 							oldValue,
 							newValue,
@@ -250,24 +369,78 @@ export class ObjectSubscriber<TObject> implements IValueSubscriber<TObject> {
 						))
 
 						if (unsubscribeValue) {
-							_unsubscribers[itemUniqueId] = unsubscribeValue
-							_unsubscribersCount[itemUniqueId] = 1
-							// return this._setUnsubscribeObject(itemUniqueId, unsubscribeValue)
+							unsubscribeValue()
+
+							throw new Error('You should not return unsubscribe function for non Object value.\n'
+								+ 'For subscribe value types use their object wrappers: Number, Boolean, String classes.\n'
+								+ `Unsubscribe function: ${unsubscribeValue}\nValue: ${newValue}\n`
+								+ `Value property path: ${new PropertiesPath(newValue, propertiesPath, key, keyType, rule)}`)
+						}
+					} else {
+						const itemUniqueId = getObjectUniqueId(newValue as any)
+
+						let {_unsubscribers, _unsubscribersCount} = this
+						if (_unsubscribers && _unsubscribers[itemUniqueId]) {
+							changeValue(
+								key,
+								oldValue,
+								newValue,
+								parent,
+								nextChangeType,
+								keyType,
+								propertiesPath,
+								rule,
+								unsubscribedLast,
+							)
+
+							_unsubscribersCount[itemUniqueId]++
+						} else {
+							if (!_unsubscribers) {
+								this._unsubscribers = _unsubscribers = []
+								this._unsubscribersCount = _unsubscribersCount = []
+							}
+
+							const unsubscribeValue = checkIsFuncOrNull(changeValue(
+								key,
+								oldValue,
+								newValue,
+								parent,
+								nextChangeType | ValueChangeType.Subscribe,
+								keyType,
+								propertiesPath,
+								rule,
+								unsubscribedLast,
+							))
+
+							if (unsubscribeValue) {
+								const chainUnsubscribe = _unsubscribers[itemUniqueId]
+								if (!chainUnsubscribe) {
+									_unsubscribers[itemUniqueId] = unsubscribeValue
+									_unsubscribersCount[itemUniqueId] = 1
+								} else {
+									if (Array.isArray(chainUnsubscribe)) {
+										chainUnsubscribe.push(unsubscribeValue)
+									} else {
+										_unsubscribers[itemUniqueId] = [chainUnsubscribe, unsubscribeValue]
+										_unsubscribersCount[itemUniqueId] = 1
+									}
+								}
+							}
 						}
 					}
+				} else {
+					changeValue(
+						key,
+						oldValue,
+						newValue,
+						parent,
+						nextChangeType,
+						keyType,
+						propertiesPath,
+						rule,
+						unsubscribedLast,
+					)
 				}
-			} else {
-				this._changeValue(
-					key,
-					oldValue,
-					newValue,
-					parent,
-					nextChangeType,
-					keyType,
-					propertiesPath,
-					rule,
-					unsubscribedLast,
-				)
 			}
 		}
 
@@ -298,12 +471,14 @@ export class ObjectSubscriber<TObject> implements IValueSubscriber<TObject> {
 					)
 
 					if (this._lastValue) {
-						this._lastValue(
-							lastValue.value,
-							lastValue.parent,
-							lastValue.key,
-							lastValue.keyType,
-						)
+						for (let i = 0, len = this._lastValue.length; i < len; i++) {
+							this._lastValue[i](
+								lastValue.value,
+								lastValue.parent,
+								lastValue.key,
+								lastValue.keyType,
+							)
+						}
 					}
 				}
 			}
