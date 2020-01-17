@@ -1,3 +1,4 @@
+import {getObjectUniqueId} from '../../helpers/object-unique-id'
 import {
 	IConditionRule,
 	IRepeatCondition,
@@ -26,8 +27,6 @@ export function ruleTypeToString(ruleType: RuleType) {
 			throw new Error('Unknown RuleType: ' + ruleType)
 	}
 }
-
-export const RULE_STRING_SEPARATOR = ' > '
 
 function ruleToString(
 	rule: IRule,
@@ -58,6 +57,19 @@ export class Rule implements IRule {
 		}
 	}
 
+	private _id: string
+	protected getId(): string {
+		return `${this.type}_${this.subType}`
+	}
+	public get id(): string {
+		if (this._id == null) {
+			this._id = this.next
+				? `${this.getId()}>(${this.next.id})`
+				: this.getId()
+		}
+		return this._id
+	}
+
 	public clone(): IRule {
 		const {type, subType, description, next, toString} = this
 		const clone = {type, subType, description, toString} as IRule
@@ -65,6 +77,8 @@ export class Rule implements IRule {
 		if (next != null) {
 			clone.next = next.clone()
 		}
+
+		(clone as any)._id = this._id
 
 		return clone
 	}
@@ -100,6 +114,14 @@ export class RuleNever extends Rule {
 	}
 }
 
+function getConditionRuleId(conditionRule: IConditionRule<any>): string {
+	if (Array.isArray(conditionRule)) {
+		return `${getObjectUniqueId(conditionRule[0])}(${conditionRule[1].id})`
+	} else {
+		return `(${conditionRule.id})`
+	}
+}
+
 export class RuleIf<TValue> extends Rule implements IRuleIf<TValue> {
 	public readonly conditionRules: Array<IConditionRule<TValue>>
 
@@ -107,6 +129,12 @@ export class RuleIf<TValue> extends Rule implements IRuleIf<TValue> {
 		super(RuleType.If)
 		this.conditionRules = conditionRules
 		this.description = '<if>'
+	}
+
+	protected getId(): string {
+		return `${super.getId()}[${this.conditionRules
+			? this.conditionRules.map(getConditionRuleId).join(',')
+			: ''}]`
 	}
 
 	public clone(): IRuleIf<TValue> {
@@ -126,6 +154,13 @@ export class RuleAny extends Rule implements IRuleAny {
 		super(RuleType.Any)
 		this.rules = rules
 		this.description = '<any>'
+	}
+
+	protected getId(): string {
+		return `${super.getId()}[(${this.rules
+			// tslint:disable-next-line:no-nested-template-literals
+			? this.rules.map(o => o.id).join('),(')
+			: ''})]`
 	}
 
 	public clone(): IRuleAny {
@@ -153,6 +188,14 @@ export class RuleRepeat<TValue = any> extends Rule implements IRuleRepeat {
 		this.condition = condition
 		this.rule = rule
 		this.description = '<repeat>'
+	}
+
+	protected getId(): string {
+		return `${super.getId()}_${
+			this.countMin == null ? '' : this.countMin
+		}_${
+			this.countMax == null ? '' : this.countMax
+		}_${getObjectUniqueId(this.condition)}(${this.rule.id})`
 	}
 
 	public clone(): IRuleAny {

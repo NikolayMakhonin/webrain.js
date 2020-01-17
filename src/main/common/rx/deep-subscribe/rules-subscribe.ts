@@ -1,5 +1,6 @@
 /* tslint:disable:no-identical-functions */
 import {checkIsFuncOrNull, isIterable} from '../../helpers/helpers'
+import {getObjectUniqueId} from '../../helpers/object-unique-id'
 import {VALUE_PROPERTY_DEFAULT} from '../../helpers/value-property'
 import {IListChanged, ListChangedType} from '../../lists/contracts/IListChanged'
 import {IMapChanged, MapChangedType} from '../../lists/contracts/IMapChanged'
@@ -707,6 +708,9 @@ export class RuleSubscribeObject<TObject, TValue>
 	extends RuleSubscribe<TObject, TValue>
 	implements IRuleSubscribe<TObject, TValue>
 {
+	private readonly _propertyNames
+	private readonly _propertyPredicate
+
 	constructor(
 		type: SubscribeObjectType,
 		propertyPredicate: (propertyName: string, object) => boolean,
@@ -719,10 +723,15 @@ export class RuleSubscribeObject<TObject, TValue>
 			propertyNames = null
 		}
 
+		if (propertyNames) {
+			this._propertyNames = propertyNames
+		}
+
 		if (propertyPredicate) {
 			if (typeof propertyPredicate !== 'function') {
 				throw new Error(`propertyPredicate (${propertyPredicate}) is not a function`)
 			}
+			this._propertyPredicate = propertyPredicate
 		} else if (type === SubscribeObjectType.Property) {
 			propertyPredicate = createPropertyPredicate(propertyNames)
 			if (!propertyPredicate) {
@@ -746,10 +755,19 @@ export class RuleSubscribeObject<TObject, TValue>
 					null,
 					propertyNames,
 				)
+				this._propertyPredicate = null
 				break
 			default:
 				throw new Error(`Unknown SubscribeObjectType: ${type}`)
 		}
+	}
+
+	protected getId(): string {
+		return `${super.getId()}_${
+			getObjectUniqueId(this._propertyPredicate)
+		}[(${
+			this._propertyNames ? this._propertyNames.join(')(') : ''
+		})]`
 	}
 }
 
@@ -792,6 +810,9 @@ export class RuleSubscribeMap<TObject extends Map<K, V>, K, V>
 	extends RuleSubscribe<TObject, V>
 	implements IRuleSubscribe<TObject, V>
 {
+	private readonly _keys
+	private readonly _keyPredicate
+
 	constructor(
 		keyPredicate: (key: K, object) => boolean,
 		description: string,
@@ -803,10 +824,15 @@ export class RuleSubscribeMap<TObject extends Map<K, V>, K, V>
 			keys = null
 		}
 
+		if (keys) {
+			this._keys = keys
+		}
+
 		if (keyPredicate) {
 			if (typeof keyPredicate !== 'function') {
 				throw new Error(`keyPredicate (${keyPredicate}) is not a function`)
 			}
+			this._keyPredicate = keyPredicate
 		} else {
 			keyPredicate = createKeyPredicate(keys)
 			if (!keyPredicate) {
@@ -820,6 +846,14 @@ export class RuleSubscribeMap<TObject extends Map<K, V>, K, V>
 			keys,
 			keyPredicate,
 		)
+	}
+
+	protected getId(): string {
+		return `${super.getId()}_${
+			getObjectUniqueId(this._keyPredicate)
+		}[(${
+			this._keys ? this._keys.join(')(') : ''
+		})]`
 	}
 }
 
