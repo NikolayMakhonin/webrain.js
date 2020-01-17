@@ -33,7 +33,7 @@ export {webrainOptions} from './helpers/webrainOptions'
 export {CalcPropertyState} from './rx/object/properties/CalcProperty'
 export {ConnectorState} from './rx/object/properties/Connector'
 export {ValueChangeType} from './rx/deep-subscribe/contracts/common'
-export {resolveAsyncAll, resolveAsyncAny} from './async/ThenableSync'
+export {resolveAsync, resolveAsyncFunc, resolveAsyncAll, resolveAsyncAny} from './async/ThenableSync'
 export {dependenciesSubscriber} from './rx/object/properties/DependenciesBuilder'
 export {CalcStat} from './helpers/CalcStat'
 export {VALUE_PROPERTY_DEFAULT} from './helpers/value-property'
@@ -42,14 +42,22 @@ export {RuleBuilder} from './rx/deep-subscribe/RuleBuilder'
 export * from './test/Assert'
 export * from './test/Mocha'
 export * from './test/unhandledErrors'
-export {delay} from './time/helpers'
+export {delay, performanceNow} from './time/helpers'
 export {TimeLimit} from './time/TimeLimit'
 export {TimeLimits} from './time/TimeLimits'
+export {Random} from './random/Random'
+export {DeepCloneEqual} from './test/DeepCloneEqual'
 
 // Interfaces:
 import {
+	IDeepCloneEqualOptions as _IDeepCloneEqualOptions,
+	IDeepCloneOptions as _IDeepCloneOptions,
+	IDeepEqualOptions as _IDeepEqualOptions,
+} from './test/DeepCloneEqual'
+import {
 	ThenableOrIteratorOrValue as _ThenableOrIteratorOrValue,
 	ThenableOrValue as _ThenableOrValue,
+	ThenableIterator as _ThenableIterator,
 } from './async/async'
 import {
 	IMergeable as _IMergeable,
@@ -79,6 +87,10 @@ import {ITimeLimitBase as _ITimeLimitBase} from './time/TimeLimit'
 import {ITimeLimit as _ITimeLimit} from './time/TimeLimit'
 import {ITimeLimits as _ITimeLimits} from './time/TimeLimits'
 
+export type IDeepCloneEqualOptions = _IDeepCloneEqualOptions
+export type IDeepCloneOptions = _IDeepCloneOptions
+export type IDeepEqualOptions = _IDeepEqualOptions
+
 export type ISubscriber<T> = _ISubscriber<T>
 export type IUnsubscribe = _IUnsubscribe
 export type IUnsubscribeOrVoid = _IUnsubscribeOrVoid
@@ -96,6 +108,7 @@ export type IObservable<T> = _IObservable<T>
 export type ISubject<T> = _ISubject<T>
 export type IPropertyChangedObject = _IPropertyChangedObject
 export type ThenableOrIteratorOrValue<T> = _ThenableOrIteratorOrValue<T>
+export type ThenableIterator<T> = _ThenableIterator<T>
 export type ThenableOrValue<T> = _ThenableOrValue<T>
 export type ICalcProperty<TValue, TInput> = _ICalcProperty<TValue, TInput>
 export type HasDefaultOrValue<T> = _HasDefaultOrValue<T>
