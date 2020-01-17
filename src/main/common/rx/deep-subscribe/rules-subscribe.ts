@@ -707,9 +707,6 @@ export class RuleSubscribeObject<TObject, TValue>
 	extends RuleSubscribe<TObject, TValue>
 	implements IRuleSubscribe<TObject, TValue>
 {
-	private readonly _propertyNames
-	private readonly _propertyPredicate
-
 	constructor(
 		type: SubscribeObjectType,
 		propertyPredicate: (propertyName: string, object) => boolean,
@@ -722,15 +719,10 @@ export class RuleSubscribeObject<TObject, TValue>
 			propertyNames = null
 		}
 
-		if (propertyNames) {
-			this._propertyNames = propertyNames
-		}
-
 		if (propertyPredicate) {
 			if (typeof propertyPredicate !== 'function') {
 				throw new Error(`propertyPredicate (${propertyPredicate}) is not a function`)
 			}
-			this._propertyPredicate = propertyPredicate
 		} else if (type === SubscribeObjectType.Property) {
 			propertyPredicate = createPropertyPredicate(propertyNames)
 			if (!propertyPredicate) {
@@ -754,7 +746,6 @@ export class RuleSubscribeObject<TObject, TValue>
 					null,
 					propertyNames,
 				)
-				this._propertyPredicate = null
 				break
 			default:
 				throw new Error(`Unknown SubscribeObjectType: ${type}`)
@@ -801,9 +792,6 @@ export class RuleSubscribeMap<TObject extends Map<K, V>, K, V>
 	extends RuleSubscribe<TObject, V>
 	implements IRuleSubscribe<TObject, V>
 {
-	private readonly _keys
-	private readonly _keyPredicate
-
 	constructor(
 		keyPredicate: (key: K, object) => boolean,
 		description: string,
@@ -815,15 +803,10 @@ export class RuleSubscribeMap<TObject extends Map<K, V>, K, V>
 			keys = null
 		}
 
-		if (keys) {
-			this._keys = keys
-		}
-
 		if (keyPredicate) {
 			if (typeof keyPredicate !== 'function') {
 				throw new Error(`keyPredicate (${keyPredicate}) is not a function`)
 			}
-			this._keyPredicate = keyPredicate
 		} else {
 			keyPredicate = createKeyPredicate(keys)
 			if (!keyPredicate) {

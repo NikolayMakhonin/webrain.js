@@ -15,6 +15,7 @@ export enum ValueKeyType {
 	ValueProperty,
 	MapKey,
 	CollectionAny,
+	ChangeCount,
 }
 
 export type IChangeValue<TValue> = (
@@ -52,5 +53,4 @@ export interface IValueSubscriber<TValue> {
 		propertiesPath: IPropertiesPath,
 		rule: IRule,
 	): IUnsubscribeOrVoid
-	attach(valueSubscriber: IValueSubscriber<TValue>): IUnsubscribeOrVoid
 }

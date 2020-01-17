@@ -558,21 +558,11 @@ describe('common > main > rx > deep-subscribe > RuleBuilder', function() {
 		delete rule.next
 		delete rule.rule
 		delete rule.rules
-		delete rule.id
-		delete rule._propertyNames
-		delete rule._propertyPredicate
-		delete rule._keys
-		delete rule._keyPredicate
 		delete expected.objectTypes
 		delete expected.properties
 		delete expected.next
 		delete expected.rule
 		delete expected.rules
-		delete expected.id
-		delete expected._propertyNames
-		delete expected._propertyPredicate
-		delete expected._keys
-		delete expected._keyPredicate
 
 		assert.deepStrictEqual(rule, expected)
 	}
@@ -584,9 +574,6 @@ describe('common > main > rx > deep-subscribe > RuleBuilder', function() {
 		}
 
 		assertRuleParams(rule, expected)
-
-		// TODO: check rule id
-		// assert.strictEqual(rule.id, expected.id)
 
 		if (rule.type === RuleType.Action) {
 			assert.ok(expected.objectTypes && expected.objectTypes.length)

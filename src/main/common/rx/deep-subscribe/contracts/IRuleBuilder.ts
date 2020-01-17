@@ -161,6 +161,8 @@ export interface IRuleBuilder<TObject = any, TValueKeys extends string | number 
 	 */
 	collection<TValue = IterableValueOf<TObject>>(): IRuleBuilder<TValue, TValueKeys>
 
+	change(): IRuleBuilder<number, TValueKeys>
+
 	/**
 	 * IMapChanged & Map, Map
 	 */

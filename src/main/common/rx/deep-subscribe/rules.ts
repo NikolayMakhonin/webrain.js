@@ -43,8 +43,6 @@ function ruleToString(
 	}`
 }
 
-let _nextRuleId = 1
-
 export class Rule implements IRule {
 	public readonly type: RuleType
 	public subType?: any
@@ -58,8 +56,6 @@ export class Rule implements IRule {
 		}
 	}
 
-	public id: number = _nextRuleId++
-
 	public clone(): IRule {
 		const {type, subType, description, next, toString} = this
 		const clone = {type, subType, description, toString} as IRule
@@ -67,8 +63,6 @@ export class Rule implements IRule {
 		if (next != null) {
 			clone.next = next.clone()
 		}
-
-		(clone as any).id = this.id
 
 		return clone
 	}

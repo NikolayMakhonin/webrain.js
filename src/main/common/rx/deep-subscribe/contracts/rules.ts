@@ -8,7 +8,6 @@ export enum RuleType {
 }
 
 export interface IRule {
-	id: number
 	readonly type: RuleType
 	subType?: any
 	next?: IRule
