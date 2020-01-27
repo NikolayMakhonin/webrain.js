@@ -7,19 +7,14 @@
     <option name="SHOW_STRUCTURE" value="true" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="69b2ee16-521b-4efd-b473-8e19e3df4d09" name="Default Changelist" comment="deepSubscribe caching rollback">
+    <list default="true" id="69b2ee16-521b-4efd-b473-8e19e3df4d09" name="Default Changelist" comment="">
+      <change afterPath="$PROJECT_DIR$/src/main/common/helpers/tuple-unique-id.ts" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/test/experiments/common/src/dependent-func.ts" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/test/experiments/node/dependent-func.ts" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/common/rx/deep-subscribe/ObjectSubscriber.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/common/rx/deep-subscribe/ObjectSubscriber.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/common/rx/deep-subscribe/RuleBuilder.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/common/rx/deep-subscribe/RuleBuilder.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/common/rx/deep-subscribe/contracts/IRuleBuilder.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/common/rx/deep-subscribe/contracts/IRuleBuilder.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/common/rx/deep-subscribe/contracts/common.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/common/rx/deep-subscribe/contracts/common.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/common/rx/deep-subscribe/contracts/constants.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/common/rx/deep-subscribe/contracts/constants.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/common/rx/deep-subscribe/contracts/rules.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/common/rx/deep-subscribe/contracts/rules.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/common/rx/deep-subscribe/deep-subscribe.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/common/rx/deep-subscribe/deep-subscribe.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/common/rx/deep-subscribe/rules-subscribe.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/common/rx/deep-subscribe/rules-subscribe.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/common/rx/deep-subscribe/rules.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/common/rx/deep-subscribe/rules.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/test/tests/common/main/rx/deep-subscribe/RuleBuilder.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/test/tests/common/main/rx/deep-subscribe/RuleBuilder.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/test/tests/common/main/rx/deep-subscribe/deep-subscribe.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/test/tests/common/main/rx/deep-subscribe/deep-subscribe.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/package.json" beforeDir="false" afterPath="$PROJECT_DIR$/package.json" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/common/helpers/object-unique-id.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/common/helpers/object-unique-id.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/test/performance/node/fundamental-operations.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/test/performance/node/fundamental-operations.ts" afterDir="false" />
     </list>
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
     <option name="SHOW_DIALOG" value="false" />
@@ -62,7 +57,7 @@
     <property name="WebServerToolWindowFactoryState" value="false" />
     <property name="auto.test.manager.delay" value="5000" />
     <property name="javascript.karma.karma_node_package_dir" value="" />
-    <property name="last_opened_file_path" value="$PROJECT_DIR$/src/main/common/random" />
+    <property name="last_opened_file_path" value="$PROJECT_DIR$/src/main/common/helpers" />
     <property name="node.js.detected.package.eslint" value="true" />
     <property name="node.js.detected.package.standard" value="true" />
     <property name="node.js.detected.package.tslint" value="true" />
@@ -82,11 +77,11 @@
   </component>
   <component name="RecentsManager">
     <key name="MoveFile.RECENT_KEYS">
+      <recent name="L:\Work\_GIT\GitHub\NodeJs\modules\webrain\src\test\experiments\common" />
       <recent name="L:\Work\_GIT\GitHub\NodeJs\modules\webrain\src\main\common\random" />
       <recent name="L:\Work\_GIT\GitHub\NodeJs\modules\webrain\src\test\tests\common\main\time" />
       <recent name="L:\Work\_GIT\GitHub\NodeJs\modules\webrain\dist\js" />
       <recent name="L:\Work\_GIT\GitHub\NodeJs\modules\webrain\src\main\common\rx" />
-      <recent name="L:\Work\_GIT\GitHub\NodeJs\modules\webrain\src\test\tests\common\main\rx\deep-subscribe\helpers\src" />
     </key>
     <key name="es6.move.members.recent.items">
       <recent name="L:\Work\_GIT\GitHub\NodeJs\modules\webrain\src\main\common\time\helpers.ts" />
@@ -96,11 +91,11 @@
       <recent name="L:\Work\_GIT\GitHub\NodeJs\modules\webrain\src\main\common\rx\object\properties\contracts.ts" />
     </key>
     <key name="CopyFile.RECENT_KEYS">
+      <recent name="L:\Work\_GIT\GitHub\NodeJs\modules\webrain\src\main\common\helpers" />
+      <recent name="L:\Work\_GIT\GitHub\NodeJs\modules\webrain\src\test\experiments\node" />
       <recent name="L:\Work\_GIT\GitHub\NodeJs\modules\webrain\src\main\common\random" />
       <recent name="L:\Work\_GIT\GitHub\NodeJs\modules\webrain\src\main\common\time" />
       <recent name="L:\Work\_GIT\GitHub\NodeJs\modules\webrain\src\test\tests\common\main" />
-      <recent name="L:\Work\_GIT\GitHub\NodeJs\modules\webrain\dist\mjs" />
-      <recent name="L:\Work\_GIT\GitHub\NodeJs\modules\webrain\src\test\tests\common\main\rx\object\properties" />
     </key>
   </component>
   <component name="RunDashboard">
@@ -115,7 +110,7 @@
       </list>
     </option>
   </component>
-  <component name="RunManager" selected="Mocha.Watch">
+  <component name="RunManager" selected="Mocha.dependent-func.base">
     <configuration default="true" type="JavaScriptTestRunnerKarma">
       <config-file value="$PROJECT_DIR$/env/karma/configs/dev.js" />
       <karma-package-dir value="$PROJECT_DIR$/node_modules/karma" />
@@ -151,6 +146,18 @@
       <test-names>
         <name value="common &gt; main &gt; rx &gt; deferred-calc &gt; DeferredCalc" />
       </test-names>
+      <method v="2" />
+    </configuration>
+    <configuration name="Experiments" type="mocha-javascript-test-runner">
+      <node-interpreter>node</node-interpreter>
+      <node-options>--max-old-space-size=4096</node-options>
+      <mocha-package>$PROJECT_DIR$/node_modules/mocha</mocha-package>
+      <working-directory>$PROJECT_DIR$</working-directory>
+      <pass-parent-env>true</pass-parent-env>
+      <ui>bdd</ui>
+      <extra-mocha-options>--opts ./env/mocha/configs/babel/mocha.opts --watch</extra-mocha-options>
+      <test-kind>PATTERN</test-kind>
+      <test-pattern>./src/test/experiments/{common,node}/**/*.*</test-pattern>
       <method v="2" />
     </configuration>
     <configuration name="L:\Work\_GIT\GitHub\NodeJs\modules\tree-state-manager\src\test\tests\common\main\rx\deep-subscribe\**\*.ts (Coverage)" type="mocha-javascript-test-runner">
@@ -205,54 +212,6 @@
       </test-names>
       <method v="2" />
     </configuration>
-    <configuration name="common &gt; main &gt; rx &gt; deep-subscribe &gt; deep-subscribe.unsubscribe leaf" type="mocha-javascript-test-runner" temporary="true" nameIsGenerated="true">
-      <node-interpreter>node</node-interpreter>
-      <node-options>--max-old-space-size=4096</node-options>
-      <mocha-package>$PROJECT_DIR$/node_modules/mocha</mocha-package>
-      <working-directory>$PROJECT_DIR$</working-directory>
-      <pass-parent-env>true</pass-parent-env>
-      <ui>bdd</ui>
-      <extra-mocha-options>--opts ./env/mocha/configs/babel/mocha.opts --watch</extra-mocha-options>
-      <test-kind>TEST</test-kind>
-      <test-file>$PROJECT_DIR$/src/test/tests/common/main/rx/deep-subscribe/deep-subscribe.ts</test-file>
-      <test-names>
-        <name value="common &gt; main &gt; rx &gt; deep-subscribe &gt; deep-subscribe" />
-        <name value="unsubscribe leaf" />
-      </test-names>
-      <method v="2" />
-    </configuration>
-    <configuration name="common &gt; main &gt; rx &gt; properties &gt; CalcObjectBuilder.deepSubscribe calc async" type="mocha-javascript-test-runner" temporary="true" nameIsGenerated="true">
-      <node-interpreter>node</node-interpreter>
-      <node-options>--max-old-space-size=4096</node-options>
-      <mocha-package>$PROJECT_DIR$/node_modules/mocha</mocha-package>
-      <working-directory>$PROJECT_DIR$</working-directory>
-      <pass-parent-env>true</pass-parent-env>
-      <ui>bdd</ui>
-      <extra-mocha-options>--opts ./env/mocha/configs/babel/mocha.opts --watch</extra-mocha-options>
-      <test-kind>TEST</test-kind>
-      <test-file>$PROJECT_DIR$/src/test/tests/common/main/rx/object/properties/CalcObjectBuilder.ts</test-file>
-      <test-names>
-        <name value="common &gt; main &gt; rx &gt; properties &gt; CalcObjectBuilder" />
-        <name value="deepSubscribe calc async" />
-      </test-names>
-      <method v="2" />
-    </configuration>
-    <configuration name="common &gt; main &gt; rx &gt; properties &gt; ConnectorBuilder.connect" type="mocha-javascript-test-runner" temporary="true" nameIsGenerated="true">
-      <node-interpreter>node</node-interpreter>
-      <node-options>--max-old-space-size=4096</node-options>
-      <mocha-package>$PROJECT_DIR$/node_modules/mocha</mocha-package>
-      <working-directory>$PROJECT_DIR$</working-directory>
-      <pass-parent-env>true</pass-parent-env>
-      <ui>bdd</ui>
-      <extra-mocha-options>--opts ./env/mocha/configs/babel/mocha.opts --watch</extra-mocha-options>
-      <test-kind>TEST</test-kind>
-      <test-file>$PROJECT_DIR$/src/test/tests/common/main/rx/object/properties/ConnectorBuilder.ts</test-file>
-      <test-names>
-        <name value="common &gt; main &gt; rx &gt; properties &gt; ConnectorBuilder" />
-        <name value="connect" />
-      </test-names>
-      <method v="2" />
-    </configuration>
     <configuration name="deep-subscribe (Coverage)" type="mocha-javascript-test-runner">
       <node-interpreter>node</node-interpreter>
       <node-options>--max-old-space-size=4096</node-options>
@@ -265,7 +224,7 @@
       <test-file>$PROJECT_DIR$/src/test/tests/common/main/rx/deep-subscribe/deep-subscribe.ts</test-file>
       <method v="2" />
     </configuration>
-    <configuration name="time-limits" type="mocha-javascript-test-runner" temporary="true" nameIsGenerated="true">
+    <configuration name="dependent-func.base" type="mocha-javascript-test-runner" temporary="true" nameIsGenerated="true">
       <node-interpreter>node</node-interpreter>
       <node-options>--max-old-space-size=4096</node-options>
       <mocha-package>$PROJECT_DIR$/node_modules/mocha</mocha-package>
@@ -273,10 +232,58 @@
       <pass-parent-env>true</pass-parent-env>
       <ui>bdd</ui>
       <extra-mocha-options>--opts ./env/mocha/configs/babel/mocha.opts --watch</extra-mocha-options>
-      <test-kind>SUITE</test-kind>
-      <test-file>$PROJECT_DIR$/src/test/tests/common/main/time/time-limits.ts</test-file>
+      <test-kind>TEST</test-kind>
+      <test-file>$PROJECT_DIR$/src/test/experiments/node/dependent-func.ts</test-file>
       <test-names>
-        <name value="time-limits" />
+        <name value="dependent-func" />
+        <name value="base" />
+      </test-names>
+      <method v="2" />
+    </configuration>
+    <configuration name="fundamental-operations" type="mocha-javascript-test-runner" temporary="true" nameIsGenerated="true">
+      <node-interpreter>node</node-interpreter>
+      <node-options>--max-old-space-size=4096</node-options>
+      <mocha-package>$PROJECT_DIR$/node_modules/mocha</mocha-package>
+      <working-directory>$PROJECT_DIR$</working-directory>
+      <pass-parent-env>true</pass-parent-env>
+      <ui>bdd</ui>
+      <extra-mocha-options>--opts ./env/mocha/configs/babel/mocha.opts</extra-mocha-options>
+      <test-kind>SUITE</test-kind>
+      <test-file>$PROJECT_DIR$/src/test/performance/node/fundamental-operations.ts</test-file>
+      <test-names>
+        <name value="fundamental-operations" />
+      </test-names>
+      <method v="2" />
+    </configuration>
+    <configuration name="fundamental-operations.Set" type="mocha-javascript-test-runner" temporary="true" nameIsGenerated="true">
+      <node-interpreter>node</node-interpreter>
+      <node-options>--max-old-space-size=4096</node-options>
+      <mocha-package>$PROJECT_DIR$/node_modules/mocha</mocha-package>
+      <working-directory>$PROJECT_DIR$</working-directory>
+      <pass-parent-env>true</pass-parent-env>
+      <ui>bdd</ui>
+      <extra-mocha-options>--opts ./env/mocha/configs/babel/mocha.opts</extra-mocha-options>
+      <test-kind>TEST</test-kind>
+      <test-file>$PROJECT_DIR$/src/test/performance/node/fundamental-operations.ts</test-file>
+      <test-names>
+        <name value="fundamental-operations" />
+        <name value="Set" />
+      </test-names>
+      <method v="2" />
+    </configuration>
+    <configuration name="fundamental-operations.getTupleId" type="mocha-javascript-test-runner" temporary="true" nameIsGenerated="true">
+      <node-interpreter>node</node-interpreter>
+      <node-options>--max-old-space-size=4096</node-options>
+      <mocha-package>$PROJECT_DIR$/node_modules/mocha</mocha-package>
+      <working-directory>$PROJECT_DIR$</working-directory>
+      <pass-parent-env>true</pass-parent-env>
+      <ui>bdd</ui>
+      <extra-mocha-options>--opts ./env/mocha/configs/babel/mocha.opts</extra-mocha-options>
+      <test-kind>TEST</test-kind>
+      <test-file>$PROJECT_DIR$/src/test/performance/node/fundamental-operations.ts</test-file>
+      <test-names>
+        <name value="fundamental-operations" />
+        <name value="getTupleId" />
       </test-names>
       <method v="2" />
     </configuration>
@@ -292,21 +299,22 @@
       <item itemvalue="Mocha.Performance" />
       <item itemvalue="Mocha.deep-subscribe (Coverage)" />
       <item itemvalue="Mocha.Watch" />
+      <item itemvalue="Mocha.Experiments" />
       <item itemvalue="Mocha.RX - Tests" />
-      <item itemvalue="Mocha.common &gt; main &gt; rx &gt; properties &gt; ConnectorBuilder.connect" />
-      <item itemvalue="Mocha.common &gt; main &gt; rx &gt; properties &gt; CalcObjectBuilder.deepSubscribe calc async" />
-      <item itemvalue="Mocha.time-limits" />
-      <item itemvalue="Mocha.common &gt; main &gt; rx &gt; deep-subscribe &gt; deep-subscribe.unsubscribe leaf" />
-      <item itemvalue="npm.Coverage Mocha Report" />
       <item itemvalue="Mocha.common &gt; main &gt; rx &gt; deep-subscribe &gt; deep-subscribe.change" />
+      <item itemvalue="Mocha.fundamental-operations.Set" />
+      <item itemvalue="Mocha.fundamental-operations" />
+      <item itemvalue="Mocha.fundamental-operations.getTupleId" />
+      <item itemvalue="Mocha.dependent-func.base" />
+      <item itemvalue="npm.Coverage Mocha Report" />
     </list>
     <recent_temporary>
       <list>
+        <item itemvalue="Mocha.dependent-func.base" />
+        <item itemvalue="Mocha.fundamental-operations.getTupleId" />
+        <item itemvalue="Mocha.fundamental-operations" />
+        <item itemvalue="Mocha.fundamental-operations.Set" />
         <item itemvalue="Mocha.common &gt; main &gt; rx &gt; deep-subscribe &gt; deep-subscribe.change" />
-        <item itemvalue="Mocha.common &gt; main &gt; rx &gt; deep-subscribe &gt; deep-subscribe.unsubscribe leaf" />
-        <item itemvalue="Mocha.time-limits" />
-        <item itemvalue="Mocha.common &gt; main &gt; rx &gt; properties &gt; CalcObjectBuilder.deepSubscribe calc async" />
-        <item itemvalue="Mocha.common &gt; main &gt; rx &gt; properties &gt; ConnectorBuilder.connect" />
       </list>
     </recent_temporary>
   </component>
@@ -317,20 +325,6 @@
       <option name="number" value="Default" />
       <option name="presentableId" value="Default" />
       <updated>1567687848586</updated>
-    </task>
-    <task id="LOCAL-00134" summary="Rename CalcObjectDebugger to Debugger">
-      <created>1570351569870</created>
-      <option name="number" value="00134" />
-      <option name="presentableId" value="LOCAL-00134" />
-      <option name="project" value="LOCAL" />
-      <updated>1570351569870</updated>
-    </task>
-    <task id="LOCAL-00135" summary="Improved Debugger">
-      <created>1570437380029</created>
-      <option name="number" value="00135" />
-      <option name="presentableId" value="LOCAL-00135" />
-      <option name="project" value="LOCAL" />
-      <updated>1570437380029</updated>
     </task>
     <task id="LOCAL-00136" summary="Implemented resolveAsyncAll, resolveAsyncAny but not tested">
       <created>1570451213589</created>
@@ -661,7 +655,21 @@
       <option name="project" value="LOCAL" />
       <updated>1579272055706</updated>
     </task>
-    <option name="localTasksCounter" value="183" />
+    <task id="LOCAL-00183" summary="deepSubscribe caching rollback">
+      <created>1579276476970</created>
+      <option name="number" value="00183" />
+      <option name="presentableId" value="LOCAL-00183" />
+      <option name="project" value="LOCAL" />
+      <updated>1579276476971</updated>
+    </task>
+    <task id="LOCAL-00184" summary="Add RuleBuilder.change() for subscribe only object changeId">
+      <created>1579276504379</created>
+      <option name="number" value="00184" />
+      <option name="presentableId" value="LOCAL-00184" />
+      <option name="project" value="LOCAL" />
+      <updated>1579276504379</updated>
+    </task>
+    <option name="localTasksCounter" value="185" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -723,8 +731,6 @@
   <component name="VcsManagerConfiguration">
     <option name="CHECK_CODE_SMELLS_BEFORE_PROJECT_COMMIT" value="false" />
     <option name="CHECK_NEW_TODO" value="false" />
-    <MESSAGE value="Fix deepSubscribe unsubscribe order" />
-    <MESSAGE value="Fix: no invalidate CalcProperty if unsubscribe" />
     <MESSAGE value="RuleBuilder: add noAutoRules()" />
     <MESSAGE value="CalcObject.connect as calc property" />
     <MESSAGE value="CalcObject interface fix" />
@@ -748,7 +754,9 @@
     <MESSAGE value="deepSubscribe caching in process: added rules unique id" />
     <MESSAGE value="deepSubscribe caching in process" />
     <MESSAGE value="deepSubscribe caching failed" />
-    <option name="LAST_COMMIT_MESSAGE" value="deepSubscribe caching failed" />
+    <MESSAGE value="deepSubscribe caching rollback" />
+    <MESSAGE value="Add RuleBuilder.change() for subscribe only object changeId" />
+    <option name="LAST_COMMIT_MESSAGE" value="Add RuleBuilder.change() for subscribe only object changeId" />
   </component>
   <component name="XDebuggerManager">
     <breakpoint-manager>
@@ -784,6 +792,7 @@
     <watches-manager>
       <configuration name="mocha-javascript-test-runner">
         <watch expression="setValue + ''" language="TypeScript" />
+        <watch expression="ImmutableMap(o)" language="TypeScript" />
       </configuration>
     </watches-manager>
   </component>

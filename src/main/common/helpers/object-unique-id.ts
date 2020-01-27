@@ -1,4 +1,7 @@
 let nextObjectId: number = 1
+export function getNextObjectId(): number {
+	return nextObjectId++
+}
 
 const UNIQUE_ID_PROPERTY_NAME = '458d576952bc489ab45e98ac7f296fd9'
 
@@ -27,7 +30,7 @@ export function getObjectUniqueId(object: object): number {
 		return null
 	}
 
-	const uniqueId = nextObjectId++
+	const uniqueId = getNextObjectId()
 	Object.defineProperty(object, UNIQUE_ID_PROPERTY_NAME, {
 		enumerable: false,
 		configurable: false,

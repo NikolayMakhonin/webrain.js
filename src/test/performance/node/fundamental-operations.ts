@@ -4,12 +4,14 @@
 /* eslint-disable no-empty,no-shadow,no-prototype-builtins,prefer-destructuring */
 /* eslint-disable prefer-rest-params,arrow-body-style */
 
+import {List as ImmutableList, Map as ImmutableMap, Set as ImmutableSet} from 'immutable'
 import {calcPerformance} from 'rdtsc'
 import {SynchronousPromise} from 'synchronous-promise'
 import {resolveValue} from '../../../main/common/async/async'
 import {resolveAsync, ThenableSync} from '../../../main/common/async/ThenableSync'
 import {createFunction, isIterable} from '../../../main/common/helpers/helpers'
 import {freezeWithUniqueId, getObjectUniqueId} from '../../../main/common/helpers/object-unique-id'
+import {getTupleId, getTupleIdMap} from '../../../main/common/helpers/tuple-unique-id'
 import {ArraySet} from '../../../main/common/lists/ArraySet'
 import {binarySearch} from '../../../main/common/lists/helpers/array'
 import {SortedList} from '../../../main/common/lists/SortedList'
@@ -782,33 +784,74 @@ describe('fundamental-operations', function() {
 		const countObject = 1000
 
 		const objects = []
+		const clones = []
 		for (let i = 0; i < countObject; i++) {
-			objects[i] = {value: i}
+			objects[i] = [ { value: 'text text text text text text' }, 10, { value: i } ]
+			clones[i] = objects[i].slice()
 			getObjectUniqueId(objects[i])
+			getObjectUniqueId(clones[i])
 		}
 
-		function testSet(addObject, removeObject, getIterableValues) {
+		function testSet(addObject, removeObject, getIterableAfterAdd, getIterableAfterDelete) {
 			for (let i = 0; i < countObject; i++) {
-				addObject(objects[i])
+				addObject(objects[i], clones[i])
 			}
+
+			// let count = 0
+			// for (const value of getIterableAfterAdd()) {
+			// 	count++
+			// }
+			// if (count !== countObject) {
+			// 	throw new Error(`count(${count}) !== countObject(${countObject})`)
+			// }
+
 			for (let i = 0; i < countObject; i++) {
 			// for (let i = 99; i >= 0; i--) {
-				removeObject(objects[i])
+				removeObject(objects[i], clones[i])
 			}
-			for (const value of getIterableValues()) {
 
-			}
+			// count = 0
+			// for (const value of getIterableAfterDelete()) {
+			// 	count++
+			// }
+			// if (count !== 0) {
+			// 	throw new Error(`count(${count}) !== 0`)
+			// }
 		}
 
 		// const set1 = new Set()
 		// const set2 = {}
 		// const set3 = []
 
+		const emptyArray = []
+
+		function testEmpty() {
+			testSet(
+				o => {},
+				o => {},
+				() => objects,
+				() => emptyArray,
+			)
+			// assert.strictEqual(set1.size, 0)
+		}
+
 		function testSetNative() {
 			const set = new SetNative()
 			testSet(
 				o => set.add(o),
 				o => set.delete(o),
+				() => set,
+				() => set,
+			)
+			// assert.strictEqual(set1.size, 0)
+		}
+
+		function testWeakSetNative() {
+			const set = new WeakSet()
+			testSet(
+				o => set.add(o),
+				o => set.delete(o),
+				() => set,
 				() => set,
 			)
 			// assert.strictEqual(set1.size, 0)
@@ -820,6 +863,7 @@ describe('fundamental-operations', function() {
 				o => (set[getObjectUniqueId(o)] = o),
 				o => delete set[getObjectUniqueId(o)],
 				o => Object.values(set),
+				o => Object.values(set),
 			)
 			// assert.strictEqual(Object.keys(set).length, 0)
 		}
@@ -829,7 +873,8 @@ describe('fundamental-operations', function() {
 			testSet(
 				o => (set[getObjectUniqueId(o)] = o),
 				o => delete set[getObjectUniqueId(o)],
-				o => set,
+				o => Object.values(set),
+				o => Object.values(set),
 			)
 			// assert.strictEqual(set.length, 0)
 		}
@@ -844,6 +889,7 @@ describe('fundamental-operations', function() {
 						set.splice(i, 1)
 					}
 				},
+				o => set,
 				o => set,
 			)
 			// assert.strictEqual(set.length, 0)
@@ -860,6 +906,7 @@ describe('fundamental-operations', function() {
 						set.length--
 					}
 				},
+				o => set,
 				o => set,
 			)
 			// assert.strictEqual(set.length, 0)
@@ -880,6 +927,7 @@ describe('fundamental-operations', function() {
 					}
 				},
 				o => set,
+				o => set,
 			)
 			// assert.strictEqual(set.length, 0)
 		}
@@ -889,6 +937,7 @@ describe('fundamental-operations', function() {
 			testSet(
 				o => set.add(o),
 				o => set.remove(o),
+				o => set,
 				o => set,
 			)
 			// set.clear()
@@ -902,6 +951,7 @@ describe('fundamental-operations', function() {
 				o => set.add(o),
 				o => set.delete(o),
 				o => set,
+				o => set,
 			)
 			// assert.strictEqual(set.size, 0)
 		}
@@ -913,29 +963,102 @@ describe('fundamental-operations', function() {
 				o => set.add(o),
 				o => set.delete(o),
 				o => set,
+				o => set,
+			)
+			// assert.strictEqual(set.size, 0)
+		}
+
+		function testImmutableSet() {
+			// console.log(ArraySet.toString())
+			let set = new ImmutableSet()
+			testSet(
+				(o, c) => { set = set.add(ImmutableList(o)) },
+				(o, c) => { set = set.delete(ImmutableList(o)) },
+				o => set,
+				o => set,
+			)
+			// assert.strictEqual(set.size, 0)
+		}
+
+		function *iterate(map: Map<any, any>) {
+			for (const item of map.values()) {
+				if (item instanceof Map) {
+					yield* iterate(item)
+				} else {
+					yield item
+				}
+			}
+		}
+
+		class TupleSet<TTuple extends any[]> {
+			private readonly _map: Map<any, any> = new Map()
+
+			public add(tuple: TTuple) {
+				let map = this._map
+				for (let i = 0, len = tuple.length; i < len; i++) {
+					const item = tuple[i]
+					if (i === len - 1) {
+						map.set(item, item)
+					}
+					let nextMap = map.get(item)
+					if (!nextMap) {
+						nextMap = new Map()
+						map.set(item, nextMap)
+					}
+				}
+			}
+
+			public delete(tuple: TTuple) {
+				let map = this._map
+				for (let i = 0, len = tuple.length; i < len; i++) {
+					const item = tuple[i]
+					if (i === len - 1) {
+						map.delete(item)
+					}
+					let nextMap = map.get(item)
+					if (!nextMap) {
+						return
+					}
+				}
+			}
+
+			public [Symbol.iterator]() {
+				return iterate(this._map)
+			}
+		}
+
+		function testTupleSet() {
+			// console.log(ArraySet.toString())
+			let set = new TupleSet()
+			testSet(
+				(o, c) => set.add(o),
+				(o, c) => set.delete(o),
+				o => set,
+				o => set,
 			)
 			// assert.strictEqual(set.size, 0)
 		}
 
 		const result = calcPerformance(
-			10000,
-			() => {
-				// no operations
-			},
-			testSetNative,
-			testObject,
-			testArrayHashTable,
-			testArraySplice,
-			testArray,
-			testArrayKeepOrder,
-			testSetPolyfill,
-			testArraySet,
-			() => testSortedList({
+			60000,
+			testEmpty,
+			testArrayHashTable, // 1.0
+			testSetNative, // 1.0
+			testArraySet, // 1.0150311148125015
+			testObject, // 1.1021265644157587
+			testWeakSetNative, // 1.6042837809702268
+			testArraySplice, // 2.0924161982094525
+			testTupleSet, // 3.2606096883892013
+			testArray, // 3.645999606727277
+			testSetPolyfill, // 5.62216901473616
+			testArrayKeepOrder, // 7.91167557313716
+			() => testSortedList({ // 22.514027691026442
 				autoSort        : true,
 				notAddIfExists  : true,
 				minAllocatedSize: 1000,
 				// compare         : compareUniqueId
 			}),
+			testImmutableSet, // 33.87640826335392
 			// () => testSortedList({
 			// 	autoSort        : true,
 			// 	notAddIfExists  : false,
@@ -946,6 +1069,59 @@ describe('fundamental-operations', function() {
 			// 	notAddIfExists  : false,
 			// 	minAllocatedSize: 1000
 			// })
+		)
+
+		console.log(result)
+	})
+
+	it('getTupleId', function() {
+		this.timeout(300000)
+
+		let _this = {}
+		let func = () => {}
+		let items = [{}, Math.round(Math.random() * 10)]
+
+		let _thisArray = []
+		let funcArray = []
+		let itemsArray = []
+
+		let id
+		for (let i = 0; i < 100000; i++) {
+			_this = {}
+			func = () => {}
+			items = [{}, Math.round(Math.random() * 10)]
+
+			_thisArray[i] = _this
+			funcArray[i] = func
+			itemsArray[i] = items
+
+			id = getTupleId.apply(getTupleIdMap(func, _this, 4), items)
+
+			id = getObjectUniqueId(_this)
+		}
+
+		let index = 0
+
+		const result = calcPerformance(
+			10000,
+			() => {
+				// no operations
+			},
+			() => {
+				// _this = {}
+				// func = () => {}
+				items = [{}, Math.round(Math.random() * 10)]
+
+				_this = _thisArray[index % 100000]
+				func = funcArray[index % 100000]
+				// items = itemsArray[index % 100000]
+			},
+			() => {
+				id = getTupleId.apply(getTupleIdMap(func, _this, 4), items)
+			},
+			() => {
+				id = getObjectUniqueId(_this)
+			},
 		)
 
 		console.log(result)
