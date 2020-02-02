@@ -75,7 +75,10 @@ import {HasDefaultOrValue as _HasDefaultOrValue} from './helpers/value-property'
 import {IObservableMap as _IObservableMap} from './lists/contracts/IMapChanged'
 import {IObservableSet as _IObservableSet} from './lists/contracts/ISetChanged'
 import {ICalcProperty as _ICalcProperty} from './rx/object/properties/contracts'
-import {IPropertyChangedObject as _IPropertyChangedObject} from './rx/object/IPropertyChanged'
+import {
+	IPropertyChangedObject as _IPropertyChangedObject,
+	IPropertyChanged as _IPropertyChanged,
+} from './rx/object/IPropertyChanged'
 import {
 	IObservable as _IObservable,
 	ISubscriber as _ISubscriber,
@@ -107,6 +110,7 @@ export type IObservableSet<T> = _IObservableSet<T>
 export type IObservable<T> = _IObservable<T>
 export type ISubject<T> = _ISubject<T>
 export type IPropertyChangedObject = _IPropertyChangedObject
+export type IPropertyChanged = _IPropertyChanged
 export type ThenableOrIteratorOrValue<T> = _ThenableOrIteratorOrValue<T>
 export type ThenableIterator<T> = _ThenableIterator<T>
 export type ThenableOrValue<T> = _ThenableOrValue<T>

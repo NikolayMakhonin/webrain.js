@@ -76,6 +76,10 @@ export interface IRuleBuilder<TObject = any, TValueKeys extends string | number 
 
 	result(): IRule
 
+	changeValuePropertyDefault(propertyName: string): this
+
+	noAutoRules(): this
+
 	valuePropertyDefault<TValue>(): IRuleBuilder<TValue, TValueKeys>
 
 	rule<TValue>(rule: IRule): IRuleBuilder<TValue, TValueKeys>

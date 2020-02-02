@@ -5,9 +5,9 @@ import {PropertyChangedObject} from './PropertyChangedObject'
 export interface ISetOptions<TObject, TValue> {
 	equalsFunc?: (this: TObject, oldValue: TValue, newValue: TValue) => boolean,
 	fillFunc?: (this: TObject, oldValue: TValue, newValue: TValue) => boolean,
-	convertFunc?: (this: TObject, newValue: TValue) => any,
-	beforeChange?: (this: TObject, oldValue: TValue) => void,
-	afterChange?: (this: TObject, newValue: TValue) => void,
+	convertFunc?: (this: TObject, oldValue: TValue, newValue: TValue) => any,
+	beforeChange?: (this: TObject, oldValue: TValue, newValue: TValue) => void,
+	afterChange?: (this: TObject, oldValue: TValue, newValue: TValue) => void,
 	suppressPropertyChanged?: boolean,
 }
 
@@ -58,7 +58,7 @@ export function _setExt(
 
 	const convertFunc = options.convertFunc
 	if (convertFunc) {
-		newValue = convertFunc.call(object, newValue)
+		newValue = convertFunc.call(object, oldValue, newValue)
 	}
 
 	// if (oldValue === newValue) {
@@ -67,7 +67,7 @@ export function _setExt(
 
 	const beforeChange = options.beforeChange
 	if (beforeChange) {
-		beforeChange.call(object, oldValue)
+		beforeChange.call(object, oldValue, newValue)
 	}
 
 	if (setValue) {
@@ -89,7 +89,7 @@ export function _setExt(
 
 	const afterChange = options.afterChange
 	if (afterChange) {
-		afterChange.call(object, newValue)
+		afterChange.call(object, oldValue, newValue)
 	}
 
 	return true
