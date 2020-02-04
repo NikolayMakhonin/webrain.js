@@ -1,95 +1,124 @@
 import {isIterator} from '../../../../main/common/helpers/helpers'
+import {IUnsubscribe} from '../../../../main/common/rx/subjects/observable'
 
-export type Func<TThis, TArgs extends any[], TResult = void> = (this: TThis, ...args: TArgs) => TResult
-
-export type TDelegate<
-	TThis,
-	TArgs extends any[],
-	TFuncResult = void,
-	TDelegateResult = void,
-> = (func: Func<TThis, TArgs, TFuncResult>) => Func<TThis, TArgs, TDelegateResult>
+export type Func<TThis, TArgs extends any[], TValue = void> = (this: TThis, ...args: TArgs) => TValue
 
 export enum FuncStatus {
 	Calculating = 'Calculating',
+	CalculatingAsync = 'CalculatingAsync',
 	Calculated = 'Calculated',
+	Error = 'Error',
 }
 
-type TChangeState<TValue> = (status: FuncStatus, value?: TValue, error?: any) => void
-
-function changeState<
+export interface IFuncState<
 	TThis,
 	TArgs extends any[],
-	TResult,
->(func: Func<TThis, TArgs, TResult>): Func<TThis, TArgs, TChangeState<TResult>> {
+	TValue,
+> {
+	status: FuncStatus
+	valueAsync: Iterator<TValue>
+	value: TValue
+	error: any
+	updateStatus(status: FuncStatus, valueAsyncOrValueOrError?: TValue|Iterator<TValue>|any): void
+	/** clear status, value, error & unsubscribe dependencies */
+	invalidate(): void
+	subscribe<This extends this>(handler: Func<This, TArgs, void>): IUnsubscribe
+
+	// TODO: parent subscribe for invalidate (clear status & value & error & unsubscribe dependencies)
+	subscribeDependency(dependency: IFuncState<any, any, any>): void
+	unsubscribeDependencies(): void
+}
+
+function getOrCreateFuncState<
+	TThis,
+	TArgs extends any[],
+	TValue,
+>(func: Func<TThis, TArgs, TValue>): Func<TThis, TArgs, IFuncState<TThis, TArgs, TValue>> {
 	return null // TODO
 }
 
-type TMeta = TDelegate<any, any, any>
-
-let currentMeta: TMeta
+let currentState: IFuncState<any, any, any>
 
 function* makeDependentIterator<
 	TThis,
 	TArgs extends any[],
-	TResult,
-	TFunc extends Func<TThis, TArgs, TResult>
+	TValue,
+	TFunc extends Func<TThis, TArgs, TValue>
 >(
-	meta: TMeta,
-	_changeState: TChangeState<TResult>,
-	iterator: Iterator<TResult>,
-): Iterator<TResult> {
-	currentMeta = meta
+	state: IFuncState<TThis, TArgs, TValue>,
+	iterator: Iterator<TValue>,
+): Iterator<TValue> {
+	currentState = state
 
-	let iteration = iterator.next()
-	while (!iteration.done) {
-		const value = yield iteration.value
-		currentMeta = meta
-		iteration = iterator.next(value)
+	try {
+		let iteration = iterator.next()
+		while (!iteration.done) {
+			const value = yield iteration.value
+			currentState = state
+			iteration = iterator.next(value)
+		}
+
+		state.updateStatus(FuncStatus.Calculated, iteration.value)
+		return iteration.value
+	} catch (error) {
+		state.updateStatus(FuncStatus.Error, error)
+		throw error
 	}
-
-	_changeState(FuncStatus.Calculated, iteration.value)
-
-	return iteration.value
 }
 
 export function makeDependentFunc<
 	TThis,
 	TArgs extends any[],
-	TResult,
-	TFunc extends Func<TThis, TArgs, TResult>
->(
-	func: TFunc,
-	meta: TMeta,
-): TFunc {
+	TValue,
+	TFunc extends Func<TThis, TArgs, TValue>
+>(func: TFunc): TFunc {
+	const _getOrCreateFuncState = getOrCreateFuncState(func)
+
 	return function() {
-		let _changeState
+		const state = _getOrCreateFuncState.apply(this, arguments) as IFuncState<TThis, TArgs, TValue>
 
-		const parentMeta = currentMeta
-
-		try {
-			currentMeta = meta
-
-			if (parentMeta) {
-				parentMeta(func).apply(this, arguments)
+		if (state.status) {
+			switch (state.status) {
+				case FuncStatus.Calculating:
+					throw new Error('Infinity loop detected')
+				case FuncStatus.CalculatingAsync:
+					// TODO: Can be async infinity loop, which is hard to debug
+					return state.valueAsync
+				case FuncStatus.Calculated:
+					return state.value
+				case FuncStatus.Error:
+					throw state.error
+				default:
+					throw new Error('Unknown FuncStatus: ' + state.status)
 			}
-
-			_changeState = changeState(func).apply(this, arguments)
-
-			_changeState(FuncStatus.Calculating)
-
-			const result = func.apply(this, arguments)
-
-			if (isIterator(result)) {
-				return makeDependentIterator(meta, _changeState, result as Iterator<any>)
-			} else {
-				_changeState(FuncStatus.Calculated, result)
-			}
-
-			return result
-		} catch (error) {
-			currentMeta = parentMeta
-			_changeState(FuncStatus.Calculated, void 0, error)
 		}
 
+		const parentState = currentState
+
+		try {
+			currentState = state
+
+			if (parentState) {
+				parentState.subscribeDependency(state)
+			}
+
+			state.updateStatus(FuncStatus.Calculating)
+
+			const value = func.apply(this, arguments)
+
+			if (isIterator(value)) {
+				const valueAsync = makeDependentIterator(state, value as Iterator<any>)
+				state.updateStatus(FuncStatus.CalculatingAsync, valueAsync)
+				return valueAsync
+			}
+
+			state.updateStatus(FuncStatus.Calculated, value)
+			return value
+		} catch (error) {
+			state.updateStatus(FuncStatus.Error, error)
+			throw error
+		} finally {
+			currentState = parentState
+		}
 	} as any
 }

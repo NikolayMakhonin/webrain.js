@@ -2152,4 +2152,46 @@ describe('fundamental-operations', function() {
 
 		console.log(result)
 	})
+
+	it('pass arguments', function() {
+		this.timeout(300000)
+
+		function _x(a, b, c, d) {
+			return  a + b + c
+		}
+
+		function x() {
+		  return _x.apply(null, arguments)
+		}
+
+		const args = []
+		for (let i = 0; i < 1000; i++) {
+			args[i] = i
+		}
+
+		let y = new Function('f', 'return function() { return f(' + args.map(o => 'arguments[' + o + ']').join(', ') + ') }')(_x)
+		let run = new Function('f', 'return f(' + args.join(', ') + ')')
+
+		for (let i = 0; i < 1000; i++) {
+			run(x)
+			run(y)
+		}
+
+		let res
+
+		const result = calcPerformance(
+			10000,
+			() => {
+				// no operations
+			},
+			() => {
+				res = run(x)
+			},
+			() => {
+				res = run(y)
+			},
+		)
+
+		console.log(result)
+	})
 })

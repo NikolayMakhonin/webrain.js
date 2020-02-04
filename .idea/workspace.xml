@@ -9,10 +9,6 @@
   <component name="ChangeListManager">
     <list default="true" id="69b2ee16-521b-4efd-b473-8e19e3df4d09" name="Default Changelist" comment="">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/common/index.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/common/index.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/common/rx/deep-subscribe/RuleBuilder.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/common/rx/deep-subscribe/RuleBuilder.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/common/rx/deep-subscribe/contracts/IRuleBuilder.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/common/rx/deep-subscribe/contracts/IRuleBuilder.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/common/rx/object/ObservableClass.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/common/rx/object/ObservableClass.ts" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/test/experiments/common/src/dependent-func.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/test/experiments/common/src/dependent-func.ts" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/test/performance/node/fundamental-operations.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/test/performance/node/fundamental-operations.ts" afterDir="false" />
     </list>
@@ -325,13 +321,6 @@
       <option name="number" value="Default" />
       <option name="presentableId" value="Default" />
       <updated>1567687848586</updated>
-    </task>
-    <task id="LOCAL-00138" summary="Small fixes">
-      <created>1570534734154</created>
-      <option name="number" value="00138" />
-      <option name="presentableId" value="LOCAL-00138" />
-      <option name="project" value="LOCAL" />
-      <updated>1570534734154</updated>
     </task>
     <task id="LOCAL-00139" summary="Fix deep-subscribe bug: keyType == null">
       <created>1570543476768</created>
@@ -669,7 +658,14 @@
       <option name="project" value="LOCAL" />
       <updated>1580138062676</updated>
     </task>
-    <option name="localTasksCounter" value="187" />
+    <task id="LOCAL-00187" summary="Rx interface changes">
+      <created>1580638294316</created>
+      <option name="number" value="00187" />
+      <option name="presentableId" value="LOCAL-00187" />
+      <option name="project" value="LOCAL" />
+      <updated>1580638294317</updated>
+    </task>
+    <option name="localTasksCounter" value="188" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -731,7 +727,6 @@
   <component name="VcsManagerConfiguration">
     <option name="CHECK_CODE_SMELLS_BEFORE_PROJECT_COMMIT" value="false" />
     <option name="CHECK_NEW_TODO" value="false" />
-    <MESSAGE value="CalcObject.connect as calc property" />
     <MESSAGE value="CalcObject interface fix" />
     <MESSAGE value="CalcObject keep state between subscribes, testing..." />
     <MESSAGE value="Before refactoring deepSubscribe fork iterations" />
@@ -756,7 +751,8 @@
     <MESSAGE value="deepSubscribe caching rollback" />
     <MESSAGE value="Add RuleBuilder.change() for subscribe only object changeId" />
     <MESSAGE value="Develop an automatic subscription system using a brilliant idea from MobX, but more universal" />
-    <option name="LAST_COMMIT_MESSAGE" value="Develop an automatic subscription system using a brilliant idea from MobX, but more universal" />
+    <MESSAGE value="Rx interface changes" />
+    <option name="LAST_COMMIT_MESSAGE" value="Rx interface changes" />
   </component>
   <component name="XDebuggerManager">
     <breakpoint-manager>
