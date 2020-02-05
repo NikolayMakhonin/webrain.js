@@ -95,7 +95,9 @@
     "express": "^4.17.1",
     "fs-extra": "^8.1.0",
     "globby": "^10.0.1",
+    "immutable": "^4.0.0-rc.12",
     "istanbul-combine": "^0.3.0",
+    "js2cpp": "^1.1.0",
     "karma": "^4.4.1",
     "karma-browserstack-launcher": "^1.5.1",
     "karma-chrome-launcher": "^3.1.0",
@@ -132,8 +134,7 @@
     "tslint-eslint-rules": "^5.4.0",
     "tslint-no-circular-imports": "^0.7.0",
     "tslint-sonarts": "^1.9.0",
-    "typescript": "^3.7.4",
-    "immutable": "^4.0.0-rc.12"
+    "typescript": "^3.7.4"
   },
   "peerDependencies": {
     "@babel/runtime-corejs3": "^7.5.5",

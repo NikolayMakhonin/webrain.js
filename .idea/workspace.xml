@@ -8,9 +8,13 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="69b2ee16-521b-4efd-b473-8e19e3df4d09" name="Default Changelist" comment="">
+      <change afterPath="$PROJECT_DIR$/src/main/common/rx/depend/FuncCallState.ts" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/common/rx/depend/contracts.ts" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/common/rx/depend/createCall.js" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/test/experiments/common/src/dependent-func.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/test/experiments/common/src/dependent-func.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/test/performance/node/fundamental-operations.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/test/performance/node/fundamental-operations.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/package.json" beforeDir="false" afterPath="$PROJECT_DIR$/package.json" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/test/experiments/common/src/dependent-func.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/common/rx/depend/dependent-func.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/test/experiments/node/dependent-func.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/test/experiments/node/dependent-func.ts" afterDir="false" />
     </list>
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
     <option name="SHOW_DIALOG" value="false" />
@@ -53,7 +57,7 @@
     <property name="WebServerToolWindowFactoryState" value="false" />
     <property name="auto.test.manager.delay" value="5000" />
     <property name="javascript.karma.karma_node_package_dir" value="" />
-    <property name="last_opened_file_path" value="$PROJECT_DIR$/src/main/common/helpers" />
+    <property name="last_opened_file_path" value="$PROJECT_DIR$/src/main/common/rx/depend/contracts.ts" />
     <property name="node.js.detected.package.eslint" value="true" />
     <property name="node.js.detected.package.standard" value="true" />
     <property name="node.js.detected.package.tslint" value="true" />
@@ -72,26 +76,26 @@
     <property name="ts.external.directory.path" value="L:\Work\_GIT\GitHub\NodeJs\modules\webrain\node_modules\typescript\lib" />
   </component>
   <component name="RecentsManager">
-    <key name="MoveFile.RECENT_KEYS">
-      <recent name="L:\Work\_GIT\GitHub\NodeJs\modules\webrain\src\test\experiments\common" />
-      <recent name="L:\Work\_GIT\GitHub\NodeJs\modules\webrain\src\main\common\random" />
-      <recent name="L:\Work\_GIT\GitHub\NodeJs\modules\webrain\src\test\tests\common\main\time" />
-      <recent name="L:\Work\_GIT\GitHub\NodeJs\modules\webrain\dist\js" />
-      <recent name="L:\Work\_GIT\GitHub\NodeJs\modules\webrain\src\main\common\rx" />
-    </key>
-    <key name="es6.move.members.recent.items">
-      <recent name="L:\Work\_GIT\GitHub\NodeJs\modules\webrain\src\main\common\time\helpers.ts" />
-      <recent name="L:\Work\_GIT\GitHub\NodeJs\modules\webrain\src\main\common\rx\deep-subscribe\contracts\deep-subscribe.ts" />
-      <recent name="L:\Work\_GIT\GitHub\NodeJs\modules\webrain\src\main\common\rx\deep-subscribe\helpers\PropertiesPath.ts" />
-      <recent name="L:\Work\_GIT\GitHub\NodeJs\modules\webrain\src\main\common\helpers\helpers.ts" />
-      <recent name="L:\Work\_GIT\GitHub\NodeJs\modules\webrain\src\main\common\rx\object\properties\contracts.ts" />
-    </key>
     <key name="CopyFile.RECENT_KEYS">
       <recent name="L:\Work\_GIT\GitHub\NodeJs\modules\webrain\src\main\common\helpers" />
       <recent name="L:\Work\_GIT\GitHub\NodeJs\modules\webrain\src\test\experiments\node" />
       <recent name="L:\Work\_GIT\GitHub\NodeJs\modules\webrain\src\main\common\random" />
       <recent name="L:\Work\_GIT\GitHub\NodeJs\modules\webrain\src\main\common\time" />
       <recent name="L:\Work\_GIT\GitHub\NodeJs\modules\webrain\src\test\tests\common\main" />
+    </key>
+    <key name="es6.move.members.recent.items">
+      <recent name="L:\Work\_GIT\GitHub\NodeJs\modules\webrain\src\main\common\rx\depend\contracts.ts" />
+      <recent name="L:\Work\_GIT\GitHub\NodeJs\modules\webrain\src\main\common\time\helpers.ts" />
+      <recent name="L:\Work\_GIT\GitHub\NodeJs\modules\webrain\src\main\common\rx\deep-subscribe\contracts\deep-subscribe.ts" />
+      <recent name="L:\Work\_GIT\GitHub\NodeJs\modules\webrain\src\main\common\rx\deep-subscribe\helpers\PropertiesPath.ts" />
+      <recent name="L:\Work\_GIT\GitHub\NodeJs\modules\webrain\src\main\common\helpers\helpers.ts" />
+    </key>
+    <key name="MoveFile.RECENT_KEYS">
+      <recent name="L:\Work\_GIT\GitHub\NodeJs\modules\webrain\src\main\common\rx\depend" />
+      <recent name="L:\Work\_GIT\GitHub\NodeJs\modules\webrain\src\test\experiments\common" />
+      <recent name="L:\Work\_GIT\GitHub\NodeJs\modules\webrain\src\main\common\random" />
+      <recent name="L:\Work\_GIT\GitHub\NodeJs\modules\webrain\src\test\tests\common\main\time" />
+      <recent name="L:\Work\_GIT\GitHub\NodeJs\modules\webrain\dist\js" />
     </key>
   </component>
   <component name="RunDashboard">
@@ -321,13 +325,6 @@
       <option name="number" value="Default" />
       <option name="presentableId" value="Default" />
       <updated>1567687848586</updated>
-    </task>
-    <task id="LOCAL-00139" summary="Fix deep-subscribe bug: keyType == null">
-      <created>1570543476768</created>
-      <option name="number" value="00139" />
-      <option name="presentableId" value="LOCAL-00139" />
-      <option name="project" value="LOCAL" />
-      <updated>1570543476768</updated>
     </task>
     <task id="LOCAL-00140" summary="Improved connector tests. Tests OK.">
       <created>1570607254028</created>
@@ -665,7 +662,14 @@
       <option name="project" value="LOCAL" />
       <updated>1580638294317</updated>
     </task>
-    <option name="localTasksCounter" value="188" />
+    <task id="LOCAL-00188" summary="Develop MobX bicycle with round wheels">
+      <created>1580801155727</created>
+      <option name="number" value="00188" />
+      <option name="presentableId" value="LOCAL-00188" />
+      <option name="project" value="LOCAL" />
+      <updated>1580801155727</updated>
+    </task>
+    <option name="localTasksCounter" value="189" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -727,7 +731,6 @@
   <component name="VcsManagerConfiguration">
     <option name="CHECK_CODE_SMELLS_BEFORE_PROJECT_COMMIT" value="false" />
     <option name="CHECK_NEW_TODO" value="false" />
-    <MESSAGE value="CalcObject interface fix" />
     <MESSAGE value="CalcObject keep state between subscribes, testing..." />
     <MESSAGE value="Before refactoring deepSubscribe fork iterations" />
     <MESSAGE value="Refactoring deepSubscribe fork iterations in process ... Tests OK." />
@@ -752,7 +755,8 @@
     <MESSAGE value="Add RuleBuilder.change() for subscribe only object changeId" />
     <MESSAGE value="Develop an automatic subscription system using a brilliant idea from MobX, but more universal" />
     <MESSAGE value="Rx interface changes" />
-    <option name="LAST_COMMIT_MESSAGE" value="Rx interface changes" />
+    <MESSAGE value="Develop MobX bicycle with round wheels" />
+    <option name="LAST_COMMIT_MESSAGE" value="Develop MobX bicycle with round wheels" />
   </component>
   <component name="XDebuggerManager">
     <breakpoint-manager>

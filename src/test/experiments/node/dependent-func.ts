@@ -10,7 +10,7 @@ import {resolveAsync} from '../../../main/common/async/ThenableSync'
 import {IUnsubscribeOrVoid} from '../../../main/common/rx/subjects/observable'
 import {assert} from '../../../main/common/test/Assert'
 import {describe, it, xit} from '../../../main/common/test/Mocha'
-import {IFuncMeta, makeDependentFunc} from '../common/src/dependent-func'
+import {IFuncMeta, makeDependentFunc} from '../../../main/common/rx/depend/dependent-func'
 
 describe('dependent-func', function() {
 	xit('perf', function() {
