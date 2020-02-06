@@ -37,7 +37,7 @@ export interface IFuncCallState<
 
 	update(status: FuncCallStatus, valueAsyncOrValueOrError?: TValue | Iterator<TValue> | any): void
 
-	subscribe(handler: ISubscriber<TThis, TArgs, TValue>): IUnsubscribe
+	subscribe(handler: ISubscriber<TThis, TArgs, TValue>, immediate: boolean): IUnsubscribe
 
 	// TODO: parent subscribe for invalidate (clear status & value & error & unsubscribe dependencies)
 	// TODO: detect cyclic dependencies

@@ -279,7 +279,6 @@ describe('common > main > rx > depend > dependent-func', function() {
 
 		// level 2
 
-		// console.log(allFuncs.filter(isInvalidated).map(o => o.id))
 		invalidate(S2)
 		checkFuncSync(S2, S2)
 		checkFuncNotChanged(allFuncs)
@@ -299,13 +298,29 @@ describe('common > main > rx > depend > dependent-func', function() {
 		checkFuncSync(I2, I2)
 		checkFuncNotChanged(allFuncs)
 
-		// invalidate(I2)
-		// checkFuncSync(I2, I2)
-		// checkFuncNotChanged(allFuncs)
-		//
-		// invalidate(A2)
-		// await checkFuncAsync(A2, A2)
-		// checkFuncNotChanged(allFuncs)
+		invalidate(I1)
+		checkFuncSync(I2, I2, I1)
+		await checkFuncAsync(A2, A2)
+		checkFuncNotChanged(allFuncs)
+
+		// level 1
+
+		invalidate(S0)
+		// console.log(allFuncs.filter(isInvalidated).map(o => o.id))
+		checkFuncSync(S2, S2, S1, S0)
+		checkFuncSync(I2, I2)
+		checkFuncNotChanged(allFuncs)
+
+		invalidate(I0)
+		checkFuncSync(S2, S2, S1, I0)
+		checkFuncSync(I2, I2, I1)
+		await checkFuncAsync(A2, A2)
+		checkFuncNotChanged(allFuncs)
+
+		invalidate(A0)
+		await checkFuncAsync(I2, I2, I1, A0)
+		await checkFuncAsync(A2, A2)
+		checkFuncNotChanged(allFuncs)
 
 		// endregion
 	})

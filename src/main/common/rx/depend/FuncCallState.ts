@@ -62,7 +62,7 @@ export class FuncCallState<
 	private _subscribersFirst: ILinkItem<ISubscriber<TThis, TArgs, TValue>>
 	private _subscribersLast: ILinkItem<ISubscriber<TThis, TArgs, TValue>>
 
-	public subscribe(subscriber: ISubscriber<TThis, TArgs, TValue>): IUnsubscribe {
+	public subscribe(subscriber: ISubscriber<TThis, TArgs, TValue>, immediate: boolean = true): IUnsubscribe {
 		const {_subscribersLast} = this
 		const subscriberLink: ILinkItem<ISubscriber<TThis, TArgs, TValue>> = {
 			value: subscriber,
@@ -77,7 +77,9 @@ export class FuncCallState<
 		}
 		this._subscribersLast = subscriberLink
 
-		this.call(this, subscriber)
+		if (immediate) {
+			this.call(this, subscriber)
+		}
 
 		return () => {
 			const {prev, next} = subscriberLink
@@ -136,7 +138,7 @@ export class FuncCallState<
 				}
 			}
 		}
-		const unsubscribe = dependency.subscribe(_invalidate)
+		const unsubscribe = dependency.subscribe(_invalidate, false)
 
 		if (!_dependencies) {
 			this._unsubscribers = [unsubscribe]
