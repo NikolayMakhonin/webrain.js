@@ -7,11 +7,10 @@
     <option name="SHOW_STRUCTURE" value="true" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="69b2ee16-521b-4efd-b473-8e19e3df4d09" name="Default Changelist" comment="Develop MobX bicycle with round wheels">
-      <change afterPath="$PROJECT_DIR$/src/test/tests/common/main/rx/depend/dependent-func.ts" afterDir="false" />
+    <list default="true" id="69b2ee16-521b-4efd-b473-8e19e3df4d09" name="Default Changelist" comment="">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/common/rx/depend/dependent-func.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/common/rx/depend/dependent-func.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/common/rx/depend/tuple-map.ts" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/common/rx/depend/FuncCallState.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/common/rx/depend/FuncCallState.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/test/tests/common/main/rx/depend/dependent-func.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/test/tests/common/main/rx/depend/dependent-func.ts" afterDir="false" />
     </list>
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
     <option name="SHOW_DIALOG" value="false" />
@@ -107,7 +106,7 @@
       </list>
     </option>
   </component>
-  <component name="RunManager" selected="Mocha.Watch">
+  <component name="RunManager" selected="Mocha.common &gt; main &gt; rx &gt; depend &gt; dependent-func.base">
     <configuration default="true" type="JavaScriptTestRunnerKarma">
       <config-file value="$PROJECT_DIR$/env/karma/configs/dev.js" />
       <karma-package-dir value="$PROJECT_DIR$/node_modules/karma" />
@@ -193,6 +192,54 @@
       <test-pattern>./src/test/tests/{common,node}/**/*.*</test-pattern>
       <method v="2" />
     </configuration>
+    <configuration name="common &gt; extensions &gt; merge &gt; ObjectMerger.combinations.complex objects" type="mocha-javascript-test-runner" temporary="true" nameIsGenerated="true">
+      <node-interpreter>node</node-interpreter>
+      <node-options>--max-old-space-size=4096</node-options>
+      <mocha-package>$PROJECT_DIR$/node_modules/mocha</mocha-package>
+      <working-directory>$PROJECT_DIR$</working-directory>
+      <pass-parent-env>true</pass-parent-env>
+      <ui>bdd</ui>
+      <extra-mocha-options>--opts ./env/mocha/configs/babel/mocha.opts --watch</extra-mocha-options>
+      <test-kind>TEST</test-kind>
+      <test-file>$PROJECT_DIR$/src/test/tests/common/main/extensions/merge/ObjectMerger.ts</test-file>
+      <test-names>
+        <name value="common &gt; extensions &gt; merge &gt; ObjectMerger" />
+        <name value="combinations" />
+        <name value="complex objects" />
+      </test-names>
+      <method v="2" />
+    </configuration>
+    <configuration name="common &gt; main &gt; rx &gt; depend &gt; dependent-func" type="mocha-javascript-test-runner" temporary="true" nameIsGenerated="true">
+      <node-interpreter>node</node-interpreter>
+      <node-options>--max-old-space-size=4096</node-options>
+      <mocha-package>$PROJECT_DIR$/node_modules/mocha</mocha-package>
+      <working-directory>$PROJECT_DIR$</working-directory>
+      <pass-parent-env>true</pass-parent-env>
+      <ui>bdd</ui>
+      <extra-mocha-options>--opts ./env/mocha/configs/babel/mocha.opts --watch</extra-mocha-options>
+      <test-kind>SUITE</test-kind>
+      <test-file>$PROJECT_DIR$/src/test/tests/common/main/rx/depend/dependent-func.ts</test-file>
+      <test-names>
+        <name value="common &gt; main &gt; rx &gt; depend &gt; dependent-func" />
+      </test-names>
+      <method v="2" />
+    </configuration>
+    <configuration name="common &gt; main &gt; rx &gt; depend &gt; dependent-func.base" type="mocha-javascript-test-runner" temporary="true" nameIsGenerated="true">
+      <node-interpreter>node</node-interpreter>
+      <node-options>--max-old-space-size=4096</node-options>
+      <mocha-package>$PROJECT_DIR$/node_modules/mocha</mocha-package>
+      <working-directory>$PROJECT_DIR$</working-directory>
+      <pass-parent-env>true</pass-parent-env>
+      <ui>bdd</ui>
+      <extra-mocha-options>--opts ./env/mocha/configs/babel/mocha.opts --watch</extra-mocha-options>
+      <test-kind>TEST</test-kind>
+      <test-file>$PROJECT_DIR$/src/test/tests/common/main/rx/depend/dependent-func.ts</test-file>
+      <test-names>
+        <name value="common &gt; main &gt; rx &gt; depend &gt; dependent-func" />
+        <name value="base" />
+      </test-names>
+      <method v="2" />
+    </configuration>
     <configuration name="deep-subscribe (Coverage)" type="mocha-javascript-test-runner">
       <node-interpreter>node</node-interpreter>
       <node-options>--max-old-space-size=4096</node-options>
@@ -218,53 +265,6 @@
       <test-names>
         <name value="dependent-func" />
         <name value="base" />
-      </test-names>
-      <method v="2" />
-    </configuration>
-    <configuration name="fundamental-operations" type="mocha-javascript-test-runner" temporary="true" nameIsGenerated="true">
-      <node-interpreter>node</node-interpreter>
-      <node-options>--max-old-space-size=4096</node-options>
-      <mocha-package>$PROJECT_DIR$/node_modules/mocha</mocha-package>
-      <working-directory>$PROJECT_DIR$</working-directory>
-      <pass-parent-env>true</pass-parent-env>
-      <ui>bdd</ui>
-      <extra-mocha-options>--opts ./env/mocha/configs/babel/mocha.opts</extra-mocha-options>
-      <test-kind>SUITE</test-kind>
-      <test-file>$PROJECT_DIR$/src/test/performance/node/fundamental-operations.ts</test-file>
-      <test-names>
-        <name value="fundamental-operations" />
-      </test-names>
-      <method v="2" />
-    </configuration>
-    <configuration name="fundamental-operations.Set" type="mocha-javascript-test-runner" temporary="true" nameIsGenerated="true">
-      <node-interpreter>node</node-interpreter>
-      <node-options>--max-old-space-size=4096</node-options>
-      <mocha-package>$PROJECT_DIR$/node_modules/mocha</mocha-package>
-      <working-directory>$PROJECT_DIR$</working-directory>
-      <pass-parent-env>true</pass-parent-env>
-      <ui>bdd</ui>
-      <extra-mocha-options>--opts ./env/mocha/configs/babel/mocha.opts</extra-mocha-options>
-      <test-kind>TEST</test-kind>
-      <test-file>$PROJECT_DIR$/src/test/performance/node/fundamental-operations.ts</test-file>
-      <test-names>
-        <name value="fundamental-operations" />
-        <name value="Set" />
-      </test-names>
-      <method v="2" />
-    </configuration>
-    <configuration name="fundamental-operations.getTupleId" type="mocha-javascript-test-runner" temporary="true" nameIsGenerated="true">
-      <node-interpreter>node</node-interpreter>
-      <node-options>--max-old-space-size=4096</node-options>
-      <mocha-package>$PROJECT_DIR$/node_modules/mocha</mocha-package>
-      <working-directory>$PROJECT_DIR$</working-directory>
-      <pass-parent-env>true</pass-parent-env>
-      <ui>bdd</ui>
-      <extra-mocha-options>--opts ./env/mocha/configs/babel/mocha.opts</extra-mocha-options>
-      <test-kind>TEST</test-kind>
-      <test-file>$PROJECT_DIR$/src/test/performance/node/fundamental-operations.ts</test-file>
-      <test-names>
-        <name value="fundamental-operations" />
-        <name value="getTupleId" />
       </test-names>
       <method v="2" />
     </configuration>
@@ -298,20 +298,20 @@
       <item itemvalue="Mocha.Watch" />
       <item itemvalue="Mocha.Experiments" />
       <item itemvalue="Mocha.RX - Tests" />
-      <item itemvalue="Mocha.fundamental-operations.Set" />
-      <item itemvalue="Mocha.fundamental-operations" />
-      <item itemvalue="Mocha.fundamental-operations.getTupleId" />
       <item itemvalue="Mocha.dependent-func.base" />
       <item itemvalue="Mocha.fundamental-operations.pass arguments" />
       <item itemvalue="npm.Coverage Mocha Report" />
+      <item itemvalue="Mocha.common &gt; extensions &gt; merge &gt; ObjectMerger.combinations.complex objects" />
+      <item itemvalue="Mocha.common &gt; main &gt; rx &gt; depend &gt; dependent-func" />
+      <item itemvalue="Mocha.common &gt; main &gt; rx &gt; depend &gt; dependent-func.base" />
     </list>
     <recent_temporary>
       <list>
+        <item itemvalue="Mocha.common &gt; main &gt; rx &gt; depend &gt; dependent-func.base" />
+        <item itemvalue="Mocha.common &gt; main &gt; rx &gt; depend &gt; dependent-func" />
+        <item itemvalue="Mocha.common &gt; extensions &gt; merge &gt; ObjectMerger.combinations.complex objects" />
         <item itemvalue="Mocha.fundamental-operations.pass arguments" />
         <item itemvalue="Mocha.dependent-func.base" />
-        <item itemvalue="Mocha.fundamental-operations.getTupleId" />
-        <item itemvalue="Mocha.fundamental-operations" />
-        <item itemvalue="Mocha.fundamental-operations.Set" />
       </list>
     </recent_temporary>
   </component>
@@ -322,13 +322,6 @@
       <option name="number" value="Default" />
       <option name="presentableId" value="Default" />
       <updated>1567687848586</updated>
-    </task>
-    <task id="LOCAL-00143" summary="Added time statistic for CalcProperty">
-      <created>1570795955646</created>
-      <option name="number" value="00143" />
-      <option name="presentableId" value="LOCAL-00143" />
-      <option name="project" value="LOCAL" />
-      <updated>1570795955647</updated>
     </task>
     <task id="LOCAL-00144" summary="Small interface fix">
       <created>1572787447689</created>
@@ -666,7 +659,14 @@
       <option name="project" value="LOCAL" />
       <updated>1580978318617</updated>
     </task>
-    <option name="localTasksCounter" value="192" />
+    <task id="LOCAL-00192" summary="Develop MobX bicycle with round wheels">
+      <created>1580987911149</created>
+      <option name="number" value="00192" />
+      <option name="presentableId" value="LOCAL-00192" />
+      <option name="project" value="LOCAL" />
+      <updated>1580987911151</updated>
+    </task>
+    <option name="localTasksCounter" value="193" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -783,6 +783,12 @@
           <url>file://$PROJECT_DIR$/src/main/common/rx/deep-subscribe/ObjectSubscriber.ts</url>
           <line>220</line>
           <option name="timeStamp" value="271" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" type="javascript">
+          <url>file://$PROJECT_DIR$/src/main/common/rx/depend/FuncCallState.ts</url>
+          <line>66</line>
+          <properties lambdaOrdinal="-1" />
+          <option name="timeStamp" value="276" />
         </line-breakpoint>
       </breakpoints>
     </breakpoint-manager>

@@ -114,9 +114,9 @@ export class FuncCallState<
 			return
 		}
 
-		const {_invalidate} = this
+		let {_invalidate} = this
 		if (!_invalidate) {
-			this._invalidate = () => this.invalidate
+			this._invalidate = _invalidate = () => this.invalidate
 		}
 		const unsubscribe = dependency.subscribe(_invalidate)
 

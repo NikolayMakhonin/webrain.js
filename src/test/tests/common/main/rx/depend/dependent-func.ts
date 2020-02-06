@@ -6,13 +6,13 @@
 
 // @ts-ignore
 import {calcPerformance} from 'rdtsc'
-import {delay} from '../../../../../../main/common'
-import {ThenableOrValue} from '../../../../../../main/common/async/async'
+import {isThenable, Thenable, ThenableOrValue} from '../../../../../../main/common/async/async'
 import {makeDependentFunc} from '../../../../../../main/common/rx/depend/dependent-func'
 import {assert} from '../../../../../../main/common/test/Assert'
 import {describe, it, xit} from '../../../../../../main/common/test/Mocha'
+import {delay} from '../../../../../../main/common/time/helpers'
 
-describe('dependent-func', function() {
+describe('common > main > rx > depend > dependent-func', function() {
 	xit('perf', function() {
 		this.timeout(300000)
 
@@ -43,15 +43,20 @@ describe('dependent-func', function() {
 		id: string,
 	}
 
-	function getCallId(funcId: string, _this?: any, a?: number, b?: number) {
-		return funcId + '_' + (a || 0) + '_' + (b || 0) + '_' + (
-			Array.isArray(_this) && _this.map(o => o.id).join('') || _this || 0
-		)
+	function getCallId(funcId: string, _this?: any, ...rest: any[]) {
+		let callId = funcId
+		for (let i = 0, len = rest.length; i < len; i++) {
+			callId += rest[i] || 0
+		}
+		callId += '(' + (
+			Array.isArray(_this) && _this.map(o => o.id).join(',') || _this || 0
+		) + ')'
+		return callId
 	}
 
 	function funcSync(id: string) {
-		const result: IDependencyFunc = makeDependentFunc((a, b) => {
-			const callId = getCallId(id, this, a, b)
+		const result: IDependencyFunc = makeDependentFunc(function() {
+			const callId = getCallId(id, this, ...arguments)
 			callHistory.push(callId)
 			const dependencies = this
 			if (Array.isArray(dependencies)) {
@@ -87,8 +92,8 @@ describe('dependent-func', function() {
 			return callId
 		}
 
-		const result: IDependencyFunc = makeDependentFunc(function(a, b) {
-			const callId = getCallId(id, this, a, b)
+		const result: IDependencyFunc = makeDependentFunc(function() {
+			const callId = getCallId(id, this, ...arguments)
 			callHistory.push(callId)
 			return run(callId, this as any)
 		}) as any
@@ -123,8 +128,8 @@ describe('dependent-func', function() {
 			return callId
 		}
 
-		const result: IDependencyFunc = makeDependentFunc(function(a, b) {
-			const callId = getCallId(id, this, a, b)
+		const result: IDependencyFunc = makeDependentFunc(function() {
+			const callId = getCallId(id, this, ...arguments)
 			callHistory.push(callId)
 			return run(callId, this as any)
 		}) as any
@@ -134,19 +139,10 @@ describe('dependent-func', function() {
 		return result
 	}
 	
-	function funcCall(func: IDependencyFunc, _this?: any, a?: number, b?: number) {
-		const callId = getCallId(func.id, _this, a, b)
+	function funcCall(func: IDependencyFunc, _this?: any, ...rest: any[]) {
+		const callId = getCallId(func.id, _this, ...rest)
 		const result: IDependencyCall = (() => {
-			switch (arguments.length) {
-				case 2:
-					return func.call(_this)
-				case 3:
-					return func.call(_this, a)
-				case 4:
-					return func.call(_this, a, b)
-				default:
-					throw new Error('arguments.length === ' + arguments.length)
-			}
+			return func.apply(_this, rest)
 		}) as any
 
 		result.id = callId
@@ -155,35 +151,49 @@ describe('dependent-func', function() {
 	}
 
 	class ThisObj {
-		private value: number
+		private value: string
 
-		constructor(value: number) {
-
+		constructor(value: string) {
+			this.value = value
 		}
 
 		public toString() {
-			return this.value + ''
+			return this.value
 		}
 	}
 
-	it('base', function() {
+	function checkAsync<TValue>(value: ThenableOrValue<TValue>): Thenable<TValue> {
+		assert.ok(isThenable(value))
+		return value as Thenable<TValue>
+	}
+
+	it('base', async function() {
 		this.timeout(300000)
 
 		const S = funcSync('S')
 		const I = funcSyncIterator('I')
 		const A = funcAsync('A')
 
-		const S3 = funcCall(S)
-		const I3 = funcCall(I, null)
-		const A3 = funcCall(A, new ThisObj(1))
+		const S0 = funcCall(S)
+		const I0 = funcCall(I, null)
+		const A0 = funcCall(A, new ThisObj('_'))
 
-		const S2 = funcCall(S, [S3, I3], void 0)
-		const I2 = funcCall(I, [I3, A3], null)
+		const S1 = funcCall(S, [S0, I0], 1)
+		const I1 = funcCall(I, [I0, A0], 1)
 
-		const S1 = funcCall(S, [S2], 1)
-		const I1 = funcCall(I, [S2, I2], 1, 2)
-		const A1 = funcCall(S, [I2], 1, void 0)
-		
-		assert.strictEqual(S1(), 'S1_1_0_S2')
+		const S2 = funcCall(S, [S1], 2, void 0)
+		const I2 = funcCall(I, [S1, I1], 2, null)
+		const A2 = funcCall(A, [I1], 2, 2)
+
+		assert.strictEqual(S0(), 'S(0)')
+		assert.strictEqual(I0(), 'I(0)')
+		assert.strictEqual(await checkAsync(A0()), 'A(_)')
+
+		assert.strictEqual(S1(), 'S1(S(0),I(0))')
+		assert.strictEqual(I1(), 'I1(I(0),A(_))')
+
+		assert.strictEqual(S2(), 'S20(S1(S(0),I(0)))')
+		assert.strictEqual(I2(), 'I20(S1(S(0),I(0)),I1(I(0),A(_)))')
+		assert.strictEqual(await checkAsync(A2()), 'A22(I1(I(0),A(_)))')
 	})
 })
