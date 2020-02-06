@@ -194,16 +194,31 @@ describe('common > main > rx > depend > dependent-func', function() {
 	}
 
 	async function checkFuncAsync<TValue>(funcCall: IDependencyCall, ...callHistory: IDependencyCall[]) {
+		checkCallHistory([])
 		assert.strictEqual(await checkAsync(funcCall()), funcCall.id)
 		checkCallHistory(callHistory)
 	}
 
-	function invalidate() {
+	function invalidate(funcCall: IDependencyCall) {
+		checkCallHistory([])
+		funcCall.state.invalidate()
+		checkCallHistory([])
+	}
 
+	function _checkFuncNotChanged<TValue>(...funcCalls: IDependencyCall[]) {
+		for (let i = 0, len = funcCalls.length; i < len; i++) {
+			checkFuncSync(funcCalls[i])
+		}
+	}
+
+	function checkFuncNotChanged<TValue>(allFuncCalls: IDependencyCall[], ...changedFuncCalls: IDependencyCall[]) {
+		_checkFuncNotChanged(...allFuncCalls.filter(o => changedFuncCalls.indexOf(o) < 0))
 	}
 
 	it('base', async function() {
 		this.timeout(300000)
+
+		// region init
 
 		const S = funcSync('S')
 		const I = funcSyncIterator('I')
@@ -220,6 +235,10 @@ describe('common > main > rx > depend > dependent-func', function() {
 		const I2 = funcCall(I, [S1, I1], 2, null)
 		const A2 = funcCall(A, [I1], 2, 2)
 
+		// endregion
+
+		// region check init
+
 		assert.strictEqual(S0.id, 'S(0)')
 		assert.strictEqual(I0.id, 'I(0)')
 		assert.strictEqual(A0.id, 'A(_)')
@@ -230,6 +249,10 @@ describe('common > main > rx > depend > dependent-func', function() {
 		assert.strictEqual(S2.id, 'S20(S1(S(0),I(0)))')
 		assert.strictEqual(I2.id, 'I20(S1(S(0),I(0)),I1(I(0),A(_)))')
 		assert.strictEqual(A2.id, 'A22(I1(I(0),A(_)))')
+
+		// endregion
+
+		// region base tests
 
 		checkFuncSync(S0, S0)
 		checkFuncSync(I0, I0)
@@ -242,5 +265,42 @@ describe('common > main > rx > depend > dependent-func', function() {
 		checkFuncSync(I2, I2)
 		await checkFuncAsync(A2, A2)
 
+		// endregion
+
+		// region invalidate
+
+		const allFuncs = [S0, I0, A0, S1, I1, S2, I2, A2]
+		checkFuncNotChanged(allFuncs)
+
+		// level 2
+
+		invalidate(S2)
+		checkFuncSync(S2, S2)
+		checkFuncNotChanged(allFuncs)
+
+		invalidate(I2)
+		checkFuncSync(I2, I2)
+		checkFuncNotChanged(allFuncs)
+
+		invalidate(A2)
+		await checkFuncAsync(A2, A2)
+		checkFuncNotChanged(allFuncs)
+
+		// level 1
+
+		invalidate(S1)
+		checkFuncSync(S2, S1, S2)
+		checkFuncSync(I2, I2)
+		checkFuncNotChanged(allFuncs)
+
+		// invalidate(I2)
+		// checkFuncSync(I2, I2)
+		// checkFuncNotChanged(allFuncs)
+		//
+		// invalidate(A2)
+		// await checkFuncAsync(A2, A2)
+		// checkFuncNotChanged(allFuncs)
+
+		// endregion
 	})
 })

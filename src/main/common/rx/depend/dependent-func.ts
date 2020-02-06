@@ -132,6 +132,8 @@ export function makeDependentFunc<
 			switch (state.status) {
 				case FuncCallStatus.Invalidating:
 					throw new Error('Call func during Invalidating')
+				case FuncCallStatus.Invalidated:
+					break
 				case FuncCallStatus.Calculating:
 					throw new Error('Recursive sync loop detected')
 				case FuncCallStatus.CalculatingAsync:
