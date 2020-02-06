@@ -3,6 +3,7 @@ import {resolveAsync} from '../../async/ThenableSync'
 import {isIterator} from '../../helpers/helpers'
 import {Func, FuncCallStatus, IFuncCallState} from './contracts'
 import {createCall, FuncCallState} from './FuncCallState'
+import {ISemiWeakMap, SemiWeakMap} from './SemiWeakMap'
 import {getTupleMap} from './tuple-map'
 
 function getOrCreateFuncCallState<
@@ -70,43 +71,46 @@ function _getFuncCallState<
 >(funcStateMap: Map<number, any>): Func<TThis, TArgs, IFuncCallState<TThis, TArgs, TValue>> {
 	return function() {
 		const argumentsLength = arguments.length
-		let argsStateMap = funcStateMap.get(argumentsLength)
-		if (!argsStateMap) {
-			argsStateMap = new SemiWeakMap()
-			funcStateMap.set(argumentsLength, argsStateMap)
+		let argsLengthStateMap = funcStateMap.get(argumentsLength)
+		if (!argsLengthStateMap) {
+			argsLengthStateMap = new SemiWeakMap()
+			funcStateMap.set(argumentsLength, argsLengthStateMap)
 		}
 
 		let state: IFuncCallState<TThis, TArgs, TValue>
 		if (argumentsLength) {
-			let stateMap = funcStateMap.get(this)
-			if (!stateMap) {
-				stateMap = new SemiWeakMap()
-				funcStateMap.set(this, stateMap)
+			let argsStateMap: ISemiWeakMap<any, any> = argsLengthStateMap.get(this)
+			if (!argsStateMap) {
+				argsStateMap = new SemiWeakMap()
+				argsLengthStateMap.set(this, argsStateMap)
 			}
 
 			for (let i = 0; i < argumentsLength - 1; i++) {
-				let nextStateMap = stateMap.get(arguments[i])
+				const arg = arguments[i]
+				let nextStateMap: ISemiWeakMap<any, any> = argsStateMap.get(arg)
 				if (!nextStateMap) {
 					nextStateMap = new SemiWeakMap()
-					stateMap.set(this, nextStateMap)
+					argsStateMap.set(arg, nextStateMap)
 				}
-				stateMap = nextStateMap
+				argsStateMap = nextStateMap
 			}
 
 			const lastArg = arguments[argumentsLength - 1]
-			state = stateMap.get(lastArg)
+			state = argsStateMap.get(lastArg)
 			if (!state) {
 				state = new FuncCallState<TThis, TArgs, TValue>(this, createCall.apply(this, arguments))
-				stateMap.set(lastArg, state)
+				argsStateMap.set(lastArg, state)
 			}
 		} else {
-			state = argsStateMap.get(this)
+			state = argsLengthStateMap.get(this)
 			if (!state) {
 				state = new FuncCallState<TThis, TArgs, TValue>(this, createCall.apply(this, arguments))
-				argsStateMap.set(this, state)
+				argsLengthStateMap.set(this, state)
 			}
 		}
-	} as any
+
+		return state
+	}
 }
 
 export function makeDependentFunc<
@@ -189,5 +193,5 @@ export function makeDependentFunc<
 		} finally {
 			currentState = parentState
 		}
-	} as any
+	}
 }
