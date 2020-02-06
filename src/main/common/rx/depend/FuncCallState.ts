@@ -1,6 +1,6 @@
 import {Thenable} from '../../async/async'
 import {IUnsubscribe} from '../subjects/observable'
-import {Func, FuncCallStatus, IFuncCallState, ILinkItem, ISubscriber, TCall} from './contracts'
+import {FuncCallStatus, IFuncCallState, ILinkItem, ISubscriber, TCall} from './contracts'
 
 export function createCall<
 	TThis,
@@ -80,11 +80,23 @@ export class FuncCallState<
 		this.call(this, subscriber)
 
 		return () => {
-			const {prev} = subscriberLink
+			const {prev, next} = subscriberLink
 			if (prev) {
-				prev.next = subscriberLink.next
+				if (next) {
+					prev.next = next
+					next.prev = prev
+				} else {
+					this._subscribersLast = prev
+					prev.next = null
+				}
 			} else {
-				this._subscribersFirst = subscriberLink.next
+				if (next) {
+					this._subscribersFirst = next
+					next.prev = null
+				} else {
+					this._subscribersFirst = null
+					this._subscribersLast = null
+				}
 			}
 		}
 	}
@@ -116,18 +128,23 @@ export class FuncCallState<
 
 		let {_invalidate} = this
 		if (!_invalidate) {
-			this._invalidate = _invalidate = () => this.invalidate
+			const self = this
+			this._invalidate = _invalidate = function() {
+				const {status} = this
+				if (status === FuncCallStatus.Invalidating || status === FuncCallStatus.Invalidated) {
+					self.update(status)
+				}
+			}
 		}
 		const unsubscribe = dependency.subscribe(_invalidate)
 
 		if (!_dependencies) {
 			this._unsubscribers = [unsubscribe]
 			this._dependencies = _dependencies = new Set()
-			_dependencies.add(dependency)
 		} else {
 			this._unsubscribers.push(unsubscribe)
-			_dependencies.add(dependency)
 		}
+		_dependencies.add(dependency)
 	}
 
 	public unsubscribeDependencies(): void {
@@ -147,30 +164,49 @@ export class FuncCallState<
 
 	private _invalidate: () => void
 	public invalidate(): void {
-		switch (this.status) {
-			case FuncCallStatus.Invalidating:
-			case FuncCallStatus.Calculating:
-			case FuncCallStatus.CalculatingAsync:
-				throw new Error(`invalidate() called when status is ${this.status}`)
-		}
-
 		this.update(FuncCallStatus.Invalidating)
 		this.update(FuncCallStatus.Invalidated)
 	}
 
+
 	public update(status: FuncCallStatus, valueAsyncOrValueOrError?: Iterator<TValue> | any | TValue): void {
-		this.status = status
 		switch (status) {
 			case FuncCallStatus.Invalidating:
+				if (this.status === FuncCallStatus.Invalidated) {
+					return
+				}
+				// tslint:disable-next-line:no-nested-switch
+				if (this.status !== FuncCallStatus.Invalidating
+					&& this.status !== FuncCallStatus.Calculated
+					&& this.status !== FuncCallStatus.Error
+				) {
+					throw new Error(`Set status ${status} called when current status is ${this.status}`)
+				}
 				this.unsubscribeDependencies()
 				break
 			case FuncCallStatus.Invalidated:
+				if (this.status !== FuncCallStatus.Invalidating) {
+					return
+				}
+				break
 			case FuncCallStatus.Calculating:
+				if (this.status != null
+					&& this.status !== FuncCallStatus.Invalidating
+					&& this.status !== FuncCallStatus.Invalidated
+				) {
+					throw new Error(`Set status ${status} called when current status is ${this.status}`)
+				}
 				break
 			case FuncCallStatus.CalculatingAsync:
+				if (this.status !== FuncCallStatus.Calculating) {
+					throw new Error(`Set status ${status} called when current status is ${this.status}`)
+				}
 				this.valueAsync = valueAsyncOrValueOrError
 				break
 			case FuncCallStatus.Calculated:
+				if (this.status !== FuncCallStatus.Calculating && this.status !== FuncCallStatus.CalculatingAsync) {
+					throw new Error(`Set status ${status} called when current status is ${this.status}`)
+				}
 				if (typeof this.valueAsync !== 'undefined') {
 					this.valueAsync = void 0
 				}
@@ -181,6 +217,9 @@ export class FuncCallState<
 				this.hasValue = true
 				break
 			case FuncCallStatus.Error:
+				if (this.status !== FuncCallStatus.Calculating && this.status !== FuncCallStatus.CalculatingAsync) {
+					throw new Error(`Set status ${status} called when current status is ${this.status}`)
+				}
 				if (typeof this.valueAsync !== 'undefined') {
 					this.valueAsync = void 0
 				}
@@ -191,6 +230,8 @@ export class FuncCallState<
 			default:
 				throw new Error('Unknown FuncCallStatus: ' + status)
 		}
+
+		this.status = status
 
 		this.emit()
 	}

@@ -15,6 +15,7 @@ function* makeDependentIterator<
 >(
 	state: IFuncCallState<TThis, TArgs, TValue>,
 	iterator: Iterator<TValue>,
+	nested?: boolean,
 ): Iterator<TValue> {
 	currentState = state
 
@@ -24,7 +25,7 @@ function* makeDependentIterator<
 			let value = iteration.value
 
 			if (isIterator(value)) {
-				value = makeDependentIterator(state, value as Iterator<TValue>)
+				value = makeDependentIterator(state, value as Iterator<TValue>, true)
 			}
 
 			value = yield value
@@ -32,10 +33,14 @@ function* makeDependentIterator<
 			iteration = iterator.next(value)
 		}
 
-		state.update(FuncCallStatus.Calculated, iteration.value)
+		if (!nested) {
+			state.update(FuncCallStatus.Calculated, iteration.value)
+		}
 		return iteration.value
 	} catch (error) {
-		state.update(FuncCallStatus.Error, error)
+		if (!nested) {
+			state.update(FuncCallStatus.Error, error)
+		}
 		throw error
 	}
 }
@@ -128,10 +133,14 @@ export function makeDependentFunc<
 	const dependentFunc = function() {
 		const state = getState.apply(this, arguments)
 
+		const parentState = currentState
+		if (parentState) {
+			parentState.subscribeDependency(state)
+		}
+
 		if (state.status) {
 			switch (state.status) {
 				case FuncCallStatus.Invalidating:
-					throw new Error('Call func during Invalidating')
 				case FuncCallStatus.Invalidated:
 					break
 				case FuncCallStatus.Calculating:
@@ -154,16 +163,10 @@ export function makeDependentFunc<
 			}
 		}
 
-		const parentState = currentState
-
 		try {
 			state.parentCallState = parentState
 
 			currentState = state
-
-			if (parentState) {
-				parentState.subscribeDependency(state)
-			}
 
 			state.update(FuncCallStatus.Calculating)
 
@@ -176,8 +179,9 @@ export function makeDependentFunc<
 
 				if (isThenable(value)) {
 					state.update(FuncCallStatus.CalculatingAsync, value)
-					return value
 				}
+
+				return value
 			} else if (isThenable(value)) {
 				throw new Error('You should use iterator instead thenable for async functions')
 			}

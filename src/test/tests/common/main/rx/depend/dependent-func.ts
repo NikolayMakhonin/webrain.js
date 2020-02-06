@@ -62,8 +62,8 @@ describe('common > main > rx > depend > dependent-func', function() {
 			_callHistory.push(callId)
 			const dependencies = this
 			if (Array.isArray(dependencies)) {
-				for (let i = 0, len = dependencies.length; i < len; i++) {
-					const dependency = dependencies[i]
+				for (let i = 0, len = dependencies.length; i < len * 2; i++) {
+					const dependency = dependencies[i % len]
 					const value = dependency()
 					assert.strictEqual(value, dependency.id)
 				}
@@ -80,8 +80,8 @@ describe('common > main > rx > depend > dependent-func', function() {
 		const nested = function*(dependencies: IDependencyCall[]) {
 			yield 1
 			if (Array.isArray(dependencies)) {
-				for (let i = 0, len = dependencies.length; i < len; i++) {
-					const dependency = dependencies[i]
+				for (let i = 0, len = dependencies.length; i < len * 2; i++) {
+					const dependency = dependencies[i % len]
 					const value = yield dependency()
 					assert.strictEqual(value, dependency.id)
 				}
