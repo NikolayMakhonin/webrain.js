@@ -4,16 +4,6 @@ import {isIterator} from '../../helpers/helpers'
 import {Func, FuncCallStatus, IFuncCallState} from './contracts'
 import {createCall, FuncCallState} from './FuncCallState'
 import {ISemiWeakMap, SemiWeakMap} from './SemiWeakMap'
-import {getTupleMap} from './tuple-map'
-
-function getOrCreateFuncCallState<
-	TThis,
-	TArgs extends any[],
-	TValue,
->(func: Func<TThis, TArgs, TValue>): Func<TThis, TArgs, IFuncCallState<TThis, TArgs, TValue>> {
-	getTupleMap(func)
-	return null // TODO
-}
 
 let currentState: IFuncCallState<any, any, any>
 
@@ -122,7 +112,12 @@ export function makeDependentFunc<
 	TThis,
 	TArgs extends any[],
 	TValue
->(func: Func<TThis, TArgs, TValue>): Func<TThis, TArgs, TValue> {
+>(func: Func<TThis, TArgs, TValue>): Func<TThis, TArgs, TValue>
+export function makeDependentFunc<
+	TThis,
+	TArgs extends any[],
+	TValue
+>(func: Func<TThis, TArgs, TValue|Iterator<TValue>>): Func<TThis, TArgs, TValue> {
 	if (rootStateMap.get(func)) {
 		throw new Error('Multiple call makeDependentFunc() for func: ' + func)
 	}
