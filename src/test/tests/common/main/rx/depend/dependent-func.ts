@@ -7,7 +7,7 @@
 // @ts-ignore
 import {calcPerformance} from 'rdtsc'
 import {isThenable, Thenable, ThenableOrValue} from '../../../../../../main/common/async/async'
-import {IFuncCallState} from '../../../../../../main/common/rx/depend/contracts'
+import {FuncCallStatus, IFuncCallState} from '../../../../../../main/common/rx/depend/contracts'
 import {getFuncCallState, makeDependentFunc} from '../../../../../../main/common/rx/depend/dependent-func'
 import {assert} from '../../../../../../main/common/test/Assert'
 import {describe, it, xit} from '../../../../../../main/common/test/Mocha'
@@ -161,7 +161,8 @@ describe('common > main > rx > depend > dependent-func', function() {
 			callArgs = [...arguments]
 		})
 		assert.strictEqual(callThis, checkCallThis)
-		assert.deepStrictEqual(callArgs, rest)
+		assert.deepStrictEqual(callArgs, rest);
+		(result.state as any).id = callId
 
 		return result
 	}
@@ -213,6 +214,10 @@ describe('common > main > rx > depend > dependent-func', function() {
 
 	function checkFuncNotChanged<TValue>(allFuncCalls: IDependencyCall[], ...changedFuncCalls: IDependencyCall[]) {
 		_checkFuncNotChanged(...allFuncCalls.filter(o => changedFuncCalls.indexOf(o) < 0))
+	}
+
+	function isInvalidated(funcCall: IDependencyCall) {
+		return funcCall.state.status === FuncCallStatus.Invalidating || funcCall.state.status === FuncCallStatus.Invalidated
 	}
 
 	it('base', async function() {
@@ -274,6 +279,7 @@ describe('common > main > rx > depend > dependent-func', function() {
 
 		// level 2
 
+		// console.log(allFuncs.filter(isInvalidated).map(o => o.id))
 		invalidate(S2)
 		checkFuncSync(S2, S2)
 		checkFuncNotChanged(allFuncs)
@@ -289,7 +295,7 @@ describe('common > main > rx > depend > dependent-func', function() {
 		// level 1
 
 		invalidate(S1)
-		checkFuncSync(S2, S1, S2)
+		checkFuncSync(S2, S2, S1)
 		checkFuncSync(I2, I2)
 		checkFuncNotChanged(allFuncs)
 

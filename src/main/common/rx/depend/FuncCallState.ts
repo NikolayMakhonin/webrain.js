@@ -168,7 +168,6 @@ export class FuncCallState<
 		this.update(FuncCallStatus.Invalidated)
 	}
 
-
 	public update(status: FuncCallStatus, valueAsyncOrValueOrError?: Iterator<TValue> | any | TValue): void {
 		switch (status) {
 			case FuncCallStatus.Invalidating:

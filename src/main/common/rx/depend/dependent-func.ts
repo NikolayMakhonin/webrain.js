@@ -42,6 +42,8 @@ function* makeDependentIterator<
 			state.update(FuncCallStatus.Error, error)
 		}
 		throw error
+	} finally {
+		currentState = null
 	}
 }
 
