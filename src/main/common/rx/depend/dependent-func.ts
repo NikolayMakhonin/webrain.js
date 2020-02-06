@@ -125,7 +125,7 @@ export function makeDependentFunc<
 	rootStateMap.set(func, funcStateMap)
 	const getState = _getFuncCallState(funcStateMap)
 
-	return function() {
+	const dependentFunc = function() {
 		const state = getState.apply(this, arguments)
 
 		if (state.status) {
@@ -189,4 +189,8 @@ export function makeDependentFunc<
 			currentState = parentState
 		}
 	}
+
+	rootStateMap.set(dependentFunc, funcStateMap)
+
+	return dependentFunc
 }

@@ -9,7 +9,8 @@
   <component name="ChangeListManager">
     <list default="true" id="69b2ee16-521b-4efd-b473-8e19e3df4d09" name="Default Changelist" comment="">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/common/rx/depend/FuncCallState.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/common/rx/depend/FuncCallState.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/common/rx/depend/contracts.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/common/rx/depend/contracts.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/common/rx/depend/dependent-func.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/common/rx/depend/dependent-func.ts" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/test/tests/common/main/rx/depend/dependent-func.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/test/tests/common/main/rx/depend/dependent-func.ts" afterDir="false" />
     </list>
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
@@ -322,13 +323,6 @@
       <option name="number" value="Default" />
       <option name="presentableId" value="Default" />
       <updated>1567687848586</updated>
-    </task>
-    <task id="LOCAL-00144" summary="Small interface fix">
-      <created>1572787447689</created>
-      <option name="number" value="00144" />
-      <option name="presentableId" value="LOCAL-00144" />
-      <option name="project" value="LOCAL" />
-      <updated>1572787447690</updated>
     </task>
     <task id="LOCAL-00145" summary="Small interface fix">
       <created>1572867027652</created>
@@ -666,7 +660,14 @@
       <option name="project" value="LOCAL" />
       <updated>1580987911151</updated>
     </task>
-    <option name="localTasksCounter" value="193" />
+    <task id="LOCAL-00193" summary="Develop dependentFunc">
+      <created>1580990078578</created>
+      <option name="number" value="00193" />
+      <option name="presentableId" value="LOCAL-00193" />
+      <option name="project" value="LOCAL" />
+      <updated>1580990078578</updated>
+    </task>
+    <option name="localTasksCounter" value="194" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -728,7 +729,6 @@
   <component name="VcsManagerConfiguration">
     <option name="CHECK_CODE_SMELLS_BEFORE_PROJECT_COMMIT" value="false" />
     <option name="CHECK_NEW_TODO" value="false" />
-    <MESSAGE value="CalcObject keep state between subscribes, testing..." />
     <MESSAGE value="Before refactoring deepSubscribe fork iterations" />
     <MESSAGE value="Refactoring deepSubscribe fork iterations in process ... Tests OK." />
     <MESSAGE value="Refactoring deepSubscribe fork iterations completed and tested. Tests OK." />
@@ -753,7 +753,8 @@
     <MESSAGE value="Develop an automatic subscription system using a brilliant idea from MobX, but more universal" />
     <MESSAGE value="Rx interface changes" />
     <MESSAGE value="Develop MobX bicycle with round wheels" />
-    <option name="LAST_COMMIT_MESSAGE" value="Develop MobX bicycle with round wheels" />
+    <MESSAGE value="Develop dependentFunc" />
+    <option name="LAST_COMMIT_MESSAGE" value="Develop dependentFunc" />
   </component>
   <component name="XDebuggerManager">
     <breakpoint-manager>
@@ -783,12 +784,6 @@
           <url>file://$PROJECT_DIR$/src/main/common/rx/deep-subscribe/ObjectSubscriber.ts</url>
           <line>220</line>
           <option name="timeStamp" value="271" />
-        </line-breakpoint>
-        <line-breakpoint enabled="true" type="javascript">
-          <url>file://$PROJECT_DIR$/src/main/common/rx/depend/FuncCallState.ts</url>
-          <line>66</line>
-          <properties lambdaOrdinal="-1" />
-          <option name="timeStamp" value="276" />
         </line-breakpoint>
       </breakpoints>
     </breakpoint-manager>

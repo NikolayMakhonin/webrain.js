@@ -7,7 +7,8 @@
 // @ts-ignore
 import {calcPerformance} from 'rdtsc'
 import {isThenable, Thenable, ThenableOrValue} from '../../../../../../main/common/async/async'
-import {makeDependentFunc} from '../../../../../../main/common/rx/depend/dependent-func'
+import {IFuncCallState} from '../../../../../../main/common/rx/depend/contracts'
+import {getFuncCallState, makeDependentFunc} from '../../../../../../main/common/rx/depend/dependent-func'
 import {assert} from '../../../../../../main/common/test/Assert'
 import {describe, it, xit} from '../../../../../../main/common/test/Mocha'
 import {delay} from '../../../../../../main/common/time/helpers'
@@ -33,10 +34,11 @@ describe('common > main > rx > depend > dependent-func', function() {
 		console.log(result)
 	})
 
-	const callHistory = []
+	const _callHistory = []
 
 	type IDependencyCall = (() => ThenableOrValue<string>) & {
 		id: string,
+		state: IFuncCallState<any, any, any>,
 	}
 
 	type IDependencyFunc = ((this: IDependencyCall[], a?: number, b?: number) => ThenableOrValue<string>) & {
@@ -57,7 +59,7 @@ describe('common > main > rx > depend > dependent-func', function() {
 	function funcSync(id: string) {
 		const result: IDependencyFunc = makeDependentFunc(function() {
 			const callId = getCallId(id, this, ...arguments)
-			callHistory.push(callId)
+			_callHistory.push(callId)
 			const dependencies = this
 			if (Array.isArray(dependencies)) {
 				for (let i = 0, len = dependencies.length; i < len; i++) {
@@ -94,7 +96,7 @@ describe('common > main > rx > depend > dependent-func', function() {
 
 		const result: IDependencyFunc = makeDependentFunc(function() {
 			const callId = getCallId(id, this, ...arguments)
-			callHistory.push(callId)
+			_callHistory.push(callId)
 			return run(callId, this as any)
 		}) as any
 
@@ -130,7 +132,7 @@ describe('common > main > rx > depend > dependent-func', function() {
 
 		const result: IDependencyFunc = makeDependentFunc(function() {
 			const callId = getCallId(id, this, ...arguments)
-			callHistory.push(callId)
+			_callHistory.push(callId)
 			return run(callId, this as any)
 		}) as any
 
@@ -146,12 +148,26 @@ describe('common > main > rx > depend > dependent-func', function() {
 		}) as any
 
 		result.id = callId
+		result.state = getFuncCallState(func).apply(_this, rest)
+		assert.ok(result.state)
+		assert.ok(result.state.call)
+		assert.strictEqual(result.state._this, _this)
+
+		let callArgs
+		let callThis
+		let checkCallThis = {}
+		result.state.call(checkCallThis, function() {
+			callThis = this
+			callArgs = [...arguments]
+		})
+		assert.strictEqual(callThis, checkCallThis)
+		assert.deepStrictEqual(callArgs, rest)
 
 		return result
 	}
 
 	class ThisObj {
-		private value: string
+		private readonly value: string
 
 		constructor(value: string) {
 			this.value = value
@@ -165,6 +181,25 @@ describe('common > main > rx > depend > dependent-func', function() {
 	function checkAsync<TValue>(value: ThenableOrValue<TValue>): Thenable<TValue> {
 		assert.ok(isThenable(value))
 		return value as Thenable<TValue>
+	}
+
+	function checkCallHistory(callHistory: IDependencyCall[]) {
+		assert.deepStrictEqual(_callHistory, callHistory.map(o => o.id))
+		_callHistory.length = 0
+	}
+
+	function checkFuncSync<TValue>(funcCall: IDependencyCall, ...callHistory: IDependencyCall[]) {
+		assert.strictEqual(funcCall(), funcCall.id)
+		checkCallHistory(callHistory)
+	}
+
+	async function checkFuncAsync<TValue>(funcCall: IDependencyCall, ...callHistory: IDependencyCall[]) {
+		assert.strictEqual(await checkAsync(funcCall()), funcCall.id)
+		checkCallHistory(callHistory)
+	}
+
+	function invalidate() {
+
 	}
 
 	it('base', async function() {
@@ -185,15 +220,27 @@ describe('common > main > rx > depend > dependent-func', function() {
 		const I2 = funcCall(I, [S1, I1], 2, null)
 		const A2 = funcCall(A, [I1], 2, 2)
 
-		assert.strictEqual(S0(), 'S(0)')
-		assert.strictEqual(I0(), 'I(0)')
-		assert.strictEqual(await checkAsync(A0()), 'A(_)')
+		assert.strictEqual(S0.id, 'S(0)')
+		assert.strictEqual(I0.id, 'I(0)')
+		assert.strictEqual(A0.id, 'A(_)')
 
-		assert.strictEqual(S1(), 'S1(S(0),I(0))')
-		assert.strictEqual(I1(), 'I1(I(0),A(_))')
+		assert.strictEqual(S1.id, 'S1(S(0),I(0))')
+		assert.strictEqual(I1.id, 'I1(I(0),A(_))')
 
-		assert.strictEqual(S2(), 'S20(S1(S(0),I(0)))')
-		assert.strictEqual(I2(), 'I20(S1(S(0),I(0)),I1(I(0),A(_)))')
-		assert.strictEqual(await checkAsync(A2()), 'A22(I1(I(0),A(_)))')
+		assert.strictEqual(S2.id, 'S20(S1(S(0),I(0)))')
+		assert.strictEqual(I2.id, 'I20(S1(S(0),I(0)),I1(I(0),A(_)))')
+		assert.strictEqual(A2.id, 'A22(I1(I(0),A(_)))')
+
+		checkFuncSync(S0, S0)
+		checkFuncSync(I0, I0)
+		await checkFuncAsync(A0, A0)
+
+		checkFuncSync(S1, S1)
+		checkFuncSync(I1, I1)
+
+		checkFuncSync(S2, S2)
+		checkFuncSync(I2, I2)
+		await checkFuncAsync(A2, A2)
+
 	})
 })
