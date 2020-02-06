@@ -1,6 +1,6 @@
 import {Thenable} from '../../async/async'
 import {IUnsubscribe} from '../subjects/observable'
-import {Func, FuncCallStatus, IFuncCallState, ISubscriber, TCall} from './contracts'
+import {Func, FuncCallStatus, IFuncCallState, ILinkItem, ISubscriber, TCall} from './contracts'
 
 export function createCall<
 	TThis,
@@ -27,11 +27,9 @@ export class FuncCallState<
 
 	constructor(
 		_this: TThis,
-		func: Func<TThis, TArgs, TValue>,
 		call: TCall<TArgs>,
 	) {
 		this._this = _this
-		this.func = func
 		this.call = call
 	}
 
@@ -40,7 +38,6 @@ export class FuncCallState<
 	// region properties
 
 	public readonly _this: TThis
-	public readonly func: Func<TThis, TArgs, TValue>
 	public readonly call: TCall<TArgs>
 
 	public status: FuncCallStatus
@@ -51,39 +48,56 @@ export class FuncCallState<
 	public value: TValue
 	public error: any
 
-	public parentStateAsync: IFuncCallState<any, any, any>
+	// endregion
+
+	// region Debug
+
+	/** for detect recursive async loop */
+	public parentCallState: IFuncCallState<any, any, any>
 
 	// endregion
 
 	// region subscribe / emit
 
-	private _subscribers: Set<ISubscriber<TThis, TArgs, TValue>>
+	private _subscribersFirst: ILinkItem<ISubscriber<TThis, TArgs, TValue>>
+	private _subscribersLast: ILinkItem<ISubscriber<TThis, TArgs, TValue>>
 
-	public subscribe(handler: ISubscriber<TThis, TArgs, TValue>): IUnsubscribe {
-		let {_subscribers} = this
-		if (!_subscribers) {
-			this._subscribers = _subscribers = new Set()
+	public subscribe(subscriber: ISubscriber<TThis, TArgs, TValue>): IUnsubscribe {
+		const {_subscribersLast} = this
+		const subscriberLink: ILinkItem<ISubscriber<TThis, TArgs, TValue>> = {
+			value: subscriber,
+			prev: _subscribersLast,
+			next: null,
 		}
 
-		_subscribers.add(handler)
-		this.call(this, handler)
+		if (_subscribersLast) {
+			_subscribersLast.next = subscriberLink
+		} else {
+			this._subscribersFirst = subscriberLink
+		}
+		this._subscribersLast = subscriberLink
+
+		this.call(this, subscriber)
+
 		return () => {
-			_subscribers.delete(handler)
+			const {prev} = subscriberLink
+			if (prev) {
+				prev.next = subscriberLink.next
+			} else {
+				this._subscribersFirst = subscriberLink.next
+			}
+		}
+	}
+
+	private _emit() {
+		for (let link = this._subscribersFirst; link; link = link.next) {
+			link.value.apply(this, arguments)
 		}
 	}
 
 	private emit() {
-		if (this._subscribers) {
-			const iterator = this._subscribers[Symbol.iterator]()
-			let iteration = iterator.next()
-			if (!iteration.done) {
-				this.call(this, function() {
-					while (!iteration.done) {
-						iteration.value.apply(this, arguments)
-						iteration = iterator.next()
-					}
-				})
-			}
+		if (this._subscribersFirst) {
+			this.call(this, this._emit)
 		}
 	}
 
@@ -91,20 +105,28 @@ export class FuncCallState<
 
 	// region subscribe dependencies
 
+	private _dependencies: Set<IFuncCallState<any, any, any>>
 	private _unsubscribers: IUnsubscribe[]
 
 	public subscribeDependency(dependency: IFuncCallState<any, any, any>): void {
+		let {_dependencies} = this
+		if (_dependencies && _dependencies.has(dependency)) {
+			return
+		}
+
 		const {_invalidate} = this
 		if (!_invalidate) {
 			this._invalidate = () => this.invalidate
 		}
 		const unsubscribe = dependency.subscribe(_invalidate)
 
-		let {_unsubscribers} = this
-		if (!_unsubscribers) {
-			this._unsubscribers = _unsubscribers = [unsubscribe]
+		if (!_dependencies) {
+			this._unsubscribers = [unsubscribe]
+			this._dependencies = _dependencies = new Set()
+			_dependencies.add(dependency)
 		} else {
-			_unsubscribers.push(unsubscribe)
+			this._unsubscribers.push(unsubscribe)
+			_dependencies.add(dependency)
 		}
 	}
 
@@ -114,6 +136,7 @@ export class FuncCallState<
 			for (let i = 0, len = _unsubscribers.length; i < len; i++) {
 				_unsubscribers[i]()
 			}
+			this._dependencies.clear()
 			_unsubscribers.length = 0
 		}
 	}
@@ -151,6 +174,7 @@ export class FuncCallState<
 				if (typeof this.valueAsync !== 'undefined') {
 					this.valueAsync = void 0
 				}
+				this.parentCallState = void 0
 				this.error = void 0
 				this.value = valueAsyncOrValueOrError
 				this.hasError = false
@@ -160,6 +184,7 @@ export class FuncCallState<
 				if (typeof this.valueAsync !== 'undefined') {
 					this.valueAsync = void 0
 				}
+				this.parentCallState = void 0
 				this.error = valueAsyncOrValueOrError
 				this.hasError = true
 				break
@@ -172,9 +197,3 @@ export class FuncCallState<
 
 	// endregion
 }
-
-// new FuncCallState(
-// 	this,
-// 	func,
-// 	createCall.apply(_this, arguments),
-// )

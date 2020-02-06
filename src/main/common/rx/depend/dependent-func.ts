@@ -2,18 +2,19 @@ import {isThenable, ThenableOrIteratorOrValue, ThenableOrValue} from '../../asyn
 import {resolveAsync} from '../../async/ThenableSync'
 import {isIterator} from '../../helpers/helpers'
 import {Func, FuncCallStatus, IFuncCallState} from './contracts'
+import {createCall, FuncCallState} from './FuncCallState'
+import {getTupleMap} from './tuple-map'
 
 function getOrCreateFuncCallState<
 	TThis,
 	TArgs extends any[],
 	TValue,
 >(func: Func<TThis, TArgs, TValue>): Func<TThis, TArgs, IFuncCallState<TThis, TArgs, TValue>> {
+	getTupleMap(func)
 	return null // TODO
 }
 
 let currentState: IFuncCallState<any, any, any>
-/**  for detect recursive async loop */
-let currentStateAsync: IFuncCallState<any, any, any>
 
 function* makeDependentIterator<
 	TThis,
@@ -48,6 +49,66 @@ function* makeDependentIterator<
 	}
 }
 
+const rootStateMap = new WeakMap<Func<any, any, any>, Map<number, any>>()
+// tslint:disable-next-line:no-empty
+const emptyFunc: Func<any, any, any> = () => {}
+export function getFuncCallState<
+	TThis,
+	TArgs extends any[],
+	TValue
+>(func: Func<TThis, TArgs, TValue>): Func<TThis, TArgs, IFuncCallState<TThis, TArgs, TValue>> {
+	const funcStateMap = rootStateMap.get(func)
+	return funcStateMap
+		? _getFuncCallState(funcStateMap)
+		: emptyFunc
+}
+
+function _getFuncCallState<
+	TThis,
+	TArgs extends any[],
+	TValue
+>(funcStateMap: Map<number, any>): Func<TThis, TArgs, IFuncCallState<TThis, TArgs, TValue>> {
+	return function() {
+		const argumentsLength = arguments.length
+		let argsStateMap = funcStateMap.get(argumentsLength)
+		if (!argsStateMap) {
+			argsStateMap = new SemiWeakMap()
+			funcStateMap.set(argumentsLength, argsStateMap)
+		}
+
+		let state: IFuncCallState<TThis, TArgs, TValue>
+		if (argumentsLength) {
+			let stateMap = funcStateMap.get(this)
+			if (!stateMap) {
+				stateMap = new SemiWeakMap()
+				funcStateMap.set(this, stateMap)
+			}
+
+			for (let i = 0; i < argumentsLength - 1; i++) {
+				let nextStateMap = stateMap.get(arguments[i])
+				if (!nextStateMap) {
+					nextStateMap = new SemiWeakMap()
+					stateMap.set(this, nextStateMap)
+				}
+				stateMap = nextStateMap
+			}
+
+			const lastArg = arguments[argumentsLength - 1]
+			state = stateMap.get(lastArg)
+			if (!state) {
+				state = new FuncCallState<TThis, TArgs, TValue>(this, createCall.apply(this, arguments))
+				stateMap.set(lastArg, state)
+			}
+		} else {
+			state = argsStateMap.get(this)
+			if (!state) {
+				state = new FuncCallState<TThis, TArgs, TValue>(this, createCall.apply(this, arguments))
+				argsStateMap.set(this, state)
+			}
+		}
+	} as any
+}
+
 export function makeDependentFunc<
 	TThis,
 	TArgs extends any[],
@@ -58,19 +119,30 @@ export function makeDependentFunc<
 	TArgs extends any[],
 	TValue
 >(func: Func<TThis, TArgs, TValue>): Func<TThis, TArgs, TValue> {
-	const _getOrCreateFuncCallState = getOrCreateFuncCallState(func)
+	if (rootStateMap.get(func)) {
+		throw new Error('Multiple call makeDependentFunc() for func: ' + func)
+	}
+	const funcStateMap = new Map<number, any>()
+	rootStateMap.set(func, funcStateMap)
+	const getState = _getFuncCallState(funcStateMap)
 
 	return function() {
-		const state = _getOrCreateFuncCallState.apply(this, arguments) as IFuncCallState<TThis, TArgs, TValue>
+		const state = getState.apply(this, arguments)
 
 		if (state.status) {
 			switch (state.status) {
+				case FuncCallStatus.Invalidating:
+					throw new Error('Call func during Invalidating')
 				case FuncCallStatus.Calculating:
 					throw new Error('Recursive sync loop detected')
 				case FuncCallStatus.CalculatingAsync:
-					// TODO: Can be async infinity loop, which is hard to debug
-					// this is solved by eliminating cyclic dependencies
-					// throw new Error('Recursive async loop detected')
+					let parentCallState = state.parentCallState
+					while (parentCallState) {
+						if (parentCallState === state) {
+							throw new Error('Recursive async loop detected')
+						}
+						parentCallState = parentCallState.parentCallState
+					}
 					return state.valueAsync
 				case FuncCallStatus.Calculated:
 					return state.value
@@ -84,6 +156,8 @@ export function makeDependentFunc<
 		const parentState = currentState
 
 		try {
+			state.parentCallState = parentState
+
 			currentState = state
 
 			if (parentState) {
@@ -95,17 +169,11 @@ export function makeDependentFunc<
 			let value: any = func.apply(this, arguments)
 
 			if (isIterator(value)) {
-				// TODO currentStateAsync - for detect recursive async loop
 				value = resolveAsync(
 					makeDependentIterator(state, value as Iterator<TValue>)	as ThenableOrIteratorOrValue<TValue>,
 				)
 
 				if (isThenable(value)) {
-					if (currentStateAsync) {
-						state.parentStateAsync = currentStateAsync
-					}
-					// TODO ...
-
 					state.update(FuncCallStatus.CalculatingAsync, value)
 					return value
 				}

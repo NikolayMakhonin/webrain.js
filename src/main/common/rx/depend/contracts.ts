@@ -30,7 +30,7 @@ export interface IFuncCallState<
 	error: any
 
 	/** for detect recursive async loop */
-	parentStateAsync: IFuncCallState<any, any, any>
+	parentCallState: IFuncCallState<any, any, any>
 
 	update(status: FuncCallStatus, valueAsyncOrValueOrError?: TValue | Iterator<TValue> | any): void
 
@@ -44,4 +44,10 @@ export interface IFuncCallState<
 
 	/** clear status, value, error & unsubscribe dependencies */
 	invalidate(): void
+}
+
+export interface ILinkItem<T> {
+	value: T
+	prev: ILinkItem<T>
+	next: ILinkItem<T>
 }
