@@ -5,7 +5,8 @@ import {deepSubscribe} from '../../../main/common/rx/deep-subscribe/deep-subscri
 import {ObservableClass} from '../../../main/common/rx/object/ObservableClass'
 import {ObservableObjectBuilder} from '../../../main/common/rx/object/ObservableObjectBuilder'
 import {assert} from '../../../main/common/test/Assert'
-import {calcMemAllocate, CalcType} from '../../../main/common/test/Calc'
+import {CalcType} from '../../../main/common/test/calc'
+import {calcMemAllocate} from '../../../main/common/test/calc-mem-allocate'
 import {describe, it} from '../../../main/common/test/Mocha'
 
 describe('ObservableClass', function() {

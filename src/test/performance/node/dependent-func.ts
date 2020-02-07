@@ -1,7 +1,8 @@
 // @ts-ignore
 import {calcPerformance} from 'rdtsc'
 import {assert} from '../../../main/common/test/Assert'
-import {calcMemAllocate, CalcType} from '../../../main/common/test/Calc'
+import {CalcType} from '../../../main/common/test/calc'
+import {calcMemAllocate} from '../../../main/common/test/calc-mem-allocate'
 import {describe, it, xit} from '../../../main/common/test/Mocha'
 import {createPerceptron} from '../../tests/common/main/rx/depend/src/helpers'
 
@@ -41,8 +42,8 @@ describe('dependent-func', function() {
 
 		let countFuncs
 
-		console.log(calcMemAllocate(CalcType.Min, 1000, () => {
-			countFuncs = createPerceptron(100, 10, false).countFuncs
+		console.log(calcMemAllocate(CalcType.Min, 50000, () => {
+			countFuncs = createPerceptron(10, 5, false).countFuncs
 		}).scale(1 / countFuncs).toString())
 	})
 
@@ -54,9 +55,9 @@ describe('dependent-func', function() {
 			input,
 			inputState,
 			output,
-		} = createPerceptron(100, 10)
+		} = createPerceptron(10, 5)
 
-		console.log(calcMemAllocate(CalcType.Min, 100, () => {
+		console.log(calcMemAllocate(CalcType.Min, 20000, () => {
 			inputState.invalidate()
 			output.call(2, 5, 10)
 		}).scale(1 / countFuncs).toString())

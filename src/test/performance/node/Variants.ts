@@ -2,7 +2,8 @@
 // @ts-ignore
 import {calcPerformance} from 'rdtsc'
 import {assert} from '../../../main/common/test/Assert'
-import {calcMemAllocate, CalcType} from '../../../main/common/test/Calc'
+import {CalcType} from '../../../main/common/test/calc'
+import {calcMemAllocate} from '../../../main/common/test/calc-mem-allocate'
 import {describe, it} from '../../../main/common/test/Mocha'
 import {treeToSequenceVariants} from '../../../main/common/test/Variants'
 

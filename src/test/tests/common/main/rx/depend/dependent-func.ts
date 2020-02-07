@@ -277,7 +277,7 @@ describe('common > main > rx > depend > dependent-func', function() {
 		await checkFuncAsync(A2, A2)
 		checkFuncNotChanged(allFuncs)
 
-		// level 1
+		// level 0
 
 		invalidate(S0)
 		// console.log(allFuncs.filter(isInvalidated).map(o => o.id))
@@ -307,6 +307,6 @@ describe('common > main > rx > depend > dependent-func', function() {
 			input,
 			inputState,
 			output,
-		} = createPerceptron(100, 100)
+		} = createPerceptron(50, 50)
 	})
 })

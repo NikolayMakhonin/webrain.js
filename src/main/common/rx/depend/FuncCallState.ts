@@ -3,14 +3,22 @@ import {IUnsubscribe} from '../subjects/observable'
 import {FuncCallStatus, IFuncCallState, ILinkItem, ISubscriber, TCall} from './contracts'
 import {ObjectPool} from './ObjectPool'
 
-class SubscriberLinkPool extends ObjectPool<ILinkItem<ISubscriber<any, any, any>>> {
+interface ISubscriberLink<TThis, TArgs extends any[], TValue>
+	extends ILinkItem<ISubscriber<TThis, TArgs, TValue>>
+{
+	state: FuncCallState<TThis, TArgs, TValue>
+}
+
+class SubscriberLinkPool extends ObjectPool<ISubscriberLink<any, any, any>> {
 	public get<TThis, TArgs extends any[], TValue>(
+		state: FuncCallState<TThis, TArgs, TValue>,
 		subscriber: ISubscriber<TThis, TArgs, TValue>,
-		prev: ILinkItem<ISubscriber<TThis, TArgs, TValue>>,
-		next: ILinkItem<ISubscriber<TThis, TArgs, TValue>>,
-	): ILinkItem<ISubscriber<TThis, TArgs, TValue>> {
+		prev: ISubscriberLink<TThis, TArgs, TValue>,
+		next: ISubscriberLink<TThis, TArgs, TValue>,
+	): ISubscriberLink<TThis, TArgs, TValue> {
 		let item = super.get()
 		if (item) {
+			item.state = state
 			item.value = subscriber
 			item.prev = prev
 			item.next = next
@@ -18,12 +26,50 @@ class SubscriberLinkPool extends ObjectPool<ILinkItem<ISubscriber<any, any, any>
 		}
 
 		item = {
+			state,
 			value: subscriber,
 			prev,
 			next,
+			delete: null,
 		}
 
+		item.delete = this.createDeleteFunc(item)
+
 		return item
+	}
+
+	private createDeleteFunc<TThis, TArgs extends any[], TValue>(
+		item: ISubscriberLink<TThis, TArgs, TValue>,
+	) {
+		return () => {
+			// tslint:disable-next-line:no-shadowed-variable
+			const {prev, next, state} = item
+			if (!state) {
+				return
+			}
+			if (prev) {
+				if (next) {
+					prev.next = next
+					next.prev = prev
+				} else {
+					(state as any)._subscribersLast = prev
+					prev.next = null
+				}
+			} else {
+				if (next) {
+					(state as any)._subscribersFirst = next
+					next.prev = null
+				} else {
+					(state as any)._subscribersFirst = null;
+					(state as any)._subscribersLast = null
+				}
+			}
+			item.state = null
+			item.value = null
+			item.prev = null
+			item.next = null
+			this.release(item)
+		}
 	}
 }
 
@@ -86,32 +132,12 @@ export class FuncCallState<
 
 	// region subscribe / emit
 
-	private _subscribersPool: Array<ILinkItem<ISubscriber<TThis, TArgs, TValue>>>
-	private _subscribersPoolLength: number
-	private _subscribersFirst: ILinkItem<ISubscriber<TThis, TArgs, TValue>>
-	private _subscribersLast: ILinkItem<ISubscriber<TThis, TArgs, TValue>>
+	private _subscribersFirst: ISubscriberLink<TThis, TArgs, TValue>
+	private _subscribersLast: ISubscriberLink<TThis, TArgs, TValue>
 
 	public subscribe(subscriber: ISubscriber<TThis, TArgs, TValue>, immediate: boolean = true): IUnsubscribe {
-		const {_subscribersLast, _subscribersPool} = this
-
-		let subscriberLink
-		if (_subscribersPool) {
-			const lastIndex = this._subscribersPoolLength - 1
-			if (lastIndex >= 0) {
-				subscriberLink = this._subscribersPool[lastIndex]
-			}
-		}
-		if (!subscriberLink) {
-			subscriberLink = {
-				value: subscriber,
-				prev: _subscribersLast,
-				next: null,
-			}
-		} else {
-			subscriberLink.value = subscriber
-			subscriberLink.prev = _subscribersLast
-			subscriberLink.next =
-		}
+		const {_subscribersLast} = this
+		const subscriberLink = subscriberLinkPool.get(this, subscriber, _subscribersLast, null)
 
 		if (_subscribersLast) {
 			_subscribersLast.next = subscriberLink
@@ -124,32 +150,59 @@ export class FuncCallState<
 			this.call(this, subscriber)
 		}
 
-		return () => {
-			const {prev, next} = subscriberLink
-			if (prev) {
-				if (next) {
-					prev.next = next
-					next.prev = prev
-				} else {
-					this._subscribersLast = prev
-					prev.next = null
-				}
-			} else {
-				if (next) {
-					this._subscribersFirst = next
-					next.prev = null
-				} else {
-					this._subscribersFirst = null
-					this._subscribersLast = null
-				}
-			}
-			subscriberLinkPool.release(subscriberLink)
-		}
+		return subscriberLink.delete
+		// return () => {
+		// 	const {prev, next} = subscriberLink
+		// 	if (prev) {
+		// 		if (next) {
+		// 			prev.next = next
+		// 			next.prev = prev
+		// 		} else {
+		// 			this._subscribersLast = prev
+		// 			prev.next = null
+		// 		}
+		// 	} else {
+		// 		if (next) {
+		// 			this._subscribersFirst = next
+		// 			next.prev = null
+		// 		} else {
+		// 			this._subscribersFirst = null
+		// 			this._subscribersLast = null
+		// 		}
+		// 	}
+		// 	subscriberLink.state = null
+		// 	subscriberLink.value = null
+		// 	subscriberLink.prev = null
+		// 	subscriberLink.next = null
+		// 	subscriberLinkPool.release(subscriberLink)
+		// 	// subscriberLink.delete()
+		// }
 	}
 
 	private _emit() {
-		for (let link = this._subscribersFirst; link; link = link.next) {
+		// let clonesFirst
+		// let clonesLast
+		// for (let link = this._subscribersFirst; link; link = link.next) {
+		// 	const cloneLink = subscriberLinkPool.get(
+		// 		null,
+		// 		link.value,
+		// 		null,
+		// 		link.next,
+		// 	)
+		// 	if (clonesLast) {
+		// 		clonesLast.next = cloneLink
+		// 	} else {
+		// 		clonesFirst = cloneLink
+		// 	}
+		// 	clonesLast = cloneLink
+		// }
+
+		for (let link = this._subscribersFirst; link;) {
+			const next = link.next
 			link.value.apply(this, arguments)
+			// link.value = null
+			// link.next = null
+			link = next
 		}
 	}
 

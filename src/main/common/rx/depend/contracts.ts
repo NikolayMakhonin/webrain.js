@@ -51,6 +51,7 @@ export interface IFuncCallState<
 
 export interface ILinkItem<T> {
 	value: T
-	prev: ILinkItem<T>
-	next: ILinkItem<T>
+	prev: this
+	next: this
+	delete?: () => void
 }
