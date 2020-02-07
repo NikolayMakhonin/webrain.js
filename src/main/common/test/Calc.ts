@@ -24,6 +24,15 @@ export class CalcStatReport {
 		return result
 	}
 
+	public scale(coef: number): CalcStatReport {
+		const result = this.clone()
+		for (let j = 0, len = this.averageValue.length; j < len; j++) {
+			result.averageValue[j] *= coef
+			result.standardDeviation[j] *= coef
+		}
+		return result
+	}
+
 	public toString() {
 		const report = Array(this.averageValue.length)
 		for (let j = 0, len = this.averageValue.length; j < len; j++) {
@@ -152,10 +161,9 @@ export function calcMemAllocate(
 	countTests: number,
 	testFunc: (...args: any[]) => void,
 	...testFuncArgs: any[]
-): void {
+) {
 	// tslint:disable-next-line:no-empty
 	const zero = _calcMemAllocate(calcType, countTests, (...args) => {}, ...testFuncArgs)
 	const value = _calcMemAllocate(calcType, countTests, testFunc, ...testFuncArgs)
-
-	console.log(value.subtract(zero).toString())
+	return value.subtract(zero)
 }

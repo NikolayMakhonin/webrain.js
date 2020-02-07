@@ -27,9 +27,9 @@ describe('common > performance > Variants', function() {
 	}
 
 	it('mem', function() {
-		calcMemAllocate(CalcType.Min, 10000, () => {
+		console.log(calcMemAllocate(CalcType.Min, 10000, () => {
 			iterateIterables(treeToSequenceVariants(tree))
-		})
+		}).toString())
 	})
 
 	it('perf', function() {

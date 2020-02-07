@@ -10,26 +10,6 @@ import {delay} from '../../../../../../main/common/time/helpers'
 import {createPerceptron} from './src/helpers'
 
 describe('common > main > rx > depend > dependent-func', function() {
-	xit('perf', function() {
-		this.timeout(300000)
-
-		let arr1 = []
-		let arr2 = new Array(10)
-
-		const result = calcPerformance(
-			5000,
-			() => {
-				// no operations
-			}, () => {
-				arr1 = new Array()
-			}, () => {
-				arr2 = new Array(10)
-			},
-		)
-
-		console.log(result)
-	})
-
 	const _callHistory = []
 
 	type IDependencyCall = (() => ThenableOrValue<string>) & {

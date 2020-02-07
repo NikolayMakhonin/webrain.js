@@ -1,7 +1,7 @@
 import {getFuncCallState, makeDependentFunc} from '../../../../../../../main/common/rx/depend/dependent-func'
 import {assert} from '../../../../../../../main/common/test/Assert'
 
-export function createPerceptron(layerSize, layersCount) {
+export function createPerceptron(layerSize, layersCount, check = true) {
 		const countFuncs = layersCount * layerSize + 2
 
 		const input = makeDependentFunc(function() {
@@ -45,19 +45,21 @@ export function createPerceptron(layerSize, layersCount) {
 			})
 		}
 
-		assert.strictEqual(
-			output.call(2, 5, 10).toPrecision(6),
-			(100 * ((layerSize - 1) * layerSize / 2) * Math.pow(layerSize, layersCount - 1)).toPrecision(6),
-		)
-
 		const inputState = getFuncCallState(input)()
 
-		inputState.invalidate()
+		if (check) {
+			assert.strictEqual(
+				output.call(2, 5, 10).toPrecision(6),
+				(100 * ((layerSize - 1) * layerSize / 2) * Math.pow(layerSize, layersCount - 1)).toPrecision(6),
+			)
 
-		assert.strictEqual(
-			output.call(2, 5, 10).toPrecision(6),
-			(100 * ((layerSize - 1) * layerSize / 2) * Math.pow(layerSize, layersCount - 1)).toPrecision(6),
-		)
+			inputState.invalidate()
+
+			assert.strictEqual(
+				output.call(2, 5, 10).toPrecision(6),
+				(100 * ((layerSize - 1) * layerSize / 2) * Math.pow(layerSize, layersCount - 1)).toPrecision(6),
+			)
+		}
 
 		return {
 			countFuncs,

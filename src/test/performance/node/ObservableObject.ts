@@ -134,10 +134,10 @@ describe('ObservableClass', function() {
 			observableObject.propertyChanged.subscribe(v => { })
 		}).observableObject1
 		object.prop = 1
-		calcMemAllocate(CalcType.Min, 10000, () => {
+		console.log(calcMemAllocate(CalcType.Min, 10000, () => {
 			// 48 bytes for create event
 			object.prop++
-		})
+		}).toString())
 	})
 
 	it('deepSubscribe memory', function() { // 48 | 0
@@ -154,22 +154,22 @@ describe('ObservableClass', function() {
 		const value1 = {}
 		const value2 = {}
 		object.prop = 1
-		calcMemAllocate(CalcType.Min, 10000, () => {
+		console.log(calcMemAllocate(CalcType.Min, 10000, () => {
 			// 48 bytes for create event
 			// 56 bytes for create unsubscribe function
 			object.prop = object.prop === value1 ? value2 : value1
-		})
+		}).toString())
 	})
 
 	it('test memory', function() {
-		calcMemAllocate(CalcType.Min, 10000, () => {
+		console.log(calcMemAllocate(CalcType.Min, 10000, () => {
 			let value
 			function calcValue() {
 				value = 3
 			}
 			calcValue()
 			return value
-		})
+		}).toString())
 	})
 
 	it('test event as object or arguments', function() {
@@ -215,13 +215,13 @@ describe('ObservableClass', function() {
 		)
 		heapUsed = process.memoryUsage().heapUsed - heapUsed
 
-		calcMemAllocate(CalcType.Min, 10000, () => {
+		console.log(calcMemAllocate(CalcType.Min, 10000, () => {
 			change1('prop', i++, i++)
-		})
+		}).toString())
 
-		calcMemAllocate(CalcType.Min, 10000, () => {
+		console.log(calcMemAllocate(CalcType.Min, 10000, () => {
 			change2({name: 'prop', newValue: i++, oldValue: i++})
-		})
+		}).toString())
 
 		console.log('value1: ', value1)
 		console.log('value2: ', value2)
