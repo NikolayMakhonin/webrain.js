@@ -1,6 +1,6 @@
 import {Thenable} from '../../async/async'
 import {IUnsubscribe} from '../subjects/observable'
-import {FuncCallStatus, IFuncCallState, ISubscriber, TCall} from './contracts'
+import {FuncCallStatus, IFuncCallState, ILinkItem, ISubscriber, TCall} from './contracts'
 
 export function createCall<
 	TThis,
@@ -59,33 +59,58 @@ export class FuncCallState<
 
 	// region subscribe / emit
 
-	private _subscribers: Set<ISubscriber<TThis, TArgs, TValue>>
+	private _subscribersFirst: ILinkItem<ISubscriber<TThis, TArgs, TValue>>
+	private _subscribersLast: ILinkItem<ISubscriber<TThis, TArgs, TValue>>
 
 	public subscribe(subscriber: ISubscriber<TThis, TArgs, TValue>, immediate: boolean = true): IUnsubscribe {
-		let {_subscribers} = this
-		if (!_subscribers) {
-			this._subscribers = _subscribers = new Set()
+		const {_subscribersLast} = this
+		const subscriberLink: ILinkItem<ISubscriber<TThis, TArgs, TValue>> = {
+			value: subscriber,
+			prev: _subscribersLast,
+			next: null,
 		}
 
-		_subscribers.add(subscriber)
+		if (_subscribersLast) {
+			_subscribersLast.next = subscriberLink
+		} else {
+			this._subscribersFirst = subscriberLink
+		}
+		this._subscribersLast = subscriberLink
 
 		if (immediate) {
 			this.call(this, subscriber)
 		}
 
 		return () => {
-			_subscribers.delete(subscriber)
+			const {prev, next} = subscriberLink
+			if (prev) {
+				if (next) {
+					prev.next = next
+					next.prev = prev
+				} else {
+					this._subscribersLast = prev
+					prev.next = null
+				}
+			} else {
+				if (next) {
+					this._subscribersFirst = next
+					next.prev = null
+				} else {
+					this._subscribersFirst = null
+					this._subscribersLast = null
+				}
+			}
 		}
 	}
 
 	private _emit() {
-		for (const subscriber of this._subscribers) {
-			subscriber.apply(this, arguments)
+		for (let link = this._subscribersFirst; link; link = link.next) {
+			link.value.apply(this, arguments)
 		}
 	}
 
 	private emit() {
-		if (this._subscribers) {
+		if (this._subscribersFirst) {
 			this.call(this, this._emit)
 		}
 	}
