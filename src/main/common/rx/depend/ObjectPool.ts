@@ -1,4 +1,4 @@
-export class ObjectPool<TArgs extends any[], TObject> {
+export class ObjectPool<TObject> {
 	private readonly _stack = []
 	private readonly _maxSize: number
 
@@ -6,7 +6,7 @@ export class ObjectPool<TArgs extends any[], TObject> {
 		this._maxSize = maxSize
 	}
 
-	public get(...args: TArgs): TObject
+	public get(...args: any[]): TObject
 	public get() {
 		const {_stack} = this
 		const lastIndex = _stack.length - 1

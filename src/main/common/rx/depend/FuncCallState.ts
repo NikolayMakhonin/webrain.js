@@ -3,14 +3,13 @@ import {IUnsubscribe} from '../subjects/observable'
 import {FuncCallStatus, IFuncCallState, ILinkItem, ISubscriber, TCall} from './contracts'
 import {ObjectPool} from './ObjectPool'
 
-const subscribeItemPool = new ObjectPool(
-	function(
-		this: ILinkItem<ISubscriber<any, any, any>>,
-		subscriber: ISubscriber<any, any, any>,
-		prev: ILinkItem<ISubscriber<any, any, any>>,
-		next: ILinkItem<ISubscriber<any, any, any>>,
-	): ILinkItem<ISubscriber<any, any, any>> {
-		const item = this
+class SubscriberLinkPool extends ObjectPool<ILinkItem<ISubscriber<any, any, any>>> {
+	public get<TThis, TArgs extends any[], TValue>(
+		subscriber: ISubscriber<TThis, TArgs, TValue>,
+		prev: ILinkItem<ISubscriber<TThis, TArgs, TValue>>,
+		next: ILinkItem<ISubscriber<TThis, TArgs, TValue>>,
+	): ILinkItem<ISubscriber<TThis, TArgs, TValue>> {
+		const item = super.get()
 		if (item) {
 			item.value = subscriber
 			item.prev = prev
@@ -23,9 +22,10 @@ const subscribeItemPool = new ObjectPool(
 			prev,
 			next,
 		}
-	},
-	10000,
-)
+	}
+}
+
+const subscriberLinkPool = new SubscriberLinkPool(1000000)
 
 export function createCall<
 	TThis,
@@ -89,7 +89,7 @@ export class FuncCallState<
 
 	public subscribe(subscriber: ISubscriber<TThis, TArgs, TValue>, immediate: boolean = true): IUnsubscribe {
 		const {_subscribersLast} = this
-		const subscriberLink = getSubscribeItem(subscriber, _subscribersLast, null)
+		const subscriberLink = subscriberLinkPool.get(subscriber, _subscribersLast, null)
 
 		if (_subscribersLast) {
 			_subscribersLast.next = subscriberLink
@@ -121,7 +121,7 @@ export class FuncCallState<
 					this._subscribersLast = null
 				}
 			}
-
+			subscriberLinkPool.release(subscriberLink)
 		}
 	}
 
