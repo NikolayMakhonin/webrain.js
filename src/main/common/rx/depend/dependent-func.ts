@@ -209,76 +209,76 @@ export function makeDependentFunc<
 
 	const dependentFunc = function() {
 		const state = getState.apply(this, arguments)
-		// return _dependentFunc.apply(state, arguments)
+		return _dependentFunc.apply(state, arguments)
 
-		const parentState = currentState
-		if (parentState) {
-			parentState.subscribeDependency(state)
-		}
-
-		state.incrementCallId()
-
-		if (state.status) {
-			switch (state.status) {
-				case FuncCallStatus.Invalidating:
-				case FuncCallStatus.Invalidated:
-					break
-				case FuncCallStatus.Calculating:
-					throw new Error('Recursive sync loop detected')
-				case FuncCallStatus.CalculatingAsync:
-					let parentCallState = state.parentCallState
-					while (parentCallState) {
-						if (parentCallState === state) {
-							throw new Error('Recursive async loop detected')
-						}
-						parentCallState = parentCallState.parentCallState
-					}
-					return state.valueAsync
-				case FuncCallStatus.Calculated:
-					return state.value
-				case FuncCallStatus.Error:
-					throw state.error
-				default:
-					throw new Error('Unknown FuncStatus: ' + state.status)
-			}
-		}
-
-		state.parentCallState = parentState
-		currentState = state
-
-		// return tryInvoke.apply(state, arguments)
-
-		try {
-			state.parentCallState = parentState
-
-			currentState = state
-
-			state.update(FuncCallStatus.Calculating)
-
-			let value: any = func.apply(this, arguments)
-
-			if (isIterator(value)) {
-				value = resolveAsync(
-					makeDependentIterator(state, value as Iterator<TValue>)	as ThenableOrIteratorOrValue<TValue>,
-				)
-
-				if (isThenable(value)) {
-					state.update(FuncCallStatus.CalculatingAsync, value)
-				}
-
-				return value
-			} else if (isThenable(value)) {
-				throw new Error('You should use iterator instead thenable for async functions')
-			}
-
-			state.update(FuncCallStatus.Calculated, value)
-			return value
-		} catch (error) {
-			state.update(FuncCallStatus.Error, error)
-			throw error
-		} finally {
-			currentState = parentState
-		}
+		// const parentState = currentState
+		// if (parentState) {
+		// 	parentState.subscribeDependency(state)
+		// }
+		//
+		// state.incrementCallId()
+		//
+		// if (state.status) {
+		// 	switch (state.status) {
+		// 		case FuncCallStatus.Invalidating:
+		// 		case FuncCallStatus.Invalidated:
+		// 			break
+		// 		case FuncCallStatus.Calculating:
+		// 			throw new Error('Recursive sync loop detected')
+		// 		case FuncCallStatus.CalculatingAsync:
+		// 			let parentCallState = state.parentCallState
+		// 			while (parentCallState) {
+		// 				if (parentCallState === state) {
+		// 					throw new Error('Recursive async loop detected')
+		// 				}
+		// 				parentCallState = parentCallState.parentCallState
+		// 			}
+		// 			return state.valueAsync
+		// 		case FuncCallStatus.Calculated:
+		// 			return state.value
+		// 		case FuncCallStatus.Error:
+		// 			throw state.error
+		// 		default:
+		// 			throw new Error('Unknown FuncStatus: ' + state.status)
+		// 	}
+		// }
+		//
+		// state.parentCallState = parentState
+		// currentState = state
+		//
+		// // return tryInvoke.apply(state, arguments)
+		//
+		// try {
+		// 	state.parentCallState = parentState
+		//
+		// 	currentState = state
+		//
+		// 	state.update(FuncCallStatus.Calculating)
+		//
+		// 	let value: any = func.apply(this, arguments)
+		//
+		// 	if (isIterator(value)) {
+		// 		value = resolveAsync(
+		// 			makeDependentIterator(state, value as Iterator<TValue>)	as ThenableOrIteratorOrValue<TValue>,
+		// 		)
+		//
+		// 		if (isThenable(value)) {
+		// 			state.update(FuncCallStatus.CalculatingAsync, value)
+		// 		}
+		//
+		// 		return value
+		// 	} else if (isThenable(value)) {
+		// 		throw new Error('You should use iterator instead thenable for async functions')
+		// 	}
+		//
+		// 	state.update(FuncCallStatus.Calculated, value)
+		// 	return value
+		// } catch (error) {
+		// 	state.update(FuncCallStatus.Error, error)
+		// 	throw error
+		// } finally {
+		// 	currentState = parentState
+		// }
 	}
 
 	rootStateMap.set(dependentFunc, getState)
