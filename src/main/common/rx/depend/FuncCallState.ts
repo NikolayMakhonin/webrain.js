@@ -9,7 +9,7 @@ class SubscriberLinkPool extends ObjectPool<ILinkItem<ISubscriber<any, any, any>
 		prev: ILinkItem<ISubscriber<TThis, TArgs, TValue>>,
 		next: ILinkItem<ISubscriber<TThis, TArgs, TValue>>,
 	): ILinkItem<ISubscriber<TThis, TArgs, TValue>> {
-		const item = super.get()
+		let item = super.get()
 		if (item) {
 			item.value = subscriber
 			item.prev = prev
@@ -17,11 +17,13 @@ class SubscriberLinkPool extends ObjectPool<ILinkItem<ISubscriber<any, any, any>
 			return item
 		}
 
-		return {
+		item = {
 			value: subscriber,
 			prev,
 			next,
 		}
+
+		return item
 	}
 }
 
@@ -143,6 +145,7 @@ export class FuncCallState<
 
 	private _dependencies: Set<IFuncCallState<any, any, any>>
 	private _unsubscribers: IUnsubscribe[]
+	private _unsubscribersLength: number
 
 	public subscribeDependency(dependency: IFuncCallState<any, any, any>): void {
 		let {_dependencies} = this
@@ -164,9 +167,10 @@ export class FuncCallState<
 
 		if (!_dependencies) {
 			this._unsubscribers = [unsubscribe]
+			this._unsubscribersLength = 1
 			this._dependencies = _dependencies = new Set()
 		} else {
-			this._unsubscribers.push(unsubscribe)
+			this._unsubscribers[this._unsubscribersLength++] = unsubscribe
 		}
 		_dependencies.add(dependency)
 	}
@@ -174,11 +178,16 @@ export class FuncCallState<
 	public unsubscribeDependencies(): void {
 		const {_unsubscribers} = this
 		if (_unsubscribers) {
-			for (let i = 0, len = _unsubscribers.length; i < len; i++) {
+			const len = this._unsubscribersLength
+			for (let i = 0; i < len; i++) {
 				_unsubscribers[i]()
+				_unsubscribers[i] = null
 			}
 			this._dependencies.clear()
-			_unsubscribers.length = 0
+			this._unsubscribersLength = 0
+			if (len > 256) {
+				_unsubscribers.length = 256
+			}
 		}
 	}
 
