@@ -8,10 +8,8 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="69b2ee16-521b-4efd-b473-8e19e3df4d09" name="Default Changelist" comment="">
-      <change afterPath="$PROJECT_DIR$/src/test/performance/node/dependent-func.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/dictionaries/Mika.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/dictionaries/Mika.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/test/tests/common/main/rx/depend/dependent-func.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/test/tests/common/main/rx/depend/dependent-func.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/test/performance/node/dependent-func.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/test/performance/node/dependent-func.ts" afterDir="false" />
     </list>
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
     <option name="SHOW_DIALOG" value="false" />
@@ -323,13 +321,6 @@
       <option name="number" value="Default" />
       <option name="presentableId" value="Default" />
       <updated>1567687848586</updated>
-    </task>
-    <task id="LOCAL-00150" summary="Fix deep-subscribe debug info">
-      <created>1573028690253</created>
-      <option name="number" value="00150" />
-      <option name="presentableId" value="LOCAL-00150" />
-      <option name="project" value="LOCAL" />
-      <updated>1573028690254</updated>
     </task>
     <task id="LOCAL-00151" summary="Fix deepSubscribe unsubscribe order">
       <created>1573050227565</created>
@@ -667,7 +658,14 @@
       <option name="project" value="LOCAL" />
       <updated>1581004485767</updated>
     </task>
-    <option name="localTasksCounter" value="199" />
+    <task id="LOCAL-00199" summary="Develop dependentFunc: perceptron performance test">
+      <created>1581056932649</created>
+      <option name="number" value="00199" />
+      <option name="presentableId" value="LOCAL-00199" />
+      <option name="project" value="LOCAL" />
+      <updated>1581056932649</updated>
+    </task>
+    <option name="localTasksCounter" value="200" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -729,7 +727,6 @@
   <component name="VcsManagerConfiguration">
     <option name="CHECK_CODE_SMELLS_BEFORE_PROJECT_COMMIT" value="false" />
     <option name="CHECK_NEW_TODO" value="false" />
-    <MESSAGE value="Before refactoring deepSubscribe fork iterations" />
     <MESSAGE value="Refactoring deepSubscribe fork iterations in process ... Tests OK." />
     <MESSAGE value="Refactoring deepSubscribe fork iterations completed and tested. Tests OK." />
     <MESSAGE value="Improved createFunction - disable it if CSP is not allowed &quot;new Function(...)&quot;. Tests OK." />
@@ -754,7 +751,8 @@
     <MESSAGE value="Rx interface changes" />
     <MESSAGE value="Develop MobX bicycle with round wheels" />
     <MESSAGE value="Develop dependentFunc" />
-    <option name="LAST_COMMIT_MESSAGE" value="Develop dependentFunc" />
+    <MESSAGE value="Develop dependentFunc: perceptron performance test" />
+    <option name="LAST_COMMIT_MESSAGE" value="Develop dependentFunc: perceptron performance test" />
   </component>
   <component name="XDebuggerManager">
     <watches-manager>
