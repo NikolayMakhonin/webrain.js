@@ -8,9 +8,7 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="69b2ee16-521b-4efd-b473-8e19e3df4d09" name="Default Changelist" comment="">
-      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/common/rx/depend/FuncCallState.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/common/rx/depend/FuncCallState.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/common/rx/depend/ObjectPool.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/common/rx/depend/ObjectPool.ts" afterDir="false" />
     </list>
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
     <option name="SHOW_DIALOG" value="false" />
@@ -106,7 +104,7 @@
       </list>
     </option>
   </component>
-  <component name="RunManager" selected="Mocha.dependent-func">
+  <component name="RunManager" selected="Mocha.dependent-func.perceptron memory recalc">
     <configuration default="true" type="JavaScriptTestRunnerKarma">
       <config-file value="$PROJECT_DIR$/env/karma/configs/dev.js" />
       <karma-package-dir value="$PROJECT_DIR$/node_modules/karma" />
@@ -306,10 +304,10 @@
     <recent_temporary>
       <list>
         <item itemvalue="Mocha.dependent-func" />
+        <item itemvalue="Mocha.common &gt; main &gt; rx &gt; depend &gt; dependent-func" />
         <item itemvalue="Mocha.dependent-func.perceptron memory recalc" />
         <item itemvalue="Mocha.dependent-func.perceptron memory create" />
         <item itemvalue="Mocha.dependent-func.perceptron" />
-        <item itemvalue="Mocha.common &gt; main &gt; rx &gt; depend &gt; dependent-func" />
       </list>
     </recent_temporary>
   </component>
@@ -320,13 +318,6 @@
       <option name="number" value="Default" />
       <option name="presentableId" value="Default" />
       <updated>1567687848586</updated>
-    </task>
-    <task id="LOCAL-00157" summary="Before refactoring deepSubscribe fork iterations">
-      <created>1573555438211</created>
-      <option name="number" value="00157" />
-      <option name="presentableId" value="LOCAL-00157" />
-      <option name="project" value="LOCAL" />
-      <updated>1573555438211</updated>
     </task>
     <task id="LOCAL-00158" summary="Refactoring deepSubscribe fork iterations in process ... Tests OK.">
       <created>1573621254959</created>
@@ -664,7 +655,14 @@
       <option name="project" value="LOCAL" />
       <updated>1581067719022</updated>
     </task>
-    <option name="localTasksCounter" value="206" />
+    <task id="LOCAL-00206" summary="With object pool&#10;&#10;perceptron 100 x 10&#10;invalidate cycles: 20055&#10;calc cycles: 274677&#10;create bytes: 634.6291329077052 ±3062.663830568589&#10;recalc bytes: 12987.14035845834 ±10340.321312351687">
+      <created>1581068433147</created>
+      <option name="number" value="00206" />
+      <option name="presentableId" value="LOCAL-00206" />
+      <option name="project" value="LOCAL" />
+      <updated>1581068433147</updated>
+    </task>
+    <option name="localTasksCounter" value="207" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -726,7 +724,6 @@
   <component name="VcsManagerConfiguration">
     <option name="CHECK_CODE_SMELLS_BEFORE_PROJECT_COMMIT" value="false" />
     <option name="CHECK_NEW_TODO" value="false" />
-    <MESSAGE value="Before improve RuleBuilder" />
     <MESSAGE value="Improved RuleBuilder and connect property. Tests OK." />
     <MESSAGE value="Renamed CalcObjectBuilder.connect -&gt; calcConnect" />
     <MESSAGE value="Added ObjectMerger.observableOnly" />
@@ -751,46 +748,17 @@
     <MESSAGE value="Develop dependentFunc. Before refactoring&#10;&#10;perceptron 100 x 10&#10;invalidate cycles: 12089&#10;calc cycles: 159433&#10;create bytes: 641.5022072204638 ±3062.0643185018303&#10;recalc bytes: 15883.9371154598 ±10539.072818593493" />
     <MESSAGE value="Develop dependentFunc. After replace linked list with Set&#10;&#10;perceptron 100 x 10&#10;invalidate cycles: 28729&#10;calc cycles: 177896&#10;create bytes: 698.5846081157645 ±6117.08026936701&#10;recalc bytes: 18922.10729057349 ±10165.769683242866" />
     <MESSAGE value="Develop dependentFunc. Rollback &quot;replace linked list with Set&quot;" />
-    <option name="LAST_COMMIT_MESSAGE" value="Develop dependentFunc. Rollback &quot;replace linked list with Set&quot;" />
+    <MESSAGE value="With object pool&#10;&#10;perceptron 100 x 10&#10;invalidate cycles: 20055&#10;calc cycles: 274677&#10;create bytes: 634.6291329077052 ±3062.663830568589&#10;recalc bytes: 12987.14035845834 ±10340.321312351687" />
+    <option name="LAST_COMMIT_MESSAGE" value="With object pool&#10;&#10;perceptron 100 x 10&#10;invalidate cycles: 20055&#10;calc cycles: 274677&#10;create bytes: 634.6291329077052 ±3062.663830568589&#10;recalc bytes: 12987.14035845834 ±10340.321312351687" />
   </component>
   <component name="XDebuggerManager">
     <breakpoint-manager>
       <breakpoints>
         <line-breakpoint enabled="true" type="javascript">
-          <url>file://$PROJECT_DIR$/src/main/common/rx/depend/FuncCallState.ts</url>
-          <line>135</line>
+          <url>file://$PROJECT_DIR$/src/test/performance/node/dependent-func.ts</url>
+          <line>58</line>
           <properties lambdaOrdinal="-1" />
-          <option name="timeStamp" value="332" />
-        </line-breakpoint>
-        <line-breakpoint enabled="true" type="javascript">
-          <url>file://$PROJECT_DIR$/src/main/common/rx/depend/dependent-func.ts</url>
-          <line>176</line>
-          <properties lambdaOrdinal="-1" />
-          <option name="timeStamp" value="333" />
-        </line-breakpoint>
-        <line-breakpoint enabled="true" type="javascript">
-          <url>file://$PROJECT_DIR$/src/main/common/rx/depend/dependent-func.ts</url>
-          <line>142</line>
-          <properties lambdaOrdinal="-1" />
-          <option name="timeStamp" value="334" />
-        </line-breakpoint>
-        <line-breakpoint enabled="true" type="javascript">
-          <url>file://$PROJECT_DIR$/src/main/common/rx/depend/FuncCallState.ts</url>
-          <line>154</line>
-          <properties lambdaOrdinal="-1" />
-          <option name="timeStamp" value="335" />
-        </line-breakpoint>
-        <line-breakpoint enabled="true" type="javascript">
-          <url>file://$PROJECT_DIR$/src/main/common/rx/depend/FuncCallState.ts</url>
-          <line>165</line>
-          <properties lambdaOrdinal="-1" />
-          <option name="timeStamp" value="336" />
-        </line-breakpoint>
-        <line-breakpoint enabled="true" type="javascript">
-          <url>file://$PROJECT_DIR$/src/main/common/rx/depend/FuncCallState.ts</url>
-          <line>170</line>
-          <properties lambdaOrdinal="-1" />
-          <option name="timeStamp" value="337" />
+          <option name="timeStamp" value="340" />
         </line-breakpoint>
       </breakpoints>
     </breakpoint-manager>
