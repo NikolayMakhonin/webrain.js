@@ -140,6 +140,8 @@ export function makeDependentFunc<
 			parentState.subscribeDependency(state)
 		}
 
+		state.incrementCallId()
+
 		if (state.status) {
 			switch (state.status) {
 				case FuncCallStatus.Invalidating:

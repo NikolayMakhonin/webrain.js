@@ -7,16 +7,13 @@
     <option name="SHOW_STRUCTURE" value="true" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="69b2ee16-521b-4efd-b473-8e19e3df4d09" name="Default Changelist" comment="Temp">
-      <change afterPath="$PROJECT_DIR$/src/main/common/test/calc-mem-allocate.ts" afterDir="false" />
+    <list default="true" id="69b2ee16-521b-4efd-b473-8e19e3df4d09" name="Default Changelist" comment="">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/common/rx/depend/FuncCallState.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/common/rx/depend/FuncCallState.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/common/rx/depend/ObjectPool.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/common/rx/depend/ObjectPool.ts" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/common/rx/depend/contracts.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/common/rx/depend/contracts.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/common/test/Calc.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/common/test/calc.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/test/performance/node/ObservableObject.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/test/performance/node/ObservableObject.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/test/performance/node/Variants.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/test/performance/node/Variants.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/common/rx/depend/dependent-func.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/common/rx/depend/dependent-func.ts" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/test/performance/node/dependent-func.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/test/performance/node/dependent-func.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/test/tests/common/main/rx/depend/dependent-func.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/test/tests/common/main/rx/depend/dependent-func.ts" afterDir="false" />
     </list>
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
     <option name="SHOW_DIALOG" value="false" />
@@ -28,7 +25,7 @@
     <option name="myAddOrReplace" value="0" />
   </component>
   <component name="CoverageViewManager">
-    <option name="myElementSize" value="265" />
+    <option name="myElementSize" value="268" />
   </component>
   <component name="ExportTestResults" outputFolder="$PROJECT_DIR$/tmp/test_results" openResultsInEditor="true" userTempatePath="" />
   <component name="FavoritesManager">
@@ -79,11 +76,11 @@
   </component>
   <component name="RecentsManager">
     <key name="MoveFile.RECENT_KEYS">
+      <recent name="L:\Work\_GIT\GitHub\NodeJs\modules\webrain\tmp\coverage\nyc\json" />
       <recent name="L:\Work\_GIT\GitHub\NodeJs\modules\webrain\src\main\common\rx\depend" />
       <recent name="L:\Work\_GIT\GitHub\NodeJs\modules\webrain\src\test\experiments\common" />
       <recent name="L:\Work\_GIT\GitHub\NodeJs\modules\webrain\src\main\common\random" />
       <recent name="L:\Work\_GIT\GitHub\NodeJs\modules\webrain\src\test\tests\common\main\time" />
-      <recent name="L:\Work\_GIT\GitHub\NodeJs\modules\webrain\dist\js" />
     </key>
     <key name="es6.move.members.recent.items">
       <recent name="L:\Work\_GIT\GitHub\NodeJs\modules\webrain\src\main\common\test\calc-mem-allocate.ts" />
@@ -112,7 +109,7 @@
       </list>
     </option>
   </component>
-  <component name="RunManager" selected="Mocha.dependent-func.perceptron memory create">
+  <component name="RunManager" selected="Mocha.dependent-func.set memory">
     <configuration default="true" type="JavaScriptTestRunnerKarma">
       <config-file value="$PROJECT_DIR$/env/karma/configs/dev.js" />
       <karma-package-dir value="$PROJECT_DIR$/node_modules/karma" />
@@ -213,22 +210,6 @@
       </test-names>
       <method v="2" />
     </configuration>
-    <configuration name="common &gt; main &gt; rx &gt; depend &gt; dependent-func.base" type="mocha-javascript-test-runner" temporary="true" nameIsGenerated="true">
-      <node-interpreter>node</node-interpreter>
-      <node-options>--max-old-space-size=4096</node-options>
-      <mocha-package>$PROJECT_DIR$/node_modules/mocha</mocha-package>
-      <working-directory>$PROJECT_DIR$</working-directory>
-      <pass-parent-env>true</pass-parent-env>
-      <ui>bdd</ui>
-      <extra-mocha-options>--opts ./env/mocha/configs/babel/mocha.opts --watch</extra-mocha-options>
-      <test-kind>TEST</test-kind>
-      <test-file>$PROJECT_DIR$/src/test/tests/common/main/rx/depend/dependent-func.ts</test-file>
-      <test-names>
-        <name value="common &gt; main &gt; rx &gt; depend &gt; dependent-func" />
-        <name value="base" />
-      </test-names>
-      <method v="2" />
-    </configuration>
     <configuration name="deep-subscribe (Coverage)" type="mocha-javascript-test-runner">
       <node-interpreter>node</node-interpreter>
       <node-options>--max-old-space-size=4096</node-options>
@@ -288,6 +269,22 @@
       </test-names>
       <method v="2" />
     </configuration>
+    <configuration name="dependent-func.set memory" type="mocha-javascript-test-runner" temporary="true" nameIsGenerated="true">
+      <node-interpreter>node</node-interpreter>
+      <node-options>--max-old-space-size=4096</node-options>
+      <mocha-package>$PROJECT_DIR$/node_modules/mocha</mocha-package>
+      <working-directory>$PROJECT_DIR$</working-directory>
+      <pass-parent-env>true</pass-parent-env>
+      <ui>bdd</ui>
+      <extra-mocha-options>--opts ./env/mocha/configs/babel/mocha.opts</extra-mocha-options>
+      <test-kind>TEST</test-kind>
+      <test-file>$PROJECT_DIR$/src/test/performance/node/dependent-func.ts</test-file>
+      <test-names>
+        <name value="dependent-func" />
+        <name value="set memory" />
+      </test-names>
+      <method v="2" />
+    </configuration>
     <list>
       <item itemvalue="Karma.Coverage Karma" />
       <item itemvalue="Karma.Dev" />
@@ -307,15 +304,15 @@
       <item itemvalue="Mocha.dependent-func" />
       <item itemvalue="Mocha.dependent-func.perceptron memory recalc" />
       <item itemvalue="Mocha.dependent-func.perceptron memory create" />
-      <item itemvalue="Mocha.common &gt; main &gt; rx &gt; depend &gt; dependent-func.base" />
+      <item itemvalue="Mocha.dependent-func.set memory" />
     </list>
     <recent_temporary>
       <list>
         <item itemvalue="Mocha.dependent-func" />
-        <item itemvalue="Mocha.dependent-func.perceptron memory create" />
-        <item itemvalue="Mocha.dependent-func.perceptron memory recalc" />
+        <item itemvalue="Mocha.dependent-func.set memory" />
         <item itemvalue="Mocha.common &gt; main &gt; rx &gt; depend &gt; dependent-func" />
-        <item itemvalue="Mocha.common &gt; main &gt; rx &gt; depend &gt; dependent-func.base" />
+        <item itemvalue="Mocha.dependent-func.perceptron memory recalc" />
+        <item itemvalue="Mocha.dependent-func.perceptron memory create" />
       </list>
     </recent_temporary>
   </component>
@@ -326,13 +323,6 @@
       <option name="number" value="Default" />
       <option name="presentableId" value="Default" />
       <updated>1567687848586</updated>
-    </task>
-    <task id="LOCAL-00162" summary="Facade changes">
-      <created>1573651414606</created>
-      <option name="number" value="00162" />
-      <option name="presentableId" value="LOCAL-00162" />
-      <option name="project" value="LOCAL" />
-      <updated>1573651414606</updated>
     </task>
     <task id="LOCAL-00163" summary="Facade changes">
       <created>1573718521622</created>
@@ -670,7 +660,14 @@
       <option name="project" value="LOCAL" />
       <updated>1581074261703</updated>
     </task>
-    <option name="localTasksCounter" value="211" />
+    <task id="LOCAL-00211" summary="Optimize subscribe. Fixed emit">
+      <created>1581083061791</created>
+      <option name="number" value="00211" />
+      <option name="presentableId" value="LOCAL-00211" />
+      <option name="project" value="LOCAL" />
+      <updated>1581083061791</updated>
+    </task>
+    <option name="localTasksCounter" value="212" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -732,7 +729,6 @@
   <component name="VcsManagerConfiguration">
     <option name="CHECK_CODE_SMELLS_BEFORE_PROJECT_COMMIT" value="false" />
     <option name="CHECK_NEW_TODO" value="false" />
-    <MESSAGE value="v0.0.3. Published." />
     <MESSAGE value="v0.0.5. Published." />
     <MESSAGE value="Fixed TimeLimits browser tests" />
     <MESSAGE value="Disabled TimeLimits browser tests" />
@@ -757,74 +753,75 @@
     <MESSAGE value="Without object pool&#10;&#10;perceptron 100 x 10&#10;invalidate cycles: 12455&#10;calc cycles: 152887&#10;create bytes: 26 ±0&#10;recalc bytes: 8668 ±0&#10;&#10;With object pool&#10;&#10;perceptron 100 x 10&#10;invalidate cycles: 24596&#10;calc cycles: 216622&#10;create bytes: 14.339321357285428 ±0&#10;recalc bytes: 4355.722554890219 ±0" />
     <MESSAGE value="Optimized _unsubscribers&#10;&#10;perceptron 100 x 10&#10;invalidate cycles: 20651&#10;calc cycles: 195882&#10;create bytes: 30&#10;recalc bytes: 2546 ±0" />
     <MESSAGE value="Temp" />
-    <option name="LAST_COMMIT_MESSAGE" value="Temp" />
+    <MESSAGE value="Optimize subscribe. Fixed emit" />
+    <option name="LAST_COMMIT_MESSAGE" value="Optimize subscribe. Fixed emit" />
   </component>
   <component name="XDebuggerManager">
     <breakpoint-manager>
       <breakpoints>
         <line-breakpoint enabled="true" type="javascript">
           <url>file://$PROJECT_DIR$/src/test/performance/node/dependent-func.ts</url>
-          <line>59</line>
+          <line>90</line>
           <properties lambdaOrdinal="-1" />
           <option name="timeStamp" value="340" />
         </line-breakpoint>
         <line-breakpoint enabled="true" type="javascript">
           <url>file://$PROJECT_DIR$/src/main/common/rx/depend/FuncCallState.ts</url>
-          <line>335</line>
+          <line>315</line>
           <properties lambdaOrdinal="-1" />
           <option name="timeStamp" value="349" />
         </line-breakpoint>
         <line-breakpoint enabled="true" type="javascript">
           <url>file://$PROJECT_DIR$/src/main/common/rx/depend/FuncCallState.ts</url>
-          <line>325</line>
+          <line>305</line>
           <properties lambdaOrdinal="-1" />
           <option name="timeStamp" value="350" />
         </line-breakpoint>
         <line-breakpoint enabled="true" type="javascript">
           <url>file://$PROJECT_DIR$/src/main/common/rx/depend/FuncCallState.ts</url>
-          <line>312</line>
+          <line>292</line>
           <properties lambdaOrdinal="-1" />
           <option name="timeStamp" value="351" />
         </line-breakpoint>
         <line-breakpoint enabled="true" type="javascript">
           <url>file://$PROJECT_DIR$/src/main/common/rx/depend/FuncCallState.ts</url>
-          <line>306</line>
+          <line>286</line>
           <properties lambdaOrdinal="-1" />
           <option name="timeStamp" value="352" />
         </line-breakpoint>
         <line-breakpoint enabled="true" type="javascript">
           <url>file://$PROJECT_DIR$/src/main/common/rx/depend/FuncCallState.ts</url>
-          <line>301</line>
+          <line>281</line>
           <properties lambdaOrdinal="-1" />
           <option name="timeStamp" value="353" />
         </line-breakpoint>
         <line-breakpoint enabled="true" type="javascript">
           <url>file://$PROJECT_DIR$/src/main/common/rx/depend/FuncCallState.ts</url>
-          <line>287</line>
+          <line>267</line>
           <properties lambdaOrdinal="-1" />
           <option name="timeStamp" value="354" />
         </line-breakpoint>
         <line-breakpoint enabled="true" type="javascript">
           <url>file://$PROJECT_DIR$/src/main/common/rx/depend/dependent-func.ts</url>
-          <line>187</line>
+          <line>189</line>
           <properties lambdaOrdinal="-1" />
           <option name="timeStamp" value="357" />
         </line-breakpoint>
         <line-breakpoint enabled="true" type="javascript">
           <url>file://$PROJECT_DIR$/src/main/common/rx/depend/dependent-func.ts</url>
-          <line>148</line>
+          <line>150</line>
           <properties lambdaOrdinal="-1" />
           <option name="timeStamp" value="366" />
         </line-breakpoint>
         <line-breakpoint enabled="true" type="javascript">
           <url>file://$PROJECT_DIR$/src/main/common/rx/depend/dependent-func.ts</url>
-          <line>153</line>
+          <line>155</line>
           <properties lambdaOrdinal="-1" />
           <option name="timeStamp" value="367" />
         </line-breakpoint>
         <line-breakpoint enabled="true" type="javascript">
           <url>file://$PROJECT_DIR$/src/main/common/rx/depend/dependent-func.ts</url>
-          <line>163</line>
+          <line>165</line>
           <properties lambdaOrdinal="-1" />
           <option name="timeStamp" value="368" />
         </line-breakpoint>
@@ -846,6 +843,7 @@
     <SUITE FILE_PATH="coverage/webrain$common___main___rx___deep_subscribe___deep_subscribe_unsubscribe_leaf.dat" NAME="common &gt; main &gt; rx &gt; deep-subscribe &gt; deep-subscribe.unsubscribe leaf Coverage Results" MODIFIED="1569219462512" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="MochaJavaScriptTestRunnerCoverage" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" />
     <SUITE FILE_PATH="coverage/webrain$common___main___rx___properties___CalcObjectBuilder.dat" NAME="common &gt; main &gt; rx &gt; properties &gt; CalcObjectBuilder Coverage Results" MODIFIED="1573363080433" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="MochaJavaScriptTestRunnerCoverage" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" />
     <SUITE FILE_PATH="coverage/webrain$L__Work__GIT_GitHub_NodeJs_modules_tree_state_manager_src_test_tests_common_main_rx_deep_subscribe______ts__Coverage_.dat" NAME="L:\Work\_GIT\GitHub\NodeJs\modules\tree-state-manager\src\test\tests\common\main\rx\deep-subscribe\**\*.ts (Coverage) Coverage Results" MODIFIED="1567218889155" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="MochaJavaScriptTestRunnerCoverage" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" />
+    <SUITE FILE_PATH="coverage/webrain$dependent_func_perceptron_memory_recalc.dat" NAME="dependent-func.perceptron memory recalc Coverage Results" MODIFIED="1581086091701" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="MochaJavaScriptTestRunnerCoverage" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" />
     <SUITE FILE_PATH="coverage/webrain$common___main___rx___deep_subscribe.dat" NAME="common &gt; main &gt; rx &gt; deep-subscribe Coverage Results" MODIFIED="1569314944753" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="MochaJavaScriptTestRunnerCoverage" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" />
     <SUITE FILE_PATH="coverage/webrain$Watch.dat" NAME="Watch Coverage Results" MODIFIED="1569642521533" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="MochaJavaScriptTestRunnerCoverage" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" />
     <SUITE FILE_PATH="coverage/tree_state_manager$L__Work__GIT_GitHub_NodeJs_modules_tree_state_manager_src_test_tests_common_main_rx_deep_subscribe______ts__Coverage_.dat" NAME="L:\Work\_GIT\GitHub\NodeJs\modules\tree-state-manager\src\test\tests\common\main\rx\deep-subscribe\**\*.ts (Coverage) Coverage Results" MODIFIED="1566748268430" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="MochaJavaScriptTestRunnerCoverage" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" />

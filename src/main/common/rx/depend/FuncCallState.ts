@@ -10,30 +10,31 @@ interface ISubscriberLink<TThis, TArgs extends any[], TValue>
 }
 
 class SubscriberLinkPool extends ObjectPool<ISubscriberLink<any, any, any>> {
-	public get<TThis, TArgs extends any[], TValue>(
+	public getOrCreate<TThis, TArgs extends any[], TValue>(
 		state: FuncCallState<TThis, TArgs, TValue>,
 		subscriber: ISubscriber<TThis, TArgs, TValue>,
 		prev: ISubscriberLink<TThis, TArgs, TValue>,
 		next: ISubscriberLink<TThis, TArgs, TValue>,
 	): ISubscriberLink<TThis, TArgs, TValue> {
-		let item = super.get()
-		if (item) {
+		let item = this.get()
+		if (!item) {
+			item = {
+				state,
+				value: subscriber,
+				prev,
+				next,
+				delete: null,
+			}
+		} else {
 			item.state = state
 			item.value = subscriber
 			item.prev = prev
 			item.next = next
-			return item
 		}
 
-		item = {
-			state,
-			value: subscriber,
-			prev,
-			next,
-			delete: null,
+		if (state && !item.delete) {
+			item.delete = this.createDeleteFunc(item)
 		}
-
-		item.delete = this.createDeleteFunc(item)
 
 		return item
 	}
@@ -73,7 +74,7 @@ class SubscriberLinkPool extends ObjectPool<ISubscriberLink<any, any, any>> {
 	}
 }
 
-const subscriberLinkPool = new SubscriberLinkPool(1000000)
+export const subscriberLinkPool = new SubscriberLinkPool(1000000)
 
 export function createCall<
 	TThis,
@@ -89,6 +90,8 @@ export function createCall<
 	const args = arguments
 	return (_this, func) => func.apply(_this, args)
 }
+
+let nextCallId = 1
 
 export class FuncCallState<
 	TThis,
@@ -137,7 +140,7 @@ export class FuncCallState<
 
 	public subscribe(subscriber: ISubscriber<TThis, TArgs, TValue>, immediate: boolean = true): IUnsubscribe {
 		const {_subscribersLast} = this
-		const subscriberLink = subscriberLinkPool.get(this, subscriber, _subscribersLast, null)
+		const subscriberLink = subscriberLinkPool.getOrCreate(this, subscriber, _subscribersLast, null)
 
 		if (_subscribersLast) {
 			_subscribersLast.next = subscriberLink
@@ -151,57 +154,32 @@ export class FuncCallState<
 		}
 
 		return subscriberLink.delete
-		// return () => {
-		// 	const {prev, next} = subscriberLink
-		// 	if (prev) {
-		// 		if (next) {
-		// 			prev.next = next
-		// 			next.prev = prev
-		// 		} else {
-		// 			this._subscribersLast = prev
-		// 			prev.next = null
-		// 		}
-		// 	} else {
-		// 		if (next) {
-		// 			this._subscribersFirst = next
-		// 			next.prev = null
-		// 		} else {
-		// 			this._subscribersFirst = null
-		// 			this._subscribersLast = null
-		// 		}
-		// 	}
-		// 	subscriberLink.state = null
-		// 	subscriberLink.value = null
-		// 	subscriberLink.prev = null
-		// 	subscriberLink.next = null
-		// 	subscriberLinkPool.release(subscriberLink)
-		// 	// subscriberLink.delete()
-		// }
 	}
 
 	private _emit() {
-		// let clonesFirst
-		// let clonesLast
-		// for (let link = this._subscribersFirst; link; link = link.next) {
-		// 	const cloneLink = subscriberLinkPool.get(
-		// 		null,
-		// 		link.value,
-		// 		null,
-		// 		link.next,
-		// 	)
-		// 	if (clonesLast) {
-		// 		clonesLast.next = cloneLink
-		// 	} else {
-		// 		clonesFirst = cloneLink
-		// 	}
-		// 	clonesLast = cloneLink
-		// }
+		let clonesFirst
+		let clonesLast
+		for (let link = this._subscribersFirst; link; link = link.next) {
+			const cloneLink = subscriberLinkPool.getOrCreate(
+				null,
+				link.value,
+				null,
+				link.next,
+			)
+			if (clonesLast) {
+				clonesLast.next = cloneLink
+			} else {
+				clonesFirst = cloneLink
+			}
+			clonesLast = cloneLink
+		}
 
-		for (let link = this._subscribersFirst; link;) {
-			const next = link.next
+		for (let link = clonesFirst; link;) {
 			link.value.apply(this, arguments)
-			// link.value = null
-			// link.next = null
+			link.value = null
+			const next = link.next
+			link.next = null
+			subscriberLinkPool.release(link)
 			link = next
 		}
 	}
@@ -216,13 +194,17 @@ export class FuncCallState<
 
 	// region subscribe dependencies
 
-	private _dependencies: Set<IFuncCallState<any, any, any>>
+	// for prevent multiple subscribe equal dependencies
+	public callId: number
+	public incrementCallId(): void {
+		this.callId = nextCallId++
+	}
+
 	private _unsubscribers: IUnsubscribe[]
 	private _unsubscribersLength: number
 
 	public subscribeDependency(dependency: IFuncCallState<any, any, any>): void {
-		let {_dependencies} = this
-		if (_dependencies && _dependencies.has(dependency)) {
+		if (dependency.callId > this.callId) {
 			return
 		}
 
@@ -238,14 +220,13 @@ export class FuncCallState<
 		}
 		const unsubscribe = dependency.subscribe(_invalidate, false)
 
-		if (!_dependencies) {
+		const {_unsubscribers} = this
+		if (!_unsubscribers) {
 			this._unsubscribers = [unsubscribe]
 			this._unsubscribersLength = 1
-			this._dependencies = _dependencies = new Set()
 		} else {
-			this._unsubscribers[this._unsubscribersLength++] = unsubscribe
+			_unsubscribers[this._unsubscribersLength++] = unsubscribe
 		}
-		_dependencies.add(dependency)
 	}
 
 	public unsubscribeDependencies(): void {
@@ -256,7 +237,6 @@ export class FuncCallState<
 				_unsubscribers[i]()
 				_unsubscribers[i] = null
 			}
-			this._dependencies.clear()
 			this._unsubscribersLength = 0
 			if (len > 256) {
 				_unsubscribers.length = 256
@@ -277,7 +257,7 @@ export class FuncCallState<
 	public update(status: FuncCallStatus, valueAsyncOrValueOrError?: Iterator<TValue> | any | TValue): void {
 		switch (status) {
 			case FuncCallStatus.Invalidating:
-				if (this.status === FuncCallStatus.Invalidated) {
+				if (this.status == null || this.status === FuncCallStatus.Invalidated) {
 					return
 				}
 				// tslint:disable-next-line:no-nested-switch
@@ -290,7 +270,7 @@ export class FuncCallState<
 				this.unsubscribeDependencies()
 				break
 			case FuncCallStatus.Invalidated:
-				if (this.status !== FuncCallStatus.Invalidating) {
+				if (this.status == null || this.status !== FuncCallStatus.Invalidating) {
 					return
 				}
 				break

@@ -39,10 +39,12 @@ export interface IFuncCallState<
 
 	subscribe(handler: ISubscriber<TThis, TArgs, TValue>, immediate: boolean): IUnsubscribe
 
+	// for prevent multiple subscribe equal dependencies
+	callId: number
+	incrementCallId(): void
 	// TODO: parent subscribe for invalidate (clear status & value & error & unsubscribe dependencies)
 	// TODO: detect cyclic dependencies
 	subscribeDependency(dependency: IFuncCallState<any, any, any>): void
-
 	unsubscribeDependencies(): void
 
 	/** clear status, value, error & unsubscribe dependencies */
