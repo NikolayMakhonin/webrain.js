@@ -1,6 +1,31 @@
 import {Thenable} from '../../async/async'
 import {IUnsubscribe} from '../subjects/observable'
 import {FuncCallStatus, IFuncCallState, ILinkItem, ISubscriber, TCall} from './contracts'
+import {ObjectPool} from './ObjectPool'
+
+const subscribeItemPool = new ObjectPool(
+	function(
+		this: ILinkItem<ISubscriber<any, any, any>>,
+		subscriber: ISubscriber<any, any, any>,
+		prev: ILinkItem<ISubscriber<any, any, any>>,
+		next: ILinkItem<ISubscriber<any, any, any>>,
+	): ILinkItem<ISubscriber<any, any, any>> {
+		const item = this
+		if (item) {
+			item.value = subscriber
+			item.prev = prev
+			item.next = next
+			return item
+		}
+
+		return {
+			value: subscriber,
+			prev,
+			next,
+		}
+	},
+	10000,
+)
 
 export function createCall<
 	TThis,
@@ -64,11 +89,7 @@ export class FuncCallState<
 
 	public subscribe(subscriber: ISubscriber<TThis, TArgs, TValue>, immediate: boolean = true): IUnsubscribe {
 		const {_subscribersLast} = this
-		const subscriberLink: ILinkItem<ISubscriber<TThis, TArgs, TValue>> = {
-			value: subscriber,
-			prev: _subscribersLast,
-			next: null,
-		}
+		const subscriberLink = getSubscribeItem(subscriber, _subscribersLast, null)
 
 		if (_subscribersLast) {
 			_subscribersLast.next = subscriberLink
@@ -100,6 +121,7 @@ export class FuncCallState<
 					this._subscribersLast = null
 				}
 			}
+
 		}
 	}
 
