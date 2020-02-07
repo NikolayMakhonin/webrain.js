@@ -3,17 +3,6 @@ import {IUnsubscribe} from '../subjects/observable'
 import {FuncCallStatus, IFuncCallState, ILinkItem, ISubscriber, TCall} from './contracts'
 import {ObjectPool} from './ObjectPool'
 
-class LinkItem<T> implements ILinkItem<T> {
-	public next: ILinkItem<T>
-	public prev: ILinkItem<T>
-	public value: T
-	constructor(value: T, prev: ILinkItem<T>, next: ILinkItem<T>) {
-		this.value = value
-		this.prev = prev
-		this.next = next
-	}
-}
-
 class SubscriberLinkPool extends ObjectPool<ILinkItem<ISubscriber<any, any, any>>> {
 	public get<TThis, TArgs extends any[], TValue>(
 		subscriber: ISubscriber<TThis, TArgs, TValue>,
@@ -28,7 +17,11 @@ class SubscriberLinkPool extends ObjectPool<ILinkItem<ISubscriber<any, any, any>
 			return item
 		}
 
-		return new LinkItem(subscriber, prev, next)
+		return {
+			value: subscriber,
+			prev,
+			next,
+		}
 	}
 }
 

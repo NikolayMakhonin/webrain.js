@@ -41,7 +41,7 @@ describe('dependent-func', function() {
 
 		let countFuncs
 
-		console.log(calcMemAllocate(CalcType.Stat, 1000, () => {
+		console.log(calcMemAllocate(CalcType.Min, 1000, () => {
 			countFuncs = createPerceptron(100, 10, false).countFuncs
 		}).scale(1 / countFuncs).toString())
 	})
@@ -56,7 +56,7 @@ describe('dependent-func', function() {
 			output,
 		} = createPerceptron(100, 10)
 
-		console.log(calcMemAllocate(CalcType.Stat, 100, () => {
+		console.log(calcMemAllocate(CalcType.Min, 100, () => {
 			inputState.invalidate()
 			output.call(2, 5, 10)
 		}).scale(1 / countFuncs).toString())
