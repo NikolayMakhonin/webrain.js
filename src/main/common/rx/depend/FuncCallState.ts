@@ -86,12 +86,32 @@ export class FuncCallState<
 
 	// region subscribe / emit
 
+	private _subscribersPool: Array<ILinkItem<ISubscriber<TThis, TArgs, TValue>>>
+	private _subscribersPoolLength: number
 	private _subscribersFirst: ILinkItem<ISubscriber<TThis, TArgs, TValue>>
 	private _subscribersLast: ILinkItem<ISubscriber<TThis, TArgs, TValue>>
 
 	public subscribe(subscriber: ISubscriber<TThis, TArgs, TValue>, immediate: boolean = true): IUnsubscribe {
-		const {_subscribersLast} = this
-		const subscriberLink = subscriberLinkPool.get(subscriber, _subscribersLast, null)
+		const {_subscribersLast, _subscribersPool} = this
+
+		let subscriberLink
+		if (_subscribersPool) {
+			const lastIndex = this._subscribersPoolLength - 1
+			if (lastIndex >= 0) {
+				subscriberLink = this._subscribersPool[lastIndex]
+			}
+		}
+		if (!subscriberLink) {
+			subscriberLink = {
+				value: subscriber,
+				prev: _subscribersLast,
+				next: null,
+			}
+		} else {
+			subscriberLink.value = subscriber
+			subscriberLink.prev = _subscribersLast
+			subscriberLink.next =
+		}
 
 		if (_subscribersLast) {
 			_subscribersLast.next = subscriberLink
