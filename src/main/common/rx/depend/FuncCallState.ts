@@ -1,6 +1,6 @@
 import {Thenable} from '../../async/async'
 import {IUnsubscribe} from '../subjects/observable'
-import {FuncCallStatus, IFuncCallState, ILinkItem, ISubscriber, TCall} from './contracts'
+import {Func, FuncCallStatus, IFuncCallState, ILinkItem, ISubscriber, TCall} from './contracts'
 import {ObjectPool} from './ObjectPool'
 
 interface ISubscriberLink<TThis, TArgs extends any[], TValue>
@@ -102,9 +102,11 @@ export class FuncCallState<
 	// region constructor
 
 	constructor(
+		func,
 		_this: TThis,
 		call: TCall<TArgs>,
 	) {
+		this.func = func
 		this._this = _this
 		this.call = call
 	}
@@ -113,6 +115,7 @@ export class FuncCallState<
 
 	// region properties
 
+	public readonly func: Func<TThis, TArgs, TValue>
 	public readonly _this: TThis
 	public readonly call: TCall<TArgs>
 
@@ -295,7 +298,6 @@ export class FuncCallState<
 				if (typeof this.valueAsync !== 'undefined') {
 					this.valueAsync = void 0
 				}
-				this.parentCallState = void 0
 				this.error = void 0
 				this.value = valueAsyncOrValueOrError
 				this.hasError = false
@@ -308,7 +310,6 @@ export class FuncCallState<
 				if (typeof this.valueAsync !== 'undefined') {
 					this.valueAsync = void 0
 				}
-				this.parentCallState = void 0
 				this.error = valueAsyncOrValueOrError
 				this.hasError = true
 				break

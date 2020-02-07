@@ -44,10 +44,11 @@ function* makeDependentIterator<
 		throw error
 	} finally {
 		currentState = null
+		state.parentCallState = void 0
 	}
 }
 
-const rootStateMap = new WeakMap<Func<any, any, any>, Map<number, any>>()
+const rootStateMap = new WeakMap<Func<any, any, any>, Func<any, any, IFuncCallState<any, any, any>>>()
 // tslint:disable-next-line:no-empty
 const emptyFunc: Func<any, any, any> = () => {}
 export function getFuncCallState<
@@ -55,17 +56,17 @@ export function getFuncCallState<
 	TArgs extends any[],
 	TValue
 >(func: Func<TThis, TArgs, TValue>): Func<TThis, TArgs, IFuncCallState<TThis, TArgs, TValue>> {
-	const funcStateMap = rootStateMap.get(func)
-	return funcStateMap
-		? _getFuncCallState(funcStateMap)
-		: emptyFunc
+	return rootStateMap.get(func) || emptyFunc
 }
 
 function _getFuncCallState<
 	TThis,
 	TArgs extends any[],
 	TValue
->(funcStateMap: Map<number, any>): Func<TThis, TArgs, IFuncCallState<TThis, TArgs, TValue>> {
+>(
+	func: Func<TThis, TArgs, TValue>,
+	funcStateMap: Map<number, any>,
+): Func<TThis, TArgs, IFuncCallState<TThis, TArgs, TValue>> {
 	return function() {
 		const argumentsLength = arguments.length
 		let argsLengthStateMap = funcStateMap.get(argumentsLength)
@@ -95,19 +96,94 @@ function _getFuncCallState<
 			const lastArg = arguments[argumentsLength - 1]
 			state = argsStateMap.get(lastArg)
 			if (!state) {
-				state = new FuncCallState<TThis, TArgs, TValue>(this, createCall.apply(this, arguments))
+				state = new FuncCallState<TThis, TArgs, TValue>(func, this, createCall.apply(this, arguments))
 				argsStateMap.set(lastArg, state)
 			}
 		} else {
 			state = argsLengthStateMap.get(this)
 			if (!state) {
-				state = new FuncCallState<TThis, TArgs, TValue>(this, createCall.apply(this, arguments))
+				state = new FuncCallState<TThis, TArgs, TValue>(func, this, createCall.apply(this, arguments))
 				argsLengthStateMap.set(this, state)
 			}
 		}
 
 		return state
 	}
+}
+
+function invoke<TValue>() {
+	this.update(FuncCallStatus.Calculating)
+
+	let value: any = this.func.apply(this._this, arguments)
+
+	if (isIterator(value)) {
+		value = resolveAsync(
+			makeDependentIterator(this, value as Iterator<TValue>)	as ThenableOrIteratorOrValue<TValue>,
+		)
+
+		if (isThenable(value)) {
+			this.update(FuncCallStatus.CalculatingAsync, value)
+		}
+
+		return value
+	} else if (isThenable(value)) {
+		throw new Error('You should use iterator instead thenable for async functions')
+	}
+
+	this.update(FuncCallStatus.Calculated, value)
+
+	return value
+}
+
+function tryInvoke() {
+	try {
+		return invoke.apply(this, arguments)
+	} catch (error) {
+		this.update(FuncCallStatus.Error, error)
+		throw error
+	} finally {
+		currentState = this.parentCallState
+		this.parentCallState = void 0
+	}
+}
+
+function _dependentFunc() {
+	const parentState = currentState
+	if (parentState) {
+		parentState.subscribeDependency(this)
+	}
+
+	this.incrementCallId()
+
+	if (this.status) {
+		switch (this.status) {
+			case FuncCallStatus.Invalidating:
+			case FuncCallStatus.Invalidated:
+				break
+			case FuncCallStatus.Calculating:
+				throw new Error('Recursive sync loop detected')
+			case FuncCallStatus.CalculatingAsync:
+				let parentCallState = this.parentCallState
+				while (parentCallState) {
+					if (parentCallState === this) {
+						throw new Error('Recursive async loop detected')
+					}
+					parentCallState = parentCallState.parentCallState
+				}
+				return this.valueAsync
+			case FuncCallStatus.Calculated:
+				return this.value
+			case FuncCallStatus.Error:
+				throw this.error
+			default:
+				throw new Error('Unknown FuncStatus: ' + this.status)
+		}
+	}
+
+	this.parentCallState = parentState
+	currentState = this
+
+	return tryInvoke.apply(this, arguments)
 }
 
 export function makeDependentFunc<
@@ -128,12 +204,12 @@ export function makeDependentFunc<
 	if (rootStateMap.get(func)) {
 		throw new Error('Multiple call makeDependentFunc() for func: ' + func)
 	}
-	const funcStateMap = new Map<number, any>()
-	rootStateMap.set(func, funcStateMap)
-	const getState = _getFuncCallState(funcStateMap)
+	const getState = _getFuncCallState(func, new Map<number, any>())
+	rootStateMap.set(func, getState)
 
 	const dependentFunc = function() {
 		const state = getState.apply(this, arguments)
+		// return _dependentFunc.apply(state, arguments)
 
 		const parentState = currentState
 		if (parentState) {
@@ -166,6 +242,11 @@ export function makeDependentFunc<
 					throw new Error('Unknown FuncStatus: ' + state.status)
 			}
 		}
+
+		state.parentCallState = parentState
+		currentState = state
+
+		// return tryInvoke.apply(state, arguments)
 
 		try {
 			state.parentCallState = parentState
@@ -200,7 +281,7 @@ export function makeDependentFunc<
 		}
 	}
 
-	rootStateMap.set(dependentFunc, funcStateMap)
+	rootStateMap.set(dependentFunc, getState)
 
 	return dependentFunc
 }

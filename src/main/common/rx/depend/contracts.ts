@@ -21,6 +21,7 @@ export interface IFuncCallState<
 	TArgs extends any[],
 	TValue,
 > {
+	readonly func: Func<TThis, TArgs, TValue>
 	readonly _this: TThis
 	readonly call: TCall<TArgs>
 
