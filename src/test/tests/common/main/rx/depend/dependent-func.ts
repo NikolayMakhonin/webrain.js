@@ -126,17 +126,9 @@ describe('common > main > rx > depend > dependent-func', function() {
 		result.id = callId
 		result.state = getFuncCallState(func).apply(_this, rest)
 		assert.ok(result.state)
-		assert.ok(result.state.callWithArgs)
+		assert.ok(result.state.args)
 		assert.strictEqual(result.state._this, _this)
-
-		let callArgs
-		let callThis
-		result.state.callWithArgs(function() {
-			callThis = this
-			callArgs = [...arguments]
-		})
-		assert.strictEqual(callThis, result.state)
-		assert.deepStrictEqual(callArgs, rest);
+		assert.deepStrictEqual(result.state.args, rest);
 		(result.state as any).id = callId
 
 		return result

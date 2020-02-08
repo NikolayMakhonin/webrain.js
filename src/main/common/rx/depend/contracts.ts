@@ -23,7 +23,7 @@ export interface IFuncCallState<
 > {
 	readonly func: Func<TThis, TArgs, TValue>
 	readonly _this: TThis
-	readonly callWithArgs: TCall<TArgs>
+	readonly args: TArgs
 
 	status: FuncCallStatus
 	hasValue: boolean
@@ -42,7 +42,6 @@ export interface IFuncCallState<
 
 	// for prevent multiple subscribe equal dependencies
 	callId: number
-	incrementCallId(): void
 	// TODO: parent subscribe for invalidate (clear status & value & error & unsubscribe dependencies)
 	// TODO: detect cyclic dependencies
 	subscribeDependency(dependency: IFuncCallState<any, any, any>): void

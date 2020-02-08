@@ -11,10 +11,10 @@ export interface ISemiWeakMap<K, V> {
 
 export class SemiWeakMap<K, V> implements ISemiWeakMap<K, V>
 {
-	private _map: Map<K, V>
-	private _weakMap: WeakMap<any, V>
+	private _map: Map<K, V> = void 0
+	private _weakMap: WeakMap<any, V> = void 0
 
-	public readonly [Symbol.toStringTag]: string = 'WeakMap'
+	public [Symbol.toStringTag]: string
 
 	public set(key: K, value: V): this {
 		if (isRefType(key)) {
@@ -80,3 +80,5 @@ export class SemiWeakMap<K, V> implements ISemiWeakMap<K, V>
 		return false
 	}
 }
+
+SemiWeakMap.prototype[Symbol.toStringTag] = 'WeakMap'

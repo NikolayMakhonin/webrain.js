@@ -85,7 +85,6 @@ class SubscriberLinkPool extends ObjectPool<ISubscriberLink<any, any, any>> {
 				value: subscriber,
 				prev,
 				next,
-				delete: subscriberLinkDelete,
 			}
 		} else {
 			item.state = state
@@ -96,42 +95,6 @@ class SubscriberLinkPool extends ObjectPool<ISubscriberLink<any, any, any>> {
 
 		return item
 	}
-}
-
-function subscriberLinkDelete<TThis, TArgs extends any[], TValue>(
-	this: ISubscriberLink<TThis, TArgs, TValue>,
-) {
-	const {state} = this
-	if (!state) {
-		return
-	}
-
-	const {prev, next, pool} = this
-
-	if (prev) {
-		if (next) {
-			prev.next = next
-			next.prev = prev
-		} else {
-			(state as any)._subscribersLast = prev
-			prev.next = null
-		}
-	} else {
-		if (next) {
-			(state as any)._subscribersFirst = next
-			next.prev = null
-		} else {
-			(state as any)._subscribersFirst = null;
-			(state as any)._subscribersLast = null
-		}
-	}
-
-	this.state = null
-	this.value = null
-	this.prev = null
-	this.next = null
-
-	this.pool.release(this)
 }
 
 export const subscriberLinkPool = new SubscriberLinkPool(1000000)
@@ -149,8 +112,6 @@ export function createCallWithArgs<
 	}
 }
 
-let nextCallId = 1
-
 export class FuncCallState<
 	TThis,
 	TArgs extends any[],
@@ -166,7 +127,11 @@ export class FuncCallState<
 	) {
 		this.func = func
 		this._this = _this
-		this.callWithArgs = callWithArgs
+		let args
+		callWithArgs(function() {
+			args = Array.from(arguments)
+		})
+		this.args = args
 	}
 
 	// endregion
@@ -175,31 +140,31 @@ export class FuncCallState<
 
 	public readonly func: Func<TThis, TArgs, TValue>
 	public readonly _this: TThis
-	public readonly callWithArgs: TCall<TArgs>
+	public args: TArgs
 
-	public status: FuncCallStatus
-	public hasValue: boolean
-	public hasError: boolean
+	public status: FuncCallStatus = FuncCallStatus.Invalidated
+	public hasValue: boolean = false
+	public hasError: boolean = false
 
-	public valueAsync: Thenable<TValue>
-	public value: TValue
-	public error: any
+	public valueAsync: Thenable<TValue> = void 0
+	public value: TValue = void 0
+	public error: any = void 0
 
 	// endregion
 
 	// region Debug
 
 	/** for detect recursive async loop */
-	public parentCallState: IFuncCallState<any, any, any>
+	public parentCallState: IFuncCallState<any, any, any> = void 0
 
 	// endregion
 
 	// region subscribe / emit
 
-	private _subscribersFirst: ISubscriberLink<TThis, TArgs, TValue>
-	private _subscribersLast: ISubscriberLink<TThis, TArgs, TValue>
+	private _subscribersFirst: ISubscriberLink<TThis, TArgs, TValue> = void 0
+	private _subscribersLast: ISubscriberLink<TThis, TArgs, TValue> = void 0
 
-	public subscribe(subscriber: ISubscriber<TThis, TArgs, TValue>, immediate: boolean = true): IUnsubscribe {
+	private _subscribe(subscriber: ISubscriber<TThis, TArgs, TValue>): ISubscriberLink<TThis, TArgs, TValue> {
 		const {_subscribersLast} = this
 		const subscriberLink = subscriberLinkPool.getOrCreate(this, subscriber, _subscribersLast, null)
 
@@ -210,9 +175,15 @@ export class FuncCallState<
 		}
 		this._subscribersLast = subscriberLink
 
-		if (immediate) {
-			this.callWithArgs(subscriber)
-		}
+		return subscriberLink
+	}
+
+	public subscribe(subscriber: ISubscriber<TThis, TArgs, TValue>, immediate: boolean = true): IUnsubscribe {
+		const subscriberLink = this._subscribe(subscriber)
+
+		// if (immediate) {
+		// 	subscriber(this.status)
+		// }
 
 		return subscriberLink
 	}
@@ -236,7 +207,7 @@ export class FuncCallState<
 		}
 
 		for (let link = clonesFirst; link;) {
-			link.value.apply(this, arguments)
+			link.value(this.status)
 			link.value = null
 			const next = link.next
 			link.next = null
@@ -247,7 +218,7 @@ export class FuncCallState<
 
 	private emit() {
 		if (this._subscribersFirst) {
-			this.callWithArgs(this._emit)
+			this._emit()
 		}
 	}
 
@@ -256,13 +227,10 @@ export class FuncCallState<
 	// region subscribe dependencies
 
 	// for prevent multiple subscribe equal dependencies
-	public callId: number
-	public incrementCallId(): void {
-		this.callId = nextCallId++
-	}
+	public callId: number = 0
 
-	private _unsubscribers: IUnsubscribe[]
-	private _unsubscribersLength: number
+	private _unsubscribers: IUnsubscribe[] = void 0
+	private _unsubscribersLength: number = 0
 
 	public subscribeDependency(dependency: IFuncCallState<any, any, any>): void {
 		if (dependency.callId > this.callId) {
@@ -272,8 +240,7 @@ export class FuncCallState<
 		let {_invalidate} = this
 		if (!_invalidate) {
 			const self = this
-			this._invalidate = _invalidate = function() {
-				const {status} = this
+			this._invalidate = _invalidate = function(status) {
 				if (status === FuncCallStatus.Invalidating || status === FuncCallStatus.Invalidated) {
 					self.update(status)
 				}
@@ -290,12 +257,46 @@ export class FuncCallState<
 		}
 	}
 
+	private subscriberLinkDelete(item) {
+		if (!item.state) {
+			return
+		}
+
+		const {prev, next, pool} = item
+
+		if (prev) {
+			if (next) {
+				prev.next = next
+				next.prev = prev
+			} else {
+				(this as any)._subscribersLast = prev
+				prev.next = null
+			}
+		} else {
+			if (next) {
+				(this as any)._subscribersFirst = next
+				next.prev = null
+			} else {
+				(this as any)._subscribersFirst = null;
+				(this as any)._subscribersLast = null
+			}
+		}
+
+		item.state = null
+		item.value = null
+		item.prev = null
+		item.next = null
+
+		item.pool.release(item)
+	}
+
 	public unsubscribeDependencies(): void {
 		const {_unsubscribers} = this
 		if (_unsubscribers) {
 			const len = this._unsubscribersLength
 			for (let i = 0; i < len; i++) {
-				_unsubscribers[i].delete()
+				const item = _unsubscribers[i]
+				item.state.subscriberLinkDelete(item)
 				_unsubscribers[i] = null
 			}
 			this._unsubscribersLength = 0
@@ -309,7 +310,7 @@ export class FuncCallState<
 
 	// region invalidate / update
 
-	private _invalidate: () => void
+	private _invalidate: () => void = void 0
 	public invalidate(): void {
 		this.update(FuncCallStatus.Invalidating)
 		this.update(FuncCallStatus.Invalidated)
