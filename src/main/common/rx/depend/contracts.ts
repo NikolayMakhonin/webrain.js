@@ -2,7 +2,7 @@ import {Thenable} from '../../async/async'
 import {IUnsubscribe} from '../subjects/observable'
 
 export type Func<TThis, TArgs extends any[], TValue = void> = (this: TThis, ...args: TArgs) => TValue
-export type TCall<TArgs extends any[]> = <TThis, TValue>(_this: TThis, func: Func<TThis, TArgs, TValue>) => TValue
+export type TCall<TArgs extends any[]> = <TThis, TValue>(this: TThis, func: Func<TThis, TArgs, TValue>) => TValue
 
 export enum FuncCallStatus {
 	Invalidating = 'Invalidating',

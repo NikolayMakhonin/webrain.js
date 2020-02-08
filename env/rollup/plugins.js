@@ -81,4 +81,19 @@ module.exports = {
 			!dev && plugins.terser(),
 		]
 	},
+	libs({dev = false, legacy = true}) {
+		return [
+			plugins.babel.minimal({
+				// compact: true,
+			}),
+			plugins.resolve({
+				browser: true,
+			}),
+			plugins.commonjs(),
+			legacy && plugins.babel.browser({
+				// compact: true,
+			}),
+			// !dev && plugins.terser(),
+		]
+	},
 }

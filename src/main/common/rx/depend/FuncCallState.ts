@@ -77,18 +77,16 @@ class SubscriberLinkPool extends ObjectPool<ISubscriberLink<any, any, any>> {
 export const subscriberLinkPool = new SubscriberLinkPool(1000000)
 
 export function createCall<
-	TThis,
 	TArgs extends any[],
-	TValue,
->(this: TThis, ...args: TArgs): TCall<TArgs>
+>(...args: TArgs): TCall<TArgs>
 export function createCall<
-	TThis,
 	TArgs extends any[],
-	TValue,
->(this: TThis): TCall<TArgs>
+>(): TCall<TArgs>
 {
 	const args = arguments
-	return (_this, func) => func.apply(_this, args)
+	return function(func) {
+		return func.apply(this, args)
+	}
 }
 
 let nextCallId = 1

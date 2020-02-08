@@ -1,12 +1,12 @@
 // @ts-ignore
 import {calcPerformance} from 'rdtsc'
-import {getObjectUniqueId} from '../../../main/common'
+import {getObjectUniqueId} from '../../../main/common/helpers/object-unique-id'
 import {subscriberLinkPool} from '../../../main/common/rx/depend/FuncCallState'
 import {assert} from '../../../main/common/test/Assert'
 import {CalcType} from '../../../main/common/test/calc'
 import {calcMemAllocate} from '../../../main/common/test/calc-mem-allocate'
 import {describe, it, xit} from '../../../main/common/test/Mocha'
-import {createPerceptron} from '../../tests/common/main/rx/depend/src/helpers'
+import {createPerceptron, createPerceptronNaked} from '../../tests/common/main/rx/depend/src/helpers'
 
 describe('dependent-func', function() {
 	it('perceptron perf', function() {
@@ -18,15 +18,23 @@ describe('dependent-func', function() {
 			inputState,
 			output,
 		} = createPerceptron(2, 2)
+		const naked = createPerceptronNaked(2, 2)
+
+		const map1 = new Map()
+		const map2 = new Map()
+		map2.set(2, 3)
+		map1.set(1, map2)
 
 		const result = calcPerformance(
 			10000,
 			() => {
-				// no operations
+				naked.call(2, 5, 10)
 			}, () => {
 				inputState.invalidate()
 			}, () => {
 				output.call(2, 5, 10)
+			}, () => {
+				return map1.get(1).get(2)
 			},
 		)
 
@@ -35,8 +43,10 @@ describe('dependent-func', function() {
 		console.log('cyclesPerSecond: ' + cyclesPerSecond)
 		console.log('countFuncs: ' + countFuncs)
 		console.log(`absoluteDiff per func: [${result.absoluteDiff.map(o => o / countFuncs).join(', ')}]`)
-		console.log(`absoluteDiff per second: [${result.absoluteDiff.map(o => countFuncs * cyclesPerSecond / o).join(', ')}]`)
-		console.log(`absoluteDiff per frame: [${result.absoluteDiff.map(o => countFuncs * cyclesPerSecond / o / 60).join(', ')}]`)
+		console.log(`funcs per second: [${result.absoluteDiff.map(o => countFuncs * cyclesPerSecond / o).join(', ')}]`)
+		console.log(`funcs per frame: [${result.absoluteDiff.map(o => countFuncs * cyclesPerSecond / o / 60).join(', ')}]`)
+		console.log(`chrome funcs per second: [${result.absoluteDiff.map(o => countFuncs * cyclesPerSecond / o / 210).join(', ')}]`)
+		console.log(`chrome funcs per frame: [${result.absoluteDiff.map(o => countFuncs * cyclesPerSecond / o / 60 / 210).join(', ')}]`)
 	})
 
 	it('set memory', function() {

@@ -96,13 +96,13 @@ function _getFuncCallState<
 			const lastArg = arguments[argumentsLength - 1]
 			state = argsStateMap.get(lastArg)
 			if (!state) {
-				state = new FuncCallState<TThis, TArgs, TValue>(func, this, createCall.apply(this, arguments))
+				state = new FuncCallState<TThis, TArgs, TValue>(func, this, createCall.apply(void 0, arguments))
 				argsStateMap.set(lastArg, state)
 			}
 		} else {
 			state = argsLengthStateMap.get(this)
 			if (!state) {
-				state = new FuncCallState<TThis, TArgs, TValue>(func, this, createCall.apply(this, arguments))
+				state = new FuncCallState<TThis, TArgs, TValue>(func, this, createCall.apply(void 0, arguments))
 				argsLengthStateMap.set(this, state)
 			}
 		}
@@ -148,20 +148,20 @@ function tryInvoke() {
 }
 
 function _dependentFunc() {
-	const parentState = currentState
-	if (parentState) {
-		parentState.subscribeDependency(this)
+	if (currentState) {
+		currentState.subscribeDependency(this)
 	}
 
 	this.incrementCallId()
 
 	if (this.status) {
 		switch (this.status) {
+			case FuncCallStatus.Calculated:
+				return this.value
+
 			case FuncCallStatus.Invalidating:
 			case FuncCallStatus.Invalidated:
 				break
-			case FuncCallStatus.Calculating:
-				throw new Error('Recursive sync loop detected')
 			case FuncCallStatus.CalculatingAsync:
 				let parentCallState = this.parentCallState
 				while (parentCallState) {
@@ -171,16 +171,18 @@ function _dependentFunc() {
 					parentCallState = parentCallState.parentCallState
 				}
 				return this.valueAsync
-			case FuncCallStatus.Calculated:
-				return this.value
+
 			case FuncCallStatus.Error:
 				throw this.error
+
+			case FuncCallStatus.Calculating:
+				throw new Error('Recursive sync loop detected')
 			default:
 				throw new Error('Unknown FuncStatus: ' + this.status)
 		}
 	}
 
-	this.parentCallState = parentState
+	this.parentCallState = currentState
 	currentState = this
 
 	return tryInvoke.apply(this, arguments)
