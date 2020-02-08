@@ -21,17 +21,17 @@ export class ObjectPool<TObject> {
 			const obj = _stack[lastIndex]
 			_stack[lastIndex] = null
 			this.size = lastIndex
-			if (obj == null) {
-				throw new Error('obj == null')
-			}
+			// if (obj == null) {
+			// 	throw new Error('obj == null')
+			// }
 			return obj
 		}
 	}
 
 	public release(obj: TObject) {
-		if (obj == null) {
-			throw new Error('obj == null')
-		}
+		// if (obj == null) {
+		// 	throw new Error('obj == null')
+		// }
 		this.usedSize--
 		const size = this.size
 		if (size < this._maxSize) {

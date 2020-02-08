@@ -6,8 +6,69 @@ import {ObjectPool} from './ObjectPool'
 interface ISubscriberLink<TThis, TArgs extends any[], TValue>
 	extends ILinkItem<ISubscriber<TThis, TArgs, TValue>>
 {
+	pool: ObjectPool<ISubscriberLink<any, any, any>>
 	state: FuncCallState<TThis, TArgs, TValue>
+	prev: ISubscriberLink<TThis, TArgs, TValue>,
+	next: ISubscriberLink<TThis, TArgs, TValue>,
 }
+
+// class SubscriberLink<TThis, TArgs extends any[], TValue>
+// 	implements ISubscriberLink<TThis, TArgs, TValue>
+// {
+// 	constructor(
+// 		pool: ObjectPool<ISubscriberLink<any, any, any>>,
+// 		state: FuncCallState<TThis, TArgs, TValue>,
+// 		value: ISubscriber<TThis, TArgs, TValue>,
+// 		prev: ISubscriberLink<TThis, TArgs, TValue>,
+// 		next: ISubscriberLink<TThis, TArgs, TValue>,
+// 	) {
+// 		this.pool = pool
+// 		this.state = state
+// 		this.value = value
+// 		this.prev = prev
+// 		this.next = next
+// 	}
+//
+// 	public pool: ObjectPool<ISubscriberLink<any, any, any>>
+// 	public next: ISubscriberLink<TThis, TArgs, TValue>
+// 	public prev: ISubscriberLink<TThis, TArgs, TValue>
+// 	public state: FuncCallState<TThis, TArgs, TValue>
+// 	public value: ISubscriber<TThis, TArgs, TValue>
+//
+// 	public delete() {
+// 		const {state} = this
+// 		if (!state) {
+// 			return
+// 		}
+//
+// 		const {prev, next, pool} = this
+//
+// 		if (prev) {
+// 			if (next) {
+// 				prev.next = next
+// 				next.prev = prev
+// 			} else {
+// 				(state as any)._subscribersLast = prev
+// 				prev.next = null
+// 			}
+// 		} else {
+// 			if (next) {
+// 				(state as any)._subscribersFirst = next
+// 				next.prev = null
+// 			} else {
+// 				(state as any)._subscribersFirst = null;
+// 				(state as any)._subscribersLast = null
+// 			}
+// 		}
+//
+// 		this.state = null
+// 		this.value = null
+// 		this.prev = null
+// 		this.next = null
+//
+// 		this.pool.release(this)
+// 	}
+// }
 
 class SubscriberLinkPool extends ObjectPool<ISubscriberLink<any, any, any>> {
 	public getOrCreate<TThis, TArgs extends any[], TValue>(
@@ -19,11 +80,12 @@ class SubscriberLinkPool extends ObjectPool<ISubscriberLink<any, any, any>> {
 		let item = this.get()
 		if (!item) {
 			item = {
+				pool: this,
 				state,
 				value: subscriber,
 				prev,
 				next,
-				delete: null,
+				delete: subscriberLinkDelete,
 			}
 		} else {
 			item.state = state
@@ -32,54 +94,52 @@ class SubscriberLinkPool extends ObjectPool<ISubscriberLink<any, any, any>> {
 			item.next = next
 		}
 
-		if (state && !item.delete) {
-			item.delete = this.createDeleteFunc(item)
-		}
-
 		return item
 	}
+}
 
-	private createDeleteFunc<TThis, TArgs extends any[], TValue>(
-		item: ISubscriberLink<TThis, TArgs, TValue>,
-	) {
-		return () => {
-			// tslint:disable-next-line:no-shadowed-variable
-			const {prev, next, state} = item
-			if (!state) {
-				return
-			}
-			if (prev) {
-				if (next) {
-					prev.next = next
-					next.prev = prev
-				} else {
-					(state as any)._subscribersLast = prev
-					prev.next = null
-				}
-			} else {
-				if (next) {
-					(state as any)._subscribersFirst = next
-					next.prev = null
-				} else {
-					(state as any)._subscribersFirst = null;
-					(state as any)._subscribersLast = null
-				}
-			}
-			item.state = null
-			item.value = null
-			item.prev = null
-			item.next = null
-			this.release(item)
+function subscriberLinkDelete<TThis, TArgs extends any[], TValue>(
+	this: ISubscriberLink<TThis, TArgs, TValue>,
+) {
+	const {state} = this
+	if (!state) {
+		return
+	}
+
+	const {prev, next, pool} = this
+
+	if (prev) {
+		if (next) {
+			prev.next = next
+			next.prev = prev
+		} else {
+			(state as any)._subscribersLast = prev
+			prev.next = null
+		}
+	} else {
+		if (next) {
+			(state as any)._subscribersFirst = next
+			next.prev = null
+		} else {
+			(state as any)._subscribersFirst = null;
+			(state as any)._subscribersLast = null
 		}
 	}
+
+	this.state = null
+	this.value = null
+	this.prev = null
+	this.next = null
+
+	this.pool.release(this)
 }
 
 export const subscriberLinkPool = new SubscriberLinkPool(1000000)
 
-export function createCall<
+export function createCallWithArgs<
 	TArgs extends any[],
 >(...args: TArgs): TCall<TArgs>
-export function createCall<
+export function createCallWithArgs<
 	TArgs extends any[],
 >(): TCall<TArgs>
 {
@@ -102,11 +162,11 @@ export class FuncCallState<
 	constructor(
 		func,
 		_this: TThis,
-		call: TCall<TArgs>,
+		callWithArgs: TCall<TArgs>,
 	) {
 		this.func = func
 		this._this = _this
-		this.call = call
+		this.callWithArgs = callWithArgs
 	}
 
 	// endregion
@@ -115,7 +175,7 @@ export class FuncCallState<
 
 	public readonly func: Func<TThis, TArgs, TValue>
 	public readonly _this: TThis
-	public readonly call: TCall<TArgs>
+	public readonly callWithArgs: TCall<TArgs>
 
 	public status: FuncCallStatus
 	public hasValue: boolean
@@ -151,10 +211,10 @@ export class FuncCallState<
 		this._subscribersLast = subscriberLink
 
 		if (immediate) {
-			this.call(subscriber)
+			this.callWithArgs(subscriber)
 		}
 
-		return subscriberLink.delete
+		return subscriberLink
 	}
 
 	private _emit() {
@@ -187,7 +247,7 @@ export class FuncCallState<
 
 	private emit() {
 		if (this._subscribersFirst) {
-			this.call(this._emit)
+			this.callWithArgs(this._emit)
 		}
 	}
 
@@ -235,7 +295,7 @@ export class FuncCallState<
 		if (_unsubscribers) {
 			const len = this._unsubscribersLength
 			for (let i = 0; i < len; i++) {
-				_unsubscribers[i]()
+				_unsubscribers[i].delete()
 				_unsubscribers[i] = null
 			}
 			this._unsubscribersLength = 0

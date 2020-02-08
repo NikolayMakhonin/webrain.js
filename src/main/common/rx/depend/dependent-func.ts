@@ -2,7 +2,7 @@ import {isThenable, ThenableOrIteratorOrValue, ThenableOrValue} from '../../asyn
 import {resolveAsync} from '../../async/ThenableSync'
 import {isIterator} from '../../helpers/helpers'
 import {Func, FuncCallStatus, IFuncCallState} from './contracts'
-import {createCall, FuncCallState} from './FuncCallState'
+import {createCallWithArgs, FuncCallState} from './FuncCallState'
 import {ISemiWeakMap, SemiWeakMap} from './SemiWeakMap'
 
 let currentState: IFuncCallState<any, any, any>
@@ -96,13 +96,13 @@ function _getFuncCallState<
 			const lastArg = arguments[argumentsLength - 1]
 			state = argsStateMap.get(lastArg)
 			if (!state) {
-				state = new FuncCallState<TThis, TArgs, TValue>(func, this, createCall.apply(void 0, arguments))
+				state = new FuncCallState<TThis, TArgs, TValue>(func, this, createCallWithArgs.apply(void 0, arguments))
 				argsStateMap.set(lastArg, state)
 			}
 		} else {
 			state = argsLengthStateMap.get(this)
 			if (!state) {
-				state = new FuncCallState<TThis, TArgs, TValue>(func, this, createCall.apply(void 0, arguments))
+				state = new FuncCallState<TThis, TArgs, TValue>(func, this, createCallWithArgs.apply(void 0, arguments))
 				argsLengthStateMap.set(this, state)
 			}
 		}

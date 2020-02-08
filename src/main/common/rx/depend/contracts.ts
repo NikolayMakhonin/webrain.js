@@ -23,7 +23,7 @@ export interface IFuncCallState<
 > {
 	readonly func: Func<TThis, TArgs, TValue>
 	readonly _this: TThis
-	readonly call: TCall<TArgs>
+	readonly callWithArgs: TCall<TArgs>
 
 	status: FuncCallStatus
 	hasValue: boolean
@@ -54,7 +54,7 @@ export interface IFuncCallState<
 
 export interface ILinkItem<T> {
 	value: T
-	prev: this
-	next: this
+	prev: ILinkItem<T>
+	next: ILinkItem<T>
 	delete?: () => void
 }
