@@ -44,7 +44,7 @@ function* makeDependentIterator<
 		throw error
 	} finally {
 		currentState = null
-		state.parentCallState = void 0
+		state.parentCallState = null
 	}
 }
 
@@ -143,7 +143,7 @@ function tryInvoke() {
 		throw error
 	} finally {
 		currentState = this.parentCallState
-		this.parentCallState = void 0
+		this.parentCallState = null
 	}
 }
 
@@ -280,7 +280,7 @@ export function makeDependentFunc<
 			throw error
 		} finally {
 			currentState = state.parentCallState
-			state.parentCallState = void 0
+			state.parentCallState = null
 		}
 	}
 

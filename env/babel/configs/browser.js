@@ -13,12 +13,12 @@ module.exports = {
 		]
 	],
 	plugins: [
-		[
-			'@babel/plugin-transform-runtime', {
-				corejs      : 3,
-				useESModules: true,
-			}
-		],
+		// [
+		// 	'@babel/plugin-transform-runtime', {
+		// 		corejs      : 3,
+		// 		useESModules: true,
+		// 	}
+		// ],
 
 		// preset/env no loose:
 		['@babel/plugin-transform-classes', {loose: false}]

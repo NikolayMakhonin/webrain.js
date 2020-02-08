@@ -1,3 +1,5 @@
+import '@babel/runtime-corejs3'
+import '@babel/runtime-corejs3/regenerator'
 import {subscriberLinkPool} from '../../../src/main/common/rx/depend/FuncCallState'
 import {createPerceptron} from '../../../src/test/tests/common/main/rx/depend/src/helpers'
 export * from '../../../src/main/common/rx/depend/dependent-func.ts'

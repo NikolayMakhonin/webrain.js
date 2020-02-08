@@ -37,7 +37,7 @@ interface ISubscriberLink<TThis, TArgs extends any[], TValue>
 //
 // 	public delete() {
 // 		const {state} = this
-// 		if (!state) {
+// 		if (state == null) {
 // 			return
 // 		}
 //
@@ -78,7 +78,7 @@ class SubscriberLinkPool extends ObjectPool<ISubscriberLink<any, any, any>> {
 		next: ISubscriberLink<TThis, TArgs, TValue>,
 	): ISubscriberLink<TThis, TArgs, TValue> {
 		let item = this.get()
-		if (!item) {
+		if (item == null) {
 			item = {
 				pool: this,
 				state,
@@ -146,7 +146,7 @@ export class FuncCallState<
 	public hasValue: boolean = false
 	public hasError: boolean = false
 
-	public valueAsync: Thenable<TValue> = void 0
+	public valueAsync: Thenable<TValue> = null
 	public value: TValue = void 0
 	public error: any = void 0
 
@@ -155,23 +155,23 @@ export class FuncCallState<
 	// region Debug
 
 	/** for detect recursive async loop */
-	public parentCallState: IFuncCallState<any, any, any> = void 0
+	public parentCallState: IFuncCallState<any, any, any> = null
 
 	// endregion
 
 	// region subscribe / emit
 
-	private _subscribersFirst: ISubscriberLink<TThis, TArgs, TValue> = void 0
-	private _subscribersLast: ISubscriberLink<TThis, TArgs, TValue> = void 0
+	private _subscribersFirst: ISubscriberLink<TThis, TArgs, TValue> = null
+	private _subscribersLast: ISubscriberLink<TThis, TArgs, TValue> = null
 
 	private _subscribe(subscriber: ISubscriber<TThis, TArgs, TValue>): ISubscriberLink<TThis, TArgs, TValue> {
 		const {_subscribersLast} = this
 		const subscriberLink = subscriberLinkPool.getOrCreate(this, subscriber, _subscribersLast, null)
 
-		if (_subscribersLast) {
-			_subscribersLast.next = subscriberLink
-		} else {
+		if (_subscribersLast == null) {
 			this._subscribersFirst = subscriberLink
+		} else {
+			_subscribersLast.next = subscriberLink
 		}
 		this._subscribersLast = subscriberLink
 
@@ -229,7 +229,7 @@ export class FuncCallState<
 	// for prevent multiple subscribe equal dependencies
 	public callId: number = 0
 
-	private _unsubscribers: IUnsubscribe[] = void 0
+	private _unsubscribers: IUnsubscribe[] = null
 	private _unsubscribersLength: number = 0
 
 	public subscribeDependency(dependency: IFuncCallState<any, any, any>): void {
@@ -238,7 +238,7 @@ export class FuncCallState<
 		}
 
 		let {_invalidate} = this
-		if (!_invalidate) {
+		if (_invalidate == null) {
 			const self = this
 			this._invalidate = _invalidate = function(status) {
 				if (status === FuncCallStatus.Invalidating || status === FuncCallStatus.Invalidated) {
@@ -249,7 +249,7 @@ export class FuncCallState<
 		const unsubscribe = dependency.subscribe(_invalidate, false)
 
 		const {_unsubscribers} = this
-		if (!_unsubscribers) {
+		if (_unsubscribers == null) {
 			this._unsubscribers = [unsubscribe]
 			this._unsubscribersLength = 1
 		} else {
@@ -258,7 +258,7 @@ export class FuncCallState<
 	}
 
 	private subscriberLinkDelete(item) {
-		if (!item.state) {
+		if (item.state == null) {
 			return
 		}
 
@@ -268,14 +268,17 @@ export class FuncCallState<
 			if (next) {
 				prev.next = next
 				next.prev = prev
+				item.next = null
 			} else {
 				(this as any)._subscribersLast = prev
 				prev.next = null
 			}
+			item.prev = null
 		} else {
 			if (next) {
 				(this as any)._subscribersFirst = next
 				next.prev = null
+				item.next = null
 			} else {
 				(this as any)._subscribersFirst = null;
 				(this as any)._subscribersLast = null
@@ -284,8 +287,6 @@ export class FuncCallState<
 
 		item.state = null
 		item.value = null
-		item.prev = null
-		item.next = null
 
 		item.pool.release(item)
 	}
@@ -310,7 +311,7 @@ export class FuncCallState<
 
 	// region invalidate / update
 
-	private _invalidate: () => void = void 0
+	private _invalidate: () => void = null
 	public invalidate(): void {
 		this.update(FuncCallStatus.Invalidating)
 		this.update(FuncCallStatus.Invalidated)
@@ -355,7 +356,7 @@ export class FuncCallState<
 					throw new Error(`Set status ${status} called when current status is ${this.status}`)
 				}
 				if (typeof this.valueAsync !== 'undefined') {
-					this.valueAsync = void 0
+					this.valueAsync = null
 				}
 				this.error = void 0
 				this.value = valueAsyncOrValueOrError
@@ -367,7 +368,7 @@ export class FuncCallState<
 					throw new Error(`Set status ${status} called when current status is ${this.status}`)
 				}
 				if (typeof this.valueAsync !== 'undefined') {
-					this.valueAsync = void 0
+					this.valueAsync = null
 				}
 				this.error = valueAsyncOrValueOrError
 				this.hasError = true

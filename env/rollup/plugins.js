@@ -22,7 +22,7 @@ const plugins = {
 	// builtins   : (options = {}) =>builtins(options),
 	resolve: (options = {}) => resolve({
 		extensions: [...fileExtensions.js, ...fileExtensions.ts],
-		dedupe,
+		// dedupe,
 		// preferBuiltins      : true,
 		// customResolveOptions: {
 		// 	moduleDirectory: 'node_modules',
@@ -52,6 +52,12 @@ const plugins = {
 		...options
 	}),
 }
+
+plugins.resolveBabelRuntime = (options = {}) => plugins.resolve({
+	only: [/^(@babel|core-js(-(pure|compat))?)(\/.*)?$/],
+	// preferBuiltins: false,
+	...options,
+})
 
 // noinspection PointlessBooleanExpressionJS
 module.exports = {
@@ -86,6 +92,7 @@ module.exports = {
 			plugins.babel.minimal({
 				// compact: true,
 			}),
+			plugins.resolveBabelRuntime(),
 			plugins.resolve({
 				browser: true,
 			}),
