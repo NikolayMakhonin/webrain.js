@@ -151,7 +151,7 @@ export class FuncCallState<
 		this._subscribersLast = subscriberLink
 
 		if (immediate) {
-			this.call(this, subscriber)
+			this.call(subscriber)
 		}
 
 		return subscriberLink.delete
@@ -187,7 +187,7 @@ export class FuncCallState<
 
 	private emit() {
 		if (this._subscribersFirst) {
-			this.call(this, this._emit)
+			this.call(this._emit)
 		}
 	}
 
