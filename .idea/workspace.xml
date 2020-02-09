@@ -8,10 +8,16 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="69b2ee16-521b-4efd-b473-8e19e3df4d09" name="Default Changelist" comment="">
+      <change afterPath="$PROJECT_DIR$/env/babel/configs/v8-trace.js" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/env/babel/configs/browser.js" beforeDir="false" afterPath="$PROJECT_DIR$/env/babel/configs/browser.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/env/rollup/babel.js" beforeDir="false" afterPath="$PROJECT_DIR$/env/rollup/babel.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/env/rollup/plugins.js" beforeDir="false" afterPath="$PROJECT_DIR$/env/rollup/plugins.js" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/common/rx/depend/FuncCallState.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/common/rx/depend/FuncCallState.ts" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/common/rx/depend/ObjectPool.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/common/rx/depend/ObjectPool.ts" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/common/rx/depend/contracts.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/common/rx/depend/contracts.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/common/rx/depend/dependent-func.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/common/rx/depend/dependent-func.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/test/tests/common/main/rx/depend/dependent-func.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/test/tests/common/main/rx/depend/dependent-func.ts" afterDir="false" />
     </list>
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
     <option name="SHOW_DIALOG" value="false" />
@@ -54,7 +60,7 @@
     <property name="WebServerToolWindowFactoryState" value="false" />
     <property name="auto.test.manager.delay" value="5000" />
     <property name="javascript.karma.karma_node_package_dir" value="" />
-    <property name="last_opened_file_path" value="$PROJECT_DIR$/isolate-00000000002FB1B0-v8.log" />
+    <property name="last_opened_file_path" value="$PROJECT_DIR$/env/babel/configs" />
     <property name="node.js.detected.package.eslint" value="true" />
     <property name="node.js.detected.package.standard" value="true" />
     <property name="node.js.detected.package.tslint" value="true" />
@@ -81,18 +87,18 @@
       <recent name="L:\Work\_GIT\GitHub\NodeJs\modules\webrain\src\test\tests\common\main\time" />
     </key>
     <key name="es6.move.members.recent.items">
-      <recent name="L:\Work\_GIT\GitHub\NodeJs\modules\webrain\src\main\common\test\calc-mem-allocate.ts" />
       <recent name="L:\Work\_GIT\GitHub\NodeJs\modules\webrain\src\main\common\rx\depend\contracts.ts" />
+      <recent name="L:\Work\_GIT\GitHub\NodeJs\modules\webrain\src\main\common\test\calc-mem-allocate.ts" />
       <recent name="L:\Work\_GIT\GitHub\NodeJs\modules\webrain\src\main\common\time\helpers.ts" />
       <recent name="L:\Work\_GIT\GitHub\NodeJs\modules\webrain\src\main\common\rx\deep-subscribe\contracts\deep-subscribe.ts" />
       <recent name="L:\Work\_GIT\GitHub\NodeJs\modules\webrain\src\main\common\rx\deep-subscribe\helpers\PropertiesPath.ts" />
     </key>
     <key name="CopyFile.RECENT_KEYS">
+      <recent name="L:\Work\_GIT\GitHub\NodeJs\modules\webrain\env\babel\configs" />
       <recent name="L:\Work\_GIT\GitHub\NodeJs\modules\webrain\env\v8" />
       <recent name="L:\Work\_GIT\GitHub\NodeJs\modules\webrain\env\libs\dependent-func" />
       <recent name="L:\Work\_GIT\GitHub\NodeJs\modules\webrain\env\common" />
       <recent name="L:\Work\_GIT\GitHub\NodeJs\modules\webrain\env\libs" />
-      <recent name="L:\Work\_GIT\GitHub\NodeJs\modules\webrain\src\test\performance\node" />
     </key>
   </component>
   <component name="RunDashboard">
@@ -338,13 +344,6 @@
       <option name="number" value="Default" />
       <option name="presentableId" value="Default" />
       <updated>1567687848586</updated>
-    </task>
-    <task id="LOCAL-00171" summary="v0.0.3. Published.">
-      <created>1577022161811</created>
-      <option name="number" value="00171" />
-      <option name="presentableId" value="LOCAL-00171" />
-      <option name="project" value="LOCAL" />
-      <updated>1577022161811</updated>
     </task>
     <task id="LOCAL-00172" summary="v0.0.5. Published.">
       <created>1577087737196</created>
@@ -682,7 +681,14 @@
       <option name="project" value="LOCAL" />
       <updated>1581188994586</updated>
     </task>
-    <option name="localTasksCounter" value="220" />
+    <task id="LOCAL-00220" summary="dependent-funcs v8 optimization in process... Need to use two fields callId &amp; callId2 to avoid overflow int number. Need to avoid using functions as variables.">
+      <created>1581225852104</created>
+      <option name="number" value="00220" />
+      <option name="presentableId" value="LOCAL-00220" />
+      <option name="project" value="LOCAL" />
+      <updated>1581225852104</updated>
+    </task>
+    <option name="localTasksCounter" value="221" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -744,7 +750,6 @@
   <component name="VcsManagerConfiguration">
     <option name="CHECK_CODE_SMELLS_BEFORE_PROJECT_COMMIT" value="false" />
     <option name="CHECK_NEW_TODO" value="false" />
-    <MESSAGE value="deepSubscribe caching in process: added rules unique id" />
     <MESSAGE value="deepSubscribe caching in process" />
     <MESSAGE value="deepSubscribe caching failed" />
     <MESSAGE value="deepSubscribe caching rollback" />
@@ -769,7 +774,8 @@
     <MESSAGE value="dependent-funcs v8 optimization in process. Need change IUnsubscribe to IDisposable" />
     <MESSAGE value="dependent-funcs v8 optimization in process. Need to return callWithArgs" />
     <MESSAGE value="dependent-funcs v8 optimization in process..." />
-    <option name="LAST_COMMIT_MESSAGE" value="dependent-funcs v8 optimization in process..." />
+    <MESSAGE value="dependent-funcs v8 optimization in process... Need to use two fields callId &amp; callId2 to avoid overflow int number. Need to avoid using functions as variables." />
+    <option name="LAST_COMMIT_MESSAGE" value="dependent-funcs v8 optimization in process... Need to use two fields callId &amp; callId2 to avoid overflow int number. Need to avoid using functions as variables." />
   </component>
   <component name="XDebuggerManager">
     <breakpoint-manager>
@@ -782,37 +788,37 @@
         </line-breakpoint>
         <line-breakpoint enabled="true" type="javascript">
           <url>file://$PROJECT_DIR$/src/main/common/rx/depend/FuncCallState.ts</url>
-          <line>401</line>
+          <line>350</line>
           <properties lambdaOrdinal="-1" />
           <option name="timeStamp" value="349" />
         </line-breakpoint>
         <line-breakpoint enabled="true" type="javascript">
           <url>file://$PROJECT_DIR$/src/main/common/rx/depend/FuncCallState.ts</url>
-          <line>392</line>
+          <line>341</line>
           <properties lambdaOrdinal="-1" />
           <option name="timeStamp" value="350" />
         </line-breakpoint>
         <line-breakpoint enabled="true" type="javascript">
           <url>file://$PROJECT_DIR$/src/main/common/rx/depend/FuncCallState.ts</url>
-          <line>380</line>
+          <line>329</line>
           <properties lambdaOrdinal="-1" />
           <option name="timeStamp" value="351" />
         </line-breakpoint>
         <line-breakpoint enabled="true" type="javascript">
           <url>file://$PROJECT_DIR$/src/main/common/rx/depend/FuncCallState.ts</url>
-          <line>374</line>
+          <line>323</line>
           <properties lambdaOrdinal="-1" />
           <option name="timeStamp" value="352" />
         </line-breakpoint>
         <line-breakpoint enabled="true" type="javascript">
           <url>file://$PROJECT_DIR$/src/main/common/rx/depend/FuncCallState.ts</url>
-          <line>369</line>
+          <line>318</line>
           <properties lambdaOrdinal="-1" />
           <option name="timeStamp" value="353" />
         </line-breakpoint>
         <line-breakpoint enabled="true" type="javascript">
           <url>file://$PROJECT_DIR$/src/main/common/rx/depend/FuncCallState.ts</url>
-          <line>353</line>
+          <line>302</line>
           <properties lambdaOrdinal="-1" />
           <option name="timeStamp" value="354" />
         </line-breakpoint>

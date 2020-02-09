@@ -1,16 +1,7 @@
 import {Thenable} from '../../async/async'
 import {IUnsubscribe} from '../subjects/observable'
-import {Func, FuncCallStatus, IFuncCallState, ILinkItem, ISubscriber, TCall} from './contracts'
+import {Func, FuncCallStatus, IFuncCallState, ISubscriber, ISubscriberLink, TCall} from './contracts'
 import {ObjectPool} from './ObjectPool'
-
-interface ISubscriberLink<TThis, TArgs extends any[], TValue>
-	extends ILinkItem<ISubscriber<TThis, TArgs, TValue>>
-{
-	pool: ObjectPool<ISubscriberLink<any, any, any>>
-	state: FuncCallState<TThis, TArgs, TValue>
-	prev: ISubscriberLink<TThis, TArgs, TValue>,
-	next: ISubscriberLink<TThis, TArgs, TValue>,
-}
 
 // class SubscriberLink<TThis, TArgs extends any[], TValue>
 // 	implements ISubscriberLink<TThis, TArgs, TValue>
@@ -70,34 +61,7 @@ interface ISubscriberLink<TThis, TArgs extends any[], TValue>
 // 	}
 // }
 
-class SubscriberLinkPool extends ObjectPool<ISubscriberLink<any, any, any>> {
-	public getOrCreate<TThis, TArgs extends any[], TValue>(
-		state: FuncCallState<TThis, TArgs, TValue>,
-		subscriber: ISubscriber<TThis, TArgs, TValue>,
-		prev: ISubscriberLink<TThis, TArgs, TValue>,
-		next: ISubscriberLink<TThis, TArgs, TValue>,
-	): ISubscriberLink<TThis, TArgs, TValue> {
-		let item = this.get()
-		if (item == null) {
-			item = {
-				pool: this,
-				state,
-				value: subscriber,
-				prev,
-				next,
-			}
-		} else {
-			item.state = state
-			item.value = subscriber
-			item.prev = prev
-			item.next = next
-		}
-
-		return item
-	}
-}
-
-export const subscriberLinkPool = new SubscriberLinkPool(1000000)
+export const subscriberLinkPool = new ObjectPool<ISubscriberLink<any, any, any>>(1000000)
 
 export function createCallWithArgs<
 	TArgs extends any[],
@@ -123,15 +87,15 @@ export class FuncCallState<
 	constructor(
 		func,
 		_this: TThis,
-		callWithArgs: TCall<TArgs>,
+		// callWithArgs: TCall<TArgs>,
 	) {
 		this.func = func
 		this._this = _this
-		let args
-		callWithArgs(function() {
-			args = Array.from(arguments)
-		})
-		this.args = args
+		// let args
+		// callWithArgs(function() {
+		// 	args = Array.from(arguments)
+		// })
+		// this.args = args
 	}
 
 	// endregion
@@ -164,30 +128,29 @@ export class FuncCallState<
 	private _subscribersFirst: ISubscriberLink<TThis, TArgs, TValue> = null
 	private _subscribersLast: ISubscriberLink<TThis, TArgs, TValue> = null
 	private getSubscriberLink(
-		subscriber: ISubscriber<TThis, TArgs, TValue>,
+		subscriber: IFuncCallState<TThis, TArgs, TValue>,
 		prev: ISubscriberLink<TThis, TArgs, TValue>,
 		next: ISubscriberLink<TThis, TArgs, TValue>,
 	): ISubscriberLink<TThis, TArgs, TValue> {
-		let item = subscriberLinkPool.get()
-		if (item == null) {
-			item = {
-				pool: subscriberLinkPool,
-				state: this,
-				value: subscriber,
-				prev,
-				next,
-			}
-		} else {
+		const item = subscriberLinkPool.get()
+		if (item != null) {
 			item.state = this
 			item.value = subscriber
 			item.prev = prev
 			item.next = next
+			return item
 		}
 
-		return item
+		return {
+			pool: subscriberLinkPool,
+			state: this,
+			value: subscriber,
+			prev,
+			next,
+		}
 	}
 
-	private _subscribe(subscriber: ISubscriber<TThis, TArgs, TValue>): ISubscriberLink<TThis, TArgs, TValue> {
+	public subscribe(subscriber: IFuncCallState<TThis, TArgs, TValue>): ISubscriberLink<TThis, TArgs, TValue> {
 		const {_subscribersLast} = this
 		const subscriberLink = this.getSubscriberLink(subscriber, _subscribersLast, null)
 
@@ -197,16 +160,6 @@ export class FuncCallState<
 			_subscribersLast.next = subscriberLink
 		}
 		this._subscribersLast = subscriberLink
-
-		return subscriberLink
-	}
-
-	public subscribe(subscriber: ISubscriber<TThis, TArgs, TValue>, immediate: boolean = true): IUnsubscribe {
-		const subscriberLink = this._subscribe(subscriber)
-
-		// if (immediate) {
-		// 	subscriber(this.status)
-		// }
 
 		return subscriberLink
 	}
@@ -229,7 +182,7 @@ export class FuncCallState<
 		}
 
 		for (let link = clonesFirst; link;) {
-			link.value(status)
+			link.value.invalidate(status)
 			link.value = null
 			const next = link.next
 			link.next = null
@@ -251,7 +204,7 @@ export class FuncCallState<
 	// for prevent multiple subscribe equal dependencies
 	public callId: number = 0
 
-	private _unsubscribers: IUnsubscribe[] = null
+	private _unsubscribers: Array<ISubscriberLink<TThis, TArgs, TValue>> = null
 	private _unsubscribersLength: number = 0
 
 	public subscribeDependency(dependency: IFuncCallState<any, any, any>): void {
@@ -259,21 +212,14 @@ export class FuncCallState<
 			return
 		}
 
-		let {_invalidate} = this
-		if (_invalidate == null) {
-			const self = this
-			this._invalidate = _invalidate = function(status) {
-				self.update(status)
-			}
-		}
-		const unsubscribe = dependency.subscribe(_invalidate, false)
+		const subscriberLink = dependency.subscribe(this)
 
 		const {_unsubscribers} = this
 		if (_unsubscribers == null) {
-			this._unsubscribers = [unsubscribe]
+			this._unsubscribers = [subscriberLink]
 			this._unsubscribersLength = 1
 		} else {
-			_unsubscribers[this._unsubscribersLength++] = unsubscribe
+			_unsubscribers[this._unsubscribersLength++] = subscriberLink
 		}
 	}
 
@@ -331,10 +277,13 @@ export class FuncCallState<
 
 	// region invalidate / update
 
-	private _invalidate: () => void = null
-	public invalidate(): void {
-		this.update(FuncCallStatus.Invalidating)
-		this.update(FuncCallStatus.Invalidated)
+	public invalidate(status?: FuncCallStatus): void {
+		if (status == null) {
+			this.update(FuncCallStatus.Invalidating)
+			this.update(FuncCallStatus.Invalidated)
+		} else {
+			this.update(status)
+		}
 	}
 
 	public update(status: FuncCallStatus, valueAsyncOrValueOrError?: Iterator<TValue> | any | TValue): void {

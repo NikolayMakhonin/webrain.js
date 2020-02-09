@@ -26,6 +26,7 @@ export class ObjectPool<TObject> {
 			// }
 			return obj
 		}
+		return null
 	}
 
 	public release(obj: TObject) {
