@@ -126,7 +126,7 @@ describe('common > main > rx > depend > dependent-func', function() {
 		result.id = callId
 		result.state = getFuncCallState(func).apply(_this, rest)
 		assert.ok(result.state)
-		assert.strictEqual(result.state._this, _this);
+		assert.strictEqual(result.state.status, FuncCallStatus.Invalidated);
 		(result.state as any).id = callId
 
 		return result

@@ -76,281 +76,502 @@ export function createCallWithArgs<
 	}
 }
 
-export class FuncCallState<
+// export class FuncCallState<
+// 	TThis,
+// 	TArgs extends any[],
+// 	TValue,
+// > implements IFuncCallState<TThis, TArgs, TValue>
+// {
+// 	// region constructor
+//
+// 	constructor(
+// 		func,
+// 		_this: TThis,
+// 		// callWithArgs: TCall<TArgs>,
+// 	) {
+// 		this.func = func
+// 		this._this = _this
+// 		// let args
+// 		// callWithArgs(function() {
+// 		// 	args = Array.from(arguments)
+// 		// })
+// 		// this.args = args
+// 	}
+//
+// 	// endregion
+//
+// 	// region properties
+//
+// 	public readonly func: Func<TThis, TArgs, TValue>
+// 	public readonly _this: TThis
+// 	public args: TArgs
+//
+// 	public status: FuncCallStatus = FuncCallStatus.Invalidated
+// 	public hasValue: boolean = false
+// 	public hasError: boolean = false
+//
+// 	public valueAsync: Thenable<TValue> = null
+// 	public value: TValue = void 0
+// 	public error: any = void 0
+//
+// 	// endregion
+//
+// 	// region Debug
+//
+// 	/** for detect recursive async loop */
+// 	public parentCallState: IFuncCallState<any, any, any> = null
+//
+// 	// endregion
+//
+// 	// region subscribe / emit
+//
+// 	private _subscribersFirst: ISubscriberLink<TThis, TArgs, TValue> = null
+// 	private _subscribersLast: ISubscriberLink<TThis, TArgs, TValue> = null
+// 	private getSubscriberLink(
+// 		subscriber: IFuncCallState<TThis, TArgs, TValue>,
+// 		prev: ISubscriberLink<TThis, TArgs, TValue>,
+// 		next: ISubscriberLink<TThis, TArgs, TValue>,
+// 	): ISubscriberLink<TThis, TArgs, TValue> {
+// 		const item = subscriberLinkPool.get()
+// 		if (item != null) {
+// 			item.state = this
+// 			item.value = subscriber
+// 			item.prev = prev
+// 			item.next = next
+// 			return item
+// 		}
+//
+// 		return {
+// 			pool: subscriberLinkPool,
+// 			state: this,
+// 			value: subscriber,
+// 			prev,
+// 			next,
+// 		}
+// 	}
+//
+// 	public subscribe(subscriber: IFuncCallState<TThis, TArgs, TValue>): ISubscriberLink<TThis, TArgs, TValue> {
+// 		const {_subscribersLast} = this
+// 		const subscriberLink = this.getSubscriberLink(subscriber, _subscribersLast, null)
+//
+// 		if (_subscribersLast == null) {
+// 			this._subscribersFirst = subscriberLink
+// 		} else {
+// 			_subscribersLast.next = subscriberLink
+// 		}
+// 		this._subscribersLast = subscriberLink
+//
+// 		return subscriberLink
+// 	}
+//
+// 	private _emit(status: FuncCallStatus) {
+// 		let clonesFirst
+// 		let clonesLast
+// 		for (let link = this._subscribersFirst; link; link = link.next) {
+// 			const cloneLink = this.getSubscriberLink(
+// 				link.value,
+// 				null,
+// 				link.next,
+// 			)
+// 			if (clonesLast == null) {
+// 				clonesFirst = cloneLink
+// 			} else {
+// 				clonesLast.next = cloneLink
+// 			}
+// 			clonesLast = cloneLink
+// 		}
+//
+// 		for (let link = clonesFirst; link;) {
+// 			link.value.invalidate(status)
+// 			link.value = null
+// 			const next = link.next
+// 			link.next = null
+// 			subscriberLinkPool.release(link)
+// 			link = next
+// 		}
+// 	}
+//
+// 	private emit(status: FuncCallStatus) {
+// 		if (this._subscribersFirst != null) {
+// 			this._emit(status)
+// 		}
+// 	}
+//
+// 	// endregion
+//
+// 	// region subscribe dependencies
+//
+// 	// for prevent multiple subscribe equal dependencies
+// 	public callId: number = 0
+//
+// 	private _unsubscribers: Array<ISubscriberLink<TThis, TArgs, TValue>> = null
+// 	private _unsubscribersLength: number = 0
+//
+// 	public subscribeDependency(dependency: IFuncCallState<any, any, any>): void {
+// 		if (dependency.callId > this.callId) {
+// 			return
+// 		}
+//
+// 		const subscriberLink = dependency.subscribe(this)
+//
+// 		const {_unsubscribers} = this
+// 		if (_unsubscribers == null) {
+// 			this._unsubscribers = [subscriberLink]
+// 			this._unsubscribersLength = 1
+// 		} else {
+// 			_unsubscribers[this._unsubscribersLength++] = subscriberLink
+// 		}
+// 	}
+//
+// 	private subscriberLinkDelete(item) {
+// 		if (item.state == null) {
+// 			return
+// 		}
+//
+// 		const {prev, next, pool} = item
+//
+// 		if (prev == null) {
+// 			if (next == null) {
+// 				(this as any)._subscribersFirst = null;
+// 				(this as any)._subscribersLast = null
+// 			} else {
+// 				(this as any)._subscribersFirst = next
+// 				next.prev = null
+// 				item.next = null
+// 			}
+// 		} else {
+// 			if (next == null) {
+// 				(this as any)._subscribersLast = prev
+// 				prev.next = null
+// 			} else {
+// 				prev.next = next
+// 				next.prev = prev
+// 				item.next = null
+// 			}
+// 			item.prev = null
+// 		}
+//
+// 		item.state = null
+// 		item.value = null
+//
+// 		item.pool.release(item)
+// 	}
+//
+// 	public unsubscribeDependencies(): void {
+// 		const {_unsubscribers} = this
+// 		if (_unsubscribers != null) {
+// 			const len = this._unsubscribersLength
+// 			for (let i = 0; i < len; i++) {
+// 				const item = _unsubscribers[i]
+// 				item.state.subscriberLinkDelete(item)
+// 				_unsubscribers[i] = null
+// 			}
+// 			this._unsubscribersLength = 0
+// 			if (len > 256) {
+// 				_unsubscribers.length = 256
+// 			}
+// 		}
+// 	}
+//
+// 	// endregion
+//
+// 	// region invalidate / update
+//
+// 	public invalidate(status?: FuncCallStatus): void {
+// 		if (status == null) {
+// 			this.update(FuncCallStatus.Invalidating)
+// 			this.update(FuncCallStatus.Invalidated)
+// 		} else {
+// 			this.update(status)
+// 		}
+// 	}
+//
+// 	public update(status: FuncCallStatus, valueAsyncOrValueOrError?: Iterator<TValue> | any | TValue): void {
+// 		const prevStatus = this.status
+// 		this.status = status
+//
+// 		switch (status) {
+// 			case FuncCallStatus.Invalidating:
+// 				if (prevStatus === FuncCallStatus.Invalidated) {
+// 					return
+// 				}
+// 				// tslint:disable-next-line:no-nested-switch
+// 				// if (prevStatus !== FuncCallStatus.Invalidating
+// 				// 	&& prevStatus !== FuncCallStatus.Calculated
+// 				// 	&& prevStatus !== FuncCallStatus.Error
+// 				// ) {
+// 				// 	throw new Error(`Set status ${status} called when current status is ${prevStatus}`)
+// 				// }
+// 				this.unsubscribeDependencies()
+// 				this.emit(status)
+// 				break
+// 			case FuncCallStatus.Invalidated:
+// 				if (prevStatus !== FuncCallStatus.Invalidating) {
+// 					return
+// 				}
+// 				this.emit(status)
+// 				break
+// 			case FuncCallStatus.Calculating:
+// 				// if (prevStatus != null
+// 				// 	&& prevStatus !== FuncCallStatus.Invalidating
+// 				// 	&& prevStatus !== FuncCallStatus.Invalidated
+// 				// ) {
+// 				// 	throw new Error(`Set status ${status} called when current status is ${prevStatus}`)
+// 				// }
+// 				break
+// 			case FuncCallStatus.CalculatingAsync:
+// 				// if (prevStatus !== FuncCallStatus.Calculating) {
+// 				// 	throw new Error(`Set status ${status} called when current status is ${prevStatus}`)
+// 				// }
+// 				this.valueAsync = valueAsyncOrValueOrError
+// 				break
+// 			case FuncCallStatus.Calculated:
+// 				// if (prevStatus !== FuncCallStatus.Calculating && prevStatus !== FuncCallStatus.CalculatingAsync) {
+// 				// 	throw new Error(`Set status ${status} called when current status is ${prevStatus}`)
+// 				// }
+// 				if (typeof this.valueAsync !== 'undefined') {
+// 					this.valueAsync = null
+// 				}
+// 				this.error = void 0
+// 				this.value = valueAsyncOrValueOrError
+// 				this.hasError = false
+// 				this.hasValue = true
+// 				break
+// 			case FuncCallStatus.Error:
+// 				// if (prevStatus !== FuncCallStatus.Calculating && prevStatus !== FuncCallStatus.CalculatingAsync) {
+// 				// 	throw new Error(`Set status ${status} called when current status is ${prevStatus}`)
+// 				// }
+// 				if (typeof this.valueAsync !== 'undefined') {
+// 					this.valueAsync = null
+// 				}
+// 				this.error = valueAsyncOrValueOrError
+// 				this.hasError = true
+// 				break
+// 			// default:
+// 			// 	throw new Error('Unknown FuncCallStatus: ' + status)
+// 		}
+// 	}
+//
+// 	// endregion
+// }
+
+// region constructor
+export function FuncCallState<
 	TThis,
 	TArgs extends any[],
 	TValue,
-> implements IFuncCallState<TThis, TArgs, TValue>
-{
-	// region constructor
-
-	constructor(
-		func,
-		_this: TThis,
-		// callWithArgs: TCall<TArgs>,
-	) {
-		this.func = func
-		this._this = _this
-		// let args
-		// callWithArgs(function() {
-		// 	args = Array.from(arguments)
-		// })
-		// this.args = args
-	}
-
+>(this: IFuncCallState<TThis, TArgs, TValue>) {
+	this.status = FuncCallStatus.Invalidated
+	this.hasValue = false
+	this.hasError = false
+	this.valueAsync = null
+	this.value = void 0
+	this.error = void 0
 	// endregion
-
-	// region properties
-
-	public readonly func: Func<TThis, TArgs, TValue>
-	public readonly _this: TThis
-	public args: TArgs
-
-	public status: FuncCallStatus = FuncCallStatus.Invalidated
-	public hasValue: boolean = false
-	public hasError: boolean = false
-
-	public valueAsync: Thenable<TValue> = null
-	public value: TValue = void 0
-	public error: any = void 0
-
-	// endregion
-
 	// region Debug
-
 	/** for detect recursive async loop */
-	public parentCallState: IFuncCallState<any, any, any> = null
-
+	this.parentCallState = null
 	// endregion
-
 	// region subscribe / emit
-
-	private _subscribersFirst: ISubscriberLink<TThis, TArgs, TValue> = null
-	private _subscribersLast: ISubscriberLink<TThis, TArgs, TValue> = null
-	private getSubscriberLink(
-		subscriber: IFuncCallState<TThis, TArgs, TValue>,
-		prev: ISubscriberLink<TThis, TArgs, TValue>,
-		next: ISubscriberLink<TThis, TArgs, TValue>,
-	): ISubscriberLink<TThis, TArgs, TValue> {
-		const item = subscriberLinkPool.get()
-		if (item != null) {
-			item.state = this
-			item.value = subscriber
-			item.prev = prev
-			item.next = next
-			return item
-		}
-
-		return {
-			pool: subscriberLinkPool,
-			state: this,
-			value: subscriber,
-			prev,
-			next,
-		}
-	}
-
-	public subscribe(subscriber: IFuncCallState<TThis, TArgs, TValue>): ISubscriberLink<TThis, TArgs, TValue> {
-		const {_subscribersLast} = this
-		const subscriberLink = this.getSubscriberLink(subscriber, _subscribersLast, null)
-
-		if (_subscribersLast == null) {
-			this._subscribersFirst = subscriberLink
-		} else {
-			_subscribersLast.next = subscriberLink
-		}
-		this._subscribersLast = subscriberLink
-
-		return subscriberLink
-	}
-
-	private _emit(status: FuncCallStatus) {
-		let clonesFirst
-		let clonesLast
-		for (let link = this._subscribersFirst; link; link = link.next) {
-			const cloneLink = this.getSubscriberLink(
-				link.value,
-				null,
-				link.next,
-			)
-			if (clonesLast == null) {
-				clonesFirst = cloneLink
-			} else {
-				clonesLast.next = cloneLink
-			}
-			clonesLast = cloneLink
-		}
-
-		for (let link = clonesFirst; link;) {
-			link.value.invalidate(status)
-			link.value = null
-			const next = link.next
-			link.next = null
-			subscriberLinkPool.release(link)
-			link = next
-		}
-	}
-
-	private emit(status: FuncCallStatus) {
-		if (this._subscribersFirst != null) {
-			this._emit(status)
-		}
-	}
-
+	this._subscribersFirst = null
+	this._subscribersLast = null
 	// endregion
-
 	// region subscribe dependencies
-
 	// for prevent multiple subscribe equal dependencies
-	public callId: number = 0
-
-	private _unsubscribers: Array<ISubscriberLink<TThis, TArgs, TValue>> = null
-	private _unsubscribersLength: number = 0
-
-	public subscribeDependency(dependency: IFuncCallState<any, any, any>): void {
-		if (dependency.callId > this.callId) {
-			return
-		}
-
-		const subscriberLink = dependency.subscribe(this)
-
-		const {_unsubscribers} = this
-		if (_unsubscribers == null) {
-			this._unsubscribers = [subscriberLink]
-			this._unsubscribersLength = 1
+	this.callId = 0
+	this._unsubscribers = null
+	this._unsubscribersLength = 0
+}
+function getSubscriberLink<
+	TThis,
+	TArgs extends any[],
+	TValue,
+>(state: IFuncCallState<TThis, TArgs, TValue>, subscriber, prev, next) {
+	const item = subscriberLinkPool.get()
+	if (item != null) {
+		item.state = state
+		item.value = subscriber
+		item.prev = prev
+		item.next = next
+		return item
+	}
+	return {
+		pool: subscriberLinkPool,
+		state,
+		value: subscriber,
+		prev,
+		next,
+	}
+}
+function subscribe<
+	TThis,
+	TArgs extends any[],
+	TValue,
+>(state: IFuncCallState<TThis, TArgs, TValue>, subscriber) {
+	const _subscribersLast = state._subscribersLast
+	const subscriberLink = getSubscriberLink(state, subscriber, _subscribersLast, null)
+	if (_subscribersLast == null) {
+		state._subscribersFirst = subscriberLink
+	} else {
+		_subscribersLast.next = subscriberLink
+	}
+	state._subscribersLast = subscriberLink
+	return subscriberLink
+}
+FuncCallState.prototype._emit = function(status) {
+	let clonesFirst
+	let clonesLast
+	for (let link = this._subscribersFirst; link; link = link.next) {
+		const cloneLink = getSubscriberLink(this, link.value, null, link.next)
+		if (clonesLast == null) {
+			clonesFirst = cloneLink
 		} else {
-			_unsubscribers[this._unsubscribersLength++] = subscriberLink
+			clonesLast.next = cloneLink
 		}
+		clonesLast = cloneLink
 	}
-
-	private subscriberLinkDelete(item) {
-		if (item.state == null) {
-			return
-		}
-
-		const {prev, next, pool} = item
-
-		if (prev == null) {
-			if (next == null) {
-				(this as any)._subscribersFirst = null;
-				(this as any)._subscribersLast = null
-			} else {
-				(this as any)._subscribersFirst = next
-				next.prev = null
-				item.next = null
-			}
+	for (let link = clonesFirst; link;) {
+		link.value.invalidate(status)
+		link.value = null
+		const next = link.next
+		link.next = null
+		subscriberLinkPool.release(link)
+		link = next
+	}
+}
+FuncCallState.prototype.emit = function(status) {
+	if (this._subscribersFirst != null) {
+		this._emit(status)
+	}
+}
+FuncCallState.prototype.subscribeDependency = function(dependency) {
+	if (dependency.callId > this.callId) {
+		return
+	}
+	const subscriberLink = subscribe(dependency, this)
+	const _unsubscribers = this._unsubscribers
+	if (_unsubscribers == null) {
+		this._unsubscribers = [subscriberLink]
+		this._unsubscribersLength = 1
+	} else {
+		_unsubscribers[this._unsubscribersLength++] = subscriberLink
+	}
+}
+FuncCallState.prototype.subscriberLinkDelete = function(item) {
+	if (item.state == null) {
+		return
+	}
+	const prev = item.prev, next = item.next, pool = item.pool
+	if (prev == null) {
+		if (next == null) {
+			this._subscribersFirst = null
+			this._subscribersLast = null
 		} else {
-			if (next == null) {
-				(this as any)._subscribersLast = prev
-				prev.next = null
-			} else {
-				prev.next = next
-				next.prev = prev
-				item.next = null
-			}
-			item.prev = null
+			this._subscribersFirst = next
+			next.prev = null
+			item.next = null
 		}
-
-		item.state = null
-		item.value = null
-
-		item.pool.release(item)
-	}
-
-	public unsubscribeDependencies(): void {
-		const {_unsubscribers} = this
-		if (_unsubscribers != null) {
-			const len = this._unsubscribersLength
-			for (let i = 0; i < len; i++) {
-				const item = _unsubscribers[i]
-				item.state.subscriberLinkDelete(item)
-				_unsubscribers[i] = null
-			}
-			this._unsubscribersLength = 0
-			if (len > 256) {
-				_unsubscribers.length = 256
-			}
-		}
-	}
-
-	// endregion
-
-	// region invalidate / update
-
-	public invalidate(status?: FuncCallStatus): void {
-		if (status == null) {
-			this.update(FuncCallStatus.Invalidating)
-			this.update(FuncCallStatus.Invalidated)
+	} else {
+		if (next == null) {
+			this._subscribersLast = prev
+			prev.next = null
 		} else {
-			this.update(status)
+			prev.next = next
+			next.prev = prev
+			item.next = null
+		}
+		item.prev = null
+	}
+	item.state = null
+	item.value = null
+	item.pool.release(item)
+}
+FuncCallState.prototype.unsubscribeDependencies = function() {
+	const _unsubscribers = this._unsubscribers
+	if (_unsubscribers != null) {
+		const len = this._unsubscribersLength
+		for (let i = 0; i < len; i++) {
+			const item = _unsubscribers[i]
+			item.state.subscriberLinkDelete(item)
+			_unsubscribers[i] = null
+		}
+		this._unsubscribersLength = 0
+		if (len > 256) {
+			_unsubscribers.length = 256
 		}
 	}
-
-	public update(status: FuncCallStatus, valueAsyncOrValueOrError?: Iterator<TValue> | any | TValue): void {
-		const prevStatus = this.status
-		this.status = status
-
-		switch (status) {
-			case FuncCallStatus.Invalidating:
-				if (prevStatus === FuncCallStatus.Invalidated) {
-					return
-				}
-				// tslint:disable-next-line:no-nested-switch
-				// if (prevStatus !== FuncCallStatus.Invalidating
-				// 	&& prevStatus !== FuncCallStatus.Calculated
-				// 	&& prevStatus !== FuncCallStatus.Error
-				// ) {
-				// 	throw new Error(`Set status ${status} called when current status is ${prevStatus}`)
-				// }
-				this.unsubscribeDependencies()
-				this.emit(status)
-				break
-			case FuncCallStatus.Invalidated:
-				if (prevStatus !== FuncCallStatus.Invalidating) {
-					return
-				}
-				this.emit(status)
-				break
-			case FuncCallStatus.Calculating:
-				// if (prevStatus != null
-				// 	&& prevStatus !== FuncCallStatus.Invalidating
-				// 	&& prevStatus !== FuncCallStatus.Invalidated
-				// ) {
-				// 	throw new Error(`Set status ${status} called when current status is ${prevStatus}`)
-				// }
-				break
-			case FuncCallStatus.CalculatingAsync:
-				// if (prevStatus !== FuncCallStatus.Calculating) {
-				// 	throw new Error(`Set status ${status} called when current status is ${prevStatus}`)
-				// }
-				this.valueAsync = valueAsyncOrValueOrError
-				break
-			case FuncCallStatus.Calculated:
-				// if (prevStatus !== FuncCallStatus.Calculating && prevStatus !== FuncCallStatus.CalculatingAsync) {
-				// 	throw new Error(`Set status ${status} called when current status is ${prevStatus}`)
-				// }
-				if (typeof this.valueAsync !== 'undefined') {
-					this.valueAsync = null
-				}
-				this.error = void 0
-				this.value = valueAsyncOrValueOrError
-				this.hasError = false
-				this.hasValue = true
-				break
-			case FuncCallStatus.Error:
-				// if (prevStatus !== FuncCallStatus.Calculating && prevStatus !== FuncCallStatus.CalculatingAsync) {
-				// 	throw new Error(`Set status ${status} called when current status is ${prevStatus}`)
-				// }
-				if (typeof this.valueAsync !== 'undefined') {
-					this.valueAsync = null
-				}
-				this.error = valueAsyncOrValueOrError
-				this.hasError = true
-				break
-			// default:
-			// 	throw new Error('Unknown FuncCallStatus: ' + status)
-		}
+}
+// endregion
+// region invalidate / update
+FuncCallState.prototype.invalidate = function(status) {
+	if (status == null) {
+		this.update(FuncCallStatus.Invalidating)
+		this.update(FuncCallStatus.Invalidated)
+	} else {
+		this.update(status)
 	}
-
-	// endregion
+}
+FuncCallState.prototype.update = function(status, valueAsyncOrValueOrError) {
+	const prevStatus = this.status
+	this.status = status
+	switch (status) {
+		case FuncCallStatus.Invalidating:
+			if (prevStatus === FuncCallStatus.Invalidated) {
+				return
+			}
+			// tslint:disable-next-line:no-nested-switch
+			// if (prevStatus !== FuncCallStatus.Invalidating
+			// 	&& prevStatus !== FuncCallStatus.Calculated
+			// 	&& prevStatus !== FuncCallStatus.Error
+			// ) {
+			// 	throw new Error(`Set status ${status} called when current status is ${prevStatus}`)
+			// }
+			this.unsubscribeDependencies()
+			this.emit(status)
+			break
+		case FuncCallStatus.Invalidated:
+			if (prevStatus !== FuncCallStatus.Invalidating) {
+				return
+			}
+			this.emit(status)
+			break
+		case FuncCallStatus.Calculating:
+			// if (prevStatus != null
+			// 	&& prevStatus !== FuncCallStatus.Invalidating
+			// 	&& prevStatus !== FuncCallStatus.Invalidated
+			// ) {
+			// 	throw new Error(`Set status ${status} called when current status is ${prevStatus}`)
+			// }
+			break
+		case FuncCallStatus.CalculatingAsync:
+			// if (prevStatus !== FuncCallStatus.Calculating) {
+			// 	throw new Error(`Set status ${status} called when current status is ${prevStatus}`)
+			// }
+			this.valueAsync = valueAsyncOrValueOrError
+			break
+		case FuncCallStatus.Calculated:
+			// if (prevStatus !== FuncCallStatus.Calculating && prevStatus !== FuncCallStatus.CalculatingAsync) {
+			// 	throw new Error(`Set status ${status} called when current status is ${prevStatus}`)
+			// }
+			if (typeof this.valueAsync !== 'undefined') {
+				this.valueAsync = null
+			}
+			this.error = void 0
+			this.value = valueAsyncOrValueOrError
+			this.hasError = false
+			this.hasValue = true
+			break
+		case FuncCallStatus.Error:
+			// if (prevStatus !== FuncCallStatus.Calculating && prevStatus !== FuncCallStatus.CalculatingAsync) {
+			// 	throw new Error(`Set status ${status} called when current status is ${prevStatus}`)
+			// }
+			if (typeof this.valueAsync !== 'undefined') {
+				this.valueAsync = null
+			}
+			this.error = valueAsyncOrValueOrError
+			this.hasError = true
+			break
+		// default:
+		// 	throw new Error('Unknown FuncCallStatus: ' + status)
+	}
 }

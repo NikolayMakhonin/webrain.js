@@ -96,13 +96,13 @@ function _getFuncCallState<
 			const lastArg = arguments[argumentsLength - 1]
 			state = argsStateMap.get(lastArg)
 			if (!state) {
-				state = new FuncCallState<TThis, TArgs, TValue>(func, this)//, createCallWithArgs.apply(void 0, arguments))
+				state = new FuncCallState<TThis, TArgs, TValue>()
 				argsStateMap.set(lastArg, state)
 			}
 		} else {
 			state = argsLengthStateMap.get(this)
 			if (!state) {
-				state = new FuncCallState<TThis, TArgs, TValue>(func, this)//, createCallWithArgs.apply(void 0, arguments))
+				state = new FuncCallState<TThis, TArgs, TValue>()
 				argsLengthStateMap.set(this, state)
 			}
 		}
