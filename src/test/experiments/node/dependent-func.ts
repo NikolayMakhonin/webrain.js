@@ -7,10 +7,11 @@
 // @ts-ignore
 import {calcPerformance} from 'rdtsc'
 import {resolveAsync} from '../../../main/common/async/ThenableSync'
+import {makeDependentFunc} from '../../../main/common/rx/depend'
 import {IUnsubscribeOrVoid} from '../../../main/common/rx/subjects/observable'
 import {assert} from '../../../main/common/test/Assert'
 import {describe, it, xit} from '../../../main/common/test/Mocha'
-import {IFuncMeta, makeDependentFunc} from '../../../main/common/rx/depend/dependent-func'
+import {IFuncMeta} from '../../../main/common/rx/depend/helpers'
 
 describe('dependent-func', function() {
 	xit('perf', function() {

@@ -1,7 +1,7 @@
 // @ts-ignore
 import {calcPerformance} from 'rdtsc'
 import {getObjectUniqueId} from '../../../main/common/helpers/object-unique-id'
-import {subscriberLinkPool} from '../../../main/common/rx/depend/FuncCallState'
+import {invalidate} from '../../../main/common/rx/depend/invalidate'
 import {assert} from '../../../main/common/test/Assert'
 import {CalcType} from '../../../main/common/test/calc'
 import {calcMemAllocate} from '../../../main/common/test/calc-mem-allocate'
@@ -30,7 +30,7 @@ describe('dependent-func', function() {
 			() => {
 				naked.call(2, 5, 10)
 			}, () => {
-				inputState.invalidate()
+				invalidate(inputState)
 			}, () => {
 				output.call(2, 5, 10)
 			}, () => {
@@ -49,7 +49,7 @@ describe('dependent-func', function() {
 		console.log(`chrome funcs per frame: [${result.absoluteDiff.map(o => countFuncs * cyclesPerSecond / o / 60 / 210).join(', ')}]`)
 	})
 
-	it('set memory', function() {
+	xit('set memory', function() {
 		this.timeout(300000)
 
 		const set = new Set()
@@ -90,22 +90,22 @@ describe('dependent-func', function() {
 			output,
 		} = createPerceptron(10, 5)
 
-		const subscriberLinkPoolSize = subscriberLinkPool.size
-		const subscriberLinkPoolAllocatedSize = subscriberLinkPool.allocatedSize
-		const subscriberLinkPoolUsedSize = subscriberLinkPool.usedSize
-		console.log('subscriberLinkPool.size = ' + subscriberLinkPoolSize)
-		console.log('subscriberLinkPool.allocatedSize = ' + subscriberLinkPoolAllocatedSize)
-		console.log('subscriberLinkPool.usedSize = ' + subscriberLinkPoolUsedSize)
+		// const subscriberLinkPoolSize = subscriberLinkPool.size
+		// const subscriberLinkPoolAllocatedSize = subscriberLinkPool.allocatedSize
+		// const subscriberLinkPoolUsedSize = subscriberLinkPool.usedSize
+		// console.log('subscriberLinkPool.size = ' + subscriberLinkPoolSize)
+		// console.log('subscriberLinkPool.allocatedSize = ' + subscriberLinkPoolAllocatedSize)
+		// console.log('subscriberLinkPool.usedSize = ' + subscriberLinkPoolUsedSize)
 		// assert.strictEqual(subscriberLinkPool.size + subscriberLinkPool.usedSize, subscriberLinkPool.allocatedSize)
 
 		console.log(calcMemAllocate(CalcType.Min, 20000, () => {
-			inputState.invalidate()
+			invalidate(inputState)
 			output.call(2, 5, 10)
 		}).scale(1 / countFuncs).toString())
 
 		// assert.strictEqual(subscriberLinkPool.size + subscriberLinkPool.usedSize, subscriberLinkPool.allocatedSize)
-		assert.strictEqual(subscriberLinkPool.size, subscriberLinkPoolSize)
-		assert.strictEqual(subscriberLinkPool.allocatedSize, subscriberLinkPoolAllocatedSize)
-		assert.strictEqual(subscriberLinkPool.usedSize, subscriberLinkPoolUsedSize)
+		// assert.strictEqual(subscriberLinkPool.size, subscriberLinkPoolSize)
+		// assert.strictEqual(subscriberLinkPool.allocatedSize, subscriberLinkPoolAllocatedSize)
+		// assert.strictEqual(subscriberLinkPool.usedSize, subscriberLinkPoolUsedSize)
 	})
 })

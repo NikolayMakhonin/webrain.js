@@ -1,8 +1,3 @@
-import {Thenable} from '../../async/async'
-import {IUnsubscribe} from '../subjects/observable'
-import {Func, FuncCallStatus, IFuncCallState, ISubscriber, ISubscriberLink, TCall} from './contracts'
-import {ObjectPool} from './ObjectPool'
-
 // class SubscriberLink<TThis, TArgs extends any[], TValue>
 // 	implements ISubscriberLink<TThis, TArgs, TValue>
 // {
@@ -60,21 +55,6 @@ import {ObjectPool} from './ObjectPool'
 // 		this.pool.release(this)
 // 	}
 // }
-
-export const subscriberLinkPool = new ObjectPool<ISubscriberLink<any, any, any>>(1000000)
-
-export function createCallWithArgs<
-	TArgs extends any[],
->(...args: TArgs): TCall<TArgs>
-export function createCallWithArgs<
-	TArgs extends any[],
->(): TCall<TArgs>
-{
-	const args = arguments
-	return function(func) {
-		return func.apply(this, args)
-	}
-}
 
 // export class FuncCallState<
 // 	TThis,
@@ -150,7 +130,7 @@ export function createCallWithArgs<
 // 		}
 // 	}
 //
-// 	public subscribe(subscriber: IFuncCallState<TThis, TArgs, TValue>): ISubscriberLink<TThis, TArgs, TValue> {
+// 	public _subscribe(subscriber: IFuncCallState<TThis, TArgs, TValue>): ISubscriberLink<TThis, TArgs, TValue> {
 // 		const {_subscribersLast} = this
 // 		const subscriberLink = this.getSubscriberLink(subscriber, _subscribersLast, null)
 //
@@ -212,7 +192,7 @@ export function createCallWithArgs<
 // 			return
 // 		}
 //
-// 		const subscriberLink = dependency.subscribe(this)
+// 		const subscriberLink = dependency._subscribe(this)
 //
 // 		const {_unsubscribers} = this
 // 		if (_unsubscribers == null) {
@@ -354,224 +334,3 @@ export function createCallWithArgs<
 //
 // 	// endregion
 // }
-
-// region constructor
-export function FuncCallState<
-	TThis,
-	TArgs extends any[],
-	TValue,
->(this: IFuncCallState<TThis, TArgs, TValue>) {
-	this.status = FuncCallStatus.Invalidated
-	this.hasValue = false
-	this.hasError = false
-	this.valueAsync = null
-	this.value = void 0
-	this.error = void 0
-	// endregion
-	// region Debug
-	/** for detect recursive async loop */
-	this.parentCallState = null
-	// endregion
-	// region subscribe / emit
-	this._subscribersFirst = null
-	this._subscribersLast = null
-	// endregion
-	// region subscribe dependencies
-	// for prevent multiple subscribe equal dependencies
-	this.callId = 0
-	this._unsubscribers = null
-	this._unsubscribersLength = 0
-}
-function getSubscriberLink<
-	TThis,
-	TArgs extends any[],
-	TValue,
->(state: IFuncCallState<TThis, TArgs, TValue>, subscriber, prev, next) {
-	const item = subscriberLinkPool.get()
-	if (item != null) {
-		item.state = state
-		item.value = subscriber
-		item.prev = prev
-		item.next = next
-		return item
-	}
-	return {
-		pool: subscriberLinkPool,
-		state,
-		value: subscriber,
-		prev,
-		next,
-	}
-}
-function subscribe<
-	TThis,
-	TArgs extends any[],
-	TValue,
->(state: IFuncCallState<TThis, TArgs, TValue>, subscriber) {
-	const _subscribersLast = state._subscribersLast
-	const subscriberLink = getSubscriberLink(state, subscriber, _subscribersLast, null)
-	if (_subscribersLast == null) {
-		state._subscribersFirst = subscriberLink
-	} else {
-		_subscribersLast.next = subscriberLink
-	}
-	state._subscribersLast = subscriberLink
-	return subscriberLink
-}
-FuncCallState.prototype._emit = function(status) {
-	let clonesFirst
-	let clonesLast
-	for (let link = this._subscribersFirst; link; link = link.next) {
-		const cloneLink = getSubscriberLink(this, link.value, null, link.next)
-		if (clonesLast == null) {
-			clonesFirst = cloneLink
-		} else {
-			clonesLast.next = cloneLink
-		}
-		clonesLast = cloneLink
-	}
-	for (let link = clonesFirst; link;) {
-		link.value.invalidate(status)
-		link.value = null
-		const next = link.next
-		link.next = null
-		subscriberLinkPool.release(link)
-		link = next
-	}
-}
-FuncCallState.prototype.emit = function(status) {
-	if (this._subscribersFirst != null) {
-		this._emit(status)
-	}
-}
-FuncCallState.prototype.subscribeDependency = function(dependency) {
-	if (dependency.callId > this.callId) {
-		return
-	}
-	const subscriberLink = subscribe(dependency, this)
-	const _unsubscribers = this._unsubscribers
-	if (_unsubscribers == null) {
-		this._unsubscribers = [subscriberLink]
-		this._unsubscribersLength = 1
-	} else {
-		_unsubscribers[this._unsubscribersLength++] = subscriberLink
-	}
-}
-FuncCallState.prototype.subscriberLinkDelete = function(item) {
-	if (item.state == null) {
-		return
-	}
-	const prev = item.prev, next = item.next, pool = item.pool
-	if (prev == null) {
-		if (next == null) {
-			this._subscribersFirst = null
-			this._subscribersLast = null
-		} else {
-			this._subscribersFirst = next
-			next.prev = null
-			item.next = null
-		}
-	} else {
-		if (next == null) {
-			this._subscribersLast = prev
-			prev.next = null
-		} else {
-			prev.next = next
-			next.prev = prev
-			item.next = null
-		}
-		item.prev = null
-	}
-	item.state = null
-	item.value = null
-	item.pool.release(item)
-}
-FuncCallState.prototype.unsubscribeDependencies = function() {
-	const _unsubscribers = this._unsubscribers
-	if (_unsubscribers != null) {
-		const len = this._unsubscribersLength
-		for (let i = 0; i < len; i++) {
-			const item = _unsubscribers[i]
-			item.state.subscriberLinkDelete(item)
-			_unsubscribers[i] = null
-		}
-		this._unsubscribersLength = 0
-		if (len > 256) {
-			_unsubscribers.length = 256
-		}
-	}
-}
-// endregion
-// region invalidate / update
-FuncCallState.prototype.invalidate = function(status) {
-	if (status == null) {
-		this.update(FuncCallStatus.Invalidating)
-		this.update(FuncCallStatus.Invalidated)
-	} else {
-		this.update(status)
-	}
-}
-FuncCallState.prototype.update = function(status, valueAsyncOrValueOrError) {
-	const prevStatus = this.status
-	this.status = status
-	switch (status) {
-		case FuncCallStatus.Invalidating:
-			if (prevStatus === FuncCallStatus.Invalidated) {
-				return
-			}
-			// tslint:disable-next-line:no-nested-switch
-			// if (prevStatus !== FuncCallStatus.Invalidating
-			// 	&& prevStatus !== FuncCallStatus.Calculated
-			// 	&& prevStatus !== FuncCallStatus.Error
-			// ) {
-			// 	throw new Error(`Set status ${status} called when current status is ${prevStatus}`)
-			// }
-			this.unsubscribeDependencies()
-			this.emit(status)
-			break
-		case FuncCallStatus.Invalidated:
-			if (prevStatus !== FuncCallStatus.Invalidating) {
-				return
-			}
-			this.emit(status)
-			break
-		case FuncCallStatus.Calculating:
-			// if (prevStatus != null
-			// 	&& prevStatus !== FuncCallStatus.Invalidating
-			// 	&& prevStatus !== FuncCallStatus.Invalidated
-			// ) {
-			// 	throw new Error(`Set status ${status} called when current status is ${prevStatus}`)
-			// }
-			break
-		case FuncCallStatus.CalculatingAsync:
-			// if (prevStatus !== FuncCallStatus.Calculating) {
-			// 	throw new Error(`Set status ${status} called when current status is ${prevStatus}`)
-			// }
-			this.valueAsync = valueAsyncOrValueOrError
-			break
-		case FuncCallStatus.Calculated:
-			// if (prevStatus !== FuncCallStatus.Calculating && prevStatus !== FuncCallStatus.CalculatingAsync) {
-			// 	throw new Error(`Set status ${status} called when current status is ${prevStatus}`)
-			// }
-			if (typeof this.valueAsync !== 'undefined') {
-				this.valueAsync = null
-			}
-			this.error = void 0
-			this.value = valueAsyncOrValueOrError
-			this.hasError = false
-			this.hasValue = true
-			break
-		case FuncCallStatus.Error:
-			// if (prevStatus !== FuncCallStatus.Calculating && prevStatus !== FuncCallStatus.CalculatingAsync) {
-			// 	throw new Error(`Set status ${status} called when current status is ${prevStatus}`)
-			// }
-			if (typeof this.valueAsync !== 'undefined') {
-				this.valueAsync = null
-			}
-			this.error = valueAsyncOrValueOrError
-			this.hasError = true
-			break
-		// default:
-		// 	throw new Error('Unknown FuncCallStatus: ' + status)
-	}
-}

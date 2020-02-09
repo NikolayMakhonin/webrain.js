@@ -2,8 +2,9 @@
 // @ts-ignore
 import {calcPerformance} from 'rdtsc'
 import {isThenable, Thenable, ThenableOrValue} from '../../../../../../main/common/async/async'
-import {FuncCallStatus, IFuncCallState} from '../../../../../../main/common/rx/depend/contracts'
-import {getFuncCallState, makeDependentFunc} from '../../../../../../main/common/rx/depend/dependent-func'
+import {getFuncCallState, makeDependentFunc} from '../../../../../../main/common/rx/depend'
+import {IFuncCallState} from '../../../../../../main/common/rx/depend/contracts'
+import {invalidate} from '../../../../../../main/common/rx/depend/invalidate'
 import {assert} from '../../../../../../main/common/test/Assert'
 import {describe, it, xit} from '../../../../../../main/common/test/Mocha'
 import {delay} from '../../../../../../main/common/time/helpers'
@@ -126,7 +127,7 @@ describe('common > main > rx > depend > dependent-func', function() {
 		result.id = callId
 		result.state = getFuncCallState(func).apply(_this, rest)
 		assert.ok(result.state)
-		assert.strictEqual(result.state.status, FuncCallStatus.Invalidated);
+		assert.strictEqual(result.state.status, 2);
 		(result.state as any).id = callId
 
 		return result
@@ -165,9 +166,9 @@ describe('common > main > rx > depend > dependent-func', function() {
 		checkCallHistory(callHistory)
 	}
 
-	function invalidate(funcCall: IDependencyCall) {
+	function _invalidate(funcCall: IDependencyCall) {
 		checkCallHistory([])
-		funcCall.state.invalidate()
+		invalidate(funcCall.state)
 		checkCallHistory([])
 	}
 
@@ -242,45 +243,45 @@ describe('common > main > rx > depend > dependent-func', function() {
 
 		// level 2
 
-		invalidate(S2)
+		_invalidate(S2)
 		checkFuncSync(S2, S2)
 		checkFuncNotChanged(allFuncs)
 
-		invalidate(I2)
+		_invalidate(I2)
 		checkFuncSync(I2, I2)
 		checkFuncNotChanged(allFuncs)
 
-		invalidate(A2)
+		_invalidate(A2)
 		await checkFuncAsync(A2, A2)
 		checkFuncNotChanged(allFuncs)
 
 		// level 1
 
-		invalidate(S1)
+		_invalidate(S1)
 		checkFuncSync(S2, S2, S1)
 		checkFuncSync(I2, I2)
 		checkFuncNotChanged(allFuncs)
 
-		invalidate(I1)
+		_invalidate(I1)
 		checkFuncSync(I2, I2, I1)
 		await checkFuncAsync(A2, A2)
 		checkFuncNotChanged(allFuncs)
 
 		// level 0
 
-		invalidate(S0)
+		_invalidate(S0)
 		// console.log(allFuncs.filter(isInvalidated).map(o => o.id))
 		checkFuncSync(S2, S2, S1, S0)
 		checkFuncSync(I2, I2)
 		checkFuncNotChanged(allFuncs)
 
-		invalidate(I0)
+		_invalidate(I0)
 		checkFuncSync(S2, S2, S1, I0)
 		checkFuncSync(I2, I2, I1)
 		await checkFuncAsync(A2, A2)
 		checkFuncNotChanged(allFuncs)
 
-		invalidate(A0)
+		_invalidate(A0)
 		await checkFuncAsync(I2, I2, I1, A0)
 		await checkFuncAsync(A2, A2)
 		checkFuncNotChanged(allFuncs)

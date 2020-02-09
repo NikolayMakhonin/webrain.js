@@ -9,14 +9,12 @@ export interface ISemiWeakMap<K, V> {
 	delete(key: K): boolean
 }
 
-export class SemiWeakMap<K, V> implements ISemiWeakMap<K, V>
-{
-	private _map: Map<K, V> = null
-	private _weakMap: WeakMap<any, V> = null
-
-	// public [Symbol.toStringTag]: string
-
-	public set(key: K, value: V): this {
+export const SemiWeakMap: new <K, V>() => ISemiWeakMap<K, V> = /** @class */ (function() {
+	function SemiWeakMap() {
+		this._map = null
+		this._weakMap = null
+	}
+	SemiWeakMap.prototype.set = function(key, value) {
 		if (isRefType(key)) {
 			let _weakMap = this._weakMap
 			if (!_weakMap) {
@@ -30,11 +28,9 @@ export class SemiWeakMap<K, V> implements ISemiWeakMap<K, V>
 			}
 			_map.set(key, value)
 		}
-
 		return this
 	}
-
-	public get(key: K): V | undefined {
+	SemiWeakMap.prototype.get = function(key) {
 		if (isRefType(key)) {
 			const _weakMap = this._weakMap
 			if (_weakMap) {
@@ -47,8 +43,7 @@ export class SemiWeakMap<K, V> implements ISemiWeakMap<K, V>
 			}
 		}
 	}
-
-	public has(key: K): boolean {
+	SemiWeakMap.prototype.has = function(key) {
 		if (isRefType(key)) {
 			const _weakMap = this._weakMap
 			if (_weakMap) {
@@ -60,11 +55,9 @@ export class SemiWeakMap<K, V> implements ISemiWeakMap<K, V>
 				return _map.has(key)
 			}
 		}
-
 		return false
 	}
-
-	public delete(key: K): boolean {
+	SemiWeakMap.prototype.delete = function(key) {
 		if (isRefType(key)) {
 			const _weakMap = this._weakMap
 			if (_weakMap) {
@@ -76,9 +69,7 @@ export class SemiWeakMap<K, V> implements ISemiWeakMap<K, V>
 				return _map.delete(key)
 			}
 		}
-
 		return false
 	}
-}
-
-// SemiWeakMap.prototype[Symbol.toStringTag] = 'WeakMap'
+	return SemiWeakMap
+}())

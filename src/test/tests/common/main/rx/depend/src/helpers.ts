@@ -1,5 +1,6 @@
 /* tslint:disable:no-identical-functions */
-import {getFuncCallState, makeDependentFunc} from '../../../../../../../main/common/rx/depend/dependent-func'
+import {getFuncCallState, makeDependentFunc} from '../../../../../../../main/common/rx/depend'
+import {invalidate} from '../../../../../../../main/common/rx/depend/invalidate'
 import {assert} from '../../../../../../../main/common/test/Assert'
 
 export function createPerceptronNaked(layerSize, layersCount, check = true) {
@@ -108,7 +109,7 @@ export function createPerceptron(layerSize, layersCount, check = true) {
 			(100 * ((layerSize - 1) * layerSize / 2) * Math.pow(layerSize, layersCount - 1)).toPrecision(6),
 		)
 
-		inputState.invalidate()
+		invalidate(inputState)
 
 		assert.strictEqual(
 			output.call(2, 5, 10).toPrecision(6),
