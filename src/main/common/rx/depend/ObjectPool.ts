@@ -17,7 +17,7 @@ export class ObjectPool<TObject> {
 		this.usedSize++
 		const {_stack} = this
 		const lastIndex = this.size - 1
-		if (lastIndex > 0) {
+		if (lastIndex >= 0) {
 			const obj = _stack[lastIndex]
 			_stack[lastIndex] = null
 			this.size = lastIndex

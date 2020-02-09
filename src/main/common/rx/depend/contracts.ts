@@ -5,12 +5,12 @@ export type Func<TThis, TArgs extends any[], TValue = void> = (this: TThis, ...a
 export type TCall<TArgs extends any[]> = <TThis, TValue>(this: TThis, func: Func<TThis, TArgs, TValue>) => TValue
 
 export enum FuncCallStatus {
-	Invalidating = 'Invalidating',
-	Invalidated = 'Invalidated',
-	Calculating = 'Calculating',
-	CalculatingAsync = 'CalculatingAsync',
-	Calculated = 'Calculated',
-	Error = 'Error',
+	Invalidating,
+	Invalidated,
+	Calculating,
+	CalculatingAsync,
+	Calculated,
+	Error,
 }
 
 export type ISubscriber<TThis, TArgs extends any[], TValue>

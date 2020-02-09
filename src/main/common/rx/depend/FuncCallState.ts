@@ -163,10 +163,33 @@ export class FuncCallState<
 
 	private _subscribersFirst: ISubscriberLink<TThis, TArgs, TValue> = null
 	private _subscribersLast: ISubscriberLink<TThis, TArgs, TValue> = null
+	private getSubscriberLink(
+		subscriber: ISubscriber<TThis, TArgs, TValue>,
+		prev: ISubscriberLink<TThis, TArgs, TValue>,
+		next: ISubscriberLink<TThis, TArgs, TValue>,
+	): ISubscriberLink<TThis, TArgs, TValue> {
+		let item = subscriberLinkPool.get()
+		if (item == null) {
+			item = {
+				pool: subscriberLinkPool,
+				state: this,
+				value: subscriber,
+				prev,
+				next,
+			}
+		} else {
+			item.state = this
+			item.value = subscriber
+			item.prev = prev
+			item.next = next
+		}
+
+		return item
+	}
 
 	private _subscribe(subscriber: ISubscriber<TThis, TArgs, TValue>): ISubscriberLink<TThis, TArgs, TValue> {
 		const {_subscribersLast} = this
-		const subscriberLink = subscriberLinkPool.getOrCreate(this, subscriber, _subscribersLast, null)
+		const subscriberLink = this.getSubscriberLink(subscriber, _subscribersLast, null)
 
 		if (_subscribersLast == null) {
 			this._subscribersFirst = subscriberLink
@@ -188,26 +211,25 @@ export class FuncCallState<
 		return subscriberLink
 	}
 
-	private _emit() {
+	private _emit(status: FuncCallStatus) {
 		let clonesFirst
 		let clonesLast
 		for (let link = this._subscribersFirst; link; link = link.next) {
-			const cloneLink = subscriberLinkPool.getOrCreate(
-				null,
+			const cloneLink = this.getSubscriberLink(
 				link.value,
 				null,
 				link.next,
 			)
-			if (clonesLast) {
-				clonesLast.next = cloneLink
-			} else {
+			if (clonesLast == null) {
 				clonesFirst = cloneLink
+			} else {
+				clonesLast.next = cloneLink
 			}
 			clonesLast = cloneLink
 		}
 
 		for (let link = clonesFirst; link;) {
-			link.value(this.status)
+			link.value(status)
 			link.value = null
 			const next = link.next
 			link.next = null
@@ -216,9 +238,9 @@ export class FuncCallState<
 		}
 	}
 
-	private emit() {
-		if (this._subscribersFirst) {
-			this._emit()
+	private emit(status: FuncCallStatus) {
+		if (this._subscribersFirst != null) {
+			this._emit(status)
 		}
 	}
 
@@ -241,9 +263,7 @@ export class FuncCallState<
 		if (_invalidate == null) {
 			const self = this
 			this._invalidate = _invalidate = function(status) {
-				if (status === FuncCallStatus.Invalidating || status === FuncCallStatus.Invalidated) {
-					self.update(status)
-				}
+				self.update(status)
 			}
 		}
 		const unsubscribe = dependency.subscribe(_invalidate, false)
@@ -264,25 +284,25 @@ export class FuncCallState<
 
 		const {prev, next, pool} = item
 
-		if (prev) {
-			if (next) {
-				prev.next = next
-				next.prev = prev
-				item.next = null
+		if (prev == null) {
+			if (next == null) {
+				(this as any)._subscribersFirst = null;
+				(this as any)._subscribersLast = null
 			} else {
-				(this as any)._subscribersLast = prev
-				prev.next = null
-			}
-			item.prev = null
-		} else {
-			if (next) {
 				(this as any)._subscribersFirst = next
 				next.prev = null
 				item.next = null
-			} else {
-				(this as any)._subscribersFirst = null;
-				(this as any)._subscribersLast = null
 			}
+		} else {
+			if (next == null) {
+				(this as any)._subscribersLast = prev
+				prev.next = null
+			} else {
+				prev.next = next
+				next.prev = prev
+				item.next = null
+			}
+			item.prev = null
 		}
 
 		item.state = null
@@ -293,7 +313,7 @@ export class FuncCallState<
 
 	public unsubscribeDependencies(): void {
 		const {_unsubscribers} = this
-		if (_unsubscribers) {
+		if (_unsubscribers != null) {
 			const len = this._unsubscribersLength
 			for (let i = 0; i < len; i++) {
 				const item = _unsubscribers[i]
@@ -318,43 +338,48 @@ export class FuncCallState<
 	}
 
 	public update(status: FuncCallStatus, valueAsyncOrValueOrError?: Iterator<TValue> | any | TValue): void {
+		const prevStatus = this.status
+		this.status = status
+
 		switch (status) {
 			case FuncCallStatus.Invalidating:
-				if (this.status == null || this.status === FuncCallStatus.Invalidated) {
+				if (prevStatus === FuncCallStatus.Invalidated) {
 					return
 				}
 				// tslint:disable-next-line:no-nested-switch
-				if (this.status !== FuncCallStatus.Invalidating
-					&& this.status !== FuncCallStatus.Calculated
-					&& this.status !== FuncCallStatus.Error
-				) {
-					throw new Error(`Set status ${status} called when current status is ${this.status}`)
-				}
+				// if (prevStatus !== FuncCallStatus.Invalidating
+				// 	&& prevStatus !== FuncCallStatus.Calculated
+				// 	&& prevStatus !== FuncCallStatus.Error
+				// ) {
+				// 	throw new Error(`Set status ${status} called when current status is ${prevStatus}`)
+				// }
 				this.unsubscribeDependencies()
+				this.emit(status)
 				break
 			case FuncCallStatus.Invalidated:
-				if (this.status == null || this.status !== FuncCallStatus.Invalidating) {
+				if (prevStatus !== FuncCallStatus.Invalidating) {
 					return
 				}
+				this.emit(status)
 				break
 			case FuncCallStatus.Calculating:
-				if (this.status != null
-					&& this.status !== FuncCallStatus.Invalidating
-					&& this.status !== FuncCallStatus.Invalidated
-				) {
-					throw new Error(`Set status ${status} called when current status is ${this.status}`)
-				}
+				// if (prevStatus != null
+				// 	&& prevStatus !== FuncCallStatus.Invalidating
+				// 	&& prevStatus !== FuncCallStatus.Invalidated
+				// ) {
+				// 	throw new Error(`Set status ${status} called when current status is ${prevStatus}`)
+				// }
 				break
 			case FuncCallStatus.CalculatingAsync:
-				if (this.status !== FuncCallStatus.Calculating) {
-					throw new Error(`Set status ${status} called when current status is ${this.status}`)
-				}
+				// if (prevStatus !== FuncCallStatus.Calculating) {
+				// 	throw new Error(`Set status ${status} called when current status is ${prevStatus}`)
+				// }
 				this.valueAsync = valueAsyncOrValueOrError
 				break
 			case FuncCallStatus.Calculated:
-				if (this.status !== FuncCallStatus.Calculating && this.status !== FuncCallStatus.CalculatingAsync) {
-					throw new Error(`Set status ${status} called when current status is ${this.status}`)
-				}
+				// if (prevStatus !== FuncCallStatus.Calculating && prevStatus !== FuncCallStatus.CalculatingAsync) {
+				// 	throw new Error(`Set status ${status} called when current status is ${prevStatus}`)
+				// }
 				if (typeof this.valueAsync !== 'undefined') {
 					this.valueAsync = null
 				}
@@ -364,22 +389,18 @@ export class FuncCallState<
 				this.hasValue = true
 				break
 			case FuncCallStatus.Error:
-				if (this.status !== FuncCallStatus.Calculating && this.status !== FuncCallStatus.CalculatingAsync) {
-					throw new Error(`Set status ${status} called when current status is ${this.status}`)
-				}
+				// if (prevStatus !== FuncCallStatus.Calculating && prevStatus !== FuncCallStatus.CalculatingAsync) {
+				// 	throw new Error(`Set status ${status} called when current status is ${prevStatus}`)
+				// }
 				if (typeof this.valueAsync !== 'undefined') {
 					this.valueAsync = null
 				}
 				this.error = valueAsyncOrValueOrError
 				this.hasError = true
 				break
-			default:
-				throw new Error('Unknown FuncCallStatus: ' + status)
+			// default:
+			// 	throw new Error('Unknown FuncCallStatus: ' + status)
 		}
-
-		this.status = status
-
-		this.emit()
 	}
 
 	// endregion
