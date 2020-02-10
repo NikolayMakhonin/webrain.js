@@ -1,5 +1,4 @@
-import {Thenable} from '../../async/async'
-import {FuncCallStatus} from './_createDependentFunc'
+import {IFuncCallState} from './_createDependentFunc'
 
 export type Func<TThis, TArgs extends any[], TValue = void> = (this: TThis, ...args: TArgs) => TValue
 export type TCall<TArgs extends any[]> = <TThis, TValue>(this: TThis, func: Func<TThis, TArgs, TValue>) => TValue
@@ -16,32 +15,4 @@ export interface ISubscriberLink<TThis, TArgs extends any[], TValue>
 	state: IFuncCallState<TThis, TArgs, TValue>
 	prev: ISubscriberLink<TThis, TArgs, TValue>,
 	next: ISubscriberLink<TThis, TArgs, TValue>,
-}
-
-export interface IFuncCallState<TThis,
-	TArgs extends any[],
-	TValue,
-	> {
-	readonly func: Func<TThis, TArgs, TValue>
-	readonly _this: TThis
-	readonly dependentFunc: Func<TThis, TArgs, TValue>
-
-	status: FuncCallStatus
-	hasValue: boolean
-	hasError: boolean
-
-	valueAsync: Thenable<TValue>
-	value: TValue
-	error: any
-
-	/** for detect recursive async loop */
-	parentCallState: IFuncCallState<any, any, any>
-
-	// for prevent multiple subscribe equal dependencies
-	callId: number
-
-	_subscribersFirst: ISubscriberLink<TThis, TArgs, TValue>
-	_subscribersLast: ISubscriberLink<TThis, TArgs, TValue>
-	_unsubscribers: Array<ISubscriberLink<TThis, TArgs, TValue>>,
-	_unsubscribersLength: number,
 }

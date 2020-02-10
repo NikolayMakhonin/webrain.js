@@ -13,7 +13,7 @@ function buildLib({fileInput, fileOutput, name}) {
 		{fileInput, fileOutput, name}, {
 			plugins: rollupPlugins.libs({dev: false, legacy: true}),
 			output : {
-				format   : 'amd',
+				format   : 'iife',
 				sourcemap: false,
 				exports  : 'named',
 			}
