@@ -3,12 +3,11 @@
 import {calcPerformance} from 'rdtsc'
 import {isThenable, Thenable, ThenableOrValue} from '../../../../../../main/common/async/async'
 import {
-	FuncCallStatus,
 	getFuncCallState,
-	IFuncCallState,
 	invalidate,
 	makeDependentFunc,
 } from '../../../../../../main/common/rx/depend/all'
+import {FuncCallStatus, IFuncCallState} from '../../../../../../main/common/rx/depend/contracts'
 import {assert} from '../../../../../../main/common/test/Assert'
 import {describe, it, xit} from '../../../../../../main/common/test/Mocha'
 import {delay} from '../../../../../../main/common/time/helpers'
