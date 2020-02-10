@@ -9,33 +9,37 @@ type TAnyFunc = (...args: any[]) => any
 
 // https://gist.github.com/naugtur/4b03a9f9f72346a9f79d7969728a849f
 const optimizationStatusDescriptions = [
-	'is function',
-	'is never optimized',
-	'is always optimized',
-	'is maybe deoptimized',
-	'is optimized',
-	'is optimized by TurboFan',
-	'is interpreted',
-	'is marked for optimization',
-	'is marked for concurrent optimization',
-	'is optimizing concurrently',
-	'is executing',
-	'topmost frame is turbo fanned',
+	'IsFunction',
+	'NeverOptimize',
+	'AlwaysOptimize',
+	'MaybeDeopted',
+	'Optimized',
+	'TurboFanned',
+	'Interpreted',
+	'MarkedForOptimization',
+	'MarkedForConcurrentOptimization',
+	'OptimizingConcurrently',
+	'IsExecuting',
+	'TopmostFrameIsTurboFanned',
+	'LiteMode',
+	'MarkedForDeoptimization',
 ]
 
 export enum OptimizationStatus {
 	IsFunction = 1,
-	IsNeverOptimized = 2,
-	IsAlwaysOptimized = 4,
-	IsMayBeOptimized = 8,
-	IsOptimized = 16,
-	IsOptimizedByTurboFan = 32,
-	IsInterpreted = 64,
-	IsMarkedForOptimization = 128,
-	IsMarkedForConcurrentOptimization = 256,
-	IsOptimizingConcurrently = 512,
+	NeverOptimize = 2,
+	AlwaysOptimize = 4,
+	MaybeDeopted = 8,
+	Optimized = 16,
+	TurboFanned = 32,
+	Interpreted = 64,
+	MarkedForOptimization = 128,
+	MarkedForConcurrentOptimization = 256,
+	OptimizingConcurrently = 512,
 	IsExecuting = 1024,
-	TopMostFrameIsTurboFanned = 2048,
+	TopmostFrameIsTurboFanned = 2048,
+	LiteMode = 4096,
+	MarkedForDeoptimization = 8192,
 }
 
 export function optimizationStatusToString(status: OptimizationStatus) {
@@ -71,7 +75,11 @@ export function assertOptimizationStatus(
 export function assertIsOptimized(func: TAnyFunc) {
 	assertOptimizationStatus(
 		func,
-		OptimizationStatus.IsFunction | OptimizationStatus.IsOptimized | OptimizationStatus.IsOptimizedByTurboFan,
-		OptimizationStatus.IsNeverOptimized | OptimizationStatus.IsExecuting,
+
+		OptimizationStatus.IsFunction | OptimizationStatus.Optimized | OptimizationStatus.TurboFanned,
+
+		OptimizationStatus.NeverOptimize | OptimizationStatus.IsExecuting |
+		OptimizationStatus.MaybeDeopted | OptimizationStatus.LiteMode |
+		OptimizationStatus.MarkedForDeoptimization,
 	)
 }

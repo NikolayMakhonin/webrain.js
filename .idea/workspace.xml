@@ -8,15 +8,10 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="69b2ee16-521b-4efd-b473-8e19e3df4d09" name="Default Changelist" comment="">
-      <change afterPath="$PROJECT_DIR$/src/test/tests/common/main/helpers/v8-funcs.js" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/test/tests/common/main/helpers/v8.ts" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/dictionaries/Mika.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/dictionaries/Mika.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/env/babel/configs/mocha.js" beforeDir="false" afterPath="$PROJECT_DIR$/env/babel/configs/mocha.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/env/rollup/plugins.js" beforeDir="false" afterPath="$PROJECT_DIR$/env/rollup/plugins.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/package.json" beforeDir="false" afterPath="$PROJECT_DIR$/package.json" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/common/rx/depend/all.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/common/rx/depend/all.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/test/tests/common/main/rx/depend/dependent-func.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/test/tests/common/main/rx/depend/dependent-func.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/test/tests/common/main/helpers/v8-funcs.js" beforeDir="false" afterPath="$PROJECT_DIR$/src/test/tests/common/main/helpers/v8-funcs.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/test/tests/common/main/helpers/v8.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/test/tests/common/main/helpers/v8.ts" afterDir="false" />
     </list>
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
     <option name="SHOW_DIALOG" value="false" />
@@ -343,13 +338,6 @@
       <option name="number" value="Default" />
       <option name="presentableId" value="Default" />
       <updated>1567687848586</updated>
-    </task>
-    <task id="LOCAL-00180" summary="deepSubscribe caching in process: added rules unique id">
-      <created>1579252557895</created>
-      <option name="number" value="00180" />
-      <option name="presentableId" value="LOCAL-00180" />
-      <option name="project" value="LOCAL" />
-      <updated>1579252557895</updated>
     </task>
     <task id="LOCAL-00181" summary="deepSubscribe caching in process">
       <created>1579265731737</created>
@@ -687,7 +675,14 @@
       <option name="project" value="LOCAL" />
       <updated>1581345320757</updated>
     </task>
-    <option name="localTasksCounter" value="229" />
+    <task id="LOCAL-00229" summary="dependent-funcs v8 optimization in process... Add check funcs optimization status">
+      <created>1581359544081</created>
+      <option name="number" value="00229" />
+      <option name="presentableId" value="LOCAL-00229" />
+      <option name="project" value="LOCAL" />
+      <updated>1581359544081</updated>
+    </task>
+    <option name="localTasksCounter" value="230" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -749,7 +744,6 @@
   <component name="VcsManagerConfiguration">
     <option name="CHECK_CODE_SMELLS_BEFORE_PROJECT_COMMIT" value="false" />
     <option name="CHECK_NEW_TODO" value="false" />
-    <MESSAGE value="Develop MobX bicycle with round wheels" />
     <MESSAGE value="Develop dependentFunc" />
     <MESSAGE value="Develop dependentFunc: perceptron performance test" />
     <MESSAGE value="Develop dependentFunc. Before refactoring&#10;&#10;perceptron 100 x 10&#10;invalidate cycles: 12089&#10;calc cycles: 159433&#10;create bytes: 641.5022072204638 ±3062.0643185018303&#10;recalc bytes: 15883.9371154598 ±10539.072818593493" />
@@ -774,7 +768,8 @@
     <MESSAGE value="dependent-funcs v8 optimization in process... Wrap modules to iife" />
     <MESSAGE value="dependent-funcs v8 optimization in process... Concat modules to single file" />
     <MESSAGE value="dependent-funcs v8 optimization in process... Wrap single module to iife. No effect." />
-    <option name="LAST_COMMIT_MESSAGE" value="dependent-funcs v8 optimization in process... Wrap single module to iife. No effect." />
+    <MESSAGE value="dependent-funcs v8 optimization in process... Add check funcs optimization status" />
+    <option name="LAST_COMMIT_MESSAGE" value="dependent-funcs v8 optimization in process... Add check funcs optimization status" />
   </component>
   <component name="XDebuggerManager">
     <breakpoint-manager>
