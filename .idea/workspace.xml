@@ -7,16 +7,18 @@
     <option name="SHOW_STRUCTURE" value="true" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="69b2ee16-521b-4efd-b473-8e19e3df4d09" name="Default Changelist" comment="dependent-funcs v8 optimization in process... Group functions to modules">
+    <list default="true" id="69b2ee16-521b-4efd-b473-8e19e3df4d09" name="Default Changelist" comment="">
+      <change afterPath="$PROJECT_DIR$/src/main/common/rx/depend/all.ts" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/env/libs/helpers.js" beforeDir="false" afterPath="$PROJECT_DIR$/env/libs/helpers.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/common/rx/depend/_createDependentFunc.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/common/rx/depend/_createDependentFunc.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/common/rx/depend/_getFuncCallState.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/common/rx/depend/_getFuncCallState.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/env/libs/dependent-func/all.js" beforeDir="false" afterPath="$PROJECT_DIR$/env/libs/dependent-func/all.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/common/rx/depend/_createDependentFunc.ts" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/common/rx/depend/_getFuncCallState.ts" beforeDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/common/rx/depend/contracts.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/common/rx/depend/contracts.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/common/rx/depend/fasade.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/common/rx/depend/fasade.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/common/rx/depend/subscribeDependency.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/common/rx/depend/subscribeDependency.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/common/rx/depend/subscriberLinkPool.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/common/rx/depend/subscriberLinkPool.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/common/rx/depend/fasade.ts" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/common/rx/depend/subscribeDependency.ts" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/common/rx/depend/subscriberLinkPool.ts" beforeDir="false" />
       <change beforePath="$PROJECT_DIR$/src/test/tests/common/main/rx/depend/dependent-func.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/test/tests/common/main/rx/depend/dependent-func.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/test/tests/common/main/rx/depend/src/helpers.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/test/tests/common/main/rx/depend/src/helpers.ts" afterDir="false" />
     </list>
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
     <option name="SHOW_DIALOG" value="false" />
@@ -328,8 +330,8 @@
     </list>
     <recent_temporary>
       <list>
-        <item itemvalue="Mocha.dependent-func" />
         <item itemvalue="Mocha.common &gt; main &gt; rx &gt; depend &gt; dependent-func" />
+        <item itemvalue="Mocha.dependent-func" />
         <item itemvalue="Mocha.common &gt; main &gt; rx &gt; depend &gt; dependent-func.closure size" />
         <item itemvalue="Mocha.common &gt; main &gt; rx &gt; depend &gt; dependent-func.base" />
         <item itemvalue="Mocha.dependent-func.perceptron memory recalc" />
@@ -343,13 +345,6 @@
       <option name="number" value="Default" />
       <option name="presentableId" value="Default" />
       <updated>1567687848586</updated>
-    </task>
-    <task id="LOCAL-00177" summary="Fix DeferredCalc &amp; CalcProperty">
-      <created>1577458448224</created>
-      <option name="number" value="00177" />
-      <option name="presentableId" value="LOCAL-00177" />
-      <option name="project" value="LOCAL" />
-      <updated>1577458448224</updated>
     </task>
     <task id="LOCAL-00178" summary="Facade changes">
       <created>1579252462452</created>
@@ -687,7 +682,14 @@
       <option name="project" value="LOCAL" />
       <updated>1581329979692</updated>
     </task>
-    <option name="localTasksCounter" value="226" />
+    <task id="LOCAL-00226" summary="dependent-funcs v8 optimization in process... Wrap modules to iife">
+      <created>1581335726066</created>
+      <option name="number" value="00226" />
+      <option name="presentableId" value="LOCAL-00226" />
+      <option name="project" value="LOCAL" />
+      <updated>1581335726066</updated>
+    </task>
+    <option name="localTasksCounter" value="227" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -749,7 +751,6 @@
   <component name="VcsManagerConfiguration">
     <option name="CHECK_CODE_SMELLS_BEFORE_PROJECT_COMMIT" value="false" />
     <option name="CHECK_NEW_TODO" value="false" />
-    <MESSAGE value="Add RuleBuilder.change() for subscribe only object changeId" />
     <MESSAGE value="Develop an automatic subscription system using a brilliant idea from MobX, but more universal" />
     <MESSAGE value="Rx interface changes" />
     <MESSAGE value="Develop MobX bicycle with round wheels" />
@@ -774,7 +775,8 @@
     <MESSAGE value="dependent-funcs v8 optimization in process.." />
     <MESSAGE value="dependent-funcs v8 optimization in process... Separated code by functions" />
     <MESSAGE value="dependent-funcs v8 optimization in process... Group functions to modules" />
-    <option name="LAST_COMMIT_MESSAGE" value="dependent-funcs v8 optimization in process... Group functions to modules" />
+    <MESSAGE value="dependent-funcs v8 optimization in process... Wrap modules to iife" />
+    <option name="LAST_COMMIT_MESSAGE" value="dependent-funcs v8 optimization in process... Wrap modules to iife" />
   </component>
   <component name="XDebuggerManager">
     <breakpoint-manager>
@@ -787,7 +789,7 @@
         </line-breakpoint>
         <line-breakpoint enabled="true" type="javascript">
           <url>file://$PROJECT_DIR$/src/test/tests/common/main/rx/depend/dependent-func.ts</url>
-          <line>302</line>
+          <line>307</line>
           <properties lambdaOrdinal="-1" />
           <option name="timeStamp" value="388" />
         </line-breakpoint>

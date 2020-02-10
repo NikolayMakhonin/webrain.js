@@ -1,4 +1,4 @@
-import {IFuncCallState} from './_createDependentFunc'
+import {IFuncCallState} from './all'
 
 export type Func<TThis, TArgs extends any[], TValue = void> = (this: TThis, ...args: TArgs) => TValue
 export type TCall<TArgs extends any[]> = <TThis, TValue>(this: TThis, func: Func<TThis, TArgs, TValue>) => TValue

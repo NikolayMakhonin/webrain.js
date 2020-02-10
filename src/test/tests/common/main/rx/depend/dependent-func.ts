@@ -2,8 +2,13 @@
 // @ts-ignore
 import {calcPerformance} from 'rdtsc'
 import {isThenable, Thenable, ThenableOrValue} from '../../../../../../main/common/async/async'
-import {FuncCallStatus, IFuncCallState, invalidate} from '../../../../../../main/common/rx/depend/_createDependentFunc'
-import {getFuncCallState, makeDependentFunc} from '../../../../../../main/common/rx/depend/fasade'
+import {
+	FuncCallStatus,
+	getFuncCallState,
+	IFuncCallState,
+	invalidate,
+	makeDependentFunc,
+} from '../../../../../../main/common/rx/depend/all'
 import {assert} from '../../../../../../main/common/test/Assert'
 import {describe, it, xit} from '../../../../../../main/common/test/Mocha'
 import {delay} from '../../../../../../main/common/time/helpers'
