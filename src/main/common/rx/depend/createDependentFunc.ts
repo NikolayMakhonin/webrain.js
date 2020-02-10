@@ -1,6 +1,6 @@
 import {Func, IFuncCallState} from './contracts'
 
-export function createDependFunc<
+export function createDependentFunc<
 	TThis,
 	TArgs extends any[],
 	TValue,

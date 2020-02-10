@@ -2,8 +2,9 @@
 // @ts-ignore
 import {calcPerformance} from 'rdtsc'
 import {isThenable, Thenable, ThenableOrValue} from '../../../../../../main/common/async/async'
-import {getFuncCallState, makeDependentFunc} from '../../../../../../main/common/rx/depend'
-import {IFuncCallState} from '../../../../../../main/common/rx/depend/contracts'
+import {FuncCallStatus, IFuncCallState} from '../../../../../../main/common/rx/depend/contracts'
+import * as debug from '../../../../../../main/common/rx/depend/debug'
+import {getFuncCallState, makeDependentFunc} from '../../../../../../main/common/rx/depend/index'
 import {invalidate} from '../../../../../../main/common/rx/depend/invalidate'
 import {assert} from '../../../../../../main/common/test/Assert'
 import {describe, it, xit} from '../../../../../../main/common/test/Mocha'
@@ -127,7 +128,7 @@ describe('common > main > rx > depend > dependent-func', function() {
 		result.id = callId
 		result.state = getFuncCallState(func).apply(_this, rest)
 		assert.ok(result.state)
-		assert.strictEqual(result.state.status, 2);
+		assert.strictEqual(result.state.status, FuncCallStatus.Invalidated);
 		(result.state as any).id = callId
 
 		return result
@@ -289,7 +290,7 @@ describe('common > main > rx > depend > dependent-func', function() {
 		// endregion
 	})
 
-	it('perceptron', async function() {
+	it('perceptron', function() {
 		this.timeout(5000)
 
 		const {
@@ -298,5 +299,9 @@ describe('common > main > rx > depend > dependent-func', function() {
 			inputState,
 			output,
 		} = createPerceptron(50, 50)
+	})
+
+	it('closure size', function() {
+		console.log(debug)
 	})
 })

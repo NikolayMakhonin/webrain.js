@@ -8,38 +8,18 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="69b2ee16-521b-4efd-b473-8e19e3df4d09" name="Default Changelist" comment="">
-      <change afterPath="$PROJECT_DIR$/src/main/common/rx/depend/_createDependentFunc.ts" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/common/rx/depend/_getFuncCallState.ts" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/common/rx/depend/_subscribe.ts" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/common/rx/depend/createCallWithArgs.ts" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/common/rx/depend/createDependentFunc.ts" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/common/rx/depend/createFuncCallState.ts" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/common/rx/depend/createGetFuncCallState.ts" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/common/rx/depend/createMakeDependentFunc.ts" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/common/rx/depend/emit.ts" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/common/rx/depend/getSubscriberLink.ts" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/common/rx/depend/index.ts" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/common/rx/depend/invalidate.ts" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/common/rx/depend/pool.ts" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/common/rx/depend/semi-weak-map/create.ts" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/common/rx/depend/semi-weak-map/get.ts" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/common/rx/depend/semi-weak-map/isRefType.ts" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/common/rx/depend/semi-weak-map/set.ts" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/common/rx/depend/subscribeDependency.ts" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/common/rx/depend/subscriberLinkDelete.ts" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/common/rx/depend/unsubscribeDependencies.ts" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/common/rx/depend/update.ts" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/common/rx/depend/debug.ts" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/common/rx/depend/new/subscriberLinkPool.ts" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/env/libs/dependent-func/all.js" beforeDir="false" afterPath="$PROJECT_DIR$/env/libs/dependent-func/all.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/common/rx/depend/FuncCallState.ts" beforeDir="false" afterPath="$PROJECT_DIR$/_trash/src/main/common/rx/depend/FuncCallState.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/common/rx/depend/ObjectPool.ts" beforeDir="false" afterPath="$PROJECT_DIR$/_trash/src/main/common/rx/depend/ObjectPool.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/common/rx/depend/SemiWeakMap.ts" beforeDir="false" afterPath="$PROJECT_DIR$/_trash/src/main/common/rx/depend/SemiWeakMap.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/common/rx/depend/contracts.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/common/rx/depend/contracts.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/common/rx/depend/dependent-func.ts" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/test/experiments/node/dependent-func.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/test/experiments/node/dependent-func.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/test/performance/node/dependent-func.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/test/performance/node/dependent-func.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/env/libs/helpers.js" beforeDir="false" afterPath="$PROJECT_DIR$/env/libs/helpers.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/common/rx/depend/_subscribe.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/common/rx/depend/_subscribe.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/common/rx/depend/createDependentFunc.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/common/rx/depend/createDependentFunc.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/common/rx/depend/createMakeDependentFunc.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/common/rx/depend/createMakeDependentFunc.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/common/rx/depend/emit.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/common/rx/depend/emit.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/common/rx/depend/getSubscriberLink.ts" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/common/rx/depend/pool.ts" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/common/rx/depend/subscriberLinkDelete.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/common/rx/depend/subscriberLinkDelete.ts" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/test/tests/common/main/rx/depend/dependent-func.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/test/tests/common/main/rx/depend/dependent-func.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/test/tests/common/main/rx/depend/src/helpers.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/test/tests/common/main/rx/depend/src/helpers.ts" afterDir="false" />
     </list>
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
     <option name="SHOW_DIALOG" value="false" />
@@ -82,7 +62,7 @@
     <property name="WebServerToolWindowFactoryState" value="false" />
     <property name="auto.test.manager.delay" value="5000" />
     <property name="javascript.karma.karma_node_package_dir" value="" />
-    <property name="last_opened_file_path" value="$PROJECT_DIR$/src/main/common/rx/depend/contracts.ts" />
+    <property name="last_opened_file_path" value="$PROJECT_DIR$/src/main/common/rx/depend/new/subscribeDependency.ts" />
     <property name="node.js.detected.package.eslint" value="true" />
     <property name="node.js.detected.package.standard" value="true" />
     <property name="node.js.detected.package.tslint" value="true" />
@@ -102,18 +82,18 @@
   </component>
   <component name="RecentsManager">
     <key name="MoveFile.RECENT_KEYS">
+      <recent name="L:\Work\_GIT\GitHub\NodeJs\modules\webrain\src\main\common\rx\depend\docs" />
       <recent name="L:\Work\_GIT\GitHub\NodeJs\modules\webrain\_trash\src\main\common\rx\depend" />
       <recent name="L:\Work\_GIT\GitHub\NodeJs\modules\webrain\src\main\common\rx\depend" />
       <recent name="L:\Work\_GIT\GitHub\NodeJs\modules\webrain\tmp\coverage\nyc\json" />
       <recent name="L:\Work\_GIT\GitHub\NodeJs\modules\webrain\src\test\experiments\common" />
-      <recent name="L:\Work\_GIT\GitHub\NodeJs\modules\webrain\src\main\common\random" />
     </key>
     <key name="es6.move.members.recent.items">
+      <recent name="L:\Work\_GIT\GitHub\NodeJs\modules\webrain\src\main\common\rx\depend\new\subscriberLinkPool.ts" />
       <recent name="L:\Work\_GIT\GitHub\NodeJs\modules\webrain\src\main\common\rx\depend\createCallWithArgs.ts" />
       <recent name="L:\Work\_GIT\GitHub\NodeJs\modules\webrain\src\main\common\rx\depend\contracts.ts" />
       <recent name="L:\Work\_GIT\GitHub\NodeJs\modules\webrain\src\main\common\rx\depend\createFuncCallState.ts" />
       <recent name="L:\Work\_GIT\GitHub\NodeJs\modules\webrain\src\main\common\rx\depend\_subscribe.ts" />
-      <recent name="L:\Work\_GIT\GitHub\NodeJs\modules\webrain\src\main\common\rx\depend\getSubscriberLink.ts" />
     </key>
     <key name="CopyFile.RECENT_KEYS">
       <recent name="L:\Work\_GIT\GitHub\NodeJs\modules\webrain\env\babel\configs" />
@@ -135,7 +115,7 @@
       </list>
     </option>
   </component>
-  <component name="RunManager" selected="Mocha.dependent-func.perceptron memory recalc">
+  <component name="RunManager" selected="Mocha.common &gt; main &gt; rx &gt; depend &gt; dependent-func.closure size">
     <configuration default="true" type="JavaScriptTestRunnerKarma">
       <config-file value="$PROJECT_DIR$/env/karma/configs/dev.js" />
       <karma-package-dir value="$PROJECT_DIR$/node_modules/karma" />
@@ -236,6 +216,38 @@
       </test-names>
       <method v="2" />
     </configuration>
+    <configuration name="common &gt; main &gt; rx &gt; depend &gt; dependent-func.base" type="mocha-javascript-test-runner" temporary="true" nameIsGenerated="true">
+      <node-interpreter>node</node-interpreter>
+      <node-options>--max-old-space-size=4096</node-options>
+      <mocha-package>$PROJECT_DIR$/node_modules/mocha</mocha-package>
+      <working-directory>$PROJECT_DIR$</working-directory>
+      <pass-parent-env>true</pass-parent-env>
+      <ui>bdd</ui>
+      <extra-mocha-options>--opts ./env/mocha/configs/babel/mocha.opts --watch</extra-mocha-options>
+      <test-kind>TEST</test-kind>
+      <test-file>$PROJECT_DIR$/src/test/tests/common/main/rx/depend/dependent-func.ts</test-file>
+      <test-names>
+        <name value="common &gt; main &gt; rx &gt; depend &gt; dependent-func" />
+        <name value="base" />
+      </test-names>
+      <method v="2" />
+    </configuration>
+    <configuration name="common &gt; main &gt; rx &gt; depend &gt; dependent-func.closure size" type="mocha-javascript-test-runner" temporary="true" nameIsGenerated="true">
+      <node-interpreter>node</node-interpreter>
+      <node-options>--max-old-space-size=4096</node-options>
+      <mocha-package>$PROJECT_DIR$/node_modules/mocha</mocha-package>
+      <working-directory>$PROJECT_DIR$</working-directory>
+      <pass-parent-env>true</pass-parent-env>
+      <ui>bdd</ui>
+      <extra-mocha-options>--opts ./env/mocha/configs/babel/mocha.opts --watch</extra-mocha-options>
+      <test-kind>TEST</test-kind>
+      <test-file>$PROJECT_DIR$/src/test/tests/common/main/rx/depend/dependent-func.ts</test-file>
+      <test-names>
+        <name value="common &gt; main &gt; rx &gt; depend &gt; dependent-func" />
+        <name value="closure size" />
+      </test-names>
+      <method v="2" />
+    </configuration>
     <configuration name="deep-subscribe (Coverage)" type="mocha-javascript-test-runner">
       <node-interpreter>node</node-interpreter>
       <node-options>--max-old-space-size=4096</node-options>
@@ -295,38 +307,6 @@
       </test-names>
       <method v="2" />
     </configuration>
-    <configuration name="dependent-func.perceptron perf" type="mocha-javascript-test-runner" temporary="true" nameIsGenerated="true">
-      <node-interpreter>node</node-interpreter>
-      <node-options>--max-old-space-size=4096</node-options>
-      <mocha-package>$PROJECT_DIR$/node_modules/mocha</mocha-package>
-      <working-directory>$PROJECT_DIR$</working-directory>
-      <pass-parent-env>true</pass-parent-env>
-      <ui>bdd</ui>
-      <extra-mocha-options>--opts ./env/mocha/configs/babel/mocha.opts</extra-mocha-options>
-      <test-kind>TEST</test-kind>
-      <test-file>$PROJECT_DIR$/src/test/performance/node/dependent-func.ts</test-file>
-      <test-names>
-        <name value="dependent-func" />
-        <name value="perceptron perf" />
-      </test-names>
-      <method v="2" />
-    </configuration>
-    <configuration name="dependent-func.set memory" type="mocha-javascript-test-runner" temporary="true" nameIsGenerated="true">
-      <node-interpreter>node</node-interpreter>
-      <node-options>--max-old-space-size=4096</node-options>
-      <mocha-package>$PROJECT_DIR$/node_modules/mocha</mocha-package>
-      <working-directory>$PROJECT_DIR$</working-directory>
-      <pass-parent-env>true</pass-parent-env>
-      <ui>bdd</ui>
-      <extra-mocha-options>--opts ./env/mocha/configs/babel/mocha.opts</extra-mocha-options>
-      <test-kind>TEST</test-kind>
-      <test-file>$PROJECT_DIR$/src/test/performance/node/dependent-func.ts</test-file>
-      <test-names>
-        <name value="dependent-func" />
-        <name value="set memory" />
-      </test-names>
-      <method v="2" />
-    </configuration>
     <list>
       <item itemvalue="Karma.Coverage Karma" />
       <item itemvalue="Karma.Dev" />
@@ -345,17 +325,17 @@
       <item itemvalue="Mocha.common &gt; main &gt; rx &gt; depend &gt; dependent-func" />
       <item itemvalue="Mocha.dependent-func" />
       <item itemvalue="Mocha.dependent-func.perceptron memory recalc" />
-      <item itemvalue="Mocha.dependent-func.set memory" />
-      <item itemvalue="Mocha.dependent-func.perceptron perf" />
       <item itemvalue="npm.Coverage Mocha Report" />
+      <item itemvalue="Mocha.common &gt; main &gt; rx &gt; depend &gt; dependent-func.base" />
+      <item itemvalue="Mocha.common &gt; main &gt; rx &gt; depend &gt; dependent-func.closure size" />
     </list>
     <recent_temporary>
       <list>
+        <item itemvalue="Mocha.common &gt; main &gt; rx &gt; depend &gt; dependent-func.closure size" />
+        <item itemvalue="Mocha.common &gt; main &gt; rx &gt; depend &gt; dependent-func.base" />
         <item itemvalue="Mocha.common &gt; main &gt; rx &gt; depend &gt; dependent-func" />
         <item itemvalue="Mocha.dependent-func" />
         <item itemvalue="Mocha.dependent-func.perceptron memory recalc" />
-        <item itemvalue="Mocha.dependent-func.perceptron perf" />
-        <item itemvalue="Mocha.dependent-func.set memory" />
       </list>
     </recent_temporary>
   </component>
@@ -366,13 +346,6 @@
       <option name="number" value="Default" />
       <option name="presentableId" value="Default" />
       <updated>1567687848586</updated>
-    </task>
-    <task id="LOCAL-00174" summary="Disabled TimeLimits browser tests">
-      <created>1577107206050</created>
-      <option name="number" value="00174" />
-      <option name="presentableId" value="LOCAL-00174" />
-      <option name="project" value="LOCAL" />
-      <updated>1577107206052</updated>
     </task>
     <task id="LOCAL-00175" summary="Disabled TimeLimits browser tests">
       <created>1577108623014</created>
@@ -710,7 +683,14 @@
       <option name="project" value="LOCAL" />
       <updated>1581235455531</updated>
     </task>
-    <option name="localTasksCounter" value="223" />
+    <task id="LOCAL-00223" summary="dependent-funcs v8 optimization in process... Separated code by functions">
+      <created>1581261547920</created>
+      <option name="number" value="00223" />
+      <option name="presentableId" value="LOCAL-00223" />
+      <option name="project" value="LOCAL" />
+      <updated>1581261547920</updated>
+    </task>
+    <option name="localTasksCounter" value="224" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -772,7 +752,6 @@
   <component name="VcsManagerConfiguration">
     <option name="CHECK_CODE_SMELLS_BEFORE_PROJECT_COMMIT" value="false" />
     <option name="CHECK_NEW_TODO" value="false" />
-    <MESSAGE value="deepSubscribe caching failed" />
     <MESSAGE value="deepSubscribe caching rollback" />
     <MESSAGE value="Add RuleBuilder.change() for subscribe only object changeId" />
     <MESSAGE value="Develop an automatic subscription system using a brilliant idea from MobX, but more universal" />
@@ -797,7 +776,8 @@
     <MESSAGE value="dependent-funcs v8 optimization in process..." />
     <MESSAGE value="dependent-funcs v8 optimization in process... Need to use two fields callId &amp; callId2 to avoid overflow int number. Need to avoid using functions as variables." />
     <MESSAGE value="dependent-funcs v8 optimization in process.." />
-    <option name="LAST_COMMIT_MESSAGE" value="dependent-funcs v8 optimization in process.." />
+    <MESSAGE value="dependent-funcs v8 optimization in process... Separated code by functions" />
+    <option name="LAST_COMMIT_MESSAGE" value="dependent-funcs v8 optimization in process... Separated code by functions" />
   </component>
   <component name="XDebuggerManager">
     <breakpoint-manager>
@@ -808,13 +788,19 @@
           <properties lambdaOrdinal="-1" />
           <option name="timeStamp" value="340" />
         </line-breakpoint>
+        <line-breakpoint enabled="true" type="javascript">
+          <url>file://$PROJECT_DIR$/src/test/tests/common/main/rx/depend/dependent-func.ts</url>
+          <line>304</line>
+          <properties lambdaOrdinal="-1" />
+          <option name="timeStamp" value="388" />
+        </line-breakpoint>
       </breakpoints>
     </breakpoint-manager>
     <watches-manager>
       <configuration name="mocha-javascript-test-runner">
-        <watch expression="this.id" language="TypeScript" />
-        <watch expression="func + ''" language="TypeScript" />
-        <watch expression="state.func + ''" language="TypeScript" />
+        <watch expression="debug" language="TypeScript" />
+        <watch expression="debug.update.__proto__" language="TypeScript" />
+        <watch expression="debug.update[Symbol.unscopables]" language="TypeScript" />
       </configuration>
     </watches-manager>
   </component>

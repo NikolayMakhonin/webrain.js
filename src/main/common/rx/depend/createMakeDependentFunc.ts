@@ -1,7 +1,7 @@
 import {ThenableOrValue} from '../../async/async'
 import {_getFuncCallState} from './_getFuncCallState'
 import {Func, IFuncCallState} from './contracts'
-import {createDependFunc} from './createDependentFunc'
+import {createDependentFunc} from './createDependentFunc'
 
 export type TRootStateMap = WeakMap<Func<any, any, any>, Func<any, any, IFuncCallState<any, any, any>>>
 
@@ -27,7 +27,7 @@ export function createMakeDependentFunc(rootStateMap: TRootStateMap) {
 		const getState = _getFuncCallState(func, new Map<number, any>())
 		rootStateMap.set(func, getState)
 
-		const dependentFunc = createDependFunc(getState)
+		const dependentFunc = createDependentFunc(getState)
 
 		rootStateMap.set(dependentFunc, getState)
 
