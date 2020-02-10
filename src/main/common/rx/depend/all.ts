@@ -14,20 +14,24 @@ export const {
 		getSubscriberLink,
 		releaseSubscriberLink,
 	} = (function() {
-		let subscriberLinkPoolSize: number = 0
-		const subscriberLinkPoolMaxSize: number = 1000000
-		const subscriberLinkPool = []
+		class SubscriberLinkPool {
+			public size = 0
+			public maxSize = 1000000
+			public stack = []
+		}
+
+		const subscriberLinkPool = new SubscriberLinkPool()
 
 		function getSubscriberLinkFromPool<TThis,
 			TArgs extends any[],
 			TValue,
 			>(): ISubscriberLink<TThis, TArgs, TValue> {
 			// this.usedSize++
-			const lastIndex = subscriberLinkPoolSize - 1
+			const lastIndex = subscriberLinkPool.size - 1
 			if (lastIndex >= 0) {
-				const obj = subscriberLinkPool[lastIndex]
-				subscriberLinkPool[lastIndex] = null
-				subscriberLinkPoolSize = lastIndex
+				const obj = subscriberLinkPool.stack[lastIndex]
+				subscriberLinkPool.stack[lastIndex] = null
+				subscriberLinkPool.size = lastIndex
 				if (obj == null) {
 					throw new Error('obj == null')
 				}
@@ -45,9 +49,9 @@ export const {
 				throw new Error('obj == null')
 			}
 			// this.usedSize--
-			if (subscriberLinkPoolSize < subscriberLinkPoolMaxSize) {
-				subscriberLinkPool[subscriberLinkPoolSize] = obj
-				subscriberLinkPoolSize++
+			if (subscriberLinkPool.size < subscriberLinkPool.maxSize) {
+				subscriberLinkPool.stack[subscriberLinkPool.size] = obj
+				subscriberLinkPool.size++
 			}
 		}
 
@@ -309,6 +313,40 @@ export const {
 			}
 		}
 
+		class FuncCallState<TThis,
+			TArgs extends any[],
+			TValue,
+		> {
+			constructor(
+				func: Func<TThis, TArgs, TValue>,
+				_this: TThis,
+				dependentFunc: Func<TThis, TArgs, TValue>,
+			) {
+				this.func = func
+				this._this = _this
+				this.dependentFunc = dependentFunc
+			}
+
+			public readonly func
+			public readonly _this
+			public readonly dependentFunc
+
+			public status = FuncCallStatus_Invalidated
+			public hasValue = false
+			public hasError = false
+			public valueAsync = null
+			public value = void 0
+			public error = void 0
+			// for detect recursive async loop
+			public parentCallState = null
+			public _subscribersFirst = null
+			public _subscribersLast = null
+			// for prevent multiple subscribe equal dependencies
+			public callId = 0
+			public _unsubscribers = null
+			public _unsubscribersLength = 0
+		}
+
 		// tslint:disable-next-line:no-shadowed-variable
 		function createFuncCallState<TThis,
 			TArgs extends any[],
@@ -318,25 +356,11 @@ export const {
 			_this: TThis,
 			dependentFunc: Func<TThis, TArgs, TValue>,
 		): IFuncCallState<TThis, TArgs, TValue> {
-			return {
+			return new FuncCallState(
 				func,
 				_this,
 				dependentFunc,
-				status: FuncCallStatus_Invalidated,
-				hasValue: false,
-				hasError: false,
-				valueAsync: null,
-				value: void 0,
-				error: void 0,
-				// for detect recursive async loop
-				parentCallState: null,
-				_subscribersFirst: null,
-				_subscribersLast: null,
-				// for prevent multiple subscribe equal dependencies
-				callId: 0,
-				_unsubscribers: null,
-				_unsubscribersLength: 0,
-			}
+			)
 		}
 
 		let currentState: IFuncCallState<any, any, any>

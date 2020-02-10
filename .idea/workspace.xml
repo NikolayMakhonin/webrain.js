@@ -8,10 +8,14 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="69b2ee16-521b-4efd-b473-8e19e3df4d09" name="Default Changelist" comment="">
+      <change afterPath="$PROJECT_DIR$/src/test/tests/common/main/helpers/v8-funcs.js" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/test/tests/common/main/helpers/v8.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/dictionaries/Mika.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/dictionaries/Mika.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/env/babel/configs/mocha.js" beforeDir="false" afterPath="$PROJECT_DIR$/env/babel/configs/mocha.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/env/rollup/plugins.js" beforeDir="false" afterPath="$PROJECT_DIR$/env/rollup/plugins.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/package.json" beforeDir="false" afterPath="$PROJECT_DIR$/package.json" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/common/rx/depend/all.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/common/rx/depend/all.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/common/rx/depend/contracts.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/common/rx/depend/contracts.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/test/performance/node/dependent-func.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/test/performance/node/dependent-func.ts" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/test/tests/common/main/rx/depend/dependent-func.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/test/tests/common/main/rx/depend/dependent-func.ts" afterDir="false" />
     </list>
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
@@ -108,7 +112,7 @@
       </list>
     </option>
   </component>
-  <component name="RunManager" selected="Mocha.common &gt; main &gt; rx &gt; depend &gt; dependent-func.closure size">
+  <component name="RunManager" selected="Mocha.common &gt; main &gt; rx &gt; depend &gt; dependent-func">
     <configuration default="true" type="JavaScriptTestRunnerKarma">
       <config-file value="$PROJECT_DIR$/env/karma/configs/dev.js" />
       <karma-package-dir value="$PROJECT_DIR$/node_modules/karma" />
@@ -196,7 +200,7 @@
     </configuration>
     <configuration name="common &gt; main &gt; rx &gt; depend &gt; dependent-func" type="mocha-javascript-test-runner" temporary="true" nameIsGenerated="true">
       <node-interpreter>node</node-interpreter>
-      <node-options>--max-old-space-size=4096</node-options>
+      <node-options>--max-old-space-size=4096 --allow-natives-syntax</node-options>
       <mocha-package>$PROJECT_DIR$/node_modules/mocha</mocha-package>
       <working-directory>$PROJECT_DIR$</working-directory>
       <pass-parent-env>true</pass-parent-env>
@@ -211,7 +215,7 @@
     </configuration>
     <configuration name="common &gt; main &gt; rx &gt; depend &gt; dependent-func.base" type="mocha-javascript-test-runner" temporary="true" nameIsGenerated="true">
       <node-interpreter>node</node-interpreter>
-      <node-options>--max-old-space-size=4096</node-options>
+      <node-options>--max-old-space-size=4096 --trace_opt --trace_deopt --allow-natives-syntax</node-options>
       <mocha-package>$PROJECT_DIR$/node_modules/mocha</mocha-package>
       <working-directory>$PROJECT_DIR$</working-directory>
       <pass-parent-env>true</pass-parent-env>
@@ -318,16 +322,16 @@
       <item itemvalue="Mocha.common &gt; main &gt; rx &gt; depend &gt; dependent-func" />
       <item itemvalue="Mocha.dependent-func" />
       <item itemvalue="Mocha.dependent-func.perceptron memory recalc" />
-      <item itemvalue="npm.Coverage Mocha Report" />
       <item itemvalue="Mocha.common &gt; main &gt; rx &gt; depend &gt; dependent-func.base" />
       <item itemvalue="Mocha.common &gt; main &gt; rx &gt; depend &gt; dependent-func.closure size" />
+      <item itemvalue="npm.Coverage Mocha Report" />
     </list>
     <recent_temporary>
       <list>
-        <item itemvalue="Mocha.dependent-func" />
         <item itemvalue="Mocha.common &gt; main &gt; rx &gt; depend &gt; dependent-func" />
-        <item itemvalue="Mocha.common &gt; main &gt; rx &gt; depend &gt; dependent-func.closure size" />
         <item itemvalue="Mocha.common &gt; main &gt; rx &gt; depend &gt; dependent-func.base" />
+        <item itemvalue="Mocha.dependent-func" />
+        <item itemvalue="Mocha.common &gt; main &gt; rx &gt; depend &gt; dependent-func.closure size" />
         <item itemvalue="Mocha.dependent-func.perceptron memory recalc" />
       </list>
     </recent_temporary>
@@ -339,13 +343,6 @@
       <option name="number" value="Default" />
       <option name="presentableId" value="Default" />
       <updated>1567687848586</updated>
-    </task>
-    <task id="LOCAL-00179" summary="Random helpers">
-      <created>1579252491813</created>
-      <option name="number" value="00179" />
-      <option name="presentableId" value="LOCAL-00179" />
-      <option name="project" value="LOCAL" />
-      <updated>1579252491813</updated>
     </task>
     <task id="LOCAL-00180" summary="deepSubscribe caching in process: added rules unique id">
       <created>1579252557895</created>
@@ -683,7 +680,14 @@
       <option name="project" value="LOCAL" />
       <updated>1581344392035</updated>
     </task>
-    <option name="localTasksCounter" value="228" />
+    <task id="LOCAL-00228" summary="dependent-funcs v8 optimization in process... Wrap single module to iife. No effect.">
+      <created>1581345320757</created>
+      <option name="number" value="00228" />
+      <option name="presentableId" value="LOCAL-00228" />
+      <option name="project" value="LOCAL" />
+      <updated>1581345320757</updated>
+    </task>
+    <option name="localTasksCounter" value="229" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -745,7 +749,6 @@
   <component name="VcsManagerConfiguration">
     <option name="CHECK_CODE_SMELLS_BEFORE_PROJECT_COMMIT" value="false" />
     <option name="CHECK_NEW_TODO" value="false" />
-    <MESSAGE value="Rx interface changes" />
     <MESSAGE value="Develop MobX bicycle with round wheels" />
     <MESSAGE value="Develop dependentFunc" />
     <MESSAGE value="Develop dependentFunc: perceptron performance test" />
@@ -770,7 +773,8 @@
     <MESSAGE value="dependent-funcs v8 optimization in process... Group functions to modules" />
     <MESSAGE value="dependent-funcs v8 optimization in process... Wrap modules to iife" />
     <MESSAGE value="dependent-funcs v8 optimization in process... Concat modules to single file" />
-    <option name="LAST_COMMIT_MESSAGE" value="dependent-funcs v8 optimization in process... Concat modules to single file" />
+    <MESSAGE value="dependent-funcs v8 optimization in process... Wrap single module to iife. No effect." />
+    <option name="LAST_COMMIT_MESSAGE" value="dependent-funcs v8 optimization in process... Wrap single module to iife. No effect." />
   </component>
   <component name="XDebuggerManager">
     <breakpoint-manager>
@@ -782,10 +786,10 @@
           <option name="timeStamp" value="340" />
         </line-breakpoint>
         <line-breakpoint enabled="true" type="javascript">
-          <url>file://$PROJECT_DIR$/src/test/tests/common/main/rx/depend/dependent-func.ts</url>
-          <line>306</line>
+          <url>file://$PROJECT_DIR$/node_modules/babel-plugin-search-and-replace/lib/index.js</url>
+          <line>5</line>
           <properties lambdaOrdinal="-1" />
-          <option name="timeStamp" value="388" />
+          <option name="timeStamp" value="390" />
         </line-breakpoint>
       </breakpoints>
     </breakpoint-manager>

@@ -1,4 +1,9 @@
 module.exports = {
+	parserOpts: {
+		plugins: [
+			'v8intrinsic',
+		],
+	},
 	presets: [
 		[
 			// see plugins list here: https://github.com/babel/babel/blob/ef3f555be9ce1ef780e05cd1594a98e9567a1b80/packages/babel-preset-env/package.json
@@ -18,6 +23,18 @@ module.exports = {
 		['@babel/plugin-proposal-class-properties', {loose: true}],
 
 		// preset/env no loose:
-		['@babel/plugin-transform-classes', {loose: false}]
+		['@babel/plugin-transform-classes', {loose: false}],
+
+		[
+			'babel-plugin-search-and-replace',
+			{
+				rules: [
+					{
+						search : '__v8__',
+						replace: '%'
+					}
+				]
+			}
+		]
 	]
 }
