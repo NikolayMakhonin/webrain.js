@@ -7,7 +7,7 @@
 // @ts-ignore
 import {calcPerformance} from 'rdtsc'
 import {resolveAsync} from '../../../main/common/async/ThenableSync'
-import {makeDependentFunc} from '../../../main/common/rx/depend'
+import {makeDependentFunc} from '../../../main/common/rx/depend/fasade'
 import {IUnsubscribeOrVoid} from '../../../main/common/rx/subjects/observable'
 import {assert} from '../../../main/common/test/Assert'
 import {describe, it, xit} from '../../../main/common/test/Mocha'

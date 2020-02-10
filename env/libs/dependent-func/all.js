@@ -1,6 +1,6 @@
 import '@babel/runtime-corejs3'
 import '@babel/runtime-corejs3/regenerator'
-import {invalidate} from '../../../src/main/common/rx/depend/invalidate'
+import {invalidate} from '../../../src/main/common/rx/depend/_createDependentFunc'
 import {createPerceptron} from '../../../src/test/tests/common/main/rx/depend/src/helpers'
 
 const {

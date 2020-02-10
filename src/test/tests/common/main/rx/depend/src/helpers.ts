@@ -1,6 +1,6 @@
 /* tslint:disable:no-identical-functions */
-import {getFuncCallState, makeDependentFunc} from '../../../../../../../main/common/rx/depend'
-import {invalidate} from '../../../../../../../main/common/rx/depend/invalidate'
+import {invalidate} from '../../../../../../../main/common/rx/depend/_createDependentFunc'
+import {getFuncCallState, makeDependentFunc} from '../../../../../../../main/common/rx/depend/fasade'
 import {assert} from '../../../../../../../main/common/test/Assert'
 
 export function createPerceptronNaked(layerSize, layersCount, check = true) {

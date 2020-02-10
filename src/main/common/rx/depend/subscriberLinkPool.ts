@@ -1,4 +1,4 @@
-import {ISubscriberLink} from './contracts'
+import {IFuncCallState, ISubscriberLink} from './contracts'
 
 let subscriberLinkPoolSize: number = 0
 const subscriberLinkPoolMaxSize: number = 1000000
@@ -33,5 +33,30 @@ export function releaseSubscriberLink<TThis,
 	if (subscriberLinkPoolSize < subscriberLinkPoolMaxSize) {
 		subscriberLinkPool[subscriberLinkPoolSize] = obj
 		subscriberLinkPoolSize++
+	}
+}
+
+export function getSubscriberLink<TThis,
+	TArgs extends any[],
+	TValue,
+	>(
+	state: IFuncCallState<TThis, TArgs, TValue>,
+	subscriber: IFuncCallState<TThis, TArgs, TValue>,
+	prev: ISubscriberLink<TThis, TArgs, TValue>,
+	next: ISubscriberLink<TThis, TArgs, TValue>,
+): ISubscriberLink<TThis, TArgs, TValue> {
+	const item = getSubscriberLinkFromPool<TThis, TArgs, TValue>()
+	if (item != null) {
+		item.state = state
+		item.value = subscriber
+		item.prev = prev
+		item.next = next
+		return item
+	}
+	return {
+		state,
+		value: subscriber,
+		prev,
+		next,
 	}
 }

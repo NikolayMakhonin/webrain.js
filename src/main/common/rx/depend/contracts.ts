@@ -1,16 +1,8 @@
 import {Thenable} from '../../async/async'
+import {FuncCallStatus} from './_createDependentFunc'
 
 export type Func<TThis, TArgs extends any[], TValue = void> = (this: TThis, ...args: TArgs) => TValue
 export type TCall<TArgs extends any[]> = <TThis, TValue>(this: TThis, func: Func<TThis, TArgs, TValue>) => TValue
-
-export enum FuncCallStatus {
-	Invalidating = 1,
-	Invalidated = 2,
-	Calculating = 3,
-	CalculatingAsync = 4,
-	Calculated = 5,
-	Error = 6,
-}
 
 export interface ILinkItem<T> {
 	value: T

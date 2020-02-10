@@ -1,4 +1,4 @@
-import {TCall} from './contracts'
+import {TCall} from '../contracts'
 
 export function createCallWithArgs<TArgs extends any[],
 	>(...args: TArgs): TCall<TArgs>

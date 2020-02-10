@@ -1,9 +1,53 @@
-import {_createDependentFunc} from './_createDependentFunc'
 import {Func, IFuncCallState} from './contracts'
-import {createFuncCallState} from './createFuncCallState'
-import {createSemiWeakMap, ISemiWeakMap} from './semi-weak-map/create'
-import {semiWeakMapGet} from './semi-weak-map/get'
-import {semiWeakMapSet} from './semi-weak-map/set'
+import {_createDependentFunc, createFuncCallState} from './_createDependentFunc'
+
+export function isRefType(value): boolean {
+	return value != null && (typeof value === 'object' || typeof value === 'function')
+}
+
+export interface ISemiWeakMap<K, V> {
+	map: Map<K, V>
+	weakMap: WeakMap<K extends object ? K : never, V>
+}
+
+export function createSemiWeakMap<K, V>(): ISemiWeakMap<K, V> {
+	return {
+		map: null,
+		weakMap: null,
+	}
+}
+
+export function semiWeakMapGet<K, V>(semiWeakMap: ISemiWeakMap<K, V>, key: K): V {
+	let value
+	if (isRefType(key)) {
+		const weakMap = semiWeakMap.weakMap
+		if (weakMap) {
+			value = weakMap.get(key as any)
+		}
+	} else {
+		const map = semiWeakMap.map
+		if (map) {
+			value = map.get(key)
+		}
+	}
+	return value == null ? null : value
+}
+
+export function semiWeakMapSet<K, V>(semiWeakMap: ISemiWeakMap<K, V>, key: K, value: V): void {
+	if (isRefType(key)) {
+		let weakMap = semiWeakMap.weakMap
+		if (!weakMap) {
+			semiWeakMap.weakMap = weakMap = new WeakMap()
+		}
+		weakMap.set(key as any, value)
+	} else {
+		let map = semiWeakMap.map
+		if (!map) {
+			semiWeakMap.map = map = new Map()
+		}
+		map.set(key, value)
+	}
+}
 
 export function _getFuncCallState<TThis,
 	TArgs extends any[],
@@ -11,7 +55,7 @@ export function _getFuncCallState<TThis,
 	func: Func<TThis, TArgs, TValue>,
 	funcStateMap: Map<number, any>,
 ): Func<TThis, TArgs, IFuncCallState<TThis, TArgs, TValue>> {
-	return function() {
+	return function () {
 		const argumentsLength = arguments.length
 		let argsLengthStateMap: ISemiWeakMap<any, any> = funcStateMap.get(argumentsLength)
 		if (!argsLengthStateMap) {

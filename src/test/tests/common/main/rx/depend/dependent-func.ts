@@ -2,10 +2,9 @@
 // @ts-ignore
 import {calcPerformance} from 'rdtsc'
 import {isThenable, Thenable, ThenableOrValue} from '../../../../../../main/common/async/async'
-import {FuncCallStatus, IFuncCallState} from '../../../../../../main/common/rx/depend/contracts'
-import * as debug from '../../../../../../main/common/rx/depend/debug'
-import {getFuncCallState, makeDependentFunc} from '../../../../../../main/common/rx/depend/index'
-import {invalidate} from '../../../../../../main/common/rx/depend/invalidate'
+import {IFuncCallState} from '../../../../../../main/common/rx/depend/contracts'
+import {FuncCallStatus, invalidate} from '../../../../../../main/common/rx/depend/_createDependentFunc'
+import {getFuncCallState, makeDependentFunc} from '../../../../../../main/common/rx/depend/fasade'
 import {assert} from '../../../../../../main/common/test/Assert'
 import {describe, it, xit} from '../../../../../../main/common/test/Mocha'
 import {delay} from '../../../../../../main/common/time/helpers'
@@ -301,7 +300,7 @@ describe('common > main > rx > depend > dependent-func', function() {
 		} = createPerceptron(50, 50)
 	})
 
-	it('closure size', function() {
-		console.log(debug)
-	})
+	// it('closure size', function() {
+	// 	console.log(debug)
+	// })
 })
