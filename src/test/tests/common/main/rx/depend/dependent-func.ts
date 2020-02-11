@@ -18,7 +18,7 @@ import {assert} from '../../../../../../main/common/test/Assert'
 import {describe, it} from '../../../../../../main/common/test/Mocha'
 import {delay} from '../../../../../../main/common/time/helpers'
 import {
-	assertFuncsIsOptimized,
+	assertIsOptimized,
 	assertFuncOptimizationStatus,
 	getFuncOptimizationStatusString,
 	OptimizationStatus, getOptimizationStatus,

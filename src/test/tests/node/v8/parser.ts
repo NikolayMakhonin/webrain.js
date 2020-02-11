@@ -5,7 +5,7 @@ import {v8_runtime_h_to_js_functions} from './helpers/parser'
 const fs = require('fs')
 const path = require('path')
 
-describe('node > v8', function() {
+describe('node > v8 > parser', function() {
 	it('parser', function() {
 		const dir = path.resolve(__dirname, './helpers')
 		const sourceFile = path.resolve(dir, 'runtime.h.txt')

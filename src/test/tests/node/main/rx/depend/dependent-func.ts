@@ -13,31 +13,18 @@ import {
 	subscribeDependency,
 	unsubscribeDependencies,
 } from '../../../../../../main/common/rx/depend/all'
-import {assert} from '../../../../../../main/common/test/Assert'
+import {assert, AssertionError} from '../../../../../../main/common/test/Assert'
 import {describe, it, xit} from '../../../../../../main/common/test/Mocha'
 import {createPerceptron} from '../../../../common/main/rx/depend/src/helpers'
 import {
 	assertFuncOptimizationStatus,
-	assertFuncsIsOptimized,
-	getFuncOptimizationStatusString,
-	getOptimizationStatus, OptimizationStatus, v8,
+	assertIsOptimized,
+	getFuncOptimizationStatusString, getObjectOptimizationInfo,
+	OptimizationStatus,
+	v8,
 } from '../../../v8/helpers/helpers'
 
 describe('node > main > rx > depend > dependent-func', function() {
-	it('v8 self test', function() {
-		function test(x) {
-			return Date.now() * x
-		}
-
-		const arr = []
-		for (let i = 0; i < 6146; i++) {
-			arr[i] = test(i)
-		}
-
-		console.log(getFuncOptimizationStatusString({test}))
-		assertFuncsIsOptimized({test})
-	})
-
 	it('v8', function() {
 		for (let i = 0; i < 10000; i++) {
 			createPerceptron(2, 2)
@@ -50,7 +37,7 @@ describe('node > main > rx > depend > dependent-func', function() {
 			}
 		}
 
-		const funcs = {
+		const objects = {
 			createPerceptron,
 			_createDependentFunc,
 			_getFuncCallState,
@@ -64,15 +51,15 @@ describe('node > main > rx > depend > dependent-func', function() {
 			unsubscribeDependencies,
 		}
 
-		console.log(getFuncOptimizationStatusString(funcs))
+		console.log(getFuncOptimizationStatusString(objects))
 
 		try {
 			for (let i = 0; i < 5000; i++) {
 				createPerceptron(2, 2)
-				assertFuncsIsOptimized(funcs)
+				assertIsOptimized(objects)
 			}
 		} finally {
-			console.log(getFuncOptimizationStatusString(funcs))
+			console.log(getFuncOptimizationStatusString(objects))
 		}
 	})
 })
