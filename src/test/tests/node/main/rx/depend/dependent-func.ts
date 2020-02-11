@@ -32,7 +32,7 @@ import {
 } from '../../../../../../main/common/rx/depend/all'
 import {assert, AssertionError} from '../../../../../../main/common/test/Assert'
 import {describe, it, xit} from '../../../../../../main/common/test/Mocha'
-import {createPerceptron} from '../../../../common/main/rx/depend/src/helpers'
+import {baseTest, createPerceptron} from '../../../../common/main/rx/depend/src/helpers'
 import {
 	assertFuncOptimizationStatus,
 	assertIsOptimized, checkIsOptimized,
@@ -42,9 +42,10 @@ import {
 } from '../../../v8/helpers/helpers'
 
 describe('node > main > rx > depend > dependent-func', function() {
-	it('v8', function() {
-		this.timeout(20000)
-
+	async function v8Test(
+		countIterations: number,
+		iterate: (iteration: number, checkOptimization: (iteration: number) => void) => void|Promise<void>,
+	) {
 		const objects = {
 			// public
 			getFuncCallState,
@@ -101,7 +102,7 @@ describe('node > main > rx > depend > dependent-func', function() {
 			}
 		}
 
-		for (let i = 0; i < 100000; i++) {
+		for (let i = 0; i < countIterations; i++) {
 			if (i === 10) {
 				// isRefType(1)
 				// isRefType(2)
@@ -115,19 +116,7 @@ describe('node > main > rx > depend > dependent-func', function() {
 				// isRefType(3)
 			}
 
-			const {
-				input,
-				output,
-			} = createPerceptron(2, 2)
-
-			// checkOptimization(i)
-
-			for (let j = 0; j < 10; j++) {
-				const state = getFuncCallState(input)()
-				invalidate(state)
-			}
-
-			// checkOptimization(i)
+			await iterate(i, checkOptimization)
 		}
 
 		console.log(optimizedObjectsIterations)
@@ -148,10 +137,35 @@ describe('node > main > rx > depend > dependent-func', function() {
 
 		// assert.deepStrictEqual(optimizedObjects, objects)
 		assertIsOptimized(objects)
+	}
 
-		// for (let i = 0; i < 5000; i++) {
-		// 	createPerceptron(2, 2)
-		// 	assertIsOptimized(objects)
-		// }
+	it('v8 perceptron', async function() {
+		this.timeout(20000)
+
+		await v8Test(100000, async (iteration, checkOptimization) => {
+			const {
+				input,
+				output,
+			} = createPerceptron(2, 2)
+
+			checkOptimization(iteration)
+
+			for (let j = 0; j < 10; j++) {
+				const state = getFuncCallState(input)()
+				await invalidate(state)
+			}
+
+			checkOptimization(iteration)
+		})
+	})
+
+	it('v8 baseTest', async function() {
+		this.timeout(20000)
+
+		await v8Test(300, async (iteration, checkOptimization) => {
+			await baseTest()
+
+			checkOptimization(iteration)
+		})
 	})
 })
