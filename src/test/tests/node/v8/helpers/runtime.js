@@ -1430,8 +1430,8 @@ export function GetInitializerFunction(a) {
 	return %GetInitializerFunction(a)
 }
 
-export function GetOptimizationStatus(a, b, c, d, e, f, g, h, i, j, k, l, m, n) {
-	return %GetOptimizationStatus(a, b, c, d, e, f, g, h, i, j, k, l, m, n)
+export function GetOptimizationStatus(fn) {
+	return %GetOptimizationStatus(fn)
 }
 
 export function GetUndetectable() {
@@ -1606,8 +1606,8 @@ export function NotifyContextDisposed() {
 	return %NotifyContextDisposed()
 }
 
-export function OptimizeFunctionOnNextCall(a, b, c, d, e, f, g, h, i, j, k, l, m, n) {
-	return %OptimizeFunctionOnNextCall(a, b, c, d, e, f, g, h, i, j, k, l, m, n)
+export function OptimizeFunctionOnNextCall(fn) {
+	return %OptimizeFunctionOnNextCall(fn)
 }
 
 export function OptimizeOsr(a, b, c, d, e, f, g, h, i, j, k, l, m, n) {
@@ -1618,8 +1618,8 @@ export function NewRegExpWithBacktrackLimit(a, b, c) {
 	return %NewRegExpWithBacktrackLimit(a, b, c)
 }
 
-export function PrepareFunctionForOptimization(a, b, c, d, e, f, g, h, i, j, k, l, m, n) {
-	return %PrepareFunctionForOptimization(a, b, c, d, e, f, g, h, i, j, k, l, m, n)
+export function PrepareFunctionForOptimization(fn) {
+	return %PrepareFunctionForOptimization(fn)
 }
 
 export function PrintWithNameForAssert(a, b) {

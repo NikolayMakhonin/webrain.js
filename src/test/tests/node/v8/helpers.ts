@@ -3,7 +3,7 @@
 import {assert, AssertionError} from '../../../../main/common/test/Assert'
 import {describe, it, xit} from '../../../../main/common/test/Mocha'
 import {
-	assertFuncOptimizationStatus,
+	assertFuncOptimizationStatus, assertIsNotOptimized,
 	assertIsOptimized,
 	getFuncOptimizationStatusString, getObjectOptimizationInfo,
 	OptimizationStatus,
@@ -11,6 +11,28 @@ import {
 } from './helpers/helpers'
 
 describe('node > v8 > helpers', function() {
+	it('base', function() {
+		function test(o) {
+			return o * o
+		}
+
+		assertIsNotOptimized({test})
+
+		test(1)
+
+		assertIsNotOptimized({test})
+
+		test(2)
+
+		assertIsNotOptimized({test})
+
+		v8.OptimizeFunctionOnNextCall(test)
+
+		test(3)
+
+		assertIsOptimized({test})
+	})
+
 	it('optimization asserts', function() {
 		const obj = {
 			x: 0,
@@ -20,8 +42,11 @@ describe('node > v8 > helpers', function() {
 			return Date.now() * (o.x + o.y)
 		}
 
+		assertIsNotOptimized({test})
+		assert.throws(() => assertIsOptimized({test}), AssertionError)
+
 		const arr = []
-		for (let i = 0; i < 6146 * 100; i++) {
+		for (let i = 0; i < 6146; i++) {
 			obj.x = i
 			obj.y = i * i
 			arr[i % 100] = test(obj)
@@ -32,6 +57,7 @@ describe('node > v8 > helpers', function() {
 		// console.log(getObjectOptimizationInfo(obj))
 		// console.log(getObjectOptimizationInfo(arr))
 
+		assert.throws(() => assertIsNotOptimized({test}), AssertionError)
 		assertIsOptimized({test, obj, arr})
 
 		for (let i = 0; i < 1000; i++) {

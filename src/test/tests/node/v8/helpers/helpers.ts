@@ -121,9 +121,10 @@ export function filterObjectByKeys(obj: object, keys: { [key: string]: any }) {
 	return objFiltered
 }
 
-export function assertIsOptimized(objectsOrFuncs: { [name: string]: TAnyFunc|object}) {
+function _checkIsOptimized(objectsOrFuncs: { [name: string]: TAnyFunc|object}) {
 	const actual = {}
 	const expected = {}
+	let hasErrors
 	for (const name in objectsOrFuncs) {
 		if (Object.prototype.hasOwnProperty.call(objectsOrFuncs, name)) {
 			const obj = objectsOrFuncs[name]
@@ -135,14 +136,18 @@ export function assertIsOptimized(objectsOrFuncs: { [name: string]: TAnyFunc|obj
 					OptimizationStatus.MarkedForDeoptimization
 
 				let actualStatus = status & (shouldFlags | shouldNotFlags)
+				if ((status & OptimizationStatus.MarkedForOptimization) !== 0) {
+					actualStatus |= OptimizationStatus.Optimized | OptimizationStatus.TurboFanned
+				}
 				let expectedStatus = actualStatus | shouldFlags
 				const differentFlags = actualStatus ^ expectedStatus
 				actualStatus &= differentFlags
 				expectedStatus &= differentFlags
 
 				if (actualStatus !== expectedStatus) {
-					actual[name] = optimizationStatusToString(actualStatus)
+					actual[name] = optimizationStatusToString(status)
 					expected[name] = optimizationStatusToString(expectedStatus)
+					hasErrors = true
 				}
 			} else if (obj != null && typeof obj === 'object') {
 				const shouldInfo = Array.isArray(obj)
@@ -177,6 +182,7 @@ export function assertIsOptimized(objectsOrFuncs: { [name: string]: TAnyFunc|obj
 				if (hasError) {
 					actual[name] = actualInfo
 					expected[name] = expectedInfo
+					hasErrors = true
 				}
 			} else {
 				throw new Error(`object type === ${typeof obj}`)
@@ -184,5 +190,32 @@ export function assertIsOptimized(objectsOrFuncs: { [name: string]: TAnyFunc|obj
 		}
 	}
 
+	return {
+		hasErrors,
+		actual,
+		expected,
+	}
+}
+
+export function checkIsOptimized(objectsOrFuncs: { [name: string]: TAnyFunc|object}) {
+	return !_checkIsOptimized(objectsOrFuncs).hasErrors
+}
+
+export function assertIsOptimized(objectsOrFuncs: { [name: string]: TAnyFunc|object}) {
+	const {
+		hasErrors,
+		actual,
+		expected,
+	} = _checkIsOptimized(objectsOrFuncs)
 	assert.deepStrictEqual(actual, expected)
+	assert.notOk(hasErrors)
+}
+
+export function assertIsNotOptimized(objectsOrFuncs: { [name: string]: TAnyFunc|object}) {
+	const {
+		hasErrors,
+		actual,
+		expected,
+	} = _checkIsOptimized(objectsOrFuncs)
+	assert.ok(hasErrors)
 }
