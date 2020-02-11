@@ -1,9 +1,7 @@
 import {assert} from '../../../../../main/common/test/Assert'
-import {getOptimizationStatus} from './v8-funcs'
+import * as v8 from './runtime'
 
-export {
-	getOptimizationStatus,
-}
+export {v8}
 
 type TAnyFunc = (...args: any[]) => any
 
@@ -57,29 +55,42 @@ export function optimizationStatusToString(status: OptimizationStatus) {
 	return status + ': [' + result.join(', ') + ']'
 }
 
-export function getOptimizationStatusString(func: TAnyFunc) {
-	const status = getOptimizationStatus(func)
-	return optimizationStatusToString(status)
+export function getFuncOptimizationStatusString(funcs: { [name: string]: TAnyFunc}) {
+	const result = {}
+	for (const name in funcs) {
+		if (Object.prototype.hasOwnProperty.call(funcs, name)) {
+			const status = v8.GetOptimizationStatus(funcs[name])
+			result[name] = optimizationStatusToString(status)
+		}
+	}
+	return result
 }
 
-export function assertOptimizationStatus(
+export function assertFuncOptimizationStatus(
+	name: string,
 	func: TAnyFunc,
 	shouldFlags: OptimizationStatus,
 	shouldNotFlags: OptimizationStatus = 0,
 ) {
-	const status = getOptimizationStatus(func)
-	assert.strictEqual(optimizationStatusToString(status), optimizationStatusToString(status | shouldFlags))
-	assert.strictEqual(optimizationStatusToString(status), optimizationStatusToString(status & ~shouldNotFlags))
+	const status = v8.GetOptimizationStatus(func)
+	assert.strictEqual(optimizationStatusToString(status), optimizationStatusToString(status | shouldFlags), name)
+	assert.strictEqual(optimizationStatusToString(status), optimizationStatusToString(status & ~shouldNotFlags), name)
 }
 
-export function assertIsOptimized(func: TAnyFunc) {
-	assertOptimizationStatus(
-		func,
+export function assertFuncsIsOptimized(funcs: { [name: string]: TAnyFunc}) {
+	for (const name in funcs) {
+		if (Object.prototype.hasOwnProperty.call(funcs, name)) {
+			assertFuncOptimizationStatus(
+				name,
 
-		OptimizationStatus.IsFunction | OptimizationStatus.Optimized | OptimizationStatus.TurboFanned,
+				funcs[name],
 
-		OptimizationStatus.NeverOptimize | OptimizationStatus.IsExecuting |
-		OptimizationStatus.MaybeDeopted | OptimizationStatus.LiteMode |
-		OptimizationStatus.MarkedForDeoptimization,
-	)
+				OptimizationStatus.IsFunction | OptimizationStatus.Optimized | OptimizationStatus.TurboFanned,
+
+				OptimizationStatus.NeverOptimize | OptimizationStatus.IsExecuting |
+				OptimizationStatus.MaybeDeopted | OptimizationStatus.LiteMode |
+				OptimizationStatus.MarkedForDeoptimization,
+			)
+		}
+	}
 }

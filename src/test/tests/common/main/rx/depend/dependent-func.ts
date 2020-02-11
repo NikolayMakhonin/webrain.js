@@ -1,17 +1,28 @@
 /* tslint:disable:no-identical-functions no-shadowed-variable */
 // @ts-ignore
 import {isThenable, Thenable, ThenableOrValue} from '../../../../../../main/common/async/async'
-import {getFuncCallState, invalidate, makeDependentFunc} from '../../../../../../main/common/rx/depend/all'
+import {
+	_createDependentFunc,
+	_getFuncCallState,
+	createFuncCallState,
+	getFuncCallState,
+	getSubscriberLink,
+	invalidate,
+	makeDependentFunc,
+	releaseSubscriberLink,
+	subscribeDependency,
+	unsubscribeDependencies,
+} from '../../../../../../main/common/rx/depend/all'
 import {FuncCallStatus, IFuncCallState} from '../../../../../../main/common/rx/depend/contracts'
 import {assert} from '../../../../../../main/common/test/Assert'
 import {describe, it} from '../../../../../../main/common/test/Mocha'
 import {delay} from '../../../../../../main/common/time/helpers'
 import {
-	assertIsOptimized,
-	assertOptimizationStatus,
-	getOptimizationStatusString,
-	OptimizationStatus,
-} from '../../helpers/v8'
+	assertFuncsIsOptimized,
+	assertFuncOptimizationStatus,
+	getFuncOptimizationStatusString,
+	OptimizationStatus, getOptimizationStatus,
+} from '../../../../node/v8/helpers/helpers'
 import {createPerceptron} from './src/helpers'
 
 describe('common > main > rx > depend > dependent-func', function() {
@@ -294,32 +305,13 @@ describe('common > main > rx > depend > dependent-func', function() {
 	})
 
 	it('perceptron', function() {
-		this.timeout(5000)
+		this.timeout(20000)
 
 		const {
 			countFuncs,
 			input,
 			inputState,
 			output,
-		} = createPerceptron(100, 100)
-	})
-
-	it('v8 self test', function() {
-		function test(x) {
-			return Date.now() * x
-		}
-
-		const arr = []
-		for (let i = 0; i < 6146; i++) {
-			arr[i] = test(i)
-		}
-
-		console.log(getOptimizationStatusString(test))
-		assertIsOptimized(test)
-	})
-
-	it('v8', function() {
-		assertIsOptimized(invalidate)
-		assertIsOptimized(makeDependentFunc)
+		} = createPerceptron(50, 50)
 	})
 })
