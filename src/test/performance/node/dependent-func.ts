@@ -47,6 +47,9 @@ describe('dependent-func', function() {
 		console.log(`funcs per frame: [${result.absoluteDiff.map(o => countFuncs * cyclesPerSecond / o / 60).join(', ')}]`)
 		console.log(`chrome funcs per second: [${result.absoluteDiff.map(o => countFuncs * cyclesPerSecond / o / 210).join(', ')}]`)
 		console.log(`chrome funcs per frame: [${result.absoluteDiff.map(o => countFuncs * cyclesPerSecond / o / 60 / 210).join(', ')}]`)
+
+		const chromeFuncsPerFrame = countFuncs * cyclesPerSecond / result.absoluteDiff[1] / 60 / 210
+		assert.ok(chromeFuncsPerFrame >= 180)
 	})
 
 	xit('set memory', function() {
@@ -75,9 +78,13 @@ describe('dependent-func', function() {
 
 		let countFuncs
 
-		console.log(calcMemAllocate(CalcType.Min, 50000, () => {
+		const result = calcMemAllocate(CalcType.Min, 50000, () => {
 			countFuncs = createPerceptron(10, 5, false).countFuncs
-		}).scale(1 / countFuncs).toString())
+		}).scale(1 / countFuncs)
+
+		console.log(result.toString())
+
+		result.averageValue.forEach(o => assert.ok(o <= 750))
 	})
 
 	it('perceptron memory recalc', function() {
@@ -97,11 +104,14 @@ describe('dependent-func', function() {
 		// console.log('subscriberLinkPool.allocatedSize = ' + subscriberLinkPoolAllocatedSize)
 		// console.log('subscriberLinkPool.usedSize = ' + subscriberLinkPoolUsedSize)
 		// assert.strictEqual(subscriberLinkPool.size + subscriberLinkPool.usedSize, subscriberLinkPool.allocatedSize)
-
-		console.log(calcMemAllocate(CalcType.Min, 20000, () => {
+		const result = calcMemAllocate(CalcType.Min, 20000, () => {
 			invalidate(inputState)
 			output.call(2, 5, 10)
-		}).scale(1 / countFuncs).toString())
+		}).scale(1 / countFuncs)
+
+		console.log(result.toString())
+
+		result.averageValue.forEach(o => assert.ok(o <= 0))
 
 		// assert.strictEqual(subscriberLinkPool.size + subscriberLinkPool.usedSize, subscriberLinkPool.allocatedSize)
 		// assert.strictEqual(subscriberLinkPool.size, subscriberLinkPoolSize)

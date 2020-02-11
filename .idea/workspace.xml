@@ -7,9 +7,9 @@
     <option name="SHOW_STRUCTURE" value="true" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="69b2ee16-521b-4efd-b473-8e19e3df4d09" name="Default Changelist" comment="">
+    <list default="true" id="69b2ee16-521b-4efd-b473-8e19e3df4d09" name="Default Changelist" comment="dependent-funcs v8 optimization in process... Tests OK.">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/test/tests/node/main/rx/depend/dependent-func.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/test/tests/node/main/rx/depend/dependent-func.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/test/performance/node/dependent-func.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/test/performance/node/dependent-func.ts" afterDir="false" />
     </list>
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
     <option name="SHOW_DIALOG" value="false" />
@@ -227,6 +227,38 @@
       <test-pattern>src/test/tests/{common,node}/{main/rx/depend,v8}/**/*.ts</test-pattern>
       <method v="2" />
     </configuration>
+    <configuration name="dependent-func.perceptron memory create" type="mocha-javascript-test-runner" temporary="true" nameIsGenerated="true">
+      <node-interpreter>node</node-interpreter>
+      <node-options>--max-old-space-size=4096</node-options>
+      <mocha-package>$PROJECT_DIR$/node_modules/mocha</mocha-package>
+      <working-directory>$PROJECT_DIR$</working-directory>
+      <pass-parent-env>true</pass-parent-env>
+      <ui>bdd</ui>
+      <extra-mocha-options>--opts ./env/mocha/configs/babel/mocha.opts</extra-mocha-options>
+      <test-kind>TEST</test-kind>
+      <test-file>$PROJECT_DIR$/src/test/performance/node/dependent-func.ts</test-file>
+      <test-names>
+        <name value="dependent-func" />
+        <name value="perceptron memory create" />
+      </test-names>
+      <method v="2" />
+    </configuration>
+    <configuration name="dependent-func.perceptron memory recalc" type="mocha-javascript-test-runner" temporary="true" nameIsGenerated="true">
+      <node-interpreter>node</node-interpreter>
+      <node-options>--max-old-space-size=4096</node-options>
+      <mocha-package>$PROJECT_DIR$/node_modules/mocha</mocha-package>
+      <working-directory>$PROJECT_DIR$</working-directory>
+      <pass-parent-env>true</pass-parent-env>
+      <ui>bdd</ui>
+      <extra-mocha-options>--opts ./env/mocha/configs/babel/mocha.opts</extra-mocha-options>
+      <test-kind>TEST</test-kind>
+      <test-file>$PROJECT_DIR$/src/test/performance/node/dependent-func.ts</test-file>
+      <test-names>
+        <name value="dependent-func" />
+        <name value="perceptron memory recalc" />
+      </test-names>
+      <method v="2" />
+    </configuration>
     <configuration name="dependent-func.perceptron perf (Compiled)" type="mocha-javascript-test-runner">
       <node-interpreter>node</node-interpreter>
       <node-options>--max-old-space-size=4096 --prof</node-options>
@@ -240,21 +272,6 @@
       <test-names>
         <name value="dependent-func" />
         <name value="perceptron perf" />
-      </test-names>
-      <method v="2" />
-    </configuration>
-    <configuration name="node &gt; main &gt; rx &gt; depend &gt; dependent-func" type="mocha-javascript-test-runner" temporary="true" nameIsGenerated="true">
-      <node-interpreter>node</node-interpreter>
-      <node-options>--max-old-space-size=4096 --allow-natives-syntax</node-options>
-      <mocha-package>$PROJECT_DIR$/node_modules/mocha</mocha-package>
-      <working-directory>$PROJECT_DIR$</working-directory>
-      <pass-parent-env>true</pass-parent-env>
-      <ui>bdd</ui>
-      <extra-mocha-options>--opts ./env/mocha/configs/babel/mocha.opts --watch</extra-mocha-options>
-      <test-kind>SUITE</test-kind>
-      <test-file>$PROJECT_DIR$/src/test/tests/node/main/rx/depend/dependent-func.ts</test-file>
-      <test-names>
-        <name value="node &gt; main &gt; rx &gt; depend &gt; dependent-func" />
       </test-names>
       <method v="2" />
     </configuration>
@@ -290,22 +307,6 @@
       </test-names>
       <method v="2" />
     </configuration>
-    <configuration name="node &gt; main &gt; rx &gt; depend &gt; dependent-func.v8" type="mocha-javascript-test-runner" temporary="true" nameIsGenerated="true">
-      <node-interpreter>node</node-interpreter>
-      <node-options>--max-old-space-size=4096 --allow-natives-syntax</node-options>
-      <mocha-package>$PROJECT_DIR$/node_modules/mocha</mocha-package>
-      <working-directory>$PROJECT_DIR$</working-directory>
-      <pass-parent-env>true</pass-parent-env>
-      <ui>bdd</ui>
-      <extra-mocha-options>--opts ./env/mocha/configs/babel/mocha.opts --watch</extra-mocha-options>
-      <test-kind>TEST</test-kind>
-      <test-file>$PROJECT_DIR$/src/test/tests/node/main/rx/depend/dependent-func.ts</test-file>
-      <test-names>
-        <name value="node &gt; main &gt; rx &gt; depend &gt; dependent-func" />
-        <name value="v8" />
-      </test-names>
-      <method v="2" />
-    </configuration>
     <configuration name="node &gt; v8 &gt; helpers" type="mocha-javascript-test-runner" temporary="true" nameIsGenerated="true">
       <node-interpreter>node</node-interpreter>
       <node-options>--max-old-space-size=4096 --allow-natives-syntax</node-options>
@@ -338,19 +339,19 @@
       <item itemvalue="Mocha.dependent-func.perceptron perf (Compiled)" />
       <item itemvalue="Mocha.dependent-func" />
       <item itemvalue="npm.Coverage Mocha Report" />
-      <item itemvalue="Mocha.node &gt; main &gt; rx &gt; depend &gt; dependent-func.v8" />
-      <item itemvalue="Mocha.node &gt; main &gt; rx &gt; depend &gt; dependent-func" />
       <item itemvalue="Mocha.node &gt; v8 &gt; helpers" />
       <item itemvalue="Mocha.node &gt; main &gt; rx &gt; depend &gt; dependent-func.v8 baseTest" />
       <item itemvalue="Mocha.node &gt; main &gt; rx &gt; depend &gt; dependent-func.v8 perceptron" />
+      <item itemvalue="Mocha.dependent-func.perceptron memory recalc" />
+      <item itemvalue="Mocha.dependent-func.perceptron memory create" />
     </list>
     <recent_temporary>
       <list>
+        <item itemvalue="Mocha.dependent-func.perceptron memory create" />
+        <item itemvalue="Mocha.dependent-func.perceptron memory recalc" />
         <item itemvalue="Mocha.node &gt; main &gt; rx &gt; depend &gt; dependent-func.v8 baseTest" />
         <item itemvalue="Mocha.node &gt; v8 &gt; helpers" />
         <item itemvalue="Mocha.node &gt; main &gt; rx &gt; depend &gt; dependent-func.v8 perceptron" />
-        <item itemvalue="Mocha.node &gt; main &gt; rx &gt; depend &gt; dependent-func.v8" />
-        <item itemvalue="Mocha.node &gt; main &gt; rx &gt; depend &gt; dependent-func" />
       </list>
     </recent_temporary>
   </component>
@@ -361,13 +362,6 @@
       <option name="number" value="Default" />
       <option name="presentableId" value="Default" />
       <updated>1567687848586</updated>
-    </task>
-    <task id="LOCAL-00187" summary="Rx interface changes">
-      <created>1580638294316</created>
-      <option name="number" value="00187" />
-      <option name="presentableId" value="LOCAL-00187" />
-      <option name="project" value="LOCAL" />
-      <updated>1580638294317</updated>
     </task>
     <task id="LOCAL-00188" summary="Develop MobX bicycle with round wheels">
       <created>1580801155727</created>
@@ -705,7 +699,14 @@
       <option name="project" value="LOCAL" />
       <updated>1581424537324</updated>
     </task>
-    <option name="localTasksCounter" value="236" />
+    <task id="LOCAL-00236" summary="dependent-funcs v8 optimization in process... Tests OK.">
+      <created>1581425355798</created>
+      <option name="number" value="00236" />
+      <option name="presentableId" value="LOCAL-00236" />
+      <option name="project" value="LOCAL" />
+      <updated>1581425355798</updated>
+    </task>
+    <option name="localTasksCounter" value="237" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -799,7 +800,7 @@
       <breakpoints>
         <line-breakpoint enabled="true" type="javascript">
           <url>file://$PROJECT_DIR$/src/test/performance/node/dependent-func.ts</url>
-          <line>100</line>
+          <line>111</line>
           <properties lambdaOrdinal="-1" />
           <option name="timeStamp" value="340" />
         </line-breakpoint>
