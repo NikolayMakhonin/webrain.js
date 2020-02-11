@@ -78,7 +78,8 @@ export function assertFuncOptimizationStatus(
 }
 
 export function getObjectOptimizationInfo(obj) {
-	return {
+	const result = {
+		CountElementsTypes: 0,
 		HasFastPackedElements: v8.HasFastPackedElements(obj),
 		HasDictionaryElements: v8.HasDictionaryElements(obj),
 		HasDoubleElements: v8.HasDoubleElements(obj),
@@ -104,6 +105,51 @@ export function getObjectOptimizationInfo(obj) {
 		HasSmiOrObjectElements: v8.HasSmiOrObjectElements(obj),
 		HeapObjectVerify: v8.HeapObjectVerify(obj),
 	}
+
+	if (result.HasFixedFloat32Elements) {
+		result.CountElementsTypes++
+	}
+	if (result.HasFixedBigUint64Elements) {
+		result.CountElementsTypes++
+	}
+	if (result.HasFixedBigInt64Elements) {
+		result.CountElementsTypes++
+	}
+	if (result.HasDoubleElements) {
+		result.CountElementsTypes++
+	}
+	if (result.HasFixedInt32Elements) {
+		result.CountElementsTypes++
+	}
+	if (result.HasFixedFloat64Elements) {
+		result.CountElementsTypes++
+	}
+	if (result.HasFixedInt8Elements) {
+		result.CountElementsTypes++
+	}
+	if (result.HasFixedInt16Elements) {
+		result.CountElementsTypes++
+	}
+	if (result.HasFixedUint8ClampedElements) {
+		result.CountElementsTypes++
+	}
+	if (result.HasFixedUint8Elements) {
+		result.CountElementsTypes++
+	}
+	if (result.HasFixedUint16Elements) {
+		result.CountElementsTypes++
+	}
+	if (result.HasFixedUint32Elements) {
+		result.CountElementsTypes++
+	}
+	if (result.HasObjectElements) {
+		result.CountElementsTypes++
+	}
+	if (result.HasSmiElements) {
+		result.CountElementsTypes++
+	}
+
+	return result
 }
 
 export type TObjectOptimizationInfo = { [key in keyof ReturnType<typeof getObjectOptimizationInfo>]?: boolean }
@@ -121,101 +167,146 @@ export function filterObjectByKeys(obj: object, keys: { [key: string]: any }) {
 	return objFiltered
 }
 
-function _checkIsOptimized(objectsOrFuncs: { [name: string]: TAnyFunc|object}) {
-	const actual = {}
-	const expected = {}
-	let hasErrors
-	for (const name in objectsOrFuncs) {
-		if (Object.prototype.hasOwnProperty.call(objectsOrFuncs, name)) {
-			const obj = objectsOrFuncs[name]
-			if (typeof obj === 'function') {
-				const status = v8.GetOptimizationStatus(obj as TAnyFunc)
-				const shouldFlags = OptimizationStatus.IsFunction | OptimizationStatus.Optimized | OptimizationStatus.TurboFanned
-				const shouldNotFlags = OptimizationStatus.NeverOptimize | OptimizationStatus.IsExecuting |
-					OptimizationStatus.MaybeDeopted | OptimizationStatus.LiteMode |
-					OptimizationStatus.MarkedForDeoptimization
+function _checkIsOptimized(obj: TAnyFunc|object, optimized: Set<any> = null, scanned: Set<any> = new Set()) {
+	if (scanned.has(obj)) {
+		return null
+	}
+	scanned.add(obj)
 
-				let actualStatus = status & (shouldFlags | shouldNotFlags)
-				if ((status & OptimizationStatus.MarkedForOptimization) !== 0) {
-					actualStatus |= OptimizationStatus.Optimized | OptimizationStatus.TurboFanned
+	if (typeof obj === 'function') {
+		const status = v8.GetOptimizationStatus(obj as TAnyFunc)
+		const shouldFlags = OptimizationStatus.IsFunction | OptimizationStatus.Optimized | OptimizationStatus.TurboFanned
+		const shouldNotFlags = OptimizationStatus.NeverOptimize | OptimizationStatus.IsExecuting |
+			OptimizationStatus.MaybeDeopted | OptimizationStatus.LiteMode |
+			OptimizationStatus.MarkedForDeoptimization
+
+		let actualStatus = status & (shouldFlags | shouldNotFlags)
+		if ((status & OptimizationStatus.MarkedForOptimization) !== 0) {
+			actualStatus |= OptimizationStatus.Optimized | OptimizationStatus.TurboFanned
+		}
+		let expectedStatus = actualStatus | shouldFlags
+		const differentFlags = actualStatus ^ expectedStatus
+		actualStatus &= differentFlags
+		expectedStatus &= differentFlags
+
+		if (actualStatus !== expectedStatus) {
+			if (optimized && !optimized.has(obj)) {
+				return null
+			}
+
+			return {
+				actual: optimizationStatusToString(status),
+				expected: optimizationStatusToString(expectedStatus),
+			}
+		}
+	} else if (obj != null && typeof obj === 'object') {
+		const shouldInfo = Array.isArray(obj)
+			? {
+				CountElementsTypes: 1,
+				HasFastPackedElements: true,
+				HasDictionaryElements: false,
+				HasFastElements: true,
+			}
+			: {
+				CountElementsTypes: 1,
+				HasDictionaryElements: false,
+				HasFastElements: true,
+				HasHoleyElements: true,
+				HasObjectElements: true,
+				HasSmiOrObjectElements: true,
+			}
+
+		const objInfo = getObjectOptimizationInfo(obj)
+		const actualInfo = {}
+		const expectedInfo = {}
+		let hasError
+		for (const key in shouldInfo) {
+			if (Object.prototype.hasOwnProperty.call(shouldInfo, key)) {
+				// tslint:disable-next-line:no-collapsible-if
+				if (objInfo[key] !== shouldInfo[key]) {
+					actualInfo[key] = objInfo[key]
+					expectedInfo[key] = shouldInfo[key]
+					hasError = true
 				}
-				let expectedStatus = actualStatus | shouldFlags
-				const differentFlags = actualStatus ^ expectedStatus
-				actualStatus &= differentFlags
-				expectedStatus &= differentFlags
-
-				if (actualStatus !== expectedStatus) {
-					actual[name] = optimizationStatusToString(status)
-					expected[name] = optimizationStatusToString(expectedStatus)
-					hasErrors = true
-				}
-			} else if (obj != null && typeof obj === 'object') {
-				const shouldInfo = Array.isArray(obj)
-					? {
-						HasFastPackedElements: true,
-						HasDictionaryElements: false,
-						HasDoubleElements: true,
-						HasFastElements: true,
-					}
-					: {
-						HasDictionaryElements: false,
-						HasFastElements: true,
-						HasHoleyElements: true,
-						HasObjectElements: true,
-						HasSmiOrObjectElements: true,
-					}
-
-				const objInfo = getObjectOptimizationInfo(obj)
-				const actualInfo = {}
-				const expectedInfo = {}
-				let hasError
-				for (const key in shouldInfo) {
-					if (Object.prototype.hasOwnProperty.call(shouldInfo, key)) {
-						// tslint:disable-next-line:no-collapsible-if
-						if (objInfo[key] !== shouldInfo[key]) {
-							actualInfo[key] = objInfo[key]
-							expectedInfo[key] = shouldInfo[key]
+			}
+		}
+		if (hasError) {
+			return {
+				actual: actualInfo,
+				expected: expectedInfo,
+			}
+		} else {
+			if (Array.isArray(obj)) {
+				const actualArr = []
+				const expectedArr = []
+				for (let i = 0, len = obj.length; i < len; i++) {
+					const item = obj[i]
+					if (typeof item === 'function' || item != null && typeof item === 'object') {
+						const res = _checkIsOptimized(item, optimized, scanned)
+						if (res) {
 							hasError = true
+							actualArr.push(res.actual)
+							expectedArr.push(res.expected)
 						}
 					}
 				}
 				if (hasError) {
-					actual[name] = actualInfo
-					expected[name] = expectedInfo
-					hasErrors = true
+					return {
+						actual: actualArr,
+						expected: expectedArr,
+					}
 				}
 			} else {
-				throw new Error(`object type === ${typeof obj}`)
+				const actualObj = {}
+				const expectedObj = {}
+				// tslint:disable-next-line:forin
+				for (const key in obj) {
+					const item = obj[key]
+					if (typeof item === 'function' || item != null && typeof item === 'object') {
+						const res = _checkIsOptimized(item, optimized, scanned)
+						if (res) {
+							hasError = true
+							actualObj[key] = res.actual
+							expectedObj[key] = res.expected
+						}
+					}
+				}
+				if (hasError) {
+					return {
+						actual: actualObj,
+						expected: expectedObj,
+					}
+				}
 			}
 		}
+	} else {
+		throw new Error(`object type === ${obj == null ? obj : typeof obj}`)
 	}
 
-	return {
-		hasErrors,
-		actual,
-		expected,
+	if (optimized) {
+		optimized.add(obj)
+	}
+
+	return null
+}
+
+export function checkIsOptimized(objectOrFunc: TAnyFunc|object, optimized: Set<any> = null) {
+	return !_checkIsOptimized(objectOrFunc, optimized)
+}
+
+export function assertIsOptimized(objectOrFunc: TAnyFunc|object, optimized: Set<any> = null) {
+	const res = _checkIsOptimized(objectOrFunc, optimized)
+	if (res) {
+		const {
+			actual,
+			expected,
+		} = res
+		assert.deepStrictEqual(actual, expected)
+		assert.notOk(res)
 	}
 }
 
-export function checkIsOptimized(objectsOrFuncs: { [name: string]: TAnyFunc|object}) {
-	return !_checkIsOptimized(objectsOrFuncs).hasErrors
-}
-
-export function assertIsOptimized(objectsOrFuncs: { [name: string]: TAnyFunc|object}) {
-	const {
-		hasErrors,
-		actual,
-		expected,
-	} = _checkIsOptimized(objectsOrFuncs)
-	assert.deepStrictEqual(actual, expected)
-	assert.notOk(hasErrors)
-}
-
-export function assertIsNotOptimized(objectsOrFuncs: { [name: string]: TAnyFunc|object}) {
-	const {
-		hasErrors,
-		actual,
-		expected,
-	} = _checkIsOptimized(objectsOrFuncs)
-	assert.ok(hasErrors)
+export function assertIsNotOptimized(objectOrFunc: TAnyFunc|object, optimized: Set<any> = null) {
+	const res = _checkIsOptimized(objectOrFunc, optimized)
+	assert.ok(res)
 }

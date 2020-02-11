@@ -9,9 +9,9 @@
   <component name="ChangeListManager">
     <list default="true" id="69b2ee16-521b-4efd-b473-8e19e3df4d09" name="Default Changelist" comment="">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/test/tests/common/main/rx/depend/dependent-func.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/test/tests/common/main/rx/depend/dependent-func.ts" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/test/tests/common/main/rx/depend/src/helpers.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/test/tests/common/main/rx/depend/src/helpers.ts" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/test/tests/node/main/rx/depend/dependent-func.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/test/tests/node/main/rx/depend/dependent-func.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/test/tests/node/v8/helpers/helpers.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/test/tests/node/v8/helpers/helpers.ts" afterDir="false" />
     </list>
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
     <option name="SHOW_DIALOG" value="false" />
@@ -107,7 +107,7 @@
       </list>
     </option>
   </component>
-  <component name="RunManager" selected="Mocha.dependent-func">
+  <component name="RunManager" selected="Mocha.node &gt; v8 &gt; helpers">
     <configuration default="true" type="JavaScriptTestRunnerKarma">
       <config-file value="$PROJECT_DIR$/env/karma/configs/dev.js" />
       <karma-package-dir value="$PROJECT_DIR$/node_modules/karma" />
@@ -276,7 +276,7 @@
       </test-names>
       <method v="2" />
     </configuration>
-    <configuration name="node &gt; main &gt; rx &gt; depend &gt; dependent-func.v8 self test" type="mocha-javascript-test-runner" temporary="true" nameIsGenerated="true">
+    <configuration name="node &gt; main &gt; rx &gt; depend &gt; dependent-func.v8 perceptron" type="mocha-javascript-test-runner" temporary="true" nameIsGenerated="true">
       <node-interpreter>node</node-interpreter>
       <node-options>--max-old-space-size=4096 --allow-natives-syntax</node-options>
       <mocha-package>$PROJECT_DIR$/node_modules/mocha</mocha-package>
@@ -288,7 +288,7 @@
       <test-file>$PROJECT_DIR$/src/test/tests/node/main/rx/depend/dependent-func.ts</test-file>
       <test-names>
         <name value="node &gt; main &gt; rx &gt; depend &gt; dependent-func" />
-        <name value="v8 self test" />
+        <name value="v8 perceptron" />
       </test-names>
       <method v="2" />
     </configuration>
@@ -339,20 +339,20 @@
       <item itemvalue="Mocha.RX - Tests" />
       <item itemvalue="Mocha.dependent-func.perceptron perf (Compiled)" />
       <item itemvalue="Mocha.dependent-func" />
-      <item itemvalue="Mocha.node &gt; main &gt; rx &gt; depend &gt; dependent-func.v8 self test" />
       <item itemvalue="npm.Coverage Mocha Report" />
       <item itemvalue="Mocha.node &gt; main &gt; rx &gt; depend &gt; dependent-func.v8" />
       <item itemvalue="Mocha.node &gt; main &gt; rx &gt; depend &gt; dependent-func" />
       <item itemvalue="Mocha.node &gt; v8 &gt; helpers" />
       <item itemvalue="Mocha.node &gt; main &gt; rx &gt; depend &gt; dependent-func.v8 baseTest" />
+      <item itemvalue="Mocha.node &gt; main &gt; rx &gt; depend &gt; dependent-func.v8 perceptron" />
     </list>
     <recent_temporary>
       <list>
         <item itemvalue="Mocha.node &gt; main &gt; rx &gt; depend &gt; dependent-func.v8 baseTest" />
-        <item itemvalue="Mocha.node &gt; main &gt; rx &gt; depend &gt; dependent-func.v8" />
         <item itemvalue="Mocha.node &gt; v8 &gt; helpers" />
+        <item itemvalue="Mocha.node &gt; main &gt; rx &gt; depend &gt; dependent-func.v8 perceptron" />
+        <item itemvalue="Mocha.node &gt; main &gt; rx &gt; depend &gt; dependent-func.v8" />
         <item itemvalue="Mocha.node &gt; main &gt; rx &gt; depend &gt; dependent-func" />
-        <item itemvalue="Mocha.node &gt; main &gt; rx &gt; depend &gt; dependent-func.v8 self test" />
       </list>
     </recent_temporary>
   </component>
@@ -363,13 +363,6 @@
       <option name="number" value="Default" />
       <option name="presentableId" value="Default" />
       <updated>1567687848586</updated>
-    </task>
-    <task id="LOCAL-00185" summary="Develop an automatic subscription system using a brilliant idea from MobX, but more universal">
-      <created>1580116234472</created>
-      <option name="number" value="00185" />
-      <option name="presentableId" value="LOCAL-00185" />
-      <option name="project" value="LOCAL" />
-      <updated>1580116234474</updated>
     </task>
     <task id="LOCAL-00186" summary="Develop an automatic subscription system using a brilliant idea from MobX, but more universal">
       <created>1580138062676</created>
@@ -707,7 +700,14 @@
       <option name="project" value="LOCAL" />
       <updated>1581417867043</updated>
     </task>
-    <option name="localTasksCounter" value="234" />
+    <task id="LOCAL-00234" summary="dependent-funcs v8 optimization in process... Tests OK.">
+      <created>1581419395534</created>
+      <option name="number" value="00234" />
+      <option name="presentableId" value="LOCAL-00234" />
+      <option name="project" value="LOCAL" />
+      <updated>1581419395534</updated>
+    </task>
+    <option name="localTasksCounter" value="235" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -769,7 +769,6 @@
   <component name="VcsManagerConfiguration">
     <option name="CHECK_CODE_SMELLS_BEFORE_PROJECT_COMMIT" value="false" />
     <option name="CHECK_NEW_TODO" value="false" />
-    <MESSAGE value="Develop dependentFunc. Before refactoring&#10;&#10;perceptron 100 x 10&#10;invalidate cycles: 12089&#10;calc cycles: 159433&#10;create bytes: 641.5022072204638 ±3062.0643185018303&#10;recalc bytes: 15883.9371154598 ±10539.072818593493" />
     <MESSAGE value="Develop dependentFunc. After replace linked list with Set&#10;&#10;perceptron 100 x 10&#10;invalidate cycles: 28729&#10;calc cycles: 177896&#10;create bytes: 698.5846081157645 ±6117.08026936701&#10;recalc bytes: 18922.10729057349 ±10165.769683242866" />
     <MESSAGE value="Develop dependentFunc. Rollback &quot;replace linked list with Set&quot;" />
     <MESSAGE value="With object pool&#10;&#10;perceptron 100 x 10&#10;invalidate cycles: 20055&#10;calc cycles: 274677&#10;create bytes: 634.6291329077052 ±3062.663830568589&#10;recalc bytes: 12987.14035845834 ±10340.321312351687" />
@@ -794,7 +793,8 @@
     <MESSAGE value="dependent-funcs v8 optimization in process... Added v8 funcs wrappers with .d.ts file" />
     <MESSAGE value="dependent-funcs v8 optimization in process..." />
     <MESSAGE value="dependent-funcs v8 optimization in process... v8 tests OK." />
-    <option name="LAST_COMMIT_MESSAGE" value="dependent-funcs v8 optimization in process... v8 tests OK." />
+    <MESSAGE value="dependent-funcs v8 optimization in process... Tests OK." />
+    <option name="LAST_COMMIT_MESSAGE" value="dependent-funcs v8 optimization in process... Tests OK." />
   </component>
   <component name="XDebuggerManager">
     <breakpoint-manager>

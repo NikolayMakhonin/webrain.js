@@ -103,6 +103,16 @@ export function createPerceptron(layerSize, layersCount, check = true) {
 		})
 	}
 
+	let _states
+	const getStates = () => {
+		if (!_states) {
+			_states = layers
+				.flatMap(o => o)
+				.map(o => getFuncCallState(o)())
+		}
+		return _states
+	}
+
 	const inputState = getFuncCallState(input)()
 
 	if (check) {
@@ -120,6 +130,7 @@ export function createPerceptron(layerSize, layersCount, check = true) {
 	}
 
 	return {
+		getStates,
 		countFuncs,
 		input,
 		inputState,
@@ -405,6 +416,12 @@ export async function baseTest() {
 	checkFuncNotChanged(allFuncs)
 
 	// endregion
+
+	return {
+		states: [S0, I0, A0, S1, I1, S2, I2, A2].map(o => {
+			return o.state
+		}),
+	}
 }
 
 // endregion

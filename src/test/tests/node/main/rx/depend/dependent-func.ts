@@ -1,6 +1,5 @@
 /* tslint:disable:no-identical-functions no-shadowed-variable no-var-requires ordered-imports */
 // @ts-ignore
-import {isThenable, Thenable, ThenableOrValue} from '../../../../../../main/common/async/async'
 import {
 	_createDependentFunc,
 	_getFuncCallState,
@@ -44,7 +43,11 @@ import {
 describe('node > main > rx > depend > dependent-func', function() {
 	async function v8Test(
 		countIterations: number,
-		iterate: (iteration: number, checkOptimization: (iteration: number) => void) => void|Promise<void>,
+		iterate: (
+			iteration: number,
+			checkOptimization: (iteration: number) => void,
+			_assertIsOptimized: typeof assertIsOptimized,
+		) => void|Promise<void>,
 	) {
 		const objects = {
 			// public
@@ -84,21 +87,24 @@ describe('node > main > rx > depend > dependent-func', function() {
 		}
 
 		const optimizedObjectsIterations = {}
-		const optimizedObjects = {}
+		const optimized = new Set()
+
+		function _assertIsOptimized(obj) {
+			return assertIsOptimized(obj, optimized)
+		}
 
 		function checkOptimization(iteration) {
 			for (const key in objects) {
 				if (Object.prototype.hasOwnProperty.call(objects, key)
-					&& !Object.prototype.hasOwnProperty.call(optimizedObjects, key)
-					&& checkIsOptimized({[key]: objects[key]})
+					&& !Object.prototype.hasOwnProperty.call(optimizedObjectsIterations, key)
+					&& optimized.has(objects[key])
 				) {
-					optimizedObjects[key] = objects[key]
 					optimizedObjectsIterations[key] = iteration
 				}
 			}
-			if (!checkIsOptimized(optimizedObjects)) {
+			if (!checkIsOptimized(objects, optimized)) {
 				console.error('Iteration: ' + iteration)
-				assertIsOptimized(optimizedObjects)
+				assertIsOptimized(objects, optimized)
 			}
 		}
 
@@ -108,7 +114,7 @@ describe('node > main > rx > depend > dependent-func', function() {
 				// isRefType(2)
 				for (const key in objects) {
 					if (Object.prototype.hasOwnProperty.call(objects, key)
-						&& !Object.prototype.hasOwnProperty.call(optimizedObjects, key)
+						&& !optimized.has(objects[key])
 					) {
 						v8.OptimizeFunctionOnNextCall(objects[key])
 					}
@@ -116,7 +122,7 @@ describe('node > main > rx > depend > dependent-func', function() {
 				// isRefType(3)
 			}
 
-			await iterate(i, checkOptimization)
+			await iterate(i, checkOptimization, _assertIsOptimized)
 		}
 
 		console.log(optimizedObjectsIterations)
@@ -136,17 +142,22 @@ describe('node > main > rx > depend > dependent-func', function() {
 		console.log('Not inlined: ', notInlined)
 
 		// assert.deepStrictEqual(optimizedObjects, objects)
-		assertIsOptimized(objects)
+		assertIsOptimized(objects, optimized)
 	}
 
 	it('v8 perceptron', async function() {
 		this.timeout(20000)
 
-		await v8Test(100000, async (iteration, checkOptimization) => {
+		await v8Test(50000, async (iteration, checkOptimization, _assertIsOptimized) => {
 			const {
 				input,
 				output,
+				getStates,
 			} = createPerceptron(2, 2)
+
+			getStates().forEach(o => {
+				_assertIsOptimized({state: o})
+			})
 
 			checkOptimization(iteration)
 
@@ -155,6 +166,10 @@ describe('node > main > rx > depend > dependent-func', function() {
 				await invalidate(state)
 			}
 
+			getStates().forEach(o => {
+				_assertIsOptimized({state: o})
+			})
+
 			checkOptimization(iteration)
 		})
 	})
@@ -162,8 +177,11 @@ describe('node > main > rx > depend > dependent-func', function() {
 	it('v8 baseTest', async function() {
 		this.timeout(20000)
 
-		await v8Test(300, async (iteration, checkOptimization) => {
-			await baseTest()
+		await v8Test(300, async (iteration, checkOptimization, _assertIsOptimized) => {
+			const { states } = await baseTest()
+			states.forEach(o => {
+				_assertIsOptimized({state: o})
+			})
 
 			checkOptimization(iteration)
 		})
