@@ -1,8 +1,6 @@
 module.exports = {
 	parserOpts: {
-		plugins: [
-			'v8intrinsic',
-		],
+		plugins: ['v8intrinsic'],
 	},
 	presets: [
 		[

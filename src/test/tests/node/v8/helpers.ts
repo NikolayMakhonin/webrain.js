@@ -2,11 +2,10 @@
 // @ts-ignore
 import {assert, AssertionError} from '../../../../main/common/test/Assert'
 import {describe, it, xit} from '../../../../main/common/test/Mocha'
+import {OptimizationStatus} from './helpers/contracts'
 import {
-	assertFuncOptimizationStatus, assertIsNotOptimized,
+	assertIsNotOptimized,
 	assertIsOptimized,
-	getFuncOptimizationStatusString, getObjectOptimizationInfo,
-	OptimizationStatus,
 	v8,
 } from './helpers/helpers'
 

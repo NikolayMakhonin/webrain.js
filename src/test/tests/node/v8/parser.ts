@@ -7,7 +7,7 @@ const path = require('path')
 
 describe('node > v8 > parser', function() {
 	it('parser', function() {
-		const dir = path.resolve(__dirname, './helpers')
+		const dir = path.resolve(__dirname, './helpers/node_4_9_1')
 		const sourceFile = path.resolve(dir, 'runtime.h.txt')
 		const jsFile = path.resolve(dir, 'runtime.js')
 		const d_tsFile = path.resolve(dir, 'runtime.d.ts')

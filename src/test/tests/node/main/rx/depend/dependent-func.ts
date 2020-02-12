@@ -32,11 +32,10 @@ import {
 import {assert, AssertionError} from '../../../../../../main/common/test/Assert'
 import {describe, it, xit} from '../../../../../../main/common/test/Mocha'
 import {baseTest, createPerceptron} from '../../../../common/main/rx/depend/src/helpers'
+import {OptimizationStatus} from '../../../v8/helpers/contracts'
 import {
-	assertFuncOptimizationStatus,
-	assertIsOptimized, checkIsOptimized,
-	getFuncOptimizationStatusString, getObjectOptimizationInfo,
-	OptimizationStatus,
+	assertIsOptimized,
+	checkIsOptimized,
 	v8,
 } from '../../../v8/helpers/helpers'
 

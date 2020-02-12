@@ -1,9 +1,8 @@
 import {assert} from '../../../../../main/common/test/Assert'
-import * as v8 from './runtime'
+import {OptimizationStatus, TAnyFunc} from './contracts'
+import * as v8 from './node_latest/runtime'
 
 export {v8}
-
-type TAnyFunc = (...args: any[]) => any
 
 // https://gist.github.com/naugtur/4b03a9f9f72346a9f79d7969728a849f
 const optimizationStatusDescriptions = [
@@ -22,23 +21,6 @@ const optimizationStatusDescriptions = [
 	'LiteMode',
 	'MarkedForDeoptimization',
 ]
-
-export enum OptimizationStatus {
-	IsFunction = 1,
-	NeverOptimize = 2,
-	AlwaysOptimize = 4,
-	MaybeDeopted = 8,
-	Optimized = 16,
-	TurboFanned = 32,
-	Interpreted = 64,
-	MarkedForOptimization = 128,
-	MarkedForConcurrentOptimization = 256,
-	OptimizingConcurrently = 512,
-	IsExecuting = 1024,
-	TopmostFrameIsTurboFanned = 2048,
-	LiteMode = 4096,
-	MarkedForDeoptimization = 8192,
-}
 
 export function optimizationStatusToString(status: OptimizationStatus) {
 	const result = []

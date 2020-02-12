@@ -1,4 +1,7 @@
 module.exports = {
+	parserOpts: {
+		plugins: ['v8intrinsic'],
+	},
 	plugins: [
 		'@babel/plugin-transform-typescript',
 
