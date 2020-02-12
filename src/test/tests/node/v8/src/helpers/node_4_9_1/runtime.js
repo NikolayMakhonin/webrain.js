@@ -1998,20 +1998,20 @@ export function IsConcurrentRecompilationSupported() {
 	return %IsConcurrentRecompilationSupported()
 }
 
-export function OptimizeFunctionOnNextCall(a, b, c, d, e, f, g, h, i, j, k, l, m, n) {
-	return %OptimizeFunctionOnNextCall(a, b, c, d, e, f, g, h, i, j, k, l, m, n)
+export function OptimizeFunctionOnNextCall(a) {
+	return %OptimizeFunctionOnNextCall(a)
 }
 
-export function OptimizeOsr(a, b, c, d, e, f, g, h, i, j, k, l, m, n) {
-	return %OptimizeOsr(a, b, c, d, e, f, g, h, i, j, k, l, m, n)
+export function OptimizeOsr(a) {
+	return %OptimizeOsr(a)
 }
 
 export function NeverOptimizeFunction(a) {
 	return %NeverOptimizeFunction(a)
 }
 
-export function GetOptimizationStatus(a, b, c, d, e, f, g, h, i, j, k, l, m, n) {
-	return %GetOptimizationStatus(a, b, c, d, e, f, g, h, i, j, k, l, m, n)
+export function GetOptimizationStatus(a) {
+	return %GetOptimizationStatus(a)
 }
 
 export function UnblockConcurrentRecompilation() {

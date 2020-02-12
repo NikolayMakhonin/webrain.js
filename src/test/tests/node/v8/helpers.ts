@@ -2,12 +2,13 @@
 // @ts-ignore
 import {assert, AssertionError} from '../../../../main/common/test/Assert'
 import {describe, it, xit} from '../../../../main/common/test/Mocha'
-import {OptimizationStatus} from './helpers/contracts'
+import {v8} from './src/helpers/common/helpers'
+import {OptimizationStatus} from './src/helpers/contracts'
 import {
 	assertIsNotOptimized,
 	assertIsOptimized,
-	v8,
-} from './helpers/helpers'
+
+} from './src/helpers/helpers'
 
 describe('node > v8 > helpers', function() {
 	it('base', function() {

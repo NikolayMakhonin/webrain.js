@@ -8,8 +8,11 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="69b2ee16-521b-4efd-b473-8e19e3df4d09" name="Default Changelist" comment="">
-      <change afterPath="$PROJECT_DIR$/src/test/tests/node/v8/helpers/contracts.ts" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/test/tests/node/v8/helpers/node_4_9_1/runtime.h.txt" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/test/tests/node/v8/src/helpers/common/helpers.ts" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/test/tests/node/v8/src/helpers/helpers.ts" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/test/tests/node/v8/src/helpers/node_4_9_1/helpers.ts" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/test/tests/node/v8/src/helpers/node_4_9_1/runtime-adapter.ts" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/test/tests/node/v8/src/helpers/node_latest/helpers.ts" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/dist/js/main/common/extensions/merge/mergers.js" beforeDir="false" afterPath="$PROJECT_DIR$/dist/js/main/common/extensions/merge/mergers.js" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/dist/js/main/common/extensions/serialization/serializers.js" beforeDir="false" afterPath="$PROJECT_DIR$/dist/js/main/common/extensions/serialization/serializers.js" afterDir="false" />
@@ -26,6 +29,7 @@
       <change beforePath="$PROJECT_DIR$/dist/js/main/common/rx/object/ObservableClass.js" beforeDir="false" afterPath="$PROJECT_DIR$/dist/js/main/common/rx/object/ObservableClass.js" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/dist/js/main/common/rx/object/PropertyChangedObject.js" beforeDir="false" afterPath="$PROJECT_DIR$/dist/js/main/common/rx/object/PropertyChangedObject.js" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/dist/js/main/common/rx/object/properties/CalcProperty.js" beforeDir="false" afterPath="$PROJECT_DIR$/dist/js/main/common/rx/object/properties/CalcProperty.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/dist/js/main/common/test/Assert.js" beforeDir="false" afterPath="$PROJECT_DIR$/dist/js/main/common/test/Assert.js" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/dist/js/main/common/test/Calc.js" beforeDir="false" afterPath="$PROJECT_DIR$/dist/js/main/common/test/Calc.js" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/dist/js/test/performance/node/ObservableObject.js" beforeDir="false" afterPath="$PROJECT_DIR$/dist/js/test/performance/node/ObservableObject.js" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/dist/js/test/performance/node/Variants.js" beforeDir="false" afterPath="$PROJECT_DIR$/dist/js/test/performance/node/Variants.js" afterDir="false" />
@@ -33,10 +37,43 @@
       <change beforePath="$PROJECT_DIR$/dist/js/test/tests/common/env/class.js" beforeDir="false" afterPath="$PROJECT_DIR$/dist/js/test/tests/common/env/class.js" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/dist/js/test/tests/common/main/helpers/performance.js" beforeDir="false" afterPath="$PROJECT_DIR$/dist/js/test/tests/common/main/helpers/performance.js" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/dist/js/test/tests/common/main/index.js" beforeDir="false" afterPath="$PROJECT_DIR$/dist/js/test/tests/common/main/index.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/dist/js/test/tests/common/main/rx/deep-subscribe/deep-subscribe.js" beforeDir="false" afterPath="$PROJECT_DIR$/dist/js/test/tests/common/main/rx/deep-subscribe/deep-subscribe.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/dist/js/test/tests/common/main/rx/deep-subscribe/helpers/src/TestDeepSubscribe.js" beforeDir="false" afterPath="$PROJECT_DIR$/dist/js/test/tests/common/main/rx/deep-subscribe/helpers/src/TestDeepSubscribe.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/dist/js/test/tests/common/main/rx/deep-subscribe/iterate-rule.js" beforeDir="false" afterPath="$PROJECT_DIR$/dist/js/test/tests/common/main/rx/deep-subscribe/iterate-rule.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/dist/js/test/tests/common/main/rx/object/properties/CalcObjectBuilder.js" beforeDir="false" afterPath="$PROJECT_DIR$/dist/js/test/tests/common/main/rx/object/properties/CalcObjectBuilder.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/dist/js/test/tests/common/main/lists/src/helpers/TestList.js" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/dist/js/test/tests/common/main/lists/src/helpers/TestMap.js" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/dist/js/test/tests/common/main/lists/src/helpers/TestSet.js" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/dist/js/test/tests/common/main/rx/deep-subscribe/RuleBuilder.js" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/dist/js/test/tests/common/main/rx/deep-subscribe/deep-subscribe-new.js" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/dist/js/test/tests/common/main/rx/deep-subscribe/deep-subscribe.js" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/dist/js/test/tests/common/main/rx/deep-subscribe/helpers/func-properties-path.js" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/dist/js/test/tests/common/main/rx/deep-subscribe/helpers/src/RuleBuildersBuilder.js" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/dist/js/test/tests/common/main/rx/deep-subscribe/helpers/src/TestDeepSubscribe.js" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/dist/js/test/tests/common/main/rx/deep-subscribe/helpers/src/func-properties-path.js" beforeDir="false" afterPath="$PROJECT_DIR$/dist/js/test/tests/common/main/rx/deep-subscribe/helpers/src/func-properties-path.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/dist/js/test/tests/common/main/rx/deep-subscribe/iterate-rule.js" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/dist/js/test/tests/common/main/rx/deferred-calc/DeferredCalc.js" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/dist/js/test/tests/common/main/rx/deferred-calc/src/TestDeferred.js" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/dist/js/test/tests/common/main/rx/deferred-calc/src/timing.js" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/dist/js/test/tests/common/main/rx/deferred-calc/timing.js" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/dist/js/test/tests/common/main/rx/object/observable-object-builder-prototype.js" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/dist/js/test/tests/common/main/rx/object/observable-object-builder.js" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/dist/js/test/tests/common/main/rx/object/properties/CalcObjectBuilder.js" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/dist/js/test/tests/common/main/rx/object/properties/CalcProperty.js" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/dist/js/test/tests/common/main/rx/object/properties/ConnectorBuilder.js" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/dist/js/test/tests/common/main/rx/object/properties/calcPropertyFactory.js" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/dist/js/test/tests/common/main/rx/object/src/TestObservableObject.js" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/dist/js/test/tests/common/main/rx/src/TestSubject.js" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/dist/js/test/tests/common/main/rx/subjects/behavior.js" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/dist/js/test/tests/common/main/rx/subjects/hasSubscribers.js" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/dist/js/test/tests/common/main/rx/subjects/observable.js" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/dist/js/test/tests/common/main/rx/subjects/subject.js" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/dist/js/test/tests/common/main/src/helpers/TestVariants.js" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/dist/js/test/tests/common/main/src/helpers/helpers.js" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/dist/js/test/tests/common/main/test/DeepCloneEqual.js" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/dist/js/test/tests/common/main/test/Variants.js" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/dist/js/test/tests/common/main/test/src/TestDeepEqual.js" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/dist/js/test/tests/common/main/time/async-behavior.js" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/dist/js/test/tests/common/main/time/time-limits.js" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/dist/js/test/tests/node/index.js" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/dist/js/test/tests/node/isNode.js" beforeDir="false" afterPath="$PROJECT_DIR$/dist/js/test/tests/node/isNode.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/dist/js/test/tests/webdriver/env/page.js" beforeDir="false" afterPath="$PROJECT_DIR$/dist/js/test/tests/webdriver/env/page.js" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/dist/mjs/main/common/extensions/serialization/serializers.js" beforeDir="false" afterPath="$PROJECT_DIR$/dist/mjs/main/common/extensions/serialization/serializers.js" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/dist/mjs/main/common/helpers/object-unique-id.js" beforeDir="false" afterPath="$PROJECT_DIR$/dist/mjs/main/common/helpers/object-unique-id.js" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/dist/mjs/main/common/index.js" beforeDir="false" afterPath="$PROJECT_DIR$/dist/mjs/main/common/index.js" afterDir="false" />
@@ -49,6 +86,7 @@
       <change beforePath="$PROJECT_DIR$/dist/mjs/main/common/rx/object/ObservableClass.js" beforeDir="false" afterPath="$PROJECT_DIR$/dist/mjs/main/common/rx/object/ObservableClass.js" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/dist/mjs/main/common/rx/object/PropertyChangedObject.js" beforeDir="false" afterPath="$PROJECT_DIR$/dist/mjs/main/common/rx/object/PropertyChangedObject.js" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/dist/mjs/main/common/rx/object/properties/CalcProperty.js" beforeDir="false" afterPath="$PROJECT_DIR$/dist/mjs/main/common/rx/object/properties/CalcProperty.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/dist/mjs/main/common/test/Assert.js" beforeDir="false" afterPath="$PROJECT_DIR$/dist/mjs/main/common/test/Assert.js" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/dist/mjs/main/common/test/Calc.js" beforeDir="false" afterPath="$PROJECT_DIR$/dist/mjs/main/common/test/Calc.js" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/dist/mjs/test/performance/node/ObservableObject.js" beforeDir="false" afterPath="$PROJECT_DIR$/dist/mjs/test/performance/node/ObservableObject.js" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/dist/mjs/test/performance/node/Variants.js" beforeDir="false" afterPath="$PROJECT_DIR$/dist/mjs/test/performance/node/Variants.js" afterDir="false" />
@@ -70,20 +108,18 @@
       <change beforePath="$PROJECT_DIR$/dist/types/common/rx/deferred-calc/DeferredCalc.d.ts" beforeDir="false" afterPath="$PROJECT_DIR$/dist/types/common/rx/deferred-calc/DeferredCalc.d.ts" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/dist/types/common/rx/object/ObservableClass.d.ts" beforeDir="false" afterPath="$PROJECT_DIR$/dist/types/common/rx/object/ObservableClass.d.ts" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/dist/types/common/test/Calc.d.ts" beforeDir="false" afterPath="$PROJECT_DIR$/dist/types/common/test/Calc.d.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/env/babel/configs/dist-js.js" beforeDir="false" afterPath="$PROJECT_DIR$/env/babel/configs/dist-js.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/env/babel/configs/minimal.js" beforeDir="false" afterPath="$PROJECT_DIR$/env/babel/configs/minimal.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/env/babel/configs/mocha.js" beforeDir="false" afterPath="$PROJECT_DIR$/env/babel/configs/mocha.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/env/babel/configs/v8-trace.js" beforeDir="false" afterPath="$PROJECT_DIR$/env/babel/configs/v8-trace.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/env/mocha/configs/no-babel/register.js" beforeDir="false" afterPath="$PROJECT_DIR$/env/mocha/configs/no-babel/register.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/env/mocha/register-tests.js" beforeDir="false" afterPath="$PROJECT_DIR$/env/mocha/register-tests.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/test/tests/common/main/rx/depend/dependent-func.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/test/tests/common/main/rx/depend/dependent-func.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/common/test/Assert.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/common/test/Assert.ts" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/test/tests/node/main/rx/depend/dependent-func.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/test/tests/node/main/rx/depend/dependent-func.ts" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/test/tests/node/v8/helpers.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/test/tests/node/v8/helpers.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/test/tests/node/v8/helpers/helpers.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/test/tests/node/v8/helpers/helpers.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/test/tests/node/v8/helpers/parser.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/test/tests/node/v8/helpers/parser.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/test/tests/node/v8/helpers/runtime.d.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/test/tests/node/v8/helpers/node_latest/runtime.d.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/test/tests/node/v8/helpers/runtime.h.txt" beforeDir="false" afterPath="$PROJECT_DIR$/src/test/tests/node/v8/helpers/node_latest/runtime.h.txt" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/test/tests/node/v8/helpers/runtime.js" beforeDir="false" afterPath="$PROJECT_DIR$/src/test/tests/node/v8/helpers/node_latest/runtime.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/test/tests/node/v8/helpers/contracts.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/test/tests/node/v8/src/helpers/contracts.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/test/tests/node/v8/helpers/helpers.ts" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/test/tests/node/v8/helpers/node_4_9_1/runtime.d.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/test/tests/node/v8/src/helpers/node_4_9_1/runtime.d.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/test/tests/node/v8/helpers/node_4_9_1/runtime.h.txt" beforeDir="false" afterPath="$PROJECT_DIR$/src/test/tests/node/v8/src/helpers/node_4_9_1/runtime.h.txt" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/test/tests/node/v8/helpers/node_4_9_1/runtime.js" beforeDir="false" afterPath="$PROJECT_DIR$/src/test/tests/node/v8/src/helpers/node_4_9_1/runtime.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/test/tests/node/v8/helpers/node_latest/runtime.d.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/test/tests/node/v8/src/helpers/node_latest/runtime.d.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/test/tests/node/v8/helpers/node_latest/runtime.h.txt" beforeDir="false" afterPath="$PROJECT_DIR$/src/test/tests/node/v8/src/helpers/node_latest/runtime.h.txt" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/test/tests/node/v8/helpers/node_latest/runtime.js" beforeDir="false" afterPath="$PROJECT_DIR$/src/test/tests/node/v8/src/helpers/node_latest/runtime.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/test/tests/node/v8/helpers/parser.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/test/tests/node/v8/src/helpers/parser.ts" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/test/tests/node/v8/parser.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/test/tests/node/v8/parser.ts" afterDir="false" />
     </list>
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
@@ -127,7 +163,7 @@
     <property name="WebServerToolWindowFactoryState" value="false" />
     <property name="auto.test.manager.delay" value="5000" />
     <property name="javascript.karma.karma_node_package_dir" value="" />
-    <property name="last_opened_file_path" value="$PROJECT_DIR$/src/test/tests/node/v8/helpers/contracts.ts" />
+    <property name="last_opened_file_path" value="$PROJECT_DIR$/src/test/tests/node/v8/helpers/node_4_9_1" />
     <property name="node.js.detected.package.eslint" value="true" />
     <property name="node.js.detected.package.standard" value="true" />
     <property name="node.js.detected.package.tslint" value="true" />
@@ -146,26 +182,26 @@
     <property name="ts.external.directory.path" value="L:\Work\_GIT\GitHub\NodeJs\modules\webrain\node_modules\typescript\lib" />
   </component>
   <component name="RecentsManager">
+    <key name="MoveFile.RECENT_KEYS">
+      <recent name="L:\Work\_GIT\GitHub\NodeJs\modules\webrain\src\test\tests\node\v8\src" />
+      <recent name="L:\Work\_GIT\GitHub\NodeJs\modules\webrain\src\test\tests\node\v8\helpers" />
+      <recent name="L:\Work\_GIT\GitHub\NodeJs\modules\webrain\src\test\tests\node\v8\helpers\node_latest" />
+      <recent name="L:\Work\_GIT\GitHub\NodeJs\modules\webrain\src\test\tests\node\src" />
+      <recent name="L:\Work\_GIT\GitHub\NodeJs\modules\webrain\src\test\tests\node\helpers" />
+    </key>
+    <key name="es6.move.members.recent.items">
+      <recent name="L:\Work\_GIT\GitHub\NodeJs\modules\webrain\src\test\tests\node\v8\helpers\common\helpers.ts" />
+      <recent name="L:\Work\_GIT\GitHub\NodeJs\modules\webrain\src\test\tests\node\v8\helpers\node_latest\helpers.ts" />
+      <recent name="L:\Work\_GIT\GitHub\NodeJs\modules\webrain\src\test\tests\node\v8\helpers\contracts.ts" />
+      <recent name="L:\Work\_GIT\GitHub\NodeJs\modules\webrain\src\main\common\rx\depend\contracts.ts" />
+      <recent name="L:\Work\_GIT\GitHub\NodeJs\modules\webrain\src\main\common\rx\depend\_createDependentFunc.ts" />
+    </key>
     <key name="CopyFile.RECENT_KEYS">
+      <recent name="L:\Work\_GIT\GitHub\NodeJs\modules\webrain\src\test\tests\node\v8\helpers\node_4_9_1" />
       <recent name="L:\Work\_GIT\GitHub\NodeJs\modules\webrain\src\test\tests\node\v8" />
       <recent name="L:\Work\_GIT\GitHub\NodeJs\modules\webrain\src\test\tests\node\main\rx\depend" />
       <recent name="L:\Work\_GIT\GitHub\NodeJs\modules\webrain\env\babel\configs" />
       <recent name="L:\Work\_GIT\GitHub\NodeJs\modules\webrain\env\v8" />
-      <recent name="L:\Work\_GIT\GitHub\NodeJs\modules\webrain\env\libs\dependent-func" />
-    </key>
-    <key name="es6.move.members.recent.items">
-      <recent name="L:\Work\_GIT\GitHub\NodeJs\modules\webrain\src\main\common\rx\depend\contracts.ts" />
-      <recent name="L:\Work\_GIT\GitHub\NodeJs\modules\webrain\src\main\common\rx\depend\_createDependentFunc.ts" />
-      <recent name="L:\Work\_GIT\GitHub\NodeJs\modules\webrain\src\main\common\rx\depend\new\fasade.ts" />
-      <recent name="L:\Work\_GIT\GitHub\NodeJs\modules\webrain\src\main\common\rx\depend\new\_getFuncCallState.ts" />
-      <recent name="L:\Work\_GIT\GitHub\NodeJs\modules\webrain\src\main\common\rx\depend\new\_createDependentFunc.ts" />
-    </key>
-    <key name="MoveFile.RECENT_KEYS">
-      <recent name="L:\Work\_GIT\GitHub\NodeJs\modules\webrain\src\test\tests\node\v8\helpers\node_latest" />
-      <recent name="L:\Work\_GIT\GitHub\NodeJs\modules\webrain\src\test\tests\node\v8\helpers" />
-      <recent name="L:\Work\_GIT\GitHub\NodeJs\modules\webrain\src\test\tests\node\src" />
-      <recent name="L:\Work\_GIT\GitHub\NodeJs\modules\webrain\src\test\tests\node\helpers" />
-      <recent name="L:\Work\_GIT\GitHub\NodeJs\modules\webrain\src\test\tests\common\main\helpers\v8" />
     </key>
   </component>
   <component name="RunDashboard">
@@ -180,7 +216,7 @@
       </list>
     </option>
   </component>
-  <component name="RunManager" selected="Mocha.node &gt; v8 &gt; parser">
+  <component name="RunManager" selected="Mocha.dependent-func">
     <configuration default="true" type="JavaScriptTestRunnerKarma">
       <config-file value="$PROJECT_DIR$/env/karma/configs/dev.js" />
       <karma-package-dir value="$PROJECT_DIR$/node_modules/karma" />
@@ -279,7 +315,7 @@
       <method v="2" />
     </configuration>
     <configuration name="dependent-func (Compiled)" type="mocha-javascript-test-runner">
-      <node-interpreter>E:/TEMP/node_8_2_1/node</node-interpreter>
+      <node-interpreter>E:/TEMP/node_4_9_1/node</node-interpreter>
       <node-options>--max-old-space-size=4096 --allow-natives-syntax</node-options>
       <mocha-package>$PROJECT_DIR$/node_modules/mocha</mocha-package>
       <working-directory>$PROJECT_DIR$</working-directory>
@@ -287,10 +323,10 @@
       <ui>bdd</ui>
       <extra-mocha-options>--opts ./env/mocha/configs/no-babel/mocha.opts --watch</extra-mocha-options>
       <test-kind>PATTERN</test-kind>
-      <test-pattern>dist/js/test/tests/{common,node}/main/rx/depend/**/*.js</test-pattern>
+      <test-pattern>dist/js/test/tests/{common,node}/{v8,main/rx/depend}/**/*.js</test-pattern>
       <method v="2" />
     </configuration>
-    <configuration name="dependent-func" type="mocha-javascript-test-runner" temporary="true">
+    <configuration name="dependent-func" type="mocha-javascript-test-runner">
       <node-interpreter>node</node-interpreter>
       <node-options>--max-old-space-size=4096 --allow-natives-syntax</node-options>
       <mocha-package>$PROJECT_DIR$/node_modules/mocha</mocha-package>
@@ -299,7 +335,7 @@
       <ui>bdd</ui>
       <extra-mocha-options>--opts ./env/mocha/configs/babel/mocha.opts --watch</extra-mocha-options>
       <test-kind>PATTERN</test-kind>
-      <test-pattern>src/test/tests/{common,node}/main/rx/depend/**/*.ts</test-pattern>
+      <test-pattern>src/test/tests/{common,node}/{v8,main/rx/depend}/**/*.ts</test-pattern>
       <method v="2" />
     </configuration>
     <configuration name="dependent-func" type="mocha-javascript-test-runner">
@@ -437,8 +473,8 @@
       <item itemvalue="Mocha.RX - Tests" />
       <item itemvalue="Mocha.dependent-func.perceptron perf (Compiled)" />
       <item itemvalue="Mocha.dependent-func (Compiled)" />
-      <item itemvalue="Mocha.node &gt; v8 &gt; parser" />
       <item itemvalue="Mocha.dependent-func" />
+      <item itemvalue="Mocha.node &gt; v8 &gt; parser" />
       <item itemvalue="Mocha.node &gt; v8 &gt; helpers" />
       <item itemvalue="Mocha.node &gt; main &gt; rx &gt; depend &gt; dependent-func.v8 baseTest" />
       <item itemvalue="Mocha.node &gt; main &gt; rx &gt; depend &gt; dependent-func.v8 perceptron" />
@@ -448,8 +484,8 @@
     </list>
     <recent_temporary>
       <list>
-        <item itemvalue="Mocha.node &gt; v8 &gt; helpers" />
         <item itemvalue="Mocha.dependent-func" />
+        <item itemvalue="Mocha.node &gt; v8 &gt; helpers" />
         <item itemvalue="Mocha.dependent-func.perceptron memory create" />
         <item itemvalue="Mocha.dependent-func.perceptron memory recalc" />
         <item itemvalue="Mocha.node &gt; main &gt; rx &gt; depend &gt; dependent-func.v8 baseTest" />
@@ -463,13 +499,6 @@
       <option name="number" value="Default" />
       <option name="presentableId" value="Default" />
       <updated>1567687848586</updated>
-    </task>
-    <task id="LOCAL-00189" summary="Develop MobX bicycle with round wheels">
-      <created>1580931649244</created>
-      <option name="number" value="00189" />
-      <option name="presentableId" value="LOCAL-00189" />
-      <option name="project" value="LOCAL" />
-      <updated>1580931649244</updated>
     </task>
     <task id="LOCAL-00190" summary="Develop MobX bicycle with round wheels">
       <created>1580977212926</created>
@@ -807,7 +836,14 @@
       <option name="project" value="LOCAL" />
       <updated>1581426145748</updated>
     </task>
-    <option name="localTasksCounter" value="238" />
+    <task id="LOCAL-00238" summary="dependent-funcs v8 optimization in process...">
+      <created>1581482193751</created>
+      <option name="number" value="00238" />
+      <option name="presentableId" value="LOCAL-00238" />
+      <option name="project" value="LOCAL" />
+      <updated>1581482193753</updated>
+    </task>
+    <option name="localTasksCounter" value="239" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -891,10 +927,10 @@
     <MESSAGE value="dependent-funcs v8 optimization in process... Wrap single module to iife. No effect." />
     <MESSAGE value="dependent-funcs v8 optimization in process... Add check funcs optimization status" />
     <MESSAGE value="dependent-funcs v8 optimization in process... Added v8 funcs wrappers with .d.ts file" />
-    <MESSAGE value="dependent-funcs v8 optimization in process..." />
     <MESSAGE value="dependent-funcs v8 optimization in process... v8 tests OK." />
     <MESSAGE value="dependent-funcs v8 optimization in process... Tests OK." />
-    <option name="LAST_COMMIT_MESSAGE" value="dependent-funcs v8 optimization in process... Tests OK." />
+    <MESSAGE value="dependent-funcs v8 optimization in process..." />
+    <option name="LAST_COMMIT_MESSAGE" value="dependent-funcs v8 optimization in process..." />
   </component>
   <component name="XDebuggerManager">
     <breakpoint-manager>

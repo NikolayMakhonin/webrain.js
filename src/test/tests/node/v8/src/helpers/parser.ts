@@ -1,5 +1,5 @@
 // see: https://github.com/v8/v8/blob/master/src/runtime/runtime.h
-// for node 4.9.1: https://raw.githubusercontent.com/v8/v8/7f211533faba9dd85708b1394186c7fe99b88392/src/runtime/runtime.h
+// for node 4.9.1: https://github.com/v8/v8/blob/7f211533faba9dd85708b1394186c7fe99b88392/src/runtime/runtime.h
 // see: https://www.npmjs.com/package/v8-natives
 
 export function v8_runtime_h_to_js_functions(runtime_h_content: string) {

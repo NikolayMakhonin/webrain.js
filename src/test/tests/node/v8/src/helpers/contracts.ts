@@ -1,3 +1,5 @@
+import {getObjectOptimizationInfo} from './node_latest/helpers'
+
 export enum OptimizationStatus {
 	IsFunction = 1,
 	NeverOptimize = 2,
@@ -16,3 +18,4 @@ export enum OptimizationStatus {
 }
 
 export type TAnyFunc = (...args: any[]) => any
+export type TObjectOptimizationInfo = { [key in keyof ReturnType<typeof getObjectOptimizationInfo>]?: boolean }

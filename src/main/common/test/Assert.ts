@@ -8,6 +8,10 @@ export const AssertionError = typeof require === 'function'
 
 const deepCloneEqualDefault = new DeepCloneEqual()
 
+if (!console.debug) {
+	console.debug = console.info
+}
+
 export class Assert {
 	public deepCloneEqual: DeepCloneEqual
 
