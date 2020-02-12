@@ -358,18 +358,19 @@ export function update<TThis,
 			// emit(state, status)
 			// region inline call
 			if (state._subscribersFirst != null) {
-				let clonesFirst
-				let clonesLast
-				for (let link = state._subscribersFirst; link; link = link.next) {
-					const cloneLink = getSubscriberLink(state, link.value, null, link.next)
-					if (clonesLast == null) {
-						clonesFirst = cloneLink
-					} else {
-						clonesLast.next = cloneLink
-					}
-					clonesLast = cloneLink
-				}
-				for (let link = clonesFirst; link;) {
+				// let clonesFirst
+				// let clonesLast
+				// for (let link = state._subscribersFirst; link; link = link.next) {
+				// 	const cloneLink = getSubscriberLink(state, link.value, null, link.next)
+				// 	if (clonesLast == null) {
+				// 		clonesFirst = cloneLink
+				// 	} else {
+				// 		clonesLast.next = cloneLink
+				// 	}
+				// 	clonesLast = cloneLink
+				// }
+				for (let link = state._subscribersFirst; link;) {
+					const next = link.next
 					// invalidate(link.value, status)
 					// region inline call
 					{
@@ -378,10 +379,9 @@ export function update<TThis,
 						update(state, FuncCallStatus_Invalidating)
 					}
 					// endregion
-					link.value = null
-					const next = link.next
-					link.next = null
-					releaseSubscriberLink(link)
+					// link.value = null
+					// link.next = null
+					// releaseSubscriberLink(link)
 					link = next
 				}
 			}
@@ -391,18 +391,19 @@ export function update<TThis,
 			// emit(state, status)
 			// region inline call
 			if (state._subscribersFirst != null) {
-				let clonesFirst
-				let clonesLast
-				for (let link = state._subscribersFirst; link; link = link.next) {
-					const cloneLink = getSubscriberLink(state, link.value, null, link.next)
-					if (clonesLast == null) {
-						clonesFirst = cloneLink
-					} else {
-						clonesLast.next = cloneLink
-					}
-					clonesLast = cloneLink
-				}
-				for (let link = clonesFirst; link;) {
+				// let clonesFirst
+				// let clonesLast
+				// for (let link = state._subscribersFirst; link; link = link.next) {
+				// 	const cloneLink = getSubscriberLink(state, link.value, null, link.next)
+				// 	if (clonesLast == null) {
+				// 		clonesFirst = cloneLink
+				// 	} else {
+				// 		clonesLast.next = cloneLink
+				// 	}
+				// 	clonesLast = cloneLink
+				// }
+				for (let link = state._subscribersFirst; link;) {
+					const next = link.next
 					// invalidate(link.value, status)
 					// region inline call
 					{
@@ -411,10 +412,9 @@ export function update<TThis,
 						update(state, FuncCallStatus_Invalidated)
 					}
 					// endregion
-					link.value = null
-					const next = link.next
-					link.next = null
-					releaseSubscriberLink(link)
+					// link.value = null
+					// link.next = null
+					// releaseSubscriberLink(link)
 					link = next
 				}
 			}
