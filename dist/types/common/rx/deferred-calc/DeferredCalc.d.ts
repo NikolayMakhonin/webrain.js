@@ -10,10 +10,7 @@ export declare class DeferredCalc {
     private readonly _canBeCalcCallback;
     private readonly _calcFunc;
     private readonly _calcCompletedCallback;
-    private _minTimeBetweenCalc?;
-    private _throttleTime?;
-    private _maxThrottleTime?;
-    private _autoInvalidateInterval?;
+    private readonly _options;
     private readonly _timing;
     private _timerId?;
     private _timeNextPulse?;

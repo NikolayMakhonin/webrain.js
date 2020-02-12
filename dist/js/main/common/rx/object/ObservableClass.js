@@ -73,7 +73,7 @@ function _setExt(name, getValue, setValue, options, object, newValue) {
   var convertFunc = options.convertFunc;
 
   if (convertFunc) {
-    newValue = convertFunc.call(object, newValue);
+    newValue = convertFunc.call(object, oldValue, newValue);
   } // if (oldValue === newValue) {
   // 	return false
   // }
@@ -82,7 +82,7 @@ function _setExt(name, getValue, setValue, options, object, newValue) {
   var beforeChange = options.beforeChange;
 
   if (beforeChange) {
-    beforeChange.call(object, oldValue);
+    beforeChange.call(object, oldValue, newValue);
   }
 
   if (setValue) {
@@ -106,7 +106,7 @@ function _setExt(name, getValue, setValue, options, object, newValue) {
   var afterChange = options.afterChange;
 
   if (afterChange) {
-    afterChange.call(object, newValue);
+    afterChange.call(object, oldValue, newValue);
   }
 
   return true;

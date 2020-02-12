@@ -4,7 +4,7 @@ var _interopRequireDefault = require("@babel/runtime-corejs3/helpers/interopRequ
 
 exports.__esModule = true;
 exports.ruleTypeToString = ruleTypeToString;
-exports.RuleRepeat = exports.RuleAny = exports.RuleIf = exports.RuleNever = exports.RuleNothing = exports.Rule = exports.RULE_STRING_SEPARATOR = void 0;
+exports.RuleRepeat = exports.RuleAny = exports.RuleIf = exports.RuleNever = exports.RuleNothing = exports.Rule = void 0;
 
 var _freeze = _interopRequireDefault(require("@babel/runtime-corejs3/core-js-stable/object/freeze"));
 
@@ -50,9 +50,6 @@ function ruleTypeToString(ruleType) {
       throw new Error('Unknown RuleType: ' + ruleType);
   }
 }
-
-var RULE_STRING_SEPARATOR = ' > ';
-exports.RULE_STRING_SEPARATOR = RULE_STRING_SEPARATOR;
 
 function ruleToString(rule, customDescription, nestedRulesStr) {
   var description = customDescription || this.description || ruleTypeToString(this.type);

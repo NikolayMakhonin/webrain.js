@@ -33,6 +33,8 @@ var _ObjectSubscriber = require("./ObjectSubscriber");
 var _RuleBuilder = require("./RuleBuilder");
 
 /* tslint:disable:no-shadowed-variable no-array-delete*/
+// const UNSUBSCRIBE_PROPERTY_PREFIX = Math.random().toString(36)
+// let nextUnsubscribePropertyId = 0
 function getRuleType(iteration) {
   return iteration && (iteration.done ? null : (0, _isArray.default)(iteration.value) ? iteration.value.length ? iteration.value[0].type : null : iteration.value.type);
 }

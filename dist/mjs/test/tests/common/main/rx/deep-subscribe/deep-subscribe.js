@@ -1,5 +1,6 @@
 /* tslint:disable:no-construct use-primitive-type no-shadowed-variable no-duplicate-string no-empty max-line-length */
-import { delay } from '../../../../../../main/common';
+import { getChangeId } from '../../../../../../main/common/rx/deep-subscribe/rules-subscribe';
+import { delay } from '../../../../../../main/common/time/helpers';
 import { VALUE_PROPERTY_DEFAULT } from '../../../../../../main/common/helpers/value-property';
 import { RuleRepeatAction } from '../../../../../../main/common/rx/deep-subscribe/contracts/rules';
 import { ObservableClass } from '../../../../../../main/common/rx/object/ObservableClass';
@@ -14,6 +15,35 @@ describe('common > main > rx > deep-subscribe > deep-subscribe', function () {
       immediate: true,
       doNotSubscribeNonObjectValues: true
     }, b => b.propertyAny().if([o => Array.isArray(o), b => b.p('1')], b => b.never()), b => b.propertyAny().repeat(1, 1, o => Array.isArray(o) ? RuleRepeatAction.Next : RuleRepeatAction.Fork, b => b.p('1'))).subscribe(o => ['value2']).unsubscribe(o => ['value2']).subscribe(o => ['value2']).unsubscribe(o => ['value2']);
+  });
+  it('change', function () {
+    let changeId = getChangeId();
+
+    const changeIds = ids => ids.map(o => o + changeId);
+
+    new TestDeepSubscribe({
+      object: createObject().observableObject,
+      immediate: true,
+      doNotSubscribeNonObjectValues: true
+    }, b => b.p('observableObject').change()).subscribe(o => changeIds([1])).unsubscribe(o => changeIds([1])).subscribe(o => changeIds([2])).unsubscribe(o => changeIds([2])).subscribe(o => changeIds([3])).change(o => o.observableObject.value = 1, changeIds([3]), changeIds([4])).unsubscribe(o => changeIds([4]));
+    changeId = getChangeId();
+    new TestDeepSubscribe({
+      object: createObject().observableObject,
+      immediate: true,
+      doNotSubscribeNonObjectValues: true
+    }, b => b.p('observableList').change()).subscribe(o => changeIds([1])).unsubscribe(o => changeIds([1])).subscribe(o => changeIds([2])).unsubscribe(o => changeIds([2])).subscribe(o => changeIds([3])).change(o => o.observableList.add(o), changeIds([3, 4]), changeIds([4, 5])).unsubscribe(o => changeIds([5]));
+    changeId = getChangeId();
+    new TestDeepSubscribe({
+      object: createObject().observableObject,
+      immediate: true,
+      doNotSubscribeNonObjectValues: true
+    }, b => b.p('observableSet').change()).subscribe(o => changeIds([1])).unsubscribe(o => changeIds([1])).subscribe(o => changeIds([2])).unsubscribe(o => changeIds([2])).subscribe(o => changeIds([3])).change(o => o.observableSet.delete(o), changeIds([3, 4]), changeIds([4, 5])).unsubscribe(o => changeIds([5]));
+    changeId = getChangeId();
+    new TestDeepSubscribe({
+      object: createObject().observableObject,
+      immediate: true,
+      doNotSubscribeNonObjectValues: true
+    }, b => b.p('observableMap').change()).subscribe(o => changeIds([1])).unsubscribe(o => changeIds([1])).subscribe(o => changeIds([2])).unsubscribe(o => changeIds([2])).subscribe(o => changeIds([3])).change(o => o.observableMap.delete('property'), changeIds([3, 4]), changeIds([4, 5])).unsubscribe(o => changeIds([5]));
   });
   it('repeat with condition', function () {
     new TestDeepSubscribe({

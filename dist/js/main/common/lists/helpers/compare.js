@@ -12,6 +12,7 @@ var _isArray = _interopRequireDefault(require("@babel/runtime-corejs3/core-js-st
 var _objectUniqueId = require("../../helpers/object-unique-id");
 
 /* tslint:disable:use-isnan */
+// noinspection DuplicatedCode
 function compareFast(o1, o2) {
   if (o1 === o2) {
     return 0;

@@ -19,6 +19,25 @@ var _inherits2 = _interopRequireDefault(require("@babel/runtime-corejs3/helpers/
 
 var _hasSubscribers = require("../subjects/hasSubscribers");
 
+// function expandAndDistinct(inputItems: any, output: string[] = [], map: any = {}): string[] {
+// 	if (inputItems == null) {
+// 		return output
+// 	}
+//
+// 	if (Array.isArray(inputItems)) {
+// 		for (const item of inputItems) {
+// 			expandAndDistinct(item, output, map)
+// 		}
+// 		return output
+// 	}
+//
+// 	if (!map[inputItems]) {
+// 		map[inputItems] = true
+// 		output[output.length] = inputItems
+// 	}
+//
+// 	return output
+// }
 var PropertyChangedSubject =
 /*#__PURE__*/
 function (_HasSubscribersSubjec) {

@@ -8,7 +8,9 @@ var _isArray3 = _interopRequireDefault(require("@babel/runtime-corejs3/core-js-s
 
 var _rdtsc = require("rdtsc");
 
-var _Calc = require("../../../main/common/test/Calc");
+var _calc = require("../../../main/common/test/calc");
+
+var _calcMemAllocate = require("../../../main/common/test/calc-mem-allocate");
 
 var _Mocha = require("../../../main/common/test/Mocha");
 
@@ -53,9 +55,9 @@ var _Variants = require("../../../main/common/test/Variants");
   }
 
   (0, _Mocha.it)('mem', function () {
-    (0, _Calc.calcMemAllocate)(_Calc.CalcType.Min, 10000, function () {
+    console.log((0, _calcMemAllocate.calcMemAllocate)(_calc.CalcType.Min, 10000, function () {
       iterateIterables((0, _Variants.treeToSequenceVariants)(tree));
-    });
+    }).toString());
   });
   (0, _Mocha.it)('perf', function () {
     var result = (0, _rdtsc.calcPerformance)(10000, function () {// no operations

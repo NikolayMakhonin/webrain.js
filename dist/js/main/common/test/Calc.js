@@ -6,7 +6,6 @@ exports.__esModule = true;
 exports.calcMin = calcMin;
 exports.calcStat = calcStat;
 exports.calc = calc;
-exports.calcMemAllocate = calcMemAllocate;
 exports.CalcType = exports.CalcStatReport = void 0;
 
 var _concat = _interopRequireDefault(require("@babel/runtime-corejs3/core-js-stable/instance/concat"));
@@ -40,6 +39,18 @@ function () {
       for (var j = 0, len = this.averageValue.length; j < len; j++) {
         result.averageValue[j] -= other.averageValue[j];
         result.standardDeviation[j] += other.standardDeviation[j];
+      }
+
+      return result;
+    }
+  }, {
+    key: "scale",
+    value: function scale(coef) {
+      var result = this.clone();
+
+      for (var j = 0, len = this.averageValue.length; j < len; j++) {
+        result.averageValue[j] *= coef;
+        result.standardDeviation[j] *= coef;
       }
 
       return result;
@@ -179,34 +190,4 @@ function calc(calcType, countTests, testFunc) {
     default:
       throw new Error('Unknown CalcType: ' + calcType);
   }
-}
-
-function _calcMemAllocate(calcType, countTests, testFunc) {
-  var _context3;
-
-  for (var _len5 = arguments.length, testFuncArgs = new Array(_len5 > 3 ? _len5 - 3 : 0), _key4 = 3; _key4 < _len5; _key4++) {
-    testFuncArgs[_key4 - 3] = arguments[_key4];
-  }
-
-  return calc.apply(void 0, (0, _concat.default)(_context3 = [calcType, countTests, function () {
-    var heapUsed = process.memoryUsage().heapUsed;
-    testFunc.apply(void 0, arguments);
-    heapUsed = process.memoryUsage().heapUsed - heapUsed;
-    return heapUsed < 0 ? null : [heapUsed];
-  }]).call(_context3, testFuncArgs));
-}
-
-function calcMemAllocate(calcType, countTests, testFunc) {
-  var _context4, _context5;
-
-  for (var _len6 = arguments.length, testFuncArgs = new Array(_len6 > 3 ? _len6 - 3 : 0), _key5 = 3; _key5 < _len6; _key5++) {
-    testFuncArgs[_key5 - 3] = arguments[_key5];
-  }
-
-  // tslint:disable-next-line:no-empty
-  var zero = _calcMemAllocate.apply(void 0, (0, _concat.default)(_context4 = [calcType, countTests, function () {}]).call(_context4, testFuncArgs));
-
-  var value = _calcMemAllocate.apply(void 0, (0, _concat.default)(_context5 = [calcType, countTests, testFunc]).call(_context5, testFuncArgs));
-
-  console.log(value.subtract(zero).toString());
 }

@@ -60,6 +60,7 @@ var _marked =
 /*#__PURE__*/
 _regenerator.default.mark(deSerializeIterableOrdered);
 
+// region SerializerVisitor
 var SerializerVisitor =
 /*#__PURE__*/
 function () {

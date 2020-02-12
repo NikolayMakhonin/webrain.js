@@ -70,7 +70,6 @@
       <change beforePath="$PROJECT_DIR$/dist/types/common/rx/deferred-calc/DeferredCalc.d.ts" beforeDir="false" afterPath="$PROJECT_DIR$/dist/types/common/rx/deferred-calc/DeferredCalc.d.ts" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/dist/types/common/rx/object/ObservableClass.d.ts" beforeDir="false" afterPath="$PROJECT_DIR$/dist/types/common/rx/object/ObservableClass.d.ts" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/dist/types/common/test/Calc.d.ts" beforeDir="false" afterPath="$PROJECT_DIR$/dist/types/common/test/Calc.d.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/common/rx/depend/all.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/common/rx/depend/all.ts" afterDir="false" />
     </list>
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
     <option name="SHOW_DIALOG" value="false" />
@@ -166,7 +165,7 @@
       </list>
     </option>
   </component>
-  <component name="RunManager" selected="Mocha.common &gt; main &gt; rx &gt; depend &gt; dependent-func.base">
+  <component name="RunManager" selected="Mocha.Watch">
     <configuration default="true" type="JavaScriptTestRunnerKarma">
       <config-file value="$PROJECT_DIR$/env/karma/configs/dev.js" />
       <karma-package-dir value="$PROJECT_DIR$/node_modules/karma" />
@@ -391,9 +390,9 @@
       <item itemvalue="Mocha.dependent-func" />
       <item itemvalue="Mocha.node &gt; v8 &gt; parser" />
       <item itemvalue="Mocha.dependent-func (perf)" />
-      <item itemvalue="npm.Coverage Mocha Report" />
       <item itemvalue="Mocha.dependent-func.perceptron memory recalc" />
       <item itemvalue="Mocha.common &gt; main &gt; rx &gt; depend &gt; dependent-func.base" />
+      <item itemvalue="npm.Coverage Mocha Report" />
     </list>
     <recent_temporary>
       <list>
@@ -411,13 +410,6 @@
       <option name="number" value="Default" />
       <option name="presentableId" value="Default" />
       <updated>1567687848586</updated>
-    </task>
-    <task id="LOCAL-00195" summary="Develop dependentFunc">
-      <created>1580994264779</created>
-      <option name="number" value="00195" />
-      <option name="presentableId" value="LOCAL-00195" />
-      <option name="project" value="LOCAL" />
-      <updated>1580994264779</updated>
     </task>
     <task id="LOCAL-00196" summary="Develop dependentFunc">
       <created>1580998176125</created>
@@ -755,7 +747,14 @@
       <option name="project" value="LOCAL" />
       <updated>1581519559506</updated>
     </task>
-    <option name="localTasksCounter" value="244" />
+    <task id="LOCAL-00244" summary="dependent-funcs v8 optimization in process...">
+      <created>1581527988904</created>
+      <option name="number" value="00244" />
+      <option name="presentableId" value="LOCAL-00244" />
+      <option name="project" value="LOCAL" />
+      <updated>1581527988904</updated>
+    </task>
+    <option name="localTasksCounter" value="245" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -837,12 +836,12 @@
     <MESSAGE value="dependent-funcs v8 optimization in process... Add check funcs optimization status" />
     <MESSAGE value="dependent-funcs v8 optimization in process... Added v8 funcs wrappers with .d.ts file" />
     <MESSAGE value="dependent-funcs v8 optimization in process... v8 tests OK." />
-    <MESSAGE value="dependent-funcs v8 optimization in process..." />
     <MESSAGE value="dependent-funcs v8 optimization in process... Tests OK." />
     <MESSAGE value="dependent-funcs v8 optimization in process... Test performance with inlined functions..." />
     <MESSAGE value="dependent-funcs v8 optimization in process... Pool as linked list is fail&#10;&#10;Pool as Array: [ 924, 5693 ] ticks&#10;Pool as LinkedList: [ 1406, 6091, -395 ]," />
     <MESSAGE value="dependent-funcs v8 optimization in process... Rollback &quot;pool as linked list&quot;" />
-    <option name="LAST_COMMIT_MESSAGE" value="dependent-funcs v8 optimization in process... Rollback &quot;pool as linked list&quot;" />
+    <MESSAGE value="dependent-funcs v8 optimization in process..." />
+    <option name="LAST_COMMIT_MESSAGE" value="dependent-funcs v8 optimization in process..." />
   </component>
   <component name="XDebuggerManager">
     <breakpoint-manager>
@@ -855,19 +854,16 @@
         <line-breakpoint enabled="true" type="javascript">
           <url>file://$PROJECT_DIR$/dist/js/test/tests/node/v8/src/helpers/node_latest/helpers.js</url>
           <line>8</line>
-          <properties lambdaOrdinal="-1" />
           <option name="timeStamp" value="343" />
         </line-breakpoint>
         <line-breakpoint enabled="true" type="javascript">
           <url>file://$PROJECT_DIR$/dist/js/main/common/test/unhandledErrors.js</url>
           <line>52</line>
-          <properties lambdaOrdinal="-1" />
           <option name="timeStamp" value="354" />
         </line-breakpoint>
         <line-breakpoint enabled="true" type="javascript">
           <url>file://$PROJECT_DIR$/dist/js/main/common/test/Assert.js</url>
           <line>240</line>
-          <properties lambdaOrdinal="-1" />
           <option name="timeStamp" value="355" />
         </line-breakpoint>
       </breakpoints>

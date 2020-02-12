@@ -12,6 +12,7 @@ var _classCallCheck2 = _interopRequireDefault(require("@babel/runtime-corejs3/he
 
 var _Mocha = require("../../../../main/common/test/Mocha");
 
+/* eslint-disable no-new,new-cap */
 (0, _Mocha.describe)('common > env > modules', function () {
   (0, _Mocha.it)('class', function () {
     var x = function x() {

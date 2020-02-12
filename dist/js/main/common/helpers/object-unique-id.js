@@ -3,6 +3,7 @@
 var _interopRequireDefault = require("@babel/runtime-corejs3/helpers/interopRequireDefault");
 
 exports.__esModule = true;
+exports.getNextObjectId = getNextObjectId;
 exports.hasObjectUniqueId = hasObjectUniqueId;
 exports.canHaveUniqueId = canHaveUniqueId;
 exports.getObjectUniqueId = getObjectUniqueId;
@@ -16,6 +17,11 @@ var _defineProperty = _interopRequireDefault(require("@babel/runtime-corejs3/cor
 var _isFrozen = _interopRequireDefault(require("@babel/runtime-corejs3/core-js-stable/object/is-frozen"));
 
 var nextObjectId = 1;
+
+function getNextObjectId() {
+  return nextObjectId++;
+}
+
 var UNIQUE_ID_PROPERTY_NAME = '458d576952bc489ab45e98ac7f296fd9';
 
 function hasObjectUniqueId(object) {
@@ -42,7 +48,7 @@ function getObjectUniqueId(object) {
     return null;
   }
 
-  var uniqueId = nextObjectId++;
+  var uniqueId = getNextObjectId();
   (0, _defineProperty.default)(object, UNIQUE_ID_PROPERTY_NAME, {
     enumerable: false,
     configurable: false,

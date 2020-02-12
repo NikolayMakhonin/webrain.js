@@ -33,7 +33,7 @@ export { webrainOptions } from './helpers/webrainOptions';
 export { CalcPropertyState } from './rx/object/properties/CalcProperty';
 export { ConnectorState } from './rx/object/properties/Connector';
 export { ValueChangeType } from './rx/deep-subscribe/contracts/common';
-export { resolveAsyncAll, resolveAsyncAny } from './async/ThenableSync';
+export { resolveAsync, resolveAsyncFunc, resolveAsyncAll, resolveAsyncAny } from './async/ThenableSync';
 export { dependenciesSubscriber } from './rx/object/properties/DependenciesBuilder';
 export { CalcStat } from './helpers/CalcStat';
 export { VALUE_PROPERTY_DEFAULT } from './helpers/value-property';
@@ -42,6 +42,8 @@ export { RuleBuilder } from './rx/deep-subscribe/RuleBuilder';
 export * from './test/Assert';
 export * from './test/Mocha';
 export * from './test/unhandledErrors';
-export { delay } from './time/helpers';
+export { delay, performanceNow } from './time/helpers';
 export { TimeLimit } from './time/TimeLimit';
-export { TimeLimits } from './time/TimeLimits'; // Interfaces:
+export { TimeLimits } from './time/TimeLimits';
+export { Random } from './random/Random';
+export { DeepCloneEqual } from './test/DeepCloneEqual'; // Interfaces:

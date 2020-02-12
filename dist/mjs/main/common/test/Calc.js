@@ -18,6 +18,17 @@ export class CalcStatReport {
     return result;
   }
 
+  scale(coef) {
+    const result = this.clone();
+
+    for (let j = 0, len = this.averageValue.length; j < len; j++) {
+      result.averageValue[j] *= coef;
+      result.standardDeviation[j] *= coef;
+    }
+
+    return result;
+  }
+
   toString() {
     const report = Array(this.averageValue.length);
 
@@ -123,22 +134,4 @@ export function calc(calcType, countTests, testFunc, ...args) {
     default:
       throw new Error('Unknown CalcType: ' + calcType);
   }
-}
-
-function _calcMemAllocate(calcType, countTests, testFunc, ...testFuncArgs) {
-  return calc(calcType, countTests, (...args) => {
-    let heapUsed = process.memoryUsage().heapUsed;
-    testFunc(...args);
-    heapUsed = process.memoryUsage().heapUsed - heapUsed;
-    return heapUsed < 0 ? null : [heapUsed];
-  }, ...testFuncArgs);
-}
-
-export function calcMemAllocate(calcType, countTests, testFunc, ...testFuncArgs) {
-  // tslint:disable-next-line:no-empty
-  const zero = _calcMemAllocate(calcType, countTests, (...args) => {}, ...testFuncArgs);
-
-  const value = _calcMemAllocate(calcType, countTests, testFunc, ...testFuncArgs);
-
-  console.log(value.subtract(zero).toString());
 }

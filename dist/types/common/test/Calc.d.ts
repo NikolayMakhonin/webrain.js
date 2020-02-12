@@ -9,6 +9,7 @@ export declare class CalcStatReport {
     });
     clone(): CalcStatReport;
     subtract(other: CalcStatReport): CalcStatReport;
+    scale(coef: number): CalcStatReport;
     toString(): string;
 }
 export declare enum CalcType {
@@ -18,4 +19,3 @@ export declare enum CalcType {
 export declare function calcMin(countTests: number, testFunc: (...args: any[]) => Array<number | BigInt> | null, ...args: any[]): CalcStatReport;
 export declare function calcStat(countTests: number, testFunc: (...args: any[]) => Array<number | BigInt> | null, ...args: any[]): CalcStatReport;
 export declare function calc(calcType: CalcType, countTests: number, testFunc: (...args: any[]) => Array<number | BigInt> | null, ...args: any[]): CalcStatReport;
-export declare function calcMemAllocate(calcType: CalcType, countTests: number, testFunc: (...args: any[]) => void, ...testFuncArgs: any[]): void;

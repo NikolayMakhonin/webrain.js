@@ -20,7 +20,9 @@ var _ObservableClass2 = require("../../../main/common/rx/object/ObservableClass"
 
 var _ObservableObjectBuilder = require("../../../main/common/rx/object/ObservableObjectBuilder");
 
-var _Calc = require("../../../main/common/test/Calc");
+var _calc = require("../../../main/common/test/calc");
+
+var _calcMemAllocate = require("../../../main/common/test/calc-mem-allocate");
 
 var _Mocha = require("../../../main/common/test/Mocha");
 
@@ -147,10 +149,10 @@ var _Mocha = require("../../../main/common/test/Mocha");
       observableObject.propertyChanged.subscribe(function (v) {});
     }).observableObject1;
     object.prop = 1;
-    (0, _Calc.calcMemAllocate)(_Calc.CalcType.Min, 10000, function () {
+    console.log((0, _calcMemAllocate.calcMemAllocate)(_calc.CalcType.Min, 10000, function () {
       // 48 bytes for create event
       object.prop++;
-    });
+    }).toString());
   });
   (0, _Mocha.it)('deepSubscribe memory', function () {
     // 48 | 0
@@ -173,14 +175,14 @@ var _Mocha = require("../../../main/common/test/Mocha");
     var value1 = {};
     var value2 = {};
     object.prop = 1;
-    (0, _Calc.calcMemAllocate)(_Calc.CalcType.Min, 10000, function () {
+    console.log((0, _calcMemAllocate.calcMemAllocate)(_calc.CalcType.Min, 10000, function () {
       // 48 bytes for create event
       // 56 bytes for create unsubscribe function
       object.prop = object.prop === value1 ? value2 : value1;
-    });
+    }).toString());
   });
   (0, _Mocha.it)('test memory', function () {
-    (0, _Calc.calcMemAllocate)(_Calc.CalcType.Min, 10000, function () {
+    console.log((0, _calcMemAllocate.calcMemAllocate)(_calc.CalcType.Min, 10000, function () {
       var value;
 
       function calcValue() {
@@ -189,7 +191,7 @@ var _Mocha = require("../../../main/common/test/Mocha");
 
       calcValue();
       return value;
-    });
+    }).toString());
   });
   (0, _Mocha.it)('test event as object or arguments', function () {
     var value1;
@@ -244,16 +246,16 @@ var _Mocha = require("../../../main/common/test/Mocha");
       });
     });
     heapUsed = process.memoryUsage().heapUsed - heapUsed;
-    (0, _Calc.calcMemAllocate)(_Calc.CalcType.Min, 10000, function () {
+    console.log((0, _calcMemAllocate.calcMemAllocate)(_calc.CalcType.Min, 10000, function () {
       change1('prop', i++, i++);
-    });
-    (0, _Calc.calcMemAllocate)(_Calc.CalcType.Min, 10000, function () {
+    }).toString());
+    console.log((0, _calcMemAllocate.calcMemAllocate)(_calc.CalcType.Min, 10000, function () {
       change2({
         name: 'prop',
         newValue: i++,
         oldValue: i++
       });
-    });
+    }).toString());
     console.log('value1: ', value1);
     console.log('value2: ', value2);
     console.log('Memory used: ', heapUsed);

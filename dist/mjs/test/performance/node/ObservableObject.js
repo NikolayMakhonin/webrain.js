@@ -4,7 +4,8 @@ import { calcPerformance } from 'rdtsc';
 import { deepSubscribe } from '../../../main/common/rx/deep-subscribe/deep-subscribe';
 import { ObservableClass } from '../../../main/common/rx/object/ObservableClass';
 import { ObservableObjectBuilder } from '../../../main/common/rx/object/ObservableObjectBuilder';
-import { calcMemAllocate, CalcType } from '../../../main/common/test/Calc';
+import { CalcType } from '../../../main/common/test/calc';
+import { calcMemAllocate } from '../../../main/common/test/calc-mem-allocate';
 import { describe, it } from '../../../main/common/test/Mocha';
 describe('ObservableClass', function () {
   this.timeout(300000);
@@ -113,10 +114,10 @@ describe('ObservableClass', function () {
       observableObject.propertyChanged.subscribe(v => {});
     }).observableObject1;
     object.prop = 1;
-    calcMemAllocate(CalcType.Min, 10000, () => {
+    console.log(calcMemAllocate(CalcType.Min, 10000, () => {
       // 48 bytes for create event
       object.prop++;
-    });
+    }).toString());
   });
   it('deepSubscribe memory', function () {
     // 48 | 0
@@ -133,14 +134,14 @@ describe('ObservableClass', function () {
     const value1 = {};
     const value2 = {};
     object.prop = 1;
-    calcMemAllocate(CalcType.Min, 10000, () => {
+    console.log(calcMemAllocate(CalcType.Min, 10000, () => {
       // 48 bytes for create event
       // 56 bytes for create unsubscribe function
       object.prop = object.prop === value1 ? value2 : value1;
-    });
+    }).toString());
   });
   it('test memory', function () {
-    calcMemAllocate(CalcType.Min, 10000, () => {
+    console.log(calcMemAllocate(CalcType.Min, 10000, () => {
       let value;
 
       function calcValue() {
@@ -149,7 +150,7 @@ describe('ObservableClass', function () {
 
       calcValue();
       return value;
-    });
+    }).toString());
   });
   it('test event as object or arguments', function () {
     let value1;
@@ -202,16 +203,16 @@ describe('ObservableClass', function () {
       oldValue: i++
     }));
     heapUsed = process.memoryUsage().heapUsed - heapUsed;
-    calcMemAllocate(CalcType.Min, 10000, () => {
+    console.log(calcMemAllocate(CalcType.Min, 10000, () => {
       change1('prop', i++, i++);
-    });
-    calcMemAllocate(CalcType.Min, 10000, () => {
+    }).toString());
+    console.log(calcMemAllocate(CalcType.Min, 10000, () => {
       change2({
         name: 'prop',
         newValue: i++,
         oldValue: i++
       });
-    });
+    }).toString());
     console.log('value1: ', value1);
     console.log('value2: ', value2);
     console.log('Memory used: ', heapUsed);

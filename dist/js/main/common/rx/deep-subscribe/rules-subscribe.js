@@ -4,7 +4,8 @@ var _interopRequireDefault = require("@babel/runtime-corejs3/helpers/interopRequ
 
 exports.__esModule = true;
 exports.hasDefaultProperty = hasDefaultProperty;
-exports.RuleSubscribeCollection = exports.RuleSubscribeMap = exports.RuleSubscribeObject = exports.RuleSubscribe = exports.SubscribeObjectType = void 0;
+exports.getChangeId = getChangeId;
+exports.RuleSubscribeChange = exports.RuleSubscribeCollection = exports.RuleSubscribeMap = exports.RuleSubscribeObject = exports.RuleSubscribe = exports.SubscribeObjectType = void 0;
 
 var _indexOf = _interopRequireDefault(require("@babel/runtime-corejs3/core-js-stable/instance/index-of"));
 
@@ -665,6 +666,65 @@ function subscribeCollection(object, immediateSubscribe, changeItem, propertiesP
     }
   };
 } // endregion
+// region subscribeChange
+
+
+var _changeId = 0;
+
+function getChangeId() {
+  return ++_changeId;
+}
+
+function subscribeChange(object, immediateSubscribe, changeItem, propertiesPath, rule) {
+  if (!object) {
+    return null;
+  }
+
+  var propertyChanged = object.propertyChanged,
+      listChanged = object.listChanged,
+      setChanged = object.setChanged,
+      mapChanged = object.mapChanged;
+
+  if (!propertyChanged && !listChanged && !setChanged && !mapChanged) {
+    return null;
+  }
+
+  var changeId;
+
+  var onChange = function onChange() {
+    if (changeId != null) {
+      var oldValue = changeId;
+      changeId = getChangeId();
+      changeItem(null, oldValue, changeId, _common.ValueChangeType.Changed, _common.ValueKeyType.ChangeCount);
+    }
+  };
+
+  var unsubscribeObject = propertyChanged && propertyChanged.subscribe(onChange);
+  var unsubscribeList = listChanged && listChanged.subscribe(onChange);
+  var unsubscribeSet = setChanged && setChanged.subscribe(onChange);
+  var unsubscribeMap = mapChanged && mapChanged.subscribe(onChange);
+  changeId = getChangeId();
+  changeItem(null, void 0, changeId, _common.ValueChangeType.Subscribe, _common.ValueKeyType.ChangeCount);
+  return function () {
+    if (unsubscribeObject) {
+      unsubscribeObject();
+    }
+
+    if (unsubscribeList) {
+      unsubscribeList();
+    }
+
+    if (unsubscribeSet) {
+      unsubscribeSet();
+    }
+
+    if (unsubscribeMap) {
+      unsubscribeMap();
+    }
+
+    changeItem(null, changeId, void 0, _common.ValueChangeType.Unsubscribe, _common.ValueKeyType.ChangeCount);
+  };
+} // endregion
 // endregion
 // region RuleSubscribeObject
 
@@ -895,6 +955,28 @@ function (_RuleSubscribe3) {
 
   return RuleSubscribeCollection;
 }(RuleSubscribe); // endregion
+// region RuleSubscribeChange
 
 
 exports.RuleSubscribeCollection = RuleSubscribeCollection;
+
+var RuleSubscribeChange =
+/*#__PURE__*/
+function (_RuleSubscribe4) {
+  (0, _inherits2.default)(RuleSubscribeChange, _RuleSubscribe4);
+
+  function RuleSubscribeChange(description) {
+    var _this4;
+
+    (0, _classCallCheck2.default)(this, RuleSubscribeChange);
+    _this4 = (0, _possibleConstructorReturn2.default)(this, (0, _getPrototypeOf2.default)(RuleSubscribeChange).call(this, description)); // @ts-ignore
+
+    _this4.subscribe = subscribeChange;
+    return _this4;
+  }
+
+  return RuleSubscribeChange;
+}(RuleSubscribe); // endregion
+
+
+exports.RuleSubscribeChange = RuleSubscribeChange;

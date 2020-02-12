@@ -41,6 +41,8 @@ export interface IRuleBuilder<TObject = any, TValueKeys extends string | number 
     ruleFirst: IRule;
     ruleLast: IRule;
     result(): IRule;
+    changeValuePropertyDefault(propertyName: string): this;
+    noAutoRules(): this;
     valuePropertyDefault<TValue>(): IRuleBuilder<TValue, TValueKeys>;
     rule<TValue>(rule: IRule): IRuleBuilder<TValue, TValueKeys>;
     ruleSubscribe<TValue>(ruleSubscribe: IRuleSubscribe<TObject, TValue>, description?: string): IRuleBuilder<TValue, TValueKeys>;
@@ -90,6 +92,7 @@ export interface IRuleBuilder<TObject = any, TValueKeys extends string | number 
      * IListChanged & Iterable, ISetChanged & Iterable, IMapChanged & Iterable, Iterable
      */
     collection<TValue = IterableValueOf<TObject>>(): IRuleBuilder<TValue, TValueKeys>;
+    change(): IRuleBuilder<number, TValueKeys>;
     /**
      * IMapChanged & Map, Map
      */

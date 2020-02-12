@@ -19,29 +19,8 @@ function () {
     this._canBeCalcCallback = canBeCalcCallback;
     this._calcFunc = calcFunc;
     this._calcCompletedCallback = calcCompletedCallback;
-
-    if (options) {
-      if (options.minTimeBetweenCalc) {
-        this._minTimeBetweenCalc = options.minTimeBetweenCalc;
-      }
-
-      if (options.throttleTime) {
-        this._throttleTime = options.throttleTime;
-      }
-
-      if (options.maxThrottleTime != null) {
-        this._maxThrottleTime = options.maxThrottleTime;
-      }
-
-      if (options.autoInvalidateInterval != null) {
-        this._autoInvalidateInterval = options.autoInvalidateInterval;
-      }
-
-      this._timing = options.timing || _timing2.timingDefault;
-    } else {
-      this._timing = _timing2.timingDefault;
-    }
-
+    this._options = options || {};
+    this._timing = this._options.timing || _timing2.timingDefault;
     this.invalidate();
   } // region Properties
   // region minTimeBetweenCalc
@@ -86,16 +65,18 @@ function () {
   }, {
     key: "_getNextCalcTime",
     value: function _getNextCalcTime() {
-      var _throttleTime = this._throttleTime,
-          _maxThrottleTime = this._maxThrottleTime;
-      var nextCalcTime = this._timeInvalidateLast + (_throttleTime || 0);
+      var _this$_options = this._options,
+          throttleTime = _this$_options.throttleTime,
+          maxThrottleTime = _this$_options.maxThrottleTime,
+          minTimeBetweenCalc = _this$_options.minTimeBetweenCalc;
+      var nextCalcTime = this._timeInvalidateLast + (throttleTime || 0);
 
-      if (_maxThrottleTime != null) {
-        nextCalcTime = Math.min(nextCalcTime, this._timeInvalidateFirst + (_maxThrottleTime || 0));
+      if (maxThrottleTime != null) {
+        nextCalcTime = Math.min(nextCalcTime, this._timeInvalidateFirst + (maxThrottleTime || 0));
       }
 
       if (this._timeCalcEnd) {
-        nextCalcTime = Math.max(nextCalcTime, this._timeCalcEnd + (this._minTimeBetweenCalc || 0));
+        nextCalcTime = Math.max(nextCalcTime, this._timeCalcEnd + (minTimeBetweenCalc || 0));
       }
 
       return nextCalcTime;
@@ -120,10 +101,10 @@ function () {
       // region Auto invalidate
 
 
-      var _autoInvalidateInterval = this._autoInvalidateInterval;
+      var autoInvalidateInterval = this._options.autoInvalidateInterval;
 
-      if (_autoInvalidateInterval != null) {
-        var autoInvalidateTime = Math.max((this._timeCalcStart || 0) + _autoInvalidateInterval, (this._timeInvalidateLast || 0) + _autoInvalidateInterval, now);
+      if (autoInvalidateInterval != null) {
+        var autoInvalidateTime = Math.max((this._timeCalcStart || 0) + autoInvalidateInterval, (this._timeInvalidateLast || 0) + autoInvalidateInterval, now);
 
         if (autoInvalidateTime <= now) {
           this._invalidate();
@@ -218,14 +199,14 @@ function () {
   }, {
     key: "minTimeBetweenCalc",
     get: function get() {
-      return this._minTimeBetweenCalc;
+      return this._options.minTimeBetweenCalc;
     },
     set: function set(value) {
-      if (this._minTimeBetweenCalc === value) {
+      if (this._options.minTimeBetweenCalc === value) {
         return;
       }
 
-      this._minTimeBetweenCalc = value;
+      this._options.minTimeBetweenCalc = value;
 
       this._pulse();
     } // endregion
@@ -234,14 +215,14 @@ function () {
   }, {
     key: "throttleTime",
     get: function get() {
-      return this._throttleTime;
+      return this._options.throttleTime;
     },
     set: function set(value) {
-      if (this._throttleTime === value) {
+      if (this._options.throttleTime === value) {
         return;
       }
 
-      this._throttleTime = value;
+      this._options.throttleTime = value;
 
       this._pulse();
     } // endregion
@@ -250,14 +231,14 @@ function () {
   }, {
     key: "maxThrottleTime",
     get: function get() {
-      return this._maxThrottleTime;
+      return this._options.maxThrottleTime;
     },
     set: function set(value) {
-      if (this._maxThrottleTime === value) {
+      if (this._options.maxThrottleTime === value) {
         return;
       }
 
-      this._maxThrottleTime = value;
+      this._options.maxThrottleTime = value;
 
       this._pulse();
     } // endregion
@@ -266,14 +247,14 @@ function () {
   }, {
     key: "autoInvalidateInterval",
     get: function get() {
-      return this._autoInvalidateInterval;
+      return this._options.autoInvalidateInterval;
     },
     set: function set(value) {
-      if (this._autoInvalidateInterval === value) {
+      if (this._options.autoInvalidateInterval === value) {
         return;
       }
 
-      this._autoInvalidateInterval = value;
+      this._options.autoInvalidateInterval = value;
 
       this._pulse();
     }

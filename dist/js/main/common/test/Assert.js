@@ -51,6 +51,10 @@ function (_Error) {
 exports.AssertionError = AssertionError;
 var deepCloneEqualDefault = new _DeepCloneEqual.DeepCloneEqual();
 
+if (!console.debug) {
+  console.debug = console.info;
+}
+
 var Assert =
 /*#__PURE__*/
 function () {

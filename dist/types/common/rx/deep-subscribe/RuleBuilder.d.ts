@@ -12,6 +12,7 @@ export declare class RuleBuilder<TObject = any, TValueKeys extends string | numb
         valuePropertyDefaultName?: string;
         autoInsertValuePropertyDefault?: boolean;
     });
+    changeValuePropertyDefault(propertyName: string): this;
     noAutoRules(): this;
     result(): IRule;
     valuePropertyDefault<TValue>(): RuleBuilder<TValue, TValueKeys>;
@@ -60,6 +61,7 @@ export declare class RuleBuilder<TObject = any, TValueKeys extends string | numb
      * IListChanged & Iterable, ISetChanged & Iterable, IMapChanged & Iterable, Iterable
      */
     collection<TValue = IterableValueOf<TObject>>(): RuleBuilder<TValue, TValueKeys>;
+    change(): RuleBuilder<number, TValueKeys>;
     /**
      * IMapChanged & Map, Map
      */

@@ -23,7 +23,6 @@ export function ruleTypeToString(ruleType) {
       throw new Error('Unknown RuleType: ' + ruleType);
   }
 }
-export const RULE_STRING_SEPARATOR = ' > ';
 
 function ruleToString(rule, customDescription, nestedRulesStr) {
   const description = customDescription || this.description || ruleTypeToString(this.type);

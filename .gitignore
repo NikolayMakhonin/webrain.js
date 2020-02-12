@@ -71,3 +71,5 @@ dist/sapper
 tmp
 /.idea/libraries/Generated_files.xml
 /package-lock.json
+code.asm
+hydrogen*.cfg

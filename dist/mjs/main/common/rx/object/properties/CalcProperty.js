@@ -44,6 +44,11 @@ export class CalcProperty extends ObservableClass {
       calcOptions = {};
     }
 
+    this.timeSyncStat = new CalcStat();
+    this.timeAsyncStat = new CalcStat();
+    this.timeDebuggerStat = new CalcStat();
+    this.timeEmitEventsStat = new CalcStat();
+    this.timeTotalStat = new CalcStat();
     this._calcFunc = calcFunc;
     this.state = new CalcPropertyState(calcOptions, initValue);
 
@@ -51,11 +56,6 @@ export class CalcProperty extends ObservableClass {
       this.state.name = name;
     }
 
-    this.timeSyncStat = new CalcStat();
-    this.timeAsyncStat = new CalcStat();
-    this.timeDebuggerStat = new CalcStat();
-    this.timeEmitEventsStat = new CalcStat();
-    this.timeTotalStat = new CalcStat();
     this._deferredCalc = new DeferredCalc(() => {
       this.onInvalidated();
     }, done => {

@@ -41,6 +41,8 @@ var _Mocha = require("../../../../../../../main/common/test/Mocha");
 var _TestDeepSubscribe = require("../../deep-subscribe/helpers/src/TestDeepSubscribe");
 
 /* tslint:disable:no-duplicate-string no-empty no-statements-same-line */
+
+/* eslint-disable guard-for-in */
 (0, _Mocha.describe)('common > main > rx > properties > CalcObjectBuilder', function () {
   this.timeout(30000);
 

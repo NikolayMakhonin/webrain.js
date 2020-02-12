@@ -73,6 +73,12 @@ function () {
   }
 
   (0, _createClass2.default)(RuleBuilder, [{
+    key: "changeValuePropertyDefault",
+    value: function changeValuePropertyDefault(propertyName) {
+      this.valuePropertyDefaultName = propertyName;
+      return this;
+    }
+  }, {
     key: "noAutoRules",
     value: function noAutoRules() {
       this.autoInsertValuePropertyDefault = false;
@@ -268,6 +274,11 @@ function () {
     key: "collection",
     value: function collection() {
       return (this.autoInsertValuePropertyDefault ? this.valuePropertyDefault() : this).ruleSubscribe(new _rulesSubscribe.RuleSubscribeCollection(_constants.COLLECTION_PREFIX));
+    }
+  }, {
+    key: "change",
+    value: function change() {
+      return (this.autoInsertValuePropertyDefault ? this.valuePropertyDefault() : this).ruleSubscribe(new _rulesSubscribe.RuleSubscribeChange(_constants.CHANGE_COUNT_PREFIX));
     }
     /**
      * IMapChanged & Map, Map

@@ -1,3 +1,4 @@
+export declare function getNextObjectId(): number;
 export declare function hasObjectUniqueId(object: object): boolean;
 export declare function canHaveUniqueId(object: object): boolean;
 export declare function getObjectUniqueId(object: object): number;

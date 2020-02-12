@@ -2,6 +2,11 @@
 import { DeepCloneEqual } from './DeepCloneEqual';
 export const AssertionError = typeof require === 'function' ? require('assertion-error') : class extends Error {};
 const deepCloneEqualDefault = new DeepCloneEqual();
+
+if (!console.debug) {
+  console.debug = console.info;
+}
+
 export class Assert {
   constructor(deepCloneEqual) {
     this.deepCloneEqual = deepCloneEqual || deepCloneEqualDefault;

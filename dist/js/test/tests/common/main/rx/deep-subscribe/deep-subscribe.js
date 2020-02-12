@@ -12,11 +12,15 @@ var _from = _interopRequireDefault(require("@babel/runtime-corejs3/core-js-stabl
 
 var _concat = _interopRequireDefault(require("@babel/runtime-corejs3/core-js-stable/instance/concat"));
 
+var _map = _interopRequireDefault(require("@babel/runtime-corejs3/core-js-stable/instance/map"));
+
 var _repeat = _interopRequireDefault(require("@babel/runtime-corejs3/core-js-stable/instance/repeat"));
 
 var _isArray = _interopRequireDefault(require("@babel/runtime-corejs3/core-js-stable/array/is-array"));
 
-var _common = require("../../../../../../main/common");
+var _rulesSubscribe = require("../../../../../../main/common/rx/deep-subscribe/rules-subscribe");
+
+var _helpers = require("../../../../../../main/common/time/helpers");
 
 var _valueProperty = require("../../../../../../main/common/helpers/value-property");
 
@@ -62,6 +66,103 @@ var _TestDeepSubscribe = require("./helpers/src/TestDeepSubscribe");
       return ['value2'];
     }).unsubscribe(function (o) {
       return ['value2'];
+    });
+  });
+  (0, _Mocha.it)('change', function () {
+    var changeId = (0, _rulesSubscribe.getChangeId)();
+
+    var changeIds = function changeIds(ids) {
+      return (0, _map.default)(ids).call(ids, function (o) {
+        return o + changeId;
+      });
+    };
+
+    new _TestDeepSubscribe.TestDeepSubscribe({
+      object: (0, _TestDeepSubscribe.createObject)().observableObject,
+      immediate: true,
+      doNotSubscribeNonObjectValues: true
+    }, function (b) {
+      return b.p('observableObject').change();
+    }).subscribe(function (o) {
+      return changeIds([1]);
+    }).unsubscribe(function (o) {
+      return changeIds([1]);
+    }).subscribe(function (o) {
+      return changeIds([2]);
+    }).unsubscribe(function (o) {
+      return changeIds([2]);
+    }).subscribe(function (o) {
+      return changeIds([3]);
+    }).change(function (o) {
+      return o.observableObject.value = 1;
+    }, changeIds([3]), changeIds([4])).unsubscribe(function (o) {
+      return changeIds([4]);
+    });
+    changeId = (0, _rulesSubscribe.getChangeId)();
+    new _TestDeepSubscribe.TestDeepSubscribe({
+      object: (0, _TestDeepSubscribe.createObject)().observableObject,
+      immediate: true,
+      doNotSubscribeNonObjectValues: true
+    }, function (b) {
+      return b.p('observableList').change();
+    }).subscribe(function (o) {
+      return changeIds([1]);
+    }).unsubscribe(function (o) {
+      return changeIds([1]);
+    }).subscribe(function (o) {
+      return changeIds([2]);
+    }).unsubscribe(function (o) {
+      return changeIds([2]);
+    }).subscribe(function (o) {
+      return changeIds([3]);
+    }).change(function (o) {
+      return o.observableList.add(o);
+    }, changeIds([3, 4]), changeIds([4, 5])).unsubscribe(function (o) {
+      return changeIds([5]);
+    });
+    changeId = (0, _rulesSubscribe.getChangeId)();
+    new _TestDeepSubscribe.TestDeepSubscribe({
+      object: (0, _TestDeepSubscribe.createObject)().observableObject,
+      immediate: true,
+      doNotSubscribeNonObjectValues: true
+    }, function (b) {
+      return b.p('observableSet').change();
+    }).subscribe(function (o) {
+      return changeIds([1]);
+    }).unsubscribe(function (o) {
+      return changeIds([1]);
+    }).subscribe(function (o) {
+      return changeIds([2]);
+    }).unsubscribe(function (o) {
+      return changeIds([2]);
+    }).subscribe(function (o) {
+      return changeIds([3]);
+    }).change(function (o) {
+      return o.observableSet.delete(o);
+    }, changeIds([3, 4]), changeIds([4, 5])).unsubscribe(function (o) {
+      return changeIds([5]);
+    });
+    changeId = (0, _rulesSubscribe.getChangeId)();
+    new _TestDeepSubscribe.TestDeepSubscribe({
+      object: (0, _TestDeepSubscribe.createObject)().observableObject,
+      immediate: true,
+      doNotSubscribeNonObjectValues: true
+    }, function (b) {
+      return b.p('observableMap').change();
+    }).subscribe(function (o) {
+      return changeIds([1]);
+    }).unsubscribe(function (o) {
+      return changeIds([1]);
+    }).subscribe(function (o) {
+      return changeIds([2]);
+    }).unsubscribe(function (o) {
+      return changeIds([2]);
+    }).subscribe(function (o) {
+      return changeIds([3]);
+    }).change(function (o) {
+      return o.observableMap.delete('property');
+    }, changeIds([3, 4]), changeIds([4, 5])).unsubscribe(function (o) {
+      return changeIds([5]);
     });
   });
   (0, _Mocha.it)('repeat with condition', function () {
@@ -1265,7 +1366,7 @@ var _TestDeepSubscribe = require("./helpers/src/TestDeepSubscribe");
 
           case 5:
             _context14.next = 7;
-            return (0, _common.delay)(20);
+            return (0, _helpers.delay)(20);
 
           case 7:
             _context14.next = 9;
@@ -1275,7 +1376,7 @@ var _TestDeepSubscribe = require("./helpers/src/TestDeepSubscribe");
 
           case 9:
             _context14.next = 11;
-            return (0, _common.delay)(20);
+            return (0, _helpers.delay)(20);
 
           case 11:
             _context14.next = 13;
@@ -1283,7 +1384,7 @@ var _TestDeepSubscribe = require("./helpers/src/TestDeepSubscribe");
 
           case 13:
             _context14.next = 15;
-            return (0, _common.delay)(100);
+            return (0, _helpers.delay)(100);
 
           case 15:
           case "end":
@@ -1319,7 +1420,7 @@ var _TestDeepSubscribe = require("./helpers/src/TestDeepSubscribe");
 
           case 5:
             _context15.next = 7;
-            return (0, _common.delay)(20);
+            return (0, _helpers.delay)(20);
 
           case 7:
             _context15.next = 9;
@@ -1329,7 +1430,7 @@ var _TestDeepSubscribe = require("./helpers/src/TestDeepSubscribe");
 
           case 9:
             _context15.next = 11;
-            return (0, _common.delay)(20);
+            return (0, _helpers.delay)(20);
 
           case 11:
             _context15.next = 13;
@@ -1337,7 +1438,7 @@ var _TestDeepSubscribe = require("./helpers/src/TestDeepSubscribe");
 
           case 13:
             _context15.next = 15;
-            return (0, _common.delay)(100);
+            return (0, _helpers.delay)(100);
 
           case 15:
           case "end":

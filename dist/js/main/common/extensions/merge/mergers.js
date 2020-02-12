@@ -47,6 +47,7 @@ var _mergeMaps = require("./merge-maps");
 var _mergeSets = require("./merge-sets");
 
 /* tslint:disable:no-nested-switch ban-types use-primitive-type */
+// region MergerVisitor
 var ValueState =
 /*#__PURE__*/
 function () {

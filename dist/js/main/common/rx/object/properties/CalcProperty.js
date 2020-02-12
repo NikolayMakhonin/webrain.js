@@ -95,6 +95,11 @@ function (_ObservableClass2) {
       calcOptions = {};
     }
 
+    _this2.timeSyncStat = new _CalcStat.CalcStat();
+    _this2.timeAsyncStat = new _CalcStat.CalcStat();
+    _this2.timeDebuggerStat = new _CalcStat.CalcStat();
+    _this2.timeEmitEventsStat = new _CalcStat.CalcStat();
+    _this2.timeTotalStat = new _CalcStat.CalcStat();
     _this2._calcFunc = calcFunc;
     _this2.state = new CalcPropertyState(calcOptions, initValue);
 
@@ -102,11 +107,6 @@ function (_ObservableClass2) {
       _this2.state.name = name;
     }
 
-    _this2.timeSyncStat = new _CalcStat.CalcStat();
-    _this2.timeAsyncStat = new _CalcStat.CalcStat();
-    _this2.timeDebuggerStat = new _CalcStat.CalcStat();
-    _this2.timeEmitEventsStat = new _CalcStat.CalcStat();
-    _this2.timeTotalStat = new _CalcStat.CalcStat();
     _this2._deferredCalc = new _DeferredCalc.DeferredCalc(function () {
       _this2.onInvalidated();
     }, function (done) {

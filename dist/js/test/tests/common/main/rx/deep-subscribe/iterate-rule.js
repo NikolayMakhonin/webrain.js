@@ -20,7 +20,7 @@ var _getIterator2 = _interopRequireDefault(require("@babel/runtime-corejs3/core-
 
 var _isArray = _interopRequireDefault(require("@babel/runtime-corejs3/core-js-stable/array/is-array"));
 
-var _common = require("../../../../../../main/common");
+var _helpers = require("../../../../../../main/common/helpers/helpers");
 
 var _rules = require("../../../../../../main/common/rx/deep-subscribe/contracts/rules");
 
@@ -35,6 +35,8 @@ var _Assert = require("../../../../../../main/common/test/Assert");
 var _Mocha = require("../../../../../../main/common/test/Mocha");
 
 /* tslint:disable:no-shadowed-variable no-empty */
+
+/* eslint-disable no-useless-escape,computed-property-spacing */
 (0, _Mocha.describe)('common > main > rx > deep-subscribe > iterate-rule', function () {
   var _marked =
   /*#__PURE__*/
@@ -96,7 +98,7 @@ var _Mocha = require("../../../../../../main/common/test/Mocha");
       };
     }
 
-    var isFork = (0, _common.isIterable)(iteration.value);
+    var isFork = (0, _helpers.isIterable)(iteration.value);
 
     if (isFork) {
       _Assert.assert.notOk(prevIsFork);

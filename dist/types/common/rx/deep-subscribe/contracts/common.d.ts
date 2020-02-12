@@ -11,7 +11,8 @@ export declare enum ValueKeyType {
     Property = 0,
     ValueProperty = 1,
     MapKey = 2,
-    CollectionAny = 3
+    CollectionAny = 3,
+    ChangeCount = 4
 }
 export declare type IChangeValue<TValue> = (key: any, oldValue: TValue, newValue: TValue, parent: any, changeType: ValueChangeType, keyType: ValueKeyType, propertiesPath: IPropertiesPath, rule: IRule, isUnsubscribed?: boolean) => IUnsubscribeOrVoid;
 export interface IPropertiesPath {

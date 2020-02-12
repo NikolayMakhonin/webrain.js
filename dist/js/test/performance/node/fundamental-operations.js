@@ -9,10 +9,6 @@ var _asyncToGenerator2 = _interopRequireDefault(require("@babel/runtime-corejs3/
 
 var _now = _interopRequireDefault(require("@babel/runtime-corejs3/core-js-stable/date/now"));
 
-var _classCallCheck2 = _interopRequireDefault(require("@babel/runtime-corejs3/helpers/classCallCheck"));
-
-var _createClass2 = _interopRequireDefault(require("@babel/runtime-corejs3/helpers/createClass"));
-
 var _freeze = _interopRequireDefault(require("@babel/runtime-corejs3/core-js-stable/object/freeze"));
 
 var _keys = _interopRequireDefault(require("@babel/runtime-corejs3/core-js-stable/object/keys"));
@@ -20,10 +16,6 @@ var _keys = _interopRequireDefault(require("@babel/runtime-corejs3/core-js-stabl
 var _isIterable2 = _interopRequireDefault(require("@babel/runtime-corejs3/core-js/is-iterable"));
 
 var _getIteratorMethod2 = _interopRequireDefault(require("@babel/runtime-corejs3/core-js/get-iterator-method"));
-
-var _regenerator = _interopRequireDefault(require("@babel/runtime-corejs3/regenerator"));
-
-var _iterator4 = _interopRequireDefault(require("@babel/runtime-corejs3/core-js-stable/symbol/iterator"));
 
 var _defineProperty = _interopRequireDefault(require("@babel/runtime-corejs3/core-js-stable/object/define-property"));
 
@@ -33,9 +25,23 @@ var _repeat = _interopRequireDefault(require("@babel/runtime-corejs3/core-js-sta
 
 var _create = _interopRequireDefault(require("@babel/runtime-corejs3/core-js-stable/object/create"));
 
+var _iterator4 = _interopRequireDefault(require("@babel/runtime-corejs3/core-js-stable/symbol/iterator"));
+
+var _classCallCheck2 = _interopRequireDefault(require("@babel/runtime-corejs3/helpers/classCallCheck"));
+
+var _createClass2 = _interopRequireDefault(require("@babel/runtime-corejs3/helpers/createClass"));
+
+var _regenerator = _interopRequireDefault(require("@babel/runtime-corejs3/regenerator"));
+
+var _map = _interopRequireDefault(require("@babel/runtime-corejs3/core-js-stable/map"));
+
+var _values = _interopRequireDefault(require("@babel/runtime-corejs3/core-js-stable/instance/values"));
+
 var _indexOf = _interopRequireDefault(require("@babel/runtime-corejs3/core-js-stable/instance/index-of"));
 
-var _values = _interopRequireDefault(require("@babel/runtime-corejs3/core-js-stable/object/values"));
+var _values2 = _interopRequireDefault(require("@babel/runtime-corejs3/core-js-stable/object/values"));
+
+var _weakSet = _interopRequireDefault(require("@babel/runtime-corejs3/core-js-stable/weak-set"));
 
 var _concat = _interopRequireDefault(require("@babel/runtime-corejs3/core-js-stable/instance/concat"));
 
@@ -43,7 +49,7 @@ var _stringify = _interopRequireDefault(require("@babel/runtime-corejs3/core-js-
 
 var _sort = _interopRequireDefault(require("@babel/runtime-corejs3/core-js-stable/instance/sort"));
 
-var _map = _interopRequireDefault(require("@babel/runtime-corejs3/core-js-stable/instance/map"));
+var _map2 = _interopRequireDefault(require("@babel/runtime-corejs3/core-js-stable/instance/map"));
 
 var _splice = _interopRequireDefault(require("@babel/runtime-corejs3/core-js-stable/instance/splice"));
 
@@ -54,6 +60,8 @@ var _getIterator2 = _interopRequireDefault(require("@babel/runtime-corejs3/core-
 var _isArray4 = _interopRequireDefault(require("@babel/runtime-corejs3/core-js-stable/array/is-array"));
 
 var _set = _interopRequireDefault(require("@babel/runtime-corejs3/core-js-stable/set"));
+
+var _immutable = require("immutable");
 
 var _rdtsc = require("rdtsc");
 
@@ -66,6 +74,8 @@ var _ThenableSync = require("../../../main/common/async/ThenableSync");
 var _helpers = require("../../../main/common/helpers/helpers");
 
 var _objectUniqueId = require("../../../main/common/helpers/object-unique-id");
+
+var _tupleUniqueId = require("../../../main/common/helpers/tuple-unique-id");
 
 var _ArraySet = require("../../../main/common/lists/ArraySet");
 
@@ -455,15 +465,15 @@ function compareDefault(o1, o2) {
   (0, _Mocha.xit)('array default value', function () {
     this.timeout(300000);
     var arrNumbers = generateArray(10);
-    var arrStrings = (0, _map.default)(arrNumbers).call(arrNumbers, function (o) {
+    var arrStrings = (0, _map2.default)(arrNumbers).call(arrNumbers, function (o) {
       return o.toString();
     });
-    var arrFunctions = (0, _map.default)(arrNumbers).call(arrNumbers, function (o) {
+    var arrFunctions = (0, _map2.default)(arrNumbers).call(arrNumbers, function (o) {
       return function () {
         return o.toString();
       };
     });
-    var arrObjects = (0, _map.default)(arrNumbers).call(arrNumbers, function (o) {
+    var arrObjects = (0, _map2.default)(arrNumbers).call(arrNumbers, function (o) {
       return {
         o: o
       };
@@ -735,7 +745,7 @@ function compareDefault(o1, o2) {
     }, function () {
       var _context2;
 
-      resultArray = (0, _concat.default)(_context2 = (0, _slice.default)(array).call(array)).call(_context2, (0, _map.default)(addArray).call(addArray, function (o) {
+      resultArray = (0, _concat.default)(_context2 = (0, _slice.default)(array).call(array)).call(_context2, (0, _map2.default)(addArray).call(addArray, function (o) {
         return 0;
       }));
     }, function () {
@@ -743,7 +753,7 @@ function compareDefault(o1, o2) {
     }, function () {
       var _context3;
 
-      resultArray = (0, _concat.default)(_context3 = (0, _slice.default)(array).call(array)).call(_context3, (0, _map.default)(addArray).call(addArray, function (o) {
+      resultArray = (0, _concat.default)(_context3 = (0, _slice.default)(array).call(array)).call(_context3, (0, _map2.default)(addArray).call(addArray, function (o) {
         return 0;
       }));
     }, function () {
@@ -831,6 +841,12 @@ function compareDefault(o1, o2) {
     console.log(result);
   });
   (0, _Mocha.xit)('Set', function () {
+    var _Symbol$iterator;
+
+    var _marked =
+    /*#__PURE__*/
+    _regenerator.default.mark(iterate);
+
     this.timeout(300000);
 
     _Assert.assert.strictEqual(SetNative, _set.default);
@@ -839,42 +855,58 @@ function compareDefault(o1, o2) {
 
     var countObject = 1000;
     var objects = [];
+    var clones = [];
 
     for (var i = 0; i < countObject; i++) {
-      objects[i] = {
+      var _context4;
+
+      objects[i] = [{
+        value: 'text text text text text text'
+      }, 10, {
         value: i
-      };
+      }];
+      clones[i] = (0, _slice.default)(_context4 = objects[i]).call(_context4);
       (0, _objectUniqueId.getObjectUniqueId)(objects[i]);
+      (0, _objectUniqueId.getObjectUniqueId)(clones[i]);
     }
 
-    function testSet(addObject, removeObject, getIterableValues) {
+    function testSet(addObject, removeObject, getIterableAfterAdd, getIterableAfterDelete) {
       for (var _i3 = 0; _i3 < countObject; _i3++) {
-        addObject(objects[_i3]);
-      }
+        addObject(objects[_i3], clones[_i3]);
+      } // let count = 0
+      // for (const value of getIterableAfterAdd()) {
+      // 	count++
+      // }
+      // if (count !== countObject) {
+      // 	throw new Error(`count(${count}) !== countObject(${countObject})`)
+      // }
+
 
       for (var _i4 = 0; _i4 < countObject; _i4++) {
         // for (let i = 99; i >= 0; i--) {
-        removeObject(objects[_i4]);
-      }
+        removeObject(objects[_i4], clones[_i4]);
+      } // count = 0
+      // for (const value of getIterableAfterDelete()) {
+      // 	count++
+      // }
+      // if (count !== 0) {
+      // 	throw new Error(`count(${count}) !== 0`)
+      // }
 
-      for (var _iterator3 = getIterableValues(), _isArray3 = (0, _isArray4.default)(_iterator3), _i5 = 0, _iterator3 = _isArray3 ? _iterator3 : (0, _getIterator2.default)(_iterator3);;) {
-        var _ref4;
-
-        if (_isArray3) {
-          if (_i5 >= _iterator3.length) break;
-          _ref4 = _iterator3[_i5++];
-        } else {
-          _i5 = _iterator3.next();
-          if (_i5.done) break;
-          _ref4 = _i5.value;
-        }
-
-        var _value = _ref4;
-      }
     } // const set1 = new Set()
     // const set2 = {}
     // const set3 = []
 
+
+    var emptyArray = [];
+
+    function testEmpty() {
+      testSet(function (o) {}, function (o) {}, function () {
+        return objects;
+      }, function () {
+        return emptyArray;
+      }); // assert.strictEqual(set1.size, 0)
+    }
 
     function testSetNative() {
       var set = new SetNative();
@@ -882,6 +914,21 @@ function compareDefault(o1, o2) {
         return set.add(o);
       }, function (o) {
         return set.delete(o);
+      }, function () {
+        return set;
+      }, function () {
+        return set;
+      }); // assert.strictEqual(set1.size, 0)
+    }
+
+    function testWeakSetNative() {
+      var set = new _weakSet.default();
+      testSet(function (o) {
+        return set.add(o);
+      }, function (o) {
+        return set.delete(o);
+      }, function () {
+        return set;
       }, function () {
         return set;
       }); // assert.strictEqual(set1.size, 0)
@@ -894,7 +941,9 @@ function compareDefault(o1, o2) {
       }, function (o) {
         return delete set[(0, _objectUniqueId.getObjectUniqueId)(o)];
       }, function (o) {
-        return (0, _values.default)(set);
+        return (0, _values2.default)(set);
+      }, function (o) {
+        return (0, _values2.default)(set);
       }); // assert.strictEqual(Object.keys(set).length, 0)
     }
 
@@ -905,7 +954,9 @@ function compareDefault(o1, o2) {
       }, function (o) {
         return delete set[(0, _objectUniqueId.getObjectUniqueId)(o)];
       }, function (o) {
-        return set;
+        return (0, _values2.default)(set);
+      }, function (o) {
+        return (0, _values2.default)(set);
       }); // assert.strictEqual(set.length, 0)
     }
 
@@ -919,6 +970,8 @@ function compareDefault(o1, o2) {
         if (i >= 0) {
           (0, _splice.default)(set).call(set, i, 1);
         }
+      }, function (o) {
+        return set;
       }, function (o) {
         return set;
       }); // assert.strictEqual(set.length, 0)
@@ -935,6 +988,8 @@ function compareDefault(o1, o2) {
           set[i] = set[set.length - 1];
           set.length--;
         }
+      }, function (o) {
+        return set;
       }, function (o) {
         return set;
       }); // assert.strictEqual(set.length, 0)
@@ -958,6 +1013,8 @@ function compareDefault(o1, o2) {
         }
       }, function (o) {
         return set;
+      }, function (o) {
+        return set;
       }); // assert.strictEqual(set.length, 0)
     }
 
@@ -967,6 +1024,8 @@ function compareDefault(o1, o2) {
         return set.add(o);
       }, function (o) {
         return set.remove(o);
+      }, function (o) {
+        return set;
       }, function (o) {
         return set;
       }); // set.clear()
@@ -982,6 +1041,8 @@ function compareDefault(o1, o2) {
         return set.delete(o);
       }, function (o) {
         return set;
+      }, function (o) {
+        return set;
       }); // assert.strictEqual(set.size, 0)
     }
 
@@ -994,18 +1055,187 @@ function compareDefault(o1, o2) {
         return set.delete(o);
       }, function (o) {
         return set;
+      }, function (o) {
+        return set;
       }); // assert.strictEqual(set.size, 0)
     }
 
-    var result = (0, _rdtsc.calcPerformance)(10000, function () {// no operations
-    }, testSetNative, testObject, testArrayHashTable, testArraySplice, testArray, testArrayKeepOrder, testSetPolyfill, testArraySet, function () {
+    function testImmutableSet() {
+      // console.log(ArraySet.toString())
+      var set = new _immutable.Set();
+      testSet(function (o, c) {
+        set = set.add((0, _immutable.List)(o));
+      }, function (o, c) {
+        set = set.delete((0, _immutable.List)(o));
+      }, function (o) {
+        return set;
+      }, function (o) {
+        return set;
+      }); // assert.strictEqual(set.size, 0)
+    }
+
+    function iterate(map) {
+      var _iterator3, _isArray3, _i5, _ref4, item;
+
+      return _regenerator.default.wrap(function iterate$(_context5) {
+        while (1) {
+          switch (_context5.prev = _context5.next) {
+            case 0:
+              _iterator3 = (0, _values.default)(map).call(map), _isArray3 = (0, _isArray4.default)(_iterator3), _i5 = 0, _iterator3 = _isArray3 ? _iterator3 : (0, _getIterator2.default)(_iterator3);
+
+            case 1:
+              if (!_isArray3) {
+                _context5.next = 7;
+                break;
+              }
+
+              if (!(_i5 >= _iterator3.length)) {
+                _context5.next = 4;
+                break;
+              }
+
+              return _context5.abrupt("break", 20);
+
+            case 4:
+              _ref4 = _iterator3[_i5++];
+              _context5.next = 11;
+              break;
+
+            case 7:
+              _i5 = _iterator3.next();
+
+              if (!_i5.done) {
+                _context5.next = 10;
+                break;
+              }
+
+              return _context5.abrupt("break", 20);
+
+            case 10:
+              _ref4 = _i5.value;
+
+            case 11:
+              item = _ref4;
+
+              if (!(item instanceof _map.default)) {
+                _context5.next = 16;
+                break;
+              }
+
+              return _context5.delegateYield(iterate(item), "t0", 14);
+
+            case 14:
+              _context5.next = 18;
+              break;
+
+            case 16:
+              _context5.next = 18;
+              return item;
+
+            case 18:
+              _context5.next = 1;
+              break;
+
+            case 20:
+            case "end":
+              return _context5.stop();
+          }
+        }
+      }, _marked);
+    }
+
+    _Symbol$iterator = _iterator4.default;
+
+    var TupleSet =
+    /*#__PURE__*/
+    function () {
+      function TupleSet() {
+        (0, _classCallCheck2.default)(this, TupleSet);
+        this._map = new _map.default();
+      }
+
+      (0, _createClass2.default)(TupleSet, [{
+        key: "add",
+        value: function add(tuple) {
+          var map = this._map;
+
+          for (var _i6 = 0, len = tuple.length; _i6 < len; _i6++) {
+            var item = tuple[_i6];
+
+            if (_i6 === len - 1) {
+              map.set(item, item);
+            }
+
+            var nextMap = map.get(item);
+
+            if (!nextMap) {
+              nextMap = new _map.default();
+              map.set(item, nextMap);
+            }
+          }
+        }
+      }, {
+        key: "delete",
+        value: function _delete(tuple) {
+          var map = this._map;
+
+          for (var _i7 = 0, len = tuple.length; _i7 < len; _i7++) {
+            var item = tuple[_i7];
+
+            if (_i7 === len - 1) {
+              map.delete(item);
+            }
+
+            var nextMap = map.get(item);
+
+            if (!nextMap) {
+              return;
+            }
+          }
+        }
+      }, {
+        key: _Symbol$iterator,
+        value: function value() {
+          return iterate(this._map);
+        }
+      }]);
+      return TupleSet;
+    }();
+
+    function testTupleSet() {
+      // console.log(ArraySet.toString())
+      var set = new TupleSet();
+      testSet(function (o, c) {
+        return set.add(o);
+      }, function (o, c) {
+        return set.delete(o);
+      }, function (o) {
+        return set;
+      }, function (o) {
+        return set;
+      }); // assert.strictEqual(set.size, 0)
+    }
+
+    var result = (0, _rdtsc.calcPerformance)(60000, testEmpty, testArrayHashTable, // 1.0
+    testSetNative, // 1.0
+    testArraySet, // 1.0150311148125015
+    testObject, // 1.1021265644157587
+    testWeakSetNative, // 1.6042837809702268
+    testArraySplice, // 2.0924161982094525
+    testTupleSet, // 3.2606096883892013
+    testArray, // 3.645999606727277
+    testSetPolyfill, // 5.62216901473616
+    testArrayKeepOrder, // 7.91167557313716
+    function () {
       return testSortedList({
+        // 22.514027691026442
         autoSort: true,
         notAddIfExists: true,
         minAllocatedSize: 1000 // compare         : compareUniqueId
 
       });
-    } // () => testSortedList({
+    }, testImmutableSet // 33.87640826335392
+    // () => testSortedList({
     // 	autoSort        : true,
     // 	notAddIfExists  : false,
     // 	minAllocatedSize: 1000
@@ -1016,6 +1246,46 @@ function compareDefault(o1, o2) {
     // 	minAllocatedSize: 1000
     // })
     );
+    console.log(result);
+  });
+  (0, _Mocha.it)('getTupleId', function () {
+    this.timeout(300000);
+    var _this = {};
+
+    var func = function func() {};
+
+    var items = [{}, Math.round(Math.random() * 10)];
+    var _thisArray = [];
+    var funcArray = [];
+    var itemsArray = [];
+    var id;
+
+    for (var i = 0; i < 100000; i++) {
+      _this = {};
+
+      func = function func() {};
+
+      items = [{}, Math.round(Math.random() * 10)];
+      _thisArray[i] = _this;
+      funcArray[i] = func;
+      itemsArray[i] = items;
+      id = _tupleUniqueId.getTupleId.apply((0, _tupleUniqueId.getTupleIdMap)(func, _this, 4), items);
+      id = (0, _objectUniqueId.getObjectUniqueId)(_this);
+    }
+
+    var index = 0;
+    var result = (0, _rdtsc.calcPerformance)(10000, function () {// no operations
+    }, function () {
+      // _this = {}
+      // func = () => {}
+      items = [{}, Math.round(Math.random() * 10)];
+      _this = _thisArray[index % 100000];
+      func = funcArray[index % 100000]; // items = itemsArray[index % 100000]
+    }, function () {
+      id = _tupleUniqueId.getTupleId.apply((0, _tupleUniqueId.getTupleIdMap)(func, _this, 4), items);
+    }, function () {
+      id = (0, _objectUniqueId.getObjectUniqueId)(_this);
+    });
     console.log(result);
   });
   (0, _Mocha.xit)('Number toString', function () {
@@ -1141,7 +1411,7 @@ function compareDefault(o1, o2) {
     console.log(result);
   });
   (0, _Mocha.xit)('Math.max()', function () {
-    var _this = this;
+    var _this2 = this;
 
     this.timeout(300000);
 
@@ -1156,14 +1426,14 @@ function compareDefault(o1, o2) {
         value3 = this.value3;
     var result = (0, _rdtsc.calcPerformance)(10000, function () {// no operations
     }, function () {
-      return Math.max(_this.value1, _this.value2, _this.value3);
+      return Math.max(_this2.value1, _this2.value2, _this2.value3);
     }, function () {
       return Math.max(value1, value2, value3);
     });
     console.log(result);
   });
   (0, _Mocha.xit)('"out" vs "set func" params', function () {
-    var _this2 = this;
+    var _this3 = this;
 
     this.timeout(300000);
 
@@ -1186,15 +1456,15 @@ function compareDefault(o1, o2) {
       var out0 = [];
 
       if (funcOut(Math.random(), out0)) {
-        _this2.prop = out0[0];
+        _this3.prop = out0[0];
       }
     }, function () {
       if (funcOut(Math.random(), out)) {
-        _this2.prop = out[0];
+        _this3.prop = out[0];
       }
     }, function () {
       funcSet(Math.random(), function (a) {
-        _this2.prop = a;
+        _this3.prop = a;
       });
     });
     console.log(result);
@@ -1256,9 +1526,9 @@ function compareDefault(o1, o2) {
     var arrConstructor = new Array(size);
     var arrConstructorFilled = new Array(size);
 
-    for (var _i6 = 0; _i6 < size; _i6++) {
-      arrSimple[_i6] = undefined;
-      arrConstructorFilled[_i6] = undefined;
+    for (var _i8 = 0; _i8 < size; _i8++) {
+      arrSimple[_i8] = undefined;
+      arrConstructorFilled[_i8] = undefined;
     }
 
     var i = size / 2 | 0;
@@ -1408,40 +1678,40 @@ function compareDefault(o1, o2) {
     /*#__PURE__*/
     _regenerator.default.mark(function _callee() {
       var i;
-      return _regenerator.default.wrap(function _callee$(_context4) {
+      return _regenerator.default.wrap(function _callee$(_context6) {
         while (1) {
-          switch (_context4.prev = _context4.next) {
+          switch (_context6.prev = _context6.next) {
             case 0:
               i = 0;
 
             case 1:
               if (!(i < 100)) {
-                _context4.next = 7;
+                _context6.next = 7;
                 break;
               }
 
               if (!(Math.random() > 1)) {
-                _context4.next = 4;
+                _context6.next = 4;
                 break;
               }
 
-              return _context4.abrupt("return", 2);
+              return _context6.abrupt("return", 2);
 
             case 4:
               i++;
-              _context4.next = 1;
+              _context6.next = 1;
               break;
 
             case 7:
-              _context4.next = 9;
+              _context6.next = 9;
               return 1;
 
             case 9:
-              return _context4.abrupt("return", 0);
+              return _context6.abrupt("return", 0);
 
             case 10:
             case "end":
-              return _context4.stop();
+              return _context6.stop();
           }
         }
       }, _callee);
@@ -1701,7 +1971,7 @@ function compareDefault(o1, o2) {
     return count / (time / 1000);
   }
 
-  function calcCountPerSecondAsync(_x, _x2) {
+  function calcCountPerSecondAsync(_x2) {
     return _calcCountPerSecondAsync.apply(this, arguments);
   }
 
@@ -1710,9 +1980,9 @@ function compareDefault(o1, o2) {
     /*#__PURE__*/
     _regenerator.default.mark(function _callee6(func, maxTime) {
       var time0, time, count, result;
-      return _regenerator.default.wrap(function _callee6$(_context10) {
+      return _regenerator.default.wrap(function _callee6$(_context12) {
         while (1) {
-          switch (_context10.prev = _context10.next) {
+          switch (_context12.prev = _context12.next) {
             case 0:
               if (maxTime === void 0) {
                 maxTime = 10000;
@@ -1723,26 +1993,26 @@ function compareDefault(o1, o2) {
               result = 0;
 
             case 4:
-              _context10.t0 = result;
-              _context10.next = 7;
+              _context12.t0 = result;
+              _context12.next = 7;
               return func();
 
             case 7:
-              result = _context10.t0 += _context10.sent;
+              result = _context12.t0 += _context12.sent;
               count++;
 
             case 9:
               if ((time = (0, _now.default)() - time0) < maxTime) {
-                _context10.next = 4;
+                _context12.next = 4;
                 break;
               }
 
             case 10:
-              return _context10.abrupt("return", count / (time / 1000));
+              return _context12.abrupt("return", count / (time / 1000));
 
             case 11:
             case "end":
-              return _context10.stop();
+              return _context12.stop();
           }
         }
       }, _callee6);
@@ -1755,82 +2025,82 @@ function compareDefault(o1, o2) {
   (0, _asyncToGenerator2.default)(
   /*#__PURE__*/
   _regenerator.default.mark(function _callee5() {
-    var _marked, nestedPromise, _nestedPromise, nestedIterator;
+    var _marked2, nestedPromise, _nestedPromise, nestedIterator;
 
-    return _regenerator.default.wrap(function _callee5$(_context9) {
+    return _regenerator.default.wrap(function _callee5$(_context11) {
       while (1) {
-        switch (_context9.prev = _context9.next) {
+        switch (_context11.prev = _context11.next) {
           case 0:
             nestedIterator = function _ref10() {
-              return _regenerator.default.wrap(function nestedIterator$(_context6) {
+              return _regenerator.default.wrap(function nestedIterator$(_context8) {
                 while (1) {
-                  switch (_context6.prev = _context6.next) {
+                  switch (_context8.prev = _context8.next) {
                     case 0:
-                      _context6.next = 2;
+                      _context8.next = 2;
                       return 1;
 
                     case 2:
-                      _context6.next = 4;
+                      _context8.next = 4;
                       return 2;
 
                     case 4:
-                      _context6.next = 6;
+                      _context8.next = 6;
                       return 3;
 
                     case 6:
-                      _context6.next = 8;
+                      _context8.next = 8;
                       return 4;
 
                     case 8:
-                      _context6.next = 10;
+                      _context8.next = 10;
                       return 5;
 
                     case 10:
-                      _context6.next = 12;
+                      _context8.next = 12;
                       return 6;
 
                     case 12:
                     case "end":
-                      return _context6.stop();
+                      return _context8.stop();
                   }
                 }
-              }, _marked);
+              }, _marked2);
             };
 
             _nestedPromise = function _ref9() {
               _nestedPromise = (0, _asyncToGenerator2.default)(
               /*#__PURE__*/
               _regenerator.default.mark(function _callee4() {
-                return _regenerator.default.wrap(function _callee4$(_context8) {
+                return _regenerator.default.wrap(function _callee4$(_context10) {
                   while (1) {
-                    switch (_context8.prev = _context8.next) {
+                    switch (_context10.prev = _context10.next) {
                       case 0:
-                        _context8.next = 2;
+                        _context10.next = 2;
                         return 1;
 
                       case 2:
-                        _context8.next = 4;
+                        _context10.next = 4;
                         return 2;
 
                       case 4:
-                        _context8.next = 6;
+                        _context10.next = 6;
                         return 3;
 
                       case 6:
-                        _context8.next = 8;
+                        _context10.next = 8;
                         return 4;
 
                       case 8:
-                        _context8.next = 10;
+                        _context10.next = 10;
                         return 5;
 
                       case 10:
-                        _context8.next = 12;
+                        _context10.next = 12;
                         return 6;
 
                       case 12:
                       case "end":
-                        return _context8.stop();
+                        return _context10.stop();
                     }
                   }
                 }, _callee4);
@@ -1842,65 +2112,18 @@ function compareDefault(o1, o2) {
               return _nestedPromise.apply(this, arguments);
             };
 
-            _marked =
+            _marked2 =
             /*#__PURE__*/
             _regenerator.default.mark(nestedIterator);
             this.timeout(300000);
-            _context9.t0 = console;
-            _context9.next = 8;
+            _context11.t0 = console;
+            _context11.next = 8;
             return calcCountPerSecondAsync(
             /*#__PURE__*/
             (0, _asyncToGenerator2.default)(
             /*#__PURE__*/
             _regenerator.default.mark(function _callee2() {
-              return _regenerator.default.wrap(function _callee2$(_context5) {
-                while (1) {
-                  switch (_context5.prev = _context5.next) {
-                    case 0:
-                      _context5.next = 2;
-                      return 1;
-
-                    case 2:
-                      _context5.next = 4;
-                      return 2;
-
-                    case 4:
-                      _context5.next = 6;
-                      return 3;
-
-                    case 6:
-                      _context5.next = 8;
-                      return 4;
-
-                    case 8:
-                      _context5.next = 10;
-                      return 5;
-
-                    case 10:
-                      _context5.next = 12;
-                      return 6;
-
-                    case 12:
-                      _context5.next = 14;
-                      return nestedPromise();
-
-                    case 14:
-                    case "end":
-                      return _context5.stop();
-                  }
-                }
-              }, _callee2);
-            })));
-
-          case 8:
-            _context9.t1 = _context9.sent;
-
-            _context9.t0.log.call(_context9.t0, 'async/await: ', _context9.t1);
-
-            console.log('ThenableSync: ', calcCountPerSecond(
-            /*#__PURE__*/
-            _regenerator.default.mark(function _callee3() {
-              return _regenerator.default.wrap(function _callee3$(_context7) {
+              return _regenerator.default.wrap(function _callee2$(_context7) {
                 while (1) {
                   switch (_context7.prev = _context7.next) {
                     case 0:
@@ -1929,11 +2152,58 @@ function compareDefault(o1, o2) {
 
                     case 12:
                       _context7.next = 14;
-                      return nestedIterator();
+                      return nestedPromise();
 
                     case 14:
                     case "end":
                       return _context7.stop();
+                  }
+                }
+              }, _callee2);
+            })));
+
+          case 8:
+            _context11.t1 = _context11.sent;
+
+            _context11.t0.log.call(_context11.t0, 'async/await: ', _context11.t1);
+
+            console.log('ThenableSync: ', calcCountPerSecond(
+            /*#__PURE__*/
+            _regenerator.default.mark(function _callee3() {
+              return _regenerator.default.wrap(function _callee3$(_context9) {
+                while (1) {
+                  switch (_context9.prev = _context9.next) {
+                    case 0:
+                      _context9.next = 2;
+                      return 1;
+
+                    case 2:
+                      _context9.next = 4;
+                      return 2;
+
+                    case 4:
+                      _context9.next = 6;
+                      return 3;
+
+                    case 6:
+                      _context9.next = 8;
+                      return 4;
+
+                    case 8:
+                      _context9.next = 10;
+                      return 5;
+
+                    case 10:
+                      _context9.next = 12;
+                      return 6;
+
+                    case 12:
+                      _context9.next = 14;
+                      return nestedIterator();
+
+                    case 14:
+                    case "end":
+                      return _context9.stop();
                   }
                 }
               }, _callee3);
@@ -1941,7 +2211,7 @@ function compareDefault(o1, o2) {
 
           case 11:
           case "end":
-            return _context9.stop();
+            return _context11.stop();
         }
       }
     }, _callee5, this);
@@ -2221,6 +2491,42 @@ function compareDefault(o1, o2) {
     }, function () {
       // 8
       return observableObject1.prop && observableObject1.prop2 && observableObject1.prop && observableObject2.prop2;
+    });
+    console.log(result);
+  });
+  (0, _Mocha.it)('pass arguments', function () {
+    this.timeout(300000);
+
+    function _x(a, b, c, d) {
+      return a + b + c;
+    }
+
+    function x() {
+      return _x.apply(null, arguments);
+    }
+
+    var args = [];
+
+    for (var i = 0; i < 1000; i++) {
+      args[i] = i;
+    }
+
+    var y = new Function('f', 'return function() { return f(' + (0, _map2.default)(args).call(args, function (o) {
+      return 'arguments[' + o + ']';
+    }).join(', ') + ') }')(_x);
+    var run = new Function('f', 'return f(' + args.join(', ') + ')');
+
+    for (var _i9 = 0; _i9 < 1000; _i9++) {
+      run(x);
+      run(y);
+    }
+
+    var res;
+    var result = (0, _rdtsc.calcPerformance)(10000, function () {// no operations
+    }, function () {
+      res = run(x);
+    }, function () {
+      res = run(y);
     });
     console.log(result);
   });

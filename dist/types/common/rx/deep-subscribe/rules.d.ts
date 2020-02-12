@@ -1,6 +1,5 @@
 import { IConditionRule, IRepeatCondition, IRule, IRuleAny, IRuleIf, IRuleRepeat, RuleType } from './contracts/rules';
 export declare function ruleTypeToString(ruleType: RuleType): "Never" | "Action" | "Any" | "If" | "Nothing" | "Repeat";
-export declare const RULE_STRING_SEPARATOR = " > ";
 export declare class Rule implements IRule {
     readonly type: RuleType;
     subType?: any;

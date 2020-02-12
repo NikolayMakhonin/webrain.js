@@ -14,4 +14,5 @@ export let ValueKeyType;
   ValueKeyType[ValueKeyType["ValueProperty"] = 1] = "ValueProperty";
   ValueKeyType[ValueKeyType["MapKey"] = 2] = "MapKey";
   ValueKeyType[ValueKeyType["CollectionAny"] = 3] = "CollectionAny";
+  ValueKeyType[ValueKeyType["ChangeCount"] = 4] = "ChangeCount";
 })(ValueKeyType || (ValueKeyType = {}));

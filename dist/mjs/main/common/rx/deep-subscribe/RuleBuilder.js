@@ -1,9 +1,9 @@
 import { VALUE_PROPERTY_DEFAULT } from '../../helpers/value-property';
-import { ANY_DISPLAY, COLLECTION_PREFIX, VALUE_PROPERTY_PREFIX } from './contracts/constants';
+import { ANY_DISPLAY, CHANGE_COUNT_PREFIX, COLLECTION_PREFIX, VALUE_PROPERTY_PREFIX } from './contracts/constants';
 import { RuleRepeatAction } from './contracts/rules';
 import { getFuncPropertiesPath } from './helpers/func-properties-path';
 import { RuleAny, RuleIf, RuleNever, RuleNothing, RuleRepeat } from './rules';
-import { hasDefaultProperty, RuleSubscribeCollection, RuleSubscribeMap, RuleSubscribeObject, SubscribeObjectType } from './rules-subscribe';
+import { hasDefaultProperty, RuleSubscribeChange, RuleSubscribeCollection, RuleSubscribeMap, RuleSubscribeObject, SubscribeObjectType } from './rules-subscribe';
 const RuleSubscribeObjectPropertyNames = RuleSubscribeObject.bind(null, SubscribeObjectType.Property, null);
 const RuleSubscribeObjectValuePropertyNames = RuleSubscribeObject.bind(null, SubscribeObjectType.ValueProperty, null);
 const RuleSubscribeMapKeys = RuleSubscribeMap.bind(null, null); // const UNSUBSCRIBE_PROPERTY_PREFIX = Math.random().toString(36)
@@ -29,6 +29,11 @@ export class RuleBuilder {
 
       this.ruleLast = ruleLast;
     }
+  }
+
+  changeValuePropertyDefault(propertyName) {
+    this.valuePropertyDefaultName = propertyName;
+    return this;
   }
 
   noAutoRules() {
@@ -160,6 +165,10 @@ export class RuleBuilder {
 
   collection() {
     return (this.autoInsertValuePropertyDefault ? this.valuePropertyDefault() : this).ruleSubscribe(new RuleSubscribeCollection(COLLECTION_PREFIX));
+  }
+
+  change() {
+    return (this.autoInsertValuePropertyDefault ? this.valuePropertyDefault() : this).ruleSubscribe(new RuleSubscribeChange(CHANGE_COUNT_PREFIX));
   }
   /**
    * IMapChanged & Map, Map
