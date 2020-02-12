@@ -70,8 +70,6 @@
       <change beforePath="$PROJECT_DIR$/dist/types/common/rx/deferred-calc/DeferredCalc.d.ts" beforeDir="false" afterPath="$PROJECT_DIR$/dist/types/common/rx/deferred-calc/DeferredCalc.d.ts" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/dist/types/common/rx/object/ObservableClass.d.ts" beforeDir="false" afterPath="$PROJECT_DIR$/dist/types/common/rx/object/ObservableClass.d.ts" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/dist/types/common/test/Calc.d.ts" beforeDir="false" afterPath="$PROJECT_DIR$/dist/types/common/test/Calc.d.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/env/libs/dependent-func/all.js" beforeDir="false" afterPath="$PROJECT_DIR$/env/libs/dependent-func/all.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/env/v8/trace.cmd" beforeDir="false" afterPath="$PROJECT_DIR$/env/v8/trace.cmd" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/common/rx/depend/all.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/common/rx/depend/all.ts" afterDir="false" />
     </list>
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
@@ -168,7 +166,7 @@
       </list>
     </option>
   </component>
-  <component name="RunManager" selected="Mocha.dependent-func (perf)">
+  <component name="RunManager" selected="Mocha.common &gt; main &gt; rx &gt; depend &gt; dependent-func.base">
     <configuration default="true" type="JavaScriptTestRunnerKarma">
       <config-file value="$PROJECT_DIR$/env/karma/configs/dev.js" />
       <karma-package-dir value="$PROJECT_DIR$/node_modules/karma" />
@@ -252,6 +250,22 @@
       <extra-mocha-options>--opts ./env/mocha/mocha.babel.opts --watch</extra-mocha-options>
       <test-kind>PATTERN</test-kind>
       <test-pattern>./src/test/tests/{common,node}/**/*.*</test-pattern>
+      <method v="2" />
+    </configuration>
+    <configuration name="common &gt; main &gt; rx &gt; depend &gt; dependent-func.base" type="mocha-javascript-test-runner" temporary="true" nameIsGenerated="true">
+      <node-interpreter>node</node-interpreter>
+      <node-options>--max-old-space-size=4096 --allow-natives-syntax</node-options>
+      <mocha-package>$PROJECT_DIR$/node_modules/mocha</mocha-package>
+      <working-directory>$PROJECT_DIR$</working-directory>
+      <pass-parent-env>true</pass-parent-env>
+      <ui>bdd</ui>
+      <extra-mocha-options>--opts ./env/mocha/configs/babel/mocha.opts --watch</extra-mocha-options>
+      <test-kind>TEST</test-kind>
+      <test-file>$PROJECT_DIR$/src/test/tests/common/main/rx/depend/dependent-func.ts</test-file>
+      <test-names>
+        <name value="common &gt; main &gt; rx &gt; depend &gt; dependent-func" />
+        <name value="base" />
+      </test-names>
       <method v="2" />
     </configuration>
     <configuration name="deep-subscribe (Coverage)" type="mocha-javascript-test-runner">
@@ -379,9 +393,11 @@
       <item itemvalue="Mocha.dependent-func (perf)" />
       <item itemvalue="npm.Coverage Mocha Report" />
       <item itemvalue="Mocha.dependent-func.perceptron memory recalc" />
+      <item itemvalue="Mocha.common &gt; main &gt; rx &gt; depend &gt; dependent-func.base" />
     </list>
     <recent_temporary>
       <list>
+        <item itemvalue="Mocha.common &gt; main &gt; rx &gt; depend &gt; dependent-func.base" />
         <item itemvalue="Mocha.dependent-func.perceptron memory recalc" />
         <item itemvalue="Mocha.dependent-func (perf)" />
         <item itemvalue="Mocha.dependent-func" />
@@ -395,13 +411,6 @@
       <option name="number" value="Default" />
       <option name="presentableId" value="Default" />
       <updated>1567687848586</updated>
-    </task>
-    <task id="LOCAL-00192" summary="Develop MobX bicycle with round wheels">
-      <created>1580987911149</created>
-      <option name="number" value="00192" />
-      <option name="presentableId" value="LOCAL-00192" />
-      <option name="project" value="LOCAL" />
-      <updated>1580987911151</updated>
     </task>
     <task id="LOCAL-00193" summary="Develop dependentFunc">
       <created>1580990078578</created>
@@ -739,7 +748,14 @@
       <option name="project" value="LOCAL" />
       <updated>1581500037962</updated>
     </task>
-    <option name="localTasksCounter" value="241" />
+    <task id="LOCAL-00241" summary="dependent-funcs v8 optimization in process... Test performance with inlined functions...">
+      <created>1581507141508</created>
+      <option name="number" value="00241" />
+      <option name="presentableId" value="LOCAL-00241" />
+      <option name="project" value="LOCAL" />
+      <updated>1581507141508</updated>
+    </task>
+    <option name="localTasksCounter" value="242" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -801,7 +817,6 @@
   <component name="VcsManagerConfiguration">
     <option name="CHECK_CODE_SMELLS_BEFORE_PROJECT_COMMIT" value="false" />
     <option name="CHECK_NEW_TODO" value="false" />
-    <MESSAGE value="Develop dependentFunc. After replace linked list with Set&#10;&#10;perceptron 100 x 10&#10;invalidate cycles: 28729&#10;calc cycles: 177896&#10;create bytes: 698.5846081157645 ±6117.08026936701&#10;recalc bytes: 18922.10729057349 ±10165.769683242866" />
     <MESSAGE value="Develop dependentFunc. Rollback &quot;replace linked list with Set&quot;" />
     <MESSAGE value="With object pool&#10;&#10;perceptron 100 x 10&#10;invalidate cycles: 20055&#10;calc cycles: 274677&#10;create bytes: 634.6291329077052 ±3062.663830568589&#10;recalc bytes: 12987.14035845834 ±10340.321312351687" />
     <MESSAGE value="With subscribeLink as class&#10;&#10;perceptron 100 x 10&#10;invalidate cycles: 19629&#10;calc cycles: 273832&#10;create bytes: 700.7978586457976 ±6116.1295932167395&#10;recalc bytes: 13471.513632528757 ±10309.651244745235" />
@@ -826,7 +841,8 @@
     <MESSAGE value="dependent-funcs v8 optimization in process... v8 tests OK." />
     <MESSAGE value="dependent-funcs v8 optimization in process..." />
     <MESSAGE value="dependent-funcs v8 optimization in process... Tests OK." />
-    <option name="LAST_COMMIT_MESSAGE" value="dependent-funcs v8 optimization in process... Tests OK." />
+    <MESSAGE value="dependent-funcs v8 optimization in process... Test performance with inlined functions..." />
+    <option name="LAST_COMMIT_MESSAGE" value="dependent-funcs v8 optimization in process... Test performance with inlined functions..." />
   </component>
   <component name="XDebuggerManager">
     <breakpoint-manager>
