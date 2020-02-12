@@ -113,7 +113,6 @@ export function subscriberLinkDelete<TThis,
 	releaseSubscriberLink(item)
 }
 
-let x = {}
 // tslint:disable-next-line:no-shadowed-variable
 export function unsubscribeDependencies<TThis,
 	TArgs extends any[],
@@ -124,8 +123,40 @@ export function unsubscribeDependencies<TThis,
 		const len = state._unsubscribersLength
 		for (let i = 0; i < len; i++) {
 			const item = _unsubscribers[i]
-			subscriberLinkDelete(item.state, item)
 			_unsubscribers[i] = null
+			// subscriberLinkDelete(item.state, item)
+			// region inline call
+			{
+				// tslint:disable-next-line:no-shadowed-variable
+				const {prev, next, state} = item
+				if (state == null) {
+					return
+				}
+				if (prev == null) {
+					if (next == null) {
+						state._subscribersFirst = null
+						state._subscribersLast = null
+					} else {
+						state._subscribersFirst = next
+						next.prev = null
+						item.next = null
+					}
+				} else {
+					if (next == null) {
+						state._subscribersLast = prev
+						prev.next = null
+					} else {
+						prev.next = next
+						next.prev = prev
+						item.next = null
+					}
+					item.prev = null
+				}
+				item.state = null
+				item.value = null
+				releaseSubscriberLink(item)
+			}
+			// endregion
 		}
 		state._unsubscribersLength = 0
 		if (len > 256) {
@@ -181,9 +212,12 @@ const FuncCallStatus_Error: FuncCallStatus = 6
 export function update<TThis,
 	TArgs extends any[],
 	TValue,
-	>(state: IFuncCallState<TThis, TArgs, TValue>, status, valueAsyncOrValueOrError?) {
+	>(
+	state: IFuncCallState<TThis, TArgs, TValue>,
+	status: FuncCallStatus,
+	valueAsyncOrValueOrError?,
+) {
 	const prevStatus = state.status
-	state.status = status
 	switch (status) {
 		case FuncCallStatus_Invalidating:
 			if (prevStatus === FuncCallStatus_Invalidated) {
@@ -195,14 +229,11 @@ export function update<TThis,
 			) {
 				throw new Error(`Set status ${status} called when current status is ${prevStatus}`)
 			}
-			unsubscribeDependencies(state)
-			emit(state, status)
 			break
 		case FuncCallStatus_Invalidated:
 			if (prevStatus !== FuncCallStatus_Invalidating) {
 				return
 			}
-			emit(state, status)
 			break
 		case FuncCallStatus_Calculating:
 			if (prevStatus != null
@@ -243,6 +274,127 @@ export function update<TThis,
 		default:
 			throw new Error('Unknown FuncCallStatus: ' + status)
 	}
+
+	state.status = status
+
+	switch (status) {
+		case FuncCallStatus_Invalidating:
+			// unsubscribeDependencies(state)
+			// region inline call
+			{
+				const _unsubscribers = state._unsubscribers
+				if (_unsubscribers != null) {
+					const len = state._unsubscribersLength
+					for (let i = 0; i < len; i++) {
+						const item = _unsubscribers[i]
+						_unsubscribers[i] = null
+						// subscriberLinkDelete(item.state, item)
+						// region inline call
+						{
+							// tslint:disable-next-line:no-shadowed-variable
+							const {prev, next, state} = item
+							if (state == null) {
+								return
+							}
+							if (prev == null) {
+								if (next == null) {
+									state._subscribersFirst = null
+									state._subscribersLast = null
+								} else {
+									state._subscribersFirst = next
+									next.prev = null
+									item.next = null
+								}
+							} else {
+								if (next == null) {
+									state._subscribersLast = prev
+									prev.next = null
+								} else {
+									prev.next = next
+									next.prev = prev
+									item.next = null
+								}
+								item.prev = null
+							}
+							item.state = null
+							item.value = null
+							releaseSubscriberLink(item)
+						}
+						// endregion
+					}
+					state._unsubscribersLength = 0
+					if (len > 256) {
+						_unsubscribers.length = 256
+					}
+				}
+			}
+			// endregion
+			// emit(state, status)
+			// region inline call
+			if (state._subscribersFirst != null) {
+				let clonesFirst
+				let clonesLast
+				for (let link = state._subscribersFirst; link; link = link.next) {
+					const cloneLink = getSubscriberLink(state, link.value, null, link.next)
+					if (clonesLast == null) {
+						clonesFirst = cloneLink
+					} else {
+						clonesLast.next = cloneLink
+					}
+					clonesLast = cloneLink
+				}
+				for (let link = clonesFirst; link;) {
+					// invalidate(link.value, status)
+					// region inline call
+					{
+						// tslint:disable-next-line:no-shadowed-variable
+						const state = link.value
+						update(state, FuncCallStatus_Invalidating)
+					}
+					// endregion
+					link.value = null
+					const next = link.next
+					link.next = null
+					releaseSubscriberLink(link)
+					link = next
+				}
+			}
+			// endregion
+			break
+		case FuncCallStatus_Invalidated:
+			// emit(state, status)
+			// region inline call
+			if (state._subscribersFirst != null) {
+				let clonesFirst
+				let clonesLast
+				for (let link = state._subscribersFirst; link; link = link.next) {
+					const cloneLink = getSubscriberLink(state, link.value, null, link.next)
+					if (clonesLast == null) {
+						clonesFirst = cloneLink
+					} else {
+						clonesLast.next = cloneLink
+					}
+					clonesLast = cloneLink
+				}
+				for (let link = clonesFirst; link;) {
+					// invalidate(link.value, status)
+					// region inline call
+					{
+						// tslint:disable-next-line:no-shadowed-variable
+						const state = link.value
+						update(state, FuncCallStatus_Invalidated)
+					}
+					// endregion
+					link.value = null
+					const next = link.next
+					link.next = null
+					releaseSubscriberLink(link)
+					link = next
+				}
+			}
+			// endregion
+			break
+	}
 }
 
 // tslint:disable-next-line:no-shadowed-variable
@@ -262,28 +414,26 @@ export function emit<TThis,
 	TArgs extends any[],
 	TValue,
 	>(state: IFuncCallState<TThis, TArgs, TValue>, status) {
-	if (state._subscribersFirst == null) {
-		return
-	}
-
-	let clonesFirst
-	let clonesLast
-	for (let link = state._subscribersFirst; link; link = link.next) {
-		const cloneLink = getSubscriberLink(state, link.value, null, link.next)
-		if (clonesLast == null) {
-			clonesFirst = cloneLink
-		} else {
-			clonesLast.next = cloneLink
+	if (state._subscribersFirst != null) {
+		let clonesFirst
+		let clonesLast
+		for (let link = state._subscribersFirst; link; link = link.next) {
+			const cloneLink = getSubscriberLink(state, link.value, null, link.next)
+			if (clonesLast == null) {
+				clonesFirst = cloneLink
+			} else {
+				clonesLast.next = cloneLink
+			}
+			clonesLast = cloneLink
 		}
-		clonesLast = cloneLink
-	}
-	for (let link = clonesFirst; link;) {
-		invalidate(link.value, status)
-		link.value = null
-		const next = link.next
-		link.next = null
-		releaseSubscriberLink(link)
-		link = next
+		for (let link = clonesFirst; link;) {
+			invalidate(link.value, status)
+			link.value = null
+			const next = link.next
+			link.next = null
+			releaseSubscriberLink(link)
+			link = next
+		}
 	}
 }
 

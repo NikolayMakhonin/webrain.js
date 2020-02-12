@@ -71,17 +71,8 @@
       <change beforePath="$PROJECT_DIR$/dist/types/common/rx/object/ObservableClass.d.ts" beforeDir="false" afterPath="$PROJECT_DIR$/dist/types/common/rx/object/ObservableClass.d.ts" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/dist/types/common/test/Calc.d.ts" beforeDir="false" afterPath="$PROJECT_DIR$/dist/types/common/test/Calc.d.ts" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/env/libs/dependent-func/all.js" beforeDir="false" afterPath="$PROJECT_DIR$/env/libs/dependent-func/all.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/env/mocha/configs/no-babel/mocha.opts" beforeDir="false" afterPath="$PROJECT_DIR$/env/mocha/configs/no-babel/mocha.opts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/env/mocha/configs/no-babel/register.js" beforeDir="false" afterPath="$PROJECT_DIR$/env/mocha/configs/no-babel/register.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/env/v8/trace.cmd" beforeDir="false" afterPath="$PROJECT_DIR$/env/v8/trace.cmd" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/common/rx/depend/all.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/common/rx/depend/all.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/common/test/calc-mem-allocate.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/common/test/calc-mem-allocate.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/test/performance/node/dependent-func.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/test/performance/node/dependent-func.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/test/tests/common/main/rx/depend/src/helpers.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/test/tests/common/main/rx/depend/src/helpers.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/test/tests/node/v8/src/helpers/common/helpers.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/test/tests/node/v8/src/helpers/common/helpers.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/test/tests/node/v8/src/helpers/contracts.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/test/tests/node/v8/src/helpers/contracts.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/test/tests/node/v8/src/helpers/helpers.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/test/tests/node/v8/src/helpers/helpers.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/test/tests/node/v8/src/helpers/node_4_9_1/helpers.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/test/tests/node/v8/src/helpers/node_4_9_1/helpers.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/test/tests/node/v8/src/helpers/node_latest/helpers.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/test/tests/node/v8/src/helpers/node_latest/helpers.ts" afterDir="false" />
     </list>
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
     <option name="SHOW_DIALOG" value="false" />
@@ -404,13 +395,6 @@
       <option name="number" value="Default" />
       <option name="presentableId" value="Default" />
       <updated>1567687848586</updated>
-    </task>
-    <task id="LOCAL-00191" summary="Develop MobX bicycle with round wheels">
-      <created>1580978318617</created>
-      <option name="number" value="00191" />
-      <option name="presentableId" value="LOCAL-00191" />
-      <option name="project" value="LOCAL" />
-      <updated>1580978318617</updated>
     </task>
     <task id="LOCAL-00192" summary="Develop MobX bicycle with round wheels">
       <created>1580987911149</created>
@@ -748,7 +732,14 @@
       <option name="project" value="LOCAL" />
       <updated>1581488847742</updated>
     </task>
-    <option name="localTasksCounter" value="240" />
+    <task id="LOCAL-00240" summary="dependent-funcs v8 optimization in process... Tests OK.">
+      <created>1581500037962</created>
+      <option name="number" value="00240" />
+      <option name="presentableId" value="LOCAL-00240" />
+      <option name="project" value="LOCAL" />
+      <updated>1581500037962</updated>
+    </task>
+    <option name="localTasksCounter" value="241" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -833,9 +824,9 @@
     <MESSAGE value="dependent-funcs v8 optimization in process... Add check funcs optimization status" />
     <MESSAGE value="dependent-funcs v8 optimization in process... Added v8 funcs wrappers with .d.ts file" />
     <MESSAGE value="dependent-funcs v8 optimization in process... v8 tests OK." />
-    <MESSAGE value="dependent-funcs v8 optimization in process... Tests OK." />
     <MESSAGE value="dependent-funcs v8 optimization in process..." />
-    <option name="LAST_COMMIT_MESSAGE" value="dependent-funcs v8 optimization in process..." />
+    <MESSAGE value="dependent-funcs v8 optimization in process... Tests OK." />
+    <option name="LAST_COMMIT_MESSAGE" value="dependent-funcs v8 optimization in process... Tests OK." />
   </component>
   <component name="XDebuggerManager">
     <breakpoint-manager>

@@ -29,13 +29,6 @@ export function testRecalcNaked() {
 	naked.call(2, 5, 10)
 }
 
-
-// for (let i = 0; i < 5000; i++) {
-// 	const {
-// 		countFuncs,
-// 		input,
-// 		inputState,
-// 		output,
-// 	} = createPerceptron(2, 2)
-// 	invalidate(inputState)
-// }
+for (let i = 0; i < 10000; i++) {
+	testCreate()
+}
