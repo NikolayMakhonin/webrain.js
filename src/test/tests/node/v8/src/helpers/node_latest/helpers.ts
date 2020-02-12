@@ -1,3 +1,4 @@
+import {OptimizationStatus} from '../contracts'
 import * as v8 from './runtime'
 
 export {v8}
@@ -77,13 +78,15 @@ export function getObjectOptimizationInfo(obj) {
 	return result
 }
 
-export const shouldArrayOptimizationInfo = {
+type TObjectOptimizationInfo = { [key in keyof ReturnType<typeof getObjectOptimizationInfo>]?: any }
+
+export const shouldArrayOptimizationInfo: TObjectOptimizationInfo = {
 	CountElementsTypes: 1,
 	HasFastPackedElements: true,
 	HasDictionaryElements: false,
 	HasFastElements: true,
 }
-export const shouldObjectOptimizationInfo = {
+export const shouldObjectOptimizationInfo: TObjectOptimizationInfo = {
 	CountElementsTypes: 1,
 	HasDictionaryElements: false,
 	HasFastElements: true,
@@ -91,3 +94,11 @@ export const shouldObjectOptimizationInfo = {
 	HasObjectElements: true,
 	HasSmiOrObjectElements: true,
 }
+
+export const shouldOptimizationStatus = OptimizationStatus.IsFunction | OptimizationStatus.Optimized
+	| OptimizationStatus.TurboFanned
+export const shouldNotOptimizationStatus = OptimizationStatus.NeverOptimize
+	| OptimizationStatus.AlwaysOptimize | OptimizationStatus.Interpreted
+	| OptimizationStatus.MaybeDeopted
+	| OptimizationStatus.IsExecuting | OptimizationStatus.LiteMode
+	| OptimizationStatus.MarkedForDeoptimization

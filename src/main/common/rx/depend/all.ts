@@ -113,6 +113,7 @@ export function subscriberLinkDelete<TThis,
 	releaseSubscriberLink(item)
 }
 
+let x = {}
 // tslint:disable-next-line:no-shadowed-variable
 export function unsubscribeDependencies<TThis,
 	TArgs extends any[],

@@ -55,3 +55,5 @@ export const v8 = node_current.v8
 export const shouldArrayOptimizationInfo = node_current.shouldArrayOptimizationInfo
 export const shouldObjectOptimizationInfo = node_current.shouldObjectOptimizationInfo
 export const getObjectOptimizationInfo = node_current.getObjectOptimizationInfo
+export const shouldOptimizationStatus = node_current.shouldOptimizationStatus
+export const shouldNotOptimizationStatus = node_current.shouldNotOptimizationStatus

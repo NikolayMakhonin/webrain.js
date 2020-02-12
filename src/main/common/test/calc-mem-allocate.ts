@@ -1,5 +1,6 @@
 // @ts-ignore
 import {runInRealtimePriority} from 'rdtsc'
+import {CollectGarbage} from '../../../test/tests/node/v8/src/helpers/node_latest/runtime'
 import {calc, CalcStatReport, CalcType} from './calc'
 
 function _calcMemAllocate(

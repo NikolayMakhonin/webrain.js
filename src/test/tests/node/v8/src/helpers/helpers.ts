@@ -3,7 +3,9 @@ import {
 	getObjectOptimizationInfo,
 	optimizationStatusToString,
 	shouldArrayOptimizationInfo,
+	shouldNotOptimizationStatus,
 	shouldObjectOptimizationInfo,
+	shouldOptimizationStatus,
 	v8,
 } from './common/helpers'
 import {OptimizationStatus, TAnyFunc} from './contracts'
@@ -16,16 +18,12 @@ function _checkIsOptimized(obj: TAnyFunc|object, optimized: Set<any> = null, sca
 
 	if (typeof obj === 'function') {
 		const status = v8.GetOptimizationStatus(obj as TAnyFunc)
-		const shouldFlags = OptimizationStatus.IsFunction | OptimizationStatus.Optimized | OptimizationStatus.TurboFanned
-		const shouldNotFlags = OptimizationStatus.NeverOptimize | OptimizationStatus.IsExecuting |
-			OptimizationStatus.MaybeDeopted | OptimizationStatus.LiteMode |
-			OptimizationStatus.MarkedForDeoptimization
 
-		let actualStatus = status & (shouldFlags | shouldNotFlags)
+		let actualStatus = status & (shouldOptimizationStatus | shouldNotOptimizationStatus)
 		if ((status & OptimizationStatus.MarkedForOptimization) !== 0) {
 			actualStatus |= OptimizationStatus.Optimized | OptimizationStatus.TurboFanned
 		}
-		let expectedStatus = actualStatus | shouldFlags
+		let expectedStatus = actualStatus | shouldOptimizationStatus
 		const differentFlags = actualStatus ^ expectedStatus
 		actualStatus &= differentFlags
 		expectedStatus &= differentFlags

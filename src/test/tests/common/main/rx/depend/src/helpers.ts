@@ -1,9 +1,9 @@
 /* tslint:disable:no-identical-functions no-shadowed-variable */
-import {delay} from '../../../../../../../main/common'
 import {isThenable, Thenable, ThenableOrValue} from '../../../../../../../main/common/async/async'
 import {getFuncCallState, invalidate, makeDependentFunc} from '../../../../../../../main/common/rx/depend/all'
 import {FuncCallStatus, IFuncCallState} from '../../../../../../../main/common/rx/depend/contracts'
 import {assert} from '../../../../../../../main/common/test/Assert'
+import {delay} from '../../../../../../../main/common/time/helpers'
 
 export function createPerceptronNaked(layerSize, layersCount, check = true) {
 	const countFuncs = layersCount * layerSize + 2
