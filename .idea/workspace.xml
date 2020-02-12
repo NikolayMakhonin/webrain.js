@@ -412,13 +412,6 @@
       <option name="presentableId" value="Default" />
       <updated>1567687848586</updated>
     </task>
-    <task id="LOCAL-00193" summary="Develop dependentFunc">
-      <created>1580990078578</created>
-      <option name="number" value="00193" />
-      <option name="presentableId" value="LOCAL-00193" />
-      <option name="project" value="LOCAL" />
-      <updated>1580990078578</updated>
-    </task>
     <task id="LOCAL-00194" summary="Develop dependentFunc">
       <created>1580993306263</created>
       <option name="number" value="00194" />
@@ -755,7 +748,14 @@
       <option name="project" value="LOCAL" />
       <updated>1581507141508</updated>
     </task>
-    <option name="localTasksCounter" value="242" />
+    <task id="LOCAL-00242" summary="dependent-funcs v8 optimization in process... Pool as linked list is fail&#10;&#10;Pool as Array: [ 924, 5693 ] ticks&#10;Pool as LinkedList: [ 1406, 6091, -395 ],">
+      <created>1581517863262</created>
+      <option name="number" value="00242" />
+      <option name="presentableId" value="LOCAL-00242" />
+      <option name="project" value="LOCAL" />
+      <updated>1581517863262</updated>
+    </task>
+    <option name="localTasksCounter" value="243" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -817,7 +817,6 @@
   <component name="VcsManagerConfiguration">
     <option name="CHECK_CODE_SMELLS_BEFORE_PROJECT_COMMIT" value="false" />
     <option name="CHECK_NEW_TODO" value="false" />
-    <MESSAGE value="Develop dependentFunc. Rollback &quot;replace linked list with Set&quot;" />
     <MESSAGE value="With object pool&#10;&#10;perceptron 100 x 10&#10;invalidate cycles: 20055&#10;calc cycles: 274677&#10;create bytes: 634.6291329077052 ±3062.663830568589&#10;recalc bytes: 12987.14035845834 ±10340.321312351687" />
     <MESSAGE value="With subscribeLink as class&#10;&#10;perceptron 100 x 10&#10;invalidate cycles: 19629&#10;calc cycles: 273832&#10;create bytes: 700.7978586457976 ±6116.1295932167395&#10;recalc bytes: 13471.513632528757 ±10309.651244745235" />
     <MESSAGE value="Without object pool&#10;&#10;perceptron 100 x 10&#10;invalidate cycles: 12455&#10;calc cycles: 152887&#10;create bytes: 26 ±0&#10;recalc bytes: 8668 ±0&#10;&#10;With object pool&#10;&#10;perceptron 100 x 10&#10;invalidate cycles: 24596&#10;calc cycles: 216622&#10;create bytes: 14.339321357285428 ±0&#10;recalc bytes: 4355.722554890219 ±0" />
@@ -842,7 +841,8 @@
     <MESSAGE value="dependent-funcs v8 optimization in process..." />
     <MESSAGE value="dependent-funcs v8 optimization in process... Tests OK." />
     <MESSAGE value="dependent-funcs v8 optimization in process... Test performance with inlined functions..." />
-    <option name="LAST_COMMIT_MESSAGE" value="dependent-funcs v8 optimization in process... Test performance with inlined functions..." />
+    <MESSAGE value="dependent-funcs v8 optimization in process... Pool as linked list is fail&#10;&#10;Pool as Array: [ 924, 5693 ] ticks&#10;Pool as LinkedList: [ 1406, 6091, -395 ]," />
+    <option name="LAST_COMMIT_MESSAGE" value="dependent-funcs v8 optimization in process... Pool as linked list is fail&#10;&#10;Pool as Array: [ 924, 5693 ] ticks&#10;Pool as LinkedList: [ 1406, 6091, -395 ]," />
   </component>
   <component name="XDebuggerManager">
     <breakpoint-manager>

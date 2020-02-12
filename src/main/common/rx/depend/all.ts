@@ -23,30 +23,33 @@ export function getSubscriberLinkFromPool<TThis,
 	TArgs extends any[],
 	TValue,
 	>(): ISubscriberLink<TThis, TArgs, TValue> {
-	const result = poolLast
-	if (result != null) {
-		const {prev} = result
-		if (prev == null) {
-			poolFirst = null
-			poolLast = null
-		} else {
-			prev.next = null
-			poolLast = prev
-		}
-	}
-	return result
-	// this.usedSize++
-	// const lastIndex = subscriberLinkPool.size - 1
-	// if (lastIndex >= 0) {
-	// 	const obj = subscriberLinkPool.stack[lastIndex]
-	// 	subscriberLinkPool.stack[lastIndex] = null
-	// 	subscriberLinkPool.size = lastIndex
-	// 	if (obj == null) {
-	// 		throw new Error('obj == null')
+	// Pool as Linked List
+	// const result = poolLast
+	// if (result != null) {
+	// 	const {prev} = result
+	// 	if (prev == null) {
+	// 		poolFirst = null
+	// 		poolLast = null
+	// 	} else {
+	// 		prev.next = null
+	// 		poolLast = prev
 	// 	}
-	// 	return obj
 	// }
-	// return null
+	// return result
+
+	// Pool as Array
+	// this.usedSize++
+	const lastIndex = subscriberLinkPool.size - 1
+	if (lastIndex >= 0) {
+		const obj = subscriberLinkPool.stack[lastIndex]
+		subscriberLinkPool.stack[lastIndex] = null
+		subscriberLinkPool.size = lastIndex
+		if (obj == null) {
+			throw new Error('obj == null')
+		}
+		return obj
+	}
+	return null
 }
 
 // tslint:disable-next-line:no-shadowed-variable
@@ -54,20 +57,23 @@ export function releaseSubscriberLink<TThis,
 	TArgs extends any[],
 	TValue,
 	>(obj: ISubscriberLink<TThis, TArgs, TValue>) {
-	if (poolLast == null) {
-		poolFirst = obj
-		obj.prev = null
-	} else {
-		poolLast.next = obj
-		obj.prev = poolLast
-	}
-	obj.next = null
-	poolLast = obj
-	// // this.usedSize--
-	// if (subscriberLinkPool.size < subscriberLinkPool.maxSize) {
-	// 	subscriberLinkPool.stack[subscriberLinkPool.size] = obj
-	// 	subscriberLinkPool.size++
+	// Pool as Linked List
+	// if (poolLast == null) {
+	// 	poolFirst = obj
+	// 	obj.prev = null
+	// } else {
+	// 	poolLast.next = obj
+	// 	obj.prev = poolLast
 	// }
+	// obj.next = null
+	// poolLast = obj
+
+	// Pool as Array
+	// this.usedSize--
+	if (subscriberLinkPool.size < subscriberLinkPool.maxSize) {
+		subscriberLinkPool.stack[subscriberLinkPool.size] = obj
+		subscriberLinkPool.size++
+	}
 }
 
 // tslint:disable-next-line:no-shadowed-variable
@@ -115,6 +121,7 @@ export function subscriberLinkDelete<TThis,
 		} else {
 			state._subscribersFirst = next
 			next.prev = null
+			item.next = null
 		}
 	} else {
 		if (next == null) {
@@ -123,7 +130,9 @@ export function subscriberLinkDelete<TThis,
 		} else {
 			prev.next = next
 			next.prev = prev
+			item.next = null
 		}
+		item.prev = null
 	}
 	item.state = null
 	item.value = null
@@ -156,6 +165,7 @@ export function unsubscribeDependencies<TThis,
 					} else {
 						state._subscribersFirst = next
 						next.prev = null
+						item.next = null
 					}
 				} else {
 					if (next == null) {
@@ -164,7 +174,9 @@ export function unsubscribeDependencies<TThis,
 					} else {
 						prev.next = next
 						next.prev = prev
+						item.next = null
 					}
+					item.prev = null
 				}
 				item.state = null
 				item.value = null
@@ -317,6 +329,7 @@ export function update<TThis,
 								} else {
 									state._subscribersFirst = next
 									next.prev = null
+									item.next = null
 								}
 							} else {
 								if (next == null) {
@@ -325,7 +338,9 @@ export function update<TThis,
 								} else {
 									prev.next = next
 									next.prev = prev
+									item.next = null
 								}
+								item.prev = null
 							}
 							item.state = null
 							item.value = null
@@ -365,6 +380,7 @@ export function update<TThis,
 					// endregion
 					link.value = null
 					const next = link.next
+					link.next = null
 					releaseSubscriberLink(link)
 					link = next
 				}
@@ -397,6 +413,7 @@ export function update<TThis,
 					// endregion
 					link.value = null
 					const next = link.next
+					link.next = null
 					releaseSubscriberLink(link)
 					link = next
 				}
@@ -439,6 +456,7 @@ export function emit<TThis,
 			invalidate(link.value, status)
 			link.value = null
 			const next = link.next
+			link.next = null
 			releaseSubscriberLink(link)
 			link = next
 		}
