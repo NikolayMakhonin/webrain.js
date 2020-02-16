@@ -1,7 +1,7 @@
 import {Thenable} from '../../async/async'
 
 export type Func<TThis, TArgs extends any[], TValue = void> = (this: TThis, ...args: TArgs) => TValue
-export type TCall<TArgs extends any[]> = <TThis, TValue>(this: TThis, func: Func<TThis, TArgs, TValue>) => TValue
+export type TCall<TArgs extends any[]> = <TThis, TValue>(_this: TThis, func: Func<TThis, TArgs, TValue>) => TValue
 
 export interface ILinkItem<T> {
 	value: T
@@ -25,7 +25,7 @@ export interface IFuncCallState<TThis,
 	> {
 	readonly func: Func<TThis, TArgs, TValue>
 	readonly _this: TThis
-	readonly dependentFunc: Func<TThis, TArgs, TValue>
+	readonly callWithArgs: TCall<TArgs>
 
 	status: FuncCallStatus
 	hasValue: boolean

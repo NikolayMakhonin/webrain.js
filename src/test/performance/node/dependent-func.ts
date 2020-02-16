@@ -9,8 +9,8 @@ import {describe, it, xit} from '../../../main/common/test/Mocha'
 import {createPerceptron, createPerceptronNaked} from '../../tests/common/main/rx/depend/src/helpers'
 import {CollectGarbage} from '../../tests/node/v8/src/helpers/node_latest/runtime'
 
-describe('dependent-func', function() {
-	it('perceptron perf', function() {
+describe('dependent-func perf', function() {
+	it('perceptron recalc', function() {
 		this.timeout(300000)
 
 		const {
@@ -50,7 +50,7 @@ describe('dependent-func', function() {
 		console.log(`chrome funcs per frame: [${result.absoluteDiff.map(o => countFuncs * cyclesPerSecond / o / 60 / 210).join(', ')}]`)
 
 		const chromeFuncsPerFrame = countFuncs * cyclesPerSecond / result.absoluteDiff[1] / 60 / 210
-		assert.ok(chromeFuncsPerFrame >= 180)
+		assert.ok(chromeFuncsPerFrame >= 150)
 	})
 
 	xit('set memory', function() {
@@ -86,6 +86,41 @@ describe('dependent-func', function() {
 		console.log(result.toString())
 
 		result.averageValue.forEach(o => assert.ok(o <= 750))
+	})
+
+	it('perceptron create', function() {
+		this.timeout(300000)
+
+		const {
+			countFuncs,
+			input,
+			inputState,
+			output,
+		} = createPerceptron(2, 2)
+		const naked = createPerceptronNaked(2, 2)
+
+		const map1 = new Map()
+		const map2 = new Map()
+		map2.set(2, 3)
+		map1.set(1, map2)
+
+		let perceptron
+
+		const result = calcPerformance(
+			10000,
+			() => {
+				perceptron = createPerceptronNaked(2, 2)
+			}, () => {
+				perceptron = createPerceptron(2, 2, false)
+			}, () => {
+				perceptron.output.call(2, 5, 10)
+			}, () => {
+				invalidate(perceptron.inputState)
+				perceptron.output.call(2, 5, 10)
+			},
+		)
+
+		console.log(result)
 	})
 
 	it('perceptron memory recalc', function() {

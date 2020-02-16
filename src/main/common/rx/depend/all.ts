@@ -1,7 +1,7 @@
 import {isThenable, ThenableOrIteratorOrValue, ThenableOrValue} from '../../async/async'
 import {resolveAsync} from '../../async/ThenableSync'
 import {isIterator} from '../../helpers/helpers'
-import {Func, FuncCallStatus, IFuncCallState, ILinkItem, ISubscriberLink} from './contracts'
+import {Func, FuncCallStatus, IFuncCallState, ISubscriberLink, TCall} from './contracts'
 
 // invalidate,
 // getFuncCallState,
@@ -305,56 +305,6 @@ export function update<TThis,
 
 	switch (status) {
 		case FuncCallStatus_Invalidating:
-			// unsubscribeDependencies(state)
-			// region inline call
-			{
-				const _unsubscribers = state._unsubscribers
-				if (_unsubscribers != null) {
-					const len = state._unsubscribersLength
-					for (let i = 0; i < len; i++) {
-						const item = _unsubscribers[i]
-						_unsubscribers[i] = null
-						// subscriberLinkDelete(item.state, item)
-						// region inline call
-						{
-							// tslint:disable-next-line:no-shadowed-variable
-							const {prev, next, state} = item
-							if (state == null) {
-								return
-							}
-							if (prev == null) {
-								if (next == null) {
-									state._subscribersFirst = null
-									state._subscribersLast = null
-								} else {
-									state._subscribersFirst = next
-									next.prev = null
-									item.next = null
-								}
-							} else {
-								if (next == null) {
-									state._subscribersLast = prev
-									prev.next = null
-								} else {
-									prev.next = next
-									next.prev = prev
-									item.next = null
-								}
-								item.prev = null
-							}
-							item.state = null
-							item.value = null
-							releaseSubscriberLink(item)
-						}
-						// endregion
-					}
-					state._unsubscribersLength = 0
-					if (len > 256) {
-						_unsubscribers.length = 256
-					}
-				}
-			}
-			// endregion
 			// emit(state, status)
 			// region inline call
 			if (state._subscribersFirst != null) {
@@ -371,17 +321,19 @@ export function update<TThis,
 				// }
 				for (let link = state._subscribersFirst; link;) {
 					const next = link.next
-					// invalidate(link.value, status)
-					// region inline call
-					{
-						// tslint:disable-next-line:no-shadowed-variable
-						const state = link.value
-						update(state, FuncCallStatus_Invalidating)
+					if (link.value.status !== FuncCallStatus.Invalidating && link.value.status !== FuncCallStatus.Invalidated) {
+						// invalidate(link.value, status)
+						// region inline call
+						{
+							// tslint:disable-next-line:no-shadowed-variable
+							const state = link.value
+							update(state, FuncCallStatus_Invalidating)
+						}
+						// endregion
+						// link.value = null
+						// link.next = null
+						// releaseSubscriberLink(link)
 					}
-					// endregion
-					// link.value = null
-					// link.next = null
-					// releaseSubscriberLink(link)
 					link = next
 				}
 			}
@@ -470,16 +422,16 @@ export class FuncCallState<TThis,
 	constructor(
 		func: Func<TThis, TArgs, TValue>,
 		_this: TThis,
-		dependentFunc: Func<TThis, TArgs, TValue>,
+		callWithArgs: TCall<TArgs>,
 	) {
 		this.func = func
 		this._this = _this
-		this.dependentFunc = dependentFunc
+		this.callWithArgs = callWithArgs
 	}
 
-	public readonly func
-	public readonly _this
-	public readonly dependentFunc
+	public readonly func: Func<TThis, TArgs, TValue>
+	public readonly _this: TThis
+	public readonly callWithArgs: TCall<TArgs>
 
 	public status = FuncCallStatus_Invalidated
 	public hasValue = false
@@ -504,93 +456,141 @@ export function createFuncCallState<TThis,
 	>(
 	func: Func<TThis, TArgs, TValue>,
 	_this: TThis,
-	dependentFunc: Func<TThis, TArgs, TValue>,
+	callWithArgs: TCall<TArgs>,
 ): IFuncCallState<TThis, TArgs, TValue> {
 	return new FuncCallState(
 		func,
 		_this,
-		dependentFunc,
+		callWithArgs,
 	)
 }
 
 let currentState: IFuncCallState<any, any, any>
 let nextCallId = 1
 
-// tslint:disable-next-line:no-shadowed-variable
-export function _createDependentFunc<TThis,
+export function _dependentFunc<
+	TThis,
 	TArgs extends any[],
-	TValue>(this: IFuncCallState<TThis, TArgs, TValue>): (this: IFuncCallState<TThis, TArgs, TValue>) => TValue {
-	const args = arguments
-	return function() {
-		const state = this
+	TValue,
+>(state: IFuncCallState<TThis, TArgs, TValue>) {
+	if (currentState) {
+		subscribeDependency(currentState, state)
+	}
 
-		if (currentState) {
-			subscribeDependency(currentState, state)
-		}
+	state.callId = nextCallId++
 
-		state.callId = nextCallId++
+	if (state.status) {
+		switch (state.status) {
+			case FuncCallStatus_Calculated:
+				return state.value
 
-		if (state.status) {
-			switch (state.status) {
-				case FuncCallStatus_Calculated:
-					return state.value
-
-				case FuncCallStatus_Invalidating:
-				case FuncCallStatus_Invalidated:
-					break
-				case FuncCallStatus_CalculatingAsync:
-					let parentCallState = state.parentCallState
-					while (parentCallState) {
-						if (parentCallState === state) {
-							throw new Error('Recursive async loop detected')
-						}
-						parentCallState = parentCallState.parentCallState
+			case FuncCallStatus_Invalidating:
+			case FuncCallStatus_Invalidated:
+				break
+			case FuncCallStatus_CalculatingAsync:
+				let parentCallState = state.parentCallState
+				while (parentCallState) {
+					if (parentCallState === state) {
+						throw new Error('Recursive async loop detected')
 					}
-					return state.valueAsync
-
-				case FuncCallStatus_Error:
-					throw state.error
-
-				case FuncCallStatus_Calculating:
-					throw new Error('Recursive sync loop detected')
-				default:
-					throw new Error('Unknown FuncStatus: ' + state.status)
-			}
-		}
-
-		state.parentCallState = currentState
-		currentState = state
-
-		// return tryInvoke.apply(state, args)
-
-		try {
-			update(state, FuncCallStatus_Calculating)
-
-			let value: any = state.func.apply(state._this, args)
-
-			if (isIterator(value)) {
-				value = resolveAsync(
-					makeDependentIterator(state, value as Iterator<TValue>) as ThenableOrIteratorOrValue<TValue>,
-				)
-
-				if (isThenable(value)) {
-					update(state, FuncCallStatus_CalculatingAsync, value)
+					parentCallState = parentCallState.parentCallState
 				}
+				return state.valueAsync
 
-				return value
-			} else if (isThenable(value)) {
-				throw new Error('You should use iterator instead thenable for async functions')
+			case FuncCallStatus_Error:
+				throw state.error
+
+			case FuncCallStatus_Calculating:
+				throw new Error('Recursive sync loop detected')
+			default:
+				throw new Error('Unknown FuncStatus: ' + state.status)
+		}
+	}
+
+	// unsubscribeDependencies(state)
+	// region inline call
+	{
+		const _unsubscribers = state._unsubscribers
+		if (_unsubscribers != null) {
+			const len = state._unsubscribersLength
+			for (let i = 0; i < len; i++) {
+				const item = _unsubscribers[i]
+				_unsubscribers[i] = null
+				// subscriberLinkDelete(item.state, item)
+				// region inline call
+				{
+					// tslint:disable-next-line:no-shadowed-variable
+					const {prev, next, state} = item
+					if (state == null) {
+						return
+					}
+					if (prev == null) {
+						if (next == null) {
+							state._subscribersFirst = null
+							state._subscribersLast = null
+						} else {
+							state._subscribersFirst = next
+							next.prev = null
+							item.next = null
+						}
+					} else {
+						if (next == null) {
+							state._subscribersLast = prev
+							prev.next = null
+						} else {
+							prev.next = next
+							next.prev = prev
+							item.next = null
+						}
+						item.prev = null
+					}
+					item.state = null
+					item.value = null
+					releaseSubscriberLink(item)
+				}
+				// endregion
+			}
+			state._unsubscribersLength = 0
+			if (len > 256) {
+				_unsubscribers.length = 256
+			}
+		}
+	}
+	// endregion
+
+	state.parentCallState = currentState
+	currentState = state
+
+	// return tryInvoke.apply(state, arguments)
+
+	try {
+		update(state, FuncCallStatus_Calculating)
+
+		// let value: any = state.func.apply(state._this, arguments)
+		let value: any = state.callWithArgs(state._this, state.func)
+
+		if (isIterator(value)) {
+			value = resolveAsync(
+				makeDependentIterator(state, value as Iterator<TValue>) as ThenableOrIteratorOrValue<TValue>,
+			)
+
+			if (isThenable(value)) {
+				update(state, FuncCallStatus_CalculatingAsync, value)
 			}
 
-			update(state, FuncCallStatus_Calculated, value)
 			return value
-		} catch (error) {
-			update(state, FuncCallStatus_Error, error)
-			throw error
-		} finally {
-			currentState = state.parentCallState
-			state.parentCallState = null
+		} else if (isThenable(value)) {
+			throw new Error('You should use iterator instead thenable for async functions')
 		}
+
+		update(state, FuncCallStatus_Calculated, value)
+		return value
+	} catch (error) {
+		update(state, FuncCallStatus_Error, error)
+		throw error
+	} finally {
+		currentState = state.parentCallState
+		state.parentCallState = null
 	}
 }
 
@@ -685,6 +685,16 @@ export function semiWeakMapSet<K, V>(semiWeakMap: ISemiWeakMap<K, V>, key: K, va
 	}
 }
 
+export function createCallWithArgs<TArgs extends any[],
+	>(...args: TArgs): TCall<TArgs>
+export function createCallWithArgs<TArgs extends any[],
+	>(): TCall<TArgs> {
+	const args = arguments
+	return function(_this, func) {
+		return func.apply(_this, args)
+	}
+}
+
 // tslint:disable-next-line:no-shadowed-variable
 export function _getFuncCallState<TThis,
 	TArgs extends any[],
@@ -701,33 +711,41 @@ export function _getFuncCallState<TThis,
 		}
 
 		let state: IFuncCallState<TThis, TArgs, TValue>
+		let currentMap: ISemiWeakMap<any, any> = semiWeakMapGet(argsLengthStateMap, this)
 		if (argumentsLength) {
-			let argsStateMap: ISemiWeakMap<any, any> = semiWeakMapGet(argsLengthStateMap, this)
-			if (!argsStateMap) {
-				argsStateMap = createSemiWeakMap()
-				semiWeakMapSet(argsLengthStateMap, this, argsStateMap)
+			if (!currentMap) {
+				currentMap = createSemiWeakMap()
+				semiWeakMapSet(argsLengthStateMap, this, currentMap)
 			}
 
 			for (let i = 0; i < argumentsLength - 1; i++) {
 				const arg = arguments[i]
-				let nextStateMap: ISemiWeakMap<any, any> = semiWeakMapGet(argsStateMap, arg)
+				let nextStateMap: ISemiWeakMap<any, any> = semiWeakMapGet(currentMap, arg)
 				if (!nextStateMap) {
 					nextStateMap = createSemiWeakMap()
-					semiWeakMapSet(argsStateMap, arg, nextStateMap)
+					semiWeakMapSet(currentMap, arg, nextStateMap)
 				}
-				argsStateMap = nextStateMap
+				currentMap = nextStateMap
 			}
 
 			const lastArg = arguments[argumentsLength - 1]
-			state = semiWeakMapGet(argsStateMap, lastArg)
+			state = semiWeakMapGet(currentMap, lastArg)
 			if (!state) {
-				state = createFuncCallState<TThis, TArgs, TValue>(func, this, _createDependentFunc.apply(void 0, arguments))
-				semiWeakMapSet(argsStateMap, lastArg, state)
+				state = createFuncCallState<TThis, TArgs, TValue>(
+					func,
+					this,
+					createCallWithArgs.apply(void 0, arguments),
+				)
+				semiWeakMapSet(currentMap, lastArg, state)
 			}
 		} else {
 			state = semiWeakMapGet(argsLengthStateMap, this)
 			if (!state) {
-				state = createFuncCallState<TThis, TArgs, TValue>(func, this, _createDependentFunc.apply(void 0, arguments))
+				state = createFuncCallState<TThis, TArgs, TValue>(
+					func,
+					this,
+					createCallWithArgs.apply(void 0, arguments),
+				)
 				semiWeakMapSet(argsLengthStateMap, this, state)
 			}
 		}
@@ -746,7 +764,7 @@ export function createDependentFunc<TThis,
 	>(getState: Func<TThis, TArgs, IFuncCallState<TThis, TArgs, TValue>>) {
 	return function() {
 		const state = getState.apply(this, arguments)
-		return state.dependentFunc()
+		return _dependentFunc(state)
 	}
 }
 
