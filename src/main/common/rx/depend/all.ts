@@ -473,13 +473,13 @@ export function _dependentFunc<
 	TArgs extends any[],
 	TValue,
 >(state: IFuncCallState<TThis, TArgs, TValue>) {
-	if (currentState) {
+	if (currentState != null) {
 		subscribeDependency(currentState, state)
 	}
 
 	state.callId = nextCallId++
 
-	if (state.status) {
+	if (state.status != null) {
 		switch (state.status) {
 			case FuncCallStatus_Calculated:
 				return state.value
@@ -618,12 +618,12 @@ export function* makeDependentIterator<TThis,
 			iteration = iterator.next(value)
 		}
 
-		if (!nested) {
+		if (nested == null) {
 			update(state, FuncCallStatus_Calculated, iteration.value)
 		}
 		return iteration.value
 	} catch (error) {
-		if (!nested) {
+		if (nested == null) {
 			update(state, FuncCallStatus_Error, error)
 		}
 		throw error
@@ -657,12 +657,12 @@ export function semiWeakMapGet<K, V>(semiWeakMap: ISemiWeakMap<K, V>, key: K): V
 	let value
 	if (isRefType(key)) {
 		const weakMap = semiWeakMap.weakMap
-		if (weakMap) {
+		if (weakMap != null) {
 			value = weakMap.get(key as any)
 		}
 	} else {
 		const map = semiWeakMap.map
-		if (map) {
+		if (map != null) {
 			value = map.get(key)
 		}
 	}
@@ -672,13 +672,13 @@ export function semiWeakMapGet<K, V>(semiWeakMap: ISemiWeakMap<K, V>, key: K): V
 export function semiWeakMapSet<K, V>(semiWeakMap: ISemiWeakMap<K, V>, key: K, value: V): void {
 	if (isRefType(key)) {
 		let weakMap = semiWeakMap.weakMap
-		if (!weakMap) {
+		if (weakMap == null) {
 			semiWeakMap.weakMap = weakMap = new WeakMap()
 		}
 		weakMap.set(key as any, value)
 	} else {
 		let map = semiWeakMap.map
-		if (!map) {
+		if (map == null) {
 			semiWeakMap.map = map = new Map()
 		}
 		map.set(key, value)
@@ -705,15 +705,15 @@ export function _getFuncCallState<TThis,
 	return function() {
 		const argumentsLength = arguments.length
 		let argsLengthStateMap: ISemiWeakMap<any, any> = funcStateMap.get(argumentsLength)
-		if (!argsLengthStateMap) {
+		if (argsLengthStateMap == null) {
 			argsLengthStateMap = createSemiWeakMap()
 			funcStateMap.set(argumentsLength, argsLengthStateMap)
 		}
 
 		let state: IFuncCallState<TThis, TArgs, TValue>
 		let currentMap: ISemiWeakMap<any, any> = semiWeakMapGet(argsLengthStateMap, this)
-		if (argumentsLength) {
-			if (!currentMap) {
+		if (argumentsLength !== 0) {
+			if (currentMap == null) {
 				currentMap = createSemiWeakMap()
 				semiWeakMapSet(argsLengthStateMap, this, currentMap)
 			}
@@ -721,7 +721,7 @@ export function _getFuncCallState<TThis,
 			for (let i = 0; i < argumentsLength - 1; i++) {
 				const arg = arguments[i]
 				let nextStateMap: ISemiWeakMap<any, any> = semiWeakMapGet(currentMap, arg)
-				if (!nextStateMap) {
+				if (nextStateMap == null) {
 					nextStateMap = createSemiWeakMap()
 					semiWeakMapSet(currentMap, arg, nextStateMap)
 				}
@@ -730,21 +730,21 @@ export function _getFuncCallState<TThis,
 
 			const lastArg = arguments[argumentsLength - 1]
 			state = semiWeakMapGet(currentMap, lastArg)
-			if (!state) {
+			if (state == null) {
 				state = createFuncCallState<TThis, TArgs, TValue>(
 					func,
 					this,
-					createCallWithArgs.apply(void 0, arguments),
+					createCallWithArgs.apply(null, arguments),
 				)
 				semiWeakMapSet(currentMap, lastArg, state)
 			}
 		} else {
 			state = semiWeakMapGet(argsLengthStateMap, this)
-			if (!state) {
+			if (state == null) {
 				state = createFuncCallState<TThis, TArgs, TValue>(
 					func,
 					this,
-					createCallWithArgs.apply(void 0, arguments),
+					createCallWithArgs.apply(null, arguments),
 				)
 				semiWeakMapSet(argsLengthStateMap, this, state)
 			}

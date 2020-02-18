@@ -1,9 +1,34 @@
 /* tslint:disable:no-identical-functions no-shadowed-variable */
 import {isThenable, Thenable, ThenableOrValue} from '../../../../../../../main/common/async/async'
 import {getFuncCallState, invalidate, makeDependentFunc} from '../../../../../../../main/common/rx/depend/all'
-import {FuncCallStatus, IFuncCallState} from '../../../../../../../main/common/rx/depend/contracts'
+import {Func, FuncCallStatus, IFuncCallState} from '../../../../../../../main/common/rx/depend/contracts'
 import {assert} from '../../../../../../../main/common/test/Assert'
 import {delay} from '../../../../../../../main/common/time/helpers'
+
+// region makeDependentFunc
+
+// tslint:disable-next-line:no-shadowed-variable
+export function __makeDependentFunc<TThis,
+	TArgs extends any[],
+	TValue,
+	>(func: Func<TThis, TArgs, Iterator<TValue>>): Func<TThis, TArgs, ThenableOrValue<TValue>>
+// tslint:disable-next-line:no-shadowed-variable
+export function __makeDependentFunc<TThis,
+	TArgs extends any[],
+	TValue,
+	>(func: Func<TThis, TArgs, TValue>): Func<TThis, TArgs, TValue>
+// tslint:disable-next-line:no-shadowed-variable
+export function __makeDependentFunc<TThis,
+	TArgs extends any[],
+	TValue,
+	>(func: Func<TThis, TArgs, TValue | Iterator<TValue>>) {
+	if (typeof func === 'function') {
+		return makeDependentFunc<TThis, TArgs, TValue>(func as any)
+	}
+	return null
+}
+
+// endregion
 
 export function createPerceptronNaked(layerSize, layersCount, check = true) {
 	const countFuncs = layersCount * layerSize + 2
@@ -59,7 +84,24 @@ export function createPerceptronNaked(layerSize, layersCount, check = true) {
 	return output
 }
 
-export function createPerceptron(layerSize, layersCount, check = true) {
+export function __invalidate<TThis,
+	TArgs extends any[],
+	TValue,
+>(state: IFuncCallState<TThis, TArgs, TValue>, status?: FuncCallStatus) {
+	return invalidate(state, status)
+}
+
+export function __outputCall(output): any {
+	return output.call(2, 5, 10)
+}
+
+export function createPerceptron(
+	layerSize,
+	layersCount,
+	check = true,
+	makeDependentFunc = __makeDependentFunc,
+	invalidate2 = __invalidate,
+) {
 	const countFuncs = layersCount * layerSize + 2
 
 	const input = makeDependentFunc(function() {
@@ -117,14 +159,14 @@ export function createPerceptron(layerSize, layersCount, check = true) {
 
 	if (check) {
 		assert.strictEqual(
-			output.call(2, 5, 10).toPrecision(6),
+			__outputCall(output).toPrecision(6),
 			(100 * ((layerSize - 1) * layerSize / 2) * Math.pow(layerSize, layersCount - 1)).toPrecision(6),
 		)
 
 		invalidate(inputState)
 
 		assert.strictEqual(
-			output.call(2, 5, 10).toPrecision(6),
+			__outputCall(output).toPrecision(6),
 			(100 * ((layerSize - 1) * layerSize / 2) * Math.pow(layerSize, layersCount - 1)).toPrecision(6),
 		)
 	}
