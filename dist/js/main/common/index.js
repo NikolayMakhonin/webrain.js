@@ -1,67 +1,7 @@
 "use strict";
 
-var _Object$keys = require("@babel/runtime-corejs3/core-js-stable/object/keys");
-
-var _forEachInstanceProperty = require("@babel/runtime-corejs3/core-js-stable/instance/for-each");
-
-var _context, _context2, _context3;
-
 exports.__esModule = true;
-var _exportNames = {
-  ThenableSync: true,
-  ObservableClass: true,
-  ObservableObject: true,
-  CalcObjectBuilder: true,
-  calcPropertyFactory: true,
-  connectorFactory: true,
-  Property: true,
-  createFunction: true,
-  Debugger: true,
-  getObjectUniqueId: true,
-  ArraySet: true,
-  ArrayMap: true,
-  ObservableSet: true,
-  ObservableMap: true,
-  deepSubscribe: true,
-  resolvePath: true,
-  ObjectMap: true,
-  ObjectSet: true,
-  CalcProperty: true,
-  ValueKeyType: true,
-  ObjectMerger: true,
-  PropertyChangedObject: true,
-  Connector: true,
-  Subject: true,
-  BehaviorSubject: true,
-  registerMergeable: true,
-  registerMerger: true,
-  registerSerializable: true,
-  registerSerializer: true,
-  ObjectSerializer: true,
-  isIterable: true,
-  DependenciesBuilder: true,
-  subscribeDependencies: true,
-  webrainOptions: true,
-  CalcPropertyState: true,
-  ConnectorState: true,
-  ValueChangeType: true,
-  resolveAsync: true,
-  resolveAsyncFunc: true,
-  resolveAsyncAll: true,
-  resolveAsyncAny: true,
-  dependenciesSubscriber: true,
-  CalcStat: true,
-  VALUE_PROPERTY_DEFAULT: true,
-  DeferredCalc: true,
-  RuleBuilder: true,
-  delay: true,
-  performanceNow: true,
-  TimeLimit: true,
-  TimeLimits: true,
-  Random: true,
-  DeepCloneEqual: true
-};
-exports.DeepCloneEqual = exports.Random = exports.TimeLimits = exports.TimeLimit = exports.performanceNow = exports.delay = exports.RuleBuilder = exports.DeferredCalc = exports.VALUE_PROPERTY_DEFAULT = exports.CalcStat = exports.dependenciesSubscriber = exports.resolveAsyncAny = exports.resolveAsyncAll = exports.resolveAsyncFunc = exports.resolveAsync = exports.ValueChangeType = exports.ConnectorState = exports.CalcPropertyState = exports.webrainOptions = exports.subscribeDependencies = exports.DependenciesBuilder = exports.isIterable = exports.ObjectSerializer = exports.registerSerializer = exports.registerSerializable = exports.registerMerger = exports.registerMergeable = exports.BehaviorSubject = exports.Subject = exports.Connector = exports.PropertyChangedObject = exports.ObjectMerger = exports.ValueKeyType = exports.CalcProperty = exports.ObjectSet = exports.ObjectMap = exports.resolvePath = exports.deepSubscribe = exports.ObservableMap = exports.ObservableSet = exports.ArrayMap = exports.ArraySet = exports.getObjectUniqueId = exports.Debugger = exports.createFunction = exports.Property = exports.connectorFactory = exports.calcPropertyFactory = exports.CalcObjectBuilder = exports.ObservableObject = exports.ObservableClass = exports.ThenableSync = void 0;
+exports.Random = exports.TimeLimits = exports.TimeLimit = exports.performanceNow = exports.delay = exports.RuleBuilder = exports.DeferredCalc = exports.VALUE_PROPERTY_DEFAULT = exports.CalcStat = exports.dependenciesSubscriber = exports.resolveAsyncAny = exports.resolveAsyncAll = exports.resolveAsyncFunc = exports.resolveAsync = exports.ValueChangeType = exports.ConnectorState = exports.CalcPropertyState = exports.webrainOptions = exports.subscribeDependencies = exports.DependenciesBuilder = exports.isIterable = exports.ObjectSerializer = exports.registerSerializer = exports.registerSerializable = exports.registerMerger = exports.registerMergeable = exports.BehaviorSubject = exports.Subject = exports.Connector = exports.PropertyChangedObject = exports.ObjectMerger = exports.ValueKeyType = exports.CalcProperty = exports.ObjectSet = exports.ObjectMap = exports.resolvePath = exports.deepSubscribe = exports.ObservableMap = exports.ObservableSet = exports.ArrayMap = exports.ArraySet = exports.getObjectUniqueId = exports.Debugger = exports.createFunction = exports.Property = exports.connectorFactory = exports.calcPropertyFactory = exports.CalcObjectBuilder = exports.ObservableObject = exports.ObservableClass = exports.ThenableSync = void 0;
 
 var _ThenableSync = require("./async/ThenableSync");
 
@@ -205,30 +145,6 @@ var _RuleBuilder = require("./rx/deep-subscribe/RuleBuilder");
 
 exports.RuleBuilder = _RuleBuilder.RuleBuilder;
 
-var _Assert = require("./test/Assert");
-
-_forEachInstanceProperty(_context = _Object$keys(_Assert)).call(_context, function (key) {
-  if (key === "default" || key === "__esModule") return;
-  if (Object.prototype.hasOwnProperty.call(_exportNames, key)) return;
-  exports[key] = _Assert[key];
-});
-
-var _Mocha = require("./test/Mocha");
-
-_forEachInstanceProperty(_context2 = _Object$keys(_Mocha)).call(_context2, function (key) {
-  if (key === "default" || key === "__esModule") return;
-  if (Object.prototype.hasOwnProperty.call(_exportNames, key)) return;
-  exports[key] = _Mocha[key];
-});
-
-var _unhandledErrors = require("./test/unhandledErrors");
-
-_forEachInstanceProperty(_context3 = _Object$keys(_unhandledErrors)).call(_context3, function (key) {
-  if (key === "default" || key === "__esModule") return;
-  if (Object.prototype.hasOwnProperty.call(_exportNames, key)) return;
-  exports[key] = _unhandledErrors[key];
-});
-
 var _helpers3 = require("./time/helpers");
 
 exports.delay = _helpers3.delay;
@@ -245,7 +161,3 @@ exports.TimeLimits = _TimeLimits.TimeLimits;
 var _Random = require("./random/Random");
 
 exports.Random = _Random.Random;
-
-var _DeepCloneEqual = require("./test/DeepCloneEqual");
-
-exports.DeepCloneEqual = _DeepCloneEqual.DeepCloneEqual;

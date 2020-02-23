@@ -21,18 +21,6 @@ module.exports = {
 		['@babel/plugin-proposal-class-properties', {loose: true}],
 
 		// preset/env no loose:
-		['@babel/plugin-transform-classes', {loose: false}],
-
-		[
-			'babel-plugin-search-and-replace',
-			{
-				rules: [
-					{
-						search : '__v8__',
-						replace: '%'
-					}
-				]
-			}
-		]
+		['@babel/plugin-transform-classes', {loose: false}]
 	]
 }

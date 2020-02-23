@@ -7,12 +7,46 @@
     <option name="SHOW_STRUCTURE" value="true" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="69b2ee16-521b-4efd-b473-8e19e3df4d09" name="Default Changelist" comment="">
+    <list default="true" id="69b2ee16-521b-4efd-b473-8e19e3df4d09" name="Default Changelist" comment="dependent-funcs v8 optimization in process...">
+      <change afterPath="$PROJECT_DIR$/env/libs/map/all.js" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/env/libs/map/build.js" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/test/performance/node/map.ts" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/test/performance/node/src/MapPolyfill.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.eslintignore" beforeDir="false" afterPath="$PROJECT_DIR$/.eslintignore" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/dictionaries/Mika.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/dictionaries/Mika.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.nycrc.json" beforeDir="false" afterPath="$PROJECT_DIR$/.nycrc.json" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/HISTORY.md" beforeDir="false" afterPath="$PROJECT_DIR$/HISTORY.md" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/dist/js/main/common/index.js" beforeDir="false" afterPath="$PROJECT_DIR$/dist/js/main/common/index.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/dist/js/main/common/rx/depend/all.js" beforeDir="false" afterPath="$PROJECT_DIR$/dist/js/main/common/rx/depend/all.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/dist/js/main/common/rx/depend/temp/createCallWithArgs.js" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/dist/js/main/common/rx/object/properties/ConnectorBuilder.js" beforeDir="false" afterPath="$PROJECT_DIR$/dist/js/main/common/rx/object/properties/ConnectorBuilder.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/dist/js/test/performance/node/dependent-func.js" beforeDir="false" afterPath="$PROJECT_DIR$/dist/js/test/performance/node/dependent-func.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/dist/js/test/performance/node/fundamental-operations.js" beforeDir="false" afterPath="$PROJECT_DIR$/dist/js/test/performance/node/fundamental-operations.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/dist/js/test/tests/common/main/rx/depend/src/helpers.js" beforeDir="false" afterPath="$PROJECT_DIR$/dist/js/test/tests/common/main/rx/depend/src/helpers.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/dist/js/test/tests/node/main/rx/depend/dependent-func.js" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/dist/mjs/main/common/index.js" beforeDir="false" afterPath="$PROJECT_DIR$/dist/mjs/main/common/index.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/dist/mjs/main/common/rx/depend/all.js" beforeDir="false" afterPath="$PROJECT_DIR$/dist/mjs/main/common/rx/depend/all.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/dist/mjs/main/common/rx/depend/temp/createCallWithArgs.js" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/dist/mjs/main/common/rx/object/properties/ConnectorBuilder.js" beforeDir="false" afterPath="$PROJECT_DIR$/dist/mjs/main/common/rx/object/properties/ConnectorBuilder.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/dist/mjs/test/performance/node/dependent-func.js" beforeDir="false" afterPath="$PROJECT_DIR$/dist/mjs/test/performance/node/dependent-func.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/dist/mjs/test/performance/node/fundamental-operations.js" beforeDir="false" afterPath="$PROJECT_DIR$/dist/mjs/test/performance/node/fundamental-operations.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/dist/mjs/test/tests/common/main/rx/depend/src/helpers.js" beforeDir="false" afterPath="$PROJECT_DIR$/dist/mjs/test/tests/common/main/rx/depend/src/helpers.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/dist/mjs/test/tests/node/main/rx/depend/dependent-func.js" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/dist/types/common/index.d.ts" beforeDir="false" afterPath="$PROJECT_DIR$/dist/types/common/index.d.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/dist/types/common/rx/depend/all.d.ts" beforeDir="false" afterPath="$PROJECT_DIR$/dist/types/common/rx/depend/all.d.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/dist/types/common/rx/depend/contracts.d.ts" beforeDir="false" afterPath="$PROJECT_DIR$/dist/types/common/rx/depend/contracts.d.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/dist/types/common/rx/depend/temp/createCallWithArgs.d.ts" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/env/babel/configs/mocha.js" beforeDir="false" afterPath="$PROJECT_DIR$/env/babel/configs/mocha.js" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/env/libs/dependent-func/all.js" beforeDir="false" afterPath="$PROJECT_DIR$/env/libs/dependent-func/all.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/env/mocha/configs/babel/mocha.opts" beforeDir="false" afterPath="$PROJECT_DIR$/env/mocha/configs/babel/mocha.opts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/env/mocha/configs/no-babel/mocha.opts" beforeDir="false" afterPath="$PROJECT_DIR$/env/mocha/configs/no-babel/mocha.opts" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/env/v8/trace.cmd" beforeDir="false" afterPath="$PROJECT_DIR$/env/v8/trace.cmd" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/common/rx/depend/all.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/common/rx/depend/all.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/test/tests/common/main/rx/depend/src/helpers.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/test/tests/common/main/rx/depend/src/helpers.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/package.json" beforeDir="false" afterPath="$PROJECT_DIR$/package.json" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/common/index.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/common/index.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/common/rx/object/properties/ConnectorBuilder.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/common/rx/object/properties/ConnectorBuilder.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/common/test/calc.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/common/test/calc.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/test/tests/node/main/rx/depend/dependent-func.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/test/tests/node/main/rx/depend/v8/dependent-func.ts" afterDir="false" />
     </list>
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
     <option name="SHOW_DIALOG" value="false" />
@@ -55,7 +89,7 @@
     <property name="WebServerToolWindowFactoryState" value="false" />
     <property name="auto.test.manager.delay" value="5000" />
     <property name="javascript.karma.karma_node_package_dir" value="" />
-    <property name="last_opened_file_path" value="$PROJECT_DIR$/docs/perf/depend-func" />
+    <property name="last_opened_file_path" value="$PROJECT_DIR$/../../apps/app-template" />
     <property name="node.js.detected.package.eslint" value="true" />
     <property name="node.js.detected.package.standard" value="true" />
     <property name="node.js.detected.package.tslint" value="true" />
@@ -75,11 +109,11 @@
   </component>
   <component name="RecentsManager">
     <key name="CopyFile.RECENT_KEYS">
+      <recent name="L:\Work\_GIT\GitHub\NodeJs\modules\webrain\src\test\performance\node" />
+      <recent name="L:\Work\_GIT\GitHub\NodeJs\modules\webrain\src\test\performance\node\src" />
+      <recent name="L:\Work\_GIT\GitHub\NodeJs\modules\webrain\env\libs" />
       <recent name="L:\Work\_GIT\GitHub\NodeJs\modules\webrain\docs\perf\depend-func" />
       <recent name="L:\Work\_GIT\GitHub\NodeJs\modules\webrain\src\test\tests\node\v8\helpers\node_4_9_1" />
-      <recent name="L:\Work\_GIT\GitHub\NodeJs\modules\webrain\src\test\tests\node\v8" />
-      <recent name="L:\Work\_GIT\GitHub\NodeJs\modules\webrain\src\test\tests\node\main\rx\depend" />
-      <recent name="L:\Work\_GIT\GitHub\NodeJs\modules\webrain\env\babel\configs" />
     </key>
     <key name="es6.move.members.recent.items">
       <recent name="L:\Work\_GIT\GitHub\NodeJs\modules\webrain\src\test\tests\node\v8\src\helpers\common\helpers.ts" />
@@ -89,11 +123,11 @@
       <recent name="L:\Work\_GIT\GitHub\NodeJs\modules\webrain\src\main\common\rx\depend\contracts.ts" />
     </key>
     <key name="MoveFile.RECENT_KEYS">
+      <recent name="L:\Work\_GIT\GitHub\NodeJs\modules\webrain\src\test\tests\node\main\rx\depend\v8" />
+      <recent name="L:\Work\_GIT\GitHub\NodeJs\modules\webrain\src\test\tests\node\main\rx\depend" />
       <recent name="L:\Work\_GIT\GitHub\NodeJs\modules\webrain\docs\perf" />
       <recent name="L:\Work\_GIT\GitHub\NodeJs\modules\webrain\docs\perf\depend-func" />
       <recent name="L:\Work\_GIT\GitHub\NodeJs\modules\webrain\src\test\tests\node\v8\src" />
-      <recent name="L:\Work\_GIT\GitHub\NodeJs\modules\webrain\src\test\tests\node\v8\helpers" />
-      <recent name="L:\Work\_GIT\GitHub\NodeJs\modules\webrain\src\test\tests\node\v8\helpers\node_latest" />
     </key>
   </component>
   <component name="RunDashboard">
@@ -108,7 +142,7 @@
       </list>
     </option>
   </component>
-  <component name="RunManager" selected="Mocha.dependent-func (perf)">
+  <component name="RunManager" selected="Mocha.Watch">
     <configuration default="true" type="JavaScriptTestRunnerKarma">
       <config-file value="$PROJECT_DIR$/env/karma/configs/dev.js" />
       <karma-package-dir value="$PROJECT_DIR$/node_modules/karma" />
@@ -334,6 +368,21 @@
       </test-names>
       <method v="2" />
     </configuration>
+    <configuration name="map perf" type="mocha-javascript-test-runner" temporary="true" nameIsGenerated="true">
+      <node-interpreter>node</node-interpreter>
+      <node-options>--max-old-space-size=4096</node-options>
+      <mocha-package>$PROJECT_DIR$/node_modules/mocha</mocha-package>
+      <working-directory>$PROJECT_DIR$</working-directory>
+      <pass-parent-env>true</pass-parent-env>
+      <ui>bdd</ui>
+      <extra-mocha-options>--opts ./env/mocha/configs/babel/mocha.opts</extra-mocha-options>
+      <test-kind>SUITE</test-kind>
+      <test-file>$PROJECT_DIR$/src/test/performance/node/map.ts</test-file>
+      <test-names>
+        <name value="map perf" />
+      </test-names>
+      <method v="2" />
+    </configuration>
     <configuration name="node &gt; v8 &gt; parser" type="mocha-javascript-test-runner">
       <node-interpreter>node</node-interpreter>
       <node-options>--max-old-space-size=4096 --allow-natives-syntax</node-options>
@@ -369,15 +418,16 @@
       <item itemvalue="Mocha.common &gt; main &gt; rx &gt; depend &gt; dependent-func.base" />
       <item itemvalue="Mocha.common &gt; main &gt; rx &gt; depend &gt; dependent-func.perceptron" />
       <item itemvalue="Mocha.fundamental-operations.new Array" />
+      <item itemvalue="Mocha.map perf" />
       <item itemvalue="npm.Coverage Mocha Report" />
     </list>
     <recent_temporary>
       <list>
+        <item itemvalue="Mocha.map perf" />
         <item itemvalue="Mocha.fundamental-operations.new Array" />
         <item itemvalue="Mocha.common &gt; main &gt; rx &gt; depend &gt; dependent-func.perceptron" />
         <item itemvalue="Mocha.common &gt; main &gt; rx &gt; depend &gt; dependent-func.base" />
         <item itemvalue="Mocha.dependent-func.perceptron memory recalc" />
-        <item itemvalue="Mocha.dependent-func (perf)" />
       </list>
     </recent_temporary>
   </component>
@@ -388,13 +438,6 @@
       <option name="number" value="Default" />
       <option name="presentableId" value="Default" />
       <updated>1567687848586</updated>
-    </task>
-    <task id="LOCAL-00198" summary="Develop dependentFunc">
-      <created>1581004485767</created>
-      <option name="number" value="00198" />
-      <option name="presentableId" value="LOCAL-00198" />
-      <option name="project" value="LOCAL" />
-      <updated>1581004485767</updated>
     </task>
     <task id="LOCAL-00199" summary="Develop dependentFunc: perceptron performance test">
       <created>1581056932649</created>
@@ -732,7 +775,14 @@
       <option name="project" value="LOCAL" />
       <updated>1581852680173</updated>
     </task>
-    <option name="localTasksCounter" value="247" />
+    <task id="LOCAL-00247" summary="dependent-funcs v8 optimization in process...">
+      <created>1582002022361</created>
+      <option name="number" value="00247" />
+      <option name="presentableId" value="LOCAL-00247" />
+      <option name="project" value="LOCAL" />
+      <updated>1582002022362</updated>
+    </task>
+    <option name="localTasksCounter" value="248" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -816,10 +866,10 @@
     <MESSAGE value="dependent-funcs v8 optimization in process... Test performance with inlined functions..." />
     <MESSAGE value="dependent-funcs v8 optimization in process... Pool as linked list is fail&#10;&#10;Pool as Array: [ 924, 5693 ] ticks&#10;Pool as LinkedList: [ 1406, 6091, -395 ]," />
     <MESSAGE value="dependent-funcs v8 optimization in process... Rollback &quot;pool as linked list&quot;" />
-    <MESSAGE value="dependent-funcs v8 optimization in process..." />
     <MESSAGE value="Tests OK" />
     <MESSAGE value="dependent-funcs v8 optimization in process... Added callWithArgs (perf is no changed). Tests OK" />
-    <option name="LAST_COMMIT_MESSAGE" value="dependent-funcs v8 optimization in process... Added callWithArgs (perf is no changed). Tests OK" />
+    <MESSAGE value="dependent-funcs v8 optimization in process..." />
+    <option name="LAST_COMMIT_MESSAGE" value="dependent-funcs v8 optimization in process..." />
   </component>
   <component name="XDebuggerManager">
     <breakpoint-manager>
@@ -828,11 +878,6 @@
           <url>file://$PROJECT_DIR$/src/test/performance/node/dependent-func.ts</url>
           <line>147</line>
           <option name="timeStamp" value="340" />
-        </line-breakpoint>
-        <line-breakpoint enabled="true" type="javascript">
-          <url>file://$PROJECT_DIR$/dist/js/test/tests/node/v8/src/helpers/node_latest/helpers.js</url>
-          <line>8</line>
-          <option name="timeStamp" value="343" />
         </line-breakpoint>
         <line-breakpoint enabled="true" type="javascript">
           <url>file://$PROJECT_DIR$/dist/js/main/common/test/unhandledErrors.js</url>
@@ -846,21 +891,25 @@
         </line-breakpoint>
         <line-breakpoint enabled="true" type="javascript">
           <url>file://$PROJECT_DIR$/src/main/common/rx/depend/all.ts</url>
-          <line>757</line>
-          <properties lambdaOrdinal="-1" />
+          <line>736</line>
           <option name="timeStamp" value="357" />
         </line-breakpoint>
         <line-breakpoint enabled="true" type="javascript">
           <url>file://$PROJECT_DIR$/src/main/common/rx/depend/all.ts</url>
-          <line>759</line>
-          <properties lambdaOrdinal="-1" />
+          <line>738</line>
           <option name="timeStamp" value="358" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" type="javascript">
+          <url>file://$PROJECT_DIR$/src/test/performance/node/src/MapPolyfill.js</url>
+          <line>1304</line>
+          <option name="timeStamp" value="361" />
         </line-breakpoint>
       </breakpoints>
     </breakpoint-manager>
     <watches-manager>
       <configuration name="mocha-javascript-test-runner">
         <watch expression="minimatch(&quot;src/js/test/tests/common/main/rx/depend/srcw/helpers.js&quot;, &quot;*/**/{src,assets,mjs}/**&quot;)" language="JavaScript" />
+        <watch expression="path.Map + ''" language="JavaScript" />
       </configuration>
     </watches-manager>
   </component>

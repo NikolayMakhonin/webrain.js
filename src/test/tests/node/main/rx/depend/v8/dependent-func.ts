@@ -28,17 +28,17 @@ import {
 	subscriberLinkDelete,
 	SubscriberLinkPool,
 	update,
-} from '../../../../../../main/common/rx/depend/all'
-import {assert, AssertionError} from '../../../../../../main/common/test/Assert'
-import {describe, it, xit} from '../../../../../../main/common/test/Mocha'
-import {baseTest, createPerceptron} from '../../../../common/main/rx/depend/src/helpers'
-import {v8} from '../../../v8/src/helpers/common/helpers'
-import {OptimizationStatus} from '../../../v8/src/helpers/contracts'
+} from '../../../../../../../main/common/rx/depend/all'
+import {assert, AssertionError} from '../../../../../../../main/common/test/Assert'
+import {describe, it, xit} from '../../../../../../../main/common/test/Mocha'
+import {baseTest, createPerceptron} from '../../../../../common/main/rx/depend/src/helpers'
+import {v8} from '../../../../v8/src/helpers/common/helpers'
+import {OptimizationStatus} from '../../../../v8/src/helpers/contracts'
 import {
 	assertIsOptimized,
 	checkIsOptimized,
 
-} from '../../../v8/src/helpers/helpers'
+} from '../../../../v8/src/helpers/helpers'
 
 describe('node > main > rx > depend > dependent-func', function() {
 	async function v8Test(

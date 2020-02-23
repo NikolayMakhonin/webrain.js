@@ -14,12 +14,13 @@ exports.update = update;
 exports.invalidate = invalidate;
 exports.emit = emit;
 exports.createFuncCallState = createFuncCallState;
-exports._createDependentFunc = _createDependentFunc;
+exports._dependentFunc = _dependentFunc;
 exports.makeDependentIterator = makeDependentIterator;
 exports.isRefType = isRefType;
 exports.createSemiWeakMap = createSemiWeakMap;
 exports.semiWeakMapGet = semiWeakMapGet;
 exports.semiWeakMapSet = semiWeakMapSet;
+exports.createCallWithArgs = createCallWithArgs;
 exports._getFuncCallState = _getFuncCallState;
 exports.createDependentFunc = createDependentFunc;
 exports.createMakeDependentFunc = createMakeDependentFunc;
@@ -41,6 +42,8 @@ var _async = require("../../async/async");
 var _ThenableSync = require("../../async/ThenableSync");
 
 var _helpers = require("../../helpers/helpers");
+
+var _contracts = require("./contracts");
 
 var _marked =
 /*#__PURE__*/
@@ -347,67 +350,8 @@ function update(state, status, valueAsyncOrValueOrError) {
 
   switch (status) {
     case FuncCallStatus_Invalidating:
-      // unsubscribeDependencies(state)
-      // region inline call
-      {
-        var _unsubscribers = state._unsubscribers;
-
-        if (_unsubscribers != null) {
-          var len = state._unsubscribersLength;
-
-          for (var i = 0; i < len; i++) {
-            var item = _unsubscribers[i];
-            _unsubscribers[i] = null; // subscriberLinkDelete(item.state, item)
-            // region inline call
-
-            {
-              // tslint:disable-next-line:no-shadowed-variable
-              var prev = item.prev,
-                  next = item.next,
-                  _state2 = item.state;
-
-              if (_state2 == null) {
-                return;
-              }
-
-              if (prev == null) {
-                if (next == null) {
-                  _state2._subscribersFirst = null;
-                  _state2._subscribersLast = null;
-                } else {
-                  _state2._subscribersFirst = next;
-                  next.prev = null;
-                  item.next = null;
-                }
-              } else {
-                if (next == null) {
-                  _state2._subscribersLast = prev;
-                  prev.next = null;
-                } else {
-                  prev.next = next;
-                  next.prev = prev;
-                  item.next = null;
-                }
-
-                item.prev = null;
-              }
-
-              item.state = null;
-              item.value = null;
-              releaseSubscriberLink(item);
-            } // endregion
-          }
-
-          state._unsubscribersLength = 0;
-
-          if (len > 256) {
-            _unsubscribers.length = 256;
-          }
-        }
-      } // endregion
       // emit(state, status)
       // region inline call
-
       if (state._subscribersFirst != null) {
         // let clonesFirst
         // let clonesLast
@@ -421,19 +365,22 @@ function update(state, status, valueAsyncOrValueOrError) {
         // 	clonesLast = cloneLink
         // }
         for (var link = state._subscribersFirst; link;) {
-          var _next = link.next; // invalidate(link.value, status)
-          // region inline call
+          var next = link.next;
 
-          {
-            // tslint:disable-next-line:no-shadowed-variable
-            var _state3 = link.value;
-            update(_state3, FuncCallStatus_Invalidating);
-          } // endregion
-          // link.value = null
-          // link.next = null
-          // releaseSubscriberLink(link)
+          if (link.value.status !== _contracts.FuncCallStatus.Invalidating && link.value.status !== _contracts.FuncCallStatus.Invalidated) {
+            // invalidate(link.value, status)
+            // region inline call
+            {
+              // tslint:disable-next-line:no-shadowed-variable
+              var _state2 = link.value;
+              update(_state2, FuncCallStatus_Invalidating);
+            } // endregion
+            // link.value = null
+            // link.next = null
+            // releaseSubscriberLink(link)
+          }
 
-          link = _next;
+          link = next;
         }
       } // endregion
 
@@ -456,19 +403,19 @@ function update(state, status, valueAsyncOrValueOrError) {
         // 	clonesLast = cloneLink
         // }
         for (var _link = state._subscribersFirst; _link;) {
-          var _next2 = _link.next; // invalidate(link.value, status)
+          var _next = _link.next; // invalidate(link.value, status)
           // region inline call
 
           {
             // tslint:disable-next-line:no-shadowed-variable
-            var _state4 = _link.value;
-            update(_state4, FuncCallStatus_Invalidated);
+            var _state3 = _link.value;
+            update(_state3, FuncCallStatus_Invalidated);
           } // endregion
           // link.value = null
           // link.next = null
           // releaseSubscriberLink(link)
 
-          _link = _next2;
+          _link = _next;
         }
       } // endregion
 
@@ -515,7 +462,7 @@ function emit(state, status) {
   }
 }
 
-var FuncCallState = function FuncCallState(func, _this, dependentFunc) {
+var FuncCallState = function FuncCallState(func, _this, callWithArgs) {
   (0, _classCallCheck2.default)(this, FuncCallState);
   this.status = FuncCallStatus_Invalidated;
   this.hasValue = false;
@@ -531,92 +478,147 @@ var FuncCallState = function FuncCallState(func, _this, dependentFunc) {
   this._unsubscribersLength = 0;
   this.func = func;
   this._this = _this;
-  this.dependentFunc = dependentFunc;
+  this.callWithArgs = callWithArgs;
 }; // tslint:disable-next-line:no-shadowed-variable
 
 
 exports.FuncCallState = FuncCallState;
 
-function createFuncCallState(func, _this, dependentFunc) {
-  return new FuncCallState(func, _this, dependentFunc);
+function createFuncCallState(func, _this, callWithArgs) {
+  return new FuncCallState(func, _this, callWithArgs);
 }
 
 var currentState;
-var nextCallId = 1; // tslint:disable-next-line:no-shadowed-variable
+var nextCallId = 1;
 
-function _createDependentFunc() {
-  var args = arguments;
-  return function () {
-    var state = this;
+function _dependentFunc(state) {
+  if (currentState != null) {
+    subscribeDependency(currentState, state);
+  }
 
-    if (currentState) {
-      subscribeDependency(currentState, state);
-    }
+  state.callId = nextCallId++;
 
-    state.callId = nextCallId++;
+  if (state.status != null) {
+    switch (state.status) {
+      case FuncCallStatus_Calculated:
+        return state.value;
 
-    if (state.status) {
-      switch (state.status) {
-        case FuncCallStatus_Calculated:
-          return state.value;
+      case FuncCallStatus_Invalidating:
+      case FuncCallStatus_Invalidated:
+        break;
 
-        case FuncCallStatus_Invalidating:
-        case FuncCallStatus_Invalidated:
-          break;
+      case FuncCallStatus_CalculatingAsync:
+        var parentCallState = state.parentCallState;
 
-        case FuncCallStatus_CalculatingAsync:
-          var parentCallState = state.parentCallState;
-
-          while (parentCallState) {
-            if (parentCallState === state) {
-              throw new Error('Recursive async loop detected');
-            }
-
-            parentCallState = parentCallState.parentCallState;
+        while (parentCallState) {
+          if (parentCallState === state) {
+            throw new Error('Recursive async loop detected');
           }
 
-          return state.valueAsync;
-
-        case FuncCallStatus_Error:
-          throw state.error;
-
-        case FuncCallStatus_Calculating:
-          throw new Error('Recursive sync loop detected');
-
-        default:
-          throw new Error('Unknown FuncStatus: ' + state.status);
-      }
-    }
-
-    state.parentCallState = currentState;
-    currentState = state; // return tryInvoke.apply(state, args)
-
-    try {
-      update(state, FuncCallStatus_Calculating);
-      var value = state.func.apply(state._this, args);
-
-      if ((0, _helpers.isIterator)(value)) {
-        value = (0, _ThenableSync.resolveAsync)(makeDependentIterator(state, value));
-
-        if ((0, _async.isThenable)(value)) {
-          update(state, FuncCallStatus_CalculatingAsync, value);
+          parentCallState = parentCallState.parentCallState;
         }
 
-        return value;
-      } else if ((0, _async.isThenable)(value)) {
-        throw new Error('You should use iterator instead thenable for async functions');
+        return state.valueAsync;
+
+      case FuncCallStatus_Error:
+        throw state.error;
+
+      case FuncCallStatus_Calculating:
+        throw new Error('Recursive sync loop detected');
+
+      default:
+        throw new Error('Unknown FuncStatus: ' + state.status);
+    }
+  } // unsubscribeDependencies(state)
+  // region inline call
+
+
+  {
+    var _unsubscribers = state._unsubscribers;
+
+    if (_unsubscribers != null) {
+      var len = state._unsubscribersLength;
+
+      for (var i = 0; i < len; i++) {
+        var item = _unsubscribers[i];
+        _unsubscribers[i] = null; // subscriberLinkDelete(item.state, item)
+        // region inline call
+
+        {
+          // tslint:disable-next-line:no-shadowed-variable
+          var prev = item.prev,
+              next = item.next,
+              _state4 = item.state;
+
+          if (_state4 == null) {
+            return;
+          }
+
+          if (prev == null) {
+            if (next == null) {
+              _state4._subscribersFirst = null;
+              _state4._subscribersLast = null;
+            } else {
+              _state4._subscribersFirst = next;
+              next.prev = null;
+              item.next = null;
+            }
+          } else {
+            if (next == null) {
+              _state4._subscribersLast = prev;
+              prev.next = null;
+            } else {
+              prev.next = next;
+              next.prev = prev;
+              item.next = null;
+            }
+
+            item.prev = null;
+          }
+
+          item.state = null;
+          item.value = null;
+          releaseSubscriberLink(item);
+        } // endregion
       }
 
-      update(state, FuncCallStatus_Calculated, value);
-      return value;
-    } catch (error) {
-      update(state, FuncCallStatus_Error, error);
-      throw error;
-    } finally {
-      currentState = state.parentCallState;
-      state.parentCallState = null;
+      state._unsubscribersLength = 0;
+
+      if (len > 256) {
+        _unsubscribers.length = 256;
+      }
     }
-  };
+  } // endregion
+
+  state.parentCallState = currentState;
+  currentState = state; // return tryInvoke.apply(state, arguments)
+
+  try {
+    update(state, FuncCallStatus_Calculating); // let value: any = state.func.apply(state._this, arguments)
+
+    var value = state.callWithArgs(state._this, state.func);
+
+    if ((0, _helpers.isIterator)(value)) {
+      value = (0, _ThenableSync.resolveAsync)(makeDependentIterator(state, value));
+
+      if ((0, _async.isThenable)(value)) {
+        update(state, FuncCallStatus_CalculatingAsync, value);
+      }
+
+      return value;
+    } else if ((0, _async.isThenable)(value)) {
+      throw new Error('You should use iterator instead thenable for async functions');
+    }
+
+    update(state, FuncCallStatus_Calculated, value);
+    return value;
+  } catch (error) {
+    update(state, FuncCallStatus_Error, error);
+    throw error;
+  } finally {
+    currentState = state.parentCallState;
+    state.parentCallState = null;
+  }
 }
 
 function makeDependentIterator(state, iterator, nested) {
@@ -652,7 +654,7 @@ function makeDependentIterator(state, iterator, nested) {
           break;
 
         case 13:
-          if (!nested) {
+          if (nested == null) {
             update(state, FuncCallStatus_Calculated, iteration.value);
           }
 
@@ -662,7 +664,7 @@ function makeDependentIterator(state, iterator, nested) {
           _context.prev = 17;
           _context.t0 = _context["catch"](1);
 
-          if (!nested) {
+          if (nested == null) {
             update(state, FuncCallStatus_Error, _context.t0);
           }
 
@@ -701,13 +703,13 @@ function semiWeakMapGet(semiWeakMap, key) {
   if (isRefType(key)) {
     var weakMap = semiWeakMap.weakMap;
 
-    if (weakMap) {
+    if (weakMap != null) {
       value = weakMap.get(key);
     }
   } else {
     var map = (0, _map2.default)(semiWeakMap);
 
-    if (map) {
+    if (map != null) {
       value = map.get(key);
     }
   }
@@ -719,7 +721,7 @@ function semiWeakMapSet(semiWeakMap, key, value) {
   if (isRefType(key)) {
     var weakMap = semiWeakMap.weakMap;
 
-    if (!weakMap) {
+    if (weakMap == null) {
       semiWeakMap.weakMap = weakMap = new _weakMap.default();
     }
 
@@ -727,12 +729,19 @@ function semiWeakMapSet(semiWeakMap, key, value) {
   } else {
     var map = (0, _map2.default)(semiWeakMap);
 
-    if (!map) {
+    if (map == null) {
       semiWeakMap.map = map = new _map.default();
     }
 
     map.set(key, value);
   }
+}
+
+function createCallWithArgs() {
+  var args = arguments;
+  return function (_this, func) {
+    return func.apply(_this, args);
+  };
 } // tslint:disable-next-line:no-shadowed-variable
 
 
@@ -741,45 +750,44 @@ function _getFuncCallState(func, funcStateMap) {
     var argumentsLength = arguments.length;
     var argsLengthStateMap = funcStateMap.get(argumentsLength);
 
-    if (!argsLengthStateMap) {
+    if (argsLengthStateMap == null) {
       argsLengthStateMap = createSemiWeakMap();
       funcStateMap.set(argumentsLength, argsLengthStateMap);
     }
 
     var state;
+    var currentMap = semiWeakMapGet(argsLengthStateMap, this);
 
-    if (argumentsLength) {
-      var argsStateMap = semiWeakMapGet(argsLengthStateMap, this);
-
-      if (!argsStateMap) {
-        argsStateMap = createSemiWeakMap();
-        semiWeakMapSet(argsLengthStateMap, this, argsStateMap);
+    if (argumentsLength !== 0) {
+      if (currentMap == null) {
+        currentMap = createSemiWeakMap();
+        semiWeakMapSet(argsLengthStateMap, this, currentMap);
       }
 
       for (var i = 0; i < argumentsLength - 1; i++) {
         var arg = arguments[i];
-        var nextStateMap = semiWeakMapGet(argsStateMap, arg);
+        var nextStateMap = semiWeakMapGet(currentMap, arg);
 
-        if (!nextStateMap) {
+        if (nextStateMap == null) {
           nextStateMap = createSemiWeakMap();
-          semiWeakMapSet(argsStateMap, arg, nextStateMap);
+          semiWeakMapSet(currentMap, arg, nextStateMap);
         }
 
-        argsStateMap = nextStateMap;
+        currentMap = nextStateMap;
       }
 
       var lastArg = arguments[argumentsLength - 1];
-      state = semiWeakMapGet(argsStateMap, lastArg);
+      state = semiWeakMapGet(currentMap, lastArg);
 
-      if (!state) {
-        state = createFuncCallState(func, this, _createDependentFunc.apply(void 0, arguments));
-        semiWeakMapSet(argsStateMap, lastArg, state);
+      if (state == null) {
+        state = createFuncCallState(func, this, createCallWithArgs.apply(null, arguments));
+        semiWeakMapSet(currentMap, lastArg, state);
       }
     } else {
       state = semiWeakMapGet(argsLengthStateMap, this);
 
-      if (!state) {
-        state = createFuncCallState(func, this, _createDependentFunc.apply(void 0, arguments));
+      if (state == null) {
+        state = createFuncCallState(func, this, createCallWithArgs.apply(null, arguments));
         semiWeakMapSet(argsLengthStateMap, this, state);
       }
     }
@@ -793,7 +801,7 @@ function _getFuncCallState(func, funcStateMap) {
 function createDependentFunc(getState) {
   return function () {
     var state = getState.apply(this, arguments);
-    return state.dependentFunc();
+    return _dependentFunc(state);
   };
 }
 

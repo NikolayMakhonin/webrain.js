@@ -1780,7 +1780,7 @@ describe('fundamental-operations', function () {
     });
     console.log(result);
   });
-  it('pass arguments', function () {
+  xit('pass arguments', function () {
     this.timeout(300000);
 
     function _x(a, b, c, d) {
@@ -1811,6 +1811,26 @@ describe('fundamental-operations', function () {
       res = run(x);
     }, () => {
       res = run(y);
+    });
+    console.log(result);
+  });
+  it('new Array', function () {
+    this.timeout(300000);
+    const arr1 = [];
+    const arr2 = new Array(12);
+
+    for (let i = 0; i < 10; i++) {
+      arr1[i] = i;
+      arr2[i] = i;
+    }
+
+    let index = 0;
+    let res;
+    const result = calcPerformance(120000, () => {// no operations
+    }, () => {
+      res = arr1[index++ % 10];
+    }, () => {
+      res = arr2[index++ % 10];
     });
     console.log(result);
   });

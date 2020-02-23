@@ -3,7 +3,10 @@
 var _interopRequireDefault = require("@babel/runtime-corejs3/helpers/interopRequireDefault");
 
 exports.__esModule = true;
+exports.__makeDependentFunc = __makeDependentFunc;
 exports.createPerceptronNaked = createPerceptronNaked;
+exports.__invalidate = __invalidate;
+exports.__outputCall = __outputCall;
 exports.createPerceptron = createPerceptron;
 exports.baseTest = baseTest;
 
@@ -40,6 +43,16 @@ var _Assert = require("../../../../../../../main/common/test/Assert");
 var _helpers = require("../../../../../../../main/common/time/helpers");
 
 /* tslint:disable:no-identical-functions no-shadowed-variable */
+// tslint:disable-next-line:no-shadowed-variable
+function __makeDependentFunc(func) {
+  if (typeof func === 'function') {
+    return (0, _all.makeDependentFunc)(func);
+  }
+
+  return null;
+} // endregion
+
+
 function createPerceptronNaked(layerSize, layersCount, check) {
   if (check === void 0) {
     check = true;
@@ -113,20 +126,36 @@ function createPerceptronNaked(layerSize, layersCount, check) {
   return output;
 }
 
-function createPerceptron(layerSize, layersCount, check) {
+function __invalidate(state, status) {
+  return (0, _all.invalidate)(state, status);
+}
+
+function __outputCall(output) {
+  return output.call(2, 5, 10);
+}
+
+function createPerceptron(layerSize, layersCount, check, makeDependentFunc, invalidate2) {
   if (check === void 0) {
     check = true;
   }
 
+  if (makeDependentFunc === void 0) {
+    makeDependentFunc = __makeDependentFunc;
+  }
+
+  if (invalidate2 === void 0) {
+    invalidate2 = __invalidate;
+  }
+
   var countFuncs = layersCount * layerSize + 2;
-  var input = (0, _all.makeDependentFunc)(function () {
+  var input = makeDependentFunc(function () {
     return 1;
   }); // first layer
 
   var layer = [];
 
   var _loop3 = function _loop3(i) {
-    layer[i] = (0, _all.makeDependentFunc)(function (a, b) {
+    layer[i] = makeDependentFunc(function (a, b) {
       return i * a * b * input() * this;
     });
   };
@@ -142,7 +171,7 @@ function createPerceptron(layerSize, layersCount, check) {
 
     var _loop4 = function _loop4(j) {
       var prevLayer = layer;
-      nextLayer[j] = (0, _all.makeDependentFunc)(function (a, b) {
+      nextLayer[j] = makeDependentFunc(function (a, b) {
         var sum = 0;
 
         for (var k = 0; k < layerSize; k++) {
@@ -164,7 +193,7 @@ function createPerceptron(layerSize, layersCount, check) {
   var output;
   {
     var prevLayer = layer;
-    output = (0, _all.makeDependentFunc)(function (a, b) {
+    output = makeDependentFunc(function (a, b) {
       var sum = 0;
 
       for (var _i4 = 0; _i4 < layerSize; _i4++) {
@@ -194,11 +223,11 @@ function createPerceptron(layerSize, layersCount, check) {
   var inputState = (0, _all.getFuncCallState)(input)();
 
   if (check) {
-    _Assert.assert.strictEqual(output.call(2, 5, 10).toPrecision(6), (100 * ((layerSize - 1) * layerSize / 2) * Math.pow(layerSize, layersCount - 1)).toPrecision(6));
+    _Assert.assert.strictEqual(__outputCall(output).toPrecision(6), (100 * ((layerSize - 1) * layerSize / 2) * Math.pow(layerSize, layersCount - 1)).toPrecision(6));
 
     (0, _all.invalidate)(inputState);
 
-    _Assert.assert.strictEqual(output.call(2, 5, 10).toPrecision(6), (100 * ((layerSize - 1) * layerSize / 2) * Math.pow(layerSize, layersCount - 1)).toPrecision(6));
+    _Assert.assert.strictEqual(__outputCall(output).toPrecision(6), (100 * ((layerSize - 1) * layerSize / 2) * Math.pow(layerSize, layersCount - 1)).toPrecision(6));
   }
 
   return {

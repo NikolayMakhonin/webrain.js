@@ -141,4 +141,3 @@ export function calc(
 			throw new Error('Unknown CalcType: ' + calcType)
 	}
 }
-

@@ -2494,7 +2494,7 @@ function compareDefault(o1, o2) {
     });
     console.log(result);
   });
-  (0, _Mocha.it)('pass arguments', function () {
+  (0, _Mocha.xit)('pass arguments', function () {
     this.timeout(300000);
 
     function _x(a, b, c, d) {
@@ -2527,6 +2527,26 @@ function compareDefault(o1, o2) {
       res = run(x);
     }, function () {
       res = run(y);
+    });
+    console.log(result);
+  });
+  (0, _Mocha.it)('new Array', function () {
+    this.timeout(300000);
+    var arr1 = [];
+    var arr2 = new Array(12);
+
+    for (var i = 0; i < 10; i++) {
+      arr1[i] = i;
+      arr2[i] = i;
+    }
+
+    var index = 0;
+    var res;
+    var result = (0, _rdtsc.calcPerformance)(120000, function () {// no operations
+    }, function () {
+      res = arr1[index++ % 10];
+    }, function () {
+      res = arr2[index++ % 10];
     });
     console.log(result);
   });

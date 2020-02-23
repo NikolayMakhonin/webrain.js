@@ -43,3 +43,34 @@ export function testRecalcNaked() {
 for (let i = 0; i < 10000; i++) {
 	testCreate()
 }
+
+function __func1(a, b) {
+	return (Date.now() + a) * b
+}
+
+function __func2(a, b) {
+	// eslint-disable-next-line prefer-rest-params
+	return __func1(a, b) * 5
+}
+
+function __func3(a, b) {
+	// eslint-disable-next-line prefer-rest-params
+	return __func1(a, b) * 2
+}
+
+function applyTest() {
+	let result
+	for (let i = 0; i < 10000; i++) {
+		result = __func3(1, 2)
+	}
+	return result
+}
+
+function applyTest2() {
+	console.log(applyTest())
+}
+
+// %NeverOptimizeFunction(applyTest2);
+
+applyTest2()
+

@@ -177,6 +177,7 @@ function connectorClass(_ref) {
   var buildRule = _ref.buildRule,
       baseClass = _ref.baseClass;
 
+  // @ts-ignore
   var NewConnector =
   /*#__PURE__*/
   function (_ref2) {
@@ -188,7 +189,8 @@ function connectorClass(_ref) {
     }
 
     return NewConnector;
-  }(baseClass || _Connector.Connector);
+  }(baseClass || _Connector.Connector); // @ts-ignore
+
 
   buildRule(new ConnectorBuilder(NewConnector.prototype));
   return NewConnector;

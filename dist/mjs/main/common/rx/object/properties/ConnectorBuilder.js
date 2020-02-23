@@ -130,7 +130,9 @@ export function connectorClass({
   buildRule,
   baseClass
 }) {
-  class NewConnector extends (baseClass || Connector) {}
+  // @ts-ignore
+  class NewConnector extends (baseClass || Connector) {} // @ts-ignore
+
 
   buildRule(new ConnectorBuilder(NewConnector.prototype));
   return NewConnector;

@@ -2,6 +2,9 @@
     "include": [
         "{src,dist/{js,mjs}}/{main,test/**/src}/**/*"
     ],
+    "exclude": [
+        "**/v8/**/*"
+    ],
     "extension": [
         ".es6", ".es", ".js", ".mjs", ".ts"
     ],

@@ -3,7 +3,18 @@ import { isThenable } from '../../../../../../../main/common/async/async';
 import { getFuncCallState, invalidate, makeDependentFunc } from '../../../../../../../main/common/rx/depend/all';
 import { FuncCallStatus } from '../../../../../../../main/common/rx/depend/contracts';
 import { assert } from '../../../../../../../main/common/test/Assert';
-import { delay } from '../../../../../../../main/common/time/helpers';
+import { delay } from '../../../../../../../main/common/time/helpers'; // region makeDependentFunc
+// tslint:disable-next-line:no-shadowed-variable
+
+// tslint:disable-next-line:no-shadowed-variable
+export function __makeDependentFunc(func) {
+  if (typeof func === 'function') {
+    return makeDependentFunc(func);
+  }
+
+  return null;
+} // endregion
+
 export function createPerceptronNaked(layerSize, layersCount, check = true) {
   const countFuncs = layersCount * layerSize + 2;
 
@@ -64,7 +75,13 @@ export function createPerceptronNaked(layerSize, layersCount, check = true) {
 
   return output;
 }
-export function createPerceptron(layerSize, layersCount, check = true) {
+export function __invalidate(state, status) {
+  return invalidate(state, status);
+}
+export function __outputCall(output) {
+  return output.call(2, 5, 10);
+}
+export function createPerceptron(layerSize, layersCount, check = true, makeDependentFunc = __makeDependentFunc, invalidate2 = __invalidate) {
   const countFuncs = layersCount * layerSize + 2;
   const input = makeDependentFunc(function () {
     return 1;
@@ -127,9 +144,9 @@ export function createPerceptron(layerSize, layersCount, check = true) {
   const inputState = getFuncCallState(input)();
 
   if (check) {
-    assert.strictEqual(output.call(2, 5, 10).toPrecision(6), (100 * ((layerSize - 1) * layerSize / 2) * Math.pow(layerSize, layersCount - 1)).toPrecision(6));
+    assert.strictEqual(__outputCall(output).toPrecision(6), (100 * ((layerSize - 1) * layerSize / 2) * Math.pow(layerSize, layersCount - 1)).toPrecision(6));
     invalidate(inputState);
-    assert.strictEqual(output.call(2, 5, 10).toPrecision(6), (100 * ((layerSize - 1) * layerSize / 2) * Math.pow(layerSize, layersCount - 1)).toPrecision(6));
+    assert.strictEqual(__outputCall(output).toPrecision(6), (100 * ((layerSize - 1) * layerSize / 2) * Math.pow(layerSize, layersCount - 1)).toPrecision(6));
   }
 
   return {

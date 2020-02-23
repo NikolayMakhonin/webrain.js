@@ -1,5 +1,5 @@
 import { ThenableOrValue } from '../../async/async';
-import { Func, FuncCallStatus, IFuncCallState, ISubscriberLink } from './contracts';
+import { Func, FuncCallStatus, IFuncCallState, ISubscriberLink, TCall } from './contracts';
 export declare class SubscriberLinkPool {
     size: number;
     maxSize: number;
@@ -19,10 +19,10 @@ export declare function update<TThis, TArgs extends any[], TValue>(state: IFuncC
 export declare function invalidate<TThis, TArgs extends any[], TValue>(state: IFuncCallState<TThis, TArgs, TValue>, status?: FuncCallStatus): void;
 export declare function emit<TThis, TArgs extends any[], TValue>(state: IFuncCallState<TThis, TArgs, TValue>, status: any): void;
 export declare class FuncCallState<TThis, TArgs extends any[], TValue> {
-    constructor(func: Func<TThis, TArgs, TValue>, _this: TThis, dependentFunc: Func<TThis, TArgs, TValue>);
-    readonly func: any;
-    readonly _this: any;
-    readonly dependentFunc: any;
+    constructor(func: Func<TThis, TArgs, TValue>, _this: TThis, callWithArgs: TCall<TArgs>);
+    readonly func: Func<TThis, TArgs, TValue>;
+    readonly _this: TThis;
+    readonly callWithArgs: TCall<TArgs>;
     status: FuncCallStatus;
     hasValue: boolean;
     hasError: boolean;
@@ -36,8 +36,8 @@ export declare class FuncCallState<TThis, TArgs extends any[], TValue> {
     _unsubscribers: any;
     _unsubscribersLength: number;
 }
-export declare function createFuncCallState<TThis, TArgs extends any[], TValue>(func: Func<TThis, TArgs, TValue>, _this: TThis, dependentFunc: Func<TThis, TArgs, TValue>): IFuncCallState<TThis, TArgs, TValue>;
-export declare function _createDependentFunc<TThis, TArgs extends any[], TValue>(this: IFuncCallState<TThis, TArgs, TValue>): (this: IFuncCallState<TThis, TArgs, TValue>) => TValue;
+export declare function createFuncCallState<TThis, TArgs extends any[], TValue>(func: Func<TThis, TArgs, TValue>, _this: TThis, callWithArgs: TCall<TArgs>): IFuncCallState<TThis, TArgs, TValue>;
+export declare function _dependentFunc<TThis, TArgs extends any[], TValue>(state: IFuncCallState<TThis, TArgs, TValue>): any;
 export declare function makeDependentIterator<TThis, TArgs extends any[], TValue, TFunc extends Func<TThis, TArgs, TValue>>(state: IFuncCallState<TThis, TArgs, TValue>, iterator: Iterator<TValue>, nested?: boolean): Iterator<TValue>;
 export declare function isRefType(value: any): boolean;
 interface ISemiWeakMap<K, V> {
@@ -47,6 +47,7 @@ interface ISemiWeakMap<K, V> {
 export declare function createSemiWeakMap<K, V>(): ISemiWeakMap<K, V>;
 export declare function semiWeakMapGet<K, V>(semiWeakMap: ISemiWeakMap<K, V>, key: K): V;
 export declare function semiWeakMapSet<K, V>(semiWeakMap: ISemiWeakMap<K, V>, key: K, value: V): void;
+export declare function createCallWithArgs<TArgs extends any[]>(...args: TArgs): TCall<TArgs>;
 export declare function _getFuncCallState<TThis, TArgs extends any[], TValue>(func: Func<TThis, TArgs, TValue>, funcStateMap: Map<number, any>): Func<TThis, TArgs, IFuncCallState<TThis, TArgs, TValue>>;
 export declare function createDependentFunc<TThis, TArgs extends any[], TValue>(getState: Func<TThis, TArgs, IFuncCallState<TThis, TArgs, TValue>>): () => any;
 declare type TRootStateMap = WeakMap<Func<any, any, any>, Func<any, any, IFuncCallState<any, any, any>>>;

@@ -27,8 +27,8 @@ var _Mocha = require("../../../main/common/test/Mocha");
 var _helpers = require("../../tests/common/main/rx/depend/src/helpers");
 
 // @ts-ignore
-(0, _Mocha.describe)('dependent-func', function () {
-  (0, _Mocha.it)('perceptron perf', function () {
+(0, _Mocha.describe)('dependent-func perf', function () {
+  (0, _Mocha.it)('perceptron recalc', function () {
     var _context, _context2, _context3, _context4, _context5;
 
     this.timeout(300000);
@@ -74,7 +74,7 @@ var _helpers = require("../../tests/common/main/rx/depend/src/helpers");
     }).join(', ') + "]");
     var chromeFuncsPerFrame = countFuncs * cyclesPerSecond / result.absoluteDiff[1] / 60 / 210;
 
-    _Assert.assert.ok(chromeFuncsPerFrame >= 180);
+    _Assert.assert.ok(chromeFuncsPerFrame >= 150);
   });
   (0, _Mocha.xit)('set memory', function () {
     this.timeout(300000);
@@ -110,16 +110,43 @@ var _helpers = require("../../tests/common/main/rx/depend/src/helpers");
       return _Assert.assert.ok(o <= 750);
     });
   });
+  (0, _Mocha.it)('perceptron create', function () {
+    this.timeout(300000);
+
+    var _createPerceptron2 = (0, _helpers.createPerceptron)(2, 2),
+        countFuncs = _createPerceptron2.countFuncs,
+        input = _createPerceptron2.input,
+        inputState = _createPerceptron2.inputState,
+        output = _createPerceptron2.output;
+
+    var naked = (0, _helpers.createPerceptronNaked)(2, 2);
+    var map1 = new _map2.default();
+    var map2 = new _map2.default();
+    map2.set(2, 3);
+    map1.set(1, map2);
+    var perceptron;
+    var result = (0, _rdtsc.calcPerformance)(10000, function () {
+      perceptron = (0, _helpers.createPerceptronNaked)(2, 2);
+    }, function () {
+      perceptron = (0, _helpers.createPerceptron)(2, 2, false);
+    }, function () {
+      perceptron.output.call(2, 5, 10);
+    }, function () {
+      (0, _all.invalidate)(perceptron.inputState);
+      perceptron.output.call(2, 5, 10);
+    });
+    console.log(result);
+  });
   (0, _Mocha.it)('perceptron memory recalc', function () {
     var _context7;
 
     this.timeout(300000);
 
-    var _createPerceptron2 = (0, _helpers.createPerceptron)(10, 5),
-        countFuncs = _createPerceptron2.countFuncs,
-        input = _createPerceptron2.input,
-        inputState = _createPerceptron2.inputState,
-        output = _createPerceptron2.output; // const subscriberLinkPoolSize = subscriberLinkPool.size
+    var _createPerceptron3 = (0, _helpers.createPerceptron)(10, 5),
+        countFuncs = _createPerceptron3.countFuncs,
+        input = _createPerceptron3.input,
+        inputState = _createPerceptron3.inputState,
+        output = _createPerceptron3.output; // const subscriberLinkPoolSize = subscriberLinkPool.size
     // const subscriberLinkPoolAllocatedSize = subscriberLinkPool.allocatedSize
     // const subscriberLinkPoolUsedSize = subscriberLinkPool.usedSize
     // console.log('subscriberLinkPool.size = ' + subscriberLinkPoolSize)

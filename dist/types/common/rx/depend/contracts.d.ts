@@ -1,6 +1,6 @@
 import { Thenable } from '../../async/async';
 export declare type Func<TThis, TArgs extends any[], TValue = void> = (this: TThis, ...args: TArgs) => TValue;
-export declare type TCall<TArgs extends any[]> = <TThis, TValue>(this: TThis, func: Func<TThis, TArgs, TValue>) => TValue;
+export declare type TCall<TArgs extends any[]> = <TThis, TValue>(_this: TThis, func: Func<TThis, TArgs, TValue>) => TValue;
 export interface ILinkItem<T> {
     value: T;
     prev: ILinkItem<T>;
@@ -18,7 +18,7 @@ export declare enum FuncCallStatus {
 export interface IFuncCallState<TThis, TArgs extends any[], TValue> {
     readonly func: Func<TThis, TArgs, TValue>;
     readonly _this: TThis;
-    readonly dependentFunc: Func<TThis, TArgs, TValue>;
+    readonly callWithArgs: TCall<TArgs>;
     status: FuncCallStatus;
     hasValue: boolean;
     hasError: boolean;

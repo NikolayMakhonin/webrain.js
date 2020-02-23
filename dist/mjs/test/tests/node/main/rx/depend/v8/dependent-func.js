@@ -1,11 +1,11 @@
 /* tslint:disable:no-identical-functions no-shadowed-variable no-var-requires ordered-imports */
 // @ts-ignore
-import { _createDependentFunc, _getFuncCallState, createFuncCallState, getFuncCallState, getSubscriberLink, invalidate, makeDependentFunc, releaseSubscriberLink, subscribeDependency, unsubscribeDependencies, FuncCallState, semiWeakMapGet, semiWeakMapSet, getSubscriberLinkFromPool, subscriberLinkPool, _subscribe, createDependentFunc, emit, isRefType, subscriberLinkDelete, update } from '../../../../../../main/common/rx/depend/all';
-import { describe, it } from '../../../../../../main/common/test/Mocha';
-import { baseTest, createPerceptron } from '../../../../common/main/rx/depend/src/helpers';
-import { v8 } from '../../../v8/src/helpers/common/helpers';
-import { OptimizationStatus } from '../../../v8/src/helpers/contracts';
-import { assertIsOptimized, checkIsOptimized } from '../../../v8/src/helpers/helpers';
+import { _createDependentFunc, _getFuncCallState, createFuncCallState, getFuncCallState, getSubscriberLink, invalidate, makeDependentFunc, releaseSubscriberLink, subscribeDependency, unsubscribeDependencies, FuncCallState, semiWeakMapGet, semiWeakMapSet, getSubscriberLinkFromPool, subscriberLinkPool, _subscribe, createDependentFunc, emit, isRefType, subscriberLinkDelete, update } from '../../../../../../../main/common/rx/depend/all';
+import { describe, it } from '../../../../../../../main/common/test/Mocha';
+import { baseTest, createPerceptron } from '../../../../../common/main/rx/depend/src/helpers';
+import { v8 } from '../../../../v8/src/helpers/common/helpers';
+import { OptimizationStatus } from '../../../../v8/src/helpers/contracts';
+import { assertIsOptimized, checkIsOptimized } from '../../../../v8/src/helpers/helpers';
 describe('node > main > rx > depend > dependent-func', function () {
   async function v8Test(countIterations, iterate) {
     const objects = {

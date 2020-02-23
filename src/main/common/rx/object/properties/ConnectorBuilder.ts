@@ -182,8 +182,10 @@ export function connectorClass<
 	buildRule: (connectorBuilder: ConnectorBuilder<Connector<TSource>, TSource>) => { object: TConnector },
 	baseClass?: new (source: TSource) => Connector<TSource>,
 }): new (source: TSource, name?: string) => TConnector {
+	// @ts-ignore
 	class NewConnector extends (baseClass || Connector) implements Connector<TSource> { }
 
+	// @ts-ignore
 	buildRule(new ConnectorBuilder<NewConnector, TSource>(
 		NewConnector.prototype,
 	))

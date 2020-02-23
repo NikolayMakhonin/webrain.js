@@ -1,6 +1,6 @@
 {
   "name": "webrain",
-  "version": "0.0.6",
+  "version": "0.0.7",
   "description": "NodeJS cross-platform and cross-browser business logic framework - Brain of your web applications.",
   "author": "Nikolay Makhonin",
   "homepage": "https://github.com/NikolayMakhonin/webrain.js",
@@ -85,13 +85,11 @@
     "@theintern/leadfoot": "^2.3.1",
     "assertion-error": "^1.1.0",
     "babel-eslint": "^10.0.3",
-    "babel-plugin-search-and-replace": "^1.0.1",
-    "babel-plugin-transform-replace-expressions": "^0.2.0",
     "chai": "^4.2.0",
     "core-js": "^3.6.4",
     "core-js-pure": "^3.6.4",
     "depcheck": "^0.8.4",
-    "electron": "^6.1.7",
+    "electron": "^6.1.8",
     "eslint": "6.1.0",
     "eslint-config-pro": "^0.0.4",
     "eslint-plugin-html": "^6.0.0",
@@ -102,7 +100,6 @@
     "globby": "^10.0.2",
     "immutable": "^4.0.0-rc.12",
     "istanbul-combine": "^0.3.0",
-    "js2cpp": "^1.1.0",
     "karma": "^4.4.1",
     "karma-browserstack-launcher": "^1.5.1",
     "karma-chrome-launcher": "^3.1.0",
@@ -124,7 +121,7 @@
     "nyc": "^14.1.1",
     "rdtsc": "^2.0.0",
     "regenerator-runtime": "^0.13.3",
-    "rollup": "^1.31.0",
+    "rollup": "^1.31.1",
     "rollup-plugin-babel": "^4.3.3",
     "rollup-plugin-commonjs": "^10.1.0",
     "rollup-plugin-istanbul": "^2.0.1",
@@ -139,7 +136,7 @@
     "tslint-eslint-rules": "^5.4.0",
     "tslint-no-circular-imports": "^0.7.0",
     "tslint-sonarts": "^1.9.0",
-    "typescript": "^3.7.5"
+    "typescript": "^3.8.2"
   },
   "peerDependencies": {
     "@babel/runtime-corejs3": "^7.5.5",
