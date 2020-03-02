@@ -1,34 +1,37 @@
 /* tslint:disable:no-identical-functions no-shadowed-variable no-var-requires ordered-imports */
+import {
+	_getFuncCallState, createSemiWeakMap, isRefType,
+	semiWeakMapGet,
+	semiWeakMapSet
+} from '../../../../../../../main/common/rx/depend/_getFuncCallState'
 // @ts-ignore
 import {
 	_createDependentFunc,
-	_getFuncCallState,
-	createFuncCallState,
-	getFuncCallState,
-	getSubscriberLink,
-	invalidate,
-	makeDependentFunc,
-	releaseSubscriberLink,
-	subscribeDependency,
-	unsubscribeDependencies,
 
-	FuncCallState,
-	createMakeDependentFunc,
-	semiWeakMapGet,
-	semiWeakMapSet,
-	createSemiWeakMap,
-	getSubscriberLinkFromPool,
-	subscriberLinkPool,
-	_subscribe,
-	createDependentFunc,
-	createGetFuncCallState,
-	emit,
-	isRefType,
-	makeDependentIterator,
-	subscriberLinkDelete,
-	SubscriberLinkPool,
-	update,
+
+
+
 } from '../../../../../../../main/common/rx/depend/all'
+import {
+	createFuncCallState, emit, FuncCallState, invalidate,
+	makeDependentIterator, update
+} from '../../../../../../../main/common/rx/depend/_dependentFunc'
+import {
+	createDependentFunc,
+	createGetFuncCallState, createMakeDependentFunc,
+	getFuncCallState,
+	makeDependentFunc
+} from '../../../../../../../main/common/rx/depend/facade'
+import {
+	_subscribe,
+	subscribeDependency, subscriberLinkDelete,
+	unsubscribeDependencies
+} from '../../../../../../../main/common/rx/depend/subscribeDependency'
+import {
+	getSubscriberLink,
+	getSubscriberLinkFromPool,
+	releaseSubscriberLink, SubscriberLinkPool, subscriberLinkPool
+} from '../../../../../../../main/common/rx/depend/subscriber-link-pool'
 import {assert, AssertionError} from '../../../../../../../main/common/test/Assert'
 import {describe, it, xit} from '../../../../../../../main/common/test/Mocha'
 import {baseTest, createPerceptron} from '../../../../../common/main/rx/depend/src/helpers'

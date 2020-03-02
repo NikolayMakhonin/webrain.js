@@ -1,7 +1,7 @@
 // @ts-ignore
 import {calcPerformance} from 'rdtsc'
 import {getObjectUniqueId} from '../../../main/common/helpers/object-unique-id'
-import {invalidate} from '../../../main/common/rx/depend/all'
+import {invalidate} from '../../../main/common/rx/depend/_dependentFunc'
 import {assert} from '../../../main/common/test/Assert'
 import {CalcType} from '../../../main/common/test/calc'
 import {calcMemAllocate} from '../../../main/common/test/calc-mem-allocate'

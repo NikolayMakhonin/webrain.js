@@ -1,7 +1,8 @@
 /* tslint:disable:no-identical-functions no-shadowed-variable */
 import {isThenable, Thenable, ThenableOrValue} from '../../../../../../../main/common/async/async'
-import {getFuncCallState, invalidate, makeDependentFunc} from '../../../../../../../main/common/rx/depend/all'
 import {Func, FuncCallStatus, IFuncCallState} from '../../../../../../../main/common/rx/depend/contracts'
+import {invalidate} from '../../../../../../../main/common/rx/depend/_dependentFunc'
+import {getFuncCallState, makeDependentFunc} from '../../../../../../../main/common/rx/depend/facade'
 import {assert} from '../../../../../../../main/common/test/Assert'
 import {delay} from '../../../../../../../main/common/time/helpers'
 
