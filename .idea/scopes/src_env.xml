@@ -1,0 +1,3 @@
+<component name="DependencyValidationManager">
+  <scope name="src+env" pattern="file:*/&amp;&amp;!file:.idea//*&amp;&amp;!file:_trash//*&amp;&amp;!file:node_modules//*&amp;&amp;!file:tmp//*&amp;&amp;!file:dist//*&amp;&amp;!file:docs//*&amp;&amp;!file:env/polyfill//*&amp;&amp;!file:src/test/performance/node/src/SetPolyfill.js" />
+</component>
