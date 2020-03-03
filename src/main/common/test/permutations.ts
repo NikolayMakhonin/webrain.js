@@ -6,7 +6,7 @@
 let factorialTable: number[]
 const maxFactorialValue = 20
 
-function getFactorial(value: number) {
+export function getFactorial(value: number) {
 	if (value < 0 || value > maxFactorialValue) {
 		throw new Error(`getFactorial error: value (${value}) < 0 || > ${maxFactorialValue}`)
 	}

@@ -8,9 +8,7 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="69b2ee16-521b-4efd-b473-8e19e3df4d09" name="Default Changelist" comment="">
-      <change afterPath="$PROJECT_DIR$/src/test/tests/common/main/test/permutations.ts" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/common/lists/BinaryTree.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/common/lists/BinaryTree.ts" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/common/test/permutations.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/common/test/permutations.ts" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/test/tests/common/main/lists/BinaryTree.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/test/tests/common/main/lists/BinaryTree.ts" afterDir="false" />
     </list>
@@ -406,20 +404,6 @@
       <option name="presentableId" value="Default" />
       <updated>1567687848586</updated>
     </task>
-    <task id="LOCAL-00205" summary="Develop dependentFunc. Rollback &quot;replace linked list with Set&quot;">
-      <created>1581067719022</created>
-      <option name="number" value="00205" />
-      <option name="presentableId" value="LOCAL-00205" />
-      <option name="project" value="LOCAL" />
-      <updated>1581067719022</updated>
-    </task>
-    <task id="LOCAL-00206" summary="With object pool&#10;&#10;perceptron 100 x 10&#10;invalidate cycles: 20055&#10;calc cycles: 274677&#10;create bytes: 634.6291329077052 ±3062.663830568589&#10;recalc bytes: 12987.14035845834 ±10340.321312351687">
-      <created>1581068433147</created>
-      <option name="number" value="00206" />
-      <option name="presentableId" value="LOCAL-00206" />
-      <option name="project" value="LOCAL" />
-      <updated>1581068433147</updated>
-    </task>
     <task id="LOCAL-00207" summary="With subscribeLink as class&#10;&#10;perceptron 100 x 10&#10;invalidate cycles: 19629&#10;calc cycles: 273832&#10;create bytes: 700.7978586457976 ±6116.1295932167395&#10;recalc bytes: 13471.513632528757 ±10309.651244745235">
       <created>1581069244006</created>
       <option name="number" value="00207" />
@@ -749,7 +733,21 @@
       <option name="project" value="LOCAL" />
       <updated>1583240474017</updated>
     </task>
-    <option name="localTasksCounter" value="254" />
+    <task id="LOCAL-00254" summary="forEachPermutation tested">
+      <created>1583244487500</created>
+      <option name="number" value="00254" />
+      <option name="presentableId" value="LOCAL-00254" />
+      <option name="project" value="LOCAL" />
+      <updated>1583244487500</updated>
+    </task>
+    <task id="LOCAL-00255" summary="BinaryTree is fully tested">
+      <created>1583244658851</created>
+      <option name="number" value="00255" />
+      <option name="presentableId" value="LOCAL-00255" />
+      <option name="project" value="LOCAL" />
+      <updated>1583244658851</updated>
+    </task>
+    <option name="localTasksCounter" value="256" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -811,8 +809,6 @@
   <component name="VcsManagerConfiguration">
     <option name="CHECK_CODE_SMELLS_BEFORE_PROJECT_COMMIT" value="false" />
     <option name="CHECK_NEW_TODO" value="false" />
-    <MESSAGE value="dependent-funcs v8 optimization in process. Need change IUnsubscribe to IDisposable" />
-    <MESSAGE value="dependent-funcs v8 optimization in process. Need to return callWithArgs" />
     <MESSAGE value="dependent-funcs v8 optimization in process... Need to use two fields callId &amp; callId2 to avoid overflow int number. Need to avoid using functions as variables." />
     <MESSAGE value="dependent-funcs v8 optimization in process.." />
     <MESSAGE value="dependent-funcs v8 optimization in process... Separated code by functions" />
@@ -836,7 +832,9 @@
     <MESSAGE value="Optimizing..." />
     <MESSAGE value="BinaryTree in process..." />
     <MESSAGE value="Added forEachPermutation best algorithm" />
-    <option name="LAST_COMMIT_MESSAGE" value="Added forEachPermutation best algorithm" />
+    <MESSAGE value="forEachPermutation tested" />
+    <MESSAGE value="BinaryTree is fully tested" />
+    <option name="LAST_COMMIT_MESSAGE" value="BinaryTree is fully tested" />
   </component>
   <component name="XDebuggerManager">
     <breakpoint-manager>
@@ -863,7 +861,7 @@
         </line-breakpoint>
         <line-breakpoint enabled="true" type="javascript">
           <url>file://$PROJECT_DIR$/src/test/tests/common/main/lists/BinaryTree.ts</url>
-          <line>129</line>
+          <line>134</line>
           <properties lambdaOrdinal="-1" />
           <option name="timeStamp" value="423" />
         </line-breakpoint>

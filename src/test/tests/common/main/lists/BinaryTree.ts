@@ -1,8 +1,7 @@
 import {BinaryTree, TCompareFunc} from '../../../../../main/common/lists/BinaryTree'
 import {assert} from '../../../../../main/common/test/Assert'
 import {describe, it} from '../../../../../main/common/test/Mocha'
-import {forEachPermutation} from '../../../../../main/common/test/permutations'
-import {TestMap} from './src/helpers/TestMap'
+import {forEachPermutation, getFactorial} from '../../../../../main/common/test/permutations'
 
 declare const after
 
@@ -89,12 +88,12 @@ class BinaryTreeTester<TItem> {
 }
 
 describe('common > main > lists > BinaryTree', function() {
-	this.timeout(600000)
+	this.timeout(6000000)
 
-	let totalMapTests = 0
+	let totalTests = 0
 
 	after(function() {
-		console.log('Total BinaryTree tests >= ' + TestMap.totalMapTests)
+		console.log('Total BinaryTree tests >= ' + totalTests)
 	})
 
 	function testVariant<TItem>(
@@ -110,12 +109,18 @@ describe('common > main > lists > BinaryTree', function() {
 				binaryTree.delete(deleteItems[i])
 			}
 		} catch (ex) {
-			console.log(`testsCount: ${totalMapTests}`)
+			console.log(`testsCount: ${totalTests}`)
 			console.log(`addItems: ${addItems.join(',')}`)
 			console.log(`deleteItems: ${deleteItems.join(',')}`)
 			throw ex
 		}
-		totalMapTests++
+		totalTests++
+		if (totalTests % 100000 === 0) {
+			const maxTests = getFactorial(addItems.length) * getFactorial(addItems.length)
+			if (totalTests < maxTests) {
+				console.log(`progress: ${totalTests} / ${maxTests} = ${Math.round(totalTests / maxTests * 100)}%`)
+			}
+		}
 	}
 
 	it('add / delete', function() {
