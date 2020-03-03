@@ -26,6 +26,9 @@ export interface IFuncCallState<TThis,
 	readonly func: Func<TThis, TArgs, TValue>
 	readonly _this: TThis
 	readonly callWithArgs: TCall<TArgs>
+	readonly valueStates: number[]
+	readonly hash: number
+	usageScore: number
 
 	status: FuncCallStatus
 	hasValue: boolean
@@ -40,11 +43,13 @@ export interface IFuncCallState<TThis,
 
 	// for prevent multiple subscribe equal dependencies
 	callId: number
-
 	_subscribersFirst: ISubscriberLink<TThis, TArgs, TValue>
 	_subscribersLast: ISubscriberLink<TThis, TArgs, TValue>
 	_unsubscribers: Array<ISubscriberLink<TThis, TArgs, TValue>>,
 	_unsubscribersLength: number,
+
+	// calculable
+	readonly hasSubscribers: boolean
 }
 
 export interface ISubscriberLink<TThis, TArgs extends any[], TValue>
@@ -52,4 +57,8 @@ export interface ISubscriberLink<TThis, TArgs extends any[], TValue>
 	state: IFuncCallState<TThis, TArgs, TValue>
 	prev: ISubscriberLink<TThis, TArgs, TValue>,
 	next: ISubscriberLink<TThis, TArgs, TValue>,
+}
+
+export interface IValueState {
+	id: number
 }

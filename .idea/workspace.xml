@@ -8,7 +8,13 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="69b2ee16-521b-4efd-b473-8e19e3df4d09" name="Default Changelist" comment="">
+      <change afterPath="$PROJECT_DIR$/src/main/common/lists/BinaryTree.ts" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/common/rx/depend/reduceCallStates.ts" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/test/tests/common/main/lists/BinaryTree.ts" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/common/rx/depend/_dependentFunc.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/common/rx/depend/_dependentFunc.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/common/rx/depend/_getFuncCallState2.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/common/rx/depend/_getFuncCallState2.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/common/rx/depend/contracts.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/common/rx/depend/contracts.ts" afterDir="false" />
     </list>
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
     <option name="SHOW_DIALOG" value="false" />
@@ -54,7 +60,7 @@
     <property name="WebServerToolWindowFactoryState" value="false" />
     <property name="auto.test.manager.delay" value="5000" />
     <property name="javascript.karma.karma_node_package_dir" value="" />
-    <property name="last_opened_file_path" value="$PROJECT_DIR$/../../apps/app-template" />
+    <property name="last_opened_file_path" value="$PROJECT_DIR$/src/test/tests/common/main/lists" />
     <property name="node.js.detected.package.eslint" value="true" />
     <property name="node.js.detected.package.standard" value="true" />
     <property name="node.js.detected.package.tslint" value="true" />
@@ -73,26 +79,26 @@
     <property name="ts.external.directory.path" value="L:\Work\_GIT\GitHub\NodeJs\modules\webrain\node_modules\typescript\lib" />
   </component>
   <component name="RecentsManager">
-    <key name="CopyFile.RECENT_KEYS">
-      <recent name="L:\Work\_GIT\GitHub\NodeJs\modules\webrain\src\test\performance\node" />
-      <recent name="L:\Work\_GIT\GitHub\NodeJs\modules\webrain\src\test\performance\node\src" />
-      <recent name="L:\Work\_GIT\GitHub\NodeJs\modules\webrain\env\libs" />
-      <recent name="L:\Work\_GIT\GitHub\NodeJs\modules\webrain\docs\perf\depend-func" />
-      <recent name="L:\Work\_GIT\GitHub\NodeJs\modules\webrain\src\test\tests\node\v8\helpers\node_4_9_1" />
-    </key>
-    <key name="es6.move.members.recent.items">
-      <recent name="L:\Work\_GIT\GitHub\NodeJs\modules\webrain\src\test\tests\node\v8\src\helpers\common\helpers.ts" />
-      <recent name="L:\Work\_GIT\GitHub\NodeJs\modules\webrain\src\test\tests\node\v8\helpers\common\helpers.ts" />
-      <recent name="L:\Work\_GIT\GitHub\NodeJs\modules\webrain\src\test\tests\node\v8\helpers\node_latest\helpers.ts" />
-      <recent name="L:\Work\_GIT\GitHub\NodeJs\modules\webrain\src\test\tests\node\v8\helpers\contracts.ts" />
-      <recent name="L:\Work\_GIT\GitHub\NodeJs\modules\webrain\src\main\common\rx\depend\contracts.ts" />
-    </key>
     <key name="MoveFile.RECENT_KEYS">
+      <recent name="L:\Work\_GIT\GitHub\NodeJs\modules\webrain\src\main\common\lists" />
+      <recent name="L:\Work\_GIT\GitHub\NodeJs\modules\webrain\src\main\common\rx\depend\docs" />
       <recent name="L:\Work\_GIT\GitHub\NodeJs\modules\webrain\src\test\tests\node\main\rx\depend\v8" />
       <recent name="L:\Work\_GIT\GitHub\NodeJs\modules\webrain\src\test\tests\node\main\rx\depend" />
       <recent name="L:\Work\_GIT\GitHub\NodeJs\modules\webrain\docs\perf" />
-      <recent name="L:\Work\_GIT\GitHub\NodeJs\modules\webrain\docs\perf\depend-func" />
-      <recent name="L:\Work\_GIT\GitHub\NodeJs\modules\webrain\src\test\tests\node\v8\src" />
+    </key>
+    <key name="es6.move.members.recent.items">
+      <recent name="L:\Work\_GIT\GitHub\NodeJs\modules\webrain\src\main\common\rx\depend\reduceCallStates.ts" />
+      <recent name="L:\Work\_GIT\GitHub\NodeJs\modules\webrain\src\main\common\rx\depend\contracts.ts" />
+      <recent name="L:\Work\_GIT\GitHub\NodeJs\modules\webrain\src\main\common\rx\depend\helpers.ts" />
+      <recent name="L:\Work\_GIT\GitHub\NodeJs\modules\webrain\src\main\common\rx\depend\facade.ts" />
+      <recent name="L:\Work\_GIT\GitHub\NodeJs\modules\webrain\src\main\common\rx\depend\_getFuncCallState.ts" />
+    </key>
+    <key name="CopyFile.RECENT_KEYS">
+      <recent name="L:\Work\_GIT\GitHub\NodeJs\modules\webrain\src\test\tests\common\main\lists" />
+      <recent name="L:\Work\_GIT\GitHub\NodeJs\modules\webrain\src\main\common\rx\depend" />
+      <recent name="L:\Work\_GIT\GitHub\NodeJs\modules\webrain\src\test\performance\node" />
+      <recent name="L:\Work\_GIT\GitHub\NodeJs\modules\webrain\src\test\performance\node\src" />
+      <recent name="L:\Work\_GIT\GitHub\NodeJs\modules\webrain\env\libs" />
     </key>
   </component>
   <component name="RunDashboard">
@@ -107,7 +113,7 @@
       </list>
     </option>
   </component>
-  <component name="RunManager" selected="Mocha.dependent-func (perf)">
+  <component name="RunManager" selected="Mocha.common &gt; main &gt; lists &gt; BinaryTree">
     <configuration default="true" type="JavaScriptTestRunnerKarma">
       <config-file value="$PROJECT_DIR$/env/karma/configs/dev.js" />
       <karma-package-dir value="$PROJECT_DIR$/node_modules/karma" />
@@ -193,7 +199,7 @@
       <test-pattern>./src/test/tests/{common,node}/**/*.*</test-pattern>
       <method v="2" />
     </configuration>
-    <configuration name="common &gt; main &gt; rx &gt; depend &gt; dependent-func.base" type="mocha-javascript-test-runner" temporary="true" nameIsGenerated="true">
+    <configuration name="common &gt; main &gt; lists &gt; BinaryTree" type="mocha-javascript-test-runner" temporary="true" nameIsGenerated="true">
       <node-interpreter>node</node-interpreter>
       <node-options>--max-old-space-size=4096 --allow-natives-syntax</node-options>
       <mocha-package>$PROJECT_DIR$/node_modules/mocha</mocha-package>
@@ -201,11 +207,10 @@
       <pass-parent-env>true</pass-parent-env>
       <ui>bdd</ui>
       <extra-mocha-options>--opts ./env/mocha/configs/babel/mocha.opts --watch</extra-mocha-options>
-      <test-kind>TEST</test-kind>
-      <test-file>$PROJECT_DIR$/src/test/tests/common/main/rx/depend/dependent-func.ts</test-file>
+      <test-kind>SUITE</test-kind>
+      <test-file>$PROJECT_DIR$/src/test/tests/common/main/lists/BinaryTree.ts</test-file>
       <test-names>
-        <name value="common &gt; main &gt; rx &gt; depend &gt; dependent-func" />
-        <name value="base" />
+        <name value="common &gt; main &gt; lists &gt; BinaryTree" />
       </test-names>
       <method v="2" />
     </configuration>
@@ -261,6 +266,22 @@
       <test-file>$PROJECT_DIR$/src/test/performance/node/dependent-func.ts</test-file>
       <method v="2" />
     </configuration>
+    <configuration name="dependent-func perf.perceptron memory create" type="mocha-javascript-test-runner" temporary="true" nameIsGenerated="true">
+      <node-interpreter>node</node-interpreter>
+      <node-options>--max-old-space-size=4096 --allow-natives-syntax</node-options>
+      <mocha-package>$PROJECT_DIR$/node_modules/mocha</mocha-package>
+      <working-directory>$PROJECT_DIR$</working-directory>
+      <pass-parent-env>true</pass-parent-env>
+      <ui>bdd</ui>
+      <extra-mocha-options>--opts ./env/mocha/configs/babel/mocha.opts</extra-mocha-options>
+      <test-kind>TEST</test-kind>
+      <test-file>$PROJECT_DIR$/src/test/performance/node/dependent-func.ts</test-file>
+      <test-names>
+        <name value="dependent-func perf" />
+        <name value="perceptron memory create" />
+      </test-names>
+      <method v="2" />
+    </configuration>
     <configuration name="dependent-func" type="mocha-javascript-test-runner">
       <node-interpreter>node</node-interpreter>
       <node-options>--max-old-space-size=4096 --allow-natives-syntax</node-options>
@@ -283,22 +304,6 @@
       <extra-mocha-options>--opts ./env/mocha/configs/babel/mocha.opts --watch</extra-mocha-options>
       <test-kind>PATTERN</test-kind>
       <test-pattern>src/test/tests/{common,node}/{main/rx/depend,v8}/**/*.ts</test-pattern>
-      <method v="2" />
-    </configuration>
-    <configuration name="dependent-func.perceptron memory recalc" type="mocha-javascript-test-runner" temporary="true" nameIsGenerated="true">
-      <node-interpreter>node</node-interpreter>
-      <node-options>--max-old-space-size=4096 --allow-natives-syntax</node-options>
-      <mocha-package>$PROJECT_DIR$/node_modules/mocha</mocha-package>
-      <working-directory>$PROJECT_DIR$</working-directory>
-      <pass-parent-env>true</pass-parent-env>
-      <ui>bdd</ui>
-      <extra-mocha-options>--opts ./env/mocha/configs/babel/mocha.opts</extra-mocha-options>
-      <test-kind>TEST</test-kind>
-      <test-file>$PROJECT_DIR$/src/test/performance/node/dependent-func.ts</test-file>
-      <test-names>
-        <name value="dependent-func" />
-        <name value="perceptron memory recalc" />
-      </test-names>
       <method v="2" />
     </configuration>
     <configuration name="dependent-func.perceptron perf (Compiled)" type="mocha-javascript-test-runner">
@@ -379,20 +384,20 @@
       <item itemvalue="Mocha.dependent-func" />
       <item itemvalue="Mocha.node &gt; v8 &gt; parser" />
       <item itemvalue="Mocha.dependent-func (perf)" />
-      <item itemvalue="Mocha.dependent-func.perceptron memory recalc" />
-      <item itemvalue="Mocha.common &gt; main &gt; rx &gt; depend &gt; dependent-func.base" />
       <item itemvalue="Mocha.common &gt; main &gt; rx &gt; depend &gt; dependent-func.perceptron" />
       <item itemvalue="Mocha.fundamental-operations.new Array" />
       <item itemvalue="Mocha.map perf" />
       <item itemvalue="npm.Coverage Mocha Report" />
+      <item itemvalue="Mocha.dependent-func perf.perceptron memory create" />
+      <item itemvalue="Mocha.common &gt; main &gt; lists &gt; BinaryTree" />
     </list>
     <recent_temporary>
       <list>
+        <item itemvalue="Mocha.common &gt; main &gt; lists &gt; BinaryTree" />
+        <item itemvalue="Mocha.dependent-func perf.perceptron memory create" />
         <item itemvalue="Mocha.map perf" />
         <item itemvalue="Mocha.fundamental-operations.new Array" />
         <item itemvalue="Mocha.common &gt; main &gt; rx &gt; depend &gt; dependent-func.perceptron" />
-        <item itemvalue="Mocha.common &gt; main &gt; rx &gt; depend &gt; dependent-func.base" />
-        <item itemvalue="Mocha.dependent-func.perceptron memory recalc" />
       </list>
     </recent_temporary>
   </component>
@@ -403,20 +408,6 @@
       <option name="number" value="Default" />
       <option name="presentableId" value="Default" />
       <updated>1567687848586</updated>
-    </task>
-    <task id="LOCAL-00200" summary="Develop dependentFunc: perceptron performance test">
-      <created>1581057267256</created>
-      <option name="number" value="00200" />
-      <option name="presentableId" value="LOCAL-00200" />
-      <option name="project" value="LOCAL" />
-      <updated>1581057267256</updated>
-    </task>
-    <task id="LOCAL-00201" summary="Develop dependentFunc: perceptron performance test">
-      <created>1581059150028</created>
-      <option name="number" value="00201" />
-      <option name="presentableId" value="LOCAL-00201" />
-      <option name="project" value="LOCAL" />
-      <updated>1581059150028</updated>
     </task>
     <task id="LOCAL-00202" summary="Develop dependentFunc. Before refactoring&#10;&#10;perceptron 100 x 10&#10;invalidate cycles: 12089&#10;calc cycles: 159433&#10;create bytes: 641.5022072204638 ±3062.0643185018303&#10;recalc bytes: 15883.9371154598 ±10539.072818593493">
       <created>1581060270317</created>
@@ -747,7 +738,21 @@
       <option name="project" value="LOCAL" />
       <updated>1582453641078</updated>
     </task>
-    <option name="localTasksCounter" value="249" />
+    <task id="LOCAL-00249" summary="Before refactoring">
+      <created>1583123606799</created>
+      <option name="number" value="00249" />
+      <option name="presentableId" value="LOCAL-00249" />
+      <option name="project" value="LOCAL" />
+      <updated>1583123606801</updated>
+    </task>
+    <task id="LOCAL-00250" summary="Refactoring completed. Optimizing...">
+      <created>1583163193970</created>
+      <option name="number" value="00250" />
+      <option name="presentableId" value="LOCAL-00250" />
+      <option name="project" value="LOCAL" />
+      <updated>1583163193970</updated>
+    </task>
+    <option name="localTasksCounter" value="251" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -809,8 +814,6 @@
   <component name="VcsManagerConfiguration">
     <option name="CHECK_CODE_SMELLS_BEFORE_PROJECT_COMMIT" value="false" />
     <option name="CHECK_NEW_TODO" value="false" />
-    <MESSAGE value="Temp" />
-    <MESSAGE value="Optimize subscribe. Fixed emit" />
     <MESSAGE value="Optimized recalc: Memory allocate === 0" />
     <MESSAGE value="dependent-funcs v8 optimization in process" />
     <MESSAGE value="dependent-funcs optimization" />
@@ -834,7 +837,9 @@
     <MESSAGE value="dependent-funcs v8 optimization in process... Added callWithArgs (perf is no changed). Tests OK" />
     <MESSAGE value="dependent-funcs v8 optimization in process..." />
     <MESSAGE value="v0.0.7 Tests OK, coverage:merge fail" />
-    <option name="LAST_COMMIT_MESSAGE" value="v0.0.7 Tests OK, coverage:merge fail" />
+    <MESSAGE value="Before refactoring" />
+    <MESSAGE value="Refactoring completed. Optimizing..." />
+    <option name="LAST_COMMIT_MESSAGE" value="Refactoring completed. Optimizing..." />
   </component>
   <component name="XDebuggerManager">
     <breakpoint-manager>
@@ -855,19 +860,15 @@
           <option name="timeStamp" value="355" />
         </line-breakpoint>
         <line-breakpoint enabled="true" type="javascript">
-          <url>file://$PROJECT_DIR$/src/main/common/rx/depend/all.ts</url>
-          <line>736</line>
-          <option name="timeStamp" value="357" />
-        </line-breakpoint>
-        <line-breakpoint enabled="true" type="javascript">
-          <url>file://$PROJECT_DIR$/src/main/common/rx/depend/all.ts</url>
-          <line>738</line>
-          <option name="timeStamp" value="358" />
-        </line-breakpoint>
-        <line-breakpoint enabled="true" type="javascript">
           <url>file://$PROJECT_DIR$/src/test/performance/node/src/MapPolyfill.js</url>
           <line>1304</line>
           <option name="timeStamp" value="361" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" type="javascript">
+          <url>file://$PROJECT_DIR$/src/test/tests/common/main/lists/BinaryTree.ts</url>
+          <line>106</line>
+          <properties lambdaOrdinal="-1" />
+          <option name="timeStamp" value="398" />
         </line-breakpoint>
       </breakpoints>
     </breakpoint-manager>

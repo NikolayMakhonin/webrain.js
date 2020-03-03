@@ -201,17 +201,21 @@ export class FuncCallState<TThis,
 		_this: TThis,
 		callWithArgs: TCall<TArgs>,
 		valueStates: number[],
+		hash: number,
 	) {
 		this.func = func
 		this._this = _this
 		this.callWithArgs = callWithArgs
 		this.valueStates = valueStates
+		this.hash = hash
 	}
 
 	public readonly func: Func<TThis, TArgs, TValue>
 	public readonly _this: TThis
 	public readonly callWithArgs: TCall<TArgs>
 	public readonly valueStates: number[]
+	public readonly hash: number
+	public usageScore: number = 0
 
 	public status = FuncCallStatus_Invalidated
 	public hasValue = false
@@ -227,6 +231,11 @@ export class FuncCallState<TThis,
 	public callId = 0
 	public _unsubscribers = null
 	public _unsubscribersLength = 0
+
+	// calculable
+	public get hasSubscribers(): boolean {
+		return this._subscribersFirst != null
+	}
 }
 
 // tslint:disable-next-line:no-shadowed-variable
@@ -238,12 +247,14 @@ export function createFuncCallState<TThis,
 	_this: TThis,
 	callWithArgs: TCall<TArgs>,
 	valueStates: number[],
+	hash: number,
 ): IFuncCallState<TThis, TArgs, TValue> {
 	return new FuncCallState(
 		func,
 		_this,
 		callWithArgs,
 		valueStates,
+		hash,
 	)
 }
 

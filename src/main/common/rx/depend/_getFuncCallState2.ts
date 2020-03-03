@@ -1,5 +1,5 @@
 import {createFuncCallState} from './_dependentFunc'
-import {Func, IFuncCallState, TCall} from './contracts'
+import {Func, IFuncCallState, IValueState} from './contracts'
 import {createCallWithArgs} from './helpers'
 
 export function isRefType(value): boolean {
@@ -40,10 +40,6 @@ export function semiWeakMapSet<K, V>(semiWeakMap: ISemiWeakMap<K, V>, key: K, va
 	}
 }
 
-interface IValueState {
-	id: number
-}
-
 const valueStateMap = createSemiWeakMap<any, IValueState>()
 
 let nextValueId: number = 1
@@ -59,16 +55,19 @@ function getValueState(value: any): IValueState {
 }
 
 const valueStates = []
+let usageNextId = 1
 
 // tslint:disable-next-line:no-shadowed-variable
-export function _getFuncCallState2<TThis,
+export function _getFuncCallState2<
+	TThis,
 	TArgs extends any[],
-	TValue>(
+	TValue
+>(
 	func: Func<TThis, TArgs, TValue>,
 ): Func<TThis, TArgs, IFuncCallState<TThis, TArgs, TValue>> {
 	const funcState = getValueState(func)
 	const funcHash = (17 * 31 + funcState.id) | 0
-	const callStateHashTable = new Map()
+	const callStateHashTable = new Map<number, Array<IFuncCallState<TThis, TArgs, TValue>>>()
 	return function() {
 		const argsLength = arguments.length
 
@@ -121,10 +120,12 @@ export function _getFuncCallState2<TThis,
 				this,
 				createCallWithArgs.apply(null, arguments),
 				valueStatesClone,
+				hash,
 			)
-
 			callStates.push(callState)
 		}
+
+		callState.usageScore = usageNextId++
 
 		return callState
 	}
