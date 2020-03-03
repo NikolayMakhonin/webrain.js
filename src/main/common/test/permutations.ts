@@ -79,7 +79,7 @@ class PermutationOuelletLexico3<T> {
 	public maxIndex: number //  long to support 20! or less
 
 	public constructor(sortedValues: T[]) {
-		if ((sortedValues.length <= 0)) {
+		if (sortedValues.length <= 0) {
 			throw new Error('sortedValues.length <= 0')
 		}
 
@@ -103,25 +103,25 @@ class PermutationOuelletLexico3<T> {
 			throw new Error(`sortIndex ${sortIndex} < 0`)
 		}
 
-		if ((sortIndex >= this.maxIndex)) {
+		if (sortIndex >= this.maxIndex) {
 			throw new Error(`sortIndex ${sortIndex} >= factorial(the length of items (${this._sortedValues.length}))`)
 		}
 
-		for (let n: number = 0; (n < this._valueUsed.length); n++) {
+		for (let n: number = 0; n < this._valueUsed.length; n++) {
 			this._valueUsed[n] = false
 		}
 
-		let factorielLower: number = this.maxIndex
-		for (let index = 0; (index < size); index++) {
-			const factorielBigger = factorielLower
-			factorielLower = getFactorial(size	- (index - 1))
-			// factorielBigger / inverseIndex;
-			let resultItemIndex: number = sortIndex % ((factorielBigger / factorielLower) | 0)
+		let factorialLower: number = this.maxIndex
+		for (let index = 0; index < size; index++) {
+			const factorialBigger = factorialLower
+			factorialLower = getFactorial(size - (index - 1))
+			// factorialBigger / inverseIndex;
+			let resultItemIndex: number = ((sortIndex % factorialBigger) / factorialLower) | 0
 			let correctedResultItemIndex: number = 0
 			for (;;) {
 				if (!this._valueUsed[correctedResultItemIndex]) {
 					resultItemIndex--
-					if ((resultItemIndex < 0)) {
+					if (resultItemIndex < 0) {
 						break
 					}
 				}
@@ -170,15 +170,15 @@ class PermutationMixOuelletSaniSinghHuttunen {
 		indexFirst: number = -1,
 		indexLastExclusive: number = -1,
 	) {
-		if ((indexFirst === -1)) {
+		if (indexFirst === -1) {
 			indexFirst = 0
 		}
 
-		if ((indexLastExclusive === -1)) {
+		if (indexLastExclusive === -1) {
 			indexLastExclusive = getFactorial(sortedValues.length)
 		}
 
-		if ((indexFirst >= indexLastExclusive)) {
+		if (indexFirst >= indexLastExclusive) {
 			throw new Error(`indexFirst (${indexFirst}) should be less than indexLastExclusive ${indexLastExclusive}`)
 		}
 
@@ -195,7 +195,7 @@ class PermutationMixOuelletSaniSinghHuttunen {
 		action(permutationOuellet.result)
 		index++
 		const values: number[] = permutationOuellet.result
-		while ((index < this._indexLastExclusive)) {
+		while (index < this._indexLastExclusive) {
 			nextSaniSinghHuttunen(values)
 			action(values)
 			index++
