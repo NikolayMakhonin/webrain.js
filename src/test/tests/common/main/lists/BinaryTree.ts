@@ -1,6 +1,10 @@
 import {BinaryTree, TCompareFunc} from '../../../../../main/common/lists/BinaryTree'
 import {assert} from '../../../../../main/common/test/Assert'
 import {describe, it} from '../../../../../main/common/test/Mocha'
+import {forEachPermutation} from '../../../../../main/common/test/permutations'
+import {TestMap} from './src/helpers/TestMap'
+
+declare const after
 
 class BinaryTreeTester<TItem> {
 	private readonly _checkItems: TItem[]
@@ -31,7 +35,25 @@ class BinaryTreeTester<TItem> {
 		// check items
 		for (let i = 0; i < _checkItems.length; i++) {
 			assert.strictEqual(_binaryTree.has(_checkItems[i]), true)
+			assert.strictEqual(_binaryTree.getByIndex(i), _checkItems[i])
 		}
+
+		let checkIndex = 0
+		_binaryTree.forEach((value, index, obj) => {
+			assert.strictEqual(obj, _binaryTree)
+			assert.strictEqual(index, checkIndex++)
+			assert.strictEqual(value, _checkItems[index])
+		})
+
+		checkIndex = 0
+		_binaryTree.forEachNodes((node, index, obj) => {
+			assert.strictEqual(obj, _binaryTree)
+			assert.strictEqual(index, checkIndex++)
+			assert.strictEqual(node.data, _checkItems[index])
+			const leftCount = node.left == null ? 0 : node.left.count
+			const rightCount = node.right == null ? 0 : node.right.count
+			assert.strictEqual(node.count, leftCount + rightCount + 1)
+		})
 
 		// check additional properties
 		if (_checkItems.length > 0) {
@@ -67,46 +89,62 @@ class BinaryTreeTester<TItem> {
 }
 
 describe('common > main > lists > BinaryTree', function() {
-	function checkDeletedItems(binaryTree: BinaryTree<number>, ...deletedItems: number[]) {
-		for (let i = 0; i < deletedItems.length; i++) {
-			assert.strictEqual(binaryTree.has(deletedItems[i]), false)
-		}
-	}
+	this.timeout(600000)
 
-	function checkBinaryTree(binaryTree: BinaryTree<number>, ...items: number[]) {
-		assert.strictEqual(binaryTree.size, items.length)
-		for (let i = 0; i < items.length; i++) {
-			assert.strictEqual(binaryTree.has(items[i]), true)
-		}
-		if (items.length > 0) {
-			assert.strictEqual(binaryTree.first, items[0])
-			assert.strictEqual(binaryTree.last, items[items.length - 1])
-		} else {
-			assert.strictEqual(binaryTree.first, null)
-			assert.strictEqual(binaryTree.last, null)
-		}
-	}
+	let totalMapTests = 0
 
-	function create() {
+	after(function() {
+		console.log('Total BinaryTree tests >= ' + TestMap.totalMapTests)
+	})
 
+	function testVariant<TItem>(
+		binaryTree: BinaryTreeTester<TItem>,
+		addItems: TItem[],
+		deleteItems: TItem[],
+	) {
+		try {
+			for (let i = 0, len = addItems.length; i < len; i++) {
+				binaryTree.add(addItems[i])
+			}
+			for (let i = 0, len = deleteItems.length; i < len; i++) {
+				binaryTree.delete(deleteItems[i])
+			}
+		} catch (ex) {
+			console.log(`testsCount: ${totalMapTests}`)
+			console.log(`addItems: ${addItems.join(',')}`)
+			console.log(`deleteItems: ${deleteItems.join(',')}`)
+			throw ex
+		}
+		totalMapTests++
 	}
 
 	it('add / delete', function() {
 		const binaryTree = new BinaryTreeTester<number>()
-		binaryTree.add(3)
-		binaryTree.add(5)
-		binaryTree.add(1)
-		binaryTree.add(4)
-		binaryTree.add(2)
-		binaryTree.add(0)
-		binaryTree.add(6)
 
-		binaryTree.delete(4)
-		binaryTree.delete(5)
-		binaryTree.delete(3)
-		binaryTree.delete(1)
-		binaryTree.delete(6)
-		binaryTree.delete(2)
-		binaryTree.delete(0)
+		testVariant(
+			binaryTree,
+			[3, 5, 1, 4, 2, 0, 6],
+			[4, 5, 3, 1, 6, 2, 0],
+		)
+
+		testVariant(
+			binaryTree,
+			[0, 1, 4, 3, 2, 5, 6],
+			[0, 1, 4, 2, 3, 5, 6],
+		)
+	})
+
+	it('add / delete combinations', function() {
+		const binaryTree = new BinaryTreeTester<number>()
+		const variants = [0, 1, 2, 3, 4, 5, 6]
+		forEachPermutation(variants, addItems => {
+			forEachPermutation(variants, deleteItems => {
+				testVariant(
+					binaryTree,
+					addItems,
+					deleteItems,
+				)
+			})
+		})
 	})
 })

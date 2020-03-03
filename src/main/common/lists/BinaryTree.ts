@@ -24,19 +24,39 @@ export class BinaryTree<TItem> {
 	}
 
 	private _root: IBinaryTreeNode<TItem> = null
-	private _first: IBinaryTreeNode<TItem> = null
-	private _last: IBinaryTreeNode<TItem> = null
 
 	public get size(): number {
 		return this._root == null ? 0 : this._root.count
 	}
 
+	public get firstNode(): IBinaryTreeNode<TItem> {
+		let node = this._root
+		let prev: IBinaryTreeNode<TItem>
+		while (node != null) {
+			prev = node
+			node = node.left
+		}
+		return prev
+	}
+
+	public get lastNode(): IBinaryTreeNode<TItem> {
+		let node = this._root
+		let prev: IBinaryTreeNode<TItem>
+		while (node != null) {
+			prev = node
+			node = node.right
+		}
+		return prev
+	}
+
 	public get first(): TItem {
-		return this._first == null ? void 0 : this._first.data
+		const node = this.firstNode
+		return node == null ? void 0 : node.data
 	}
 
 	public get last(): TItem {
-		return this._last == null ? void 0 : this._last.data
+		const node = this.lastNode
+		return node == null ? void 0 : node.data
 	}
 
 	public add(item: TItem): number {
@@ -52,8 +72,6 @@ export class BinaryTree<TItem> {
 		let parent: IBinaryTreeNode<TItem> = this._root
 		if (parent == null) {
 			this._root = node
-			this._last = node
-			this._first = node
 			return 0
 		} else {
 			const {compare} = this
@@ -67,9 +85,7 @@ export class BinaryTree<TItem> {
 
 				// For even placement of equal elements in nodes
 				if (compareResult === 0) {
-					if (parent === this._first
-						|| parent !== this._last
-						&& parent.left != null
+					if (parent.left != null
 						&& (parent.right == null || parent.left.count > parent.right.count)
 					) {
 						compareResult = 1
@@ -86,18 +102,12 @@ export class BinaryTree<TItem> {
 
 					if (parent.left == null) {
 						parent.left = node
-						if (parent === this._first) {
-							this._first = node
-						}
 						return index
 					}
 					parent = parent.left
 				} else {
 					if (parent.right == null) {
 						parent.right = node
-						if (parent === this._last) {
-							this._last = node
-						}
 						return index
 					}
 					parent = parent.right
@@ -136,17 +146,6 @@ export class BinaryTree<TItem> {
 					replaceNode = parent.left
 				} else {
 					if (parent.left.count > parent.right.count) {
-						replaceNode = parent.right
-						let prevReplaceNode
-						while (replaceNode.left != null) {
-							replaceNode.count--
-							prevReplaceNode = replaceNode
-							replaceNode = replaceNode.left
-						}
-						if (prevReplaceNode != null) {
-							prevReplaceNode.left = replaceNode.right
-						}
-					} else {
 						replaceNode = parent.left
 						let prevReplaceNode
 						while (replaceNode.right != null) {
@@ -156,6 +155,21 @@ export class BinaryTree<TItem> {
 						}
 						if (prevReplaceNode != null) {
 							prevReplaceNode.right = replaceNode.left
+						} else {
+							parent.left = replaceNode.left
+						}
+					} else {
+						replaceNode = parent.right
+						let prevReplaceNode
+						while (replaceNode.left != null) {
+							replaceNode.count--
+							prevReplaceNode = replaceNode
+							replaceNode = replaceNode.left
+						}
+						if (prevReplaceNode != null) {
+							prevReplaceNode.left = replaceNode.right
+						} else {
+							parent.right = replaceNode.right
 						}
 					}
 
@@ -236,11 +250,11 @@ export class BinaryTree<TItem> {
 			if (index >= parent.count) {
 				return null
 			}
-			const leftCount = parent.left.count
+			const leftCount = parent.left == null ? 0 : parent.left.count
 			if (index < leftCount) {
 				parent = parent.left
 			} else if (index > leftCount) {
-				index -= leftCount
+				index = index - leftCount - 1
 				parent = parent.right
 			} else {
 				return parent
@@ -263,12 +277,17 @@ export class BinaryTree<TItem> {
 	): void {
 		if (parent.left != null) {
 			this._forEachNodes(parent.left, index, callbackfn)
+			index += parent.left.count
 		}
 
 		callbackfn.call(thisArg, parent, index, this)
 
 		if (parent.right != null) {
-			this._forEachNodes(parent.right, index + parent.left.count + 1, callbackfn)
+			this._forEachNodes(
+				parent.right,
+				index + 1,
+				callbackfn,
+			)
 		}
 	}
 
