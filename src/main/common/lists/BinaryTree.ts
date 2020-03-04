@@ -1,8 +1,14 @@
+// visualizations: https://www.cs.usfca.edu/~galles/visualization/Algorithms.html
+// AVL algorithm: https://habr.com/ru/post/150732/
+
+import {IObjectPool} from './contracts/IObjectPool'
+
 export interface IBinaryTreeNode<TItem> {
 	data: TItem
 	left: IBinaryTreeNode<TItem>
 	right: IBinaryTreeNode<TItem>
 	count: number
+	height: number
 }
 
 export type TCompareFunc<T> = (o1: T, o2: T) => -1|0|1
@@ -16,11 +22,75 @@ function compareDefault(o1, o2) {
 	return o1 > o2 ? 1 : -1
 }
 
+function getHeight<TItem>(node: IBinaryTreeNode<TItem>) {
+	return node ? node.height : 0
+}
+
+function setHeight<TItem>(node: IBinaryTreeNode<TItem>, value: number) {
+	return node.height = value
+}
+
+function getBalanceFactor<TItem>(node: IBinaryTreeNode<TItem>) {
+	return getHeight(node.right) - getHeight(node.left)
+}
+
+function fixHeight<TItem>(node: IBinaryTreeNode<TItem>) {
+	const hl = getHeight(node.left)
+	const hr = getHeight(node.right)
+	setHeight(node, (hl > hr ? hl : hr) + 1)
+}
+
+function rotateRight<TItem>(node: IBinaryTreeNode<TItem>) {
+	const left = node.left
+	node.left = left.right
+	left.right = node
+	fixHeight(node)
+	fixHeight(left)
+	return left
+}
+
+function rotateLeft<TItem>(node: IBinaryTreeNode<TItem>) {
+	const right = node.right
+	node.right = right.left
+	right.left = node
+	fixHeight(node)
+	fixHeight(right)
+	return right
+}
+
+function balance<TItem>(node: IBinaryTreeNode<TItem>) {
+	fixHeight(node)
+
+	if (getBalanceFactor(node) === 2) {
+		if (getBalanceFactor(node.right) < 0) {
+			node.right = rotateRight(node.right)
+		}
+		return rotateLeft(node)
+	}
+
+	if (getBalanceFactor(node) === -2) {
+		if (getBalanceFactor(node.left) > 0) {
+			node.left = rotateLeft(node.left)
+		}
+		return rotateRight(node)
+	}
+
+	return node
+}
+
 export class BinaryTree<TItem> {
 	public readonly compare: TCompareFunc<TItem>
+	private readonly _objectPool: IObjectPool<IBinaryTreeNode<TItem>>
 
-	constructor(compare?: TCompareFunc<TItem>) {
+	constructor({
+		compare,
+		objectPool,
+	}: {
+		compare?: TCompareFunc<TItem>,
+		objectPool?: IObjectPool<IBinaryTreeNode<TItem>>,
+	} = {}) {
 		this.compare = compare || compareDefault
+		this._objectPool = objectPool
 	}
 
 	private _root: IBinaryTreeNode<TItem> = null
@@ -59,15 +129,40 @@ export class BinaryTree<TItem> {
 		return node == null ? void 0 : node.data
 	}
 
-	public add(item: TItem): number {
-		// this._size++
+	public createNode(data: TItem): IBinaryTreeNode<TItem> {
+		const node = this._objectPool != null
+			? this._objectPool.get()
+			: null
 
-		const node: IBinaryTreeNode<TItem> = {
-			data: item,
+		if (node != null) {
+			node.data = data
+			node.left = null
+			node.right = null
+			node.count = 1
+			return node
+		}
+
+		return {
+			data,
 			left: null,
 			right: null,
 			count: 1,
 		}
+	}
+
+	public releaseNode(node: IBinaryTreeNode<TItem>) {
+		if (this._objectPool) {
+			node.data = void 0
+			node.left = null
+			node.right = null
+			this._objectPool.release(node)
+		}
+	}
+
+	public add(item: TItem): number {
+		// this._size++
+
+		const node = this.createNode(item)
 
 		let parent: IBinaryTreeNode<TItem> = this._root
 		if (parent == null) {
@@ -190,6 +285,8 @@ export class BinaryTree<TItem> {
 					branch[i].count--
 					branch[i] = null
 				}
+
+				this.releaseNode(parent)
 
 				return index
 			}

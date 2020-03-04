@@ -1,16 +1,21 @@
-import {BinaryTree, TCompareFunc} from '../../../../../main/common/lists/BinaryTree'
+import {BinaryTree, IBinaryTreeNode, TCompareFunc} from '../../../../../main/common/lists/BinaryTree'
+import {ObjectPool} from '../../../../../main/common/lists/ObjectPool'
 import {assert} from '../../../../../main/common/test/Assert'
-import {describe, it} from '../../../../../main/common/test/Mocha'
+import {describe, it, xit} from '../../../../../main/common/test/Mocha'
 import {forEachPermutation, getFactorial} from '../../../../../main/common/test/permutations'
 
 declare const after
+
+const binaryTreeObjectBool = new ObjectPool<IBinaryTreeNode<any>>(1000000)
 
 class BinaryTreeTester<TItem> {
 	private readonly _checkItems: TItem[]
 	private readonly _binaryTree: BinaryTree<TItem>
 
 	constructor(compare?: TCompareFunc<TItem>) {
-		this._binaryTree = new BinaryTree()
+		this._binaryTree = new BinaryTree({
+			objectPool: binaryTreeObjectBool,
+		})
 		this._checkItems = []
 		this.check()
 	}
@@ -139,7 +144,21 @@ describe('common > main > lists > BinaryTree', function() {
 		)
 	})
 
-	it('add / delete combinations', function() {
+	it('add / delete random', function() {
+		const binaryTree = new BinaryTreeTester<number>()
+		const variants = [0, 1, 2, 3, 4, 5, 6]
+		for (let i = 0; i < 10000; i++) {
+			const addItems = variants.slice().sort(() => Math.random() > 0.5 ? 1 : -1)
+			const deleteItems = variants.slice().sort(() => Math.random() > 0.5 ? 1 : -1)
+			testVariant(
+				binaryTree,
+				addItems,
+				deleteItems,
+			)
+		}
+	})
+
+	xit('add / delete combinations', function() {
 		const binaryTree = new BinaryTreeTester<number>()
 		const variants = [0, 1, 2, 3, 4, 5, 6]
 		forEachPermutation(variants, addItems => {
