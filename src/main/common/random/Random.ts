@@ -14,21 +14,48 @@ function mulberry32(seed: number): () => number {
 	* 1) arrayShuffle(array, () => Math.random())
 	* 2) arrayShuffle(array, () => rnd.next())
 	*/
-export function arrayShuffle<T>(array: T[], rnd: () => number): T[] {
-	array.sort(() => rnd() > 0.5 ? 1 : -1)
+
+export function randomWithoutSeed() {
+	return Math.random()
+}
+
+// from: https://stackoverflow.com/a/6274398/5221762
+export function arrayShuffle<T>(array: T[], rnd?: () => number): T[] {
+	if (rnd == null) {
+		rnd = randomWithoutSeed
+	}
+
+	let counter = array.length
+
+	// While there are elements in the array
+	while (counter > 0) {
+		// Pick a random index
+		const index = (rnd() * counter) | 0
+
+		// Decrease counter by 1
+		counter--
+
+		// And swap the last element with it
+		const temp = array[counter]
+		array[counter] = array[index]
+		array[index] = temp
+	}
+
 	return array
 }
 
-const randomWithoutSeed = Math.random.bind(Math)
+export function getRandomFunc(seed?: number) {
+	return seed
+		? mulberry32(seed)
+		: randomWithoutSeed
+}
 
 /** Generate random number in range [0..1) like Math.random() or other, but can be pseudorandom with seed */
 export class Random {
 	private readonly _rnd: () => number
 
 	constructor(seed?: number) {
-		this._rnd = seed
-			? mulberry32(seed)
-			: randomWithoutSeed
+		this._rnd = getRandomFunc(seed)
 	}
 
 	public next(): number {

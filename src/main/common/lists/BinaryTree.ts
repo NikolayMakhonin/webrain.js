@@ -22,30 +22,26 @@ function compareDefault(o1, o2) {
 	return o1 > o2 ? 1 : -1
 }
 
-function getHeight<TItem>(node: IBinaryTreeNode<TItem>) {
-	return node ? node.height : 0
-}
-
-function setHeight<TItem>(node: IBinaryTreeNode<TItem>, value: number) {
-	return node.height = value
-}
-
 function getBalanceFactor<TItem>(node: IBinaryTreeNode<TItem>) {
-	return getHeight(node.right) - getHeight(node.left)
+	return (node.right == null ? 0 : node.right.height) - (node.left == null ? 0 : node.left.height)
 }
 
-function fixHeight<TItem>(node: IBinaryTreeNode<TItem>) {
-	const hl = getHeight(node.left)
-	const hr = getHeight(node.right)
-	setHeight(node, (hl > hr ? hl : hr) + 1)
+function fixMetrics<TItem>(node: IBinaryTreeNode<TItem>) {
+	const heightLeft = node.left == null ? 0 : node.left.height
+	const heightRight = node.right == null ? 0 : node.right.height
+	node.height = (heightLeft > heightRight ? heightLeft : heightRight) + 1
+
+	const countLeft = node.left == null ? 0 : node.left.count
+	const countRight = node.right == null ? 0 : node.right.count
+	node.count = countLeft + countRight + 1
 }
 
 function rotateRight<TItem>(node: IBinaryTreeNode<TItem>) {
 	const left = node.left
 	node.left = left.right
 	left.right = node
-	fixHeight(node)
-	fixHeight(left)
+	fixMetrics(node)
+	fixMetrics(left)
 	return left
 }
 
@@ -53,13 +49,13 @@ function rotateLeft<TItem>(node: IBinaryTreeNode<TItem>) {
 	const right = node.right
 	node.right = right.left
 	right.left = node
-	fixHeight(node)
-	fixHeight(right)
+	fixMetrics(node)
+	fixMetrics(right)
 	return right
 }
 
 function balance<TItem>(node: IBinaryTreeNode<TItem>) {
-	fixHeight(node)
+	fixMetrics(node)
 
 	if (getBalanceFactor(node) === 2) {
 		if (getBalanceFactor(node.right) < 0) {
@@ -76,6 +72,22 @@ function balance<TItem>(node: IBinaryTreeNode<TItem>) {
 	}
 
 	return node
+}
+
+function getLastLeft<TItem>(node: IBinaryTreeNode<TItem>) {
+	let left = node
+	while (left.left != null) {
+		left = left.left
+	}
+	return left
+}
+
+function removeLastLeft<TItem>(node: IBinaryTreeNode<TItem>) {
+	if (node.left == null) {
+		return node.right
+	}
+	node.left = removeLastLeft(node.left)
+	return balance(node)
 }
 
 export class BinaryTree<TItem> {
@@ -139,6 +151,7 @@ export class BinaryTree<TItem> {
 			node.left = null
 			node.right = null
 			node.count = 1
+			node.height = 1
 			return node
 		}
 
@@ -147,6 +160,7 @@ export class BinaryTree<TItem> {
 			left: null,
 			right: null,
 			count: 1,
+			height: 1,
 		}
 	}
 
@@ -159,12 +173,60 @@ export class BinaryTree<TItem> {
 		}
 	}
 
+	public _add(parent: IBinaryTreeNode<TItem>, node: IBinaryTreeNode<TItem>) {
+		if (!parent) {
+			return node
+		}
+
+		const compareResult = this.compare(node.data, parent.data)
+		if (compareResult < 0) {
+			parent.left = this._add(parent.left, node)
+		} else {
+			parent.right = this._add(parent.right, node)
+		}
+
+		return balance(parent)
+	}
+
+	public _delete(node, item) {
+		if (!node) {
+			return null
+		}
+
+		const compareResult = this.compare(item, node.data)
+		if (compareResult < 0) {
+			node.left = this._delete(node.left, item)
+		} else if (compareResult > 0) {
+			node.right = this._delete(node.right, item)
+		} else { // item == node.data
+			const left = node.left
+			const right = node.right
+
+			this.releaseNode(node)
+
+			if (!right) {
+				return left
+			}
+			const lastLeft = getLastLeft(right)
+			lastLeft.right = removeLastLeft(right)
+			lastLeft.left = left
+			return balance(lastLeft)
+		}
+
+		return balance(node)
+	}
+
 	public add(item: TItem): number {
+		this._root = this._add(this._root, this.createNode(item))
+		return this.getIndex(item)
+	}
+
+	public __add(item: TItem): number {
 		// this._size++
 
 		const node = this.createNode(item)
 
-		let parent: IBinaryTreeNode<TItem> = this._root
+		let parent = this._root
 		if (parent == null) {
 			this._root = node
 			return 0
@@ -212,7 +274,13 @@ export class BinaryTree<TItem> {
 	}
 
 	public delete(item: TItem): number {
-		let parent: IBinaryTreeNode<TItem> = this._root
+		const index = this.getIndex(item)
+		this._root = this._delete(this._root, item)
+		return index
+	}
+
+	public __delete(item: TItem): number {
+		let parent = this._root
 		if (parent == null) {
 			return null
 		}
@@ -317,8 +385,43 @@ export class BinaryTree<TItem> {
 		return this.getNodeByItem(item) != null
 	}
 
+	public getIndex(item: TItem): number {
+		let parent = this._root
+		if (parent == null) {
+			return -1
+		}
+
+		const {compare} = this
+
+		let index = parent.count
+
+		while (parent != null) {
+			const compareResult = compare(item, parent.data)
+
+			if (compareResult === 0) {
+				index--
+				if (parent.right) {
+					index -= parent.right.count
+				}
+				return index
+			}
+
+			if (compareResult < 0) {
+				index--
+				if (parent.right) {
+					index -= parent.right.count
+				}
+				parent = parent.left
+			} else  {
+				parent = parent.right
+			}
+		}
+
+		return null
+	}
+
 	public getNodeByItem(item: TItem): IBinaryTreeNode<TItem> {
-		let parent: IBinaryTreeNode<TItem> = this._root
+		let parent = this._root
 		const {compare} = this
 		while (parent != null) {
 			const compareResult = compare(item, parent.data)
@@ -406,4 +509,8 @@ export class BinaryTree<TItem> {
 			callbackfn(value.data, index, binaryTree)
 		}, thisArg)
 	}
+
+	// public clear() {
+	// 	this._root = null
+	// }
 }

@@ -8,6 +8,18 @@ declare const after
 
 const binaryTreeObjectBool = new ObjectPool<IBinaryTreeNode<any>>(1000000)
 
+function checkHeight<TItem>(node: IBinaryTreeNode<TItem>): number {
+	if (node == null) {
+		return 0
+	}
+	const heightLeft = checkHeight(node.left)
+	const heightRight = checkHeight(node.right)
+	const height = Math.max(heightLeft, heightRight) + 1
+	assert.strictEqual(node.height, height)
+	assert.ok(Math.abs(heightRight - heightLeft) <= 1)
+	return height
+}
+
 class BinaryTreeTester<TItem> {
 	private readonly _checkItems: TItem[]
 	private readonly _binaryTree: BinaryTree<TItem>
@@ -34,12 +46,17 @@ class BinaryTreeTester<TItem> {
 		// check deleted
 		for (let i = 0; i < deletedItems.length; i++) {
 			assert.strictEqual(_binaryTree.has(deletedItems[i]), false)
+			assert.strictEqual(_binaryTree.getIndex(deletedItems[i]), -1)
 		}
+
+		// check height
+		checkHeight((_binaryTree as any)._root)
 
 		// check items
 		for (let i = 0; i < _checkItems.length; i++) {
 			assert.strictEqual(_binaryTree.has(_checkItems[i]), true)
 			assert.strictEqual(_binaryTree.getByIndex(i), _checkItems[i])
+			assert.strictEqual(_binaryTree.getIndex(_checkItems[i]), i)
 		}
 
 		let checkIndex = 0
@@ -54,9 +71,14 @@ class BinaryTreeTester<TItem> {
 			assert.strictEqual(obj, _binaryTree)
 			assert.strictEqual(index, checkIndex++)
 			assert.strictEqual(node.data, _checkItems[index])
+
 			const leftCount = node.left == null ? 0 : node.left.count
 			const rightCount = node.right == null ? 0 : node.right.count
 			assert.strictEqual(node.count, leftCount + rightCount + 1)
+
+			const leftHeight = node.left == null ? 0 : node.left.height
+			const rightHeight = node.right == null ? 0 : node.right.height
+			assert.strictEqual(node.height, Math.max(leftHeight, rightHeight) + 1)
 		})
 
 		// check additional properties
@@ -71,8 +93,8 @@ class BinaryTreeTester<TItem> {
 
 	public add(item: TItem) {
 		const index = this._binaryTree.add(item)
-		assert.ok(index >= 0)
-		assert.ok(index <= this._checkItems.length)
+		assert.ok(index >= 0, `${index}`)
+		assert.ok(index <= this._checkItems.length, `${index}`)
 		this._checkItems.splice(index, 0, item)
 		this.check()
 	}
