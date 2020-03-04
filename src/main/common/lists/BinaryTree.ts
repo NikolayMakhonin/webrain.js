@@ -13,8 +13,6 @@ export interface IBinaryTreeNode<TItem> {
 
 export type TCompareFunc<T> = (o1: T, o2: T) => -1|0|1
 
-const branch = []
-
 function compareDefault(o1, o2) {
 	if (o1 === o2) {
 		return 0
@@ -89,6 +87,10 @@ function removeLastLeft<TItem>(node: IBinaryTreeNode<TItem>) {
 	node.left = removeLastLeft(node.left)
 	return balance(node)
 }
+
+// needed to avoid recursion
+const stackObj = []
+const stackInt = []
 
 export class BinaryTree<TItem> {
 	public readonly compare: TCompareFunc<TItem>
@@ -173,7 +175,7 @@ export class BinaryTree<TItem> {
 		}
 	}
 
-	public _add(parent: IBinaryTreeNode<TItem>, node: IBinaryTreeNode<TItem>) {
+	public _add_recursive(parent: IBinaryTreeNode<TItem>, node: IBinaryTreeNode<TItem>) {
 		if (!parent) {
 			return node
 		}
@@ -186,6 +188,40 @@ export class BinaryTree<TItem> {
 		}
 
 		return balance(parent)
+	}
+
+	public _add(parent: IBinaryTreeNode<TItem>, node: IBinaryTreeNode<TItem>) {
+		// const {compare} = this
+		let stackLength = 0
+		let result
+
+		for (; parent != null;) {
+			const compareResult = this.compare(node.data, parent.data)
+
+			stackObj[stackLength] = parent
+			if (compareResult < 0) {
+				stackInt[stackLength] = 1
+				parent = parent.left
+			} else {
+				stackInt[stackLength] = 0
+				parent = parent.right
+			}
+			stackLength++
+		}
+
+		result = node
+		for (; stackLength > 0;) {
+			stackLength--
+			parent = stackObj[stackLength]
+			if (stackInt[stackLength] === 1) {
+				parent.left = result
+			} else {
+				parent.right = result
+			}
+			result = balance(parent)
+		}
+
+		return result
 	}
 
 	public _delete(node, item) {

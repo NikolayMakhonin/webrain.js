@@ -8,11 +8,9 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="69b2ee16-521b-4efd-b473-8e19e3df4d09" name="Default Changelist" comment="">
-      <change afterPath="$PROJECT_DIR$/src/test/performance/node/BinaryTree.ts" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/common/lists/BinaryTree.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/common/lists/BinaryTree.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/common/random/Random.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/common/random/Random.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/test/tests/common/main/lists/BinaryTree.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/test/tests/common/main/lists/BinaryTree.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/test/performance/node/BinaryTree.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/test/performance/node/BinaryTree.ts" afterDir="false" />
     </list>
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
     <option name="SHOW_DIALOG" value="false" />
@@ -406,13 +404,6 @@
       <option name="presentableId" value="Default" />
       <updated>1567687848586</updated>
     </task>
-    <task id="LOCAL-00211" summary="Optimize subscribe. Fixed emit">
-      <created>1581083061791</created>
-      <option name="number" value="00211" />
-      <option name="presentableId" value="LOCAL-00211" />
-      <option name="project" value="LOCAL" />
-      <updated>1581083061791</updated>
-    </task>
     <task id="LOCAL-00212" summary="Optimized recalc: Memory allocate === 0">
       <created>1581092630760</created>
       <option name="number" value="00212" />
@@ -749,7 +740,14 @@
       <option name="project" value="LOCAL" />
       <updated>1583301965882</updated>
     </task>
-    <option name="localTasksCounter" value="260" />
+    <task id="LOCAL-00260" summary="BinaryTree: Implementing AVL algorithm...">
+      <created>1583314135985</created>
+      <option name="number" value="00260" />
+      <option name="presentableId" value="LOCAL-00260" />
+      <option name="project" value="LOCAL" />
+      <updated>1583314135985</updated>
+    </task>
+    <option name="localTasksCounter" value="261" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
