@@ -55,6 +55,8 @@ describe('BinaryTree perf', function() {
   absoluteDiff: [ 724, 1437, 287, 1161 ],
   absoluteDiff: [ 744, 1479, 318, 1242 ],
 
+  absoluteDiff: [ 712, 1291, 294, 1276 ],
+
   // AVL removed add recursion
   absoluteDiff: [ 732, 1774, 291, 1215 ],
   absoluteDiff: [ 755, 1790, 318, 1234 ],
@@ -64,6 +66,10 @@ describe('BinaryTree perf', function() {
   absoluteDiff: [ 736, 1652, 299, 1207 ],
   absoluteDiff: [ 736, 1636, 291, 1180 ],
   absoluteDiff: [ 732, 1617, 303, 1169 ],
+
+  // AVL removed removeLastLeft recursion
+  absoluteDiff: [ 732, 1322, 318, 1342 ],
+  absoluteDiff: [ 720, 1253, 291, 1257 ],
 
   		*/
 	})

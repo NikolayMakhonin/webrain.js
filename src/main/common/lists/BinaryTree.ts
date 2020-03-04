@@ -80,17 +80,36 @@ function getLastLeft<TItem>(node: IBinaryTreeNode<TItem>) {
 	return left
 }
 
+// function removeLastLeft<TItem>(node: IBinaryTreeNode<TItem>) {
+// 	if (node.left == null) {
+// 		return node.right
+// 	}
+// 	node.left = removeLastLeft(node.left)
+// 	return balance(node)
+// }
+
 function removeLastLeft<TItem>(node: IBinaryTreeNode<TItem>) {
-	if (node.left == null) {
-		return node.right
+	let stackLength = 0
+	const stack = []
+	let result
+	while (node.left != null) {
+		stack[stackLength++] = node
+		node = node.left
 	}
-	node.left = removeLastLeft(node.left)
-	return balance(node)
+
+	result = node.right
+	while (stackLength > 0) {
+		node = stack[--stackLength]
+		node.left = result
+		result = balance(node)
+	}
+
+	return result
 }
 
-// needed to avoid recursion
-const stackObj = []
-const stackInt = []
+let foundIndex = -1
+let deletedIndex = -1
+let foundNode = null
 
 export class BinaryTree<TItem> {
 	public readonly compare: TCompareFunc<TItem>
@@ -175,13 +194,16 @@ export class BinaryTree<TItem> {
 		}
 	}
 
-	public _add_recursive(parent: IBinaryTreeNode<TItem>, node: IBinaryTreeNode<TItem>) {
+	public _add(parent: IBinaryTreeNode<TItem>, node: IBinaryTreeNode<TItem>) {
 		if (!parent) {
 			return node
 		}
 
-		const compareResult = this.compare(node.data, parent.data)
-		if (compareResult < 0) {
+		if (this.compare(node.data, parent.data) < 0) {
+			foundIndex--
+			if (parent.right != null) {
+				foundIndex -= parent.right.count
+			}
 			parent.left = this._add(parent.left, node)
 		} else {
 			parent.right = this._add(parent.right, node)
@@ -190,7 +212,7 @@ export class BinaryTree<TItem> {
 		return balance(parent)
 	}
 
-	public _add(parent: IBinaryTreeNode<TItem>, node: IBinaryTreeNode<TItem>) {
+	public _add_non_recursive(parent: IBinaryTreeNode<TItem>, node: IBinaryTreeNode<TItem>) {
 		// const {compare} = this
 		let stackLength = 0
 		let result
@@ -231,19 +253,34 @@ export class BinaryTree<TItem> {
 
 		const compareResult = this.compare(item, node.data)
 		if (compareResult < 0) {
+			foundIndex--
+			if (node.right != null) {
+				foundIndex -= node.right.count
+			}
 			node.left = this._delete(node.left, item)
 		} else if (compareResult > 0) {
 			node.right = this._delete(node.right, item)
 		} else { // item == node.data
+			foundIndex--
+			if (node.right != null) {
+				foundIndex -= node.right.count
+			}
+
 			const left = node.left
 			const right = node.right
 
-			this.releaseNode(node)
+			foundNode = node
 
 			if (!right) {
 				return left
 			}
-			const lastLeft = getLastLeft(right)
+
+			let lastLeft = right
+			while (lastLeft.left != null) {
+				lastLeft = lastLeft.left
+			}
+			// lastLeft.left =
+
 			lastLeft.right = removeLastLeft(right)
 			lastLeft.left = left
 			return balance(lastLeft)
@@ -253,8 +290,9 @@ export class BinaryTree<TItem> {
 	}
 
 	public add(item: TItem): number {
+		foundIndex = this._root == null ? 0 : this._root.count
 		this._root = this._add(this._root, this.createNode(item))
-		return this.getIndex(item)
+		return foundIndex
 	}
 
 	public __add(item: TItem): number {
@@ -310,9 +348,13 @@ export class BinaryTree<TItem> {
 	}
 
 	public delete(item: TItem): number {
-		const index = this.getIndex(item)
+		foundIndex = this._root == null ? 0 : this._root.count
+		foundNode = null
 		this._root = this._delete(this._root, item)
-		return index
+		if (foundNode != null) {
+			this.releaseNode(foundNode)
+		}
+		return foundIndex
 	}
 
 	public __delete(item: TItem): number {

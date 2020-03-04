@@ -404,13 +404,6 @@
       <option name="presentableId" value="Default" />
       <updated>1567687848586</updated>
     </task>
-    <task id="LOCAL-00212" summary="Optimized recalc: Memory allocate === 0">
-      <created>1581092630760</created>
-      <option name="number" value="00212" />
-      <option name="presentableId" value="LOCAL-00212" />
-      <option name="project" value="LOCAL" />
-      <updated>1581092630760</updated>
-    </task>
     <task id="LOCAL-00213" summary="dependent-funcs optimization">
       <created>1581100118774</created>
       <option name="number" value="00213" />
@@ -747,7 +740,14 @@
       <option name="project" value="LOCAL" />
       <updated>1583314135985</updated>
     </task>
-    <option name="localTasksCounter" value="261" />
+    <task id="LOCAL-00261" summary="BinaryTree: try to use non recursive add - failed, it is slower than recursive">
+      <created>1583317387946</created>
+      <option name="number" value="00261" />
+      <option name="presentableId" value="LOCAL-00261" />
+      <option name="project" value="LOCAL" />
+      <updated>1583317387946</updated>
+    </task>
+    <option name="localTasksCounter" value="262" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -809,7 +809,6 @@
   <component name="VcsManagerConfiguration">
     <option name="CHECK_CODE_SMELLS_BEFORE_PROJECT_COMMIT" value="false" />
     <option name="CHECK_NEW_TODO" value="false" />
-    <MESSAGE value="dependent-funcs v8 optimization in process... Wrap modules to iife" />
     <MESSAGE value="dependent-funcs v8 optimization in process... Concat modules to single file" />
     <MESSAGE value="dependent-funcs v8 optimization in process... Wrap single module to iife. No effect." />
     <MESSAGE value="dependent-funcs v8 optimization in process... Add check funcs optimization status" />
@@ -834,7 +833,8 @@
     <MESSAGE value="Extracted ObjectPool" />
     <MESSAGE value="Fix v8 test" />
     <MESSAGE value="BinaryTree: Implementing AVL algorithm..." />
-    <option name="LAST_COMMIT_MESSAGE" value="BinaryTree: Implementing AVL algorithm..." />
+    <MESSAGE value="BinaryTree: try to use non recursive add - failed, it is slower than recursive" />
+    <option name="LAST_COMMIT_MESSAGE" value="BinaryTree: try to use non recursive add - failed, it is slower than recursive" />
   </component>
   <component name="XDebuggerManager">
     <breakpoint-manager>
