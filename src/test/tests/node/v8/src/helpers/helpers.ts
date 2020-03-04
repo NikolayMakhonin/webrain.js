@@ -28,14 +28,33 @@ function _checkIsOptimized(obj: TAnyFunc|object, optimized: Set<any> = null, sca
 		actualStatus &= differentFlags
 		expectedStatus &= differentFlags
 
+		const actualFunc = {}
+		const expectedFunc = {}
+		let hasError
+
 		if (actualStatus !== expectedStatus) {
 			if (optimized && !optimized.has(obj)) {
 				return null
 			}
 
+			actualFunc['()'] = optimizationStatusToString(status)
+			expectedFunc['()'] = optimizationStatusToString(expectedStatus)
+			hasError = true
+		}
+
+		if (obj.prototype) {
+			const res = _checkIsOptimized(obj.prototype, optimized, scanned)
+			if (res) {
+				hasError = true;
+				(actualFunc as any)._prototype = res.actual;
+				(expectedFunc as any)._prototype = res.expected
+			}
+		}
+
+		if (hasError) {
 			return {
-				actual: optimizationStatusToString(status),
-				expected: optimizationStatusToString(expectedStatus),
+				actual: actualFunc,
+				expected: expectedFunc,
 			}
 		}
 	} else if (obj != null && typeof obj === 'object') {

@@ -1,36 +1,36 @@
 /* tslint:disable:no-identical-functions no-shadowed-variable no-var-requires ordered-imports */
+import {ObjectPool} from '../../../../../../../main/common/lists/ObjectPool'
 import {
-	_getFuncCallState, createSemiWeakMap, isRefType,
+	_getFuncCallState,
+	createSemiWeakMap,
+	isRefType,
 	semiWeakMapGet,
-	semiWeakMapSet
+	semiWeakMapSet,
 } from '../../../../../../../main/common/rx/depend/_getFuncCallState'
-// @ts-ignore
 import {
-	_createDependentFunc,
-
-
-
-
-} from '../../../../../../../main/common/rx/depend/all'
-import {
-	createFuncCallState, emit, FuncCallState, invalidate,
-	makeDependentIterator, update
+	createFuncCallState,
+	emit,
+	FuncCallState,
+	invalidate,
+	makeDependentIterator,
+	update,
 } from '../../../../../../../main/common/rx/depend/_dependentFunc'
 import {
 	createDependentFunc,
-	createGetFuncCallState, createMakeDependentFunc,
+	createGetFuncCallState,
+	createMakeDependentFunc,
 	getFuncCallState,
-	makeDependentFunc
+	makeDependentFunc,
 } from '../../../../../../../main/common/rx/depend/facade'
 import {
 	_subscribe,
-	subscribeDependency, subscriberLinkDelete,
-	unsubscribeDependencies
+	subscribeDependency,
+	subscriberLinkDelete,
+	unsubscribeDependencies,
 } from '../../../../../../../main/common/rx/depend/subscribeDependency'
 import {
 	getSubscriberLink,
-	getSubscriberLinkFromPool,
-	releaseSubscriberLink, SubscriberLinkPool, subscriberLinkPool
+	subscriberLinkPool,
 } from '../../../../../../../main/common/rx/depend/subscriber-link-pool'
 import {assert, AssertionError} from '../../../../../../../main/common/test/Assert'
 import {describe, it, xit} from '../../../../../../../main/common/test/Mocha'
@@ -40,7 +40,6 @@ import {OptimizationStatus} from '../../../../v8/src/helpers/contracts'
 import {
 	assertIsOptimized,
 	checkIsOptimized,
-
 } from '../../../../v8/src/helpers/helpers'
 
 describe('node > main > rx > depend > dependent-func', function() {
@@ -58,13 +57,12 @@ describe('node > main > rx > depend > dependent-func', function() {
 			invalidate,
 			makeDependentFunc,
 			createPerceptron,
+			ObjectPool,
 
 			// internal
-			_createDependentFunc,
 			_getFuncCallState,
 			createFuncCallState,
 			getSubscriberLink,
-			releaseSubscriberLink,
 			subscribeDependency,
 			unsubscribeDependencies,
 
@@ -72,7 +70,6 @@ describe('node > main > rx > depend > dependent-func', function() {
 			FuncCallState,
 			semiWeakMapGet,
 			semiWeakMapSet,
-			getSubscriberLinkFromPool,
 			subscriberLinkPool,
 			_subscribe,
 			createDependentFunc,
@@ -88,6 +85,8 @@ describe('node > main > rx > depend > dependent-func', function() {
 			// createSemiWeakMap,
 			// SubscriberLinkPool,
 		}
+
+		v8.DeoptimizeNow()
 
 		const optimizedObjectsIterations = {}
 		const optimized = new Set()
