@@ -1,7 +1,7 @@
 import {isThenable, ThenableOrIteratorOrValue} from '../../async/async'
 import {resolveAsync} from '../../async/ThenableSync'
 import {isIterator} from '../../helpers/helpers'
-import {Func, FuncCallStatus, IFuncCallState, TCall} from './contracts'
+import {Func, FuncCallStatus, IFuncCallState, IValueState, TCall} from './contracts'
 import {subscribeDependency} from './subscribeDependency'
 import {getSubscriberLink, releaseSubscriberLink} from './subscriber-link-pool'
 
@@ -200,7 +200,7 @@ export class FuncCallState<TThis,
 		func: Func<TThis, TArgs, TValue>,
 		_this: TThis,
 		callWithArgs: TCall<TArgs>,
-		valueStates: number[],
+		valueStates: IValueState[],
 		hash: number,
 	) {
 		this.func = func
@@ -213,9 +213,9 @@ export class FuncCallState<TThis,
 	public readonly func: Func<TThis, TArgs, TValue>
 	public readonly _this: TThis
 	public readonly callWithArgs: TCall<TArgs>
-	public readonly valueStates: number[]
+	public readonly valueStates: IValueState[]
 	public readonly hash: number
-	public usageScore: number = 0
+	public deletePriority: number = 0
 
 	public status = FuncCallStatus_Invalidated
 	public hasValue = false
@@ -246,7 +246,7 @@ export function createFuncCallState<TThis,
 	func: Func<TThis, TArgs, TValue>,
 	_this: TThis,
 	callWithArgs: TCall<TArgs>,
-	valueStates: number[],
+	valueStates: IValueState[],
 	hash: number,
 ): IFuncCallState<TThis, TArgs, TValue> {
 	return new FuncCallState(

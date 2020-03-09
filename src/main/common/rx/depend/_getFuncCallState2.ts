@@ -40,21 +40,30 @@ export function semiWeakMapSet<K, V>(semiWeakMap: ISemiWeakMap<K, V>, key: K, va
 	}
 }
 
-const valueStateMap = createSemiWeakMap<any, IValueState>()
+const valueStateMap = new Map<any, IValueState>()
 
 let nextValueId: number = 1
 function getValueState(value: any): IValueState {
-	let state = semiWeakMapGet(valueStateMap, value)
+	let state = valueStateMap.get(value)
 	if (state == null) {
 		state = {
 			id: nextValueId++,
+			usageCount: 0,
+			value,
 		}
-		semiWeakMapSet(valueStateMap, value, state)
+		valueStateMap.set(value, state)
 	}
 	return state
 }
 
-const valueStates = []
+function deleteValueState(valueState: IValueState): void {
+	if (!valueStateMap.delete(valueState.value)) {
+		throw new Error('valueState not found')
+	}
+}
+
+const valueStates: IValueState[] = []
+const callStateHashTable = new Map<number, Array<IFuncCallState<any, any, any>>>()
 let usageNextId = 1
 
 // tslint:disable-next-line:no-shadowed-variable
@@ -67,19 +76,21 @@ export function _getFuncCallState2<
 ): Func<TThis, TArgs, IFuncCallState<TThis, TArgs, TValue>> {
 	const funcState = getValueState(func)
 	const funcHash = (17 * 31 + funcState.id) | 0
-	const callStateHashTable = new Map<number, Array<IFuncCallState<TThis, TArgs, TValue>>>()
 	return function() {
-		const argsLength = arguments.length
+		const countArgs = arguments.length
+		const countValueStates = countArgs + 2
 
 		valueStates[0] = funcState
 		let hash = funcHash
 
-		let valueState: IValueState = getValueState(this)
-		valueStates[1] = valueState
-		hash = (hash * 31 + valueState.id) | 0
+		{
+			const valueState: IValueState = getValueState(this)
+			valueStates[1] = valueState
+			hash = (hash * 31 + valueState.id) | 0
+		}
 
-		for (let i = 0; i < argsLength; i++) {
-			valueState = getValueState(arguments[i])
+		for (let i = 0; i < countArgs; i++) {
+			const valueState = getValueState(arguments[i])
 			valueStates[i + 2] = valueState
 			hash = (hash * 31 + valueState.id) | 0
 		}
@@ -90,9 +101,9 @@ export function _getFuncCallState2<
 			for (let i = 0, len = callStates.length; i < len; i++) {
 				const state = callStates[i]
 				const key = state.valueStates
-				if (key.length === argsLength + 2) {
+				if (key.length === countValueStates) {
 					let notFound
-					for (let j = 0; j <= argsLength; j++) {
+					for (let j = 0; j <= countArgs; j++) {
 						if (key[j] !== valueStates[j]) {
 							notFound = true
 							break
@@ -110,9 +121,11 @@ export function _getFuncCallState2<
 		}
 
 		if (!callState) {
-			const valueStatesClone = [] // new Array(argsLength + 1)
-			for (let i = 0; i < argsLength + 2; i++) {
-				valueStatesClone[i] = valueStates[i]
+			const valueStatesClone: IValueState[] = [] // new Array(argsLength + 1)
+			for (let i = 0; i < countValueStates; i++) {
+				const valueState = valueStates[i]
+				valueStatesClone[i] = valueState
+				valueState.usageCount++
 			}
 
 			callState = createFuncCallState<TThis, TArgs, TValue>(
@@ -125,8 +138,53 @@ export function _getFuncCallState2<
 			callStates.push(callState)
 		}
 
-		callState.usageScore = usageNextId++
+		callState.deletePriority = usageNextId++
 
 		return callState
+	}
+}
+
+export function deleteFuncCallState<
+	TThis,
+	TArgs extends any[],
+	TValue
+>(callState: IFuncCallState<TThis, TArgs, TValue>) {
+	const valueStates = callState.valueStates
+	let hash = 17
+	for (let i = 0, len = valueStates.length; i < len; i++) {
+		const valueState = valueStates[i]
+		hash = hash * 31 + valueState.id
+		const usageCount = valueState.usageCount
+		if (usageCount === 1) {
+			deleteValueState(valueState)
+		} else {
+			valueState.usageCount = usageCount - 1
+		}
+	}
+
+	// search and delete callState
+	const callStates = callStateHashTable.get(hash)
+	const callStatesLastIndex = callStates.length
+	if (callStatesLastIndex === -1) {
+		throw new Error('callStates.length === 0')
+	} else if (callStatesLastIndex === 0) {
+		if (callStates[0] !== callState) {
+			throw new Error('callStates[0] !== callState')
+		}
+		callStateHashTable.delete(hash)
+	} else {
+		let index = 0
+		for (index = 0; index <= callStatesLastIndex; index++) {
+			if (callStates[index] === callState) {
+				if (index !== callStatesLastIndex) {
+					callStates[index] = callStates[callStatesLastIndex]
+				}
+				callStates.length = callStatesLastIndex
+				break
+			}
+		}
+		if (index > callStatesLastIndex) {
+			throw new Error('callState not found')
+		}
 	}
 }

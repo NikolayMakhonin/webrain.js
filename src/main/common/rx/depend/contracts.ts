@@ -26,9 +26,9 @@ export interface IFuncCallState<TThis,
 	readonly func: Func<TThis, TArgs, TValue>
 	readonly _this: TThis
 	readonly callWithArgs: TCall<TArgs>
-	readonly valueStates: number[]
+	readonly valueStates: IValueState[]
 	readonly hash: number
-	usageScore: number
+	deletePriority: number
 
 	status: FuncCallStatus
 	hasValue: boolean
@@ -61,4 +61,6 @@ export interface ISubscriberLink<TThis, TArgs extends any[], TValue>
 
 export interface IValueState {
 	id: number
+	usageCount: number
+	value: any
 }

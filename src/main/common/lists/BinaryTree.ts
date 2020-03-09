@@ -5,6 +5,7 @@ import {IObjectPool} from './contracts/IObjectPool'
 
 export interface IBinaryTreeNode<TItem> {
 	data: TItem
+	parent: IBinaryTreeNode<TItem>
 	left: IBinaryTreeNode<TItem>
 	right: IBinaryTreeNode<TItem>
 	count: number
@@ -38,6 +39,12 @@ function rotateRight<TItem>(node: IBinaryTreeNode<TItem>) {
 	const left = node.left
 	node.left = left.right
 	left.right = node
+
+	if (node.left != null) {
+		node.left.parent = node
+	}
+	left.right.parent = left
+
 	fixMetrics(node)
 	fixMetrics(left)
 	return left
@@ -47,6 +54,12 @@ function rotateLeft<TItem>(node: IBinaryTreeNode<TItem>) {
 	const right = node.right
 	node.right = right.left
 	right.left = node
+
+	if (node.right != null) {
+		node.right.parent = node
+	}
+	right.left.parent = right
+
 	fixMetrics(node)
 	fixMetrics(right)
 	return right
@@ -58,6 +71,7 @@ function balance<TItem>(node: IBinaryTreeNode<TItem>) {
 	if (getBalanceFactor(node) === 2) {
 		if (getBalanceFactor(node.right) < 0) {
 			node.right = rotateRight(node.right)
+			node.right.parent = node
 		}
 		return rotateLeft(node)
 	}
@@ -65,6 +79,7 @@ function balance<TItem>(node: IBinaryTreeNode<TItem>) {
 	if (getBalanceFactor(node) === -2) {
 		if (getBalanceFactor(node.left) > 0) {
 			node.left = rotateLeft(node.left)
+			node.left.parent = node
 		}
 		return rotateRight(node)
 	}
@@ -88,19 +103,24 @@ function getLastLeft<TItem>(node: IBinaryTreeNode<TItem>) {
 // 	return balance(node)
 // }
 
+const removeLastStack = []
 function removeLastLeft<TItem>(node: IBinaryTreeNode<TItem>) {
 	let stackLength = 0
-	const stack = []
 	let result
 	while (node.left != null) {
-		stack[stackLength++] = node
+		removeLastStack[stackLength++] = node
 		node = node.left
 	}
 
 	result = node.right
 	while (stackLength > 0) {
-		node = stack[--stackLength]
+		stackLength--
+		node = removeLastStack[stackLength]
+		removeLastStack[stackLength] = null
 		node.left = result
+		if (result != null) {
+			result.parent = node
+		}
 		result = balance(node)
 	}
 
@@ -110,6 +130,8 @@ function removeLastLeft<TItem>(node: IBinaryTreeNode<TItem>) {
 let foundIndex = -1
 let deletedIndex = -1
 let foundNode = null
+let stackObj = []
+let stackInt = []
 
 export class BinaryTree<TItem> {
 	public readonly compare: TCompareFunc<TItem>
@@ -169,6 +191,7 @@ export class BinaryTree<TItem> {
 
 		if (node != null) {
 			node.data = data
+			node.parent = null
 			node.left = null
 			node.right = null
 			node.count = 1
@@ -178,6 +201,7 @@ export class BinaryTree<TItem> {
 
 		return {
 			data,
+			parent: null,
 			left: null,
 			right: null,
 			count: 1,
@@ -207,6 +231,10 @@ export class BinaryTree<TItem> {
 			parent.left = this._add(parent.left, node)
 		} else {
 			parent.right = this._add(parent.right, node)
+		}
+
+		if (parent.left != null) {
+			parent.left.parent = parent
 		}
 
 		return balance(parent)
@@ -240,6 +268,11 @@ export class BinaryTree<TItem> {
 			} else {
 				parent.right = result
 			}
+
+			if (parent.left != null) {
+				parent.left.parent = parent
+			}
+
 			result = balance(parent)
 		}
 
@@ -258,8 +291,14 @@ export class BinaryTree<TItem> {
 				foundIndex -= node.right.count
 			}
 			node.left = this._delete(node.left, item)
+			if (node.left != null) {
+				node.left.parent = node
+			}
 		} else if (compareResult > 0) {
 			node.right = this._delete(node.right, item)
+			if (node.right != null) {
+				node.right.parent = node
+			}
 		} else { // item == node.data
 			foundIndex--
 			if (node.right != null) {
@@ -283,6 +322,12 @@ export class BinaryTree<TItem> {
 
 			lastLeft.right = removeLastLeft(right)
 			lastLeft.left = left
+			if (lastLeft.right != null) {
+				lastLeft.right.parent = lastLeft
+			}
+			if (lastLeft.left != null) {
+				lastLeft.left.parent = lastLeft
+			}
 			return balance(lastLeft)
 		}
 
