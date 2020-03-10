@@ -34,7 +34,12 @@ export function deleteValueState(id: number, value: any): void {
 
 export const valueIdsBuffer: number[] = []
 export const callStateHashTable = new Map<number, Array<IFuncCallState<any, any, any>>>()
+
 let callStatesCount = 0
+const maxCallStatesCount = 1500
+const minDeleteCallStatesCount = 500
+let nextCallStatesCount = maxCallStatesCount
+
 let usageNextId = 1
 
 export function addFuncCallState<
@@ -54,8 +59,9 @@ export function addFuncCallState<
 		valueIds,
 	)
 
-	if (callStatesCount >= 1500) {
-		reduceCallStates(500)
+	if (callStatesCount >= nextCallStatesCount) {
+		reduceCallStates(callStatesCount - maxCallStatesCount + minDeleteCallStatesCount)
+		nextCallStatesCount = callStatesCount + minDeleteCallStatesCount
 	}
 	callStatesCount++
 
@@ -214,7 +220,7 @@ export function reduceCallStates<
 	callStateHashTable.forEach(states => {
 		for (let i = 0, len = states.length; i < len; i++) {
 			const callState = states[i]
-			if (!callState.hasSubscribers) {
+			if (!callState.hasSubscribers && !callState.isHandling) {
 				reduceCallHeap.add(callState)
 			}
 		}

@@ -1,7 +1,13 @@
 /* tslint:disable:no-identical-functions no-shadowed-variable */
 import {isThenable, Thenable, ThenableOrValue} from '../../../../../../../main/common/async/async'
-import {Func, FuncCallStatus, IFuncCallState} from '../../../../../../../main/common/rx/depend/contracts'
 import {invalidate} from '../../../../../../../main/common/rx/depend/_dependentFunc'
+import {
+	callStateHashTable,
+	reduceCallStates,
+	valueIdsMap,
+	valueStatesMap,
+} from '../../../../../../../main/common/rx/depend/_getFuncCallState2'
+import {Func, FuncCallStatus, IFuncCallState} from '../../../../../../../main/common/rx/depend/contracts'
 import {getFuncCallState, makeDependentFunc} from '../../../../../../../main/common/rx/depend/facade'
 import {assert} from '../../../../../../../main/common/test/Assert'
 import {delay} from '../../../../../../../main/common/time/helpers'
@@ -157,6 +163,7 @@ export function createPerceptron(
 	}
 
 	const inputState = getFuncCallState(input)()
+	const outputState = getFuncCallState(output).call(2, 5, 10)
 
 	if (check) {
 		assert.strictEqual(
@@ -172,12 +179,19 @@ export function createPerceptron(
 		)
 	}
 
+	let outputStateHash = 17
+	for (let i = 0; i < outputState.valueIds.length; i++) {
+		outputStateHash = (outputStateHash * 31 + outputState.valueIds[i]) | 0
+	}
+
 	return {
 		getStates,
 		countFuncs,
 		input,
 		inputState,
 		output,
+		outputState,
+		outputStateHash,
 	}
 }
 
@@ -468,3 +482,10 @@ export async function baseTest() {
 }
 
 // endregion
+
+export function clearCallStates() {
+	reduceCallStates(2000000000)
+	assert.strictEqual(callStateHashTable && callStateHashTable.size, 0)
+	assert.strictEqual(valueStatesMap.size, 0)
+	assert.strictEqual(valueIdsMap.size, 0)
+}

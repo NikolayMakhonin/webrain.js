@@ -1,7 +1,7 @@
 import {isThenable, ThenableOrIteratorOrValue} from '../../async/async'
 import {resolveAsync} from '../../async/ThenableSync'
 import {isIterator} from '../../helpers/helpers'
-import {Func, FuncCallStatus, IFuncCallState, IValueState, TCall} from './contracts'
+import {Func, FuncCallStatus, IFuncCallState, TCall} from './contracts'
 import {subscribeDependency, unsubscribeDependencies} from './subscribeDependency'
 import {getSubscriberLink, releaseSubscriberLink} from './subscriber-link-pool'
 
@@ -232,6 +232,12 @@ export class FuncCallState<TThis,
 	// calculable
 	public get hasSubscribers(): boolean {
 		return this._subscribersFirst != null
+	}
+
+	public get isHandling(): boolean {
+		return this.status === FuncCallStatus_Calculating
+			|| this.status === FuncCallStatus_CalculatingAsync
+			|| this.status === FuncCallStatus_Invalidating
 	}
 }
 

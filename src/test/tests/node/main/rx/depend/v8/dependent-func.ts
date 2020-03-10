@@ -14,7 +14,7 @@ import * as subscriberLinkPool from '../../../../../../../main/common/rx/depend/
 
 import {assert, AssertionError} from '../../../../../../../main/common/test/Assert'
 import {describe, it, xit} from '../../../../../../../main/common/test/Mocha'
-import {baseTest, createPerceptron} from '../../../../../common/main/rx/depend/src/helpers'
+import {baseTest, clearCallStates, createPerceptron} from '../../../../../common/main/rx/depend/src/helpers'
 import {v8} from '../../../../v8/src/helpers/common/helpers'
 import {OptimizationStatus} from '../../../../v8/src/helpers/contracts'
 import {
@@ -103,6 +103,8 @@ describe('node > main > rx > depend > dependent-func', function() {
 
 		// assert.deepStrictEqual(optimizedObjects, objects)
 		assertIsOptimized(objects, optimized)
+
+		clearCallStates()
 	}
 
 	it('v8 perceptron', async function() {

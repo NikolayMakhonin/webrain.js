@@ -49,6 +49,7 @@ export interface IFuncCallState<TThis,
 
 	// calculable
 	readonly hasSubscribers: boolean
+	readonly isHandling: boolean
 }
 
 export interface ISubscriberLink<TThis, TArgs extends any[], TValue>
