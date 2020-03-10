@@ -1,33 +1,66 @@
+import {ObjectPool} from '../../lists/ObjectPool'
+import {PairingHeap, PairingNode} from '../../lists/PairingHeap'
 import {createFuncCallState} from './_dependentFunc'
-import {Func, IFuncCallState, IValueState} from './contracts'
+import {Func, IFuncCallState, IValueState, TCall} from './contracts'
 import {createCallWithArgs} from './helpers'
+import {unsubscribeDependencies} from './subscribeDependency'
 
-const valueStateMap = new Map<any, IValueState>()
+export const valueIdsMap = new Map<any, number>()
+export const valueStatesMap = new Map<number, IValueState>()
 
 let nextValueId: number = 1
-function getValueState(value: any): IValueState {
-	let state = valueStateMap.get(value)
-	if (state == null) {
-		nextValueId = (nextValueId + 1) | 0
-		state = {
-			id: nextValueId,
+export function getValueState(value: any): number {
+	let id = valueIdsMap.get(value)
+	if (id == null) {
+		id = nextValueId++
+		const state: IValueState = {
 			usageCount: 0,
 			value,
 		}
-		valueStateMap.set(value, state)
+		valueIdsMap.set(value, id)
+		valueStatesMap.set(id, state)
 	}
-	return state
+	return id
 }
 
-function deleteValueState(valueState: IValueState): void {
-	if (!valueStateMap.delete(valueState.value)) {
+export function deleteValueState(id: number, value: any): void {
+	if (!valueStatesMap.delete(id)) {
+		throw new Error('value not found')
+	}
+	if (!valueIdsMap.delete(value)) {
 		throw new Error('valueState not found')
 	}
 }
 
-const valueStatesBuffer: IValueState[] = []
-const callStateHashTable = new Map<number, Array<IFuncCallState<any, any, any>>>()
+export const valueIdsBuffer: number[] = []
+export const callStateHashTable = new Map<number, Array<IFuncCallState<any, any, any>>>()
+let callStatesCount = 0
 let usageNextId = 1
+
+export function addFuncCallState<
+	TThis,
+	TArgs extends any[],
+	TValue,
+>(
+	func: Func<TThis, TArgs, TValue>,
+	_this: TThis,
+	callWithArgs: TCall<TArgs>,
+	valueIds: number[],
+): IFuncCallState<TThis, TArgs, TValue> {
+	const callState = createFuncCallState<TThis, TArgs, TValue>(
+		func,
+		_this,
+		callWithArgs,
+		valueIds,
+	)
+
+	if (callStatesCount > 100) {
+		reduceCallStates(50)
+	}
+	callStatesCount++
+
+	return callState
+}
 
 // tslint:disable-next-line:no-shadowed-variable
 export function _getFuncCallState2<
@@ -37,25 +70,25 @@ export function _getFuncCallState2<
 >(
 	func: Func<TThis, TArgs, TValue>,
 ): Func<TThis, TArgs, IFuncCallState<TThis, TArgs, TValue>> {
-	const funcState = getValueState(func)
-	const funcHash = (17 * 31 + funcState.id) | 0
+	const funcId = nextValueId++
+	const funcHash = (17 * 31 + funcId) | 0
 	return function() {
 		const countArgs = arguments.length
-		const countValueStates = (countArgs + 2) | 0
+		const countValueStates = countArgs + 2
 
-		valueStatesBuffer[0] = funcState
+		valueIdsBuffer[0] = funcId
 		let hash = funcHash
 
 		{
-			const valueState: IValueState = getValueState(this)
-			valueStatesBuffer[1] = valueState
-			hash = (hash * 31 + valueState.id) | 0
+			const valueId = getValueState(this)
+			valueIdsBuffer[1] = valueId
+			hash = (hash * 31 + valueId) | 0
 		}
 
 		for (let i = 0; i < countArgs; i++) {
-			const valueState = getValueState(arguments[i])
-			valueStatesBuffer[i + 2] = valueState
-			hash = (hash * 31 + valueState.id) | 0
+			const valueId = getValueState(arguments[i])
+			valueIdsBuffer[i + 2] = valueId
+			hash = (hash * 31 + valueId) | 0
 		}
 
 		let callState
@@ -63,11 +96,11 @@ export function _getFuncCallState2<
 		if (callStates != null) {
 			for (let i = 0, len = callStates.length; i < len; i++) {
 				const state = callStates[i]
-				const valueStates = state.valueStates
-				if (valueStates.length === countValueStates) {
+				const valueIds = state.valueIds
+				if (valueIds.length === countValueStates) {
 					let j = 0
 					for (; j < countValueStates; j++) {
-						if (valueStates[j] !== valueStatesBuffer[j]) {
+						if (valueIds[j] !== valueIdsBuffer[j]) {
 							break
 						}
 					}
@@ -84,25 +117,27 @@ export function _getFuncCallState2<
 		}
 
 		if (callState == null) {
-			const valueStatesClone: IValueState[] = [] // new Array(countValueStates)
+			const valueIdsClone: number[] = [] // new Array(countValueStates)
 			for (let i = 0; i < countValueStates; i++) {
-				const valueState = valueStatesBuffer[i]
-				valueStatesClone[i] = valueState
-				valueState.usageCount = (valueState.usageCount + 1) | 0
+				const valueId = valueIdsBuffer[i]
+				valueIdsClone[i] = valueId
+				if (i > 0) {
+					const valueState = valueStatesMap.get(valueId)
+					valueState.usageCount++
+				}
 			}
 
-			callState = createFuncCallState<TThis, TArgs, TValue>(
+			callState = addFuncCallState<TThis, TArgs, TValue>(
 				func,
 				this,
 				createCallWithArgs.apply(null, arguments),
-				valueStatesClone,
+				valueIdsClone,
 			)
 
 			callStates.push(callState)
 		}
 
-		usageNextId = (usageNextId + 1) | 0
-		callState.deletePriority = usageNextId
+		callState.deleteOrder = usageNextId++
 
 		return callState
 	}
@@ -113,23 +148,30 @@ export function deleteFuncCallState<
 	TArgs extends any[],
 	TValue
 >(callState: IFuncCallState<TThis, TArgs, TValue>) {
-	const valueStates = callState.valueStates
+	unsubscribeDependencies(callState)
+
+	const valueIds = callState.valueIds
 
 	let hash = 17
-	for (let i = 0, len = valueStates.length; i < len; i++) {
-		const valueState = valueStates[i]
-		hash = (hash * 31 + valueState.id) | 0
-		const usageCount = valueState.usageCount
-		if (usageCount === 1) {
-			deleteValueState(valueState)
-		} else {
-			valueState.usageCount = (usageCount - 1) | 0
+	for (let i = 0, len = valueIds.length; i < len; i++) {
+		const valueId = valueIds[i]
+		hash = (hash * 31 + valueId) | 0
+		if (i > 0) {
+			const valueState = valueStatesMap.get(valueId)
+			const usageCount = valueState.usageCount
+			if (usageCount <= 0) {
+				throw new Error('usageCount <= 0')
+			} else if (usageCount === 1 && i > 0) {
+				deleteValueState(valueId, valueState.value)
+			} else {
+				valueState.usageCount--
+			}
 		}
 	}
 
 	// search and delete callState
 	const callStates = callStateHashTable.get(hash)
-	const callStatesLastIndex = callStates.length
+	const callStatesLastIndex = callStates.length - 1
 	if (callStatesLastIndex === -1) {
 		throw new Error('callStates.length === 0')
 	} else if (callStatesLastIndex === 0) {
@@ -152,4 +194,46 @@ export function deleteFuncCallState<
 			throw new Error('callState not found')
 		}
 	}
+
+	callStatesCount--
+}
+
+export const reduceCallObjectPool = new ObjectPool<PairingNode<IFuncCallState<any, any, any>>>(10000000)
+export const reduceCallHeap = new PairingHeap<IFuncCallState<any, any, any>>({
+	objectPool: reduceCallObjectPool,
+	lessThanFunc(o1, o2) {
+		return o1.deleteOrder < o2.deleteOrder
+	},
+})
+
+export function reduceCallStates<
+	TThis,
+	TArgs extends any[],
+	TValue
+>(deleteSize: number) {
+	callStateHashTable.forEach(states => {
+		for (let i = 0, len = states.length; i < len; i++) {
+			const callState = states[i]
+			if (!callState.hasSubscribers) {
+				reduceCallHeap.add(callState)
+			}
+		}
+	})
+
+	while (deleteSize > 0 && reduceCallHeap.size > 0) {
+		const callState = reduceCallHeap.deleteMin()
+		const {_unsubscribers} = callState
+		if (_unsubscribers != null) {
+			for (let i = 0, len = _unsubscribers.length; i < len; i++) {
+				const state = _unsubscribers[i].state
+				if (state._subscribersFirst === state._subscribersLast) {
+					reduceCallHeap.add(state)
+				}
+			}
+		}
+		deleteFuncCallState(callState)
+		deleteSize--
+	}
+
+	reduceCallHeap.clear()
 }

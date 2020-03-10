@@ -1,19 +1,19 @@
 // @ts-ignore
 import {calcPerformance} from 'rdtsc'
-import {assert} from 'webrain/dist/js/main/common/test/Assert'
-import {CalcType} from 'webrain/dist/js/main/common/test/calc'
-import {calcMemAllocate} from 'webrain/dist/js/main/common/test/calc-mem-allocate'
-import {describe, it} from 'webrain/dist/js/main/common/test/Mocha'
 import {ObjectPool} from '../../../main/common/lists/ObjectPool'
 import {PairingHeap, PairingNode} from '../../../main/common/lists/PairingHeap'
+import {assert} from '../../../main/common/test/Assert'
+import {CalcType} from '../../../main/common/test/calc'
+import {calcMemAllocate} from '../../../main/common/test/calc-mem-allocate'
+import {describe, it, xit} from '../../../main/common/test/Mocha'
 
 describe('PairingHeap perf', function() {
-	const objectPool = new ObjectPool<PairingNode<any, any>>(1000000)
+	const objectPool = new ObjectPool<PairingNode<any>>(1000000)
 
 	it('add / delete', function() {
 		this.timeout(300000)
 
-		const binaryTree = new PairingHeap<{id: number}, {id: number}>({
+		const pairingHeap = new PairingHeap<{id: number}>({
 			objectPool,
 			lessThanFunc(o1, o2) {
 				return o1.id < o2.id
@@ -23,6 +23,7 @@ describe('PairingHeap perf', function() {
 			.map(id => ({id}))
 
 		const len = addItems.length
+		let res
 
 		const result = calcPerformance(
 			10000,
@@ -34,17 +35,17 @@ describe('PairingHeap perf', function() {
 			}, () => { // 333
 				for (let i = 0; i < len; i++) {
 					const item = addItems[i]
-					binaryTree.add(item, item)
+					pairingHeap.add(item)
 				}
 			}, () => { // 7
 				for (let i = 0; i < len; i++) {
 					const item = addItems[i]
-					binaryTree.getMin()
+					res = pairingHeap.getMin()
 				}
 			}, () => { // 555
 				for (let i = 0; i < len; i++) {
 					const item = addItems[i]
-					binaryTree.deleteMin()
+					pairingHeap.deleteMin()
 				}
 			},
 		)
@@ -81,20 +82,73 @@ describe('PairingHeap perf', function() {
   absoluteDiff: [ 360, -4, 548 ],
   absoluteDiff: [ 349, 4, 590 ],
   absoluteDiff: [ 349, 0, 552 ],
+  absoluteDiff: [ 337, -35, 540 ],
+  absoluteDiff: [ 384, 46, 575 ],
+  absoluteDiff: [ 395, 51, 576 ],
+
+  // without key
+  absoluteDiff: [ 357, 19, 556 ],
+  absoluteDiff: [ 418, 57, 590 ],
+  absoluteDiff: [ 384, 51, 602 ],
+  absoluteDiff: [ 380, 51, 595 ],
+  absoluteDiff: [ 372, 50, 576 ],
+
+  absoluteDiff: [ 383, 49, 601 ],
+  absoluteDiff: [ 372, 31, 594 ],
+  absoluteDiff: [ 410, 65, 587 ],
+  absoluteDiff: [ 369, 66, 599 ],
+
+  absoluteDiff: [ 311, 80, 564 ],
+  absoluteDiff: [ 318, 46, 556 ],
+
+  absoluteDiff: [ 368, 53, 583 ],
+  absoluteDiff: [ 375, 73, 601 ],
+
+  absoluteDiff: [ 372, 53, 587 ],
+  absoluteDiff: [ 376, 54, 609 ],
+  absoluteDiff: [ 353, 50, 583 ],
+
+  absoluteDiff: [ 376, 77, 587 ],
+  absoluteDiff: [ 364, 50, 583 ],
+  absoluteDiff: [ 372, 57, 594 ],
+
+  absoluteDiff: [ 318, 50, 567 ],
+  absoluteDiff: [ 337, 72, 575 ],
+  absoluteDiff: [ 318, 61, 563 ],
+  absoluteDiff: [ 311, 50, 552 ],
+  absoluteDiff: [ 315, 35, 548 ],
+
+  absoluteDiff: [ 375, 61, 625 ],
+  absoluteDiff: [ 345, 42, 556 ],
+
+  absoluteDiff: [ 365, 50, 587 ],
+  absoluteDiff: [ 368, 30, 598 ],
+  absoluteDiff: [ 395, 57, 590 ],
+  absoluteDiff: [ 368, 54, 586 ],
+
+  absoluteDiff: [ 383, 54, 625 ],
+  absoluteDiff: [ 365, 47, 606 ],
+  absoluteDiff: [ 372, 61, 583 ],
+  absoluteDiff: [ 387, 76, 613 ],
+
+  absoluteDiff: [ 364, 65, 575 ],
+  absoluteDiff: [ 379, 54, 590 ],
+  absoluteDiff: [ 395, 50, 632 ],
+  absoluteDiff: [ 372, 61, 594 ],
 		 */
 	})
 
 	it('add / delete memory', function() {
 		this.timeout(300000)
 
-		const binaryTree = new PairingHeap<number, number>({objectPool})
+		const binaryTree = new PairingHeap<number>({objectPool})
 		const addItems = [6, 1, 5, 3, 0, 4, 2]
 		const len = addItems.length
 
 		const result = calcMemAllocate(CalcType.Min, 2000, () => {
 			for (let i = 0; i < len; i++) {
 				const item = addItems[i]
-				binaryTree.add(item, item)
+				binaryTree.add(item)
 			}
 			for (let i = 0; i < len; i++) {
 				binaryTree.getMin()

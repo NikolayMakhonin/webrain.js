@@ -1,37 +1,17 @@
 /* tslint:disable:no-identical-functions no-shadowed-variable no-var-requires ordered-imports */
-import {ObjectPool} from '../../../../../../../main/common/lists/ObjectPool'
-import {
-	_getFuncCallState,
-	createSemiWeakMap,
-	isRefType,
-	semiWeakMapGet,
-	semiWeakMapSet,
-} from '../../../../../../../main/common/rx/depend/_getFuncCallState'
-import {
-	createFuncCallState,
-	emit,
-	FuncCallState,
-	invalidate,
-	makeDependentIterator,
-	update,
-} from '../../../../../../../main/common/rx/depend/_dependentFunc'
-import {
-	createDependentFunc,
-	createGetFuncCallState,
-	createMakeDependentFunc,
-	getFuncCallState,
-	makeDependentFunc,
-} from '../../../../../../../main/common/rx/depend/facade'
-import {
-	_subscribe,
-	subscribeDependency,
-	subscriberLinkDelete,
-	unsubscribeDependencies,
-} from '../../../../../../../main/common/rx/depend/subscribeDependency'
-import {
-	getSubscriberLink,
-	subscriberLinkPool,
-} from '../../../../../../../main/common/rx/depend/subscriber-link-pool'
+import * as ObjectPool from '../../../../../../../main/common/lists/ObjectPool'
+import * as PairingHeap from '../../../../../../../main/common/lists/PairingHeap'
+import {invalidate} from '../../../../../../../main/common/rx/depend/_dependentFunc'
+import * as _getFuncCallState from '../../../../../../../main/common/rx/depend/_getFuncCallState'
+import * as _getFuncCallState2 from '../../../../../../../main/common/rx/depend/_getFuncCallState2'
+import * as _dependentFunc from '../../../../../../../main/common/rx/depend/_dependentFunc'
+import {getFuncCallState} from '../../../../../../../main/common/rx/depend/facade'
+import * as facade from '../../../../../../../main/common/rx/depend/facade'
+import * as helpers from '../../../../../../../main/common/rx/depend/helpers'
+import * as contracts from '../../../../../../../main/common/rx/depend/contracts'
+import * as subscribeDependency from '../../../../../../../main/common/rx/depend/subscribeDependency'
+import * as subscriberLinkPool from '../../../../../../../main/common/rx/depend/subscriber-link-pool'
+
 import {assert, AssertionError} from '../../../../../../../main/common/test/Assert'
 import {describe, it, xit} from '../../../../../../../main/common/test/Mocha'
 import {baseTest, createPerceptron} from '../../../../../common/main/rx/depend/src/helpers'
@@ -52,38 +32,16 @@ describe('node > main > rx > depend > dependent-func', function() {
 		) => void|Promise<void>,
 	) {
 		const objects = {
-			// public
-			getFuncCallState,
-			invalidate,
-			makeDependentFunc,
-			createPerceptron,
 			ObjectPool,
-
-			// internal
+			PairingHeap,
 			_getFuncCallState,
-			createFuncCallState,
-			getSubscriberLink,
+			_getFuncCallState2,
+			_dependentFunc,
+			facade,
+			helpers,
+			contracts,
 			subscribeDependency,
-			unsubscribeDependencies,
-
-			// internal deep
-			FuncCallState,
-			semiWeakMapGet,
-			semiWeakMapSet,
 			subscriberLinkPool,
-			_subscribe,
-			createDependentFunc,
-			emit,
-			isRefType,
-			subscriberLinkDelete,
-			update,
-			// makeDependentIterator,
-
-			// internal single call
-			// createGetFuncCallState,
-			// createMakeDependentFunc,
-			// createSemiWeakMap,
-			// SubscriberLinkPool,
 		}
 
 		v8.DeoptimizeNow()

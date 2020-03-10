@@ -5,24 +5,24 @@ import {describe, it} from '../../../../../main/common/test/Mocha'
 
 declare const after: any
 
-const objectPool = new ObjectPool<PairingNode<any, any>>(1000000)
+const objectPool = new ObjectPool<PairingNode<any>>(1000000)
 
-function getMinIndex<TItem, TKey>(arr: Array<PairingNode<TItem, TKey>>): number {
+function getMinIndex<TItem>(arr: Array<PairingNode<TItem>>): number {
 	let min
 	let minIndex
 	for (let i = 0, len = arr.length; i < len; i++) {
 		const item = arr[i]
-		if (i === 0 || item.key < min) {
-			min = item.key
+		if (i === 0 || item.item < min) {
+			min = item.item
 			minIndex = i
 		}
 	}
 	return minIndex
 }
 
-class PairingHeapTester<TItem, TKey> {
-	private readonly _checkItems: Array<PairingNode<TItem, TKey>>
-	private readonly _heap: PairingHeap<TItem, TKey>
+class PairingHeapTester<TItem> {
+	private readonly _checkItems: Array<PairingNode<TItem>>
+	private readonly _heap: PairingHeap<TItem>
 
 	constructor() {
 		this._heap = new PairingHeap({objectPool})
@@ -37,18 +37,17 @@ class PairingHeapTester<TItem, TKey> {
 		assert.strictEqual(_heap.size, _checkItems.length)
 	}
 
-	public add(item: TItem, key: TKey) {
-		const node = this._heap.add(item, key)
-		assert.strictEqual(node.key, key)
+	public add(item: TItem) {
+		const node = this._heap.add(item)
 		assert.strictEqual(node.item, item)
 		this._checkItems.push(node)
 		this.check()
 		return node
 	}
 
-	public delete(node: PairingNode<TItem, TKey>) {
+	public delete(node: PairingNode<TItem>) {
 		const index = this._checkItems.indexOf(node)
-		const checkKey = node.key
+		const checkItem = node.item
 		if (index >= 0) {
 			assert.ok(index < this._checkItems.length)
 			assert.strictEqual(this._checkItems[index], node)
@@ -98,20 +97,20 @@ describe('common > main > PairingHeap', function() {
 	})
 
 	function testVariant(
-		heap: PairingHeapTester<number, number>,
+		heap: PairingHeapTester<number>,
 		addItems: number[],
 		deleteIndexes: number[],
 	) {
 		try {
 			const deleteNodes = []
 			for (let i = 0, len = addItems.length; i < len; i++) {
-				deleteNodes.push(heap.add(addItems[i], addItems[i]))
+				deleteNodes.push(heap.add(addItems[i]))
 			}
 			for (let i = 0, len = deleteNodes.length; i < len; i++) {
 				heap.delete(deleteNodes[i])
 			}
 			for (let i = 0, len = addItems.length; i < len; i++) {
-				deleteNodes.push(heap.add(addItems[i], addItems[i]))
+				deleteNodes.push(heap.add(addItems[i]))
 			}
 			for (let i = 0, len = addItems.length; i < len; i++) {
 				assert.strictEqual(heap.deleteMin(), i)
@@ -127,7 +126,7 @@ describe('common > main > PairingHeap', function() {
 	}
 
 	it('add / delete', function() {
-		const heap = new PairingHeapTester<number, number>()
+		const heap = new PairingHeapTester<number>()
 
 		testVariant(
 			heap,
@@ -137,7 +136,7 @@ describe('common > main > PairingHeap', function() {
 	})
 
 	it('add / delete random', function() {
-		const heap = new PairingHeapTester<number, number>()
+		const heap = new PairingHeapTester<number>()
 		const variants = [0, 1, 2, 3, 4, 5, 6]
 		for (let i = 0; i < 10000; i++) {
 			const addItems = variants.slice().sort(() => Math.random() > 0.5 ? 1 : -1)

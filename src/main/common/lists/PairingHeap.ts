@@ -8,24 +8,22 @@
  */
 import {IObjectPool} from './contracts/IObjectPool'
 
-export interface PairingNode<TItem, TKey> {
-	// ! First child of this node
-	child: PairingNode<TItem, TKey>
-	// ! Next node in the list of this node's siblings
-	next: PairingNode<TItem, TKey>
-	// ! Previous node in the list of this node's siblings
-	prev: PairingNode<TItem, TKey>
-
+export interface PairingNode<TItem> {
 	// ! Pointer to a piece of client data
 	item: TItem
-	// ! Key for the item
-	key: TKey
+
+	// ! First child of this node
+	child: PairingNode<TItem>
+	// ! Next node in the list of this node's siblings
+	next: PairingNode<TItem>
+	// ! Previous node in the list of this node's siblings
+	prev: PairingNode<TItem>
 }
 
-export type ILessThanFunc<TKey> = (o1: TKey, o2: TKey) => boolean
+export type TLessThanFunc<TItem> = (o1: TItem, o2: TItem) => boolean
 
 function lessThanDefault(o1, o2) {
-	return o1 < o2 ? true : false
+	return o1 < o2
 }
 
 /**
@@ -35,21 +33,21 @@ function lessThanDefault(o1, o2) {
  * iteration for merging rather than the standard recursion methods (due to
  * concerns for stackframe overhead).
  */
-export class PairingHeap<TItem, TKey> {
+export class PairingHeap<TItem> {
 	// ! Memory map to use for node allocation
-	private _objectPool: IObjectPool<PairingNode<TItem, TKey>>
+	private readonly _objectPool: IObjectPool<PairingNode<TItem>>
+	private readonly _lessThanFunc: TLessThanFunc<TItem>
 	// ! The number of items held in the queue
 	private _size: number = 0
 	// ! Pointer to the minimum node in the queue
-	private _root: PairingNode<TItem, TKey> = null
-	private _lessThanFunc: ILessThanFunc<TKey>
+	private _root: PairingNode<TItem> = null
 
 	constructor({
 		objectPool,
 		lessThanFunc,
 	}: {
-		objectPool?: IObjectPool<PairingNode<TItem, TKey>>,
-		lessThanFunc?: ILessThanFunc<TKey>,
+		objectPool?: IObjectPool<PairingNode<TItem>>,
+		lessThanFunc?: TLessThanFunc<TItem>,
 	}) {
 		this._objectPool = objectPool
 		this._lessThanFunc = lessThanFunc || lessThanDefault
@@ -74,34 +72,31 @@ export class PairingHeap<TItem, TKey> {
 	}
 
 	/**
-	 * Takes an item-key pair to insert it into the queue and creates a new
+	 * Takes an item to insert it into the queue and creates a new
 	 * corresponding node.  Merges the new node with the root of the queue.
 	 *
 	 * @param item  Item to insert
-	 * @param key   Key to use for node priority
 	 * @return      Pointer to corresponding node
 	 */
-	public add( item: TItem, key: TKey ): PairingNode<TItem, TKey> {
-		let node: PairingNode<TItem, TKey> = this._objectPool != null
+	public add(item: TItem): PairingNode<TItem> {
+		let node: PairingNode<TItem> = this._objectPool != null
 			? this._objectPool.get()
 			: null
 
 		if (node == null) {
 			node = {
-				key,
 				child: null,
 				next: null,
 				prev: null,
 				item,
 			}
 		} else {
-			node.key = key
 			node.item = item
 		}
 
-		this._size = (this._size + 1) | 0
+		this._size++
 
-		this._root = this.merge( this._root, node )
+		this._root = merge(this._root, node, this._lessThanFunc)
 
 		return node
 	}
@@ -109,13 +104,13 @@ export class PairingHeap<TItem, TKey> {
 	/**
 	 * Returns the minimum item from the queue without modifying any data.
 	 *
-	 * @return      Node with minimum key
+	 * @return      Minimum item
 	 */
-	public getMin(): PairingNode<TItem, TKey> {
-		if ( this.isEmpty ) {
-			return null
-		}
-		return this._root
+	public getMin(): TItem {
+		const {_root} = this
+		return _root == null
+			? void 0
+			: _root.item
 	}
 
 	/**
@@ -123,14 +118,15 @@ export class PairingHeap<TItem, TKey> {
 	 * the queue along the way to maintain the heap property.  Relies on the
 	 * @ref <pq_delete> method to delete the root of the tree.
 	 *
-	 * @return      Minimum key, corresponding to item deleted
+	 * @return      Minimum item, corresponding to item deleted
 	 */
 	public deleteMin(): TItem {
-		const result = this._root == null
+		const {_root} = this
+		const result = _root == null
 			? void 0
-			: this._root.item
+			: _root.item
 
-		this.delete(this._root)
+		this.delete(_root)
 
 		return result
 	}
@@ -143,64 +139,57 @@ export class PairingHeap<TItem, TKey> {
 	 * subsequently merges that tree with the root.
 	 *
 	 * @param node  Pointer to node corresponding to the item to delete
-	 * @return      Key of item deleted
 	 */
-	public delete( node: PairingNode<TItem, TKey> ): void {
-		const key: TKey = node.key
-
-		if ( node === this._root ) {
-			this._root = this.collapse( node.child )
-		} else
-		{
-			if ( node.prev.child === node ) {
+	public delete(node: PairingNode<TItem>): void {
+		if (node === this._root) {
+			this._root = collapse(node.child, this._lessThanFunc)
+		} else {
+			if (node.prev.child === node) {
 				node.prev.child = node.next
 			} else {
 				node.prev.next = node.next
 			}
 
-			if ( node.next != null ) {
+			if (node.next != null) {
 				node.next.prev = node.prev
 			}
 
-			this._root = this.merge( this._root, this.collapse( node.child ) )
+			this._root = merge(this._root, collapse(node.child, this._lessThanFunc), this._lessThanFunc)
 		}
 
-		node.key = void 0
-		node.item = void 0
 		node.child = null
 		node.prev = null
 		node.next = null
+		node.item = void 0
 		this._objectPool.release(node)
 
-		this._size = (this._size - 1) | 0
+		this._size--
 	}
 
 	/**
 	 * If the item in the queue is modified in such a way to decrease the
-	 * key, then this function will update the queue to preserve queue
+	 * item, then this function will update the queue to preserve queue
 	 * properties given a pointer to the corresponding node.  Cuts the node
 	 * from its list of siblings and merges it with the root.
 	 *
 	 * @param node      Node to change
-	 * @param new_key   New key to use for the given node
 	 */
-	public decreaseKey( node: PairingNode<TItem, TKey>, new_key: TKey ): void {
-		node.key = new_key
-		if ( node === this._root ) {
+	public decreaseKey(node: PairingNode<TItem>): void {
+		if (node === this._root) {
 			return
 		}
 
-		if ( node.prev.child === node ) {
+		if (node.prev.child === node) {
 			node.prev.child = node.next
 		} else {
 			node.prev.next = node.next
 		}
 
-		if ( node.next != null ) {
+		if (node.next != null) {
 			node.next.prev = node.prev
 		}
 
-		this._root = this.merge( this._root, node )
+		this._root = merge(this._root, node, this._lessThanFunc)
 	}
 
 	/**
@@ -209,108 +198,107 @@ export class PairingHeap<TItem, TKey> {
 	 * @return      True if queue holds nothing, false otherwise
 	 */
 	public get isEmpty(): boolean {
-		return ( this._size === 0 )
+		return this._root == null
 	}
 
-	/**
-	 * Merges two nodes together, making the item of greater key the child
-	 * of the other.
-	 *
-	 * @param a     First node
-	 * @param b     Second node
-	 * @return      Resulting tree root
-	 */
-	public merge(
-		a: PairingNode<TItem, TKey>,
-		b: PairingNode<TItem, TKey>,
-	): PairingNode<TItem, TKey> {
-		let parent: PairingNode<TItem, TKey>
-		let child: PairingNode<TItem, TKey>
+	public readonly merge = merge
+	public readonly collapse = collapse
+}
 
-		if ( a == null ) {
-			return b
-		} else if ( b == null ) {
-			return a
-		} else if ( a === b ) {
-			return a
-		}
+/**
+ * Merges two nodes together, making the greater item the child
+ * of the other.
+ *
+ * @param a     First node
+ * @param b     Second node
+ * @return      Resulting tree root
+ */
+export function merge<TItem>(
+	a: PairingNode<TItem>,
+	b: PairingNode<TItem>,
+	lessThanFunc: TLessThanFunc<TItem>,
+): PairingNode<TItem> {
+	let parent: PairingNode<TItem>
+	let child: PairingNode<TItem>
 
-		if ( this._lessThanFunc(b.key, a.key) )
-		{
-			parent = b
-			child = a
-		} else
-		{
-			parent = a
-			child = b
-		}
-
-		child.next = parent.child
-		if ( parent.child != null ) {
-			parent.child.prev = child
-		}
-		child.prev = parent
-		parent.child = child
-
-		parent.next = null
-		parent.prev = null
-
-		return parent
+	if (a == null) {
+		return b
+	} else if (b == null) {
+		return a
+	} else if (a === b) {
+		return a
 	}
 
-	/**
-	 * Performs an iterative pairwise merging of a list of nodes until a
-	 * single tree remains.  Implements the two-pass method without using
-	 * explicit recursion (to prevent stack overflow with large lists).
-	 * Performs the first pass in place while maintaining only the minimal list
-	 * structure needed to iterate back through during the second pass.
-	 *
-	 * @param node  Head of the list to collapse
-	 * @return      Root of the collapsed tree
-	 */
-	public collapse(
-		node: PairingNode<TItem, TKey>,
-	): PairingNode<TItem, TKey> {
-		let tail: PairingNode<TItem, TKey>
-		let a: PairingNode<TItem, TKey>
-		let b: PairingNode<TItem, TKey>
-		let next: PairingNode<TItem, TKey>
-		let result: PairingNode<TItem, TKey>
-
-		if ( node == null ) {
-			return null
-		}
-
-		next = node
-		tail = null
-		while ( next != null )
-		{
-			a = next
-			b = a.next
-			if ( b != null )
-			{
-				next = b.next
-				result = this.merge( a, b )
-				// tack the result onto the end of the temporary list
-				result.prev = tail
-				tail = result
-			} else
-			{
-				a.prev = tail
-				tail = a
-				break
-			}
-		}
-
-		result = null
-		while ( tail != null )
-		{
-			// trace back through to merge the list
-			next = tail.prev
-			result = this.merge( result, tail )
-			tail = next
-		}
-
-		return result
+	if (lessThanFunc(b.item, a.item)) {
+		parent = b
+		child = a
+	} else {
+		parent = a
+		child = b
 	}
+
+	child.next = parent.child
+	if (parent.child != null) {
+		parent.child.prev = child
+	}
+	child.prev = parent
+	parent.child = child
+
+	parent.next = null
+	parent.prev = null
+
+	return parent
+}
+
+/**
+ * Performs an iterative pairwise merging of a list of nodes until a
+ * single tree remains.  Implements the two-pass method without using
+ * explicit recursion (to prevent stack overflow with large lists).
+ * Performs the first pass in place while maintaining only the minimal list
+ * structure needed to iterate back through during the second pass.
+ *
+ * @param node  Head of the list to collapse
+ * @return      Root of the collapsed tree
+ */
+export function collapse<TItem>(
+	node: PairingNode<TItem>,
+	lessThanFunc: TLessThanFunc<TItem>,
+): PairingNode<TItem> {
+	let tail: PairingNode<TItem>
+	let a: PairingNode<TItem>
+	let b: PairingNode<TItem>
+	let next: PairingNode<TItem>
+	let result: PairingNode<TItem>
+
+	if (node == null) {
+		return null
+	}
+
+	next = node
+	tail = null
+	while (next != null) {
+		a = next
+		b = a.next
+		if (b != null) {
+			next = b.next
+			result = merge(a, b, lessThanFunc)
+			// tack the result onto the end of the temporary list
+			result.prev = tail
+			tail = result
+		} else {
+			a.prev = tail
+			tail = a
+			break
+		}
+	}
+
+	result = null
+	while (tail != null) {
+		// trace back through to merge the list
+		next = tail.prev
+		result = merge(result, tail, lessThanFunc)
+		tail = next
+	}
+
+	return result
 }
