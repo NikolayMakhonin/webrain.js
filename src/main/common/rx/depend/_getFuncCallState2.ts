@@ -54,8 +54,8 @@ export function addFuncCallState<
 		valueIds,
 	)
 
-	if (callStatesCount > 100) {
-		reduceCallStates(50)
+	if (callStatesCount >= 1500) {
+		reduceCallStates(500)
 	}
 	callStatesCount++
 

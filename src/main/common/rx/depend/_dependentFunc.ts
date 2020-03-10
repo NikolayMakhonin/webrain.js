@@ -2,7 +2,7 @@ import {isThenable, ThenableOrIteratorOrValue} from '../../async/async'
 import {resolveAsync} from '../../async/ThenableSync'
 import {isIterator} from '../../helpers/helpers'
 import {Func, FuncCallStatus, IFuncCallState, IValueState, TCall} from './contracts'
-import {subscribeDependency} from './subscribeDependency'
+import {subscribeDependency, unsubscribeDependencies} from './subscribeDependency'
 import {getSubscriberLink, releaseSubscriberLink} from './subscriber-link-pool'
 
 const FuncCallStatus_Invalidating: FuncCallStatus = 1
@@ -294,56 +294,7 @@ export function _dependentFunc<TThis,
 		}
 	}
 
-	// unsubscribeDependencies(state)
-	// region inline call
-	{
-		const _unsubscribers = state._unsubscribers
-		if (_unsubscribers != null) {
-			const len = state._unsubscribersLength
-			for (let i = 0; i < len; i++) {
-				const item = _unsubscribers[i]
-				_unsubscribers[i] = null
-				// subscriberLinkDelete(item.state, item)
-				// region inline call
-				{
-					// tslint:disable-next-line:no-shadowed-variable
-					const {prev, next, state} = item
-					if (state == null) {
-						return
-					}
-					if (prev == null) {
-						if (next == null) {
-							state._subscribersFirst = null
-							state._subscribersLast = null
-						} else {
-							state._subscribersFirst = next
-							next.prev = null
-							item.next = null
-						}
-					} else {
-						if (next == null) {
-							state._subscribersLast = prev
-							prev.next = null
-						} else {
-							prev.next = next
-							next.prev = prev
-							item.next = null
-						}
-						item.prev = null
-					}
-					item.state = null
-					item.value = null
-					releaseSubscriberLink(item)
-				}
-				// endregion
-			}
-			state._unsubscribersLength = 0
-			if (len > 256) {
-				_unsubscribers.length = 256
-			}
-		}
-	}
-	// endregion
+	unsubscribeDependencies(state)
 
 	state.parentCallState = currentState
 	currentState = state
