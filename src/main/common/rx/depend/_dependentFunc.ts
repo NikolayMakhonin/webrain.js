@@ -201,20 +201,17 @@ export class FuncCallState<TThis,
 		_this: TThis,
 		callWithArgs: TCall<TArgs>,
 		valueStates: IValueState[],
-		hash: number,
 	) {
 		this.func = func
 		this._this = _this
 		this.callWithArgs = callWithArgs
 		this.valueStates = valueStates
-		this.hash = hash
 	}
 
 	public readonly func: Func<TThis, TArgs, TValue>
 	public readonly _this: TThis
 	public readonly callWithArgs: TCall<TArgs>
 	public readonly valueStates: IValueState[]
-	public readonly hash: number
 	public deletePriority: number = 0
 
 	public status = FuncCallStatus_Invalidated
@@ -247,14 +244,12 @@ export function createFuncCallState<TThis,
 	_this: TThis,
 	callWithArgs: TCall<TArgs>,
 	valueStates: IValueState[],
-	hash: number,
 ): IFuncCallState<TThis, TArgs, TValue> {
 	return new FuncCallState(
 		func,
 		_this,
 		callWithArgs,
 		valueStates,
-		hash,
 	)
 }
 

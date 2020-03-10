@@ -128,10 +128,10 @@ function removeLastLeft<TItem>(node: IBinaryTreeNode<TItem>) {
 }
 
 let foundIndex = -1
-let deletedIndex = -1
+// let deletedIndex = -1
 let foundNode = null
-let stackObj = []
-let stackInt = []
+const stackObj = []
+const stackInt = []
 
 export class BinaryTree<TItem> {
 	public readonly compare: TCompareFunc<TItem>
@@ -402,107 +402,107 @@ export class BinaryTree<TItem> {
 		return foundIndex
 	}
 
-	public __delete(item: TItem): number {
-		let parent = this._root
-		if (parent == null) {
-			return null
-		}
-
-		const {compare} = this
-		let branchLength = 0
-		let prev
-		let prevSide = 0
-		let index = parent.count
-		while (parent != null) {
-			const compareResult = compare(item, parent.data)
-
-			if (compareResult === 0) {
-				// found
-				// this._size--
-
-				index--
-				if (parent.right) {
-					index -= parent.right.count
-				}
-
-				let replaceNode
-				if (parent.left == null) {
-					replaceNode = parent.right
-				} else if (parent.right == null) {
-					replaceNode = parent.left
-				} else {
-					if (parent.left.count > parent.right.count) {
-						replaceNode = parent.left
-						let prevReplaceNode
-						while (replaceNode.right != null) {
-							replaceNode.count--
-							prevReplaceNode = replaceNode
-							replaceNode = replaceNode.right
-						}
-						if (prevReplaceNode != null) {
-							prevReplaceNode.right = replaceNode.left
-						} else {
-							parent.left = replaceNode.left
-						}
-					} else {
-						replaceNode = parent.right
-						let prevReplaceNode
-						while (replaceNode.left != null) {
-							replaceNode.count--
-							prevReplaceNode = replaceNode
-							replaceNode = replaceNode.left
-						}
-						if (prevReplaceNode != null) {
-							prevReplaceNode.left = replaceNode.right
-						} else {
-							parent.right = replaceNode.right
-						}
-					}
-
-					replaceNode.left = parent.left
-					replaceNode.right = parent.right
-					replaceNode.count = parent.count - 1
-				}
-
-				if (prevSide < 0) {
-					prev.left = replaceNode
-				} else if (prevSide > 0) {
-					prev.right = replaceNode
-				} else {
-					this._root = replaceNode
-				}
-
-				for (let i = 0; i < branchLength; i++) {
-					branch[i].count--
-					branch[i] = null
-				}
-
-				this.releaseNode(parent)
-
-				return index
-			}
-
-			branch[branchLength++] = parent
-			prev = parent
-			prevSide = compareResult
-
-			if (compareResult < 0) {
-				index--
-				if (parent.right) {
-					index -= parent.right.count
-				}
-				parent = parent.left
-			} else  {
-				parent = parent.right
-			}
-		}
-
-		for (let i = 0; i < branchLength; i++) {
-			branch[i] = null
-		}
-
-		return null
-	}
+	// public __delete(item: TItem): number {
+	// 	let parent = this._root
+	// 	if (parent == null) {
+	// 		return null
+	// 	}
+	//
+	// 	const {compare} = this
+	// 	let branchLength = 0
+	// 	let prev
+	// 	let prevSide = 0
+	// 	let index = parent.count
+	// 	while (parent != null) {
+	// 		const compareResult = compare(item, parent.data)
+	//
+	// 		if (compareResult === 0) {
+	// 			// found
+	// 			// this._size--
+	//
+	// 			index--
+	// 			if (parent.right) {
+	// 				index -= parent.right.count
+	// 			}
+	//
+	// 			let replaceNode
+	// 			if (parent.left == null) {
+	// 				replaceNode = parent.right
+	// 			} else if (parent.right == null) {
+	// 				replaceNode = parent.left
+	// 			} else {
+	// 				if (parent.left.count > parent.right.count) {
+	// 					replaceNode = parent.left
+	// 					let prevReplaceNode
+	// 					while (replaceNode.right != null) {
+	// 						replaceNode.count--
+	// 						prevReplaceNode = replaceNode
+	// 						replaceNode = replaceNode.right
+	// 					}
+	// 					if (prevReplaceNode != null) {
+	// 						prevReplaceNode.right = replaceNode.left
+	// 					} else {
+	// 						parent.left = replaceNode.left
+	// 					}
+	// 				} else {
+	// 					replaceNode = parent.right
+	// 					let prevReplaceNode
+	// 					while (replaceNode.left != null) {
+	// 						replaceNode.count--
+	// 						prevReplaceNode = replaceNode
+	// 						replaceNode = replaceNode.left
+	// 					}
+	// 					if (prevReplaceNode != null) {
+	// 						prevReplaceNode.left = replaceNode.right
+	// 					} else {
+	// 						parent.right = replaceNode.right
+	// 					}
+	// 				}
+	//
+	// 				replaceNode.left = parent.left
+	// 				replaceNode.right = parent.right
+	// 				replaceNode.count = parent.count - 1
+	// 			}
+	//
+	// 			if (prevSide < 0) {
+	// 				prev.left = replaceNode
+	// 			} else if (prevSide > 0) {
+	// 				prev.right = replaceNode
+	// 			} else {
+	// 				this._root = replaceNode
+	// 			}
+	//
+	// 			for (let i = 0; i < branchLength; i++) {
+	// 				branch[i].count--
+	// 				branch[i] = null
+	// 			}
+	//
+	// 			this.releaseNode(parent)
+	//
+	// 			return index
+	// 		}
+	//
+	// 		branch[branchLength++] = parent
+	// 		prev = parent
+	// 		prevSide = compareResult
+	//
+	// 		if (compareResult < 0) {
+	// 			index--
+	// 			if (parent.right) {
+	// 				index -= parent.right.count
+	// 			}
+	// 			parent = parent.left
+	// 		} else  {
+	// 			parent = parent.right
+	// 		}
+	// 	}
+	//
+	// 	for (let i = 0; i < branchLength; i++) {
+	// 		branch[i] = null
+	// 	}
+	//
+	// 	return null
+	// }
 
 	public has(item: TItem): boolean {
 		return this.getNodeByItem(item) != null

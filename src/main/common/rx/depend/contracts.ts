@@ -27,7 +27,6 @@ export interface IFuncCallState<TThis,
 	readonly _this: TThis
 	readonly callWithArgs: TCall<TArgs>
 	readonly valueStates: IValueState[]
-	readonly hash: number
 	deletePriority: number
 
 	status: FuncCallStatus

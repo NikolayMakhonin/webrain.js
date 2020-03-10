@@ -2,52 +2,15 @@ import {createFuncCallState} from './_dependentFunc'
 import {Func, IFuncCallState, IValueState} from './contracts'
 import {createCallWithArgs} from './helpers'
 
-export function isRefType(value): boolean {
-	return value != null && (typeof value === 'object' || typeof value === 'function')
-}
-
-interface ISemiWeakMap<K, V> {
-	map: Map<K, V>
-	weakMap: WeakMap<K extends object ? K : never, V>
-}
-
-export function createSemiWeakMap<K, V>(): ISemiWeakMap<K, V> {
-	return {
-		map: new Map(),
-		weakMap: new WeakMap(),
-	}
-}
-
-export function semiWeakMapGet<K, V>(semiWeakMap: ISemiWeakMap<K, V>, key: K): V {
-	let value
-	if (isRefType(key)) {
-		const weakMap = semiWeakMap.weakMap
-		value = weakMap.get(key as any)
-	} else {
-		const map = semiWeakMap.map
-		value = map.get(key)
-	}
-	return value == null ? null : value
-}
-
-export function semiWeakMapSet<K, V>(semiWeakMap: ISemiWeakMap<K, V>, key: K, value: V): void {
-	if (isRefType(key)) {
-		const weakMap = semiWeakMap.weakMap
-		weakMap.set(key as any, value)
-	} else {
-		const map = semiWeakMap.map
-		map.set(key, value)
-	}
-}
-
 const valueStateMap = new Map<any, IValueState>()
 
 let nextValueId: number = 1
 function getValueState(value: any): IValueState {
 	let state = valueStateMap.get(value)
 	if (state == null) {
+		nextValueId = (nextValueId + 1) | 0
 		state = {
-			id: nextValueId++,
+			id: nextValueId,
 			usageCount: 0,
 			value,
 		}
@@ -62,7 +25,7 @@ function deleteValueState(valueState: IValueState): void {
 	}
 }
 
-const valueStates: IValueState[] = []
+const valueStatesBuffer: IValueState[] = []
 const callStateHashTable = new Map<number, Array<IFuncCallState<any, any, any>>>()
 let usageNextId = 1
 
@@ -78,20 +41,20 @@ export function _getFuncCallState2<
 	const funcHash = (17 * 31 + funcState.id) | 0
 	return function() {
 		const countArgs = arguments.length
-		const countValueStates = countArgs + 2
+		const countValueStates = (countArgs + 2) | 0
 
-		valueStates[0] = funcState
+		valueStatesBuffer[0] = funcState
 		let hash = funcHash
 
 		{
 			const valueState: IValueState = getValueState(this)
-			valueStates[1] = valueState
+			valueStatesBuffer[1] = valueState
 			hash = (hash * 31 + valueState.id) | 0
 		}
 
 		for (let i = 0; i < countArgs; i++) {
 			const valueState = getValueState(arguments[i])
-			valueStates[i + 2] = valueState
+			valueStatesBuffer[i + 2] = valueState
 			hash = (hash * 31 + valueState.id) | 0
 		}
 
@@ -100,16 +63,16 @@ export function _getFuncCallState2<
 		if (callStates != null) {
 			for (let i = 0, len = callStates.length; i < len; i++) {
 				const state = callStates[i]
-				const key = state.valueStates
-				if (key.length === countValueStates) {
-					let notFound
-					for (let j = 0; j <= countArgs; j++) {
-						if (key[j] !== valueStates[j]) {
-							notFound = true
+				const valueStates = state.valueStates
+				if (valueStates.length === countValueStates) {
+					let j = 0
+					for (; j < countValueStates; j++) {
+						if (valueStates[j] !== valueStatesBuffer[j]) {
 							break
 						}
 					}
-					if (!notFound) {
+
+					if (j === countValueStates) {
 						callState = state
 						break
 					}
@@ -120,12 +83,12 @@ export function _getFuncCallState2<
 			callStateHashTable.set(hash, callStates)
 		}
 
-		if (!callState) {
-			const valueStatesClone: IValueState[] = [] // new Array(argsLength + 1)
+		if (callState == null) {
+			const valueStatesClone: IValueState[] = [] // new Array(countValueStates)
 			for (let i = 0; i < countValueStates; i++) {
-				const valueState = valueStates[i]
+				const valueState = valueStatesBuffer[i]
 				valueStatesClone[i] = valueState
-				valueState.usageCount++
+				valueState.usageCount = (valueState.usageCount + 1) | 0
 			}
 
 			callState = createFuncCallState<TThis, TArgs, TValue>(
@@ -133,12 +96,13 @@ export function _getFuncCallState2<
 				this,
 				createCallWithArgs.apply(null, arguments),
 				valueStatesClone,
-				hash,
 			)
+
 			callStates.push(callState)
 		}
 
-		callState.deletePriority = usageNextId++
+		usageNextId = (usageNextId + 1) | 0
+		callState.deletePriority = usageNextId
 
 		return callState
 	}
@@ -150,15 +114,16 @@ export function deleteFuncCallState<
 	TValue
 >(callState: IFuncCallState<TThis, TArgs, TValue>) {
 	const valueStates = callState.valueStates
+
 	let hash = 17
 	for (let i = 0, len = valueStates.length; i < len; i++) {
 		const valueState = valueStates[i]
-		hash = hash * 31 + valueState.id
+		hash = (hash * 31 + valueState.id) | 0
 		const usageCount = valueState.usageCount
 		if (usageCount === 1) {
 			deleteValueState(valueState)
 		} else {
-			valueState.usageCount = usageCount - 1
+			valueState.usageCount = (usageCount - 1) | 0
 		}
 	}
 

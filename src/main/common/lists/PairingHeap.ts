@@ -22,106 +22,10 @@ export interface PairingNode<TItem, TKey> {
 	key: TKey
 }
 
-/**
- * Merges two nodes together, making the item of greater key the child
- * of the other.
- *
- * @param a     First node
- * @param b     Second node
- * @return      Resulting tree root
- */
-export function merge<TItem, TKey>(
-	a: PairingNode<TItem, TKey>,
-	b: PairingNode<TItem, TKey>,
-): PairingNode<TItem, TKey> {
-	let parent: PairingNode<TItem, TKey>
-	let child: PairingNode<TItem, TKey>
+export type ILessThanFunc<TKey> = (o1: TKey, o2: TKey) => boolean
 
-	if ( a == null ) {
-		return b
-	} else if ( b == null ) {
-		return a
-	} else if ( a === b ) {
-		return a
-	}
-
-	if ( b.key < a.key )
-	{
-		parent = b
-		child = a
-	} else
-	{
-		parent = a
-		child = b
-	}
-
-	child.next = parent.child
-	if ( parent.child != null ) {
-		parent.child.prev = child
-	}
-	child.prev = parent
-	parent.child = child
-
-	parent.next = null
-	parent.prev = null
-
-	return parent
-}
-
-/**
- * Performs an iterative pairwise merging of a list of nodes until a
- * single tree remains.  Implements the two-pass method without using
- * explicit recursion (to prevent stack overflow with large lists).
- * Performs the first pass in place while maintaining only the minimal list
- * structure needed to iterate back through during the second pass.
- *
- * @param node  Head of the list to collapse
- * @return      Root of the collapsed tree
- */
-export function collapse<TItem, TKey>(
-	node: PairingNode<TItem, TKey>,
-): PairingNode<TItem, TKey> {
-	let tail: PairingNode<TItem, TKey>
-	let a: PairingNode<TItem, TKey>
-	let b: PairingNode<TItem, TKey>
-	let next: PairingNode<TItem, TKey>
-	let result: PairingNode<TItem, TKey>
-
-	if ( node == null ) {
-		return null
-	}
-
-	next = node
-	tail = null
-	while ( next != null )
-	{
-		a = next
-		b = a.next
-		if ( b != null )
-		{
-			next = b.next
-			result = merge( a, b )
-			// tack the result onto the end of the temporary list
-			result.prev = tail
-			tail = result
-		} else
-		{
-			a.prev = tail
-			tail = a
-			break
-		}
-	}
-
-	result = null
-	while ( tail != null )
-	{
-		// trace back through to merge the list
-		next = tail.prev
-		result = merge( result, tail )
-		tail = next
-	}
-
-	return result
+function lessThanDefault(o1, o2) {
+	return o1 < o2 ? true : false
 }
 
 /**
@@ -138,9 +42,17 @@ export class PairingHeap<TItem, TKey> {
 	private _size: number = 0
 	// ! Pointer to the minimum node in the queue
 	private _root: PairingNode<TItem, TKey> = null
+	private _lessThanFunc: ILessThanFunc<TKey>
 
-	constructor( objectPool?: IObjectPool<PairingNode<TItem, TKey>> ) {
+	constructor({
+		objectPool,
+		lessThanFunc,
+	}: {
+		objectPool?: IObjectPool<PairingNode<TItem, TKey>>,
+		lessThanFunc?: ILessThanFunc<TKey>,
+	}) {
 		this._objectPool = objectPool
+		this._lessThanFunc = lessThanFunc || lessThanDefault
 	}
 
 	/**
@@ -189,7 +101,7 @@ export class PairingHeap<TItem, TKey> {
 
 		this._size = (this._size + 1) | 0
 
-		this._root = merge( this._root, node )
+		this._root = this.merge( this._root, node )
 
 		return node
 	}
@@ -213,9 +125,13 @@ export class PairingHeap<TItem, TKey> {
 	 *
 	 * @return      Minimum key, corresponding to item deleted
 	 */
-	public deleteMin(): PairingNode<TItem, TKey> {
-		const result = this._root
+	public deleteMin(): TItem {
+		const result = this._root == null
+			? void 0
+			: this._root.item
+
 		this.delete(this._root)
+
 		return result
 	}
 
@@ -233,7 +149,7 @@ export class PairingHeap<TItem, TKey> {
 		const key: TKey = node.key
 
 		if ( node === this._root ) {
-			this._root = collapse( node.child )
+			this._root = this.collapse( node.child )
 		} else
 		{
 			if ( node.prev.child === node ) {
@@ -246,7 +162,7 @@ export class PairingHeap<TItem, TKey> {
 				node.next.prev = node.prev
 			}
 
-			this._root = merge( this._root, collapse( node.child ) )
+			this._root = this.merge( this._root, this.collapse( node.child ) )
 		}
 
 		node.key = void 0
@@ -284,7 +200,7 @@ export class PairingHeap<TItem, TKey> {
 			node.next.prev = node.prev
 		}
 
-		this._root = merge( this._root, node )
+		this._root = this.merge( this._root, node )
 	}
 
 	/**
@@ -296,6 +212,105 @@ export class PairingHeap<TItem, TKey> {
 		return ( this._size === 0 )
 	}
 
-	public static readonly merge = merge
-	public static readonly collapse = collapse
+	/**
+	 * Merges two nodes together, making the item of greater key the child
+	 * of the other.
+	 *
+	 * @param a     First node
+	 * @param b     Second node
+	 * @return      Resulting tree root
+	 */
+	public merge(
+		a: PairingNode<TItem, TKey>,
+		b: PairingNode<TItem, TKey>,
+	): PairingNode<TItem, TKey> {
+		let parent: PairingNode<TItem, TKey>
+		let child: PairingNode<TItem, TKey>
+
+		if ( a == null ) {
+			return b
+		} else if ( b == null ) {
+			return a
+		} else if ( a === b ) {
+			return a
+		}
+
+		if ( this._lessThanFunc(b.key, a.key) )
+		{
+			parent = b
+			child = a
+		} else
+		{
+			parent = a
+			child = b
+		}
+
+		child.next = parent.child
+		if ( parent.child != null ) {
+			parent.child.prev = child
+		}
+		child.prev = parent
+		parent.child = child
+
+		parent.next = null
+		parent.prev = null
+
+		return parent
+	}
+
+	/**
+	 * Performs an iterative pairwise merging of a list of nodes until a
+	 * single tree remains.  Implements the two-pass method without using
+	 * explicit recursion (to prevent stack overflow with large lists).
+	 * Performs the first pass in place while maintaining only the minimal list
+	 * structure needed to iterate back through during the second pass.
+	 *
+	 * @param node  Head of the list to collapse
+	 * @return      Root of the collapsed tree
+	 */
+	public collapse(
+		node: PairingNode<TItem, TKey>,
+	): PairingNode<TItem, TKey> {
+		let tail: PairingNode<TItem, TKey>
+		let a: PairingNode<TItem, TKey>
+		let b: PairingNode<TItem, TKey>
+		let next: PairingNode<TItem, TKey>
+		let result: PairingNode<TItem, TKey>
+
+		if ( node == null ) {
+			return null
+		}
+
+		next = node
+		tail = null
+		while ( next != null )
+		{
+			a = next
+			b = a.next
+			if ( b != null )
+			{
+				next = b.next
+				result = this.merge( a, b )
+				// tack the result onto the end of the temporary list
+				result.prev = tail
+				tail = result
+			} else
+			{
+				a.prev = tail
+				tail = a
+				break
+			}
+		}
+
+		result = null
+		while ( tail != null )
+		{
+			// trace back through to merge the list
+			next = tail.prev
+			result = this.merge( result, tail )
+			tail = next
+		}
+
+		return result
+	}
 }
