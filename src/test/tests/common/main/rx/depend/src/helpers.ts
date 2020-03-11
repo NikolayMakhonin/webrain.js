@@ -325,7 +325,7 @@ function funcCall(func: IDependencyFunc, _this?: any, ...rest: any[]) {
 	result.id = callId
 	result.state = getFuncCallState(func).apply(_this, rest)
 	assert.ok(result.state)
-	assert.strictEqual(result.state.status, FuncCallStatus.Status_Invalidated);
+	assert.strictEqual(result.state.status, FuncCallStatus.Status_Invalidated_Self);
 	(result.state as any).id = callId
 
 	return result

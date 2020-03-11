@@ -233,7 +233,7 @@ export class FuncCallState<TThis,
 	public readonly valueIds: number[]
 	public deleteOrder: number = 0
 
-	public status = Status_Invalidated
+	public status = Status_Invalidated_Self
 	public hasValue = false
 	public hasError = false
 	public valueAsync = null
@@ -314,9 +314,10 @@ function* checkDependenciesChangedAsync(
 }
 
 function checkDependenciesChanged(callState: IFuncCallState<any, any, any>): ThenableIterator<boolean>|boolean {
-	if (!callState.hasValue) {
+	if ((callState.status & Flag_Invalidate_Self) !== 0) {
 		return true
 	}
+
 	const {_unsubscribers} = callState
 	if (_unsubscribers != null) {
 		const {changeResultId} = callState
