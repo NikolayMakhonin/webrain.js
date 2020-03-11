@@ -10,12 +10,27 @@ export interface ILinkItem<T> {
 }
 
 export enum FuncCallStatus {
-	Invalidating = 1,
-	Invalidated = 2,
-	Calculating = 3,
-	CalculatingAsync = 4,
-	Calculated = 5,
-	Error = 6,
+	// Flags
+	Flag_Invalidate = 1,
+	Flag_Invalidating = 2,
+	Flag_Invalidated = 4,
+	Flag_Invalidate_Self = 8,
+	Flag_Calculate = 16,
+	Flag_Calculating = 32,
+	Flag_Calculated = 64,
+	Flag_Calculate_Async = 128,
+	Flag_Calculate_Error = 256,
+
+	// Statuses
+	Status_Invalidating = Flag_Invalidate | Flag_Invalidating,
+	Status_Invalidated = Flag_Invalidate | Flag_Invalidated,
+	Status_Invalidating_Self = Flag_Invalidate | Flag_Invalidating | Flag_Invalidate_Self,
+	Status_Invalidated_Self = Flag_Invalidate | Flag_Invalidated | Flag_Invalidate_Self,
+
+	Status_Calculating = Flag_Calculate | Flag_Calculating,
+	Status_Calculated = Flag_Calculate | Flag_Calculated,
+	Status_Calculating_Async = Flag_Calculate | Flag_Calculating | Flag_Calculate_Async,
+	Status_Calculated_Error = Flag_Calculate | Flag_Calculated | Flag_Calculate_Error,
 }
 
 export interface IFuncCallState<TThis,
@@ -28,7 +43,7 @@ export interface IFuncCallState<TThis,
 	readonly valueIds: number[]
 	deleteOrder: number
 
-	status: FuncCallStatus
+	status
 	hasValue: boolean
 	hasError: boolean
 

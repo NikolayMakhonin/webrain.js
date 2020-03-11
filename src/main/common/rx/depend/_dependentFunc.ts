@@ -5,12 +5,25 @@ import {Func, FuncCallStatus, IFuncCallState, TCall} from './contracts'
 import {subscribeDependency, unsubscribeDependencies} from './subscribeDependency'
 import {getSubscriberLink, releaseSubscriberLink} from './subscriber-link-pool'
 
-const FuncCallStatus_Invalidating: FuncCallStatus = 1
-const FuncCallStatus_Invalidated: FuncCallStatus = 2
-const FuncCallStatus_Calculating: FuncCallStatus = 3
-const FuncCallStatus_CalculatingAsync: FuncCallStatus = 4
-const FuncCallStatus_Calculated: FuncCallStatus = 5
-const FuncCallStatus_Error: FuncCallStatus = 6
+const Flag_Invalidate: FuncCallStatus = 1
+const Flag_Invalidating: FuncCallStatus = 2
+const Flag_Invalidated: FuncCallStatus = 4
+const Flag_Invalidate_Self: FuncCallStatus = 8
+const Flag_Calculate: FuncCallStatus = 16
+const Flag_Calculating: FuncCallStatus = 32
+const Flag_Calculated: FuncCallStatus = 64
+const Flag_Calculate_Async: FuncCallStatus = 128
+const Flag_Calculate_Error: FuncCallStatus = 256
+
+const Status_Invalidating: FuncCallStatus = Flag_Invalidate | Flag_Invalidating
+const Status_Invalidated: FuncCallStatus = Flag_Invalidate | Flag_Invalidated
+const Status_Invalidating_Self = Flag_Invalidate | Flag_Invalidating | Flag_Invalidate_Self
+const Status_Invalidated_Self = Flag_Invalidate | Flag_Invalidated | Flag_Invalidate_Self
+
+const Status_Calculating: FuncCallStatus = Flag_Calculate | Flag_Calculating
+const Status_Calculated: FuncCallStatus = Flag_Calculate | Flag_Calculated
+const Status_Calculating_Async = Flag_Calculate | Flag_Calculating | Flag_Calculate_Async
+const Status_Calculated_Error = Flag_Calculate | Flag_Calculated | Flag_Calculate_Error
 
 let nextChangeResultId = 1
 
@@ -23,160 +36,158 @@ export function update<TThis,
 	valueAsyncOrValueOrError?,
 ) {
 	const prevStatus = state.status
-	switch (status) {
-		case FuncCallStatus_Invalidating:
-			if (prevStatus === FuncCallStatus_Invalidated) {
-				return
+	if ((status & Flag_Invalidating) !== 0) {
+		if ((prevStatus & Flag_Invalidated) !== 0) {
+			if ((prevStatus & Flag_Invalidate_Self) < (status & Flag_Invalidate_Self)) {
+				state.status = prevStatus | Flag_Invalidate_Self
 			}
-			if (prevStatus !== FuncCallStatus_Invalidating
-				&& prevStatus !== FuncCallStatus_Calculated
-				&& prevStatus !== FuncCallStatus_Error
-			) {
-				throw new Error(`Set status ${status} called when current status is ${prevStatus}`)
+			return
+		}
+		if ((prevStatus & (Flag_Invalidating | Flag_Calculated)) === 0) {
+			throw new Error(`Set status ${status} called when current status is ${prevStatus}`)
+		}
+		if ((prevStatus & Flag_Invalidate_Self) !== 0) {
+			status |= Flag_Invalidate_Self
+		}
+	} else if ((status & Flag_Invalidated) !== 0) {
+		if ((prevStatus & Flag_Invalidating) === 0) {
+			if ((prevStatus & Flag_Invalidate_Self) < (status & Flag_Invalidate_Self)) {
+				state.status = prevStatus | Flag_Invalidate_Self
 			}
-			break
-		case FuncCallStatus_Invalidated:
-			if (prevStatus !== FuncCallStatus_Invalidating) {
-				return
-			}
-			break
-		case FuncCallStatus_Calculating:
-			if (prevStatus != null
-				&& prevStatus !== FuncCallStatus_Invalidating
-				&& prevStatus !== FuncCallStatus_Invalidated
-			) {
-				throw new Error(`Set status ${status} called when current status is ${prevStatus}`)
-			}
-			break
-		case FuncCallStatus_CalculatingAsync:
-			if (prevStatus !== FuncCallStatus_Calculating) {
-				throw new Error(`Set status ${status} called when current status is ${prevStatus}`)
-			}
-			state.valueAsync = valueAsyncOrValueOrError
-			break
-		case FuncCallStatus_Calculated:
-			if (prevStatus !== FuncCallStatus_Calculating && prevStatus !== FuncCallStatus_CalculatingAsync) {
-				throw new Error(`Set status ${status} called when current status is ${prevStatus}`)
-			}
-			if (state.valueAsync != null) {
-				state.valueAsync = null
-			}
-			if (state.hasError || !state.hasValue || state.value !== valueAsyncOrValueOrError) {
-				state.error = void 0
-				state.value = valueAsyncOrValueOrError
-				state.hasError = false
-				state.hasValue = true
-				state.changeResultId = nextChangeResultId++
-			}
-			break
-		case FuncCallStatus_Error:
-			if (prevStatus !== FuncCallStatus_Calculating && prevStatus !== FuncCallStatus_CalculatingAsync) {
-				throw new Error(`Set status ${status} called when current status is ${prevStatus}`)
-			}
-			if (state.valueAsync != null) {
-				state.valueAsync = null
-			}
-			state.error = valueAsyncOrValueOrError
-			if (!state.hasError) {
-				state.hasError = true
-				state.changeResultId = nextChangeResultId++
-			}
-			break
-		default:
-			throw new Error('Unknown FuncCallStatus: ' + status)
+			return
+		}
+		if ((prevStatus & Flag_Invalidate_Self) !== 0) {
+			status |= Flag_Invalidate_Self
+		}
+	} else if (status === Status_Calculating) {
+		if ((prevStatus & Flag_Invalidate) === 0) {
+			throw new Error(`Set status ${status} called when current status is ${prevStatus}`)
+		}
+	} else if (status === Status_Calculating_Async) {
+		if (prevStatus !== Status_Calculating) {
+			throw new Error(`Set status ${status} called when current status is ${prevStatus}`)
+		}
+		state.valueAsync = valueAsyncOrValueOrError
+	} else if (status === Status_Calculated) {
+		if ((prevStatus & Flag_Calculating) === 0) {
+			throw new Error(`Set status ${status} called when current status is ${prevStatus}`)
+		}
+		if (state.valueAsync != null) {
+			state.valueAsync = null
+		}
+		if (state.hasError || !state.hasValue || state.value !== valueAsyncOrValueOrError) {
+			state.error = void 0
+			state.value = valueAsyncOrValueOrError
+			state.hasError = false
+			state.hasValue = true
+			state.changeResultId = nextChangeResultId++
+		}
+	} else if (status === Status_Calculated_Error) {
+		if ((prevStatus & Flag_Calculating) === 0) {
+			throw new Error(`Set status ${status} called when current status is ${prevStatus}`)
+		}
+		if (state.valueAsync != null) {
+			state.valueAsync = null
+		}
+		state.error = valueAsyncOrValueOrError
+		if (!state.hasError) {
+			state.hasError = true
+			state.changeResultId = nextChangeResultId++
+		}
+	} else {
+		throw new Error('Unknown FuncCallStatus: ' + status)
 	}
 
 	state.status = status
 
-	switch (status) {
-		case FuncCallStatus_Invalidating:
-			// emit(state, status)
-			// region inline call
-			if (state._subscribersFirst != null) {
-				// let clonesFirst
-				// let clonesLast
-				// for (let link = state._subscribersFirst; link; link = link.next) {
-				// 	const cloneLink = getSubscriberLink(state, link.value, null, link.next)
-				// 	if (clonesLast == null) {
-				// 		clonesFirst = cloneLink
-				// 	} else {
-				// 		clonesLast.next = cloneLink
-				// 	}
-				// 	clonesLast = cloneLink
-				// }
-				for (let link = state._subscribersFirst; link;) {
-					const next = link.next
-					if (link.value.status !== FuncCallStatus.Invalidating && link.value.status !== FuncCallStatus.Invalidated) {
-						// invalidate(link.value, status)
-						// region inline call
-						{
-							// tslint:disable-next-line:no-shadowed-variable
-							const state = link.value
-							update(state, FuncCallStatus_Invalidating)
-						}
-						// endregion
-						// link.value = null
-						// link.next = null
-						// releaseSubscriberLink(link)
-					}
-					link = next
-				}
-			}
-			// endregion
-			break
-		case FuncCallStatus_Invalidated:
-			// emit(state, status)
-			// region inline call
-			if (state._subscribersFirst != null) {
-				// let clonesFirst
-				// let clonesLast
-				// for (let link = state._subscribersFirst; link; link = link.next) {
-				// 	const cloneLink = getSubscriberLink(state, link.value, null, link.next)
-				// 	if (clonesLast == null) {
-				// 		clonesFirst = cloneLink
-				// 	} else {
-				// 		clonesLast.next = cloneLink
-				// 	}
-				// 	clonesLast = cloneLink
-				// }
-				for (let link = state._subscribersFirst; link;) {
-					const next = link.next
-					// invalidate(link.value, status)
+	if ((status & Flag_Invalidating) !== 0) {
+		// emit(state, Status_Invalidating)
+		// region inline call
+		if (state._subscribersFirst != null) {
+			// let clonesFirst
+			// let clonesLast
+			// for (let link = state._subscribersFirst; link; link = link.next) {
+			// 	const cloneLink = getSubscriberLink(state, link.value, null, link.next)
+			// 	if (clonesLast == null) {
+			// 		clonesFirst = cloneLink
+			// 	} else {
+			// 		clonesLast.next = cloneLink
+			// 	}
+			// 	clonesLast = cloneLink
+			// }
+			for (let link = state._subscribersFirst; link;) {
+				const next = link.next
+				if ((link.value.status & Flag_Invalidate) === 0) {
+					// invalidate(link.value, Status_Invalidating)
 					// region inline call
 					{
 						// tslint:disable-next-line:no-shadowed-variable
 						const state = link.value
-						update(state, FuncCallStatus_Invalidated)
+						update(state, Status_Invalidating)
 					}
 					// endregion
 					// link.value = null
 					// link.next = null
 					// releaseSubscriberLink(link)
-					link = next
 				}
+				link = next
 			}
-			// endregion
-			break
+		}
+		// endregion
+	} else if ((status & Flag_Invalidated) !== 0) {
+		// emit(state, Status_Invalidated)
+		// region inline call
+		if (state._subscribersFirst != null) {
+			// let clonesFirst
+			// let clonesLast
+			// for (let link = state._subscribersFirst; link; link = link.next) {
+			// 	const cloneLink = getSubscriberLink(state, link.value, null, link.next)
+			// 	if (clonesLast == null) {
+			// 		clonesFirst = cloneLink
+			// 	} else {
+			// 		clonesLast.next = cloneLink
+			// 	}
+			// 	clonesLast = cloneLink
+			// }
+			for (let link = state._subscribersFirst; link;) {
+				const next = link.next
+				// invalidate(link.value, Status_Invalidated)
+				// region inline call
+				{
+					// tslint:disable-next-line:no-shadowed-variable
+					const state = link.value
+					update(state, Status_Invalidated)
+				}
+				// endregion
+				// link.value = null
+				// link.next = null
+				// releaseSubscriberLink(link)
+				link = next
+			}
+		}
+		// endregion
 	}
 }
 
 // tslint:disable-next-line:no-shadowed-variable
-export function invalidate<TThis,
+export function invalidate<
+	TThis,
 	TArgs extends any[],
 	TValue,
-	>(state: IFuncCallState<TThis, TArgs, TValue>, status?: FuncCallStatus) {
+>(state: IFuncCallState<TThis, TArgs, TValue>, status?: FuncCallStatus) {
 	if (status == null) {
-		update(state, FuncCallStatus_Invalidating)
-		update(state, FuncCallStatus_Invalidated)
+		update(state, Status_Invalidating_Self)
+		update(state, Status_Invalidated_Self)
 	} else {
 		update(state, status)
 	}
 }
 
-export function emit<TThis,
+export function emit<
+	TThis,
 	TArgs extends any[],
 	TValue,
-	>(state: IFuncCallState<TThis, TArgs, TValue>, status) {
+>(state: IFuncCallState<TThis, TArgs, TValue>, status) {
 	if (state._subscribersFirst != null) {
 		let clonesFirst
 		let clonesLast
@@ -222,7 +233,7 @@ export class FuncCallState<TThis,
 	public readonly valueIds: number[]
 	public deleteOrder: number = 0
 
-	public status = FuncCallStatus_Invalidated
+	public status = Status_Invalidated
 	public hasValue = false
 	public hasError = false
 	public valueAsync = null
@@ -245,9 +256,7 @@ export class FuncCallState<TThis,
 	}
 
 	public get isHandling(): boolean {
-		return this.status === FuncCallStatus_Calculating
-			|| this.status === FuncCallStatus_CalculatingAsync
-			|| this.status === FuncCallStatus_Invalidating
+		return (this.status & (Flag_Calculating | Flag_Invalidating)) !== 0
 	}
 }
 
@@ -278,24 +287,22 @@ function* checkDependenciesChangedAsync(
 		const {changeResultId} = callState
 		for (let i = fromIndex || 0, len = _unsubscribers.length; i < len; i++) {
 			const dependencyState = _unsubscribers[i].state
-			if (dependencyState.status === FuncCallStatus_Invalidating
-				|| dependencyState.status === FuncCallStatus_Invalidated
-			) {
+			if ((dependencyState.status & Flag_Invalidate) !== 0) {
 				_dependentFunc(dependencyState, true)
 			}
 
-			if (dependencyState.status === FuncCallStatus.CalculatingAsync) {
+			if (dependencyState.status === Status_Calculating_Async) {
 				yield resolveAsync(dependencyState.valueAsync, null, () => { }) as any
 			}
 
-			if (dependencyState.status === FuncCallStatus_Calculated) {
+			if (dependencyState.status === Status_Calculated) {
 				if (dependencyState.changeResultId > changeResultId) {
 					unsubscribeDependencies(dependencyState)
 					return true
 				}
-			} else if (dependencyState.status === FuncCallStatus_Error) {
+			} else if (dependencyState.status === Status_Calculated_Error) {
 				unsubscribeDependencies(dependencyState, i + 1)
-				update(callState, FuncCallStatus_Error, dependencyState.error)
+				update(callState, Status_Calculated_Error, dependencyState.error)
 				return false
 			} else {
 				throw new Error('Unexpected dependency status: ' + dependencyState.status)
@@ -315,22 +322,20 @@ function checkDependenciesChanged(callState: IFuncCallState<any, any, any>): The
 		const {changeResultId} = callState
 		for (let i = 0, len = _unsubscribers.length; i < len; i++) {
 			const dependencyState = _unsubscribers[i].state
-			if (dependencyState.status === FuncCallStatus_Invalidating
-				|| dependencyState.status === FuncCallStatus_Invalidated
-			) {
+			if ((dependencyState.status & Flag_Invalidate) !== 0) {
 				_dependentFunc(dependencyState, true)
 			}
 
-			if (dependencyState.status === FuncCallStatus_Calculated) {
+			if (dependencyState.status === Status_Calculated) {
 				if (dependencyState.changeResultId > changeResultId) {
 					unsubscribeDependencies(dependencyState)
 					return true
 				}
-			} else if (dependencyState.status === FuncCallStatus_Error) {
+			} else if (dependencyState.status === Status_Calculated_Error) {
 				unsubscribeDependencies(dependencyState, i + 1)
-				update(callState, FuncCallStatus_Error, dependencyState.error)
+				update(callState, Status_Calculated_Error, dependencyState.error)
 				return false
-			} else if (dependencyState.status === FuncCallStatus_CalculatingAsync) {
+			} else if (dependencyState.status === Status_Calculating_Async) {
 				return checkDependenciesChangedAsync(dependencyState, i)
 			} else {
 				throw new Error('Unexpected dependency status: ' + dependencyState.status)
@@ -356,68 +361,63 @@ export function _dependentFunc<
 	state.callId = nextCallId++
 
 	if (state.status != null) {
-		switch (state.status) {
-			case FuncCallStatus_Calculated:
-				return state.value
-
-			case FuncCallStatus_Invalidating:
-			case FuncCallStatus_Invalidated:
-				break
-			case FuncCallStatus_CalculatingAsync:
-				let parentCallState = state.parentCallState
-				while (parentCallState) {
-					if (parentCallState === state) {
-						throw new Error('Recursive async loop detected')
-					}
-					parentCallState = parentCallState.parentCallState
+		if (state.status === Status_Calculated) {
+			return state.value
+		} else if ((state.status & Flag_Invalidate) !== 0) {
+			// nothing
+		} else if (state.status === Status_Calculating_Async) {
+			let parentCallState = state.parentCallState
+			while (parentCallState) {
+				if (parentCallState === state) {
+					throw new Error('Recursive async loop detected')
 				}
-				return state.valueAsync
-
-			case FuncCallStatus_Error:
-				throw state.error
-
-			case FuncCallStatus_Calculating:
-				throw new Error('Recursive sync loop detected')
-			default:
-				throw new Error('Unknown FuncCallStatus: ' + state.status)
+				parentCallState = parentCallState.parentCallState
+			}
+			return state.valueAsync
+		} else if (state.status === Status_Calculated_Error) {
+			throw state.error
+		} else if (state.status === Status_Calculating) {
+			throw new Error('Recursive sync loop detected')
+		} else {
+			throw new Error('Unknown FuncCallStatus: ' + state.status)
 		}
 	}
 
 	state.parentCallState = currentState
 	currentState = null
 
-	update(state, FuncCallStatus_Calculating)
+	update(state, Status_Calculating)
 
 	// TODO remove this
-	// unsubscribeDependencies(state)
-	// return calc(state, dontThrowOnError)
+	unsubscribeDependencies(state)
+	return calc(state, dontThrowOnError)
 
-	const dependenciesChanged = checkDependenciesChanged(state)
-	if (dependenciesChanged === false) {
-		state.status = FuncCallStatus_Calculated
-		return state.value
-	}
-
-	let value
-	if (dependenciesChanged === true) {
-		value = calc(state, dontThrowOnError)
-	}
-
-	if (isIterator(dependenciesChanged)) {
-		value = resolveAsync(dependenciesChanged, o => {
-			if (o === false) {
-				state.status = FuncCallStatus_Calculated
-				return state.value
-			}
-			return calc(state, dontThrowOnError)
-		})
-
-		if (isThenable(value)) {
-			update(state, FuncCallStatus_CalculatingAsync, value)
-		}
-	}
-
-	return value
+	// const dependenciesChanged = checkDependenciesChanged(state)
+	// if (dependenciesChanged === false) {
+	// 	state.status = Status_Calculated
+	// 	return state.value
+	// }
+	//
+	// let value
+	// if (dependenciesChanged === true) {
+	// 	value = calc(state, dontThrowOnError)
+	// }
+	//
+	// if (isIterator(dependenciesChanged)) {
+	// 	value = resolveAsync(dependenciesChanged, o => {
+	// 		if (o === false) {
+	// 			state.status = Status_Calculated
+	// 			return state.value
+	// 		}
+	// 		return calc(state, dontThrowOnError)
+	// 	})
+	//
+	// 	if (isThenable(value)) {
+	// 		update(state, Status_Calculating_Async, value)
+	// 	}
+	// }
+	//
+	// return value
 }
 
 export function calc<
@@ -437,7 +437,7 @@ export function calc<
 			)
 
 			if (isThenable(value)) {
-				update(state, FuncCallStatus_CalculatingAsync, value)
+				update(state, Status_Calculating_Async, value)
 			}
 
 			return value
@@ -445,10 +445,10 @@ export function calc<
 			throw new Error('You should use iterator instead thenable for async functions')
 		}
 
-		update(state, FuncCallStatus_Calculated, value)
+		update(state, Status_Calculated, value)
 		return value
 	} catch (error) {
-		update(state, FuncCallStatus_Error, error)
+		update(state, Status_Calculated_Error, error)
 		if (dontThrowOnError !== true) {
 			throw error
 		}
@@ -483,12 +483,12 @@ export function* makeDependentIterator<TThis,
 		}
 
 		if (nested == null) {
-			update(state, FuncCallStatus_Calculated, iteration.value)
+			update(state, Status_Calculated, iteration.value)
 		}
 		return iteration.value
 	} catch (error) {
 		if (nested == null) {
-			update(state, FuncCallStatus_Error, error)
+			update(state, Status_Calculated_Error, error)
 		}
 		throw error
 	} finally {

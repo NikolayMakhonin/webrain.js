@@ -219,6 +219,18 @@ function getCallId(funcId: string, _this?: any, ...rest: any[]) {
 	return callId
 }
 
+function callIdToResult(callId: string) {
+	return String(callId)
+	// switch (callId) {
+	// 	case 'I(0)': // I0
+	// 	case 'I1(I(0),A(_))': // I1
+	// 	case 'I20(S1(S(0),I(0)),I1(I(0),A(_)))': // I2
+	// 		return String(callId)
+	// 	default:
+	// 		return callId
+	// }
+}
+
 function funcSync(id: string) {
 	const result: IDependencyFunc = makeDependentFunc(function() {
 		const callId = getCallId(id, this, ...arguments)
@@ -231,7 +243,7 @@ function funcSync(id: string) {
 				assert.strictEqual(value, dependency.id)
 			}
 		}
-		return String(callId)
+		return callIdToResult(callId)
 	}) as any
 
 	result.id = id
@@ -254,7 +266,7 @@ function funcSyncIterator(id: string) {
 	const run = function*(callId: string, dependencies: IDependencyCall[]) {
 		yield 1
 		yield nested(dependencies)
-		return String(callId)
+		return callIdToResult(callId)
 	}
 
 	const result: IDependencyFunc = makeDependentFunc(function() {
@@ -290,7 +302,7 @@ function funcAsync(id: string) {
 		yield delay(0)
 		yield nested()
 		yield nestedAsync(dependencies)
-		return String(callId)
+		return callIdToResult(callId)
 	}
 
 	const result: IDependencyFunc = makeDependentFunc(function() {
@@ -313,7 +325,7 @@ function funcCall(func: IDependencyFunc, _this?: any, ...rest: any[]) {
 	result.id = callId
 	result.state = getFuncCallState(func).apply(_this, rest)
 	assert.ok(result.state)
-	assert.strictEqual(result.state.status, FuncCallStatus.Invalidated);
+	assert.strictEqual(result.state.status, FuncCallStatus.Status_Invalidated);
 	(result.state as any).id = callId
 
 	return result
@@ -369,7 +381,8 @@ function checkFuncNotChanged<TValue>(allFuncCalls: IDependencyCall[], ...changed
 }
 
 function isInvalidated(funcCall: IDependencyCall) {
-	return funcCall.state.status === FuncCallStatus.Invalidating || funcCall.state.status === FuncCallStatus.Invalidated
+	return funcCall.state.status === FuncCallStatus.Status_Invalidating
+		|| funcCall.state.status === FuncCallStatus.Status_Invalidated
 }
 
 export async function baseTest() {
@@ -379,16 +392,16 @@ export async function baseTest() {
 	const I = funcSyncIterator('I')
 	const A = funcAsync('A')
 
-	const S0 = funcCall(S)
-	const I0 = funcCall(I, null)
-	const A0 = funcCall(A, new ThisObj('_'))
+	const S0 = funcCall(S) // S(0)
+	const I0 = funcCall(I, null) // I(0)
+	const A0 = funcCall(A, new ThisObj('_')) // A(_)
 
-	const S1 = funcCall(S, [S0, I0], 1)
-	const I1 = funcCall(I, [I0, A0], 1)
+	const S1 = funcCall(S, [S0, I0], 1) // S1(S(0),I(0))
+	const I1 = funcCall(I, [I0, A0], 1) // I1(I(0),A(_))
 
-	const S2 = funcCall(S, [S1], 2, void 0)
-	const I2 = funcCall(I, [S1, I1], 2, null)
-	const A2 = funcCall(A, [I1], 2, 2)
+	const S2 = funcCall(S, [S1], 2, void 0) // S20(S1(S(0),I(0)))
+	const I2 = funcCall(I, [S1, I1], 2, null) // I20(S1(S(0),I(0)),I1(I(0),A(_)))
+	const A2 = funcCall(A, [I1], 2, 2) // A22(I1(I(0),A(_)))
 
 	// endregion
 
@@ -439,6 +452,115 @@ export async function baseTest() {
 
 	_invalidate(A2)
 	await checkFuncAsync(A2, A2)
+	checkFuncNotChanged(allFuncs)
+
+	// level 1
+
+	_invalidate(S1)
+	checkFuncSync(S2, S2, S1)
+	checkFuncSync(I2, I2)
+	checkFuncNotChanged(allFuncs)
+
+	_invalidate(I1)
+	checkFuncSync(I2, I2, I1)
+	await checkFuncAsync(A2, A2)
+	checkFuncNotChanged(allFuncs)
+
+	// level 0
+
+	_invalidate(S0)
+	// console.log(allFuncs.filter(isInvalidated).map(o => o.id))
+	checkFuncSync(S2, S2, S1, S0)
+	checkFuncSync(I2, I2)
+	checkFuncNotChanged(allFuncs)
+
+	_invalidate(I0)
+	checkFuncSync(S2, S2, S1, I0)
+	checkFuncSync(I2, I2, I1)
+	await checkFuncAsync(A2, A2)
+	checkFuncNotChanged(allFuncs)
+
+	_invalidate(A0)
+	await checkFuncAsync(I2, I2, I1, A0)
+	await checkFuncAsync(A2, A2)
+	checkFuncNotChanged(allFuncs)
+
+	// endregion
+
+	return {
+		states: [S0, I0, A0, S1, I1, S2, I2, A2].map(o => {
+			return o.state
+		}),
+	}
+}
+
+export async function baseTestOld() {
+	// region init
+
+	const S = funcSync('S')
+	const I = funcSyncIterator('I')
+	const A = funcAsync('A')
+
+	const S0 = funcCall(S) // S(0)
+	const I0 = funcCall(I, null) // I(0)
+	const A0 = funcCall(A, new ThisObj('_')) // A(_)
+
+	const S1 = funcCall(S, [S0, I0], 1) // S1(S(0),I(0))
+	const I1 = funcCall(I, [I0, A0], 1) // I1(I(0),A(_))
+
+	const S2 = funcCall(S, [S1], 2, void 0) // S20(S1(S(0),I(0)))
+	const I2 = funcCall(I, [S1, I1], 2, null) // I20(S1(S(0),I(0)),I1(I(0),A(_)))
+	const A2 = funcCall(A, [I1], 2, 2) // A22(I1(I(0),A(_)))
+
+	// endregion
+
+	// region check init
+
+	assert.strictEqual(S0.id, 'S(0)')
+	assert.strictEqual(I0.id, 'I(0)')
+	assert.strictEqual(A0.id, 'A(_)')
+
+	assert.strictEqual(S1.id, 'S1(S(0),I(0))')
+	assert.strictEqual(I1.id, 'I1(I(0),A(_))')
+
+	assert.strictEqual(S2.id, 'S20(S1(S(0),I(0)))')
+	assert.strictEqual(I2.id, 'I20(S1(S(0),I(0)),I1(I(0),A(_)))')
+	assert.strictEqual(A2.id, 'A22(I1(I(0),A(_)))')
+
+	// endregion
+
+	// region base tests
+
+	checkFuncSync(S0, S0)
+	checkFuncSync(I0, I0)
+	await checkFuncAsync(A0, A0)
+
+	checkFuncSync(S1, S1)
+	checkFuncSync(I1, I1)
+
+	checkFuncSync(S2, S2)
+	checkFuncSync(I2, I2)
+	await checkFuncAsync(A2, A2)
+
+	// endregion
+
+	// region invalidate
+
+	const allFuncs = [S0, I0, A0, S1, I1, S2, I2, A2]
+	checkFuncNotChanged(allFuncs)
+
+	// level 2
+
+	_invalidate(S2)
+	checkFuncSync(S2)
+	checkFuncNotChanged(allFuncs)
+
+	_invalidate(I2)
+	checkFuncSync(I2, I2)
+	checkFuncNotChanged(allFuncs)
+
+	_invalidate(A2)
+	await checkFuncAsync(A2)
 	checkFuncNotChanged(allFuncs)
 
 	// level 1
