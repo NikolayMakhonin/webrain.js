@@ -12,6 +12,8 @@ const FuncCallStatus_CalculatingAsync: FuncCallStatus = 4
 const FuncCallStatus_Calculated: FuncCallStatus = 5
 const FuncCallStatus_Error: FuncCallStatus = 6
 
+let nextChangeResultId = 1
+
 export function update<TThis,
 	TArgs extends any[],
 	TValue,
@@ -56,23 +58,29 @@ export function update<TThis,
 			if (prevStatus !== FuncCallStatus_Calculating && prevStatus !== FuncCallStatus_CalculatingAsync) {
 				throw new Error(`Set status ${status} called when current status is ${prevStatus}`)
 			}
-			if (typeof state.valueAsync !== 'undefined') {
+			if (state.valueAsync != null) {
 				state.valueAsync = null
 			}
-			state.error = void 0
-			state.value = valueAsyncOrValueOrError
-			state.hasError = false
-			state.hasValue = true
+			if (state.hasError || !state.hasValue || state.value !== valueAsyncOrValueOrError) {
+				state.error = void 0
+				state.value = valueAsyncOrValueOrError
+				state.hasError = false
+				state.hasValue = true
+				state.changeResultId = nextChangeResultId++
+			}
 			break
 		case FuncCallStatus_Error:
 			if (prevStatus !== FuncCallStatus_Calculating && prevStatus !== FuncCallStatus_CalculatingAsync) {
 				throw new Error(`Set status ${status} called when current status is ${prevStatus}`)
 			}
-			if (typeof state.valueAsync !== 'undefined') {
+			if (state.valueAsync != null) {
 				state.valueAsync = null
 			}
-			state.error = valueAsyncOrValueOrError
-			state.hasError = true
+			if (!state.hasError) {
+				state.error = valueAsyncOrValueOrError
+				state.hasError = true
+				state.changeResultId = nextChangeResultId++
+			}
 			break
 		default:
 			throw new Error('Unknown FuncCallStatus: ' + status)
@@ -224,6 +232,8 @@ export class FuncCallState<TThis,
 	public parentCallState = null
 	public _subscribersFirst = null
 	public _subscribersLast = null
+	/** for prevent recalc dependent funcs if dependencies.changeResultId <= dependent.changeResultId */
+	public changeResultId = 0
 	// for prevent multiple subscribe equal dependencies
 	public callId = 0
 	public _unsubscribers = null
@@ -257,6 +267,62 @@ export function createFuncCallState<TThis,
 		callWithArgs,
 		valueIds,
 	)
+}
+
+function* checkDependenciesChangedAsync(callState: IFuncCallState<any, any, any>, i: number): Iterable<boolean> {
+	const {_unsubscribers} = callState
+	if (_unsubscribers != null) {
+		const {changeResultId} = callState
+		for (const len = _unsubscribers.length; i < len; i++) {
+			const dependencyState = _unsubscribers[i].state
+			if (dependencyState.status === FuncCallStatus_Invalidating
+				|| dependencyState.status === FuncCallStatus_Invalidated
+			) {
+				_dependentFunc(dependencyState)
+			}
+
+			if (dependencyState.status === FuncCallStatus.CalculatingAsync) {
+				yield dependencyState.valueAsync as any
+			}
+
+			if (dependencyState.status !== FuncCallStatus_Calculated) {
+				throw new Error('Unexpected dependency status: ' + dependencyState.status)
+			}
+
+			if (dependencyState.changeResultId > changeResultId) {
+				return false
+			}
+		}
+	}
+
+	return true
+}
+
+function checkDependenciesChanged(callState: IFuncCallState<any, any, any>): Iterable<boolean>|boolean {
+	const {_unsubscribers} = callState
+	if (_unsubscribers != null) {
+		const {changeResultId} = callState
+		for (let i = 0, len = _unsubscribers.length; i < len; i++) {
+			const dependencyState = _unsubscribers[i].state
+			if (dependencyState.status === FuncCallStatus_Invalidating
+				|| dependencyState.status === FuncCallStatus_Invalidated
+			) {
+				_dependentFunc(dependencyState)
+			}
+
+			if (dependencyState.status === FuncCallStatus_Calculated) {
+				if (dependencyState.changeResultId > changeResultId) {
+					return false
+				}
+			} else if (dependencyState.status === FuncCallStatus_CalculatingAsync) {
+				return checkDependenciesChangedAsync(dependencyState, i)
+			} else {
+				throw new Error('Unexpected dependency status: ' + dependencyState.status)
+			}
+		}
+	}
+
+	return true
 }
 
 let currentState: IFuncCallState<any, any, any>
@@ -296,8 +362,13 @@ export function _dependentFunc<TThis,
 			case FuncCallStatus_Calculating:
 				throw new Error('Recursive sync loop detected')
 			default:
-				throw new Error('Unknown FuncStatus: ' + state.status)
+				throw new Error('Unknown FuncCallStatus: ' + state.status)
 		}
+	}
+
+	const dependenciesChanged = checkDependenciesChanged(state)
+	if (dependenciesChanged === false) {
+		state.status = FuncCallStatus_Calculated
 	}
 
 	unsubscribeDependencies(state)

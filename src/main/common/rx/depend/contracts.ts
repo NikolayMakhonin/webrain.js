@@ -7,7 +7,6 @@ export interface ILinkItem<T> {
 	value: T
 	prev: ILinkItem<T>
 	next: ILinkItem<T>
-	delete?: () => void
 }
 
 export enum FuncCallStatus {
@@ -37,6 +36,9 @@ export interface IFuncCallState<TThis,
 	value: TValue
 	error: any
 
+	/** for prevent recalc dependent funcs if dependencies.changeResultId <= dependent.changeResultId */
+	changeResultId: number
+
 	/** for detect recursive async loop */
 	parentCallState: IFuncCallState<any, any, any>
 
@@ -53,7 +55,8 @@ export interface IFuncCallState<TThis,
 }
 
 export interface ISubscriberLink<TThis, TArgs extends any[], TValue>
-	extends ILinkItem<IFuncCallState<TThis, TArgs, TValue>> {
+	extends ILinkItem<IFuncCallState<TThis, TArgs, TValue>>
+{
 	state: IFuncCallState<TThis, TArgs, TValue>
 	prev: ISubscriberLink<TThis, TArgs, TValue>,
 	next: ISubscriberLink<TThis, TArgs, TValue>,
