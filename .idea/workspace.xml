@@ -390,8 +390,8 @@
     </list>
     <recent_temporary>
       <list>
-        <item itemvalue="Mocha.common &gt; main &gt; rx &gt; depend &gt; dependent-func" />
         <item itemvalue="Mocha.common &gt; main &gt; rx &gt; depend &gt; dependent-func.base" />
+        <item itemvalue="Mocha.common &gt; main &gt; rx &gt; depend &gt; dependent-func" />
         <item itemvalue="Mocha.common &gt; main &gt; rx &gt; depend &gt; dependent-func.perceptron" />
         <item itemvalue="Mocha.dependent-func perf.perceptron memory create" />
         <item itemvalue="Mocha.dependent-func perf.perceptron recalc" />
@@ -405,13 +405,6 @@
       <option name="number" value="Default" />
       <option name="presentableId" value="Default" />
       <updated>1567687848586</updated>
-    </task>
-    <task id="LOCAL-00222" summary="dependent-funcs v8 optimization in process..">
-      <created>1581235455531</created>
-      <option name="number" value="00222" />
-      <option name="presentableId" value="LOCAL-00222" />
-      <option name="project" value="LOCAL" />
-      <updated>1581235455531</updated>
     </task>
     <task id="LOCAL-00223" summary="dependent-funcs v8 optimization in process... Separated code by functions">
       <created>1581261547920</created>
@@ -749,7 +742,14 @@
       <option name="project" value="LOCAL" />
       <updated>1583940626066</updated>
     </task>
-    <option name="localTasksCounter" value="271" />
+    <task id="LOCAL-00271" summary="Develop. Tests OK.">
+      <created>1583941118389</created>
+      <option name="number" value="00271" />
+      <option name="presentableId" value="LOCAL-00271" />
+      <option name="project" value="LOCAL" />
+      <updated>1583941118390</updated>
+    </task>
+    <option name="localTasksCounter" value="272" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -861,17 +861,12 @@
           <line>1304</line>
           <option name="timeStamp" value="361" />
         </line-breakpoint>
-        <line-breakpoint enabled="true" type="javascript">
-          <url>file://$PROJECT_DIR$/src/test/tests/common/main/rx/depend/src/helpers.ts</url>
-          <line>445</line>
-          <properties lambdaOrdinal="-1" />
-          <option name="timeStamp" value="426" />
-        </line-breakpoint>
       </breakpoints>
     </breakpoint-manager>
     <watches-manager>
       <configuration name="mocha-javascript-test-runner">
         <watch expression="callId" language="TypeScript" />
+        <watch expression="callState.status &amp; Flag_Invalidate_Self" language="TypeScript" />
       </configuration>
     </watches-manager>
   </component>

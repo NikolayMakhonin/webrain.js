@@ -1,4 +1,4 @@
-/* tslint:disable:no-identical-functions no-shadowed-variable */
+/* tslint:disable:no-identical-functions no-shadowed-variable no-duplicate-string */
 import {isThenable, Thenable, ThenableOrValue} from '../../../../../../../main/common/async/async'
 import {invalidate} from '../../../../../../../main/common/rx/depend/_dependentFunc'
 import {
@@ -220,15 +220,14 @@ function getCallId(funcId: string, _this?: any, ...rest: any[]) {
 }
 
 function callIdToResult(callId: string) {
-	return String(callId)
-	// switch (callId) {
-	// 	case 'I(0)': // I0
-	// 	case 'I1(I(0),A(_))': // I1
-	// 	case 'I20(S1(S(0),I(0)),I1(I(0),A(_)))': // I2
-	// 		return String(callId)
-	// 	default:
-	// 		return callId
-	// }
+	switch (callId) {
+		case 'I(0)': // I0
+		case 'I1(I(0),A(_))': // I1
+		case 'I20(S1(S(0),I(0)),I1(I(0),A(_)))': // I2
+			return String(callId)
+		default:
+			return callId
+	}
 }
 
 function funcSync(id: string) {
@@ -385,7 +384,7 @@ function isInvalidated(funcCall: IDependencyCall) {
 		|| funcCall.state.status === FuncCallStatus.Status_Invalidated
 }
 
-export async function baseTest() {
+export async function baseTestOld() {
 	// region init
 
 	const S = funcSync('S')
@@ -494,7 +493,7 @@ export async function baseTest() {
 	}
 }
 
-export async function baseTestOld() {
+export async function baseTest() {
 	// region init
 
 	const S = funcSync('S')
@@ -552,7 +551,7 @@ export async function baseTestOld() {
 	// level 2
 
 	_invalidate(S2)
-	checkFuncSync(S2)
+	checkFuncSync(S2, S2)
 	checkFuncNotChanged(allFuncs)
 
 	_invalidate(I2)
@@ -560,14 +559,14 @@ export async function baseTestOld() {
 	checkFuncNotChanged(allFuncs)
 
 	_invalidate(A2)
-	await checkFuncAsync(A2)
+	await checkFuncAsync(A2, A2)
 	checkFuncNotChanged(allFuncs)
 
 	// level 1
 
 	_invalidate(S1)
-	checkFuncSync(S2, S2, S1)
-	checkFuncSync(I2, I2)
+	checkFuncSync(S2, S1)
+	checkFuncSync(I2)
 	checkFuncNotChanged(allFuncs)
 
 	_invalidate(I1)

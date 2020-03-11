@@ -314,10 +314,6 @@ function* checkDependenciesChangedAsync(
 }
 
 function checkDependenciesChanged(callState: IFuncCallState<any, any, any>): ThenableIterator<boolean>|boolean {
-	if ((callState.status & Flag_Invalidate_Self) !== 0) {
-		return true
-	}
-
 	const {_unsubscribers} = callState
 	if (_unsubscribers != null) {
 		const {changeResultId} = callState
@@ -387,38 +383,43 @@ export function _dependentFunc<
 	state.parentCallState = currentState
 	currentState = null
 
+	const prevStatus = state.status
+
 	update(state, Status_Calculating)
 
 	// TODO remove this
-	unsubscribeDependencies(state)
-	return calc(state, dontThrowOnError)
+	// unsubscribeDependencies(state)
+	// return calc(state, dontThrowOnError)
 
-	// const dependenciesChanged = checkDependenciesChanged(state)
-	// if (dependenciesChanged === false) {
-	// 	state.status = Status_Calculated
-	// 	return state.value
-	// }
-	//
-	// let value
-	// if (dependenciesChanged === true) {
-	// 	value = calc(state, dontThrowOnError)
-	// }
-	//
-	// if (isIterator(dependenciesChanged)) {
-	// 	value = resolveAsync(dependenciesChanged, o => {
-	// 		if (o === false) {
-	// 			state.status = Status_Calculated
-	// 			return state.value
-	// 		}
-	// 		return calc(state, dontThrowOnError)
-	// 	})
-	//
-	// 	if (isThenable(value)) {
-	// 		update(state, Status_Calculating_Async, value)
-	// 	}
-	// }
-	//
-	// return value
+	const shouldRecalc = (prevStatus & Flag_Invalidate_Self) !== 0
+		? true
+		: checkDependenciesChanged(state)
+
+	if (shouldRecalc === false) {
+		state.status = Status_Calculated
+		return state.value
+	}
+
+	let value
+	if (shouldRecalc === true) {
+		value = calc(state, dontThrowOnError)
+	}
+
+	if (isIterator(shouldRecalc)) {
+		value = resolveAsync(shouldRecalc, o => {
+			if (o === false) {
+				state.status = Status_Calculated
+				return state.value
+			}
+			return calc(state, dontThrowOnError)
+		})
+
+		if (isThenable(value)) {
+			update(state, Status_Calculating_Async, value)
+		}
+	}
+
+	return value
 }
 
 export function calc<
