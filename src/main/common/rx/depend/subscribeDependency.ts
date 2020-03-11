@@ -35,14 +35,15 @@ export function subscriberLinkDelete<TThis,
 }
 
 // tslint:disable-next-line:no-shadowed-variable
-export function unsubscribeDependencies<TThis,
+export function unsubscribeDependencies<
+	TThis,
 	TArgs extends any[],
 	TValue,
-	>(state: IFuncCallState<TThis, TArgs, TValue>) {
+>(state: IFuncCallState<TThis, TArgs, TValue>, fromIndex: number = 0) {
 	const _unsubscribers = state._unsubscribers
 	if (_unsubscribers != null) {
 		const len = state._unsubscribersLength
-		for (let i = 0; i < len; i++) {
+		for (let i = fromIndex; i < len; i++) {
 			const item = _unsubscribers[i]
 			_unsubscribers[i] = null
 			// subscriberLinkDelete(item.state, item)
@@ -79,8 +80,8 @@ export function unsubscribeDependencies<TThis,
 			}
 			// endregion
 		}
-		state._unsubscribersLength = 0
-		if (len > 256) {
+		state._unsubscribersLength = fromIndex
+		if (fromIndex < 256 && len > 256) {
 			_unsubscribers.length = 256
 		}
 	}

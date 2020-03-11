@@ -231,7 +231,7 @@ function funcSync(id: string) {
 				assert.strictEqual(value, dependency.id)
 			}
 		}
-		return callId
+		return String(callId)
 	}) as any
 
 	result.id = id
@@ -251,10 +251,10 @@ function funcSyncIterator(id: string) {
 		}
 		return 1
 	}
-	const run = function*(callId, dependencies: IDependencyCall[]) {
+	const run = function*(callId: string, dependencies: IDependencyCall[]) {
 		yield 1
 		yield nested(dependencies)
-		return callId
+		return String(callId)
 	}
 
 	const result: IDependencyFunc = makeDependentFunc(function() {
@@ -285,12 +285,12 @@ function funcAsync(id: string) {
 		yield delay(0)
 		return 1
 	}
-	const run = function*(callId, dependencies: IDependencyCall[]) {
+	const run = function*(callId: string, dependencies: IDependencyCall[]) {
 		yield 1
 		yield delay(0)
 		yield nested()
 		yield nestedAsync(dependencies)
-		return callId
+		return String(callId)
 	}
 
 	const result: IDependencyFunc = makeDependentFunc(function() {

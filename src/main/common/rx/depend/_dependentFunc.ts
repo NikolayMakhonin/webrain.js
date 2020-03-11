@@ -1,4 +1,4 @@
-import {isThenable, ThenableOrIteratorOrValue} from '../../async/async'
+import {isThenable, ThenableIterator, ThenableOrIteratorOrValue} from '../../async/async'
 import {resolveAsync} from '../../async/ThenableSync'
 import {isIterator} from '../../helpers/helpers'
 import {Func, FuncCallStatus, IFuncCallState, TCall} from './contracts'
@@ -76,8 +76,8 @@ export function update<TThis,
 			if (state.valueAsync != null) {
 				state.valueAsync = null
 			}
+			state.error = valueAsyncOrValueOrError
 			if (!state.hasError) {
-				state.error = valueAsyncOrValueOrError
 				state.hasError = true
 				state.changeResultId = nextChangeResultId++
 			}
@@ -269,36 +269,47 @@ export function createFuncCallState<TThis,
 	)
 }
 
-function* checkDependenciesChangedAsync(callState: IFuncCallState<any, any, any>, i: number): Iterable<boolean> {
+function* checkDependenciesChangedAsync(
+	callState: IFuncCallState<any, any, any>,
+	fromIndex?: number,
+): ThenableIterator<boolean> {
 	const {_unsubscribers} = callState
 	if (_unsubscribers != null) {
 		const {changeResultId} = callState
-		for (const len = _unsubscribers.length; i < len; i++) {
+		for (let i = fromIndex || 0, len = _unsubscribers.length; i < len; i++) {
 			const dependencyState = _unsubscribers[i].state
 			if (dependencyState.status === FuncCallStatus_Invalidating
 				|| dependencyState.status === FuncCallStatus_Invalidated
 			) {
-				_dependentFunc(dependencyState)
+				_dependentFunc(dependencyState, true)
 			}
 
 			if (dependencyState.status === FuncCallStatus.CalculatingAsync) {
-				yield dependencyState.valueAsync as any
+				yield resolveAsync(dependencyState.valueAsync, null, () => { }) as any
 			}
 
-			if (dependencyState.status !== FuncCallStatus_Calculated) {
-				throw new Error('Unexpected dependency status: ' + dependencyState.status)
-			}
-
-			if (dependencyState.changeResultId > changeResultId) {
+			if (dependencyState.status === FuncCallStatus_Calculated) {
+				if (dependencyState.changeResultId > changeResultId) {
+					unsubscribeDependencies(dependencyState)
+					return true
+				}
+			} else if (dependencyState.status === FuncCallStatus_Error) {
+				unsubscribeDependencies(dependencyState, i + 1)
+				update(callState, FuncCallStatus_Error, dependencyState.error)
 				return false
+			} else {
+				throw new Error('Unexpected dependency status: ' + dependencyState.status)
 			}
 		}
 	}
 
-	return true
+	return false
 }
 
-function checkDependenciesChanged(callState: IFuncCallState<any, any, any>): Iterable<boolean>|boolean {
+function checkDependenciesChanged(callState: IFuncCallState<any, any, any>): ThenableIterator<boolean>|boolean {
+	if (!callState.hasValue) {
+		return true
+	}
 	const {_unsubscribers} = callState
 	if (_unsubscribers != null) {
 		const {changeResultId} = callState
@@ -307,13 +318,18 @@ function checkDependenciesChanged(callState: IFuncCallState<any, any, any>): Ite
 			if (dependencyState.status === FuncCallStatus_Invalidating
 				|| dependencyState.status === FuncCallStatus_Invalidated
 			) {
-				_dependentFunc(dependencyState)
+				_dependentFunc(dependencyState, true)
 			}
 
 			if (dependencyState.status === FuncCallStatus_Calculated) {
 				if (dependencyState.changeResultId > changeResultId) {
-					return false
+					unsubscribeDependencies(dependencyState)
+					return true
 				}
+			} else if (dependencyState.status === FuncCallStatus_Error) {
+				unsubscribeDependencies(dependencyState, i + 1)
+				update(callState, FuncCallStatus_Error, dependencyState.error)
+				return false
 			} else if (dependencyState.status === FuncCallStatus_CalculatingAsync) {
 				return checkDependenciesChangedAsync(dependencyState, i)
 			} else {
@@ -322,16 +338,17 @@ function checkDependenciesChanged(callState: IFuncCallState<any, any, any>): Ite
 		}
 	}
 
-	return true
+	return false
 }
 
 let currentState: IFuncCallState<any, any, any>
 let nextCallId = 1
 
-export function _dependentFunc<TThis,
+export function _dependentFunc<
+	TThis,
 	TArgs extends any[],
 	TValue,
-	>(state: IFuncCallState<TThis, TArgs, TValue>) {
+>(state: IFuncCallState<TThis, TArgs, TValue>, dontThrowOnError?: boolean) {
 	if (currentState != null) {
 		subscribeDependency(currentState, state)
 	}
@@ -366,20 +383,50 @@ export function _dependentFunc<TThis,
 		}
 	}
 
+	state.parentCallState = currentState
+	currentState = null
+
+	update(state, FuncCallStatus_Calculating)
+
+	// TODO remove this
+	// unsubscribeDependencies(state)
+	// return calc(state, dontThrowOnError)
+
 	const dependenciesChanged = checkDependenciesChanged(state)
 	if (dependenciesChanged === false) {
 		state.status = FuncCallStatus_Calculated
+		return state.value
 	}
 
-	unsubscribeDependencies(state)
+	let value
+	if (dependenciesChanged === true) {
+		value = calc(state, dontThrowOnError)
+	}
 
-	state.parentCallState = currentState
-	currentState = state
+	if (isIterator(dependenciesChanged)) {
+		value = resolveAsync(dependenciesChanged, o => {
+			if (o === false) {
+				state.status = FuncCallStatus_Calculated
+				return state.value
+			}
+			return calc(state, dontThrowOnError)
+		})
 
-	// return tryInvoke.apply(state, arguments)
+		if (isThenable(value)) {
+			update(state, FuncCallStatus_CalculatingAsync, value)
+		}
+	}
 
+	return value
+}
+
+export function calc<
+	TThis,
+	TArgs extends any[],
+	TValue,
+>(state: IFuncCallState<TThis, TArgs, TValue>, dontThrowOnError?: boolean) {
 	try {
-		update(state, FuncCallStatus_Calculating)
+		currentState = state
 
 		// let value: any = state.func.apply(state._this, arguments)
 		let value: any = state.callWithArgs(state._this, state.func)
@@ -402,7 +449,9 @@ export function _dependentFunc<TThis,
 		return value
 	} catch (error) {
 		update(state, FuncCallStatus_Error, error)
-		throw error
+		if (dontThrowOnError !== true) {
+			throw error
+		}
 	} finally {
 		currentState = state.parentCallState
 		state.parentCallState = null
