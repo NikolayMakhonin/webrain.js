@@ -25,8 +25,6 @@ const Status_Calculated: FuncCallStatus = Flag_Calculate | Flag_Calculated
 const Status_Calculating_Async = Flag_Calculate | Flag_Calculating | Flag_Calculate_Async
 const Status_Calculated_Error = Flag_Calculate | Flag_Calculated | Flag_Calculate_Error
 
-let nextChangeResultId = 1
-
 export function update<TThis,
 	TArgs extends any[],
 	TValue,
@@ -80,7 +78,7 @@ export function update<TThis,
 			state.value = valueAsyncOrValueOrError
 			state.hasError = false
 			state.hasValue = true
-			state.changeResultId = nextChangeResultId++
+			state.changeResultId = state.callId
 		}
 	} else if (status === Status_Calculated_Error) {
 		if ((prevStatus & Flag_Calculating) === 0) {
@@ -92,7 +90,7 @@ export function update<TThis,
 		state.error = valueAsyncOrValueOrError
 		if (!state.hasError) {
 			state.hasError = true
-			state.changeResultId = nextChangeResultId++
+			state.changeResultId = state.callId
 		}
 	} else {
 		throw new Error('Unknown FuncCallStatus: ' + status)
@@ -316,7 +314,7 @@ function* checkDependenciesChangedAsync(
 function checkDependenciesChanged(callState: IFuncCallState<any, any, any>): ThenableIterator<boolean>|boolean {
 	const {_unsubscribers, _unsubscribersLength} = callState
 	if (_unsubscribers != null) {
-		const {changeResultId} = callState
+		const {callId} = callState
 		for (let i = 0, len = _unsubscribersLength; i < len; i++) {
 			const dependencyState = _unsubscribers[i].state
 			if ((dependencyState.status & Flag_Invalidate) !== 0) {
@@ -324,7 +322,7 @@ function checkDependenciesChanged(callState: IFuncCallState<any, any, any>): The
 			}
 
 			if (dependencyState.status === Status_Calculated) {
-				if (dependencyState.changeResultId > changeResultId) {
+				if (dependencyState.changeResultId > callId) {
 					unsubscribeDependencies(callState)
 					return true
 				}
@@ -333,7 +331,7 @@ function checkDependenciesChanged(callState: IFuncCallState<any, any, any>): The
 				update(callState, Status_Calculated_Error, dependencyState.error)
 				return false
 			} else if (dependencyState.status === Status_Calculating_Async) {
-				return checkDependenciesChangedAsync(dependencyState, i)
+				return checkDependenciesChangedAsync(callState, i)
 			} else {
 				throw new Error('Unexpected dependency status: ' + dependencyState.status)
 			}
@@ -355,14 +353,12 @@ export function _dependentFunc<
 		subscribeDependency(currentState, state)
 	}
 
-	state.callId = nextCallId++
-
-	if (state.status != null) {
-		if (state.status === Status_Calculated) {
-			return state.value
-		} else if ((state.status & Flag_Invalidate) !== 0) {
-			// nothing
-		} else if (state.status === Status_Calculating_Async) {
+	if (state.status === Status_Calculated) {
+		state.callId = nextCallId++
+		return state.value
+	} else if ((state.status & Flag_Invalidate) === 0) {
+		state.callId = nextCallId++
+		if (state.status === Status_Calculating_Async) {
 			let parentCallState = state.parentCallState
 			while (parentCallState) {
 				if (parentCallState === state) {

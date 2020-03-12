@@ -111,8 +111,9 @@ export function createPerceptron(
 ) {
 	const countFuncs = layersCount * layerSize + 2
 
+	let callId = 0
 	const input = makeDependentFunc(function() {
-		return 1
+		return ++callId
 	})
 
 	// first layer
@@ -168,14 +169,14 @@ export function createPerceptron(
 	if (check) {
 		assert.strictEqual(
 			__outputCall(output).toPrecision(6),
-			(100 * ((layerSize - 1) * layerSize / 2) * Math.pow(layerSize, layersCount - 1)).toPrecision(6),
+			(callId * 100 * ((layerSize - 1) * layerSize / 2) * Math.pow(layerSize, layersCount - 1)).toPrecision(6),
 		)
 
 		invalidate(inputState)
 
 		assert.strictEqual(
 			__outputCall(output).toPrecision(6),
-			(100 * ((layerSize - 1) * layerSize / 2) * Math.pow(layerSize, layersCount - 1)).toPrecision(6),
+			(callId * 100 * ((layerSize - 1) * layerSize / 2) * Math.pow(layerSize, layersCount - 1)).toPrecision(6),
 		)
 	}
 
@@ -394,6 +395,15 @@ function _checkFuncNotChanged<TValue>(...funcCalls: IDependencyCall[]) {
 	}
 }
 
+function checkChangeResultIds(...orderedFuncCalls: IDependencyCall[]) {
+	let changeResultId = 0
+	for (let i = 0, len = orderedFuncCalls.length; i < len; i++) {
+		const funcCall = orderedFuncCalls[i]
+		assert.ok(changeResultId < funcCall.state.changeResultId)
+		changeResultId = funcCall.state.changeResultId
+	}
+}
+
 function checkFuncNotChanged<TValue>(allFuncCalls: IDependencyCall[], ...changedFuncCalls: IDependencyCall[]) {
 	_checkFuncNotChanged(...allFuncCalls.filter(o => changedFuncCalls.indexOf(o) < 0))
 }
@@ -566,20 +576,24 @@ export async function baseTest() {
 
 	const allFuncs = [S0, I0, A0, S1, I1, S2, I2, A2]
 	checkFuncNotChanged(allFuncs)
+	checkChangeResultIds(...allFuncs)
 
 	// level 2
 
 	_invalidate(S2)
 	checkFuncSync(S2, S2)
 	checkFuncNotChanged(allFuncs)
+	checkChangeResultIds(...allFuncs)
 
 	_invalidate(I2)
 	checkFuncSync(I2, I2)
 	checkFuncNotChanged(allFuncs)
+	checkChangeResultIds(S0, I0, A0, S1, I1, S2, A2, I2)
 
 	_invalidate(A2)
 	await checkFuncAsync(A2, A2)
 	checkFuncNotChanged(allFuncs)
+	checkChangeResultIds(S0, I0, A0, S1, I1, S2, A2, I2)
 
 	// level 1
 
@@ -587,11 +601,13 @@ export async function baseTest() {
 	checkFuncSync(S2, S1)
 	checkFuncSync(I2)
 	checkFuncNotChanged(allFuncs)
+	checkChangeResultIds(S0, I0, A0, S1, I1, S2, A2, I2)
 
 	_invalidate(I1)
 	checkFuncSync(I2, I1, I2)
 	await checkFuncAsync(A2, A2)
 	checkFuncNotChanged(allFuncs)
+	checkChangeResultIds(S0, I0, A0, S1, S2, A2, I1, I2)
 
 	// level 0
 
@@ -600,17 +616,20 @@ export async function baseTest() {
 	checkFuncSync(S2, S0)
 	checkFuncSync(I2)
 	checkFuncNotChanged(allFuncs)
+	checkChangeResultIds(S0, I0, A0, S1, S2, A2, I1, I2)
 
 	_invalidate(I0)
 	checkFuncSync(S2, I0, S1)
 	checkFuncSync(I2, I1, I2)
 	await checkFuncAsync(A2, A2)
 	checkFuncNotChanged(allFuncs)
+	checkChangeResultIds(S0, A0, S1, S2, A2, I0, I1, I2)
 
 	_invalidate(A0)
-	checkFuncSync(I2, A0)
-	await checkFuncAsync(A2)
+	await checkFuncAsync(I2, A0)
+	checkFuncSync(A2)
 	checkFuncNotChanged(allFuncs)
+	checkChangeResultIds(S0, A0, S1, S2, A2, I0, I1, I2)
 
 	// endregion
 

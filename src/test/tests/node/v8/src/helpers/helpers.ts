@@ -58,6 +58,10 @@ function _checkIsOptimized(obj: TAnyFunc|object, optimized: Set<any> = null, sca
 			}
 		}
 	} else if (obj != null && typeof obj === 'object') {
+		if (obj.valueOf() !== obj) {
+			return null
+		}
+
 		const shouldInfo = Array.isArray(obj)
 			? shouldArrayOptimizationInfo
 			: shouldObjectOptimizationInfo
