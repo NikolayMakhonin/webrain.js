@@ -1,4 +1,4 @@
-/* tslint:disable:no-identical-functions no-shadowed-variable no-duplicate-string */
+/* tslint:disable:no-identical-functions no-shadowed-variable no-duplicate-string no-construct use-primitive-type */
 import {isThenable, Thenable, ThenableOrValue} from '../../../../../../../main/common/async/async'
 import {invalidate} from '../../../../../../../main/common/rx/depend/_dependentFunc'
 import {
@@ -224,7 +224,7 @@ function callIdToResult(callId: string) {
 		case 'I(0)': // I0
 		case 'I1(I(0),A(_))': // I1
 		case 'I20(S1(S(0),I(0)),I1(I(0),A(_)))': // I2
-			return String(callId)
+			return new String(callId)
 		default:
 			return callId
 	}
@@ -239,7 +239,7 @@ function funcSync(id: string) {
 			for (let i = 0, len = dependencies.length; i < len * 2; i++) {
 				const dependency = dependencies[i % len]
 				const value = dependency()
-				assert.strictEqual(value, dependency.id)
+				assert.strictEqual(value + '', dependency.id)
 			}
 		}
 		return callIdToResult(callId)
@@ -257,7 +257,7 @@ function funcSyncIterator(id: string) {
 			for (let i = 0, len = dependencies.length; i < len * 2; i++) {
 				const dependency = dependencies[i % len]
 				const value = yield dependency()
-				assert.strictEqual(value, dependency.id)
+				assert.strictEqual(value + '', dependency.id)
 			}
 		}
 		return 1
@@ -290,7 +290,7 @@ function funcAsync(id: string) {
 			for (let i = 0, len = dependencies.length; i < len; i++) {
 				const dependency = dependencies[i]
 				const value = yield dependency()
-				assert.strictEqual(value, dependency.id)
+				assert.strictEqual(value + '', dependency.id)
 			}
 		}
 		yield delay(0)
@@ -353,19 +353,20 @@ function checkCallHistory(callHistory: IDependencyCall[]) {
 }
 
 function checkFuncSync<TValue>(funcCall: IDependencyCall, ...callHistory: IDependencyCall[]) {
-	assert.strictEqual(funcCall(), funcCall.id)
+	assert.strictEqual(funcCall() + '', funcCall.id)
 	checkCallHistory(callHistory)
 }
 
 function checkDependenciesDuplicates(...funcCalls: IDependencyCall[]) {
 	const set = new Set()
 	for (let i = 0, len = funcCalls.length; i < len; i++) {
-		const {_unsubscribers} = funcCalls[i].state
+		const {state} = funcCalls[i]
+		const {_unsubscribers} = state
 		if (_unsubscribers != null) {
 			for (let j = 0, len = _unsubscribers.length; j < len; j++) {
 				const id = (_unsubscribers[j].state as any).id
-				assert.ok(id)
-				assert.notOk(set.has(id))
+				assert.ok(id, (state as any).id)
+				assert.notOk(set.has(id), `Duplicate ${id} in ${(state as any).id}`)
 				set.add(id)
 			}
 			set.clear()
@@ -376,7 +377,7 @@ function checkDependenciesDuplicates(...funcCalls: IDependencyCall[]) {
 async function checkFuncAsync<TValue>(funcCall: IDependencyCall, ...callHistory: IDependencyCall[]) {
 	checkCallHistory([])
 	checkDependenciesDuplicates(funcCall)
-	assert.strictEqual(await checkAsync(funcCall()), funcCall.id)
+	assert.strictEqual((await checkAsync(funcCall())) + '', funcCall.id)
 	checkDependenciesDuplicates(funcCall, ...callHistory)
 	checkCallHistory(callHistory)
 }
@@ -588,7 +589,7 @@ export async function baseTest() {
 	checkFuncNotChanged(allFuncs)
 
 	_invalidate(I1)
-	checkFuncSync(I2, I2, I1)
+	checkFuncSync(I2, I1, I2)
 	await checkFuncAsync(A2, A2)
 	checkFuncNotChanged(allFuncs)
 
@@ -596,19 +597,19 @@ export async function baseTest() {
 
 	_invalidate(S0)
 	// console.log(allFuncs.filter(isInvalidated).map(o => o.id))
-	checkFuncSync(S2, S2, S1, S0)
-	checkFuncSync(I2, I2)
+	checkFuncSync(S2, S0)
+	checkFuncSync(I2)
 	checkFuncNotChanged(allFuncs)
 
 	_invalidate(I0)
-	checkFuncSync(S2, S2, S1, I0)
-	checkFuncSync(I2, I2, I1)
+	checkFuncSync(S2, I0, S1)
+	checkFuncSync(I2, I1, I2)
 	await checkFuncAsync(A2, A2)
 	checkFuncNotChanged(allFuncs)
 
 	_invalidate(A0)
-	await checkFuncAsync(I2, I2, I1, A0)
-	await checkFuncAsync(A2, A2)
+	checkFuncSync(I2, A0)
+	await checkFuncAsync(A2)
 	checkFuncNotChanged(allFuncs)
 
 	// endregion

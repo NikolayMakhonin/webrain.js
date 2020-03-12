@@ -228,9 +228,9 @@ export function reduceCallStates<
 
 	while (deleteSize > 0 && reduceCallHeap.size > 0) {
 		const callState = reduceCallHeap.deleteMin()
-		const {_unsubscribers} = callState
+		const {_unsubscribers, _unsubscribersLength} = callState
 		if (_unsubscribers != null) {
-			for (let i = 0, len = _unsubscribers.length; i < len; i++) {
+			for (let i = 0, len = _unsubscribersLength; i < len; i++) {
 				const state = _unsubscribers[i].state
 				if (state._subscribersFirst === state._subscribersLast) {
 					reduceCallHeap.add(state)

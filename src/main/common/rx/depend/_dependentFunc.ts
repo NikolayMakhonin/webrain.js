@@ -282,10 +282,10 @@ function* checkDependenciesChangedAsync(
 	callState: IFuncCallState<any, any, any>,
 	fromIndex?: number,
 ): ThenableIterator<boolean> {
-	const {_unsubscribers} = callState
+	const {_unsubscribers, _unsubscribersLength} = callState
 	if (_unsubscribers != null) {
 		const {changeResultId} = callState
-		for (let i = fromIndex || 0, len = _unsubscribers.length; i < len; i++) {
+		for (let i = fromIndex || 0, len = _unsubscribersLength; i < len; i++) {
 			const dependencyState = _unsubscribers[i].state
 			if ((dependencyState.status & Flag_Invalidate) !== 0) {
 				_dependentFunc(dependencyState, true)
@@ -297,11 +297,11 @@ function* checkDependenciesChangedAsync(
 
 			if (dependencyState.status === Status_Calculated) {
 				if (dependencyState.changeResultId > changeResultId) {
-					unsubscribeDependencies(dependencyState)
+					unsubscribeDependencies(callState)
 					return true
 				}
 			} else if (dependencyState.status === Status_Calculated_Error) {
-				unsubscribeDependencies(dependencyState, i + 1)
+				unsubscribeDependencies(callState, i + 1)
 				update(callState, Status_Calculated_Error, dependencyState.error)
 				return false
 			} else {
@@ -314,10 +314,10 @@ function* checkDependenciesChangedAsync(
 }
 
 function checkDependenciesChanged(callState: IFuncCallState<any, any, any>): ThenableIterator<boolean>|boolean {
-	const {_unsubscribers} = callState
+	const {_unsubscribers, _unsubscribersLength} = callState
 	if (_unsubscribers != null) {
 		const {changeResultId} = callState
-		for (let i = 0, len = _unsubscribers.length; i < len; i++) {
+		for (let i = 0, len = _unsubscribersLength; i < len; i++) {
 			const dependencyState = _unsubscribers[i].state
 			if ((dependencyState.status & Flag_Invalidate) !== 0) {
 				_dependentFunc(dependencyState, true)
@@ -325,11 +325,11 @@ function checkDependenciesChanged(callState: IFuncCallState<any, any, any>): The
 
 			if (dependencyState.status === Status_Calculated) {
 				if (dependencyState.changeResultId > changeResultId) {
-					unsubscribeDependencies(dependencyState)
+					unsubscribeDependencies(callState)
 					return true
 				}
 			} else if (dependencyState.status === Status_Calculated_Error) {
-				unsubscribeDependencies(dependencyState, i + 1)
+				unsubscribeDependencies(callState, i + 1)
 				update(callState, Status_Calculated_Error, dependencyState.error)
 				return false
 			} else if (dependencyState.status === Status_Calculating_Async) {
@@ -407,9 +407,7 @@ export function _dependentFunc<
 	let value
 	if (shouldRecalc === true) {
 		value = calc(state, dontThrowOnError)
-	}
-
-	if (isIterator(shouldRecalc)) {
+	} else if (isIterator(shouldRecalc)) {
 		value = resolveAsync(shouldRecalc, o => {
 			if (o === false) {
 				state.status = Status_Calculated
@@ -421,6 +419,8 @@ export function _dependentFunc<
 		if (isThenable(value)) {
 			update(state, Status_Calculating_Async, value)
 		}
+	} else {
+		throw new Error(`shouldRecalc == ${shouldRecalc}`)
 	}
 
 	return value
@@ -431,6 +431,8 @@ export function calc<
 	TArgs extends any[],
 	TValue,
 >(state: IFuncCallState<TThis, TArgs, TValue>, dontThrowOnError?: boolean) {
+	state.callId = nextCallId++
+
 	try {
 		currentState = state
 
