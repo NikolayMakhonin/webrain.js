@@ -87,10 +87,11 @@ export function unsubscribeDependencies<
 	}
 }
 
-export function _subscribe<TThis,
+export function _subscribe<
+	TThis,
 	TArgs extends any[],
 	TValue,
-	>(state: IFuncCallState<TThis, TArgs, TValue>, subscriber: IFuncCallState<TThis, TArgs, TValue>) {
+>(state: IFuncCallState<TThis, TArgs, TValue>, subscriber: IFuncCallState<TThis, TArgs, TValue>) {
 	const _subscribersLast = state._subscribersLast
 	const subscriberLink = getSubscriberLink<TThis, TArgs, TValue>(state, subscriber, _subscribersLast, null)
 	if (_subscribersLast == null) {
@@ -103,10 +104,11 @@ export function _subscribe<TThis,
 }
 
 // tslint:disable-next-line:no-shadowed-variable
-export function subscribeDependency<TThis,
+export function subscribeDependency<
+	TThis,
 	TArgs extends any[],
 	TValue,
-	>(state: IFuncCallState<TThis, TArgs, TValue>, dependency) {
+>(state: IFuncCallState<TThis, TArgs, TValue>, dependency) {
 	if (dependency.callId > state.callId) {
 		return
 	}

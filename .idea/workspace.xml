@@ -10,6 +10,8 @@
     <list default="true" id="69b2ee16-521b-4efd-b473-8e19e3df4d09" name="Default Changelist" comment="">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/common/rx/depend/_dependentFunc.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/common/rx/depend/_dependentFunc.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/common/rx/depend/subscribeDependency.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/common/rx/depend/subscribeDependency.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/common/rx/depend/subscriber-link-pool.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/common/rx/depend/subscriber-link-pool.ts" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/test/tests/common/main/rx/depend/src/helpers.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/test/tests/common/main/rx/depend/src/helpers.ts" afterDir="false" />
     </list>
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
@@ -406,13 +408,6 @@
       <option name="presentableId" value="Default" />
       <updated>1567687848586</updated>
     </task>
-    <task id="LOCAL-00223" summary="dependent-funcs v8 optimization in process... Separated code by functions">
-      <created>1581261547920</created>
-      <option name="number" value="00223" />
-      <option name="presentableId" value="LOCAL-00223" />
-      <option name="project" value="LOCAL" />
-      <updated>1581261547920</updated>
-    </task>
     <task id="LOCAL-00224" summary="dependent-funcs v8 optimization in process... Separated code by functions">
       <created>1581329220713</created>
       <option name="number" value="00224" />
@@ -749,7 +744,14 @@
       <option name="project" value="LOCAL" />
       <updated>1583941118390</updated>
     </task>
-    <option name="localTasksCounter" value="272" />
+    <task id="LOCAL-00272" summary="Develop">
+      <created>1583943018201</created>
+      <option name="number" value="00272" />
+      <option name="presentableId" value="LOCAL-00272" />
+      <option name="project" value="LOCAL" />
+      <updated>1583943018201</updated>
+    </task>
+    <option name="localTasksCounter" value="273" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -834,9 +836,9 @@
     <MESSAGE value="BinaryTree: Implementing AVL algorithm..." />
     <MESSAGE value="BinaryTree: try to use non recursive add - failed, it is slower than recursive" />
     <MESSAGE value="BinaryTree: optimizing AVL ..." />
-    <MESSAGE value="Develop" />
     <MESSAGE value="Develop. Tests OK." />
-    <option name="LAST_COMMIT_MESSAGE" value="Develop. Tests OK." />
+    <MESSAGE value="Develop" />
+    <option name="LAST_COMMIT_MESSAGE" value="Develop" />
   </component>
   <component name="XDebuggerManager">
     <breakpoint-manager>
@@ -861,12 +863,84 @@
           <line>1304</line>
           <option name="timeStamp" value="361" />
         </line-breakpoint>
+        <line-breakpoint enabled="true" type="javascript">
+          <url>file://$PROJECT_DIR$/src/test/tests/common/main/rx/depend/src/helpers.ts</url>
+          <line>588</line>
+          <properties lambdaOrdinal="-1" />
+          <option name="timeStamp" value="434" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" type="javascript">
+          <url>file://$PROJECT_DIR$/src/test/tests/common/main/rx/depend/src/helpers.ts</url>
+          <line>584</line>
+          <properties lambdaOrdinal="-1" />
+          <option name="timeStamp" value="436" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" type="javascript">
+          <url>file://$PROJECT_DIR$/src/test/tests/common/main/rx/depend/src/helpers.ts</url>
+          <line>585</line>
+          <properties lambdaOrdinal="-1" />
+          <option name="timeStamp" value="439" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" type="javascript">
+          <condition expression="state._unsubscribersLength &gt;= 2" language="TypeScript" />
+          <url>file://$PROJECT_DIR$/src/main/common/rx/depend/subscribeDependency.ts</url>
+          <line>120</line>
+          <properties lambdaOrdinal="-1" />
+          <option name="timeStamp" value="442" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" type="javascript">
+          <url>file://$PROJECT_DIR$/src/test/tests/common/main/rx/depend/src/helpers.ts</url>
+          <line>574</line>
+          <properties lambdaOrdinal="-1" />
+          <option name="timeStamp" value="443" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" type="javascript">
+          <url>file://$PROJECT_DIR$/src/test/tests/common/main/rx/depend/src/helpers.ts</url>
+          <line>576</line>
+          <properties lambdaOrdinal="-1" />
+          <option name="timeStamp" value="444" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" type="javascript">
+          <url>file://$PROJECT_DIR$/src/test/tests/common/main/rx/depend/src/helpers.ts</url>
+          <line>577</line>
+          <properties lambdaOrdinal="-1" />
+          <option name="timeStamp" value="445" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" type="javascript">
+          <url>file://$PROJECT_DIR$/src/test/tests/common/main/rx/depend/src/helpers.ts</url>
+          <line>578</line>
+          <properties lambdaOrdinal="-1" />
+          <option name="timeStamp" value="446" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" type="javascript">
+          <url>file://$PROJECT_DIR$/src/test/tests/common/main/rx/depend/src/helpers.ts</url>
+          <line>582</line>
+          <properties lambdaOrdinal="-1" />
+          <option name="timeStamp" value="447" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" type="javascript">
+          <url>file://$PROJECT_DIR$/src/test/tests/common/main/rx/depend/src/helpers.ts</url>
+          <line>583</line>
+          <properties lambdaOrdinal="-1" />
+          <option name="timeStamp" value="448" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" type="javascript">
+          <url>file://$PROJECT_DIR$/src/test/tests/common/main/rx/depend/src/helpers.ts</url>
+          <line>573</line>
+          <properties lambdaOrdinal="-1" />
+          <option name="timeStamp" value="449" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" type="javascript">
+          <url>file://$PROJECT_DIR$/src/main/common/rx/depend/_dependentFunc.ts</url>
+          <line>353</line>
+          <properties lambdaOrdinal="-1" />
+          <option name="timeStamp" value="451" />
+        </line-breakpoint>
       </breakpoints>
     </breakpoint-manager>
     <watches-manager>
       <configuration name="mocha-javascript-test-runner">
-        <watch expression="callId" language="TypeScript" />
-        <watch expression="callState.status &amp; Flag_Invalidate_Self" language="TypeScript" />
+        <watch expression="state._unsubscribersLength" language="TypeScript" />
       </configuration>
     </watches-manager>
   </component>

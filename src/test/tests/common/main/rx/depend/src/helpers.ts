@@ -357,9 +357,27 @@ function checkFuncSync<TValue>(funcCall: IDependencyCall, ...callHistory: IDepen
 	checkCallHistory(callHistory)
 }
 
+function checkDependenciesDuplicates(...funcCalls: IDependencyCall[]) {
+	const set = new Set()
+	for (let i = 0, len = funcCalls.length; i < len; i++) {
+		const {_unsubscribers} = funcCalls[i].state
+		if (_unsubscribers != null) {
+			for (let j = 0, len = _unsubscribers.length; j < len; j++) {
+				const id = (_unsubscribers[j].state as any).id
+				assert.ok(id)
+				assert.notOk(set.has(id))
+				set.add(id)
+			}
+			set.clear()
+		}
+	}
+}
+
 async function checkFuncAsync<TValue>(funcCall: IDependencyCall, ...callHistory: IDependencyCall[]) {
 	checkCallHistory([])
+	checkDependenciesDuplicates(funcCall)
 	assert.strictEqual(await checkAsync(funcCall()), funcCall.id)
+	checkDependenciesDuplicates(funcCall, ...callHistory)
 	checkCallHistory(callHistory)
 }
 

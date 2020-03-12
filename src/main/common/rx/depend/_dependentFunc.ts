@@ -391,9 +391,13 @@ export function _dependentFunc<
 	// unsubscribeDependencies(state)
 	// return calc(state, dontThrowOnError)
 
-	const shouldRecalc = (prevStatus & Flag_Invalidate_Self) !== 0
-		? true
-		: checkDependenciesChanged(state)
+	let shouldRecalc: ThenableIterator<boolean> | boolean
+	if ((prevStatus & Flag_Invalidate_Self) !== 0) {
+		shouldRecalc = true
+		unsubscribeDependencies(state)
+	} else {
+		shouldRecalc = checkDependenciesChanged(state)
+	}
 
 	if (shouldRecalc === false) {
 		state.status = Status_Calculated

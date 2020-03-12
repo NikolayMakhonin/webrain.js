@@ -12,10 +12,11 @@ export function releaseSubscriberLink<TThis,
 }
 
 // tslint:disable-next-line:no-shadowed-variable
-export function getSubscriberLink<TThis,
+export function getSubscriberLink<
+	TThis,
 	TArgs extends any[],
 	TValue,
-	>(
+>(
 	state: IFuncCallState<TThis, TArgs, TValue>,
 	subscriber: IFuncCallState<TThis, TArgs, TValue>,
 	prev: ISubscriberLink<TThis, TArgs, TValue>,
