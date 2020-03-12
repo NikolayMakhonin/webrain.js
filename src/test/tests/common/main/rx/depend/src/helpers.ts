@@ -325,7 +325,7 @@ function funcCall(func: IDependencyFunc, _this?: any, ...rest: any[]) {
 	result.id = callId
 	result.state = getFuncCallState(func).apply(_this, rest)
 	assert.ok(result.state)
-	assert.strictEqual(result.state.status, FuncCallStatus.Status_Invalidated_Self);
+	assert.strictEqual(result.state.status, FuncCallStatus.Flag_Invalidated | FuncCallStatus.Flag_Invalidate_Self);
 	(result.state as any).id = callId
 
 	return result
@@ -410,8 +410,7 @@ function checkFuncNotChanged<TValue>(allFuncCalls: IDependencyCall[], ...changed
 }
 
 function isInvalidated(funcCall: IDependencyCall) {
-	return funcCall.state.status === FuncCallStatus.Status_Invalidating
-		|| funcCall.state.status === FuncCallStatus.Status_Invalidated
+	return (funcCall.state.status & FuncCallStatus.Mask_Invalidate) !== 0
 }
 
 export async function baseTestOld() {
@@ -636,17 +635,17 @@ export async function baseTest() {
 
 	// invalidate during calc async
 
-	let promise
+	// let promise
 
-	_invalidate(I1)
-	checkFuncSync(I2, I1, I2)
-	promise = checkFuncAsync(A2, A2)
-	_invalidate(I1)
-	checkFuncSync(I2, I1, I2)
-	await promise
-	await checkFuncAsync(A2, A2)
-	checkFuncNotChanged(allFuncs)
-	checkChangeResultIds(S0, A0, S1, S2, A2, I0, I1, I2)
+	// _invalidate(I1)
+	// checkFuncSync(I2, I1, I2)
+	// promise = checkFuncAsync(A2, A2)
+	// _invalidate(I1)
+	// checkFuncSync(I2, I1, I2)
+	// await promise
+	// await checkFuncAsync(A2, A2)
+	// checkFuncNotChanged(allFuncs)
+	// checkChangeResultIds(S0, A0, S1, S2, A2, I0, I1, I2)
 
 	// endregion
 

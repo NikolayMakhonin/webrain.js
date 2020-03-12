@@ -10,27 +10,22 @@ export interface ILinkItem<T> {
 }
 
 export enum FuncCallStatus {
-	// Flags
-	Flag_Invalidate = 1,
-	Flag_Invalidating = 2,
-	Flag_Invalidated = 4,
-	Flag_Invalidate_Self = 8,
-	Flag_Calculate = 16,
-	Flag_Calculating = 32,
-	Flag_Calculated = 64,
-	Flag_Calculate_Async = 128,
-	Flag_Calculate_Error = 256,
+	Flag_None = 0,
 
-	// Statuses
-	Status_Invalidating = Flag_Invalidate | Flag_Invalidating,
-	Status_Invalidated = Flag_Invalidate | Flag_Invalidated,
-	Status_Invalidating_Self = Flag_Invalidate | Flag_Invalidating | Flag_Invalidate_Self,
-	Status_Invalidated_Self = Flag_Invalidate | Flag_Invalidated | Flag_Invalidate_Self,
+	Flag_Invalidating = 1,
+	Flag_Invalidated = 2,
+	Mask_Invalidate = 3,
 
-	Status_Calculating = Flag_Calculate | Flag_Calculating,
-	Status_Calculated = Flag_Calculate | Flag_Calculated,
-	Status_Calculating_Async = Flag_Calculate | Flag_Calculating | Flag_Calculate_Async,
-	Status_Calculated_Error = Flag_Calculate | Flag_Calculated | Flag_Calculate_Error,
+	Flag_Invalidate_Self = 4,
+
+	Flag_Calculating = 8,
+	Flag_Calculating_Async = 24,
+	Flag_Calculated = 32,
+	Mask_Calculate = 32,
+
+	Flag_HasError = 64,
+
+	Flag_HasValue = 128,
 }
 
 export interface IFuncCallState<TThis,
