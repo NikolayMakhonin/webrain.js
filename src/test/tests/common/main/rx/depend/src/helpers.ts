@@ -362,9 +362,9 @@ function checkDependenciesDuplicates(...funcCalls: IDependencyCall[]) {
 	const set = new Set()
 	for (let i = 0, len = funcCalls.length; i < len; i++) {
 		const {state} = funcCalls[i]
-		const {_unsubscribers} = state
+		const {_unsubscribers, _unsubscribersLength} = state
 		if (_unsubscribers != null) {
-			for (let j = 0, len = _unsubscribers.length; j < len; j++) {
+			for (let j = 0, len = _unsubscribersLength; j < len; j++) {
 				const id = (_unsubscribers[j].state as any).id
 				assert.ok(id, (state as any).id)
 				assert.notOk(set.has(id), `Duplicate ${id} in ${(state as any).id}`)
@@ -378,9 +378,10 @@ function checkDependenciesDuplicates(...funcCalls: IDependencyCall[]) {
 async function checkFuncAsync<TValue>(funcCall: IDependencyCall, ...callHistory: IDependencyCall[]) {
 	checkCallHistory([])
 	checkDependenciesDuplicates(funcCall)
-	assert.strictEqual((await checkAsync(funcCall())) + '', funcCall.id)
-	checkDependenciesDuplicates(funcCall, ...callHistory)
+	const promise = checkAsync(funcCall())
 	checkCallHistory(callHistory)
+	assert.strictEqual((await promise) + '', funcCall.id)
+	checkDependenciesDuplicates(funcCall, ...callHistory)
 }
 
 function _invalidate(funcCall: IDependencyCall) {
@@ -628,6 +629,22 @@ export async function baseTest() {
 	_invalidate(A0)
 	await checkFuncAsync(I2, A0)
 	checkFuncSync(A2)
+	checkFuncNotChanged(allFuncs)
+	checkChangeResultIds(S0, A0, S1, S2, A2, I0, I1, I2)
+
+	// endregion
+
+	// invalidate during calc async
+
+	let promise
+
+	_invalidate(I1)
+	checkFuncSync(I2, I1, I2)
+	promise = checkFuncAsync(A2, A2)
+	_invalidate(I1)
+	checkFuncSync(I2, I1, I2)
+	await promise
+	await checkFuncAsync(A2, A2)
 	checkFuncNotChanged(allFuncs)
 	checkChangeResultIds(S0, A0, S1, S2, A2, I0, I1, I2)
 

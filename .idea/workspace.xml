@@ -9,9 +9,7 @@
   <component name="ChangeListManager">
     <list default="true" id="69b2ee16-521b-4efd-b473-8e19e3df4d09" name="Default Changelist" comment="">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/common/rx/depend/_dependentFunc.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/common/rx/depend/_dependentFunc.ts" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/test/tests/common/main/rx/depend/src/helpers.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/test/tests/common/main/rx/depend/src/helpers.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/test/tests/node/v8/src/helpers/helpers.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/test/tests/node/v8/src/helpers/helpers.ts" afterDir="false" />
     </list>
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
     <option name="SHOW_DIALOG" value="false" />
@@ -407,13 +405,6 @@
       <option name="presentableId" value="Default" />
       <updated>1567687848586</updated>
     </task>
-    <task id="LOCAL-00226" summary="dependent-funcs v8 optimization in process... Wrap modules to iife">
-      <created>1581335726066</created>
-      <option name="number" value="00226" />
-      <option name="presentableId" value="LOCAL-00226" />
-      <option name="project" value="LOCAL" />
-      <updated>1581335726066</updated>
-    </task>
     <task id="LOCAL-00227" summary="dependent-funcs v8 optimization in process... Concat modules to single file">
       <created>1581344392035</created>
       <option name="number" value="00227" />
@@ -750,7 +741,14 @@
       <option name="project" value="LOCAL" />
       <updated>1583990664713</updated>
     </task>
-    <option name="localTasksCounter" value="275" />
+    <task id="LOCAL-00275" summary="Develop. Tests OK.">
+      <created>1584003167594</created>
+      <option name="number" value="00275" />
+      <option name="presentableId" value="LOCAL-00275" />
+      <option name="project" value="LOCAL" />
+      <updated>1584003167594</updated>
+    </task>
+    <option name="localTasksCounter" value="276" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -835,9 +833,9 @@
     <MESSAGE value="BinaryTree: Implementing AVL algorithm..." />
     <MESSAGE value="BinaryTree: try to use non recursive add - failed, it is slower than recursive" />
     <MESSAGE value="BinaryTree: optimizing AVL ..." />
-    <MESSAGE value="Develop. Tests OK." />
     <MESSAGE value="Develop" />
-    <option name="LAST_COMMIT_MESSAGE" value="Develop" />
+    <MESSAGE value="Develop. Tests OK." />
+    <option name="LAST_COMMIT_MESSAGE" value="Develop. Tests OK." />
   </component>
   <component name="XDebuggerManager">
     <breakpoint-manager>
@@ -862,6 +860,18 @@
           <line>1304</line>
           <option name="timeStamp" value="361" />
         </line-breakpoint>
+        <line-breakpoint enabled="true" type="javascript">
+          <url>file://$PROJECT_DIR$/src/test/tests/common/main/rx/depend/src/helpers.ts</url>
+          <line>643</line>
+          <properties lambdaOrdinal="-1" />
+          <option name="timeStamp" value="496" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" type="javascript">
+          <url>file://$PROJECT_DIR$/src/test/tests/common/main/rx/depend/src/helpers.ts</url>
+          <line>646</line>
+          <properties lambdaOrdinal="-1" />
+          <option name="timeStamp" value="497" />
+        </line-breakpoint>
       </breakpoints>
     </breakpoint-manager>
     <watches-manager>
@@ -871,6 +881,7 @@
         <watch expression="callState.id" language="TypeScript" />
         <watch expression="dependencyState.id" language="TypeScript" />
         <watch expression="I2.state._unsubscribersLength" language="TypeScript" />
+        <watch expression="_callHistory" language="TypeScript" />
       </configuration>
     </watches-manager>
   </component>
