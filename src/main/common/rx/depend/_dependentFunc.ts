@@ -371,57 +371,6 @@ export function updateCalculatedError<TThis,
 	state.status = Update_Calculated_Error
 }
 
-export function update<TThis,
-	TArgs extends any[],
-	TValue,
-	>(
-	state: IFuncCallState<TThis, TArgs, TValue>,
-	status: Mask_Update,
-	valueAsyncOrValueOrError?,
-) {
-	const prevStatus = state.status
-	if (status === Update_Calculating) {
-		if (getInvalidate(prevStatus) === 0) {
-			throw new Error(`Set status ${status} called when current status is ${prevStatus}`)
-		}
-	} else if (status === Update_Calculating_Async) {
-		if (getCalculate(prevStatus) !== Flag_Calculating) {
-			throw new Error(`Set status ${status} called when current status is ${prevStatus}`)
-		}
-		state.valueAsync = valueAsyncOrValueOrError
-	} else if (status === Update_Calculated_Value) {
-		if (!isCalculating(prevStatus)) {
-			throw new Error(`Set status ${status} called when current status is ${prevStatus}`)
-		}
-		if (state.valueAsync != null) {
-			state.valueAsync = null
-		}
-		if (state.hasError || !state.hasValue || state.value !== valueAsyncOrValueOrError) {
-			state.error = void 0
-			state.value = valueAsyncOrValueOrError
-			state.hasError = false
-			state.hasValue = true
-			state.changeResultId = state.callId
-		}
-	} else if (status === Update_Calculated_Error) {
-		if (!isCalculating(prevStatus)) {
-			throw new Error(`Set status ${status} called when current status is ${prevStatus}`)
-		}
-		if (state.valueAsync != null) {
-			state.valueAsync = null
-		}
-		state.error = valueAsyncOrValueOrError
-		if (!state.hasError) {
-			state.hasError = true
-			state.changeResultId = state.callId
-		}
-	} else {
-		throw new Error('Unknown FuncCallStatus: ' + status)
-	}
-
-	state.status = status
-}
-
 // tslint:disable-next-line:no-shadowed-variable
 export function invalidate<
 	TThis,
