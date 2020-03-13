@@ -18,6 +18,7 @@ describe('dependent-func perf', function() {
 			input,
 			inputState,
 			output,
+			outputState,
 		} = createPerceptron(2, 2)
 		const naked = createPerceptronNaked(2, 2)
 
@@ -48,6 +49,7 @@ describe('dependent-func perf', function() {
 		console.log(`funcs per frame: [${result.absoluteDiff.map(o => countFuncs * cyclesPerSecond / o / 60).join(', ')}]`)
 		console.log(`chrome funcs per second: [${result.absoluteDiff.map(o => countFuncs * cyclesPerSecond / o / 210).join(', ')}]`)
 		console.log(`chrome funcs per frame: [${result.absoluteDiff.map(o => countFuncs * cyclesPerSecond / o / 60 / 210).join(', ')}]`)
+		console.log(`smallint overflow after: ${((1 << 30) / outputState.callId) * result.calcInfo.testTime / 1000 * 210 / 3600} hours`)
 
 		const chromeFuncsPerFrame = countFuncs * cyclesPerSecond / result.absoluteDiff[1] / 60 / 210
 		assert.ok(chromeFuncsPerFrame >= 150)
