@@ -13,14 +13,14 @@ type Flag_None = 0
 
 type Flag_Invalidating = 1
 type Flag_Invalidated = 2
-type Mask_Invalidate = (0 | Flag_Invalidating | Flag_Invalidated | 3)
+type Mask_Invalidate = (0 | Flag_Invalidating | Flag_Invalidated)
 
 type Flag_Invalidate_Self = 4
 
 type Flag_Calculating = 8
 type Flag_Calculating_Async = 24
 type Flag_Calculated = 32
-type Mask_Calculate = (0 | Flag_Calculating | Flag_Calculating_Async | Flag_Calculated | 56)
+type Mask_Calculate = (0 | Flag_Calculating | Flag_Calculating_Async | Flag_Calculated)
 
 type Flag_HasValue = 64
 
@@ -56,14 +56,14 @@ const Flag_None: Flag_None = 0
 
 const Flag_Invalidating: Flag_Invalidating = 1
 const Flag_Invalidated: Flag_Invalidated = 2
-const Mask_Invalidate: Mask_Invalidate = 3
+const Mask_Invalidate = 3
 
 const Flag_Invalidate_Self: Flag_Invalidate_Self = 4
 
 const Flag_Calculating: Flag_Calculating = 8
 const Flag_Calculating_Async: Flag_Calculating_Async = 24
 const Flag_Calculated: Flag_Calculated = 32
-const Mask_Calculate: Mask_Calculate = 56
+const Mask_Calculate = 56
 
 const Flag_HasValue: Flag_HasValue = 64
 
@@ -201,9 +201,8 @@ export function updateInvalidate<TThis,
 			throw new Error(`Set status ${status} called when current status is ${prevStatus}`)
 		}
 
-		state.status = status === Update_Invalidating_Self || isInvalidateSelf(prevStatus)
-			? Update_Invalidating_Self
-			: Update_Invalidating
+		state.status = (prevStatus & (~(Mask_Invalidate | Flag_Calculated) | Flag_Invalidate_Self))
+			| status
 
 		// emit(state, Update_Invalidating)
 		// region inline call
@@ -246,9 +245,8 @@ export function updateInvalidate<TThis,
 			return
 		}
 
-		state.status = status === Update_Invalidated_Self || isInvalidateSelf(prevStatus)
-			? Update_Invalidated_Self
-			: Update_Invalidated
+		state.status = (prevStatus & (~(Mask_Invalidate | Flag_Calculated) | Flag_Invalidate_Self))
+			| status
 
 		// emit(state, Update_Invalidated)
 		// region inline call
@@ -317,7 +315,7 @@ export function updateCalculatingAsync<
 	}
 	state.valueAsync = valueAsync
 
-	state.status = Update_Calculating_Async
+	state.status = setCalculate(prevStatus, Update_Calculating_Async)
 }
 
 export function updateCalculatedValue<
@@ -336,7 +334,12 @@ export function updateCalculatedValue<
 	if (state.valueAsync != null) {
 		state.valueAsync = null
 	}
-	if (state.hasError || !state.hasValue || state.value !== value) {
+	if ((prevStatus & (Flag_HasError | Flag_HasValue)) !== Flag_HasValue
+		|| state.value !== value
+	) {
+
+	}
+	if ((!(!state.hasError && state.hasValue)) || state.value !== value) {
 		state.error = void 0
 		state.value = value
 		state.hasError = false
@@ -345,6 +348,11 @@ export function updateCalculatedValue<
 	}
 
 	state.status = Update_Calculated_Value
+
+	const invalidateStatus = getInvalidate(prevStatus)
+	if (invalidateStatus !== 0) {
+		updateInvalidate(state, invalidateStatus)
+	}
 }
 
 export function updateCalculatedError<TThis,
@@ -363,12 +371,17 @@ export function updateCalculatedError<TThis,
 		state.valueAsync = null
 	}
 	state.error = error
-	if (!state.hasError) {
+	if ((prevStatus & Flag_HasError) === 0) {
 		state.hasError = true
 		state.changeResultId = state.callId
 	}
 
-	state.status = Update_Calculated_Error
+	state.status = Update_Calculated_Error | (prevStatus & Flag_HasValue)
+
+	const invalidateStatus = getInvalidate(prevStatus)
+	if (invalidateStatus !== 0) {
+		updateInvalidate(state, invalidateStatus)
+	}
 }
 
 // tslint:disable-next-line:no-shadowed-variable
