@@ -2,7 +2,7 @@ import {isThenable, Thenable, ThenableIterator, ThenableOrIteratorOrValue} from 
 import {resolveAsync} from '../../async/ThenableSync'
 import {isIterator} from '../../helpers/helpers'
 import {Func, FuncCallStatus, IFuncCallState, TCall} from './contracts'
-import {subscribeDependency, unsubscribeDependencies} from './subscribeDependency'
+import {_subscribe, unsubscribeDependencies} from './subscribeDependency'
 import {getSubscriberLink, releaseSubscriberLink} from './subscriber-link-pool'
 
 // region FuncCallStatus
@@ -576,6 +576,35 @@ function checkDependenciesChanged(callState: IFuncCallState<any, any, any>): The
 
 let currentState: IFuncCallState<any, any, any>
 let nextCallId = 1
+
+// tslint:disable-next-line:no-shadowed-variable
+export function subscribeDependency<
+	TThis,
+	TArgs extends any[],
+	TValue,
+>(state: IFuncCallState<TThis, TArgs, TValue>, dependency) {
+	if (dependency.callId > state.callId) {
+		if (getCalculate(state.status) !== Flag_Calculating_Async) {
+			return
+		}
+		const _unsubscribers = state._unsubscribers
+		for (let i = 0, len = state._unsubscribersLength; i < len; i++) {
+			if (_unsubscribers[i].state === dependency) {
+				return
+			}
+		}
+	}
+	{
+		const subscriberLink = _subscribe(dependency, state)
+		const _unsubscribers = state._unsubscribers
+		if (_unsubscribers == null) {
+			state._unsubscribers = [subscriberLink]
+			state._unsubscribersLength = 1
+		} else {
+			_unsubscribers[state._unsubscribersLength++] = subscriberLink
+		}
+	}
+}
 
 export function _dependentFunc<
 	TThis,

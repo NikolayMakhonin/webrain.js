@@ -102,22 +102,3 @@ export function _subscribe<
 	state._subscribersLast = subscriberLink
 	return subscriberLink
 }
-
-// tslint:disable-next-line:no-shadowed-variable
-export function subscribeDependency<
-	TThis,
-	TArgs extends any[],
-	TValue,
->(state: IFuncCallState<TThis, TArgs, TValue>, dependency) {
-	if (dependency.callId > state.callId) {
-		return
-	}
-	const subscriberLink = _subscribe(dependency, state)
-	const _unsubscribers = state._unsubscribers
-	if (_unsubscribers == null) {
-		state._unsubscribers = [subscriberLink]
-		state._unsubscribersLength = 1
-	} else {
-		_unsubscribers[state._unsubscribersLength++] = subscriberLink
-	}
-}

@@ -725,7 +725,7 @@ export async function baseTest() {
 	checkChangeResultIds(S0, A0, S1, S2, A2, I0, I1, I2)
 
 	_invalidate(A0)
-	promise1 = checkFuncAsync(A2, A2)
+	promise1 = checkFuncAsync(A2, A0)
 	await checkFuncAsync(A0, A0)
 	promise2 = checkFuncAsync(I2, I2)
 	_invalidate(I1)
