@@ -297,7 +297,7 @@ export function updateCalculating<
 		throw new Error(`Set status ${Update_Calculating} called when current status is ${prevStatus}`)
 	}
 
-	state.status = Update_Calculating
+	state.status = (prevStatus & ~(Mask_Invalidate | Mask_Calculate)) | Flag_Calculating
 }
 
 export function updateCalculatingAsync<
@@ -310,12 +310,33 @@ export function updateCalculatingAsync<
 ) {
 	const prevStatus = state.status
 
-	if (getCalculate(prevStatus) !== Flag_Calculating) {
+	if (!isCalculating(prevStatus)) {
 		throw new Error(`Set status ${Update_Calculating_Async} called when current status is ${prevStatus}`)
 	}
 	state.valueAsync = valueAsync
 
 	state.status = setCalculate(prevStatus, Update_Calculating_Async)
+}
+
+export function updateCalculated<
+	TThis,
+	TArgs extends any[],
+	TValue,
+>(
+	state: IFuncCallState<TThis, TArgs, TValue>,
+) {
+	const prevStatus = state.status
+
+	if (!isCalculating(prevStatus)) {
+		throw new Error(`Set status ${Update_Calculated_Value} called when current status is ${prevStatus}`)
+	}
+
+	state.status = (prevStatus & (Flag_HasValue | Flag_HasError)) | Flag_Calculated
+
+	const invalidateStatus = getInvalidate(prevStatus)
+	if (invalidateStatus !== 0) {
+		updateInvalidate(state, invalidateStatus)
+	}
 }
 
 export function updateCalculatedValue<
@@ -337,13 +358,8 @@ export function updateCalculatedValue<
 	if ((prevStatus & (Flag_HasError | Flag_HasValue)) !== Flag_HasValue
 		|| state.value !== value
 	) {
-
-	}
-	if ((!(!state.hasError && state.hasValue)) || state.value !== value) {
 		state.error = void 0
 		state.value = value
-		state.hasError = false
-		state.hasValue = true
 		state.changeResultId = state.callId
 	}
 
@@ -372,7 +388,6 @@ export function updateCalculatedError<TThis,
 	}
 	state.error = error
 	if ((prevStatus & Flag_HasError) === 0) {
-		state.hasError = true
 		state.changeResultId = state.callId
 	}
 
@@ -452,8 +467,6 @@ export class FuncCallState<TThis,
 	public deleteOrder: number = 0
 
 	public status = Flag_Invalidated | Flag_Invalidate_Self
-	public hasValue = false
-	public hasError = false
 	public valueAsync = null
 	public value = void 0
 	public error = void 0
@@ -617,7 +630,13 @@ export function _dependentFunc<
 	}
 
 	if (shouldRecalc === false) {
-		state.status = Update_Calculated_Value // TODO setCalculate(state.status, Update_Calculated_Value)
+		updateCalculated(state)
+		if (isHasError(state.status)) {
+			if (dontThrowOnError !== true) {
+				throw state.error
+			}
+			return
+		}
 		return state.value
 	}
 
@@ -627,7 +646,13 @@ export function _dependentFunc<
 	} else if (isIterator(shouldRecalc)) {
 		value = resolveAsync(shouldRecalc, o => {
 			if (o === false) {
-				state.status = Update_Calculated_Value // TODO setCalculate(state.status, Update_Calculated_Value)
+				updateCalculated(state)
+				if (isHasError(state.status)) {
+					if (dontThrowOnError !== true) {
+						throw state.error
+					}
+					return
+				}
 				return state.value
 			}
 			return calc(state, dontThrowOnError)

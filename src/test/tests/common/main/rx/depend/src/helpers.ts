@@ -348,14 +348,14 @@ function checkAsync<TValue>(value: ThenableOrValue<TValue>): Thenable<TValue> {
 	return value as Thenable<TValue>
 }
 
-function checkCallHistory(callHistory: IDependencyCall[]) {
+function checkCallHistory(...callHistory: IDependencyCall[]) {
 	assert.deepStrictEqual(_callHistory, callHistory.map(o => o.id))
 	_callHistory.length = 0
 }
 
 function checkFuncSync<TValue>(funcCall: IDependencyCall, ...callHistory: IDependencyCall[]) {
 	assert.strictEqual(funcCall() + '', funcCall.id)
-	checkCallHistory(callHistory)
+	checkCallHistory(...callHistory)
 }
 
 function checkDependenciesDuplicates(...funcCalls: IDependencyCall[]) {
@@ -375,19 +375,22 @@ function checkDependenciesDuplicates(...funcCalls: IDependencyCall[]) {
 	}
 }
 
-async function checkFuncAsync<TValue>(funcCall: IDependencyCall, ...callHistory: IDependencyCall[]) {
-	checkCallHistory([])
+function checkFuncAsync<TValue>(funcCall: IDependencyCall, ...callHistory: IDependencyCall[]) {
+	checkCallHistory()
 	checkDependenciesDuplicates(funcCall)
 	const promise = checkAsync(funcCall())
-	checkCallHistory(callHistory)
-	assert.strictEqual((await promise) + '', funcCall.id)
-	checkDependenciesDuplicates(funcCall, ...callHistory)
+	checkCallHistory(...callHistory)
+	return promise
+		.then((value: string) => {
+			assert.strictEqual(value + '', funcCall.id)
+			checkDependenciesDuplicates(funcCall, ...callHistory)
+		})
 }
 
 function _invalidate(funcCall: IDependencyCall) {
-	checkCallHistory([])
+	checkCallHistory()
 	invalidate(funcCall.state)
-	checkCallHistory([])
+	checkCallHistory()
 }
 
 function _checkFuncNotChanged<TValue>(...funcCalls: IDependencyCall[]) {
@@ -578,7 +581,9 @@ export async function baseTest() {
 	checkFuncNotChanged(allFuncs)
 	checkChangeResultIds(...allFuncs)
 
-	// level 2
+	// region Forward
+
+	// region level 2
 
 	_invalidate(S2)
 	checkFuncSync(S2, S2)
@@ -595,7 +600,9 @@ export async function baseTest() {
 	checkFuncNotChanged(allFuncs)
 	checkChangeResultIds(S0, I0, A0, S1, I1, S2, A2, I2)
 
-	// level 1
+	// endregion
+
+	// region level 1
 
 	_invalidate(S1)
 	checkFuncSync(S2, S1)
@@ -609,7 +616,9 @@ export async function baseTest() {
 	checkFuncNotChanged(allFuncs)
 	checkChangeResultIds(S0, I0, A0, S1, S2, A2, I1, I2)
 
-	// level 0
+	// endregion
+
+	// region level 0
 
 	_invalidate(S0)
 	// console.log(allFuncs.filter(isInvalidated).map(o => o.id))
@@ -633,19 +642,98 @@ export async function baseTest() {
 
 	// endregion
 
+	// endregion
+
+	// region Backward
+
+	// region level 0
+
+	_invalidate(A0)
+	await checkFuncAsync(A2, A0)
+	checkCallHistory(A2)
+	checkFuncSync(I2)
+	checkFuncNotChanged(allFuncs)
+	checkChangeResultIds(S0, A0, S1, S2, A2, I0, I1, I2)
+
+	_invalidate(I0)
+	await checkFuncAsync(A2, I0, I1, A2)
+	checkFuncSync(I2, S1, I2)
+	checkFuncSync(S2)
+	checkFuncNotChanged(allFuncs)
+	checkChangeResultIds(S0, A0, S1, S2, A2, I0, I1, I2)
+
+	_invalidate(S0)
+	// console.log(allFuncs.filter(isInvalidated).map(o => o.id))
+	checkFuncSync(I2, S0)
+	checkFuncSync(S2)
+	checkFuncNotChanged(allFuncs)
+	checkChangeResultIds(S0, A0, S1, S2, A2, I0, I1, I2)
+
+	// endregion
+
+	// region level 1
+
+	_invalidate(I1)
+	await checkFuncAsync(A2, I1, A2)
+	checkFuncSync(I2, I2)
+	checkFuncNotChanged(allFuncs)
+	checkChangeResultIds(S0, A0, S1, S2, A2, I0, I1, I2)
+
+	_invalidate(S1)
+	checkFuncSync(I2, S1)
+	checkFuncSync(S2)
+	checkFuncNotChanged(allFuncs)
+	checkChangeResultIds(S0, A0, S1, S2, A2, I0, I1, I2)
+
+	// endregion
+
+	// region level 2
+
+	_invalidate(A2)
+	await checkFuncAsync(A2, A2)
+	checkFuncNotChanged(allFuncs)
+	checkChangeResultIds(S0, A0, S1, S2, A2, I0, I1, I2)
+
+	_invalidate(I2)
+	checkFuncSync(I2, I2)
+	checkFuncNotChanged(allFuncs)
+	checkChangeResultIds(S0, A0, S1, S2, A2, I0, I1, I2)
+
+	_invalidate(S2)
+	checkFuncSync(S2, S2)
+	checkFuncNotChanged(allFuncs)
+	checkChangeResultIds(S0, A0, S1, S2, A2, I0, I1, I2)
+
+	// endregion
+
+	// endregion
+
+	// endregion
+
 	// invalidate during calc async
 
-	// let promise
+	let promise1, promise2
 
-	// _invalidate(I1)
-	// checkFuncSync(I2, I1, I2)
-	// promise = checkFuncAsync(A2, A2)
-	// _invalidate(I1)
-	// checkFuncSync(I2, I1, I2)
-	// await promise
-	// await checkFuncAsync(A2, A2)
-	// checkFuncNotChanged(allFuncs)
-	// checkChangeResultIds(S0, A0, S1, S2, A2, I0, I1, I2)
+	_invalidate(I1)
+	checkFuncSync(I2, I1, I2)
+	promise1 = checkFuncAsync(A2, A2)
+	_invalidate(I1)
+	checkFuncSync(I2, I1, I2)
+	await promise1
+	checkFuncSync(A2)
+	checkFuncNotChanged(allFuncs)
+	checkChangeResultIds(S0, A0, S1, S2, A2, I0, I1, I2)
+
+	_invalidate(A0)
+	promise1 = checkFuncAsync(A2, A2)
+	await checkFuncAsync(A0, A0)
+	promise2 = checkFuncAsync(I2, I2)
+	_invalidate(I1)
+	checkFuncSync(I2, I1, I2)
+	await promise1
+	checkFuncSync(A2)
+	checkFuncNotChanged(allFuncs)
+	checkChangeResultIds(S0, A0, S1, S2, A2, I0, I1, I2)
 
 	// endregion
 

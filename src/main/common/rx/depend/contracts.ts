@@ -38,9 +38,7 @@ export interface IFuncCallState<TThis,
 	readonly valueIds: number[]
 	deleteOrder: number
 
-	status
-	hasValue: boolean
-	hasError: boolean
+	status: FuncCallStatus
 
 	valueAsync: Thenable<TValue>
 	value: TValue
