@@ -1,6 +1,6 @@
 /* tslint:disable:no-identical-functions no-shadowed-variable no-duplicate-string no-construct use-primitive-type */
 import {isThenable, Thenable, ThenableOrValue} from '../../../../../../../main/common/async/async'
-import {invalidate} from '../../../../../../../main/common/rx/depend/_dependentFunc'
+import {checkStatus, invalidate, statusToString} from '../../../../../../../main/common/rx/depend/_dependentFunc'
 import {
 	callStateHashTable,
 	reduceCallStates,
@@ -11,6 +11,8 @@ import {Func, FuncCallStatus, IFuncCallState} from '../../../../../../../main/co
 import {getFuncCallState, makeDependentFunc} from '../../../../../../../main/common/rx/depend/facade'
 import {assert} from '../../../../../../../main/common/test/Assert'
 import {delay} from '../../../../../../../main/common/time/helpers'
+
+(global as any).statusToString = statusToString
 
 // region makeDependentFunc
 
@@ -94,7 +96,7 @@ export function createPerceptronNaked(layerSize, layersCount, check = true) {
 export function __invalidate<TThis,
 	TArgs extends any[],
 	TValue,
->(state: IFuncCallState<TThis, TArgs, TValue>, status?: FuncCallStatus) {
+>(state: IFuncCallState<TThis, TArgs, TValue>, status?: any) {
 	return invalidate(state, status)
 }
 
@@ -355,6 +357,7 @@ function checkCallHistory(...callHistory: IDependencyCall[]) {
 
 function checkFuncSync<TValue>(funcCall: IDependencyCall, ...callHistory: IDependencyCall[]) {
 	assert.strictEqual(funcCall() + '', funcCall.id)
+	assertStatus(funcCall.state.status)
 	checkCallHistory(...callHistory)
 }
 
@@ -379,17 +382,21 @@ function checkFuncAsync<TValue>(funcCall: IDependencyCall, ...callHistory: IDepe
 	checkCallHistory()
 	checkDependenciesDuplicates(funcCall)
 	const promise = checkAsync(funcCall())
+	assertStatus(funcCall.state.status)
 	checkCallHistory(...callHistory)
 	return promise
 		.then((value: string) => {
 			assert.strictEqual(value + '', funcCall.id)
+			assertStatus(funcCall.state.status)
 			checkDependenciesDuplicates(funcCall, ...callHistory)
 		})
 }
 
-function _invalidate(funcCall: IDependencyCall) {
+function _invalidate(...funcCalls: IDependencyCall[]) {
 	checkCallHistory()
-	invalidate(funcCall.state)
+	for (let i = 0; i < funcCalls.length; i++) {
+		invalidate(funcCalls[i].state)
+	}
 	checkCallHistory()
 }
 
@@ -414,6 +421,10 @@ function checkFuncNotChanged<TValue>(allFuncCalls: IDependencyCall[], ...changed
 
 function isInvalidated(funcCall: IDependencyCall) {
 	return (funcCall.state.status & FuncCallStatus.Mask_Invalidate) !== 0
+}
+
+export function assertStatus(status: FuncCallStatus) {
+	assert.ok(checkStatus(status), statusToString(status))
 }
 
 export async function baseTestOld() {
@@ -712,7 +723,8 @@ export async function baseTest() {
 
 	// invalidate during calc async
 
-	let promise1, promise2
+	let promise1
+	let promise2
 
 	_invalidate(I1)
 	checkFuncSync(I2, I1, I2)
@@ -726,12 +738,31 @@ export async function baseTest() {
 
 	_invalidate(A0)
 	promise1 = checkFuncAsync(A2, A0)
-	await checkFuncAsync(A0, A0)
-	promise2 = checkFuncAsync(I2, I2)
-	_invalidate(I1)
-	checkFuncSync(I2, I1, I2)
+	_invalidate(A0)
+	promise2 = checkFuncAsync(I2)
+	await checkFuncAsync(A0)
+	checkCallHistory(A2)
+	_invalidate(I0)
 	await promise1
-	checkFuncSync(A2)
+	checkCallHistory(I0, I1)
+	checkFuncSync(I2, S1, I2)
+	await promise2
+	checkCallHistory()
+	checkFuncNotChanged(allFuncs)
+	checkChangeResultIds(S0, A0, S1, S2, A2, I0, I1, I2)
+
+	_invalidate(A0, I0)
+	promise1 = checkFuncAsync(A2, I0, I1, A0)
+	_invalidate(A0)
+	promise2 = checkFuncAsync(I2, S1)
+	await checkFuncAsync(A0)
+	checkCallHistory(A2, I2)
+	_invalidate(I0)
+	await promise1
+	checkCallHistory(I0, I1)
+	checkFuncSync(I2, S1, I2)
+	await promise2
+	checkCallHistory()
 	checkFuncNotChanged(allFuncs)
 	checkChangeResultIds(S0, A0, S1, S2, A2, I0, I1, I2)
 
