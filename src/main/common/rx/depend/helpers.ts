@@ -9,3 +9,7 @@ export function createCallWithArgs<TArgs extends any[],
 		return func.apply(_this, args)
 	}
 }
+
+export class InternalError extends Error {
+
+}

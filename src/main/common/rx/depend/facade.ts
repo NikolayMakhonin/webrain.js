@@ -3,6 +3,7 @@ import {_dependentFunc} from './_dependentFunc'
 import {_getFuncCallState} from './_getFuncCallState'
 import {_getFuncCallState2} from './_getFuncCallState2'
 import {Func, IFuncCallState} from './contracts'
+import {InternalError} from './helpers'
 
 export function createDependentFunc<TThis,
 	TArgs extends any[],
@@ -34,7 +35,7 @@ export function createMakeDependentFunc(rootStateMap: TRootStateMap) {
 		TValue,
 		>(func: Func<TThis, TArgs, TValue | Iterator<TValue>>): Func<TThis, TArgs, TValue> {
 		if (rootStateMap.get(func)) {
-			throw new Error('Multiple call makeDependentFunc() for func: ' + func)
+			throw new InternalError('Multiple call makeDependentFunc() for func: ' + func)
 		}
 		const getState = _getFuncCallState2(func)
 		rootStateMap.set(func, getState)

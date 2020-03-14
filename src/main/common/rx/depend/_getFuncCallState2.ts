@@ -2,7 +2,7 @@ import {ObjectPool} from '../../lists/ObjectPool'
 import {PairingHeap, PairingNode} from '../../lists/PairingHeap'
 import {createFuncCallState} from './_dependentFunc'
 import {Func, IFuncCallState, IValueState, TCall} from './contracts'
-import {createCallWithArgs} from './helpers'
+import {createCallWithArgs, InternalError} from './helpers'
 import {unsubscribeDependencies} from './subscribeDependency'
 
 export const valueIdsMap = new Map<any, number>()
@@ -25,10 +25,10 @@ export function getValueState(value: any): number {
 
 export function deleteValueState(id: number, value: any): void {
 	if (!valueStatesMap.delete(id)) {
-		throw new Error('value not found')
+		throw new InternalError('value not found')
 	}
 	if (!valueIdsMap.delete(value)) {
-		throw new Error('valueState not found')
+		throw new InternalError('valueState not found')
 	}
 }
 
@@ -166,7 +166,7 @@ export function deleteFuncCallState<
 			const valueState = valueStatesMap.get(valueId)
 			const usageCount = valueState.usageCount
 			if (usageCount <= 0) {
-				throw new Error('usageCount <= 0')
+				throw new InternalError('usageCount <= 0')
 			} else if (usageCount === 1 && i > 0) {
 				deleteValueState(valueId, valueState.value)
 			} else {
@@ -179,10 +179,10 @@ export function deleteFuncCallState<
 	const callStates = callStateHashTable.get(hash)
 	const callStatesLastIndex = callStates.length - 1
 	if (callStatesLastIndex === -1) {
-		throw new Error('callStates.length === 0')
+		throw new InternalError('callStates.length === 0')
 	} else if (callStatesLastIndex === 0) {
 		if (callStates[0] !== callState) {
-			throw new Error('callStates[0] !== callState')
+			throw new InternalError('callStates[0] !== callState')
 		}
 		callStateHashTable.delete(hash)
 	} else {
@@ -197,7 +197,7 @@ export function deleteFuncCallState<
 			}
 		}
 		if (index > callStatesLastIndex) {
-			throw new Error('callState not found')
+			throw new InternalError('callState not found')
 		}
 	}
 

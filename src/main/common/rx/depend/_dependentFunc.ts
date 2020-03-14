@@ -2,6 +2,7 @@ import {isThenable, Thenable, ThenableIterator, ThenableOrIteratorOrValue} from 
 import {resolveAsync} from '../../async/ThenableSync'
 import {isIterator} from '../../helpers/helpers'
 import {Func, FuncCallStatus, IFuncCallState, TCall} from './contracts'
+import {InternalError} from './helpers'
 import {_subscribe, unsubscribeDependencies} from './subscribeDependency'
 import {getSubscriberLink, releaseSubscriberLink} from './subscriber-link-pool'
 
@@ -347,7 +348,7 @@ export function updateInvalidate<TThis,
 		}
 		// endregion
 	} else {
-		throw new Error('Unknown status: ' + status)
+		throw new InternalError('Unknown status: ' + status)
 	}
 }
 
@@ -361,7 +362,7 @@ export function updateCalculating<
 	const prevStatus = state.status
 
 	if (getInvalidate(prevStatus) === 0) {
-		throw new Error(`Set status ${Update_Calculating} called when current status is ${prevStatus}`)
+		throw new InternalError(`Set status ${Update_Calculating} called when current status is ${prevStatus}`)
 	}
 
 	state.status = (prevStatus & ~(Mask_Invalidate | Flag_Invalidate_Self | Mask_Calculate)) | Flag_Calculating
@@ -378,7 +379,7 @@ export function updateCalculatingAsync<
 	const prevStatus = state.status
 
 	if (!isCalculating(prevStatus)) {
-		throw new Error(`Set status ${Update_Calculating_Async} called when current status is ${prevStatus}`)
+		throw new InternalError(`Set status ${Update_Calculating_Async} called when current status is ${prevStatus}`)
 	}
 	state.valueAsync = valueAsync
 
@@ -395,7 +396,7 @@ export function updateCalculated<
 	const prevStatus = state.status
 
 	if (!isCalculating(prevStatus)) {
-		throw new Error(`Set status ${Update_Calculated_Value} called when current status is ${prevStatus}`)
+		throw new InternalError(`Set status ${Update_Calculated_Value} called when current status is ${prevStatus}`)
 	}
 
 	state.status = (prevStatus & (Flag_HasValue | Flag_HasError)) | Flag_Calculated
@@ -417,7 +418,7 @@ export function updateCalculatedValue<
 	const prevStatus = state.status
 
 	if (!isCalculating(prevStatus)) {
-		throw new Error(`Set status ${Update_Calculated_Value} called when current status is ${prevStatus}`)
+		throw new InternalError(`Set status ${Update_Calculated_Value} called when current status is ${prevStatus}`)
 	}
 	if (state.valueAsync != null) {
 		state.valueAsync = null
@@ -448,7 +449,7 @@ export function updateCalculatedError<TThis,
 	const prevStatus = state.status
 
 	if (!isCalculating(prevStatus)) {
-		throw new Error(`Set status ${Update_Calculated_Error} called when current status is ${prevStatus}`)
+		throw new InternalError(`Set status ${Update_Calculated_Error} called when current status is ${prevStatus}`)
 	}
 	if (state.valueAsync != null) {
 		state.valueAsync = null
@@ -600,6 +601,7 @@ function* checkDependenciesChangedAsync(
 			if (isCalculated(dependencyState.status)) {
 				if (isHasError(dependencyState.status)) {
 					unsubscribeDependencies(state, i + 1)
+					state.callId = nextCallId++
 					updateCalculatedError(state, dependencyState.error)
 					return false
 				} else if (dependencyState.changeResultId > changeResultId) {
@@ -607,11 +609,13 @@ function* checkDependenciesChangedAsync(
 					return true
 				}
 			} else {
-				throw new Error('Unexpected dependency status: ' + dependencyState.status)
+				throw new InternalError('Unexpected dependency status: ' + dependencyState.status)
 			}
 		}
 	}
 
+	state.callId = nextCallId++
+	updateCalculated(state)
 	return false
 }
 
@@ -628,6 +632,7 @@ function checkDependenciesChanged(state: IFuncCallState<any, any, any>): Thenabl
 			if (isCalculated(dependencyState.status)) {
 				if (isHasError(dependencyState.status)) {
 					unsubscribeDependencies(state, i + 1)
+					state.callId = nextCallId++
 					updateCalculatedError(state, dependencyState.error)
 					return false
 				} else if (dependencyState.changeResultId > callId) {
@@ -637,11 +642,13 @@ function checkDependenciesChanged(state: IFuncCallState<any, any, any>): Thenabl
 			} else if (getCalculate(dependencyState.status) === Flag_Calculating_Async) {
 				return checkDependenciesChangedAsync(state, i)
 			} else {
-				throw new Error('Unexpected dependency status: ' + dependencyState.status)
+				throw new InternalError('Unexpected dependency status: ' + dependencyState.status)
 			}
 		}
 	}
 
+	state.callId = nextCallId++
+	updateCalculated(state)
 	return false
 }
 
@@ -700,20 +707,20 @@ export function _dependentFunc<
 			let parentCallState = state.parentCallState
 			while (parentCallState) {
 				if (parentCallState === state) {
-					throw new Error('Recursive async loop detected')
+					throw new InternalError('Recursive async loop detected')
 				}
 				parentCallState = parentCallState.parentCallState
 			}
 			return state.valueAsync
 		} else if (getCalculate(state.status) === Flag_Calculating) {
-			throw new Error('Recursive sync loop detected')
+			throw new InternalError('Recursive sync loop detected')
 		} else {
-			throw new Error('Unknown FuncCallStatus: ' + state.status)
+			throw new InternalError('Unknown FuncCallStatus: ' + state.status)
 		}
 	} else if (getInvalidate(state.status) !== 0) {
 		// nothing
 	} else {
-		throw new Error('Unknown FuncCallStatus: ' + state.status)
+		throw new InternalError('Unknown FuncCallStatus: ' + state.status)
 	}
 
 	state.parentCallState = currentState
@@ -734,7 +741,6 @@ export function _dependentFunc<
 	}
 
 	if (shouldRecalc === false) {
-		updateCalculated(state)
 		if (isHasError(state.status)) {
 			if (dontThrowOnError !== true) {
 				throw state.error
@@ -750,7 +756,6 @@ export function _dependentFunc<
 	} else if (isIterator(shouldRecalc)) {
 		value = resolveAsync(shouldRecalc, o => {
 			if (o === false) {
-				updateCalculated(state)
 				if (isHasError(state.status)) {
 					if (dontThrowOnError !== true) {
 						throw state.error
@@ -766,7 +771,7 @@ export function _dependentFunc<
 			updateCalculatingAsync(state, value)
 		}
 	} else {
-		throw new Error(`shouldRecalc == ${shouldRecalc}`)
+		throw new InternalError(`shouldRecalc == ${shouldRecalc}`)
 	}
 
 	return value
@@ -779,30 +784,39 @@ export function calc<
 >(state: IFuncCallState<TThis, TArgs, TValue>, dontThrowOnError?: boolean) {
 	state.callId = nextCallId++
 
+	let _isIterator = false
 	try {
 		currentState = state
 
 		// let value: any = state.func.apply(state._this, arguments)
 		let value: any = state.callWithArgs(state._this, state.func)
 
-		if (isIterator(value)) {
-			value = resolveAsync(
-				makeDependentIterator(state, value as Iterator<TValue>) as ThenableOrIteratorOrValue<TValue>,
-			)
-
+		if (!isIterator(value)) {
 			if (isThenable(value)) {
-				updateCalculatingAsync(state, value)
+				throw new InternalError('You should use iterator instead thenable for async functions')
 			}
-
+			updateCalculatedValue(state, value)
 			return value
-		} else if (isThenable(value)) {
-			throw new Error('You should use iterator instead thenable for async functions')
 		}
 
-		updateCalculatedValue(state, value)
+		_isIterator = true
+
+		value = resolveAsync(
+			makeDependentIterator(state, value as Iterator<TValue>) as ThenableOrIteratorOrValue<TValue>,
+		)
+
+		if (isThenable(value)) {
+			updateCalculatingAsync(state, value)
+		}
+
 		return value
 	} catch (error) {
-		updateCalculatedError(state, error)
+		if (error instanceof InternalError) {
+			throw error
+		}
+		if (!_isIterator) {
+			updateCalculatedError(state, error)
+		}
 		if (dontThrowOnError !== true) {
 			throw error
 		}
@@ -841,6 +855,9 @@ export function* makeDependentIterator<TThis,
 		}
 		return iteration.value
 	} catch (error) {
+		if (error instanceof InternalError) {
+			throw error
+		}
 		if (nested == null) {
 			updateCalculatedError(state, error)
 		}
