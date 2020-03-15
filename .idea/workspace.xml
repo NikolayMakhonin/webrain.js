@@ -7,11 +7,9 @@
     <option name="SHOW_STRUCTURE" value="true" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="69b2ee16-521b-4efd-b473-8e19e3df4d09" name="Default Changelist" comment="Develop tests">
+    <list default="true" id="69b2ee16-521b-4efd-b473-8e19e3df4d09" name="Default Changelist" comment="">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/common/rx/depend/_dependentFunc.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/common/rx/depend/_dependentFunc.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/common/rx/depend/contracts.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/common/rx/depend/contracts.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/test/tests/common/main/rx/depend/src/helpers.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/test/tests/common/main/rx/depend/src/helpers.ts" afterDir="false" />
     </list>
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
     <option name="SHOW_DIALOG" value="false" />
@@ -407,13 +405,6 @@
       <option name="presentableId" value="Default" />
       <updated>1567687848586</updated>
     </task>
-    <task id="LOCAL-00238" summary="dependent-funcs v8 optimization in process...">
-      <created>1581482193751</created>
-      <option name="number" value="00238" />
-      <option name="presentableId" value="LOCAL-00238" />
-      <option name="project" value="LOCAL" />
-      <updated>1581482193753</updated>
-    </task>
     <task id="LOCAL-00239" summary="dependent-funcs v8 optimization in process...">
       <created>1581488847742</created>
       <option name="number" value="00239" />
@@ -750,7 +741,14 @@
       <option name="project" value="LOCAL" />
       <updated>1584206489704</updated>
     </task>
-    <option name="localTasksCounter" value="287" />
+    <task id="LOCAL-00287" summary="Develop. Tests OK.">
+      <created>1584262908152</created>
+      <option name="number" value="00287" />
+      <option name="presentableId" value="LOCAL-00287" />
+      <option name="project" value="LOCAL" />
+      <updated>1584262908152</updated>
+    </task>
+    <option name="localTasksCounter" value="288" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -835,9 +833,9 @@
     <MESSAGE value="BinaryTree: try to use non recursive add - failed, it is slower than recursive" />
     <MESSAGE value="BinaryTree: optimizing AVL ..." />
     <MESSAGE value="Develop" />
-    <MESSAGE value="Develop. Tests OK." />
     <MESSAGE value="Develop tests" />
-    <option name="LAST_COMMIT_MESSAGE" value="Develop tests" />
+    <MESSAGE value="Develop. Tests OK." />
+    <option name="LAST_COMMIT_MESSAGE" value="Develop. Tests OK." />
   </component>
   <component name="XDebuggerManager">
     <breakpoint-manager>
@@ -864,31 +862,31 @@
         </line-breakpoint>
         <line-breakpoint enabled="true" type="javascript">
           <url>file://$PROJECT_DIR$/src/main/common/rx/depend/_dependentFunc.ts</url>
-          <line>390</line>
+          <line>328</line>
           <properties lambdaOrdinal="-1" />
           <option name="timeStamp" value="603" />
         </line-breakpoint>
         <line-breakpoint enabled="true" type="javascript">
           <url>file://$PROJECT_DIR$/src/main/common/rx/depend/_dependentFunc.ts</url>
-          <line>407</line>
+          <line>345</line>
           <properties lambdaOrdinal="-1" />
           <option name="timeStamp" value="604" />
         </line-breakpoint>
         <line-breakpoint enabled="true" type="javascript">
           <url>file://$PROJECT_DIR$/src/main/common/rx/depend/_dependentFunc.ts</url>
-          <line>424</line>
+          <line>362</line>
           <properties lambdaOrdinal="-1" />
           <option name="timeStamp" value="605" />
         </line-breakpoint>
         <line-breakpoint enabled="true" type="javascript">
           <url>file://$PROJECT_DIR$/src/main/common/rx/depend/_dependentFunc.ts</url>
-          <line>446</line>
+          <line>384</line>
           <properties lambdaOrdinal="-1" />
           <option name="timeStamp" value="606" />
         </line-breakpoint>
         <line-breakpoint enabled="true" type="javascript">
           <url>file://$PROJECT_DIR$/src/main/common/rx/depend/_dependentFunc.ts</url>
-          <line>477</line>
+          <line>415</line>
           <properties lambdaOrdinal="-1" />
           <option name="timeStamp" value="607" />
         </line-breakpoint>

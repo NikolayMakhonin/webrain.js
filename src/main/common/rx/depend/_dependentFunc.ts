@@ -270,7 +270,7 @@ export function invalidateParents<
 				&& childStatus !== Update_Invalidated_Self
 				&& status !== childStatus
 			) {
-				updateInvalidate(state, status)
+				updateInvalidate(childState, status)
 			}
 			link = next
 		}
@@ -298,39 +298,7 @@ export function updateInvalidate<
 		state.status = (prevStatus & (~(Mask_Invalidate | Flag_Calculated) | Flag_Invalidate_Self))
 			| status
 
-		// emit(state, Update_Invalidating)
-		// region inline call
-		if (state._subscribersFirst != null) {
-			// let clonesFirst
-			// let clonesLast
-			// for (let link = state._subscribersFirst; link; link = link.next) {
-			// 	const cloneLink = getSubscriberLink(state, link.value, null, link.next)
-			// 	if (clonesLast == null) {
-			// 		clonesFirst = cloneLink
-			// 	} else {
-			// 		clonesLast.next = cloneLink
-			// 	}
-			// 	clonesLast = cloneLink
-			// }
-			for (let link = state._subscribersFirst; link;) {
-				const next = link.next
-				if (getInvalidate(link.value.status) === 0) {
-					// invalidate(link.value, Update_Invalidating)
-					// region inline call
-					{
-						// tslint:disable-next-line:no-shadowed-variable
-						const state = link.value
-						updateInvalidate(state, Update_Invalidating)
-					}
-					// endregion
-					// link.value = null
-					// link.next = null
-					// releaseSubscriberLink(link)
-				}
-				link = next
-			}
-		}
-		// endregion
+		invalidateParents(state, Update_Invalidating)
 	} else if (status === Update_Invalidated || status === Update_Invalidated_Self) {
 		if (!isInvalidating(prevStatus)) {
 			if (!isInvalidateSelf(prevStatus) && status === Update_Invalidated_Self) {
@@ -342,37 +310,7 @@ export function updateInvalidate<
 		state.status = (prevStatus & (~(Mask_Invalidate | Flag_Calculated) | Flag_Invalidate_Self))
 			| status
 
-		// emit(state, Update_Invalidated)
-		// region inline call
-		if (state._subscribersFirst != null) {
-			// let clonesFirst
-			// let clonesLast
-			// for (let link = state._subscribersFirst; link; link = link.next) {
-			// 	const cloneLink = getSubscriberLink(state, link.value, null, link.next)
-			// 	if (clonesLast == null) {
-			// 		clonesFirst = cloneLink
-			// 	} else {
-			// 		clonesLast.next = cloneLink
-			// 	}
-			// 	clonesLast = cloneLink
-			// }
-			for (let link = state._subscribersFirst; link;) {
-				const next = link.next
-				// invalidate(link.value, Update_Invalidated)
-				// region inline call
-				{
-					// tslint:disable-next-line:no-shadowed-variable
-					const state = link.value
-					updateInvalidate(state, Update_Invalidated)
-				}
-				// endregion
-				// link.value = null
-				// link.next = null
-				// releaseSubscriberLink(link)
-				link = next
-			}
-		}
-		// endregion
+		invalidateParents(state, Update_Invalidated)
 	} else {
 		throw new InternalError('Unknown status: ' + status)
 	}
