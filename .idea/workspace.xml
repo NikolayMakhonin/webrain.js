@@ -7,12 +7,10 @@
     <option name="SHOW_STRUCTURE" value="true" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="69b2ee16-521b-4efd-b473-8e19e3df4d09" name="Default Changelist" comment="Develop. Tests OK.">
+    <list default="true" id="69b2ee16-521b-4efd-b473-8e19e3df4d09" name="Default Changelist" comment="Develop tests">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/common/rx/depend/_dependentFunc.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/common/rx/depend/_dependentFunc.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/common/rx/depend/_getFuncCallState2.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/common/rx/depend/_getFuncCallState2.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/common/rx/depend/facade.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/common/rx/depend/facade.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/common/rx/depend/helpers.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/common/rx/depend/helpers.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/common/rx/depend/contracts.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/common/rx/depend/contracts.ts" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/test/tests/common/main/rx/depend/src/helpers.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/test/tests/common/main/rx/depend/src/helpers.ts" afterDir="false" />
     </list>
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
@@ -409,13 +407,6 @@
       <option name="presentableId" value="Default" />
       <updated>1567687848586</updated>
     </task>
-    <task id="LOCAL-00237" summary="dependent-funcs v8 optimization in process... Tests OK.">
-      <created>1581426145748</created>
-      <option name="number" value="00237" />
-      <option name="presentableId" value="LOCAL-00237" />
-      <option name="project" value="LOCAL" />
-      <updated>1581426145748</updated>
-    </task>
     <task id="LOCAL-00238" summary="dependent-funcs v8 optimization in process...">
       <created>1581482193751</created>
       <option name="number" value="00238" />
@@ -752,7 +743,14 @@
       <option name="project" value="LOCAL" />
       <updated>1584164888358</updated>
     </task>
-    <option name="localTasksCounter" value="286" />
+    <task id="LOCAL-00286" summary="Develop tests">
+      <created>1584206489704</created>
+      <option name="number" value="00286" />
+      <option name="presentableId" value="LOCAL-00286" />
+      <option name="project" value="LOCAL" />
+      <updated>1584206489704</updated>
+    </task>
+    <option name="localTasksCounter" value="287" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -814,7 +812,6 @@
   <component name="VcsManagerConfiguration">
     <option name="CHECK_CODE_SMELLS_BEFORE_PROJECT_COMMIT" value="false" />
     <option name="CHECK_NEW_TODO" value="false" />
-    <MESSAGE value="dependent-funcs v8 optimization in process... Added v8 funcs wrappers with .d.ts file" />
     <MESSAGE value="dependent-funcs v8 optimization in process... v8 tests OK." />
     <MESSAGE value="dependent-funcs v8 optimization in process... Tests OK." />
     <MESSAGE value="dependent-funcs v8 optimization in process... Test performance with inlined functions..." />
@@ -839,7 +836,8 @@
     <MESSAGE value="BinaryTree: optimizing AVL ..." />
     <MESSAGE value="Develop" />
     <MESSAGE value="Develop. Tests OK." />
-    <option name="LAST_COMMIT_MESSAGE" value="Develop. Tests OK." />
+    <MESSAGE value="Develop tests" />
+    <option name="LAST_COMMIT_MESSAGE" value="Develop tests" />
   </component>
   <component name="XDebuggerManager">
     <breakpoint-manager>
@@ -866,39 +864,45 @@
         </line-breakpoint>
         <line-breakpoint enabled="true" type="javascript">
           <url>file://$PROJECT_DIR$/src/main/common/rx/depend/_dependentFunc.ts</url>
-          <line>364</line>
+          <line>390</line>
           <properties lambdaOrdinal="-1" />
           <option name="timeStamp" value="603" />
         </line-breakpoint>
         <line-breakpoint enabled="true" type="javascript">
           <url>file://$PROJECT_DIR$/src/main/common/rx/depend/_dependentFunc.ts</url>
-          <line>381</line>
+          <line>407</line>
           <properties lambdaOrdinal="-1" />
           <option name="timeStamp" value="604" />
         </line-breakpoint>
         <line-breakpoint enabled="true" type="javascript">
           <url>file://$PROJECT_DIR$/src/main/common/rx/depend/_dependentFunc.ts</url>
-          <line>398</line>
+          <line>424</line>
           <properties lambdaOrdinal="-1" />
           <option name="timeStamp" value="605" />
         </line-breakpoint>
         <line-breakpoint enabled="true" type="javascript">
           <url>file://$PROJECT_DIR$/src/main/common/rx/depend/_dependentFunc.ts</url>
-          <line>420</line>
+          <line>446</line>
           <properties lambdaOrdinal="-1" />
           <option name="timeStamp" value="606" />
         </line-breakpoint>
         <line-breakpoint enabled="true" type="javascript">
           <url>file://$PROJECT_DIR$/src/main/common/rx/depend/_dependentFunc.ts</url>
-          <line>451</line>
+          <line>477</line>
           <properties lambdaOrdinal="-1" />
           <option name="timeStamp" value="607" />
         </line-breakpoint>
         <line-breakpoint enabled="true" type="javascript">
           <url>file://$PROJECT_DIR$/src/test/tests/common/main/rx/depend/src/helpers.ts</url>
-          <line>1010</line>
+          <line>1027</line>
           <properties lambdaOrdinal="-1" />
-          <option name="timeStamp" value="651" />
+          <option name="timeStamp" value="659" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" type="javascript">
+          <url>file://$PROJECT_DIR$/src/test/tests/common/main/rx/depend/src/helpers.ts</url>
+          <line>1034</line>
+          <properties lambdaOrdinal="-1" />
+          <option name="timeStamp" value="662" />
         </line-breakpoint>
       </breakpoints>
       <breakpoints-dialog>
@@ -920,6 +924,9 @@
         <watch expression="I1.state.statusString" language="TypeScript" />
         <watch expression="A2.state.statusString" language="TypeScript" />
         <watch expression="funcCall.id" language="TypeScript" />
+        <watch expression="S2.state._unsubscribersLength" language="TypeScript" />
+        <watch expression="I1.state.calcId" language="TypeScript" />
+        <watch expression="I2.state.calcId" language="TypeScript" />
       </configuration>
     </watches-manager>
   </component>

@@ -46,6 +46,7 @@ export interface IFuncCallState<TThis,
 
 	/** for prevent recalc dependent funcs if dependencies.changeResultId <= dependent.changeResultId */
 	changeResultId: number
+	calcId: number
 
 	/** for detect recursive async loop */
 	parentCallState: IFuncCallState<any, any, any>

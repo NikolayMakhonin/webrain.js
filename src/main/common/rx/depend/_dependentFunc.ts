@@ -252,10 +252,36 @@ export function statusToString(status: FuncCallStatus): string {
 	return buffer.join(' | ')
 }
 
-export function updateInvalidate<TThis,
+export function invalidateParents<
+	TThis,
 	TArgs extends any[],
 	TValue,
-	>(
+>(
+	state: IFuncCallState<TThis, TArgs, TValue>,
+	status: Mask_Update_Invalidate,
+) {
+	if (state._subscribersFirst != null) {
+		for (let link = state._subscribersFirst; link;) {
+			const next = link.next
+			const childState = link.value
+			const childStatus = childState.status & Mask_Update_Invalidate
+			if (childStatus === 0
+				|| status !== Update_Invalidating
+				&& childStatus !== Update_Invalidated_Self
+				&& status !== childStatus
+			) {
+				updateInvalidate(state, status)
+			}
+			link = next
+		}
+	}
+}
+
+export function updateInvalidate<
+	TThis,
+	TArgs extends any[],
+	TValue,
+>(
 	state: IFuncCallState<TThis, TArgs, TValue>,
 	status: Mask_Update_Invalidate,
 ) {
@@ -428,7 +454,7 @@ export function updateCalculatedValue<
 	) {
 		state.error = void 0
 		state.value = value
-		state.changeResultId = state.callId
+		state.changeResultId = state.calcId
 	}
 
 	state.status = Update_Calculated_Value
@@ -456,7 +482,7 @@ export function updateCalculatedError<TThis,
 	}
 	state.error = error
 	if ((prevStatus & Flag_HasError) === 0) {
-		state.changeResultId = state.callId
+		state.changeResultId = state.calcId
 	}
 
 	state.status = Update_Calculated_Error | (prevStatus & Flag_HasValue)
@@ -544,6 +570,7 @@ export class FuncCallState<TThis,
 	public _subscribersLast = null
 	/** for prevent recalc dependent funcs if dependencies.changeResultId <= dependent.changeResultId */
 	public changeResultId = 0
+	public calcId = 0
 	// for prevent multiple subscribe equal dependencies
 	public callId = 0
 	public _unsubscribers = null
@@ -601,7 +628,6 @@ function* checkDependenciesChangedAsync(
 			if (isCalculated(dependencyState.status)) {
 				if (isHasError(dependencyState.status)) {
 					unsubscribeDependencies(state, i + 1)
-					state.callId = nextCallId++
 					updateCalculatedError(state, dependencyState.error)
 					return false
 				} else if (dependencyState.changeResultId > changeResultId) {
@@ -614,7 +640,6 @@ function* checkDependenciesChangedAsync(
 		}
 	}
 
-	state.callId = nextCallId++
 	updateCalculated(state)
 	return false
 }
@@ -622,7 +647,7 @@ function* checkDependenciesChangedAsync(
 function checkDependenciesChanged(state: IFuncCallState<any, any, any>): ThenableIterator<boolean>|boolean {
 	const {_unsubscribers, _unsubscribersLength} = state
 	if (_unsubscribers != null) {
-		const {callId} = state
+		const {changeResultId} = state
 		for (let i = 0, len = _unsubscribersLength; i < len; i++) {
 			const dependencyState = _unsubscribers[i].state
 			if (getInvalidate(dependencyState.status) !== 0) {
@@ -632,10 +657,9 @@ function checkDependenciesChanged(state: IFuncCallState<any, any, any>): Thenabl
 			if (isCalculated(dependencyState.status)) {
 				if (isHasError(dependencyState.status)) {
 					unsubscribeDependencies(state, i + 1)
-					state.callId = nextCallId++
 					updateCalculatedError(state, dependencyState.error)
 					return false
-				} else if (dependencyState.changeResultId > callId) {
+				} else if (dependencyState.changeResultId > changeResultId) {
 					unsubscribeDependencies(state)
 					return true
 				}
@@ -647,13 +671,13 @@ function checkDependenciesChanged(state: IFuncCallState<any, any, any>): Thenabl
 		}
 	}
 
-	state.callId = nextCallId++
 	updateCalculated(state)
 	return false
 }
 
 let currentState: IFuncCallState<any, any, any>
 let nextCallId = 1
+let nextCalcId = 1
 
 // tslint:disable-next-line:no-shadowed-variable
 export function subscribeDependency<
@@ -692,17 +716,16 @@ export function _dependentFunc<
 	if (currentState != null) {
 		subscribeDependency(currentState, state)
 	}
+	state.callId = nextCallId++
 
 	const prevStatus = state.status
 
 	if (isCalculated(state.status)) {
-		state.callId = nextCallId++
 		if (isHasError(state.status)) {
 			throw state.error
 		}
 		return state.value
 	} else if (getCalculate(state.status) !== 0) {
-		state.callId = nextCallId++
 		if (getCalculate(state.status) === Flag_Calculating_Async) {
 			let parentCallState = state.parentCallState
 			while (parentCallState) {
@@ -783,6 +806,7 @@ export function calc<
 	TValue,
 >(state: IFuncCallState<TThis, TArgs, TValue>, dontThrowOnError?: boolean) {
 	state.callId = nextCallId++
+	state.calcId = nextCalcId++
 
 	let _isIterator = false
 	try {
