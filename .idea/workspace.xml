@@ -7,11 +7,8 @@
     <option name="SHOW_STRUCTURE" value="true" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="69b2ee16-521b-4efd-b473-8e19e3df4d09" name="Default Changelist" comment="Develop. Tests OK.">
+    <list default="true" id="69b2ee16-521b-4efd-b473-8e19e3df4d09" name="Default Changelist" comment="">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/common/rx/depend/_dependentFunc.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/common/rx/depend/_dependentFunc.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/common/rx/depend/contracts.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/common/rx/depend/contracts.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/common/rx/depend/subscribeDependency.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/common/rx/depend/subscribeDependency.ts" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/test/tests/common/main/rx/depend/src/helpers.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/test/tests/common/main/rx/depend/src/helpers.ts" afterDir="false" />
     </list>
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
@@ -408,13 +405,6 @@
       <option name="presentableId" value="Default" />
       <updated>1567687848586</updated>
     </task>
-    <task id="LOCAL-00240" summary="dependent-funcs v8 optimization in process... Tests OK.">
-      <created>1581500037962</created>
-      <option name="number" value="00240" />
-      <option name="presentableId" value="LOCAL-00240" />
-      <option name="project" value="LOCAL" />
-      <updated>1581500037962</updated>
-    </task>
     <task id="LOCAL-00241" summary="dependent-funcs v8 optimization in process... Test performance with inlined functions...">
       <created>1581507141508</created>
       <option name="number" value="00241" />
@@ -751,7 +741,14 @@
       <option name="project" value="LOCAL" />
       <updated>1584275115607</updated>
     </task>
-    <option name="localTasksCounter" value="289" />
+    <task id="LOCAL-00289" summary="Develop">
+      <created>1584349716059</created>
+      <option name="number" value="00289" />
+      <option name="presentableId" value="LOCAL-00289" />
+      <option name="project" value="LOCAL" />
+      <updated>1584349716060</updated>
+    </task>
+    <option name="localTasksCounter" value="290" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -835,10 +832,10 @@
     <MESSAGE value="BinaryTree: Implementing AVL algorithm..." />
     <MESSAGE value="BinaryTree: try to use non recursive add - failed, it is slower than recursive" />
     <MESSAGE value="BinaryTree: optimizing AVL ..." />
-    <MESSAGE value="Develop" />
     <MESSAGE value="Develop tests" />
     <MESSAGE value="Develop. Tests OK." />
-    <option name="LAST_COMMIT_MESSAGE" value="Develop. Tests OK." />
+    <MESSAGE value="Develop" />
+    <option name="LAST_COMMIT_MESSAGE" value="Develop" />
   </component>
   <component name="XDebuggerManager">
     <breakpoint-manager>
@@ -848,6 +845,12 @@
           <line>20</line>
           <properties lambdaOrdinal="-1" />
           <option name="timeStamp" value="720" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" type="javascript">
+          <url>file://$PROJECT_DIR$/src/test/tests/common/main/rx/depend/src/helpers.ts</url>
+          <line>963</line>
+          <properties lambdaOrdinal="-1" />
+          <option name="timeStamp" value="731" />
         </line-breakpoint>
       </breakpoints>
       <breakpoints-dialog>
