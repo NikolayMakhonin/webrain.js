@@ -350,27 +350,27 @@ export function updateInvalidate<
 	if (status === Update_Invalidating || status === Update_Invalidating_Force) {
 		if (isInvalidated(prevStatus)) {
 			if (!isInvalidateForce(prevStatus) && status === Update_Invalidating_Force) {
-				state.status = setInvalidateForce(prevStatus, true)
+				state.status = prevStatus | Flag_Invalidate_Force
 			}
 			if (parentForce) {
 				statusBefore = Update_Invalidated_Force
 			}
 		} else {
-			state.status = (prevStatus & (~(Mask_Invalidate | Flag_Calculated) | Flag_Invalidate_Force))
-				| status
+			state.status = (prevStatus & ~(Mask_Invalidate | Flag_Calculated)) | status
 
 			statusBefore = parentForce ? Update_Invalidating_Force : Update_Invalidating
 			statusAfter = Update_Invalidating
 		}
 	} else if (status === Update_Invalidated || status === Update_Invalidated_Force) {
-		if (!isInvalidating(prevStatus)) {
+		if (isInvalidated(prevStatus)) {
 			if (!isInvalidateForce(prevStatus) && status === Update_Invalidated_Force) {
-				state.status = setInvalidateForce(prevStatus, true)
+				state.status = prevStatus | Flag_Invalidate_Force
 			}
-			statusBefore = Update_Invalidated_Force
+			if (parentForce) {
+				statusBefore = Update_Invalidated_Force
+			}
 		} else {
-			state.status = (prevStatus & (~(Mask_Invalidate | Flag_Calculated) | Flag_Invalidate_Force))
-				| status
+			state.status = (prevStatus & ~(Mask_Invalidate | Flag_Calculated)) | status
 
 			statusBefore = parentForce ? Update_Invalidated_Force : Update_Invalidated
 			statusAfter = Update_Invalidated
