@@ -15,17 +15,21 @@ export enum FuncCallStatus {
 	Flag_Invalidating = 1,
 	Flag_Invalidated = 2,
 	Mask_Invalidate = 3,
+	Flag_Invalidate_Force = 4,
 
-	Flag_Invalidate_Self = 4,
+	Flag_Parent_Invalidating = 8,
+	Flag_Parent_Invalidated = 16,
+	Mask_Parent_Invalidate = 24,
+	Flag_Parent_Invalidate_Force = 32,
 
-	Flag_Calculating = 8,
-	Flag_Calculating_Async = 24,
-	Flag_Calculated = 32,
-	Mask_Calculate = 32,
+	Flag_Calculating = 128,
+	Flag_Calculating_Async = 384,
+	Flag_Calculated = 512,
+	Mask_Calculate = 896,
 
-	Flag_HasError = 64,
+	Flag_HasValue = 1024,
 
-	Flag_HasValue = 128,
+	Flag_HasError = 2048,
 }
 
 export interface IFuncCallState<TThis,
@@ -55,6 +59,7 @@ export interface IFuncCallState<TThis,
 	callId: number
 	_subscribersFirst: ISubscriberLink<TThis, TArgs, TValue>
 	_subscribersLast: ISubscriberLink<TThis, TArgs, TValue>
+	_subscribersCalculating: ISubscriberLink<TThis, TArgs, TValue>
 	_unsubscribers: Array<ISubscriberLink<TThis, TArgs, TValue>>,
 	_unsubscribersLength: number,
 

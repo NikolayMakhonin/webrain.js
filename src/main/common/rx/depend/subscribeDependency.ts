@@ -1,14 +1,18 @@
 import {IFuncCallState} from './contracts'
 import {getSubscriberLink, releaseSubscriberLink} from './subscriber-link-pool'
 
-export function subscriberLinkDelete<TThis,
+export function subscriberLinkDelete<
+	TThis,
 	TArgs extends any[],
 	TValue,
-	>(state: IFuncCallState<TThis, TArgs, TValue>, item) {
+>(item) {
+	const {prev, next, state} = item
 	if (state == null) {
 		return
 	}
-	const {prev, next} = item
+	if (item === state._subscribersCalculating) {
+		state._subscribersCalculating = next
+	}
 	if (prev == null) {
 		if (next == null) {
 			state._subscribersFirst = null
@@ -53,6 +57,9 @@ export function unsubscribeDependencies<
 				const {prev, next, state} = item
 				if (state == null) {
 					return
+				}
+				if (item === state._subscribersCalculating) {
+					state._subscribersCalculating = next
 				}
 				if (prev == null) {
 					if (next == null) {

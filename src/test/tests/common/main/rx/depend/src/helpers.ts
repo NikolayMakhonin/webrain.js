@@ -343,7 +343,7 @@ function funcCall(func: IDependencyFunc, _this?: any, ...rest: any[]) {
 	result.id = callId
 	result.state = getFuncCallState(func).apply(_this, rest)
 	assert.ok(result.state)
-	assert.strictEqual(result.state.status, FuncCallStatus.Flag_Invalidated | FuncCallStatus.Flag_Invalidate_Self);
+	assert.strictEqual(result.state.status, FuncCallStatus.Flag_Invalidated | FuncCallStatus.Flag_Invalidate_Force);
 	(result.state as any).id = callId
 
 	return result
@@ -449,10 +449,12 @@ function checkFuncAsync<TValue>(
 		}
 
 		if (resultType === ResultType.Error || resultType === ResultType.Any && error) {
+			assert.ok(error)
 			// if (resultsAsError.indexOf(error + '') < 0) {
 			// 	assert.fail(`funcCall.id = ${funcCall.id}, error = ${error}`)
 			// }
 		} else if (resultType === ResultType.Value || resultType === ResultType.Any && !error) {
+			assert.notOk(error)
 			assert.strictEqual(value + '', funcCall.id)
 		} else {
 			throw new Error('Unknown ResultType: ' + resultType)
@@ -461,6 +463,84 @@ function checkFuncAsync<TValue>(
 		assertStatus(funcCall.state.status)
 		checkDependenciesDuplicates(funcCall, ...callHistory)
 	})()
+}
+
+const statusesShort = {
+	i: FuncCallStatus.Flag_Invalidating,
+	I: FuncCallStatus.Flag_Invalidated,
+	f: FuncCallStatus.Flag_Invalidating | FuncCallStatus.Flag_Invalidate_Force,
+	F: FuncCallStatus.Flag_Invalidated | FuncCallStatus.Flag_Invalidate_Force,
+	c: FuncCallStatus.Flag_Calculating,
+	a: FuncCallStatus.Flag_Calculating_Async,
+	C: FuncCallStatus.Flag_Calculated,
+	V: FuncCallStatus.Flag_HasValue,
+	E: FuncCallStatus.Flag_HasError,
+}
+
+function parseStatusShort(statusShort: string) {
+	let status: FuncCallStatus = 0
+	for (let i = 0, len = statusShort.length; i < len; i++) {
+		status |= statusesShort[statusShort[i]]
+	}
+	return status
+}
+
+function statusToShortString(status: FuncCallStatus) {
+	let result = ''
+	if ((status & FuncCallStatus.Flag_Invalidate_Force) === 0) {
+		if ((status & FuncCallStatus.Flag_Invalidating) !== 0) {
+			result += 'i'
+			status &= ~FuncCallStatus.Flag_Invalidating
+		}
+		if ((status & FuncCallStatus.Flag_Invalidated) !== 0) {
+			result += 'I'
+			status &= ~FuncCallStatus.Flag_Invalidated
+		}
+	} else {
+		status &= ~FuncCallStatus.Flag_Invalidate_Force
+		if ((status & FuncCallStatus.Flag_Invalidating) !== 0) {
+			result += 'f'
+			status &= ~FuncCallStatus.Flag_Invalidating
+		}
+		if ((status & FuncCallStatus.Flag_Invalidated) !== 0) {
+			result += 'F'
+			status &= ~FuncCallStatus.Flag_Invalidated
+		}
+	}
+
+	if ((status & FuncCallStatus.Flag_Calculating_Async) === FuncCallStatus.Flag_Calculating_Async) {
+		result += 'a'
+		status &= ~FuncCallStatus.Flag_Calculating_Async
+	} else if ((status & FuncCallStatus.Flag_Calculating) !== 0) {
+		result += 'c'
+		status &= ~FuncCallStatus.Flag_Calculating
+	}
+
+	if ((status & FuncCallStatus.Flag_Calculated) !== 0) {
+		result += 'C'
+		status &= ~FuncCallStatus.Flag_Calculated
+	}
+	if ((status & FuncCallStatus.Flag_HasValue) !== 0) {
+		result += 'V'
+		status &= ~FuncCallStatus.Flag_HasValue
+	}
+	if ((status & FuncCallStatus.Flag_HasError) !== 0) {
+		result += 'E'
+		status &= ~FuncCallStatus.Flag_HasError
+	}
+	if (status !== 0) {
+		result += status
+	}
+	return result
+}
+
+function checkStatuses(...funcCalls: IDependencyCall[]) {
+	return function(...statusesShort: string[]) {
+		assert.deepStrictEqual(
+			funcCalls.map(o => statusToShortString(o.state.status)),
+			statusesShort,
+		)
+	}
 }
 
 function _invalidate(...funcCalls: IDependencyCall[]) {
@@ -501,6 +581,35 @@ function isInvalidated(funcCall: IDependencyCall) {
 
 export function assertStatus(status: FuncCallStatus) {
 	assert.ok(checkStatus(status), statusToString(status))
+}
+
+function getSubscribers(state: IFuncCallState<any, any, any>) {
+	const subscribers = []
+	for (let link = state._subscribersFirst; link !== null;) {
+		subscribers.push(link.value)
+		link = link.next
+	}
+	return subscribers
+}
+
+function checkSubscribers(funcCall: IDependencyCall, ...subscribersFuncCalls: IDependencyCall[]) {
+	const ids = getSubscribers(funcCall.state)
+		.map(o => o.id).sort()
+	const checkIds = subscribersFuncCalls
+		.map(o => o.id).sort()
+	assert.deepStrictEqual(ids, checkIds, funcCall.id)
+}
+
+function checkUnsubscribers(funcCall: IDependencyCall, ...unsubscribersFuncCalls: IDependencyCall[]) {
+	const ids = funcCall.state._unsubscribers === null || funcCall.state._unsubscribersLength === 0
+		? []
+		: funcCall.state._unsubscribers.filter(o => o)
+			.map(o => (o.state as any).id)
+			.sort()
+
+	const checkIds = unsubscribersFuncCalls
+		.map(o => o.id).sort()
+	assert.deepStrictEqual(ids, checkIds, funcCall.id)
 }
 
 export async function baseTestOld() {
@@ -630,6 +739,36 @@ export async function baseTest() {
 	const I2 = funcCall(I, [S1, I1], 2, null) // I20(S1(S(0),I(0)),I1(I(0),A(_)))
 	const A2 = funcCall(A, [I1], 2, 2) // A22(I1(I(0),A(_)))
 
+	const allFuncs = [S0, I0, A0, S1, I1, S2, I2, A2]
+	const _checkStatuses = checkStatuses(...allFuncs)
+
+	function _checkSubscribersAll() {
+		checkSubscribers(S0, S1)
+		checkSubscribers(I0, S1, I1)
+		checkSubscribers(A0, I1)
+		checkSubscribers(S1, S2, I2)
+		checkSubscribers(I1, I2, A2)
+		checkSubscribers(S2)
+		checkSubscribers(I2)
+		checkSubscribers(A2)
+	}
+
+	function _checkUnsubscribersAll() {
+		checkUnsubscribers(S0)
+		checkUnsubscribers(I0)
+		checkUnsubscribers(A0)
+		checkUnsubscribers(S1, S0, I0)
+		checkUnsubscribers(I1, I0, A0)
+		checkUnsubscribers(S2, S1)
+		checkUnsubscribers(I2, S1, I1)
+		checkUnsubscribers(A2, I1)
+	}
+
+	function checkSubscribersAll() {
+		_checkSubscribersAll()
+		_checkUnsubscribersAll()
+	}
+
 	// endregion
 
 	// region check init
@@ -649,22 +788,31 @@ export async function baseTest() {
 
 	// region base tests
 
+	_checkStatuses('F', 'F', 'F',   'F', 'F',   'F', 'F', 'F')
 	checkFuncSync(ResultType.Value, S0, S0)
+	_checkStatuses('CV', 'F', 'F',   'F', 'F',   'F', 'F', 'F')
 	checkFuncSync(ResultType.Value, I0, I0)
+	_checkStatuses('CV', 'CV', 'F',   'F', 'F',   'F', 'F', 'F')
 	await checkFuncAsync(ResultType.Value, A0, A0)
+	_checkStatuses('CV', 'CV', 'CV',   'F', 'F',   'F', 'F', 'F')
 
 	checkFuncSync(ResultType.Value, S1, S1)
+	_checkStatuses('CV', 'CV', 'CV',   'CV', 'F',   'F', 'F', 'F')
 	checkFuncSync(ResultType.Value, I1, I1)
+	_checkStatuses('CV', 'CV', 'CV',   'CV', 'CV',   'F', 'F', 'F')
 
 	checkFuncSync(ResultType.Value, S2, S2)
+	_checkStatuses('CV', 'CV', 'CV',   'CV', 'CV',   'CV', 'F', 'F')
 	checkFuncSync(ResultType.Value, I2, I2)
+	_checkStatuses('CV', 'CV', 'CV',   'CV', 'CV',   'CV', 'CV', 'F')
 	await checkFuncAsync(ResultType.Value, A2, A2)
+	_checkStatuses('CV', 'CV', 'CV',   'CV', 'CV',   'CV', 'CV', 'CV')
+	checkSubscribersAll()
 
 	// endregion
 
 	// region invalidate
 
-	const allFuncs = [S0, I0, A0, S1, I1, S2, I2, A2]
 	checkFuncNotChanged(allFuncs)
 	checkChangeResultIds(...allFuncs)
 
@@ -672,18 +820,33 @@ export async function baseTest() {
 
 	// region level 2
 
+	_checkStatuses('CV', 'CV', 'CV',   'CV', 'CV',   'CV', 'CV', 'CV')
+	checkSubscribersAll()
 	_invalidate(S2)
+	_checkStatuses('CV', 'CV', 'CV',   'CV', 'CV',   'FV', 'CV', 'CV')
 	checkFuncSync(ResultType.Value, S2, S2)
+	_checkStatuses('CV', 'CV', 'CV',   'CV', 'CV',   'CV', 'CV', 'CV')
+	checkSubscribersAll()
 	checkFuncNotChanged(allFuncs)
 	checkChangeResultIds(...allFuncs)
 
+	_checkStatuses('CV', 'CV', 'CV',   'CV', 'CV',   'CV', 'CV', 'CV')
+	checkSubscribersAll()
 	_invalidate(I2)
+	_checkStatuses('CV', 'CV', 'CV',   'CV', 'CV',   'CV', 'FV', 'CV')
 	checkFuncSync(ResultType.Value, I2, I2)
+	_checkStatuses('CV', 'CV', 'CV',   'CV', 'CV',   'CV', 'CV', 'CV')
+	checkSubscribersAll()
 	checkFuncNotChanged(allFuncs)
 	checkChangeResultIds(S0, I0, A0, S1, I1, S2, A2, I2)
 
+	_checkStatuses('CV', 'CV', 'CV',   'CV', 'CV',   'CV', 'CV', 'CV')
+	checkSubscribersAll()
 	_invalidate(A2)
+	_checkStatuses('CV', 'CV', 'CV',   'CV', 'CV',   'CV', 'CV', 'FV')
 	await checkFuncAsync(ResultType.Value, A2, A2)
+	_checkStatuses('CV', 'CV', 'CV',   'CV', 'CV',   'CV', 'CV', 'CV')
+	checkSubscribersAll()
 	checkFuncNotChanged(allFuncs)
 	checkChangeResultIds(S0, I0, A0, S1, I1, S2, A2, I2)
 
@@ -691,15 +854,27 @@ export async function baseTest() {
 
 	// region level 1
 
+	_checkStatuses('CV', 'CV', 'CV',   'CV', 'CV',   'CV', 'CV', 'CV')
+	checkSubscribersAll()
 	_invalidate(S1)
+	_checkStatuses('CV', 'CV', 'CV',   'FV', 'CV',   'IV', 'IV', 'CV')
 	checkFuncSync(ResultType.Value, S2, S1)
+	_checkStatuses('CV', 'CV', 'CV',   'CV', 'CV',   'CV', 'IV', 'CV')
 	checkFuncSync(ResultType.Value, I2)
+	_checkStatuses('CV', 'CV', 'CV',   'CV', 'CV',   'CV', 'CV', 'CV')
+	checkSubscribersAll()
 	checkFuncNotChanged(allFuncs)
 	checkChangeResultIds(S0, I0, A0, S1, I1, S2, A2, I2)
 
+	_checkStatuses('CV', 'CV', 'CV',   'CV', 'CV',   'CV', 'CV', 'CV')
+	checkSubscribersAll()
 	_invalidate(I1)
+	_checkStatuses('CV', 'CV', 'CV',   'CV', 'FV',   'CV', 'IV', 'IV')
 	checkFuncSync(ResultType.Value, I2, I1, I2)
+	_checkStatuses('CV', 'CV', 'CV',   'CV', 'CV',   'CV', 'CV', 'FV')
 	await checkFuncAsync(ResultType.Value, A2, A2)
+	_checkStatuses('CV', 'CV', 'CV',   'CV', 'CV',   'CV', 'CV', 'CV')
+	checkSubscribersAll()
 	checkFuncNotChanged(allFuncs)
 	checkChangeResultIds(S0, I0, A0, S1, S2, A2, I1, I2)
 
@@ -707,6 +882,7 @@ export async function baseTest() {
 
 	// region level 0
 
+	_checkStatuses('CV', 'CV', 'CV',   'CV', 'CV',   'CV', 'CV', 'CV')
 	_invalidate(S0)
 	// console.log(allFuncs.filter(isInvalidated).map(o => o.id))
 	checkFuncSync(ResultType.Value, S2, S0)
@@ -824,6 +1000,7 @@ export async function baseTest() {
 	checkFuncSync(ResultType.Value, I2, S1, I2)
 	await promise2
 	checkCallHistory()
+	await checkFuncAsync(ResultType.Value, A2, A2)
 	checkFuncNotChanged(allFuncs)
 	checkChangeResultIds(S0, A0, S1, S2, A2, I0, I1, I2)
 
@@ -839,6 +1016,7 @@ export async function baseTest() {
 	checkFuncSync(ResultType.Value, I2, S1, I2)
 	await promise2
 	checkCallHistory()
+	await checkFuncAsync(ResultType.Value, A2, A2)
 	checkFuncNotChanged(allFuncs)
 	checkChangeResultIds(S0, A0, S1, S2, A2, I0, I1, I2)
 
