@@ -963,14 +963,21 @@ export async function baseTest() {
 
 	_checkStatuses('CV', 'CV', 'CV',   'CV', 'CV',   'CV', 'CV', 'CV')
 	_invalidate(I1)
+	_checkStatuses('CV', 'CV', 'CV',   'CV', 'FV',   'CV', 'IV', 'IV')
 	await checkFuncAsync(ResultType.Value, A2, I1, A2)
+	_checkStatuses('CV', 'CV', 'CV',   'CV', 'CV',   'CV', 'FV', 'CV')
 	checkFuncSync(ResultType.Value, I2, I2)
+	_checkStatuses('CV', 'CV', 'CV',   'CV', 'CV',   'CV', 'CV', 'CV')
 	checkFuncNotChanged(allFuncs)
 	checkChangeResultIds(S0, A0, S1, S2, A2, I0, I1, I2)
 
+	_checkStatuses('CV', 'CV', 'CV',   'CV', 'CV',   'CV', 'CV', 'CV')
 	_invalidate(S1)
+	_checkStatuses('CV', 'CV', 'CV',   'FV', 'CV',   'IV', 'IV', 'CV')
 	checkFuncSync(ResultType.Value, I2, S1)
+	_checkStatuses('CV', 'CV', 'CV',   'CV', 'CV',   'IV', 'CV', 'CV')
 	checkFuncSync(ResultType.Value, S2)
+	_checkStatuses('CV', 'CV', 'CV',   'CV', 'CV',   'CV', 'CV', 'CV')
 	checkFuncNotChanged(allFuncs)
 	checkChangeResultIds(S0, A0, S1, S2, A2, I0, I1, I2)
 
@@ -978,18 +985,27 @@ export async function baseTest() {
 
 	// region level 2
 
+	_checkStatuses('CV', 'CV', 'CV',   'CV', 'CV',   'CV', 'CV', 'CV')
 	_invalidate(A2)
+	_checkStatuses('CV', 'CV', 'CV',   'CV', 'CV',   'CV', 'CV', 'FV')
 	await checkFuncAsync(ResultType.Value, A2, A2)
+	_checkStatuses('CV', 'CV', 'CV',   'CV', 'CV',   'CV', 'CV', 'CV')
 	checkFuncNotChanged(allFuncs)
 	checkChangeResultIds(S0, A0, S1, S2, A2, I0, I1, I2)
 
+	_checkStatuses('CV', 'CV', 'CV',   'CV', 'CV',   'CV', 'CV', 'CV')
 	_invalidate(I2)
+	_checkStatuses('CV', 'CV', 'CV',   'CV', 'CV',   'CV', 'FV', 'CV')
 	checkFuncSync(ResultType.Value, I2, I2)
+	_checkStatuses('CV', 'CV', 'CV',   'CV', 'CV',   'CV', 'CV', 'CV')
 	checkFuncNotChanged(allFuncs)
 	checkChangeResultIds(S0, A0, S1, S2, A2, I0, I1, I2)
 
+	_checkStatuses('CV', 'CV', 'CV',   'CV', 'CV',   'CV', 'CV', 'CV')
 	_invalidate(S2)
+	_checkStatuses('CV', 'CV', 'CV',   'CV', 'CV',   'FV', 'CV', 'CV')
 	checkFuncSync(ResultType.Value, S2, S2)
+	_checkStatuses('CV', 'CV', 'CV',   'CV', 'CV',   'CV', 'CV', 'CV')
 	checkFuncNotChanged(allFuncs)
 	checkChangeResultIds(S0, A0, S1, S2, A2, I0, I1, I2)
 
@@ -1004,21 +1020,35 @@ export async function baseTest() {
 	let promise1
 	let promise2
 
+	_checkStatuses('CV', 'CV', 'CV',   'CV', 'CV',   'CV', 'CV', 'CV')
 	_invalidate(I1)
+	_checkStatuses('CV', 'CV', 'CV',   'CV', 'FV',   'CV', 'IV', 'IV')
 	checkFuncSync(ResultType.Value, I2, I1, I2)
+	_checkStatuses('CV', 'CV', 'CV',   'CV', 'CV',   'CV', 'CV', 'FV')
 	promise1 = checkFuncAsync(ResultType.Value, A2, A2)
+	_checkStatuses('CV', 'CV', 'CV',   'CV', 'CV',   'CV', 'CV', 'aV')
 	_invalidate(I1)
+	checkUnsubscribers(A2)
+	_checkStatuses('CV', 'CV', 'CV',   'CV', 'FV',   'CV', 'IV', 'aV')
 	checkFuncSync(ResultType.Value, I2, I1, I2)
+	_checkStatuses('CV', 'CV', 'CV',   'CV', 'CV',   'CV', 'CV', 'aV')
 	await promise1
+	_checkStatuses('CV', 'CV', 'CV',   'CV', 'CV',   'CV', 'CV', 'CV')
 	checkFuncSync(ResultType.Value, A2)
 	checkFuncNotChanged(allFuncs)
 	checkChangeResultIds(S0, A0, S1, S2, A2, I0, I1, I2)
 
+	_checkStatuses('CV', 'CV', 'CV',   'CV', 'CV',   'CV', 'CV', 'CV')
 	_invalidate(A0)
+	_checkStatuses('CV', 'CV', 'FV',   'CV', 'IV',   'CV', 'IV', 'IV')
 	promise1 = checkFuncAsync(ResultType.Value, A2, A0)
+	_checkStatuses('CV', 'CV', 'aV',   'CV', 'aV',   'CV', 'IV', 'aV')
 	_invalidate(A0)
+	_checkStatuses('CV', 'CV', 'FaV',   'CV', 'IaV',   'CV', 'IV', 'IaV')
 	promise2 = checkFuncAsync(ResultType.Value, I2)
+	_checkStatuses('CV', 'CV', 'FaV',   'CV', 'IaV',   'CV', 'aV', 'IaV')
 	await checkFuncAsync(ResultType.Value, A0)
+	_checkStatuses('CV', 'CV', 'FV',   'CV', 'FV',   'CV', 'IV', 'IV')
 	checkCallHistory(A2)
 	_invalidate(I0)
 	await promise1
