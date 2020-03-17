@@ -161,6 +161,10 @@ function setCalculate(status: FuncCallStatus, value: Mask_Calculate | Flag_None)
 	return (status & ~Mask_Calculate) | value
 }
 
+function isCheck(status: FuncCallStatus): boolean {
+	return (status & Flag_Check) !== 0
+}
+
 function isCalculating(status: FuncCallStatus): boolean {
 	return (status & Flag_Calculating) !== 0
 }
@@ -411,6 +415,40 @@ export function updateInvalidate<
 	}
 }
 
+export function updateCheck<
+	TThis,
+	TArgs extends any[],
+	TValue,
+>(
+	state: IFuncCallState<TThis, TArgs, TValue>,
+) {
+	const prevStatus = state.status
+
+	if ((prevStatus & Mask_Invalidate) === 0) {
+		throw new InternalError(`Set status ${statusToString(Update_Check)} called when current status is ${statusToString(prevStatus)}`)
+	}
+
+	state.status = (prevStatus & ~(Mask_Invalidate | Flag_Recalc | Mask_Calculate)) | Flag_Check
+}
+
+export function updateCheckAsync<
+	TThis,
+	TArgs extends any[],
+	TValue,
+>(
+	state: IFuncCallState<TThis, TArgs, TValue>,
+	valueAsync: Thenable<TValue>,
+) {
+	const prevStatus = state.status
+
+	if (!isCheck(prevStatus)) {
+		throw new InternalError(`Set status ${statusToString(Update_Check_Async)} called when current status is ${statusToString(prevStatus)}`)
+	}
+	state.valueAsync = valueAsync
+
+	state.status = setCalculate(prevStatus, Update_Check_Async)
+}
+
 export function updateCalculating<
 	TThis,
 	TArgs extends any[],
@@ -420,7 +458,7 @@ export function updateCalculating<
 ) {
 	const prevStatus = state.status
 
-	if ((prevStatus & (Mask_Invalidate | Flag_Calculating)) === 0) {
+	if ((prevStatus & (Mask_Invalidate | Flag_Check | Flag_Calculating)) === 0) {
 		throw new InternalError(`Set status ${statusToString(Update_Calculating)} called when current status is ${statusToString(prevStatus)}`)
 	}
 
@@ -456,7 +494,7 @@ export function updateCalculated<
 ) {
 	const prevStatus = state.status
 
-	if (!isCalculating(prevStatus)) {
+	if ((prevStatus & (Flag_Check | Flag_Calculating)) === 0) {
 		throw new InternalError(`Set status ${statusToString(Update_Calculated_Value)} called when current status is ${statusToString(prevStatus)}`)
 	}
 
@@ -480,7 +518,7 @@ export function updateCalculatedValue<
 ) {
 	const prevStatus = state.status
 
-	if (!isCalculating(prevStatus)) {
+	if ((prevStatus & (Flag_Check | Flag_Calculating)) === 0) {
 		throw new InternalError(`Set status ${statusToString(Update_Calculated_Value)} called when current status is ${statusToString(prevStatus)}`)
 	}
 	if (state.valueAsync != null) {
@@ -510,7 +548,7 @@ export function updateCalculatedError<
 ) {
 	const prevStatus = state.status
 
-	if (!isCalculating(prevStatus)) {
+	if ((prevStatus & (Flag_Check | Flag_Calculating)) === 0) {
 		throw new InternalError(`Set status ${statusToString(Update_Calculated_Error)} called when current status is ${statusToString(prevStatus)}`)
 	}
 	if (state.valueAsync != null) {
@@ -633,7 +671,7 @@ export class FuncCallState<TThis,
 	}
 
 	public get isHandling(): boolean {
-		return (this.status & (Flag_Calculating | Flag_Invalidating)) !== 0
+		return (this.status & (Flag_Check | Flag_Calculating | Flag_Invalidating)) !== 0
 	}
 
 	public get statusString(): string {
@@ -679,8 +717,8 @@ function* checkDependenciesChangedAsync(
 				return true
 			}
 
-			if (!(getCalculate(dependencyState.status) !== Flag_Calculating
-				&& (dependencyState.status & (Flag_HasError | Flag_HasValue)) !== 0)
+			if ((dependencyState.status & (Flag_Check | Flag_Calculating)) !== 0
+				|| (dependencyState.status & (Flag_HasError | Flag_HasValue)) === 0
 			) {
 				throw new InternalError(`Unexpected dependency status: ${statusToString(dependencyState.status)}`)
 			}
@@ -708,8 +746,8 @@ function checkDependenciesChanged(state: IFuncCallState<any, any, any>): Thenabl
 				return true
 			}
 
-			if (!(getCalculate(dependencyState.status) !== Flag_Calculating
-				&& (dependencyState.status & (Flag_HasError | Flag_HasValue)) !== 0)
+			if ((dependencyState.status & (Flag_Check | Flag_Calculating)) !== 0
+				|| (dependencyState.status & (Flag_HasError | Flag_HasValue)) === 0
 			) {
 				throw new InternalError(`Unexpected dependency status: ${statusToString(dependencyState.status)}`)
 			}
@@ -779,7 +817,7 @@ export function _dependentFunc<
 				parentCallState = parentCallState.parentCallState
 			}
 			return state.valueAsync
-		} else if (getCalculate(state.status) === Flag_Calculating) {
+		} else if ((state.status & (Flag_Check | Flag_Calculating)) !== 0) {
 			throw new InternalError('Recursive sync loop detected')
 		} else {
 			throw new InternalError(`Unknown FuncCallStatus: ${statusToString(state.status)}`)
