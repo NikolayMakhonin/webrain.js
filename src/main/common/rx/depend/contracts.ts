@@ -48,8 +48,6 @@ export interface IFuncCallState<TThis,
 	value: TValue
 	error: any
 
-	/** for prevent recalc dependent funcs if dependencies.changeResultId <= dependent.changeResultId */
-	changeResultId: number
 	calcId: number
 
 	/** for detect recursive async loop */

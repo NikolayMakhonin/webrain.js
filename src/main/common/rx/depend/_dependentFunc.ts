@@ -484,7 +484,6 @@ export function updateCalculatedValue<
 	) {
 		state.error = void 0
 		state.value = value
-		state.changeResultId = state.calcId
 		afterCalc(state, prevStatus, true)
 	} else {
 		afterCalc(state, prevStatus, false)
@@ -512,7 +511,6 @@ export function updateCalculatedError<
 	state.status = Update_Calculated_Error | (prevStatus & Flag_HasValue)
 
 	if ((prevStatus & Flag_HasError) === 0) {
-		state.changeResultId = state.calcId
 		afterCalc(state, prevStatus, true)
 	} else {
 		afterCalc(state, prevStatus, false)
@@ -614,8 +612,6 @@ export class FuncCallState<TThis,
 	public _subscribersFirst = null
 	public _subscribersLast = null
 	public _subscribersCalculating = null
-	/** for prevent recalc dependent funcs if dependencies.changeResultId <= dependent.changeResultId */
-	public changeResultId = 0
 	public calcId = 0
 	// for prevent multiple subscribe equal dependencies
 	public callId = 0
@@ -660,7 +656,6 @@ function* checkDependenciesChangedAsync(
 ): ThenableIterator<boolean> {
 	const {_unsubscribers, _unsubscribersLength} = state
 	if (_unsubscribers != null) {
-		const {changeResultId} = state
 		for (let i = fromIndex || 0, len = _unsubscribersLength; i < len; i++) {
 			const dependencyState = _unsubscribers[i].state
 			if (getInvalidate(dependencyState.status) !== 0) {

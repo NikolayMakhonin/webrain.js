@@ -407,13 +407,6 @@
       <option name="presentableId" value="Default" />
       <updated>1567687848586</updated>
     </task>
-    <task id="LOCAL-00244" summary="dependent-funcs v8 optimization in process...">
-      <created>1581527988904</created>
-      <option name="number" value="00244" />
-      <option name="presentableId" value="LOCAL-00244" />
-      <option name="project" value="LOCAL" />
-      <updated>1581527988904</updated>
-    </task>
     <task id="LOCAL-00245" summary="Tests OK">
       <created>1581532378829</created>
       <option name="number" value="00245" />
@@ -750,7 +743,14 @@
       <option name="project" value="LOCAL" />
       <updated>1584355838232</updated>
     </task>
-    <option name="localTasksCounter" value="293" />
+    <task id="LOCAL-00293" summary="Develop. Tests OK.">
+      <created>1584437494969</created>
+      <option name="number" value="00293" />
+      <option name="presentableId" value="LOCAL-00293" />
+      <option name="project" value="LOCAL" />
+      <updated>1584437494969</updated>
+    </task>
+    <option name="localTasksCounter" value="294" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -835,9 +835,9 @@
     <MESSAGE value="BinaryTree: try to use non recursive add - failed, it is slower than recursive" />
     <MESSAGE value="BinaryTree: optimizing AVL ..." />
     <MESSAGE value="Develop tests" />
-    <MESSAGE value="Develop. Tests OK." />
     <MESSAGE value="Develop" />
-    <option name="LAST_COMMIT_MESSAGE" value="Develop" />
+    <MESSAGE value="Develop. Tests OK." />
+    <option name="LAST_COMMIT_MESSAGE" value="Develop. Tests OK." />
   </component>
   <component name="XDebuggerManager">
     <breakpoint-manager>
@@ -849,22 +849,10 @@
           <option name="timeStamp" value="720" />
         </line-breakpoint>
         <line-breakpoint enabled="true" type="javascript">
-          <url>file://$PROJECT_DIR$/src/main/common/rx/depend/_dependentFunc.ts</url>
-          <line>501</line>
-          <properties lambdaOrdinal="-1" />
-          <option name="timeStamp" value="748" />
-        </line-breakpoint>
-        <line-breakpoint enabled="true" type="javascript">
           <url>file://$PROJECT_DIR$/src/test/tests/common/main/rx/depend/src/helpers.ts</url>
-          <line>873</line>
+          <line>1077</line>
           <properties lambdaOrdinal="-1" />
-          <option name="timeStamp" value="773" />
-        </line-breakpoint>
-        <line-breakpoint enabled="true" type="javascript">
-          <url>file://$PROJECT_DIR$/src/test/tests/common/main/rx/depend/src/helpers.ts</url>
-          <line>1070</line>
-          <properties lambdaOrdinal="-1" />
-          <option name="timeStamp" value="788" />
+          <option name="timeStamp" value="796" />
         </line-breakpoint>
       </breakpoints>
       <breakpoints-dialog>

@@ -31,7 +31,7 @@ export function __makeDependentFunc<TThis,
 	TArgs extends any[],
 	TValue,
 	>(func: Func<TThis, TArgs, TValue | Iterator<TValue>>) {
-	if (typeof func === 'Irunction') {
+	if (typeof func === 'function') {
 		return makeDependentFunc<TThis, TArgs, TValue>(func as any)
 	}
 	return null
@@ -549,20 +549,6 @@ function _checkFuncNotChanged<TValue>(...funcCalls: IDependencyCall[]) {
 	}
 }
 
-function checkChangeResultIds(...orderedFuncCalls: IDependencyCall[]) {
-	let prevState: IFuncCallState<any, any, any>
-	for (let i = 0, len = orderedFuncCalls.length; i < len; i++) {
-		const funcCall = orderedFuncCalls[i]
-		if (prevState != null) {
-			assert.ok(
-				prevState.changeResultId < funcCall.state.changeResultId,
-				`${(prevState as any).id} (${prevState.changeResultId}) >= ${(funcCall.state as any).id} (${funcCall.state.changeResultId})`,
-			)
-		}
-		prevState = funcCall.state
-	}
-}
-
 function checkFuncNotChanged<TValue>(allFuncCalls: IDependencyCall[], ...changedFuncCalls: IDependencyCall[]) {
 	_checkFuncNotChanged(...allFuncCalls.filter(o => changedFuncCalls.indexOf(o) < 0))
 }
@@ -801,12 +787,13 @@ export async function baseTest() {
 	_checkStatuses('CV', 'CV', 'CV',   'CV', 'CV',   'CV', 'CV', 'CV')
 	checkSubscribersAll()
 
+	checkFuncNotChanged(allFuncs)
+
 	// endregion
 
-	// region invalidate
+	// region Without Errors
 
-	checkFuncNotChanged(allFuncs)
-	checkChangeResultIds(...allFuncs)
+	// region invalidate
 
 	// region Forward
 
@@ -820,7 +807,6 @@ export async function baseTest() {
 	_checkStatuses('CV', 'CV', 'CV',   'CV', 'CV',   'CV', 'CV', 'CV')
 	checkSubscribersAll()
 	checkFuncNotChanged(allFuncs)
-	checkChangeResultIds(...allFuncs)
 
 	_checkStatuses('CV', 'CV', 'CV',   'CV', 'CV',   'CV', 'CV', 'CV')
 	checkSubscribersAll()
@@ -830,7 +816,6 @@ export async function baseTest() {
 	_checkStatuses('CV', 'CV', 'CV',   'CV', 'CV',   'CV', 'CV', 'CV')
 	checkSubscribersAll()
 	checkFuncNotChanged(allFuncs)
-	checkChangeResultIds(S0, I0, A0, S1, I1, S2, A2, I2)
 
 	_checkStatuses('CV', 'CV', 'CV',   'CV', 'CV',   'CV', 'CV', 'CV')
 	checkSubscribersAll()
@@ -840,7 +825,6 @@ export async function baseTest() {
 	_checkStatuses('CV', 'CV', 'CV',   'CV', 'CV',   'CV', 'CV', 'CV')
 	checkSubscribersAll()
 	checkFuncNotChanged(allFuncs)
-	checkChangeResultIds(S0, I0, A0, S1, I1, S2, A2, I2)
 
 	// endregion
 
@@ -856,7 +840,6 @@ export async function baseTest() {
 	_checkStatuses('CV', 'CV', 'CV',   'CV', 'CV',   'CV', 'CV', 'CV')
 	checkSubscribersAll()
 	checkFuncNotChanged(allFuncs)
-	checkChangeResultIds(S0, I0, A0, S1, I1, S2, A2, I2)
 
 	_checkStatuses('CV', 'CV', 'CV',   'CV', 'CV',   'CV', 'CV', 'CV')
 	checkSubscribersAll()
@@ -868,7 +851,6 @@ export async function baseTest() {
 	_checkStatuses('CV', 'CV', 'CV',   'CV', 'CV',   'CV', 'CV', 'CV')
 	checkSubscribersAll()
 	checkFuncNotChanged(allFuncs)
-	checkChangeResultIds(S0, I0, A0, S1, S2, A2, I1, I2)
 
 	// endregion
 
@@ -883,7 +865,6 @@ export async function baseTest() {
 	checkFuncSync(ResultType.Value, I2)
 	_checkStatuses('CV', 'CV', 'CV',   'CV', 'CV',   'CV', 'CV', 'CV')
 	checkFuncNotChanged(allFuncs)
-	checkChangeResultIds(S0, I0, A0, S1, S2, A2, I1, I2)
 
 	_checkStatuses('CV', 'CV', 'CV',   'CV', 'CV',   'CV', 'CV', 'CV')
 	_invalidate(I0)
@@ -895,7 +876,6 @@ export async function baseTest() {
 	await checkFuncAsync(ResultType.Value, A2, A2)
 	_checkStatuses('CV', 'CV', 'CV',   'CV', 'CV',   'CV', 'CV', 'CV')
 	checkFuncNotChanged(allFuncs)
-	checkChangeResultIds(S0, A0, S1, S2, A2, I0, I1, I2)
 
 	_checkStatuses('CV', 'CV', 'CV',   'CV', 'CV',   'CV', 'CV', 'CV')
 	_invalidate(A0)
@@ -905,7 +885,6 @@ export async function baseTest() {
 	checkFuncSync(ResultType.Value, A2)
 	_checkStatuses('CV', 'CV', 'CV',   'CV', 'CV',   'CV', 'CV', 'CV')
 	checkFuncNotChanged(allFuncs)
-	checkChangeResultIds(S0, A0, S1, S2, A2, I0, I1, I2)
 
 	// endregion
 
@@ -923,7 +902,6 @@ export async function baseTest() {
 	checkFuncSync(ResultType.Value, I2)
 	_checkStatuses('CV', 'CV', 'CV',   'CV', 'CV',   'CV', 'CV', 'CV')
 	checkFuncNotChanged(allFuncs)
-	checkChangeResultIds(S0, A0, S1, S2, A2, I0, I1, I2)
 
 	_checkStatuses('CV', 'CV', 'CV',   'CV', 'CV',   'CV', 'CV', 'CV')
 	_invalidate(I0)
@@ -935,7 +913,6 @@ export async function baseTest() {
 	checkFuncSync(ResultType.Value, S2)
 	_checkStatuses('CV', 'CV', 'CV',   'CV', 'CV',   'CV', 'CV', 'CV')
 	checkFuncNotChanged(allFuncs)
-	checkChangeResultIds(S0, A0, S1, S2, A2, I0, I1, I2)
 
 	_checkStatuses('CV', 'CV', 'CV',   'CV', 'CV',   'CV', 'CV', 'CV')
 	_invalidate(S0)
@@ -945,7 +922,6 @@ export async function baseTest() {
 	checkFuncSync(ResultType.Value, S2)
 	_checkStatuses('CV', 'CV', 'CV',   'CV', 'CV',   'CV', 'CV', 'CV')
 	checkFuncNotChanged(allFuncs)
-	checkChangeResultIds(S0, A0, S1, S2, A2, I0, I1, I2)
 
 	// endregion
 
@@ -959,7 +935,6 @@ export async function baseTest() {
 	checkFuncSync(ResultType.Value, I2, I2)
 	_checkStatuses('CV', 'CV', 'CV',   'CV', 'CV',   'CV', 'CV', 'CV')
 	checkFuncNotChanged(allFuncs)
-	checkChangeResultIds(S0, A0, S1, S2, A2, I0, I1, I2)
 
 	_checkStatuses('CV', 'CV', 'CV',   'CV', 'CV',   'CV', 'CV', 'CV')
 	_invalidate(S1)
@@ -969,7 +944,6 @@ export async function baseTest() {
 	checkFuncSync(ResultType.Value, S2)
 	_checkStatuses('CV', 'CV', 'CV',   'CV', 'CV',   'CV', 'CV', 'CV')
 	checkFuncNotChanged(allFuncs)
-	checkChangeResultIds(S0, A0, S1, S2, A2, I0, I1, I2)
 
 	// endregion
 
@@ -981,7 +955,6 @@ export async function baseTest() {
 	await checkFuncAsync(ResultType.Value, A2, A2)
 	_checkStatuses('CV', 'CV', 'CV',   'CV', 'CV',   'CV', 'CV', 'CV')
 	checkFuncNotChanged(allFuncs)
-	checkChangeResultIds(S0, A0, S1, S2, A2, I0, I1, I2)
 
 	_checkStatuses('CV', 'CV', 'CV',   'CV', 'CV',   'CV', 'CV', 'CV')
 	_invalidate(I2)
@@ -989,7 +962,6 @@ export async function baseTest() {
 	checkFuncSync(ResultType.Value, I2, I2)
 	_checkStatuses('CV', 'CV', 'CV',   'CV', 'CV',   'CV', 'CV', 'CV')
 	checkFuncNotChanged(allFuncs)
-	checkChangeResultIds(S0, A0, S1, S2, A2, I0, I1, I2)
 
 	_checkStatuses('CV', 'CV', 'CV',   'CV', 'CV',   'CV', 'CV', 'CV')
 	_invalidate(S2)
@@ -997,7 +969,6 @@ export async function baseTest() {
 	checkFuncSync(ResultType.Value, S2, S2)
 	_checkStatuses('CV', 'CV', 'CV',   'CV', 'CV',   'CV', 'CV', 'CV')
 	checkFuncNotChanged(allFuncs)
-	checkChangeResultIds(S0, A0, S1, S2, A2, I0, I1, I2)
 
 	// endregion
 
@@ -1005,7 +976,7 @@ export async function baseTest() {
 
 	// endregion
 
-	// invalidate during calc async
+	// region invalidate during calc async
 
 	let promise1
 	let promise2
@@ -1026,7 +997,6 @@ export async function baseTest() {
 	_checkStatuses('CV', 'CV', 'CV',   'CV', 'CV',   'CV', 'CV', 'CV')
 	checkFuncSync(ResultType.Value, A2)
 	checkFuncNotChanged(allFuncs)
-	checkChangeResultIds(S0, A0, S1, S2, A2, I0, I1, I2)
 
 	_checkStatuses('CV', 'CV', 'CV',   'CV', 'CV',   'CV', 'CV', 'CV')
 	_invalidate(A0)
@@ -1053,7 +1023,6 @@ export async function baseTest() {
 	checkFuncSync(ResultType.Value, S2)
 	_checkStatuses('CV', 'CV', 'CV',   'CV', 'CV',   'CV', 'CV', 'CV')
 	checkFuncNotChanged(allFuncs)
-	checkChangeResultIds(S0, A0, S1, S2, A2, I0, I1, I2)
 
 	_checkStatuses('CV', 'CV', 'CV',   'CV', 'CV',   'CV', 'CV', 'CV')
 	_invalidate(A0, I0)
@@ -1079,73 +1048,16 @@ export async function baseTest() {
 	checkFuncSync(ResultType.Value, S2)
 	_checkStatuses('CV', 'CV', 'CV',   'CV', 'CV',   'CV', 'CV', 'CV')
 	checkFuncNotChanged(allFuncs)
-	checkChangeResultIds(S0, A0, S1, S2, A2, I0, I1, I2)
 
 	_checkStatuses('CV', 'CV', 'CV',   'CV', 'CV',   'CV', 'CV', 'CV')
-	// endregion
-
-	return {
-		states: [S0, I0, A0, S1, I1, S2, I2, A2].map(o => {
-			return o.state
-		}),
-	}
-}
-
-export async function baseTest_() {
-	// region init
-
-	const S = funcSync('S')
-	const I = funcSyncIterator('I')
-	const A = funcAsync('A')
-
-	const S0 = funcCall(S) // S(0)
-	const I0 = funcCall(I, null) // I(0)
-	const A0 = funcCall(A, new ThisObj('_')) // A(_)
-
-	const S1 = funcCall(S, [S0, I0], 1) // S1(S(0),I(0))
-	const I1 = funcCall(I, [I0, A0], 1) // I1(I(0),A(_))
-
-	const S2 = funcCall(S, [S1], 2, void 0) // S20(S1(S(0),I(0)))
-	const I2 = funcCall(I, [S1, I1], 2, null) // I20(S1(S(0),I(0)),I1(I(0),A(_)))
-	const A2 = funcCall(A, [I1], 2, 2) // A22(I1(I(0),A(_)))
 
 	// endregion
 
-	// region check init
-
-	assert.strictEqual(S0.id, 'S(0)')
-	assert.strictEqual(I0.id, 'I(0)')
-	assert.strictEqual(A0.id, 'A(_)')
-
-	assert.strictEqual(S1.id, 'S1(S(0),I(0))')
-	assert.strictEqual(I1.id, 'I1(I(0),A(_))')
-
-	assert.strictEqual(S2.id, 'S20(S1(S(0),I(0)))')
-	assert.strictEqual(I2.id, 'I20(S1(S(0),I(0)),I1(I(0),A(_)))')
-	assert.strictEqual(A2.id, 'A22(I1(I(0),A(_)))')
-
 	// endregion
 
-	// region base tests
-
-	checkFuncSync(ResultType.Value, S0, S0)
-	checkFuncSync(ResultType.Value, I0, I0)
-	await checkFuncAsync(ResultType.Value, A0, A0)
-
-	checkFuncSync(ResultType.Value, S1, S1)
-	checkFuncSync(ResultType.Value, I1, I1)
-
-	checkFuncSync(ResultType.Value, S2, S2)
-	checkFuncSync(ResultType.Value, I2, I2)
-	await checkFuncAsync(ResultType.Value, A2, A2)
-
-	// endregion
+	// region With Errors
 
 	// region invalidate
-
-	const allFuncs = [S0, I0, A0, S1, I1, S2, I2, A2]
-	checkFuncNotChanged(allFuncs)
-	checkChangeResultIds(...allFuncs)
 
 	// region Forward
 
@@ -1155,20 +1067,21 @@ export async function baseTest_() {
 
 	setResultsAsError(S2, I2, A2)
 
+	_checkStatuses('CV', 'CV', 'CV',   'CV', 'CV',   'CV', 'CV', 'CV')
 	_invalidate(S2)
+	_checkStatuses('CV', 'CV', 'CV',   'CV', 'CV',   'IrV', 'CV', 'CV')
 	checkFuncSync(ResultType.Error, S2, S2)
+	_checkStatuses('CV', 'CV', 'CV',   'CV', 'CV',   'CVE', 'CV', 'CV')
 	checkFuncNotChanged(allFuncs)
-	checkChangeResultIds(S0, I0, A0, S1, I1, I2, A2, S2)
 
+	_checkStatuses('CV', 'CV', 'CV',   'CV', 'CV',   'CVE', 'CV', 'CV')
 	_invalidate(I2)
 	checkFuncSync(ResultType.Error, I2, I2)
 	checkFuncNotChanged(allFuncs)
-	checkChangeResultIds(S0, I0, A0, S1, I1, A2, S2, I2)
 
 	_invalidate(A2)
 	await checkFuncAsync(ResultType.Error, A2, A2)
 	checkFuncNotChanged(allFuncs)
-	checkChangeResultIds(S0, I0, A0, S1, I1, S2, I2, A2)
 
 	// endregion
 
@@ -1179,17 +1092,14 @@ export async function baseTest_() {
 	_invalidate(S2)
 	checkFuncSync(ResultType.Value, S2, S2)
 	checkFuncNotChanged(allFuncs)
-	checkChangeResultIds(S0, I0, A0, S1, I1, I2, A2, S2)
 
 	_invalidate(I2)
 	checkFuncSync(ResultType.Value, I2, I2)
 	checkFuncNotChanged(allFuncs)
-	checkChangeResultIds(S0, I0, A0, S1, I1, A2, S2, I2)
 
 	_invalidate(A2)
 	await checkFuncAsync(ResultType.Value, A2, A2)
 	checkFuncNotChanged(allFuncs)
-	checkChangeResultIds(S0, I0, A0, S1, I1, S2, I2, A2)
 
 	// endregion
 
@@ -1202,36 +1112,30 @@ export async function baseTest_() {
 	checkFuncSync(ResultType.Error, S2, S1)
 	checkFuncSync(ResultType.Error, I2)
 	checkFuncNotChanged(allFuncs)
-	checkChangeResultIds(S0, I0, A0, I1, A2, S1, S2, I2)
 	setResultsAsError()
 	_invalidate(S1)
 	checkFuncSync(ResultType.Value, S2, S1, S2)
 	checkFuncSync(ResultType.Value, I2, I2)
 	checkFuncNotChanged(allFuncs)
-	checkChangeResultIds(S0, I0, A0, I1, A2, S1, S2, I2)
 	_invalidate(S1)
 	checkFuncSync(ResultType.Value, S2, S1)
 	checkFuncSync(ResultType.Value, I2)
 	checkFuncNotChanged(allFuncs)
-	checkChangeResultIds(S0, I0, A0, I1, A2, S1, S2, I2)
 
 	setResultsAsError(I1)
 	_invalidate(I1)
 	checkFuncSync(ResultType.Error, I2, I1)
 	checkFuncSync(ResultType.Error, A2)
 	checkFuncNotChanged(allFuncs)
-	checkChangeResultIds(S0, I0, A0, S1, S2, I1, I2, A2)
 	setResultsAsError()
 	_invalidate(I1)
 	checkFuncSync(ResultType.Value, I2, I1, I2)
 	await checkFuncAsync(ResultType.Value, A2, A2)
 	checkFuncNotChanged(allFuncs)
-	checkChangeResultIds(S0, I0, A0, S1, S2, I1, I2, A2)
 	_invalidate(I1)
 	checkFuncSync(ResultType.Value, I2, I1, I2)
 	await checkFuncAsync(ResultType.Value, A2, A2)
 	checkFuncNotChanged(allFuncs)
-	checkChangeResultIds(S0, I0, A0, S1, S2, A2, I1, I2)
 
 	// endregion
 
@@ -1243,20 +1147,17 @@ export async function baseTest_() {
 	checkFuncSync(ResultType.Error, S2, S0)
 	checkFuncSync(ResultType.Error, I2)
 	checkFuncNotChanged(allFuncs)
-	checkChangeResultIds(I0, A0, A2, I1, S0, S1, S2, I2)
 	setResultsAsError()
 	_invalidate(S0)
 	// console.log(allFuncs.filter(isInvalidated).map(o => o.id))
 	checkFuncSync(ResultType.Value, S2, S0, S1, S2)
 	checkFuncSync(ResultType.Value, I2, I2)
 	checkFuncNotChanged(allFuncs)
-	checkChangeResultIds(I0, A0, A2, I1, S0, S1, S2, I2)
 	_invalidate(S0)
 	// console.log(allFuncs.filter(isInvalidated).map(o => o.id))
 	checkFuncSync(ResultType.Value, S2, S0)
 	checkFuncSync(ResultType.Value, I2)
 	checkFuncNotChanged(allFuncs)
-	checkChangeResultIds(I0, A0, A2, I1, S0, S1, S2, I2)
 
 	setResultsAsError(I0)
 	_invalidate(I0)
@@ -1264,26 +1165,22 @@ export async function baseTest_() {
 	checkFuncSync(ResultType.Error, I2)
 	checkFuncSync(ResultType.Error, A2)
 	checkFuncNotChanged(allFuncs)
-	checkChangeResultIds(A0, S0, I0, S1, S2, I2, I1, A2)
 	setResultsAsError()
 	_invalidate(I0)
 	checkFuncSync(ResultType.Value, S2, I0, S1, S2)
 	checkFuncSync(ResultType.Value, I2, I2, I1)
 	await checkFuncAsync(ResultType.Value, A2, A2)
 	checkFuncNotChanged(allFuncs)
-	checkChangeResultIds(A0, S0, I0, S1, S2, I1, I2, A2)
 	_invalidate(I0)
 	checkFuncSync(ResultType.Value, S2, I0, S1)
 	checkFuncSync(ResultType.Value, I2, I1, I2)
 	await checkFuncAsync(ResultType.Value, A2, A2)
 	checkFuncNotChanged(allFuncs)
-	checkChangeResultIds(I0, A0, A2, I1, S0, S1, S2, I2)
 
 	_invalidate(A0)
 	await checkFuncAsync(ResultType.Value, I2, A0)
 	checkFuncSync(ResultType.Value, A2)
 	checkFuncNotChanged(allFuncs)
-	checkChangeResultIds(S0, A0, S1, S2, A2, I0, I1, I2)
 
 	// endregion
 
@@ -1298,21 +1195,18 @@ export async function baseTest_() {
 	checkCallHistory(A2)
 	checkFuncSync(ResultType.Value, I2)
 	checkFuncNotChanged(allFuncs)
-	checkChangeResultIds(S0, A0, S1, S2, A2, I0, I1, I2)
 
 	_invalidate(I0)
 	await checkFuncAsync(ResultType.Value, A2, I0, I1, A2)
 	checkFuncSync(ResultType.Value, I2, S1, I2)
 	checkFuncSync(ResultType.Value, S2)
 	checkFuncNotChanged(allFuncs)
-	checkChangeResultIds(S0, A0, S1, S2, A2, I0, I1, I2)
 
 	_invalidate(S0)
 	// console.log(allFuncs.filter(isInvalidated).map(o => o.id))
 	checkFuncSync(ResultType.Value, I2, S0)
 	checkFuncSync(ResultType.Value, S2)
 	checkFuncNotChanged(allFuncs)
-	checkChangeResultIds(S0, A0, S1, S2, A2, I0, I1, I2)
 
 	// endregion
 
@@ -1322,13 +1216,11 @@ export async function baseTest_() {
 	await checkFuncAsync(ResultType.Value, A2, I1, A2)
 	checkFuncSync(ResultType.Value, I2, I2)
 	checkFuncNotChanged(allFuncs)
-	checkChangeResultIds(S0, A0, S1, S2, A2, I0, I1, I2)
 
 	_invalidate(S1)
 	checkFuncSync(ResultType.Value, I2, S1)
 	checkFuncSync(ResultType.Value, S2)
 	checkFuncNotChanged(allFuncs)
-	checkChangeResultIds(S0, A0, S1, S2, A2, I0, I1, I2)
 
 	// endregion
 
@@ -1337,17 +1229,14 @@ export async function baseTest_() {
 	_invalidate(A2)
 	await checkFuncAsync(ResultType.Value, A2, A2)
 	checkFuncNotChanged(allFuncs)
-	checkChangeResultIds(S0, A0, S1, S2, A2, I0, I1, I2)
 
 	_invalidate(I2)
 	checkFuncSync(ResultType.Value, I2, I2)
 	checkFuncNotChanged(allFuncs)
-	checkChangeResultIds(S0, A0, S1, S2, A2, I0, I1, I2)
 
 	_invalidate(S2)
 	checkFuncSync(ResultType.Value, S2, S2)
 	checkFuncNotChanged(allFuncs)
-	checkChangeResultIds(S0, A0, S1, S2, A2, I0, I1, I2)
 
 	// endregion
 
@@ -1355,10 +1244,7 @@ export async function baseTest_() {
 
 	// endregion
 
-	// invalidate during calc async
-
-	let promise1
-	let promise2
+	// region invalidate during calc async
 
 	_invalidate(I1)
 	checkFuncSync(ResultType.Value, I2, I1, I2)
@@ -1368,7 +1254,6 @@ export async function baseTest_() {
 	await promise1
 	checkFuncSync(ResultType.Value, A2)
 	checkFuncNotChanged(allFuncs)
-	checkChangeResultIds(S0, A0, S1, S2, A2, I0, I1, I2)
 
 	_invalidate(A0)
 	promise1 = checkFuncAsync(ResultType.Value, A2, A0)
@@ -1383,7 +1268,6 @@ export async function baseTest_() {
 	await promise2
 	checkCallHistory()
 	checkFuncNotChanged(allFuncs)
-	checkChangeResultIds(S0, A0, S1, S2, A2, I0, I1, I2)
 
 	_invalidate(A0, I0)
 	promise1 = checkFuncAsync(ResultType.Value, A2, I0, I1, A0)
@@ -1398,7 +1282,8 @@ export async function baseTest_() {
 	await promise2
 	checkCallHistory()
 	checkFuncNotChanged(allFuncs)
-	checkChangeResultIds(S0, A0, S1, S2, A2, I0, I1, I2)
+
+	// endregion
 
 	// endregion
 
