@@ -1156,16 +1156,23 @@ export async function baseTest() {
 	_checkStatuses('CV', 'CV', 'CV',   'CV', 'CVE',   'CV', 'CVE', 'IrV')
 	await checkFuncAsync(ResultType.Error, A2, A2)
 	_checkStatuses('CV', 'CV', 'CV',   'CV', 'CVE',   'CV', 'CVE', 'CVE')
-	return
 	checkFuncNotChanged(allFuncs)
 	setResultsAsError()
+	_checkStatuses('CV', 'CV', 'CV',   'CV', 'CVE',   'CV', 'CVE', 'CVE')
 	_invalidate(I1)
+	_checkStatuses('CV', 'CV', 'CV',   'CV', 'IrVE',   'CV', 'IVE', 'IVE')
 	checkFuncSync(ResultType.Value, I2, I1, I2)
+	_checkStatuses('CV', 'CV', 'CV',   'CV', 'CV',   'CV', 'CV', 'IrVE')
 	await checkFuncAsync(ResultType.Value, A2, A2)
+	_checkStatuses('CV', 'CV', 'CV',   'CV', 'CV',   'CV', 'CV', 'CV')
 	checkFuncNotChanged(allFuncs)
+	_checkStatuses('CV', 'CV', 'CV',   'CV', 'CV',   'CV', 'CV', 'CV')
 	_invalidate(I1)
+	_checkStatuses('CV', 'CV', 'CV',   'CV', 'IrV',   'CV', 'IV', 'IV')
 	checkFuncSync(ResultType.Value, I2, I1, I2)
+	_checkStatuses('CV', 'CV', 'CV',   'CV', 'CV',   'CV', 'CV', 'IrV')
 	await checkFuncAsync(ResultType.Value, A2, A2)
+	_checkStatuses('CV', 'CV', 'CV',   'CV', 'CV',   'CV', 'CV', 'CV')
 	checkFuncNotChanged(allFuncs)
 
 	// endregion
@@ -1173,6 +1180,7 @@ export async function baseTest() {
 	// region level 0
 
 	setResultsAsError(S0)
+	_checkStatuses('CV', 'CV', 'CV',   'CV', 'CV',   'CV', 'CV', 'CV')
 	_invalidate(S0)
 	// console.log(allFuncs.filter(isInvalidated).map(o => o.id))
 	checkFuncSync(ResultType.Error, S2, S0)
