@@ -359,41 +359,36 @@ export function updateInvalidate<
 	let statusBefore: Mask_Update_Invalidate | Flag_None = 0
 	let statusAfter: Mask_Update_Invalidate | Flag_None = 0
 
-	if (status === Update_Invalidating || status === Update_Invalidating_Recalc) {
-		if (isInvalidated(prevStatus)) {
-			if (!isRecalc(prevStatus) && status === Update_Invalidating_Recalc) {
-				state.status = prevStatus | Flag_Recalc
-			}
-			if (parentRecalc) {
-				statusBefore = Update_Invalidated_Recalc
-			}
-		} else {
-			state.status = (prevStatus & ~(Mask_Invalidate | Flag_Calculated)) | status
+	if (isRecalc(status) && state._unsubscribersLength !== 0) {
+		unsubscribeDependencies(state)
+	}
 
-			statusBefore = parentRecalc ? Update_Invalidating_Recalc : Update_Invalidating
-			statusAfter = Update_Invalidating
-		}
-	} else if (status === Update_Invalidated || status === Update_Invalidated_Recalc) {
-		if (isInvalidated(prevStatus)) {
-			if (!isRecalc(prevStatus) && status === Update_Invalidated_Recalc) {
-				state.status = prevStatus | Flag_Recalc
-			}
-			if (parentRecalc) {
-				statusBefore = Update_Invalidated_Recalc
-			}
-		} else {
-			state.status = (prevStatus & ~(Mask_Invalidate | Flag_Calculated)) | status
-
-			statusBefore = parentRecalc ? Update_Invalidated_Recalc : Update_Invalidated
-			statusAfter = Update_Invalidated
-		}
-	} else if (status === Update_Recalc) {
+	if (status === Update_Recalc) {
 		if (isCalculated(prevStatus)) {
 			throw new InternalError(`Set status ${statusToString(Update_Recalc)} called when current status is ${statusToString(prevStatus)}`)
 		}
 		state.status = prevStatus | status
 	} else {
-		throw new InternalError(`Unknown status: ${statusToString(status)}`)
+		if (isInvalidated(prevStatus)) {
+			if (!isRecalc(prevStatus) && isRecalc(status)) {
+				state.status = prevStatus | Flag_Recalc
+			}
+			if (parentRecalc) {
+				statusBefore = Update_Invalidated_Recalc
+			}
+		} else if (status === Update_Invalidating || status === Update_Invalidating_Recalc) {
+			state.status = (prevStatus & ~(Mask_Invalidate | Flag_Calculated)) | status
+
+			statusBefore = parentRecalc ? Update_Invalidating_Recalc : Update_Invalidating
+			statusAfter = Update_Invalidating
+		} else if (status === Update_Invalidated || status === Update_Invalidated_Recalc) {
+			state.status = (prevStatus & ~(Mask_Invalidate | Flag_Calculated)) | status
+
+			statusBefore = parentRecalc ? Update_Invalidated_Recalc : Update_Invalidated
+			statusAfter = Update_Invalidated
+		} else {
+			throw new InternalError(`Unknown status: ${statusToString(status)}`)
+		}
 	}
 
 	if (statusBefore !== 0 || statusAfter !== 0) {
@@ -666,7 +661,6 @@ function* checkDependenciesChangedAsync(
 			}
 
 			if ((state.status & FuncCallStatus.Flag_Recalc) !== 0) {
-				unsubscribeDependencies(state)
 				return true
 			}
 
@@ -702,7 +696,6 @@ function checkDependenciesChanged(state: IFuncCallState<any, any, any>): Thenabl
 			}
 
 			if ((state.status & FuncCallStatus.Flag_Recalc) !== 0) {
-				unsubscribeDependencies(state)
 				return true
 			}
 
@@ -799,14 +792,9 @@ export function _dependentFunc<
 
 	updateCalculating(state)
 
-	// TODO remove this
-	// unsubscribeDependencies(state)
-	// return calc(state, dontThrowOnError)
-
 	let shouldRecalc: ThenableIterator<boolean> | boolean
 	if (isRecalc(prevStatus)) {
 		shouldRecalc = true
-		unsubscribeDependencies(state)
 	} else {
 		shouldRecalc = checkDependenciesChanged(state)
 	}

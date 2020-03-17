@@ -1075,6 +1075,7 @@ export async function baseTest() {
 	checkFuncNotChanged(allFuncs)
 
 	_checkStatuses('CV', 'CV', 'CV',   'CV', 'CV',   'CVE', 'CV', 'CV')
+	return
 	_invalidate(I2)
 	checkFuncSync(ResultType.Error, I2, I2)
 	checkFuncNotChanged(allFuncs)
