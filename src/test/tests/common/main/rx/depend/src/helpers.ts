@@ -1,6 +1,6 @@
 /* tslint:disable:no-identical-functions no-shadowed-variable no-duplicate-string no-construct use-primitive-type */
 import {isThenable, Thenable, ThenableOrValue} from '../../../../../../../main/common/async/async'
-import {checkStatus, invalidate, statusToString} from '../../../../../../../main/common/rx/depend/_dependentFunc'
+import {invalidate, statusToString} from '../../../../../../../main/common/rx/depend/_dependentFunc'
 import {
 	callStateHashTable,
 	reduceCallStates,
@@ -1008,11 +1008,11 @@ export async function baseTest() {
 	_invalidate(A0)
 	_checkStatuses('CV', 'CV', 'IrV',   'CV', 'IV',   'CV', 'IV', 'IV')
 	promise1 = checkFuncAsync(ResultType.Value, A2, A0)
-	_checkStatuses('CV', 'CV', 'caV',   'CV', 'caV',   'CV', 'IV', 'caV')
+	_checkStatuses('CV', 'CV', 'caV',   'CV', 'xaV',   'CV', 'IV', 'xaV')
 	_invalidate(A0)
-	_checkStatuses('CV', 'CV', 'IrcaV',   'CV', 'IcaV',   'CV', 'IV', 'IcaV')
+	_checkStatuses('CV', 'CV', 'IrcaV',   'CV', 'IxaV',   'CV', 'IV', 'IxaV')
 	promise2 = checkFuncAsync(ResultType.Value, I2)
-	_checkStatuses('CV', 'CV', 'IrcaV',   'CV', 'IcaV',   'CV', 'caV', 'IcaV')
+	_checkStatuses('CV', 'CV', 'IrcaV',   'CV', 'IxaV',   'CV', 'xaV', 'IxaV')
 	await checkFuncAsync(ResultType.Value, A0)
 	_checkStatuses('CV', 'CV', 'IV',   'CV', 'IV',   'CV', 'IV', 'IV')
 	_invalidate(I0)
@@ -1034,11 +1034,11 @@ export async function baseTest() {
 	_invalidate(A0, I0)
 	_checkStatuses('CV', 'IrV', 'IrV',   'IV', 'IV',   'IV', 'IV', 'IV')
 	promise1 = checkFuncAsync(ResultType.Value, A2, I0, I1, A0)
-	_checkStatuses('CV', 'CV', 'caV',   'IrV', 'caV',   'IV', 'IV', 'caV')
+	_checkStatuses('CV', 'CV', 'caV',   'IrV', 'caV',   'IV', 'IV', 'xaV')
 	_invalidate(A0)
-	_checkStatuses('CV', 'CV', 'IrcaV',   'IrV', 'IcaV',   'IV', 'IV', 'IcaV')
+	_checkStatuses('CV', 'CV', 'IrcaV',   'IrV', 'IcaV',   'IV', 'IV', 'IxaV')
 	promise2 = checkFuncAsync(ResultType.Value, I2, S1)
-	_checkStatuses('CV', 'CV', 'IrcaV',   'CV', 'IcaV',   'IV', 'caV', 'IcaV')
+	_checkStatuses('CV', 'CV', 'IrcaV',   'CV', 'IcaV',   'IV', 'xaV', 'IxaV')
 	await checkFuncAsync(ResultType.Value, A0)
 	_checkStatuses('CV', 'CV', 'CV',   'CV', 'CV',   'IV', 'CV', 'caV')
 	checkCallHistory(A2, I2)
@@ -1232,7 +1232,6 @@ export async function baseTest() {
 	_checkStatuses('CV', 'IrVE', 'CV',   'IVE', 'IVE',   'IVE', 'IVE', 'IVE')
 	checkFuncSync(ResultType.Value, S2, I0, S1, S2)
 	_checkStatuses('CV', 'CV', 'CV',   'CV', 'IrVE',   'CV', 'IrVE', 'IVE')
-	return
 	checkFuncSync(ResultType.Value, I2, I2, I1)
 	_checkStatuses('CV', 'CV', 'CV',   'CV', 'CV',   'CV', 'CV', 'IrVE')
 	await checkFuncAsync(ResultType.Value, A2, A2)

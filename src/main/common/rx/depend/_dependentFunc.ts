@@ -378,7 +378,7 @@ export function updateInvalidate<
 	let statusBefore: Mask_Update_Invalidate | Flag_None = 0
 	let statusAfter: Mask_Update_Invalidate | Flag_None = 0
 
-	if (isRecalc(status) && state._unsubscribersLength !== 0) {
+	if (isRecalc(status) && (prevStatus & Flag_Calculating) === 0 && state._unsubscribersLength !== 0) {
 		unsubscribeDependencies(state)
 	}
 
@@ -458,7 +458,7 @@ export function updateCalculating<
 ) {
 	const prevStatus = state.status
 
-	if ((prevStatus & (Mask_Invalidate | Flag_Check | Flag_Calculating)) === 0) {
+	if ((prevStatus & (Mask_Invalidate | Flag_Check)) === 0) {
 		throw new InternalError(`Set status ${statusToString(Update_Calculating)} called when current status is ${statusToString(prevStatus)}`)
 	}
 
@@ -831,7 +831,7 @@ export function _dependentFunc<
 	state.parentCallState = currentState
 	currentState = null
 
-	updateCalculating(state)
+	updateCheck(state)
 
 	let shouldRecalc: ThenableIterator<boolean> | boolean
 	if (isRecalc(prevStatus)) {
@@ -868,7 +868,7 @@ export function _dependentFunc<
 		})
 
 		if (isThenable(value)) {
-			updateCalculatingAsync(state, value)
+			updateCheckAsync(state, value)
 		}
 	} else {
 		throw new InternalError(`shouldRecalc == ${shouldRecalc}`)
