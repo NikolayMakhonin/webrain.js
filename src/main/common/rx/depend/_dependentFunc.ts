@@ -612,7 +612,6 @@ export class FuncCallState<TThis,
 	public _subscribersFirst = null
 	public _subscribersLast = null
 	public _subscribersCalculating = null
-	public calcId = 0
 	// for prevent multiple subscribe equal dependencies
 	public callId = 0
 	public _unsubscribers = null
@@ -727,7 +726,6 @@ function checkDependenciesChanged(state: IFuncCallState<any, any, any>): Thenabl
 
 let currentState: IFuncCallState<any, any, any>
 let nextCallId = 1
-let nextCalcId = 1
 
 // tslint:disable-next-line:no-shadowed-variable
 export function subscribeDependency<
@@ -857,7 +855,6 @@ export function calc<
 >(state: IFuncCallState<TThis, TArgs, TValue>, dontThrowOnError?: boolean) {
 	updateCalculating(state)
 	state.callId = nextCallId++
-	state.calcId = nextCalcId++
 
 	let _isIterator = false
 	try {

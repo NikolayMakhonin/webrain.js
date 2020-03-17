@@ -48,8 +48,6 @@ export interface IFuncCallState<TThis,
 	value: TValue
 	error: any
 
-	calcId: number
-
 	/** for detect recursive async loop */
 	parentCallState: IFuncCallState<any, any, any>
 
