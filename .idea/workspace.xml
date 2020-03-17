@@ -8,8 +8,6 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="69b2ee16-521b-4efd-b473-8e19e3df4d09" name="Default Changelist" comment="">
-      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/common/rx/depend/_dependentFunc.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/common/rx/depend/_dependentFunc.ts" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/test/tests/common/main/rx/depend/src/helpers.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/test/tests/common/main/rx/depend/src/helpers.ts" afterDir="false" />
     </list>
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
@@ -406,13 +404,6 @@
       <option name="presentableId" value="Default" />
       <updated>1567687848586</updated>
     </task>
-    <task id="LOCAL-00247" summary="dependent-funcs v8 optimization in process...">
-      <created>1582002022361</created>
-      <option name="number" value="00247" />
-      <option name="presentableId" value="LOCAL-00247" />
-      <option name="project" value="LOCAL" />
-      <updated>1582002022362</updated>
-    </task>
     <task id="LOCAL-00248" summary="v0.0.7 Tests OK, coverage:merge fail">
       <created>1582453641076</created>
       <option name="number" value="00248" />
@@ -749,7 +740,14 @@
       <option name="project" value="LOCAL" />
       <updated>1584439029147</updated>
     </task>
-    <option name="localTasksCounter" value="296" />
+    <task id="LOCAL-00296" summary="Develop. Tests OK.">
+      <created>1584439561868</created>
+      <option name="number" value="00296" />
+      <option name="presentableId" value="LOCAL-00296" />
+      <option name="project" value="LOCAL" />
+      <updated>1584439561868</updated>
+    </task>
+    <option name="localTasksCounter" value="297" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -833,10 +831,10 @@
     <MESSAGE value="BinaryTree: optimizing AVL ..." />
     <MESSAGE value="Develop tests" />
     <MESSAGE value="Develop" />
-    <MESSAGE value="Develop. Tests OK." />
     <MESSAGE value="Deleted changeResultId" />
     <MESSAGE value="Deleted calcId" />
-    <option name="LAST_COMMIT_MESSAGE" value="Deleted calcId" />
+    <MESSAGE value="Develop. Tests OK." />
+    <option name="LAST_COMMIT_MESSAGE" value="Develop. Tests OK." />
   </component>
   <component name="XDebuggerManager">
     <breakpoint-manager>
@@ -846,6 +844,12 @@
           <line>20</line>
           <properties lambdaOrdinal="-1" />
           <option name="timeStamp" value="720" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" type="javascript">
+          <url>file://$PROJECT_DIR$/src/test/tests/common/main/rx/depend/src/helpers.ts</url>
+          <line>1124</line>
+          <properties lambdaOrdinal="-1" />
+          <option name="timeStamp" value="799" />
         </line-breakpoint>
       </breakpoints>
       <breakpoints-dialog>

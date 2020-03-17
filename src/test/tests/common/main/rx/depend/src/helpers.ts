@@ -1075,13 +1075,17 @@ export async function baseTest() {
 	checkFuncNotChanged(allFuncs)
 
 	_checkStatuses('CV', 'CV', 'CV',   'CV', 'CV',   'CVE', 'CV', 'CV')
-	return
 	_invalidate(I2)
+	_checkStatuses('CV', 'CV', 'CV',   'CV', 'CV',   'CVE', 'IrV', 'CV')
 	checkFuncSync(ResultType.Error, I2, I2)
+	_checkStatuses('CV', 'CV', 'CV',   'CV', 'CV',   'CVE', 'CVE', 'CV')
 	checkFuncNotChanged(allFuncs)
 
+	_checkStatuses('CV', 'CV', 'CV',   'CV', 'CV',   'CVE', 'CVE', 'CV')
 	_invalidate(A2)
+	_checkStatuses('CV', 'CV', 'CV',   'CV', 'CV',   'CVE', 'CVE', 'IrV')
 	await checkFuncAsync(ResultType.Error, A2, A2)
+	_checkStatuses('CV', 'CV', 'CV',   'CV', 'CV',   'CVE', 'CVE', 'CVE')
 	checkFuncNotChanged(allFuncs)
 
 	// endregion
@@ -1090,16 +1094,25 @@ export async function baseTest() {
 
 	setResultsAsError()
 
+	_checkStatuses('CV', 'CV', 'CV',   'CV', 'CV',   'CVE', 'CVE', 'CVE')
 	_invalidate(S2)
+	_checkStatuses('CV', 'CV', 'CV',   'CV', 'CV',   'IrVE', 'CVE', 'CVE')
 	checkFuncSync(ResultType.Value, S2, S2)
+	_checkStatuses('CV', 'CV', 'CV',   'CV', 'CV',   'CV', 'CVE', 'CVE')
 	checkFuncNotChanged(allFuncs)
 
+	_checkStatuses('CV', 'CV', 'CV',   'CV', 'CV',   'CV', 'CVE', 'CVE')
 	_invalidate(I2)
+	_checkStatuses('CV', 'CV', 'CV',   'CV', 'CV',   'CV', 'IrVE', 'CVE')
 	checkFuncSync(ResultType.Value, I2, I2)
+	_checkStatuses('CV', 'CV', 'CV',   'CV', 'CV',   'CV', 'CV', 'CVE')
 	checkFuncNotChanged(allFuncs)
 
+	_checkStatuses('CV', 'CV', 'CV',   'CV', 'CV',   'CV', 'CV', 'CVE')
 	_invalidate(A2)
+	_checkStatuses('CV', 'CV', 'CV',   'CV', 'CV',   'CV', 'CV', 'IrVE')
 	await checkFuncAsync(ResultType.Value, A2, A2)
+	_checkStatuses('CV', 'CV', 'CV',   'CV', 'CV',   'CV', 'CV', 'CV')
 	checkFuncNotChanged(allFuncs)
 
 	// endregion
@@ -1109,6 +1122,7 @@ export async function baseTest() {
 	// region level 1
 
 	setResultsAsError(S1)
+	_checkStatuses('CV', 'CV', 'CV',   'CV', 'CV',   'CV', 'CV', 'CV')
 	_invalidate(S1)
 	checkFuncSync(ResultType.Error, S2, S1)
 	checkFuncSync(ResultType.Error, I2)
