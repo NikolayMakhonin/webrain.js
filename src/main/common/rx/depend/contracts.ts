@@ -15,12 +15,12 @@ export enum FuncCallStatus {
 	Flag_Invalidating = 1,
 	Flag_Invalidated = 2,
 	Mask_Invalidate = 3,
-	Flag_Invalidate_Force = 4,
+	Flag_Recalc = 4,
 
 	Flag_Parent_Invalidating = 8,
 	Flag_Parent_Invalidated = 16,
 	Mask_Parent_Invalidate = 24,
-	Flag_Parent_Invalidate_Force = 32,
+	Flag_Parent_Recalc = 32,
 
 	Flag_Calculating = 128,
 	Flag_Calculating_Async = 384,

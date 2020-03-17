@@ -15,12 +15,12 @@ type Flag_None = 0
 type Flag_Invalidating = 1
 type Flag_Invalidated = 2
 type Mask_Invalidate = (0 | Flag_Invalidating | Flag_Invalidated)
-type Flag_Invalidate_Force = 4
+type Flag_Recalc = 4
 
 type Flag_Parent_Invalidating = 8
 type Flag_Parent_Invalidated = 16
 type Mask_Parent_Invalidate = (0 | Flag_Parent_Invalidating | Flag_Parent_Invalidated)
-type Flag_Parent_Invalidate_Force = 32
+type Flag_Parent_Recalc = 32
 
 type Flag_Calculating = 128
 type Flag_Calculating_Async = 384
@@ -33,8 +33,9 @@ type Flag_HasError = 2048
 
 type Update_Invalidating = Flag_Invalidating
 type Update_Invalidated = Flag_Invalidated
-type Update_Invalidating_Force = 5
-type Update_Invalidated_Force = 6
+type Update_Recalc = 4
+type Update_Invalidating_Recalc = 5
+type Update_Invalidated_Recalc = 6
 type Update_Calculating = Flag_Calculating
 type Update_Calculating_Async = Flag_Calculating_Async
 type Update_Calculated_Value = 1536
@@ -43,8 +44,9 @@ type Update_Calculated_Error = 2560
 type Mask_Update_Invalidate =
 	Update_Invalidating
 	| Update_Invalidated
-	| Update_Invalidating_Force
-	| Update_Invalidated_Force
+	| Update_Recalc
+	| Update_Invalidating_Recalc
+	| Update_Invalidated_Recalc
 
 type Mask_Update =
 	Mask_Update_Invalidate
@@ -62,12 +64,12 @@ const Flag_None: Flag_None = 0
 const Flag_Invalidating: Flag_Invalidating = 1
 const Flag_Invalidated: Flag_Invalidated = 2
 const Mask_Invalidate = 3
-const Flag_Invalidate_Force: Flag_Invalidate_Force = 4
+const Flag_Recalc: Flag_Recalc = 4
 
 const Flag_Parent_Invalidating: Flag_Parent_Invalidating = 8
 const Flag_Parent_Invalidated: Flag_Parent_Invalidated = 16
 const Mask_Parent_Invalidate = 24
-const Flag_Parent_Invalidate_Force: Flag_Parent_Invalidate_Force = 32
+const Flag_Parent_Recalc: Flag_Parent_Recalc = 32
 
 const Flag_Calculating: Flag_Calculating = 128
 const Flag_Calculating_Async: Flag_Calculating_Async = 384
@@ -80,8 +82,9 @@ const Flag_HasError: Flag_HasError = 2048
 
 const Update_Invalidating = Flag_Invalidating
 const Update_Invalidated = Flag_Invalidated
-const Update_Invalidating_Force = 5
-const Update_Invalidated_Force = 6
+const Update_Recalc = 4
+const Update_Invalidating_Recalc = 5
+const Update_Invalidated_Recalc = 6
 const Update_Calculating = Flag_Calculating
 const Update_Calculating_Async = Flag_Calculating_Async
 const Update_Calculated_Value = 1536
@@ -90,8 +93,8 @@ const Update_Calculated_Error = 2560
 const Mask_Update_Invalidate =
 	Update_Invalidating
 	| Update_Invalidated
-	| Update_Invalidating_Force
-	| Update_Invalidated_Force
+	| Update_Invalidating_Recalc
+	| Update_Invalidated_Recalc
 
 const Mask_Update =
 	Mask_Update_Invalidate
@@ -124,16 +127,16 @@ function isInvalidated(status: FuncCallStatus): boolean {
 
 // endregion
 
-// region InvalidateForce
+// region Recalc
 
-function isInvalidateForce(status: FuncCallStatus): boolean {
-	return (status & Flag_Invalidate_Force) !== 0
+function isRecalc(status: FuncCallStatus): boolean {
+	return (status & Flag_Recalc) !== 0
 }
 
-function setInvalidateForce(status: FuncCallStatus, value: boolean): FuncCallStatus {
+function setRecalc(status: FuncCallStatus, value: boolean): FuncCallStatus {
 	return value
-		? status | Flag_Invalidate_Force
-		: status & ~Flag_Invalidate_Force
+		? status | Flag_Recalc
+		: status & ~Flag_Recalc
 }
 
 // endregion
@@ -195,7 +198,7 @@ export function checkStatus(status: FuncCallStatus): boolean {
 		return false
 	}
 
-	if ((status & Flag_Invalidate_Force) !== 0 && (status & Mask_Invalidate) === 0) {
+	if ((status & Flag_Recalc) !== 0 && (status & Mask_Invalidate) === 0) {
 		return false
 	}
 
@@ -228,8 +231,8 @@ export function statusToString(status: FuncCallStatus): string {
 	if ((status & Flag_Invalidated) !== 0) {
 		buffer.push('Invalidated')
 	}
-	if ((status & Flag_Invalidate_Force) !== 0) {
-		buffer.push('Force')
+	if ((status & Flag_Recalc) !== 0) {
+		buffer.push('Recalc')
 	}
 	if ((status & Flag_Calculating) !== 0) {
 		buffer.push('Calculating')
@@ -248,7 +251,7 @@ export function statusToString(status: FuncCallStatus): string {
 	}
 
 	const remain = status & ~(
-		Flag_Invalidating | Flag_Invalidated | Flag_Invalidate_Force
+		Flag_Invalidating | Flag_Invalidated | Flag_Recalc
 		| Flag_Calculating | (Flag_Calculating_Async & ~Flag_Calculating) | Flag_Calculated
 		| Flag_HasError | Flag_HasValue
 	)
@@ -267,6 +270,9 @@ const Flag_Before_Calc: Flag_Before_Calc = 1
 const Flag_After_Calc: Flag_After_Calc = 2
 const Mask_Invalidate_Parent = 3
 
+// tslint:disable-next-line:no-empty
+function emptyFunc() { }
+
 export function invalidateParent<
 	TThis,
 	TArgs extends any[],
@@ -279,9 +285,15 @@ export function invalidateParent<
 	const childState = link.value
 	const childStatus = childState.status & Mask_Update_Invalidate
 	if (childStatus === 0
-		|| status !== Update_Invalidating
-		&& childStatus !== Update_Invalidated_Force
-		&& status !== childStatus
+		|| status !== childStatus
+		&& childStatus !== Update_Invalidated_Recalc
+		&& (
+			childStatus === Update_Recalc
+			|| childStatus === Update_Invalidating
+			|| status !== Update_Invalidating
+			&& (childStatus === Update_Invalidated
+				|| status !== Update_Recalc)
+		)
 	) {
 		updateInvalidate(childState, status, false)
 	}
@@ -340,41 +352,46 @@ export function updateInvalidate<
 >(
 	state: IFuncCallState<TThis, TArgs, TValue>,
 	status: Mask_Update_Invalidate,
-	parentForce: boolean,
+	parentRecalc: boolean,
 ) {
 	const prevStatus = state.status
 
 	let statusBefore: Mask_Update_Invalidate | Flag_None = 0
 	let statusAfter: Mask_Update_Invalidate | Flag_None = 0
 
-	if (status === Update_Invalidating || status === Update_Invalidating_Force) {
+	if (status === Update_Invalidating || status === Update_Invalidating_Recalc) {
 		if (isInvalidated(prevStatus)) {
-			if (!isInvalidateForce(prevStatus) && status === Update_Invalidating_Force) {
-				state.status = prevStatus | Flag_Invalidate_Force
+			if (!isRecalc(prevStatus) && status === Update_Invalidating_Recalc) {
+				state.status = prevStatus | Flag_Recalc
 			}
-			if (parentForce) {
-				statusBefore = Update_Invalidated_Force
+			if (parentRecalc) {
+				statusBefore = Update_Invalidated_Recalc
 			}
 		} else {
 			state.status = (prevStatus & ~(Mask_Invalidate | Flag_Calculated)) | status
 
-			statusBefore = parentForce ? Update_Invalidating_Force : Update_Invalidating
+			statusBefore = parentRecalc ? Update_Invalidating_Recalc : Update_Invalidating
 			statusAfter = Update_Invalidating
 		}
-	} else if (status === Update_Invalidated || status === Update_Invalidated_Force) {
+	} else if (status === Update_Invalidated || status === Update_Invalidated_Recalc) {
 		if (isInvalidated(prevStatus)) {
-			if (!isInvalidateForce(prevStatus) && status === Update_Invalidated_Force) {
-				state.status = prevStatus | Flag_Invalidate_Force
+			if (!isRecalc(prevStatus) && status === Update_Invalidated_Recalc) {
+				state.status = prevStatus | Flag_Recalc
 			}
-			if (parentForce) {
-				statusBefore = Update_Invalidated_Force
+			if (parentRecalc) {
+				statusBefore = Update_Invalidated_Recalc
 			}
 		} else {
 			state.status = (prevStatus & ~(Mask_Invalidate | Flag_Calculated)) | status
 
-			statusBefore = parentForce ? Update_Invalidated_Force : Update_Invalidated
+			statusBefore = parentRecalc ? Update_Invalidated_Recalc : Update_Invalidated
 			statusAfter = Update_Invalidated
 		}
+	} else if (status === Update_Recalc) {
+		if (isCalculated(prevStatus)) {
+			throw new InternalError(`Set status ${statusToString(Update_Recalc)} called when current status is ${statusToString(prevStatus)}`)
+		}
+		state.status = prevStatus | status
 	} else {
 		throw new InternalError(`Unknown status: ${statusToString(status)}`)
 	}
@@ -397,7 +414,7 @@ export function updateCalculating<
 		throw new InternalError(`Set status ${statusToString(Update_Calculating)} called when current status is ${statusToString(prevStatus)}`)
 	}
 
-	state.status = (prevStatus & ~(Mask_Invalidate | Flag_Invalidate_Force | Mask_Calculate)) | Flag_Calculating
+	state.status = (prevStatus & ~(Mask_Invalidate | Flag_Recalc | Mask_Calculate)) | Flag_Calculating
 
 	state._subscribersCalculating = state._subscribersLast
 }
@@ -515,8 +532,7 @@ export function afterCalc<
 		updateInvalidate(state, Update_Invalidating, valueChanged)
 		updateInvalidate(state, Update_Invalidated, valueChanged)
 	} else if (valueChanged) {
-		invalidateParents(state, Update_Invalidating_Force, Flag_None)
-		invalidateParents(state, Update_Invalidated_Force, Flag_None)
+		invalidateParents(state, Update_Recalc, Flag_None)
 	}
 
 	state._subscribersCalculating = null
@@ -532,8 +548,8 @@ export function invalidate<
 	status?: Mask_Update_Invalidate,
 ) {
 	if (status == null) {
-		updateInvalidate(state, Update_Invalidating_Force, false)
-		updateInvalidate(state, Update_Invalidated_Force, false)
+		updateInvalidate(state, Update_Invalidating_Recalc, false)
+		updateInvalidate(state, Update_Invalidated_Recalc, false)
 	} else {
 		updateInvalidate(state, status, false)
 	}
@@ -589,7 +605,7 @@ export class FuncCallState<TThis,
 	public readonly valueIds: number[]
 	public deleteOrder: number = 0
 
-	public status = Flag_Invalidated | Flag_Invalidate_Force
+	public status = Flag_Invalidated | Flag_Recalc
 	public valueAsync = null
 	public value = void 0
 	public error = void 0
@@ -652,10 +668,10 @@ function* checkDependenciesChangedAsync(
 			}
 
 			if (getCalculate(dependencyState.status) === Flag_Calculating_Async) {
-				yield resolveAsync(dependencyState.valueAsync, null, () => { }) as any
+				yield resolveAsync(dependencyState.valueAsync, null, emptyFunc) as any
 			}
 
-			if ((state.status & FuncCallStatus.Flag_Invalidate_Force) !== 0) {
+			if ((state.status & FuncCallStatus.Flag_Recalc) !== 0) {
 				unsubscribeDependencies(state)
 				return true
 			}
@@ -667,9 +683,6 @@ function* checkDependenciesChangedAsync(
 					unsubscribeDependencies(state, i + 1)
 					updateCalculatedError(state, dependencyState.error)
 					return false
-				} else if (dependencyState.changeResultId > changeResultId) {
-					unsubscribeDependencies(state)
-					return true
 				}
 			} else {
 				throw new InternalError(`Unexpected dependency status: ${statusToString(dependencyState.status)}`)
@@ -684,7 +697,6 @@ function* checkDependenciesChangedAsync(
 function checkDependenciesChanged(state: IFuncCallState<any, any, any>): ThenableIterator<boolean>|boolean {
 	const {_unsubscribers, _unsubscribersLength} = state
 	if (_unsubscribers != null) {
-		const {changeResultId} = state
 		for (let i = 0, len = _unsubscribersLength; i < len; i++) {
 			const dependencyState = _unsubscribers[i].state
 			if (getInvalidate(dependencyState.status) !== 0) {
@@ -695,7 +707,7 @@ function checkDependenciesChanged(state: IFuncCallState<any, any, any>): Thenabl
 				return checkDependenciesChangedAsync(state, i)
 			}
 
-			if ((state.status & FuncCallStatus.Flag_Invalidate_Force) !== 0) {
+			if ((state.status & FuncCallStatus.Flag_Recalc) !== 0) {
 				unsubscribeDependencies(state)
 				return true
 			}
@@ -707,9 +719,6 @@ function checkDependenciesChanged(state: IFuncCallState<any, any, any>): Thenabl
 					unsubscribeDependencies(state, i + 1)
 					updateCalculatedError(state, dependencyState.error)
 					return false
-				} else if (dependencyState.changeResultId > changeResultId) {
-					unsubscribeDependencies(state)
-					return true
 				}
 			} else {
 				throw new InternalError(`Unexpected dependency status: ${statusToString(dependencyState.status)}`)
@@ -802,7 +811,7 @@ export function _dependentFunc<
 	// return calc(state, dontThrowOnError)
 
 	let shouldRecalc: ThenableIterator<boolean> | boolean
-	if (isInvalidateForce(prevStatus)) {
+	if (isRecalc(prevStatus)) {
 		shouldRecalc = true
 		unsubscribeDependencies(state)
 	} else {
