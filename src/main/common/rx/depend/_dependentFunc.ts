@@ -284,6 +284,8 @@ export function invalidateParent<
 	const next = link.next
 	const childState = link.value
 	const childStatus = childState.status & Mask_Update_Invalidate
+
+	// this condition needed only for optimization
 	if (childStatus === 0
 		|| status !== childStatus
 		&& childStatus !== Update_Invalidated_Recalc
@@ -664,15 +666,9 @@ function* checkDependenciesChangedAsync(
 				return true
 			}
 
-			if (getCalculate(dependencyState.status) !== Flag_Calculating
-				&& (dependencyState.status & (Flag_HasError | Flag_HasValue)) !== 0
+			if (!(getCalculate(dependencyState.status) !== Flag_Calculating
+				&& (dependencyState.status & (Flag_HasError | Flag_HasValue)) !== 0)
 			) {
-				if (isHasError(dependencyState.status)) {
-					unsubscribeDependencies(state, i + 1)
-					updateCalculatedError(state, dependencyState.error)
-					return false
-				}
-			} else {
 				throw new InternalError(`Unexpected dependency status: ${statusToString(dependencyState.status)}`)
 			}
 		}
@@ -699,15 +695,9 @@ function checkDependenciesChanged(state: IFuncCallState<any, any, any>): Thenabl
 				return true
 			}
 
-			if (getCalculate(dependencyState.status) !== Flag_Calculating
-				&& (dependencyState.status & (Flag_HasError | Flag_HasValue)) !== 0
+			if (!(getCalculate(dependencyState.status) !== Flag_Calculating
+				&& (dependencyState.status & (Flag_HasError | Flag_HasValue)) !== 0)
 			) {
-				if (isHasError(dependencyState.status)) {
-					unsubscribeDependencies(state, i + 1)
-					updateCalculatedError(state, dependencyState.error)
-					return false
-				}
-			} else {
 				throw new InternalError(`Unexpected dependency status: ${statusToString(dependencyState.status)}`)
 			}
 		}
