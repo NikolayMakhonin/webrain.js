@@ -22,14 +22,15 @@ export enum FuncCallStatus {
 	Mask_Parent_Invalidate = 24,
 	Flag_Parent_Recalc = 32,
 
-	Flag_Calculating = 128,
-	Flag_Calculating_Async = 384,
-	Flag_Calculated = 512,
-	Mask_Calculate = 896,
+	Flag_Check = 128,
+	Flag_Calculating = 256,
+	Flag_Async = 512,
+	Flag_Calculated = 1024,
+	Mask_Calculate = 1920,
 
-	Flag_HasValue = 1024,
+	Flag_HasValue = 2048,
 
-	Flag_HasError = 2048,
+	Flag_HasError = 4096,
 }
 
 export interface IFuncCallState<TThis,

@@ -9,6 +9,8 @@
   <component name="ChangeListManager">
     <list default="true" id="69b2ee16-521b-4efd-b473-8e19e3df4d09" name="Default Changelist" comment="">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/common/rx/depend/_dependentFunc.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/common/rx/depend/_dependentFunc.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/common/rx/depend/contracts.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/common/rx/depend/contracts.ts" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/test/tests/common/main/rx/depend/src/helpers.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/test/tests/common/main/rx/depend/src/helpers.ts" afterDir="false" />
     </list>
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
@@ -405,13 +407,6 @@
       <option name="presentableId" value="Default" />
       <updated>1567687848586</updated>
     </task>
-    <task id="LOCAL-00252" summary="BinaryTree in process...">
-      <created>1583231376084</created>
-      <option name="number" value="00252" />
-      <option name="presentableId" value="LOCAL-00252" />
-      <option name="project" value="LOCAL" />
-      <updated>1583231376084</updated>
-    </task>
     <task id="LOCAL-00253" summary="Added forEachPermutation best algorithm">
       <created>1583240474017</created>
       <option name="number" value="00253" />
@@ -748,7 +743,14 @@
       <option name="project" value="LOCAL" />
       <updated>1584442383843</updated>
     </task>
-    <option name="localTasksCounter" value="301" />
+    <task id="LOCAL-00301" summary="Develop. Tests OK.">
+      <created>1584451703545</created>
+      <option name="number" value="00301" />
+      <option name="presentableId" value="LOCAL-00301" />
+      <option name="project" value="LOCAL" />
+      <updated>1584451703545</updated>
+    </task>
+    <option name="localTasksCounter" value="302" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -848,15 +850,57 @@
         </line-breakpoint>
         <line-breakpoint enabled="true" type="javascript">
           <url>file://$PROJECT_DIR$/src/test/tests/common/main/rx/depend/src/helpers.ts</url>
-          <line>1245</line>
+          <line>1252</line>
           <properties lambdaOrdinal="-1" />
           <option name="timeStamp" value="816" />
         </line-breakpoint>
         <line-breakpoint enabled="true" type="javascript">
           <url>file://$PROJECT_DIR$/src/test/tests/common/main/rx/depend/src/helpers.ts</url>
-          <line>1234</line>
+          <line>1242</line>
           <properties lambdaOrdinal="-1" />
-          <option name="timeStamp" value="817" />
+          <option name="timeStamp" value="818" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" type="javascript">
+          <url>file://$PROJECT_DIR$/src/test/tests/common/main/rx/depend/src/helpers.ts</url>
+          <line>1241</line>
+          <properties lambdaOrdinal="-1" />
+          <option name="timeStamp" value="819" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" type="javascript">
+          <url>file://$PROJECT_DIR$/src/test/tests/common/main/rx/depend/src/helpers.ts</url>
+          <line>1235</line>
+          <properties lambdaOrdinal="-1" />
+          <option name="timeStamp" value="821" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" type="javascript">
+          <url>file://$PROJECT_DIR$/src/main/common/rx/depend/_dependentFunc.ts</url>
+          <line>762</line>
+          <properties lambdaOrdinal="-1" />
+          <option name="timeStamp" value="825" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" type="javascript">
+          <url>file://$PROJECT_DIR$/src/main/common/rx/depend/_dependentFunc.ts</url>
+          <line>482</line>
+          <properties lambdaOrdinal="-1" />
+          <option name="timeStamp" value="826" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" type="javascript">
+          <url>file://$PROJECT_DIR$/src/main/common/rx/depend/_dependentFunc.ts</url>
+          <line>512</line>
+          <properties lambdaOrdinal="-1" />
+          <option name="timeStamp" value="827" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" type="javascript">
+          <url>file://$PROJECT_DIR$/src/main/common/rx/depend/_dependentFunc.ts</url>
+          <line>354</line>
+          <properties lambdaOrdinal="-1" />
+          <option name="timeStamp" value="828" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" type="javascript">
+          <url>file://$PROJECT_DIR$/src/main/common/rx/depend/_dependentFunc.ts</url>
+          <line>350</line>
+          <properties lambdaOrdinal="-1" />
+          <option name="timeStamp" value="829" />
         </line-breakpoint>
       </breakpoints>
       <breakpoints-dialog>
@@ -883,7 +927,7 @@
         <watch expression="statusToString(dependencyState.status)" language="TypeScript" />
         <watch expression="state.id" language="TypeScript" />
         <watch expression="funcCall.id" language="TypeScript" />
-        <watch expression="S2.state._unsubscribersLength" language="TypeScript" />
+        <watch expression="I2.state._unsubscribersLength" language="TypeScript" />
         <watch expression="I1.state.calcId" language="TypeScript" />
         <watch expression="I2.state.calcId" language="TypeScript" />
         <watch expression="S0.state._subscribersFirst.state" language="TypeScript" />

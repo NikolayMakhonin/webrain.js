@@ -22,24 +22,27 @@ type Flag_Parent_Invalidated = 16
 type Mask_Parent_Invalidate = (0 | Flag_Parent_Invalidating | Flag_Parent_Invalidated)
 type Flag_Parent_Recalc = 32
 
-type Flag_Calculating = 128
-type Flag_Calculating_Async = 384
-type Flag_Calculated = 512
-type Mask_Calculate = (0 | Flag_Calculating | Flag_Calculating_Async | Flag_Calculated)
+type Flag_Check = 128
+type Flag_Calculating = 256
+type Flag_Async = 512
+type Flag_Calculated = 1024
+type Mask_Calculate = (0 | Flag_Check | Flag_Calculating | Flag_Async | Flag_Calculated)
 
-type Flag_HasValue = 1024
+type Flag_HasValue = 2048
 
-type Flag_HasError = 2048
+type Flag_HasError = 4096
 
 type Update_Invalidating = Flag_Invalidating
 type Update_Invalidated = Flag_Invalidated
 type Update_Recalc = 4
 type Update_Invalidating_Recalc = 5
 type Update_Invalidated_Recalc = 6
+type Update_Check = Flag_Check
+type Update_Check_Async = 640
 type Update_Calculating = Flag_Calculating
-type Update_Calculating_Async = Flag_Calculating_Async
-type Update_Calculated_Value = 1536
-type Update_Calculated_Error = 2560
+type Update_Calculating_Async = 768
+type Update_Calculated_Value = 3072
+type Update_Calculated_Error = 5120
 
 type Mask_Update_Invalidate =
 	Update_Invalidating
@@ -50,6 +53,8 @@ type Mask_Update_Invalidate =
 
 type Mask_Update =
 	Mask_Update_Invalidate
+	| Update_Check
+	| Update_Check_Async
 	| Update_Calculating
 	| Update_Calculating_Async
 	| Update_Calculated_Value
@@ -71,24 +76,27 @@ const Flag_Parent_Invalidated: Flag_Parent_Invalidated = 16
 const Mask_Parent_Invalidate = 24
 const Flag_Parent_Recalc: Flag_Parent_Recalc = 32
 
-const Flag_Calculating: Flag_Calculating = 128
-const Flag_Calculating_Async: Flag_Calculating_Async = 384
-const Flag_Calculated: Flag_Calculated = 512
-const Mask_Calculate = 896
+const Flag_Check: Flag_Check = 128
+const Flag_Calculating: Flag_Calculating = 256
+const Flag_Async: Flag_Async = 512
+const Flag_Calculated: Flag_Calculated = 1024
+const Mask_Calculate = 1920
 
-const Flag_HasValue: Flag_HasValue = 1024
+const Flag_HasValue: Flag_HasValue = 2048
 
-const Flag_HasError: Flag_HasError = 2048
+const Flag_HasError: Flag_HasError = 4096
 
-const Update_Invalidating = Flag_Invalidating
-const Update_Invalidated = Flag_Invalidated
-const Update_Recalc = 4
-const Update_Invalidating_Recalc = 5
-const Update_Invalidated_Recalc = 6
-const Update_Calculating = Flag_Calculating
-const Update_Calculating_Async = Flag_Calculating_Async
-const Update_Calculated_Value = 1536
-const Update_Calculated_Error = 2560
+const Update_Invalidating: Update_Invalidating = Flag_Invalidating
+const Update_Invalidated: Update_Invalidated = Flag_Invalidated
+const Update_Recalc: Update_Recalc = 4
+const Update_Invalidating_Recalc: Update_Invalidating_Recalc = 5
+const Update_Invalidated_Recalc: Update_Invalidated_Recalc = 6
+const Update_Check: Update_Check = Flag_Check
+const Update_Check_Async: Update_Check_Async = 640
+const Update_Calculating: Update_Calculating = Flag_Calculating
+const Update_Calculating_Async: Update_Calculating_Async = 768
+const Update_Calculated_Value: Update_Calculated_Value = 3072
+const Update_Calculated_Error: Update_Calculated_Error = 5120
 
 const Mask_Update_Invalidate =
 	Update_Invalidating
@@ -98,6 +106,8 @@ const Mask_Update_Invalidate =
 
 const Mask_Update =
 	Mask_Update_Invalidate
+	| Update_Check
+	| Update_Check_Async
 	| Update_Calculating
 	| Update_Calculating_Async
 	| Update_Calculated_Value
@@ -193,34 +203,34 @@ function setHasError(status: FuncCallStatus, value: boolean): FuncCallStatus {
 
 // endregion
 
-export function checkStatus(status: FuncCallStatus): boolean {
-	if ((status & Mask_Invalidate) === Mask_Invalidate) {
-		return false
-	}
-
-	if ((status & Flag_Recalc) !== 0 && (status & Mask_Invalidate) === 0) {
-		return false
-	}
-
-	if ((status & Flag_Calculated) !== 0) {
-		if ((status & Mask_Invalidate) !== 0) {
-			return false
-		}
-		if ((status & Flag_Calculating) !== 0) {
-			return false
-		}
-	}
-
-	if ((status & Flag_Calculating) === 0 && (status & (Flag_Calculating_Async & ~Flag_Calculating)) !== 0) {
-		return false
-	}
-
-	if ((status & (Mask_Invalidate | Mask_Calculate)) === 0) {
-		return false
-	}
-
-	return true
-}
+// export function checkStatus(status: FuncCallStatus): boolean {
+// 	if ((status & Mask_Invalidate) === Mask_Invalidate) {
+// 		return false
+// 	}
+//
+// 	if ((status & Flag_Recalc) !== 0 && (status & Mask_Invalidate) === 0) {
+// 		return false
+// 	}
+//
+// 	if ((status & Flag_Calculated) !== 0) {
+// 		if ((status & Mask_Invalidate) !== 0) {
+// 			return false
+// 		}
+// 		if ((status & Flag_Calculating) !== 0) {
+// 			return false
+// 		}
+// 	}
+//
+// 	if ((status & Flag_Calculating) === 0 && (status & Flag_Async) !== 0) {
+// 		return false
+// 	}
+//
+// 	if ((status & (Mask_Invalidate | Mask_Calculate)) === 0) {
+// 		return false
+// 	}
+//
+// 	return true
+// }
 
 export function statusToString(status: FuncCallStatus): string {
 	const buffer = []
@@ -234,10 +244,13 @@ export function statusToString(status: FuncCallStatus): string {
 	if ((status & Flag_Recalc) !== 0) {
 		buffer.push('Recalc')
 	}
+	if ((status & Flag_Check) !== 0) {
+		buffer.push('Check')
+	}
 	if ((status & Flag_Calculating) !== 0) {
 		buffer.push('Calculating')
 	}
-	if ((status & (Flag_Calculating_Async & ~Flag_Calculating)) !== 0) {
+	if ((status & Flag_Async) !== 0) {
 		buffer.push('Async')
 	}
 	if ((status & Flag_Calculated) !== 0) {
@@ -252,7 +265,7 @@ export function statusToString(status: FuncCallStatus): string {
 
 	const remain = status & ~(
 		Flag_Invalidating | Flag_Invalidated | Flag_Recalc
-		| Flag_Calculating | (Flag_Calculating_Async & ~Flag_Calculating) | Flag_Calculated
+		| Flag_Check | Flag_Calculating | Flag_Async | Flag_Calculated
 		| Flag_HasError | Flag_HasValue
 	)
 
@@ -658,7 +671,7 @@ function* checkDependenciesChangedAsync(
 				_dependentFunc(dependencyState, true)
 			}
 
-			if (getCalculate(dependencyState.status) === Flag_Calculating_Async) {
+			if ((dependencyState.status & Flag_Async) !== 0) {
 				yield resolveAsync(dependencyState.valueAsync, null, emptyFunc) as any
 			}
 
@@ -687,7 +700,7 @@ function checkDependenciesChanged(state: IFuncCallState<any, any, any>): Thenabl
 				_dependentFunc(dependencyState, true)
 			}
 
-			if (getCalculate(dependencyState.status) === Flag_Calculating_Async) {
+			if ((dependencyState.status & Flag_Async) !== 0) {
 				return checkDependenciesChangedAsync(state, i)
 			}
 
@@ -717,7 +730,7 @@ export function subscribeDependency<
 	TValue,
 >(state: IFuncCallState<TThis, TArgs, TValue>, dependency) {
 	if (state.callId < dependency.callId) {
-		if (getCalculate(state.status) !== Flag_Calculating_Async) {
+		if ((state.status & Flag_Async) === 0) {
 			return
 		}
 		const _unsubscribers = state._unsubscribers
@@ -757,7 +770,7 @@ export function _dependentFunc<
 		}
 		return state.value
 	} else if (getCalculate(state.status) !== 0) {
-		if (getCalculate(state.status) === Flag_Calculating_Async) {
+		if ((state.status & Flag_Async) !== 0) {
 			let parentCallState = state.parentCallState
 			while (parentCallState) {
 				if (parentCallState === state) {
