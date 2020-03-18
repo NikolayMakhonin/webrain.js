@@ -31,6 +31,8 @@ export enum FuncCallStatus {
 	Flag_HasValue = 2048,
 
 	Flag_HasError = 4096,
+
+	Flag_InternalError = 8192,
 }
 
 export interface IFuncCallState<TThis,

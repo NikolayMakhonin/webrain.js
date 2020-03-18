@@ -454,6 +454,10 @@ function checkFuncSync<TValue>(
 	try {
 		value = checkSync(funcCall())
 	} catch (err) {
+		if (err instanceof InternalError) {
+			assert.strictEqual(getCurrentState(), null)
+			throw err
+		}
 		error = err
 	}
 
@@ -483,8 +487,12 @@ function checkFuncAsync<TValue>(
 	let promise
 	try {
 		promise = checkAsync(funcCall())
-	} catch (error) {
-		assert.fail(error)
+	} catch (err) {
+		if (err instanceof InternalError) {
+			assert.strictEqual(getCurrentState(), null)
+			throw err
+		}
+		assert.fail(err)
 	}
 	// assertStatus(funcCall.state.status)
 	checkCallHistory(...callHistory)
@@ -496,6 +504,10 @@ function checkFuncAsync<TValue>(
 		try {
 			value = await promise
 		} catch (err) {
+			if (err instanceof InternalError) {
+				assert.strictEqual(getCurrentState(), null)
+				throw err
+			}
 			error = err
 		}
 
@@ -775,14 +787,6 @@ export async function baseTest() {
 	const I2 = funcCall(I, [S1, I1], 2, null) // I20(S1(S(0),I(0)),I1(I(0),A(_)))
 	const A2 = funcCall(A, [I1], 2, 2) // A22(I1(I(0),A(_)))
 
-	const A3_dependencies = []
-	const A3 = _funcCall(A, 'A33()', A3_dependencies, 3, 3)
-	const A4 = _funcCall(A, 'A44()', [A3], 4, 4)
-	const A5 = _funcCall(A, 'A55()', [A4], 5, 5)
-	A3.hasLoop = true
-	A4.hasLoop = true
-	A5.hasLoop = true
-
 	const allFuncs = [S0, I0, A0, S1, I1, S2, I2, A2]
 	const _checkStatuses = checkStatuses(...allFuncs)
 
@@ -827,11 +831,6 @@ export async function baseTest() {
 	assert.strictEqual(S2.id, 'S20(S1(S(0),I(0)))')
 	assert.strictEqual(I2.id, 'I20(S1(S(0),I(0)),I1(I(0),A(_)))')
 	assert.strictEqual(A2.id, 'A22(I1(I(0),A(_)))')
-
-	A3_dependencies.push(A5)
-	assert.strictEqual(A3.id, 'A33()')
-	assert.strictEqual(A4.id, 'A44()')
-	assert.strictEqual(A5.id, 'A55()')
 
 	// endregion
 
@@ -1680,16 +1679,120 @@ export async function baseTest() {
 
 	// endregion
 
-	// region Async loop
+	// region Loops
 
-	// await assert.throwsAsync(async () => {
-	// 	await checkFuncAsync(ResultType.Value, A3, A3)
-	// }, InternalError, /async.*loop/i)
+	// region init
+
+	const SL = funcSync('SL')
+	const IL = funcSyncIterator('IL')
+	const AL = funcAsync('AL')
+
+	const SL3_dependencies = []
+	const SL3 = _funcCall(SL, 'SL33()', SL3_dependencies, 3, 3)
+	const SL4 = _funcCall(SL, 'SL44()', [SL3], 4, 4)
+	const SL5 = _funcCall(SL, 'SL55()', [SL4], 5, 5)
+	SL3.hasLoop = true
+	SL4.hasLoop = true
+	SL5.hasLoop = true
+
+	const IL3_dependencies = []
+	const IL3 = _funcCall(IL, 'IL33()', IL3_dependencies, 3, 3)
+	const IL4 = _funcCall(IL, 'IL44()', [IL3], 4, 4)
+	const IL5 = _funcCall(IL, 'IL55()', [IL4], 5, 5)
+	IL3.hasLoop = true
+	IL4.hasLoop = true
+	IL5.hasLoop = true
+
+	const AL3_dependencies = []
+	const AL3 = _funcCall(AL, 'AL33()', AL3_dependencies, 3, 3)
+	const AL4 = _funcCall(AL, 'AL44()', [AL3], 4, 4)
+	const AL5 = _funcCall(AL, 'AL55()', [AL4], 5, 5)
+	AL3.hasLoop = true
+	AL4.hasLoop = true
+	AL5.hasLoop = true
+
+	// endregion
+
+	// region check init
+
+	SL3_dependencies.push(SL5)
+	assert.strictEqual(SL3.id, 'SL33()')
+	assert.strictEqual(SL4.id, 'SL44()')
+	assert.strictEqual(SL5.id, 'SL55()')
+
+	IL3_dependencies.push(IL5)
+	assert.strictEqual(IL3.id, 'IL33()')
+	assert.strictEqual(IL4.id, 'IL44()')
+	assert.strictEqual(IL5.id, 'IL55()')
+
+	AL3_dependencies.push(AL5)
+	assert.strictEqual(AL3.id, 'AL33()')
+	assert.strictEqual(AL4.id, 'AL44()')
+	assert.strictEqual(AL5.id, 'AL55()')
+
+	// endregion
+
+	// region sync
+
+	assert.throws(() => {
+		checkFuncSync(ResultType.Value, SL3, SL3)
+	}, InternalError, /\bsync loop\b/i)
+	checkCallHistory(SL3, SL5, SL4)
+
+	assert.throws(() => {
+		checkFuncSync(ResultType.Value, SL4, SL4)
+	}, InternalError, /\bsync loop\b/i)
+	checkCallHistory()
+
+	assert.throws(() => {
+		checkFuncSync(ResultType.Value, SL5, SL5)
+	}, InternalError, /\bsync loop\b/i)
+	checkCallHistory()
+
+	// endregion
+
+	// region iterator
+
+	assert.throws(() => {
+		checkFuncSync(ResultType.Value, IL3, IL3)
+	}, InternalError, /\bsync loop\b/i)
+	checkCallHistory(IL3, IL5, IL4)
+
+	assert.throws(() => {
+		checkFuncSync(ResultType.Value, IL4, IL4)
+	}, InternalError, /\bsync loop\b/i)
+	// checkCallHistory(IL4, IL3, IL5)
+
+	assert.throws(() => {
+		checkFuncSync(ResultType.Value, IL5, IL5)
+	}, InternalError, /\bsync loop\b/i)
+	// checkCallHistory(IL5, IL4, IL3)
+
+	// endregion
+
+	// region async
+
+	await assert.throwsAsync(async () => {
+		await checkFuncAsync(ResultType.Value, AL3, AL3)
+	}, InternalError, /\basync loop\b/i)
+	checkCallHistory(AL5, AL4)
+
+	await assert.throwsAsync(async () => {
+		await checkFuncAsync(ResultType.Value, AL4)
+	}, InternalError, /\basync loop\b/i)
+	checkCallHistory()
+
+	await assert.throwsAsync(async () => {
+		await checkFuncAsync(ResultType.Value, AL5)
+	}, InternalError, /\basync loop\b/i)
+	checkCallHistory()
+
+	// endregion
 
 	// endregion
 
 	return {
-		states: [S0, I0, A0, S1, I1, S2, I2, A2, A3, A4, A5].map(o => {
+		states: [S0, I0, A0, S1, I1, S2, I2, A2, AL3, AL4, AL5].map(o => {
 			return o.state
 		}),
 	}

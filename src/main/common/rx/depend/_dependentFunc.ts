@@ -3,7 +3,7 @@ import {resolveAsync} from '../../async/ThenableSync'
 import {isIterator} from '../../helpers/helpers'
 import {Func, FuncCallStatus, IFuncCallState, ISubscriberLink, TCall} from './contracts'
 import {InternalError} from './helpers'
-import {_subscribe, unsubscribeDependencies} from './subscribeDependency'
+import {_subscribe, subscriberLinkDelete, unsubscribeDependencies} from './subscribeDependency'
 import {getSubscriberLink, releaseSubscriberLink} from './subscriber-link-pool'
 
 // region FuncCallStatus
@@ -31,6 +31,8 @@ type Mask_Calculate = (0 | Flag_Check | Flag_Calculating | Flag_Async | Flag_Cal
 type Flag_HasValue = 2048
 
 type Flag_HasError = 4096
+
+type Flag_InternalError = 8192
 
 type Update_Invalidating = Flag_Invalidating
 type Update_Invalidated = Flag_Invalidated
@@ -85,6 +87,8 @@ const Mask_Calculate = 1920
 const Flag_HasValue: Flag_HasValue = 2048
 
 const Flag_HasError: Flag_HasError = 4096
+
+const Flag_InternalError: Flag_InternalError = 8192
 
 const Update_Invalidating: Update_Invalidating = Flag_Invalidating
 const Update_Invalidated: Update_Invalidated = Flag_Invalidated
@@ -290,6 +294,17 @@ const Mask_Invalidate_Parent = 3
 // tslint:disable-next-line:no-empty
 function emptyFunc() { }
 
+export function internalError<
+	TThis,
+	TArgs extends any[],
+	TValue,
+>(state: IFuncCallState<TThis, TArgs, TValue>, message: string) {
+	unsubscribeDependencies(state)
+	const error = new InternalError(message)
+	updateCalculatedError(state, error)
+	throw error
+}
+
 export function invalidateParent<
 	TThis,
 	TArgs extends any[],
@@ -344,7 +359,7 @@ export function invalidateParents<
 			link = state._subscribersFirst
 		}
 	} else {
-		throw new InternalError('statusBefore === 0 && statusAfter === 0')
+		internalError(state, 'statusBefore === 0 && statusAfter === 0')
 	}
 
 	for (; link !== null;) {
@@ -384,7 +399,7 @@ export function updateInvalidate<
 
 	if (status === Update_Recalc) {
 		if (isCalculated(prevStatus)) {
-			throw new InternalError(`Set status ${statusToString(Update_Recalc)} called when current status is ${statusToString(prevStatus)}`)
+			internalError(state, `Set status ${statusToString(Update_Recalc)} called when current status is ${statusToString(prevStatus)}`)
 		}
 		state.status = prevStatus | status
 	} else {
@@ -406,7 +421,7 @@ export function updateInvalidate<
 			statusBefore = parentRecalc ? Update_Invalidated_Recalc : Update_Invalidated
 			statusAfter = Update_Invalidated
 		} else {
-			throw new InternalError(`Unknown status: ${statusToString(status)}`)
+			internalError(state, `Unknown status: ${statusToString(status)}`)
 		}
 	}
 
@@ -425,7 +440,7 @@ export function updateCheck<
 	const prevStatus = state.status
 
 	if ((prevStatus & Mask_Invalidate) === 0) {
-		throw new InternalError(`Set status ${statusToString(Update_Check)} called when current status is ${statusToString(prevStatus)}`)
+		internalError(state, `Set status ${statusToString(Update_Check)} called when current status is ${statusToString(prevStatus)}`)
 	}
 
 	state.status = (prevStatus & ~(Mask_Invalidate | Flag_Recalc | Mask_Calculate)) | Flag_Check
@@ -442,7 +457,7 @@ export function updateCheckAsync<
 	const prevStatus = state.status
 
 	if (!isCheck(prevStatus)) {
-		throw new InternalError(`Set status ${statusToString(Update_Check_Async)} called when current status is ${statusToString(prevStatus)}`)
+		internalError(state, `Set status ${statusToString(Update_Check_Async)} called when current status is ${statusToString(prevStatus)}`)
 	}
 	state.valueAsync = valueAsync
 
@@ -459,7 +474,7 @@ export function updateCalculating<
 	const prevStatus = state.status
 
 	if ((prevStatus & (Mask_Invalidate | Flag_Check)) === 0) {
-		throw new InternalError(`Set status ${statusToString(Update_Calculating)} called when current status is ${statusToString(prevStatus)}`)
+		internalError(state, `Set status ${statusToString(Update_Calculating)} called when current status is ${statusToString(prevStatus)}`)
 	}
 
 	state.status = (prevStatus & ~(Mask_Invalidate | Flag_Recalc | Mask_Calculate)) | Flag_Calculating
@@ -478,7 +493,7 @@ export function updateCalculatingAsync<
 	const prevStatus = state.status
 
 	if (!isCalculating(prevStatus)) {
-		throw new InternalError(`Set status ${statusToString(Update_Calculating_Async)} called when current status is ${statusToString(prevStatus)}`)
+		internalError(state, `Set status ${statusToString(Update_Calculating_Async)} called when current status is ${statusToString(prevStatus)}`)
 	}
 	state.valueAsync = valueAsync
 
@@ -495,7 +510,7 @@ export function updateCalculated<
 	const prevStatus = state.status
 
 	if ((prevStatus & (Flag_Check | Flag_Calculating)) === 0) {
-		throw new InternalError(`Set status ${statusToString(Update_Calculated_Value)} called when current status is ${statusToString(prevStatus)}`)
+		internalError(state, `Set status ${statusToString(Update_Calculated_Value)} called when current status is ${statusToString(prevStatus)}`)
 	}
 
 	state.status = (prevStatus & (Flag_HasValue | Flag_HasError)) | Flag_Calculated
@@ -519,7 +534,7 @@ export function updateCalculatedValue<
 	const prevStatus = state.status
 
 	if ((prevStatus & (Flag_Check | Flag_Calculating)) === 0) {
-		throw new InternalError(`Set status ${statusToString(Update_Calculated_Value)} called when current status is ${statusToString(prevStatus)}`)
+		internalError(state, `Set status ${statusToString(Update_Calculated_Value)} called when current status is ${statusToString(prevStatus)}`)
 	}
 	if (state.valueAsync != null) {
 		state.valueAsync = null
@@ -548,14 +563,20 @@ export function updateCalculatedError<
 ) {
 	const prevStatus = state.status
 
-	if ((prevStatus & (Flag_Check | Flag_Calculating)) === 0) {
-		throw new InternalError(`Set status ${statusToString(Update_Calculated_Error)} called when current status is ${statusToString(prevStatus)}`)
-	}
-	if (state.valueAsync != null) {
-		state.valueAsync = null
-	}
+	if (error instanceof InternalError) {
+		state.status = Update_Calculated_Error | (prevStatus & Flag_HasValue) | Flag_InternalError
+		state.parentCallState = null
+		currentState = null
+	} else {
+		if ((prevStatus & (Flag_Check | Flag_Calculating)) === 0) {
+			internalError(state, `Set status ${statusToString(Update_Calculated_Error)} called when current status is ${statusToString(prevStatus)}`)
+		}
+		if (state.valueAsync != null) {
+			state.valueAsync = null
+		}
 
-	state.status = Update_Calculated_Error | (prevStatus & Flag_HasValue)
+		state.status = Update_Calculated_Error | (prevStatus & Flag_HasValue)
+	}
 
 	if ((prevStatus & Flag_HasError) === 0
 		|| state.error !== error
@@ -722,7 +743,7 @@ function* checkDependenciesChangedAsync(
 			if ((dependencyState.status & (Flag_Check | Flag_Calculating)) !== 0
 				|| (dependencyState.status & (Flag_HasError | Flag_HasValue)) === 0
 			) {
-				throw new InternalError(`Unexpected dependency status: ${statusToString(dependencyState.status)}`)
+				internalError(state, `Unexpected dependency status: ${statusToString(dependencyState.status)}`)
 			}
 		}
 	}
@@ -751,7 +772,7 @@ function checkDependenciesChanged(state: IFuncCallState<any, any, any>): Thenabl
 			if ((dependencyState.status & (Flag_Check | Flag_Calculating)) !== 0
 				|| (dependencyState.status & (Flag_HasError | Flag_HasValue)) === 0
 			) {
-				throw new InternalError(`Unexpected dependency status: ${statusToString(dependencyState.status)}`)
+				internalError(state, `Unexpected dependency status: ${statusToString(dependencyState.status)}`)
 			}
 		}
 	}
@@ -815,23 +836,23 @@ export function _dependentFunc<
 		return state.value
 	} else if (getCalculate(state.status) !== 0) {
 		if ((state.status & Flag_Async) !== 0) {
-			let parentCallState = state.parentCallState
+			let parentCallState = currentState
 			while (parentCallState) {
 				if (parentCallState === state) {
-					throw new InternalError('Recursive async loop detected')
+					internalError(state, 'Recursive async loop detected')
 				}
 				parentCallState = parentCallState.parentCallState
 			}
 			return state.valueAsync
 		} else if ((state.status & (Flag_Check | Flag_Calculating)) !== 0) {
-			throw new InternalError('Recursive sync loop detected')
+			internalError(state, 'Recursive sync loop detected')
 		} else {
-			throw new InternalError(`Unknown FuncCallStatus: ${statusToString(state.status)}`)
+			internalError(state, `Unknown FuncCallStatus: ${statusToString(state.status)}`)
 		}
 	} else if (getInvalidate(state.status) !== 0) {
 		// nothing
 	} else {
-		throw new InternalError(`Unknown FuncCallStatus: ${statusToString(state.status)}`)
+		internalError(state, `Unknown FuncCallStatus: ${statusToString(state.status)}`)
 	}
 
 	state.parentCallState = currentState
@@ -881,7 +902,7 @@ export function _dependentFunc<
 			updateCheckAsync(state, value)
 		}
 	} else {
-		throw new InternalError(`shouldRecalc == ${shouldRecalc}`)
+		internalError(state, `shouldRecalc == ${shouldRecalc}`)
 	}
 
 	return value
@@ -904,7 +925,7 @@ export function calc<
 
 		if (!isIterator(value)) {
 			if (isThenable(value)) {
-				throw new InternalError('You should use iterator instead thenable for async functions')
+				internalError(state, 'You should use iterator instead thenable for async functions')
 			}
 			updateCalculatedValue(state, value)
 			return value
@@ -922,13 +943,10 @@ export function calc<
 
 		return value
 	} catch (error) {
-		if (error instanceof InternalError) {
-			throw error
-		}
 		if (!_isIterator) {
 			updateCalculatedError(state, error)
 		}
-		if (dontThrowOnError !== true) {
+		if (dontThrowOnError !== true || error instanceof InternalError) {
 			throw error
 		}
 	} finally {
@@ -964,7 +982,7 @@ export function* makeDependentIterator<TThis,
 		}
 
 		if ((state.status & Flag_Async) !== 0) {
-			currentState = null
+			currentState = state.parentCallState
 			if (nested == null) {
 				state.parentCallState = null
 			}
@@ -975,13 +993,10 @@ export function* makeDependentIterator<TThis,
 		return iteration.value
 	} catch (error) {
 		if ((state.status & Flag_Async) !== 0) {
-			currentState = null
+			currentState = state.parentCallState
 			if (nested == null) {
 				state.parentCallState = null
 			}
-		}
-		if (error instanceof InternalError) {
-			throw error
 		}
 		if (nested == null) {
 			updateCalculatedError(state, error)
