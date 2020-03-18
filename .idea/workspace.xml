@@ -7,7 +7,9 @@
     <option name="SHOW_STRUCTURE" value="true" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="69b2ee16-521b-4efd-b473-8e19e3df4d09" name="Default Changelist" comment="" />
+    <list default="true" id="69b2ee16-521b-4efd-b473-8e19e3df4d09" name="Default Changelist" comment="">
+      <change beforePath="$PROJECT_DIR$/src/main/common/rx/depend/docs/perf.log" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/common/rx/depend/docs/perf.log" afterDir="false" />
+    </list>
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -18,7 +20,7 @@
     <option name="myAddOrReplace" value="0" />
   </component>
   <component name="CoverageViewManager">
-    <option name="myElementSize" value="202" />
+    <option name="myElementSize" value="177" />
   </component>
   <component name="ExportTestResults" outputFolder="$PROJECT_DIR$/tmp/test_results" openResultsInEditor="true" userTempatePath="" />
   <component name="FavoritesManager">
@@ -105,7 +107,7 @@
       </list>
     </option>
   </component>
-  <component name="RunManager" selected="Mocha.common &gt; main &gt; rx &gt; depend &gt; dependent-func.base">
+  <component name="RunManager" selected="Mocha.dependent-func (perf)">
     <configuration default="true" type="JavaScriptTestRunnerKarma">
       <config-file value="$PROJECT_DIR$/env/karma/configs/dev.js" />
       <karma-package-dir value="$PROJECT_DIR$/node_modules/karma" />
@@ -401,13 +403,6 @@
       <option name="number" value="Default" />
       <option name="presentableId" value="Default" />
       <updated>1567687848586</updated>
-    </task>
-    <task id="LOCAL-00264" summary="Develop">
-      <created>1583817125580</created>
-      <option name="number" value="00264" />
-      <option name="presentableId" value="LOCAL-00264" />
-      <option name="project" value="LOCAL" />
-      <updated>1583817125580</updated>
     </task>
     <task id="LOCAL-00265" summary="Develop">
       <created>1583836054984</created>
@@ -745,7 +740,14 @@
       <option name="project" value="LOCAL" />
       <updated>1584546334427</updated>
     </task>
-    <option name="localTasksCounter" value="313" />
+    <task id="LOCAL-00313" summary="dependent-funcs: Small fix">
+      <created>1584546507289</created>
+      <option name="number" value="00313" />
+      <option name="presentableId" value="LOCAL-00313" />
+      <option name="project" value="LOCAL" />
+      <updated>1584546507289</updated>
+    </task>
+    <option name="localTasksCounter" value="314" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -807,7 +809,6 @@
   <component name="VcsManagerConfiguration">
     <option name="CHECK_CODE_SMELLS_BEFORE_PROJECT_COMMIT" value="false" />
     <option name="CHECK_NEW_TODO" value="false" />
-    <MESSAGE value="dependent-funcs v8 optimization in process... Pool as linked list is fail&#10;&#10;Pool as Array: [ 924, 5693 ] ticks&#10;Pool as LinkedList: [ 1406, 6091, -395 ]," />
     <MESSAGE value="dependent-funcs v8 optimization in process... Rollback &quot;pool as linked list&quot;" />
     <MESSAGE value="Tests OK" />
     <MESSAGE value="dependent-funcs v8 optimization in process... Added callWithArgs (perf is no changed). Tests OK" />
@@ -832,7 +833,8 @@
     <MESSAGE value="Develop" />
     <MESSAGE value="Develop. Tests OK." />
     <MESSAGE value="dependent-funcs: Base test is fully completed. Tests OK." />
-    <option name="LAST_COMMIT_MESSAGE" value="dependent-funcs: Base test is fully completed. Tests OK." />
+    <MESSAGE value="dependent-funcs: Small fix" />
+    <option name="LAST_COMMIT_MESSAGE" value="dependent-funcs: Small fix" />
   </component>
   <component name="XDebuggerManager">
     <breakpoint-manager>
