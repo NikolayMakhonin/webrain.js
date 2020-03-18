@@ -614,14 +614,9 @@ export function invalidate<
 	TValue,
 >(
 	state: IFuncCallState<TThis, TArgs, TValue>,
-	status?: Mask_Update_Invalidate,
 ) {
-	if (status == null) {
-		updateInvalidate(state, Update_Invalidating_Recalc, false)
-		updateInvalidate(state, Update_Invalidated_Recalc, false)
-	} else {
-		updateInvalidate(state, status, false)
-	}
+	updateInvalidate(state, Update_Invalidating_Recalc, false)
+	updateInvalidate(state, Update_Invalidated_Recalc, false)
 }
 
 export function emit<
