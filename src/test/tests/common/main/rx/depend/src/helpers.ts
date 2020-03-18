@@ -1,6 +1,6 @@
 /* tslint:disable:no-identical-functions no-shadowed-variable no-duplicate-string no-construct use-primitive-type */
 import {isThenable, Thenable, ThenableOrValue} from '../../../../../../../main/common/async/async'
-import {invalidate, statusToString} from '../../../../../../../main/common/rx/depend/_dependentFunc'
+import {getCurrentState, invalidate, statusToString} from '../../../../../../../main/common/rx/depend/_dependentFunc'
 import {
 	callStateHashTable,
 	reduceCallStates,
@@ -9,6 +9,7 @@ import {
 } from '../../../../../../../main/common/rx/depend/_getFuncCallState2'
 import {Func, FuncCallStatus, IFuncCallState} from '../../../../../../../main/common/rx/depend/contracts'
 import {getFuncCallState, makeDependentFunc} from '../../../../../../../main/common/rx/depend/facade'
+import {InternalError} from '../../../../../../../main/common/rx/depend/helpers'
 import {assert} from '../../../../../../../main/common/test/Assert'
 import {delay} from '../../../../../../../main/common/time/helpers'
 
@@ -205,6 +206,7 @@ const _callHistory = []
 type IDependencyCall = (() => ThenableOrValue<string>) & {
 	id: string,
 	state: IFuncCallState<any, any, any>,
+	hasLoop: boolean,
 }
 
 type IDependencyFunc = ((this: IDependencyCall[], a?: number, b?: number) => ThenableOrValue<string>) & {
@@ -217,7 +219,9 @@ function getCallId(funcId: string, _this?: any, ...rest: any[]) {
 		callId += rest[i] || 0
 	}
 	callId += '(' + (
-		Array.isArray(_this) && _this.map(o => o.id).join(',') || _this || 0
+		Array.isArray(_this)
+			? _this.filter(o => !o.hasLoop).map(o => o.id).join(',')
+			: _this || 0
 	) + ')'
 	return callId
 }
@@ -254,11 +258,14 @@ function funcSync(id: string) {
 		const callId = getCallId(id, this, ...arguments)
 		_callHistory.push(callId)
 		const dependencies = this
+		const currentState = getCurrentState()
+		assert.strictEqual((currentState as any).id, callId)
 		if (Array.isArray(dependencies)) {
 			for (let i = 0, len = dependencies.length; i < len * 2; i++) {
 				const dependency = dependencies[i % len]
 				const value = dependency()
 				assert.strictEqual(value + '', dependency.id)
+				assert.strictEqual(getCurrentState(), currentState)
 			}
 		}
 		return callIdToResult(callId)
@@ -270,27 +277,39 @@ function funcSync(id: string) {
 }
 
 function funcSyncIterator(id: string) {
-	const nested = function*(dependencies: IDependencyCall[]) {
+	const nested = function*(dependencies: IDependencyCall[], currentState) {
+		assert.strictEqual(getCurrentState(), currentState)
 		yield 1
+		assert.strictEqual(getCurrentState(), currentState)
 		if (Array.isArray(dependencies)) {
 			for (let i = 0, len = dependencies.length; i < len * 2; i++) {
 				const dependency = dependencies[i % len]
-				const value = yield dependency()
+				const iterator = dependency()
+				// assert.strictEqual(getCurrentState(), currentState)
+				const value = yield iterator
 				assert.strictEqual(value + '', dependency.id)
+				assert.strictEqual(getCurrentState(), currentState)
 			}
 		}
 		return 1
 	}
-	const run = function*(callId: string, dependencies: IDependencyCall[]) {
+	const run = function*(callId: string, dependencies: IDependencyCall[], currentState) {
+		assert.strictEqual(getCurrentState(), currentState)
 		yield 1
-		yield nested(dependencies)
+		assert.strictEqual(getCurrentState(), currentState)
+		yield nested(dependencies, currentState)
+		assert.strictEqual(getCurrentState(), currentState)
 		return callIdToResult(callId)
 	}
 
 	const result: IDependencyFunc = makeDependentFunc(function() {
 		const callId = getCallId(id, this, ...arguments)
 		_callHistory.push(callId)
-		return run(callId, this as any)
+		const currentState = getCurrentState()
+		assert.strictEqual((currentState as any).id, callId)
+		const res = run(callId, this as any, currentState)
+		assert.strictEqual(getCurrentState(), currentState)
+		return res
 	}) as any
 
 	result.id = id
@@ -303,30 +322,45 @@ function funcAsync(id: string) {
 		yield 1
 		return 1
 	}
-	const nestedAsync = function*(dependencies: IDependencyCall[]) {
+	const nestedAsync = function*(dependencies: IDependencyCall[], currentState) {
+		assert.strictEqual(getCurrentState(), currentState)
 		yield 1
+		assert.strictEqual(getCurrentState(), currentState)
 		if (dependencies) {
-			for (let i = 0, len = dependencies.length; i < len; i++) {
-				const dependency = dependencies[i]
-				const value = yield dependency()
+			for (let i = 0, len = dependencies.length; i < len * 2; i++) {
+				const dependency = dependencies[i % len]
+				const promise = dependency()
+				// assert.strictEqual(getCurrentState(), currentState)
+				const value = yield promise
 				assert.strictEqual(value + '', dependency.id)
+				assert.strictEqual(getCurrentState(), currentState)
 			}
 		}
 		yield delay(0)
+		assert.strictEqual(getCurrentState(), currentState)
 		return 1
 	}
-	const run = function*(callId: string, dependencies: IDependencyCall[]) {
+	const run = function*(callId: string, dependencies: IDependencyCall[], currentState) {
+		assert.strictEqual(getCurrentState(), currentState)
 		yield 1
+		assert.strictEqual(getCurrentState(), currentState)
 		yield delay(0)
+		assert.strictEqual(getCurrentState(), currentState)
 		yield nested()
-		yield nestedAsync(dependencies)
+		assert.strictEqual(getCurrentState(), currentState)
+		yield nestedAsync(dependencies, currentState)
+		assert.strictEqual(getCurrentState(), currentState)
 		return callIdToResult(callId)
 	}
 
 	const result: IDependencyFunc = makeDependentFunc(function() {
 		const callId = getCallId(id, this, ...arguments)
 		_callHistory.push(callId)
-		return run(callId, this as any)
+		const currentState = getCurrentState()
+		assert.strictEqual((currentState as any).id, callId)
+		const res = run(callId, this as any, currentState)
+		assert.strictEqual(getCurrentState(), currentState)
+		return res
 	}) as any
 
 	result.id = id
@@ -334,10 +368,12 @@ function funcAsync(id: string) {
 	return result
 }
 
-function funcCall(func: IDependencyFunc, _this?: any, ...rest: any[]) {
-	const callId = getCallId(func.id, _this, ...rest)
+function _funcCall(func: IDependencyFunc, callId: string, _this?: any, ...rest: any[]) {
 	const result: IDependencyCall = (() => {
-		return func.apply(_this, rest)
+		const currentState = getCurrentState()
+		const res = func.apply(_this, rest)
+		// assert.strictEqual(getCurrentState(), currentState)
+		return res
 	}) as any
 
 	result.id = callId
@@ -347,6 +383,11 @@ function funcCall(func: IDependencyFunc, _this?: any, ...rest: any[]) {
 	(result.state as any).id = callId
 
 	return result
+}
+
+function funcCall(func: IDependencyFunc, _this?: any, ...rest: any[]) {
+	const callId = getCallId(func.id, _this, ...rest)
+	return _funcCall(func, callId, _this, ...rest)
 }
 
 class ThisObj {
@@ -406,6 +447,7 @@ function checkFuncSync<TValue>(
 ) {
 	checkCallHistory()
 	checkDependenciesDuplicates(funcCall)
+	assert.strictEqual(getCurrentState(), null)
 
 	let value
 	let error
@@ -415,6 +457,7 @@ function checkFuncSync<TValue>(
 		error = err
 	}
 
+	assert.strictEqual(getCurrentState(), null)
 	if (resultType === ResultType.Error || resultType === ResultType.Any && error) {
 		// if (resultsAsError.indexOf(error + '') < 0) {
 		// 	assert.fail(`funcCall.id = ${funcCall.id}, error = ${error}`)
@@ -436,6 +479,7 @@ function checkFuncAsync<TValue>(
 ) {
 	checkCallHistory()
 	checkDependenciesDuplicates(funcCall)
+	assert.strictEqual(getCurrentState(), null)
 	let promise
 	try {
 		promise = checkAsync(funcCall())
@@ -445,6 +489,8 @@ function checkFuncAsync<TValue>(
 	// assertStatus(funcCall.state.status)
 	checkCallHistory(...callHistory)
 	return (async () => {
+		assert.strictEqual(getCurrentState(), null)
+
 		let value
 		let error
 		try {
@@ -453,6 +499,7 @@ function checkFuncAsync<TValue>(
 			error = err
 		}
 
+		assert.strictEqual(getCurrentState(), null)
 		if (resultType === ResultType.Error || resultType === ResultType.Any && error) {
 			assert.ok(error)
 			// if (resultsAsError.indexOf(error + '') < 0) {
@@ -728,6 +775,14 @@ export async function baseTest() {
 	const I2 = funcCall(I, [S1, I1], 2, null) // I20(S1(S(0),I(0)),I1(I(0),A(_)))
 	const A2 = funcCall(A, [I1], 2, 2) // A22(I1(I(0),A(_)))
 
+	const A3_dependencies = []
+	const A3 = _funcCall(A, 'A33()', A3_dependencies, 3, 3)
+	const A4 = _funcCall(A, 'A44()', [A3], 4, 4)
+	const A5 = _funcCall(A, 'A55()', [A4], 5, 5)
+	A3.hasLoop = true
+	A4.hasLoop = true
+	A5.hasLoop = true
+
 	const allFuncs = [S0, I0, A0, S1, I1, S2, I2, A2]
 	const _checkStatuses = checkStatuses(...allFuncs)
 
@@ -772,6 +827,11 @@ export async function baseTest() {
 	assert.strictEqual(S2.id, 'S20(S1(S(0),I(0)))')
 	assert.strictEqual(I2.id, 'I20(S1(S(0),I(0)),I1(I(0),A(_)))')
 	assert.strictEqual(A2.id, 'A22(I1(I(0),A(_)))')
+
+	A3_dependencies.push(A5)
+	assert.strictEqual(A3.id, 'A33()')
+	assert.strictEqual(A4.id, 'A44()')
+	assert.strictEqual(A5.id, 'A55()')
 
 	// endregion
 
@@ -1620,8 +1680,16 @@ export async function baseTest() {
 
 	// endregion
 
+	// region Async loop
+
+	// await assert.throwsAsync(async () => {
+	// 	await checkFuncAsync(ResultType.Value, A3, A3)
+	// }, InternalError, /async.*loop/i)
+
+	// endregion
+
 	return {
-		states: [S0, I0, A0, S1, I1, S2, I2, A2].map(o => {
+		states: [S0, I0, A0, S1, I1, S2, I2, A2, A3, A4, A5].map(o => {
 			return o.state
 		}),
 	}

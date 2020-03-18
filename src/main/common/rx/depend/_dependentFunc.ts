@@ -760,8 +760,12 @@ function checkDependenciesChanged(state: IFuncCallState<any, any, any>): Thenabl
 	return false
 }
 
-let currentState: IFuncCallState<any, any, any>
+let currentState: IFuncCallState<any, any, any> = null
 let nextCallId = 1
+
+export function getCurrentState() {
+	return currentState
+}
 
 // tslint:disable-next-line:no-shadowed-variable
 export function subscribeDependency<
@@ -797,7 +801,7 @@ export function _dependentFunc<
 	TArgs extends any[],
 	TValue,
 >(state: IFuncCallState<TThis, TArgs, TValue>, dontThrowOnError?: boolean) {
-	if (currentState != null) {
+	if (currentState != null && (currentState.status & Flag_Check) === 0) {
 		subscribeDependency(currentState, state)
 	}
 	state.callId = nextCallId++
@@ -843,6 +847,8 @@ export function _dependentFunc<
 	}
 
 	if (shouldRecalc === false) {
+		currentState = state.parentCallState
+		state.parentCallState = null
 		if (isHasError(state.status)) {
 			if (dontThrowOnError !== true) {
 				throw state.error
@@ -858,6 +864,8 @@ export function _dependentFunc<
 	} else if (isIterator(shouldRecalc)) {
 		value = resolveAsync(shouldRecalc, o => {
 			if (o === false) {
+				currentState = null
+				state.parentCallState = null
 				if (isHasError(state.status)) {
 					if (dontThrowOnError !== true) {
 						throw state.error
@@ -925,7 +933,9 @@ export function calc<
 		}
 	} finally {
 		currentState = state.parentCallState
-		state.parentCallState = null
+		if (!_isIterator) {
+			state.parentCallState = null
+		}
 	}
 }
 
@@ -967,6 +977,8 @@ export function* makeDependentIterator<TThis,
 		throw error
 	} finally {
 		currentState = null
-		state.parentCallState = null
+		if (nested == null) {
+			state.parentCallState = null
+		}
 	}
 }

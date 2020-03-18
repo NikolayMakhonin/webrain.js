@@ -5,6 +5,8 @@ import {baseTest, clearCallStates, createPerceptron} from './src/helpers'
 
 describe('common > main > rx > depend > dependent-func', function() {
 	it('base', async function() {
+		this.timeout(20000)
+
 		await baseTest()
 
 		clearCallStates()
