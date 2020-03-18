@@ -554,11 +554,13 @@ export function updateCalculatedError<
 	if (state.valueAsync != null) {
 		state.valueAsync = null
 	}
-	state.error = error
 
 	state.status = Update_Calculated_Error | (prevStatus & Flag_HasValue)
 
-	if ((prevStatus & Flag_HasError) === 0) {
+	if ((prevStatus & Flag_HasError) === 0
+		|| state.error !== error
+	) {
+		state.error = error
 		afterCalc(state, prevStatus, true)
 	} else {
 		afterCalc(state, prevStatus, false)
