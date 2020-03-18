@@ -285,7 +285,7 @@ function funcSyncIterator(id: string) {
 			for (let i = 0, len = dependencies.length; i < len * 2; i++) {
 				const dependency = dependencies[i % len]
 				const iterator = dependency()
-				// assert.strictEqual(getCurrentState(), currentState)
+				assert.strictEqual(getCurrentState(), currentState)
 				const value = yield iterator
 				assert.strictEqual(value + '', dependency.id)
 				assert.strictEqual(getCurrentState(), currentState)
@@ -330,7 +330,7 @@ function funcAsync(id: string) {
 			for (let i = 0, len = dependencies.length; i < len * 2; i++) {
 				const dependency = dependencies[i % len]
 				const promise = dependency()
-				// assert.strictEqual(getCurrentState(), currentState)
+				assert.strictEqual(getCurrentState(), currentState)
 				const value = yield promise
 				assert.strictEqual(value + '', dependency.id)
 				assert.strictEqual(getCurrentState(), currentState)
@@ -372,7 +372,7 @@ function _funcCall(func: IDependencyFunc, callId: string, _this?: any, ...rest: 
 	const result: IDependencyCall = (() => {
 		const currentState = getCurrentState()
 		const res = func.apply(_this, rest)
-		// assert.strictEqual(getCurrentState(), currentState)
+		assert.strictEqual(getCurrentState(), currentState)
 		return res
 	}) as any
 

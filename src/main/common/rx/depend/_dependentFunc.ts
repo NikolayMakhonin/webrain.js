@@ -963,11 +963,23 @@ export function* makeDependentIterator<TThis,
 			iteration = iterator.next(value)
 		}
 
+		if ((state.status & Flag_Async) !== 0) {
+			currentState = null
+			if (nested == null) {
+				state.parentCallState = null
+			}
+		}
 		if (nested == null) {
 			updateCalculatedValue(state, iteration.value)
 		}
 		return iteration.value
 	} catch (error) {
+		if ((state.status & Flag_Async) !== 0) {
+			currentState = null
+			if (nested == null) {
+				state.parentCallState = null
+			}
+		}
 		if (error instanceof InternalError) {
 			throw error
 		}
@@ -975,10 +987,5 @@ export function* makeDependentIterator<TThis,
 			updateCalculatedError(state, error)
 		}
 		throw error
-	} finally {
-		currentState = null
-		if (nested == null) {
-			state.parentCallState = null
-		}
 	}
 }
