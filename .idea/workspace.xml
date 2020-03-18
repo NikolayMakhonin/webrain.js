@@ -8,7 +8,6 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="69b2ee16-521b-4efd-b473-8e19e3df4d09" name="Default Changelist" comment="">
-      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/test/tests/common/main/rx/depend/src/helpers.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/test/tests/common/main/rx/depend/src/helpers.ts" afterDir="false" />
     </list>
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
@@ -405,13 +404,6 @@
       <option name="presentableId" value="Default" />
       <updated>1567687848586</updated>
     </task>
-    <task id="LOCAL-00258" summary="Fix v8 test">
-      <created>1583301913102</created>
-      <option name="number" value="00258" />
-      <option name="presentableId" value="LOCAL-00258" />
-      <option name="project" value="LOCAL" />
-      <updated>1583301913102</updated>
-    </task>
     <task id="LOCAL-00259" summary="BinaryTree: Implementing AVL algorithm...">
       <created>1583301965882</created>
       <option name="number" value="00259" />
@@ -748,7 +740,14 @@
       <option name="project" value="LOCAL" />
       <updated>1584505358036</updated>
     </task>
-    <option name="localTasksCounter" value="307" />
+    <task id="LOCAL-00307" summary="Develop">
+      <created>1584508108233</created>
+      <option name="number" value="00307" />
+      <option name="presentableId" value="LOCAL-00307" />
+      <option name="project" value="LOCAL" />
+      <updated>1584508108233</updated>
+    </task>
+    <option name="localTasksCounter" value="308" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -845,6 +844,12 @@
           <line>20</line>
           <properties lambdaOrdinal="-1" />
           <option name="timeStamp" value="720" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" type="javascript">
+          <url>file://$PROJECT_DIR$/src/test/tests/common/main/rx/depend/src/helpers.ts</url>
+          <line>1405</line>
+          <properties lambdaOrdinal="-1" />
+          <option name="timeStamp" value="852" />
         </line-breakpoint>
       </breakpoints>
       <breakpoints-dialog>
