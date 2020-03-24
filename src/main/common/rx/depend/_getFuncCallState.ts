@@ -48,7 +48,7 @@ export function addFuncCallState<
 	TValue,
 	TNewThis,
 >(
-	func: Func<TThis, TArgs, TValue>,
+	func: Func<TNewThis, TArgs, TValue>,
 	_this: TThis,
 	callWithArgs: TCall<TArgs>,
 	getThis: TGetThis<TThis, TArgs, TValue, TNewThis>,

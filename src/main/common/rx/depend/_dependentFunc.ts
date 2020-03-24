@@ -1,10 +1,16 @@
-import {isThenable, Thenable, ThenableIterator, ThenableOrIteratorOrValue, ThenableOrValue} from '../../async/async'
+import {
+	isThenable,
+	Thenable,
+	ThenableIterator,
+	ThenableOrIterator,
+	ThenableOrIteratorOrValue,
+	ThenableOrValue,
+} from '../../async/async'
 import {resolveAsync} from '../../async/ThenableSync'
 import {isIterator} from '../../helpers/helpers'
 import {Func, FuncCallStatus, IFuncCallState, ISubscriberLink, TCall, TFuncCallState, TGetThis} from './contracts'
 import {InternalError} from './helpers'
-import {_subscribe, subscriberLinkDelete, unsubscribeDependencies} from './subscribeDependency'
-import {getSubscriberLink, releaseSubscriberLink} from './subscriber-link-pool'
+import {_subscribe, unsubscribeDependencies} from './subscribeDependency'
 
 // region FuncCallStatus
 
@@ -294,11 +300,7 @@ const Mask_Invalidate_Parent = 3
 // tslint:disable-next-line:no-empty
 function emptyFunc() { }
 
-export function internalError<
-	TThis,
-	TArgs extends any[],
-	TValue,
->(state: IFuncCallState<TThis, TArgs, TValue>, message: string) {
+export function internalError(state: TFuncCallState, message: string) {
 	unsubscribeDependencies(state)
 	const error = new InternalError(message)
 	updateCalculatedError(state, error)
@@ -306,13 +308,12 @@ export function internalError<
 }
 
 export function invalidateParent<
-	TThis,
-	TArgs extends any[],
-	TValue,
+	TState extends TFuncCallState,
+	TSubscriber extends TFuncCallState,
 >(
-	link: ISubscriberLink<TThis, TArgs, TValue>,
+	link: ISubscriberLink<TState, TSubscriber>,
 	status: Mask_Update_Invalidate,
-): ISubscriberLink<TThis, TArgs, TValue> {
+): ISubscriberLink<TState, any> {
 	const next = link.next
 	const childState = link.value
 	const childStatus = childState.status & Mask_Update_Invalidate
@@ -335,19 +336,15 @@ export function invalidateParent<
 	return next
 }
 
-export function invalidateParents<
-	TThis,
-	TArgs extends any[],
-	TValue,
->(
-	state: IFuncCallState<TThis, TArgs, TValue>,
+export function invalidateParents<TState extends TFuncCallState>(
+	state: TState,
 	statusBefore: Mask_Update_Invalidate | Flag_None,
 	statusAfter: Mask_Update_Invalidate | Flag_None,
 ) {
 	const lastLink = state._subscribersCalculating
 
 	let status: Mask_Update_Invalidate
-	let link: ISubscriberLink<TThis, TArgs, TValue>
+	let link: ISubscriberLink<TState, any>
 	if (statusBefore !== 0) {
 		status = statusBefore
 		link = state._subscribersFirst
@@ -379,12 +376,8 @@ export function invalidateParents<
 	}
 }
 
-export function updateInvalidate<
-	TThis,
-	TArgs extends any[],
-	TValue,
->(
-	state: IFuncCallState<TThis, TArgs, TValue>,
+export function updateInvalidate(
+	state: TFuncCallState,
 	status: Mask_Update_Invalidate,
 	parentRecalc: boolean,
 ) {
@@ -430,13 +423,7 @@ export function updateInvalidate<
 	}
 }
 
-export function updateCheck<
-	TThis,
-	TArgs extends any[],
-	TValue,
->(
-	state: IFuncCallState<TThis, TArgs, TValue>,
-) {
+export function updateCheck(state: TFuncCallState) {
 	const prevStatus = state.status
 
 	if ((prevStatus & Mask_Invalidate) === 0) {
@@ -450,8 +437,9 @@ export function updateCheckAsync<
 	TThis,
 	TArgs extends any[],
 	TValue,
+	TNewThis
 >(
-	state: IFuncCallState<TThis, TArgs, TValue>,
+	state: IFuncCallState<TThis, TArgs, TValue, TNewThis>,
 	valueAsync: Thenable<TValue>,
 ) {
 	const prevStatus = state.status
@@ -468,8 +456,9 @@ export function updateCalculating<
 	TThis,
 	TArgs extends any[],
 	TValue,
+	TNewThis
 >(
-	state: IFuncCallState<TThis, TArgs, TValue>,
+	state: IFuncCallState<TThis, TArgs, TValue, TNewThis>,
 ) {
 	const prevStatus = state.status
 
@@ -486,8 +475,9 @@ export function updateCalculatingAsync<
 	TThis,
 	TArgs extends any[],
 	TValue,
+	TNewThis
 >(
-	state: IFuncCallState<TThis, TArgs, TValue>,
+	state: IFuncCallState<TThis, TArgs, TValue, TNewThis>,
 	valueAsync: Thenable<TValue>,
 ) {
 	const prevStatus = state.status
@@ -500,13 +490,7 @@ export function updateCalculatingAsync<
 	state.status = setCalculate(prevStatus, Update_Calculating_Async)
 }
 
-export function updateCalculated<
-	TThis,
-	TArgs extends any[],
-	TValue,
->(
-	state: IFuncCallState<TThis, TArgs, TValue>,
-) {
+export function updateCalculated(state: TFuncCallState) {
 	const prevStatus = state.status
 
 	if ((prevStatus & (Flag_Check | Flag_Calculating)) === 0) {
@@ -527,8 +511,9 @@ export function updateCalculatedValue<
 	TThis,
 	TArgs extends any[],
 	TValue,
+	TNewThis
 >(
-	state: IFuncCallState<TThis, TArgs, TValue>,
+	state: IFuncCallState<TThis, TArgs, TValue, TNewThis>,
 	value: TValue,
 ) {
 	const prevStatus = state.status
@@ -553,12 +538,8 @@ export function updateCalculatedValue<
 	}
 }
 
-export function updateCalculatedError<
-	TThis,
-	TArgs extends any[],
-	TValue,
->(
-	state: IFuncCallState<TThis, TArgs, TValue>,
+export function updateCalculatedError(
+	state: TFuncCallState,
 	error: any,
 ) {
 	const prevStatus = state.status
@@ -588,12 +569,8 @@ export function updateCalculatedError<
 	}
 }
 
-export function afterCalc<
-	TThis,
-	TArgs extends any[],
-	TValue,
->(
-	state: IFuncCallState<TThis, TArgs, TValue>,
+export function afterCalc(
+	state: TFuncCallState,
 	prevStatus: FuncCallStatus,
 	valueChanged: boolean,
 ) {
@@ -608,44 +585,39 @@ export function afterCalc<
 }
 
 // tslint:disable-next-line:no-shadowed-variable
-export function invalidate<
-	TThis,
-	TArgs extends any[],
-	TValue,
->(
-	state: IFuncCallState<TThis, TArgs, TValue>,
-) {
+export function invalidate(state: TFuncCallState) {
 	updateInvalidate(state, Update_Invalidating_Recalc, false)
 	updateInvalidate(state, Update_Invalidated_Recalc, false)
 }
-
-export function emit<
-	TThis,
-	TArgs extends any[],
-	TValue,
->(state: IFuncCallState<TThis, TArgs, TValue>, status) {
-	if (state._subscribersFirst != null) {
-		let clonesFirst
-		let clonesLast
-		for (let link = state._subscribersFirst; link != null; link = link.next) {
-			const cloneLink = getSubscriberLink(state, link.value, null, link.next)
-			if (clonesLast == null) {
-				clonesFirst = cloneLink
-			} else {
-				clonesLast.next = cloneLink
-			}
-			clonesLast = cloneLink
-		}
-		for (let link = clonesFirst; link != null;) {
-			invalidate(link.value, status)
-			link.value = null
-			const next = link.next
-			link.next = null
-			releaseSubscriberLink(link)
-			link = next
-		}
-	}
-}
+//
+// export function emit<
+// 	TThis,
+// 	TArgs extends any[],
+// 	TValue,
+// 	TNewThis
+// >(state: IFuncCallState<TThis, TArgs, TValue, TNewThis>, status) {
+// 	if (state._subscribersFirst != null) {
+// 		let clonesFirst
+// 		let clonesLast
+// 		for (let link = state._subscribersFirst; link != null; link = link.next) {
+// 			const cloneLink = getSubscriberLink(state, link.value, null, link.next)
+// 			if (clonesLast == null) {
+// 				clonesFirst = cloneLink
+// 			} else {
+// 				clonesLast.next = cloneLink
+// 			}
+// 			clonesLast = cloneLink
+// 		}
+// 		for (let link = clonesFirst; link != null;) {
+// 			invalidate(link.value, status)
+// 			link.value = null
+// 			const next = link.next
+// 			link.next = null
+// 			releaseSubscriberLink(link)
+// 			link = next
+// 		}
+// 	}
+// }
 
 export class FuncCallState<
 	TThis,
@@ -659,7 +631,7 @@ export class FuncCallState<
 	TNewThis
 > {
 	constructor(
-		func: Func<TThis, TArgs, TValue>,
+		func: Func<TNewThis, TArgs, TValue>,
 		_this: TThis,
 		callWithArgs: TCall<TArgs>,
 		getThis: TGetThis<TThis, TArgs, TValue, TNewThis>,
@@ -671,7 +643,7 @@ export class FuncCallState<
 		this.valueIds = valueIds
 	}
 
-	public readonly func: Func<TThis, TArgs, TValue>
+	public readonly func: Func<TNewThis, TArgs, TValue>
 	public readonly _this: TThis
 	public readonly callWithArgs: TCall<TArgs>
 	public readonly getThis: TGetThis<TThis, TArgs, TValue, TNewThis>
@@ -713,7 +685,7 @@ export function createFuncCallState<
 	TValue,
 	TNewThis
 >(
-	func: Func<TThis, TArgs, TValue>,
+	func: Func<TNewThis, TArgs, TValue>,
 	_this: TThis,
 	callWithArgs: TCall<TArgs>,
 	getThis: TGetThis<TThis, TArgs, TValue, TNewThis>,
@@ -797,9 +769,12 @@ export function getCurrentState() {
 }
 
 // tslint:disable-next-line:no-shadowed-variable
-export function subscribeDependency(
-	state: TFuncCallState,
-	dependency: TFuncCallState,
+export function subscribeDependency<
+	TState extends TFuncCallState,
+	TDependency extends TFuncCallState,
+>(
+	state: TState,
+	dependency: TDependency,
 ) {
 	if (state.callId < dependency.callId) {
 		if ((state.status & Flag_Async) === 0) {
@@ -828,12 +803,11 @@ export function _dependentFunc<
 	TThis,
 	TArgs extends any[],
 	TValue,
-	TNewThis,
-	TFunc extends Func<TThis, TArgs, TValue>
+	TNewThis
 >(
 	state: IFuncCallState<TThis, TArgs, TValue, TNewThis>,
 	dontThrowOnError?: boolean,
-): ThenableOrValue<TValue> {
+): TValue extends ThenableOrIterator<infer V> ? ThenableOrValue<V> : TValue {
 	if (currentState != null && (currentState.status & Flag_Check) === 0) {
 		subscribeDependency(currentState, state)
 	}
@@ -924,8 +898,7 @@ export function calc<
 	TThis,
 	TArgs extends any[],
 	TValue,
-	TNewThis,
-	TFunc extends Func<TThis, TArgs, TValue>
+	TNewThis
 >(
 	state: IFuncCallState<TThis, TArgs, TValue, TNewThis>,
 	dontThrowOnError?: boolean,
@@ -978,8 +951,7 @@ export function* makeDependentIterator<
 	TThis,
 	TArgs extends any[],
 	TValue,
-	TNewThis,
-	TFunc extends Func<TThis, TArgs, TValue>
+	TNewThis
 >(
 	state: IFuncCallState<TThis, TArgs, TValue, TNewThis>,
 	iterator: Iterator<TValue>,

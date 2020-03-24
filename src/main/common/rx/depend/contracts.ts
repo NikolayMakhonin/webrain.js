@@ -42,7 +42,7 @@ export interface IFuncCallState<
 	TValue,
 	TNewThis
 > {
-	readonly func: Func<TThis, TArgs, TValue>
+	readonly func: Func<TNewThis, TArgs, TValue>
 	readonly _this: TThis
 	readonly callWithArgs: TCall<TArgs>
 	readonly getThis: TGetThis<TThis, TArgs, TValue, TNewThis>
@@ -76,7 +76,7 @@ export interface ISubscriberLink<
 	TState extends TFuncCallState,
 	TSubscriber extends TFuncCallState,
 >
-	extends ILinkItem<TFuncCallState>
+	extends ILinkItem<TSubscriber>
 {
 	state: TState,
 	prev: ISubscriberLink<TState, any>,
