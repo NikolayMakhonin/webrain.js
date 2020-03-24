@@ -6,9 +6,9 @@ import {
 	reduceCallStates,
 	valueIdsMap,
 	valueStatesMap,
-} from '../../../../../../../main/common/rx/depend/_getFuncCallState2'
+} from '../../../../../../../main/common/rx/depend/_getFuncCallState'
 import {Func, FuncCallStatus, IFuncCallState} from '../../../../../../../main/common/rx/depend/contracts'
-import {getFuncCallState, makeDependentFunc} from '../../../../../../../main/common/rx/depend/facade'
+import {getFuncCallState, depend} from '../../../../../../../main/common/rx/depend/facade'
 import {InternalError} from '../../../../../../../main/common/rx/depend/helpers'
 import {assert} from '../../../../../../../main/common/test/Assert'
 import {delay} from '../../../../../../../main/common/time/helpers'
@@ -33,7 +33,7 @@ export function __makeDependentFunc<TThis,
 	TValue,
 	>(func: Func<TThis, TArgs, TValue | Iterator<TValue>>) {
 	if (typeof func === 'function') {
-		return makeDependentFunc<TThis, TArgs, TValue>(func as any)
+		return depend<TThis, TArgs, TValue>(func as any)
 	}
 	return null
 }
@@ -254,7 +254,7 @@ function callIdToResult(callId: string) {
 }
 
 function funcSync(id: string) {
-	const result: IDependencyFunc = makeDependentFunc(function() {
+	const result: IDependencyFunc = depend(function() {
 		const callId = getCallId(id, this, ...arguments)
 		_callHistory.push(callId)
 		const dependencies = this
@@ -302,7 +302,7 @@ function funcSyncIterator(id: string) {
 		return callIdToResult(callId)
 	}
 
-	const result: IDependencyFunc = makeDependentFunc(function() {
+	const result: IDependencyFunc = depend(function() {
 		const callId = getCallId(id, this, ...arguments)
 		_callHistory.push(callId)
 		const currentState = getCurrentState()
@@ -353,7 +353,7 @@ function funcAsync(id: string) {
 		return callIdToResult(callId)
 	}
 
-	const result: IDependencyFunc = makeDependentFunc(function() {
+	const result: IDependencyFunc = depend(function() {
 		const callId = getCallId(id, this, ...arguments)
 		_callHistory.push(callId)
 		const currentState = getCurrentState()

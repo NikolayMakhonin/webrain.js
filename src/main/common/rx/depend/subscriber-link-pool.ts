@@ -1,28 +1,24 @@
 import {ObjectPool} from '../../lists/ObjectPool'
-import {IFuncCallState, ISubscriberLink} from './contracts'
+import {ISubscriberLink, TFuncCallState, TSubscriberLink} from './contracts'
 
-export const subscriberLinkPool = new ObjectPool<ISubscriberLink<any, any, any>>(1000000)
+export const subscriberLinkPool = new ObjectPool<TSubscriberLink>(1000000)
 
 // tslint:disable-next-line:no-shadowed-variable
-export function releaseSubscriberLink<TThis,
-	TArgs extends any[],
-	TValue,
-	>(obj: ISubscriberLink<TThis, TArgs, TValue>) {
+export function releaseSubscriberLink(obj: TSubscriberLink) {
 	subscriberLinkPool.release(obj)
 }
 
 // tslint:disable-next-line:no-shadowed-variable
 export function getSubscriberLink<
-	TThis,
-	TArgs extends any[],
-	TValue,
+	TState extends TFuncCallState,
+	TSubscriber extends TFuncCallState,
 >(
-	state: IFuncCallState<TThis, TArgs, TValue>,
-	subscriber: IFuncCallState<TThis, TArgs, TValue>,
-	prev: ISubscriberLink<TThis, TArgs, TValue>,
-	next: ISubscriberLink<TThis, TArgs, TValue>,
-): ISubscriberLink<TThis, TArgs, TValue> {
-	const item: ISubscriberLink<TThis, TArgs, TValue> = subscriberLinkPool.get()
+	state: TState,
+	subscriber: TSubscriber,
+	prev: ISubscriberLink<TState, any>,
+	next: ISubscriberLink<TState, any>,
+): ISubscriberLink<TState, TSubscriber> {
+	const item: ISubscriberLink<TState, TSubscriber> = subscriberLinkPool.get()
 	if (item != null) {
 		item.state = state
 		item.value = subscriber

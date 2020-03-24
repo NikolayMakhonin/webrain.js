@@ -1,7 +1,7 @@
-import {isThenable, Thenable, ThenableIterator, ThenableOrIteratorOrValue} from '../../async/async'
+import {isThenable, Thenable, ThenableIterator, ThenableOrIteratorOrValue, ThenableOrValue} from '../../async/async'
 import {resolveAsync} from '../../async/ThenableSync'
 import {isIterator} from '../../helpers/helpers'
-import {Func, FuncCallStatus, IFuncCallState, ISubscriberLink, TCall} from './contracts'
+import {Func, FuncCallStatus, IFuncCallState, ISubscriberLink, TCall, TFuncCallState, TGetThis} from './contracts'
 import {InternalError} from './helpers'
 import {_subscribe, subscriberLinkDelete, unsubscribeDependencies} from './subscribeDependency'
 import {getSubscriberLink, releaseSubscriberLink} from './subscriber-link-pool'
@@ -647,14 +647,22 @@ export function emit<
 	}
 }
 
-export class FuncCallState<TThis,
+export class FuncCallState<
+	TThis,
 	TArgs extends any[],
 	TValue,
-	> {
+	TNewThis
+> implements IFuncCallState<
+	TThis,
+	TArgs,
+	TValue,
+	TNewThis
+> {
 	constructor(
 		func: Func<TThis, TArgs, TValue>,
 		_this: TThis,
 		callWithArgs: TCall<TArgs>,
+		getThis: TGetThis<TThis, TArgs, TValue, TNewThis>,
 		valueIds: number[],
 	) {
 		this.func = func
@@ -666,6 +674,7 @@ export class FuncCallState<TThis,
 	public readonly func: Func<TThis, TArgs, TValue>
 	public readonly _this: TThis
 	public readonly callWithArgs: TCall<TArgs>
+	public readonly getThis: TGetThis<TThis, TArgs, TValue, TNewThis>
 	public readonly valueIds: number[]
 	public deleteOrder: number = 0
 
@@ -698,25 +707,29 @@ export class FuncCallState<TThis,
 }
 
 // tslint:disable-next-line:no-shadowed-variable
-export function createFuncCallState<TThis,
+export function createFuncCallState<
+	TThis,
 	TArgs extends any[],
 	TValue,
-	>(
+	TNewThis
+>(
 	func: Func<TThis, TArgs, TValue>,
 	_this: TThis,
 	callWithArgs: TCall<TArgs>,
+	getThis: TGetThis<TThis, TArgs, TValue, TNewThis>,
 	valueIds: number[],
-): IFuncCallState<TThis, TArgs, TValue> {
+): IFuncCallState<TThis, TArgs, TValue, TNewThis> {
 	return new FuncCallState(
 		func,
 		_this,
 		callWithArgs,
+		getThis,
 		valueIds,
 	)
 }
 
 function* checkDependenciesChangedAsync(
-	state: IFuncCallState<any, any, any>,
+	state: TFuncCallState,
 	fromIndex?: number,
 ): ThenableIterator<boolean> {
 	const {_unsubscribers, _unsubscribersLength} = state
@@ -747,7 +760,7 @@ function* checkDependenciesChangedAsync(
 	return false
 }
 
-function checkDependenciesChanged(state: IFuncCallState<any, any, any>): ThenableIterator<boolean>|boolean {
+function checkDependenciesChanged(state: TFuncCallState): ThenableIterator<boolean>|boolean {
 	const {_unsubscribers, _unsubscribersLength} = state
 	if (_unsubscribers != null) {
 		for (let i = 0, len = _unsubscribersLength; i < len; i++) {
@@ -776,7 +789,7 @@ function checkDependenciesChanged(state: IFuncCallState<any, any, any>): Thenabl
 	return false
 }
 
-let currentState: IFuncCallState<any, any, any> = null
+let currentState: TFuncCallState = null
 let nextCallId = 1
 
 export function getCurrentState() {
@@ -784,11 +797,10 @@ export function getCurrentState() {
 }
 
 // tslint:disable-next-line:no-shadowed-variable
-export function subscribeDependency<
-	TThis,
-	TArgs extends any[],
-	TValue,
->(state: IFuncCallState<TThis, TArgs, TValue>, dependency) {
+export function subscribeDependency(
+	state: TFuncCallState,
+	dependency: TFuncCallState,
+) {
 	if (state.callId < dependency.callId) {
 		if ((state.status & Flag_Async) === 0) {
 			return
@@ -816,7 +828,12 @@ export function _dependentFunc<
 	TThis,
 	TArgs extends any[],
 	TValue,
->(state: IFuncCallState<TThis, TArgs, TValue>, dontThrowOnError?: boolean) {
+	TNewThis,
+	TFunc extends Func<TThis, TArgs, TValue>
+>(
+	state: IFuncCallState<TThis, TArgs, TValue, TNewThis>,
+	dontThrowOnError?: boolean,
+): ThenableOrValue<TValue> {
 	if (currentState != null && (currentState.status & Flag_Check) === 0) {
 		subscribeDependency(currentState, state)
 	}
@@ -874,7 +891,7 @@ export function _dependentFunc<
 		return state.value
 	}
 
-	let value
+	let value: ThenableOrValue<TValue>
 	if (shouldRecalc === true) {
 		value = calc(state, dontThrowOnError)
 	} else if (isIterator(shouldRecalc)) {
@@ -907,7 +924,12 @@ export function calc<
 	TThis,
 	TArgs extends any[],
 	TValue,
->(state: IFuncCallState<TThis, TArgs, TValue>, dontThrowOnError?: boolean) {
+	TNewThis,
+	TFunc extends Func<TThis, TArgs, TValue>
+>(
+	state: IFuncCallState<TThis, TArgs, TValue, TNewThis>,
+	dontThrowOnError?: boolean,
+): ThenableOrValue<TValue> {
 	updateCalculating(state)
 	state.callId = nextCallId++
 
@@ -916,7 +938,7 @@ export function calc<
 		currentState = state
 
 		// let value: any = state.func.apply(state._this, arguments)
-		let value: any = state.callWithArgs(state._this, state.func)
+		let value: ThenableOrIteratorOrValue<TValue> = state.callWithArgs(state._this, state.func)
 
 		if (!isIterator(value)) {
 			if (isThenable(value)) {
@@ -952,11 +974,14 @@ export function calc<
 	}
 }
 
-export function* makeDependentIterator<TThis,
+export function* makeDependentIterator<
+	TThis,
 	TArgs extends any[],
 	TValue,
-	TFunc extends Func<TThis, TArgs, TValue>>(
-	state: IFuncCallState<TThis, TArgs, TValue>,
+	TNewThis,
+	TFunc extends Func<TThis, TArgs, TValue>
+>(
+	state: IFuncCallState<TThis, TArgs, TValue, TNewThis>,
 	iterator: Iterator<TValue>,
 	nested?: boolean,
 ): Iterator<TValue> {

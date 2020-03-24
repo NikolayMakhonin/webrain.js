@@ -35,13 +35,17 @@ export enum FuncCallStatus {
 	Flag_InternalError = 8192,
 }
 
-export interface IFuncCallState<TThis,
+export type TFuncCallState = IFuncCallState<any, any, any, any>
+export interface IFuncCallState<
+	TThis,
 	TArgs extends any[],
 	TValue,
-	> {
+	TNewThis
+> {
 	readonly func: Func<TThis, TArgs, TValue>
 	readonly _this: TThis
 	readonly callWithArgs: TCall<TArgs>
+	readonly getThis: TGetThis<TThis, TArgs, TValue, TNewThis>
 	readonly valueIds: number[]
 	deleteOrder: number
 
@@ -52,14 +56,14 @@ export interface IFuncCallState<TThis,
 	error: any
 
 	/** for detect recursive async loop */
-	parentCallState: IFuncCallState<any, any, any>
+	parentCallState: TFuncCallState
 
 	// for prevent multiple subscribe equal dependencies
 	callId: number
-	_subscribersFirst: ISubscriberLink<TThis, TArgs, TValue>
-	_subscribersLast: ISubscriberLink<TThis, TArgs, TValue>
-	_subscribersCalculating: ISubscriberLink<TThis, TArgs, TValue>
-	_unsubscribers: Array<ISubscriberLink<TThis, TArgs, TValue>>,
+	_subscribersFirst: ISubscriberLink<this, any>
+	_subscribersLast: ISubscriberLink<this, any>
+	_subscribersCalculating: ISubscriberLink<this, any>
+	_unsubscribers: Array<ISubscriberLink<any, this>>,
 	_unsubscribersLength: number,
 
 	// calculable
@@ -67,15 +71,26 @@ export interface IFuncCallState<TThis,
 	readonly isHandling: boolean
 }
 
-export interface ISubscriberLink<TThis, TArgs extends any[], TValue>
-	extends ILinkItem<IFuncCallState<TThis, TArgs, TValue>>
+export type TSubscriberLink = ISubscriberLink<any, any>
+export interface ISubscriberLink<
+	TState extends TFuncCallState,
+	TSubscriber extends TFuncCallState,
+>
+	extends ILinkItem<TFuncCallState>
 {
-	state: IFuncCallState<TThis, TArgs, TValue>
-	prev: ISubscriberLink<TThis, TArgs, TValue>,
-	next: ISubscriberLink<TThis, TArgs, TValue>,
+	state: TState,
+	prev: ISubscriberLink<TState, any>,
+	next: ISubscriberLink<TState, any>,
 }
 
 export interface IValueState {
 	usageCount: number
 	value: any
 }
+
+export type TGetThis<
+	TThis,
+	TArgs extends any[],
+	TValue,
+	TNewThis
+> = (state: IFuncCallState<TThis, TArgs, TValue, TNewThis>) => TNewThis

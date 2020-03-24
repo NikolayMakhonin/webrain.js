@@ -2,13 +2,12 @@
 import * as ObjectPool from '../../../../../../../main/common/lists/ObjectPool'
 import * as PairingHeap from '../../../../../../../main/common/lists/PairingHeap'
 import {invalidate} from '../../../../../../../main/common/rx/depend/_dependentFunc'
-import * as _getFuncCallState from '../../../../../../../main/common/rx/depend/_getFuncCallState'
-import * as _getFuncCallState2 from '../../../../../../../main/common/rx/depend/_getFuncCallState2'
+import * as _getFuncCallState from '../../../../../../../main/common/rx/depend/_getFuncCallStateOld'
+import * as _getFuncCallState2 from '../../../../../../../main/common/rx/depend/_getFuncCallState'
 import * as _dependentFunc from '../../../../../../../main/common/rx/depend/_dependentFunc'
 import {getFuncCallState} from '../../../../../../../main/common/rx/depend/facade'
 import * as facade from '../../../../../../../main/common/rx/depend/facade'
 import * as helpers from '../../../../../../../main/common/rx/depend/helpers'
-import * as contracts from '../../../../../../../main/common/rx/depend/contracts'
 import * as subscribeDependency from '../../../../../../../main/common/rx/depend/subscribeDependency'
 import * as subscriberLinkPool from '../../../../../../../main/common/rx/depend/subscriber-link-pool'
 
@@ -35,11 +34,13 @@ describe('node > main > rx > depend > dependent-func', function() {
 			ObjectPool,
 			PairingHeap,
 			_getFuncCallState,
-			_getFuncCallState2,
+			_getFuncCallState2: {
+				..._getFuncCallState2,
+				reduceCallStates: null,
+			},
 			_dependentFunc,
 			facade,
 			helpers,
-			contracts,
 			subscribeDependency,
 			subscriberLinkPool,
 		}
@@ -108,7 +109,7 @@ describe('node > main > rx > depend > dependent-func', function() {
 	}
 
 	it('v8 perceptron', async function() {
-		this.timeout(20000)
+		this.timeout(60000)
 
 		await v8Test(1000, async (iteration, checkOptimization, _assertIsOptimized) => {
 			const {
@@ -137,7 +138,7 @@ describe('node > main > rx > depend > dependent-func', function() {
 	})
 
 	it('v8 baseTest', async function() {
-		this.timeout(20000)
+		this.timeout(60000)
 
 		await v8Test(100, async (iteration, checkOptimization, _assertIsOptimized) => {
 			const { states } = await baseTest()
