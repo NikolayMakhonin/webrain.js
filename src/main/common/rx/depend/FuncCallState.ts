@@ -652,7 +652,7 @@ export class FuncCallState<
 	}
 	
 	// tslint:disable-next-line:no-shadowed-variable
-	public invalidate() {
+	public invalidate(): void {
 		this.updateInvalidate(Update_Invalidating_Recalc, false)
 		this.updateInvalidate(Update_Invalidated_Recalc, false)
 	}

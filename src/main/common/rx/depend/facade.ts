@@ -1,7 +1,7 @@
 import {ThenableOrIterator, ThenableOrValue} from '../../async/async'
 import {_getFuncCallState} from './_getFuncCallState'
 import {Func, IFuncCallState, TGetThis} from './contracts'
-import {_dependentFunc, TFuncCallState} from './FuncCallState'
+import {TFuncCallState} from './FuncCallState'
 import {InternalError} from './helpers'
 
 export function createDependentFunc<

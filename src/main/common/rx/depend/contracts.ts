@@ -89,6 +89,12 @@ export interface IFuncCallState<
 		dependency: TDependency,
 	): void
 
+	_dependentFunc(
+		dontThrowOnError?: boolean,
+	): TOuterResult<TInnerResult>
+
+	invalidate(): void
+
 	// endregion
 }
 

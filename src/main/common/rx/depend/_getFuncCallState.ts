@@ -1,7 +1,7 @@
 import {ObjectPool} from '../../lists/ObjectPool'
 import {PairingHeap, PairingNode} from '../../lists/PairingHeap'
 import {Func, IFuncCallState, IValueState, TCall, TGetThis} from './contracts'
-import {createFuncCallState, TFuncCallState} from './FuncCallState'
+import {createFuncCallState, FuncCallState, TFuncCallState} from './FuncCallState'
 import {createCallWithArgs, InternalError} from './helpers'
 import {unsubscribeDependencies} from './subscribeDependency'
 
@@ -80,7 +80,7 @@ export function _getFuncCallState<
 >(
 	func: Func<TNewThis, TArgs, TValue>,
 	getThis: TGetThis<TThis, TArgs, TValue, TNewThis>,
-): Func<TThis, TArgs, IFuncCallState<TThis, TArgs, TValue, TNewThis>> {
+): Func<TThis, TArgs, FuncCallState<TThis, TArgs, TValue, TNewThis>> {
 	const funcId = nextValueId++
 	const funcHash = (17 * 31 + funcId) | 0
 

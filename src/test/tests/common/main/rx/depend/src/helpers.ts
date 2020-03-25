@@ -7,8 +7,12 @@ import {
 	valueStatesMap,
 } from '../../../../../../../main/common/rx/depend/_getFuncCallState'
 import {Func, FuncCallStatus, IFuncCallState} from '../../../../../../../main/common/rx/depend/contracts'
-import {getFuncCallState, depend} from '../../../../../../../main/common/rx/depend/facade'
-import {getCurrentState, invalidate, statusToString} from '../../../../../../../main/common/rx/depend/FuncCallState'
+import {depend, getFuncCallState} from '../../../../../../../main/common/rx/depend/facade'
+import {
+	getCurrentState,
+	statusToString,
+	TFuncCallState,
+} from '../../../../../../../main/common/rx/depend/FuncCallState'
 import {InternalError} from '../../../../../../../main/common/rx/depend/helpers'
 import {assert} from '../../../../../../../main/common/test/Assert'
 import {delay} from '../../../../../../../main/common/time/helpers'
@@ -94,11 +98,13 @@ export function createPerceptronNaked(layerSize, layersCount, check = true) {
 	return output
 }
 
-export function __invalidate<TThis,
+export function __invalidate<
+	TThis,
 	TArgs extends any[],
 	TValue,
->(state: IFuncCallState<TThis, TArgs, TValue>, status?: any) {
-	return state.invalidate(status)
+	TNewThis
+>(state: IFuncCallState<TThis, TArgs, TValue, TNewThis>) {
+	return state.invalidate()
 }
 
 export function __outputCall(output): any {
@@ -205,7 +211,7 @@ const _callHistory = []
 
 type IDependencyCall = (() => ThenableOrValue<string>) & {
 	id: string,
-	state: IFuncCallState<any, any, any>,
+	state: TFuncCallState,
 	hasLoop: boolean,
 }
 
@@ -631,7 +637,7 @@ function isInvalidated(funcCall: IDependencyCall) {
 // 	assert.ok(checkStatus(status), statusToString(status))
 // }
 
-function getSubscribers(state: IFuncCallState<any, any, any>) {
+function getSubscribers(state: TFuncCallState) {
 	const subscribers = []
 	for (let link = state._subscribersFirst; link !== null;) {
 		subscribers.push(link.value)
