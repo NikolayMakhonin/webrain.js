@@ -1,6 +1,5 @@
 /* tslint:disable:no-identical-functions no-shadowed-variable no-duplicate-string no-construct use-primitive-type */
 import {isThenable, Thenable, ThenableOrValue} from '../../../../../../../main/common/async/async'
-import {getCurrentState, invalidate, statusToString} from '../../../../../../../main/common/rx/depend/_dependentFunc'
 import {
 	callStateHashTable,
 	reduceCallStates,
@@ -9,6 +8,7 @@ import {
 } from '../../../../../../../main/common/rx/depend/_getFuncCallState'
 import {Func, FuncCallStatus, IFuncCallState} from '../../../../../../../main/common/rx/depend/contracts'
 import {getFuncCallState, depend} from '../../../../../../../main/common/rx/depend/facade'
+import {getCurrentState, invalidate, statusToString} from '../../../../../../../main/common/rx/depend/FuncCallState'
 import {InternalError} from '../../../../../../../main/common/rx/depend/helpers'
 import {assert} from '../../../../../../../main/common/test/Assert'
 import {delay} from '../../../../../../../main/common/time/helpers'
@@ -98,7 +98,7 @@ export function __invalidate<TThis,
 	TArgs extends any[],
 	TValue,
 >(state: IFuncCallState<TThis, TArgs, TValue>, status?: any) {
-	return invalidate(state, status)
+	return state.invalidate(status)
 }
 
 export function __outputCall(output): any {
@@ -175,7 +175,7 @@ export function createPerceptron(
 			(callId * 100 * ((layerSize - 1) * layerSize / 2) * Math.pow(layerSize, layersCount - 1)).toPrecision(6),
 		)
 
-		invalidate(inputState)
+		inputState.invalidate()
 
 		assert.strictEqual(
 			__outputCall(output).toPrecision(6),
@@ -608,7 +608,7 @@ function checkStatuses(...funcCalls: IDependencyCall[]) {
 function _invalidate(...funcCalls: IDependencyCall[]) {
 	checkCallHistory()
 	for (let i = 0; i < funcCalls.length; i++) {
-		invalidate(funcCalls[i].state)
+		funcCalls[i].state.invalidate()
 	}
 	checkCallHistory()
 }

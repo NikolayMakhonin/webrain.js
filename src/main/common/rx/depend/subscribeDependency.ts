@@ -1,4 +1,5 @@
-import {IFuncCallState, ISubscriberLink, TFuncCallState} from './contracts'
+import {IFuncCallState, ISubscriberLink} from './contracts'
+import {TFuncCallState} from './FuncCallState'
 import {getSubscriberLink, releaseSubscriberLink} from './subscriber-link-pool'
 
 export function subscriberLinkDelete<TState extends TFuncCallState>(

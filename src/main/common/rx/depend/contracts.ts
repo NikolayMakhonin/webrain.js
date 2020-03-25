@@ -1,4 +1,5 @@
-import {Thenable} from '../../async/async'
+import {IThenable, ThenableOrValue} from '../../async/async'
+import {TFuncCallState} from './FuncCallState'
 
 export type Func<TThis, TArgs extends any[], TValue = void> = (this: TThis, ...args: TArgs) => TValue
 export type TCall<TArgs extends any[]> = <TThis, TValue>(_this: TThis, func: Func<TThis, TArgs, TValue>) => TValue
@@ -34,25 +35,34 @@ export enum FuncCallStatus {
 
 	Flag_InternalError = 8192,
 }
+export type TIteratorOrValue<T> = Iterator<T> | T
+export type TOuterResult<TInnerResult> = TInnerResult extends Iterator<infer V> ? ThenableOrValue<V> : TInnerResult
+export type TInnerValue<TInnerResult> = TInnerResult extends Iterator<infer V> ? V : TInnerResult
 
-export type TFuncCallState = IFuncCallState<any, any, any, any>
-export interface IFuncCallState<
+export type TGetThis<
 	TThis,
 	TArgs extends any[],
 	TValue,
 	TNewThis
+> = (this: IFuncCallState<TThis, TArgs, TValue, TNewThis>) => TNewThis
+
+export interface IFuncCallState<
+	TOuterThis,
+	TArgs extends any[],
+	TInnerResult,
+	TInnerThis
 > {
-	readonly func: Func<TNewThis, TArgs, TValue>
-	readonly _this: TThis
+	readonly func: Func<TInnerThis, TArgs, TInnerResult>
+	readonly _this: TOuterThis
 	readonly callWithArgs: TCall<TArgs>
-	readonly getThis: TGetThis<TThis, TArgs, TValue, TNewThis>
+	readonly getThis: TGetThis<TOuterThis, TArgs, TInnerResult, TInnerThis>
 	readonly valueIds: number[]
 	deleteOrder: number
 
 	status: FuncCallStatus
 
-	valueAsync: Thenable<TValue>
-	value: TValue
+	valueAsync: IThenable<TInnerValue<TInnerResult>>
+	value: TInnerValue<TInnerResult>
 	error: any
 
 	/** for detect recursive async loop */
@@ -60,15 +70,26 @@ export interface IFuncCallState<
 
 	// for prevent multiple subscribe equal dependencies
 	callId: number
-	_subscribersFirst: ISubscriberLink<this, any>
-	_subscribersLast: ISubscriberLink<this, any>
-	_subscribersCalculating: ISubscriberLink<this, any>
-	_unsubscribers: Array<ISubscriberLink<any, this>>,
-	_unsubscribersLength: number,
+	// _subscribersFirst: ISubscriberLink<this, any>
+	// _subscribersLast: ISubscriberLink<this, any>
+	// _subscribersCalculating: ISubscriberLink<this, any>
+	// _unsubscribers: Array<ISubscriberLink<any, this>>,
+	// _unsubscribersLength: number,
 
-	// calculable
+	// region calculable
+
 	readonly hasSubscribers: boolean
 	readonly isHandling: boolean
+
+	// endregion
+
+	// region methods
+
+	subscribeDependency<TDependency extends TFuncCallState>(
+		dependency: TDependency,
+	): void
+
+	// endregion
 }
 
 export type TSubscriberLink = ISubscriberLink<any, any>
@@ -87,10 +108,3 @@ export interface IValueState {
 	usageCount: number
 	value: any
 }
-
-export type TGetThis<
-	TThis,
-	TArgs extends any[],
-	TValue,
-	TNewThis
-> = (state: IFuncCallState<TThis, TArgs, TValue, TNewThis>) => TNewThis

@@ -1,12 +1,12 @@
 /* tslint:disable:no-identical-functions no-shadowed-variable no-var-requires ordered-imports */
 import * as ObjectPool from '../../../../../../../main/common/lists/ObjectPool'
 import * as PairingHeap from '../../../../../../../main/common/lists/PairingHeap'
-import {invalidate} from '../../../../../../../main/common/rx/depend/_dependentFunc'
 import * as _getFuncCallState from '../../../../../../../main/common/rx/depend/_getFuncCallStateOld'
 import * as _getFuncCallState2 from '../../../../../../../main/common/rx/depend/_getFuncCallState'
 import * as _dependentFunc from '../../../../../../../main/common/rx/depend/_dependentFunc'
 import {getFuncCallState} from '../../../../../../../main/common/rx/depend/facade'
 import * as facade from '../../../../../../../main/common/rx/depend/facade'
+import {invalidate} from '../../../../../../../main/common/rx/depend/FuncCallState'
 import * as helpers from '../../../../../../../main/common/rx/depend/helpers'
 import * as subscribeDependency from '../../../../../../../main/common/rx/depend/subscribeDependency'
 import * as subscriberLinkPool from '../../../../../../../main/common/rx/depend/subscriber-link-pool'
@@ -126,7 +126,7 @@ describe('node > main > rx > depend > dependent-func', function() {
 
 			for (let j = 0; j < 10; j++) {
 				const state = getFuncCallState(input)()
-				await invalidate(state)
+				await state.invalidate()
 			}
 
 			getStates().forEach(o => {

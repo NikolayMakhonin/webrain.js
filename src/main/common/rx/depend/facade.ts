@@ -1,7 +1,7 @@
 import {ThenableOrIterator, ThenableOrValue} from '../../async/async'
-import {_dependentFunc} from './_dependentFunc'
 import {_getFuncCallState} from './_getFuncCallState'
-import {Func, IFuncCallState, TFuncCallState, TGetThis} from './contracts'
+import {Func, IFuncCallState, TGetThis} from './contracts'
+import {_dependentFunc, TFuncCallState} from './FuncCallState'
 import {InternalError} from './helpers'
 
 export function createDependentFunc<
@@ -21,7 +21,7 @@ export function createDependentFunc<
 	return function() {
 		const state: IFuncCallState<TThis, TArgs, TValue, TNewThis>
 			= getState.apply(this, arguments)
-		return _dependentFunc(state) as any
+		return state._dependentFunc() as any
 	}
 }
 
@@ -118,8 +118,8 @@ function ThisAsOrig<
 	TArgs extends any[],
 	TValue,
 	TNewThis
->(state: IFuncCallState<TThis, TArgs, TValue, TNewThis>): TThis {
-	return state._this
+>(this: IFuncCallState<TThis, TArgs, TValue, TNewThis>): TThis {
+	return this._this
 }
 
 function ThisAsState<
@@ -128,9 +128,9 @@ function ThisAsState<
 	TValue,
 	TNewThis
 >(
-	state: IFuncCallState<TThis, TArgs, TValue, TNewThis>,
+	this: IFuncCallState<TThis, TArgs, TValue, TNewThis>,
 ): IFuncCallState<TThis, TArgs, TValue, TNewThis> {
-	return state
+	return this
 }
 
 interface TFuncCallStateX<TThis, TArgs extends any[], TValue>

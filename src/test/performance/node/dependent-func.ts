@@ -1,7 +1,7 @@
 // @ts-ignore
 import {calcPerformance} from 'rdtsc'
 import {getObjectUniqueId} from '../../../main/common/helpers/object-unique-id'
-import {invalidate} from '../../../main/common/rx/depend/_dependentFunc'
+import {invalidate} from '../../../main/common/rx/depend/FuncCallState'
 import {assert} from '../../../main/common/test/Assert'
 import {CalcType} from '../../../main/common/test/calc'
 import {calcMemAllocate} from '../../../main/common/test/calc-mem-allocate'
@@ -32,7 +32,7 @@ describe('dependent-func perf', function() {
 			() => {
 				naked.call(2, 5, 10)
 			}, () => {
-				invalidate(inputState)
+				inputState.invalidate()
 			}, () => {
 				output.call(2, 5, 10)
 			}, () => {
@@ -117,7 +117,7 @@ describe('dependent-func perf', function() {
 			}, () => {
 				perceptron.output.call(2, 5, 10)
 			}, () => {
-				invalidate(perceptron.inputState)
+				perceptron.inputState.invalidate()
 				perceptron.output.call(2, 5, 10)
 			},
 		)
@@ -143,7 +143,7 @@ describe('dependent-func perf', function() {
 		// console.log('subscriberLinkPool.usedSize = ' + subscriberLinkPoolUsedSize)
 		// assert.strictEqual(subscriberLinkPool.size + subscriberLinkPool.usedSize, subscriberLinkPool.allocatedSize)
 		const result = calcMemAllocate(CalcType.Min, 2000, () => {
-			invalidate(inputState)
+			inputState.invalidate()
 			output.call(2, 5, 10)
 		}).scale(1 / countFuncs)
 

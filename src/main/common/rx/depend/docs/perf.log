@@ -363,3 +363,47 @@
   absoluteDiff: [ 3921, 8479, 5339 ],
   absoluteDiff: [ 315, 7533, -371 ],
   absoluteDiff: [ 4021, 7106, 4600 ],
+
+  absoluteDiff: [ 226, 6945, -457 ],
+  absoluteDiff: [ 3837, 6755, 4290 ],
+  absoluteDiff: [ 340, 7026, -334 ],
+  absoluteDiff: [ 3906, 6747, 4474 ],
+  absoluteDiff: [ 307, 6678, -360 ],
+  absoluteDiff: [ 4232, 7107, 4189 ],
+  absoluteDiff: [ 268, 6893, -391 ],
+  absoluteDiff: [ 4006, 6606, 4060 ],
+  absoluteDiff: [ 249, 6996, -399 ],
+  absoluteDiff: [ 4079, 6548, 4312 ],
+
+  // constants in separate module
+  absoluteDiff: [ 571, 7030, -353 ],
+  absoluteDiff: [ 3967, 7387, 4358 ],
+  absoluteDiff: [ 586, 7505, -388 ],
+  absoluteDiff: [ 4044, 8491, 5436 ],
+
+  // fix constants
+  absoluteDiff: [ 230, 6728, -406 ],
+  absoluteDiff: [ 299, 6839, -357 ],
+  absoluteDiff: [ 211, 7138, -452 ],
+
+  // functions as methods
+  absoluteDiff: [ 265, 6724, -429 ],
+  absoluteDiff: [ 3825, 6531, 3994 ],
+  absoluteDiff: [ 288, 6858, -406 ],
+  absoluteDiff: [ 4462, 7026, 4075 ],
+  absoluteDiff: [ 265, 6996, -406 ],
+  absoluteDiff: [ 3642, 7165, 4405 ],
+  absoluteDiff: [ 180, 6935, -502 ],
+  absoluteDiff: [ 3745, 6835, 4029 ],
+
+  absoluteDiff: [ 227, 6981, -448 ],
+  absoluteDiff: [ 3979, 7153, 4167 ],
+  absoluteDiff: [ 272, 6743, -398 ],
+  absoluteDiff: [ 3684, 7364, 4424 ],
+  absoluteDiff: [ 123, 7004, -540 ],
+  absoluteDiff: [ 3883, 7203, 4174 ],
+
+  absoluteDiff: [ 165, 6616, -507 ],
+  absoluteDiff: [ 3830, 6785, 4612 ],
+  absoluteDiff: [ 280, 6547, -364 ],
+  absoluteDiff: [ 3925, 6543, 4040 ],

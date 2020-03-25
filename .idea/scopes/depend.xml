@@ -1,0 +1,3 @@
+<component name="DependencyValidationManager">
+  <scope name="depend" pattern="file[webrain]:src/test/tests/node/main/rx/depend//*||file[webrain]:src/test/tests/common/main/rx/depend//*||file:src/test/performance/node/dependent-func.ts||file:src/test/experiments/node/dependent-func.ts||file[webrain]:src/main/common/rx/depend//*" />
+</component>

@@ -1,7 +1,7 @@
 import {ObjectPool} from '../../lists/ObjectPool'
 import {PairingHeap, PairingNode} from '../../lists/PairingHeap'
-import {createFuncCallState} from './_dependentFunc'
-import {Func, IFuncCallState, IValueState, TCall, TFuncCallState, TGetThis} from './contracts'
+import {Func, IFuncCallState, IValueState, TCall, TGetThis} from './contracts'
+import {createFuncCallState, TFuncCallState} from './FuncCallState'
 import {createCallWithArgs, InternalError} from './helpers'
 import {unsubscribeDependencies} from './subscribeDependency'
 

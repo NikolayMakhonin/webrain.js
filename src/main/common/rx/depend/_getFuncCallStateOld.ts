@@ -1,5 +1,5 @@
-import {createFuncCallState} from './_dependentFunc'
 import {Func, IFuncCallState} from './contracts'
+import {createFuncCallState} from './FuncCallState'
 import {createCallWithArgs} from './helpers'
 
 export function isRefType(value): boolean {

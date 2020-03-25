@@ -1,5 +1,6 @@
 import {ObjectPool} from '../../lists/ObjectPool'
-import {ISubscriberLink, TFuncCallState, TSubscriberLink} from './contracts'
+import {ISubscriberLink, TSubscriberLink} from './contracts'
+import {TFuncCallState} from './FuncCallState'
 
 export const subscriberLinkPool = new ObjectPool<TSubscriberLink>(1000000)
 
