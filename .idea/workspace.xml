@@ -7,23 +7,8 @@
     <option name="SHOW_STRUCTURE" value="true" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="69b2ee16-521b-4efd-b473-8e19e3df4d09" name="Default Changelist" comment="Develop. Tests OK.">
-      <change afterPath="$PROJECT_DIR$/.idea/scopes/depend.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/common/rx/depend/FuncCallState.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/docs/TODO.md" beforeDir="false" afterPath="$PROJECT_DIR$/docs/TODO.md" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/env/libs/dependent-func/all.js" beforeDir="false" afterPath="$PROJECT_DIR$/env/libs/dependent-func/all.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/common/rx/depend/_dependentFunc.ts" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/common/rx/depend/_getFuncCallState.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/common/rx/depend/_getFuncCallState.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/common/rx/depend/_getFuncCallStateOld.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/common/rx/depend/_getFuncCallStateOld.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/common/rx/depend/contracts.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/common/rx/depend/contracts.ts" afterDir="false" />
+    <list default="true" id="69b2ee16-521b-4efd-b473-8e19e3df4d09" name="Default Changelist" comment="">
       <change beforePath="$PROJECT_DIR$/src/main/common/rx/depend/docs/perf.log" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/common/rx/depend/docs/perf.log" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/common/rx/depend/facade.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/common/rx/depend/facade.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/common/rx/depend/subscribeDependency.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/common/rx/depend/subscribeDependency.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/common/rx/depend/subscriber-link-pool.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/common/rx/depend/subscriber-link-pool.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/test/performance/node/dependent-func.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/test/performance/node/dependent-func.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/test/tests/common/main/rx/depend/src/helpers.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/test/tests/common/main/rx/depend/src/helpers.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/test/tests/node/main/rx/depend/v8/dependent-func.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/test/tests/node/main/rx/depend/v8/dependent-func.ts" afterDir="false" />
     </list>
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
     <option name="SHOW_DIALOG" value="false" />
@@ -420,13 +405,6 @@
       <option name="presentableId" value="Default" />
       <updated>1567687848586</updated>
     </task>
-    <task id="LOCAL-00268" summary="Develop">
-      <created>1583904244875</created>
-      <option name="number" value="00268" />
-      <option name="presentableId" value="LOCAL-00268" />
-      <option name="project" value="LOCAL" />
-      <updated>1583904244875</updated>
-    </task>
     <task id="LOCAL-00269" summary="Develop">
       <created>1583930348286</created>
       <option name="number" value="00269" />
@@ -763,7 +741,14 @@
       <option name="project" value="LOCAL" />
       <updated>1585048772558</updated>
     </task>
-    <option name="localTasksCounter" value="317" />
+    <task id="LOCAL-00317" summary="Refactoring. Tests OK.">
+      <created>1585122300851</created>
+      <option name="number" value="00317" />
+      <option name="presentableId" value="LOCAL-00317" />
+      <option name="project" value="LOCAL" />
+      <updated>1585122300851</updated>
+    </task>
+    <option name="localTasksCounter" value="318" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -825,7 +810,6 @@
   <component name="VcsManagerConfiguration">
     <option name="CHECK_CODE_SMELLS_BEFORE_PROJECT_COMMIT" value="false" />
     <option name="CHECK_NEW_TODO" value="false" />
-    <MESSAGE value="Tests OK" />
     <MESSAGE value="dependent-funcs v8 optimization in process... Added callWithArgs (perf is no changed). Tests OK" />
     <MESSAGE value="dependent-funcs v8 optimization in process..." />
     <MESSAGE value="v0.0.7 Tests OK, coverage:merge fail" />
@@ -850,7 +834,8 @@
     <MESSAGE value="dependent-funcs: Small fix" />
     <MESSAGE value="dependent-funcs: Perf test OK" />
     <MESSAGE value="Develop. Tests OK." />
-    <option name="LAST_COMMIT_MESSAGE" value="Develop. Tests OK." />
+    <MESSAGE value="Refactoring. Tests OK." />
+    <option name="LAST_COMMIT_MESSAGE" value="Refactoring. Tests OK." />
   </component>
   <component name="XDebuggerManager">
     <breakpoint-manager>
