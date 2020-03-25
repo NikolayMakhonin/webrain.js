@@ -5,60 +5,60 @@ import {TFuncCallState} from './FuncCallState'
 import {InternalError} from './helpers'
 
 export function createDependentFunc<
-	TThis,
+	TThisOuter,
 	TArgs extends any[],
-	TValue,
-	TNewThis
->(getState: Func<TThis, TArgs, IFuncCallState<TThis, TArgs, TValue, TNewThis>>): Func<
-	TThis,
+	TInnerResult,
+	TThisInner
+>(getState: Func<TThisOuter, TArgs, IFuncCallState<TThisOuter, TArgs, TInnerResult, TThisInner>>): Func<
+	TThisOuter,
 	TArgs,
 	Func<
-		TThis,
+		TThisOuter,
 		TArgs,
-		TValue extends ThenableOrIterator<infer V> ? ThenableOrValue<V> : TValue
+		TInnerResult extends ThenableOrIterator<infer V> ? ThenableOrValue<V> : TInnerResult
 	>
 > {
 	return function() {
-		const state: IFuncCallState<TThis, TArgs, TValue, TNewThis>
+		const state: IFuncCallState<TThisOuter, TArgs, TInnerResult, TThisInner>
 			= getState.apply(this, arguments)
-		return state._dependentFunc() as any
+		return state.getValue() as any
 	}
 }
 
 type TRootStateMap = WeakMap<Func<any, any, any>, Func<any, any, TFuncCallState>>
 
 // interface TMakeDependentFunc {
-// 	<TThis, TArgs extends any[], TValue, TNewThis>(
-// 		func: Func<TNewThis, TArgs, Iterator<TValue>>,
-// 	): Func<TNewThis, TArgs, ThenableOrValue<TValue>>
+// 	<TThisOuter, TArgs extends any[], TInnerResult, TThisInner>(
+// 		func: Func<TThisInner, TArgs, Iterator<TInnerResult>>,
+// 	): Func<TThisInner, TArgs, ThenableOrValue<TInnerResult>>
 //
-// 	<TThis, TArgs extends any[], TValue, TNewThis>(
-// 		func: Func<TNewThis, TArgs, TValue>,
-// 	): Func<TNewThis, TArgs, TValue>
+// 	<TThisOuter, TArgs extends any[], TInnerResult, TThisInner>(
+// 		func: Func<TThisInner, TArgs, TInnerResult>,
+// 	): Func<TThisInner, TArgs, TInnerResult>
 // }
 
 // type TMakeDependentFunc = <
-// 	TThis,
+// 	TThisOuter,
 // 	TArgs extends any[],
-// 	TValue
+// 	TInnerResult
 // >(
-// 	func: Func<TThis, TArgs, TValue>,
+// 	func: Func<TThisOuter, TArgs, TInnerResult>,
 // ) => Func<
-// 	TThis,
+// 	TThisOuter,
 // 	TArgs,
-// 	TValue extends Iterator<infer V, any, any> ? ThenableOrValue<V> : TValue
+// 	TInnerResult extends Iterator<infer V, any, any> ? ThenableOrValue<V> : TInnerResult
 // >
 //
 // type TMakeDependentFuncX = <
-// 	TThis,
+// 	TThisOuter,
 // 	TArgs extends any[],
-// 	TValue,
+// 	TInnerResult,
 // >(
-// 	func: Func<IFuncCallState<TThis, TArgs, TValue>, TArgs, TValue>,
+// 	func: Func<IFuncCallState<TThisOuter, TArgs, TInnerResult>, TArgs, TInnerResult>,
 // ) => Func<
-// 	TThis,
+// 	TThisOuter,
 // 	TArgs,
-// 	TValue extends Iterator<infer V, any, any> ? ThenableOrValue<V> : TValue
+// 	TInnerResult extends Iterator<infer V, any, any> ? ThenableOrValue<V> : TInnerResult
 // >
 
 // tslint:disable-next-line:no-empty
@@ -68,13 +68,13 @@ const EMPTY_FUNC: Func<any, any, any> = () => {}
 export function createGetFuncCallState(rootStateMap: TRootStateMap) {
 	// tslint:disable-next-line:no-shadowed-variable
 	function getFuncCallState<
-		TThis,
+		TThisOuter,
 		TArgs extends any[],
-		TValue,
-		TNewThis
+		TInnerResult,
+		TThisInner
 	>(
-		func: Func<TThis, TArgs, TValue>,
-	): Func<TThis, TArgs, IFuncCallState<TThis, TArgs, TValue, TNewThis>> {
+		func: Func<TThisOuter, TArgs, TInnerResult>,
+	): Func<TThisOuter, TArgs, IFuncCallState<TThisOuter, TArgs, TInnerResult, TThisInner>> {
 		return rootStateMap.get(func) || EMPTY_FUNC
 	}
 
@@ -86,23 +86,23 @@ const rootStateMap: TRootStateMap = new WeakMap()
 export const getFuncCallState = createGetFuncCallState(rootStateMap)
 
 function makeDependentFunc<
-	TThis,
+	TThisOuter,
 	TArgs extends any[],
-	TValue,
-	TNewThis
+	TInnerResult,
+	TThisInner
 >(
-	func: Func<TNewThis, TArgs, TValue>,
-	getThis: TGetThis<TThis, TArgs, TValue, TNewThis>,
+	func: Func<TThisInner, TArgs, TInnerResult>,
+	getThisInner: TGetThis<TThisOuter, TArgs, TInnerResult, TThisInner>,
 ): Func<
-	TThis,
+	TThisOuter,
 	TArgs,
-	TValue extends ThenableOrIterator<infer V> ? ThenableOrValue<V> : TValue
+	TInnerResult extends ThenableOrIterator<infer V> ? ThenableOrValue<V> : TInnerResult
 > {
 	if (rootStateMap.get(func)) {
 		throw new InternalError('Multiple call makeDependentFunc() for func: ' + func)
 	}
 
-	const getState = _getFuncCallState(func, getThis)
+	const getState = _getFuncCallState(func, getThisInner)
 
 	rootStateMap.set(func, getState)
 
@@ -114,43 +114,43 @@ function makeDependentFunc<
 }
 
 function ThisAsOrig<
-	TThis,
+	TThisOuter,
 	TArgs extends any[],
-	TValue,
-	TNewThis
->(this: IFuncCallState<TThis, TArgs, TValue, TNewThis>): TThis {
-	return this._this
+	TInnerResult,
+	TThisInner
+>(this: IFuncCallState<TThisOuter, TArgs, TInnerResult, TThisInner>): TThisOuter {
+	return this.thisOuter
 }
 
 function ThisAsState<
-	TThis,
+	TThisOuter,
 	TArgs extends any[],
-	TValue,
-	TNewThis
+	TInnerResult,
+	TThisInner
 >(
-	this: IFuncCallState<TThis, TArgs, TValue, TNewThis>,
-): IFuncCallState<TThis, TArgs, TValue, TNewThis> {
+	this: IFuncCallState<TThisOuter, TArgs, TInnerResult, TThisInner>,
+): IFuncCallState<TThisOuter, TArgs, TInnerResult, TThisInner> {
 	return this
 }
 
-interface TFuncCallStateX<TThis, TArgs extends any[], TValue>
-	extends IFuncCallState<TThis, TArgs, TValue, TFuncCallStateX<TThis, TArgs, TValue>>
+interface TFuncCallStateX<TThisOuter, TArgs extends any[], TInnerResult>
+	extends IFuncCallState<TThisOuter, TArgs, TInnerResult, TFuncCallStateX<TThisOuter, TArgs, TInnerResult>>
 {}
 
 export function dependX<
-	TThis,
+	TThisOuter,
 	TArgs extends any[],
-	TValue
->(func: Func<TFuncCallStateX<TThis, TArgs, TValue>, TArgs, TValue>) {
-	return makeDependentFunc<TThis, TArgs, TValue, TFuncCallStateX<TThis, TArgs, TValue>>
+	TInnerResult
+>(func: Func<TFuncCallStateX<TThisOuter, TArgs, TInnerResult>, TArgs, TInnerResult>) {
+	return makeDependentFunc<TThisOuter, TArgs, TInnerResult, TFuncCallStateX<TThisOuter, TArgs, TInnerResult>>
 		(func, ThisAsState)
 }
 
 export function depend<
-	TThis,
+	TThisOuter,
 	TArgs extends any[],
-	TValue,
->(func: Func<TThis, TArgs, TValue>) {
-	return makeDependentFunc<TThis, TArgs, TValue, TThis>
+	TInnerResult,
+>(func: Func<TThisOuter, TArgs, TInnerResult>) {
+	return makeDependentFunc<TThisOuter, TArgs, TInnerResult, TThisOuter>
 		(func, ThisAsOrig)
 }

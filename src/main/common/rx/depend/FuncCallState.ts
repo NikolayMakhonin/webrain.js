@@ -357,24 +357,24 @@ export function invalidateParent<
 
 export type TFuncCallState = FuncCallState<any, any, any, any>
 export class FuncCallState<
-	TOuterThis,
+	TThisOuter,
 	TArgs extends any[],
 	TInnerResult,
-	TInnerThis
+	TThisInner
 >
-	implements IFuncCallState<TOuterThis, TArgs, TInnerResult, TInnerThis>
+	implements IFuncCallState<TThisOuter, TArgs, TInnerResult, TThisInner>
 {
 	constructor(
-		func: Func<TInnerThis, TArgs, TInnerResult>,
-		_this: TOuterThis,
+		func: Func<TThisInner, TArgs, TInnerResult>,
+		thisOuter: TThisOuter,
 		callWithArgs: TCall<TArgs>,
-		getThis: TGetThis<TOuterThis, TArgs, TInnerResult, TInnerThis>,
+		getThisInner: TGetThis<TThisOuter, TArgs, TInnerResult, TThisInner>,
 		valueIds: number[],
 	) {
 		this.func = func
-		this._this = _this
+		this.thisOuter = thisOuter
 		this.callWithArgs = callWithArgs
-		this.getThis = getThis
+		this.getThisInner = getThisInner
 		this.valueIds = valueIds
 	}
 
@@ -382,10 +382,10 @@ export class FuncCallState<
 
 	// region public
 
-	public readonly func: Func<TInnerThis, TArgs, TInnerResult>
-	public readonly _this: TOuterThis
+	private readonly func: Func<TThisInner, TArgs, TInnerResult>
+	public readonly thisOuter: TThisOuter
 	public readonly callWithArgs: TCall<TArgs>
-	public readonly getThis: TGetThis<TOuterThis, TArgs, TInnerResult, TInnerThis>
+	public readonly getThisInner: TGetThis<TThisOuter, TArgs, TInnerResult, TThisInner>
 	public readonly valueIds: number[]
 	public deleteOrder: number = 0
 
@@ -425,14 +425,16 @@ export class FuncCallState<
 
 	// region methods
 
-	public internalError(message: string) {
+	// region private
+
+	private internalError(message: string) {
 		unsubscribeDependencies(this)
 		const error = new InternalError(message)
 		this.updateCalculatedError(error)
 		throw error
 	}
 	
-	public invalidateParents(
+	private invalidateParents(
 		statusBefore: Mask_Update_Invalidate | Flag_None,
 		statusAfter: Mask_Update_Invalidate | Flag_None,
 	) {
@@ -470,54 +472,8 @@ export class FuncCallState<
 			link = next
 		}
 	}
-	
-	public updateInvalidate(
-		status: Mask_Update_Invalidate,
-		parentRecalc: boolean,
-	) {
-		const prevStatus = this.status
-	
-		let statusBefore: Mask_Update_Invalidate | Flag_None = 0
-		let statusAfter: Mask_Update_Invalidate | Flag_None = 0
-	
-		if (isRecalc(status) && (prevStatus & Flag_Calculating) === 0 && this._unsubscribersLength !== 0) {
-			unsubscribeDependencies(this)
-		}
-	
-		if (status === Update_Recalc) {
-			if (isCalculated(prevStatus)) {
-				this.internalError(`Set status ${statusToString(Update_Recalc)} called when current status is ${statusToString(prevStatus)}`)
-			}
-			this.status = prevStatus | status
-		} else {
-			if (isInvalidated(prevStatus)) {
-				if (!isRecalc(prevStatus) && isRecalc(status)) {
-					this.status = prevStatus | Flag_Recalc
-				}
-				if (parentRecalc) {
-					statusBefore = Update_Invalidated_Recalc
-				}
-			} else if (status === Update_Invalidating || status === Update_Invalidating_Recalc) {
-				this.status = (prevStatus & ~(Mask_Invalidate | Flag_Calculated)) | status
-	
-				statusBefore = parentRecalc ? Update_Invalidating_Recalc : Update_Invalidating
-				statusAfter = Update_Invalidating
-			} else if (status === Update_Invalidated || status === Update_Invalidated_Recalc) {
-				this.status = (prevStatus & ~(Mask_Invalidate | Flag_Calculated)) | status
-	
-				statusBefore = parentRecalc ? Update_Invalidated_Recalc : Update_Invalidated
-				statusAfter = Update_Invalidated
-			} else {
-				this.internalError(`Unknown status: ${statusToString(status)}`)
-			}
-		}
-	
-		if (statusBefore !== 0 || statusAfter !== 0) {
-			this.invalidateParents(statusBefore, statusAfter)
-		}
-	}
-	
-	public updateCheck() {
+
+	private updateCheck() {
 		const prevStatus = this.status
 	
 		if ((prevStatus & Mask_Invalidate) === 0) {
@@ -527,7 +483,7 @@ export class FuncCallState<
 		this.status = (prevStatus & ~(Mask_Invalidate | Flag_Recalc | Mask_Calculate)) | Flag_Check
 	}
 	
-	public updateCheckAsync(
+	private updateCheckAsync(
 		valueAsync: IThenable<TInnerValue<TInnerResult>>,
 	) {
 		const prevStatus = this.status
@@ -540,7 +496,7 @@ export class FuncCallState<
 		this.status = (prevStatus & ~Mask_Calculate) | Update_Check_Async
 	}
 	
-	public updateCalculating() {
+	private updateCalculating() {
 		const prevStatus = this.status
 	
 		if ((prevStatus & (Mask_Invalidate | Flag_Check)) === 0) {
@@ -552,7 +508,7 @@ export class FuncCallState<
 		this._subscribersCalculating = this._subscribersLast
 	}
 	
-	public updateCalculatingAsync(
+	private updateCalculatingAsync(
 		valueAsync: IThenable<TInnerValue<TInnerResult>>,
 	) {
 		const prevStatus = this.status
@@ -565,7 +521,7 @@ export class FuncCallState<
 		this.status = (prevStatus & ~Mask_Calculate) | Update_Calculating_Async
 	}
 	
-	public updateCalculated() {
+	private updateCalculated() {
 		const prevStatus = this.status
 	
 		if ((prevStatus & (Flag_Check | Flag_Calculating)) === 0) {
@@ -582,7 +538,7 @@ export class FuncCallState<
 		}
 	}
 	
-	public updateCalculatedValue(
+	private updateCalculatedValue(
 		value: TInnerValue<TInnerResult>,
 	) {
 		const prevStatus = this.status
@@ -607,7 +563,7 @@ export class FuncCallState<
 		}
 	}
 	
-	public updateCalculatedError(
+	private updateCalculatedError(
 		error: any,
 	) {
 		const prevStatus = this.status
@@ -637,7 +593,7 @@ export class FuncCallState<
 		}
 	}
 	
-	public afterCalc(
+	private afterCalc(
 		prevStatus: FuncCallStatus,
 		valueChanged: boolean,
 	) {
@@ -650,14 +606,8 @@ export class FuncCallState<
 	
 		this._subscribersCalculating = null
 	}
-	
-	// tslint:disable-next-line:no-shadowed-variable
-	public invalidate(): void {
-		this.updateInvalidate(Update_Invalidating_Recalc, false)
-		this.updateInvalidate(Update_Invalidated_Recalc, false)
-	}
-	
-	public *checkDependenciesChangedAsync(
+
+	private *checkDependenciesChangedAsync(
 		fromIndex?: number,
 	): ThenableIterator<boolean> {
 		const {_unsubscribers, _unsubscribersLength} = this
@@ -665,7 +615,7 @@ export class FuncCallState<
 			for (let i = fromIndex || 0, len = _unsubscribersLength; i < len; i++) {
 				const dependencyState = _unsubscribers[i].state
 				if (getInvalidate(dependencyState.status) !== 0) {
-					dependencyState._dependentFunc(true)
+					dependencyState.getValue(true)
 				}
 	
 				if ((dependencyState.status & Flag_Async) !== 0) {
@@ -688,13 +638,13 @@ export class FuncCallState<
 		return false
 	}
 	
-	public checkDependenciesChanged(): ThenableIterator<boolean> | boolean {
+	private checkDependenciesChanged(): ThenableIterator<boolean> | boolean {
 		const {_unsubscribers, _unsubscribersLength} = this
 		if (_unsubscribers != null) {
 			for (let i = 0, len = _unsubscribersLength; i < len; i++) {
 				const dependencyState = _unsubscribers[i].state
 				if (getInvalidate(dependencyState.status) !== 0) {
-					dependencyState._dependentFunc(true)
+					dependencyState.getValue(true)
 				}
 	
 				if ((dependencyState.status & Flag_Async) !== 0) {
@@ -716,124 +666,8 @@ export class FuncCallState<
 		this.updateCalculated()
 		return false
 	}
-	
-	// tslint:disable-next-line:no-shadowed-variable
-	public subscribeDependency<TDependency extends TFuncCallState>(
-		dependency: TDependency,
-	): void {
-		if (this.callId < dependency.callId) {
-			if ((this.status & Flag_Async) === 0) {
-				return
-			}
-			const _unsubscribers = this._unsubscribers
-			for (let i = 0, len = this._unsubscribersLength; i < len; i++) {
-				if (_unsubscribers[i].state === dependency) {
-					return
-				}
-			}
-		}
-		{
-			const subscriberLink = _subscribe(dependency, this)
-			const _unsubscribers = this._unsubscribers
-			if (_unsubscribers == null) {
-				this._unsubscribers = [subscriberLink]
-				this._unsubscribersLength = 1
-			} else {
-				_unsubscribers[this._unsubscribersLength++] = subscriberLink
-			}
-		}
-	}
-	
-	public _dependentFunc(
-		dontThrowOnError?: boolean,
-	): TOuterResult<TInnerResult> {
-		if (currentState != null && (currentState.status & Flag_Check) === 0) {
-			currentState.subscribeDependency(this)
-		}
-		this.callId = nextCallId++
-	
-		const prevStatus = this.status
-	
-		if (isCalculated(this.status)) {
-			if (isHasError(this.status)) {
-				throw this.error
-			}
-			return this.value as any
-		} else if (getCalculate(this.status) !== 0) {
-			if ((this.status & Flag_Async) !== 0) {
-				let parentCallState = currentState
-				while (parentCallState) {
-					if (parentCallState === this) {
-						this.internalError('Recursive async loop detected')
-					}
-					parentCallState = parentCallState.parentCallState
-				}
-				return this.valueAsync as any
-			} else if ((this.status & (Flag_Check | Flag_Calculating)) !== 0) {
-				this.internalError('Recursive sync loop detected')
-			} else {
-				this.internalError(`Unknown FuncCallStatus: ${statusToString(this.status)}`)
-			}
-		} else if (getInvalidate(this.status) !== 0) {
-			// nothing
-		} else {
-			this.internalError(`Unknown FuncCallStatus: ${statusToString(this.status)}`)
-		}
-	
-		this.parentCallState = currentState
-		currentState = null
-	
-		this.updateCheck()
-	
-		let shouldRecalc: ThenableIterator<boolean> | boolean
-		if (isRecalc(prevStatus)) {
-			shouldRecalc = true
-		} else {
-			shouldRecalc = this.checkDependenciesChanged()
-		}
-	
-		if (shouldRecalc === false) {
-			currentState = this.parentCallState
-			this.parentCallState = null
-			if (isHasError(this.status)) {
-				if (dontThrowOnError !== true) {
-					throw this.error
-				}
-				return
-			}
-			return this.value as any
-		}
-	
-		let value: any
-		if (shouldRecalc === true) {
-			value = this.calc(dontThrowOnError)
-		} else if (isIterator(shouldRecalc)) {
-			value = resolveAsync(shouldRecalc, o => {
-				if (o === false) {
-					currentState = null
-					this.parentCallState = null
-					if (isHasError(this.status)) {
-						if (dontThrowOnError !== true) {
-							throw this.error
-						}
-						return
-					}
-					return this.value
-				}
-				return this.calc(dontThrowOnError)
-			})
-	
-			if (isThenable(value)) {
-				this.updateCheckAsync(value as any)
-			}
-		} else {
-			this.internalError(`shouldRecalc == ${shouldRecalc}`)
-		}
-	
-		return value
-	}
-	
-	public calc(
+
+	private calc(
 		dontThrowOnError?: boolean,
 	): TOuterResult<TInnerResult> {
 		this.updateCalculating()
@@ -843,9 +677,9 @@ export class FuncCallState<
 		try {
 			currentState = this
 	
-			// let value: any = this.func.apply(this._this, arguments)
+			// let value: any = this.func.apply(this.thisOuter, arguments)
 			let value: any
-				= this.callWithArgs(this.getThis(), this.func)
+				= this.callWithArgs(this.getThisInner(), this.func)
 	
 			if (!isIterator(value)) {
 				if (isThenable(value)) {
@@ -881,7 +715,7 @@ export class FuncCallState<
 		}
 	}
 	
-	public* makeDependentIterator(
+	private* makeDependentIterator(
 		iterator: Iterator<TInnerValue<TInnerResult>>,
 		nested?: boolean,
 	): Iterator<TInnerValue<TInnerResult>> {
@@ -926,24 +760,198 @@ export class FuncCallState<
 	}
 
 	// endregion
+
+	// region public
+
+	public updateInvalidate(
+		status: Mask_Update_Invalidate,
+		parentRecalc: boolean,
+	): void {
+		const prevStatus = this.status
+
+		let statusBefore: Mask_Update_Invalidate | Flag_None = 0
+		let statusAfter: Mask_Update_Invalidate | Flag_None = 0
+
+		if (isRecalc(status) && (prevStatus & Flag_Calculating) === 0 && this._unsubscribersLength !== 0) {
+			unsubscribeDependencies(this)
+		}
+
+		if (status === Update_Recalc) {
+			if (isCalculated(prevStatus)) {
+				this.internalError(`Set status ${statusToString(Update_Recalc)} called when current status is ${statusToString(prevStatus)}`)
+			}
+			this.status = prevStatus | status
+		} else {
+			if (isInvalidated(prevStatus)) {
+				if (!isRecalc(prevStatus) && isRecalc(status)) {
+					this.status = prevStatus | Flag_Recalc
+				}
+				if (parentRecalc) {
+					statusBefore = Update_Invalidated_Recalc
+				}
+			} else if (status === Update_Invalidating || status === Update_Invalidating_Recalc) {
+				this.status = (prevStatus & ~(Mask_Invalidate | Flag_Calculated)) | status
+
+				statusBefore = parentRecalc ? Update_Invalidating_Recalc : Update_Invalidating
+				statusAfter = Update_Invalidating
+			} else if (status === Update_Invalidated || status === Update_Invalidated_Recalc) {
+				this.status = (prevStatus & ~(Mask_Invalidate | Flag_Calculated)) | status
+
+				statusBefore = parentRecalc ? Update_Invalidated_Recalc : Update_Invalidated
+				statusAfter = Update_Invalidated
+			} else {
+				this.internalError(`Unknown status: ${statusToString(status)}`)
+			}
+		}
+
+		if (statusBefore !== 0 || statusAfter !== 0) {
+			this.invalidateParents(statusBefore, statusAfter)
+		}
+	}
+
+	// tslint:disable-next-line:no-shadowed-variable
+	public invalidate(): void {
+		this.updateInvalidate(Update_Invalidating_Recalc, false)
+		this.updateInvalidate(Update_Invalidated_Recalc, false)
+	}
+
+	// tslint:disable-next-line:no-shadowed-variable
+	public subscribeDependency<TDependency extends TFuncCallState>(
+		dependency: TDependency,
+	): void {
+		if (this.callId < dependency.callId) {
+			if ((this.status & Flag_Async) === 0) {
+				return
+			}
+			const _unsubscribers = this._unsubscribers
+			for (let i = 0, len = this._unsubscribersLength; i < len; i++) {
+				if (_unsubscribers[i].state === dependency) {
+					return
+				}
+			}
+		}
+		{
+			const subscriberLink = _subscribe(dependency, this)
+			const _unsubscribers = this._unsubscribers
+			if (_unsubscribers == null) {
+				this._unsubscribers = [subscriberLink]
+				this._unsubscribersLength = 1
+			} else {
+				_unsubscribers[this._unsubscribersLength++] = subscriberLink
+			}
+		}
+	}
+
+	public getValue(
+		dontThrowOnError?: boolean,
+	): TOuterResult<TInnerResult> {
+		if (currentState != null && (currentState.status & Flag_Check) === 0) {
+			currentState.subscribeDependency(this)
+		}
+		this.callId = nextCallId++
+
+		const prevStatus = this.status
+
+		if (isCalculated(this.status)) {
+			if (isHasError(this.status)) {
+				throw this.error
+			}
+			return this.value as any
+		} else if (getCalculate(this.status) !== 0) {
+			if ((this.status & Flag_Async) !== 0) {
+				let parentCallState = currentState
+				while (parentCallState) {
+					if (parentCallState === this) {
+						this.internalError('Recursive async loop detected')
+					}
+					parentCallState = parentCallState.parentCallState
+				}
+				return this.valueAsync as any
+			} else if ((this.status & (Flag_Check | Flag_Calculating)) !== 0) {
+				this.internalError('Recursive sync loop detected')
+			} else {
+				this.internalError(`Unknown FuncCallStatus: ${statusToString(this.status)}`)
+			}
+		} else if (getInvalidate(this.status) !== 0) {
+			// nothing
+		} else {
+			this.internalError(`Unknown FuncCallStatus: ${statusToString(this.status)}`)
+		}
+
+		this.parentCallState = currentState
+		currentState = null
+
+		this.updateCheck()
+
+		let shouldRecalc: ThenableIterator<boolean> | boolean
+		if (isRecalc(prevStatus)) {
+			shouldRecalc = true
+		} else {
+			shouldRecalc = this.checkDependenciesChanged()
+		}
+
+		if (shouldRecalc === false) {
+			currentState = this.parentCallState
+			this.parentCallState = null
+			if (isHasError(this.status)) {
+				if (dontThrowOnError !== true) {
+					throw this.error
+				}
+				return
+			}
+			return this.value as any
+		}
+
+		let value: any
+		if (shouldRecalc === true) {
+			value = this.calc(dontThrowOnError)
+		} else if (isIterator(shouldRecalc)) {
+			value = resolveAsync(shouldRecalc, o => {
+				if (o === false) {
+					currentState = null
+					this.parentCallState = null
+					if (isHasError(this.status)) {
+						if (dontThrowOnError !== true) {
+							throw this.error
+						}
+						return
+					}
+					return this.value
+				}
+				return this.calc(dontThrowOnError)
+			})
+
+			if (isThenable(value)) {
+				this.updateCheckAsync(value as any)
+			}
+		} else {
+			this.internalError(`shouldRecalc == ${shouldRecalc}`)
+		}
+
+		return value
+	}
+
+	// endregion
+
+	// endregion
 }
 
 // tslint:disable-next-line:no-shadowed-variable
-export function createFuncCallState<TThis,
+export function createFuncCallState<TThisOuter,
 	TArgs extends any[],
-	TValue,
-	TNewThis>(
-	func: Func<TNewThis, TArgs, TValue>,
-	_this: TThis,
+	TInnerResult,
+	TThisInner>(
+	func: Func<TThisInner, TArgs, TInnerResult>,
+	thisOuter: TThisOuter,
 	callWithArgs: TCall<TArgs>,
-	getThis: TGetThis<TThis, TArgs, TValue, TNewThis>,
+	getThisInner: TGetThis<TThisOuter, TArgs, TInnerResult, TThisInner>,
 	valueIds: number[],
-): IFuncCallState<TThis, TArgs, TValue, TNewThis> {
+): IFuncCallState<TThisOuter, TArgs, TInnerResult, TThisInner> {
 	return new FuncCallState(
 		func,
-		_this,
+		thisOuter,
 		callWithArgs,
-		getThis,
+		getThisInner,
 		valueIds,
 	)
 }

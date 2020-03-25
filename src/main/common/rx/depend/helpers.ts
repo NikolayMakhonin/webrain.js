@@ -14,13 +14,13 @@ export class InternalError extends Error {
 }
 
 // function makeDeferredFunc<
-// 	TThis,
+// 	TThisOuter,
 // 	TArgs extends any[],
-// 	TValue,
+// 	TInnerResult,
 // >(
-// 	this: TThis,
-// 	func: Func<TThis, TArgs, TValue | Iterator<TValue>>,
-// ): Func<TThis, TArgs, Iterator<TValue>> {
+// 	this: TThisOuter,
+// 	func: Func<TThisOuter, TArgs, TInnerResult | Iterator<TInnerResult>>,
+// ): Func<TThisOuter, TArgs, Iterator<TInnerResult>> {
 // 	return function() {
 // 		return {
 // 			next: () => new ThenableSync((resolve, reject) => {

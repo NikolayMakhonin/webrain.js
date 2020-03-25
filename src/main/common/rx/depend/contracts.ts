@@ -1,5 +1,5 @@
 import {IThenable, ThenableOrValue} from '../../async/async'
-import {TFuncCallState} from './FuncCallState'
+import {Mask_Update_Invalidate, TFuncCallState} from './FuncCallState'
 
 export type Func<TThis, TArgs extends any[], TValue = void> = (this: TThis, ...args: TArgs) => TValue
 export type TCall<TArgs extends any[]> = <TThis, TValue>(_this: TThis, func: Func<TThis, TArgs, TValue>) => TValue
@@ -40,22 +40,22 @@ export type TOuterResult<TInnerResult> = TInnerResult extends Iterator<infer V> 
 export type TInnerValue<TInnerResult> = TInnerResult extends Iterator<infer V> ? V : TInnerResult
 
 export type TGetThis<
-	TThis,
-	TArgs extends any[],
-	TValue,
-	TNewThis
-> = (this: IFuncCallState<TThis, TArgs, TValue, TNewThis>) => TNewThis
-
-export interface IFuncCallState<
-	TOuterThis,
+	TThisOuter,
 	TArgs extends any[],
 	TInnerResult,
-	TInnerThis
+	TThisInner
+> = (this: IFuncCallState<TThisOuter, TArgs, TInnerResult, TThisInner>) => TThisInner
+
+export interface IFuncCallState<
+	TThisOuter,
+	TArgs extends any[],
+	TInnerResult,
+	TThisInner
 > {
-	readonly func: Func<TInnerThis, TArgs, TInnerResult>
-	readonly _this: TOuterThis
+	readonly thisOuter: TThisOuter
+	readonly getThisInner: TGetThis<TThisOuter, TArgs, TInnerResult, TThisInner>
 	readonly callWithArgs: TCall<TArgs>
-	readonly getThis: TGetThis<TOuterThis, TArgs, TInnerResult, TInnerThis>
+
 	readonly valueIds: number[]
 	deleteOrder: number
 
@@ -64,17 +64,6 @@ export interface IFuncCallState<
 	valueAsync: IThenable<TInnerValue<TInnerResult>>
 	value: TInnerValue<TInnerResult>
 	error: any
-
-	/** for detect recursive async loop */
-	parentCallState: TFuncCallState
-
-	// for prevent multiple subscribe equal dependencies
-	callId: number
-	// _subscribersFirst: ISubscriberLink<this, any>
-	// _subscribersLast: ISubscriberLink<this, any>
-	// _subscribersCalculating: ISubscriberLink<this, any>
-	// _unsubscribers: Array<ISubscriberLink<any, this>>,
-	// _unsubscribersLength: number,
 
 	// region calculable
 
@@ -89,7 +78,7 @@ export interface IFuncCallState<
 		dependency: TDependency,
 	): void
 
-	_dependentFunc(
+	getValue(
 		dontThrowOnError?: boolean,
 	): TOuterResult<TInnerResult>
 

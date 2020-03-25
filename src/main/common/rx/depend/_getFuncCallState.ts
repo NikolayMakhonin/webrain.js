@@ -43,22 +43,22 @@ let nextCallStatesCount = maxCallStatesCount
 let usageNextId = 1
 
 export function addFuncCallState<
-	TThis,
+	TThisOuter,
 	TArgs extends any[],
-	TValue,
-	TNewThis,
+	TInnerResult,
+	TThisInner,
 >(
-	func: Func<TNewThis, TArgs, TValue>,
-	_this: TThis,
+	func: Func<TThisInner, TArgs, TInnerResult>,
+	thisOuter: TThisOuter,
 	callWithArgs: TCall<TArgs>,
-	getThis: TGetThis<TThis, TArgs, TValue, TNewThis>,
+	getThisInner: TGetThis<TThisOuter, TArgs, TInnerResult, TThisInner>,
 	valueIds: number[],
-): IFuncCallState<TThis, TArgs, TValue, TNewThis> {
+): IFuncCallState<TThisOuter, TArgs, TInnerResult, TThisInner> {
 	const callState = createFuncCallState(
 		func,
-		_this,
+		thisOuter,
 		callWithArgs,
-		getThis,
+		getThisInner,
 		valueIds,
 	)
 
@@ -73,18 +73,18 @@ export function addFuncCallState<
 
 // tslint:disable-next-line:no-shadowed-variable
 export function _getFuncCallState<
-	TThis,
+	TThisOuter,
 	TArgs extends any[],
-	TValue,
-	TNewThis
+	TInnerResult,
+	TThisInner
 >(
-	func: Func<TNewThis, TArgs, TValue>,
-	getThis: TGetThis<TThis, TArgs, TValue, TNewThis>,
-): Func<TThis, TArgs, FuncCallState<TThis, TArgs, TValue, TNewThis>> {
+	func: Func<TThisInner, TArgs, TInnerResult>,
+	getThisInner: TGetThis<TThisOuter, TArgs, TInnerResult, TThisInner>,
+): Func<TThisOuter, TArgs, FuncCallState<TThisOuter, TArgs, TInnerResult, TThisInner>> {
 	const funcId = nextValueId++
 	const funcHash = (17 * 31 + funcId) | 0
 
-	return function __getFuncCallState(this: TThis) {
+	return function __getFuncCallState(this: TThisOuter) {
 		const countArgs = arguments.length
 		const countValueStates = countArgs + 2
 
@@ -139,11 +139,11 @@ export function _getFuncCallState<
 				}
 			}
 
-			callState = addFuncCallState<TThis, TArgs, TValue, TNewThis>(
+			callState = addFuncCallState<TThisOuter, TArgs, TInnerResult, TThisInner>(
 				func,
 				this,
 				createCallWithArgs.apply(null, arguments),
-				getThis,
+				getThisInner,
 				valueIdsClone,
 			)
 

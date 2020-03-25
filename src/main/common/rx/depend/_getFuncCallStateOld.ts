@@ -51,11 +51,11 @@
 // }
 //
 // // tslint:disable-next-line:no-shadowed-variable
-// export function _getFuncCallState<TThis,
+// export function _getFuncCallState<TThisOuter,
 // 	TArgs extends any[],
-// 	TValue>(
-// 	func: Func<TThis, TArgs, TValue>,
-// ): Func<TThis, TArgs, IFuncCallState<TThis, TArgs, TValue>> {
+// 	TInnerResult>(
+// 	func: Func<TThisOuter, TArgs, TInnerResult>,
+// ): Func<TThisOuter, TArgs, IFuncCallState<TThisOuter, TArgs, TInnerResult>> {
 // 	const funcStateMap = new Map<number, any>()
 // 	return function() {
 // 		const argumentsLength = arguments.length
@@ -65,7 +65,7 @@
 // 			funcStateMap.set(argumentsLength, argsLengthStateMap)
 // 		}
 //
-// 		let state: IFuncCallState<TThis, TArgs, TValue>
+// 		let state: IFuncCallState<TThisOuter, TArgs, TInnerResult>
 // 		let currentMap: ISemiWeakMap<any, any> = semiWeakMapGet(argsLengthStateMap, this)
 // 		if (argumentsLength !== 0) {
 // 			if (currentMap == null) {
@@ -86,7 +86,7 @@
 // 			const lastArg = arguments[argumentsLength - 1]
 // 			state = semiWeakMapGet(currentMap, lastArg)
 // 			if (state == null) {
-// 				state = createFuncCallState<TThis, TArgs, TValue>(
+// 				state = createFuncCallState<TThisOuter, TArgs, TInnerResult>(
 // 					func,
 // 					this,
 // 					createCallWithArgs.apply(null, arguments),
@@ -96,7 +96,7 @@
 // 		} else {
 // 			state = semiWeakMapGet(argsLengthStateMap, this)
 // 			if (state == null) {
-// 				state = createFuncCallState<TThis, TArgs, TValue>(
+// 				state = createFuncCallState<TThisOuter, TArgs, TInnerResult>(
 // 					func,
 // 					this,
 // 					createCallWithArgs.apply(null, arguments),

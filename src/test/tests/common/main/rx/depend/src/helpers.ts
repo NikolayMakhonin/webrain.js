@@ -22,22 +22,22 @@ import {delay} from '../../../../../../../main/common/time/helpers'
 // region makeDependentFunc
 
 // tslint:disable-next-line:no-shadowed-variable
-export function __makeDependentFunc<TThis,
+export function __makeDependentFunc<TThisOuter,
 	TArgs extends any[],
-	TValue,
-	>(func: Func<TThis, TArgs, Iterator<TValue>>): Func<TThis, TArgs, ThenableOrValue<TValue>>
+	TInnerResult,
+	>(func: Func<TThisOuter, TArgs, Iterator<TInnerResult>>): Func<TThisOuter, TArgs, ThenableOrValue<TInnerResult>>
 // tslint:disable-next-line:no-shadowed-variable
-export function __makeDependentFunc<TThis,
+export function __makeDependentFunc<TThisOuter,
 	TArgs extends any[],
-	TValue,
-	>(func: Func<TThis, TArgs, TValue>): Func<TThis, TArgs, TValue>
+	TInnerResult,
+	>(func: Func<TThisOuter, TArgs, TInnerResult>): Func<TThisOuter, TArgs, TInnerResult>
 // tslint:disable-next-line:no-shadowed-variable
-export function __makeDependentFunc<TThis,
+export function __makeDependentFunc<TThisOuter,
 	TArgs extends any[],
-	TValue,
-	>(func: Func<TThis, TArgs, TValue | Iterator<TValue>>) {
+	TInnerResult,
+	>(func: Func<TThisOuter, TArgs, TInnerResult | Iterator<TInnerResult>>) {
 	if (typeof func === 'function') {
-		return depend<TThis, TArgs, TValue>(func as any)
+		return depend<TThisOuter, TArgs, TInnerResult>(func as any)
 	}
 	return null
 }
@@ -99,11 +99,11 @@ export function createPerceptronNaked(layerSize, layersCount, check = true) {
 }
 
 export function __invalidate<
-	TThis,
+	TThisOuter,
 	TArgs extends any[],
-	TValue,
-	TNewThis
->(state: IFuncCallState<TThis, TArgs, TValue, TNewThis>) {
+	TInnerResult,
+	TThisInner
+>(state: IFuncCallState<TThisOuter, TArgs, TInnerResult, TThisInner>) {
 	return state.invalidate()
 }
 
