@@ -1,5 +1,5 @@
 import {IThenable, ThenableOrValue} from '../../async/async'
-import {TFuncCallState} from './FuncCallState'
+import {TCallState} from './CallState'
 
 export type Func<TThis, TArgs extends any[], TValue = void> = (this: TThis, ...args: TArgs) => TValue
 export type TCall<TArgs extends any[]> = <TThis, TValue>(_this: TThis, func: Func<TThis, TArgs, TValue>) => TValue
@@ -10,7 +10,7 @@ export interface ILinkItem<T> {
 	next: ILinkItem<T>
 }
 
-export enum FuncCallStatus {
+export enum CallStatus {
 	Flag_None = 0,
 
 	Flag_Invalidating = 1,
@@ -44,9 +44,9 @@ export type TGetThis<
 	TArgs extends any[],
 	TInnerResult,
 	TThisInner
-> = (this: IFuncCallState<TThisOuter, TArgs, TInnerResult, TThisInner>) => TThisInner
+> = (this: ICallState<TThisOuter, TArgs, TInnerResult, TThisInner>) => TThisInner
 
-export interface IFuncCallState<
+export interface ICallState<
 	TThisOuter,
 	TArgs extends any[],
 	TInnerResult,
@@ -59,7 +59,7 @@ export interface IFuncCallState<
 	readonly valueIds: number[]
 	deleteOrder: number
 
-	status: FuncCallStatus
+	status: CallStatus
 
 	valueAsync: IThenable<TInnerValue<TInnerResult>>
 	value: TInnerValue<TInnerResult>
@@ -74,7 +74,7 @@ export interface IFuncCallState<
 
 	// region methods
 
-	subscribeDependency<TDependency extends TFuncCallState>(
+	subscribeDependency<TDependency extends TCallState>(
 		dependency: TDependency,
 	): void
 

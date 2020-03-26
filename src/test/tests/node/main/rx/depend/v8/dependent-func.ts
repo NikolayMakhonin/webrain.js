@@ -1,8 +1,8 @@
 /* tslint:disable:no-identical-functions no-shadowed-variable no-var-requires ordered-imports */
 import * as ObjectPool from '../../../../../../../main/common/lists/ObjectPool'
 import * as PairingHeap from '../../../../../../../main/common/lists/PairingHeap'
-import * as _getFuncCallState from '../../../../../../../main/common/rx/depend/_getFuncCallState'
-import {getFuncCallState} from '../../../../../../../main/common/rx/depend/facade'
+import * as getOrCreateCallState from '../../../../../../../main/common/rx/depend/getOrCreateCallState'
+import {getCallState} from '../../../../../../../main/common/rx/depend/facade'
 import * as facade from '../../../../../../../main/common/rx/depend/facade'
 import * as helpers from '../../../../../../../main/common/rx/depend/helpers'
 
@@ -28,8 +28,8 @@ describe('node > main > rx > depend > dependent-func', function() {
 		const objects = {
 			ObjectPool,
 			PairingHeap,
-			_getFuncCallState: {
-				..._getFuncCallState,
+			getOrCreateCallState: {
+				...getOrCreateCallState,
 				reduceCallStates: null,
 			},
 			facade,
@@ -116,7 +116,7 @@ describe('node > main > rx > depend > dependent-func', function() {
 			checkOptimization(iteration)
 
 			for (let j = 0; j < 10; j++) {
-				const state = getFuncCallState(input)()
+				const state = getCallState(input)()
 				await state.invalidate()
 			}
 

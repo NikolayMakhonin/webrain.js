@@ -1,5 +1,5 @@
-// import {Func, IFuncCallState} from './contracts'
-// import {createFuncCallState} from './FuncCallState'
+// import {Func, ICallState} from './contracts'
+// import {createCallState} from './CallState'
 // import {createCallWithArgs} from './helpers'
 //
 // export function isRefType(value): boolean {
@@ -51,11 +51,11 @@
 // }
 //
 // // tslint:disable-next-line:no-shadowed-variable
-// export function _getFuncCallState<TThisOuter,
+// export function _getCallState<TThisOuter,
 // 	TArgs extends any[],
 // 	TInnerResult>(
 // 	func: Func<TThisOuter, TArgs, TInnerResult>,
-// ): Func<TThisOuter, TArgs, IFuncCallState<TThisOuter, TArgs, TInnerResult>> {
+// ): Func<TThisOuter, TArgs, ICallState<TThisOuter, TArgs, TInnerResult>> {
 // 	const funcStateMap = new Map<number, any>()
 // 	return function() {
 // 		const argumentsLength = arguments.length
@@ -65,7 +65,7 @@
 // 			funcStateMap.set(argumentsLength, argsLengthStateMap)
 // 		}
 //
-// 		let state: IFuncCallState<TThisOuter, TArgs, TInnerResult>
+// 		let state: ICallState<TThisOuter, TArgs, TInnerResult>
 // 		let currentMap: ISemiWeakMap<any, any> = semiWeakMapGet(argsLengthStateMap, this)
 // 		if (argumentsLength !== 0) {
 // 			if (currentMap == null) {
@@ -86,7 +86,7 @@
 // 			const lastArg = arguments[argumentsLength - 1]
 // 			state = semiWeakMapGet(currentMap, lastArg)
 // 			if (state == null) {
-// 				state = createFuncCallState<TThisOuter, TArgs, TInnerResult>(
+// 				state = createCallState<TThisOuter, TArgs, TInnerResult>(
 // 					func,
 // 					this,
 // 					createCallWithArgs.apply(null, arguments),
@@ -96,7 +96,7 @@
 // 		} else {
 // 			state = semiWeakMapGet(argsLengthStateMap, this)
 // 			if (state == null) {
-// 				state = createFuncCallState<TThisOuter, TArgs, TInnerResult>(
+// 				state = createCallState<TThisOuter, TArgs, TInnerResult>(
 // 					func,
 // 					this,
 // 					createCallWithArgs.apply(null, arguments),

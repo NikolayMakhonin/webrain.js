@@ -3,9 +3,9 @@ import {resolveAsync} from '../../async/ThenableSync'
 import {isIterator} from '../../helpers/helpers'
 import {ObjectPool} from '../../lists/ObjectPool'
 import {
+	CallStatus,
 	Func,
-	FuncCallStatus,
-	IFuncCallState,
+	ICallState,
 	ILinkItem,
 	TCall,
 	TGetThis,
@@ -15,7 +15,7 @@ import {
 } from './contracts'
 import {InternalError} from './helpers'
 
-// region FuncCallStatus
+// region CallStatus
 
 // region Types
 
@@ -132,19 +132,19 @@ export const Mask_Update =
 
 // region Invalidate
 
-export function getInvalidate(status: FuncCallStatus): Mask_Invalidate {
+export function getInvalidate(status: CallStatus): Mask_Invalidate {
 	return (status & Mask_Invalidate) as any
 }
 
-export function setInvalidate(status: FuncCallStatus, value: Mask_Invalidate | Flag_None): FuncCallStatus {
+export function setInvalidate(status: CallStatus, value: Mask_Invalidate | Flag_None): CallStatus {
 	return (status & ~Mask_Invalidate) | value
 }
 
-export function isInvalidating(status: FuncCallStatus): boolean {
+export function isInvalidating(status: CallStatus): boolean {
 	return (status & Flag_Invalidating) !== 0
 }
 
-export function isInvalidated(status: FuncCallStatus): boolean {
+export function isInvalidated(status: CallStatus): boolean {
 	return (status & Flag_Invalidated) !== 0
 }
 
@@ -152,11 +152,11 @@ export function isInvalidated(status: FuncCallStatus): boolean {
 
 // region Recalc
 
-export function isRecalc(status: FuncCallStatus): boolean {
+export function isRecalc(status: CallStatus): boolean {
 	return (status & Flag_Recalc) !== 0
 }
 
-export function setRecalc(status: FuncCallStatus, value: boolean): FuncCallStatus {
+export function setRecalc(status: CallStatus, value: boolean): CallStatus {
 	return value
 		? status | Flag_Recalc
 		: status & ~Flag_Recalc
@@ -166,23 +166,23 @@ export function setRecalc(status: FuncCallStatus, value: boolean): FuncCallStatu
 
 // region Calculate
 
-export function getCalculate(status: FuncCallStatus): Mask_Calculate {
+export function getCalculate(status: CallStatus): Mask_Calculate {
 	return (status & Mask_Calculate) as any
 }
 
-export function setCalculate(status: FuncCallStatus, value: Mask_Calculate | Flag_None): FuncCallStatus {
+export function setCalculate(status: CallStatus, value: Mask_Calculate | Flag_None): CallStatus {
 	return (status & ~Mask_Calculate) | value
 }
 
-export function isCheck(status: FuncCallStatus): boolean {
+export function isCheck(status: CallStatus): boolean {
 	return (status & Flag_Check) !== 0
 }
 
-export function isCalculating(status: FuncCallStatus): boolean {
+export function isCalculating(status: CallStatus): boolean {
 	return (status & Flag_Calculating) !== 0
 }
 
-export function isCalculated(status: FuncCallStatus): boolean {
+export function isCalculated(status: CallStatus): boolean {
 	return (status & Flag_Calculated) !== 0
 }
 
@@ -190,11 +190,11 @@ export function isCalculated(status: FuncCallStatus): boolean {
 
 // region HasValue
 
-export function isHasValue(status: FuncCallStatus): boolean {
+export function isHasValue(status: CallStatus): boolean {
 	return (status & Flag_HasValue) !== 0
 }
 
-export function setHasValue(status: FuncCallStatus, value: boolean): FuncCallStatus {
+export function setHasValue(status: CallStatus, value: boolean): CallStatus {
 	return value
 		? status | Flag_HasValue
 		: status & ~Flag_HasValue
@@ -204,11 +204,11 @@ export function setHasValue(status: FuncCallStatus, value: boolean): FuncCallSta
 
 // region HasError
 
-export function isHasError(status: FuncCallStatus): boolean {
+export function isHasError(status: CallStatus): boolean {
 	return (status & Flag_HasError) !== 0
 }
 
-export function setHasError(status: FuncCallStatus, value: boolean): FuncCallStatus {
+export function setHasError(status: CallStatus, value: boolean): CallStatus {
 	return value
 		? status | Flag_HasError
 		: status & ~Flag_HasError
@@ -220,7 +220,7 @@ export function setHasError(status: FuncCallStatus, value: boolean): FuncCallSta
 
 // region Methods
 
-// export function checkStatus(status: FuncCallStatus): boolean {
+// export function checkStatus(status: CallStatus): boolean {
 // 	if ((status & Mask_Invalidate) === Mask_Invalidate) {
 // 		return false
 // 	}
@@ -249,7 +249,7 @@ export function setHasError(status: FuncCallStatus, value: boolean): FuncCallSta
 // 	return true
 // }
 
-export function statusToString(status: FuncCallStatus): string {
+export function statusToString(status: CallStatus): string {
 	const buffer = []
 
 	if ((status & Flag_Invalidating) !== 0) {
@@ -310,7 +310,7 @@ const Mask_Invalidate_Parent = 3
 
 // region variables
 
-let currentState: TFuncCallState = null
+let currentState: TCallState = null
 let nextCallId = 1
 
 export function getCurrentState() {
@@ -322,8 +322,8 @@ export function getCurrentState() {
 // region subscriberLinkPool
 
 export type TSubscriberLink = ISubscriberLink<any, any>
-export interface ISubscriberLink<TState extends TFuncCallState,
-	TSubscriber extends TFuncCallState,
+export interface ISubscriberLink<TState extends TCallState,
+	TSubscriber extends TCallState,
 	>
 	extends ILinkItem<TSubscriber> {
 	state: TState,
@@ -339,8 +339,8 @@ export function releaseSubscriberLink(obj: TSubscriberLink) {
 }
 
 // tslint:disable-next-line:no-shadowed-variable
-export function getSubscriberLink<TState extends TFuncCallState,
-	TSubscriber extends TFuncCallState,
+export function getSubscriberLink<TState extends TCallState,
+	TSubscriber extends TCallState,
 	>(
 	state: TState,
 	subscriber: TSubscriber,
@@ -363,7 +363,7 @@ export function getSubscriberLink<TState extends TFuncCallState,
 	}
 }
 
-export function subscriberLinkDelete<TState extends TFuncCallState>(
+export function subscriberLinkDelete<TState extends TCallState>(
 	item: ISubscriberLink<TState, any>,
 ) {
 	const {prev, next, state} = item
@@ -406,8 +406,8 @@ export function subscriberLinkDelete<TState extends TFuncCallState>(
 function emptyFunc() { }
 
 export function invalidateParent<
-	TState extends TFuncCallState,
-	TSubscriber extends TFuncCallState,
+	TState extends TCallState,
+	TSubscriber extends TCallState,
 >(
 	link: ISubscriberLink<TState, TSubscriber>,
 	status: Mask_Update_Invalidate,
@@ -436,15 +436,15 @@ export function invalidateParent<
 
 // endregion
 
-export type TFuncCallState = FuncCallState<any, any, any, any>
+export type TCallState = CallState<any, any, any, any>
 
-export class FuncCallState<
+export class CallState<
 	TThisOuter,
 	TArgs extends any[],
 	TInnerResult,
 	TThisInner
 >
-	implements IFuncCallState<TThisOuter, TArgs, TInnerResult, TThisInner>
+	implements ICallState<TThisOuter, TArgs, TInnerResult, TThisInner>
 {
 	constructor(
 		func: Func<TThisInner, TArgs, TInnerResult>,
@@ -471,12 +471,12 @@ export class FuncCallState<
 	public readonly valueIds: number[]
 	public deleteOrder: number = 0
 
-	public status: FuncCallStatus = Flag_Invalidated | Flag_Recalc
+	public status: CallStatus = Flag_Invalidated | Flag_Recalc
 	public valueAsync: IThenable<TInnerValue<TInnerResult>> = null
 	public value: TInnerValue<TInnerResult> = void 0
 	public error: any = void 0
 	// for detect recursive async loop
-	public parentCallState: TFuncCallState = null
+	public parentCallState: TCallState = null
 	public _subscribersFirst: ISubscriberLink<this, any> = null
 	public _subscribersLast: ISubscriberLink<this, any> = null
 	public _subscribersCalculating: ISubscriberLink<this, any> = null
@@ -676,7 +676,7 @@ export class FuncCallState<
 	}
 	
 	private afterCalc(
-		prevStatus: FuncCallStatus,
+		prevStatus: CallStatus,
 		valueChanged: boolean,
 	) {
 		if ((prevStatus & Mask_Invalidate) !== 0) {
@@ -704,7 +704,7 @@ export class FuncCallState<
 					yield resolveAsync(dependencyState.valueAsync, null, emptyFunc) as any
 				}
 	
-				if ((this.status & FuncCallStatus.Flag_Recalc) !== 0) {
+				if ((this.status & CallStatus.Flag_Recalc) !== 0) {
 					return true
 				}
 	
@@ -733,7 +733,7 @@ export class FuncCallState<
 					return this.checkDependenciesChangedAsync(i)
 				}
 	
-				if ((this.status & FuncCallStatus.Flag_Recalc) !== 0) {
+				if ((this.status & CallStatus.Flag_Recalc) !== 0) {
 					return true
 				}
 	
@@ -841,7 +841,7 @@ export class FuncCallState<
 		}
 	}
 	
-	private _subscribe<TSubscriber extends TFuncCallState>(
+	private _subscribe<TSubscriber extends TCallState>(
 		subscriber: TSubscriber,
 	) {
 		const _subscribersLast = this._subscribersLast
@@ -912,7 +912,7 @@ export class FuncCallState<
 	}
 
 	// tslint:disable-next-line:no-shadowed-variable
-	public subscribeDependency<TDependency extends TFuncCallState>(
+	public subscribeDependency<TDependency extends TCallState>(
 		dependency: TDependency,
 	): void {
 		if (this.callId < dependency.callId) {
@@ -966,12 +966,12 @@ export class FuncCallState<
 			} else if ((this.status & (Flag_Check | Flag_Calculating)) !== 0) {
 				this.internalError('Recursive sync loop detected')
 			} else {
-				this.internalError(`Unknown FuncCallStatus: ${statusToString(this.status)}`)
+				this.internalError(`Unknown CallStatus: ${statusToString(this.status)}`)
 			}
 		} else if (getInvalidate(this.status) !== 0) {
 			// nothing
 		} else {
-			this.internalError(`Unknown FuncCallStatus: ${statusToString(this.status)}`)
+			this.internalError(`Unknown CallStatus: ${statusToString(this.status)}`)
 		}
 
 		this.parentCallState = currentState

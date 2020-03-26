@@ -1,18 +1,18 @@
 /* tslint:disable:no-identical-functions no-shadowed-variable no-duplicate-string no-construct use-primitive-type */
 import {isThenable, Thenable, ThenableOrValue} from '../../../../../../../main/common/async/async'
 import {
+	getCurrentState,
+	statusToString,
+	TCallState,
+} from '../../../../../../../main/common/rx/depend/CallState'
+import {CallStatus, Func, ICallState} from '../../../../../../../main/common/rx/depend/contracts'
+import {depend, getCallState} from '../../../../../../../main/common/rx/depend/facade'
+import {
 	callStateHashTable,
 	reduceCallStates,
 	valueIdsMap,
 	valueStatesMap,
-} from '../../../../../../../main/common/rx/depend/_getFuncCallState'
-import {Func, FuncCallStatus, IFuncCallState} from '../../../../../../../main/common/rx/depend/contracts'
-import {depend, getFuncCallState} from '../../../../../../../main/common/rx/depend/facade'
-import {
-	getCurrentState,
-	statusToString,
-	TFuncCallState,
-} from '../../../../../../../main/common/rx/depend/FuncCallState'
+} from '../../../../../../../main/common/rx/depend/getOrCreateCallState'
 import {InternalError} from '../../../../../../../main/common/rx/depend/helpers'
 import {assert} from '../../../../../../../main/common/test/Assert'
 import {delay} from '../../../../../../../main/common/time/helpers'
@@ -103,7 +103,7 @@ export function __invalidate<
 	TArgs extends any[],
 	TInnerResult,
 	TThisInner
->(state: IFuncCallState<TThisOuter, TArgs, TInnerResult, TThisInner>) {
+>(state: ICallState<TThisOuter, TArgs, TInnerResult, TThisInner>) {
 	return state.invalidate()
 }
 
@@ -167,13 +167,13 @@ export function createPerceptron(
 		if (!_states) {
 			_states = layers
 				.flatMap(o => o)
-				.map(o => getFuncCallState(o)())
+				.map(o => getCallState(o)())
 		}
 		return _states
 	}
 
-	const inputState = getFuncCallState(input)()
-	const outputState = getFuncCallState(output).call(2, 5, 10)
+	const inputState = getCallState(input)()
+	const outputState = getCallState(output).call(2, 5, 10)
 
 	if (check) {
 		assert.strictEqual(
@@ -211,7 +211,7 @@ const _callHistory = []
 
 type IDependencyCall = (() => ThenableOrValue<string>) & {
 	id: string,
-	state: TFuncCallState,
+	state: TCallState,
 	hasLoop: boolean,
 }
 
@@ -383,9 +383,9 @@ function _funcCall(func: IDependencyFunc, callId: string, _this?: any, ...rest: 
 	}) as any
 
 	result.id = callId
-	result.state = getFuncCallState(func).apply(_this, rest)
+	result.state = getCallState(func).apply(_this, rest)
 	assert.ok(result.state)
-	assert.strictEqual(result.state.status, FuncCallStatus.Flag_Invalidated | FuncCallStatus.Flag_Recalc);
+	assert.strictEqual(result.state.status, CallStatus.Flag_Invalidated | CallStatus.Flag_Recalc);
 	(result.state as any).id = callId
 
 	return result
@@ -536,65 +536,65 @@ function checkFuncAsync<TValue>(
 }
 
 const statusesShort = {
-	i: FuncCallStatus.Flag_Invalidating,
-	I: FuncCallStatus.Flag_Invalidated,
-	f: FuncCallStatus.Flag_Invalidating | FuncCallStatus.Flag_Recalc,
-	F: FuncCallStatus.Flag_Invalidated | FuncCallStatus.Flag_Recalc,
-	x: FuncCallStatus.Flag_Check,
-	c: FuncCallStatus.Flag_Calculating,
-	a: FuncCallStatus.Flag_Async,
-	C: FuncCallStatus.Flag_Calculated,
-	V: FuncCallStatus.Flag_HasValue,
-	E: FuncCallStatus.Flag_HasError,
+	i: CallStatus.Flag_Invalidating,
+	I: CallStatus.Flag_Invalidated,
+	f: CallStatus.Flag_Invalidating | CallStatus.Flag_Recalc,
+	F: CallStatus.Flag_Invalidated | CallStatus.Flag_Recalc,
+	x: CallStatus.Flag_Check,
+	c: CallStatus.Flag_Calculating,
+	a: CallStatus.Flag_Async,
+	C: CallStatus.Flag_Calculated,
+	V: CallStatus.Flag_HasValue,
+	E: CallStatus.Flag_HasError,
 }
 
 function parseStatusShort(statusShort: string) {
-	let status: FuncCallStatus = 0
+	let status: CallStatus = 0
 	for (let i = 0, len = statusShort.length; i < len; i++) {
 		status |= statusesShort[statusShort[i]]
 	}
 	return status
 }
 
-function statusToShortString(status: FuncCallStatus) {
+function statusToShortString(status: CallStatus) {
 	let result = ''
-	if ((status & FuncCallStatus.Flag_Invalidating) !== 0) {
+	if ((status & CallStatus.Flag_Invalidating) !== 0) {
 		result += 'i'
-		status &= ~FuncCallStatus.Flag_Invalidating
+		status &= ~CallStatus.Flag_Invalidating
 	}
-	if ((status & FuncCallStatus.Flag_Invalidated) !== 0) {
+	if ((status & CallStatus.Flag_Invalidated) !== 0) {
 		result += 'I'
-		status &= ~FuncCallStatus.Flag_Invalidated
+		status &= ~CallStatus.Flag_Invalidated
 	}
-	if ((status & FuncCallStatus.Flag_Recalc) !== 0) {
+	if ((status & CallStatus.Flag_Recalc) !== 0) {
 		result += 'r'
-		status &= ~FuncCallStatus.Flag_Recalc
+		status &= ~CallStatus.Flag_Recalc
 	}
 
-	if ((status & FuncCallStatus.Flag_Check) !== 0) {
+	if ((status & CallStatus.Flag_Check) !== 0) {
 		result += 'x'
-		status &= ~FuncCallStatus.Flag_Check
+		status &= ~CallStatus.Flag_Check
 	}
-	if ((status & FuncCallStatus.Flag_Calculating) !== 0) {
+	if ((status & CallStatus.Flag_Calculating) !== 0) {
 		result += 'c'
-		status &= ~FuncCallStatus.Flag_Calculating
+		status &= ~CallStatus.Flag_Calculating
 	}
-	if ((status & FuncCallStatus.Flag_Async) !== 0) {
+	if ((status & CallStatus.Flag_Async) !== 0) {
 		result += 'a'
-		status &= ~FuncCallStatus.Flag_Async
+		status &= ~CallStatus.Flag_Async
 	}
 
-	if ((status & FuncCallStatus.Flag_Calculated) !== 0) {
+	if ((status & CallStatus.Flag_Calculated) !== 0) {
 		result += 'C'
-		status &= ~FuncCallStatus.Flag_Calculated
+		status &= ~CallStatus.Flag_Calculated
 	}
-	if ((status & FuncCallStatus.Flag_HasValue) !== 0) {
+	if ((status & CallStatus.Flag_HasValue) !== 0) {
 		result += 'V'
-		status &= ~FuncCallStatus.Flag_HasValue
+		status &= ~CallStatus.Flag_HasValue
 	}
-	if ((status & FuncCallStatus.Flag_HasError) !== 0) {
+	if ((status & CallStatus.Flag_HasError) !== 0) {
 		result += 'E'
-		status &= ~FuncCallStatus.Flag_HasError
+		status &= ~CallStatus.Flag_HasError
 	}
 	if (status !== 0) {
 		result += status
@@ -630,14 +630,14 @@ function checkFuncNotChanged<TValue>(allFuncCalls: IDependencyCall[], ...changed
 }
 
 function isInvalidated(funcCall: IDependencyCall) {
-	return (funcCall.state.status & FuncCallStatus.Mask_Invalidate) !== 0
+	return (funcCall.state.status & CallStatus.Mask_Invalidate) !== 0
 }
 
 // export function assertStatus(status: FuncCallStatus) {
 // 	assert.ok(checkStatus(status), statusToString(status))
 // }
 
-function getSubscribers(state: TFuncCallState) {
+function getSubscribers(state: TCallState) {
 	const subscribers = []
 	for (let link = state._subscribersFirst; link !== null;) {
 		subscribers.push(link.value)

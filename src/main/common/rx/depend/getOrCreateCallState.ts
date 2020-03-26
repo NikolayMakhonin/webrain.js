@@ -1,7 +1,7 @@
 import {ObjectPool} from '../../lists/ObjectPool'
 import {PairingHeap, PairingNode} from '../../lists/PairingHeap'
-import {Func, IFuncCallState, IValueState, TCall, TGetThis} from './contracts'
-import {FuncCallState, TFuncCallState} from './FuncCallState'
+import {Func, ICallState, IValueState, TCall, TGetThis} from './contracts'
+import {CallState, TCallState} from './CallState'
 import {createCallWithArgs, InternalError} from './helpers'
 
 // region get/create/delete ValueState
@@ -41,16 +41,16 @@ export function deleteValueState(valueId: number, value: any): void {
 
 // region get/create/delete CallState
 
-export const callStateHashTable = new Map<number, TFuncCallState[]>()
+export const callStateHashTable = new Map<number, TCallState[]>()
 let callStatesCount = 0
 
-// region getOrCreateFuncCallState
+// region getOrCreateCallState
 
 const maxCallStatesCount = 1500
 const minDeleteCallStatesCount = 500
 let nextCallStatesCount = maxCallStatesCount
 
-export function createFuncCallState<
+export function createCallState<
 	TThisOuter,
 	TArgs extends any[],
 	TInnerResult,
@@ -61,8 +61,8 @@ export function createFuncCallState<
 	callWithArgs: TCall<TArgs>,
 	getThisInner: TGetThis<TThisOuter, TArgs, TInnerResult, TThisInner>,
 	valueIds: number[],
-): IFuncCallState<TThisOuter, TArgs, TInnerResult, TThisInner> {
-	const callState = new FuncCallState(
+): ICallState<TThisOuter, TArgs, TInnerResult, TThisInner> {
+	const callState = new CallState(
 		func,
 		thisOuter,
 		callWithArgs,
@@ -83,7 +83,7 @@ let usageNextId = 1
 export const valueIdsBuffer: number[] = []
 
 // tslint:disable-next-line:no-shadowed-variable
-export function getOrCreateFuncCallState<
+export function getOrCreateCallState<
 	TThisOuter,
 	TArgs extends any[],
 	TInnerResult,
@@ -91,11 +91,11 @@ export function getOrCreateFuncCallState<
 >(
 	func: Func<TThisInner, TArgs, TInnerResult>,
 	getThisInner: TGetThis<TThisOuter, TArgs, TInnerResult, TThisInner>,
-): Func<TThisOuter, TArgs, FuncCallState<TThisOuter, TArgs, TInnerResult, TThisInner>> {
+): Func<TThisOuter, TArgs, CallState<TThisOuter, TArgs, TInnerResult, TThisInner>> {
 	const funcId = nextValueId++
 	const funcHash = (17 * 31 + funcId) | 0
 
-	return function __getFuncCallState(this: TThisOuter) {
+	return function _getOrCreateCallState(this: TThisOuter) {
 		const countArgs = arguments.length
 		const countValueStates = countArgs + 2
 
@@ -150,7 +150,7 @@ export function getOrCreateFuncCallState<
 				}
 			}
 
-			callState = createFuncCallState<TThisOuter, TArgs, TInnerResult, TThisInner>(
+			callState = createCallState<TThisOuter, TArgs, TInnerResult, TThisInner>(
 				func,
 				this,
 				createCallWithArgs.apply(null, arguments),
@@ -171,7 +171,7 @@ export function getOrCreateFuncCallState<
 
 // region reduceCallStates to free memory
 
-export function deleteFuncCallState(callState: TFuncCallState) {
+export function deleteCallState(callState: TCallState) {
 	callState.unsubscribeDependencies()
 
 	const valueIds = callState.valueIds
@@ -222,14 +222,14 @@ export function deleteFuncCallState(callState: TFuncCallState) {
 	callStatesCount--
 }
 
-export const reduceCallStatesHeap = new PairingHeap<TFuncCallState>({
-	objectPool: new ObjectPool<PairingNode<TFuncCallState>>(10000000),
+export const reduceCallStatesHeap = new PairingHeap<TCallState>({
+	objectPool: new ObjectPool<PairingNode<TCallState>>(10000000),
 	lessThanFunc(o1, o2) {
 		return o1.deleteOrder < o2.deleteOrder
 	},
 })
 
-function reduceCallStatesHeapAdd(states: TFuncCallState[]) {
+function reduceCallStatesHeapAdd(states: TCallState[]) {
 	for (let i = 0, len = states.length; i < len; i++) {
 		const callState = states[i]
 		if (!callState.hasSubscribers && !callState.isHandling) {
@@ -252,7 +252,7 @@ export function reduceCallStates(deleteSize: number) {
 				}
 			}
 		}
-		deleteFuncCallState(callState)
+		deleteCallState(callState)
 		deleteSize--
 	}
 
