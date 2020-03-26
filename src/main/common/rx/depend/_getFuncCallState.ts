@@ -1,15 +1,20 @@
 import {ObjectPool} from '../../lists/ObjectPool'
 import {PairingHeap, PairingNode} from '../../lists/PairingHeap'
 import {Func, IFuncCallState, IValueState, TCall, TGetThis} from './contracts'
-import {createFuncCallState, FuncCallState, TFuncCallState} from './FuncCallState'
+import {FuncCallState, TFuncCallState} from './FuncCallState'
 import {createCallWithArgs, InternalError} from './helpers'
-import {unsubscribeDependencies} from './subscribeDependency'
 
+// region get/create/delete ValueState
+
+let nextValueId: number = 1
 export const valueIdsMap = new Map<any, number>()
 export const valueStatesMap = new Map<number, IValueState>()
 
-let nextValueId: number = 1
-export function getValueState(value: any): number {
+export function getValueState(valueId: number): IValueState {
+	return valueStatesMap.get(valueId)
+}
+
+export function getOrCreateValueId(value: any): number {
 	let id = valueIdsMap.get(value)
 	if (id == null) {
 		id = nextValueId++
@@ -23,8 +28,8 @@ export function getValueState(value: any): number {
 	return id
 }
 
-export function deleteValueState(id: number, value: any): void {
-	if (!valueStatesMap.delete(id)) {
+export function deleteValueState(valueId: number, value: any): void {
+	if (!valueStatesMap.delete(valueId)) {
 		throw new InternalError('value not found')
 	}
 	if (!valueIdsMap.delete(value)) {
@@ -32,17 +37,20 @@ export function deleteValueState(id: number, value: any): void {
 	}
 }
 
-export const valueIdsBuffer: number[] = []
-export const callStateHashTable = new Map<number, TFuncCallState[]>()
+// endregion
 
+// region get/create/delete CallState
+
+export const callStateHashTable = new Map<number, TFuncCallState[]>()
 let callStatesCount = 0
+
+// region getOrCreateFuncCallState
+
 const maxCallStatesCount = 1500
 const minDeleteCallStatesCount = 500
 let nextCallStatesCount = maxCallStatesCount
 
-let usageNextId = 1
-
-export function addFuncCallState<
+export function createFuncCallState<
 	TThisOuter,
 	TArgs extends any[],
 	TInnerResult,
@@ -54,7 +62,7 @@ export function addFuncCallState<
 	getThisInner: TGetThis<TThisOuter, TArgs, TInnerResult, TThisInner>,
 	valueIds: number[],
 ): IFuncCallState<TThisOuter, TArgs, TInnerResult, TThisInner> {
-	const callState = createFuncCallState(
+	const callState = new FuncCallState(
 		func,
 		thisOuter,
 		callWithArgs,
@@ -71,8 +79,11 @@ export function addFuncCallState<
 	return callState
 }
 
+let usageNextId = 1
+export const valueIdsBuffer: number[] = []
+
 // tslint:disable-next-line:no-shadowed-variable
-export function _getFuncCallState<
+export function getOrCreateFuncCallState<
 	TThisOuter,
 	TArgs extends any[],
 	TInnerResult,
@@ -92,13 +103,13 @@ export function _getFuncCallState<
 		let hash = funcHash
 
 		{
-			const valueId = getValueState(this)
+			const valueId = getOrCreateValueId(this)
 			valueIdsBuffer[1] = valueId
 			hash = (hash * 31 + valueId) | 0
 		}
 
 		for (let i = 0; i < countArgs; i++) {
-			const valueId = getValueState(arguments[i])
+			const valueId = getOrCreateValueId(arguments[i])
 			valueIdsBuffer[i + 2] = valueId
 			hash = (hash * 31 + valueId) | 0
 		}
@@ -134,12 +145,12 @@ export function _getFuncCallState<
 				const valueId = valueIdsBuffer[i]
 				valueIdsClone[i] = valueId
 				if (i > 0) {
-					const valueState = valueStatesMap.get(valueId)
+					const valueState = getValueState(valueId)
 					valueState.usageCount++
 				}
 			}
 
-			callState = addFuncCallState<TThisOuter, TArgs, TInnerResult, TThisInner>(
+			callState = createFuncCallState<TThisOuter, TArgs, TInnerResult, TThisInner>(
 				func,
 				this,
 				createCallWithArgs.apply(null, arguments),
@@ -156,8 +167,12 @@ export function _getFuncCallState<
 	}
 }
 
+// endregion
+
+// region reduceCallStates to free memory
+
 export function deleteFuncCallState(callState: TFuncCallState) {
-	unsubscribeDependencies(callState)
+	callState.unsubscribeDependencies()
 
 	const valueIds = callState.valueIds
 
@@ -166,7 +181,7 @@ export function deleteFuncCallState(callState: TFuncCallState) {
 		const valueId = valueIds[i]
 		hash = (hash * 31 + valueId) | 0
 		if (i > 0) {
-			const valueState = valueStatesMap.get(valueId)
+			const valueState = getValueState(valueId)
 			const usageCount = valueState.usageCount
 			if (usageCount <= 0) {
 				throw new InternalError('usageCount <= 0')
@@ -207,34 +222,33 @@ export function deleteFuncCallState(callState: TFuncCallState) {
 	callStatesCount--
 }
 
-export const reduceCallObjectPool = new ObjectPool<PairingNode<TFuncCallState>>(10000000)
-export const reduceCallHeap = new PairingHeap<TFuncCallState>({
-	objectPool: reduceCallObjectPool,
+export const reduceCallStatesHeap = new PairingHeap<TFuncCallState>({
+	objectPool: new ObjectPool<PairingNode<TFuncCallState>>(10000000),
 	lessThanFunc(o1, o2) {
 		return o1.deleteOrder < o2.deleteOrder
 	},
 })
 
-function reduceCallHeapAdd(states: TFuncCallState[]) {
+function reduceCallStatesHeapAdd(states: TFuncCallState[]) {
 	for (let i = 0, len = states.length; i < len; i++) {
 		const callState = states[i]
 		if (!callState.hasSubscribers && !callState.isHandling) {
-			reduceCallHeap.add(callState)
+			reduceCallStatesHeap.add(callState)
 		}
 	}
 }
 
 export function reduceCallStates(deleteSize: number) {
-	callStateHashTable.forEach(reduceCallHeapAdd)
+	callStateHashTable.forEach(reduceCallStatesHeapAdd)
 
-	while (deleteSize > 0 && reduceCallHeap.size > 0) {
-		const callState = reduceCallHeap.deleteMin()
+	while (deleteSize > 0 && reduceCallStatesHeap.size > 0) {
+		const callState = reduceCallStatesHeap.deleteMin()
 		const {_unsubscribers, _unsubscribersLength} = callState
 		if (_unsubscribers != null) {
 			for (let i = 0, len = _unsubscribersLength; i < len; i++) {
 				const state = _unsubscribers[i].state
 				if (state._subscribersFirst === state._subscribersLast) {
-					reduceCallHeap.add(state)
+					reduceCallStatesHeap.add(state)
 				}
 			}
 		}
@@ -242,5 +256,9 @@ export function reduceCallStates(deleteSize: number) {
 		deleteSize--
 	}
 
-	reduceCallHeap.clear()
+	reduceCallStatesHeap.clear()
 }
+
+// endregion
+
+// endregion

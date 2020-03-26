@@ -1,5 +1,5 @@
 import {ThenableOrIterator, ThenableOrValue} from '../../async/async'
-import {_getFuncCallState} from './_getFuncCallState'
+import {getOrCreateFuncCallState} from './_getFuncCallState'
 import {Func, IFuncCallState, TGetThis} from './contracts'
 import {TFuncCallState} from './FuncCallState'
 import {InternalError} from './helpers'
@@ -102,7 +102,7 @@ function makeDependentFunc<
 		throw new InternalError('Multiple call makeDependentFunc() for func: ' + func)
 	}
 
-	const getState = _getFuncCallState(func, getThisInner)
+	const getState = getOrCreateFuncCallState(func, getThisInner)
 
 	rootStateMap.set(func, getState)
 

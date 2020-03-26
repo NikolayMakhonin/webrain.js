@@ -1,5 +1,5 @@
 import {IThenable, ThenableOrValue} from '../../async/async'
-import {Mask_Update_Invalidate, TFuncCallState} from './FuncCallState'
+import {TFuncCallState} from './FuncCallState'
 
 export type Func<TThis, TArgs extends any[], TValue = void> = (this: TThis, ...args: TArgs) => TValue
 export type TCall<TArgs extends any[]> = <TThis, TValue>(_this: TThis, func: Func<TThis, TArgs, TValue>) => TValue
@@ -85,18 +85,6 @@ export interface IFuncCallState<
 	invalidate(): void
 
 	// endregion
-}
-
-export type TSubscriberLink = ISubscriberLink<any, any>
-export interface ISubscriberLink<
-	TState extends TFuncCallState,
-	TSubscriber extends TFuncCallState,
->
-	extends ILinkItem<TSubscriber>
-{
-	state: TState,
-	prev: ISubscriberLink<TState, any>,
-	next: ISubscriberLink<TState, any>,
 }
 
 export interface IValueState {

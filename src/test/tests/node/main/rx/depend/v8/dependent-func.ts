@@ -5,8 +5,6 @@ import * as _getFuncCallState from '../../../../../../../main/common/rx/depend/_
 import {getFuncCallState} from '../../../../../../../main/common/rx/depend/facade'
 import * as facade from '../../../../../../../main/common/rx/depend/facade'
 import * as helpers from '../../../../../../../main/common/rx/depend/helpers'
-import * as subscribeDependency from '../../../../../../../main/common/rx/depend/subscribeDependency'
-import * as subscriberLinkPool from '../../../../../../../main/common/rx/depend/subscriber-link-pool'
 
 import {assert, AssertionError} from '../../../../../../../main/common/test/Assert'
 import {describe, it, xit} from '../../../../../../../main/common/test/Mocha'
@@ -36,8 +34,6 @@ describe('node > main > rx > depend > dependent-func', function() {
 			},
 			facade,
 			helpers,
-			subscribeDependency,
-			subscriberLinkPool,
 		}
 
 		v8.DeoptimizeNow()

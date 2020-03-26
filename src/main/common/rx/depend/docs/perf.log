@@ -411,3 +411,13 @@
   absoluteDiff: [ 3603, 6229, 3653 ],
   absoluteDiff: [ 238, 6616, -414 ],
   absoluteDiff: [ 3810, 6517, 4278 ],
+
+  absoluteDiff: [ 252, 6555, -418 ],
+  absoluteDiff: [ 226, 6682, -456 ],
+  absoluteDiff: [ 3776, 7100, 3853 ],
+
+  absoluteDiff: [ 268, 6569, -391 ],
+  absoluteDiff: [ 314, 6627, -372 ],
+  absoluteDiff: [ 3864, 7034, 4029 ],
+  absoluteDiff: [ 311, 6563, -337 ],
+  absoluteDiff: [ 3603, 6647, 3971 ],

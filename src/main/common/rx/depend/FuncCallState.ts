@@ -1,11 +1,12 @@
 import {isThenable, IThenable, ThenableIterator, ThenableOrIteratorOrValue} from '../../async/async'
 import {resolveAsync} from '../../async/ThenableSync'
 import {isIterator} from '../../helpers/helpers'
+import {ObjectPool} from '../../lists/ObjectPool'
 import {
 	Func,
 	FuncCallStatus,
 	IFuncCallState,
-	ISubscriberLink,
+	ILinkItem,
 	TCall,
 	TGetThis,
 	TInnerValue,
@@ -13,7 +14,6 @@ import {
 	TOuterResult,
 } from './contracts'
 import {InternalError} from './helpers'
-import {_subscribe, unsubscribeDependencies} from './subscribeDependency'
 
 // region FuncCallStatus
 
@@ -319,6 +319,87 @@ export function getCurrentState() {
 
 // endregion
 
+// region subscriberLinkPool
+
+export type TSubscriberLink = ISubscriberLink<any, any>
+export interface ISubscriberLink<TState extends TFuncCallState,
+	TSubscriber extends TFuncCallState,
+	>
+	extends ILinkItem<TSubscriber> {
+	state: TState,
+	prev: ISubscriberLink<TState, any>,
+	next: ISubscriberLink<TState, any>,
+}
+
+export const subscriberLinkPool = new ObjectPool<TSubscriberLink>(1000000)
+
+// tslint:disable-next-line:no-shadowed-variable
+export function releaseSubscriberLink(obj: TSubscriberLink) {
+	subscriberLinkPool.release(obj)
+}
+
+// tslint:disable-next-line:no-shadowed-variable
+export function getSubscriberLink<TState extends TFuncCallState,
+	TSubscriber extends TFuncCallState,
+	>(
+	state: TState,
+	subscriber: TSubscriber,
+	prev: ISubscriberLink<TState, any>,
+	next: ISubscriberLink<TState, any>,
+): ISubscriberLink<TState, TSubscriber> {
+	const item: ISubscriberLink<TState, TSubscriber> = subscriberLinkPool.get()
+	if (item != null) {
+		item.state = state
+		item.value = subscriber
+		item.prev = prev
+		item.next = next
+		return item
+	}
+	return {
+		state,
+		value: subscriber,
+		prev,
+		next,
+	}
+}
+
+export function subscriberLinkDelete<TState extends TFuncCallState>(
+	item: ISubscriberLink<TState, any>,
+) {
+	const {prev, next, state} = item
+	if (state == null) {
+		return
+	}
+	if (item === state._subscribersCalculating) {
+		state._subscribersCalculating = next
+	}
+	if (prev == null) {
+		if (next == null) {
+			state._subscribersFirst = null
+			state._subscribersLast = null
+		} else {
+			state._subscribersFirst = next
+			next.prev = null
+			item.next = null
+		}
+	} else {
+		if (next == null) {
+			state._subscribersLast = prev
+			prev.next = null
+		} else {
+			prev.next = next
+			next.prev = prev
+			item.next = null
+		}
+		item.prev = null
+	}
+	item.state = null
+	item.value = null
+	releaseSubscriberLink(item)
+}
+
+// endregion
+
 // region helpers
 
 // tslint:disable-next-line:no-empty
@@ -356,6 +437,7 @@ export function invalidateParent<
 // endregion
 
 export type TFuncCallState = FuncCallState<any, any, any, any>
+
 export class FuncCallState<
 	TThisOuter,
 	TArgs extends any[],
@@ -428,7 +510,7 @@ export class FuncCallState<
 	// region private
 
 	private internalError(message: string) {
-		unsubscribeDependencies(this)
+		this.unsubscribeDependencies()
 		const error = new InternalError(message)
 		this.updateCalculatedError(error)
 		throw error
@@ -758,6 +840,20 @@ export class FuncCallState<
 			throw error
 		}
 	}
+	
+	private _subscribe<TSubscriber extends TFuncCallState>(
+		subscriber: TSubscriber,
+	) {
+		const _subscribersLast = this._subscribersLast
+		const subscriberLink = getSubscriberLink(this, subscriber, _subscribersLast, null)
+		if (_subscribersLast == null) {
+			this._subscribersFirst = subscriberLink
+		} else {
+			_subscribersLast.next = subscriberLink
+		}
+		this._subscribersLast = subscriberLink
+		return subscriberLink
+	}
 
 	// endregion
 
@@ -773,7 +869,7 @@ export class FuncCallState<
 		let statusAfter: Mask_Update_Invalidate | Flag_None = 0
 
 		if (isRecalc(status) && (prevStatus & Flag_Calculating) === 0 && this._unsubscribersLength !== 0) {
-			unsubscribeDependencies(this)
+			this.unsubscribeDependencies()
 		}
 
 		if (status === Update_Recalc) {
@@ -831,7 +927,7 @@ export class FuncCallState<
 			}
 		}
 		{
-			const subscriberLink = _subscribe(dependency, this)
+			const subscriberLink = dependency._subscribe(this)
 			const _unsubscribers = this._unsubscribers
 			if (_unsubscribers == null) {
 				this._unsubscribers = [subscriberLink]
@@ -930,28 +1026,26 @@ export class FuncCallState<
 
 		return value
 	}
+	
+	// tslint:disable-next-line:no-shadowed-variable
+	public unsubscribeDependencies(fromIndex?: number) {
+		const _unsubscribers = this._unsubscribers
+		if (_unsubscribers != null) {
+			const len = this._unsubscribersLength
+			const _fromIndex = fromIndex == null ? 0 : fromIndex
+			for (let i = _fromIndex; i < len; i++) {
+				const item = _unsubscribers[i]
+				_unsubscribers[i] = null
+				subscriberLinkDelete(item)
+			}
+			this._unsubscribersLength = _fromIndex
+			if (_fromIndex < 256 && len > 256) {
+				_unsubscribers.length = 256
+			}
+		}
+	}
 
 	// endregion
 
 	// endregion
-}
-
-// tslint:disable-next-line:no-shadowed-variable
-export function createFuncCallState<TThisOuter,
-	TArgs extends any[],
-	TInnerResult,
-	TThisInner>(
-	func: Func<TThisInner, TArgs, TInnerResult>,
-	thisOuter: TThisOuter,
-	callWithArgs: TCall<TArgs>,
-	getThisInner: TGetThis<TThisOuter, TArgs, TInnerResult, TThisInner>,
-	valueIds: number[],
-): IFuncCallState<TThisOuter, TArgs, TInnerResult, TThisInner> {
-	return new FuncCallState(
-		func,
-		thisOuter,
-		callWithArgs,
-		getThisInner,
-		valueIds,
-	)
 }
