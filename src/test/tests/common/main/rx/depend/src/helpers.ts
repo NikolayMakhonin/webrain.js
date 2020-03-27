@@ -10,9 +10,9 @@ import {depend, getCallState} from '../../../../../../../main/common/rx/depend/f
 import {
 	callStateHashTable,
 	reduceCallStates,
-	valueIdsMap,
-	valueStatesMap,
-} from '../../../../../../../main/common/rx/depend/getOrCreateCallState'
+	valueToIdMap,
+	valueIdToStateMap,
+} from '../../../../../../../main/common/rx/depend/makeGetOrCreateCallState'
 import {InternalError} from '../../../../../../../main/common/rx/depend/helpers'
 import {assert} from '../../../../../../../main/common/test/Assert'
 import {delay} from '../../../../../../../main/common/time/helpers'
@@ -24,20 +24,20 @@ import {delay} from '../../../../../../../main/common/time/helpers'
 // tslint:disable-next-line:no-shadowed-variable
 export function __makeDependentFunc<TThisOuter,
 	TArgs extends any[],
-	TInnerResult,
-	>(func: Func<TThisOuter, TArgs, Iterator<TInnerResult>>): Func<TThisOuter, TArgs, ThenableOrValue<TInnerResult>>
+	TResultInner,
+	>(func: Func<TThisOuter, TArgs, Iterator<TResultInner>>): Func<TThisOuter, TArgs, ThenableOrValue<TResultInner>>
 // tslint:disable-next-line:no-shadowed-variable
 export function __makeDependentFunc<TThisOuter,
 	TArgs extends any[],
-	TInnerResult,
-	>(func: Func<TThisOuter, TArgs, TInnerResult>): Func<TThisOuter, TArgs, TInnerResult>
+	TResultInner,
+	>(func: Func<TThisOuter, TArgs, TResultInner>): Func<TThisOuter, TArgs, TResultInner>
 // tslint:disable-next-line:no-shadowed-variable
 export function __makeDependentFunc<TThisOuter,
 	TArgs extends any[],
-	TInnerResult,
-	>(func: Func<TThisOuter, TArgs, TInnerResult | Iterator<TInnerResult>>) {
+	TResultInner,
+	>(func: Func<TThisOuter, TArgs, TResultInner | Iterator<TResultInner>>) {
 	if (typeof func === 'function') {
-		return depend<TThisOuter, TArgs, TInnerResult>(func as any)
+		return depend<TThisOuter, TArgs, TResultInner>(func as any)
 	}
 	return null
 }
@@ -101,9 +101,9 @@ export function createPerceptronNaked(layerSize, layersCount, check = true) {
 export function __invalidate<
 	TThisOuter,
 	TArgs extends any[],
-	TInnerResult,
+	TResultInner,
 	TThisInner
->(state: ICallState<TThisOuter, TArgs, TInnerResult, TThisInner>) {
+>(state: ICallState<TThisOuter, TArgs, TResultInner, TThisInner>) {
 	return state.invalidate()
 }
 
@@ -1809,6 +1809,6 @@ export async function baseTest() {
 export function clearCallStates() {
 	reduceCallStates(2000000000)
 	assert.strictEqual(callStateHashTable && callStateHashTable.size, 0)
-	assert.strictEqual(valueStatesMap.size, 0)
-	assert.strictEqual(valueIdsMap.size, 0)
+	assert.strictEqual(valueIdToStateMap.size, 0)
+	assert.strictEqual(valueToIdMap.size, 0)
 }

@@ -1,38 +1,43 @@
 import {ObjectPool} from '../../lists/ObjectPool'
 import {PairingHeap, PairingNode} from '../../lists/PairingHeap'
-import {Func, ICallState, IValueState, TCall, TGetThis} from './contracts'
-import {CallState, TCallState} from './CallState'
+import {CallState, TCallState, TFuncCall} from './CallState'
+import {Func, ICallState, TCall} from './contracts'
 import {createCallWithArgs, InternalError} from './helpers'
 
 // region get/create/delete ValueState
 
+export interface IValueState {
+	usageCount: number
+	value: any
+}
+
+export const valueIdToStateMap = new Map<number, IValueState>()
+export const valueToIdMap = new Map<any, number>()
 let nextValueId: number = 1
-export const valueIdsMap = new Map<any, number>()
-export const valueStatesMap = new Map<number, IValueState>()
 
 export function getValueState(valueId: number): IValueState {
-	return valueStatesMap.get(valueId)
+	return valueIdToStateMap.get(valueId)
 }
 
 export function getOrCreateValueId(value: any): number {
-	let id = valueIdsMap.get(value)
+	let id = valueToIdMap.get(value)
 	if (id == null) {
 		id = nextValueId++
 		const state: IValueState = {
 			usageCount: 0,
 			value,
 		}
-		valueIdsMap.set(value, id)
-		valueStatesMap.set(id, state)
+		valueToIdMap.set(value, id)
+		valueIdToStateMap.set(id, state)
 	}
 	return id
 }
 
 export function deleteValueState(valueId: number, value: any): void {
-	if (!valueStatesMap.delete(valueId)) {
+	if (!valueIdToStateMap.delete(valueId)) {
 		throw new InternalError('value not found')
 	}
-	if (!valueIdsMap.delete(value)) {
+	if (!valueToIdMap.delete(value)) {
 		throw new InternalError('valueState not found')
 	}
 }
@@ -53,20 +58,17 @@ let nextCallStatesCount = maxCallStatesCount
 export function createCallState<
 	TThisOuter,
 	TArgs extends any[],
-	TInnerResult,
-	TThisInner,
+	TResultInner,
 >(
-	func: Func<TThisInner, TArgs, TInnerResult>,
 	thisOuter: TThisOuter,
 	callWithArgs: TCall<TArgs>,
-	getThisInner: TGetThis<TThisOuter, TArgs, TInnerResult, TThisInner>,
+	funcCall: TFuncCall<TThisOuter, TArgs, TResultInner>,
 	valueIds: number[],
-): ICallState<TThisOuter, TArgs, TInnerResult, TThisInner> {
+): ICallState<TThisOuter, TArgs, TResultInner> {
 	const callState = new CallState(
-		func,
 		thisOuter,
 		callWithArgs,
-		getThisInner,
+		funcCall,
 		valueIds,
 	)
 
@@ -83,15 +85,13 @@ let usageNextId = 1
 export const valueIdsBuffer: number[] = []
 
 // tslint:disable-next-line:no-shadowed-variable
-export function getOrCreateCallState<
+export function makeGetOrCreateCallState<
 	TThisOuter,
 	TArgs extends any[],
-	TInnerResult,
-	TThisInner
+	TResultInner,
 >(
-	func: Func<TThisInner, TArgs, TInnerResult>,
-	getThisInner: TGetThis<TThisOuter, TArgs, TInnerResult, TThisInner>,
-): Func<TThisOuter, TArgs, CallState<TThisOuter, TArgs, TInnerResult, TThisInner>> {
+	funcCall: TFuncCall<TThisOuter, TArgs, TResultInner>,
+): Func<TThisOuter, TArgs, CallState<TThisOuter, TArgs, TResultInner>> {
 	const funcId = nextValueId++
 	const funcHash = (17 * 31 + funcId) | 0
 
@@ -150,11 +150,10 @@ export function getOrCreateCallState<
 				}
 			}
 
-			callState = createCallState<TThisOuter, TArgs, TInnerResult, TThisInner>(
-				func,
+			callState = createCallState<TThisOuter, TArgs, TResultInner>(
 				this,
 				createCallWithArgs.apply(null, arguments),
-				getThisInner,
+				funcCall,
 				valueIdsClone,
 			)
 
@@ -172,7 +171,7 @@ export function getOrCreateCallState<
 // region reduceCallStates to free memory
 
 export function deleteCallState(callState: TCallState) {
-	callState.unsubscribeDependencies()
+	callState._unsubscribeDependencies()
 
 	const valueIds = callState.valueIds
 

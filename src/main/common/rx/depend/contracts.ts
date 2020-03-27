@@ -1,5 +1,5 @@
 import {IThenable, ThenableOrValue} from '../../async/async'
-import {TCallState} from './CallState'
+import {TFuncCall} from './CallState'
 
 export type Func<TThis, TArgs extends any[], TValue = void> = (this: TThis, ...args: TArgs) => TValue
 export type TCall<TArgs extends any[]> = <TThis, TValue>(_this: TThis, func: Func<TThis, TArgs, TValue>) => TValue
@@ -36,33 +36,32 @@ export enum CallStatus {
 	Flag_InternalError = 8192,
 }
 export type TIteratorOrValue<T> = Iterator<T> | T
-export type TOuterResult<TInnerResult> = TInnerResult extends Iterator<infer V> ? ThenableOrValue<V> : TInnerResult
-export type TInnerValue<TInnerResult> = TInnerResult extends Iterator<infer V> ? V : TInnerResult
+export type TResultOuter<TResultInner> = TResultInner extends Iterator<infer V> ? ThenableOrValue<V> : TResultInner
+export type TInnerValue<TResultInner> = TResultInner extends Iterator<infer V> ? V : TResultInner
 
 export type TGetThis<
 	TThisOuter,
 	TArgs extends any[],
-	TInnerResult,
+	TResultInner,
 	TThisInner
-> = (this: ICallState<TThisOuter, TArgs, TInnerResult, TThisInner>) => TThisInner
+> = (this: ICallState<TThisOuter, TArgs, TResultInner>) => TThisInner
 
 export interface ICallState<
 	TThisOuter,
 	TArgs extends any[],
-	TInnerResult,
-	TThisInner
+	TResultInner,
 > {
 	readonly thisOuter: TThisOuter
-	readonly getThisInner: TGetThis<TThisOuter, TArgs, TInnerResult, TThisInner>
 	readonly callWithArgs: TCall<TArgs>
+	readonly funcCall: TFuncCall<TThisOuter, TArgs, TResultInner>
 
 	readonly valueIds: number[]
 	deleteOrder: number
 
 	status: CallStatus
 
-	valueAsync: IThenable<TInnerValue<TInnerResult>>
-	value: TInnerValue<TInnerResult>
+	valueAsync: IThenable<TInnerValue<TResultInner>>
+	value: TInnerValue<TResultInner>
 	error: any
 
 	// region calculable
@@ -74,20 +73,11 @@ export interface ICallState<
 
 	// region methods
 
-	subscribeDependency<TDependency extends TCallState>(
-		dependency: TDependency,
-	): void
-
 	getValue(
 		dontThrowOnError?: boolean,
-	): TOuterResult<TInnerResult>
+	): TResultOuter<TResultInner>
 
 	invalidate(): void
 
 	// endregion
-}
-
-export interface IValueState {
-	usageCount: number
-	value: any
 }

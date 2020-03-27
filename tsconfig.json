@@ -6,7 +6,8 @@
 		"baseUrl": ".",
 		"target": "ESNext",
 		"lib": ["dom", "esnext"],
-		"skipLibCheck": true
+		"skipLibCheck": true,
+		"stripInternal": true
 	},
 	"include": [
 		"src/main/**/*.ts"
