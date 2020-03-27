@@ -17,13 +17,13 @@ export function getCallState<
 	TArgs extends any[],
 	TResultInner,
 >(
-	funcCall: TFuncCall<TThisOuter, TArgs, TResultInner>,
+	func: Func<TThisOuter, TArgs, TResultInner>,
 ): Func<
 	TThisOuter,
 	TArgs,
 	ICallState<TThisOuter, TArgs, TResultInner>
 > {
-	return rootStateMap.get(funcCall) || EMPTY_FUNC
+	return rootStateMap.get(func) || EMPTY_FUNC
 }
 
 // endregion
@@ -55,20 +55,19 @@ export function makeDependentFunc<
 	TThisOuter,
 	TArgs extends any[],
 	TResultInner,
-	TResultWrapper = TResultInner,
 >(
-	func: Func<any, TArgs, TResultInner>,
-	funcCall: TFuncCall<TThisOuter, TArgs, TResultWrapper>,
+	func: Func<unknown, TArgs, unknown>,
+	funcCall: TFuncCall<TThisOuter, TArgs, TResultInner>,
 ): Func<
 	TThisOuter,
 	TArgs,
-	TResultWrapper extends ThenableOrIterator<infer V> ? ThenableOrValue<V> : TResultWrapper
+	TResultInner extends ThenableOrIterator<infer V> ? ThenableOrValue<V> : TResultInner
 > {
 	if (rootStateMap.get(func)) {
 		throw new InternalError('Multiple call makeDependentFunc() for func: ' + func)
 	}
 
-	const getOrCreateCallState = makeGetOrCreateCallState(funcCall)
+	const getOrCreateCallState = makeGetOrCreateCallState(func, funcCall)
 
 	rootStateMap.set(func, getOrCreateCallState)
 
@@ -83,6 +82,14 @@ export function makeDependentFunc<
 
 // region depend / dependX
 
+function _funcCall<
+	TThisOuter,
+	TArgs extends any[],
+	TResultInner,
+>(this: CallState<TThisOuter, TArgs, TResultInner>): TResultInner {
+	return this.callWithArgs(this.thisOuter, this.func) as any
+}
+
 /** Inner this same as outer this */
 export function depend<
 	TThisOuter,
@@ -91,10 +98,20 @@ export function depend<
 	TResultWrapper = TResultInner,
 >(
 	func: Func<TThisOuter, TArgs, TResultInner>,
-) {
-	return makeDependentFunc(func, function funcCall() {
-		return this.callWithArgs(this.thisOuter, func)
-	})
+): Func<
+	TThisOuter,
+	TArgs,
+	TResultInner extends ThenableOrIterator<infer V> ? ThenableOrValue<V> : TResultInner
+> {
+	return makeDependentFunc(func, _funcCall) as any
+}
+
+function funcCallX<
+	TThisOuter,
+	TArgs extends any[],
+	TResultInner,
+>(this: CallState<TThisOuter, TArgs, TResultInner>): TResultInner {
+	return this.callWithArgs(this, this.func) as any
 }
 
 /** Inner this as CallState */
@@ -108,10 +125,12 @@ export function dependX<
 		TArgs,
 		TResultInner
 	>,
-) {
-	return makeDependentFunc(func, function funcCall() {
-		return this.callWithArgs(this, func)
-	})
+): Func<
+	TThisOuter,
+	TArgs,
+	TResultInner extends ThenableOrIterator<infer V> ? ThenableOrValue<V> : TResultInner
+> {
+	return makeDependentFunc(func, funcCallX) as any
 }
 
 // endregion

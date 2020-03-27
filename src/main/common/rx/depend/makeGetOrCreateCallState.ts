@@ -60,12 +60,14 @@ export function createCallState<
 	TArgs extends any[],
 	TResultInner,
 >(
+	func: Func<unknown, TArgs, unknown>,
 	thisOuter: TThisOuter,
 	callWithArgs: TCall<TArgs>,
 	funcCall: TFuncCall<TThisOuter, TArgs, TResultInner>,
 	valueIds: number[],
 ): ICallState<TThisOuter, TArgs, TResultInner> {
 	const callState = new CallState(
+		func,
 		thisOuter,
 		callWithArgs,
 		funcCall,
@@ -90,6 +92,7 @@ export function makeGetOrCreateCallState<
 	TArgs extends any[],
 	TResultInner,
 >(
+	func: Func<unknown, TArgs, unknown>,
 	funcCall: TFuncCall<TThisOuter, TArgs, TResultInner>,
 ): Func<TThisOuter, TArgs, CallState<TThisOuter, TArgs, TResultInner>> {
 	const funcId = nextValueId++
@@ -151,6 +154,7 @@ export function makeGetOrCreateCallState<
 			}
 
 			callState = createCallState<TThisOuter, TArgs, TResultInner>(
+				func,
 				this,
 				createCallWithArgs.apply(null, arguments),
 				funcCall,

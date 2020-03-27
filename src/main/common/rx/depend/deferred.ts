@@ -1,38 +1,28 @@
 import {ThenableOrIterator, ThenableOrValue, TReject, TResolve} from '../../async/async'
 import {ThenableSync} from '../../async/ThenableSync'
-import {TCallStateX} from './CallState'
-import {Func, TGetThis} from './contracts'
-import {dependX, makeDependentFunc} from './depend'
+import {CallState} from './CallState'
+import {Func} from './contracts'
+import { makeDependentFunc} from './depend'
 
-type TFuncWrapperAsync<TResultInner> = (
-	resolve: TResolve<TResultInner>,
-	reject: TReject,
-) => void
+// region deferred / deferredX
 
-function deferredWrapper<
+function funcCallDeferred<
 	TThisOuter,
 	TArgs extends any[],
 	TResultInner,
-	TResultWrapper = TResultInner,
->(func: Func<TThisOuter, TArgs, TResultInner>)
-: Func<TThisOuter, TArgs, TResultWrapper>
-{
-	return function _deferredWrapper() {
-		return {
-			next: () => new ThenableSync((resolve, reject) => {
-				setTimeout(() => {
-					try {
-						resolve(func.apply(this, arguments))
-					} catch (err) {
-						reject(err)
-					}
-				})
-			}),
-		} as any
-	}
+>(this: CallState<TThisOuter, TArgs, TResultInner>) {
+	return {
+		next: () => new ThenableSync((resolve, reject) => {
+			setTimeout(() => {
+				try {
+					resolve(this.callWithArgs(this.thisOuter, this.func))
+				} catch (err) {
+					reject(err)
+				}
+			})
+		}),
+	} as any
 }
-
-// region deferred / deferredX
 
 /** Inner this same as outer this */
 export function deferred<
@@ -42,10 +32,30 @@ export function deferred<
 	TResultWrapper = TResultInner,
 >(
 	func: Func<TThisOuter, TArgs, TResultInner>,
-	funcWrapper?: (func: Func<TThisOuter, TArgs, TResultInner>)
-		=> Func<TThisOuter, TArgs, TResultWrapper>,
-) {
-	return makeDependentFunc(func, false, funcWrapper)
+): Func<
+	TThisOuter,
+	TArgs,
+	TResultInner extends ThenableOrIterator<infer V> ? ThenableOrValue<V> : ThenableOrValue<TResultInner>
+> {
+	return makeDependentFunc(func, funcCallDeferred) as any
+}
+
+function funcCallDeferredX<
+	TThisOuter,
+	TArgs extends any[],
+	TResultInner,
+>(this: CallState<TThisOuter, TArgs, TResultInner>) {
+	return {
+		next: () => new ThenableSync((resolve, reject) => {
+			setTimeout(() => {
+				try {
+					resolve(this.callWithArgs(this, this.func))
+				} catch (err) {
+					reject(err)
+				}
+			})
+		}),
+	} as any
 }
 
 /** Inner this as CallState */
@@ -53,94 +63,18 @@ export function deferredX<
 	TThisOuter,
 	TArgs extends any[],
 	TResultInner,
-	TResultWrapper = TResultInner,
 >(
-	func: Func<TCallStateX<TThisOuter, TArgs, TResultInner>, TArgs, TResultInner>,
-	funcWrapper?: (func: Func<TCallStateX<TThisOuter, TArgs, TResultInner>, TArgs, TResultInner>)
-		=> Func<TCallStateX<TThisOuter, TArgs, TResultInner>, TArgs, TResultWrapper>,
-) {
-	return makeDependentFunc(func, true, funcWrapper)
+	func: Func<
+		CallState<TThisOuter, TArgs, TResultInner>,
+		TArgs,
+		TResultInner
+	>,
+): Func<
+	TThisOuter,
+	TArgs,
+	TResultInner extends ThenableOrIterator<infer V> ? ThenableOrValue<V> : ThenableOrValue<TResultInner>
+> {
+	return makeDependentFunc(func, funcCallDeferredX) as any
 }
 
 // endregion
-
-export function makeDeferredFunc<
-	TThisOuter,
-	TArgs extends any[],
-	TResultInner
->(
-	calc: (
-		resolve: TResolve<TResultInner>,
-		reject: TReject,
-	) => void,
-)
-: TResultInner extends Iterator<infer V> ? ThenableOrValue<V> : ThenableOrValue<TResultInner>
-{
-	return dependX<
-		TThisOuter,
-		TArgs,
-		TResultInner extends Iterator<infer V> ? TResultInner : Iterator<TResultInner>
-	>(function() {
-		return {
-			next: () => new ThenableSync(calc),
-		} as any
-	}) as any
-}
-
-export function makeDeferredFunc<
-	TThisOuter,
-	TArgs extends any[],
-	TResultInner
->(
-	func: Func<TCallStateX<TThisOuter, TArgs, TResultInner>, TArgs, TResultInner>,
-	calc: (
-		func: Func<TCallStateX<TThisOuter, TArgs, TResultInner>, TArgs, TResultInner>,
-		resolve: TResolve<TResultInner>,
-		reject: TReject,
-	) => void,
-)
-: TResultInner extends Iterator<infer V> ? ThenableOrValue<V> : ThenableOrValue<TResultInner>
-{
-	return dependX<
-		TThisOuter,
-		TArgs,
-		TResultInner extends Iterator<infer V> ? TResultInner : Iterator<TResultInner>
-	>(function() {
-		return {
-			next: () => new ThenableSync((resolve, reject) => {
-				setTimeout(() => {
-					try {
-						resolve(func.apply(this, arguments))
-					} catch (err) {
-						reject(err)
-					}
-				})
-			}),
-		} as any
-	}) as any
-}
-
-export function makeDeferredFunc<
-	TThisOuter,
-	TArgs extends any[],
-	TResultInner
->(
-	func: Func<TCallStateX<TThisOuter, TArgs, TResultInner>, TArgs, TResultInner>,
-	calc: (
-		func: Func<TCallStateX<TThisOuter, TArgs, TResultInner>, TArgs, TResultInner>,
-		resolve: TResolve<TResultInner>,
-		reject: TReject,
-	) => void,
-)
-: TResultInner extends Iterator<infer V> ? ThenableOrValue<V> : ThenableOrValue<TResultInner> {
-
-}
-
-// const x = {
-// 	y: 0,
-// 	z: makeDeferredFunc(function(this: { x: this}) {
-// 		const r = this
-// 	}),
-// }
-//
-// x.z()

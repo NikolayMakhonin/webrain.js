@@ -455,11 +455,13 @@ export class CallState<
 	implements ICallState<TThisOuter, TArgs, TResultInner>
 {
 	constructor(
+		func: Func<unknown, TArgs, unknown>,
 		thisOuter: TThisOuter,
 		callWithArgs: TCall<TArgs>,
 		funcCall: TFuncCall<TThisOuter, TArgs, TResultInner>,
 		valueIds: number[],
 	) {
+		this.func = func
 		this.thisOuter = thisOuter
 		this.callWithArgs = callWithArgs
 		this.funcCall = funcCall
@@ -470,6 +472,7 @@ export class CallState<
 
 	// region public
 
+	public readonly func: Func<unknown, TArgs, unknown>
 	public readonly thisOuter: TThisOuter
 	public readonly callWithArgs: TCall<TArgs>
 	public readonly funcCall: TFuncCall<TThisOuter, TArgs, TResultInner>

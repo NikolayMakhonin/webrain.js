@@ -51,6 +51,7 @@ export interface ICallState<
 	TArgs extends any[],
 	TResultInner,
 > {
+	readonly func: Func<unknown, TArgs, unknown>
 	readonly thisOuter: TThisOuter
 	readonly callWithArgs: TCall<TArgs>
 	readonly funcCall: TFuncCall<TThisOuter, TArgs, TResultInner>
