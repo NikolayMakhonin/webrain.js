@@ -16,7 +16,6 @@ import {
 	ICallState,
 	ILinkItem,
 	TCall,
-	TGetThis,
 	TInnerValue,
 	TIteratorOrValue,
 	TResultOuter,
@@ -455,12 +454,6 @@ export type TFuncCall<
 	state: CallState<TThisOuter, TArgs, TResultInner>,
 ) => TResultInner
 
-export interface IDeferredCallState<TValue> {
-	calc: DeferredCalc,
-	resolve: TResolve<TValue>,
-	reject: TReject,
-}
-
 export class CallState<
 	TThisOuter,
 	TArgs extends any[],
@@ -515,7 +508,7 @@ export class CallState<
 
 	public deferredOptions: IDeferredCalcOptions = null
 	/** @internal */
-	public _deferred: IDeferredCallState<TResultInner> = null
+	public _deferredCalc: DeferredCalc = null
 
 	// for detect recursive async loop
 	private _parentCallState: TCallState = null
@@ -722,14 +715,21 @@ export class CallState<
 
 		try {
 			let iteration = iterator.next()
-			while (!iteration.done) {
-				let value: TIteratorOrValue<TInnerValue<TResultInner>> = iteration.value
+			let value: TIteratorOrValue<TInnerValue<TResultInner>>
+
+			while (true) {
+				value = iteration.value
 
 				if (isIterator(value)) {
 					value = this._makeDependentIterator(value as Iterator<TInnerValue<TResultInner>>, true)
 				}
 
 				value = yield value as any
+
+				if (iteration.done) {
+					break
+				}
+
 				currentState = this
 				iteration = iterator.next(value as any)
 			}
@@ -741,9 +741,9 @@ export class CallState<
 				}
 			}
 			if (nested == null) {
-				this._updateCalculatedValue(iteration.value)
+				this._updateCalculatedValue(value as any)
 			}
-			return iteration.value
+			return value
 		} catch (error) {
 			if ((this.status & Flag_Async) !== 0) {
 				currentState = this._parentCallState
@@ -888,7 +888,8 @@ export class CallState<
 
 	// region 4: change value & status
 
-	private _internalError(message: string) {
+	/** @internal */
+	public _internalError(message: string) {
 		this._unsubscribeDependencies()
 		const error = new InternalError(message)
 		this._updateCalculatedError(error)

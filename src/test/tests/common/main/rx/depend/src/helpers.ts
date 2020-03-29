@@ -5,15 +5,15 @@ import {
 	statusToString,
 	TCallState,
 } from '../../../../../../../main/common/rx/depend/CallState'
-import {CallStatus, Func, ICallState} from '../../../../../../../main/common/rx/depend/contracts'
+import {CallStatus, Func, ICallState, IDeferredOptions} from '../../../../../../../main/common/rx/depend/contracts'
 import {depend, getCallState} from '../../../../../../../main/common/rx/depend/facade'
+import {InternalError} from '../../../../../../../main/common/rx/depend/helpers'
 import {
 	callStateHashTable,
 	reduceCallStates,
-	valueToIdMap,
 	valueIdToStateMap,
+	valueToIdMap,
 } from '../../../../../../../main/common/rx/depend/makeGetOrCreateCallState'
-import {InternalError} from '../../../../../../../main/common/rx/depend/helpers'
 import {assert} from '../../../../../../../main/common/test/Assert'
 import {delay} from '../../../../../../../main/common/time/helpers'
 
@@ -102,8 +102,7 @@ export function __invalidate<
 	TThisOuter,
 	TArgs extends any[],
 	TResultInner,
-	TThisInner
->(state: ICallState<TThisOuter, TArgs, TResultInner, TThisInner>) {
+>(state: ICallState<TThisOuter, TArgs, TResultInner>) {
 	return state.invalidate()
 }
 
@@ -259,7 +258,16 @@ function callIdToResult(callId: string) {
 	return result
 }
 
-function funcSync(id: string) {
+function getDeferredOptions(async: boolean): IDeferredOptions {
+	return async
+		? {
+			delayBeforeCalc: 1,
+			minTimeBetweenCalc: 10,
+		}
+		: {}
+}
+
+function funcSync(id: string, deferred: boolean) {
 	const result: IDependencyFunc = depend(function() {
 		const callId = getCallId(id, this, ...arguments)
 		_callHistory.push(callId)
@@ -275,14 +283,14 @@ function funcSync(id: string) {
 			}
 		}
 		return callIdToResult(callId)
-	}) as any
+	}, !deferred ? null : getDeferredOptions(false)) as any
 
 	result.id = id
 
 	return result
 }
 
-function funcSyncIterator(id: string) {
+function funcSyncIterator(id: string, deferred: boolean) {
 	const nested = function*(dependencies: IDependencyCall[], currentState) {
 		assert.strictEqual(getCurrentState(), currentState)
 		yield 1
@@ -316,14 +324,14 @@ function funcSyncIterator(id: string) {
 		const res = run(callId, this as any, currentState)
 		assert.strictEqual(getCurrentState(), currentState)
 		return res
-	}) as any
+	}, !deferred ? null : getDeferredOptions(false)) as any
 
 	result.id = id
 
 	return result
 }
 
-function funcAsync(id: string) {
+function funcAsync(id: string, deferred: boolean) {
 	const nested = function*() {
 		yield 1
 		return 1
@@ -367,7 +375,7 @@ function funcAsync(id: string) {
 		const res = run(callId, this as any, currentState)
 		assert.strictEqual(getCurrentState(), currentState)
 		return res
-	}) as any
+	}, !deferred ? null : getDeferredOptions(true)) as any
 
 	result.id = id
 
@@ -418,7 +426,13 @@ function checkAsync<TValue>(value: ThenableOrValue<TValue>): Thenable<TValue> {
 	return value as Thenable<TValue>
 }
 
+let callHistoryCheckDisabled = false
 function checkCallHistory(...callHistory: IDependencyCall[]) {
+	if (callHistoryCheckDisabled) {
+		_callHistory.length = 0
+		return
+	}
+
 	assert.deepStrictEqual(_callHistory, callHistory.map(o => o.id))
 	_callHistory.length = 0
 }
@@ -666,121 +680,128 @@ function checkUnsubscribers(funcCall: IDependencyCall, ...unsubscribersFuncCalls
 	assert.deepStrictEqual(ids, checkIds, funcCall.id)
 }
 
-export async function baseTestOld() {
-	// region init
+// export async function baseTestOld() {
+// 	// region init
+//
+// 	const S = funcSync('S')
+// 	const I = funcSyncIterator('I')
+// 	const A = funcAsync('A')
+//
+// 	const S0 = funcCall(S) // S(0)
+// 	const I0 = funcCall(I, null) // I(0)
+// 	const A0 = funcCall(A, new ThisObj('_')) // A(_)
+//
+// 	const S1 = funcCall(S, [S0, I0], 1) // S1(S(0),I(0))
+// 	const I1 = funcCall(I, [I0, A0], 1) // I1(I(0),A(_))
+//
+// 	const S2 = funcCall(S, [S1], 2, void 0) // S20(S1(S(0),I(0)))
+// 	const I2 = funcCall(I, [S1, I1], 2, null) // I20(S1(S(0),I(0)),I1(I(0),A(_)))
+// 	const A2 = funcCall(A, [I1], 2, 2) // A22(I1(I(0),A(_)))
+//
+// 	// endregion
+//
+// 	// region check init
+//
+// 	assert.strictEqual(S0.id, 'S(0)')
+// 	assert.strictEqual(I0.id, 'I(0)')
+// 	assert.strictEqual(A0.id, 'A(_)')
+//
+// 	assert.strictEqual(S1.id, 'S1(S(0),I(0))')
+// 	assert.strictEqual(I1.id, 'I1(I(0),A(_))')
+//
+// 	assert.strictEqual(S2.id, 'S20(S1(S(0),I(0)))')
+// 	assert.strictEqual(I2.id, 'I20(S1(S(0),I(0)),I1(I(0),A(_)))')
+// 	assert.strictEqual(A2.id, 'A22(I1(I(0),A(_)))')
+//
+// 	// endregion
+//
+// 	// region base tests
+//
+// 	checkFuncSync(ResultType.Value, S0, S0)
+// 	checkFuncSync(ResultType.Value, I0, I0)
+// 	await checkFuncAsync(ResultType.Value, A0, A0)
+//
+// 	checkFuncSync(ResultType.Value, S1, S1)
+// 	checkFuncSync(ResultType.Value, I1, I1)
+//
+// 	checkFuncSync(ResultType.Value, S2, S2)
+// 	checkFuncSync(ResultType.Value, I2, I2)
+// 	await checkFuncAsync(ResultType.Value, A2, A2)
+//
+// 	// endregion
+//
+// 	// region invalidate
+//
+// 	const allFuncs = [S0, I0, A0, S1, I1, S2, I2, A2]
+// 	checkFuncNotChanged(allFuncs)
+//
+// 	// level 2
+//
+// 	_invalidate(S2)
+// 	checkFuncSync(ResultType.Value, S2, S2)
+// 	checkFuncNotChanged(allFuncs)
+//
+// 	_invalidate(I2)
+// 	checkFuncSync(ResultType.Value, I2, I2)
+// 	checkFuncNotChanged(allFuncs)
+//
+// 	_invalidate(A2)
+// 	await checkFuncAsync(ResultType.Value, A2, A2)
+// 	checkFuncNotChanged(allFuncs)
+//
+// 	// level 1
+//
+// 	_invalidate(S1)
+// 	checkFuncSync(ResultType.Value, S2, S2, S1)
+// 	checkFuncSync(ResultType.Value, I2, I2)
+// 	checkFuncNotChanged(allFuncs)
+//
+// 	_invalidate(I1)
+// 	checkFuncSync(ResultType.Value, I2, I2, I1)
+// 	await checkFuncAsync(ResultType.Value, A2, A2)
+// 	checkFuncNotChanged(allFuncs)
+//
+// 	// level 0
+//
+// 	_invalidate(S0)
+// 	// console.log(allFuncs.filter(isInvalidated).map(o => o.id))
+// 	checkFuncSync(ResultType.Value, S2, S2, S1, S0)
+// 	checkFuncSync(ResultType.Value, I2, I2)
+// 	checkFuncNotChanged(allFuncs)
+//
+// 	_invalidate(I0)
+// 	checkFuncSync(ResultType.Value, S2, S2, S1, I0)
+// 	checkFuncSync(ResultType.Value, I2, I2, I1)
+// 	await checkFuncAsync(ResultType.Value, A2, A2)
+// 	checkFuncNotChanged(allFuncs)
+//
+// 	_invalidate(A0)
+// 	await checkFuncAsync(ResultType.Value, I2, I2, I1, A0)
+// 	await checkFuncAsync(ResultType.Value, A2, A2)
+// 	checkFuncNotChanged(allFuncs)
+//
+// 	// endregion
+//
+// 	return {
+// 		states: [S0, I0, A0, S1, I1, S2, I2, A2].map(o => {
+// 			return o.state
+// 		}),
+// 	}
+// }
 
-	const S = funcSync('S')
-	const I = funcSyncIterator('I')
-	const A = funcAsync('A')
-
-	const S0 = funcCall(S) // S(0)
-	const I0 = funcCall(I, null) // I(0)
-	const A0 = funcCall(A, new ThisObj('_')) // A(_)
-
-	const S1 = funcCall(S, [S0, I0], 1) // S1(S(0),I(0))
-	const I1 = funcCall(I, [I0, A0], 1) // I1(I(0),A(_))
-
-	const S2 = funcCall(S, [S1], 2, void 0) // S20(S1(S(0),I(0)))
-	const I2 = funcCall(I, [S1, I1], 2, null) // I20(S1(S(0),I(0)),I1(I(0),A(_)))
-	const A2 = funcCall(A, [I1], 2, 2) // A22(I1(I(0),A(_)))
-
-	// endregion
-
-	// region check init
-
-	assert.strictEqual(S0.id, 'S(0)')
-	assert.strictEqual(I0.id, 'I(0)')
-	assert.strictEqual(A0.id, 'A(_)')
-
-	assert.strictEqual(S1.id, 'S1(S(0),I(0))')
-	assert.strictEqual(I1.id, 'I1(I(0),A(_))')
-
-	assert.strictEqual(S2.id, 'S20(S1(S(0),I(0)))')
-	assert.strictEqual(I2.id, 'I20(S1(S(0),I(0)),I1(I(0),A(_)))')
-	assert.strictEqual(A2.id, 'A22(I1(I(0),A(_)))')
-
-	// endregion
-
-	// region base tests
-
-	checkFuncSync(ResultType.Value, S0, S0)
-	checkFuncSync(ResultType.Value, I0, I0)
-	await checkFuncAsync(ResultType.Value, A0, A0)
-
-	checkFuncSync(ResultType.Value, S1, S1)
-	checkFuncSync(ResultType.Value, I1, I1)
-
-	checkFuncSync(ResultType.Value, S2, S2)
-	checkFuncSync(ResultType.Value, I2, I2)
-	await checkFuncAsync(ResultType.Value, A2, A2)
-
-	// endregion
-
-	// region invalidate
-
-	const allFuncs = [S0, I0, A0, S1, I1, S2, I2, A2]
-	checkFuncNotChanged(allFuncs)
-
-	// level 2
-
-	_invalidate(S2)
-	checkFuncSync(ResultType.Value, S2, S2)
-	checkFuncNotChanged(allFuncs)
-
-	_invalidate(I2)
-	checkFuncSync(ResultType.Value, I2, I2)
-	checkFuncNotChanged(allFuncs)
-
-	_invalidate(A2)
-	await checkFuncAsync(ResultType.Value, A2, A2)
-	checkFuncNotChanged(allFuncs)
-
-	// level 1
-
-	_invalidate(S1)
-	checkFuncSync(ResultType.Value, S2, S2, S1)
-	checkFuncSync(ResultType.Value, I2, I2)
-	checkFuncNotChanged(allFuncs)
-
-	_invalidate(I1)
-	checkFuncSync(ResultType.Value, I2, I2, I1)
-	await checkFuncAsync(ResultType.Value, A2, A2)
-	checkFuncNotChanged(allFuncs)
-
-	// level 0
-
-	_invalidate(S0)
-	// console.log(allFuncs.filter(isInvalidated).map(o => o.id))
-	checkFuncSync(ResultType.Value, S2, S2, S1, S0)
-	checkFuncSync(ResultType.Value, I2, I2)
-	checkFuncNotChanged(allFuncs)
-
-	_invalidate(I0)
-	checkFuncSync(ResultType.Value, S2, S2, S1, I0)
-	checkFuncSync(ResultType.Value, I2, I2, I1)
-	await checkFuncAsync(ResultType.Value, A2, A2)
-	checkFuncNotChanged(allFuncs)
-
-	_invalidate(A0)
-	await checkFuncAsync(ResultType.Value, I2, I2, I1, A0)
-	await checkFuncAsync(ResultType.Value, A2, A2)
-	checkFuncNotChanged(allFuncs)
-
-	// endregion
-
-	return {
-		states: [S0, I0, A0, S1, I1, S2, I2, A2].map(o => {
-			return o.state
-		}),
+export async function baseTest(deferred?: boolean) {
+	if (deferred == null) {
+		// await baseTest(false)
+		return await baseTest(true)
 	}
-}
 
-export async function baseTest() {
+	callHistoryCheckDisabled = deferred
+
 	// region init
 
-	const S = funcSync('S')
-	const I = funcSyncIterator('I')
-	const A = funcAsync('A')
+	const S = funcSync('S', deferred)
+	const I = funcSyncIterator('I', deferred)
+	const A = funcAsync('A', deferred)
 
 	const S0 = funcCall(S) // S(0)
 	const I0 = funcCall(I, null) // I(0)
@@ -1689,9 +1710,9 @@ export async function baseTest() {
 
 	// region init
 
-	const SL = funcSync('SL')
-	const IL = funcSyncIterator('IL')
-	const AL = funcAsync('AL')
+	const SL = funcSync('SL', deferred)
+	const IL = funcSyncIterator('IL', deferred)
+	const AL = funcAsync('AL', deferred)
 
 	const SL3_dependencies = []
 	const SL3 = _funcCall(SL, 'SL33()', SL3_dependencies, 3, 3)

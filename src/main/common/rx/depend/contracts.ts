@@ -40,12 +40,11 @@ export type TIteratorOrValue<T> = Iterator<T> | T
 export type TResultOuter<TResultInner> = TResultInner extends Iterator<infer V> ? ThenableOrValue<V> : TResultInner
 export type TInnerValue<TResultInner> = TResultInner extends Iterator<infer V> ? V : TResultInner
 
-export type TGetThis<
-	TThisOuter,
-	TArgs extends any[],
-	TResultInner,
-	TThisInner
-> = (this: ICallState<TThisOuter, TArgs, TResultInner>) => TThisInner
+export interface IDeferredOptions {
+	delayBeforeCalc?: number,
+	minTimeBetweenCalc?: number,
+	autoInvalidateInterval?: number,
+}
 
 export interface ICallState<
 	TThisOuter,
@@ -69,7 +68,7 @@ export interface ICallState<
 		[key: string]: any;
 		[key: number]: any;
 	}
-	readonly deferredOptions: IDeferredCalcOptions
+	readonly deferredOptions: IDeferredOptions
 
 	// region calculable
 

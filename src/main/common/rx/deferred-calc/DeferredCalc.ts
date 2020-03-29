@@ -3,6 +3,7 @@ import {ITiming, timingDefault} from './timing'
 export interface IDeferredCalcOptions {
 	throttleTime?: number,
 	maxThrottleTime?: number,
+	delayBeforeCalc?: number,
 	minTimeBetweenCalc?: number,
 	autoInvalidateInterval?: number,
 	timing?: ITiming,
@@ -12,26 +13,25 @@ export class DeferredCalc {
 	private readonly _canBeCalcCallback: () => void
 	private readonly _calcFunc: (done: (value: any) => void) => void
 	private readonly _calcCompletedCallback: (value: any) => void
-
 	private readonly _options: IDeferredCalcOptions
-
 	private readonly _timing: ITiming
 
-	private _timerId?: number
-	private _timeNextPulse?: number
+	private _timerId: number = -1
+	private _timeNextPulse: number = -1
 
-	private _timeInvalidateFirst?: number
-	private _timeInvalidateLast?: number
-	private _canBeCalcEmitted?: boolean
-	private _calcRequested?: boolean
-	private _timeCalcStart?: number
-	private _timeCalcEnd?: number
+	private _timeInvalidateFirst: number = -1
+	private _timeInvalidateLast: number = 0
+	private _canBeCalcEmitted: boolean = false
+	private _calcRequested: boolean = false
+	private _timeCalcStart: number = 0
+	private _timeCalcEnd: number = 0
 
 	constructor(
 		canBeCalcCallback: () => void,
 		calcFunc: (done: (...args: any[]) => void) => void,
 		calcCompletedCallback: (...doneArgs: any[]) => void,
 		options: IDeferredCalcOptions,
+		dontInvalidate?: boolean,
 	) {
 		this._canBeCalcCallback = canBeCalcCallback
 		this._calcFunc = calcFunc
@@ -39,7 +39,9 @@ export class DeferredCalc {
 		this._options = options || {}
 		this._timing = this._options.timing || timingDefault
 
-		this.invalidate()
+		if (!dontInvalidate) {
+			this.invalidate()
+		}
 	}
 
 	// region Properties
@@ -89,6 +91,21 @@ export class DeferredCalc {
 
 	// endregion
 
+	// region delayBeforeCalc
+
+	public get delayBeforeCalc(): number {
+		return this._options.delayBeforeCalc
+	}
+	public set delayBeforeCalc(value: number) {
+		if (this._options.delayBeforeCalc === value) {
+			return
+		}
+		this._options.delayBeforeCalc = value
+		this._pulse()
+	}
+
+	// endregion
+
 	// region autoInvalidateInterval
 
 	public get autoInvalidateInterval(): number {
@@ -109,33 +126,38 @@ export class DeferredCalc {
 	// region Private methods
 
 	private _calc(): void {
-		this._timeInvalidateFirst = null
-		this._timeInvalidateLast = null
+		this._timeInvalidateFirst = -1
+		this._timeInvalidateLast = 0
 		this._canBeCalcEmitted = false
 		this._calcRequested = false
 		this._timeCalcStart = this._timing.now()
-		this._timeCalcEnd = null
+		this._timeCalcEnd = 0
 		this._pulse()
 
-		this._calcFunc.call(this, (...args: any[]) => {
+		this._calcFunc((...args: any[]) => {
 			this._timeCalcEnd = this._timing.now()
-			this._calcCompletedCallback.apply(this, args)
+			if (this._calcCompletedCallback != null) {
+				this._calcCompletedCallback.apply(this, args)
+			}
 			this._pulse()
 		})
 	}
 
 	private _canBeCalc() {
 		this._canBeCalcEmitted = true
-		this._canBeCalcCallback.call(this)
+		this._canBeCalcCallback()
 	}
 
 	private _getNextCalcTime() {
-		const {throttleTime, maxThrottleTime, minTimeBetweenCalc} = this._options
+		const {throttleTime, maxThrottleTime, delayBeforeCalc, minTimeBetweenCalc} = this._options
 		let nextCalcTime = this._timeInvalidateLast + (throttleTime || 0)
 		if (maxThrottleTime != null) {
 			nextCalcTime = Math.min(nextCalcTime, this._timeInvalidateFirst + (maxThrottleTime || 0))
 		}
-		if (this._timeCalcEnd) {
+		if (delayBeforeCalc != null) {
+			nextCalcTime = Math.max(nextCalcTime, this._timeInvalidateFirst + (delayBeforeCalc || 0))
+		}
+		if (this._timeCalcEnd !== 0) {
 			nextCalcTime = Math.max(nextCalcTime, this._timeCalcEnd + (minTimeBetweenCalc || 0))
 		}
 		return nextCalcTime
@@ -148,10 +170,10 @@ export class DeferredCalc {
 		const now = _timing.now()
 
 		let {_timeNextPulse: timeNextPulse} = this
-		if (timeNextPulse == null) {
+		if (timeNextPulse < 0) {
 			timeNextPulse = now
 		} else if (timeNextPulse <= now) {
-			this._timerId = null
+			this._timerId = -1
 		}
 
 		// endregion
@@ -161,8 +183,8 @@ export class DeferredCalc {
 		const {autoInvalidateInterval} = this._options
 		if (autoInvalidateInterval != null) {
 			const autoInvalidateTime = Math.max(
-				(this._timeCalcStart || 0) + autoInvalidateInterval,
-				(this._timeInvalidateLast || 0) + autoInvalidateInterval,
+				this._timeCalcStart + autoInvalidateInterval,
+				this._timeInvalidateLast + autoInvalidateInterval,
 				now)
 
 			if (autoInvalidateTime <= now) {
@@ -178,8 +200,8 @@ export class DeferredCalc {
 
 		if (!this._canBeCalcEmitted
 			&& !this._calcRequested
-			&& this._timeInvalidateLast
-			&& (this._timeCalcEnd || !this._timeCalcStart)
+			&& this._timeInvalidateLast !== 0
+			&& (this._timeCalcEnd !== 0 || this._timeCalcStart === 0)
 		) {
 			const canBeCalcTime = this._getNextCalcTime()
 			if (canBeCalcTime <= now) {
@@ -195,7 +217,7 @@ export class DeferredCalc {
 
 		// region Calc
 
-		if (this._calcRequested && (this._timeCalcEnd || !this._timeCalcStart)) {
+		if (this._calcRequested && (this._timeCalcEnd !== 0 || this._timeCalcStart === 0)) {
 			const calcTime = this._getNextCalcTime()
 			if (calcTime <= now) {
 				this._calc()
@@ -211,11 +233,11 @@ export class DeferredCalc {
 
 		if (timeNextPulse > now && timeNextPulse !== this._timeNextPulse) {
 			const {_timerId: timerId} = this
-			if (timerId != null) {
+			if (timerId >= 0) {
 				_timing.clearTimeout(timerId)
 			}
 			this._timeNextPulse = timeNextPulse
-			this._timerId = _timing.setTimeout(() => { this._pulse() }, timeNextPulse - now)
+			this._timerId = _timing.setTimeout(() => { this._pulse() }, timeNextPulse - now + 1) // ( + 1) is  fix hung
 		}
 
 		// endregion
@@ -223,7 +245,7 @@ export class DeferredCalc {
 
 	private _invalidate(): void {
 		const now = this._timing.now()
-		if (this._timeInvalidateFirst == null) {
+		if (this._timeInvalidateFirst < 0) {
 			this._timeInvalidateFirst = now
 		}
 		this._timeInvalidateLast = now

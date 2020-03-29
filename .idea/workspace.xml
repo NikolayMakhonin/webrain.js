@@ -7,15 +7,13 @@
     <option name="SHOW_STRUCTURE" value="true" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="69b2ee16-521b-4efd-b473-8e19e3df4d09" name="Default Changelist" comment="">
+    <list default="true" id="69b2ee16-521b-4efd-b473-8e19e3df4d09" name="Default Changelist" comment="Refactoring &amp; implement deferred. Tests OK.">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/common/rx/deferred-calc/DeferredCalc.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/common/rx/deferred-calc/DeferredCalc.ts" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/common/rx/depend/CallState.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/common/rx/depend/CallState.ts" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/common/rx/depend/contracts.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/common/rx/depend/contracts.ts" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/common/rx/depend/deferred.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/common/rx/depend/deferred.ts" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/common/rx/depend/depend.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/common/rx/depend/depend.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/common/rx/depend/makeGetOrCreateCallState.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/common/rx/depend/makeGetOrCreateCallState.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/test/performance/node/dependent-func.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/test/performance/node/dependent-func.ts" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/test/tests/common/main/rx/depend/src/helpers.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/test/tests/common/main/rx/depend/src/helpers.ts" afterDir="false" />
     </list>
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
@@ -28,7 +26,7 @@
     <option name="myAddOrReplace" value="0" />
   </component>
   <component name="CoverageViewManager">
-    <option name="myElementSize" value="177" />
+    <option name="myElementSize" value="182" />
   </component>
   <component name="ExportTestResults" outputFolder="$PROJECT_DIR$/tmp/test_results" openResultsInEditor="true" userTempatePath="" />
   <component name="FavoritesManager">
@@ -78,16 +76,16 @@
     <property name="prettierjs.PrettierConfiguration.Package" value="L:\Work\_GIT\GitHub\NodeJs\modules\webrain\node_modules\prettier" />
     <property name="restartRequiresConfirmation" value="false" />
     <property name="run.code.analysis.last.selected.profile" value="pProject Default" />
-    <property name="settings.editor.selected.configurable" value="settings.typescriptcompiler" />
+    <property name="settings.editor.selected.configurable" value="coverage" />
     <property name="ts.external.directory.path" value="L:\Work\_GIT\GitHub\NodeJs\modules\webrain\node_modules\typescript\lib" />
   </component>
   <component name="RecentsManager">
-    <key name="CopyFile.RECENT_KEYS">
-      <recent name="L:\Work\_GIT\GitHub\NodeJs\modules\webrain\src\test\tests\common\main\lists" />
-      <recent name="L:\Work\_GIT\GitHub\NodeJs\modules\webrain\src\test\performance\node" />
+    <key name="MoveFile.RECENT_KEYS">
+      <recent name="L:\Work\_GIT\GitHub\NodeJs\modules\webrain\_trash\src\main\common\rx\depend" />
       <recent name="L:\Work\_GIT\GitHub\NodeJs\modules\webrain\src\main\common\lists" />
-      <recent name="L:\Work\_GIT\GitHub\NodeJs\modules\webrain\src\test\tests\common\main\test" />
-      <recent name="L:\Work\_GIT\GitHub\NodeJs\modules\webrain\src\main\common\rx\depend" />
+      <recent name="L:\Work\_GIT\GitHub\NodeJs\modules\webrain\src\main\common\rx\depend\docs" />
+      <recent name="L:\Work\_GIT\GitHub\NodeJs\modules\webrain\src\test\tests\node\main\rx\depend\v8" />
+      <recent name="L:\Work\_GIT\GitHub\NodeJs\modules\webrain\src\test\tests\node\main\rx\depend" />
     </key>
     <key name="es6.move.members.recent.items">
       <recent name="L:\Work\_GIT\GitHub\NodeJs\modules\webrain\src\main\common\rx\depend\getOrCreateCallState.ts" />
@@ -96,12 +94,12 @@
       <recent name="L:\Work\_GIT\GitHub\NodeJs\modules\webrain\src\main\common\rx\depend\FuncCallStatus.ts" />
       <recent name="L:\Work\_GIT\GitHub\NodeJs\modules\webrain\src\main\common\rx\depend\helpers.ts" />
     </key>
-    <key name="MoveFile.RECENT_KEYS">
-      <recent name="L:\Work\_GIT\GitHub\NodeJs\modules\webrain\_trash\src\main\common\rx\depend" />
+    <key name="CopyFile.RECENT_KEYS">
+      <recent name="L:\Work\_GIT\GitHub\NodeJs\modules\webrain\src\test\tests\common\main\lists" />
+      <recent name="L:\Work\_GIT\GitHub\NodeJs\modules\webrain\src\test\performance\node" />
       <recent name="L:\Work\_GIT\GitHub\NodeJs\modules\webrain\src\main\common\lists" />
-      <recent name="L:\Work\_GIT\GitHub\NodeJs\modules\webrain\src\main\common\rx\depend\docs" />
-      <recent name="L:\Work\_GIT\GitHub\NodeJs\modules\webrain\src\test\tests\node\main\rx\depend\v8" />
-      <recent name="L:\Work\_GIT\GitHub\NodeJs\modules\webrain\src\test\tests\node\main\rx\depend" />
+      <recent name="L:\Work\_GIT\GitHub\NodeJs\modules\webrain\src\test\tests\common\main\test" />
+      <recent name="L:\Work\_GIT\GitHub\NodeJs\modules\webrain\src\main\common\rx\depend" />
     </key>
   </component>
   <component name="RunDashboard">
@@ -116,7 +114,7 @@
       </list>
     </option>
   </component>
-  <component name="RunManager" selected="Mocha.common &gt; main &gt; rx &gt; depend &gt; dependent-func">
+  <component name="RunManager" selected="Mocha.Watch">
     <configuration default="true" type="JavaScriptTestRunnerKarma">
       <config-file value="$PROJECT_DIR$/env/karma/configs/dev.js" />
       <karma-package-dir value="$PROJECT_DIR$/node_modules/karma" />
@@ -397,8 +395,8 @@
     </list>
     <recent_temporary>
       <list>
-        <item itemvalue="Mocha.common &gt; main &gt; rx &gt; depend &gt; dependent-func" />
         <item itemvalue="Mocha.common &gt; main &gt; rx &gt; depend &gt; dependent-func.base" />
+        <item itemvalue="Mocha.common &gt; main &gt; rx &gt; depend &gt; dependent-func" />
         <item itemvalue="Mocha.common &gt; main &gt; rx &gt; depend &gt; dependent-func.perceptron" />
         <item itemvalue="Mocha.dependent-func perf.perceptron memory create" />
         <item itemvalue="Mocha.dependent-func perf.perceptron recalc" />
@@ -412,13 +410,6 @@
       <option name="number" value="Default" />
       <option name="presentableId" value="Default" />
       <updated>1567687848586</updated>
-    </task>
-    <task id="LOCAL-00276" summary="Develop">
-      <created>1584005214023</created>
-      <option name="number" value="00276" />
-      <option name="presentableId" value="LOCAL-00276" />
-      <option name="project" value="LOCAL" />
-      <updated>1584005214023</updated>
     </task>
     <task id="LOCAL-00277" summary="Develop. Tests OK.">
       <created>1584035129573</created>
@@ -756,7 +747,14 @@
       <option name="project" value="LOCAL" />
       <updated>1585323468676</updated>
     </task>
-    <option name="localTasksCounter" value="325" />
+    <task id="LOCAL-00325" summary="Refactoring &amp; implement deferred. Tests OK.">
+      <created>1585451314086</created>
+      <option name="number" value="00325" />
+      <option name="presentableId" value="LOCAL-00325" />
+      <option name="project" value="LOCAL" />
+      <updated>1585451314087</updated>
+    </task>
+    <option name="localTasksCounter" value="326" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -818,7 +816,6 @@
   <component name="VcsManagerConfiguration">
     <option name="CHECK_CODE_SMELLS_BEFORE_PROJECT_COMMIT" value="false" />
     <option name="CHECK_NEW_TODO" value="false" />
-    <MESSAGE value="dependent-funcs v8 optimization in process... Added callWithArgs (perf is no changed). Tests OK" />
     <MESSAGE value="dependent-funcs v8 optimization in process..." />
     <MESSAGE value="v0.0.7 Tests OK, coverage:merge fail" />
     <MESSAGE value="Before refactoring" />
@@ -843,7 +840,8 @@
     <MESSAGE value="dependent-funcs: Perf test OK" />
     <MESSAGE value="Develop. Tests OK." />
     <MESSAGE value="Refactoring. Tests OK." />
-    <option name="LAST_COMMIT_MESSAGE" value="Refactoring. Tests OK." />
+    <MESSAGE value="Refactoring &amp; implement deferred. Tests OK." />
+    <option name="LAST_COMMIT_MESSAGE" value="Refactoring &amp; implement deferred. Tests OK." />
   </component>
   <component name="XDebuggerManager">
     <breakpoint-manager>
@@ -851,14 +849,14 @@
         <line-breakpoint enabled="true" type="javascript">
           <condition expression="getCurrentState()" language="TypeScript" />
           <url>file://$PROJECT_DIR$/src/test/tests/common/main/rx/depend/src/helpers.ts</url>
-          <line>463</line>
+          <line>477</line>
           <option name="timeStamp" value="968" />
         </line-breakpoint>
         <line-breakpoint enabled="true" type="javascript">
-          <url>file://$PROJECT_DIR$/src/main/common/rx/depend/CallState.ts</url>
-          <line>676</line>
+          <url>file://$PROJECT_DIR$/src/main/common/rx/depend/depend.ts</url>
+          <line>161</line>
           <properties lambdaOrdinal="-1" />
-          <option name="timeStamp" value="973" />
+          <option name="timeStamp" value="1086" />
         </line-breakpoint>
       </breakpoints>
       <breakpoints-dialog>
@@ -871,37 +869,8 @@
     </breakpoint-manager>
     <watches-manager>
       <configuration name="mocha-javascript-test-runner">
-        <watch expression="S0.state.statusString" language="TypeScript" />
-        <watch expression="I0.state.statusString" language="TypeScript" />
-        <watch expression="A0.state.statusString" language="TypeScript" />
-        <watch expression="S1.state.statusString" language="TypeScript" />
-        <watch expression="I1.state.statusString" language="TypeScript" />
-        <watch expression="S2.state.statusString" language="TypeScript" />
-        <watch expression="I2.state.statusString" language="TypeScript" />
-        <watch expression="A2.state.statusString" language="TypeScript" />
-        <watch expression="statusToString(status)" language="TypeScript" />
-        <watch expression="statusToString(prevStatus)" language="TypeScript" />
-        <watch expression="statusToString(state.status)" language="TypeScript" />
-        <watch expression="statusToString(dependencyState.status)" language="TypeScript" />
-        <watch expression="state.id" language="TypeScript" />
-        <watch expression="state.parentCallState.id" language="TypeScript" />
-        <watch expression="currentState.id" language="TypeScript" />
-        <watch expression="funcCall.id" language="TypeScript" />
-        <watch expression="I2.state._unsubscribersLength" language="TypeScript" />
-        <watch expression="I1.state.calcId" language="TypeScript" />
-        <watch expression="I2.state.calcId" language="TypeScript" />
-        <watch expression="S0.state._subscribersFirst.state" language="TypeScript" />
-        <watch expression="Array.isArray(_this) &amp;&amp; _this.filter(o =&gt; !o.hasLoop).map(o =&gt; o.id)" language="TypeScript" />
-        <watch expression="result.state" language="TypeScript" />
-        <watch expression="SL3.state._unsubscribersLength" language="TypeScript" />
-        <watch expression="SL4.state._unsubscribersLength" language="TypeScript" />
-        <watch expression="SL5.state._unsubscribersLength" language="TypeScript" />
-        <watch expression="SL3.state._subscribersFirst" language="TypeScript" />
-        <watch expression="SL4.state._subscribersFirst" language="TypeScript" />
-        <watch expression="SL5.state._subscribersFirst" language="TypeScript" />
-        <watch expression="SL3.state.statusString" language="TypeScript" />
-        <watch expression="SL4.state.statusString" language="TypeScript" />
-        <watch expression="SL5.state.statusString" language="TypeScript" />
+        <watch expression="value" language="TypeScript" />
+        <watch expression="_deferredCalc" language="TypeScript" />
       </configuration>
     </watches-manager>
   </component>
@@ -922,6 +891,7 @@
     <SUITE FILE_PATH="coverage/webrain$common___main___rx___deep_subscribe___deep_subscribe_new_ruleFactoriesVariants_self_sync.dat" NAME="common &gt; main &gt; rx &gt; deep-subscribe &gt; deep-subscribe new.ruleFactoriesVariants self sync Coverage Results" MODIFIED="1569993384239" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="MochaJavaScriptTestRunnerCoverage" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" />
     <SUITE FILE_PATH="coverage/webrain$ObservableObject_propertyChanged_memory.dat" NAME="ObservableObject.propertyChanged memory Coverage Results" MODIFIED="1567179257245" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="MochaJavaScriptTestRunnerCoverage" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" />
     <SUITE FILE_PATH="coverage/webrain$common___main___rx___deep_subscribe___deep_subscribe_lists.dat" NAME="common &gt; main &gt; rx &gt; deep-subscribe &gt; deep-subscribe.lists Coverage Results" MODIFIED="1569217506032" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="MochaJavaScriptTestRunnerCoverage" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" />
+    <SUITE FILE_PATH="coverage/webrain$DeferredCalc.dat" NAME="DeferredCalc Coverage Results" MODIFIED="1585495401890" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="MochaJavaScriptTestRunnerCoverage" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" />
     <SUITE FILE_PATH="coverage/webrain$common___main___rx___properties___ConnectorBuilder.dat" NAME="common &gt; main &gt; rx &gt; properties &gt; ConnectorBuilder Coverage Results" MODIFIED="1569042769612" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="MochaJavaScriptTestRunnerCoverage" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" />
     <SUITE FILE_PATH="coverage/webrain$common___main___rx___properties___CalcObjectBuilder.dat" NAME="common &gt; main &gt; rx &gt; properties &gt; CalcObjectBuilder Coverage Results" MODIFIED="1573363080433" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="MochaJavaScriptTestRunnerCoverage" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" />
     <SUITE FILE_PATH="coverage/webrain$common___main___rx___deep_subscribe.dat" NAME="common &gt; main &gt; rx &gt; deep-subscribe Coverage Results" MODIFIED="1569314944753" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="MochaJavaScriptTestRunnerCoverage" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" />
@@ -930,6 +900,6 @@
     <SUITE FILE_PATH="coverage/webrain$common___main___rx___deep_subscribe___iterate_rule_repeat.dat" NAME="common &gt; main &gt; rx &gt; deep-subscribe &gt; iterate-rule.repeat Coverage Results" MODIFIED="1573581674782" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="MochaJavaScriptTestRunnerCoverage" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" />
     <SUITE FILE_PATH="coverage/webrain$common___main___rx___deep_subscribe___deep_subscribe_repeat_with_condition.dat" NAME="common &gt; main &gt; rx &gt; deep-subscribe &gt; deep-subscribe.repeat with condition Coverage Results" MODIFIED="1569420644304" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="MochaJavaScriptTestRunnerCoverage" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" />
     <SUITE FILE_PATH="coverage/webrain$ObservableObject_deepSubscribe.dat" NAME="ObservableObject.deepSubscribe Coverage Results" MODIFIED="1567141941071" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="MochaJavaScriptTestRunnerCoverage" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" />
-    <SUITE FILE_PATH="coverage/webrain$common___main___rx___depend___dependent_func_base.dat" NAME="common &gt; main &gt; rx &gt; depend &gt; dependent-func.base Coverage Results" MODIFIED="1584546359758" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="MochaJavaScriptTestRunnerCoverage" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" />
+    <SUITE FILE_PATH="coverage/webrain$common___main___rx___depend___dependent_func_base.dat" NAME="common &gt; main &gt; rx &gt; depend &gt; dependent-func.base Coverage Results" MODIFIED="1585495890156" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="MochaJavaScriptTestRunnerCoverage" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" />
   </component>
 </project>
