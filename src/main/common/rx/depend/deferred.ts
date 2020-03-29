@@ -1,28 +1,99 @@
-import {ThenableOrIterator, ThenableOrValue, TReject, TResolve} from '../../async/async'
-import {ThenableSync} from '../../async/ThenableSync'
-import {CallState} from './CallState'
+import {ThenableOrIterator, ThenableOrValue} from '../../async/async'
+import {resolveAsync, ThenableSync} from '../../async/ThenableSync'
+import {DeferredCalc, IDeferredCalcOptions} from '../../rx/deferred-calc/DeferredCalc'
+import {CallState, TFuncCall} from './CallState'
 import {Func} from './contracts'
-import { makeDependentFunc} from './depend'
+import {_funcCall, funcCallX, makeDependentFunc} from './depend'
 
-// region deferred / deferredX
+// region makeDeferredFunc
 
-function funcCallDeferred<
+export function _initCallState<
 	TThisOuter,
 	TArgs extends any[],
 	TResultInner,
->(this: CallState<TThisOuter, TArgs, TResultInner>) {
-	return {
-		next: () => new ThenableSync((resolve, reject) => {
-			setTimeout(() => {
-				try {
-					resolve(this.callWithArgs(this.thisOuter, this.func))
-				} catch (err) {
-					reject(err)
-				}
-			})
-		}),
-	} as any
+>(
+	state: CallState<TThisOuter, TArgs, TResultInner>,
+	funcCall: TFuncCall<TThisOuter, TArgs, TResultInner>,
+	defaultOptions: IDeferredCalcOptions,
+) {
+	const options = {
+		throttleTime: defaultOptions.throttleTime,
+		maxThrottleTime: defaultOptions.maxThrottleTime,
+		minTimeBetweenCalc: defaultOptions.minTimeBetweenCalc,
+		autoInvalidateInterval: defaultOptions.autoInvalidateInterval,
+		timing: null,
+	}
+	state.deferredOptions = options
+
+	const _deferred = {
+		calc: new DeferredCalc(
+			null,
+			() => {
+				const {resolve, reject} = state._deferred
+				state._deferred.resolve = null
+				state._deferred.reject = null
+				resolveAsync(
+					funcCall(state),
+					resolve,
+					reject,
+				)
+			},
+			null,
+			options,
+		),
+		resolve: null,
+		reject: null,
+	}
+	state._deferred = _deferred
+
+	const iteratorResult = {
+		value: null,
+		done: true,
+	}
+
+	const executor = (resolve, reject) => {
+		iteratorResult.value = null
+		if (_deferred.resolve != null || _deferred.reject != null) {
+			throw new Error('_deferred.resolve != null || _deferred.reject != null')
+		}
+		_deferred.resolve = resolve
+		_deferred.reject = reject
+		_deferred.calc.invalidate() // TODO call on state invalidate
+		_deferred.calc.calc()
+	}
+
+	const iterator: Iterator<TResultInner> = {
+		next: () => {
+			iteratorResult.value = new ThenableSync(executor)
+			return iteratorResult
+		},
+	}
+
+	state.funcCall = () => iterator as any
 }
+
+/** Inner this as CallState */
+export function makeDeferredFunc<
+	TThisOuter,
+	TArgs extends any[],
+	TResultInner,
+>(
+	func: Func<unknown, TArgs, unknown>,
+	funcCall: TFuncCall<TThisOuter, TArgs, TResultInner>,
+	defaultOptions: IDeferredCalcOptions,
+): Func<
+	TThisOuter,
+	TArgs,
+	TResultInner extends ThenableOrIterator<infer V> ? ThenableOrValue<V> : ThenableOrValue<TResultInner>
+> {
+	return makeDependentFunc(func, null, state => {
+		_initCallState(state, funcCall, defaultOptions)
+	}) as any
+}
+
+// endregion
+
+// region deferred / deferredX
 
 /** Inner this same as outer this */
 export function deferred<
@@ -32,30 +103,13 @@ export function deferred<
 	TResultWrapper = TResultInner,
 >(
 	func: Func<TThisOuter, TArgs, TResultInner>,
+	defaultOptions: IDeferredCalcOptions,
 ): Func<
 	TThisOuter,
 	TArgs,
-	TResultInner extends ThenableOrIterator<infer V> ? ThenableOrValue<V> : ThenableOrValue<TResultInner>
+	TResultInner extends ThenableOrIterator<infer V> ? ThenableOrValue<V> : TResultInner
 > {
-	return makeDependentFunc(func, funcCallDeferred) as any
-}
-
-function funcCallDeferredX<
-	TThisOuter,
-	TArgs extends any[],
-	TResultInner,
->(this: CallState<TThisOuter, TArgs, TResultInner>) {
-	return {
-		next: () => new ThenableSync((resolve, reject) => {
-			setTimeout(() => {
-				try {
-					resolve(this.callWithArgs(this, this.func))
-				} catch (err) {
-					reject(err)
-				}
-			})
-		}),
-	} as any
+	return makeDeferredFunc(func, _funcCall, defaultOptions) as any
 }
 
 /** Inner this as CallState */
@@ -69,12 +123,13 @@ export function deferredX<
 		TArgs,
 		TResultInner
 	>,
+	defaultOptions: IDeferredCalcOptions,
 ): Func<
 	TThisOuter,
 	TArgs,
-	TResultInner extends ThenableOrIterator<infer V> ? ThenableOrValue<V> : ThenableOrValue<TResultInner>
+	TResultInner extends ThenableOrIterator<infer V> ? ThenableOrValue<V> : TResultInner
 > {
-	return makeDependentFunc(func, funcCallDeferredX) as any
+	return makeDeferredFunc(func, funcCallX, defaultOptions) as any
 }
 
 // endregion

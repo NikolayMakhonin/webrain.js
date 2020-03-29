@@ -1,7 +1,15 @@
-import {isThenable, IThenable, ThenableIterator, ThenableOrIteratorOrValue} from '../../async/async'
+import {
+	isThenable,
+	IThenable,
+	ThenableIterator,
+	ThenableOrIteratorOrValue,
+	TReject,
+	TResolve,
+} from '../../async/async'
 import {resolveAsync} from '../../async/ThenableSync'
 import {isIterator} from '../../helpers/helpers'
 import {ObjectPool} from '../../lists/ObjectPool'
+import {DeferredCalc, IDeferredCalcOptions} from '../deferred-calc/DeferredCalc'
 import {
 	CallStatus,
 	Func,
@@ -444,8 +452,14 @@ export type TFuncCall<
 	TArgs extends any[],
 	TResultInner
 > = (
-	this: CallState<TThisOuter, TArgs, TResultInner>,
+	state: CallState<TThisOuter, TArgs, TResultInner>,
 ) => TResultInner
+
+export interface IDeferredCallState<TValue> {
+	calc: DeferredCalc,
+	resolve: TResolve<TValue>,
+	reject: TReject,
+}
 
 export class CallState<
 	TThisOuter,
@@ -475,22 +489,47 @@ export class CallState<
 	public readonly func: Func<unknown, TArgs, unknown>
 	public readonly thisOuter: TThisOuter
 	public readonly callWithArgs: TCall<TArgs>
-	public readonly funcCall: TFuncCall<TThisOuter, TArgs, TResultInner>
+	public funcCall: TFuncCall<TThisOuter, TArgs, TResultInner>
 	public readonly valueIds: number[]
-	public deleteOrder: number = 0
+
+	/** @internal */
+	public _deleteOrder: number = 0
 
 	public status: CallStatus = Flag_Invalidated | Flag_Recalc
 	public valueAsync: IThenable<TInnerValue<TResultInner>> = null
 	public value: TInnerValue<TResultInner> = void 0
 	public error: any = void 0
+
+	private _data: {
+		[key: string]: any;
+		[key: number]: any;
+	} = null
+
+	public get data() {
+		let {_data} = this
+		if (_data == null) {
+			this._data = _data = {}
+		}
+		return _data
+	}
+
+	public deferredOptions: IDeferredCalcOptions = null
+	/** @internal */
+	public _deferred: IDeferredCallState<TResultInner> = null
+
 	// for detect recursive async loop
-	public parentCallState: TCallState = null
+	private _parentCallState: TCallState = null
+	/** @internal */
 	public _subscribersFirst: ISubscriberLink<this, any> = null
+	/** @internal */
 	public _subscribersLast: ISubscriberLink<this, any> = null
+	/** @internal */
 	public _subscribersCalculating: ISubscriberLink<this, any> = null
 	// for prevent multiple subscribe equal dependencies
-	public callId: number = 0
+	private _callId: number = 0
+	/** @internal */
 	public _unsubscribers: Array<ISubscriberLink<any, this>> = null
+	/** @internal */
 	public _unsubscribersLength: number = 0
 
 	// endregion
@@ -509,6 +548,24 @@ export class CallState<
 		return statusToString(this.status)
 	}
 
+	// public get hasValue(): boolean {
+	// 	return (this.status & Flag_HasValue) !== 0
+	// }
+	//
+	// public get hasError(): boolean {
+	// 	return (this.status & Flag_HasError) !== 0
+	// }
+	//
+	// public get hasValueOrAsync(): boolean {
+	// 	return (this.status & (Flag_HasValue | Flag_Async)) !== 0
+	// }
+	//
+	// public get valueOrAsync(): IThenable<TInnerValue<TResultInner>> | TInnerValue<TResultInner> {
+	// 	return this.valueAsync != null
+	// 		? this.valueAsync
+	// 		: this.value
+	// }
+
 	// endregion
 
 	// endregion
@@ -523,7 +580,7 @@ export class CallState<
 		if (currentState != null && (currentState.status & Flag_Check) === 0) {
 			currentState._subscribeDependency(this)
 		}
-		this.callId = nextCallId++
+		this._callId = nextCallId++
 
 		const prevStatus = this.status
 
@@ -539,7 +596,7 @@ export class CallState<
 					if (parentCallState === this) {
 						this._internalError('Recursive async loop detected')
 					}
-					parentCallState = parentCallState.parentCallState
+					parentCallState = parentCallState._parentCallState
 				}
 				return this.valueAsync as any
 			} else if ((this.status & (Flag_Check | Flag_Calculating)) !== 0) {
@@ -553,7 +610,7 @@ export class CallState<
 			this._internalError(`Unknown CallStatus: ${statusToString(this.status)}`)
 		}
 
-		this.parentCallState = currentState
+		this._parentCallState = currentState
 		currentState = null
 
 		this._updateCheck()
@@ -566,8 +623,8 @@ export class CallState<
 		}
 
 		if (shouldRecalc === false) {
-			currentState = this.parentCallState
-			this.parentCallState = null
+			currentState = this._parentCallState
+			this._parentCallState = null
 			if (isHasError(this.status)) {
 				if (dontThrowOnError !== true) {
 					throw this.error
@@ -584,7 +641,7 @@ export class CallState<
 			value = resolveAsync(shouldRecalc, o => {
 				if (o === false) {
 					currentState = null
-					this.parentCallState = null
+					this._parentCallState = null
 					if (isHasError(this.status)) {
 						if (dontThrowOnError !== true) {
 							throw this.error
@@ -610,14 +667,14 @@ export class CallState<
 		dontThrowOnError?: boolean,
 	): TResultOuter<TResultInner> {
 		this._updateCalculating()
-		this.callId = nextCallId++
+		this._callId = nextCallId++
 
 		let _isIterator = false
 		try {
 			currentState = this
 
 			// let value: any = this.func.apply(this.thisOuter, arguments)
-			let value: any = this.funcCall()
+			let value: any = this.funcCall(this)
 			// this.callWithArgs<TThisInner, TResultInner>(
 			// 	this.thisAsState ? this as any : this.thisOuter,
 			// 	this.func,
@@ -650,9 +707,9 @@ export class CallState<
 				throw error
 			}
 		} finally {
-			currentState = this.parentCallState
+			currentState = this._parentCallState
 			if (!_isIterator) {
-				this.parentCallState = null
+				this._parentCallState = null
 			}
 		}
 	}
@@ -678,9 +735,9 @@ export class CallState<
 			}
 
 			if ((this.status & Flag_Async) !== 0) {
-				currentState = this.parentCallState
+				currentState = this._parentCallState
 				if (nested == null) {
-					this.parentCallState = null
+					this._parentCallState = null
 				}
 			}
 			if (nested == null) {
@@ -689,9 +746,9 @@ export class CallState<
 			return iteration.value
 		} catch (error) {
 			if ((this.status & Flag_Async) !== 0) {
-				currentState = this.parentCallState
+				currentState = this._parentCallState
 				if (nested == null) {
-					this.parentCallState = null
+					this._parentCallState = null
 				}
 			}
 			if (nested == null) {
@@ -708,7 +765,7 @@ export class CallState<
 	private _subscribeDependency<TDependency extends TCallState>(
 		dependency: TDependency,
 	): void {
-		if (this.callId < dependency.callId) {
+		if (this._callId < dependency._callId) {
 			if ((this.status & Flag_Async) === 0) {
 				return
 			}
@@ -935,7 +992,7 @@ export class CallState<
 
 		if (error instanceof InternalError) {
 			this.status = Update_Calculated_Error | (prevStatus & Flag_HasValue) | Flag_InternalError
-			this.parentCallState = null
+			this._parentCallState = null
 			currentState = null
 		} else {
 			if ((prevStatus & (Flag_Check | Flag_Calculating)) === 0) {

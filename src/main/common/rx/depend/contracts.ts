@@ -1,4 +1,5 @@
 import {IThenable, ThenableOrValue} from '../../async/async'
+import {IDeferredCalcOptions} from '../deferred-calc/DeferredCalc'
 import {TFuncCall} from './CallState'
 
 export type Func<TThis, TArgs extends any[], TValue = void> = (this: TThis, ...args: TArgs) => TValue
@@ -57,13 +58,18 @@ export interface ICallState<
 	readonly funcCall: TFuncCall<TThisOuter, TArgs, TResultInner>
 
 	readonly valueIds: number[]
-	deleteOrder: number
 
 	status: CallStatus
 
 	valueAsync: IThenable<TInnerValue<TResultInner>>
 	value: TInnerValue<TResultInner>
 	error: any
+
+	readonly data: {
+		[key: string]: any;
+		[key: number]: any;
+	}
+	readonly deferredOptions: IDeferredCalcOptions
 
 	// region calculable
 

@@ -1,9 +1,9 @@
 import {ITiming, timingDefault} from './timing'
 
 export interface IDeferredCalcOptions {
-	minTimeBetweenCalc?: number,
 	throttleTime?: number,
 	maxThrottleTime?: number,
+	minTimeBetweenCalc?: number,
 	autoInvalidateInterval?: number,
 	timing?: ITiming,
 }

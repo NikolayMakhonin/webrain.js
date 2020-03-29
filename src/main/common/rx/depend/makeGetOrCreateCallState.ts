@@ -94,6 +94,7 @@ export function makeGetOrCreateCallState<
 >(
 	func: Func<unknown, TArgs, unknown>,
 	funcCall: TFuncCall<TThisOuter, TArgs, TResultInner>,
+	initCallState: (state: CallState<TThisOuter, TArgs, TResultInner>) => void,
 ): Func<TThisOuter, TArgs, CallState<TThisOuter, TArgs, TResultInner>> {
 	const funcId = nextValueId++
 	const funcHash = (17 * 31 + funcId) | 0
@@ -160,6 +161,10 @@ export function makeGetOrCreateCallState<
 				funcCall,
 				valueIdsClone,
 			)
+
+			if (initCallState != null) {
+				initCallState(callState)
+			}
 
 			callStates.push(callState)
 		}
@@ -228,7 +233,7 @@ export function deleteCallState(callState: TCallState) {
 export const reduceCallStatesHeap = new PairingHeap<TCallState>({
 	objectPool: new ObjectPool<PairingNode<TCallState>>(10000000),
 	lessThanFunc(o1, o2) {
-		return o1.deleteOrder < o2.deleteOrder
+		return o1._deleteOrder < o2._deleteOrder
 	},
 })
 

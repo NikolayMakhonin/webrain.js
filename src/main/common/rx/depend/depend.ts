@@ -58,6 +58,7 @@ export function makeDependentFunc<
 >(
 	func: Func<unknown, TArgs, unknown>,
 	funcCall: TFuncCall<TThisOuter, TArgs, TResultInner>,
+	initCallState?: (state: CallState<TThisOuter, TArgs, TResultInner>) => void,
 ): Func<
 	TThisOuter,
 	TArgs,
@@ -67,7 +68,7 @@ export function makeDependentFunc<
 		throw new InternalError('Multiple call makeDependentFunc() for func: ' + func)
 	}
 
-	const getOrCreateCallState = makeGetOrCreateCallState(func, funcCall)
+	const getOrCreateCallState = makeGetOrCreateCallState(func, funcCall, initCallState)
 
 	rootStateMap.set(func, getOrCreateCallState)
 
@@ -82,12 +83,12 @@ export function makeDependentFunc<
 
 // region depend / dependX
 
-function _funcCall<
+export function _funcCall<
 	TThisOuter,
 	TArgs extends any[],
 	TResultInner,
->(this: CallState<TThisOuter, TArgs, TResultInner>): TResultInner {
-	return this.callWithArgs(this.thisOuter, this.func) as any
+>(state: CallState<TThisOuter, TArgs, TResultInner>): TResultInner {
+	return state.callWithArgs(state.thisOuter, state.func) as any
 }
 
 /** Inner this same as outer this */
@@ -106,12 +107,12 @@ export function depend<
 	return makeDependentFunc(func, _funcCall) as any
 }
 
-function funcCallX<
+export function funcCallX<
 	TThisOuter,
 	TArgs extends any[],
 	TResultInner,
->(this: CallState<TThisOuter, TArgs, TResultInner>): TResultInner {
-	return this.callWithArgs(this, this.func) as any
+>(state: CallState<TThisOuter, TArgs, TResultInner>): TResultInner {
+	return state.callWithArgs(state, state.func) as any
 }
 
 /** Inner this as CallState */
