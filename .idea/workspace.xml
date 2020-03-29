@@ -7,14 +7,10 @@
     <option name="SHOW_STRUCTURE" value="true" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="69b2ee16-521b-4efd-b473-8e19e3df4d09" name="Default Changelist" comment="Refactoring &amp; implement deferred. Tests OK.">
+    <list default="true" id="69b2ee16-521b-4efd-b473-8e19e3df4d09" name="Default Changelist" comment="Depend deferred test completed. Tests OK.">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/common/rx/deferred-calc/DeferredCalc.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/common/rx/deferred-calc/DeferredCalc.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/common/rx/depend/CallState.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/common/rx/depend/CallState.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/common/rx/depend/contracts.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/common/rx/depend/contracts.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/common/rx/depend/deferred.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/common/rx/depend/deferred.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/common/rx/depend/depend.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/common/rx/depend/depend.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/test/tests/common/main/rx/depend/src/helpers.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/test/tests/common/main/rx/depend/src/helpers.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/test/tests/common/main/rx/deferred-calc/DeferredCalc.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/test/tests/common/main/rx/deferred-calc/DeferredCalc.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/test/tests/common/main/rx/deferred-calc/src/TestDeferred.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/test/tests/common/main/rx/deferred-calc/src/TestDeferred.ts" afterDir="false" />
     </list>
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
     <option name="SHOW_DIALOG" value="false" />
@@ -411,13 +407,6 @@
       <option name="presentableId" value="Default" />
       <updated>1567687848586</updated>
     </task>
-    <task id="LOCAL-00277" summary="Develop. Tests OK.">
-      <created>1584035129573</created>
-      <option name="number" value="00277" />
-      <option name="presentableId" value="LOCAL-00277" />
-      <option name="project" value="LOCAL" />
-      <updated>1584035129574</updated>
-    </task>
     <task id="LOCAL-00278" summary="Develop. Tests OK.">
       <created>1584076699784</created>
       <option name="number" value="00278" />
@@ -754,7 +743,14 @@
       <option name="project" value="LOCAL" />
       <updated>1585451314087</updated>
     </task>
-    <option name="localTasksCounter" value="326" />
+    <task id="LOCAL-00326" summary="Depend deferred test completed. Tests OK.">
+      <created>1585498188495</created>
+      <option name="number" value="00326" />
+      <option name="presentableId" value="LOCAL-00326" />
+      <option name="project" value="LOCAL" />
+      <updated>1585498188495</updated>
+    </task>
+    <option name="localTasksCounter" value="327" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -816,7 +812,6 @@
   <component name="VcsManagerConfiguration">
     <option name="CHECK_CODE_SMELLS_BEFORE_PROJECT_COMMIT" value="false" />
     <option name="CHECK_NEW_TODO" value="false" />
-    <MESSAGE value="dependent-funcs v8 optimization in process..." />
     <MESSAGE value="v0.0.7 Tests OK, coverage:merge fail" />
     <MESSAGE value="Before refactoring" />
     <MESSAGE value="Refactoring completed. Optimizing..." />
@@ -841,7 +836,8 @@
     <MESSAGE value="Develop. Tests OK." />
     <MESSAGE value="Refactoring. Tests OK." />
     <MESSAGE value="Refactoring &amp; implement deferred. Tests OK." />
-    <option name="LAST_COMMIT_MESSAGE" value="Refactoring &amp; implement deferred. Tests OK." />
+    <MESSAGE value="Depend deferred test completed. Tests OK." />
+    <option name="LAST_COMMIT_MESSAGE" value="Depend deferred test completed. Tests OK." />
   </component>
   <component name="XDebuggerManager">
     <breakpoint-manager>

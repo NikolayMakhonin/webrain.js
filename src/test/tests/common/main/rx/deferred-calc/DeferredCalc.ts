@@ -3,8 +3,7 @@ import {DeferredCalc} from '../../../../../../main/common/rx/deferred-calc/Defer
 import {timingDefault} from '../../../../../../main/common/rx/deferred-calc/timing'
 import {assert} from '../../../../../../main/common/test/Assert'
 import {describe, it} from '../../../../../../main/common/test/Mocha'
-import {assertEvents, EventType, IEvent, TestDeferredCalc, timing} from './src/TestDeferred'
-import {TestTiming} from './src/timing'
+import {assertEvents, EventType, IEvent, TestDeferredCalc, TestTimingForDeferredCalc, timing} from './src/TestDeferred'
 
 declare const after
 
@@ -752,7 +751,7 @@ describe('common > main > rx > deferred-calc > DeferredCalc', function() {
 				throttleTime: 2,
 				maxThrottleTime: 3,
 				minTimeBetweenCalc: 4,
-				timing: new TestTiming(),
+				timing: new TestTimingForDeferredCalc(),
 			})
 
 		assert.strictEqual(deferredCalc.autoInvalidateInterval, 1)
