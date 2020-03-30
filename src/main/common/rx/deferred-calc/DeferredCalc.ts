@@ -134,10 +134,10 @@ export class DeferredCalc {
 		this._timeCalcEnd = 0
 		this._pulse()
 
-		this._calcFunc((...args: any[]) => {
+		this._calcFunc(() => {
 			this._timeCalcEnd = this._timing.now()
 			if (this._calcCompletedCallback != null) {
-				this._calcCompletedCallback.apply(this, args)
+				this._calcCompletedCallback.apply(this, arguments)
 			}
 			this._pulse()
 		})

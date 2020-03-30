@@ -426,3 +426,6 @@
   absoluteDiff: [ 4186, 7137, -3826 ],
   absoluteDiff: [ 169, 6746, -503 ],
   absoluteDiff: [ 4137, 7223, -4078 ],
+
+  absoluteDiff: [ 192, 64408, -651 ],
+  absoluteDiff: [ 456, 64017, -430 ],

@@ -42,20 +42,18 @@ export function createRejected<TValue = any>(
 }
 
 export class ThenableSync<TValue = any> implements IThenable<TValue> {
-	private _onfulfilled: Array<TOnFulfilled<TValue, any>>
-	private _onrejected: Array<TOnRejected<TValue>>
-	private _value: TValue
-	private _error: any
-	private _status: ThenableSyncStatus
+	private _onfulfilled: Array<TOnFulfilled<TValue, any>> = null
+	private _onrejected: Array<TOnRejected<TValue>> = null
+	private _value: TValue = void 0
+	private _error: any = null
+	private _status: ThenableSyncStatus = null
 	private readonly _customResolveValue: TResolveAsyncValue
 
 	constructor(
 		executor?: TExecutor<TValue>,
 		customResolveValue?: TResolveAsyncValue,
 	) {
-		if (customResolveValue != null) {
-			this._customResolveValue = customResolveValue
-		}
+		this._customResolveValue = customResolveValue
 
 		if (executor) {
 			try {

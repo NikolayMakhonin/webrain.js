@@ -7,8 +7,12 @@
     <option name="SHOW_STRUCTURE" value="true" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="69b2ee16-521b-4efd-b473-8e19e3df4d09" name="Default Changelist" comment="Fix DeferredCalc hung. Tests OK.">
+    <list default="true" id="69b2ee16-521b-4efd-b473-8e19e3df4d09" name="Default Changelist" comment="">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/env/libs/dependent-func/all.js" beforeDir="false" afterPath="$PROJECT_DIR$/env/libs/dependent-func/all.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/env/v8/trace.cmd" beforeDir="false" afterPath="$PROJECT_DIR$/env/v8/trace.cmd" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/common/async/ThenableSync.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/common/async/ThenableSync.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/common/rx/deferred-calc/DeferredCalc.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/common/rx/deferred-calc/DeferredCalc.ts" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/common/rx/depend/docs/perf.log" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/common/rx/depend/docs/perf.log" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/test/tests/common/main/rx/depend/src/helpers.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/test/tests/common/main/rx/depend/src/helpers.ts" afterDir="false" />
     </list>
@@ -57,7 +61,7 @@
     <property name="WebServerToolWindowFactoryState" value="false" />
     <property name="auto.test.manager.delay" value="5000" />
     <property name="javascript.karma.karma_node_package_dir" value="" />
-    <property name="last_opened_file_path" value="$PROJECT_DIR$/src/main/common/rx/depend/getOrCreateCallState.ts" />
+    <property name="last_opened_file_path" value="$PROJECT_DIR$/isolate-000000000046F620-v8.log" />
     <property name="node.js.detected.package.eslint" value="true" />
     <property name="node.js.detected.package.standard" value="true" />
     <property name="node.js.detected.package.tslint" value="true" />
@@ -110,7 +114,7 @@
       </list>
     </option>
   </component>
-  <component name="RunManager" selected="Mocha.dependent-func (perf)">
+  <component name="RunManager" selected="Mocha.dependent-func perf.perceptron recalc">
     <configuration default="true" type="JavaScriptTestRunnerKarma">
       <config-file value="$PROJECT_DIR$/env/karma/configs/dev.js" />
       <karma-package-dir value="$PROJECT_DIR$/node_modules/karma" />
@@ -297,7 +301,7 @@
     </configuration>
     <configuration name="dependent-func perf.perceptron recalc" type="mocha-javascript-test-runner" temporary="true" nameIsGenerated="true">
       <node-interpreter>node</node-interpreter>
-      <node-options>--max-old-space-size=4096 --allow-natives-syntax</node-options>
+      <node-options>--max-old-space-size=4096 --allow-natives-syntax --prof</node-options>
       <mocha-package>$PROJECT_DIR$/node_modules/mocha</mocha-package>
       <working-directory>$PROJECT_DIR$</working-directory>
       <pass-parent-env>true</pass-parent-env>
@@ -391,11 +395,11 @@
     </list>
     <recent_temporary>
       <list>
-        <item itemvalue="Mocha.common &gt; main &gt; rx &gt; depend &gt; dependent-func.base" />
+        <item itemvalue="Mocha.dependent-func perf.perceptron recalc" />
         <item itemvalue="Mocha.common &gt; main &gt; rx &gt; depend &gt; dependent-func" />
+        <item itemvalue="Mocha.common &gt; main &gt; rx &gt; depend &gt; dependent-func.base" />
         <item itemvalue="Mocha.common &gt; main &gt; rx &gt; depend &gt; dependent-func.perceptron" />
         <item itemvalue="Mocha.dependent-func perf.perceptron memory create" />
-        <item itemvalue="Mocha.dependent-func perf.perceptron recalc" />
       </list>
     </recent_temporary>
   </component>
@@ -406,13 +410,6 @@
       <option name="number" value="Default" />
       <option name="presentableId" value="Default" />
       <updated>1567687848586</updated>
-    </task>
-    <task id="LOCAL-00279" summary="Develop. Tests OK.">
-      <created>1584076707975</created>
-      <option name="number" value="00279" />
-      <option name="presentableId" value="LOCAL-00279" />
-      <option name="project" value="LOCAL" />
-      <updated>1584076707975</updated>
     </task>
     <task id="LOCAL-00280" summary="Develop. Tests OK.">
       <created>1584077008549</created>
@@ -750,7 +747,14 @@
       <option name="project" value="LOCAL" />
       <updated>1585499893322</updated>
     </task>
-    <option name="localTasksCounter" value="328" />
+    <task id="LOCAL-00328" summary="depend deferred is completed. Tests OK.">
+      <created>1585500716487</created>
+      <option name="number" value="00328" />
+      <option name="presentableId" value="LOCAL-00328" />
+      <option name="project" value="LOCAL" />
+      <updated>1585500716487</updated>
+    </task>
+    <option name="localTasksCounter" value="329" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -812,7 +816,6 @@
   <component name="VcsManagerConfiguration">
     <option name="CHECK_CODE_SMELLS_BEFORE_PROJECT_COMMIT" value="false" />
     <option name="CHECK_NEW_TODO" value="false" />
-    <MESSAGE value="Before refactoring" />
     <MESSAGE value="Refactoring completed. Optimizing..." />
     <MESSAGE value="Optimizing..." />
     <MESSAGE value="BinaryTree in process..." />
@@ -837,7 +840,8 @@
     <MESSAGE value="Refactoring &amp; implement deferred. Tests OK." />
     <MESSAGE value="Depend deferred test completed. Tests OK." />
     <MESSAGE value="Fix DeferredCalc hung. Tests OK." />
-    <option name="LAST_COMMIT_MESSAGE" value="Fix DeferredCalc hung. Tests OK." />
+    <MESSAGE value="depend deferred is completed. Tests OK." />
+    <option name="LAST_COMMIT_MESSAGE" value="depend deferred is completed. Tests OK." />
   </component>
   <component name="XDebuggerManager">
     <breakpoint-manager>
