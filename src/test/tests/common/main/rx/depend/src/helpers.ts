@@ -37,7 +37,7 @@ export function __makeDependentFunc<TThisOuter,
 	TResultInner,
 	>(func: Func<TThisOuter, TArgs, TResultInner | Iterator<TResultInner>>) {
 	if (typeof func === 'function') {
-		return depend<TThisOuter, TArgs, TResultInner>(func as any, {})
+		return depend<TThisOuter, TArgs, TResultInner>(func as any)
 	}
 	return null
 }

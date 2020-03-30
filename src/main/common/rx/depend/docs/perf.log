@@ -431,3 +431,12 @@
   absoluteDiff: [ 192, 64408, -651 ],
   absoluteDiff: [ 456, 64017, -430 ],
   absoluteDiff: [ 303, 65930, -555 ],
+
+  absoluteDiff: [ 429, 68835, -571 ],
+  absoluteDiff: [ 360, 66975, -683 ],
+  absoluteDiff: [ 452, 66971, -491 ],
+  absoluteDiff: [ 402, 66500, -598 ],
+
+  absoluteDiff: [ 318, 6973, -380 ],
+  absoluteDiff: [ 288, 7061, -368 ],
+  absoluteDiff: [ 211, 6804, -441 ],
