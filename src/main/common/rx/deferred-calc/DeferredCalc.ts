@@ -11,8 +11,8 @@ export interface IDeferredCalcOptions {
 
 export class DeferredCalc {
 	private readonly _canBeCalcCallback: () => void
-	private readonly _calcFunc: (done: (value: any) => void) => void
-	private readonly _calcCompletedCallback: (value: any) => void
+	private readonly _calcFunc: () => void
+	private readonly _calcCompletedCallback: (...doneArgs: any[]) => void
 	private readonly _options: IDeferredCalcOptions
 	private readonly _timing: ITiming
 
@@ -28,7 +28,7 @@ export class DeferredCalc {
 
 	constructor(
 		canBeCalcCallback: () => void,
-		calcFunc: (done: (...args: any[]) => void) => void,
+		calcFunc: () => void,
 		calcCompletedCallback: (...doneArgs: any[]) => void,
 		options: IDeferredCalcOptions,
 		dontInvalidate?: boolean,
@@ -38,6 +38,7 @@ export class DeferredCalc {
 		this._calcCompletedCallback = calcCompletedCallback
 		this._options = options || {}
 		this._timing = this._options.timing || timingDefault
+		this._pulseBind = () => { this._pulse() }
 
 		if (!dontInvalidate) {
 			this.invalidate()
@@ -134,13 +135,16 @@ export class DeferredCalc {
 		this._timeCalcEnd = 0
 		this._pulse()
 
-		this._calcFunc(() => {
-			this._timeCalcEnd = this._timing.now()
-			if (this._calcCompletedCallback != null) {
-				this._calcCompletedCallback.apply(this, arguments)
-			}
-			this._pulse()
-		})
+		this._calcFunc()
+	}
+
+	public done(...args: any[])
+	public done(v1, v2, v3, v4, v5) {
+		this._timeCalcEnd = this._timing.now()
+		if (this._calcCompletedCallback != null) {
+			this._calcCompletedCallback(v1, v2, v3, v4, v5)
+		}
+		this._pulse()
 	}
 
 	private _canBeCalc() {
@@ -163,6 +167,7 @@ export class DeferredCalc {
 		return nextCalcTime
 	}
 
+	private readonly _pulseBind: () => void
 	private _pulse(): void {
 		// region Timer
 
@@ -237,7 +242,7 @@ export class DeferredCalc {
 				_timing.clearTimeout(timerId)
 			}
 			this._timeNextPulse = timeNextPulse
-			this._timerId = _timing.setTimeout(() => { this._pulse() }, timeNextPulse - now + 1) // ( + 1) is  fix hung
+			this._timerId = _timing.setTimeout(this._pulseBind, timeNextPulse - now + 1) // ( + 1) is  fix hung
 		}
 
 		// endregion

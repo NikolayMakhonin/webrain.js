@@ -79,7 +79,7 @@ staticDeferredCalc = new DeferredCalc(
 			staticDeferredCalc.calc()
 		}
 	},
-	function(done) {
+	function() {
 		if (staticDeferredCalc) {
 			assert.strictEqual(this, staticDeferredCalc)
 		} else {
@@ -91,9 +91,9 @@ staticDeferredCalc = new DeferredCalc(
 			type: EventType.Calc,
 		})
 		if (!staticCalcTime) {
-			done()
+			this.done()
 		} else {
-			timing.setTimeout(done, staticCalcTime + 1)
+			timing.setTimeout(() => this.done(), staticCalcTime + 1)
 		}
 	},
 	function() {
@@ -203,7 +203,7 @@ export class TestDeferredCalc extends TestVariants<
 								this.calc()
 							}
 						},
-						function(done) {
+						function() {
 							if (deferredCalc) {
 								assert.strictEqual(this, deferredCalc)
 							} else {
@@ -215,9 +215,9 @@ export class TestDeferredCalc extends TestVariants<
 								type: EventType.Calc,
 							})
 							if (!calcTime) {
-								done()
+								this.done()
 							} else {
-								timing.setTimeout(done, calcTime + 1)
+								timing.setTimeout(() => this.done(), calcTime + 1)
 							}
 						},
 						function() {

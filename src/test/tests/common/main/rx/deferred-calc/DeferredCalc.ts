@@ -696,12 +696,12 @@ describe('common > main > rx > deferred-calc > DeferredCalc', function() {
 				})
 				this.calc()
 			},
-			function(done) {
+			function() {
 				events.push({
 					time: timingDefault.now() - startTestTime,
 					type: EventType.Calc,
 				})
-				done()
+				this.done()
 			},
 			function() {
 				events.push({

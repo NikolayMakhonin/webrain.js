@@ -85,6 +85,14 @@ export function makeDependentFunc<
 
 // region makeDeferredFunc
 
+function _canBeCalcCallback() {
+	this.calc()
+}
+
+function _calcFunc() {
+	this.done()
+}
+
 export function _initDeferredCallState<
 	TThisOuter,
 	TArgs extends any[],
@@ -102,45 +110,60 @@ export function _initDeferredCallState<
 	}
 	state.deferredOptions = options
 
+	const thenable = {
+		subscribers: [],
+		resolved: false,
+		then(done) {
+			if (this.resolved) {
+				done()
+			} else {
+				this.subscribers.push(done)
+			}
+			return null
+		},
+		resolve() {
+			this.resolved = true
+			for (let i = 0, len = this.subscribers.length; i < len; i++) {
+				this.subscribers[i]()
+			}
+			this.subscribers.length = 0
+		},
+	}
+
 	let _resolve = null
 
 	const _deferredCalc = new DeferredCalc(
-		function() {
-			this.calc()
-		},
-		done => {
-			done()
-		},
+		_canBeCalcCallback,
+		_calcFunc,
 		() => {
 			const __resolve = _resolve
 			_resolve = null
-			__resolve()
+			if (__resolve) {
+				__resolve()
+			}
+			thenable.resolve()
 		},
 		options,
 		true,
 	)
 	state._deferredCalc = _deferredCalc
 
-	const executor = resolve => {
-		if (_resolve != null) {
-			throw new Error('_resolve != null')
-		}
-		_resolve = resolve
-		_deferredCalc.invalidate()
+	const iteratorResult = {
+		value: thenable as any,
+		done: false,
 	}
 
 	let stage = 2
-
 	const iterator: Iterator<TResultInner> = {
 		next: () => {
 			switch (stage) {
 				case 0: {
 					stage = 1
-					const value = new ThenableSync(executor)
-					return {
-						value,
-						done: false,
-					}
+					thenable.resolved = false
+					_deferredCalc.invalidate()
+					iteratorResult.value = thenable
+					iteratorResult.done = false
+					return iteratorResult
 				}
 				case 1: {
 					stage = 2
@@ -148,10 +171,9 @@ export function _initDeferredCallState<
 					if (isThenable(value)) {
 						state._internalError('You should use iterator instead thenable for async functions')
 					}
-					return {
-						value,
-						done: true,
-					}
+					iteratorResult.value = value
+					iteratorResult.done = true
+					return iteratorResult
 				}
 				default:
 					throw new Error('stage == ' + stage)

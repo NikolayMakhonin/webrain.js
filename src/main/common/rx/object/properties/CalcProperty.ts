@@ -103,7 +103,7 @@ export class CalcProperty<TValue, TInput = any>
 			() => {
 				this.onInvalidated()
 			},
-			(done: (isChanged: boolean, oldValue: TValue, newValue: TValue) => void) => {
+			() => {
 				const prevValue = this.state.value
 
 				const timeStart = now()
@@ -129,7 +129,7 @@ export class CalcProperty<TValue, TInput = any>
 						timeAsync = now()
 						Debugger.Instance.onCalculated(this, prevValue, val)
 						timeDebugger = now()
-						done(isChangedForce, prevValue, val)
+						this._deferredCalc.done(isChangedForce, prevValue, val)
 						timeEmitEvents = now()
 
 						this.timeSyncStat.add(timeSync - timeStart)
@@ -150,7 +150,7 @@ export class CalcProperty<TValue, TInput = any>
 						if (webrainOptions.equalsFunc.call(this.state, prevValue, this.state.value)) {
 							this.state.value = val = prevValue
 						}
-						done(prevValue !== val, prevValue, val)
+						this._deferredCalc.done(prevValue !== val, prevValue, val)
 						timeEmitEvents = now()
 
 						this.timeSyncStat.add(timeSync - timeStart)
