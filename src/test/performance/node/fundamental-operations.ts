@@ -1711,7 +1711,7 @@ describe('fundamental-operations', function() {
 		console.log(result)
 	})
 
-	xit('try catch', function() {
+	it('try catch', function() {
 		this.timeout(300000)
 
 		function tryCatch<T>(func: () => T|void, onValue: (value: T) => void, onError: (error) => void): boolean {

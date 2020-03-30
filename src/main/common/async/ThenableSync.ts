@@ -193,14 +193,12 @@ export class ThenableSync<TValue = any> implements IThenable<TValue> {
 			}
 
 			let isError
-			error = (() => {
-				try {
-					return onrejected(error)
-				} catch (err) {
-					isError = true
-					return err
-				}
-			})()
+			try {
+				error = onrejected(error)
+			} catch (err) {
+				isError = true
+				error = err
+			}
 
 			const result = resolveAsync(error, null, null, !lastExpression, customResolveValue)
 
@@ -232,14 +230,12 @@ export class ThenableSync<TValue = any> implements IThenable<TValue> {
 				}
 
 				let isError
-				_value = (() => {
-					try {
-						return onfulfilled(_value)
-					} catch (err) {
-						isError = true
-						return err
-					}
-				})()
+				try {
+					_value = onfulfilled(_value) as any
+				} catch (err) {
+					isError = true
+					_value = err
+				}
 
 				if (isError) {
 					const result = resolveAsync(_value as any, null, null, !lastExpression,
@@ -276,14 +272,12 @@ export class ThenableSync<TValue = any> implements IThenable<TValue> {
 				const rejected = onrejected
 					? (value): any => {
 						let isError
-						value = (() => {
-							try {
-								return onrejected(value)
-							} catch (err) {
-								isError = true
-								return err
-							}
-						})()
+						try {
+							value = onrejected(value)
+						} catch (err) {
+							isError = true
+							value = err
+						}
 						if (isError) {
 							result.reject(value)
 						} else {
@@ -302,14 +296,12 @@ export class ThenableSync<TValue = any> implements IThenable<TValue> {
 				_onfulfilled.push(onfulfilled
 					? (value: any): any => {
 						let isError
-						value = (() => {
-							try {
-								return onfulfilled(value)
-							} catch (err) {
-								isError = true
-								return err
-							}
-						})()
+						try {
+							value = onfulfilled(value)
+						} catch (err) {
+							isError = true
+							value = err
+						}
 						if (isError) {
 							resolveValue(value, rejected, rejected, customResolveValue)
 						} else {
