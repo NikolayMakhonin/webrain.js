@@ -86,7 +86,7 @@ export class ThenableSync<TValue = any> implements IThenable<TValue> {
 				if (e) {
 					this._reject(o)
 				} else {
-					value = o
+					this.__resolve(o)
 				}
 			},
 			(o, e) => {
@@ -107,7 +107,9 @@ export class ThenableSync<TValue = any> implements IThenable<TValue> {
 		if ((result & ResolveResult.Error) !== 0) {
 			return
 		}
+	}
 
+	private __resolve(value?: ThenableOrIteratorOrValue<TValue>): void {
 		this._status = ThenableSyncStatus.Resolved
 
 		this._value = value as TValue
@@ -142,8 +144,12 @@ export class ThenableSync<TValue = any> implements IThenable<TValue> {
 
 		const result = resolveValue(
 			error,
-			o => { error = o },
-			o => { this._reject(o) },
+			o => {
+				this.__reject(o)
+			},
+			o => {
+				this._reject(o)
+			},
 			this._customResolveValue,
 		)
 
@@ -151,7 +157,9 @@ export class ThenableSync<TValue = any> implements IThenable<TValue> {
 			this._status = ThenableSyncStatus.Resolving
 			return
 		}
+	}
 
+	private __reject(error?: ThenableOrIteratorOrValue<any>): void {
 		this._status = ThenableSyncStatus.Rejected
 
 		this._error = error
@@ -237,7 +245,7 @@ export class ThenableSync<TValue = any> implements IThenable<TValue> {
 					const result = resolveAsync(_value as any, null, null, !lastExpression,
 						customResolveValue)
 					if (isThenable(result)) {
-						return result.then(o => reject(o), onrejected)
+						return result.then(reject, onrejected)
 					}
 					return reject(result)
 				} else {

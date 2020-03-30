@@ -82,7 +82,10 @@ export function resolveIterator<T>(
 		nextOnImmediate: (value: ThenableOrIteratorOrValue<T>, isError: boolean) => void,
 		nextOnDeferred: (value: ThenableOrIteratorOrValue<T>, isError: boolean) => void,
 	): ResolveResult {
-		const body = () => {
+		let _onImmediate: (value: T, isError: boolean) => void
+		let _onDeferred: (value: T, isError: boolean) => void
+
+		try {
 			while (true) {
 				let iteratorResult: IteratorResult<ThenableOrIteratorOrValue<T>>
 
@@ -98,16 +101,24 @@ export function resolveIterator<T>(
 					return isError ? ResolveResult.ImmediateError : ResolveResult.Immediate
 				}
 
+				if (_onImmediate == null) {
+					_onImmediate = (o, nextIsError) => {
+						nextValue = o
+						isThrow = nextIsError
+					}
+				}
+
+				if (_onDeferred == null) {
+					_onDeferred = (o, nextIsError) => {
+						iterate(o, nextIsError, nextOnDeferred, nextOnDeferred)
+					}
+				}
+
 				const result = _resolveValue(
 					iteratorResult.value,
 					false,
-					(o, nextIsError) => {
-						nextValue = o
-						isThrow = nextIsError
-					},
-					(o, nextIsError) => {
-						iterate(o, nextIsError, nextOnDeferred, nextOnDeferred)
-					},
+					_onImmediate,
+					_onDeferred,
 					customResolveValue,
 				)
 
@@ -115,10 +126,6 @@ export function resolveIterator<T>(
 					return result
 				}
 			}
-		}
-
-		try {
-			return body()
 		} catch (err) {
 			nextOnImmediate(err, true)
 			return ResolveResult.ImmediateError
@@ -141,21 +148,29 @@ export function resolveThenable<T>(
 	let result = isError ? ResolveResult.DeferredError : ResolveResult.Deferred
 	let deferred
 
-	((thenable as any).thenLast || thenable.then).call(thenable, value => {
+	const _onfulfilled: TOnFulfilled<T, void> = value => {
 		if (deferred) {
 			onDeferred(value, isError)
 		} else {
 			result = isError ? ResolveResult.ImmediateError : ResolveResult.Immediate
 			onImmediate(value, isError)
 		}
-	}, err => {
+	}
+
+	const _onrejected: TOnRejected = err => {
 		if (deferred) {
 			onDeferred(err, true)
 		} else {
 			result = ResolveResult.ImmediateError
 			onImmediate(err, true)
 		}
-	})
+	}
+
+	if ((thenable as any).thenLast != null) {
+		(thenable as any).thenLast(_onfulfilled, _onrejected)
+	} else {
+		thenable.then(_onfulfilled, _onrejected)
+	}
 
 	deferred = true
 
@@ -175,6 +190,7 @@ function _resolveValue<T>(
 		}
 		value = o
 	}
+
 	const nextOnDeferred = (val, nextIsError) => {
 		_resolveValue(val, isError || nextIsError, onDeferred, onDeferred, customResolveValue)
 	}
