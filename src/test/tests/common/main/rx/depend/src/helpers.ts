@@ -13,7 +13,7 @@ import {
 	reduceCallStates,
 	valueIdToStateMap,
 	valueToIdMap,
-} from '../../../../../../../main/common/rx/depend/makeGetOrCreateCallState'
+} from '../../../../../../../main/common/rx/depend/createCallStateProvider'
 import {assert} from '../../../../../../../main/common/test/Assert'
 import {delay} from '../../../../../../../main/common/time/helpers'
 

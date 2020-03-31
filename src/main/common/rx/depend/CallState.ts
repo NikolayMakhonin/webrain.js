@@ -454,6 +454,8 @@ export type TFuncCall<
 	state: CallState<TThisOuter, TArgs, TResultInner>,
 ) => TResultInner
 
+let usageNextId = 1
+
 export class CallState<
 	TThisOuter,
 	TArgs extends any[],
@@ -564,6 +566,10 @@ export class CallState<
 	// endregion
 
 	// region methods
+
+	public updateUsageStat() {
+		this._deleteOrder = usageNextId++
+	}
 
 	// region 1: calc
 

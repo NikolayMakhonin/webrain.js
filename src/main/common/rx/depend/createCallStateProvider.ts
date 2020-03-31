@@ -65,7 +65,7 @@ export function createCallState<
 	callWithArgs: TCall<TArgs>,
 	funcCall: TFuncCall<TThisOuter, TArgs, TResultInner>,
 	valueIds: number[],
-): ICallState<TThisOuter, TArgs, TResultInner> {
+): CallState<TThisOuter, TArgs, TResultInner> {
 	const callState = new CallState(
 		func,
 		thisOuter,
@@ -83,11 +83,19 @@ export function createCallState<
 	return callState
 }
 
-let usageNextId = 1
 export const valueIdsBuffer: number[] = []
 
+export interface ICallStateProvider<
+	TThisOuter,
+	TArgs extends any[],
+	TResultInner,
+> {
+	get: Func<TThisOuter, TArgs, CallState<TThisOuter, TArgs, TResultInner>>
+	getOrCreate: Func<TThisOuter, TArgs, CallState<TThisOuter, TArgs, TResultInner>>
+}
+
 // tslint:disable-next-line:no-shadowed-variable
-export function makeGetOrCreateCallState<
+export function createCallStateProvider<
 	TThisOuter,
 	TArgs extends any[],
 	TResultInner,
@@ -95,13 +103,42 @@ export function makeGetOrCreateCallState<
 	func: Func<unknown, TArgs, unknown>,
 	funcCall: TFuncCall<TThisOuter, TArgs, TResultInner>,
 	initCallState: (state: CallState<TThisOuter, TArgs, TResultInner>) => void,
-): Func<TThisOuter, TArgs, CallState<TThisOuter, TArgs, TResultInner>> {
+): ICallStateProvider<TThisOuter, TArgs, TResultInner> {
 	const funcId = nextValueId++
 	const funcHash = (17 * 31 + funcId) | 0
 
-	return function _getOrCreateCallState(this: TThisOuter) {
+	function findCallState(
+		callStates: Array<CallState<TThisOuter, TArgs, TResultInner>>,
+		countValueStates: number,
+		_valueIdsBuffer: number[],
+	) {
+		for (let i = 0, len = callStates.length; i < len; i++) {
+			const state = callStates[i]
+			const valueIds = state.valueIds
+			if (valueIds.length === countValueStates) {
+				let j = 0
+				for (; j < countValueStates; j++) {
+					if (valueIds[j] !== _valueIdsBuffer[j]) {
+						break
+					}
+				}
+
+				if (j === countValueStates) {
+					return state
+				}
+			}
+		}
+
+		return null
+	}
+
+	function getCallState(this: TThisOuter) {
+		// region getCallState
+
 		const countArgs = arguments.length
 		const countValueStates = countArgs + 2
+
+		// region calc hash
 
 		valueIdsBuffer[0] = funcId
 		let hash = funcHash
@@ -118,60 +155,98 @@ export function makeGetOrCreateCallState<
 			hash = (hash * 31 + valueId) | 0
 		}
 
-		let callState
+		// endregion
+
+		let callState: CallState<TThisOuter, TArgs, TResultInner>
 		let callStates = callStateHashTable.get(hash)
 		if (callStates != null) {
-			for (let i = 0, len = callStates.length; i < len; i++) {
-				const state = callStates[i]
-				const valueIds = state.valueIds
-				if (valueIds.length === countValueStates) {
-					let j = 0
-					for (; j < countValueStates; j++) {
-						if (valueIds[j] !== valueIdsBuffer[j]) {
-							break
-						}
-					}
+			callState = findCallState(callStates, countValueStates, valueIdsBuffer)
+		}
 
-					if (j === countValueStates) {
-						callState = state
-						break
-					}
-				}
-			}
-		} else {
+		// endregion
+
+		if (callState != null) {
+			callState.updateUsageStat()
+		}
+
+		return callState
+	}
+
+	function getOrCreateCallState(this: TThisOuter) {
+		// region getCallState
+
+		const countArgs = arguments.length
+		const countValueStates = countArgs + 2
+
+		// region calc hash
+
+		valueIdsBuffer[0] = funcId
+		let hash = funcHash
+
+		{
+			const valueId = getOrCreateValueId(this)
+			valueIdsBuffer[1] = valueId
+			hash = (hash * 31 + valueId) | 0
+		}
+
+		for (let i = 0; i < countArgs; i++) {
+			const valueId = getOrCreateValueId(arguments[i])
+			valueIdsBuffer[i + 2] = valueId
+			hash = (hash * 31 + valueId) | 0
+		}
+
+		// endregion
+
+		let callState: CallState<TThisOuter, TArgs, TResultInner>
+		let callStates = callStateHashTable.get(hash)
+		if (callStates != null) {
+			callState = findCallState(callStates, countValueStates, valueIdsBuffer)
+		}
+
+		// endregion
+
+		if (callState != null) {
+			callState.updateUsageStat()
+			return callState
+		}
+
+		if (callStates == null) {
 			callStates = []
 			callStateHashTable.set(hash, callStates)
 		}
 
-		if (callState == null) {
-			const valueIdsClone: number[] = [] // new Array(countValueStates)
-			for (let i = 0; i < countValueStates; i++) {
-				const valueId = valueIdsBuffer[i]
-				valueIdsClone[i] = valueId
-				if (i > 0) {
-					const valueState = getValueState(valueId)
-					valueState.usageCount++
-				}
+		const valueIdsClone: number[] = [] // new Array(countValueStates)
+		for (let i = 0; i < countValueStates; i++) {
+			const valueId = valueIdsBuffer[i]
+			valueIdsClone[i] = valueId
+			if (i > 0) {
+				const valueState = getValueState(valueId)
+				valueState.usageCount++
 			}
-
-			callState = createCallState<TThisOuter, TArgs, TResultInner>(
-				func,
-				this,
-				createCallWithArgs.apply(null, arguments),
-				funcCall,
-				valueIdsClone,
-			)
-
-			if (initCallState != null) {
-				initCallState(callState)
-			}
-
-			callStates.push(callState)
 		}
 
-		callState.deleteOrder = usageNextId++
+		callState = createCallState<TThisOuter, TArgs, TResultInner>(
+			func,
+			this,
+			createCallWithArgs.apply(null, arguments),
+			funcCall,
+			valueIdsClone,
+		)
+
+		if (initCallState != null) {
+			initCallState(callState)
+		}
+
+		callState.updateUsageStat()
+
+		callStates.push(callState)
 
 		return callState
+	}
+
+	return {
+		get: getCallState,
+		getOrCreate: getOrCreateCallState,
 	}
 }
 

@@ -3,13 +3,13 @@ import {resolveAsync, ThenableSync} from '../../async/ThenableSync'
 import {DeferredCalc, IDeferredCalcOptions} from '../deferred-calc/DeferredCalc'
 import {CallState, TCallState, TFuncCall} from './CallState'
 import {Func, ICallState, IDeferredOptions} from './contracts'
+import {createCallStateProvider, ICallStateProvider} from './createCallStateProvider'
 import {InternalError} from './helpers'
-import {makeGetOrCreateCallState} from './makeGetOrCreateCallState'
 
-type TRootStateMap = WeakMap<Func<any, any, any>, Func<any, any, TCallState>>
-const rootStateMap: TRootStateMap = new WeakMap()
+type TCallStateProviderMap = WeakMap<Func<any, any, any>, ICallStateProvider<any, any, any>>
+const callStateProviderMap: TCallStateProviderMap = new WeakMap()
 
-// region getCallState
+// region getCallState / getOrCreateCallState
 
 // tslint:disable-next-line:no-empty
 const EMPTY_FUNC: Func<any, any, any> = () => {}
@@ -25,7 +25,27 @@ export function getCallState<
 	TArgs,
 	ICallState<TThisOuter, TArgs, TResultInner>
 > {
-	return rootStateMap.get(func) || EMPTY_FUNC
+	const callStateProvider = callStateProviderMap.get(func)
+	return callStateProvider == null
+		? EMPTY_FUNC
+		: callStateProvider.get
+}
+
+export function getOrCreateCallState<
+	TThisOuter,
+	TArgs extends any[],
+	TResultInner,
+>(
+	func: Func<TThisOuter, TArgs, TResultInner>,
+): Func<
+	TThisOuter,
+	TArgs,
+	ICallState<TThisOuter, TArgs, TResultInner>
+> {
+	const callStateProvider = callStateProviderMap.get(func)
+	return callStateProvider == null
+		? EMPTY_FUNC
+		: callStateProvider.getOrCreate
 }
 
 // endregion
@@ -36,7 +56,7 @@ export function createDependentFunc<
 	TThisOuter,
 	TArgs extends any[],
 	TResultInner,
->(getState: Func<TThisOuter, TArgs, CallState<TThisOuter, TArgs, TResultInner>>)
+>(callStateProvider: ICallStateProvider<TThisOuter, TArgs, TResultInner>)
 : Func<
 	TThisOuter,
 	TArgs,
@@ -48,7 +68,7 @@ export function createDependentFunc<
 > {
 	return function() {
 		const state: CallState<TThisOuter, TArgs, TResultInner>
-			= getState.apply(this, arguments)
+			= callStateProvider.getOrCreate.apply(this, arguments)
 		return state.getValue() as any
 	}
 }
@@ -66,17 +86,17 @@ export function makeDependentFunc<
 	TArgs,
 	TResultInner extends ThenableOrIterator<infer V> ? ThenableOrValue<V> : TResultInner
 > {
-	if (rootStateMap.get(func)) {
+	if (callStateProviderMap.get(func)) {
 		throw new InternalError('Multiple call makeDependentFunc() for func: ' + func)
 	}
 
-	const getOrCreateCallState = makeGetOrCreateCallState(func, funcCall, initCallState)
+	const callStateProvider = createCallStateProvider(func, funcCall, initCallState)
 
-	rootStateMap.set(func, getOrCreateCallState)
+	callStateProviderMap.set(func, callStateProvider)
 
-	const dependentFunc = createDependentFunc(getOrCreateCallState)
+	const dependentFunc = createDependentFunc(callStateProvider)
 
-	rootStateMap.set(dependentFunc, getOrCreateCallState)
+	callStateProviderMap.set(dependentFunc, callStateProvider)
 
 	return dependentFunc as any
 }

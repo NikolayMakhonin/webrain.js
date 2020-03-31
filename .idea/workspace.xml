@@ -8,8 +8,14 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="69b2ee16-521b-4efd-b473-8e19e3df4d09" name="Default Changelist" comment="">
+      <change afterPath="$PROJECT_DIR$/src/main/common/lists/DependMap.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/common/rx/depend/CallState.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/common/rx/depend/CallState.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/common/rx/depend/depend.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/common/rx/depend/depend.ts" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/common/rx/depend/docs/perf.log" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/common/rx/depend/docs/perf.log" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/common/rx/depend/makeGetOrCreateCallState.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/common/rx/depend/createCallStateProvider.ts" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/test/tests/common/main/rx/depend/src/helpers.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/test/tests/common/main/rx/depend/src/helpers.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/test/tests/node/main/rx/depend/v8/dependent-func.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/test/tests/node/main/rx/depend/v8/dependent-func.ts" afterDir="false" />
     </list>
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
     <option name="SHOW_DIALOG" value="false" />
@@ -56,7 +62,7 @@
     <property name="WebServerToolWindowFactoryState" value="false" />
     <property name="auto.test.manager.delay" value="5000" />
     <property name="javascript.karma.karma_node_package_dir" value="" />
-    <property name="last_opened_file_path" value="$PROJECT_DIR$/src/test/performance/node" />
+    <property name="last_opened_file_path" value="$PROJECT_DIR$/src/main/common/lists" />
     <property name="node.js.detected.package.eslint" value="true" />
     <property name="node.js.detected.package.standard" value="true" />
     <property name="node.js.detected.package.tslint" value="true" />
@@ -76,9 +82,9 @@
   </component>
   <component name="RecentsManager">
     <key name="CopyFile.RECENT_KEYS">
+      <recent name="L:\Work\_GIT\GitHub\NodeJs\modules\webrain\src\main\common\lists" />
       <recent name="L:\Work\_GIT\GitHub\NodeJs\modules\webrain\src\test\performance\node" />
       <recent name="L:\Work\_GIT\GitHub\NodeJs\modules\webrain\src\test\tests\common\main\lists" />
-      <recent name="L:\Work\_GIT\GitHub\NodeJs\modules\webrain\src\main\common\lists" />
       <recent name="L:\Work\_GIT\GitHub\NodeJs\modules\webrain\src\test\tests\common\main\test" />
       <recent name="L:\Work\_GIT\GitHub\NodeJs\modules\webrain\src\main\common\rx\depend" />
     </key>
@@ -238,7 +244,7 @@
       <working-directory>$PROJECT_DIR$</working-directory>
       <pass-parent-env>true</pass-parent-env>
       <ui>bdd</ui>
-      <extra-mocha-options>--opts ./env/mocha/configs/babel/mocha.opts</extra-mocha-options>
+      <extra-mocha-options>--opts ./env/mocha/configs/babel/mocha.opts --watch</extra-mocha-options>
       <test-kind>SUITE</test-kind>
       <test-file>$PROJECT_DIR$/src/test/tests/common/main/rx/depend/dependent-func.ts</test-file>
       <test-names>
@@ -387,17 +393,17 @@
       <item itemvalue="Mocha.common &gt; main &gt; rx &gt; depend &gt; dependent-func" />
       <item itemvalue="Mocha.common &gt; main &gt; rx &gt; properties &gt; CalcObjectBuilder" />
       <item itemvalue="Mocha.common &gt; main &gt; helpers &gt; ThenableSync" />
-      <item itemvalue="Node.js.dependent-func.js" />
-      <item itemvalue="npm.Coverage Mocha Report" />
       <item itemvalue="Mocha.fundamental-operations.try catch" />
       <item itemvalue="Mocha.common &gt; async" />
+      <item itemvalue="Node.js.dependent-func.js" />
+      <item itemvalue="npm.Coverage Mocha Report" />
     </list>
     <recent_temporary>
       <list>
+        <item itemvalue="Mocha.common &gt; main &gt; rx &gt; depend &gt; dependent-func" />
         <item itemvalue="Mocha.common &gt; async" />
         <item itemvalue="Mocha.common &gt; main &gt; helpers &gt; ThenableSync" />
         <item itemvalue="Mocha.fundamental-operations.try catch" />
-        <item itemvalue="Mocha.common &gt; main &gt; rx &gt; depend &gt; dependent-func" />
         <item itemvalue="Mocha.common &gt; main &gt; rx &gt; properties &gt; CalcObjectBuilder" />
       </list>
     </recent_temporary>
@@ -409,13 +415,6 @@
       <option name="number" value="Default" />
       <option name="presentableId" value="Default" />
       <updated>1567687848586</updated>
-    </task>
-    <task id="LOCAL-00284" summary="Develop">
-      <created>1584116039684</created>
-      <option name="number" value="00284" />
-      <option name="presentableId" value="LOCAL-00284" />
-      <option name="project" value="LOCAL" />
-      <updated>1584116039684</updated>
     </task>
     <task id="LOCAL-00285" summary="Develop. Tests OK.">
       <created>1584164888358</created>
@@ -753,7 +752,14 @@
       <option name="project" value="LOCAL" />
       <updated>1585556039412</updated>
     </task>
-    <option name="localTasksCounter" value="333" />
+    <task id="LOCAL-00333" summary="depend is completed. Tests OK.">
+      <created>1585556426055</created>
+      <option name="number" value="00333" />
+      <option name="presentableId" value="LOCAL-00333" />
+      <option name="project" value="LOCAL" />
+      <updated>1585556426055</updated>
+    </task>
+    <option name="localTasksCounter" value="334" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -815,7 +821,6 @@
   <component name="VcsManagerConfiguration">
     <option name="CHECK_CODE_SMELLS_BEFORE_PROJECT_COMMIT" value="false" />
     <option name="CHECK_NEW_TODO" value="false" />
-    <MESSAGE value="Added forEachPermutation best algorithm" />
     <MESSAGE value="forEachPermutation tested" />
     <MESSAGE value="BinaryTree is fully tested" />
     <MESSAGE value="BinaryTree is fully tested (22 mins for combinations test)" />
@@ -840,7 +845,8 @@
     <MESSAGE value="depend deferred, optimization. Tests OK." />
     <MESSAGE value="DeferredCalc, optimization. Tests OK." />
     <MESSAGE value="async optimization. Tests OK." />
-    <option name="LAST_COMMIT_MESSAGE" value="async optimization. Tests OK." />
+    <MESSAGE value="depend is completed. Tests OK." />
+    <option name="LAST_COMMIT_MESSAGE" value="depend is completed. Tests OK." />
   </component>
   <component name="XDebuggerManager">
     <breakpoint-manager>
@@ -853,7 +859,7 @@
         </line-breakpoint>
         <line-breakpoint enabled="true" type="javascript">
           <url>file://$PROJECT_DIR$/src/main/common/rx/depend/depend.ts</url>
-          <line>183</line>
+          <line>203</line>
           <option name="timeStamp" value="1086" />
         </line-breakpoint>
       </breakpoints>
