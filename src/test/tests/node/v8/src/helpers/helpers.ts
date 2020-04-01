@@ -62,6 +62,21 @@ function _checkIsOptimized(obj: TAnyFunc|object, optimized: Set<any> = null, sca
 			return null
 		}
 
+		if (obj instanceof Int8Array
+			|| obj instanceof Int16Array
+			|| obj instanceof Int32Array
+			|| obj instanceof BigInt64Array
+			|| obj instanceof Uint8Array
+			|| obj instanceof Uint16Array
+			|| obj instanceof Uint32Array
+			|| obj instanceof BigUint64Array
+			|| obj instanceof Float32Array
+			|| obj instanceof Float64Array
+			|| obj instanceof Uint8ClampedArray
+		) {
+			return null
+		}
+
 		const shouldInfo = Array.isArray(obj)
 			? shouldArrayOptimizationInfo
 			: shouldObjectOptimizationInfo

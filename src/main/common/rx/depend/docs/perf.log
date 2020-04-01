@@ -484,3 +484,35 @@
 
   absoluteDiff: [ 272, 6858, -391 ],
   absoluteDiff: [ 1497626, 7317, 1203 ],
+  absoluteDiff: [ 1481797, 6715, 682 ],
+  absoluteDiff: [ 242, 7115, -418 ],
+  absoluteDiff: [ 1483550, 7318, 993 ],
+
+  // using callStateProviderState
+  absoluteDiff: [ 268, 7249, -433 ],
+  absoluteDiff: [ 750770, 9369, 1085 ],
+
+  // using callStateProvider
+  absoluteDiff: [ 310, 8502, -441 ],
+  absoluteDiff: [ 40737, 11979, 2453 ],
+  absoluteDiff: [ 303, 7985, -399 ],
+  absoluteDiff: [ 51255, 12248, 1917 ],
+  absoluteDiff: [ 306, 7602, -368 ],
+  absoluteDiff: [ 1536289, 10526, 1529 ],
+  absoluteDiff: [ 306, 7708, -368 ],
+  absoluteDiff: [ 1535143, 11692, 1841 ],
+  absoluteDiff: [ 276, 6884, -391 ],
+  absoluteDiff: [ 353, 7057, -387 ],
+  absoluteDiff: [ 6736, 9246, 3723 ],
+  absoluteDiff: [ 303, 7103, -368 ],
+  absoluteDiff: [ 793408, 10653, 622 ],
+  absoluteDiff: [ 314, 6996, -322 ],
+  absoluteDiff: [ 1539248, 10216, 851 ],
+  absoluteDiff: [ 357, 7211, -352 ],
+  absoluteDiff: [ 409699, 11753, 1242 ],
+  absoluteDiff: [ 288, 7260, -352 ],
+  absoluteDiff: [ 1509911, 10483, 1188 ],
+  absoluteDiff: [ 257, 7188, -406 ],
+  absoluteDiff: [ 6256, 9400, 4470 ],
+
+

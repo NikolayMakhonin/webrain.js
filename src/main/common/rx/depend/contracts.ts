@@ -56,7 +56,7 @@ export interface ICallState<
 	readonly callWithArgs: TCall<TArgs>
 	readonly funcCall: TFuncCall<TThisOuter, TArgs, TResultInner>
 
-	readonly valueIds: number[]
+	readonly valueIds: Int32Array
 
 	status: CallStatus
 
