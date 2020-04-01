@@ -1422,7 +1422,7 @@ export function getOrCreateCallState<
 // region get/create/delete/reduce CallStates
 
 export const callStateHashTable = new Map<number, TCallState[]>()
-let callStatesCount = 0
+let callStatesCount = 2 << 30
 
 // region createCallState
 

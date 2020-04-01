@@ -41,7 +41,7 @@ export function testRecalc() {
 // }
 
 for (let i = 0; i < 10000; i++) {
-	testRecalc()
+	testCreate()
 }
 
 // function __func1(a, b) {
