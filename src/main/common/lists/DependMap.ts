@@ -15,7 +15,7 @@ import {IObservableMap, MapChangedType} from './contracts/IMapChanged'
 import {fillMap} from './helpers/set'
 
 export class DependMap<K, V>
-	implements IObservableMap<K, V>,
+	implements Map<K, V>,
 		IMergeable<DependMap<K, V>, object>,
 		ISerializable
 {

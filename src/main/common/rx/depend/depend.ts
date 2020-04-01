@@ -1,107 +1,7 @@
 import {isThenable, ThenableOrIterator, ThenableOrValue} from '../../async/async'
-import {resolveAsync, ThenableSync} from '../../async/ThenableSync'
 import {DeferredCalc, IDeferredCalcOptions} from '../deferred-calc/DeferredCalc'
-import {CallState, TCallState, TFuncCall} from './CallState'
-import {Func, ICallState, IDeferredOptions} from './contracts'
-import {createCallStateProvider, ICallStateProvider} from './createCallStateProvider'
-import {InternalError} from './helpers'
-
-type TCallStateProviderMap = WeakMap<Func<any, any, any>, ICallStateProvider<any, any, any>>
-const callStateProviderMap: TCallStateProviderMap = new WeakMap()
-
-// region getCallState / getOrCreateCallState
-
-// tslint:disable-next-line:no-empty
-const EMPTY_FUNC: Func<any, any, any> = () => {}
-
-export function getCallState<
-	TThisOuter,
-	TArgs extends any[],
-	TResultInner,
->(
-	func: Func<TThisOuter, TArgs, TResultInner>,
-): Func<
-	TThisOuter,
-	TArgs,
-	ICallState<TThisOuter, TArgs, TResultInner>
-> {
-	const callStateProvider = callStateProviderMap.get(func)
-	return callStateProvider == null
-		? EMPTY_FUNC
-		: callStateProvider.get
-}
-
-export function getOrCreateCallState<
-	TThisOuter,
-	TArgs extends any[],
-	TResultInner,
->(
-	func: Func<TThisOuter, TArgs, TResultInner>,
-): Func<
-	TThisOuter,
-	TArgs,
-	ICallState<TThisOuter, TArgs, TResultInner>
-> {
-	const callStateProvider = callStateProviderMap.get(func)
-	return callStateProvider == null
-		? EMPTY_FUNC
-		: callStateProvider.getOrCreate
-}
-
-// endregion
-
-// region makeDependentFunc
-
-export function createDependentFunc<
-	TThisOuter,
-	TArgs extends any[],
-	TResultInner,
->(callStateProvider: ICallStateProvider<TThisOuter, TArgs, TResultInner>)
-: Func<
-	TThisOuter,
-	TArgs,
-	Func<
-		TThisOuter,
-		TArgs,
-		TResultInner extends ThenableOrIterator<infer V> ? ThenableOrValue<V> : TResultInner
-	>
-> {
-	return function() {
-		const state: CallState<TThisOuter, TArgs, TResultInner>
-			= callStateProvider.getOrCreate.apply(this, arguments)
-		return state.getValue() as any
-	}
-}
-
-export function makeDependentFunc<
-	TThisOuter,
-	TArgs extends any[],
-	TResultInner,
->(
-	func: Func<unknown, TArgs, unknown>,
-	funcCall: TFuncCall<TThisOuter, TArgs, TResultInner>,
-	initCallState?: (state: CallState<TThisOuter, TArgs, TResultInner>) => void,
-): Func<
-	TThisOuter,
-	TArgs,
-	TResultInner extends ThenableOrIterator<infer V> ? ThenableOrValue<V> : TResultInner
-> {
-	if (callStateProviderMap.get(func)) {
-		throw new InternalError('Multiple call makeDependentFunc() for func: ' + func)
-	}
-
-	const callStateProvider = createCallStateProvider(func, funcCall, initCallState)
-
-	callStateProviderMap.set(func, callStateProvider)
-
-	const dependentFunc = createDependentFunc(callStateProvider)
-
-	callStateProviderMap.set(dependentFunc, callStateProvider)
-
-	return dependentFunc as any
-}
-
-// endregion
+import {CallState, makeDependentFunc, TFuncCall} from './CallState'
+import {Func, IDeferredOptions} from './contracts'
 
 // region makeDeferredFunc
 
@@ -242,7 +142,12 @@ export function _funcCall<
 	return state.callWithArgs(state.thisOuter, state.func) as any
 }
 
-/** Inner this same as outer this */
+/**
+ * Inner this same as outer this
+ * @param func
+ * @param deferredOptions
+ * @param isSimpleProperty sync, no deferred, without dependencies
+ */
 export function depend<
 	TThisOuter,
 	TArgs extends any[],
@@ -250,15 +155,19 @@ export function depend<
 	TResultWrapper = TResultInner,
 >(
 	func: Func<TThisOuter, TArgs, TResultInner>,
-	defaultOptions?: IDeferredOptions,
+	deferredOptions?: IDeferredOptions,
+	isSimpleProperty?: boolean,
 ): Func<
 	TThisOuter,
 	TArgs,
 	TResultInner extends ThenableOrIterator<infer V> ? ThenableOrValue<V> : TResultInner
 > {
-	return defaultOptions == null
-		? makeDependentFunc(func, _funcCall) as any
-		: makeDeferredFunc(func, _funcCall, defaultOptions) as any
+	if (isSimpleProperty && deferredOptions != null) {
+		throw new Error('isSimpleProperty should not be deferred')
+	}
+	return deferredOptions == null
+		? makeDependentFunc(func, _funcCall, null, isSimpleProperty) as any
+		: makeDeferredFunc(func, _funcCall, deferredOptions) as any
 }
 
 export function funcCallX<
@@ -269,7 +178,12 @@ export function funcCallX<
 	return state.callWithArgs(state, state.func) as any
 }
 
-/** Inner this as CallState */
+/**
+ * Inner this as CallState
+ * @param func
+ * @param deferredOptions
+ * @param isSimpleProperty sync, no deferred, without dependencies
+ */
 export function dependX<
 	TThisOuter,
 	TArgs extends any[],
@@ -280,15 +194,19 @@ export function dependX<
 		TArgs,
 		TResultInner
 	>,
-	defaultOptions?: IDeferredOptions,
+	deferredOptions?: IDeferredOptions,
+	isSimpleProperty?: boolean,
 ): Func<
 	TThisOuter,
 	TArgs,
 	TResultInner extends ThenableOrIterator<infer V> ? ThenableOrValue<V> : TResultInner
 > {
-	return defaultOptions == null
-		? makeDependentFunc(func, funcCallX) as any
-		: makeDeferredFunc(func, funcCallX, defaultOptions) as any
+	if (isSimpleProperty && deferredOptions != null) {
+		throw new Error('isSimpleProperty should not be deferred')
+	}
+	return deferredOptions == null
+		? makeDependentFunc(func, funcCallX, null, isSimpleProperty) as any
+		: makeDeferredFunc(func, funcCallX, deferredOptions) as any
 }
 
 // endregion

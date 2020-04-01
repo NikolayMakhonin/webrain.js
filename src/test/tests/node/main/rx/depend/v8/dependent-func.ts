@@ -1,7 +1,7 @@
 /* tslint:disable:no-identical-functions no-shadowed-variable no-var-requires ordered-imports */
 import * as ObjectPool from '../../../../../../../main/common/lists/ObjectPool'
 import * as PairingHeap from '../../../../../../../main/common/lists/PairingHeap'
-import * as getOrCreateCallState from '../../../../../../../main/common/rx/depend/createCallStateProvider'
+import * as getOrCreateCallState from '../../../../../../../main/common/rx/depend/createCallStateProviderState'
 import {getCallState} from '../../../../../../../main/common/rx/depend/facade'
 import * as facade from '../../../../../../../main/common/rx/depend/facade'
 import * as helpers from '../../../../../../../main/common/rx/depend/helpers'
@@ -116,7 +116,7 @@ describe('node > main > rx > depend > dependent-func', function() {
 			checkOptimization(iteration)
 
 			for (let j = 0; j < 10; j++) {
-				const state = getCallState(input)()
+				const state = getOrCreateCallState(input)()
 				await state.invalidate()
 			}
 

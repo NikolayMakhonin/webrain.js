@@ -20,10 +20,10 @@
         <y:ProxyAutoBoundsNode>
           <y:Realizers active="0">
             <y:GroupNode>
-              <y:Geometry height="511.71396484375" width="417.103515625" x="406.708984375" y="90.28603515625002"/>
+              <y:Geometry height="511.71396484375" width="432.728515625" x="406.708984375" y="90.28603515625002"/>
               <y:Fill color="#F2F0D8" transparent="false"/>
               <y:BorderStyle color="#000000" type="line" width="1.0"/>
-              <y:NodeLabel alignment="center" autoSizePolicy="node_width" backgroundColor="#B7B69E" borderDistance="0.0" fontFamily="Dialog" fontSize="15" fontStyle="plain" hasLineColor="false" height="22.37646484375" horizontalTextPosition="center" iconTextGap="4" modelName="internal" modelPosition="t" textColor="#000000" verticalTextPosition="bottom" visible="true" width="417.103515625" x="0.0" xml:space="preserve" y="0.0">Get</y:NodeLabel>
+              <y:NodeLabel alignment="center" autoSizePolicy="node_width" backgroundColor="#B7B69E" borderDistance="0.0" fontFamily="Dialog" fontSize="15" fontStyle="plain" hasLineColor="false" height="22.37646484375" horizontalTextPosition="center" iconTextGap="4" modelName="internal" modelPosition="t" textColor="#000000" verticalTextPosition="bottom" visible="true" width="432.728515625" x="0.0" xml:space="preserve" y="0.0">Get</y:NodeLabel>
               <y:Shape type="rectangle"/>
               <y:DropShadow color="#D2D2D2" offsetX="4" offsetY="4"/>
               <y:State closed="false" closedHeight="50.0" closedWidth="50.0" innerGraphDisplayEnabled="false"/>
@@ -110,7 +110,7 @@
           <data key="d5" xml:space="preserve"><![CDATA[Событие любое]]></data>
           <data key="d6">
             <y:ShapeNode>
-              <y:Geometry height="30.0" width="80.0" x="728.8125" y="224.22500000000002"/>
+              <y:Geometry height="30.0" width="80.0" x="744.4375" y="239.85000000000002"/>
               <y:Fill color="#CCCCFF" transparent="false"/>
               <y:BorderStyle color="#000000" raised="false" type="line" width="1.0"/>
               <y:NodeLabel alignment="center" autoSizePolicy="content" fontFamily="Calibri" fontSize="16" fontStyle="plain" hasBackgroundColor="false" hasLineColor="false" height="20.0" horizontalTextPosition="center" iconTextGap="4" modelName="internal" modelPosition="c" textColor="#000000" verticalTextPosition="bottom" visible="true" width="70.0" x="5.0" xml:space="preserve" y="5.0">countArgs</y:NodeLabel>

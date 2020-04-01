@@ -7,13 +7,16 @@
     <option name="SHOW_STRUCTURE" value="true" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="69b2ee16-521b-4efd-b473-8e19e3df4d09" name="Default Changelist" comment="">
-      <change afterPath="$PROJECT_DIR$/src/main/common/lists/DependMap.ts" afterDir="false" />
+    <list default="true" id="69b2ee16-521b-4efd-b473-8e19e3df4d09" name="Default Changelist" comment="depend . Tests OK.">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/common/lists/DependMap.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/common/lists/DependMap.ts" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/common/rx/depend/CallState.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/common/rx/depend/CallState.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/common/rx/depend/createCallStateProvider.ts" beforeDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/common/rx/depend/depend.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/common/rx/depend/depend.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/common/rx/depend/docs/makeGetOrCreateCallState.graphml" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/common/rx/depend/docs/makeGetOrCreateCallState.graphml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/common/rx/depend/docs/perf.log" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/common/rx/depend/docs/perf.log" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/common/rx/depend/makeGetOrCreateCallState.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/common/rx/depend/createCallStateProvider.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/common/rx/depend/facade.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/common/rx/depend/facade.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/test/performance/node/dependent-func.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/test/performance/node/dependent-func.ts" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/test/tests/common/main/rx/depend/src/helpers.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/test/tests/common/main/rx/depend/src/helpers.ts" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/test/tests/node/main/rx/depend/v8/dependent-func.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/test/tests/node/main/rx/depend/v8/dependent-func.ts" afterDir="false" />
     </list>
@@ -62,7 +65,7 @@
     <property name="WebServerToolWindowFactoryState" value="false" />
     <property name="auto.test.manager.delay" value="5000" />
     <property name="javascript.karma.karma_node_package_dir" value="" />
-    <property name="last_opened_file_path" value="$PROJECT_DIR$/src/main/common/lists" />
+    <property name="last_opened_file_path" value="$PROJECT_DIR$/src/main/common/rx/depend/createCallStateProviderState.ts" />
     <property name="node.js.detected.package.eslint" value="true" />
     <property name="node.js.detected.package.standard" value="true" />
     <property name="node.js.detected.package.tslint" value="true" />
@@ -81,26 +84,26 @@
     <property name="ts.external.directory.path" value="L:\Work\_GIT\GitHub\NodeJs\modules\webrain\node_modules\typescript\lib" />
   </component>
   <component name="RecentsManager">
-    <key name="CopyFile.RECENT_KEYS">
-      <recent name="L:\Work\_GIT\GitHub\NodeJs\modules\webrain\src\main\common\lists" />
-      <recent name="L:\Work\_GIT\GitHub\NodeJs\modules\webrain\src\test\performance\node" />
-      <recent name="L:\Work\_GIT\GitHub\NodeJs\modules\webrain\src\test\tests\common\main\lists" />
-      <recent name="L:\Work\_GIT\GitHub\NodeJs\modules\webrain\src\test\tests\common\main\test" />
-      <recent name="L:\Work\_GIT\GitHub\NodeJs\modules\webrain\src\main\common\rx\depend" />
-    </key>
-    <key name="es6.move.members.recent.items">
-      <recent name="L:\Work\_GIT\GitHub\NodeJs\modules\webrain\src\main\common\rx\depend\getOrCreateCallState.ts" />
-      <recent name="L:\Work\_GIT\GitHub\NodeJs\modules\webrain\src\main\common\rx\depend\FuncCallState.ts" />
-      <recent name="L:\Work\_GIT\GitHub\NodeJs\modules\webrain\src\main\common\rx\depend\contracts.ts" />
-      <recent name="L:\Work\_GIT\GitHub\NodeJs\modules\webrain\src\main\common\rx\depend\FuncCallStatus.ts" />
-      <recent name="L:\Work\_GIT\GitHub\NodeJs\modules\webrain\src\main\common\rx\depend\helpers.ts" />
-    </key>
     <key name="MoveFile.RECENT_KEYS">
       <recent name="L:\Work\_GIT\GitHub\NodeJs\modules\webrain\_trash\src\main\common\rx\depend" />
       <recent name="L:\Work\_GIT\GitHub\NodeJs\modules\webrain\src\main\common\lists" />
       <recent name="L:\Work\_GIT\GitHub\NodeJs\modules\webrain\src\main\common\rx\depend\docs" />
       <recent name="L:\Work\_GIT\GitHub\NodeJs\modules\webrain\src\test\tests\node\main\rx\depend\v8" />
       <recent name="L:\Work\_GIT\GitHub\NodeJs\modules\webrain\src\test\tests\node\main\rx\depend" />
+    </key>
+    <key name="es6.move.members.recent.items">
+      <recent name="L:\Work\_GIT\GitHub\NodeJs\modules\webrain\src\main\common\rx\depend\CallState.ts" />
+      <recent name="L:\Work\_GIT\GitHub\NodeJs\modules\webrain\src\main\common\rx\depend\createCallStateProviderState.ts" />
+      <recent name="L:\Work\_GIT\GitHub\NodeJs\modules\webrain\src\main\common\rx\depend\getOrCreateCallState.ts" />
+      <recent name="L:\Work\_GIT\GitHub\NodeJs\modules\webrain\src\main\common\rx\depend\FuncCallState.ts" />
+      <recent name="L:\Work\_GIT\GitHub\NodeJs\modules\webrain\src\main\common\rx\depend\contracts.ts" />
+    </key>
+    <key name="CopyFile.RECENT_KEYS">
+      <recent name="L:\Work\_GIT\GitHub\NodeJs\modules\webrain\src\main\common\lists" />
+      <recent name="L:\Work\_GIT\GitHub\NodeJs\modules\webrain\src\test\performance\node" />
+      <recent name="L:\Work\_GIT\GitHub\NodeJs\modules\webrain\src\test\tests\common\main\lists" />
+      <recent name="L:\Work\_GIT\GitHub\NodeJs\modules\webrain\src\test\tests\common\main\test" />
+      <recent name="L:\Work\_GIT\GitHub\NodeJs\modules\webrain\src\main\common\rx\depend" />
     </key>
   </component>
   <component name="RunDashboard">
@@ -115,7 +118,7 @@
       </list>
     </option>
   </component>
-  <component name="RunManager" selected="Mocha.dependent-func (perf)">
+  <component name="RunManager" selected="Mocha.common &gt; main &gt; rx &gt; depend &gt; dependent-func">
     <configuration default="true" type="JavaScriptTestRunnerKarma">
       <config-file value="$PROJECT_DIR$/env/karma/configs/dev.js" />
       <karma-package-dir value="$PROJECT_DIR$/node_modules/karma" />
@@ -408,6 +411,10 @@
       </list>
     </recent_temporary>
   </component>
+  <component name="StructureViewFactory">
+    <option name="AUTOSCROLL_FROM_SOURCE" value="true" />
+    <option name="ACTIVE_ACTIONS" value=",SHOW_CLASSES,SHOW_INHERITED" />
+  </component>
   <component name="TaskManager">
     <task active="true" id="Default" summary="Default task">
       <changelist id="69b2ee16-521b-4efd-b473-8e19e3df4d09" name="Default Changelist" comment="Fix package dependencies" />
@@ -415,13 +422,6 @@
       <option name="number" value="Default" />
       <option name="presentableId" value="Default" />
       <updated>1567687848586</updated>
-    </task>
-    <task id="LOCAL-00285" summary="Develop. Tests OK.">
-      <created>1584164888358</created>
-      <option name="number" value="00285" />
-      <option name="presentableId" value="LOCAL-00285" />
-      <option name="project" value="LOCAL" />
-      <updated>1584164888358</updated>
     </task>
     <task id="LOCAL-00286" summary="Develop tests">
       <created>1584206489704</created>
@@ -759,7 +759,14 @@
       <option name="project" value="LOCAL" />
       <updated>1585556426055</updated>
     </task>
-    <option name="localTasksCounter" value="334" />
+    <task id="LOCAL-00334" summary="depend is completed. Tests OK.">
+      <created>1585654484012</created>
+      <option name="number" value="00334" />
+      <option name="presentableId" value="LOCAL-00334" />
+      <option name="project" value="LOCAL" />
+      <updated>1585654484012</updated>
+    </task>
+    <option name="localTasksCounter" value="335" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -854,13 +861,23 @@
         <line-breakpoint enabled="true" type="javascript">
           <condition expression="getCurrentState()" language="TypeScript" />
           <url>file://$PROJECT_DIR$/src/test/tests/common/main/rx/depend/src/helpers.ts</url>
-          <line>477</line>
+          <line>472</line>
           <option name="timeStamp" value="968" />
         </line-breakpoint>
         <line-breakpoint enabled="true" type="javascript">
           <url>file://$PROJECT_DIR$/src/main/common/rx/depend/depend.ts</url>
-          <line>203</line>
+          <line>103</line>
           <option name="timeStamp" value="1086" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" type="javascript">
+          <url>file://$PROJECT_DIR$/src/test/performance/node/dependent-func.ts</url>
+          <line>4</line>
+          <option name="timeStamp" value="1091" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" type="javascript">
+          <url>file://$PROJECT_DIR$/src/test/performance/node/dependent-func.ts</url>
+          <line>83</line>
+          <option name="timeStamp" value="1093" />
         </line-breakpoint>
       </breakpoints>
       <breakpoints-dialog>
@@ -875,6 +892,7 @@
       <configuration name="mocha-javascript-test-runner">
         <watch expression="value" language="TypeScript" />
         <watch expression="_deferredCalc" language="TypeScript" />
+        <watch expression="getOrCreate" />
       </configuration>
     </watches-manager>
   </component>

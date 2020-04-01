@@ -6,7 +6,6 @@ import {CalcType} from '../../../main/common/test/calc'
 import {calcMemAllocate} from '../../../main/common/test/calc-mem-allocate'
 import {describe, it, xit} from '../../../main/common/test/Mocha'
 import {createPerceptron, createPerceptronNaked} from '../../tests/common/main/rx/depend/src/helpers'
-import {CollectGarbage} from '../../tests/node/v8/src/helpers/node_latest/runtime'
 
 describe('dependent-func perf', function() {
 	it('perceptron recalc', function() {

@@ -2,25 +2,17 @@ import {
 	isThenable,
 	IThenable,
 	ThenableIterator,
+	ThenableOrIterator,
 	ThenableOrIteratorOrValue,
-	TReject,
-	TResolve,
+	ThenableOrValue,
 } from '../../async/async'
 import {resolveAsync} from '../../async/ThenableSync'
 import {isIterator} from '../../helpers/helpers'
 import {ObjectPool} from '../../lists/ObjectPool'
+import {PairingHeap, PairingNode} from '../../lists/PairingHeap'
 import {DeferredCalc, IDeferredCalcOptions} from '../deferred-calc/DeferredCalc'
-import {
-	CallStatus,
-	Func,
-	ICallState,
-	ILinkItem,
-	TCall,
-	TInnerValue,
-	TIteratorOrValue,
-	TResultOuter,
-} from './contracts'
-import {InternalError} from './helpers'
+import {CallStatus, Func, ICallState, ILinkItem, TCall, TInnerValue, TIteratorOrValue, TResultOuter} from './contracts'
+import {createCallWithArgs, InternalError} from './helpers'
 
 // region CallStatus
 
@@ -135,6 +127,7 @@ export const Mask_Update =
 
 // endregion
 
+// TODO inline these methods
 // region Properties
 
 // region Invalidate
@@ -408,7 +401,7 @@ export function subscriberLinkDelete<TState extends TCallState>(
 // region helpers
 
 // tslint:disable-next-line:no-empty
-function emptyFunc() { }
+function EMPTY_FUNC(this: any, ...args: any[]): any { }
 
 export function invalidateParent<
 	TState extends TCallState,
@@ -842,7 +835,7 @@ export class CallState<
 				}
 
 				if ((dependencyState.status & Flag_Async) !== 0) {
-					yield resolveAsync(dependencyState.valueAsync, null, emptyFunc) as any
+					yield resolveAsync(dependencyState.valueAsync, null, EMPTY_FUNC) as any
 				}
 
 				if ((this.status & CallStatus.Flag_Recalc) !== 0) {
@@ -1135,3 +1128,500 @@ export class CallState<
 
 	// endregion
 }
+
+// region get/create/delete ValueState
+
+export interface IValueState {
+	usageCount: number
+	value: any
+}
+
+export const valueIdToStateMap = new Map<number, IValueState>()
+export const valueToIdMap = new Map<any, number>()
+let nextValueId: number = 1
+
+export function getValueState(valueId: number): IValueState {
+	return valueIdToStateMap.get(valueId)
+}
+
+export function getOrCreateValueId(value: any): number {
+	let id = valueToIdMap.get(value)
+	if (id == null) {
+		id = nextValueId++
+		const state: IValueState = {
+			usageCount: 0,
+			value,
+		}
+		valueToIdMap.set(value, id)
+		valueIdToStateMap.set(id, state)
+	}
+	return id
+}
+
+export function deleteValueState(valueId: number, value: any): void {
+	if (!valueIdToStateMap.delete(valueId)) {
+		throw new InternalError('value not found')
+	}
+	if (!valueToIdMap.delete(value)) {
+		throw new InternalError('valueState not found')
+	}
+}
+
+// endregion
+
+// region CallStateProviderState
+
+export const valueIdsBuffer: number[] = []
+
+function findCallState<
+	TThisOuter,
+	TArgs extends any[],
+	TResultInner,
+>(
+	callStates: Array<CallState<TThisOuter, TArgs, TResultInner>>,
+	countValueStates: number,
+	_valueIdsBuffer: number[],
+) {
+	for (let i = 0, len = callStates.length; i < len; i++) {
+		const state = callStates[i]
+		const valueIds = state.valueIds
+		if (valueIds.length === countValueStates) {
+			let j = 0
+			for (; j < countValueStates; j++) {
+				if (valueIds[j] !== _valueIdsBuffer[j]) {
+					break
+				}
+			}
+
+			if (j === countValueStates) {
+				return state
+			}
+		}
+	}
+
+	return null
+}
+
+interface ICallStateProviderState<
+	TThisOuter,
+	TArgs extends any[],
+	TResultInner,
+> {
+	func: Func<unknown, TArgs, unknown>
+	funcCall: TFuncCall<TThisOuter, TArgs, TResultInner>
+	initCallState: (state: CallState<TThisOuter, TArgs, TResultInner>) => void
+	funcId: number
+	funcHash: number
+}
+
+let currentCallStateProviderState: ICallStateProviderState<any, any, any> = null
+
+// noinspection DuplicatedCode
+export function _getCallState<
+	TThisOuter,
+	TArgs extends any[],
+	TResultInner,
+>(this: TThisOuter) {
+	// region getCallState
+
+	const countArgs = arguments.length
+	const countValueStates = countArgs + 2
+
+	// region calc hash
+
+	const _valueIdsBuffer = valueIdsBuffer
+	const _state = currentCallStateProviderState
+	_valueIdsBuffer[0] = _state.funcId
+	let hash = _state.funcHash
+
+	{
+		const valueId = getOrCreateValueId(this)
+		_valueIdsBuffer[1] = valueId
+		hash = (hash * 31 + valueId) | 0
+	}
+
+	for (let i = 0; i < countArgs; i++) {
+		const valueId = getOrCreateValueId(arguments[i])
+		_valueIdsBuffer[i + 2] = valueId
+		hash = (hash * 31 + valueId) | 0
+	}
+
+	// endregion
+
+	let callState: CallState<TThisOuter, TArgs, TResultInner>
+	const callStates = callStateHashTable.get(hash)
+	if (callStates != null) {
+		callState = findCallState(callStates, countValueStates, _valueIdsBuffer)
+	}
+
+	// endregion
+
+	if (callState != null) {
+		callState.updateUsageStat()
+	}
+
+	return callState
+}
+
+// noinspection DuplicatedCode
+export function _getOrCreateCallState<
+	TThisOuter,
+	TArgs extends any[],
+	TResultInner,
+>(this: TThisOuter) {
+	// region getCallState
+
+	const countArgs = arguments.length
+	const countValueStates = countArgs + 2
+
+	// region calc hash
+
+	const _valueIdsBuffer = valueIdsBuffer
+	const _state = currentCallStateProviderState
+	_valueIdsBuffer[0] = _state.funcId
+	let hash = _state.funcHash
+
+	{
+		const valueId = getOrCreateValueId(this)
+		_valueIdsBuffer[1] = valueId
+		hash = (hash * 31 + valueId) | 0
+	}
+
+	for (let i = 0; i < countArgs; i++) {
+		const valueId = getOrCreateValueId(arguments[i])
+		_valueIdsBuffer[i + 2] = valueId
+		hash = (hash * 31 + valueId) | 0
+	}
+
+	// endregion
+
+	let callState: CallState<TThisOuter, TArgs, TResultInner>
+	let callStates = callStateHashTable.get(hash)
+	if (callStates != null) {
+		callState = findCallState(callStates, countValueStates, _valueIdsBuffer)
+	}
+
+	// endregion
+
+	if (callState != null) {
+		callState.updateUsageStat()
+		return callState
+	}
+
+	if (callStates == null) {
+		callStates = []
+		callStateHashTable.set(hash, callStates)
+	}
+
+	const valueIdsClone: number[] = [] // new Array(countValueStates)
+	for (let i = 0; i < countValueStates; i++) {
+		const valueId = _valueIdsBuffer[i]
+		valueIdsClone[i] = valueId
+		if (i > 0) {
+			const valueState = getValueState(valueId)
+			valueState.usageCount++
+		}
+	}
+
+	callState = createCallState<TThisOuter, TArgs, TResultInner>(
+		_state.func,
+		this,
+		createCallWithArgs.apply(null, arguments),
+		_state.funcCall,
+		valueIdsClone,
+	)
+
+	if (_state.initCallState != null) {
+		_state.initCallState(callState)
+	}
+
+	callState.updateUsageStat()
+
+	callStates.push(callState)
+
+	return callState
+}
+
+// tslint:disable-next-line:no-shadowed-variable
+export function createCallStateProviderState<
+	TThisOuter,
+	TArgs extends any[],
+	TResultInner,
+>(
+	func: Func<unknown, TArgs, unknown>,
+	funcCall: TFuncCall<TThisOuter, TArgs, TResultInner>,
+	initCallState: (state: CallState<TThisOuter, TArgs, TResultInner>) => void,
+): ICallStateProviderState<TThisOuter, TArgs, TResultInner> {
+	const funcId = nextValueId++
+	const funcHash = (17 * 31 + funcId) | 0
+
+	const state: ICallStateProviderState<TThisOuter, TArgs, TResultInner> = {
+		func,
+		funcCall,
+		initCallState,
+		funcId,
+		funcHash,
+	}
+
+	return state
+}
+
+// endregion
+
+// region CallState Provider
+
+type TCallStateProviderMap = WeakMap<Func<any, any, any>, ICallStateProviderState<any, any, any>>
+const callStateProviderMap: TCallStateProviderMap = new WeakMap()
+
+// region getCallState / getOrCreateCallState
+
+export function getCallState<
+	TThisOuter,
+	TArgs extends any[],
+	TResultInner,
+>(
+	func: Func<TThisOuter, TArgs, TResultInner>,
+): Func<
+	TThisOuter,
+	TArgs,
+	ICallState<TThisOuter, TArgs, TResultInner>
+> {
+	const callStateProviderState = callStateProviderMap.get(func)
+	if (callStateProviderState == null) {
+		return EMPTY_FUNC
+	} else {
+		currentCallStateProviderState = callStateProviderState
+		return _getCallState
+	}
+}
+
+export function getOrCreateCallState<
+	TThisOuter,
+	TArgs extends any[],
+	TResultInner,
+>(
+	func: Func<TThisOuter, TArgs, TResultInner>,
+): Func<
+	TThisOuter,
+	TArgs,
+	ICallState<TThisOuter, TArgs, TResultInner>
+> {
+	const callStateProviderState = callStateProviderMap.get(func)
+	if (callStateProviderState == null) {
+		return EMPTY_FUNC
+	} else {
+		currentCallStateProviderState = callStateProviderState
+		return _getOrCreateCallState
+	}
+}
+
+// endregion
+
+// endregion
+
+// region get/create/delete/reduce CallStates
+
+export const callStateHashTable = new Map<number, TCallState[]>()
+let callStatesCount = 0
+
+// region createCallState
+
+const maxCallStatesCount = 1500
+const minDeleteCallStatesCount = 500
+let nextCallStatesCount = maxCallStatesCount
+
+export function createCallState<
+	TThisOuter,
+	TArgs extends any[],
+	TResultInner,
+>(
+	func: Func<unknown, TArgs, unknown>,
+	thisOuter: TThisOuter,
+	callWithArgs: TCall<TArgs>,
+	funcCall: TFuncCall<TThisOuter, TArgs, TResultInner>,
+	valueIds: number[],
+): CallState<TThisOuter, TArgs, TResultInner> {
+	const callState = new CallState(
+		func,
+		thisOuter,
+		callWithArgs,
+		funcCall,
+		valueIds,
+	)
+
+	if (callStatesCount >= nextCallStatesCount) {
+		reduceCallStates(callStatesCount - maxCallStatesCount + minDeleteCallStatesCount)
+		nextCallStatesCount = callStatesCount + minDeleteCallStatesCount
+	}
+	callStatesCount++
+
+	return callState
+}
+
+// endregion
+
+// region deleteCallState
+
+export function deleteCallState(callState: TCallState) {
+	callState._unsubscribeDependencies()
+
+	const valueIds = callState.valueIds
+
+	let hash = 17
+	for (let i = 0, len = valueIds.length; i < len; i++) {
+		const valueId = valueIds[i]
+		hash = (hash * 31 + valueId) | 0
+		if (i > 0) {
+			const valueState = getValueState(valueId)
+			const usageCount = valueState.usageCount
+			if (usageCount <= 0) {
+				throw new InternalError('usageCount <= 0')
+			} else if (usageCount === 1 && i > 0) {
+				deleteValueState(valueId, valueState.value)
+			} else {
+				valueState.usageCount--
+			}
+		}
+	}
+
+	// search and delete callState
+	const callStates = callStateHashTable.get(hash)
+	const callStatesLastIndex = callStates.length - 1
+	if (callStatesLastIndex === -1) {
+		throw new InternalError('callStates.length === 0')
+	} else if (callStatesLastIndex === 0) {
+		if (callStates[0] !== callState) {
+			throw new InternalError('callStates[0] !== callState')
+		}
+		callStateHashTable.delete(hash)
+	} else {
+		let index = 0
+		for (index = 0; index <= callStatesLastIndex; index++) {
+			if (callStates[index] === callState) {
+				if (index !== callStatesLastIndex) {
+					callStates[index] = callStates[callStatesLastIndex]
+				}
+				callStates.length = callStatesLastIndex
+				break
+			}
+		}
+		if (index > callStatesLastIndex) {
+			throw new InternalError('callState not found')
+		}
+	}
+
+	callStatesCount--
+}
+
+// endregion
+
+// region reduceCallStates to free memory
+
+export const reduceCallStatesHeap = new PairingHeap<TCallState>({
+	objectPool: new ObjectPool<PairingNode<TCallState>>(10000000),
+	lessThanFunc(o1, o2) {
+		return o1._deleteOrder < o2._deleteOrder
+	},
+})
+
+function reduceCallStatesHeapAdd(states: TCallState[]) {
+	for (let i = 0, len = states.length; i < len; i++) {
+		const callState = states[i]
+		if (!callState.hasSubscribers && !callState.isHandling) {
+			reduceCallStatesHeap.add(callState)
+		}
+	}
+}
+
+export function reduceCallStates(deleteSize: number) {
+	callStateHashTable.forEach(reduceCallStatesHeapAdd)
+
+	while (deleteSize > 0 && reduceCallStatesHeap.size > 0) {
+		const callState = reduceCallStatesHeap.deleteMin()
+		const {_unsubscribers, _unsubscribersLength} = callState
+		if (_unsubscribers != null) {
+			for (let i = 0, len = _unsubscribersLength; i < len; i++) {
+				const state = _unsubscribers[i].state
+				if (state._subscribersFirst === state._subscribersLast) {
+					reduceCallStatesHeap.add(state)
+				}
+			}
+		}
+		deleteCallState(callState)
+		deleteSize--
+	}
+
+	reduceCallStatesHeap.clear()
+}
+
+// endregion
+
+// endregion
+
+// region makeDependentFunc
+
+export function createDependentFunc<TThisOuter,
+	TArgs extends any[],
+	TResultInner,
+	>(
+	func: Func<unknown, TArgs, unknown>,
+	callStateProviderState: ICallStateProviderState<TThisOuter, TArgs, TResultInner>,
+	isSimpleProperty: boolean,
+)
+	: Func<TThisOuter,
+	TArgs,
+	Func<TThisOuter,
+		TArgs,
+		TResultInner extends ThenableOrIterator<infer V> ? ThenableOrValue<V> : TResultInner>> {
+	return function _createDependentFunc() {
+		currentCallStateProviderState = callStateProviderState
+		const getState = isSimpleProperty && currentState == null
+			? _getCallState
+			: _getOrCreateCallState
+
+		const state: CallState<TThisOuter, TArgs, TResultInner>
+			= getState.apply(this, arguments)
+
+		return state != null
+			? state.getValue() as any
+			: func.apply(this, arguments)
+	}
+}
+
+/**
+ * @param isSimpleProperty sync, no deferred, without dependencies
+ */
+export function makeDependentFunc<
+	TThisOuter,
+	TArgs extends any[],
+	TResultInner,
+>(
+	func: Func<unknown, TArgs, unknown>,
+	funcCall: TFuncCall<TThisOuter, TArgs, TResultInner>,
+	initCallState?: (state: CallState<TThisOuter, TArgs, TResultInner>) => void,
+	isSimpleProperty?: boolean,
+): Func<
+	TThisOuter,
+	TArgs,
+	TResultInner extends ThenableOrIterator<infer V> ? ThenableOrValue<V> : TResultInner
+> {
+	if (callStateProviderMap.get(func)) {
+		throw new InternalError('Multiple call makeDependentFunc() for func: ' + func)
+	}
+
+	const callStateProviderState = createCallStateProviderState(func, funcCall, initCallState)
+
+	callStateProviderMap.set(func, callStateProviderState)
+
+	const dependentFunc = createDependentFunc(
+		func,
+		callStateProviderState,
+		isSimpleProperty,
+	)
+
+	callStateProviderMap.set(dependentFunc, callStateProviderState)
+
+	return dependentFunc as any
+}
+
+// endregion

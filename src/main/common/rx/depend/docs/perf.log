@@ -454,3 +454,30 @@
 
   absoluteDiff: [ 253, 6957, -445 ],
   absoluteDiff: [ 303, 6559, -315 ],
+
+  absoluteDiff: [ 299, 7406, -360 ],
+  absoluteDiff: [ 326, 7088, -353 ],
+  absoluteDiff: [ 230, 6915, -433 ],
+  absoluteDiff: [ 272, 6930, -395 ],
+  absoluteDiff: [ 268, 7179, -403 ],
+  absoluteDiff: [ 5819, 7767, 4546 ],
+
+  absoluteDiff: [ 227, 7173, -398 ],
+  absoluteDiff: [ 5516, 7648, 4757 ],
+
+  absoluteDiff: [ 295, 7214, -376 ],
+  absoluteDiff: [ 5524, 7498, 4658 ],
+  absoluteDiff: [ 306, 7003, -372 ],
+  absoluteDiff: [ 5643, 7479, 5539 ],
+  absoluteDiff: [ 257, 7026, -383 ],
+  absoluteDiff: [ 5286, 7441, 4742 ],
+
+  absoluteDiff: [ 268, 7314, -433 ],
+  absoluteDiff: [ 4193, 6968, 4538 ],
+  absoluteDiff: [ 245, 7195, -441 ],
+  absoluteDiff: [ 1303234, 7632, 1810 ],
+  absoluteDiff: [ 299, 6865, -403 ],
+  absoluteDiff: [ 4094, 6191, 4397 ],
+
+  absoluteDiff: [ 322, 7306, -387 ],
+  absoluteDiff: [ 3906, 6540, 4393 ],

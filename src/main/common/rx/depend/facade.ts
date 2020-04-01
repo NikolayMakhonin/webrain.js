@@ -1,5 +1,5 @@
 export {
-	getCallState,
 	depend,
 	dependX,
 } from './depend'
+export {getCallState} from './CallState'

@@ -1,19 +1,14 @@
 /* tslint:disable:no-identical-functions no-shadowed-variable no-duplicate-string no-construct use-primitive-type */
 import {isThenable, Thenable, ThenableOrValue} from '../../../../../../../main/common/async/async'
 import {
-	getCurrentState,
+	callStateHashTable,
+	getCurrentState, getOrCreateCallState, reduceCallStates,
 	statusToString,
-	TCallState,
+	TCallState, valueIdToStateMap, valueToIdMap,
 } from '../../../../../../../main/common/rx/depend/CallState'
 import {CallStatus, Func, ICallState, IDeferredOptions} from '../../../../../../../main/common/rx/depend/contracts'
 import {depend, getCallState} from '../../../../../../../main/common/rx/depend/facade'
 import {InternalError} from '../../../../../../../main/common/rx/depend/helpers'
-import {
-	callStateHashTable,
-	reduceCallStates,
-	valueIdToStateMap,
-	valueToIdMap,
-} from '../../../../../../../main/common/rx/depend/createCallStateProvider'
 import {assert} from '../../../../../../../main/common/test/Assert'
 import {delay} from '../../../../../../../main/common/time/helpers'
 
@@ -166,13 +161,13 @@ export function createPerceptron(
 		if (!_states) {
 			_states = layers
 				.flatMap(o => o)
-				.map(o => getCallState(o)())
+				.map(o => getOrCreateCallState(o)())
 		}
 		return _states
 	}
 
-	const inputState = getCallState(input)()
-	const outputState = getCallState(output).call(2, 5, 10)
+	const inputState = getOrCreateCallState(input)()
+	const outputState = getOrCreateCallState(output).call(2, 5, 10)
 
 	if (check) {
 		assert.strictEqual(
@@ -391,7 +386,7 @@ function _funcCall(func: IDependencyFunc, callId: string, _this?: any, ...rest: 
 	}) as any
 
 	result.id = callId
-	result.state = getCallState(func).apply(_this, rest)
+	result.state = getOrCreateCallState(func).apply(_this, rest)
 	assert.ok(result.state)
 	assert.strictEqual(result.state.status, CallStatus.Flag_Invalidated | CallStatus.Flag_Recalc);
 	(result.state as any).id = callId
