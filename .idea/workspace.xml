@@ -10,9 +10,7 @@
     <list default="true" id="69b2ee16-521b-4efd-b473-8e19e3df4d09" name="Default Changelist" comment="">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/common/rx/depend/CallState.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/common/rx/depend/CallState.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/common/rx/depend/contracts.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/common/rx/depend/contracts.ts" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/common/rx/depend/docs/perf.log" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/common/rx/depend/docs/perf.log" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/test/tests/node/v8/src/helpers/helpers.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/test/tests/node/v8/src/helpers/helpers.ts" afterDir="false" />
     </list>
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
     <option name="SHOW_DIALOG" value="false" />
@@ -417,13 +415,6 @@
       <option name="presentableId" value="Default" />
       <updated>1567687848586</updated>
     </task>
-    <task id="LOCAL-00289" summary="Develop">
-      <created>1584349716059</created>
-      <option name="number" value="00289" />
-      <option name="presentableId" value="LOCAL-00289" />
-      <option name="project" value="LOCAL" />
-      <updated>1584349716060</updated>
-    </task>
     <task id="LOCAL-00290" summary="Develop">
       <created>1584350807324</created>
       <option name="number" value="00290" />
@@ -760,7 +751,14 @@
       <option name="project" value="LOCAL" />
       <updated>1585726340361</updated>
     </task>
-    <option name="localTasksCounter" value="338" />
+    <task id="LOCAL-00338" summary="depend refactoring. Tests OK.">
+      <created>1585733926125</created>
+      <option name="number" value="00338" />
+      <option name="presentableId" value="LOCAL-00338" />
+      <option name="project" value="LOCAL" />
+      <updated>1585733926125</updated>
+    </task>
+    <option name="localTasksCounter" value="339" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -845,9 +843,9 @@
     <MESSAGE value="DeferredCalc, optimization. Tests OK." />
     <MESSAGE value="async optimization. Tests OK." />
     <MESSAGE value="depend is completed. Tests OK." />
-    <MESSAGE value="depend refactoring. Tests OK." />
     <MESSAGE value="depend refactoring. Tests OK. Bad performance" />
-    <option name="LAST_COMMIT_MESSAGE" value="depend refactoring. Tests OK. Bad performance" />
+    <MESSAGE value="depend refactoring. Tests OK." />
+    <option name="LAST_COMMIT_MESSAGE" value="depend refactoring. Tests OK." />
   </component>
   <component name="XDebuggerManager">
     <breakpoint-manager>

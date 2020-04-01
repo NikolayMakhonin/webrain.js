@@ -515,4 +515,24 @@
   absoluteDiff: [ 257, 7188, -406 ],
   absoluteDiff: [ 6256, 9400, 4470 ],
 
+  // using callStateProvider
+  absoluteDiff: [ 191, 7080, -475 ],
+  absoluteDiff: [ 7736, 10028, 4500 ],
+
+  // using callStateProviderState
+  absoluteDiff: [ 284, 6977, -391 ],
+  absoluteDiff: [ 7570, 8908, 4615 ],
+  absoluteDiff: [ 276, 7218, -437 ],
+  absoluteDiff: [ 6957, 8801, 4489 ],
+  absoluteDiff: [ 280, 7280, -353 ],
+  absoluteDiff: [ 7011, 8337, 4588 ],
+
+  absoluteDiff: [ 307, 6923, -368 ],
+  absoluteDiff: [ 1270348, 10527, 1959 ],
+  absoluteDiff: [ 303, 7038, -379 ],
+  absoluteDiff: [ 1253749, 10243, 2250 ],
+
+  absoluteDiff: [ 145, 6865, -514 ],
+  absoluteDiff: [ 8127, 9518, 4623 ],
+
 
