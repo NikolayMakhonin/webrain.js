@@ -1502,14 +1502,17 @@ export function createCallStateProvider<
 		)
 
 		if (
-			callStatesCount < 0 // for prevent deoptimize
+			callStatesCount === 0 // for prevent deoptimize
 			|| callStatesCount >= nextCallStatesCount
 		) {
-			if (callStatesCount < 0) {
-				callStatesCount = 0
+			if (callStatesCount === 0) {
+				callStatesCount = 1
 			}
 			reduceCallStates.call(null, callStatesCount - maxCallStatesCount + minDeleteCallStatesCount)
-			nextCallStatesCount = Math.max(maxCallStatesCount, callStatesCount + minDeleteCallStatesCount)
+			nextCallStatesCount = callStatesCount + minDeleteCallStatesCount
+			if (nextCallStatesCount < maxCallStatesCount) {
+				nextCallStatesCount = maxCallStatesCount
+			}
 		}
 		callStatesCount++
 
@@ -1593,7 +1596,7 @@ export function getOrCreateCallState<
 // region get/create/delete/reduce CallStates
 
 export const callStateHashTable = new Map<number, TCallState[]>()
-let callStatesCount = -1
+let callStatesCount = 0
 
 // region createCallState
 

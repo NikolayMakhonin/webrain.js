@@ -7,8 +7,7 @@
     <option name="SHOW_STRUCTURE" value="true" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="69b2ee16-521b-4efd-b473-8e19e3df4d09" name="Default Changelist" comment="optimizing...">
-      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+    <list default="true" id="69b2ee16-521b-4efd-b473-8e19e3df4d09" name="Default Changelist" comment="">
       <change beforePath="$PROJECT_DIR$/src/main/common/rx/depend/CallState.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/common/rx/depend/CallState.ts" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/common/rx/depend/docs/perf.log" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/common/rx/depend/docs/perf.log" afterDir="false" />
     </list>
@@ -421,13 +420,6 @@
       <option name="presentableId" value="Default" />
       <updated>1567687848586</updated>
     </task>
-    <task id="LOCAL-00294" summary="Deleted changeResultId">
-      <created>1584438983732</created>
-      <option name="number" value="00294" />
-      <option name="presentableId" value="LOCAL-00294" />
-      <option name="project" value="LOCAL" />
-      <updated>1584438983732</updated>
-    </task>
     <task id="LOCAL-00295" summary="Deleted calcId">
       <created>1584439029147</created>
       <option name="number" value="00295" />
@@ -764,7 +756,14 @@
       <option name="project" value="LOCAL" />
       <updated>1585845641015</updated>
     </task>
-    <option name="localTasksCounter" value="343" />
+    <task id="LOCAL-00343" summary="optimizing... Tests OK.">
+      <created>1585849736304</created>
+      <option name="number" value="00343" />
+      <option name="presentableId" value="LOCAL-00343" />
+      <option name="project" value="LOCAL" />
+      <updated>1585849736304</updated>
+    </task>
+    <option name="localTasksCounter" value="344" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -826,7 +825,6 @@
   <component name="VcsManagerConfiguration">
     <option name="CHECK_CODE_SMELLS_BEFORE_PROJECT_COMMIT" value="false" />
     <option name="CHECK_NEW_TODO" value="false" />
-    <MESSAGE value="Extracted ObjectPool" />
     <MESSAGE value="Fix v8 test" />
     <MESSAGE value="BinaryTree: Implementing AVL algorithm..." />
     <MESSAGE value="BinaryTree: try to use non recursive add - failed, it is slower than recursive" />
@@ -851,7 +849,8 @@
     <MESSAGE value="depend refactoring. Tests OK. Bad performance" />
     <MESSAGE value="depend refactoring. Tests OK." />
     <MESSAGE value="optimizing..." />
-    <option name="LAST_COMMIT_MESSAGE" value="optimizing..." />
+    <MESSAGE value="optimizing... Tests OK." />
+    <option name="LAST_COMMIT_MESSAGE" value="optimizing... Tests OK." />
   </component>
   <component name="XDebuggerManager">
     <breakpoint-manager>
@@ -866,12 +865,6 @@
           <url>file://$PROJECT_DIR$/src/main/common/rx/depend/depend.ts</url>
           <line>104</line>
           <option name="timeStamp" value="1086" />
-        </line-breakpoint>
-        <line-breakpoint enabled="true" type="javascript">
-          <url>file://$PROJECT_DIR$/src/main/common/rx/depend/CallState.ts</url>
-          <line>1510</line>
-          <properties lambdaOrdinal="-1" />
-          <option name="timeStamp" value="1099" />
         </line-breakpoint>
       </breakpoints>
       <breakpoints-dialog>
