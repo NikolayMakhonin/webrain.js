@@ -146,7 +146,7 @@ export function createPerceptron(
 ) {
 	const countFuncs = layersCount * layerSize + 2
 
-	// region randomValue
+	// region randomValues
 
 	const randomValues = [
 		0,
