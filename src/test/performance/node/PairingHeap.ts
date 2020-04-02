@@ -135,6 +135,21 @@ describe('PairingHeap perf', function() {
   absoluteDiff: [ 379, 54, 590 ],
   absoluteDiff: [ 395, 50, 632 ],
   absoluteDiff: [ 372, 61, 594 ],
+
+  absoluteDiff: [ 364, 57, 908 ],
+  absoluteDiff: [ 341, 65, 874 ],
+  absoluteDiff: [ 368, 57, 878 ],
+  absoluteDiff: [ 375, 50, 877 ],
+
+  absoluteDiff: [ 387, 57, 885 ],
+  absoluteDiff: [ 376, 42, 951 ],
+  absoluteDiff: [ 383, 54, 901 ],
+  absoluteDiff: [ 414, 57, 897 ],
+
+  absoluteDiff: [ 368, 38, 874 ],
+  absoluteDiff: [ 403, 57, 912 ],
+  absoluteDiff: [ 368, 96, 920 ],
+  absoluteDiff: [ 383, 61, 904 ],
 		 */
 	})
 
