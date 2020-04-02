@@ -25,7 +25,7 @@ import {
 
 export function testCreate() {
 	// eslint-disable-next-line no-shadow
-	const {inputState} = createPerceptron(2, 2)
+	const {inputState} = createPerceptron(10, 5, false)
 	__invalidate(inputState)
 }
 
@@ -40,8 +40,11 @@ export function testRecalc() {
 // 	naked.call(2, 5, 10)
 // }
 
-for (let i = 0; i < 10000; i++) {
-	// testRecalc()
+for (let i = 0; i < 50000; i++) {
+	testRecalc()
+}
+
+for (let i = 0; i < 50000; i++) {
 	testCreate()
 }
 

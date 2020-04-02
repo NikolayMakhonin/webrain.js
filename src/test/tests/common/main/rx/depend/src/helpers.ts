@@ -1,10 +1,15 @@
 /* tslint:disable:no-identical-functions no-shadowed-variable no-duplicate-string no-construct use-primitive-type */
 import {isThenable, Thenable, ThenableOrValue} from '../../../../../../../main/common/async/async'
+import {nextHash} from '../../../../../../../main/common/helpers/helpers'
 import {
 	callStateHashTable,
-	getCurrentState, getOrCreateCallState, reduceCallStates,
+	getCurrentState,
+	getOrCreateCallState,
+	reduceCallStates,
 	statusToString,
-	TCallState, valueIdToStateMap, valueToIdMap,
+	TCallState,
+	valueIdToStateMap,
+	valueToIdMap,
 } from '../../../../../../../main/common/rx/depend/CallState'
 import {CallStatus, Func, ICallState, IDeferredOptions} from '../../../../../../../main/common/rx/depend/contracts'
 import {depend} from '../../../../../../../main/common/rx/depend/facade'
@@ -50,24 +55,34 @@ export function createPerceptronNaked(layerSize, layersCount, check = true) {
 	}
 
 	// first layer
-	let layer = []
+	let layer
 	for (let i = 0; i < layerSize; i++) {
-		layer[i] = function(a, b) {
+		const func = function(a, b) {
 			return i * a * b * input() * (this as any)
+		}
+		if (i === 0) {
+			layer = [func]
+		} else {
+			layer[i] = func
 		}
 	}
 	const layers = [layer]
 
 	for (let i = 0; i < layersCount - 1; i++) {
-		const nextLayer = []
+		let nextLayer
 		for (let j = 0; j < layerSize; j++) {
 			const prevLayer = layer
-			nextLayer[j] = function(a, b) {
+			const func = function(a, b) {
 				let sum = 0
 				for (let k = 0; k < layerSize; k++) {
 					sum += prevLayer[k].call(this, a, b)
 				}
 				return sum
+			}
+			if (j === 0) {
+				nextLayer = [func]
+			} else {
+				nextLayer[j] = func
 			}
 		}
 		layer = nextLayer
@@ -108,12 +123,26 @@ export function __outputCall(output): any {
 	return output.call(2, 5, 10)
 }
 
+function createNextLayer(prevLayer, layerSize, r1, r2, r3) {
+	return __makeDependentFunc(function(a, b) {
+		let sum = 0
+		for (let k = 0; k < layerSize; k++) {
+			sum += prevLayer[k].call(this, a, b, r1, r2, r3)
+		}
+		return sum
+	})
+}
+
+function createFirstLayer(i, input) {
+	return __makeDependentFunc(function(a, b, r1, r2, r3) {
+		return i * a * b * input() * (this as any)
+	})
+}
+
 export function createPerceptron(
 	layerSize,
 	layersCount,
 	check = true,
-	makeDependentFunc = __makeDependentFunc,
-	invalidate2 = __invalidate,
 ) {
 	const countFuncs = layersCount * layerSize + 2
 
@@ -140,33 +169,35 @@ export function createPerceptron(
 	// endregion
 
 	let callId = 0
-	const input = makeDependentFunc(function() {
+	const input = __makeDependentFunc(function() {
 		return ++callId
 	})
 
 	// first layer
-	let layer = []
+	let layer
 	for (let i = 0; i < layerSize; i++) {
-		layer[i] = makeDependentFunc(function(a, b, r1, r2, r3) {
-			return i * a * b * input() * (this as any)
-		})
+		const func = createFirstLayer(i, input)
+		if (i === 0) {
+			layer = [func]
+		} else {
+			layer[i] = func
+		}
 	}
 	const layers = [layer]
 
 	for (let i = 0; i < layersCount - 1; i++) {
-		const nextLayer = []
+		let nextLayer
 		for (let j = 0; j < layerSize; j++) {
 			const prevLayer = layer
 			const r1 = randomValues[(i * layerSize * 3 + j) % randomValuesLength]
 			const r2 = randomValues[(i * layerSize * 3 + j + 1) % randomValuesLength]
 			const r3 = randomValues[(i * layerSize * 3 + j + 2) % randomValuesLength]
-			nextLayer[j] = makeDependentFunc(function(a, b) {
-				let sum = 0
-				for (let k = 0; k < layerSize; k++) {
-					sum += prevLayer[k].call(this, a, b, r1, r2, r3)
-				}
-				return sum
-			})
+			const func = createNextLayer(prevLayer, layerSize, r1, r2, r3)
+			if (j === 0) {
+				nextLayer = [func]
+			} else {
+				nextLayer[j] = func
+			}
 		}
 		layer = nextLayer
 		layers.push(layer)
@@ -175,7 +206,7 @@ export function createPerceptron(
 	let output
 	{
 		const prevLayer = layer
-		output = makeDependentFunc(function(a, b) {
+		output = __makeDependentFunc(function(a, b) {
 			let sum = 0
 			for (let i = 0; i < layerSize; i++) {
 				sum += prevLayer[i].call(this, a, b)
@@ -213,7 +244,7 @@ export function createPerceptron(
 
 	let outputStateHash = 17
 	for (let i = 0; i < outputState.valueIds.length; i++) {
-		outputStateHash = (outputStateHash * 31 + outputState.valueIds[i]) | 0
+		outputStateHash = nextHash(outputStateHash, outputState.valueIds[i])
 	}
 
 	return {

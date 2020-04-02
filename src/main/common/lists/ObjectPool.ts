@@ -4,7 +4,6 @@ export class ObjectPool<TObject> implements IObjectPool<TObject> {
 	public size = 0
 	public maxSize
 	private readonly _stack = [null]
-	private __owner = null
 
 	constructor(maxSize: number) {
 		this.maxSize = maxSize

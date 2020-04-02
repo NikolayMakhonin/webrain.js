@@ -30,6 +30,7 @@ export function _initDeferredCallState<
 	}
 	state.deferredOptions = options
 
+	// TODO - remove []
 	const thenable = {
 		subscribers: [],
 		resolved: false,

@@ -100,3 +100,7 @@ export function equalsObjects(o1, o2) {
 
 	return false
 }
+
+export function nextHash(hash: number, value: number) {
+	return ((4294967296 + hash) * 31 + value) | 0
+}

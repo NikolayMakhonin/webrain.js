@@ -7,7 +7,8 @@ import {
 	ThenableOrValue,
 } from '../../async/async'
 import {resolveAsync} from '../../async/ThenableSync'
-import {isIterator} from '../../helpers/helpers'
+import {isIterator, nextHash} from '../../helpers/helpers'
+import {IObjectPool} from '../../lists/contracts/IObjectPool'
 import {ObjectPool} from '../../lists/ObjectPool'
 import {PairingHeap, PairingNode} from '../../lists/PairingHeap'
 import {DeferredCalc, IDeferredCalcOptions} from '../deferred-calc/DeferredCalc'
@@ -250,7 +251,7 @@ export function setHasError(status: CallStatus, value: boolean): CallStatus {
 // }
 
 export function statusToString(status: CallStatus): string {
-	const buffer = []
+	const buffer = ['']
 
 	if ((status & Flag_Invalidating) !== 0) {
 		buffer.push('Invalidating')
@@ -287,7 +288,7 @@ export function statusToString(status: CallStatus): string {
 	)
 
 	if (remain !== 0) {
-		buffer.push(remain)
+		buffer.push(remain + '')
 	}
 
 	return buffer.join(' | ')
@@ -1247,13 +1248,13 @@ function findCallState<
 // 	{
 // 		const valueId = getOrCreateValueId(this)
 // 		_valueIdsBuffer[1] = valueId
-// 		hash = (hash * 31 + valueId) | 0
+// 		hash = nextHash(hash, valueId)
 // 	}
 //
 // 	for (let i = 0; i < countArgs; i++) {
 // 		const valueId = getOrCreateValueId(arguments[i])
 // 		_valueIdsBuffer[i + 2] = valueId
-// 		hash = (hash * 31 + valueId) | 0
+// 		hash = nextHash(hash, valueId)
 // 	}
 //
 // 	// endregion
@@ -1343,13 +1344,13 @@ function findCallState<
 // 	{
 // 		const valueId = getOrCreateValueId.call(null, this)
 // 		_valueIdsBuffer[1] = valueId
-// 		hash = (hash * 31 + valueId) | 0
+// 		hash = nextHash(hash, valueId)
 // 	}
 //
 // 	for (let i = 0; i < countArgs; i++) {
 // 		const valueId = getOrCreateValueId.call(null, arguments[i])
 // 		_valueIdsBuffer[i + 2] = valueId
-// 		hash = (hash * 31 + valueId) | 0
+// 		hash = nextHash(hash, valueId)
 // 	}
 //
 // 	// endregion
@@ -1392,7 +1393,7 @@ export function createCallStateProvider<
 	initCallState: (state: CallState<TThisOuter, TArgs, TResultInner>) => void,
 ): ICallStateProvider<TThisOuter, TArgs, TResultInner> {
 	const funcId = nextValueId++
-	const funcHash = (17 * 31 + funcId) | 0
+	const funcHash = nextHash(17, funcId)
 
 	// noinspection DuplicatedCode
 	function _getCallState(this: TThisOuter) {
@@ -1410,13 +1411,13 @@ export function createCallStateProvider<
 		{
 			const valueId = getOrCreateValueId(this)
 			_valueIdsBuffer[1] = valueId
-			hash = (hash * 31 + valueId) | 0
+			hash = nextHash(hash, valueId)
 		}
 
 		for (let i = 0; i < countArgs; i++) {
 			const valueId = getOrCreateValueId(arguments[i])
 			_valueIdsBuffer[i + 2] = valueId
-			hash = (hash * 31 + valueId) | 0
+			hash = nextHash(hash, valueId)
 		}
 
 		// endregion
@@ -1460,13 +1461,13 @@ export function createCallStateProvider<
 		{
 			const valueId = getOrCreateValueId(this)
 			_valueIdsBuffer[1] = valueId
-			hash = (hash * 31 + valueId) | 0
+			hash = nextHash(hash, valueId)
 		}
 
 		for (let i = 0; i < countArgs; i++) {
 			const valueId = getOrCreateValueId(arguments[i])
 			_valueIdsBuffer[i + 2] = valueId
-			hash = (hash * 31 + valueId) | 0
+			hash = nextHash(hash, valueId)
 		}
 
 		// endregion
@@ -1482,11 +1483,6 @@ export function createCallStateProvider<
 		if (callState != null) {
 			callState.updateUsageStat()
 			return callState
-		}
-
-		if (callStates == null) {
-			callStates = []
-			callStateHashTable.set(hash, callStates)
 		}
 
 		const valueIdsClone: Int32Array = _valueIdsBuffer.slice(0, countValueStates)
@@ -1505,7 +1501,11 @@ export function createCallStateProvider<
 			valueIdsClone,
 		)
 
-		if (callStatesCount >= nextCallStatesCount) {
+		if (
+			callStatesCount < 0 // for prevent deoptimize
+			|| callStatesCount >= nextCallStatesCount
+		) {
+			callStatesCount = 0
 			reduceCallStates.call(null, callStatesCount - maxCallStatesCount + minDeleteCallStatesCount)
 			nextCallStatesCount = callStatesCount + minDeleteCallStatesCount
 		}
@@ -1517,7 +1517,12 @@ export function createCallStateProvider<
 
 		callState.updateUsageStat()
 
-		callStates.push(callState)
+		if (callStates == null) {
+			callStates = [callState]
+			callStateHashTable.set(hash, callStates)
+		} else {
+			callStates.push(callState)
+		}
 
 		return callState
 	}
@@ -1586,7 +1591,7 @@ export function getOrCreateCallState<
 // region get/create/delete/reduce CallStates
 
 export const callStateHashTable = new Map<number, TCallState[]>()
-let callStatesCount = 0
+let callStatesCount = -1
 
 // region createCallState
 
@@ -1634,7 +1639,7 @@ export function deleteCallState(callState: TCallState) {
 	let hash = 17
 	for (let i = 0, len = valueIds.length; i < len; i++) {
 		const valueId = valueIds[i]
-		hash = (hash * 31 + valueId) | 0
+		hash = nextHash(hash, valueId)
 		if (i > 0) {
 			const valueState = getValueState(valueId)
 			const usageCount = valueState.usageCount
