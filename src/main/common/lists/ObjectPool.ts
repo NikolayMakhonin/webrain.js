@@ -3,7 +3,8 @@ import {IObjectPool} from './contracts/IObjectPool'
 export class ObjectPool<TObject> implements IObjectPool<TObject> {
 	public size = 0
 	public maxSize
-	private readonly _stack = []
+	private readonly _stack = [null]
+	private __owner = null
 
 	constructor(maxSize: number) {
 		this.maxSize = maxSize
@@ -16,8 +17,8 @@ export class ObjectPool<TObject> implements IObjectPool<TObject> {
 			const obj = this._stack[lastIndex]
 			this._stack[lastIndex] = null
 			this.size = lastIndex
-			if (obj == null) {
-				throw new Error('obj == null')
+			if (obj === null) {
+				throw new Error('obj === null')
 			}
 			return obj
 		}

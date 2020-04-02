@@ -49,7 +49,10 @@ export class PairingHeap<TItem> {
 		objectPool?: IObjectPool<PairingNode<TItem>>,
 		lessThanFunc?: TLessThanFunc<TItem>,
 	}) {
-		this._objectPool = objectPool
+		if (objectPool != null) {
+			(objectPool as any).__owner = this
+			this._objectPool = objectPool
+		}
 		this._lessThanFunc = lessThanFunc || lessThanDefault
 	}
 
@@ -83,7 +86,7 @@ export class PairingHeap<TItem> {
 			? this._objectPool.get()
 			: null
 
-		if (node == null) {
+		if (node === null) {
 			node = {
 				child: null,
 				next: null,
@@ -221,15 +224,19 @@ export function merge<TItem>(
 	let parent: PairingNode<TItem>
 	let child: PairingNode<TItem>
 
-	if (a == null) {
+	// v8 optimization
+	const a_item = a === null ? null : a.item
+	const b_item = b === null ? null : b.item
+
+	if (a_item === null) {
 		return b
-	} else if (b == null) {
+	} else if (b_item === null) {
 		return a
 	} else if (a === b) {
 		return a
 	}
 
-	if (lessThanFunc(b.item, a.item)) {
+	if (lessThanFunc(b_item, a_item)) {
 		parent = b
 		child = a
 	} else {
@@ -238,7 +245,7 @@ export function merge<TItem>(
 	}
 
 	child.next = parent.child
-	if (parent.child != null) {
+	if (parent.child !== null) {
 		parent.child.prev = child
 	}
 	child.prev = parent

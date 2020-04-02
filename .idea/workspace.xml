@@ -9,8 +9,16 @@
   <component name="ChangeListManager">
     <list default="true" id="69b2ee16-521b-4efd-b473-8e19e3df4d09" name="Default Changelist" comment="">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/env/libs/dependent-func/all.js" beforeDir="false" afterPath="$PROJECT_DIR$/env/libs/dependent-func/all.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/common/lists/ObjectPool.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/common/lists/ObjectPool.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/common/lists/PairingHeap.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/common/lists/PairingHeap.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/common/lists/contracts/IObjectPool.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/common/lists/contracts/IObjectPool.ts" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/common/rx/depend/CallState.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/common/rx/depend/CallState.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/common/rx/depend/depend.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/common/rx/depend/depend.ts" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/common/rx/depend/docs/perf.log" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/common/rx/depend/docs/perf.log" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/common/rx/depend/helpers.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/common/rx/depend/helpers.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/test/tests/common/main/rx/depend/src/helpers.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/test/tests/common/main/rx/depend/src/helpers.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/test/tests/node/main/rx/depend/v8/dependent-func.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/test/tests/node/main/rx/depend/v8/dependent-func.ts" afterDir="false" />
     </list>
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
     <option name="SHOW_DIALOG" value="false" />
@@ -110,7 +118,7 @@
       </list>
     </option>
   </component>
-  <component name="RunManager" selected="Mocha.dependent-func">
+  <component name="RunManager" selected="Mocha.common &gt; main &gt; PairingHeap">
     <configuration default="true" type="JavaScriptTestRunnerKarma">
       <config-file value="$PROJECT_DIR$/env/karma/configs/dev.js" />
       <karma-package-dir value="$PROJECT_DIR$/node_modules/karma" />
@@ -178,6 +186,21 @@
       <test-pattern>$PROJECT_DIR$/src/test/tests/common/main/rx/deep-subscribe/**/*.ts</test-pattern>
       <method v="2" />
     </configuration>
+    <configuration name="PairingHeap perf" type="mocha-javascript-test-runner" temporary="true" nameIsGenerated="true">
+      <node-interpreter>node</node-interpreter>
+      <node-options>--max-old-space-size=4096</node-options>
+      <mocha-package>$PROJECT_DIR$/node_modules/mocha</mocha-package>
+      <working-directory>$PROJECT_DIR$</working-directory>
+      <pass-parent-env>true</pass-parent-env>
+      <ui>bdd</ui>
+      <extra-mocha-options>--opts ./env/mocha/configs/babel/mocha.opts</extra-mocha-options>
+      <test-kind>SUITE</test-kind>
+      <test-file>$PROJECT_DIR$/src/test/performance/node/PairingHeap.ts</test-file>
+      <test-names>
+        <name value="PairingHeap perf" />
+      </test-names>
+      <method v="2" />
+    </configuration>
     <configuration name="RX - Tests" type="mocha-javascript-test-runner">
       <node-interpreter>node</node-interpreter>
       <node-options>--max-old-space-size=4096</node-options>
@@ -217,6 +240,21 @@
       </test-names>
       <method v="2" />
     </configuration>
+    <configuration name="common &gt; main &gt; PairingHeap" type="mocha-javascript-test-runner" temporary="true" nameIsGenerated="true">
+      <node-interpreter>node</node-interpreter>
+      <node-options>--max-old-space-size=4096 --allow-natives-syntax</node-options>
+      <mocha-package>$PROJECT_DIR$/node_modules/mocha</mocha-package>
+      <working-directory>$PROJECT_DIR$</working-directory>
+      <pass-parent-env>true</pass-parent-env>
+      <ui>bdd</ui>
+      <extra-mocha-options>--opts ./env/mocha/configs/babel/mocha.opts --watch</extra-mocha-options>
+      <test-kind>SUITE</test-kind>
+      <test-file>$PROJECT_DIR$/src/test/tests/common/main/lists/PairingHeap.ts</test-file>
+      <test-names>
+        <name value="common &gt; main &gt; PairingHeap" />
+      </test-names>
+      <method v="2" />
+    </configuration>
     <configuration name="common &gt; main &gt; helpers &gt; ThenableSync" type="mocha-javascript-test-runner" temporary="true" nameIsGenerated="true">
       <node-interpreter>node</node-interpreter>
       <node-options>--max-old-space-size=4096 --allow-natives-syntax</node-options>
@@ -244,21 +282,6 @@
       <test-file>$PROJECT_DIR$/src/test/tests/common/main/rx/depend/dependent-func.ts</test-file>
       <test-names>
         <name value="common &gt; main &gt; rx &gt; depend &gt; dependent-func" />
-      </test-names>
-      <method v="2" />
-    </configuration>
-    <configuration name="common &gt; main &gt; rx &gt; properties &gt; CalcObjectBuilder" type="mocha-javascript-test-runner" temporary="true" nameIsGenerated="true">
-      <node-interpreter>node</node-interpreter>
-      <node-options>--max-old-space-size=4096 --allow-natives-syntax</node-options>
-      <mocha-package>$PROJECT_DIR$/node_modules/mocha</mocha-package>
-      <working-directory>$PROJECT_DIR$</working-directory>
-      <pass-parent-env>true</pass-parent-env>
-      <ui>bdd</ui>
-      <extra-mocha-options>--opts ./env/mocha/configs/babel/mocha.opts --watch</extra-mocha-options>
-      <test-kind>SUITE</test-kind>
-      <test-file>$PROJECT_DIR$/src/test/tests/common/main/rx/object/properties/CalcObjectBuilder.ts</test-file>
-      <test-names>
-        <name value="common &gt; main &gt; rx &gt; properties &gt; CalcObjectBuilder" />
       </test-names>
       <method v="2" />
     </configuration>
@@ -338,22 +361,6 @@
       </test-names>
       <method v="2" />
     </configuration>
-    <configuration name="fundamental-operations.try catch" type="mocha-javascript-test-runner" temporary="true" nameIsGenerated="true">
-      <node-interpreter>node</node-interpreter>
-      <node-options>--max-old-space-size=4096</node-options>
-      <mocha-package>$PROJECT_DIR$/node_modules/mocha</mocha-package>
-      <working-directory>$PROJECT_DIR$</working-directory>
-      <pass-parent-env>true</pass-parent-env>
-      <ui>bdd</ui>
-      <extra-mocha-options>--opts ./env/mocha/configs/babel/mocha.opts</extra-mocha-options>
-      <test-kind>TEST</test-kind>
-      <test-file>$PROJECT_DIR$/src/test/performance/node/fundamental-operations.ts</test-file>
-      <test-names>
-        <name value="fundamental-operations" />
-        <name value="try catch" />
-      </test-names>
-      <method v="2" />
-    </configuration>
     <configuration name="node &gt; v8 &gt; parser" type="mocha-javascript-test-runner">
       <node-interpreter>node</node-interpreter>
       <node-options>--max-old-space-size=4096 --allow-natives-syntax</node-options>
@@ -386,20 +393,20 @@
       <item itemvalue="Mocha.node &gt; v8 &gt; parser" />
       <item itemvalue="Mocha.dependent-func (perf)" />
       <item itemvalue="Mocha.common &gt; main &gt; rx &gt; depend &gt; dependent-func" />
-      <item itemvalue="Mocha.common &gt; main &gt; rx &gt; properties &gt; CalcObjectBuilder" />
       <item itemvalue="Mocha.common &gt; main &gt; helpers &gt; ThenableSync" />
-      <item itemvalue="Mocha.fundamental-operations.try catch" />
       <item itemvalue="Mocha.common &gt; async" />
       <item itemvalue="Node.js.dependent-func.js" />
       <item itemvalue="npm.Coverage Mocha Report" />
+      <item itemvalue="Mocha.PairingHeap perf" />
+      <item itemvalue="Mocha.common &gt; main &gt; PairingHeap" />
     </list>
     <recent_temporary>
       <list>
+        <item itemvalue="Mocha.common &gt; main &gt; PairingHeap" />
+        <item itemvalue="Mocha.PairingHeap perf" />
         <item itemvalue="Mocha.common &gt; main &gt; rx &gt; depend &gt; dependent-func" />
         <item itemvalue="Mocha.common &gt; async" />
         <item itemvalue="Mocha.common &gt; main &gt; helpers &gt; ThenableSync" />
-        <item itemvalue="Mocha.fundamental-operations.try catch" />
-        <item itemvalue="Mocha.common &gt; main &gt; rx &gt; properties &gt; CalcObjectBuilder" />
       </list>
     </recent_temporary>
   </component>
@@ -414,20 +421,6 @@
       <option name="number" value="Default" />
       <option name="presentableId" value="Default" />
       <updated>1567687848586</updated>
-    </task>
-    <task id="LOCAL-00290" summary="Develop">
-      <created>1584350807324</created>
-      <option name="number" value="00290" />
-      <option name="presentableId" value="LOCAL-00290" />
-      <option name="project" value="LOCAL" />
-      <updated>1584350807324</updated>
-    </task>
-    <task id="LOCAL-00291" summary="Develop">
-      <created>1584352042833</created>
-      <option name="number" value="00291" />
-      <option name="presentableId" value="LOCAL-00291" />
-      <option name="project" value="LOCAL" />
-      <updated>1584352042833</updated>
     </task>
     <task id="LOCAL-00292" summary="Develop">
       <created>1584355838232</created>
@@ -758,7 +751,21 @@
       <option name="project" value="LOCAL" />
       <updated>1585733926125</updated>
     </task>
-    <option name="localTasksCounter" value="339" />
+    <task id="LOCAL-00339" summary="depend refactoring. Tests OK.">
+      <created>1585735148563</created>
+      <option name="number" value="00339" />
+      <option name="presentableId" value="LOCAL-00339" />
+      <option name="project" value="LOCAL" />
+      <updated>1585735148563</updated>
+    </task>
+    <task id="LOCAL-00340" summary="optimizing...">
+      <created>1585801373181</created>
+      <option name="number" value="00340" />
+      <option name="presentableId" value="LOCAL-00340" />
+      <option name="project" value="LOCAL" />
+      <updated>1585801373181</updated>
+    </task>
+    <option name="localTasksCounter" value="341" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -820,7 +827,6 @@
   <component name="VcsManagerConfiguration">
     <option name="CHECK_CODE_SMELLS_BEFORE_PROJECT_COMMIT" value="false" />
     <option name="CHECK_NEW_TODO" value="false" />
-    <MESSAGE value="BinaryTree is fully tested (22 mins for combinations test)" />
     <MESSAGE value="Extracted ObjectPool" />
     <MESSAGE value="Fix v8 test" />
     <MESSAGE value="BinaryTree: Implementing AVL algorithm..." />
@@ -845,7 +851,8 @@
     <MESSAGE value="depend is completed. Tests OK." />
     <MESSAGE value="depend refactoring. Tests OK. Bad performance" />
     <MESSAGE value="depend refactoring. Tests OK." />
-    <option name="LAST_COMMIT_MESSAGE" value="depend refactoring. Tests OK." />
+    <MESSAGE value="optimizing..." />
+    <option name="LAST_COMMIT_MESSAGE" value="optimizing..." />
   </component>
   <component name="XDebuggerManager">
     <breakpoint-manager>
@@ -853,7 +860,7 @@
         <line-breakpoint enabled="true" type="javascript">
           <condition expression="getCurrentState()" language="TypeScript" />
           <url>file://$PROJECT_DIR$/src/test/tests/common/main/rx/depend/src/helpers.ts</url>
-          <line>472</line>
+          <line>500</line>
           <option name="timeStamp" value="968" />
         </line-breakpoint>
         <line-breakpoint enabled="true" type="javascript">

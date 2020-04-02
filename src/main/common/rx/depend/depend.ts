@@ -20,12 +20,12 @@ export function _initDeferredCallState<
 >(
 	state: CallState<TThisOuter, TArgs, TResultInner>,
 	funcCall: TFuncCall<TThisOuter, TArgs, TResultInner>,
-	defaultOptions: IDeferredOptions,
+	deferredOptions: IDeferredOptions,
 ) {
 	const options: IDeferredCalcOptions = {
-		delayBeforeCalc: defaultOptions.delayBeforeCalc,
-		minTimeBetweenCalc: defaultOptions.minTimeBetweenCalc,
-		autoInvalidateInterval: defaultOptions.autoInvalidateInterval,
+		delayBeforeCalc: deferredOptions.delayBeforeCalc,
+		minTimeBetweenCalc: deferredOptions.minTimeBetweenCalc,
+		autoInvalidateInterval: deferredOptions.autoInvalidateInterval,
 		timing: null,
 	}
 	state.deferredOptions = options

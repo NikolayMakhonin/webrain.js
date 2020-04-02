@@ -102,7 +102,7 @@ describe('node > main > rx > depend > dependent-func', function() {
 	}
 
 	it('v8 perceptron', async function() {
-		this.timeout(60000)
+		this.timeout(120000)
 
 		await v8Test(1000, async (iteration, checkOptimization, _assertIsOptimized) => {
 			const {
@@ -131,7 +131,7 @@ describe('node > main > rx > depend > dependent-func', function() {
 	})
 
 	it('v8 baseTest', async function() {
-		this.timeout(60000)
+		this.timeout(120000)
 
 		await v8Test(100, async (iteration, checkOptimization, _assertIsOptimized) => {
 			const { states } = await baseTest()

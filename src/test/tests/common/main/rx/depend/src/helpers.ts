@@ -7,7 +7,7 @@ import {
 	TCallState, valueIdToStateMap, valueToIdMap,
 } from '../../../../../../../main/common/rx/depend/CallState'
 import {CallStatus, Func, ICallState, IDeferredOptions} from '../../../../../../../main/common/rx/depend/contracts'
-import {depend, getCallState} from '../../../../../../../main/common/rx/depend/facade'
+import {depend} from '../../../../../../../main/common/rx/depend/facade'
 import {InternalError} from '../../../../../../../main/common/rx/depend/helpers'
 import {assert} from '../../../../../../../main/common/test/Assert'
 import {delay} from '../../../../../../../main/common/time/helpers'
@@ -17,20 +17,23 @@ import {delay} from '../../../../../../../main/common/time/helpers'
 // region makeDependentFunc
 
 // tslint:disable-next-line:no-shadowed-variable
-export function __makeDependentFunc<TThisOuter,
+export function __makeDependentFunc<
+	TThisOuter,
 	TArgs extends any[],
 	TResultInner,
-	>(func: Func<TThisOuter, TArgs, Iterator<TResultInner>>): Func<TThisOuter, TArgs, ThenableOrValue<TResultInner>>
+>(func: Func<TThisOuter, TArgs, Iterator<TResultInner>>): Func<TThisOuter, TArgs, ThenableOrValue<TResultInner>>
 // tslint:disable-next-line:no-shadowed-variable
-export function __makeDependentFunc<TThisOuter,
+export function __makeDependentFunc<
+	TThisOuter,
 	TArgs extends any[],
 	TResultInner,
-	>(func: Func<TThisOuter, TArgs, TResultInner>): Func<TThisOuter, TArgs, TResultInner>
+>(func: Func<TThisOuter, TArgs, TResultInner>): Func<TThisOuter, TArgs, TResultInner>
 // tslint:disable-next-line:no-shadowed-variable
-export function __makeDependentFunc<TThisOuter,
+export function __makeDependentFunc<
+	TThisOuter,
 	TArgs extends any[],
 	TResultInner,
-	>(func: Func<TThisOuter, TArgs, TResultInner | Iterator<TResultInner>>) {
+>(func: Func<TThisOuter, TArgs, TResultInner | Iterator<TResultInner>>) {
 	if (typeof func === 'function') {
 		return depend<TThisOuter, TArgs, TResultInner>(func as any)
 	}
@@ -114,6 +117,28 @@ export function createPerceptron(
 ) {
 	const countFuncs = layersCount * layerSize + 2
 
+	// region randomValue
+
+	const randomValues = [
+		0,
+		{ x: 1 },
+		'123',
+		null,
+		() => ({}),
+		1,
+		false,
+		() => 1,
+		{},
+		'',
+		void 0,
+		2,
+		{ y: 1, x: 2},
+		true,
+	]
+	const randomValuesLength = randomValues.length
+
+	// endregion
+
 	let callId = 0
 	const input = makeDependentFunc(function() {
 		return ++callId
@@ -122,7 +147,7 @@ export function createPerceptron(
 	// first layer
 	let layer = []
 	for (let i = 0; i < layerSize; i++) {
-		layer[i] = makeDependentFunc(function(a, b) {
+		layer[i] = makeDependentFunc(function(a, b, r1, r2, r3) {
 			return i * a * b * input() * (this as any)
 		})
 	}
@@ -132,10 +157,13 @@ export function createPerceptron(
 		const nextLayer = []
 		for (let j = 0; j < layerSize; j++) {
 			const prevLayer = layer
+			const r1 = randomValues[(i * layerSize * 3 + j) % randomValuesLength]
+			const r2 = randomValues[(i * layerSize * 3 + j + 1) % randomValuesLength]
+			const r3 = randomValues[(i * layerSize * 3 + j + 2) % randomValuesLength]
 			nextLayer[j] = makeDependentFunc(function(a, b) {
 				let sum = 0
 				for (let k = 0; k < layerSize; k++) {
-					sum += prevLayer[k].call(this, a, b)
+					sum += prevLayer[k].call(this, a, b, r1, r2, r3)
 				}
 				return sum
 			})
