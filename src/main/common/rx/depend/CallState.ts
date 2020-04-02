@@ -1505,9 +1505,11 @@ export function createCallStateProvider<
 			callStatesCount < 0 // for prevent deoptimize
 			|| callStatesCount >= nextCallStatesCount
 		) {
-			callStatesCount = 0
+			if (callStatesCount < 0) {
+				callStatesCount = 0
+			}
 			reduceCallStates.call(null, callStatesCount - maxCallStatesCount + minDeleteCallStatesCount)
-			nextCallStatesCount = callStatesCount + minDeleteCallStatesCount
+			nextCallStatesCount = Math.max(maxCallStatesCount, callStatesCount + minDeleteCallStatesCount)
 		}
 		callStatesCount++
 

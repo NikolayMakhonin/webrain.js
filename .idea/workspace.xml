@@ -9,6 +9,7 @@
   <component name="ChangeListManager">
     <list default="true" id="69b2ee16-521b-4efd-b473-8e19e3df4d09" name="Default Changelist" comment="optimizing...">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/common/rx/depend/CallState.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/common/rx/depend/CallState.ts" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/common/rx/depend/docs/perf.log" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/common/rx/depend/docs/perf.log" afterDir="false" />
     </list>
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
@@ -29,6 +30,11 @@
   </component>
   <component name="Git.Settings">
     <option name="PREVIEW_PUSH_PROTECTED_ONLY" value="true" />
+    <option name="RECENT_BRANCH_BY_REPOSITORY">
+      <map>
+        <entry key="$PROJECT_DIR$" value="fc6247e73b239b9e82d1bbe9c87cc0275952215e" />
+      </map>
+    </option>
     <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
   </component>
   <component name="JsFlowSettings">
@@ -75,12 +81,12 @@
     <property name="ts.external.directory.path" value="L:\Work\_GIT\GitHub\NodeJs\modules\webrain\node_modules\typescript\lib" />
   </component>
   <component name="RecentsManager">
-    <key name="MoveFile.RECENT_KEYS">
-      <recent name="L:\Work\_GIT\GitHub\NodeJs\modules\webrain\_trash\src\main\common\rx\depend" />
+    <key name="CopyFile.RECENT_KEYS">
       <recent name="L:\Work\_GIT\GitHub\NodeJs\modules\webrain\src\main\common\lists" />
-      <recent name="L:\Work\_GIT\GitHub\NodeJs\modules\webrain\src\main\common\rx\depend\docs" />
-      <recent name="L:\Work\_GIT\GitHub\NodeJs\modules\webrain\src\test\tests\node\main\rx\depend\v8" />
-      <recent name="L:\Work\_GIT\GitHub\NodeJs\modules\webrain\src\test\tests\node\main\rx\depend" />
+      <recent name="L:\Work\_GIT\GitHub\NodeJs\modules\webrain\src\test\performance\node" />
+      <recent name="L:\Work\_GIT\GitHub\NodeJs\modules\webrain\src\test\tests\common\main\lists" />
+      <recent name="L:\Work\_GIT\GitHub\NodeJs\modules\webrain\src\test\tests\common\main\test" />
+      <recent name="L:\Work\_GIT\GitHub\NodeJs\modules\webrain\src\main\common\rx\depend" />
     </key>
     <key name="es6.move.members.recent.items">
       <recent name="L:\Work\_GIT\GitHub\NodeJs\modules\webrain\src\main\common\helpers\helpers.ts" />
@@ -89,12 +95,12 @@
       <recent name="L:\Work\_GIT\GitHub\NodeJs\modules\webrain\src\main\common\rx\depend\getOrCreateCallState.ts" />
       <recent name="L:\Work\_GIT\GitHub\NodeJs\modules\webrain\src\main\common\rx\depend\FuncCallState.ts" />
     </key>
-    <key name="CopyFile.RECENT_KEYS">
+    <key name="MoveFile.RECENT_KEYS">
+      <recent name="L:\Work\_GIT\GitHub\NodeJs\modules\webrain\_trash\src\main\common\rx\depend" />
       <recent name="L:\Work\_GIT\GitHub\NodeJs\modules\webrain\src\main\common\lists" />
-      <recent name="L:\Work\_GIT\GitHub\NodeJs\modules\webrain\src\test\performance\node" />
-      <recent name="L:\Work\_GIT\GitHub\NodeJs\modules\webrain\src\test\tests\common\main\lists" />
-      <recent name="L:\Work\_GIT\GitHub\NodeJs\modules\webrain\src\test\tests\common\main\test" />
-      <recent name="L:\Work\_GIT\GitHub\NodeJs\modules\webrain\src\main\common\rx\depend" />
+      <recent name="L:\Work\_GIT\GitHub\NodeJs\modules\webrain\src\main\common\rx\depend\docs" />
+      <recent name="L:\Work\_GIT\GitHub\NodeJs\modules\webrain\src\test\tests\node\main\rx\depend\v8" />
+      <recent name="L:\Work\_GIT\GitHub\NodeJs\modules\webrain\src\test\tests\node\main\rx\depend" />
     </key>
   </component>
   <component name="RunDashboard">
@@ -109,7 +115,7 @@
       </list>
     </option>
   </component>
-  <component name="RunManager" selected="Mocha.common &gt; main &gt; PairingHeap">
+  <component name="RunManager" selected="Mocha.dependent-func (perf)">
     <configuration default="true" type="JavaScriptTestRunnerKarma">
       <config-file value="$PROJECT_DIR$/env/karma/configs/dev.js" />
       <karma-package-dir value="$PROJECT_DIR$/node_modules/karma" />
@@ -216,21 +222,6 @@
       <test-pattern>./src/test/tests/{common,node}/**/*.*</test-pattern>
       <method v="2" />
     </configuration>
-    <configuration name="common &gt; async" type="mocha-javascript-test-runner" temporary="true" nameIsGenerated="true">
-      <node-interpreter>node</node-interpreter>
-      <node-options>--max-old-space-size=4096</node-options>
-      <mocha-package>$PROJECT_DIR$/node_modules/mocha</mocha-package>
-      <working-directory>$PROJECT_DIR$</working-directory>
-      <pass-parent-env>true</pass-parent-env>
-      <ui>bdd</ui>
-      <extra-mocha-options>--opts ./env/mocha/configs/babel/mocha.opts</extra-mocha-options>
-      <test-kind>SUITE</test-kind>
-      <test-file>$PROJECT_DIR$/src/test/performance/node/async.ts</test-file>
-      <test-names>
-        <name value="common &gt; async" />
-      </test-names>
-      <method v="2" />
-    </configuration>
     <configuration name="common &gt; main &gt; PairingHeap" type="mocha-javascript-test-runner" temporary="true" nameIsGenerated="true">
       <node-interpreter>node</node-interpreter>
       <node-options>--max-old-space-size=4096 --allow-natives-syntax</node-options>
@@ -243,21 +234,6 @@
       <test-file>$PROJECT_DIR$/src/test/tests/common/main/lists/PairingHeap.ts</test-file>
       <test-names>
         <name value="common &gt; main &gt; PairingHeap" />
-      </test-names>
-      <method v="2" />
-    </configuration>
-    <configuration name="common &gt; main &gt; helpers &gt; ThenableSync" type="mocha-javascript-test-runner" temporary="true" nameIsGenerated="true">
-      <node-interpreter>node</node-interpreter>
-      <node-options>--max-old-space-size=4096 --allow-natives-syntax</node-options>
-      <mocha-package>$PROJECT_DIR$/node_modules/mocha</mocha-package>
-      <working-directory>$PROJECT_DIR$</working-directory>
-      <pass-parent-env>true</pass-parent-env>
-      <ui>bdd</ui>
-      <extra-mocha-options>--opts ./env/mocha/configs/babel/mocha.opts --watch</extra-mocha-options>
-      <test-kind>SUITE</test-kind>
-      <test-file>$PROJECT_DIR$/src/test/tests/common/main/async/ThenableSync.ts</test-file>
-      <test-names>
-        <name value="common &gt; main &gt; helpers &gt; ThenableSync" />
       </test-names>
       <method v="2" />
     </configuration>
@@ -310,6 +286,38 @@
       <extra-mocha-options>--opts ./env/mocha/configs/babel/mocha.opts</extra-mocha-options>
       <test-kind>PATTERN</test-kind>
       <test-pattern>src/test/performance/node/{dependent-func.ts,PairingHeap.ts}</test-pattern>
+      <method v="2" />
+    </configuration>
+    <configuration name="dependent-func perf.perceptron create" type="mocha-javascript-test-runner" temporary="true" nameIsGenerated="true">
+      <node-interpreter>node</node-interpreter>
+      <node-options>--max-old-space-size=4096 --allow-natives-syntax</node-options>
+      <mocha-package>$PROJECT_DIR$/node_modules/mocha</mocha-package>
+      <working-directory>$PROJECT_DIR$</working-directory>
+      <pass-parent-env>true</pass-parent-env>
+      <ui>bdd</ui>
+      <extra-mocha-options>--opts ./env/mocha/configs/babel/mocha.opts</extra-mocha-options>
+      <test-kind>TEST</test-kind>
+      <test-file>$PROJECT_DIR$/src/test/performance/node/dependent-func.ts</test-file>
+      <test-names>
+        <name value="dependent-func perf" />
+        <name value="perceptron create" />
+      </test-names>
+      <method v="2" />
+    </configuration>
+    <configuration name="dependent-func perf.perceptron memory create" type="mocha-javascript-test-runner" temporary="true" nameIsGenerated="true">
+      <node-interpreter>node</node-interpreter>
+      <node-options>--max-old-space-size=4096 --allow-natives-syntax</node-options>
+      <mocha-package>$PROJECT_DIR$/node_modules/mocha</mocha-package>
+      <working-directory>$PROJECT_DIR$</working-directory>
+      <pass-parent-env>true</pass-parent-env>
+      <ui>bdd</ui>
+      <extra-mocha-options>--opts ./env/mocha/configs/babel/mocha.opts</extra-mocha-options>
+      <test-kind>TEST</test-kind>
+      <test-file>$PROJECT_DIR$/src/test/performance/node/dependent-func.ts</test-file>
+      <test-names>
+        <name value="dependent-func perf" />
+        <name value="perceptron memory create" />
+      </test-names>
       <method v="2" />
     </configuration>
     <configuration name="dependent-func" type="mocha-javascript-test-runner">
@@ -384,20 +392,20 @@
       <item itemvalue="Mocha.node &gt; v8 &gt; parser" />
       <item itemvalue="Mocha.dependent-func (perf)" />
       <item itemvalue="Mocha.common &gt; main &gt; rx &gt; depend &gt; dependent-func" />
-      <item itemvalue="Mocha.common &gt; main &gt; helpers &gt; ThenableSync" />
-      <item itemvalue="Mocha.common &gt; async" />
-      <item itemvalue="Node.js.dependent-func.js" />
-      <item itemvalue="npm.Coverage Mocha Report" />
       <item itemvalue="Mocha.PairingHeap perf" />
       <item itemvalue="Mocha.common &gt; main &gt; PairingHeap" />
+      <item itemvalue="Node.js.dependent-func.js" />
+      <item itemvalue="npm.Coverage Mocha Report" />
+      <item itemvalue="Mocha.dependent-func perf.perceptron create" />
+      <item itemvalue="Mocha.dependent-func perf.perceptron memory create" />
     </list>
     <recent_temporary>
       <list>
+        <item itemvalue="Mocha.dependent-func perf.perceptron create" />
+        <item itemvalue="Mocha.dependent-func perf.perceptron memory create" />
         <item itemvalue="Mocha.common &gt; main &gt; PairingHeap" />
         <item itemvalue="Mocha.PairingHeap perf" />
         <item itemvalue="Mocha.common &gt; main &gt; rx &gt; depend &gt; dependent-func" />
-        <item itemvalue="Mocha.common &gt; async" />
-        <item itemvalue="Mocha.common &gt; main &gt; helpers &gt; ThenableSync" />
       </list>
     </recent_temporary>
   </component>
@@ -860,14 +868,10 @@
           <option name="timeStamp" value="1086" />
         </line-breakpoint>
         <line-breakpoint enabled="true" type="javascript">
-          <url>file://$PROJECT_DIR$/src/test/performance/node/dependent-func.ts</url>
-          <line>4</line>
-          <option name="timeStamp" value="1091" />
-        </line-breakpoint>
-        <line-breakpoint enabled="true" type="javascript">
-          <url>file://$PROJECT_DIR$/src/test/performance/node/dependent-func.ts</url>
-          <line>83</line>
-          <option name="timeStamp" value="1093" />
+          <url>file://$PROJECT_DIR$/src/main/common/rx/depend/CallState.ts</url>
+          <line>1510</line>
+          <properties lambdaOrdinal="-1" />
+          <option name="timeStamp" value="1099" />
         </line-breakpoint>
       </breakpoints>
       <breakpoints-dialog>
