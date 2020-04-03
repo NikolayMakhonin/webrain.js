@@ -50,7 +50,7 @@ describe('dependent-func perf', function() {
 		console.log(`smallint overflow after: ${((1 << 30) / outputState._callId) * result.calcInfo.testTime / 1000 * 210 / 3600} hours`)
 
 		const chromeFuncsPerFrame = countFuncs * cyclesPerSecond / result.absoluteDiff[1] / 60 / 210
-		assert.ok(chromeFuncsPerFrame >= 150)
+		assert.ok(chromeFuncsPerFrame >= 150, chromeFuncsPerFrame + '')
 	})
 
 	xit('set memory', function() {
@@ -121,6 +121,7 @@ describe('dependent-func perf', function() {
 		)
 
 		console.log(result)
+		assert.ok(result.absoluteDiff[0] < 15000, result.absoluteDiff[1] + '')
 	})
 
 	it('perceptron memory recalc', function() {
