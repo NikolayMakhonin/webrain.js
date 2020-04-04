@@ -10,7 +10,8 @@ import {
 } from '../extensions/serialization/contracts'
 import {registerSerializable} from '../extensions/serialization/serializers'
 import {isIterable} from '../helpers/helpers'
-import {dependX} from '../rx/depend/facade'
+import {invalidateCallState} from '../rx/depend/CallState'
+import {depend, dependX, getCallState} from '../rx/depend/facade'
 import {IObservableMap, MapChangedType} from './contracts/IMapChanged'
 import {fillMap} from './helpers/set'
 
@@ -27,9 +28,79 @@ export class DependMap<K, V>
 		this._map = map || new Map<K, V>()
 	}
 
+	public readonly [Symbol.toStringTag]: string = 'Map'
+
+	// region observe methods
+
+	// tslint:disable-next-line:no-empty
+	public observeAll() { }
+
+	public observeKey(key: K) {
+		this.observeAll()
+	}
+
+	public observeAnyKey() {
+		this.observeAll()
+	}
+
+	public observeValue(key: K) {
+		this.observeKey(key)
+	}
+
+	public observeAnyValue() {
+		this.observeAnyKey()
+	}
+
+	// endregion
+
+	// region read methods
+
 	public get(key: K): V | undefined {
+		this.observeValue(key)
 		return this._map.get(key)
 	}
+
+	public has(key: K): boolean {
+		this.observeKey(key)
+		return this._map.has(key)
+	}
+
+	private _size(): number {
+		this.observeAnyKey()
+		return this._map.size
+	}
+
+	public get size(): number {
+		return this._size()
+	}
+
+	public entries(): IterableIterator<[K, V]> {
+		this.observeAnyValue()
+		return this._map.entries()
+	}
+
+	public keys(): IterableIterator<K> {
+		this.observeAnyKey()
+		return this._map.keys()
+	}
+
+	public values(): IterableIterator<V> {
+		this.observeAnyValue()
+		return this._map.values()
+	}
+
+	public forEach(callbackfn: (value: V, key: K, map: Map<K, V>) => void, thisArg?: any): void {
+		this.observeAnyValue()
+		this._map.forEach((k, v) => callbackfn.call(thisArg, k, v, this))
+	}
+
+	public [Symbol.iterator](): IterableIterator<[K, V]> {
+		return this.entries()
+	}
+
+	// endregion
+
+	// region change methods
 
 	public set(key: K, value: V): this {
 		const {_map} = this
@@ -38,35 +109,12 @@ export class DependMap<K, V>
 
 		_map.set(key, value)
 
-		const size = _map.size
-		if (size > oldSize) {
-			const {_mapChangedIfCanEmit} = this
-			if (_mapChangedIfCanEmit) {
-				_mapChangedIfCanEmit.emit({
-					type: MapChangedType.Added,
-					key,
-					newValue: value,
-				})
-			}
-
-			const {propertyChangedIfCanEmit} = this
-			if (propertyChangedIfCanEmit) {
-				propertyChangedIfCanEmit.onPropertyChanged({
-					name: 'size',
-					oldValue: oldSize,
-					newValue: size,
-				})
-			}
-		} else {
-			const {_mapChangedIfCanEmit} = this
-			if (_mapChangedIfCanEmit) {
-				_mapChangedIfCanEmit.emit({
-					type: MapChangedType.Set,
-					key,
-					oldValue,
-					newValue: value,
-				})
-			}
+		if (_map.size !== oldSize) {
+			invalidateCallState(getCallState(this.observeAnyKey)())
+			invalidateCallState(getCallState(this.observeKey)(key))
+		} else if (oldValue !== value) {
+			invalidateCallState(getCallState(this.observeAnyValue)())
+			invalidateCallState(getCallState(this.observeValue)(key))
 		}
 
 		return this
@@ -75,30 +123,12 @@ export class DependMap<K, V>
 	public delete(key: K): boolean {
 		const {_map} = this
 		const oldSize = _map.size
-		const oldValue = _map.get(key)
 
 		this._map.delete(key)
 
-		const size = _map.size
-		if (size < oldSize) {
-			const {_mapChangedIfCanEmit} = this
-			if (_mapChangedIfCanEmit) {
-				_mapChangedIfCanEmit.emit({
-					type: MapChangedType.Removed,
-					key,
-					oldValue,
-				})
-			}
-
-			const {propertyChangedIfCanEmit} = this
-			if (propertyChangedIfCanEmit) {
-				propertyChangedIfCanEmit.onPropertyChanged({
-					name: 'size',
-					oldValue: oldSize,
-					newValue: size,
-				})
-			}
-
+		if (_map.size !== oldSize) {
+			invalidateCallState(getCallState(this.observeAnyKey)())
+			invalidateCallState(getCallState(this.observeKey)(key))
 			return true
 		}
 
@@ -106,69 +136,12 @@ export class DependMap<K, V>
 	}
 
 	public clear(): void {
-		const {size} = this
+		const {size} = this._map
 		if (size === 0) {
 			return
 		}
 
-		const {_mapChangedIfCanEmit} = this
-		if (_mapChangedIfCanEmit) {
-			const oldItems = Array.from(this.entries())
-
-			this._map.clear()
-
-			for (let i = 0, len = oldItems.length; i < len; i++) {
-				const oldItem = oldItems[i]
-				_mapChangedIfCanEmit.emit({
-					type: MapChangedType.Removed,
-					key: oldItem[0],
-					oldValue: oldItem[1],
-				})
-			}
-		} else {
-			this._map.clear()
-		}
-
-		const {propertyChangedIfCanEmit} = this
-		if (propertyChangedIfCanEmit) {
-			propertyChangedIfCanEmit.onPropertyChanged({
-				name: 'size',
-				oldValue: size,
-				newValue: 0,
-			})
-		}
-	}
-
-	// region Unchanged Map methods
-
-	public readonly [Symbol.toStringTag]: string = 'Map'
-
-	public get size(): number {
-		return this._map.size
-	}
-
-	public [Symbol.iterator](): IterableIterator<[K, V]> {
-		return this._map[Symbol.iterator]()
-	}
-
-	public entries(): IterableIterator<[K, V]> {
-		return this._map.entries()
-	}
-
-	public forEach(callbackfn: (value: V, key: K, map: Map<K, V>) => void, thisArg?: any): void {
-		this._map.forEach((k, v) => callbackfn.call(thisArg, k, v, this))
-	}
-
-	public has(key: K): boolean {
-		return this._map.has(key)
-	}
-
-	public keys(): IterableIterator<K> {
-		return this._map.keys()
-	}
-
-	public values(): IterableIterator<V> {
-		return this._map.values()
+		invalidateCallState(getCallState(this.observeAll)())
 	}
 
 	// endregion
@@ -240,7 +213,11 @@ export class DependMap<K, V>
 	// endregion
 }
 
-DependMap.prototype.get = dependX(DependMap.prototype.get)
+DependMap.prototype.observeAll = depend(DependMap.prototype.observeAll, null, true)
+DependMap.prototype.observeAnyKey = depend(DependMap.prototype.observeAnyKey, null, true)
+DependMap.prototype.observeAnyValue = depend(DependMap.prototype.observeAnyValue, null, true)
+DependMap.prototype.observeKey = depend(DependMap.prototype.observeKey, null, true)
+DependMap.prototype.observeValue = depend(DependMap.prototype.observeValue, null, true)
 
 registerMergeable(DependMap)
 

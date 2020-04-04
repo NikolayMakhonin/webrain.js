@@ -1549,6 +1549,18 @@ const callStateProviderMap: TCallStateProviderMap = new WeakMap()
 
 // region getCallState / getOrCreateCallState
 
+export function invalidateCallState<
+	TThisOuter,
+	TArgs extends any[],
+	TResultInner,
+>(
+	state: ICallState<TThisOuter, TArgs, TResultInner>,
+) {
+	if (state != null) {
+		state.invalidate()
+	}
+}
+
 export function getCallState<
 	TThisOuter,
 	TArgs extends any[],
@@ -1741,7 +1753,7 @@ export function createDependentFunc<
 >(
 	func: Func<unknown, TArgs, unknown>,
 	callStateProvider: ICallStateProvider<TThisOuter, TArgs, TResultInner>,
-	isSimpleProperty: boolean,
+	canAlwaysRecalc: boolean,
 )
 	: Func<TThisOuter,
 	TArgs,
@@ -1749,7 +1761,7 @@ export function createDependentFunc<
 		TArgs,
 		TResultInner extends ThenableOrIterator<infer V> ? ThenableOrValue<V> : TResultInner>> {
 	return function _dependentFunc() {
-		const getState = isSimpleProperty && currentState == null
+		const getState = canAlwaysRecalc && currentState == null
 			? callStateProvider.get
 			: callStateProvider.getOrCreate
 
@@ -1763,7 +1775,7 @@ export function createDependentFunc<
 }
 
 /**
- * @param isSimpleProperty sync, no deferred, without dependencies
+ * @param canAlwaysRecalc sync, no deferred, without dependencies
  */
 export function makeDependentFunc<
 	TThisOuter,
@@ -1773,7 +1785,7 @@ export function makeDependentFunc<
 	func: Func<unknown, TArgs, unknown>,
 	funcCall: TFuncCall<TThisOuter, TArgs, TResultInner>,
 	initCallState?: (state: CallState<TThisOuter, TArgs, TResultInner>) => void,
-	isSimpleProperty?: boolean,
+	canAlwaysRecalc?: boolean,
 ): Func<
 	TThisOuter,
 	TArgs,
@@ -1790,7 +1802,7 @@ export function makeDependentFunc<
 	const dependentFunc = createDependentFunc(
 		func,
 		callStateProvider,
-		isSimpleProperty,
+		canAlwaysRecalc,
 	)
 
 	callStateProviderMap.set(dependentFunc, callStateProvider)

@@ -147,7 +147,7 @@ export function _funcCall<
  * Inner this same as outer this
  * @param func
  * @param deferredOptions
- * @param isSimpleProperty sync, no deferred, without dependencies
+ * @param canAlwaysRecalc sync, no deferred, without dependencies
  */
 export function depend<
 	TThisOuter,
@@ -157,17 +157,17 @@ export function depend<
 >(
 	func: Func<TThisOuter, TArgs, TResultInner>,
 	deferredOptions?: IDeferredOptions,
-	isSimpleProperty?: boolean,
+	canAlwaysRecalc?: boolean,
 ): Func<
 	TThisOuter,
 	TArgs,
 	TResultInner extends ThenableOrIterator<infer V> ? ThenableOrValue<V> : TResultInner
 > {
-	if (isSimpleProperty && deferredOptions != null) {
-		throw new Error('isSimpleProperty should not be deferred')
+	if (canAlwaysRecalc && deferredOptions != null) {
+		throw new Error('canAlwaysRecalc should not be deferred')
 	}
 	return deferredOptions == null
-		? makeDependentFunc(func, _funcCall, null, isSimpleProperty) as any
+		? makeDependentFunc(func, _funcCall, null, canAlwaysRecalc) as any
 		: makeDeferredFunc(func, _funcCall, deferredOptions) as any
 }
 
@@ -183,7 +183,7 @@ export function funcCallX<
  * Inner this as CallState
  * @param func
  * @param deferredOptions
- * @param isSimpleProperty sync, no deferred, without dependencies
+ * @param canAlwaysRecalc sync, no deferred, without dependencies
  */
 export function dependX<
 	TThisOuter,
@@ -196,17 +196,17 @@ export function dependX<
 		TResultInner
 	>,
 	deferredOptions?: IDeferredOptions,
-	isSimpleProperty?: boolean,
+	canAlwaysRecalc?: boolean,
 ): Func<
 	TThisOuter,
 	TArgs,
 	TResultInner extends ThenableOrIterator<infer V> ? ThenableOrValue<V> : TResultInner
 > {
-	if (isSimpleProperty && deferredOptions != null) {
-		throw new Error('isSimpleProperty should not be deferred')
+	if (canAlwaysRecalc && deferredOptions != null) {
+		throw new Error('canAlwaysRecalc should not be deferred')
 	}
 	return deferredOptions == null
-		? makeDependentFunc(func, funcCallX, null, isSimpleProperty) as any
+		? makeDependentFunc(func, funcCallX, null, canAlwaysRecalc) as any
 		: makeDeferredFunc(func, funcCallX, deferredOptions) as any
 }
 
