@@ -68,13 +68,9 @@ export class DependMap<K, V>
 		return this._map.has(key)
 	}
 
-	private _size(): number {
+	public get size(): number {
 		this.dependAnyKey()
 		return this._map.size
-	}
-
-	public get size(): number {
-		return this._size()
 	}
 
 	public entries(): IterableIterator<[K, V]> {
@@ -98,7 +94,8 @@ export class DependMap<K, V>
 	}
 
 	public [Symbol.iterator](): IterableIterator<[K, V]> {
-		return this.entries()
+		this.dependAnyValue()
+		return this._map[Symbol.iterator]()
 	}
 
 	// endregion
@@ -113,11 +110,11 @@ export class DependMap<K, V>
 		_map.set(key, value)
 
 		if (_map.size !== oldSize) {
-			invalidateCallState(getCallState(this.dependAnyKey)())
-			invalidateCallState(getCallState(this.dependKey)(key))
+			invalidateCallState(getCallState(this.dependAnyKey).call(this))
+			invalidateCallState(getCallState(this.dependKey).call(this, key))
 		} else if (oldValue !== value) {
-			invalidateCallState(getCallState(this.dependAnyValue)())
-			invalidateCallState(getCallState(this.dependValue)(key))
+			invalidateCallState(getCallState(this.dependAnyValue).call(this))
+			invalidateCallState(getCallState(this.dependValue).call(this, key))
 		}
 
 		return this
@@ -130,8 +127,8 @@ export class DependMap<K, V>
 		this._map.delete(key)
 
 		if (_map.size !== oldSize) {
-			invalidateCallState(getCallState(this.dependAnyKey)())
-			invalidateCallState(getCallState(this.dependKey)(key))
+			invalidateCallState(getCallState(this.dependAnyKey).call(this))
+			invalidateCallState(getCallState(this.dependKey).call(this, key))
 			return true
 		}
 
@@ -144,7 +141,9 @@ export class DependMap<K, V>
 			return
 		}
 
-		invalidateCallState(getCallState(this.dependAll)())
+		this._map.clear()
+
+		invalidateCallState(getCallState(this.dependAll).call(this))
 	}
 
 	// endregion
@@ -198,7 +197,7 @@ export class DependMap<K, V>
 	// region ISerializable
 
 	// noinspection SpellCheckingInspection
-	public static uuid: string = 'e162178d51234beaab6eb96d5b8f130b'
+	public static uuid: string = 'd97c26caddd84a4d9748fd0f345f75fd'
 
 	public serialize(serialize: ISerializeValue): ISerializedObject {
 		this.dependAnyValue()

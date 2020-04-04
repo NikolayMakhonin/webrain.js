@@ -8,10 +8,10 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="69b2ee16-521b-4efd-b473-8e19e3df4d09" name="Default Changelist" comment="">
+      <change afterPath="$PROJECT_DIR$/src/main/common/lists/DependSet.ts" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/test/tests/common/main/lists/DependMap.ts" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/common/lists/DependMap.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/common/lists/DependMap.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/common/rx/depend/CallState.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/common/rx/depend/CallState.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/common/rx/depend/depend.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/common/rx/depend/depend.ts" afterDir="false" />
     </list>
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
     <option name="SHOW_DIALOG" value="false" />
@@ -63,7 +63,7 @@
     <property name="WebServerToolWindowFactoryState" value="false" />
     <property name="auto.test.manager.delay" value="5000" />
     <property name="javascript.karma.karma_node_package_dir" value="" />
-    <property name="last_opened_file_path" value="$PROJECT_DIR$/src/main/common/helpers/helpers.ts" />
+    <property name="last_opened_file_path" value="$PROJECT_DIR$/src/main/common/lists" />
     <property name="node.js.detected.package.eslint" value="true" />
     <property name="node.js.detected.package.standard" value="true" />
     <property name="node.js.detected.package.tslint" value="true" />
@@ -84,8 +84,8 @@
   <component name="RecentsManager">
     <key name="CopyFile.RECENT_KEYS">
       <recent name="L:\Work\_GIT\GitHub\NodeJs\modules\webrain\src\main\common\lists" />
-      <recent name="L:\Work\_GIT\GitHub\NodeJs\modules\webrain\src\test\performance\node" />
       <recent name="L:\Work\_GIT\GitHub\NodeJs\modules\webrain\src\test\tests\common\main\lists" />
+      <recent name="L:\Work\_GIT\GitHub\NodeJs\modules\webrain\src\test\performance\node" />
       <recent name="L:\Work\_GIT\GitHub\NodeJs\modules\webrain\src\test\tests\common\main\test" />
       <recent name="L:\Work\_GIT\GitHub\NodeJs\modules\webrain\src\main\common\rx\depend" />
     </key>
@@ -116,8 +116,8 @@
       </list>
     </option>
   </component>
-  <component name="RunManager" selected="Mocha.dependent-func">
-    <configuration default="true" type="JavaScriptTestRunnerKarma">
+  <component name="RunManager" selected="Mocha.common &gt; main &gt; lists &gt; DependMap">
+    <configuration default="true" type="JavaScriptTestRunnerKarma" activateToolWindowBeforeRun="false">
       <config-file value="$PROJECT_DIR$/env/karma/configs/dev.js" />
       <karma-package-dir value="$PROJECT_DIR$/node_modules/karma" />
       <node-interpreter value="node" />
@@ -238,7 +238,7 @@
       </test-names>
       <method v="2" />
     </configuration>
-    <configuration name="common &gt; main &gt; rx &gt; depend &gt; dependent-func" type="mocha-javascript-test-runner" temporary="true" nameIsGenerated="true">
+    <configuration name="common &gt; main &gt; lists &gt; DependMap" type="mocha-javascript-test-runner" temporary="true" nameIsGenerated="true">
       <node-interpreter>node</node-interpreter>
       <node-options>--max-old-space-size=4096 --allow-natives-syntax</node-options>
       <mocha-package>$PROJECT_DIR$/node_modules/mocha</mocha-package>
@@ -247,9 +247,9 @@
       <ui>bdd</ui>
       <extra-mocha-options>--opts ./env/mocha/configs/babel/mocha.opts --watch</extra-mocha-options>
       <test-kind>SUITE</test-kind>
-      <test-file>$PROJECT_DIR$/src/test/tests/common/main/rx/depend/dependent-func.ts</test-file>
+      <test-file>$PROJECT_DIR$/src/test/tests/common/main/lists/DependMap.ts</test-file>
       <test-names>
-        <name value="common &gt; main &gt; rx &gt; depend &gt; dependent-func" />
+        <name value="common &gt; main &gt; lists &gt; DependMap" />
       </test-names>
       <method v="2" />
     </configuration>
@@ -392,21 +392,21 @@
       <item itemvalue="Mocha.dependent-func" />
       <item itemvalue="Mocha.node &gt; v8 &gt; parser" />
       <item itemvalue="Mocha.dependent-func (perf)" />
-      <item itemvalue="Mocha.common &gt; main &gt; rx &gt; depend &gt; dependent-func" />
       <item itemvalue="Mocha.PairingHeap perf" />
       <item itemvalue="Mocha.common &gt; main &gt; PairingHeap" />
-      <item itemvalue="Node.js.dependent-func.js" />
-      <item itemvalue="npm.Coverage Mocha Report" />
       <item itemvalue="Mocha.dependent-func perf.perceptron create" />
       <item itemvalue="Mocha.dependent-func perf.perceptron memory create" />
+      <item itemvalue="Node.js.dependent-func.js" />
+      <item itemvalue="npm.Coverage Mocha Report" />
+      <item itemvalue="Mocha.common &gt; main &gt; lists &gt; DependMap" />
     </list>
     <recent_temporary>
       <list>
+        <item itemvalue="Mocha.common &gt; main &gt; lists &gt; DependMap" />
         <item itemvalue="Mocha.dependent-func perf.perceptron create" />
         <item itemvalue="Mocha.dependent-func perf.perceptron memory create" />
         <item itemvalue="Mocha.common &gt; main &gt; PairingHeap" />
         <item itemvalue="Mocha.PairingHeap perf" />
-        <item itemvalue="Mocha.common &gt; main &gt; rx &gt; depend &gt; dependent-func" />
       </list>
     </recent_temporary>
   </component>
@@ -421,13 +421,6 @@
       <option name="number" value="Default" />
       <option name="presentableId" value="Default" />
       <updated>1567687848586</updated>
-    </task>
-    <task id="LOCAL-00299" summary="Develop. Tests OK.">
-      <created>1584442231350</created>
-      <option name="number" value="00299" />
-      <option name="presentableId" value="LOCAL-00299" />
-      <option name="project" value="LOCAL" />
-      <updated>1584442231350</updated>
     </task>
     <task id="LOCAL-00300" summary="Develop. Tests OK.">
       <created>1584442383843</created>
@@ -765,7 +758,14 @@
       <option name="project" value="LOCAL" />
       <updated>1585975385096</updated>
     </task>
-    <option name="localTasksCounter" value="348" />
+    <task id="LOCAL-00348" summary="DependMap completed but not tested">
+      <created>1585995163422</created>
+      <option name="number" value="00348" />
+      <option name="presentableId" value="LOCAL-00348" />
+      <option name="project" value="LOCAL" />
+      <updated>1585995163422</updated>
+    </task>
+    <option name="localTasksCounter" value="349" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -832,7 +832,6 @@
   <component name="VcsManagerConfiguration">
     <option name="CHECK_CODE_SMELLS_BEFORE_PROJECT_COMMIT" value="false" />
     <option name="CHECK_NEW_TODO" value="false" />
-    <MESSAGE value="BinaryTree: Implementing AVL algorithm..." />
     <MESSAGE value="BinaryTree: try to use non recursive add - failed, it is slower than recursive" />
     <MESSAGE value="BinaryTree: optimizing AVL ..." />
     <MESSAGE value="Develop tests" />
@@ -857,7 +856,8 @@
     <MESSAGE value="optimizing..." />
     <MESSAGE value="optimizing... Tests OK." />
     <MESSAGE value="DependMap in process" />
-    <option name="LAST_COMMIT_MESSAGE" value="DependMap in process" />
+    <MESSAGE value="DependMap completed but not tested" />
+    <option name="LAST_COMMIT_MESSAGE" value="DependMap completed but not tested" />
   </component>
   <component name="XDebuggerManager">
     <breakpoint-manager>
