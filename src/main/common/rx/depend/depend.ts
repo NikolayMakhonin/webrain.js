@@ -183,7 +183,6 @@ export function funcCallX<
  * Inner this as CallState
  * @param func
  * @param deferredOptions
- * @param canAlwaysRecalc sync, no deferred, without dependencies
  */
 export function dependX<
 	TThisOuter,
@@ -196,17 +195,16 @@ export function dependX<
 		TResultInner
 	>,
 	deferredOptions?: IDeferredOptions,
-	canAlwaysRecalc?: boolean,
 ): Func<
 	TThisOuter,
 	TArgs,
 	TResultInner extends ThenableOrIterator<infer V> ? ThenableOrValue<V> : TResultInner
 > {
-	if (canAlwaysRecalc && deferredOptions != null) {
+	if (deferredOptions != null) {
 		throw new Error('canAlwaysRecalc should not be deferred')
 	}
 	return deferredOptions == null
-		? makeDependentFunc(func, funcCallX, null, canAlwaysRecalc) as any
+		? makeDependentFunc(func, funcCallX, null, false) as any
 		: makeDeferredFunc(func, funcCallX, deferredOptions) as any
 }
 

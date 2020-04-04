@@ -1,4 +1,3 @@
-import {ThenableIterator} from '../async/async'
 import {IMergeable, IMergeOptions, IMergeValue} from '../extensions/merge/contracts'
 import {createMergeMapWrapper, mergeMaps} from '../extensions/merge/merge-maps'
 import {registerMergeable} from '../extensions/merge/mergers'
@@ -10,9 +9,8 @@ import {
 } from '../extensions/serialization/contracts'
 import {registerSerializable} from '../extensions/serialization/serializers'
 import {isIterable} from '../helpers/helpers'
-import {invalidateCallState} from '../rx/depend/CallState'
-import {depend, dependX, getCallState} from '../rx/depend/facade'
-import {IObservableMap, MapChangedType} from './contracts/IMapChanged'
+import {ALWAYS_CHANGE_VALUE, invalidateCallState} from '../rx/depend/CallState'
+import {depend, getCallState} from '../rx/depend/facade'
 import {fillMap} from './helpers/set'
 
 export class DependMap<K, V>
@@ -30,25 +28,30 @@ export class DependMap<K, V>
 
 	public readonly [Symbol.toStringTag]: string = 'Map'
 
-	// region observe methods
+	// region depend methods
 
-	// tslint:disable-next-line:no-empty
-	public observeAll() { }
-
-	public observeKey(key: K) {
-		this.observeAll()
+	public dependAll() {
+		return ALWAYS_CHANGE_VALUE
 	}
 
-	public observeAnyKey() {
-		this.observeAll()
+	public dependKey(key: K) {
+		this.dependAll()
+		return ALWAYS_CHANGE_VALUE
 	}
 
-	public observeValue(key: K) {
-		this.observeKey(key)
+	public dependAnyKey() {
+		this.dependAll()
+		return ALWAYS_CHANGE_VALUE
 	}
 
-	public observeAnyValue() {
-		this.observeAnyKey()
+	public dependValue(key: K) {
+		this.dependKey(key)
+		return ALWAYS_CHANGE_VALUE
+	}
+
+	public dependAnyValue() {
+		this.dependAnyKey()
+		return ALWAYS_CHANGE_VALUE
 	}
 
 	// endregion
@@ -56,17 +59,17 @@ export class DependMap<K, V>
 	// region read methods
 
 	public get(key: K): V | undefined {
-		this.observeValue(key)
+		this.dependValue(key)
 		return this._map.get(key)
 	}
 
 	public has(key: K): boolean {
-		this.observeKey(key)
+		this.dependKey(key)
 		return this._map.has(key)
 	}
 
 	private _size(): number {
-		this.observeAnyKey()
+		this.dependAnyKey()
 		return this._map.size
 	}
 
@@ -75,22 +78,22 @@ export class DependMap<K, V>
 	}
 
 	public entries(): IterableIterator<[K, V]> {
-		this.observeAnyValue()
+		this.dependAnyValue()
 		return this._map.entries()
 	}
 
 	public keys(): IterableIterator<K> {
-		this.observeAnyKey()
+		this.dependAnyKey()
 		return this._map.keys()
 	}
 
 	public values(): IterableIterator<V> {
-		this.observeAnyValue()
+		this.dependAnyValue()
 		return this._map.values()
 	}
 
 	public forEach(callbackfn: (value: V, key: K, map: Map<K, V>) => void, thisArg?: any): void {
-		this.observeAnyValue()
+		this.dependAnyValue()
 		this._map.forEach((k, v) => callbackfn.call(thisArg, k, v, this))
 	}
 
@@ -110,11 +113,11 @@ export class DependMap<K, V>
 		_map.set(key, value)
 
 		if (_map.size !== oldSize) {
-			invalidateCallState(getCallState(this.observeAnyKey)())
-			invalidateCallState(getCallState(this.observeKey)(key))
+			invalidateCallState(getCallState(this.dependAnyKey)())
+			invalidateCallState(getCallState(this.dependKey)(key))
 		} else if (oldValue !== value) {
-			invalidateCallState(getCallState(this.observeAnyValue)())
-			invalidateCallState(getCallState(this.observeValue)(key))
+			invalidateCallState(getCallState(this.dependAnyValue)())
+			invalidateCallState(getCallState(this.dependValue)(key))
 		}
 
 		return this
@@ -127,8 +130,8 @@ export class DependMap<K, V>
 		this._map.delete(key)
 
 		if (_map.size !== oldSize) {
-			invalidateCallState(getCallState(this.observeAnyKey)())
-			invalidateCallState(getCallState(this.observeKey)(key))
+			invalidateCallState(getCallState(this.dependAnyKey)())
+			invalidateCallState(getCallState(this.dependKey)(key))
 			return true
 		}
 
@@ -141,20 +144,20 @@ export class DependMap<K, V>
 			return
 		}
 
-		invalidateCallState(getCallState(this.observeAll)())
+		invalidateCallState(getCallState(this.dependAll)())
 	}
 
 	// endregion
 
 	// region IMergeable
 
-	public _canMerge(source: ObservableMap<K, V>): boolean {
+	public _canMerge(source: DependMap<K, V>): boolean {
 		const {_map} = this
 		if ((_map as any).canMerge) {
 			return (_map as any).canMerge(source)
 		}
 
-		if (source.constructor === ObservableMap
+		if (source.constructor === DependMap
 			&& this._map === source._map
 		) {
 			return null
@@ -168,12 +171,13 @@ export class DependMap<K, V>
 
 	public _merge(
 		merge: IMergeValue,
-		older: ObservableMap<K, V> | object,
-		newer: ObservableMap<K, V> | object,
+		older: DependMap<K, V> | object,
+		newer: DependMap<K, V> | object,
 		preferCloneOlder?: boolean,
 		preferCloneNewer?: boolean,
 		options?: IMergeOptions,
 	): boolean {
+		this.dependAnyValue()
 		return mergeMaps(
 			(target, source) => createMergeMapWrapper(
 				target,
@@ -197,6 +201,7 @@ export class DependMap<K, V>
 	public static uuid: string = 'e162178d51234beaab6eb96d5b8f130b'
 
 	public serialize(serialize: ISerializeValue): ISerializedObject {
+		this.dependAnyValue()
 		return {
 			map: serialize(this._map),
 		}
@@ -205,19 +210,18 @@ export class DependMap<K, V>
 	public deSerialize(
 		// deSerialize: IDeSerializeValue,
 		// serializedValue: ISerializedObject,
-	// tslint:disable-next-line:no-empty
 	): void {
-
+		// empty
 	}
 
 	// endregion
 }
 
-DependMap.prototype.observeAll = depend(DependMap.prototype.observeAll, null, true)
-DependMap.prototype.observeAnyKey = depend(DependMap.prototype.observeAnyKey, null, true)
-DependMap.prototype.observeAnyValue = depend(DependMap.prototype.observeAnyValue, null, true)
-DependMap.prototype.observeKey = depend(DependMap.prototype.observeKey, null, true)
-DependMap.prototype.observeValue = depend(DependMap.prototype.observeValue, null, true)
+DependMap.prototype.dependAll = depend(DependMap.prototype.dependAll, null, true)
+DependMap.prototype.dependAnyKey = depend(DependMap.prototype.dependAnyKey, null, true)
+DependMap.prototype.dependAnyValue = depend(DependMap.prototype.dependAnyValue, null, true)
+DependMap.prototype.dependKey = depend(DependMap.prototype.dependKey, null, true)
+DependMap.prototype.dependValue = depend(DependMap.prototype.dependValue, null, true)
 
 registerMergeable(DependMap)
 
@@ -227,7 +231,7 @@ registerSerializable(DependMap, {
 			deSerialize: IDeSerializeValue,
 			serializedValue: ISerializedObject,
 			valueFactory: (map?: Map<K, V>) => DependMap<K, V>,
-		): ThenableIterator<DependMap<K, V>> {
+		): Iterator<DependMap<K, V>|any> {
 			const innerMap = yield deSerialize<Map<K, V>>(serializedValue.map)
 			const value = valueFactory(innerMap)
 			// value.deSerialize(deSerialize, serializedValue)

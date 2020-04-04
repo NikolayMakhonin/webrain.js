@@ -300,6 +300,9 @@ export function statusToString(status: CallStatus): string {
 
 // region constants
 
+// tslint:disable-next-line:no-construct use-primitive-type
+export const ALWAYS_CHANGE_VALUE = new String('ALWAYS_CHANGE_VALUE')
+
 type Flag_Before_Calc = 1
 type Flag_After_Calc = 2
 type Mask_Invalidate_Parent = 3
@@ -977,7 +980,8 @@ export class CallState<
 		this.status = Update_Calculated_Value
 
 		if ((prevStatus & (Flag_HasError | Flag_HasValue)) !== Flag_HasValue
-			|| this.value !== value
+			|| value === ALWAYS_CHANGE_VALUE
+			|| this.value !== value && !(Number.isNaN(this.value as any) && Number.isNaN(value as any))
 		) {
 			this.error = void 0
 			this.value = value

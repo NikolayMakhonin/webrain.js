@@ -116,7 +116,7 @@
       </list>
     </option>
   </component>
-  <component name="RunManager" selected="Mocha.dependent-func (perf)">
+  <component name="RunManager" selected="Mocha.dependent-func">
     <configuration default="true" type="JavaScriptTestRunnerKarma">
       <config-file value="$PROJECT_DIR$/env/karma/configs/dev.js" />
       <karma-package-dir value="$PROJECT_DIR$/node_modules/karma" />
@@ -421,13 +421,6 @@
       <option name="number" value="Default" />
       <option name="presentableId" value="Default" />
       <updated>1567687848586</updated>
-    </task>
-    <task id="LOCAL-00298" summary="Develop. Tests OK.">
-      <created>1584441517784</created>
-      <option name="number" value="00298" />
-      <option name="presentableId" value="LOCAL-00298" />
-      <option name="project" value="LOCAL" />
-      <updated>1584441517784</updated>
     </task>
     <task id="LOCAL-00299" summary="Develop. Tests OK.">
       <created>1584442231350</created>
@@ -765,7 +758,14 @@
       <option name="project" value="LOCAL" />
       <updated>1585941276129</updated>
     </task>
-    <option name="localTasksCounter" value="347" />
+    <task id="LOCAL-00347" summary="DependMap in process">
+      <created>1585975385096</created>
+      <option name="number" value="00347" />
+      <option name="presentableId" value="LOCAL-00347" />
+      <option name="project" value="LOCAL" />
+      <updated>1585975385096</updated>
+    </task>
+    <option name="localTasksCounter" value="348" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -832,7 +832,6 @@
   <component name="VcsManagerConfiguration">
     <option name="CHECK_CODE_SMELLS_BEFORE_PROJECT_COMMIT" value="false" />
     <option name="CHECK_NEW_TODO" value="false" />
-    <MESSAGE value="Fix v8 test" />
     <MESSAGE value="BinaryTree: Implementing AVL algorithm..." />
     <MESSAGE value="BinaryTree: try to use non recursive add - failed, it is slower than recursive" />
     <MESSAGE value="BinaryTree: optimizing AVL ..." />
@@ -857,7 +856,8 @@
     <MESSAGE value="depend refactoring. Tests OK." />
     <MESSAGE value="optimizing..." />
     <MESSAGE value="optimizing... Tests OK." />
-    <option name="LAST_COMMIT_MESSAGE" value="optimizing... Tests OK." />
+    <MESSAGE value="DependMap in process" />
+    <option name="LAST_COMMIT_MESSAGE" value="DependMap in process" />
   </component>
   <component name="XDebuggerManager">
     <breakpoint-manager>
