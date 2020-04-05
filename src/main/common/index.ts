@@ -45,6 +45,10 @@ export {delay, performanceNow} from './time/helpers'
 export {TimeLimit} from './time/TimeLimit'
 export {TimeLimits} from './time/TimeLimits'
 export {Random} from './random/Random'
+export {ALWAYS_CHANGE_VALUE} from './rx/depend/CallState'
+export {getCallState, getOrCreateCallState, invalidateCallState} from './rx/depend/CallState'
+export {CallStatus} from './rx/depend/contracts'
+export {depend, dependX} from './rx/depend/depend'
 
 // region Interfaces
 
@@ -68,6 +72,10 @@ import {TClass as _TClass} from './helpers/helpers'
 import {HasDefaultOrValue as _HasDefaultOrValue} from './helpers/value-property'
 import {IObservableMap as _IObservableMap} from './lists/contracts/IMapChanged'
 import {IObservableSet as _IObservableSet} from './lists/contracts/ISetChanged'
+import {
+	ICallState as _ICallState,
+	IDeferredOptions as _IDeferredOptions,
+} from './rx/depend/contracts'
 import {ICalcProperty as _ICalcProperty} from './rx/object/properties/contracts'
 import {
 	IPropertyChangedObject as _IPropertyChangedObject,
@@ -109,6 +117,9 @@ export type HasDefaultOrValue<T> = _HasDefaultOrValue<T>
 export type ITimeLimitBase = _ITimeLimitBase
 export type ITimeLimit = _ITimeLimit
 export type ITimeLimits = _ITimeLimits
+export type IDeferredOptions = _IDeferredOptions
+export type ICallState<TThisOuter, TArgs extends any[], TResultInner>
+	= _ICallState<TThisOuter, TArgs, TResultInner>
 
 // endregion
 

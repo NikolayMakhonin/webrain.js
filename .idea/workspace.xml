@@ -7,11 +7,10 @@
     <option name="SHOW_STRUCTURE" value="true" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="69b2ee16-521b-4efd-b473-8e19e3df4d09" name="Default Changelist" comment="">
-      <change afterPath="$PROJECT_DIR$/src/main/common/lists/DependSet.ts" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/test/tests/common/main/lists/DependMap.ts" afterDir="false" />
+    <list default="true" id="69b2ee16-521b-4efd-b473-8e19e3df4d09" name="Default Changelist" comment="Integrate depend to CalcProperty">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/common/lists/DependMap.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/common/lists/DependMap.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/docs/TODO.md" beforeDir="false" afterPath="$PROJECT_DIR$/docs/TODO.md" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/common/index.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/common/index.ts" afterDir="false" />
     </list>
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
     <option name="SHOW_DIALOG" value="false" />
@@ -116,7 +115,7 @@
       </list>
     </option>
   </component>
-  <component name="RunManager" selected="Mocha.common &gt; main &gt; lists &gt; DependMap">
+  <component name="RunManager" selected="Mocha.Watch">
     <configuration default="true" type="JavaScriptTestRunnerKarma" activateToolWindowBeforeRun="false">
       <config-file value="$PROJECT_DIR$/env/karma/configs/dev.js" />
       <karma-package-dir value="$PROJECT_DIR$/node_modules/karma" />
@@ -184,21 +183,6 @@
       <test-pattern>$PROJECT_DIR$/src/test/tests/common/main/rx/deep-subscribe/**/*.ts</test-pattern>
       <method v="2" />
     </configuration>
-    <configuration name="PairingHeap perf" type="mocha-javascript-test-runner" temporary="true" nameIsGenerated="true">
-      <node-interpreter>node</node-interpreter>
-      <node-options>--max-old-space-size=4096</node-options>
-      <mocha-package>$PROJECT_DIR$/node_modules/mocha</mocha-package>
-      <working-directory>$PROJECT_DIR$</working-directory>
-      <pass-parent-env>true</pass-parent-env>
-      <ui>bdd</ui>
-      <extra-mocha-options>--opts ./env/mocha/configs/babel/mocha.opts</extra-mocha-options>
-      <test-kind>SUITE</test-kind>
-      <test-file>$PROJECT_DIR$/src/test/performance/node/PairingHeap.ts</test-file>
-      <test-names>
-        <name value="PairingHeap perf" />
-      </test-names>
-      <method v="2" />
-    </configuration>
     <configuration name="RX - Tests" type="mocha-javascript-test-runner">
       <node-interpreter>node</node-interpreter>
       <node-options>--max-old-space-size=4096</node-options>
@@ -223,21 +207,6 @@
       <test-pattern>./src/test/tests/{common,node}/**/*.*</test-pattern>
       <method v="2" />
     </configuration>
-    <configuration name="common &gt; main &gt; PairingHeap" type="mocha-javascript-test-runner" temporary="true" nameIsGenerated="true">
-      <node-interpreter>node</node-interpreter>
-      <node-options>--max-old-space-size=4096 --allow-natives-syntax</node-options>
-      <mocha-package>$PROJECT_DIR$/node_modules/mocha</mocha-package>
-      <working-directory>$PROJECT_DIR$</working-directory>
-      <pass-parent-env>true</pass-parent-env>
-      <ui>bdd</ui>
-      <extra-mocha-options>--opts ./env/mocha/configs/babel/mocha.opts --watch</extra-mocha-options>
-      <test-kind>SUITE</test-kind>
-      <test-file>$PROJECT_DIR$/src/test/tests/common/main/lists/PairingHeap.ts</test-file>
-      <test-names>
-        <name value="common &gt; main &gt; PairingHeap" />
-      </test-names>
-      <method v="2" />
-    </configuration>
     <configuration name="common &gt; main &gt; lists &gt; DependMap" type="mocha-javascript-test-runner" temporary="true" nameIsGenerated="true">
       <node-interpreter>node</node-interpreter>
       <node-options>--max-old-space-size=4096 --allow-natives-syntax</node-options>
@@ -250,6 +219,37 @@
       <test-file>$PROJECT_DIR$/src/test/tests/common/main/lists/DependMap.ts</test-file>
       <test-names>
         <name value="common &gt; main &gt; lists &gt; DependMap" />
+      </test-names>
+      <method v="2" />
+    </configuration>
+    <configuration name="common &gt; main &gt; rx &gt; properties &gt; CalcObjectBuilder" type="mocha-javascript-test-runner" temporary="true" nameIsGenerated="true">
+      <node-interpreter>node</node-interpreter>
+      <node-options>--max-old-space-size=4096 --allow-natives-syntax</node-options>
+      <mocha-package>$PROJECT_DIR$/node_modules/mocha</mocha-package>
+      <working-directory>$PROJECT_DIR$</working-directory>
+      <pass-parent-env>true</pass-parent-env>
+      <ui>bdd</ui>
+      <extra-mocha-options>--opts ./env/mocha/configs/babel/mocha.opts --watch</extra-mocha-options>
+      <test-kind>SUITE</test-kind>
+      <test-file>$PROJECT_DIR$/src/test/tests/common/main/rx/object/properties/CalcObjectBuilder.ts</test-file>
+      <test-names>
+        <name value="common &gt; main &gt; rx &gt; properties &gt; CalcObjectBuilder" />
+      </test-names>
+      <method v="2" />
+    </configuration>
+    <configuration name="common &gt; main &gt; rx &gt; properties &gt; CalcObjectBuilder.deepSubscribe calc circular sync" type="mocha-javascript-test-runner" temporary="true" nameIsGenerated="true">
+      <node-interpreter>node</node-interpreter>
+      <node-options>--max-old-space-size=4096 --allow-natives-syntax</node-options>
+      <mocha-package>$PROJECT_DIR$/node_modules/mocha</mocha-package>
+      <working-directory>$PROJECT_DIR$</working-directory>
+      <pass-parent-env>true</pass-parent-env>
+      <ui>bdd</ui>
+      <extra-mocha-options>--opts ./env/mocha/configs/babel/mocha.opts --watch</extra-mocha-options>
+      <test-kind>TEST</test-kind>
+      <test-file>$PROJECT_DIR$/src/test/tests/common/main/rx/object/properties/CalcObjectBuilder.ts</test-file>
+      <test-names>
+        <name value="common &gt; main &gt; rx &gt; properties &gt; CalcObjectBuilder" />
+        <name value="deepSubscribe calc circular sync" />
       </test-names>
       <method v="2" />
     </configuration>
@@ -392,21 +392,21 @@
       <item itemvalue="Mocha.dependent-func" />
       <item itemvalue="Mocha.node &gt; v8 &gt; parser" />
       <item itemvalue="Mocha.dependent-func (perf)" />
-      <item itemvalue="Mocha.PairingHeap perf" />
-      <item itemvalue="Mocha.common &gt; main &gt; PairingHeap" />
       <item itemvalue="Mocha.dependent-func perf.perceptron create" />
       <item itemvalue="Mocha.dependent-func perf.perceptron memory create" />
+      <item itemvalue="Mocha.common &gt; main &gt; lists &gt; DependMap" />
       <item itemvalue="Node.js.dependent-func.js" />
       <item itemvalue="npm.Coverage Mocha Report" />
-      <item itemvalue="Mocha.common &gt; main &gt; lists &gt; DependMap" />
+      <item itemvalue="Mocha.common &gt; main &gt; rx &gt; properties &gt; CalcObjectBuilder" />
+      <item itemvalue="Mocha.common &gt; main &gt; rx &gt; properties &gt; CalcObjectBuilder.deepSubscribe calc circular sync" />
     </list>
     <recent_temporary>
       <list>
+        <item itemvalue="Mocha.common &gt; main &gt; rx &gt; properties &gt; CalcObjectBuilder.deepSubscribe calc circular sync" />
+        <item itemvalue="Mocha.common &gt; main &gt; rx &gt; properties &gt; CalcObjectBuilder" />
         <item itemvalue="Mocha.common &gt; main &gt; lists &gt; DependMap" />
         <item itemvalue="Mocha.dependent-func perf.perceptron create" />
         <item itemvalue="Mocha.dependent-func perf.perceptron memory create" />
-        <item itemvalue="Mocha.common &gt; main &gt; PairingHeap" />
-        <item itemvalue="Mocha.PairingHeap perf" />
       </list>
     </recent_temporary>
   </component>
@@ -421,27 +421,6 @@
       <option name="number" value="Default" />
       <option name="presentableId" value="Default" />
       <updated>1567687848586</updated>
-    </task>
-    <task id="LOCAL-00300" summary="Develop. Tests OK.">
-      <created>1584442383843</created>
-      <option name="number" value="00300" />
-      <option name="presentableId" value="LOCAL-00300" />
-      <option name="project" value="LOCAL" />
-      <updated>1584442383843</updated>
-    </task>
-    <task id="LOCAL-00301" summary="Develop. Tests OK.">
-      <created>1584451703545</created>
-      <option name="number" value="00301" />
-      <option name="presentableId" value="LOCAL-00301" />
-      <option name="project" value="LOCAL" />
-      <updated>1584451703545</updated>
-    </task>
-    <task id="LOCAL-00302" summary="Develop. Tests OK.">
-      <created>1584458359117</created>
-      <option name="number" value="00302" />
-      <option name="presentableId" value="LOCAL-00302" />
-      <option name="project" value="LOCAL" />
-      <updated>1584458359117</updated>
     </task>
     <task id="LOCAL-00303" summary="Develop. Tests OK.">
       <created>1584459604858</created>
@@ -765,7 +744,28 @@
       <option name="project" value="LOCAL" />
       <updated>1585995163422</updated>
     </task>
-    <option name="localTasksCounter" value="349" />
+    <task id="LOCAL-00349" summary="DependMap, DependSet is completed">
+      <created>1585999629770</created>
+      <option name="number" value="00349" />
+      <option name="presentableId" value="LOCAL-00349" />
+      <option name="project" value="LOCAL" />
+      <updated>1585999629770</updated>
+    </task>
+    <task id="LOCAL-00350" summary="CallState - added subscribe other tools">
+      <created>1586071211314</created>
+      <option name="number" value="00350" />
+      <option name="presentableId" value="LOCAL-00350" />
+      <option name="project" value="LOCAL" />
+      <updated>1586071211316</updated>
+    </task>
+    <task id="LOCAL-00351" summary="Integrate depend to CalcProperty">
+      <created>1586075558299</created>
+      <option name="number" value="00351" />
+      <option name="presentableId" value="LOCAL-00351" />
+      <option name="project" value="LOCAL" />
+      <updated>1586075558299</updated>
+    </task>
+    <option name="localTasksCounter" value="352" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -832,9 +832,6 @@
   <component name="VcsManagerConfiguration">
     <option name="CHECK_CODE_SMELLS_BEFORE_PROJECT_COMMIT" value="false" />
     <option name="CHECK_NEW_TODO" value="false" />
-    <MESSAGE value="BinaryTree: try to use non recursive add - failed, it is slower than recursive" />
-    <MESSAGE value="BinaryTree: optimizing AVL ..." />
-    <MESSAGE value="Develop tests" />
     <MESSAGE value="Deleted changeResultId" />
     <MESSAGE value="Deleted calcId" />
     <MESSAGE value="Develop" />
@@ -857,7 +854,10 @@
     <MESSAGE value="optimizing... Tests OK." />
     <MESSAGE value="DependMap in process" />
     <MESSAGE value="DependMap completed but not tested" />
-    <option name="LAST_COMMIT_MESSAGE" value="DependMap completed but not tested" />
+    <MESSAGE value="DependMap, DependSet is completed" />
+    <MESSAGE value="CallState - added subscribe other tools" />
+    <MESSAGE value="Integrate depend to CalcProperty" />
+    <option name="LAST_COMMIT_MESSAGE" value="Integrate depend to CalcProperty" />
   </component>
   <component name="XDebuggerManager">
     <breakpoint-manager>
