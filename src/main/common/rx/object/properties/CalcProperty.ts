@@ -1,4 +1,4 @@
-import {isAsync, ThenableOrValue} from '../../../async/async'
+import {isAsync, isThenable, Thenable, ThenableOrValue} from '../../../async/async'
 import {resolveAsyncFunc} from '../../../async/ThenableSync'
 import {CalcStat} from '../../../helpers/CalcStat'
 import {now} from '../../../helpers/performance'
@@ -6,9 +6,12 @@ import {VALUE_PROPERTY_DEFAULT} from '../../../helpers/value-property'
 import {webrainOptions} from '../../../helpers/webrainOptions'
 import {Debugger} from '../../Debugger'
 import {DeferredCalc, IDeferredCalcOptions} from '../../deferred-calc/DeferredCalc'
+import {getCallState, getOrCreateCallState, invalidateCallState} from '../../depend/CallState'
+import {dependX} from '../../depend/depend'
 import {ObservableClass} from '../ObservableClass'
 import {ObservableObjectBuilder} from '../ObservableObjectBuilder'
 import {CalcPropertyFunc, ICalcProperty, ICalcPropertyState} from './contracts'
+import {subscribeDependencies} from './DependenciesBuilder'
 
 export class CalcPropertyValue<TValue, TInput = any> {
 	public get: () => CalcProperty<TValue, TInput>
@@ -40,6 +43,10 @@ export class CalcPropertyState<TValue, TInput = any>
 new ObservableObjectBuilder(CalcPropertyState.prototype)
 	.writable('input')
 	.writable('value')
+
+function *thenableAsIterator<T>(thenable: Thenable<T>) {
+	return thenable
+}
 
 export class CalcProperty<TValue, TInput = any>
 	extends ObservableClass
@@ -91,7 +98,27 @@ export class CalcProperty<TValue, TInput = any>
 		this.timeEmitEventsStat = new CalcStat()
 		this.timeTotalStat = new CalcStat()
 
-		this._calcFunc = calcFunc
+		this._calcFunc = dependX(function(state) {
+			const result = calcFunc(state)
+			return isThenable(result) ? thenableAsIterator(result) : result
+		})
+
+		let dependUnsubscribe
+		this.propertyChanged.hasSubscribersObservable
+			.subscribe(hasSubscribers => {
+				if (dependUnsubscribe) {
+					dependUnsubscribe()
+					dependUnsubscribe = null
+				}
+
+				if (hasSubscribers) {
+					dependUnsubscribe = getOrCreateCallState(this._calcFunc)
+						.call(this, this.state)
+						.subscribe(() => {
+							this._invalidate(true)
+						})
+				}
+			})
 
 		this.state = new CalcPropertyState(calcOptions, initValue)
 
@@ -221,6 +248,10 @@ export class CalcProperty<TValue, TInput = any>
 	}
 
 	public invalidate(): void {
+		invalidateCallState(getCallState(this._calcFunc).call(this, this.state))
+	}
+
+	private _invalidate(): void {
 		if (!this._error) {
 			// console.log('invalidate: ' + this.state.name)
 			this._deferredCalc.invalidate()
