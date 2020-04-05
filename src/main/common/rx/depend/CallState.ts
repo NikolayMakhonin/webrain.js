@@ -8,10 +8,11 @@ import {
 } from '../../async/async'
 import {resolveAsync} from '../../async/ThenableSync'
 import {isIterator, nextHash} from '../../helpers/helpers'
-import {IObjectPool} from '../../lists/contracts/IObjectPool'
 import {ObjectPool} from '../../lists/ObjectPool'
 import {PairingHeap, PairingNode} from '../../lists/PairingHeap'
 import {DeferredCalc, IDeferredCalcOptions} from '../deferred-calc/DeferredCalc'
+import {ISubscriber, IUnsubscribe} from '../subjects/observable'
+import {ISubject, Subject} from '../subjects/subject'
 import {CallStatus, Func, ICallState, ILinkItem, TCall, TInnerValue, TIteratorOrValue, TResultOuter} from './contracts'
 import {InternalError} from './helpers'
 
@@ -477,7 +478,7 @@ export class CallState<
 
 	// region properties
 
-	// region public
+	// region public/private
 
 	public readonly func: Func<unknown, TArgs, unknown>
 	public readonly thisOuter: TThisOuter
@@ -524,6 +525,8 @@ export class CallState<
 	public _unsubscribers: Array<ISubscriberLink<any, this>> = null
 	/** @internal */
 	public _unsubscribersLength: number = 0
+
+	private _invalidatedSubject: ISubject<this> = null
 
 	// endregion
 
@@ -1089,6 +1092,10 @@ export class CallState<
 		if (statusBefore !== 0 || statusAfter !== 0) {
 			this._invalidateParents(statusBefore, statusAfter)
 		}
+
+		if (isInvalidated(status) && !isInvalidated(prevStatus)) {
+			this.onInvalidated()
+		}
 	}
 
 	private _invalidateParents(
@@ -1128,6 +1135,25 @@ export class CallState<
 
 			link = next
 		}
+	}
+
+	// endregion
+
+	// region 6: subscribe other tools
+
+	private onInvalidated() {
+		const {_invalidatedSubject} = this
+		if (_invalidatedSubject != null) {
+			_invalidatedSubject.emit(this)
+		}
+	}
+
+	public subscribe(subscriber: ISubscriber<this>): IUnsubscribe {
+		let {_invalidatedSubject} = this
+		if (_invalidatedSubject == null) {
+			this._invalidatedSubject = _invalidatedSubject = new Subject<this>()
+		}
+		return _invalidatedSubject.subscribe(subscriber)
 	}
 
 	// endregion
