@@ -10,10 +10,10 @@ import {
 	TCallState,
 	valueIdToStateMap,
 	valueToIdMap,
-} from '../../../../../../../main/common/rx/depend/CallState'
-import {CallStatus, Func, ICallState, IDeferredOptions} from '../../../../../../../main/common/rx/depend/contracts'
-import {depend} from '../../../../../../../main/common/rx/depend/facade'
-import {InternalError} from '../../../../../../../main/common/rx/depend/helpers'
+} from '../../../../../../../main/common/rx/depend/core/CallState'
+import {CallStatus, Func, ICallState, IDeferredOptions} from '../../../../../../../main/common/rx/depend/core/contracts'
+import {depend} from '../../../../../../../main/common/rx/depend/core/facade'
+import {InternalError} from '../../../../../../../main/common/rx/depend/core/helpers'
 import {assert} from '../../../../../../../main/common/test/Assert'
 import {delay} from '../../../../../../../main/common/time/helpers'
 

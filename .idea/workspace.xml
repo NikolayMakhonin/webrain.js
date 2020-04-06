@@ -7,10 +7,8 @@
     <option name="SHOW_STRUCTURE" value="true" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="69b2ee16-521b-4efd-b473-8e19e3df4d09" name="Default Changelist" comment="Integrate depend to CalcProperty">
+    <list default="true" id="69b2ee16-521b-4efd-b473-8e19e3df4d09" name="Default Changelist" comment="">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/docs/TODO.md" beforeDir="false" afterPath="$PROJECT_DIR$/docs/TODO.md" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/common/index.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/common/index.ts" afterDir="false" />
     </list>
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
     <option name="SHOW_DIALOG" value="false" />
@@ -62,7 +60,7 @@
     <property name="WebServerToolWindowFactoryState" value="false" />
     <property name="auto.test.manager.delay" value="5000" />
     <property name="javascript.karma.karma_node_package_dir" value="" />
-    <property name="last_opened_file_path" value="$PROJECT_DIR$/src/main/common/lists" />
+    <property name="last_opened_file_path" value="$PROJECT_DIR$/src/main/common/rx/depend/lists" />
     <property name="node.js.detected.package.eslint" value="true" />
     <property name="node.js.detected.package.standard" value="true" />
     <property name="node.js.detected.package.tslint" value="true" />
@@ -422,13 +420,6 @@
       <option name="presentableId" value="Default" />
       <updated>1567687848586</updated>
     </task>
-    <task id="LOCAL-00303" summary="Develop. Tests OK.">
-      <created>1584459604858</created>
-      <option name="number" value="00303" />
-      <option name="presentableId" value="LOCAL-00303" />
-      <option name="project" value="LOCAL" />
-      <updated>1584459604858</updated>
-    </task>
     <task id="LOCAL-00304" summary="Develop">
       <created>1584460254213</created>
       <option name="number" value="00304" />
@@ -765,7 +756,14 @@
       <option name="project" value="LOCAL" />
       <updated>1586075558299</updated>
     </task>
-    <option name="localTasksCounter" value="352" />
+    <task id="LOCAL-00352" summary="Fix facade">
+      <created>1586080541779</created>
+      <option name="number" value="00352" />
+      <option name="presentableId" value="LOCAL-00352" />
+      <option name="project" value="LOCAL" />
+      <updated>1586080541780</updated>
+    </task>
+    <option name="localTasksCounter" value="353" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -832,7 +830,6 @@
   <component name="VcsManagerConfiguration">
     <option name="CHECK_CODE_SMELLS_BEFORE_PROJECT_COMMIT" value="false" />
     <option name="CHECK_NEW_TODO" value="false" />
-    <MESSAGE value="Deleted changeResultId" />
     <MESSAGE value="Deleted calcId" />
     <MESSAGE value="Develop" />
     <MESSAGE value="dependent-funcs: Base test is fully completed. Tests OK." />
@@ -857,7 +854,8 @@
     <MESSAGE value="DependMap, DependSet is completed" />
     <MESSAGE value="CallState - added subscribe other tools" />
     <MESSAGE value="Integrate depend to CalcProperty" />
-    <option name="LAST_COMMIT_MESSAGE" value="Integrate depend to CalcProperty" />
+    <MESSAGE value="Fix facade" />
+    <option name="LAST_COMMIT_MESSAGE" value="Fix facade" />
   </component>
   <component name="XDebuggerManager">
     <breakpoint-manager>

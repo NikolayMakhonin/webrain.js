@@ -1,5 +1,5 @@
-import {IThenable, ThenableOrValue} from '../../async/async'
-import {IDeferredCalcOptions} from '../deferred-calc/DeferredCalc'
+import {IThenable, ThenableOrValue} from '../../../async/async'
+import {IDeferredCalcOptions} from '../../deferred-calc/DeferredCalc'
 import {TFuncCall} from './CallState'
 
 export type Func<TThis, TArgs extends any[], TValue = void> = (this: TThis, ...args: TArgs) => TValue

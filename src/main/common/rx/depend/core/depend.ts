@@ -1,5 +1,5 @@
-import {isThenable, ThenableOrIterator, ThenableOrValue} from '../../async/async'
-import {DeferredCalc, IDeferredCalcOptions} from '../deferred-calc/DeferredCalc'
+import {isThenable, ThenableOrIterator, ThenableOrValue} from '../../../async/async'
+import {DeferredCalc, IDeferredCalcOptions} from '../../deferred-calc/DeferredCalc'
 import {CallState, makeDependentFunc, TFuncCall} from './CallState'
 import {Func, IDeferredOptions} from './contracts'
 

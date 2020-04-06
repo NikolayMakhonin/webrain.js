@@ -1,11 +1,11 @@
 /* tslint:disable:no-identical-functions no-shadowed-variable no-var-requires ordered-imports */
 import * as ObjectPool from '../../../../../../../main/common/lists/ObjectPool'
 import * as PairingHeap from '../../../../../../../main/common/lists/PairingHeap'
-import * as CallState from '../../../../../../../main/common/rx/depend/CallState'
-import {getOrCreateCallState} from '../../../../../../../main/common/rx/depend/CallState'
-import * as depend from '../../../../../../../main/common/rx/depend/depend'
-import * as facade from '../../../../../../../main/common/rx/depend/facade'
-import * as helpers from '../../../../../../../main/common/rx/depend/helpers'
+import * as CallState from '../../../../../../../main/common/rx/depend/core/CallState'
+import {getOrCreateCallState} from '../../../../../../../main/common/rx/depend/core/CallState'
+import * as depend from '../../../../../../../main/common/rx/depend/core/depend'
+import * as facade from '../../../../../../../main/common/rx/depend/core/facade'
+import * as helpers from '../../../../../../../main/common/rx/depend/core/helpers'
 
 import {assert, AssertionError} from '../../../../../../../main/common/test/Assert'
 import {describe, it, xit} from '../../../../../../../main/common/test/Mocha'

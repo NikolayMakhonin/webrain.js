@@ -45,10 +45,10 @@ export {delay, performanceNow} from './time/helpers'
 export {TimeLimit} from './time/TimeLimit'
 export {TimeLimits} from './time/TimeLimits'
 export {Random} from './random/Random'
-export {ALWAYS_CHANGE_VALUE} from './rx/depend/CallState'
-export {getCallState, getOrCreateCallState, invalidateCallState} from './rx/depend/CallState'
-export {CallStatus} from './rx/depend/contracts'
-export {depend, dependX} from './rx/depend/depend'
+export {ALWAYS_CHANGE_VALUE} from './rx/depend/core/CallState'
+export {getCallState, getOrCreateCallState, invalidateCallState} from './rx/depend/core/CallState'
+export {CallStatus} from './rx/depend/core/contracts'
+export {depend, dependX} from './rx/depend/core/depend'
 
 // region Interfaces
 
@@ -75,7 +75,7 @@ import {IObservableSet as _IObservableSet} from './lists/contracts/ISetChanged'
 import {
 	ICallState as _ICallState,
 	IDeferredOptions as _IDeferredOptions,
-} from './rx/depend/contracts'
+} from './rx/depend/core/contracts'
 import {ICalcProperty as _ICalcProperty} from './rx/object/properties/contracts'
 import {
 	IPropertyChangedObject as _IPropertyChangedObject,

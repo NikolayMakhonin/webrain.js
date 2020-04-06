@@ -1,7 +1,7 @@
-import {DependMap} from '../../../../../main/common/lists/DependMap'
+import {DependMap} from '../../../../../main/common/rx/depend/lists/DependMap'
 import {ObservableMap} from '../../../../../main/common/lists/ObservableMap'
-import {getCallState} from '../../../../../main/common/rx/depend/CallState'
-import {depend} from '../../../../../main/common/rx/depend/depend'
+import {getCallState} from '../../../../../main/common/rx/depend/core/CallState'
+import {depend} from '../../../../../main/common/rx/depend/core/depend'
 import {assert} from '../../../../../main/common/test/Assert'
 import {describe, it} from '../../../../../main/common/test/Mocha'
 

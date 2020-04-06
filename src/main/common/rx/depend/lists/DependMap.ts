@@ -1,17 +1,17 @@
-import {IMergeable, IMergeOptions, IMergeValue} from '../extensions/merge/contracts'
-import {createMergeMapWrapper, mergeMaps} from '../extensions/merge/merge-maps'
-import {registerMergeable} from '../extensions/merge/mergers'
+import {IMergeable, IMergeOptions, IMergeValue} from '../../../extensions/merge/contracts'
+import {createMergeMapWrapper, mergeMaps} from '../../../extensions/merge/merge-maps'
+import {registerMergeable} from '../../../extensions/merge/mergers'
 import {
 	IDeSerializeValue,
 	ISerializable,
 	ISerializedObject,
 	ISerializeValue,
-} from '../extensions/serialization/contracts'
-import {registerSerializable} from '../extensions/serialization/serializers'
-import {isIterable} from '../helpers/helpers'
-import {ALWAYS_CHANGE_VALUE, invalidateCallState} from '../rx/depend/CallState'
-import {depend, getCallState} from '../rx/depend/facade'
-import {fillMap} from './helpers/set'
+} from '../../../extensions/serialization/contracts'
+import {registerSerializable} from '../../../extensions/serialization/serializers'
+import {isIterable} from '../../../helpers/helpers'
+import {ALWAYS_CHANGE_VALUE, invalidateCallState} from '../core/CallState'
+import {depend, getCallState} from '../core/facade'
+import {fillMap} from '../../../lists/helpers/set'
 
 export class DependMap<K, V>
 	implements Map<K, V>,

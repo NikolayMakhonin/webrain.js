@@ -1,7 +1,7 @@
 /* eslint-disable new-cap,arrow-body-style,prefer-destructuring */
 import '@babel/runtime-corejs3'
 import '@babel/runtime-corejs3/regenerator'
-import {invalidate} from '../../../src/main/common/rx/depend/CallState'
+import {invalidate} from '../../../src/main/common/rx/depend/core/CallState'
 import {
 	__makeDependentFunc,
 	__invalidate,

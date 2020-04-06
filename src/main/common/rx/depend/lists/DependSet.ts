@@ -1,18 +1,18 @@
-import {IMergeable, IMergeOptions, IMergeValue} from '../extensions/merge/contracts'
-import {mergeMaps} from '../extensions/merge/merge-maps'
-import {createMergeSetWrapper} from '../extensions/merge/merge-sets'
-import {registerMergeable} from '../extensions/merge/mergers'
+import {IMergeable, IMergeOptions, IMergeValue} from '../../../extensions/merge/contracts'
+import {mergeMaps} from '../../../extensions/merge/merge-maps'
+import {createMergeSetWrapper} from '../../../extensions/merge/merge-sets'
+import {registerMergeable} from '../../../extensions/merge/mergers'
 import {
 	IDeSerializeValue,
 	ISerializable,
 	ISerializedObject,
 	ISerializeValue,
-} from '../extensions/serialization/contracts'
-import {registerSerializable} from '../extensions/serialization/serializers'
-import {isIterable} from '../helpers/helpers'
-import {ALWAYS_CHANGE_VALUE, invalidateCallState} from '../rx/depend/CallState'
-import {depend, getCallState} from '../rx/depend/facade'
-import {fillSet} from './helpers/set'
+} from '../../../extensions/serialization/contracts'
+import {registerSerializable} from '../../../extensions/serialization/serializers'
+import {isIterable} from '../../../helpers/helpers'
+import {ALWAYS_CHANGE_VALUE, invalidateCallState} from '../core/CallState'
+import {depend, getCallState} from '../core/facade'
+import {fillSet} from '../../../lists/helpers/set'
 
 export class DependSet<V>
 	implements Set<V>,
