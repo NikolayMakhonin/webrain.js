@@ -115,7 +115,7 @@ export class CalcProperty<TValue, TInput = any>
 					dependUnsubscribe = getOrCreateCallState(this._calcFunc)
 						.call(this, this.state)
 						.subscribe(() => {
-							this._invalidate(true)
+							this._invalidate()
 						})
 				}
 			})

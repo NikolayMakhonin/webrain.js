@@ -3,7 +3,7 @@ import {createFunction} from '../../helpers/helpers'
 import {webrainOptions} from '../../helpers/webrainOptions'
 import {depend, dependX} from '../../rx/depend/core/depend'
 import '../extensions/autoConnect'
-import {CallState} from '../depend/core/CallState'
+import {CallState, getOrCreateCallState} from '../depend/core/CallState'
 import {Func, IDeferredOptions} from '../depend/core/contracts'
 import {PropertyChangedEvent} from './IPropertyChanged'
 import {_set, _setExt, ISetOptions, ObservableClass} from './ObservableClass'
@@ -117,7 +117,30 @@ export class ObservableObjectBuilder<TObject extends ObservableClass> {
 		deferredOptions?: IDeferredOptions,
 	): this & { object: { readonly [newProp in Name]: TResultValue } } {
 		return this.readable(name, {
-			getValue: dependX(func, deferredOptions),
+			getValue: dependX(func, deferredOptions, state => {
+				let value
+				let dependUnsubscribe
+				state._this.propertyChanged.hasSubscribersObservable
+					.subscribe(hasSubscribers => {
+						if (dependUnsubscribe) {
+							dependUnsubscribe()
+							dependUnsubscribe = null
+						}
+
+						if (hasSubscribers) {
+							dependUnsubscribe = state
+								.subscribe(() => {
+									const oldValue = value
+									value = state.getValue()
+									state._this.propertyChanged.onPropertyChanged({
+										name,
+										oldValue,
+										newValue: value,
+									})
+								})
+						}
+					})
+			}),
 		}) as any
 	}
 

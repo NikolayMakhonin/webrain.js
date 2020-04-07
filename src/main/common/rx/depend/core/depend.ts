@@ -121,6 +121,7 @@ export function makeDeferredFunc<
 	func: Func<unknown, TArgs, unknown>,
 	funcCall: TFuncCall<TThisOuter, TArgs, TResultInner>,
 	defaultOptions: IDeferredOptions,
+	initCallState?: (state: CallState<TThisOuter, TArgs, TResultInner>) => void,
 ): Func<
 	TThisOuter,
 	TArgs,
@@ -128,6 +129,9 @@ export function makeDeferredFunc<
 > {
 	return makeDependentFunc(func, null, state => {
 		_initDeferredCallState(state, funcCall, defaultOptions)
+		if (initCallState != null) {
+			initCallState(state as any)
+		}
 	}) as any
 }
 
@@ -195,6 +199,7 @@ export function dependX<
 		TResultInner
 	>,
 	deferredOptions?: IDeferredOptions,
+	initCallState?: (state: CallState<TThisOuter, TArgs, TResultInner>) => void,
 ): Func<
 	TThisOuter,
 	TArgs,
@@ -204,8 +209,8 @@ export function dependX<
 		throw new Error('canAlwaysRecalc should not be deferred')
 	}
 	return deferredOptions == null
-		? makeDependentFunc(func, funcCallX, null, false) as any
-		: makeDeferredFunc(func, funcCallX, deferredOptions) as any
+		? makeDependentFunc(func, funcCallX, initCallState, false) as any
+		: makeDeferredFunc(func, funcCallX, deferredOptions, initCallState) as any
 }
 
 // endregion

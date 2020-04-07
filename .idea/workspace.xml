@@ -7,7 +7,12 @@
     <option name="SHOW_STRUCTURE" value="true" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="69b2ee16-521b-4efd-b473-8e19e3df4d09" name="Default Changelist" comment="" />
+    <list default="true" id="69b2ee16-521b-4efd-b473-8e19e3df4d09" name="Default Changelist" comment="">
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/common/rx/depend/core/depend.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/common/rx/depend/core/depend.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/common/rx/object/ObservableObjectBuilder.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/common/rx/object/ObservableObjectBuilder.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/common/rx/object/properties/CalcProperty.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/common/rx/object/properties/CalcProperty.ts" afterDir="false" />
+    </list>
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -419,13 +424,6 @@
       <option name="presentableId" value="Default" />
       <updated>1567687848586</updated>
     </task>
-    <task id="LOCAL-00307" summary="Develop">
-      <created>1584508108233</created>
-      <option name="number" value="00307" />
-      <option name="presentableId" value="LOCAL-00307" />
-      <option name="project" value="LOCAL" />
-      <updated>1584508108233</updated>
-    </task>
     <task id="LOCAL-00308" summary="Develop">
       <created>1584508623942</created>
       <option name="number" value="00308" />
@@ -762,7 +760,14 @@
       <option name="project" value="LOCAL" />
       <updated>1586234336065</updated>
     </task>
-    <option name="localTasksCounter" value="356" />
+    <task id="LOCAL-00356" summary="Depend: Small refactoring">
+      <created>1586235255177</created>
+      <option name="number" value="00356" />
+      <option name="presentableId" value="LOCAL-00356" />
+      <option name="project" value="LOCAL" />
+      <updated>1586235255178</updated>
+    </task>
+    <option name="localTasksCounter" value="357" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -851,10 +856,10 @@
     <MESSAGE value="CallState - added subscribe other tools" />
     <MESSAGE value="Integrate depend to CalcProperty" />
     <MESSAGE value="Fix facade" />
-    <MESSAGE value="Depend: Small refactoring" />
     <MESSAGE value="Depend: Integrated to writable property" />
     <MESSAGE value="Depend: Added dependCalc property" />
-    <option name="LAST_COMMIT_MESSAGE" value="Depend: Added dependCalc property" />
+    <MESSAGE value="Depend: Small refactoring" />
+    <option name="LAST_COMMIT_MESSAGE" value="Depend: Small refactoring" />
   </component>
   <component name="XDebuggerManager">
     <breakpoint-manager>
@@ -873,31 +878,26 @@
         <line-breakpoint enabled="true" type="javascript">
           <url>file://$PROJECT_DIR$/src/test/tests/common/main/lists/helpers/array.js</url>
           <line>9</line>
-          <properties lambdaOrdinal="-1" />
           <option name="timeStamp" value="1092" />
         </line-breakpoint>
         <line-breakpoint enabled="true" type="javascript">
           <url>file://$PROJECT_DIR$/src/main/common/rx/depend/core/CallState.ts</url>
-          <line>901</line>
-          <properties lambdaOrdinal="-1" />
+          <line>896</line>
           <option name="timeStamp" value="1094" />
         </line-breakpoint>
         <line-breakpoint enabled="true" type="javascript">
           <url>file://$PROJECT_DIR$/src/main/common/rx/depend/core/CallState.ts</url>
-          <line>1722</line>
-          <properties lambdaOrdinal="-1" />
+          <line>1534</line>
           <option name="timeStamp" value="1098" />
         </line-breakpoint>
         <line-breakpoint enabled="true" type="javascript">
           <url>file://$PROJECT_DIR$/src/test/tests/common/main/rx/object/properties/CalcObjectBuilder.ts</url>
           <line>353</line>
-          <properties lambdaOrdinal="0" />
           <option name="timeStamp" value="1099" />
         </line-breakpoint>
         <line-breakpoint enabled="true" type="javascript">
           <url>file://$PROJECT_DIR$/src/main/common/rx/object/properties/CalcProperty.ts</url>
           <line>117</line>
-          <properties lambdaOrdinal="-1" />
           <option name="timeStamp" value="1104" />
         </line-breakpoint>
       </breakpoints>
