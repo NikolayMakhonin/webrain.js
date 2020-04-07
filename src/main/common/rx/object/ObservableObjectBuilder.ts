@@ -27,6 +27,31 @@ export interface IUpdatableFieldOptions<TObject, TValue> extends IReadableFieldO
 	update?: (this: TObject, value: any) => TValue|void
 }
 
+function initDependCalcState(state) {
+	let value
+	let dependUnsubscribe
+	state._this.propertyChanged.hasSubscribersObservable
+		.subscribe(hasSubscribers => {
+			if (dependUnsubscribe) {
+				dependUnsubscribe()
+				dependUnsubscribe = null
+			}
+
+			if (hasSubscribers) {
+				dependUnsubscribe = state
+					.subscribe(() => {
+						const oldValue = value
+						value = state.getValue()
+						state._this.propertyChanged.onPropertyChanged({
+							name,
+							oldValue,
+							newValue: value,
+						})
+					})
+			}
+		})
+}
+
 export class ObservableObjectBuilder<TObject extends ObservableClass> {
 	public object: TObject
 
@@ -73,7 +98,7 @@ export class ObservableObjectBuilder<TObject extends ObservableClass> {
 		Object.defineProperty(object, name, {
 			configurable: true,
 			enumerable  : !hidden,
-			get: depend(getValue, null, true),
+			get: depend(getValue, null, null, true),
 			// get: getValue,
 			set,
 		})
@@ -99,7 +124,50 @@ export class ObservableObjectBuilder<TObject extends ObservableClass> {
 		return this.updatable(name, options, initValue)
 	}
 
+	public simpleCalc<
+		TArgs extends any[],
+		TResultInner,
+		Name extends string | number = Extract<keyof TObject, string|number>,
+		TValue = TResultInner extends ThenableOrIterator<infer V> ? ThenableOrValue<V> : TResultInner,
+		TResultValue = Name extends keyof TObject
+			? (TValue extends TObject[Name] ? TObject[Name] : never)
+			: TValue,
+	>(
+		name: Name,
+		func: Func<
+			TObject,
+			TArgs,
+			TResultInner
+		>,
+	): this & { object: { readonly [newProp in Name]: TResultValue } } {
+		return this.readable(name, {
+			getValue: func,
+		}) as any
+	}
+
 	public dependCalc<
+		TArgs extends any[],
+		TResultInner,
+		Name extends string | number = Extract<keyof TObject, string|number>,
+		TValue = TResultInner extends ThenableOrIterator<infer V> ? ThenableOrValue<V> : TResultInner,
+		TResultValue = Name extends keyof TObject
+			? (TValue extends TObject[Name] ? TObject[Name] : never)
+			: TValue,
+	>(
+		name: Name,
+		func: Func<
+			TObject,
+			TArgs,
+			TResultInner
+		>,
+		deferredOptions?: IDeferredOptions,
+	): this & { object: { readonly [newProp in Name]: TResultValue } } {
+		return this.readable(name, {
+			getValue: depend(func, deferredOptions, initDependCalcState),
+		}) as any
+	}
+
+	public dependCalcX<
 		TArgs extends any[],
 		TResultInner,
 		Name extends string | number = Extract<keyof TObject, string|number>,
@@ -117,30 +185,7 @@ export class ObservableObjectBuilder<TObject extends ObservableClass> {
 		deferredOptions?: IDeferredOptions,
 	): this & { object: { readonly [newProp in Name]: TResultValue } } {
 		return this.readable(name, {
-			getValue: dependX(func, deferredOptions, state => {
-				let value
-				let dependUnsubscribe
-				state._this.propertyChanged.hasSubscribersObservable
-					.subscribe(hasSubscribers => {
-						if (dependUnsubscribe) {
-							dependUnsubscribe()
-							dependUnsubscribe = null
-						}
-
-						if (hasSubscribers) {
-							dependUnsubscribe = state
-								.subscribe(() => {
-									const oldValue = value
-									value = state.getValue()
-									state._this.propertyChanged.onPropertyChanged({
-										name,
-										oldValue,
-										newValue: value,
-									})
-								})
-						}
-					})
-			}),
+			getValue: dependX(func, deferredOptions, initDependCalcState),
 		}) as any
 	}
 

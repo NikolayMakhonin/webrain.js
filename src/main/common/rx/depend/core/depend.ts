@@ -161,6 +161,7 @@ export function depend<
 >(
 	func: Func<TThisOuter, TArgs, TResultInner>,
 	deferredOptions?: IDeferredOptions,
+	initCallState?: (state: CallState<TThisOuter, TArgs, TResultInner>) => void,
 	canAlwaysRecalc?: boolean,
 ): Func<
 	TThisOuter,
@@ -171,8 +172,8 @@ export function depend<
 		throw new Error('canAlwaysRecalc should not be deferred')
 	}
 	return deferredOptions == null
-		? makeDependentFunc(func, _funcCall, null, canAlwaysRecalc) as any
-		: makeDeferredFunc(func, _funcCall, deferredOptions) as any
+		? makeDependentFunc(func, _funcCall, initCallState, canAlwaysRecalc) as any
+		: makeDeferredFunc(func, _funcCall, deferredOptions, initCallState) as any
 }
 
 export function funcCallX<

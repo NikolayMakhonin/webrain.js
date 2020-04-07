@@ -78,7 +78,7 @@ export class DependPropertyBuilder<TObject extends object> {
 		Object.defineProperty(object, name, {
 			configurable: true,
 			enumerable  : !hidden,
-			get: depend(getValue, null, true),
+			get: depend(getValue, null, null, true),
 			set,
 		})
 
