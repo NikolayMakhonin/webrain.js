@@ -1,7 +1,10 @@
+import {IThenable, ThenableOrIterator, ThenableOrValue} from '../../async/async'
 import {createFunction} from '../../helpers/helpers'
 import {webrainOptions} from '../../helpers/webrainOptions'
-import {depend} from '../../rx/depend/core/depend'
+import {depend, dependX} from '../../rx/depend/core/depend'
 import '../extensions/autoConnect'
+import {CallState} from '../depend/core/CallState'
+import {Func, IDeferredOptions} from '../depend/core/contracts'
 import {PropertyChangedEvent} from './IPropertyChanged'
 import {_set, _setExt, ISetOptions, ObservableClass} from './ObservableClass'
 
@@ -94,6 +97,28 @@ export class ObservableObjectBuilder<TObject extends ObservableClass> {
 		initValue?: TValue,
 	): this & { object: { readonly [newProp in Name]: TValue } } {
 		return this.updatable(name, options, initValue)
+	}
+
+	public dependCalc<
+		TArgs extends any[],
+		TResultInner,
+		Name extends string | number = Extract<keyof TObject, string|number>,
+		TValue = TResultInner extends ThenableOrIterator<infer V> ? ThenableOrValue<V> : TResultInner,
+		TResultValue = Name extends keyof TObject
+			? (TValue extends TObject[Name] ? TObject[Name] : never)
+			: TValue,
+	>(
+		name: Name,
+		func: Func<
+			CallState<TObject, TArgs, TResultInner>,
+			TArgs,
+			TResultInner
+		>,
+		deferredOptions?: IDeferredOptions,
+	): this & { object: { readonly [newProp in Name]: TResultValue } } {
+		return this.readable(name, {
+			getValue: dependX(func, deferredOptions),
+		}) as any
 	}
 
 	public updatable<TValue, Name extends string | number>(
