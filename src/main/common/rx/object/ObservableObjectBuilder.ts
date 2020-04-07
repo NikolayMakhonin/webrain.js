@@ -27,29 +27,31 @@ export interface IUpdatableFieldOptions<TObject, TValue> extends IReadableFieldO
 	update?: (this: TObject, value: any) => TValue|void
 }
 
-function initDependCalcState(state) {
-	let value
-	let dependUnsubscribe
-	state._this.propertyChanged.hasSubscribersObservable
-		.subscribe(hasSubscribers => {
-			if (dependUnsubscribe) {
-				dependUnsubscribe()
-				dependUnsubscribe = null
-			}
+function makeInitDependCalcState(name: string|number) {
+	return function initDependCalcState(state) {
+		let value
+		let dependUnsubscribe
+		state._this.propertyChanged.hasSubscribersObservable
+			.subscribe(hasSubscribers => {
+				if (dependUnsubscribe) {
+					dependUnsubscribe()
+					dependUnsubscribe = null
+				}
 
-			if (hasSubscribers) {
-				dependUnsubscribe = state
-					.subscribe(() => {
-						const oldValue = value
-						value = state.getValue()
-						state._this.propertyChanged.onPropertyChanged({
-							name,
-							oldValue,
-							newValue: value,
+				if (hasSubscribers) {
+					dependUnsubscribe = state
+						.subscribe(() => {
+							const oldValue = value
+							value = state.getValue()
+							state._this.propertyChanged.onPropertyChanged({
+								name,
+								oldValue,
+								newValue: value,
+							})
 						})
-					})
-			}
-		})
+				}
+			})
+	}
 }
 
 export class ObservableObjectBuilder<TObject extends ObservableClass> {
@@ -163,7 +165,7 @@ export class ObservableObjectBuilder<TObject extends ObservableClass> {
 		deferredOptions?: IDeferredOptions,
 	): this & { object: { readonly [newProp in Name]: TResultValue } } {
 		return this.readable(name, {
-			getValue: depend(func, deferredOptions, initDependCalcState),
+			getValue: depend(func, deferredOptions, makeInitDependCalcState(name)),
 		}) as any
 	}
 
@@ -185,7 +187,7 @@ export class ObservableObjectBuilder<TObject extends ObservableClass> {
 		deferredOptions?: IDeferredOptions,
 	): this & { object: { readonly [newProp in Name]: TResultValue } } {
 		return this.readable(name, {
-			getValue: dependX(func, deferredOptions, initDependCalcState),
+			getValue: dependX(func, deferredOptions, makeInitDependCalcState(name)),
 		}) as any
 	}
 
