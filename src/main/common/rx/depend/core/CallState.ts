@@ -1,3 +1,4 @@
+import {webrainOptions} from '../../../helpers/webrainOptions'
 import {
 	isThenable,
 	IThenable,
@@ -984,7 +985,9 @@ export class CallState<
 
 		if ((prevStatus & (Flag_HasError | Flag_HasValue)) !== Flag_HasValue
 			|| value === ALWAYS_CHANGE_VALUE
-			|| this.value !== value && !(Number.isNaN(this.value as any) && Number.isNaN(value as any))
+			|| !(
+				this.value === value || webrainOptions.equalsFunc && webrainOptions.equalsFunc(this.value, value)
+			)
 		) {
 			this.error = void 0
 			this.value = value
@@ -1176,6 +1179,14 @@ export function getValueState(valueId: number): IValueState {
 	return valueIdToStateMap.get(valueId)
 }
 
+export function getValueId(value: any): number {
+	const id = valueToIdMap.get(value)
+	if (id == null) {
+		return 0
+	}
+	return id
+}
+
 export function getOrCreateValueId(value: any): number {
 	let id = valueToIdMap.get(value)
 	if (id == null) {
@@ -1224,6 +1235,12 @@ interface ICallStateProvider<
 > {
 	get: Func<TThisOuter, TArgs, CallState<TThisOuter, TArgs, TResultInner>>
 	getOrCreate: Func<TThisOuter, TArgs, CallState<TThisOuter, TArgs, TResultInner>>
+	func: Func<unknown, TArgs, unknown>,
+	dependFunc: Func<
+		TThisOuter,
+		TArgs,
+		TResultInner extends ThenableOrIterator<infer V> ? ThenableOrValue<V> : TResultInner
+	>,
 }
 
 // let currentCallStateProviderState: ICallStateProviderState<any, any, any> = null
@@ -1439,13 +1456,19 @@ export function createCallStateProvider<
 		let hash = funcHash
 
 		{
-			const valueId = getOrCreateValueId(this)
+			const valueId = getValueId(this)
+			if (valueId === 0) {
+				return null
+			}
 			_valueIdsBuffer[1] = valueId
 			hash = nextHash(hash, valueId)
 		}
 
 		for (let i = 0; i < countArgs; i++) {
-			const valueId = getOrCreateValueId(arguments[i])
+			const valueId = getValueId(arguments[i])
+			if (valueId === 0) {
+				return null
+			}
 			_valueIdsBuffer[i + 2] = valueId
 			hash = nextHash(hash, valueId)
 		}
@@ -1565,6 +1588,8 @@ export function createCallStateProvider<
 	const state: ICallStateProvider<TThisOuter, TArgs, TResultInner> = {
 		get: _getCallState,
 		getOrCreate: _getOrCreateCallState,
+		func,
+		dependFunc: null,
 	}
 
 	return state
@@ -1821,23 +1846,26 @@ export function makeDependentFunc<
 	TArgs,
 	TResultInner extends ThenableOrIterator<infer V> ? ThenableOrValue<V> : TResultInner
 > {
-	if (callStateProviderMap.get(func)) {
-		throw new InternalError('Multiple call makeDependentFunc() for func: ' + func)
+	let callStateProvider = callStateProviderMap.get(func)
+	if (callStateProvider != null) {
+		return callStateProvider.dependFunc
 	}
 
-	const callStateProvider = createCallStateProvider(func, funcCall, initCallState)
+	callStateProvider = createCallStateProvider(func, funcCall, initCallState)
 
 	callStateProviderMap.set(func, callStateProvider)
 
-	const dependentFunc = createDependentFunc(
+	const dependFunc = createDependentFunc(
 		func,
 		callStateProvider,
 		canAlwaysRecalc,
 	)
 
-	callStateProviderMap.set(dependentFunc, callStateProvider)
+	callStateProvider.dependFunc = dependFunc
 
-	return dependentFunc as any
+	callStateProviderMap.set(dependFunc, callStateProvider)
+
+	return dependFunc as any
 }
 
 // endregion

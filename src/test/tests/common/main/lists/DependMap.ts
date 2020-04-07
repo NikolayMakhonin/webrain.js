@@ -1,9 +1,9 @@
-import {DependMap} from '../../../../../main/common/rx/depend/lists/DependMap'
-import {ObservableMap} from '../../../../../main/common/lists/ObservableMap'
 import {getCallState} from '../../../../../main/common/rx/depend/core/CallState'
 import {depend} from '../../../../../main/common/rx/depend/core/depend'
+import {DependMap} from '../../../../../main/common/rx/depend/lists/DependMap'
 import {assert} from '../../../../../main/common/test/Assert'
 import {describe, it} from '../../../../../main/common/test/Mocha'
+import {clearCallStates} from '../rx/depend/src/helpers'
 
 declare const after
 
@@ -57,5 +57,7 @@ describe('common > main > lists > DependMap', function() {
 		assert.ok(getCallState(map.dependAnyKey).call(map))
 		assert.ok(getCallState(map.dependValue).call(map, 2))
 		assert.ok(getCallState(map.dependAnyValue).call(map))
+
+		clearCallStates()
 	})
 })

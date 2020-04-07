@@ -7,8 +7,16 @@
     <option name="SHOW_STRUCTURE" value="true" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="69b2ee16-521b-4efd-b473-8e19e3df4d09" name="Default Changelist" comment="">
+    <list default="true" id="69b2ee16-521b-4efd-b473-8e19e3df4d09" name="Default Changelist" comment="Depend: Small refactoring">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/common/helpers/helpers.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/common/helpers/helpers.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/common/helpers/webrainOptions.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/common/helpers/webrainOptions.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/common/rx/depend/core/CallState.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/common/rx/depend/core/CallState.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/common/rx/depend/properties/DependPropertyBuilder.ts" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/common/rx/object/ObservableClass.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/common/rx/object/ObservableClass.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/common/rx/object/ObservableObjectBuilder.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/common/rx/object/ObservableObjectBuilder.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/common/rx/object/properties/ConnectorBuilder.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/common/rx/object/properties/ConnectorBuilder.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/test/tests/common/main/lists/DependMap.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/test/tests/common/main/lists/DependMap.ts" afterDir="false" />
     </list>
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
     <option name="SHOW_DIALOG" value="false" />
@@ -79,12 +87,12 @@
     <property name="ts.external.directory.path" value="L:\Work\_GIT\GitHub\NodeJs\modules\webrain\node_modules\typescript\lib" />
   </component>
   <component name="RecentsManager">
-    <key name="CopyFile.RECENT_KEYS">
-      <recent name="L:\Work\_GIT\GitHub\NodeJs\modules\webrain\src\main\common\lists" />
-      <recent name="L:\Work\_GIT\GitHub\NodeJs\modules\webrain\src\test\tests\common\main\lists" />
-      <recent name="L:\Work\_GIT\GitHub\NodeJs\modules\webrain\src\test\performance\node" />
-      <recent name="L:\Work\_GIT\GitHub\NodeJs\modules\webrain\src\test\tests\common\main\test" />
+    <key name="MoveFile.RECENT_KEYS">
       <recent name="L:\Work\_GIT\GitHub\NodeJs\modules\webrain\src\main\common\rx\depend" />
+      <recent name="L:\Work\_GIT\GitHub\NodeJs\modules\webrain\_trash\src\main\common\rx\depend" />
+      <recent name="L:\Work\_GIT\GitHub\NodeJs\modules\webrain\src\main\common\rx\depend\lists" />
+      <recent name="L:\Work\_GIT\GitHub\NodeJs\modules\webrain\src\main\common\rx\depend\core" />
+      <recent name="L:\Work\_GIT\GitHub\NodeJs\modules\webrain\src\main\common\lists" />
     </key>
     <key name="es6.move.members.recent.items">
       <recent name="L:\Work\_GIT\GitHub\NodeJs\modules\webrain\src\main\common\helpers\helpers.ts" />
@@ -93,12 +101,12 @@
       <recent name="L:\Work\_GIT\GitHub\NodeJs\modules\webrain\src\main\common\rx\depend\getOrCreateCallState.ts" />
       <recent name="L:\Work\_GIT\GitHub\NodeJs\modules\webrain\src\main\common\rx\depend\FuncCallState.ts" />
     </key>
-    <key name="MoveFile.RECENT_KEYS">
-      <recent name="L:\Work\_GIT\GitHub\NodeJs\modules\webrain\_trash\src\main\common\rx\depend" />
+    <key name="CopyFile.RECENT_KEYS">
+      <recent name="L:\Work\_GIT\GitHub\NodeJs\modules\webrain\src\main\common\rx\depend\lists" />
       <recent name="L:\Work\_GIT\GitHub\NodeJs\modules\webrain\src\main\common\lists" />
-      <recent name="L:\Work\_GIT\GitHub\NodeJs\modules\webrain\src\main\common\rx\depend\docs" />
-      <recent name="L:\Work\_GIT\GitHub\NodeJs\modules\webrain\src\test\tests\node\main\rx\depend\v8" />
-      <recent name="L:\Work\_GIT\GitHub\NodeJs\modules\webrain\src\test\tests\node\main\rx\depend" />
+      <recent name="L:\Work\_GIT\GitHub\NodeJs\modules\webrain\src\test\tests\common\main\lists" />
+      <recent name="L:\Work\_GIT\GitHub\NodeJs\modules\webrain\src\test\performance\node" />
+      <recent name="L:\Work\_GIT\GitHub\NodeJs\modules\webrain\src\test\tests\common\main\test" />
     </key>
   </component>
   <component name="RunDashboard">
@@ -205,7 +213,7 @@
       <test-pattern>./src/test/tests/{common,node}/**/*.*</test-pattern>
       <method v="2" />
     </configuration>
-    <configuration name="common &gt; main &gt; lists &gt; DependMap" type="mocha-javascript-test-runner" temporary="true" nameIsGenerated="true">
+    <configuration name="common &gt; main &gt; lists &gt; DependMap.base" type="mocha-javascript-test-runner" temporary="true" nameIsGenerated="true">
       <node-interpreter>node</node-interpreter>
       <node-options>--max-old-space-size=4096 --allow-natives-syntax</node-options>
       <mocha-package>$PROJECT_DIR$/node_modules/mocha</mocha-package>
@@ -213,14 +221,31 @@
       <pass-parent-env>true</pass-parent-env>
       <ui>bdd</ui>
       <extra-mocha-options>--opts ./env/mocha/configs/babel/mocha.opts --watch</extra-mocha-options>
-      <test-kind>SUITE</test-kind>
+      <test-kind>TEST</test-kind>
       <test-file>$PROJECT_DIR$/src/test/tests/common/main/lists/DependMap.ts</test-file>
       <test-names>
         <name value="common &gt; main &gt; lists &gt; DependMap" />
+        <name value="base" />
       </test-names>
       <method v="2" />
     </configuration>
-    <configuration name="common &gt; main &gt; rx &gt; properties &gt; CalcObjectBuilder" type="mocha-javascript-test-runner" temporary="true" nameIsGenerated="true">
+    <configuration name="common &gt; main &gt; rx &gt; deep-subscribe &gt; deep-subscribe new.ruleFactoriesVariants self sync" type="mocha-javascript-test-runner" temporary="true" nameIsGenerated="true">
+      <node-interpreter>node</node-interpreter>
+      <node-options>--max-old-space-size=4096 --allow-natives-syntax</node-options>
+      <mocha-package>$PROJECT_DIR$/node_modules/mocha</mocha-package>
+      <working-directory>$PROJECT_DIR$</working-directory>
+      <pass-parent-env>true</pass-parent-env>
+      <ui>bdd</ui>
+      <extra-mocha-options>--opts ./env/mocha/configs/babel/mocha.opts --watch</extra-mocha-options>
+      <test-kind>TEST</test-kind>
+      <test-file>$PROJECT_DIR$/src/test/tests/common/main/rx/deep-subscribe/deep-subscribe-new.ts</test-file>
+      <test-names>
+        <name value="common &gt; main &gt; rx &gt; deep-subscribe &gt; deep-subscribe new" />
+        <name value="ruleFactoriesVariants self sync" />
+      </test-names>
+      <method v="2" />
+    </configuration>
+    <configuration name="common &gt; main &gt; rx &gt; depend &gt; dependent-func" type="mocha-javascript-test-runner" temporary="true" nameIsGenerated="true">
       <node-interpreter>node</node-interpreter>
       <node-options>--max-old-space-size=4096 --allow-natives-syntax</node-options>
       <mocha-package>$PROJECT_DIR$/node_modules/mocha</mocha-package>
@@ -229,9 +254,9 @@
       <ui>bdd</ui>
       <extra-mocha-options>--opts ./env/mocha/configs/babel/mocha.opts --watch</extra-mocha-options>
       <test-kind>SUITE</test-kind>
-      <test-file>$PROJECT_DIR$/src/test/tests/common/main/rx/object/properties/CalcObjectBuilder.ts</test-file>
+      <test-file>$PROJECT_DIR$/src/test/tests/common/main/rx/depend/dependent-func.ts</test-file>
       <test-names>
-        <name value="common &gt; main &gt; rx &gt; properties &gt; CalcObjectBuilder" />
+        <name value="common &gt; main &gt; rx &gt; depend &gt; dependent-func" />
       </test-names>
       <method v="2" />
     </configuration>
@@ -248,6 +273,22 @@
       <test-names>
         <name value="common &gt; main &gt; rx &gt; properties &gt; CalcObjectBuilder" />
         <name value="deepSubscribe calc circular sync" />
+      </test-names>
+      <method v="2" />
+    </configuration>
+    <configuration name="common &gt; main &gt; rx &gt; properties &gt; CalcObjectBuilder.deepSubscribe calc sync" type="mocha-javascript-test-runner" temporary="true" nameIsGenerated="true">
+      <node-interpreter>node</node-interpreter>
+      <node-options>--max-old-space-size=4096 --allow-natives-syntax</node-options>
+      <mocha-package>$PROJECT_DIR$/node_modules/mocha</mocha-package>
+      <working-directory>$PROJECT_DIR$</working-directory>
+      <pass-parent-env>true</pass-parent-env>
+      <ui>bdd</ui>
+      <extra-mocha-options>--opts ./env/mocha/configs/babel/mocha.opts --watch</extra-mocha-options>
+      <test-kind>TEST</test-kind>
+      <test-file>$PROJECT_DIR$/src/test/tests/common/main/rx/object/properties/CalcObjectBuilder.ts</test-file>
+      <test-names>
+        <name value="common &gt; main &gt; rx &gt; properties &gt; CalcObjectBuilder" />
+        <name value="deepSubscribe calc sync" />
       </test-names>
       <method v="2" />
     </configuration>
@@ -285,38 +326,6 @@
       <extra-mocha-options>--opts ./env/mocha/configs/babel/mocha.opts</extra-mocha-options>
       <test-kind>PATTERN</test-kind>
       <test-pattern>src/test/performance/node/{dependent-func.ts,PairingHeap.ts}</test-pattern>
-      <method v="2" />
-    </configuration>
-    <configuration name="dependent-func perf.perceptron create" type="mocha-javascript-test-runner" temporary="true" nameIsGenerated="true">
-      <node-interpreter>node</node-interpreter>
-      <node-options>--max-old-space-size=4096 --allow-natives-syntax</node-options>
-      <mocha-package>$PROJECT_DIR$/node_modules/mocha</mocha-package>
-      <working-directory>$PROJECT_DIR$</working-directory>
-      <pass-parent-env>true</pass-parent-env>
-      <ui>bdd</ui>
-      <extra-mocha-options>--opts ./env/mocha/configs/babel/mocha.opts</extra-mocha-options>
-      <test-kind>TEST</test-kind>
-      <test-file>$PROJECT_DIR$/src/test/performance/node/dependent-func.ts</test-file>
-      <test-names>
-        <name value="dependent-func perf" />
-        <name value="perceptron create" />
-      </test-names>
-      <method v="2" />
-    </configuration>
-    <configuration name="dependent-func perf.perceptron memory create" type="mocha-javascript-test-runner" temporary="true" nameIsGenerated="true">
-      <node-interpreter>node</node-interpreter>
-      <node-options>--max-old-space-size=4096 --allow-natives-syntax</node-options>
-      <mocha-package>$PROJECT_DIR$/node_modules/mocha</mocha-package>
-      <working-directory>$PROJECT_DIR$</working-directory>
-      <pass-parent-env>true</pass-parent-env>
-      <ui>bdd</ui>
-      <extra-mocha-options>--opts ./env/mocha/configs/babel/mocha.opts</extra-mocha-options>
-      <test-kind>TEST</test-kind>
-      <test-file>$PROJECT_DIR$/src/test/performance/node/dependent-func.ts</test-file>
-      <test-names>
-        <name value="dependent-func perf" />
-        <name value="perceptron memory create" />
-      </test-names>
       <method v="2" />
     </configuration>
     <configuration name="dependent-func" type="mocha-javascript-test-runner">
@@ -390,21 +399,21 @@
       <item itemvalue="Mocha.dependent-func" />
       <item itemvalue="Mocha.node &gt; v8 &gt; parser" />
       <item itemvalue="Mocha.dependent-func (perf)" />
-      <item itemvalue="Mocha.dependent-func perf.perceptron create" />
-      <item itemvalue="Mocha.dependent-func perf.perceptron memory create" />
-      <item itemvalue="Mocha.common &gt; main &gt; lists &gt; DependMap" />
       <item itemvalue="Node.js.dependent-func.js" />
       <item itemvalue="npm.Coverage Mocha Report" />
-      <item itemvalue="Mocha.common &gt; main &gt; rx &gt; properties &gt; CalcObjectBuilder" />
       <item itemvalue="Mocha.common &gt; main &gt; rx &gt; properties &gt; CalcObjectBuilder.deepSubscribe calc circular sync" />
+      <item itemvalue="Mocha.common &gt; main &gt; rx &gt; deep-subscribe &gt; deep-subscribe new.ruleFactoriesVariants self sync" />
+      <item itemvalue="Mocha.common &gt; main &gt; rx &gt; depend &gt; dependent-func" />
+      <item itemvalue="Mocha.common &gt; main &gt; lists &gt; DependMap.base" />
+      <item itemvalue="Mocha.common &gt; main &gt; rx &gt; properties &gt; CalcObjectBuilder.deepSubscribe calc sync" />
     </list>
     <recent_temporary>
       <list>
+        <item itemvalue="Mocha.common &gt; main &gt; rx &gt; properties &gt; CalcObjectBuilder.deepSubscribe calc sync" />
+        <item itemvalue="Mocha.common &gt; main &gt; lists &gt; DependMap.base" />
+        <item itemvalue="Mocha.common &gt; main &gt; rx &gt; depend &gt; dependent-func" />
+        <item itemvalue="Mocha.common &gt; main &gt; rx &gt; deep-subscribe &gt; deep-subscribe new.ruleFactoriesVariants self sync" />
         <item itemvalue="Mocha.common &gt; main &gt; rx &gt; properties &gt; CalcObjectBuilder.deepSubscribe calc circular sync" />
-        <item itemvalue="Mocha.common &gt; main &gt; rx &gt; properties &gt; CalcObjectBuilder" />
-        <item itemvalue="Mocha.common &gt; main &gt; lists &gt; DependMap" />
-        <item itemvalue="Mocha.dependent-func perf.perceptron create" />
-        <item itemvalue="Mocha.dependent-func perf.perceptron memory create" />
       </list>
     </recent_temporary>
   </component>
@@ -419,13 +428,6 @@
       <option name="number" value="Default" />
       <option name="presentableId" value="Default" />
       <updated>1567687848586</updated>
-    </task>
-    <task id="LOCAL-00304" summary="Develop">
-      <created>1584460254213</created>
-      <option name="number" value="00304" />
-      <option name="presentableId" value="LOCAL-00304" />
-      <option name="project" value="LOCAL" />
-      <updated>1584460254213</updated>
     </task>
     <task id="LOCAL-00305" summary="Develop">
       <created>1584504849734</created>
@@ -763,7 +765,14 @@
       <option name="project" value="LOCAL" />
       <updated>1586080541780</updated>
     </task>
-    <option name="localTasksCounter" value="353" />
+    <task id="LOCAL-00353" summary="Depend: Small refactoring">
+      <created>1586141072451</created>
+      <option name="number" value="00353" />
+      <option name="presentableId" value="LOCAL-00353" />
+      <option name="project" value="LOCAL" />
+      <updated>1586141072451</updated>
+    </task>
+    <option name="localTasksCounter" value="354" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -830,7 +839,6 @@
   <component name="VcsManagerConfiguration">
     <option name="CHECK_CODE_SMELLS_BEFORE_PROJECT_COMMIT" value="false" />
     <option name="CHECK_NEW_TODO" value="false" />
-    <MESSAGE value="Deleted calcId" />
     <MESSAGE value="Develop" />
     <MESSAGE value="dependent-funcs: Base test is fully completed. Tests OK." />
     <MESSAGE value="dependent-funcs: Small fix" />
@@ -855,7 +863,8 @@
     <MESSAGE value="CallState - added subscribe other tools" />
     <MESSAGE value="Integrate depend to CalcProperty" />
     <MESSAGE value="Fix facade" />
-    <option name="LAST_COMMIT_MESSAGE" value="Fix facade" />
+    <MESSAGE value="Depend: Small refactoring" />
+    <option name="LAST_COMMIT_MESSAGE" value="Depend: Small refactoring" />
   </component>
   <component name="XDebuggerManager">
     <breakpoint-manager>
@@ -867,9 +876,39 @@
           <option name="timeStamp" value="968" />
         </line-breakpoint>
         <line-breakpoint enabled="true" type="javascript">
-          <url>file://$PROJECT_DIR$/src/main/common/rx/depend/depend.ts</url>
+          <url>file://$PROJECT_DIR$/src/main/common/rx/depend/core/depend.ts</url>
           <line>104</line>
           <option name="timeStamp" value="1086" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" type="javascript">
+          <url>file://$PROJECT_DIR$/src/test/tests/common/main/lists/helpers/array.js</url>
+          <line>9</line>
+          <properties lambdaOrdinal="-1" />
+          <option name="timeStamp" value="1092" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" type="javascript">
+          <url>file://$PROJECT_DIR$/src/main/common/rx/depend/core/CallState.ts</url>
+          <line>901</line>
+          <properties lambdaOrdinal="-1" />
+          <option name="timeStamp" value="1094" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" type="javascript">
+          <url>file://$PROJECT_DIR$/src/main/common/rx/depend/core/CallState.ts</url>
+          <line>1722</line>
+          <properties lambdaOrdinal="-1" />
+          <option name="timeStamp" value="1098" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" type="javascript">
+          <url>file://$PROJECT_DIR$/src/test/tests/common/main/rx/object/properties/CalcObjectBuilder.ts</url>
+          <line>353</line>
+          <properties lambdaOrdinal="0" />
+          <option name="timeStamp" value="1099" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" type="javascript">
+          <url>file://$PROJECT_DIR$/src/main/common/rx/object/properties/CalcProperty.ts</url>
+          <line>117</line>
+          <properties lambdaOrdinal="-1" />
+          <option name="timeStamp" value="1104" />
         </line-breakpoint>
       </breakpoints>
       <breakpoints-dialog>
@@ -882,9 +921,10 @@
     </breakpoint-manager>
     <watches-manager>
       <configuration name="mocha-javascript-test-runner">
-        <watch expression="value" language="TypeScript" />
-        <watch expression="_deferredCalc" language="TypeScript" />
-        <watch expression="getOrCreate" />
+        <watch expression="this" language="TypeScript" />
+        <watch expression="arguments" language="TypeScript" />
+        <watch expression="state" language="TypeScript" />
+        <watch expression="func + ''" language="TypeScript" />
       </configuration>
     </watches-manager>
   </component>
