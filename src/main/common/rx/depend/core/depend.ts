@@ -140,7 +140,7 @@ export function _funcCall<
 	TArgs extends any[],
 	TResultInner,
 >(state: CallState<TThisOuter, TArgs, TResultInner>): TResultInner {
-	return state.callWithArgs(state.thisOuter, state.func) as any
+	return state.callWithArgs(state._this, state.func) as any
 }
 
 /**

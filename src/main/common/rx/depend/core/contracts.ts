@@ -52,7 +52,7 @@ export interface ICallState<
 	TResultInner,
 > {
 	readonly func: Func<unknown, TArgs, unknown>
-	readonly thisOuter: TThisOuter
+	readonly _this: TThisOuter
 	readonly callWithArgs: TCall<TArgs>
 	readonly funcCall: TFuncCall<TThisOuter, TArgs, TResultInner>
 

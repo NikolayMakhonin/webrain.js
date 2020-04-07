@@ -471,7 +471,7 @@ export class CallState<
 		valueIds: Int32Array,
 	) {
 		this.func = func
-		this.thisOuter = thisOuter
+		this._this = thisOuter
 		this.callWithArgs = callWithArgs
 		this.funcCall = funcCall
 		this.valueIds = valueIds
@@ -482,7 +482,7 @@ export class CallState<
 	// region public/private
 
 	public readonly func: Func<unknown, TArgs, unknown>
-	public readonly thisOuter: TThisOuter
+	public readonly _this: TThisOuter
 	public readonly callWithArgs: TCall<TArgs>
 	public funcCall: TFuncCall<TThisOuter, TArgs, TResultInner>
 	public readonly valueIds: Int32Array
@@ -674,12 +674,7 @@ export class CallState<
 		try {
 			currentState = this
 
-			// let value: any = this.func.apply(this.thisOuter, arguments)
 			let value: any = this.funcCall(this)
-			// this.callWithArgs<TThisInner, TResultInner>(
-			// 	this.thisAsState ? this as any : this.thisOuter,
-			// 	this.func,
-			// )
 
 			if (!isIterator(value)) {
 				if (isThenable(value)) {
@@ -1274,161 +1269,6 @@ function findCallState<
 	return null
 }
 
-// noinspection DuplicatedCode
-// export function _getCallState<
-// 	TThisOuter,
-// 	TArgs extends any[],
-// 	TResultInner,
-// >(this: TThisOuter) {
-// 	// region getCallState
-//
-// 	const countArgs = arguments.length
-// 	const countValueStates = countArgs + 2
-//
-// 	// region calc hash
-//
-// 	const _valueIdsBuffer = valueIdsBuffer
-// 	const _state = currentCallStateProviderState
-// 	_valueIdsBuffer[0] = _state.funcId
-// 	let hash = _state.funcHash
-//
-// 	{
-// 		const valueId = getOrCreateValueId(this)
-// 		_valueIdsBuffer[1] = valueId
-// 		hash = nextHash(hash, valueId)
-// 	}
-//
-// 	for (let i = 0; i < countArgs; i++) {
-// 		const valueId = getOrCreateValueId(arguments[i])
-// 		_valueIdsBuffer[i + 2] = valueId
-// 		hash = nextHash(hash, valueId)
-// 	}
-//
-// 	// endregion
-//
-// 	let callState: CallState<TThisOuter, TArgs, TResultInner>
-// 	const callStates = callStateHashTable.get(hash)
-// 	if (callStates != null) {
-// 		callState = findCallState(callStates, countValueStates, _valueIdsBuffer)
-// 	}
-//
-// 	// endregion
-//
-// 	if (callState != null) {
-// 		callState.updateUsageStat()
-// 	}
-//
-// 	return callState
-// }
-//
-// export function _createCallState<
-// 	TThisOuter,
-// 	TArgs extends any[],
-// 	TResultInner,
-// >(
-// 	func: Func<unknown, TArgs, unknown>,
-// 	thisOuter: TThisOuter,
-// 	callWithArgs: TCall<TArgs>,
-// 	funcCall: TFuncCall<TThisOuter, TArgs, TResultInner>,
-// 	_valueIdsBuffer: Int32Array,
-// 	countValueStates: number,
-// 	initCallState: (state: CallState<TThisOuter, TArgs, TResultInner>) => void,
-// 	hash: number,
-// 	callStates: Array<CallState<TThisOuter, TArgs, TResultInner>>,
-// ) {
-// 	if (callStates == null) {
-// 		callStates = []
-// 		callStateHashTable.set(hash, callStates)
-// 	}
-//
-// 	const valueIdsClone: Int32Array = _valueIdsBuffer.slice(0, countValueStates)
-// 	for (let i = 0; i < countValueStates; i++) {
-// 		if (i > 0) {
-// 			const valueState = getValueState(_valueIdsBuffer[i])
-// 			valueState.usageCount++
-// 		}
-// 	}
-//
-// 	const callState = createCallState.call(
-// 		null,
-// 		func,
-// 		thisOuter,
-// 		callWithArgs,
-// 		funcCall,
-// 		valueIdsClone,
-// 		countValueStates,
-// 	)
-//
-// 	if (initCallState != null) {
-// 		initCallState(callState)
-// 	}
-//
-// 	callState.updateUsageStat()
-//
-// 	callStates.push(callState)
-//
-// 	return callState
-// }
-//
-// // noinspection DuplicatedCode
-// export function _getOrCreateCallState<
-// 	TThisOuter,
-// 	TArgs extends any[],
-// 	TResultInner,
-// >(this: TThisOuter) {
-// 	// region getCallState
-//
-// 	const countArgs = arguments.length
-// 	const countValueStates = countArgs + 2
-//
-// 	// region calc hash
-//
-// 	const _valueIdsBuffer = valueIdsBuffer
-// 	const _state = currentCallStateProviderState
-// 	_valueIdsBuffer[0] = _state.funcId
-// 	let hash = _state.funcHash
-//
-// 	{
-// 		const valueId = getOrCreateValueId.call(null, this)
-// 		_valueIdsBuffer[1] = valueId
-// 		hash = nextHash(hash, valueId)
-// 	}
-//
-// 	for (let i = 0; i < countArgs; i++) {
-// 		const valueId = getOrCreateValueId.call(null, arguments[i])
-// 		_valueIdsBuffer[i + 2] = valueId
-// 		hash = nextHash(hash, valueId)
-// 	}
-//
-// 	// endregion
-//
-// 	let callState: CallState<TThisOuter, TArgs, TResultInner>
-// 	const callStates = callStateHashTable.get(hash)
-// 	if (callStates != null) {
-// 		callState = findCallState(callStates, countValueStates, _valueIdsBuffer)
-// 	}
-//
-// 	// endregion
-//
-// 	if (callState != null) {
-// 		callState.updateUsageStat()
-// 		return callState
-// 	}
-//
-// 	return _createCallState.call(
-// 		null,
-// 		_state.func,
-// 		this,
-// 		createCallWithArgs.apply(null, arguments),
-// 		_state.funcCall,
-// 		_valueIdsBuffer,
-// 		countValueStates,
-// 		_state.initCallState,
-// 		hash,
-// 		callStates,
-// 	)
-// }
-
 // tslint:disable-next-line:no-shadowed-variable
 export function createCallStateProvider<
 	TThisOuter,
@@ -1670,34 +1510,6 @@ let callStatesCount = 0
 const maxCallStatesCount = 1500
 const minDeleteCallStatesCount = 500
 let nextCallStatesCount = maxCallStatesCount
-
-// export function createCallState<
-// 	TThisOuter,
-// 	TArgs extends any[],
-// 	TResultInner,
-// >(
-// 	func: Func<unknown, TArgs, unknown>,
-// 	thisOuter: TThisOuter,
-// 	callWithArgs: TCall<TArgs>,
-// 	funcCall: TFuncCall<TThisOuter, TArgs, TResultInner>,
-// 	valueIds: Int32Array,
-// ): CallState<TThisOuter, TArgs, TResultInner> {
-// 	const callState = new CallState(
-// 		func,
-// 		thisOuter,
-// 		callWithArgs,
-// 		funcCall,
-// 		valueIds,
-// 	)
-//
-// 	if (callStatesCount >= nextCallStatesCount) {
-// 		reduceCallStates(callStatesCount - maxCallStatesCount + minDeleteCallStatesCount)
-// 		nextCallStatesCount = callStatesCount + minDeleteCallStatesCount
-// 	}
-// 	callStatesCount++
-//
-// 	return callState
-// }
 
 // endregion
 
