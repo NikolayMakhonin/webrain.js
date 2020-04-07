@@ -98,27 +98,28 @@ export class CalcProperty<TValue, TInput = any>
 		this.timeEmitEventsStat = new CalcStat()
 		this.timeTotalStat = new CalcStat()
 
-		this._calcFunc = dependX(function(state) {
-			const result = calcFunc(state)
-			return isThenable(result) ? thenableAsIterator(result) : result
-		})
+		this._calcFunc = calcFunc
+		// this._calcFunc = dependX(function(state) {
+		// 	const result = calcFunc(state)
+		// 	return isThenable(result) ? thenableAsIterator(result) : result
+		// })
 
-		let dependUnsubscribe
-		this.propertyChanged.hasSubscribersObservable
-			.subscribe(hasSubscribers => {
-				if (dependUnsubscribe) {
-					dependUnsubscribe()
-					dependUnsubscribe = null
-				}
-
-				if (hasSubscribers) {
-					dependUnsubscribe = getOrCreateCallState(this._calcFunc)
-						.call(this, this.state)
-						.subscribe(() => {
-							this._invalidate()
-						})
-				}
-			})
+		// let dependUnsubscribe
+		// this.propertyChanged.hasSubscribersObservable
+		// 	.subscribe(hasSubscribers => {
+		// 		if (dependUnsubscribe) {
+		// 			dependUnsubscribe()
+		// 			dependUnsubscribe = null
+		// 		}
+		//
+		// 		if (hasSubscribers) {
+		// 			dependUnsubscribe = getOrCreateCallState(this._calcFunc)
+		// 				.call(this, this.state)
+		// 				.subscribe(() => {
+		// 					this._invalidate()
+		// 				})
+		// 		}
+		// 	})
 
 		this.state = new CalcPropertyState(calcOptions, initValue)
 
@@ -248,7 +249,8 @@ export class CalcProperty<TValue, TInput = any>
 	}
 
 	public invalidate(): void {
-		invalidateCallState(getCallState(this._calcFunc).call(this, this.state))
+		this._invalidate()
+		// invalidateCallState(getCallState(this._calcFunc).call(this, this.state))
 	}
 
 	private _invalidate(): void {
