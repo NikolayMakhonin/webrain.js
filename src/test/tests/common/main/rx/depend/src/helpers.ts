@@ -3,7 +3,6 @@ import {isThenable, Thenable, ThenableOrValue} from '../../../../../../../main/c
 import {nextHash} from '../../../../../../../main/common/helpers/helpers'
 import {
 	callStateHashTable,
-	getCurrentState,
 	getOrCreateCallState,
 	reduceCallStates,
 	statusToString,
@@ -12,6 +11,7 @@ import {
 	valueToIdMap,
 } from '../../../../../../../main/common/rx/depend/core/CallState'
 import {CallStatus, Func, ICallState, IDeferredOptions} from '../../../../../../../main/common/rx/depend/core/contracts'
+import {getCurrentState} from '../../../../../../../main/common/rx/depend/core/current-state'
 import {depend} from '../../../../../../../main/common/rx/depend/core/facade'
 import {InternalError} from '../../../../../../../main/common/rx/depend/core/helpers'
 import {assert} from '../../../../../../../main/common/test/Assert'
@@ -843,11 +843,29 @@ function checkUnsubscribers(funcCall: IDependencyCall, ...unsubscribersFuncCalls
 // 	}
 // }
 
+function checkCurrentStateNull() {
+	let stop = false
+
+	async function start() {
+		while (!stop) {
+			assert.strictEqual(getCurrentState(), null)
+			await delay(0)
+		}
+	}
+	start()
+
+	return () => {
+		stop = true
+	}
+}
+
 export async function baseTest(deferred?: boolean) {
 	if (deferred == null) {
-		// await baseTest(false)
+		await baseTest(false)
 		return await baseTest(true)
 	}
+
+	const stopCheckCurrentState = checkCurrentStateNull()
 
 	callHistoryCheckDisabled = deferred
 
@@ -1871,6 +1889,8 @@ export async function baseTest(deferred?: boolean) {
 	// endregion
 
 	// endregion
+
+	stopCheckCurrentState()
 
 	return {
 		states: [S0, I0, A0, S1, I1, S2, I2, A2, AL3, AL4, AL5].map(o => {

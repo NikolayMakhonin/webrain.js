@@ -8,7 +8,7 @@ import {CalcObjectBuilder} from '../../../../../../../main/common/rx/object/prop
 import {calcPropertyFactory} from '../../../../../../../main/common/rx/object/properties/CalcPropertyBuilder'
 import {connectorFactory} from '../../../../../../../main/common/rx/object/properties/ConnectorBuilder'
 import {ICalcProperty} from '../../../../../../../main/common/rx/object/properties/contracts'
-import {resolvePath} from '../../../../../../../main/common/rx/object/properties/helpers'
+import {resolvePath} from '../../../../../../../main/common/rx/object/properties/path/resolve'
 import {Property} from '../../../../../../../main/common/rx/object/properties/Property'
 import {IUnsubscribeOrVoid} from '../../../../../../../main/common/rx/subjects/observable'
 import {assert} from '../../../../../../../main/common/test/Assert'

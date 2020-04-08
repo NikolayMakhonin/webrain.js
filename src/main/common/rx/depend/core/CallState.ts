@@ -1,4 +1,3 @@
-import {webrainOptions} from '../../../helpers/webrainOptions'
 import {
 	isThenable,
 	IThenable,
@@ -9,12 +8,14 @@ import {
 } from '../../../async/async'
 import {resolveAsync} from '../../../async/ThenableSync'
 import {isIterator, nextHash} from '../../../helpers/helpers'
+import {webrainOptions} from '../../../helpers/webrainOptions'
 import {ObjectPool} from '../../../lists/ObjectPool'
 import {PairingHeap, PairingNode} from '../../../lists/PairingHeap'
 import {DeferredCalc, IDeferredCalcOptions} from '../../deferred-calc/DeferredCalc'
 import {ISubscriber, IUnsubscribe} from '../../subjects/observable'
 import {ISubject, Subject} from '../../subjects/subject'
 import {CallStatus, Func, ICallState, ILinkItem, TCall, TInnerValue, TIteratorOrValue, TResultOuter} from './contracts'
+import {getCurrentState, setCurrentState} from './current-state'
 import {InternalError} from './helpers'
 
 // region CallStatus
@@ -316,12 +317,7 @@ const Mask_Invalidate_Parent = 3
 
 // region variables
 
-let currentState: TCallState = null
 let nextCallId = 1
-
-export function getCurrentState() {
-	return currentState
-}
 
 // endregion
 
@@ -578,6 +574,7 @@ export class CallState<
 	public getValue(
 		dontThrowOnError?: boolean,
 	): TResultOuter<TResultInner> {
+		const currentState = getCurrentState()
 		if (currentState != null && (currentState.status & Flag_Check) === 0) {
 			currentState._subscribeDependency.call(currentState, this)
 		}
@@ -612,7 +609,7 @@ export class CallState<
 		}
 
 		this._parentCallState = currentState
-		currentState = null
+		setCurrentState(null)
 
 		this._updateCheck()
 
@@ -624,7 +621,7 @@ export class CallState<
 		}
 
 		if (shouldRecalc === false) {
-			currentState = this._parentCallState
+			setCurrentState(this._parentCallState)
 			this._parentCallState = null
 			if (isHasError(this.status)) {
 				if (dontThrowOnError !== true) {
@@ -641,7 +638,7 @@ export class CallState<
 		} else if (isIterator(shouldRecalc)) {
 			value = resolveAsync(shouldRecalc, o => {
 				if (o === false) {
-					currentState = null
+					setCurrentState(null)
 					this._parentCallState = null
 					if (isHasError(this.status)) {
 						if (dontThrowOnError !== true) {
@@ -672,7 +669,7 @@ export class CallState<
 
 		let _isIterator = false
 		try {
-			currentState = this
+			setCurrentState(this)
 
 			let value: any = this.funcCall(this)
 
@@ -703,7 +700,7 @@ export class CallState<
 				throw error
 			}
 		} finally {
-			currentState = this._parentCallState
+			setCurrentState(this._parentCallState)
 			if (!_isIterator) {
 				this._parentCallState = null
 			}
@@ -714,7 +711,7 @@ export class CallState<
 		iterator: Iterator<TInnerValue<TResultInner>>,
 		nested?: boolean,
 	): Iterator<TInnerValue<TResultInner>> {
-		currentState = this
+		setCurrentState(this)
 
 		try {
 			let iteration = iterator.next()
@@ -733,12 +730,13 @@ export class CallState<
 					break
 				}
 
-				currentState = this
+				setCurrentState(this)
 				iteration = iterator.next(value as any)
+				setCurrentState(null)
 			}
 
 			if ((this.status & Flag_Async) !== 0) {
-				currentState = this._parentCallState
+				setCurrentState(this._parentCallState)
 				if (nested == null) {
 					this._parentCallState = null
 				}
@@ -749,7 +747,7 @@ export class CallState<
 			return value
 		} catch (error) {
 			if ((this.status & Flag_Async) !== 0) {
-				currentState = this._parentCallState
+				setCurrentState(this._parentCallState)
 				if (nested == null) {
 					this._parentCallState = null
 				}
@@ -1000,7 +998,7 @@ export class CallState<
 		if (error instanceof InternalError) {
 			this.status = Update_Calculated_Error | (prevStatus & Flag_HasValue) | Flag_InternalError
 			this._parentCallState = null
-			currentState = null
+			setCurrentState(null)
 		} else {
 			if ((prevStatus & (Flag_Check | Flag_Calculating)) === 0) {
 				this._internalError(`Set status ${statusToString(Update_Calculated_Error)} called when current status is ${statusToString(prevStatus)}`)
@@ -1628,7 +1626,7 @@ export function createDependentFunc<
 		TArgs,
 		TResultInner extends ThenableOrIterator<infer V> ? ThenableOrValue<V> : TResultInner>> {
 	return function _dependentFunc() {
-		const getState = canAlwaysRecalc && currentState == null
+		const getState = canAlwaysRecalc && getCurrentState() == null
 			? callStateProvider.get
 			: callStateProvider.getOrCreate
 
