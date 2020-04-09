@@ -3,12 +3,10 @@
   <component name="AnalysisUIOptions">
     <option name="SPLITTER_PROPORTION" value="0.26758242" />
     <option name="SCOPE_TYPE" value="8" />
-    <option name="CUSTOM_SCOPE_NAME" value="src-main" />
-    <option name="SHOW_STRUCTURE" value="true" />
+    <option name="CUSTOM_SCOPE_NAME" value="All Places" />
   </component>
   <component name="ChangeListManager">
     <list default="true" id="69b2ee16-521b-4efd-b473-8e19e3df4d09" name="Default Changelist" comment="">
-      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/test/tests/common/main/rx/depend/src/helpers.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/test/tests/common/main/rx/depend/src/helpers.ts" afterDir="false" />
     </list>
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
@@ -422,13 +420,6 @@
       <option name="presentableId" value="Default" />
       <updated>1567687848586</updated>
     </task>
-    <task id="LOCAL-00316" summary="Develop. Tests OK.">
-      <created>1585048772557</created>
-      <option name="number" value="00316" />
-      <option name="presentableId" value="LOCAL-00316" />
-      <option name="project" value="LOCAL" />
-      <updated>1585048772558</updated>
-    </task>
     <task id="LOCAL-00317" summary="Refactoring. Tests OK.">
       <created>1585122300851</created>
       <option name="number" value="00317" />
@@ -765,7 +756,14 @@
       <option name="project" value="LOCAL" />
       <updated>1586415903024</updated>
     </task>
-    <option name="localTasksCounter" value="365" />
+    <task id="LOCAL-00365" summary="Integrate currentState to resolveAsync. Added specific tests. Tests OK.">
+      <created>1586416998853</created>
+      <option name="number" value="00365" />
+      <option name="presentableId" value="LOCAL-00365" />
+      <option name="project" value="LOCAL" />
+      <updated>1586416998853</updated>
+    </task>
+    <option name="localTasksCounter" value="366" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -832,7 +830,6 @@
   <component name="VcsManagerConfiguration">
     <option name="CHECK_CODE_SMELLS_BEFORE_PROJECT_COMMIT" value="false" />
     <option name="CHECK_NEW_TODO" value="false" />
-    <MESSAGE value="Depend deferred test completed. Tests OK." />
     <MESSAGE value="Fix DeferredCalc hung. Tests OK." />
     <MESSAGE value="depend deferred is completed. Tests OK." />
     <MESSAGE value="depend deferred, optimization. Tests OK." />
@@ -857,7 +854,8 @@
     <MESSAGE value="Beforr integrate currentState to resolveAsync. Tests OK." />
     <MESSAGE value="Before integrate currentState to resolveAsync. Tests OK." />
     <MESSAGE value="Integrate currentState to resolveAsync without specific tests. Other tests OK." />
-    <option name="LAST_COMMIT_MESSAGE" value="Integrate currentState to resolveAsync without specific tests. Other tests OK." />
+    <MESSAGE value="Integrate currentState to resolveAsync. Added specific tests. Tests OK." />
+    <option name="LAST_COMMIT_MESSAGE" value="Integrate currentState to resolveAsync. Added specific tests. Tests OK." />
   </component>
   <component name="XDebuggerManager">
     <breakpoint-manager>

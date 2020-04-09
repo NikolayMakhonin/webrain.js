@@ -1,5 +1,4 @@
 /* tslint:disable:no-empty no-construct use-primitive-type no-duplicate-string */
-import {delay} from '../../../../../../../../main/common/time/helpers'
 import {VALUE_PROPERTY_DEFAULT} from '../../../../../../../../main/common/helpers/value-property'
 import {IListChanged} from '../../../../../../../../main/common/lists/contracts/IListChanged'
 import {IMapChanged} from '../../../../../../../../main/common/lists/contracts/IMapChanged'
@@ -15,6 +14,7 @@ import {ObservableObjectBuilder} from '../../../../../../../../main/common/rx/ob
 import {IUnsubscribe, IUnsubscribeOrVoid} from '../../../../../../../../main/common/rx/subjects/observable'
 import {Assert} from '../../../../../../../../main/common/test/Assert'
 import {DeepCloneEqual} from '../../../../../../../../main/common/test/DeepCloneEqual'
+import {delay} from '../../../../../../../../main/common/time/helpers'
 import {IRulesFactory, ruleFactoriesVariants} from './RuleBuildersBuilder'
 
 const assert = new Assert(new DeepCloneEqual({
