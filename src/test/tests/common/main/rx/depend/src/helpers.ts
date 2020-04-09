@@ -1,4 +1,5 @@
 /* tslint:disable:no-identical-functions no-shadowed-variable no-duplicate-string no-construct use-primitive-type */
+import {resolveAsync, ThenableSync} from '../../../../../../../main/common'
 import {isThenable, Thenable, ThenableOrValue} from '../../../../../../../main/common/async/async'
 import {nextHash} from '../../../../../../../main/common/helpers/helpers'
 import {
@@ -334,6 +335,7 @@ function funcSync(id: string, deferred: boolean) {
 				const value = dependency()
 				assert.strictEqual(value + '', dependency.id)
 				assert.strictEqual(getCurrentState(), currentState)
+				checkCurrentStateAsync(currentState)
 			}
 		}
 		return callIdToResult(callId)
@@ -357,6 +359,7 @@ function funcSyncIterator(id: string, deferred: boolean) {
 				const value = yield iterator
 				assert.strictEqual(value + '', dependency.id)
 				assert.strictEqual(getCurrentState(), currentState)
+				checkCurrentStateAsync(currentState)
 			}
 		}
 		return 1
@@ -402,6 +405,7 @@ function funcAsync(id: string, deferred: boolean) {
 				const value = yield promise
 				assert.strictEqual(value + '', dependency.id)
 				assert.strictEqual(getCurrentState(), currentState)
+				checkCurrentStateAsync(currentState)
 			}
 		}
 		yield delay(0)
@@ -843,13 +847,34 @@ function checkUnsubscribers(funcCall: IDependencyCall, ...unsubscribersFuncCalls
 // 	}
 // }
 
-function checkCurrentStateNull() {
+function checkCurrentStateAsync(state: TCallState) {
+	assert.strictEqual(getCurrentState(), state)
+	return resolveAsync(
+		resolveAsync(
+			delay(0),
+			() => {
+				assert.strictEqual(getCurrentState(), state)
+				throw 1
+			},
+			() => {
+				assert.fail()
+			},
+		),
+		() => {
+			assert.fail()
+		},
+		() => {
+			assert.strictEqual(getCurrentState(), state)
+		},
+	)
+}
+
+function checkCurrentStateAsyncContinuous(state: TCallState) {
 	let stop = false
 
 	async function start() {
 		while (!stop) {
-			assert.strictEqual(getCurrentState(), null)
-			await delay(0)
+			await checkCurrentStateAsync(state)
 		}
 	}
 	start()
@@ -865,7 +890,7 @@ export async function baseTest(deferred?: boolean) {
 		return await baseTest(true)
 	}
 
-	const stopCheckCurrentState = checkCurrentStateNull()
+	const stopCheckCurrentState = checkCurrentStateAsyncContinuous(null)
 
 	callHistoryCheckDisabled = deferred
 

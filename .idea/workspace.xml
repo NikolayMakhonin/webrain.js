@@ -7,11 +7,9 @@
     <option name="SHOW_STRUCTURE" value="true" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="69b2ee16-521b-4efd-b473-8e19e3df4d09" name="Default Changelist" comment="Before integrate currentState to resolveAsync. Tests OK.">
+    <list default="true" id="69b2ee16-521b-4efd-b473-8e19e3df4d09" name="Default Changelist" comment="">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/common/async/async.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/common/async/async.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/common/rx/depend/core/CallState.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/common/rx/depend/core/CallState.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/test/tests/common/main/async/ThenableSync.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/test/tests/common/main/async/ThenableSync.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/test/tests/common/main/rx/depend/src/helpers.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/test/tests/common/main/rx/depend/src/helpers.ts" afterDir="false" />
     </list>
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
     <option name="SHOW_DIALOG" value="false" />
@@ -116,7 +114,7 @@
       </list>
     </option>
   </component>
-  <component name="RunManager" selected="Mocha.dependent-func">
+  <component name="RunManager" selected="Mocha.Watch">
     <configuration default="true" type="JavaScriptTestRunnerKarma" activateToolWindowBeforeRun="false">
       <config-file value="$PROJECT_DIR$/env/karma/configs/dev.js" />
       <karma-package-dir value="$PROJECT_DIR$/node_modules/karma" />
@@ -423,13 +421,6 @@
       <option name="number" value="Default" />
       <option name="presentableId" value="Default" />
       <updated>1567687848586</updated>
-    </task>
-    <task id="LOCAL-00315" summary="Develop. Tests OK.">
-      <created>1585045978141</created>
-      <option name="number" value="00315" />
-      <option name="presentableId" value="LOCAL-00315" />
-      <option name="project" value="LOCAL" />
-      <updated>1585045978142</updated>
     </task>
     <task id="LOCAL-00316" summary="Develop. Tests OK.">
       <created>1585048772557</created>
@@ -767,7 +758,14 @@
       <option name="project" value="LOCAL" />
       <updated>1586405722523</updated>
     </task>
-    <option name="localTasksCounter" value="364" />
+    <task id="LOCAL-00364" summary="Integrate currentState to resolveAsync without specific tests. Other tests OK.">
+      <created>1586415903024</created>
+      <option name="number" value="00364" />
+      <option name="presentableId" value="LOCAL-00364" />
+      <option name="project" value="LOCAL" />
+      <updated>1586415903024</updated>
+    </task>
+    <option name="localTasksCounter" value="365" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -834,7 +832,6 @@
   <component name="VcsManagerConfiguration">
     <option name="CHECK_CODE_SMELLS_BEFORE_PROJECT_COMMIT" value="false" />
     <option name="CHECK_NEW_TODO" value="false" />
-    <MESSAGE value="Refactoring &amp; implement deferred. Tests OK." />
     <MESSAGE value="Depend deferred test completed. Tests OK." />
     <MESSAGE value="Fix DeferredCalc hung. Tests OK." />
     <MESSAGE value="depend deferred is completed. Tests OK." />
@@ -859,7 +856,8 @@
     <MESSAGE value="Removed depend from old calc property" />
     <MESSAGE value="Beforr integrate currentState to resolveAsync. Tests OK." />
     <MESSAGE value="Before integrate currentState to resolveAsync. Tests OK." />
-    <option name="LAST_COMMIT_MESSAGE" value="Before integrate currentState to resolveAsync. Tests OK." />
+    <MESSAGE value="Integrate currentState to resolveAsync without specific tests. Other tests OK." />
+    <option name="LAST_COMMIT_MESSAGE" value="Integrate currentState to resolveAsync without specific tests. Other tests OK." />
   </component>
   <component name="XDebuggerManager">
     <breakpoint-manager>
@@ -867,7 +865,7 @@
         <line-breakpoint enabled="true" type="javascript">
           <condition expression="getCurrentState()" language="TypeScript" />
           <url>file://$PROJECT_DIR$/src/test/tests/common/main/rx/depend/src/helpers.ts</url>
-          <line>531</line>
+          <line>535</line>
           <option name="timeStamp" value="968" />
         </line-breakpoint>
         <line-breakpoint enabled="true" type="javascript">
@@ -882,33 +880,9 @@
         </line-breakpoint>
         <line-breakpoint enabled="true" type="javascript">
           <url>file://$PROJECT_DIR$/src/test/tests/common/main/rx/depend/src/helpers.ts</url>
-          <line>414</line>
+          <line>866</line>
           <properties lambdaOrdinal="-1" />
-          <option name="timeStamp" value="1125" />
-        </line-breakpoint>
-        <line-breakpoint enabled="true" type="javascript">
-          <url>file://$PROJECT_DIR$/src/main/common/async/async.ts</url>
-          <line>93</line>
-          <properties lambdaOrdinal="-1" />
-          <option name="timeStamp" value="1126" />
-        </line-breakpoint>
-        <line-breakpoint enabled="true" type="javascript">
-          <url>file://$PROJECT_DIR$/src/main/common/async/async.ts</url>
-          <line>114</line>
-          <properties lambdaOrdinal="-1" />
-          <option name="timeStamp" value="1127" />
-        </line-breakpoint>
-        <line-breakpoint enabled="true" type="javascript">
-          <url>file://$PROJECT_DIR$/src/main/common/async/async.ts</url>
-          <line>118</line>
-          <properties lambdaOrdinal="-1" />
-          <option name="timeStamp" value="1128" />
-        </line-breakpoint>
-        <line-breakpoint enabled="true" type="javascript">
-          <url>file://$PROJECT_DIR$/src/main/common/async/async.ts</url>
-          <line>205</line>
-          <properties lambdaOrdinal="-1" />
-          <option name="timeStamp" value="1130" />
+          <option name="timeStamp" value="1140" />
         </line-breakpoint>
       </breakpoints>
       <breakpoints-dialog>
