@@ -1,5 +1,5 @@
 import {assert} from '../../../../../main/common/test/Assert'
-import {describe, it} from '../../../../../main/common/test/Mocha'
+import {describe, it, xit} from '../../../../../main/common/test/Mocha'
 import {TestThenableSync, ValueType} from './src/TestThenableSync'
 
 declare const after

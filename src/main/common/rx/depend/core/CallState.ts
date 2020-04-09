@@ -683,8 +683,30 @@ export class CallState<
 
 			_isIterator = true
 
+			// Old method:
+			// value = resolveAsync(
+			// 	this._makeDependentIterator(value) as ThenableOrIteratorOrValue<TResultInner>,
+			// )
+
+			// New method (more functionality)
 			value = resolveAsync(
-				this._makeDependentIterator(value) as ThenableOrIteratorOrValue<TResultInner>,
+				value as ThenableOrIteratorOrValue<TResultInner>,
+				val => {
+					if ((this.status & Flag_Async) !== 0) {
+						// setCurrentState(this._parentCallState)
+						this._parentCallState = null
+					}
+					this._updateCalculatedValue(val as any)
+					return val
+				},
+				error => {
+					if ((this.status & Flag_Async) !== 0) {
+						// setCurrentState(this._parentCallState)
+						this._parentCallState = null
+					}
+					this._updateCalculatedError(error)
+					throw error
+				},
 			)
 
 			if (isThenable(value)) {
@@ -736,7 +758,7 @@ export class CallState<
 			}
 
 			if ((this.status & Flag_Async) !== 0) {
-				setCurrentState(this._parentCallState)
+				// setCurrentState(this._parentCallState)
 				if (nested == null) {
 					this._parentCallState = null
 				}
@@ -747,7 +769,7 @@ export class CallState<
 			return value
 		} catch (error) {
 			if ((this.status & Flag_Async) !== 0) {
-				setCurrentState(this._parentCallState)
+				// setCurrentState(this._parentCallState)
 				if (nested == null) {
 					this._parentCallState = null
 				}

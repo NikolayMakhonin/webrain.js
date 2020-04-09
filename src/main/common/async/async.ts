@@ -1,5 +1,6 @@
 import {isIterator} from '../helpers/helpers'
 import {TCallState} from '../rx/depend/core/CallState'
+import {getCurrentState, setCurrentState} from '../rx/depend/core/current-state'
 
 export type ThenableOrValue<T> = T | Thenable<T>
 
@@ -66,7 +67,7 @@ export enum ResolveResult {
 	DeferredError = Deferred | Error,
 }
 
-export function resolveIterator<T>(
+function resolveIterator<T>(
 	iterator: ThenableIterator<T>,
 	isError: boolean,
 	onImmediate: (value: ThenableOrIteratorOrValue<T>, isError: boolean) => void,
@@ -82,7 +83,6 @@ export function resolveIterator<T>(
 		isThrow: boolean,
 		nextOnImmediate: (value: ThenableOrIteratorOrValue<T>, isError: boolean) => void,
 		nextOnDeferred: (value: ThenableOrIteratorOrValue<T>, isError: boolean) => void,
-		// callState: TCallState,
 	): ResolveResult {
 		let _onImmediate: (value: T, isError: boolean) => void
 		let _onDeferred: (value: T, isError: boolean) => void
@@ -137,7 +137,7 @@ export function resolveIterator<T>(
 	return iterate(void 0, false, onImmediate, onDeferred)
 }
 
-export function resolveThenable<T>(
+function resolveThenable<T>(
 	thenable: ThenableOrIteratorOrValueNested<T>,
 	isError: boolean,
 	onImmediate: (value: ThenableOrIteratorOrValue<T>, isError: boolean) => void,
@@ -185,62 +185,82 @@ function _resolveValue<T>(
 	onImmediate: (value: T, isError: boolean) => void,
 	onDeferred: (value: T, isError: boolean) => void,
 	customResolveValue: TResolveAsyncValue<T>,
+	callState?: TCallState,
 ): ResolveResult {
-	const nextOnImmediate = (o, nextIsError) => {
-		if (nextIsError) {
-			isError = true
-		}
-		value = o
+	const prevCallState = getCurrentState()
+	if (callState == null) {
+		callState = prevCallState
+	} else {
+		setCurrentState(callState)
 	}
 
-	const nextOnDeferred = (val, nextIsError) => {
-		_resolveValue(val, isError || nextIsError, onDeferred, onDeferred, customResolveValue)
-	}
-
-	while (true) {
-		{
-			const result = resolveThenable(
-				value as ThenableOrIteratorOrValueNested<T>,
-				isError,
-				nextOnImmediate,
-				nextOnDeferred,
-			)
-
-			if ((result & ResolveResult.Deferred) !== 0) {
-				return result
+	try {
+		const nextOnImmediate = (o, nextIsError) => {
+			if (nextIsError) {
+				isError = true
 			}
-			if ((result & ResolveResult.Immediate) !== 0) {
-				continue
-			}
+			value = o
 		}
 
-		{
-			const result = resolveIterator(
-				value as ThenableIterator<T>,
-				isError,
-				nextOnImmediate,
-				nextOnDeferred,
+		const nextOnDeferred = (val, nextIsError) => {
+			_resolveValue(
+				val,
+				isError || nextIsError,
+				onDeferred,
+				onDeferred,
 				customResolveValue,
+				callState,
 			)
-
-			if ((result & ResolveResult.Deferred) !== 0) {
-				return result
-			}
-			if ((result & ResolveResult.Immediate) !== 0) {
-				continue
-			}
 		}
 
-		if (value != null && customResolveValue != null) {
-			const newValue = customResolveValue(value as T)
-			if (newValue !== value) {
-				value = newValue
-				continue
-			}
-		}
+		while (true) {
+			{
+				const result = resolveThenable(
+					value as ThenableOrIteratorOrValueNested<T>,
+					isError,
+					nextOnImmediate,
+					nextOnDeferred,
+				)
 
-		onImmediate(value as T, isError)
-		return isError ? ResolveResult.ImmediateError : ResolveResult.Immediate
+				if ((result & ResolveResult.Deferred) !== 0) {
+					return result
+				}
+				if ((result & ResolveResult.Immediate) !== 0) {
+					continue
+				}
+			}
+
+			{
+				const result = resolveIterator(
+					value as ThenableIterator<T>,
+					isError,
+					nextOnImmediate,
+					nextOnDeferred,
+					customResolveValue,
+				)
+
+				if ((result & ResolveResult.Deferred) !== 0) {
+					return result
+				}
+				if ((result & ResolveResult.Immediate) !== 0) {
+					continue
+				}
+			}
+
+			if (value != null && customResolveValue != null) {
+				const newValue = customResolveValue(value as T)
+				if (newValue !== value) {
+					value = newValue
+					continue
+				}
+			}
+
+			onImmediate(value as T, isError)
+
+			return isError ? ResolveResult.ImmediateError : ResolveResult.Immediate
+		}
+	} finally {
+		setCurrentState(prevCallState)
 	}
 }
 
