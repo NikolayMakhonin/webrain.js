@@ -98,54 +98,51 @@ export function buildPath<
 export type TGetNextPath<TObject, TValue, TNextValue>
 	= (nextValue: TGetPropertyPath<TObject, TValue>) => TGetPropertyPath<TObject, TNextValue>
 
-export interface IPropertyPathOptions<TObject, TValue, TCommonValue = TObject> {
-	common?: TGetNextPath<TObject, TObject, TCommonValue>
+export interface IPropertyPathOptions<TObject, TCommonValue, TValue> {
 	get?: TGetNextPath<TObject, TCommonValue, TValue>
-	set?: TGetNextPath<TObject, TCommonValue, void>
+	set?: TGetNextPath<TObject, TCommonValue, void|TValue>
 }
 
-export function buildPropertyPath<TObject, TValue>(
-	getSet: TGetNextPath<TObject, TObject, TValue>,
-): IPropertyPath<TObject, TValue>
-export function buildPropertyPath<TObject, TValue, TCommonValue>(
-	options: IPropertyPathOptions<TObject, TValue, TCommonValue>,
-): IPropertyPath<TObject, TValue>
-export function buildPropertyPath<TObject, TValue, TCommonValue>(
-	arg: TGetNextPath<TObject, TObject, TValue>
-		| IPropertyPathOptions<TObject, TValue, TCommonValue>,
+// export function buildPropertyPath<TObject, TValue>(
+// 	getSet: TGetNextPath<TObject, TObject, TValue>,
+// ): IPropertyPath<TObject, TValue>
+// export function buildPropertyPath<TObject, TValue, TCommonValue>(
+// 	options: IPropertyPathOptions<TObject, TValue, TCommonValue>,
+// ): IPropertyPath<TObject, TValue>
+export function buildPropertyPath<TObject, TCommonValue = TObject, TValue = TCommonValue>(
+	common: TGetNextPath<TObject, TObject, TCommonValue>,
+	getSet?: IPropertyPathOptions<TObject, TCommonValue, TValue>,
 ): IPropertyPath<TObject, TValue> {
-	if (typeof arg === 'function') {
-		return new PropertyPath(arg(buildPath())())
-	} else {
-		const {common, get, set} = arg
-		if (get == null && set == null) {
-			return new PropertyPath(common(buildPath())() as any)
-		}
-
-		let commonPathArray
-		if (common != null) {
-			commonPathArray = common(buildPath())()
-		}
-
-		let getPathArray
-		if (get != null) {
-			getPathArray = get(buildPath())()
+	if (getSet != null) {
+		const {get, set} = getSet
+		if (get != null || set != null) {
+			let commonPathArray
 			if (common != null) {
-				getPathArray = [...commonPathArray, ...getPathArray]
+				commonPathArray = common(buildPath())()
 			}
-		}
 
-		let setPathArray
-		if (set != null) {
-			setPathArray = set(buildPath())()
-			if (common != null) {
-				setPathArray = [...commonPathArray, ...setPathArray]
+			let getPathArray
+			if (get != null) {
+				getPathArray = get(buildPath())()
+				if (common != null) {
+					getPathArray = [...commonPathArray, ...getPathArray]
+				}
 			}
-		}
 
-		return {
-			get: get == null ? null : object => getOrSet(getPathArray, object),
-			set: set == null ? null : (object, newValue) => getOrSet(setPathArray, object, true, newValue),
+			let setPathArray
+			if (set != null) {
+				setPathArray = set(buildPath())()
+				if (common != null) {
+					setPathArray = [...commonPathArray, ...setPathArray]
+				}
+			}
+
+			return {
+				get: get == null ? null : object => getOrSet(getPathArray, object),
+				set: set == null ? null : (object, newValue) => getOrSet(setPathArray, object, true, newValue),
+			}
 		}
 	}
+
+	return new PropertyPath(common(buildPath())() as any)
 }

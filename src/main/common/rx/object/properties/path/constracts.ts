@@ -1,24 +1,20 @@
 import {AsyncValueOf, ThenableOrIteratorOrValue, ThenableOrValue} from '../../../../async/async'
 import {AsyncHasDefaultValueOf, HasDefaultValueOf} from '../../../../helpers/value-property'
 
-// region common
+// region TGetPropertyValue
 
-type TGetValue1<TValue>
-	= (value: any, newValue?: TValue) => ThenableOrIteratorOrValue<HasDefaultValueOf<TValue>>
+type TGetValue1<TValue, TNextValue>
+	= (value: TValue, newValue?: TNextValue) => ThenableOrIteratorOrValue<HasDefaultValueOf<TNextValue>>
 type TGetValue2<TValue, TNextValue>
 	= (value: HasDefaultValueOf<TValue>, newValue?: TNextValue) => ThenableOrIteratorOrValue<TNextValue>
 
-// endregion
-
-// region TGetPropertyValue
-
-type TGetPropertyValueResult1<TValue>
-	= TGetPropertyValue<HasDefaultValueOf<TValue>>
-type TGetPropertyValue1<TValue> = <TNextValue>(
-	getValue: TGetValue1<TValue>,
-	isValueProperty: true,
-	newValue?: TNextValue,
-) => TGetPropertyValueResult1<TValue>
+type TGetPropertyValueResult1<TNextValue> = TGetPropertyValue<AsyncValueOf<TNextValue>>
+type TGetPropertyValue1<TValue> =
+	<TNextValue>(
+		getValue: TGetValue1<TValue, TNextValue>,
+		isValueProperty: true,
+		newValue?: TNextValue,
+	) => TGetPropertyValueResult1<TNextValue>
 
 type TGetPropertyValueResult2<TNextValue> = TGetPropertyValue<AsyncValueOf<TNextValue>>
 type TGetPropertyValue2<TValue> =
@@ -31,28 +27,43 @@ type TGetPropertyValue2<TValue> =
 export type TGetPropertyValueResult3<TValue> = ThenableOrValue<AsyncHasDefaultValueOf<TValue>>
 type TGetPropertyValue3<TValue> = () => TGetPropertyValueResult3<TValue>
 
-export type TGetPropertyValue<TValue> = (
+export type TGetPropertyValue<TValue> =
 	TGetPropertyValue1<TValue> &
 	TGetPropertyValue2<TValue> &
 	TGetPropertyValue3<TValue>
-)
-	& { value: ThenableOrValue<TValue> }
 
 // endregion
 
 // region TPropertyPath
 
-type TGetPropertyPathResult1<TObject, TValue>
-	= TGetPropertyPath<TObject, HasDefaultValueOf<TValue>>
-type TGetPropertyPath1<TObject, TValue> = <TNextValue>(
-	getValue: TGetValue1<TValue>,
-	isValueProperty: true,
-) => TGetPropertyPathResult1<TObject, TValue>
+type TSetValue1<TValue, TNextValue>
+	= (value: TValue, newValue: TNextValue) => void
+type TSetValue2<TValue, TNextValue>
+	= (value: HasDefaultValueOf<TValue>, newValue: TNextValue) => void
+
+type TGetPropertyPathResult1<TObject, TNextValue> = TGetPropertyPath<TObject, AsyncValueOf<TNextValue>>
+type TGetPropertyPath1<TObject, TValue> =
+	<TNextValue>(
+		getValue: TGetValue1<TValue, TNextValue>,
+		isValueProperty: true,
+	) => TGetPropertyPathResult1<TObject, TNextValue>
+type TSetPropertyPath1<TObject, TValue> =
+	<TNextValue>(
+		getValue: TGetValue1<TValue, TNextValue>,
+		setValue: TSetValue1<TValue, TNextValue>,
+		isValueProperty: true,
+	) => TGetPropertyPathResult1<TObject, TNextValue>
 
 type TGetPropertyPathResult2<TObject, TNextValue> = TGetPropertyPath<TObject, AsyncValueOf<TNextValue>>
 type TGetPropertyPath2<TObject, TValue> =
 	<TNextValue>(
 		getValue: TGetValue2<TValue, TNextValue>,
+		isValueProperty?: false,
+	) => TGetPropertyPathResult2<TObject, TNextValue>
+type TSetPropertyPath2<TObject, TValue> =
+	<TNextValue>(
+		getValue: TGetValue2<TValue, TNextValue>,
+		setValue: TSetValue2<TValue, TNextValue>,
 		isValueProperty?: false,
 	) => TGetPropertyPathResult2<TObject, TNextValue>
 
@@ -66,14 +77,17 @@ export interface IPathNode<TObject, TValue> {
 }
 
 export type TPropertyPathArray<TObject, TValue> = Array<IPathNode<TObject, TValue>>
-type TGetPropertyPathResult3<TObject, TValue> = TPropertyPathArray<TObject, TValue>
+
+type TGetPropertyPathResult3<TObject, TValue>
+	= TPropertyPathArray<TObject, ThenableOrValue<AsyncHasDefaultValueOf<TValue>>>
 type TGetPropertyPath3<TObject, TValue> = () => TGetPropertyPathResult3<TObject, TValue>
 
-export type TGetPropertyPath<TObject, TValue> = (
+export type TGetPropertyPath<TObject, TValue> =
 	TGetPropertyPath1<TObject, TValue> &
+	TSetPropertyPath1<TObject, TValue> &
 	TGetPropertyPath2<TObject, TValue> &
+	TSetPropertyPath2<TObject, TValue> &
 	TGetPropertyPath3<TObject, TValue>
-)
 
 export interface IPropertyPath<TObject, TValue> {
 	get(object: TObject): TGetPropertyValueResult3<TValue>

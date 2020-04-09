@@ -21,7 +21,7 @@ export interface IThenableOrIteratorOrValueNested<T> extends IThenable<ThenableO
 export interface IPromiseLikeOrIteratorOrValueNested<T> extends PromiseLike<ThenableOrIteratorOrValue<T>>
 {}
 
-export interface ThenableIterator<T> extends Iterator<ThenableOrIteratorOrValue<T|any>>
+export interface ThenableIterator<T> extends Iterator<any, ThenableOrIteratorOrValue<T>>
 {}
 
 export type TResolve<TValue> = (value?: ThenableOrIteratorOrValue<TValue>) => void

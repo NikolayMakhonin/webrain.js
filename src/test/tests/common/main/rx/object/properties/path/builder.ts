@@ -1,10 +1,15 @@
 /* tslint:disable:no-duplicate-string */
-import {VALUE_PROPERTY_DEFAULT} from '../../../../../../../../main/common/helpers/value-property'
+import {AsyncValueOf, ThenableIterator} from '../../../../../../../../main/common/async/async'
+import {HasDefaultValueOf, VALUE_PROPERTY_DEFAULT} from '../../../../../../../../main/common/helpers/value-property'
 import {getOrCreateCallState, invalidateCallState} from '../../../../../../../../main/common/rx/depend/core/CallState'
 import {getCurrentState} from '../../../../../../../../main/common/rx/depend/core/current-state'
 import {dependX} from '../../../../../../../../main/common/rx/depend/core/depend'
-import {buildPropertyPath} from '../../../../../../../../main/common/rx/object/properties/path/builder'
-import {IPropertyPath} from '../../../../../../../../main/common/rx/object/properties/path/constracts'
+import {buildPropertyPath, TGetNextPath} from '../../../../../../../../main/common/rx/object/properties/path/builder'
+import {
+	IPropertyPath,
+	TGetPropertyPath,
+	TGetPropertyValue
+} from '../../../../../../../../main/common/rx/object/properties/path/constracts'
 /* eslint-disable guard-for-in */
 import {assert} from '../../../../../../../../main/common/test/Assert'
 import {describe, it} from '../../../../../../../../main/common/test/Mocha'
@@ -19,7 +24,7 @@ describe('common > main > rx > properties > builder', function() {
 
 		const innerObject = {
 			[VALUE_PROPERTY_DEFAULT]: 100,
-			d: 1,
+			d: '1',
 		}
 
 		const object = {
@@ -35,12 +40,14 @@ describe('common > main > rx > properties > builder', function() {
 						return {
 							get c() {
 								checkCurrentState()
-								return (function*() {
+								const iterator: ThenableIterator<typeof innerObject> = (function*() {
 									checkCurrentState()
 									yield delay(0)
 									checkCurrentState()
 									return innerObject
 								})()
+
+								return iterator
 							},
 						}
 					})()
@@ -48,20 +55,26 @@ describe('common > main > rx > properties > builder', function() {
 			},
 		}
 
-		const paths: Array<IPropertyPath<typeof object, number>> = [
-			buildPropertyPath({
-				common: b => b(o => o.a, true)(o => o.b),
+		// const x: HasDefaultValueOf<typeof object> = null
+		// const p1: TGetNextPath<typeof object, typeof object, typeof object.a> = null
+		// const p2: TGetPropertyPath<typeof object, typeof object> = null
+		// const p3: TGetPropertyValue<typeof object> = null
+		// const d1 = p1(
+		// 	b => b(o => o.a, true)(o => o.b)(o => o.c)(o => o.d, true)
+		// )
+		// const d2 = p2(o => o.a, true)(o => o.b)(o => o.c)(o => o.d, true)()
+		// const d3 = p3(o => o.a, true)(o => o.b)(o => o.c)(o => o.d, true)()
+
+		const paths: Array<IPropertyPath<typeof object, string>> = [
+			buildPropertyPath(b => b(o => o.a, true)(o => o.b), {
 				get: b => b(o => o.c)(o => o.d, true),
-				set: b => b(o => o.c)(null, (o, v) => { o.d = v }, true),
+				set: b => b(o => o.c)(o => o.d, (o, v) => { o.d = v }, true),
 			}),
-			buildPropertyPath({
-				common: b => b(o => o.a, true)(o => o.b)(o => o.c)(o => o.d, (o, v) => { o.d = v }, true),
-			}),
-			buildPropertyPath({
+			buildPropertyPath(null, {
 				get: b => b(o => o.a, true)(o => o.b)(o => o.c)(o => o.d, true),
-				set: b => b(o => o.a, true)(o => o.b)(o => o.c)(null, (o, v) => { o.d = v }, true),
+				set: b => b(o => o.a, true)(o => o.b)(o => o.c)(o => o.d, (o, v) => { o.d = v }, true),
 			}),
-			buildPropertyPath<typeof object, number, number>(
+			buildPropertyPath(
 				b => b(o => o.a, true)(o => o.b)(o => o.c)(o => o.d, (o, v) => { o.d = v }, true),
 			),
 		]
@@ -85,16 +98,16 @@ describe('common > main > rx > properties > builder', function() {
 			currentState = null
 
 			checkCurrentState()
-			assert.strictEqual(value, 1)
+			assert.strictEqual(value, '1')
 
-			await path.set(object, 2)
+			await path.set(object, '2')
 
 			currentState = callState
 			value = await getValue()
 			currentState = null
 
 			checkCurrentState()
-			assert.strictEqual(value, 1)
+			assert.strictEqual(value, '1')
 			invalidateCallState(callState)
 
 			currentState = callState
@@ -108,9 +121,9 @@ describe('common > main > rx > properties > builder', function() {
 			currentState = null
 			
 			checkCurrentState()
-			assert.strictEqual(value, 2)
+			assert.strictEqual(value, '2')
 
-			await path.set(object, 1)
+			await path.set(object, '1')
 			invalidateCallState(callState)
 
 			currentState = callState
@@ -119,7 +132,7 @@ describe('common > main > rx > properties > builder', function() {
 
 			assert.strictEqual(currentState, null)
 			checkCurrentState()
-			assert.strictEqual(value, 1)
+			assert.strictEqual(value, '1')
 		}
 
 		checkCurrentState()
