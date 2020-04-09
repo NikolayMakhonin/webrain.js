@@ -1,7 +1,7 @@
 import {ThenableOrIteratorOrValue} from '../../../../async/async'
 import {
-	IPropertyPath,
-	TGetPropertyPath,
+	IPropertyPath, TGetPropertyPathGet,
+	TGetPropertyPathGetSet, TGetPropertyPathSet,
 	TGetPropertyValue,
 	TGetPropertyValueResult3,
 	TGetValue,
@@ -38,7 +38,7 @@ function getOrSet<TObject, TValue>(
 
 	const lastNode = path[path.length - 1]
 
-	const getResult = set
+	const getResult: any = set
 		? nextValue(lastNode.setValue as any, lastNode.isValueProperty as any, newValue)
 		: nextValue(lastNode.getValue as any, lastNode.isValueProperty as any)
 
@@ -65,7 +65,7 @@ export class PropertyPath<TObject, TValue> implements IPropertyPath<TObject, TVa
 export function buildPath<
 	TInput,
 	TValue = TInput extends ThenableOrIteratorOrValue<infer V> ? V : TInput
->(): TGetPropertyPath<TInput, TValue> {
+>(): TGetPropertyPathGetSet<TInput, TValue> {
 	const path: TPropertyPathArray<any, any> = []
 
 	const get: any = <TNextValue>(getValue: TGetValue<TValue, TNextValue>, arg2?, arg3?) => {
@@ -95,23 +95,29 @@ export function buildPath<
 	return get
 }
 
-export type TGetNextPath<TObject, TValue, TNextValue>
-	= (nextValue: TGetPropertyPath<TObject, TValue>) => TGetPropertyPath<TObject, TNextValue>
+export type TGetNextPathGet<TObject, TValue, TNextValue>
+	= (nextValue: TGetPropertyPathGet<TObject, TValue>) => TGetPropertyPathGet<TObject, TNextValue>
+export type TGetNextPathSet<TObject, TValue, TNextValue>
+	= (nextValue: TGetPropertyPathGet<TObject, TValue>) => TGetPropertyPathSet<TObject, TNextValue>
+export type TGetNextPathGetSet<TObject, TValue, TNextValue>
+	= (nextValue: TGetPropertyPathGetSet<TObject, TValue>) => TGetPropertyPathGetSet<TObject, TNextValue>
 
-export interface IPropertyPathOptions<TObject, TCommonValue, TValue> {
-	get?: TGetNextPath<TObject, TCommonValue, TValue>
-	set?: TGetNextPath<TObject, TCommonValue, void|TValue>
+export interface IPropertyPathGet<TObject, TCommonValue, TValue> {
+	get?: TGetNextPathGet<TObject, TCommonValue, TValue>
 }
 
-// export function buildPropertyPath<TObject, TValue>(
-// 	getSet: TGetNextPath<TObject, TObject, TValue>,
-// ): IPropertyPath<TObject, TValue>
-// export function buildPropertyPath<TObject, TValue, TCommonValue>(
-// 	options: IPropertyPathOptions<TObject, TValue, TCommonValue>,
-// ): IPropertyPath<TObject, TValue>
+export interface IPropertyPathSet<TObject, TCommonValue, TValue> {
+	set?: TGetNextPathSet<TObject, TCommonValue, void|TValue>
+}
+
+export interface IPropertyPathGetSet<TObject, TCommonValue, TValue>
+	extends IPropertyPathGet<TObject, TCommonValue, TValue>,
+		IPropertyPathSet<TObject, TCommonValue, TValue>
+{ }
+
 export function buildPropertyPath<TObject, TCommonValue = TObject, TValue = TCommonValue>(
-	common: TGetNextPath<TObject, TObject, TCommonValue>,
-	getSet?: IPropertyPathOptions<TObject, TCommonValue, TValue>,
+	common: TGetNextPathGetSet<TObject, TObject, TCommonValue>,
+	getSet?: IPropertyPathGetSet<TObject, TCommonValue, TValue>,
 ): IPropertyPath<TObject, TValue> {
 	if (getSet != null) {
 		const {get, set} = getSet

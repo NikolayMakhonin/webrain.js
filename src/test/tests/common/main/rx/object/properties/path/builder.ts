@@ -4,10 +4,10 @@ import {HasDefaultValueOf, VALUE_PROPERTY_DEFAULT} from '../../../../../../../..
 import {getOrCreateCallState, invalidateCallState} from '../../../../../../../../main/common/rx/depend/core/CallState'
 import {getCurrentState} from '../../../../../../../../main/common/rx/depend/core/current-state'
 import {dependX} from '../../../../../../../../main/common/rx/depend/core/depend'
-import {buildPropertyPath, TGetNextPath} from '../../../../../../../../main/common/rx/object/properties/path/builder'
+import {buildPropertyPath, TGetNextPathGetSet} from '../../../../../../../../main/common/rx/object/properties/path/builder'
 import {
 	IPropertyPath,
-	TGetPropertyPath,
+	TGetPropertyPathGetSet,
 	TGetPropertyValue
 } from '../../../../../../../../main/common/rx/object/properties/path/constracts'
 /* eslint-disable guard-for-in */

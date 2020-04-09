@@ -41,7 +41,7 @@ type TSetValue1<TValue, TNextValue>
 type TSetValue2<TValue, TNextValue>
 	= (value: HasDefaultValueOf<TValue>, newValue: TNextValue) => void
 
-type TGetPropertyPathResult1<TObject, TNextValue> = TGetPropertyPath<TObject, AsyncValueOf<TNextValue>>
+type TGetPropertyPathResult1<TObject, TNextValue> = TGetPropertyPathGetSet<TObject, AsyncValueOf<TNextValue>>
 type TGetPropertyPath1<TObject, TValue> =
 	<TNextValue>(
 		getValue: TGetValue1<TValue, TNextValue>,
@@ -54,7 +54,7 @@ type TSetPropertyPath1<TObject, TValue> =
 		isValueProperty: true,
 	) => TGetPropertyPathResult1<TObject, TNextValue>
 
-type TGetPropertyPathResult2<TObject, TNextValue> = TGetPropertyPath<TObject, AsyncValueOf<TNextValue>>
+type TGetPropertyPathResult2<TObject, TNextValue> = TGetPropertyPathGetSet<TObject, AsyncValueOf<TNextValue>>
 type TGetPropertyPath2<TObject, TValue> =
 	<TNextValue>(
 		getValue: TGetValue2<TValue, TNextValue>,
@@ -82,12 +82,19 @@ type TGetPropertyPathResult3<TObject, TValue>
 	= TPropertyPathArray<TObject, ThenableOrValue<AsyncHasDefaultValueOf<TValue>>>
 type TGetPropertyPath3<TObject, TValue> = () => TGetPropertyPathResult3<TObject, TValue>
 
-export type TGetPropertyPath<TObject, TValue> =
+export type TGetPropertyPathGet<TObject, TValue> =
 	TGetPropertyPath1<TObject, TValue> &
-	TSetPropertyPath1<TObject, TValue> &
 	TGetPropertyPath2<TObject, TValue> &
+	TGetPropertyPath3<TObject, TValue>
+
+export type TGetPropertyPathSet<TObject, TValue> =
+	TSetPropertyPath1<TObject, TValue> &
 	TSetPropertyPath2<TObject, TValue> &
 	TGetPropertyPath3<TObject, TValue>
+
+export type TGetPropertyPathGetSet<TObject, TValue> =
+	TGetPropertyPathGet<TObject, TValue> &
+	TGetPropertyPathSet<TObject, TValue>
 
 export interface IPropertyPath<TObject, TValue> {
 	get(object: TObject): TGetPropertyValueResult3<TValue>

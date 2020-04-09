@@ -7,6 +7,13 @@ import {Func, IDeferredOptions} from '../depend/core/contracts'
 import '../extensions/autoConnect'
 import {PropertyChangedEvent} from './IPropertyChanged'
 import {_set, _setExt, ISetOptions, ObservableClass} from './ObservableClass'
+import {
+	buildPropertyPath,
+	IPropertyPathGet,
+	IPropertyPathGetSet,
+	TGetNextPathGet,
+	TGetNextPathGetSet,
+} from './properties/path/builder'
 
 export interface IFieldOptions<TObject, TValue> {
 	hidden?: boolean,
@@ -124,6 +131,46 @@ export class ObservableObjectBuilder<TObject extends ObservableClass> {
 		initValue?: TValue,
 	): this & { object: { readonly [newProp in Name]: TValue } } {
 		return this.updatable(name, options, initValue)
+	}
+
+	public connectPath<
+		Name extends string | number = Extract<keyof TObject, string|number>,
+		TValue = Name extends keyof TObject ? TObject[Name] : any,
+		TCommonValue = TObject,
+	>(
+		name: Name,
+		common: TGetNextPathGet<TObject, TObject, TCommonValue>,
+		getSet?: null|undefined,
+		options?: IReadableFieldOptions<TObject, TValue>,
+	): this & { object: { readonly [newProp in Name]: TValue } }
+	public connectPath<
+		Name extends string | number = Extract<keyof TObject, string|number>,
+		TValue = Name extends keyof TObject ? TObject[Name] : any,
+		TCommonValue = TObject,
+	>(
+		name: Name,
+		common: TGetNextPathGetSet<TObject, TObject, TCommonValue>,
+		getSet?: IPropertyPathGetSet<TObject, TCommonValue, TValue>,
+		options?: IReadableFieldOptions<TObject, TValue>,
+	): this & { object: { [newProp in Name]: TValue } } {
+		const path = buildPropertyPath(common, getSet)
+
+		const hidden = options && options.hidden
+
+		const {object} = this
+
+		Object.defineProperty(object, name, {
+			configurable: true,
+			enumerable  : !hidden,
+			get() {
+				return path.get(this)
+			},
+			set(value: TValue) {
+				return path.set(this, value)
+			},
+		})
+
+		return this as any
 	}
 
 	public simpleCalc<

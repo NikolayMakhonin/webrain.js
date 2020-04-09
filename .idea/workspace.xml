@@ -8,7 +8,7 @@
   <component name="ChangeListManager">
     <list default="true" id="69b2ee16-521b-4efd-b473-8e19e3df4d09" name="Default Changelist" comment="">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/common/async/async.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/common/async/async.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/common/rx/object/ObservableObjectBuilder.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/common/rx/object/ObservableObjectBuilder.ts" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/common/rx/object/properties/path/builder.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/common/rx/object/properties/path/builder.ts" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/common/rx/object/properties/path/constracts.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/common/rx/object/properties/path/constracts.ts" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/test/tests/common/main/rx/object/properties/path/builder.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/test/tests/common/main/rx/object/properties/path/builder.ts" afterDir="false" />
@@ -423,13 +423,6 @@
       <option name="presentableId" value="Default" />
       <updated>1567687848586</updated>
     </task>
-    <task id="LOCAL-00319" summary="Refactoring. Tests OK.">
-      <created>1585131252613</created>
-      <option name="number" value="00319" />
-      <option name="presentableId" value="LOCAL-00319" />
-      <option name="project" value="LOCAL" />
-      <updated>1585131252613</updated>
-    </task>
     <task id="LOCAL-00320" summary="Refactoring. Tests OK.">
       <created>1585135559778</created>
       <option name="number" value="00320" />
@@ -766,7 +759,14 @@
       <option name="project" value="LOCAL" />
       <updated>1586425847713</updated>
     </task>
-    <option name="localTasksCounter" value="368" />
+    <task id="LOCAL-00368" summary="buildPropertyPath refactoring. Tests OK.">
+      <created>1586449529885</created>
+      <option name="number" value="00368" />
+      <option name="presentableId" value="LOCAL-00368" />
+      <option name="project" value="LOCAL" />
+      <updated>1586449529885</updated>
+    </task>
+    <option name="localTasksCounter" value="369" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -833,7 +833,6 @@
   <component name="VcsManagerConfiguration">
     <option name="CHECK_CODE_SMELLS_BEFORE_PROJECT_COMMIT" value="false" />
     <option name="CHECK_NEW_TODO" value="false" />
-    <MESSAGE value="depend deferred, optimization. Tests OK." />
     <MESSAGE value="DeferredCalc, optimization. Tests OK." />
     <MESSAGE value="async optimization. Tests OK." />
     <MESSAGE value="depend is completed. Tests OK." />
@@ -858,7 +857,8 @@
     <MESSAGE value="Integrate currentState to resolveAsync. Added specific tests. Tests OK." />
     <MESSAGE value="Lint fixes. Tests OK." />
     <MESSAGE value="buildPropertyPath tested. Tests OK." />
-    <option name="LAST_COMMIT_MESSAGE" value="buildPropertyPath tested. Tests OK." />
+    <MESSAGE value="buildPropertyPath refactoring. Tests OK." />
+    <option name="LAST_COMMIT_MESSAGE" value="buildPropertyPath refactoring. Tests OK." />
   </component>
   <component name="XDebuggerManager">
     <breakpoint-manager>
