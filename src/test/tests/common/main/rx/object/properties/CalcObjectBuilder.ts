@@ -12,7 +12,7 @@ import {resolvePath} from '../../../../../../../main/common/rx/object/properties
 import {Property} from '../../../../../../../main/common/rx/object/properties/Property'
 import {IUnsubscribeOrVoid} from '../../../../../../../main/common/rx/subjects/observable'
 import {assert} from '../../../../../../../main/common/test/Assert'
-import {describe, it} from '../../../../../../../main/common/test/Mocha'
+import {describe, it, xit} from '../../../../../../../main/common/test/Mocha'
 import {delay} from '../../../../../../../main/common/time/helpers'
 import {createObject, TestDeepSubscribe} from '../../deep-subscribe/helpers/src/TestDeepSubscribe'
 

@@ -38,9 +38,11 @@ function getOrSet<TObject, TValue>(
 
 	const lastNode = path[path.length - 1]
 
-	return set
-		? nextValue(lastNode.setValue as any, lastNode.isValueProperty as any, newValue)()
-		: nextValue(lastNode.getValue as any, lastNode.isValueProperty as any)()
+	const getResult = set
+		? nextValue(lastNode.setValue as any, lastNode.isValueProperty as any, newValue)
+		: nextValue(lastNode.getValue as any, lastNode.isValueProperty as any)
+
+	return getResult()
 }
 
 export class PropertyPath<TObject, TValue> implements IPropertyPath<TObject, TValue> {
@@ -125,33 +127,25 @@ export function buildPropertyPath<TObject, TValue, TCommonValue>(
 			commonPathArray = common(buildPath())()
 		}
 
-		let getPath
+		let getPathArray
 		if (get != null) {
-			const getPathArray = get(buildPath())()
-			getPath = new PropertyPath(common == null
-				? getPathArray
-				: [...commonPathArray, ...getPathArray])
+			getPathArray = get(buildPath())()
+			if (common != null) {
+				getPathArray = [...commonPathArray, ...getPathArray]
+			}
 		}
 
-		let setPath
+		let setPathArray
 		if (set != null) {
-			const setPathArray = set(buildPath())()
-			setPath = new PropertyPath(common == null
-				? setPathArray
-				: [...commonPathArray, ...setPathArray])
+			setPathArray = set(buildPath())()
+			if (common != null) {
+				setPathArray = [...commonPathArray, ...setPathArray]
+			}
 		}
 
 		return {
-			get: get == null ? null : object => getOrSet(setPath, object),
-			set: set == null ? null : (object, newValue) => getOrSet(setPath, object, true, newValue),
+			get: get == null ? null : object => getOrSet(getPathArray, object),
+			set: set == null ? null : (object, newValue) => getOrSet(setPathArray, object, true, newValue),
 		}
 	}
 }
-
-const obj = {
-	a: {
-		b: '123',
-	},
-}
-
-const _path = buildPath<typeof obj>()(o => o.a)(o => o.b)()

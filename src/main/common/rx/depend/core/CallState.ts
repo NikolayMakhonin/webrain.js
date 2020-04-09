@@ -1,4 +1,5 @@
 import {
+	isAsync,
 	isThenable,
 	IThenable,
 	ThenableIterator,
@@ -667,21 +668,25 @@ export class CallState<
 		this._updateCalculating()
 		this._callId = nextCallId++
 
-		let _isIterator = false
+		let _isAsync = false
 		try {
 			setCurrentState(this)
 
 			let value: any = this.funcCall(this)
 
-			if (!isIterator(value)) {
-				if (isThenable(value)) {
-					this._internalError('You should use iterator instead thenable for async functions')
-				}
+			if (!isAsync(value)) {
+				// if (isThenable(value)) {
+				// 	this._internalError('You should use iterator instead thenable for async functions')
+				// }
 				this._updateCalculatedValue(value)
 				return value
 			}
 
-			_isIterator = true
+			if (value instanceof Promise) {
+				this._internalError('You should use iterator instead Promise for async functions')
+			}
+
+			_isAsync = true
 
 			// Old method:
 			// value = resolveAsync(
@@ -715,7 +720,7 @@ export class CallState<
 
 			return value
 		} catch (error) {
-			if (!_isIterator) {
+			if (!_isAsync) {
 				this._updateCalculatedError(error)
 			}
 			if (dontThrowOnError !== true || error instanceof InternalError) {
@@ -723,7 +728,7 @@ export class CallState<
 			}
 		} finally {
 			setCurrentState(this._parentCallState)
-			if (!_isIterator) {
+			if (!_isAsync) {
 				this._parentCallState = null
 			}
 		}
