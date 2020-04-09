@@ -72,9 +72,9 @@ function nextSaniSinghHuttunen(numList: number[]): boolean {
 }
 
 class PermutationOuelletLexico3<T> {
-	private _sortedValues: T[]
+	private readonly _sortedValues: T[]
 
-	private _valueUsed: boolean[]
+	private readonly _valueUsed: boolean[]
 
 	public maxIndex: number //  long to support 20! or less
 
@@ -159,11 +159,11 @@ class PermutationOuelletLexico3<T> {
 }
 
 class PermutationMixOuelletSaniSinghHuttunen {
-	private _indexFirst: number
+	private readonly _indexFirst: number
 
-	private _indexLastExclusive: number
+	private readonly _indexLastExclusive: number
 
-	private _sortedValues: number[]
+	private readonly _sortedValues: number[]
 
 	public constructor(
 		sortedValues: number[],

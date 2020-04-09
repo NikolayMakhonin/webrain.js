@@ -1,4 +1,4 @@
-import {ThenableSync} from '../../../async/ThenableSync'
+// import {ThenableSync} from '../../../async/ThenableSync'
 // import {Func, TCall} from './contracts'
 
 // export function createCallWithArgs<TArgs extends any[]>(...args: TArgs): TCall<TArgs>

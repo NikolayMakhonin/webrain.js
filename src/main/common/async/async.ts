@@ -1,4 +1,5 @@
 import {isIterator} from '../helpers/helpers'
+import {TCallState} from '../rx/depend/core/CallState'
 
 export type ThenableOrValue<T> = T | Thenable<T>
 
@@ -81,6 +82,7 @@ export function resolveIterator<T>(
 		isThrow: boolean,
 		nextOnImmediate: (value: ThenableOrIteratorOrValue<T>, isError: boolean) => void,
 		nextOnDeferred: (value: ThenableOrIteratorOrValue<T>, isError: boolean) => void,
+		// callState: TCallState,
 	): ResolveResult {
 		let _onImmediate: (value: T, isError: boolean) => void
 		let _onDeferred: (value: T, isError: boolean) => void

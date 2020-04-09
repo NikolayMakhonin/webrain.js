@@ -1,6 +1,6 @@
 import {isAsync, Thenable, ThenableOrIterator, ThenableOrIteratorOrValue} from '../async/async'
 import {resolveAsyncAll, resolveAsyncAny} from '../async/ThenableSync'
-import {ITimeLimit, ITimeLimitBase, TimeLimit} from './TimeLimit'
+import {ITimeLimit, ITimeLimitBase} from './TimeLimit'
 
 function createSingleCallFunc<T>(func: () => T): () => T {
 	if (!func) {

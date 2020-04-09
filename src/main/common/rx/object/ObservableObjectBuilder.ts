@@ -1,10 +1,10 @@
-import {IThenable, ThenableOrIterator, ThenableOrValue} from '../../async/async'
+import {ThenableOrIterator, ThenableOrValue} from '../../async/async'
 import {createFunction} from '../../helpers/helpers'
 import {webrainOptions} from '../../helpers/webrainOptions'
 import {depend, dependX} from '../../rx/depend/core/depend'
-import '../extensions/autoConnect'
 import {CallState, getOrCreateCallState} from '../depend/core/CallState'
-import {Func, IDeferredOptions} from '../depend/core/contracts'
+import {Func} from '../depend/core/contracts'
+import '../extensions/autoConnect'
 import {PropertyChangedEvent} from './IPropertyChanged'
 import {_set, _setExt, ISetOptions, ObservableClass} from './ObservableClass'
 

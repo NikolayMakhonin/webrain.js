@@ -10,9 +10,9 @@ import {
 } from '../../../extensions/serialization/contracts'
 import {registerSerializable} from '../../../extensions/serialization/serializers'
 import {isIterable} from '../../../helpers/helpers'
+import {fillSet} from '../../../lists/helpers/set'
 import {ALWAYS_CHANGE_VALUE, invalidateCallState} from '../core/CallState'
 import {depend, getCallState} from '../core/facade'
-import {fillSet} from '../../../lists/helpers/set'
 
 export class DependSet<V>
 	implements Set<V>,

@@ -1,5 +1,4 @@
 import {IThenable, ThenableOrValue} from '../../../async/async'
-import {IDeferredCalcOptions} from '../../deferred-calc/DeferredCalc'
 import {TFuncCall} from './CallState'
 
 export type Func<TThis, TArgs extends any[], TValue = void> = (this: TThis, ...args: TArgs) => TValue
@@ -46,6 +45,7 @@ export interface IDeferredOptions {
 	autoInvalidateInterval?: number,
 }
 
+export type ICallStateAny = ICallState<any, any, any>
 export interface ICallState<
 	TThisOuter,
 	TArgs extends any[],
