@@ -532,6 +532,7 @@ export class CallState<
 
 	public get hasSubscribers(): boolean {
 		return this._subscribersFirst != null
+			|| this._invalidatedSubject != null && this._invalidatedSubject.hasSubscribers
 	}
 
 	public get isHandling(): boolean {
@@ -1112,12 +1113,12 @@ export class CallState<
 			}
 		}
 
-		if (statusBefore !== 0 || statusAfter !== 0) {
-			this._invalidateParents(statusBefore, statusAfter)
-		}
-
 		if (isInvalidated(status) && !isInvalidated(prevStatus)) {
 			this.onInvalidated()
+		}
+
+		if (statusBefore !== 0 || statusAfter !== 0) {
+			this._invalidateParents(statusBefore, statusAfter)
 		}
 	}
 
@@ -1480,7 +1481,9 @@ export function invalidateCallState<
 ) {
 	if (state != null) {
 		state.invalidate()
+		return true
 	}
+	return false
 }
 
 export function getCallState<

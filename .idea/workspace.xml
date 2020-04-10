@@ -7,12 +7,11 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="69b2ee16-521b-4efd-b473-8e19e3df4d09" name="Default Changelist" comment="">
-      <change afterPath="$PROJECT_DIR$/src/main/common/rx/object/helpers.ts" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/common/rx/depend/core/CallState.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/common/rx/depend/core/CallState.ts" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/common/rx/object/ObservableObjectBuilder.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/common/rx/object/ObservableObjectBuilder.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/common/rx/object/properties/ConnectorBuilder.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/common/rx/object/properties/ConnectorBuilder.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/common/rx/object/properties/path/builder.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/common/rx/object/properties/path/builder.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/common/rx/object/helpers.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/common/rx/object/helpers.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/common/rx/object/properties/CalcObjectBuilder.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/common/rx/object/properties/CalcObjectBuilder.ts" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/common/rx/object/properties/path/constracts.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/common/rx/object/properties/path/constracts.ts" afterDir="false" />
     </list>
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
@@ -425,13 +424,6 @@
       <option name="presentableId" value="Default" />
       <updated>1567687848586</updated>
     </task>
-    <task id="LOCAL-00321" summary="Refactoring. Tests OK.">
-      <created>1585196342618</created>
-      <option name="number" value="00321" />
-      <option name="presentableId" value="LOCAL-00321" />
-      <option name="project" value="LOCAL" />
-      <updated>1585196342619</updated>
-    </task>
     <task id="LOCAL-00322" summary="Refactoring. Tests OK.">
       <created>1585201347223</created>
       <option name="number" value="00322" />
@@ -768,7 +760,14 @@
       <option name="project" value="LOCAL" />
       <updated>1586450892023</updated>
     </task>
-    <option name="localTasksCounter" value="370" />
+    <task id="LOCAL-00370" summary="Integrating to project... Tests OK.">
+      <created>1586500816366</created>
+      <option name="number" value="00370" />
+      <option name="presentableId" value="LOCAL-00370" />
+      <option name="project" value="LOCAL" />
+      <updated>1586500816366</updated>
+    </task>
+    <option name="localTasksCounter" value="371" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -835,7 +834,6 @@
   <component name="VcsManagerConfiguration">
     <option name="CHECK_CODE_SMELLS_BEFORE_PROJECT_COMMIT" value="false" />
     <option name="CHECK_NEW_TODO" value="false" />
-    <MESSAGE value="async optimization. Tests OK." />
     <MESSAGE value="depend is completed. Tests OK." />
     <MESSAGE value="depend refactoring. Tests OK. Bad performance" />
     <MESSAGE value="depend refactoring. Tests OK." />
@@ -860,7 +858,8 @@
     <MESSAGE value="buildPropertyPath tested. Tests OK." />
     <MESSAGE value="buildPropertyPath refactoring. Tests OK." />
     <MESSAGE value="Added connectPath property. Tests OK." />
-    <option name="LAST_COMMIT_MESSAGE" value="Added connectPath property. Tests OK." />
+    <MESSAGE value="Integrating to project... Tests OK." />
+    <option name="LAST_COMMIT_MESSAGE" value="Integrating to project... Tests OK." />
   </component>
   <component name="XDebuggerManager">
     <breakpoint-manager>

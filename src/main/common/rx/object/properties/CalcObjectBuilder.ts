@@ -1,5 +1,10 @@
+import {ThenableOrIterator, ThenableOrValue} from '../../../async/async'
 import {NotFunction} from '../../../helpers/typescript'
+import {depend, dependX} from '../../../rx/depend/core/depend'
 import {RuleBuilder} from '../../deep-subscribe/RuleBuilder'
+import {CallState} from '../../depend/core/CallState'
+import {Func, IDeferredOptions} from '../../depend/core/contracts'
+import {makeDependPropertySubscriber} from '../helpers'
 import {ObservableClass} from '../ObservableClass'
 import {IReadableFieldOptions, IWritableFieldOptions} from '../ObservableObjectBuilder'
 import {CalcProperty} from './CalcProperty'
@@ -107,6 +112,71 @@ export class CalcObjectBuilder<TObject extends ObservableClass, TValueKeys exten
 				},
 			}),
 		)
+	}
+
+	public simpleCalc<
+		TArgs extends any[],
+		TResultInner,
+		Name extends string | number = Extract<keyof TObject, string|number>,
+		TValue = TResultInner extends ThenableOrIterator<infer V> ? ThenableOrValue<V> : TResultInner,
+		TResultValue = Name extends keyof TObject
+			? (TValue extends TObject[Name] ? TObject[Name] : never)
+			: TValue,
+	>(
+		name: Name,
+		func: Func<
+			TObject,
+			TArgs,
+			TResultInner
+		>,
+	): this & { object: { readonly [newProp in Name]: TResultValue } } {
+		return super.readable(name, {
+			getValue: func,
+		}) as any
+	}
+
+	public dependCalc<
+		TArgs extends any[],
+		TResultInner,
+		Name extends string | number = Extract<keyof TObject, string|number>,
+		TValue = TResultInner extends ThenableOrIterator<infer V> ? ThenableOrValue<V> : TResultInner,
+		TResultValue = Name extends keyof TObject
+			? (TValue extends TObject[Name] ? TObject[Name] : never)
+			: TValue,
+	>(
+		name: Name,
+		func: Func<
+			TObject,
+			TArgs,
+			TResultInner
+		>,
+		deferredOptions?: IDeferredOptions,
+	): this & { object: { readonly [newProp in Name]: TResultValue } } {
+		return super.readable(name, {
+			getValue: depend(func, deferredOptions, makeDependPropertySubscriber(name)),
+		}) as any
+	}
+
+	public dependCalcX<
+		TArgs extends any[],
+		TResultInner,
+		Name extends string | number = Extract<keyof TObject, string|number>,
+		TValue = TResultInner extends ThenableOrIterator<infer V> ? ThenableOrValue<V> : TResultInner,
+		TResultValue = Name extends keyof TObject
+			? (TValue extends TObject[Name] ? TObject[Name] : never)
+			: TValue,
+	>(
+		name: Name,
+		func: Func<
+			CallState<TObject, TArgs, TResultInner>,
+			TArgs,
+			TResultInner
+		>,
+		deferredOptions?: IDeferredOptions,
+	): this & { object: { readonly [newProp in Name]: TResultValue } } {
+		return super.readable(name, {
+			getValue: dependX(func, deferredOptions, makeDependPropertySubscriber(name)),
+		}) as any
 	}
 }
 

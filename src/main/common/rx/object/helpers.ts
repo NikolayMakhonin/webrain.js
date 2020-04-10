@@ -1,3 +1,7 @@
+import {isAsync} from '../../async/async'
+import {resolveAsync} from '../../async/ThenableSync'
+import {webrainOptions} from '../../helpers/webrainOptions'
+
 export function makeDependPropertySubscriber(name: string | number) {
 	return function initDependCalcState(state) {
 		let value
@@ -10,15 +14,21 @@ export function makeDependPropertySubscriber(name: string | number) {
 				}
 
 				if (hasSubscribers) {
+					value = state.getValue()
 					dependUnsubscribe = state
 						.subscribe(() => {
+							const newValue = state.getValue()
+							// resolveAsync(state.getValue(), newValue => {
 							const oldValue = value
-							value = state.getValue()
-							state._this.propertyChanged.onPropertyChanged({
-								name,
-								oldValue,
-								newValue: value,
-							})
+							value = newValue
+							if (!(oldValue === newValue || webrainOptions.equalsFunc && webrainOptions.equalsFunc(oldValue, newValue))) {
+								state._this.propertyChanged.emit({
+									name,
+									oldValue,
+									newValue,
+								})
+							}
+							// })
 						})
 				}
 			})
