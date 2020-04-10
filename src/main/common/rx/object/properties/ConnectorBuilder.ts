@@ -35,16 +35,6 @@ export class ConnectorBuilder<
 		TCommonValue = TObject,
 	>(
 		name: Name,
-		common: TGetNextPathGet<TObject, TObject, TCommonValue>,
-		getSet?: null|undefined,
-		options?: IReadableFieldOptions<TObject, TValue>,
-	): this & { object: { readonly [newProp in Name]: TValue } }
-	public connectPath<
-		Name extends string | number = Extract<keyof TObject, string|number>,
-		TValue = Name extends keyof TObject ? TObject[Name] : any,
-		TCommonValue = TObject,
-	>(
-		name: Name,
 		common: TGetNextPathGetSet<TObject, TObject, TCommonValue>,
 		getSet?: IPropertyPathGetSet<TObject, TCommonValue, TValue>,
 		options?: IReadableFieldOptions<TObject, TValue>,
@@ -206,6 +196,7 @@ export class ConnectorBuilder<
 				},
 				update: writable && function(value: any): TValue|void {
 					const baseValue = baseGetValue.call(this)
+					set.call(this, value)
 					if (baseValue.parent != null) {
 						setObjectValue(baseValue.parent, baseValue.key, baseValue.keyType, value)
 					}
