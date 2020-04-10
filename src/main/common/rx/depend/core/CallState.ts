@@ -1167,7 +1167,9 @@ export class CallState<
 	private onInvalidated() {
 		const {_invalidatedSubject} = this
 		if (_invalidatedSubject != null) {
-			_invalidatedSubject.emit(this)
+			// TODO setTimeout needed until not resolved problem
+			// with delete subscriber link during iterate subscribers links
+			setTimeout(() => _invalidatedSubject.emit(this), 0)
 		}
 	}
 

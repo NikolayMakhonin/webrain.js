@@ -46,19 +46,36 @@ function getOrSet<TObject, TValue>(
 }
 
 export class PropertyPath<TObject, TValue> implements IPropertyPath<TObject, TValue> {
-	private readonly _path: TPropertyPathArray<TObject, TValue>
+	private readonly _get: TPropertyPathArray<TObject, TValue>
+	private readonly _set: TPropertyPathArray<TObject, TValue>
+
 	constructor(
-		path: TPropertyPathArray<TObject, TValue>,
+		common?: TPropertyPathArray<TObject, TValue>,
+		get?: TPropertyPathArray<TObject, TValue>,
+		set?: TPropertyPathArray<TObject, TValue>,
 	) {
-		this._path = path
+		this._get = get == null
+			? common
+			: (common == null ? get : [...common, ...get])
+		this._set = set == null
+			? common
+			: (common == null ? set : [...common, ...set])
+	}
+
+	public get canGet() {
+		return !!this._get
+	}
+
+	public get canSet() {
+		return !!this._set
 	}
 
 	public get(object: TObject): TGetPropertyValueResult3<TValue> {
-		return getOrSet(this._path, object)
+		return getOrSet(this._get, object)
 	}
 
 	public set(object: TObject, newValue: TValue): TGetPropertyValueResult3<void> {
-		return getOrSet(this._path, object, true, newValue)
+		return getOrSet(this._set, object, true, newValue)
 	}
 }
 
@@ -119,36 +136,17 @@ export function buildPropertyPath<TObject, TCommonValue = TObject, TValue = TCom
 	common: TGetNextPathGetSet<TObject, TObject, TCommonValue>,
 	getSet?: IPropertyPathGetSet<TObject, TCommonValue, TValue>,
 ): IPropertyPath<TObject, TValue> {
+	const commonPathArray: any = common == null ? null : common(buildPath())()
+
 	if (getSet != null) {
 		const {get, set} = getSet
 		if (get != null || set != null) {
-			let commonPathArray
-			if (common != null) {
-				commonPathArray = common(buildPath())()
-			}
+			const getPathArray: any = get == null ? null : get(buildPath())()
+			const setPathArray: any = set == null ? null : set(buildPath())()
 
-			let getPathArray
-			if (get != null) {
-				getPathArray = get(buildPath())()
-				if (common != null) {
-					getPathArray = [...commonPathArray, ...getPathArray]
-				}
-			}
-
-			let setPathArray
-			if (set != null) {
-				setPathArray = set(buildPath())()
-				if (common != null) {
-					setPathArray = [...commonPathArray, ...setPathArray]
-				}
-			}
-
-			return {
-				get: get == null ? null : object => getOrSet(getPathArray, object),
-				set: set == null ? null : (object, newValue) => getOrSet(setPathArray, object, true, newValue),
-			}
+			return new PropertyPath(commonPathArray, getPathArray, setPathArray)
 		}
 	}
 
-	return new PropertyPath(common(buildPath())() as any)
+	return new PropertyPath(commonPathArray)
 }

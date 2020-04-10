@@ -1,13 +1,16 @@
 import {createFunction} from '../../../helpers/helpers'
+import {depend} from '../../../rx/depend/core/depend'
 import {Debugger} from '../../Debugger'
 import {ValueKeyType} from '../../deep-subscribe/contracts/common'
 import {deepSubscribeRule} from '../../deep-subscribe/deep-subscribe'
 import {setObjectValue} from '../../deep-subscribe/helpers/common'
 import {RuleBuilder} from '../../deep-subscribe/RuleBuilder'
+import {makeDependPropertySubscriber} from '../helpers'
 import {_set, _setExt, ObservableClass} from '../ObservableClass'
-import {IWritableFieldOptions, ObservableObjectBuilder} from '../ObservableObjectBuilder'
+import {IReadableFieldOptions, IWritableFieldOptions, ObservableObjectBuilder} from '../ObservableObjectBuilder'
 import {Connector, ConnectorState} from './Connector'
 import {ValueKeys} from './contracts'
+import {buildPropertyPath, IPropertyPathGetSet, TGetNextPathGet, TGetNextPathGetSet} from './path/builder'
 
 const buildSourceRule: <TSource, TValueKeys extends string | number = ValueKeys>
 	(builder: RuleBuilder<ConnectorState<TSource>, TValueKeys>)
@@ -24,6 +27,46 @@ export class ConnectorBuilder<
 		object?: TObject,
 	) {
 		super(object)
+	}
+
+	public connectPath<
+		Name extends string | number = Extract<keyof TObject, string|number>,
+		TValue = Name extends keyof TObject ? TObject[Name] : any,
+		TCommonValue = TObject,
+	>(
+		name: Name,
+		common: TGetNextPathGet<TObject, TObject, TCommonValue>,
+		getSet?: null|undefined,
+		options?: IReadableFieldOptions<TObject, TValue>,
+	): this & { object: { readonly [newProp in Name]: TValue } }
+	public connectPath<
+		Name extends string | number = Extract<keyof TObject, string|number>,
+		TValue = Name extends keyof TObject ? TObject[Name] : any,
+		TCommonValue = TObject,
+	>(
+		name: Name,
+		common: TGetNextPathGetSet<TObject, TObject, TCommonValue>,
+		getSet?: IPropertyPathGetSet<TObject, TCommonValue, TValue>,
+		options?: IReadableFieldOptions<TObject, TValue>,
+	): this & { object: { [newProp in Name]: TValue } } {
+		const path = buildPropertyPath(common, getSet)
+
+		const hidden = options && options.hidden
+
+		const {object} = this
+
+		Object.defineProperty(object, name, {
+			configurable: true,
+			enumerable  : !hidden,
+			get: !path.canSet ? null : depend(function(this: typeof object) {
+				return path.get(this)
+			}, null, makeDependPropertySubscriber(name)),
+			set: !path.canGet ? null : function(value: TValue) {
+				return path.set(this, value)
+			},
+		})
+
+		return this as any
 	}
 
 	public connect<

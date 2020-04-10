@@ -2,18 +2,12 @@ import {ThenableOrIterator, ThenableOrValue} from '../../async/async'
 import {createFunction} from '../../helpers/helpers'
 import {webrainOptions} from '../../helpers/webrainOptions'
 import {depend, dependX} from '../../rx/depend/core/depend'
-import {CallState, getOrCreateCallState} from '../depend/core/CallState'
+import {CallState} from '../depend/core/CallState'
 import {Func, IDeferredOptions} from '../depend/core/contracts'
 import '../extensions/autoConnect'
+import {makeDependPropertySubscriber} from './helpers'
 import {PropertyChangedEvent} from './IPropertyChanged'
 import {_set, _setExt, ISetOptions, ObservableClass} from './ObservableClass'
-import {
-	buildPropertyPath,
-	IPropertyPathGet,
-	IPropertyPathGetSet,
-	TGetNextPathGet,
-	TGetNextPathGetSet,
-} from './properties/path/builder'
 
 export interface IFieldOptions<TObject, TValue> {
 	hidden?: boolean,
@@ -32,33 +26,6 @@ export interface IReadableFieldOptions<TObject, TValue> extends IWritableFieldOp
 
 export interface IUpdatableFieldOptions<TObject, TValue> extends IReadableFieldOptions<TObject, TValue> {
 	update?: (this: TObject, value: any) => TValue|void
-}
-
-function makeInitDependCalcState(name: string|number) {
-	return function initDependCalcState(state) {
-		let value
-		let dependUnsubscribe
-		state._this.propertyChanged.hasSubscribersObservable
-			.subscribe(hasSubscribers => {
-				if (dependUnsubscribe) {
-					dependUnsubscribe()
-					dependUnsubscribe = null
-				}
-
-				if (hasSubscribers) {
-					dependUnsubscribe = state
-						.subscribe(() => {
-							const oldValue = value
-							value = state.getValue()
-							state._this.propertyChanged.onPropertyChanged({
-								name,
-								oldValue,
-								newValue: value,
-							})
-						})
-				}
-			})
-	}
 }
 
 export class ObservableObjectBuilder<TObject extends ObservableClass> {
@@ -133,46 +100,6 @@ export class ObservableObjectBuilder<TObject extends ObservableClass> {
 		return this.updatable(name, options, initValue)
 	}
 
-	public connectPath<
-		Name extends string | number = Extract<keyof TObject, string|number>,
-		TValue = Name extends keyof TObject ? TObject[Name] : any,
-		TCommonValue = TObject,
-	>(
-		name: Name,
-		common: TGetNextPathGet<TObject, TObject, TCommonValue>,
-		getSet?: null|undefined,
-		options?: IReadableFieldOptions<TObject, TValue>,
-	): this & { object: { readonly [newProp in Name]: TValue } }
-	public connectPath<
-		Name extends string | number = Extract<keyof TObject, string|number>,
-		TValue = Name extends keyof TObject ? TObject[Name] : any,
-		TCommonValue = TObject,
-	>(
-		name: Name,
-		common: TGetNextPathGetSet<TObject, TObject, TCommonValue>,
-		getSet?: IPropertyPathGetSet<TObject, TCommonValue, TValue>,
-		options?: IReadableFieldOptions<TObject, TValue>,
-	): this & { object: { [newProp in Name]: TValue } } {
-		const path = buildPropertyPath(common, getSet)
-
-		const hidden = options && options.hidden
-
-		const {object} = this
-
-		Object.defineProperty(object, name, {
-			configurable: true,
-			enumerable  : !hidden,
-			get() {
-				return path.get(this)
-			},
-			set(value: TValue) {
-				return path.set(this, value)
-			},
-		})
-
-		return this as any
-	}
-
 	public simpleCalc<
 		TArgs extends any[],
 		TResultInner,
@@ -212,7 +139,7 @@ export class ObservableObjectBuilder<TObject extends ObservableClass> {
 		deferredOptions?: IDeferredOptions,
 	): this & { object: { readonly [newProp in Name]: TResultValue } } {
 		return this.readable(name, {
-			getValue: depend(func, deferredOptions, makeInitDependCalcState(name)),
+			getValue: depend(func, deferredOptions, makeDependPropertySubscriber(name)),
 		}) as any
 	}
 
@@ -234,7 +161,7 @@ export class ObservableObjectBuilder<TObject extends ObservableClass> {
 		deferredOptions?: IDeferredOptions,
 	): this & { object: { readonly [newProp in Name]: TResultValue } } {
 		return this.readable(name, {
-			getValue: dependX(func, deferredOptions, makeInitDependCalcState(name)),
+			getValue: dependX(func, deferredOptions, makeDependPropertySubscriber(name)),
 		}) as any
 	}
 
