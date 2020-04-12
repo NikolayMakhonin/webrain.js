@@ -12,10 +12,24 @@ import {calcPropertyFactory} from './CalcPropertyBuilder'
 import {Connector} from './Connector'
 import {ConnectorBuilder, connectorFactory} from './ConnectorBuilder'
 import {ValueKeys} from './contracts'
+import {DependConnectorBuilder} from './DependConnectorBuilder'
+import {PathGetSet} from './path/builder'
+import {TPathNodes} from './path/constracts'
 
-export class CalcObjectBuilder<TObject extends ObservableClass, TValueKeys extends string | number = ValueKeys>
-	extends ConnectorBuilder<TObject, TObject>
+export class CalcObjectBuilder<
+	TObject extends ObservableClass,
+	TConnectorSource = TObject,
+	TValueKeys extends string | number = ValueKeys,
+>
+	extends DependConnectorBuilder<TObject, TConnectorSource>
 {
+	constructor(
+		object?: TObject,
+		connectorSourcePath?: TPathNodes<TObject, TConnectorSource>,
+	) {
+		super(object, connectorSourcePath)
+	}
+
 	// @ts-ignore
 	public writable<
 		Name extends keyof TObject,
@@ -112,44 +126,6 @@ export class CalcObjectBuilder<TObject extends ObservableClass, TValueKeys exten
 				},
 			}),
 		)
-	}
-
-	public simpleCalc<
-		Name extends keyof TObject,
-	>(
-		name: Name,
-		func: (this: TObject)
-			=> ThenableOrIteratorOrValue<TObject[Name]>,
-	): this & { object: { readonly [newProp in Name]: TObject[Name] } } {
-		return super.readable(name as any, {
-			getValue: func,
-		}) as any
-	}
-
-	public dependCalc<
-		Name extends keyof TObject,
-	>(
-		name: Name,
-		func: (this: TObject)
-			=> ThenableOrIteratorOrValue<TObject[Name]>,
-		deferredOptions?: IDeferredOptions,
-	): this & { object: { readonly [newProp in Name]: TObject[Name] } } {
-		return super.readable(name as any, {
-			getValue: depend(func, deferredOptions, makeDependPropertySubscriber(name as any)),
-		}) as any
-	}
-
-	public dependCalcX<
-		Name extends keyof TObject,
-	>(
-		name: Name,
-		func: (this: CallState<TObject, any[], TObject[Name]>)
-			=> ThenableOrIteratorOrValue<TObject[Name]>,
-		deferredOptions?: IDeferredOptions,
-	): this & { object: { readonly [newProp in Name]: TObject[Name] } } {
-		return super.readable(name as any, {
-			getValue: dependX(func, deferredOptions, makeDependPropertySubscriber(name as any)),
-		}) as any
 	}
 }
 

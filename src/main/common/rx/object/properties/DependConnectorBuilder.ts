@@ -1,16 +1,12 @@
 import {depend} from '../../../rx/depend/core/depend'
-import {RuleBuilder} from '../../deep-subscribe/RuleBuilder'
 import {makeDependPropertySubscriber} from '../helpers'
 import {ObservableClass} from '../ObservableClass'
-import {IReadableFieldOptions, IWritableFieldOptions, ObservableObjectBuilder} from '../ObservableObjectBuilder'
-import {Connector, ConnectorState} from './Connector'
+import {IReadableFieldOptions} from '../ObservableObjectBuilder'
+import {Connector} from './Connector'
 import {ConnectorBuilder} from './ConnectorBuilder'
 import {ValueKeys} from './contracts'
-import {buildPropertyPath, IPropertyPathGetSet, PropertyPath, TGetNextPathGet, TGetNextPathGetSet} from './path/builder'
-
-const buildSourceRule: <TSource, TValueKeys extends string | number = ValueKeys>
-	(builder: RuleBuilder<ConnectorState<TSource>, TValueKeys>)
-		=> RuleBuilder<TSource, TValueKeys> = b => b.p('source')
+import {buildPropertyPath, IPropertyPathGetSet, pathsConcat, PathGetSet, TGetNextPathGetSet} from './path/builder'
+import {TPathNodes} from './path/constracts'
 
 export class DependConnectorBuilder<
 	TObject extends Connector<TSource> | ObservableClass,
@@ -19,11 +15,11 @@ export class DependConnectorBuilder<
 >
 	extends ConnectorBuilder<TObject>
 {
-	public readonly sourcePath?: PropertyPath<TObject, TSource>
+	public readonly sourcePath?: TPathNodes<TObject, TSource>
 
 	constructor(
 		object?: TObject,
-		sourcePath?: PropertyPath<TObject, TSource>,
+		sourcePath?: TPathNodes<TObject, TSource>,
 	) {
 		super(object)
 		this.sourcePath = sourcePath
@@ -39,10 +35,13 @@ export class DependConnectorBuilder<
 		getSet?: IPropertyPathGetSet<TSource, TCommonValue, TValue>,
 		options?: IReadableFieldOptions<TSource, TValue>,
 	): this & { object: { [newProp in Name]: TValue } } {
-		let path: PropertyPath<TObject, TValue> = buildPropertyPath(common, getSet) as any
+		let path: PathGetSet<TObject, TValue> = buildPropertyPath(common, getSet) as any
 		const {sourcePath} = this
 		if (sourcePath != null) {
-			path = sourcePath.concat(path as any)
+			path = new PathGetSet(
+				pathsConcat(sourcePath, path == null ? null : path.nodesGet),
+				pathsConcat(sourcePath, path == null ? null : path.nodesSet),
+			) as any
 		}
 
 		const hidden = options && options.hidden
