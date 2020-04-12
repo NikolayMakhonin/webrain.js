@@ -1,6 +1,6 @@
 import {ThenableOrIteratorOrValue} from '../../../../async/async'
 import {
-	IPropertyPath, TGetPropertyPathGet,
+	TGetPropertyPathGet,
 	TGetPropertyPathGetSet, TGetPropertyPathSet,
 	TGetPropertyValue,
 	TGetPropertyValueResult3,
@@ -13,19 +13,19 @@ function getOrSet<TObject, TValue>(
 	path: TPropertyPathArray<TObject, TValue>,
 	object: TObject,
 	set?: false,
-): TGetPropertyValueResult3<TValue>
+): TGetPropertyValue<TValue>
 function getOrSet<TObject, TValue>(
 	path: TPropertyPathArray<TObject, TValue>,
 	object: TObject,
 	set: true,
 	newValue?: TValue,
-): TGetPropertyValueResult3<void>
+): TGetPropertyValue<void>
 function getOrSet<TObject, TValue>(
 	path: TPropertyPathArray<TObject, TValue>,
 	object: TObject,
 	set?: boolean,
 	newValue?: TValue,
-): TGetPropertyValueResult3<TValue|void> {
+): TGetPropertyValue<TValue|void> {
 	let nextValue: TGetPropertyValue<any> = resolvePath(object)
 	for (let i = 0, len = path.length - 1; i < len; i++) {
 		const node = path[i]
@@ -42,12 +42,82 @@ function getOrSet<TObject, TValue>(
 		? nextValue(lastNode.setValue as any, lastNode.isValueProperty as any, newValue)
 		: nextValue(lastNode.getValue as any, lastNode.isValueProperty as any)
 
-	return getResult()
+	return getResult
 }
 
-export class PropertyPath<TObject, TValue> implements IPropertyPath<TObject, TValue> {
+// export class ConcatPropertyPaths<TObject, TValue, TNextValue>
+// 	implements IPropertyPath<TObject, TNextValue>
+// {
+// 	private readonly _paths: Array<IPropertyPath<any, any>>
+// 	public readonly canGet: boolean
+// 	public readonly canSet: boolean
+//
+// 	constructor(...paths: Array<IPropertyPath<any, any>>) {
+// 		this._paths = paths
+//
+// 		const len = paths.length
+// 		if (len === 0) {
+// 			throw new Error('paths.length === 0')
+// 		}
+//
+// 		let canGet = true
+// 		let canSet = true
+//
+// 		for (let i = 0; i < len; i++) {
+// 			const path = paths[i]
+// 			if (!path.canGet) {
+// 				canGet = false
+// 				if (i < len - 1) {
+// 					canSet = false
+// 				}
+// 			}
+// 			if (i >= len - 1 && !path.canSet) {
+// 				canSet = false
+// 			}
+// 		}
+//
+// 		this.canGet = canGet
+// 		this.canSet = canSet
+// 	}
+//
+// 	public get(object: TObject): TGetPropertyValueResult3<TValue> {
+// 		if (!this.canGet) {
+// 			throw new Error('canGet === false')
+// 		}
+//
+// 		const {_paths} = this
+// 		for (let i = 0, len = _paths.length; i < len; i++) {
+// 			const path = _paths[i]
+//
+// 			if (!path.canGet) {
+// 				canGet = false
+// 				if (i < len - 1) {
+// 					canSet = false
+// 				}
+// 			}
+// 			if (i >= len - 1 && !path.canSet) {
+// 				canSet = false
+// 			}
+// 		}
+// 		return getOrSet(this._get, object)()
+// 	}
+//
+// 	public set(object: TObject, newValue: TValue): TGetPropertyValueResult3<void> {
+// 		return getOrSet(this._set, object, true, newValue)()
+// 	}
+//
+// 	public concat<TNextValue>(
+// 		nextPath: IPropertyPath<TValue, TNextValue>,
+// 	): IPropertyPath<TObject, TNextValue> {
+//
+// 	}
+// }
+
+export class PropertyPath<TObject, TValue> {
 	private readonly _get: TPropertyPathArray<TObject, TValue>
 	private readonly _set: TPropertyPathArray<TObject, TValue>
+	public readonly canGet: boolean
+	public readonly canSet: boolean
 
 	constructor(
 		common?: TPropertyPathArray<TObject, TValue>,
@@ -60,22 +130,27 @@ export class PropertyPath<TObject, TValue> implements IPropertyPath<TObject, TVa
 		this._set = set == null
 			? common
 			: (common == null ? set : [...common, ...set])
-	}
 
-	public get canGet() {
-		return !!this._get
-	}
-
-	public get canSet() {
-		return !!this._set
+		this.canGet = !!this._get
+		this.canSet = !!this._set
 	}
 
 	public get(object: TObject): TGetPropertyValueResult3<TValue> {
-		return getOrSet(this._get, object)
+		return getOrSet(this._get, object)()
 	}
 
 	public set(object: TObject, newValue: TValue): TGetPropertyValueResult3<void> {
-		return getOrSet(this._set, object, true, newValue)
+		return getOrSet(this._set, object, true, newValue)()
+	}
+
+	public concat<TNextValue>(
+		nextPath: PropertyPath<TValue, TNextValue>,
+	): PropertyPath<TObject, TNextValue> {
+		return new PropertyPath<TObject, TNextValue>(
+			null,
+			(this._get as any || []).concat(nextPath._get as any || []),
+			(this._set as any || []).concat(nextPath._set as any || []),
+		)
 	}
 }
 
@@ -135,7 +210,7 @@ export interface IPropertyPathGetSet<TObject, TCommonValue, TValue>
 export function buildPropertyPath<TObject, TCommonValue = TObject, TValue = TCommonValue>(
 	common: TGetNextPathGetSet<TObject, TObject, TCommonValue>,
 	getSet?: IPropertyPathGetSet<TObject, TCommonValue, TValue>,
-): IPropertyPath<TObject, TValue> {
+): PropertyPath<TObject, TValue> {
 	const commonPathArray: any = common == null ? null : common(buildPath())()
 
 	if (getSet != null) {

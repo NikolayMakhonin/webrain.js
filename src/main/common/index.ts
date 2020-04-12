@@ -49,6 +49,8 @@ export {ALWAYS_CHANGE_VALUE} from './rx/depend/core/CallState'
 export {getCallState, getOrCreateCallState, invalidateCallState} from './rx/depend/core/CallState'
 export {CallStatus} from './rx/depend/core/contracts'
 export {depend, dependX} from './rx/depend/core/depend'
+export {DependMap} from './rx/depend/lists/DependMap'
+export {DependSet} from './rx/depend/lists/DependSet'
 
 // region Interfaces
 

@@ -29,36 +29,6 @@ export class ConnectorBuilder<
 		super(object)
 	}
 
-	public connectPath<
-		Name extends string | number = Extract<keyof TObject, string|number>,
-		TValue = Name extends keyof TObject ? TObject[Name] : any,
-		TCommonValue = TObject,
-	>(
-		name: Name,
-		common: TGetNextPathGetSet<TObject, TObject, TCommonValue>,
-		getSet?: IPropertyPathGetSet<TObject, TCommonValue, TValue>,
-		options?: IReadableFieldOptions<TObject, TValue>,
-	): this & { object: { [newProp in Name]: TValue } } {
-		const path = buildPropertyPath(common, getSet)
-
-		const hidden = options && options.hidden
-
-		const {object} = this
-
-		Object.defineProperty(object, name, {
-			configurable: true,
-			enumerable  : !hidden,
-			get: !path.canSet ? null : depend(function(this: typeof object) {
-				return path.get(this)
-			}, null, makeDependPropertySubscriber(name)),
-			set: !path.canGet ? null : function(value: TValue) {
-				return path.set(this, value)
-			},
-		})
-
-		return this as any
-	}
-
 	public connect<
 		Name extends string | number = Extract<keyof TObject, string|number>,
 		TValue = Name extends keyof TObject ? TObject[Name] : any,
