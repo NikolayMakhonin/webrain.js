@@ -6,14 +6,8 @@
     <option name="CUSTOM_SCOPE_NAME" value="All Places" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="69b2ee16-521b-4efd-b473-8e19e3df4d09" name="Default Changelist" comment="Object builders refactoring...">
-      <change afterPath="$PROJECT_DIR$/src/main/common/rx/object/properties/DependCalcObjectBuilder.ts" afterDir="false" />
+    <list default="true" id="69b2ee16-521b-4efd-b473-8e19e3df4d09" name="Default Changelist" comment="">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/common/rx/object/properties/CalcObjectBuilder.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/common/rx/object/properties/CalcObjectBuilder.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/common/rx/object/properties/DependCalcProperty.ts" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/common/rx/object/properties/DependCalcPropertyBuilder.ts" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/common/rx/object/properties/DependCalcProperty_.ts" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/common/rx/object/properties/DependConnectorBuilder.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/common/rx/object/properties/DependConnectorBuilder.ts" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/common/rx/object/properties/path/builder.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/common/rx/object/properties/path/builder.ts" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/common/rx/object/properties/path/constracts.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/common/rx/object/properties/path/constracts.ts" afterDir="false" />
     </list>
@@ -428,13 +422,6 @@
       <option name="presentableId" value="Default" />
       <updated>1567687848586</updated>
     </task>
-    <task id="LOCAL-00325" summary="Refactoring &amp; implement deferred. Tests OK.">
-      <created>1585451314086</created>
-      <option name="number" value="00325" />
-      <option name="presentableId" value="LOCAL-00325" />
-      <option name="project" value="LOCAL" />
-      <updated>1585451314087</updated>
-    </task>
     <task id="LOCAL-00326" summary="Depend deferred test completed. Tests OK.">
       <created>1585498188495</created>
       <option name="number" value="00326" />
@@ -771,7 +758,14 @@
       <option name="project" value="LOCAL" />
       <updated>1586668732871</updated>
     </task>
-    <option name="localTasksCounter" value="374" />
+    <task id="LOCAL-00374" summary="Object builders refactoring...">
+      <created>1586720429636</created>
+      <option name="number" value="00374" />
+      <option name="presentableId" value="LOCAL-00374" />
+      <option name="project" value="LOCAL" />
+      <updated>1586720429637</updated>
+    </task>
+    <option name="localTasksCounter" value="375" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">

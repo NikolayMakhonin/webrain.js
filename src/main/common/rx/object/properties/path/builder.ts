@@ -7,19 +7,12 @@ import {
 	TGetPropertyPathSet,
 	TGetPropertyValue,
 	TGetPropertyValueResult3,
-	TGetValue,
 	TGetValue1,
-	TGetValue2,
-	TPathNodes,
+	TGetValue2, TPathNodes,
 	TSetValue1,
 	TSetValue2,
 } from './constracts'
 import {resolvePath} from './resolve'
-
-export interface IPath {
-	get: Array<IPathNode<any, any>>
-	set: Array<IPathNode<any, any>>
-}
 
 export function pathsConcat(
 	...paths: Array<Path<any, any>|Array<IPathNode<any, any>>|IPathNode<any, any>>
@@ -353,7 +346,7 @@ export function buildPath<
 
 	const get: any = <TNextValue>(getPath, arg2?, arg3?) => {
 		if (path.append(getPath, arg2, arg3) == null) {
-			return path.nodes
+			return path
 		}
 		return get
 	}
@@ -433,7 +426,7 @@ export function buildPropertyPath<TObject, TCommonValue = TObject, TValue = TCom
 	}
 
 	return new PathGetSet(
-		pathsConcat(new Path(commonPathArray), new Path(getPathArray)),
-		pathsConcat(new Path(commonPathArray), new Path(setPathArray)),
+		pathsConcat(commonPathArray, getPathArray),
+		pathsConcat(commonPathArray, setPathArray),
 	)
 }

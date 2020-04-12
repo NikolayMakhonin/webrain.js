@@ -1,5 +1,6 @@
 import {AsyncValueOf, ThenableOrIteratorOrValue, ThenableOrValue} from '../../../../async/async'
 import {AsyncHasDefaultValueOf, HasDefaultValueOf} from '../../../../helpers/value-property'
+import {Path} from './builder'
 
 // region TGetPropertyValue
 
@@ -79,7 +80,7 @@ export interface IPathNode<TObject, TValue> {
 export type TPathNodes<TObject, TValue> = Array<IPathNode<TObject, TValue>>
 
 export type TGetPropertyPathResult3<TObject, TValue>
-	= TPathNodes<TObject, ThenableOrValue<AsyncHasDefaultValueOf<TValue>>>
+	= Path<TObject, ThenableOrValue<AsyncHasDefaultValueOf<TValue>>>
 export type TGetPropertyPath3<TObject, TValue> = () => TGetPropertyPathResult3<TObject, TValue>
 
 export type TGetPropertyPathGet<TObject, TValue> =
