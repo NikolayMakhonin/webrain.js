@@ -6,8 +6,25 @@ import {makeDependPropertySubscriber} from '../helpers'
 import {ObservableClass} from '../ObservableClass'
 import {CalcObjectBuilder} from './CalcObjectBuilder'
 import {ValueKeys} from './contracts'
-import {PathGetSet} from './path/builder'
-import {TPathNodes} from './path/constracts'
+import {Path} from './path/builder'
+
+function createGetValue<TObject, TCalcSource, TValue>(
+	calcSourcePath: Path<TObject, TCalcSource>,
+	getValue: (this: TCalcSource) => TValue,
+): (this: TObject) => TValue {
+	if (calcSourcePath == null) {
+		return getValue as any
+	} else {
+		const path = calcSourcePath
+			.clone()
+			.append(o => getValue.call(o) as TValue)
+			.append()
+
+		return function(this: TObject) {
+			return path.get(this) as TValue
+		}
+	}
+}
 
 export class DependCalcObjectBuilder<
 	TObject extends ObservableClass,
@@ -17,12 +34,12 @@ export class DependCalcObjectBuilder<
 >
 	extends CalcObjectBuilder<TObject, TConnectorSource>
 {
-	public readonly calcSourcePath?: TPathNodes<TObject, TCalcSource>
+	public readonly calcSourcePath?: Path<TObject, TCalcSource>
 
 	constructor(
 		object?: TObject,
-		connectorSourcePath?: TPathNodes<TObject, TConnectorSource>,
-		calcSourcePath?: TPathNodes<TObject, TCalcSource>,
+		connectorSourcePath?: Path<TObject, TConnectorSource>,
+		calcSourcePath?: Path<TObject, TCalcSource>,
 	) {
 		super(object, connectorSourcePath)
 		this.calcSourcePath = calcSourcePath
@@ -32,14 +49,11 @@ export class DependCalcObjectBuilder<
 		Name extends keyof TObject,
 	>(
 		name: Name,
-		func: (this: TObject)
+		func: (this: TCalcSource)
 			=> ThenableOrIteratorOrValue<TObject[Name]>,
 	): this & { object: { readonly [newProp in Name]: TObject[Name] } } {
-		const {calcSourcePath} = this
 		return super.readable(name as any, {
-			getValue: calcSourcePath == null
-				? func
-				: calcSourcePath,
+			getValue: createGetValue(this.calcSourcePath, func),
 		}) as any
 	}
 
@@ -47,12 +61,15 @@ export class DependCalcObjectBuilder<
 		Name extends keyof TObject,
 	>(
 		name: Name,
-		func: (this: TObject)
+		func: (this: TCalcSource)
 			=> ThenableOrIteratorOrValue<TObject[Name]>,
 		deferredOptions?: IDeferredOptions,
 	): this & { object: { readonly [newProp in Name]: TObject[Name] } } {
 		return super.readable(name as any, {
-			getValue: depend(func, deferredOptions, makeDependPropertySubscriber(name as any)),
+			getValue: createGetValue(
+				this.calcSourcePath,
+				depend(func, deferredOptions, makeDependPropertySubscriber(name as any)),
+			),
 		}) as any
 	}
 
@@ -60,12 +77,15 @@ export class DependCalcObjectBuilder<
 		Name extends keyof TObject,
 	>(
 		name: Name,
-		func: (this: CallState<TObject, any[], TObject[Name]>)
+		func: (this: CallState<TCalcSource, any[], TObject[Name]>)
 			=> ThenableOrIteratorOrValue<TObject[Name]>,
 		deferredOptions?: IDeferredOptions,
 	): this & { object: { readonly [newProp in Name]: TObject[Name] } } {
 		return super.readable(name as any, {
-			getValue: dependX(func, deferredOptions, makeDependPropertySubscriber(name as any)),
+			getValue: createGetValue(
+				this.calcSourcePath,
+				dependX(func, deferredOptions, makeDependPropertySubscriber(name as any)),
+			),
 		}) as any
 	}
 }

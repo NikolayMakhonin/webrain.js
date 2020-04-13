@@ -10,7 +10,7 @@ import {_set, _setExt, ObservableClass} from '../ObservableClass'
 import {IReadableFieldOptions, IWritableFieldOptions, ObservableObjectBuilder} from '../ObservableObjectBuilder'
 import {Connector, ConnectorState} from './Connector'
 import {ValueKeys} from './contracts'
-import {buildPropertyPath, IPropertyPathGetSet, TGetNextPathGet, TGetNextPathGetSet} from './path/builder'
+import {pathGetSetBuild, IPathGetSetFactory, TGetNextPathGet, TGetNextPathGetSet} from './path/builder'
 
 const buildSourceRule: <TSource, TValueKeys extends string | number = ValueKeys>
 	(builder: RuleBuilder<ConnectorState<TSource>, TValueKeys>)

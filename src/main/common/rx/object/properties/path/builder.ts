@@ -1,4 +1,5 @@
 import {AsyncValueOf, ThenableOrIteratorOrValue} from '../../../../async/async'
+import {AsyncHasDefaultValueOf} from '../../../../helpers/value-property'
 import {
 	IPathNode,
 	TGetPropertyPath3,
@@ -14,8 +15,35 @@ import {
 } from './constracts'
 import {resolvePath} from './resolve'
 
+type TPathOrArrayOrNode<TValue, TNextValue>
+	= Path<TValue, TNextValue>|Array<IPathNode<TValue, TNextValue>>|IPathNode<TValue, TNextValue>
+
+export function pathsConcat<V1, V2, V3>(
+	...paths: [
+		TPathOrArrayOrNode<V1, V2>,
+		TPathOrArrayOrNode<V2, V3>,
+	]
+): Path<V1, V3>
+export function pathsConcat<V1, V2, V3, V4>(
+	...paths: [
+		TPathOrArrayOrNode<V1, V2>,
+		TPathOrArrayOrNode<V2, V3>,
+		TPathOrArrayOrNode<V3, V4>,
+	]
+): Path<V1, V4>
+export function pathsConcat<V1, V2, V3, V4, V5>(
+	...paths: [
+		TPathOrArrayOrNode<V1, V2>,
+		TPathOrArrayOrNode<V2, V3>,
+		TPathOrArrayOrNode<V3, V4>,
+		TPathOrArrayOrNode<V4, V5>,
+	]
+): Path<V1, V5>
 export function pathsConcat(
-	...paths: Array<Path<any, any>|Array<IPathNode<any, any>>|IPathNode<any, any>>
+	...paths: Array<TPathOrArrayOrNode<any, any>>
+): Path<any, any>
+export function pathsConcat(
+	...paths: Array<TPathOrArrayOrNode<any, any>>
 ): Path<any, any> {
 	let isNewArray = false
 	let result
@@ -48,7 +76,7 @@ export function pathsConcat(
 		}
 	}
 
-	return result == null ? null : new Path(result)
+	return result == null ? null : new Path(result).init()
 }
 
 function pathCanGetSet(pathNodes: Array<IPathNode<any, any>>): boolean {
@@ -268,11 +296,12 @@ export class Path<TObject, TValue> {
 
 	constructor(
 		nodes?: TPathNodes<any, any>,
+		canGet?: boolean,
+		canSet?: boolean,
 	) {
 		this.nodes = nodes || []
-		const canGetSet = pathCanGetSet(this.nodes)
-		this.canGet = canGetSet && (this.nodes)[this.nodes.length - 1].getValue != null
-		this.canSet = canGetSet && (this.nodes)[this.nodes.length - 1].setValue != null
+		this.canGet = canGet
+		this.canSet = canSet
 	}
 
 	public get(object: TObject): TGetPropertyValueResult3<TValue> {
@@ -289,6 +318,14 @@ export class Path<TObject, TValue> {
 		return pathSetValue(this.nodes, object, newValue)()
 	}
 
+	public init(): Path<TObject, TValue> {
+		const canGetSet = pathCanGetSet(this.nodes);
+		(this as any).canGet = canGetSet && (this.nodes)[this.nodes.length - 1].getValue != null;
+		(this as any).canSet = canGetSet && (this.nodes)[this.nodes.length - 1].setValue != null
+		return this as any
+	}
+
+	public append(): Path<TObject, AsyncHasDefaultValueOf<TValue>>
 	public append<TNextValue>(
 		getValue: TGetValue1<TValue, TNextValue>,
 		isValueProperty: true,
@@ -308,7 +345,7 @@ export class Path<TObject, TValue> {
 		isValueProperty?: false,
 	): Path<TObject, AsyncValueOf<TNextValue>>
 	public append<TNextValue>(
-		getValue: any,
+		getValue?: any,
 		arg2?: any,
 		arg3?: any,
 	): Path<TObject, AsyncValueOf<TNextValue>> {
@@ -323,6 +360,7 @@ export class Path<TObject, TValue> {
 		}
 
 		if (getValue == null && setValue == null) {
+			this.init()
 			return null
 		}
 
@@ -335,10 +373,19 @@ export class Path<TObject, TValue> {
 		return this as any
 	}
 
-	public static readonly build = buildPath
+	public concat<TNextValue>(nextPath: TPathOrArrayOrNode<TValue, TNextValue>) {
+		return pathsConcat<TObject, TValue, TNextValue>(this, nextPath)
+	}
+
+	public clone(): Path<TObject, TValue> {
+		return new Path(this.nodes, this.canGet, this.canSet)
+	}
+
+	public static readonly concat = pathsConcat
+	public static readonly build = pathBuild
 }
 
-export function buildPath<
+export function pathBuild<
 	TInput,
 	TValue = TInput extends ThenableOrIteratorOrValue<infer V> ? V : TInput
 >(): TGetPropertyPathGetSet<TInput, TValue> {
@@ -385,6 +432,18 @@ export class PathGetSet<TObject, TValue> {
 	public set(object: TObject, newValue: TValue): TGetPropertyValueResult3<void> {
 		return this.pathSet.set(object, newValue)
 	}
+
+	public static concat<V1, V2, V3>(
+		path: TPathOrArrayOrNode<V1, V2>,
+		pathGetSet: PathGetSet<V2, V3>,
+	): PathGetSet<V1, V3> {
+		return new PathGetSet(
+			pathGetSet == null ? path as any : Path.concat(path, pathGetSet.pathGet),
+			pathGetSet == null ? path as any : Path.concat(path, pathGetSet.pathSet),
+		)
+	}
+
+	public static readonly build = pathGetSetBuild
 }
 
 export type TGetNextPathGet<TObject, TValue, TNextValue>
@@ -402,26 +461,26 @@ export interface IPropertyPathSet<TObject, TCommonValue, TValue> {
 	set?: TGetNextPathSet<TObject, TCommonValue, void|TValue>
 }
 
-export interface IPropertyPathGetSet<TObject, TCommonValue, TValue>
+export interface IPathGetSetFactory<TObject, TCommonValue, TValue>
 	extends IPropertyPathGet<TObject, TCommonValue, TValue>,
 		IPropertyPathSet<TObject, TCommonValue, TValue>
 { }
 
-export function buildPropertyPath<TObject, TCommonValue = TObject, TValue = TCommonValue>(
+export function pathGetSetBuild<TObject, TCommonValue = TObject, TValue = TCommonValue>(
 	common: TGetNextPathGetSet<TObject, TObject, TCommonValue>,
-	getSet?: IPropertyPathGetSet<TObject, TCommonValue, TValue>,
+	getSet?: IPathGetSetFactory<TObject, TCommonValue, TValue>,
 ): PathGetSet<TObject, TValue> {
-	const commonPathArray: any = common == null ? null : common(buildPath())()
+	const commonPathArray: any = common == null ? null : common(pathBuild())()
 
 	let getPathArray: any
 	let setPathArray: any
 	if (getSet != null) {
 		const {get, set} = getSet
 		if (get != null) {
-			getPathArray = get(buildPath())()
+			getPathArray = get(pathBuild())()
 		}
 		if (set != null) {
-			setPathArray = set(buildPath())()
+			setPathArray = set(pathBuild())()
 		}
 	}
 

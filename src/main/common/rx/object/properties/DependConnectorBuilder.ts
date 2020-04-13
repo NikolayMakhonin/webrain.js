@@ -5,8 +5,7 @@ import {IReadableFieldOptions} from '../ObservableObjectBuilder'
 import {Connector} from './Connector'
 import {ConnectorBuilder} from './ConnectorBuilder'
 import {ValueKeys} from './contracts'
-import {buildPropertyPath, IPropertyPathGetSet, pathsConcat, PathGetSet, TGetNextPathGetSet} from './path/builder'
-import {TPathNodes} from './path/constracts'
+import {IPathGetSetFactory, Path, PathGetSet, TGetNextPathGetSet} from './path/builder'
 
 export class DependConnectorBuilder<
 	TObject extends Connector<TSource> | ObservableClass,
@@ -15,11 +14,11 @@ export class DependConnectorBuilder<
 >
 	extends ConnectorBuilder<TObject>
 {
-	public readonly sourcePath?: TPathNodes<TObject, TSource>
+	public readonly sourcePath?: Path<TObject, TSource>
 
 	constructor(
 		object?: TObject,
-		sourcePath?: TPathNodes<TObject, TSource>,
+		sourcePath?: Path<TObject, TSource>,
 	) {
 		super(object)
 		this.sourcePath = sourcePath
@@ -32,16 +31,13 @@ export class DependConnectorBuilder<
 	>(
 		name: Name,
 		common: TGetNextPathGetSet<TSource, TSource, TCommonValue>,
-		getSet?: IPropertyPathGetSet<TSource, TCommonValue, TValue>,
+		getSet?: IPathGetSetFactory<TSource, TCommonValue, TValue>,
 		options?: IReadableFieldOptions<TSource, TValue>,
 	): this & { object: { [newProp in Name]: TValue } } {
-		let path: PathGetSet<TObject, TValue> = buildPropertyPath(common, getSet) as any
+		let path = PathGetSet.build(common, getSet) as any
 		const {sourcePath} = this
 		if (sourcePath != null) {
-			path = new PathGetSet(
-				pathsConcat(sourcePath, path == null ? null : path.nodesGet),
-				pathsConcat(sourcePath, path == null ? null : path.nodesSet),
-			) as any
+			path = PathGetSet.concat(sourcePath, path)
 		}
 
 		const hidden = options && options.hidden

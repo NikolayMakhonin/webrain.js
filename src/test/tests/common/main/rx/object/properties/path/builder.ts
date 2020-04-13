@@ -1,15 +1,10 @@
 /* tslint:disable:no-duplicate-string */
-import {AsyncValueOf, ThenableIterator} from '../../../../../../../../main/common/async/async'
-import {HasDefaultValueOf, VALUE_PROPERTY_DEFAULT} from '../../../../../../../../main/common/helpers/value-property'
+import {ThenableIterator} from '../../../../../../../../main/common/async/async'
+import {VALUE_PROPERTY_DEFAULT} from '../../../../../../../../main/common/helpers/value-property'
 import {getOrCreateCallState, invalidateCallState} from '../../../../../../../../main/common/rx/depend/core/CallState'
 import {getCurrentState} from '../../../../../../../../main/common/rx/depend/core/current-state'
 import {dependX} from '../../../../../../../../main/common/rx/depend/core/depend'
-import {buildPropertyPath, TGetNextPathGetSet} from '../../../../../../../../main/common/rx/object/properties/path/builder'
-import {
-	IPropertyPath,
-	TGetPropertyPathGetSet,
-	TGetPropertyValue
-} from '../../../../../../../../main/common/rx/object/properties/path/constracts'
+import {pathGetSetBuild} from '../../../../../../../../main/common/rx/object/properties/path/builder'
 /* eslint-disable guard-for-in */
 import {assert} from '../../../../../../../../main/common/test/Assert'
 import {describe, it} from '../../../../../../../../main/common/test/Mocha'
@@ -66,15 +61,15 @@ describe('common > main > rx > properties > builder', function() {
 		// const d3 = p3(o => o.a, true)(o => o.b)(o => o.c)(o => o.d, true)()
 
 		const paths: Array<IPropertyPath<typeof object, string>> = [
-			buildPropertyPath(b => b(o => o.a, true)(o => o.b), {
+			pathGetSetBuild(b => b(o => o.a, true)(o => o.b), {
 				get: b => b(o => o.c)(o => o.d, true),
 				set: b => b(o => o.c)(o => o.d, (o, v) => { o.d = v }, true),
 			}),
-			buildPropertyPath(null, {
+			pathGetSetBuild(null, {
 				get: b => b(o => o.a, true)(o => o.b)(o => o.c)(o => o.d, true),
 				set: b => b(o => o.a, true)(o => o.b)(o => o.c)(o => o.d, (o, v) => { o.d = v }, true),
 			}),
-			buildPropertyPath(
+			pathGetSetBuild(
 				b => b(o => o.a, true)(o => o.b)(o => o.c)(o => o.d, (o, v) => { o.d = v }, true),
 			),
 		]

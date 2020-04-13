@@ -97,12 +97,4 @@ export type TGetPropertyPathGetSet<TObject, TValue> =
 	TGetPropertyPathGet<TObject, TValue> &
 	TGetPropertyPathSet<TObject, TValue>
 
-// export interface IPropertyPath<TObject, TValue> {
-// 	canGet: boolean
-// 	canSet: boolean
-// 	get(object: TObject): TGetPropertyValue<TValue>
-// 	set(object: TObject, newValue: TValue): TGetPropertyValue<void>
-// 	concat<TNextValue>(nextPath: IPropertyPath<TValue, TNextValue>): IPropertyPath<TObject, TNextValue>
-// }
-
 // endregion

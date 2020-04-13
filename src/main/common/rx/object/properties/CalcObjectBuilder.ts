@@ -1,20 +1,14 @@
-import {ThenableOrIterator, ThenableOrIteratorOrValue, ThenableOrValue} from '../../../async/async'
 import {NotFunction} from '../../../helpers/typescript'
-import {depend, dependX} from '../../../rx/depend/core/depend'
 import {RuleBuilder} from '../../deep-subscribe/RuleBuilder'
-import {CallState} from '../../depend/core/CallState'
-import {Func, IDeferredOptions} from '../../depend/core/contracts'
-import {makeDependPropertySubscriber} from '../helpers'
 import {ObservableClass} from '../ObservableClass'
 import {IReadableFieldOptions, IWritableFieldOptions} from '../ObservableObjectBuilder'
 import {CalcProperty} from './CalcProperty'
 import {calcPropertyFactory} from './CalcPropertyBuilder'
 import {Connector} from './Connector'
-import {ConnectorBuilder, connectorFactory} from './ConnectorBuilder'
+import {connectorFactory} from './ConnectorBuilder'
 import {ValueKeys} from './contracts'
 import {DependConnectorBuilder} from './DependConnectorBuilder'
-import {PathGetSet} from './path/builder'
-import {TPathNodes} from './path/constracts'
+import {Path} from './path/builder'
 
 export class CalcObjectBuilder<
 	TObject extends ObservableClass,
@@ -25,7 +19,7 @@ export class CalcObjectBuilder<
 {
 	constructor(
 		object?: TObject,
-		connectorSourcePath?: TPathNodes<TObject, TConnectorSource>,
+		connectorSourcePath?: Path<TObject, TConnectorSource>,
 	) {
 		super(object, connectorSourcePath)
 	}
