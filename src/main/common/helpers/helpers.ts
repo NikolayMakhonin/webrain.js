@@ -106,9 +106,9 @@ export function nextHash(hash: number, value: number) {
 }
 
 export function missingGetter() {
-	throw new Error('Missing Getter')
+	throw new TypeError('Missing Getter')
 }
 
 export function missingSetter() {
-	throw new Error('Missing Setter')
+	throw new TypeError('Missing Setter')
 }

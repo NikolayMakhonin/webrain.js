@@ -37,15 +37,15 @@ export class DependCalcObjectBuilder<
 >
 	extends CalcObjectBuilder<TObject, TConnectorSource>
 {
-	// public readonly calcSourcePath?: Path<TObject, TCalcSource>
+	public readonly calcSourcePath?: Path<TObject, TCalcSource>
 
 	constructor(
 		object?: TObject,
 		connectorSourcePath?: Path<TObject, TConnectorSource>,
-		// calcSourcePath?: Path<TObject, TCalcSource>,
+		calcSourcePath?: Path<TObject, TCalcSource>,
 	) {
 		super(object, connectorSourcePath)
-		// this.calcSourcePath = calcSourcePath
+		this.calcSourcePath = calcSourcePath
 	}
 
 	public simpleCalc<
@@ -91,7 +91,7 @@ export class DependCalcObjectBuilder<
 		TPropertyClass extends PropertyClass<TObject>,
 	>(
 		name: Name,
-		build: (builder: DependCalcObjectBuilder<PropertyClass<TObject>>)
+		build: (builder: DependCalcObjectBuilder<PropertyClass<TObject>, TObject>)
 			=> { object: TPropertyClass },
 	): this & { object: { readonly [newProp in Name]: TObject[Name] } } {
 		const propClass = propertyClass(build)
@@ -107,7 +107,7 @@ export class DependCalcObjectBuilder<
 		TConnector extends PropertyClass<TObject>
 	>(
 		name: Name,
-		build: (builder: DependCalcObjectBuilder<PropertyClass<TObject>>)
+		build: (builder: DependCalcObjectBuilder<PropertyClass<TObject>, TObject>)
 			=> { object: TConnector },
 		func: (this: CalcPropertyClass<TConnector, TObject[Name]>)
 			=> ThenableOrIteratorOrValue<TObject[Name]>,
@@ -127,7 +127,7 @@ export class DependCalcObjectBuilder<
 		TConnector extends PropertyClass<TObject>
 	>(
 		name: Name,
-		build: (builder: DependCalcObjectBuilder<PropertyClass<TObject>>)
+		build: (builder: DependCalcObjectBuilder<PropertyClass<TObject>, TObject>)
 			=> { object: TConnector },
 		func: (this: CallState<CalcPropertyClass<TConnector, TObject[Name]>, any[], TObject[Name]>)
 			=> ThenableOrIteratorOrValue<TObject[Name]>,
@@ -152,10 +152,11 @@ export function observableClass<
 	TConnectSource = TPropertyClass,
 	TCalcSource = TPropertyClass,
 >(
-	build: (builder: DependCalcObjectBuilder<TBaseClass>) => { object: TPropertyClass },
+	build: (builder: DependCalcObjectBuilder<TBaseClass, TConnectSource, TCalcSource>)
+		=> { object: TPropertyClass },
 	baseClass?: Class<TConstructorArgs, TBaseClass>,
 	connectPath?: TGetNextPathGetSet<TBaseClass, TBaseClass, TConnectSource>,
-	// calcPath?: TGetNextPathGetSet<TBaseClass, TBaseClass, TConnectSource>,
+	calcPath?: TGetNextPathGetSet<TBaseClass, TBaseClass, TCalcSource>,
 ): Class<TConstructorArgs, TPropertyClass> {
 	// @ts-ignore
 	class NewPropertyClass extends (baseClass == null ? null : ObservableClass) { }
@@ -168,7 +169,7 @@ export function observableClass<
 	>(
 		NewPropertyClass.prototype,
 		connectPath(Path.build<TBaseClass, TBaseClass>())() as any,
-		// calcPath(Path.build<TBaseClass, TBaseClass>())() as any,
+		calcPath(Path.build<TBaseClass, TBaseClass>())() as any,
 	))
 
 	return NewPropertyClass as any
@@ -197,7 +198,7 @@ export function propertyClass<
 	TPropertyClass extends TBaseClass,
 	TBaseClass extends PropertyClass<TObject> = PropertyClass<TObject>,
 >(
-	build: (builder: DependCalcObjectBuilder<TBaseClass>) => { object: TPropertyClass },
+	build: (builder: DependCalcObjectBuilder<TBaseClass, TObject>) => { object: TPropertyClass },
 	baseClass?: Class<[TObject], TBaseClass>,
 ) {
 	return observableClass<

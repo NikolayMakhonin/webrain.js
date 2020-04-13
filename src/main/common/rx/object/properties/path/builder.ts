@@ -2,7 +2,6 @@ import {AsyncValueOf, ThenableOrIteratorOrValue} from '../../../../async/async'
 import {AsyncHasDefaultValueOf} from '../../../../helpers/value-property'
 import {
 	IPathNode,
-	TGetPropertyPath3,
 	TGetPropertyPathGet,
 	TGetPropertyPathGetSet,
 	TGetPropertyPathSet,

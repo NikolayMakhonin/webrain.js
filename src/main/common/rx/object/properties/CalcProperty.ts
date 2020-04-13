@@ -1,4 +1,4 @@
-import {isAsync, Thenable, ThenableOrValue} from '../../../async/async'
+import {isAsync, ThenableOrValue} from '../../../async/async'
 import {resolveAsyncFunc} from '../../../async/ThenableSync'
 import {CalcStat} from '../../../helpers/CalcStat'
 import {now} from '../../../helpers/performance'

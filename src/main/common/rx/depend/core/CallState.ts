@@ -15,7 +15,7 @@ import {PairingHeap, PairingNode} from '../../../lists/PairingHeap'
 import {DeferredCalc, IDeferredCalcOptions} from '../../deferred-calc/DeferredCalc'
 import {ISubscriber, IUnsubscribe} from '../../subjects/observable'
 import {ISubject, Subject} from '../../subjects/subject'
-import {CallStatus, Func, ICallState, ILinkItem, TCall, TInnerValue, TIteratorOrValue, TResultOuter} from './contracts'
+import {CallStatus, Func, ICallState, ILinkItem, TCall, TInnerValue, TResultOuter} from './contracts'
 import {getCurrentState, setCurrentState} from './current-state'
 import {InternalError} from './helpers'
 

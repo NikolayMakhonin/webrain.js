@@ -25,10 +25,48 @@ export class DependConnectorBuilder<
 		this.sourcePath = sourcePath
 	}
 
+	public connectSimple<
+		Name extends string | number = Extract<keyof TObject, string|number>,
+		TCommonValue = TObject,
+		TValue = Name extends keyof TObject ? TObject[Name] : TCommonValue,
+	>(
+		name: Name,
+		common: TGetNextPathGetSet<TSource, TSource, TCommonValue>,
+		getSet?: IPathGetSetFactory<TSource, TCommonValue, TValue>,
+		options?: IReadableFieldOptions<TSource, TValue>,
+	): this & { object: { [newProp in Name]: TValue } } {
+		let path = PathGetSet.build(common, getSet) as any
+		const {sourcePath} = this
+		if (sourcePath != null) {
+			path = PathGetSet.concat(sourcePath, path)
+		}
+
+		const hidden = options && options.hidden
+
+		const {object} = this
+
+		if (!path.canGet) {
+			throw new Error('path.canGet == false')
+		}
+
+		Object.defineProperty(object, name, {
+			configurable: true,
+			enumerable  : !hidden,
+			get(this: typeof object) {
+				return path.get(this)
+			},
+			set: !path.canSet ? missingSetter : function(value: TValue) {
+				return path.set(this, value)
+			},
+		})
+
+		return this as any
+	}
+
 	public connectPath<
 		Name extends string | number = Extract<keyof TObject, string|number>,
-		TValue = Name extends keyof TObject ? TObject[Name] : any,
 		TCommonValue = TObject,
+		TValue = Name extends keyof TObject ? TObject[Name] : TCommonValue,
 	>(
 		name: Name,
 		common: TGetNextPathGetSet<TSource, TSource, TCommonValue>,
