@@ -6,9 +6,10 @@
     <option name="CUSTOM_SCOPE_NAME" value="src+env ts" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="69b2ee16-521b-4efd-b473-8e19e3df4d09" name="Default Changelist" comment="">
+    <list default="true" id="69b2ee16-521b-4efd-b473-8e19e3df4d09" name="Default Changelist" comment="Object builders debugging... Tests OK.">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/common/rx/object/properties/DependCalcObjectBuilder.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/common/rx/object/properties/DependCalcObjectBuilder.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/common/rx/object/properties/DependConnectorBuilder.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/common/rx/object/properties/DependConnectorBuilder.ts" afterDir="false" />
     </list>
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
     <option name="SHOW_DIALOG" value="false" />
@@ -396,9 +397,9 @@
       <item itemvalue="Mocha.common &gt; main &gt; rx &gt; properties &gt; CalcObjectBuilder.deepSubscribe calc sync" />
       <item itemvalue="Mocha.common &gt; main &gt; rx &gt; depend &gt; dependent-func.base" />
       <item itemvalue="Mocha.common &gt; main &gt; rx &gt; properties &gt; builder" />
+      <item itemvalue="Mocha.common &gt; main &gt; helpers &gt; ThenableSync.variants" />
       <item itemvalue="Node.js.dependent-func.js" />
       <item itemvalue="npm.Coverage Mocha Report" />
-      <item itemvalue="Mocha.common &gt; main &gt; helpers &gt; ThenableSync.variants" />
     </list>
     <recent_temporary>
       <list>
@@ -421,13 +422,6 @@
       <option name="number" value="Default" />
       <option name="presentableId" value="Default" />
       <updated>1567687848586</updated>
-    </task>
-    <task id="LOCAL-00331" summary="async optimization. Tests OK.">
-      <created>1585548432056</created>
-      <option name="number" value="00331" />
-      <option name="presentableId" value="LOCAL-00331" />
-      <option name="project" value="LOCAL" />
-      <updated>1585548432057</updated>
     </task>
     <task id="LOCAL-00332" summary="async optimization. Tests OK.">
       <created>1585556039412</created>
@@ -765,7 +759,14 @@
       <option name="project" value="LOCAL" />
       <updated>1586770652985</updated>
     </task>
-    <option name="localTasksCounter" value="380" />
+    <task id="LOCAL-00380" summary="Object builders debugging... Tests OK.">
+      <created>1586771839100</created>
+      <option name="number" value="00380" />
+      <option name="presentableId" value="LOCAL-00380" />
+      <option name="project" value="LOCAL" />
+      <updated>1586771839100</updated>
+    </task>
+    <option name="localTasksCounter" value="381" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">

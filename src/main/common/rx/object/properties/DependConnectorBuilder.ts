@@ -113,7 +113,7 @@ export function dependConnectorClass<
 	baseClass?: new (source: TSource) => Connector<TSource>,
 }): new (source: TSource, name?: string) => TConnector {
 	// @ts-ignore
-	class NewConnector extends (baseClass || Connector) implements Connector<TSource> { }
+	class NewConnector extends (baseClass != null ? baseClass : Connector) implements Connector<TSource> { }
 
 	// @ts-ignore
 	buildRule(new DependConnectorBuilder<NewConnector, TSource>(
