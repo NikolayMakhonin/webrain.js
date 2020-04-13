@@ -168,8 +168,8 @@ export function observableClass<
 		TCalcSource
 	>(
 		NewPropertyClass.prototype,
-		connectPath(Path.build<TBaseClass, TBaseClass>())() as any,
-		calcPath(Path.build<TBaseClass, TBaseClass>())() as any,
+		connectPath == null ? null : connectPath(Path.build<TBaseClass, TBaseClass>())() as any,
+		calcPath == null ? null : calcPath(Path.build<TBaseClass, TBaseClass>())() as any,
 	))
 
 	return NewPropertyClass as any
