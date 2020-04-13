@@ -104,3 +104,11 @@ export function equalsObjects(o1, o2) {
 export function nextHash(hash: number, value: number) {
 	return ((4294967296 + hash) * 31 + value) | 0
 }
+
+export function missingGetter() {
+	throw new Error('Missing Getter')
+}
+
+export function missingSetter() {
+	throw new Error('Missing Setter')
+}

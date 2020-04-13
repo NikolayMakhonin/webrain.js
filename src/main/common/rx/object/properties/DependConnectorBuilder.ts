@@ -1,3 +1,4 @@
+import {missingSetter} from '../../../helpers/helpers'
 import {depend} from '../../../rx/depend/core/depend'
 import {makeDependPropertySubscriber} from '../helpers'
 import {ObservableClass} from '../ObservableClass'
@@ -44,13 +45,17 @@ export class DependConnectorBuilder<
 
 		const {object} = this
 
+		if (!path.canGet) {
+			throw new Error('path.canGet == false')
+		}
+
 		Object.defineProperty(object, name, {
 			configurable: true,
 			enumerable  : !hidden,
-			get: !path.canSet ? null : depend(function(this: typeof object) {
+			get: depend(function(this: typeof object) {
 				return path.get(this)
 			}, null, makeDependPropertySubscriber(name)),
-			set: !path.canGet ? null : function(value: TValue) {
+			set: !path.canSet ? missingSetter : function(value: TValue) {
 				return path.set(this, value)
 			},
 		})

@@ -35,6 +35,7 @@ export class DependSet<V>
 		return ALWAYS_CHANGE_VALUE
 	}
 
+	// noinspection JSUnusedLocalSymbols
 	public dependValue(value: V) {
 		this.dependAll()
 		return ALWAYS_CHANGE_VALUE

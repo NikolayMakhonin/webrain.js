@@ -101,8 +101,8 @@ export class CalcObjectBuilder<
 	>(
 		name: Name,
 		buildRule: (builder: RuleBuilder<TObject, ValueKeys>) => RuleBuilder<TObject[Name], ValueKeys>,
-		options?: IWritableFieldOptions<TObject, TObject[Name]>,
-		initValue?: TObject[Name],
+		// options?: IWritableFieldOptions<TObject, TObject[Name]>,
+		// initValue?: TObject[Name],
 	): this {
 		return this.calc<
 			Connector<TObject> & { readonly value: TObject[Name] },

@@ -1,6 +1,6 @@
 /* tslint:disable:no-identical-functions no-shadowed-variable no-duplicate-string no-construct use-primitive-type */
 import {isThenable, Thenable, ThenableOrValue} from '../../../../../../../main/common/async/async'
-import {resolveAsync, ThenableSync} from '../../../../../../../main/common/async/ThenableSync'
+import {resolveAsync} from '../../../../../../../main/common/async/ThenableSync'
 import {nextHash} from '../../../../../../../main/common/helpers/helpers'
 import {
 	callStateHashTable,

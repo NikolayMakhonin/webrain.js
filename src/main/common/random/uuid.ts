@@ -1,4 +1,3 @@
-const self = {}
 const lut = []
 for (let i = 0; i < 256; i++) {
 	lut[i] = (i < 16 ? '0' : '') + (i).toString(16)

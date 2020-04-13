@@ -1,6 +1,0 @@
-import {VALUE_PROPERTY_DEFAULT} from '../../../helpers/value-property'
-import {ObservableClass} from '../ObservableClass'
-import {ObservableObjectBuilder} from '../ObservableObjectBuilder'
-import {CalcObjectBuilder} from './CalcObjectBuilder'
-import {DependCalcObjectBuilder} from './DependCalcObjectBuilder'
-import {Path, TGetNextPathGetSet} from './path/builder'

@@ -6,11 +6,28 @@
     <option name="CUSTOM_SCOPE_NAME" value="All Places" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="69b2ee16-521b-4efd-b473-8e19e3df4d09" name="Default Changelist" comment="">
+    <list default="true" id="69b2ee16-521b-4efd-b473-8e19e3df4d09" name="Default Changelist" comment="Object builders refactoring is completed. Old Tests OK.">
+      <change beforePath="$PROJECT_DIR$/.gitignore" beforeDir="false" afterPath="$PROJECT_DIR$/.gitignore" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/common/helpers/typescript.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/common/helpers/typescript.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/common/helpers/helpers.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/common/helpers/helpers.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/common/index.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/common/index.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/common/random/Random.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/common/random/Random.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/common/random/uuid.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/common/random/uuid.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/common/rx/depend/core/CallState.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/common/rx/depend/core/CallState.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/common/rx/depend/lists/DependMap.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/common/rx/depend/lists/DependMap.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/common/rx/depend/lists/DependSet.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/common/rx/depend/lists/DependSet.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/common/rx/object/ObservableObjectBuilder.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/common/rx/object/ObservableObjectBuilder.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/common/rx/object/helpers.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/common/rx/object/helpers.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/common/rx/object/properties/CalcObjectBuilder.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/common/rx/object/properties/CalcObjectBuilder.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/common/rx/object/properties/CalcProperty.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/common/rx/object/properties/CalcProperty.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/common/rx/object/properties/ConnectorBuilder.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/common/rx/object/properties/ConnectorBuilder.ts" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/common/rx/object/properties/DependCalcObjectBuilder.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/common/rx/object/properties/DependCalcObjectBuilder.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/common/rx/object/properties/helpers.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/common/rx/object/properties/helpers.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/common/rx/object/properties/DependConnectorBuilder.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/common/rx/object/properties/DependConnectorBuilder.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/common/rx/object/properties/helpers.ts" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/common/rx/object/properties/path/builder.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/common/rx/object/properties/path/builder.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/test/tests/common/main/rx/depend/src/helpers.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/test/tests/common/main/rx/depend/src/helpers.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/test/tests/common/main/rx/object/properties/CalcObjectBuilder.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/test/tests/common/main/rx/object/properties/CalcObjectBuilder.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/test/tests/common/main/rx/object/properties/CalcProperty.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/test/tests/common/main/rx/object/properties/CalcProperty.ts" afterDir="false" />
     </list>
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
     <option name="SHOW_DIALOG" value="false" />
@@ -62,7 +79,7 @@
     <property name="WebServerToolWindowFactoryState" value="false" />
     <property name="auto.test.manager.delay" value="5000" />
     <property name="javascript.karma.karma_node_package_dir" value="" />
-    <property name="last_opened_file_path" value="$PROJECT_DIR$/src/main/common/helpers/typescript.ts" />
+    <property name="last_opened_file_path" value="$PROJECT_DIR$/src/main/common/helpers/helpers.ts" />
     <property name="node.js.detected.package.eslint" value="true" />
     <property name="node.js.detected.package.standard" value="true" />
     <property name="node.js.detected.package.tslint" value="true" />
@@ -89,11 +106,11 @@
       <recent name="L:\Work\_GIT\GitHub\NodeJs\modules\webrain\src\test\tests\common\main\lists" />
     </key>
     <key name="es6.move.members.recent.items">
+      <recent name="L:\Work\_GIT\GitHub\NodeJs\modules\webrain\src\main\common\helpers\helpers.ts" />
       <recent name="L:\Work\_GIT\GitHub\NodeJs\modules\webrain\src\main\common\helpers\typescript.ts" />
       <recent name="L:\Work\_GIT\GitHub\NodeJs\modules\webrain\src\main\common\rx\object\helpers.ts" />
       <recent name="L:\Work\_GIT\GitHub\NodeJs\modules\webrain\src\main\common\rx\object\properties\CalcPropertyState.ts" />
       <recent name="L:\Work\_GIT\GitHub\NodeJs\modules\webrain\src\main\common\rx\depend\core\current-state.ts" />
-      <recent name="L:\Work\_GIT\GitHub\NodeJs\modules\webrain\src\main\common\rx\object\properties\path\constracts.ts" />
     </key>
     <key name="MoveFile.RECENT_KEYS">
       <recent name="L:\Work\_GIT\GitHub\NodeJs\modules\webrain\_trash\src\main\common\rx\depend" />
@@ -422,13 +439,6 @@
       <option name="number" value="Default" />
       <option name="presentableId" value="Default" />
       <updated>1567687848586</updated>
-    </task>
-    <task id="LOCAL-00328" summary="depend deferred is completed. Tests OK.">
-      <created>1585500716487</created>
-      <option name="number" value="00328" />
-      <option name="presentableId" value="LOCAL-00328" />
-      <option name="project" value="LOCAL" />
-      <updated>1585500716487</updated>
     </task>
     <task id="LOCAL-00329" summary="depend deferred, optimization. Tests OK.">
       <created>1585533889448</created>
@@ -766,7 +776,14 @@
       <option name="project" value="LOCAL" />
       <updated>1586752944828</updated>
     </task>
-    <option name="localTasksCounter" value="377" />
+    <task id="LOCAL-00377" summary="Object builders refactoring is completed. Old Tests OK.">
+      <created>1586757004138</created>
+      <option name="number" value="00377" />
+      <option name="presentableId" value="LOCAL-00377" />
+      <option name="project" value="LOCAL" />
+      <updated>1586757004138</updated>
+    </task>
+    <option name="localTasksCounter" value="378" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -833,7 +850,6 @@
   <component name="VcsManagerConfiguration">
     <option name="CHECK_CODE_SMELLS_BEFORE_PROJECT_COMMIT" value="false" />
     <option name="CHECK_NEW_TODO" value="false" />
-    <MESSAGE value="depend refactoring. Tests OK. Bad performance" />
     <MESSAGE value="depend refactoring. Tests OK." />
     <MESSAGE value="optimizing..." />
     <MESSAGE value="optimizing... Tests OK." />
@@ -858,7 +874,8 @@
     <MESSAGE value="Added connectPath property. Tests OK." />
     <MESSAGE value="Integrating to project... Tests OK." />
     <MESSAGE value="Object builders refactoring..." />
-    <option name="LAST_COMMIT_MESSAGE" value="Object builders refactoring..." />
+    <MESSAGE value="Object builders refactoring is completed. Old Tests OK." />
+    <option name="LAST_COMMIT_MESSAGE" value="Object builders refactoring is completed. Old Tests OK." />
   </component>
   <component name="XDebuggerManager">
     <breakpoint-manager>

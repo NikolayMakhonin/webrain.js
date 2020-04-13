@@ -1,5 +1,3 @@
-import {isAsync} from '../../async/async'
-import {resolveAsync} from '../../async/ThenableSync'
 import {webrainOptions} from '../../helpers/webrainOptions'
 
 export function makeDependPropertySubscriber(name: string | number) {

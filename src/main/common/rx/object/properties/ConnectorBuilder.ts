@@ -1,16 +1,13 @@
 import {createFunction} from '../../../helpers/helpers'
-import {depend} from '../../../rx/depend/core/depend'
 import {Debugger} from '../../Debugger'
 import {ValueKeyType} from '../../deep-subscribe/contracts/common'
 import {deepSubscribeRule} from '../../deep-subscribe/deep-subscribe'
 import {setObjectValue} from '../../deep-subscribe/helpers/common'
 import {RuleBuilder} from '../../deep-subscribe/RuleBuilder'
-import {makeDependPropertySubscriber} from '../helpers'
 import {_set, _setExt, ObservableClass} from '../ObservableClass'
-import {IReadableFieldOptions, IWritableFieldOptions, ObservableObjectBuilder} from '../ObservableObjectBuilder'
+import {IWritableFieldOptions, ObservableObjectBuilder} from '../ObservableObjectBuilder'
 import {Connector, ConnectorState} from './Connector'
 import {ValueKeys} from './contracts'
-import {pathGetSetBuild, IPathGetSetFactory, TGetNextPathGet, TGetNextPathGetSet} from './path/builder'
 
 const buildSourceRule: <TSource, TValueKeys extends string | number = ValueKeys>
 	(builder: RuleBuilder<ConnectorState<TSource>, TValueKeys>)

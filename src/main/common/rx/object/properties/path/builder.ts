@@ -99,11 +99,11 @@ function pathCanGetSet(pathNodes: Array<IPathNode<any, any>>): boolean {
 	return true
 }
 
-function pathCanGet(pathNodes: Array<IPathNode<any, any>>, length?: number): boolean {
+function pathCanGet(pathNodes: Array<IPathNode<any, any>>): boolean {
 	return pathCanGetSet(pathNodes) && pathNodes[pathNodes.length - 1].getValue != null
 }
 
-function pathCanSet(pathNodes: Array<IPathNode<any, any>>, length?: number): boolean {
+function pathCanSet(pathNodes: Array<IPathNode<any, any>>): boolean {
 	return pathCanGetSet(pathNodes) && pathNodes[pathNodes.length - 1].setValue != null
 }
 

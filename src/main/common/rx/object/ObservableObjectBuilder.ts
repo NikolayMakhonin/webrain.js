@@ -1,6 +1,6 @@
-import {createFunction} from '../../helpers/helpers'
+import {createFunction, missingSetter} from '../../helpers/helpers'
 import {webrainOptions} from '../../helpers/webrainOptions'
-import {depend, dependX} from '../../rx/depend/core/depend'
+import {depend} from '../../rx/depend/core/depend'
 import '../extensions/autoConnect'
 import {PropertyChangedEvent} from './IPropertyChanged'
 import {_set, _setExt, ISetOptions, ObservableClass} from './ObservableClass'
@@ -161,15 +161,16 @@ export class ObservableObjectBuilder<TObject extends ObservableClass> {
 				enumerable: !hidden,
 				// get: depend(getValue, null, true),
 				get: getValue,
-			}
-			if (update) {
-				attributes.set = function(value) {
-					const newValue = update.call(this, value)
-					if (typeof newValue !== 'undefined') {
-						setOnUpdate.call(this, newValue)
+				set: update
+					? function(value) {
+						const newValue = update.call(this, value)
+						if (typeof newValue !== 'undefined') {
+							setOnUpdate.call(this, newValue)
+						}
 					}
-				}
+					: missingSetter,
 			}
+
 			Object.defineProperty(instance, name, attributes)
 		}
 
@@ -200,23 +201,24 @@ export class ObservableObjectBuilder<TObject extends ObservableClass> {
 					}
 					return factoryValue
 				},
-			}
-			if (update) {
-				initAttributes.set = function(this: TObject, value) {
-					// tslint:disable:no-dead-store
-					const factoryValue = init.call(this)
-					const newValue = update.call(this, value)
-					if (typeof newValue !== 'undefined') {
-						const oldValue = getValue.call(this)
-						if (webrainOptions.equalsFunc
-							? !webrainOptions.equalsFunc.call(this, oldValue, newValue)
-							: oldValue !== newValue
-						) {
-							setOnInit.call(this, newValue)
+				set: update
+					? function(this: TObject, value) {
+						// tslint:disable:no-dead-store
+						const factoryValue = init.call(this)
+						const newValue = update.call(this, value)
+						if (typeof newValue !== 'undefined') {
+							const oldValue = getValue.call(this)
+							if (webrainOptions.equalsFunc
+								? !webrainOptions.equalsFunc.call(this, oldValue, newValue)
+								: oldValue !== newValue
+							) {
+								setOnInit.call(this, newValue)
+							}
 						}
 					}
-				}
+					: missingSetter,
 			}
+
 			Object.defineProperty(object, name, initAttributes)
 
 			if (__fields) {

@@ -735,57 +735,57 @@ export class CallState<
 		}
 	}
 
-	private* _makeDependentIterator(
-		iterator: Iterator<TInnerValue<TResultInner>>,
-		nested?: boolean,
-	): Iterator<TInnerValue<TResultInner>> {
-		setCurrentState(this)
-
-		try {
-			let iteration = iterator.next()
-			let value: TIteratorOrValue<TInnerValue<TResultInner>>
-
-			while (true) {
-				value = iteration.value
-
-				if (isIterator(value)) {
-					value = this._makeDependentIterator(value as Iterator<TInnerValue<TResultInner>>, true)
-				}
-
-				value = yield value as any
-
-				if (iteration.done) {
-					break
-				}
-
-				setCurrentState(this)
-				iteration = iterator.next(value as any)
-				setCurrentState(null)
-			}
-
-			if ((this.status & Flag_Async) !== 0) {
-				// setCurrentState(this._parentCallState)
-				if (nested == null) {
-					this._parentCallState = null
-				}
-			}
-			if (nested == null) {
-				this._updateCalculatedValue(value as any)
-			}
-			return value
-		} catch (error) {
-			if ((this.status & Flag_Async) !== 0) {
-				// setCurrentState(this._parentCallState)
-				if (nested == null) {
-					this._parentCallState = null
-				}
-			}
-			if (nested == null) {
-				this._updateCalculatedError(error)
-			}
-			throw error
-		}
-	}
+	// private* _makeDependentIterator(
+	// 	iterator: Iterator<TInnerValue<TResultInner>>,
+	// 	nested?: boolean,
+	// ): Iterator<TInnerValue<TResultInner>> {
+	// 	setCurrentState(this)
+	//
+	// 	try {
+	// 		let iteration = iterator.next()
+	// 		let value: TIteratorOrValue<TInnerValue<TResultInner>>
+	//
+	// 		while (true) {
+	// 			value = iteration.value
+	//
+	// 			if (isIterator(value)) {
+	// 				value = this._makeDependentIterator(value as Iterator<TInnerValue<TResultInner>>, true)
+	// 			}
+	//
+	// 			value = yield value as any
+	//
+	// 			if (iteration.done) {
+	// 				break
+	// 			}
+	//
+	// 			setCurrentState(this)
+	// 			iteration = iterator.next(value as any)
+	// 			setCurrentState(null)
+	// 		}
+	//
+	// 		if ((this.status & Flag_Async) !== 0) {
+	// 			// setCurrentState(this._parentCallState)
+	// 			if (nested == null) {
+	// 				this._parentCallState = null
+	// 			}
+	// 		}
+	// 		if (nested == null) {
+	// 			this._updateCalculatedValue(value as any)
+	// 		}
+	// 		return value
+	// 	} catch (error) {
+	// 		if ((this.status & Flag_Async) !== 0) {
+	// 			// setCurrentState(this._parentCallState)
+	// 			if (nested == null) {
+	// 				this._parentCallState = null
+	// 			}
+	// 		}
+	// 		if (nested == null) {
+	// 			this._updateCalculatedError(error)
+	// 		}
+	// 		throw error
+	// 	}
+	// }
 
 	// endregion
 
@@ -1239,17 +1239,17 @@ export function deleteValueState(valueId: number, value: any): void {
 
 const valueIdsBuffer: Int32Array = new Int32Array(100)
 
-interface ICallStateProviderState<
-	TThisOuter,
-	TArgs extends any[],
-	TResultInner,
-> {
-	func: Func<unknown, TArgs, unknown>
-	funcCall: TFuncCall<TThisOuter, TArgs, TResultInner>
-	initCallState: (state: CallState<TThisOuter, TArgs, TResultInner>) => void
-	funcId: number
-	funcHash: number
-}
+// interface ICallStateProviderState<
+// 	TThisOuter,
+// 	TArgs extends any[],
+// 	TResultInner,
+// > {
+// 	func: Func<unknown, TArgs, unknown>
+// 	funcCall: TFuncCall<TThisOuter, TArgs, TResultInner>
+// 	initCallState: (state: CallState<TThisOuter, TArgs, TResultInner>) => void
+// 	funcId: number
+// 	funcHash: number
+// }
 
 interface ICallStateProvider<
 	TThisOuter,

@@ -1,4 +1,4 @@
-import {isAsync, isThenable, Thenable, ThenableOrValue} from '../../../async/async'
+import {isAsync, Thenable, ThenableOrValue} from '../../../async/async'
 import {resolveAsyncFunc} from '../../../async/ThenableSync'
 import {CalcStat} from '../../../helpers/CalcStat'
 import {now} from '../../../helpers/performance'
@@ -6,12 +6,9 @@ import {VALUE_PROPERTY_DEFAULT} from '../../../helpers/value-property'
 import {webrainOptions} from '../../../helpers/webrainOptions'
 import {Debugger} from '../../Debugger'
 import {DeferredCalc, IDeferredCalcOptions} from '../../deferred-calc/DeferredCalc'
-import {getCallState, getOrCreateCallState, invalidateCallState} from '../../depend/core/CallState'
-import {dependX} from '../../depend/core/depend'
 import {ObservableClass} from '../ObservableClass'
 import {ObservableObjectBuilder} from '../ObservableObjectBuilder'
 import {CalcPropertyFunc, ICalcProperty, ICalcPropertyState} from './contracts'
-import {subscribeDependencies} from './DependenciesBuilder'
 
 export class CalcPropertyValue<TValue, TInput = any> {
 	public get: () => CalcProperty<TValue, TInput>
@@ -43,10 +40,6 @@ export class CalcPropertyState<TValue, TInput = any>
 new ObservableObjectBuilder(CalcPropertyState.prototype)
 	.writable('input')
 	.writable('value')
-
-function *thenableAsIterator<T>(thenable: Thenable<T>) {
-	return thenable
-}
 
 export class CalcProperty<TValue, TInput = any>
 	extends ObservableClass

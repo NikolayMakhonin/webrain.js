@@ -135,7 +135,6 @@ export class Random {
 
 	public nextArrayItems<T>(array: T[], minCount: number, relativeMaxCount: number): T[] {
 		arrayShuffle(array, () => this.next())
-		const result = []
 		const count = this.nextInt(Math.round(array.length * relativeMaxCount))
 		return array.slice(0, count)
 	}

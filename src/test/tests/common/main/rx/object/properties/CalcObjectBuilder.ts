@@ -7,14 +7,11 @@ import {ObservableClass} from '../../../../../../../main/common/rx/object/Observ
 import {CalcObjectBuilder} from '../../../../../../../main/common/rx/object/properties/CalcObjectBuilder'
 import {calcPropertyFactory} from '../../../../../../../main/common/rx/object/properties/CalcPropertyBuilder'
 import {connectorFactory} from '../../../../../../../main/common/rx/object/properties/ConnectorBuilder'
-import {ICalcProperty} from '../../../../../../../main/common/rx/object/properties/contracts'
 import {resolvePath} from '../../../../../../../main/common/rx/object/properties/path/resolve'
-import {Property} from '../../../../../../../main/common/rx/object/properties/Property'
 import {IUnsubscribeOrVoid} from '../../../../../../../main/common/rx/subjects/observable'
 import {assert} from '../../../../../../../main/common/test/Assert'
 import {describe, it, xit} from '../../../../../../../main/common/test/Mocha'
-import {delay} from '../../../../../../../main/common/time/helpers'
-import {createObject, TestDeepSubscribe} from '../../deep-subscribe/helpers/src/TestDeepSubscribe'
+import {TestDeepSubscribe} from '../../deep-subscribe/helpers/src/TestDeepSubscribe'
 
 describe('common > main > rx > properties > CalcObjectBuilder', function() {
 	this.timeout(30000)

@@ -11,23 +11,23 @@ import {CalcObjectBuilder} from './CalcObjectBuilder'
 import {ValueKeys} from './contracts'
 import {Path, TGetNextPathGetSet} from './path/builder'
 
-function createGetValue<TObject, TCalcSource, TValue>(
-	calcSourcePath: Path<TObject, TCalcSource>,
-	getValue: (this: TCalcSource) => TValue,
-): (this: TObject) => TValue {
-	if (calcSourcePath == null) {
-		return getValue as any
-	} else {
-		const path = calcSourcePath
-			.clone()
-			.append(o => getValue.call(o) as TValue)
-			.append()
-
-		return function(this: TObject) {
-			return path.get(this) as TValue
-		}
-	}
-}
+// function createGetValue<TObject, TCalcSource, TValue>(
+// 	calcSourcePath: Path<TObject, TCalcSource>,
+// 	getValue: (this: TCalcSource) => TValue,
+// ): (this: TObject) => TValue {
+// 	if (calcSourcePath == null) {
+// 		return getValue as any
+// 	} else {
+// 		const path = calcSourcePath
+// 			.clone()
+// 			.append(o => getValue.call(o) as TValue)
+// 			.append()
+//
+// 		return function(this: TObject) {
+// 			return path.get(this) as TValue
+// 		}
+// 	}
+// }
 
 export class DependCalcObjectBuilder<
 	TObject extends ObservableClass,
@@ -37,26 +37,26 @@ export class DependCalcObjectBuilder<
 >
 	extends CalcObjectBuilder<TObject, TConnectorSource>
 {
-	public readonly calcSourcePath?: Path<TObject, TCalcSource>
+	// public readonly calcSourcePath?: Path<TObject, TCalcSource>
 
 	constructor(
 		object?: TObject,
 		connectorSourcePath?: Path<TObject, TConnectorSource>,
-		calcSourcePath?: Path<TObject, TCalcSource>,
+		// calcSourcePath?: Path<TObject, TCalcSource>,
 	) {
 		super(object, connectorSourcePath)
-		this.calcSourcePath = calcSourcePath
+		// this.calcSourcePath = calcSourcePath
 	}
 
 	public simpleCalc<
 		Name extends keyof TObject,
 	>(
 		name: Name,
-		func: (this: TCalcSource)
+		func: (this: TObject)
 			=> ThenableOrIteratorOrValue<TObject[Name]>,
 	): this & { object: { readonly [newProp in Name]: TObject[Name] } } {
 		return super.readable(name as any, {
-			getValue: createGetValue(this.calcSourcePath, func),
+			getValue: func,
 		}) as any
 	}
 
@@ -64,15 +64,12 @@ export class DependCalcObjectBuilder<
 		Name extends keyof TObject,
 	>(
 		name: Name,
-		func: (this: TCalcSource)
+		func: (this: TObject)
 			=> ThenableOrIteratorOrValue<TObject[Name]>,
 		deferredOptions?: IDeferredOptions,
 	): this & { object: { readonly [newProp in Name]: TObject[Name] } } {
 		return super.readable(name as any, {
-			getValue: createGetValue(
-				this.calcSourcePath,
-				depend(func, deferredOptions, makeDependPropertySubscriber(name as any)),
-			),
+			getValue: depend(func, deferredOptions, makeDependPropertySubscriber(name as any)),
 		}) as any
 	}
 
@@ -80,15 +77,12 @@ export class DependCalcObjectBuilder<
 		Name extends keyof TObject,
 	>(
 		name: Name,
-		func: (this: CallState<TCalcSource, any[], TObject[Name]>)
+		func: (this: CallState<TObject, any[], TObject[Name]>)
 			=> ThenableOrIteratorOrValue<TObject[Name]>,
 		deferredOptions?: IDeferredOptions,
 	): this & { object: { readonly [newProp in Name]: TObject[Name] } } {
 		return super.readable(name as any, {
-			getValue: createGetValue(
-				this.calcSourcePath,
-				dependX(func, deferredOptions, makeDependPropertySubscriber(name as any)),
-			),
+			getValue: dependX(func, deferredOptions, makeDependPropertySubscriber(name as any)),
 		}) as any
 	}
 
@@ -161,7 +155,7 @@ export function observableClass<
 	build: (builder: DependCalcObjectBuilder<TBaseClass>) => { object: TPropertyClass },
 	baseClass?: Class<TConstructorArgs, TBaseClass>,
 	connectPath?: TGetNextPathGetSet<TBaseClass, TBaseClass, TConnectSource>,
-	calcPath?: TGetNextPathGetSet<TBaseClass, TBaseClass, TConnectSource>,
+	// calcPath?: TGetNextPathGetSet<TBaseClass, TBaseClass, TConnectSource>,
 ): Class<TConstructorArgs, TPropertyClass> {
 	// @ts-ignore
 	class NewPropertyClass extends (baseClass == null ? null : ObservableClass) { }
@@ -174,7 +168,7 @@ export function observableClass<
 	>(
 		NewPropertyClass.prototype,
 		connectPath(Path.build<TBaseClass, TBaseClass>())() as any,
-		calcPath(Path.build<TBaseClass, TBaseClass>())() as any,
+		// calcPath(Path.build<TBaseClass, TBaseClass>())() as any,
 	))
 
 	return NewPropertyClass as any

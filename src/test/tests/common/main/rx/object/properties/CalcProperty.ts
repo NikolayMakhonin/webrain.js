@@ -1,11 +1,6 @@
 /* tslint:disable:no-duplicate-string */
 /* eslint-disable guard-for-in */
-import {ObservableClass} from '../../../../../../../main/common/rx/object/ObservableClass'
-import {ObservableObjectBuilder} from '../../../../../../../main/common/rx/object/ObservableObjectBuilder'
-import {ConnectorBuilder} from '../../../../../../../main/common/rx/object/properties/ConnectorBuilder'
-import {assert} from '../../../../../../../main/common/test/Assert'
-import {describe, it, xdescribe} from '../../../../../../../main/common/test/Mocha'
-import {createObject} from '../../deep-subscribe/helpers/src/TestDeepSubscribe'
+import {xdescribe} from '../../../../../../../main/common/test/Mocha'
 
 xdescribe('common > main > rx > properties > CalcProperty', function() {
 	// it('connect', function() {

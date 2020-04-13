@@ -34,6 +34,7 @@ export class DependMap<K, V>
 		return ALWAYS_CHANGE_VALUE
 	}
 
+	// noinspection JSUnusedLocalSymbols
 	public dependKey(key: K) {
 		this.dependAll()
 		return ALWAYS_CHANGE_VALUE
