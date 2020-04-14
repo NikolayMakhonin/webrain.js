@@ -347,21 +347,21 @@ export class Path<TObject, TValue = TObject> {
 	// 	getValue: TGetValue2<TValue, TNextValue>,
 	// 	isValueProperty?: false,
 	// ): Path<TObject, TNextValue>
-	// public append<TNextValue>(
-	// 	getValue: TGetValue1<TValue, TNextValue>,
-	// 	setValue: TSetValue1<TValue, TNextValue>,
-	// 	isValueProperty: true,
-	// ): Path<TObject, TNextValue>
+	public append<TNextValue>(
+		getValue: TGetValue1<TValue, TNextValue>,
+		setValue: TSetValue1<TValue, TNextValue>,
+		isValueProperty: true,
+	): Path<TObject, TNextValue>
 	public append<TNextValue>(
 		getValue: TGetValue2<TValue, TNextValue>,
 		setValue?: TSetValue2<TValue, TNextValue>,
-		isValueProperty?: boolean,
+		isValueProperty?: false,
 	): Path<TObject, TNextValue>
-	// public append<TNextValue>(
-	// 	getValue?: any,
-	// 	arg2?: any,
-	// 	arg3?: any,
-	// ): Path<TObject, TNextValue>
+	public append<TNextValue>(
+		getValue?: any,
+		setValue?: any,
+		isValueProperty?: any,
+	): Path<TObject, TNextValue>
 	{
 		// let setValue
 		// let isValueProperty: boolean

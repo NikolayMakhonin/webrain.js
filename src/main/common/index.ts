@@ -52,7 +52,7 @@ export {CallStatus} from './rx/depend/core/contracts'
 export {depend, dependX} from './rx/depend/core/depend'
 export {DependMap} from './rx/depend/lists/DependMap'
 export {DependSet} from './rx/depend/lists/DependSet'
-export {dependCalcPropertyFactory} from './rx/object/properties/DependCalcObjectBuilder'
+export {dependCalcPropertyFactory, dependCalcPropertyFactoryX} from './rx/object/properties/DependCalcObjectBuilder'
 export {dependConnectorFactory} from './rx/object/properties/DependConnectorBuilder'
 
 // region Interfaces
