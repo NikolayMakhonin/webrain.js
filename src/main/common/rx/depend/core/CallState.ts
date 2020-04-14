@@ -306,6 +306,7 @@ export function statusToString(status: CallStatus): string {
 
 // tslint:disable-next-line:no-construct use-primitive-type
 export const ALWAYS_CHANGE_VALUE = new String('ALWAYS_CHANGE_VALUE')
+export const NO_CHANGE_VALUE = new String('NO_CHANGE_VALUE')
 
 type Flag_Before_Calc = 1
 type Flag_After_Calc = 2
@@ -1004,10 +1005,13 @@ export class CallState<
 
 		this.status = Update_Calculated_Value
 
-		if ((prevStatus & (Flag_HasError | Flag_HasValue)) !== Flag_HasValue
-			|| value === ALWAYS_CHANGE_VALUE
-			|| !(
-				this.value === value || webrainOptions.equalsFunc && webrainOptions.equalsFunc(this.value, value)
+		if (value !== NO_CHANGE_VALUE
+			&& (
+				(prevStatus & (Flag_HasError | Flag_HasValue)) !== Flag_HasValue
+					|| value === ALWAYS_CHANGE_VALUE
+					|| !(
+						this.value === value || webrainOptions.equalsFunc && webrainOptions.equalsFunc(this.value, value)
+					)
 			)
 		) {
 			this.error = void 0

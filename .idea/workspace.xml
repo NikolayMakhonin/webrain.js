@@ -30,9 +30,10 @@
     <select />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="69b2ee16-521b-4efd-b473-8e19e3df4d09" name="Default Changelist" comment="Object builders refactoring and debugging... Tests OK.">
-      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/common/rx/object/properties/DependCalcObjectBuilder.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/common/rx/object/properties/DependCalcObjectBuilder.ts" afterDir="false" />
+    <list default="true" id="69b2ee16-521b-4efd-b473-8e19e3df4d09" name="Default Changelist" comment="">
+      <change beforePath="$PROJECT_DIR$/src/main/common/index.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/common/index.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/common/rx/depend/core/CallState.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/common/rx/depend/core/CallState.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/common/rx/depend/core/depend.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/common/rx/depend/core/depend.ts" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -441,14 +442,7 @@
       <workItem from="1586860395998" duration="6502000" />
       <workItem from="1586866992744" duration="5668000" />
       <workItem from="1586872696123" duration="6185000" />
-      <workItem from="1586887545919" duration="530000" />
-    </task>
-    <task id="LOCAL-00337" summary="depend refactoring. Tests OK. Bad performance">
-      <created>1585726340360</created>
-      <option name="number" value="00337" />
-      <option name="presentableId" value="LOCAL-00337" />
-      <option name="project" value="LOCAL" />
-      <updated>1585726340361</updated>
+      <workItem from="1586887545919" duration="2844000" />
     </task>
     <task id="LOCAL-00338" summary="depend refactoring. Tests OK.">
       <created>1585733926125</created>
@@ -786,7 +780,14 @@
       <option name="project" value="LOCAL" />
       <updated>1586876351252</updated>
     </task>
-    <option name="localTasksCounter" value="386" />
+    <task id="LOCAL-00386" summary="Object builders refactoring and debugging... Tests OK.">
+      <created>1586888082082</created>
+      <option name="number" value="00386" />
+      <option name="presentableId" value="LOCAL-00386" />
+      <option name="project" value="LOCAL" />
+      <updated>1586888082082</updated>
+    </task>
+    <option name="localTasksCounter" value="387" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -879,10 +880,10 @@
       <screen x="0" y="0" width="1920" height="882" />
     </state>
     <state x="651" y="254" key="ANALYSIS_DLG_com.intellij.analysis.BaseAnalysisAction$1/0.0.1920.882@0.0.1920.882" timestamp="1586875498549" />
-    <state x="0" y="0" width="1918" height="882" key="CommitChangelistDialog2" timestamp="1586880558593">
+    <state x="0" y="0" width="1918" height="882" key="CommitChangelistDialog2" timestamp="1586888081317">
       <screen x="0" y="0" width="1920" height="882" />
     </state>
-    <state x="0" y="0" width="1918" height="882" key="CommitChangelistDialog2/0.0.1920.882@0.0.1920.882" timestamp="1586880558593" />
+    <state x="0" y="0" width="1918" height="882" key="CommitChangelistDialog2/0.0.1920.882@0.0.1920.882" timestamp="1586888081317" />
     <state width="685" height="550" key="DebuggerActiveHint" timestamp="1586874995431">
       <screen x="0" y="0" width="1920" height="882" />
     </state>
@@ -959,10 +960,10 @@
       <screen x="0" y="0" width="1920" height="882" />
     </state>
     <state x="343" y="0" key="SettingsEditor/0.0.1920.882@0.0.1920.882" timestamp="1586873862184" />
-    <state x="2" y="1" width="1908" height="878" key="find.popup" timestamp="1586887799075">
+    <state x="2" y="1" width="1908" height="878" key="find.popup" timestamp="1586894128427">
       <screen x="0" y="0" width="1920" height="882" />
     </state>
-    <state x="2" y="1" width="1908" height="878" key="find.popup/0.0.1920.882@0.0.1920.882" timestamp="1586887799075" />
+    <state x="2" y="1" width="1908" height="878" key="find.popup/0.0.1920.882@0.0.1920.882" timestamp="1586894128427" />
   </component>
   <component name="XDebuggerManager">
     <breakpoint-manager>

@@ -206,9 +206,6 @@ export function dependX<
 	TArgs,
 	TResultInner extends ThenableOrIterator<infer V> ? ThenableOrValue<V> : TResultInner
 > {
-	if (deferredOptions != null) {
-		throw new Error('canAlwaysRecalc should not be deferred')
-	}
 	return deferredOptions == null
 		? makeDependentFunc(func, funcCallX, initCallState, false) as any
 		: makeDeferredFunc(func, funcCallX, deferredOptions, initCallState) as any
