@@ -1,4 +1,4 @@
-import {Class} from '../../../helpers/typescript'
+import {TClass} from '../../../helpers/typescript'
 import {ObservableClass} from '../ObservableClass'
 
 export function observableClass<
@@ -7,8 +7,8 @@ export function observableClass<
 	TPropertyClass extends TBaseClass
 >(
 	build: (object: TBaseClass) => TPropertyClass,
-	baseClass?: Class<TConstructorArgs, TBaseClass>,
-): Class<TConstructorArgs, TPropertyClass> {
+	baseClass?: TClass<TConstructorArgs, TBaseClass>,
+): TClass<TConstructorArgs, TPropertyClass> {
 	class NewPropertyClass extends (baseClass != null ? baseClass : ObservableClass) { }
 
 	build(NewPropertyClass.prototype as TBaseClass)

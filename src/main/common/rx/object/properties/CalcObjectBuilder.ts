@@ -123,8 +123,24 @@ export class CalcObjectBuilder<
 	}
 }
 
-// const builder = new CalcObjectBuilder(true as any)
-//
+class Class extends ObservableClass {
+	public prop1: number
+	public prop2: string
+}
+
+new CalcObjectBuilder(new Class())
+	.writable('prop1')
+	.calc(
+		'prop2',
+		o => o,
+		calcPropertyFactory({
+			dependencies: d => d.invalidateOn(b => b.propertyAny()),
+			calcFunc(state) {
+				const x = this
+			},
+		}),
+	)
+
 // export function calc<
 // 	TObject extends ObservableClass,
 // 	TInput extends new (object: TObject) => any | NotFunction<any>,

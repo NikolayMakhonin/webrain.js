@@ -1,5 +1,5 @@
 import {missingSetter} from '../../../helpers/helpers'
-import {Class} from '../../../helpers/typescript'
+import {TClass} from '../../../helpers/typescript'
 import {depend} from '../../../rx/depend/core/depend'
 import {makeDependPropertySubscriber} from '../helpers'
 import {ObservableClass} from '../ObservableClass'
@@ -111,7 +111,7 @@ export function dependConnectorClass<
 		= Connector<TSource>,
 >(
 	build: (connectorBuilder: DependConnectorBuilder<TBaseClass, TSource>) => { object: TConnectorClass },
-	baseClass?: Class<[TSource, string?], TBaseClass>,
+	baseClass?: TClass<[TSource, string?], TBaseClass>,
 ) {
 	const sourcePath = Path.build<TBaseClass>()(o => o.connectorState)(o => o.source)()
 

@@ -44,5 +44,5 @@ export type TPrimitiveNotNullable = boolean | number | string | null | undefined
 export type TPrimitiveNullable = Boolean | Number | String | Symbol | BigInt | Date
 export type TPrimitive = TPrimitiveNotNullable | TPrimitiveNullable
 
-export type Class<TArgs extends any[],
-	TClass> = new(...args: TArgs) => TClass
+export type TClass<TArgs extends any[],
+	_TClass> = new(...args: TArgs) => _TClass
