@@ -114,7 +114,7 @@ export class DependCalcObjectBuilder<
 		}) as any
 	}
 
-	public nestedCalc2<
+	public nestedCalc<
 		TInput,
 		Name extends keyof TObject,
 	>(
@@ -142,45 +142,45 @@ export class DependCalcObjectBuilder<
 			}) as any
 	}
 
-	public nestedCalc<
-		Name extends keyof TObject,
-		TConnector extends PropertyClass<TObject>
-	>(
-		name: Name,
-		build: (builder: DependCalcObjectBuilder<PropertyClass<TObject>, TObject>)
-			=> { object: TConnector },
-		func: (this: TConnector)
-			=> ThenableOrIteratorOrValue<TObject[Name]>,
-		deferredOptions?: IDeferredOptions,
-	): this { // & { object: { readonly [newProp in Name]: TObject[Name] } } {
-		const inputClass = propertyClass(build)
-		const propClass = calcPropertyClass(func, deferredOptions)
-		return super.readable(name as any, {
-			factory() {
-				return new propClass(new inputClass(this))
-			},
-		}) as any
-	}
-
-	public nestedCalcX<
-		Name extends keyof TObject,
-		TConnector extends PropertyClass<TObject>
-	>(
-		name: Name,
-		build: (builder: DependCalcObjectBuilder<PropertyClass<TObject>, TObject>)
-			=> { object: TConnector },
-		func: (this: CallState<CalcPropertyClass<TObject[Name], TConnector>, any[], TObject[Name]>)
-			=> ThenableOrIteratorOrValue<TObject[Name]>,
-		deferredOptions?: IDeferredOptions,
-	): this & { object: { readonly [newProp in Name]: TObject[Name] } } {
-		const inputClass = propertyClass(build)
-		const propClass = calcPropertyClassX(func, deferredOptions)
-		return super.readable(name as any, {
-			factory() {
-				return new propClass(new inputClass(this))
-			},
-		}) as any
-	}
+	// public nestedCalc<
+	// 	Name extends keyof TObject,
+	// 	TConnector extends PropertyClass<TObject>
+	// >(
+	// 	name: Name,
+	// 	build: (builder: DependCalcObjectBuilder<PropertyClass<TObject>, TObject>)
+	// 		=> { object: TConnector },
+	// 	func: (this: TConnector)
+	// 		=> ThenableOrIteratorOrValue<TObject[Name]>,
+	// 	deferredOptions?: IDeferredOptions,
+	// ): this { // & { object: { readonly [newProp in Name]: TObject[Name] } } {
+	// 	const inputClass = propertyClass(build)
+	// 	const propClass = calcPropertyClass(func, deferredOptions)
+	// 	return super.readable(name as any, {
+	// 		factory() {
+	// 			return new propClass(new inputClass(this))
+	// 		},
+	// 	}) as any
+	// }
+	//
+	// public nestedCalcX<
+	// 	Name extends keyof TObject,
+	// 	TConnector extends PropertyClass<TObject>
+	// >(
+	// 	name: Name,
+	// 	build: (builder: DependCalcObjectBuilder<PropertyClass<TObject>, TObject>)
+	// 		=> { object: TConnector },
+	// 	func: (this: CallState<CalcPropertyClass<TObject[Name], TConnector>, any[], TObject[Name]>)
+	// 		=> ThenableOrIteratorOrValue<TObject[Name]>,
+	// 	deferredOptions?: IDeferredOptions,
+	// ): this & { object: { readonly [newProp in Name]: TObject[Name] } } {
+	// 	const inputClass = propertyClass(build)
+	// 	const propClass = calcPropertyClassX(func, deferredOptions)
+	// 	return super.readable(name as any, {
+	// 		factory() {
+	// 			return new propClass(new inputClass(this))
+	// 		},
+	// 	}) as any
+	// }
 }
 
 // region PropertyClass
@@ -343,57 +343,57 @@ export function dependCalcPropertyFactoryX<
 
 // endregion
 
-class Class extends ObservableClass {
-	public prop1: number
-	public prop2: string
-	public prop3: string
-}
-
-new DependCalcObjectBuilder(new Class())
-	.writable('prop1')
-	// .nestedCalc('prop2', c => c
-	// 	.connectSimple('prop1', b2 => b2(o => o.prop1)),
-	// 	function() {
-	// 		const x = this.prop1
-	// 		return ''
-	// 	})
-	.nestedCalc2(
-		'prop2',
-		dependConnectorFactory({
-			build: c => c
-				.connectSimple('_prop1', b => b.p(o => o.prop1)),
-		}),
-		dependCalcPropertyFactory({
-			*calcFunc() {
-				const x = this._prop1
-				// const y = state.prop1
-				return ''
-			},
-		}),
-	)
-	// .calc(
-	// 	'prop2',
-	// 	connectorFactory({
-	// 		buildRule: c => c
-	// 			.connect('_prop1', b2 => b2.p('prop1')),
-	// 	}),
-	// 	calcPropertyFactory({
-	// 		calcFunc(state) {
-	// 			const x = state.input._prop1
-	// 		},
-	// 	}),
-	// )
-	.nestedCalc2(
-		'prop3',
-		dependConnectorFactory({
-			build: c => c
-				.connectSimple('_prop1', b => b.p(o => o.prop1)),
-		}),
-		dependCalcPropertyFactoryX({
-			*calcFunc() {
-				const x = this._this.input._prop1
-				// const y = state.prop1
-				return ''
-			},
-		}),
-	)
+// class Class extends ObservableClass {
+// 	public prop1: number
+// 	public prop2: string
+// 	public prop3: string
+// }
+//
+// new DependCalcObjectBuilder(new Class())
+// 	.writable('prop1')
+// 	// .nestedCalc('prop2', c => c
+// 	// 	.connectSimple('prop1', b2 => b2(o => o.prop1)),
+// 	// 	function() {
+// 	// 		const x = this.prop1
+// 	// 		return ''
+// 	// 	})
+// 	.nestedCalc(
+// 		'prop2',
+// 		dependConnectorFactory({
+// 			build: c => c
+// 				.connectSimple('_prop1', b => b.p(o => o.prop1)),
+// 		}),
+// 		dependCalcPropertyFactory({
+// 			*calcFunc() {
+// 				const x = this._prop1
+// 				// const y = state.prop1
+// 				return ''
+// 			},
+// 		}),
+// 	)
+// 	// .calc(
+// 	// 	'prop2',
+// 	// 	connectorFactory({
+// 	// 		buildRule: c => c
+// 	// 			.connect('_prop1', b2 => b2.p('prop1')),
+// 	// 	}),
+// 	// 	calcPropertyFactory({
+// 	// 		calcFunc(state) {
+// 	// 			const x = state.input._prop1
+// 	// 		},
+// 	// 	}),
+// 	// )
+// 	.nestedCalc(
+// 		'prop3',
+// 		dependConnectorFactory({
+// 			build: c => c
+// 				.connectSimple('_prop1', b => b.p(o => o.prop1)),
+// 		}),
+// 		dependCalcPropertyFactoryX({
+// 			*calcFunc() {
+// 				const x = this._this.input._prop1
+// 				// const y = state.prop1
+// 				return ''
+// 			},
+// 		}),
+// 	)
