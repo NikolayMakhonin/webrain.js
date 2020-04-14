@@ -1,4 +1,5 @@
 import {missingSetter} from '../../../helpers/helpers'
+import {Class} from '../../../helpers/typescript'
 import {depend} from '../../../rx/depend/core/depend'
 import {makeDependPropertySubscriber} from '../helpers'
 import {ObservableClass} from '../ObservableClass'
@@ -6,6 +7,7 @@ import {IReadableFieldOptions} from '../ObservableObjectBuilder'
 import {Connector} from './Connector'
 import {ConnectorBuilder} from './ConnectorBuilder'
 import {ValueKeys} from './contracts'
+import {observableClass} from './helpers'
 import {IPathGetSetFactory, Path, PathGetSet, TGetNextPathGetSet} from './path/builder'
 
 export class DependConnectorBuilder<
@@ -103,38 +105,40 @@ export class DependConnectorBuilder<
 }
 
 export function dependConnectorClass<
-	TSource extends ObservableClass,
-	TConnector extends Connector<TSource>,
->({
-	buildRule,
-	baseClass,
-}: {
-	buildRule: (connectorBuilder: DependConnectorBuilder<Connector<TSource>, TSource>) => { object: TConnector },
-	baseClass?: new (source: TSource) => Connector<TSource>,
-}): new (source: TSource, name?: string) => TConnector {
-	// @ts-ignore
-	class NewConnector extends (baseClass != null ? baseClass : Connector) implements Connector<TSource> { }
+	TSource,
+	TConnectorClass extends TBaseClass,
+	TBaseClass extends Connector<TSource>
+		= Connector<TSource>,
+>(
+	build: (connectorBuilder: DependConnectorBuilder<TBaseClass, TSource>) => { object: TConnectorClass },
+	baseClass?: Class<[TSource, string?], TBaseClass>,
+) {
+	const sourcePath = Path.build<TBaseClass>()(o => o.connectorState)(o => o.source)()
 
-	// @ts-ignore
-	buildRule(new DependConnectorBuilder<NewConnector, TSource>(
-		NewConnector.prototype,
-	))
-
-	return NewConnector as unknown as new (source: TSource) => TConnector
+	return observableClass<
+		[TSource, string?],
+		TBaseClass,
+		TConnectorClass
+	>(
+		object => build(new DependConnectorBuilder<TBaseClass, TSource>(object, sourcePath as any)).object,
+		baseClass != null ? baseClass : Connector as any,
+	)
 }
 
 export function dependConnectorFactory<
 	TSource extends ObservableClass,
-	TConnector extends Connector<TSource>,
+	TConnectorClass extends TBaseClass,
+	TBaseClass extends Connector<TSource>
+		= Connector<TSource>,
 >({
 	name,
 	buildRule,
 	baseClass,
 }: {
 	name?: string,
-	buildRule: (connectorBuilder: DependConnectorBuilder<Connector<TSource>, TSource>) => { object: TConnector },
-	baseClass?: new (source: TSource, name?: string) => Connector<TSource>,
-}): (source: TSource, name?: string) => TConnector {
-	const NewConnector = dependConnectorClass({buildRule, baseClass})
-	return (source, sourceName) => new NewConnector(source, name || sourceName) as unknown as TConnector
+	buildRule: (connectorBuilder: DependConnectorBuilder<TBaseClass, TSource>) => { object: TConnectorClass },
+	baseClass?: new (source: TSource, name?: string) => TBaseClass,
+}): (source: TSource, name?: string) => TConnectorClass {
+	const NewConnector = dependConnectorClass(buildRule, baseClass)
+	return (source, _name) => new NewConnector(source, _name != null ? _name : name)
 }

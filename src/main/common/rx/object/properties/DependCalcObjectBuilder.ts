@@ -1,5 +1,5 @@
 import {ThenableOrIteratorOrValue} from '../../../async/async'
-import {Class} from '../../../helpers/typescript'
+import {Class, NotFunction} from '../../../helpers/typescript'
 import {VALUE_PROPERTY_DEFAULT} from '../../../helpers/value-property'
 import {depend, dependX} from '../../../rx/depend/core/depend'
 import {CallState} from '../../depend/core/CallState'
@@ -9,7 +9,8 @@ import {ObservableClass} from '../ObservableClass'
 import {ObservableObjectBuilder} from '../ObservableObjectBuilder'
 import {CalcObjectBuilder} from './CalcObjectBuilder'
 import {ValueKeys} from './contracts'
-import {Path, TGetNextPathGetSet} from './path/builder'
+import {observableClass} from './helpers'
+import {Path} from './path/builder'
 
 function createGetValue<TObject, TCalcSource, TValue>(
 	calcSourcePath: Path<TObject, TCalcSource>,
@@ -110,6 +111,34 @@ export class DependCalcObjectBuilder<
 		}) as any
 	}
 
+	public nestedCalc2<
+		TInput,
+		Name extends keyof TObject,
+	>(
+		name: Name,
+		inputOrFactory: ((source: TObject, name?: string) => TInput) | NotFunction<TInput>,
+		calcFactory: (input: TInput, name?: string) => CalcPropertyClass<TObject[Name], TInput>,
+	): this & { object: { readonly [newProp in Name]: TObject[Name] } } {
+		return (this as ObservableObjectBuilder<TObject>)
+			.readable<
+				Extract<Name, string|number>,
+				CalcPropertyClass<TObject[Name], TInput>
+			>(name as Extract<Name, string|number>, {
+				factory(this: TObject) {
+					let input: TInput
+					if (typeof inputOrFactory !== 'undefined') {
+						input = typeof inputOrFactory === 'function'
+							? (inputOrFactory as (object: TObject, name?: string) => TInput)(
+								this,
+								name as any != null ? name as any : this.constructor.name,
+							)
+							: inputOrFactory
+					}
+					return calcFactory(input, `${this.constructor.name}.${name}`)
+				},
+			}) as any
+	}
+
 	public nestedCalc<
 		Name extends keyof TObject,
 		TConnector extends PropertyClass<TObject>
@@ -137,7 +166,7 @@ export class DependCalcObjectBuilder<
 		name: Name,
 		build: (builder: DependCalcObjectBuilder<PropertyClass<TObject>, TObject>)
 			=> { object: TConnector },
-		func: (this: CallState<CalcPropertyClass<TConnector, TObject[Name]>, any[], TObject[Name]>)
+		func: (this: CallState<CalcPropertyClass<TObject[Name], TConnector>, any[], TObject[Name]>)
 			=> ThenableOrIteratorOrValue<TObject[Name]>,
 		deferredOptions?: IDeferredOptions,
 	): this & { object: { readonly [newProp in Name]: TObject[Name] } } {
@@ -150,40 +179,6 @@ export class DependCalcObjectBuilder<
 		}) as any
 	}
 }
-
-// region observableClass
-
-export function observableClass<
-	TConstructorArgs extends any[],
-	TPropertyClass extends TBaseClass,
-	TBaseClass extends ObservableClass = ObservableClass,
-	TConnectSource = TPropertyClass,
-	TCalcSource = TPropertyClass,
->(
-	build: (builder: DependCalcObjectBuilder<TBaseClass, TConnectSource, TCalcSource>)
-		=> { object: TPropertyClass },
-	baseClass?: Class<TConstructorArgs, TBaseClass>,
-	connectPath?: TGetNextPathGetSet<TBaseClass, TBaseClass, TConnectSource>,
-	calcPath?: TGetNextPathGetSet<TBaseClass, TBaseClass, TCalcSource>,
-): Class<TConstructorArgs, TPropertyClass> {
-	// @ts-ignore
-	class NewPropertyClass extends (baseClass != null ? baseClass : ObservableClass) { }
-
-	// @ts-ignore
-	build(new DependCalcObjectBuilder<
-		NewPropertyClass,
-		TConnectSource,
-		TCalcSource
-	>(
-		NewPropertyClass.prototype,
-		connectPath == null ? null : connectPath(Path.build<TBaseClass, TBaseClass>())() as any,
-		calcPath == null ? null : calcPath(Path.build<TBaseClass, TBaseClass>())() as any,
-	))
-
-	return NewPropertyClass as any
-}
-
-// endregion
 
 // region PropertyClass
 
@@ -209,16 +204,15 @@ export function propertyClass<
 	build: (builder: DependCalcObjectBuilder<TBaseClass, TObject>) => { object: TPropertyClass },
 	baseClass?: Class<[TObject], TBaseClass>,
 ) {
+	const objectPath = Path.build<TBaseClass>()(o => o.$object)()
+
 	return observableClass<
-		[TObject],
-		TPropertyClass,
+		[TObject, string?],
 		TBaseClass,
-		TObject,
 		TPropertyClass
 	>(
-		build,
+		object => build(new DependCalcObjectBuilder<TBaseClass, TObject>(object, objectPath as any)).object,
 		baseClass != null ? baseClass : PropertyClass as any,
-		b => b(o => o.$object) as any,
 	)
 }
 
@@ -226,12 +220,14 @@ export function propertyClass<
 
 // region CalcPropertyClass
 
-export class CalcPropertyClass<TInput, TValue> extends ObservableClass {
+export class CalcPropertyClass<TValue, TInput> extends ObservableClass {
 	public input: TInput
+	public readonly name: string
 
-	constructor(input: TInput) {
+	constructor(input: TInput, name?: string) {
 		super()
 		this.input = input
+		this.name = name
 	}
 
 	public [VALUE_PROPERTY_DEFAULT]: TValue
@@ -243,19 +239,25 @@ new ObservableObjectBuilder(CalcPropertyClass.prototype)
 export function calcPropertyClassX<
 	TInput,
 	TValue,
-	TCalcPropertyClass extends CalcPropertyClass<TInput, TValue> = CalcPropertyClass<TInput, TValue>,
+	TCalcPropertyClass extends TBaseClass,
+	TBaseClass extends CalcPropertyClass<TValue, TInput>
+		= CalcPropertyClass<TValue, TInput>,
 >(
 	func: (this: CallState<TCalcPropertyClass, any[], TValue>)
 		=> ThenableOrIteratorOrValue<TValue>,
 	deferredOptions?: IDeferredOptions,
-	baseClass?: Class<[TInput], TCalcPropertyClass>,
+	baseClass?: Class<[TInput], TBaseClass>,
 ) {
+	// const inputPath = Path.build<TBaseClass>()(o => o.input)()
+
 	return observableClass<
-		[TInput],
-		TCalcPropertyClass,
+		[TInput, string?],
+		TBaseClass,
 		TCalcPropertyClass
 	>(
-		b => b.dependCalcX(VALUE_PROPERTY_DEFAULT, func, deferredOptions) as any,
+		object => new DependCalcObjectBuilder<TBaseClass>(object) // , inputPath, inputPath)
+			.dependCalcX(VALUE_PROPERTY_DEFAULT, func, deferredOptions)
+			.object as any,
 		baseClass != null ? baseClass : CalcPropertyClass as any,
 	)
 }
@@ -263,25 +265,52 @@ export function calcPropertyClassX<
 export function calcPropertyClass<
 	TInput,
 	TValue,
-	TCalcPropertyClass extends CalcPropertyClass<TInput, TValue>
-		= CalcPropertyClass<TInput, TValue>,
+	TCalcPropertyClass extends TBaseClass,
+	TBaseClass extends CalcPropertyClass<TValue, TInput>
+		= CalcPropertyClass<TValue, TInput>,
 >(
 	func: (this: TInput) => ThenableOrIteratorOrValue<TValue>,
 	deferredOptions?: IDeferredOptions,
-	baseClass?: Class<[TInput], TCalcPropertyClass>,
+	baseClass?: Class<[TInput, string?], TBaseClass>,
 ) {
+	const inputPath = Path.build<TBaseClass>()(o => o.input, true)()
+
 	return observableClass<
-		[TInput],
-		TCalcPropertyClass,
-		TCalcPropertyClass,
-		TInput,
-		TInput
+		[TInput, string?],
+		TBaseClass,
+		TCalcPropertyClass
 	>(
-		b => b.dependCalc(VALUE_PROPERTY_DEFAULT, func, deferredOptions) as any,
+		object => new DependCalcObjectBuilder<TBaseClass, TInput, TInput>(object, inputPath as any, inputPath as any)
+			.dependCalc(VALUE_PROPERTY_DEFAULT, func, deferredOptions)
+			.object as any,
 		baseClass != null ? baseClass : CalcPropertyClass as any,
-		b => b(o => o.input as any, true),
-		b => b(o => o.input as any, true),
 	)
+}
+
+export function dependCalcPropertyFactory<
+	TInput,
+	TValue,
+	TCalcPropertyClass extends TBaseClass,
+	TBaseClass extends CalcPropertyClass<TValue, TInput>
+		= CalcPropertyClass<TValue, TInput>,
+>({
+	name,
+	func,
+	deferredOptions,
+	baseClass,
+}: {
+	name?: string,
+	func: (this: TInput) => ThenableOrIteratorOrValue<TValue>,
+	deferredOptions?: IDeferredOptions,
+	baseClass?: Class<[TInput, string?], TBaseClass>,
+}): (input: TInput, name?: string) => TCalcPropertyClass {
+	const NewProperty = calcPropertyClass<
+		TInput,
+		TValue,
+		TCalcPropertyClass,
+		TBaseClass
+	>(func, deferredOptions, baseClass)
+	return (input: TInput, _name?: string) => new NewProperty(input, _name != null ? _name : name)
 }
 
 // endregion

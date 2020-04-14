@@ -1,6 +1,6 @@
-import {AsyncValueOf, ThenableOrIteratorOrValue} from '../../../../async/async'
-import {AsyncHasDefaultValueOf} from '../../../../helpers/value-property'
+import {ThenableOrIteratorOrValue} from '../../../../async/async'
 import {
+	AsyncPropertyValueOf,
 	IPathNode,
 	TGetPropertyPathGet,
 	TGetPropertyPathGetSet,
@@ -317,37 +317,37 @@ export class Path<TObject, TValue> {
 		return pathSetValue(this.nodes, object, newValue)()
 	}
 
-	public init(): Path<TObject, TValue> {
+	public init(): Path<TObject, AsyncPropertyValueOf<TValue>> {
 		const canGetSet = pathCanGetSet(this.nodes);
 		(this as any).canGet = canGetSet && (this.nodes)[this.nodes.length - 1].getValue != null;
 		(this as any).canSet = canGetSet && (this.nodes)[this.nodes.length - 1].setValue != null
 		return this as any
 	}
 
-	public append(): Path<TObject, AsyncHasDefaultValueOf<TValue>>
+	public append(): Path<TObject, AsyncPropertyValueOf<TValue>>
 	public append<TNextValue>(
 		getValue: TGetValue1<TValue, TNextValue>,
 		isValueProperty: true,
-	): Path<TObject, AsyncValueOf<TNextValue>>
+	): Path<TObject, TNextValue>
 	public append<TNextValue>(
 		getValue: TGetValue2<TValue, TNextValue>,
 		isValueProperty?: false,
-	): Path<TObject, AsyncValueOf<TNextValue>>
+	): Path<TObject, TNextValue>
 	public append<TNextValue>(
 		getValue: TGetValue1<TValue, TNextValue>,
 		setValue: TSetValue1<TValue, TNextValue>,
 		isValueProperty: true,
-	): Path<TObject, AsyncValueOf<TNextValue>>
+	): Path<TObject, TNextValue>
 	public append<TNextValue>(
 		getValue: TGetValue2<TValue, TNextValue>,
 		setValue: TSetValue2<TValue, TNextValue>,
 		isValueProperty?: false,
-	): Path<TObject, AsyncValueOf<TNextValue>>
+	): Path<TObject, TNextValue>
 	public append<TNextValue>(
 		getValue?: any,
 		arg2?: any,
 		arg3?: any,
-	): Path<TObject, AsyncValueOf<TNextValue>> {
+	): Path<TObject, TNextValue> {
 		let setValue
 		let isValueProperty: boolean
 		if (typeof arg2 === 'function') {
@@ -386,7 +386,7 @@ export class Path<TObject, TValue> {
 
 export function pathBuild<
 	TInput,
-	TValue = TInput extends ThenableOrIteratorOrValue<infer V> ? V : TInput
+	TValue = TInput
 >(): TGetPropertyPathGetSet<TInput, TValue> {
 	const path = new Path()
 

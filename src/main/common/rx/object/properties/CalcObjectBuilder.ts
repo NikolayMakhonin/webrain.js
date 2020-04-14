@@ -55,10 +55,10 @@ export class CalcObjectBuilder<
 		calcFactory: (initValue?: TObject[Name]) => CalcProperty<TObject[Name], TInput>,
 		initValue?: TObject[Name],
 	): this {
-		return super.readable<Extract<Name, string|number>, CalcProperty<
-			TObject[Name],
-			TInput
-		>>(name as Extract<Name, string|number>, {
+		return super.readable<
+			Extract<Name, string|number>,
+			CalcProperty<TObject[Name], TInput>
+		>(name as Extract<Name, string|number>, {
 			factory(this: TObject) {
 				const property = calcFactory(initValue)
 				if (property.state.name == null) {
