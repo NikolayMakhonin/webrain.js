@@ -288,7 +288,7 @@ function pathSetValue<TObject, TValue>(
 // 	}
 // }
 
-export class Path<TObject, TValue> {
+export class Path<TObject, TValue = TObject> {
 	public readonly nodes: TPathNodes<any, any>
 	public readonly canGet: boolean
 	public readonly canSet: boolean
@@ -324,44 +324,59 @@ export class Path<TObject, TValue> {
 		return this as any
 	}
 
-	public append(): Path<TObject, AsyncPropertyValueOf<TValue>>
-	public append<TNextValue>(
+	public v<TNextValue>(
 		getValue: TGetValue1<TValue, TNextValue>,
-		isValueProperty: true,
-	): Path<TObject, TNextValue>
-	public append<TNextValue>(
-		getValue: TGetValue2<TValue, TNextValue>,
-		isValueProperty?: false,
-	): Path<TObject, TNextValue>
-	public append<TNextValue>(
-		getValue: TGetValue1<TValue, TNextValue>,
-		setValue: TSetValue1<TValue, TNextValue>,
-		isValueProperty: true,
-	): Path<TObject, TNextValue>
-	public append<TNextValue>(
-		getValue: TGetValue2<TValue, TNextValue>,
-		setValue: TSetValue2<TValue, TNextValue>,
-		isValueProperty?: false,
-	): Path<TObject, TNextValue>
-	public append<TNextValue>(
-		getValue?: any,
-		arg2?: any,
-		arg3?: any,
+		setValue?: TSetValue1<TValue, TNextValue>,
 	): Path<TObject, TNextValue> {
-		let setValue
-		let isValueProperty: boolean
-		if (typeof arg2 === 'function') {
-			setValue = arg2
-			isValueProperty = !!arg3
-		} else {
-			setValue = null
-			isValueProperty = !!arg2
-		}
+		return this.append(getValue, setValue, true)
+	}
 
-		if (getValue == null && setValue == null) {
-			this.init()
-			return null
-		}
+	public p<TNextValue>(
+		getValue: TGetValue2<TValue, TNextValue>,
+		setValue?: TSetValue2<TValue, TNextValue>,
+	): Path<TObject, TNextValue> {
+		return this.append(getValue, setValue, false)
+	}
+
+	// public append(): Path<TObject, AsyncPropertyValueOf<TValue>>
+	// public append<TNextValue>(
+	// 	getValue: TGetValue1<TValue, TNextValue>,
+	// 	isValueProperty: true,
+	// ): Path<TObject, TNextValue>
+	// public append<TNextValue>(
+	// 	getValue: TGetValue2<TValue, TNextValue>,
+	// 	isValueProperty?: false,
+	// ): Path<TObject, TNextValue>
+	// public append<TNextValue>(
+	// 	getValue: TGetValue1<TValue, TNextValue>,
+	// 	setValue: TSetValue1<TValue, TNextValue>,
+	// 	isValueProperty: true,
+	// ): Path<TObject, TNextValue>
+	public append<TNextValue>(
+		getValue: TGetValue2<TValue, TNextValue>,
+		setValue?: TSetValue2<TValue, TNextValue>,
+		isValueProperty?: boolean,
+	): Path<TObject, TNextValue>
+	// public append<TNextValue>(
+	// 	getValue?: any,
+	// 	arg2?: any,
+	// 	arg3?: any,
+	// ): Path<TObject, TNextValue>
+	{
+		// let setValue
+		// let isValueProperty: boolean
+		// if (typeof arg2 === 'function') {
+		// 	setValue = arg2
+		// 	isValueProperty = !!arg3
+		// } else {
+		// 	setValue = null
+		// 	isValueProperty = !!arg2
+		// }
+
+		// if (getValue == null && setValue == null) {
+		// 	this.init()
+		// 	return null
+		// }
 
 		this.nodes.push({
 			getValue,
@@ -381,24 +396,24 @@ export class Path<TObject, TValue> {
 	}
 
 	public static readonly concat = pathsConcat
-	public static readonly build = pathBuild
+	// public static readonly build = pathBuild
 }
 
-export function pathBuild<
-	TInput,
-	TValue = TInput
->(): TGetPropertyPathGetSet<TInput, TValue> {
-	const path = new Path()
-
-	const get: any = <TNextValue>(getPath, arg2?, arg3?) => {
-		if (path.append(getPath, arg2, arg3) == null) {
-			return path
-		}
-		return get
-	}
-
-	return get
-}
+// export function pathBuild<
+// 	TInput,
+// 	TValue = TInput
+// >(): TGetPropertyPathGetSet<TInput, TValue> {
+// 	const path = new Path()
+//
+// 	const get: any = <TNextValue>(getPath, arg2?, arg3?) => {
+// 		if (path.append(getPath, arg2, arg3) == null) {
+// 			return path
+// 		}
+// 		return get
+// 	}
+//
+// 	return get
+// }
 
 export class PathGetSet<TObject, TValue> {
 	public readonly pathGet: Path<TObject, TValue>
@@ -452,39 +467,42 @@ export type TGetNextPathSet<TObject, TValue, TNextValue>
 export type TGetNextPathGetSet<TObject, TValue, TNextValue>
 	= (nextValue: TGetPropertyPathGetSet<TObject, TValue>) => TGetPropertyPathGetSet<TObject, TNextValue>
 
-export interface IPropertyPathGet<TObject, TCommonValue, TValue> {
-	get?: TGetNextPathGet<TObject, TCommonValue, TValue>
+export type TNextPath<TObject, TValue, TNextValue>
+	= (path: Path<TObject, TValue>) => Path<TObject, TNextValue>
+
+export interface INextPathGet<TObject, TValue, TNextValue> {
+	get?: TNextPath<TObject, TValue, TNextValue>
 }
 
-export interface IPropertyPathSet<TObject, TCommonValue, TValue> {
-	set?: TGetNextPathSet<TObject, TCommonValue, void|TValue>
+export interface INextPathSet<TObject, TValue, TNextValue> {
+	set?: TNextPath<TObject, TValue, TNextValue>
 }
 
-export interface IPathGetSetFactory<TObject, TCommonValue, TValue>
-	extends IPropertyPathGet<TObject, TCommonValue, TValue>,
-		IPropertyPathSet<TObject, TCommonValue, TValue>
+export interface INextPathGetSet<TObject, TValue, TNextValue>
+	extends INextPathGet<TObject, TValue, TNextValue>,
+		INextPathSet<TObject, TValue, TNextValue>
 { }
 
 export function pathGetSetBuild<TObject, TCommonValue = TObject, TValue = TCommonValue>(
-	common: TGetNextPathGetSet<TObject, TObject, TCommonValue>,
-	getSet?: IPathGetSetFactory<TObject, TCommonValue, TValue>,
+	common: TNextPath<TObject, TObject, TCommonValue>,
+	getSet?: INextPathGetSet<TObject, TCommonValue, TValue>,
 ): PathGetSet<TObject, TValue> {
-	const commonPathArray: any = common == null ? null : common(pathBuild())()
+	const pathCommon: any = common == null ? null : common(new Path()).init()
 
-	let getPathArray: any
-	let setPathArray: any
+	let pathGet: any
+	let pathSet: any
 	if (getSet != null) {
 		const {get, set} = getSet
 		if (get != null) {
-			getPathArray = get(pathBuild())()
+			pathGet = get(new Path()).init()
 		}
 		if (set != null) {
-			setPathArray = set(pathBuild())()
+			pathSet = set(new Path()).init()
 		}
 	}
 
 	return new PathGetSet(
-		pathsConcat(commonPathArray, getPathArray),
-		pathsConcat(commonPathArray, setPathArray),
+		pathsConcat(pathCommon, pathGet),
+		pathsConcat(pathCommon, pathSet),
 	)
 }

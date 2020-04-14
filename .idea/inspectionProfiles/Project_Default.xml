@@ -8,6 +8,7 @@
       <scope name="src-test" level="INFORMATION" enabled="true" />
     </inspection_tool>
     <inspection_tool class="ES6ModulesDependencies" enabled="false" level="WEAK WARNING" enabled_by_default="false" />
+    <inspection_tool class="ES6PreferShortImport" enabled="false" level="WARNING" enabled_by_default="false" />
     <inspection_tool class="ES6RedundantAwait" enabled="true" level="WEAK WARNING" enabled_by_default="true">
       <scope name="src-test" level="INFORMATION" enabled="true" />
     </inspection_tool>
@@ -35,9 +36,6 @@
     <inspection_tool class="UnnecessaryLocalVariableJS" enabled="false" level="WARNING" enabled_by_default="false">
       <option name="m_ignoreImmediatelyReturnedVariables" value="false" />
       <option name="m_ignoreAnnotatedVariables" value="false" />
-    </inspection_tool>
-    <inspection_tool class="UnterminatedStatementJS" enabled="false" level="WARNING" enabled_by_default="false">
-      <option name="ignoreSemicolonAtEndOfBlock" value="true" />
     </inspection_tool>
   </profile>
 </component>

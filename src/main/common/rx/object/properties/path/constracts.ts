@@ -1,4 +1,4 @@
-import {AsyncValueOf, ThenableOrIterator, ThenableOrValue} from '../../../../async/async'
+import {AsyncValueOf, Thenable, ThenableOrIterator} from '../../../../async/async'
 import {VALUE_PROPERTY_DEFAULT} from '../../../../helpers/value-property'
 import {Path} from './builder'
 
@@ -9,9 +9,14 @@ import {Path} from './builder'
 
 // export type AsyncPropertyValueOf<TObject>
 // 	= PropertyValueOf<AsyncValueOf<TObject>>
+// type _ThenableOrIteratorOrValue<T> = Thenable<T> | Iterator<any, T> | T
+// type _ThenableOrIterator<T> = Thenable<T> | Iterator<any, T>
+// type _AsyncValueOf<T> = T extends _ThenableOrIterator<infer V>	? V : T
+// type _ThenableOrIterator<T> = ThenableOrIterator<T>
+// type _AsyncValueOf<T> = AsyncValueOf<T>
 
 export type AsyncPropertyValueOf<TValue>
-	// = TValue extends ThenableOrIterator<infer V>
+	// = TValue extends _ThenableOrIterator<infer V>
 	// 	? (V extends { [VALUE_PROPERTY_DEFAULT]: infer V2 }
 	// 		? V2
 	// 		: V)
@@ -27,7 +32,7 @@ export type AsyncPropertyValueOf<TValue>
 			: TValue)
 
 export type AsyncPropertyPathOf<TObject, TValue>
-	// = TValue extends ThenableOrIterator<infer V>
+	// = TValue extends _ThenableOrIterator<infer V>
 	// 	? (V extends { [VALUE_PROPERTY_DEFAULT]: infer V2 }
 	// 		? Path<TObject, V2>
 	// 		: Path<TObject, V>)

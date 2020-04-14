@@ -4,7 +4,7 @@ import {VALUE_PROPERTY_DEFAULT} from '../../../../../../../../main/common/helper
 import {getOrCreateCallState, invalidateCallState} from '../../../../../../../../main/common/rx/depend/core/CallState'
 import {getCurrentState} from '../../../../../../../../main/common/rx/depend/core/current-state'
 import {dependX} from '../../../../../../../../main/common/rx/depend/core/depend'
-import {pathGetSetBuild} from '../../../../../../../../main/common/rx/object/properties/path/builder'
+import {PathGetSet, pathGetSetBuild} from '../../../../../../../../main/common/rx/object/properties/path/builder'
 /* eslint-disable guard-for-in */
 import {assert} from '../../../../../../../../main/common/test/Assert'
 import {describe, it} from '../../../../../../../../main/common/test/Mocha'
@@ -60,21 +60,23 @@ describe('common > main > rx > properties > builder', function() {
 		// const d2 = p2(o => o.a, true)(o => o.b)(o => o.c)(o => o.d, true)()
 		// const d3 = p3(o => o.a, true)(o => o.b)(o => o.c)(o => o.d, true)()
 
-		const paths: Array<IPropertyPath<typeof object, string>> = [
-			pathGetSetBuild(b => b(o => o.a, true)(o => o.b), {
-				get: b => b(o => o.c)(o => o.d, true),
-				set: b => b(o => o.c)(o => o.d, (o, v) => { o.d = v }, true),
-			}),
-			pathGetSetBuild(null, {
-				get: b => b(o => o.a, true)(o => o.b)(o => o.c)(o => o.d, true),
-				set: b => b(o => o.a, true)(o => o.b)(o => o.c)(o => o.d, (o, v) => { o.d = v }, true),
-			}),
+		const paths: Array<PathGetSet<typeof object, string>> = [
+			// pathGetSetBuild(b => b.v(o => o.a).p(o => o.b), {
+			// 	get: b => b.p(o => o.c).v(o => o.d),
+			// 	set: b => b.p(o => o.c).v(o => o.d, (o, v) => { o.d = v }),
+			// }),
+			// pathGetSetBuild(null, {
+			// 	get: b => b.v(o => o.a).p(o => o.b).p(o => o.c).v(o => o.d),
+			// 	set: b => b.v(o => o.a).p(o => o.b).p(o => o.c).v(o => o.d, (o, v) => { o.d = v }),
+			// }),
 			pathGetSetBuild(
-				b => b(o => o.a, true)(o => o.b)(o => o.c)(o => o.d, (o, v) => { o.d = v }, true),
+				b => b.v(o => o.a).p(o => o.b).p(o => o.c).v(o => o.d, (o, v) => { o.d = v }),
 			),
 		]
 
 		for (let i = 0, len = paths.length; i < len; i++) {
+			console.log('path: ' + i)
+
 			const path = paths[i]
 			const getValue = dependX(function() {
 				assert.strictEqual(this, currentState)

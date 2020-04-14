@@ -1,5 +1,5 @@
-import {ThenableOrIteratorOrValue} from '../../../async/async'
-import {TClass, NotFunction} from '../../../helpers/typescript'
+import {IteratorOrValue, ThenableOrIteratorOrValue} from '../../../async/async'
+import {NotFunction, TClass} from '../../../helpers/typescript'
 import {VALUE_PROPERTY_DEFAULT} from '../../../helpers/value-property'
 import {depend, dependX} from '../../../rx/depend/core/depend'
 import {CallState} from '../../depend/core/CallState'
@@ -9,7 +9,9 @@ import {ObservableClass} from '../ObservableClass'
 import {ObservableObjectBuilder} from '../ObservableObjectBuilder'
 import {CalcObjectBuilder} from './CalcObjectBuilder'
 import {calcPropertyFactory} from './CalcPropertyBuilder'
+import {connectorFactory} from './ConnectorBuilder'
 import {ValueKeys} from './contracts'
+import {dependConnectorFactory} from './DependConnectorBuilder'
 import {observableClass} from './helpers'
 import {Path} from './path/builder'
 
@@ -150,7 +152,7 @@ export class DependCalcObjectBuilder<
 		func: (this: TConnector)
 			=> ThenableOrIteratorOrValue<TObject[Name]>,
 		deferredOptions?: IDeferredOptions,
-	): this & { object: { readonly [newProp in Name]: TObject[Name] } } {
+	): this { // & { object: { readonly [newProp in Name]: TObject[Name] } } {
 		const inputClass = propertyClass(build)
 		const propClass = calcPropertyClass(func, deferredOptions)
 		return super.readable(name as any, {
@@ -205,7 +207,7 @@ export function propertyClass<
 	build: (builder: DependCalcObjectBuilder<TBaseClass, TObject>) => { object: TPropertyClass },
 	baseClass?: TClass<[TObject], TBaseClass>,
 ) {
-	const objectPath = Path.build<TBaseClass>()(o => o.$object)()
+	const objectPath = new Path<TBaseClass>().p(o => o.$object).init()
 
 	return observableClass<
 		[TObject, string?],
@@ -274,7 +276,7 @@ export function calcPropertyClass<
 	deferredOptions?: IDeferredOptions,
 	baseClass?: TClass<[TInput, string?], TBaseClass>,
 ) {
-	const inputPath = Path.build<TBaseClass>()(o => o.input, true)()
+	const inputPath = new Path<TBaseClass>().v(o => o.input).init()
 
 	return observableClass<
 		[TInput, string?],
@@ -297,26 +299,41 @@ export function dependCalcPropertyFactory<
 >({
 	name,
 	calcFunc,
-	calcFuncX,
 	deferredOptions,
 	// baseClass,
 }: {
 	name?: string,
-	calcFunc: (this: TInput) => ThenableOrIteratorOrValue<TValue>,
-	calcFuncX?: void,
-	deferredOptions?: IDeferredOptions,
-	// baseClass?: TClass<[TInput, string?], TBaseClass>,
-} | {
-	name?: string,
-	calcFunc?: void,
-	calcFuncX: (this: CallState<CalcPropertyClass<TValue, TInput>, any[], TValue>) => ThenableOrIteratorOrValue<TValue>,
+	calcFunc: (this: TInput) => IteratorOrValue<TValue>,
 	deferredOptions?: IDeferredOptions,
 	// baseClass?: TClass<[TInput, string?], TBaseClass>,
 }): (input: TInput, name?: string) => CalcPropertyClass<TValue, TInput> {
-	const NewProperty = (calcFuncX != null
-		? calcPropertyClass as any
-		: calcPropertyClassX as any)
-	(
+	const NewProperty: any = calcPropertyClass(
+		calcFunc,
+		deferredOptions,
+		// baseClass,
+	)
+	return (input: TInput, _name?: string) => new NewProperty(input, _name != null ? _name : name) as any
+}
+
+export function dependCalcPropertyFactoryX<
+	TInput,
+	TValue,
+	// TCalcPropertyClass extends TBaseClass,
+	// TBaseClass extends CalcPropertyClass<TValue, TInput>
+	// 	= CalcPropertyClass<TValue, TInput>,
+>({
+	name,
+	calcFunc,
+	deferredOptions,
+	// baseClass,
+}: {
+	name?: string,
+	calcFunc: (this: CallState<CalcPropertyClass<TValue, TInput>, any[], TValue>)
+		=> IteratorOrValue<TValue>,
+	deferredOptions?: IDeferredOptions,
+	// baseClass?: TClass<[TInput, string?], TBaseClass>,
+}): (input: TInput, name?: string) => CalcPropertyClass<TValue, TInput> {
+	const NewProperty = calcPropertyClassX(
 		calcFunc,
 		deferredOptions,
 		// baseClass,
@@ -329,16 +346,53 @@ export function dependCalcPropertyFactory<
 class Class extends ObservableClass {
 	public prop1: number
 	public prop2: string
+	public prop3: string
 }
 
 new DependCalcObjectBuilder(new Class())
 	.writable('prop1')
+	// .nestedCalc('prop2', c => c
+	// 	.connectSimple('prop1', b2 => b2(o => o.prop1)),
+	// 	function() {
+	// 		const x = this.prop1
+	// 		return ''
+	// 	})
 	.nestedCalc2(
 		'prop2',
-		o => o,
+		dependConnectorFactory({
+			build: c => c
+				.connectSimple('_prop1', b => b.p(o => o.prop1)),
+		}),
 		dependCalcPropertyFactory({
-			calcFuncX() {
-				const x = this._this.input.prop1
+			*calcFunc() {
+				const x = this._prop1
+				// const y = state.prop1
+				return ''
+			},
+		}),
+	)
+	// .calc(
+	// 	'prop2',
+	// 	connectorFactory({
+	// 		buildRule: c => c
+	// 			.connect('_prop1', b2 => b2.p('prop1')),
+	// 	}),
+	// 	calcPropertyFactory({
+	// 		calcFunc(state) {
+	// 			const x = state.input._prop1
+	// 		},
+	// 	}),
+	// )
+	.nestedCalc2(
+		'prop3',
+		dependConnectorFactory({
+			build: c => c
+				.connectSimple('_prop1', b => b.p(o => o.prop1)),
+		}),
+		dependCalcPropertyFactoryX({
+			*calcFunc() {
+				const x = this._this.input._prop1
+				// const y = state.prop1
 				return ''
 			},
 		}),

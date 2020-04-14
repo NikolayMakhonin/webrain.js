@@ -6,6 +6,8 @@ export type ThenableOrValue<T> = T | Thenable<T>
 
 export type ThenableOrIterator<T> = ThenableIterator<T> | ThenableOrIteratorOrValueNested<T>
 
+export type IteratorOrValue<T> = ThenableIterator<T> | T
+
 export type ThenableOrIteratorOrValue<T> = T | ThenableOrIterator<T>
 
 export type AsyncValueOf<T> = T extends ThenableOrIterator<infer V>	? V : T
