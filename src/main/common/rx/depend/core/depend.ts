@@ -1,4 +1,5 @@
 import {isThenable, ThenableOrIterator, ThenableOrValue} from '../../../async/async'
+import {ThenableSync} from '../../../async/ThenableSync'
 import {DeferredCalc, IDeferredCalcOptions} from '../../deferred-calc/DeferredCalc'
 import {CallState, makeDependentFunc, TFuncCall} from './CallState'
 import {Func, IDeferredOptions} from './contracts'
@@ -89,8 +90,8 @@ export function _initDeferredCallState<
 				case 1: {
 					stage = 2
 					const value = funcCall(state)
-					if (isThenable(value)) {
-						state._internalError('You should use iterator instead thenable for async functions')
+					if (isThenable(value) && !(value instanceof ThenableSync)) {
+						state._internalError('You should use iterator or ThenableSync instead Promise for async functions')
 					}
 					iteratorResult.value = value
 					iteratorResult.done = true

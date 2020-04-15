@@ -7,7 +7,7 @@ import {
 	ThenableOrIteratorOrValue,
 	ThenableOrValue,
 } from '../../../async/async'
-import {resolveAsync} from '../../../async/ThenableSync'
+import {resolveAsync, ThenableSync} from '../../../async/ThenableSync'
 import {isIterator, nextHash} from '../../../helpers/helpers'
 import {webrainOptions} from '../../../helpers/webrainOptions'
 import {ObjectPool} from '../../../lists/ObjectPool'
@@ -677,15 +677,12 @@ export class CallState<
 			let value: any = this.funcCall(this)
 
 			if (!isAsync(value)) {
-				// if (isThenable(value)) {
-				// 	this._internalError('You should use iterator instead thenable for async functions')
-				// }
 				this._updateCalculatedValue(value)
 				return value
 			}
 
-			if (value instanceof Promise) {
-				this._internalError('You should use iterator instead Promise for async functions')
+			if (isThenable(value) && !(value instanceof ThenableSync)) {
+				this._internalError('You should use iterator or ThenableSync instead Promise for async functions')
 			}
 
 			_isAsync = true

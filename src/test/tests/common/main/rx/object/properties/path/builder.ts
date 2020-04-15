@@ -79,62 +79,66 @@ describe('common > main > rx > properties > builder', function() {
 			),
 		]
 
-		for (let i = 0, len = paths.length; i < len; i++) {
-			console.log('path: ' + i)
+		for (let isDeferred = 0; isDeferred <= 1; isDeferred++) {
+			for (let i = 0, len = paths.length; i < len; i++) {
+				console.log('path: ' + i)
 
-			const path = paths[i]
-			const getValue = dependX(function() {
-				assert.strictEqual(this, currentState)
+				const path = paths[i]
+				const getValue = dependX(function() {
+					assert.strictEqual(this, currentState)
+					checkCurrentState()
+					const val = path.get(object)
+					checkCurrentState()
+					return val
+				}, isDeferred ? {
+					delayBeforeCalc: 10,
+				} : null)
+
+				const callState = getOrCreateCallState(getValue)()
+
 				checkCurrentState()
-				const val = path.get(object)
+
+				currentState = callState
+				let value = await getValue()
+				currentState = null
+
 				checkCurrentState()
-				return val
-			})
+				assert.strictEqual(value, '1')
 
-			const callState = getOrCreateCallState(getValue)()
+				await path.set(object, '2')
 
-			checkCurrentState()
+				currentState = callState
+				value = await getValue()
+				currentState = null
 
-			currentState = callState
-			let value = await getValue()
-			currentState = null
+				checkCurrentState()
+				assert.strictEqual(value, '1')
+				invalidateCallState(callState)
 
-			checkCurrentState()
-			assert.strictEqual(value, '1')
+				currentState = callState
+				const valueAsync = getValue()
+				currentState = null
 
-			await path.set(object, '2')
+				checkCurrentState()
 
-			currentState = callState
-			value = await getValue()
-			currentState = null
+				currentState = callState
+				value = await valueAsync
+				currentState = null
 
-			checkCurrentState()
-			assert.strictEqual(value, '1')
-			invalidateCallState(callState)
+				checkCurrentState()
+				assert.strictEqual(value, '2')
 
-			currentState = callState
-			const valueAsync = getValue()
-			currentState = null
-			
-			checkCurrentState()
-			
-			currentState = callState
-			value = await valueAsync
-			currentState = null
-			
-			checkCurrentState()
-			assert.strictEqual(value, '2')
+				await path.set(object, '1')
+				invalidateCallState(callState)
 
-			await path.set(object, '1')
-			invalidateCallState(callState)
+				currentState = callState
+				value = await getValue()
+				currentState = null
 
-			currentState = callState
-			value = await getValue()
-			currentState = null
-
-			assert.strictEqual(currentState, null)
-			checkCurrentState()
-			assert.strictEqual(value, '1')
+				assert.strictEqual(currentState, null)
+				checkCurrentState()
+				assert.strictEqual(value, '1')
+			}
 		}
 
 		checkCurrentState()
