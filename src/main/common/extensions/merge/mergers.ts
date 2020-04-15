@@ -1,6 +1,7 @@
 /* tslint:disable:no-nested-switch ban-types use-primitive-type */
 import {isIterable, TClass, typeToDebugString} from '../../helpers/helpers'
 import {canHaveUniqueId, getObjectUniqueId} from '../../helpers/object-unique-id'
+import {webrainOptions} from '../../helpers/webrainOptions'
 import {fillMap, fillSet} from '../../lists/helpers/set'
 import {TypeMetaCollection} from '../TypeMeta'
 import {
@@ -866,19 +867,10 @@ function createPrimitiveTypeMetaMerger<TTarget = any, TSource = any>(
 		preferClone: false,
 		...meta,
 		merger: {
-			merge(
-				merge: IMergeValue,
-				base: TTarget,
-				older: TTarget | TSource,
-				newer: TTarget | TSource,
-				set?: (value: any) => void,
-				// preferCloneOlder?: boolean,
-				// preferCloneNewer?: boolean,
-				// options?: IMergeOptions,
-			): boolean {
-				set((newer as any).valueOf())
-				return true
+			canMerge(target: TTarget, source: TSource): boolean {
+				return deepEqualsPrimitive(target, source) ? null : false
 			},
+			preferClone: o => Object.isFrozen(o) ? true : null,
 			...(meta ? meta.merger : {}),
 		},
 	}
@@ -1003,12 +995,71 @@ registerMerger<string, string>(String as any, {
 
 registerMergerPrimitive(Number)
 registerMergerPrimitive(Boolean)
-registerMergerPrimitive(Array)
+// registerMergerPrimitive(Array)
 registerMergerPrimitive(Error)
 
 // endregion
 
 // region Array
+
+function deepEqualsPrimitive(o1, o2) {
+	if (o1 === o2) {
+		return true
+	}
+
+	if (o1 == null || o2 == null) {
+		return false
+	}
+
+	if (webrainOptions.equalsFunc && webrainOptions.equalsFunc(o1, o2)) {
+		return true
+	}
+
+	if (Array.isArray(o1)) {
+		if (!Array.isArray(o2)) {
+			return false
+		}
+
+		const len = o1.length
+		if (o2.length !== len) {
+			return false
+		}
+
+		for (let i = 0; i < len; i++) {
+			if (!deepEqualsPrimitive(o1[i], o2[i])) {
+				return false
+			}
+		}
+	} else if (o1.constructor === Object) {
+		if (o2.constructor !== Object) {
+			return false
+		}
+
+		for (const key in o1) {
+			if (Object.prototype.hasOwnProperty.call(o1, key)) {
+				if (!Object.prototype.hasOwnProperty.call(o2, key)) {
+					return false
+				}
+				if (!deepEqualsPrimitive(o1[key], o2[key])) {
+					return false
+				}
+			}
+		}
+	} else {
+		return false
+	}
+
+	return true
+}
+
+registerMerger<any[], any[]>(Array, {
+	merger: {
+		canMerge(target: any[], source: any[]): boolean {
+			return deepEqualsPrimitive(target, source) ? null : false
+		},
+	},
+	preferClone: o => Object.isFrozen(o) ? true : null,
+})
 
 // @ts-ignore
 // registerMerger<any[], any[]>(Array, {

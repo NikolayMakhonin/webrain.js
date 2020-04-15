@@ -712,6 +712,10 @@ export class CallState<
 						this._parentCallState = null
 					}
 					this._updateCalculatedError(error)
+
+					// TODO delete this line (it needed only for replace old deepSubscribe to new depend funcs)
+					console.error(error)
+
 					throw error
 				},
 			)

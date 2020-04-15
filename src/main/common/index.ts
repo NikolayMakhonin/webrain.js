@@ -54,6 +54,7 @@ export {DependMap} from './rx/depend/lists/DependMap'
 export {DependSet} from './rx/depend/lists/DependSet'
 export {dependCalcPropertyFactory, dependCalcPropertyFactoryX} from './rx/object/properties/DependCalcObjectBuilder'
 export {dependConnectorFactory} from './rx/object/properties/DependConnectorBuilder'
+export {noSubscribe} from './rx/depend/core/current-state'
 
 // region Interfaces
 
