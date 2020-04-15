@@ -1,6 +1,6 @@
 /* tslint:disable:no-identical-functions no-shadowed-variable no-duplicate-string no-construct use-primitive-type */
 import {isThenable, Thenable, ThenableOrValue} from '../../../../../../../main/common/async/async'
-import {resolveAsync} from '../../../../../../../main/common/async/ThenableSync'
+import {resolveAsync, ThenableSync} from '../../../../../../../main/common/async/ThenableSync'
 import {nextHash} from '../../../../../../../main/common/helpers/helpers'
 import {
 	callStateHashTable,
@@ -562,9 +562,16 @@ function checkFuncAsync<TValue>(
 	checkCallHistory()
 	checkDependenciesDuplicates(funcCall)
 	assert.strictEqual(getCurrentState(), null)
-	let promise
+	let thenable
 	try {
-		promise = checkAsync(funcCall())
+		thenable = checkAsync(funcCall())
+			.then(o => {
+				assert.strictEqual(getCurrentState(), null)
+				return o
+			}, o => {
+				assert.strictEqual(getCurrentState(), null)
+				return ThenableSync.createRejected(o)
+			})
 	} catch (err) {
 		if (err instanceof InternalError) {
 			assert.strictEqual(getCurrentState(), null)
@@ -580,7 +587,7 @@ function checkFuncAsync<TValue>(
 		let value
 		let error
 		try {
-			value = await promise
+			value = await thenable
 		} catch (err) {
 			if (err instanceof InternalError) {
 				assert.strictEqual(getCurrentState(), null)

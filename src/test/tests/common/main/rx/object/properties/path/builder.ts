@@ -1,5 +1,6 @@
 /* tslint:disable:no-duplicate-string */
 import {ThenableIterator} from '../../../../../../../../main/common/async/async'
+import {resolveAsync, ThenableSync} from '../../../../../../../../main/common/async/ThenableSync'
 import {VALUE_PROPERTY_DEFAULT} from '../../../../../../../../main/common/helpers/value-property'
 import {getOrCreateCallState, invalidateCallState} from '../../../../../../../../main/common/rx/depend/core/CallState'
 import {getCurrentState} from '../../../../../../../../main/common/rx/depend/core/current-state'
@@ -14,7 +15,10 @@ describe('common > main > rx > properties > builder', function() {
 	it('base', async function() {
 		let currentState = null
 		function checkCurrentState() {
-			assert.strictEqual(getCurrentState(), currentState)
+			const _currentState = getCurrentState()
+			if (_currentState !== currentState) {
+				assert.strictEqual(_currentState, currentState)
+			}
 		}
 
 		const innerObject = {
@@ -27,25 +31,26 @@ describe('common > main > rx > properties > builder', function() {
 			a: {
 				get b() {
 					checkCurrentState()
-					return (async () => {
+					return resolveAsync(delay(0), () => {
 						checkCurrentState()
-						await delay(0)
-						assert.strictEqual(getCurrentState(), null)
-						// checkCurrentState()
-						return {
-							get c() {
-								checkCurrentState()
-								const iterator: ThenableIterator<typeof innerObject> = (function*() {
+						return delay(0)
+					})
+						.then(() => {
+							checkCurrentState()
+							return {
+								get c() {
 									checkCurrentState()
-									yield delay(0)
-									checkCurrentState()
-									return innerObject
-								})()
+									const iterator: ThenableIterator<typeof innerObject> = (function*() {
+										checkCurrentState()
+										yield delay(0)
+										checkCurrentState()
+										return innerObject
+									})()
 
-								return iterator
-							},
-						}
-					})()
+									return iterator
+								},
+							}
+						})
 				},
 			},
 		}
@@ -61,14 +66,14 @@ describe('common > main > rx > properties > builder', function() {
 		// const d3 = p3(o => o.a, true)(o => o.b)(o => o.c)(o => o.d, true)()
 
 		const paths: Array<PathGetSet<typeof object, string>> = [
-			// pathGetSetBuild(b => b.v(o => o.a).p(o => o.b), {
-			// 	get: b => b.p(o => o.c).v(o => o.d),
-			// 	set: b => b.p(o => o.c).v(o => o.d, (o, v) => { o.d = v }),
-			// }),
-			// pathGetSetBuild(null, {
-			// 	get: b => b.v(o => o.a).p(o => o.b).p(o => o.c).v(o => o.d),
-			// 	set: b => b.v(o => o.a).p(o => o.b).p(o => o.c).v(o => o.d, (o, v) => { o.d = v }),
-			// }),
+			pathGetSetBuild(b => b.v(o => o.a).p(o => o.b), {
+				get: b => b.p(o => o.c).v(o => o.d),
+				set: b => b.p(o => o.c).v(o => o.d, (o, v) => { o.d = v }),
+			}),
+			pathGetSetBuild(null, {
+				get: b => b.v(o => o.a).p(o => o.b).p(o => o.c).v(o => o.d),
+				set: b => b.v(o => o.a).p(o => o.b).p(o => o.c).v(o => o.d, (o, v) => { o.d = v }),
+			}),
 			pathGetSetBuild(
 				b => b.v(o => o.a).p(o => o.b).p(o => o.c).v(o => o.d, (o, v) => { o.d = v }),
 			),

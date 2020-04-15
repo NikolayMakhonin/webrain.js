@@ -700,7 +700,6 @@ export class CallState<
 				value as ThenableOrIteratorOrValue<TResultInner>,
 				val => {
 					if ((this.status & Flag_Async) !== 0) {
-						// setCurrentState(this._parentCallState)
 						this._parentCallState = null
 					}
 					this._updateCalculatedValue(val as any)
@@ -708,7 +707,6 @@ export class CallState<
 				},
 				error => {
 					if ((this.status & Flag_Async) !== 0) {
-						// setCurrentState(this._parentCallState)
 						this._parentCallState = null
 					}
 					this._updateCalculatedError(error)

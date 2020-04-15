@@ -11,6 +11,7 @@ import {
 	TReject,
 	TResolve, TResolveAsyncValue,
 } from './async'
+import {getCurrentState, setCurrentState} from "../rx/depend/core/current-state";
 
 export type TExecutor<TValue = any> = (
 	resolve: TResolve<TValue>,
@@ -269,15 +270,23 @@ export class ThenableSync<TValue = any> implements IThenable<TValue> {
 					this._onrejected = _onrejected = []
 				}
 
+				const callState = getCurrentState()
+
 				const rejected = onrejected
 					? (value): any => {
 						let isError
+
+						const prevState = getCurrentState()
 						try {
+							setCurrentState(callState)
 							value = onrejected(value)
 						} catch (err) {
 							isError = true
 							value = err
+						} finally {
+							setCurrentState(prevState)
 						}
+
 						if (isError) {
 							result.reject(value)
 						} else {
@@ -296,12 +305,18 @@ export class ThenableSync<TValue = any> implements IThenable<TValue> {
 				_onfulfilled.push(onfulfilled
 					? (value: any): any => {
 						let isError
+
+						const prevState = getCurrentState()
 						try {
-							value = onfulfilled(value)
+							setCurrentState(callState)
+							value = onfulfilled(value) as any
 						} catch (err) {
 							isError = true
 							value = err
+						} finally {
+							setCurrentState(prevState)
 						}
+
 						if (isError) {
 							resolveValue(value, rejected, rejected, customResolveValue)
 						} else {
