@@ -1,7 +1,8 @@
 import {webrainOptions} from '../../helpers/webrainOptions'
+import {CallStatusShort, ICallStateAny} from '../depend/core/contracts'
 
 export function makeDependPropertySubscriber(name: string | number) {
-	return function initDependCalcState(state) {
+	return function initDependCalcState(state: ICallStateAny) {
 		let value
 		let dependUnsubscribe
 		state._this.propertyChanged.hasSubscribersObservable
@@ -12,21 +13,27 @@ export function makeDependPropertySubscriber(name: string | number) {
 				}
 
 				if (hasSubscribers) {
-					value = state.getValue()
+					value = state.value
+					state.getValue()
 					dependUnsubscribe = state
 						.subscribe(() => {
-							const newValue = state.getValue()
-							// resolveAsync(state.getValue(), newValue => {
-							const oldValue = value
-							value = newValue
-							if (!(oldValue === newValue || webrainOptions.equalsFunc && webrainOptions.equalsFunc(oldValue, newValue))) {
-								state._this.propertyChanged.emit({
-									name,
-									oldValue,
-									newValue,
-								})
+							switch (state.statusShort) {
+								case CallStatusShort.Invalidated:
+									state.getValue()
+									break
+								case CallStatusShort.CalculatedValue:
+									const oldValue = value
+									const newValue = state.value
+									value = newValue
+									if (!(oldValue === newValue || webrainOptions.equalsFunc && webrainOptions.equalsFunc(oldValue, newValue))) {
+										state._this.propertyChanged.emit({
+											name,
+											oldValue,
+											newValue,
+										})
+									}
+									break
 							}
-							// })
 						})
 				}
 			})

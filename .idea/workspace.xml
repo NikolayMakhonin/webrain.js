@@ -30,11 +30,13 @@
     <select />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="69b2ee16-521b-4efd-b473-8e19e3df4d09" name="Default Changelist" comment="">
+    <list default="true" id="69b2ee16-521b-4efd-b473-8e19e3df4d09" name="Default Changelist" comment="Object builders refactoring and debugging... Tests OK.">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/common/rx/depend/core/CallState.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/common/rx/depend/core/CallState.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/common/rx/depend/core/depend.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/common/rx/depend/core/depend.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/test/tests/common/main/rx/object/properties/path/builder.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/test/tests/common/main/rx/object/properties/path/builder.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/common/rx/depend/core/contracts.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/common/rx/depend/core/contracts.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/common/rx/depend/core/current-state.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/common/rx/depend/core/current-state.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/common/rx/depend/core/deferred.ts" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/common/rx/object/helpers.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/common/rx/object/helpers.ts" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -108,12 +110,12 @@
     <property name="ts.external.directory.path" value="L:\Work\_GIT\GitHub\NodeJs\modules\webrain\node_modules\typescript\lib" />
   </component>
   <component name="RecentsManager">
-    <key name="MoveFile.RECENT_KEYS">
-      <recent name="L:\Work\_GIT\GitHub\NodeJs\modules\webrain\_trash\src\main\common\rx\depend" />
-      <recent name="L:\Work\_GIT\GitHub\NodeJs\modules\webrain\src\main\common\rx\object\properties\path" />
-      <recent name="L:\Work\_GIT\GitHub\NodeJs\modules\webrain\src\main\common\rx\depend" />
+    <key name="CopyFile.RECENT_KEYS">
+      <recent name="L:\Work\_GIT\GitHub\NodeJs\modules\webrain\src\main\common\rx\object\properties" />
+      <recent name="L:\Work\_GIT\GitHub\NodeJs\modules\webrain\src\test\tests\common\main\rx\object\properties\path" />
       <recent name="L:\Work\_GIT\GitHub\NodeJs\modules\webrain\src\main\common\rx\depend\lists" />
-      <recent name="L:\Work\_GIT\GitHub\NodeJs\modules\webrain\src\main\common\rx\depend\core" />
+      <recent name="L:\Work\_GIT\GitHub\NodeJs\modules\webrain\src\main\common\lists" />
+      <recent name="L:\Work\_GIT\GitHub\NodeJs\modules\webrain\src\test\tests\common\main\lists" />
     </key>
     <key name="es6.move.members.recent.items">
       <recent name="L:\Work\_GIT\GitHub\NodeJs\modules\webrain\src\main\common\rx\object\properties\helpers.ts" />
@@ -122,12 +124,12 @@
       <recent name="L:\Work\_GIT\GitHub\NodeJs\modules\webrain\src\main\common\rx\object\helpers.ts" />
       <recent name="L:\Work\_GIT\GitHub\NodeJs\modules\webrain\src\main\common\rx\object\properties\CalcPropertyState.ts" />
     </key>
-    <key name="CopyFile.RECENT_KEYS">
-      <recent name="L:\Work\_GIT\GitHub\NodeJs\modules\webrain\src\main\common\rx\object\properties" />
-      <recent name="L:\Work\_GIT\GitHub\NodeJs\modules\webrain\src\test\tests\common\main\rx\object\properties\path" />
+    <key name="MoveFile.RECENT_KEYS">
+      <recent name="L:\Work\_GIT\GitHub\NodeJs\modules\webrain\_trash\src\main\common\rx\depend" />
+      <recent name="L:\Work\_GIT\GitHub\NodeJs\modules\webrain\src\main\common\rx\object\properties\path" />
+      <recent name="L:\Work\_GIT\GitHub\NodeJs\modules\webrain\src\main\common\rx\depend" />
       <recent name="L:\Work\_GIT\GitHub\NodeJs\modules\webrain\src\main\common\rx\depend\lists" />
-      <recent name="L:\Work\_GIT\GitHub\NodeJs\modules\webrain\src\main\common\lists" />
-      <recent name="L:\Work\_GIT\GitHub\NodeJs\modules\webrain\src\test\tests\common\main\lists" />
+      <recent name="L:\Work\_GIT\GitHub\NodeJs\modules\webrain\src\main\common\rx\depend\core" />
     </key>
   </component>
   <component name="RunManager" selected="Mocha.Watch">
@@ -442,14 +444,7 @@
       <workItem from="1586860395998" duration="6502000" />
       <workItem from="1586866992744" duration="5668000" />
       <workItem from="1586872696123" duration="6185000" />
-      <workItem from="1586887545919" duration="21939000" />
-    </task>
-    <task id="LOCAL-00341" summary="optimizing...">
-      <created>1585806368145</created>
-      <option name="number" value="00341" />
-      <option name="presentableId" value="LOCAL-00341" />
-      <option name="project" value="LOCAL" />
-      <updated>1585806368146</updated>
+      <workItem from="1586887545919" duration="27975000" />
     </task>
     <task id="LOCAL-00342" summary="optimizing...">
       <created>1585845641015</created>
@@ -787,7 +782,14 @@
       <option name="project" value="LOCAL" />
       <updated>1586963033226</updated>
     </task>
-    <option name="localTasksCounter" value="390" />
+    <task id="LOCAL-00390" summary="Object builders refactoring and debugging... Tests OK.">
+      <created>1586966705118</created>
+      <option name="number" value="00390" />
+      <option name="presentableId" value="LOCAL-00390" />
+      <option name="project" value="LOCAL" />
+      <updated>1586966705118</updated>
+    </task>
+    <option name="localTasksCounter" value="391" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -880,34 +882,34 @@
       <screen x="0" y="0" width="1920" height="882" />
     </state>
     <state x="651" y="254" key="ANALYSIS_DLG_com.intellij.analysis.BaseAnalysisAction$1/0.0.1920.882@0.0.1920.882" timestamp="1586875498549" />
-    <state x="0" y="0" width="1918" height="882" key="CommitChangelistDialog2" timestamp="1586963032296">
+    <state x="0" y="0" width="1918" height="882" key="CommitChangelistDialog2" timestamp="1587028935447">
       <screen x="0" y="0" width="1920" height="882" />
     </state>
-    <state x="0" y="0" width="1918" height="882" key="CommitChangelistDialog2/0.0.1920.882@0.0.1920.882" timestamp="1586963032296" />
+    <state x="0" y="0" width="1918" height="882" key="CommitChangelistDialog2/0.0.1920.882@0.0.1920.882" timestamp="1587028935447" />
     <state width="685" height="550" key="DebuggerActiveHint" timestamp="1586960017206">
       <screen x="0" y="0" width="1920" height="882" />
     </state>
     <state width="685" height="550" key="DebuggerActiveHint/0.0.1920.882@0.0.1920.882" timestamp="1586960017206" />
-    <state x="0" y="4" width="1920" height="875" key="DiffContextDialog" timestamp="1586962885015">
+    <state x="0" y="4" width="1920" height="875" key="DiffContextDialog" timestamp="1587028933510">
       <screen x="0" y="0" width="1920" height="882" />
     </state>
-    <state x="0" y="4" width="1920" height="875" key="DiffContextDialog/0.0.1920.882@0.0.1920.882" timestamp="1586962885015" />
-    <state width="1892" height="137" key="GridCell.Tab.0.bottom" timestamp="1586966403673">
+    <state x="0" y="4" width="1920" height="875" key="DiffContextDialog/0.0.1920.882@0.0.1920.882" timestamp="1587028933510" />
+    <state width="1892" height="166" key="GridCell.Tab.0.bottom" timestamp="1587028705089">
       <screen x="0" y="0" width="1920" height="882" />
     </state>
-    <state width="1892" height="137" key="GridCell.Tab.0.bottom/0.0.1920.882@0.0.1920.882" timestamp="1586966403673" />
-    <state width="1892" height="137" key="GridCell.Tab.0.center" timestamp="1586966403672">
+    <state width="1892" height="166" key="GridCell.Tab.0.bottom/0.0.1920.882@0.0.1920.882" timestamp="1587028705089" />
+    <state width="1892" height="166" key="GridCell.Tab.0.center" timestamp="1587028705089">
       <screen x="0" y="0" width="1920" height="882" />
     </state>
-    <state width="1892" height="137" key="GridCell.Tab.0.center/0.0.1920.882@0.0.1920.882" timestamp="1586966403672" />
-    <state width="1892" height="137" key="GridCell.Tab.0.left" timestamp="1586966403672">
+    <state width="1892" height="166" key="GridCell.Tab.0.center/0.0.1920.882@0.0.1920.882" timestamp="1587028705089" />
+    <state width="1892" height="166" key="GridCell.Tab.0.left" timestamp="1587028705089">
       <screen x="0" y="0" width="1920" height="882" />
     </state>
-    <state width="1892" height="137" key="GridCell.Tab.0.left/0.0.1920.882@0.0.1920.882" timestamp="1586966403672" />
-    <state width="1892" height="137" key="GridCell.Tab.0.right" timestamp="1586966403673">
+    <state width="1892" height="166" key="GridCell.Tab.0.left/0.0.1920.882@0.0.1920.882" timestamp="1587028705089" />
+    <state width="1892" height="166" key="GridCell.Tab.0.right" timestamp="1587028705089">
       <screen x="0" y="0" width="1920" height="882" />
     </state>
-    <state width="1892" height="137" key="GridCell.Tab.0.right/0.0.1920.882@0.0.1920.882" timestamp="1586966403673" />
+    <state width="1892" height="166" key="GridCell.Tab.0.right/0.0.1920.882@0.0.1920.882" timestamp="1587028705089" />
     <state width="1892" height="340" key="GridCell.Tab.1.bottom" timestamp="1586966382735">
       <screen x="0" y="0" width="1920" height="882" />
     </state>

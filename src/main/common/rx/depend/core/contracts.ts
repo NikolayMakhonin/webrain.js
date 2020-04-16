@@ -1,4 +1,5 @@
 import {IThenable, ThenableOrValue} from '../../../async/async'
+import {ISubscriber, IUnsubscribe} from '../../subjects/observable'
 import {TFuncCall} from './CallState'
 
 export type Func<TThis, TArgs extends any[], TValue = void> = (this: TThis, ...args: TArgs) => TValue
@@ -35,6 +36,14 @@ export enum CallStatus {
 
 	Flag_InternalError = 8192,
 }
+
+export enum CallStatusShort {
+	Handling = 'Handling',
+	Invalidated = 'Invalidated',
+	CalculatedValue = 'CalculatedValue',
+	CalculatedError = 'CalculatedError',
+}
+
 export type TIteratorOrValue<T> = Iterator<T> | T
 export type TResultOuter<TResultInner> = TResultInner extends Iterator<infer V> ? ThenableOrValue<V> : TResultInner
 export type TInnerValue<TResultInner> = TResultInner extends Iterator<infer V> ? V : TResultInner
@@ -58,11 +67,11 @@ export interface ICallState<
 
 	readonly valueIds: Int32Array
 
-	status: CallStatus
+	readonly status: CallStatus
 
-	valueAsync: IThenable<TInnerValue<TResultInner>>
-	value: TInnerValue<TResultInner>
-	error: any
+	readonly valueAsync: IThenable<TInnerValue<TResultInner>>
+	readonly value: TInnerValue<TResultInner>
+	readonly error: any
 
 	readonly data: {
 		[key: string]: any;
@@ -73,7 +82,8 @@ export interface ICallState<
 	// region calculable
 
 	readonly hasSubscribers: boolean
-	readonly isHandling: boolean
+
+	readonly statusShort: CallStatusShort
 
 	// endregion
 
@@ -84,6 +94,15 @@ export interface ICallState<
 	): TResultOuter<TResultInner>
 
 	invalidate(): void
+
+	/**
+	 * Subscribe "on invalidated" or "on calculated"
+	 * @param subscriber The first argument is {@link ICallState};
+	 * [statusShort]{@link ICallState.statusShort} is [Invalidated]{@link CallStatusShort.Invalidated},
+	 * [CalculatedValue]{@link CallStatusShort.CalculatedValue}
+	 * or [CalculatedError]{@link CallStatusShort.CalculatedError}
+	 */
+	subscribe(subscriber: ISubscriber<this>): IUnsubscribe
 
 	// endregion
 }

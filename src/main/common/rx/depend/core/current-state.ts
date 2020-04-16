@@ -1,7 +1,6 @@
+import {IteratorOrValue, ThenableIterator} from '../../../async/async'
+import {isIterator} from '../../../helpers/helpers'
 import {TCallState} from './CallState'
-import {Func} from "./contracts";
-import {IteratorOrValue, ThenableIterator} from "../../../async/async";
-import {isIterator} from "../../../helpers/helpers";
 
 let currentState: TCallState = null
 

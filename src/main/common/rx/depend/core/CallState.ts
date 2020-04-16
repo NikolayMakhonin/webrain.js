@@ -15,7 +15,15 @@ import {PairingHeap, PairingNode} from '../../../lists/PairingHeap'
 import {DeferredCalc, IDeferredCalcOptions} from '../../deferred-calc/DeferredCalc'
 import {ISubscriber, IUnsubscribe} from '../../subjects/observable'
 import {ISubject, Subject} from '../../subjects/subject'
-import {CallStatus, Func, ICallState, ILinkItem, TCall, TInnerValue, TResultOuter} from './contracts'
+import {
+	CallStatus, CallStatusShort,
+	Func,
+	ICallState,
+	ILinkItem,
+	TCall,
+	TInnerValue,
+	TResultOuter,
+} from './contracts'
 import {getCurrentState, setCurrentState} from './current-state'
 import {InternalError} from './helpers'
 
@@ -298,6 +306,25 @@ export function statusToString(status: CallStatus): string {
 	return buffer.join(' | ')
 }
 
+export function toStatusShort(status: CallStatus): CallStatusShort {
+	if ((status & (Flag_Check | Flag_Calculating | Flag_Invalidating)) !== 0) {
+		return CallStatusShort.Handling
+	}
+	if ((status & Flag_Invalidated) !== 0) {
+		return CallStatusShort.Invalidated
+	}
+	if ((status & Flag_Calculated) !== 0) {
+		if ((status & Flag_HasValue) !== 0) {
+			return CallStatusShort.CalculatedValue
+		}
+		if ((status & Flag_HasError) !== 0) {
+			return CallStatusShort.CalculatedError
+		}
+	}
+
+	throw new Error(`Cannot convert CallStatus (${statusToString(status)}) to CallStatusShort`)
+}
+
 // endregion
 
 // endregion
@@ -306,6 +333,7 @@ export function statusToString(status: CallStatus): string {
 
 // tslint:disable-next-line:no-construct use-primitive-type
 export const ALWAYS_CHANGE_VALUE = new String('ALWAYS_CHANGE_VALUE')
+// tslint:disable-next-line:no-construct use-primitive-type
 export const NO_CHANGE_VALUE = new String('NO_CHANGE_VALUE')
 
 type Flag_Before_Calc = 1
@@ -525,7 +553,7 @@ export class CallState<
 	/** @internal */
 	public _unsubscribersLength: number = 0
 
-	private _invalidatedSubject: ISubject<this> = null
+	private _changedSubject: ISubject<this> = null
 
 	// endregion
 
@@ -533,11 +561,11 @@ export class CallState<
 
 	public get hasSubscribers(): boolean {
 		return this._subscribersFirst != null
-			|| this._invalidatedSubject != null && this._invalidatedSubject.hasSubscribers
+			|| this._changedSubject != null && this._changedSubject.hasSubscribers
 	}
 
-	public get isHandling(): boolean {
-		return (this.status & (Flag_Check | Flag_Calculating | Flag_Invalidating)) !== 0
+	public get statusShort(): CallStatusShort {
+		return toStatusShort(this.status)
 	}
 
 	public get statusString(): string {
@@ -1016,6 +1044,7 @@ export class CallState<
 			this.error = void 0
 			this.value = value
 			this._afterCalc(prevStatus, true)
+			this.onChanged()
 		} else {
 			this._afterCalc(prevStatus, false)
 		}
@@ -1046,6 +1075,7 @@ export class CallState<
 		) {
 			this.error = error
 			this._afterCalc(prevStatus, true)
+			this.onChanged()
 		} else {
 			this._afterCalc(prevStatus, false)
 		}
@@ -1117,7 +1147,7 @@ export class CallState<
 		}
 
 		if (isInvalidated(status) && !isInvalidated(prevStatus)) {
-			this.onInvalidated()
+			this.onChanged()
 		}
 
 		if (statusBefore !== 0 || statusAfter !== 0) {
@@ -1168,21 +1198,28 @@ export class CallState<
 
 	// region 6: subscribe other tools
 
-	private onInvalidated() {
-		const {_invalidatedSubject} = this
-		if (_invalidatedSubject != null) {
+	private onChanged() {
+		const {_changedSubject} = this
+		if (_changedSubject != null) {
 			// TODO setTimeout needed until not resolved problem
 			// with delete subscriber link during iterate subscribers links
-			setTimeout(() => _invalidatedSubject.emit(this), 0)
+			setTimeout(() => _changedSubject.emit(this), 0)
 		}
 	}
 
+	/**
+	 * Subscribe "on invalidated" or "on calculated"
+	 * @param subscriber The first argument is {@link ICallState};
+	 * [statusShort]{@link ICallState.statusShort} is [Invalidated]{@link CallStatusShort.Invalidated},
+	 * [CalculatedValue]{@link CallStatusShort.CalculatedValue}
+	 * or [CalculatedError]{@link CallStatusShort.CalculatedError}
+	 */
 	public subscribe(subscriber: ISubscriber<this>): IUnsubscribe {
-		let {_invalidatedSubject} = this
-		if (_invalidatedSubject == null) {
-			this._invalidatedSubject = _invalidatedSubject = new Subject<this>()
+		let {_changedSubject} = this
+		if (_changedSubject == null) {
+			this._changedSubject = _changedSubject = new Subject<this>()
 		}
-		return _invalidatedSubject.subscribe(subscriber)
+		return _changedSubject.subscribe(subscriber)
 	}
 
 	// endregion
@@ -1613,7 +1650,7 @@ export const reduceCallStatesHeap = new PairingHeap<TCallState>({
 function reduceCallStatesHeapAdd(states: TCallState[]) {
 	for (let i = 0, len = states.length; i < len; i++) {
 		const callState = states[i]
-		if (!callState.hasSubscribers && !callState.isHandling) {
+		if (!callState.hasSubscribers && callState.statusShort !== CallStatusShort.Handling) {
 			reduceCallStatesHeap.add(callState)
 		}
 	}
