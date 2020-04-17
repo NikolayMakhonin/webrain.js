@@ -30,7 +30,9 @@
     <select />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="69b2ee16-521b-4efd-b473-8e19e3df4d09" name="Default Changelist" comment="depend: added lazy mode, but not tested.">
+    <list default="true" id="69b2ee16-521b-4efd-b473-8e19e3df4d09" name="Default Changelist" comment="">
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/test/tests/common/main/rx/depend/dependent-func.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/test/tests/common/main/rx/depend/dependent-func.ts" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/test/tests/common/main/rx/depend/src/helpers.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/test/tests/common/main/rx/depend/src/helpers.ts" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
@@ -440,14 +442,7 @@
       <workItem from="1586866992744" duration="5668000" />
       <workItem from="1586872696123" duration="6185000" />
       <workItem from="1586887545919" duration="37770000" />
-      <workItem from="1587105271608" duration="17323000" />
-    </task>
-    <task id="LOCAL-00345" summary="optimizing... Tests OK.">
-      <created>1585850401797</created>
-      <option name="number" value="00345" />
-      <option name="presentableId" value="LOCAL-00345" />
-      <option name="project" value="LOCAL" />
-      <updated>1585850401797</updated>
+      <workItem from="1587105271608" duration="18325000" />
     </task>
     <task id="LOCAL-00346" summary="optimizing... Tests OK.">
       <created>1585941276129</created>
@@ -785,7 +780,14 @@
       <option name="project" value="LOCAL" />
       <updated>1587133993442</updated>
     </task>
-    <option name="localTasksCounter" value="394" />
+    <task id="LOCAL-00394" summary="depend: lazy mode, testing and debugging...">
+      <created>1587134188915</created>
+      <option name="number" value="00394" />
+      <option name="presentableId" value="LOCAL-00394" />
+      <option name="project" value="LOCAL" />
+      <updated>1587134188915</updated>
+    </task>
+    <option name="localTasksCounter" value="395" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -846,7 +848,6 @@
   <component name="VcsManagerConfiguration">
     <option name="CHECK_CODE_SMELLS_BEFORE_PROJECT_COMMIT" value="false" />
     <option name="CHECK_NEW_TODO" value="false" />
-    <MESSAGE value="DependMap, DependSet is completed" />
     <MESSAGE value="CallState - added subscribe other tools" />
     <MESSAGE value="Integrate depend to CalcProperty" />
     <MESSAGE value="Fix facade" />
@@ -871,17 +872,18 @@
     <MESSAGE value="Object builders refactoring and debugging... Tests OK." />
     <MESSAGE value="CallState.subscribe() will emit &quot;on invalidated&quot; and &quot;on calculated&quot;. Tests OK." />
     <MESSAGE value="depend: added lazy mode, but not tested." />
-    <option name="LAST_COMMIT_MESSAGE" value="depend: added lazy mode, but not tested." />
+    <MESSAGE value="depend: lazy mode, testing and debugging..." />
+    <option name="LAST_COMMIT_MESSAGE" value="depend: lazy mode, testing and debugging..." />
   </component>
   <component name="WindowStateProjectService">
     <state x="651" y="254" key="ANALYSIS_DLG_com.intellij.analysis.BaseAnalysisAction$1" timestamp="1586875498549">
       <screen x="0" y="0" width="1920" height="882" />
     </state>
     <state x="651" y="254" key="ANALYSIS_DLG_com.intellij.analysis.BaseAnalysisAction$1/0.0.1920.882@0.0.1920.882" timestamp="1586875498549" />
-    <state x="0" y="0" width="1918" height="882" key="CommitChangelistDialog2" timestamp="1587133992291">
+    <state x="0" y="0" width="1918" height="882" key="CommitChangelistDialog2" timestamp="1587134187089">
       <screen x="0" y="0" width="1920" height="882" />
     </state>
-    <state x="0" y="0" width="1918" height="882" key="CommitChangelistDialog2/0.0.1920.882@0.0.1920.882" timestamp="1587133992291" />
+    <state x="0" y="0" width="1918" height="882" key="CommitChangelistDialog2/0.0.1920.882@0.0.1920.882" timestamp="1587134187089" />
     <state width="685" height="550" key="DebuggerActiveHint" timestamp="1587132753603">
       <screen x="0" y="0" width="1920" height="882" />
     </state>
