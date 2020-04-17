@@ -1,5 +1,5 @@
 /* tslint:disable:no-identical-functions no-shadowed-variable no-duplicate-string no-construct use-primitive-type */
-import {isThenable, Thenable, ThenableOrValue} from '../../../../../../../main/common/async/async'
+import {isAsync, isThenable, Thenable, ThenableOrValue} from '../../../../../../../main/common/async/async'
 import {resolveAsync, ThenableSync} from '../../../../../../../main/common/async/ThenableSync'
 import {nextHash} from '../../../../../../../main/common/helpers/helpers'
 import {
@@ -332,13 +332,18 @@ function funcSync(id: string, deferred: boolean, isLazy?: boolean) {
 		if (Array.isArray(dependencies)) {
 			for (let i = 0, len = dependencies.length; i < len * 2; i++) {
 				const dependency = dependencies[i % len]
-				const value = isLazy
-					? dependency.state.getValue(true)
-					: dependency()
 				if (isLazy) {
+					const value = dependency.state.getValue(true)
 					assert.strictEqual(isAsync(value), false)
+					if ((dependency.state.status & CallStatus.Flag_Calculated) === 0) {
+						assert.strictEqual(value, dependency.state.value)
+					} else {
+						assert.strictEqual(value + '', dependency.id)
+					}
+				} else {
+					const value = dependency()
+					assert.strictEqual(value + '', dependency.id)
 				}
-				assert.strictEqual(value + '', dependency.id)
 				assert.strictEqual(getCurrentState(), currentState)
 				checkCurrentStateAsync(currentState)
 			}
@@ -359,15 +364,20 @@ function funcSyncIterator(id: string, deferred: boolean, isLazy?: boolean) {
 		if (Array.isArray(dependencies)) {
 			for (let i = 0, len = dependencies.length; i < len * 2; i++) {
 				const dependency = dependencies[i % len]
-				const valueAsync = isLazy
-					? dependency.state.getValue(true)
-					: dependency()
 				if (isLazy) {
-					assert.strictEqual(isAsync(valueAsync), false)
+					const value = dependency.state.getValue(true)
+					assert.strictEqual(isAsync(value), false)
+					if ((dependency.state.status & CallStatus.Flag_Calculated) === 0) {
+						assert.strictEqual(value, dependency.state.value)
+					} else {
+						assert.strictEqual(value + '', dependency.id)
+					}
+				} else {
+					const valueAsync = dependency()
+					assert.strictEqual(getCurrentState(), currentState)
+					const value = yield valueAsync
+					assert.strictEqual(value + '', dependency.id)
 				}
-				assert.strictEqual(getCurrentState(), currentState)
-				const value = yield valueAsync
-				assert.strictEqual(value + '', dependency.id)
 				assert.strictEqual(getCurrentState(), currentState)
 				checkCurrentStateAsync(currentState)
 			}
@@ -410,15 +420,20 @@ function funcAsync(id: string, deferred: boolean, isLazy?: boolean) {
 		if (dependencies) {
 			for (let i = 0, len = dependencies.length; i < len * 2; i++) {
 				const dependency = dependencies[i % len]
-				const valueAsync = isLazy
-					? dependency.state.getValue(true)
-					: dependency()
 				if (isLazy) {
-					assert.strictEqual(isAsync(valueAsync), false)
+					const value = dependency.state.getValue(true)
+					assert.strictEqual(isAsync(value), false)
+					if ((dependency.state.status & CallStatus.Flag_Calculated) === 0) {
+						assert.strictEqual(value, dependency.state.value)
+					} else {
+						assert.strictEqual(value + '', dependency.id)
+					}
+				} else {
+					const valueAsync = dependency()
+					assert.strictEqual(getCurrentState(), currentState)
+					const value = yield valueAsync
+					assert.strictEqual(value + '', dependency.id)
 				}
-				assert.strictEqual(getCurrentState(), currentState)
-				const value = yield valueAsync
-				assert.strictEqual(value + '', dependency.id)
 				assert.strictEqual(getCurrentState(), currentState)
 				checkCurrentStateAsync(currentState)
 			}
@@ -2018,8 +2033,16 @@ export async function lazyTest(deferred?: boolean) {
 
 	// region base tests
 
-	// _checkStatuses('Ir', 'Ir', 'Ir',   'Ir', 'Ir',   'Ir', 'Ir', 'Ir')
-	// checkFuncSync(ResultType.Value, S0, S0)
+	console.clear()
+	_checkStatuses('Ir',  'Ir', 'Ir',   'Ir', 'Ir', 'Ir', 'Ir')
+	checkFuncSync(ResultType.Value, SL1, SL1, A0)
+	_checkStatuses('ca',  'Ir', 'CV',   'Ir', 'Ir', 'Ir', 'Ir')
+	await checkFuncAsync(ResultType.Value, A0)
+	_checkStatuses('CV',  'Ir', 'IrV',   'Ir', 'Ir', 'Ir', 'Ir')
+	checkFuncSync(ResultType.Value, SL1, SL1)
+	_checkStatuses('CV',  'Ir', 'CV',   'Ir', 'Ir', 'Ir', 'Ir')
+	_invalidate(A0)
+	_checkStatuses('IrV',  'Ir', 'IV',   'Ir', 'Ir', 'Ir', 'Ir')
 	// _checkStatuses('CV', 'Ir', 'Ir',   'Ir', 'Ir',   'Ir', 'Ir', 'Ir')
 	// checkFuncSync(ResultType.Value, I0, I0)
 	// _checkStatuses('CV', 'CV', 'Ir',   'Ir', 'Ir',   'Ir', 'Ir', 'Ir')

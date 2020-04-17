@@ -374,7 +374,7 @@ export function releaseSubscriberLink(obj: TSubscriberLink) {
 export function getSubscriberLink<
 	TState extends TCallState,
 	TSubscriber extends TCallState,
-	>(
+>(
 	state: TState,
 	subscriber: TSubscriber,
 	prev: ISubscriberLink<TState, any>,
@@ -618,7 +618,7 @@ export class CallState<
 	): TResultOuter<TResultInner> {
 		const currentState = getCurrentState()
 		if (currentState != null && (currentState.status & Flag_Check) === 0) {
-			currentState._subscribeDependency.call(currentState, this)
+			currentState._subscribeDependency.call(currentState, this, isLazy)
 		}
 		this._callId = nextCallId++
 
@@ -1169,10 +1169,6 @@ export class CallState<
 		let statusBefore: Mask_Update_Invalidate | Flag_None = 0
 		let statusAfter: Mask_Update_Invalidate | Flag_None = 0
 
-		if (isRecalc(status) && (prevStatus & Flag_Calculating) === 0 && this._unsubscribersLength !== 0) {
-			this._unsubscribeDependencies()
-		}
-
 		if (status === Update_Recalc) {
 			if (isCalculated(prevStatus)) {
 				this._internalError(`Set status ${statusToString(Update_Recalc)} called when current status is ${statusToString(prevStatus)}`)
@@ -1199,6 +1195,14 @@ export class CallState<
 			} else {
 				this._internalError(`Unknown status: ${statusToString(status)}`)
 			}
+		}
+
+		if (isRecalc(status)
+			&& (prevStatus & Flag_Calculating) === 0
+			&& (this.status & Flag_Invalidating) === 0
+			&& this._unsubscribersLength !== 0
+		) {
+			this._unsubscribeDependencies()
 		}
 
 		if (isInvalidated(status) && !isInvalidated(prevStatus)) {

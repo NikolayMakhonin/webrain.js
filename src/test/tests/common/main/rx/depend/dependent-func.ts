@@ -8,6 +8,13 @@ describe('common > main > rx > depend > dependent-func', function() {
 		this.timeout(20000)
 
 		await baseTest()
+
+		clearCallStates()
+	})
+
+	it('lazy', async function() {
+		this.timeout(20000)
+
 		await lazyTest()
 
 		clearCallStates()
