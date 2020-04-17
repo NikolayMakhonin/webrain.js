@@ -322,7 +322,7 @@ export function toStatusShort(status: CallStatus): CallStatusShort {
 		}
 	}
 
-	throw new Error(`Cannot convert CallStatus (${statusToString(status)}) to CallStatusShort`)
+	throw new InternalError(`Cannot convert CallStatus (${statusToString(status)}) to CallStatusShort`)
 }
 
 // endregion
@@ -888,10 +888,13 @@ export class CallState<
 			subscriberLink.next = _subscribersCalculating
 			_subscribersCalculating.prev = subscriberLink
 
-			if (_subscribersCalculatingLazy === _subscribersCalculating) {
+			if (_subscribersCalculatingLazy == null) {
 				this._subscribersCalculatingLazy = subscriberLink
 			}
 		} else {
+			if (!isLazy && this._subscribersCalculating == null) {
+				this._subscribersCalculating = subscriberLink
+			}
 			_subscribersLast.next = subscriberLink
 		}
 
@@ -1027,8 +1030,14 @@ export class CallState<
 
 		this.status = (prevStatus & ~(Mask_Invalidate | Flag_Recalc | Mask_Calculate)) | Flag_Calculating
 
-		this._subscribersCalculatingLazy = this._subscribersLast
-		this._subscribersCalculating = this._subscribersLast
+		const {_subscribersLast} = this
+		if (_subscribersLast != null) {
+			if (_subscribersLast.isLazy) {
+				this._subscribersCalculatingLazy = _subscribersLast
+			} else {
+				this._subscribersCalculating = _subscribersLast
+			}
+		}
 	}
 
 	private _updateCalculatingAsync(
@@ -1206,15 +1215,10 @@ export class CallState<
 		statusCalculatingLazy: Mask_Update_Invalidate | Flag_None,
 		statusCalculating: Mask_Update_Invalidate | Flag_None,
 	) {
-		const {_subscribersFirst, _subscribersCalculating} = this
-		let {_subscribersCalculatingLazy} = this
+		const {_subscribersFirst, _subscribersCalculatingLazy, _subscribersCalculating} = this
 
 		if (_subscribersFirst == null) {
 			return
-		}
-
-		if (_subscribersCalculatingLazy != null && _subscribersCalculatingLazy === _subscribersCalculating) {
-			_subscribersCalculatingLazy = null
 		}
 
 		let status: Mask_Update_Invalidate
@@ -1253,17 +1257,13 @@ export class CallState<
 					if (statusCalculatingLazy !== 0) {
 						status = statusCalculatingLazy
 						lastLink = _subscribersCalculating
-					} else if (statusCalculating !== 0
-						&& _subscribersCalculating != null
-					) {
+					} else if (statusCalculating !== 0 && _subscribersCalculating != null) {
 						next = _subscribersCalculating.next
 					} else {
-						// TODO
-						throw new Error('ERR 1')
+						this._internalError('Unexpected behavior 1')
 					}
 				} else {
-					// TODO
-					throw new Error('ERR 2')
+					this._internalError('Unexpected behavior 2')
 				}
 			}
 
