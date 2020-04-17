@@ -62,7 +62,7 @@ export class DependConnectorBuilder<
 	public connectPath<
 		Name extends string | number = Extract<keyof TObject, string|number>,
 		TValue = Name extends keyof TObject ? TObject[Name] : TSource,
-		>(
+	>(
 		name: Name,
 		common: TNextPath<TSource, TSource, TValue>,
 		getSet?: null|undefined,
@@ -72,7 +72,7 @@ export class DependConnectorBuilder<
 		Name extends string | number = Extract<keyof TObject, string|number>,
 		TCommonValue = TSource,
 		TValue = Name extends keyof TObject ? TObject[Name] : TCommonValue,
-		>(
+	>(
 		name: Name,
 		common: TNextPath<TSource, TSource, TCommonValue>,
 		getSet: INextPathGetSet<TSource, TCommonValue, TValue>,

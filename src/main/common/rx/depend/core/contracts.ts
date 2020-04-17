@@ -90,7 +90,7 @@ export interface ICallState<
 	// region methods
 
 	getValue(
-		dontThrowOnError?: boolean,
+		isLazy?: boolean,
 	): TResultOuter<TResultInner>
 
 	invalidate(): void

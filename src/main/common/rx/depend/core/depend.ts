@@ -1,7 +1,7 @@
 import {isThenable, ThenableOrIterator, ThenableOrValue} from '../../../async/async'
 import {ThenableSync} from '../../../async/ThenableSync'
 import {DeferredCalc, IDeferredCalcOptions} from '../../deferred-calc/DeferredCalc'
-import {CallState, makeDependentFunc, TFuncCall} from './CallState'
+import {CallState, getOrCreateCallState, makeDependentFunc, TFuncCall} from './CallState'
 import {Func, IDeferredOptions} from './contracts'
 
 // region makeDeferredFunc
@@ -211,5 +211,38 @@ export function dependX<
 		? makeDependentFunc(func, funcCallX, initCallState, false) as any
 		: makeDeferredFunc(func, funcCallX, deferredOptions, initCallState) as any
 }
+
+// endregion
+
+// region dependLazy
+
+// export function dependLazy<
+// 	TThis,
+// 	TArgs extends any[],
+// 	TResult,
+// >(
+// 	func: Func<
+// 		TThis,
+// 		TArgs,
+// 		TResult
+// 	>,
+// ): Func<
+// 	TThis,
+// 	TArgs,
+// 	TResult
+// > {
+// 	return function() {
+// 		const state = getOrCreateCallState(func).apply(this, arguments)
+// 		const value = state.getValue()
+// 		if (!isThenable(value)) {
+// 			return value
+// 		}
+//
+// 		value
+// 			.then(() => {
+// 				state.
+// 			})
+// 	}
+// }
 
 // endregion

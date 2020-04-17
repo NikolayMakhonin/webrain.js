@@ -357,10 +357,12 @@ export type TSubscriberLink = ISubscriberLink<any, any>
 export interface ISubscriberLink<TState extends TCallState,
 	TSubscriber extends TCallState,
 	>
-	extends ILinkItem<TSubscriber> {
+	extends ILinkItem<TSubscriber>
+{
 	state: TState,
 	prev: ISubscriberLink<TState, any>,
 	next: ISubscriberLink<TState, any>,
+	isLazy: boolean,
 }
 
 export const subscriberLinkPool = new ObjectPool<TSubscriberLink>(1000000)
@@ -372,11 +374,12 @@ export function releaseSubscriberLink(obj: TSubscriberLink) {
 export function getSubscriberLink<
 	TState extends TCallState,
 	TSubscriber extends TCallState,
->(
+	>(
 	state: TState,
 	subscriber: TSubscriber,
 	prev: ISubscriberLink<TState, any>,
 	next: ISubscriberLink<TState, any>,
+	isLazy: boolean,
 ): ISubscriberLink<TState, TSubscriber> {
 	const item: ISubscriberLink<TState, TSubscriber> = subscriberLinkPool.get()
 	if (item != null) {
@@ -384,6 +387,7 @@ export function getSubscriberLink<
 		item.value = subscriber
 		item.prev = prev
 		item.next = next
+		item.isLazy = isLazy
 		return item
 	}
 	return {
@@ -391,6 +395,7 @@ export function getSubscriberLink<
 		value: subscriber,
 		prev,
 		next,
+		isLazy,
 	}
 }
 
@@ -400,6 +405,9 @@ export function subscriberLinkDelete<TState extends TCallState>(
 	const {prev, next, state} = item
 	if (state == null) {
 		return
+	}
+	if (item === state._subscribersCalculatingLazy) {
+		state._subscribersCalculatingLazy = next
 	}
 	if (item === state._subscribersCalculating) {
 		state._subscribersCalculating = next
@@ -439,7 +447,7 @@ function EMPTY_FUNC(this: any, ...args: any[]): any { }
 export function invalidateParent<
 	TState extends TCallState,
 	TSubscriber extends TCallState,
->(
+	>(
 	link: ISubscriberLink<TState, TSubscriber>,
 	status: Mask_Update_Invalidate,
 ): ISubscriberLink<TState, any> {
@@ -476,7 +484,7 @@ export type TFuncCall<
 	TThisOuter,
 	TArgs extends any[],
 	TResultInner
-> = (
+	> = (
 	state: CallState<TThisOuter, TArgs, TResultInner>,
 ) => TResultInner
 
@@ -486,7 +494,7 @@ export class CallState<
 	TThisOuter,
 	TArgs extends any[],
 	TResultInner,
->
+	>
 	implements ICallState<TThisOuter, TArgs, TResultInner>
 {
 	constructor(
@@ -544,6 +552,8 @@ export class CallState<
 	public _subscribersFirst: ISubscriberLink<this, any> = null
 	/** @internal */
 	public _subscribersLast: ISubscriberLink<this, any> = null
+	/** @internal */
+	public _subscribersCalculatingLazy: ISubscriberLink<this, any> = null
 	/** @internal */
 	public _subscribersCalculating: ISubscriberLink<this, any> = null
 	// for prevent multiple subscribe equal dependencies
@@ -603,6 +613,7 @@ export class CallState<
 	// region 1: calc
 
 	public getValue(
+		isLazy?: boolean,
 		dontThrowOnError?: boolean,
 	): TResultOuter<TResultInner> {
 		const currentState = getCurrentState()
@@ -627,6 +638,11 @@ export class CallState<
 					}
 					parentCallState = parentCallState._parentCallState
 				}
+
+				if (isLazy) {
+					return this.value
+				}
+
 				return this.valueAsync as any
 			} else if ((this.status & (Flag_Check | Flag_Calculating)) !== 0) {
 				this._internalError('Recursive sync loop detected')
@@ -687,6 +703,10 @@ export class CallState<
 			}
 		} else {
 			this._internalError(`shouldRecalc == ${shouldRecalc}`)
+		}
+
+		if (isLazy && isThenable(value)) {
+			return this.value
 		}
 
 		return value
@@ -821,7 +841,8 @@ export class CallState<
 
 	private _subscribeDependency<TDependency extends TCallState>(
 		dependency: TDependency,
-	): void {
+		isLazy: boolean,
+	) {
 		if (this._callId < dependency._callId) {
 			if ((this.status & Flag_Async) === 0) {
 				return
@@ -834,7 +855,7 @@ export class CallState<
 			}
 		}
 		{
-			const subscriberLink = dependency._subscribe(this)
+			const subscriberLink = dependency._subscribe(this, isLazy)
 			const _unsubscribers = this._unsubscribers
 			if (_unsubscribers == null) {
 				this._unsubscribers = [subscriberLink]
@@ -847,14 +868,33 @@ export class CallState<
 
 	private _subscribe<TSubscriber extends TCallState>(
 		subscriber: TSubscriber,
+		isLazy: boolean,
 	) {
 		const _subscribersLast = this._subscribersLast
-		const subscriberLink = getSubscriberLink(this, subscriber, _subscribersLast, null)
+		const subscriberLink = getSubscriberLink(this, subscriber, _subscribersLast, null, isLazy)
+
 		if (_subscribersLast == null) {
 			this._subscribersFirst = subscriberLink
+		} else if (isLazy && this._subscribersCalculating != null) {
+			// insert before calculating
+			const {_subscribersCalculatingLazy, _subscribersCalculating} = this
+			const {prev} = _subscribersCalculating
+			if (prev == null) {
+				this._subscribersFirst = subscriberLink
+			} else {
+				prev.next = subscriberLink
+				subscriberLink.prev = prev
+			}
+			subscriberLink.next = _subscribersCalculating
+			_subscribersCalculating.prev = subscriberLink
+
+			if (_subscribersCalculatingLazy === _subscribersCalculating) {
+				this._subscribersCalculatingLazy = subscriberLink
+			}
 		} else {
 			_subscribersLast.next = subscriberLink
 		}
+
 		this._subscribersLast = subscriberLink
 		return subscriberLink
 	}
@@ -887,9 +927,10 @@ export class CallState<
 		const {_unsubscribers, _unsubscribersLength} = this
 		if (_unsubscribers != null) {
 			for (let i = fromIndex || 0, len = _unsubscribersLength; i < len; i++) {
-				const dependencyState = _unsubscribers[i].state
+				const link = _unsubscribers[i]
+				const dependencyState = link.state
 				if (getInvalidate(dependencyState.status) !== 0) {
-					dependencyState.getValue(true)
+					dependencyState.getValue(link.isLazy, true)
 				}
 
 				if ((dependencyState.status & Flag_Async) !== 0) {
@@ -916,9 +957,10 @@ export class CallState<
 		const {_unsubscribers, _unsubscribersLength} = this
 		if (_unsubscribers != null) {
 			for (let i = 0, len = _unsubscribersLength; i < len; i++) {
-				const dependencyState = _unsubscribers[i].state
+				const link = _unsubscribers[i]
+				const dependencyState = link.state
 				if (getInvalidate(dependencyState.status) !== 0) {
-					dependencyState.getValue(true)
+					dependencyState.getValue(link.isLazy, true)
 				}
 
 				if ((dependencyState.status & Flag_Async) !== 0) {
@@ -985,6 +1027,7 @@ export class CallState<
 
 		this.status = (prevStatus & ~(Mask_Invalidate | Flag_Recalc | Mask_Calculate)) | Flag_Calculating
 
+		this._subscribersCalculatingLazy = this._subscribersLast
 		this._subscribersCalculating = this._subscribersLast
 	}
 
@@ -1010,6 +1053,7 @@ export class CallState<
 
 		this.status = (prevStatus & (Flag_HasValue | Flag_HasError)) | Flag_Calculated
 
+		this._subscribersCalculatingLazy = null
 		this._subscribersCalculating = null
 
 		const invalidateStatus = getInvalidate(prevStatus)
@@ -1089,9 +1133,11 @@ export class CallState<
 			this._updateInvalidate(Update_Invalidating, valueChanged)
 			this._updateInvalidate(Update_Invalidated, valueChanged)
 		} else if (valueChanged) {
-			this._invalidateParents(Update_Recalc, Flag_None)
+			this._invalidateParents(Update_Recalc, Update_Invalidating_Recalc, Flag_None)
+			this._invalidateParents(Flag_None, Update_Invalidated_Recalc, Flag_None)
 		}
 
+		this._subscribersCalculatingLazy = null
 		this._subscribersCalculating = null
 	}
 
@@ -1151,42 +1197,73 @@ export class CallState<
 		}
 
 		if (statusBefore !== 0 || statusAfter !== 0) {
-			this._invalidateParents(statusBefore, statusAfter)
+			this._invalidateParents(statusBefore, statusAfter, statusAfter)
 		}
 	}
 
 	private _invalidateParents(
-		statusBefore: Mask_Update_Invalidate | Flag_None,
-		statusAfter: Mask_Update_Invalidate | Flag_None,
+		statusCalculated: Mask_Update_Invalidate | Flag_None,
+		statusCalculatingLazy: Mask_Update_Invalidate | Flag_None,
+		statusCalculating: Mask_Update_Invalidate | Flag_None,
 	) {
-		const lastLink = this._subscribersCalculating
+		const {_subscribersFirst, _subscribersCalculating} = this
+		let {_subscribersCalculatingLazy} = this
+
+		if (_subscribersFirst == null) {
+			return
+		}
+
+		if (_subscribersCalculatingLazy != null && _subscribersCalculatingLazy === _subscribersCalculating) {
+			_subscribersCalculatingLazy = null
+		}
 
 		let status: Mask_Update_Invalidate
 		let link: ISubscriberLink<this, any>
-		if (statusBefore !== 0) {
-			status = statusBefore
+		let lastLink: ISubscriberLink<this, any>
+		if (statusCalculated !== 0 && _subscribersFirst !== _subscribersCalculatingLazy) {
+			status = statusCalculated
 			link = this._subscribersFirst
-		} else if (statusAfter !== 0) {
-			status = statusAfter
-			if (lastLink !== null) {
-				link = lastLink.next
-			} else {
-				link = this._subscribersFirst
-			}
+			lastLink = _subscribersCalculatingLazy != null
+				? _subscribersCalculatingLazy.prev
+				: _subscribersCalculating
+		} else if (statusCalculatingLazy !== 0 && _subscribersCalculatingLazy != null) {
+			status = statusCalculatingLazy
+			link = _subscribersCalculatingLazy
+			lastLink = _subscribersCalculating
+		} else if (statusCalculating !== 0 && _subscribersCalculating != null) {
+			status = statusCalculating
+			link = _subscribersCalculating.next
+			lastLink = null
 		} else {
-			this._internalError('statusBefore === 0 && statusAfter === 0')
+			return
 		}
 
 		for (; link !== null;) {
-			const next = invalidateParent(link, status)
+			let next = invalidateParent(link, status)
 
-			if (statusAfter === 0) {
-				if (link === lastLink) {
-					break
-				}
-			} else {
-				if (link === lastLink) {
-					status = statusAfter
+			if (link === lastLink) {
+				if (lastLink === _subscribersCalculating) {
+					if (statusCalculating !== 0) {
+						status = statusCalculating
+						lastLink = null
+					} else {
+						break
+					}
+				} else if (_subscribersCalculatingLazy != null && lastLink === _subscribersCalculatingLazy.prev) {
+					if (statusCalculatingLazy !== 0) {
+						status = statusCalculatingLazy
+						lastLink = _subscribersCalculating
+					} else if (statusCalculating !== 0
+						&& _subscribersCalculating != null
+					) {
+						next = _subscribersCalculating.next
+					} else {
+						// TODO
+						throw new Error('ERR 1')
+					}
+				} else {
+					// TODO
+					throw new Error('ERR 2')
 				}
 			}
 
@@ -1295,7 +1372,7 @@ interface ICallStateProvider<
 	TThisOuter,
 	TArgs extends any[],
 	TResultInner,
-> {
+	> {
 	get: Func<TThisOuter, TArgs, CallState<TThisOuter, TArgs, TResultInner>>
 	getOrCreate: Func<TThisOuter, TArgs, CallState<TThisOuter, TArgs, TResultInner>>
 	func: Func<unknown, TArgs, unknown>,
@@ -1303,7 +1380,7 @@ interface ICallStateProvider<
 		TThisOuter,
 		TArgs,
 		TResultInner extends ThenableOrIterator<infer V> ? ThenableOrValue<V> : TResultInner
-	>,
+		>,
 }
 
 // let currentCallStateProviderState: ICallStateProviderState<any, any, any> = null
@@ -1312,7 +1389,7 @@ function findCallState<
 	TThisOuter,
 	TArgs extends any[],
 	TResultInner,
->(
+	>(
 	callStates: Array<CallState<TThisOuter, TArgs, TResultInner>>,
 	countValueStates: number,
 	_valueIdsBuffer: Int32Array,
@@ -1342,7 +1419,7 @@ export function createCallStateProvider<
 	TThisOuter,
 	TArgs extends any[],
 	TResultInner,
->(
+	>(
 	func: Func<unknown, TArgs, unknown>,
 	funcCall: TFuncCall<TThisOuter, TArgs, TResultInner>,
 	initCallState: (state: CallState<TThisOuter, TArgs, TResultInner>) => void,
@@ -1516,7 +1593,7 @@ export function invalidateCallState<
 	TThisOuter,
 	TArgs extends any[],
 	TResultInner,
->(
+	>(
 	state: ICallState<TThisOuter, TArgs, TResultInner>,
 ) {
 	if (state != null) {
@@ -1530,13 +1607,13 @@ export function getCallState<
 	TThisOuter,
 	TArgs extends any[],
 	TResultInner,
->(
+	>(
 	func: Func<TThisOuter, TArgs, TResultInner>,
 ): Func<
 	TThisOuter,
 	TArgs,
 	ICallState<TThisOuter, TArgs, TResultInner>
-> {
+	> {
 	const callStateProvider = callStateProviderMap.get(func)
 	if (callStateProvider == null) {
 		return EMPTY_FUNC
@@ -1549,13 +1626,13 @@ export function getOrCreateCallState<
 	TThisOuter,
 	TArgs extends any[],
 	TResultInner,
->(
+	>(
 	func: Func<TThisOuter, TArgs, TResultInner>,
 ): Func<
 	TThisOuter,
 	TArgs,
 	ICallState<TThisOuter, TArgs, TResultInner>
-> {
+	> {
 	const callStateProviderState = callStateProviderMap.get(func)
 	if (callStateProviderState == null) {
 		return EMPTY_FUNC
@@ -1687,7 +1764,7 @@ export function createDependentFunc<
 	TThisOuter,
 	TArgs extends any[],
 	TResultInner,
->(
+	>(
 	func: Func<unknown, TArgs, unknown>,
 	callStateProvider: ICallStateProvider<TThisOuter, TArgs, TResultInner>,
 	canAlwaysRecalc: boolean,
@@ -1718,7 +1795,7 @@ export function makeDependentFunc<
 	TThisOuter,
 	TArgs extends any[],
 	TResultInner,
->(
+	>(
 	func: Func<unknown, TArgs, unknown>,
 	funcCall: TFuncCall<TThisOuter, TArgs, TResultInner>,
 	initCallState?: (state: CallState<TThisOuter, TArgs, TResultInner>) => void,
@@ -1727,7 +1804,7 @@ export function makeDependentFunc<
 	TThisOuter,
 	TArgs,
 	TResultInner extends ThenableOrIterator<infer V> ? ThenableOrValue<V> : TResultInner
-> {
+	> {
 	let callStateProvider = callStateProviderMap.get(func)
 	if (callStateProvider != null) {
 		return callStateProvider.dependFunc

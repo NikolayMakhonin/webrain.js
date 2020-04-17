@@ -15,24 +15,23 @@ export function makeDependPropertySubscriber(name: string | number) {
 				if (hasSubscribers) {
 					value = state.value
 					state.getValue()
+					if (state.statusShort === CallStatusShort.CalculatedValue) {
+						value = state.value
+					}
+
 					dependUnsubscribe = state
-						.subscribe(() => {
-							switch (state.statusShort) {
-								case CallStatusShort.Invalidated:
-									state.getValue()
-									break
-								case CallStatusShort.CalculatedValue:
-									const oldValue = value
-									const newValue = state.value
-									value = newValue
-									if (!(oldValue === newValue || webrainOptions.equalsFunc && webrainOptions.equalsFunc(oldValue, newValue))) {
-										state._this.propertyChanged.emit({
-											name,
-											oldValue,
-											newValue,
-										})
-									}
-									break
+						.subscribe(async () => {
+							if (state.statusShort === CallStatusShort.Invalidated) {
+								const oldValue = value
+								const newValue = await state.getValue()
+								value = newValue
+								if (!(oldValue === newValue || webrainOptions.equalsFunc && webrainOptions.equalsFunc(oldValue, newValue))) {
+									state._this.propertyChanged.emit({
+										name,
+										oldValue,
+										newValue,
+									})
+								}
 							}
 						})
 				}
