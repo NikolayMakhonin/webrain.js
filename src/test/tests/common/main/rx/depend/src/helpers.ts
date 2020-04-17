@@ -27,19 +27,19 @@ export function __makeDependentFunc<
 	TThisOuter,
 	TArgs extends any[],
 	TResultInner,
->(func: Func<TThisOuter, TArgs, Iterator<TResultInner>>): Func<TThisOuter, TArgs, ThenableOrValue<TResultInner>>
+	>(func: Func<TThisOuter, TArgs, Iterator<TResultInner>>): Func<TThisOuter, TArgs, ThenableOrValue<TResultInner>>
 // tslint:disable-next-line:no-shadowed-variable
 export function __makeDependentFunc<
 	TThisOuter,
 	TArgs extends any[],
 	TResultInner,
->(func: Func<TThisOuter, TArgs, TResultInner>): Func<TThisOuter, TArgs, TResultInner>
+	>(func: Func<TThisOuter, TArgs, TResultInner>): Func<TThisOuter, TArgs, TResultInner>
 // tslint:disable-next-line:no-shadowed-variable
 export function __makeDependentFunc<
 	TThisOuter,
 	TArgs extends any[],
 	TResultInner,
->(func: Func<TThisOuter, TArgs, TResultInner | Iterator<TResultInner>>) {
+	>(func: Func<TThisOuter, TArgs, TResultInner | Iterator<TResultInner>>) {
 	if (typeof func === 'function') {
 		return depend<TThisOuter, TArgs, TResultInner>(func as any)
 	}
@@ -116,7 +116,7 @@ export function __invalidate<
 	TThisOuter,
 	TArgs extends any[],
 	TResultInner,
->(state: ICallState<TThisOuter, TArgs, TResultInner>) {
+	>(state: ICallState<TThisOuter, TArgs, TResultInner>) {
 	return state.invalidate()
 }
 
@@ -322,7 +322,7 @@ function getDeferredOptions(async: boolean): IDeferredOptions {
 		: {}
 }
 
-function funcSync(id: string, deferred: boolean) {
+function funcSync(id: string, deferred: boolean, isLazy?: boolean) {
 	const result: IDependencyFunc = depend(function() {
 		const callId = getCallId(id, this, ...arguments)
 		_callHistory.push(callId)
@@ -332,7 +332,12 @@ function funcSync(id: string, deferred: boolean) {
 		if (Array.isArray(dependencies)) {
 			for (let i = 0, len = dependencies.length; i < len * 2; i++) {
 				const dependency = dependencies[i % len]
-				const value = dependency()
+				const value = isLazy
+					? dependency.state.getValue(true)
+					: dependency()
+				if (isLazy) {
+					assert.strictEqual(isAsync(value), false)
+				}
 				assert.strictEqual(value + '', dependency.id)
 				assert.strictEqual(getCurrentState(), currentState)
 				checkCurrentStateAsync(currentState)
@@ -346,7 +351,7 @@ function funcSync(id: string, deferred: boolean) {
 	return result
 }
 
-function funcSyncIterator(id: string, deferred: boolean) {
+function funcSyncIterator(id: string, deferred: boolean, isLazy?: boolean) {
 	const nested = function*(dependencies: IDependencyCall[], currentState) {
 		assert.strictEqual(getCurrentState(), currentState)
 		yield 1
@@ -354,9 +359,14 @@ function funcSyncIterator(id: string, deferred: boolean) {
 		if (Array.isArray(dependencies)) {
 			for (let i = 0, len = dependencies.length; i < len * 2; i++) {
 				const dependency = dependencies[i % len]
-				const iterator = dependency()
+				const valueAsync = isLazy
+					? dependency.state.getValue(true)
+					: dependency()
+				if (isLazy) {
+					assert.strictEqual(isAsync(valueAsync), false)
+				}
 				assert.strictEqual(getCurrentState(), currentState)
-				const value = yield iterator
+				const value = yield valueAsync
 				assert.strictEqual(value + '', dependency.id)
 				assert.strictEqual(getCurrentState(), currentState)
 				checkCurrentStateAsync(currentState)
@@ -388,7 +398,7 @@ function funcSyncIterator(id: string, deferred: boolean) {
 	return result
 }
 
-function funcAsync(id: string, deferred: boolean) {
+function funcAsync(id: string, deferred: boolean, isLazy?: boolean) {
 	const nested = function*() {
 		yield 1
 		return 1
@@ -400,9 +410,14 @@ function funcAsync(id: string, deferred: boolean) {
 		if (dependencies) {
 			for (let i = 0, len = dependencies.length; i < len * 2; i++) {
 				const dependency = dependencies[i % len]
-				const promise = dependency()
+				const valueAsync = isLazy
+					? dependency.state.getValue(true)
+					: dependency()
+				if (isLazy) {
+					assert.strictEqual(isAsync(valueAsync), false)
+				}
 				assert.strictEqual(getCurrentState(), currentState)
-				const value = yield promise
+				const value = yield valueAsync
 				assert.strictEqual(value + '', dependency.id)
 				assert.strictEqual(getCurrentState(), currentState)
 				checkCurrentStateAsync(currentState)
@@ -919,6 +934,1043 @@ export async function baseTest(deferred?: boolean) {
 	const A2 = funcCall(A, [I1], 2, 2) // A22(I1(I(0),A(_)))
 
 	const allFuncs = [S0, I0, A0, S1, I1, S2, I2, A2]
+	const _checkStatuses = checkStatuses(...allFuncs)
+
+	function _checkSubscribersAll() {
+		checkSubscribers(S0, S1)
+		checkSubscribers(I0, S1, I1)
+		checkSubscribers(A0, I1)
+		checkSubscribers(S1, S2, I2)
+		checkSubscribers(I1, I2, A2)
+		checkSubscribers(S2)
+		checkSubscribers(I2)
+		checkSubscribers(A2)
+	}
+
+	function _checkUnsubscribersAll() {
+		checkUnsubscribers(S0)
+		checkUnsubscribers(I0)
+		checkUnsubscribers(A0)
+		checkUnsubscribers(S1, S0, I0)
+		checkUnsubscribers(I1, I0, A0)
+		checkUnsubscribers(S2, S1)
+		checkUnsubscribers(I2, S1, I1)
+		checkUnsubscribers(A2, I1)
+	}
+
+	function checkSubscribersAll() {
+		_checkSubscribersAll()
+		_checkUnsubscribersAll()
+	}
+
+	// endregion
+
+	// region check init
+
+	assert.strictEqual(S0.id, 'S(0)')
+	assert.strictEqual(I0.id, 'I(0)')
+	assert.strictEqual(A0.id, 'A(_)')
+
+	assert.strictEqual(S1.id, 'S1(S(0),I(0))')
+	assert.strictEqual(I1.id, 'I1(I(0),A(_))')
+
+	assert.strictEqual(S2.id, 'S20(S1(S(0),I(0)))')
+	assert.strictEqual(I2.id, 'I20(S1(S(0),I(0)),I1(I(0),A(_)))')
+	assert.strictEqual(A2.id, 'A22(I1(I(0),A(_)))')
+
+	// endregion
+
+	// region base tests
+
+	_checkStatuses('Ir', 'Ir', 'Ir',   'Ir', 'Ir',   'Ir', 'Ir', 'Ir')
+	checkFuncSync(ResultType.Value, S0, S0)
+	_checkStatuses('CV', 'Ir', 'Ir',   'Ir', 'Ir',   'Ir', 'Ir', 'Ir')
+	checkFuncSync(ResultType.Value, I0, I0)
+	_checkStatuses('CV', 'CV', 'Ir',   'Ir', 'Ir',   'Ir', 'Ir', 'Ir')
+	await checkFuncAsync(ResultType.Value, A0, A0)
+	_checkStatuses('CV', 'CV', 'CV',   'Ir', 'Ir',   'Ir', 'Ir', 'Ir')
+
+	checkFuncSync(ResultType.Value, S1, S1)
+	_checkStatuses('CV', 'CV', 'CV',   'CV', 'Ir',   'Ir', 'Ir', 'Ir')
+	checkFuncSync(ResultType.Value, I1, I1)
+	_checkStatuses('CV', 'CV', 'CV',   'CV', 'CV',   'Ir', 'Ir', 'Ir')
+
+	checkFuncSync(ResultType.Value, S2, S2)
+	_checkStatuses('CV', 'CV', 'CV',   'CV', 'CV',   'CV', 'Ir', 'Ir')
+	checkFuncSync(ResultType.Value, I2, I2)
+	_checkStatuses('CV', 'CV', 'CV',   'CV', 'CV',   'CV', 'CV', 'Ir')
+	await checkFuncAsync(ResultType.Value, A2, A2)
+	_checkStatuses('CV', 'CV', 'CV',   'CV', 'CV',   'CV', 'CV', 'CV')
+	checkSubscribersAll()
+
+	checkFuncNotChanged(allFuncs)
+
+	// endregion
+
+	// region Without Errors
+
+	// region invalidate
+
+	// region Forward
+
+	// region level 2
+
+	_checkStatuses('CV', 'CV', 'CV',   'CV', 'CV',   'CV', 'CV', 'CV')
+	checkSubscribersAll()
+	_invalidate(S2)
+	_checkStatuses('CV', 'CV', 'CV',   'CV', 'CV',   'IrV', 'CV', 'CV')
+	checkFuncSync(ResultType.Value, S2, S2)
+	_checkStatuses('CV', 'CV', 'CV',   'CV', 'CV',   'CV', 'CV', 'CV')
+	checkSubscribersAll()
+	checkFuncNotChanged(allFuncs)
+
+	_checkStatuses('CV', 'CV', 'CV',   'CV', 'CV',   'CV', 'CV', 'CV')
+	checkSubscribersAll()
+	_invalidate(I2)
+	_checkStatuses('CV', 'CV', 'CV',   'CV', 'CV',   'CV', 'IrV', 'CV')
+	checkFuncSync(ResultType.Value, I2, I2)
+	_checkStatuses('CV', 'CV', 'CV',   'CV', 'CV',   'CV', 'CV', 'CV')
+	checkSubscribersAll()
+	checkFuncNotChanged(allFuncs)
+
+	_checkStatuses('CV', 'CV', 'CV',   'CV', 'CV',   'CV', 'CV', 'CV')
+	checkSubscribersAll()
+	_invalidate(A2)
+	_checkStatuses('CV', 'CV', 'CV',   'CV', 'CV',   'CV', 'CV', 'IrV')
+	await checkFuncAsync(ResultType.Value, A2, A2)
+	_checkStatuses('CV', 'CV', 'CV',   'CV', 'CV',   'CV', 'CV', 'CV')
+	checkSubscribersAll()
+	checkFuncNotChanged(allFuncs)
+
+	// endregion
+
+	// region level 1
+
+	_checkStatuses('CV', 'CV', 'CV',   'CV', 'CV',   'CV', 'CV', 'CV')
+	checkSubscribersAll()
+	_invalidate(S1)
+	_checkStatuses('CV', 'CV', 'CV',   'IrV', 'CV',   'IV', 'IV', 'CV')
+	checkFuncSync(ResultType.Value, S2, S1)
+	_checkStatuses('CV', 'CV', 'CV',   'CV', 'CV',   'CV', 'IV', 'CV')
+	checkFuncSync(ResultType.Value, I2)
+	_checkStatuses('CV', 'CV', 'CV',   'CV', 'CV',   'CV', 'CV', 'CV')
+	checkSubscribersAll()
+	checkFuncNotChanged(allFuncs)
+
+	_checkStatuses('CV', 'CV', 'CV',   'CV', 'CV',   'CV', 'CV', 'CV')
+	checkSubscribersAll()
+	_invalidate(I1)
+	_checkStatuses('CV', 'CV', 'CV',   'CV', 'IrV',   'CV', 'IV', 'IV')
+	checkFuncSync(ResultType.Value, I2, I1, I2)
+	_checkStatuses('CV', 'CV', 'CV',   'CV', 'CV',   'CV', 'CV', 'IrV')
+	await checkFuncAsync(ResultType.Value, A2, A2)
+	_checkStatuses('CV', 'CV', 'CV',   'CV', 'CV',   'CV', 'CV', 'CV')
+	checkSubscribersAll()
+	checkFuncNotChanged(allFuncs)
+
+	// endregion
+
+	// region level 0
+
+	_checkStatuses('CV', 'CV', 'CV',   'CV', 'CV',   'CV', 'CV', 'CV')
+	_invalidate(S0)
+	_checkStatuses('IrV', 'CV', 'CV',   'IV', 'CV',   'IV', 'IV', 'CV')
+	// console.log(allFuncs.filter(isInvalidated).map(o => o.id))
+	checkFuncSync(ResultType.Value, S2, S0)
+	_checkStatuses('CV', 'CV', 'CV',   'CV', 'CV',   'CV', 'IV', 'CV')
+	checkFuncSync(ResultType.Value, I2)
+	_checkStatuses('CV', 'CV', 'CV',   'CV', 'CV',   'CV', 'CV', 'CV')
+	checkFuncNotChanged(allFuncs)
+
+	_checkStatuses('CV', 'CV', 'CV',   'CV', 'CV',   'CV', 'CV', 'CV')
+	_invalidate(I0)
+	_checkStatuses('CV', 'IrV', 'CV',   'IV', 'IV',   'IV', 'IV', 'IV')
+	checkFuncSync(ResultType.Value, S2, I0, S1)
+	_checkStatuses('CV', 'CV', 'CV',   'CV', 'IrV',   'CV', 'IV', 'IV')
+	checkFuncSync(ResultType.Value, I2, I1, I2)
+	_checkStatuses('CV', 'CV', 'CV',   'CV', 'CV',   'CV', 'CV', 'IrV')
+	await checkFuncAsync(ResultType.Value, A2, A2)
+	_checkStatuses('CV', 'CV', 'CV',   'CV', 'CV',   'CV', 'CV', 'CV')
+	checkFuncNotChanged(allFuncs)
+
+	_checkStatuses('CV', 'CV', 'CV',   'CV', 'CV',   'CV', 'CV', 'CV')
+	_invalidate(A0)
+	_checkStatuses('CV', 'CV', 'IrV',   'CV', 'IV',   'CV', 'IV', 'IV')
+	await checkFuncAsync(ResultType.Value, I2, A0)
+	_checkStatuses('CV', 'CV', 'CV',   'CV', 'CV',   'CV', 'CV', 'IV')
+	checkFuncSync(ResultType.Value, A2)
+	_checkStatuses('CV', 'CV', 'CV',   'CV', 'CV',   'CV', 'CV', 'CV')
+	checkFuncNotChanged(allFuncs)
+
+	// endregion
+
+	// endregion
+
+	// region Backward
+
+	// region level 0
+
+	_checkStatuses('CV', 'CV', 'CV',   'CV', 'CV',   'CV', 'CV', 'CV')
+	_invalidate(A0)
+	_checkStatuses('CV', 'CV', 'IrV',   'CV', 'IV',   'CV', 'IV', 'IV')
+	await checkFuncAsync(ResultType.Value, A2, A0)
+	_checkStatuses('CV', 'CV', 'CV',   'CV', 'CV',   'CV', 'IV', 'CV')
+	checkFuncSync(ResultType.Value, I2)
+	_checkStatuses('CV', 'CV', 'CV',   'CV', 'CV',   'CV', 'CV', 'CV')
+	checkFuncNotChanged(allFuncs)
+
+	_checkStatuses('CV', 'CV', 'CV',   'CV', 'CV',   'CV', 'CV', 'CV')
+	_invalidate(I0)
+	_checkStatuses('CV', 'IrV', 'CV',   'IV', 'IV',   'IV', 'IV', 'IV')
+	await checkFuncAsync(ResultType.Value, A2, I0, I1, A2)
+	_checkStatuses('CV', 'CV', 'CV',   'IrV', 'CV',   'IV', 'IrV', 'CV')
+	checkFuncSync(ResultType.Value, I2, I2, S1)
+	_checkStatuses('CV', 'CV', 'CV',   'CV', 'CV',   'IV', 'CV', 'CV')
+	checkFuncSync(ResultType.Value, S2)
+	_checkStatuses('CV', 'CV', 'CV',   'CV', 'CV',   'CV', 'CV', 'CV')
+	checkFuncNotChanged(allFuncs)
+
+	_checkStatuses('CV', 'CV', 'CV',   'CV', 'CV',   'CV', 'CV', 'CV')
+	_invalidate(S0)
+	_checkStatuses('IrV', 'CV', 'CV',   'IV', 'CV',   'IV', 'IV', 'CV')
+	checkFuncSync(ResultType.Value, I2, S0)
+	_checkStatuses('CV', 'CV', 'CV',   'CV', 'CV',   'IV', 'CV', 'CV')
+	checkFuncSync(ResultType.Value, S2)
+	_checkStatuses('CV', 'CV', 'CV',   'CV', 'CV',   'CV', 'CV', 'CV')
+	checkFuncNotChanged(allFuncs)
+
+	// endregion
+
+	// region level 1
+
+	_checkStatuses('CV', 'CV', 'CV',   'CV', 'CV',   'CV', 'CV', 'CV')
+	_invalidate(I1)
+	_checkStatuses('CV', 'CV', 'CV',   'CV', 'IrV',   'CV', 'IV', 'IV')
+	await checkFuncAsync(ResultType.Value, A2, I1, A2)
+	_checkStatuses('CV', 'CV', 'CV',   'CV', 'CV',   'CV', 'IrV', 'CV')
+	checkFuncSync(ResultType.Value, I2, I2)
+	_checkStatuses('CV', 'CV', 'CV',   'CV', 'CV',   'CV', 'CV', 'CV')
+	checkFuncNotChanged(allFuncs)
+
+	_checkStatuses('CV', 'CV', 'CV',   'CV', 'CV',   'CV', 'CV', 'CV')
+	_invalidate(S1)
+	_checkStatuses('CV', 'CV', 'CV',   'IrV', 'CV',   'IV', 'IV', 'CV')
+	checkFuncSync(ResultType.Value, I2, S1)
+	_checkStatuses('CV', 'CV', 'CV',   'CV', 'CV',   'IV', 'CV', 'CV')
+	checkFuncSync(ResultType.Value, S2)
+	_checkStatuses('CV', 'CV', 'CV',   'CV', 'CV',   'CV', 'CV', 'CV')
+	checkFuncNotChanged(allFuncs)
+
+	// endregion
+
+	// region level 2
+
+	_checkStatuses('CV', 'CV', 'CV',   'CV', 'CV',   'CV', 'CV', 'CV')
+	_invalidate(A2)
+	_checkStatuses('CV', 'CV', 'CV',   'CV', 'CV',   'CV', 'CV', 'IrV')
+	await checkFuncAsync(ResultType.Value, A2, A2)
+	_checkStatuses('CV', 'CV', 'CV',   'CV', 'CV',   'CV', 'CV', 'CV')
+	checkFuncNotChanged(allFuncs)
+
+	_checkStatuses('CV', 'CV', 'CV',   'CV', 'CV',   'CV', 'CV', 'CV')
+	_invalidate(I2)
+	_checkStatuses('CV', 'CV', 'CV',   'CV', 'CV',   'CV', 'IrV', 'CV')
+	checkFuncSync(ResultType.Value, I2, I2)
+	_checkStatuses('CV', 'CV', 'CV',   'CV', 'CV',   'CV', 'CV', 'CV')
+	checkFuncNotChanged(allFuncs)
+
+	_checkStatuses('CV', 'CV', 'CV',   'CV', 'CV',   'CV', 'CV', 'CV')
+	_invalidate(S2)
+	_checkStatuses('CV', 'CV', 'CV',   'CV', 'CV',   'IrV', 'CV', 'CV')
+	checkFuncSync(ResultType.Value, S2, S2)
+	_checkStatuses('CV', 'CV', 'CV',   'CV', 'CV',   'CV', 'CV', 'CV')
+	checkFuncNotChanged(allFuncs)
+
+	// endregion
+
+	// endregion
+
+	// endregion
+
+	// region invalidate during calc async
+
+	let promise1
+	let promise2
+
+	_checkStatuses('CV', 'CV', 'CV',   'CV', 'CV',   'CV', 'CV', 'CV')
+	_invalidate(I1)
+	_checkStatuses('CV', 'CV', 'CV',   'CV', 'IrV',   'CV', 'IV', 'IV')
+	checkFuncSync(ResultType.Value, I2, I1, I2)
+	_checkStatuses('CV', 'CV', 'CV',   'CV', 'CV',   'CV', 'CV', 'IrV')
+	promise1 = checkFuncAsync(ResultType.Value, A2, A2)
+	_checkStatuses('CV', 'CV', 'CV',   'CV', 'CV',   'CV', 'CV', 'caV')
+	_invalidate(I1)
+	checkUnsubscribers(A2)
+	_checkStatuses('CV', 'CV', 'CV',   'CV', 'IrV',   'CV', 'IV', 'caV')
+	checkFuncSync(ResultType.Value, I2, I1, I2)
+	_checkStatuses('CV', 'CV', 'CV',   'CV', 'CV',   'CV', 'CV', 'caV')
+	await promise1
+	_checkStatuses('CV', 'CV', 'CV',   'CV', 'CV',   'CV', 'CV', 'CV')
+	checkFuncSync(ResultType.Value, A2)
+	checkFuncNotChanged(allFuncs)
+
+	_checkStatuses('CV', 'CV', 'CV',   'CV', 'CV',   'CV', 'CV', 'CV')
+	_invalidate(A0)
+	_checkStatuses('CV', 'CV', 'IrV',   'CV', 'IV',   'CV', 'IV', 'IV')
+	promise1 = checkFuncAsync(ResultType.Value, A2, A0)
+	_checkStatuses('CV', 'CV', 'caV',   'CV', 'xaV',   'CV', 'IV', 'xaV')
+	_invalidate(A0)
+	_checkStatuses('CV', 'CV', 'IrcaV',   'CV', 'IxaV',   'CV', 'IV', 'IxaV')
+	promise2 = checkFuncAsync(ResultType.Value, I2)
+	_checkStatuses('CV', 'CV', 'IrcaV',   'CV', 'IxaV',   'CV', 'xaV', 'IxaV')
+	await checkFuncAsync(ResultType.Value, A0)
+	_checkStatuses('CV', 'CV', 'IV',   'CV', 'IV',   'CV', 'IV', 'IV')
+	_invalidate(I0)
+	_checkStatuses('CV', 'IrV', 'IV',   'IV', 'IV',   'IV', 'IV', 'IV')
+	await promise1
+	_checkStatuses('CV', 'IrV', 'IV',   'IV', 'IV',   'IV', 'IV', 'IV')
+	checkFuncSync(ResultType.Value, I2, I0, S1, I1, I2)
+	_checkStatuses('CV', 'CV', 'CV',   'CV', 'CV',   'IV', 'CV', 'IrV')
+	await promise2
+	_checkStatuses('CV', 'CV', 'CV',   'CV', 'CV',   'IV', 'CV', 'IrV')
+	checkCallHistory()
+	await checkFuncAsync(ResultType.Value, A2, A2)
+	_checkStatuses('CV', 'CV', 'CV',   'CV', 'CV',   'IV', 'CV', 'CV')
+	checkFuncSync(ResultType.Value, S2)
+	_checkStatuses('CV', 'CV', 'CV',   'CV', 'CV',   'CV', 'CV', 'CV')
+	checkFuncNotChanged(allFuncs)
+
+	_checkStatuses('CV', 'CV', 'CV',   'CV', 'CV',   'CV', 'CV', 'CV')
+	_invalidate(A0, I0)
+	_checkStatuses('CV', 'IrV', 'IrV',   'IV', 'IV',   'IV', 'IV', 'IV')
+	promise1 = checkFuncAsync(ResultType.Value, A2, I0, I1, A0)
+	_checkStatuses('CV', 'CV', 'caV',   'IrV', 'caV',   'IV', 'IV', 'xaV')
+	_invalidate(A0)
+	_checkStatuses('CV', 'CV', 'IrcaV',   'IrV', 'IcaV',   'IV', 'IV', 'IxaV')
+	promise2 = checkFuncAsync(ResultType.Value, I2, S1)
+	_checkStatuses('CV', 'CV', 'IrcaV',   'CV', 'IcaV',   'IV', 'xaV', 'IxaV')
+	await checkFuncAsync(ResultType.Value, A0)
+	_checkStatuses('CV', 'CV', 'CV',   'CV', 'CV',   'IV', 'CV', 'caV')
+	checkCallHistory(A2, I2)
+	_invalidate(I0)
+	_checkStatuses('CV', 'IrV', 'CV',   'IV', 'IV',   'IV', 'IV', 'caV')
+	await promise1
+	_checkStatuses('CV', 'CV', 'CV',   'IrV', 'CV',   'IV', 'IrV', 'CV')
+	checkCallHistory(I0, I1)
+	checkFuncSync(ResultType.Value, I2, I2, S1)
+	_checkStatuses('CV', 'CV', 'CV',   'CV', 'CV',   'IV', 'CV', 'CV')
+	await promise2
+	checkCallHistory()
+	checkFuncSync(ResultType.Value, S2)
+	_checkStatuses('CV', 'CV', 'CV',   'CV', 'CV',   'CV', 'CV', 'CV')
+	checkFuncNotChanged(allFuncs)
+
+	_checkStatuses('CV', 'CV', 'CV',   'CV', 'CV',   'CV', 'CV', 'CV')
+
+	// endregion
+
+	// endregion
+
+	// region With Errors
+
+	// region invalidate
+
+	// region Forward
+
+	// region level 2
+
+	// region error
+
+	setResultsAsError(S2, I2, A2)
+
+	_checkStatuses('CV', 'CV', 'CV',   'CV', 'CV',   'CV', 'CV', 'CV')
+	_invalidate(S2)
+	_checkStatuses('CV', 'CV', 'CV',   'CV', 'CV',   'IrV', 'CV', 'CV')
+	checkFuncSync(ResultType.Error, S2, S2)
+	_checkStatuses('CV', 'CV', 'CV',   'CV', 'CV',   'CVE', 'CV', 'CV')
+	checkFuncNotChanged(allFuncs)
+
+	_checkStatuses('CV', 'CV', 'CV',   'CV', 'CV',   'CVE', 'CV', 'CV')
+	_invalidate(I2)
+	_checkStatuses('CV', 'CV', 'CV',   'CV', 'CV',   'CVE', 'IrV', 'CV')
+	checkFuncSync(ResultType.Error, I2, I2)
+	_checkStatuses('CV', 'CV', 'CV',   'CV', 'CV',   'CVE', 'CVE', 'CV')
+	checkFuncNotChanged(allFuncs)
+
+	_checkStatuses('CV', 'CV', 'CV',   'CV', 'CV',   'CVE', 'CVE', 'CV')
+	_invalidate(A2)
+	_checkStatuses('CV', 'CV', 'CV',   'CV', 'CV',   'CVE', 'CVE', 'IrV')
+	await checkFuncAsync(ResultType.Error, A2, A2)
+	_checkStatuses('CV', 'CV', 'CV',   'CV', 'CV',   'CVE', 'CVE', 'CVE')
+	checkFuncNotChanged(allFuncs)
+
+	// endregion
+
+	// region value
+
+	setResultsAsError()
+
+	_checkStatuses('CV', 'CV', 'CV',   'CV', 'CV',   'CVE', 'CVE', 'CVE')
+	_invalidate(S2)
+	_checkStatuses('CV', 'CV', 'CV',   'CV', 'CV',   'IrVE', 'CVE', 'CVE')
+	checkFuncSync(ResultType.Value, S2, S2)
+	_checkStatuses('CV', 'CV', 'CV',   'CV', 'CV',   'CV', 'CVE', 'CVE')
+	checkFuncNotChanged(allFuncs)
+
+	_checkStatuses('CV', 'CV', 'CV',   'CV', 'CV',   'CV', 'CVE', 'CVE')
+	_invalidate(I2)
+	_checkStatuses('CV', 'CV', 'CV',   'CV', 'CV',   'CV', 'IrVE', 'CVE')
+	checkFuncSync(ResultType.Value, I2, I2)
+	_checkStatuses('CV', 'CV', 'CV',   'CV', 'CV',   'CV', 'CV', 'CVE')
+	checkFuncNotChanged(allFuncs)
+
+	_checkStatuses('CV', 'CV', 'CV',   'CV', 'CV',   'CV', 'CV', 'CVE')
+	_invalidate(A2)
+	_checkStatuses('CV', 'CV', 'CV',   'CV', 'CV',   'CV', 'CV', 'IrVE')
+	await checkFuncAsync(ResultType.Value, A2, A2)
+	_checkStatuses('CV', 'CV', 'CV',   'CV', 'CV',   'CV', 'CV', 'CV')
+	checkFuncNotChanged(allFuncs)
+
+	// endregion
+
+	// endregion
+
+	// region level 1
+
+	setResultsAsError(S1)
+	_checkStatuses('CV', 'CV', 'CV',   'CV', 'CV',   'CV', 'CV', 'CV')
+	_invalidate(S1)
+	_checkStatuses('CV', 'CV', 'CV',   'IrV', 'CV',   'IV', 'IV', 'CV')
+	checkFuncSync(ResultType.Error, S2, S1, S2)
+	_checkStatuses('CV', 'CV', 'CV',   'CVE', 'CV',   'CVE', 'IrV', 'CV')
+	checkFuncSync(ResultType.Error, I2, I2)
+	_checkStatuses('CV', 'CV', 'CV',   'CVE', 'CV',   'CVE', 'CVE', 'CV')
+	checkFuncNotChanged(allFuncs)
+	_checkStatuses('CV', 'CV', 'CV',   'CVE', 'CV',   'CVE', 'CVE', 'CV')
+	_invalidate(S1)
+	_checkStatuses('CV', 'CV', 'CV',   'IrVE', 'CV',   'IVE', 'IVE', 'CV')
+	checkFuncSync(ResultType.Error, S2, S1)
+	_checkStatuses('CV', 'CV', 'CV',   'CVE', 'CV',   'CVE', 'IVE', 'CV')
+	checkFuncSync(ResultType.Error, I2)
+	_checkStatuses('CV', 'CV', 'CV',   'CVE', 'CV',   'CVE', 'CVE', 'CV')
+	checkFuncNotChanged(allFuncs)
+	setResultsAsError()
+	_checkStatuses('CV', 'CV', 'CV',   'CVE', 'CV',   'CVE', 'CVE', 'CV')
+	_invalidate(S1)
+	_checkStatuses('CV', 'CV', 'CV',   'IrVE', 'CV',   'IVE', 'IVE', 'CV')
+	checkFuncSync(ResultType.Value, S2, S1, S2)
+	_checkStatuses('CV', 'CV', 'CV',   'CV', 'CV',   'CV', 'IrVE', 'CV')
+	checkFuncSync(ResultType.Value, I2, I2)
+	_checkStatuses('CV', 'CV', 'CV',   'CV', 'CV',   'CV', 'CV', 'CV')
+	checkFuncNotChanged(allFuncs)
+	_checkStatuses('CV', 'CV', 'CV',   'CV', 'CV',   'CV', 'CV', 'CV')
+	_invalidate(S1)
+	_checkStatuses('CV', 'CV', 'CV',   'IrV', 'CV',   'IV', 'IV', 'CV')
+	checkFuncSync(ResultType.Value, S2, S1)
+	_checkStatuses('CV', 'CV', 'CV',   'CV', 'CV',   'CV', 'IV', 'CV')
+	checkFuncSync(ResultType.Value, I2)
+	_checkStatuses('CV', 'CV', 'CV',   'CV', 'CV',   'CV', 'CV', 'CV')
+	checkFuncNotChanged(allFuncs)
+
+	setResultsAsError(I1)
+	_checkStatuses('CV', 'CV', 'CV',   'CV', 'CV',   'CV', 'CV', 'CV')
+	_invalidate(I1)
+	_checkStatuses('CV', 'CV', 'CV',   'CV', 'IrV',   'CV', 'IV', 'IV')
+	checkFuncSync(ResultType.Error, I2, I1, I2)
+	_checkStatuses('CV', 'CV', 'CV',   'CV', 'CVE',   'CV', 'CVE', 'IrV')
+	await checkFuncAsync(ResultType.Error, A2, A2)
+	_checkStatuses('CV', 'CV', 'CV',   'CV', 'CVE',   'CV', 'CVE', 'CVE')
+	checkFuncNotChanged(allFuncs)
+	_checkStatuses('CV', 'CV', 'CV',   'CV', 'CVE',   'CV', 'CVE', 'CVE')
+	_invalidate(I1)
+	_checkStatuses('CV', 'CV', 'CV',   'CV', 'IrVE',   'CV', 'IVE', 'IVE')
+	checkFuncSync(ResultType.Error, I2, I1, I2)
+	_checkStatuses('CV', 'CV', 'CV',   'CV', 'CVE',   'CV', 'CVE', 'IrVE')
+	await checkFuncAsync(ResultType.Error, A2, A2)
+	_checkStatuses('CV', 'CV', 'CV',   'CV', 'CVE',   'CV', 'CVE', 'CVE')
+	checkFuncNotChanged(allFuncs)
+	setResultsAsError()
+	_checkStatuses('CV', 'CV', 'CV',   'CV', 'CVE',   'CV', 'CVE', 'CVE')
+	_invalidate(I1)
+	_checkStatuses('CV', 'CV', 'CV',   'CV', 'IrVE',   'CV', 'IVE', 'IVE')
+	checkFuncSync(ResultType.Value, I2, I1, I2)
+	_checkStatuses('CV', 'CV', 'CV',   'CV', 'CV',   'CV', 'CV', 'IrVE')
+	await checkFuncAsync(ResultType.Value, A2, A2)
+	_checkStatuses('CV', 'CV', 'CV',   'CV', 'CV',   'CV', 'CV', 'CV')
+	checkFuncNotChanged(allFuncs)
+	_checkStatuses('CV', 'CV', 'CV',   'CV', 'CV',   'CV', 'CV', 'CV')
+	_invalidate(I1)
+	_checkStatuses('CV', 'CV', 'CV',   'CV', 'IrV',   'CV', 'IV', 'IV')
+	checkFuncSync(ResultType.Value, I2, I1, I2)
+	_checkStatuses('CV', 'CV', 'CV',   'CV', 'CV',   'CV', 'CV', 'IrV')
+	await checkFuncAsync(ResultType.Value, A2, A2)
+	_checkStatuses('CV', 'CV', 'CV',   'CV', 'CV',   'CV', 'CV', 'CV')
+	checkFuncNotChanged(allFuncs)
+
+	// endregion
+
+	// region level 0
+
+	setResultsAsError(S0)
+	_checkStatuses('CV', 'CV', 'CV',   'CV', 'CV',   'CV', 'CV', 'CV')
+	_invalidate(S0)
+	_checkStatuses('IrV', 'CV', 'CV',   'IV', 'CV',   'IV', 'IV', 'CV')
+	// console.log(allFuncs.filter(isInvalidated).map(o => o.id))
+	checkFuncSync(ResultType.Error, S2, S0, S1, S2)
+	_checkStatuses('CVE', 'CV', 'CV',   'CVE', 'CV',   'CVE', 'IrV', 'CV')
+	checkFuncSync(ResultType.Error, I2, I2)
+	_checkStatuses('CVE', 'CV', 'CV',   'CVE', 'CV',   'CVE', 'CVE', 'CV')
+	checkFuncNotChanged(allFuncs)
+	_checkStatuses('CVE', 'CV', 'CV',   'CVE', 'CV',   'CVE', 'CVE', 'CV')
+	_invalidate(S0)
+	_checkStatuses('IrVE', 'CV', 'CV',   'IVE', 'CV',   'IVE', 'IVE', 'CV')
+	// console.log(allFuncs.filter(isInvalidated).map(o => o.id))
+	checkFuncSync(ResultType.Error, S2, S0)
+	_checkStatuses('CVE', 'CV', 'CV',   'CVE', 'CV',   'CVE', 'IVE', 'CV')
+	checkFuncSync(ResultType.Error, I2)
+	_checkStatuses('CVE', 'CV', 'CV',   'CVE', 'CV',   'CVE', 'CVE', 'CV')
+	checkFuncNotChanged(allFuncs)
+	setResultsAsError()
+	_checkStatuses('CVE', 'CV', 'CV',   'CVE', 'CV',   'CVE', 'CVE', 'CV')
+	_invalidate(S0)
+	_checkStatuses('IrVE', 'CV', 'CV',   'IVE', 'CV',   'IVE', 'IVE', 'CV')
+	// console.log(allFuncs.filter(isInvalidated).map(o => o.id))
+	checkFuncSync(ResultType.Value, S2, S0, S1, S2)
+	_checkStatuses('CV', 'CV', 'CV',   'CV', 'CV',   'CV', 'IrVE', 'CV')
+	checkFuncSync(ResultType.Value, I2, I2)
+	_checkStatuses('CV', 'CV', 'CV',   'CV', 'CV',   'CV', 'CV', 'CV')
+	checkFuncNotChanged(allFuncs)
+	_checkStatuses('CV', 'CV', 'CV',   'CV', 'CV',   'CV', 'CV', 'CV')
+	_invalidate(S0)
+	_checkStatuses('IrV', 'CV', 'CV',   'IV', 'CV',   'IV', 'IV', 'CV')
+	// console.log(allFuncs.filter(isInvalidated).map(o => o.id))
+	checkFuncSync(ResultType.Value, S2, S0)
+	_checkStatuses('CV', 'CV', 'CV',   'CV', 'CV',   'CV', 'IV', 'CV')
+	checkFuncSync(ResultType.Value, I2)
+	_checkStatuses('CV', 'CV', 'CV',   'CV', 'CV',   'CV', 'CV', 'CV')
+	checkFuncNotChanged(allFuncs)
+
+	setResultsAsError(I0)
+	_checkStatuses('CV', 'CV', 'CV',   'CV', 'CV',   'CV', 'CV', 'CV')
+	_invalidate(I0)
+	_checkStatuses('CV', 'IrV', 'CV',   'IV', 'IV',   'IV', 'IV', 'IV')
+	checkFuncSync(ResultType.Error, S2, I0, S1, S2)
+	_checkStatuses('CV', 'CVE', 'CV',   'CVE', 'IrV',   'CVE', 'IrV', 'IV')
+	checkFuncSync(ResultType.Error, I2, I2)
+	_checkStatuses('CV', 'CVE', 'CV',   'CVE', 'IrV',   'CVE', 'CVE', 'IV')
+	await checkFuncAsync(ResultType.Error, A2, I1, A2)
+	_checkStatuses('CV', 'CVE', 'CV',   'CVE', 'CVE',   'CVE', 'CVE', 'CVE')
+	checkFuncNotChanged(allFuncs)
+	_checkStatuses('CV', 'CVE', 'CV',   'CVE', 'CVE',   'CVE', 'CVE', 'CVE')
+	_invalidate(I0)
+	_checkStatuses('CV', 'IrVE', 'CV',   'IVE', 'IVE',   'IVE', 'IVE', 'IVE')
+	checkFuncSync(ResultType.Error, S2, I0, S1, S2)
+	_checkStatuses('CV', 'CVE', 'CV',   'CVE', 'IrVE',   'CVE', 'IrVE', 'IVE')
+	checkFuncSync(ResultType.Error, I2, I2)
+	_checkStatuses('CV', 'CVE', 'CV',   'CVE', 'IrVE',   'CVE', 'CVE', 'IVE')
+	await checkFuncAsync(ResultType.Error, A2, I1, A2)
+	_checkStatuses('CV', 'CVE', 'CV',   'CVE', 'CVE',   'CVE', 'CVE', 'CVE')
+	checkFuncNotChanged(allFuncs)
+	setResultsAsError()
+	_checkStatuses('CV', 'CVE', 'CV',   'CVE', 'CVE',   'CVE', 'CVE', 'CVE')
+	_invalidate(I0)
+	_checkStatuses('CV', 'IrVE', 'CV',   'IVE', 'IVE',   'IVE', 'IVE', 'IVE')
+	checkFuncSync(ResultType.Value, S2, I0, S1, S2)
+	_checkStatuses('CV', 'CV', 'CV',   'CV', 'IrVE',   'CV', 'IrVE', 'IVE')
+	checkFuncSync(ResultType.Value, I2, I2, I1)
+	_checkStatuses('CV', 'CV', 'CV',   'CV', 'CV',   'CV', 'CV', 'IrVE')
+	await checkFuncAsync(ResultType.Value, A2, A2)
+	_checkStatuses('CV', 'CV', 'CV',   'CV', 'CV',   'CV', 'CV', 'CV')
+	checkFuncNotChanged(allFuncs)
+	_checkStatuses('CV', 'CV', 'CV',   'CV', 'CV',   'CV', 'CV', 'CV')
+	_invalidate(I0)
+	_checkStatuses('CV', 'IrV', 'CV',   'IV', 'IV',   'IV', 'IV', 'IV')
+	checkFuncSync(ResultType.Value, S2, I0, S1)
+	_checkStatuses('CV', 'CV', 'CV',   'CV', 'IrV',   'CV', 'IV', 'IV')
+	checkFuncSync(ResultType.Value, I2, I1, I2)
+	_checkStatuses('CV', 'CV', 'CV',   'CV', 'CV',   'CV', 'CV', 'IrV')
+	await checkFuncAsync(ResultType.Value, A2, A2)
+	_checkStatuses('CV', 'CV', 'CV',   'CV', 'CV',   'CV', 'CV', 'CV')
+	checkFuncNotChanged(allFuncs)
+
+	setResultsAsError(A0)
+	_checkStatuses('CV', 'CV', 'CV',   'CV', 'CV',   'CV', 'CV', 'CV')
+	_invalidate(A0)
+	_checkStatuses('CV', 'CV', 'IrV',   'CV', 'IV',   'CV', 'IV', 'IV')
+	await checkFuncAsync(ResultType.Error, I2, A0)
+	checkCallHistory(I1, I2)
+	_checkStatuses('CV', 'CV', 'CVE',   'CV', 'CVE',   'CV', 'CVE', 'IrV')
+	await checkFuncAsync(ResultType.Error, A2, A2)
+	_checkStatuses('CV', 'CV', 'CVE',   'CV', 'CVE',   'CV', 'CVE', 'CVE')
+	checkFuncNotChanged(allFuncs)
+	_checkStatuses('CV', 'CV', 'CVE',   'CV', 'CVE',   'CV', 'CVE', 'CVE')
+	_invalidate(A0)
+	_checkStatuses('CV', 'CV', 'IrVE',   'CV', 'IVE',   'CV', 'IVE', 'IVE')
+	await checkFuncAsync(ResultType.Error, I2, A0)
+	_checkStatuses('CV', 'CV', 'CVE',   'CV', 'CVE',   'CV', 'CVE', 'IVE')
+	checkFuncSync(ResultType.Error, A2)
+	_checkStatuses('CV', 'CV', 'CVE',   'CV', 'CVE',   'CV', 'CVE', 'CVE')
+	checkFuncNotChanged(allFuncs)
+	setResultsAsError()
+	_checkStatuses('CV', 'CV', 'CVE',   'CV', 'CVE',   'CV', 'CVE', 'CVE')
+	_invalidate(A0)
+	_checkStatuses('CV', 'CV', 'IrVE',   'CV', 'IVE',   'CV', 'IVE', 'IVE')
+	await checkFuncAsync(ResultType.Value, I2, A0)
+	checkCallHistory(I1, I2)
+	_checkStatuses('CV', 'CV', 'CV',   'CV', 'CV',   'CV', 'CV', 'IrVE')
+	await checkFuncAsync(ResultType.Value, A2, A2)
+	_checkStatuses('CV', 'CV', 'CV',   'CV', 'CV',   'CV', 'CV', 'CV')
+	checkFuncNotChanged(allFuncs)
+	_checkStatuses('CV', 'CV', 'CV',   'CV', 'CV',   'CV', 'CV', 'CV')
+	_invalidate(A0)
+	_checkStatuses('CV', 'CV', 'IrV',   'CV', 'IV',   'CV', 'IV', 'IV')
+	await checkFuncAsync(ResultType.Value, I2, A0)
+	_checkStatuses('CV', 'CV', 'CV',   'CV', 'CV',   'CV', 'CV', 'IV')
+	checkFuncSync(ResultType.Value, A2)
+	_checkStatuses('CV', 'CV', 'CV',   'CV', 'CV',   'CV', 'CV', 'CV')
+	checkFuncNotChanged(allFuncs)
+
+	// endregion
+
+	// endregion
+
+	// region Backward
+
+	// region level 0
+
+	setResultsAsError(A0)
+	_checkStatuses('CV', 'CV', 'CV',   'CV', 'CV',   'CV', 'CV', 'CV')
+	_invalidate(A0)
+	_checkStatuses('CV', 'CV', 'IrV',   'CV', 'IV',   'CV', 'IV', 'IV')
+	await checkFuncAsync(ResultType.Error, A2, A0)
+	checkCallHistory(I1, A2)
+	_checkStatuses('CV', 'CV', 'CVE',   'CV', 'CVE',   'CV', 'IrV', 'CVE')
+	checkFuncSync(ResultType.Error, I2, I2)
+	_checkStatuses('CV', 'CV', 'CVE',   'CV', 'CVE',   'CV', 'CVE', 'CVE')
+	checkFuncNotChanged(allFuncs)
+	setResultsAsError()
+	_checkStatuses('CV', 'CV', 'CVE',   'CV', 'CVE',   'CV', 'CVE', 'CVE')
+	_invalidate(A0)
+	_checkStatuses('CV', 'CV', 'IrVE',   'CV', 'IVE',   'CV', 'IVE', 'IVE')
+	await checkFuncAsync(ResultType.Value, A2, A0)
+	checkCallHistory(I1, A2)
+	_checkStatuses('CV', 'CV', 'CV',   'CV', 'CV',   'CV', 'IrVE', 'CV')
+	checkFuncSync(ResultType.Value, I2, I2)
+	_checkStatuses('CV', 'CV', 'CV',   'CV', 'CV',   'CV', 'CV', 'CV')
+	checkFuncNotChanged(allFuncs)
+	_checkStatuses('CV', 'CV', 'CV',   'CV', 'CV',   'CV', 'CV', 'CV')
+	_invalidate(A0)
+	_checkStatuses('CV', 'CV', 'IrV',   'CV', 'IV',   'CV', 'IV', 'IV')
+	await checkFuncAsync(ResultType.Value, A2, A0)
+	_checkStatuses('CV', 'CV', 'CV',   'CV', 'CV',   'CV', 'IV', 'CV')
+	checkFuncSync(ResultType.Value, I2)
+	_checkStatuses('CV', 'CV', 'CV',   'CV', 'CV',   'CV', 'CV', 'CV')
+	checkFuncNotChanged(allFuncs)
+
+	setResultsAsError(I0)
+	_checkStatuses('CV', 'CV', 'CV',   'CV', 'CV',   'CV', 'CV', 'CV')
+	_invalidate(I0)
+	_checkStatuses('CV', 'IrV', 'CV',   'IV', 'IV',   'IV', 'IV', 'IV')
+	await checkFuncAsync(ResultType.Error, A2, I0, I1, A2)
+	_checkStatuses('CV', 'CVE', 'CV',   'IrV', 'CVE',   'IV', 'IrV', 'CVE')
+	checkFuncSync(ResultType.Error, I2, I2, S1)
+	_checkStatuses('CV', 'CVE', 'CV',   'CVE', 'CVE',   'IrV', 'CVE', 'CVE')
+	checkFuncSync(ResultType.Error, S2, S2)
+	_checkStatuses('CV', 'CVE', 'CV',   'CVE', 'CVE',   'CVE', 'CVE', 'CVE')
+	checkFuncNotChanged(allFuncs)
+	setResultsAsError()
+	_checkStatuses('CV', 'CVE', 'CV',   'CVE', 'CVE',   'CVE', 'CVE', 'CVE')
+	_invalidate(I0)
+	_checkStatuses('CV', 'IrVE', 'CV',   'IVE', 'IVE',   'IVE', 'IVE', 'IVE')
+	await checkFuncAsync(ResultType.Value, A2, I0, I1, A2)
+	_checkStatuses('CV', 'CV', 'CV',   'IrVE', 'CV',   'IVE', 'IVE', 'CV')
+	checkFuncSync(ResultType.Value, I2, S1, I2)
+	_checkStatuses('CV', 'CV', 'CV',   'CV', 'CV',   'IrVE', 'CV', 'CV')
+	checkFuncSync(ResultType.Value, S2, S2)
+	_checkStatuses('CV', 'CV', 'CV',   'CV', 'CV',   'CV', 'CV', 'CV')
+	checkFuncNotChanged(allFuncs)
+	_checkStatuses('CV', 'CV', 'CV',   'CV', 'CV',   'CV', 'CV', 'CV')
+	_invalidate(I0)
+	_checkStatuses('CV', 'IrV', 'CV',   'IV', 'IV',   'IV', 'IV', 'IV')
+	await checkFuncAsync(ResultType.Value, A2, I0, I1, A2)
+	_checkStatuses('CV', 'CV', 'CV',   'IrV', 'CV',   'IV', 'IrV', 'CV')
+	checkFuncSync(ResultType.Value, I2, I2, S1)
+	_checkStatuses('CV', 'CV', 'CV',   'CV', 'CV',   'IV', 'CV', 'CV')
+	checkFuncSync(ResultType.Value, S2)
+	_checkStatuses('CV', 'CV', 'CV',   'CV', 'CV',   'CV', 'CV', 'CV')
+	checkFuncNotChanged(allFuncs)
+
+	setResultsAsError(S0)
+	_checkStatuses('CV', 'CV', 'CV',   'CV', 'CV',   'CV', 'CV', 'CV')
+	_invalidate(S0)
+	_checkStatuses('IrV', 'CV', 'CV',   'IV', 'CV',   'IV', 'IV', 'CV')
+	checkFuncSync(ResultType.Error, I2, S0, S1, I2)
+	_checkStatuses('CVE', 'CV', 'CV',   'CVE', 'CV',   'IrV', 'CVE', 'CV')
+	checkFuncSync(ResultType.Error, S2, S2)
+	_checkStatuses('CVE', 'CV', 'CV',   'CVE', 'CV',   'CVE', 'CVE', 'CV')
+	checkFuncNotChanged(allFuncs)
+	setResultsAsError()
+	_checkStatuses('CVE', 'CV', 'CV',   'CVE', 'CV',   'CVE', 'CVE', 'CV')
+	_invalidate(S0)
+	_checkStatuses('IrVE', 'CV', 'CV',   'IVE', 'CV',   'IVE', 'IVE', 'CV')
+	checkFuncSync(ResultType.Value, I2, S0, S1, I2)
+	_checkStatuses('CV', 'CV', 'CV',   'CV', 'CV',   'IrVE', 'CV', 'CV')
+	checkFuncSync(ResultType.Value, S2, S2)
+	_checkStatuses('CV', 'CV', 'CV',   'CV', 'CV',   'CV', 'CV', 'CV')
+	checkFuncNotChanged(allFuncs)
+	_checkStatuses('CV', 'CV', 'CV',   'CV', 'CV',   'CV', 'CV', 'CV')
+	_invalidate(S0)
+	_checkStatuses('IrV', 'CV', 'CV',   'IV', 'CV',   'IV', 'IV', 'CV')
+	checkFuncSync(ResultType.Value, I2, S0)
+	_checkStatuses('CV', 'CV', 'CV',   'CV', 'CV',   'IV', 'CV', 'CV')
+	checkFuncSync(ResultType.Value, S2)
+	_checkStatuses('CV', 'CV', 'CV',   'CV', 'CV',   'CV', 'CV', 'CV')
+	checkFuncNotChanged(allFuncs)
+
+	// endregion
+
+	// region level 1
+
+	setResultsAsError(I1)
+	_checkStatuses('CV', 'CV', 'CV',   'CV', 'CV',   'CV', 'CV', 'CV')
+	_invalidate(I1)
+	_checkStatuses('CV', 'CV', 'CV',   'CV', 'IrV',   'CV', 'IV', 'IV')
+	await checkFuncAsync(ResultType.Error, A2, I1, A2)
+	_checkStatuses('CV', 'CV', 'CV',   'CV', 'CVE',   'CV', 'IrV', 'CVE')
+	checkFuncSync(ResultType.Error, I2, I2)
+	_checkStatuses('CV', 'CV', 'CV',   'CV', 'CVE',   'CV', 'CVE', 'CVE')
+	checkFuncNotChanged(allFuncs)
+	setResultsAsError()
+	_checkStatuses('CV', 'CV', 'CV',   'CV', 'CVE',   'CV', 'CVE', 'CVE')
+	_invalidate(I1)
+	_checkStatuses('CV', 'CV', 'CV',   'CV', 'IrVE',   'CV', 'IVE', 'IVE')
+	await checkFuncAsync(ResultType.Value, A2, I1, A2)
+	_checkStatuses('CV', 'CV', 'CV',   'CV', 'CV',   'CV', 'IrVE', 'CV')
+	checkFuncSync(ResultType.Value, I2, I2)
+	_checkStatuses('CV', 'CV', 'CV',   'CV', 'CV',   'CV', 'CV', 'CV')
+	checkFuncNotChanged(allFuncs)
+	_checkStatuses('CV', 'CV', 'CV',   'CV', 'CV',   'CV', 'CV', 'CV')
+	_invalidate(I1)
+	_checkStatuses('CV', 'CV', 'CV',   'CV', 'IrV',   'CV', 'IV', 'IV')
+	await checkFuncAsync(ResultType.Value, A2, I1, A2)
+	_checkStatuses('CV', 'CV', 'CV',   'CV', 'CV',   'CV', 'IrV', 'CV')
+	checkFuncSync(ResultType.Value, I2, I2)
+	_checkStatuses('CV', 'CV', 'CV',   'CV', 'CV',   'CV', 'CV', 'CV')
+	checkFuncNotChanged(allFuncs)
+
+	setResultsAsError(S1)
+	_checkStatuses('CV', 'CV', 'CV',   'CV', 'CV',   'CV', 'CV', 'CV')
+	_invalidate(S1)
+	_checkStatuses('CV', 'CV', 'CV',   'IrV', 'CV',   'IV', 'IV', 'CV')
+	checkFuncSync(ResultType.Error, I2, S1, I2)
+	_checkStatuses('CV', 'CV', 'CV',   'CVE', 'CV',   'IrV', 'CVE', 'CV')
+	checkFuncSync(ResultType.Error, S2, S2)
+	_checkStatuses('CV', 'CV', 'CV',   'CVE', 'CV',   'CVE', 'CVE', 'CV')
+	checkFuncNotChanged(allFuncs)
+	setResultsAsError()
+	_checkStatuses('CV', 'CV', 'CV',   'CVE', 'CV',   'CVE', 'CVE', 'CV')
+	_invalidate(S1)
+	_checkStatuses('CV', 'CV', 'CV',   'IrVE', 'CV',   'IVE', 'IVE', 'CV')
+	checkFuncSync(ResultType.Value, I2, S1, I2)
+	_checkStatuses('CV', 'CV', 'CV',   'CV', 'CV',   'IrVE', 'CV', 'CV')
+	checkFuncSync(ResultType.Value, S2, S2)
+	_checkStatuses('CV', 'CV', 'CV',   'CV', 'CV',   'CV', 'CV', 'CV')
+	checkFuncNotChanged(allFuncs)
+	_checkStatuses('CV', 'CV', 'CV',   'CV', 'CV',   'CV', 'CV', 'CV')
+	_invalidate(S1)
+	_checkStatuses('CV', 'CV', 'CV',   'IrV', 'CV',   'IV', 'IV', 'CV')
+	checkFuncSync(ResultType.Value, I2, S1)
+	_checkStatuses('CV', 'CV', 'CV',   'CV', 'CV',   'IV', 'CV', 'CV')
+	checkFuncSync(ResultType.Value, S2)
+	_checkStatuses('CV', 'CV', 'CV',   'CV', 'CV',   'CV', 'CV', 'CV')
+	checkFuncNotChanged(allFuncs)
+
+	// endregion
+
+	// region level 2
+
+	// region error
+
+	setResultsAsError(S2, I2, A2)
+
+	_checkStatuses('CV', 'CV', 'CV',   'CV', 'CV',   'CV', 'CV', 'CV')
+	_invalidate(A2)
+	_checkStatuses('CV', 'CV', 'CV',   'CV', 'CV',   'CV', 'CV', 'IrV')
+	await checkFuncAsync(ResultType.Error, A2, A2)
+	_checkStatuses('CV', 'CV', 'CV',   'CV', 'CV',   'CV', 'CV', 'CVE')
+	checkFuncNotChanged(allFuncs)
+
+	_checkStatuses('CV', 'CV', 'CV',   'CV', 'CV',   'CV', 'CV', 'CVE')
+	_invalidate(I2)
+	_checkStatuses('CV', 'CV', 'CV',   'CV', 'CV',   'CV', 'IrV', 'CVE')
+	checkFuncSync(ResultType.Error, I2, I2)
+	_checkStatuses('CV', 'CV', 'CV',   'CV', 'CV',   'CV', 'CVE', 'CVE')
+	checkFuncNotChanged(allFuncs)
+
+	_checkStatuses('CV', 'CV', 'CV',   'CV', 'CV',   'CV', 'CVE', 'CVE')
+	_invalidate(S2)
+	_checkStatuses('CV', 'CV', 'CV',   'CV', 'CV',   'IrV', 'CVE', 'CVE')
+	checkFuncSync(ResultType.Error, S2, S2)
+	_checkStatuses('CV', 'CV', 'CV',   'CV', 'CV',   'CVE', 'CVE', 'CVE')
+	checkFuncNotChanged(allFuncs)
+
+	// endregion
+
+	// region value
+
+	setResultsAsError()
+
+	_checkStatuses('CV', 'CV', 'CV',   'CV', 'CV',   'CVE', 'CVE', 'CVE')
+	_invalidate(A2)
+	_checkStatuses('CV', 'CV', 'CV',   'CV', 'CV',   'CVE', 'CVE', 'IrVE')
+	await checkFuncAsync(ResultType.Value, A2, A2)
+	_checkStatuses('CV', 'CV', 'CV',   'CV', 'CV',   'CVE', 'CVE', 'CV')
+	checkFuncNotChanged(allFuncs)
+
+	_checkStatuses('CV', 'CV', 'CV',   'CV', 'CV',   'CVE', 'CVE', 'CV')
+	_invalidate(I2)
+	_checkStatuses('CV', 'CV', 'CV',   'CV', 'CV',   'CVE', 'IrVE', 'CV')
+	checkFuncSync(ResultType.Value, I2, I2)
+	_checkStatuses('CV', 'CV', 'CV',   'CV', 'CV',   'CVE', 'CV', 'CV')
+	checkFuncNotChanged(allFuncs)
+
+	_checkStatuses('CV', 'CV', 'CV',   'CV', 'CV',   'CVE', 'CV', 'CV')
+	_invalidate(S2)
+	_checkStatuses('CV', 'CV', 'CV',   'CV', 'CV',   'IrVE', 'CV', 'CV')
+	checkFuncSync(ResultType.Value, S2, S2)
+	_checkStatuses('CV', 'CV', 'CV',   'CV', 'CV',   'CV', 'CV', 'CV')
+	checkFuncNotChanged(allFuncs)
+
+	// endregion
+
+	// endregion
+
+	// endregion
+
+	// endregion
+
+	// region invalidate during calc async
+
+	_checkStatuses('CV', 'CV', 'CV',   'CV', 'CV',   'CV', 'CV', 'CV')
+	_invalidate(I1)
+	_checkStatuses('CV', 'CV', 'CV',   'CV', 'IrV',   'CV', 'IV', 'IV')
+	checkFuncSync(ResultType.Value, I2, I1, I2)
+	_checkStatuses('CV', 'CV', 'CV',   'CV', 'CV',   'CV', 'CV', 'IrV')
+	promise1 = checkFuncAsync(ResultType.Value, A2, A2)
+	_checkStatuses('CV', 'CV', 'CV',   'CV', 'CV',   'CV', 'CV', 'caV')
+	_invalidate(I1)
+	checkUnsubscribers(A2)
+	_checkStatuses('CV', 'CV', 'CV',   'CV', 'IrV',   'CV', 'IV', 'caV')
+	checkFuncSync(ResultType.Value, I2, I1, I2)
+	_checkStatuses('CV', 'CV', 'CV',   'CV', 'CV',   'CV', 'CV', 'caV')
+	await promise1
+	_checkStatuses('CV', 'CV', 'CV',   'CV', 'CV',   'CV', 'CV', 'CV')
+	checkFuncSync(ResultType.Value, A2)
+	checkFuncNotChanged(allFuncs)
+
+	_checkStatuses('CV', 'CV', 'CV',   'CV', 'CV',   'CV', 'CV', 'CV')
+	_invalidate(A0)
+	_checkStatuses('CV', 'CV', 'IrV',   'CV', 'IV',   'CV', 'IV', 'IV')
+	promise1 = checkFuncAsync(ResultType.Value, A2, A0)
+	_checkStatuses('CV', 'CV', 'caV',   'CV', 'xaV',   'CV', 'IV', 'xaV')
+	_invalidate(A0)
+	_checkStatuses('CV', 'CV', 'IrcaV',   'CV', 'IxaV',   'CV', 'IV', 'IxaV')
+	promise2 = checkFuncAsync(ResultType.Value, I2)
+	_checkStatuses('CV', 'CV', 'IrcaV',   'CV', 'IxaV',   'CV', 'xaV', 'IxaV')
+	await checkFuncAsync(ResultType.Value, A0)
+	_checkStatuses('CV', 'CV', 'IV',   'CV', 'IV',   'CV', 'IV', 'IV')
+	_invalidate(I0)
+	_checkStatuses('CV', 'IrV', 'IV',   'IV', 'IV',   'IV', 'IV', 'IV')
+	await promise1
+	_checkStatuses('CV', 'IrV', 'IV',   'IV', 'IV',   'IV', 'IV', 'IV')
+	checkFuncSync(ResultType.Value, I2, I0, S1, I1, I2)
+	_checkStatuses('CV', 'CV', 'CV',   'CV', 'CV',   'IV', 'CV', 'IrV')
+	await promise2
+	_checkStatuses('CV', 'CV', 'CV',   'CV', 'CV',   'IV', 'CV', 'IrV')
+	checkCallHistory()
+	await checkFuncAsync(ResultType.Value, A2, A2)
+	_checkStatuses('CV', 'CV', 'CV',   'CV', 'CV',   'IV', 'CV', 'CV')
+	checkFuncSync(ResultType.Value, S2)
+	_checkStatuses('CV', 'CV', 'CV',   'CV', 'CV',   'CV', 'CV', 'CV')
+	checkFuncNotChanged(allFuncs)
+
+	_checkStatuses('CV', 'CV', 'CV',   'CV', 'CV',   'CV', 'CV', 'CV')
+	_invalidate(A0, I0)
+	_checkStatuses('CV', 'IrV', 'IrV',   'IV', 'IV',   'IV', 'IV', 'IV')
+	promise1 = checkFuncAsync(ResultType.Value, A2, I0, I1, A0)
+	_checkStatuses('CV', 'CV', 'caV',   'IrV', 'caV',   'IV', 'IV', 'xaV')
+	_invalidate(A0)
+	_checkStatuses('CV', 'CV', 'IrcaV',   'IrV', 'IcaV',   'IV', 'IV', 'IxaV')
+	promise2 = checkFuncAsync(ResultType.Value, I2, S1)
+	_checkStatuses('CV', 'CV', 'IrcaV',   'CV', 'IcaV',   'IV', 'xaV', 'IxaV')
+	await checkFuncAsync(ResultType.Value, A0)
+	_checkStatuses('CV', 'CV', 'CV',   'CV', 'CV',   'IV', 'CV', 'caV')
+	checkCallHistory(A2, I2)
+	_invalidate(I0)
+	_checkStatuses('CV', 'IrV', 'CV',   'IV', 'IV',   'IV', 'IV', 'caV')
+	await promise1
+	_checkStatuses('CV', 'CV', 'CV',   'IrV', 'CV',   'IV', 'IrV', 'CV')
+	checkCallHistory(I0, I1)
+	checkFuncSync(ResultType.Value, I2, I2, S1)
+	_checkStatuses('CV', 'CV', 'CV',   'CV', 'CV',   'IV', 'CV', 'CV')
+	await promise2
+	checkCallHistory()
+	checkFuncSync(ResultType.Value, S2)
+	_checkStatuses('CV', 'CV', 'CV',   'CV', 'CV',   'CV', 'CV', 'CV')
+	checkFuncNotChanged(allFuncs)
+
+	_checkStatuses('CV', 'CV', 'CV',   'CV', 'CV',   'CV', 'CV', 'CV')
+
+	// endregion
+
+	// endregion
+
+	// region Loops
+
+	// region init
+
+	const SL = funcSync('SL', deferred)
+	const IL = funcSyncIterator('IL', deferred)
+	const AL = funcAsync('AL', deferred)
+
+	const SL3_dependencies = []
+	const SL3 = _funcCall(SL, 'SL33()', SL3_dependencies, 3, 3)
+	const SL4 = _funcCall(SL, 'SL44()', [SL3], 4, 4)
+	const SL5 = _funcCall(SL, 'SL55()', [SL4], 5, 5)
+	SL3.hasLoop = true
+	SL4.hasLoop = true
+	SL5.hasLoop = true
+
+	const IL3_dependencies = []
+	const IL3 = _funcCall(IL, 'IL33()', IL3_dependencies, 3, 3)
+	const IL4 = _funcCall(IL, 'IL44()', [IL3], 4, 4)
+	const IL5 = _funcCall(IL, 'IL55()', [IL4], 5, 5)
+	IL3.hasLoop = true
+	IL4.hasLoop = true
+	IL5.hasLoop = true
+
+	const AL3_dependencies = []
+	const AL3 = _funcCall(AL, 'AL33()', AL3_dependencies, 3, 3)
+	const AL4 = _funcCall(AL, 'AL44()', [AL3], 4, 4)
+	const AL5 = _funcCall(AL, 'AL55()', [AL4], 5, 5)
+	AL3.hasLoop = true
+	AL4.hasLoop = true
+	AL5.hasLoop = true
+
+	// endregion
+
+	// region check init
+
+	SL3_dependencies.push(SL5)
+	assert.strictEqual(SL3.id, 'SL33()')
+	assert.strictEqual(SL4.id, 'SL44()')
+	assert.strictEqual(SL5.id, 'SL55()')
+
+	IL3_dependencies.push(IL5)
+	assert.strictEqual(IL3.id, 'IL33()')
+	assert.strictEqual(IL4.id, 'IL44()')
+	assert.strictEqual(IL5.id, 'IL55()')
+
+	AL3_dependencies.push(AL5)
+	assert.strictEqual(AL3.id, 'AL33()')
+	assert.strictEqual(AL4.id, 'AL44()')
+	assert.strictEqual(AL5.id, 'AL55()')
+
+	// endregion
+
+	// region sync
+
+	assert.throws(() => {
+		checkFuncSync(ResultType.Value, SL3, SL3)
+	}, InternalError, /\bsync loop\b/i)
+	checkCallHistory(SL3, SL5, SL4)
+
+	assert.throws(() => {
+		checkFuncSync(ResultType.Value, SL4, SL4)
+	}, InternalError, /\bsync loop\b/i)
+	checkCallHistory()
+
+	assert.throws(() => {
+		checkFuncSync(ResultType.Value, SL5, SL5)
+	}, InternalError, /\bsync loop\b/i)
+	checkCallHistory()
+
+	// endregion
+
+	// region iterator
+
+	assert.throws(() => {
+		checkFuncSync(ResultType.Value, IL3, IL3)
+	}, InternalError, /\bsync loop\b/i)
+	checkCallHistory(IL3, IL5, IL4)
+
+	assert.throws(() => {
+		checkFuncSync(ResultType.Value, IL4, IL4)
+	}, InternalError, /\bsync loop\b/i)
+	// checkCallHistory(IL4, IL3, IL5)
+
+	assert.throws(() => {
+		checkFuncSync(ResultType.Value, IL5, IL5)
+	}, InternalError, /\bsync loop\b/i)
+	// checkCallHistory(IL5, IL4, IL3)
+
+	// endregion
+
+	// region async
+
+	await assert.throwsAsync(async () => {
+		await checkFuncAsync(ResultType.Value, AL3, AL3)
+	}, InternalError, /\basync loop\b/i)
+	checkCallHistory(AL5, AL4)
+
+	await assert.throwsAsync(async () => {
+		await checkFuncAsync(ResultType.Value, AL4)
+	}, InternalError, /\basync loop\b/i)
+	checkCallHistory()
+
+	await assert.throwsAsync(async () => {
+		await checkFuncAsync(ResultType.Value, AL5)
+	}, InternalError, /\basync loop\b/i)
+	checkCallHistory()
+
+	// endregion
+
+	// endregion
+
+	stopCheckCurrentState()
+
+	return {
+		states: [S0, I0, A0, S1, I1, S2, I2, A2, AL3, AL4, AL5].map(o => {
+			return o.state
+		}),
+	}
+}
+
+export async function lazyTest(deferred?: boolean) {
+	if (deferred == null) {
+		await lazyTest(false)
+		return await lazyTest(true)
+	}
+
+	const stopCheckCurrentState = checkCurrentStateAsyncContinuous(null)
+
+	callHistoryCheckDisabled = deferred
+
+	// region init
+
+	const S = funcSync('S', deferred)
+	const A = funcAsync('A', deferred)
+
+	const A0 = funcCall(A, new ThisObj('_')) // A(_)
+
+	const S0 = funcCall(S, [A0], 0) // S0(A(_))
+	const SL0 = funcCall(S, [A0], 'L') // SL(A(_))
+	const A10 = funcCall(A, [A0], 10) // A10(A(_))
+	const A11 = funcCall(A, [A0], 11) // A11(A(_))
+	const A12 = funcCall(A, [A0], 12) // A12(A(_))
+	const A13 = funcCall(A, [A0], 13) // A13(A(_))
+
+	const allFuncs = [A0, S11, I1, S2, I2, A2]
 	const _checkStatuses = checkStatuses(...allFuncs)
 
 	function _checkSubscribersAll() {

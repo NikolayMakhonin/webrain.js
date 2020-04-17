@@ -31,8 +31,6 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="69b2ee16-521b-4efd-b473-8e19e3df4d09" name="Default Changelist" comment="depend: added lazy mode, but not tested.">
-      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/common/rx/depend/core/CallState.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/common/rx/depend/core/CallState.ts" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/test/tests/common/main/rx/depend/src/helpers.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/test/tests/common/main/rx/depend/src/helpers.ts" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
@@ -442,14 +440,7 @@
       <workItem from="1586866992744" duration="5668000" />
       <workItem from="1586872696123" duration="6185000" />
       <workItem from="1586887545919" duration="37770000" />
-      <workItem from="1587105271608" duration="17020000" />
-    </task>
-    <task id="LOCAL-00344" summary="optimizing... Tests OK.">
-      <created>1585849944122</created>
-      <option name="number" value="00344" />
-      <option name="presentableId" value="LOCAL-00344" />
-      <option name="project" value="LOCAL" />
-      <updated>1585849944122</updated>
+      <workItem from="1587105271608" duration="17323000" />
     </task>
     <task id="LOCAL-00345" summary="optimizing... Tests OK.">
       <created>1585850401797</created>
@@ -787,7 +778,14 @@
       <option name="project" value="LOCAL" />
       <updated>1587125391390</updated>
     </task>
-    <option name="localTasksCounter" value="393" />
+    <task id="LOCAL-00393" summary="depend: added lazy mode, but not tested.">
+      <created>1587133993442</created>
+      <option name="number" value="00393" />
+      <option name="presentableId" value="LOCAL-00393" />
+      <option name="project" value="LOCAL" />
+      <updated>1587133993442</updated>
+    </task>
+    <option name="localTasksCounter" value="394" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -880,10 +878,10 @@
       <screen x="0" y="0" width="1920" height="882" />
     </state>
     <state x="651" y="254" key="ANALYSIS_DLG_com.intellij.analysis.BaseAnalysisAction$1/0.0.1920.882@0.0.1920.882" timestamp="1586875498549" />
-    <state x="0" y="0" width="1918" height="882" key="CommitChangelistDialog2" timestamp="1587133566721">
+    <state x="0" y="0" width="1918" height="882" key="CommitChangelistDialog2" timestamp="1587133992291">
       <screen x="0" y="0" width="1920" height="882" />
     </state>
-    <state x="0" y="0" width="1918" height="882" key="CommitChangelistDialog2/0.0.1920.882@0.0.1920.882" timestamp="1587133566721" />
+    <state x="0" y="0" width="1918" height="882" key="CommitChangelistDialog2/0.0.1920.882@0.0.1920.882" timestamp="1587133992291" />
     <state width="685" height="550" key="DebuggerActiveHint" timestamp="1587132753603">
       <screen x="0" y="0" width="1920" height="882" />
     </state>
@@ -979,7 +977,7 @@
         <line-breakpoint enabled="true" type="javascript">
           <condition expression="getCurrentState()" language="TypeScript" />
           <url>file://$PROJECT_DIR$/src/test/tests/common/main/rx/depend/src/helpers.ts</url>
-          <line>530</line>
+          <line>535</line>
           <option name="timeStamp" value="968" />
         </line-breakpoint>
         <line-breakpoint enabled="true" type="javascript">
@@ -1005,7 +1003,7 @@
         <line-breakpoint enabled="true" type="javascript">
           <condition expression="rest.length" language="TypeScript" />
           <url>file://$PROJECT_DIR$/src/test/tests/common/main/rx/depend/src/helpers.ts</url>
-          <line>440</line>
+          <line>445</line>
           <properties lambdaOrdinal="-1" />
           <option name="timeStamp" value="1171" />
         </line-breakpoint>
