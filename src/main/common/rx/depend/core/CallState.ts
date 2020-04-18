@@ -1143,8 +1143,13 @@ export class CallState<
 		valueChanged: boolean,
 	) {
 		if ((prevStatus & Mask_Invalidate) !== 0) {
-			this._updateInvalidate(Update_Invalidating, valueChanged)
-			this._updateInvalidate(Update_Invalidated, valueChanged)
+			if ((prevStatus & Flag_Recalc) !== 0) {
+				this._updateInvalidate(Update_Invalidating_Recalc, valueChanged)
+				this._updateInvalidate(Update_Invalidated_Recalc, valueChanged)
+			} else {
+				this._updateInvalidate(Update_Invalidating, valueChanged)
+				this._updateInvalidate(Update_Invalidated, valueChanged)
+			}
 		} else if (valueChanged) {
 			this._invalidateParents(Update_Recalc, Update_Invalidating_Recalc, Flag_None)
 			this._invalidateParents(Flag_None, Update_Invalidated_Recalc, Flag_None)
