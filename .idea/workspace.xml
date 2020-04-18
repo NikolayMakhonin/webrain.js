@@ -440,14 +440,7 @@
       <workItem from="1586866992744" duration="5668000" />
       <workItem from="1586872696123" duration="6185000" />
       <workItem from="1586887545919" duration="37770000" />
-      <workItem from="1587105271608" duration="45443000" />
-    </task>
-    <task id="LOCAL-00352" summary="Fix facade">
-      <created>1586080541779</created>
-      <option name="number" value="00352" />
-      <option name="presentableId" value="LOCAL-00352" />
-      <option name="project" value="LOCAL" />
-      <updated>1586080541780</updated>
+      <workItem from="1587105271608" duration="45738000" />
     </task>
     <task id="LOCAL-00353" summary="Depend: Small refactoring">
       <created>1586141072451</created>
@@ -785,7 +778,14 @@
       <option name="project" value="LOCAL" />
       <updated>1587218831663</updated>
     </task>
-    <option name="localTasksCounter" value="401" />
+    <task id="LOCAL-00401" summary="depend: lazy mode, testing and debugging... Tests OK">
+      <created>1587220142209</created>
+      <option name="number" value="00401" />
+      <option name="presentableId" value="LOCAL-00401" />
+      <option name="project" value="LOCAL" />
+      <updated>1587220142209</updated>
+    </task>
+    <option name="localTasksCounter" value="402" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -874,18 +874,18 @@
     <option name="LAST_COMMIT_MESSAGE" value="depend: lazy mode, testing and debugging... Tests OK" />
   </component>
   <component name="WindowStateProjectService">
-    <state x="91" y="91" width="1738" height="700" key="#com.intellij.execution.junit2.states.ComparisonFailureState$DiffDialog" timestamp="1587220134005">
+    <state x="91" y="91" width="1738" height="700" key="#com.intellij.execution.junit2.states.ComparisonFailureState$DiffDialog" timestamp="1587220437050">
       <screen x="0" y="0" width="1920" height="882" />
     </state>
-    <state x="91" y="91" width="1738" height="700" key="#com.intellij.execution.junit2.states.ComparisonFailureState$DiffDialog/0.0.1920.882@0.0.1920.882" timestamp="1587220134005" />
+    <state x="91" y="91" width="1738" height="700" key="#com.intellij.execution.junit2.states.ComparisonFailureState$DiffDialog/0.0.1920.882@0.0.1920.882" timestamp="1587220437050" />
     <state x="651" y="254" key="ANALYSIS_DLG_com.intellij.analysis.BaseAnalysisAction$1" timestamp="1586875498549">
       <screen x="0" y="0" width="1920" height="882" />
     </state>
     <state x="651" y="254" key="ANALYSIS_DLG_com.intellij.analysis.BaseAnalysisAction$1/0.0.1920.882@0.0.1920.882" timestamp="1586875498549" />
-    <state x="0" y="0" width="1918" height="882" key="CommitChangelistDialog2" timestamp="1587218829176">
+    <state x="0" y="0" width="1918" height="882" key="CommitChangelistDialog2" timestamp="1587220140283">
       <screen x="0" y="0" width="1920" height="882" />
     </state>
-    <state x="0" y="0" width="1918" height="882" key="CommitChangelistDialog2/0.0.1920.882@0.0.1920.882" timestamp="1587218829176" />
+    <state x="0" y="0" width="1918" height="882" key="CommitChangelistDialog2/0.0.1920.882@0.0.1920.882" timestamp="1587220140283" />
     <state width="789" height="550" key="DebuggerActiveHint" timestamp="1587218174056">
       <screen x="0" y="0" width="1920" height="882" />
     </state>
@@ -894,22 +894,22 @@
       <screen x="0" y="0" width="1920" height="882" />
     </state>
     <state x="0" y="4" width="1920" height="875" key="DiffContextDialog/0.0.1920.882@0.0.1920.882" timestamp="1587217425676" />
-    <state width="706" height="569" key="GridCell.Tab.0.bottom" timestamp="1587220057342">
+    <state width="706" height="569" key="GridCell.Tab.0.bottom" timestamp="1587220374849">
       <screen x="0" y="0" width="1920" height="882" />
     </state>
-    <state width="706" height="569" key="GridCell.Tab.0.bottom/0.0.1920.882@0.0.1920.882" timestamp="1587220057342" />
-    <state width="706" height="569" key="GridCell.Tab.0.center" timestamp="1587220057342">
+    <state width="706" height="569" key="GridCell.Tab.0.bottom/0.0.1920.882@0.0.1920.882" timestamp="1587220374849" />
+    <state width="706" height="569" key="GridCell.Tab.0.center" timestamp="1587220374849">
       <screen x="0" y="0" width="1920" height="882" />
     </state>
-    <state width="706" height="569" key="GridCell.Tab.0.center/0.0.1920.882@0.0.1920.882" timestamp="1587220057342" />
-    <state width="706" height="569" key="GridCell.Tab.0.left" timestamp="1587220057342">
+    <state width="706" height="569" key="GridCell.Tab.0.center/0.0.1920.882@0.0.1920.882" timestamp="1587220374849" />
+    <state width="706" height="569" key="GridCell.Tab.0.left" timestamp="1587220374849">
       <screen x="0" y="0" width="1920" height="882" />
     </state>
-    <state width="706" height="569" key="GridCell.Tab.0.left/0.0.1920.882@0.0.1920.882" timestamp="1587220057342" />
-    <state width="706" height="569" key="GridCell.Tab.0.right" timestamp="1587220057342">
+    <state width="706" height="569" key="GridCell.Tab.0.left/0.0.1920.882@0.0.1920.882" timestamp="1587220374849" />
+    <state width="706" height="569" key="GridCell.Tab.0.right" timestamp="1587220374849">
       <screen x="0" y="0" width="1920" height="882" />
     </state>
-    <state width="706" height="569" key="GridCell.Tab.0.right/0.0.1920.882@0.0.1920.882" timestamp="1587220057342" />
+    <state width="706" height="569" key="GridCell.Tab.0.right/0.0.1920.882@0.0.1920.882" timestamp="1587220374849" />
     <state width="703" height="490" key="GridCell.Tab.1.bottom" timestamp="1587218471508">
       <screen x="0" y="0" width="1920" height="882" />
     </state>

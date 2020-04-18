@@ -2053,6 +2053,24 @@ export async function lazyTest(deferred?: boolean) {
 	checkCallHistory()
 	_clearStates()
 
+	// A-AL
+	_checkStatuses('Ir',  'Ir', 'Ir',   'Ir', 'Ir', 'Ir', 'Ir')
+	promise1 = checkFuncAsync(ResultType.Value, AL1, AL1)
+	_checkStatuses('Ir',  'Ir', 'Ir',   'Ir', 'ca', 'Ir', 'Ir')
+	promise2 = checkFuncAsync(ResultType.Value, A1, A1)
+	_checkStatuses('Ir',  'Ir', 'Ir',   'ca', 'ca', 'Ir', 'Ir')
+	await promise1
+	_checkStatuses('ca',  'Ir', 'Ir',   'ca', 'CV', 'Ir', 'Ir')
+	await promise2
+	checkCallHistory(A0)
+	_checkStatuses('CV',  'Ir', 'Ir',   'CV', 'IrV', 'Ir', 'Ir')
+	promise1 = checkFuncAsync(ResultType.Value, AL1, AL1)
+	_checkStatuses('CV',  'Ir', 'Ir',   'CV', 'caV', 'Ir', 'Ir')
+	await promise1
+	_checkStatuses('CV',  'Ir', 'Ir',   'CV', 'CV', 'Ir', 'Ir')
+	checkCallHistory()
+	_clearStates()
+
 	// _checkStatuses('CV', 'Ir', 'Ir',   'Ir', 'Ir',   'Ir', 'Ir', 'Ir')
 	// checkFuncSync(ResultType.Value, I0, I0)
 	// _checkStatuses('CV', 'CV', 'Ir',   'Ir', 'Ir',   'Ir', 'Ir', 'Ir')
