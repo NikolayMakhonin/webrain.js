@@ -1978,7 +1978,7 @@ export async function lazyTest(deferred?: boolean) {
 
 	// region base tests
 
-	// L
+	// SL
 	_checkStatuses('Ir',  'Ir', 'Ir',   'Ir', 'Ir', 'Ir', 'Ir')
 	checkFuncSync(ResultType.Value, SL1, SL1, A0)
 	_checkStatuses('ca',  'Ir', 'CV',   'Ir', 'Ir', 'Ir', 'Ir')
@@ -1995,7 +1995,7 @@ export async function lazyTest(deferred?: boolean) {
 	checkCallHistory()
 	_clearStates()
 
-	// L*
+	// SL-A
 	_checkStatuses('Ir',  'Ir', 'Ir',   'Ir', 'Ir', 'Ir', 'Ir')
 	checkFuncSync(ResultType.Value, SL1, SL1, A0)
 	_checkStatuses('ca',  'Ir', 'CV',   'Ir', 'Ir', 'Ir', 'Ir')
@@ -2005,6 +2005,51 @@ export async function lazyTest(deferred?: boolean) {
 	_checkStatuses('CV',  'Ir', 'IrV',   'CV', 'Ir', 'Ir', 'Ir')
 	checkFuncSync(ResultType.Value, SL1, SL1)
 	_checkStatuses('CV',  'Ir', 'CV',   'CV', 'Ir', 'Ir', 'Ir')
+	checkCallHistory()
+	_clearStates()
+
+	// SL-A-AL
+	_checkStatuses('Ir',  'Ir', 'Ir',   'Ir', 'Ir', 'Ir', 'Ir')
+	checkFuncSync(ResultType.Value, SL1, SL1, A0)
+	_checkStatuses('ca',  'Ir', 'CV',   'Ir', 'Ir', 'Ir', 'Ir')
+	promise1 = checkFuncAsync(ResultType.Value, A1, A1)
+	_checkStatuses('ca',  'Ir', 'CV',   'ca', 'Ir', 'Ir', 'Ir')
+	let promise2 = checkFuncAsync(ResultType.Value, AL1, AL1)
+	_checkStatuses('ca',  'Ir', 'CV',   'ca', 'ca', 'Ir', 'Ir')
+	await promise1
+	_checkStatuses('CV',  'Ir', 'IrV',   'CV', 'IrV', 'Ir', 'Ir')
+	await promise2
+	_checkStatuses('CV',  'Ir', 'IrV',   'CV', 'IrV', 'Ir', 'Ir')
+	checkFuncSync(ResultType.Value, SL1, SL1)
+	_checkStatuses('CV',  'Ir', 'CV',   'CV', 'IrV', 'Ir', 'Ir')
+	promise2 = checkFuncAsync(ResultType.Value, AL1, AL1)
+	_checkStatuses('CV',  'Ir', 'CV',   'CV', 'caV', 'Ir', 'Ir')
+	await promise2
+	_checkStatuses('CV',  'Ir', 'CV',   'CV', 'CV', 'Ir', 'Ir')
+	checkCallHistory()
+	_clearStates()
+
+	// AL-AL
+	_checkStatuses('Ir',  'Ir', 'Ir',   'Ir', 'Ir', 'Ir', 'Ir')
+	promise1 = checkFuncAsync(ResultType.Value, AL1, AL1)
+	_checkStatuses('Ir',  'Ir', 'Ir',   'Ir', 'ca', 'Ir', 'Ir')
+	promise2 = checkFuncAsync(ResultType.Value, AL2, AL2)
+	_checkStatuses('Ir',  'Ir', 'Ir',   'Ir', 'ca', 'Ir', 'ca')
+	await promise1
+	_checkStatuses('ca',  'Ir', 'Ir',   'Ir', 'CV', 'Ir', 'ca')
+	await promise2
+	checkCallHistory(A0)
+	_checkStatuses('ca',  'Ir', 'Ir',   'Ir', 'CV', 'Ir', 'CV')
+	await checkFuncAsync(ResultType.Value, A0)
+	_checkStatuses('CV',  'Ir', 'Ir',   'Ir', 'IrV', 'Ir', 'IrV')
+	promise1 = checkFuncAsync(ResultType.Value, AL1, AL1)
+	_checkStatuses('CV',  'Ir', 'Ir',   'Ir', 'caV', 'Ir', 'IrV')
+	promise2 = checkFuncAsync(ResultType.Value, AL2, AL2)
+	_checkStatuses('CV',  'Ir', 'Ir',   'Ir', 'caV', 'Ir', 'caV')
+	await promise1
+	_checkStatuses('CV',  'Ir', 'Ir',   'Ir', 'CV', 'Ir', 'caV')
+	await promise2
+	_checkStatuses('CV',  'Ir', 'Ir',   'Ir', 'CV', 'Ir', 'CV')
 	checkCallHistory()
 	_clearStates()
 
