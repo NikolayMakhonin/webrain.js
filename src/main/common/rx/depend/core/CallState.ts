@@ -875,7 +875,7 @@ export class CallState<
 
 		if (_subscribersLast == null) {
 			this._subscribersFirst = subscriberLink
-		} else if (isLazy) {
+		} else if (isLazy && this._subscribersCalculating != null) {
 			// insert after calculating
 			const {_subscribersCalculatingLazy, _subscribersCalculating} = this
 			const {next} = _subscribersCalculating

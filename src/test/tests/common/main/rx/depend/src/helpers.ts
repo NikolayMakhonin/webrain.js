@@ -334,6 +334,7 @@ function funcSync(id: string, deferred: boolean, isLazy?: boolean) {
 				const dependency = dependencies[i % len]
 				if (isLazy) {
 					const value = dependency.state.getValue(true)
+					assert.notOk(dependency.state.error)
 					assert.strictEqual(isAsync(value), false)
 					if ((dependency.state.status & CallStatus.Flag_Calculated) === 0) {
 						assert.strictEqual(value, dependency.state.value)
@@ -342,6 +343,7 @@ function funcSync(id: string, deferred: boolean, isLazy?: boolean) {
 					}
 				} else {
 					const value = dependency()
+					assert.notOk(dependency.state.error)
 					assert.strictEqual(value + '', dependency.id)
 				}
 				assert.strictEqual(getCurrentState(), currentState)
@@ -366,6 +368,7 @@ function funcSyncIterator(id: string, deferred: boolean, isLazy?: boolean) {
 				const dependency = dependencies[i % len]
 				if (isLazy) {
 					const value = dependency.state.getValue(true)
+					assert.notOk(dependency.state.error)
 					assert.strictEqual(isAsync(value), false)
 					if ((dependency.state.status & CallStatus.Flag_Calculated) === 0) {
 						assert.strictEqual(value, dependency.state.value)
@@ -376,6 +379,7 @@ function funcSyncIterator(id: string, deferred: boolean, isLazy?: boolean) {
 					const valueAsync = dependency()
 					assert.strictEqual(getCurrentState(), currentState)
 					const value = yield valueAsync
+					assert.notOk(dependency.state.error)
 					assert.strictEqual(value + '', dependency.id)
 				}
 				assert.strictEqual(getCurrentState(), currentState)
@@ -422,6 +426,7 @@ function funcAsync(id: string, deferred: boolean, isLazy?: boolean) {
 				const dependency = dependencies[i % len]
 				if (isLazy) {
 					const value = dependency.state.getValue(true)
+					assert.notOk(dependency.state.error)
 					assert.strictEqual(isAsync(value), false)
 					if ((dependency.state.status & CallStatus.Flag_Calculated) === 0) {
 						assert.strictEqual(value, dependency.state.value)
@@ -432,6 +437,7 @@ function funcAsync(id: string, deferred: boolean, isLazy?: boolean) {
 					const valueAsync = dependency()
 					assert.strictEqual(getCurrentState(), currentState)
 					const value = yield valueAsync
+					assert.notOk(dependency.state.error)
 					assert.strictEqual(value + '', dependency.id)
 				}
 				assert.strictEqual(getCurrentState(), currentState)
@@ -610,6 +616,7 @@ function checkFuncSync<TValue>(
 		// 	assert.fail(`funcCall.id = ${funcCall.id}, error = ${error}`)
 		// }
 	} else if (resultType === ResultType.Value || resultType === ResultType.Any && !error) {
+		assert.notOk(funcCall.state.error)
 		assert.strictEqual(value + '', funcCall.id)
 	} else {
 		throw new Error('Unknown ResultType: ' + resultType)
@@ -668,7 +675,7 @@ function checkFuncAsync<TValue>(
 			// 	assert.fail(`funcCall.id = ${funcCall.id}, error = ${error}`)
 			// }
 		} else if (resultType === ResultType.Value || resultType === ResultType.Any && !error) {
-			assert.notOk(error)
+			assert.notOk(funcCall.state.error)
 			assert.strictEqual(value + '', funcCall.id)
 		} else {
 			throw new Error('Unknown ResultType: ' + resultType)
@@ -1996,6 +2003,10 @@ export async function lazyTest(deferred?: boolean) {
 	_checkStatuses('ca',  'Ir', 'CV',   'ca', 'Ir', 'Ir', 'Ir')
 	await promise1
 	_checkStatuses('CV',  'Ir', 'IrV',   'CV', 'Ir', 'Ir', 'Ir')
+	checkFuncSync(ResultType.Value, SL1, SL1)
+	_checkStatuses('CV',  'Ir', 'CV',   'CV', 'Ir', 'Ir', 'Ir')
+	checkCallHistory()
+	_clearStates()
 
 	// _checkStatuses('CV', 'Ir', 'Ir',   'Ir', 'Ir',   'Ir', 'Ir', 'Ir')
 	// checkFuncSync(ResultType.Value, I0, I0)
