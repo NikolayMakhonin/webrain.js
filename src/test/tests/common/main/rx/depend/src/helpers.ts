@@ -3,7 +3,7 @@ import {isAsync, isThenable, Thenable, ThenableOrValue} from '../../../../../../
 import {resolveAsync, ThenableSync} from '../../../../../../../main/common/async/ThenableSync'
 import {nextHash} from '../../../../../../../main/common/helpers/helpers'
 import {
-	callStateHashTable,
+	callStateHashTable, deleteCallState,
 	getOrCreateCallState,
 	reduceCallStates,
 	statusToString,
@@ -487,6 +487,41 @@ function _funcCall(func: IDependencyFunc, callId: string, _this?: any, ...rest: 
 	return result
 }
 
+function clearState(call: IDependencyCall) {
+	const oldState = call.state
+	const callId = (oldState as any).id
+
+	let oldArgs
+	oldState.callWithArgs(null, function() {
+		oldArgs = Array.from(arguments)
+	})
+
+	deleteCallState(oldState)
+
+	const newState = oldState.callWithArgs(oldState._this, getOrCreateCallState(oldState.func)) as typeof oldState
+	assert.ok(newState)
+	assert.notStrictEqual(newState, oldState)
+	assert.strictEqual(newState._this, oldState._this)
+	assert.strictEqual(newState.func, oldState.func)
+
+	let newArgs
+	newState.callWithArgs(null, function() {
+		newArgs = Array.from(arguments)
+	})
+
+	assert.deepStrictEqual(newArgs, oldArgs);
+
+	(newState as any).id = callId
+
+	call.state = newState
+}
+
+function clearStates(...call: IDependencyCall[]) {
+	for (let i = 0, len = call.length; i < len; i++) {
+		clearState(call[i])
+	}
+}
+
 function funcCall(func: IDependencyFunc, _this?: any, ...rest: any[]) {
 	const callId = getCallId(func.id, _this, ...rest)
 	return _funcCall(func, callId, _this, ...rest)
@@ -774,115 +809,6 @@ function checkUnsubscribers(funcCall: IDependencyCall, ...unsubscribersFuncCalls
 		.map(o => o.id).sort()
 	assert.deepStrictEqual(ids, checkIds, funcCall.id)
 }
-
-// export async function baseTestOld() {
-// 	// region init
-//
-// 	const S = funcSync('S')
-// 	const I = funcSyncIterator('I')
-// 	const A = funcAsync('A')
-//
-// 	const S0 = funcCall(S) // S(0)
-// 	const I0 = funcCall(I, null) // I(0)
-// 	const A0 = funcCall(A, new ThisObj('_')) // A(_)
-//
-// 	const S1 = funcCall(S, [S0, I0], 1) // S1(S(0),I(0))
-// 	const I1 = funcCall(I, [I0, A0], 1) // I1(I(0),A(_))
-//
-// 	const S2 = funcCall(S, [S1], 2, void 0) // S20(S1(S(0),I(0)))
-// 	const I2 = funcCall(I, [S1, I1], 2, null) // I20(S1(S(0),I(0)),I1(I(0),A(_)))
-// 	const A2 = funcCall(A, [I1], 2, 2) // A22(I1(I(0),A(_)))
-//
-// 	// endregion
-//
-// 	// region check init
-//
-// 	assert.strictEqual(S0.id, 'S(0)')
-// 	assert.strictEqual(I0.id, 'I(0)')
-// 	assert.strictEqual(A0.id, 'A(_)')
-//
-// 	assert.strictEqual(S1.id, 'S1(S(0),I(0))')
-// 	assert.strictEqual(I1.id, 'I1(I(0),A(_))')
-//
-// 	assert.strictEqual(S2.id, 'S20(S1(S(0),I(0)))')
-// 	assert.strictEqual(I2.id, 'I20(S1(S(0),I(0)),I1(I(0),A(_)))')
-// 	assert.strictEqual(A2.id, 'A22(I1(I(0),A(_)))')
-//
-// 	// endregion
-//
-// 	// region base tests
-//
-// 	checkFuncSync(ResultType.Value, S0, S0)
-// 	checkFuncSync(ResultType.Value, I0, I0)
-// 	await checkFuncAsync(ResultType.Value, A0, A0)
-//
-// 	checkFuncSync(ResultType.Value, S1, S1)
-// 	checkFuncSync(ResultType.Value, I1, I1)
-//
-// 	checkFuncSync(ResultType.Value, S2, S2)
-// 	checkFuncSync(ResultType.Value, I2, I2)
-// 	await checkFuncAsync(ResultType.Value, A2, A2)
-//
-// 	// endregion
-//
-// 	// region invalidate
-//
-// 	const allFuncs = [S0, I0, A0, S1, I1, S2, I2, A2]
-// 	checkFuncNotChanged(allFuncs)
-//
-// 	// level 2
-//
-// 	_invalidate(S2)
-// 	checkFuncSync(ResultType.Value, S2, S2)
-// 	checkFuncNotChanged(allFuncs)
-//
-// 	_invalidate(I2)
-// 	checkFuncSync(ResultType.Value, I2, I2)
-// 	checkFuncNotChanged(allFuncs)
-//
-// 	_invalidate(A2)
-// 	await checkFuncAsync(ResultType.Value, A2, A2)
-// 	checkFuncNotChanged(allFuncs)
-//
-// 	// level 1
-//
-// 	_invalidate(S1)
-// 	checkFuncSync(ResultType.Value, S2, S2, S1)
-// 	checkFuncSync(ResultType.Value, I2, I2)
-// 	checkFuncNotChanged(allFuncs)
-//
-// 	_invalidate(I1)
-// 	checkFuncSync(ResultType.Value, I2, I2, I1)
-// 	await checkFuncAsync(ResultType.Value, A2, A2)
-// 	checkFuncNotChanged(allFuncs)
-//
-// 	// level 0
-//
-// 	_invalidate(S0)
-// 	// console.log(allFuncs.filter(isInvalidated).map(o => o.id))
-// 	checkFuncSync(ResultType.Value, S2, S2, S1, S0)
-// 	checkFuncSync(ResultType.Value, I2, I2)
-// 	checkFuncNotChanged(allFuncs)
-//
-// 	_invalidate(I0)
-// 	checkFuncSync(ResultType.Value, S2, S2, S1, I0)
-// 	checkFuncSync(ResultType.Value, I2, I2, I1)
-// 	await checkFuncAsync(ResultType.Value, A2, A2)
-// 	checkFuncNotChanged(allFuncs)
-//
-// 	_invalidate(A0)
-// 	await checkFuncAsync(ResultType.Value, I2, I2, I1, A0)
-// 	await checkFuncAsync(ResultType.Value, A2, A2)
-// 	checkFuncNotChanged(allFuncs)
-//
-// 	// endregion
-//
-// 	return {
-// 		states: [S0, I0, A0, S1, I1, S2, I2, A2].map(o => {
-// 			return o.state
-// 		}),
-// 	}
-// }
 
 function checkCurrentStateAsync(state: TCallState) {
 	assert.strictEqual(getCurrentState(), state)
@@ -2017,6 +1943,10 @@ export async function lazyTest(deferred?: boolean) {
 		_checkUnsubscribersAll()
 	}
 
+	function _clearStates() {
+		clearStates(...allFuncs)
+	}
+
 	// endregion
 
 	// region check init
@@ -2033,7 +1963,7 @@ export async function lazyTest(deferred?: boolean) {
 
 	// region base tests
 
-	console.clear()
+	// L
 	_checkStatuses('Ir',  'Ir', 'Ir',   'Ir', 'Ir', 'Ir', 'Ir')
 	checkFuncSync(ResultType.Value, SL1, SL1, A0)
 	_checkStatuses('ca',  'Ir', 'CV',   'Ir', 'Ir', 'Ir', 'Ir')
@@ -2043,6 +1973,19 @@ export async function lazyTest(deferred?: boolean) {
 	_checkStatuses('CV',  'Ir', 'CV',   'Ir', 'Ir', 'Ir', 'Ir')
 	_invalidate(A0)
 	_checkStatuses('IrV',  'Ir', 'IV',   'Ir', 'Ir', 'Ir', 'Ir')
+	checkFuncSync(ResultType.Value, SL1, A0)
+	_checkStatuses('caV',  'Ir', 'CV',   'Ir', 'Ir', 'Ir', 'Ir')
+	await checkFuncAsync(ResultType.Value, A0)
+	_checkStatuses('CV',  'Ir', 'CV',   'Ir', 'Ir', 'Ir', 'Ir')
+	checkCallHistory()
+	_clearStates()
+
+	// L*
+	_checkStatuses('Ir',  'Ir', 'Ir',   'Ir', 'Ir', 'Ir', 'Ir')
+	// checkFuncSync(ResultType.Value, SL1, SL1, A0)
+	// _checkStatuses('ca',  'Ir', 'CV',   'Ir', 'Ir', 'Ir', 'Ir')
+	// let promise1 = checkFuncSync(ResultType.Value, A1, A1)
+
 	// _checkStatuses('CV', 'Ir', 'Ir',   'Ir', 'Ir',   'Ir', 'Ir', 'Ir')
 	// checkFuncSync(ResultType.Value, I0, I0)
 	// _checkStatuses('CV', 'CV', 'Ir',   'Ir', 'Ir',   'Ir', 'Ir', 'Ir')

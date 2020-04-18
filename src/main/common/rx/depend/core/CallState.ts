@@ -932,11 +932,12 @@ export class CallState<
 			for (let i = fromIndex || 0, len = _unsubscribersLength; i < len; i++) {
 				const link = _unsubscribers[i]
 				const dependencyState = link.state
+				const {isLazy} = link
 				if (getInvalidate(dependencyState.status) !== 0) {
-					dependencyState.getValue(link.isLazy, true)
+					dependencyState.getValue(isLazy, true)
 				}
 
-				if ((dependencyState.status & Flag_Async) !== 0) {
+				if (!isLazy && (dependencyState.status & Flag_Async) !== 0) {
 					yield resolveAsync(dependencyState.valueAsync, null, EMPTY_FUNC) as any
 				}
 
@@ -944,9 +945,10 @@ export class CallState<
 					return true
 				}
 
-				if ((dependencyState.status & (Flag_Check | Flag_Calculating)) !== 0
+				if (!isLazy && (
+					(dependencyState.status & (Flag_Check | Flag_Calculating)) !== 0
 					|| (dependencyState.status & (Flag_HasError | Flag_HasValue)) === 0
-				) {
+				)) {
 					this._internalError(`Unexpected dependency status: ${statusToString(dependencyState.status)}`)
 				}
 			}
@@ -962,11 +964,12 @@ export class CallState<
 			for (let i = 0, len = _unsubscribersLength; i < len; i++) {
 				const link = _unsubscribers[i]
 				const dependencyState = link.state
+				const {isLazy} = link
 				if (getInvalidate(dependencyState.status) !== 0) {
-					dependencyState.getValue(link.isLazy, true)
+					dependencyState.getValue(isLazy, true)
 				}
 
-				if ((dependencyState.status & Flag_Async) !== 0) {
+				if (!isLazy && (dependencyState.status & Flag_Async) !== 0) {
 					return this._checkDependenciesChangedAsync(i)
 				}
 
@@ -974,9 +977,10 @@ export class CallState<
 					return true
 				}
 
-				if ((dependencyState.status & (Flag_Check | Flag_Calculating)) !== 0
+				if (!isLazy && (
+					(dependencyState.status & (Flag_Check | Flag_Calculating)) !== 0
 					|| (dependencyState.status & (Flag_HasError | Flag_HasValue)) === 0
-				) {
+				)) {
 					this._internalError(`Unexpected dependency status: ${statusToString(dependencyState.status)}`)
 				}
 			}
