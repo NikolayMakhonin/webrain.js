@@ -1990,9 +1990,12 @@ export async function lazyTest(deferred?: boolean) {
 
 	// L*
 	_checkStatuses('Ir',  'Ir', 'Ir',   'Ir', 'Ir', 'Ir', 'Ir')
-	// checkFuncSync(ResultType.Value, SL1, SL1, A0)
-	// _checkStatuses('ca',  'Ir', 'CV',   'Ir', 'Ir', 'Ir', 'Ir')
-	// let promise1 = checkFuncSync(ResultType.Value, A1, A1)
+	checkFuncSync(ResultType.Value, SL1, SL1, A0)
+	_checkStatuses('ca',  'Ir', 'CV',   'Ir', 'Ir', 'Ir', 'Ir')
+	let promise1 = checkFuncAsync(ResultType.Value, A1, A1)
+	_checkStatuses('ca',  'Ir', 'CV',   'ca', 'Ir', 'Ir', 'Ir')
+	await promise1
+	_checkStatuses('CV',  'Ir', 'IrV',   'CV', 'Ir', 'Ir', 'Ir')
 
 	// _checkStatuses('CV', 'Ir', 'Ir',   'Ir', 'Ir',   'Ir', 'Ir', 'Ir')
 	// checkFuncSync(ResultType.Value, I0, I0)

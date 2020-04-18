@@ -875,27 +875,24 @@ export class CallState<
 
 		if (_subscribersLast == null) {
 			this._subscribersFirst = subscriberLink
-		} else if (isLazy && this._subscribersCalculating != null) {
-			// insert before calculating
+		} else if (isLazy) {
+			// insert after calculating
 			const {_subscribersCalculatingLazy, _subscribersCalculating} = this
-			const {prev} = _subscribersCalculating
-			if (prev == null) {
-				this._subscribersFirst = subscriberLink
-			} else {
-				prev.next = subscriberLink
-				subscriberLink.prev = prev
+			const {next} = _subscribersCalculating
+			if (next != null) {
+				subscriberLink.next = next
+				next.prev = subscriberLink
 			}
-			subscriberLink.next = _subscribersCalculating
-			_subscribersCalculating.prev = subscriberLink
+			_subscribersCalculating.next = subscriberLink
+			subscriberLink.prev = _subscribersCalculating
+			this._subscribersCalculating = subscriberLink
 
 			if (_subscribersCalculatingLazy == null) {
 				this._subscribersCalculatingLazy = subscriberLink
 			}
 		} else {
-			if (!isLazy && this._subscribersCalculating == null) {
-				this._subscribersCalculating = subscriberLink
-			}
 			_subscribersLast.next = subscriberLink
+			subscriberLink.prev = _subscribersLast
 		}
 
 		this._subscribersLast = subscriberLink
@@ -1036,10 +1033,9 @@ export class CallState<
 
 		const {_subscribersLast} = this
 		if (_subscribersLast != null) {
+			this._subscribersCalculating = _subscribersLast
 			if (_subscribersLast.isLazy) {
 				this._subscribersCalculatingLazy = _subscribersLast
-			} else {
-				this._subscribersCalculating = _subscribersLast
 			}
 		}
 	}
@@ -1234,23 +1230,27 @@ export class CallState<
 			return
 		}
 
+		const _subscribersCalculatingLazyPrev = _subscribersCalculatingLazy != null
+			? _subscribersCalculatingLazy.prev
+			: _subscribersCalculatingLazy
+
 		let status: Mask_Update_Invalidate
-		let link: ISubscriberLink<this, any>
 		let lastLink: ISubscriberLink<this, any>
+		let link: ISubscriberLink<this, any>
 		if (statusCalculated !== 0 && _subscribersFirst !== _subscribersCalculatingLazy) {
 			status = statusCalculated
-			link = this._subscribersFirst
 			lastLink = _subscribersCalculatingLazy != null
-				? _subscribersCalculatingLazy.prev
+				? _subscribersCalculatingLazyPrev
 				: _subscribersCalculating
+			link = this._subscribersFirst
 		} else if (statusCalculatingLazy !== 0 && _subscribersCalculatingLazy != null) {
 			status = statusCalculatingLazy
-			link = _subscribersCalculatingLazy
 			lastLink = _subscribersCalculating
+			link = _subscribersCalculatingLazy
 		} else if (statusCalculating !== 0 && _subscribersCalculating != null) {
 			status = statusCalculating
-			link = _subscribersCalculating.next
 			lastLink = null
+			link = _subscribersCalculating.next
 		} else {
 			return
 		}
@@ -1266,11 +1266,13 @@ export class CallState<
 					} else {
 						break
 					}
-				} else if (_subscribersCalculatingLazy != null && lastLink === _subscribersCalculatingLazy.prev) {
+				} else if (lastLink === _subscribersCalculatingLazyPrev) {
 					if (statusCalculatingLazy !== 0) {
 						status = statusCalculatingLazy
 						lastLink = _subscribersCalculating
 					} else if (statusCalculating !== 0 && _subscribersCalculating != null) {
+						status = statusCalculating
+						lastLink = null
 						next = _subscribersCalculating.next
 					} else {
 						this._internalError('Unexpected behavior 1')
