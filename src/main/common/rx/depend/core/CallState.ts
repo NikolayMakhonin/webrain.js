@@ -1256,7 +1256,12 @@ export class CallState<
 		}
 
 		for (; link !== null;) {
-			let next = invalidateParent(link, status)
+			let next = invalidateParent(
+				link,
+				link.isLazy && status === Update_Recalc && statusCalculatingLazy !== 0
+					? statusCalculatingLazy
+					: status,
+			)
 
 			if (link === lastLink) {
 				if (lastLink === _subscribersCalculating) {

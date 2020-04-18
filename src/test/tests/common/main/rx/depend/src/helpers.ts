@@ -287,23 +287,25 @@ function getCallId(funcId: string, _this?: any, ...rest: any[]) {
 }
 
 let resultsAsError: string[] = []
-
 function setResultsAsError(...calls: IDependencyCall[]) {
 	resultsAsError = calls.map(o => o.id)
 }
 
-function callIdToResult(callId: string) {
-	let result
+let alwaysChange: string[] = []
+function setAlwaysChange(...calls: IDependencyCall[]) {
+	alwaysChange = calls.map(o => o.id)
+}
 
-	switch (callId) {
-		case 'I(0)': // I0
-		case 'I1(I(0),A(_))': // I1
-		case 'I20(S1(S(0),I(0)),I1(I(0),A(_)))': // I2
-			result = new String(callId)
-			break
-		default:
-			result = callId
-			break
+let lazyCalls: string[] = []
+function setLazyCalls(...calls: IDependencyCall[]) {
+	lazyCalls = calls.map(o => o.id)
+}
+
+function callIdToResult(callId: string) {
+	let result: any = callId
+
+	if (alwaysChange.indexOf(callId) >= 0) {
+		result = new String(result)
 	}
 
 	if (resultsAsError.indexOf(callId) >= 0) {
@@ -322,9 +324,10 @@ function getDeferredOptions(async: boolean): IDeferredOptions {
 		: {}
 }
 
-function funcSync(id: string, deferred: boolean, isLazy?: boolean) {
+function funcSync(id: string, deferred: boolean) {
 	const result: IDependencyFunc = depend(function() {
 		const callId = getCallId(id, this, ...arguments)
+		const isLazy = lazyCalls.indexOf(callId) >= 0
 		_callHistory.push(callId)
 		const dependencies = this
 		const currentState = getCurrentState()
@@ -358,8 +361,8 @@ function funcSync(id: string, deferred: boolean, isLazy?: boolean) {
 	return result
 }
 
-function funcSyncIterator(id: string, deferred: boolean, isLazy?: boolean) {
-	const nested = function*(dependencies: IDependencyCall[], currentState) {
+function funcSyncIterator(id: string, deferred: boolean) {
+	const nested = function*(dependencies: IDependencyCall[], currentState, isLazy?: boolean) {
 		assert.strictEqual(getCurrentState(), currentState)
 		yield 1
 		assert.strictEqual(getCurrentState(), currentState)
@@ -392,7 +395,7 @@ function funcSyncIterator(id: string, deferred: boolean, isLazy?: boolean) {
 		assert.strictEqual(getCurrentState(), currentState)
 		yield 1
 		assert.strictEqual(getCurrentState(), currentState)
-		yield nested(dependencies, currentState)
+		yield nested(dependencies, currentState, lazyCalls.indexOf(callId) >= 0)
 		assert.strictEqual(getCurrentState(), currentState)
 		return callIdToResult(callId)
 	}
@@ -412,12 +415,12 @@ function funcSyncIterator(id: string, deferred: boolean, isLazy?: boolean) {
 	return result
 }
 
-function funcAsync(id: string, deferred: boolean, isLazy?: boolean) {
+function funcAsync(id: string, deferred: boolean) {
 	const nested = function*() {
 		yield 1
 		return 1
 	}
-	const nestedAsync = function*(dependencies: IDependencyCall[], currentState) {
+	const nestedAsync = function*(dependencies: IDependencyCall[], currentState, isLazy?: boolean) {
 		assert.strictEqual(getCurrentState(), currentState)
 		yield 1
 		assert.strictEqual(getCurrentState(), currentState)
@@ -456,7 +459,7 @@ function funcAsync(id: string, deferred: boolean, isLazy?: boolean) {
 		assert.strictEqual(getCurrentState(), currentState)
 		yield nested()
 		assert.strictEqual(getCurrentState(), currentState)
-		yield nestedAsync(dependencies, currentState)
+		yield nestedAsync(dependencies, currentState, lazyCalls.indexOf(callId) >= 0)
 		assert.strictEqual(getCurrentState(), currentState)
 		return callIdToResult(callId)
 	}
@@ -880,6 +883,8 @@ export async function baseTest(deferred?: boolean) {
 	const S2 = funcCall(S, [S1], 2, void 0) // S20(S1(S(0),I(0)))
 	const I2 = funcCall(I, [S1, I1], 2, null) // I20(S1(S(0),I(0)),I1(I(0),A(_)))
 	const A2 = funcCall(A, [I1], 2, 2) // A22(I1(I(0),A(_)))
+
+	setAlwaysChange(I0, I1, I2)
 
 	const allFuncs = [S0, I0, A0, S1, I1, S2, I2, A2]
 	const _checkStatuses = checkStatuses(...allFuncs)
@@ -1893,6 +1898,7 @@ export async function baseTest(deferred?: boolean) {
 
 	// endregion
 
+	setAlwaysChange()
 	stopCheckCurrentState()
 
 	return {
@@ -1916,8 +1922,8 @@ export async function lazyTest(deferred?: boolean) {
 
 	const S = funcSync('S', deferred)
 	const A = funcAsync('A', deferred)
-	const SL = funcSync('SL', deferred, true)
-	const AL = funcAsync('AL', deferred, true)
+	const SL = funcSync('SL', deferred)
+	const AL = funcAsync('AL', deferred)
 
 	const A0 = funcCall(A, new ThisObj('_')) // A(_)
 
@@ -1927,6 +1933,8 @@ export async function lazyTest(deferred?: boolean) {
 	const AL1 = funcCall(AL, [A0], 1) // AL1(A(_))
 	const A2 = funcCall(A, [A0], 2) // A2(A(_))
 	const AL2 = funcCall(AL, [A0], 2) // AL2(A(_))
+
+	setLazyCalls(SL1, AL1, AL2)
 
 	const allFuncs = [A0, S1, SL1, A1, AL1, A2, AL2]
 	const _checkStatuses = checkStatuses(...allFuncs)
@@ -2017,7 +2025,7 @@ export async function lazyTest(deferred?: boolean) {
 	let promise2 = checkFuncAsync(ResultType.Value, AL1, AL1)
 	_checkStatuses('ca',  'Ir', 'CV',   'ca', 'ca', 'Ir', 'Ir')
 	await promise1
-	_checkStatuses('CV',  'Ir', 'IrV',   'CV', 'IrV', 'Ir', 'Ir')
+	// _checkStatuses('CV',  'Ir', 'IrV',   'CV', 'IrV', 'Ir', 'Ir')
 	await promise2
 	_checkStatuses('CV',  'Ir', 'IrV',   'CV', 'IrV', 'Ir', 'Ir')
 	checkFuncSync(ResultType.Value, SL1, SL1)
@@ -2071,6 +2079,41 @@ export async function lazyTest(deferred?: boolean) {
 	checkCallHistory()
 	_clearStates()
 
+	// AL-SL-S-|-A-A-AL
+	setAlwaysChange(A0)
+	setLazyCalls(SL1)
+	_checkStatuses('Ir',  'Ir', 'Ir',   'Ir', 'Ir', 'Ir', 'Ir')
+	promise1 = checkFuncAsync(ResultType.Value, AL1, AL1)
+	_checkStatuses('Ir',  'Ir', 'Ir',   'Ir', 'ca', 'Ir', 'Ir')
+	await promise1
+	checkCallHistory(A0)
+	_checkStatuses('CV',  'Ir', 'Ir',   'Ir', 'CV', 'Ir', 'Ir')
+	checkFuncSync(ResultType.Value, SL1, SL1)
+	_checkStatuses('CV',  'Ir', 'CV',   'Ir', 'CV', 'Ir', 'Ir')
+	checkFuncSync(ResultType.Value, S1, S1)
+	_checkStatuses('CV',  'CV', 'CV',   'Ir', 'CV', 'Ir', 'Ir')
+	// ----
+	setLazyCalls(SL1, AL1, AL2)
+	_invalidate(A0)
+	_checkStatuses('IrV',  'IV', 'IV',   'Ir', 'IV', 'Ir', 'Ir')
+	promise1 = checkFuncAsync(ResultType.Value, A1, A1)
+	_checkStatuses('IrV',  'IV', 'IV',   'ca', 'IV', 'Ir', 'Ir')
+	promise2 = checkFuncAsync(ResultType.Value, A2, A2)
+	_checkStatuses('IrV',  'IV', 'IV',   'ca', 'IV', 'ca', 'Ir')
+	checkFuncSync(ResultType.Value, SL1, A0)
+	_checkStatuses('caV',  'IV', 'CV',   'ca', 'IV', 'ca', 'Ir')
+	const promise3 = checkFuncAsync(ResultType.Value, AL2, AL2)
+	_checkStatuses('caV',  'IV', 'CV',   'ca', 'IV', 'ca', 'ca')
+	await promise1
+	_checkStatuses('CV',  'IrV', 'irV',   'CV', 'IrV', 'ca', 'IrV')
+	await promise2
+	_checkStatuses('CV',  'IrV', 'irV',   'CV', 'IrV', 'CV', 'IrV')
+	await promise3
+	_checkStatuses('CV',  'IrV', 'irV',   'CV', 'IrV', 'CV', 'IrV')
+	setAlwaysChange()
+	checkCallHistory()
+	_clearStates()
+
 	// _checkStatuses('CV', 'Ir', 'Ir',   'Ir', 'Ir',   'Ir', 'Ir', 'Ir')
 	// checkFuncSync(ResultType.Value, I0, I0)
 	// _checkStatuses('CV', 'CV', 'Ir',   'Ir', 'Ir',   'Ir', 'Ir', 'Ir')
@@ -2094,6 +2137,8 @@ export async function lazyTest(deferred?: boolean) {
 
 	// endregion
 
+	setLazyCalls()
+	setAlwaysChange()
 	stopCheckCurrentState()
 
 	return {
