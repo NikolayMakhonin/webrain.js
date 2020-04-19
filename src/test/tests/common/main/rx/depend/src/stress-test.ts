@@ -17,9 +17,12 @@ import {assert} from '../../../../../../../main/common/test/Assert'
 // region contracts
 
 type TFuncId = number
-interface IFunc<TThis, TArgs extends any[], TResult> {
-	(this: TThis, ...args: TArgs): TResult
+interface IFunc<TThis, TArgs extends any[], TResult> extends Func<TThis, TArgs, TResult> {
 	id: TFuncId
+}
+
+interface IDependFunc<TThis, TArgs extends any[], TResult> extends Func<TThis, TArgs, TResult> {
+	func: IFunc<TThis, TArgs, TResult>
 }
 
 type TCallId = string
@@ -27,7 +30,7 @@ interface ICall<TThis, TArgs extends any[], TResult> {
 	(): TResult
 	id: TCallId
 	level: number
-	func: IFunc<TThis, TArgs, TResult>
+	dependFunc: IDependFunc<TThis, TArgs, TResult>
 	_this: TThis
 	args: TArgs
 }
@@ -40,6 +43,7 @@ type TCallState = ICallState<number, number[], number> & {
 }
 
 type TFunc = IFunc<number, number[], number>
+type TDependFunc = IDependFunc<number, number[], number>
 type TCall = ICall<number, number[], number>
 
 // endregion
@@ -87,14 +91,14 @@ function getCallId<
 	TThis,
 	TArgs extends any[],
 >(
-	func: Func<TThis, TArgs, any>,
+	funcId: number,
 ): Func<
 	TThis,
 	TArgs,
 	TCallId
 > {
 	return function() {
-		const buffer = [(func as any).id, this]
+		const buffer = [funcId, this]
 		for (let i = 0, len = arguments.length; i < len; i++) {
 			buffer.push(arguments[i])
 		}
@@ -112,7 +116,7 @@ function checkCallState<TThis, TArgs extends any[], TResult>(
 	}
 
 	assert.ok(state)
-	assert.strictEqual(state.func, call.func)
+	assert.strictEqual(state.func, call.dependFunc.func)
 	assert.strictEqual(state._this, call._this)
 
 	let args
@@ -130,7 +134,7 @@ function _getOrCreateCallState<TThis, TArgs extends any[], TResult>(
 ): ICallState<TThis, TArgs, TResult> {
 	return checkCallState(
 		call,
-		getOrCreateCallState(call.func).apply(call._this, call.args),
+		getOrCreateCallState(call.dependFunc).apply(call._this, call.args),
 		false,
 	)
 }
@@ -140,7 +144,7 @@ function _getCallState<TThis, TArgs extends any[], TResult>(
 ): ICallState<TThis, TArgs, TResult> {
 	return checkCallState(
 		call,
-		getCallState(call.func).apply(call._this, call.args),
+		getCallState(call.dependFunc).apply(call._this, call.args),
 		true,
 	)
 }
@@ -291,21 +295,17 @@ export function stressTest({
    countRootCalls: number,
 }) {
 	const rnd = new Random(0)
-	const funcs: TFunc[] = []
+	const funcs: TDependFunc[] = []
 	const calls: TCall[][] = []
 	const callsMap = new Map<TCallId, TCall>()
 
 	function getRandomCall(minLevel: number) {
 		const countLevels = calls.length
 		let countAvailable = 0
-		let countMax = 0
 		for (let i = 0; i < countLevels; i++) {
 			const count = calls[i].length
 			if (i >= minLevel) {
 				countAvailable += count
-			}
-			if (count > countMax) {
-				countMax = count
 			}
 		}
 
@@ -327,12 +327,13 @@ export function stressTest({
 	function initCallState(state: TCallState) {
 		state.data.dependencies = []
 		state.data.parents = []
-		const callId = state.callWithArgs(state._this, getCallId(state.func))
+		const callId = state.callWithArgs(state._this, getCallId((state.func as any).id))
 		const call = callsMap.get(callId)
 		assert.ok(call)
+		state.data.call = call
 	}
 
-	function createFunc() {
+	function createDependFunc() {
 		const isDependX = rnd.nextBoolean()
 
 		const func: TFunc = function() {
@@ -375,23 +376,23 @@ export function stressTest({
 			}
 			: null
 
-		const dependFunc: TFunc = isDependX
+		const dependFunc: TDependFunc = isDependX
 			? dependX(func as any, deferredOptions, initCallState as any) as any
 			: depend(func, deferredOptions, initCallState as any) as any
 
-		dependFunc.id = func.id
+		dependFunc.func = func
 
 		return dependFunc
 	}
 
-	function getNextFunc() {
+	function getNextDependFunc() {
 		if (funcs.length !== 0 && rnd.nextBoolean(funcs.length / maxFuncsCount)) {
 			return rnd.nextArrayItem(funcs)
 		}
 
-		const func = createFunc()
-		funcs.push(func)
-		return func
+		const dependFunc = createDependFunc()
+		funcs.push(dependFunc)
+		return dependFunc
 	}
 
 	function createCall(level: number) {
@@ -405,7 +406,7 @@ export function stressTest({
 	}
 
 	function _createCall(level: number) {
-		const func = getNextFunc()
+		const dependFunc = getNextDependFunc()
 
 		const countArgs = rnd.nextBoolean()
 			? rnd.nextInt(3)
@@ -418,19 +419,19 @@ export function stressTest({
 			args[i] = rnd.nextInt(3)
 		}
 
-		const callId = getCallId(func).apply(_this, args)
+		const callId = getCallId(dependFunc.func.id).apply(_this, args)
 
 		if (callsMap.has(callId)) {
 			return null
 		}
 
 		const call: TCall = function() {
-			return func.apply(_this, args)
+			return dependFunc.apply(_this, args)
 		}
 
 		call.id = callId
 		call.level = level
-		call.func = func
+		call.dependFunc = dependFunc
 		call._this = _this
 		call.args = args
 
@@ -478,7 +479,7 @@ export function stressTest({
 				}
 			} else {
 				const call = getRandomCall(0)
-				invalidateCallState(getCallState(call.func).apply(call._this, call.args))
+				invalidateCallState(getCallState(call.dependFunc).apply(call._this, call.args))
 			}
 		}
 
