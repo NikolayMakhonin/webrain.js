@@ -179,18 +179,18 @@ function calcCheckResult(call: TCall) {
 		return state.value
 	}
 
-	let sum = calcSumArgs.apply(call._this, call.args)
+	const sumArgs = calcSumArgs.apply(call._this, call.args)
 
 	const dependencies: TCall[] = state.data.dependencies
 	assert.ok(Array.isArray(dependencies))
 
-	if (dependencies != null) {
-		for (let i = 0, len = dependencies.length; i < len; i++) {
-			const dependency = dependencies[i]
-			const dependencyState = _getCallState(dependency)
-			if (dependencyState.value != null) {
-				sum += dependencyState.value
-			}
+	let sum = sumArgs
+	for (let i = 0, len = dependencies.length; i < len; i++) {
+		const dependency = dependencies[i]
+		const dependencyState = _getCallState(dependency)
+		assert.ok(dependencyState)
+		if (typeof dependencyState.value !== 'undefined') {
+			sum += dependencyState.value
 		}
 	}
 
@@ -203,7 +203,7 @@ function checkCallResult(call: TCall, result: number, isLazy: boolean) {
 	if (typeof result === 'undefined') {
 		assert.ok(isLazy)
 	} else {
-		assert.strictEqual(typeof result, 'number')
+		assert.ok(Number.isFinite(result))
 	}
 
 	const checkResult = calcCheckResult(call)
@@ -221,7 +221,7 @@ function runCall(call: TCall, isLazy: boolean) {
 		if (isThenable(result)) {
 			return (result as IThenable)
 				.then(value => {
-					checkCallResult(call, value, true)
+					checkCallResult(call, value, false)
 					return value
 				}, error => {
 					console.error(error)
@@ -230,7 +230,8 @@ function runCall(call: TCall, isLazy: boolean) {
 		}
 	}
 
-	checkCallResult(call, result, true)
+	checkCallResult(call, result, isLazy)
+
 	return result
 }
 
@@ -247,11 +248,14 @@ function runLazy(
 	let sum = sumArgs
 	for (let i = 0; i < countDependencies; i++) {
 		const dependency = getNextCall(minLevel)
-		const result = runCall(dependency, false)
-		checkCallResult(dependency, result, true)
+		const result = runCall(dependency, true)
 		dependencies.push(dependency)
-		sum += result
+		if (typeof result !== 'undefined') {
+			sum += result
+		}
 	}
+
+	assert.ok(Number.isFinite(sum))
 
 	return sum
 }
@@ -273,8 +277,12 @@ function *runAsIterator(
 		const isLazy = rnd.nextBoolean()
 		const result = yield runCall(dependency, isLazy)
 		dependencies.push(dependency)
-		sum += result
+		if (typeof result !== 'undefined') {
+			sum += result
+		}
 	}
+
+	assert.ok(Number.isFinite(sum))
 
 	return sum
 }
@@ -284,15 +292,17 @@ function *runAsIterator(
 let nextObjectId = 1
 
 export function stressTest({
-   iterations,
-   maxFuncsCount,
-   maxCallsCount,
-   countRootCalls,
+	iterations,
+	maxLevelsCount,
+	maxFuncsCount,
+	maxCallsCount,
+	countRootCalls,
 }: {
-   iterations: number,
-   maxFuncsCount: number,
-   maxCallsCount: number,
-   countRootCalls: number,
+	iterations: number,
+	maxLevelsCount: number,
+	maxFuncsCount: number,
+	maxCallsCount: number,
+	countRootCalls: number,
 }) {
 	const rnd = new Random(0)
 	const funcs: TDependFunc[] = []
@@ -344,13 +354,15 @@ export function stressTest({
 				? this._this
 				: this
 
-			let sumArgs = this
+			let sumArgs = _this
 			for (let i = 0, len = arguments.length; i < len; i++) {
 				sumArgs += arguments[i]
 			}
 
+			assert.ok(state.data.call.level < maxLevelsCount)
+
 			const countDependencies = rnd.nextBoolean()
-				? rnd.nextInt(10)
+				? rnd.nextInt(maxLevelsCount - state.data.call.level - 1)
 				: 0
 
 			const isLazyAll = rnd.nextBoolean()
@@ -412,11 +424,11 @@ export function stressTest({
 			? rnd.nextInt(3)
 			: 0
 
-		const _this = rnd.nextInt(3)
+		const _this = rnd.nextInt(1, 4)
 
 		const args = []
 		for (let i = 0; i < countArgs; i++) {
-			args[i] = rnd.nextInt(3)
+			args[i] = rnd.nextInt(1, 4)
 		}
 
 		const callId = getCallId(dependFunc.func.id).apply(_this, args)

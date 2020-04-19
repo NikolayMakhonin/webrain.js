@@ -28,6 +28,7 @@ describe('common > main > rx > depend > dependent-func', function() {
 
 		await stressTest({
 			iterations: 10000,
+			maxLevelsCount: 10,
 			maxFuncsCount: 10,
 			maxCallsCount: 100,
 			countRootCalls: 5,
