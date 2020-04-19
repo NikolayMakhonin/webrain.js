@@ -9,13 +9,14 @@ import * as helpers from '../../../../../../../main/common/rx/depend/core/helper
 
 import {assert, AssertionError} from '../../../../../../../main/common/test/Assert'
 import {describe, it, xit} from '../../../../../../../main/common/test/Mocha'
-import {baseTest, clearCallStates, createPerceptron} from '../../../../../common/main/rx/depend/src/helpers'
+import {baseTest, createPerceptron} from '../../../../../common/main/rx/depend/src/helpers'
 import {v8} from '../../../../v8/src/helpers/common/helpers'
 import {OptimizationStatus} from '../../../../v8/src/helpers/contracts'
 import {
 	assertIsOptimized,
 	checkIsOptimized,
 } from '../../../../v8/src/helpers/helpers'
+import {clearCallStates} from "../../../../../common/main/rx/depend/src/_helpers";
 
 describe('node > main > rx > depend > dependent-func', function() {
 	async function v8Test(

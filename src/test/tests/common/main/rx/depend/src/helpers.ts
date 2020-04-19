@@ -3,50 +3,20 @@ import {isAsync, isThenable, Thenable, ThenableOrValue} from '../../../../../../
 import {resolveAsync, ThenableSync} from '../../../../../../../main/common/async/ThenableSync'
 import {nextHash} from '../../../../../../../main/common/helpers/helpers'
 import {
-	callStateHashTable, deleteCallState,
+	deleteCallState,
 	getOrCreateCallState,
-	reduceCallStates,
 	statusToString,
 	TCallState,
-	valueIdToStateMap,
-	valueToIdMap,
 } from '../../../../../../../main/common/rx/depend/core/CallState'
-import {CallStatus, Func, ICallState, IDeferredOptions} from '../../../../../../../main/common/rx/depend/core/contracts'
+import {CallStatus, IDeferredOptions} from '../../../../../../../main/common/rx/depend/core/contracts'
 import {getCurrentState} from '../../../../../../../main/common/rx/depend/core/current-state'
 import {depend} from '../../../../../../../main/common/rx/depend/core/facade'
 import {InternalError} from '../../../../../../../main/common/rx/depend/core/helpers'
 import {assert} from '../../../../../../../main/common/test/Assert'
 import {delay} from '../../../../../../../main/common/time/helpers'
+import {__makeDependentFunc, __outputCall} from './_helpers'
 
 (global as any).statusToString = statusToString
-
-// region makeDependentFunc
-
-// tslint:disable-next-line:no-shadowed-variable
-export function __makeDependentFunc<
-	TThisOuter,
-	TArgs extends any[],
-	TResultInner,
-	>(func: Func<TThisOuter, TArgs, Iterator<TResultInner>>): Func<TThisOuter, TArgs, ThenableOrValue<TResultInner>>
-// tslint:disable-next-line:no-shadowed-variable
-export function __makeDependentFunc<
-	TThisOuter,
-	TArgs extends any[],
-	TResultInner,
-	>(func: Func<TThisOuter, TArgs, TResultInner>): Func<TThisOuter, TArgs, TResultInner>
-// tslint:disable-next-line:no-shadowed-variable
-export function __makeDependentFunc<
-	TThisOuter,
-	TArgs extends any[],
-	TResultInner,
-	>(func: Func<TThisOuter, TArgs, TResultInner | Iterator<TResultInner>>) {
-	if (typeof func === 'function') {
-		return depend<TThisOuter, TArgs, TResultInner>(func as any)
-	}
-	return null
-}
-
-// endregion
 
 export function createPerceptronNaked(layerSize, layersCount, check = true) {
 	const countFuncs = layersCount * layerSize + 2
@@ -110,18 +80,6 @@ export function createPerceptronNaked(layerSize, layersCount, check = true) {
 	}
 
 	return output
-}
-
-export function __invalidate<
-	TThisOuter,
-	TArgs extends any[],
-	TResultInner,
-	>(state: ICallState<TThisOuter, TArgs, TResultInner>) {
-	return state.invalidate()
-}
-
-export function __outputCall(output): any {
-	return output.call(2, 5, 10)
 }
 
 function createNextLayer(prevLayer, layerSize) {
@@ -1939,32 +1897,32 @@ export async function lazyTest(deferred?: boolean) {
 	const allFuncs = [A0, S1, SL1, A1, AL1, A2, AL2]
 	const _checkStatuses = checkStatuses(...allFuncs)
 
-	function _checkSubscribersAll() {
-		checkSubscribers(S0, S1)
-		checkSubscribers(I0, S1, I1)
-		checkSubscribers(A0, I1)
-		checkSubscribers(S1, S2, I2)
-		checkSubscribers(I1, I2, A2)
-		checkSubscribers(S2)
-		checkSubscribers(I2)
-		checkSubscribers(A2)
-	}
-
-	function _checkUnsubscribersAll() {
-		checkUnsubscribers(S0)
-		checkUnsubscribers(I0)
-		checkUnsubscribers(A0)
-		checkUnsubscribers(S1, S0, I0)
-		checkUnsubscribers(I1, I0, A0)
-		checkUnsubscribers(S2, S1)
-		checkUnsubscribers(I2, S1, I1)
-		checkUnsubscribers(A2, I1)
-	}
-
-	function checkSubscribersAll() {
-		_checkSubscribersAll()
-		_checkUnsubscribersAll()
-	}
+	// function _checkSubscribersAll() {
+	// 	checkSubscribers(S0, S1)
+	// 	checkSubscribers(I0, S1, I1)
+	// 	checkSubscribers(A0, I1)
+	// 	checkSubscribers(S1, S2, I2)
+	// 	checkSubscribers(I1, I2, A2)
+	// 	checkSubscribers(S2)
+	// 	checkSubscribers(I2)
+	// 	checkSubscribers(A2)
+	// }
+	//
+	// function _checkUnsubscribersAll() {
+	// 	checkUnsubscribers(S0)
+	// 	checkUnsubscribers(I0)
+	// 	checkUnsubscribers(A0)
+	// 	checkUnsubscribers(S1, S0, I0)
+	// 	checkUnsubscribers(I1, I0, A0)
+	// 	checkUnsubscribers(S2, S1)
+	// 	checkUnsubscribers(I2, S1, I1)
+	// 	checkUnsubscribers(A2, I1)
+	// }
+	//
+	// function checkSubscribersAll() {
+	// 	_checkSubscribersAll()
+	// 	_checkUnsubscribersAll()
+	// }
 
 	function _clearStates() {
 		clearStates(...allFuncs)
@@ -2149,10 +2107,3 @@ export async function lazyTest(deferred?: boolean) {
 }
 
 // endregion
-
-export function clearCallStates() {
-	reduceCallStates(2000000000)
-	assert.strictEqual(callStateHashTable && callStateHashTable.size, 0)
-	assert.strictEqual(valueIdToStateMap.size, 0)
-	assert.strictEqual(valueToIdMap.size, 0)
-}

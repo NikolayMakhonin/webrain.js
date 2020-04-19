@@ -3,12 +3,14 @@ import '@babel/runtime-corejs3'
 import '@babel/runtime-corejs3/regenerator'
 import {invalidate} from '../../../src/main/common/rx/depend/core/CallState'
 import {
-	__makeDependentFunc,
-	__invalidate,
-	__outputCall,
 	createPerceptron,
 	createPerceptronNaked,
 } from '../../../src/test/tests/common/main/rx/depend/src/helpers'
+import {
+    __invalidate,
+    __makeDependentFunc,
+    __outputCall
+} from "../../../src/test/tests/common/main/rx/depend/src/_helpers";
 
 // const {
 // 	countFuncs,
