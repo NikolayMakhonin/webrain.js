@@ -34,7 +34,7 @@ describe('common > main > rx > depend > dependent-func', function() {
 			countRootCalls: 5,
 			disableAsync: true,
 			disableDeferred: true,
-			disableLazy: true,
+			disableLazy: false,
 		})
 
 		clearCallStates()

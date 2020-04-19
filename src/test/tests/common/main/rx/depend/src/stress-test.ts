@@ -201,11 +201,11 @@ function calcCheckResult(call: TCall) {
 	const state = _getCallState(call)
 	assert.ok(state)
 
-	checkDependencies(state)
-
 	if (!isCalculated(state) || state.data.noChanges) {
 		return state.value
 	}
+
+	checkDependencies(state)
 
 	const sumArgs = calcSumArgs.apply(call._this, call.args)
 
