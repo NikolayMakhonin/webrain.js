@@ -13,6 +13,7 @@ import {
 } from '../../../../../../../main/common/rx/depend/core/contracts'
 import {depend, dependX} from '../../../../../../../main/common/rx/depend/core/depend'
 import {assert} from '../../../../../../../main/common/test/Assert'
+import {delay} from '../../../../../../../main/common/time/helpers'
 
 // region contracts
 
@@ -261,11 +262,12 @@ function runLazy(
 }
 
 function *runAsIterator(
-	rnd: Random,
 	state: TCallState,
 	sumArgs: number,
 	countDependencies: number,
 	getNextCall: (minLevel: number) => TCall,
+	rnd: Random,
+	disableLazy: boolean,
 ) {
 	const minLevel = state.data.call.level + 1
 	const dependencies = state.data.dependencies
@@ -274,7 +276,7 @@ function *runAsIterator(
 	let sum = sumArgs
 	for (let i = 0; i < countDependencies; i++) {
 		const dependency = getNextCall(minLevel)
-		const isLazy = rnd.nextBoolean()
+		const isLazy = !disableLazy && rnd.nextBoolean()
 		const result = yield runCall(dependency, isLazy)
 		dependencies.push(dependency)
 		if (typeof result !== 'undefined') {
@@ -297,12 +299,18 @@ export function stressTest({
 	maxFuncsCount,
 	maxCallsCount,
 	countRootCalls,
+	disableAsync,
+	disableDeferred,
+	disableLazy,
 }: {
 	iterations: number,
 	maxLevelsCount: number,
 	maxFuncsCount: number,
 	maxCallsCount: number,
 	countRootCalls: number,
+	disableAsync?: boolean,
+	disableDeferred?: boolean,
+	disableLazy?: boolean,
 }) {
 	const rnd = new Random(0)
 	const funcs: TDependFunc[] = []
@@ -365,18 +373,36 @@ export function stressTest({
 				? rnd.nextInt(maxLevelsCount - state.data.call.level - 1)
 				: 0
 
-			const isLazyAll = rnd.nextBoolean()
+			const isLazyAll = !disableLazy && rnd.nextBoolean()
 
-			const result = isLazyAll
-				? runLazy(state, sumArgs, countDependencies, getNextCall)
-				: runAsIterator(rnd, state, sumArgs, countDependencies, getNextCall)
+			function calc() {
+				return isLazyAll
+					? runLazy(state, sumArgs, countDependencies, getNextCall)
+					: runAsIterator(state, sumArgs, countDependencies, getNextCall, rnd, disableLazy)
+			}
 
-			return result
+			if (!disableAsync && rnd.nextBoolean(0.1)) {
+				return (async () => {
+					if (rnd.nextBoolean()) {
+						await delay(0)
+					}
+
+					const result = calc()
+
+					if (rnd.nextBoolean()) {
+						await delay(0)
+					}
+
+					return result
+				})()
+			}
+
+			return calc()
 		} as any
 
 		func.id = nextObjectId++
 
-		const isDeferred = rnd.nextBoolean()
+		const isDeferred = !disableDeferred && rnd.nextBoolean()
 		const deferredOptions: IDeferredOptions = isDeferred
 			? {
 				delayBeforeCalc: rnd.nextBoolean()
@@ -484,10 +510,16 @@ export function stressTest({
 				await thenable
 			} else if (step < 0.6) {
 				const call = getRandomCall(0)
-				const isLazy = rnd.nextBoolean()
+				const isLazy = !disableLazy && rnd.nextBoolean()
 				const result = runCall(call, isLazy)
+				const state = _getCallState(call)
+				assert.ok(state)
 				if (isThenable(result)) {
+					assert.ok(!disableDeferred || !disableAsync)
 					thenables.push(result)
+					assert.strictEqual(state.valueAsync, result)
+				} else {
+					assert.strictEqual(state.value, result)
 				}
 			} else {
 				const call = getRandomCall(0)

@@ -32,6 +32,9 @@ describe('common > main > rx > depend > dependent-func', function() {
 			maxFuncsCount: 10,
 			maxCallsCount: 100,
 			countRootCalls: 5,
+			disableAsync: true,
+			disableDeferred: true,
+			disableLazy: true,
 		})
 
 		clearCallStates()
