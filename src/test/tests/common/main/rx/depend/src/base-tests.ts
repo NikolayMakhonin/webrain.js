@@ -5,7 +5,7 @@ import {
 	deleteCallState,
 	getOrCreateCallState,
 	statusToString,
-	TCallState,
+	TCallStateAny,
 } from '../../../../../../../main/common/rx/depend/core/CallState'
 import {CallStatus, IDeferredOptions} from '../../../../../../../main/common/rx/depend/core/contracts'
 import {getCurrentState} from '../../../../../../../main/common/rx/depend/core/current-state'
@@ -22,7 +22,7 @@ const _callHistory = []
 
 type IDependencyCall = (() => ThenableOrValue<string>) & {
 	id: string,
-	state: TCallState,
+	state: TCallStateAny,
 	hasLoop: boolean,
 }
 
@@ -548,7 +548,7 @@ function isInvalidated(funcCall: IDependencyCall) {
 // 	assert.ok(checkStatus(status), statusToString(status))
 // }
 
-function getSubscribers(state: TCallState) {
+function getSubscribers(state: TCallStateAny) {
 	const subscribers = []
 	for (let link = state._subscribersFirst; link !== null;) {
 		subscribers.push(link.value)
@@ -577,7 +577,7 @@ function checkUnsubscribers(funcCall: IDependencyCall, ...unsubscribersFuncCalls
 	assert.deepStrictEqual(ids, checkIds, funcCall.id)
 }
 
-function checkCurrentStateAsync(state: TCallState) {
+function checkCurrentStateAsync(state: TCallStateAny) {
 	assert.strictEqual(getCurrentState(), state)
 	return resolveAsync(
 		resolveAsync(
@@ -599,7 +599,7 @@ function checkCurrentStateAsync(state: TCallState) {
 	)
 }
 
-function checkCurrentStateAsyncContinuous(state: TCallState) {
+function checkCurrentStateAsyncContinuous(state: TCallStateAny) {
 	let stop = false
 
 	async function start() {

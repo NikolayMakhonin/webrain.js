@@ -1,5 +1,5 @@
 import {isIterator} from '../helpers/helpers'
-import {TCallState} from '../rx/depend/core/CallState'
+import {TCallStateAny} from '../rx/depend/core/CallState'
 import {getCurrentState, setCurrentState} from '../rx/depend/core/current-state'
 
 export type ThenableOrValue<T> = T | Thenable<T>
@@ -187,7 +187,7 @@ function _resolveValue<T>(
 	onImmediate: (value: T, isError: boolean) => void,
 	onDeferred: (value: T, isError: boolean) => void,
 	customResolveValue: TResolveAsyncValue<T>,
-	callState?: TCallState,
+	callState?: TCallStateAny,
 ): ResolveResult {
 	const prevCallState = getCurrentState()
 	if (callState == null) {

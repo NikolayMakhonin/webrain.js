@@ -354,8 +354,8 @@ let nextCallId = 1
 // region subscriberLinkPool
 
 export type TSubscriberLink = ISubscriberLink<any, any>
-export interface ISubscriberLink<TState extends TCallState,
-	TSubscriber extends TCallState,
+export interface ISubscriberLink<TState extends TCallStateAny,
+	TSubscriber extends TCallStateAny,
 	>
 	extends ILinkItem<TSubscriber>
 {
@@ -372,8 +372,8 @@ export function releaseSubscriberLink(obj: TSubscriberLink) {
 }
 
 export function getSubscriberLink<
-	TState extends TCallState,
-	TSubscriber extends TCallState,
+	TState extends TCallStateAny,
+	TSubscriber extends TCallStateAny,
 >(
 	state: TState,
 	subscriber: TSubscriber,
@@ -399,7 +399,7 @@ export function getSubscriberLink<
 	}
 }
 
-export function subscriberLinkDelete<TState extends TCallState>(
+export function subscriberLinkDelete<TState extends TCallStateAny>(
 	item: ISubscriberLink<TState, any>,
 ) {
 	const {prev, next, state} = item
@@ -445,8 +445,8 @@ export function subscriberLinkDelete<TState extends TCallState>(
 function EMPTY_FUNC(this: any, ...args: any[]): any { }
 
 export function invalidateParent<
-	TState extends TCallState,
-	TSubscriber extends TCallState,
+	TState extends TCallStateAny,
+	TSubscriber extends TCallStateAny,
 	>(
 	link: ISubscriberLink<TState, TSubscriber>,
 	status: Mask_Update_Invalidate,
@@ -475,10 +475,7 @@ export function invalidateParent<
 
 // endregion
 
-export type TCallState = CallState<any, any, any>
-// export interface TCallStateX<TThisOuter, TArgs extends any[], TResultInner>
-// 	extends CallState<TThisOuter, TArgs, TResultInner, true, TCallStateX<TThisOuter, TArgs, TResultInner>>
-// {}
+export type TCallStateAny = CallState<any, any, any>
 
 export type TFuncCall<
 	TThisOuter,
@@ -547,7 +544,7 @@ export class CallState<
 	public _deferredCalc: DeferredCalc = null
 
 	// for detect recursive async loop
-	private _parentCallState: TCallState = null
+	private _parentCallState: TCallStateAny = null
 	/** @internal */
 	public _subscribersFirst: ISubscriberLink<this, any> = null
 	/** @internal */
@@ -839,7 +836,7 @@ export class CallState<
 
 	// region 2: subscribe / unsubscribe
 
-	private _subscribeDependency<TDependency extends TCallState>(
+	private _subscribeDependency<TDependency extends TCallStateAny>(
 		dependency: TDependency,
 		isLazy: boolean,
 	) {
@@ -866,7 +863,7 @@ export class CallState<
 		}
 	}
 
-	private _subscribe<TSubscriber extends TCallState>(
+	private _subscribe<TSubscriber extends TCallStateAny>(
 		subscriber: TSubscriber,
 		isLazy: boolean,
 	) {
@@ -1627,13 +1624,13 @@ export function getCallState<
 	TThisOuter,
 	TArgs extends any[],
 	TResultInner,
-	>(
+>(
 	func: Func<TThisOuter, TArgs, TResultInner>,
 ): Func<
 	TThisOuter,
 	TArgs,
 	ICallState<TThisOuter, TArgs, TResultInner>
-	> {
+> {
 	const callStateProvider = callStateProviderMap.get(func)
 	if (callStateProvider == null) {
 		return EMPTY_FUNC
@@ -1669,7 +1666,7 @@ export function getOrCreateCallState<
 
 // region get/create/delete/reduce CallStates
 
-export const callStateHashTable = new Map<number, TCallState[]>()
+export const callStateHashTable = new Map<number, TCallStateAny[]>()
 let callStatesCount = 0
 
 // region createCallState
@@ -1682,7 +1679,7 @@ let nextCallStatesCount = maxCallStatesCount
 
 // region deleteCallState
 
-export function deleteCallState(callState: TCallState) {
+export function deleteCallState(callState: TCallStateAny) {
 	callState._unsubscribeDependencies()
 
 	const valueIds = callState.valueIds
@@ -1737,14 +1734,14 @@ export function deleteCallState(callState: TCallState) {
 
 // region reduceCallStates to free memory
 
-export const reduceCallStatesHeap = new PairingHeap<TCallState>({
-	objectPool: new ObjectPool<PairingNode<TCallState>>(10000000),
+export const reduceCallStatesHeap = new PairingHeap<TCallStateAny>({
+	objectPool: new ObjectPool<PairingNode<TCallStateAny>>(10000000),
 	lessThanFunc(o1, o2) {
 		return o1._deleteOrder < o2._deleteOrder
 	},
 })
 
-function reduceCallStatesHeapAdd(states: TCallState[]) {
+function reduceCallStatesHeapAdd(states: TCallStateAny[]) {
 	for (let i = 0, len = states.length; i < len; i++) {
 		const callState = states[i]
 		if (!callState.hasSubscribers && callState.statusShort !== CallStatusShort.Handling) {

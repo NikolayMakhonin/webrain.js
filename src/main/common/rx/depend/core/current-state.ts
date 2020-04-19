@@ -1,14 +1,14 @@
 import {IteratorOrValue, ThenableIterator} from '../../../async/async'
 import {isIterator} from '../../../helpers/helpers'
-import {TCallState} from './CallState'
+import {TCallStateAny} from './CallState'
 
-let currentState: TCallState = null
+let currentState: TCallStateAny = null
 
 export function getCurrentState() {
 	return currentState
 }
 
-export function setCurrentState(state: TCallState) {
+export function setCurrentState(state: TCallStateAny) {
 	currentState = state
 }
 
