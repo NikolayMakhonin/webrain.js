@@ -4,6 +4,7 @@ import {describe, it} from '../../../../../../main/common/test/Mocha'
 import {baseTest, lazyTest} from './src/base-tests'
 import {clearCallStates} from "./src/helpers";
 import {createPerceptron} from "./src/perceptron";
+import {stressTest} from "./src/stress-test";
 
 describe('common > main > rx > depend > dependent-func', function() {
 	it('base', async function() {
@@ -18,6 +19,19 @@ describe('common > main > rx > depend > dependent-func', function() {
 		this.timeout(20000)
 
 		await lazyTest()
+
+		clearCallStates()
+	})
+
+	it('stress', async function() {
+		this.timeout(20000)
+
+		await stressTest({
+			iterations: 10000,
+			maxFuncsCount: 10,
+			maxCallsCount: 100,
+			countRootCalls: 5,
+		})
 
 		clearCallStates()
 	})

@@ -277,12 +277,17 @@ function *runAsIterator(
 
 let nextObjectId = 1
 
-function stressTest(
-	iterations: number,
-	maxFuncsCount: number = 10,
-	maxCallsCount: number = 100,
-	countRootCalls: number = 5,
-) {
+export function stressTest({
+   iterations,
+   maxFuncsCount,
+   maxCallsCount,
+   countRootCalls,
+}: {
+   iterations: number,
+   maxFuncsCount: number,
+   maxCallsCount: number,
+   countRootCalls: number,
+}) {
 	const rnd = new Random()
 	const funcs: TFunc[] = []
 	const calls: TCall[][] = []
