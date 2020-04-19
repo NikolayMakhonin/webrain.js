@@ -32,9 +32,6 @@
   <component name="ChangeListManager">
     <list default="true" id="69b2ee16-521b-4efd-b473-8e19e3df4d09" name="Default Changelist" comment="">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/common/async/async.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/common/async/async.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/common/rx/depend/core/CallState.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/common/rx/depend/core/CallState.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/common/rx/depend/core/current-state.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/common/rx/depend/core/current-state.ts" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/test/tests/common/main/rx/depend/src/base-tests.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/test/tests/common/main/rx/depend/src/base-tests.ts" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/test/tests/common/main/rx/depend/src/stress-test.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/test/tests/common/main/rx/depend/src/stress-test.ts" afterDir="false" />
     </list>
@@ -442,14 +439,7 @@
       <workItem from="1586866992744" duration="5668000" />
       <workItem from="1586872696123" duration="6185000" />
       <workItem from="1586887545919" duration="37770000" />
-      <workItem from="1587105271608" duration="63052000" />
-    </task>
-    <task id="LOCAL-00359" summary="Depend: Fix dependCalc">
-      <created>1586239783782</created>
-      <option name="number" value="00359" />
-      <option name="presentableId" value="LOCAL-00359" />
-      <option name="project" value="LOCAL" />
-      <updated>1586239783782</updated>
+      <workItem from="1587105271608" duration="69759000" />
     </task>
     <task id="LOCAL-00360" summary="Removed depend from old calc property">
       <created>1586245011494</created>
@@ -787,7 +777,14 @@
       <option name="project" value="LOCAL" />
       <updated>1587267236703</updated>
     </task>
-    <option name="localTasksCounter" value="408" />
+    <task id="LOCAL-00408" summary="depend: stress test in process...">
+      <created>1587275803517</created>
+      <option name="number" value="00408" />
+      <option name="presentableId" value="LOCAL-00408" />
+      <option name="project" value="LOCAL" />
+      <updated>1587275803518</updated>
+    </task>
+    <option name="localTasksCounter" value="409" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -888,10 +885,10 @@
       <screen x="0" y="0" width="1920" height="882" />
     </state>
     <state x="651" y="254" key="ANALYSIS_DLG_com.intellij.analysis.BaseAnalysisAction$1/0.0.1920.882@0.0.1920.882" timestamp="1586875498549" />
-    <state x="0" y="0" width="1918" height="882" key="CommitChangelistDialog2" timestamp="1587267235910">
+    <state x="0" y="0" width="1918" height="882" key="CommitChangelistDialog2" timestamp="1587275802282">
       <screen x="0" y="0" width="1920" height="882" />
     </state>
-    <state x="0" y="0" width="1918" height="882" key="CommitChangelistDialog2/0.0.1920.882@0.0.1920.882" timestamp="1587267235910" />
+    <state x="0" y="0" width="1918" height="882" key="CommitChangelistDialog2/0.0.1920.882@0.0.1920.882" timestamp="1587275802282" />
     <state width="789" height="550" key="DebuggerActiveHint" timestamp="1587228152930">
       <screen x="0" y="0" width="1920" height="882" />
     </state>
@@ -900,22 +897,22 @@
       <screen x="0" y="0" width="1920" height="882" />
     </state>
     <state x="0" y="4" width="1920" height="875" key="DiffContextDialog/0.0.1920.882@0.0.1920.882" timestamp="1587264875996" />
-    <state width="706" height="265" key="GridCell.Tab.0.bottom" timestamp="1587265389761">
+    <state width="708" height="424" key="GridCell.Tab.0.bottom" timestamp="1587276744101">
       <screen x="0" y="0" width="1920" height="882" />
     </state>
-    <state width="706" height="265" key="GridCell.Tab.0.bottom/0.0.1920.882@0.0.1920.882" timestamp="1587265389761" />
-    <state width="706" height="265" key="GridCell.Tab.0.center" timestamp="1587265389761">
+    <state width="708" height="424" key="GridCell.Tab.0.bottom/0.0.1920.882@0.0.1920.882" timestamp="1587276744101" />
+    <state width="708" height="424" key="GridCell.Tab.0.center" timestamp="1587276744101">
       <screen x="0" y="0" width="1920" height="882" />
     </state>
-    <state width="706" height="265" key="GridCell.Tab.0.center/0.0.1920.882@0.0.1920.882" timestamp="1587265389761" />
-    <state width="706" height="265" key="GridCell.Tab.0.left" timestamp="1587265389761">
+    <state width="708" height="424" key="GridCell.Tab.0.center/0.0.1920.882@0.0.1920.882" timestamp="1587276744101" />
+    <state width="708" height="424" key="GridCell.Tab.0.left" timestamp="1587276744101">
       <screen x="0" y="0" width="1920" height="882" />
     </state>
-    <state width="706" height="265" key="GridCell.Tab.0.left/0.0.1920.882@0.0.1920.882" timestamp="1587265389761" />
-    <state width="706" height="265" key="GridCell.Tab.0.right" timestamp="1587265389761">
+    <state width="708" height="424" key="GridCell.Tab.0.left/0.0.1920.882@0.0.1920.882" timestamp="1587276744101" />
+    <state width="708" height="424" key="GridCell.Tab.0.right" timestamp="1587276744101">
       <screen x="0" y="0" width="1920" height="882" />
     </state>
-    <state width="706" height="265" key="GridCell.Tab.0.right/0.0.1920.882@0.0.1920.882" timestamp="1587265389761" />
+    <state width="708" height="424" key="GridCell.Tab.0.right/0.0.1920.882@0.0.1920.882" timestamp="1587276744101" />
     <state width="706" height="334" key="GridCell.Tab.1.bottom" timestamp="1587264665910">
       <screen x="0" y="0" width="1920" height="882" />
     </state>

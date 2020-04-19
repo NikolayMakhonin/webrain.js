@@ -4,19 +4,29 @@ import {
 	getOrCreateCallState,
 	TCallStateAny,
 } from '../../../../../../../main/common/rx/depend/core/CallState'
-import {CallStatus, Func, ICallState, ICallStateAny} from '../../../../../../../main/common/rx/depend/core/contracts'
+import {
+	CallStatus,
+	Func,
+	ICallState,
+	ICallStateAny,
+	IDeferredOptions
+} from '../../../../../../../main/common/rx/depend/core/contracts'
 import {assert} from '../../../../../../../main/common/test/Assert'
+import {depend, dependX} from "../../../../../../../main/common";
 
 // region contracts
 
+type TFuncId = number
 interface IFunc<TThis, TArgs extends any[], TResult> {
 	(this: TThis, ...args: TArgs): TResult
-	id: number
+	id: TFuncId
 }
 
+type TCallId = string
 interface ICall<TThis, TArgs extends any[], TResult> {
 	(): TResult
-	id: string
+	id: TCallId
+	level: number
 	func: IFunc<TThis, TArgs, TResult>
 	_this: TThis
 	args: TArgs
@@ -24,11 +34,13 @@ interface ICall<TThis, TArgs extends any[], TResult> {
 
 type TCallState = ICallState<number, number[], number> & {
 	data: {
+		call: TCall,
 		dependencies: TCall[],
 	},
 }
-type TCall = ICall<number, number[], number>
+
 type TFunc = IFunc<number, number[], number>
+type TCall = ICall<number, number[], number>
 
 // endregion
 
@@ -74,14 +86,13 @@ class Pool<TObject> {
 function getCallId<
 	TThis,
 	TArgs extends any[],
-	TResult,
-	>(
-	func: Func<TThis, TArgs, TResult>,
+>(
+	func: Func<TThis, TArgs, any>,
 ): Func<
 	TThis,
 	TArgs,
-	string
-	> {
+	TCallId
+> {
 	return function() {
 		const buffer = [(func as any).id, this]
 		for (let i = 0, len = arguments.length; i < len; i++) {
@@ -161,7 +172,7 @@ function calcCheckResult(call: TCall) {
 	assert.ok(state)
 
 	if (!isCalculated(state)) {
-		return null
+		return state.value
 	}
 
 	let sum = calcSumArgs.apply(call._this, call.args)
@@ -179,6 +190,8 @@ function calcCheckResult(call: TCall) {
 		}
 	}
 
+	assert.strictEqual(state.value, sum)
+
 	return sum
 }
 
@@ -190,34 +203,50 @@ function checkCallResult(call: TCall, result: number, isLazy: boolean) {
 	}
 
 	const checkResult = calcCheckResult(call)
-	if (checkResult == null) {
-		return
-	}
 
 	assert.strictEqual(result, checkResult)
 }
 
-function runLazy(state: TCallState, sum: number, countDependencies: number, getNextCall: () => TCall) {
-	state.data.dependencies.length = 0
+function runLazy(
+	state: TCallState,
+	sum: number,
+	countDependencies: number,
+	getNextCall: (minLevel: number) => TCall,
+) {
+	const minLevel = state.data.call.level + 1
+	const dependencies = state.data.dependencies
+	dependencies.length = 0
+
 	for (let i = 0; i < countDependencies; i++) {
-		const dependency = getNextCall()
-		const result = _getOrCreateCallState(dependency).getValue(true)
+		const dependency = getNextCall(minLevel)
+		const dependencyState = _getOrCreateCallState(dependency)
+		const result = dependencyState.getValue(true)
 		checkCallResult(dependency, result, true)
-		state.data.dependencies.push(dependency)
+		dependencies.push(dependency)
 		sum += result
 	}
+
 	return sum
 }
 
-function *runAsIterator(state: TCallState, sum: number, countDependencies: number, getNextCall: () => TCall) {
-	state.data.dependencies.length = 0
+function *runAsIterator(
+	state: TCallState,
+	sum: number,
+	countDependencies: number,
+	getNextCall: (minLevel: number) => TCall,
+) {
+	const minLevel = state.data.call.level + 1
+	const dependencies = state.data.dependencies
+	dependencies.length = 0
+
 	for (let i = 0; i < countDependencies; i++) {
-		const dependency = getNextCall()
-		const result = yield _getOrCreateCallState(dependency).getValue(true)
-		checkCallResult(dependency, result, false)
-		state.data.dependencies.push(dependency)
+		const dependency = getNextCall(minLevel)
+		const result = yield dependency()
+		checkCallResult(dependency, result, true)
+		dependencies.push(dependency)
 		sum += result
 	}
+
 	return sum
 }
 
@@ -225,37 +254,18 @@ function *runAsIterator(state: TCallState, sum: number, countDependencies: numbe
 
 let nextObjectId = 1
 
-function stressTest(iterations: number) {
+function stressTest(iterations: number, maxFuncsCount: number, maxCallsCount: number) {
 	const rnd = new Random()
 	const funcs: TFunc[] = []
+	const calls: TCall[][] = []
+	const callsMap = new Map<TCallId, TCall>()
 
-	const callsFree = new Pool<TCall>(rnd, createCall)
-	const callsUsed = new Pool<TCall>(rnd)
-
-	function createCall() {
-		const func = rnd.nextArrayItem(funcs)
-
-		const countArgs = rnd.nextBoolean()
-			? rnd.nextInt(3)
-			: 0
-
-		const _this = rnd.nextInt(3)
-
-		const args = []
-		for (let i = 0; i < countArgs; i++) {
-			args[i] = rnd.nextInt(3)
-		}
-
-		const call: TCall = function() {
-			return func.apply(_this, args)
-		}
-
-		call.func = func
-		call._this = _this
-		call.args = args
-		call.id = getCallId(func).apply(_this, args)
-
-		return call
+	function initCallState(state: TCallState) {
+		state.data.dependencies = []
+		state.data.parents = []
+		const callId = state.callWithArgs(state._this, getCallId(state.func))
+		const call = callsMap.get(callId)
+		assert.ok(call)
 	}
 
 	function createFunc() {
@@ -263,7 +273,7 @@ function stressTest(iterations: number) {
 		const isLazy = rnd.nextBoolean()
 
 		const func = function() {
-			const state = isDependX
+			const state: TCallState = isDependX
 				? this
 				: getCallState(func).apply(this, arguments)
 			const _this = isDependX
@@ -279,18 +289,127 @@ function stressTest(iterations: number) {
 				sum += arguments[i]
 			}
 
-			if (isLazy) {
-				let sum = 0
-				for (let i = 0; i < countDependencies; i++) {
-					const dependency = callsFree.get()
-					const result = _getOrCreateCallState(dependency).getValue(true)
-					// TODO assert result
-					sum += result
-				}
-				return sum
-			}
+			const result = isLazy
+				? runLazy(state, sum, countDependencies, getNextCall)
+				: runAsIterator(state, sum, countDependencies, getNextCall)
+
+			return result
 		}
 
 		func.id = nextObjectId++
+
+		const isDeferred = rnd.nextBoolean()
+		const deferredOptions: IDeferredOptions = isDeferred
+			? {
+				delayBeforeCalc: rnd.nextBoolean()
+					? void 0
+					: (rnd.nextBoolean() ? 0 : rnd.nextInt(1, 2)),
+				minTimeBetweenCalc: rnd.nextBoolean()
+					? void 0
+					: (rnd.nextBoolean() ? 0 : rnd.nextInt(1, 2)),
+			}
+			: null
+
+		const dependFunc = isDependX
+			? dependX(func, deferredOptions, initCallState)
+			: depend(func, deferredOptions, initCallState)
+
+		dependFunc.id = func
+
+		return dependFunc
+	}
+
+	function getNextFunc() {
+		if (funcs.length !== 0 && rnd.nextBoolean(funcs.length / maxFuncsCount)) {
+			return rnd.nextArrayItem(funcs)
+		}
+
+		const func = createFunc()
+		funcs.push(func)
+		return func
+	}
+
+	function createCall(level: number) {
+		for (let i = 0; i < 100; i++) {
+			const call = _createCall(level)
+			if (call != null) {
+				return call
+			}
+		}
+		throw new Error('Cannot create call')
+	}
+
+	function _createCall(level: number) {
+		const func = getNextFunc()
+
+		const countArgs = rnd.nextBoolean()
+			? rnd.nextInt(3)
+			: 0
+
+		const _this = rnd.nextInt(3)
+
+		const args = []
+		for (let i = 0; i < countArgs; i++) {
+			args[i] = rnd.nextInt(3)
+		}
+
+		const callId = getCallId(func).apply(_this, args)
+
+		if (callsMap.has(callId)) {
+			return null
+		}
+
+		const call: TCall = function() {
+			return func.apply(_this, args)
+		}
+
+		call.id = callId
+		call.level = level
+		call.func = func
+		call._this = _this
+		call.args = args
+
+		while (level >= calls.length) {
+			calls.push([])
+		}
+		calls[level].push(call)
+		callsMap.set(callId, call)
+
+		return call
+	}
+
+	function getNextCall(minLevel: number) {
+		const countLevels = calls.length
+		if (minLevel < calls.length) {
+			let countTotal = 0
+			let countAvailable = 0
+			let countMax = 0
+			for (let i = 0; i < countLevels; i++) {
+				const count = calls[i].length
+				countTotal += count
+				if (i >= minLevel) {
+					countAvailable += count
+				}
+				if (count > countMax) {
+					countMax = count
+				}
+			}
+
+			if (countAvailable > 0 && rnd.nextBoolean(countTotal / maxCallsCount)) {
+				let index = rnd.nextInt(countAvailable)
+				for (let i = minLevel; i < countLevels; i++) {
+					const count = calls[i].length
+					if (index < count) {
+						return calls[i][index]
+					}
+					index -= count
+				}
+				throw new Error('Call not found')
+			}
+		}
+
+		const call = createCall(minLevel)
+
+		return call
 	}
 }
