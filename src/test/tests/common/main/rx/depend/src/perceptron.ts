@@ -1,7 +1,7 @@
 import {nextHash} from '../../../../../../../main/common/helpers/helpers'
 import {getOrCreateCallState} from '../../../../../../../main/common/rx/depend/core/CallState'
 import {assert} from '../../../../../../../main/common/test/Assert'
-import {__makeDependentFunc, __outputCall} from './_helpers'
+import {__makeDependentFunc, __outputCall} from './helpers'
 
 export function createPerceptronNaked(layerSize, layersCount, check = true) {
 	const countFuncs = layersCount * layerSize + 2

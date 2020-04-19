@@ -1,8 +1,8 @@
 /* tslint:disable:no-identical-functions no-shadowed-variable */
 import {assert} from '../../../../../../main/common/test/Assert'
 import {describe, it} from '../../../../../../main/common/test/Mocha'
-import {baseTest, lazyTest} from './src/helpers'
-import {clearCallStates} from "./src/_helpers";
+import {baseTest, lazyTest} from './src/base-tests'
+import {clearCallStates} from "./src/helpers";
 import {createPerceptron} from "./src/perceptron";
 
 describe('common > main > rx > depend > dependent-func', function() {

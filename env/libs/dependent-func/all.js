@@ -6,7 +6,7 @@ import {
     __invalidate,
     __makeDependentFunc,
     __outputCall
-} from "../../../src/test/tests/common/main/rx/depend/src/_helpers";
+} from "../../../src/test/tests/common/main/rx/depend/src/helpers";
 import {createPerceptron, createPerceptronNaked} from "../../../src/test/tests/common/main/rx/depend/src/perceptron";
 
 // const {
