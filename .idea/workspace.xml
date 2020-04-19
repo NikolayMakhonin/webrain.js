@@ -30,11 +30,10 @@
     <select />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="69b2ee16-521b-4efd-b473-8e19e3df4d09" name="Default Changelist" comment="depend: lazy mode, testing and debugging... Tests OK">
-      <change afterPath="$PROJECT_DIR$/src/test/tests/common/main/rx/depend/src/_helpers.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+    <list default="true" id="69b2ee16-521b-4efd-b473-8e19e3df4d09" name="Default Changelist" comment="">
+      <change afterPath="$PROJECT_DIR$/src/test/tests/common/main/rx/depend/src/perceptron.ts" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/env/libs/dependent-func/all.js" beforeDir="false" afterPath="$PROJECT_DIR$/env/libs/dependent-func/all.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/test/tests/common/main/lists/DependMap.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/test/tests/common/main/lists/DependMap.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/test/performance/node/dependent-func.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/test/performance/node/dependent-func.ts" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/test/tests/common/main/rx/depend/dependent-func.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/test/tests/common/main/rx/depend/dependent-func.ts" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/test/tests/common/main/rx/depend/src/helpers.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/test/tests/common/main/rx/depend/src/helpers.ts" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/test/tests/node/main/rx/depend/v8/dependent-func.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/test/tests/node/main/rx/depend/v8/dependent-func.ts" afterDir="false" />
@@ -116,11 +115,11 @@
       <recent name="L:\Work\_GIT\GitHub\NodeJs\modules\webrain\src\main\common\rx\depend\core" />
     </key>
     <key name="es6.move.members.recent.items">
+      <recent name="L:\Work\_GIT\GitHub\NodeJs\modules\webrain\src\test\tests\common\main\rx\depend\src\perceptron.ts" />
       <recent name="L:\Work\_GIT\GitHub\NodeJs\modules\webrain\src\test\tests\common\main\rx\depend\src\_helpers.ts" />
       <recent name="L:\Work\_GIT\GitHub\NodeJs\modules\webrain\src\main\common\rx\object\properties\helpers.ts" />
       <recent name="L:\Work\_GIT\GitHub\NodeJs\modules\webrain\src\main\common\helpers\helpers.ts" />
       <recent name="L:\Work\_GIT\GitHub\NodeJs\modules\webrain\src\main\common\helpers\typescript.ts" />
-      <recent name="L:\Work\_GIT\GitHub\NodeJs\modules\webrain\src\main\common\rx\object\helpers.ts" />
     </key>
     <key name="CopyFile.RECENT_KEYS">
       <recent name="L:\Work\_GIT\GitHub\NodeJs\modules\webrain\src\main\common\rx\object\properties" />
@@ -443,14 +442,7 @@
       <workItem from="1586866992744" duration="5668000" />
       <workItem from="1586872696123" duration="6185000" />
       <workItem from="1586887545919" duration="37770000" />
-      <workItem from="1587105271608" duration="53431000" />
-    </task>
-    <task id="LOCAL-00355" summary="Depend: Added dependCalc property">
-      <created>1586234336065</created>
-      <option name="number" value="00355" />
-      <option name="presentableId" value="LOCAL-00355" />
-      <option name="project" value="LOCAL" />
-      <updated>1586234336065</updated>
+      <workItem from="1587105271608" duration="53816000" />
     </task>
     <task id="LOCAL-00356" summary="Depend: Small refactoring">
       <created>1586235255177</created>
@@ -788,7 +780,14 @@
       <option name="project" value="LOCAL" />
       <updated>1587231000675</updated>
     </task>
-    <option name="localTasksCounter" value="404" />
+    <task id="LOCAL-00404" summary="depend: base tests changing file structure... Tests OK">
+      <created>1587265171568</created>
+      <option name="number" value="00404" />
+      <option name="presentableId" value="LOCAL-00404" />
+      <option name="project" value="LOCAL" />
+      <updated>1587265171568</updated>
+    </task>
+    <option name="localTasksCounter" value="405" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -849,7 +848,6 @@
   <component name="VcsManagerConfiguration">
     <option name="CHECK_CODE_SMELLS_BEFORE_PROJECT_COMMIT" value="false" />
     <option name="CHECK_NEW_TODO" value="false" />
-    <MESSAGE value="Fix facade" />
     <MESSAGE value="Depend: Integrated to writable property" />
     <MESSAGE value="Depend: Added dependCalc property" />
     <MESSAGE value="Depend: Small refactoring" />
@@ -874,7 +872,8 @@
     <MESSAGE value="depend: lazy mode, testing and debugging..." />
     <MESSAGE value="depend: fix bug: mark as recalc after calculated. Tests OK" />
     <MESSAGE value="depend: lazy mode, testing and debugging... Tests OK" />
-    <option name="LAST_COMMIT_MESSAGE" value="depend: lazy mode, testing and debugging... Tests OK" />
+    <MESSAGE value="depend: base tests changing file structure... Tests OK" />
+    <option name="LAST_COMMIT_MESSAGE" value="depend: base tests changing file structure... Tests OK" />
   </component>
   <component name="WindowStateProjectService">
     <state x="409" y="84" key="#com.intellij.execution.impl.EditConfigurationsDialog" timestamp="1587230852397">
@@ -889,10 +888,10 @@
       <screen x="0" y="0" width="1920" height="882" />
     </state>
     <state x="651" y="254" key="ANALYSIS_DLG_com.intellij.analysis.BaseAnalysisAction$1/0.0.1920.882@0.0.1920.882" timestamp="1586875498549" />
-    <state x="0" y="0" width="1918" height="882" key="CommitChangelistDialog2" timestamp="1587264876537">
+    <state x="0" y="0" width="1918" height="882" key="CommitChangelistDialog2" timestamp="1587265170623">
       <screen x="0" y="0" width="1920" height="882" />
     </state>
-    <state x="0" y="0" width="1918" height="882" key="CommitChangelistDialog2/0.0.1920.882@0.0.1920.882" timestamp="1587264876537" />
+    <state x="0" y="0" width="1918" height="882" key="CommitChangelistDialog2/0.0.1920.882@0.0.1920.882" timestamp="1587265170623" />
     <state width="789" height="550" key="DebuggerActiveHint" timestamp="1587228152930">
       <screen x="0" y="0" width="1920" height="882" />
     </state>
@@ -901,22 +900,22 @@
       <screen x="0" y="0" width="1920" height="882" />
     </state>
     <state x="0" y="4" width="1920" height="875" key="DiffContextDialog/0.0.1920.882@0.0.1920.882" timestamp="1587264875996" />
-    <state width="706" height="334" key="GridCell.Tab.0.bottom" timestamp="1587264665909">
+    <state width="706" height="265" key="GridCell.Tab.0.bottom" timestamp="1587265286300">
       <screen x="0" y="0" width="1920" height="882" />
     </state>
-    <state width="706" height="334" key="GridCell.Tab.0.bottom/0.0.1920.882@0.0.1920.882" timestamp="1587264665909" />
-    <state width="706" height="334" key="GridCell.Tab.0.center" timestamp="1587264665909">
+    <state width="706" height="265" key="GridCell.Tab.0.bottom/0.0.1920.882@0.0.1920.882" timestamp="1587265286300" />
+    <state width="706" height="265" key="GridCell.Tab.0.center" timestamp="1587265286299">
       <screen x="0" y="0" width="1920" height="882" />
     </state>
-    <state width="706" height="334" key="GridCell.Tab.0.center/0.0.1920.882@0.0.1920.882" timestamp="1587264665909" />
-    <state width="706" height="334" key="GridCell.Tab.0.left" timestamp="1587264665909">
+    <state width="706" height="265" key="GridCell.Tab.0.center/0.0.1920.882@0.0.1920.882" timestamp="1587265286299" />
+    <state width="706" height="265" key="GridCell.Tab.0.left" timestamp="1587265286299">
       <screen x="0" y="0" width="1920" height="882" />
     </state>
-    <state width="706" height="334" key="GridCell.Tab.0.left/0.0.1920.882@0.0.1920.882" timestamp="1587264665909" />
-    <state width="706" height="334" key="GridCell.Tab.0.right" timestamp="1587264665909">
+    <state width="706" height="265" key="GridCell.Tab.0.left/0.0.1920.882@0.0.1920.882" timestamp="1587265286299" />
+    <state width="706" height="265" key="GridCell.Tab.0.right" timestamp="1587265286300">
       <screen x="0" y="0" width="1920" height="882" />
     </state>
-    <state width="706" height="334" key="GridCell.Tab.0.right/0.0.1920.882@0.0.1920.882" timestamp="1587264665909" />
+    <state width="706" height="265" key="GridCell.Tab.0.right/0.0.1920.882@0.0.1920.882" timestamp="1587265286300" />
     <state width="706" height="334" key="GridCell.Tab.1.bottom" timestamp="1587264665910">
       <screen x="0" y="0" width="1920" height="882" />
     </state>
@@ -988,7 +987,7 @@
         <line-breakpoint enabled="true" type="javascript">
           <condition expression="getCurrentState()" language="TypeScript" />
           <url>file://$PROJECT_DIR$/src/test/tests/common/main/rx/depend/src/helpers.ts</url>
-          <line>552</line>
+          <line>351</line>
           <option name="timeStamp" value="968" />
         </line-breakpoint>
         <line-breakpoint enabled="true" type="javascript">
@@ -1014,7 +1013,7 @@
         <line-breakpoint enabled="true" type="javascript">
           <condition expression="rest.length" language="TypeScript" />
           <url>file://$PROJECT_DIR$/src/test/tests/common/main/rx/depend/src/helpers.ts</url>
-          <line>427</line>
+          <line>226</line>
           <properties lambdaOrdinal="-1" />
           <option name="timeStamp" value="1171" />
         </line-breakpoint>
@@ -1032,13 +1031,13 @@
         </line-breakpoint>
         <line-breakpoint enabled="true" type="javascript">
           <url>file://$PROJECT_DIR$/src/test/tests/common/main/rx/depend/src/helpers.ts</url>
-          <line>1729</line>
+          <line>1528</line>
           <properties lambdaOrdinal="-1" />
           <option name="timeStamp" value="1217" />
         </line-breakpoint>
         <line-breakpoint enabled="true" type="javascript">
           <url>file://$PROJECT_DIR$/src/test/tests/common/main/rx/depend/src/helpers.ts</url>
-          <line>1730</line>
+          <line>1529</line>
           <properties lambdaOrdinal="-1" />
           <option name="timeStamp" value="1219" />
         </line-breakpoint>
