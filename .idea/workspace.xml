@@ -31,7 +31,7 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="69b2ee16-521b-4efd-b473-8e19e3df4d09" name="Default Changelist" comment="">
-      <change beforePath="$PROJECT_DIR$/src/main/common/rx/depend/core/CallState.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/common/rx/depend/core/CallState.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/test/tests/common/main/rx/depend/src/stress-test.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/test/tests/common/main/rx/depend/src/stress-test.ts" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
@@ -125,7 +125,7 @@
       <recent name="L:\Work\_GIT\GitHub\NodeJs\modules\webrain\src\test\tests\common\main\lists" />
     </key>
   </component>
-  <component name="RunManager" selected="Mocha.common &gt; main &gt; rx &gt; depend &gt; dependent-func.lazy">
+  <component name="RunManager" selected="Mocha.common &gt; main &gt; rx &gt; depend &gt; dependent-func.stress">
     <configuration default="true" type="JavaScriptTestRunnerKarma" activateToolWindowBeforeRun="false">
       <config-file value="$PROJECT_DIR$/env/karma/configs/dev.js" />
       <karma-package-dir value="$PROJECT_DIR$/node_modules/karma" />
@@ -264,6 +264,22 @@
       </test-names>
       <method v="2" />
     </configuration>
+    <configuration name="common &gt; main &gt; rx &gt; depend &gt; dependent-func.stress" type="mocha-javascript-test-runner" temporary="true" nameIsGenerated="true">
+      <node-interpreter>node</node-interpreter>
+      <node-options>--max-old-space-size=4096 --allow-natives-syntax</node-options>
+      <mocha-package>$PROJECT_DIR$/node_modules/mocha</mocha-package>
+      <working-directory>$PROJECT_DIR$</working-directory>
+      <pass-parent-env>true</pass-parent-env>
+      <ui>bdd</ui>
+      <extra-mocha-options>--opts ./env/mocha/configs/babel/mocha.opts --watch</extra-mocha-options>
+      <test-kind>TEST</test-kind>
+      <test-file>$PROJECT_DIR$/src/test/tests/common/main/rx/depend/dependent-func.ts</test-file>
+      <test-names>
+        <name value="common &gt; main &gt; rx &gt; depend &gt; dependent-func" />
+        <name value="stress" />
+      </test-names>
+      <method v="2" />
+    </configuration>
     <configuration name="common &gt; main &gt; rx &gt; properties &gt; builder" type="mocha-javascript-test-runner" temporary="true" nameIsGenerated="true">
       <node-interpreter>node</node-interpreter>
       <node-options>--max-old-space-size=4096 --allow-natives-syntax</node-options>
@@ -276,22 +292,6 @@
       <test-file>$PROJECT_DIR$/src/test/tests/common/main/rx/object/properties/path/builder.ts</test-file>
       <test-names>
         <name value="common &gt; main &gt; rx &gt; properties &gt; builder" />
-      </test-names>
-      <method v="2" />
-    </configuration>
-    <configuration name="common &gt; main &gt; rx &gt; properties &gt; builder.base" type="mocha-javascript-test-runner" temporary="true" nameIsGenerated="true">
-      <node-interpreter>node</node-interpreter>
-      <node-options>--max-old-space-size=4096 --allow-natives-syntax</node-options>
-      <mocha-package>$PROJECT_DIR$/node_modules/mocha</mocha-package>
-      <working-directory>$PROJECT_DIR$</working-directory>
-      <pass-parent-env>true</pass-parent-env>
-      <ui>bdd</ui>
-      <extra-mocha-options>--opts ./env/mocha/configs/babel/mocha.opts --watch</extra-mocha-options>
-      <test-kind>TEST</test-kind>
-      <test-file>$PROJECT_DIR$/src/test/tests/common/main/rx/object/properties/path/builder.ts</test-file>
-      <test-names>
-        <name value="common &gt; main &gt; rx &gt; properties &gt; builder" />
-        <name value="base" />
       </test-names>
       <method v="2" />
     </configuration>
@@ -404,19 +404,19 @@
       <item itemvalue="Mocha.dependent-func (perf)" />
       <item itemvalue="Mocha.common &gt; main &gt; rx &gt; depend &gt; dependent-func.base" />
       <item itemvalue="Mocha.common &gt; main &gt; rx &gt; properties &gt; builder" />
-      <item itemvalue="Mocha.common &gt; main &gt; rx &gt; properties &gt; builder.base" />
       <item itemvalue="Mocha.common &gt; main &gt; rx &gt; depend &gt; dependent-func" />
       <item itemvalue="Mocha.common &gt; main &gt; rx &gt; depend &gt; dependent-func.lazy" />
       <item itemvalue="Node.js.dependent-func.js" />
       <item itemvalue="npm.Coverage Mocha Report" />
+      <item itemvalue="Mocha.common &gt; main &gt; rx &gt; depend &gt; dependent-func.stress" />
     </list>
     <recent_temporary>
       <list>
+        <item itemvalue="Mocha.common &gt; main &gt; rx &gt; depend &gt; dependent-func.stress" />
         <item itemvalue="Mocha.common &gt; main &gt; rx &gt; depend &gt; dependent-func.lazy" />
         <item itemvalue="Mocha.common &gt; main &gt; rx &gt; depend &gt; dependent-func" />
         <item itemvalue="Mocha.common &gt; main &gt; rx &gt; depend &gt; dependent-func.base" />
         <item itemvalue="Mocha.common &gt; main &gt; rx &gt; properties &gt; builder" />
-        <item itemvalue="Mocha.common &gt; main &gt; rx &gt; properties &gt; builder.base" />
       </list>
     </recent_temporary>
   </component>
@@ -438,21 +438,7 @@
       <workItem from="1586866992744" duration="5668000" />
       <workItem from="1586872696123" duration="6185000" />
       <workItem from="1586887545919" duration="37770000" />
-      <workItem from="1587105271608" duration="72294000" />
-    </task>
-    <task id="LOCAL-00361" summary="Beforr integrate currentState to resolveAsync. Tests OK.">
-      <created>1586367304709</created>
-      <option name="number" value="00361" />
-      <option name="presentableId" value="LOCAL-00361" />
-      <option name="project" value="LOCAL" />
-      <updated>1586367304710</updated>
-    </task>
-    <task id="LOCAL-00362" summary="Before integrate currentState to resolveAsync. Tests OK.">
-      <created>1586405154420</created>
-      <option name="number" value="00362" />
-      <option name="presentableId" value="LOCAL-00362" />
-      <option name="project" value="LOCAL" />
-      <updated>1586405154421</updated>
+      <workItem from="1587105271608" duration="74746000" />
     </task>
     <task id="LOCAL-00363" summary="Before integrate currentState to resolveAsync. Tests OK.">
       <created>1586405722522</created>
@@ -783,7 +769,21 @@
       <option name="project" value="LOCAL" />
       <updated>1587283422938</updated>
     </task>
-    <option name="localTasksCounter" value="410" />
+    <task id="LOCAL-00410" summary="depend: stress test in process...">
+      <created>1587285978578</created>
+      <option name="number" value="00410" />
+      <option name="presentableId" value="LOCAL-00410" />
+      <option name="project" value="LOCAL" />
+      <updated>1587285978578</updated>
+    </task>
+    <task id="LOCAL-00411" summary="depend: stress test, testing and debugging...">
+      <created>1587286249470</created>
+      <option name="number" value="00411" />
+      <option name="presentableId" value="LOCAL-00411" />
+      <option name="project" value="LOCAL" />
+      <updated>1587286249470</updated>
+    </task>
+    <option name="localTasksCounter" value="412" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -844,7 +844,6 @@
   <component name="VcsManagerConfiguration">
     <option name="CHECK_CODE_SMELLS_BEFORE_PROJECT_COMMIT" value="false" />
     <option name="CHECK_NEW_TODO" value="false" />
-    <MESSAGE value="Depend: Added dependCalc property" />
     <MESSAGE value="Depend: Small refactoring" />
     <MESSAGE value="Depend: Fix dependCalc" />
     <MESSAGE value="Removed depend from old calc property" />
@@ -869,7 +868,8 @@
     <MESSAGE value="depend: lazy mode, testing and debugging... Tests OK" />
     <MESSAGE value="depend: base tests changing file structure... Tests OK" />
     <MESSAGE value="depend: stress test in process..." />
-    <option name="LAST_COMMIT_MESSAGE" value="depend: stress test in process..." />
+    <MESSAGE value="depend: stress test, testing and debugging..." />
+    <option name="LAST_COMMIT_MESSAGE" value="depend: stress test, testing and debugging..." />
   </component>
   <component name="WindowStateProjectService">
     <state x="409" y="84" key="#com.intellij.execution.impl.EditConfigurationsDialog" timestamp="1587230852397">
@@ -884,82 +884,82 @@
       <screen x="0" y="0" width="1920" height="882" />
     </state>
     <state x="651" y="254" key="ANALYSIS_DLG_com.intellij.analysis.BaseAnalysisAction$1/0.0.1920.882@0.0.1920.882" timestamp="1586875498549" />
-    <state x="0" y="0" width="1918" height="882" key="CommitChangelistDialog2" timestamp="1587283421481">
+    <state x="0" y="0" width="1918" height="882" key="CommitChangelistDialog2" timestamp="1587286248759">
       <screen x="0" y="0" width="1920" height="882" />
     </state>
-    <state x="0" y="0" width="1918" height="882" key="CommitChangelistDialog2/0.0.1920.882@0.0.1920.882" timestamp="1587283421481" />
-    <state width="789" height="550" key="DebuggerActiveHint" timestamp="1587228152930">
+    <state x="0" y="0" width="1918" height="882" key="CommitChangelistDialog2/0.0.1920.882@0.0.1920.882" timestamp="1587286248759" />
+    <state width="827" height="550" key="DebuggerActiveHint" timestamp="1587288403224">
       <screen x="0" y="0" width="1920" height="882" />
     </state>
-    <state width="789" height="550" key="DebuggerActiveHint/0.0.1920.882@0.0.1920.882" timestamp="1587228152930" />
+    <state width="827" height="550" key="DebuggerActiveHint/0.0.1920.882@0.0.1920.882" timestamp="1587288403224" />
     <state x="0" y="4" width="1920" height="875" key="DiffContextDialog" timestamp="1587264875996">
       <screen x="0" y="0" width="1920" height="882" />
     </state>
     <state x="0" y="4" width="1920" height="875" key="DiffContextDialog/0.0.1920.882@0.0.1920.882" timestamp="1587264875996" />
-    <state width="708" height="424" key="GridCell.Tab.0.bottom" timestamp="1587276744101">
+    <state width="586" height="424" key="GridCell.Tab.0.bottom" timestamp="1587289195031">
       <screen x="0" y="0" width="1920" height="882" />
     </state>
-    <state width="708" height="424" key="GridCell.Tab.0.bottom/0.0.1920.882@0.0.1920.882" timestamp="1587276744101" />
-    <state width="708" height="424" key="GridCell.Tab.0.center" timestamp="1587276744101">
+    <state width="586" height="424" key="GridCell.Tab.0.bottom/0.0.1920.882@0.0.1920.882" timestamp="1587289195031" />
+    <state width="586" height="424" key="GridCell.Tab.0.center" timestamp="1587289195031">
       <screen x="0" y="0" width="1920" height="882" />
     </state>
-    <state width="708" height="424" key="GridCell.Tab.0.center/0.0.1920.882@0.0.1920.882" timestamp="1587276744101" />
-    <state width="708" height="424" key="GridCell.Tab.0.left" timestamp="1587276744101">
+    <state width="586" height="424" key="GridCell.Tab.0.center/0.0.1920.882@0.0.1920.882" timestamp="1587289195031" />
+    <state width="586" height="424" key="GridCell.Tab.0.left" timestamp="1587289195031">
       <screen x="0" y="0" width="1920" height="882" />
     </state>
-    <state width="708" height="424" key="GridCell.Tab.0.left/0.0.1920.882@0.0.1920.882" timestamp="1587276744101" />
-    <state width="708" height="424" key="GridCell.Tab.0.right" timestamp="1587276744101">
+    <state width="586" height="424" key="GridCell.Tab.0.left/0.0.1920.882@0.0.1920.882" timestamp="1587289195031" />
+    <state width="586" height="424" key="GridCell.Tab.0.right" timestamp="1587289195031">
       <screen x="0" y="0" width="1920" height="882" />
     </state>
-    <state width="708" height="424" key="GridCell.Tab.0.right/0.0.1920.882@0.0.1920.882" timestamp="1587276744101" />
-    <state width="706" height="334" key="GridCell.Tab.1.bottom" timestamp="1587264665910">
+    <state width="586" height="424" key="GridCell.Tab.0.right/0.0.1920.882@0.0.1920.882" timestamp="1587289195031" />
+    <state width="586" height="424" key="GridCell.Tab.1.bottom" timestamp="1587289194887">
       <screen x="0" y="0" width="1920" height="882" />
     </state>
-    <state width="706" height="334" key="GridCell.Tab.1.bottom/0.0.1920.882@0.0.1920.882" timestamp="1587264665910" />
-    <state width="706" height="334" key="GridCell.Tab.1.center" timestamp="1587264665909">
+    <state width="586" height="424" key="GridCell.Tab.1.bottom/0.0.1920.882@0.0.1920.882" timestamp="1587289194887" />
+    <state width="586" height="424" key="GridCell.Tab.1.center" timestamp="1587289194887">
       <screen x="0" y="0" width="1920" height="882" />
     </state>
-    <state width="706" height="334" key="GridCell.Tab.1.center/0.0.1920.882@0.0.1920.882" timestamp="1587264665909" />
-    <state width="706" height="334" key="GridCell.Tab.1.left" timestamp="1587264665909">
+    <state width="586" height="424" key="GridCell.Tab.1.center/0.0.1920.882@0.0.1920.882" timestamp="1587289194887" />
+    <state width="586" height="424" key="GridCell.Tab.1.left" timestamp="1587289194887">
       <screen x="0" y="0" width="1920" height="882" />
     </state>
-    <state width="706" height="334" key="GridCell.Tab.1.left/0.0.1920.882@0.0.1920.882" timestamp="1587264665909" />
-    <state width="706" height="334" key="GridCell.Tab.1.right" timestamp="1587264665909">
+    <state width="586" height="424" key="GridCell.Tab.1.left/0.0.1920.882@0.0.1920.882" timestamp="1587289194887" />
+    <state width="586" height="424" key="GridCell.Tab.1.right" timestamp="1587289194887">
       <screen x="0" y="0" width="1920" height="882" />
     </state>
-    <state width="706" height="334" key="GridCell.Tab.1.right/0.0.1920.882@0.0.1920.882" timestamp="1587264665909" />
-    <state width="706" height="334" key="GridCell.Tab.2.bottom" timestamp="1587264665910">
+    <state width="586" height="424" key="GridCell.Tab.1.right/0.0.1920.882@0.0.1920.882" timestamp="1587289194887" />
+    <state width="586" height="424" key="GridCell.Tab.2.bottom" timestamp="1587289194887">
       <screen x="0" y="0" width="1920" height="882" />
     </state>
-    <state width="706" height="334" key="GridCell.Tab.2.bottom/0.0.1920.882@0.0.1920.882" timestamp="1587264665910" />
-    <state width="706" height="334" key="GridCell.Tab.2.center" timestamp="1587264665910">
+    <state width="586" height="424" key="GridCell.Tab.2.bottom/0.0.1920.882@0.0.1920.882" timestamp="1587289194887" />
+    <state width="586" height="424" key="GridCell.Tab.2.center" timestamp="1587289194887">
       <screen x="0" y="0" width="1920" height="882" />
     </state>
-    <state width="706" height="334" key="GridCell.Tab.2.center/0.0.1920.882@0.0.1920.882" timestamp="1587264665910" />
-    <state width="706" height="334" key="GridCell.Tab.2.left" timestamp="1587264665910">
+    <state width="586" height="424" key="GridCell.Tab.2.center/0.0.1920.882@0.0.1920.882" timestamp="1587289194887" />
+    <state width="586" height="424" key="GridCell.Tab.2.left" timestamp="1587289194887">
       <screen x="0" y="0" width="1920" height="882" />
     </state>
-    <state width="706" height="334" key="GridCell.Tab.2.left/0.0.1920.882@0.0.1920.882" timestamp="1587264665910" />
-    <state width="706" height="334" key="GridCell.Tab.2.right" timestamp="1587264665910">
+    <state width="586" height="424" key="GridCell.Tab.2.left/0.0.1920.882@0.0.1920.882" timestamp="1587289194887" />
+    <state width="586" height="424" key="GridCell.Tab.2.right" timestamp="1587289194887">
       <screen x="0" y="0" width="1920" height="882" />
     </state>
-    <state width="706" height="334" key="GridCell.Tab.2.right/0.0.1920.882@0.0.1920.882" timestamp="1587264665910" />
-    <state width="706" height="334" key="GridCell.Tab.3.bottom" timestamp="1587264665911">
+    <state width="586" height="424" key="GridCell.Tab.2.right/0.0.1920.882@0.0.1920.882" timestamp="1587289194887" />
+    <state width="586" height="424" key="GridCell.Tab.3.bottom" timestamp="1587289194888">
       <screen x="0" y="0" width="1920" height="882" />
     </state>
-    <state width="706" height="334" key="GridCell.Tab.3.bottom/0.0.1920.882@0.0.1920.882" timestamp="1587264665911" />
-    <state width="706" height="334" key="GridCell.Tab.3.center" timestamp="1587264665910">
+    <state width="586" height="424" key="GridCell.Tab.3.bottom/0.0.1920.882@0.0.1920.882" timestamp="1587289194888" />
+    <state width="586" height="424" key="GridCell.Tab.3.center" timestamp="1587289194887">
       <screen x="0" y="0" width="1920" height="882" />
     </state>
-    <state width="706" height="334" key="GridCell.Tab.3.center/0.0.1920.882@0.0.1920.882" timestamp="1587264665910" />
-    <state width="706" height="334" key="GridCell.Tab.3.left" timestamp="1587264665910">
+    <state width="586" height="424" key="GridCell.Tab.3.center/0.0.1920.882@0.0.1920.882" timestamp="1587289194887" />
+    <state width="586" height="424" key="GridCell.Tab.3.left" timestamp="1587289194887">
       <screen x="0" y="0" width="1920" height="882" />
     </state>
-    <state width="706" height="334" key="GridCell.Tab.3.left/0.0.1920.882@0.0.1920.882" timestamp="1587264665910" />
-    <state width="706" height="334" key="GridCell.Tab.3.right" timestamp="1587264665911">
+    <state width="586" height="424" key="GridCell.Tab.3.left/0.0.1920.882@0.0.1920.882" timestamp="1587289194887" />
+    <state width="586" height="424" key="GridCell.Tab.3.right" timestamp="1587289194888">
       <screen x="0" y="0" width="1920" height="882" />
     </state>
-    <state width="706" height="334" key="GridCell.Tab.3.right/0.0.1920.882@0.0.1920.882" timestamp="1587264665911" />
+    <state width="586" height="424" key="GridCell.Tab.3.right/0.0.1920.882@0.0.1920.882" timestamp="1587289194888" />
     <state x="693" y="68" key="RollbackChangesDialog" timestamp="1587133556568">
       <screen x="0" y="0" width="1920" height="882" />
     </state>
@@ -1042,6 +1042,54 @@
           <line>1175</line>
           <properties lambdaOrdinal="-1" />
           <option name="timeStamp" value="1229" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" type="javascript">
+          <url>file://$PROJECT_DIR$/src/test/tests/common/main/rx/depend/src/stress-test.ts</url>
+          <line>460</line>
+          <properties lambdaOrdinal="-1" />
+          <option name="timeStamp" value="1245" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" type="javascript">
+          <url>file://$PROJECT_DIR$/src/test/tests/common/main/rx/depend/dependent-func.ts</url>
+          <line>35</line>
+          <properties lambdaOrdinal="-1" />
+          <option name="timeStamp" value="1248" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" type="javascript">
+          <url>file://$PROJECT_DIR$/src/test/tests/common/main/rx/depend/src/stress-test.ts</url>
+          <line>447</line>
+          <properties lambdaOrdinal="-1" />
+          <option name="timeStamp" value="1251" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" type="javascript">
+          <url>file://$PROJECT_DIR$/src/test/tests/common/main/rx/depend/src/stress-test.ts</url>
+          <line>403</line>
+          <properties lambdaOrdinal="-1" />
+          <option name="timeStamp" value="1252" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" type="javascript">
+          <url>file://$PROJECT_DIR$/src/test/tests/common/main/rx/depend/src/stress-test.ts</url>
+          <line>338</line>
+          <properties lambdaOrdinal="-1" />
+          <option name="timeStamp" value="1258" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" type="javascript">
+          <url>file://$PROJECT_DIR$/src/test/tests/common/main/rx/depend/src/stress-test.ts</url>
+          <line>327</line>
+          <properties lambdaOrdinal="-1" />
+          <option name="timeStamp" value="1260" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" type="javascript">
+          <url>file://$PROJECT_DIR$/src/test/tests/common/main/rx/depend/src/stress-test.ts</url>
+          <line>423</line>
+          <properties lambdaOrdinal="-1" />
+          <option name="timeStamp" value="1265" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" type="javascript">
+          <url>file://$PROJECT_DIR$/src/test/tests/common/main/rx/depend/src/stress-test.ts</url>
+          <line>427</line>
+          <properties lambdaOrdinal="-1" />
+          <option name="timeStamp" value="1266" />
         </line-breakpoint>
       </breakpoints>
       <breakpoints-dialog>

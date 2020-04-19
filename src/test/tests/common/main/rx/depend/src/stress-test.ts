@@ -2,7 +2,7 @@ import {isThenable, IThenable} from '../../../../../../../main/common/async/asyn
 import {Random} from '../../../../../../../main/common/random/Random'
 import {
 	getCallState,
-	getOrCreateCallState,
+	getOrCreateCallState, invalidateCallState,
 } from '../../../../../../../main/common/rx/depend/core/CallState'
 import {
 	CallStatus,
@@ -96,7 +96,7 @@ function getCallId<
 	return function() {
 		const buffer = [(func as any).id, this]
 		for (let i = 0, len = arguments.length; i < len; i++) {
-			buffer[i] = arguments[i]
+			buffer.push(arguments[i])
 		}
 		return buffer.join('_')
 	}
@@ -253,6 +253,7 @@ function runLazy(
 }
 
 function *runAsIterator(
+	rnd: Random,
 	state: TCallState,
 	sumArgs: number,
 	countDependencies: number,
@@ -265,7 +266,8 @@ function *runAsIterator(
 	let sum = sumArgs
 	for (let i = 0; i < countDependencies; i++) {
 		const dependency = getNextCall(minLevel)
-		const result = yield runCall(dependency, false)
+		const isLazy = rnd.nextBoolean()
+		const result = yield runCall(dependency, isLazy)
 		dependencies.push(dependency)
 		sum += result
 	}
@@ -288,7 +290,7 @@ export function stressTest({
    maxCallsCount: number,
    countRootCalls: number,
 }) {
-	const rnd = new Random()
+	const rnd = new Random(0)
 	const funcs: TFunc[] = []
 	const calls: TCall[][] = []
 	const callsMap = new Map<TCallId, TCall>()
@@ -332,7 +334,6 @@ export function stressTest({
 
 	function createFunc() {
 		const isDependX = rnd.nextBoolean()
-		const isLazy = rnd.nextBoolean()
 
 		const func: TFunc = function() {
 			const state: TCallState = isDependX
@@ -351,9 +352,11 @@ export function stressTest({
 				? rnd.nextInt(10)
 				: 0
 
-			const result = isLazy
+			const isLazyAll = rnd.nextBoolean()
+
+			const result = isLazyAll
 				? runLazy(state, sumArgs, countDependencies, getNextCall)
-				: runAsIterator(state, sumArgs, countDependencies, getNextCall)
+				: runAsIterator(rnd, state, sumArgs, countDependencies, getNextCall)
 
 			return result
 		} as any
@@ -457,23 +460,25 @@ export function stressTest({
 	async function test() {
 		const thenables = []
 		for (let i = 0; i < iterations; i++) {
-			if (thenables.length > 0) {
-				if (rnd.nextBoolean(thenables.length / 100)) {
-					await Promise.all(thenables)
-				} else if (rnd.nextBoolean(thenables.length / 20)) {
-					const index = rnd.nextInt(thenables.length)
-					const thenable = thenables[index]
-					thenables[index] = thenables[thenables.length - 1]
-					thenables.length--
-					await thenable
+			const step = rnd.next()
+			if (step < thenables.length / 100) {
+				await Promise.all(thenables)
+			} else if (step < thenables.length / 20) {
+				const index = rnd.nextInt(thenables.length)
+				const thenable = thenables[index]
+				thenables[index] = thenables[thenables.length - 1]
+				thenables.length--
+				await thenable
+			} else if (step < 0.6) {
+				const call = getRandomCall(0)
+				const isLazy = rnd.nextBoolean()
+				const result = runCall(call, isLazy)
+				if (isThenable(result)) {
+					thenables.push(result)
 				}
-			}
-
-			const call = getRandomCall(0)
-			const isLazy = rnd.nextBoolean()
-			const result = runCall(call, isLazy)
-			if (isThenable(result)) {
-				thenables.push(result)
+			} else {
+				const call = getRandomCall(0)
+				invalidateCallState(getCallState(call.func).apply(call._this, call.args))
 			}
 		}
 
