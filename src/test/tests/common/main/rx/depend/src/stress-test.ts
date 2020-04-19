@@ -1,18 +1,18 @@
+import {isThenable, IThenable} from '../../../../../../../main/common/async/async'
 import {Random} from '../../../../../../../main/common/random/Random'
 import {
 	getCallState,
 	getOrCreateCallState,
-	TCallStateAny,
 } from '../../../../../../../main/common/rx/depend/core/CallState'
 import {
 	CallStatus,
 	Func,
 	ICallState,
 	ICallStateAny,
-	IDeferredOptions
+	IDeferredOptions,
 } from '../../../../../../../main/common/rx/depend/core/contracts'
+import {depend, dependX} from '../../../../../../../main/common/rx/depend/core/depend'
 import {assert} from '../../../../../../../main/common/test/Assert'
-import {depend, dependX} from "../../../../../../../main/common";
 
 // region contracts
 
@@ -48,9 +48,9 @@ type TCall = ICall<number, number[], number>
 
 class Pool<TObject> {
 	private _length: number = 0
-	private _objects: TObject[]
-	private _rnd: Random
-	private _createObject: () => TObject
+	private readonly _objects: TObject[]
+	private readonly _rnd: Random
+	private readonly _createObject: () => TObject
 	constructor(
 		rnd: Random,
 		createObject?: () => TObject,
@@ -207,9 +207,32 @@ function checkCallResult(call: TCall, result: number, isLazy: boolean) {
 	assert.strictEqual(result, checkResult)
 }
 
+function runCall(call: TCall, isLazy: boolean) {
+	let result
+	if (isLazy) {
+		const dependencyState = _getOrCreateCallState(call)
+		result = dependencyState.getValue(true)
+	} else {
+		result = call()
+		if (isThenable(result)) {
+			return (result as IThenable)
+				.then(value => {
+					checkCallResult(call, value, true)
+					return value
+				}, error => {
+					console.error(error)
+					assert.fail()
+				})
+		}
+	}
+
+	checkCallResult(call, result, true)
+	return result
+}
+
 function runLazy(
 	state: TCallState,
-	sum: number,
+	sumArgs: number,
 	countDependencies: number,
 	getNextCall: (minLevel: number) => TCall,
 ) {
@@ -217,10 +240,10 @@ function runLazy(
 	const dependencies = state.data.dependencies
 	dependencies.length = 0
 
+	let sum = sumArgs
 	for (let i = 0; i < countDependencies; i++) {
 		const dependency = getNextCall(minLevel)
-		const dependencyState = _getOrCreateCallState(dependency)
-		const result = dependencyState.getValue(true)
+		const result = runCall(dependency, false)
 		checkCallResult(dependency, result, true)
 		dependencies.push(dependency)
 		sum += result
@@ -231,7 +254,7 @@ function runLazy(
 
 function *runAsIterator(
 	state: TCallState,
-	sum: number,
+	sumArgs: number,
 	countDependencies: number,
 	getNextCall: (minLevel: number) => TCall,
 ) {
@@ -239,10 +262,10 @@ function *runAsIterator(
 	const dependencies = state.data.dependencies
 	dependencies.length = 0
 
+	let sum = sumArgs
 	for (let i = 0; i < countDependencies; i++) {
 		const dependency = getNextCall(minLevel)
-		const result = yield dependency()
-		checkCallResult(dependency, result, true)
+		const result = yield runCall(dependency, false)
 		dependencies.push(dependency)
 		sum += result
 	}
@@ -254,11 +277,45 @@ function *runAsIterator(
 
 let nextObjectId = 1
 
-function stressTest(iterations: number, maxFuncsCount: number, maxCallsCount: number) {
+function stressTest(
+	iterations: number,
+	maxFuncsCount: number = 10,
+	maxCallsCount: number = 100,
+	countRootCalls: number = 5,
+) {
 	const rnd = new Random()
 	const funcs: TFunc[] = []
 	const calls: TCall[][] = []
 	const callsMap = new Map<TCallId, TCall>()
+
+	function getRandomCall(minLevel: number) {
+		const countLevels = calls.length
+		let countAvailable = 0
+		let countMax = 0
+		for (let i = 0; i < countLevels; i++) {
+			const count = calls[i].length
+			if (i >= minLevel) {
+				countAvailable += count
+			}
+			if (count > countMax) {
+				countMax = count
+			}
+		}
+
+		if (countAvailable > 0) {
+			let index = rnd.nextInt(countAvailable)
+			for (let i = minLevel; i < countLevels; i++) {
+				const count = calls[i].length
+				if (index < count) {
+					return calls[i][index]
+				}
+				index -= count
+			}
+			throw new Error('Call not found')
+		}
+
+		throw new Error('countAvailable == 0')
+	}
 
 	function initCallState(state: TCallState) {
 		state.data.dependencies = []
@@ -272,7 +329,7 @@ function stressTest(iterations: number, maxFuncsCount: number, maxCallsCount: nu
 		const isDependX = rnd.nextBoolean()
 		const isLazy = rnd.nextBoolean()
 
-		const func = function() {
+		const func: TFunc = function() {
 			const state: TCallState = isDependX
 				? this
 				: getCallState(func).apply(this, arguments)
@@ -280,21 +337,21 @@ function stressTest(iterations: number, maxFuncsCount: number, maxCallsCount: nu
 				? this._this
 				: this
 
+			let sumArgs = this
+			for (let i = 0, len = arguments.length; i < len; i++) {
+				sumArgs += arguments[i]
+			}
+
 			const countDependencies = rnd.nextBoolean()
 				? rnd.nextInt(10)
 				: 0
 
-			let sum = this
-			for (let i = 0, len = arguments.length; i < len; i++) {
-				sum += arguments[i]
-			}
-
 			const result = isLazy
-				? runLazy(state, sum, countDependencies, getNextCall)
-				: runAsIterator(state, sum, countDependencies, getNextCall)
+				? runLazy(state, sumArgs, countDependencies, getNextCall)
+				: runAsIterator(state, sumArgs, countDependencies, getNextCall)
 
 			return result
-		}
+		} as any
 
 		func.id = nextObjectId++
 
@@ -310,11 +367,11 @@ function stressTest(iterations: number, maxFuncsCount: number, maxCallsCount: nu
 			}
 			: null
 
-		const dependFunc = isDependX
-			? dependX(func, deferredOptions, initCallState)
-			: depend(func, deferredOptions, initCallState)
+		const dependFunc: TFunc = isDependX
+			? dependX(func as any, deferredOptions, initCallState as any) as any
+			: depend(func, deferredOptions, initCallState as any) as any
 
-		dependFunc.id = func
+		dependFunc.id = func.id
 
 		return dependFunc
 	}
@@ -379,37 +436,44 @@ function stressTest(iterations: number, maxFuncsCount: number, maxCallsCount: nu
 	}
 
 	function getNextCall(minLevel: number) {
-		const countLevels = calls.length
-		if (minLevel < calls.length) {
-			let countTotal = 0
-			let countAvailable = 0
-			let countMax = 0
-			for (let i = 0; i < countLevels; i++) {
-				const count = calls[i].length
-				countTotal += count
-				if (i >= minLevel) {
-					countAvailable += count
-				}
-				if (count > countMax) {
-					countMax = count
-				}
-			}
-
-			if (countAvailable > 0 && rnd.nextBoolean(countTotal / maxCallsCount)) {
-				let index = rnd.nextInt(countAvailable)
-				for (let i = minLevel; i < countLevels; i++) {
-					const count = calls[i].length
-					if (index < count) {
-						return calls[i][index]
-					}
-					index -= count
-				}
-				throw new Error('Call not found')
-			}
+		if (minLevel < calls.length && rnd.nextBoolean(callsMap.size / maxCallsCount)) {
+			return getRandomCall(minLevel)
 		}
 
 		const call = createCall(minLevel)
 
 		return call
 	}
+
+	for (let i = 0; i < countRootCalls; i++) {
+		const call = getNextCall(0)
+	}
+
+	async function test() {
+		const thenables = []
+		for (let i = 0; i < iterations; i++) {
+			if (thenables.length > 0) {
+				if (rnd.nextBoolean(thenables.length / 100)) {
+					await Promise.all(thenables)
+				} else if (rnd.nextBoolean(thenables.length / 20)) {
+					const index = rnd.nextInt(thenables.length)
+					const thenable = thenables[index]
+					thenables[index] = thenables[thenables.length - 1]
+					thenables.length--
+					await thenable
+				}
+			}
+
+			const call = getRandomCall(0)
+			const isLazy = rnd.nextBoolean()
+			const result = runCall(call, isLazy)
+			if (isThenable(result)) {
+				thenables.push(result)
+			}
+		}
+
+		await Promise.all(thenables)
+	}
+
+	return test()
 }

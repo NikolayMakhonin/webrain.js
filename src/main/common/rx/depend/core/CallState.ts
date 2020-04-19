@@ -491,7 +491,7 @@ export class CallState<
 	TThisOuter,
 	TArgs extends any[],
 	TResultInner,
-	>
+>
 	implements ICallState<TThisOuter, TArgs, TResultInner>
 {
 	constructor(
