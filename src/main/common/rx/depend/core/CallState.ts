@@ -1213,7 +1213,7 @@ export class CallState<
 		}
 
 		if (statusBefore !== 0 || statusAfter !== 0) {
-			this._invalidateParents(statusBefore, statusAfter, statusAfter)
+			this._invalidateParents(statusBefore, statusBefore, statusAfter)
 		}
 	}
 
