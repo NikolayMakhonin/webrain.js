@@ -27,7 +27,7 @@ describe('common > main > rx > depend > dependent-func', function() {
 		this.timeout(20000)
 
 		await stressTest({
-			iterations: 100000,
+			iterations: 1000000,
 			maxLevelsCount: 10,
 			maxFuncsCount: 10,
 			maxCallsCount: 100,

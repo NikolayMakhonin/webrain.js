@@ -45,7 +45,7 @@ export function arrayShuffle<T>(array: T[], rnd?: () => number): T[] {
 }
 
 export function getRandomFunc(seed?: number) {
-	return seed
+	return seed != null
 		? mulberry32(seed)
 		: randomWithoutSeed
 }

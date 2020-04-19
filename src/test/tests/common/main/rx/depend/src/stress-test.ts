@@ -2,7 +2,8 @@ import {isThenable, IThenable} from '../../../../../../../main/common/async/asyn
 import {Random} from '../../../../../../../main/common/random/Random'
 import {
 	getCallState,
-	getOrCreateCallState, invalidateCallState,
+	getOrCreateCallState,
+	invalidateCallState, TCallStateAny,
 } from '../../../../../../../main/common/rx/depend/core/CallState'
 import {
 	CallStatus,
@@ -40,6 +41,7 @@ type TCallState = ICallState<number, number[], number> & {
 	data: {
 		call: TCall,
 		dependencies: TCall[],
+		noChanges: boolean,
 	},
 }
 
@@ -172,11 +174,36 @@ function isCalculated(state: ICallStateAny) {
 	return true
 }
 
+function checkDependencies(state: ICallStateAny) {
+	const dependencies = state.data.dependencies
+	const {_unsubscribers, _unsubscribersLength} = state as any as TCallStateAny
+
+	for (let i = 0, len = dependencies.length; i < len; i++) {
+		const dependency = dependencies[i]
+		let found
+		for (let j = 0; j < _unsubscribersLength; j++) {
+			const _dependency = _unsubscribers[j].state.data.call
+			if (_dependency === dependency) {
+				found = true
+				break
+			}
+		}
+		assert.ok(found)
+	}
+
+	for (let i = 0; i < _unsubscribersLength; i++) {
+		const _dependency = _unsubscribers[i].state.data.call
+		assert.ok(dependencies.indexOf(_dependency) >= 0)
+	}
+}
+
 function calcCheckResult(call: TCall) {
 	const state = _getCallState(call)
 	assert.ok(state)
 
-	if (!isCalculated(state)) {
+	checkDependencies(state)
+
+	if (!isCalculated(state) || state.data.noChanges) {
 		return state.value
 	}
 
@@ -195,7 +222,9 @@ function calcCheckResult(call: TCall) {
 		}
 	}
 
-	assert.strictEqual(state.value, sum)
+	if (state.value !== sum) {
+		assert.strictEqual(state.value, sum)
+	}
 
 	return sum
 }
@@ -237,6 +266,7 @@ function runCall(call: TCall, isLazy: boolean) {
 }
 
 function runLazy(
+	rnd: Random,
 	state: TCallState,
 	sumArgs: number,
 	countDependencies: number,
@@ -244,47 +274,71 @@ function runLazy(
 ) {
 	const minLevel = state.data.call.level + 1
 	const dependencies = state.data.dependencies
-	dependencies.length = 0
+
+	const oldDependencies = rnd.nextBoolean()
+	if (oldDependencies) {
+		countDependencies = dependencies.length
+	} else {
+		dependencies.length = 0
+	}
 
 	let sum = sumArgs
 	for (let i = 0; i < countDependencies; i++) {
-		const dependency = getNextCall(minLevel)
+		const dependency = oldDependencies
+			? dependencies[i]
+			: getNextCall(minLevel)
 		const result = runCall(dependency, true)
-		dependencies.push(dependency)
+		if (!oldDependencies) {
+			dependencies.push(dependency)
+			checkDependencies(state)
+		}
 		if (typeof result !== 'undefined') {
 			sum += result
 		}
 	}
 
 	assert.ok(Number.isFinite(sum))
+	checkDependencies(state)
 
 	return sum
 }
 
 function *runAsIterator(
+	rnd: Random,
 	state: TCallState,
 	sumArgs: number,
 	countDependencies: number,
 	getNextCall: (minLevel: number) => TCall,
-	rnd: Random,
 	disableLazy: boolean,
 ) {
 	const minLevel = state.data.call.level + 1
 	const dependencies = state.data.dependencies
-	dependencies.length = 0
+
+	const oldDependencies = rnd.nextBoolean()
+	if (oldDependencies) {
+		countDependencies = dependencies.length
+	} else {
+		dependencies.length = 0
+	}
 
 	let sum = sumArgs
 	for (let i = 0; i < countDependencies; i++) {
-		const dependency = getNextCall(minLevel)
+		const dependency = oldDependencies
+			? dependencies[i]
+			: getNextCall(minLevel)
 		const isLazy = !disableLazy && rnd.nextBoolean()
 		const result = yield runCall(dependency, isLazy)
-		dependencies.push(dependency)
+		if (!oldDependencies) {
+			dependencies.push(dependency)
+			checkDependencies(state)
+		}
 		if (typeof result !== 'undefined') {
 			sum += result
 		}
 	}
 
 	assert.ok(Number.isFinite(sum))
+	checkDependencies(state)
 
 	return sum
 }
@@ -312,7 +366,7 @@ export function stressTest({
 	disableDeferred?: boolean,
 	disableLazy?: boolean,
 }) {
-	const rnd = new Random(0)
+	const rnd = new Random(1)
 	const funcs: TDependFunc[] = []
 	const calls: TCall[][] = []
 	const callsMap = new Map<TCallId, TCall>()
@@ -343,12 +397,12 @@ export function stressTest({
 	}
 
 	function initCallState(state: TCallState) {
-		state.data.dependencies = []
-		state.data.parents = []
 		const callId = state.callWithArgs(state._this, getCallId((state.func as any).id))
 		const call = callsMap.get(callId)
 		assert.ok(call)
 		state.data.call = call
+		state.data.dependencies = []
+		state.data.noChanges = false
 	}
 
 	function createDependFunc() {
@@ -376,9 +430,18 @@ export function stressTest({
 			const isLazyAll = !disableLazy && rnd.nextBoolean()
 
 			function calc() {
+				const noChanges = rnd.nextBoolean()
+				if (noChanges && (state.status & CallStatus.Flag_HasValue) !== 0) {
+					state.data.dependencies.length = 0
+					state.data.noChanges = true
+					return state.value
+				}
+
+				state.data.noChanges = false
+
 				return isLazyAll
-					? runLazy(state, sumArgs, countDependencies, getNextCall)
-					: runAsIterator(state, sumArgs, countDependencies, getNextCall, rnd, disableLazy)
+					? runLazy(rnd, state, sumArgs, countDependencies, getNextCall)
+					: runAsIterator(rnd, state, sumArgs, countDependencies, getNextCall, disableLazy)
 			}
 
 			if (!disableAsync && rnd.nextBoolean(0.1)) {
