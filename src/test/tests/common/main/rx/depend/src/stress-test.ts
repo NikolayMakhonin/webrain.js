@@ -16,6 +16,7 @@ import {getCurrentState} from '../../../../../../../main/common/rx/depend/core/c
 import {depend, dependX} from '../../../../../../../main/common/rx/depend/core/depend'
 import {assert} from '../../../../../../../main/common/test/Assert'
 import {delay} from '../../../../../../../main/common/time/helpers'
+import {clearCallStates} from "./helpers";
 
 // region contracts
 
@@ -366,7 +367,48 @@ function *runAsIterator(
 
 let nextObjectId = 1
 
-export function stressTest({
+export async function stressTest({
+	seed,
+	testsCount,
+	iterationsPerTest,
+	maxLevelsCount,
+	maxFuncsCount,
+	maxCallsCount,
+	countRootCalls,
+	disableAsync,
+	disableDeferred,
+	disableLazy,
+}: {
+	seed?: number,
+	testsCount: number,
+	iterationsPerTest: number,
+	maxLevelsCount: number,
+	maxFuncsCount: number,
+	maxCallsCount: number,
+	countRootCalls: number,
+	disableAsync?: boolean,
+	disableDeferred?: boolean,
+	disableLazy?: boolean,
+}) {
+	for (let i = 0; i < testsCount; i++) {
+		await _stressTest({
+			seed,
+			iterations: iterationsPerTest,
+			maxLevelsCount,
+			maxFuncsCount,
+			maxCallsCount,
+			countRootCalls,
+			disableAsync,
+			disableDeferred,
+			disableLazy,
+		})
+
+		clearCallStates()
+	}
+}
+
+export function _stressTest({
+	seed,
 	iterations,
 	maxLevelsCount,
 	maxFuncsCount,
@@ -376,6 +418,7 @@ export function stressTest({
 	disableDeferred,
 	disableLazy,
 }: {
+	seed?: number,
 	iterations: number,
 	maxLevelsCount: number,
 	maxFuncsCount: number,
@@ -385,7 +428,11 @@ export function stressTest({
 	disableDeferred?: boolean,
 	disableLazy?: boolean,
 }) {
-	const rnd = new Random(1)
+	if (seed == null) {
+		seed = new Random().nextInt(2 << 29)
+	}
+	console.log(`seed = ${seed}`)
+	const rnd = new Random(seed)
 	const funcs: TDependFunc[] = []
 	const calls: TCall[][] = []
 	const callsMap = new Map<TCallId, TCall>()
