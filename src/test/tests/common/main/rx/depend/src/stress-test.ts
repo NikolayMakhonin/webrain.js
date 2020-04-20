@@ -15,6 +15,7 @@ import {
 import {depend, dependX} from '../../../../../../../main/common/rx/depend/core/depend'
 import {assert} from '../../../../../../../main/common/test/Assert'
 import {delay} from '../../../../../../../main/common/time/helpers'
+import {getCurrentState} from "../../../../../../../main/common/rx/depend/core/current-state";
 
 // region contracts
 
@@ -244,11 +245,13 @@ function checkCallResult(call: TCall, result: number, isLazy: boolean) {
 function runCall(call: TCall, isLazy: boolean) {
 	let result
 	if (isLazy) {
-		const dependencyState = _getOrCreateCallState(call)
-		result = dependencyState.getValue(true)
+		const state = _getOrCreateCallState(call)
+		result = state.getValue(true)
 	} else {
 		result = call()
+		const state = _getCallState(call)
 		if (isThenable(result)) {
+			assert.strictEqual(state.valueAsync, result)
 			return (result as IThenable)
 				.then(value => {
 					checkCallResult(call, value, false)
@@ -272,6 +275,9 @@ function runLazy(
 	countDependencies: number,
 	getNextCall: (minLevel: number) => TCall,
 ) {
+	let currentState = getCurrentState()
+	assert.strictEqual(currentState, state)
+
 	const minLevel = state.data.call.level + 1
 	const dependencies = state.data.dependencies
 
@@ -288,6 +294,10 @@ function runLazy(
 			? dependencies[i]
 			: getNextCall(minLevel)
 		const result = runCall(dependency, true)
+
+		currentState = getCurrentState()
+		assert.strictEqual(currentState, state)
+
 		if (!oldDependencies) {
 			dependencies.push(dependency)
 			checkDependencies(state)
@@ -311,6 +321,9 @@ function *runAsIterator(
 	getNextCall: (minLevel: number) => TCall,
 	disableLazy: boolean,
 ) {
+	let currentState = getCurrentState()
+	assert.strictEqual(currentState, state)
+
 	const minLevel = state.data.call.level + 1
 	const dependencies = state.data.dependencies
 
@@ -328,6 +341,10 @@ function *runAsIterator(
 			: getNextCall(minLevel)
 		const isLazy = !disableLazy && rnd.nextBoolean()
 		const result = yield runCall(dependency, isLazy)
+
+		currentState = getCurrentState()
+		assert.strictEqual(currentState, state)
+
 		if (!oldDependencies) {
 			dependencies.push(dependency)
 			checkDependencies(state)
@@ -430,6 +447,9 @@ export function stressTest({
 			const isLazyAll = !disableLazy && rnd.nextBoolean()
 
 			function calc() {
+				let currentState = getCurrentState()
+				assert.strictEqual(currentState, state)
+
 				const noChanges = rnd.nextBoolean()
 				if (noChanges && (state.status & CallStatus.Flag_HasValue) !== 0) {
 					state.data.dependencies.length = 0
@@ -445,16 +465,28 @@ export function stressTest({
 			}
 
 			if (!disableAsync && rnd.nextBoolean(0.1)) {
-				return (async () => {
-					if (rnd.nextBoolean()) {
-						await delay(0)
-					}
-
-					const result = calc()
+				return (function*() {
+					let currentState = getCurrentState()
+					assert.strictEqual(currentState, state)
 
 					if (rnd.nextBoolean()) {
-						await delay(0)
+						yield delay(0)
 					}
+
+					currentState = getCurrentState()
+					assert.strictEqual(currentState, state)
+
+					const result = yield calc()
+
+					currentState = getCurrentState()
+					assert.strictEqual(currentState, state)
+
+					if (rnd.nextBoolean()) {
+						yield delay(0)
+					}
+
+					currentState = getCurrentState()
+					assert.strictEqual(currentState, state)
 
 					return result
 				})()
@@ -562,6 +594,13 @@ export function stressTest({
 	async function test() {
 		const thenables = []
 		for (let i = 0; i < iterations; i++) {
+			if (i > 0 && i % 50000 === 0) {
+				console.log(i)
+			}
+
+			const currentState = getCurrentState()
+			assert.strictEqual(currentState, null)
+
 			const step = rnd.next()
 			if (step < thenables.length / 100) {
 				await Promise.all(thenables)
@@ -580,7 +619,6 @@ export function stressTest({
 				if (isThenable(result)) {
 					assert.ok(!disableDeferred || !disableAsync)
 					thenables.push(result)
-					assert.strictEqual(state.valueAsync, result)
 				} else {
 					assert.strictEqual(state.value, result)
 				}

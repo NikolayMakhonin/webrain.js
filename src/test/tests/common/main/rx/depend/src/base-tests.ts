@@ -1782,9 +1782,9 @@ export async function lazyTest(deferred?: boolean) {
 	let promise2 = checkFuncAsync(ResultType.Value, AL1, AL1)
 	_checkStatuses('ca',  'Ir', 'CV',   'ca', 'ca', 'Ir', 'Ir')
 	await promise1
-	// _checkStatuses('CV',  'Ir', 'IrV',   'CV', 'IrV', 'Ir', 'Ir')
 	await promise2
-	await delay(1)
+	await A0()
+	await delay(100)
 	_checkStatuses('CV',  'Ir', 'IrV',   'CV', 'IrV', 'Ir', 'Ir')
 	checkFuncSync(ResultType.Value, SL1, SL1)
 	_checkStatuses('CV',  'Ir', 'CV',   'CV', 'IrV', 'Ir', 'Ir')
@@ -1813,7 +1813,6 @@ export async function lazyTest(deferred?: boolean) {
 	promise2 = checkFuncAsync(ResultType.Value, AL2, AL2)
 	_checkStatuses('CV',  'Ir', 'Ir',   'Ir', 'caV', 'Ir', 'caV')
 	await promise1
-	_checkStatuses('CV',  'Ir', 'Ir',   'Ir', 'CV', 'Ir', 'caV')
 	await promise2
 	_checkStatuses('CV',  'Ir', 'Ir',   'Ir', 'CV', 'Ir', 'CV')
 	checkCallHistory()

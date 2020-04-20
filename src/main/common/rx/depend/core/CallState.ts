@@ -677,8 +677,9 @@ export class CallState<
 		} else if (isIterator(shouldRecalc)) {
 			value = resolveAsync(shouldRecalc, o => {
 				if (o === false) {
-					setCurrentState(null)
-					this._parentCallState = null
+					if ((this.status & Flag_Async) !== 0) {
+						this._parentCallState = null
+					}
 					if (isHasError(this.status)) {
 						if (dontThrowOnError !== true) {
 							throw this.error
@@ -690,8 +691,12 @@ export class CallState<
 				return this._calc(dontThrowOnError)
 			})
 
+			setCurrentState(this._parentCallState)
+
 			if (isThenable(value)) {
 				this._updateCheckAsync(value as any)
+			} else {
+				this._parentCallState = null
 			}
 		} else {
 			this._internalError(`shouldRecalc == ${shouldRecalc}`)
@@ -1234,7 +1239,7 @@ export class CallState<
 				? statusLazy
 				: status
 
-			let next = _status === 0
+			const next = _status === 0
 				? link.next
 				: invalidateParent(
 					link,

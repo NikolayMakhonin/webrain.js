@@ -1,3 +1,4 @@
+import {getCurrentState, setCurrentState} from '../rx/depend/core/current-state'
 import {
 	isAsync,
 	isThenable, IThenable,
@@ -11,7 +12,6 @@ import {
 	TReject,
 	TResolve, TResolveAsyncValue,
 } from './async'
-import {getCurrentState, setCurrentState} from "../rx/depend/core/current-state";
 
 export type TExecutor<TValue = any> = (
 	resolve: TResolve<TValue>,
