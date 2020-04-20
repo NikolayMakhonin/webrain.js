@@ -12,10 +12,10 @@ import {
 	ICallStateAny,
 	IDeferredOptions,
 } from '../../../../../../../main/common/rx/depend/core/contracts'
+import {getCurrentState} from '../../../../../../../main/common/rx/depend/core/current-state'
 import {depend, dependX} from '../../../../../../../main/common/rx/depend/core/depend'
 import {assert} from '../../../../../../../main/common/test/Assert'
 import {delay} from '../../../../../../../main/common/time/helpers'
-import {getCurrentState} from "../../../../../../../main/common/rx/depend/core/current-state";
 
 // region contracts
 
@@ -36,6 +36,8 @@ interface ICall<TThis, TArgs extends any[], TResult> {
 	dependFunc: IDependFunc<TThis, TArgs, TResult>
 	_this: TThis
 	args: TArgs
+	getCallState(): TCallState
+	getOrCreateCallState(): TCallState
 }
 
 type TCallState = ICallState<number, number[], number> & {
@@ -134,21 +136,21 @@ function checkCallState<TThis, TArgs extends any[], TResult>(
 }
 
 function _getOrCreateCallState<TThis, TArgs extends any[], TResult>(
-	call: ICall<TThis, TArgs, TResult>,
+	this: ICall<TThis, TArgs, TResult>,
 ): ICallState<TThis, TArgs, TResult> {
 	return checkCallState(
-		call,
-		getOrCreateCallState(call.dependFunc).apply(call._this, call.args),
+		this,
+		getOrCreateCallState(this.dependFunc).apply(this._this, this.args),
 		false,
 	)
 }
 
 function _getCallState<TThis, TArgs extends any[], TResult>(
-	call: ICall<TThis, TArgs, TResult>,
+	this: ICall<TThis, TArgs, TResult>,
 ): ICallState<TThis, TArgs, TResult> {
 	return checkCallState(
-		call,
-		getCallState(call.dependFunc).apply(call._this, call.args),
+		this,
+		getCallState(this.dependFunc).apply(this._this, this.args),
 		true,
 	)
 }
@@ -199,7 +201,7 @@ function checkDependencies(state: ICallStateAny) {
 }
 
 function calcCheckResult(call: TCall) {
-	const state = _getCallState(call)
+	const state = call.getCallState()
 	assert.ok(state)
 
 	if (!isCalculated(state) || state.data.noChanges) {
@@ -216,7 +218,7 @@ function calcCheckResult(call: TCall) {
 	let sum = sumArgs
 	for (let i = 0, len = dependencies.length; i < len; i++) {
 		const dependency = dependencies[i]
-		const dependencyState = _getCallState(dependency)
+		const dependencyState = dependency.getCallState()
 		assert.ok(dependencyState)
 		if (typeof dependencyState.value !== 'undefined') {
 			sum += dependencyState.value
@@ -245,11 +247,11 @@ function checkCallResult(call: TCall, result: number, isLazy: boolean) {
 function runCall(call: TCall, isLazy: boolean) {
 	let result
 	if (isLazy) {
-		const state = _getOrCreateCallState(call)
+		const state = call.getOrCreateCallState()
 		result = state.getValue(true)
 	} else {
 		result = call()
-		const state = _getCallState(call)
+		const state = call.getCallState()
 		if (isThenable(result)) {
 			assert.strictEqual(state.valueAsync, result)
 			return (result as IThenable)
@@ -447,7 +449,7 @@ export function stressTest({
 			const isLazyAll = !disableLazy && rnd.nextBoolean()
 
 			function calc() {
-				let currentState = getCurrentState()
+				const currentState = getCurrentState()
 				assert.strictEqual(currentState, state)
 
 				const noChanges = rnd.nextBoolean()
@@ -567,6 +569,8 @@ export function stressTest({
 		call.dependFunc = dependFunc
 		call._this = _this
 		call.args = args
+		call.getCallState = _getCallState as any
+		call.getOrCreateCallState = _getOrCreateCallState as any
 
 		while (level >= calls.length) {
 			calls.push([])
@@ -614,7 +618,7 @@ export function stressTest({
 				const call = getRandomCall(0)
 				const isLazy = !disableLazy && rnd.nextBoolean()
 				const result = runCall(call, isLazy)
-				const state = _getCallState(call)
+				const state = call.getCallState()
 				assert.ok(state)
 				if (isThenable(result)) {
 					assert.ok(!disableDeferred || !disableAsync)

@@ -39,6 +39,23 @@ describe('common > main > rx > depend > dependent-func / stress', function() {
 		clearCallStates()
 	})
 
+	xit('async + sync + lazy', async function() {
+		this.timeout(120000)
+
+		await stressTest({
+			iterations: 1000000,
+			maxLevelsCount: 10,
+			maxFuncsCount: 10,
+			maxCallsCount: 100,
+			countRootCalls: 5,
+			disableAsync: false,
+			disableDeferred: true,
+			disableLazy: false,
+		})
+
+		clearCallStates()
+	})
+
 	it('async + sync', async function() {
 		this.timeout(120000)
 
