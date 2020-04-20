@@ -410,7 +410,7 @@ export function subscriberLinkDelete<TState extends TCallStateAny>(
 		state._subscribersCalculatingLazy = next
 	}
 	if (item === state._subscribersCalculating) {
-		state._subscribersCalculating = next
+		state._subscribersCalculating = prev
 	}
 	if (prev == null) {
 		if (next == null) {
@@ -1228,25 +1228,31 @@ export class CallState<
 			return
 		}
 
-		const _subscribersCalculatingLazyPrev = _subscribersCalculatingLazy != null
-			? _subscribersCalculatingLazy.prev
-			: _subscribersCalculatingLazy
+		// const _subscribersCalculatingLazyPrev = _subscribersCalculatingLazy != null
+		// 	? _subscribersCalculatingLazy.prev
+		// 	: _subscribersCalculatingLazy
 
 		let status: Mask_Update_Invalidate
+		let statusLazy: Mask_Update_Invalidate
 		let lastLink: ISubscriberLink<this, any>
 		let link: ISubscriberLink<this, any>
-		if (statusCalculated !== 0 && _subscribersFirst !== _subscribersCalculatingLazy) {
+		if ((statusCalculated !== 0 || statusCalculatingLazy !== 0)
+			// && _subscribersFirst !== _subscribersCalculatingLazy
+		) {
 			status = statusCalculated
-			lastLink = _subscribersCalculatingLazy != null
-				? _subscribersCalculatingLazyPrev
-				: _subscribersCalculating
-			link = this._subscribersFirst
-		} else if (statusCalculatingLazy !== 0 && _subscribersCalculatingLazy != null) {
-			status = statusCalculatingLazy
+			statusLazy = statusCalculatingLazy
 			lastLink = _subscribersCalculating
-			link = _subscribersCalculatingLazy
+				// _subscribersCalculatingLazy != null
+				// 	? _subscribersCalculatingLazyPrev
+				// 	: _subscribersCalculating
+			link = this._subscribersFirst
+		// } else if (statusCalculatingLazy !== 0 && _subscribersCalculatingLazy != null) {
+		// 	status = statusCalculatingLazy
+		// 	lastLink = _subscribersCalculating
+		// 	link = _subscribersCalculatingLazy
 		} else if (statusCalculating !== 0 && _subscribersCalculating != null) {
 			status = statusCalculating
+			statusLazy = statusCalculating
 			lastLink = null
 			link = _subscribersCalculating.next
 		} else {
@@ -1254,12 +1260,16 @@ export class CallState<
 		}
 
 		for (; link !== null;) {
-			let next = invalidateParent(
-				link,
-				link.isLazy && status === Update_Recalc && statusCalculatingLazy !== 0
-					? statusCalculatingLazy
-					: status,
-			)
+			const _status = link.isLazy
+				? statusLazy
+				: status
+
+			let next = _status === 0
+				? link.next
+				: invalidateParent(
+					link,
+					_status,
+				)
 
 			if (link === lastLink) {
 				if (lastLink === _subscribersCalculating) {
@@ -1269,17 +1279,17 @@ export class CallState<
 					} else {
 						break
 					}
-				} else if (lastLink === _subscribersCalculatingLazyPrev) {
-					if (statusCalculatingLazy !== 0) {
-						status = statusCalculatingLazy
-						lastLink = _subscribersCalculating
-					} else if (statusCalculating !== 0 && _subscribersCalculating != null) {
-						status = statusCalculating
-						lastLink = null
-						next = _subscribersCalculating.next
-					} else {
-						this._internalError('Unexpected behavior 1')
-					}
+				// } else if (lastLink === _subscribersCalculatingLazyPrev) {
+				// 	if (statusCalculatingLazy !== 0) {
+				// 		status = statusCalculatingLazy
+				// 		lastLink = _subscribersCalculating
+				// 	} else if (statusCalculating !== 0 && _subscribersCalculating != null) {
+				// 		status = statusCalculating
+				// 		lastLink = null
+				// 		next = _subscribersCalculating.next
+				// 	} else {
+				// 		this._internalError('Unexpected behavior 1')
+				// 	}
 				} else {
 					this._internalError('Unexpected behavior 2')
 				}
