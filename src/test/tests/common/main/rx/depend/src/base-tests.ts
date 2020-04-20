@@ -1784,7 +1784,7 @@ export async function lazyTest(deferred?: boolean) {
 	await promise1
 	// _checkStatuses('CV',  'Ir', 'IrV',   'CV', 'IrV', 'Ir', 'Ir')
 	await promise2
-	await delay(0)
+	await delay(1)
 	_checkStatuses('CV',  'Ir', 'IrV',   'CV', 'IrV', 'Ir', 'Ir')
 	checkFuncSync(ResultType.Value, SL1, SL1)
 	_checkStatuses('CV',  'Ir', 'CV',   'CV', 'IrV', 'Ir', 'Ir')

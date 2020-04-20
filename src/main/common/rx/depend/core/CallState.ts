@@ -406,9 +406,6 @@ export function subscriberLinkDelete<TState extends TCallStateAny>(
 	if (state == null) {
 		return
 	}
-	if (item === state._subscribersCalculatingLazy) {
-		state._subscribersCalculatingLazy = next
-	}
 	if (item === state._subscribersCalculating) {
 		state._subscribersCalculating = prev
 	}
@@ -549,8 +546,6 @@ export class CallState<
 	public _subscribersFirst: ISubscriberLink<this, any> = null
 	/** @internal */
 	public _subscribersLast: ISubscriberLink<this, any> = null
-	/** @internal */
-	public _subscribersCalculatingLazy: ISubscriberLink<this, any> = null
 	/** @internal */
 	public _subscribersCalculating: ISubscriberLink<this, any> = null
 	// for prevent multiple subscribe equal dependencies
@@ -875,7 +870,7 @@ export class CallState<
 			this._subscribersFirst = subscriberLink
 		} else if (isLazy && this._subscribersCalculating != null) {
 			// insert after calculating
-			const {_subscribersCalculatingLazy, _subscribersCalculating} = this
+			const {_subscribersCalculating} = this
 			const {next} = _subscribersCalculating
 			if (next != null) {
 				subscriberLink.next = next
@@ -884,10 +879,6 @@ export class CallState<
 			_subscribersCalculating.next = subscriberLink
 			subscriberLink.prev = _subscribersCalculating
 			this._subscribersCalculating = subscriberLink
-
-			if (_subscribersCalculatingLazy == null) {
-				this._subscribersCalculatingLazy = subscriberLink
-			}
 		} else {
 			_subscribersLast.next = subscriberLink
 			subscriberLink.prev = _subscribersLast
@@ -1029,13 +1020,7 @@ export class CallState<
 
 		this.status = (prevStatus & ~(Mask_Invalidate | Flag_Recalc | Mask_Calculate)) | Flag_Calculating
 
-		const {_subscribersLast} = this
-		if (_subscribersLast != null) {
-			this._subscribersCalculating = _subscribersLast
-			if (_subscribersLast.isLazy) {
-				this._subscribersCalculatingLazy = _subscribersLast
-			}
-		}
+		this._subscribersCalculating = this._subscribersLast
 	}
 
 	private _updateCalculatingAsync(
@@ -1060,7 +1045,6 @@ export class CallState<
 
 		this.status = (prevStatus & (Flag_HasValue | Flag_HasError)) | Flag_Calculated
 
-		this._subscribersCalculatingLazy = null
 		this._subscribersCalculating = null
 
 		const invalidateStatus = getInvalidate(prevStatus)
@@ -1149,7 +1133,6 @@ export class CallState<
 			this._invalidateParents(Flag_None, Update_Invalidated_Recalc, Flag_None)
 		}
 
-		this._subscribersCalculatingLazy = null
 		this._subscribersCalculating = null
 	}
 
@@ -1222,34 +1205,21 @@ export class CallState<
 		statusCalculatingLazy: Mask_Update_Invalidate | Flag_None,
 		statusCalculating: Mask_Update_Invalidate | Flag_None,
 	) {
-		const {_subscribersFirst, _subscribersCalculatingLazy, _subscribersCalculating} = this
+		const {_subscribersFirst,  _subscribersCalculating} = this
 
 		if (_subscribersFirst == null) {
 			return
 		}
 
-		// const _subscribersCalculatingLazyPrev = _subscribersCalculatingLazy != null
-		// 	? _subscribersCalculatingLazy.prev
-		// 	: _subscribersCalculatingLazy
-
-		let status: Mask_Update_Invalidate
-		let statusLazy: Mask_Update_Invalidate
+		let status: Mask_Update_Invalidate | Flag_None
+		let statusLazy: Mask_Update_Invalidate | Flag_None
 		let lastLink: ISubscriberLink<this, any>
 		let link: ISubscriberLink<this, any>
-		if ((statusCalculated !== 0 || statusCalculatingLazy !== 0)
-			// && _subscribersFirst !== _subscribersCalculatingLazy
-		) {
+		if ((statusCalculated !== 0 || statusCalculatingLazy !== 0)) {
 			status = statusCalculated
 			statusLazy = statusCalculatingLazy
 			lastLink = _subscribersCalculating
-				// _subscribersCalculatingLazy != null
-				// 	? _subscribersCalculatingLazyPrev
-				// 	: _subscribersCalculating
 			link = this._subscribersFirst
-		// } else if (statusCalculatingLazy !== 0 && _subscribersCalculatingLazy != null) {
-		// 	status = statusCalculatingLazy
-		// 	lastLink = _subscribersCalculating
-		// 	link = _subscribersCalculatingLazy
 		} else if (statusCalculating !== 0 && _subscribersCalculating != null) {
 			status = statusCalculating
 			statusLazy = statusCalculating
@@ -1279,17 +1249,6 @@ export class CallState<
 					} else {
 						break
 					}
-				// } else if (lastLink === _subscribersCalculatingLazyPrev) {
-				// 	if (statusCalculatingLazy !== 0) {
-				// 		status = statusCalculatingLazy
-				// 		lastLink = _subscribersCalculating
-				// 	} else if (statusCalculating !== 0 && _subscribersCalculating != null) {
-				// 		status = statusCalculating
-				// 		lastLink = null
-				// 		next = _subscribersCalculating.next
-				// 	} else {
-				// 		this._internalError('Unexpected behavior 1')
-				// 	}
 				} else {
 					this._internalError('Unexpected behavior 2')
 				}

@@ -31,8 +31,9 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="69b2ee16-521b-4efd-b473-8e19e3df4d09" name="Default Changelist" comment="">
-      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/common/rx/depend/core/CallState.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/common/rx/depend/core/CallState.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/test/tests/common/main/rx/depend/dependent-func.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/test/tests/common/main/rx/depend/dependent-func.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/test/tests/common/main/rx/depend/src/base-tests.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/test/tests/common/main/rx/depend/src/base-tests.ts" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -438,14 +439,7 @@
       <workItem from="1586866992744" duration="5668000" />
       <workItem from="1586872696123" duration="6185000" />
       <workItem from="1586887545919" duration="37770000" />
-      <workItem from="1587105271608" duration="95960000" />
-    </task>
-    <task id="LOCAL-00371" summary="Integrating to project... Tests OK.">
-      <created>1586520231159</created>
-      <option name="number" value="00371" />
-      <option name="presentableId" value="LOCAL-00371" />
-      <option name="project" value="LOCAL" />
-      <updated>1586520231159</updated>
+      <workItem from="1587105271608" duration="96519000" />
     </task>
     <task id="LOCAL-00372" summary="Integrating to project... Tests OK.">
       <created>1586536248271</created>
@@ -783,7 +777,14 @@
       <option name="project" value="LOCAL" />
       <updated>1587310546706</updated>
     </task>
-    <option name="localTasksCounter" value="420" />
+    <task id="LOCAL-00420" summary="depend: stress test, testing and debugging. Sync + Lazy tests is OK.">
+      <created>1587352118288</created>
+      <option name="number" value="00420" />
+      <option name="presentableId" value="LOCAL-00420" />
+      <option name="project" value="LOCAL" />
+      <updated>1587352118288</updated>
+    </task>
+    <option name="localTasksCounter" value="421" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -844,7 +845,6 @@
   <component name="VcsManagerConfiguration">
     <option name="CHECK_CODE_SMELLS_BEFORE_PROJECT_COMMIT" value="false" />
     <option name="CHECK_NEW_TODO" value="false" />
-    <MESSAGE value="Depend: Fix dependCalc" />
     <MESSAGE value="Removed depend from old calc property" />
     <MESSAGE value="Beforr integrate currentState to resolveAsync. Tests OK." />
     <MESSAGE value="Before integrate currentState to resolveAsync. Tests OK." />
@@ -869,25 +869,26 @@
     <MESSAGE value="depend: stress test in process..." />
     <MESSAGE value="depend: stress test, testing and debugging. Simple sync tests is OK." />
     <MESSAGE value="depend: stress test, testing and debugging..." />
-    <option name="LAST_COMMIT_MESSAGE" value="depend: stress test, testing and debugging..." />
+    <MESSAGE value="depend: stress test, testing and debugging. Sync + Lazy tests is OK." />
+    <option name="LAST_COMMIT_MESSAGE" value="depend: stress test, testing and debugging. Sync + Lazy tests is OK." />
   </component>
   <component name="WindowStateProjectService">
     <state x="409" y="84" key="#com.intellij.execution.impl.EditConfigurationsDialog" timestamp="1587230852397">
       <screen x="0" y="0" width="1920" height="882" />
     </state>
     <state x="409" y="84" key="#com.intellij.execution.impl.EditConfigurationsDialog/0.0.1920.882@0.0.1920.882" timestamp="1587230852397" />
-    <state x="91" y="91" width="1738" height="700" key="#com.intellij.execution.junit2.states.ComparisonFailureState$DiffDialog" timestamp="1587264657359">
+    <state x="91" y="91" width="1738" height="700" key="#com.intellij.execution.junit2.states.ComparisonFailureState$DiffDialog" timestamp="1587352382542">
       <screen x="0" y="0" width="1920" height="882" />
     </state>
-    <state x="91" y="91" width="1738" height="700" key="#com.intellij.execution.junit2.states.ComparisonFailureState$DiffDialog/0.0.1920.882@0.0.1920.882" timestamp="1587264657359" />
+    <state x="91" y="91" width="1738" height="700" key="#com.intellij.execution.junit2.states.ComparisonFailureState$DiffDialog/0.0.1920.882@0.0.1920.882" timestamp="1587352382542" />
     <state x="651" y="254" key="ANALYSIS_DLG_com.intellij.analysis.BaseAnalysisAction$1" timestamp="1586875498549">
       <screen x="0" y="0" width="1920" height="882" />
     </state>
     <state x="651" y="254" key="ANALYSIS_DLG_com.intellij.analysis.BaseAnalysisAction$1/0.0.1920.882@0.0.1920.882" timestamp="1586875498549" />
-    <state x="0" y="0" width="1918" height="882" key="CommitChangelistDialog2" timestamp="1587310545996">
+    <state x="0" y="0" width="1918" height="882" key="CommitChangelistDialog2" timestamp="1587352117221">
       <screen x="0" y="0" width="1920" height="882" />
     </state>
-    <state x="0" y="0" width="1918" height="882" key="CommitChangelistDialog2/0.0.1920.882@0.0.1920.882" timestamp="1587310545996" />
+    <state x="0" y="0" width="1918" height="882" key="CommitChangelistDialog2/0.0.1920.882@0.0.1920.882" timestamp="1587352117221" />
     <state width="884" height="550" key="DebuggerActiveHint" timestamp="1587313226225">
       <screen x="0" y="0" width="1920" height="882" />
     </state>
@@ -1019,15 +1020,9 @@
         </line-breakpoint>
         <line-breakpoint enabled="true" type="javascript">
           <url>file://$PROJECT_DIR$/src/main/common/rx/depend/core/CallState.ts</url>
-          <line>1289</line>
+          <line>1252</line>
           <properties lambdaOrdinal="-1" />
           <option name="timeStamp" value="1195" />
-        </line-breakpoint>
-        <line-breakpoint enabled="true" type="javascript">
-          <url>file://$PROJECT_DIR$/src/main/common/rx/depend/core/CallState.ts</url>
-          <line>1286</line>
-          <properties lambdaOrdinal="-1" />
-          <option name="timeStamp" value="1196" />
         </line-breakpoint>
         <line-breakpoint enabled="true" type="javascript">
           <url>file://$PROJECT_DIR$/src/test/tests/common/main/rx/depend/src/base-tests.ts</url>
@@ -1043,7 +1038,7 @@
         </line-breakpoint>
         <line-breakpoint enabled="true" type="javascript">
           <url>file://$PROJECT_DIR$/src/main/common/rx/depend/core/CallState.ts</url>
-          <line>1176</line>
+          <line>1159</line>
           <properties lambdaOrdinal="-1" />
           <option name="timeStamp" value="1229" />
         </line-breakpoint>
@@ -1109,7 +1104,7 @@
         </line-breakpoint>
         <line-breakpoint enabled="true" type="javascript">
           <url>file://$PROJECT_DIR$/src/main/common/rx/depend/core/CallState.ts</url>
-          <line>993</line>
+          <line>984</line>
           <properties lambdaOrdinal="-1" />
           <option name="timeStamp" value="1368" />
         </line-breakpoint>
@@ -1122,31 +1117,25 @@
         </line-breakpoint>
         <line-breakpoint enabled="true" type="javascript">
           <url>file://$PROJECT_DIR$/src/main/common/rx/depend/core/CallState.ts</url>
-          <line>888</line>
-          <properties lambdaOrdinal="-1" />
-          <option name="timeStamp" value="1383" />
-        </line-breakpoint>
-        <line-breakpoint enabled="true" type="javascript">
-          <url>file://$PROJECT_DIR$/src/main/common/rx/depend/core/CallState.ts</url>
-          <line>885</line>
+          <line>880</line>
           <properties lambdaOrdinal="-1" />
           <option name="timeStamp" value="1401" />
         </line-breakpoint>
         <line-breakpoint enabled="true" type="javascript">
           <url>file://$PROJECT_DIR$/src/main/common/rx/depend/core/CallState.ts</url>
-          <line>963</line>
+          <line>954</line>
           <properties lambdaOrdinal="-1" />
           <option name="timeStamp" value="1405" />
         </line-breakpoint>
         <line-breakpoint enabled="true" type="javascript">
           <url>file://$PROJECT_DIR$/src/main/common/rx/depend/core/CallState.ts</url>
-          <line>1147</line>
+          <line>1131</line>
           <properties lambdaOrdinal="-1" />
           <option name="timeStamp" value="1406" />
         </line-breakpoint>
         <line-breakpoint enabled="true" type="javascript">
           <url>file://$PROJECT_DIR$/src/main/common/rx/depend/core/CallState.ts</url>
-          <line>1171</line>
+          <line>1154</line>
           <properties lambdaOrdinal="-1" />
           <option name="timeStamp" value="1408" />
         </line-breakpoint>
