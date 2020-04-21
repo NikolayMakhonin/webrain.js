@@ -1,7 +1,6 @@
 /* tslint:disable:no-identical-functions no-shadowed-variable */
 import {assert} from '../../../../../../../main/common/test/Assert'
 import {describe, it, xit} from '../../../../../../../main/common/test/Mocha'
-import {clearCallStates} from '../src/helpers'
 import {stressTest} from '../src/stress-test'
 
 describe('common > main > rx > depend > dependent-func / stress', function() {
@@ -20,8 +19,6 @@ describe('common > main > rx > depend > dependent-func / stress', function() {
 			disableDeferred: false,
 			disableLazy: false,
 		})
-
-		clearCallStates()
 	})
 
 	xit('async + deferred + sync', async function() {
@@ -37,8 +34,6 @@ describe('common > main > rx > depend > dependent-func / stress', function() {
 			disableDeferred: false,
 			disableLazy: true,
 		})
-
-		clearCallStates()
 	})
 
 	xit('async + sync + lazy', async function() {
@@ -54,13 +49,11 @@ describe('common > main > rx > depend > dependent-func / stress', function() {
 			disableDeferred: true,
 			disableLazy: false,
 		})
-
-		clearCallStates()
 	})
 
 	xit('async + sync', async function() {
 		await stressTest({
-			// seed: 1,
+			// seed: 1062512229,
 			testsCount: 100,
 			iterationsPerTest: 200000,
 			maxLevelsCount: 10,
@@ -71,14 +64,12 @@ describe('common > main > rx > depend > dependent-func / stress', function() {
 			disableDeferred: true,
 			disableLazy: true,
 		})
-
-		clearCallStates()
 	})
 
 	it('sync + lazy', async function() {
 		await stressTest({
 			// seed: 92684389,
-			testsCount: 100,
+			testsCount: 20,
 			iterationsPerTest: 200000,
 			maxLevelsCount: 10,
 			maxFuncsCount: 10,
@@ -88,14 +79,12 @@ describe('common > main > rx > depend > dependent-func / stress', function() {
 			disableDeferred: true,
 			disableLazy: false,
 		})
-
-		clearCallStates()
 	})
 
 	it('sync', async function() {
 		await stressTest({
 			// seed: 1,
-			testsCount: 100,
+			testsCount: 20,
 			iterationsPerTest: 200000,
 			maxLevelsCount: 10,
 			maxFuncsCount: 10,

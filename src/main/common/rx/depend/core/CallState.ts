@@ -1196,12 +1196,13 @@ export class CallState<
 		}
 
 		// TODO
-		if (isRecalc(status)
-			&& (prevStatus & Flag_Calculating) === 0
-			&& (this.status & Flag_Invalidating) === 0
-			&& this._unsubscribersLength !== 0
-		) {
-			this._unsubscribeDependencies()
+		if (isRecalc(status)) {
+			if ((this.status & Flag_Invalidating) !== 0) {
+				this._internalError(`Set status ${statusToString(status)} called when current status is ${statusToString(prevStatus)}`)
+			}
+			if ((prevStatus & Flag_Calculating) === 0 && this._unsubscribersLength !== 0) {
+				this._unsubscribeDependencies()
+			}
 		}
 
 		if (isInvalidated(status) && !isInvalidated(prevStatus)) {
