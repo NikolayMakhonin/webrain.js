@@ -34,7 +34,6 @@
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/common/rx/depend/core/CallState.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/common/rx/depend/core/CallState.ts" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/test/tests/common/main/rx/depend/dependent-func/stress.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/test/tests/common/main/rx/depend/dependent-func/stress.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/test/tests/common/main/rx/depend/src/stress-test.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/test/tests/common/main/rx/depend/src/stress-test.ts" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -127,7 +126,7 @@
       <recent name="L:\Work\_GIT\GitHub\NodeJs\modules\webrain\src\main\common\rx\depend\lists" />
     </key>
   </component>
-  <component name="RunManager" selected="Mocha.common &gt; main &gt; rx &gt; depend &gt; dependent-func / stress.sync">
+  <component name="RunManager" selected="Mocha.dependent-func (stress)">
     <configuration default="true" type="JavaScriptTestRunnerKarma" activateToolWindowBeforeRun="false">
       <config-file value="$PROJECT_DIR$/env/karma/configs/dev.js" />
       <karma-package-dir value="$PROJECT_DIR$/node_modules/karma" />
@@ -246,21 +245,6 @@
       </test-names>
       <method v="2" />
     </configuration>
-    <configuration name="common &gt; main &gt; rx &gt; depend &gt; dependent-func / stress" type="mocha-javascript-test-runner" temporary="true" nameIsGenerated="true">
-      <node-interpreter>node</node-interpreter>
-      <node-options>--max-old-space-size=4096 --allow-natives-syntax</node-options>
-      <mocha-package>$PROJECT_DIR$/node_modules/mocha</mocha-package>
-      <working-directory>$PROJECT_DIR$</working-directory>
-      <pass-parent-env>true</pass-parent-env>
-      <ui>bdd</ui>
-      <extra-mocha-options>--opts ./env/mocha/configs/babel/mocha.opts --watch</extra-mocha-options>
-      <test-kind>SUITE</test-kind>
-      <test-file>$PROJECT_DIR$/src/test/tests/common/main/rx/depend/dependent-func/stress.ts</test-file>
-      <test-names>
-        <name value="common &gt; main &gt; rx &gt; depend &gt; dependent-func / stress" />
-      </test-names>
-      <method v="2" />
-    </configuration>
     <configuration name="common &gt; main &gt; rx &gt; depend &gt; dependent-func / stress.sync + lazy" type="mocha-javascript-test-runner" temporary="true" nameIsGenerated="true">
       <node-interpreter>node</node-interpreter>
       <node-options>--max-old-space-size=4096 --allow-natives-syntax</node-options>
@@ -327,6 +311,21 @@
       <extra-mocha-options>--opts ./env/mocha/configs/babel/mocha.opts</extra-mocha-options>
       <test-kind>PATTERN</test-kind>
       <test-pattern>src/test/performance/node/{dependent-func.ts,PairingHeap.ts}</test-pattern>
+      <method v="2" />
+    </configuration>
+    <configuration name="dependent-func (stress)" type="mocha-javascript-test-runner" temporary="true">
+      <node-interpreter>node</node-interpreter>
+      <node-options>--max-old-space-size=4096 --allow-natives-syntax</node-options>
+      <mocha-package>$PROJECT_DIR$/node_modules/mocha</mocha-package>
+      <working-directory>$PROJECT_DIR$</working-directory>
+      <pass-parent-env>true</pass-parent-env>
+      <ui>bdd</ui>
+      <extra-mocha-options>--opts ./env/mocha/configs/babel/mocha.opts</extra-mocha-options>
+      <test-kind>SUITE</test-kind>
+      <test-file>$PROJECT_DIR$/src/test/tests/common/main/rx/depend/dependent-func/stress.ts</test-file>
+      <test-names>
+        <name value="common &gt; main &gt; rx &gt; depend &gt; dependent-func / stress" />
+      </test-names>
       <method v="2" />
     </configuration>
     <configuration name="dependent-func" type="mocha-javascript-test-runner">
@@ -401,18 +400,18 @@
       <item itemvalue="Mocha.node &gt; v8 &gt; parser" />
       <item itemvalue="Mocha.dependent-func (perf)" />
       <item itemvalue="Mocha.L:\Work\_GIT\GitHub\NodeJs\modules\webrain\src\test\tests\common\main\rx\depend\dependent-func\**\*.ts" />
-      <item itemvalue="Node.js.dependent-func.js" />
-      <item itemvalue="npm.Coverage Mocha Report" />
       <item itemvalue="Mocha.common &gt; main &gt; rx &gt; depend &gt; dependent-func / stress.sync" />
       <item itemvalue="Mocha.common &gt; main &gt; rx &gt; depend &gt; dependent-func / stress.sync + lazy" />
-      <item itemvalue="Mocha.common &gt; main &gt; rx &gt; depend &gt; dependent-func / stress" />
+      <item itemvalue="Mocha.dependent-func (stress)" />
       <item itemvalue="Mocha.common &gt; main &gt; rx &gt; depend &gt; dependent-func / base" />
+      <item itemvalue="Node.js.dependent-func.js" />
+      <item itemvalue="npm.Coverage Mocha Report" />
     </list>
     <recent_temporary>
       <list>
-        <item itemvalue="Mocha.common &gt; main &gt; rx &gt; depend &gt; dependent-func / stress.sync" />
+        <item itemvalue="Mocha.dependent-func (stress)" />
         <item itemvalue="Mocha.common &gt; main &gt; rx &gt; depend &gt; dependent-func / base" />
-        <item itemvalue="Mocha.common &gt; main &gt; rx &gt; depend &gt; dependent-func / stress" />
+        <item itemvalue="Mocha.common &gt; main &gt; rx &gt; depend &gt; dependent-func / stress.sync" />
         <item itemvalue="Mocha.common &gt; main &gt; rx &gt; depend &gt; dependent-func / stress.sync + lazy" />
         <item itemvalue="Mocha.L:\Work\_GIT\GitHub\NodeJs\modules\webrain\src\test\tests\common\main\rx\depend\dependent-func\**\*.ts" />
       </list>
@@ -436,14 +435,7 @@
       <workItem from="1586866992744" duration="5668000" />
       <workItem from="1586872696123" duration="6185000" />
       <workItem from="1586887545919" duration="37770000" />
-      <workItem from="1587105271608" duration="133205000" />
-    </task>
-    <task id="LOCAL-00376" summary="Object builders refactoring...">
-      <created>1586752944828</created>
-      <option name="number" value="00376" />
-      <option name="presentableId" value="LOCAL-00376" />
-      <option name="project" value="LOCAL" />
-      <updated>1586752944828</updated>
+      <workItem from="1587105271608" duration="134767000" />
     </task>
     <task id="LOCAL-00377" summary="Object builders refactoring is completed. Old Tests OK.">
       <created>1586757004138</created>
@@ -781,7 +773,14 @@
       <option name="project" value="LOCAL" />
       <updated>1587385116775</updated>
     </task>
-    <option name="localTasksCounter" value="425" />
+    <task id="LOCAL-00425" summary="depend: stress test, testing and debugging. Sync + Lazy tests is OK.">
+      <created>1587445051069</created>
+      <option name="number" value="00425" />
+      <option name="presentableId" value="LOCAL-00425" />
+      <option name="project" value="LOCAL" />
+      <updated>1587445051069</updated>
+    </task>
+    <option name="localTasksCounter" value="426" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -863,57 +862,57 @@
     <MESSAGE value="depend: stress test in process..." />
     <MESSAGE value="depend: stress test, testing and debugging. Simple sync tests is OK." />
     <MESSAGE value="depend: stress test, testing and debugging..." />
-    <MESSAGE value="depend: stress test, testing and debugging. Sync + Lazy tests is OK." />
     <MESSAGE value="depend: stress test: deleted _subscribersCalculatingLazy. Sync + Lazy tests is OK." />
     <MESSAGE value="depend: stress test, testing and debugging. Async + Sync tests is OK." />
     <MESSAGE value="depend: stress test, testing and debugging. Sync tests is OK." />
-    <option name="LAST_COMMIT_MESSAGE" value="depend: stress test, testing and debugging. Sync tests is OK." />
+    <MESSAGE value="depend: stress test, testing and debugging. Sync + Lazy tests is OK." />
+    <option name="LAST_COMMIT_MESSAGE" value="depend: stress test, testing and debugging. Sync + Lazy tests is OK." />
   </component>
   <component name="WindowStateProjectService">
-    <state x="409" y="84" key="#com.intellij.execution.impl.EditConfigurationsDialog" timestamp="1587352884498">
+    <state x="409" y="84" key="#com.intellij.execution.impl.EditConfigurationsDialog" timestamp="1587446355710">
       <screen x="0" y="0" width="1920" height="882" />
     </state>
-    <state x="409" y="84" key="#com.intellij.execution.impl.EditConfigurationsDialog/0.0.1920.882@0.0.1920.882" timestamp="1587352884498" />
-    <state x="91" y="91" width="1738" height="700" key="#com.intellij.execution.junit2.states.ComparisonFailureState$DiffDialog" timestamp="1587444792981">
+    <state x="409" y="84" key="#com.intellij.execution.impl.EditConfigurationsDialog/0.0.1920.882@0.0.1920.882" timestamp="1587446355710" />
+    <state x="91" y="91" width="1738" height="700" key="#com.intellij.execution.junit2.states.ComparisonFailureState$DiffDialog" timestamp="1587445854541">
       <screen x="0" y="0" width="1920" height="882" />
     </state>
-    <state x="91" y="91" width="1738" height="700" key="#com.intellij.execution.junit2.states.ComparisonFailureState$DiffDialog/0.0.1920.882@0.0.1920.882" timestamp="1587444792981" />
+    <state x="91" y="91" width="1738" height="700" key="#com.intellij.execution.junit2.states.ComparisonFailureState$DiffDialog/0.0.1920.882@0.0.1920.882" timestamp="1587445854541" />
     <state x="651" y="254" key="ANALYSIS_DLG_com.intellij.analysis.BaseAnalysisAction$1" timestamp="1586875498549">
       <screen x="0" y="0" width="1920" height="882" />
     </state>
     <state x="651" y="254" key="ANALYSIS_DLG_com.intellij.analysis.BaseAnalysisAction$1/0.0.1920.882@0.0.1920.882" timestamp="1586875498549" />
-    <state x="0" y="0" width="1918" height="882" key="CommitChangelistDialog2" timestamp="1587385115829">
+    <state x="0" y="0" width="1918" height="882" key="CommitChangelistDialog2" timestamp="1587445049352">
       <screen x="0" y="0" width="1920" height="882" />
     </state>
-    <state x="0" y="0" width="1918" height="882" key="CommitChangelistDialog2/0.0.1920.882@0.0.1920.882" timestamp="1587385115829" />
+    <state x="0" y="0" width="1918" height="882" key="CommitChangelistDialog2/0.0.1920.882@0.0.1920.882" timestamp="1587445049352" />
     <state width="884" height="550" key="DebuggerActiveHint" timestamp="1587442025887">
       <screen x="0" y="0" width="1920" height="882" />
     </state>
     <state width="884" height="550" key="DebuggerActiveHint/0.0.1920.882@0.0.1920.882" timestamp="1587442025887" />
-    <state x="0" y="4" width="1920" height="875" key="DiffContextDialog" timestamp="1587366030163">
+    <state x="0" y="4" width="1920" height="875" key="DiffContextDialog" timestamp="1587444858693">
       <screen x="0" y="0" width="1920" height="882" />
     </state>
-    <state x="0" y="4" width="1920" height="875" key="DiffContextDialog/0.0.1920.882@0.0.1920.882" timestamp="1587366030163" />
+    <state x="0" y="4" width="1920" height="875" key="DiffContextDialog/0.0.1920.882@0.0.1920.882" timestamp="1587444858693" />
     <state x="686" y="134" key="FileChooserDialogImpl" timestamp="1587352857059">
       <screen x="0" y="0" width="1920" height="882" />
     </state>
     <state x="686" y="134" key="FileChooserDialogImpl/0.0.1920.882@0.0.1920.882" timestamp="1587352857058" />
-    <state width="801" height="456" key="GridCell.Tab.0.bottom" timestamp="1587444787931">
+    <state width="801" height="456" key="GridCell.Tab.0.bottom" timestamp="1587446307225">
       <screen x="0" y="0" width="1920" height="882" />
     </state>
-    <state width="801" height="456" key="GridCell.Tab.0.bottom/0.0.1920.882@0.0.1920.882" timestamp="1587444787931" />
-    <state width="801" height="456" key="GridCell.Tab.0.center" timestamp="1587444787931">
+    <state width="801" height="456" key="GridCell.Tab.0.bottom/0.0.1920.882@0.0.1920.882" timestamp="1587446307225" />
+    <state width="801" height="456" key="GridCell.Tab.0.center" timestamp="1587446307225">
       <screen x="0" y="0" width="1920" height="882" />
     </state>
-    <state width="801" height="456" key="GridCell.Tab.0.center/0.0.1920.882@0.0.1920.882" timestamp="1587444787931" />
-    <state width="801" height="456" key="GridCell.Tab.0.left" timestamp="1587444787931">
+    <state width="801" height="456" key="GridCell.Tab.0.center/0.0.1920.882@0.0.1920.882" timestamp="1587446307225" />
+    <state width="801" height="456" key="GridCell.Tab.0.left" timestamp="1587446307225">
       <screen x="0" y="0" width="1920" height="882" />
     </state>
-    <state width="801" height="456" key="GridCell.Tab.0.left/0.0.1920.882@0.0.1920.882" timestamp="1587444787931" />
-    <state width="801" height="456" key="GridCell.Tab.0.right" timestamp="1587444787931">
+    <state width="801" height="456" key="GridCell.Tab.0.left/0.0.1920.882@0.0.1920.882" timestamp="1587446307225" />
+    <state width="801" height="456" key="GridCell.Tab.0.right" timestamp="1587446307225">
       <screen x="0" y="0" width="1920" height="882" />
     </state>
-    <state width="801" height="456" key="GridCell.Tab.0.right/0.0.1920.882@0.0.1920.882" timestamp="1587444787931" />
+    <state width="801" height="456" key="GridCell.Tab.0.right/0.0.1920.882@0.0.1920.882" timestamp="1587446307225" />
     <state width="801" height="456" key="GridCell.Tab.1.bottom" timestamp="1587443882900">
       <screen x="0" y="0" width="1920" height="882" />
     </state>
@@ -1021,7 +1020,7 @@
         </line-breakpoint>
         <line-breakpoint enabled="true" type="javascript">
           <url>file://$PROJECT_DIR$/src/main/common/rx/depend/core/CallState.ts</url>
-          <line>1264</line>
+          <line>1265</line>
           <properties lambdaOrdinal="-1" />
           <option name="timeStamp" value="1195" />
         </line-breakpoint>
@@ -1039,7 +1038,7 @@
         </line-breakpoint>
         <line-breakpoint enabled="true" type="javascript">
           <url>file://$PROJECT_DIR$/src/main/common/rx/depend/core/CallState.ts</url>
-          <line>1170</line>
+          <line>1171</line>
           <properties lambdaOrdinal="-1" />
           <option name="timeStamp" value="1229" />
         </line-breakpoint>

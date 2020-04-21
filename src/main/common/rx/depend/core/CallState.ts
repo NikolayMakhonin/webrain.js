@@ -1133,15 +1133,16 @@ export class CallState<
 	) {
 		if ((prevStatus & Mask_Invalidate) !== 0) {
 			if ((prevStatus & Flag_Recalc) !== 0) {
-				this._updateInvalidate(Update_Invalidating_Recalc, valueChanged)
+				this._updateInvalidate(Update_Invalidating, valueChanged)
 				this._updateInvalidate(Update_Invalidated_Recalc, valueChanged)
 			} else {
 				this._updateInvalidate(Update_Invalidating, valueChanged)
 				this._updateInvalidate(Update_Invalidated, valueChanged)
 			}
 		} else if (valueChanged) {
-			this._invalidateParents(Flag_None, Update_Invalidating_Recalc, Flag_None)
-			this._invalidateParents(Update_Recalc, Update_Invalidated_Recalc, Flag_None)
+			this._invalidateParents(Flag_None, Update_Invalidating, Flag_None)
+			this._invalidateParents(Flag_None, Update_Invalidated, Flag_None)
+			this._invalidateParents(Update_Recalc, Update_Recalc, Flag_None)
 		}
 
 		this._subscribersCalculating = null
@@ -1152,7 +1153,7 @@ export class CallState<
 	// region 5: invalidate self and dependent
 
 	public invalidate(): void {
-		this._updateInvalidate(Update_Invalidating_Recalc, false)
+		this._updateInvalidate(Update_Invalidating, false)
 		this._updateInvalidate(Update_Invalidated_Recalc, false)
 	}
 
