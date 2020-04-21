@@ -4,7 +4,7 @@ import {describe, it, xit} from '../../../../../../../main/common/test/Mocha'
 import {stressTest} from '../src/stress-test'
 
 describe('common > main > rx > depend > dependent-func / stress', function() {
-	this.timeout(600000)
+	this.timeout(60 * 60 * 1000)
 
 	xit('async + deferred + sync + lazy', async function() {
 		await stressTest({
@@ -51,9 +51,9 @@ describe('common > main > rx > depend > dependent-func / stress', function() {
 		})
 	})
 
-	xit('async + sync', async function() {
+	it('async + sync', async function() {
 		await stressTest({
-			// seed: 707230305,
+			seed: 706106678,
 			testsCount: 100,
 			iterationsPerTest: 200000,
 			maxLevelsCount: 10,

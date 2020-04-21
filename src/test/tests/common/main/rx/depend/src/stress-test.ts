@@ -261,7 +261,8 @@ function runCall(call: TCall, isLazy: boolean) {
 			assert.strictEqual(state.valueAsync, result)
 			return (result as IThenable)
 				.then(value => {
-					checkCallResult(call, value, false)
+					checkCallResult(call, call.getCallState().value, false)
+					// checkCallResult(call, value, false)
 					return value
 				}, error => {
 					console.error(error)
@@ -327,7 +328,7 @@ function *runAsIterator(
 	state: TCallState,
 	sumArgs: number,
 	countDependencies: number,
-	getNextCall: (minLevel: number) => TCall,
+	getNextCall: (minLevel: number, parent: TCallState) => TCall,
 	disableLazy: boolean,
 ) {
 	let currentState = getCurrentState()
