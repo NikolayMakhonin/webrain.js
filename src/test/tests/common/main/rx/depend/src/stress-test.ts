@@ -262,6 +262,35 @@ function checkCallResult(call: TCall, result: number, isLazy: boolean) {
 	assert.strictEqual(result, checkResult)
 }
 
+function checkSubscribers(state: TCallStateAny) {
+	let prevLink = null
+	let link = state._subscribersFirst
+	while (link != null) {
+		assert.strictEqual(link.prev, prevLink)
+		assert.strictEqual(link.state, state)
+		assert.ok(link.value)
+		assert.notStrictEqual(link.value, state)
+		prevLink = link
+		link = link.next
+	}
+	assert.strictEqual(state._subscribersLast, prevLink)
+
+	const {_unsubscribers, _unsubscribersLength} = state
+	for (let i = 0; i < _unsubscribersLength; i++) {
+		const _unsubscriber = _unsubscribers[i]
+		assert.ok(_unsubscriber)
+		assert.strictEqual(_unsubscriber.value, state)
+		assert.ok(_unsubscriber.state)
+		assert.notStrictEqual(_unsubscriber.state, state)
+	}
+
+	if (_unsubscribers != null) {
+		for (let i = _unsubscribersLength, len3 = _unsubscribers.length; i < len3; i++) {
+			assert.strictEqual(_unsubscribers[i], null)
+		}
+	}
+}
+
 function runCall(call: TCall, isLazy: boolean) {
 	let result
 	if (isLazy) {
@@ -706,6 +735,19 @@ export function _stressTest({
 		const call = getNextCall(0)
 	}
 
+	function checkSubscribersAll() {
+		for (let i = 0, len = calls.length; i < len; i++) {
+			const level = calls[i]
+			for (let j = 0, len2 = level.length; j < len2; j++) {
+				const call = level[j]
+				const state = call.getCallState()
+				if (state != null) {
+					checkSubscribers(state as any)
+				}
+			}
+		}
+	}
+
 	async function test() {
 		const thenables = []
 		for (let i = 0; i < iterations; i++) {
@@ -741,6 +783,8 @@ export function _stressTest({
 				const call = getRandomCall(0)
 				invalidateCallState(getCallState(call.dependFunc).apply(call._this, call.args))
 			}
+
+			checkSubscribersAll()
 		}
 
 		await Promise.all(thenables)
