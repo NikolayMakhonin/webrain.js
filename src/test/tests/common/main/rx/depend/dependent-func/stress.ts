@@ -53,7 +53,7 @@ describe('common > main > rx > depend > dependent-func / stress', function() {
 
 	xit('async + sync', async function() {
 		await stressTest({
-			// seed: 1062512229,
+			// seed: 707230305,
 			testsCount: 100,
 			iterationsPerTest: 200000,
 			maxLevelsCount: 10,

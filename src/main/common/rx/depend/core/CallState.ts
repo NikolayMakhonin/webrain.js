@@ -930,11 +930,15 @@ export class CallState<
 					dependencyState.getValue(isLazy, true)
 				}
 
+				if ((this.status & Flag_Recalc) !== 0) {
+					return true
+				}
+
 				if (!isLazy && (dependencyState.status & Flag_Async) !== 0) {
 					yield resolveAsync(dependencyState.valueAsync, null, EMPTY_FUNC) as any
 				}
 
-				if ((this.status & CallStatus.Flag_Recalc) !== 0) {
+				if ((this.status & Flag_Recalc) !== 0) {
 					return true
 				}
 
@@ -962,12 +966,12 @@ export class CallState<
 					dependencyState.getValue(isLazy, true)
 				}
 
-				if (!isLazy && (dependencyState.status & Flag_Async) !== 0) {
-					return this._checkDependenciesChangedAsync(i)
+				if ((this.status & Flag_Recalc) !== 0) {
+					return true
 				}
 
-				if ((this.status & CallStatus.Flag_Recalc) !== 0) {
-					return true
+				if (!isLazy && (dependencyState.status & Flag_Async) !== 0) {
+					return this._checkDependenciesChangedAsync(i)
 				}
 
 				if (!isLazy && (
@@ -1133,10 +1137,10 @@ export class CallState<
 	) {
 		if ((prevStatus & Mask_Invalidate) !== 0) {
 			if ((prevStatus & Flag_Recalc) !== 0) {
-				this._updateInvalidate(Update_Invalidating, valueChanged)
+				this._updateInvalidate(Update_Invalidating, false)
 				this._updateInvalidate(Update_Invalidated_Recalc, valueChanged)
 			} else {
-				this._updateInvalidate(Update_Invalidating, valueChanged)
+				this._updateInvalidate(Update_Invalidating, false)
 				this._updateInvalidate(Update_Invalidated, valueChanged)
 			}
 		} else if (valueChanged) {
