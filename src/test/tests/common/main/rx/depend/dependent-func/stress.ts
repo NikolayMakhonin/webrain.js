@@ -77,9 +77,9 @@ describe('common > main > rx > depend > dependent-func / stress', function() {
 
 	it('sync + lazy', async function() {
 		await stressTest({
-			// seed: 1,
+			// seed: 23808431,
 			testsCount: 100,
-			iterationsPerTest: 100000,
+			iterationsPerTest: 200000,
 			maxLevelsCount: 10,
 			maxFuncsCount: 10,
 			maxCallsCount: 100,
@@ -95,7 +95,7 @@ describe('common > main > rx > depend > dependent-func / stress', function() {
 	it('sync', async function() {
 		await stressTest({
 			// seed: 1,
-			testsCount: 20,
+			testsCount: 100,
 			iterationsPerTest: 200000,
 			maxLevelsCount: 10,
 			maxFuncsCount: 10,

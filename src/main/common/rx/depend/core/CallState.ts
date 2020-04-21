@@ -454,6 +454,7 @@ export function invalidateParent<
 
 	// this condition needed only for optimization
 	if (childStatus === 0
+		|| isRecalc(status) // TODO detete this and test
 		|| status !== childStatus
 		&& childStatus !== Update_Invalidated_Recalc
 		&& (
@@ -610,8 +611,9 @@ export class CallState<
 	): TResultOuter<TResultInner> {
 		const currentState = getCurrentState()
 		if (currentState != null && (currentState.status & Flag_Check) === 0) {
-			currentState._subscribeDependency.call(currentState, this, isLazy)
+			currentState._subscribeDependency.call(currentState, this, !!isLazy)
 		}
+		// TODO: delete line and test
 		this._callId = nextCallId++
 
 		const prevStatus = this.status
@@ -1023,6 +1025,10 @@ export class CallState<
 			this._internalError(`Set status ${statusToString(Update_Calculating)} called when current status is ${statusToString(prevStatus)}`)
 		}
 
+		if (this._unsubscribersLength !== 0) {
+			this._internalError(`Set status ${statusToString(Update_Calculating)} called when _unsubscribersLength == ${this._unsubscribersLength}`)
+		}
+
 		this.status = (prevStatus & ~(Mask_Invalidate | Flag_Recalc | Mask_Calculate)) | Flag_Calculating
 
 		this._subscribersCalculating = this._subscribersLast
@@ -1134,8 +1140,8 @@ export class CallState<
 				this._updateInvalidate(Update_Invalidated, valueChanged)
 			}
 		} else if (valueChanged) {
-			this._invalidateParents(Update_Recalc, Update_Invalidating_Recalc, Flag_None)
-			this._invalidateParents(Flag_None, Update_Invalidated_Recalc, Flag_None)
+			this._invalidateParents(Flag_None, Update_Invalidating_Recalc, Flag_None)
+			this._invalidateParents(Update_Recalc, Update_Invalidated_Recalc, Flag_None)
 		}
 
 		this._subscribersCalculating = null
@@ -1188,6 +1194,7 @@ export class CallState<
 			}
 		}
 
+		// TODO
 		if (isRecalc(status)
 			&& (prevStatus & Flag_Calculating) === 0
 			&& (this.status & Flag_Invalidating) === 0

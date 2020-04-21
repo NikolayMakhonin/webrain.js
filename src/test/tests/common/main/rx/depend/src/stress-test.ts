@@ -178,6 +178,10 @@ function isCalculated(state: ICallStateAny) {
 	return true
 }
 
+function checkDependenciesIsEmpty(state: ICallStateAny) {
+	assert.strictEqual((state as any)._unsubscribersLength, 0)
+}
+
 function checkDependencies(state: ICallStateAny) {
 	const dependencies = state.data.dependencies
 	const {_unsubscribers, _unsubscribersLength} = state as any as TCallStateAny
@@ -291,11 +295,13 @@ function runLazy(
 		dependencies.length = 0
 	}
 
+	checkDependenciesIsEmpty(state)
+
 	let sum = sumArgs
 	for (let i = 0; i < countDependencies; i++) {
 		const dependency = oldDependencies
 			? dependencies[i]
-			: getNextCall(minLevel)
+			: getNextCall(minLevel, state)
 		const result = runCall(dependency, true)
 
 		currentState = getCurrentState()
@@ -337,11 +343,13 @@ function *runAsIterator(
 		dependencies.length = 0
 	}
 
+	checkDependenciesIsEmpty(state)
+
 	let sum = sumArgs
 	for (let i = 0; i < countDependencies; i++) {
 		const dependency = oldDependencies
 			? dependencies[i]
-			: getNextCall(minLevel)
+			: getNextCall(minLevel, state)
 		const isLazy = !disableLazy && rnd.nextBoolean()
 		const result = yield runCall(dependency, isLazy)
 
@@ -437,7 +445,39 @@ export function _stressTest({
 	const calls: TCall[][] = []
 	const callsMap = new Map<TCallId, TCall>()
 
-	function getRandomCall(minLevel: number) {
+	function getRandomCall(minLevel: number, parent?: TCallState) {
+		if (parent != null) {
+			let dependency = null
+			let dependencyState = parent
+			const variant = rnd.next()
+			if (variant < 0.14) {
+				if (dependencyState.data.dependencies.length === 0) {
+					dependency = null
+				} else {
+					dependency = rnd.nextArrayItem(dependencyState.data.dependencies)
+					if (variant < 0.12) {
+						dependencyState = dependency.getCallState()
+						if (dependencyState.data.dependencies.length === 0) {
+							dependency = null
+						} else {
+							dependency = rnd.nextArrayItem(dependencyState.data.dependencies)
+							if (variant < 0.08) {
+								dependencyState = dependency.getCallState()
+								if (dependencyState.data.dependencies.length === 0) {
+									dependency = null
+								} else {
+									dependency = rnd.nextArrayItem(dependencyState.data.dependencies)
+								}
+							}
+						}
+					}
+				}
+			}
+			if (dependency != null) {
+				return dependency
+			}
+		}
+
 		const countLevels = calls.length
 		let countAvailable = 0
 		for (let i = 0; i < countLevels; i++) {
@@ -482,6 +522,8 @@ export function _stressTest({
 				? this._this
 				: this
 
+			checkDependenciesIsEmpty(state)
+
 			let sumArgs = _this
 			for (let i = 0, len = arguments.length; i < len; i++) {
 				sumArgs += arguments[i]
@@ -498,6 +540,8 @@ export function _stressTest({
 			function calc() {
 				const currentState = getCurrentState()
 				assert.strictEqual(currentState, state)
+
+				checkDependenciesIsEmpty(state)
 
 				const noChanges = rnd.nextBoolean()
 				if (noChanges && (state.status & CallStatus.Flag_HasValue) !== 0) {
@@ -628,9 +672,9 @@ export function _stressTest({
 		return call
 	}
 
-	function getNextCall(minLevel: number) {
+	function getNextCall(minLevel: number, parent?: TCallState) {
 		if (minLevel < calls.length && rnd.nextBoolean(callsMap.size / maxCallsCount)) {
-			return getRandomCall(minLevel)
+			return getRandomCall(minLevel, parent)
 		}
 
 		const call = createCall(minLevel)
