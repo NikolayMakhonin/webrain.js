@@ -842,11 +842,11 @@ export class CallState<
 		dependency: TDependency,
 		isLazy: boolean,
 	) {
-		if (this._callId < dependency._callId) {
-			// TODO optimize it
-			// if ((this.status & Flag_Async) === 0) {
-			// 	return
-			// }
+		// TODO optimize it
+		if (
+			(this.status & Flag_Async) !== 0
+			|| this._callId < dependency._callId
+		) {
 			const _unsubscribers = this._unsubscribers
 			for (let i = 0, len = this._unsubscribersLength; i < len; i++) {
 				if (_unsubscribers[i].state === dependency) {

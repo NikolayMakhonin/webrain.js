@@ -16,7 +16,7 @@ import {getCurrentState} from '../../../../../../../main/common/rx/depend/core/c
 import {depend, dependX} from '../../../../../../../main/common/rx/depend/core/depend'
 import {assert} from '../../../../../../../main/common/test/Assert'
 import {delay} from '../../../../../../../main/common/time/helpers'
-import {clearCallStates} from "./helpers";
+import {clearCallStates} from './helpers'
 
 // region contracts
 
@@ -182,7 +182,20 @@ function checkDependenciesIsEmpty(state: ICallStateAny) {
 	assert.strictEqual((state as any)._unsubscribersLength, 0)
 }
 
+function checkDependenciesNoDuplicates(state: ICallStateAny) {
+	const {_unsubscribers, _unsubscribersLength} = state as any as TCallStateAny
+	for (let i = 0; i < _unsubscribersLength; i++) {
+		for (let j = i + 1; j < _unsubscribersLength; j++) {
+			if (_unsubscribers[i].state === _unsubscribers[j].state) {
+				throw new Error('Found duplicate dependency')
+			}
+		}
+	}
+}
+
 function checkDependencies(state: ICallStateAny) {
+	checkDependenciesNoDuplicates(state)
+
 	const dependencies = state.data.dependencies
 	const {_unsubscribers, _unsubscribersLength} = state as any as TCallStateAny
 
@@ -281,7 +294,7 @@ function runLazy(
 	state: TCallState,
 	sumArgs: number,
 	countDependencies: number,
-	getNextCall: (minLevel: number) => TCall,
+	getNextCall: (minLevel: number, parent: TCallState) => TCall,
 ) {
 	let currentState = getCurrentState()
 	assert.strictEqual(currentState, state)
@@ -308,7 +321,9 @@ function runLazy(
 		currentState = getCurrentState()
 		assert.strictEqual(currentState, state)
 
-		if (!oldDependencies) {
+		if (oldDependencies) {
+			checkDependenciesNoDuplicates(state)
+		} else {
 			dependencies.push(dependency)
 			checkDependencies(state)
 		}
@@ -357,7 +372,9 @@ function *runAsIterator(
 		currentState = getCurrentState()
 		assert.strictEqual(currentState, state)
 
-		if (!oldDependencies) {
+		if (oldDependencies) {
+			checkDependenciesNoDuplicates(state)
+		} else {
 			dependencies.push(dependency)
 			checkDependencies(state)
 		}
@@ -400,6 +417,8 @@ export async function stressTest({
 	disableLazy?: boolean,
 }) {
 	for (let i = 0; i < testsCount; i++) {
+		console.log(`test number: ${i}`)
+
 		await _stressTest({
 			seed,
 			iterations: iterationsPerTest,
