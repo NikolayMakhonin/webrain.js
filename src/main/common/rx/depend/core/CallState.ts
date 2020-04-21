@@ -875,11 +875,14 @@ export class CallState<
 
 		if (_subscribersLast == null) {
 			this._subscribersFirst = subscriberLink
+			this._subscribersLast = subscriberLink
 		} else if (isLazy && this._subscribersCalculating != null) {
 			// insert after calculating
 			const {_subscribersCalculating} = this
 			const {next} = _subscribersCalculating
-			if (next != null) {
+			if (next == null) {
+				this._subscribersLast = subscriberLink
+			} else {
 				subscriberLink.next = next
 				next.prev = subscriberLink
 			}
@@ -889,9 +892,9 @@ export class CallState<
 		} else {
 			_subscribersLast.next = subscriberLink
 			subscriberLink.prev = _subscribersLast
+			this._subscribersLast = subscriberLink
 		}
 
-		this._subscribersLast = subscriberLink
 		return subscriberLink
 	}
 

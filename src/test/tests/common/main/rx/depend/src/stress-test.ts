@@ -748,6 +748,23 @@ export function _stressTest({
 		}
 	}
 
+	function waitAll() {
+		const thenables = []
+
+		for (let i = 0, len = calls.length; i < len; i++) {
+			const level = calls[i]
+			for (let j = 0, len2 = level.length; j < len2; j++) {
+				const call = level[j]
+				const value = call()
+				if (isThenable(value)) {
+					thenables.push(value)
+				}
+			}
+		}
+
+		return Promise.all(thenables)
+	}
+
 	async function test() {
 		const thenables = []
 		for (let i = 0; i < iterations; i++) {
@@ -784,10 +801,11 @@ export function _stressTest({
 				invalidateCallState(getCallState(call.dependFunc).apply(call._this, call.args))
 			}
 
-			checkSubscribersAll()
+			// checkSubscribersAll()
 		}
 
 		await Promise.all(thenables)
+		await waitAll()
 	}
 
 	return test()
