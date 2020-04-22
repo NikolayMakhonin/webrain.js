@@ -426,6 +426,7 @@ export async function stressTest({
 	seed,
 	testsCount,
 	iterationsPerTest,
+	iterationsPerCall,
 	maxLevelsCount,
 	maxFuncsCount,
 	maxCallsCount,
@@ -436,36 +437,79 @@ export async function stressTest({
 }: {
 	seed?: number,
 	testsCount: number,
-	iterationsPerTest: number,
-	maxLevelsCount: number,
-	maxFuncsCount: number,
-	maxCallsCount: number,
-	countRootCalls: number,
-	disableAsync?: boolean,
-	disableDeferred?: boolean,
-	disableLazy?: boolean,
+	iterationsPerTest?: number,
+	iterationsPerCall?: number,
+	maxLevelsCount: number|[number, number],
+	maxFuncsCount: number|[number, number],
+	maxCallsCount: number|[number, number],
+	countRootCalls: number|[number, number],
+	disableAsync?: boolean|null,
+	disableDeferred?: boolean|null,
+	disableLazy?: boolean|null,
 }) {
 	for (let i = 0; i < testsCount; i++) {
 		console.log(`test number: ${i}`)
 
+		const _seed = seed != null
+			? seed
+			: new Random().nextInt(2 << 29)
+
+		console.log(`seed = ${_seed}`)
+		const rnd = new Random(_seed)
+
+		const _maxLevelsCount = Array.isArray(maxLevelsCount)
+			? rnd.nextInt(maxLevelsCount[0], maxLevelsCount[1] + 1)
+			: maxLevelsCount
+
+		const _maxFuncsCount = Array.isArray(maxFuncsCount)
+			? rnd.nextInt(maxFuncsCount[0], maxFuncsCount[1] + 1)
+			: maxFuncsCount
+
+		const _maxCallsCount = Array.isArray(maxCallsCount)
+			? rnd.nextInt(
+				maxCallsCount[0],
+				Math.min(_maxFuncsCount * 10, maxCallsCount[1] + 1),
+			)
+			: maxCallsCount
+
+		const _countRootCalls = Array.isArray(countRootCalls)
+			? rnd.nextInt(countRootCalls[0], countRootCalls[1] + 1)
+			: countRootCalls
+
+		const _disableAsync = disableAsync == null
+			? rnd.nextBoolean()
+			: disableAsync
+
+		const _disableDeferred = disableDeferred == null
+			? rnd.nextBoolean()
+			: disableDeferred
+
+		const _disableLazy = disableLazy == null
+			? rnd.nextBoolean()
+			: disableLazy
+
+		const _iterationsPerTest = iterationsPerTest == null
+			? iterationsPerCall * _maxCallsCount
+			: iterationsPerTest
+
 		await _stressTest({
-			seed,
-			iterations: iterationsPerTest,
-			maxLevelsCount,
-			maxFuncsCount,
-			maxCallsCount,
-			countRootCalls,
-			disableAsync,
-			disableDeferred,
-			disableLazy,
+			rnd,
+			iterations: _iterationsPerTest,
+			maxLevelsCount: _maxLevelsCount,
+			maxFuncsCount: _maxFuncsCount,
+			maxCallsCount: _maxCallsCount,
+			countRootCalls: _countRootCalls,
+			disableAsync: _disableAsync,
+			disableDeferred: _disableDeferred,
+			disableLazy: _disableLazy,
 		})
 
 		clearCallStates()
 	}
 }
 
-export function _stressTest({
-	seed,
+function _stressTest({
+	rnd,
 	iterations,
 	maxLevelsCount,
 	maxFuncsCount,
@@ -475,7 +519,7 @@ export function _stressTest({
 	disableDeferred,
 	disableLazy,
 }: {
-	seed?: number,
+	rnd: Random,
 	iterations: number,
 	maxLevelsCount: number,
 	maxFuncsCount: number,
@@ -485,11 +529,6 @@ export function _stressTest({
 	disableDeferred?: boolean,
 	disableLazy?: boolean,
 }) {
-	if (seed == null) {
-		seed = new Random().nextInt(2 << 29)
-	}
-	console.log(`seed = ${seed}`)
-	const rnd = new Random(seed)
 	const funcs: TDependFunc[] = []
 	const calls: TCall[][] = []
 	const callsMap = new Map<TCallId, TCall>()
@@ -784,7 +823,7 @@ export function _stressTest({
 				thenables[index] = thenables[thenables.length - 1]
 				thenables.length--
 				await thenable
-			} else if (step < 0.6) {
+			} else if (step < (i % 100) / 100) {
 				const call = getRandomCall(0)
 				const isLazy = !disableLazy && rnd.nextBoolean()
 				const result = runCall(call, isLazy)
