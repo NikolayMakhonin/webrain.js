@@ -683,10 +683,10 @@ function _stressTest({
 			? {
 				delayBeforeCalc: rnd.nextBoolean()
 					? void 0
-					: (rnd.nextBoolean() ? 0 : rnd.nextInt(1, 2)),
+					: (rnd.nextBoolean() ? 0 : rnd.nextInt(1, 100)),
 				minTimeBetweenCalc: rnd.nextBoolean()
 					? void 0
-					: (rnd.nextBoolean() ? 0 : rnd.nextInt(1, 2)),
+					: (rnd.nextBoolean() ? 0 : rnd.nextInt(1, 100)),
 			}
 			: null
 
@@ -805,9 +805,12 @@ function _stressTest({
 	}
 
 	async function test() {
+		let time = Date.now()
 		const thenables = []
 		for (let i = 0; i < iterations; i++) {
-			if (i > 0 && i % 50000 === 0) {
+			const now = Date.now()
+			if (now >= time + 10 * 1000) {
+				time = now
 				console.log(i)
 			}
 

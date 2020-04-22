@@ -34,7 +34,9 @@ class SimpleThenable {
 
 	public resolve() {
 		if (this._resolved) {
-			throw new InternalError('Multiple call resolve()')
+			// throw new InternalError('Multiple call resolve()')
+			console.warn('Multiple call resolve()')
+			return
 		}
 		this._resolved = true
 
