@@ -32,7 +32,7 @@
   <component name="ChangeListManager">
     <list default="true" id="69b2ee16-521b-4efd-b473-8e19e3df4d09" name="Default Changelist" comment="">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/common/rx/depend/core/depend.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/common/rx/depend/core/depend.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/test/tests/common/main/rx/depend/dependent-func/stress.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/test/tests/common/main/rx/depend/dependent-func/stress.ts" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/test/tests/common/main/rx/depend/src/stress-test.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/test/tests/common/main/rx/depend/src/stress-test.ts" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
@@ -126,7 +126,7 @@
       <recent name="L:\Work\_GIT\GitHub\NodeJs\modules\webrain\src\main\common\rx\depend\lists" />
     </key>
   </component>
-  <component name="RunManager" selected="Mocha.common &gt; main &gt; rx &gt; depend &gt; dependent-func / stress.all">
+  <component name="RunManager" selected="Mocha.dependent-func (stress)">
     <configuration default="true" type="JavaScriptTestRunnerKarma" activateToolWindowBeforeRun="false">
       <config-file value="$PROJECT_DIR$/env/karma/configs/dev.js" />
       <karma-package-dir value="$PROJECT_DIR$/node_modules/karma" />
@@ -421,12 +421,12 @@
       <item itemvalue="Mocha.dependent-func (perf)" />
       <item itemvalue="Mocha.dependent-func (stress)" />
       <item itemvalue="Mocha.common &gt; main &gt; rx &gt; depend &gt; dependent-func / base" />
-      <item itemvalue="Node.js.dependent-func.js" />
-      <item itemvalue="npm.Coverage Mocha Report" />
       <item itemvalue="Mocha.common &gt; main &gt; rx &gt; depend &gt; dependent-func / stress.async + deferred + sync" />
       <item itemvalue="Mocha.common &gt; main &gt; rx &gt; depend &gt; dependent-func / stress.deferred + sync" />
       <item itemvalue="Mocha.common &gt; main &gt; rx &gt; depend &gt; dependent-func / base.lazy" />
       <item itemvalue="Mocha.common &gt; main &gt; rx &gt; depend &gt; dependent-func / stress.all" />
+      <item itemvalue="Node.js.dependent-func.js" />
+      <item itemvalue="npm.Coverage Mocha Report" />
     </list>
     <recent_temporary>
       <list>
@@ -461,6 +461,7 @@
       <workItem from="1587491997561" duration="70000" />
       <workItem from="1587492080282" duration="280000" />
       <workItem from="1587492623228" duration="13478000" />
+      <workItem from="1587565663784" duration="1294000" />
     </task>
     <task id="LOCAL-00386" summary="Object builders refactoring and debugging... Tests OK.">
       <created>1586888082082</created>
@@ -922,22 +923,22 @@
       <screen x="0" y="0" width="1920" height="882" />
     </state>
     <state x="686" y="134" key="FileChooserDialogImpl/0.0.1920.882@0.0.1920.882" timestamp="1587352857058" />
-    <state width="858" height="285" key="GridCell.Tab.0.bottom" timestamp="1587546669894">
+    <state width="882" height="497" key="GridCell.Tab.0.bottom" timestamp="1587566358257">
       <screen x="0" y="0" width="1920" height="882" />
     </state>
-    <state width="858" height="285" key="GridCell.Tab.0.bottom/0.0.1920.882@0.0.1920.882" timestamp="1587546669894" />
-    <state width="858" height="285" key="GridCell.Tab.0.center" timestamp="1587546669894">
+    <state width="882" height="497" key="GridCell.Tab.0.bottom/0.0.1920.882@0.0.1920.882" timestamp="1587566358257" />
+    <state width="882" height="497" key="GridCell.Tab.0.center" timestamp="1587566358256">
       <screen x="0" y="0" width="1920" height="882" />
     </state>
-    <state width="858" height="285" key="GridCell.Tab.0.center/0.0.1920.882@0.0.1920.882" timestamp="1587546669894" />
-    <state width="858" height="285" key="GridCell.Tab.0.left" timestamp="1587546669894">
+    <state width="882" height="497" key="GridCell.Tab.0.center/0.0.1920.882@0.0.1920.882" timestamp="1587566358256" />
+    <state width="882" height="497" key="GridCell.Tab.0.left" timestamp="1587566358256">
       <screen x="0" y="0" width="1920" height="882" />
     </state>
-    <state width="858" height="285" key="GridCell.Tab.0.left/0.0.1920.882@0.0.1920.882" timestamp="1587546669894" />
-    <state width="858" height="285" key="GridCell.Tab.0.right" timestamp="1587546669894">
+    <state width="882" height="497" key="GridCell.Tab.0.left/0.0.1920.882@0.0.1920.882" timestamp="1587566358256" />
+    <state width="882" height="497" key="GridCell.Tab.0.right" timestamp="1587566358257">
       <screen x="0" y="0" width="1920" height="882" />
     </state>
-    <state width="858" height="285" key="GridCell.Tab.0.right/0.0.1920.882@0.0.1920.882" timestamp="1587546669894" />
+    <state width="882" height="497" key="GridCell.Tab.0.right/0.0.1920.882@0.0.1920.882" timestamp="1587566358257" />
     <state width="858" height="285" key="GridCell.Tab.1.bottom" timestamp="1587546669895">
       <screen x="0" y="0" width="1920" height="882" />
     </state>

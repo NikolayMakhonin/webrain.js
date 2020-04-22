@@ -6,7 +6,7 @@ import {stressTest} from '../src/stress-test'
 describe('common > main > rx > depend > dependent-func / stress', function() {
 	this.timeout(60 * 60 * 1000)
 
-	it('all', async function() {
+	xit('all', async function() {
 		await stressTest({
 			// seed: 20385142,
 			testsCount: 1000,
@@ -21,15 +21,15 @@ describe('common > main > rx > depend > dependent-func / stress', function() {
 		})
 	})
 
-	xit('async + deferred + sync + lazy', async function() {
+	it('async + deferred + sync + lazy', async function() {
 		await stressTest({
 			// seed: 1,
-			testsCount: 100,
-			iterationsPerTest: 200000,
-			maxLevelsCount: 10,
-			maxFuncsCount: 10,
-			maxCallsCount: 100,
-			countRootCalls: 5,
+			testsCount: 1000,
+			iterationsPerCall: 2000,
+			maxLevelsCount: [1, 10],
+			maxFuncsCount: [1, 10],
+			maxCallsCount: [1, 100],
+			countRootCalls: [1, 5],
 			disableAsync: false,
 			disableDeferred: false,
 			disableLazy: false,

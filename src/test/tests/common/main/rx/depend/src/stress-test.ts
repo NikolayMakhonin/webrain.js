@@ -787,8 +787,10 @@ function _stressTest({
 		}
 	}
 
-	function waitAll() {
+	async function waitAll() {
 		const thenables = []
+
+		await delay(150)
 
 		for (let i = 0, len = calls.length; i < len; i++) {
 			const level = calls[i]
@@ -801,12 +803,32 @@ function _stressTest({
 			}
 		}
 
-		return Promise.all(thenables)
+		await Promise.all(thenables)
 	}
 
 	async function test() {
 		let time = Date.now()
 		const thenables = []
+
+		function calc() {
+			const call = getRandomCall(0)
+			const isLazy = !disableLazy && rnd.nextBoolean()
+			const result = runCall(call, isLazy)
+			const state = call.getCallState()
+			assert.ok(state)
+			if (isThenable(result)) {
+				assert.ok(!disableDeferred || !disableAsync)
+				thenables.push(result)
+			} else {
+				assert.strictEqual(state.value, result)
+			}
+		}
+
+		function invalidate() {
+			const call = getRandomCall(0)
+			invalidateCallState(getCallState(call.dependFunc).apply(call._this, call.args))
+		}
+
 		for (let i = 0; i < iterations; i++) {
 			const now = Date.now()
 			if (now >= time + 10 * 1000) {
@@ -817,6 +839,8 @@ function _stressTest({
 			const currentState = getCurrentState()
 			assert.strictEqual(currentState, null)
 
+			let func
+
 			const step = rnd.next()
 			if (step < thenables.length / 100) {
 				await Promise.all(thenables)
@@ -826,21 +850,18 @@ function _stressTest({
 				thenables[index] = thenables[thenables.length - 1]
 				thenables.length--
 				await thenable
-			} else if (step < (i % 100) / 100) {
-				const call = getRandomCall(0)
-				const isLazy = !disableLazy && rnd.nextBoolean()
-				const result = runCall(call, isLazy)
-				const state = call.getCallState()
-				assert.ok(state)
-				if (isThenable(result)) {
-					assert.ok(!disableDeferred || !disableAsync)
-					thenables.push(result)
-				} else {
-					assert.strictEqual(state.value, result)
-				}
 			} else {
-				const call = getRandomCall(0)
-				invalidateCallState(getCallState(call.dependFunc).apply(call._this, call.args))
+				if (step < (i % 100) / 100) {
+					func = calc
+				} else {
+					func = invalidate
+				}
+
+				if (rnd.nextBoolean()) {
+					func()
+				} else {
+					setTimeout(func, rnd.nextBoolean() ? 0 : rnd.nextInt(100))
+				}
 			}
 
 			// checkSubscribersAll()
