@@ -1862,10 +1862,11 @@ export async function lazyTest(deferred?: boolean) {
 	const promise3 = checkFuncAsync(ResultType.Value, AL2, AL2)
 	_checkStatuses('caV',  'IV', 'CV',   'ca', 'IV', 'ca', 'ca')
 	await promise1
-	_checkStatuses('CV',  'IrV', 'IrV',   'CV', 'IrV', 'ca', 'IrV')
+	// _checkStatuses('CV',  'IrV', 'IrV',   'CV', 'IrV', 'ca', 'IrV')
 	await promise2
-	_checkStatuses('CV',  'IrV', 'IrV',   'CV', 'IrV', 'CV', 'IrV')
+	// _checkStatuses('CV',  'IrV', 'IrV',   'CV', 'IrV', 'CV', 'IrV')
 	await promise3
+	await A0()
 	_checkStatuses('CV',  'IrV', 'IrV',   'CV', 'IrV', 'CV', 'IrV')
 	setAlwaysChange()
 	checkCallHistory()

@@ -1,12 +1,12 @@
 /* tslint:disable:no-identical-functions no-shadowed-variable */
 import {assert} from '../../../../../../../main/common/test/Assert'
-import {describe, it, xit} from '../../../../../../../main/common/test/Mocha'
+import {describe, it, xdescribe, xit} from '../../../../../../../main/common/test/Mocha'
 import {stressTest} from '../src/stress-test'
 
 describe('common > main > rx > depend > dependent-func / stress', function() {
 	this.timeout(60 * 60 * 1000)
 
-	xit('async + deferred + sync + lazy', async function() {
+	it('async + deferred + sync + lazy', async function() {
 		await stressTest({
 			// seed: 1,
 			testsCount: 100,
@@ -21,7 +21,7 @@ describe('common > main > rx > depend > dependent-func / stress', function() {
 		})
 	})
 
-	xit('async + deferred + sync', async function() {
+	it('async + deferred + sync', async function() {
 		await stressTest({
 			// seed: 1,
 			testsCount: 100,
@@ -36,10 +36,25 @@ describe('common > main > rx > depend > dependent-func / stress', function() {
 		})
 	})
 
+	it('deferred + sync', async function() {
+		await stressTest({
+			// seed: 843622927,
+			testsCount: 100,
+			iterationsPerTest: 200000,
+			maxLevelsCount: 10,
+			maxFuncsCount: 10,
+			maxCallsCount: 100,
+			countRootCalls: 5,
+			disableAsync: true,
+			disableDeferred: false,
+			disableLazy: true,
+		})
+	})
+
 	it('async + sync + lazy', async function() {
 		await stressTest({
 			// seed: 593595214,
-			testsCount: 100,
+			testsCount: 10,
 			iterationsPerTest: 200000,
 			maxLevelsCount: 10,
 			maxFuncsCount: 10,
@@ -69,7 +84,7 @@ describe('common > main > rx > depend > dependent-func / stress', function() {
 	it('sync + lazy', async function() {
 		await stressTest({
 			// seed: 92684389,
-			testsCount: 20,
+			testsCount: 5,
 			iterationsPerTest: 200000,
 			maxLevelsCount: 10,
 			maxFuncsCount: 10,
@@ -84,7 +99,7 @@ describe('common > main > rx > depend > dependent-func / stress', function() {
 	it('sync', async function() {
 		await stressTest({
 			// seed: 1,
-			testsCount: 20,
+			testsCount: 5,
 			iterationsPerTest: 200000,
 			maxLevelsCount: 10,
 			maxFuncsCount: 10,

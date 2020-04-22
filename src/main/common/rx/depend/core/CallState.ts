@@ -753,10 +753,8 @@ export class CallState<
 					if ((this.status & Flag_Async) !== 0) {
 						this._parentCallState = null
 					}
-					this._updateCalculatedError(error)
 
-					// TODO delete this line (it needed only for replace old deepSubscribe to new depend funcs)
-					console.error(error)
+					this._updateCalculatedError(error)
 
 					throw error
 				},
@@ -768,7 +766,7 @@ export class CallState<
 
 			return value
 		} catch (error) {
-			if (!_isAsync) {
+			if (!_isAsync || error instanceof InternalError) {
 				this._updateCalculatedError(error)
 			}
 			if (dontThrowOnError !== true || error instanceof InternalError) {
@@ -945,12 +943,13 @@ export class CallState<
 					return true
 				}
 
-				if (!isLazy && (
-					(dependencyState.status & (Flag_Check | Flag_Calculating)) !== 0
-					|| (dependencyState.status & (Flag_HasError | Flag_HasValue)) === 0
-				)) {
-					this._internalError(`Unexpected dependency status: ${statusToString(dependencyState.status)}`)
-				}
+				// This is incorrect checking, because everything can happen after awaiting:
+				// if (!isLazy && (
+				// 	(dependencyState.status & (Flag_Check | Flag_Calculating)) !== 0
+				// 	|| (dependencyState.status & (Flag_HasError | Flag_HasValue)) === 0
+				// )) {
+				// 	this._internalError(`Unexpected dependency status: ${statusToString(dependencyState.status)}`)
+				// }
 			}
 		}
 
@@ -1108,14 +1107,12 @@ export class CallState<
 	) {
 		const prevStatus = this.status
 
-		if (error instanceof InternalError) {
+		if (error instanceof InternalError || (prevStatus & (Flag_Check | Flag_Calculating)) === 0) {
+			console.error('InternalError: ', error)
 			this.status = Update_Calculated_Error | (prevStatus & Flag_HasValue) | Flag_InternalError
 			this._parentCallState = null
 			setCurrentState(null)
 		} else {
-			if ((prevStatus & (Flag_Check | Flag_Calculating)) === 0) {
-				this._internalError(`Set status ${statusToString(Update_Calculated_Error)} called when current status is ${statusToString(prevStatus)}`)
-			}
 			if (this.valueAsync != null) {
 				this.valueAsync = null
 			}

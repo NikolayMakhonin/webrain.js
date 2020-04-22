@@ -1,5 +1,6 @@
 import {missingSetter} from '../../../helpers/helpers'
 import {TClass} from '../../../helpers/typescript'
+import {getOrCreateCallState} from '../../../rx/depend/core/CallState'
 import {depend} from '../../../rx/depend/core/depend'
 import {makeDependPropertySubscriber} from '../helpers'
 import {ObservableClass} from '../ObservableClass'
@@ -56,7 +57,7 @@ export class DependConnectorBuilder<
 		getSet?: INextPathGetSet<TSource, TCommonValue, TValue>,
 		options?: IReadableFieldOptions<TSource, TValue>,
 	): this & { object: { [newProp in Name]: TValue } } {
-		return this._connectPath(name, false, common, getSet, options)
+		return this._connectPath(name, false, false, common, getSet, options)
 	}
 
 	public connectPath<
@@ -88,7 +89,39 @@ export class DependConnectorBuilder<
 		getSet?: INextPathGetSet<TSource, TCommonValue, TValue>,
 		options?: IReadableFieldOptions<TSource, TValue>,
 	): this & { object: { [newProp in Name]: TValue } } {
-		return this._connectPath(name, true, common, getSet, options)
+		return this._connectPath(name, true, false, common, getSet, options)
+	}
+
+	public connectLazy<
+		Name extends string | number = Extract<keyof TObject, string|number>,
+		TValue = Name extends keyof TObject ? TObject[Name] : TSource,
+		>(
+		name: Name,
+		common: TNextPath<TSource, TSource, TValue>,
+		getSet?: null|undefined,
+		options?: IReadableFieldOptions<TSource, TValue>,
+	): this & { object: { [newProp in Name]: TValue } }
+	public connectLazy<
+		Name extends string | number = Extract<keyof TObject, string|number>,
+		TCommonValue = TSource,
+		TValue = Name extends keyof TObject ? TObject[Name] : TCommonValue,
+		>(
+		name: Name,
+		common: TNextPath<TSource, TSource, TCommonValue>,
+		getSet: INextPathGetSet<TSource, TCommonValue, TValue>,
+		options?: IReadableFieldOptions<TSource, TValue>,
+	): this & { object: { [newProp in Name]: TValue } }
+	public connectLazy<
+		Name extends string | number = Extract<keyof TObject, string|number>,
+		TCommonValue = TSource,
+		TValue = Name extends keyof TObject ? TObject[Name] : TCommonValue,
+		>(
+		name: Name,
+		common: TNextPath<TSource, TSource, TCommonValue>,
+		getSet?: INextPathGetSet<TSource, TCommonValue, TValue>,
+		options?: IReadableFieldOptions<TSource, TValue>,
+	): this & { object: { [newProp in Name]: TValue } } {
+		return this._connectPath(name, true, true, common, getSet, options)
 	}
 
 	private _connectPath<
@@ -98,6 +131,7 @@ export class DependConnectorBuilder<
 	>(
 		name: Name,
 		isDepend: boolean,
+		isLazy: boolean,
 		common: TNextPath<TSource, TSource, TCommonValue>,
 		getSet?: INextPathGetSet<TSource, TCommonValue, TValue>,
 		options?: IReadableFieldOptions<TSource, TValue>,
@@ -116,16 +150,23 @@ export class DependConnectorBuilder<
 			throw new Error('path.canGet == false')
 		}
 
+		const getValue = isDepend
+			? depend(function(this: typeof object) {
+				return path.get(this)
+			}, null, makeDependPropertySubscriber(name))
+			: function(this: typeof object) {
+				return path.get(this)
+			}
+
 		Object.defineProperty(object, name, {
 			configurable: true,
 			enumerable  : !hidden,
-			get: isDepend
-				? depend(function(this: typeof object) {
-					return path.get(this)
-				}, null, makeDependPropertySubscriber(name))
-				: function(this: typeof object) {
-					return path.get(this)
-				},
+			get: isDepend && isLazy
+				? function() {
+					const state = getOrCreateCallState(getValue).apply(this, arguments)
+					return state.getValue(true)
+				}
+				: getValue,
 			set: !path.canSet ? missingSetter : function(value: TValue) {
 				return path.set(this, value)
 			},

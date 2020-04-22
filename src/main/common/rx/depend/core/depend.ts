@@ -1,8 +1,9 @@
 import {isThenable, ThenableOrIterator, ThenableOrValue} from '../../../async/async'
 import {ThenableSync} from '../../../async/ThenableSync'
 import {DeferredCalc, IDeferredCalcOptions} from '../../deferred-calc/DeferredCalc'
-import {CallState, getOrCreateCallState, makeDependentFunc, TFuncCall} from './CallState'
+import {CallState, makeDependentFunc, TFuncCall} from './CallState'
 import {Func, IDeferredOptions} from './contracts'
+import {InternalError} from './helpers'
 
 // region makeDeferredFunc
 
@@ -12,6 +13,47 @@ function _canBeCalcCallback() {
 
 function _calcFunc() {
 	this.done()
+}
+
+class SimpleThenable {
+	private _subscribers: Array<() => void> = null
+	private _resolved: boolean = false
+
+	public then(done: () => void) {
+		if (this._resolved) {
+			done()
+		} else {
+			let {_subscribers} = this
+			if (_subscribers == null) {
+				this._subscribers = _subscribers = []
+			}
+			_subscribers.push(done)
+		}
+		return null
+	}
+
+	public resolve() {
+		if (this._resolved) {
+			throw new InternalError('Multiple call resolve()')
+		}
+		this._resolved = true
+
+		const {_subscribers} = this
+		if (_subscribers != null) {
+			this._subscribers = null
+			for (let i = 0, len = _subscribers.length; i < len; i++) {
+				_subscribers[i]()
+			}
+		}
+	}
+
+	public reset() {
+		this._resolved = false
+		const {_subscribers} = this
+		if (_subscribers != null && _subscribers.length > 0) {
+			throw new InternalError('reset when it has subscribers')
+		}
+	}
 }
 
 export function _initDeferredCallState<
@@ -31,38 +73,12 @@ export function _initDeferredCallState<
 	}
 	state.deferredOptions = options
 
-	// TODO - remove []
-	const thenable = {
-		subscribers: [],
-		resolved: false,
-		then(done) {
-			if (this.resolved) {
-				done()
-			} else {
-				this.subscribers.push(done)
-			}
-			return null
-		},
-		resolve() {
-			this.resolved = true
-			for (let i = 0, len = this.subscribers.length; i < len; i++) {
-				this.subscribers[i]()
-			}
-			this.subscribers.length = 0
-		},
-	}
-
-	let _resolve = null
+	const thenable = new SimpleThenable()
 
 	const _deferredCalc = new DeferredCalc(
 		_canBeCalcCallback,
 		_calcFunc,
 		() => {
-			const __resolve = _resolve
-			_resolve = null
-			if (__resolve) {
-				__resolve()
-			}
 			thenable.resolve()
 		},
 		options,
@@ -81,7 +97,7 @@ export function _initDeferredCallState<
 			switch (stage) {
 				case 0: {
 					stage = 1
-					thenable.resolved = false
+					thenable.reset()
 					_deferredCalc.invalidate()
 					iteratorResult.value = thenable
 					iteratorResult.done = false
@@ -98,12 +114,12 @@ export function _initDeferredCallState<
 					return iteratorResult
 				}
 				default:
-					throw new Error('stage == ' + stage)
+					throw new InternalError('stage == ' + stage)
 			}
 		},
 		[Symbol.iterator]: () => {
 			if (stage !== 2) {
-				throw new Error('stage == ' + stage)
+				throw new InternalError('stage == ' + stage)
 			}
 			stage = 0
 			return iterator
@@ -170,7 +186,7 @@ export function depend<
 	TResultInner extends ThenableOrIterator<infer V> ? ThenableOrValue<V> : TResultInner
 > {
 	if (canAlwaysRecalc && deferredOptions != null) {
-		throw new Error('canAlwaysRecalc should not be deferred')
+		throw new InternalError('canAlwaysRecalc should not be deferred')
 	}
 	return deferredOptions == null
 		? makeDependentFunc(func, _funcCall, initCallState, canAlwaysRecalc) as any
