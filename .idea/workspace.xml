@@ -31,18 +31,10 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="69b2ee16-521b-4efd-b473-8e19e3df4d09" name="Default Changelist" comment="">
-      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/common/rx/object/properties/path/builder/ObjectSubscriber.ts" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/common/rx/object/properties/path/builder/contracts/deep-subscribe.ts" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/common/rx/object/properties/path/builder/deep-subscribe.ts" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/common/rx/object/properties/path/builder/helpers/PropertiesPath.ts" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/common/rx/object/properties/path/builder/iterate-rule.ts" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/common/rx/object/properties/path/builder/RuleBuilder.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/common/rx/object/properties/path/builder/RuleBuilder.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/common/rx/object/properties/path/builder/helpers/func-properties-path.ts" beforeDir="false" />
       <change beforePath="$PROJECT_DIR$/src/test/tests/common/main/rx/object/properties/path/builder/RuleBuilder.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/test/tests/common/main/rx/object/properties/path/builder/RuleBuilder.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/test/tests/common/main/rx/object/properties/path/builder/deep-subscribe-new.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/test/tests/common/main/rx/object/properties/path/builder/deep-subscribe-new.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/test/tests/common/main/rx/object/properties/path/builder/deep-subscribe.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/test/tests/common/main/rx/object/properties/path/builder/deep-subscribe.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/test/tests/common/main/rx/object/properties/path/builder/helpers/func-properties-path.ts" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/test/tests/common/main/rx/object/properties/path/builder/helpers/src/TestDeepSubscribe.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/test/tests/common/main/rx/object/properties/path/builder/helpers/src/TestDeepSubscribe.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/test/tests/common/main/rx/object/properties/path/builder/iterate-rule.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/test/tests/common/main/rx/object/properties/path/builder/iterate-rule.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/test/tests/common/main/rx/object/properties/path/builder/helpers/src/func-properties-path.js" beforeDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -484,14 +476,7 @@
       <workItem from="1587492080282" duration="280000" />
       <workItem from="1587492623228" duration="13478000" />
       <workItem from="1587565663784" duration="7699000" />
-      <workItem from="1587720746493" duration="3679000" />
-    </task>
-    <task id="LOCAL-00389" summary="Object builders refactoring and debugging... Tests OK.">
-      <created>1586963033226</created>
-      <option name="number" value="00389" />
-      <option name="presentableId" value="LOCAL-00389" />
-      <option name="project" value="LOCAL" />
-      <updated>1586963033226</updated>
+      <workItem from="1587720746493" duration="4038000" />
     </task>
     <task id="LOCAL-00390" summary="Object builders refactoring and debugging... Tests OK.">
       <created>1586966705118</created>
@@ -829,7 +814,14 @@
       <option name="project" value="LOCAL" />
       <updated>1587725427572</updated>
     </task>
-    <option name="localTasksCounter" value="438" />
+    <task id="LOCAL-00438" summary="Path Builder: delete unnecessary files">
+      <created>1587726026285</created>
+      <option name="number" value="00438" />
+      <option name="presentableId" value="LOCAL-00438" />
+      <option name="project" value="LOCAL" />
+      <updated>1587726026286</updated>
+    </task>
+    <option name="localTasksCounter" value="439" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -890,7 +882,6 @@
   <component name="VcsManagerConfiguration">
     <option name="CHECK_CODE_SMELLS_BEFORE_PROJECT_COMMIT" value="false" />
     <option name="CHECK_NEW_TODO" value="false" />
-    <MESSAGE value="Added connectPath property. Tests OK." />
     <MESSAGE value="Integrating to project... Tests OK." />
     <MESSAGE value="Object builders refactoring..." />
     <MESSAGE value="Object builders refactoring is completed. Old Tests OK." />
@@ -915,7 +906,8 @@
     <MESSAGE value="depend: stress test is completed and tested. Combined stress tests is OK." />
     <MESSAGE value="depend: stress test, testing and debugging. Async + Deferred + Sync + Lazy 135 tests is OK" />
     <MESSAGE value="Make Path Builder based on deep-subscribe RuleBuilder" />
-    <option name="LAST_COMMIT_MESSAGE" value="Make Path Builder based on deep-subscribe RuleBuilder" />
+    <MESSAGE value="Path Builder: delete unnecessary files" />
+    <option name="LAST_COMMIT_MESSAGE" value="Path Builder: delete unnecessary files" />
   </component>
   <component name="WindowStateProjectService">
     <state x="38" y="39" width="1718" height="786" key="#com.intellij.execution.impl.EditConfigurationsDialog" timestamp="1587725642583">
@@ -926,18 +918,18 @@
       <screen x="0" y="0" width="1920" height="882" />
     </state>
     <state x="91" y="91" width="1738" height="700" key="#com.intellij.execution.junit2.states.ComparisonFailureState$DiffDialog/0.0.1920.882@0.0.1920.882" timestamp="1587445854541" />
-    <state x="623" y="124" key="#com.intellij.refactoring.safeDelete.UnsafeUsagesDialog" timestamp="1587725796184">
+    <state x="623" y="124" key="#com.intellij.refactoring.safeDelete.UnsafeUsagesDialog" timestamp="1587726051063">
       <screen x="0" y="0" width="1920" height="882" />
     </state>
-    <state x="623" y="124" key="#com.intellij.refactoring.safeDelete.UnsafeUsagesDialog/0.0.1920.882@0.0.1920.882" timestamp="1587725796184" />
+    <state x="623" y="124" key="#com.intellij.refactoring.safeDelete.UnsafeUsagesDialog/0.0.1920.882@0.0.1920.882" timestamp="1587726051063" />
     <state x="651" y="254" key="ANALYSIS_DLG_com.intellij.analysis.BaseAnalysisAction$1" timestamp="1586875498549">
       <screen x="0" y="0" width="1920" height="882" />
     </state>
     <state x="651" y="254" key="ANALYSIS_DLG_com.intellij.analysis.BaseAnalysisAction$1/0.0.1920.882@0.0.1920.882" timestamp="1586875498549" />
-    <state x="0" y="0" width="1918" height="882" key="CommitChangelistDialog2" timestamp="1587725424633">
+    <state x="0" y="0" width="1918" height="882" key="CommitChangelistDialog2" timestamp="1587726025258">
       <screen x="0" y="0" width="1920" height="882" />
     </state>
-    <state x="0" y="0" width="1918" height="882" key="CommitChangelistDialog2/0.0.1920.882@0.0.1920.882" timestamp="1587725424633" />
+    <state x="0" y="0" width="1918" height="882" key="CommitChangelistDialog2/0.0.1920.882@0.0.1920.882" timestamp="1587726025258" />
     <state width="884" height="550" key="DebuggerActiveHint" timestamp="1587540221049">
       <screen x="0" y="0" width="1920" height="882" />
     </state>
@@ -950,22 +942,22 @@
       <screen x="0" y="0" width="1920" height="882" />
     </state>
     <state x="686" y="134" key="FileChooserDialogImpl/0.0.1920.882@0.0.1920.882" timestamp="1587352857058" />
-    <state width="614" height="270" key="GridCell.Tab.0.bottom" timestamp="1587725811521">
+    <state width="614" height="388" key="GridCell.Tab.0.bottom" timestamp="1587726314726">
       <screen x="0" y="0" width="1920" height="882" />
     </state>
-    <state width="614" height="270" key="GridCell.Tab.0.bottom/0.0.1920.882@0.0.1920.882" timestamp="1587725811521" />
-    <state width="614" height="270" key="GridCell.Tab.0.center" timestamp="1587725811521">
+    <state width="614" height="388" key="GridCell.Tab.0.bottom/0.0.1920.882@0.0.1920.882" timestamp="1587726314726" />
+    <state width="614" height="388" key="GridCell.Tab.0.center" timestamp="1587726314726">
       <screen x="0" y="0" width="1920" height="882" />
     </state>
-    <state width="614" height="270" key="GridCell.Tab.0.center/0.0.1920.882@0.0.1920.882" timestamp="1587725811521" />
-    <state width="614" height="270" key="GridCell.Tab.0.left" timestamp="1587725811520">
+    <state width="614" height="388" key="GridCell.Tab.0.center/0.0.1920.882@0.0.1920.882" timestamp="1587726314726" />
+    <state width="614" height="388" key="GridCell.Tab.0.left" timestamp="1587726314725">
       <screen x="0" y="0" width="1920" height="882" />
     </state>
-    <state width="614" height="270" key="GridCell.Tab.0.left/0.0.1920.882@0.0.1920.882" timestamp="1587725811520" />
-    <state width="614" height="270" key="GridCell.Tab.0.right" timestamp="1587725811521">
+    <state width="614" height="388" key="GridCell.Tab.0.left/0.0.1920.882@0.0.1920.882" timestamp="1587726314725" />
+    <state width="614" height="388" key="GridCell.Tab.0.right" timestamp="1587726314726">
       <screen x="0" y="0" width="1920" height="882" />
     </state>
-    <state width="614" height="270" key="GridCell.Tab.0.right/0.0.1920.882@0.0.1920.882" timestamp="1587725811521" />
+    <state width="614" height="388" key="GridCell.Tab.0.right/0.0.1920.882@0.0.1920.882" timestamp="1587726314726" />
     <state width="858" height="285" key="GridCell.Tab.1.bottom" timestamp="1587546669895">
       <screen x="0" y="0" width="1920" height="882" />
     </state>

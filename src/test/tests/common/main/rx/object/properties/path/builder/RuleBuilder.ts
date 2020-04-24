@@ -633,126 +633,6 @@ describe('common > main > rx > properties > builder > RuleBuilder', function() {
 		}
 	}
 
-	it('path', function() {
-		const builder = new RuleBuilder<IObject>({
-			autoInsertValuePropertyDefault: false,
-		})
-		assert.strictEqual(builder.result(), undefined)
-
-		const builder1 = builder.path(o => o.prop1)
-		const rule1 = builder1.result()
-		assert.strictEqual(builder1 as any, builder)
-
-		assertRule(rule1, {
-			type: RuleType.Action,
-			objectTypes: ['object', 'array'],
-			properties: ['prop1'],
-			description: 'prop1',
-		})
-
-		const builder3 = builder1.path(o => o["prop '2'"].prop3)
-		checkType<string>(builder3)
-		assert.strictEqual(builder3 as any, builder)
-		assert.strictEqual(builder3.result(), rule1)
-
-		assertRule(rule1, {
-			type: RuleType.Action,
-			objectTypes: ['object', 'array'],
-			properties: ['prop1'],
-			description: 'prop1',
-			next: {
-				type: RuleType.Action,
-				objectTypes: ['object', 'array'],
-				properties: ["prop '2'"],
-				description: "prop '2'",
-				next: {
-					type: RuleType.Action,
-					objectTypes: ['object', 'array'],
-					properties: ['prop3'],
-					description: 'prop3',
-				},
-			},
-		})
-
-		const builder4 = builder3.path(o => o.length)
-		checkType<number>(builder4)
-		assert.strictEqual(builder4 as any, builder)
-		assert.strictEqual(builder4.result(), rule1)
-
-		assertRule(rule1, {
-			type: RuleType.Action,
-			objectTypes: ['object', 'array'],
-			properties: ['prop1'],
-			description: 'prop1',
-			next: {
-				type: RuleType.Action,
-				objectTypes: ['object', 'array'],
-				properties: ["prop '2'"],
-				description: "prop '2'",
-				next: {
-					type: RuleType.Action,
-					objectTypes: ['object', 'array'],
-					properties: ['prop3'],
-					description: 'prop3',
-					next: {
-						type: RuleType.Action,
-						objectTypes: ['object', 'array'],
-						properties: ['length'],
-						description: 'length',
-					},
-				},
-			},
-		})
-	})
-
-	it('path complex', function() {
-		const builder = new RuleBuilder<IObject>({
-			autoInsertValuePropertyDefault: false,
-		})
-		assert.strictEqual(builder.result(), undefined)
-
-		const builder1 = builder.path(o => o['prop1|prop2']['#prop3']['#prop4||prop5']['*']['#']['#*'])
-		const rule1 = builder1.result()
-		assert.strictEqual(builder1 as any, builder)
-
-		assertRule(rule1, {
-			type: RuleType.Action,
-			objectTypes: ['object', 'array'],
-			properties: ['prop1', 'prop2'],
-			description: 'prop1|prop2',
-			next: {
-				type: RuleType.Action,
-				objectTypes: ['map'],
-				properties: ['prop3'],
-				description: '#prop3',
-				next: {
-					type: RuleType.Action,
-					objectTypes: ['map'],
-					properties: ['prop4', '', 'prop5'],
-					description: '#prop4||prop5',
-					next: {
-						type: RuleType.Action,
-						objectTypes: ['object', 'array'],
-						properties: ANY,
-						description: ANY_DISPLAY,
-						next: {
-							type: RuleType.Action,
-							objectTypes: ['map', 'set', 'list', 'iterable'],
-							properties: ANY,
-							description: COLLECTION_PREFIX,
-							next: {
-								type: RuleType.Action,
-								objectTypes: ['map'],
-								properties: ANY,
-								description: COLLECTION_PREFIX + ANY_DISPLAY,
-							},
-						},
-					},
-				},
-			},
-		})
-	})
-
 	it('property', function() {
 		const builder = new RuleBuilder<IObject>({
 			autoInsertValuePropertyDefault: false,
@@ -1260,12 +1140,12 @@ describe('common > main > rx > properties > builder > RuleBuilder', function() {
 			.repeat(
 				null, null, null,
 				b => b
-					.repeat(1, null, null, b => b.path(o => o.prop1))
-					.repeat(null, 2, null, b => b.path(o => o["prop '2'"]))
-					.repeat(3, 4, null, b => b.path(o => o.prop4)),
+					.repeat(1, null, null, b => b.p('prop1'))
+					.repeat(null, 2, null, b => b.p("prop '2'"))
+					.repeat(3, 4, null, b => b.p('prop4')),
 			)
-			.repeat(5, 6, null, b => b.path(o => o.prop5))
-			.repeat(7, 8, null, b => b.path(o => o.length))
+			.repeat(5, 6, null, b => b.p('prop5'))
+			.repeat(7, 8, null, b => b.p('length'))
 
 		checkType<number>(builder1)
 
@@ -1357,24 +1237,24 @@ describe('common > main > rx > properties > builder > RuleBuilder', function() {
 		assert.throws(() => builder.any(b => ({rule: null} as any)), [Error, TypeError, ReferenceError])
 
 		const builder1 = builder
-			.any(b => b.path(o => o.prop1))
-			.any(b => b.path(o => o["prop '2'"]))
+			.any(b => b.p('prop1'))
+			.any(b => b.p("prop '2'"))
 			.any(
 				b => b.any(
-					b => b.path(o => o.prop4),
+					b => b.p('prop4'),
 				),
 				b => b.any(
-					b => b.path(o => o.prop4),
-					b => b.path(o => o.prop4_1),
+					b => b.p('prop4'),
+					b => b.p('prop4_1'),
 				),
 				b => b.any(
-					b => b.path(o => o.prop4),
-					b => b.path(o => o.prop4_1),
-					b => b.path(o => o.prop4_2),
+					b => b.p('prop4'),
+					b => b.p('prop4_1'),
+					b => b.p('prop4_2'),
 				),
 			)
-			.any(b => b.path(o => o.prop5))
-			.any(b => b.path(o => o.length))
+			.any(b => b.p('prop5'))
+			.any(b => b.p('length'))
 
 		checkType<number>(builder1)
 

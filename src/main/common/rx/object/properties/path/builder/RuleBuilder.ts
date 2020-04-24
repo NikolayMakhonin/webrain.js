@@ -11,7 +11,6 @@ import {
 } from './contracts/IRuleBuilder'
 import {IRuleSubscribe} from './contracts/rule-subscribe'
 import {IRepeatCondition, IRule, RuleRepeatAction} from './contracts/rules'
-import {getFuncPropertiesPath} from './helpers/func-properties-path'
 import {RuleAny, RuleIf, RuleNever, RuleNothing, RuleRepeat} from './rules'
 import {
 	hasDefaultProperty, RuleSubscribeChange,
@@ -338,37 +337,6 @@ export class RuleBuilder<TObject = any, TValueKeys extends string | number = nev
 			name => keyRegexp.test(name as string),
 			keyRegexp.toString(),
 		)
-	}
-
-	/**
-	 * @deprecated because babel transform object.map property to unparseable code
-	 */
-	public path<TValue>(getValueFunc: (o: TObject) => TValue)
-		: RuleBuilder<any, TValueKeys>
-	// public path<TValue>(getValueFunc: RuleGetValueFunc<TObject, TValue, TValueKeys>)
-	// 	: RuleBuilder<TRulePathObjectValueOf<TValue>, TValueKeys>
-	{
-		for (const propertyNames of getFuncPropertiesPath(getValueFunc as any)) {
-			if (propertyNames.startsWith(COLLECTION_PREFIX)) {
-				const keys = propertyNames.substring(1)
-				if (keys === '') {
-					this.collection<any>()
-				} else {
-					this.mapKeys<any>(...keys.split('|'))
-				}
-			} else if (propertyNames.startsWith(VALUE_PROPERTY_PREFIX)) {
-				const valuePropertyNames = propertyNames.substring(1)
-				if (valuePropertyNames === '') {
-					throw new Error(`You should specify at least one value property name; path = ${getValueFunc}`)
-				} else {
-					this.valuePropertyNames<any>(...valuePropertyNames.split('|'))
-				}
-			} else {
-				this.propertyNames<any>(...propertyNames.split('|'))
-			}
-		}
-
-		return this as any
 	}
 
 	public if<TValue>(
