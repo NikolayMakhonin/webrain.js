@@ -1,4 +1,5 @@
 import {ThenableOrIteratorOrValue} from '../../../../async/async'
+import {isIterable} from '../../../../helpers/helpers'
 import {
 	AsyncPropertyValueOf,
 	IPathNode,
@@ -111,9 +112,14 @@ function pathGetOrSetValue<TObject, TValue>(
 	object: TObject,
 ): TGetPropertyValue<TValue|void> {
 	let nextValue: TGetPropertyValue<any> = resolvePath(object)
-	for (let i = 0, len = path.length - 1; i < len; i++) {
-		const node = path[i]
-		nextValue = nextValue(node.getValue, node.isValueProperty as any)
+	const len = path.length
+	if (len > 1) {
+		let node = path[0]
+		for (let i = 1; i < len; i++) {
+			const next = path[i]
+			nextValue = nextValue(node.getValue, node.isValueProperty as any, void 0, next.getValue as any)
+			node = next
+		}
 	}
 
 	return nextValue
@@ -336,6 +342,37 @@ export class Path<TObject, TValue = TObject> {
 		setValue?: TSetValue2<TValue, TNextValue>,
 	): Path<TObject, TNextValue> {
 		return this.append(getValue, setValue, false)
+	}
+
+	// public propertyAny<TNextValue>(
+	// 	getValue: TGetValue2<TValue, TNextValue>,
+	// 	setValue?: TSetValue2<TValue, TNextValue>,
+	// ): Path<TObject, TNextValue> {
+	// 	return this.append((value, newValue, next): any => {
+	// 		// tslint:disable-next-line:forin
+	// 		for (const key in value) {
+	// 			if (next != null) {
+	// 				next(value[key] as any)
+	// 			}
+	// 		}
+	// 	}, null, false)
+	// }
+
+	public collection<TNextValue>(
+		getValue: TGetValue2<TValue, TNextValue>,
+		setValue?: TSetValue2<TValue, TNextValue>,
+	): Path<TObject, TNextValue> {
+		return this.append((value, newValue, next): any => {
+			if (isIterable(value)) {
+				if (next == null) {
+					value[Symbol.iterator]()
+				} else {
+					for (const item of value as any) {
+						next(item)
+					}
+				}
+			}
+		}, null, false)
 	}
 
 	// public append(): Path<TObject, AsyncPropertyValueOf<TValue>>

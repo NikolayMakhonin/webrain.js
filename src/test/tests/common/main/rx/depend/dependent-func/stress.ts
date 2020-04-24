@@ -3,7 +3,7 @@ import {assert} from '../../../../../../../main/common/test/Assert'
 import {describe, it, xdescribe, xit} from '../../../../../../../main/common/test/Mocha'
 import {stressTest} from '../src/stress-test'
 
-describe('common > main > rx > depend > dependent-func / stress', function() {
+xdescribe('common > main > rx > depend > dependent-func / stress', function() {
 	this.timeout(60 * 60 * 1000)
 
 	xit('all', async function() {

@@ -49,10 +49,20 @@ export type AsyncPropertyPathOf<TObject, TValue>
 
 // region TGetPropertyValue
 
+export type TNextValueFunc<TNextValue> = (nextValue: TNextValue) => void
+
 export type TGetValue1<TValue, TNextValue>
-	= (value: AsyncValueOf<TValue>, newValue?: AsyncValueOf<TNextValue>) => TNextValue
+	= (
+		value: AsyncValueOf<TValue>,
+		newValue?: AsyncValueOf<TNextValue>,
+		next?: TNextValueFunc<TNextValue>,
+	) => TNextValue
 export type TGetValue2<TValue, TNextValue>
-	= (value: AsyncPropertyValueOf<TValue>, newValue?: AsyncPropertyValueOf<TNextValue>) => TNextValue
+	= (
+		value: AsyncPropertyValueOf<TValue>,
+		newValue?: AsyncPropertyValueOf<TNextValue>,
+		next?: TNextValueFunc<TNextValue>,
+	) => TNextValue
 
 export type TGetPropertyValueResult1<TNextValue> = TGetPropertyValue<TNextValue>
 export type TGetPropertyValue1<TValue> =
@@ -60,6 +70,7 @@ export type TGetPropertyValue1<TValue> =
 		getValue: TGetValue1<TValue, TNextValue>,
 		isValueProperty: true,
 		newValue?: TNextValue,
+		next?: TNextValueFunc<TNextValue>,
 	) => TGetPropertyValueResult1<TNextValue>
 
 export type TGetPropertyValueResult2<TNextValue> = TGetPropertyValue<TNextValue>
@@ -68,6 +79,7 @@ export type TGetPropertyValue2<TValue> =
 		getValue: TGetValue2<TValue, TNextValue>,
 		isValueProperty?: false,
 		newValue?: TNextValue,
+		next?: TNextValueFunc<TNextValue>,
 	) => TGetPropertyValueResult2<TNextValue>
 
 export type TGetPropertyValueResult3<TValue> = AsyncPropertyValueOf<TValue>

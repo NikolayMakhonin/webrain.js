@@ -189,7 +189,7 @@ export class PropertyClass<TObject> extends ObservableClass {
 	/** @internal */
 	public $object: TObject
 	constructor(object: TObject) {
-		super();
+		super()
 		(this as any).$object = object
 	}
 }
