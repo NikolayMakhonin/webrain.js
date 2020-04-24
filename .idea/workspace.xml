@@ -30,7 +30,20 @@
     <select />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="69b2ee16-521b-4efd-b473-8e19e3df4d09" name="Default Changelist" comment="" />
+    <list default="true" id="69b2ee16-521b-4efd-b473-8e19e3df4d09" name="Default Changelist" comment="">
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/common/rx/object/properties/path/builder/ObjectSubscriber.ts" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/common/rx/object/properties/path/builder/contracts/deep-subscribe.ts" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/common/rx/object/properties/path/builder/deep-subscribe.ts" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/common/rx/object/properties/path/builder/helpers/PropertiesPath.ts" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/common/rx/object/properties/path/builder/iterate-rule.ts" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/test/tests/common/main/rx/object/properties/path/builder/RuleBuilder.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/test/tests/common/main/rx/object/properties/path/builder/RuleBuilder.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/test/tests/common/main/rx/object/properties/path/builder/deep-subscribe-new.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/test/tests/common/main/rx/object/properties/path/builder/deep-subscribe-new.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/test/tests/common/main/rx/object/properties/path/builder/deep-subscribe.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/test/tests/common/main/rx/object/properties/path/builder/deep-subscribe.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/test/tests/common/main/rx/object/properties/path/builder/helpers/func-properties-path.ts" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/test/tests/common/main/rx/object/properties/path/builder/helpers/src/TestDeepSubscribe.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/test/tests/common/main/rx/object/properties/path/builder/helpers/src/TestDeepSubscribe.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/test/tests/common/main/rx/object/properties/path/builder/iterate-rule.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/test/tests/common/main/rx/object/properties/path/builder/iterate-rule.ts" afterDir="false" />
+    </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
     <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
@@ -199,7 +212,7 @@
       <ui>bdd</ui>
       <extra-mocha-options>--opts ./env/mocha/configs/babel/mocha.opts --watch</extra-mocha-options>
       <test-kind>PATTERN</test-kind>
-      <test-pattern>./src/test/tests/common/main/rx/object/properties/path/builder/**/RuleBuilder.ts</test-pattern>
+      <test-pattern>./src/test/tests/common/main/rx/object/properties/path/builder/**/*.*</test-pattern>
       <method v="2" />
     </configuration>
     <configuration name="RX - Tests" type="mocha-javascript-test-runner">
@@ -471,14 +484,7 @@
       <workItem from="1587492080282" duration="280000" />
       <workItem from="1587492623228" duration="13478000" />
       <workItem from="1587565663784" duration="7699000" />
-      <workItem from="1587720746493" duration="3135000" />
-    </task>
-    <task id="LOCAL-00388" summary="Object builders refactoring and debugging... Tests OK.">
-      <created>1586928931138</created>
-      <option name="number" value="00388" />
-      <option name="presentableId" value="LOCAL-00388" />
-      <option name="project" value="LOCAL" />
-      <updated>1586928931138</updated>
+      <workItem from="1587720746493" duration="3679000" />
     </task>
     <task id="LOCAL-00389" summary="Object builders refactoring and debugging... Tests OK.">
       <created>1586963033226</created>
@@ -816,7 +822,14 @@
       <option name="project" value="LOCAL" />
       <updated>1587724972789</updated>
     </task>
-    <option name="localTasksCounter" value="437" />
+    <task id="LOCAL-00437" summary="Make Path Builder based on deep-subscribe RuleBuilder">
+      <created>1587725427572</created>
+      <option name="number" value="00437" />
+      <option name="presentableId" value="LOCAL-00437" />
+      <option name="project" value="LOCAL" />
+      <updated>1587725427572</updated>
+    </task>
+    <option name="localTasksCounter" value="438" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -905,22 +918,26 @@
     <option name="LAST_COMMIT_MESSAGE" value="Make Path Builder based on deep-subscribe RuleBuilder" />
   </component>
   <component name="WindowStateProjectService">
-    <state x="38" y="39" width="1718" height="786" key="#com.intellij.execution.impl.EditConfigurationsDialog" timestamp="1587725414623">
+    <state x="38" y="39" width="1718" height="786" key="#com.intellij.execution.impl.EditConfigurationsDialog" timestamp="1587725642583">
       <screen x="0" y="0" width="1920" height="882" />
     </state>
-    <state x="38" y="39" width="1718" height="786" key="#com.intellij.execution.impl.EditConfigurationsDialog/0.0.1920.882@0.0.1920.882" timestamp="1587725414623" />
+    <state x="38" y="39" width="1718" height="786" key="#com.intellij.execution.impl.EditConfigurationsDialog/0.0.1920.882@0.0.1920.882" timestamp="1587725642583" />
     <state x="91" y="91" width="1738" height="700" key="#com.intellij.execution.junit2.states.ComparisonFailureState$DiffDialog" timestamp="1587445854541">
       <screen x="0" y="0" width="1920" height="882" />
     </state>
     <state x="91" y="91" width="1738" height="700" key="#com.intellij.execution.junit2.states.ComparisonFailureState$DiffDialog/0.0.1920.882@0.0.1920.882" timestamp="1587445854541" />
+    <state x="623" y="124" key="#com.intellij.refactoring.safeDelete.UnsafeUsagesDialog" timestamp="1587725796184">
+      <screen x="0" y="0" width="1920" height="882" />
+    </state>
+    <state x="623" y="124" key="#com.intellij.refactoring.safeDelete.UnsafeUsagesDialog/0.0.1920.882@0.0.1920.882" timestamp="1587725796184" />
     <state x="651" y="254" key="ANALYSIS_DLG_com.intellij.analysis.BaseAnalysisAction$1" timestamp="1586875498549">
       <screen x="0" y="0" width="1920" height="882" />
     </state>
     <state x="651" y="254" key="ANALYSIS_DLG_com.intellij.analysis.BaseAnalysisAction$1/0.0.1920.882@0.0.1920.882" timestamp="1586875498549" />
-    <state x="0" y="0" width="1918" height="882" key="CommitChangelistDialog2" timestamp="1587724959927">
+    <state x="0" y="0" width="1918" height="882" key="CommitChangelistDialog2" timestamp="1587725424633">
       <screen x="0" y="0" width="1920" height="882" />
     </state>
-    <state x="0" y="0" width="1918" height="882" key="CommitChangelistDialog2/0.0.1920.882@0.0.1920.882" timestamp="1587724959927" />
+    <state x="0" y="0" width="1918" height="882" key="CommitChangelistDialog2/0.0.1920.882@0.0.1920.882" timestamp="1587725424633" />
     <state width="884" height="550" key="DebuggerActiveHint" timestamp="1587540221049">
       <screen x="0" y="0" width="1920" height="882" />
     </state>
@@ -933,22 +950,22 @@
       <screen x="0" y="0" width="1920" height="882" />
     </state>
     <state x="686" y="134" key="FileChooserDialogImpl/0.0.1920.882@0.0.1920.882" timestamp="1587352857058" />
-    <state width="614" height="526" key="GridCell.Tab.0.bottom" timestamp="1587724881392">
+    <state width="614" height="270" key="GridCell.Tab.0.bottom" timestamp="1587725811521">
       <screen x="0" y="0" width="1920" height="882" />
     </state>
-    <state width="614" height="526" key="GridCell.Tab.0.bottom/0.0.1920.882@0.0.1920.882" timestamp="1587724881392" />
-    <state width="614" height="526" key="GridCell.Tab.0.center" timestamp="1587724881392">
+    <state width="614" height="270" key="GridCell.Tab.0.bottom/0.0.1920.882@0.0.1920.882" timestamp="1587725811521" />
+    <state width="614" height="270" key="GridCell.Tab.0.center" timestamp="1587725811521">
       <screen x="0" y="0" width="1920" height="882" />
     </state>
-    <state width="614" height="526" key="GridCell.Tab.0.center/0.0.1920.882@0.0.1920.882" timestamp="1587724881392" />
-    <state width="614" height="526" key="GridCell.Tab.0.left" timestamp="1587724881392">
+    <state width="614" height="270" key="GridCell.Tab.0.center/0.0.1920.882@0.0.1920.882" timestamp="1587725811521" />
+    <state width="614" height="270" key="GridCell.Tab.0.left" timestamp="1587725811520">
       <screen x="0" y="0" width="1920" height="882" />
     </state>
-    <state width="614" height="526" key="GridCell.Tab.0.left/0.0.1920.882@0.0.1920.882" timestamp="1587724881392" />
-    <state width="614" height="526" key="GridCell.Tab.0.right" timestamp="1587724881392">
+    <state width="614" height="270" key="GridCell.Tab.0.left/0.0.1920.882@0.0.1920.882" timestamp="1587725811520" />
+    <state width="614" height="270" key="GridCell.Tab.0.right" timestamp="1587725811521">
       <screen x="0" y="0" width="1920" height="882" />
     </state>
-    <state width="614" height="526" key="GridCell.Tab.0.right/0.0.1920.882@0.0.1920.882" timestamp="1587724881392" />
+    <state width="614" height="270" key="GridCell.Tab.0.right/0.0.1920.882@0.0.1920.882" timestamp="1587725811521" />
     <state width="858" height="285" key="GridCell.Tab.1.bottom" timestamp="1587546669895">
       <screen x="0" y="0" width="1920" height="882" />
     </state>

@@ -5,6 +5,7 @@ import {ObjectSet} from '../../../../../../../../../main/common/lists/ObjectSet'
 import {ObservableMap} from '../../../../../../../../../main/common/lists/ObservableMap'
 import {ObservableSet} from '../../../../../../../../../main/common/lists/ObservableSet'
 import {SortedList} from '../../../../../../../../../main/common/lists/SortedList'
+import {ObservableObjectBuilder} from '../../../../../../../../../main/common/rx/object/ObservableObjectBuilder'
 import {ValueChangeType, ValueKeyType} from '../../../../../../../../../main/common/rx/object/properties/path/builder/contracts/common'
 import {ANY, ANY_DISPLAY, COLLECTION_PREFIX} from '../../../../../../../../../main/common/rx/object/properties/path/builder/contracts/constants'
 import {
@@ -13,7 +14,6 @@ import {
 } from '../../../../../../../../../main/common/rx/object/properties/path/builder/contracts/rule-subscribe'
 import {IRule, RuleType} from '../../../../../../../../../main/common/rx/object/properties/path/builder/contracts/rules'
 import {RuleBuilder} from '../../../../../../../../../main/common/rx/object/properties/path/builder/RuleBuilder'
-import {ObservableObjectBuilder} from '../../../../../../../../../main/common/rx/object/ObservableObjectBuilder'
 import {assert} from '../../../../../../../../../main/common/test/Assert'
 import {describe, it} from '../../../../../../../../../main/common/test/Mocha'
 
