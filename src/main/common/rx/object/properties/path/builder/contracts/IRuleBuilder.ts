@@ -4,7 +4,6 @@ import {VALUE_PROPERTY_DEFAULT} from '../../../../../../helpers/value-property'
 import {ANY, COLLECTION_PREFIX} from './constants'
 import {IRuleSubscribe, ISubscribeObject} from './rule-subscribe'
 import {IRepeatCondition, IRule} from './rules'
-import {RuleSubscribe} from "../rules-subscribe";
 
 export type IRuleFactory<TObject, TValue, TValueKeys extends string | number>
 	= (builder: IRuleBuilder<TObject, TValueKeys>) => IRuleBuilder<TValue, TValueKeys>
@@ -63,12 +62,6 @@ export type TRulePathObject<TObject, TValueKeys extends string | number> =
 	& {
 	[key in RULE_PATH_OBJECT_VALUE]: TObject
 }
-export type TRulePathObjectValueOf<TObject extends TRulePathObject<any, any>>
-	= TObject extends { [key in RULE_PATH_OBJECT_VALUE]: any }
-	? TObject[RULE_PATH_OBJECT_VALUE]
-	: never
-export type RuleGetValueFunc<TObject, TValue, TValueKeys extends string | number>
-	= (o: TRulePathObject<TObject, TValueKeys>) => TValue
 
 export interface IRuleBuilder<TObject = any, TValueKeys extends string | number = never> {
 	ruleFirst: IRule
@@ -211,12 +204,6 @@ export interface IRuleBuilder<TObject = any, TValueKeys extends string | number 
 	 * IMapChanged & Map, Map
 	 */
 	mapRegexp<TValue = MapValueOf<TObject>>(keyRegexp: RegExp): IRuleBuilder<TValue, TValueKeys>
-
-	/**
-	 * @deprecated because babel transform object.map property to unparseable code
-	 */
-	path<TValue>(getValueFunc: (o: TObject) => TValue)
-		: IRuleBuilder<any, TValueKeys>
 
 	if<TValue>(
 		...exclusiveConditionRules: Array<[

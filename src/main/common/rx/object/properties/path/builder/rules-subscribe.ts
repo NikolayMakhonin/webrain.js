@@ -5,8 +5,7 @@ import {IListChanged} from '../../../../../lists/contracts/IListChanged'
 import {IMapChanged} from '../../../../../lists/contracts/IMapChanged'
 import {ISetChanged} from '../../../../../lists/contracts/ISetChanged'
 import {IUnsubscribe, IUnsubscribeOrVoid} from '../../../../subjects/observable'
-import {IPropertyChanged} from '../../../IPropertyChanged'
-import {ValueChangeType, ValueKeyType} from './contracts/common'
+import {ValueKeyType} from './contracts/common'
 import {ANY} from './contracts/constants'
 import {IChangeItem, IRuleSubscribe, ISubscribeObject} from './contracts/rule-subscribe'
 import {RuleType} from './contracts/rules'
@@ -15,7 +14,6 @@ import {Rule} from './rules'
 function forEachCollection<TItem>(
 	iterable: Iterable<TItem>,
 	changeItem: IChangeItem<TItem>,
-	isSubscribe,
 ) {
 	for (const item of iterable) {
 		changeItem(item, null, ValueKeyType.CollectionAny)
@@ -149,7 +147,7 @@ export function subscribeIterable<TItem>(
 		return null
 	}
 
-	forEachCollection(object, changeItem, true)
+	forEachCollection(object, changeItem)
 }
 
 // endregion
@@ -164,7 +162,7 @@ export function subscribeList<TItem>(
 		return null
 	}
 
-	forEachCollection(object, changeItem, true)
+	forEachCollection(object, changeItem)
 
 	return true
 }
@@ -181,7 +179,7 @@ export function subscribeSet<TItem>(
 		return null
 	}
 
-	forEachCollection(object, changeItem, true)
+	forEachCollection(object, changeItem)
 
 	return true
 }
@@ -246,11 +244,6 @@ export function subscribeCollection<TItem>(
 // endregion
 
 // region subscribeChange
-
-let _changeId = 0
-export function getChangeId(): number {
-	return ++_changeId
-}
 
 export function subscribeChange(
 	object: any,
@@ -317,10 +310,12 @@ export class RuleSubscribe<TObject = any, TChild = any>
 
 	public constructor(
 		subscribe: ISubscribeObject<TObject, TChild>,
+		subType: SubscribeObjectType,
 		description: string,
 	) {
 		super(RuleType.Action, description)
 		this.subscribe = subscribe
+		this.subType = subType
 	}
 
 	public clone(): IRuleSubscribe<TObject, TChild> {
@@ -342,7 +337,7 @@ export class RuleSubscribe<TObject = any, TChild = any>
 }
 
 export function createSubscribeObject<TObject extends object, TValue>(
-	type: SubscribeObjectType,
+	subType: SubscribeObjectType,
 	propertyPredicate: (propertyName: string, object) => boolean,
 	...propertyNames: string[]
 ): ISubscribeObject<TObject, TValue> {
@@ -354,14 +349,14 @@ export function createSubscribeObject<TObject extends object, TValue>(
 		if (typeof propertyPredicate !== 'function') {
 			throw new Error(`propertyPredicate (${propertyPredicate}) is not a function`)
 		}
-	} else if (type === SubscribeObjectType.Property) {
+	} else if (subType === SubscribeObjectType.Property) {
 		propertyPredicate = createPropertyPredicate(propertyNames)
 		if (!propertyPredicate) {
 			propertyNames = null
 		}
 	}
 
-	switch (type) {
+	switch (subType) {
 		case SubscribeObjectType.Property:
 			return (object, changeItem) => subscribeObject<TValue>(
 				propertyNames,
@@ -376,26 +371,7 @@ export function createSubscribeObject<TObject extends object, TValue>(
 				changeItem,
 			)
 		default:
-			throw new Error(`Unknown SubscribeObjectType: ${type}`)
-	}
-}
-
-export class RuleSubscribeObject<TObject extends object, TValue>
-	extends RuleSubscribe<TObject, TValue>
-	implements IRuleSubscribe<TObject, TValue>
-{
-	constructor(
-		type: SubscribeObjectType,
-		propertyPredicate: (propertyName: string, object) => boolean,
-		description: string,
-		...propertyNames: string[]
-	) {
-		super(
-			createSubscribeObject<TObject, TValue>(type, propertyPredicate, ...propertyNames),
-			description,
-		)
-
-		this.subType = type
+			throw new Error(`Unknown SubscribeObjectType: ${subType}`)
 	}
 }
 
@@ -459,48 +435,6 @@ export function createSubscribeMap<TObject extends Map<K, V>, K, V>(
 		object,
 		changeItem,
 	)
-}
-
-export class RuleSubscribeMap<TObject extends Map<K, V>, K, V>
-	extends RuleSubscribe<TObject, V>
-	implements IRuleSubscribe<TObject, V>
-{
-	constructor(
-		keyPredicate: (key: K, object) => boolean,
-		description: string,
-		...keys: K[]
-	) {
-		super(
-			createSubscribeMap<TObject, K, V>(keyPredicate, ...keys),
-			description,
-		)
-	}
-}
-
-// endregion
-
-// region RuleSubscribeCollection
-
-export class RuleSubscribeCollection<TObject extends Iterable<TItem>, TItem>
-	extends RuleSubscribe<TObject, TItem>
-	implements IRuleSubscribe<TObject, TItem>
-{
-	constructor(description: string) {
-		super(subscribeCollection, description)
-	}
-}
-
-// endregion
-
-// region RuleSubscribeChange
-
-export class RuleSubscribeChange<TObject>
-	extends RuleSubscribe<TObject, number>
-	implements IRuleSubscribe<TObject, number>
-{
-	constructor(description: string) {
-		super(subscribeChange, description)
-	}
 }
 
 // endregion

@@ -650,10 +650,10 @@ describe('common > main > rx > properties > builder > RuleBuilder', function() {
 
 		assertRule(simpleRule1, {
 			type: RuleType.Action,
+			subType: SubscribeObjectType.ValueProperty,
 			objectTypes: ['object', 'array'],
 			properties: [VALUE_PROPERTY_DEFAULT, 'prop1', 'prop2'],
 			description: '@prop1|prop2',
-			subType: SubscribeObjectType.ValueProperty,
 		})
 
 		const builder2 = builder.valuePropertyNames<string>('prop2', 'prop3')
@@ -665,16 +665,16 @@ describe('common > main > rx > properties > builder > RuleBuilder', function() {
 
 		assertRule(simpleRule1, {
 			type: RuleType.Action,
+			subType: SubscribeObjectType.ValueProperty,
 			objectTypes: ['object', 'array'],
 			properties: [VALUE_PROPERTY_DEFAULT, 'prop1', 'prop2'],
 			description: '@prop1|prop2',
-			subType: SubscribeObjectType.ValueProperty,
 			next: {
 				type: RuleType.Action,
+				subType: SubscribeObjectType.ValueProperty,
 				objectTypes: ['object', 'array'],
 				properties: [VALUE_PROPERTY_DEFAULT, 'prop2', 'prop3'],
 				description: '@prop2|prop3',
-				subType: SubscribeObjectType.ValueProperty,
 			},
 		})
 
@@ -687,22 +687,22 @@ describe('common > main > rx > properties > builder > RuleBuilder', function() {
 
 		assertRule(simpleRule1, {
 			type: RuleType.Action,
+			subType: SubscribeObjectType.ValueProperty,
 			objectTypes: ['object', 'array'],
 			properties: [VALUE_PROPERTY_DEFAULT, 'prop1', 'prop2'],
 			description: '@prop1|prop2',
-			subType: SubscribeObjectType.ValueProperty,
 			next: {
 				type: RuleType.Action,
+				subType: SubscribeObjectType.ValueProperty,
 				objectTypes: ['object', 'array'],
 				properties: [VALUE_PROPERTY_DEFAULT, 'prop2', 'prop3'],
 				description: '@prop2|prop3',
-				subType: SubscribeObjectType.ValueProperty,
 				next: {
 					type: RuleType.Action,
+					subType: SubscribeObjectType.ValueProperty,
 					objectTypes: ['object', 'array'],
 					properties: [VALUE_PROPERTY_DEFAULT, 'prop3', 'prop4'],
 					description: '@prop3|prop4',
-					subType: SubscribeObjectType.ValueProperty,
 				},
 			},
 		})
@@ -874,6 +874,7 @@ describe('common > main > rx > properties > builder > RuleBuilder', function() {
 
 		assertRule(rule1, {
 			type: RuleType.Action,
+			subType: SubscribeObjectType.Property,
 			objectTypes: ['map'],
 			properties: ['prop1', 'prop2'],
 			description: '/prop1|prop2/',
@@ -886,11 +887,13 @@ describe('common > main > rx > properties > builder > RuleBuilder', function() {
 
 		assertRule(rule1, {
 			type: RuleType.Action,
+			subType: SubscribeObjectType.Property,
 			objectTypes: ['map'],
 			properties: ['prop1', 'prop2'],
 			description: '/prop1|prop2/',
 			next: {
 				type: RuleType.Action,
+				subType: SubscribeObjectType.Property,
 				objectTypes: ['map'],
 				properties: ['prop2', 'prop3'],
 				description: '/prop2|prop3/',
@@ -904,16 +907,19 @@ describe('common > main > rx > properties > builder > RuleBuilder', function() {
 
 		assertRule(rule1, {
 			type: RuleType.Action,
+			subType: SubscribeObjectType.Property,
 			objectTypes: ['map'],
 			properties: ['prop1', 'prop2'],
 			description: '/prop1|prop2/',
 			next: {
 				type: RuleType.Action,
+				subType: SubscribeObjectType.Property,
 				objectTypes: ['map'],
 				properties: ['prop2', 'prop3'],
 				description: '/prop2|prop3/',
 				next: {
 					type: RuleType.Action,
+					subType: SubscribeObjectType.Property,
 					objectTypes: ['map'],
 					properties: ['prop3', 'prop4'],
 					description: '/prop3|prop4/',
@@ -937,6 +943,7 @@ describe('common > main > rx > properties > builder > RuleBuilder', function() {
 
 		assertRule(rule1, {
 			type: RuleType.Action,
+			subType: SubscribeObjectType.Property,
 			objectTypes: ['map'],
 			properties: ANY,
 			description: COLLECTION_PREFIX,
@@ -949,11 +956,13 @@ describe('common > main > rx > properties > builder > RuleBuilder', function() {
 
 		assertRule(rule1, {
 			type: RuleType.Action,
+			subType: SubscribeObjectType.Property,
 			objectTypes: ['map'],
 			properties: ANY,
 			description: COLLECTION_PREFIX,
 			next: {
 				type: RuleType.Action,
+				subType: SubscribeObjectType.Property,
 				objectTypes: ['map'],
 				properties: ANY,
 				description: COLLECTION_PREFIX,
@@ -967,16 +976,19 @@ describe('common > main > rx > properties > builder > RuleBuilder', function() {
 
 		assertRule(rule1, {
 			type: RuleType.Action,
+			subType: SubscribeObjectType.Property,
 			objectTypes: ['map'],
 			properties: ANY,
 			description: COLLECTION_PREFIX,
 			next: {
 				type: RuleType.Action,
+				subType: SubscribeObjectType.Property,
 				objectTypes: ['map'],
 				properties: ANY,
 				description: COLLECTION_PREFIX,
 				next: {
 					type: RuleType.Action,
+					subType: SubscribeObjectType.Property,
 					objectTypes: ['map'],
 					properties: ANY,
 					description: `${COLLECTION_PREFIX}prop1|${ANY_DISPLAY}|prop2`,
@@ -991,21 +1003,25 @@ describe('common > main > rx > properties > builder > RuleBuilder', function() {
 
 		assertRule(rule1, {
 			type: RuleType.Action,
+			subType: SubscribeObjectType.Property,
 			objectTypes: ['map'],
 			properties: ANY,
 			description: COLLECTION_PREFIX,
 			next: {
 				type: RuleType.Action,
+				subType: SubscribeObjectType.Property,
 				objectTypes: ['map'],
 				properties: ANY,
 				description: COLLECTION_PREFIX,
 				next: {
 					type: RuleType.Action,
+					subType: SubscribeObjectType.Property,
 					objectTypes: ['map'],
 					properties: ANY,
 					description: `${COLLECTION_PREFIX}prop1|${ANY_DISPLAY}|prop2`,
 					next: {
 						type: RuleType.Action,
+						subType: SubscribeObjectType.Property,
 						objectTypes: ['map'],
 						properties: ANY,
 						description: COLLECTION_PREFIX + ANY_DISPLAY,
@@ -1029,6 +1045,7 @@ describe('common > main > rx > properties > builder > RuleBuilder', function() {
 
 		assertRule(rule1, {
 			type: RuleType.Action,
+			subType: SubscribeObjectType.Property,
 			objectTypes: ['map'],
 			properties: ['prop1'],
 			description: COLLECTION_PREFIX + 'prop1',
@@ -1041,11 +1058,13 @@ describe('common > main > rx > properties > builder > RuleBuilder', function() {
 
 		assertRule(rule1, {
 			type: RuleType.Action,
+			subType: SubscribeObjectType.Property,
 			objectTypes: ['map'],
 			properties: ['prop1'],
 			description: COLLECTION_PREFIX + 'prop1',
 			next: {
 				type: RuleType.Action,
+				subType: SubscribeObjectType.Property,
 				objectTypes: ['map'],
 				properties: ['prop2'],
 				description: COLLECTION_PREFIX + 'prop2',
@@ -1059,16 +1078,19 @@ describe('common > main > rx > properties > builder > RuleBuilder', function() {
 
 		assertRule(rule1, {
 			type: RuleType.Action,
+			subType: SubscribeObjectType.Property,
 			objectTypes: ['map'],
 			properties: ['prop1'],
 			description: COLLECTION_PREFIX + 'prop1',
 			next: {
 				type: RuleType.Action,
+				subType: SubscribeObjectType.Property,
 				objectTypes: ['map'],
 				properties: ['prop2'],
 				description: COLLECTION_PREFIX + 'prop2',
 				next: {
 					type: RuleType.Action,
+					subType: SubscribeObjectType.Property,
 					objectTypes: ['map'],
 					properties: ['prop3', 'prop4', 'prop5'],
 					description: COLLECTION_PREFIX + 'prop3|prop4|prop5',
@@ -1092,6 +1114,7 @@ describe('common > main > rx > properties > builder > RuleBuilder', function() {
 
 		assertRule(rule1, {
 			type: RuleType.Action,
+			subType: SubscribeObjectType.Property,
 			objectTypes: ['set'],
 			properties: ANY,
 			description: COLLECTION_PREFIX,
@@ -1104,11 +1127,13 @@ describe('common > main > rx > properties > builder > RuleBuilder', function() {
 
 		assertRule(rule1, {
 			type: RuleType.Action,
+			subType: SubscribeObjectType.Property,
 			objectTypes: ['map', 'set', 'list', 'iterable'],
 			properties: ANY,
 			description: COLLECTION_PREFIX,
 			next: {
 				type: RuleType.Action,
+				subType: SubscribeObjectType.Property,
 				objectTypes: ['set'],
 				properties: ANY,
 				description: COLLECTION_PREFIX,
@@ -1122,16 +1147,19 @@ describe('common > main > rx > properties > builder > RuleBuilder', function() {
 
 		assertRule(rule1, {
 			type: RuleType.Action,
+			subType: SubscribeObjectType.Property,
 			objectTypes: ['set'],
 			properties: ANY,
 			description: COLLECTION_PREFIX,
 			next: {
 				type: RuleType.Action,
+				subType: SubscribeObjectType.Property,
 				objectTypes: ['set'],
 				properties: ANY,
 				description: COLLECTION_PREFIX,
 				next: {
 					type: RuleType.Action,
+					subType: SubscribeObjectType.Property,
 					objectTypes: ['set'],
 					properties: ANY,
 					description: COLLECTION_PREFIX,

@@ -31,10 +31,8 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="69b2ee16-521b-4efd-b473-8e19e3df4d09" name="Default Changelist" comment="">
-      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/common/rx/object/properties/path/builder/RuleBuilder.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/common/rx/object/properties/path/builder/RuleBuilder.ts" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/common/rx/object/properties/path/builder/contracts/IRuleBuilder.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/common/rx/object/properties/path/builder/contracts/IRuleBuilder.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/common/rx/object/properties/path/builder/contracts/rule-subscribe.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/common/rx/object/properties/path/builder/contracts/rule-subscribe.ts" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/common/rx/object/properties/path/builder/rules-subscribe.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/common/rx/object/properties/path/builder/rules-subscribe.ts" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/test/tests/common/main/rx/object/properties/path/builder/RuleBuilder.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/test/tests/common/main/rx/object/properties/path/builder/RuleBuilder.ts" afterDir="false" />
     </list>
@@ -492,14 +490,7 @@
       <workItem from="1587492623228" duration="13478000" />
       <workItem from="1587565663784" duration="7699000" />
       <workItem from="1587720746493" duration="5289000" />
-      <workItem from="1587787076321" duration="13849000" />
-    </task>
-    <task id="LOCAL-00392" summary="depend: added lazy mode, but not tested.">
-      <created>1587125391390</created>
-      <option name="number" value="00392" />
-      <option name="presentableId" value="LOCAL-00392" />
-      <option name="project" value="LOCAL" />
-      <updated>1587125391390</updated>
+      <workItem from="1587787076321" duration="14986000" />
     </task>
     <task id="LOCAL-00393" summary="depend: added lazy mode, but not tested.">
       <created>1587133993442</created>
@@ -837,7 +828,14 @@
       <option name="project" value="LOCAL" />
       <updated>1587790198419</updated>
     </task>
-    <option name="localTasksCounter" value="441" />
+    <task id="LOCAL-00441" summary="Path Builder: refactoring... Tests OK">
+      <created>1587805009362</created>
+      <option name="number" value="00441" />
+      <option name="presentableId" value="LOCAL-00441" />
+      <option name="project" value="LOCAL" />
+      <updated>1587805009363</updated>
+    </task>
+    <option name="localTasksCounter" value="442" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -898,7 +896,6 @@
   <component name="VcsManagerConfiguration">
     <option name="CHECK_CODE_SMELLS_BEFORE_PROJECT_COMMIT" value="false" />
     <option name="CHECK_NEW_TODO" value="false" />
-    <MESSAGE value="Object builders refactoring is completed. Old Tests OK." />
     <MESSAGE value="Object builders refactoring is completed. Tests OK." />
     <MESSAGE value="Object builders debugging... Tests OK." />
     <MESSAGE value="Object builders refactoring and debugging... Tests OK." />
@@ -923,17 +920,22 @@
     <MESSAGE value="Path Builder: delete unnecessary files" />
     <MESSAGE value="Path Builder: delete func-properties-path" />
     <MESSAGE value="Path Builder: delete unused code" />
-    <option name="LAST_COMMIT_MESSAGE" value="Path Builder: delete unused code" />
+    <MESSAGE value="Path Builder: refactoring... Tests OK" />
+    <option name="LAST_COMMIT_MESSAGE" value="Path Builder: refactoring... Tests OK" />
   </component>
   <component name="WindowStateProjectService">
     <state x="38" y="39" width="1718" height="786" key="#com.intellij.execution.impl.EditConfigurationsDialog" timestamp="1587791206915">
       <screen x="0" y="0" width="1920" height="882" />
     </state>
     <state x="38" y="39" width="1718" height="786" key="#com.intellij.execution.impl.EditConfigurationsDialog/0.0.1920.882@0.0.1920.882" timestamp="1587791206915" />
-    <state x="91" y="91" width="1738" height="700" key="#com.intellij.execution.junit2.states.ComparisonFailureState$DiffDialog" timestamp="1587804989284">
+    <state x="91" y="91" width="1738" height="700" key="#com.intellij.execution.junit2.states.ComparisonFailureState$DiffDialog" timestamp="1587806130405">
       <screen x="0" y="0" width="1920" height="882" />
     </state>
-    <state x="91" y="91" width="1738" height="700" key="#com.intellij.execution.junit2.states.ComparisonFailureState$DiffDialog/0.0.1920.882@0.0.1920.882" timestamp="1587804989284" />
+    <state x="91" y="91" width="1738" height="700" key="#com.intellij.execution.junit2.states.ComparisonFailureState$DiffDialog/0.0.1920.882@0.0.1920.882" timestamp="1587806130405" />
+    <state x="717" y="85" key="#com.intellij.ide.util.MemberChooser" timestamp="1587806074143">
+      <screen x="0" y="0" width="1920" height="882" />
+    </state>
+    <state x="717" y="85" key="#com.intellij.ide.util.MemberChooser/0.0.1920.882@0.0.1920.882" timestamp="1587806074143" />
     <state x="623" y="124" key="#com.intellij.refactoring.safeDelete.UnsafeUsagesDialog" timestamp="1587726051063">
       <screen x="0" y="0" width="1920" height="882" />
     </state>
@@ -942,10 +944,10 @@
       <screen x="0" y="0" width="1920" height="882" />
     </state>
     <state x="651" y="254" key="ANALYSIS_DLG_com.intellij.analysis.BaseAnalysisAction$1/0.0.1920.882@0.0.1920.882" timestamp="1586875498549" />
-    <state x="0" y="0" width="1918" height="882" key="CommitChangelistDialog2" timestamp="1587790197235">
+    <state x="0" y="0" width="1918" height="882" key="CommitChangelistDialog2" timestamp="1587805008343">
       <screen x="0" y="0" width="1920" height="882" />
     </state>
-    <state x="0" y="0" width="1918" height="882" key="CommitChangelistDialog2/0.0.1920.882@0.0.1920.882" timestamp="1587790197235" />
+    <state x="0" y="0" width="1918" height="882" key="CommitChangelistDialog2/0.0.1920.882@0.0.1920.882" timestamp="1587805008343" />
     <state width="884" height="550" key="DebuggerActiveHint" timestamp="1587792572910">
       <screen x="0" y="0" width="1920" height="882" />
     </state>
@@ -958,22 +960,22 @@
       <screen x="0" y="0" width="1920" height="882" />
     </state>
     <state x="686" y="134" key="FileChooserDialogImpl/0.0.1920.882@0.0.1920.882" timestamp="1587352857058" />
-    <state width="681" height="388" key="GridCell.Tab.0.bottom" timestamp="1587804407775">
+    <state width="681" height="388" key="GridCell.Tab.0.bottom" timestamp="1587805987385">
       <screen x="0" y="0" width="1920" height="882" />
     </state>
-    <state width="681" height="388" key="GridCell.Tab.0.bottom/0.0.1920.882@0.0.1920.882" timestamp="1587804407775" />
-    <state width="681" height="388" key="GridCell.Tab.0.center" timestamp="1587804407775">
+    <state width="681" height="388" key="GridCell.Tab.0.bottom/0.0.1920.882@0.0.1920.882" timestamp="1587805987385" />
+    <state width="681" height="388" key="GridCell.Tab.0.center" timestamp="1587805987385">
       <screen x="0" y="0" width="1920" height="882" />
     </state>
-    <state width="681" height="388" key="GridCell.Tab.0.center/0.0.1920.882@0.0.1920.882" timestamp="1587804407775" />
-    <state width="681" height="388" key="GridCell.Tab.0.left" timestamp="1587804407774">
+    <state width="681" height="388" key="GridCell.Tab.0.center/0.0.1920.882@0.0.1920.882" timestamp="1587805987385" />
+    <state width="681" height="388" key="GridCell.Tab.0.left" timestamp="1587805987384">
       <screen x="0" y="0" width="1920" height="882" />
     </state>
-    <state width="681" height="388" key="GridCell.Tab.0.left/0.0.1920.882@0.0.1920.882" timestamp="1587804407774" />
-    <state width="681" height="388" key="GridCell.Tab.0.right" timestamp="1587804407775">
+    <state width="681" height="388" key="GridCell.Tab.0.left/0.0.1920.882@0.0.1920.882" timestamp="1587805987384" />
+    <state width="681" height="388" key="GridCell.Tab.0.right" timestamp="1587805987385">
       <screen x="0" y="0" width="1920" height="882" />
     </state>
-    <state width="681" height="388" key="GridCell.Tab.0.right/0.0.1920.882@0.0.1920.882" timestamp="1587804407775" />
+    <state width="681" height="388" key="GridCell.Tab.0.right/0.0.1920.882@0.0.1920.882" timestamp="1587805987385" />
     <state width="804" height="388" key="GridCell.Tab.1.bottom" timestamp="1587793068037">
       <screen x="0" y="0" width="1920" height="882" />
     </state>
