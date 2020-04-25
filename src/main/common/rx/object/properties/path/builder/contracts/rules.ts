@@ -1,3 +1,5 @@
+import {INextRuleIterable} from "../../../../../deep-subscribe/iterate-rule";
+
 export enum RuleType {
 	Nothing,
 	Never,
@@ -12,7 +14,6 @@ export interface IRule {
 	subType?: any
 	next?: IRule
 	description?: string
-	forEach()
 	clone(): IRule
 }
 

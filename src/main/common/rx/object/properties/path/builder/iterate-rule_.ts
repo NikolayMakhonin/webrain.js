@@ -1,14 +1,11 @@
-import {IRule, RuleType} from "./contracts/rules";
-import {IRuleAny, IRuleIf, IRuleRepeat, RuleRepeatAction} from "../../../../deep-subscribe/contracts/rules";
-import {INextRuleIterable, IRuleIterable} from "../../../../deep-subscribe/iterate-rule";
-import {IRuleSubscribe} from "./contracts/rule-subscribe";
-import {Rule} from "./rules";
+import {IRuleAction} from '../../../../deep-subscribe/contracts/rules'
+import {IRuleSubscribe} from './contracts/rule-subscribe'
+import {IRuleAny, IRuleIf, IRuleRepeat, RuleRepeatAction} from './contracts/rules'
+import {IRule, RuleType} from './contracts/rules'
 
-// export type IChangeItem<TItem> = (
-// 	item: TItem,
-// 	key: any,
-// 	keyType: ValueKeyType,
-// ) => void
+export type INextRuleIterable = (object: any) => IRuleIterable
+export type IRuleOrIterable = IRuleAction | IRuleIterable | INextRuleIterable
+export interface IRuleIterable extends Iterable<IRuleOrIterable> {}
 
 const repeatNext = function*(
 	nextObject: any,
@@ -49,7 +46,7 @@ const repeatNext = function*(
 	_iterateRule(nextObject, repeatRule.rule, repeatRuleNext)
 
 	function repeatRuleNext(nextIterationObject) {
-		repeatNext(
+		return repeatNext(
 			nextIterationObject,
 			index + 1,
 			repeatRule,
@@ -71,9 +68,12 @@ function _iterateRule<TValue>(
 			return
 		}
 
-		const ruleNext: INextRuleIterable = rule.next || next
-			? (nextObject: any) => _iterateRule(nextObject, rule.next, next)
-			: null
+		let {ruleNext} = rule
+		if (ruleNext == null) {
+			rule.ruleNext = ruleNext = rule.next || next
+				? (nextObject: any) => _iterateRule(nextObject, rule.next, next)
+				: null
+		}
 
 		switch (rule.type) {
 			case RuleType.Nothing:
@@ -139,35 +139,3 @@ function _iterateRule<TValue>(
 		}
 	}
 }
-
-class Rule2 extends Rule {
-	public
-}
-
-// export function forEachRule(object, rule: IRule) {
-// 	switch (rule.type) {
-// 		case RuleType.Never:
-// 			return
-// 		case RuleType.If:
-// 			const {conditionRules} = (rule as IRuleIf)
-// 			const len = conditionRules.length
-// 			let i = 0
-// 			for (; i < len; i++) {
-// 				const conditionRule = conditionRules[i]
-// 				if (Array.isArray(conditionRule)) {
-// 					if (conditionRule[0](object)) {
-// 						forEachRule(object, conditionRule[1], ruleNext)
-// 						break
-// 					}
-// 				} else {
-// 					forEachRule(object, conditionRule, ruleNext)
-// 					break
-// 				}
-// 			}
-//
-// 			if (i === len && ruleNext) {
-// 				yield* ruleNext(object)
-// 			}
-// 			break
-// 	}
-// }
