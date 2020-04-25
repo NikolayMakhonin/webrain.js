@@ -9,20 +9,18 @@ import {
 	ObjectValueOf,
 	PropertyValueOf,
 } from './contracts/IRuleBuilder'
-import {IRuleSubscribe} from './contracts/rule-subscribe'
+import {IRuleSubscribe, ISubscribeObject} from './contracts/rule-subscribe'
 import {IRepeatCondition, IRule, RuleRepeatAction} from './contracts/rules'
 import {RuleAny, RuleIf, RuleNever, RuleNothing, RuleRepeat} from './rules'
 import {
-	hasDefaultProperty, RuleSubscribeChange,
-	RuleSubscribeCollection,
-	RuleSubscribeMap,
-	RuleSubscribeObject,
+	createSubscribeMap,
+	hasDefaultProperty, RuleSubscribe, RuleSubscribeChange,
+	RuleSubscribeObject, subscribeChange, subscribeCollection,
 	SubscribeObjectType,
 } from './rules-subscribe'
 
 const RuleSubscribeObjectPropertyNames = RuleSubscribeObject.bind(null, SubscribeObjectType.Property, null)
 const RuleSubscribeObjectValuePropertyNames = RuleSubscribeObject.bind(null, SubscribeObjectType.ValueProperty, null)
-const RuleSubscribeMapKeys = RuleSubscribeMap.bind(null, null)
 
 // const UNSUBSCRIBE_PROPERTY_PREFIX = Math.random().toString(36)
 // let nextUnsubscribePropertyId = 0
@@ -123,6 +121,31 @@ export class RuleBuilder<TObject = any, TValueKeys extends string | number = nev
 
 	public never(): RuleBuilder<any, TValueKeys> {
 		return this.rule<TObject>(RuleNever.instance)
+	}
+
+	/**
+	 * Custom func
+	 */
+	public func<TValue>(
+		subscribe: ISubscribeObject<TObject, TValue>,
+		description?: string,
+	): RuleBuilder<TValue, TValueKeys> {
+		return (this.autoInsertValuePropertyDefault
+			? this.valuePropertyDefault()
+			: this)
+			.ruleSubscribe<TValue>(
+				new RuleSubscribe(subscribe, description),
+			)
+	}
+
+	/**
+	 * Custom func
+	 */
+	public f<TValue>(
+		subscribe: ISubscribeObject<TObject, TValue>,
+		description?: string,
+	): RuleBuilder<TValue, TValueKeys> {
+		return this.func(subscribe, description)
 	}
 
 	/**
@@ -261,7 +284,7 @@ export class RuleBuilder<TObject = any, TValueKeys extends string | number = nev
 			? this.valuePropertyDefault()
 			: this)
 			.ruleSubscribe<TValue>(
-				new RuleSubscribeCollection<any, TValue>(COLLECTION_PREFIX),
+				new RuleSubscribe<any, TValue>(subscribeCollection, COLLECTION_PREFIX),
 			)
 	}
 
@@ -270,7 +293,7 @@ export class RuleBuilder<TObject = any, TValueKeys extends string | number = nev
 			? this.valuePropertyDefault()
 			: this)
 			.ruleSubscribe<number>(
-				new RuleSubscribeChange<any>(CHANGE_COUNT_PREFIX),
+				new RuleSubscribe<any>(subscribeChange, CHANGE_COUNT_PREFIX),
 			)
 	}
 
@@ -282,7 +305,7 @@ export class RuleBuilder<TObject = any, TValueKeys extends string | number = nev
 			? this.valuePropertyDefault()
 			: this)
 			.ruleSubscribe<TValue>(
-				new RuleSubscribeMapKeys(COLLECTION_PREFIX + key, key),
+				new RuleSubscribe(createSubscribeMap<any, any, any>(null, key), COLLECTION_PREFIX + key),
 			)
 	}
 
@@ -294,7 +317,7 @@ export class RuleBuilder<TObject = any, TValueKeys extends string | number = nev
 			? this.valuePropertyDefault()
 			: this)
 			.ruleSubscribe<TValue>(
-				new RuleSubscribeMapKeys(COLLECTION_PREFIX + keys.join('|'), ...keys),
+				new RuleSubscribe(createSubscribeMap<any, any, any>(null, ...keys), COLLECTION_PREFIX + keys.join('|')),
 			)
 	}
 
@@ -306,7 +329,7 @@ export class RuleBuilder<TObject = any, TValueKeys extends string | number = nev
 			? this.valuePropertyDefault()
 			: this)
 			.ruleSubscribe<TValue>(
-				new RuleSubscribeMap(null, COLLECTION_PREFIX) as any,
+				new RuleSubscribe(createSubscribeMap<any, any, any>(null), COLLECTION_PREFIX) as any,
 			)
 	}
 
@@ -321,7 +344,7 @@ export class RuleBuilder<TObject = any, TValueKeys extends string | number = nev
 			? this.valuePropertyDefault()
 			: this)
 			.ruleSubscribe<TValue>(
-				new RuleSubscribeMap(keyPredicate, description) as any,
+				new RuleSubscribe(createSubscribeMap<any, any, any>(keyPredicate), description) as any,
 			)
 	}
 

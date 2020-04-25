@@ -2,8 +2,9 @@ import {AsyncValueOf, ThenableOrIterator} from '../../../../../../async/async'
 import {Diff, TPrimitive} from '../../../../../../helpers/typescript'
 import {VALUE_PROPERTY_DEFAULT} from '../../../../../../helpers/value-property'
 import {ANY, COLLECTION_PREFIX} from './constants'
-import {IRuleSubscribe} from './rule-subscribe'
+import {IRuleSubscribe, ISubscribeObject} from './rule-subscribe'
 import {IRepeatCondition, IRule} from './rules'
+import {RuleSubscribe} from "../rules-subscribe";
 
 export type IRuleFactory<TObject, TValue, TValueKeys extends string | number>
 	= (builder: IRuleBuilder<TObject, TValueKeys>) => IRuleBuilder<TValue, TValueKeys>
@@ -92,6 +93,22 @@ export interface IRuleBuilder<TObject = any, TValueKeys extends string | number 
 	nothing(): IRuleBuilder<TObject, TValueKeys>
 
 	never(): IRuleBuilder<any, TValueKeys>
+
+	/**
+	 * Custom func
+	 */
+	func<TValue>(
+		subscribe: ISubscribeObject<TObject, TValue>,
+		description?: string,
+	): IRuleBuilder<TValue, TValueKeys>
+
+	/**
+	 * Custom func
+	 */
+	f<TValue>(
+		subscribe: ISubscribeObject<TObject, TValue>,
+		description?: string,
+	): IRuleBuilder<TValue, TValueKeys>
 
 	/**
 	 * Object property, Array index

@@ -1,4 +1,4 @@
-/* tslint:disable:no-shadowed-variable no-duplicate-string */
+/* tslint:disable:no-shadowed-variable no-duplicate-string no-empty */
 /* eslint-disable no-useless-escape,computed-property-spacing */
 import {ObjectMap} from '../../../../../../../../../main/common/lists/ObjectMap'
 import {ObjectSet} from '../../../../../../../../../main/common/lists/ObjectSet'
@@ -16,6 +16,8 @@ import {IRule, RuleType} from '../../../../../../../../../main/common/rx/object/
 import {RuleBuilder} from '../../../../../../../../../main/common/rx/object/properties/path/builder/RuleBuilder'
 import {assert} from '../../../../../../../../../main/common/test/Assert'
 import {describe, it} from '../../../../../../../../../main/common/test/Mocha'
+import {SubscribeObjectType} from "../../../../../../../../../main/common/rx/object/properties/path/builder/rules-subscribe";
+import {VALUE_PROPERTY_DEFAULT} from "../../../../../../../../../main/common";
 
 describe('common > main > rx > properties > builder > RuleBuilder', function() {
 	interface IObject {
@@ -54,6 +56,7 @@ describe('common > main > rx > properties > builder > RuleBuilder', function() {
 	function testSubscribe<TObject>(
 		isCollection: boolean,
 		isMap: boolean,
+		isValueObject: boolean,
 		nonObservableObject: TObject,
 		observableObject: TObject,
 		subscribe: ISubscribeObject<TObject, string>,
@@ -84,37 +87,24 @@ describe('common > main > rx > properties > builder > RuleBuilder', function() {
 				assert.ok(typeof key, 'string')
 				assert.ok(key)
 				assert.ok(key.length)
-				assert.strictEqual(keyType, ValueKeyType.Property)
+				assert.strictEqual(keyType, isValueObject
+					? ValueKeyType.ValueProperty
+					: ValueKeyType.Property)
 			}
 		}
 
 		let subscribedItems = []
 
 		function changeItem(
+			value: string,
 			key: any,
-			oldValue: string,
-			newValue: string,
-			changeType: ValueChangeType,
 			keyType: ValueKeyType,
 		) {
-			if ((changeType & ValueChangeType.Unsubscribe) !== 0
-				&& typeof oldValue !== 'undefined'
-			) {
-				assert.ok(oldValue)
-				oldValue = oldValue.trim()
-				checkDebugPropertyName(oldValue, key, keyType)
-				subscribedItems.push('-' + oldValue)
-			}
-
-			if ((changeType & ValueChangeType.Subscribe) !== 0
-				&& typeof newValue !== 'undefined'
-			) {
-				assert.ok(newValue)
-				assert.strictEqual(typeof newValue, 'string', newValue)
-				newValue = newValue.trim()
-				checkDebugPropertyName(newValue, key, keyType)
-				subscribedItems.push('+' + newValue)
-			}
+			assert.ok(value)
+			assert.strictEqual(typeof value, 'string', value)
+			value = value.trim()
+			checkDebugPropertyName(value, key, keyType)
+			subscribedItems.push('+' + value)
 		}
 
 		function testNonSubscribeProperties(object) {
@@ -149,11 +139,6 @@ describe('common > main > rx > properties > builder > RuleBuilder', function() {
 				// region Observable
 
 				const testObservableObject = object => {
-					let unsubscribe = subscribe(object, false, changeItem)
-					testNonSubscribeProperties(object)
-					assert.deepStrictEqual(subscribedItems, [])
-					subscribedItems = []
-
 					for (const property of subscribeProperties) {
 						add(object, property)
 
@@ -163,8 +148,15 @@ describe('common > main > rx > properties > builder > RuleBuilder', function() {
 					}
 					subscribedItems = []
 
-					unsubscribe = subscribe(object, true, changeItem)
-					assert.deepStrictEqual(subscribedItems.sort(), subscribeProperties.map(o => '+value_' + o).sort())
+					subscribe(object, changeItem)
+					if (isValueObject) {
+						assert.deepStrictEqual(subscribedItems.sort(), subscribeProperties
+							.filter(o => o !== VALUE_PROPERTY_DEFAULT)
+							.filter((o, i) => i === 0)
+							.map(o => '+value_' + o).sort())
+					} else {
+						assert.deepStrictEqual(subscribedItems.sort(), subscribeProperties.map(o => '+value_' + o).sort())
+					}
 					subscribedItems = []
 					for (const property of subscribeProperties) {
 						remove(object, property, false)
@@ -190,7 +182,7 @@ describe('common > main > rx > properties > builder > RuleBuilder', function() {
 		}
 	}
 
-	function testObject(properties: string | string[], subscribe: ISubscribeObject<any, string>) {
+	function testObject(properties: string | string[], subscribe: ISubscribeObject<any, string>, isValueObject: boolean) {
 		const builder = new ObservableObjectBuilder()
 
 		if (properties !== ANY) {
@@ -222,7 +214,7 @@ describe('common > main > rx > properties > builder > RuleBuilder', function() {
 		}
 
 		testSubscribe(
-			false, false,
+			false, false, isValueObject,
 			{...builder.object},
 			builder.object,
 			subscribe,
@@ -241,7 +233,7 @@ describe('common > main > rx > properties > builder > RuleBuilder', function() {
 		// 	.writable('p3', null, 'value_p3')
 
 		testSubscribe(
-			false, true,
+			false, true, isValueObject,
 			Object.create({...builder.object}),
 			Object.create(builder.object),
 			subscribe,
@@ -261,7 +253,7 @@ describe('common > main > rx > properties > builder > RuleBuilder', function() {
 		)
 	}
 
-	function testArray(properties: string | string[], subscribe: ISubscribeObject<any, string>) {
+	function testArray(properties: string | string[], subscribe: ISubscribeObject<any, string>, isValueObject: boolean) {
 		if (properties === ANY || properties.indexOf('length') >= 0) {
 			return
 		}
@@ -281,7 +273,7 @@ describe('common > main > rx > properties > builder > RuleBuilder', function() {
 		}
 
 		testSubscribe(
-			false, true,
+			false, true, isValueObject,
 			object,
 			null,
 			subscribe,
@@ -315,7 +307,7 @@ describe('common > main > rx > properties > builder > RuleBuilder', function() {
 		}
 
 		testSubscribe(
-			true, true,
+			true, true, false,
 			map,
 			observableMap,
 			subscribe,
@@ -342,7 +334,7 @@ describe('common > main > rx > properties > builder > RuleBuilder', function() {
 		}
 
 		testSubscribe(
-			true, false,
+			true, false, false,
 			set,
 			observableSet,
 			subscribe,
@@ -356,7 +348,7 @@ describe('common > main > rx > properties > builder > RuleBuilder', function() {
 
 	function testIterable(properties: string | string[], subscribe: ISubscribeObject<any, string>) {
 		assert.strictEqual(
-			subscribe({}, true, item => { assert.fail() }, item => { assert.fail() }),
+			subscribe({}, item => { assert.fail() }),
 			null,
 		)
 
@@ -386,7 +378,7 @@ describe('common > main > rx > properties > builder > RuleBuilder', function() {
 		}
 
 		testSubscribe(
-			true, false,
+			true, false, false,
 			array,
 			null,
 			subscribe,
@@ -439,7 +431,7 @@ describe('common > main > rx > properties > builder > RuleBuilder', function() {
 		}
 
 		testSubscribe(
-			true, false,
+			true, false, false,
 			list,
 			observableList,
 			subscribe,
@@ -463,13 +455,30 @@ describe('common > main > rx > properties > builder > RuleBuilder', function() {
 		delete rule.next
 		delete rule.rule
 		delete rule.rules
+		delete rule.toString
 		delete expected.objectTypes
 		delete expected.properties
 		delete expected.next
 		delete expected.rule
 		delete expected.rules
 
-		assert.deepStrictEqual(rule, expected)
+		assert.deepStrictEqual(rule, expected, null, {
+			customIsPrimitive(o) {
+				if (typeof o === 'function') {
+					return false
+				}
+				return null
+			},
+			customEqual(o1, o2) {
+				if (typeof o1 === 'function') {
+					return typeof o2 === 'function'
+				} else if (typeof o2 === 'function') {
+					return typeof o1 === 'function'
+				}
+
+				return null
+			},
+		})
 	}
 
 	function _assertRule(rule: IRule | any, expected: any) {
@@ -488,10 +497,10 @@ describe('common > main > rx > properties > builder > RuleBuilder', function() {
 			for (const objectType of expected.objectTypes) {
 				switch (objectType) {
 					case 'object':
-						testObject(expected.properties, rule.subscribe)
+						testObject(expected.properties, rule.subscribe, rule.subType === SubscribeObjectType.ValueProperty)
 						break
 					case 'array':
-						testArray(expected.properties, rule.subscribe)
+						testArray(expected.properties, rule.subscribe, rule.subType === SubscribeObjectType.ValueProperty)
 						break
 					case 'map':
 						testMap(expected.properties, rule.subscribe)
@@ -561,6 +570,7 @@ describe('common > main > rx > properties > builder > RuleBuilder', function() {
 
 		assertRule(rule1, {
 			type: RuleType.Action,
+			subType: SubscribeObjectType.Property,
 			objectTypes: ['object', 'array'],
 			properties: ['prop1', 'prop2'],
 			description: '/prop1|prop2/',
@@ -573,11 +583,13 @@ describe('common > main > rx > properties > builder > RuleBuilder', function() {
 
 		assertRule(rule1, {
 			type: RuleType.Action,
+			subType: SubscribeObjectType.Property,
 			objectTypes: ['object', 'array'],
 			properties: ['prop1', 'prop2'],
 			description: '/prop1|prop2/',
 			next: {
 				type: RuleType.Action,
+				subType: SubscribeObjectType.Property,
 				objectTypes: ['object', 'array'],
 				properties: ['prop2', 'prop3'],
 				description: '/prop2|prop3/',
@@ -591,19 +603,106 @@ describe('common > main > rx > properties > builder > RuleBuilder', function() {
 
 		assertRule(rule1, {
 			type: RuleType.Action,
+			subType: SubscribeObjectType.Property,
 			objectTypes: ['object', 'array'],
 			properties: ['prop1', 'prop2'],
 			description: '/prop1|prop2/',
 			next: {
 				type: RuleType.Action,
+				subType: SubscribeObjectType.Property,
 				objectTypes: ['object', 'array'],
 				properties: ['prop2', 'prop3'],
 				description: '/prop2|prop3/',
 				next: {
 					type: RuleType.Action,
+					subType: SubscribeObjectType.Property,
 					objectTypes: ['object', 'array'],
 					properties: ['prop3', 'prop4'],
 					description: '/prop3|prop4/',
+				},
+			},
+		})
+
+		// noinspection JSUnusedLocalSymbols
+		const rule3 = builder3.result().next.next as IRuleSubscribe
+	})
+
+	it('value property', function() {
+		const builder = new RuleBuilder<IObject>({
+			autoInsertValuePropertyDefault: false,
+		})
+		assert.strictEqual(builder.result(), undefined)
+
+		const builder1 = builder.valuePropertyNames<string>('prop1', 'prop2')
+		const rule1 = builder1.result() as IRuleSubscribe
+		assert.strictEqual(builder1 as any, builder)
+
+		function toSimpleRule(rule) {
+			if (rule == null) {
+				return rule
+			}
+			const innerRule = (rule.conditionRules[1][1]).clone()
+			innerRule.next = toSimpleRule(rule.next)
+			return innerRule
+		}
+
+		let simpleRule1 = toSimpleRule(rule1)
+
+		assertRule(simpleRule1, {
+			type: RuleType.Action,
+			objectTypes: ['object', 'array'],
+			properties: [VALUE_PROPERTY_DEFAULT, 'prop1', 'prop2'],
+			description: '@prop1|prop2',
+			subType: SubscribeObjectType.ValueProperty,
+		})
+
+		const builder2 = builder.valuePropertyNames<string>('prop2', 'prop3')
+		checkType<string>(builder2)
+		assert.strictEqual(builder2 as any, builder)
+		assert.strictEqual(builder2.result(), rule1)
+
+		simpleRule1 = toSimpleRule(rule1)
+
+		assertRule(simpleRule1, {
+			type: RuleType.Action,
+			objectTypes: ['object', 'array'],
+			properties: [VALUE_PROPERTY_DEFAULT, 'prop1', 'prop2'],
+			description: '@prop1|prop2',
+			subType: SubscribeObjectType.ValueProperty,
+			next: {
+				type: RuleType.Action,
+				objectTypes: ['object', 'array'],
+				properties: [VALUE_PROPERTY_DEFAULT, 'prop2', 'prop3'],
+				description: '@prop2|prop3',
+				subType: SubscribeObjectType.ValueProperty,
+			},
+		})
+
+		const builder3 = builder.valuePropertyNames<boolean>('prop3', 'prop4')
+		checkType<boolean>(builder3)
+		assert.strictEqual(builder3 as any, builder)
+		assert.strictEqual(builder3.result(), rule1)
+
+		simpleRule1 = toSimpleRule(rule1)
+
+		assertRule(simpleRule1, {
+			type: RuleType.Action,
+			objectTypes: ['object', 'array'],
+			properties: [VALUE_PROPERTY_DEFAULT, 'prop1', 'prop2'],
+			description: '@prop1|prop2',
+			subType: SubscribeObjectType.ValueProperty,
+			next: {
+				type: RuleType.Action,
+				objectTypes: ['object', 'array'],
+				properties: [VALUE_PROPERTY_DEFAULT, 'prop2', 'prop3'],
+				description: '@prop2|prop3',
+				subType: SubscribeObjectType.ValueProperty,
+				next: {
+					type: RuleType.Action,
+					objectTypes: ['object', 'array'],
+					properties: [VALUE_PROPERTY_DEFAULT, 'prop3', 'prop4'],
+					description: '@prop3|prop4',
+					subType: SubscribeObjectType.ValueProperty,
 				},
 			},
 		})
@@ -624,6 +723,7 @@ describe('common > main > rx > properties > builder > RuleBuilder', function() {
 
 		assertRule(rule1, {
 			type: RuleType.Action,
+			subType: SubscribeObjectType.Property,
 			objectTypes: ['object', 'array'],
 			properties: ANY,
 			description: ANY_DISPLAY,
@@ -636,11 +736,13 @@ describe('common > main > rx > properties > builder > RuleBuilder', function() {
 
 		assertRule(rule1, {
 			type: RuleType.Action,
+			subType: SubscribeObjectType.Property,
 			objectTypes: ['object', 'array'],
 			properties: ANY,
 			description: ANY_DISPLAY,
 			next: {
 				type: RuleType.Action,
+				subType: SubscribeObjectType.Property,
 				objectTypes: ['object', 'array'],
 				properties: ANY,
 				description: ANY_DISPLAY,
@@ -654,16 +756,19 @@ describe('common > main > rx > properties > builder > RuleBuilder', function() {
 
 		assertRule(rule1, {
 			type: RuleType.Action,
+			subType: SubscribeObjectType.Property,
 			objectTypes: ['object', 'array'],
 			properties: ANY,
 			description: ANY_DISPLAY,
 			next: {
 				type: RuleType.Action,
+				subType: SubscribeObjectType.Property,
 				objectTypes: ['object', 'array'],
 				properties: ANY,
 				description: ANY_DISPLAY,
 				next: {
 					type: RuleType.Action,
+					subType: SubscribeObjectType.Property,
 					objectTypes: ['object', 'array'],
 					properties: ANY,
 					description: `prop1|${ANY_DISPLAY}|prop2`,
@@ -689,6 +794,7 @@ describe('common > main > rx > properties > builder > RuleBuilder', function() {
 
 		assertRule(rule1, {
 			type: RuleType.Action,
+			subType: SubscribeObjectType.Property,
 			objectTypes: ['object', 'array'],
 			properties: ['prop1'],
 			description: 'prop1',
@@ -701,11 +807,13 @@ describe('common > main > rx > properties > builder > RuleBuilder', function() {
 
 		assertRule(rule1, {
 			type: RuleType.Action,
+			subType: SubscribeObjectType.Property,
 			objectTypes: ['object', 'array'],
 			properties: ['prop1'],
 			description: 'prop1',
 			next: {
 				type: RuleType.Action,
+				subType: SubscribeObjectType.Property,
 				objectTypes: ['object', 'array'],
 				properties: ['prop2'],
 				description: 'prop2',
@@ -719,16 +827,19 @@ describe('common > main > rx > properties > builder > RuleBuilder', function() {
 
 		assertRule(rule1, {
 			type: RuleType.Action,
+			subType: SubscribeObjectType.Property,
 			objectTypes: ['object', 'array'],
 			properties: ['prop1'],
 			description: 'prop1',
 			next: {
 				type: RuleType.Action,
+				subType: SubscribeObjectType.Property,
 				objectTypes: ['object', 'array'],
 				properties: ['prop2'],
 				description: 'prop2',
 				next: {
 					type: RuleType.Action,
+					subType: SubscribeObjectType.Property,
 					objectTypes: ['object', 'array'],
 					properties: ['prop3', 'prop4', 'prop5'],
 					description: 'prop3|prop4|prop5',
@@ -1070,6 +1181,7 @@ describe('common > main > rx > properties > builder > RuleBuilder', function() {
 				description: '<repeat>',
 				rule: {
 					type: RuleType.Action,
+					subType: SubscribeObjectType.Property,
 					objectTypes: ['object', 'array'],
 					properties: ['prop1'],
 					description: 'prop1',
@@ -1082,6 +1194,7 @@ describe('common > main > rx > properties > builder > RuleBuilder', function() {
 					description: '<repeat>',
 					rule: {
 						type: RuleType.Action,
+						subType: SubscribeObjectType.Property,
 						objectTypes: ['object', 'array'],
 						properties: ["prop '2'"],
 						description: "prop '2'",
@@ -1094,6 +1207,7 @@ describe('common > main > rx > properties > builder > RuleBuilder', function() {
 						description: '<repeat>',
 						rule: {
 							type: RuleType.Action,
+							subType: SubscribeObjectType.Property,
 							objectTypes: ['object', 'array'],
 							properties: ['prop4'],
 							description: 'prop4',
@@ -1109,6 +1223,7 @@ describe('common > main > rx > properties > builder > RuleBuilder', function() {
 				description: '<repeat>',
 				rule: {
 					type: RuleType.Action,
+					subType: SubscribeObjectType.Property,
 					objectTypes: ['object', 'array'],
 					properties: ['prop5'],
 					description: 'prop5',
@@ -1121,6 +1236,7 @@ describe('common > main > rx > properties > builder > RuleBuilder', function() {
 					description: '<repeat>',
 					rule: {
 						type: RuleType.Action,
+						subType: SubscribeObjectType.Property,
 						objectTypes: ['object', 'array'],
 						properties: ['length'],
 						description: 'length',
@@ -1170,6 +1286,7 @@ describe('common > main > rx > properties > builder > RuleBuilder', function() {
 			description: '<any>',
 			rules: [{
 				type: RuleType.Action,
+				subType: SubscribeObjectType.Property,
 				objectTypes: ['object', 'array'],
 				properties: ['prop1'],
 				description: 'prop1',
@@ -1179,6 +1296,7 @@ describe('common > main > rx > properties > builder > RuleBuilder', function() {
 				description: '<any>',
 				rules: [{
 					type: RuleType.Action,
+					subType: SubscribeObjectType.Property,
 					objectTypes: ['object', 'array'],
 					properties: ["prop '2'"],
 					description: "prop '2'",
@@ -1191,6 +1309,7 @@ describe('common > main > rx > properties > builder > RuleBuilder', function() {
 						description: '<any>',
 						rules: [{
 							type: RuleType.Action,
+							subType: SubscribeObjectType.Property,
 							objectTypes: ['object', 'array'],
 							properties: ['prop4'],
 							description: 'prop4',
@@ -1200,11 +1319,13 @@ describe('common > main > rx > properties > builder > RuleBuilder', function() {
 						description: '<any>',
 						rules: [{
 							type: RuleType.Action,
+							subType: SubscribeObjectType.Property,
 							objectTypes: ['object', 'array'],
 							properties: ['prop4'],
 							description: 'prop4',
 						}, {
 							type: RuleType.Action,
+							subType: SubscribeObjectType.Property,
 							objectTypes: ['object', 'array'],
 							properties: ['prop4_1'],
 							description: 'prop4_1',
@@ -1214,16 +1335,19 @@ describe('common > main > rx > properties > builder > RuleBuilder', function() {
 						description: '<any>',
 						rules: [{
 							type: RuleType.Action,
+							subType: SubscribeObjectType.Property,
 							objectTypes: ['object', 'array'],
 							properties: ['prop4'],
 							description: 'prop4',
 						}, {
 							type: RuleType.Action,
+							subType: SubscribeObjectType.Property,
 							objectTypes: ['object', 'array'],
 							properties: ['prop4_1'],
 							description: 'prop4_1',
 						}, {
 							type: RuleType.Action,
+							subType: SubscribeObjectType.Property,
 							objectTypes: ['object', 'array'],
 							properties: ['prop4_2'],
 							description: 'prop4_2',
@@ -1234,6 +1358,7 @@ describe('common > main > rx > properties > builder > RuleBuilder', function() {
 						description: '<any>',
 						rules: [{
 							type: RuleType.Action,
+							subType: SubscribeObjectType.Property,
 							objectTypes: ['object', 'array'],
 							properties: ['prop5'],
 							description: 'prop5',
@@ -1243,6 +1368,7 @@ describe('common > main > rx > properties > builder > RuleBuilder', function() {
 							description: '<any>',
 							rules: [{
 								type: RuleType.Action,
+								subType: SubscribeObjectType.Property,
 								objectTypes: ['object', 'array'],
 								properties: ['length'],
 								description: 'length',
