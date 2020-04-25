@@ -10,7 +10,7 @@ export type IChangeItem<TItem> = (
 export type ISubscribeObject<TObject, TChild> = (
 	object: TObject,
 	changeItem: IChangeItem<TChild>,
-) => IUnsubscribeOrVoid
+) => any
 
 export interface IRuleSubscribe<TObject = any, TChild = any> extends IRuleAction {
 	readonly subscribe: ISubscribeObject<TObject, TChild>

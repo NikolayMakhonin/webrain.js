@@ -108,13 +108,6 @@ export class RuleBuilder<TObject = any, TValueKeys extends string | number = nev
 	public ruleSubscribe<TValue>(
 		ruleSubscribe: IRuleSubscribe<TObject, TValue>,
 	): RuleBuilder<TValue, TValueKeys> {
-		if (ruleSubscribe.unsubscribers) {
-			throw new Error('You should not add duplicate IRuleSubscribe instances. Clone rule before add.')
-		}
-
-		ruleSubscribe.unsubscribers = []
-		ruleSubscribe.unsubscribersCount = []
-
 		return this.rule<TValue>(ruleSubscribe)
 	}
 
@@ -147,9 +140,10 @@ export class RuleBuilder<TObject = any, TValueKeys extends string | number = nev
 	 */
 	public f<TValue>(
 		subscribe: ISubscribeObject<TObject, TValue>,
+		subType: SubscribeObjectType,
 		description?: string,
 	): RuleBuilder<TValue, TValueKeys> {
-		return this.func(subscribe, description)
+		return this.func(subscribe, subType, description)
 	}
 
 	/**
@@ -333,7 +327,11 @@ export class RuleBuilder<TObject = any, TValueKeys extends string | number = nev
 			? this.valuePropertyDefault()
 			: this)
 			.ruleSubscribe<TValue>(
-				new RuleSubscribe(createSubscribeMap<any, any, any>(null, key), SubscribeObjectType.Property, COLLECTION_PREFIX + key),
+				new RuleSubscribe(
+					createSubscribeMap<any, any, any>(null, key),
+					SubscribeObjectType.Property,
+					COLLECTION_PREFIX + key,
+				),
 			)
 	}
 
@@ -345,7 +343,11 @@ export class RuleBuilder<TObject = any, TValueKeys extends string | number = nev
 			? this.valuePropertyDefault()
 			: this)
 			.ruleSubscribe<TValue>(
-				new RuleSubscribe(createSubscribeMap<any, any, any>(null, ...keys), SubscribeObjectType.Property, COLLECTION_PREFIX + keys.join('|')),
+				new RuleSubscribe(
+					createSubscribeMap<any, any, any>(null, ...keys),
+					SubscribeObjectType.Property,
+					COLLECTION_PREFIX + keys.join('|'),
+				),
 			)
 	}
 
