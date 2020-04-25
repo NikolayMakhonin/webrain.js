@@ -146,118 +146,29 @@ describe('common > main > rx > properties > builder > RuleBuilder', function() {
 
 		for (let debugIteration = 0; debugIteration < 2; debugIteration++) {
 			try {
-				// region Non Observable
-
-				const testNonObservableObject = object => {
-					let unsubscribe = subscribe(object, false, changeItem)
-					assert.strictEqual(unsubscribe, null)
-					testNonSubscribeProperties(object)
-
-					unsubscribe = subscribe(object, true, changeItem)
-					assert.ok(unsubscribe)
-					assert.strictEqual(typeof unsubscribe, 'function')
-					assert.deepStrictEqual(subscribedItems, [])
-					subscribedItems = []
-					testNonSubscribeProperties(object)
-					for (const property of subscribeProperties) {
-						add(object, property)
-						assert.deepStrictEqual(subscribedItems, [])
-
-						if (change) {
-							change(object, property)
-							assert.deepStrictEqual(subscribedItems, [])
-						}
-					}
-					testNonSubscribeProperties(object)
-					unsubscribe()
-					assert.deepStrictEqual(subscribedItems.sort(), subscribeProperties.map(o => '-value_' + o).sort())
-					subscribedItems = []
-
-					unsubscribe = subscribe(object, true, changeItem)
-					assert.ok(unsubscribe)
-					assert.strictEqual(typeof unsubscribe, 'function')
-					assert.deepStrictEqual(subscribedItems.sort(), subscribeProperties.map(o => '+value_' + o).sort())
-					subscribedItems = []
-					testNonSubscribeProperties(object)
-					for (const property of subscribeProperties) {
-						remove(object, property, false)
-						assert.deepStrictEqual(subscribedItems, [])
-					}
-					testNonSubscribeProperties(object)
-					unsubscribe()
-					assert.deepStrictEqual(subscribedItems, [])
-					subscribedItems = []
-
-					unsubscribe = subscribe(object, false, changeItem)
-					assert.strictEqual(unsubscribe, null)
-					assert.deepStrictEqual(subscribedItems, [])
-				}
-
-				// endregion
-
 				// region Observable
 
 				const testObservableObject = object => {
 					let unsubscribe = subscribe(object, false, changeItem)
-					assert.ok(unsubscribe)
-					assert.strictEqual(typeof unsubscribe, 'function')
 					testNonSubscribeProperties(object)
-					unsubscribe()
 					assert.deepStrictEqual(subscribedItems, [])
 					subscribedItems = []
 
-					unsubscribe = subscribe(object, true, changeItem)
-					assert.ok(unsubscribe)
-					assert.strictEqual(typeof unsubscribe, 'function')
-					assert.deepStrictEqual(subscribedItems, [])
-					subscribedItems = []
-					testNonSubscribeProperties(object)
 					for (const property of subscribeProperties) {
 						add(object, property)
-						assert.deepStrictEqual(subscribedItems, [
-							// '-undefined',
-							'+value_' + property,
-						])
-						subscribedItems = []
 
 						if (change) {
 							change(object, property)
-							assert.deepStrictEqual(subscribedItems, [
-								'-value_' + property,
-								'+value_' + property,
-							])
-							subscribedItems = []
 						}
 					}
-					testNonSubscribeProperties(object)
-					unsubscribe()
-					assert.deepStrictEqual(subscribedItems.sort(), subscribeProperties.map(o => '-value_' + o).sort())
-					subscribedItems = []
-
-					unsubscribe = subscribe(object, false, changeItem)
-					assert.ok(unsubscribe)
-					assert.strictEqual(typeof unsubscribe, 'function')
-					unsubscribe()
-					assert.deepStrictEqual(subscribedItems.sort(), subscribeProperties.map(o => '-value_' + o).sort())
 					subscribedItems = []
 
 					unsubscribe = subscribe(object, true, changeItem)
-					assert.ok(unsubscribe)
-					assert.strictEqual(typeof unsubscribe, 'function')
 					assert.deepStrictEqual(subscribedItems.sort(), subscribeProperties.map(o => '+value_' + o).sort())
 					subscribedItems = []
-					testNonSubscribeProperties(object)
 					for (const property of subscribeProperties) {
 						remove(object, property, false)
-						assert.deepStrictEqual(subscribedItems, [
-							'-value_' + property,
-							// '+undefined',
-						])
-						subscribedItems = []
 					}
-					testNonSubscribeProperties(object)
-					unsubscribe()
-					assert.deepStrictEqual(subscribedItems, [])
 					subscribedItems = []
 				}
 
@@ -265,12 +176,6 @@ describe('common > main > rx > properties > builder > RuleBuilder', function() {
 
 				if (observableObject) {
 					testObservableObject(observableObject)
-				}
-
-				if (nonObservableObject) {
-					// Obsolete
-					// testNonObservableObject(nonObservableObject)
-					// testObservableObject(nonObservableObject)
 				}
 			} catch (ex) {
 				if (!lastError) {

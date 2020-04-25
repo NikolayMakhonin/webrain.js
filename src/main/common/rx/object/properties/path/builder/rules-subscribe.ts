@@ -1,15 +1,15 @@
 /* tslint:disable:no-identical-functions */
-import {checkIsFuncOrNull, isIterable} from '../../../../../helpers/helpers'
+import {isIterable} from '../../../../../helpers/helpers'
 import {VALUE_PROPERTY_DEFAULT} from '../../../../../helpers/value-property'
-import {IListChanged, ListChangedType} from '../../../../../lists/contracts/IListChanged'
-import {IMapChanged, MapChangedType} from '../../../../../lists/contracts/IMapChanged'
-import {ISetChanged, SetChangedType} from '../../../../../lists/contracts/ISetChanged'
-import {IPropertyChanged} from '../../../IPropertyChanged'
+import {IListChanged} from '../../../../../lists/contracts/IListChanged'
+import {IMapChanged} from '../../../../../lists/contracts/IMapChanged'
+import {ISetChanged} from '../../../../../lists/contracts/ISetChanged'
 import {IUnsubscribe, IUnsubscribeOrVoid} from '../../../../subjects/observable'
-import {IPropertiesPath, ValueChangeType, ValueKeyType} from './contracts/common'
+import {IPropertyChanged} from '../../../IPropertyChanged'
+import {ValueChangeType, ValueKeyType} from './contracts/common'
 import {ANY} from './contracts/constants'
 import {IChangeItem, IRuleSubscribe, ISubscribeObject} from './contracts/rule-subscribe'
-import {IRule, RuleType} from './contracts/rules'
+import {RuleType} from './contracts/rules'
 import {Rule} from './rules'
 
 function forEachCollection<TItem>(
@@ -46,130 +46,34 @@ function subscribeObjectValue<TValue>(
 	object: IPropertyChanged,
 	immediateSubscribe: boolean,
 	changeItem: IChangeItem<TValue>,
-	propertiesPath: IPropertiesPath,
-	rule?: IRule,
-): IUnsubscribeOrVoid {
+): void {
 	if (!(object instanceof Object)) {
 		changeItem(null, void 0, object as any, ValueChangeType.Subscribe, null)
 		return null
 	}
 
-	if (object.constructor === Object
-		|| Array.isArray(object)
-	) {
+	if (object.constructor === Object || Array.isArray(object)) {
 		changeItem(null, void 0, object as any, ValueChangeType.Subscribe, null)
-		return () => {
-			changeItem(null, object as any, void 0, ValueChangeType.Unsubscribe, null)
-		}
 	}
 
-	let subscribePropertyName
-
-	const getSubscribePropertyName = () => {
-		if (allowSubscribePrototype
-			? !(VALUE_PROPERTY_DEFAULT in object)
-			: !Object.prototype.hasOwnProperty.call(object, VALUE_PROPERTY_DEFAULT)
-		) {
-			return null
-		}
-
-		const propertyName = getFirstExistProperty(object, propertyNames)
-		if (propertyName == null) {
-			return VALUE_PROPERTY_DEFAULT
-		}
-
-		return propertyName
-	}
-
-	const subscribeProperty = (propertyName, isFirst: boolean) => {
-		subscribePropertyName = propertyName
-		if (propertyName == null) {
-			changeItem(null, void 0, object as any, ValueChangeType.Subscribe, null)
-		} else {
-			const value = object[propertyName]
-			if (typeof value !== 'undefined') {
-				changeItem(propertyName, void 0, value, ValueChangeType.Subscribe, ValueKeyType.ValueProperty)
-			}
-			if (isFirst) {
-				changeItem(propertyName, void 0, void 0, ValueChangeType.Subscribe, ValueKeyType.ValueProperty)
-			}
-		}
-	}
-
-	const unsubscribeProperty = (isLast: boolean) => {
-		if (subscribePropertyName == null) {
-			changeItem(null, object as any, void 0, ValueChangeType.Unsubscribe, null)
-		} else {
-			if (isLast) {
-				changeItem(subscribePropertyName, void 0, void 0, ValueChangeType.Unsubscribe, ValueKeyType.ValueProperty)
-			}
-			const value = object[subscribePropertyName]
-			if (typeof value !== 'undefined') {
-				changeItem(subscribePropertyName, value, void 0,
-					ValueChangeType.Unsubscribe, ValueKeyType.ValueProperty)
-			}
-		}
-		subscribePropertyName = null
-	}
-
-	const {propertyChanged} = object
-	let unsubscribe
-	let subscribed
-	if (propertyChanged) {
-		unsubscribe = checkIsFuncOrNull(propertyChanged
-			.subscribe(({name, oldValue, newValue}) => {
-				if (!subscribed || !unsubscribe && oldValue === newValue) {
-					return
-				}
-
-				const newSubscribePropertyName = getSubscribePropertyName()
-
-				if (name === subscribePropertyName) {
-					if (subscribePropertyName === newSubscribePropertyName
-						&& subscribePropertyName != null
-						&& unsubscribe != null
-						&& typeof oldValue !== 'undefined'
-						&& typeof newValue !== 'undefined'
-					) {
-						changeItem(subscribePropertyName, oldValue, newValue,
-							ValueChangeType.Changed,
-							ValueKeyType.ValueProperty)
-						return
-					}
-					if (typeof oldValue !== 'undefined') {
-						changeItem(subscribePropertyName, oldValue, void 0, ValueChangeType.Unsubscribe, ValueKeyType.ValueProperty)
-					}
-				} else if (subscribePropertyName !== newSubscribePropertyName) {
-					unsubscribeProperty(false)
-				} else {
-					return
-				}
-
-				if (unsubscribe != null) {
-					subscribeProperty(newSubscribePropertyName, false)
-				}
-			}, { propertiesPath, rule }))
-	}
-
-	if (immediateSubscribe) {
-		subscribeProperty(getSubscribePropertyName(), true)
-	} else if (unsubscribe == null) {
+	if (allowSubscribePrototype
+		? !(VALUE_PROPERTY_DEFAULT in object)
+		: !Object.prototype.hasOwnProperty.call(object, VALUE_PROPERTY_DEFAULT)
+	) {
 		return null
 	}
 
-	subscribed = true
+	let propertyName = getFirstExistProperty(object, propertyNames)
+	if (propertyName == null) {
+		propertyName = VALUE_PROPERTY_DEFAULT
+	}
 
-	return () => {
-		let _unsubscribe
-		if (unsubscribe) {
-			_unsubscribe = unsubscribe
-			unsubscribe = null
-		}
-
-		unsubscribeProperty(true)
-
-		if (_unsubscribe) {
-			_unsubscribe()
+	if (propertyName == null) {
+		changeItem(null, void 0, object as any, ValueChangeType.Subscribe, null)
+	} else {
+		const value = object[propertyName]
+		if (typeof value !== 'undefined') {
+			changeItem(propertyName, void 0, value, ValueChangeType.Subscribe, ValueKeyType.ValueProperty)
 		}
 	}
 }
@@ -197,42 +101,9 @@ function subscribeObject<TValue>(
 	object: IPropertyChanged,
 	immediateSubscribe: boolean,
 	changeItem: IChangeItem<TValue>,
-	propertiesPath: IPropertiesPath,
-	rule?: IRule,
 ): IUnsubscribeOrVoid {
 	if (!(object instanceof Object)) {
 		return null
-	}
-
-	const {propertyChanged} = object
-	let unsubscribe
-	let subscribed
-	if (propertyChanged) {
-		unsubscribe = checkIsFuncOrNull(propertyChanged
-			.subscribe(({name, oldValue, newValue}) => {
-				if (!subscribed || !unsubscribe && oldValue === newValue) {
-					return
-				}
-
-				 // PROF: 623 - 1.3%
-				if (!propertyPredicate || propertyPredicate(name, object)) {
-					if (unsubscribe
-						&& typeof oldValue !== 'undefined'
-						&& typeof newValue !== 'undefined'
-					) {
-						changeItem(name, oldValue, newValue,
-							ValueChangeType.Changed,
-							ValueKeyType.Property)
-					} else {
-						if (typeof oldValue !== 'undefined') {
-							changeItem(name, oldValue, void 0, ValueChangeType.Unsubscribe, ValueKeyType.Property)
-						}
-						if (unsubscribe && typeof newValue !== 'undefined') {
-							changeItem(name, void 0, newValue, ValueChangeType.Subscribe, ValueKeyType.Property)
-						}
-					}
-				}
-			}, { propertiesPath, rule }))
 	}
 
 	const forEach = (isSubscribe: boolean) => {
@@ -296,27 +167,7 @@ function subscribeObject<TValue>(
 		}
 	}
 
-	if (immediateSubscribe) {
-		forEach(true)
-	} else if (unsubscribe == null) {
-		return null
-	}
-
-	subscribed = true
-
-	return () => {
-		let _unsubscribe
-		if (unsubscribe) {
-			_unsubscribe = unsubscribe
-			unsubscribe = null
-		}
-
-		forEach(false)
-
-		if (_unsubscribe) {
-			_unsubscribe()
-		}
-	}
+	forEach(true)
 }
 
 // endregion
@@ -332,15 +183,7 @@ function subscribeIterable<TItem>(
 		return null
 	}
 
-	if (immediateSubscribe) {
-		forEachCollection(object, changeItem, true)
-	} else {
-		return null
-	}
-	
-	return () => {
-		forEachCollection(object, changeItem, false)
-	}
+	forEachCollection(object, changeItem, true)
 }
 
 // endregion
@@ -351,70 +194,14 @@ function subscribeList<TItem>(
 	object: IListChanged<TItem> & Iterable<TItem>,
 	immediateSubscribe: boolean,
 	changeItem: IChangeItem<TItem>,
-	propertiesPath: IPropertiesPath,
-	rule?: IRule,
-): IUnsubscribeOrVoid {
+): boolean {
 	if (!object || object[Symbol.toStringTag] !== 'List') {
 		return null
 	}
 
-	const {listChanged} = object
-	let unsubscribe
-	let subscribed
-	if (listChanged) {
-		unsubscribe = checkIsFuncOrNull(listChanged
-			.subscribe(({type, oldItems, newItems}) => {
-				if (!subscribed) {
-					return
-				}
+	forEachCollection(object, changeItem, true)
 
-				switch (type) {
-					case ListChangedType.Added:
-						if (unsubscribe) {
-							for (let i = 0, len = newItems.length; i < len; i++) {
-								changeItem(null, void 0, newItems[i], ValueChangeType.Subscribe, ValueKeyType.CollectionAny)
-							}
-						}
-						break
-					case ListChangedType.Removed:
-						for (let i = 0, len = oldItems.length; i < len; i++) {
-							changeItem(null, oldItems[i], void 0, ValueChangeType.Unsubscribe, ValueKeyType.CollectionAny)
-						}
-						break
-					case ListChangedType.Set:
-						if (unsubscribe) {
-							changeItem(null, oldItems[0], newItems[0],
-								ValueChangeType.Changed,
-								ValueKeyType.CollectionAny)
-						} else if (oldItems[0] !== newItems[0]) {
-							changeItem(null, oldItems[0], void 0, ValueChangeType.Unsubscribe, ValueKeyType.CollectionAny)
-						}
-						break
-				}
-			}, { propertiesPath, rule }))
-	}
-
-	if (immediateSubscribe) {
-		forEachCollection(object, changeItem, true)
-	} else if (unsubscribe == null) {
-		return null
-	}
-
-	subscribed = true
-
-	return () => {
-		let _unsubscribe
-		if (unsubscribe) {
-			_unsubscribe = unsubscribe
-			unsubscribe = null
-		}
-
-		forEachCollection(object, changeItem, false)
-
-		if (_unsubscribe) {
-			_unsubscribe()
-		}
-	}
+	return true
 }
 
 // endregion
@@ -425,61 +212,14 @@ function subscribeSet<TItem>(
 	object: ISetChanged<TItem> & Iterable<TItem>,
 	immediateSubscribe: boolean,
 	changeItem: IChangeItem<TItem>,
-	propertiesPath: IPropertiesPath,
-	rule?: IRule,
-): IUnsubscribeOrVoid {
+): boolean {
 	if (!object || object[Symbol.toStringTag] !== 'Set' && !(object instanceof Set)) {
 		return null
 	}
 
-	const {setChanged} = object
-	let unsubscribe
-	let subscribed
-	if (setChanged) {
-		unsubscribe = checkIsFuncOrNull(setChanged
-			.subscribe(({type, oldItems, newItems}) => {
-				if (!subscribed) {
-					return
-				}
+	forEachCollection(object, changeItem, true)
 
-				switch (type) {
-					case SetChangedType.Added:
-						if (unsubscribe) {
-							for (let i = 0, len = newItems.length; i < len; i++) {
-								changeItem(null, void 0, newItems[i], ValueChangeType.Subscribe, ValueKeyType.CollectionAny)
-							}
-						}
-						break
-					case SetChangedType.Removed:
-						for (let i = 0, len = oldItems.length; i < len; i++) {
-							changeItem(null, oldItems[i], void 0, ValueChangeType.Unsubscribe, ValueKeyType.CollectionAny)
-						}
-						break
-				}
-			}, { propertiesPath, rule }))
-	}
-
-	if (immediateSubscribe) {
-		forEachCollection(object, changeItem, true)
-	} else if (unsubscribe == null) {
-		return null
-	}
-
-	subscribed = true
-
-	return () => {
-		let _unsubscribe
-		if (unsubscribe) {
-			_unsubscribe = unsubscribe
-			unsubscribe = null
-		}
-
-		forEachCollection(object, changeItem, false)
-
-		if (_unsubscribe) {
-			_unsubscribe()
-		}
-	}
+	return true
 }
 
 // endregion
@@ -492,97 +232,29 @@ function subscribeMap<K, V>(
 	object: IMapChanged<K, V> & Map<K, V>,
 	immediateSubscribe: boolean,
 	changeItem: IChangeItem<V>,
-	propertiesPath: IPropertiesPath,
-	rule?: IRule,
-): IUnsubscribeOrVoid {
+): boolean {
 	if (!object || object[Symbol.toStringTag] !== 'Map' && !(object instanceof Map)) {
 		return null
 	}
 
-	const {mapChanged} = object
-	let unsubscribe
-	let subscribed
-	if (mapChanged) {
-		unsubscribe = checkIsFuncOrNull(mapChanged
-			.subscribe(({type, key, oldValue, newValue}) => {
-				if (!subscribed || !unsubscribe && oldValue === newValue) {
-					return
-				}
+	if (keys) {
+		for (let i = 0, len = keys.length; i < len; i++) {
+			const key = keys[i]
 
-				if (!keyPredicate || keyPredicate(key, object)) {
-					switch (type) {
-						case MapChangedType.Added:
-							if (unsubscribe) {
-								changeItem(key, void 0, newValue, ValueChangeType.Subscribe, ValueKeyType.MapKey)
-							}
-							break
-						case MapChangedType.Removed:
-							changeItem(key, oldValue, void 0, ValueChangeType.Unsubscribe, ValueKeyType.MapKey)
-							break
-						case MapChangedType.Set:
-							if (unsubscribe) {
-								changeItem(key, oldValue, newValue, ValueChangeType.Changed, ValueKeyType.MapKey)
-							} else {
-								changeItem(key, oldValue, void 0, ValueChangeType.Unsubscribe, ValueKeyType.MapKey)
-							}
-							break
-					}
-				}
-			}, { propertiesPath, rule }))
-	}
-
-	const forEach = (isSubscribe: boolean) => {
-		if (keys) {
-			for (let i = 0, len = keys.length; i < len; i++) {
-				const key = keys[i]
-				if (!isSubscribe) {
-					changeItem(key, void 0, void 0, ValueChangeType.Unsubscribe, ValueKeyType.MapKey)
-				}
-				if (object.has(key)) {
-					if (isSubscribe) {
-						changeItem(key, void 0, object.get(key), ValueChangeType.Subscribe, ValueKeyType.MapKey)
-					} else {
-						changeItem(key, object.get(key), void 0, ValueChangeType.Unsubscribe, ValueKeyType.MapKey)
-					}
-				}
-				if (isSubscribe) {
-					changeItem(key, void 0, void 0, ValueChangeType.Subscribe, ValueKeyType.MapKey)
-				}
+			if (object.has(key)) {
+				changeItem(key, void 0, object.get(key), ValueChangeType.Subscribe, ValueKeyType.MapKey)
 			}
-		} else {
-			for (const entry of object) {
-				if (!keyPredicate || keyPredicate(entry[0], object)) {
-					if (isSubscribe) {
-						changeItem(entry[0], void 0, entry[1], ValueChangeType.Subscribe, ValueKeyType.MapKey)
-					} else {
-						changeItem(entry[0], entry[1], void 0, ValueChangeType.Unsubscribe, ValueKeyType.MapKey)
-					}
-				}
+			changeItem(key, void 0, void 0, ValueChangeType.Subscribe, ValueKeyType.MapKey)
+		}
+	} else {
+		for (const entry of object) {
+			if (!keyPredicate || keyPredicate(entry[0], object)) {
+				changeItem(entry[0], void 0, entry[1], ValueChangeType.Subscribe, ValueKeyType.MapKey)
 			}
 		}
 	}
 
-	if (immediateSubscribe) {
-		forEach(true)
-	} else if (unsubscribe == null) {
-		return null
-	}
-
-	subscribed = true
-
-	return () => {
-		let _unsubscribe
-		if (unsubscribe) {
-			_unsubscribe = unsubscribe
-			unsubscribe = null
-		}
-
-		forEach(false)
-
-		if (_unsubscribe) {
-			_unsubscribe()
-		}
-	}
+	return true
 }
 
 // endregion
@@ -593,37 +265,19 @@ function subscribeCollection<TItem>(
 	object: Iterable<TItem>,
 	immediateSubscribe: boolean,
 	changeItem: IChangeItem<TItem>,
-	propertiesPath: IPropertiesPath,
-	rule?: IRule,
-): IUnsubscribeOrVoid {
+): void {
 	if (!object) {
 		return null
 	}
 
-	const unsubscribeList = subscribeList(object as any, immediateSubscribe, changeItem, propertiesPath, rule)
-	const unsubscribeSet = subscribeSet(object as any, immediateSubscribe, changeItem, propertiesPath, rule)
-	const unsubscribeMap = subscribeMap(null, null, object as any,
-		immediateSubscribe, changeItem, propertiesPath, rule)
+	const unsubscribeList = subscribeList(object as any, immediateSubscribe, changeItem)
+	const unsubscribeSet = subscribeSet(object as any, immediateSubscribe, changeItem)
+	const unsubscribeMap = subscribeMap(null, null, object as any, immediateSubscribe, changeItem)
 	let unsubscribeIterable
 	if (!unsubscribeList && !unsubscribeSet && !unsubscribeMap) {
 		unsubscribeIterable = subscribeIterable(object as any, immediateSubscribe, changeItem)
 		if (!unsubscribeIterable) {
 			return null
-		}
-	}
-
-	return () => {
-		if (unsubscribeList) {
-			unsubscribeList()
-		}
-		if (unsubscribeSet) {
-			unsubscribeSet()
-		}
-		if (unsubscribeMap) {
-			unsubscribeMap()
-		}
-		if (unsubscribeIterable) {
-			unsubscribeIterable()
 		}
 	}
 }
@@ -639,55 +293,12 @@ export function getChangeId(): number {
 
 function subscribeChange(
 	object: any,
-	immediateSubscribe: boolean,
-	changeItem: IChangeItem<number>,
-	propertiesPath: IPropertiesPath,
-	rule?: IRule,
 ): IUnsubscribeOrVoid {
-	if (!object) {
+	if (!isIterable(object)) {
 		return null
 	}
 
-	const {propertyChanged, listChanged, setChanged, mapChanged} = object
-
-	if (!propertyChanged && !listChanged && !setChanged && !mapChanged) {
-		return null
-	}
-
-	let changeId
-
-	const onChange = () => {
-		if (changeId != null) {
-			const oldValue = changeId
-			changeId = getChangeId()
-			changeItem(null, oldValue, changeId, ValueChangeType.Changed, ValueKeyType.ChangeCount)
-		}
-	}
-
-	const unsubscribeObject = propertyChanged && propertyChanged.subscribe(onChange)
-	const unsubscribeList = listChanged && listChanged.subscribe(onChange)
-	const unsubscribeSet = setChanged && setChanged.subscribe(onChange)
-	const unsubscribeMap = mapChanged && mapChanged.subscribe(onChange)
-
-	changeId = getChangeId()
-	changeItem(null, void 0, changeId, ValueChangeType.Subscribe, ValueKeyType.ChangeCount)
-
-	return () => {
-		if (unsubscribeObject) {
-			unsubscribeObject()
-		}
-		if (unsubscribeList) {
-			unsubscribeList()
-		}
-		if (unsubscribeSet) {
-			unsubscribeSet()
-		}
-		if (unsubscribeMap) {
-			unsubscribeMap()
-		}
-
-		changeItem(null, changeId, void 0, ValueChangeType.Unsubscribe, ValueKeyType.ChangeCount)
-	}
+	object[Symbol.iterator]()
 }
 
 // endregion
