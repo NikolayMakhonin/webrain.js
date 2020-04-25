@@ -28,7 +28,7 @@ const repeatNext = function*(
 		if ((repeatAction & RuleRepeatAction.Next) === 0) {
 			return
 		}
-		_iterateRule(nextObject, repeatRule.rule, repeatRuleNext)
+		forEachRules(repeatRule.rule, nextObject, repeatRuleNext)
 		return
 	}
 
@@ -43,7 +43,7 @@ const repeatNext = function*(
 		ruleNext(nextObject)
 	}
 
-	_iterateRule(nextObject, repeatRule.rule, repeatRuleNext)
+	forEachRules(repeatRule.rule, nextObject, repeatRuleNext)
 
 	function repeatRuleNext(nextIterationObject) {
 		return repeatNext(
@@ -55,9 +55,9 @@ const repeatNext = function*(
 	}
 }
 
-function _iterateRule<TValue>(
-	object: any,
+export function forEachRules<TValue>(
 	rule: IRule,
+	object: any,
 	next,
 ): IRuleIterable {
 	while (true) {
@@ -68,12 +68,9 @@ function _iterateRule<TValue>(
 			return
 		}
 
-		let {ruleNext} = rule
-		if (ruleNext == null) {
-			rule.ruleNext = ruleNext = rule.next || next
-				? (nextObject: any) => _iterateRule(nextObject, rule.next, next)
-				: null
-		}
+		const ruleNext = rule.next || next
+			? (nextObject: any) => forEachRules(rule.next, nextObject, next)
+			: null
 
 		switch (rule.type) {
 			case RuleType.Nothing:
@@ -82,7 +79,9 @@ function _iterateRule<TValue>(
 			case RuleType.Never:
 				return
 			case RuleType.Action:
-				(rule as IRuleSubscribe).subscribe(object, ruleNext)
+				if (ruleNext != null) {
+					ruleNext(rule)
+				}
 				break
 			case RuleType.If: {
 				const {conditionRules} = (rule as IRuleIf)
@@ -92,11 +91,11 @@ function _iterateRule<TValue>(
 					const conditionRule = conditionRules[i]
 					if (Array.isArray(conditionRule)) {
 						if (conditionRule[0](object)) {
-							_iterateRule(object, conditionRule[1], ruleNext)
+							forEachRules(conditionRule[1], object, ruleNext)
 							break
 						}
 					} else {
-						_iterateRule(object, conditionRule, ruleNext)
+						forEachRules(conditionRule, object, ruleNext)
 						break
 					}
 				}
@@ -112,7 +111,7 @@ function _iterateRule<TValue>(
 					return
 				}
 				if (rules.length === 1) {
-					_iterateRule(object, rules[0], ruleNext)
+					forEachRules(rules[0], object, ruleNext)
 				}
 
 				for (let i = 0, len = rules.length; i < len; i++) {
@@ -120,7 +119,7 @@ function _iterateRule<TValue>(
 					if (!subRule) {
 						throw new Error(`RuleType.Any rule=${subRule}`)
 					}
-					_iterateRule(object, subRule, ruleNext)
+					forEachRules(subRule, object, ruleNext)
 				}
 				break
 			case RuleType.Repeat: {

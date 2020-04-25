@@ -1,7 +1,7 @@
 /* tslint:disable:no-shadowed-variable no-empty */
 import {isIterable} from '../../../../../../../../../main/common/helpers/helpers'
 /* eslint-disable no-useless-escape,computed-property-spacing */
-import {RuleType} from '../../../../../../../../../main/common/rx/object/properties/path/builder/contracts/rules'
+import {IRule, RuleType} from '../../../../../../../../../main/common/rx/object/properties/path/builder/contracts/rules'
 import {
 	IRuleIterator,
 	iterateRule,
@@ -12,6 +12,7 @@ import {Rule} from '../../../../../../../../../main/common/rx/object/properties/
 import {IUnsubscribe, IUnsubscribeOrVoid} from '../../../../../../../../../main/common/rx/subjects/observable'
 import {assert} from '../../../../../../../../../main/common/test/Assert'
 import {describe, it} from '../../../../../../../../../main/common/test/Mocha'
+import {forEachRules} from "../../../../../../../../../main/common/rx/object/properties/path/builder/forEachRules";
 
 describe('common > main > rx > properties > builder > iterate-rule', function() {
 	// function ruleToString(rule: IRule) {
@@ -59,7 +60,7 @@ describe('common > main > rx > properties > builder > iterate-rule', function() 
 		return dest
 	}
 
-	function rulesToObject(ruleIterator: IRuleIterator, obj: any = {}, prevIsFork?: boolean): IUnsubscribeOrVoid {
+	function rulesIteratorToObject(ruleIterator: IRuleIterator, obj: any = {}, prevIsFork?: boolean): IUnsubscribeOrVoid {
 		let iteration
 		if (!ruleIterator || (iteration = ruleIterator.next()).done) {
 			obj._end = true
@@ -89,14 +90,65 @@ describe('common > main > rx > properties > builder > iterate-rule', function() 
 		return subscribeNextRule(
 			ruleIterator,
 			iteration,
-			nextRuleIterator => rulesToObject(nextRuleIterator, obj, isFork),
+			nextRuleIterator => rulesIteratorToObject(nextRuleIterator, obj, isFork),
 			(rule, getRuleIterable) => {
 				if (rule.type === RuleType.Never) {
 					return null
 				}
 
 				const newObj = {}
-				const unsubscribe = rulesToObject(
+				const unsubscribe = rulesIteratorToObject(
+					getRuleIterable
+						? getRuleIterable(testObject)[Symbol.iterator]()
+						: null, newObj, isFork)
+				mergeObjects(obj, {[rule.description]: newObj})
+				return unsubscribe
+			},
+		)
+	}
+
+	function forEachRulesToObject(rule: IRule, obj: any = {}, prevIsFork?: boolean): IUnsubscribeOrVoid {
+		forEachRules(rule, testObject, (object, value, key, keyType) => {
+
+		})
+
+		let iteration
+		if (!ruleIterator || (iteration = ruleIterator.next()).done) {
+			obj._end = true
+
+			return () => {
+				obj._end = false
+			}
+		}
+
+		const isFork = isIterable(iteration.value)
+		if (isFork) {
+			assert.notOk(prevIsFork)
+			assert.ok(Array.isArray(iteration.value))
+			if (iteration.value.length > 0) {
+				for (let i = 0; i < iteration.value.length; i++) {
+					const item = iteration.value[i]
+					if (i > 0) {
+						assert.ok(!Array.isArray(item) || item.length > 0)
+						assert.ok(item.type == null || item.type === RuleType.Action)
+					} else {
+						assert.ok(item.type == null || item.type === RuleType.Action || item.type === RuleType.Never)
+					}
+				}
+			}
+		}
+
+		return subscribeNextRule(
+			ruleIterator,
+			iteration,
+			nextRuleIterator => rulesIteratorToObject(nextRuleIterator, obj, isFork),
+			(rule, getRuleIterable) => {
+				if (rule.type === RuleType.Never) {
+					return null
+				}
+
+				const newObj = {}
+				const unsubscribe = rulesIteratorToObject(
 					getRuleIterable
 						? getRuleIterable(testObject)[Symbol.iterator]()
 						: null, newObj, isFork)
@@ -131,13 +183,29 @@ describe('common > main > rx > properties > builder > iterate-rule', function() 
 		// }
 	}
 
-	function testIterateRule(buildRule: (builder: RuleBuilder<any>) => RuleBuilder<any>, ...expectedPaths: string[]) {
-		const result = iterateRule(testObject, buildRule(new RuleBuilder<any>({
+	function testForEachRules(buildRule: (builder: RuleBuilder<any>) => RuleBuilder<any>, ...expectedPaths: string[]) {
+		const rule = buildRule(new RuleBuilder<any>({
 			autoInsertValuePropertyDefault: false,
-		})).result())
+		})).result()
+		const object = {}
+		forEachRulesToObject(rule, object)
+		// console.log(JSON.stringify(object, null, 4))
+		let paths = Array.from(objectToPaths(object, true))
+		assert.deepStrictEqual(paths.sort(), expectedPaths.sort(), JSON.stringify(paths, null, 4))
+
+		// console.log(JSON.stringify(object, null, 4))
+		paths = Array.from(objectToPaths(object, false))
+		assert.deepStrictEqual(paths.sort(), expectedPaths.sort(), JSON.stringify(paths, null, 4))
+	}
+
+	function testIterateRule(buildRule: (builder: RuleBuilder<any>) => RuleBuilder<any>, ...expectedPaths: string[]) {
+		const rule = buildRule(new RuleBuilder<any>({
+			autoInsertValuePropertyDefault: false,
+		})).result()
+		const result = iterateRule(testObject, rule)
 		assert.ok(result)
 		const object = {}
-		const unsubscribe = rulesToObject(result[Symbol.iterator](), object)
+		const unsubscribe = rulesIteratorToObject(result[Symbol.iterator](), object)
 		// console.log(JSON.stringify(object, null, 4))
 		let paths = Array.from(objectToPaths(object, true))
 		assert.deepStrictEqual(paths.sort(), expectedPaths.sort(), JSON.stringify(paths, null, 4))
@@ -152,6 +220,8 @@ describe('common > main > rx > properties > builder > iterate-rule', function() 
 		// console.log(JSON.stringify(object, null, 4))
 		paths = Array.from(objectToPaths(object, false))
 		assert.deepStrictEqual(paths.sort(), expectedPaths.sort(), JSON.stringify(paths, null, 4))
+
+		// testForEachRules(buildRule)
 	}
 
 	it('never', function() {
