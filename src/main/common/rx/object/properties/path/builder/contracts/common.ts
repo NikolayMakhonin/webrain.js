@@ -11,6 +11,7 @@ export enum ValueChangeType {
 }
 
 export enum ValueKeyType {
+	Index,
 	Property,
 	ValueProperty,
 	MapKey,

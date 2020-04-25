@@ -12,6 +12,7 @@ export interface IRule {
 	subType?: any
 	next?: IRule
 	description?: string
+	forEach()
 	clone(): IRule
 }
 

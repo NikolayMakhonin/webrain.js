@@ -1,9 +1,7 @@
 /* tslint:disable:no-identical-functions */
 import {isIterable} from '../../../../../helpers/helpers'
 import {VALUE_PROPERTY_DEFAULT} from '../../../../../helpers/value-property'
-import {IListChanged} from '../../../../../lists/contracts/IListChanged'
 import {IMapChanged} from '../../../../../lists/contracts/IMapChanged'
-import {ISetChanged} from '../../../../../lists/contracts/ISetChanged'
 import {IUnsubscribe, IUnsubscribeOrVoid} from '../../../../subjects/observable'
 import {ValueKeyType} from './contracts/common'
 import {ANY} from './contracts/constants'
@@ -137,55 +135,6 @@ export function subscribeObject<TValue>(
 
 // endregion
 
-// region subscribeIterable
-
-export function subscribeIterable<TItem>(
-	object: Iterable<TItem>,
-	changeItem: IChangeItem<TItem>,
-): IUnsubscribeOrVoid {
-	if (!object || typeof object === 'string' || !isIterable(object)) {
-		return null
-	}
-
-	forEachCollection(object, changeItem)
-}
-
-// endregion
-
-// region subscribeList
-
-export function subscribeList<TItem>(
-	object: IListChanged<TItem> & Iterable<TItem>,
-	changeItem: IChangeItem<TItem>,
-): boolean {
-	if (!object || object[Symbol.toStringTag] !== 'List') {
-		return null
-	}
-
-	forEachCollection(object, changeItem)
-
-	return true
-}
-
-// endregion
-
-// region subscribeSet
-
-export function subscribeSet<TItem>(
-	object: ISetChanged<TItem> & Iterable<TItem>,
-	changeItem: IChangeItem<TItem>,
-): boolean {
-	if (!object || object[Symbol.toStringTag] !== 'Set' && !(object instanceof Set)) {
-		return null
-	}
-
-	forEachCollection(object, changeItem)
-
-	return true
-}
-
-// endregion
-
 // region subscribeMap
 
 export function subscribeMap<K, V>(
@@ -193,7 +142,7 @@ export function subscribeMap<K, V>(
 	keyPredicate: (key, object) => boolean,
 	object: IMapChanged<K, V> & Map<K, V>,
 	changeItem: IChangeItem<V>,
-): boolean {
+): void {
 	if (!object || object[Symbol.toStringTag] !== 'Map' && !(object instanceof Map)) {
 		return null
 	}
@@ -213,8 +162,6 @@ export function subscribeMap<K, V>(
 			}
 		}
 	}
-
-	return true
 }
 
 // endregion
@@ -225,20 +172,21 @@ export function subscribeCollection<TItem>(
 	object: Iterable<TItem>,
 	changeItem: IChangeItem<TItem>,
 ): void {
-	if (!object) {
+	if (!object || typeof object === 'string') {
 		return null
 	}
 
-	const unsubscribeList = subscribeList(object as any, changeItem)
-	const unsubscribeSet = subscribeSet(object as any, changeItem)
-	const unsubscribeMap = subscribeMap(null, null, object as any, changeItem)
-	let unsubscribeIterable
-	if (!unsubscribeList && !unsubscribeSet && !unsubscribeMap) {
-		unsubscribeIterable = subscribeIterable(object as any, changeItem)
-		if (!unsubscribeIterable) {
-			return null
+	if (Array.isArray(object)) {
+		for (let i = 0, len = object.length; i < len; i++) {
+			changeItem(object[i], i, ValueKeyType.Index)
 		}
+	} else if (object instanceof Map || object[Symbol.toStringTag] === 'Map') {
+		subscribeMap(null, null, object as any, changeItem)
+	} else if (isIterable(object)) {
+		forEachCollection(object, changeItem)
 	}
+
+	return null
 }
 
 // endregion
