@@ -1,7 +1,6 @@
 /* tslint:disable:no-identical-functions */
 import {isIterable} from '../../../../../helpers/helpers'
 import {VALUE_PROPERTY_DEFAULT} from '../../../../../helpers/value-property'
-import {IMapChanged} from '../../../../../lists/contracts/IMapChanged'
 import {IUnsubscribe, IUnsubscribeOrVoid} from '../../../../subjects/observable'
 import {ValueKeyType} from './contracts/common'
 import {ANY} from './contracts/constants'
@@ -9,12 +8,12 @@ import {IChangeItem, IRuleSubscribe, ISubscribeObject} from './contracts/rule-su
 import {RuleType} from './contracts/rules'
 import {Rule} from './rules'
 
-function forEachCollection<TItem>(
-	iterable: Iterable<TItem>,
-	changeItem: IChangeItem<TItem>,
+function forEachCollection<TObject extends Iterable<TValue>, TValue>(
+	object: TObject,
+	changeItem: IChangeItem<TObject, TValue>,
 ) {
-	for (const item of iterable) {
-		changeItem(item, iterable, null, ValueKeyType.CollectionAny)
+	for (const item of object) {
+		changeItem(item, object, null, ValueKeyType.CollectionAny)
 	}
 }
 
@@ -33,10 +32,10 @@ function getFirstExistProperty(object: object, propertyNames: string[]) {
 	return null
 }
 
-export function subscribeObjectValue<TValue>(
+export function subscribeObjectValue<TObject extends object, TValue>(
 	propertyNames: string[],
-	object: object,
-	changeItem: IChangeItem<TValue>,
+	object: TObject,
+	changeItem: IChangeItem<TObject, TValue>,
 ): void {
 	if (!(object instanceof Object)) {
 		changeItem(object as any, object, null, null)
@@ -86,11 +85,11 @@ export function hasDefaultProperty(object: object) {
 		&& !Array.isArray(object)
 }
 
-export function subscribeObject<TValue>(
+export function subscribeObject<TObject extends object, TValue>(
 	propertyNames: string|string[],
 	propertyPredicate: (propertyName, object) => boolean,
-	object: object,
-	changeItem: IChangeItem<TValue>,
+	object: TObject,
+	changeItem: IChangeItem<TObject, TValue>,
 ): IUnsubscribeOrVoid {
 	if (!(object instanceof Object)) {
 		return null
@@ -101,7 +100,7 @@ export function subscribeObject<TValue>(
 			if ((allowSubscribePrototype || Object.prototype.hasOwnProperty.call(object, propertyName))
 				&& (!propertyPredicate || propertyPredicate(propertyName, object))
 			) {
-				changeItem(object[propertyName], object, propertyName, ValueKeyType.Property)
+				changeItem(object[propertyName] as any, object, propertyName, ValueKeyType.Property)
 			}
 		}
 	} else {
@@ -137,11 +136,11 @@ export function subscribeObject<TValue>(
 
 // region subscribeMap
 
-export function subscribeMap<K, V>(
+export function subscribeMap<TObject extends Map<K, V>, K, V>(
 	keys: K[],
 	keyPredicate: (key, object) => boolean,
-	object: IMapChanged<K, V> & Map<K, V>,
-	changeItem: IChangeItem<V>,
+	object: TObject,
+	changeItem: IChangeItem<TObject, V>,
 ): void {
 	if (!object || object[Symbol.toStringTag] !== 'Map' && !(object instanceof Map)) {
 		return null
@@ -168,9 +167,9 @@ export function subscribeMap<K, V>(
 
 // region subscribeCollection
 
-export function subscribeCollection<TItem>(
-	object: Iterable<TItem>,
-	changeItem: IChangeItem<TItem>,
+export function subscribeCollection<TObject extends Iterable<TValue>, TValue>(
+	object: TObject,
+	changeItem: IChangeItem<TObject, TValue>,
 ): void {
 	if (!object || typeof object === 'string') {
 		return null
@@ -193,8 +192,9 @@ export function subscribeCollection<TItem>(
 
 // region subscribeChange
 
-export function subscribeChange(
-	object: any,
+export function subscribeChange<TObject extends Iterable<TValue>, TValue>(
+	object: TObject,
+	// changeItem: IChangeItem<TObject, TValue>,
 ): IUnsubscribeOrVoid {
 	if (!isIterable(object)) {
 		return null
@@ -306,14 +306,14 @@ export function createSubscribeObject<TObject extends object, TValue>(
 
 	switch (subType) {
 		case SubscribeObjectType.Property:
-			return (object, changeItem) => subscribeObject<TValue>(
+			return (object, changeItem) => subscribeObject<TObject, TValue>(
 				propertyNames,
 				propertyPredicate,
 				object,
 				changeItem,
 			)
 		case SubscribeObjectType.ValueProperty:
-			return (object, changeItem) => subscribeObjectValue<TValue>(
+			return (object, changeItem) => subscribeObjectValue<TObject, TValue>(
 				propertyNames,
 				object,
 				changeItem,

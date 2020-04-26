@@ -91,6 +91,7 @@ export interface ICallState<
 
 	getValue(
 		isLazy?: boolean,
+		dontThrowOnError?: boolean,
 	): TResultOuter<TResultInner>
 
 	invalidate(): void

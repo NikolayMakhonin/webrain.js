@@ -30,14 +30,20 @@
     <select />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="69b2ee16-521b-4efd-b473-8e19e3df4d09" name="Default Changelist" comment="">
-      <change afterPath="$PROJECT_DIR$/src/test/tests/common/main/rx/object/properties/path/builder/forEachRules.ts" afterDir="false" />
+    <list default="true" id="69b2ee16-521b-4efd-b473-8e19e3df4d09" name="Default Changelist" comment="Path Builder: forEachRules completed and tested">
+      <change afterPath="$PROJECT_DIR$/src/main/common/rx/object/properties/path/dependDeepSubscribe.ts" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/test/tests/common/main/rx/object/properties/path/dependDeepSubscribe.ts" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/common/rx/object/properties/path/builder/contracts/rule-subscribe.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/common/rx/object/properties/path/builder/contracts/rule-subscribe.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/common/rx/object/properties/path/builder/forEachRules.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/common/rx/object/properties/path/builder/forEachRules.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/common/rx/depend/core/CallState.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/common/rx/depend/core/CallState.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/common/rx/depend/core/contracts.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/common/rx/depend/core/contracts.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/common/rx/object/properties/path/builder/forEachRules.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/common/rx/object/properties/path/forEachRule.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/common/rx/object/properties/path/builder/iterate-rule.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/common/rx/object/properties/path/iterate-rule.ts" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/common/rx/object/properties/path/builder/rules-subscribe.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/common/rx/object/properties/path/builder/rules-subscribe.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/test/tests/common/main/rx/object/properties/path/builder/RuleBuilder.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/test/tests/common/main/rx/object/properties/path/builder/RuleBuilder.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/test/tests/common/main/rx/object/properties/path/builder/iterate-rule.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/test/tests/common/main/rx/object/properties/path/builder/iterate-rule.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/common/rx/object/properties/path/deep-subscribe.ts" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/common/rx/object/properties/path/resolve.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/common/rx/object/properties/path/resolve.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/test/tests/common/main/rx/object/properties/path/builder.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/test/tests/common/main/rx/object/properties/path/builder.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/test/tests/common/main/rx/object/properties/path/builder/forEachRules.ts" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/test/tests/common/main/rx/object/properties/path/builder/iterate-rule.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/test/tests/common/main/rx/object/properties/path/iterate-rule.ts" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -89,7 +95,7 @@
     <property name="WebServerToolWindowFactoryState" value="false" />
     <property name="auto.test.manager.delay" value="5000" />
     <property name="javascript.karma.karma_node_package_dir" value="" />
-    <property name="last_opened_file_path" value="$PROJECT_DIR$/src/test/tests/common/main/rx/object/properties/path/builder" />
+    <property name="last_opened_file_path" value="$PROJECT_DIR$/src/test/tests/common/main/rx/object/properties/path" />
     <property name="node.js.detected.package.eslint" value="true" />
     <property name="node.js.detected.package.standard" value="true" />
     <property name="node.js.detected.package.tslint" value="true" />
@@ -109,11 +115,11 @@
   </component>
   <component name="RecentsManager">
     <key name="CopyFile.RECENT_KEYS">
+      <recent name="L:\Work\_GIT\GitHub\NodeJs\modules\webrain\src\test\tests\common\main\rx\object\properties\path" />
       <recent name="L:\Work\_GIT\GitHub\NodeJs\modules\webrain\src\test\tests\common\main\rx\object\properties\path\builder" />
       <recent name="L:\Work\_GIT\GitHub\NodeJs\modules\webrain\src\main\common\rx\object\properties\path\builder" />
       <recent name="L:\Work\_GIT\GitHub\NodeJs\modules\webrain\src\test\tests\common\main\rx" />
       <recent name="L:\Work\_GIT\GitHub\NodeJs\modules\webrain\src\main\common\rx" />
-      <recent name="L:\Work\_GIT\GitHub\NodeJs\modules\webrain\src\main\common\rx\_builder" />
     </key>
     <key name="es6.move.members.recent.items">
       <recent name="L:\Work\_GIT\GitHub\NodeJs\modules\webrain\src\test\tests\common\main\rx\depend\src\perceptron.ts" />
@@ -130,7 +136,7 @@
       <recent name="L:\Work\_GIT\GitHub\NodeJs\modules\webrain\_trash\src\main\common\rx\depend" />
     </key>
   </component>
-  <component name="RunManager" selected="Mocha.Path Builder">
+  <component name="RunManager" selected="Mocha.common &gt; main &gt; rx &gt; properties &gt; dependDeepSubscribe.base">
     <configuration default="true" type="JavaScriptTestRunnerKarma" activateToolWindowBeforeRun="false">
       <config-file value="$PROJECT_DIR$/env/karma/configs/dev.js" />
       <karma-package-dir value="$PROJECT_DIR$/node_modules/karma" />
@@ -210,7 +216,7 @@
       <test-pattern>./src/test/tests/common/main/rx/object/properties/path/builder/**/*.*</test-pattern>
       <method v="2" />
     </configuration>
-    <configuration name="Path Builder" type="mocha-javascript-test-runner">
+    <configuration name="Path" type="mocha-javascript-test-runner">
       <node-interpreter>node</node-interpreter>
       <node-options>--max-old-space-size=4096</node-options>
       <mocha-package>$PROJECT_DIR$/node_modules/mocha</mocha-package>
@@ -219,7 +225,7 @@
       <ui>bdd</ui>
       <extra-mocha-options>--opts ./env/mocha/configs/babel/mocha.opts --watch</extra-mocha-options>
       <test-kind>PATTERN</test-kind>
-      <test-pattern>./src/test/tests/common/main/rx/object/properties/path/builder/**/*.*</test-pattern>
+      <test-pattern>./src/test/tests/common/main/rx/object/properties/path/**/*.*</test-pattern>
       <method v="2" />
     </configuration>
     <configuration name="RX - Tests" type="mocha-javascript-test-runner">
@@ -278,22 +284,6 @@
       </test-names>
       <method v="2" />
     </configuration>
-    <configuration name="common &gt; main &gt; rx &gt; depend &gt; dependent-func / stress.deferred + sync" type="mocha-javascript-test-runner" temporary="true" nameIsGenerated="true">
-      <node-interpreter>node</node-interpreter>
-      <node-options>--max-old-space-size=4096 --allow-natives-syntax</node-options>
-      <mocha-package>$PROJECT_DIR$/node_modules/mocha</mocha-package>
-      <working-directory>$PROJECT_DIR$</working-directory>
-      <pass-parent-env>true</pass-parent-env>
-      <ui>bdd</ui>
-      <extra-mocha-options>--opts ./env/mocha/configs/babel/mocha.opts</extra-mocha-options>
-      <test-kind>TEST</test-kind>
-      <test-file>$PROJECT_DIR$/src/test/tests/common/main/rx/depend/dependent-func/stress.ts</test-file>
-      <test-names>
-        <name value="common &gt; main &gt; rx &gt; depend &gt; dependent-func / stress" />
-        <name value="deferred + sync" />
-      </test-names>
-      <method v="2" />
-    </configuration>
     <configuration name="common &gt; main &gt; rx &gt; properties &gt; builder &gt; iterate-rule" type="mocha-javascript-test-runner" temporary="true" nameIsGenerated="true">
       <node-interpreter>node</node-interpreter>
       <node-options>--max-old-space-size=4096</node-options>
@@ -322,6 +312,22 @@
       <test-names>
         <name value="common &gt; main &gt; rx &gt; properties &gt; builder &gt; iterate-rule" />
         <name value="path any" />
+      </test-names>
+      <method v="2" />
+    </configuration>
+    <configuration name="common &gt; main &gt; rx &gt; properties &gt; dependDeepSubscribe.base" type="mocha-javascript-test-runner" temporary="true" nameIsGenerated="true">
+      <node-interpreter>node</node-interpreter>
+      <node-options>--max-old-space-size=4096</node-options>
+      <mocha-package>$PROJECT_DIR$/node_modules/mocha</mocha-package>
+      <working-directory>$PROJECT_DIR$</working-directory>
+      <pass-parent-env>true</pass-parent-env>
+      <ui>bdd</ui>
+      <extra-mocha-options>--opts ./env/mocha/configs/babel/mocha.opts --watch</extra-mocha-options>
+      <test-kind>TEST</test-kind>
+      <test-file>$PROJECT_DIR$/src/test/tests/common/main/rx/object/properties/path/dependDeepSubscribe.ts</test-file>
+      <test-names>
+        <name value="common &gt; main &gt; rx &gt; properties &gt; dependDeepSubscribe" />
+        <name value="base" />
       </test-names>
       <method v="2" />
     </configuration>
@@ -437,7 +443,7 @@
       <item itemvalue="Karma.time-limits" />
       <item itemvalue="Mocha.Performance" />
       <item itemvalue="Mocha.Watch" />
-      <item itemvalue="Mocha.Path Builder" />
+      <item itemvalue="Mocha.Path" />
       <item itemvalue="Mocha.Path Builder (Coverage)" />
       <item itemvalue="Mocha.DeferredCalc" />
       <item itemvalue="Mocha.Experiments" />
@@ -452,19 +458,19 @@
       <item itemvalue="Mocha.node &gt; v8 &gt; parser" />
       <item itemvalue="Mocha.common &gt; main &gt; rx &gt; depend &gt; dependent-func / base.lazy" />
       <item itemvalue="Mocha.common &gt; main &gt; rx &gt; depend &gt; dependent-func / stress.all" />
-      <item itemvalue="Mocha.common &gt; main &gt; rx &gt; depend &gt; dependent-func / stress.deferred + sync" />
       <item itemvalue="Mocha.common &gt; main &gt; rx &gt; properties &gt; builder &gt; iterate-rule" />
+      <item itemvalue="Mocha.common &gt; main &gt; rx &gt; properties &gt; builder &gt; iterate-rule.path any" />
       <item itemvalue="Node.js.dependent-func.js" />
       <item itemvalue="npm.Coverage Mocha Report" />
-      <item itemvalue="Mocha.common &gt; main &gt; rx &gt; properties &gt; builder &gt; iterate-rule.path any" />
+      <item itemvalue="Mocha.common &gt; main &gt; rx &gt; properties &gt; dependDeepSubscribe.base" />
     </list>
     <recent_temporary>
       <list>
-        <item itemvalue="Mocha.common &gt; main &gt; rx &gt; properties &gt; builder &gt; iterate-rule.path any" />
+        <item itemvalue="Mocha.common &gt; main &gt; rx &gt; properties &gt; dependDeepSubscribe.base" />
         <item itemvalue="Mocha.common &gt; main &gt; rx &gt; properties &gt; builder &gt; iterate-rule" />
+        <item itemvalue="Mocha.common &gt; main &gt; rx &gt; properties &gt; builder &gt; iterate-rule.path any" />
         <item itemvalue="Mocha.common &gt; main &gt; rx &gt; depend &gt; dependent-func / stress.all" />
         <item itemvalue="Mocha.common &gt; main &gt; rx &gt; depend &gt; dependent-func / base.lazy" />
-        <item itemvalue="Mocha.common &gt; main &gt; rx &gt; depend &gt; dependent-func / stress.deferred + sync" />
       </list>
     </recent_temporary>
   </component>
@@ -494,14 +500,7 @@
       <workItem from="1587565663784" duration="7699000" />
       <workItem from="1587720746493" duration="5289000" />
       <workItem from="1587787076321" duration="29386000" />
-      <workItem from="1587830820530" duration="11024000" />
-    </task>
-    <task id="LOCAL-00398" summary="depend: fix bug: mark as recalc after calculated. Tests OK">
-      <created>1587188181604</created>
-      <option name="number" value="00398" />
-      <option name="presentableId" value="LOCAL-00398" />
-      <option name="project" value="LOCAL" />
-      <updated>1587188181604</updated>
+      <workItem from="1587830820530" duration="21340000" />
     </task>
     <task id="LOCAL-00399" summary="depend: lazy mode, testing and debugging... Tests OK">
       <created>1587217458421</created>
@@ -839,7 +838,14 @@
       <option name="project" value="LOCAL" />
       <updated>1587825389784</updated>
     </task>
-    <option name="localTasksCounter" value="447" />
+    <task id="LOCAL-00447" summary="Path Builder: forEachRules completed and tested">
+      <created>1587874048853</created>
+      <option name="number" value="00447" />
+      <option name="presentableId" value="LOCAL-00447" />
+      <option name="project" value="LOCAL" />
+      <updated>1587874048856</updated>
+    </task>
+    <option name="localTasksCounter" value="448" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -900,7 +906,6 @@
   <component name="VcsManagerConfiguration">
     <option name="CHECK_CODE_SMELLS_BEFORE_PROJECT_COMMIT" value="false" />
     <option name="CHECK_NEW_TODO" value="false" />
-    <MESSAGE value="Object builders debugging... Tests OK." />
     <MESSAGE value="Object builders refactoring and debugging... Tests OK." />
     <MESSAGE value="CallState.subscribe() will emit &quot;on invalidated&quot; and &quot;on calculated&quot;. Tests OK." />
     <MESSAGE value="depend: added lazy mode, but not tested." />
@@ -925,13 +930,14 @@
     <MESSAGE value="Path Builder: delete unused code" />
     <MESSAGE value="Path Builder: refactoring... Tests OK" />
     <MESSAGE value="Path Builder: iterate-rules..." />
-    <option name="LAST_COMMIT_MESSAGE" value="Path Builder: iterate-rules..." />
+    <MESSAGE value="Path Builder: forEachRules completed and tested" />
+    <option name="LAST_COMMIT_MESSAGE" value="Path Builder: forEachRules completed and tested" />
   </component>
   <component name="WindowStateProjectService">
-    <state x="38" y="39" width="1718" height="786" key="#com.intellij.execution.impl.EditConfigurationsDialog" timestamp="1587791206915">
+    <state x="38" y="39" width="1718" height="786" key="#com.intellij.execution.impl.EditConfigurationsDialog" timestamp="1587874492922">
       <screen x="0" y="0" width="1920" height="882" />
     </state>
-    <state x="38" y="39" width="1718" height="786" key="#com.intellij.execution.impl.EditConfigurationsDialog/0.0.1920.882@0.0.1920.882" timestamp="1587791206915" />
+    <state x="38" y="39" width="1718" height="786" key="#com.intellij.execution.impl.EditConfigurationsDialog/0.0.1920.882@0.0.1920.882" timestamp="1587874492922" />
     <state x="91" y="91" width="1738" height="700" key="#com.intellij.execution.junit2.states.ComparisonFailureState$DiffDialog" timestamp="1587807988754">
       <screen x="0" y="0" width="1920" height="882" />
     </state>
@@ -948,14 +954,14 @@
       <screen x="0" y="0" width="1920" height="882" />
     </state>
     <state x="651" y="254" key="ANALYSIS_DLG_com.intellij.analysis.BaseAnalysisAction$1/0.0.1920.882@0.0.1920.882" timestamp="1586875498549" />
-    <state x="0" y="0" width="1918" height="882" key="CommitChangelistDialog2" timestamp="1587825386938">
+    <state x="0" y="0" width="1918" height="882" key="CommitChangelistDialog2" timestamp="1587874265759">
       <screen x="0" y="0" width="1920" height="882" />
     </state>
-    <state x="0" y="0" width="1918" height="882" key="CommitChangelistDialog2/0.0.1920.882@0.0.1920.882" timestamp="1587825386938" />
-    <state width="884" height="550" key="DebuggerActiveHint" timestamp="1587873867760">
+    <state x="0" y="0" width="1918" height="882" key="CommitChangelistDialog2/0.0.1920.882@0.0.1920.882" timestamp="1587874265759" />
+    <state width="884" height="550" key="DebuggerActiveHint" timestamp="1587883472096">
       <screen x="0" y="0" width="1920" height="882" />
     </state>
-    <state width="884" height="550" key="DebuggerActiveHint/0.0.1920.882@0.0.1920.882" timestamp="1587873867760" />
+    <state width="884" height="550" key="DebuggerActiveHint/0.0.1920.882@0.0.1920.882" timestamp="1587883472096" />
     <state x="0" y="4" width="1920" height="875" key="DiffContextDialog" timestamp="1587788841256">
       <screen x="0" y="0" width="1920" height="882" />
     </state>
@@ -964,70 +970,70 @@
       <screen x="0" y="0" width="1920" height="882" />
     </state>
     <state x="686" y="134" key="FileChooserDialogImpl/0.0.1920.882@0.0.1920.882" timestamp="1587352857058" />
-    <state width="698" height="388" key="GridCell.Tab.0.bottom" timestamp="1587873998280">
+    <state width="627" height="443" key="GridCell.Tab.0.bottom" timestamp="1587884202808">
       <screen x="0" y="0" width="1920" height="882" />
     </state>
-    <state width="698" height="388" key="GridCell.Tab.0.bottom/0.0.1920.882@0.0.1920.882" timestamp="1587873998280" />
-    <state width="698" height="388" key="GridCell.Tab.0.center" timestamp="1587873998280">
+    <state width="627" height="443" key="GridCell.Tab.0.bottom/0.0.1920.882@0.0.1920.882" timestamp="1587884202808" />
+    <state width="627" height="443" key="GridCell.Tab.0.center" timestamp="1587884202808">
       <screen x="0" y="0" width="1920" height="882" />
     </state>
-    <state width="698" height="388" key="GridCell.Tab.0.center/0.0.1920.882@0.0.1920.882" timestamp="1587873998280" />
-    <state width="698" height="388" key="GridCell.Tab.0.left" timestamp="1587873998280">
+    <state width="627" height="443" key="GridCell.Tab.0.center/0.0.1920.882@0.0.1920.882" timestamp="1587884202808" />
+    <state width="627" height="443" key="GridCell.Tab.0.left" timestamp="1587884202808">
       <screen x="0" y="0" width="1920" height="882" />
     </state>
-    <state width="698" height="388" key="GridCell.Tab.0.left/0.0.1920.882@0.0.1920.882" timestamp="1587873998280" />
-    <state width="698" height="388" key="GridCell.Tab.0.right" timestamp="1587873998280">
+    <state width="627" height="443" key="GridCell.Tab.0.left/0.0.1920.882@0.0.1920.882" timestamp="1587884202808" />
+    <state width="627" height="443" key="GridCell.Tab.0.right" timestamp="1587884202808">
       <screen x="0" y="0" width="1920" height="882" />
     </state>
-    <state width="698" height="388" key="GridCell.Tab.0.right/0.0.1920.882@0.0.1920.882" timestamp="1587873998280" />
-    <state width="698" height="388" key="GridCell.Tab.1.bottom" timestamp="1587873998280">
+    <state width="627" height="443" key="GridCell.Tab.0.right/0.0.1920.882@0.0.1920.882" timestamp="1587884202808" />
+    <state width="627" height="443" key="GridCell.Tab.1.bottom" timestamp="1587884202809">
       <screen x="0" y="0" width="1920" height="882" />
     </state>
-    <state width="698" height="388" key="GridCell.Tab.1.bottom/0.0.1920.882@0.0.1920.882" timestamp="1587873998280" />
-    <state width="698" height="388" key="GridCell.Tab.1.center" timestamp="1587873998280">
+    <state width="627" height="443" key="GridCell.Tab.1.bottom/0.0.1920.882@0.0.1920.882" timestamp="1587884202809" />
+    <state width="627" height="443" key="GridCell.Tab.1.center" timestamp="1587884202809">
       <screen x="0" y="0" width="1920" height="882" />
     </state>
-    <state width="698" height="388" key="GridCell.Tab.1.center/0.0.1920.882@0.0.1920.882" timestamp="1587873998280" />
-    <state width="698" height="388" key="GridCell.Tab.1.left" timestamp="1587873998280">
+    <state width="627" height="443" key="GridCell.Tab.1.center/0.0.1920.882@0.0.1920.882" timestamp="1587884202809" />
+    <state width="627" height="443" key="GridCell.Tab.1.left" timestamp="1587884202808">
       <screen x="0" y="0" width="1920" height="882" />
     </state>
-    <state width="698" height="388" key="GridCell.Tab.1.left/0.0.1920.882@0.0.1920.882" timestamp="1587873998280" />
-    <state width="698" height="388" key="GridCell.Tab.1.right" timestamp="1587873998280">
+    <state width="627" height="443" key="GridCell.Tab.1.left/0.0.1920.882@0.0.1920.882" timestamp="1587884202808" />
+    <state width="627" height="443" key="GridCell.Tab.1.right" timestamp="1587884202809">
       <screen x="0" y="0" width="1920" height="882" />
     </state>
-    <state width="698" height="388" key="GridCell.Tab.1.right/0.0.1920.882@0.0.1920.882" timestamp="1587873998280" />
-    <state width="698" height="388" key="GridCell.Tab.2.bottom" timestamp="1587873998281">
+    <state width="627" height="443" key="GridCell.Tab.1.right/0.0.1920.882@0.0.1920.882" timestamp="1587884202809" />
+    <state width="627" height="443" key="GridCell.Tab.2.bottom" timestamp="1587884202810">
       <screen x="0" y="0" width="1920" height="882" />
     </state>
-    <state width="698" height="388" key="GridCell.Tab.2.bottom/0.0.1920.882@0.0.1920.882" timestamp="1587873998281" />
-    <state width="698" height="388" key="GridCell.Tab.2.center" timestamp="1587873998281">
+    <state width="627" height="443" key="GridCell.Tab.2.bottom/0.0.1920.882@0.0.1920.882" timestamp="1587884202810" />
+    <state width="627" height="443" key="GridCell.Tab.2.center" timestamp="1587884202809">
       <screen x="0" y="0" width="1920" height="882" />
     </state>
-    <state width="698" height="388" key="GridCell.Tab.2.center/0.0.1920.882@0.0.1920.882" timestamp="1587873998281" />
-    <state width="698" height="388" key="GridCell.Tab.2.left" timestamp="1587873998281">
+    <state width="627" height="443" key="GridCell.Tab.2.center/0.0.1920.882@0.0.1920.882" timestamp="1587884202809" />
+    <state width="627" height="443" key="GridCell.Tab.2.left" timestamp="1587884202809">
       <screen x="0" y="0" width="1920" height="882" />
     </state>
-    <state width="698" height="388" key="GridCell.Tab.2.left/0.0.1920.882@0.0.1920.882" timestamp="1587873998281" />
-    <state width="698" height="388" key="GridCell.Tab.2.right" timestamp="1587873998281">
+    <state width="627" height="443" key="GridCell.Tab.2.left/0.0.1920.882@0.0.1920.882" timestamp="1587884202809" />
+    <state width="627" height="443" key="GridCell.Tab.2.right" timestamp="1587884202810">
       <screen x="0" y="0" width="1920" height="882" />
     </state>
-    <state width="698" height="388" key="GridCell.Tab.2.right/0.0.1920.882@0.0.1920.882" timestamp="1587873998281" />
-    <state width="698" height="388" key="GridCell.Tab.3.bottom" timestamp="1587873998281">
+    <state width="627" height="443" key="GridCell.Tab.2.right/0.0.1920.882@0.0.1920.882" timestamp="1587884202810" />
+    <state width="627" height="443" key="GridCell.Tab.3.bottom" timestamp="1587884202810">
       <screen x="0" y="0" width="1920" height="882" />
     </state>
-    <state width="698" height="388" key="GridCell.Tab.3.bottom/0.0.1920.882@0.0.1920.882" timestamp="1587873998281" />
-    <state width="698" height="388" key="GridCell.Tab.3.center" timestamp="1587873998281">
+    <state width="627" height="443" key="GridCell.Tab.3.bottom/0.0.1920.882@0.0.1920.882" timestamp="1587884202810" />
+    <state width="627" height="443" key="GridCell.Tab.3.center" timestamp="1587884202810">
       <screen x="0" y="0" width="1920" height="882" />
     </state>
-    <state width="698" height="388" key="GridCell.Tab.3.center/0.0.1920.882@0.0.1920.882" timestamp="1587873998281" />
-    <state width="698" height="388" key="GridCell.Tab.3.left" timestamp="1587873998281">
+    <state width="627" height="443" key="GridCell.Tab.3.center/0.0.1920.882@0.0.1920.882" timestamp="1587884202810" />
+    <state width="627" height="443" key="GridCell.Tab.3.left" timestamp="1587884202810">
       <screen x="0" y="0" width="1920" height="882" />
     </state>
-    <state width="698" height="388" key="GridCell.Tab.3.left/0.0.1920.882@0.0.1920.882" timestamp="1587873998281" />
-    <state width="698" height="388" key="GridCell.Tab.3.right" timestamp="1587873998281">
+    <state width="627" height="443" key="GridCell.Tab.3.left/0.0.1920.882@0.0.1920.882" timestamp="1587884202810" />
+    <state width="627" height="443" key="GridCell.Tab.3.right" timestamp="1587884202810">
       <screen x="0" y="0" width="1920" height="882" />
     </state>
-    <state width="698" height="388" key="GridCell.Tab.3.right/0.0.1920.882@0.0.1920.882" timestamp="1587873998281" />
+    <state width="627" height="443" key="GridCell.Tab.3.right/0.0.1920.882@0.0.1920.882" timestamp="1587884202810" />
     <state x="693" y="68" key="RollbackChangesDialog" timestamp="1587133556568">
       <screen x="0" y="0" width="1920" height="882" />
     </state>
@@ -1040,14 +1046,14 @@
       <screen x="0" y="0" width="1920" height="882" />
     </state>
     <state width="969" height="450" key="XDebugger.FullValuePopup/0.0.1920.882@0.0.1920.882" timestamp="1587792310914" />
-    <state x="121" y="111" key="com.intellij.xdebugger.impl.breakpoints.ui.BreakpointsDialogFactory$2" timestamp="1587541071100">
+    <state x="121" y="111" key="com.intellij.xdebugger.impl.breakpoints.ui.BreakpointsDialogFactory$2" timestamp="1587884348340">
       <screen x="0" y="0" width="1920" height="882" />
     </state>
-    <state x="121" y="111" key="com.intellij.xdebugger.impl.breakpoints.ui.BreakpointsDialogFactory$2/0.0.1920.882@0.0.1920.882" timestamp="1587541071100" />
-    <state x="2" y="1" width="1908" height="878" key="find.popup" timestamp="1587802615215">
+    <state x="121" y="111" key="com.intellij.xdebugger.impl.breakpoints.ui.BreakpointsDialogFactory$2/0.0.1920.882@0.0.1920.882" timestamp="1587884348340" />
+    <state x="2" y="1" width="1908" height="878" key="find.popup" timestamp="1587882091032">
       <screen x="0" y="0" width="1920" height="882" />
     </state>
-    <state x="2" y="1" width="1908" height="878" key="find.popup/0.0.1920.882@0.0.1920.882" timestamp="1587802615215" />
+    <state x="2" y="1" width="1908" height="878" key="find.popup/0.0.1920.882@0.0.1920.882" timestamp="1587882091032" />
     <state x="732" y="169" key="refactoring.ChangeSignatureDialog" timestamp="1587872020169">
       <screen x="0" y="0" width="1920" height="882" />
     </state>
@@ -1101,116 +1107,6 @@
           <option name="timeStamp" value="1510" />
         </line-breakpoint>
         <line-breakpoint enabled="true" type="javascript">
-          <url>file://$PROJECT_DIR$/src/main/common/test/DeepCloneEqual.ts</url>
-          <line>200</line>
-          <option name="timeStamp" value="1511" />
-        </line-breakpoint>
-        <line-breakpoint enabled="true" type="javascript">
-          <url>file://$PROJECT_DIR$/src/main/common/test/DeepCloneEqual.ts</url>
-          <line>226</line>
-          <option name="timeStamp" value="1512" />
-        </line-breakpoint>
-        <line-breakpoint enabled="true" type="javascript">
-          <url>file://$PROJECT_DIR$/src/main/common/test/DeepCloneEqual.ts</url>
-          <line>230</line>
-          <option name="timeStamp" value="1513" />
-        </line-breakpoint>
-        <line-breakpoint enabled="true" type="javascript">
-          <url>file://$PROJECT_DIR$/src/main/common/test/DeepCloneEqual.ts</url>
-          <line>234</line>
-          <option name="timeStamp" value="1514" />
-        </line-breakpoint>
-        <line-breakpoint enabled="true" type="javascript">
-          <url>file://$PROJECT_DIR$/src/main/common/test/DeepCloneEqual.ts</url>
-          <line>242</line>
-          <option name="timeStamp" value="1515" />
-        </line-breakpoint>
-        <line-breakpoint enabled="true" type="javascript">
-          <url>file://$PROJECT_DIR$/src/main/common/test/DeepCloneEqual.ts</url>
-          <line>248</line>
-          <option name="timeStamp" value="1516" />
-        </line-breakpoint>
-        <line-breakpoint enabled="true" type="javascript">
-          <url>file://$PROJECT_DIR$/src/main/common/test/DeepCloneEqual.ts</url>
-          <line>269</line>
-          <option name="timeStamp" value="1517" />
-        </line-breakpoint>
-        <line-breakpoint enabled="true" type="javascript">
-          <url>file://$PROJECT_DIR$/src/main/common/test/DeepCloneEqual.ts</url>
-          <line>286</line>
-          <option name="timeStamp" value="1518" />
-        </line-breakpoint>
-        <line-breakpoint enabled="true" type="javascript">
-          <url>file://$PROJECT_DIR$/src/main/common/test/DeepCloneEqual.ts</url>
-          <line>298</line>
-          <option name="timeStamp" value="1519" />
-        </line-breakpoint>
-        <line-breakpoint enabled="true" type="javascript">
-          <url>file://$PROJECT_DIR$/src/main/common/test/DeepCloneEqual.ts</url>
-          <line>306</line>
-          <option name="timeStamp" value="1520" />
-        </line-breakpoint>
-        <line-breakpoint enabled="true" type="javascript">
-          <url>file://$PROJECT_DIR$/src/main/common/test/DeepCloneEqual.ts</url>
-          <line>310</line>
-          <option name="timeStamp" value="1521" />
-        </line-breakpoint>
-        <line-breakpoint enabled="true" type="javascript">
-          <url>file://$PROJECT_DIR$/src/main/common/test/DeepCloneEqual.ts</url>
-          <line>320</line>
-          <option name="timeStamp" value="1522" />
-        </line-breakpoint>
-        <line-breakpoint enabled="true" type="javascript">
-          <url>file://$PROJECT_DIR$/src/main/common/test/DeepCloneEqual.ts</url>
-          <line>341</line>
-          <option name="timeStamp" value="1523" />
-        </line-breakpoint>
-        <line-breakpoint enabled="true" type="javascript">
-          <url>file://$PROJECT_DIR$/src/main/common/test/DeepCloneEqual.ts</url>
-          <line>346</line>
-          <option name="timeStamp" value="1524" />
-        </line-breakpoint>
-        <line-breakpoint enabled="true" type="javascript">
-          <url>file://$PROJECT_DIR$/src/main/common/test/DeepCloneEqual.ts</url>
-          <line>376</line>
-          <option name="timeStamp" value="1525" />
-        </line-breakpoint>
-        <line-breakpoint enabled="true" type="javascript">
-          <url>file://$PROJECT_DIR$/src/main/common/test/DeepCloneEqual.ts</url>
-          <line>399</line>
-          <option name="timeStamp" value="1526" />
-        </line-breakpoint>
-        <line-breakpoint enabled="true" type="javascript">
-          <url>file://$PROJECT_DIR$/src/main/common/test/DeepCloneEqual.ts</url>
-          <line>404</line>
-          <option name="timeStamp" value="1527" />
-        </line-breakpoint>
-        <line-breakpoint enabled="true" type="javascript">
-          <url>file://$PROJECT_DIR$/src/main/common/test/DeepCloneEqual.ts</url>
-          <line>413</line>
-          <option name="timeStamp" value="1528" />
-        </line-breakpoint>
-        <line-breakpoint enabled="true" type="javascript">
-          <url>file://$PROJECT_DIR$/src/main/common/test/DeepCloneEqual.ts</url>
-          <line>416</line>
-          <option name="timeStamp" value="1529" />
-        </line-breakpoint>
-        <line-breakpoint enabled="true" type="javascript">
-          <url>file://$PROJECT_DIR$/src/main/common/test/DeepCloneEqual.ts</url>
-          <line>422</line>
-          <option name="timeStamp" value="1530" />
-        </line-breakpoint>
-        <line-breakpoint enabled="true" type="javascript">
-          <url>file://$PROJECT_DIR$/src/main/common/test/DeepCloneEqual.ts</url>
-          <line>427</line>
-          <option name="timeStamp" value="1531" />
-        </line-breakpoint>
-        <line-breakpoint enabled="true" type="javascript">
-          <url>file://$PROJECT_DIR$/src/main/common/test/DeepCloneEqual.ts</url>
-          <line>436</line>
-          <option name="timeStamp" value="1532" />
-        </line-breakpoint>
-        <line-breakpoint enabled="true" type="javascript">
           <url>file://$PROJECT_DIR$/src/test/tests/common/main/rx/object/properties/path/builder/RuleBuilder.ts</url>
           <line>474</line>
           <option name="timeStamp" value="1533" />
@@ -1226,28 +1122,46 @@
           <option name="timeStamp" value="1535" />
         </line-breakpoint>
         <line-breakpoint enabled="true" type="javascript">
-          <url>file://$PROJECT_DIR$/src/test/tests/common/main/rx/object/properties/path/builder/iterate-rule.ts</url>
+          <url>file://$PROJECT_DIR$/src/test/tests/common/main/rx/object/properties/path/iterate-rule.ts</url>
           <line>157</line>
           <properties lambdaOrdinal="-1" />
           <option name="timeStamp" value="1543" />
         </line-breakpoint>
         <line-breakpoint enabled="true" type="javascript">
-          <url>file://$PROJECT_DIR$/src/test/tests/common/main/rx/object/properties/path/builder/iterate-rule.ts</url>
+          <url>file://$PROJECT_DIR$/src/test/tests/common/main/rx/object/properties/path/iterate-rule.ts</url>
           <line>151</line>
           <properties lambdaOrdinal="-1" />
           <option name="timeStamp" value="1548" />
         </line-breakpoint>
         <line-breakpoint enabled="true" type="javascript">
-          <url>file://$PROJECT_DIR$/src/test/tests/common/main/rx/object/properties/path/builder/iterate-rule.ts</url>
+          <url>file://$PROJECT_DIR$/src/test/tests/common/main/rx/object/properties/path/iterate-rule.ts</url>
           <line>111</line>
           <properties lambdaOrdinal="-1" />
           <option name="timeStamp" value="1549" />
         </line-breakpoint>
         <line-breakpoint enabled="true" type="javascript">
-          <url>file://$PROJECT_DIR$/src/test/tests/common/main/rx/object/properties/path/builder/iterate-rule.ts</url>
+          <url>file://$PROJECT_DIR$/src/test/tests/common/main/rx/object/properties/path/iterate-rule.ts</url>
           <line>116</line>
           <properties lambdaOrdinal="-1" />
           <option name="timeStamp" value="1557" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" type="javascript">
+          <url>file://$PROJECT_DIR$/src/main/common/rx/object/properties/path/dependDeepSubscribe.ts</url>
+          <line>45</line>
+          <properties lambdaOrdinal="-1" />
+          <option name="timeStamp" value="1583" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" type="javascript">
+          <url>file://$PROJECT_DIR$/src/main/common/rx/object/properties/path/dependDeepSubscribe.ts</url>
+          <line>38</line>
+          <properties lambdaOrdinal="-1" />
+          <option name="timeStamp" value="1589" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" type="javascript">
+          <url>file://$PROJECT_DIR$/src/main/common/rx/object/properties/path/dependDeepSubscribe.ts</url>
+          <line>61</line>
+          <properties lambdaOrdinal="-1" />
+          <option name="timeStamp" value="1590" />
         </line-breakpoint>
       </breakpoints>
       <breakpoints-dialog>
@@ -1287,6 +1201,8 @@
         <watch expression="_onfulfilled[0]['[[Scopes]]']" language="TypeScript" />
         <watch expression="link.value" />
         <watch expression="JSON.stringify(rule1, null, 4)" language="TypeScript" />
+        <watch expression="'c' in object" language="TypeScript" />
+        <watch expression="propertyName in object" language="TypeScript" />
       </configuration>
     </watches-manager>
   </component>

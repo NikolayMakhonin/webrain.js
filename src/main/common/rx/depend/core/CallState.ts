@@ -634,7 +634,7 @@ export class CallState<
 				}
 
 				if (isLazy) {
-					return this.value
+					return this.value as any
 				}
 
 				return this.valueAsync as any
@@ -705,7 +705,7 @@ export class CallState<
 		}
 
 		if (isLazy && isThenable(value)) {
-			return this.value
+			return this.value as any
 		}
 
 		return value

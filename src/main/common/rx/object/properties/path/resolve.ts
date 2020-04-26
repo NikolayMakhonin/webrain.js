@@ -4,8 +4,8 @@ import {HasDefaultOrValue, VALUE_PROPERTY_DEFAULT} from '../../../../helpers/val
 import {CalcPropertyValue} from '../CalcProperty'
 import {TGetPropertyValue} from './constracts'
 
-function resolveValueProperty(value: any, getValue?: (value: any) => any) {
-	if (value != null && typeof value === 'object') {
+export function resolveValueProperty(value: any, getValue?: (value: any) => any) {
+	if (value != null && (value instanceof Object) && value.constructor !== Object && !Array.isArray(value)) {
 		if (VALUE_PROPERTY_DEFAULT in value) {
 			if (getValue) {
 				const newValue = getValue(value)

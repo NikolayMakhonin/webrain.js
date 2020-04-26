@@ -1,4 +1,4 @@
-/* tslint:disable:no-duplicate-string */
+/* tslint:disable:no-duplicate-string new-parens */
 import {ThenableIterator} from '../../../../../../../../main/common/async/async'
 import {resolveAsync, ThenableSync} from '../../../../../../../../main/common/async/ThenableSync'
 import {VALUE_PROPERTY_DEFAULT} from '../../../../../../../../main/common/helpers/value-property'
@@ -21,14 +21,15 @@ describe('common > main > rx > properties > builder', function() {
 			}
 		}
 
-		const innerObject = {
-			[VALUE_PROPERTY_DEFAULT]: 100,
-			d: '1',
+		const innerObject = new class {
+			public [VALUE_PROPERTY_DEFAULT] = 100
+			public d = '1'
 		}
 
-		const object = {
-			[VALUE_PROPERTY_DEFAULT]: 101,
-			a: {
+		const object = new class {
+			public [VALUE_PROPERTY_DEFAULT] = 101
+			public a = {
+				[VALUE_PROPERTY_DEFAULT]: 101,
 				get b() {
 					checkCurrentState()
 					return resolveAsync(delay(0), () => {
@@ -52,7 +53,7 @@ describe('common > main > rx > properties > builder', function() {
 							}
 						})
 				},
-			},
+			}
 		}
 
 		// const x: HasDefaultValueOf<typeof object> = null

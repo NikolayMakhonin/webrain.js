@@ -1,18 +1,18 @@
 /* tslint:disable:no-shadowed-variable no-empty */
-import {isIterable} from '../../../../../../../../../main/common/helpers/helpers'
+import {isIterable} from '../../../../../../../../main/common/helpers/helpers'
 /* eslint-disable no-useless-escape,computed-property-spacing */
-import {IRule, RuleType} from '../../../../../../../../../main/common/rx/object/properties/path/builder/contracts/rules'
-import {forEachRules} from '../../../../../../../../../main/common/rx/object/properties/path/builder/forEachRules'
+import {IRule, RuleType} from '../../../../../../../../main/common/rx/object/properties/path/builder/contracts/rules'
+import {forEachRule} from '../../../../../../../../main/common/rx/object/properties/path/forEachRule'
 import {
 	IRuleIterator,
 	iterateRule,
 	subscribeNextRule,
-} from '../../../../../../../../../main/common/rx/object/properties/path/builder/iterate-rule'
-import {RuleBuilder} from '../../../../../../../../../main/common/rx/object/properties/path/builder/RuleBuilder'
-import {Rule} from '../../../../../../../../../main/common/rx/object/properties/path/builder/rules'
-import {IUnsubscribe, IUnsubscribeOrVoid} from '../../../../../../../../../main/common/rx/subjects/observable'
-import {assert} from '../../../../../../../../../main/common/test/Assert'
-import {describe, it} from '../../../../../../../../../main/common/test/Mocha'
+} from '../../../../../../../../main/common/rx/object/properties/path/iterate-rule'
+import {RuleBuilder} from '../../../../../../../../main/common/rx/object/properties/path/builder/RuleBuilder'
+import {Rule} from '../../../../../../../../main/common/rx/object/properties/path/builder/rules'
+import {IUnsubscribe, IUnsubscribeOrVoid} from '../../../../../../../../main/common/rx/subjects/observable'
+import {assert} from '../../../../../../../../main/common/test/Assert'
+import {describe, it, xit} from '../../../../../../../../main/common/test/Mocha'
 
 describe('common > main > rx > properties > builder > iterate-rule', function() {
 	// function ruleToString(rule: IRule) {
@@ -107,8 +107,8 @@ describe('common > main > rx > properties > builder > iterate-rule', function() 
 		)
 	}
 
-	function forEachRulesToObject(rule: IRule, obj: any = {}, prevIsFork?: boolean): IUnsubscribeOrVoid {
-		forEachRules<any, any>(rule, obj, (value, parent, key, keyType) => {
+	function forEachRuleToObject(rule: IRule, obj: any = {}, prevIsFork?: boolean): IUnsubscribeOrVoid {
+		forEachRule<any, any>(rule, obj, (value, parent, key, keyType) => {
 			if (parent != null) {
 				assert.strictEqual(parent[key], value)
 			}
@@ -153,7 +153,7 @@ describe('common > main > rx > properties > builder > iterate-rule', function() 
 			autoInsertValuePropertyDefault: false,
 		})).result()
 		const object = {}
-		forEachRulesToObject(rule, object)
+		forEachRuleToObject(rule, object)
 		// console.log(JSON.stringify(object, null, 4))
 		const paths = Array.from(objectToPaths(object, true))
 		assert.deepStrictEqual(paths.sort(), expectedPaths.sort(), JSON.stringify(paths, null, 4))

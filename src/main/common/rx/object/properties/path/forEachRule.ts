@@ -1,8 +1,8 @@
-import {ValueKeyType} from './contracts/common'
-import {IChangeItem, IRuleSubscribe} from './contracts/rule-subscribe'
-import {IRuleAction} from './contracts/rules'
-import {IRuleAny, IRuleIf, IRuleRepeat, RuleRepeatAction} from './contracts/rules'
-import {IRule, RuleType} from './contracts/rules'
+import {ValueKeyType} from './builder/contracts/common'
+import {IChangeItem, IRuleSubscribe} from './builder/contracts/rule-subscribe'
+import {IRuleAction} from './builder/contracts/rules'
+import {IRuleAny, IRuleIf, IRuleRepeat, RuleRepeatAction} from './builder/contracts/rules'
+import {IRule, RuleType} from './builder/contracts/rules'
 
 export type INextRuleIterable = (object: any) => IRuleIterable
 export type IRuleOrIterable = IRuleAction | IRuleIterable | INextRuleIterable
@@ -33,7 +33,7 @@ const repeatNext = function<TObject, TValue>(
 		if ((repeatAction & RuleRepeatAction.Next) === 0) {
 			return
 		}
-		forEachRules(
+		forEachRule(
 			repeatRule.rule,
 			object,
 			repeatRuleNext,
@@ -56,7 +56,7 @@ const repeatNext = function<TObject, TValue>(
 		ruleNext(object, key, keyType)
 	}
 
-	forEachRules<TObject, TValue>(
+	forEachRule<TObject, TValue>(
 		repeatRule.rule,
 		object,
 		repeatRuleNext,
@@ -90,7 +90,7 @@ type IResolveRuleSubscribe<TObject, TValue>
 		keyType: ValueKeyType,
 	) => any
 
-export function forEachRules<TObject, TValue>(
+export function forEachRule<TObject, TValue>(
 	rule: IRule,
 	object: TObject,
 	next: IChangeItem<TObject, TValue>,
@@ -113,15 +113,13 @@ export function forEachRules<TObject, TValue>(
 				nextParent: any,
 				nextKey: any,
 				nextKeyType: ValueKeyType,
-			) => forEachRules(rule.next, nextObject, next, nextParent, nextKey, nextKeyType, resolveRuleSubscribe)
+			) => forEachRule(rule.next, nextObject, next, nextParent, nextKey, nextKeyType, resolveRuleSubscribe)
 			: null
 
 		switch (rule.type) {
 			case RuleType.Nothing:
-				ruleNext(object, parent, key, keyType)
-				return
-				// rule = rule.next
-				// break
+				rule = rule.next
+				break
 			case RuleType.Never:
 				return
 			case RuleType.Action:
@@ -142,20 +140,21 @@ export function forEachRules<TObject, TValue>(
 					const conditionRule = conditionRules[i]
 					if (Array.isArray(conditionRule)) {
 						if (conditionRule[0](object)) {
-							forEachRules(conditionRule[1], object, ruleNext, parent, key, keyType, resolveRuleSubscribe)
+							forEachRule(conditionRule[1], object, ruleNext, parent, key, keyType, resolveRuleSubscribe)
 							break
 						}
 					} else {
-						forEachRules(conditionRule, object, ruleNext, parent, key, keyType, resolveRuleSubscribe)
+						forEachRule(conditionRule, object, ruleNext, parent, key, keyType, resolveRuleSubscribe)
 						break
 					}
 				}
 
-				if (i === len && ruleNext != null) {
-					ruleNext(object, parent, key, keyType)
+				if (i !== len || ruleNext == null) {
+					return
 				}
 
-				return
+				rule = rule.next
+				break
 			}
 			case RuleType.Any:
 				const {rules} = (rule as IRuleAny)
@@ -163,7 +162,7 @@ export function forEachRules<TObject, TValue>(
 					return
 				}
 				if (rules.length === 1) {
-					forEachRules(rules[0], object, ruleNext, parent, key, keyType, resolveRuleSubscribe)
+					forEachRule(rules[0], object, ruleNext, parent, key, keyType, resolveRuleSubscribe)
 				}
 
 				for (let i = 0, len = rules.length; i < len; i++) {
@@ -171,7 +170,7 @@ export function forEachRules<TObject, TValue>(
 					if (!subRule) {
 						throw new Error(`RuleType.Any rule=${subRule}`)
 					}
-					forEachRules(subRule, object, ruleNext, parent, key, keyType, resolveRuleSubscribe)
+					forEachRule(subRule, object, ruleNext, parent, key, keyType, resolveRuleSubscribe)
 				}
 
 				return
