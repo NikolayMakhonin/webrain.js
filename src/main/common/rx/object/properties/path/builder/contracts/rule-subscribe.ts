@@ -1,15 +1,15 @@
-import {IUnsubscribe, IUnsubscribeOrVoid} from '../../../../../subjects/observable'
-import {ValueChangeType, ValueKeyType} from './common'
+import {ValueKeyType} from './common'
 import {IRuleAction} from './rules'
 
-export type IChangeItem<TItem> = (
+export type IChangeItem<TObject, TItem> = (
 	item: TItem,
+	object: TObject,
 	key: any,
 	keyType: ValueKeyType,
 ) => void
 export type ISubscribeObject<TObject, TChild> = (
 	object: TObject,
-	changeItem: IChangeItem<TChild>,
+	changeItem: IChangeItem<TObject, TChild>,
 ) => any
 
 export interface IRuleSubscribe<TObject = any, TChild = any> extends IRuleAction {

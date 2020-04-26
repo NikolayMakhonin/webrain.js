@@ -1,5 +1,6 @@
 /* tslint:disable:no-shadowed-variable no-duplicate-string no-empty */
 /* eslint-disable no-useless-escape,computed-property-spacing */
+import {VALUE_PROPERTY_DEFAULT} from '../../../../../../../../../main/common/helpers/value-property'
 import {ObjectMap} from '../../../../../../../../../main/common/lists/ObjectMap'
 import {ObjectSet} from '../../../../../../../../../main/common/lists/ObjectSet'
 import {ObservableMap} from '../../../../../../../../../main/common/lists/ObservableMap'
@@ -14,10 +15,9 @@ import {
 } from '../../../../../../../../../main/common/rx/object/properties/path/builder/contracts/rule-subscribe'
 import {IRule, RuleType} from '../../../../../../../../../main/common/rx/object/properties/path/builder/contracts/rules'
 import {RuleBuilder} from '../../../../../../../../../main/common/rx/object/properties/path/builder/RuleBuilder'
+import {SubscribeObjectType} from '../../../../../../../../../main/common/rx/object/properties/path/builder/rules-subscribe'
 import {assert} from '../../../../../../../../../main/common/test/Assert'
 import {describe, it} from '../../../../../../../../../main/common/test/Mocha'
-import {SubscribeObjectType} from "../../../../../../../../../main/common/rx/object/properties/path/builder/rules-subscribe";
-import {VALUE_PROPERTY_DEFAULT} from "../../../../../../../../../main/common";
 
 describe('common > main > rx > properties > builder > RuleBuilder', function() {
 	interface IObject {
@@ -97,6 +97,7 @@ describe('common > main > rx > properties > builder > RuleBuilder', function() {
 
 		function changeItem(
 			value: string,
+			parent: any,
 			key: any,
 			keyType: ValueKeyType,
 		) {

@@ -2,6 +2,7 @@
 import {isIterable} from '../../../../../../../../../main/common/helpers/helpers'
 /* eslint-disable no-useless-escape,computed-property-spacing */
 import {IRule, RuleType} from '../../../../../../../../../main/common/rx/object/properties/path/builder/contracts/rules'
+import {forEachRules} from '../../../../../../../../../main/common/rx/object/properties/path/builder/forEachRules'
 import {
 	IRuleIterator,
 	iterateRule,
@@ -12,7 +13,6 @@ import {Rule} from '../../../../../../../../../main/common/rx/object/properties/
 import {IUnsubscribe, IUnsubscribeOrVoid} from '../../../../../../../../../main/common/rx/subjects/observable'
 import {assert} from '../../../../../../../../../main/common/test/Assert'
 import {describe, it} from '../../../../../../../../../main/common/test/Mocha'
-import {forEachRules} from "../../../../../../../../../main/common/rx/object/properties/path/builder/forEachRules";
 
 describe('common > main > rx > properties > builder > iterate-rule', function() {
 	// function ruleToString(rule: IRule) {
@@ -108,54 +108,19 @@ describe('common > main > rx > properties > builder > iterate-rule', function() 
 	}
 
 	function forEachRulesToObject(rule: IRule, obj: any = {}, prevIsFork?: boolean): IUnsubscribeOrVoid {
-		forEachRules(rule, testObject, (object, value, key, keyType) => {
-
+		forEachRules<any, any>(rule, obj, (value, parent, key, keyType) => {
+			if (parent != null) {
+				assert.strictEqual(parent[key], value)
+			}
+			value._end = true
+		}, null, null, null, (rule, value, next, parent, key, keyType) => {
+			if (parent != null) {
+				assert.strictEqual(parent[key], value)
+			}
+			const newObj = {[rule.description]: {}}
+			rule.subscribe(newObj, next)
+			mergeObjects(value, newObj)
 		})
-
-		let iteration
-		if (!ruleIterator || (iteration = ruleIterator.next()).done) {
-			obj._end = true
-
-			return () => {
-				obj._end = false
-			}
-		}
-
-		const isFork = isIterable(iteration.value)
-		if (isFork) {
-			assert.notOk(prevIsFork)
-			assert.ok(Array.isArray(iteration.value))
-			if (iteration.value.length > 0) {
-				for (let i = 0; i < iteration.value.length; i++) {
-					const item = iteration.value[i]
-					if (i > 0) {
-						assert.ok(!Array.isArray(item) || item.length > 0)
-						assert.ok(item.type == null || item.type === RuleType.Action)
-					} else {
-						assert.ok(item.type == null || item.type === RuleType.Action || item.type === RuleType.Never)
-					}
-				}
-			}
-		}
-
-		return subscribeNextRule(
-			ruleIterator,
-			iteration,
-			nextRuleIterator => rulesIteratorToObject(nextRuleIterator, obj, isFork),
-			(rule, getRuleIterable) => {
-				if (rule.type === RuleType.Never) {
-					return null
-				}
-
-				const newObj = {}
-				const unsubscribe = rulesIteratorToObject(
-					getRuleIterable
-						? getRuleIterable(testObject)[Symbol.iterator]()
-						: null, newObj, isFork)
-				mergeObjects(obj, {[rule.description]: newObj})
-				return unsubscribe
-			},
-		)
 	}
 
 	function *objectToPaths(obj, endValue, parentPath: string = ''): Iterable<string> {
@@ -190,11 +155,7 @@ describe('common > main > rx > properties > builder > iterate-rule', function() 
 		const object = {}
 		forEachRulesToObject(rule, object)
 		// console.log(JSON.stringify(object, null, 4))
-		let paths = Array.from(objectToPaths(object, true))
-		assert.deepStrictEqual(paths.sort(), expectedPaths.sort(), JSON.stringify(paths, null, 4))
-
-		// console.log(JSON.stringify(object, null, 4))
-		paths = Array.from(objectToPaths(object, false))
+		const paths = Array.from(objectToPaths(object, true))
 		assert.deepStrictEqual(paths.sort(), expectedPaths.sort(), JSON.stringify(paths, null, 4))
 	}
 
@@ -221,7 +182,7 @@ describe('common > main > rx > properties > builder > iterate-rule', function() 
 		paths = Array.from(objectToPaths(object, false))
 		assert.deepStrictEqual(paths.sort(), expectedPaths.sort(), JSON.stringify(paths, null, 4))
 
-		// testForEachRules(buildRule)
+		testForEachRules(buildRule, ...expectedPaths)
 	}
 
 	it('never', function() {
@@ -283,6 +244,22 @@ describe('common > main > rx > properties > builder > iterate-rule', function() 
 	})
 
 	it('nothing', function() {
+		testIterateRule(
+			b => b
+				.any(
+					b => b.p('a'),
+					b => b.nothing(),
+				)
+				.any(
+					b => b.p('a'),
+					b => b.nothing(),
+				)
+				.p('c'),
+			'a.a.c',
+			'a.c',
+			'c',
+		)
+
 		testIterateRule(
 			b => b
 				.any(
@@ -442,7 +419,7 @@ describe('common > main > rx > properties > builder > iterate-rule', function() 
 		)
 	})
 
-	it('path any', function() {
+	xit('path any', function() {
 		testIterateRule(
 			b => b.p('a', 'b').p<any>('c'),
 			'a|b.c',

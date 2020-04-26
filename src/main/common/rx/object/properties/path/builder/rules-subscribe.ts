@@ -14,7 +14,7 @@ function forEachCollection<TItem>(
 	changeItem: IChangeItem<TItem>,
 ) {
 	for (const item of iterable) {
-		changeItem(item, null, ValueKeyType.CollectionAny)
+		changeItem(item, iterable, null, ValueKeyType.CollectionAny)
 	}
 }
 
@@ -39,12 +39,12 @@ export function subscribeObjectValue<TValue>(
 	changeItem: IChangeItem<TValue>,
 ): void {
 	if (!(object instanceof Object)) {
-		changeItem(object as any, null, null)
+		changeItem(object as any, object, null, null)
 		return null
 	}
 
 	if (object.constructor === Object || Array.isArray(object)) {
-		changeItem(object as any, null, null)
+		changeItem(object as any, object, null, null)
 	}
 
 	if (allowSubscribePrototype
@@ -60,11 +60,11 @@ export function subscribeObjectValue<TValue>(
 	}
 
 	if (propertyName == null) {
-		changeItem(object as any, null, null)
+		changeItem(object as any, object, null, null)
 	} else {
 		const value = object[propertyName]
 		if (typeof value !== 'undefined') {
-			changeItem(value, propertyName, ValueKeyType.ValueProperty)
+			changeItem(value, object, propertyName, ValueKeyType.ValueProperty)
 		}
 	}
 }
@@ -101,7 +101,7 @@ export function subscribeObject<TValue>(
 			if ((allowSubscribePrototype || Object.prototype.hasOwnProperty.call(object, propertyName))
 				&& (!propertyPredicate || propertyPredicate(propertyName, object))
 			) {
-				changeItem(object[propertyName], propertyName, ValueKeyType.Property)
+				changeItem(object[propertyName], object, propertyName, ValueKeyType.Property)
 			}
 		}
 	} else {
@@ -115,7 +115,7 @@ export function subscribeObject<TValue>(
 				) {
 					const value = object[propertyName]
 					if (typeof value !== 'undefined') {
-						changeItem(value, propertyName, ValueKeyType.Property)
+						changeItem(value, object, propertyName, ValueKeyType.Property)
 					}
 				}
 			}
@@ -126,7 +126,7 @@ export function subscribeObject<TValue>(
 			) {
 				const value = object[propertyNames]
 				if (typeof value !== 'undefined') {
-					changeItem(value, propertyNames, ValueKeyType.Property)
+					changeItem(value, object, propertyNames, ValueKeyType.Property)
 				}
 			}
 		}
@@ -152,13 +152,13 @@ export function subscribeMap<K, V>(
 			const key = keys[i]
 
 			if (object.has(key)) {
-				changeItem(object.get(key), key, ValueKeyType.MapKey)
+				changeItem(object.get(key), object, key, ValueKeyType.MapKey)
 			}
 		}
 	} else {
 		for (const entry of object) {
 			if (!keyPredicate || keyPredicate(entry[0], object)) {
-				changeItem(entry[1], entry[0], ValueKeyType.MapKey)
+				changeItem(entry[1], object, entry[0], ValueKeyType.MapKey)
 			}
 		}
 	}
@@ -178,7 +178,7 @@ export function subscribeCollection<TItem>(
 
 	if (Array.isArray(object)) {
 		for (let i = 0, len = object.length; i < len; i++) {
-			changeItem(object[i], i, ValueKeyType.Index)
+			changeItem(object[i], object, i, ValueKeyType.Index)
 		}
 	} else if (object instanceof Map || object[Symbol.toStringTag] === 'Map') {
 		subscribeMap(null, null, object as any, changeItem)

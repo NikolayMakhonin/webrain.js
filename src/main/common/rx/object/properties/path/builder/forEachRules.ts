@@ -1,5 +1,6 @@
-import {IRuleAction} from '../../../../deep-subscribe/contracts/rules'
-import {IRuleSubscribe} from './contracts/rule-subscribe'
+import {ValueKeyType} from './contracts/common'
+import {IChangeItem, IRuleSubscribe} from './contracts/rule-subscribe'
+import {IRuleAction} from './contracts/rules'
 import {IRuleAny, IRuleIf, IRuleRepeat, RuleRepeatAction} from './contracts/rules'
 import {IRule, RuleType} from './contracts/rules'
 
@@ -7,14 +8,18 @@ export type INextRuleIterable = (object: any) => IRuleIterable
 export type IRuleOrIterable = IRuleAction | IRuleIterable | INextRuleIterable
 export interface IRuleIterable extends Iterable<IRuleOrIterable> {}
 
-const repeatNext = function*(
-	nextObject: any,
+const repeatNext = function<TObject, TValue>(
+	object: TObject,
 	index: number,
 	repeatRule: IRuleRepeat,
 	ruleNext,
-): IRuleIterable {
+	parent: any,
+	key: any,
+	keyType: ValueKeyType,
+	resolveRuleSubscribe: IResolveRuleSubscribe<TObject, TValue>,
+): void {
 	let repeatAction = repeatRule.condition
-		? repeatRule.condition(nextObject, index)
+		? repeatRule.condition(object, index)
 		: RuleRepeatAction.All
 
 	if (index < repeatRule.countMin) {
@@ -28,61 +33,107 @@ const repeatNext = function*(
 		if ((repeatAction & RuleRepeatAction.Next) === 0) {
 			return
 		}
-		forEachRules(repeatRule.rule, nextObject, repeatRuleNext)
+		forEachRules(
+			repeatRule.rule,
+			object,
+			repeatRuleNext,
+			parent,
+			key,
+			keyType,
+			resolveRuleSubscribe,
+		)
 		return
 	}
 
 	if ((repeatAction & RuleRepeatAction.Next) === 0) {
 		if (ruleNext) {
-			ruleNext(nextObject)
+			ruleNext(object, key, keyType)
 		}
 		return
 	}
 
 	if (ruleNext) {
-		ruleNext(nextObject)
+		ruleNext(object, key, keyType)
 	}
 
-	forEachRules(repeatRule.rule, nextObject, repeatRuleNext)
+	forEachRules<TObject, TValue>(
+		repeatRule.rule,
+		object,
+		repeatRuleNext,
+		parent,
+		key,
+		keyType,
+		resolveRuleSubscribe,
+	)
 
-	function repeatRuleNext(nextIterationObject) {
-		return repeatNext(
-			nextIterationObject,
+	function repeatRuleNext(nextIterationObject: TValue): void {
+		repeatNext(
+			nextIterationObject as any as TObject,
 			index + 1,
 			repeatRule,
 			ruleNext,
+			parent,
+			key,
+			keyType,
+			resolveRuleSubscribe,
 		)
 	}
 }
 
-export function forEachRules<TValue>(
+type IResolveRuleSubscribe<TObject, TValue>
+	= (
+		rule: IRuleSubscribe,
+		object: TObject,
+		next: IChangeItem<TObject, TValue>,
+		parent: any,
+		key: any,
+		keyType: ValueKeyType,
+	) => any
+
+export function forEachRules<TObject, TValue>(
 	rule: IRule,
-	object: any,
-	next,
-): IRuleIterable {
+	object: TObject,
+	next: IChangeItem<TObject, TValue>,
+	parent: any,
+	key: any,
+	keyType: ValueKeyType,
+	resolveRuleSubscribe: IResolveRuleSubscribe<TObject, TValue>,
+): void {
 	while (true) {
 		if (rule == null) {
 			if (next != null) {
-				next(object)
+				next(object as any, parent, key, keyType)
 			}
 			return
 		}
 
 		const ruleNext = rule.next || next
-			? (nextObject: any) => forEachRules(rule.next, nextObject, next)
+			? (
+				nextObject: any,
+				nextParent: any,
+				nextKey: any,
+				nextKeyType: ValueKeyType,
+			) => forEachRules(rule.next, nextObject, next, nextParent, nextKey, nextKeyType, resolveRuleSubscribe)
 			: null
 
 		switch (rule.type) {
 			case RuleType.Nothing:
-				rule = rule.next
-				break
+				ruleNext(object, parent, key, keyType)
+				return
+				// rule = rule.next
+				// break
 			case RuleType.Never:
 				return
 			case RuleType.Action:
-				if (ruleNext != null) {
-					ruleNext(rule)
-				}
-				break
+				resolveRuleSubscribe(
+					rule as IRuleSubscribe,
+					object,
+					ruleNext,
+					parent,
+					key,
+					keyType,
+				)
+				return
 			case RuleType.If: {
 				const {conditionRules} = (rule as IRuleIf)
 				const len = conditionRules.length
@@ -91,19 +142,20 @@ export function forEachRules<TValue>(
 					const conditionRule = conditionRules[i]
 					if (Array.isArray(conditionRule)) {
 						if (conditionRule[0](object)) {
-							forEachRules(conditionRule[1], object, ruleNext)
+							forEachRules(conditionRule[1], object, ruleNext, parent, key, keyType, resolveRuleSubscribe)
 							break
 						}
 					} else {
-						forEachRules(conditionRule, object, ruleNext)
+						forEachRules(conditionRule, object, ruleNext, parent, key, keyType, resolveRuleSubscribe)
 						break
 					}
 				}
 
 				if (i === len && ruleNext != null) {
-					ruleNext(object)
+					ruleNext(object, parent, key, keyType)
 				}
-				break
+
+				return
 			}
 			case RuleType.Any:
 				const {rules} = (rule as IRuleAny)
@@ -111,7 +163,7 @@ export function forEachRules<TValue>(
 					return
 				}
 				if (rules.length === 1) {
-					forEachRules(rules[0], object, ruleNext)
+					forEachRules(rules[0], object, ruleNext, parent, key, keyType, resolveRuleSubscribe)
 				}
 
 				for (let i = 0, len = rules.length; i < len; i++) {
@@ -119,9 +171,10 @@ export function forEachRules<TValue>(
 					if (!subRule) {
 						throw new Error(`RuleType.Any rule=${subRule}`)
 					}
-					forEachRules(subRule, object, ruleNext)
+					forEachRules(subRule, object, ruleNext, parent, key, keyType, resolveRuleSubscribe)
 				}
-				break
+
+				return
 			case RuleType.Repeat: {
 				const {countMin, countMax} = rule as IRuleRepeat
 
@@ -129,9 +182,9 @@ export function forEachRules<TValue>(
 					return
 				}
 
-				repeatNext(object, 0, rule as IRuleRepeat, ruleNext)
+				repeatNext(object, 0, rule as IRuleRepeat, ruleNext, parent, key, keyType, resolveRuleSubscribe)
 
-				break
+				return
 			}
 			default:
 				throw new Error('Unknown RuleType: ' + rule.type)
