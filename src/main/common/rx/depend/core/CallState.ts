@@ -15,15 +15,7 @@ import {PairingHeap, PairingNode} from '../../../lists/PairingHeap'
 import {DeferredCalc, IDeferredCalcOptions} from '../../deferred-calc/DeferredCalc'
 import {ISubscriber, IUnsubscribe} from '../../subjects/observable'
 import {ISubject, Subject} from '../../subjects/subject'
-import {
-	CallStatus, CallStatusShort,
-	Func,
-	ICallState,
-	ILinkItem,
-	TCall,
-	TInnerValue,
-	TResultOuter,
-} from './contracts'
+import {CallStatus, CallStatusShort, Func, ICallState, ILinkItem, TCall, TInnerValue, TResultOuter} from './contracts'
 import {getCurrentState, setCurrentState} from './current-state'
 import {InternalError} from './helpers'
 
@@ -483,8 +475,6 @@ export type TFuncCall<
 	state: CallState<TThisOuter, TArgs, TResultInner>,
 ) => TResultInner
 
-let usageNextId = 1
-
 export class CallState<
 	TThisOuter,
 	TArgs extends any[],
@@ -517,7 +507,7 @@ export class CallState<
 	public readonly valueIds: Int32Array
 
 	/** @internal */
-	public _deleteOrder: number = 0
+	public _lastAccessTime: number = 0
 
 	public status: CallStatus = Flag_Invalidated | Flag_Recalc
 	public valueAsync: IThenable<TInnerValue<TResultInner>> = null
@@ -563,8 +553,7 @@ export class CallState<
 	// region calculable
 
 	public get hasSubscribers(): boolean {
-		return this._subscribersFirst != null
-			|| this._changedSubject != null && this._changedSubject.hasSubscribers
+		return this._changedSubject != null && this._changedSubject.hasSubscribers
 	}
 
 	public get statusShort(): CallStatusShort {
@@ -599,8 +588,8 @@ export class CallState<
 
 	// region methods
 
-	public updateUsageStat() {
-		this._deleteOrder = usageNextId++
+	public updateUsageStat(now: number) {
+		this._lastAccessTime = now
 	}
 
 	// region 1: calc
@@ -1474,7 +1463,7 @@ export function createCallStateProvider<
 		// endregion
 
 		if (callState != null) {
-			callState.updateUsageStat()
+			callState.updateUsageStat(Date.now())
 		}
 
 		return callState
@@ -1523,8 +1512,10 @@ export function createCallStateProvider<
 
 		// endregion
 
+		const now = Date.now()
+
 		if (callState != null) {
-			callState.updateUsageStat()
+			callState.updateUsageStat(now)
 			return callState
 		}
 
@@ -1544,26 +1535,13 @@ export function createCallStateProvider<
 			valueIdsClone,
 		)
 
-		if (
-			callStatesCount === 0 // for prevent deoptimize
-			|| callStatesCount >= nextCallStatesCount
-		) {
-			if (callStatesCount === 0) {
-				callStatesCount = 1
-			}
-			reduceCallStates.call(null, callStatesCount - maxCallStatesCount + minDeleteCallStatesCount)
-			nextCallStatesCount = callStatesCount + minDeleteCallStatesCount
-			if (nextCallStatesCount < maxCallStatesCount) {
-				nextCallStatesCount = maxCallStatesCount
-			}
-		}
 		callStatesCount++
 
 		if (initCallState != null) {
 			initCallState(callState)
 		}
 
-		callState.updateUsageStat()
+		callState.updateUsageStat(now)
 
 		if (callStates == null) {
 			callStates = [callState]
@@ -1606,6 +1584,31 @@ export function invalidateCallState<
 		return true
 	}
 	return false
+}
+
+export function subscribeCallState<
+	TThisOuter,
+	TArgs extends any[],
+	TResultInner,
+>(
+	callState: ICallState<TThisOuter, TArgs, TResultInner>,
+	subscriber: ISubscriber<ICallState<TThisOuter, TArgs, TResultInner>>,
+) {
+	const unsubscribe = callState.subscribe(state => {
+		switch (state.statusShort) {
+			case CallStatusShort.Invalidated:
+				state.getValue(false, true)
+				break
+			case CallStatusShort.CalculatedValue:
+			case CallStatusShort.CalculatedError:
+				subscriber(state)
+				break
+		}
+	})
+
+	callState.getValue(false, true)
+
+	return unsubscribe
 }
 
 export function getCallState<
@@ -1656,14 +1659,6 @@ export function getOrCreateCallState<
 
 export const callStateHashTable = new Map<number, TCallStateAny[]>()
 let callStatesCount = 0
-
-// region createCallState
-
-const maxCallStatesCount = 1500
-const minDeleteCallStatesCount = 500
-let nextCallStatesCount = maxCallStatesCount
-
-// endregion
 
 // region deleteCallState
 
@@ -1725,21 +1720,36 @@ export function deleteCallState(callState: TCallStateAny) {
 export const reduceCallStatesHeap = new PairingHeap<TCallStateAny>({
 	objectPool: new ObjectPool<PairingNode<TCallStateAny>>(10000000),
 	lessThanFunc(o1, o2) {
-		return o1._deleteOrder < o2._deleteOrder
+		return o1._lastAccessTime < o2._lastAccessTime
 	},
 })
 
-function reduceCallStatesHeapAdd(states: TCallStateAny[]) {
+function reduceCallStatesHeapAdd(
+	states: TCallStateAny[],
+	now: number,
+	_minCallStateLifeTime: number,
+) {
 	for (let i = 0, len = states.length; i < len; i++) {
 		const callState = states[i]
-		if (!callState.hasSubscribers && callState.statusShort !== CallStatusShort.Handling) {
+		if (
+			callState._lastAccessTime + _minCallStateLifeTime <= now
+			&& callState._subscribersFirst == null
+			&& !callState.hasSubscribers
+			&& callState.statusShort !== CallStatusShort.Handling
+		) {
 			reduceCallStatesHeap.add(callState)
 		}
 	}
 }
 
-export function reduceCallStates(deleteSize: number) {
-	callStateHashTable.forEach(reduceCallStatesHeapAdd)
+export function reduceCallStates(deleteSize: number, _minCallStateLifeTime: number) {
+	const now = Date.now()
+
+	callStateHashTable.forEach(state => {
+		reduceCallStatesHeapAdd(state, now, _minCallStateLifeTime)
+	})
+
+	let countDeleted = 0
 
 	while (deleteSize > 0 && reduceCallStatesHeap.size > 0) {
 		const callState = reduceCallStatesHeap.deleteMin()
@@ -1747,17 +1757,43 @@ export function reduceCallStates(deleteSize: number) {
 		if (_unsubscribers != null) {
 			for (let i = 0, len = _unsubscribersLength; i < len; i++) {
 				const state = _unsubscribers[i].state
-				if (state._subscribersFirst === state._subscribersLast) {
+				if (
+					callState._lastAccessTime + _minCallStateLifeTime <= now
+					&& state._subscribersFirst === state._subscribersLast
+					&& !state.hasSubscribers
+					&& state.statusShort !== CallStatusShort.Handling
+				) {
 					reduceCallStatesHeap.add(state)
 				}
 			}
 		}
 		deleteCallState(callState)
+		countDeleted++
 		deleteSize--
 	}
 
 	reduceCallStatesHeap.clear()
+
+	return countDeleted
 }
+
+// Garbage collector
+function garbageCollect() {
+	try {
+		const countDeleted = reduceCallStates(
+			webrainOptions.callState.garbageCollectBulkSize,
+			webrainOptions.callState.minLifeTime,
+		)
+		if (countDeleted > 0) {
+			console.log(`CallState garbage collect: ${countDeleted}`)
+		}
+		setTimeout(garbageCollect, webrainOptions.callState.garbageCollectInterval)
+	} catch (error) {
+		console.error(error)
+		throw error
+	}
+}
+garbageCollect()
 
 // endregion
 

@@ -7,7 +7,7 @@ import {
 	invalidateCallState,
 } from '../../../../../../../../main/common/rx/depend/core/CallState'
 import {depend} from '../../../../../../../../main/common/rx/depend/core/depend'
-import {dependDeepSubscribe} from '../../../../../../../../main/common/rx/object/properties/path/dependDeepSubscribe'
+import {dependDeepSubscriber} from '../../../../../../../../main/common/rx/object/properties/path/dependDeepSubscriber'
 /* eslint-disable guard-for-in */
 import {assert} from '../../../../../../../../main/common/test/Assert'
 import {describe, it} from '../../../../../../../../main/common/test/Mocha'
@@ -82,8 +82,7 @@ describe('common > main > rx > properties > dependDeepSubscribe', function() {
 
 		assert.deepStrictEqual(visits, [])
 
-		await dependDeepSubscribe<typeof object, string>({
-			object,
+		const unsubscribe = dependDeepSubscriber({
 			build: b => b
 				.v('a')
 				.collection()
@@ -97,10 +96,13 @@ describe('common > main > rx > properties > dependDeepSubscribe', function() {
 			subscriber(state) {
 				values.push(state.value)
 			},
-		})
+		})(object)
+
+		await delay(10)
+		await delay(10)
+		await delay(10)
 
 		assert.deepStrictEqual(visits, ['a', 'b', 'c', 'value'])
-		await delay(0)
 		assert.deepStrictEqual(values, [ALWAYS_CHANGE_VALUE])
 
 		visits = []
@@ -127,5 +129,19 @@ describe('common > main > rx > properties > dependDeepSubscribe', function() {
 
 		assert.deepStrictEqual(visits, ['value2', 'a', 'b', 'c'])
 		assert.deepStrictEqual(values, [ALWAYS_CHANGE_VALUE])
+
+		visits = []
+		values = []
+
+		unsubscribe()
+		value = 'value2'
+		invalidate()
+
+		await delay(10)
+		await delay(10)
+		await delay(10)
+
+		assert.deepStrictEqual(visits, [])
+		assert.deepStrictEqual(values, [])
 	})
 })

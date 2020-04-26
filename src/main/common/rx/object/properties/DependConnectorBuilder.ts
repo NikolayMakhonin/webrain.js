@@ -185,7 +185,7 @@ export function dependConnectorClass<
 	build: (connectorBuilder: DependConnectorBuilder<TBaseClass, TSource>) => { object: TConnectorClass },
 	baseClass?: TClass<[TSource, string?], TBaseClass>,
 ) {
-	const sourcePath = new Path<TBaseClass>().p(o => o.connectorState).p(o => o.source).init()
+	const sourcePath = new Path<TBaseClass>().f(o => o.connectorState).f(o => o.source).init()
 
 	return observableClass<
 		[TSource, string?],

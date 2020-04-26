@@ -1,5 +1,5 @@
 import {resolveAsync, ThenableSync} from '../../../../async/ThenableSync'
-import {ALWAYS_CHANGE_VALUE, getOrCreateCallState} from '../../../../rx/depend/core/CallState'
+import {ALWAYS_CHANGE_VALUE, getOrCreateCallState, subscribeCallState} from '../../../../rx/depend/core/CallState'
 import {depend} from '../../../../rx/depend/core/depend'
 import {CallStatusShort, ICallState} from '../../../depend/core/contracts'
 import {ISubscriber} from '../../../subjects/observable'
@@ -72,16 +72,14 @@ const dependForEachRule = depend(function<TObject, TValue>(this: TObject, rule: 
 	)
 })
 
-export function dependDeepSubscribe<TObject, TValue>({
-	object,
+export function dependDeepSubscriber<TObject, TValue>({
 	rule,
 	build,
 	subscriber,
 }: {
-	object: TObject,
 	rule?: IRule,
 	build?: (builder: IRuleBuilder<TObject>) => IRuleBuilder<TValue>,
-	subscriber: ISubscriber<ICallState<TObject, [IRule], TValue>>,
+	subscriber?: ISubscriber<ICallState<TObject, [IRule], TValue>>,
 }) {
 	if (rule == null) {
 		rule = build(new RuleBuilder({
@@ -89,20 +87,13 @@ export function dependDeepSubscribe<TObject, TValue>({
 		})).result()
 	}
 
-	const callState: ICallState<TObject, [IRule], TValue>
-		= getOrCreateCallState(dependForEachRule).call(object, rule)
-
-	const unsubscribe = callState.subscribe(state => {
-		switch (state.statusShort) {
-			case CallStatusShort.Invalidated:
-				state.getValue(false, true)
-				break
-			case CallStatusShort.CalculatedValue:
-			case CallStatusShort.CalculatedError:
-				subscriber(state)
-				break
-		}
-	})
-
-	return callState.getValue(false, true)
+	return function subscribe(
+		object: TObject,
+		_subscriber?: ISubscriber<ICallState<TObject, [IRule], TValue>>,
+	) {
+		return subscribeCallState(
+			getOrCreateCallState(dependForEachRule).call(object, rule) as ICallState<TObject, [IRule], TValue>,
+			subscriber || _subscriber,
+		)
+	}
 }

@@ -50,7 +50,7 @@ export function __outputCall(output): any {
 }
 
 export function clearCallStates() {
-	reduceCallStates(2000000000)
+	reduceCallStates(2000000000, 0)
 	assert.strictEqual(callStateHashTable && callStateHashTable.size, 0)
 	assert.strictEqual(valueIdToStateMap.size, 0)
 	assert.strictEqual(valueToIdMap.size, 0)

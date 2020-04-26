@@ -55,7 +55,7 @@ export {DependSet} from './rx/depend/lists/DependSet'
 export {dependCalcPropertyFactory, dependCalcPropertyFactoryX} from './rx/object/properties/DependCalcObjectBuilder'
 export {dependConnectorFactory} from './rx/object/properties/DependConnectorBuilder'
 export {noSubscribe} from './rx/depend/core/current-state'
-export {dependDeepSubscribe} from './rx/object/properties/path/dependDeepSubscribe'
+export {dependDeepSubscriber} from './rx/object/properties/path/dependDeepSubscriber'
 
 // region Interfaces
 

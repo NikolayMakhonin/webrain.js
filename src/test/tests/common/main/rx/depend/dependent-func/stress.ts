@@ -1,10 +1,13 @@
 /* tslint:disable:no-identical-functions no-shadowed-variable */
+import {webrainOptions} from '../../../../../../../main/common/helpers/webrainOptions'
 import {assert} from '../../../../../../../main/common/test/Assert'
 import {describe, it, xdescribe, xit} from '../../../../../../../main/common/test/Mocha'
 import {stressTest} from '../src/stress-test'
 
-xdescribe('common > main > rx > depend > dependent-func / stress', function() {
+describe('common > main > rx > depend > dependent-func / stress', function() {
 	this.timeout(60 * 60 * 1000)
+
+	webrainOptions.callState.minLifeTime = 0
 
 	xit('all', async function() {
 		await stressTest({
@@ -21,7 +24,7 @@ xdescribe('common > main > rx > depend > dependent-func / stress', function() {
 		})
 	})
 
-	it('async + deferred + sync + lazy', async function() {
+	xit('async + deferred + sync + lazy', async function() {
 		await stressTest({
 			// seed: 1,
 			testsCount: 1000,

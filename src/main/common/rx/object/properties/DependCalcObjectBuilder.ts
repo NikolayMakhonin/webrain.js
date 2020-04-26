@@ -204,7 +204,7 @@ export function propertyClass<
 	build: (builder: DependCalcObjectBuilder<TBaseClass, TObject>) => { object: TPropertyClass },
 	baseClass?: TClass<[TObject], TBaseClass>,
 ) {
-	const objectPath = new Path<TBaseClass>().p(o => o.$object).init()
+	const objectPath = new Path<TBaseClass>().f(o => o.$object).init()
 
 	return observableClass<
 		[TObject, string?],
@@ -273,7 +273,7 @@ export function calcPropertyClass<
 	deferredOptions?: IDeferredOptions,
 	baseClass?: TClass<[TInput, string?], TBaseClass>,
 ) {
-	const inputPath = new Path<TBaseClass>().v(o => o.input).init()
+	const inputPath = new Path<TBaseClass>().fv(o => o.input).init()
 
 	return observableClass<
 		[TInput, string?],
@@ -358,7 +358,7 @@ export function dependCalcPropertyFactoryX<
 // 		'prop2',
 // 		dependConnectorFactory({
 // 			build: c => c
-// 				.connectSimple('_prop1', b => b.p(o => o.prop1)),
+// 				.connectSimple('_prop1', b => b.f(o => o.prop1)),
 // 		}),
 // 		dependCalcPropertyFactory({
 // 			*calcFunc() {
@@ -384,7 +384,7 @@ export function dependCalcPropertyFactoryX<
 // 		'prop3',
 // 		dependConnectorFactory({
 // 			build: c => c
-// 				.connectSimple('_prop1', b => b.p(o => o.prop1)),
+// 				.connectSimple('_prop1', b => b.f(o => o.prop1)),
 // 		}),
 // 		dependCalcPropertyFactoryX({
 // 			*calcFunc() {

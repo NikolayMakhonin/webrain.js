@@ -1,4 +1,5 @@
 /* tslint:disable:no-identical-functions no-shadowed-variable */
+import {webrainOptions} from '../../../../../../../main/common/helpers/webrainOptions'
 import {assert} from '../../../../../../../main/common/test/Assert'
 import {describe, it} from '../../../../../../../main/common/test/Mocha'
 import {baseTest, lazyTest} from '../src/base-tests'
@@ -6,6 +7,8 @@ import {clearCallStates} from '../src/helpers'
 import {createPerceptron} from '../src/perceptron'
 
 describe('common > main > rx > depend > dependent-func / base', function() {
+	webrainOptions.callState.minLifeTime = 60000
+
 	it('base', async function() {
 		this.timeout(20000)
 
