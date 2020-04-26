@@ -4,7 +4,7 @@ import {VALUE_PROPERTY_DEFAULT} from '../../../../../../../../main/common/helper
 import {
 	ALWAYS_CHANGE_VALUE,
 	getCallState,
-	invalidateCallState
+	invalidateCallState,
 } from '../../../../../../../../main/common/rx/depend/core/CallState'
 import {depend} from '../../../../../../../../main/common/rx/depend/core/depend'
 import {dependDeepSubscribe} from '../../../../../../../../main/common/rx/object/properties/path/dependDeepSubscribe'

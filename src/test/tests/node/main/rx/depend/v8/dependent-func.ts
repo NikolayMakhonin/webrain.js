@@ -16,8 +16,8 @@ import {
 	assertIsOptimized,
 	checkIsOptimized,
 } from '../../../../v8/src/helpers/helpers'
-import {clearCallStates} from "../../../../../common/main/rx/depend/src/helpers";
-import {createPerceptron} from "../../../../../common/main/rx/depend/src/perceptron";
+import {clearCallStates} from '../../../../../common/main/rx/depend/src/helpers'
+import {createPerceptron} from '../../../../../common/main/rx/depend/src/perceptron'
 
 describe('node > main > rx > depend > dependent-func', function() {
 	async function v8Test(

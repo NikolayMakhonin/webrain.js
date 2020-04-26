@@ -1,4 +1,3 @@
-import {ThenableOrIteratorOrValue} from '../../../../async/async'
 import {
 	AsyncPropertyValueOf,
 	IPathNode,
@@ -13,7 +12,6 @@ import {
 	TSetValue2,
 } from './constracts'
 import {resolvePath} from './resolve'
-import {IRule} from "../../../deep-subscribe/contracts/rules";
 
 type TPathOrArrayOrNode<TValue, TNextValue>
 	= Path<TValue, TNextValue>|Array<IPathNode<TValue, TNextValue>>|IPathNode<TValue, TNextValue>

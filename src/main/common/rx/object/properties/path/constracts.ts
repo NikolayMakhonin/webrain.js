@@ -1,4 +1,4 @@
-import {AsyncValueOf, Thenable, ThenableOrIterator} from '../../../../async/async'
+import {AsyncValueOf, ThenableOrIterator} from '../../../../async/async'
 import {VALUE_PROPERTY_DEFAULT} from '../../../../helpers/value-property'
 import {Path} from './builder'
 

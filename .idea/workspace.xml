@@ -30,20 +30,13 @@
     <select />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="69b2ee16-521b-4efd-b473-8e19e3df4d09" name="Default Changelist" comment="Path Builder: forEachRules completed and tested">
-      <change afterPath="$PROJECT_DIR$/src/main/common/rx/object/properties/path/dependDeepSubscribe.ts" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/test/tests/common/main/rx/object/properties/path/dependDeepSubscribe.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/common/rx/depend/core/CallState.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/common/rx/depend/core/CallState.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/common/rx/depend/core/contracts.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/common/rx/depend/core/contracts.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/common/rx/object/properties/path/builder/forEachRules.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/common/rx/object/properties/path/forEachRule.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/common/rx/object/properties/path/builder/iterate-rule.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/common/rx/object/properties/path/iterate-rule.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/common/rx/object/properties/path/builder/rules-subscribe.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/common/rx/object/properties/path/builder/rules-subscribe.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/common/rx/object/properties/path/deep-subscribe.ts" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/common/rx/object/properties/path/resolve.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/common/rx/object/properties/path/resolve.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/test/tests/common/main/rx/object/properties/path/builder.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/test/tests/common/main/rx/object/properties/path/builder.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/test/tests/common/main/rx/object/properties/path/builder/forEachRules.ts" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/test/tests/common/main/rx/object/properties/path/builder/iterate-rule.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/test/tests/common/main/rx/object/properties/path/iterate-rule.ts" afterDir="false" />
+    <list default="true" id="69b2ee16-521b-4efd-b473-8e19e3df4d09" name="Default Changelist" comment="">
+      <change beforePath="$PROJECT_DIR$/src/main/common/rx/object/properties/DependCalcObjectBuilder.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/common/rx/object/properties/DependCalcObjectBuilder.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/common/rx/object/properties/path/builder.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/common/rx/object/properties/path/builder.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/common/rx/object/properties/path/builder/contracts/rules.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/common/rx/object/properties/path/builder/contracts/rules.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/common/rx/object/properties/path/constracts.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/common/rx/object/properties/path/constracts.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/test/tests/common/main/rx/object/properties/path/dependDeepSubscribe.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/test/tests/common/main/rx/object/properties/path/dependDeepSubscribe.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/test/tests/node/main/rx/depend/v8/dependent-func.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/test/tests/node/main/rx/depend/v8/dependent-func.ts" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -500,14 +493,7 @@
       <workItem from="1587565663784" duration="7699000" />
       <workItem from="1587720746493" duration="5289000" />
       <workItem from="1587787076321" duration="29386000" />
-      <workItem from="1587830820530" duration="21340000" />
-    </task>
-    <task id="LOCAL-00399" summary="depend: lazy mode, testing and debugging... Tests OK">
-      <created>1587217458421</created>
-      <option name="number" value="00399" />
-      <option name="presentableId" value="LOCAL-00399" />
-      <option name="project" value="LOCAL" />
-      <updated>1587217458421</updated>
+      <workItem from="1587830820530" duration="21771000" />
     </task>
     <task id="LOCAL-00400" summary="depend: lazy mode, testing and debugging... Tests OK">
       <created>1587218831663</created>
@@ -845,7 +831,14 @@
       <option name="project" value="LOCAL" />
       <updated>1587874048856</updated>
     </task>
-    <option name="localTasksCounter" value="448" />
+    <task id="LOCAL-00448" summary="Path Builder: dependDeepSubscribe completed and tested">
+      <created>1587884367063</created>
+      <option name="number" value="00448" />
+      <option name="presentableId" value="LOCAL-00448" />
+      <option name="project" value="LOCAL" />
+      <updated>1587884367063</updated>
+    </task>
+    <option name="localTasksCounter" value="449" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -906,7 +899,6 @@
   <component name="VcsManagerConfiguration">
     <option name="CHECK_CODE_SMELLS_BEFORE_PROJECT_COMMIT" value="false" />
     <option name="CHECK_NEW_TODO" value="false" />
-    <MESSAGE value="Object builders refactoring and debugging... Tests OK." />
     <MESSAGE value="CallState.subscribe() will emit &quot;on invalidated&quot; and &quot;on calculated&quot;. Tests OK." />
     <MESSAGE value="depend: added lazy mode, but not tested." />
     <MESSAGE value="depend: lazy mode, testing and debugging..." />
@@ -931,7 +923,8 @@
     <MESSAGE value="Path Builder: refactoring... Tests OK" />
     <MESSAGE value="Path Builder: iterate-rules..." />
     <MESSAGE value="Path Builder: forEachRules completed and tested" />
-    <option name="LAST_COMMIT_MESSAGE" value="Path Builder: forEachRules completed and tested" />
+    <MESSAGE value="Path Builder: dependDeepSubscribe completed and tested" />
+    <option name="LAST_COMMIT_MESSAGE" value="Path Builder: dependDeepSubscribe completed and tested" />
   </component>
   <component name="WindowStateProjectService">
     <state x="38" y="39" width="1718" height="786" key="#com.intellij.execution.impl.EditConfigurationsDialog" timestamp="1587874492922">
@@ -950,14 +943,14 @@
       <screen x="0" y="0" width="1920" height="882" />
     </state>
     <state x="623" y="124" key="#com.intellij.refactoring.safeDelete.UnsafeUsagesDialog/0.0.1920.882@0.0.1920.882" timestamp="1587726051063" />
-    <state x="651" y="254" key="ANALYSIS_DLG_com.intellij.analysis.BaseAnalysisAction$1" timestamp="1586875498549">
+    <state x="651" y="254" key="ANALYSIS_DLG_com.intellij.analysis.BaseAnalysisAction$1" timestamp="1587884394137">
       <screen x="0" y="0" width="1920" height="882" />
     </state>
-    <state x="651" y="254" key="ANALYSIS_DLG_com.intellij.analysis.BaseAnalysisAction$1/0.0.1920.882@0.0.1920.882" timestamp="1586875498549" />
-    <state x="0" y="0" width="1918" height="882" key="CommitChangelistDialog2" timestamp="1587874265759">
+    <state x="651" y="254" key="ANALYSIS_DLG_com.intellij.analysis.BaseAnalysisAction$1/0.0.1920.882@0.0.1920.882" timestamp="1587884394137" />
+    <state x="0" y="0" width="1918" height="882" key="CommitChangelistDialog2" timestamp="1587884366235">
       <screen x="0" y="0" width="1920" height="882" />
     </state>
-    <state x="0" y="0" width="1918" height="882" key="CommitChangelistDialog2/0.0.1920.882@0.0.1920.882" timestamp="1587874265759" />
+    <state x="0" y="0" width="1918" height="882" key="CommitChangelistDialog2/0.0.1920.882@0.0.1920.882" timestamp="1587884366235" />
     <state width="884" height="550" key="DebuggerActiveHint" timestamp="1587883472096">
       <screen x="0" y="0" width="1920" height="882" />
     </state>
