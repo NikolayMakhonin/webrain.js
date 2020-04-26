@@ -325,14 +325,14 @@ export class Path<TObject, TValue = TObject> {
 		return this as any
 	}
 
-	public v<TNextValue>(
+	public fv<TNextValue>(
 		getValue: TGetValue1<TValue, TNextValue>,
 		setValue?: TSetValue1<TValue, TNextValue>,
 	): Path<TObject, TNextValue> {
 		return this.append(getValue, setValue, true)
 	}
 
-	public p<TNextValue>(
+	public f<TNextValue>(
 		getValue: TGetValue2<TValue, TNextValue>,
 		setValue?: TSetValue2<TValue, TNextValue>,
 	): Path<TObject, TNextValue> {

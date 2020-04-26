@@ -67,16 +67,16 @@ describe('common > main > rx > properties > builder', function() {
 		// const d3 = p3(o => o.a, true)(o => o.b)(o => o.c)(o => o.d, true)()
 
 		const paths: Array<PathGetSet<typeof object, string>> = [
-			pathGetSetBuild(b => b.v(o => o.a).p(o => o.b), {
-				get: b => b.p(o => o.c).v(o => o.d),
-				set: b => b.p(o => o.c).v(o => o.d, (o, v) => { o.d = v }),
+			pathGetSetBuild(b => b.fv(o => o.a).f(o => o.b), {
+				get: b => b.f(o => o.c).fv(o => o.d),
+				set: b => b.f(o => o.c).fv(o => o.d, (o, v) => { o.d = v }),
 			}),
 			pathGetSetBuild(null, {
-				get: b => b.v(o => o.a).p(o => o.b).p(o => o.c).v(o => o.d),
-				set: b => b.v(o => o.a).p(o => o.b).p(o => o.c).v(o => o.d, (o, v) => { o.d = v }),
+				get: b => b.fv(o => o.a).f(o => o.b).f(o => o.c).fv(o => o.d),
+				set: b => b.fv(o => o.a).f(o => o.b).f(o => o.c).fv(o => o.d, (o, v) => { o.d = v }),
 			}),
 			pathGetSetBuild(
-				b => b.v(o => o.a).p(o => o.b).p(o => o.c).v(o => o.d, (o, v) => { o.d = v }),
+				b => b.fv(o => o.a).f(o => o.b).f(o => o.c).fv(o => o.d, (o, v) => { o.d = v }),
 			),
 		]
 

@@ -31,12 +31,8 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="69b2ee16-521b-4efd-b473-8e19e3df4d09" name="Default Changelist" comment="">
-      <change beforePath="$PROJECT_DIR$/src/main/common/rx/object/properties/DependCalcObjectBuilder.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/common/rx/object/properties/DependCalcObjectBuilder.ts" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/common/rx/object/properties/path/builder.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/common/rx/object/properties/path/builder.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/common/rx/object/properties/path/builder/contracts/rules.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/common/rx/object/properties/path/builder/contracts/rules.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/common/rx/object/properties/path/constracts.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/common/rx/object/properties/path/constracts.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/test/tests/common/main/rx/object/properties/path/dependDeepSubscribe.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/test/tests/common/main/rx/object/properties/path/dependDeepSubscribe.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/test/tests/node/main/rx/depend/v8/dependent-func.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/test/tests/node/main/rx/depend/v8/dependent-func.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/test/tests/common/main/rx/object/properties/path/builder.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/test/tests/common/main/rx/object/properties/path/builder.ts" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -129,7 +125,7 @@
       <recent name="L:\Work\_GIT\GitHub\NodeJs\modules\webrain\_trash\src\main\common\rx\depend" />
     </key>
   </component>
-  <component name="RunManager" selected="Mocha.common &gt; main &gt; rx &gt; properties &gt; dependDeepSubscribe.base">
+  <component name="RunManager" selected="Mocha.Watch">
     <configuration default="true" type="JavaScriptTestRunnerKarma" activateToolWindowBeforeRun="false">
       <config-file value="$PROJECT_DIR$/env/karma/configs/dev.js" />
       <karma-package-dir value="$PROJECT_DIR$/node_modules/karma" />
@@ -493,14 +489,7 @@
       <workItem from="1587565663784" duration="7699000" />
       <workItem from="1587720746493" duration="5289000" />
       <workItem from="1587787076321" duration="29386000" />
-      <workItem from="1587830820530" duration="21771000" />
-    </task>
-    <task id="LOCAL-00400" summary="depend: lazy mode, testing and debugging... Tests OK">
-      <created>1587218831663</created>
-      <option name="number" value="00400" />
-      <option name="presentableId" value="LOCAL-00400" />
-      <option name="project" value="LOCAL" />
-      <updated>1587218831663</updated>
+      <workItem from="1587830820530" duration="22175000" />
     </task>
     <task id="LOCAL-00401" summary="depend: lazy mode, testing and debugging... Tests OK">
       <created>1587220142209</created>
@@ -838,7 +827,14 @@
       <option name="project" value="LOCAL" />
       <updated>1587884367063</updated>
     </task>
-    <option name="localTasksCounter" value="449" />
+    <task id="LOCAL-00449" summary="TSLint fixes">
+      <created>1587885029695</created>
+      <option name="number" value="00449" />
+      <option name="presentableId" value="LOCAL-00449" />
+      <option name="project" value="LOCAL" />
+      <updated>1587885029695</updated>
+    </task>
+    <option name="localTasksCounter" value="450" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -899,7 +895,6 @@
   <component name="VcsManagerConfiguration">
     <option name="CHECK_CODE_SMELLS_BEFORE_PROJECT_COMMIT" value="false" />
     <option name="CHECK_NEW_TODO" value="false" />
-    <MESSAGE value="CallState.subscribe() will emit &quot;on invalidated&quot; and &quot;on calculated&quot;. Tests OK." />
     <MESSAGE value="depend: added lazy mode, but not tested." />
     <MESSAGE value="depend: lazy mode, testing and debugging..." />
     <MESSAGE value="depend: fix bug: mark as recalc after calculated. Tests OK" />
@@ -924,7 +919,8 @@
     <MESSAGE value="Path Builder: iterate-rules..." />
     <MESSAGE value="Path Builder: forEachRules completed and tested" />
     <MESSAGE value="Path Builder: dependDeepSubscribe completed and tested" />
-    <option name="LAST_COMMIT_MESSAGE" value="Path Builder: dependDeepSubscribe completed and tested" />
+    <MESSAGE value="TSLint fixes" />
+    <option name="LAST_COMMIT_MESSAGE" value="TSLint fixes" />
   </component>
   <component name="WindowStateProjectService">
     <state x="38" y="39" width="1718" height="786" key="#com.intellij.execution.impl.EditConfigurationsDialog" timestamp="1587874492922">
@@ -947,10 +943,10 @@
       <screen x="0" y="0" width="1920" height="882" />
     </state>
     <state x="651" y="254" key="ANALYSIS_DLG_com.intellij.analysis.BaseAnalysisAction$1/0.0.1920.882@0.0.1920.882" timestamp="1587884394137" />
-    <state x="0" y="0" width="1918" height="882" key="CommitChangelistDialog2" timestamp="1587884366235">
+    <state x="0" y="0" width="1918" height="882" key="CommitChangelistDialog2" timestamp="1587885029018">
       <screen x="0" y="0" width="1920" height="882" />
     </state>
-    <state x="0" y="0" width="1918" height="882" key="CommitChangelistDialog2/0.0.1920.882@0.0.1920.882" timestamp="1587884366235" />
+    <state x="0" y="0" width="1918" height="882" key="CommitChangelistDialog2/0.0.1920.882@0.0.1920.882" timestamp="1587885029018" />
     <state width="884" height="550" key="DebuggerActiveHint" timestamp="1587883472096">
       <screen x="0" y="0" width="1920" height="882" />
     </state>
@@ -963,22 +959,22 @@
       <screen x="0" y="0" width="1920" height="882" />
     </state>
     <state x="686" y="134" key="FileChooserDialogImpl/0.0.1920.882@0.0.1920.882" timestamp="1587352857058" />
-    <state width="627" height="443" key="GridCell.Tab.0.bottom" timestamp="1587884202808">
+    <state width="627" height="495" key="GridCell.Tab.0.bottom" timestamp="1587885188157">
       <screen x="0" y="0" width="1920" height="882" />
     </state>
-    <state width="627" height="443" key="GridCell.Tab.0.bottom/0.0.1920.882@0.0.1920.882" timestamp="1587884202808" />
-    <state width="627" height="443" key="GridCell.Tab.0.center" timestamp="1587884202808">
+    <state width="627" height="495" key="GridCell.Tab.0.bottom/0.0.1920.882@0.0.1920.882" timestamp="1587885188157" />
+    <state width="627" height="495" key="GridCell.Tab.0.center" timestamp="1587885188157">
       <screen x="0" y="0" width="1920" height="882" />
     </state>
-    <state width="627" height="443" key="GridCell.Tab.0.center/0.0.1920.882@0.0.1920.882" timestamp="1587884202808" />
-    <state width="627" height="443" key="GridCell.Tab.0.left" timestamp="1587884202808">
+    <state width="627" height="495" key="GridCell.Tab.0.center/0.0.1920.882@0.0.1920.882" timestamp="1587885188157" />
+    <state width="627" height="495" key="GridCell.Tab.0.left" timestamp="1587885188157">
       <screen x="0" y="0" width="1920" height="882" />
     </state>
-    <state width="627" height="443" key="GridCell.Tab.0.left/0.0.1920.882@0.0.1920.882" timestamp="1587884202808" />
-    <state width="627" height="443" key="GridCell.Tab.0.right" timestamp="1587884202808">
+    <state width="627" height="495" key="GridCell.Tab.0.left/0.0.1920.882@0.0.1920.882" timestamp="1587885188157" />
+    <state width="627" height="495" key="GridCell.Tab.0.right" timestamp="1587885188157">
       <screen x="0" y="0" width="1920" height="882" />
     </state>
-    <state width="627" height="443" key="GridCell.Tab.0.right/0.0.1920.882@0.0.1920.882" timestamp="1587884202808" />
+    <state width="627" height="495" key="GridCell.Tab.0.right/0.0.1920.882@0.0.1920.882" timestamp="1587885188157" />
     <state width="627" height="443" key="GridCell.Tab.1.bottom" timestamp="1587884202809">
       <screen x="0" y="0" width="1920" height="882" />
     </state>
@@ -1043,10 +1039,10 @@
       <screen x="0" y="0" width="1920" height="882" />
     </state>
     <state x="121" y="111" key="com.intellij.xdebugger.impl.breakpoints.ui.BreakpointsDialogFactory$2/0.0.1920.882@0.0.1920.882" timestamp="1587884348340" />
-    <state x="2" y="1" width="1908" height="878" key="find.popup" timestamp="1587882091032">
+    <state x="2" y="1" width="1908" height="878" key="find.popup" timestamp="1587884974106">
       <screen x="0" y="0" width="1920" height="882" />
     </state>
-    <state x="2" y="1" width="1908" height="878" key="find.popup/0.0.1920.882@0.0.1920.882" timestamp="1587882091032" />
+    <state x="2" y="1" width="1908" height="878" key="find.popup/0.0.1920.882@0.0.1920.882" timestamp="1587884974106" />
     <state x="732" y="169" key="refactoring.ChangeSignatureDialog" timestamp="1587872020169">
       <screen x="0" y="0" width="1920" height="882" />
     </state>
