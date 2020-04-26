@@ -1582,7 +1582,7 @@ export function subscribeCallState<
 	TResultInner,
 >(
 	callState: ICallState<TThisOuter, TArgs, TResultInner>,
-	subscriber: ISubscriber<ICallState<TThisOuter, TArgs, TResultInner>>,
+	subscriber?: ISubscriber<ICallState<TThisOuter, TArgs, TResultInner>>,
 ) {
 	const unsubscribe = callState.subscribe(state => {
 		switch (state.statusShort) {
@@ -1591,7 +1591,9 @@ export function subscribeCallState<
 				break
 			case CallStatusShort.CalculatedValue:
 			case CallStatusShort.CalculatedError:
-				subscriber(state)
+				if (subscriber != null) {
+					subscriber(state)
+				}
 				break
 		}
 	})
@@ -1599,6 +1601,21 @@ export function subscribeCallState<
 	callState.getValue(false, true)
 
 	return unsubscribe
+}
+
+export function autoCalc<
+	TThisOuter,
+	TArgs extends any[],
+>(this: TThisOuter, ...args: TArgs)
+export function autoCalc<
+	TThisOuter,
+	TArgs extends any[],
+>() {
+	return <TResultInner>(func: Func<TThisOuter, TArgs, TResultInner>) => {
+		return subscribeCallState(
+			getOrCreateCallState(func).apply(this, ...arguments),
+		)
+	}
 }
 
 export function getCallState<
@@ -1624,13 +1641,13 @@ export function getOrCreateCallState<
 	TThisOuter,
 	TArgs extends any[],
 	TResultInner,
-	>(
+>(
 	func: Func<TThisOuter, TArgs, TResultInner>,
 ): Func<
 	TThisOuter,
 	TArgs,
 	ICallState<TThisOuter, TArgs, TResultInner>
-	> {
+> {
 	const callStateProviderState = callStateProviderMap.get(func)
 	if (callStateProviderState == null) {
 		return EMPTY_FUNC

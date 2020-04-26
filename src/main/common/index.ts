@@ -47,7 +47,13 @@ export {TimeLimit} from './time/TimeLimit'
 export {TimeLimits} from './time/TimeLimits'
 export {Random} from './random/Random'
 export {ALWAYS_CHANGE_VALUE, NO_CHANGE_VALUE} from './rx/depend/core/CallState'
-export {getCallState, getOrCreateCallState, invalidateCallState} from './rx/depend/core/CallState'
+export {
+	getCallState,
+	getOrCreateCallState,
+	invalidateCallState,
+	autoCalc,
+	subscribeCallState,
+} from './rx/depend/core/CallState'
 export {CallStatus} from './rx/depend/core/contracts'
 export {depend, dependX} from './rx/depend/core/depend'
 export {DependMap} from './rx/depend/lists/DependMap'
@@ -56,6 +62,8 @@ export {dependCalcPropertyFactory, dependCalcPropertyFactoryX} from './rx/object
 export {dependConnectorFactory} from './rx/object/properties/DependConnectorBuilder'
 export {noSubscribe} from './rx/depend/core/current-state'
 export {dependDeepSubscriber} from './rx/object/properties/path/dependDeepSubscriber'
+export {Path} from './rx/object/properties/path/builder'
+export {autoCalcConnect} from './rx/object/properties/helpers'
 
 // region Interfaces
 
