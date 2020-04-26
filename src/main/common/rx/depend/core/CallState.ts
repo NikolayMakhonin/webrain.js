@@ -588,10 +588,6 @@ export class CallState<
 
 	// region methods
 
-	public updateUsageStat(now: number) {
-		this._lastAccessTime = now
-	}
-
 	// region 1: calc
 
 	public getValue(
@@ -608,6 +604,7 @@ export class CallState<
 		const prevStatus = this.status
 
 		if (isCalculated(this.status)) {
+			this._lastAccessTime = Date.now()
 			if (isHasError(this.status)) {
 				throw this.error
 			}
@@ -1084,6 +1081,7 @@ export class CallState<
 		) {
 			this.error = void 0
 			this.value = value
+			this._lastAccessTime = Date.now()
 			this._afterCalc(prevStatus, true)
 			this.onChanged()
 		} else {
@@ -1113,6 +1111,7 @@ export class CallState<
 			|| this.error !== error
 		) {
 			this.error = error
+			this._lastAccessTime = Date.now()
 			this._afterCalc(prevStatus, true)
 			this.onChanged()
 		} else {
@@ -1462,10 +1461,6 @@ export function createCallStateProvider<
 
 		// endregion
 
-		if (callState != null) {
-			callState.updateUsageStat(Date.now())
-		}
-
 		return callState
 	}
 
@@ -1512,10 +1507,7 @@ export function createCallStateProvider<
 
 		// endregion
 
-		const now = Date.now()
-
 		if (callState != null) {
-			callState.updateUsageStat(now)
 			return callState
 		}
 
@@ -1540,8 +1532,6 @@ export function createCallStateProvider<
 		if (initCallState != null) {
 			initCallState(callState)
 		}
-
-		callState.updateUsageStat(now)
 
 		if (callStates == null) {
 			callStates = [callState]
@@ -1673,13 +1663,15 @@ export function deleteCallState(callState: TCallStateAny) {
 		hash = nextHash(hash, valueId)
 		if (i > 0) {
 			const valueState = getValueState(valueId)
-			const usageCount = valueState.usageCount
-			if (usageCount <= 0) {
-				throw new InternalError('usageCount <= 0')
-			} else if (usageCount === 1 && i > 0) {
-				deleteValueState(valueId, valueState.value)
-			} else {
-				valueState.usageCount--
+			if (valueState != null) {
+				const usageCount = valueState.usageCount
+				if (usageCount <= 0) {
+					throw new InternalError('usageCount <= 0')
+				} else if (usageCount === 1 && i > 0) {
+					deleteValueState(valueId, valueState.value)
+				} else {
+					valueState.usageCount--
+				}
 			}
 		}
 	}
