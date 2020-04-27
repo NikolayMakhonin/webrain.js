@@ -15,6 +15,7 @@ import {INextPathGetSet, Path, PathGetSet, TNextPath} from './path/builder'
 export interface IConnectFieldOptions<TObject, TValue> extends IReadableFieldOptions<TObject, TValue> {
 	isDepend?: boolean,
 	isLazy?: boolean,
+	isWait?: boolean,
 	waitCondition?: (value: TValue) => boolean,
 	waitTimeout?: number,
 }
@@ -35,6 +36,8 @@ export class DependConnectorBuilder<
 		super(object)
 		this.sourcePath = sourcePath
 	}
+
+	// region connectSimple
 
 	public connectSimple<
 		Name extends string | number = Extract<keyof TObject, string|number>,
@@ -68,6 +71,10 @@ export class DependConnectorBuilder<
 		return this._connectPath(name, common, getSet, options)
 	}
 
+	// endregion
+
+	// region connectPath
+	
 	public connectPath<
 		Name extends string | number = Extract<keyof TObject, string|number>,
 		TValue = Name extends keyof TObject ? TObject[Name] : TSource,
@@ -106,6 +113,10 @@ export class DependConnectorBuilder<
 			})
 	}
 
+	// endregion
+
+	// region connectLazy
+	
 	public connectLazy<
 		Name extends string | number = Extract<keyof TObject, string|number>,
 		TValue = Name extends keyof TObject ? TObject[Name] : TSource,
@@ -145,6 +156,100 @@ export class DependConnectorBuilder<
 				isLazy: true,
 			})
 	}
+
+	// endregion
+
+	// region connectWait
+
+	public connectWait<
+		Name extends string | number = Extract<keyof TObject, string|number>,
+		TValue = Name extends keyof TObject ? TObject[Name] : TSource,
+		>(
+		name: Name,
+		common: TNextPath<TSource, TSource, TValue>,
+		getSet?: null|undefined,
+		options?: IConnectFieldOptions<TSource, TValue>,
+	): this & { object: { [newProp in Name]: TValue } }
+	public connectWait<
+		Name extends string | number = Extract<keyof TObject, string|number>,
+		TCommonValue = TSource,
+		TValue = Name extends keyof TObject ? TObject[Name] : TCommonValue,
+		>(
+		name: Name,
+		common: TNextPath<TSource, TSource, TCommonValue>,
+		getSet: INextPathGetSet<TSource, TCommonValue, TValue>,
+		options?: IConnectFieldOptions<TSource, TValue>,
+	): this & { object: { [newProp in Name]: TValue } }
+	public connectWait<
+		Name extends string | number = Extract<keyof TObject, string|number>,
+		TCommonValue = TSource,
+		TValue = Name extends keyof TObject ? TObject[Name] : TCommonValue,
+		>(
+		name: Name,
+		common: TNextPath<TSource, TSource, TCommonValue>,
+		getSet?: INextPathGetSet<TSource, TCommonValue, TValue>,
+		options?: IConnectFieldOptions<TSource, TValue>,
+	): this & { object: { [newProp in Name]: TValue } } {
+		return this._connectPath(name, common, getSet,
+			options	? {
+				...options,
+				isDepend: true,
+				isWait: true,
+			} : {
+				isDepend: true,
+				isWait: true,
+			})
+	}
+
+	// endregion
+
+	// region connectWaitLazy
+
+	public connectWaitLazy<
+		Name extends string | number = Extract<keyof TObject, string|number>,
+		TValue = Name extends keyof TObject ? TObject[Name] : TSource,
+		>(
+		name: Name,
+		common: TNextPath<TSource, TSource, TValue>,
+		getSet?: null|undefined,
+		options?: IConnectFieldOptions<TSource, TValue>,
+	): this & { object: { [newProp in Name]: TValue } }
+	public connectWaitLazy<
+		Name extends string | number = Extract<keyof TObject, string|number>,
+		TCommonValue = TSource,
+		TValue = Name extends keyof TObject ? TObject[Name] : TCommonValue,
+		>(
+		name: Name,
+		common: TNextPath<TSource, TSource, TCommonValue>,
+		getSet: INextPathGetSet<TSource, TCommonValue, TValue>,
+		options?: IConnectFieldOptions<TSource, TValue>,
+	): this & { object: { [newProp in Name]: TValue } }
+	public connectWaitLazy<
+		Name extends string | number = Extract<keyof TObject, string|number>,
+		TCommonValue = TSource,
+		TValue = Name extends keyof TObject ? TObject[Name] : TCommonValue,
+		>(
+		name: Name,
+		common: TNextPath<TSource, TSource, TCommonValue>,
+		getSet?: INextPathGetSet<TSource, TCommonValue, TValue>,
+		options?: IConnectFieldOptions<TSource, TValue>,
+	): this & { object: { [newProp in Name]: TValue } } {
+		return this._connectPath(name, common, getSet,
+			options	? {
+				...options,
+				isDepend: true,
+				isLazy: true,
+				isWait: true,
+			} : {
+				isDepend: true,
+				isLazy: true,
+				isWait: true,
+			})
+	}
+
+	// endregion
+
+	// region _connectPath
 
 	private _connectPath<
 		Name extends string | number = Extract<keyof TObject, string|number>,
@@ -166,6 +271,7 @@ export class DependConnectorBuilder<
 			hidden,
 			isDepend,
 			isLazy,
+			isWait,
 			waitCondition,
 			waitTimeout,
 		} = options || {}
@@ -181,7 +287,7 @@ export class DependConnectorBuilder<
 		}
 		if (isDepend) {
 			getValue = depend(getValue, null, makeDependPropertySubscriber(name))
-			if (waitCondition != null) {
+			if (isWait) {
 				getValue = dependWait(getValue, waitCondition as any, waitTimeout, isLazy)
 			} else if (isLazy) {
 				const _getValue = getValue
@@ -203,6 +309,8 @@ export class DependConnectorBuilder<
 
 		return this as any
 	}
+
+	// endregion
 }
 
 export function dependConnectorClass<

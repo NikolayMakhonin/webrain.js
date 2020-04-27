@@ -62,7 +62,7 @@ export {dependConnectorFactory} from './rx/object/properties/DependConnectorBuil
 export {noSubscribe} from './rx/depend/core/current-state'
 export {dependDeepSubscriber} from './rx/object/properties/path/dependDeepSubscriber'
 export {Path} from './rx/object/properties/path/builder'
-export {autoCalcConnect, autoCalc, dependWait} from './rx/depend/helpers'
+export {autoCalcConnect, autoCalc, dependWait, dependWrapThis} from './rx/depend/helpers'
 export {createConnector} from './rx/object/properties/helpers'
 
 // region Interfaces

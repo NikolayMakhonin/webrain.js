@@ -6,8 +6,12 @@ import {baseTest, lazyTest} from '../src/base-tests'
 import {clearCallStates} from '../src/helpers'
 import {createPerceptron} from '../src/perceptron'
 
+declare const beforeEach: any
+
 describe('common > main > rx > depend > dependent-func / base', function() {
-	webrainOptions.callState.minLifeTime = 60000
+	beforeEach(function() {
+		webrainOptions.callState.garbageCollect.disabled = true
+	})
 
 	it('base', async function() {
 		this.timeout(20000)

@@ -1823,19 +1823,25 @@ export function reduceCallStates(deleteSize: number, _minCallStateLifeTime: numb
 // Garbage collector
 function garbageCollect() {
 	try {
-		const countDeleted = reduceCallStates(
-			webrainOptions.callState.garbageCollectBulkSize,
-			webrainOptions.callState.minLifeTime,
-		)
-		if (countDeleted > 0) {
-			console.log(`CallState garbage collect: ${countDeleted}`)
+		const {bulkSize, minLifeTime, interval, disabled} = webrainOptions.callState.garbageCollect
+
+		if (!disabled) {
+			const countDeleted = reduceCallStates(
+				bulkSize,
+				minLifeTime,
+			)
+			if (countDeleted > 0) {
+				console.log(`CallState garbage collect: ${countDeleted}`)
+			}
 		}
-		setTimeout(garbageCollect, webrainOptions.callState.garbageCollectInterval)
+
+		setTimeout(garbageCollect, interval)
 	} catch (error) {
 		console.error(error)
 		throw error
 	}
 }
+
 garbageCollect()
 
 // endregion

@@ -1,10 +1,15 @@
 import {isThenable} from '../../async/async'
 import {ThenableSync} from '../../async/ThenableSync'
+import {webrainOptions} from '../../helpers/webrainOptions'
 import {createConnector} from '../object/properties/helpers'
 import {IUnsubscribe} from '../subjects/observable'
 import {dependBindThis, getOrCreateCallState, subscribeCallState} from './core/CallState'
 import {CallStatusShort, Func, TInnerValue} from './core/contracts'
 import {dependX} from './core/depend'
+
+function simpleCondition(value) {
+	return value != null
+}
 
 export function dependWait<
 	TThisOuter,
@@ -12,10 +17,18 @@ export function dependWait<
 	TResultInner,
 >(
 	func: Func<TThisOuter, TArgs, TResultInner>,
-	condition: (value: TInnerValue<TResultInner>) => boolean,
+	condition?: (value: TInnerValue<TResultInner>) => boolean,
 	timeout?: number,
 	isLazy?: boolean,
 ) {
+	if (condition == null) {
+		condition = simpleCondition
+	}
+
+	if (timeout == null) {
+		timeout = webrainOptions.timeouts.dependWait
+	}
+
 	return dependX(function() {
 		const state = this
 
@@ -95,4 +108,18 @@ export function autoCalcConnect<
 		),
 		func,
 	))
+}
+
+export function dependWrapThis<
+	TThis,
+	TWrapThis,
+	TArgs extends any[],
+	TResult
+>(
+	wrapThis: (_this: TThis) => TWrapThis,
+	func: Func<TWrapThis, TArgs, TResult>,
+): (_this: TThis) => Func<never, TArgs, TResult> {
+	return function(_this: TThis) {
+		return dependBindThis(wrapThis(_this), func)
+	}
 }

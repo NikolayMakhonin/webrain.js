@@ -4,12 +4,19 @@ import {assert} from '../../../../../../../main/common/test/Assert'
 import {describe, it, xdescribe, xit} from '../../../../../../../main/common/test/Mocha'
 import {stressTest} from '../src/stress-test'
 
+declare const beforeEach: any
+
 describe('common > main > rx > depend > dependent-func / stress', function() {
 	this.timeout(60 * 60 * 1000)
 
-	webrainOptions.callState.minLifeTime = 0
+	beforeEach(function() {
+		webrainOptions.callState.garbageCollect.disabled = false
+		webrainOptions.callState.garbageCollect.bulkSize = 100
+		webrainOptions.callState.garbageCollect.interval = 1000
+		webrainOptions.callState.garbageCollect.minLifeTime = 500
+	})
 
-	xit('all', async function() {
+	it('all', async function() {
 		await stressTest({
 			// seed: 20385142,
 			testsCount: 1000,

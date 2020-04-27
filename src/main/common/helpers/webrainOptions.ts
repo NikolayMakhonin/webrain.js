@@ -13,8 +13,14 @@ export const webrainOptions = {
 
 	debugInfo: true,
 	callState: {
-		minLifeTime: 60000,
-		garbageCollectBulkSize: 1000,
-		garbageCollectInterval: 1000,
+		garbageCollect: {
+			minLifeTime: 60000,
+			bulkSize: 1000,
+			interval: 1000,
+			disabled: false,
+		},
+	},
+	timeouts: {
+		dependWait: 60000,
 	},
 }
