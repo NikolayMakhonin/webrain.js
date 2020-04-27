@@ -1826,12 +1826,17 @@ function garbageCollect() {
 		const {bulkSize, minLifeTime, interval, disabled} = webrainOptions.callState.garbageCollect
 
 		if (!disabled) {
+			const time = Date.now()
 			const countDeleted = reduceCallStates(
 				bulkSize,
 				minLifeTime,
 			)
 			if (countDeleted > 0) {
-				console.log(`CallState garbage collect: ${countDeleted}`)
+				console.log(`CallState garbage collect: ${
+					countDeleted
+				}, ${
+					(Date.now() - time) / countDeleted
+				} ms per item`)
 			}
 		}
 

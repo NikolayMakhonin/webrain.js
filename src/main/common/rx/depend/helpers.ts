@@ -32,7 +32,7 @@ export function dependWait<
 	return dependX(function() {
 		const state = this
 
-		const funcState = getOrCreateCallState(func).apply(this, arguments)
+		const funcState = getOrCreateCallState(func).apply(state._this, arguments)
 		const value = funcState.getValue(isLazy)
 
 		if (!isThenable(value) && condition(value)) {
