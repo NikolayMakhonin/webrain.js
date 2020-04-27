@@ -1374,6 +1374,7 @@ interface ICallStateProvider<
 		TArgs,
 		TResultInner extends ThenableOrIterator<infer V> ? ThenableOrValue<V> : TResultInner
 		>,
+	isBindThis: boolean,
 }
 
 // let currentCallStateProviderState: ICallStateProviderState<any, any, any> = null
@@ -1548,6 +1549,7 @@ export function createCallStateProvider<
 		getOrCreate: _getOrCreateCallState,
 		func,
 		dependFunc: null,
+		isBindThis: false,
 	}
 
 	return state
@@ -1603,21 +1605,6 @@ export function subscribeCallState<
 	return unsubscribe
 }
 
-export function autoCalc<
-	TThisOuter,
-	TArgs extends any[],
->(this: TThisOuter, ...args: TArgs)
-export function autoCalc<
-	TThisOuter,
-	TArgs extends any[],
->() {
-	return <TResultInner>(func: Func<TThisOuter, TArgs, TResultInner>) => {
-		return subscribeCallState(
-			getOrCreateCallState(func).apply(this, ...arguments),
-		)
-	}
-}
-
 export function getCallState<
 	TThisOuter,
 	TArgs extends any[],
@@ -1656,6 +1643,53 @@ export function getOrCreateCallState<
 		return callStateProviderState.getOrCreate
 		// return _getOrCreateCallState
 	}
+}
+
+export function dependBindThis<
+	TThis,
+	TArgs extends any[],
+	TResult
+>(
+	_this: TThis,
+	func: Func<TThis, TArgs, TResult>,
+): Func<never, TArgs, TResult> {
+	const {
+		dependFunc: _dependFunc,
+		func: _func,
+		get,
+		getOrCreate,
+		isBindThis,
+	} = callStateProviderMap.get(func)
+
+	if (isBindThis) {
+		throw new Error('Function already bind: ' + func)
+	}
+
+	const newCallStateProviderState: ICallStateProvider<any, any, any> = {
+		dependFunc: newDependFunc,
+		func() {
+			return _func.apply(_this, arguments)
+		},
+		get() {
+			return get.apply(_this, arguments)
+		},
+		getOrCreate() {
+			return getOrCreate.apply(_this, arguments)
+		},
+		isBindThis: true,
+	}
+
+	callStateProviderMap.set(
+		newDependFunc,
+		newCallStateProviderState,
+	)
+
+	function newDependFunc(this: never, ...args: TArgs): TResult
+	function newDependFunc() {
+		return _dependFunc.apply(_this, arguments)
+	}
+
+	return newDependFunc
 }
 
 // endregion

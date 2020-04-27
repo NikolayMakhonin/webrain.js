@@ -1,6 +1,4 @@
 import {TClass} from '../../../helpers/typescript'
-import {autoCalc} from '../../../rx/depend/core/CallState'
-import {Func} from '../../depend/core/contracts'
 import {ObservableClass} from '../ObservableClass'
 
 export function observableClass<
@@ -18,13 +16,11 @@ export function observableClass<
 	return NewPropertyClass as any
 }
 
-export function autoCalcConnect<
-	TObject,
-	TInput,
+export function createConnector<TObject,
+	TConnector,
 	>(
 	object: TObject,
-	inputFactory: (source: TObject, name?: string) => TInput,
-	func: Func<TInput, [], any>,
+	factory: (source: TObject) => TConnector,
 ) {
-	return autoCalc.call(inputFactory(object))(func)
+	return factory(object)
 }

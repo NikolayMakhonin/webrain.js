@@ -51,7 +51,6 @@ export {
 	getCallState,
 	getOrCreateCallState,
 	invalidateCallState,
-	autoCalc,
 	subscribeCallState,
 } from './rx/depend/core/CallState'
 export {CallStatus} from './rx/depend/core/contracts'
@@ -63,7 +62,8 @@ export {dependConnectorFactory} from './rx/object/properties/DependConnectorBuil
 export {noSubscribe} from './rx/depend/core/current-state'
 export {dependDeepSubscriber} from './rx/object/properties/path/dependDeepSubscriber'
 export {Path} from './rx/object/properties/path/builder'
-export {autoCalcConnect} from './rx/object/properties/helpers'
+export {autoCalcConnect, autoCalc, dependWait} from './rx/depend/helpers'
+export {createConnector} from './rx/object/properties/helpers'
 
 // region Interfaces
 

@@ -31,10 +31,10 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="69b2ee16-521b-4efd-b473-8e19e3df4d09" name="Default Changelist" comment="">
+      <change afterPath="$PROJECT_DIR$/src/main/common/rx/depend/helpers.ts" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/common/index.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/common/index.ts" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/common/rx/depend/core/CallState.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/common/rx/depend/core/CallState.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/common/rx/object/properties/DependCalcObjectBuilder.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/common/rx/object/properties/DependCalcObjectBuilder.ts" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/common/rx/object/properties/DependConnectorBuilder.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/common/rx/object/properties/DependConnectorBuilder.ts" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/common/rx/object/properties/helpers.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/common/rx/object/properties/helpers.ts" afterDir="false" />
     </list>
@@ -88,7 +88,7 @@
     <property name="WebServerToolWindowFactoryState" value="false" />
     <property name="auto.test.manager.delay" value="5000" />
     <property name="javascript.karma.karma_node_package_dir" value="" />
-    <property name="last_opened_file_path" value="$PROJECT_DIR$/src/test/tests/common/main/rx/object/properties/path" />
+    <property name="last_opened_file_path" value="$PROJECT_DIR$/src/main/common/rx/object/properties/helpers.ts" />
     <property name="node.js.detected.package.eslint" value="true" />
     <property name="node.js.detected.package.standard" value="true" />
     <property name="node.js.detected.package.tslint" value="true" />
@@ -108,18 +108,18 @@
   </component>
   <component name="RecentsManager">
     <key name="MoveFile.RECENT_KEYS">
+      <recent name="L:\Work\_GIT\GitHub\NodeJs\modules\webrain\src\main\common\rx\depend" />
       <recent name="L:\Work\_GIT\GitHub\NodeJs\modules\webrain\src\main\common\rx\object\properties\path" />
       <recent name="L:\Work\_GIT\GitHub\NodeJs\modules\webrain\src\test\tests\common\main\rx\object\properties\path" />
       <recent name="L:\Work\_GIT\GitHub\NodeJs\modules\webrain\src\main\common\rx" />
       <recent name="L:\Work\_GIT\GitHub\NodeJs\modules\webrain\src\test\tests\common\main\rx\depend\dependent-func" />
-      <recent name="L:\Work\_GIT\GitHub\NodeJs\modules\webrain\_trash\src\main\common\rx\depend" />
     </key>
     <key name="es6.move.members.recent.items">
+      <recent name="L:\Work\_GIT\GitHub\NodeJs\modules\webrain\src\main\common\rx\object\properties\helpers.ts" />
+      <recent name="L:\Work\_GIT\GitHub\NodeJs\modules\webrain\src\main\common\rx\depend\core\helpers.ts" />
       <recent name="L:\Work\_GIT\GitHub\NodeJs\modules\webrain\src\test\tests\common\main\rx\depend\src\perceptron.ts" />
       <recent name="L:\Work\_GIT\GitHub\NodeJs\modules\webrain\src\test\tests\common\main\rx\depend\src\_helpers.ts" />
-      <recent name="L:\Work\_GIT\GitHub\NodeJs\modules\webrain\src\main\common\rx\object\properties\helpers.ts" />
       <recent name="L:\Work\_GIT\GitHub\NodeJs\modules\webrain\src\main\common\helpers\helpers.ts" />
-      <recent name="L:\Work\_GIT\GitHub\NodeJs\modules\webrain\src\main\common\helpers\typescript.ts" />
     </key>
     <key name="CopyFile.RECENT_KEYS">
       <recent name="L:\Work\_GIT\GitHub\NodeJs\modules\webrain\src\test\tests\common\main\rx\object\properties\path" />
@@ -493,14 +493,7 @@
       <workItem from="1587720746493" duration="5289000" />
       <workItem from="1587787076321" duration="29386000" />
       <workItem from="1587830820530" duration="22175000" />
-      <workItem from="1587885471895" duration="18311000" />
-    </task>
-    <task id="LOCAL-00404" summary="depend: base tests changing file structure... Tests OK">
-      <created>1587265171568</created>
-      <option name="number" value="00404" />
-      <option name="presentableId" value="LOCAL-00404" />
-      <option name="project" value="LOCAL" />
-      <updated>1587265171568</updated>
+      <workItem from="1587885471895" duration="33568000" />
     </task>
     <task id="LOCAL-00405" summary="depend: base tests changing file structure... Tests OK">
       <created>1587265342534</created>
@@ -838,7 +831,14 @@
       <option name="project" value="LOCAL" />
       <updated>1587906889849</updated>
     </task>
-    <option name="localTasksCounter" value="453" />
+    <task id="LOCAL-00453" summary="Small fixes">
+      <created>1587913662668</created>
+      <option name="number" value="00453" />
+      <option name="presentableId" value="LOCAL-00453" />
+      <option name="project" value="LOCAL" />
+      <updated>1587913662668</updated>
+    </task>
+    <option name="localTasksCounter" value="454" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -899,7 +899,6 @@
   <component name="VcsManagerConfiguration">
     <option name="CHECK_CODE_SMELLS_BEFORE_PROJECT_COMMIT" value="false" />
     <option name="CHECK_NEW_TODO" value="false" />
-    <MESSAGE value="depend: fix bug: mark as recalc after calculated. Tests OK" />
     <MESSAGE value="depend: lazy mode, testing and debugging... Tests OK" />
     <MESSAGE value="depend: base tests changing file structure... Tests OK" />
     <MESSAGE value="depend: stress test in process..." />
@@ -924,7 +923,8 @@
     <MESSAGE value="TSLint fixes" />
     <MESSAGE value="depend: fix garbage collection. Tests OK." />
     <MESSAGE value="depend: stress test all, 200 tests is OK." />
-    <option name="LAST_COMMIT_MESSAGE" value="depend: stress test all, 200 tests is OK." />
+    <MESSAGE value="Small fixes" />
+    <option name="LAST_COMMIT_MESSAGE" value="Small fixes" />
   </component>
   <component name="WindowStateProjectService">
     <state x="38" y="39" width="1718" height="786" key="#com.intellij.execution.impl.EditConfigurationsDialog" timestamp="1587902977178">
@@ -943,42 +943,42 @@
       <screen x="0" y="0" width="1920" height="882" />
     </state>
     <state x="623" y="124" key="#com.intellij.refactoring.safeDelete.UnsafeUsagesDialog/0.0.1920.882@0.0.1920.882" timestamp="1587726051063" />
-    <state x="651" y="254" key="ANALYSIS_DLG_com.intellij.analysis.BaseAnalysisAction$1" timestamp="1587884394137">
+    <state x="651" y="254" key="ANALYSIS_DLG_com.intellij.analysis.BaseAnalysisAction$1" timestamp="1587984930341">
       <screen x="0" y="0" width="1920" height="882" />
     </state>
-    <state x="651" y="254" key="ANALYSIS_DLG_com.intellij.analysis.BaseAnalysisAction$1/0.0.1920.882@0.0.1920.882" timestamp="1587884394137" />
-    <state x="0" y="0" width="1918" height="882" key="CommitChangelistDialog2" timestamp="1587906888737">
+    <state x="651" y="254" key="ANALYSIS_DLG_com.intellij.analysis.BaseAnalysisAction$1/0.0.1920.882@0.0.1920.882" timestamp="1587984930341" />
+    <state x="0" y="0" width="1918" height="882" key="CommitChangelistDialog2" timestamp="1587913662076">
       <screen x="0" y="0" width="1920" height="882" />
     </state>
-    <state x="0" y="0" width="1918" height="882" key="CommitChangelistDialog2/0.0.1920.882@0.0.1920.882" timestamp="1587906888737" />
+    <state x="0" y="0" width="1918" height="882" key="CommitChangelistDialog2/0.0.1920.882@0.0.1920.882" timestamp="1587913662076" />
     <state width="884" height="550" key="DebuggerActiveHint" timestamp="1587883472096">
       <screen x="0" y="0" width="1920" height="882" />
     </state>
     <state width="884" height="550" key="DebuggerActiveHint/0.0.1920.882@0.0.1920.882" timestamp="1587883472096" />
-    <state x="0" y="4" width="1920" height="875" key="DiffContextDialog" timestamp="1587902065985">
+    <state x="0" y="4" width="1920" height="875" key="DiffContextDialog" timestamp="1587913638964">
       <screen x="0" y="0" width="1920" height="882" />
     </state>
-    <state x="0" y="4" width="1920" height="875" key="DiffContextDialog/0.0.1920.882@0.0.1920.882" timestamp="1587902065985" />
-    <state x="686" y="134" key="FileChooserDialogImpl" timestamp="1587910524828">
+    <state x="0" y="4" width="1920" height="875" key="DiffContextDialog/0.0.1920.882@0.0.1920.882" timestamp="1587913638964" />
+    <state x="1059" y="106" key="FileChooserDialogImpl" timestamp="1587984144460">
       <screen x="0" y="0" width="1920" height="882" />
     </state>
-    <state x="686" y="134" key="FileChooserDialogImpl/0.0.1920.882@0.0.1920.882" timestamp="1587910524828" />
-    <state width="645" height="444" key="GridCell.Tab.0.bottom" timestamp="1587911675057">
+    <state x="1059" y="106" key="FileChooserDialogImpl/0.0.1920.882@0.0.1920.882" timestamp="1587984144460" />
+    <state width="645" height="444" key="GridCell.Tab.0.bottom" timestamp="1587966139865">
       <screen x="0" y="0" width="1920" height="882" />
     </state>
-    <state width="645" height="444" key="GridCell.Tab.0.bottom/0.0.1920.882@0.0.1920.882" timestamp="1587911675057" />
-    <state width="645" height="444" key="GridCell.Tab.0.center" timestamp="1587911675056">
+    <state width="645" height="444" key="GridCell.Tab.0.bottom/0.0.1920.882@0.0.1920.882" timestamp="1587966139865" />
+    <state width="645" height="444" key="GridCell.Tab.0.center" timestamp="1587966139864">
       <screen x="0" y="0" width="1920" height="882" />
     </state>
-    <state width="645" height="444" key="GridCell.Tab.0.center/0.0.1920.882@0.0.1920.882" timestamp="1587911675056" />
-    <state width="645" height="444" key="GridCell.Tab.0.left" timestamp="1587911675056">
+    <state width="645" height="444" key="GridCell.Tab.0.center/0.0.1920.882@0.0.1920.882" timestamp="1587966139864" />
+    <state width="645" height="444" key="GridCell.Tab.0.left" timestamp="1587966139864">
       <screen x="0" y="0" width="1920" height="882" />
     </state>
-    <state width="645" height="444" key="GridCell.Tab.0.left/0.0.1920.882@0.0.1920.882" timestamp="1587911675056" />
-    <state width="645" height="444" key="GridCell.Tab.0.right" timestamp="1587911675056">
+    <state width="645" height="444" key="GridCell.Tab.0.left/0.0.1920.882@0.0.1920.882" timestamp="1587966139864" />
+    <state width="645" height="444" key="GridCell.Tab.0.right" timestamp="1587966139864">
       <screen x="0" y="0" width="1920" height="882" />
     </state>
-    <state width="645" height="444" key="GridCell.Tab.0.right/0.0.1920.882@0.0.1920.882" timestamp="1587911675056" />
+    <state width="645" height="444" key="GridCell.Tab.0.right/0.0.1920.882@0.0.1920.882" timestamp="1587966139864" />
     <state width="645" height="383" key="GridCell.Tab.1.bottom" timestamp="1587901378417">
       <screen x="0" y="0" width="1920" height="882" />
     </state>
@@ -1043,10 +1043,10 @@
       <screen x="0" y="0" width="1920" height="882" />
     </state>
     <state x="121" y="111" key="com.intellij.xdebugger.impl.breakpoints.ui.BreakpointsDialogFactory$2/0.0.1920.882@0.0.1920.882" timestamp="1587884348340" />
-    <state x="2" y="1" width="1908" height="878" key="find.popup" timestamp="1587905553865">
+    <state x="2" y="1" width="1908" height="878" key="find.popup" timestamp="1587986469357">
       <screen x="0" y="0" width="1920" height="882" />
     </state>
-    <state x="2" y="1" width="1908" height="878" key="find.popup/0.0.1920.882@0.0.1920.882" timestamp="1587905553865" />
+    <state x="2" y="1" width="1908" height="878" key="find.popup/0.0.1920.882@0.0.1920.882" timestamp="1587986469357" />
     <state x="732" y="169" key="refactoring.ChangeSignatureDialog" timestamp="1587872020169">
       <screen x="0" y="0" width="1920" height="882" />
     </state>
