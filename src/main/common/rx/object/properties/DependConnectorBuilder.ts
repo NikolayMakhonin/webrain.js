@@ -184,8 +184,9 @@ export class DependConnectorBuilder<
 			if (waitCondition != null) {
 				getValue = dependWait(getValue, waitCondition as any, waitTimeout, isLazy)
 			} else if (isLazy) {
+				const _getValue = getValue
 				getValue = function() {
-					const state = getOrCreateCallState(getValue).apply(this, arguments)
+					const state = getOrCreateCallState(_getValue).apply(this, arguments)
 					return state.getValue(true)
 				}
 			}

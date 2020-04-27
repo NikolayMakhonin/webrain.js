@@ -493,14 +493,7 @@
       <workItem from="1587720746493" duration="5289000" />
       <workItem from="1587787076321" duration="29386000" />
       <workItem from="1587830820530" duration="22175000" />
-      <workItem from="1587885471895" duration="33568000" />
-    </task>
-    <task id="LOCAL-00405" summary="depend: base tests changing file structure... Tests OK">
-      <created>1587265342534</created>
-      <option name="number" value="00405" />
-      <option name="presentableId" value="LOCAL-00405" />
-      <option name="project" value="LOCAL" />
-      <updated>1587265342534</updated>
+      <workItem from="1587885471895" duration="34320000" />
     </task>
     <task id="LOCAL-00406" summary="depend: base tests changing file structure... Tests OK">
       <created>1587265438958</created>
@@ -838,7 +831,14 @@
       <option name="project" value="LOCAL" />
       <updated>1587913662668</updated>
     </task>
-    <option name="localTasksCounter" value="454" />
+    <task id="LOCAL-00454" summary="Added depend helpers">
+      <created>1587989396598</created>
+      <option name="number" value="00454" />
+      <option name="presentableId" value="LOCAL-00454" />
+      <option name="project" value="LOCAL" />
+      <updated>1587989396598</updated>
+    </task>
+    <option name="localTasksCounter" value="455" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -899,7 +899,6 @@
   <component name="VcsManagerConfiguration">
     <option name="CHECK_CODE_SMELLS_BEFORE_PROJECT_COMMIT" value="false" />
     <option name="CHECK_NEW_TODO" value="false" />
-    <MESSAGE value="depend: lazy mode, testing and debugging... Tests OK" />
     <MESSAGE value="depend: base tests changing file structure... Tests OK" />
     <MESSAGE value="depend: stress test in process..." />
     <MESSAGE value="depend: stress test, testing and debugging. Simple sync tests is OK." />
@@ -924,7 +923,8 @@
     <MESSAGE value="depend: fix garbage collection. Tests OK." />
     <MESSAGE value="depend: stress test all, 200 tests is OK." />
     <MESSAGE value="Small fixes" />
-    <option name="LAST_COMMIT_MESSAGE" value="Small fixes" />
+    <MESSAGE value="Added depend helpers" />
+    <option name="LAST_COMMIT_MESSAGE" value="Added depend helpers" />
   </component>
   <component name="WindowStateProjectService">
     <state x="38" y="39" width="1718" height="786" key="#com.intellij.execution.impl.EditConfigurationsDialog" timestamp="1587902977178">
@@ -947,18 +947,18 @@
       <screen x="0" y="0" width="1920" height="882" />
     </state>
     <state x="651" y="254" key="ANALYSIS_DLG_com.intellij.analysis.BaseAnalysisAction$1/0.0.1920.882@0.0.1920.882" timestamp="1587984930341" />
-    <state x="0" y="0" width="1918" height="882" key="CommitChangelistDialog2" timestamp="1587913662076">
+    <state x="0" y="0" width="1918" height="882" key="CommitChangelistDialog2" timestamp="1587989395613">
       <screen x="0" y="0" width="1920" height="882" />
     </state>
-    <state x="0" y="0" width="1918" height="882" key="CommitChangelistDialog2/0.0.1920.882@0.0.1920.882" timestamp="1587913662076" />
+    <state x="0" y="0" width="1918" height="882" key="CommitChangelistDialog2/0.0.1920.882@0.0.1920.882" timestamp="1587989395613" />
     <state width="884" height="550" key="DebuggerActiveHint" timestamp="1587883472096">
       <screen x="0" y="0" width="1920" height="882" />
     </state>
     <state width="884" height="550" key="DebuggerActiveHint/0.0.1920.882@0.0.1920.882" timestamp="1587883472096" />
-    <state x="0" y="4" width="1920" height="875" key="DiffContextDialog" timestamp="1587913638964">
+    <state x="0" y="4" width="1920" height="875" key="DiffContextDialog" timestamp="1587989376652">
       <screen x="0" y="0" width="1920" height="882" />
     </state>
-    <state x="0" y="4" width="1920" height="875" key="DiffContextDialog/0.0.1920.882@0.0.1920.882" timestamp="1587913638964" />
+    <state x="0" y="4" width="1920" height="875" key="DiffContextDialog/0.0.1920.882@0.0.1920.882" timestamp="1587989376652" />
     <state x="1059" y="106" key="FileChooserDialogImpl" timestamp="1587984144460">
       <screen x="0" y="0" width="1920" height="882" />
     </state>
@@ -1043,10 +1043,10 @@
       <screen x="0" y="0" width="1920" height="882" />
     </state>
     <state x="121" y="111" key="com.intellij.xdebugger.impl.breakpoints.ui.BreakpointsDialogFactory$2/0.0.1920.882@0.0.1920.882" timestamp="1587884348340" />
-    <state x="2" y="1" width="1908" height="878" key="find.popup" timestamp="1587986469357">
+    <state x="2" y="1" width="1908" height="878" key="find.popup" timestamp="1587988759243">
       <screen x="0" y="0" width="1920" height="882" />
     </state>
-    <state x="2" y="1" width="1908" height="878" key="find.popup/0.0.1920.882@0.0.1920.882" timestamp="1587986469357" />
+    <state x="2" y="1" width="1908" height="878" key="find.popup/0.0.1920.882@0.0.1920.882" timestamp="1587988759243" />
     <state x="732" y="169" key="refactoring.ChangeSignatureDialog" timestamp="1587872020169">
       <screen x="0" y="0" width="1920" height="882" />
     </state>
