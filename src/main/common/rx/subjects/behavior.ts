@@ -1,6 +1,6 @@
+import {equals} from '../../helpers/helpers'
 import {ISubscriber, IUnsubscribe} from './observable'
 import {ISubject, Subject} from './subject'
-import {equals} from "../../helpers/helpers";
 
 export interface IBehavior<T> {
 	value: T

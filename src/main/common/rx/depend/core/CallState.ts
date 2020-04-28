@@ -446,7 +446,7 @@ export function invalidateParent<
 
 	// this condition needed only for optimization
 	if (childStatus === 0
-		|| isRecalc(status) // TODO detete this and test
+		|| isRecalc(status) // TODO delete this and test
 		|| status !== childStatus
 		&& childStatus !== Update_Invalidated_Recalc
 		&& (

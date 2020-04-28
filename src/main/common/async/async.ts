@@ -219,7 +219,7 @@ function _resolveValue<T>(
 		while (true) {
 			iterations++
 			if (iterations > 1000) {
-				throw new Error(`_resolveAsync infinity loop`)
+				throw new Error('_resolveAsync infinity loop')
 			}
 
 			{

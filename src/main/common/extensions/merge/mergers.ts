@@ -1,7 +1,7 @@
 /* tslint:disable:no-nested-switch ban-types use-primitive-type */
 import {equals, isIterable, TClass, typeToDebugString} from '../../helpers/helpers'
 import {canHaveUniqueId, getObjectUniqueId} from '../../helpers/object-unique-id'
-import {webrainOptions} from '../../helpers/webrainOptions'
+import {webrainEquals, webrainOptions} from '../../helpers/webrainOptions'
 import {fillMap, fillSet} from '../../lists/helpers/set'
 import {TypeMetaCollection} from '../TypeMeta'
 import {
@@ -563,8 +563,8 @@ export class MergerVisitor implements IMergerVisitor {
 		refsNewer?: any[],
 	): boolean {
 		let preferCloneBase = null
-		if (equals(base, newer)) {
-			if (equals(base, older)) {
+		if (webrainEquals(base, newer)) {
+			if (webrainEquals(base, older)) {
 				return false
 			}
 			preferCloneBase = preferCloneNewer
@@ -580,7 +580,7 @@ export class MergerVisitor implements IMergerVisitor {
 			return false
 		}
 
-		if (equals(base, older)) {
+		if (webrainEquals(base, older)) {
 			preferCloneBase = preferCloneOlder = mergePreferClone(preferCloneBase, preferCloneOlder)
 		}
 		if (older === newer) {
