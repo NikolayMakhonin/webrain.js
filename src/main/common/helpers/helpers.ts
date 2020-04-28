@@ -1,11 +1,12 @@
 export function isIterable(value: any): boolean {
 	return value != null
+		&& typeof value !== 'string'
+		&& !(value instanceof String)
 		&& typeof value[Symbol.iterator] === 'function'
 }
 
 export function isIterator(value: any): boolean {
-	return value != null
-		&& typeof value[Symbol.iterator] === 'function'
+	return isIterable(value)
 		&& typeof value.next === 'function'
 }
 

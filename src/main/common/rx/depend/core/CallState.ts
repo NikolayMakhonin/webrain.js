@@ -1070,12 +1070,13 @@ export class CallState<
 
 		this.status = Update_Calculated_Value
 
+		const prevValue = this.value
 		if (value !== NO_CHANGE_VALUE
 			&& (
 				(prevStatus & (Flag_HasError | Flag_HasValue)) !== Flag_HasValue
 					|| value === ALWAYS_CHANGE_VALUE
 					|| !(
-						this.value === value || webrainOptions.equalsFunc && webrainOptions.equalsFunc(this.value, value)
+						prevValue === value || webrainOptions.equalsFunc && webrainOptions.equalsFunc(this.value, value)
 					)
 			)
 		) {
@@ -1189,6 +1190,7 @@ export class CallState<
 
 		// TODO
 		if (isRecalc(status)) {
+			// TODO emit debug event
 			if ((this.status & Flag_Invalidating) !== 0) {
 				this._internalError(`Set status ${statusToString(status)} called when current status is ${statusToString(prevStatus)}`)
 			}

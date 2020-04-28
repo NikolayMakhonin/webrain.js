@@ -106,6 +106,14 @@ import {ISubject as _ISubject} from './rx/subjects/subject'
 import {ITimeLimitBase as _ITimeLimitBase} from './time/TimeLimit'
 import {ITimeLimit as _ITimeLimit} from './time/TimeLimit'
 import {ITimeLimits as _ITimeLimits} from './time/TimeLimits'
+import {
+	IWritableFieldOptions as _IWritableFieldOptions,
+	IReadableFieldOptions as _IReadableFieldOptions,
+	IUpdatableFieldOptions as _IUpdatableFieldOptions,
+} from './rx/object/ObservableObjectBuilder'
+import {
+	IConnectFieldOptions as _IConnectFieldOptions,
+} from './rx/object/properties/DependConnectorBuilder'
 
 export type ISubscriber<T> = _ISubscriber<T>
 export type IUnsubscribe = _IUnsubscribe
@@ -135,6 +143,10 @@ export type ITimeLimits = _ITimeLimits
 export type IDeferredOptions = _IDeferredOptions
 export type ICallState<TThisOuter, TArgs extends any[], TResultInner>
 	= _ICallState<TThisOuter, TArgs, TResultInner>
+export type IWritableFieldOptions<TObject, TValue> = _IWritableFieldOptions<TObject, TValue>
+export type IReadableFieldOptions<TObject, TValue> = _IReadableFieldOptions<TObject, TValue>
+export type IUpdatableFieldOptions<TObject, TValue> = _IUpdatableFieldOptions<TObject, TValue>
+export type IConnectFieldOptions<TObject, TValue> = _IConnectFieldOptions<TObject, TValue>
 
 // endregion
 

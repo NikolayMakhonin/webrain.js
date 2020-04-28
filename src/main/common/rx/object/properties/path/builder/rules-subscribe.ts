@@ -171,7 +171,7 @@ export function subscribeCollection<TObject extends Iterable<TValue>, TValue>(
 	object: TObject,
 	changeItem: IChangeItem<TObject, TValue>,
 ): void {
-	if (!object || typeof object === 'string') {
+	if (!isIterable(object)) {
 		return null
 	}
 
@@ -181,7 +181,7 @@ export function subscribeCollection<TObject extends Iterable<TValue>, TValue>(
 		}
 	} else if (object instanceof Map || object[Symbol.toStringTag] === 'Map') {
 		subscribeMap(null, null, object as any, changeItem)
-	} else if (isIterable(object)) {
+	} else {
 		forEachCollection(object, changeItem)
 	}
 

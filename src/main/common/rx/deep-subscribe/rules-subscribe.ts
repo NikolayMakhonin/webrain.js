@@ -328,7 +328,7 @@ function subscribeIterable<TItem>(
 	immediateSubscribe: boolean,
 	changeItem: IChangeItem<TItem>,
 ): IUnsubscribeOrVoid {
-	if (!object || typeof object === 'string' || !isIterable(object)) {
+	if (!object || !isIterable(object)) {
 		return null
 	}
 
