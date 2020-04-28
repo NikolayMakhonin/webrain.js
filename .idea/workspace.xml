@@ -30,14 +30,8 @@
     <select />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="69b2ee16-521b-4efd-b473-8e19e3df4d09" name="Default Changelist" comment="Refactoring: add webrainEquals to merger and DependMap">
+    <list default="true" id="69b2ee16-521b-4efd-b473-8e19e3df4d09" name="Default Changelist" comment="">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/common/async/async.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/common/async/async.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/common/extensions/merge/mergers.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/common/extensions/merge/mergers.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/common/index.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/common/index.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/common/rx/depend/core/CallState.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/common/rx/depend/core/CallState.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/common/rx/depend/lists/DependMap.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/common/rx/depend/lists/DependMap.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/common/rx/subjects/behavior.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/common/rx/subjects/behavior.ts" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -494,14 +488,7 @@
       <workItem from="1587720746493" duration="5289000" />
       <workItem from="1587787076321" duration="29386000" />
       <workItem from="1587830820530" duration="22175000" />
-      <workItem from="1587885471895" duration="63409000" />
-    </task>
-    <task id="LOCAL-00414" summary="depend: stress test, testing and debugging...">
-      <created>1587293463987</created>
-      <option name="number" value="00414" />
-      <option name="presentableId" value="LOCAL-00414" />
-      <option name="project" value="LOCAL" />
-      <updated>1587293463987</updated>
+      <workItem from="1587885471895" duration="64063000" />
     </task>
     <task id="LOCAL-00415" summary="depend: stress test, testing and debugging...">
       <created>1587294947140</created>
@@ -839,7 +826,14 @@
       <option name="project" value="LOCAL" />
       <updated>1588058396986</updated>
     </task>
-    <option name="localTasksCounter" value="463" />
+    <task id="LOCAL-00463" summary="Refactoring completed. Tests OK.">
+      <created>1588059220308</created>
+      <option name="number" value="00463" />
+      <option name="presentableId" value="LOCAL-00463" />
+      <option name="project" value="LOCAL" />
+      <updated>1588059220309</updated>
+    </task>
+    <option name="localTasksCounter" value="464" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -900,7 +894,6 @@
   <component name="VcsManagerConfiguration">
     <option name="CHECK_CODE_SMELLS_BEFORE_PROJECT_COMMIT" value="false" />
     <option name="CHECK_NEW_TODO" value="false" />
-    <MESSAGE value="depend: stress test, testing and debugging. Sync tests is OK." />
     <MESSAGE value="depend: stress test, testing and debugging. Async + Sync tests is OK." />
     <MESSAGE value="depend: stress test, testing and debugging." />
     <MESSAGE value="depend: stress test, testing and debugging. Sync + Lazy tests is OK." />
@@ -925,7 +918,8 @@
     <MESSAGE value="Fix isIterator / isIterable critical bug" />
     <MESSAGE value="Fix NaN === NaN critical bug. Check _resolveAsync infinity loop" />
     <MESSAGE value="Refactoring: add webrainEquals() helper" />
-    <option name="LAST_COMMIT_MESSAGE" value="Refactoring: add webrainEquals() helper" />
+    <MESSAGE value="Refactoring completed. Tests OK." />
+    <option name="LAST_COMMIT_MESSAGE" value="Refactoring completed. Tests OK." />
   </component>
   <component name="WindowStateProjectService">
     <state x="38" y="39" width="1718" height="786" key="#com.intellij.execution.impl.EditConfigurationsDialog" timestamp="1588047767217">
@@ -948,10 +942,10 @@
       <screen x="0" y="0" width="1920" height="882" />
     </state>
     <state x="651" y="254" key="ANALYSIS_DLG_com.intellij.analysis.BaseAnalysisAction$1/0.0.1920.882@0.0.1920.882" timestamp="1588059003240" />
-    <state x="0" y="0" width="1918" height="882" key="CommitChangelistDialog2" timestamp="1588058755644">
+    <state x="0" y="0" width="1918" height="882" key="CommitChangelistDialog2" timestamp="1588059219136">
       <screen x="0" y="0" width="1920" height="882" />
     </state>
-    <state x="0" y="0" width="1918" height="882" key="CommitChangelistDialog2/0.0.1920.882@0.0.1920.882" timestamp="1588058755644" />
+    <state x="0" y="0" width="1918" height="882" key="CommitChangelistDialog2/0.0.1920.882@0.0.1920.882" timestamp="1588059219136" />
     <state width="884" height="550" key="DebuggerActiveHint" timestamp="1587883472096">
       <screen x="0" y="0" width="1920" height="882" />
     </state>
@@ -964,22 +958,22 @@
       <screen x="0" y="0" width="1920" height="882" />
     </state>
     <state x="1059" y="106" key="FileChooserDialogImpl/0.0.1920.882@0.0.1920.882" timestamp="1587984144460" />
-    <state width="871" height="243" key="GridCell.Tab.0.bottom" timestamp="1588058925828">
+    <state width="871" height="390" key="GridCell.Tab.0.bottom" timestamp="1588059248072">
       <screen x="0" y="0" width="1920" height="882" />
     </state>
-    <state width="871" height="243" key="GridCell.Tab.0.bottom/0.0.1920.882@0.0.1920.882" timestamp="1588058925828" />
-    <state width="871" height="243" key="GridCell.Tab.0.center" timestamp="1588058925827">
+    <state width="871" height="390" key="GridCell.Tab.0.bottom/0.0.1920.882@0.0.1920.882" timestamp="1588059248072" />
+    <state width="871" height="390" key="GridCell.Tab.0.center" timestamp="1588059248072">
       <screen x="0" y="0" width="1920" height="882" />
     </state>
-    <state width="871" height="243" key="GridCell.Tab.0.center/0.0.1920.882@0.0.1920.882" timestamp="1588058925827" />
-    <state width="871" height="243" key="GridCell.Tab.0.left" timestamp="1588058925825">
+    <state width="871" height="390" key="GridCell.Tab.0.center/0.0.1920.882@0.0.1920.882" timestamp="1588059248072" />
+    <state width="871" height="390" key="GridCell.Tab.0.left" timestamp="1588059248072">
       <screen x="0" y="0" width="1920" height="882" />
     </state>
-    <state width="871" height="243" key="GridCell.Tab.0.left/0.0.1920.882@0.0.1920.882" timestamp="1588058925825" />
-    <state width="871" height="243" key="GridCell.Tab.0.right" timestamp="1588058925827">
+    <state width="871" height="390" key="GridCell.Tab.0.left/0.0.1920.882@0.0.1920.882" timestamp="1588059248072" />
+    <state width="871" height="390" key="GridCell.Tab.0.right" timestamp="1588059248072">
       <screen x="0" y="0" width="1920" height="882" />
     </state>
-    <state width="871" height="243" key="GridCell.Tab.0.right/0.0.1920.882@0.0.1920.882" timestamp="1588058925827" />
+    <state width="871" height="390" key="GridCell.Tab.0.right/0.0.1920.882@0.0.1920.882" timestamp="1588059248072" />
     <state width="871" height="242" key="GridCell.Tab.1.bottom" timestamp="1588057472838">
       <screen x="0" y="0" width="1920" height="882" />
     </state>
