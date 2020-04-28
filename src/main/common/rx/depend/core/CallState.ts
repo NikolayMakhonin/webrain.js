@@ -8,8 +8,8 @@ import {
 	ThenableOrValue,
 } from '../../../async/async'
 import {resolveAsync, ThenableSync} from '../../../async/ThenableSync'
-import {equals, isIterator, nextHash} from '../../../helpers/helpers'
-import {webrainOptions} from '../../../helpers/webrainOptions'
+import {isIterator, nextHash} from '../../../helpers/helpers'
+import {webrainEquals, webrainOptions} from '../../../helpers/webrainOptions'
 import {ObjectPool} from '../../../lists/ObjectPool'
 import {PairingHeap, PairingNode} from '../../../lists/PairingHeap'
 import {DeferredCalc, IDeferredCalcOptions} from '../../deferred-calc/DeferredCalc'
@@ -1075,9 +1075,7 @@ export class CallState<
 			&& (
 				(prevStatus & (Flag_HasError | Flag_HasValue)) !== Flag_HasValue
 					|| value === ALWAYS_CHANGE_VALUE
-					|| !(
-						equals(prevValue, value) || webrainOptions.equalsFunc && webrainOptions.equalsFunc(prevValue, value)
-					)
+					|| !webrainEquals(prevValue, value)
 			)
 		) {
 			this.error = void 0
@@ -1109,13 +1107,11 @@ export class CallState<
 		}
 
 		const prevError = this.error
-		if (value !== NO_CHANGE_VALUE
+		if (error !== NO_CHANGE_VALUE
 			&& (
 				(prevStatus & Flag_HasError) === 0
-				|| error === ALWAYS_CHANGE_VALUE
-				|| !(
-					equals(prevError, error) || webrainOptions.equalsFunc && webrainOptions.equalsFunc(prevError, error)
-				)
+					|| error === ALWAYS_CHANGE_VALUE
+					|| !webrainEquals(prevError, error)
 			)
 		) {
 			this.error = error

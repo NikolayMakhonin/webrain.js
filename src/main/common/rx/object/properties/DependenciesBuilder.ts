@@ -1,11 +1,10 @@
-import {webrainOptions} from '../../../helpers/webrainOptions'
+import {webrainEquals} from '../../../helpers/webrainOptions'
 import {IPropertiesPath, ValueKeyType} from '../../deep-subscribe/contracts/common'
 import {IRule} from '../../deep-subscribe/contracts/rules'
 import {deepSubscribeRule} from '../../deep-subscribe/deep-subscribe'
 import {PropertiesPath} from '../../deep-subscribe/helpers/PropertiesPath'
 import {RuleBuilder} from '../../deep-subscribe/RuleBuilder'
 import {ValueKeys} from './contracts'
-import {equals} from "../../../helpers/helpers";
 
 export type IDependencyAction<TTarget, TValue = any>
 	= (
@@ -103,9 +102,7 @@ export function subscribeDependencies<TSubscribeObject, TActionTarget>(
 						}
 
 						const stateValue = state[id].value
-						if (equals(stateValue, newValue)
-							|| webrainOptions.equalsFunc && webrainOptions.equalsFunc(stateValue, newValue)
-						) {
+						if (webrainEquals(stateValue, newValue)) {
 							return
 						}
 						// action(actionTarget, stateValue, parent, key, keyType, propertiesPath, rule)

@@ -1,8 +1,8 @@
-import {webrainOptions} from '../../helpers/webrainOptions'
+import {equals} from '../../helpers/helpers'
+import {webrainEquals, webrainOptions} from '../../helpers/webrainOptions'
 import {getCallState, invalidateCallState} from '../../rx/depend/core/CallState'
 import '../extensions/autoConnect'
 import {PropertyChangedObject} from './PropertyChangedObject'
-import {equals} from "../../helpers/helpers";
 
 export interface ISetOptions<TObject, TValue> {
 	equalsFunc?: (this: TObject, oldValue: TValue, newValue: TValue) => boolean,
@@ -110,9 +110,7 @@ export function _set(
 ) {
 	const oldValue = getValue.call(this)
 
-	if (equals(oldValue, newValue)
-		|| webrainOptions.equalsFunc && webrainOptions.equalsFunc.call(this, oldValue, newValue)
-	) {
+	if (webrainEquals.call(this, oldValue, newValue)) {
 		return false
 	}
 

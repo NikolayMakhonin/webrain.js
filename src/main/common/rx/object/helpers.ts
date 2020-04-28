@@ -1,6 +1,5 @@
-import {webrainOptions} from '../../helpers/webrainOptions'
+import {webrainEquals} from '../../helpers/webrainOptions'
 import {CallStatusShort, ICallStateAny} from '../depend/core/contracts'
-import {equals} from "../../helpers/helpers";
 
 export function makeDependPropertySubscriber(name: string | number) {
 	return function initDependCalcState(state: ICallStateAny) {
@@ -26,9 +25,7 @@ export function makeDependPropertySubscriber(name: string | number) {
 								const oldValue = value
 								const newValue = await state.getValue()
 								value = newValue
-								if (!(equals(oldValue, newValue)
-									|| webrainOptions.equalsFunc && webrainOptions.equalsFunc(oldValue, newValue)
-								)) {
+								if (!webrainEquals(oldValue, newValue)) {
 									state._this.propertyChanged.emit({
 										name,
 										oldValue,

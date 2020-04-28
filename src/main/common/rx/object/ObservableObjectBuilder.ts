@@ -1,5 +1,5 @@
-import {createFunction, equals, missingSetter} from '../../helpers/helpers'
-import {webrainOptions} from '../../helpers/webrainOptions'
+import {createFunction, missingSetter} from '../../helpers/helpers'
+import {webrainEquals} from '../../helpers/webrainOptions'
 import {depend} from '../../rx/depend/core/depend'
 import '../extensions/autoConnect'
 import {PropertyChangedEvent} from './IPropertyChanged'
@@ -77,9 +77,7 @@ export class ObservableObjectBuilder<TObject extends ObservableClass> {
 
 		if (__fields && typeof initValue !== 'undefined') {
 			const value = __fields[name]
-			if (!(equals(value, initValue)
-				|| webrainOptions.equalsFunc && webrainOptions.equalsFunc.call(object, value, initValue)
-			)) {
+			if (!webrainEquals.call(object, value, initValue)) {
 				object[name as any] = initValue
 			}
 		}
@@ -194,9 +192,7 @@ export class ObservableObjectBuilder<TObject extends ObservableClass> {
 					const factoryValue = init.call(this)
 					if (typeof factoryValue !== 'undefined') {
 						const oldValue = getValue.call(this)
-						if (!(equals(oldValue, factoryValue)
-							|| webrainOptions.equalsFunc && webrainOptions.equalsFunc.call(this, oldValue, factoryValue)
-						)) {
+						if (!webrainEquals.call(this, oldValue, factoryValue)) {
 							setOnInit.call(this, factoryValue)
 						}
 					}
@@ -209,9 +205,7 @@ export class ObservableObjectBuilder<TObject extends ObservableClass> {
 						const newValue = update.call(this, value)
 						if (typeof newValue !== 'undefined') {
 							const oldValue = getValue.call(this)
-							if (!(equals(oldValue, newValue)
-								|| webrainOptions.equalsFunc && webrainOptions.equalsFunc.call(this, oldValue, newValue)
-							)) {
+							if (!webrainEquals.call(this, oldValue, newValue)) {
 								setOnInit.call(this, newValue)
 							}
 						}
@@ -243,9 +237,7 @@ export class ObservableObjectBuilder<TObject extends ObservableClass> {
 					initializeValue.call(this, initValue)
 				}
 
-				if (!(equals(oldValue, initValue)
-					|| webrainOptions.equalsFunc && webrainOptions.equalsFunc.call(object, oldValue, initValue)
-				)) {
+				if (!webrainEquals.call(object, oldValue, initValue)) {
 					__fields[name] = initValue
 					const {propertyChangedIfCanEmit} = object
 					if (propertyChangedIfCanEmit) {

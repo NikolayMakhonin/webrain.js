@@ -4,7 +4,7 @@ import {CalcStat} from '../../../helpers/CalcStat'
 import {equals} from '../../../helpers/helpers'
 import {now} from '../../../helpers/performance'
 import {VALUE_PROPERTY_DEFAULT} from '../../../helpers/value-property'
-import {webrainOptions} from '../../../helpers/webrainOptions'
+import {webrainEquals, webrainOptions} from '../../../helpers/webrainOptions'
 import {Debugger} from '../../Debugger'
 import {DeferredCalc, IDeferredCalcOptions} from '../../deferred-calc/DeferredCalc'
 import {ObservableClass} from '../ObservableClass'
@@ -206,10 +206,7 @@ export class CalcProperty<TValue, TInput = any>
 
 	private setDeferredValue(newValue, force?: boolean) {
 		const oldValue = this._deferredValue
-		if (!force && (
-			equals(oldValue, newValue)
-			|| webrainOptions.equalsFunc && webrainOptions.equalsFunc.call(this, oldValue, newValue)
-		)) {
+		if (!force && webrainEquals.call(this, oldValue, newValue)) {
 			return
 		}
 
@@ -226,10 +223,7 @@ export class CalcProperty<TValue, TInput = any>
 	}
 
 	private onValueChanged(oldValue, newValue, force?: boolean) {
-		if (!force && (
-			equals(oldValue, newValue)
-			|| webrainOptions.equalsFunc && webrainOptions.equalsFunc.call(this, oldValue, newValue)
-		)) {
+		if (!force && webrainEquals.call(this, oldValue, newValue)) {
 			return
 		}
 
@@ -287,10 +281,7 @@ export class CalcProperty<TValue, TInput = any>
 	}
 
 	public clear() {
-		if (!(
-			equals(this.state.value, this._initValue)
-			|| webrainOptions.equalsFunc && webrainOptions.equalsFunc.call(this, this.state.value, this._initValue)
-		)) {
+		if (!webrainEquals.call(this, this.state.value, this._initValue)) {
 			const oldValue = this.state.value
 			const newValue = this._initValue
 			this.state.value = newValue

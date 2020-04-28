@@ -1,4 +1,4 @@
-import {equalsObjects} from './helpers'
+import {equals, equalsObjects} from './helpers'
 
 export const webrainOptions = {
 	equalsFunc<TValue>(oldValue: TValue, newValue: TValue): boolean {
@@ -20,4 +20,9 @@ export const webrainOptions = {
 	timeouts: {
 		dependWait: 60000,
 	},
+}
+
+export function webrainEquals(o1, o2) {
+	return equals(o1, o2) || webrainOptions.equalsFunc != null
+		&& webrainOptions.equalsFunc.call(this, o1, o2)
 }
