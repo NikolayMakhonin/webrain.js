@@ -1,8 +1,11 @@
 export function isIterable(value: any): boolean {
 	return value != null
-		&& typeof value !== 'string'
-		&& !(value instanceof String)
-		&& typeof value[Symbol.iterator] === 'function'
+		&& typeof value === 'object'
+		&& (
+			Array.isArray(value)
+			|| !(value instanceof String)
+			&& typeof value[Symbol.iterator] === 'function'
+		)
 }
 
 export function isIterator(value: any): boolean {
