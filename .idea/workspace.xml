@@ -30,10 +30,24 @@
     <select />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="69b2ee16-521b-4efd-b473-8e19e3df4d09" name="Default Changelist" comment="">
+    <list default="true" id="69b2ee16-521b-4efd-b473-8e19e3df4d09" name="Default Changelist" comment="Fix NaN === NaN critical bug. Check _resolveAsync infinity loop">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/common/async/async.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/common/async/async.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/common/extensions/merge/mergers.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/common/extensions/merge/mergers.ts" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/common/helpers/helpers.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/common/helpers/helpers.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/common/helpers/webrainOptions.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/common/helpers/webrainOptions.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/common/lists/BinaryTree.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/common/lists/BinaryTree.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/common/rx/deep-subscribe/ObjectSubscriber.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/common/rx/deep-subscribe/ObjectSubscriber.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/common/rx/deep-subscribe/rules-subscribe.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/common/rx/deep-subscribe/rules-subscribe.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/common/rx/depend/core/CallState.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/common/rx/depend/core/CallState.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/common/rx/depend/lists/DependMap.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/common/rx/depend/lists/DependMap.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/common/rx/object/ObservableClass.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/common/rx/object/ObservableClass.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/common/rx/object/ObservableObjectBuilder.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/common/rx/object/ObservableObjectBuilder.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/common/rx/object/helpers.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/common/rx/object/helpers.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/common/rx/object/properties/CalcProperty.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/common/rx/object/properties/CalcProperty.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/common/rx/object/properties/DependenciesBuilder.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/common/rx/object/properties/DependenciesBuilder.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/common/rx/subjects/behavior.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/common/rx/subjects/behavior.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/common/test/DeepCloneEqual.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/common/test/DeepCloneEqual.ts" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -490,14 +504,7 @@
       <workItem from="1587720746493" duration="5289000" />
       <workItem from="1587787076321" duration="29386000" />
       <workItem from="1587830820530" duration="22175000" />
-      <workItem from="1587885471895" duration="56831000" />
-    </task>
-    <task id="LOCAL-00411" summary="depend: stress test, testing and debugging...">
-      <created>1587286249470</created>
-      <option name="number" value="00411" />
-      <option name="presentableId" value="LOCAL-00411" />
-      <option name="project" value="LOCAL" />
-      <updated>1587286249470</updated>
+      <workItem from="1587885471895" duration="61339000" />
     </task>
     <task id="LOCAL-00412" summary="depend: stress test, testing and debugging...">
       <created>1587289205062</created>
@@ -835,7 +842,14 @@
       <option name="project" value="LOCAL" />
       <updated>1588048907142</updated>
     </task>
-    <option name="localTasksCounter" value="460" />
+    <task id="LOCAL-00460" summary="Fix isIterator / isIterable critical bug">
+      <created>1588052763065</created>
+      <option name="number" value="00460" />
+      <option name="presentableId" value="LOCAL-00460" />
+      <option name="project" value="LOCAL" />
+      <updated>1588052763065</updated>
+    </task>
+    <option name="localTasksCounter" value="461" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -944,38 +958,38 @@
       <screen x="0" y="0" width="1920" height="882" />
     </state>
     <state x="651" y="254" key="ANALYSIS_DLG_com.intellij.analysis.BaseAnalysisAction$1/0.0.1920.882@0.0.1920.882" timestamp="1587984930341" />
-    <state x="0" y="0" width="1918" height="882" key="CommitChangelistDialog2" timestamp="1588048906363">
+    <state x="0" y="0" width="1918" height="882" key="CommitChangelistDialog2" timestamp="1588056975706">
       <screen x="0" y="0" width="1920" height="882" />
     </state>
-    <state x="0" y="0" width="1918" height="882" key="CommitChangelistDialog2/0.0.1920.882@0.0.1920.882" timestamp="1588048906363" />
+    <state x="0" y="0" width="1918" height="882" key="CommitChangelistDialog2/0.0.1920.882@0.0.1920.882" timestamp="1588056975706" />
     <state width="884" height="550" key="DebuggerActiveHint" timestamp="1587883472096">
       <screen x="0" y="0" width="1920" height="882" />
     </state>
     <state width="884" height="550" key="DebuggerActiveHint/0.0.1920.882@0.0.1920.882" timestamp="1587883472096" />
-    <state x="0" y="4" width="1920" height="875" key="DiffContextDialog" timestamp="1588047731894">
+    <state x="0" y="4" width="1920" height="875" key="DiffContextDialog" timestamp="1588056963541">
       <screen x="0" y="0" width="1920" height="882" />
     </state>
-    <state x="0" y="4" width="1920" height="875" key="DiffContextDialog/0.0.1920.882@0.0.1920.882" timestamp="1588047731894" />
+    <state x="0" y="4" width="1920" height="875" key="DiffContextDialog/0.0.1920.882@0.0.1920.882" timestamp="1588056963541" />
     <state x="1059" y="106" key="FileChooserDialogImpl" timestamp="1587984144460">
       <screen x="0" y="0" width="1920" height="882" />
     </state>
     <state x="1059" y="106" key="FileChooserDialogImpl/0.0.1920.882@0.0.1920.882" timestamp="1587984144460" />
-    <state width="871" height="419" key="GridCell.Tab.0.bottom" timestamp="1588050149542">
+    <state width="871" height="320" key="GridCell.Tab.0.bottom" timestamp="1588057115020">
       <screen x="0" y="0" width="1920" height="882" />
     </state>
-    <state width="871" height="419" key="GridCell.Tab.0.bottom/0.0.1920.882@0.0.1920.882" timestamp="1588050149542" />
-    <state width="871" height="419" key="GridCell.Tab.0.center" timestamp="1588050149541">
+    <state width="871" height="320" key="GridCell.Tab.0.bottom/0.0.1920.882@0.0.1920.882" timestamp="1588057115020" />
+    <state width="871" height="320" key="GridCell.Tab.0.center" timestamp="1588057115020">
       <screen x="0" y="0" width="1920" height="882" />
     </state>
-    <state width="871" height="419" key="GridCell.Tab.0.center/0.0.1920.882@0.0.1920.882" timestamp="1588050149541" />
-    <state width="871" height="419" key="GridCell.Tab.0.left" timestamp="1588050149539">
+    <state width="871" height="320" key="GridCell.Tab.0.center/0.0.1920.882@0.0.1920.882" timestamp="1588057115020" />
+    <state width="871" height="320" key="GridCell.Tab.0.left" timestamp="1588057115020">
       <screen x="0" y="0" width="1920" height="882" />
     </state>
-    <state width="871" height="419" key="GridCell.Tab.0.left/0.0.1920.882@0.0.1920.882" timestamp="1588050149539" />
-    <state width="871" height="419" key="GridCell.Tab.0.right" timestamp="1588050149542">
+    <state width="871" height="320" key="GridCell.Tab.0.left/0.0.1920.882@0.0.1920.882" timestamp="1588057115020" />
+    <state width="871" height="320" key="GridCell.Tab.0.right" timestamp="1588057115020">
       <screen x="0" y="0" width="1920" height="882" />
     </state>
-    <state width="871" height="419" key="GridCell.Tab.0.right/0.0.1920.882@0.0.1920.882" timestamp="1588050149542" />
+    <state width="871" height="320" key="GridCell.Tab.0.right/0.0.1920.882@0.0.1920.882" timestamp="1588057115020" />
     <state width="871" height="418" key="GridCell.Tab.1.bottom" timestamp="1587994969399">
       <screen x="0" y="0" width="1920" height="882" />
     </state>
@@ -1040,10 +1054,10 @@
       <screen x="0" y="0" width="1920" height="882" />
     </state>
     <state x="121" y="111" key="com.intellij.xdebugger.impl.breakpoints.ui.BreakpointsDialogFactory$2/0.0.1920.882@0.0.1920.882" timestamp="1587884348340" />
-    <state x="2" y="1" width="1908" height="878" key="find.popup" timestamp="1588052464279">
+    <state x="2" y="1" width="1908" height="878" key="find.popup" timestamp="1588057112095">
       <screen x="0" y="0" width="1920" height="882" />
     </state>
-    <state x="2" y="1" width="1908" height="878" key="find.popup/0.0.1920.882@0.0.1920.882" timestamp="1588052464279" />
+    <state x="2" y="1" width="1908" height="878" key="find.popup/0.0.1920.882@0.0.1920.882" timestamp="1588057112095" />
     <state x="732" y="169" key="refactoring.ChangeSignatureDialog" timestamp="1587872020169">
       <screen x="0" y="0" width="1920" height="882" />
     </state>

@@ -1,4 +1,4 @@
-import {isIterable, isIterator} from '../helpers/helpers'
+import {equals, isIterable, isIterator} from '../helpers/helpers'
 import {getObjectUniqueId} from '../helpers/object-unique-id'
 
 export interface IDeepCloneEqualOptions {
@@ -191,8 +191,7 @@ export class DeepCloneEqual {
 
 		const equal = (o1: any, o2: any): boolean => {
 			if (isPrimitive(o1) || isPrimitive(o2)) {
-				if (o1 === o2
-					|| Number.isNaN(o1) && Number.isNaN(o2)
+				if (equals(o1, o2)
 					|| (!options || !options.strictEqualFunctions)
 						&& typeof o1 === 'function' && typeof o2 === 'function'
 						&& o1.toString() === o2.toString()
@@ -292,9 +291,7 @@ export class DeepCloneEqual {
 			const valueOf1 = o1.valueOf()
 			const valueOf2 = o2.valueOf()
 			if (valueOf1 !== o1 || valueOf2 !== o2) {
-				if (valueOf1 === valueOf2
-					|| Number.isNaN(valueOf1) && Number.isNaN(valueOf2)
-				) {
+				if (equals(valueOf1, valueOf2)) {
 					return true
 				} else {
 					return false

@@ -1,4 +1,4 @@
-import {isIterator} from '../helpers/helpers'
+import {equals, isIterator} from '../helpers/helpers'
 import {TCallStateAny} from '../rx/depend/core/CallState'
 import {getCurrentState, setCurrentState} from '../rx/depend/core/current-state'
 
@@ -215,7 +215,13 @@ function _resolveValue<T>(
 			)
 		}
 
+		let iterations = 0
 		while (true) {
+			iterations++
+			if (iterations > 1000) {
+				throw new Error(`_resolveAsync infinity loop`)
+			}
+
 			{
 				const result = resolveThenable(
 					value as ThenableOrIteratorOrValueNested<T>,
@@ -251,7 +257,7 @@ function _resolveValue<T>(
 
 			if (value != null && customResolveValue != null) {
 				const newValue = customResolveValue(value as T)
-				if (newValue !== value) {
+				if (!equals(newValue, value)) {
 					value = newValue
 					continue
 				}

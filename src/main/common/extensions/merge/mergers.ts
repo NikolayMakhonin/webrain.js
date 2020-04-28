@@ -1,5 +1,5 @@
 /* tslint:disable:no-nested-switch ban-types use-primitive-type */
-import {isIterable, TClass, typeToDebugString} from '../../helpers/helpers'
+import {equals, isIterable, TClass, typeToDebugString} from '../../helpers/helpers'
 import {canHaveUniqueId, getObjectUniqueId} from '../../helpers/object-unique-id'
 import {webrainOptions} from '../../helpers/webrainOptions'
 import {fillMap, fillSet} from '../../lists/helpers/set'
@@ -563,8 +563,8 @@ export class MergerVisitor implements IMergerVisitor {
 		refsNewer?: any[],
 	): boolean {
 		let preferCloneBase = null
-		if (base === newer) {
-			if (base === older) {
+		if (equals(base, newer)) {
+			if (equals(base, older)) {
 				return false
 			}
 			preferCloneBase = preferCloneNewer
@@ -580,7 +580,7 @@ export class MergerVisitor implements IMergerVisitor {
 			return false
 		}
 
-		if (base === older) {
+		if (equals(base, older)) {
 			preferCloneBase = preferCloneOlder = mergePreferClone(preferCloneBase, preferCloneOlder)
 		}
 		if (older === newer) {
@@ -1003,7 +1003,7 @@ registerMergerPrimitive(Error)
 // region Array
 
 function deepEqualsPrimitive(o1, o2) {
-	if (o1 === o2) {
+	if (equals(o1, o2)) {
 		return true
 	}
 

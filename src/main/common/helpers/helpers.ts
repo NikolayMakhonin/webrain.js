@@ -1,3 +1,9 @@
+export function equals(v1, v2) {
+	return v1 === v2
+		// is NaN
+		|| v1 !== v1 && v2 !== v2
+}
+
 export function isIterable(value: any): boolean {
 	return value != null
 		&& typeof value === 'object'
@@ -90,7 +96,7 @@ export function hideObjectProperty(object: object, propertyName: string) {
 }
 
 export function equalsObjects(o1, o2) {
-	if (o1 === o2) {
+	if (equals(o1, o2)) {
 		return true
 	}
 

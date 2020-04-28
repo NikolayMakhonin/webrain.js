@@ -5,6 +5,7 @@ import {deepSubscribeRule} from '../../deep-subscribe/deep-subscribe'
 import {PropertiesPath} from '../../deep-subscribe/helpers/PropertiesPath'
 import {RuleBuilder} from '../../deep-subscribe/RuleBuilder'
 import {ValueKeys} from './contracts'
+import {equals} from "../../../helpers/helpers";
 
 export type IDependencyAction<TTarget, TValue = any>
 	= (
@@ -102,7 +103,9 @@ export function subscribeDependencies<TSubscribeObject, TActionTarget>(
 						}
 
 						const stateValue = state[id].value
-						if (webrainOptions.equalsFunc(stateValue, newValue)) {
+						if (equals(stateValue, newValue)
+							|| webrainOptions.equalsFunc && webrainOptions.equalsFunc(stateValue, newValue)
+						) {
 							return
 						}
 						// action(actionTarget, stateValue, parent, key, keyType, propertiesPath, rule)

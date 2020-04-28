@@ -15,7 +15,7 @@ export interface IBinaryTreeNode<TItem> {
 export type TCompareFunc<T> = (o1: T, o2: T) => -1|0|1
 
 function compareDefault(o1, o2) {
-	if (o1 === o2) {
+	if (o1 === o2 || o1 !== o1 && o2 !== o2) {
 		return 0
 	}
 	return o1 > o2 ? 1 : -1

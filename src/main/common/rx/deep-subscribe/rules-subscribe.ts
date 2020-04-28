@@ -1,5 +1,5 @@
 /* tslint:disable:no-identical-functions */
-import {checkIsFuncOrNull, isIterable} from '../../helpers/helpers'
+import {checkIsFuncOrNull, equals, isIterable} from '../../helpers/helpers'
 import {VALUE_PROPERTY_DEFAULT} from '../../helpers/value-property'
 import {IListChanged, ListChangedType} from '../../lists/contracts/IListChanged'
 import {IMapChanged, MapChangedType} from '../../lists/contracts/IMapChanged'
@@ -118,7 +118,7 @@ function subscribeObjectValue<TValue>(
 	if (propertyChanged) {
 		unsubscribe = checkIsFuncOrNull(propertyChanged
 			.subscribe(({name, oldValue, newValue}) => {
-				if (!subscribed || !unsubscribe && oldValue === newValue) {
+				if (!subscribed || !unsubscribe && equals(oldValue, newValue)) {
 					return
 				}
 
@@ -210,7 +210,7 @@ function subscribeObject<TValue>(
 	if (propertyChanged) {
 		unsubscribe = checkIsFuncOrNull(propertyChanged
 			.subscribe(({name, oldValue, newValue}) => {
-				if (!subscribed || !unsubscribe && oldValue === newValue) {
+				if (!subscribed || !unsubscribe && equals(oldValue, newValue)) {
 					return
 				}
 
@@ -505,7 +505,7 @@ function subscribeMap<K, V>(
 	if (mapChanged) {
 		unsubscribe = checkIsFuncOrNull(mapChanged
 			.subscribe(({type, key, oldValue, newValue}) => {
-				if (!subscribed || !unsubscribe && oldValue === newValue) {
+				if (!subscribed || !unsubscribe && equals(oldValue, newValue)) {
 					return
 				}
 

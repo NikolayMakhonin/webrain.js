@@ -8,7 +8,7 @@ import {
 	ISerializeValue,
 } from '../../../extensions/serialization/contracts'
 import {registerSerializable} from '../../../extensions/serialization/serializers'
-import {isIterable} from '../../../helpers/helpers'
+import {equals, isIterable} from '../../../helpers/helpers'
 import {fillMap} from '../../../lists/helpers/set'
 import {ALWAYS_CHANGE_VALUE, invalidateCallState} from '../core/CallState'
 import {depend, getCallState} from '../core/facade'
@@ -113,7 +113,7 @@ export class DependMap<K, V>
 		if (_map.size !== oldSize) {
 			invalidateCallState(getCallState(this.dependAnyKey).call(this))
 			invalidateCallState(getCallState(this.dependKey).call(this, key))
-		} else if (oldValue !== value) {
+		} else if (!equals(oldValue, value)) {
 			invalidateCallState(getCallState(this.dependAnyValue).call(this))
 			invalidateCallState(getCallState(this.dependValue).call(this, key))
 		}

@@ -8,7 +8,7 @@ import {
 	ThenableOrValue,
 } from '../../../async/async'
 import {resolveAsync, ThenableSync} from '../../../async/ThenableSync'
-import {isIterator, nextHash} from '../../../helpers/helpers'
+import {equals, isIterator, nextHash} from '../../../helpers/helpers'
 import {webrainOptions} from '../../../helpers/webrainOptions'
 import {ObjectPool} from '../../../lists/ObjectPool'
 import {PairingHeap, PairingNode} from '../../../lists/PairingHeap'
@@ -1076,7 +1076,7 @@ export class CallState<
 				(prevStatus & (Flag_HasError | Flag_HasValue)) !== Flag_HasValue
 					|| value === ALWAYS_CHANGE_VALUE
 					|| !(
-						prevValue === value || webrainOptions.equalsFunc && webrainOptions.equalsFunc(this.value, value)
+						equals(prevValue, value) || webrainOptions.equalsFunc && webrainOptions.equalsFunc(prevValue, value)
 					)
 			)
 		) {
@@ -1108,8 +1108,15 @@ export class CallState<
 			this.status = Update_Calculated_Error | (prevStatus & Flag_HasValue)
 		}
 
-		if ((prevStatus & Flag_HasError) === 0
-			|| this.error !== error
+		const prevError = this.error
+		if (value !== NO_CHANGE_VALUE
+			&& (
+				(prevStatus & Flag_HasError) === 0
+				|| error === ALWAYS_CHANGE_VALUE
+				|| !(
+					equals(prevError, error) || webrainOptions.equalsFunc && webrainOptions.equalsFunc(prevError, error)
+				)
+			)
 		) {
 			this.error = error
 			this._lastAccessTime = Date.now()

@@ -2,6 +2,7 @@ import {webrainOptions} from '../../helpers/webrainOptions'
 import {getCallState, invalidateCallState} from '../../rx/depend/core/CallState'
 import '../extensions/autoConnect'
 import {PropertyChangedObject} from './PropertyChangedObject'
+import {equals} from "../../helpers/helpers";
 
 export interface ISetOptions<TObject, TValue> {
 	equalsFunc?: (this: TObject, oldValue: TValue, newValue: TValue) => boolean,
@@ -48,7 +49,7 @@ export function _setExt(
 	const oldValue = getValue ? getValue.call(this) : this.__fields[name]
 
 	const equalsFunc = options.equalsFunc || webrainOptions.equalsFunc
-	if (oldValue === newValue || equalsFunc && equalsFunc.call(this, oldValue, newValue)) {
+	if (equals(oldValue, newValue) || equalsFunc && equalsFunc.call(this, oldValue, newValue)) {
 		return false
 	}
 
@@ -62,7 +63,8 @@ export function _setExt(
 		newValue = convertFunc.call(this, oldValue, newValue)
 	}
 
-	// if (oldValue === newValue) {
+	// TODO uncomment this and run tests
+	// if (equals(oldValue, newValue)) {
 	// 	return false
 	// }
 
@@ -108,7 +110,9 @@ export function _set(
 ) {
 	const oldValue = getValue.call(this)
 
-	if (oldValue === newValue || webrainOptions.equalsFunc && webrainOptions.equalsFunc.call(this, oldValue, newValue)) {
+	if (equals(oldValue, newValue)
+		|| webrainOptions.equalsFunc && webrainOptions.equalsFunc.call(this, oldValue, newValue)
+	) {
 		return false
 	}
 

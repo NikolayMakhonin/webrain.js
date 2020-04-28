@@ -1,5 +1,5 @@
 /* tslint:disable:no-array-delete*/
-import {checkIsFuncOrNull} from '../../helpers/helpers'
+import {checkIsFuncOrNull, equals} from '../../helpers/helpers'
 import {getObjectUniqueId} from '../../helpers/object-unique-id'
 import {binarySearch} from '../../lists/helpers/array'
 import {Debugger} from '../Debugger'
@@ -23,10 +23,6 @@ const undefinedSubscribedValue: ISubscribedValue = {
 	keyType: null,
 }
 
-function valuesEqual(v1, v2) {
-	return v1 === v2 || Number.isNaN(v1) && Number.isNaN(v2)
-}
-
 function subscribedValueEquals(o1: ISubscribedValue, o2: ISubscribedValue): boolean {
 	if (o1 === o2) {
 		return true
@@ -34,7 +30,7 @@ function subscribedValueEquals(o1: ISubscribedValue, o2: ISubscribedValue): bool
 	if (!o1 || !o2) {
 		return false
 	}
-	return valuesEqual(o1.value, o2.value)
+	return equals(o1.value, o2.value)
 		&& o1.parent === o2.parent
 		&& o1.keyType === o2.keyType
 		&& o1.key === o2.key
