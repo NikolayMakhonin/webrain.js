@@ -552,6 +552,7 @@ export class CallState<
 
 	// region calculable
 
+	// TODO hasDependent ... 
 	public get hasSubscribers(): boolean {
 		return this._changedSubject != null && this._changedSubject.hasSubscribers
 	}

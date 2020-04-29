@@ -114,6 +114,7 @@ import {
 import {
 	IConnectFieldOptions as _IConnectFieldOptions,
 } from './rx/object/properties/DependConnectorBuilder'
+import {TSubscribeFunc as _TSubscribeFunc} from './rx/object/properties/path/dependDeepSubscriber'
 
 export type ISubscriber<T> = _ISubscriber<T>
 export type IUnsubscribe = _IUnsubscribe
@@ -147,6 +148,7 @@ export type IWritableFieldOptions<TObject, TValue> = _IWritableFieldOptions<TObj
 export type IReadableFieldOptions<TObject, TValue> = _IReadableFieldOptions<TObject, TValue>
 export type IUpdatableFieldOptions<TObject, TValue> = _IUpdatableFieldOptions<TObject, TValue>
 export type IConnectFieldOptions<TObject, TValue> = _IConnectFieldOptions<TObject, TValue>
+export type TSubscribeFunc<TObject, TValue> = _TSubscribeFunc<TObject, TValue>
 
 // endregion
 
