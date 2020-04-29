@@ -32,9 +32,9 @@
   <component name="ChangeListManager">
     <list default="true" id="69b2ee16-521b-4efd-b473-8e19e3df4d09" name="Default Changelist" comment="">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/common/async/async.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/common/async/async.ts" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/common/rx/depend/core/CallState.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/common/rx/depend/core/CallState.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/common/time/helpers.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/common/time/helpers.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/common/rx/depend/core/contracts.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/common/rx/depend/core/contracts.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/common/rx/object/properties/DependConnectorBuilder.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/common/rx/object/properties/DependConnectorBuilder.ts" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/test/tests/common/main/rx/depend/dependent-func/stress.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/test/tests/common/main/rx/depend/dependent-func/stress.ts" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
@@ -492,14 +492,7 @@
       <workItem from="1587720746493" duration="5289000" />
       <workItem from="1587787076321" duration="29386000" />
       <workItem from="1587830820530" duration="22175000" />
-      <workItem from="1587885471895" duration="71866000" />
-    </task>
-    <task id="LOCAL-00417" summary="depend: stress test, testing and debugging. Simple sync tests is OK.">
-      <created>1587308210080</created>
-      <option name="number" value="00417" />
-      <option name="presentableId" value="LOCAL-00417" />
-      <option name="project" value="LOCAL" />
-      <updated>1587308210080</updated>
+      <workItem from="1587885471895" duration="73982000" />
     </task>
     <task id="LOCAL-00418" summary="depend: stress test, testing and debugging...">
       <created>1587308769413</created>
@@ -837,7 +830,14 @@
       <option name="project" value="LOCAL" />
       <updated>1588165037695</updated>
     </task>
-    <option name="localTasksCounter" value="466" />
+    <task id="LOCAL-00466" summary="Small optimization. Tests OK.">
+      <created>1588170028001</created>
+      <option name="number" value="00466" />
+      <option name="presentableId" value="LOCAL-00466" />
+      <option name="project" value="LOCAL" />
+      <updated>1588170028001</updated>
+    </task>
+    <option name="localTasksCounter" value="467" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -898,7 +898,6 @@
   <component name="VcsManagerConfiguration">
     <option name="CHECK_CODE_SMELLS_BEFORE_PROJECT_COMMIT" value="false" />
     <option name="CHECK_NEW_TODO" value="false" />
-    <MESSAGE value="depend: stress test, testing and debugging." />
     <MESSAGE value="depend: stress test, testing and debugging. Sync + Lazy tests is OK." />
     <MESSAGE value="depend: stress test, testing and debugging. Async + Deferred + Sync + Lazy tests is OK. Base Tests is OK. Perf mem allocation tests is Failed." />
     <MESSAGE value="depend: stress test is completed and tested. Combined stress tests is OK." />
@@ -923,7 +922,8 @@
     <MESSAGE value="Refactoring completed. Tests OK." />
     <MESSAGE value="depend: stress test all, 140 tests (1 hour) is OK." />
     <MESSAGE value="Small changes." />
-    <option name="LAST_COMMIT_MESSAGE" value="Small changes." />
+    <MESSAGE value="Small optimization. Tests OK." />
+    <option name="LAST_COMMIT_MESSAGE" value="Small optimization. Tests OK." />
   </component>
   <component name="WindowStateProjectService">
     <state x="38" y="39" width="1718" height="786" key="#com.intellij.execution.impl.EditConfigurationsDialog" timestamp="1588047767217">
@@ -946,38 +946,38 @@
       <screen x="0" y="0" width="1920" height="882" />
     </state>
     <state x="651" y="254" key="ANALYSIS_DLG_com.intellij.analysis.BaseAnalysisAction$1/0.0.1920.882@0.0.1920.882" timestamp="1588059003240" />
-    <state x="0" y="0" width="1918" height="882" key="CommitChangelistDialog2" timestamp="1588165036807">
+    <state x="0" y="0" width="1918" height="882" key="CommitChangelistDialog2" timestamp="1588170027320">
       <screen x="0" y="0" width="1920" height="882" />
     </state>
-    <state x="0" y="0" width="1918" height="882" key="CommitChangelistDialog2/0.0.1920.882@0.0.1920.882" timestamp="1588165036807" />
+    <state x="0" y="0" width="1918" height="882" key="CommitChangelistDialog2/0.0.1920.882@0.0.1920.882" timestamp="1588170027320" />
     <state width="884" height="550" key="DebuggerActiveHint" timestamp="1587883472096">
       <screen x="0" y="0" width="1920" height="882" />
     </state>
     <state width="884" height="550" key="DebuggerActiveHint/0.0.1920.882@0.0.1920.882" timestamp="1587883472096" />
-    <state x="0" y="4" width="1920" height="875" key="DiffContextDialog" timestamp="1588165015316">
+    <state x="0" y="4" width="1920" height="875" key="DiffContextDialog" timestamp="1588170012881">
       <screen x="0" y="0" width="1920" height="882" />
     </state>
-    <state x="0" y="4" width="1920" height="875" key="DiffContextDialog/0.0.1920.882@0.0.1920.882" timestamp="1588165015316" />
+    <state x="0" y="4" width="1920" height="875" key="DiffContextDialog/0.0.1920.882@0.0.1920.882" timestamp="1588170012881" />
     <state x="1059" y="106" key="FileChooserDialogImpl" timestamp="1587984144460">
       <screen x="0" y="0" width="1920" height="882" />
     </state>
     <state x="1059" y="106" key="FileChooserDialogImpl/0.0.1920.882@0.0.1920.882" timestamp="1587984144460" />
-    <state width="528" height="288" key="GridCell.Tab.0.bottom" timestamp="1588168662478">
+    <state width="528" height="257" key="GridCell.Tab.0.bottom" timestamp="1588179643481">
       <screen x="0" y="0" width="1920" height="882" />
     </state>
-    <state width="528" height="288" key="GridCell.Tab.0.bottom/0.0.1920.882@0.0.1920.882" timestamp="1588168662478" />
-    <state width="528" height="288" key="GridCell.Tab.0.center" timestamp="1588168662473">
+    <state width="528" height="257" key="GridCell.Tab.0.bottom/0.0.1920.882@0.0.1920.882" timestamp="1588179643481" />
+    <state width="528" height="257" key="GridCell.Tab.0.center" timestamp="1588179643481">
       <screen x="0" y="0" width="1920" height="882" />
     </state>
-    <state width="528" height="288" key="GridCell.Tab.0.center/0.0.1920.882@0.0.1920.882" timestamp="1588168662473" />
-    <state width="528" height="288" key="GridCell.Tab.0.left" timestamp="1588168662473">
+    <state width="528" height="257" key="GridCell.Tab.0.center/0.0.1920.882@0.0.1920.882" timestamp="1588179643481" />
+    <state width="528" height="257" key="GridCell.Tab.0.left" timestamp="1588179643479">
       <screen x="0" y="0" width="1920" height="882" />
     </state>
-    <state width="528" height="288" key="GridCell.Tab.0.left/0.0.1920.882@0.0.1920.882" timestamp="1588168662473" />
-    <state width="528" height="288" key="GridCell.Tab.0.right" timestamp="1588168662473">
+    <state width="528" height="257" key="GridCell.Tab.0.left/0.0.1920.882@0.0.1920.882" timestamp="1588179643479" />
+    <state width="528" height="257" key="GridCell.Tab.0.right" timestamp="1588179643481">
       <screen x="0" y="0" width="1920" height="882" />
     </state>
-    <state width="528" height="288" key="GridCell.Tab.0.right/0.0.1920.882@0.0.1920.882" timestamp="1588168662473" />
+    <state width="528" height="257" key="GridCell.Tab.0.right/0.0.1920.882@0.0.1920.882" timestamp="1588179643481" />
     <state width="871" height="242" key="GridCell.Tab.1.bottom" timestamp="1588057472838">
       <screen x="0" y="0" width="1920" height="882" />
     </state>
@@ -1042,10 +1042,10 @@
       <screen x="0" y="0" width="1920" height="882" />
     </state>
     <state x="121" y="111" key="com.intellij.xdebugger.impl.breakpoints.ui.BreakpointsDialogFactory$2/0.0.1920.882@0.0.1920.882" timestamp="1587884348340" />
-    <state x="2" y="1" width="1908" height="878" key="find.popup" timestamp="1588168635971">
+    <state x="2" y="1" width="1908" height="878" key="find.popup" timestamp="1588179442153">
       <screen x="0" y="0" width="1920" height="882" />
     </state>
-    <state x="2" y="1" width="1908" height="878" key="find.popup/0.0.1920.882@0.0.1920.882" timestamp="1588168635971" />
+    <state x="2" y="1" width="1908" height="878" key="find.popup/0.0.1920.882@0.0.1920.882" timestamp="1588179442153" />
     <state x="732" y="169" key="refactoring.ChangeSignatureDialog" timestamp="1587872020169">
       <screen x="0" y="0" width="1920" height="882" />
     </state>

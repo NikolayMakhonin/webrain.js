@@ -72,6 +72,7 @@ export interface ICallState<
 	readonly valueAsync: IThenable<TInnerValue<TResultInner>>
 	readonly value: TInnerValue<TResultInner>
 	readonly error: any
+	readonly valueOrThrow: TInnerValue<TResultInner>
 
 	readonly data: {
 		[key: string]: any;

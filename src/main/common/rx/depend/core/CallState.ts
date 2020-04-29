@@ -514,6 +514,12 @@ export class CallState<
 	public valueAsync: IThenable<TInnerValue<TResultInner>> = null
 	public value: TInnerValue<TResultInner> = void 0
 	public error: any = void 0
+	public get valueOrThrow(): TInnerValue<TResultInner> {
+		if (isHasError(this.status)) {
+			throw this.error
+		}
+		return this.value
+	}
 
 	private _data: {
 		[key: string]: any;
@@ -607,10 +613,9 @@ export class CallState<
 
 		if (isCalculated(this.status)) {
 			this._lastAccessTime = fastNow()
-			if (isHasError(this.status)) {
-				throw this.error
-			}
-			return this.value as any
+			return dontThrowOnError
+				? this.value as any
+				: this.valueOrThrow as any
 		} else if (getCalculate(this.status) !== 0) {
 			if ((this.status & Flag_Async) !== 0) {
 				let parentCallState = currentState
@@ -622,7 +627,9 @@ export class CallState<
 				}
 
 				if (isLazy) {
-					return this.value as any
+					return dontThrowOnError
+						? this.value as any
+						: this.valueOrThrow as any
 				}
 
 				return this.valueAsync as any
@@ -652,13 +659,9 @@ export class CallState<
 		if (shouldRecalc === false) {
 			setCurrentState(this._parentCallState)
 			this._parentCallState = null
-			if (isHasError(this.status)) {
-				if (dontThrowOnError !== true) {
-					throw this.error
-				}
-				return
-			}
-			return this.value as any
+			return dontThrowOnError
+				? this.value as any
+				: this.valueOrThrow as any
 		}
 
 		let value: any
@@ -670,13 +673,9 @@ export class CallState<
 					if ((this.status & Flag_Async) !== 0) {
 						this._parentCallState = null
 					}
-					if (isHasError(this.status)) {
-						if (dontThrowOnError !== true) {
-							throw this.error
-						}
-						return
-					}
-					return this.value
+					return dontThrowOnError
+						? this.value as any
+						: this.valueOrThrow as any
 				}
 				return this._calc(dontThrowOnError)
 			})
@@ -693,7 +692,9 @@ export class CallState<
 		}
 
 		if (isLazy && isThenable(value)) {
-			return this.value as any
+			return dontThrowOnError
+				? this.value as any
+				: this.valueOrThrow as any
 		}
 
 		return value
