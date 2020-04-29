@@ -100,13 +100,21 @@ export function dependDeepSubscriber<TObject, TValue>({
 		_object: TObject,
 		_subscriber?: ISubscriber<ICallState<TObject, [IRule], TValue>>,
 	) {
+		if (!_subscriber) {
+			_subscriber = subscriber
+		}
 		return subscribeCallState(
 			getOrCreateCallState(dependForEachRule).call(
 				_object || object,
 				rule,
 				emitLastValue,
 			) as ICallState<TObject, [IRule], TValue>,
-			_subscriber || subscriber,
+			state => {
+				if (state.statusShort === CallStatusShort.CalculatedError) {
+					console.error(state.error)
+				}
+				_subscriber(state)
+			},
 		)
 	}
 }

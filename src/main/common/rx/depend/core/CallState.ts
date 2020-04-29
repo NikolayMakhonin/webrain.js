@@ -307,11 +307,11 @@ export function toStatusShort(status: CallStatus): CallStatusShort {
 		return CallStatusShort.Invalidated
 	}
 	if ((status & Flag_Calculated) !== 0) {
-		if ((status & Flag_HasValue) !== 0) {
-			return CallStatusShort.CalculatedValue
-		}
 		if ((status & Flag_HasError) !== 0) {
 			return CallStatusShort.CalculatedError
+		}
+		if ((status & Flag_HasValue) !== 0) {
+			return CallStatusShort.CalculatedValue
 		}
 	}
 
