@@ -11,3 +11,13 @@ export const performanceNow = typeof performance !== 'undefined'
 export function delay(timeMilliseconds): Thenable<any> {
 	return new Promise(resolve => setTimeout(resolve, timeMilliseconds))
 }
+
+let _fastNow = Date.now()
+setInterval(() => {
+	_fastNow = Date.now()
+}, 1000)
+
+/** Precision - 1 second */
+export function fastNow() {
+	return _fastNow
+}

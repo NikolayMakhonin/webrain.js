@@ -12,6 +12,7 @@ import {isIterator, nextHash} from '../../../helpers/helpers'
 import {webrainEquals, webrainOptions} from '../../../helpers/webrainOptions'
 import {ObjectPool} from '../../../lists/ObjectPool'
 import {PairingHeap, PairingNode} from '../../../lists/PairingHeap'
+import {fastNow} from '../../../time/helpers'
 import {DeferredCalc, IDeferredCalcOptions} from '../../deferred-calc/DeferredCalc'
 import {ISubscriber, IUnsubscribe} from '../../subjects/observable'
 import {ISubject, Subject} from '../../subjects/subject'
@@ -552,7 +553,7 @@ export class CallState<
 
 	// region calculable
 
-	// TODO hasDependent ... 
+	// TODO hasDependent ...
 	public get hasSubscribers(): boolean {
 		return this._changedSubject != null && this._changedSubject.hasSubscribers
 	}
@@ -605,7 +606,7 @@ export class CallState<
 		const prevStatus = this.status
 
 		if (isCalculated(this.status)) {
-			this._lastAccessTime = Date.now()
+			this._lastAccessTime = fastNow()
 			if (isHasError(this.status)) {
 				throw this.error
 			}
@@ -1081,7 +1082,7 @@ export class CallState<
 		) {
 			this.error = void 0
 			this.value = value
-			this._lastAccessTime = Date.now()
+			this._lastAccessTime = fastNow()
 			this._afterCalc(prevStatus, true)
 			this.onChanged()
 		} else {
@@ -1116,7 +1117,7 @@ export class CallState<
 			)
 		) {
 			this.error = error
-			this._lastAccessTime = Date.now()
+			this._lastAccessTime = fastNow()
 			this._afterCalc(prevStatus, true)
 			this.onChanged()
 		} else {
@@ -1792,7 +1793,7 @@ function reduceCallStatesHeapAdd(
 }
 
 export function reduceCallStates(deleteSize: number, _minCallStateLifeTime: number) {
-	const now = Date.now()
+	const now = fastNow()
 
 	callStateHashTable.forEach(state => {
 		reduceCallStatesHeapAdd(state, now, _minCallStateLifeTime)
@@ -1832,7 +1833,7 @@ function garbageCollect() {
 		const {bulkSize, minLifeTime, interval, disabled} = webrainOptions.callState.garbageCollect
 
 		if (!disabled) {
-			const time = Date.now()
+			const time = fastNow()
 			const countDeleted = reduceCallStates(
 				bulkSize,
 				minLifeTime,
@@ -1841,7 +1842,7 @@ function garbageCollect() {
 				console.log(`CallState garbage collect: ${
 					countDeleted
 				}, ${
-					(Date.now() - time) / countDeleted
+					(fastNow() - time) / countDeleted
 				} ms per item`)
 			}
 		}

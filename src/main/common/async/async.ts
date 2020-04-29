@@ -52,7 +52,9 @@ export interface IThenable<T = any> extends PromiseLike<T> {
 export type Thenable<T = any> = IThenable<T> | PromiseLike<T>
 
 export function isThenable(value: any): boolean {
-	return value != null && typeof value.then === 'function'
+	return value != null
+		&& typeof value === 'object'
+		&& typeof value.then === 'function'
 }
 
 export function isAsync(value: any): boolean {
