@@ -539,19 +539,19 @@ function _stressTest({
 			let dependencyState = parent
 			const variant = rnd.next()
 			if (variant < 0.14) {
-				if (dependencyState != null && dependencyState.data.dependencies.length === 0) {
+				if (dependencyState == null || dependencyState.data.dependencies.length === 0) {
 					dependency = null
 				} else {
 					dependency = rnd.nextArrayItem(dependencyState.data.dependencies)
 					if (variant < 0.12) {
 						dependencyState = dependency.getCallState()
-						if (dependencyState != null && dependencyState.data.dependencies.length === 0) {
+						if (dependencyState == null || dependencyState.data.dependencies.length === 0) {
 							dependency = null
 						} else {
 							dependency = rnd.nextArrayItem(dependencyState.data.dependencies)
 							if (variant < 0.08) {
 								dependencyState = dependency.getCallState()
-								if (dependencyState != null && dependencyState.data.dependencies.length === 0) {
+								if (dependencyState == null || dependencyState.data.dependencies.length === 0) {
 									dependency = null
 								} else {
 									dependency = rnd.nextArrayItem(dependencyState.data.dependencies)
@@ -804,6 +804,8 @@ function _stressTest({
 		}
 
 		await Promise.all(thenables)
+
+		await delay(50)
 	}
 
 	async function test() {

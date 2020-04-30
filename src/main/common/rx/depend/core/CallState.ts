@@ -1840,11 +1840,9 @@ function garbageCollect() {
 				minLifeTime,
 			)
 			if (countDeleted > 0) {
-				console.log(`CallState garbage collect: ${
-					countDeleted
-				}, ${
+				console.log(`CallState GC - deleted: ${countDeleted}, alive: ${callStatesCount}, ${
 					(fastNow() - time) / countDeleted
-				} ms per item`)
+				} ms/item`)
 			}
 		}
 
