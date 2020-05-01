@@ -10,6 +10,7 @@ export interface IDeferredCalcOptions {
 }
 
 export class DeferredCalc {
+	private readonly _shouldInvalidate: () => void
 	private readonly _canBeCalcCallback: () => void
 	private readonly _calcFunc: () => void
 	private readonly _calcCompletedCallback: (...doneArgs: any[]) => void
@@ -26,13 +27,22 @@ export class DeferredCalc {
 	private _timeCalcStart: number = 0
 	private _timeCalcEnd: number = 0
 
-	constructor(
+	constructor({
+		shouldInvalidate,
+		canBeCalcCallback,
+		calcFunc,
+		calcCompletedCallback,
+		options,
+		dontImmediateInvalidate,
+	}: {
+		shouldInvalidate?: () => void,
 		canBeCalcCallback: () => void,
 		calcFunc: () => void,
 		calcCompletedCallback: (...doneArgs: any[]) => void,
 		options: IDeferredCalcOptions,
-		dontInvalidate?: boolean,
-	) {
+		dontImmediateInvalidate?: boolean,
+	}) {
+		this._shouldInvalidate = shouldInvalidate
 		this._canBeCalcCallback = canBeCalcCallback
 		this._calcFunc = calcFunc
 		this._calcCompletedCallback = calcCompletedCallback
@@ -40,7 +50,7 @@ export class DeferredCalc {
 		this._timing = this._options.timing || timingDefault
 		this._pulseBind = () => { this._pulse() }
 
-		if (!dontInvalidate) {
+		if (!dontImmediateInvalidate) {
 			this.invalidate()
 		}
 	}
@@ -186,14 +196,18 @@ export class DeferredCalc {
 		// region Auto invalidate
 
 		const {autoInvalidateInterval} = this._options
-		if (autoInvalidateInterval != null) {
+		if (autoInvalidateInterval && this._timeInvalidateLast === 0) {
 			const autoInvalidateTime = Math.max(
 				this._timeCalcStart + autoInvalidateInterval,
-				this._timeInvalidateLast + autoInvalidateInterval,
 				now)
 
 			if (autoInvalidateTime <= now) {
-				this._invalidate()
+				if (this._shouldInvalidate != null) {
+					this._shouldInvalidate()
+				} else {
+					this.invalidate()
+				}
+				return
 			} else if (timeNextPulse <= now || autoInvalidateTime < timeNextPulse) {
 				timeNextPulse = autoInvalidateTime
 			}

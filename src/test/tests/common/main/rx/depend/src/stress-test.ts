@@ -681,12 +681,15 @@ function _stressTest({
 		const isDeferred = !disableDeferred && rnd.nextBoolean()
 		const deferredOptions: IDeferredOptions = isDeferred
 			? {
-				delayBeforeCalc: rnd.nextBoolean()
-					? void 0
-					: (rnd.nextBoolean() ? 0 : rnd.nextInt(1, 100)),
+				delayBeforeCalc: rnd.nextBoolean(0.3)
+					? (rnd.nextBoolean() ? 0 : rnd.nextInt(1, 100))
+					: void 0,
 				minTimeBetweenCalc: rnd.nextBoolean()
-					? void 0
-					: (rnd.nextBoolean() ? 0 : rnd.nextInt(1, 100)),
+					? (rnd.nextBoolean() ? 0 : rnd.nextInt(1, 100))
+					: void 0,
+				autoInvalidateInterval: rnd.nextBoolean(0.2)
+					? (rnd.nextBoolean() ? 0 : rnd.nextInt(1, 100))
+					: void 0,
 			}
 			: null
 

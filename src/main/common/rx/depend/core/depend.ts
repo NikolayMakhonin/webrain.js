@@ -77,15 +77,15 @@ export function _initDeferredCallState<
 
 	const thenable = new SimpleThenable()
 
-	const _deferredCalc = new DeferredCalc(
-		_canBeCalcCallback,
-		_calcFunc,
-		() => {
+	const _deferredCalc = new DeferredCalc({
+		canBeCalcCallback: _canBeCalcCallback,
+		calcFunc: _calcFunc,
+		calcCompletedCallback() {
 			thenable.resolve()
 		},
 		options,
-		true,
-	)
+		dontImmediateInvalidate: true,
+	})
 	state._deferredCalc = _deferredCalc
 
 	const iteratorResult = {

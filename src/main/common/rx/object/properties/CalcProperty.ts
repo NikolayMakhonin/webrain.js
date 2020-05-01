@@ -121,11 +121,11 @@ export class CalcProperty<TValue, TInput = any>
 			this.state.name = name
 		}
 
-		this._deferredCalc = new DeferredCalc(
-			() => {
+		this._deferredCalc = new DeferredCalc({
+			canBeCalcCallback: () => {
 				this.onInvalidated()
 			},
-			() => {
+			calcFunc: () => {
 				const prevValue = this.state.value
 
 				const timeStart = now()
@@ -190,7 +190,7 @@ export class CalcProperty<TValue, TInput = any>
 					this.setDeferredValue(deferredValue)
 				}
 			},
-			(isChangedForce, oldValue, newValue) => {
+			calcCompletedCallback: (isChangedForce, oldValue, newValue) => {
 				if (isChangedForce || !equals(oldValue, newValue)) {
 					if (!isChangedForce && isAsync(this._deferredValue)) {
 						this._deferredValue = newValue
@@ -200,8 +200,8 @@ export class CalcProperty<TValue, TInput = any>
 					this.onValueChanged(oldValue, newValue, isChangedForce)
 				}
 			},
-			calcOptions,
-		)
+			options: calcOptions,
+		})
 	}
 
 	private setDeferredValue(newValue, force?: boolean) {
