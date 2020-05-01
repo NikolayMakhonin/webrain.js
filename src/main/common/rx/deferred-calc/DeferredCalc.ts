@@ -36,10 +36,10 @@ export class DeferredCalc {
 		dontImmediateInvalidate,
 	}: {
 		shouldInvalidate?: () => void,
-		canBeCalcCallback: () => void,
-		calcFunc: () => void,
-		calcCompletedCallback: (...doneArgs: any[]) => void,
-		options: IDeferredCalcOptions,
+		canBeCalcCallback?: () => void,
+		calcFunc?: () => void,
+		calcCompletedCallback?: (...doneArgs: any[]) => void,
+		options?: IDeferredCalcOptions,
 		dontImmediateInvalidate?: boolean,
 	}) {
 		this._shouldInvalidate = shouldInvalidate
@@ -145,7 +145,11 @@ export class DeferredCalc {
 		this._timeCalcEnd = 0
 		this._pulse()
 
-		this._calcFunc()
+		if (this._calcFunc != null) {
+			this._calcFunc()
+		} else {
+			this.done()
+		}
 	}
 
 	public done(...args: any[])
@@ -159,7 +163,11 @@ export class DeferredCalc {
 
 	private _canBeCalc() {
 		this._canBeCalcEmitted = true
-		this._canBeCalcCallback()
+		if (this._canBeCalcCallback != null) {
+			this._canBeCalcCallback()
+		} else {
+			this.calc()
+		}
 	}
 
 	private _getNextCalcTime() {

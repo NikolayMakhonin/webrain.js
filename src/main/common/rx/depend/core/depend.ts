@@ -7,14 +7,6 @@ import {InternalError} from './helpers'
 
 // region makeDeferredFunc
 
-function _canBeCalcCallback() {
-	this.calc()
-}
-
-function _calcFunc() {
-	this.done()
-}
-
 class SimpleThenable {
 	private _subscribers: Array<() => void> = null
 	private _resolved: boolean = false
@@ -35,7 +27,7 @@ class SimpleThenable {
 	public resolve() {
 		if (this._resolved) {
 			// throw new InternalError('Multiple call resolve()')
-			console.warn('Multiple call resolve()')
+			console.debug('Multiple call resolve()')
 			return
 		}
 		this._resolved = true
@@ -78,8 +70,6 @@ export function _initDeferredCallState<
 	const thenable = new SimpleThenable()
 
 	const _deferredCalc = new DeferredCalc({
-		canBeCalcCallback: _canBeCalcCallback,
-		calcFunc: _calcFunc,
 		calcCompletedCallback() {
 			thenable.resolve()
 		},

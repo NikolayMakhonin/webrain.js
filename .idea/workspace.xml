@@ -492,14 +492,7 @@
       <workItem from="1587830820530" duration="22175000" />
       <workItem from="1587885471895" duration="84763000" />
       <workItem from="1588248569392" duration="29000" />
-      <workItem from="1588305192970" duration="5027000" />
-    </task>
-    <task id="LOCAL-00423" summary="depend: stress test, testing and debugging. Async + Sync tests is OK.">
-      <created>1587367849739</created>
-      <option name="number" value="00423" />
-      <option name="presentableId" value="LOCAL-00423" />
-      <option name="project" value="LOCAL" />
-      <updated>1587367849739</updated>
+      <workItem from="1588305192970" duration="5419000" />
     </task>
     <task id="LOCAL-00424" summary="depend: stress test, testing and debugging. Sync tests is OK.">
       <created>1587385116773</created>
@@ -837,7 +830,14 @@
       <option name="project" value="LOCAL" />
       <updated>1588309895462</updated>
     </task>
-    <option name="localTasksCounter" value="472" />
+    <task id="LOCAL-00472" summary="DeferredCalc refactoring... Tests OK.">
+      <created>1588310288383</created>
+      <option name="number" value="00472" />
+      <option name="presentableId" value="LOCAL-00472" />
+      <option name="project" value="LOCAL" />
+      <updated>1588310288383</updated>
+    </task>
+    <option name="localTasksCounter" value="473" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -946,10 +946,10 @@
       <screen x="0" y="0" width="1920" height="882" />
     </state>
     <state x="651" y="254" key="ANALYSIS_DLG_com.intellij.analysis.BaseAnalysisAction$1/0.0.1920.882@0.0.1920.882" timestamp="1588059003240" />
-    <state x="-2" y="0" width="1918" height="882" key="CommitChangelistDialog2" timestamp="1588309894449">
+    <state x="-2" y="0" width="1918" height="882" key="CommitChangelistDialog2" timestamp="1588310287802">
       <screen x="0" y="0" width="1920" height="882" />
     </state>
-    <state x="-2" y="0" width="1918" height="882" key="CommitChangelistDialog2/0.0.1920.882@0.0.1920.882" timestamp="1588309894449" />
+    <state x="-2" y="0" width="1918" height="882" key="CommitChangelistDialog2/0.0.1920.882@0.0.1920.882" timestamp="1588310287802" />
     <state width="884" height="550" key="DebuggerActiveHint" timestamp="1588307652026">
       <screen x="0" y="0" width="1920" height="882" />
     </state>
@@ -962,22 +962,22 @@
       <screen x="0" y="0" width="1920" height="882" />
     </state>
     <state x="1059" y="106" key="FileChooserDialogImpl/0.0.1920.882@0.0.1920.882" timestamp="1587984144460" />
-    <state width="719" height="500" key="GridCell.Tab.0.bottom" timestamp="1588310275580">
+    <state width="719" height="500" key="GridCell.Tab.0.bottom" timestamp="1588310605929">
       <screen x="0" y="0" width="1920" height="882" />
     </state>
-    <state width="719" height="500" key="GridCell.Tab.0.bottom/0.0.1920.882@0.0.1920.882" timestamp="1588310275580" />
-    <state width="719" height="500" key="GridCell.Tab.0.center" timestamp="1588310275580">
+    <state width="719" height="500" key="GridCell.Tab.0.bottom/0.0.1920.882@0.0.1920.882" timestamp="1588310605929" />
+    <state width="719" height="500" key="GridCell.Tab.0.center" timestamp="1588310605928">
       <screen x="0" y="0" width="1920" height="882" />
     </state>
-    <state width="719" height="500" key="GridCell.Tab.0.center/0.0.1920.882@0.0.1920.882" timestamp="1588310275580" />
-    <state width="719" height="500" key="GridCell.Tab.0.left" timestamp="1588310275580">
+    <state width="719" height="500" key="GridCell.Tab.0.center/0.0.1920.882@0.0.1920.882" timestamp="1588310605928" />
+    <state width="719" height="500" key="GridCell.Tab.0.left" timestamp="1588310605928">
       <screen x="0" y="0" width="1920" height="882" />
     </state>
-    <state width="719" height="500" key="GridCell.Tab.0.left/0.0.1920.882@0.0.1920.882" timestamp="1588310275580" />
-    <state width="719" height="500" key="GridCell.Tab.0.right" timestamp="1588310275580">
+    <state width="719" height="500" key="GridCell.Tab.0.left/0.0.1920.882@0.0.1920.882" timestamp="1588310605928" />
+    <state width="719" height="500" key="GridCell.Tab.0.right" timestamp="1588310605929">
       <screen x="0" y="0" width="1920" height="882" />
     </state>
-    <state width="719" height="500" key="GridCell.Tab.0.right/0.0.1920.882@0.0.1920.882" timestamp="1588310275580" />
+    <state width="719" height="500" key="GridCell.Tab.0.right/0.0.1920.882@0.0.1920.882" timestamp="1588310605929" />
     <state width="719" height="500" key="GridCell.Tab.1.bottom" timestamp="1588308728533">
       <screen x="0" y="0" width="1920" height="882" />
     </state>
@@ -1042,10 +1042,10 @@
       <screen x="0" y="0" width="1920" height="882" />
     </state>
     <state x="121" y="111" key="com.intellij.xdebugger.impl.breakpoints.ui.BreakpointsDialogFactory$2/0.0.1920.882@0.0.1920.882" timestamp="1587884348340" />
-    <state x="2" y="1" width="1908" height="878" key="find.popup" timestamp="1588309485564">
+    <state x="2" y="1" width="1908" height="878" key="find.popup" timestamp="1588310555140">
       <screen x="0" y="0" width="1920" height="882" />
     </state>
-    <state x="2" y="1" width="1908" height="878" key="find.popup/0.0.1920.882@0.0.1920.882" timestamp="1588309485564" />
+    <state x="2" y="1" width="1908" height="878" key="find.popup/0.0.1920.882@0.0.1920.882" timestamp="1588310555140" />
     <state x="732" y="169" key="refactoring.ChangeSignatureDialog" timestamp="1587872020169">
       <screen x="0" y="0" width="1920" height="882" />
     </state>
@@ -1060,7 +1060,7 @@
       <breakpoints>
         <line-breakpoint enabled="true" type="javascript">
           <url>file://$PROJECT_DIR$/src/main/common/rx/depend/core/depend.ts</url>
-          <line>123</line>
+          <line>113</line>
           <option name="timeStamp" value="1086" />
         </line-breakpoint>
         <line-breakpoint enabled="true" type="javascript">
