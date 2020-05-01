@@ -193,28 +193,6 @@ export class DeferredCalc {
 
 		// endregion
 
-		// region Auto invalidate
-
-		const {autoInvalidateInterval} = this._options
-		if (autoInvalidateInterval && this._timeInvalidateLast === 0) {
-			const autoInvalidateTime = Math.max(
-				this._timeCalcStart + autoInvalidateInterval,
-				now)
-
-			if (autoInvalidateTime <= now) {
-				if (this._shouldInvalidate != null) {
-					this._shouldInvalidate()
-				} else {
-					this.invalidate()
-				}
-				return
-			} else if (timeNextPulse <= now || autoInvalidateTime < timeNextPulse) {
-				timeNextPulse = autoInvalidateTime
-			}
-		}
-
-		// endregion
-
 		// region Can be calc
 
 		if (!this._canBeCalcEmitted
@@ -248,6 +226,31 @@ export class DeferredCalc {
 
 		// endregion
 
+		// region Auto invalidate
+
+		const {autoInvalidateInterval} = this._options
+		if (autoInvalidateInterval
+			&& this._timeInvalidateLast === 0
+			&& !(timeNextPulse > now && timeNextPulse !== this._timeNextPulse)
+		) {
+			const autoInvalidateTime = Math.max(
+				this._timeCalcStart + autoInvalidateInterval,
+				now)
+
+			if (autoInvalidateTime <= now) {
+				if (this._shouldInvalidate != null) {
+					this._shouldInvalidate()
+				} else {
+					this.invalidate()
+				}
+				return
+			} else if (timeNextPulse <= now || autoInvalidateTime < timeNextPulse) {
+				timeNextPulse = autoInvalidateTime
+			}
+		}
+
+		// endregion
+
 		// region Timer
 
 		if (timeNextPulse > now && timeNextPulse !== this._timeNextPulse) {
@@ -257,6 +260,7 @@ export class DeferredCalc {
 			}
 			this._timeNextPulse = timeNextPulse
 			this._timerId = _timing.setTimeout(this._pulseBind, timeNextPulse - now + 1) // ( + 1) is  fix hung
+			return
 		}
 
 		// endregion
