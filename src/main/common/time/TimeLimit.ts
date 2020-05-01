@@ -76,7 +76,7 @@ export class TimeLimit implements ITimeLimit {
 
 		if (waitTime) {
 			waiters.push(delay(waitTime))
-			// console.log(`WAIT: ${waitTime}ms; ${new Date(new Date().getTime() + waitTime)}`)
+			// console.debug(`WAIT: ${waitTime}ms; ${new Date(new Date().getTime() + waitTime)}`)
 		}
 		// else {
 		// 	await delay(0)
@@ -106,14 +106,14 @@ export class TimeLimit implements ITimeLimit {
 			}
 		}
 
-		// console.log(countActive + '\t' + len + '\t' + queue.length)
+		// console.debug(countActive + '\t' + len + '\t' + queue.length)
 	}
 
 	public run<TResult>(
 		func?: () => ThenableOrIteratorOrValue<TResult>,
 	): ThenableOrIteratorOrValue<TResult> {
 		return this.wait(() => {
-			// console.log(countActive)
+			// console.debug(countActive)
 
 			this._countActive++
 
