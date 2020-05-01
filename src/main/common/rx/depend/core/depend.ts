@@ -26,9 +26,7 @@ class SimpleThenable {
 
 	public resolve() {
 		if (this._resolved) {
-			// throw new InternalError('Multiple call resolve()')
-			console.debug('Multiple call resolve()')
-			return
+			throw new InternalError('Multiple call resolve()')
 		}
 		this._resolved = true
 
@@ -70,6 +68,9 @@ export function _initDeferredCallState<
 	const thenable = new SimpleThenable()
 
 	const _deferredCalc = new DeferredCalc({
+		shouldInvalidate() {
+			state.invalidate()
+		},
 		calcCompletedCallback() {
 			thenable.resolve()
 		},
