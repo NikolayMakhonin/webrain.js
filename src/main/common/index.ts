@@ -23,8 +23,6 @@ export {CalcStat} from './helpers/CalcStat'
 export {VALUE_PROPERTY_DEFAULT} from './helpers/value-property'
 export {DeferredCalc} from './rx/deferred-calc/DeferredCalc'
 export {delay, performanceNow} from './time/helpers'
-export {TimeLimit} from './time/TimeLimit'
-export {TimeLimits} from './time/TimeLimits'
 export {Random} from './random/Random'
 export {ALWAYS_CHANGE_VALUE, NO_CHANGE_VALUE} from './rx/depend/core/CallState'
 export {
@@ -81,9 +79,6 @@ import {
 	IUnsubscribeOrVoid as _IUnsubscribeOrVoid,
 } from './rx/subjects/observable'
 import {ISubject as _ISubject} from './rx/subjects/subject'
-import {ITimeLimitBase as _ITimeLimitBase} from './time/TimeLimit'
-import {ITimeLimit as _ITimeLimit} from './time/TimeLimit'
-import {ITimeLimits as _ITimeLimits} from './time/TimeLimits'
 import {
 	IWritableFieldOptions as _IWritableFieldOptions,
 	IReadableFieldOptions as _IReadableFieldOptions,
