@@ -15,12 +15,10 @@ import {getTupleId, getTupleIdMap} from '../../../main/common/helpers/tuple-uniq
 import {ArraySet} from '../../../main/common/lists/ArraySet'
 import {binarySearch} from '../../../main/common/lists/helpers/array'
 import {SortedList} from '../../../main/common/lists/SortedList'
-import {deepSubscribe} from '../../../main/common/rx/deep-subscribe/deep-subscribe'
 import {ObservableClass} from '../../../main/common/rx/object/ObservableClass'
 import {ObservableObjectBuilder} from '../../../main/common/rx/object/ObservableObjectBuilder'
 import {assert} from '../../../main/common/test/Assert'
 import {describe, it, xit} from '../../../main/common/test/Mocha'
-import {createObject, TestDeepSubscribe} from '../../tests/common/main/rx/deep-subscribe/helpers/src/TestDeepSubscribe'
 
 const SetNative = Set
 require('./src/SetPolyfill')
@@ -1164,65 +1162,6 @@ describe('fundamental-operations', function() {
 			() => object.hasOwnProperty('property'),
 			() => Object.prototype.hasOwnProperty.call(child, 'property'),
 			() => child.hasOwnProperty('property'),
-		)
-
-		console.log(result)
-	})
-
-	xit('deepSubscribe', function() {
-		this.timeout(300000)
-
-		const createTester = (...propertyNames) => new TestDeepSubscribe(
-			{
-				object         : createObject().object,
-				immediate      : true,
-				performanceTest: true,
-			},
-			b => b
-				.repeat(1, 3, null, b => b
-					.any(
-						// b => b.propertyRegexp(/object|observableObject/),
-						b => b.propertyNames('object', 'observableObject'),
-						b => b.propertyNames(...propertyNames).path(o => o['#']),
-					))
-				.path(o => o['#']),
-		)
-			.subscribe([])
-			.unsubscribe([])
-
-		const testerList = createTester('list')
-		const testerSet = createTester('set')
-		const testerMap = createTester('map')
-		const testerObservableList = createTester('observableList')
-		const testerObservableSet = createTester('observableSet')
-		const testerObservableMap = createTester('observableMap')
-		const testerAll = createTester('list', 'set', 'map', 'observableList', 'observableSet', 'observableMap')
-
-		const result = calcPerformance(
-			10000,
-			() => {
-				// no operations
-			},
-			() => testerList.subscribe([]),
-			() => testerList.unsubscribe([]),
-
-			() => testerSet.subscribe([]),
-			() => testerSet.unsubscribe([]),
-
-			() => testerMap.subscribe([]),
-			() => testerMap.unsubscribe([]),
-
-			() => testerObservableList.subscribe([]),
-			() => testerObservableList.unsubscribe([]),
-
-			() => testerObservableSet.subscribe([]),
-			() => testerObservableSet.unsubscribe([]),
-
-			() => testerObservableMap.subscribe([]),
-			() => testerObservableMap.unsubscribe([]),
-
-			() => testerAll.subscribe([]),
-			() => testerAll.unsubscribe([]),
 		)
 
 		console.log(result)

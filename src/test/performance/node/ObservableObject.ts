@@ -1,7 +1,6 @@
 /* tslint:disable:no-empty no-identical-functions */
 // @ts-ignore
 import {calcPerformance} from 'rdtsc'
-import {deepSubscribe} from '../../../main/common/rx/deep-subscribe/deep-subscribe'
 import {ObservableClass} from '../../../main/common/rx/object/ObservableClass'
 import {ObservableObjectBuilder} from '../../../main/common/rx/object/ObservableObjectBuilder'
 import {assert} from '../../../main/common/test/Assert'
@@ -108,7 +107,6 @@ describe('ObservableClass', function() {
 		// })
 	}
 
-
 	it('simple', function() { // 173n | 184n
 		testPerformance(createObject())
 	})
@@ -116,17 +114,6 @@ describe('ObservableClass', function() {
 	it('propertyChanged', function() { // 721n | 682n
 		testPerformance(createObject(observableObject => {
 			observableObject.propertyChanged.subscribe(v => { })
-		}))
-	})
-
-	it('deepSubscribe', function() { // 2162n | 1890n
-		let i = 0
-		testPerformance(createObject(observableObject => {
-			deepSubscribe({
-				object: observableObject,
-				lastValue: v => typeof v === 'object' && i++ % 3 === 0 ? () => {} : null,
-				ruleBuilder: b => b.path(o => o.prop),
-			})
 		}))
 	})
 
@@ -138,27 +125,6 @@ describe('ObservableClass', function() {
 		console.log(calcMemAllocate(CalcType.Min, 10000, () => {
 			// 48 bytes for create event
 			object.prop++
-		}).toString())
-	})
-
-	it('deepSubscribe memory', function() { // 48 | 0
-		const object = createObject(observableObject => {
-			deepSubscribe({
-				object: observableObject,
-				// v => v != null && typeof v === 'object'
-				// 	? () => {}
-				// 	: null,
-				lastValue: v => null,
-				ruleBuilder: b => b.path(o => o.prop),
-			})
-		}).observableObject1
-		const value1 = {}
-		const value2 = {}
-		object.prop = 1
-		console.log(calcMemAllocate(CalcType.Min, 10000, () => {
-			// 48 bytes for create event
-			// 56 bytes for create unsubscribe function
-			object.prop = object.prop === value1 ? value2 : value1
 		}).toString())
 	})
 
