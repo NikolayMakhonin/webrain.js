@@ -1,7 +1,6 @@
 import {createFunction, missingSetter} from '../../helpers/helpers'
 import {webrainEquals} from '../../helpers/webrainOptions'
 import {depend} from '../../rx/depend/core/depend'
-import '../extensions/autoConnect'
 import {PropertyChangedEvent} from './IPropertyChanged'
 import {_set, _setExt, ISetOptions, ObservableClass} from './ObservableClass'
 

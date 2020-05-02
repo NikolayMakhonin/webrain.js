@@ -1,7 +1,6 @@
 import {equals} from '../../helpers/helpers'
 import {webrainEquals, webrainOptions} from '../../helpers/webrainOptions'
 import {getCallState, invalidateCallState} from '../../rx/depend/core/CallState'
-import '../extensions/autoConnect'
 import {PropertyChangedObject} from './PropertyChangedObject'
 
 export interface ISetOptions<TObject, TValue> {

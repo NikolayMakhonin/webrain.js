@@ -8,7 +8,6 @@ import {
 	ISerializeValue,
 } from '../../extensions/serialization/contracts'
 import {deSerializeObject, registerSerializer, serializeObject} from '../../extensions/serialization/serializers'
-import '../extensions/autoConnect'
 import {ObservableClass} from './ObservableClass'
 
 export class ObservableObject extends ObservableClass
