@@ -1,11 +1,11 @@
 import {isThenable, IThenable, ThenableOrIteratorOrValue, ThenableOrValue} from '../../../../async/async'
 import {resolveAsync, ThenableSync} from '../../../../async/ThenableSync'
 import {HasDefaultOrValue, VALUE_PROPERTY_DEFAULT} from '../../../../helpers/value-property'
-import {CalcPropertyValue} from '../CalcProperty'
 import {TGetPropertyValue} from './constracts'
 
 export function resolveValueProperty(value: any, getValue?: (value: any) => any) {
 	if (value != null && (value instanceof Object) && value.constructor !== Object && !Array.isArray(value)) {
+		// tslint:disable-next-line:no-collapsible-if
 		if (VALUE_PROPERTY_DEFAULT in value) {
 			if (getValue) {
 				const newValue = getValue(value)
@@ -14,10 +14,6 @@ export function resolveValueProperty(value: any, getValue?: (value: any) => any)
 				}
 			}
 			return value[VALUE_PROPERTY_DEFAULT]
-		}
-
-		if (value instanceof CalcPropertyValue) {
-			return value.get()
 		}
 	}
 

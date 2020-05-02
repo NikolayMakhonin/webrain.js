@@ -7,8 +7,8 @@ import {IDeferredOptions} from '../../depend/core/contracts'
 import {makeDependPropertySubscriber} from '../helpers'
 import {ObservableClass} from '../ObservableClass'
 import {ObservableObjectBuilder} from '../ObservableObjectBuilder'
-import {CalcObjectBuilder} from './CalcObjectBuilder'
 import {ValueKeys} from './contracts'
+import {DependConnectorBuilder} from './DependConnectorBuilder'
 import {observableClass} from './helpers'
 import {Path} from './path/builder'
 
@@ -36,7 +36,7 @@ export class DependCalcObjectBuilder<
 	TCalcSource = TObject,
 	TValueKeys extends string | number = ValueKeys,
 >
-	extends CalcObjectBuilder<TObject, TConnectorSource>
+	extends DependConnectorBuilder<TObject, TConnectorSource>
 {
 	public readonly calcSourcePath?: Path<TObject, TCalcSource>
 

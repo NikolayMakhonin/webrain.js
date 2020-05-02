@@ -5,9 +5,8 @@ import {depend} from '../../../rx/depend/core/depend'
 import {dependWait} from '../../../rx/depend/helpers'
 import {makeDependPropertySubscriber} from '../helpers'
 import {ObservableClass} from '../ObservableClass'
-import {IReadableFieldOptions} from '../ObservableObjectBuilder'
+import {IReadableFieldOptions, ObservableObjectBuilder} from '../ObservableObjectBuilder'
 import {Connector} from './Connector'
-import {ConnectorBuilder} from './ConnectorBuilder'
 import {ValueKeys} from './contracts'
 import {observableClass} from './helpers'
 import {INextPathGetSet, Path, PathGetSet, TNextPath} from './path/builder'
@@ -25,7 +24,7 @@ export class DependConnectorBuilder<
 	TSource = TObject,
 	TValueKeys extends string | number = ValueKeys
 >
-	extends ConnectorBuilder<TObject>
+	extends ObservableObjectBuilder<TObject>
 {
 	public readonly sourcePath?: Path<TObject, TSource>
 
