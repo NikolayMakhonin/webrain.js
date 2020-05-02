@@ -1,13 +1,8 @@
 /* tslint:disable:no-shadowed-variable no-duplicate-string no-empty */
 /* eslint-disable no-useless-escape,computed-property-spacing */
 import {VALUE_PROPERTY_DEFAULT} from '../../../../../../../../../main/common/helpers/value-property'
-import {ObjectMap} from '../../../../../../../../../main/common/lists/ObjectMap'
-import {ObjectSet} from '../../../../../../../../../main/common/lists/ObjectSet'
-import {ObservableMap} from '../../../../../../../../../main/common/lists/ObservableMap'
-import {ObservableSet} from '../../../../../../../../../main/common/lists/ObservableSet'
-import {SortedList} from '../../../../../../../../../main/common/lists/SortedList'
 import {ObservableObjectBuilder} from '../../../../../../../../../main/common/rx/object/ObservableObjectBuilder'
-import {ValueChangeType, ValueKeyType} from '../../../../../../../../../main/common/rx/object/properties/path/builder/contracts/common'
+import {ValueKeyType} from '../../../../../../../../../main/common/rx/object/properties/path/builder/contracts/common'
 import {ANY, ANY_DISPLAY, COLLECTION_PREFIX} from '../../../../../../../../../main/common/rx/object/properties/path/builder/contracts/constants'
 import {
 	IRuleSubscribe,

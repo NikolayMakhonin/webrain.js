@@ -10,7 +10,6 @@ import {
 	registerSerializable,
 	TypeMetaSerializerCollection,
 } from '../../../../../../main/common/extensions/serialization/serializers'
-import {SortedList} from '../../../../../../main/common/lists/SortedList'
 import {Assert} from '../../../../../../main/common/test/Assert'
 import {DeepCloneEqual} from '../../../../../../main/common/test/DeepCloneEqual'
 import {describe, it} from '../../../../../../main/common/test/Mocha'
@@ -330,19 +329,6 @@ describe('common > extensions > serialization > serializers', function() {
 
 		assert.notStrictEqual(result, obj3)
 		assertDeepEqualExt(result, obj3)
-	})
-
-	it('SortedList circular', function() {
-		const sortedList = new SortedList()
-		sortedList.add(sortedList)
-
-		const serialized = serializeValue(sortedList)
-		const result = deSerializeValue(serialized)
-
-		assert.notStrictEqual(result, sortedList)
-		// console.log(sortedList)
-		// console.log(result)
-		assertDeepEqualExt(result, sortedList)
 	})
 
 	it('complex object', function() {

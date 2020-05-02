@@ -30,8 +30,27 @@
     <select />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="69b2ee16-521b-4efd-b473-8e19e3df4d09" name="Default Changelist" comment="Prepare v2: deleting unnecessary lists... Tests OK.">
+    <list default="true" id="69b2ee16-521b-4efd-b473-8e19e3df4d09" name="Default Changelist" comment="">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/common/index.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/common/index.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/common/lists/ArrayMap.ts" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/common/lists/ArraySet.ts" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/common/lists/ObjectHashMap.ts" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/common/lists/ObjectMap.ts" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/common/lists/ObjectSet.ts" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/common/lists/ObservableMap.ts" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/common/lists/ObservableSet.ts" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/common/lists/SortedList.ts" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/test/performance/node/fundamental-operations.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/test/performance/node/fundamental-operations.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/test/tests/common/main/extensions/merge/ObjectMerger.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/test/tests/common/main/extensions/merge/ObjectMerger.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/test/tests/common/main/extensions/merge/src/TestMerger.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/test/tests/common/main/extensions/merge/src/TestMerger.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/test/tests/common/main/extensions/serialization/serializers.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/test/tests/common/main/extensions/serialization/serializers.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/test/tests/common/main/lists/ObservableMap.ts" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/test/tests/common/main/lists/ObservableSet.ts" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/test/tests/common/main/lists/SortedList.ts" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/test/tests/common/main/lists/src/helpers/TestList.ts" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/test/tests/common/main/lists/src/helpers/TestMap.ts" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/test/tests/common/main/lists/src/helpers/TestSet.ts" beforeDir="false" />
       <change beforePath="$PROJECT_DIR$/src/test/tests/common/main/rx/object/properties/path/builder/RuleBuilder.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/test/tests/common/main/rx/object/properties/path/builder/RuleBuilder.ts" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
@@ -493,21 +512,7 @@
       <workItem from="1588248569392" duration="29000" />
       <workItem from="1588305192970" duration="10281000" />
       <workItem from="1588344581732" duration="156000" />
-      <workItem from="1588402877237" duration="4019000" />
-    </task>
-    <task id="LOCAL-00433" summary="depend: stress test, testing and debugging. Async + Deferred + Sync + Lazy tests is OK. Base Tests is OK. Perf mem allocation tests is Failed.">
-      <created>1587537623378</created>
-      <option name="number" value="00433" />
-      <option name="presentableId" value="LOCAL-00433" />
-      <option name="project" value="LOCAL" />
-      <updated>1587537623380</updated>
-    </task>
-    <task id="LOCAL-00434" summary="depend: stress test is completed and tested. Combined stress tests is OK.">
-      <created>1587540473874</created>
-      <option name="number" value="00434" />
-      <option name="presentableId" value="LOCAL-00434" />
-      <option name="project" value="LOCAL" />
-      <updated>1587540473874</updated>
+      <workItem from="1588402877237" duration="5013000" />
     </task>
     <task id="LOCAL-00435" summary="depend: stress test, testing and debugging. Async + Deferred + Sync + Lazy 135 tests is OK">
       <created>1587572935301</created>
@@ -838,7 +843,21 @@
       <option name="project" value="LOCAL" />
       <updated>1588406087846</updated>
     </task>
-    <option name="localTasksCounter" value="482" />
+    <task id="LOCAL-00482" summary="Prepare v2: deleting unnecessary lists... Tests OK.">
+      <created>1588406916348</created>
+      <option name="number" value="00482" />
+      <option name="presentableId" value="LOCAL-00482" />
+      <option name="project" value="LOCAL" />
+      <updated>1588406916348</updated>
+    </task>
+    <task id="LOCAL-00483" summary="Prepare v2: deleting unnecessary lists... Tests OK.">
+      <created>1588407188347</created>
+      <option name="number" value="00483" />
+      <option name="presentableId" value="LOCAL-00483" />
+      <option name="project" value="LOCAL" />
+      <updated>1588407188347</updated>
+    </task>
+    <option name="localTasksCounter" value="484" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -899,7 +918,6 @@
   <component name="VcsManagerConfiguration">
     <option name="CHECK_CODE_SMELLS_BEFORE_PROJECT_COMMIT" value="false" />
     <option name="CHECK_NEW_TODO" value="false" />
-    <MESSAGE value="TSLint fixes" />
     <MESSAGE value="depend: fix garbage collection. Tests OK." />
     <MESSAGE value="depend: stress test all, 200 tests is OK." />
     <MESSAGE value="Small fixes" />
@@ -924,7 +942,8 @@
     <MESSAGE value="Prepare v2: delete _trash" />
     <MESSAGE value="Prepare v2: deleted old calc / connect properties. Tests OK." />
     <MESSAGE value="Prepare v2: deleted deep-subscriber. Tests OK." />
-    <option name="LAST_COMMIT_MESSAGE" value="Prepare v2: deleted deep-subscriber. Tests OK." />
+    <MESSAGE value="Prepare v2: deleting unnecessary lists... Tests OK." />
+    <option name="LAST_COMMIT_MESSAGE" value="Prepare v2: deleting unnecessary lists... Tests OK." />
   </component>
   <component name="WindowStateProjectService">
     <state x="38" y="39" width="1718" height="786" key="#com.intellij.execution.impl.EditConfigurationsDialog" timestamp="1588047767217">
@@ -939,18 +958,18 @@
       <screen x="0" y="0" width="1920" height="882" />
     </state>
     <state x="717" y="85" key="#com.intellij.ide.util.MemberChooser/0.0.1920.882@0.0.1920.882" timestamp="1587806074143" />
-    <state x="623" y="124" key="#com.intellij.refactoring.safeDelete.UnsafeUsagesDialog" timestamp="1588406122375">
+    <state x="623" y="124" key="#com.intellij.refactoring.safeDelete.UnsafeUsagesDialog" timestamp="1588407658588">
       <screen x="0" y="0" width="1920" height="882" />
     </state>
-    <state x="623" y="124" key="#com.intellij.refactoring.safeDelete.UnsafeUsagesDialog/0.0.1920.882@0.0.1920.882" timestamp="1588406122375" />
+    <state x="623" y="124" key="#com.intellij.refactoring.safeDelete.UnsafeUsagesDialog/0.0.1920.882@0.0.1920.882" timestamp="1588407658588" />
     <state x="651" y="254" key="ANALYSIS_DLG_com.intellij.analysis.BaseAnalysisAction$1" timestamp="1588059003240">
       <screen x="0" y="0" width="1920" height="882" />
     </state>
     <state x="651" y="254" key="ANALYSIS_DLG_com.intellij.analysis.BaseAnalysisAction$1/0.0.1920.882@0.0.1920.882" timestamp="1588059003240" />
-    <state x="-2" y="0" width="1918" height="882" key="CommitChangelistDialog2" timestamp="1588406839606">
+    <state x="-2" y="0" width="1918" height="882" key="CommitChangelistDialog2" timestamp="1588407187448">
       <screen x="0" y="0" width="1920" height="882" />
     </state>
-    <state x="-2" y="0" width="1918" height="882" key="CommitChangelistDialog2/0.0.1920.882@0.0.1920.882" timestamp="1588406839606" />
+    <state x="-2" y="0" width="1918" height="882" key="CommitChangelistDialog2/0.0.1920.882@0.0.1920.882" timestamp="1588407187448" />
     <state width="884" height="550" key="DebuggerActiveHint" timestamp="1588307652026">
       <screen x="0" y="0" width="1920" height="882" />
     </state>
@@ -963,22 +982,22 @@
       <screen x="0" y="0" width="1920" height="882" />
     </state>
     <state x="1059" y="106" key="FileChooserDialogImpl/0.0.1920.882@0.0.1920.882" timestamp="1587984144460" />
-    <state width="554" height="703" key="GridCell.Tab.0.bottom" timestamp="1588406865838">
+    <state width="554" height="409" key="GridCell.Tab.0.bottom" timestamp="1588407688613">
       <screen x="0" y="0" width="1920" height="882" />
     </state>
-    <state width="554" height="703" key="GridCell.Tab.0.bottom/0.0.1920.882@0.0.1920.882" timestamp="1588406865838" />
-    <state width="554" height="703" key="GridCell.Tab.0.center" timestamp="1588406865838">
+    <state width="554" height="409" key="GridCell.Tab.0.bottom/0.0.1920.882@0.0.1920.882" timestamp="1588407688613" />
+    <state width="554" height="409" key="GridCell.Tab.0.center" timestamp="1588407688613">
       <screen x="0" y="0" width="1920" height="882" />
     </state>
-    <state width="554" height="703" key="GridCell.Tab.0.center/0.0.1920.882@0.0.1920.882" timestamp="1588406865838" />
-    <state width="554" height="703" key="GridCell.Tab.0.left" timestamp="1588406865838">
+    <state width="554" height="409" key="GridCell.Tab.0.center/0.0.1920.882@0.0.1920.882" timestamp="1588407688613" />
+    <state width="554" height="409" key="GridCell.Tab.0.left" timestamp="1588407688613">
       <screen x="0" y="0" width="1920" height="882" />
     </state>
-    <state width="554" height="703" key="GridCell.Tab.0.left/0.0.1920.882@0.0.1920.882" timestamp="1588406865838" />
-    <state width="554" height="703" key="GridCell.Tab.0.right" timestamp="1588406865838">
+    <state width="554" height="409" key="GridCell.Tab.0.left/0.0.1920.882@0.0.1920.882" timestamp="1588407688613" />
+    <state width="554" height="409" key="GridCell.Tab.0.right" timestamp="1588407688613">
       <screen x="0" y="0" width="1920" height="882" />
     </state>
-    <state width="554" height="703" key="GridCell.Tab.0.right/0.0.1920.882@0.0.1920.882" timestamp="1588406865838" />
+    <state width="554" height="409" key="GridCell.Tab.0.right/0.0.1920.882@0.0.1920.882" timestamp="1588407688613" />
     <state width="719" height="500" key="GridCell.Tab.1.bottom" timestamp="1588330186422">
       <screen x="0" y="0" width="1920" height="882" />
     </state>
@@ -1081,27 +1100,27 @@
         </line-breakpoint>
         <line-breakpoint enabled="true" type="javascript">
           <url>file://$PROJECT_DIR$/src/test/tests/common/main/rx/object/properties/path/builder/RuleBuilder.ts</url>
-          <line>585</line>
+          <line>580</line>
           <option name="timeStamp" value="1508" />
         </line-breakpoint>
         <line-breakpoint enabled="true" type="javascript">
           <url>file://$PROJECT_DIR$/src/test/tests/common/main/rx/object/properties/path/builder/RuleBuilder.ts</url>
-          <line>402</line>
+          <line>397</line>
           <option name="timeStamp" value="1510" />
         </line-breakpoint>
         <line-breakpoint enabled="true" type="javascript">
           <url>file://$PROJECT_DIR$/src/test/tests/common/main/rx/object/properties/path/builder/RuleBuilder.ts</url>
-          <line>411</line>
+          <line>406</line>
           <option name="timeStamp" value="1533" />
         </line-breakpoint>
         <line-breakpoint enabled="true" type="javascript">
           <url>file://$PROJECT_DIR$/src/test/tests/common/main/rx/object/properties/path/builder/RuleBuilder.ts</url>
-          <line>413</line>
+          <line>408</line>
           <option name="timeStamp" value="1534" />
         </line-breakpoint>
         <line-breakpoint enabled="true" type="javascript">
           <url>file://$PROJECT_DIR$/src/test/tests/common/main/rx/object/properties/path/builder/RuleBuilder.ts</url>
-          <line>405</line>
+          <line>400</line>
           <option name="timeStamp" value="1535" />
         </line-breakpoint>
         <line-breakpoint enabled="true" type="javascript">

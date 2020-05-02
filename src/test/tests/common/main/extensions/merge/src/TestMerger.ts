@@ -4,7 +4,6 @@ import {ITypeMetaMerger} from '../../../../../../../main/common/extensions/merge
 import {ObjectMerger, TypeMetaMergerCollection} from '../../../../../../../main/common/extensions/merge/mergers'
 import {TClass} from '../../../../../../../main/common/helpers/helpers'
 import {canHaveUniqueId} from '../../../../../../../main/common/helpers/object-unique-id'
-import {SortedList} from '../../../../../../../main/common/lists/SortedList'
 import {Assert} from '../../../../../../../main/common/test/Assert'
 import {DeepCloneEqual, isPrimitiveDefault} from '../../../../../../../main/common/test/DeepCloneEqual'
 import {IOptionsVariant, IOptionsVariants, ITestCase, TestVariants} from '../../../src/helpers/TestVariants'
@@ -30,21 +29,6 @@ export const deepCloneEqual = new DeepCloneEqual({
 	},
 	cloneOptions: {
 		customClone: (o, setInstance, cloneNested) => {
-			if (o.constructor === SortedList) {
-				const list = new SortedList({
-					autoSort: (o as any).autoSort,
-					notAddIfExists: (o as any).notAddIfExists,
-					compare: (o as any).compare,
-				})
-
-				setInstance(list)
-
-				for (const item of (o as unknown as SortedList<any>)) {
-					list.add(cloneNested(item))
-				}
-				return list as any
-			}
-
 			return null
 		},
 	},
@@ -52,31 +36,6 @@ export const deepCloneEqual = new DeepCloneEqual({
 		equalInnerReferences: true,
 		strictEqualFunctions: true,
 		customEqual: (o1, o2, equal) => {
-			if (o1.constructor === SortedList) {
-				// tslint:disable-next-line:no-collapsible-if
-				if (o1.constructor === o2.constructor) {
-					if (!equal((o1 as SortedList<any>).autoSort, o2.autoSort)) {
-						return false
-					}
-					if (!equal((o1 as SortedList<any>).notAddIfExists, o2.notAddIfExists)) {
-						return false
-					}
-					if (!equal((o1 as SortedList<any>).compare, o2.compare)) {
-						return false
-					}
-				}
-				// let count = 0
-				// for (const item of o2) {
-				// 	if (!o1.contains(item)) {
-				// 		return false
-				// 	}
-				// 	count++
-				// }
-				// if (!equal(o1.size, count)) {
-				// 	return false
-				// }
-			}
-
 			return null
 		},
 	},

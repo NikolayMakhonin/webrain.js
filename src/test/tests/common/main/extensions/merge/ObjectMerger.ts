@@ -8,15 +8,7 @@
 import {IMergeable, IMergeOptions, IMergeValue} from '../../../../../../main/common/extensions/merge/contracts'
 import {registerMergeable} from '../../../../../../main/common/extensions/merge/mergers'
 import {canHaveUniqueId} from '../../../../../../main/common/helpers/object-unique-id'
-import {ArrayMap} from '../../../../../../main/common/lists/ArrayMap'
-import {ArraySet} from '../../../../../../main/common/lists/ArraySet'
 import {fillMap, fillObject, fillObjectKeys, fillSet} from '../../../../../../main/common/lists/helpers/set'
-import {ObjectHashMap} from '../../../../../../main/common/lists/ObjectHashMap'
-import {ObjectMap} from '../../../../../../main/common/lists/ObjectMap'
-import {ObjectSet} from '../../../../../../main/common/lists/ObjectSet'
-import {ObservableMap} from '../../../../../../main/common/lists/ObservableMap'
-import {ObservableSet} from '../../../../../../main/common/lists/ObservableSet'
-import {SortedList} from '../../../../../../main/common/lists/SortedList'
 import {Property} from '../../../../../../main/common/rx/object/properties/Property'
 import {Assert} from '../../../../../../main/common/test/Assert'
 import {describe, it, xit} from '../../../../../../main/common/test/Mocha'
@@ -860,45 +852,12 @@ describe('common > extensions > merge > ObjectMerger', function() {
 
 			it('Map', function() {
 				testMergeMaps(
-					[o => fillMap(new Map(), o), o => fillMap(new ObservableMap(new Map()), o)],
-					[o => fillMap(new Map(), o), o => fillMap(new ObservableMap(new Map()), o)],
+					[o => fillMap(new Map(), o), o => fillMap(new Map(), o)],
+					[o => fillMap(new Map(), o), o => fillMap(new Map(), o)],
 					[[0, null], [func, func], [void 0, {a: 1, b: 2}], [object, {a: 2, c: 3}]],
 					[[0, object], [null, func], [void 0, {a: 4, c: 5}], [object, {a: 6, b: 7}]],
 					[[0, null], [null, null], [func, func], [void 0, {a: 1, b: 2}], [object, {a: 10, c: 11}]],
 					[[0, object], [void 0, {a: 4, c: 5}], [object, {a: 10, b: 7, c: 11}], [null, null]],
-				)
-			})
-
-			it('ArrayMap', function() {
-				testMergeMaps(
-					[
-						o => fillMap(new ArrayMap(), o), o => fillMap(new ObservableMap(new ArrayMap()), o),
-						o => fillMap(new ObjectHashMap(), o), o => fillMap(new ObservableMap(new ObjectHashMap()), o),
-					],
-					[
-						o => fillMap(new Map(), o), o => fillMap(new ObservableMap(new Map()), o),
-						o => fillMap(new ArrayMap(), o), o => fillMap(new ObservableMap(new ArrayMap()), o),
-						o => fillMap(new ObjectHashMap(), o), o => fillMap(new ObservableMap(new ObjectHashMap()), o),
-					],
-					[[func2, null], [func, func], [func4, {a: 1, b: 2}], [object, {a: 2, c: 3}]],
-					[[func2, object], [func3, func], [func4, {a: 4, c: 5}], [object, {a: 6, b: 7}]],
-					[[func2, null], [func3, null], [func, func], [func4, {a: 1, b: 2}], [object, {a: 10, c: 11}]],
-					[[func2, object], [func4, {a: 4, c: 5}], [object, {a: 10, b: 7, c: 11}], [func3, null]],
-				)
-			})
-
-			it('ObjectMap', function() {
-				testMergeMaps(
-					[o => fillMap(new ObjectMap(), o), o => fillMap(new ObservableMap(new ObjectMap()), o)],
-					[
-						o => fillMap(new Map(), o), o => fillMap(new ObservableMap(new Map()), o),
-						o => fillMap(new ObjectMap(), o), o => fillMap(new ObservableMap(new ObjectMap()), o),
-						o => fillObject({}, o),
-					],
-					[['0', null], ['1', func], ['3', {a: 1, b: 2}], ['5', {a: 2, c: 3}]],
-					[['0', object], ['6', func], ['3', {a: 4, c: 5}], ['5', {a: 6, b: 7}]],
-					[['0', null], ['6', null], ['1', func], ['3', {a: 1, b: 2}], ['5', {a: 10, c: 11}]],
-					[['0', object], ['3', {a: 4, c: 5}], ['5', {a: 10, c: 11, b: 7}], ['6', null]],
 				)
 			})
 		})
@@ -939,49 +898,12 @@ describe('common > extensions > merge > ObjectMerger', function() {
 
 			it('Set', function() {
 				testMergeSets(
-					[o => fillSet(new Set(), o), o => fillSet(new ObservableSet(new Set()), o)],
-					[o => fillSet(new Set(), o), o => fillSet(new ObservableSet(new Set()), o)],
+					[o => fillSet(new Set(), o), o => fillSet(new Set(), o)],
+					[o => fillSet(new Set(), o), o => fillSet(new Set(), o)],
 					[0, func, void 0],
 					[0, func, object],
 					[0, 1, void 0, object],
 					[0, 1, object],
-				)
-			})
-
-			it('ArraySet', function() {
-				testMergeSets(
-					[
-						o => fillSet(new ArraySet(), o), o => fillSet(new ObservableSet(new ArraySet()), o),
-						// o => fillSet(new ObjectHashSet(), o), o => fillSet(new ObservableSet(new ObjectHashSet()), o),
-					],
-					[
-						o => fillSet(new Set(), o), o => fillSet(new ObservableSet(new Set()), o),
-						o => fillSet(new ArraySet(), o), o => fillSet(new ObservableSet(new ArraySet()), o),
-						// o => fillSet(new ObjectHashSet(), o), o => fillSet(new ObservableSet(new ObjectHashSet()), o),
-					],
-					[func2, func, func4],
-					[func2, func, object],
-					[func2, func3, func4, object],
-					[func2, func3, object],
-				)
-			})
-
-			it('ObjectSet', function() {
-				testMergeSets(
-					[
-						o => fillSet(new ObjectSet(), o), o => fillSet(new ObservableSet(new ObjectSet()), o),
-						o => fillSet(new SortedList({autoSort: true, notAddIfExists: true}) as any, o),
-					],
-					[
-						o => fillSet(new Set(), o), o => fillSet(new ObservableSet(new Set()), o),
-						o => fillSet(new ObjectSet(), o), o => fillSet(new ObservableSet(new ObjectSet()), o),
-						o => fillSet(new SortedList({autoSort: true, notAddIfExists: true}) as any, o),
-						o => fillObjectKeys({}, o),
-					],
-					['0', '2', '3'],
-					['0', '2', '4'],
-					['0', '1', '3', '4'],
-					['0', '1', '4'],
 				)
 			})
 		})

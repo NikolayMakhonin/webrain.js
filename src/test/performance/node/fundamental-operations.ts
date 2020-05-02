@@ -12,11 +12,7 @@ import {resolveAsync, ThenableSync} from '../../../main/common/async/ThenableSyn
 import {createFunction, isIterable} from '../../../main/common/helpers/helpers'
 import {freezeWithUniqueId, getObjectUniqueId} from '../../../main/common/helpers/object-unique-id'
 import {getTupleId, getTupleIdMap} from '../../../main/common/helpers/tuple-unique-id'
-import {ArraySet} from '../../../main/common/lists/ArraySet'
 import {binarySearch} from '../../../main/common/lists/helpers/array'
-import {SortedList} from '../../../main/common/lists/SortedList'
-import {ObservableClass} from '../../../main/common/rx/object/ObservableClass'
-import {ObservableObjectBuilder} from '../../../main/common/rx/object/ObservableObjectBuilder'
 import {assert} from '../../../main/common/test/Assert'
 import {describe, it, xit} from '../../../main/common/test/Mocha'
 
@@ -930,33 +926,9 @@ describe('fundamental-operations', function() {
 			// assert.strictEqual(set.length, 0)
 		}
 
-		function testSortedList(options) {
-			const set = new SortedList(options)
-			testSet(
-				o => set.add(o),
-				o => set.remove(o),
-				o => set,
-				o => set,
-			)
-			// set.clear()
-			// assert.strictEqual(set.size, 0)
-		}
-
 		function testSetPolyfill() {
 			// console.log(SetPolyfill.toString())
 			const set = new SetPolyfill()
-			testSet(
-				o => set.add(o),
-				o => set.delete(o),
-				o => set,
-				o => set,
-			)
-			// assert.strictEqual(set.size, 0)
-		}
-
-		function testArraySet() {
-			// console.log(ArraySet.toString())
-			const set = new ArraySet()
 			testSet(
 				o => set.add(o),
 				o => set.delete(o),
@@ -1042,7 +1014,6 @@ describe('fundamental-operations', function() {
 			testEmpty,
 			testArrayHashTable, // 1.0
 			testSetNative, // 1.0
-			testArraySet, // 1.0150311148125015
 			testObject, // 1.1021265644157587
 			testWeakSetNative, // 1.6042837809702268
 			testArraySplice, // 2.0924161982094525
@@ -1050,23 +1021,7 @@ describe('fundamental-operations', function() {
 			testArray, // 3.645999606727277
 			testSetPolyfill, // 5.62216901473616
 			testArrayKeepOrder, // 7.91167557313716
-			() => testSortedList({ // 22.514027691026442
-				autoSort        : true,
-				notAddIfExists  : true,
-				minAllocatedSize: 1000,
-				// compare         : compareUniqueId
-			}),
 			testImmutableSet, // 33.87640826335392
-			// () => testSortedList({
-			// 	autoSort        : true,
-			// 	notAddIfExists  : false,
-			// 	minAllocatedSize: 1000
-			// }),
-			// () => testSortedList({
-			// 	autoSort        : false,
-			// 	notAddIfExists  : false,
-			// 	minAllocatedSize: 1000
-			// })
 		)
 
 		console.log(result)
