@@ -10,7 +10,6 @@ import {resolveValue} from '../../../main/common/async/async'
 import {resolveAsync, ThenableSync} from '../../../main/common/async/ThenableSync'
 import {createFunction, isIterable} from '../../../main/common/helpers/helpers'
 import {freezeWithUniqueId, getObjectUniqueId} from '../../../main/common/helpers/object-unique-id'
-import {getTupleId, getTupleIdMap} from '../../../main/common/helpers/tuple-unique-id'
 import {binarySearch} from '../../../main/common/lists/helpers/array'
 import {assert} from '../../../main/common/test/Assert'
 import {describe, it, xit} from '../../../main/common/test/Mocha'
@@ -1021,59 +1020,6 @@ describe('fundamental-operations', function() {
 			testSetPolyfill, // 5.62216901473616
 			testArrayKeepOrder, // 7.91167557313716
 			testImmutableSet, // 33.87640826335392
-		)
-
-		console.log(result)
-	})
-
-	it('getTupleId', function() {
-		this.timeout(300000)
-
-		let _this = {}
-		let func = () => {}
-		let items = [{}, Math.round(Math.random() * 10)]
-
-		let _thisArray = []
-		let funcArray = []
-		let itemsArray = []
-
-		let id
-		for (let i = 0; i < 100000; i++) {
-			_this = {}
-			func = () => {}
-			items = [{}, Math.round(Math.random() * 10)]
-
-			_thisArray[i] = _this
-			funcArray[i] = func
-			itemsArray[i] = items
-
-			id = getTupleId.apply(getTupleIdMap(func, _this, 4), items)
-
-			id = getObjectUniqueId(_this)
-		}
-
-		let index = 0
-
-		const result = calcPerformance(
-			10000,
-			() => {
-				// no operations
-			},
-			() => {
-				// _this = {}
-				// func = () => {}
-				items = [{}, Math.round(Math.random() * 10)]
-
-				_this = _thisArray[index % 100000]
-				func = funcArray[index % 100000]
-				// items = itemsArray[index % 100000]
-			},
-			() => {
-				id = getTupleId.apply(getTupleIdMap(func, _this, 4), items)
-			},
-			() => {
-				id = getObjectUniqueId(_this)
-			},
 		)
 
 		console.log(result)
