@@ -57,7 +57,6 @@ describe('common > main > rx > properties > builder > RuleBuilder', function() {
 		isCollection: boolean,
 		isMap: boolean,
 		isValueObject: boolean,
-		nonObservableObject: TObject,
 		observableObject: TObject,
 		subscribe: ISubscribeObject<TObject, string>,
 		properties: string[],
@@ -216,7 +215,6 @@ describe('common > main > rx > properties > builder > RuleBuilder', function() {
 
 		testSubscribe(
 			false, false, isValueObject,
-			{...builder.object},
 			builder.object,
 			subscribe,
 			[nonSubscribeProperty, ...(properties === ANY ? [] : properties)],
@@ -235,7 +233,6 @@ describe('common > main > rx > properties > builder > RuleBuilder', function() {
 
 		testSubscribe(
 			false, true, isValueObject,
-			Object.create({...builder.object}),
 			Object.create(builder.object),
 			subscribe,
 			[nonSubscribeProperty, ...(properties === ANY ? [] : properties)],
@@ -275,8 +272,7 @@ describe('common > main > rx > properties > builder > RuleBuilder', function() {
 
 		testSubscribe(
 			false, true, isValueObject,
-			object,
-			null,
+			null, // object,
 			subscribe,
 			[nonSubscribeProperty, ...(properties === ANY ? [] : properties)],
 			properties === ANY
@@ -289,12 +285,10 @@ describe('common > main > rx > properties > builder > RuleBuilder', function() {
 	}
 
 	function testMap(properties: string | string[], subscribe: ISubscribeObject<any, string>) {
-		const map = new ObjectMap<string>()
-		const observableMap = new ObservableMap(new ObjectMap<string>())
+		const map = new Map()
 
 		if (properties !== ANY) {
 			map.set(nonSubscribeProperty, 'value_' + nonSubscribeProperty)
-			observableMap.set(nonSubscribeProperty, 'value_' + nonSubscribeProperty)
 		}
 
 		function change(object, property) {
@@ -310,7 +304,6 @@ describe('common > main > rx > properties > builder > RuleBuilder', function() {
 		testSubscribe(
 			true, true, false,
 			map,
-			observableMap,
 			subscribe,
 			[nonSubscribeProperty, ...(properties === ANY ? [] : properties)],
 			properties === ANY
@@ -323,8 +316,7 @@ describe('common > main > rx > properties > builder > RuleBuilder', function() {
 	}
 
 	function testSet(properties: string | string[], subscribe: ISubscribeObject<any, string>) {
-		const set = new ObjectSet()
-		const observableSet = new ObservableSet(new ObjectSet())
+		const set = new Set()
 
 		function add(object, property) {
 			object.add('value_' + property)
@@ -337,7 +329,6 @@ describe('common > main > rx > properties > builder > RuleBuilder', function() {
 		testSubscribe(
 			true, false, false,
 			set,
-			observableSet,
 			subscribe,
 			[],
 			['p1', 'p2', 'p3'],
@@ -380,61 +371,7 @@ describe('common > main > rx > properties > builder > RuleBuilder', function() {
 
 		testSubscribe(
 			true, false, false,
-			array,
-			null,
-			subscribe,
-			[],
-			['p1', 'p2', 'p3'],
-			add,
-			change,
-			remove,
-		)
-	}
-
-	function testList(properties: string | string[], subscribe: ISubscribeObject<any, string>) {
-		const list = new SortedList({
-			autoSort: true,
-			notAddIfExists: true,
-		})
-		// @ts-ignore
-		Object.defineProperty(list, 'listChanged', {
-			configurable: true,
-			writable: true,
-			value: null,
-		})
-
-		const observableList = new SortedList({
-			autoSort: true,
-			notAddIfExists: true,
-		})
-
-		// tslint:disable-next-line:no-identical-functions
-		function add(object, property) {
-			object.add('value_' + property)
-		}
-
-		function change(object, property) {
-			for (let i = object.size - 1; i >= 0; i--) {
-				if (object.get(i).trim() === 'value_' + property) {
-					object.set(i, object.get(i) + ' ')
-					return
-				}
-			}
-		}
-
-		function remove(object, property) {
-			for (let i = object.size - 1; i >= 0; i--) {
-				if (object.get(i).trim() === 'value_' + property) {
-					object.removeAt(i)
-					return
-				}
-			}
-		}
-
-		testSubscribe(
-			true, false, false,
-			list,
-			observableList,
+			null, // array,
 			subscribe,
 			[],
 			['p1', 'p2', 'p3'],
@@ -505,9 +442,6 @@ describe('common > main > rx > properties > builder > RuleBuilder', function() {
 						break
 					case 'map':
 						testMap(expected.properties, rule.subscribe)
-						break
-					case 'list':
-						testList(expected.properties, rule.subscribe)
 						break
 					case 'iterable':
 						testIterable(expected.properties, rule.subscribe)
@@ -1129,7 +1063,7 @@ describe('common > main > rx > properties > builder > RuleBuilder', function() {
 		assertRule(rule1, {
 			type: RuleType.Action,
 			subType: SubscribeObjectType.Property,
-			objectTypes: ['map', 'set', 'list', 'iterable'],
+			objectTypes: ['map', 'set', 'iterable'],
 			properties: ANY,
 			description: COLLECTION_PREFIX,
 			next: {
