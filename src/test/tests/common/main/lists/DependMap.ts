@@ -3,7 +3,7 @@ import {depend} from '../../../../../main/common/rx/depend/core/depend'
 import {DependMap} from '../../../../../main/common/rx/depend/lists/DependMap'
 import {assert} from '../../../../../main/common/test/Assert'
 import {describe, it} from '../../../../../main/common/test/Mocha'
-import {clearCallStates} from "../rx/depend/src/helpers";
+import {clearCallStates} from '../rx/depend/src/helpers'
 
 declare const after
 

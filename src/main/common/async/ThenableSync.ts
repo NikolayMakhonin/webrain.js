@@ -43,7 +43,7 @@ export function createRejected<TValue = any>(
 }
 
 export class ThenableSync<TValue = any> implements IThenable<TValue> {
-	private _onfulfilled: Array<TOnFulfilled<TValue, any>> = null
+	private _onfulfilled: Array<TOnFulfilled<TValue>> = null
 	private _onrejected: Array<TOnRejected<TValue>> = null
 	private _value: TValue = void 0
 	private _error: any = null

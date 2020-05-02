@@ -8,7 +8,7 @@ export const performanceNow = typeof performance !== 'undefined'
 		return time[0] * 1000 + time[1] * 0.000001
 	}
 
-export function delay(timeMilliseconds): Thenable<any> {
+export function delay(timeMilliseconds): Thenable {
 	return new Promise(resolve => setTimeout(resolve, timeMilliseconds))
 }
 

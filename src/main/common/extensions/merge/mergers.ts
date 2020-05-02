@@ -478,11 +478,11 @@ enum ObjectStatus {
 }
 
 export class MergerVisitor implements IMergerVisitor {
-	public readonly getMeta: (type: TClass<any>) => ITypeMetaMerger<any, any>
+	public readonly getMeta: (type: TClass<any>) => ITypeMetaMerger
 	// public refs: IRef[]
 	public statuses: ObjectStatus[]
 
-	constructor(getMeta: (type: TClass<any>) => ITypeMetaMerger<any, any>) {
+	constructor(getMeta: (type: TClass<any>) => ITypeMetaMerger) {
 		this.getMeta = getMeta
 	}
 
@@ -779,23 +779,23 @@ export class MergerVisitor implements IMergerVisitor {
 // region TypeMetaMergerCollection
 
 export class TypeMetaMergerCollection
-	extends TypeMetaCollection<ITypeMetaMerger<any, any>>
+	extends TypeMetaCollection<ITypeMetaMerger>
 	implements ITypeMetaMergerCollection
 {
-	public customMeta: (type) => ITypeMetaMerger<any, any>
+	public customMeta: (type) => ITypeMetaMerger
 
 	constructor({
 		proto,
 		customMeta,
 	}: {
 		proto?: ITypeMetaMergerCollection,
-		customMeta?: (type) => ITypeMetaMerger<any, any>,
+		customMeta?: (type) => ITypeMetaMerger,
 	} = {}) {
 		super(proto || TypeMetaMergerCollection.default)
 		this.customMeta = customMeta
 	}
 
-	public getMeta(type: TClass<any>): ITypeMetaMerger<any, any> {
+	public getMeta(type: TClass<any>): ITypeMetaMerger {
 		return this.customMeta && this.customMeta(type) || super.getMeta(type)
 	}
 

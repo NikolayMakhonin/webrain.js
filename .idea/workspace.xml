@@ -31,10 +31,23 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="69b2ee16-521b-4efd-b473-8e19e3df4d09" name="Default Changelist" comment="">
-      <change beforePath="$PROJECT_DIR$/src/main/common/rx/extensions/autoConnect.ts" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/common/rx/object/ObservableClass.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/common/rx/object/ObservableClass.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/common/rx/object/ObservableObject.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/common/rx/object/ObservableObject.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/common/rx/object/ObservableObjectBuilder.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/common/rx/object/ObservableObjectBuilder.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/common/async/ThenableSync.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/common/async/ThenableSync.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/common/extensions/merge/contracts.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/common/extensions/merge/contracts.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/common/extensions/merge/mergers.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/common/extensions/merge/mergers.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/common/extensions/serialization/contracts.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/common/extensions/serialization/contracts.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/common/extensions/serialization/serializers.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/common/extensions/serialization/serializers.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/common/rx/object/properties/Property.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/common/rx/object/properties/Property.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/common/time/helpers.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/common/time/helpers.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/test/performance/node/dependent-func.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/test/performance/node/dependent-func.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/test/performance/node/map.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/test/performance/node/map.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/test/tests/common/main/extensions/merge/src/TestMerger.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/test/tests/common/main/extensions/merge/src/TestMerger.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/test/tests/common/main/lists/DependMap.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/test/tests/common/main/lists/DependMap.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/test/tests/common/main/rx/depend/src/base-tests.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/test/tests/common/main/rx/depend/src/base-tests.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/test/tests/common/main/rx/object/properties/path/builder/deep-subscribe-new.ts" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/test/tests/common/main/rx/object/properties/path/builder/deep-subscribe.ts" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/test/tests/common/main/rx/object/properties/path/builder/helpers/src/TestDeepSubscribe.ts" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/test/tests/common/main/src/helpers/helpers.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/test/tests/common/main/src/helpers/helpers.ts" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -86,7 +99,7 @@
     <property name="WebServerToolWindowFactoryState" value="false" />
     <property name="auto.test.manager.delay" value="5000" />
     <property name="javascript.karma.karma_node_package_dir" value="" />
-    <property name="last_opened_file_path" value="$PROJECT_DIR$/src/main/common/rx/object/properties/helpers.ts" />
+    <property name="last_opened_file_path" value="$PROJECT_DIR$/docs/depend" />
     <property name="node.js.detected.package.eslint" value="true" />
     <property name="node.js.detected.package.standard" value="true" />
     <property name="node.js.detected.package.tslint" value="true" />
@@ -106,11 +119,11 @@
   </component>
   <component name="RecentsManager">
     <key name="CopyFile.RECENT_KEYS">
+      <recent name="L:\Work\_GIT\GitHub\NodeJs\modules\webrain\docs\depend" />
       <recent name="L:\Work\_GIT\GitHub\NodeJs\modules\webrain\src\test\tests\common\main\rx\object\properties\path" />
       <recent name="L:\Work\_GIT\GitHub\NodeJs\modules\webrain\src\test\tests\common\main\rx\object\properties\path\builder" />
       <recent name="L:\Work\_GIT\GitHub\NodeJs\modules\webrain\src\main\common\rx\object\properties\path\builder" />
       <recent name="L:\Work\_GIT\GitHub\NodeJs\modules\webrain\src\test\tests\common\main\rx" />
-      <recent name="L:\Work\_GIT\GitHub\NodeJs\modules\webrain\src\main\common\rx" />
     </key>
     <key name="es6.move.members.recent.items">
       <recent name="L:\Work\_GIT\GitHub\NodeJs\modules\webrain\src\main\common\rx\object\properties\helpers.ts" />
@@ -120,11 +133,11 @@
       <recent name="L:\Work\_GIT\GitHub\NodeJs\modules\webrain\src\main\common\helpers\helpers.ts" />
     </key>
     <key name="MoveFile.RECENT_KEYS">
+      <recent name="L:\Work\_GIT\GitHub\NodeJs\modules\webrain\docs\depend" />
       <recent name="L:\Work\_GIT\GitHub\NodeJs\modules\webrain\src\main\common\rx\depend" />
       <recent name="L:\Work\_GIT\GitHub\NodeJs\modules\webrain\src\main\common\rx\object\properties\path" />
       <recent name="L:\Work\_GIT\GitHub\NodeJs\modules\webrain\src\test\tests\common\main\rx\object\properties\path" />
       <recent name="L:\Work\_GIT\GitHub\NodeJs\modules\webrain\src\main\common\rx" />
-      <recent name="L:\Work\_GIT\GitHub\NodeJs\modules\webrain\src\test\tests\common\main\rx\depend\dependent-func" />
     </key>
   </component>
   <component name="RunManager" selected="Mocha.Watch">
@@ -495,21 +508,7 @@
       <workItem from="1588248569392" duration="29000" />
       <workItem from="1588305192970" duration="10281000" />
       <workItem from="1588344581732" duration="156000" />
-      <workItem from="1588402877237" duration="5396000" />
-    </task>
-    <task id="LOCAL-00438" summary="Path Builder: delete unnecessary files">
-      <created>1587726026285</created>
-      <option name="number" value="00438" />
-      <option name="presentableId" value="LOCAL-00438" />
-      <option name="project" value="LOCAL" />
-      <updated>1587726026286</updated>
-    </task>
-    <task id="LOCAL-00439" summary="Path Builder: delete func-properties-path">
-      <created>1587726350895</created>
-      <option name="number" value="00439" />
-      <option name="presentableId" value="LOCAL-00439" />
-      <option name="project" value="LOCAL" />
-      <updated>1587726350895</updated>
+      <workItem from="1588402877237" duration="7192000" />
     </task>
     <task id="LOCAL-00440" summary="Path Builder: delete unused code">
       <created>1587790198419</created>
@@ -840,7 +839,21 @@
       <option name="project" value="LOCAL" />
       <updated>1588408124958</updated>
     </task>
-    <option name="localTasksCounter" value="487" />
+    <task id="LOCAL-00487" summary="Prepare v2: deleted unnecessary autoConnect. Tests OK.">
+      <created>1588408305673</created>
+      <option name="number" value="00487" />
+      <option name="presentableId" value="LOCAL-00487" />
+      <option name="project" value="LOCAL" />
+      <updated>1588408305673</updated>
+    </task>
+    <task id="LOCAL-00488" summary="Prepare v2... Tests OK.">
+      <created>1588408447685</created>
+      <option name="number" value="00488" />
+      <option name="presentableId" value="LOCAL-00488" />
+      <option name="project" value="LOCAL" />
+      <updated>1588408447686</updated>
+    </task>
+    <option name="localTasksCounter" value="489" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -901,8 +914,6 @@
   <component name="VcsManagerConfiguration">
     <option name="CHECK_CODE_SMELLS_BEFORE_PROJECT_COMMIT" value="false" />
     <option name="CHECK_NEW_TODO" value="false" />
-    <MESSAGE value="Small fixes" />
-    <MESSAGE value="Added depend helpers" />
     <MESSAGE value="Small changes. Tests OK." />
     <MESSAGE value="Fix isIterator / isIterable critical bug" />
     <MESSAGE value="Fix NaN === NaN critical bug. Check _resolveAsync infinity loop" />
@@ -926,7 +937,9 @@
     <MESSAGE value="Prepare v2: deleting unnecessary lists... Tests OK." />
     <MESSAGE value="Prepare v2: deleted unnecessary lists. Tests OK." />
     <MESSAGE value="Prepare v2: deleted unnecessary TimeLimits. Tests OK." />
-    <option name="LAST_COMMIT_MESSAGE" value="Prepare v2: deleted unnecessary TimeLimits. Tests OK." />
+    <MESSAGE value="Prepare v2: deleted unnecessary autoConnect. Tests OK." />
+    <MESSAGE value="Prepare v2... Tests OK." />
+    <option name="LAST_COMMIT_MESSAGE" value="Prepare v2... Tests OK." />
   </component>
   <component name="WindowStateProjectService">
     <state x="38" y="39" width="1718" height="786" key="#com.intellij.execution.impl.EditConfigurationsDialog" timestamp="1588047767217">
@@ -945,14 +958,14 @@
       <screen x="0" y="0" width="1920" height="882" />
     </state>
     <state x="623" y="124" key="#com.intellij.refactoring.safeDelete.UnsafeUsagesDialog/0.0.1920.882@0.0.1920.882" timestamp="1588408070345" />
-    <state x="651" y="254" key="ANALYSIS_DLG_com.intellij.analysis.BaseAnalysisAction$1" timestamp="1588059003240">
+    <state x="651" y="254" key="ANALYSIS_DLG_com.intellij.analysis.BaseAnalysisAction$1" timestamp="1588411109555">
       <screen x="0" y="0" width="1920" height="882" />
     </state>
-    <state x="651" y="254" key="ANALYSIS_DLG_com.intellij.analysis.BaseAnalysisAction$1/0.0.1920.882@0.0.1920.882" timestamp="1588059003240" />
-    <state x="-2" y="0" width="1918" height="882" key="CommitChangelistDialog2" timestamp="1588408123844">
+    <state x="651" y="254" key="ANALYSIS_DLG_com.intellij.analysis.BaseAnalysisAction$1/0.0.1920.882@0.0.1920.882" timestamp="1588411109555" />
+    <state x="-2" y="0" width="1918" height="882" key="CommitChangelistDialog2" timestamp="1588408447061">
       <screen x="0" y="0" width="1920" height="882" />
     </state>
-    <state x="-2" y="0" width="1918" height="882" key="CommitChangelistDialog2/0.0.1920.882@0.0.1920.882" timestamp="1588408123844" />
+    <state x="-2" y="0" width="1918" height="882" key="CommitChangelistDialog2/0.0.1920.882@0.0.1920.882" timestamp="1588408447061" />
     <state width="884" height="550" key="DebuggerActiveHint" timestamp="1588307652026">
       <screen x="0" y="0" width="1920" height="882" />
     </state>
@@ -965,22 +978,22 @@
       <screen x="0" y="0" width="1920" height="882" />
     </state>
     <state x="1059" y="106" key="FileChooserDialogImpl/0.0.1920.882@0.0.1920.882" timestamp="1587984144460" />
-    <state width="601" height="318" key="GridCell.Tab.0.bottom" timestamp="1588408287544">
+    <state width="601" height="155" key="GridCell.Tab.0.bottom" timestamp="1588412008811">
       <screen x="0" y="0" width="1920" height="882" />
     </state>
-    <state width="601" height="318" key="GridCell.Tab.0.bottom/0.0.1920.882@0.0.1920.882" timestamp="1588408287544" />
-    <state width="601" height="318" key="GridCell.Tab.0.center" timestamp="1588408287544">
+    <state width="601" height="155" key="GridCell.Tab.0.bottom/0.0.1920.882@0.0.1920.882" timestamp="1588412008811" />
+    <state width="601" height="155" key="GridCell.Tab.0.center" timestamp="1588412008811">
       <screen x="0" y="0" width="1920" height="882" />
     </state>
-    <state width="601" height="318" key="GridCell.Tab.0.center/0.0.1920.882@0.0.1920.882" timestamp="1588408287544" />
-    <state width="601" height="318" key="GridCell.Tab.0.left" timestamp="1588408287544">
+    <state width="601" height="155" key="GridCell.Tab.0.center/0.0.1920.882@0.0.1920.882" timestamp="1588412008811" />
+    <state width="601" height="155" key="GridCell.Tab.0.left" timestamp="1588412008811">
       <screen x="0" y="0" width="1920" height="882" />
     </state>
-    <state width="601" height="318" key="GridCell.Tab.0.left/0.0.1920.882@0.0.1920.882" timestamp="1588408287544" />
-    <state width="601" height="318" key="GridCell.Tab.0.right" timestamp="1588408287544">
+    <state width="601" height="155" key="GridCell.Tab.0.left/0.0.1920.882@0.0.1920.882" timestamp="1588412008811" />
+    <state width="601" height="155" key="GridCell.Tab.0.right" timestamp="1588412008811">
       <screen x="0" y="0" width="1920" height="882" />
     </state>
-    <state width="601" height="318" key="GridCell.Tab.0.right/0.0.1920.882@0.0.1920.882" timestamp="1588408287544" />
+    <state width="601" height="155" key="GridCell.Tab.0.right/0.0.1920.882@0.0.1920.882" timestamp="1588412008811" />
     <state width="719" height="500" key="GridCell.Tab.1.bottom" timestamp="1588330186422">
       <screen x="0" y="0" width="1920" height="882" />
     </state>

@@ -369,7 +369,7 @@ export type TSerializableClass<TObject extends ISerializable>
 	= (new (...args: any[]) => TObject) & { readonly uuid: string }
 
 export class TypeMetaSerializerCollection
-	extends TypeMetaCollectionWithId<ITypeMetaSerializer<any>>
+	extends TypeMetaCollectionWithId<ITypeMetaSerializer>
 	implements ITypeMetaSerializerCollection {
 	
 	constructor(proto?: ITypeMetaSerializerCollection) {
@@ -553,7 +553,7 @@ export function serializeIterable(
 
 export function *deSerializeIterableOrdered(
 	serializedValue: ISerializedValueArray,
-	add: (item: any) => void|ThenableSync<any>,
+	add: (item: any) => void|ThenableSync,
 ): ThenableIterator<any> {
 	for (let i = 0, len = serializedValue.length; i < len; i++) {
 		yield add(serializedValue[i])

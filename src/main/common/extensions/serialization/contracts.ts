@@ -129,7 +129,7 @@ export interface ITypeMetaSerializerOverride<TValue = any> {
 	valueFactory?: (...args) => any
 }
 
-export interface ITypeMetaSerializerCollection extends TypeMetaCollectionWithId<ITypeMetaSerializer<any>> {
+export interface ITypeMetaSerializerCollection extends TypeMetaCollectionWithId<ITypeMetaSerializer> {
 	getMeta<TValue>(type: TClass<TValue>): ITypeMetaSerializer<TValue>
 	putType<TValue>(type: TClass<TValue>, meta: ITypeMetaSerializer<TValue>): ITypeMetaSerializer<TValue>
 	deleteType<TValue>(type: TClass<TValue>): ITypeMetaSerializer<TValue>

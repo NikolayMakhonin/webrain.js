@@ -607,6 +607,7 @@ function checkCurrentStateAsyncContinuous(state: TCallStateAny) {
 			await checkCurrentStateAsync(state)
 		}
 	}
+	// noinspection JSIgnoredPromiseFromCall
 	start()
 
 	return () => {

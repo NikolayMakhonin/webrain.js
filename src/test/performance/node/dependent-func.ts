@@ -5,7 +5,7 @@ import {assert} from '../../../main/common/test/Assert'
 import {CalcType} from '../../../main/common/test/calc'
 import {calcMemAllocate} from '../../../main/common/test/calc-mem-allocate'
 import {describe, it, xit} from '../../../main/common/test/Mocha'
-import {createPerceptron, createPerceptronNaked} from "../../tests/common/main/rx/depend/src/perceptron";
+import {createPerceptron, createPerceptronNaked} from '../../tests/common/main/rx/depend/src/perceptron'
 
 describe('dependent-func perf', function() {
 	it('perceptron recalc', function() {

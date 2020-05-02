@@ -92,14 +92,14 @@ interface IMergerOptionsVariants extends IOptionsVariants {
 
 export class TypeMetaMergerCollectionMock extends TypeMetaMergerCollection {
 	private _resetFuncs: Array<() => void> = []
-	public changeMetaFunc: (meta: ITypeMetaMerger<any, any>) => () => void
+	public changeMetaFunc: (meta: ITypeMetaMerger) => () => void
 	public static default: TypeMetaMergerCollectionMock = new TypeMetaMergerCollectionMock()
 
 	constructor() {
 		super()
 	}
 
-	public getMeta(type: TClass<any>): ITypeMetaMerger<any, any> {
+	public getMeta(type: TClass<any>): ITypeMetaMerger {
 		const meta = super.getMeta(type)
 		// assert.ok(meta, `Meta not found for type: ${typeToDebugString(type)}`)
 		if (meta && this.changeMetaFunc) {

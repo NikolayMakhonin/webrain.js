@@ -66,7 +66,7 @@ export interface ITypeMetaMerger<TTarget = any, TSource = any> extends ITypeMeta
 export type TMergeableClass<TObject extends IMergeable<TObject, TSource>, TSource = any>
 	= new (...args: any[]) => TObject
 
-export interface ITypeMetaMergerCollection extends ITypeMetaCollection<ITypeMetaMerger<any, any>> {
+export interface ITypeMetaMergerCollection extends ITypeMetaCollection<ITypeMetaMerger> {
 	putType<TTarget, TSource>(
 		type: TClass<TTarget>,
 		meta: ITypeMetaMerger<TTarget, TSource>,

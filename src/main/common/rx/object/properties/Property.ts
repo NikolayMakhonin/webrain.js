@@ -19,7 +19,7 @@ export interface IPropertyOptions<TTarget, TSource> {
 export class Property<TValue, TMergeSource = TValue>
 	extends ObservableClass
 	implements
-		IMergeable<Property<TValue, TMergeSource>, any>,
+		IMergeable<Property<TValue, TMergeSource>>,
 		ISerializable
 {
 	protected merger?: ObjectMerger

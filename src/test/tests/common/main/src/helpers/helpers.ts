@@ -15,7 +15,7 @@ import {ObservableObjectBuilder} from '../../../../../../main/common/rx/object/O
 import {Property} from '../../../../../../main/common/rx/object/properties/Property'
 
 export class CircularClass extends ObservableClass
-	implements ISerializable, IMergeable<CircularClass, any>
+	implements ISerializable, IMergeable<CircularClass>
 {
 	public array: any[]
 	public value: {}
