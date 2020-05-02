@@ -65,7 +65,7 @@ const dependForEachRule = depend(function<TObject, TValue>(this: TObject, rule: 
 				resolve(lastValue)
 			}
 		}),
-		emitLastValue ? null : o => ALWAYS_CHANGE_VALUE,
+		emitLastValue ? null : () => ALWAYS_CHANGE_VALUE,
 		null,
 		null,
 		resolveValueProperty,

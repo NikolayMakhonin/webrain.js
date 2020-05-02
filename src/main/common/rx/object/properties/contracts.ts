@@ -18,8 +18,3 @@ export interface ICalcPropertyState<TValue, TInput> {
 	readonly calcOptions: IDeferredCalcOptions,
 	name: string
 }
-
-/** @return true: value changed; false: value not changed; null - auto */
-export type CalcPropertyFunc<TValue, TInput>
-	= (state: ICalcPropertyState<TValue, TInput>)
-	=> PromiseLike<boolean | void> | ThenableOrIteratorOrValue<boolean | void>

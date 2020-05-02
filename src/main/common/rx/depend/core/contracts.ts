@@ -44,7 +44,6 @@ export enum CallStatusShort {
 	CalculatedError = 'CalculatedError',
 }
 
-export type TIteratorOrValue<T> = Iterator<T> | T
 export type TResultOuter<TResultInner> = TResultInner extends Iterator<infer V> ? ThenableOrValue<V> : TResultInner
 export type TInnerValue<TResultInner> = TResultInner extends Iterator<infer V> ? V : TResultInner
 

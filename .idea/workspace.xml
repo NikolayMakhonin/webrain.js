@@ -30,101 +30,14 @@
     <select />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="69b2ee16-521b-4efd-b473-8e19e3df4d09" name="Default Changelist" comment="Prepare v2. Deleted commented files. Lint fixes. Tests OK.">
-      <change beforePath="$PROJECT_DIR$/.idea/scopes/src_env_ts.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/scopes/src_env_ts.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/dist/types/browser/index.d.ts" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/dist/types/common/async/ThenableSync.d.ts" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/dist/types/common/async/async.d.ts" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/dist/types/common/extensions/TypeMeta.d.ts" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/dist/types/common/extensions/merge/contracts.d.ts" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/dist/types/common/extensions/merge/merge-maps.d.ts" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/dist/types/common/extensions/merge/merge-sets.d.ts" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/dist/types/common/extensions/merge/mergers.d.ts" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/dist/types/common/extensions/serialization/contracts.d.ts" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/dist/types/common/extensions/serialization/serializers.d.ts" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/dist/types/common/helpers/CalcStat.d.ts" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/dist/types/common/helpers/helpers.d.ts" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/dist/types/common/helpers/object-unique-id.d.ts" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/dist/types/common/helpers/performance.d.ts" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/dist/types/common/helpers/tuple-unique-id.d.ts" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/dist/types/common/helpers/typescript.d.ts" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/dist/types/common/helpers/value-property.d.ts" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/dist/types/common/helpers/webrainOptions.d.ts" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/dist/types/common/index.d.ts" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/dist/types/common/lists/ArrayMap.d.ts" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/dist/types/common/lists/ArraySet.d.ts" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/dist/types/common/lists/ObjectHashMap.d.ts" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/dist/types/common/lists/ObjectMap.d.ts" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/dist/types/common/lists/ObjectSet.d.ts" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/dist/types/common/lists/ObservableMap.d.ts" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/dist/types/common/lists/ObservableSet.d.ts" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/dist/types/common/lists/SortedList.d.ts" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/dist/types/common/lists/base/ListChangedObject.d.ts" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/dist/types/common/lists/base/MapChangedObject.d.ts" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/dist/types/common/lists/base/SetChangedObject.d.ts" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/dist/types/common/lists/contracts/ICompare.d.ts" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/dist/types/common/lists/contracts/IListChanged.d.ts" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/dist/types/common/lists/contracts/IMapChanged.d.ts" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/dist/types/common/lists/contracts/ISetChanged.d.ts" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/dist/types/common/lists/helpers/array.d.ts" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/dist/types/common/lists/helpers/compare.d.ts" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/dist/types/common/lists/helpers/set.d.ts" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/dist/types/common/random/Random.d.ts" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/dist/types/common/random/uuid.d.ts" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/dist/types/common/rx/Debugger.d.ts" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/dist/types/common/rx/deep-subscribe/ObjectSubscriber.d.ts" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/dist/types/common/rx/deep-subscribe/RuleBuilder.d.ts" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/dist/types/common/rx/deep-subscribe/contracts/IRuleBuilder.d.ts" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/dist/types/common/rx/deep-subscribe/contracts/common.d.ts" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/dist/types/common/rx/deep-subscribe/contracts/constants.d.ts" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/dist/types/common/rx/deep-subscribe/contracts/deep-subscribe.d.ts" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/dist/types/common/rx/deep-subscribe/contracts/rule-subscribe.d.ts" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/dist/types/common/rx/deep-subscribe/contracts/rules.d.ts" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/dist/types/common/rx/deep-subscribe/deep-subscribe.d.ts" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/dist/types/common/rx/deep-subscribe/helpers/PropertiesPath.d.ts" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/dist/types/common/rx/deep-subscribe/helpers/common.d.ts" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/dist/types/common/rx/deep-subscribe/helpers/func-properties-path.d.ts" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/dist/types/common/rx/deep-subscribe/iterate-rule.d.ts" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/dist/types/common/rx/deep-subscribe/rules-subscribe.d.ts" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/dist/types/common/rx/deep-subscribe/rules.d.ts" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/dist/types/common/rx/deferred-calc/DeferredCalc.d.ts" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/dist/types/common/rx/deferred-calc/timing.d.ts" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/dist/types/common/rx/depend/all.d.ts" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/dist/types/common/rx/depend/contracts.d.ts" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/dist/types/common/rx/extensions/autoConnect.d.ts" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/dist/types/common/rx/object/IPropertyChanged.d.ts" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/dist/types/common/rx/object/ObservableClass.d.ts" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/dist/types/common/rx/object/ObservableObject.d.ts" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/dist/types/common/rx/object/ObservableObjectBuilder.d.ts" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/dist/types/common/rx/object/PropertyChangedObject.d.ts" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/dist/types/common/rx/object/properties/CalcObjectBuilder.d.ts" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/dist/types/common/rx/object/properties/CalcProperty.d.ts" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/dist/types/common/rx/object/properties/CalcPropertyBuilder.d.ts" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/dist/types/common/rx/object/properties/CalcPropertyDependenciesBuilder.d.ts" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/dist/types/common/rx/object/properties/Connector.d.ts" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/dist/types/common/rx/object/properties/ConnectorBuilder.d.ts" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/dist/types/common/rx/object/properties/DependenciesBuilder.d.ts" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/dist/types/common/rx/object/properties/ISerializableObservableObject.d.ts" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/dist/types/common/rx/object/properties/Property.d.ts" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/dist/types/common/rx/object/properties/contracts.d.ts" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/dist/types/common/rx/object/properties/helpers.d.ts" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/dist/types/common/rx/subjects/behavior.d.ts" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/dist/types/common/rx/subjects/hasSubscribers.d.ts" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/dist/types/common/rx/subjects/observable.d.ts" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/dist/types/common/rx/subjects/subject.d.ts" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/dist/types/common/test/Assert.d.ts" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/dist/types/common/test/Calc.d.ts" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/dist/types/common/test/DeepCloneEqual.d.ts" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/dist/types/common/test/Mocha.d.ts" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/dist/types/common/test/Variants.d.ts" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/dist/types/common/test/calc-mem-allocate.d.ts" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/dist/types/common/test/helpers.d.ts" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/dist/types/common/test/unhandledErrors.d.ts" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/dist/types/common/time/TimeLimit.d.ts" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/dist/types/common/time/TimeLimits.d.ts" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/dist/types/common/time/helpers.d.ts" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/dist/types/node/index.d.ts" beforeDir="false" />
+    <list default="true" id="69b2ee16-521b-4efd-b473-8e19e3df4d09" name="Default Changelist" comment="">
+      <change beforePath="$PROJECT_DIR$/src/main/common/helpers/helpers.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/common/helpers/helpers.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/common/rx/depend/core/contracts.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/common/rx/depend/core/contracts.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/common/rx/depend/core/current-state.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/common/rx/depend/core/current-state.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/common/rx/object/properties/contracts.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/common/rx/object/properties/contracts.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/common/rx/object/properties/path/builder.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/common/rx/object/properties/path/builder.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/common/rx/object/properties/path/builder/contracts/common.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/common/rx/object/properties/path/builder/contracts/common.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/common/rx/object/properties/path/dependDeepSubscriber.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/common/rx/object/properties/path/dependDeepSubscriber.ts" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -585,21 +498,7 @@
       <workItem from="1588248569392" duration="29000" />
       <workItem from="1588305192970" duration="10281000" />
       <workItem from="1588344581732" duration="156000" />
-      <workItem from="1588402877237" duration="7952000" />
-    </task>
-    <task id="LOCAL-00443" summary="Path Builder: refactoring... Tests OK">
-      <created>1587806347916</created>
-      <option name="number" value="00443" />
-      <option name="presentableId" value="LOCAL-00443" />
-      <option name="project" value="LOCAL" />
-      <updated>1587806347919</updated>
-    </task>
-    <task id="LOCAL-00444" summary="Path Builder: refactoring... Tests OK">
-      <created>1587806773668</created>
-      <option name="number" value="00444" />
-      <option name="presentableId" value="LOCAL-00444" />
-      <option name="project" value="LOCAL" />
-      <updated>1587806773673</updated>
+      <workItem from="1588402877237" duration="9000000" />
     </task>
     <task id="LOCAL-00445" summary="Path Builder: iterate-rules...">
       <created>1587822560887</created>
@@ -930,7 +829,21 @@
       <option name="project" value="LOCAL" />
       <updated>1588413030411</updated>
     </task>
-    <option name="localTasksCounter" value="492" />
+    <task id="LOCAL-00492" summary="Prepare v2: deleted unnecessary TimeLimits. Tests OK.">
+      <created>1588413292838</created>
+      <option name="number" value="00492" />
+      <option name="presentableId" value="LOCAL-00492" />
+      <option name="project" value="LOCAL" />
+      <updated>1588413292838</updated>
+    </task>
+    <task id="LOCAL-00493" summary="Prepare v2: deleted unnecessary BinaryTree. Tests OK.">
+      <created>1588413404087</created>
+      <option name="number" value="00493" />
+      <option name="presentableId" value="LOCAL-00493" />
+      <option name="project" value="LOCAL" />
+      <updated>1588413404087</updated>
+    </task>
+    <option name="localTasksCounter" value="494" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -991,7 +904,6 @@
   <component name="VcsManagerConfiguration">
     <option name="CHECK_CODE_SMELLS_BEFORE_PROJECT_COMMIT" value="false" />
     <option name="CHECK_NEW_TODO" value="false" />
-    <MESSAGE value="Refactoring: add webrainEquals() helper" />
     <MESSAGE value="Refactoring completed. Tests OK." />
     <MESSAGE value="depend: stress test all, 140 tests (1 hour) is OK." />
     <MESSAGE value="Small changes." />
@@ -1010,13 +922,14 @@
     <MESSAGE value="Prepare v2: deleted deep-subscriber. Tests OK." />
     <MESSAGE value="Prepare v2: deleting unnecessary lists... Tests OK." />
     <MESSAGE value="Prepare v2: deleted unnecessary lists. Tests OK." />
-    <MESSAGE value="Prepare v2: deleted unnecessary TimeLimits. Tests OK." />
     <MESSAGE value="Prepare v2: deleted unnecessary autoConnect. Tests OK." />
     <MESSAGE value="Prepare v2... Tests OK." />
     <MESSAGE value="Prepare v2. Deleted commented files. Lint fixes. Tests OK." />
     <MESSAGE value="Prepare v2. Deleted unused dependencies. Tests OK." />
     <MESSAGE value="Prepare v2. Deleted getTupleId/getTupleIdMap" />
-    <option name="LAST_COMMIT_MESSAGE" value="Prepare v2. Deleted getTupleId/getTupleIdMap" />
+    <MESSAGE value="Prepare v2: deleted unnecessary TimeLimits. Tests OK." />
+    <MESSAGE value="Prepare v2: deleted unnecessary BinaryTree. Tests OK." />
+    <option name="LAST_COMMIT_MESSAGE" value="Prepare v2: deleted unnecessary BinaryTree. Tests OK." />
   </component>
   <component name="WindowStateProjectService">
     <state x="38" y="39" width="1718" height="786" key="#com.intellij.execution.impl.EditConfigurationsDialog" timestamp="1588047767217">
@@ -1031,18 +944,18 @@
       <screen x="0" y="0" width="1920" height="882" />
     </state>
     <state x="717" y="85" key="#com.intellij.ide.util.MemberChooser/0.0.1920.882@0.0.1920.882" timestamp="1587806074143" />
-    <state x="623" y="124" key="#com.intellij.refactoring.safeDelete.UnsafeUsagesDialog" timestamp="1588412953446">
+    <state x="623" y="124" key="#com.intellij.refactoring.safeDelete.UnsafeUsagesDialog" timestamp="1588413339123">
       <screen x="0" y="0" width="1920" height="882" />
     </state>
-    <state x="623" y="124" key="#com.intellij.refactoring.safeDelete.UnsafeUsagesDialog/0.0.1920.882@0.0.1920.882" timestamp="1588412953446" />
-    <state x="651" y="254" key="ANALYSIS_DLG_com.intellij.analysis.BaseAnalysisAction$1" timestamp="1588413088570">
+    <state x="623" y="124" key="#com.intellij.refactoring.safeDelete.UnsafeUsagesDialog/0.0.1920.882@0.0.1920.882" timestamp="1588413339123" />
+    <state x="651" y="254" key="ANALYSIS_DLG_com.intellij.analysis.BaseAnalysisAction$1" timestamp="1588413930131">
       <screen x="0" y="0" width="1920" height="882" />
     </state>
-    <state x="651" y="254" key="ANALYSIS_DLG_com.intellij.analysis.BaseAnalysisAction$1/0.0.1920.882@0.0.1920.882" timestamp="1588413088570" />
-    <state x="-2" y="0" width="1918" height="882" key="CommitChangelistDialog2" timestamp="1588413029029">
+    <state x="651" y="254" key="ANALYSIS_DLG_com.intellij.analysis.BaseAnalysisAction$1/0.0.1920.882@0.0.1920.882" timestamp="1588413930131" />
+    <state x="-2" y="0" width="1918" height="882" key="CommitChangelistDialog2" timestamp="1588413403056">
       <screen x="0" y="0" width="1920" height="882" />
     </state>
-    <state x="-2" y="0" width="1918" height="882" key="CommitChangelistDialog2/0.0.1920.882@0.0.1920.882" timestamp="1588413029029" />
+    <state x="-2" y="0" width="1918" height="882" key="CommitChangelistDialog2/0.0.1920.882@0.0.1920.882" timestamp="1588413403056" />
     <state width="884" height="550" key="DebuggerActiveHint" timestamp="1588307652026">
       <screen x="0" y="0" width="1920" height="882" />
     </state>
@@ -1055,22 +968,22 @@
       <screen x="0" y="0" width="1920" height="882" />
     </state>
     <state x="1059" y="106" key="FileChooserDialogImpl/0.0.1920.882@0.0.1920.882" timestamp="1587984144460" />
-    <state width="601" height="192" key="GridCell.Tab.0.bottom" timestamp="1588412953485">
+    <state width="601" height="192" key="GridCell.Tab.0.bottom" timestamp="1588414142196">
       <screen x="0" y="0" width="1920" height="882" />
     </state>
-    <state width="601" height="192" key="GridCell.Tab.0.bottom/0.0.1920.882@0.0.1920.882" timestamp="1588412953485" />
-    <state width="601" height="192" key="GridCell.Tab.0.center" timestamp="1588412953484">
+    <state width="601" height="192" key="GridCell.Tab.0.bottom/0.0.1920.882@0.0.1920.882" timestamp="1588414142196" />
+    <state width="601" height="192" key="GridCell.Tab.0.center" timestamp="1588414142196">
       <screen x="0" y="0" width="1920" height="882" />
     </state>
-    <state width="601" height="192" key="GridCell.Tab.0.center/0.0.1920.882@0.0.1920.882" timestamp="1588412953484" />
-    <state width="601" height="192" key="GridCell.Tab.0.left" timestamp="1588412953484">
+    <state width="601" height="192" key="GridCell.Tab.0.center/0.0.1920.882@0.0.1920.882" timestamp="1588414142196" />
+    <state width="601" height="192" key="GridCell.Tab.0.left" timestamp="1588414142196">
       <screen x="0" y="0" width="1920" height="882" />
     </state>
-    <state width="601" height="192" key="GridCell.Tab.0.left/0.0.1920.882@0.0.1920.882" timestamp="1588412953484" />
-    <state width="601" height="192" key="GridCell.Tab.0.right" timestamp="1588412953484">
+    <state width="601" height="192" key="GridCell.Tab.0.left/0.0.1920.882@0.0.1920.882" timestamp="1588414142196" />
+    <state width="601" height="192" key="GridCell.Tab.0.right" timestamp="1588414142196">
       <screen x="0" y="0" width="1920" height="882" />
     </state>
-    <state width="601" height="192" key="GridCell.Tab.0.right/0.0.1920.882@0.0.1920.882" timestamp="1588412953484" />
+    <state width="601" height="192" key="GridCell.Tab.0.right/0.0.1920.882@0.0.1920.882" timestamp="1588414142196" />
     <state width="719" height="500" key="GridCell.Tab.1.bottom" timestamp="1588330186422">
       <screen x="0" y="0" width="1920" height="882" />
     </state>
@@ -1119,10 +1032,10 @@
       <screen x="0" y="0" width="1920" height="882" />
     </state>
     <state width="719" height="500" key="GridCell.Tab.3.right/0.0.1920.882@0.0.1920.882" timestamp="1588330186423" />
-    <state x="693" y="68" key="RollbackChangesDialog" timestamp="1588404230655">
+    <state x="693" y="68" key="RollbackChangesDialog" timestamp="1588413158271">
       <screen x="0" y="0" width="1920" height="882" />
     </state>
-    <state x="693" y="68" key="RollbackChangesDialog/0.0.1920.882@0.0.1920.882" timestamp="1588404230655" />
+    <state x="693" y="68" key="RollbackChangesDialog/0.0.1920.882@0.0.1920.882" timestamp="1588413158271" />
     <state x="343" y="0" key="SettingsEditor" timestamp="1587292504383">
       <screen x="0" y="0" width="1920" height="882" />
     </state>
@@ -1135,10 +1048,10 @@
       <screen x="0" y="0" width="1920" height="882" />
     </state>
     <state x="121" y="111" key="com.intellij.xdebugger.impl.breakpoints.ui.BreakpointsDialogFactory$2/0.0.1920.882@0.0.1920.882" timestamp="1587884348340" />
-    <state x="2" y="1" width="1908" height="878" key="find.popup" timestamp="1588412548690">
+    <state x="2" y="1" width="1908" height="878" key="find.popup" timestamp="1588413137170">
       <screen x="0" y="0" width="1920" height="882" />
     </state>
-    <state x="2" y="1" width="1908" height="878" key="find.popup/0.0.1920.882@0.0.1920.882" timestamp="1588412548690" />
+    <state x="2" y="1" width="1908" height="878" key="find.popup/0.0.1920.882@0.0.1920.882" timestamp="1588413137170" />
     <state x="732" y="169" key="refactoring.ChangeSignatureDialog" timestamp="1587872020169">
       <screen x="0" y="0" width="1920" height="882" />
     </state>

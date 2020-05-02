@@ -12,16 +12,6 @@ export function setCurrentState(state: TCallStateAny) {
 	currentState = state
 }
 
-function _noSubscribe<TValue>(func: () => TValue): TValue {
-	const prevState = getCurrentState()
-	try {
-		setCurrentState(null)
-		return func()
-	} finally {
-		setCurrentState(prevState)
-	}
-}
-
 function *_noSubscribeAsync<TValue>(iterator: Iterator<any, TValue>): Iterator<any, TValue> {
 	const prevState = getCurrentState()
 	try {

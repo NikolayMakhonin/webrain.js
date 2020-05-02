@@ -461,13 +461,6 @@ export class PathGetSet<TObject, TValue> {
 	public static readonly build = pathGetSetBuild
 }
 
-export type TGetNextPathGet<TObject, TValue, TNextValue>
-	= (nextValue: TGetPropertyPathGet<TObject, TValue>) => TGetPropertyPathGet<TObject, TNextValue>
-export type TGetNextPathSet<TObject, TValue, TNextValue>
-	= (nextValue: TGetPropertyPathGet<TObject, TValue>) => TGetPropertyPathSet<TObject, TNextValue>
-export type TGetNextPathGetSet<TObject, TValue, TNextValue>
-	= (nextValue: TGetPropertyPathGetSet<TObject, TValue>) => TGetPropertyPathGetSet<TObject, TNextValue>
-
 export type TNextPath<TObject, TValue, TNextValue>
 	= (path: Path<TObject, TValue>) => Path<TObject, TNextValue>
 

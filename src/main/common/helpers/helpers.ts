@@ -29,35 +29,6 @@ export function typeToDebugString(type) {
 export const EMPTY: any = function EMPTY() {}
 
 export type TClass<T> = new (...args: any[]) => T
-export type TFunc<TResult> = (...args: any[]) => TResult
-
-export function checkIsFuncOrNull<T extends TFunc<any>|void>(func: T): T {
-	// PROF: 66 - 0.1%
-	if (func != null && typeof func !== 'function') {
-		throw new Error(`Value is not a function or null/undefined: ${func}`)
-	}
-	return func
-}
-
-export function toSingleCall<T extends TFunc<any>|void>(func: T, throwOnMultipleCall?: boolean): T {
-	if (func == null) {
-		return func
-	}
-
-	func = checkIsFuncOrNull(func)
-
-	let isCalled = false
-	return ((...args) => {
-		if (isCalled) {
-			if (throwOnMultipleCall) {
-				throw new Error(`Multiple call for single call function: ${func}`)
-			}
-			return
-		}
-		isCalled = true
-		return (func as TFunc<any>)(...args)
-	}) as any
-}
 
 const allowCreateFunction = (() => {
 	try {
@@ -79,20 +50,6 @@ export function createFunction(alternativeFuncFactory, ...args: string[]): Funct
 			: alternativeFuncFactory()
 	}
 	return func
-}
-
-export function hideObjectProperty(object: object, propertyName: string) {
-	const descriptor = Object.getOwnPropertyDescriptor(object, propertyName)
-	if (descriptor) {
-		descriptor.enumerable = false
-		return
-	}
-
-	Object.defineProperty(object, propertyName, {
-		configurable: true,
-		enumerable: false,
-		value: object[propertyName],
-	})
 }
 
 export function equalsObjects(o1, o2) {
