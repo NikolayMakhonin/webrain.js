@@ -6,7 +6,6 @@
 
 import {List as ImmutableList, Map as ImmutableMap, Set as ImmutableSet} from 'immutable'
 import {calcPerformance} from 'rdtsc'
-import {SynchronousPromise} from 'synchronous-promise'
 import {resolveValue} from '../../../main/common/async/async'
 import {resolveAsync, ThenableSync} from '../../../main/common/async/ThenableSync'
 import {createFunction, isIterable} from '../../../main/common/helpers/helpers'
@@ -1396,32 +1395,11 @@ describe('fundamental-operations', function() {
 			},
 			() => {
 				let resolve
-				new SynchronousPromise(o => {
-					resolve = o
-				})
-					.then(o => true)
-					// .then(o => true)
-
-				resolve(1)
-			},
-			() => {
-				let resolve
 				new ThenableSync(o => {
 					resolve = o
 				})
 					.then(o => true)
 					// .then(o => true)
-
-				resolve(1)
-			},
-			() => {
-				let resolve
-				let result
-				new SynchronousPromise(o => {
-					resolve = o
-				})
-					.then(o => true)
-					.then(o => (result = o))
 
 				resolve(1)
 			},

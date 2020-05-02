@@ -129,7 +129,6 @@
     "rollup-plugin-terser": "^5.2.0",
     "rollup-pluginutils": "^2.8.2",
     "shx": "^0.3.2",
-    "synchronous-promise": "^2.0.10",
     "tslint": "^5.20.1",
     "tslint-clean-code": "^0.2.10",
     "tslint-consistent-codestyle": "^1.16.0",
