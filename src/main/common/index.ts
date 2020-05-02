@@ -65,8 +65,6 @@ import {
 } from './extensions/serialization/contracts'
 import {TClass as _TClass} from './helpers/helpers'
 import {HasDefaultOrValue as _HasDefaultOrValue} from './helpers/value-property'
-import {IObservableMap as _IObservableMap} from './lists/contracts/IMapChanged'
-import {IObservableSet as _IObservableSet} from './lists/contracts/ISetChanged'
 import {
 	ICallState as _ICallState,
 	IDeferredOptions as _IDeferredOptions,
@@ -107,8 +105,6 @@ export type TClass<T> = _TClass<T>
 export type IMergeOptions = _IMergeOptions
 export type IMergeValue = _IMergeValue
 export type IMergeable<TTarget, TSource = any> = _IMergeable<TTarget, TSource>
-export type IObservableMap<K, V> = _IObservableMap<K, V>
-export type IObservableSet<T> = _IObservableSet<T>
 export type IObservable<T> = _IObservable<T>
 export type ISubject<T> = _ISubject<T>
 export type IPropertyChangedObject = _IPropertyChangedObject
