@@ -11,6 +11,8 @@
 
 [Support development $][patreon-url]
 
+**webrain v1 is not supported anymore, use next version**
+
 # Description
 
 **Status:** integration and debugging on real production project (90% completed)
