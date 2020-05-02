@@ -109,9 +109,6 @@ export type ThenableIterator<T> = _ThenableIterator<T>
 export type ThenableOrValue<T> = _ThenableOrValue<T>
 export type ICalcProperty<TValue, TInput> = _ICalcProperty<TValue, TInput>
 export type HasDefaultOrValue<T> = _HasDefaultOrValue<T>
-export type ITimeLimitBase = _ITimeLimitBase
-export type ITimeLimit = _ITimeLimit
-export type ITimeLimits = _ITimeLimits
 export type IDeferredOptions = _IDeferredOptions
 export type ICallState<TThisOuter, TArgs extends any[], TResultInner>
 	= _ICallState<TThisOuter, TArgs, TResultInner>
