@@ -4,6 +4,9 @@
 export {ThenableSync} from './async/ThenableSync'
 export {ObservableClass} from './rx/object/ObservableClass'
 export {ObservableObject} from './rx/object/ObservableObject'
+export {ObjectBuilder} from './rx/object/ObjectBuilder'
+export {ClassBuilder} from './rx/object/ClassBuilder'
+export {ObservableObjectBuilder} from './rx/object/ObservableObjectBuilder'
 export {DependCalcObjectBuilder} from './rx/object/properties/DependCalcObjectBuilder'
 export {createFunction} from './helpers/helpers'
 export {getObjectUniqueId} from './helpers/object-unique-id'
@@ -88,6 +91,15 @@ import {
 	IConnectFieldOptions as _IConnectFieldOptions,
 } from './rx/object/properties/DependConnectorBuilder'
 import {TSubscribeFunc as _TSubscribeFunc} from './rx/object/properties/path/dependDeepSubscriber'
+import {
+	Func as _Func,
+	FuncAny as _FuncAny,
+	ArgsOf as _ArgsOf,
+	ResultOf as _ResultOf,
+	AsyncResultOf as _AsyncResultOf,
+	KeysOf as _KeysOf,
+	OptionalNested as _OptionalNested,
+} from './helpers/typescript'
 
 export type ISubscriber<T> = _ISubscriber<T>
 export type IUnsubscribe = _IUnsubscribe
@@ -117,6 +129,13 @@ export type IReadableFieldOptions<TObject, TValue> = _IReadableFieldOptions<TObj
 export type IUpdatableFieldOptions<TObject, TValue> = _IUpdatableFieldOptions<TObject, TValue>
 export type IConnectFieldOptions<TObject, TValue> = _IConnectFieldOptions<TObject, TValue>
 export type TSubscribeFunc<TObject, TValue> = _TSubscribeFunc<TObject, TValue>
+export type Func<TThis, TArgs extends any[], TValue = void> = _Func<TThis, TArgs, TValue>
+export type FuncAny = _FuncAny
+export type ArgsOf<TFunc> = _ArgsOf<TFunc>
+export type ResultOf<TFunc> = _ResultOf<TFunc>
+export type AsyncResultOf<TFunc> = _AsyncResultOf<TFunc>
+export type KeysOf<TObject, TValue> = _KeysOf<TObject, TValue>
+export type OptionalNested<TObject> = _OptionalNested<TObject>
 
 // endregion
 

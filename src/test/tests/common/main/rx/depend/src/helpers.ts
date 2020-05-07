@@ -6,9 +6,10 @@ import {
 	valueIdToStateMap,
 	valueToIdMap,
 } from '../../../../../../../main/common/rx/depend/core/CallState'
-import {Func, ICallState} from '../../../../../../../main/common/rx/depend/core/contracts'
+import {ICallState} from '../../../../../../../main/common/rx/depend/core/contracts'
 import {depend} from '../../../../../../../main/common/rx/depend/core/depend'
 import {assert} from '../../../../../../../main/common/test/Assert'
+import {Func} from "../../../../../../../main/common/helpers/typescript";
 
 // region makeDependentFunc
 

@@ -2,6 +2,7 @@ import {createFunction, missingSetter} from '../../helpers/helpers'
 import {webrainEquals} from '../../helpers/webrainOptions'
 import {depend} from '../../rx/depend/core/depend'
 import {PropertyChangedEvent} from './IPropertyChanged'
+import {ObjectBuilder} from './ObjectBuilder'
 import {_set, _setExt, ISetOptions, ObservableClass} from './ObservableClass'
 
 export interface IFieldOptions<TObject, TValue> {
@@ -23,11 +24,9 @@ export interface IUpdatableFieldOptions<TObject, TValue> extends IReadableFieldO
 	update?: (this: TObject, value: any) => TValue|void
 }
 
-export class ObservableObjectBuilder<TObject extends ObservableClass> {
-	public object: TObject
-
+export class ObservableObjectBuilder<TObject extends ObservableClass> extends ObjectBuilder<TObject> {
 	constructor(object?: TObject) {
-		this.object = object || new ObservableClass() as TObject
+		super(object || new ObservableClass() as TObject)
 	}
 
 	public writable<

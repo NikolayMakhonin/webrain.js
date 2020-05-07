@@ -4,8 +4,9 @@ import {webrainOptions} from '../../helpers/webrainOptions'
 import {createConnector} from '../object/properties/helpers'
 import {IUnsubscribe} from '../subjects/observable'
 import {dependBindThis, getOrCreateCallState, subscribeCallState} from './core/CallState'
-import {CallStatusShort, Func, TInnerValue} from './core/contracts'
+import {CallStatusShort, TInnerValue} from './core/contracts'
 import {dependX} from './core/depend'
+import {Func} from "../../helpers/typescript";
 
 function simpleCondition(value) {
 	return value != null

@@ -1,8 +1,8 @@
 import {IThenable, ThenableOrValue} from '../../../async/async'
 import {ISubscriber, IUnsubscribe} from '../../subjects/observable'
 import {TFuncCall} from './CallState'
+import {Func} from "../../../helpers/typescript";
 
-export type Func<TThis, TArgs extends any[], TValue = void> = (this: TThis, ...args: TArgs) => TValue
 export type TCall<TArgs extends any[]> = <TThis, TValue>(_this: TThis, func: Func<TThis, TArgs, TValue>) => TValue
 
 export interface ILinkItem<T> {

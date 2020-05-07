@@ -30,6 +30,8 @@
 
 // export type Not<T, NotType> = T extends NotType ? never : T
 
+import {AsyncValueOf} from "../async/async";
+
 /** Remove types from T that are assignable to U */
 export type Diff<T, U> = T extends U ? never : T
 /** Remove types from T that are not assignable to U */
@@ -38,7 +40,19 @@ export type Filter<T, U> = T extends U ? T : never
 // type T30 = Diff<'a' | 'b' | 'c' | 'd', 'a' | 'c' | 'f'>  // "b" | "d"
 // type T31 = Filter<'a' | 'b' | 'c' | 'd', 'a' | 'c' | 'f'>  // "a" | "c"
 
-export type NotFunction<T> = T extends Function ? never : T
+export type Func<TThis, TArgs extends any[], TValue = void> = (this: TThis, ...args: TArgs) => TValue
+export type FuncAny = Func<any, any[], any>
+export type NotFunc<T> = T extends Function ? never : T
+export type ArgsOf<TFunc> = TFunc extends (...args: infer TArgs) => any
+	? TArgs
+	: never
+export type ResultOf<TFunc> = TFunc extends (...args: any[]) => infer TResult
+	? TResult
+	: never
+export type AsyncResultOf<TFunc> = AsyncValueOf<ResultOf<TFunc>>
+export type KeysOf<TObject, TValue> = {
+	[TKey in keyof TObject]: TObject[TKey] extends TValue ? TKey : never
+}[keyof TObject]
 
 export type TPrimitiveNotNullable = boolean | number | string | null | undefined | symbol | bigint | void
 export type TPrimitiveNullable = Boolean | Number | String | Symbol | BigInt | Date
@@ -46,3 +60,9 @@ export type TPrimitive = TPrimitiveNotNullable | TPrimitiveNullable
 
 export type TClass<TArgs extends any[],
 	_TClass> = new(...args: TArgs) => _TClass
+
+export type OptionalNested<TObject> = TObject extends object
+	? {
+		[TKey in keyof TObject]?: OptionalNested<TObject[TKey]>
+	}
+	: TObject

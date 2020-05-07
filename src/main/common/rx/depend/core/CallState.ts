@@ -16,9 +16,10 @@ import {fastNow} from '../../../time/helpers'
 import {DeferredCalc, IDeferredCalcOptions} from '../../deferred-calc/DeferredCalc'
 import {ISubscriber, IUnsubscribe} from '../../subjects/observable'
 import {ISubject, Subject} from '../../subjects/subject'
-import {CallStatus, CallStatusShort, Func, ICallState, ILinkItem, TCall, TInnerValue, TResultOuter} from './contracts'
+import {CallStatus, CallStatusShort, ICallState, ILinkItem, TCall, TInnerValue, TResultOuter} from './contracts'
 import {getCurrentState, setCurrentState} from './current-state'
 import {InternalError} from './helpers'
+import {Func} from "../../../helpers/typescript";
 
 // region CallStatus
 

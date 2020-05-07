@@ -573,61 +573,6 @@ describe('fundamental-operations', function() {
 		console.log(result)
 	})
 
-	// xit('array capacity', function () {
-	// 	this.timeout(300000)
-	//
-	// 	let arr
-	//
-	// 	const result = calcPerformance(
-	// 		60000,
-	// 		() => {
-	// 			// no operations
-	// 		},
-	// 		() => { // 821
-	// 			arr = [1, 2, 3, 4, 5]
-	// 			arr.length = 10
-	// 		},
-	// 		() => {
-	// 			arr.push(6) // 16
-	// 		},
-	// 		() => {
-	// 			arr = arr.slice(5, 1) // 265
-	// 		},
-	// 		() => { // 737
-	// 			arr = [1, 2, 3, 4, 5]
-	// 			arr.length = 10
-	// 		},
-	// 		() => {
-	// 			arr[5] = 6 // 20
-	// 		},
-	// 		() => {
-	// 			delete arr[5] // 238
-	// 		},
-	// 		() => { // 74
-	// 			arr = new Array(10)
-	// 			copyToArray([1, 2, 3, 4, 5], arr)
-	// 		},
-	// 		() => {
-	// 			arr.push(6) // 146
-	// 		},
-	// 		() => {
-	// 			arr.splice(5, 1) // 771
-	// 		},
-	// 		() => { // 55
-	// 			arr = new Array(10)
-	// 			copyToArray([1, 2, 3, 4, 5], arr)
-	// 		},
-	// 		() => {
-	// 			arr[5] = 6 // 1
-	// 		},
-	// 		() => {
-	// 			delete arr[5] // 231
-	// 		}
-	// 	)
-	//
-	// 	console.log(result)
-	// })
-
 	function calcSortCompareCount(array, size, addArray) {
 		// array.length = size
 		let count = 0

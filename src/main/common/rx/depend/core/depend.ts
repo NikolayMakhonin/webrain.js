@@ -2,8 +2,9 @@ import {isThenable, ThenableOrIterator, ThenableOrValue} from '../../../async/as
 import {ThenableSync} from '../../../async/ThenableSync'
 import {DeferredCalc, IDeferredCalcOptions} from '../../deferred-calc/DeferredCalc'
 import {CallState, makeDependentFunc, TFuncCall} from './CallState'
-import {Func, IDeferredOptions} from './contracts'
+import {IDeferredOptions} from './contracts'
 import {InternalError} from './helpers'
+import {Func} from "../../../helpers/typescript";
 
 // region makeDeferredFunc
 

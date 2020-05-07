@@ -1,12 +1,12 @@
 import {IteratorOrValue, ThenableOrIteratorOrValue} from '../../../async/async'
-import {NotFunction, TClass} from '../../../helpers/typescript'
+import {FuncAny, NotFunc, TClass} from '../../../helpers/typescript'
 import {VALUE_PROPERTY_DEFAULT} from '../../../helpers/value-property'
 import {depend, dependX} from '../../../rx/depend/core/depend'
 import {CallState} from '../../depend/core/CallState'
 import {IDeferredOptions} from '../../depend/core/contracts'
 import {makeDependPropertySubscriber} from '../helpers'
 import {ObservableClass} from '../ObservableClass'
-import {ObservableObjectBuilder} from '../ObservableObjectBuilder'
+import {IReadableFieldOptions, IWritableFieldOptions, ObservableObjectBuilder} from '../ObservableObjectBuilder'
 import {ValueKeys} from './contracts'
 import {DependConnectorBuilder} from './DependConnectorBuilder'
 import {observableClass} from './helpers'
@@ -47,6 +47,39 @@ export class DependCalcObjectBuilder<
 	) {
 		super(object, connectorSourcePath)
 		this.calcSourcePath = calcSourcePath
+	}
+
+	// @ts-ignore
+	public func<
+		Name extends keyof TObject,
+		TValue = TObject[Name] & FuncAny,
+	>(
+		name: Name,
+		func: TValue,
+	): this {
+		return super.func(name as any, func)
+	}
+
+	// @ts-ignore
+	public writable<
+		Name extends keyof TObject,
+	>(
+		name: Name,
+		options?: IWritableFieldOptions<TObject, TObject[Name]>,
+		initValue?: TObject[Name],
+	): this {
+		return super.writable(name as any, options, initValue)
+	}
+
+	// @ts-ignore
+	public readable<
+		Name extends keyof TObject,
+	>(
+		name: Name,
+		options?: IReadableFieldOptions<TObject, TObject[Name]>,
+		initValue?: TObject[Name],
+	): this {
+		return super.readable(name as any, options, initValue)
 	}
 
 	public simpleCalc<
@@ -116,7 +149,7 @@ export class DependCalcObjectBuilder<
 		Name extends keyof TObject,
 	>(
 		name: Name,
-		inputOrFactory: ((source: TObject, name?: string) => TInput) | NotFunction<TInput>,
+		inputOrFactory: ((source: TObject, name?: string) => TInput) | NotFunc<TInput>,
 		calcFactory: (input: TInput, name?: string) => CalcPropertyClass<TObject[Name], TInput>,
 	): this { // & { object: { readonly [newProp in Name]: TObject[Name] } } {
 		return (this as ObservableObjectBuilder<TObject>)

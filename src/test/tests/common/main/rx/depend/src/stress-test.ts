@@ -7,7 +7,6 @@ import {
 } from '../../../../../../../main/common/rx/depend/core/CallState'
 import {
 	CallStatus,
-	Func,
 	ICallState,
 	ICallStateAny,
 	IDeferredOptions,
@@ -17,6 +16,7 @@ import {depend, dependX} from '../../../../../../../main/common/rx/depend/core/d
 import {assert} from '../../../../../../../main/common/test/Assert'
 import {delay} from '../../../../../../../main/common/time/helpers'
 import {clearCallStates} from './helpers'
+import {Func} from "../../../../../../../main/common/helpers/typescript";
 
 // region contracts
 
