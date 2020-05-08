@@ -1521,7 +1521,12 @@ export function createCallStateProvider<
 			return callState
 		}
 
-		const valueIdsClone: Int32Array = _valueIdsBuffer.slice(0, countValueStates)
+		// const valueIdsClone: Int32Array = _valueIdsBuffer.slice(0, countValueStates)
+		const valueIdsClone = new Int32Array(countValueStates)
+		for (let i = 0; i < countValueStates; i++) {
+			valueIdsClone[i] = _valueIdsBuffer[i]
+		}
+
 		for (let i = 0; i < countValueStates; i++) {
 			if (i > 0) {
 				const valueState = getValueState(_valueIdsBuffer[i])
