@@ -1055,7 +1055,34 @@ function deepEqualsPrimitive(o1, o2) {
 registerMerger<any[], any[]>(Array, {
 	merger: {
 		canMerge(target: any[], source: any[]): boolean {
-			return deepEqualsPrimitive(target, source) ? null : false
+			return deepEqualsPrimitive(target, source)
+				? null
+				: true
+		},
+		merge(
+			merge: IMergeValue,
+			base: any[],
+			older: any[],
+			newer: any[],
+			set?: (value: any[]) => void,
+			preferCloneOlder?: boolean,
+			preferCloneNewer?: boolean,
+			options?: IMergeOptions,
+		): boolean {
+			if (!base || Object.isFrozen(base)) {
+				set(newer && preferCloneNewer
+					? newer.slice()
+					: newer)
+				return
+			}
+
+			const len = newer.length
+			for (let i = 0; i < len; i++) {
+				base[i] = newer[i]
+			}
+			base.length = len
+
+			return true
 		},
 	},
 	preferClone: o => Object.isFrozen(o) ? true : null,

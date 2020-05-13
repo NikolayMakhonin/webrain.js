@@ -580,8 +580,8 @@ describe('common > extensions > merge > ObjectMerger', function() {
 			expected: {
 				error: null,
 				returnValue: true,
-				setValue: NEWER,
-				base: BASE,
+				setValue: NONE,
+				base: [3],
 				older: OLDER,
 				newer: NEWER,
 			},
