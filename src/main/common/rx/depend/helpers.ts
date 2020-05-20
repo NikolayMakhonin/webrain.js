@@ -86,10 +86,18 @@ export function autoCalc<
 	TResultInner,
 >(
 	func: Func<TThisOuter, TArgs, TResultInner>,
+	dontLogErrors?: boolean,
 ): Func<TThisOuter, TArgs, IUnsubscribe> {
 	return function() {
 		return subscribeCallState(
 			getOrCreateCallState(func).apply(this, arguments),
+			dontLogErrors
+				? null
+				: state => {
+					if (state.statusShort === CallStatusShort.CalculatedError) {
+						console.error(state.error)
+					}
+				},
 		)
 	}
 }
@@ -101,6 +109,7 @@ export function autoCalcConnect<
 	object: TObject,
 	connectorFactory: (source: TObject, name?: string) => TConnector,
 	func: Func<TConnector, [], any>,
+	dontLogErrors?: boolean,
 ) {
 	return autoCalc(dependBindThis(
 		createConnector(
@@ -108,7 +117,7 @@ export function autoCalcConnect<
 			connectorFactory,
 		),
 		func,
-	))
+	), dontLogErrors)
 }
 
 export function dependWrapThis<

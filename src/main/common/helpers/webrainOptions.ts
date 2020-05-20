@@ -16,6 +16,7 @@ export const webrainOptions = {
 			interval: 1000,
 			disabled: false,
 		},
+		logCaughtErrors: false,
 	},
 	timeouts: {
 		dependWait: 60000,

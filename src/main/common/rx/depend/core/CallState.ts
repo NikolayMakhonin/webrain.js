@@ -9,6 +9,7 @@ import {
 } from '../../../async/async'
 import {resolveAsync, ThenableSync} from '../../../async/ThenableSync'
 import {isIterator, nextHash} from '../../../helpers/helpers'
+import {Func} from '../../../helpers/typescript'
 import {webrainEquals, webrainOptions} from '../../../helpers/webrainOptions'
 import {ObjectPool} from '../../../lists/ObjectPool'
 import {PairingHeap, PairingNode} from '../../../lists/PairingHeap'
@@ -19,7 +20,6 @@ import {ISubject, Subject} from '../../subjects/subject'
 import {CallStatus, CallStatusShort, ICallState, ILinkItem, TCall, TInnerValue, TResultOuter} from './contracts'
 import {getCurrentState, setCurrentState} from './current-state'
 import {InternalError} from './helpers'
-import {Func} from "../../../helpers/typescript";
 
 // region CallStatus
 
@@ -1122,6 +1122,9 @@ export class CallState<
 			this._lastAccessTime = fastNow()
 			this._afterCalc(prevStatus, true)
 			this.onChanged()
+			if (webrainOptions.callState.logCaughtErrors) {
+				console.error(error)
+			}
 		} else {
 			this._afterCalc(prevStatus, false)
 		}
