@@ -135,12 +135,12 @@ export class Random {
 
 	public nextArrayItems<T>(array: T[], minCount: number, relativeMaxCount: number): T[] {
 		arrayShuffle(array, () => this.next())
-		const count = this.nextInt(Math.round(array.length * relativeMaxCount))
+		const count = this.nextInt(minCount, Math.round(array.length * relativeMaxCount))
 		return array.slice(0, count)
 	}
 
 	public nextColor(): string {
-		return '#' + this.nextInt(0x1000000).toString(16)
+		return '#' + this.nextInt(0x1000000).toString(16).padStart(6, '0')
 	}
 
 	public nextEnum<TValue extends string, TEnum extends { [key: string]: TValue }>(enumType: TEnum): TValue {
