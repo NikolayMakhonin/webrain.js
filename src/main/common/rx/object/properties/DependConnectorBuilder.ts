@@ -347,6 +347,6 @@ export function dependConnectorFactory<
 	build: (connectorBuilder: DependConnectorBuilder<TBaseClass, TSource>) => { object: TConnectorClass },
 	baseClass?: new (source: TSource, name?: string) => TBaseClass,
 }): (source: TSource, name?: string) => TConnectorClass {
-	const NewConnector = dependConnectorClass(build, baseClass)
+	const NewConnector = dependConnectorClass(build as any, baseClass as any)
 	return (source, _name) => new NewConnector(source, _name != null ? _name : name)
 }

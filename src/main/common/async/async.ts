@@ -1,4 +1,5 @@
 import {equals, isIterator} from '../helpers/helpers'
+/* tslint:disable-next-line:no-circular-imports */
 import {TCallStateAny} from '../rx/depend/core/CallState'
 import {getCurrentState, setCurrentState} from '../rx/depend/core/current-state'
 

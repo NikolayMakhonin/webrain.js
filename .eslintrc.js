@@ -1,8 +1,11 @@
-{
+/* eslint-disable */
+
+module.exports = {
 	"extends": ["pro"],
 	"rules": {
-		"object-curly-newline": "off",
-		"function-paren-newline": "off"
+		// Temporary disable: TypeError: Cannot read property 'value' of null (waiting for update babel-eslint)
+		"template-curly-spacing" : "off",
+		"indent": "off",
 	},
 
 	"env": {
@@ -15,11 +18,14 @@
 		"ecmaVersion": 6,
 		"sourceType": "module",
 		"allowImportExportEverywhere": false,
-		"codeFrame": true
+		"codeFrame": true,
+		"babelOptions": {
+			"configFile": "./env/babel/configs/minimal.js"
+		},
 	},
 
 	"plugins": [
-		"html"
+		"html",
 	],
 	"settings": {
 		"html/indent": "+tab",
