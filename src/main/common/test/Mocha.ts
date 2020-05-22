@@ -28,6 +28,8 @@ export function it(name, func: (this: {
 	return globalScope.it.call(this, name, isFuncWithoutParameters(func)
 		? function() {
 			try {
+				unScheduleAfterAll()
+
 				const result = func.call(this)
 
 				if (result && typeof result.then === 'function') {
@@ -45,18 +47,52 @@ export function it(name, func: (this: {
 				assert.assertNotHandledErrors()
 				return result
 			} finally {
+				scheduleAfterAll()
 				assert.assertNotHandledErrors()
 			}
 		}
 		: function(done) {
 			try {
+				unScheduleAfterAll()
 				return func.call(this, err => {
 					assert.assertNotHandledErrors()
 					done(err)
 				})
 			} finally {
+				scheduleAfterAll()
 				assert.assertNotHandledErrors()
 			}
 		})
 }
 Object.assign(it, globalScope.it)
+
+// region after all
+
+let _afterAll = []
+export function afterAll(func: () => void) {
+	_afterAll.push(func)
+}
+
+function runAfterAll() {
+	console.debug('Mocha runAfterAll()')
+	const funcs = _afterAll
+	_afterAll = null
+	for (let i = 0; i < funcs.length; i++) {
+		funcs[i]()
+	}
+}
+
+let afterAllTimer
+function scheduleAfterAll() {
+	unScheduleAfterAll()
+	afterAllTimer = setTimeout(runAfterAll, 1000)
+}
+
+function unScheduleAfterAll() {
+	if (afterAllTimer != null) {
+		clearTimeout(afterAllTimer)
+		afterAllTimer = null
+	}
+}
+
+// endregion

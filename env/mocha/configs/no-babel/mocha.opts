@@ -1,4 +1,5 @@
 --exclude ./*/**/{src,assets,v8,mjs}/**
+--file ./src/test/tests/common/stop-timers-after-all.ts
 --ui bdd
 --watch-extensions js){100}|^(((?!([\\/](dist|tmp|node_modules|\.[^\\/]*)[\\/]|\.(log|bak)$)).)*
 -r ./env/mocha/configs/no-babel/register
