@@ -85,7 +85,7 @@ function runAfterAll() {
 let afterAllTimer
 function scheduleAfterAll() {
 	unScheduleAfterAll()
-	afterAllTimer = setTimeout(runAfterAll, 1000)
+	afterAllTimer = setTimeout(runAfterAll, 5000)
 }
 
 function unScheduleAfterAll() {

@@ -11,7 +11,7 @@ var unhandledErrors = _require2.unhandledErrors
 var exit = _require2.exit
 
 if (process.version !== 'v4.9.1') {
-	unhandledErrors(() => {
+	unhandledErrors(function () {
 		console.error.apply(console, arguments)
 		assert.throwAssertionError(null, null, 'unhandled error')
 		exit()

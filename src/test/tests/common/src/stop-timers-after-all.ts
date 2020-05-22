@@ -1,4 +1,4 @@
-import {afterAll} from '../../../main/common/test/Mocha'
+import {afterAll} from '../../../../main/common/test/Mocha'
 
 let disableTimers = false
 const oldSetTimeout = global.setTimeout
@@ -34,4 +34,8 @@ afterAll(() => {
 	for (let i = 0; i < intervals.length; i++) {
 		clearInterval(intervals[i])
 	}
+
+	console.debug('Stop timers after all')
 })
+
+console.debug('Init stop timers after all')
