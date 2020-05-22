@@ -1073,7 +1073,7 @@ registerMerger<any[], any[]>(Array, {
 				set(newer && preferCloneNewer
 					? newer.slice()
 					: newer)
-				return
+				return true
 			}
 
 			const len = newer.length

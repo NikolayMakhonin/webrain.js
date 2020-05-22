@@ -218,7 +218,12 @@ class PermutationMixOuelletSaniSinghHuttunen {
 		for (let coreIndex: number = 0; coreIndex < coreCount; coreIndex++) {
 			const stopIndex: number = Math.min(startIndex + partCount, itemsFactorial)
 			const mix = new PermutationMixOuelletSaniSinghHuttunen(sortedValues, startIndex, stopIndex)
-			const task = new Promise(resolve => setTimeout(() => resolve(mix.forEachPermutation(action)), 0))
+			const task = new Promise(resolve => {
+				setTimeout(() => {
+					mix.forEachPermutation(action)
+					resolve()
+				}, 0)
+			})
 			tasks.push(task)
 			if (stopIndex === itemsFactorial) {
 				break

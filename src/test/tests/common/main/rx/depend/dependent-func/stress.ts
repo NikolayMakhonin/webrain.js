@@ -16,7 +16,7 @@ describe('common > main > rx > depend > dependent-func / stress', function() {
 		webrainOptions.callState.garbageCollect.minLifeTime = 500
 	})
 
-	it('all', async function() {
+	xit('all', async function() {
 		await stressTest({
 			// seed: 624649026,
 			testsCount: 10,

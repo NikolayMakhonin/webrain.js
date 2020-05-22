@@ -1,3 +1,4 @@
+/* tslint:disable:no-circular-imports */
 import {
 	AsyncPropertyValueOf,
 	IPathNode,

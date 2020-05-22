@@ -3,13 +3,13 @@ import {Random} from '../../../../../../../main/common/random/Random'
 import {
 	getCallState,
 	getOrCreateCallState,
-	invalidateCallState, TCallStateAny,
+	invalidateCallState,
 } from '../../../../../../../main/common/rx/depend/core/CallState'
 import {
 	CallStatus,
 	ICallState,
 	ICallStateAny,
-	IDeferredOptions,
+	IDeferredOptions, TCallStateAny,
 } from '../../../../../../../main/common/rx/depend/core/contracts'
 import {getCurrentState} from '../../../../../../../main/common/rx/depend/core/current-state'
 import {depend, dependX} from '../../../../../../../main/common/rx/depend/core/depend'

@@ -1,3 +1,4 @@
+/* tslint:disable:no-circular-imports */
 import {AsyncValueOf, ThenableOrIterator} from '../../../../async/async'
 import {VALUE_PROPERTY_DEFAULT} from '../../../../helpers/value-property'
 import {Path} from './builder'

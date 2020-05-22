@@ -5,9 +5,9 @@ import {
 	deleteCallState,
 	getOrCreateCallState,
 	statusToString,
-	TCallStateAny,
+
 } from '../../../../../../../main/common/rx/depend/core/CallState'
-import {CallStatus, IDeferredOptions} from '../../../../../../../main/common/rx/depend/core/contracts'
+import {CallStatus, IDeferredOptions, TCallStateAny} from '../../../../../../../main/common/rx/depend/core/contracts'
 import {getCurrentState} from '../../../../../../../main/common/rx/depend/core/current-state'
 import {depend} from '../../../../../../../main/common/rx/depend/core/facade'
 import {InternalError} from '../../../../../../../main/common/rx/depend/core/helpers'

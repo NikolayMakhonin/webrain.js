@@ -17,7 +17,17 @@ import {fastNow} from '../../../time/helpers'
 import {DeferredCalc, IDeferredCalcOptions} from '../../deferred-calc/DeferredCalc'
 import {ISubscriber, IUnsubscribe} from '../../subjects/observable'
 import {ISubject, Subject} from '../../subjects/subject'
-import {CallStatus, CallStatusShort, ICallState, ILinkItem, TCall, TInnerValue, TResultOuter} from './contracts'
+import {
+	CallStatus,
+	CallStatusShort,
+	ICallState,
+	ILinkItem,
+	TCall,
+	TCallStateAny,
+	TFuncCall,
+	TInnerValue,
+	TResultOuter,
+} from './contracts'
 import {getCurrentState, setCurrentState} from './current-state'
 import {InternalError} from './helpers'
 
@@ -467,16 +477,6 @@ export function invalidateParent<
 
 // endregion
 
-export type TCallStateAny = CallState<any, any, any>
-
-export type TFuncCall<
-	TThisOuter,
-	TArgs extends any[],
-	TResultInner
-	> = (
-	state: CallState<TThisOuter, TArgs, TResultInner>,
-) => TResultInner
-
 export class CallState<
 	TThisOuter,
 	TArgs extends any[],
@@ -684,7 +684,7 @@ export class CallState<
 			setCurrentState(this._parentCallState)
 
 			if (isThenable(value)) {
-				this._updateCheckAsync(value as any)
+				this._updateCheckAsync(value)
 			} else {
 				this._parentCallState = null
 			}
@@ -926,7 +926,7 @@ export class CallState<
 				}
 
 				if (!isLazy && (dependencyState.status & Flag_Async) !== 0) {
-					yield resolveAsync(dependencyState.valueAsync, null, EMPTY_FUNC) as any
+					yield resolveAsync(dependencyState.valueAsync, null, EMPTY_FUNC)
 				}
 
 				if ((this.status & Flag_Recalc) !== 0) {

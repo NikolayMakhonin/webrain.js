@@ -179,9 +179,9 @@ export class Property<TValue, TMergeSource = TValue>
 	public _canMerge(source: Property<TValue, TMergeSource>|TValue|TMergeSource): boolean {
 		if (webrainOptions.equalsFunc
 			? source.constructor === Property
-				&& webrainOptions.equalsFunc.call(this, this.value, (source as Property<TValue, TMergeSource>).value)
+				&& webrainOptions.equalsFunc.call(this, this.value, source.value)
 				|| webrainOptions.equalsFunc.call(this, this.value, source)
-			: source.constructor === Property && this.value === (source as Property<TValue, TMergeSource>).value
+			: source.constructor === Property && this.value === source.value
 				|| this.value === source
 		) {
 			return null

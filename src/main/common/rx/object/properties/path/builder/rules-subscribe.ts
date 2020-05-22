@@ -313,11 +313,13 @@ export function createSubscribeObject<TObject extends object, TValue>(
 				changeItem,
 			)
 		case SubscribeObjectType.ValueProperty:
-			return (object, changeItem) => subscribeObjectValue<TObject, TValue>(
-				propertyNames,
-				object,
-				changeItem,
-			)
+			return (object, changeItem) => {
+				subscribeObjectValue<TObject, TValue>(
+					propertyNames,
+					object,
+					changeItem,
+				)
+			}
 		default:
 			throw new Error(`Unknown SubscribeObjectType: ${subType}`)
 	}
@@ -377,12 +379,14 @@ export function createSubscribeMap<TObject extends Map<K, V>, K, V>(
 		}
 	}
 
-	return (object, changeItem) => subscribeMap(
-		keys,
-		keyPredicate,
-		object,
-		changeItem,
-	)
+	return (object, changeItem) => {
+		subscribeMap(
+			keys,
+			keyPredicate,
+			object,
+			changeItem,
+		)
+	}
 }
 
 // endregion

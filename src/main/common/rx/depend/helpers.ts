@@ -1,12 +1,12 @@
 import {isThenable} from '../../async/async'
 import {ThenableSync} from '../../async/ThenableSync'
+import {Func} from '../../helpers/typescript'
 import {webrainOptions} from '../../helpers/webrainOptions'
 import {createConnector} from '../object/properties/helpers'
 import {IUnsubscribe} from '../subjects/observable'
 import {dependBindThis, getOrCreateCallState, subscribeCallState} from './core/CallState'
 import {CallStatusShort, TInnerValue} from './core/contracts'
 import {dependX} from './core/depend'
-import {Func} from "../../helpers/typescript";
 
 function simpleCondition(value) {
 	return value != null

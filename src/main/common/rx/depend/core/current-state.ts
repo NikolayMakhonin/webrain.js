@@ -1,6 +1,7 @@
+/* tslint:disable:no-circular-imports */
 import {IteratorOrValue, ThenableIterator} from '../../../async/async'
 import {isIterator} from '../../../helpers/helpers'
-import {TCallStateAny} from './CallState'
+import {TCallStateAny} from './contracts'
 
 let currentState: TCallStateAny = null
 

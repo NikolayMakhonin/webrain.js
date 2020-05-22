@@ -113,7 +113,9 @@ export function forEachRule<TObject, TValue>(
 				nextParent: any,
 				nextKey: any,
 				nextKeyType: ValueKeyType,
-			) => forEachRule(rule.next, nextObject, next, nextParent, nextKey, nextKeyType, resolveRuleSubscribe)
+			) => {
+				forEachRule(rule.next, nextObject, next, nextParent, nextKey, nextKeyType, resolveRuleSubscribe)
+			}
 			: null
 
 		switch (rule.type) {

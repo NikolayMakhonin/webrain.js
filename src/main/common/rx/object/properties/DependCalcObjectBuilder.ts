@@ -219,6 +219,7 @@ export class PropertyClass<TObject> extends ObservableClass {
 	/** @internal */
 	public $object: TObject
 	constructor(object: TObject) {
+		super();
 		(this as any).$object = object
 	}
 }
@@ -341,7 +342,7 @@ export function dependCalcPropertyFactory<
 		deferredOptions,
 		// baseClass,
 	)
-	return (input: TInput, _name?: string) => new NewProperty(input, _name != null ? _name : name) as any
+	return (input: TInput, _name?: string) => new NewProperty(input, _name != null ? _name : name)
 }
 
 export function dependCalcPropertyFactoryX<

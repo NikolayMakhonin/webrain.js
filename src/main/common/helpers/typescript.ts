@@ -1,4 +1,7 @@
 /* tslint:disable:ban-types use-primitive-type */
+
+import {AsyncValueOf} from '../async/async'
+
 /**
  * @enumerable decorator that sets the enumerable property of a class field to false.
  * @param value true|false
@@ -29,8 +32,6 @@
 // }
 
 // export type Not<T, NotType> = T extends NotType ? never : T
-
-import {AsyncValueOf} from "../async/async";
 
 /** Remove types from T that are assignable to U */
 export type Diff<T, U> = T extends U ? never : T
