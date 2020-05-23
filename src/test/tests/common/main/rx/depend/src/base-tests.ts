@@ -14,7 +14,10 @@ import {InternalError} from '../../../../../../../main/common/rx/depend/core/hel
 import {assert} from '../../../../../../../main/common/test/Assert'
 import {delay} from '../../../../../../../main/common/time/helpers'
 
-(global as any).statusToString = statusToString
+if (typeof global !== 'undefined') {
+	// for debug only
+	(global as any).statusToString = statusToString
+}
 
 // region baseTest
 
