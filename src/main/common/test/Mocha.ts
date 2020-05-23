@@ -65,34 +65,3 @@ export function it(name, func: (this: {
 		})
 }
 Object.assign(it, globalScope.it)
-
-// region after all
-
-let _afterAll = []
-export function afterAll(func: () => void) {
-	_afterAll.push(func)
-}
-
-function runAfterAll() {
-	console.debug('Mocha runAfterAll()')
-	const funcs = _afterAll
-	_afterAll = null
-	for (let i = 0; i < funcs.length; i++) {
-		funcs[i]()
-	}
-}
-
-let afterAllTimer
-function scheduleAfterAll() {
-	unScheduleAfterAll()
-	afterAllTimer = setTimeout(runAfterAll, 5000)
-}
-
-function unScheduleAfterAll() {
-	if (afterAllTimer != null) {
-		clearTimeout(afterAllTimer)
-		afterAllTimer = null
-	}
-}
-
-// endregion
