@@ -1,5 +1,4 @@
 /* eslint-disable object-curly-newline */
-const path = require('path')
 const {terser} = require('rollup-plugin-terser')
 const istanbul = require('rollup-plugin-istanbul')
 // const globals = require('rollup-plugin-node-globals')
@@ -52,22 +51,6 @@ const plugins = {
 		},
 		...options
 	}),
-	writeToFile({fileOrFunc}) {
-		return {
-			name: 'writeToFile',
-			async transform(code, id) {
-				if (typeof fileOrFunc === 'function') {
-					fileOrFunc = fileOrFunc(id)
-				}
-
-				await writeTextFile(fileOrFunc, code)
-
-				return {
-					code,
-				}
-			}
-		}
-	},
 }
 
 // noinspection PointlessBooleanExpressionJS
@@ -83,14 +66,6 @@ module.exports = {
 			plugins.commonjs(),
 			legacy && plugins.babel.browser(),
 			!dev && plugins.terser(),
-			plugins.writeToFile({
-				fileOrFunc(id) {
-					const parsed = path.parse(id)
-					const result = path.join(parsed.dir, parsed.name + '.build' + parsed.ext)
-					console.log('plugins.writeToFile', result)
-					return result
-				}
-			})
 		]
 	},
 	watch({dev = false, legacy = true, coverage = false, getFileCodePlugins = []}) {

@@ -6,6 +6,7 @@ const path = require('path')
 const fs = require('fs')
 const thisPackage = require('../../package')
 const rollupPlugins  = require('../rollup/plugins.js')
+const {writeTextFile, writeTextFileSync} = require('../common/helpers')
 
 module.exports.rollup = {
 	plugins: rollupPlugins
@@ -28,19 +29,6 @@ function concatArrays(...arrays) {
 	return items
 }
 
-module.exports.writeTextFile = writeTextFile
-function writeTextFile(outFilePath, text) {
-	const dir = path.dirname(outFilePath)
-
-	if (!fs.existsSync(dir)) {
-		fs.mkdirSync(dir, {recursive: true})
-	}
-
-	fs.writeFileSync(outFilePath, text)
-
-	return outFilePath
-}
-
 module.exports.concatJsFiles = function concatJsFiles(outFilePath, ...globbyPatterns) {
 	const dir = path.dirname(outFilePath)
 
@@ -54,7 +42,7 @@ module.exports.concatJsFiles = function concatJsFiles(outFilePath, ...globbyPatt
 			+ "'")
 		.join('\n') + '\n'
 
-	return writeTextFile(outFilePath, code)
+	return writeTextFileSync(outFilePath, code)
 }
 
 module.exports.servedPattern = servedPattern
@@ -90,7 +78,7 @@ module.exports.configCommon = function (config) {
 		unshiftFiles: [
 			...[
 				// Check if polyfill load first and fix Uint8Array bug
-				servedPattern(writeTextFile(
+				servedPattern(writeTextFileSync(
 					'tmp/karma/polyfill-before.js',
 					"'use strict'; \n"
 					+ '(function () {\n'
@@ -114,7 +102,7 @@ module.exports.configCommon = function (config) {
 				// Load polyfill
 				// servedPattern(require.resolve('../../static/polyfill')),
 				// servedPattern(require.resolve('@babel/polyfill/dist/polyfill')), // For IE / PhantomJS
-				servedPattern(writeTextFile(
+				servedPattern(writeTextFileSync(
 					'tmp/karma/polyfill-after.js',
 					"console.log('karma polyfill activated!');"
 				))
@@ -142,7 +130,34 @@ module.exports.configCommon = function (config) {
 			'karma-coverage',
 			require('./modules/karma-express'),
 			require('./modules/karma-custom-launcher'),
-			require('./modules/karma-unshift-files')
+			require('./modules/karma-unshift-files'),
+
+			{
+				'preprocessor:writeToFile': [
+					'factory',
+					(factory => {
+						factory.$inject = ['args', 'config', 'emitter', 'logger']
+						return factory
+					})((preconfig, config, emitter, logger) => {
+						let log = logger.create('preprocessor.rollup')
+
+						return async (original, file, done) => {
+							let originalPath = file.originalPath
+							let location = path.relative(config.basePath, originalPath)
+
+							try {
+								const parsed = path.parse(originalPath)
+								const fileOutput = path.join(parsed.dir, parsed.name + '.build' + parsed.ext)
+								await writeTextFile(fileOutput, original)
+								done(null, original)
+							} catch (error) {
+								log.error('Failed to process ./%s\n\n%s\n', location, error.stack)
+								done(error, null)
+							}
+						}
+					}),
+				],
+			}
 		],
 
 		// optionally, configure the reporter

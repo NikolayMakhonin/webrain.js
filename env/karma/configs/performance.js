@@ -1,7 +1,7 @@
 /* eslint-disable prefer-template,no-sync,object-property-newline */
 // Karma configuration
 const helpers = require('../helpers')
-const {fileExtensions} = require('../../common/helpers')
+const {fileExtensions, writeTextFileSync} = require('../../common/helpers')
 
 module.exports = function (config) {
 	helpers.configCommon(config)
@@ -21,7 +21,7 @@ module.exports = function (config) {
 		// list of files / patterns to load in the browser
 		files: [
 			helpers.servedPattern(require.resolve('chai/chai')),
-			helpers.servedPattern(helpers.writeTextFile('tmp/karma/chai.js', '"use strict"; var assert = chai.assert, expect = chai.expect, should = chai.should;')),
+			helpers.servedPattern(writeTextFileSync('tmp/karma/chai.js', '"use strict"; var assert = chai.assert, expect = chai.expect, should = chai.should;')),
 			helpers.concatJsFiles(
 				'tmp/karma/performance.js',
 				`src/test/performance/{common,browser}/**/*{${[...fileExtensions.js, ...fileExtensions.ts].join(',')}}`,

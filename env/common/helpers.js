@@ -56,12 +56,25 @@ async function writeTextFile(filePath, content) {
 	})
 }
 
+function writeTextFileSync(filePath, content) {
+	const dir = path.dirname(filePath)
+
+	if (!fs.existsSync(dir)) {
+		fs.mkdirSync(dir, {recursive: true})
+	}
+
+	fs.writeFileSync(filePath, content)
+
+	return filePath
+}
+
 function normalizePath(filepath) {
 	return path.relative(process.cwd(), filepath).replace(/\\/g, '/')
 }
 
 module.exports = {
 	writeTextFile,
+	writeTextFileSync,
 	fileExtensions,
 	asPromise,
 	now,
