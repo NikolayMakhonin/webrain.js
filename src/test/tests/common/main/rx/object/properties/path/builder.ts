@@ -86,7 +86,7 @@ describe('common > main > rx > properties > builder', function() {
 
 				const path = paths[i]
 				const getValue = dependX(function() {
-					assert.strictEqual(this, currentState)
+					assert.strictEqual(this, currentState, currentState.func + '')
 					checkCurrentState()
 					const val = path.get(object)
 					checkCurrentState()
