@@ -1,4 +1,5 @@
 /* eslint-disable object-curly-newline */
+const path = require('path')
 const {terser} = require('rollup-plugin-terser')
 const istanbul = require('rollup-plugin-istanbul')
 // const globals = require('rollup-plugin-node-globals')
@@ -7,8 +8,7 @@ const resolve  = require('rollup-plugin-node-resolve')
 const replace = require('@rollup/plugin-replace')
 const commonjs  = require('rollup-plugin-commonjs')
 const nycrc  = require('../../.nycrc.json')
-const {fileExtensions} = require('../common/helpers')
-
+const {fileExtensions, writeTextFile} = require('../common/helpers')
 const babel = require('./babel')
 
 const dedupe = importee => /^(@babel|core-js[^\\/]*|regenerator-runtime)([\\/]|$)/.test(importee)
@@ -52,6 +52,22 @@ const plugins = {
 		},
 		...options
 	}),
+	writeToFile({fileOrFunc}) {
+		return {
+			name: 'writeToFile',
+			async transform(code, id) {
+				if (typeof fileOrFunc === 'function') {
+					fileOrFunc = fileOrFunc(id)
+				}
+
+				await writeTextFile(fileOrFunc, code)
+
+				return {
+					code,
+				}
+			}
+		}
+	},
 }
 
 // noinspection PointlessBooleanExpressionJS
@@ -67,6 +83,14 @@ module.exports = {
 			plugins.commonjs(),
 			legacy && plugins.babel.browser(),
 			!dev && plugins.terser(),
+			plugins.writeToFile({
+				fileOrFunc(id) {
+					const parsed = path.parse(id)
+					const result = path.join(parsed.dir, parsed.name + '.build' + parsed.ext)
+					console.log('plugins.writeToFile', result)
+					return result
+				}
+			})
 		]
 	},
 	watch({dev = false, legacy = true, coverage = false, getFileCodePlugins = []}) {

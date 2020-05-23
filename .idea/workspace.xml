@@ -321,12 +321,9 @@
       <change beforePath="$PROJECT_DIR$/dist/types/common/time/TimeLimit.d.ts" beforeDir="false" />
       <change beforePath="$PROJECT_DIR$/dist/types/common/time/TimeLimits.d.ts" beforeDir="false" />
       <change beforePath="$PROJECT_DIR$/dist/types/common/time/helpers.d.ts" beforeDir="false" afterPath="$PROJECT_DIR$/dist/types/common/time/helpers.d.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/env/karma/configs/ci.js" beforeDir="false" afterPath="$PROJECT_DIR$/env/karma/configs/ci.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/env/karma/configs/coverage.js" beforeDir="false" afterPath="$PROJECT_DIR$/env/karma/configs/coverage.js" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/env/karma/configs/dev.js" beforeDir="false" afterPath="$PROJECT_DIR$/env/karma/configs/dev.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/env/karma/configs/performance.js" beforeDir="false" afterPath="$PROJECT_DIR$/env/karma/configs/performance.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/env/karma/configs/tests.js" beforeDir="false" afterPath="$PROJECT_DIR$/env/karma/configs/tests.js" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/env/karma/helpers.js" beforeDir="false" afterPath="$PROJECT_DIR$/env/karma/helpers.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/env/rollup/plugins.js" beforeDir="false" afterPath="$PROJECT_DIR$/env/rollup/plugins.js" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/package.json" beforeDir="false" afterPath="$PROJECT_DIR$/package.json" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
@@ -394,7 +391,7 @@
     <property name="prettierjs.PrettierConfiguration.Package" value="L:\Work\_GIT\GitHub\NodeJs\modules\webrain\node_modules\prettier" />
     <property name="restartRequiresConfirmation" value="false" />
     <property name="run.code.analysis.last.selected.profile" value="pProject Default" />
-    <property name="settings.editor.selected.configurable" value="editor.preferences.smartKeys" />
+    <property name="settings.editor.selected.configurable" value="debugger.stepping" />
     <property name="ts.external.directory.path" value="L:\Work\_GIT\GitHub\NodeJs\modules\webrain\node_modules\typescript\lib" />
   </component>
   <component name="RecentsManager">
@@ -420,7 +417,7 @@
       <recent name="L:\Work\_GIT\GitHub\NodeJs\modules\webrain\src\test\tests\common\main\rx\object\properties\path\builder" />
     </key>
   </component>
-  <component name="RunManager" selected="Mocha.dependent-func (stress)">
+  <component name="RunManager" selected="Karma.Dev">
     <configuration default="true" type="JavaScriptTestRunnerKarma" activateToolWindowBeforeRun="false">
       <config-file value="$PROJECT_DIR$/env/karma/configs/dev.js" />
       <karma-package-dir value="$PROJECT_DIR$/node_modules/karma" />
@@ -803,21 +800,7 @@
       <workItem from="1590133610409" duration="701000" />
       <workItem from="1590135086386" duration="2390000" />
       <workItem from="1590149294582" duration="15706000" />
-      <workItem from="1590207827975" duration="5277000" />
-    </task>
-    <task id="LOCAL-00459" summary="Fix isIterator / isIterable critical bug">
-      <created>1588048907141</created>
-      <option name="number" value="00459" />
-      <option name="presentableId" value="LOCAL-00459" />
-      <option name="project" value="LOCAL" />
-      <updated>1588048907142</updated>
-    </task>
-    <task id="LOCAL-00460" summary="Fix isIterator / isIterable critical bug">
-      <created>1588052763065</created>
-      <option name="number" value="00460" />
-      <option name="presentableId" value="LOCAL-00460" />
-      <option name="project" value="LOCAL" />
-      <updated>1588052763065</updated>
+      <workItem from="1590207827975" duration="8879000" />
     </task>
     <task id="LOCAL-00461" summary="Fix NaN === NaN critical bug. Check _resolveAsync infinity loop">
       <created>1588057124171</created>
@@ -1148,7 +1131,21 @@
       <option name="project" value="LOCAL" />
       <updated>1590210169925</updated>
     </task>
-    <option name="localTasksCounter" value="508" />
+    <task id="LOCAL-00508" summary="Improve karma rollup preprocessor">
+      <created>1590213154765</created>
+      <option name="number" value="00508" />
+      <option name="presentableId" value="LOCAL-00508" />
+      <option name="project" value="LOCAL" />
+      <updated>1590213154765</updated>
+    </task>
+    <task id="LOCAL-00509" summary="Rollback karma rollup preprocessor">
+      <created>1590213370115</created>
+      <option name="number" value="00509" />
+      <option name="presentableId" value="LOCAL-00509" />
+      <option name="project" value="LOCAL" />
+      <updated>1590213370115</updated>
+    </task>
+    <option name="localTasksCounter" value="510" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -1209,8 +1206,6 @@
   <component name="VcsManagerConfiguration">
     <option name="CHECK_CODE_SMELLS_BEFORE_PROJECT_COMMIT" value="false" />
     <option name="CHECK_NEW_TODO" value="false" />
-    <MESSAGE value="Replace console.log -&gt; console.debug" />
-    <MESSAGE value="webrain v1" />
     <MESSAGE value="Prepare v2: delete _trash" />
     <MESSAGE value="Prepare v2: deleted old calc / connect properties. Tests OK." />
     <MESSAGE value="Prepare v2: deleted deep-subscriber. Tests OK." />
@@ -1234,13 +1229,15 @@
     <MESSAGE value="Auto stop timers" />
     <MESSAGE value="Deleted: Stop timers after all tests" />
     <MESSAGE value="Prepare release" />
-    <option name="LAST_COMMIT_MESSAGE" value="Prepare release" />
+    <MESSAGE value="Improve karma rollup preprocessor" />
+    <MESSAGE value="Rollback karma rollup preprocessor" />
+    <option name="LAST_COMMIT_MESSAGE" value="Rollback karma rollup preprocessor" />
   </component>
   <component name="WindowStateProjectService">
-    <state x="38" y="39" width="1718" height="786" key="#com.intellij.execution.impl.EditConfigurationsDialog" timestamp="1590162602157">
+    <state x="38" y="39" width="1718" height="786" key="#com.intellij.execution.impl.EditConfigurationsDialog" timestamp="1590214250610">
       <screen x="0" y="0" width="1920" height="882" />
     </state>
-    <state x="38" y="39" width="1718" height="786" key="#com.intellij.execution.impl.EditConfigurationsDialog/0.0.1920.882@0.0.1920.882" timestamp="1590162602157" />
+    <state x="38" y="39" width="1718" height="786" key="#com.intellij.execution.impl.EditConfigurationsDialog/0.0.1920.882@0.0.1920.882" timestamp="1590214250610" />
     <state x="91" y="91" width="1738" height="700" key="#com.intellij.execution.junit2.states.ComparisonFailureState$DiffDialog" timestamp="1588308999883">
       <screen x="0" y="0" width="1920" height="882" />
     </state>
@@ -1265,94 +1262,110 @@
       <screen x="0" y="0" width="1920" height="882" />
     </state>
     <state x="651" y="254" key="ANALYSIS_DLG_com.intellij.analysis.BaseAnalysisAction$1/0.0.1920.882@0.0.1920.882" timestamp="1588413930131" />
-    <state x="-2" y="0" width="1918" height="882" key="CommitChangelistDialog2" timestamp="1590210166815">
+    <state x="-2" y="0" width="1918" height="882" key="CommitChangelistDialog2" timestamp="1590216100151">
       <screen x="0" y="0" width="1920" height="882" />
     </state>
-    <state x="-2" y="0" width="1918" height="882" key="CommitChangelistDialog2/0.0.1920.882@0.0.1920.882" timestamp="1590210166815" />
+    <state x="-2" y="0" width="1918" height="882" key="CommitChangelistDialog2/0.0.1920.882@0.0.1920.882" timestamp="1590216100151" />
     <state width="884" height="550" key="DebuggerActiveHint" timestamp="1590162335145">
       <screen x="0" y="0" width="1920" height="882" />
     </state>
     <state width="884" height="550" key="DebuggerActiveHint/0.0.1920.882@0.0.1920.882" timestamp="1590162335145" />
-    <state x="0" y="4" width="1920" height="875" key="DiffContextDialog" timestamp="1590209873094">
+    <state x="0" y="4" width="1920" height="875" key="DiffContextDialog" timestamp="1590213343979">
       <screen x="0" y="0" width="1920" height="882" />
     </state>
-    <state x="0" y="4" width="1920" height="875" key="DiffContextDialog/0.0.1920.882@0.0.1920.882" timestamp="1590209873094" />
+    <state x="0" y="4" width="1920" height="875" key="DiffContextDialog/0.0.1920.882@0.0.1920.882" timestamp="1590213343979" />
     <state x="1059" y="106" key="FileChooserDialogImpl" timestamp="1590069094529">
       <screen x="0" y="0" width="1920" height="882" />
     </state>
     <state x="1059" y="106" key="FileChooserDialogImpl/0.0.1920.882@0.0.1920.882" timestamp="1590069094529" />
-    <state width="722" height="195" key="GridCell.Tab.0.bottom" timestamp="1590210724062">
+    <state width="829" height="246" key="GridCell.Tab.0.bottom" timestamp="1590216622967">
       <screen x="0" y="0" width="1920" height="882" />
     </state>
-    <state width="722" height="195" key="GridCell.Tab.0.bottom/0.0.1920.882@0.0.1920.882" timestamp="1590210724062" />
-    <state width="722" height="195" key="GridCell.Tab.0.center" timestamp="1590210724062">
+    <state width="829" height="246" key="GridCell.Tab.0.bottom/0.0.1920.882@0.0.1920.882" timestamp="1590216622967" />
+    <state width="829" height="246" key="GridCell.Tab.0.center" timestamp="1590216622966">
       <screen x="0" y="0" width="1920" height="882" />
     </state>
-    <state width="722" height="195" key="GridCell.Tab.0.center/0.0.1920.882@0.0.1920.882" timestamp="1590210724062" />
-    <state width="722" height="195" key="GridCell.Tab.0.left" timestamp="1590210724061">
+    <state width="829" height="246" key="GridCell.Tab.0.center/0.0.1920.882@0.0.1920.882" timestamp="1590216622966" />
+    <state width="829" height="246" key="GridCell.Tab.0.left" timestamp="1590216622966">
       <screen x="0" y="0" width="1920" height="882" />
     </state>
-    <state width="722" height="195" key="GridCell.Tab.0.left/0.0.1920.882@0.0.1920.882" timestamp="1590210724061" />
-    <state width="722" height="195" key="GridCell.Tab.0.right" timestamp="1590210724062">
+    <state width="829" height="246" key="GridCell.Tab.0.left/0.0.1920.882@0.0.1920.882" timestamp="1590216622966" />
+    <state width="829" height="246" key="GridCell.Tab.0.right" timestamp="1590216622966">
       <screen x="0" y="0" width="1920" height="882" />
     </state>
-    <state width="722" height="195" key="GridCell.Tab.0.right/0.0.1920.882@0.0.1920.882" timestamp="1590210724062" />
-    <state width="722" height="410" key="GridCell.Tab.1.bottom" timestamp="1590210054379">
+    <state width="829" height="246" key="GridCell.Tab.0.right/0.0.1920.882@0.0.1920.882" timestamp="1590216622966" />
+    <state width="829" height="246" key="GridCell.Tab.1.bottom" timestamp="1590216622967">
       <screen x="0" y="0" width="1920" height="882" />
     </state>
-    <state width="722" height="410" key="GridCell.Tab.1.bottom/0.0.1920.882@0.0.1920.882" timestamp="1590210054379" />
-    <state width="722" height="410" key="GridCell.Tab.1.center" timestamp="1590210054379">
+    <state width="829" height="246" key="GridCell.Tab.1.bottom/0.0.1920.882@0.0.1920.882" timestamp="1590216622967" />
+    <state width="829" height="246" key="GridCell.Tab.1.center" timestamp="1590216622967">
       <screen x="0" y="0" width="1920" height="882" />
     </state>
-    <state width="722" height="410" key="GridCell.Tab.1.center/0.0.1920.882@0.0.1920.882" timestamp="1590210054379" />
-    <state width="722" height="410" key="GridCell.Tab.1.left" timestamp="1590210054379">
+    <state width="829" height="246" key="GridCell.Tab.1.center/0.0.1920.882@0.0.1920.882" timestamp="1590216622967" />
+    <state width="829" height="246" key="GridCell.Tab.1.left" timestamp="1590216622967">
       <screen x="0" y="0" width="1920" height="882" />
     </state>
-    <state width="722" height="410" key="GridCell.Tab.1.left/0.0.1920.882@0.0.1920.882" timestamp="1590210054379" />
-    <state width="722" height="410" key="GridCell.Tab.1.right" timestamp="1590210054379">
+    <state width="829" height="246" key="GridCell.Tab.1.left/0.0.1920.882@0.0.1920.882" timestamp="1590216622967" />
+    <state width="829" height="246" key="GridCell.Tab.1.right" timestamp="1590216622967">
       <screen x="0" y="0" width="1920" height="882" />
     </state>
-    <state width="722" height="410" key="GridCell.Tab.1.right/0.0.1920.882@0.0.1920.882" timestamp="1590210054379" />
-    <state width="722" height="410" key="GridCell.Tab.2.bottom" timestamp="1590210054380">
+    <state width="829" height="246" key="GridCell.Tab.1.right/0.0.1920.882@0.0.1920.882" timestamp="1590216622967" />
+    <state width="525" height="403" key="GridCell.Tab.2.bottom" timestamp="1590214355028">
       <screen x="0" y="0" width="1920" height="882" />
     </state>
-    <state width="722" height="410" key="GridCell.Tab.2.bottom/0.0.1920.882@0.0.1920.882" timestamp="1590210054380" />
-    <state width="722" height="410" key="GridCell.Tab.2.center" timestamp="1590210054379">
+    <state width="525" height="403" key="GridCell.Tab.2.bottom/0.0.1920.882@0.0.1920.882" timestamp="1590214355028" />
+    <state width="525" height="403" key="GridCell.Tab.2.center" timestamp="1590214355028">
       <screen x="0" y="0" width="1920" height="882" />
     </state>
-    <state width="722" height="410" key="GridCell.Tab.2.center/0.0.1920.882@0.0.1920.882" timestamp="1590210054379" />
-    <state width="722" height="410" key="GridCell.Tab.2.left" timestamp="1590210054379">
+    <state width="525" height="403" key="GridCell.Tab.2.center/0.0.1920.882@0.0.1920.882" timestamp="1590214355028" />
+    <state width="525" height="403" key="GridCell.Tab.2.left" timestamp="1590214355028">
       <screen x="0" y="0" width="1920" height="882" />
     </state>
-    <state width="722" height="410" key="GridCell.Tab.2.left/0.0.1920.882@0.0.1920.882" timestamp="1590210054379" />
-    <state width="722" height="410" key="GridCell.Tab.2.right" timestamp="1590210054379">
+    <state width="525" height="403" key="GridCell.Tab.2.left/0.0.1920.882@0.0.1920.882" timestamp="1590214355028" />
+    <state width="525" height="403" key="GridCell.Tab.2.right" timestamp="1590214355028">
       <screen x="0" y="0" width="1920" height="882" />
     </state>
-    <state width="722" height="410" key="GridCell.Tab.2.right/0.0.1920.882@0.0.1920.882" timestamp="1590210054379" />
-    <state width="722" height="410" key="GridCell.Tab.3.bottom" timestamp="1590210054380">
+    <state width="525" height="403" key="GridCell.Tab.2.right/0.0.1920.882@0.0.1920.882" timestamp="1590214355028" />
+    <state width="525" height="403" key="GridCell.Tab.3.bottom" timestamp="1590214355028">
       <screen x="0" y="0" width="1920" height="882" />
     </state>
-    <state width="722" height="410" key="GridCell.Tab.3.bottom/0.0.1920.882@0.0.1920.882" timestamp="1590210054380" />
-    <state width="722" height="410" key="GridCell.Tab.3.center" timestamp="1590210054380">
+    <state width="525" height="403" key="GridCell.Tab.3.bottom/0.0.1920.882@0.0.1920.882" timestamp="1590214355028" />
+    <state width="525" height="403" key="GridCell.Tab.3.center" timestamp="1590214355028">
       <screen x="0" y="0" width="1920" height="882" />
     </state>
-    <state width="722" height="410" key="GridCell.Tab.3.center/0.0.1920.882@0.0.1920.882" timestamp="1590210054380" />
-    <state width="722" height="410" key="GridCell.Tab.3.left" timestamp="1590210054380">
+    <state width="525" height="403" key="GridCell.Tab.3.center/0.0.1920.882@0.0.1920.882" timestamp="1590214355028" />
+    <state width="525" height="403" key="GridCell.Tab.3.left" timestamp="1590214355028">
       <screen x="0" y="0" width="1920" height="882" />
     </state>
-    <state width="722" height="410" key="GridCell.Tab.3.left/0.0.1920.882@0.0.1920.882" timestamp="1590210054380" />
-    <state width="722" height="410" key="GridCell.Tab.3.right" timestamp="1590210054380">
+    <state width="525" height="403" key="GridCell.Tab.3.left/0.0.1920.882@0.0.1920.882" timestamp="1590214355028" />
+    <state width="525" height="403" key="GridCell.Tab.3.right" timestamp="1590214355028">
       <screen x="0" y="0" width="1920" height="882" />
     </state>
-    <state width="722" height="410" key="GridCell.Tab.3.right/0.0.1920.882@0.0.1920.882" timestamp="1590210054380" />
+    <state width="525" height="403" key="GridCell.Tab.3.right/0.0.1920.882@0.0.1920.882" timestamp="1590214355028" />
+    <state width="525" height="398" key="GridCell.Tab.4.bottom" timestamp="1590213679498">
+      <screen x="0" y="0" width="1920" height="882" />
+    </state>
+    <state width="525" height="398" key="GridCell.Tab.4.bottom/0.0.1920.882@0.0.1920.882" timestamp="1590213679498" />
+    <state width="525" height="398" key="GridCell.Tab.4.center" timestamp="1590213679497">
+      <screen x="0" y="0" width="1920" height="882" />
+    </state>
+    <state width="525" height="398" key="GridCell.Tab.4.center/0.0.1920.882@0.0.1920.882" timestamp="1590213679497" />
+    <state width="525" height="398" key="GridCell.Tab.4.left" timestamp="1590213679497">
+      <screen x="0" y="0" width="1920" height="882" />
+    </state>
+    <state width="525" height="398" key="GridCell.Tab.4.left/0.0.1920.882@0.0.1920.882" timestamp="1590213679497" />
+    <state width="525" height="398" key="GridCell.Tab.4.right" timestamp="1590213679497">
+      <screen x="0" y="0" width="1920" height="882" />
+    </state>
+    <state width="525" height="398" key="GridCell.Tab.4.right/0.0.1920.882@0.0.1920.882" timestamp="1590213679497" />
     <state x="693" y="68" key="RollbackChangesDialog" timestamp="1588413158271">
       <screen x="0" y="0" width="1920" height="882" />
     </state>
     <state x="693" y="68" key="RollbackChangesDialog/0.0.1920.882@0.0.1920.882" timestamp="1588413158271" />
-    <state x="343" y="0" key="SettingsEditor" timestamp="1587292504383">
+    <state x="343" y="0" key="SettingsEditor" timestamp="1590213856595">
       <screen x="0" y="0" width="1920" height="882" />
     </state>
-    <state x="343" y="0" key="SettingsEditor/0.0.1920.882@0.0.1920.882" timestamp="1587292504383" />
+    <state x="343" y="0" key="SettingsEditor/0.0.1920.882@0.0.1920.882" timestamp="1590213856595" />
     <state width="969" height="450" key="XDebugger.FullValuePopup" timestamp="1590162225930">
       <screen x="0" y="0" width="1920" height="882" />
     </state>
@@ -1361,10 +1374,10 @@
       <screen x="0" y="0" width="1920" height="882" />
     </state>
     <state x="121" y="111" key="com.intellij.xdebugger.impl.breakpoints.ui.BreakpointsDialogFactory$2/0.0.1920.882@0.0.1920.882" timestamp="1587884348340" />
-    <state x="2" y="1" width="1908" height="878" key="find.popup" timestamp="1590212275727">
+    <state x="2" y="1" width="1908" height="878" key="find.popup" timestamp="1590214206465">
       <screen x="0" y="0" width="1920" height="882" />
     </state>
-    <state x="2" y="1" width="1908" height="878" key="find.popup/0.0.1920.882@0.0.1920.882" timestamp="1590212275727" />
+    <state x="2" y="1" width="1908" height="878" key="find.popup/0.0.1920.882@0.0.1920.882" timestamp="1590214206465" />
     <state x="732" y="169" key="refactoring.ChangeSignatureDialog" timestamp="1587872020169">
       <screen x="0" y="0" width="1920" height="882" />
     </state>
@@ -1511,6 +1524,30 @@
           <line>1854</line>
           <properties lambdaOrdinal="-1" />
           <option name="timeStamp" value="1627" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" type="javascript">
+          <url>file://$PROJECT_DIR$/node_modules/karma-rollup-preprocessor/lib/index.js</url>
+          <line>72</line>
+          <properties lambdaOrdinal="-1" />
+          <option name="timeStamp" value="1629" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" type="javascript">
+          <url>file://$PROJECT_DIR$/node_modules/karma-rollup-preprocessor/lib/index.js</url>
+          <line>110</line>
+          <properties lambdaOrdinal="-1" />
+          <option name="timeStamp" value="1632" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" type="javascript">
+          <url>file://$PROJECT_DIR$/node_modules/@metahub/karma-rollup-preprocessor/lib/index.js</url>
+          <line>14</line>
+          <properties lambdaOrdinal="-1" />
+          <option name="timeStamp" value="1635" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" type="javascript">
+          <url>file://$PROJECT_DIR$/node_modules/@metahub/karma-rollup-preprocessor/lib/index.js</url>
+          <line>26</line>
+          <properties lambdaOrdinal="-1" />
+          <option name="timeStamp" value="1636" />
         </line-breakpoint>
       </breakpoints>
       <breakpoints-dialog>
