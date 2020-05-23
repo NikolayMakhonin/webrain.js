@@ -1,11 +1,12 @@
-import { createFunction } from '../../helpers/helpers';
-import { webrainOptions } from '../../helpers/webrainOptions';
-import '../extensions/autoConnect';
+import { createFunction, missingSetter } from '../../helpers/helpers';
+import { webrainEquals } from '../../helpers/webrainOptions';
+import { depend } from '../../rx/depend/core/depend';
 import { PropertyChangedEvent } from './IPropertyChanged';
+import { ObjectBuilder } from './ObjectBuilder';
 import { _set, _setExt, ObservableClass } from './ObservableClass';
-export class ObservableObjectBuilder {
+export class ObservableObjectBuilder extends ObjectBuilder {
   constructor(object) {
-    this.object = object || new ObservableClass();
+    super(object || new ObservableClass());
   }
 
   writable(name, options, initValue) {
@@ -33,25 +34,23 @@ export class ObservableObjectBuilder {
     const setValue = options && options.setValue || createFunction(() => function (v) {
       this.__fields[name] = v;
     }, 'v', `this.__fields["${name}"] = v`);
-    const set = setOptions ? _setExt.bind(null, name, getValue, setValue, setOptions) : _set.bind(null, name, getValue, setValue);
+    const set = setOptions ? function (newValue) {
+      return _setExt.call(this, name, getValue, setValue, setOptions, newValue);
+    } : function (newValue) {
+      return _set.call(this, name, getValue, setValue, newValue);
+    };
     Object.defineProperty(object, name, {
       configurable: true,
       enumerable: !hidden,
-
-      get() {
-        return getValue.call(this);
-      },
-
-      set(newValue) {
-        set(this, newValue);
-      }
-
+      get: depend(getValue, null, null, true),
+      // get: getValue,
+      set
     });
 
     if (__fields && typeof initValue !== 'undefined') {
       const value = __fields[name];
 
-      if (webrainOptions.equalsFunc ? !webrainOptions.equalsFunc.call(object, value, initValue) : value !== initValue) {
+      if (!webrainEquals.call(object, value, initValue)) {
         object[name] = initValue;
       }
     }
@@ -100,7 +99,11 @@ export class ObservableObjectBuilder {
     if (update) {
       // tslint:disable-next-line
       const setOptions = options && options.setOptions;
-      setOnUpdate = setOptions ? _setExt.bind(null, name, getValue, setValue, setOptions) : _set.bind(null, name, getValue, setValue);
+      setOnUpdate = setOptions ? function (newValue) {
+        return _setExt.call(this, name, getValue, setValue, setOptions, newValue);
+      } : function (newValue) {
+        return _set.call(this, name, getValue, setValue, newValue);
+      };
     }
 
     let setOnInit;
@@ -109,30 +112,27 @@ export class ObservableObjectBuilder {
       const setOptions = { ...(options && options.setOptions),
         suppressPropertyChanged: true
       };
-      setOnInit = setOptions ? _setExt.bind(null, name, getValue, setValue, setOptions) : _set.bind(null, name, getValue, setValue);
+      setOnInit = setOptions ? function (newValue) {
+        return _setExt.call(this, name, getValue, setValue, setOptions, newValue);
+      } : function (newValue) {
+        return _set.call(this, name, getValue, setValue, newValue);
+      };
     }
 
     const createInstanceProperty = instance => {
       const attributes = {
         configurable: true,
         enumerable: !hidden,
-
-        get() {
-          return getValue.call(this);
-        }
-
-      };
-
-      if (update) {
-        attributes.set = function (value) {
+        // get: depend(getValue, null, true),
+        get: getValue,
+        set: update ? function (value) {
           const newValue = update.call(this, value);
 
           if (typeof newValue !== 'undefined') {
-            setOnUpdate(this, newValue);
+            setOnUpdate.call(this, newValue);
           }
-        };
-      }
-
+        } : missingSetter
+      };
       Object.defineProperty(instance, name, attributes);
     };
 
@@ -160,18 +160,15 @@ export class ObservableObjectBuilder {
           if (typeof factoryValue !== 'undefined') {
             const oldValue = getValue.call(this);
 
-            if (webrainOptions.equalsFunc ? !webrainOptions.equalsFunc.call(this, oldValue, factoryValue) : oldValue !== factoryValue) {
-              setOnInit(this, factoryValue);
+            if (!webrainEquals.call(this, oldValue, factoryValue)) {
+              setOnInit.call(this, factoryValue);
             }
           }
 
           return factoryValue;
-        }
+        },
 
-      };
-
-      if (update) {
-        initAttributes.set = function (value) {
+        set: update ? function (value) {
           // tslint:disable:no-dead-store
           const factoryValue = init.call(this);
           const newValue = update.call(this, value);
@@ -179,13 +176,12 @@ export class ObservableObjectBuilder {
           if (typeof newValue !== 'undefined') {
             const oldValue = getValue.call(this);
 
-            if (webrainOptions.equalsFunc ? !webrainOptions.equalsFunc.call(this, oldValue, newValue) : oldValue !== newValue) {
-              setOnInit(this, newValue);
+            if (!webrainEquals.call(this, oldValue, newValue)) {
+              setOnInit.call(this, newValue);
             }
           }
-        };
-      }
-
+        } : missingSetter
+      };
       Object.defineProperty(object, name, initAttributes);
 
       if (__fields) {
@@ -208,7 +204,7 @@ export class ObservableObjectBuilder {
           initializeValue.call(this, initValue);
         }
 
-        if (webrainOptions.equalsFunc ? !webrainOptions.equalsFunc.call(object, oldValue, initValue) : oldValue !== initValue) {
+        if (!webrainEquals.call(object, oldValue, initValue)) {
           __fields[name] = initValue;
           const {
             propertyChangedIfCanEmit

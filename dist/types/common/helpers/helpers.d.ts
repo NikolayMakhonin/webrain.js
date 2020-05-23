@@ -1,11 +1,11 @@
+export declare function equals(v1: any, v2: any): boolean;
 export declare function isIterable(value: any): boolean;
 export declare function isIterator(value: any): boolean;
 export declare function typeToDebugString(type: any): any;
 export declare const EMPTY: any;
 export declare type TClass<T> = new (...args: any[]) => T;
-export declare type TFunc<TResult> = (...args: any[]) => TResult;
-export declare function checkIsFuncOrNull<T extends TFunc<any> | void>(func: T): T;
-export declare function toSingleCall<T extends TFunc<any> | void>(func: T, throwOnMultipleCall?: boolean): T;
 export declare function createFunction(alternativeFuncFactory: any, ...args: string[]): Function;
-export declare function hideObjectProperty(object: object, propertyName: string): void;
 export declare function equalsObjects(o1: any, o2: any): any;
+export declare function nextHash(hash: number, value: number): number;
+export declare function missingGetter(): void;
+export declare function missingSetter(): void;

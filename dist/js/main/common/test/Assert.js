@@ -5,6 +5,8 @@ var _interopRequireDefault = require("@babel/runtime-corejs3/helpers/interopRequ
 exports.__esModule = true;
 exports.assert = exports.Assert = exports.AssertionError = void 0;
 
+var _construct = _interopRequireDefault(require("@babel/runtime-corejs3/core-js-stable/reflect/construct"));
+
 var _regenerator = _interopRequireDefault(require("@babel/runtime-corejs3/regenerator"));
 
 var _asyncToGenerator2 = _interopRequireDefault(require("@babel/runtime-corejs3/helpers/asyncToGenerator"));
@@ -25,29 +27,32 @@ var _createClass2 = _interopRequireDefault(require("@babel/runtime-corejs3/helpe
 
 var _classCallCheck2 = _interopRequireDefault(require("@babel/runtime-corejs3/helpers/classCallCheck"));
 
+var _inherits2 = _interopRequireDefault(require("@babel/runtime-corejs3/helpers/inherits"));
+
 var _possibleConstructorReturn2 = _interopRequireDefault(require("@babel/runtime-corejs3/helpers/possibleConstructorReturn"));
 
 var _getPrototypeOf2 = _interopRequireDefault(require("@babel/runtime-corejs3/helpers/getPrototypeOf"));
-
-var _inherits2 = _interopRequireDefault(require("@babel/runtime-corejs3/helpers/inherits"));
 
 var _wrapNativeSuper2 = _interopRequireDefault(require("@babel/runtime-corejs3/helpers/wrapNativeSuper"));
 
 var _DeepCloneEqual = require("./DeepCloneEqual");
 
-/* tslint:disable:no-var-requires triple-equals */
-var AssertionError = typeof require === 'function' ? require('assertion-error') :
-/*#__PURE__*/
-function (_Error) {
+function _createSuper(Derived) { var hasNativeReflectConstruct = _isNativeReflectConstruct(); return function () { var Super = (0, _getPrototypeOf2.default)(Derived), result; if (hasNativeReflectConstruct) { var NewTarget = (0, _getPrototypeOf2.default)(this).constructor; result = (0, _construct.default)(Super, arguments, NewTarget); } else { result = Super.apply(this, arguments); } return (0, _possibleConstructorReturn2.default)(this, result); }; }
+
+function _isNativeReflectConstruct() { if (typeof Reflect === "undefined" || !_construct.default) return false; if (_construct.default.sham) return false; if (typeof Proxy === "function") return true; try { Date.prototype.toString.call((0, _construct.default)(Date, [], function () {})); return true; } catch (e) { return false; } }
+
+var AssertionError = typeof require === 'function' ? require('assertion-error') : /*#__PURE__*/function (_Error) {
   (0, _inherits2.default)(_class, _Error);
+
+  var _super = _createSuper(_class);
 
   function _class() {
     (0, _classCallCheck2.default)(this, _class);
-    return (0, _possibleConstructorReturn2.default)(this, (0, _getPrototypeOf2.default)(_class).apply(this, arguments));
+    return _super.apply(this, arguments);
   }
 
   return _class;
-}((0, _wrapNativeSuper2.default)(Error));
+}( /*#__PURE__*/(0, _wrapNativeSuper2.default)(Error));
 exports.AssertionError = AssertionError;
 var deepCloneEqualDefault = new _DeepCloneEqual.DeepCloneEqual();
 
@@ -55,9 +60,7 @@ if (!console.debug) {
   console.debug = console.info;
 }
 
-var Assert =
-/*#__PURE__*/
-function () {
+var Assert = /*#__PURE__*/function () {
   function Assert(deepCloneEqual) {
     (0, _classCallCheck2.default)(this, Assert);
     this.deepCloneEqual = deepCloneEqual || deepCloneEqualDefault;
@@ -106,7 +109,7 @@ function () {
   }, {
     key: "circularDeepStrictEqual",
     value: function circularDeepStrictEqual(actual, expected, message, options) {
-      if (!this.deepCloneEqual.equal(actual, expected, (0, _extends2.default)({}, options, {
+      if (!this.deepCloneEqual.equal(actual, expected, (0, _extends2.default)((0, _extends2.default)({}, options), {}, {
         circular: true
       }))) {
         this.throwAssertionError(actual, expected, message);
@@ -166,15 +169,13 @@ function () {
       }
 
       if (regExp) {
-        this.ok(regExp.test(err.message));
+        this.ok(regExp.test(err.message), err ? (message || '') + '\r\n' + err + '\r\n' + err.stack : message);
       }
     }
   }, {
     key: "throwsAsync",
     value: function () {
-      var _throwsAsync = (0, _asyncToGenerator2.default)(
-      /*#__PURE__*/
-      _regenerator.default.mark(function _callee(fn, errType, regExp, message) {
+      var _throwsAsync = (0, _asyncToGenerator2.default)( /*#__PURE__*/_regenerator.default.mark(function _callee(fn, errType, regExp, message) {
         var err;
         return _regenerator.default.wrap(function _callee$(_context3) {
           while (1) {
@@ -194,7 +195,7 @@ function () {
                 err = _context3.t0;
 
               case 8:
-                this.assertError(err);
+                this.assertError(err, errType, regExp, message);
 
               case 9:
               case "end":
@@ -221,7 +222,7 @@ function () {
         err = ex;
       }
 
-      this.assertError(err);
+      this.assertError(err, errType, regExp, message);
     }
   }, {
     key: "assertNotHandledErrors",

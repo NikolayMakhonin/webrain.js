@@ -10,11 +10,11 @@ describe('map perf', function () {
   // see: https://github.com/garycourt/murmurhash-js
   // see: https://stackoverflow.com/a/22429679/5221762
   function murmurhash2_32_gc(str, seed) {
-    var l = str.length,
+    let l = str.length,
         h = seed ^ l,
         i = 0,
         k;
-    var step = l >= 128 ? l / 128 | 0 : 1;
+    const step = l >= 128 ? l / 128 | 0 : 1;
 
     while (l >= 4 * step) {
       k = str.charCodeAt(i) & 0xff | (str.charCodeAt(i += step) & 0xff) << 8 | (str.charCodeAt(i += step) & 0xff) << 16 | (str.charCodeAt(i += step) & 0xff) << 24;
@@ -45,7 +45,7 @@ describe('map perf', function () {
   }
 
   function murmurhash3_32_gc(key, seed) {
-    var remainder, bytes, h1, h1b, c1, c1b, c2, c2b, k1, i;
+    let remainder, bytes, h1, h1b, c1, c1b, c2, c2b, k1, i;
     remainder = key.length & 3; // key.length % 4
 
     bytes = key.length - remainder;

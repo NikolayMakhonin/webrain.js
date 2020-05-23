@@ -3,8 +3,7 @@ import { DeferredCalc } from '../../../../../../main/common/rx/deferred-calc/Def
 import { timingDefault } from '../../../../../../main/common/rx/deferred-calc/timing';
 import { assert } from '../../../../../../main/common/test/Assert';
 import { describe, it } from '../../../../../../main/common/test/Mocha';
-import { assertEvents, EventType, TestDeferredCalc, timing } from './src/TestDeferred';
-import { TestTiming } from './src/timing';
+import { EventType, TestDeferredCalc, TestTimingForDeferredCalc, timing } from './src/TestDeferred';
 describe('common > main > rx > deferred-calc > DeferredCalc', function () {
   this.timeout(20000);
   const testDeferredCalc = TestDeferredCalc.test;
@@ -535,47 +534,50 @@ describe('common > main > rx > deferred-calc > DeferredCalc', function () {
     let events = [];
     const timeCoef = 2;
     const startTestTime = timingDefault.now();
-    const deferredCalc = new DeferredCalc(function () {
-      events.push({
-        time: timingDefault.now() - startTestTime,
-        type: EventType.CanBeCalc
-      });
-      this.calc();
-    }, function (done) {
-      events.push({
-        time: timingDefault.now() - startTestTime,
-        type: EventType.Calc
-      });
-      done();
-    }, function () {
-      events.push({
-        time: timingDefault.now() - startTestTime,
-        type: EventType.Completed
-      });
-    }, {
-      autoInvalidateInterval: 9 * timeCoef,
-      throttleTime: 10 * timeCoef,
-      maxThrottleTime: 100 * timeCoef,
-      minTimeBetweenCalc: 5 * timeCoef
+    const deferredCalc = new DeferredCalc({
+      canBeCalcCallback() {
+        events.push({
+          time: timingDefault.now() - startTestTime,
+          type: EventType.CanBeCalc
+        });
+        this.calc();
+      },
+
+      calcFunc() {
+        events.push({
+          time: timingDefault.now() - startTestTime,
+          type: EventType.Calc
+        });
+        this.done();
+      },
+
+      calcCompletedCallback() {
+        events.push({
+          time: timingDefault.now() - startTestTime,
+          type: EventType.Completed
+        });
+      },
+
+      options: {
+        autoInvalidateInterval: 9 * timeCoef,
+        throttleTime: 10 * timeCoef,
+        maxThrottleTime: 100 * timeCoef,
+        minTimeBetweenCalc: 5 * timeCoef
+      }
     });
     await new Promise(resolve => setTimeout(resolve, 100 * timeCoef));
     deferredCalc.autoInvalidateInterval = null;
     await new Promise(resolve => setTimeout(resolve, 10 * timeCoef));
+    assert.strictEqual(events.length % 3, 0);
+    assert.ok(events.length / 3 > 2);
+    const checkEventTypes = [EventType.CanBeCalc, EventType.Calc, EventType.Completed];
 
     for (let i = 0; i < events.length; i++) {
-      assert.ok(events[i].time >= 100 * timeCoef);
-      assert.ok(events[i].time < 150 * timeCoef);
+      const event = events[i];
+      assert.ok(event.time < 100 * timeCoef, event.time + '');
+      assert.strictEqual(event.type, checkEventTypes[i % 3]);
     }
 
-    assertEvents(events.map(o => ({
-      type: o.type
-    })), [{
-      type: EventType.CanBeCalc
-    }, {
-      type: EventType.Calc
-    }, {
-      type: EventType.Completed
-    }]);
     events = [];
     await new Promise(resolve => setTimeout(resolve, 100 * timeCoef));
     assert.deepStrictEqual(events, []);
@@ -587,12 +589,20 @@ describe('common > main > rx > deferred-calc > DeferredCalc', function () {
 
     const calcCompletedCallback = () => {};
 
-    const deferredCalc = new DeferredCalc(() => {}, () => {}, () => {}, {
-      autoInvalidateInterval: 1,
-      throttleTime: 2,
-      maxThrottleTime: 3,
-      minTimeBetweenCalc: 4,
-      timing: new TestTiming()
+    const deferredCalc = new DeferredCalc({
+      canBeCalcCallback() {},
+
+      calcFunc() {},
+
+      calcCompletedCallback() {},
+
+      options: {
+        autoInvalidateInterval: 1,
+        throttleTime: 2,
+        maxThrottleTime: 3,
+        minTimeBetweenCalc: 4,
+        timing: new TestTimingForDeferredCalc()
+      }
     });
     assert.strictEqual(deferredCalc.autoInvalidateInterval, 1);
     assert.strictEqual(deferredCalc.throttleTime, 2);

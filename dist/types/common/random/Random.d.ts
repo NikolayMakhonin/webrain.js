@@ -2,7 +2,9 @@
     * 1) arrayShuffle(array, () => Math.random())
     * 2) arrayShuffle(array, () => rnd.next())
     */
-export declare function arrayShuffle<T>(array: T[], rnd: () => number): T[];
+export declare function randomWithoutSeed(): number;
+export declare function arrayShuffle<T>(array: T[], rnd?: () => number): T[];
+export declare function getRandomFunc(seed?: number): () => number;
 /** Generate random number in range [0..1) like Math.random() or other, but can be pseudorandom with seed */
 export declare class Random {
     private readonly _rnd;

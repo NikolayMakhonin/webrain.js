@@ -2,13 +2,6 @@
 import { registerMergeable } from '../../../../../../main/common/extensions/merge/mergers';
 import { registerSerializable } from '../../../../../../main/common/extensions/serialization/serializers';
 import { isIterable } from '../../../../../../main/common/helpers/helpers';
-import { ArrayMap } from '../../../../../../main/common/lists/ArrayMap';
-import { ArraySet } from '../../../../../../main/common/lists/ArraySet';
-import { ObjectMap } from '../../../../../../main/common/lists/ObjectMap';
-import { ObjectSet } from '../../../../../../main/common/lists/ObjectSet';
-import { ObservableMap } from '../../../../../../main/common/lists/ObservableMap';
-import { ObservableSet } from '../../../../../../main/common/lists/ObservableSet';
-import { SortedList } from '../../../../../../main/common/lists/SortedList';
 import { ObservableClass } from '../../../../../../main/common/rx/object/ObservableClass';
 import { ObservableObjectBuilder } from '../../../../../../main/common/rx/object/ObservableObjectBuilder';
 import { Property } from '../../../../../../main/common/rx/object/properties/Property';
@@ -113,13 +106,8 @@ export function createComplexObject(options = {}) {
     circularClass: options.circular && options.circularClass && circularClass,
     object: options.circular && object,
     array: options.array && array,
-    sortedList: options.sortedList && new SortedList(),
     set: options.set && new Set(),
-    arraySet: options.arraySet && new ArraySet(),
-    objectSet: options.objectSet && new ObjectSet(),
     map: options.map && new Map(),
-    arrayMap: options.arrayMap && new ArrayMap(),
-    objectMap: options.objectMap && new ObjectMap(),
     iterable: options.function && createIterable(array),
     // iterator: options.function && toIterableIterator(array),
     promiseSync: options.function && {
@@ -130,12 +118,6 @@ export function createComplexObject(options = {}) {
     },
     property: new Property(null, object)
   });
-  object.setObservable = options.set && options.observableSet && new ObservableSet(object.set);
-  object.arraySetObservable = options.arraySet && options.observableSet && new ObservableSet(object.arraySet);
-  object.objectSetObservable = options.objectSet && options.observableSet && new ObservableSet(object.objectSet);
-  object.mapObservable = options.map && options.observableMap && new ObservableMap(object.map);
-  object.arrayMapObservable = options.arrayMap && options.observableMap && new ObservableMap(object.arrayMap);
-  object.objectMapObservable = options.objectMap && options.observableMap && new ObservableMap(object.objectMap);
 
   const valueIsCollection = value => {
     return value && (isIterable(value) || value.constructor === Object);

@@ -5,13 +5,15 @@ var _interopRequireDefault = require("@babel/runtime-corejs3/helpers/interopRequ
 exports.__esModule = true;
 exports.TypeMetaCollectionWithId = exports.TypeMetaCollection = void 0;
 
-var _possibleConstructorReturn2 = _interopRequireDefault(require("@babel/runtime-corejs3/helpers/possibleConstructorReturn"));
-
-var _getPrototypeOf2 = _interopRequireDefault(require("@babel/runtime-corejs3/helpers/getPrototypeOf"));
+var _construct = _interopRequireDefault(require("@babel/runtime-corejs3/core-js-stable/reflect/construct"));
 
 var _get2 = _interopRequireDefault(require("@babel/runtime-corejs3/helpers/get"));
 
 var _inherits2 = _interopRequireDefault(require("@babel/runtime-corejs3/helpers/inherits"));
+
+var _possibleConstructorReturn2 = _interopRequireDefault(require("@babel/runtime-corejs3/helpers/possibleConstructorReturn"));
+
+var _getPrototypeOf2 = _interopRequireDefault(require("@babel/runtime-corejs3/helpers/getPrototypeOf"));
 
 var _defineProperty = _interopRequireDefault(require("@babel/runtime-corejs3/core-js-stable/object/define-property"));
 
@@ -21,13 +23,15 @@ var _createClass2 = _interopRequireDefault(require("@babel/runtime-corejs3/helpe
 
 var _helpers = require("../helpers/helpers");
 
+function _createSuper(Derived) { var hasNativeReflectConstruct = _isNativeReflectConstruct(); return function () { var Super = (0, _getPrototypeOf2.default)(Derived), result; if (hasNativeReflectConstruct) { var NewTarget = (0, _getPrototypeOf2.default)(this).constructor; result = (0, _construct.default)(Super, arguments, NewTarget); } else { result = Super.apply(this, arguments); } return (0, _possibleConstructorReturn2.default)(this, result); }; }
+
+function _isNativeReflectConstruct() { if (typeof Reflect === "undefined" || !_construct.default) return false; if (_construct.default.sham) return false; if (typeof Proxy === "function") return true; try { Date.prototype.toString.call((0, _construct.default)(Date, [], function () {})); return true; } catch (e) { return false; } }
+
 // noinspection SpellCheckingInspection
 var typeMetaPropertyNameBase = '043a558080e94cbda1add09753c28772';
 var typeMetaPropertyNameIndex = 0;
 
-var TypeMetaCollection =
-/*#__PURE__*/
-function () {
+var TypeMetaCollection = /*#__PURE__*/function () {
   // noinspection JSUnusedLocalSymbols
   function TypeMetaCollection(proto) {
     (0, _classCallCheck2.default)(this, TypeMetaCollection);
@@ -100,16 +104,16 @@ function () {
 
 exports.TypeMetaCollection = TypeMetaCollection;
 
-var TypeMetaCollectionWithId =
-/*#__PURE__*/
-function (_TypeMetaCollection) {
+var TypeMetaCollectionWithId = /*#__PURE__*/function (_TypeMetaCollection) {
   (0, _inherits2.default)(TypeMetaCollectionWithId, _TypeMetaCollection);
+
+  var _super = _createSuper(TypeMetaCollectionWithId);
 
   function TypeMetaCollectionWithId(proto) {
     var _this;
 
     (0, _classCallCheck2.default)(this, TypeMetaCollectionWithId);
-    _this = (0, _possibleConstructorReturn2.default)(this, (0, _getPrototypeOf2.default)(TypeMetaCollectionWithId).call(this, proto));
+    _this = _super.call(this, proto);
     _this._typeMap = {};
     return _this;
   }

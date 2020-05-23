@@ -1,4 +1,4 @@
-import { ThenableOrIteratorOrValue, ThenableOrValue } from '../../../async/async';
+import { ThenableOrValue } from '../../../async/async';
 import { VALUE_PROPERTY_DEFAULT } from '../../../helpers/value-property';
 import { IDeferredCalcOptions } from '../../deferred-calc/DeferredCalc';
 export declare type ValueKeys = '@last' | '@wait' | '@lastOrWait';
@@ -15,5 +15,3 @@ export interface ICalcPropertyState<TValue, TInput> {
     readonly calcOptions: IDeferredCalcOptions;
     name: string;
 }
-/** @return true: value changed; false: value not changed; null - auto */
-export declare type CalcPropertyFunc<TValue, TInput> = (state: ICalcPropertyState<TValue, TInput>) => PromiseLike<boolean | void> | ThenableOrIteratorOrValue<boolean | void>;

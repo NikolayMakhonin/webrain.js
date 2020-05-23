@@ -8,11 +8,21 @@ exports.createMergeMapWrapper = createMergeMapWrapper;
 exports.mergeMaps = mergeMaps;
 exports.MergeMapWrapper = exports.MergeObjectWrapper = void 0;
 
-var _toStringTag = _interopRequireDefault(require("@babel/runtime-corejs3/core-js-stable/symbol/to-string-tag"));
+var _bind = _interopRequireDefault(require("@babel/runtime-corejs3/core-js-stable/instance/bind"));
 
 var _getIterator2 = _interopRequireDefault(require("@babel/runtime-corejs3/core-js/get-iterator"));
 
-var _isArray2 = _interopRequireDefault(require("@babel/runtime-corejs3/core-js-stable/array/is-array"));
+var _getIteratorMethod2 = _interopRequireDefault(require("@babel/runtime-corejs3/core-js/get-iterator-method"));
+
+var _symbol = _interopRequireDefault(require("@babel/runtime-corejs3/core-js-stable/symbol"));
+
+var _from = _interopRequireDefault(require("@babel/runtime-corejs3/core-js-stable/array/from"));
+
+var _slice = _interopRequireDefault(require("@babel/runtime-corejs3/core-js-stable/instance/slice"));
+
+var _isArray = _interopRequireDefault(require("@babel/runtime-corejs3/core-js-stable/array/is-array"));
+
+var _toStringTag = _interopRequireDefault(require("@babel/runtime-corejs3/core-js-stable/symbol/to-string-tag"));
 
 var _keys = _interopRequireDefault(require("@babel/runtime-corejs3/core-js-stable/instance/keys"));
 
@@ -22,7 +32,12 @@ var _createClass2 = _interopRequireDefault(require("@babel/runtime-corejs3/helpe
 
 var _helpers = require("../../helpers/helpers");
 
-/* tslint:disable:no-identical-functions */
+function _createForOfIteratorHelperLoose(o) { var _context3; var i = 0; if (typeof _symbol.default === "undefined" || (0, _getIteratorMethod2.default)(o) == null) { if ((0, _isArray.default)(o) || (o = _unsupportedIterableToArray(o))) return function () { if (i >= o.length) return { done: true }; return { done: false, value: o[i++] }; }; throw new TypeError("Invalid attempt to iterate non-iterable instance.\nIn order to be iterable, non-array objects must have a [Symbol.iterator]() method."); } i = (0, _getIterator2.default)(o); return (0, _bind.default)(_context3 = i.next).call(_context3, i); }
+
+function _unsupportedIterableToArray(o, minLen) { var _context2; if (!o) return; if (typeof o === "string") return _arrayLikeToArray(o, minLen); var n = (0, _slice.default)(_context2 = Object.prototype.toString.call(o)).call(_context2, 8, -1); if (n === "Object" && o.constructor) n = o.constructor.name; if (n === "Map" || n === "Set") return (0, _from.default)(o); if (n === "Arguments" || /^(?:Ui|I)nt(?:8|16|32)(?:Clamped)?Array$/.test(n)) return _arrayLikeToArray(o, minLen); }
+
+function _arrayLikeToArray(arr, len) { if (len == null || len > arr.length) len = arr.length; for (var i = 0, arr2 = new Array(len); i < len; i++) { arr2[i] = arr[i]; } return arr2; }
+
 function mergeMapWrappers(merge, base, older, newer, preferCloneOlder, preferCloneNewer, options) {
   var changed = false;
   var addItems = [];
@@ -100,9 +115,7 @@ function mergeMapWrappers(merge, base, older, newer, preferCloneOlder, preferClo
   return changed;
 }
 
-var MergeObjectWrapper =
-/*#__PURE__*/
-function () {
+var MergeObjectWrapper = /*#__PURE__*/function () {
   function MergeObjectWrapper(object, keyAsValue) {
     (0, _classCallCheck2.default)(this, MergeObjectWrapper);
     this._object = object;
@@ -149,9 +162,7 @@ function () {
 
 exports.MergeObjectWrapper = MergeObjectWrapper;
 
-var MergeMapWrapper =
-/*#__PURE__*/
-function () {
+var MergeMapWrapper = /*#__PURE__*/function () {
   function MergeMapWrapper(map) {
     (0, _classCallCheck2.default)(this, MergeMapWrapper);
     this._map = map;
@@ -165,21 +176,10 @@ function () {
   }, {
     key: "forEachKeys",
     value: function forEachKeys(callbackfn) {
-      for (var _iterator = (0, _keys.default)(_context = this._map).call(_context), _isArray = (0, _isArray2.default)(_iterator), _i2 = 0, _iterator = _isArray ? _iterator : (0, _getIterator2.default)(_iterator);;) {
+      for (var _iterator = _createForOfIteratorHelperLoose((0, _keys.default)(_context = this._map).call(_context)), _step; !(_step = _iterator()).done;) {
         var _context;
 
-        var _ref;
-
-        if (_isArray) {
-          if (_i2 >= _iterator.length) break;
-          _ref = _iterator[_i2++];
-        } else {
-          _i2 = _iterator.next();
-          if (_i2.done) break;
-          _ref = _i2.value;
-        }
-
-        var _key2 = _ref;
+        var _key2 = _step.value;
         callbackfn(_key2);
       }
     }
@@ -209,7 +209,7 @@ function createMergeMapWrapper(target, source, arrayOrIterableToMap) {
     return new MergeMapWrapper(source);
   }
 
-  if (arrayOrIterableToMap && ((0, _isArray2.default)(source) || (0, _helpers.isIterable)(source))) {
+  if (arrayOrIterableToMap && ((0, _isArray.default)(source) || (0, _helpers.isIterable)(source))) {
     return createMergeMapWrapper(target, arrayOrIterableToMap(source), null);
   }
 

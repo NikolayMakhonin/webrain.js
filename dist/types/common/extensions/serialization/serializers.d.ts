@@ -32,7 +32,7 @@ export declare class DeSerializerVisitor implements IDeSerializerVisitor {
 export declare type TSerializableClass<TObject extends ISerializable> = (new (...args: any[]) => TObject) & {
     readonly uuid: string;
 };
-export declare class TypeMetaSerializerCollection extends TypeMetaCollectionWithId<ITypeMetaSerializer<any>> implements ITypeMetaSerializerCollection {
+export declare class TypeMetaSerializerCollection extends TypeMetaCollectionWithId<ITypeMetaSerializer> implements ITypeMetaSerializerCollection {
     constructor(proto?: ITypeMetaSerializerCollection);
     static default: TypeMetaSerializerCollection;
     private static makeTypeMetaSerializer;
@@ -50,7 +50,7 @@ export declare class ObjectSerializer implements IObjectSerializer {
 export declare function serializeArray(serialize: ISerializeValue, value: any[], length?: number): ISerializedValueArray;
 export declare function deSerializeArray<T>(deSerialize: IDeSerializeValue, serializedValue: ISerializedValueArray, value: T[]): T[];
 export declare function serializeIterable(serialize: ISerializeValue, value: Iterable<any>): ISerializedValueArray;
-export declare function deSerializeIterableOrdered(serializedValue: ISerializedValueArray, add: (item: any) => void | ThenableSync<any>): ThenableIterator<any>;
+export declare function deSerializeIterableOrdered(serializedValue: ISerializedValueArray, add: (item: any) => void | ThenableSync): ThenableIterator<any>;
 export declare function deSerializeIterable(serializedValue: ISerializedValueArray, add: (item: any) => void): void;
 export declare function serializeObject(serialize: ISerializeValue, value: object, options?: ISerializeOptions): ISerializedObject;
 export declare function deSerializeObject<T extends object>(deSerialize: IDeSerializeValue, serializedValue: ISerializedObject, value: T): T;

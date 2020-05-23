@@ -1,6 +1,7 @@
 /* tslint:disable:no-nested-switch ban-types use-primitive-type */
-import { isIterable, typeToDebugString } from '../../helpers/helpers';
+import { equals, isIterable, typeToDebugString } from '../../helpers/helpers';
 import { canHaveUniqueId, getObjectUniqueId } from '../../helpers/object-unique-id';
+import { webrainEquals, webrainOptions } from '../../helpers/webrainOptions';
 import { fillMap, fillSet } from '../../lists/helpers/set';
 import { TypeMetaCollection } from '../TypeMeta';
 import { createMergeMapWrapper, mergeMaps } from './merge-maps';
@@ -509,8 +510,8 @@ export class MergerVisitor {
   merge(base, older, newer, set, preferCloneOlder, preferCloneNewer, options, refsBase, refsOlder, refsNewer) {
     let preferCloneBase = null;
 
-    if (base === newer) {
-      if (base === older) {
+    if (webrainEquals(base, newer)) {
+      if (webrainEquals(base, older)) {
         return false;
       }
 
@@ -528,7 +529,7 @@ export class MergerVisitor {
       return false;
     }
 
-    if (base === older) {
+    if (webrainEquals(base, older)) {
       preferCloneBase = preferCloneOlder = mergePreferClone(preferCloneBase, preferCloneOlder);
     }
 
@@ -771,11 +772,11 @@ function createPrimitiveTypeMetaMerger(meta) {
     preferClone: false,
     ...meta,
     merger: {
-      merge(merge, base, older, newer, set) {
-        set(newer.valueOf());
-        return true;
+      canMerge(target, source) {
+        return deepEqualsPrimitive(target, source) ? null : false;
       },
 
+      preferClone: o => Object.isFrozen(o) ? true : null,
       ...(meta ? meta.merger : {})
     }
   };
@@ -863,11 +864,88 @@ registerMerger(String, {
   preferClone: false
 });
 registerMergerPrimitive(Number);
-registerMergerPrimitive(Boolean);
-registerMergerPrimitive(Array);
+registerMergerPrimitive(Boolean); // registerMergerPrimitive(Array)
+
 registerMergerPrimitive(Error); // endregion
 // region Array
-// @ts-ignore
+
+function deepEqualsPrimitive(o1, o2) {
+  if (equals(o1, o2)) {
+    return true;
+  }
+
+  if (o1 == null || o2 == null) {
+    return false;
+  }
+
+  if (webrainOptions.equalsFunc && webrainOptions.equalsFunc(o1, o2)) {
+    return true;
+  }
+
+  if (Array.isArray(o1)) {
+    if (!Array.isArray(o2)) {
+      return false;
+    }
+
+    const len = o1.length;
+
+    if (o2.length !== len) {
+      return false;
+    }
+
+    for (let i = 0; i < len; i++) {
+      if (!deepEqualsPrimitive(o1[i], o2[i])) {
+        return false;
+      }
+    }
+  } else if (o1.constructor === Object) {
+    if (o2.constructor !== Object) {
+      return false;
+    }
+
+    for (const key in o1) {
+      if (Object.prototype.hasOwnProperty.call(o1, key)) {
+        if (!Object.prototype.hasOwnProperty.call(o2, key)) {
+          return false;
+        }
+
+        if (!deepEqualsPrimitive(o1[key], o2[key])) {
+          return false;
+        }
+      }
+    }
+  } else {
+    return false;
+  }
+
+  return true;
+}
+
+registerMerger(Array, {
+  merger: {
+    canMerge(target, source) {
+      return deepEqualsPrimitive(target, source) ? null : true;
+    },
+
+    merge(merge, base, older, newer, set, preferCloneOlder, preferCloneNewer, options) {
+      if (!base || Object.isFrozen(base)) {
+        set(newer && preferCloneNewer ? newer.slice() : newer);
+        return true;
+      }
+
+      const len = newer.length;
+
+      for (let i = 0; i < len; i++) {
+        base[i] = newer[i];
+      }
+
+      base.length = len;
+      return true;
+    }
+
+  },
+  preferClone: o => Object.isFrozen(o) ? true : null
+}); // @ts-ignore
 // registerMerger<any[], any[]>(Array, {
 // 	merger: {
 // 		canMerge(target: any[], source: any[]): boolean {

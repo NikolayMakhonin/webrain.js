@@ -68,16 +68,16 @@ export const ITERATOR_GENERATOR = function* () {
 
 function createIterator(value, isThrow) {
   const iteratorInner = function* () {
-    assert.strictEqual((yield void 0), void 0);
-    assert.strictEqual((yield null), null);
-    assert.strictEqual((yield false), false);
-    assert.strictEqual((yield 0), 0);
-    assert.strictEqual((yield ''), '');
-    assert.strictEqual((yield OBJ), OBJ);
-    assert.strictEqual((yield FUNC), FUNC); // assert.strictEqual(yield THEN_LIKE, 'THEN_LIKE')
+    assert.strictEqual(yield void 0, void 0);
+    assert.strictEqual(yield null, null);
+    assert.strictEqual(yield false, false);
+    assert.strictEqual(yield 0, 0);
+    assert.strictEqual(yield '', '');
+    assert.strictEqual(yield OBJ, OBJ);
+    assert.strictEqual(yield FUNC, FUNC); // assert.strictEqual(yield THEN_LIKE, 'THEN_LIKE')
 
-    assert.strictEqual((yield ITERABLE), ITERABLE);
-    assert.strictEqual((yield ITERATOR_GENERATOR()), ITERABLE);
+    assert.strictEqual(yield ITERABLE, ITERABLE);
+    assert.strictEqual(yield ITERATOR_GENERATOR(), ITERABLE);
 
     if (isThrow) {
       throw value;
@@ -87,16 +87,16 @@ function createIterator(value, isThrow) {
   };
 
   const iterator = function* () {
-    assert.strictEqual((yield new ThenableSync(resolve => resolve(void 0))), void 0);
-    assert.strictEqual((yield new ThenableSync(resolve => resolve(null))), null);
-    assert.strictEqual((yield new ThenableSync(resolve => resolve(false))), false);
-    assert.strictEqual((yield new ThenableSync(resolve => resolve(0))), 0);
-    assert.strictEqual((yield new ThenableSync(resolve => resolve(''))), '');
-    assert.strictEqual((yield new ThenableSync(resolve => resolve(OBJ))), OBJ);
-    assert.strictEqual((yield new ThenableSync(resolve => resolve(FUNC))), FUNC); // assert.strictEqual(yield new ThenableSync(resolve => resolve(THEN_LIKE)), 'THEN_LIKE')
+    assert.strictEqual(yield new ThenableSync(resolve => resolve(void 0)), void 0);
+    assert.strictEqual(yield new ThenableSync(resolve => resolve(null)), null);
+    assert.strictEqual(yield new ThenableSync(resolve => resolve(false)), false);
+    assert.strictEqual(yield new ThenableSync(resolve => resolve(0)), 0);
+    assert.strictEqual(yield new ThenableSync(resolve => resolve('')), '');
+    assert.strictEqual(yield new ThenableSync(resolve => resolve(OBJ)), OBJ);
+    assert.strictEqual(yield new ThenableSync(resolve => resolve(FUNC)), FUNC); // assert.strictEqual(yield new ThenableSync(resolve => resolve(THEN_LIKE)), 'THEN_LIKE')
 
-    assert.strictEqual((yield new ThenableSync(resolve => resolve(ITERABLE))), ITERABLE);
-    assert.strictEqual((yield new ThenableSync(resolve => resolve(ITERATOR_GENERATOR()))), ITERABLE);
+    assert.strictEqual(yield new ThenableSync(resolve => resolve(ITERABLE)), ITERABLE);
+    assert.strictEqual(yield new ThenableSync(resolve => resolve(ITERATOR_GENERATOR())), ITERABLE);
     const result = yield iteratorInner();
     return result;
   }();

@@ -17,8 +17,10 @@ export declare class ThenableSync<TValue = any> implements IThenable<TValue> {
     constructor(executor?: TExecutor<TValue>, customResolveValue?: TResolveAsyncValue);
     resolve(value?: ThenableOrIteratorOrValue<TValue>): void;
     private _resolve;
+    private __resolve;
     reject(error?: ThenableOrIteratorOrValue<any>): void;
     private _reject;
+    private __reject;
     private _then;
     then<TResult1 = TValue, TResult2 = never>(onfulfilled?: TOnFulfilled<TValue, TResult1>, onrejected?: TOnRejected<TResult2>, customResolveValue?: TResolveAsyncValue | false): ThenableSync<TResult1>;
     thenLast<TResult1 = TValue, TResult2 = never>(onfulfilled?: TOnFulfilled<TValue, TResult1>, onrejected?: TOnRejected<TResult2>, customResolveValue?: TResolveAsyncValue | false): ThenableOrValue<TResult1>;

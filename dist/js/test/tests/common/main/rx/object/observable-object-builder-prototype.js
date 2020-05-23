@@ -2,13 +2,15 @@
 
 var _interopRequireDefault = require("@babel/runtime-corejs3/helpers/interopRequireDefault");
 
+var _construct = _interopRequireDefault(require("@babel/runtime-corejs3/core-js-stable/reflect/construct"));
+
 var _classCallCheck2 = _interopRequireDefault(require("@babel/runtime-corejs3/helpers/classCallCheck"));
+
+var _inherits2 = _interopRequireDefault(require("@babel/runtime-corejs3/helpers/inherits"));
 
 var _possibleConstructorReturn2 = _interopRequireDefault(require("@babel/runtime-corejs3/helpers/possibleConstructorReturn"));
 
 var _getPrototypeOf2 = _interopRequireDefault(require("@babel/runtime-corejs3/helpers/getPrototypeOf"));
-
-var _inherits2 = _interopRequireDefault(require("@babel/runtime-corejs3/helpers/inherits"));
 
 var _map = _interopRequireDefault(require("@babel/runtime-corejs3/core-js-stable/instance/map"));
 
@@ -20,7 +22,10 @@ var _Assert = require("../../../../../../main/common/test/Assert");
 
 var _Mocha = require("../../../../../../main/common/test/Mocha");
 
-/* eslint-disable guard-for-in */
+function _createSuper(Derived) { var hasNativeReflectConstruct = _isNativeReflectConstruct(); return function () { var Super = (0, _getPrototypeOf2.default)(Derived), result; if (hasNativeReflectConstruct) { var NewTarget = (0, _getPrototypeOf2.default)(this).constructor; result = (0, _construct.default)(Super, arguments, NewTarget); } else { result = Super.apply(this, arguments); } return (0, _possibleConstructorReturn2.default)(this, result); }; }
+
+function _isNativeReflectConstruct() { if (typeof Reflect === "undefined" || !_construct.default) return false; if (_construct.default.sham) return false; if (typeof Proxy === "function") return true; try { Date.prototype.toString.call((0, _construct.default)(Date, [], function () {})); return true; } catch (e) { return false; } }
+
 (0, _Mocha.describe)('common > main > rx > observable-object-builder-prototype', function () {
   function assertEvents(events, check) {
     events = events && (0, _map.default)(events).call(events, function (o) {
@@ -35,53 +40,53 @@ var _Mocha = require("../../../../../../main/common/test/Mocha");
   }
 
   (0, _Mocha.it)('writable', function () {
-    var BaseClass1 =
-    /*#__PURE__*/
-    function (_ObservableClass) {
+    var BaseClass1 = /*#__PURE__*/function (_ObservableClass) {
       (0, _inherits2.default)(BaseClass1, _ObservableClass);
+
+      var _super = _createSuper(BaseClass1);
 
       function BaseClass1() {
         (0, _classCallCheck2.default)(this, BaseClass1);
-        return (0, _possibleConstructorReturn2.default)(this, (0, _getPrototypeOf2.default)(BaseClass1).apply(this, arguments));
+        return _super.apply(this, arguments);
       }
 
       return BaseClass1;
     }(_ObservableClass3.ObservableClass);
 
-    var BaseClass2 =
-    /*#__PURE__*/
-    function (_BaseClass) {
+    var BaseClass2 = /*#__PURE__*/function (_BaseClass) {
       (0, _inherits2.default)(BaseClass2, _BaseClass);
+
+      var _super2 = _createSuper(BaseClass2);
 
       function BaseClass2() {
         (0, _classCallCheck2.default)(this, BaseClass2);
-        return (0, _possibleConstructorReturn2.default)(this, (0, _getPrototypeOf2.default)(BaseClass2).apply(this, arguments));
+        return _super2.apply(this, arguments);
       }
 
       return BaseClass2;
     }(BaseClass1);
 
-    var Class1 =
-    /*#__PURE__*/
-    function (_BaseClass2) {
+    var Class1 = /*#__PURE__*/function (_BaseClass2) {
       (0, _inherits2.default)(Class1, _BaseClass2);
+
+      var _super3 = _createSuper(Class1);
 
       function Class1() {
         (0, _classCallCheck2.default)(this, Class1);
-        return (0, _possibleConstructorReturn2.default)(this, (0, _getPrototypeOf2.default)(Class1).apply(this, arguments));
+        return _super3.apply(this, arguments);
       }
 
       return Class1;
     }(BaseClass1);
 
-    var Class2 =
-    /*#__PURE__*/
-    function (_BaseClass3) {
+    var Class2 = /*#__PURE__*/function (_BaseClass3) {
       (0, _inherits2.default)(Class2, _BaseClass3);
+
+      var _super4 = _createSuper(Class2);
 
       function Class2() {
         (0, _classCallCheck2.default)(this, Class2);
-        return (0, _possibleConstructorReturn2.default)(this, (0, _getPrototypeOf2.default)(Class2).apply(this, arguments));
+        return _super4.apply(this, arguments);
       }
 
       return Class2;
@@ -270,53 +275,53 @@ var _Mocha = require("../../../../../../main/common/test/Mocha");
     _Assert.assert.deepStrictEqual(object2.baseProp1, '7');
   });
   (0, _Mocha.it)('readable', function () {
-    var BaseClass1 =
-    /*#__PURE__*/
-    function (_ObservableClass2) {
+    var BaseClass1 = /*#__PURE__*/function (_ObservableClass2) {
       (0, _inherits2.default)(BaseClass1, _ObservableClass2);
+
+      var _super5 = _createSuper(BaseClass1);
 
       function BaseClass1() {
         (0, _classCallCheck2.default)(this, BaseClass1);
-        return (0, _possibleConstructorReturn2.default)(this, (0, _getPrototypeOf2.default)(BaseClass1).apply(this, arguments));
+        return _super5.apply(this, arguments);
       }
 
       return BaseClass1;
     }(_ObservableClass3.ObservableClass);
 
-    var BaseClass2 =
-    /*#__PURE__*/
-    function (_BaseClass4) {
+    var BaseClass2 = /*#__PURE__*/function (_BaseClass4) {
       (0, _inherits2.default)(BaseClass2, _BaseClass4);
+
+      var _super6 = _createSuper(BaseClass2);
 
       function BaseClass2() {
         (0, _classCallCheck2.default)(this, BaseClass2);
-        return (0, _possibleConstructorReturn2.default)(this, (0, _getPrototypeOf2.default)(BaseClass2).apply(this, arguments));
+        return _super6.apply(this, arguments);
       }
 
       return BaseClass2;
     }(BaseClass1);
 
-    var Class1 =
-    /*#__PURE__*/
-    function (_BaseClass5) {
+    var Class1 = /*#__PURE__*/function (_BaseClass5) {
       (0, _inherits2.default)(Class1, _BaseClass5);
+
+      var _super7 = _createSuper(Class1);
 
       function Class1() {
         (0, _classCallCheck2.default)(this, Class1);
-        return (0, _possibleConstructorReturn2.default)(this, (0, _getPrototypeOf2.default)(Class1).apply(this, arguments));
+        return _super7.apply(this, arguments);
       }
 
       return Class1;
     }(BaseClass1);
 
-    var Class2 =
-    /*#__PURE__*/
-    function (_BaseClass6) {
+    var Class2 = /*#__PURE__*/function (_BaseClass6) {
       (0, _inherits2.default)(Class2, _BaseClass6);
+
+      var _super8 = _createSuper(Class2);
 
       function Class2() {
         (0, _classCallCheck2.default)(this, Class2);
-        return (0, _possibleConstructorReturn2.default)(this, (0, _getPrototypeOf2.default)(Class2).apply(this, arguments));
+        return _super8.apply(this, arguments);
       }
 
       return Class2;

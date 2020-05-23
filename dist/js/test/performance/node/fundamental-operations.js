@@ -5,6 +5,14 @@ var _interopRequireDefault = require("@babel/runtime-corejs3/helpers/interopRequ
 exports.__esModule = true;
 exports.compareDefault = compareDefault;
 
+var _bind = _interopRequireDefault(require("@babel/runtime-corejs3/core-js-stable/instance/bind"));
+
+var _getIterator2 = _interopRequireDefault(require("@babel/runtime-corejs3/core-js/get-iterator"));
+
+var _symbol = _interopRequireDefault(require("@babel/runtime-corejs3/core-js-stable/symbol"));
+
+var _from = _interopRequireDefault(require("@babel/runtime-corejs3/core-js-stable/array/from"));
+
 var _asyncToGenerator2 = _interopRequireDefault(require("@babel/runtime-corejs3/helpers/asyncToGenerator"));
 
 var _now = _interopRequireDefault(require("@babel/runtime-corejs3/core-js-stable/date/now"));
@@ -20,8 +28,6 @@ var _getIteratorMethod2 = _interopRequireDefault(require("@babel/runtime-corejs3
 var _defineProperty = _interopRequireDefault(require("@babel/runtime-corejs3/core-js-stable/object/define-property"));
 
 var _setTimeout2 = _interopRequireDefault(require("@babel/runtime-corejs3/core-js-stable/set-timeout"));
-
-var _repeat = _interopRequireDefault(require("@babel/runtime-corejs3/core-js-stable/instance/repeat"));
 
 var _create = _interopRequireDefault(require("@babel/runtime-corejs3/core-js-stable/object/create"));
 
@@ -55,17 +61,13 @@ var _splice = _interopRequireDefault(require("@babel/runtime-corejs3/core-js-sta
 
 var _slice = _interopRequireDefault(require("@babel/runtime-corejs3/core-js-stable/instance/slice"));
 
-var _getIterator2 = _interopRequireDefault(require("@babel/runtime-corejs3/core-js/get-iterator"));
-
-var _isArray4 = _interopRequireDefault(require("@babel/runtime-corejs3/core-js-stable/array/is-array"));
+var _isArray = _interopRequireDefault(require("@babel/runtime-corejs3/core-js-stable/array/is-array"));
 
 var _set = _interopRequireDefault(require("@babel/runtime-corejs3/core-js-stable/set"));
 
 var _immutable = require("immutable");
 
 var _rdtsc = require("rdtsc");
-
-var _synchronousPromise = require("synchronous-promise");
 
 var _async = require("../../../main/common/async/async");
 
@@ -75,29 +77,18 @@ var _helpers = require("../../../main/common/helpers/helpers");
 
 var _objectUniqueId = require("../../../main/common/helpers/object-unique-id");
 
-var _tupleUniqueId = require("../../../main/common/helpers/tuple-unique-id");
-
-var _ArraySet = require("../../../main/common/lists/ArraySet");
-
 var _array = require("../../../main/common/lists/helpers/array");
-
-var _SortedList = require("../../../main/common/lists/SortedList");
 
 var _Assert = require("../../../main/common/test/Assert");
 
 var _Mocha = require("../../../main/common/test/Mocha");
 
-var _TestDeepSubscribe = require("../../tests/common/main/rx/deep-subscribe/helpers/src/TestDeepSubscribe");
+function _createForOfIteratorHelperLoose(o) { var _context14; var i = 0; if (typeof _symbol.default === "undefined" || (0, _getIteratorMethod2.default)(o) == null) { if ((0, _isArray.default)(o) || (o = _unsupportedIterableToArray(o))) return function () { if (i >= o.length) return { done: true }; return { done: false, value: o[i++] }; }; throw new TypeError("Invalid attempt to iterate non-iterable instance.\nIn order to be iterable, non-array objects must have a [Symbol.iterator]() method."); } i = (0, _getIterator2.default)(o); return (0, _bind.default)(_context14 = i.next).call(_context14, i); }
 
-/* tslint:disable:prefer-const no-identical-functions no-empty no-shadowed-variable no-conditional-assignment */
+function _unsupportedIterableToArray(o, minLen) { var _context13; if (!o) return; if (typeof o === "string") return _arrayLikeToArray(o, minLen); var n = (0, _slice.default)(_context13 = Object.prototype.toString.call(o)).call(_context13, 8, -1); if (n === "Object" && o.constructor) n = o.constructor.name; if (n === "Map" || n === "Set") return (0, _from.default)(o); if (n === "Arguments" || /^(?:Ui|I)nt(?:8|16|32)(?:Clamped)?Array$/.test(n)) return _arrayLikeToArray(o, minLen); }
 
-/* tslint:disable:no-var-requires one-variable-per-declaration */
+function _arrayLikeToArray(arr, len) { if (len == null || len > arr.length) len = arr.length; for (var i = 0, arr2 = new Array(len); i < len; i++) { arr2[i] = arr[i]; } return arr2; }
 
-/* eslint-disable no-new-func,no-array-constructor,object-property-newline,no-undef */
-
-/* eslint-disable no-empty,no-shadow,no-prototype-builtins,prefer-destructuring */
-
-/* eslint-disable prefer-rest-params,arrow-body-style */
 var SetNative = _set.default;
 
 require('./src/SetPolyfill');
@@ -201,20 +192,9 @@ function compareDefault(o1, o2) {
           return output;
         }
 
-        if ((0, _isArray4.default)(inputItems)) {
-          for (var _iterator = inputItems, _isArray = (0, _isArray4.default)(_iterator), _i = 0, _iterator = _isArray ? _iterator : (0, _getIterator2.default)(_iterator);;) {
-            var _ref2;
-
-            if (_isArray) {
-              if (_i >= _iterator.length) break;
-              _ref2 = _iterator[_i++];
-            } else {
-              _i = _iterator.next();
-              if (_i.done) break;
-              _ref2 = _i.value;
-            }
-
-            var item = _ref2;
+        if ((0, _isArray.default)(inputItems)) {
+          for (var _iterator = _createForOfIteratorHelperLoose(inputItems), _step; !(_step = _iterator()).done;) {
+            var item = _step.value;
             expandAndDistinct(item, output, map);
           }
 
@@ -249,20 +229,9 @@ function compareDefault(o1, o2) {
           return output;
         }
 
-        if ((0, _isArray4.default)(inputItems)) {
-          for (var _iterator2 = inputItems, _isArray2 = (0, _isArray4.default)(_iterator2), _i2 = 0, _iterator2 = _isArray2 ? _iterator2 : (0, _getIterator2.default)(_iterator2);;) {
-            var _ref3;
-
-            if (_isArray2) {
-              if (_i2 >= _iterator2.length) break;
-              _ref3 = _iterator2[_i2++];
-            } else {
-              _i2 = _iterator2.next();
-              if (_i2.done) break;
-              _ref3 = _i2.value;
-            }
-
-            var item = _ref3;
+        if ((0, _isArray.default)(inputItems)) {
+          for (var _iterator2 = _createForOfIteratorHelperLoose(inputItems), _step2; !(_step2 = _iterator2()).done;) {
+            var item = _step2.value;
             expandAndDistinct(item, output, map);
           }
 
@@ -620,60 +589,7 @@ function compareDefault(o1, o2) {
       return lastIndexOf2(arr, 5000);
     });
     console.log(result);
-  }); // xit('array capacity', function () {
-  // 	this.timeout(300000)
-  //
-  // 	let arr
-  //
-  // 	const result = calcPerformance(
-  // 		60000,
-  // 		() => {
-  // 			// no operations
-  // 		},
-  // 		() => { // 821
-  // 			arr = [1, 2, 3, 4, 5]
-  // 			arr.length = 10
-  // 		},
-  // 		() => {
-  // 			arr.push(6) // 16
-  // 		},
-  // 		() => {
-  // 			arr = arr.slice(5, 1) // 265
-  // 		},
-  // 		() => { // 737
-  // 			arr = [1, 2, 3, 4, 5]
-  // 			arr.length = 10
-  // 		},
-  // 		() => {
-  // 			arr[5] = 6 // 20
-  // 		},
-  // 		() => {
-  // 			delete arr[5] // 238
-  // 		},
-  // 		() => { // 74
-  // 			arr = new Array(10)
-  // 			copyToArray([1, 2, 3, 4, 5], arr)
-  // 		},
-  // 		() => {
-  // 			arr.push(6) // 146
-  // 		},
-  // 		() => {
-  // 			arr.splice(5, 1) // 771
-  // 		},
-  // 		() => { // 55
-  // 			arr = new Array(10)
-  // 			copyToArray([1, 2, 3, 4, 5], arr)
-  // 		},
-  // 		() => {
-  // 			arr[5] = 6 // 1
-  // 		},
-  // 		() => {
-  // 			delete arr[5] // 231
-  // 		}
-  // 	)
-  //
-  // 	console.log(result)
-  // })
+  });
 
   function calcSortCompareCount(array, size, addArray) {
     // array.length = size
@@ -843,9 +759,7 @@ function compareDefault(o1, o2) {
   (0, _Mocha.xit)('Set', function () {
     var _Symbol$iterator;
 
-    var _marked =
-    /*#__PURE__*/
-    _regenerator.default.mark(iterate);
+    var _marked = /*#__PURE__*/_regenerator.default.mark(iterate);
 
     this.timeout(300000);
 
@@ -871,8 +785,8 @@ function compareDefault(o1, o2) {
     }
 
     function testSet(addObject, removeObject, getIterableAfterAdd, getIterableAfterDelete) {
-      for (var _i3 = 0; _i3 < countObject; _i3++) {
-        addObject(objects[_i3], clones[_i3]);
+      for (var _i = 0; _i < countObject; _i++) {
+        addObject(objects[_i], clones[_i]);
       } // let count = 0
       // for (const value of getIterableAfterAdd()) {
       // 	count++
@@ -882,9 +796,9 @@ function compareDefault(o1, o2) {
       // }
 
 
-      for (var _i4 = 0; _i4 < countObject; _i4++) {
+      for (var _i2 = 0; _i2 < countObject; _i2++) {
         // for (let i = 99; i >= 0; i--) {
-        removeObject(objects[_i4], clones[_i4]);
+        removeObject(objects[_i2], clones[_i2]);
       } // count = 0
       // for (const value of getIterableAfterDelete()) {
       // 	count++
@@ -1018,37 +932,9 @@ function compareDefault(o1, o2) {
       }); // assert.strictEqual(set.length, 0)
     }
 
-    function testSortedList(options) {
-      var set = new _SortedList.SortedList(options);
-      testSet(function (o) {
-        return set.add(o);
-      }, function (o) {
-        return set.remove(o);
-      }, function (o) {
-        return set;
-      }, function (o) {
-        return set;
-      }); // set.clear()
-      // assert.strictEqual(set.size, 0)
-    }
-
     function testSetPolyfill() {
       // console.log(SetPolyfill.toString())
       var set = new SetPolyfill();
-      testSet(function (o) {
-        return set.add(o);
-      }, function (o) {
-        return set.delete(o);
-      }, function (o) {
-        return set;
-      }, function (o) {
-        return set;
-      }); // assert.strictEqual(set.size, 0)
-    }
-
-    function testArraySet() {
-      // console.log(ArraySet.toString())
-      var set = new _ArraySet.ArraySet();
       testSet(function (o) {
         return set.add(o);
       }, function (o) {
@@ -1075,68 +961,42 @@ function compareDefault(o1, o2) {
     }
 
     function iterate(map) {
-      var _iterator3, _isArray3, _i5, _ref4, item;
+      var _iterator3, _step3, item;
 
       return _regenerator.default.wrap(function iterate$(_context5) {
         while (1) {
           switch (_context5.prev = _context5.next) {
             case 0:
-              _iterator3 = (0, _values.default)(map).call(map), _isArray3 = (0, _isArray4.default)(_iterator3), _i5 = 0, _iterator3 = _isArray3 ? _iterator3 : (0, _getIterator2.default)(_iterator3);
+              _iterator3 = _createForOfIteratorHelperLoose((0, _values.default)(map).call(map));
 
             case 1:
-              if (!_isArray3) {
+              if ((_step3 = _iterator3()).done) {
+                _context5.next = 11;
+                break;
+              }
+
+              item = _step3.value;
+
+              if (!(item instanceof _map.default)) {
                 _context5.next = 7;
                 break;
               }
 
-              if (!(_i5 >= _iterator3.length)) {
-                _context5.next = 4;
-                break;
-              }
+              return _context5.delegateYield(iterate(item), "t0", 5);
 
-              return _context5.abrupt("break", 20);
-
-            case 4:
-              _ref4 = _iterator3[_i5++];
-              _context5.next = 11;
+            case 5:
+              _context5.next = 9;
               break;
 
             case 7:
-              _i5 = _iterator3.next();
-
-              if (!_i5.done) {
-                _context5.next = 10;
-                break;
-              }
-
-              return _context5.abrupt("break", 20);
-
-            case 10:
-              _ref4 = _i5.value;
-
-            case 11:
-              item = _ref4;
-
-              if (!(item instanceof _map.default)) {
-                _context5.next = 16;
-                break;
-              }
-
-              return _context5.delegateYield(iterate(item), "t0", 14);
-
-            case 14:
-              _context5.next = 18;
-              break;
-
-            case 16:
-              _context5.next = 18;
+              _context5.next = 9;
               return item;
 
-            case 18:
+            case 9:
               _context5.next = 1;
               break;
 
-            case 20:
+            case 11:
             case "end":
               return _context5.stop();
           }
@@ -1146,9 +1006,7 @@ function compareDefault(o1, o2) {
 
     _Symbol$iterator = _iterator4.default;
 
-    var TupleSet =
-    /*#__PURE__*/
-    function () {
+    var TupleSet = /*#__PURE__*/function () {
       function TupleSet() {
         (0, _classCallCheck2.default)(this, TupleSet);
         this._map = new _map.default();
@@ -1159,10 +1017,10 @@ function compareDefault(o1, o2) {
         value: function add(tuple) {
           var map = this._map;
 
-          for (var _i6 = 0, len = tuple.length; _i6 < len; _i6++) {
-            var item = tuple[_i6];
+          for (var _i3 = 0, len = tuple.length; _i3 < len; _i3++) {
+            var item = tuple[_i3];
 
-            if (_i6 === len - 1) {
+            if (_i3 === len - 1) {
               map.set(item, item);
             }
 
@@ -1179,10 +1037,10 @@ function compareDefault(o1, o2) {
         value: function _delete(tuple) {
           var map = this._map;
 
-          for (var _i7 = 0, len = tuple.length; _i7 < len; _i7++) {
-            var item = tuple[_i7];
+          for (var _i4 = 0, len = tuple.length; _i4 < len; _i4++) {
+            var item = tuple[_i4];
 
-            if (_i7 === len - 1) {
+            if (_i4 === len - 1) {
               map.delete(item);
             }
 
@@ -1218,7 +1076,6 @@ function compareDefault(o1, o2) {
 
     var result = (0, _rdtsc.calcPerformance)(60000, testEmpty, testArrayHashTable, // 1.0
     testSetNative, // 1.0
-    testArraySet, // 1.0150311148125015
     testObject, // 1.1021265644157587
     testWeakSetNative, // 1.6042837809702268
     testArraySplice, // 2.0924161982094525
@@ -1226,66 +1083,8 @@ function compareDefault(o1, o2) {
     testArray, // 3.645999606727277
     testSetPolyfill, // 5.62216901473616
     testArrayKeepOrder, // 7.91167557313716
-    function () {
-      return testSortedList({
-        // 22.514027691026442
-        autoSort: true,
-        notAddIfExists: true,
-        minAllocatedSize: 1000 // compare         : compareUniqueId
-
-      });
-    }, testImmutableSet // 33.87640826335392
-    // () => testSortedList({
-    // 	autoSort        : true,
-    // 	notAddIfExists  : false,
-    // 	minAllocatedSize: 1000
-    // }),
-    // () => testSortedList({
-    // 	autoSort        : false,
-    // 	notAddIfExists  : false,
-    // 	minAllocatedSize: 1000
-    // })
+    testImmutableSet // 33.87640826335392
     );
-    console.log(result);
-  });
-  (0, _Mocha.it)('getTupleId', function () {
-    this.timeout(300000);
-    var _this = {};
-
-    var func = function func() {};
-
-    var items = [{}, Math.round(Math.random() * 10)];
-    var _thisArray = [];
-    var funcArray = [];
-    var itemsArray = [];
-    var id;
-
-    for (var i = 0; i < 100000; i++) {
-      _this = {};
-
-      func = function func() {};
-
-      items = [{}, Math.round(Math.random() * 10)];
-      _thisArray[i] = _this;
-      funcArray[i] = func;
-      itemsArray[i] = items;
-      id = _tupleUniqueId.getTupleId.apply((0, _tupleUniqueId.getTupleIdMap)(func, _this, 4), items);
-      id = (0, _objectUniqueId.getObjectUniqueId)(_this);
-    }
-
-    var index = 0;
-    var result = (0, _rdtsc.calcPerformance)(10000, function () {// no operations
-    }, function () {
-      // _this = {}
-      // func = () => {}
-      items = [{}, Math.round(Math.random() * 10)];
-      _this = _thisArray[index % 100000];
-      func = funcArray[index % 100000]; // items = itemsArray[index % 100000]
-    }, function () {
-      id = _tupleUniqueId.getTupleId.apply((0, _tupleUniqueId.getTupleIdMap)(func, _this, 4), items);
-    }, function () {
-      id = (0, _objectUniqueId.getObjectUniqueId)(_this);
-    });
     console.log(result);
   });
   (0, _Mocha.xit)('Number toString', function () {
@@ -1329,73 +1128,6 @@ function compareDefault(o1, o2) {
     });
     console.log(result);
   });
-  (0, _Mocha.xit)('deepSubscribe', function () {
-    this.timeout(300000);
-
-    var createTester = function createTester() {
-      for (var _len2 = arguments.length, propertyNames = new Array(_len2), _key2 = 0; _key2 < _len2; _key2++) {
-        propertyNames[_key2] = arguments[_key2];
-      }
-
-      return new _TestDeepSubscribe.TestDeepSubscribe({
-        object: (0, _TestDeepSubscribe.createObject)().object,
-        immediate: true,
-        performanceTest: true
-      }, function (b) {
-        return (0, _repeat.default)(b).call(b, 1, 3, null, function (b) {
-          return b.any( // b => b.propertyRegexp(/object|observableObject/),
-          function (b) {
-            return b.propertyNames('object', 'observableObject');
-          }, function (b) {
-            return b.propertyNames.apply(b, propertyNames).path(function (o) {
-              return o['#'];
-            });
-          });
-        }).path(function (o) {
-          return o['#'];
-        });
-      }).subscribe([]).unsubscribe([]);
-    };
-
-    var testerList = createTester('list');
-    var testerSet = createTester('set');
-    var testerMap = createTester('map');
-    var testerObservableList = createTester('observableList');
-    var testerObservableSet = createTester('observableSet');
-    var testerObservableMap = createTester('observableMap');
-    var testerAll = createTester('list', 'set', 'map', 'observableList', 'observableSet', 'observableMap');
-    var result = (0, _rdtsc.calcPerformance)(10000, function () {// no operations
-    }, function () {
-      return testerList.subscribe([]);
-    }, function () {
-      return testerList.unsubscribe([]);
-    }, function () {
-      return testerSet.subscribe([]);
-    }, function () {
-      return testerSet.unsubscribe([]);
-    }, function () {
-      return testerMap.subscribe([]);
-    }, function () {
-      return testerMap.unsubscribe([]);
-    }, function () {
-      return testerObservableList.subscribe([]);
-    }, function () {
-      return testerObservableList.unsubscribe([]);
-    }, function () {
-      return testerObservableSet.subscribe([]);
-    }, function () {
-      return testerObservableSet.unsubscribe([]);
-    }, function () {
-      return testerObservableMap.subscribe([]);
-    }, function () {
-      return testerObservableMap.unsubscribe([]);
-    }, function () {
-      return testerAll.subscribe([]);
-    }, function () {
-      return testerAll.unsubscribe([]);
-    });
-    console.log(result);
-  });
   (0, _Mocha.xit)('setTimeout', function () {
     this.timeout(300000);
 
@@ -1411,7 +1143,7 @@ function compareDefault(o1, o2) {
     console.log(result);
   });
   (0, _Mocha.xit)('Math.max()', function () {
-    var _this2 = this;
+    var _this = this;
 
     this.timeout(300000);
 
@@ -1426,14 +1158,14 @@ function compareDefault(o1, o2) {
         value3 = this.value3;
     var result = (0, _rdtsc.calcPerformance)(10000, function () {// no operations
     }, function () {
-      return Math.max(_this2.value1, _this2.value2, _this2.value3);
+      return Math.max(_this.value1, _this.value2, _this.value3);
     }, function () {
       return Math.max(value1, value2, value3);
     });
     console.log(result);
   });
   (0, _Mocha.xit)('"out" vs "set func" params', function () {
-    var _this3 = this;
+    var _this2 = this;
 
     this.timeout(300000);
 
@@ -1456,15 +1188,15 @@ function compareDefault(o1, o2) {
       var out0 = [];
 
       if (funcOut(Math.random(), out0)) {
-        _this3.prop = out0[0];
+        _this2.prop = out0[0];
       }
     }, function () {
       if (funcOut(Math.random(), out)) {
-        _this3.prop = out[0];
+        _this2.prop = out[0];
       }
     }, function () {
       funcSet(Math.random(), function (a) {
-        _this3.prop = a;
+        _this2.prop = a;
       });
     });
     console.log(result);
@@ -1478,11 +1210,11 @@ function compareDefault(o1, o2) {
     };
 
     var funcObjectParams = function funcObjectParams(_temp) {
-      var _ref5 = _temp === void 0 ? {} : _temp,
-          param0 = _ref5.param0,
-          param1 = _ref5.param1,
-          param2 = _ref5.param2,
-          param3 = _ref5.param3;
+      var _ref2 = _temp === void 0 ? {} : _temp,
+          param0 = _ref2.param0,
+          param1 = _ref2.param1,
+          param2 = _ref2.param2,
+          param3 = _ref2.param3;
 
       return param0 || param1 || param2 || param3;
     };
@@ -1526,9 +1258,9 @@ function compareDefault(o1, o2) {
     var arrConstructor = new Array(size);
     var arrConstructorFilled = new Array(size);
 
-    for (var _i8 = 0; _i8 < size; _i8++) {
-      arrSimple[_i8] = undefined;
-      arrConstructorFilled[_i8] = undefined;
+    for (var _i5 = 0; _i5 < size; _i5++) {
+      arrSimple[_i5] = undefined;
+      arrConstructorFilled[_i5] = undefined;
     }
 
     var i = size / 2 | 0;
@@ -1628,32 +1360,12 @@ function compareDefault(o1, o2) {
     var result = (0, _rdtsc.calcPerformance)(20000, function () {// no operations
     }, function () {
       var resolve;
-      new _synchronousPromise.SynchronousPromise(function (o) {
-        resolve = o;
-      }).then(function (o) {
-        return true;
-      }); // .then(o => true)
-
-      resolve(1);
-    }, function () {
-      var resolve;
       new _ThenableSync.ThenableSync(function (o) {
         resolve = o;
       }).then(function (o) {
         return true;
       }); // .then(o => true)
 
-      resolve(1);
-    }, function () {
-      var resolve;
-      var result;
-      new _synchronousPromise.SynchronousPromise(function (o) {
-        resolve = o;
-      }).then(function (o) {
-        return true;
-      }).then(function (o) {
-        return result = o;
-      });
       resolve(1);
     }, function () {
       var resolve;
@@ -1674,9 +1386,7 @@ function compareDefault(o1, o2) {
 
     this.timeout(300000);
     var iterable = true;
-    var iterable2 = (_iterable = {}, _iterable[_iterator4.default] =
-    /*#__PURE__*/
-    _regenerator.default.mark(function _callee() {
+    var iterable2 = (_iterable = {}, _iterable[_iterator4.default] = /*#__PURE__*/_regenerator.default.mark(function _callee() {
       var i;
       return _regenerator.default.wrap(function _callee$(_context6) {
         while (1) {
@@ -1784,9 +1494,7 @@ function compareDefault(o1, o2) {
       hashTable[i] = i;
     }
 
-    var Class =
-    /*#__PURE__*/
-    function () {
+    var Class = /*#__PURE__*/function () {
       function Class() {
         (0, _classCallCheck2.default)(this, Class);
       }
@@ -1841,7 +1549,7 @@ function compareDefault(o1, o2) {
     });
     console.log(result);
   });
-  (0, _Mocha.xit)('try catch', function () {
+  (0, _Mocha.it)('try catch', function () {
     this.timeout(300000);
 
     function tryCatch(func, onValue, onError) {
@@ -1971,14 +1679,12 @@ function compareDefault(o1, o2) {
     return count / (time / 1000);
   }
 
-  function calcCountPerSecondAsync(_x2) {
+  function calcCountPerSecondAsync(_x2, _x3) {
     return _calcCountPerSecondAsync.apply(this, arguments);
   }
 
   function _calcCountPerSecondAsync() {
-    _calcCountPerSecondAsync = (0, _asyncToGenerator2.default)(
-    /*#__PURE__*/
-    _regenerator.default.mark(function _callee6(func, maxTime) {
+    _calcCountPerSecondAsync = (0, _asyncToGenerator2.default)( /*#__PURE__*/_regenerator.default.mark(function _callee6(func, maxTime) {
       var time0, time, count, result;
       return _regenerator.default.wrap(function _callee6$(_context12) {
         while (1) {
@@ -2020,18 +1726,14 @@ function compareDefault(o1, o2) {
     return _calcCountPerSecondAsync.apply(this, arguments);
   }
 
-  (0, _Mocha.xit)('ThenableSync 2',
-  /*#__PURE__*/
-  (0, _asyncToGenerator2.default)(
-  /*#__PURE__*/
-  _regenerator.default.mark(function _callee5() {
+  (0, _Mocha.xit)('ThenableSync 2', /*#__PURE__*/(0, _asyncToGenerator2.default)( /*#__PURE__*/_regenerator.default.mark(function _callee5() {
     var _marked2, nestedPromise, _nestedPromise, nestedIterator;
 
     return _regenerator.default.wrap(function _callee5$(_context11) {
       while (1) {
         switch (_context11.prev = _context11.next) {
           case 0:
-            nestedIterator = function _ref10() {
+            nestedIterator = function _nestedIterator() {
               return _regenerator.default.wrap(function nestedIterator$(_context8) {
                 while (1) {
                   switch (_context8.prev = _context8.next) {
@@ -2067,10 +1769,8 @@ function compareDefault(o1, o2) {
               }, _marked2);
             };
 
-            _nestedPromise = function _ref9() {
-              _nestedPromise = (0, _asyncToGenerator2.default)(
-              /*#__PURE__*/
-              _regenerator.default.mark(function _callee4() {
+            _nestedPromise = function _nestedPromise3() {
+              _nestedPromise = (0, _asyncToGenerator2.default)( /*#__PURE__*/_regenerator.default.mark(function _callee4() {
                 return _regenerator.default.wrap(function _callee4$(_context10) {
                   while (1) {
                     switch (_context10.prev = _context10.next) {
@@ -2108,21 +1808,15 @@ function compareDefault(o1, o2) {
               return _nestedPromise.apply(this, arguments);
             };
 
-            nestedPromise = function _ref8() {
+            nestedPromise = function _nestedPromise2() {
               return _nestedPromise.apply(this, arguments);
             };
 
-            _marked2 =
-            /*#__PURE__*/
-            _regenerator.default.mark(nestedIterator);
+            _marked2 = /*#__PURE__*/_regenerator.default.mark(nestedIterator);
             this.timeout(300000);
             _context11.t0 = console;
             _context11.next = 8;
-            return calcCountPerSecondAsync(
-            /*#__PURE__*/
-            (0, _asyncToGenerator2.default)(
-            /*#__PURE__*/
-            _regenerator.default.mark(function _callee2() {
+            return calcCountPerSecondAsync( /*#__PURE__*/(0, _asyncToGenerator2.default)( /*#__PURE__*/_regenerator.default.mark(function _callee2() {
               return _regenerator.default.wrap(function _callee2$(_context7) {
                 while (1) {
                   switch (_context7.prev = _context7.next) {
@@ -2167,9 +1861,7 @@ function compareDefault(o1, o2) {
 
             _context11.t0.log.call(_context11.t0, 'async/await: ', _context11.t1);
 
-            console.log('ThenableSync: ', calcCountPerSecond(
-            /*#__PURE__*/
-            _regenerator.default.mark(function _callee3() {
+            console.log('ThenableSync: ', calcCountPerSecond( /*#__PURE__*/_regenerator.default.mark(function _callee3() {
               return _regenerator.default.wrap(function _callee3$(_context9) {
                 while (1) {
                   switch (_context9.prev = _context9.next) {
@@ -2267,9 +1959,7 @@ function compareDefault(o1, o2) {
   (0, _Mocha.xit)('Resolve properties path', function () {
     this.timeout(300000);
 
-    var ResolvePropertiesPath =
-    /*#__PURE__*/
-    function () {
+    var ResolvePropertiesPath = /*#__PURE__*/function () {
       function ResolvePropertiesPath(value) {
         (0, _classCallCheck2.default)(this, ResolvePropertiesPath);
         this.value = value;
@@ -2394,9 +2084,7 @@ function compareDefault(o1, o2) {
 
     var getValueBase = Function('name', 'object', 'return object.__fields[name]');
 
-    var ObservableObjectBuilderTest =
-    /*#__PURE__*/
-    function () {
+    var ObservableObjectBuilderTest = /*#__PURE__*/function () {
       function ObservableObjectBuilderTest(object) {
         (0, _classCallCheck2.default)(this, ObservableObjectBuilderTest);
         this.object = object || new ObservableObjectTest();
@@ -2516,7 +2204,7 @@ function compareDefault(o1, o2) {
     }).join(', ') + ') }')(_x);
     var run = new Function('f', 'return f(' + args.join(', ') + ')');
 
-    for (var _i9 = 0; _i9 < 1000; _i9++) {
+    for (var _i6 = 0; _i6 < 1000; _i6++) {
       run(x);
       run(y);
     }

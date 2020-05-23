@@ -41,8 +41,8 @@ var _Mocha = require("../../../../../../main/common/test/Mocha");
   }
 
   (0, _Mocha.it)('enumerate properties', function () {
-    var _writable$readable = new _ObservableObjectBuilder.ObservableObjectBuilder().writable('writable').readable('readable', null, '1'),
-        object = _writable$readable.object;
+    var _ObservableObjectBuil = new _ObservableObjectBuilder.ObservableObjectBuilder().writable('writable').readable('readable', null, '1'),
+        object = _ObservableObjectBuil.object;
 
     _Assert.assert.deepStrictEqual((0, _keys.default)(object), ['writable', 'readable']); // tslint:disable-next-line:forin
 
@@ -51,11 +51,8 @@ var _Mocha = require("../../../../../../main/common/test/Mocha");
       _Assert.assert.ok(key === 'writable' || key === 'readable', "key = " + key);
     }
 
-    _Assert.assert.ok(object.propertyChanged);
+    _Assert.assert.ok(object.propertyChanged); // assert.throws(() => ((object.propertyChanged as any) = '1'), TypeError)
 
-    _Assert.assert.throws(function () {
-      return object.propertyChanged = '1';
-    }, TypeError);
 
     (0, _defineProperty.default)(object, 'propertyChanged', {
       value: '2'
@@ -64,14 +61,11 @@ var _Mocha = require("../../../../../../main/common/test/Mocha");
     _Assert.assert.strictEqual(object.propertyChanged, '2');
   });
   (0, _Mocha.it)('propertyChanged property', function () {
-    var _ref = new _ObservableObjectBuilder.ObservableObjectBuilder(),
-        object = _ref.object;
+    var _ObservableObjectBuil2 = new _ObservableObjectBuilder.ObservableObjectBuilder(),
+        object = _ObservableObjectBuil2.object;
 
-    _Assert.assert.ok(object.propertyChanged);
+    _Assert.assert.ok(object.propertyChanged); // assert.throws(() => (object.propertyChanged = '1'), TypeError)
 
-    _Assert.assert.throws(function () {
-      return object.propertyChanged = '1';
-    }, TypeError);
 
     (0, _defineProperty.default)(object, 'propertyChanged', {
       value: '2'
@@ -80,8 +74,8 @@ var _Mocha = require("../../../../../../main/common/test/Mocha");
     _Assert.assert.strictEqual(object.propertyChanged, '2');
   });
   (0, _Mocha.it)('onPropertyChanged', function () {
-    var _ref2 = new _ObservableObjectBuilder.ObservableObjectBuilder(),
-        object = _ref2.object;
+    var _ObservableObjectBuil3 = new _ObservableObjectBuilder.ObservableObjectBuilder(),
+        object = _ObservableObjectBuil3.object;
 
     var results = [];
 
@@ -162,8 +156,8 @@ var _Mocha = require("../../../../../../main/common/test/Mocha");
     results = [];
   });
   (0, _Mocha.it)('readable simple', function () {
-    var _ref3 = new _ObservableObjectBuilder.ObservableObjectBuilder(),
-        object = _ref3.object;
+    var _ObservableObjectBuil4 = new _ObservableObjectBuilder.ObservableObjectBuilder(),
+        object = _ObservableObjectBuil4.object;
 
     _Assert.assert.ok(object instanceof _ObservableClass.ObservableClass);
 
@@ -200,8 +194,8 @@ var _Mocha = require("../../../../../../main/common/test/Mocha");
     _Assert.assert.strictEqual(builder.object, object);
   });
   (0, _Mocha.it)('readable factory', function () {
-    var _ref4 = new _ObservableObjectBuilder.ObservableObjectBuilder(),
-        object = _ref4.object;
+    var _ObservableObjectBuil5 = new _ObservableObjectBuilder.ObservableObjectBuilder(),
+        object = _ObservableObjectBuil5.object;
 
     _Assert.assert.ok(object instanceof _ObservableClass.ObservableClass);
 
@@ -229,8 +223,8 @@ var _Mocha = require("../../../../../../main/common/test/Mocha");
     _Assert.assert.strictEqual(valueCreated, true);
   });
   (0, _Mocha.it)('writable simple', function () {
-    var _ref5 = new _ObservableObjectBuilder.ObservableObjectBuilder(),
-        object = _ref5.object;
+    var _ObservableObjectBuil6 = new _ObservableObjectBuilder.ObservableObjectBuilder(),
+        object = _ObservableObjectBuil6.object;
 
     _Assert.assert.ok(object instanceof _ObservableClass.ObservableClass);
 

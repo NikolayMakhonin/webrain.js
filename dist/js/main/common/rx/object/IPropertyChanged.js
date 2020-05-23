@@ -21,9 +21,7 @@ var _createClass2 = _interopRequireDefault(require("@babel/runtime-corejs3/helpe
 // 		this.newValue = newValue
 // 	}
 // }
-var PropertyChangedEvent =
-/*#__PURE__*/
-function () {
+var PropertyChangedEvent = /*#__PURE__*/function () {
   function PropertyChangedEvent(name, oldValue, getNewValue) {
     (0, _classCallCheck2.default)(this, PropertyChangedEvent);
     this.name = name;

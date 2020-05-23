@@ -4,7 +4,9 @@ var _interopRequireDefault = require("@babel/runtime-corejs3/helpers/interopRequ
 
 exports.__esModule = true;
 exports.assertEvents = assertEvents;
-exports.TestDeferredCalc = exports.timing = exports.EventType = void 0;
+exports.TestDeferredCalc = exports.timing = exports.TestTimingForDeferredCalc = exports.EventType = void 0;
+
+var _construct = _interopRequireDefault(require("@babel/runtime-corejs3/core-js-stable/reflect/construct"));
 
 var _stringify = _interopRequireDefault(require("@babel/runtime-corejs3/core-js-stable/json/stringify"));
 
@@ -12,19 +14,21 @@ var _splice = _interopRequireDefault(require("@babel/runtime-corejs3/core-js-sta
 
 var _slice = _interopRequireDefault(require("@babel/runtime-corejs3/core-js-stable/instance/slice"));
 
+var _extends2 = _interopRequireDefault(require("@babel/runtime-corejs3/helpers/extends"));
+
+var _map = _interopRequireDefault(require("@babel/runtime-corejs3/core-js-stable/instance/map"));
+
 var _classCallCheck2 = _interopRequireDefault(require("@babel/runtime-corejs3/helpers/classCallCheck"));
 
 var _createClass2 = _interopRequireDefault(require("@babel/runtime-corejs3/helpers/createClass"));
 
-var _possibleConstructorReturn2 = _interopRequireDefault(require("@babel/runtime-corejs3/helpers/possibleConstructorReturn"));
-
-var _getPrototypeOf2 = _interopRequireDefault(require("@babel/runtime-corejs3/helpers/getPrototypeOf"));
+var _get2 = _interopRequireDefault(require("@babel/runtime-corejs3/helpers/get"));
 
 var _inherits2 = _interopRequireDefault(require("@babel/runtime-corejs3/helpers/inherits"));
 
-var _extends2 = _interopRequireDefault(require("@babel/runtime-corejs3/helpers/extends"));
+var _possibleConstructorReturn2 = _interopRequireDefault(require("@babel/runtime-corejs3/helpers/possibleConstructorReturn"));
 
-var _map = _interopRequireDefault(require("@babel/runtime-corejs3/core-js-stable/instance/map"));
+var _getPrototypeOf2 = _interopRequireDefault(require("@babel/runtime-corejs3/helpers/getPrototypeOf"));
 
 var _DeferredCalc = require("../../../../../../../main/common/rx/deferred-calc/DeferredCalc");
 
@@ -33,6 +37,10 @@ var _Assert = require("../../../../../../../main/common/test/Assert");
 var _TestVariants2 = require("../../../src/helpers/TestVariants");
 
 var _timing = require("./timing");
+
+function _createSuper(Derived) { var hasNativeReflectConstruct = _isNativeReflectConstruct(); return function () { var Super = (0, _getPrototypeOf2.default)(Derived), result; if (hasNativeReflectConstruct) { var NewTarget = (0, _getPrototypeOf2.default)(this).constructor; result = (0, _construct.default)(Super, arguments, NewTarget); } else { result = Super.apply(this, arguments); } return (0, _possibleConstructorReturn2.default)(this, result); }; }
+
+function _isNativeReflectConstruct() { if (typeof Reflect === "undefined" || !_construct.default) return false; if (_construct.default.sham) return false; if (typeof Proxy === "function") return true; try { Date.prototype.toString.call((0, _construct.default)(Date, [], function () {})); return true; } catch (e) { return false; } }
 
 var EventType;
 exports.EventType = EventType;
@@ -43,7 +51,27 @@ exports.EventType = EventType;
   EventType[EventType["Completed"] = 2] = "Completed";
 })(EventType || (exports.EventType = EventType = {}));
 
-var timing = new _timing.TestTiming();
+var TestTimingForDeferredCalc = /*#__PURE__*/function (_TestTiming) {
+  (0, _inherits2.default)(TestTimingForDeferredCalc, _TestTiming);
+
+  var _super = _createSuper(TestTimingForDeferredCalc);
+
+  function TestTimingForDeferredCalc() {
+    (0, _classCallCheck2.default)(this, TestTimingForDeferredCalc);
+    return _super.apply(this, arguments);
+  }
+
+  (0, _createClass2.default)(TestTimingForDeferredCalc, [{
+    key: "setTimeout",
+    value: function setTimeout(handler, timeout) {
+      return (0, _get2.default)((0, _getPrototypeOf2.default)(TestTimingForDeferredCalc.prototype), "setTimeout", this).call(this, handler, timeout - 1);
+    }
+  }]);
+  return TestTimingForDeferredCalc;
+}(_timing.TestTiming);
+
+exports.TestTimingForDeferredCalc = TestTimingForDeferredCalc;
+var timing = new TestTimingForDeferredCalc();
 exports.timing = timing;
 timing.addTime(1000);
 var staticAutoCalc;
@@ -51,56 +79,65 @@ var staticCalcTime;
 var testStartTime;
 var staticEvents = [];
 var staticDeferredCalc;
-staticDeferredCalc = new _DeferredCalc.DeferredCalc(function () {
-  if (staticDeferredCalc) {
-    _Assert.assert.strictEqual(this, staticDeferredCalc);
-  } else {
-    _Assert.assert.ok(this);
-  }
+staticDeferredCalc = new _DeferredCalc.DeferredCalc({
+  canBeCalcCallback: function canBeCalcCallback() {
+    if (staticDeferredCalc) {
+      _Assert.assert.strictEqual(this, staticDeferredCalc);
+    } else {
+      _Assert.assert.ok(this);
+    }
 
-  staticEvents.push({
-    time: timing.now() - testStartTime,
-    type: EventType.CanBeCalc
-  });
+    staticEvents.push({
+      time: timing.now() - testStartTime,
+      type: EventType.CanBeCalc
+    });
 
-  if (staticAutoCalc) {
-    staticDeferredCalc.calc();
-  }
-}, function (done) {
-  if (staticDeferredCalc) {
-    _Assert.assert.strictEqual(this, staticDeferredCalc);
-  } else {
-    _Assert.assert.ok(this);
-  }
+    if (staticAutoCalc) {
+      staticDeferredCalc.calc();
+    }
+  },
+  calcFunc: function calcFunc() {
+    var _this = this;
 
-  staticEvents.push({
-    time: timing.now() - testStartTime,
-    type: EventType.Calc
-  });
+    if (staticDeferredCalc) {
+      _Assert.assert.strictEqual(this, staticDeferredCalc);
+    } else {
+      _Assert.assert.ok(this);
+    }
 
-  if (!staticCalcTime) {
-    done();
-  } else {
-    timing.setTimeout(done, staticCalcTime);
-  }
-}, function () {
-  if (staticDeferredCalc) {
-    _Assert.assert.strictEqual(this, staticDeferredCalc);
-  } else {
-    _Assert.assert.ok(this);
-  }
+    staticEvents.push({
+      time: timing.now() - testStartTime,
+      type: EventType.Calc
+    });
 
-  staticEvents.push({
-    time: timing.now() - testStartTime,
-    type: EventType.Completed
-  });
-}, {
-  timing: timing
+    if (!staticCalcTime) {
+      this.done();
+    } else {
+      timing.setTimeout(function () {
+        return _this.done();
+      }, staticCalcTime + 1);
+    }
+  },
+  calcCompletedCallback: function calcCompletedCallback() {
+    if (staticDeferredCalc) {
+      _Assert.assert.strictEqual(this, staticDeferredCalc);
+    } else {
+      _Assert.assert.ok(this);
+    }
+
+    staticEvents.push({
+      time: timing.now() - testStartTime,
+      type: EventType.Completed
+    });
+  },
+  options: {
+    timing: timing
+  }
 });
 
 function eventsToDisplay(events) {
   return (0, _map.default)(events).call(events, function (event) {
-    return (0, _extends2.default)({}, event, {
+    return (0, _extends2.default)((0, _extends2.default)({}, event), {}, {
       type: event.type == null ? event.type : EventType[event.type]
     });
   });
@@ -113,17 +150,17 @@ function assertEvents(events, excepted) {
   _Assert.assert.deepStrictEqual(events, excepted);
 }
 
-var TestDeferredCalc =
-/*#__PURE__*/
-function (_TestVariants) {
+var TestDeferredCalc = /*#__PURE__*/function (_TestVariants) {
   (0, _inherits2.default)(TestDeferredCalc, _TestVariants);
 
+  var _super2 = _createSuper(TestDeferredCalc);
+
   function TestDeferredCalc() {
-    var _this;
+    var _this2;
 
     (0, _classCallCheck2.default)(this, TestDeferredCalc);
-    _this = (0, _possibleConstructorReturn2.default)(this, (0, _getPrototypeOf2.default)(TestDeferredCalc).call(this));
-    _this.baseOptionsVariants = {
+    _this2 = _super2.call(this);
+    _this2.baseOptionsVariants = {
       calcTime: [0],
       throttleTime: [null],
       maxThrottleTime: [null],
@@ -132,7 +169,7 @@ function (_TestVariants) {
       reuseInstance: [false, true],
       autoCalc: [false]
     };
-    return _this;
+    return _this2;
   }
 
   (0, _createClass2.default)(TestDeferredCalc, [{
@@ -175,55 +212,64 @@ function (_TestVariants) {
               events = [];
               var autoCalc = options.autoCalc;
               var calcTime = options.calcTime;
-              deferredCalc = new _DeferredCalc.DeferredCalc(function () {
-                if (deferredCalc) {
-                  _Assert.assert.strictEqual(this, deferredCalc);
-                } else {
-                  _Assert.assert.ok(this);
-                }
+              deferredCalc = new _DeferredCalc.DeferredCalc({
+                canBeCalcCallback: function canBeCalcCallback() {
+                  if (deferredCalc) {
+                    _Assert.assert.strictEqual(this, deferredCalc);
+                  } else {
+                    _Assert.assert.ok(this);
+                  }
 
-                events.push({
-                  time: timing.now() - testStartTime,
-                  type: EventType.CanBeCalc
-                });
+                  events.push({
+                    time: timing.now() - testStartTime,
+                    type: EventType.CanBeCalc
+                  });
 
-                if (autoCalc) {
-                  this.calc();
-                }
-              }, function (done) {
-                if (deferredCalc) {
-                  _Assert.assert.strictEqual(this, deferredCalc);
-                } else {
-                  _Assert.assert.ok(this);
-                }
+                  if (autoCalc) {
+                    this.calc();
+                  }
+                },
+                calcFunc: function calcFunc() {
+                  var _this3 = this;
 
-                events.push({
-                  time: timing.now() - testStartTime,
-                  type: EventType.Calc
-                });
+                  if (deferredCalc) {
+                    _Assert.assert.strictEqual(this, deferredCalc);
+                  } else {
+                    _Assert.assert.ok(this);
+                  }
 
-                if (!calcTime) {
-                  done();
-                } else {
-                  timing.setTimeout(done, calcTime);
-                }
-              }, function () {
-                if (deferredCalc) {
-                  _Assert.assert.strictEqual(this, deferredCalc);
-                } else {
-                  _Assert.assert.ok(this);
-                }
+                  events.push({
+                    time: timing.now() - testStartTime,
+                    type: EventType.Calc
+                  });
 
-                events.push({
-                  time: timing.now() - testStartTime,
-                  type: EventType.Completed
-                });
-              }, {
-                timing: timing,
-                minTimeBetweenCalc: options.minTimeBetweenCalc,
-                throttleTime: options.throttleTime,
-                maxThrottleTime: options.maxThrottleTime,
-                autoInvalidateInterval: options.autoInvalidateInterval
+                  if (!calcTime) {
+                    this.done();
+                  } else {
+                    timing.setTimeout(function () {
+                      return _this3.done();
+                    }, calcTime + 1);
+                  }
+                },
+                calcCompletedCallback: function calcCompletedCallback() {
+                  if (deferredCalc) {
+                    _Assert.assert.strictEqual(this, deferredCalc);
+                  } else {
+                    _Assert.assert.ok(this);
+                  }
+
+                  events.push({
+                    time: timing.now() - testStartTime,
+                    type: EventType.Completed
+                  });
+                },
+                options: {
+                  timing: timing,
+                  minTimeBetweenCalc: options.minTimeBetweenCalc,
+                  throttleTime: options.throttleTime,
+                  maxThrottleTime: options.maxThrottleTime,
+                  autoInvalidateInterval: options.autoInvalidateInterval
+                }
               });
             }
 

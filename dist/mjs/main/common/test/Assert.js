@@ -97,7 +97,7 @@ export class Assert {
     }
 
     if (regExp) {
-      this.ok(regExp.test(err.message));
+      this.ok(regExp.test(err.message), err ? (message || '') + '\r\n' + err + '\r\n' + err.stack : message);
     }
   }
 
@@ -110,7 +110,7 @@ export class Assert {
       err = ex;
     }
 
-    this.assertError(err);
+    this.assertError(err, errType, regExp, message);
   }
 
   throws(fn, errType, regExp, message) {
@@ -122,7 +122,7 @@ export class Assert {
       err = ex;
     }
 
-    this.assertError(err);
+    this.assertError(err, errType, regExp, message);
   }
 
   assertNotHandledErrors() {

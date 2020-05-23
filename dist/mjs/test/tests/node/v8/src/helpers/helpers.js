@@ -21,18 +21,45 @@ function _checkIsOptimized(obj, optimized = null, scanned = new Set()) {
     const differentFlags = actualStatus ^ expectedStatus;
     actualStatus &= differentFlags;
     expectedStatus &= differentFlags;
+    const actualFunc = {};
+    const expectedFunc = {};
+    let hasError;
 
     if (actualStatus !== expectedStatus) {
       if (optimized && !optimized.has(obj)) {
         return null;
       }
 
+      actualFunc['()'] = optimizationStatusToString(status);
+      expectedFunc['()'] = optimizationStatusToString(expectedStatus);
+      hasError = true;
+    }
+
+    if (obj.prototype) {
+      const res = _checkIsOptimized(obj.prototype, optimized, scanned);
+
+      if (res) {
+        hasError = true;
+        actualFunc._prototype = res.actual;
+        expectedFunc._prototype = res.expected;
+      }
+    }
+
+    if (hasError) {
       return {
-        actual: optimizationStatusToString(status),
-        expected: optimizationStatusToString(expectedStatus)
+        actual: actualFunc,
+        expected: expectedFunc
       };
     }
   } else if (obj != null && typeof obj === 'object') {
+    if (obj.valueOf() !== obj) {
+      return null;
+    }
+
+    if (obj instanceof Int8Array || obj instanceof Int16Array || obj instanceof Int32Array || obj instanceof BigInt64Array || obj instanceof Uint8Array || obj instanceof Uint16Array || obj instanceof Uint32Array || obj instanceof BigUint64Array || obj instanceof Float32Array || obj instanceof Float64Array || obj instanceof Uint8ClampedArray) {
+      return null;
+    }
+
     const shouldInfo = Array.isArray(obj) ? shouldArrayOptimizationInfo : shouldObjectOptimizationInfo;
     const objInfo = getObjectOptimizationInfo(obj);
     const actualInfo = {};

@@ -10,58 +10,72 @@ export let EventType;
   EventType[EventType["Completed"] = 2] = "Completed";
 })(EventType || (EventType = {}));
 
-export const timing = new TestTiming();
+export class TestTimingForDeferredCalc extends TestTiming {
+  setTimeout(handler, timeout) {
+    return super.setTimeout(handler, timeout - 1);
+  }
+
+}
+export const timing = new TestTimingForDeferredCalc();
 timing.addTime(1000);
 let staticAutoCalc;
 let staticCalcTime;
 let testStartTime;
 let staticEvents = [];
 let staticDeferredCalc;
-staticDeferredCalc = new DeferredCalc(function () {
-  if (staticDeferredCalc) {
-    assert.strictEqual(this, staticDeferredCalc);
-  } else {
-    assert.ok(this);
-  }
+staticDeferredCalc = new DeferredCalc({
+  canBeCalcCallback() {
+    if (staticDeferredCalc) {
+      assert.strictEqual(this, staticDeferredCalc);
+    } else {
+      assert.ok(this);
+    }
 
-  staticEvents.push({
-    time: timing.now() - testStartTime,
-    type: EventType.CanBeCalc
-  });
+    staticEvents.push({
+      time: timing.now() - testStartTime,
+      type: EventType.CanBeCalc
+    });
 
-  if (staticAutoCalc) {
-    staticDeferredCalc.calc();
-  }
-}, function (done) {
-  if (staticDeferredCalc) {
-    assert.strictEqual(this, staticDeferredCalc);
-  } else {
-    assert.ok(this);
-  }
+    if (staticAutoCalc) {
+      staticDeferredCalc.calc();
+    }
+  },
 
-  staticEvents.push({
-    time: timing.now() - testStartTime,
-    type: EventType.Calc
-  });
+  calcFunc() {
+    if (staticDeferredCalc) {
+      assert.strictEqual(this, staticDeferredCalc);
+    } else {
+      assert.ok(this);
+    }
 
-  if (!staticCalcTime) {
-    done();
-  } else {
-    timing.setTimeout(done, staticCalcTime);
-  }
-}, function () {
-  if (staticDeferredCalc) {
-    assert.strictEqual(this, staticDeferredCalc);
-  } else {
-    assert.ok(this);
-  }
+    staticEvents.push({
+      time: timing.now() - testStartTime,
+      type: EventType.Calc
+    });
 
-  staticEvents.push({
-    time: timing.now() - testStartTime,
-    type: EventType.Completed
-  });
-}, {
-  timing
+    if (!staticCalcTime) {
+      this.done();
+    } else {
+      timing.setTimeout(() => this.done(), staticCalcTime + 1);
+    }
+  },
+
+  calcCompletedCallback() {
+    if (staticDeferredCalc) {
+      assert.strictEqual(this, staticDeferredCalc);
+    } else {
+      assert.ok(this);
+    }
+
+    staticEvents.push({
+      time: timing.now() - testStartTime,
+      type: EventType.Completed
+    });
+  },
+
+  options: {
+    timing
+  }
 });
 
 function eventsToDisplay(events) {
@@ -126,55 +140,63 @@ export class TestDeferredCalc extends TestVariants {
           events = [];
           const autoCalc = options.autoCalc;
           const calcTime = options.calcTime;
-          deferredCalc = new DeferredCalc(function () {
-            if (deferredCalc) {
-              assert.strictEqual(this, deferredCalc);
-            } else {
-              assert.ok(this);
-            }
+          deferredCalc = new DeferredCalc({
+            canBeCalcCallback() {
+              if (deferredCalc) {
+                assert.strictEqual(this, deferredCalc);
+              } else {
+                assert.ok(this);
+              }
 
-            events.push({
-              time: timing.now() - testStartTime,
-              type: EventType.CanBeCalc
-            });
+              events.push({
+                time: timing.now() - testStartTime,
+                type: EventType.CanBeCalc
+              });
 
-            if (autoCalc) {
-              this.calc();
-            }
-          }, function (done) {
-            if (deferredCalc) {
-              assert.strictEqual(this, deferredCalc);
-            } else {
-              assert.ok(this);
-            }
+              if (autoCalc) {
+                this.calc();
+              }
+            },
 
-            events.push({
-              time: timing.now() - testStartTime,
-              type: EventType.Calc
-            });
+            calcFunc() {
+              if (deferredCalc) {
+                assert.strictEqual(this, deferredCalc);
+              } else {
+                assert.ok(this);
+              }
 
-            if (!calcTime) {
-              done();
-            } else {
-              timing.setTimeout(done, calcTime);
-            }
-          }, function () {
-            if (deferredCalc) {
-              assert.strictEqual(this, deferredCalc);
-            } else {
-              assert.ok(this);
-            }
+              events.push({
+                time: timing.now() - testStartTime,
+                type: EventType.Calc
+              });
 
-            events.push({
-              time: timing.now() - testStartTime,
-              type: EventType.Completed
-            });
-          }, {
-            timing,
-            minTimeBetweenCalc: options.minTimeBetweenCalc,
-            throttleTime: options.throttleTime,
-            maxThrottleTime: options.maxThrottleTime,
-            autoInvalidateInterval: options.autoInvalidateInterval
+              if (!calcTime) {
+                this.done();
+              } else {
+                timing.setTimeout(() => this.done(), calcTime + 1);
+              }
+            },
+
+            calcCompletedCallback() {
+              if (deferredCalc) {
+                assert.strictEqual(this, deferredCalc);
+              } else {
+                assert.ok(this);
+              }
+
+              events.push({
+                time: timing.now() - testStartTime,
+                type: EventType.Completed
+              });
+            },
+
+            options: {
+              timing,
+              minTimeBetweenCalc: options.minTimeBetweenCalc,
+              throttleTime: options.throttleTime,
+              maxThrottleTime: options.maxThrottleTime,
+              autoInvalidateInterval: options.autoInvalidateInterval
+            }
           });
         }
 

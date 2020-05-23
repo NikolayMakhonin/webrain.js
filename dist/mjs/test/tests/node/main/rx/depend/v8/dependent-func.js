@@ -1,46 +1,31 @@
 /* tslint:disable:no-identical-functions no-shadowed-variable no-var-requires ordered-imports */
-// @ts-ignore
-import { _createDependentFunc, _getFuncCallState, createFuncCallState, getFuncCallState, getSubscriberLink, invalidate, makeDependentFunc, releaseSubscriberLink, subscribeDependency, unsubscribeDependencies, FuncCallState, semiWeakMapGet, semiWeakMapSet, getSubscriberLinkFromPool, subscriberLinkPool, _subscribe, createDependentFunc, emit, isRefType, subscriberLinkDelete, update } from '../../../../../../../main/common/rx/depend/all';
+import * as ObjectPool from '../../../../../../../main/common/lists/ObjectPool';
+import * as PairingHeap from '../../../../../../../main/common/lists/PairingHeap';
+import * as CallState from '../../../../../../../main/common/rx/depend/core/CallState';
+import { getOrCreateCallState } from '../../../../../../../main/common/rx/depend/core/CallState';
+import * as depend from '../../../../../../../main/common/rx/depend/core/depend';
+import * as facade from '../../../../../../../main/common/rx/depend/core/facade';
+import * as helpers from '../../../../../../../main/common/rx/depend/core/helpers';
 import { describe, it } from '../../../../../../../main/common/test/Mocha';
-import { baseTest, createPerceptron } from '../../../../../common/main/rx/depend/src/helpers';
+import { baseTest } from '../../../../../common/main/rx/depend/src/base-tests';
 import { v8 } from '../../../../v8/src/helpers/common/helpers';
 import { OptimizationStatus } from '../../../../v8/src/helpers/contracts';
 import { assertIsOptimized, checkIsOptimized } from '../../../../v8/src/helpers/helpers';
+import { clearCallStates } from '../../../../../common/main/rx/depend/src/helpers';
+import { createPerceptron } from '../../../../../common/main/rx/depend/src/perceptron';
 describe('node > main > rx > depend > dependent-func', function () {
   async function v8Test(countIterations, iterate) {
     const objects = {
-      // public
-      getFuncCallState,
-      invalidate,
-      makeDependentFunc,
-      createPerceptron,
-      // internal
-      _createDependentFunc,
-      _getFuncCallState,
-      createFuncCallState,
-      getSubscriberLink,
-      releaseSubscriberLink,
-      subscribeDependency,
-      unsubscribeDependencies,
-      // internal deep
-      FuncCallState,
-      semiWeakMapGet,
-      semiWeakMapSet,
-      getSubscriberLinkFromPool,
-      subscriberLinkPool,
-      _subscribe,
-      createDependentFunc,
-      emit,
-      isRefType,
-      subscriberLinkDelete,
-      update // makeDependentIterator,
-      // internal single call
-      // createGetFuncCallState,
-      // createMakeDependentFunc,
-      // createSemiWeakMap,
-      // SubscriberLinkPool,
-
+      ObjectPool,
+      PairingHeap,
+      CallState: { ...CallState,
+        reduceCallStates: null
+      },
+      depend,
+      facade,
+      helpers
     };
+    v8.DeoptimizeNow();
     const optimizedObjectsIterations = {};
     const optimized = new Set();
 
@@ -94,11 +79,12 @@ describe('node > main > rx > depend > dependent-func', function () {
     console.log('Not inlined: ', notInlined); // assert.deepStrictEqual(optimizedObjects, objects)
 
     assertIsOptimized(objects, optimized);
+    clearCallStates();
   }
 
   it('v8 perceptron', async function () {
-    this.timeout(20000);
-    await v8Test(1000, async (iteration, checkOptimization, _assertIsOptimized) => {
+    this.timeout(120000);
+    await v8Test(10, async (iteration, checkOptimization, _assertIsOptimized) => {
       const {
         input,
         output,
@@ -112,8 +98,8 @@ describe('node > main > rx > depend > dependent-func', function () {
       checkOptimization(iteration);
 
       for (let j = 0; j < 10; j++) {
-        const state = getFuncCallState(input)();
-        await invalidate(state);
+        const state = getOrCreateCallState(input)();
+        await state.invalidate();
       }
 
       getStates().forEach(o => {
@@ -125,8 +111,8 @@ describe('node > main > rx > depend > dependent-func', function () {
     });
   });
   it('v8 baseTest', async function () {
-    this.timeout(20000);
-    await v8Test(100, async (iteration, checkOptimization, _assertIsOptimized) => {
+    this.timeout(120000);
+    await v8Test(10, async (iteration, checkOptimization, _assertIsOptimized) => {
       const {
         states
       } = await baseTest();

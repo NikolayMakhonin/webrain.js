@@ -29,9 +29,7 @@ function compareHandlers(o1, o2) {
   throw new Error('Duplicate timing handlers');
 }
 
-var TestTiming =
-/*#__PURE__*/
-function () {
+var TestTiming = /*#__PURE__*/function () {
   function TestTiming() {
     (0, _classCallCheck2.default)(this, TestTiming);
     this._handlers = [];

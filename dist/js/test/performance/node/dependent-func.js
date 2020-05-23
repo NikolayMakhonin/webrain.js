@@ -14,8 +14,6 @@ var _rdtsc = require("rdtsc");
 
 var _objectUniqueId = require("../../../main/common/helpers/object-unique-id");
 
-var _all = require("../../../main/common/rx/depend/all");
-
 var _Assert = require("../../../main/common/test/Assert");
 
 var _calc = require("../../../main/common/test/calc");
@@ -24,7 +22,7 @@ var _calcMemAllocate = require("../../../main/common/test/calc-mem-allocate");
 
 var _Mocha = require("../../../main/common/test/Mocha");
 
-var _helpers = require("../../tests/common/main/rx/depend/src/helpers");
+var _perceptron = require("../../tests/common/main/rx/depend/src/perceptron");
 
 // @ts-ignore
 (0, _Mocha.describe)('dependent-func perf', function () {
@@ -33,13 +31,14 @@ var _helpers = require("../../tests/common/main/rx/depend/src/helpers");
 
     this.timeout(300000);
 
-    var _createPerceptron = (0, _helpers.createPerceptron)(2, 2),
+    var _createPerceptron = (0, _perceptron.createPerceptron)(2, 2),
         countFuncs = _createPerceptron.countFuncs,
         input = _createPerceptron.input,
         inputState = _createPerceptron.inputState,
-        output = _createPerceptron.output;
+        output = _createPerceptron.output,
+        outputState = _createPerceptron.outputState;
 
-    var naked = (0, _helpers.createPerceptronNaked)(2, 2);
+    var naked = (0, _perceptron.createPerceptronNaked)(2, 2);
     var map1 = new _map2.default();
     var map2 = new _map2.default();
     map2.set(2, 3);
@@ -47,7 +46,7 @@ var _helpers = require("../../tests/common/main/rx/depend/src/helpers");
     var result = (0, _rdtsc.calcPerformance)(10000, function () {
       naked.call(2, 5, 10);
     }, function () {
-      (0, _all.invalidate)(inputState);
+      inputState.invalidate();
     }, function () {
       output.call(2, 5, 10);
     }, function () {
@@ -72,9 +71,10 @@ var _helpers = require("../../tests/common/main/rx/depend/src/helpers");
     console.log("chrome funcs per frame: [" + (0, _map.default)(_context5 = result.absoluteDiff).call(_context5, function (o) {
       return countFuncs * cyclesPerSecond / o / 60 / 210;
     }).join(', ') + "]");
+    console.log("smallint overflow after: " + (1 << 30) / outputState._callId * result.calcInfo.testTime / 1000 * 210 / 3600 + " hours");
     var chromeFuncsPerFrame = countFuncs * cyclesPerSecond / result.absoluteDiff[1] / 60 / 210;
 
-    _Assert.assert.ok(chromeFuncsPerFrame >= 150);
+    _Assert.assert.ok(chromeFuncsPerFrame >= 150, chromeFuncsPerFrame + '');
   });
   (0, _Mocha.xit)('set memory', function () {
     this.timeout(300000);
@@ -103,7 +103,7 @@ var _helpers = require("../../tests/common/main/rx/depend/src/helpers");
     this.timeout(300000);
     var countFuncs;
     var result = (0, _calcMemAllocate.calcMemAllocate)(_calc.CalcType.Min, 50000, function () {
-      countFuncs = (0, _helpers.createPerceptron)(10, 5, false).countFuncs;
+      countFuncs = (0, _perceptron.createPerceptron)(10, 5, false).countFuncs;
     }).scale(1 / countFuncs);
     console.log(result.toString());
     (0, _forEach.default)(_context6 = result.averageValue).call(_context6, function (o) {
@@ -113,36 +113,38 @@ var _helpers = require("../../tests/common/main/rx/depend/src/helpers");
   (0, _Mocha.it)('perceptron create', function () {
     this.timeout(300000);
 
-    var _createPerceptron2 = (0, _helpers.createPerceptron)(2, 2),
+    var _createPerceptron2 = (0, _perceptron.createPerceptron)(2, 2),
         countFuncs = _createPerceptron2.countFuncs,
         input = _createPerceptron2.input,
         inputState = _createPerceptron2.inputState,
         output = _createPerceptron2.output;
 
-    var naked = (0, _helpers.createPerceptronNaked)(2, 2);
+    var naked = (0, _perceptron.createPerceptronNaked)(2, 2);
     var map1 = new _map2.default();
     var map2 = new _map2.default();
     map2.set(2, 3);
     map1.set(1, map2);
     var perceptron;
     var result = (0, _rdtsc.calcPerformance)(10000, function () {
-      perceptron = (0, _helpers.createPerceptronNaked)(2, 2);
+      perceptron = (0, _perceptron.createPerceptronNaked)(2, 2);
     }, function () {
-      perceptron = (0, _helpers.createPerceptron)(2, 2, false);
+      perceptron = (0, _perceptron.createPerceptron)(2, 2, false);
     }, function () {
       perceptron.output.call(2, 5, 10);
     }, function () {
-      (0, _all.invalidate)(perceptron.inputState);
+      perceptron.inputState.invalidate();
       perceptron.output.call(2, 5, 10);
     });
     console.log(result);
+
+    _Assert.assert.ok(result.absoluteDiff[0] < 15000, result.absoluteDiff[1] + '');
   });
   (0, _Mocha.it)('perceptron memory recalc', function () {
     var _context7;
 
     this.timeout(300000);
 
-    var _createPerceptron3 = (0, _helpers.createPerceptron)(10, 5),
+    var _createPerceptron3 = (0, _perceptron.createPerceptron)(10, 5),
         countFuncs = _createPerceptron3.countFuncs,
         input = _createPerceptron3.input,
         inputState = _createPerceptron3.inputState,
@@ -156,7 +158,7 @@ var _helpers = require("../../tests/common/main/rx/depend/src/helpers");
 
 
     var result = (0, _calcMemAllocate.calcMemAllocate)(_calc.CalcType.Min, 2000, function () {
-      (0, _all.invalidate)(inputState);
+      inputState.invalidate();
       output.call(2, 5, 10);
     }).scale(1 / countFuncs);
     console.log(result.toString());

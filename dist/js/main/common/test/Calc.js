@@ -18,9 +18,7 @@ var _classCallCheck2 = _interopRequireDefault(require("@babel/runtime-corejs3/he
 
 var _createClass2 = _interopRequireDefault(require("@babel/runtime-corejs3/helpers/createClass"));
 
-var CalcStatReport =
-/*#__PURE__*/
-function () {
+var CalcStatReport = /*#__PURE__*/function () {
   function CalcStatReport(data) {
     (0, _classCallCheck2.default)(this, CalcStatReport);
     (0, _assign.default)(this, data);

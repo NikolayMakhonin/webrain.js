@@ -1,67 +1,45 @@
 "use strict";
 
+var _interopRequireDefault = require("@babel/runtime-corejs3/helpers/interopRequireDefault");
+
 exports.__esModule = true;
-exports.resolvePath = resolvePath;
+exports.observableClass = observableClass;
+exports.createConnector = createConnector;
 
-var _async = require("../../../async/async");
+var _construct = _interopRequireDefault(require("@babel/runtime-corejs3/core-js-stable/reflect/construct"));
 
-var _ThenableSync = require("../../../async/ThenableSync");
+var _classCallCheck2 = _interopRequireDefault(require("@babel/runtime-corejs3/helpers/classCallCheck"));
 
-var _valueProperty = require("../../../helpers/value-property");
+var _inherits2 = _interopRequireDefault(require("@babel/runtime-corejs3/helpers/inherits"));
 
-var _CalcProperty = require("./CalcProperty");
+var _possibleConstructorReturn2 = _interopRequireDefault(require("@babel/runtime-corejs3/helpers/possibleConstructorReturn"));
 
-function resolveValueProperty(value, getValue) {
-  if (value != null && typeof value === 'object') {
-    if (_valueProperty.VALUE_PROPERTY_DEFAULT in value) {
-      if (getValue) {
-        var newValue = getValue(value);
+var _getPrototypeOf2 = _interopRequireDefault(require("@babel/runtime-corejs3/helpers/getPrototypeOf"));
 
-        if (typeof newValue !== 'undefined') {
-          return newValue;
-        }
-      }
+var _ObservableClass = require("../ObservableClass");
 
-      return value[_valueProperty.VALUE_PROPERTY_DEFAULT];
+function _createSuper(Derived) { var hasNativeReflectConstruct = _isNativeReflectConstruct(); return function () { var Super = (0, _getPrototypeOf2.default)(Derived), result; if (hasNativeReflectConstruct) { var NewTarget = (0, _getPrototypeOf2.default)(this).constructor; result = (0, _construct.default)(Super, arguments, NewTarget); } else { result = Super.apply(this, arguments); } return (0, _possibleConstructorReturn2.default)(this, result); }; }
+
+function _isNativeReflectConstruct() { if (typeof Reflect === "undefined" || !_construct.default) return false; if (_construct.default.sham) return false; if (typeof Proxy === "function") return true; try { Date.prototype.toString.call((0, _construct.default)(Date, [], function () {})); return true; } catch (e) { return false; } }
+
+function observableClass(build, baseClass) {
+  var NewPropertyClass = /*#__PURE__*/function (_ref) {
+    (0, _inherits2.default)(NewPropertyClass, _ref);
+
+    var _super = _createSuper(NewPropertyClass);
+
+    function NewPropertyClass() {
+      (0, _classCallCheck2.default)(this, NewPropertyClass);
+      return _super.apply(this, arguments);
     }
 
-    if (value instanceof _CalcProperty.CalcPropertyValue) {
-      return value.get();
-    }
-  }
+    return NewPropertyClass;
+  }(baseClass != null ? baseClass : _ObservableClass.ObservableClass);
 
-  return value;
+  build(NewPropertyClass.prototype);
+  return NewPropertyClass;
 }
 
-function resolvePath(value) {
-  var get = function get(getValue, isValueProperty) {
-    var _getValue = getValue && function (val) {
-      return val != null && typeof val === 'object' || typeof val === 'string' ? getValue(val) : void 0;
-    };
-
-    var customResolveValue = _getValue && isValueProperty ? function (val) {
-      return resolveValueProperty(val, _getValue);
-    } : resolveValueProperty;
-    value = (0, _ThenableSync.resolveAsync)(value, null, null, null, customResolveValue);
-
-    if (!_getValue) {
-      return value;
-    }
-
-    if (!isValueProperty) {
-      if (value instanceof _ThenableSync.ThenableSync) {
-        value = value.then(_getValue, null, false);
-      } else if ((0, _async.isThenable)(value)) {
-        value = value.then(_getValue);
-      } else {
-        value = (0, _ThenableSync.resolveAsync)(_getValue(value));
-      }
-    }
-
-    return get;
-  };
-
-  return get;
-} // Test
-// const x: TGetPropertyValue<ICalcProperty<Date>>
-// const r = x(o => o, true)()
+function createConnector(object, factory) {
+  return factory(object);
+}

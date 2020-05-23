@@ -3,10 +3,14 @@
 var _interopRequireDefault = require("@babel/runtime-corejs3/helpers/interopRequireDefault");
 
 exports.__esModule = true;
+exports.randomWithoutSeed = randomWithoutSeed;
 exports.arrayShuffle = arrayShuffle;
+exports.getRandomFunc = getRandomFunc;
 exports.Random = void 0;
 
 var _values = _interopRequireDefault(require("@babel/runtime-corejs3/core-js-stable/object/values"));
+
+var _padStart = _interopRequireDefault(require("@babel/runtime-corejs3/core-js-stable/instance/pad-start"));
 
 var _slice = _interopRequireDefault(require("@babel/runtime-corejs3/core-js-stable/instance/slice"));
 
@@ -14,16 +18,11 @@ var _classCallCheck2 = _interopRequireDefault(require("@babel/runtime-corejs3/he
 
 var _createClass2 = _interopRequireDefault(require("@babel/runtime-corejs3/helpers/createClass"));
 
-var _bind = _interopRequireDefault(require("@babel/runtime-corejs3/core-js-stable/instance/bind"));
-
-var _sort = _interopRequireDefault(require("@babel/runtime-corejs3/core-js-stable/instance/sort"));
-
 var _imul = _interopRequireDefault(require("@babel/runtime-corejs3/core-js-stable/math/imul"));
 
 var _uuid = require("./uuid");
 
-var _context;
-
+// from here: https://stackoverflow.com/a/47593316/5221762
 function mulberry32(seed) {
   return function () {
     var t = seed += 0x6D2B79F5;
@@ -38,22 +37,42 @@ function mulberry32(seed) {
 	*/
 
 
+function randomWithoutSeed() {
+  return Math.random();
+} // from: https://stackoverflow.com/a/6274398/5221762
+
+
 function arrayShuffle(array, rnd) {
-  (0, _sort.default)(array).call(array, function () {
-    return rnd() > 0.5 ? 1 : -1;
-  });
+  if (rnd == null) {
+    rnd = randomWithoutSeed;
+  }
+
+  var counter = array.length; // While there are elements in the array
+
+  while (counter > 0) {
+    // Pick a random index
+    var index = rnd() * counter | 0; // Decrease counter by 1
+
+    counter--; // And swap the last element with it
+
+    var temp = array[counter];
+    array[counter] = array[index];
+    array[index] = temp;
+  }
+
   return array;
 }
 
-var randomWithoutSeed = (0, _bind.default)(_context = Math.random).call(_context, Math);
+function getRandomFunc(seed) {
+  return seed != null ? mulberry32(seed) : randomWithoutSeed;
+}
 /** Generate random number in range [0..1) like Math.random() or other, but can be pseudorandom with seed */
 
-var Random =
-/*#__PURE__*/
-function () {
+
+var Random = /*#__PURE__*/function () {
   function Random(seed) {
     (0, _classCallCheck2.default)(this, Random);
-    this._rnd = seed ? mulberry32(seed) : randomWithoutSeed;
+    this._rnd = getRandomFunc(seed);
   }
 
   (0, _createClass2.default)(Random, [{
@@ -165,14 +184,15 @@ function () {
       arrayShuffle(array, function () {
         return _this.next();
       });
-      var result = [];
-      var count = this.nextInt(Math.round(array.length * relativeMaxCount));
+      var count = this.nextInt(minCount, Math.round(array.length * relativeMaxCount));
       return (0, _slice.default)(array).call(array, 0, count);
     }
   }, {
     key: "nextColor",
     value: function nextColor() {
-      return '#' + this.nextInt(0x1000000).toString(16);
+      var _context;
+
+      return '#' + (0, _padStart.default)(_context = this.nextInt(0x1000000).toString(16)).call(_context, 6, '0');
     }
   }, {
     key: "nextEnum",

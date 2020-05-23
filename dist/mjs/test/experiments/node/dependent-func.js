@@ -10,7 +10,7 @@
 // @ts-ignore
 import { calcPerformance } from 'rdtsc';
 import { resolveAsync } from '../../../main/common/async/ThenableSync';
-import { makeDependentFunc } from '../../../main/common/rx/depend/fasade';
+import { makeDependentFunc } from '../../../main/common/rx/depend/core/facade';
 import { assert } from '../../../main/common/test/Assert';
 import { describe, it, xit } from '../../../main/common/test/Mocha';
 describe('dependent-func', function () {

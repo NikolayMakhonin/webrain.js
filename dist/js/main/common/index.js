@@ -1,7 +1,7 @@
 "use strict";
 
 exports.__esModule = true;
-exports.Random = exports.TimeLimits = exports.TimeLimit = exports.performanceNow = exports.delay = exports.RuleBuilder = exports.DeferredCalc = exports.VALUE_PROPERTY_DEFAULT = exports.CalcStat = exports.dependenciesSubscriber = exports.resolveAsyncAny = exports.resolveAsyncAll = exports.resolveAsyncFunc = exports.resolveAsync = exports.ValueChangeType = exports.ConnectorState = exports.CalcPropertyState = exports.webrainOptions = exports.subscribeDependencies = exports.DependenciesBuilder = exports.isIterable = exports.ObjectSerializer = exports.registerSerializer = exports.registerSerializable = exports.registerMerger = exports.registerMergeable = exports.BehaviorSubject = exports.Subject = exports.Connector = exports.PropertyChangedObject = exports.ObjectMerger = exports.ValueKeyType = exports.CalcProperty = exports.ObjectSet = exports.ObjectMap = exports.resolvePath = exports.deepSubscribe = exports.ObservableMap = exports.ObservableSet = exports.ArrayMap = exports.ArraySet = exports.getObjectUniqueId = exports.Debugger = exports.createFunction = exports.Property = exports.connectorFactory = exports.calcPropertyFactory = exports.CalcObjectBuilder = exports.ObservableObject = exports.ObservableClass = exports.ThenableSync = void 0;
+exports.createConnector = exports.dependWrapThis = exports.dependWait = exports.autoCalc = exports.autoCalcConnect = exports.Path = exports.dependDeepSubscriber = exports.noSubscribe = exports.dependConnectorFactory = exports.dependCalcPropertyFactoryX = exports.dependCalcPropertyFactory = exports.DependSet = exports.DependMap = exports.dependX = exports.depend = exports.CallStatus = exports.subscribeCallState = exports.invalidateCallState = exports.getOrCreateCallState = exports.getCallState = exports.NO_CHANGE_VALUE = exports.ALWAYS_CHANGE_VALUE = exports.Random = exports.performanceNow = exports.delay = exports.DeferredCalc = exports.VALUE_PROPERTY_DEFAULT = exports.CalcStat = exports.resolveAsyncAny = exports.resolveAsyncAll = exports.resolveAsyncFunc = exports.resolveAsync = exports.ConnectorState = exports.webrainEquals = exports.webrainOptions = exports.equals = exports.isIterator = exports.isIterable = exports.ObjectSerializer = exports.registerSerializer = exports.registerSerializable = exports.registerMerger = exports.registerMergeable = exports.BehaviorSubject = exports.Subject = exports.Connector = exports.PropertyChangedObject = exports.ObjectMerger = exports.resolvePath = exports.getObjectUniqueId = exports.createFunction = exports.DependCalcObjectBuilder = exports.ObservableObjectBuilder = exports.ClassBuilder = exports.ObjectBuilder = exports.ObservableObject = exports.ObservableClass = exports.ThenableSync = void 0;
 
 var _ThenableSync = require("./async/ThenableSync");
 
@@ -19,76 +19,38 @@ var _ObservableObject = require("./rx/object/ObservableObject");
 
 exports.ObservableObject = _ObservableObject.ObservableObject;
 
-var _CalcObjectBuilder = require("./rx/object/properties/CalcObjectBuilder");
+var _ObjectBuilder = require("./rx/object/ObjectBuilder");
 
-exports.CalcObjectBuilder = _CalcObjectBuilder.CalcObjectBuilder;
+exports.ObjectBuilder = _ObjectBuilder.ObjectBuilder;
 
-var _CalcPropertyBuilder = require("./rx/object/properties/CalcPropertyBuilder");
+var _ClassBuilder = require("./rx/object/ClassBuilder");
 
-exports.calcPropertyFactory = _CalcPropertyBuilder.calcPropertyFactory;
+exports.ClassBuilder = _ClassBuilder.ClassBuilder;
 
-var _ConnectorBuilder = require("./rx/object/properties/ConnectorBuilder");
+var _ObservableObjectBuilder = require("./rx/object/ObservableObjectBuilder");
 
-exports.connectorFactory = _ConnectorBuilder.connectorFactory;
+exports.ObservableObjectBuilder = _ObservableObjectBuilder.ObservableObjectBuilder;
 
-var _Property = require("./rx/object/properties/Property");
+var _DependCalcObjectBuilder = require("./rx/object/properties/DependCalcObjectBuilder");
 
-exports.Property = _Property.Property;
+exports.DependCalcObjectBuilder = _DependCalcObjectBuilder.DependCalcObjectBuilder;
+exports.dependCalcPropertyFactory = _DependCalcObjectBuilder.dependCalcPropertyFactory;
+exports.dependCalcPropertyFactoryX = _DependCalcObjectBuilder.dependCalcPropertyFactoryX;
 
 var _helpers = require("./helpers/helpers");
 
 exports.createFunction = _helpers.createFunction;
 exports.isIterable = _helpers.isIterable;
-
-var _Debugger = require("./rx/Debugger");
-
-exports.Debugger = _Debugger.Debugger;
+exports.isIterator = _helpers.isIterator;
+exports.equals = _helpers.equals;
 
 var _objectUniqueId = require("./helpers/object-unique-id");
 
 exports.getObjectUniqueId = _objectUniqueId.getObjectUniqueId;
 
-var _ArraySet = require("./lists/ArraySet");
+var _resolve = require("./rx/object/properties/path/resolve");
 
-exports.ArraySet = _ArraySet.ArraySet;
-
-var _ArrayMap = require("./lists/ArrayMap");
-
-exports.ArrayMap = _ArrayMap.ArrayMap;
-
-var _ObservableSet = require("./lists/ObservableSet");
-
-exports.ObservableSet = _ObservableSet.ObservableSet;
-
-var _ObservableMap = require("./lists/ObservableMap");
-
-exports.ObservableMap = _ObservableMap.ObservableMap;
-
-var _deepSubscribe = require("./rx/deep-subscribe/deep-subscribe");
-
-exports.deepSubscribe = _deepSubscribe.deepSubscribe;
-
-var _helpers2 = require("./rx/object/properties/helpers");
-
-exports.resolvePath = _helpers2.resolvePath;
-
-var _ObjectMap = require("./lists/ObjectMap");
-
-exports.ObjectMap = _ObjectMap.ObjectMap;
-
-var _ObjectSet = require("./lists/ObjectSet");
-
-exports.ObjectSet = _ObjectSet.ObjectSet;
-
-var _CalcProperty = require("./rx/object/properties/CalcProperty");
-
-exports.CalcProperty = _CalcProperty.CalcProperty;
-exports.CalcPropertyState = _CalcProperty.CalcPropertyState;
-
-var _common = require("./rx/deep-subscribe/contracts/common");
-
-exports.ValueKeyType = _common.ValueKeyType;
-exports.ValueChangeType = _common.ValueChangeType;
+exports.resolvePath = _resolve.resolvePath;
 
 var _mergers = require("./extensions/merge/mergers");
 
@@ -119,15 +81,10 @@ exports.registerSerializable = _serializers.registerSerializable;
 exports.registerSerializer = _serializers.registerSerializer;
 exports.ObjectSerializer = _serializers.ObjectSerializer;
 
-var _DependenciesBuilder = require("./rx/object/properties/DependenciesBuilder");
-
-exports.DependenciesBuilder = _DependenciesBuilder.DependenciesBuilder;
-exports.subscribeDependencies = _DependenciesBuilder.subscribeDependencies;
-exports.dependenciesSubscriber = _DependenciesBuilder.dependenciesSubscriber;
-
 var _webrainOptions = require("./helpers/webrainOptions");
 
 exports.webrainOptions = _webrainOptions.webrainOptions;
+exports.webrainEquals = _webrainOptions.webrainEquals;
 
 var _CalcStat = require("./helpers/CalcStat");
 
@@ -141,23 +98,64 @@ var _DeferredCalc = require("./rx/deferred-calc/DeferredCalc");
 
 exports.DeferredCalc = _DeferredCalc.DeferredCalc;
 
-var _RuleBuilder = require("./rx/deep-subscribe/RuleBuilder");
+var _helpers2 = require("./time/helpers");
 
-exports.RuleBuilder = _RuleBuilder.RuleBuilder;
-
-var _helpers3 = require("./time/helpers");
-
-exports.delay = _helpers3.delay;
-exports.performanceNow = _helpers3.performanceNow;
-
-var _TimeLimit = require("./time/TimeLimit");
-
-exports.TimeLimit = _TimeLimit.TimeLimit;
-
-var _TimeLimits = require("./time/TimeLimits");
-
-exports.TimeLimits = _TimeLimits.TimeLimits;
+exports.delay = _helpers2.delay;
+exports.performanceNow = _helpers2.performanceNow;
 
 var _Random = require("./random/Random");
 
 exports.Random = _Random.Random;
+
+var _CallState = require("./rx/depend/core/CallState");
+
+exports.ALWAYS_CHANGE_VALUE = _CallState.ALWAYS_CHANGE_VALUE;
+exports.NO_CHANGE_VALUE = _CallState.NO_CHANGE_VALUE;
+exports.getCallState = _CallState.getCallState;
+exports.getOrCreateCallState = _CallState.getOrCreateCallState;
+exports.invalidateCallState = _CallState.invalidateCallState;
+exports.subscribeCallState = _CallState.subscribeCallState;
+
+var _contracts = require("./rx/depend/core/contracts");
+
+exports.CallStatus = _contracts.CallStatus;
+
+var _depend = require("./rx/depend/core/depend");
+
+exports.depend = _depend.depend;
+exports.dependX = _depend.dependX;
+
+var _DependMap = require("./rx/depend/lists/DependMap");
+
+exports.DependMap = _DependMap.DependMap;
+
+var _DependSet = require("./rx/depend/lists/DependSet");
+
+exports.DependSet = _DependSet.DependSet;
+
+var _DependConnectorBuilder = require("./rx/object/properties/DependConnectorBuilder");
+
+exports.dependConnectorFactory = _DependConnectorBuilder.dependConnectorFactory;
+
+var _currentState = require("./rx/depend/core/current-state");
+
+exports.noSubscribe = _currentState.noSubscribe;
+
+var _dependDeepSubscriber = require("./rx/object/properties/path/dependDeepSubscriber");
+
+exports.dependDeepSubscriber = _dependDeepSubscriber.dependDeepSubscriber;
+
+var _builder = require("./rx/object/properties/path/builder");
+
+exports.Path = _builder.Path;
+
+var _helpers3 = require("./rx/depend/helpers");
+
+exports.autoCalcConnect = _helpers3.autoCalcConnect;
+exports.autoCalc = _helpers3.autoCalc;
+exports.dependWait = _helpers3.dependWait;
+exports.dependWrapThis = _helpers3.dependWrapThis;
+
+var _helpers4 = require("./rx/object/properties/helpers");
+
+exports.createConnector = _helpers4.createConnector;

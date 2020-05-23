@@ -9,9 +9,7 @@ var _classCallCheck2 = _interopRequireDefault(require("@babel/runtime-corejs3/he
 
 var _createClass2 = _interopRequireDefault(require("@babel/runtime-corejs3/helpers/createClass"));
 
-var Observable =
-/*#__PURE__*/
-function () {
+var Observable = /*#__PURE__*/function () {
   function Observable() {
     (0, _classCallCheck2.default)(this, Observable);
   }

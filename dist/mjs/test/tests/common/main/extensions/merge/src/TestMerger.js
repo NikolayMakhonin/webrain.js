@@ -2,7 +2,6 @@
 // import clone from 'clone'
 import { ObjectMerger, TypeMetaMergerCollection } from '../../../../../../../main/common/extensions/merge/mergers';
 import { canHaveUniqueId } from '../../../../../../../main/common/helpers/object-unique-id';
-import { SortedList } from '../../../../../../../main/common/lists/SortedList';
 import { Assert } from '../../../../../../../main/common/test/Assert';
 import { DeepCloneEqual, isPrimitiveDefault } from '../../../../../../../main/common/test/DeepCloneEqual';
 import { TestVariants } from '../../../src/helpers/TestVariants';
@@ -23,21 +22,6 @@ export const deepCloneEqual = new DeepCloneEqual({
   },
   cloneOptions: {
     customClone: (o, setInstance, cloneNested) => {
-      if (o.constructor === SortedList) {
-        const list = new SortedList({
-          autoSort: o.autoSort,
-          notAddIfExists: o.notAddIfExists,
-          compare: o.compare
-        });
-        setInstance(list);
-
-        for (const item of o) {
-          list.add(cloneNested(item));
-        }
-
-        return list;
-      }
-
       return null;
     }
   },
@@ -45,33 +29,6 @@ export const deepCloneEqual = new DeepCloneEqual({
     equalInnerReferences: true,
     strictEqualFunctions: true,
     customEqual: (o1, o2, equal) => {
-      if (o1.constructor === SortedList) {
-        // tslint:disable-next-line:no-collapsible-if
-        if (o1.constructor === o2.constructor) {
-          if (!equal(o1.autoSort, o2.autoSort)) {
-            return false;
-          }
-
-          if (!equal(o1.notAddIfExists, o2.notAddIfExists)) {
-            return false;
-          }
-
-          if (!equal(o1.compare, o2.compare)) {
-            return false;
-          }
-        } // let count = 0
-        // for (const item of o2) {
-        // 	if (!o1.contains(item)) {
-        // 		return false
-        // 	}
-        // 	count++
-        // }
-        // if (!equal(o1.size, count)) {
-        // 	return false
-        // }
-
-      }
-
       return null;
     }
   }

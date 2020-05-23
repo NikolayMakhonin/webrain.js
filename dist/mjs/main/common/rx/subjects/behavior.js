@@ -1,3 +1,4 @@
+import { equals } from '../../helpers/helpers';
 import { Subject } from './subject';
 export function behavior(base) {
   return class Behavior extends base {
@@ -44,7 +45,7 @@ export function behavior(base) {
             unsubscribeValue
           } = this;
 
-          if (typeof unsubscribeValue !== 'undefined' && unsubscribeValue !== value) {
+          if (typeof unsubscribeValue !== 'undefined' && !equals(unsubscribeValue, value)) {
             subscriber(unsubscribeValue);
           }
         } finally {

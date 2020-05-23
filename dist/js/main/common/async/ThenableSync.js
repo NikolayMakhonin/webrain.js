@@ -25,11 +25,11 @@ var _classCallCheck2 = _interopRequireDefault(require("@babel/runtime-corejs3/he
 
 var _createClass2 = _interopRequireDefault(require("@babel/runtime-corejs3/helpers/createClass"));
 
+var _currentState = require("../rx/depend/core/current-state");
+
 var _async = require("./async");
 
-var _marked =
-/*#__PURE__*/
-_regenerator.default.mark(_resolveAsyncAll);
+var _marked = /*#__PURE__*/_regenerator.default.mark(_resolveAsyncAll);
 
 var ThenableSyncStatus;
 exports.ThenableSyncStatus = ThenableSyncStatus;
@@ -52,15 +52,15 @@ function createRejected(error, customResolveValue) {
   return thenable;
 }
 
-var ThenableSync =
-/*#__PURE__*/
-function () {
+var ThenableSync = /*#__PURE__*/function () {
   function ThenableSync(executor, customResolveValue) {
     (0, _classCallCheck2.default)(this, ThenableSync);
-
-    if (customResolveValue != null) {
-      this._customResolveValue = customResolveValue;
-    }
+    this._onfulfilled = null;
+    this._onrejected = null;
+    this._value = void 0;
+    this._error = null;
+    this._status = null;
+    this._customResolveValue = customResolveValue;
 
     if (executor) {
       try {
@@ -98,7 +98,7 @@ function () {
         if (e) {
           _this._reject(o);
         } else {
-          value = o;
+          _this.__resolve(o);
         }
       }, function (o, e) {
         if (e) {
@@ -116,7 +116,10 @@ function () {
       if ((result & _async.ResolveResult.Error) !== 0) {
         return;
       }
-
+    }
+  }, {
+    key: "__resolve",
+    value: function __resolve(value) {
       this._status = ThenableSyncStatus.Resolved;
       this._value = value;
       var _onfulfilled = this._onfulfilled;
@@ -153,7 +156,7 @@ function () {
       }
 
       var result = (0, _async.resolveValue)(error, function (o) {
-        error = o;
+        _this2.__reject(o);
       }, function (o) {
         _this2._reject(o);
       }, this._customResolveValue);
@@ -162,7 +165,10 @@ function () {
         this._status = ThenableSyncStatus.Resolving;
         return;
       }
-
+    }
+  }, {
+    key: "__reject",
+    value: function __reject(error) {
       this._status = ThenableSyncStatus.Rejected;
       this._error = error;
       var _onrejected = this._onrejected;
@@ -192,14 +198,12 @@ function () {
 
         var isError;
 
-        error = function () {
-          try {
-            return onrejected(error);
-          } catch (err) {
-            isError = true;
-            return err;
-          }
-        }();
+        try {
+          error = onrejected(error);
+        } catch (err) {
+          isError = true;
+          error = err;
+        }
 
         var result = resolveAsync(error, null, null, !lastExpression, customResolveValue);
 
@@ -231,22 +235,18 @@ function () {
 
             var isError;
 
-            _value = function () {
-              try {
-                return onfulfilled(_value);
-              } catch (err) {
-                isError = true;
-                return err;
-              }
-            }();
+            try {
+              _value = onfulfilled(_value);
+            } catch (err) {
+              isError = true;
+              _value = err;
+            }
 
             if (isError) {
               var result = resolveAsync(_value, null, null, !lastExpression, customResolveValue);
 
               if ((0, _async.isThenable)(result)) {
-                return result.then(function (o) {
-                  return reject(o);
-                }, onrejected);
+                return result.then(reject, onrejected);
               }
 
               return reject(result);
@@ -278,17 +278,20 @@ function () {
               this._onrejected = _onrejected = [];
             }
 
+            var callState = (0, _currentState.getCurrentState)();
             var rejected = onrejected ? function (value) {
               var isError;
+              var prevState = (0, _currentState.getCurrentState)();
 
-              value = function () {
-                try {
-                  return onrejected(value);
-                } catch (err) {
-                  isError = true;
-                  return err;
-                }
-              }();
+              try {
+                (0, _currentState.setCurrentState)(callState);
+                value = onrejected(value);
+              } catch (err) {
+                isError = true;
+                value = err;
+              } finally {
+                (0, _currentState.setCurrentState)(prevState);
+              }
 
               if (isError) {
                 _result2.reject(value);
@@ -309,15 +312,17 @@ function () {
 
             _onfulfilled.push(onfulfilled ? function (value) {
               var isError;
+              var prevState = (0, _currentState.getCurrentState)();
 
-              value = function () {
-                try {
-                  return onfulfilled(value);
-                } catch (err) {
-                  isError = true;
-                  return err;
-                }
-              }();
+              try {
+                (0, _currentState.setCurrentState)(callState);
+                value = onfulfilled(value);
+              } catch (err) {
+                isError = true;
+                value = err;
+              } finally {
+                (0, _currentState.setCurrentState)(prevState);
+              }
 
               if (isError) {
                 (0, _async.resolveValue)(value, rejected, rejected, customResolveValue);

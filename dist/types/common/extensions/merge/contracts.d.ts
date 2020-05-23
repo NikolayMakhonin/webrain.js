@@ -28,7 +28,7 @@ export interface ITypeMetaMerger<TTarget = any, TSource = any> extends ITypeMeta
     merger?: IValueMerger<TTarget, TSource>;
 }
 export declare type TMergeableClass<TObject extends IMergeable<TObject, TSource>, TSource = any> = new (...args: any[]) => TObject;
-export interface ITypeMetaMergerCollection extends ITypeMetaCollection<ITypeMetaMerger<any, any>> {
+export interface ITypeMetaMergerCollection extends ITypeMetaCollection<ITypeMetaMerger> {
     putType<TTarget, TSource>(type: TClass<TTarget>, meta: ITypeMetaMerger<TTarget, TSource>): ITypeMetaMerger<TTarget, TSource>;
     putMergeableType<TTarget extends IMergeable<TTarget, TSource>, TSource = any>(type: TMergeableClass<TTarget, TSource>, meta?: ITypeMetaMerger<TTarget, TSource>): ITypeMetaMerger<TTarget, TSource>;
 }

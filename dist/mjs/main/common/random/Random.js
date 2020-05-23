@@ -15,16 +15,38 @@ function mulberry32(seed) {
 	*/
 
 
+export function randomWithoutSeed() {
+  return Math.random();
+} // from: https://stackoverflow.com/a/6274398/5221762
+
 export function arrayShuffle(array, rnd) {
-  array.sort(() => rnd() > 0.5 ? 1 : -1);
+  if (rnd == null) {
+    rnd = randomWithoutSeed;
+  }
+
+  let counter = array.length; // While there are elements in the array
+
+  while (counter > 0) {
+    // Pick a random index
+    const index = rnd() * counter | 0; // Decrease counter by 1
+
+    counter--; // And swap the last element with it
+
+    const temp = array[counter];
+    array[counter] = array[index];
+    array[index] = temp;
+  }
+
   return array;
 }
-const randomWithoutSeed = Math.random.bind(Math);
+export function getRandomFunc(seed) {
+  return seed != null ? mulberry32(seed) : randomWithoutSeed;
+}
 /** Generate random number in range [0..1) like Math.random() or other, but can be pseudorandom with seed */
 
 export class Random {
   constructor(seed) {
-    this._rnd = seed ? mulberry32(seed) : randomWithoutSeed;
+    this._rnd = getRandomFunc(seed);
   }
 
   next() {
@@ -105,13 +127,12 @@ export class Random {
 
   nextArrayItems(array, minCount, relativeMaxCount) {
     arrayShuffle(array, () => this.next());
-    const result = [];
-    const count = this.nextInt(Math.round(array.length * relativeMaxCount));
+    const count = this.nextInt(minCount, Math.round(array.length * relativeMaxCount));
     return array.slice(0, count);
   }
 
   nextColor() {
-    return '#' + this.nextInt(0x1000000).toString(16);
+    return '#' + this.nextInt(0x1000000).toString(16).padStart(6, '0');
   }
 
   nextEnum(enumType) {

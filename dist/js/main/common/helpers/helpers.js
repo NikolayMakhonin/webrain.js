@@ -3,28 +3,32 @@
 var _interopRequireDefault = require("@babel/runtime-corejs3/helpers/interopRequireDefault");
 
 exports.__esModule = true;
+exports.equals = equals;
 exports.isIterable = isIterable;
 exports.isIterator = isIterator;
 exports.typeToDebugString = typeToDebugString;
-exports.checkIsFuncOrNull = checkIsFuncOrNull;
-exports.toSingleCall = toSingleCall;
 exports.createFunction = createFunction;
-exports.hideObjectProperty = hideObjectProperty;
 exports.equalsObjects = equalsObjects;
+exports.nextHash = nextHash;
+exports.missingGetter = missingGetter;
+exports.missingSetter = missingSetter;
 exports.EMPTY = void 0;
-
-var _defineProperty = _interopRequireDefault(require("@babel/runtime-corejs3/core-js-stable/object/define-property"));
-
-var _getOwnPropertyDescriptor = _interopRequireDefault(require("@babel/runtime-corejs3/core-js-stable/object/get-own-property-descriptor"));
 
 var _getIteratorMethod2 = _interopRequireDefault(require("@babel/runtime-corejs3/core-js/get-iterator-method"));
 
+var _isArray = _interopRequireDefault(require("@babel/runtime-corejs3/core-js-stable/array/is-array"));
+
+function equals(v1, v2) {
+  return v1 === v2 // is NaN
+  || v1 !== v1 && v2 !== v2;
+}
+
 function isIterable(value) {
-  return value != null && typeof (0, _getIteratorMethod2.default)(value) === 'function';
+  return value != null && typeof value === 'object' && ((0, _isArray.default)(value) || !(value instanceof String) && typeof (0, _getIteratorMethod2.default)(value) === 'function');
 }
 
 function isIterator(value) {
-  return value != null && typeof (0, _getIteratorMethod2.default)(value) === 'function' && typeof value.next === 'function';
+  return isIterable(value) && typeof value.next === 'function';
 }
 
 function typeToDebugString(type) {
@@ -35,36 +39,6 @@ function typeToDebugString(type) {
 var EMPTY = function EMPTY() {};
 
 exports.EMPTY = EMPTY;
-
-function checkIsFuncOrNull(func) {
-  // PROF: 66 - 0.1%
-  if (func != null && typeof func !== 'function') {
-    throw new Error("Value is not a function or null/undefined: " + func);
-  }
-
-  return func;
-}
-
-function toSingleCall(func, throwOnMultipleCall) {
-  if (func == null) {
-    return func;
-  }
-
-  func = checkIsFuncOrNull(func);
-  var isCalled = false;
-  return function () {
-    if (isCalled) {
-      if (throwOnMultipleCall) {
-        throw new Error("Multiple call for single call function: " + func);
-      }
-
-      return;
-    }
-
-    isCalled = true;
-    return func.apply(void 0, arguments);
-  };
-}
 
 var allowCreateFunction = function () {
   try {
@@ -92,23 +66,8 @@ function createFunction(alternativeFuncFactory) {
   return func;
 }
 
-function hideObjectProperty(object, propertyName) {
-  var descriptor = (0, _getOwnPropertyDescriptor.default)(object, propertyName);
-
-  if (descriptor) {
-    descriptor.enumerable = false;
-    return;
-  }
-
-  (0, _defineProperty.default)(object, propertyName, {
-    configurable: true,
-    enumerable: false,
-    value: object[propertyName]
-  });
-}
-
 function equalsObjects(o1, o2) {
-  if (o1 === o2) {
+  if (equals(o1, o2)) {
     return true;
   }
 
@@ -121,4 +80,16 @@ function equalsObjects(o1, o2) {
   }
 
   return false;
+}
+
+function nextHash(hash, value) {
+  return (4294967296 + hash) * 31 + value | 0;
+}
+
+function missingGetter() {
+  throw new TypeError('Missing Getter');
+}
+
+function missingSetter() {
+  throw new TypeError('Missing Setter');
 }

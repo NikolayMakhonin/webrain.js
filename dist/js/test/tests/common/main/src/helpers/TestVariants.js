@@ -6,6 +6,18 @@ exports.__esModule = true;
 exports.expandArray = expandArray;
 exports.TestVariants = exports.THIS = void 0;
 
+var _bind = _interopRequireDefault(require("@babel/runtime-corejs3/core-js-stable/instance/bind"));
+
+var _getIterator2 = _interopRequireDefault(require("@babel/runtime-corejs3/core-js/get-iterator"));
+
+var _getIteratorMethod2 = _interopRequireDefault(require("@babel/runtime-corejs3/core-js/get-iterator-method"));
+
+var _symbol = _interopRequireDefault(require("@babel/runtime-corejs3/core-js-stable/symbol"));
+
+var _from = _interopRequireDefault(require("@babel/runtime-corejs3/core-js-stable/array/from"));
+
+var _slice = _interopRequireDefault(require("@babel/runtime-corejs3/core-js-stable/instance/slice"));
+
 var _classCallCheck2 = _interopRequireDefault(require("@babel/runtime-corejs3/helpers/classCallCheck"));
 
 var _createClass2 = _interopRequireDefault(require("@babel/runtime-corejs3/helpers/createClass"));
@@ -16,38 +28,29 @@ var _regenerator = _interopRequireDefault(require("@babel/runtime-corejs3/regene
 
 var _extends3 = _interopRequireDefault(require("@babel/runtime-corejs3/helpers/extends"));
 
-var _getIterator2 = _interopRequireDefault(require("@babel/runtime-corejs3/core-js/get-iterator"));
+var _isArray = _interopRequireDefault(require("@babel/runtime-corejs3/core-js-stable/array/is-array"));
 
-var _isArray6 = _interopRequireDefault(require("@babel/runtime-corejs3/core-js-stable/array/is-array"));
+var _marked = /*#__PURE__*/_regenerator.default.mark(generateOptions);
 
-var _marked =
-/*#__PURE__*/
-_regenerator.default.mark(generateOptions);
+function _createForOfIteratorHelperLoose(o) { var _context3; var i = 0; if (typeof _symbol.default === "undefined" || (0, _getIteratorMethod2.default)(o) == null) { if ((0, _isArray.default)(o) || (o = _unsupportedIterableToArray(o))) return function () { if (i >= o.length) return { done: true }; return { done: false, value: o[i++] }; }; throw new TypeError("Invalid attempt to iterate non-iterable instance.\nIn order to be iterable, non-array objects must have a [Symbol.iterator]() method."); } i = (0, _getIterator2.default)(o); return (0, _bind.default)(_context3 = i.next).call(_context3, i); }
+
+function _unsupportedIterableToArray(o, minLen) { var _context2; if (!o) return; if (typeof o === "string") return _arrayLikeToArray(o, minLen); var n = (0, _slice.default)(_context2 = Object.prototype.toString.call(o)).call(_context2, 8, -1); if (n === "Object" && o.constructor) n = o.constructor.name; if (n === "Map" || n === "Set") return (0, _from.default)(o); if (n === "Arguments" || /^(?:Ui|I)nt(?:8|16|32)(?:Clamped)?Array$/.test(n)) return _arrayLikeToArray(o, minLen); }
+
+function _arrayLikeToArray(arr, len) { if (len == null || len > arr.length) len = arr.length; for (var i = 0, arr2 = new Array(len); i < len; i++) { arr2[i] = arr[i]; } return arr2; }
 
 function expandArray(array, output) {
   if (output === void 0) {
     output = [];
   }
 
-  for (var _iterator = array, _isArray = (0, _isArray6.default)(_iterator), _i = 0, _iterator = _isArray ? _iterator : (0, _getIterator2.default)(_iterator);;) {
-    var _ref;
-
-    if (_isArray) {
-      if (_i >= _iterator.length) break;
-      _ref = _iterator[_i++];
-    } else {
-      _i = _iterator.next();
-      if (_i.done) break;
-      _ref = _i.value;
-    }
-
-    var item = _ref;
+  for (var _iterator = _createForOfIteratorHelperLoose(array), _step; !(_step = _iterator()).done;) {
+    var item = _step.value;
 
     if (!item) {
       continue;
     }
 
-    if ((0, _isArray6.default)(item)) {
+    if ((0, _isArray.default)(item)) {
       expandArray(item, output);
     } else {
       output.push(item);
@@ -64,7 +67,7 @@ exports.THIS = THIS;
 var NONE = function NONE() {};
 
 function generateOptions(base, optionsVariants, exclude) {
-  var hasChilds, _key, _iterator2, _isArray2, _i2, _extends2, _ref2, optionVariant, _variant, newOptionsVariants;
+  var hasChilds, _key, _iterator2, _step2, _extends2, optionVariant, _variant, newOptionsVariants;
 
   return _regenerator.default.wrap(function generateOptions$(_context) {
     while (1) {
@@ -74,79 +77,53 @@ function generateOptions(base, optionsVariants, exclude) {
 
         case 1:
           if ((_context.t1 = _context.t0()).done) {
-            _context.next = 26;
+            _context.next = 17;
             break;
           }
 
           _key = _context.t1.value;
 
           if (!optionsVariants[_key]) {
-            _context.next = 24;
+            _context.next = 15;
             break;
           }
 
-          _iterator2 = optionsVariants[_key], _isArray2 = (0, _isArray6.default)(_iterator2), _i2 = 0, _iterator2 = _isArray2 ? _iterator2 : (0, _getIterator2.default)(_iterator2);
+          _iterator2 = _createForOfIteratorHelperLoose(optionsVariants[_key]);
 
         case 5:
-          if (!_isArray2) {
-            _context.next = 11;
-            break;
-          }
-
-          if (!(_i2 >= _iterator2.length)) {
-            _context.next = 8;
-            break;
-          }
-
-          return _context.abrupt("break", 23);
-
-        case 8:
-          _ref2 = _iterator2[_i2++];
-          _context.next = 15;
-          break;
-
-        case 11:
-          _i2 = _iterator2.next();
-
-          if (!_i2.done) {
+          if ((_step2 = _iterator2()).done) {
             _context.next = 14;
             break;
           }
 
-          return _context.abrupt("break", 23);
-
-        case 14:
-          _ref2 = _i2.value;
-
-        case 15:
-          optionVariant = _ref2;
-          _variant = (0, _extends3.default)({}, base, (_extends2 = {}, _extends2[_key] = optionVariant, _extends2));
+          optionVariant = _step2.value;
+          _variant = (0, _extends3.default)((0, _extends3.default)({}, base), {}, (_extends2 = {}, _extends2[_key] = optionVariant, _extends2));
           newOptionsVariants = (0, _extends3.default)({}, optionsVariants);
           newOptionsVariants[_key] = null;
           hasChilds = true;
-          return _context.delegateYield(generateOptions(_variant, newOptionsVariants, exclude), "t2", 21);
+          return _context.delegateYield(generateOptions(_variant, newOptionsVariants, exclude), "t2", 12);
 
-        case 21:
+        case 12:
           _context.next = 5;
           break;
 
-        case 23:
-          return _context.abrupt("break", 26);
+        case 14:
+          return _context.abrupt("break", 17);
 
-        case 24:
+        case 15:
           _context.next = 1;
           break;
 
-        case 26:
+        case 17:
           if (!(!hasChilds && (!exclude || !exclude(base)))) {
-            _context.next = 29;
+            _context.next = 20;
             break;
           }
 
-          _context.next = 29;
+          _context.next = 20;
           return base;
 
-        case 29:
+        case 20:
         case "end":
           return _context.stop();
       }
@@ -155,9 +132,7 @@ function generateOptions(base, optionsVariants, exclude) {
 } // region Test Actions
 
 
-var TestVariants =
-/*#__PURE__*/
-function () {
+var TestVariants = /*#__PURE__*/function () {
   function TestVariants() {
     (0, _classCallCheck2.default)(this, TestVariants);
   }
@@ -165,7 +140,7 @@ function () {
   (0, _createClass2.default)(TestVariants, [{
     key: "test",
     value: function test(testCases) {
-      var optionsVariants = (0, _extends3.default)({}, this.baseOptionsVariants, {}, testCases);
+      var optionsVariants = (0, _extends3.default)((0, _extends3.default)({}, this.baseOptionsVariants), testCases);
       var expected = testCases.expected;
       var exclude = testCases.exclude;
       delete optionsVariants.expected;
@@ -175,19 +150,8 @@ function () {
 
       var variants = generateOptions({}, optionsVariants, exclude); // variants = Array.from(variants)
 
-      for (var _iterator3 = actionsWithDescriptions, _isArray3 = (0, _isArray6.default)(_iterator3), _i3 = 0, _iterator3 = _isArray3 ? _iterator3 : (0, _getIterator2.default)(_iterator3);;) {
-        var _ref3;
-
-        if (_isArray3) {
-          if (_i3 >= _iterator3.length) break;
-          _ref3 = _iterator3[_i3++];
-        } else {
-          _i3 = _iterator3.next();
-          if (_i3.done) break;
-          _ref3 = _i3.value;
-        }
-
-        var actionsWithDescription = _ref3;
+      for (var _iterator3 = _createForOfIteratorHelperLoose(actionsWithDescriptions), _step3; !(_step3 = _iterator3()).done;) {
+        var actionsWithDescription = _step3.value;
         var actions = actionsWithDescription.actions,
             description = actionsWithDescription.description;
 
@@ -196,34 +160,12 @@ function () {
           description = '';
         }
 
-        for (var _iterator4 = expandArray(actions), _isArray4 = (0, _isArray6.default)(_iterator4), _i4 = 0, _iterator4 = _isArray4 ? _iterator4 : (0, _getIterator2.default)(_iterator4);;) {
-          var _ref4;
+        for (var _iterator4 = _createForOfIteratorHelperLoose(expandArray(actions)), _step4; !(_step4 = _iterator4()).done;) {
+          var action = _step4.value;
 
-          if (_isArray4) {
-            if (_i4 >= _iterator4.length) break;
-            _ref4 = _iterator4[_i4++];
-          } else {
-            _i4 = _iterator4.next();
-            if (_i4.done) break;
-            _ref4 = _i4.value;
-          }
-
-          var action = _ref4;
-
-          for (var _iterator5 = variants, _isArray5 = (0, _isArray6.default)(_iterator5), _i5 = 0, _iterator5 = _isArray5 ? _iterator5 : (0, _getIterator2.default)(_iterator5);;) {
-            var _ref5;
-
-            if (_isArray5) {
-              if (_i5 >= _iterator5.length) break;
-              _ref5 = _iterator5[_i5++];
-            } else {
-              _i5 = _iterator5.next();
-              if (_i5.done) break;
-              _ref5 = _i5.value;
-            }
-
-            var _variant2 = _ref5;
-            this.testVariant((0, _extends3.default)({}, _variant2, {
+          for (var _iterator5 = _createForOfIteratorHelperLoose(variants), _step5; !(_step5 = _iterator5()).done;) {
+            var _variant2 = _step5.value;
+            this.testVariant((0, _extends3.default)((0, _extends3.default)({}, _variant2), {}, {
               action: action,
               description: description,
               expected: expected

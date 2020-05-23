@@ -30,23 +30,7 @@ var _mergers = require("../../../../../../main/common/extensions/merge/mergers")
 
 var _objectUniqueId = require("../../../../../../main/common/helpers/object-unique-id");
 
-var _ArrayMap = require("../../../../../../main/common/lists/ArrayMap");
-
-var _ArraySet = require("../../../../../../main/common/lists/ArraySet");
-
 var _set2 = require("../../../../../../main/common/lists/helpers/set");
-
-var _ObjectHashMap = require("../../../../../../main/common/lists/ObjectHashMap");
-
-var _ObjectMap = require("../../../../../../main/common/lists/ObjectMap");
-
-var _ObjectSet = require("../../../../../../main/common/lists/ObjectSet");
-
-var _ObservableMap = require("../../../../../../main/common/lists/ObservableMap");
-
-var _ObservableSet = require("../../../../../../main/common/lists/ObservableSet");
-
-var _SortedList = require("../../../../../../main/common/lists/SortedList");
 
 var _Property = require("../../../../../../main/common/rx/object/properties/Property");
 
@@ -107,9 +91,7 @@ var assert = new _Assert.Assert(_TestMerger.deepCloneEqual);
     return !o.preferCloneBase && isObject(o.base) && (!_TestMerger.deepCloneEqual.equal(o.base, o.newer) && isObject(o.newer) || _TestMerger.deepCloneEqual.equal(o.base, o.newer) && !_TestMerger.deepCloneEqual.equal(o.base, o.older) && isObject(o.older));
   }
 
-  var Class =
-  /*#__PURE__*/
-  function () {
+  var Class = /*#__PURE__*/function () {
     function Class(value) {
       (0, _classCallCheck2.default)(this, Class);
       this.value = value;
@@ -298,7 +280,7 @@ var assert = new _Assert.Assert(_TestMerger.deepCloneEqual);
       // })
 
 
-      testMerger((0, _extends2.default)({}, options, {
+      testMerger((0, _extends2.default)((0, _extends2.default)({}, options), {}, {
         base: createValues(),
         older: createValues(),
         newer: createValues()
@@ -309,7 +291,7 @@ var assert = new _Assert.Assert(_TestMerger.deepCloneEqual);
         return [_TestMerger.BASE, _TestMerger.OLDER, _TestMerger.NEWER, null, void 0, 0, 1, false, true];
       };
 
-      testMerger((0, _extends2.default)({}, options, {
+      testMerger((0, _extends2.default)((0, _extends2.default)({}, options), {}, {
         base: createValues(),
         older: createValues(),
         newer: createValues()
@@ -320,7 +302,7 @@ var assert = new _Assert.Assert(_TestMerger.deepCloneEqual);
         return [_TestMerger.BASE, _TestMerger.OLDER, _TestMerger.NEWER, void 0, 1, '', '1', '2'];
       };
 
-      testMerger((0, _extends2.default)({}, options, {
+      testMerger((0, _extends2.default)((0, _extends2.default)({}, options), {}, {
         base: createValues(),
         older: createValues(),
         newer: createValues()
@@ -331,7 +313,7 @@ var assert = new _Assert.Assert(_TestMerger.deepCloneEqual);
         return [_TestMerger.BASE, _TestMerger.OLDER, _TestMerger.NEWER, void 0, 1, new String(''), new String('1'), new String('2')];
       };
 
-      testMerger((0, _extends2.default)({}, options, {
+      testMerger((0, _extends2.default)((0, _extends2.default)({}, options), {}, {
         base: createValues(),
         older: createValues(),
         newer: createValues()
@@ -342,7 +324,7 @@ var assert = new _Assert.Assert(_TestMerger.deepCloneEqual);
         return [_TestMerger.BASE, _TestMerger.OLDER, _TestMerger.NEWER, void 0, '', {}, new Date(1), new Date(2), new Date(3)];
       };
 
-      testMerger((0, _extends2.default)({}, options, {
+      testMerger((0, _extends2.default)((0, _extends2.default)({}, options), {}, {
         base: createValues(),
         older: createValues(),
         newer: createValues()
@@ -377,7 +359,7 @@ var assert = new _Assert.Assert(_TestMerger.deepCloneEqual);
         })];
       };
 
-      testMerger((0, _extends2.default)({}, options, {
+      testMerger((0, _extends2.default)((0, _extends2.default)({}, options), {}, {
         base: createValues(),
         older: createValues(),
         newer: createValues()
@@ -414,7 +396,7 @@ var assert = new _Assert.Assert(_TestMerger.deepCloneEqual);
         }), new Date(1), new Date(2)];
       };
 
-      testMerger((0, _extends2.default)({}, options, {
+      testMerger((0, _extends2.default)((0, _extends2.default)({}, options), {}, {
         base: createValues(),
         older: createValues(),
         newer: createValues()
@@ -642,8 +624,8 @@ var assert = new _Assert.Assert(_TestMerger.deepCloneEqual);
         expected: {
           error: null,
           returnValue: true,
-          setValue: _TestMerger.NEWER,
-          base: _TestMerger.BASE,
+          setValue: _TestMerger.NONE,
+          base: [3],
           older: _TestMerger.OLDER,
           newer: _TestMerger.NEWER
         },
@@ -868,14 +850,14 @@ var assert = new _Assert.Assert(_TestMerger.deepCloneEqual);
       }
     });
     (0, _Mocha.it)('simple circular', function () {
-      testMerger((0, _extends2.default)({}, options, {
+      testMerger((0, _extends2.default)((0, _extends2.default)({}, options), {}, {
         base: [createValue(1, true)],
         older: [createValue(1, true)],
         newer: [createValue(1, true)]
       }));
     });
     (0, _Mocha.it)('not circular', function () {
-      testMerger((0, _extends2.default)({}, options, {
+      testMerger((0, _extends2.default)((0, _extends2.default)({}, options), {}, {
         base: [createValue(1, false), createValue(2, false), createValue(3, false), null],
         older: [createValue(1, false), createValue(2, false), createValue(3, false), null],
         newer: [createValue(1, false), createValue(2, false), createValue(3, false), null]
@@ -1000,11 +982,11 @@ var assert = new _Assert.Assert(_TestMerger.deepCloneEqual);
         testMergeMaps([function (o) {
           return (0, _set2.fillMap)(new _map.default(), o);
         }, function (o) {
-          return (0, _set2.fillMap)(new _ObservableMap.ObservableMap(new _map.default()), o);
+          return (0, _set2.fillMap)(new _map.default(), o);
         }], [function (o) {
           return (0, _set2.fillMap)(new _map.default(), o);
         }, function (o) {
-          return (0, _set2.fillMap)(new _ObservableMap.ObservableMap(new _map.default()), o);
+          return (0, _set2.fillMap)(new _map.default(), o);
         }], [[0, null], [func, func], [void 0, {
           a: 1,
           b: 2
@@ -1031,96 +1013,6 @@ var assert = new _Assert.Assert(_TestMerger.deepCloneEqual);
           b: 7,
           c: 11
         }], [null, null]]);
-      });
-      (0, _Mocha.it)('ArrayMap', function () {
-        testMergeMaps([function (o) {
-          return (0, _set2.fillMap)(new _ArrayMap.ArrayMap(), o);
-        }, function (o) {
-          return (0, _set2.fillMap)(new _ObservableMap.ObservableMap(new _ArrayMap.ArrayMap()), o);
-        }, function (o) {
-          return (0, _set2.fillMap)(new _ObjectHashMap.ObjectHashMap(), o);
-        }, function (o) {
-          return (0, _set2.fillMap)(new _ObservableMap.ObservableMap(new _ObjectHashMap.ObjectHashMap()), o);
-        }], [function (o) {
-          return (0, _set2.fillMap)(new _map.default(), o);
-        }, function (o) {
-          return (0, _set2.fillMap)(new _ObservableMap.ObservableMap(new _map.default()), o);
-        }, function (o) {
-          return (0, _set2.fillMap)(new _ArrayMap.ArrayMap(), o);
-        }, function (o) {
-          return (0, _set2.fillMap)(new _ObservableMap.ObservableMap(new _ArrayMap.ArrayMap()), o);
-        }, function (o) {
-          return (0, _set2.fillMap)(new _ObjectHashMap.ObjectHashMap(), o);
-        }, function (o) {
-          return (0, _set2.fillMap)(new _ObservableMap.ObservableMap(new _ObjectHashMap.ObjectHashMap()), o);
-        }], [[func2, null], [func, func], [func4, {
-          a: 1,
-          b: 2
-        }], [object, {
-          a: 2,
-          c: 3
-        }]], [[func2, object], [func3, func], [func4, {
-          a: 4,
-          c: 5
-        }], [object, {
-          a: 6,
-          b: 7
-        }]], [[func2, null], [func3, null], [func, func], [func4, {
-          a: 1,
-          b: 2
-        }], [object, {
-          a: 10,
-          c: 11
-        }]], [[func2, object], [func4, {
-          a: 4,
-          c: 5
-        }], [object, {
-          a: 10,
-          b: 7,
-          c: 11
-        }], [func3, null]]);
-      });
-      (0, _Mocha.it)('ObjectMap', function () {
-        testMergeMaps([function (o) {
-          return (0, _set2.fillMap)(new _ObjectMap.ObjectMap(), o);
-        }, function (o) {
-          return (0, _set2.fillMap)(new _ObservableMap.ObservableMap(new _ObjectMap.ObjectMap()), o);
-        }], [function (o) {
-          return (0, _set2.fillMap)(new _map.default(), o);
-        }, function (o) {
-          return (0, _set2.fillMap)(new _ObservableMap.ObservableMap(new _map.default()), o);
-        }, function (o) {
-          return (0, _set2.fillMap)(new _ObjectMap.ObjectMap(), o);
-        }, function (o) {
-          return (0, _set2.fillMap)(new _ObservableMap.ObservableMap(new _ObjectMap.ObjectMap()), o);
-        }, function (o) {
-          return (0, _set2.fillObject)({}, o);
-        }], [['0', null], ['1', func], ['3', {
-          a: 1,
-          b: 2
-        }], ['5', {
-          a: 2,
-          c: 3
-        }]], [['0', object], ['6', func], ['3', {
-          a: 4,
-          c: 5
-        }], ['5', {
-          a: 6,
-          b: 7
-        }]], [['0', null], ['6', null], ['1', func], ['3', {
-          a: 1,
-          b: 2
-        }], ['5', {
-          a: 10,
-          c: 11
-        }]], [['0', object], ['3', {
-          a: 4,
-          c: 5
-        }], ['5', {
-          a: 10,
-          c: 11,
-          b: 7
-        }], ['6', null]]);
       });
     });
     (0, _Mocha.describe)('sets', function () {
@@ -1159,56 +1051,12 @@ var assert = new _Assert.Assert(_TestMerger.deepCloneEqual);
         testMergeSets([function (o) {
           return (0, _set2.fillSet)(new _set.default(), o);
         }, function (o) {
-          return (0, _set2.fillSet)(new _ObservableSet.ObservableSet(new _set.default()), o);
+          return (0, _set2.fillSet)(new _set.default(), o);
         }], [function (o) {
           return (0, _set2.fillSet)(new _set.default(), o);
         }, function (o) {
-          return (0, _set2.fillSet)(new _ObservableSet.ObservableSet(new _set.default()), o);
+          return (0, _set2.fillSet)(new _set.default(), o);
         }], [0, func, void 0], [0, func, object], [0, 1, void 0, object], [0, 1, object]);
-      });
-      (0, _Mocha.it)('ArraySet', function () {
-        testMergeSets([function (o) {
-          return (0, _set2.fillSet)(new _ArraySet.ArraySet(), o);
-        }, function (o) {
-          return (0, _set2.fillSet)(new _ObservableSet.ObservableSet(new _ArraySet.ArraySet()), o);
-        } // o => fillSet(new ObjectHashSet(), o), o => fillSet(new ObservableSet(new ObjectHashSet()), o),
-        ], [function (o) {
-          return (0, _set2.fillSet)(new _set.default(), o);
-        }, function (o) {
-          return (0, _set2.fillSet)(new _ObservableSet.ObservableSet(new _set.default()), o);
-        }, function (o) {
-          return (0, _set2.fillSet)(new _ArraySet.ArraySet(), o);
-        }, function (o) {
-          return (0, _set2.fillSet)(new _ObservableSet.ObservableSet(new _ArraySet.ArraySet()), o);
-        } // o => fillSet(new ObjectHashSet(), o), o => fillSet(new ObservableSet(new ObjectHashSet()), o),
-        ], [func2, func, func4], [func2, func, object], [func2, func3, func4, object], [func2, func3, object]);
-      });
-      (0, _Mocha.it)('ObjectSet', function () {
-        testMergeSets([function (o) {
-          return (0, _set2.fillSet)(new _ObjectSet.ObjectSet(), o);
-        }, function (o) {
-          return (0, _set2.fillSet)(new _ObservableSet.ObservableSet(new _ObjectSet.ObjectSet()), o);
-        }, function (o) {
-          return (0, _set2.fillSet)(new _SortedList.SortedList({
-            autoSort: true,
-            notAddIfExists: true
-          }), o);
-        }], [function (o) {
-          return (0, _set2.fillSet)(new _set.default(), o);
-        }, function (o) {
-          return (0, _set2.fillSet)(new _ObservableSet.ObservableSet(new _set.default()), o);
-        }, function (o) {
-          return (0, _set2.fillSet)(new _ObjectSet.ObjectSet(), o);
-        }, function (o) {
-          return (0, _set2.fillSet)(new _ObservableSet.ObservableSet(new _ObjectSet.ObjectSet()), o);
-        }, function (o) {
-          return (0, _set2.fillSet)(new _SortedList.SortedList({
-            autoSort: true,
-            notAddIfExists: true
-          }), o);
-        }, function (o) {
-          return (0, _set2.fillObjectKeys)({}, o);
-        }], ['0', '2', '3'], ['0', '2', '4'], ['0', '1', '3', '4'], ['0', '1', '4']);
       });
     });
   });

@@ -6,21 +6,21 @@ declare enum ObjectStatus {
     Merged = 2
 }
 export declare class MergerVisitor implements IMergerVisitor {
-    readonly getMeta: (type: TClass<any>) => ITypeMetaMerger<any, any>;
+    readonly getMeta: (type: TClass<any>) => ITypeMetaMerger;
     statuses: ObjectStatus[];
-    constructor(getMeta: (type: TClass<any>) => ITypeMetaMerger<any, any>);
+    constructor(getMeta: (type: TClass<any>) => ITypeMetaMerger);
     getStatus(object: any): ObjectStatus;
     setStatus(object: any, status: ObjectStatus): any;
     getNextMerge(preferCloneOlder: boolean, preferCloneNewer: boolean, refsBase: any[], refsOlder: any[], refsNewer: any[], options: IMergeVisitorOptions<any, any>): IMergeValue;
     merge<TTarget = any, TSource = any>(base: TTarget, older: TTarget | TSource, newer: TTarget | TSource, set?: (value: TTarget) => void, preferCloneOlder?: boolean, preferCloneNewer?: boolean, options?: IMergeVisitorOptions<TTarget, TSource>, refsBase?: any[], refsOlder?: any[], refsNewer?: any[]): boolean;
 }
-export declare class TypeMetaMergerCollection extends TypeMetaCollection<ITypeMetaMerger<any, any>> implements ITypeMetaMergerCollection {
-    customMeta: (type: any) => ITypeMetaMerger<any, any>;
+export declare class TypeMetaMergerCollection extends TypeMetaCollection<ITypeMetaMerger> implements ITypeMetaMergerCollection {
+    customMeta: (type: any) => ITypeMetaMerger;
     constructor({ proto, customMeta, }?: {
         proto?: ITypeMetaMergerCollection;
-        customMeta?: (type: any) => ITypeMetaMerger<any, any>;
+        customMeta?: (type: any) => ITypeMetaMerger;
     });
-    getMeta(type: TClass<any>): ITypeMetaMerger<any, any>;
+    getMeta(type: TClass<any>): ITypeMetaMerger;
     static default: TypeMetaMergerCollection;
     private static makeTypeMetaMerger;
     putMergeableType<TTarget extends IMergeable<TTarget, TSource>, TSource = any>(type: TMergeableClass<TTarget, TSource>, meta?: ITypeMetaMerger<TTarget, TSource>): ITypeMetaMerger<TTarget, TSource>;

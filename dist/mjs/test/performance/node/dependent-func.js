@@ -1,12 +1,11 @@
 // @ts-ignore
 import { calcPerformance } from 'rdtsc';
 import { getObjectUniqueId } from '../../../main/common/helpers/object-unique-id';
-import { invalidate } from '../../../main/common/rx/depend/all';
 import { assert } from '../../../main/common/test/Assert';
 import { CalcType } from '../../../main/common/test/calc';
 import { calcMemAllocate } from '../../../main/common/test/calc-mem-allocate';
 import { describe, it, xit } from '../../../main/common/test/Mocha';
-import { createPerceptron, createPerceptronNaked } from '../../tests/common/main/rx/depend/src/helpers';
+import { createPerceptron, createPerceptronNaked } from '../../tests/common/main/rx/depend/src/perceptron';
 describe('dependent-func perf', function () {
   it('perceptron recalc', function () {
     this.timeout(300000);
@@ -14,7 +13,8 @@ describe('dependent-func perf', function () {
       countFuncs,
       input,
       inputState,
-      output
+      output,
+      outputState
     } = createPerceptron(2, 2);
     const naked = createPerceptronNaked(2, 2);
     const map1 = new Map();
@@ -24,7 +24,7 @@ describe('dependent-func perf', function () {
     const result = calcPerformance(10000, () => {
       naked.call(2, 5, 10);
     }, () => {
-      invalidate(inputState);
+      inputState.invalidate();
     }, () => {
       output.call(2, 5, 10);
     }, () => {
@@ -39,8 +39,9 @@ describe('dependent-func perf', function () {
     console.log(`funcs per frame: [${result.absoluteDiff.map(o => countFuncs * cyclesPerSecond / o / 60).join(', ')}]`);
     console.log(`chrome funcs per second: [${result.absoluteDiff.map(o => countFuncs * cyclesPerSecond / o / 210).join(', ')}]`);
     console.log(`chrome funcs per frame: [${result.absoluteDiff.map(o => countFuncs * cyclesPerSecond / o / 60 / 210).join(', ')}]`);
+    console.log(`smallint overflow after: ${(1 << 30) / outputState._callId * result.calcInfo.testTime / 1000 * 210 / 3600} hours`);
     const chromeFuncsPerFrame = countFuncs * cyclesPerSecond / result.absoluteDiff[1] / 60 / 210;
-    assert.ok(chromeFuncsPerFrame >= 150);
+    assert.ok(chromeFuncsPerFrame >= 150, chromeFuncsPerFrame + '');
   });
   xit('set memory', function () {
     this.timeout(300000);
@@ -93,10 +94,11 @@ describe('dependent-func perf', function () {
     }, () => {
       perceptron.output.call(2, 5, 10);
     }, () => {
-      invalidate(perceptron.inputState);
+      perceptron.inputState.invalidate();
       perceptron.output.call(2, 5, 10);
     });
     console.log(result);
+    assert.ok(result.absoluteDiff[0] < 15000, result.absoluteDiff[1] + '');
   });
   it('perceptron memory recalc', function () {
     this.timeout(300000);
@@ -114,7 +116,7 @@ describe('dependent-func perf', function () {
     // assert.strictEqual(subscriberLinkPool.size + subscriberLinkPool.usedSize, subscriberLinkPool.allocatedSize)
 
     const result = calcMemAllocate(CalcType.Min, 2000, () => {
-      invalidate(inputState);
+      inputState.invalidate();
       output.call(2, 5, 10);
     }).scale(1 / countFuncs);
     console.log(result.toString());

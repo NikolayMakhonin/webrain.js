@@ -31,6 +31,7 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="69b2ee16-521b-4efd-b473-8e19e3df4d09" name="Default Changelist" comment="Fix Random">
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/dist/js/main/browser/helpers/touchMouse.js" beforeDir="false" />
       <change beforePath="$PROJECT_DIR$/dist/js/main/common/async/ThenableSync.js" beforeDir="false" afterPath="$PROJECT_DIR$/dist/js/main/common/async/ThenableSync.js" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/dist/js/main/common/async/async.js" beforeDir="false" afterPath="$PROJECT_DIR$/dist/js/main/common/async/async.js" afterDir="false" />
@@ -248,6 +249,7 @@
       <change beforePath="$PROJECT_DIR$/dist/mjs/test/tests/common/main/rx/deferred-calc/src/TestDeferred.js" beforeDir="false" afterPath="$PROJECT_DIR$/dist/mjs/test/tests/common/main/rx/deferred-calc/src/TestDeferred.js" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/dist/mjs/test/tests/common/main/rx/depend/dependent-func.js" beforeDir="false" />
       <change beforePath="$PROJECT_DIR$/dist/mjs/test/tests/common/main/rx/depend/src/helpers.js" beforeDir="false" afterPath="$PROJECT_DIR$/dist/mjs/test/tests/common/main/rx/depend/src/helpers.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/dist/mjs/test/tests/common/main/rx/object/observable-object-builder.js" beforeDir="false" afterPath="$PROJECT_DIR$/dist/mjs/test/tests/common/main/rx/object/observable-object-builder.js" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/dist/mjs/test/tests/common/main/rx/object/properties/CalcObjectBuilder.js" beforeDir="false" />
       <change beforePath="$PROJECT_DIR$/dist/mjs/test/tests/common/main/rx/object/properties/CalcProperty.js" beforeDir="false" />
       <change beforePath="$PROJECT_DIR$/dist/mjs/test/tests/common/main/rx/object/properties/ConnectorBuilder.js" beforeDir="false" />
@@ -781,14 +783,7 @@
       <workItem from="1590135086386" duration="2390000" />
       <workItem from="1590149294582" duration="15706000" />
       <workItem from="1590207827975" duration="9740000" />
-      <workItem from="1590217587334" duration="20444000" />
-    </task>
-    <task id="LOCAL-00469" summary="Fix stress test. Tests OK.">
-      <created>1588226418130</created>
-      <option name="number" value="00469" />
-      <option name="presentableId" value="LOCAL-00469" />
-      <option name="project" value="LOCAL" />
-      <updated>1588226418130</updated>
+      <workItem from="1590217587334" duration="21450000" />
     </task>
     <task id="LOCAL-00470" summary="depend: stress test all, 1 hour is OK.">
       <created>1588229442841</created>
@@ -1126,7 +1121,14 @@
       <option name="project" value="LOCAL" />
       <updated>1590245924311</updated>
     </task>
-    <option name="localTasksCounter" value="518" />
+    <task id="LOCAL-00518" summary="Fix travis tests">
+      <created>1590246269130</created>
+      <option name="number" value="00518" />
+      <option name="presentableId" value="LOCAL-00518" />
+      <option name="project" value="LOCAL" />
+      <updated>1590246269130</updated>
+    </task>
+    <option name="localTasksCounter" value="519" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -1247,10 +1249,10 @@
       <screen x="0" y="0" width="1920" height="882" />
     </state>
     <state x="651" y="254" key="ANALYSIS_DLG_com.intellij.analysis.BaseAnalysisAction$1/0.0.1920.882@0.0.1920.882" timestamp="1588413930131" />
-    <state x="-2" y="0" width="1918" height="882" key="CommitChangelistDialog2" timestamp="1590245921901">
+    <state x="-2" y="0" width="1918" height="882" key="CommitChangelistDialog2" timestamp="1590252856360">
       <screen x="0" y="0" width="1920" height="882" />
     </state>
-    <state x="-2" y="0" width="1918" height="882" key="CommitChangelistDialog2/0.0.1920.882@0.0.1920.882" timestamp="1590245921901" />
+    <state x="-2" y="0" width="1918" height="882" key="CommitChangelistDialog2/0.0.1920.882@0.0.1920.882" timestamp="1590252856360" />
     <state width="884" height="550" key="DebuggerActiveHint" timestamp="1590162335145">
       <screen x="0" y="0" width="1920" height="882" />
     </state>
@@ -1359,10 +1361,10 @@
       <screen x="0" y="0" width="1920" height="882" />
     </state>
     <state x="121" y="111" key="com.intellij.xdebugger.impl.breakpoints.ui.BreakpointsDialogFactory$2/0.0.1920.882@0.0.1920.882" timestamp="1587884348340" />
-    <state x="2" y="1" width="1908" height="878" key="find.popup" timestamp="1590246251793">
+    <state x="2" y="1" width="1908" height="878" key="find.popup" timestamp="1590252826067">
       <screen x="0" y="0" width="1920" height="882" />
     </state>
-    <state x="2" y="1" width="1908" height="878" key="find.popup/0.0.1920.882@0.0.1920.882" timestamp="1590246251793" />
+    <state x="2" y="1" width="1908" height="878" key="find.popup/0.0.1920.882@0.0.1920.882" timestamp="1590252826067" />
     <state x="732" y="169" key="refactoring.ChangeSignatureDialog" timestamp="1587872020169">
       <screen x="0" y="0" width="1920" height="882" />
     </state>

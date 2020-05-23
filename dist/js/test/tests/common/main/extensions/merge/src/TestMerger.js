@@ -6,25 +6,23 @@ exports.__esModule = true;
 exports.isRefer = isRefer;
 exports.TestMerger = exports.TypeMetaMergerCollectionMock = exports.NEWER = exports.OLDER = exports.BASE = exports.NONE = exports.deepCloneEqual = void 0;
 
+var _construct = _interopRequireDefault(require("@babel/runtime-corejs3/core-js-stable/reflect/construct"));
+
 var _extends2 = _interopRequireDefault(require("@babel/runtime-corejs3/helpers/extends"));
 
 var _classCallCheck2 = _interopRequireDefault(require("@babel/runtime-corejs3/helpers/classCallCheck"));
 
 var _createClass2 = _interopRequireDefault(require("@babel/runtime-corejs3/helpers/createClass"));
 
-var _possibleConstructorReturn2 = _interopRequireDefault(require("@babel/runtime-corejs3/helpers/possibleConstructorReturn"));
-
-var _getPrototypeOf2 = _interopRequireDefault(require("@babel/runtime-corejs3/helpers/getPrototypeOf"));
-
 var _get2 = _interopRequireDefault(require("@babel/runtime-corejs3/helpers/get"));
 
 var _inherits2 = _interopRequireDefault(require("@babel/runtime-corejs3/helpers/inherits"));
 
+var _possibleConstructorReturn2 = _interopRequireDefault(require("@babel/runtime-corejs3/helpers/possibleConstructorReturn"));
+
+var _getPrototypeOf2 = _interopRequireDefault(require("@babel/runtime-corejs3/helpers/getPrototypeOf"));
+
 var _freeze = _interopRequireDefault(require("@babel/runtime-corejs3/core-js-stable/object/freeze"));
-
-var _getIterator2 = _interopRequireDefault(require("@babel/runtime-corejs3/core-js/get-iterator"));
-
-var _isArray2 = _interopRequireDefault(require("@babel/runtime-corejs3/core-js-stable/array/is-array"));
 
 var _isFrozen = _interopRequireDefault(require("@babel/runtime-corejs3/core-js-stable/object/is-frozen"));
 
@@ -32,16 +30,16 @@ var _mergers = require("../../../../../../../main/common/extensions/merge/merger
 
 var _objectUniqueId = require("../../../../../../../main/common/helpers/object-unique-id");
 
-var _SortedList = require("../../../../../../../main/common/lists/SortedList");
-
 var _Assert = require("../../../../../../../main/common/test/Assert");
 
 var _DeepCloneEqual = require("../../../../../../../main/common/test/DeepCloneEqual");
 
 var _TestVariants2 = require("../../../src/helpers/TestVariants");
 
-/* tslint:disable:no-construct use-primitive-type */
-// import clone from 'clone'
+function _createSuper(Derived) { var hasNativeReflectConstruct = _isNativeReflectConstruct(); return function () { var Super = (0, _getPrototypeOf2.default)(Derived), result; if (hasNativeReflectConstruct) { var NewTarget = (0, _getPrototypeOf2.default)(this).constructor; result = (0, _construct.default)(Super, arguments, NewTarget); } else { result = Super.apply(this, arguments); } return (0, _possibleConstructorReturn2.default)(this, result); }; }
+
+function _isNativeReflectConstruct() { if (typeof Reflect === "undefined" || !_construct.default) return false; if (_construct.default.sham) return false; if (typeof Proxy === "function") return true; try { Date.prototype.toString.call((0, _construct.default)(Date, [], function () {})); return true; } catch (e) { return false; } }
+
 var deepCloneEqual = new _DeepCloneEqual.DeepCloneEqual({
   commonOptions: {
     circular: true,
@@ -59,33 +57,6 @@ var deepCloneEqual = new _DeepCloneEqual.DeepCloneEqual({
   },
   cloneOptions: {
     customClone: function customClone(o, setInstance, cloneNested) {
-      if (o.constructor === _SortedList.SortedList) {
-        var list = new _SortedList.SortedList({
-          autoSort: o.autoSort,
-          notAddIfExists: o.notAddIfExists,
-          compare: o.compare
-        });
-        setInstance(list);
-
-        for (var _iterator = o, _isArray = (0, _isArray2.default)(_iterator), _i = 0, _iterator = _isArray ? _iterator : (0, _getIterator2.default)(_iterator);;) {
-          var _ref;
-
-          if (_isArray) {
-            if (_i >= _iterator.length) break;
-            _ref = _iterator[_i++];
-          } else {
-            _i = _iterator.next();
-            if (_i.done) break;
-            _ref = _i.value;
-          }
-
-          var item = _ref;
-          list.add(cloneNested(item));
-        }
-
-        return list;
-      }
-
       return null;
     }
   },
@@ -93,33 +64,6 @@ var deepCloneEqual = new _DeepCloneEqual.DeepCloneEqual({
     equalInnerReferences: true,
     strictEqualFunctions: true,
     customEqual: function customEqual(o1, o2, equal) {
-      if (o1.constructor === _SortedList.SortedList) {
-        // tslint:disable-next-line:no-collapsible-if
-        if (o1.constructor === o2.constructor) {
-          if (!equal(o1.autoSort, o2.autoSort)) {
-            return false;
-          }
-
-          if (!equal(o1.notAddIfExists, o2.notAddIfExists)) {
-            return false;
-          }
-
-          if (!equal(o1.compare, o2.compare)) {
-            return false;
-          }
-        } // let count = 0
-        // for (const item of o2) {
-        // 	if (!o1.contains(item)) {
-        // 		return false
-        // 	}
-        // 	count++
-        // }
-        // if (!equal(o1.size, count)) {
-        // 	return false
-        // }
-
-      }
-
       return null;
     }
   }
@@ -135,16 +79,16 @@ exports.OLDER = OLDER;
 var NEWER = (0, _freeze.default)(new String('NEWER'));
 exports.NEWER = NEWER;
 
-var TypeMetaMergerCollectionMock =
-/*#__PURE__*/
-function (_TypeMetaMergerCollec) {
+var TypeMetaMergerCollectionMock = /*#__PURE__*/function (_TypeMetaMergerCollec) {
   (0, _inherits2.default)(TypeMetaMergerCollectionMock, _TypeMetaMergerCollec);
+
+  var _super = _createSuper(TypeMetaMergerCollectionMock);
 
   function TypeMetaMergerCollectionMock() {
     var _this;
 
     (0, _classCallCheck2.default)(this, TypeMetaMergerCollectionMock);
-    _this = (0, _possibleConstructorReturn2.default)(this, (0, _getPrototypeOf2.default)(TypeMetaMergerCollectionMock).call(this));
+    _this = _super.call(this);
     _this._resetFuncs = [];
     return _this;
   }
@@ -289,16 +233,16 @@ function isRefer(value) {
   return value === BASE || value === OLDER || value === NEWER;
 }
 
-var TestMerger =
-/*#__PURE__*/
-function (_TestVariants) {
+var TestMerger = /*#__PURE__*/function (_TestVariants) {
   (0, _inherits2.default)(TestMerger, _TestVariants);
+
+  var _super2 = _createSuper(TestMerger);
 
   function TestMerger() {
     var _this2;
 
     (0, _classCallCheck2.default)(this, TestMerger);
-    _this2 = (0, _possibleConstructorReturn2.default)(this, (0, _getPrototypeOf2.default)(TestMerger).call(this));
+    _this2 = _super2.call(this);
     _this2.baseOptionsVariants = {
       base: [],
       older: [],

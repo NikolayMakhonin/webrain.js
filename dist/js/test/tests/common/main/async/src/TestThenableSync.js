@@ -5,6 +5,8 @@ var _interopRequireDefault = require("@babel/runtime-corejs3/helpers/interopRequ
 exports.__esModule = true;
 exports.TestThenableSync = exports.ITERATOR_GENERATOR = exports.ITERABLE = exports.FUNC = exports.THEN_LIKE = exports.OBJ = exports.ThenType = exports.ValueType = void 0;
 
+var _construct = _interopRequireDefault(require("@babel/runtime-corejs3/core-js-stable/reflect/construct"));
+
 var _stringify = _interopRequireDefault(require("@babel/runtime-corejs3/core-js-stable/json/stringify"));
 
 var _values = _interopRequireDefault(require("@babel/runtime-corejs3/core-js-stable/object/values"));
@@ -13,11 +15,11 @@ var _classCallCheck2 = _interopRequireDefault(require("@babel/runtime-corejs3/he
 
 var _createClass2 = _interopRequireDefault(require("@babel/runtime-corejs3/helpers/createClass"));
 
+var _inherits2 = _interopRequireDefault(require("@babel/runtime-corejs3/helpers/inherits"));
+
 var _possibleConstructorReturn2 = _interopRequireDefault(require("@babel/runtime-corejs3/helpers/possibleConstructorReturn"));
 
 var _getPrototypeOf2 = _interopRequireDefault(require("@babel/runtime-corejs3/helpers/getPrototypeOf"));
-
-var _inherits2 = _interopRequireDefault(require("@babel/runtime-corejs3/helpers/inherits"));
 
 var _bind = _interopRequireDefault(require("@babel/runtime-corejs3/core-js-stable/instance/bind"));
 
@@ -37,7 +39,10 @@ var _Assert = require("../../../../../../main/common/test/Assert");
 
 var _TestVariants2 = require("../../src/helpers/TestVariants");
 
-/* tslint:disable:no-empty no-identical-functions no-construct use-primitive-type */
+function _createSuper(Derived) { var hasNativeReflectConstruct = _isNativeReflectConstruct(); return function () { var Super = (0, _getPrototypeOf2.default)(Derived), result; if (hasNativeReflectConstruct) { var NewTarget = (0, _getPrototypeOf2.default)(this).constructor; result = (0, _construct.default)(Super, arguments, NewTarget); } else { result = Super.apply(this, arguments); } return (0, _possibleConstructorReturn2.default)(this, result); }; }
+
+function _isNativeReflectConstruct() { if (typeof Reflect === "undefined" || !_construct.default) return false; if (_construct.default.sham) return false; if (typeof Proxy === "function") return true; try { Date.prototype.toString.call((0, _construct.default)(Date, [], function () {})); return true; } catch (e) { return false; } }
+
 var ValueType;
 exports.ValueType = ValueType;
 
@@ -103,9 +108,7 @@ exports.FUNC = FUNC;
 var ITERABLE = new _set.default();
 exports.ITERABLE = ITERABLE;
 
-var ITERATOR_GENERATOR =
-/*#__PURE__*/
-_regenerator.default.mark(function ITERATOR_GENERATOR() {
+var ITERATOR_GENERATOR = /*#__PURE__*/_regenerator.default.mark(function ITERATOR_GENERATOR() {
   return _regenerator.default.wrap(function ITERATOR_GENERATOR$(_context) {
     while (1) {
       switch (_context.prev = _context.next) {
@@ -127,9 +130,7 @@ _regenerator.default.mark(function ITERATOR_GENERATOR() {
 exports.ITERATOR_GENERATOR = ITERATOR_GENERATOR;
 
 function createIterator(value, isThrow) {
-  var iteratorInner =
-  /*#__PURE__*/
-  _regenerator.default.mark(function iteratorInner() {
+  var iteratorInner = /*#__PURE__*/_regenerator.default.mark(function iteratorInner() {
     return _regenerator.default.wrap(function iteratorInner$(_context2) {
       while (1) {
         switch (_context2.prev = _context2.next) {
@@ -238,9 +239,7 @@ function createIterator(value, isThrow) {
     }, iteratorInner);
   });
 
-  var iterator =
-  /*#__PURE__*/
-  _regenerator.default.mark(function _callee() {
+  var iterator = /*#__PURE__*/_regenerator.default.mark(function _callee() {
     var result;
     return _regenerator.default.wrap(function _callee$(_context3) {
       while (1) {
@@ -694,16 +693,16 @@ function createThen(valueInfo, getValueType, addResolve, getThenType, getThenThr
   valueInfo.value = thenable;
 }
 
-var TestThenableSync =
-/*#__PURE__*/
-function (_TestVariants) {
+var TestThenableSync = /*#__PURE__*/function (_TestVariants) {
   (0, _inherits2.default)(TestThenableSync, _TestVariants);
+
+  var _super = _createSuper(TestThenableSync);
 
   function TestThenableSync() {
     var _this;
 
     (0, _classCallCheck2.default)(this, TestThenableSync);
-    _this = (0, _possibleConstructorReturn2.default)(this, (0, _getPrototypeOf2.default)(TestThenableSync).call(this));
+    _this = _super.call(this);
     _this.baseOptionsVariants = {
       value: ['v'],
       // , void 0, ITERABLE, ITERATOR_GENERATOR],

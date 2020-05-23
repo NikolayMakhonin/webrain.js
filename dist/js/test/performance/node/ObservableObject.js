@@ -2,19 +2,19 @@
 
 var _interopRequireDefault = require("@babel/runtime-corejs3/helpers/interopRequireDefault");
 
+var _construct = _interopRequireDefault(require("@babel/runtime-corejs3/core-js-stable/reflect/construct"));
+
 var _bind = _interopRequireDefault(require("@babel/runtime-corejs3/core-js-stable/instance/bind"));
 
 var _classCallCheck2 = _interopRequireDefault(require("@babel/runtime-corejs3/helpers/classCallCheck"));
+
+var _inherits2 = _interopRequireDefault(require("@babel/runtime-corejs3/helpers/inherits"));
 
 var _possibleConstructorReturn2 = _interopRequireDefault(require("@babel/runtime-corejs3/helpers/possibleConstructorReturn"));
 
 var _getPrototypeOf2 = _interopRequireDefault(require("@babel/runtime-corejs3/helpers/getPrototypeOf"));
 
-var _inherits2 = _interopRequireDefault(require("@babel/runtime-corejs3/helpers/inherits"));
-
 var _rdtsc = require("rdtsc");
-
-var _deepSubscribe = require("../../../main/common/rx/deep-subscribe/deep-subscribe");
 
 var _ObservableClass2 = require("../../../main/common/rx/object/ObservableClass");
 
@@ -26,20 +26,22 @@ var _calcMemAllocate = require("../../../main/common/test/calc-mem-allocate");
 
 var _Mocha = require("../../../main/common/test/Mocha");
 
-/* tslint:disable:no-empty no-identical-functions */
-// @ts-ignore
+function _createSuper(Derived) { var hasNativeReflectConstruct = _isNativeReflectConstruct(); return function () { var Super = (0, _getPrototypeOf2.default)(Derived), result; if (hasNativeReflectConstruct) { var NewTarget = (0, _getPrototypeOf2.default)(this).constructor; result = (0, _construct.default)(Super, arguments, NewTarget); } else { result = Super.apply(this, arguments); } return (0, _possibleConstructorReturn2.default)(this, result); }; }
+
+function _isNativeReflectConstruct() { if (typeof Reflect === "undefined" || !_construct.default) return false; if (_construct.default.sham) return false; if (typeof Proxy === "function") return true; try { Date.prototype.toString.call((0, _construct.default)(Date, [], function () {})); return true; } catch (e) { return false; } }
+
 (0, _Mocha.describe)('ObservableClass', function () {
   this.timeout(300000);
 
   function createObject(init) {
-    var Class =
-    /*#__PURE__*/
-    function (_ObservableClass) {
+    var Class = /*#__PURE__*/function (_ObservableClass) {
       (0, _inherits2.default)(Class, _ObservableClass);
+
+      var _super = _createSuper(Class);
 
       function Class() {
         (0, _classCallCheck2.default)(this, Class);
-        return (0, _possibleConstructorReturn2.default)(this, (0, _getPrototypeOf2.default)(Class).apply(this, arguments));
+        return _super.apply(this, arguments);
       }
 
       return Class;
@@ -126,23 +128,6 @@ var _Mocha = require("../../../main/common/test/Mocha");
       observableObject.propertyChanged.subscribe(function (v) {});
     }));
   });
-  (0, _Mocha.it)('deepSubscribe', function () {
-    // 2162n | 1890n
-    var i = 0;
-    testPerformance(createObject(function (observableObject) {
-      (0, _deepSubscribe.deepSubscribe)({
-        object: observableObject,
-        lastValue: function lastValue(v) {
-          return typeof v === 'object' && i++ % 3 === 0 ? function () {} : null;
-        },
-        ruleBuilder: function ruleBuilder(b) {
-          return b.path(function (o) {
-            return o.prop;
-          });
-        }
-      });
-    }));
-  });
   (0, _Mocha.it)('propertyChanged memory', function () {
     // 48 | 0
     var object = createObject(function (observableObject) {
@@ -152,33 +137,6 @@ var _Mocha = require("../../../main/common/test/Mocha");
     console.log((0, _calcMemAllocate.calcMemAllocate)(_calc.CalcType.Min, 10000, function () {
       // 48 bytes for create event
       object.prop++;
-    }).toString());
-  });
-  (0, _Mocha.it)('deepSubscribe memory', function () {
-    // 48 | 0
-    var object = createObject(function (observableObject) {
-      (0, _deepSubscribe.deepSubscribe)({
-        object: observableObject,
-        // v => v != null && typeof v === 'object'
-        // 	? () => {}
-        // 	: null,
-        lastValue: function lastValue(v) {
-          return null;
-        },
-        ruleBuilder: function ruleBuilder(b) {
-          return b.path(function (o) {
-            return o.prop;
-          });
-        }
-      });
-    }).observableObject1;
-    var value1 = {};
-    var value2 = {};
-    object.prop = 1;
-    console.log((0, _calcMemAllocate.calcMemAllocate)(_calc.CalcType.Min, 10000, function () {
-      // 48 bytes for create event
-      // 56 bytes for create unsubscribe function
-      object.prop = object.prop === value1 ? value2 : value1;
     }).toString());
   });
   (0, _Mocha.it)('test memory', function () {

@@ -45,23 +45,51 @@ function _checkIsOptimized(obj, optimized, scanned) {
     var differentFlags = actualStatus ^ expectedStatus;
     actualStatus &= differentFlags;
     expectedStatus &= differentFlags;
+    var actualFunc = {};
+    var expectedFunc = {};
+    var hasError;
 
     if (actualStatus !== expectedStatus) {
       if (optimized && !optimized.has(obj)) {
         return null;
       }
 
+      actualFunc['()'] = (0, _helpers.optimizationStatusToString)(status);
+      expectedFunc['()'] = (0, _helpers.optimizationStatusToString)(expectedStatus);
+      hasError = true;
+    }
+
+    if (obj.prototype) {
+      var res = _checkIsOptimized(obj.prototype, optimized, scanned);
+
+      if (res) {
+        hasError = true;
+        actualFunc._prototype = res.actual;
+        expectedFunc._prototype = res.expected;
+      }
+    }
+
+    if (hasError) {
       return {
-        actual: (0, _helpers.optimizationStatusToString)(status),
-        expected: (0, _helpers.optimizationStatusToString)(expectedStatus)
+        actual: actualFunc,
+        expected: expectedFunc
       };
     }
   } else if (obj != null && typeof obj === 'object') {
+    if (obj.valueOf() !== obj) {
+      return null;
+    }
+
+    if (obj instanceof Int8Array || obj instanceof Int16Array || obj instanceof Int32Array || obj instanceof BigInt64Array || obj instanceof Uint8Array || obj instanceof Uint16Array || obj instanceof Uint32Array || obj instanceof BigUint64Array || obj instanceof Float32Array || obj instanceof Float64Array || obj instanceof Uint8ClampedArray) {
+      return null;
+    }
+
     var shouldInfo = (0, _isArray.default)(obj) ? _helpers.shouldArrayOptimizationInfo : _helpers.shouldObjectOptimizationInfo;
     var objInfo = (0, _helpers.getObjectOptimizationInfo)(obj);
     var actualInfo = {};
     var expectedInfo = {};
-    var hasError;
+
+    var _hasError;
 
     for (var key in shouldInfo) {
       if (Object.prototype.hasOwnProperty.call(shouldInfo, key)) {
@@ -69,12 +97,12 @@ function _checkIsOptimized(obj, optimized, scanned) {
         if (objInfo[key] !== shouldInfo[key]) {
           actualInfo[key] = objInfo[key];
           expectedInfo[key] = shouldInfo[key];
-          hasError = true;
+          _hasError = true;
         }
       }
     }
 
-    if (hasError) {
+    if (_hasError) {
       return {
         actual: actualInfo,
         expected: expectedInfo
@@ -88,17 +116,17 @@ function _checkIsOptimized(obj, optimized, scanned) {
           var item = obj[i];
 
           if (typeof item === 'function' || item != null && typeof item === 'object') {
-            var res = _checkIsOptimized(item, optimized, scanned);
+            var _res = _checkIsOptimized(item, optimized, scanned);
 
-            if (res) {
-              hasError = true;
-              actualArr.push(res.actual);
-              expectedArr.push(res.expected);
+            if (_res) {
+              _hasError = true;
+              actualArr.push(_res.actual);
+              expectedArr.push(_res.expected);
             }
           }
         }
 
-        if (hasError) {
+        if (_hasError) {
           return {
             actual: actualArr,
             expected: expectedArr
@@ -112,17 +140,17 @@ function _checkIsOptimized(obj, optimized, scanned) {
           var _item = obj[_key];
 
           if (typeof _item === 'function' || _item != null && typeof _item === 'object') {
-            var _res = _checkIsOptimized(_item, optimized, scanned);
+            var _res2 = _checkIsOptimized(_item, optimized, scanned);
 
-            if (_res) {
-              hasError = true;
-              actualObj[_key] = _res.actual;
-              expectedObj[_key] = _res.expected;
+            if (_res2) {
+              _hasError = true;
+              actualObj[_key] = _res2.actual;
+              expectedObj[_key] = _res2.expected;
             }
           }
         }
 
-        if (hasError) {
+        if (_hasError) {
           return {
             actual: actualObj,
             expected: expectedObj

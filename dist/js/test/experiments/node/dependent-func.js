@@ -20,7 +20,7 @@ var _rdtsc = require("rdtsc");
 
 var _ThenableSync = require("../../../main/common/async/ThenableSync");
 
-var _fasade = require("../../../main/common/rx/depend/fasade");
+var _facade = require("../../../main/common/rx/depend/core/facade");
 
 var _Assert = require("../../../main/common/test/Assert");
 
@@ -52,12 +52,8 @@ var _Mocha = require("../../../main/common/test/Mocha");
   (0, _Mocha.it)('base', function () {
     var _context3, _context4, _context5, _context6, _context7, _context8, _context9;
 
-    var _marked =
-    /*#__PURE__*/
-    _regenerator.default.mark(func2Body),
-        _marked2 =
-    /*#__PURE__*/
-    _regenerator.default.mark(func3Body);
+    var _marked = /*#__PURE__*/_regenerator.default.mark(func2Body),
+        _marked2 = /*#__PURE__*/_regenerator.default.mark(func3Body);
 
     this.timeout(300000);
     var func1;
@@ -135,9 +131,7 @@ var _Mocha = require("../../../main/common/test/Mocha");
       };
     }
 
-    var FuncMeta =
-    /*#__PURE__*/
-    function () {
+    var FuncMeta = /*#__PURE__*/function () {
       function FuncMeta(id) {
         (0, _classCallCheck2.default)(this, FuncMeta);
         this.subscribers = new _map2.default();
@@ -169,9 +163,9 @@ var _Mocha = require("../../../main/common/test/Mocha");
     var meta1 = new FuncMeta(1);
     var meta2 = new FuncMeta(2);
     var meta3 = new FuncMeta(3);
-    func1 = (0, _fasade.makeDependentFunc)(func1Body, getSubscriber1, meta1);
-    func2 = (0, _fasade.makeDependentFunc)(func2Body, getSubscriber2, meta2);
-    func3 = (0, _fasade.makeDependentFunc)(func3Body, getSubscriber3, meta3);
+    func1 = (0, _facade.makeDependentFunc)(func1Body, getSubscriber1, meta1);
+    func2 = (0, _facade.makeDependentFunc)(func2Body, getSubscriber2, meta2);
+    func3 = (0, _facade.makeDependentFunc)(func3Body, getSubscriber3, meta3);
     var result = (0, _ThenableSync.resolveAsync)(func3());
 
     _Assert.assert.strictEqual(result, 115);

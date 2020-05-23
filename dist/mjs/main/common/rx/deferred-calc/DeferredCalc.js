@@ -1,12 +1,35 @@
 import { timingDefault } from './timing';
 export class DeferredCalc {
-  constructor(canBeCalcCallback, calcFunc, calcCompletedCallback, options) {
+  constructor({
+    shouldInvalidate,
+    canBeCalcCallback,
+    calcFunc,
+    calcCompletedCallback,
+    options,
+    dontImmediateInvalidate
+  }) {
+    this._timerId = -1;
+    this._timeNextPulse = -1;
+    this._timeInvalidateFirst = -1;
+    this._timeInvalidateLast = 0;
+    this._canBeCalcEmitted = false;
+    this._calcRequested = false;
+    this._timeCalcStart = 0;
+    this._timeCalcEnd = 0;
+    this._shouldInvalidate = shouldInvalidate;
     this._canBeCalcCallback = canBeCalcCallback;
     this._calcFunc = calcFunc;
     this._calcCompletedCallback = calcCompletedCallback;
     this._options = options || {};
     this._timing = this._options.timing || timingDefault;
-    this.invalidate();
+
+    this._pulseBind = () => {
+      this._pulse();
+    };
+
+    if (!dontImmediateInvalidate) {
+      this.invalidate();
+    }
   } // region Properties
   // region minTimeBetweenCalc
 
@@ -56,6 +79,22 @@ export class DeferredCalc {
 
     this._pulse();
   } // endregion
+  // region delayBeforeCalc
+
+
+  get delayBeforeCalc() {
+    return this._options.delayBeforeCalc;
+  }
+
+  set delayBeforeCalc(value) {
+    if (this._options.delayBeforeCalc === value) {
+      return;
+    }
+
+    this._options.delayBeforeCalc = value;
+
+    this._pulse();
+  } // endregion
   // region autoInvalidateInterval
 
 
@@ -77,34 +116,47 @@ export class DeferredCalc {
 
 
   _calc() {
-    this._timeInvalidateFirst = null;
-    this._timeInvalidateLast = null;
+    this._timeInvalidateFirst = -1;
+    this._timeInvalidateLast = 0;
     this._canBeCalcEmitted = false;
     this._calcRequested = false;
     this._timeCalcStart = this._timing.now();
-    this._timeCalcEnd = null;
+    this._timeCalcEnd = 0;
 
     this._pulse();
 
-    this._calcFunc.call(this, (...args) => {
-      this._timeCalcEnd = this._timing.now();
+    if (this._calcFunc != null) {
+      this._calcFunc();
+    } else {
+      this.done();
+    }
+  }
 
-      this._calcCompletedCallback.apply(this, args);
+  done(v1, v2, v3, v4, v5) {
+    this._timeCalcEnd = this._timing.now();
 
-      this._pulse();
-    });
+    if (this._calcCompletedCallback != null) {
+      this._calcCompletedCallback(v1, v2, v3, v4, v5);
+    }
+
+    this._pulse();
   }
 
   _canBeCalc() {
     this._canBeCalcEmitted = true;
 
-    this._canBeCalcCallback.call(this);
+    if (this._canBeCalcCallback != null) {
+      this._canBeCalcCallback();
+    } else {
+      this.calc();
+    }
   }
 
   _getNextCalcTime() {
     const {
       throttleTime,
       maxThrottleTime,
+      delayBeforeCalc,
       minTimeBetweenCalc
     } = this._options;
     let nextCalcTime = this._timeInvalidateLast + (throttleTime || 0);
@@ -113,7 +165,11 @@ export class DeferredCalc {
       nextCalcTime = Math.min(nextCalcTime, this._timeInvalidateFirst + (maxThrottleTime || 0));
     }
 
-    if (this._timeCalcEnd) {
+    if (delayBeforeCalc != null) {
+      nextCalcTime = Math.max(nextCalcTime, this._timeInvalidateFirst + (delayBeforeCalc || 0));
+    }
+
+    if (this._timeCalcEnd !== 0) {
       nextCalcTime = Math.max(nextCalcTime, this._timeCalcEnd + (minTimeBetweenCalc || 0));
     }
 
@@ -132,31 +188,15 @@ export class DeferredCalc {
       _timeNextPulse: timeNextPulse
     } = this;
 
-    if (timeNextPulse == null) {
+    if (timeNextPulse < 0) {
       timeNextPulse = now;
     } else if (timeNextPulse <= now) {
-      this._timerId = null;
-    } // endregion
-    // region Auto invalidate
-
-
-    const {
-      autoInvalidateInterval
-    } = this._options;
-
-    if (autoInvalidateInterval != null) {
-      const autoInvalidateTime = Math.max((this._timeCalcStart || 0) + autoInvalidateInterval, (this._timeInvalidateLast || 0) + autoInvalidateInterval, now);
-
-      if (autoInvalidateTime <= now) {
-        this._invalidate();
-      } else if (timeNextPulse <= now || autoInvalidateTime < timeNextPulse) {
-        timeNextPulse = autoInvalidateTime;
-      }
+      this._timerId = -1;
     } // endregion
     // region Can be calc
 
 
-    if (!this._canBeCalcEmitted && !this._calcRequested && this._timeInvalidateLast && (this._timeCalcEnd || !this._timeCalcStart)) {
+    if (!this._canBeCalcEmitted && !this._calcRequested && this._timeInvalidateLast !== 0 && (this._timeCalcEnd !== 0 || this._timeCalcStart === 0)) {
       const canBeCalcTime = this._getNextCalcTime();
 
       if (canBeCalcTime <= now) {
@@ -172,7 +212,7 @@ export class DeferredCalc {
     // region Calc
 
 
-    if (this._calcRequested && (this._timeCalcEnd || !this._timeCalcStart)) {
+    if (this._calcRequested && (this._timeCalcEnd !== 0 || this._timeCalcStart === 0)) {
       const calcTime = this._getNextCalcTime();
 
       if (calcTime <= now) {
@@ -183,6 +223,28 @@ export class DeferredCalc {
         timeNextPulse = calcTime;
       }
     } // endregion
+    // region Auto invalidate
+
+
+    const {
+      autoInvalidateInterval
+    } = this._options;
+
+    if (autoInvalidateInterval && this._timeInvalidateLast === 0 && !(timeNextPulse > now && timeNextPulse !== this._timeNextPulse)) {
+      const autoInvalidateTime = Math.max(this._timeCalcStart + autoInvalidateInterval, now);
+
+      if (autoInvalidateTime <= now) {
+        if (this._shouldInvalidate != null) {
+          this._shouldInvalidate();
+        } else {
+          this.invalidate();
+        }
+
+        return;
+      } else if (timeNextPulse <= now || autoInvalidateTime < timeNextPulse) {
+        timeNextPulse = autoInvalidateTime;
+      }
+    } // endregion
     // region Timer
 
 
@@ -191,14 +253,14 @@ export class DeferredCalc {
         _timerId: timerId
       } = this;
 
-      if (timerId != null) {
+      if (timerId >= 0) {
         _timing.clearTimeout(timerId);
       }
 
       this._timeNextPulse = timeNextPulse;
-      this._timerId = _timing.setTimeout(() => {
-        this._pulse();
-      }, timeNextPulse - now);
+      this._timerId = _timing.setTimeout(this._pulseBind, timeNextPulse - now + 1); // ( + 1) is  fix hung
+
+      return;
     } // endregion
 
   }
@@ -206,7 +268,7 @@ export class DeferredCalc {
   _invalidate() {
     const now = this._timing.now();
 
-    if (this._timeInvalidateFirst == null) {
+    if (this._timeInvalidateFirst < 0) {
       this._timeInvalidateFirst = now;
     }
 

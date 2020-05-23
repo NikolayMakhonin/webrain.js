@@ -16,25 +16,35 @@ exports.serializePrimitiveAsObject = serializePrimitiveAsObject;
 exports.deSerializePrimitiveAsObject = deSerializePrimitiveAsObject;
 exports.ObjectSerializer = exports.TypeMetaSerializerCollection = exports.DeSerializerVisitor = exports.SerializerVisitor = void 0;
 
+var _getIterator2 = _interopRequireDefault(require("@babel/runtime-corejs3/core-js/get-iterator"));
+
+var _getIteratorMethod2 = _interopRequireDefault(require("@babel/runtime-corejs3/core-js/get-iterator-method"));
+
+var _symbol = _interopRequireDefault(require("@babel/runtime-corejs3/core-js-stable/symbol"));
+
+var _from = _interopRequireDefault(require("@babel/runtime-corejs3/core-js-stable/array/from"));
+
+var _slice = _interopRequireDefault(require("@babel/runtime-corejs3/core-js-stable/instance/slice"));
+
+var _construct2 = _interopRequireDefault(require("@babel/runtime-corejs3/core-js-stable/reflect/construct"));
+
 var _map = _interopRequireDefault(require("@babel/runtime-corejs3/core-js-stable/map"));
 
 var _set = _interopRequireDefault(require("@babel/runtime-corejs3/core-js-stable/set"));
 
-var _getIterator2 = _interopRequireDefault(require("@babel/runtime-corejs3/core-js/get-iterator"));
-
-var _isArray2 = _interopRequireDefault(require("@babel/runtime-corejs3/core-js-stable/array/is-array"));
+var _isArray = _interopRequireDefault(require("@babel/runtime-corejs3/core-js-stable/array/is-array"));
 
 var _regenerator = _interopRequireDefault(require("@babel/runtime-corejs3/regenerator"));
 
 var _extends2 = _interopRequireDefault(require("@babel/runtime-corejs3/helpers/extends"));
 
+var _inherits2 = _interopRequireDefault(require("@babel/runtime-corejs3/helpers/inherits"));
+
 var _possibleConstructorReturn2 = _interopRequireDefault(require("@babel/runtime-corejs3/helpers/possibleConstructorReturn"));
 
 var _getPrototypeOf2 = _interopRequireDefault(require("@babel/runtime-corejs3/helpers/getPrototypeOf"));
 
-var _inherits2 = _interopRequireDefault(require("@babel/runtime-corejs3/helpers/inherits"));
-
-var _construct2 = _interopRequireDefault(require("@babel/runtime-corejs3/helpers/construct"));
+var _construct3 = _interopRequireDefault(require("@babel/runtime-corejs3/helpers/construct"));
 
 var _filter = _interopRequireDefault(require("@babel/runtime-corejs3/core-js-stable/instance/filter"));
 
@@ -56,14 +66,20 @@ var _objectUniqueId = require("../../helpers/object-unique-id");
 
 var _TypeMeta = require("../TypeMeta");
 
-var _marked =
-/*#__PURE__*/
-_regenerator.default.mark(deSerializeIterableOrdered);
+var _marked = /*#__PURE__*/_regenerator.default.mark(deSerializeIterableOrdered);
+
+function _createForOfIteratorHelperLoose(o) { var _context12; var i = 0; if (typeof _symbol.default === "undefined" || (0, _getIteratorMethod2.default)(o) == null) { if ((0, _isArray.default)(o) || (o = _unsupportedIterableToArray(o))) return function () { if (i >= o.length) return { done: true }; return { done: false, value: o[i++] }; }; throw new TypeError("Invalid attempt to iterate non-iterable instance.\nIn order to be iterable, non-array objects must have a [Symbol.iterator]() method."); } i = (0, _getIterator2.default)(o); return (0, _bind.default)(_context12 = i.next).call(_context12, i); }
+
+function _unsupportedIterableToArray(o, minLen) { var _context11; if (!o) return; if (typeof o === "string") return _arrayLikeToArray(o, minLen); var n = (0, _slice.default)(_context11 = Object.prototype.toString.call(o)).call(_context11, 8, -1); if (n === "Object" && o.constructor) n = o.constructor.name; if (n === "Map" || n === "Set") return (0, _from.default)(o); if (n === "Arguments" || /^(?:Ui|I)nt(?:8|16|32)(?:Clamped)?Array$/.test(n)) return _arrayLikeToArray(o, minLen); }
+
+function _arrayLikeToArray(arr, len) { if (len == null || len > arr.length) len = arr.length; for (var i = 0, arr2 = new Array(len); i < len; i++) { arr2[i] = arr[i]; } return arr2; }
+
+function _createSuper(Derived) { var hasNativeReflectConstruct = _isNativeReflectConstruct(); return function () { var Super = (0, _getPrototypeOf2.default)(Derived), result; if (hasNativeReflectConstruct) { var NewTarget = (0, _getPrototypeOf2.default)(this).constructor; result = (0, _construct2.default)(Super, arguments, NewTarget); } else { result = Super.apply(this, arguments); } return (0, _possibleConstructorReturn2.default)(this, result); }; }
+
+function _isNativeReflectConstruct() { if (typeof Reflect === "undefined" || !_construct2.default) return false; if (_construct2.default.sham) return false; if (typeof Proxy === "function") return true; try { Date.prototype.toString.call((0, _construct2.default)(Date, [], function () {})); return true; } catch (e) { return false; } }
 
 // region SerializerVisitor
-var SerializerVisitor =
-/*#__PURE__*/
-function () {
+var SerializerVisitor = /*#__PURE__*/function () {
   function SerializerVisitor(typeMeta) {
     var _context;
 
@@ -188,9 +204,7 @@ exports.SerializerVisitor = SerializerVisitor;
 
 var LOCKED = function LOCKED() {};
 
-var DeSerializerVisitor =
-/*#__PURE__*/
-function () {
+var DeSerializerVisitor = /*#__PURE__*/function () {
   function DeSerializerVisitor(typeMeta, types, objects) {
     var _context2;
 
@@ -351,7 +365,7 @@ function () {
           args[_key] = arguments[_key];
         }
 
-        return (0, _construct2.default)(type, args);
+        return (0, _construct3.default)(type, args);
       };
 
       if (id != null && !factory) {
@@ -417,14 +431,14 @@ function () {
 
 exports.DeSerializerVisitor = DeSerializerVisitor;
 
-var TypeMetaSerializerCollection =
-/*#__PURE__*/
-function (_TypeMetaCollectionWi) {
+var TypeMetaSerializerCollection = /*#__PURE__*/function (_TypeMetaCollectionWi) {
   (0, _inherits2.default)(TypeMetaSerializerCollection, _TypeMetaCollectionWi);
+
+  var _super = _createSuper(TypeMetaSerializerCollection);
 
   function TypeMetaSerializerCollection(proto) {
     (0, _classCallCheck2.default)(this, TypeMetaSerializerCollection);
-    return (0, _possibleConstructorReturn2.default)(this, (0, _getPrototypeOf2.default)(TypeMetaSerializerCollection).call(this, proto || TypeMetaSerializerCollection.default));
+    return _super.call(this, proto || TypeMetaSerializerCollection.default);
   }
 
   (0, _createClass2.default)(TypeMetaSerializerCollection, [{
@@ -435,16 +449,14 @@ function (_TypeMetaCollectionWi) {
   }], [{
     key: "makeTypeMetaSerializer",
     value: function makeTypeMetaSerializer(type, meta) {
-      return (0, _extends2.default)({
+      return (0, _extends2.default)((0, _extends2.default)({
         uuid: type.uuid
-      }, meta, {
+      }, meta), {}, {
         serializer: (0, _extends2.default)({
           serialize: function serialize(_serialize, value, options) {
             return value.serialize(_serialize, options);
           },
-          deSerialize:
-          /*#__PURE__*/
-          _regenerator.default.mark(function deSerialize(_deSerialize, serializedValue, valueFactory, options) {
+          deSerialize: /*#__PURE__*/_regenerator.default.mark(function deSerialize(_deSerialize, serializedValue, valueFactory, options) {
             var value;
             return _regenerator.default.wrap(function deSerialize$(_context5) {
               while (1) {
@@ -484,9 +496,7 @@ function registerSerializer(type, meta) {
 // region ObjectSerializer
 
 
-var ObjectSerializer =
-/*#__PURE__*/
-function () {
+var ObjectSerializer = /*#__PURE__*/function () {
   function ObjectSerializer(typeMeta) {
     (0, _classCallCheck2.default)(this, ObjectSerializer);
     this.typeMeta = new TypeMetaSerializerCollection(typeMeta);
@@ -528,7 +538,7 @@ function () {
           objects = _ref.objects,
           data = _ref.data;
 
-      if (!(0, _isArray2.default)(types)) {
+      if (!(0, _isArray.default)(types)) {
         throw new Error("serialized value types field is not array: " + types);
       }
 
@@ -588,19 +598,8 @@ function deSerializeArray(deSerialize, serializedValue, value) {
 function serializeIterable(serialize, value) {
   var serializedValue = [];
 
-  for (var _iterator = value, _isArray = (0, _isArray2.default)(_iterator), _i = 0, _iterator = _isArray ? _iterator : (0, _getIterator2.default)(_iterator);;) {
-    var _ref2;
-
-    if (_isArray) {
-      if (_i >= _iterator.length) break;
-      _ref2 = _iterator[_i++];
-    } else {
-      _i = _iterator.next();
-      if (_i.done) break;
-      _ref2 = _i.value;
-    }
-
-    var _item = _ref2;
+  for (var _iterator = _createForOfIteratorHelperLoose(value), _step; !(_step = _iterator()).done;) {
+    var _item = _step.value;
     serializedValue.push(serialize(_item));
   }
 
@@ -794,9 +793,7 @@ registerSerializer(_set.default, {
       return serializeIterable(_serialize4, value);
     },
     deSerialize: function (_deSerialize4) {
-      var _marked2 =
-      /*#__PURE__*/
-      _regenerator.default.mark(deSerialize);
+      var _marked2 = /*#__PURE__*/_regenerator.default.mark(deSerialize);
 
       function deSerialize(_x8, _x9, _x10) {
         var _args3 = arguments;
@@ -822,9 +819,7 @@ registerSerializer(_set.default, {
       };
 
       return deSerialize;
-    }(
-    /*#__PURE__*/
-    _regenerator.default.mark(function _callee(deSerialize, serializedValue, valueFactory) {
+    }( /*#__PURE__*/_regenerator.default.mark(function _callee(deSerialize, serializedValue, valueFactory) {
       var value;
       return _regenerator.default.wrap(function _callee$(_context8) {
         while (1) {
@@ -862,9 +857,7 @@ registerSerializer(_map.default, {
       }, value);
     },
     deSerialize: function (_deSerialize5) {
-      var _marked3 =
-      /*#__PURE__*/
-      _regenerator.default.mark(deSerialize);
+      var _marked3 = /*#__PURE__*/_regenerator.default.mark(deSerialize);
 
       function deSerialize(_x11, _x12, _x13) {
         var _args5 = arguments;
@@ -890,9 +883,7 @@ registerSerializer(_map.default, {
       };
 
       return deSerialize;
-    }(
-    /*#__PURE__*/
-    _regenerator.default.mark(function _callee2(deSerialize, serializedValue, valueFactory) {
+    }( /*#__PURE__*/_regenerator.default.mark(function _callee2(deSerialize, serializedValue, valueFactory) {
       var value;
       return _regenerator.default.wrap(function _callee2$(_context10) {
         while (1) {

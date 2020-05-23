@@ -6,15 +6,23 @@ exports.__esModule = true;
 exports.isPrimitiveDefault = isPrimitiveDefault;
 exports.DeepCloneEqual = void 0;
 
-var _isNan = _interopRequireDefault(require("@babel/runtime-corejs3/core-js-stable/number/is-nan"));
+var _bind = _interopRequireDefault(require("@babel/runtime-corejs3/core-js-stable/instance/bind"));
+
+var _getIteratorMethod2 = _interopRequireDefault(require("@babel/runtime-corejs3/core-js/get-iterator-method"));
+
+var _symbol = _interopRequireDefault(require("@babel/runtime-corejs3/core-js-stable/symbol"));
+
+var _slice = _interopRequireDefault(require("@babel/runtime-corejs3/core-js-stable/instance/slice"));
+
+var _isArray = _interopRequireDefault(require("@babel/runtime-corejs3/core-js-stable/array/is-array"));
 
 var _iterator6 = _interopRequireDefault(require("@babel/runtime-corejs3/core-js-stable/symbol/iterator"));
 
 var _toStringTag = _interopRequireDefault(require("@babel/runtime-corejs3/core-js-stable/symbol/to-string-tag"));
 
-var _from = _interopRequireDefault(require("@babel/runtime-corejs3/core-js-stable/array/from"));
+var _getIterator2 = _interopRequireDefault(require("@babel/runtime-corejs3/core-js/get-iterator"));
 
-var _getIteratorMethod2 = _interopRequireDefault(require("@babel/runtime-corejs3/core-js/get-iterator-method"));
+var _from = _interopRequireDefault(require("@babel/runtime-corejs3/core-js-stable/array/from"));
 
 var _extends2 = _interopRequireDefault(require("@babel/runtime-corejs3/helpers/extends"));
 
@@ -24,70 +32,46 @@ var _createClass2 = _interopRequireDefault(require("@babel/runtime-corejs3/helpe
 
 var _regenerator = _interopRequireDefault(require("@babel/runtime-corejs3/regenerator"));
 
-var _getIterator2 = _interopRequireDefault(require("@babel/runtime-corejs3/core-js/get-iterator"));
-
-var _isArray6 = _interopRequireDefault(require("@babel/runtime-corejs3/core-js-stable/array/is-array"));
+var _helpers = require("../helpers/helpers");
 
 var _objectUniqueId = require("../helpers/object-unique-id");
 
-var _marked =
-/*#__PURE__*/
-_regenerator.default.mark(toIterableIterator);
+var _marked = /*#__PURE__*/_regenerator.default.mark(toIterableIterator);
+
+function _createForOfIteratorHelperLoose(o) { var _context3; var i = 0; if (typeof _symbol.default === "undefined" || (0, _getIteratorMethod2.default)(o) == null) { if ((0, _isArray.default)(o) || (o = _unsupportedIterableToArray(o))) return function () { if (i >= o.length) return { done: true }; return { done: false, value: o[i++] }; }; throw new TypeError("Invalid attempt to iterate non-iterable instance.\nIn order to be iterable, non-array objects must have a [Symbol.iterator]() method."); } i = (0, _getIterator2.default)(o); return (0, _bind.default)(_context3 = i.next).call(_context3, i); }
+
+function _unsupportedIterableToArray(o, minLen) { var _context2; if (!o) return; if (typeof o === "string") return _arrayLikeToArray(o, minLen); var n = (0, _slice.default)(_context2 = Object.prototype.toString.call(o)).call(_context2, 8, -1); if (n === "Object" && o.constructor) n = o.constructor.name; if (n === "Map" || n === "Set") return (0, _from.default)(o); if (n === "Arguments" || /^(?:Ui|I)nt(?:8|16|32)(?:Clamped)?Array$/.test(n)) return _arrayLikeToArray(o, minLen); }
+
+function _arrayLikeToArray(arr, len) { if (len == null || len > arr.length) len = arr.length; for (var i = 0, arr2 = new Array(len); i < len; i++) { arr2[i] = arr[i]; } return arr2; }
 
 function isPrimitiveDefault(value) {
   return value == null || typeof value === 'boolean' || typeof value === 'number' || typeof value === 'string' || typeof value === 'function' || value instanceof Error;
 }
 
 function toIterableIterator(array) {
-  var _iterator, _isArray, _i, _ref, item;
+  var _iterator, _step, item;
 
   return _regenerator.default.wrap(function toIterableIterator$(_context) {
     while (1) {
       switch (_context.prev = _context.next) {
         case 0:
-          _iterator = array, _isArray = (0, _isArray6.default)(_iterator), _i = 0, _iterator = _isArray ? _iterator : (0, _getIterator2.default)(_iterator);
+          _iterator = _createForOfIteratorHelperLoose(array);
 
         case 1:
-          if (!_isArray) {
+          if ((_step = _iterator()).done) {
             _context.next = 7;
             break;
           }
 
-          if (!(_i >= _iterator.length)) {
-            _context.next = 4;
-            break;
-          }
-
-          return _context.abrupt("break", 16);
-
-        case 4:
-          _ref = _iterator[_i++];
-          _context.next = 11;
-          break;
-
-        case 7:
-          _i = _iterator.next();
-
-          if (!_i.done) {
-            _context.next = 10;
-            break;
-          }
-
-          return _context.abrupt("break", 16);
-
-        case 10:
-          _ref = _i.value;
-
-        case 11:
-          item = _ref;
-          _context.next = 14;
+          item = _step.value;
+          _context.next = 5;
           return item;
 
-        case 14:
+        case 5:
           _context.next = 1;
           break;
 
-        case 16:
+        case 7:
         case "end":
           return _context.stop();
       }
@@ -101,14 +85,12 @@ function toIterableIteratorGenerator(array) {
   };
 }
 
-var DeepCloneEqual =
-/*#__PURE__*/
-function () {
+var DeepCloneEqual = /*#__PURE__*/function () {
   function DeepCloneEqual(_temp) {
-    var _ref2 = _temp === void 0 ? {} : _temp,
-        commonOptions = _ref2.commonOptions,
-        cloneOptions = _ref2.cloneOptions,
-        equalOptions = _ref2.equalOptions;
+    var _ref = _temp === void 0 ? {} : _temp,
+        commonOptions = _ref.commonOptions,
+        cloneOptions = _ref.cloneOptions,
+        equalOptions = _ref.equalOptions;
 
     (0, _classCallCheck2.default)(this, DeepCloneEqual);
 
@@ -135,7 +117,7 @@ function () {
   }, {
     key: "clone",
     value: function clone(value, options, cache) {
-      options = (0, _extends2.default)({}, this.commonOptions, {}, this.cloneOptions, {}, options);
+      options = (0, _extends2.default)((0, _extends2.default)((0, _extends2.default)({}, this.commonOptions), this.cloneOptions), options);
       var customClone = options && options.customClone;
       var isPrimitive = options && options.customIsPrimitive || isPrimitiveDefault;
 
@@ -180,7 +162,7 @@ function () {
           }
         }
 
-        if ((0, _getIteratorMethod2.default)(source) && source.next) {
+        if ((0, _helpers.isIterator)(source)) {
           cloned = toIterableIterator(clone((0, _from.default)((0, _getIterator2.default)(source))));
 
           if (id != null) {
@@ -217,45 +199,23 @@ function () {
 
         switch (sourceTag) {
           case 'Set':
-            for (var _iterator2 = source, _isArray2 = (0, _isArray6.default)(_iterator2), _i2 = 0, _iterator2 = _isArray2 ? _iterator2 : (0, _getIterator2.default)(_iterator2);;) {
-              var _ref3;
-
-              if (_isArray2) {
-                if (_i2 >= _iterator2.length) break;
-                _ref3 = _iterator2[_i2++];
-              } else {
-                _i2 = _iterator2.next();
-                if (_i2.done) break;
-                _ref3 = _i2.value;
-              }
-
-              var item = _ref3;
+            for (var _iterator2 = _createForOfIteratorHelperLoose(source), _step2; !(_step2 = _iterator2()).done;) {
+              var item = _step2.value;
               cloned.add(clone(item));
             }
 
             return cloned;
 
           case 'Map':
-            for (var _iterator3 = source, _isArray3 = (0, _isArray6.default)(_iterator3), _i3 = 0, _iterator3 = _isArray3 ? _iterator3 : (0, _getIterator2.default)(_iterator3);;) {
-              var _ref4;
-
-              if (_isArray3) {
-                if (_i3 >= _iterator3.length) break;
-                _ref4 = _iterator3[_i3++];
-              } else {
-                _i3 = _iterator3.next();
-                if (_i3.done) break;
-                _ref4 = _i3.value;
-              }
-
-              var _item = _ref4;
+            for (var _iterator3 = _createForOfIteratorHelperLoose(source), _step3; !(_step3 = _iterator3()).done;) {
+              var _item = _step3.value;
               cloned.set(clone(_item[0]), clone(_item[1]));
             }
 
             return cloned;
         }
 
-        if ((0, _getIteratorMethod2.default)(source) && !(0, _getIteratorMethod2.default)(cloned)) {
+        if ((0, _helpers.isIterable)(source) && !(0, _helpers.isIterable)(cloned)) {
           cloned[_iterator6.default] = toIterableIteratorGenerator(clone((0, _from.default)((0, _getIterator2.default)(source))));
         }
 
@@ -273,7 +233,7 @@ function () {
   }, {
     key: "equal",
     value: function equal(obj1, obj2, options) {
-      options = (0, _extends2.default)({}, this.commonOptions, {}, this.equalOptions, {}, options);
+      options = (0, _extends2.default)((0, _extends2.default)((0, _extends2.default)({}, this.commonOptions), this.equalOptions), options);
       var customEqual = options && options.customEqual;
       var isPrimitive = options && options.customIsPrimitive || isPrimitiveDefault;
       var cache1;
@@ -286,7 +246,7 @@ function () {
 
       var equal = function equal(o1, o2) {
         if (isPrimitive(o1) || isPrimitive(o2)) {
-          if (o1 === o2 || (0, _isNan.default)(o1) && (0, _isNan.default)(o2) || (!options || !options.strictEqualFunctions) && typeof o1 === 'function' && typeof o2 === 'function' && o1.toString() === o2.toString()) {
+          if ((0, _helpers.equals)(o1, o2) || (!options || !options.strictEqualFunctions) && typeof o1 === 'function' && typeof o2 === 'function' && o1.toString() === o2.toString()) {
             return true;
           } else {
             return false;
@@ -384,16 +344,16 @@ function () {
         var valueOf2 = o2.valueOf();
 
         if (valueOf1 !== o1 || valueOf2 !== o2) {
-          if (valueOf1 === valueOf2 || (0, _isNan.default)(valueOf1) && (0, _isNan.default)(valueOf2)) {
+          if ((0, _helpers.equals)(valueOf1, valueOf2)) {
             return true;
           } else {
             return false;
           }
         }
 
-        if (typeof (0, _getIteratorMethod2.default)(o1) === 'function') {
-          if (typeof (0, _getIteratorMethod2.default)(o2) === 'function') {
-            if ((0, _isArray6.default)(o1) && (0, _isArray6.default)(o2)) {
+        if ((0, _helpers.isIterable)(o1)) {
+          if ((0, _helpers.isIterable)(o2)) {
+            if ((0, _isArray.default)(o1) && (0, _isArray.default)(o2)) {
               if (o1.length !== o2.length) {
                 return false;
               }
@@ -431,41 +391,19 @@ function () {
                   var initialCache1NewLength = cache1NewLength;
                   var initialCache2NewLength = cache2NewLength;
 
-                  for (var _iterator4 = o1, _isArray4 = (0, _isArray6.default)(_iterator4), _i4 = 0, _iterator4 = _isArray4 ? _iterator4 : (0, _getIterator2.default)(_iterator4);;) {
-                    var _ref5;
+                  for (var _iterator4 = _createForOfIteratorHelperLoose(o1), _step4; !(_step4 = _iterator4()).done;) {
+                    var item1 = _step4.value;
 
-                    if (_isArray4) {
-                      if (_i4 >= _iterator4.length) break;
-                      _ref5 = _iterator4[_i4++];
-                    } else {
-                      _i4 = _iterator4.next();
-                      if (_i4.done) break;
-                      _ref5 = _i4.value;
-                    }
-
-                    var item1 = _ref5;
-
-                    if (isMap && (!(0, _isArray6.default)(item1) || item1.length !== 2)) {
+                    if (isMap && (!(0, _isArray.default)(item1) || item1.length !== 2)) {
                       return false;
                     }
 
                     var found = void 0;
 
-                    for (var _iterator5 = o2, _isArray5 = (0, _isArray6.default)(_iterator5), _i5 = 0, _iterator5 = _isArray5 ? _iterator5 : (0, _getIterator2.default)(_iterator5);;) {
-                      var _ref6;
+                    for (var _iterator5 = _createForOfIteratorHelperLoose(o2), _step5; !(_step5 = _iterator5()).done;) {
+                      var item2 = _step5.value;
 
-                      if (_isArray5) {
-                        if (_i5 >= _iterator5.length) break;
-                        _ref6 = _iterator5[_i5++];
-                      } else {
-                        _i5 = _iterator5.next();
-                        if (_i5.done) break;
-                        _ref6 = _i5.value;
-                      }
-
-                      var item2 = _ref6;
-
-                      if (isMap && (!(0, _isArray6.default)(item2) || item2.length !== 2)) {
+                      if (isMap && (!(0, _isArray.default)(item2) || item2.length !== 2)) {
                         return false;
                       }
 
@@ -488,8 +426,8 @@ function () {
 
                         cache1New.length = prevCache1NewLength;
 
-                        for (var _i6 = prevCache2NewLength, _len = cache2NewLength; _i6 < _len; _i6++) {
-                          cache2[cache2New[_i6]] = 0;
+                        for (var _i = prevCache2NewLength, _len = cache2NewLength; _i < _len; _i++) {
+                          cache2[cache2New[_i]] = 0;
                         }
 
                         cache2New.length = prevCache2NewLength;
@@ -539,7 +477,7 @@ function () {
           } else {
             return false;
           }
-        } else if (typeof (0, _getIteratorMethod2.default)(o2) === 'function') {
+        } else if ((0, _helpers.isIterable)(o2)) {
           return false;
         }
 

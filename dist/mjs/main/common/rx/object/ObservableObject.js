@@ -1,7 +1,6 @@
 import { mergeMaps, MergeObjectWrapper } from '../../extensions/merge/merge-maps';
 import { registerMerger } from '../../extensions/merge/mergers';
 import { deSerializeObject, registerSerializer, serializeObject } from '../../extensions/serialization/serializers';
-import '../extensions/autoConnect';
 import { ObservableClass } from './ObservableClass';
 export class ObservableObject extends ObservableClass {}
 registerMerger(ObservableObject, {

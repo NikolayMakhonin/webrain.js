@@ -53,7 +53,7 @@ function GetOptimizationStatus(fn) {
   return convertOptimizationStatus(v8.GetOptimizationStatus(fn));
 }
 
-var _default = (0, _extends2.default)({}, v8, {
+var _default = (0, _extends2.default)((0, _extends2.default)({}, v8), {}, {
   GetOptimizationStatus: GetOptimizationStatus
 });
 

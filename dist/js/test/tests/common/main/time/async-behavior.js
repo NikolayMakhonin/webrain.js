@@ -16,11 +16,7 @@ var _Mocha = require("../../../../../main/common/test/Mocha");
 
 /* tslint:disable:no-empty */
 (0, _Mocha.xdescribe)('async behavior', function () {
-  (0, _Mocha.it)('base',
-  /*#__PURE__*/
-  (0, _asyncToGenerator2.default)(
-  /*#__PURE__*/
-  _regenerator.default.mark(function _callee5() {
+  (0, _Mocha.it)('base', /*#__PURE__*/(0, _asyncToGenerator2.default)( /*#__PURE__*/_regenerator.default.mark(function _callee5() {
     var asyncImmediate, sync, result, asyncFunc, test, call, promise;
     return _regenerator.default.wrap(function _callee5$(_context5) {
       while (1) {
@@ -28,12 +24,8 @@ var _Mocha = require("../../../../../main/common/test/Mocha");
           case 0:
             this.timeout(10000);
 
-            asyncImmediate =
-            /*#__PURE__*/
-            function () {
-              var _ref2 = (0, _asyncToGenerator2.default)(
-              /*#__PURE__*/
-              _regenerator.default.mark(function _callee(func) {
+            asyncImmediate = /*#__PURE__*/function () {
+              var _ref2 = (0, _asyncToGenerator2.default)( /*#__PURE__*/_regenerator.default.mark(function _callee(func) {
                 return _regenerator.default.wrap(function _callee$(_context) {
                   while (1) {
                     switch (_context.prev = _context.next) {
@@ -71,12 +63,8 @@ var _Mocha = require("../../../../../main/common/test/Mocha");
               return func ? func() : new Date().getTime() + Math.random();
             };
 
-            asyncFunc =
-            /*#__PURE__*/
-            function () {
-              var _ref3 = (0, _asyncToGenerator2.default)(
-              /*#__PURE__*/
-              _regenerator.default.mark(function _callee2(func, awaitMode) {
+            asyncFunc = /*#__PURE__*/function () {
+              var _ref3 = (0, _asyncToGenerator2.default)( /*#__PURE__*/_regenerator.default.mark(function _callee2(func, awaitMode) {
                 return _regenerator.default.wrap(function _callee2$(_context2) {
                   while (1) {
                     switch (_context2.prev = _context2.next) {
@@ -231,12 +219,8 @@ var _Mocha = require("../../../../../main/common/test/Mocha");
               };
             }();
 
-            test =
-            /*#__PURE__*/
-            function () {
-              var _ref4 = (0, _asyncToGenerator2.default)(
-              /*#__PURE__*/
-              _regenerator.default.mark(function _callee3(shouldCallImmediate) {
+            test = /*#__PURE__*/function () {
+              var _ref4 = (0, _asyncToGenerator2.default)( /*#__PURE__*/_regenerator.default.mark(function _callee3(shouldCallImmediate) {
                 var i,
                     awaitMode,
                     call,
@@ -305,9 +289,7 @@ var _Mocha = require("../../../../../main/common/test/Mocha");
               }).then(function () {
                 _Assert.assert.strictEqual(call, 1);
               });
-              (0, _asyncToGenerator2.default)(
-              /*#__PURE__*/
-              _regenerator.default.mark(function _callee4() {
+              (0, _asyncToGenerator2.default)( /*#__PURE__*/_regenerator.default.mark(function _callee4() {
                 return _regenerator.default.wrap(function _callee4$(_context4) {
                   while (1) {
                     switch (_context4.prev = _context4.next) {

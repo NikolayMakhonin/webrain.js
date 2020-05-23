@@ -1,3 +1,4 @@
+import { getCurrentState, setCurrentState } from '../rx/depend/core/current-state';
 import { isAsync, isThenable, ResolveResult, resolveValue, resolveValueFunc } from './async';
 export let ThenableSyncStatus;
 
@@ -19,9 +20,12 @@ export function createRejected(error, customResolveValue) {
 }
 export class ThenableSync {
   constructor(executor, customResolveValue) {
-    if (customResolveValue != null) {
-      this._customResolveValue = customResolveValue;
-    }
+    this._onfulfilled = null;
+    this._onrejected = null;
+    this._value = void 0;
+    this._error = null;
+    this._status = null;
+    this._customResolveValue = customResolveValue;
 
     if (executor) {
       try {
@@ -54,7 +58,7 @@ export class ThenableSync {
       if (e) {
         this._reject(o);
       } else {
-        value = o;
+        this.__resolve(o);
       }
     }, (o, e) => {
       if (e) {
@@ -72,7 +76,9 @@ export class ThenableSync {
     if ((result & ResolveResult.Error) !== 0) {
       return;
     }
+  }
 
+  __resolve(value) {
     this._status = ThenableSyncStatus.Resolved;
     this._value = value;
     const {
@@ -109,7 +115,7 @@ export class ThenableSync {
     }
 
     const result = resolveValue(error, o => {
-      error = o;
+      this.__reject(o);
     }, o => {
       this._reject(o);
     }, this._customResolveValue);
@@ -118,7 +124,9 @@ export class ThenableSync {
       this._status = ThenableSyncStatus.Resolving;
       return;
     }
+  }
 
+  __reject(error) {
     this._status = ThenableSyncStatus.Rejected;
     this._error = error;
     const {
@@ -149,14 +157,12 @@ export class ThenableSync {
 
       let isError;
 
-      error = (() => {
-        try {
-          return onrejected(error);
-        } catch (err) {
-          isError = true;
-          return err;
-        }
-      })();
+      try {
+        error = onrejected(error);
+      } catch (err) {
+        isError = true;
+        error = err;
+      }
 
       const result = resolveAsync(error, null, null, !lastExpression, customResolveValue);
 
@@ -188,20 +194,18 @@ export class ThenableSync {
 
           let isError;
 
-          _value = (() => {
-            try {
-              return onfulfilled(_value);
-            } catch (err) {
-              isError = true;
-              return err;
-            }
-          })();
+          try {
+            _value = onfulfilled(_value);
+          } catch (err) {
+            isError = true;
+            _value = err;
+          }
 
           if (isError) {
             const result = resolveAsync(_value, null, null, !lastExpression, customResolveValue);
 
             if (isThenable(result)) {
-              return result.then(o => reject(o), onrejected);
+              return result.then(reject, onrejected);
             }
 
             return reject(result);
@@ -233,17 +237,20 @@ export class ThenableSync {
             this._onrejected = _onrejected = [];
           }
 
+          const callState = getCurrentState();
           const rejected = onrejected ? value => {
             let isError;
+            const prevState = getCurrentState();
 
-            value = (() => {
-              try {
-                return onrejected(value);
-              } catch (err) {
-                isError = true;
-                return err;
-              }
-            })();
+            try {
+              setCurrentState(callState);
+              value = onrejected(value);
+            } catch (err) {
+              isError = true;
+              value = err;
+            } finally {
+              setCurrentState(prevState);
+            }
 
             if (isError) {
               result.reject(value);
@@ -266,15 +273,17 @@ export class ThenableSync {
 
           _onfulfilled.push(onfulfilled ? value => {
             let isError;
+            const prevState = getCurrentState();
 
-            value = (() => {
-              try {
-                return onfulfilled(value);
-              } catch (err) {
-                isError = true;
-                return err;
-              }
-            })();
+            try {
+              setCurrentState(callState);
+              value = onfulfilled(value);
+            } catch (err) {
+              isError = true;
+              value = err;
+            } finally {
+              setCurrentState(prevState);
+            }
 
             if (isError) {
               resolveValue(value, rejected, rejected, customResolveValue);

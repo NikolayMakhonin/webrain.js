@@ -2,17 +2,19 @@
 
 var _interopRequireDefault = require("@babel/runtime-corejs3/helpers/interopRequireDefault");
 
+var _construct = _interopRequireDefault(require("@babel/runtime-corejs3/core-js-stable/reflect/construct"));
+
 var _regenerator = _interopRequireDefault(require("@babel/runtime-corejs3/regenerator"));
 
 var _get2 = _interopRequireDefault(require("@babel/runtime-corejs3/helpers/get"));
 
 var _createClass2 = _interopRequireDefault(require("@babel/runtime-corejs3/helpers/createClass"));
 
+var _inherits2 = _interopRequireDefault(require("@babel/runtime-corejs3/helpers/inherits"));
+
 var _possibleConstructorReturn2 = _interopRequireDefault(require("@babel/runtime-corejs3/helpers/possibleConstructorReturn"));
 
 var _getPrototypeOf2 = _interopRequireDefault(require("@babel/runtime-corejs3/helpers/getPrototypeOf"));
-
-var _inherits2 = _interopRequireDefault(require("@babel/runtime-corejs3/helpers/inherits"));
 
 var _classCallCheck2 = _interopRequireDefault(require("@babel/runtime-corejs3/helpers/classCallCheck"));
 
@@ -28,8 +30,6 @@ var _bind = _interopRequireDefault(require("@babel/runtime-corejs3/core-js-stabl
 
 var _serializers = require("../../../../../../main/common/extensions/serialization/serializers");
 
-var _SortedList = require("../../../../../../main/common/lists/SortedList");
-
 var _Assert = require("../../../../../../main/common/test/Assert");
 
 var _DeepCloneEqual = require("../../../../../../main/common/test/DeepCloneEqual");
@@ -38,7 +38,10 @@ var _Mocha = require("../../../../../../main/common/test/Mocha");
 
 var _helpers = require("../../src/helpers/helpers");
 
-/* tslint:disable:no-duplicate-string no-shadowed-variable */
+function _createSuper(Derived) { var hasNativeReflectConstruct = _isNativeReflectConstruct(); return function () { var Super = (0, _getPrototypeOf2.default)(Derived), result; if (hasNativeReflectConstruct) { var NewTarget = (0, _getPrototypeOf2.default)(this).constructor; result = (0, _construct.default)(Super, arguments, NewTarget); } else { result = Super.apply(this, arguments); } return (0, _possibleConstructorReturn2.default)(this, result); }; }
+
+function _isNativeReflectConstruct() { if (typeof Reflect === "undefined" || !_construct.default) return false; if (_construct.default.sham) return false; if (typeof Proxy === "function") return true; try { Date.prototype.toString.call((0, _construct.default)(Date, [], function () {})); return true; } catch (e) { return false; } }
+
 var assert = new _Assert.Assert(new _DeepCloneEqual.DeepCloneEqual({
   commonOptions: {},
   equalOptions: {
@@ -126,9 +129,9 @@ var assertDeepEqualExt = function assertDeepEqualExt(o1, o2) {
       array: true,
       undefined: true
     }, options));
-    var checkObject = (0, _helpers.createComplexObject)((0, _extends2.default)({
+    var checkObject = (0, _helpers.createComplexObject)((0, _extends2.default)((0, _extends2.default)({
       array: true
-    }, options, {
+    }, options), {}, {
       undefined: false
     }));
 
@@ -263,16 +266,16 @@ var assertDeepEqualExt = function assertDeepEqualExt(o1, o2) {
     assertDeepEqualExt(result, obj1);
   });
 
-  var Class2 =
-  /*#__PURE__*/
-  function (_Class) {
+  var Class2 = /*#__PURE__*/function (_Class) {
     (0, _inherits2.default)(Class2, _Class);
+
+    var _super = _createSuper(Class2);
 
     function Class2(prop2) {
       var _this;
 
       (0, _classCallCheck2.default)(this, Class2);
-      _this = (0, _possibleConstructorReturn2.default)(this, (0, _getPrototypeOf2.default)(Class2).call(this));
+      _this = _super.call(this);
       _this.prop3 = 'prop3';
       _this.prop2 = prop2;
       return _this;
@@ -323,28 +326,26 @@ var assertDeepEqualExt = function assertDeepEqualExt(o1, o2) {
     assertDeepEqualExt(result, obj2);
   });
 
-  var Class3 =
-  /*#__PURE__*/
-  function (_Class2) {
+  var Class3 = /*#__PURE__*/function (_Class2) {
     (0, _inherits2.default)(Class3, _Class2);
+
+    var _super2 = _createSuper(Class3);
 
     function Class3(prop2) {
       (0, _classCallCheck2.default)(this, Class3);
-      return (0, _possibleConstructorReturn2.default)(this, (0, _getPrototypeOf2.default)(Class3).call(this, prop2));
+      return _super2.call(this, prop2);
     }
 
     (0, _createClass2.default)(Class3, [{
       key: "serialize",
       value: function serialize(_serialize2) {
-        return (0, _extends2.default)({}, (0, _get2.default)((0, _getPrototypeOf2.default)(Class3.prototype), "serialize", this).call(this, _serialize2), {
+        return (0, _extends2.default)((0, _extends2.default)({}, (0, _get2.default)((0, _getPrototypeOf2.default)(Class3.prototype), "serialize", this).call(this, _serialize2)), {}, {
           prop4: _serialize2(this.prop4)
         });
       }
     }, {
       key: "deSerialize",
-      value:
-      /*#__PURE__*/
-      _regenerator.default.mark(function deSerialize(_deSerialize2, serializedValue) {
+      value: /*#__PURE__*/_regenerator.default.mark(function deSerialize(_deSerialize2, serializedValue) {
         return _regenerator.default.wrap(function deSerialize$(_context) {
           while (1) {
             switch (_context.prev = _context.next) {
@@ -388,16 +389,6 @@ var assertDeepEqualExt = function assertDeepEqualExt(o1, o2) {
     obj3.prop2 = 'prop2';
     assert.notStrictEqual(result, obj3);
     assertDeepEqualExt(result, obj3);
-  });
-  (0, _Mocha.it)('SortedList circular', function () {
-    var sortedList = new _SortedList.SortedList();
-    sortedList.add(sortedList);
-    var serialized = serializeValue(sortedList);
-    var result = deSerializeValue(serialized);
-    assert.notStrictEqual(result, sortedList); // console.log(sortedList)
-    // console.log(result)
-
-    assertDeepEqualExt(result, sortedList);
   });
   (0, _Mocha.it)('complex object', function () {
     testComplexObject({

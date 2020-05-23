@@ -2,7 +2,6 @@
 
 exports.__esModule = true;
 exports.uuid = uuid;
-var self = {};
 var lut = [];
 
 for (var i = 0; i < 256; i++) {

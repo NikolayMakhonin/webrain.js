@@ -11,17 +11,39 @@ var _createClass2 = _interopRequireDefault(require("@babel/runtime-corejs3/helpe
 
 var _timing2 = require("./timing");
 
-var DeferredCalc =
-/*#__PURE__*/
-function () {
-  function DeferredCalc(canBeCalcCallback, calcFunc, calcCompletedCallback, options) {
+var DeferredCalc = /*#__PURE__*/function () {
+  function DeferredCalc(_ref) {
+    var _this = this;
+
+    var shouldInvalidate = _ref.shouldInvalidate,
+        canBeCalcCallback = _ref.canBeCalcCallback,
+        calcFunc = _ref.calcFunc,
+        calcCompletedCallback = _ref.calcCompletedCallback,
+        options = _ref.options,
+        dontImmediateInvalidate = _ref.dontImmediateInvalidate;
     (0, _classCallCheck2.default)(this, DeferredCalc);
+    this._timerId = -1;
+    this._timeNextPulse = -1;
+    this._timeInvalidateFirst = -1;
+    this._timeInvalidateLast = 0;
+    this._canBeCalcEmitted = false;
+    this._calcRequested = false;
+    this._timeCalcStart = 0;
+    this._timeCalcEnd = 0;
+    this._shouldInvalidate = shouldInvalidate;
     this._canBeCalcCallback = canBeCalcCallback;
     this._calcFunc = calcFunc;
     this._calcCompletedCallback = calcCompletedCallback;
     this._options = options || {};
     this._timing = this._options.timing || _timing2.timingDefault;
-    this.invalidate();
+
+    this._pulseBind = function () {
+      _this._pulse();
+    };
+
+    if (!dontImmediateInvalidate) {
+      this.invalidate();
+    }
   } // region Properties
   // region minTimeBetweenCalc
 
@@ -32,35 +54,42 @@ function () {
     // endregion
     // region Private methods
     value: function _calc() {
-      var _this = this;
-
-      this._timeInvalidateFirst = null;
-      this._timeInvalidateLast = null;
+      this._timeInvalidateFirst = -1;
+      this._timeInvalidateLast = 0;
       this._canBeCalcEmitted = false;
       this._calcRequested = false;
       this._timeCalcStart = this._timing.now();
-      this._timeCalcEnd = null;
+      this._timeCalcEnd = 0;
 
       this._pulse();
 
-      this._calcFunc.call(this, function () {
-        _this._timeCalcEnd = _this._timing.now();
+      if (this._calcFunc != null) {
+        this._calcFunc();
+      } else {
+        this.done();
+      }
+    }
+  }, {
+    key: "done",
+    value: function done(v1, v2, v3, v4, v5) {
+      this._timeCalcEnd = this._timing.now();
 
-        for (var _len = arguments.length, args = new Array(_len), _key = 0; _key < _len; _key++) {
-          args[_key] = arguments[_key];
-        }
+      if (this._calcCompletedCallback != null) {
+        this._calcCompletedCallback(v1, v2, v3, v4, v5);
+      }
 
-        _this._calcCompletedCallback.apply(_this, args);
-
-        _this._pulse();
-      });
+      this._pulse();
     }
   }, {
     key: "_canBeCalc",
     value: function _canBeCalc() {
       this._canBeCalcEmitted = true;
 
-      this._canBeCalcCallback.call(this);
+      if (this._canBeCalcCallback != null) {
+        this._canBeCalcCallback();
+      } else {
+        this.calc();
+      }
     }
   }, {
     key: "_getNextCalcTime",
@@ -68,6 +97,7 @@ function () {
       var _this$_options = this._options,
           throttleTime = _this$_options.throttleTime,
           maxThrottleTime = _this$_options.maxThrottleTime,
+          delayBeforeCalc = _this$_options.delayBeforeCalc,
           minTimeBetweenCalc = _this$_options.minTimeBetweenCalc;
       var nextCalcTime = this._timeInvalidateLast + (throttleTime || 0);
 
@@ -75,7 +105,11 @@ function () {
         nextCalcTime = Math.min(nextCalcTime, this._timeInvalidateFirst + (maxThrottleTime || 0));
       }
 
-      if (this._timeCalcEnd) {
+      if (delayBeforeCalc != null) {
+        nextCalcTime = Math.max(nextCalcTime, this._timeInvalidateFirst + (delayBeforeCalc || 0));
+      }
+
+      if (this._timeCalcEnd !== 0) {
         nextCalcTime = Math.max(nextCalcTime, this._timeCalcEnd + (minTimeBetweenCalc || 0));
       }
 
@@ -84,8 +118,6 @@ function () {
   }, {
     key: "_pulse",
     value: function _pulse() {
-      var _this2 = this;
-
       // region Timer
       var _timing = this._timing;
 
@@ -93,29 +125,15 @@ function () {
 
       var timeNextPulse = this._timeNextPulse;
 
-      if (timeNextPulse == null) {
+      if (timeNextPulse < 0) {
         timeNextPulse = now;
       } else if (timeNextPulse <= now) {
-        this._timerId = null;
-      } // endregion
-      // region Auto invalidate
-
-
-      var autoInvalidateInterval = this._options.autoInvalidateInterval;
-
-      if (autoInvalidateInterval != null) {
-        var autoInvalidateTime = Math.max((this._timeCalcStart || 0) + autoInvalidateInterval, (this._timeInvalidateLast || 0) + autoInvalidateInterval, now);
-
-        if (autoInvalidateTime <= now) {
-          this._invalidate();
-        } else if (timeNextPulse <= now || autoInvalidateTime < timeNextPulse) {
-          timeNextPulse = autoInvalidateTime;
-        }
+        this._timerId = -1;
       } // endregion
       // region Can be calc
 
 
-      if (!this._canBeCalcEmitted && !this._calcRequested && this._timeInvalidateLast && (this._timeCalcEnd || !this._timeCalcStart)) {
+      if (!this._canBeCalcEmitted && !this._calcRequested && this._timeInvalidateLast !== 0 && (this._timeCalcEnd !== 0 || this._timeCalcStart === 0)) {
         var canBeCalcTime = this._getNextCalcTime();
 
         if (canBeCalcTime <= now) {
@@ -131,7 +149,7 @@ function () {
       // region Calc
 
 
-      if (this._calcRequested && (this._timeCalcEnd || !this._timeCalcStart)) {
+      if (this._calcRequested && (this._timeCalcEnd !== 0 || this._timeCalcStart === 0)) {
         var calcTime = this._getNextCalcTime();
 
         if (calcTime <= now) {
@@ -142,20 +160,40 @@ function () {
           timeNextPulse = calcTime;
         }
       } // endregion
+      // region Auto invalidate
+
+
+      var autoInvalidateInterval = this._options.autoInvalidateInterval;
+
+      if (autoInvalidateInterval && this._timeInvalidateLast === 0 && !(timeNextPulse > now && timeNextPulse !== this._timeNextPulse)) {
+        var autoInvalidateTime = Math.max(this._timeCalcStart + autoInvalidateInterval, now);
+
+        if (autoInvalidateTime <= now) {
+          if (this._shouldInvalidate != null) {
+            this._shouldInvalidate();
+          } else {
+            this.invalidate();
+          }
+
+          return;
+        } else if (timeNextPulse <= now || autoInvalidateTime < timeNextPulse) {
+          timeNextPulse = autoInvalidateTime;
+        }
+      } // endregion
       // region Timer
 
 
       if (timeNextPulse > now && timeNextPulse !== this._timeNextPulse) {
         var timerId = this._timerId;
 
-        if (timerId != null) {
+        if (timerId >= 0) {
           _timing.clearTimeout(timerId);
         }
 
         this._timeNextPulse = timeNextPulse;
-        this._timerId = _timing.setTimeout(function () {
-          _this2._pulse();
-        }, timeNextPulse - now);
+        this._timerId = _timing.setTimeout(this._pulseBind, timeNextPulse - now + 1); // ( + 1) is  fix hung
+
+        return;
       } // endregion
 
     }
@@ -164,7 +202,7 @@ function () {
     value: function _invalidate() {
       var now = this._timing.now();
 
-      if (this._timeInvalidateFirst == null) {
+      if (this._timeInvalidateFirst < 0) {
         this._timeInvalidateFirst = now;
       }
 
@@ -239,6 +277,22 @@ function () {
       }
 
       this._options.maxThrottleTime = value;
+
+      this._pulse();
+    } // endregion
+    // region delayBeforeCalc
+
+  }, {
+    key: "delayBeforeCalc",
+    get: function get() {
+      return this._options.delayBeforeCalc;
+    },
+    set: function set(value) {
+      if (this._options.delayBeforeCalc === value) {
+        return;
+      }
+
+      this._options.delayBeforeCalc = value;
 
       this._pulse();
     } // endregion

@@ -1,4 +1,3 @@
-const self = {};
 const lut = [];
 
 for (let i = 0; i < 256; i++) {

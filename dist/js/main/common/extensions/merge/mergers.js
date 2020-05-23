@@ -8,27 +8,31 @@ exports.registerMerger = registerMerger;
 exports.registerMergerPrimitive = registerMergerPrimitive;
 exports.ObjectMerger = exports.TypeMetaMergerCollection = exports.MergerVisitor = void 0;
 
-var _map = _interopRequireDefault(require("@babel/runtime-corejs3/core-js-stable/map"));
+var _construct = _interopRequireDefault(require("@babel/runtime-corejs3/core-js-stable/reflect/construct"));
 
-var _isArray = _interopRequireDefault(require("@babel/runtime-corejs3/core-js-stable/array/is-array"));
+var _map = _interopRequireDefault(require("@babel/runtime-corejs3/core-js-stable/map"));
 
 var _toStringTag = _interopRequireDefault(require("@babel/runtime-corejs3/core-js-stable/symbol/to-string-tag"));
 
 var _set = _interopRequireDefault(require("@babel/runtime-corejs3/core-js-stable/set"));
 
-var _isFrozen = _interopRequireDefault(require("@babel/runtime-corejs3/core-js-stable/object/is-frozen"));
+var _slice = _interopRequireDefault(require("@babel/runtime-corejs3/core-js-stable/instance/slice"));
+
+var _isArray = _interopRequireDefault(require("@babel/runtime-corejs3/core-js-stable/array/is-array"));
 
 var _bind = _interopRequireDefault(require("@babel/runtime-corejs3/core-js-stable/instance/bind"));
 
+var _isFrozen = _interopRequireDefault(require("@babel/runtime-corejs3/core-js-stable/object/is-frozen"));
+
 var _extends2 = _interopRequireDefault(require("@babel/runtime-corejs3/helpers/extends"));
-
-var _possibleConstructorReturn2 = _interopRequireDefault(require("@babel/runtime-corejs3/helpers/possibleConstructorReturn"));
-
-var _getPrototypeOf2 = _interopRequireDefault(require("@babel/runtime-corejs3/helpers/getPrototypeOf"));
 
 var _get2 = _interopRequireDefault(require("@babel/runtime-corejs3/helpers/get"));
 
 var _inherits2 = _interopRequireDefault(require("@babel/runtime-corejs3/helpers/inherits"));
+
+var _possibleConstructorReturn2 = _interopRequireDefault(require("@babel/runtime-corejs3/helpers/possibleConstructorReturn"));
+
+var _getPrototypeOf2 = _interopRequireDefault(require("@babel/runtime-corejs3/helpers/getPrototypeOf"));
 
 var _classCallCheck2 = _interopRequireDefault(require("@babel/runtime-corejs3/helpers/classCallCheck"));
 
@@ -38,6 +42,8 @@ var _helpers = require("../../helpers/helpers");
 
 var _objectUniqueId = require("../../helpers/object-unique-id");
 
+var _webrainOptions = require("../../helpers/webrainOptions");
+
 var _set2 = require("../../lists/helpers/set");
 
 var _TypeMeta = require("../TypeMeta");
@@ -46,11 +52,12 @@ var _mergeMaps = require("./merge-maps");
 
 var _mergeSets = require("./merge-sets");
 
-/* tslint:disable:no-nested-switch ban-types use-primitive-type */
+function _createSuper(Derived) { var hasNativeReflectConstruct = _isNativeReflectConstruct(); return function () { var Super = (0, _getPrototypeOf2.default)(Derived), result; if (hasNativeReflectConstruct) { var NewTarget = (0, _getPrototypeOf2.default)(this).constructor; result = (0, _construct.default)(Super, arguments, NewTarget); } else { result = Super.apply(this, arguments); } return (0, _possibleConstructorReturn2.default)(this, result); }; }
+
+function _isNativeReflectConstruct() { if (typeof Reflect === "undefined" || !_construct.default) return false; if (_construct.default.sham) return false; if (typeof Proxy === "function") return true; try { Date.prototype.toString.call((0, _construct.default)(Date, [], function () {})); return true; } catch (e) { return false; } }
+
 // region MergerVisitor
-var ValueState =
-/*#__PURE__*/
-function () {
+var ValueState = /*#__PURE__*/function () {
   function ValueState(mergerState, target, preferClone, selfAsValue, refs) {
     (0, _classCallCheck2.default)(this, ValueState);
     this.mergerState = mergerState;
@@ -296,9 +303,7 @@ function () {
   return ValueState;
 }();
 
-var MergeState =
-/*#__PURE__*/
-function () {
+var MergeState = /*#__PURE__*/function () {
   // noinspection DuplicatedCode
   function MergeState(mergerVisitor, base, older, newer, set, preferCloneBase, preferCloneOlder, preferCloneNewer, refsBase, refsOlder, refsNewer, options) {
     (0, _classCallCheck2.default)(this, MergeState);
@@ -466,9 +471,7 @@ var ObjectStatus;
   ObjectStatus[ObjectStatus["Merged"] = 2] = "Merged";
 })(ObjectStatus || (ObjectStatus = {}));
 
-var MergerVisitor =
-/*#__PURE__*/
-function () {
+var MergerVisitor = /*#__PURE__*/function () {
   // public refs: IRef[]
   function MergerVisitor(getMeta) {
     (0, _classCallCheck2.default)(this, MergerVisitor);
@@ -531,8 +534,8 @@ function () {
     value: function merge(base, older, newer, set, preferCloneOlder, preferCloneNewer, options, refsBase, refsOlder, refsNewer) {
       var preferCloneBase = null;
 
-      if (base === newer) {
-        if (base === older) {
+      if ((0, _webrainOptions.webrainEquals)(base, newer)) {
+        if ((0, _webrainOptions.webrainEquals)(base, older)) {
           return false;
         }
 
@@ -550,7 +553,7 @@ function () {
         return false;
       }
 
-      if (base === older) {
+      if ((0, _webrainOptions.webrainEquals)(base, older)) {
         preferCloneBase = preferCloneOlder = mergePreferClone(preferCloneBase, preferCloneOlder);
       }
 
@@ -748,10 +751,10 @@ function () {
 
 exports.MergerVisitor = MergerVisitor;
 
-var TypeMetaMergerCollection =
-/*#__PURE__*/
-function (_TypeMetaCollection) {
+var TypeMetaMergerCollection = /*#__PURE__*/function (_TypeMetaCollection) {
   (0, _inherits2.default)(TypeMetaMergerCollection, _TypeMetaCollection);
+
+  var _super = _createSuper(TypeMetaMergerCollection);
 
   function TypeMetaMergerCollection(_temp) {
     var _this4;
@@ -761,7 +764,7 @@ function (_TypeMetaCollection) {
         customMeta = _ref.customMeta;
 
     (0, _classCallCheck2.default)(this, TypeMetaMergerCollection);
-    _this4 = (0, _possibleConstructorReturn2.default)(this, (0, _getPrototypeOf2.default)(TypeMetaMergerCollection).call(this, proto || TypeMetaMergerCollection.default));
+    _this4 = _super.call(this, proto || TypeMetaMergerCollection.default);
     _this4.customMeta = customMeta;
     return _this4;
   }
@@ -779,11 +782,11 @@ function (_TypeMetaCollection) {
   }], [{
     key: "makeTypeMetaMerger",
     value: function makeTypeMetaMerger(type, meta) {
-      return (0, _extends2.default)({
+      return (0, _extends2.default)((0, _extends2.default)({
         valueFactory: function valueFactory() {
           return new type();
         }
-      }, meta, {
+      }, meta), {}, {
         merger: (0, _extends2.default)({
           canMerge: function canMerge(target, source) {
             return target._canMerge ? target._canMerge(source) : target.constructor === source.constructor;
@@ -810,13 +813,15 @@ function registerMerger(type, meta) {
 }
 
 function createPrimitiveTypeMetaMerger(meta) {
-  return (0, _extends2.default)({
+  return (0, _extends2.default)((0, _extends2.default)({
     preferClone: false
-  }, meta, {
+  }, meta), {}, {
     merger: (0, _extends2.default)({
-      merge: function merge(_merge2, base, older, newer, set) {
-        set(newer.valueOf());
-        return true;
+      canMerge: function canMerge(target, source) {
+        return deepEqualsPrimitive(target, source) ? null : false;
+      },
+      preferClone: function preferClone(o) {
+        return (0, _isFrozen.default)(o) ? true : null;
       }
     }, meta ? meta.merger : {})
   });
@@ -831,9 +836,7 @@ function registerMergerPrimitive(type, meta) {
 var primitiveTypeMetaMerger = createPrimitiveTypeMetaMerger();
 var observableObjectProperties = ['propertyChanged'];
 
-var ObjectMerger =
-/*#__PURE__*/
-function () {
+var ObjectMerger = /*#__PURE__*/function () {
   function ObjectMerger(typeMeta) {
     var _context;
 
@@ -900,7 +903,7 @@ registerMerger(String, {
 
       return true;
     },
-    merge: function merge(_merge3, base, older, newer, set) {
+    merge: function merge(_merge2, base, older, newer, set) {
       // base = base.valueOf()
       // older = older.valueOf()
       // newer = newer.valueOf()
@@ -918,11 +921,88 @@ registerMerger(String, {
   preferClone: false
 });
 registerMergerPrimitive(Number);
-registerMergerPrimitive(Boolean);
-registerMergerPrimitive(Array);
+registerMergerPrimitive(Boolean); // registerMergerPrimitive(Array)
+
 registerMergerPrimitive(Error); // endregion
 // region Array
-// @ts-ignore
+
+function deepEqualsPrimitive(o1, o2) {
+  if ((0, _helpers.equals)(o1, o2)) {
+    return true;
+  }
+
+  if (o1 == null || o2 == null) {
+    return false;
+  }
+
+  if (_webrainOptions.webrainOptions.equalsFunc && _webrainOptions.webrainOptions.equalsFunc(o1, o2)) {
+    return true;
+  }
+
+  if ((0, _isArray.default)(o1)) {
+    if (!(0, _isArray.default)(o2)) {
+      return false;
+    }
+
+    var len = o1.length;
+
+    if (o2.length !== len) {
+      return false;
+    }
+
+    for (var i = 0; i < len; i++) {
+      if (!deepEqualsPrimitive(o1[i], o2[i])) {
+        return false;
+      }
+    }
+  } else if (o1.constructor === Object) {
+    if (o2.constructor !== Object) {
+      return false;
+    }
+
+    for (var key in o1) {
+      if (Object.prototype.hasOwnProperty.call(o1, key)) {
+        if (!Object.prototype.hasOwnProperty.call(o2, key)) {
+          return false;
+        }
+
+        if (!deepEqualsPrimitive(o1[key], o2[key])) {
+          return false;
+        }
+      }
+    }
+  } else {
+    return false;
+  }
+
+  return true;
+}
+
+registerMerger(Array, {
+  merger: {
+    canMerge: function canMerge(target, source) {
+      return deepEqualsPrimitive(target, source) ? null : true;
+    },
+    merge: function merge(_merge3, base, older, newer, set, preferCloneOlder, preferCloneNewer, options) {
+      if (!base || (0, _isFrozen.default)(base)) {
+        set(newer && preferCloneNewer ? (0, _slice.default)(newer).call(newer) : newer);
+        return true;
+      }
+
+      var len = newer.length;
+
+      for (var i = 0; i < len; i++) {
+        base[i] = newer[i];
+      }
+
+      base.length = len;
+      return true;
+    }
+  },
+  preferClone: function preferClone(o) {
+    return (0, _isFrozen.default)(o) ? true : null;
+  }
+}); // @ts-ignore
 // registerMerger<any[], any[]>(Array, {
 // 	merger: {
 // 		canMerge(target: any[], source: any[]): boolean {

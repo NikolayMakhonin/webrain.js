@@ -9,9 +9,7 @@ var _classCallCheck2 = _interopRequireDefault(require("@babel/runtime-corejs3/he
 
 var _createClass2 = _interopRequireDefault(require("@babel/runtime-corejs3/helpers/createClass"));
 
-var CalcStat =
-/*#__PURE__*/
-function () {
+var CalcStat = /*#__PURE__*/function () {
   function CalcStat() {
     (0, _classCallCheck2.default)(this, CalcStat);
     this.count = 0;

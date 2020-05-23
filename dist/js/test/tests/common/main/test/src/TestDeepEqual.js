@@ -5,15 +5,17 @@ var _interopRequireDefault = require("@babel/runtime-corejs3/helpers/interopRequ
 exports.__esModule = true;
 exports.TestDeepEqual = exports.deepCloneEqual = void 0;
 
+var _construct = _interopRequireDefault(require("@babel/runtime-corejs3/core-js-stable/reflect/construct"));
+
 var _classCallCheck2 = _interopRequireDefault(require("@babel/runtime-corejs3/helpers/classCallCheck"));
 
 var _createClass2 = _interopRequireDefault(require("@babel/runtime-corejs3/helpers/createClass"));
 
+var _inherits2 = _interopRequireDefault(require("@babel/runtime-corejs3/helpers/inherits"));
+
 var _possibleConstructorReturn2 = _interopRequireDefault(require("@babel/runtime-corejs3/helpers/possibleConstructorReturn"));
 
 var _getPrototypeOf2 = _interopRequireDefault(require("@babel/runtime-corejs3/helpers/getPrototypeOf"));
-
-var _inherits2 = _interopRequireDefault(require("@babel/runtime-corejs3/helpers/inherits"));
 
 var _extends2 = _interopRequireDefault(require("@babel/runtime-corejs3/helpers/extends"));
 
@@ -22,6 +24,10 @@ var _Assert = require("../../../../../../main/common/test/Assert");
 var _DeepCloneEqual = require("../../../../../../main/common/test/DeepCloneEqual");
 
 var _TestVariants2 = require("../../src/helpers/TestVariants");
+
+function _createSuper(Derived) { var hasNativeReflectConstruct = _isNativeReflectConstruct(); return function () { var Super = (0, _getPrototypeOf2.default)(Derived), result; if (hasNativeReflectConstruct) { var NewTarget = (0, _getPrototypeOf2.default)(this).constructor; result = (0, _construct.default)(Super, arguments, NewTarget); } else { result = Super.apply(this, arguments); } return (0, _possibleConstructorReturn2.default)(this, result); }; }
+
+function _isNativeReflectConstruct() { if (typeof Reflect === "undefined" || !_construct.default) return false; if (_construct.default.sham) return false; if (typeof Proxy === "function") return true; try { Date.prototype.toString.call((0, _construct.default)(Date, [], function () {})); return true; } catch (e) { return false; } }
 
 var deepCloneEqual = new _DeepCloneEqual.DeepCloneEqual();
 exports.deepCloneEqual = deepCloneEqual;
@@ -54,16 +60,16 @@ function resolveOptions(optionsSource, optionsParams) {
   return resolvedOptions;
 }
 
-var TestDeepEqual =
-/*#__PURE__*/
-function (_TestVariants) {
+var TestDeepEqual = /*#__PURE__*/function (_TestVariants) {
   (0, _inherits2.default)(TestDeepEqual, _TestVariants);
+
+  var _super = _createSuper(TestDeepEqual);
 
   function TestDeepEqual() {
     var _this;
 
     (0, _classCallCheck2.default)(this, TestDeepEqual);
-    _this = (0, _possibleConstructorReturn2.default)(this, (0, _getPrototypeOf2.default)(TestDeepEqual).call(this));
+    _this = _super.call(this);
     _this.baseOptionsVariants = {
       circular: [false, true],
       noCrossReferences: [false, true],

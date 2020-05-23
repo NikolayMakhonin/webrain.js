@@ -1,8 +1,8 @@
-import { ObservableClass } from '../../../../main/common/rx/object/ObservableClass';
+import { getCallState } from '../../../../main/common/rx/depend/core/CallState';
 import { assert } from '../../../../main/common/test/Assert';
 import { describe, it } from '../../../../main/common/test/Mocha';
 describe('common > main > index', function () {
   it('base', function () {
-    assert.ok(ObservableClass);
+    assert.ok(!!getCallState);
   });
 });

@@ -4,8 +4,6 @@ var _interopRequireDefault = require("@babel/runtime-corejs3/helpers/interopRequ
 
 var _regenerator = _interopRequireDefault(require("@babel/runtime-corejs3/regenerator"));
 
-var _map = _interopRequireDefault(require("@babel/runtime-corejs3/core-js-stable/instance/map"));
-
 var _setTimeout2 = _interopRequireDefault(require("@babel/runtime-corejs3/core-js-stable/set-timeout"));
 
 var _promise = _interopRequireDefault(require("@babel/runtime-corejs3/core-js-stable/promise"));
@@ -21,8 +19,6 @@ var _Assert = require("../../../../../../main/common/test/Assert");
 var _Mocha = require("../../../../../../main/common/test/Mocha");
 
 var _TestDeferred = require("./src/TestDeferred");
-
-var _timing2 = require("./src/timing");
 
 /* tslint:disable:no-empty no-identical-functions */
 (0, _Mocha.describe)('common > main > rx > deferred-calc > DeferredCalc', function () {
@@ -639,12 +635,8 @@ var _timing2 = require("./src/timing");
       }]
     });
   });
-  (0, _Mocha.it)('real timing',
-  /*#__PURE__*/
-  (0, _asyncToGenerator2.default)(
-  /*#__PURE__*/
-  _regenerator.default.mark(function _callee() {
-    var events, timeCoef, startTestTime, deferredCalc, i;
+  (0, _Mocha.it)('real timing', /*#__PURE__*/(0, _asyncToGenerator2.default)( /*#__PURE__*/_regenerator.default.mark(function _callee() {
+    var events, timeCoef, startTestTime, deferredCalc, checkEventTypes, i, event;
     return _regenerator.default.wrap(function _callee$(_context) {
       while (1) {
         switch (_context.prev = _context.next) {
@@ -652,28 +644,33 @@ var _timing2 = require("./src/timing");
             events = [];
             timeCoef = 2;
             startTestTime = _timing.timingDefault.now();
-            deferredCalc = new _DeferredCalc.DeferredCalc(function () {
-              events.push({
-                time: _timing.timingDefault.now() - startTestTime,
-                type: _TestDeferred.EventType.CanBeCalc
-              });
-              this.calc();
-            }, function (done) {
-              events.push({
-                time: _timing.timingDefault.now() - startTestTime,
-                type: _TestDeferred.EventType.Calc
-              });
-              done();
-            }, function () {
-              events.push({
-                time: _timing.timingDefault.now() - startTestTime,
-                type: _TestDeferred.EventType.Completed
-              });
-            }, {
-              autoInvalidateInterval: 9 * timeCoef,
-              throttleTime: 10 * timeCoef,
-              maxThrottleTime: 100 * timeCoef,
-              minTimeBetweenCalc: 5 * timeCoef
+            deferredCalc = new _DeferredCalc.DeferredCalc({
+              canBeCalcCallback: function canBeCalcCallback() {
+                events.push({
+                  time: _timing.timingDefault.now() - startTestTime,
+                  type: _TestDeferred.EventType.CanBeCalc
+                });
+                this.calc();
+              },
+              calcFunc: function calcFunc() {
+                events.push({
+                  time: _timing.timingDefault.now() - startTestTime,
+                  type: _TestDeferred.EventType.Calc
+                });
+                this.done();
+              },
+              calcCompletedCallback: function calcCompletedCallback() {
+                events.push({
+                  time: _timing.timingDefault.now() - startTestTime,
+                  type: _TestDeferred.EventType.Completed
+                });
+              },
+              options: {
+                autoInvalidateInterval: 9 * timeCoef,
+                throttleTime: 10 * timeCoef,
+                maxThrottleTime: 100 * timeCoef,
+                minTimeBetweenCalc: 5 * timeCoef
+              }
             });
             _context.next = 6;
             return new _promise.default(function (resolve) {
@@ -688,44 +685,37 @@ var _timing2 = require("./src/timing");
             });
 
           case 9:
-            for (i = 0; i < events.length; i++) {
-              _Assert.assert.ok(events[i].time >= 100 * timeCoef);
+            _Assert.assert.strictEqual(events.length % 3, 0);
 
-              _Assert.assert.ok(events[i].time < 150 * timeCoef);
+            _Assert.assert.ok(events.length / 3 > 2);
+
+            checkEventTypes = [_TestDeferred.EventType.CanBeCalc, _TestDeferred.EventType.Calc, _TestDeferred.EventType.Completed];
+
+            for (i = 0; i < events.length; i++) {
+              event = events[i];
+
+              _Assert.assert.ok(event.time < 100 * timeCoef, event.time + '');
+
+              _Assert.assert.strictEqual(event.type, checkEventTypes[i % 3]);
             }
 
-            (0, _TestDeferred.assertEvents)((0, _map.default)(events).call(events, function (o) {
-              return {
-                type: o.type
-              };
-            }), [{
-              type: _TestDeferred.EventType.CanBeCalc
-            }, {
-              type: _TestDeferred.EventType.Calc
-            }, {
-              type: _TestDeferred.EventType.Completed
-            }]);
             events = [];
-            _context.next = 14;
+            _context.next = 16;
             return new _promise.default(function (resolve) {
               return (0, _setTimeout2.default)(resolve, 100 * timeCoef);
             });
 
-          case 14:
+          case 16:
             _Assert.assert.deepStrictEqual(events, []);
 
-          case 15:
+          case 17:
           case "end":
             return _context.stop();
         }
       }
     }, _callee);
   })));
-  (0, _Mocha.it)('properties',
-  /*#__PURE__*/
-  (0, _asyncToGenerator2.default)(
-  /*#__PURE__*/
-  _regenerator.default.mark(function _callee2() {
+  (0, _Mocha.it)('properties', /*#__PURE__*/(0, _asyncToGenerator2.default)( /*#__PURE__*/_regenerator.default.mark(function _callee2() {
     var canBeCalcCallback, calcFunc, calcCompletedCallback, deferredCalc;
     return _regenerator.default.wrap(function _callee2$(_context2) {
       while (1) {
@@ -737,12 +727,17 @@ var _timing2 = require("./src/timing");
 
             calcCompletedCallback = function calcCompletedCallback() {};
 
-            deferredCalc = new _DeferredCalc.DeferredCalc(function () {}, function () {}, function () {}, {
-              autoInvalidateInterval: 1,
-              throttleTime: 2,
-              maxThrottleTime: 3,
-              minTimeBetweenCalc: 4,
-              timing: new _timing2.TestTiming()
+            deferredCalc = new _DeferredCalc.DeferredCalc({
+              canBeCalcCallback: function canBeCalcCallback() {},
+              calcFunc: function calcFunc() {},
+              calcCompletedCallback: function calcCompletedCallback() {},
+              options: {
+                autoInvalidateInterval: 1,
+                throttleTime: 2,
+                maxThrottleTime: 3,
+                minTimeBetweenCalc: 4,
+                timing: new _TestDeferred.TestTimingForDeferredCalc()
+              }
             });
 
             _Assert.assert.strictEqual(deferredCalc.autoInvalidateInterval, 1);

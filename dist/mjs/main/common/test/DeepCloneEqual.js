@@ -1,3 +1,4 @@
+import { equals, isIterable, isIterator } from '../helpers/helpers';
 import { getObjectUniqueId } from '../helpers/object-unique-id';
 export function isPrimitiveDefault(value) {
   return value == null || typeof value === 'boolean' || typeof value === 'number' || typeof value === 'string' || typeof value === 'function' || value instanceof Error;
@@ -89,7 +90,7 @@ export class DeepCloneEqual {
         }
       }
 
-      if (source[Symbol.iterator] && source.next) {
+      if (isIterator(source)) {
         cloned = toIterableIterator(clone(Array.from(source[Symbol.iterator]())));
 
         if (id != null) {
@@ -140,7 +141,7 @@ export class DeepCloneEqual {
           return cloned;
       }
 
-      if (source[Symbol.iterator] && !cloned[Symbol.iterator]) {
+      if (isIterable(source) && !isIterable(cloned)) {
         cloned[Symbol.iterator] = toIterableIteratorGenerator(clone(Array.from(source[Symbol.iterator]())));
       }
 
@@ -173,7 +174,7 @@ export class DeepCloneEqual {
 
     const equal = (o1, o2) => {
       if (isPrimitive(o1) || isPrimitive(o2)) {
-        if (o1 === o2 || Number.isNaN(o1) && Number.isNaN(o2) || (!options || !options.strictEqualFunctions) && typeof o1 === 'function' && typeof o2 === 'function' && o1.toString() === o2.toString()) {
+        if (equals(o1, o2) || (!options || !options.strictEqualFunctions) && typeof o1 === 'function' && typeof o2 === 'function' && o1.toString() === o2.toString()) {
           return true;
         } else {
           return false;
@@ -271,15 +272,15 @@ export class DeepCloneEqual {
       const valueOf2 = o2.valueOf();
 
       if (valueOf1 !== o1 || valueOf2 !== o2) {
-        if (valueOf1 === valueOf2 || Number.isNaN(valueOf1) && Number.isNaN(valueOf2)) {
+        if (equals(valueOf1, valueOf2)) {
           return true;
         } else {
           return false;
         }
       }
 
-      if (typeof o1[Symbol.iterator] === 'function') {
-        if (typeof o2[Symbol.iterator] === 'function') {
+      if (isIterable(o1)) {
+        if (isIterable(o2)) {
           if (Array.isArray(o1) && Array.isArray(o2)) {
             if (o1.length !== o2.length) {
               return false;
@@ -399,7 +400,7 @@ export class DeepCloneEqual {
         } else {
           return false;
         }
-      } else if (typeof o2[Symbol.iterator] === 'function') {
+      } else if (isIterable(o2)) {
         return false;
       }
 

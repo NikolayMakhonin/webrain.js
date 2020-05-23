@@ -1,4 +1,4 @@
-import '../extensions/autoConnect';
+import { ObjectBuilder } from './ObjectBuilder';
 import { ISetOptions, ObservableClass } from './ObservableClass';
 export interface IFieldOptions<TObject, TValue> {
     hidden?: boolean;
@@ -15,8 +15,7 @@ export interface IReadableFieldOptions<TObject, TValue> extends IWritableFieldOp
 export interface IUpdatableFieldOptions<TObject, TValue> extends IReadableFieldOptions<TObject, TValue> {
     update?: (this: TObject, value: any) => TValue | void;
 }
-export declare class ObservableObjectBuilder<TObject extends ObservableClass> {
-    object: TObject;
+export declare class ObservableObjectBuilder<TObject extends ObservableClass> extends ObjectBuilder<TObject> {
     constructor(object?: TObject);
     writable<Name extends string | number = Extract<keyof TObject, string | number>, TValue = Name extends keyof TObject ? TObject[Name] : any>(name: Name, options?: IWritableFieldOptions<TObject, TValue>, initValue?: TValue): this & {
         object: {
