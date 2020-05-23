@@ -1,4 +1,5 @@
 import {isThenable, IThenable} from '../../../../../../../main/common/async/async'
+import {Func} from '../../../../../../../main/common/helpers/typescript'
 import {Random} from '../../../../../../../main/common/random/Random'
 import {
 	getCallState,
@@ -16,7 +17,6 @@ import {depend, dependX} from '../../../../../../../main/common/rx/depend/core/d
 import {assert} from '../../../../../../../main/common/test/Assert'
 import {delay} from '../../../../../../../main/common/time/helpers'
 import {clearCallStates} from './helpers'
-import {Func} from "../../../../../../../main/common/helpers/typescript";
 
 // region contracts
 

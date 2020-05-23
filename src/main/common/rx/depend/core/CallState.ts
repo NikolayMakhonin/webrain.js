@@ -1558,6 +1558,8 @@ export function createCallStateProvider<
 			callStates.push(callState)
 		}
 
+		garbageCollectSchedule()
+
 		return callState
 	}
 
@@ -1840,6 +1842,8 @@ export function reduceCallStates(deleteSize: number, _minCallStateLifeTime: numb
 // Garbage collector
 function garbageCollect() {
 	try {
+		garbageCollectTimer = null
+
 		const {bulkSize, minLifeTime, interval, disabled} = webrainOptions.callState.garbageCollect
 
 		if (!disabled) {
@@ -1848,21 +1852,29 @@ function garbageCollect() {
 				bulkSize,
 				minLifeTime,
 			)
-			if (countDeleted > 0) {
+			if (countDeleted > 0 || callStatesCount === 0) {
 				console.debug(`CallState GC - deleted: ${countDeleted}, alive: ${callStatesCount}, ${
 					(fastNow() - time) / countDeleted
 				} ms/item`)
 			}
 		}
 
-		setTimeout(garbageCollect, interval)
+		garbageCollectSchedule()
 	} catch (error) {
 		console.error(error)
 		throw error
 	}
 }
 
-garbageCollect()
+let garbageCollectTimer = null
+function garbageCollectSchedule() {
+	if (callStatesCount > 0 && garbageCollectTimer === null) {
+		const {interval, disabled} = webrainOptions.callState.garbageCollect
+		if (!disabled) {
+			garbageCollectTimer = setTimeout(garbageCollect, interval)
+		}
+	}
+}
 
 // endregion
 

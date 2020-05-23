@@ -12,12 +12,30 @@ export function delay(timeMilliseconds): Thenable {
 	return new Promise(resolve => setTimeout(resolve, timeMilliseconds))
 }
 
+// region fast now
+
 let _fastNow = Date.now()
-setInterval(() => {
+let lastAccessTime = 0
+function fastNowUpdate() {
 	_fastNow = Date.now()
-}, 1000)
+	if (_fastNow - lastAccessTime > 5000) {
+		clearInterval(fastNowTimer)
+		fastNowTimer = null
+	}
+}
+
+let fastNowTimer = null
+function fastNowSchedule() {
+	lastAccessTime = _fastNow
+	if (fastNowTimer === null) {
+		fastNowTimer = setInterval(fastNowUpdate, 1000)
+	}
+}
 
 /** Precision - 1 second */
 export function fastNow() {
+	fastNowSchedule()
 	return _fastNow
 }
+
+// endregion
