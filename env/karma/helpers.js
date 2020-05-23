@@ -6,7 +6,6 @@ const path = require('path')
 const fs = require('fs')
 const thisPackage = require('../../package')
 const rollupPlugins  = require('../rollup/plugins.js')
-const build = require('../common/build')
 
 module.exports.rollup = {
 	plugins: rollupPlugins
@@ -42,11 +41,7 @@ function writeTextFile(outFilePath, text) {
 	return outFilePath
 }
 
-module.exports.concatJsFiles = function concatJsFiles(
-	outFilePath,
-	{dev, legacy, coverage},
-	...globbyPatterns
-) {
+module.exports.concatJsFiles = function concatJsFiles(outFilePath, ...globbyPatterns) {
 	const dir = path.dirname(outFilePath)
 
 	const code = globby
@@ -59,20 +54,7 @@ module.exports.concatJsFiles = function concatJsFiles(
 			+ "'")
 		.join('\n') + '\n'
 
-	const tmpFilePath = writeTextFile(outFilePath + '.tmp.js', code)
-
-	build({
-		fileInput: tmpFilePath,
-		fileOutput: outFilePath,
-	}, {
-		plugins: helpers.rollup.plugins.karma({dev, legacy, coverage}),
-		output : {
-			format   : 'iife',
-			sourcemap: true // 'inline'
-		}
-	})
-
-	return outFilePath
+	return writeTextFile(outFilePath, code)
 }
 
 module.exports.servedPattern = servedPattern
