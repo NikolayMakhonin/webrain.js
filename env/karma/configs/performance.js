@@ -42,7 +42,7 @@ module.exports = function (config) {
 			plugins: helpers.rollup.plugins.karma({dev: false, legacy: true, coverage: false}),
 			output : {
 				format   : 'iife',
-				sourcemap: true // 'inline'
+				sourcemap: 'inline',
 			}
 		},
 
