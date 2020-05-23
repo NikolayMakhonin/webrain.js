@@ -321,16 +321,12 @@
       <change beforePath="$PROJECT_DIR$/dist/types/common/time/TimeLimit.d.ts" beforeDir="false" />
       <change beforePath="$PROJECT_DIR$/dist/types/common/time/TimeLimits.d.ts" beforeDir="false" />
       <change beforePath="$PROJECT_DIR$/dist/types/common/time/helpers.d.ts" beforeDir="false" afterPath="$PROJECT_DIR$/dist/types/common/time/helpers.d.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/env/common/helpers.js" beforeDir="false" afterPath="$PROJECT_DIR$/env/common/helpers.js" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/env/karma/configs/ci.js" beforeDir="false" afterPath="$PROJECT_DIR$/env/karma/configs/ci.js" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/env/karma/configs/coverage.js" beforeDir="false" afterPath="$PROJECT_DIR$/env/karma/configs/coverage.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/env/karma/configs/dev.js" beforeDir="false" afterPath="$PROJECT_DIR$/env/karma/configs/dev.js" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/env/karma/configs/performance.js" beforeDir="false" afterPath="$PROJECT_DIR$/env/karma/configs/performance.js" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/env/karma/configs/tests.js" beforeDir="false" afterPath="$PROJECT_DIR$/env/karma/configs/tests.js" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/env/karma/helpers.js" beforeDir="false" afterPath="$PROJECT_DIR$/env/karma/helpers.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/env/rollup/plugins.js" beforeDir="false" afterPath="$PROJECT_DIR$/env/rollup/plugins.js" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/package.json" beforeDir="false" afterPath="$PROJECT_DIR$/package.json" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/test/tests/common/main/rx/depend/src/base-tests.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/test/tests/common/main/rx/depend/src/base-tests.ts" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -423,12 +419,26 @@
       <recent name="L:\Work\_GIT\GitHub\NodeJs\modules\webrain\src\test\tests\common\main\rx\object\properties\path\builder" />
     </key>
   </component>
-  <component name="RunManager" selected="Karma.Dev">
+  <component name="RunManager" selected="Karma.Coverage">
     <configuration default="true" type="JavaScriptTestRunnerKarma" activateToolWindowBeforeRun="false">
       <config-file value="$PROJECT_DIR$/env/karma/configs/dev.js" />
       <karma-package-dir value="$PROJECT_DIR$/node_modules/karma" />
       <node-interpreter value="node" />
       <envs />
+      <method v="2" />
+    </configuration>
+    <configuration name="common &gt; main &gt; rx &gt; properties &gt; builder.base" type="JavaScriptTestRunnerKarma" activateToolWindowBeforeRun="false" temporary="true" nameIsGenerated="true">
+      <config-file value="$PROJECT_DIR$/env/karma/configs/coverage.js" />
+      <karma-package-dir value="$PROJECT_DIR$/node_modules/karma" />
+      <working-directory value="$PROJECT_DIR$" />
+      <node-interpreter value="node" />
+      <envs />
+      <scope-kind value="TEST" />
+      <test-file-path value="$PROJECT_DIR$/src/test/tests/common/main/rx/object/properties/path/builder.ts" />
+      <test-names>
+        <test-name value="common &gt; main &gt; rx &gt; properties &gt; builder" />
+        <test-name value="base" />
+      </test-names>
       <method v="2" />
     </configuration>
     <configuration name="time-limits" type="JavaScriptTestRunnerKarma" nameIsGenerated="true">
@@ -540,23 +550,6 @@
       <extra-mocha-options>--opts ./env/mocha/configs/babel/mocha.opts --watch</extra-mocha-options>
       <test-kind>PATTERN</test-kind>
       <test-pattern>./src/test/tests/{common,node}/**/*.*</test-pattern>
-      <method v="2" />
-    </configuration>
-    <configuration name="common &gt; extensions &gt; merge &gt; ObjectMerger.base.array as primitive" type="mocha-javascript-test-runner" temporary="true" nameIsGenerated="true">
-      <node-interpreter>node</node-interpreter>
-      <node-options>--max-old-space-size=4096 --allow-natives-syntax</node-options>
-      <mocha-package>$PROJECT_DIR$/node_modules/mocha</mocha-package>
-      <working-directory>$PROJECT_DIR$</working-directory>
-      <pass-parent-env>true</pass-parent-env>
-      <ui>bdd</ui>
-      <extra-mocha-options>--opts ./env/mocha/configs/babel/mocha.opts</extra-mocha-options>
-      <test-kind>TEST</test-kind>
-      <test-file>$PROJECT_DIR$/src/test/tests/common/main/extensions/merge/ObjectMerger.ts</test-file>
-      <test-names>
-        <name value="common &gt; extensions &gt; merge &gt; ObjectMerger" />
-        <name value="base" />
-        <name value="array as primitive" />
-      </test-names>
       <method v="2" />
     </configuration>
     <configuration name="common &gt; main &gt; index.base" type="mocha-javascript-test-runner" temporary="true">
@@ -746,7 +739,6 @@
       <item itemvalue="Mocha.dependent-func" />
       <item itemvalue="Mocha.dependent-func.perceptron perf (Compiled)" />
       <item itemvalue="Mocha.node &gt; v8 &gt; parser" />
-      <item itemvalue="Mocha.common &gt; extensions &gt; merge &gt; ObjectMerger.base.array as primitive" />
       <item itemvalue="Mocha.common &gt; main &gt; index.base" />
       <item itemvalue="Mocha.fastNow perf" />
       <item itemvalue="Mocha.common &gt; main &gt; rx &gt; depend &gt; dependent-func / base" />
@@ -754,14 +746,15 @@
       <item itemvalue="Node.js.mocha" />
       <item itemvalue="Node.js.dependent-func.js" />
       <item itemvalue="npm.Coverage Mocha Report" />
+      <item itemvalue="Karma.common &gt; main &gt; rx &gt; properties &gt; builder.base" />
     </list>
     <recent_temporary>
       <list>
+        <item itemvalue="Karma.common &gt; main &gt; rx &gt; properties &gt; builder.base" />
         <item itemvalue="Mocha.common &gt; main &gt; rx &gt; depend &gt; dependent-func / base.perceptron" />
         <item itemvalue="Mocha.common &gt; main &gt; rx &gt; depend &gt; dependent-func / base" />
         <item itemvalue="Mocha.fastNow perf" />
         <item itemvalue="Mocha.common &gt; main &gt; index.base" />
-        <item itemvalue="Mocha.common &gt; extensions &gt; merge &gt; ObjectMerger.base.array as primitive" />
       </list>
     </recent_temporary>
   </component>
@@ -807,21 +800,7 @@
       <workItem from="1590135086386" duration="2390000" />
       <workItem from="1590149294582" duration="15706000" />
       <workItem from="1590207827975" duration="9740000" />
-      <workItem from="1590217587334" duration="742000" />
-    </task>
-    <task id="LOCAL-00462" summary="Refactoring: add webrainEquals() helper">
-      <created>1588058396986</created>
-      <option name="number" value="00462" />
-      <option name="presentableId" value="LOCAL-00462" />
-      <option name="project" value="LOCAL" />
-      <updated>1588058396986</updated>
-    </task>
-    <task id="LOCAL-00463" summary="Refactoring completed. Tests OK.">
-      <created>1588059220308</created>
-      <option name="number" value="00463" />
-      <option name="presentableId" value="LOCAL-00463" />
-      <option name="project" value="LOCAL" />
-      <updated>1588059220309</updated>
+      <workItem from="1590217587334" duration="7949000" />
     </task>
     <task id="LOCAL-00464" summary="depend: stress test all, 140 tests (1 hour) is OK.">
       <created>1588062953244</created>
@@ -1152,7 +1131,21 @@
       <option name="project" value="LOCAL" />
       <updated>1590216955781</updated>
     </task>
-    <option name="localTasksCounter" value="511" />
+    <task id="LOCAL-00511" summary="Improve karma rollup preprocessor">
+      <created>1590218428999</created>
+      <option name="number" value="00511" />
+      <option name="presentableId" value="LOCAL-00511" />
+      <option name="project" value="LOCAL" />
+      <updated>1590218429000</updated>
+    </task>
+    <task id="LOCAL-00512" summary="Prepare release">
+      <created>1590218514641</created>
+      <option name="number" value="00512" />
+      <option name="presentableId" value="LOCAL-00512" />
+      <option name="project" value="LOCAL" />
+      <updated>1590218514641</updated>
+    </task>
+    <option name="localTasksCounter" value="513" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -1235,16 +1228,20 @@
     <MESSAGE value="Fix Mocha" />
     <MESSAGE value="Auto stop timers" />
     <MESSAGE value="Deleted: Stop timers after all tests" />
-    <MESSAGE value="Prepare release" />
     <MESSAGE value="Rollback karma rollup preprocessor" />
     <MESSAGE value="Improve karma rollup preprocessor" />
-    <option name="LAST_COMMIT_MESSAGE" value="Improve karma rollup preprocessor" />
+    <MESSAGE value="Prepare release" />
+    <option name="LAST_COMMIT_MESSAGE" value="Prepare release" />
   </component>
   <component name="WindowStateProjectService">
-    <state x="38" y="39" width="1718" height="786" key="#com.intellij.execution.impl.EditConfigurationsDialog" timestamp="1590214250610">
+    <state x="617" y="103" key="#ESLint" timestamp="1590218488709">
       <screen x="0" y="0" width="1920" height="882" />
     </state>
-    <state x="38" y="39" width="1718" height="786" key="#com.intellij.execution.impl.EditConfigurationsDialog/0.0.1920.882@0.0.1920.882" timestamp="1590214250610" />
+    <state x="617" y="103" key="#ESLint/0.0.1920.882@0.0.1920.882" timestamp="1590218488709" />
+    <state x="38" y="39" width="1718" height="786" key="#com.intellij.execution.impl.EditConfigurationsDialog" timestamp="1590227684444">
+      <screen x="0" y="0" width="1920" height="882" />
+    </state>
+    <state x="38" y="39" width="1718" height="786" key="#com.intellij.execution.impl.EditConfigurationsDialog/0.0.1920.882@0.0.1920.882" timestamp="1590227684444" />
     <state x="91" y="91" width="1738" height="700" key="#com.intellij.execution.junit2.states.ComparisonFailureState$DiffDialog" timestamp="1588308999883">
       <screen x="0" y="0" width="1920" height="882" />
     </state>
@@ -1269,54 +1266,54 @@
       <screen x="0" y="0" width="1920" height="882" />
     </state>
     <state x="651" y="254" key="ANALYSIS_DLG_com.intellij.analysis.BaseAnalysisAction$1/0.0.1920.882@0.0.1920.882" timestamp="1588413930131" />
-    <state x="-2" y="0" width="1918" height="882" key="CommitChangelistDialog2" timestamp="1590217277663">
+    <state x="-2" y="0" width="1918" height="882" key="CommitChangelistDialog2" timestamp="1590218512822">
       <screen x="0" y="0" width="1920" height="882" />
     </state>
-    <state x="-2" y="0" width="1918" height="882" key="CommitChangelistDialog2/0.0.1920.882@0.0.1920.882" timestamp="1590217277663" />
+    <state x="-2" y="0" width="1918" height="882" key="CommitChangelistDialog2/0.0.1920.882@0.0.1920.882" timestamp="1590218512822" />
     <state width="884" height="550" key="DebuggerActiveHint" timestamp="1590162335145">
       <screen x="0" y="0" width="1920" height="882" />
     </state>
     <state width="884" height="550" key="DebuggerActiveHint/0.0.1920.882@0.0.1920.882" timestamp="1590162335145" />
-    <state x="0" y="4" width="1920" height="875" key="DiffContextDialog" timestamp="1590217276910">
+    <state x="0" y="4" width="1920" height="875" key="DiffContextDialog" timestamp="1590218410434">
       <screen x="0" y="0" width="1920" height="882" />
     </state>
-    <state x="0" y="4" width="1920" height="875" key="DiffContextDialog/0.0.1920.882@0.0.1920.882" timestamp="1590217276910" />
+    <state x="0" y="4" width="1920" height="875" key="DiffContextDialog/0.0.1920.882@0.0.1920.882" timestamp="1590218410434" />
     <state x="1059" y="106" key="FileChooserDialogImpl" timestamp="1590069094529">
       <screen x="0" y="0" width="1920" height="882" />
     </state>
     <state x="1059" y="106" key="FileChooserDialogImpl/0.0.1920.882@0.0.1920.882" timestamp="1590069094529" />
-    <state width="898" height="279" key="GridCell.Tab.0.bottom" timestamp="1590218298743">
+    <state width="810" height="305" key="GridCell.Tab.0.bottom" timestamp="1590227713416">
       <screen x="0" y="0" width="1920" height="882" />
     </state>
-    <state width="898" height="279" key="GridCell.Tab.0.bottom/0.0.1920.882@0.0.1920.882" timestamp="1590218298743" />
-    <state width="898" height="279" key="GridCell.Tab.0.center" timestamp="1590218298743">
+    <state width="810" height="305" key="GridCell.Tab.0.bottom/0.0.1920.882@0.0.1920.882" timestamp="1590227713416" />
+    <state width="810" height="305" key="GridCell.Tab.0.center" timestamp="1590227713416">
       <screen x="0" y="0" width="1920" height="882" />
     </state>
-    <state width="898" height="279" key="GridCell.Tab.0.center/0.0.1920.882@0.0.1920.882" timestamp="1590218298743" />
-    <state width="898" height="279" key="GridCell.Tab.0.left" timestamp="1590218298742">
+    <state width="810" height="305" key="GridCell.Tab.0.center/0.0.1920.882@0.0.1920.882" timestamp="1590227713416" />
+    <state width="810" height="305" key="GridCell.Tab.0.left" timestamp="1590227713415">
       <screen x="0" y="0" width="1920" height="882" />
     </state>
-    <state width="898" height="279" key="GridCell.Tab.0.left/0.0.1920.882@0.0.1920.882" timestamp="1590218298742" />
-    <state width="898" height="279" key="GridCell.Tab.0.right" timestamp="1590218298743">
+    <state width="810" height="305" key="GridCell.Tab.0.left/0.0.1920.882@0.0.1920.882" timestamp="1590227713415" />
+    <state width="810" height="305" key="GridCell.Tab.0.right" timestamp="1590227713416">
       <screen x="0" y="0" width="1920" height="882" />
     </state>
-    <state width="898" height="279" key="GridCell.Tab.0.right/0.0.1920.882@0.0.1920.882" timestamp="1590218298743" />
-    <state width="898" height="279" key="GridCell.Tab.1.bottom" timestamp="1590218298744">
+    <state width="810" height="305" key="GridCell.Tab.0.right/0.0.1920.882@0.0.1920.882" timestamp="1590227713416" />
+    <state width="810" height="305" key="GridCell.Tab.1.bottom" timestamp="1590227708422">
       <screen x="0" y="0" width="1920" height="882" />
     </state>
-    <state width="898" height="279" key="GridCell.Tab.1.bottom/0.0.1920.882@0.0.1920.882" timestamp="1590218298744" />
-    <state width="898" height="279" key="GridCell.Tab.1.center" timestamp="1590218298744">
+    <state width="810" height="305" key="GridCell.Tab.1.bottom/0.0.1920.882@0.0.1920.882" timestamp="1590227708422" />
+    <state width="810" height="305" key="GridCell.Tab.1.center" timestamp="1590227708422">
       <screen x="0" y="0" width="1920" height="882" />
     </state>
-    <state width="898" height="279" key="GridCell.Tab.1.center/0.0.1920.882@0.0.1920.882" timestamp="1590218298744" />
-    <state width="898" height="279" key="GridCell.Tab.1.left" timestamp="1590218298743">
+    <state width="810" height="305" key="GridCell.Tab.1.center/0.0.1920.882@0.0.1920.882" timestamp="1590227708422" />
+    <state width="810" height="305" key="GridCell.Tab.1.left" timestamp="1590227708422">
       <screen x="0" y="0" width="1920" height="882" />
     </state>
-    <state width="898" height="279" key="GridCell.Tab.1.left/0.0.1920.882@0.0.1920.882" timestamp="1590218298743" />
-    <state width="898" height="279" key="GridCell.Tab.1.right" timestamp="1590218298744">
+    <state width="810" height="305" key="GridCell.Tab.1.left/0.0.1920.882@0.0.1920.882" timestamp="1590227708422" />
+    <state width="810" height="305" key="GridCell.Tab.1.right" timestamp="1590227708422">
       <screen x="0" y="0" width="1920" height="882" />
     </state>
-    <state width="898" height="279" key="GridCell.Tab.1.right/0.0.1920.882@0.0.1920.882" timestamp="1590218298744" />
+    <state width="810" height="305" key="GridCell.Tab.1.right/0.0.1920.882@0.0.1920.882" timestamp="1590227708422" />
     <state width="525" height="403" key="GridCell.Tab.2.bottom" timestamp="1590217579038">
       <screen x="0" y="0" width="1920" height="882" />
     </state>
@@ -1381,10 +1378,10 @@
       <screen x="0" y="0" width="1920" height="882" />
     </state>
     <state x="121" y="111" key="com.intellij.xdebugger.impl.breakpoints.ui.BreakpointsDialogFactory$2/0.0.1920.882@0.0.1920.882" timestamp="1587884348340" />
-    <state x="2" y="1" width="1908" height="878" key="find.popup" timestamp="1590218296685">
+    <state x="2" y="1" width="1908" height="878" key="find.popup" timestamp="1590223631695">
       <screen x="0" y="0" width="1920" height="882" />
     </state>
-    <state x="2" y="1" width="1908" height="878" key="find.popup/0.0.1920.882@0.0.1920.882" timestamp="1590218296685" />
+    <state x="2" y="1" width="1908" height="878" key="find.popup/0.0.1920.882@0.0.1920.882" timestamp="1590223631695" />
     <state x="732" y="169" key="refactoring.ChangeSignatureDialog" timestamp="1587872020169">
       <screen x="0" y="0" width="1920" height="882" />
     </state>
@@ -1550,6 +1547,12 @@
           <url>file://$PROJECT_DIR$/node_modules/@metahub/karma-rollup-preprocessor/lib/index.js</url>
           <line>26</line>
           <option name="timeStamp" value="1636" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" type="javascript">
+          <url>file://$PROJECT_DIR$/src/test/tests/common/main/rx/object/properties/path/builder.ts</url>
+          <line>88</line>
+          <properties lambdaOrdinal="-1" />
+          <option name="timeStamp" value="1637" />
         </line-breakpoint>
       </breakpoints>
       <breakpoints-dialog>

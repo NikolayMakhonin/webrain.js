@@ -121,7 +121,7 @@ module.exports.configCommon = function (config) {
 			'karma-safaritechpreview-launcher',
 			'karma-opera-launcher',
 			'karma-edge-launcher',
-			'karma-ie-launcher',
+			// 'karma-ie-launcher',
 			'karma-phantomjs-launcher',
 			'karma-electron',
 
@@ -138,21 +138,21 @@ module.exports.configCommon = function (config) {
 					(factory => {
 						factory.$inject = ['args', 'config', 'emitter', 'logger']
 						return factory
-					})((preconfig, config, emitter, logger) => {
-						let log = logger.create('preprocessor.rollup')
+					})((preconfig, _config, emitter, logger) => {
+						const log = logger.create('preprocessor.rollup')
 
 						return async (original, file, done) => {
-							let originalPath = file.originalPath
-							let location = path.relative(config.basePath, originalPath)
+							const {originalPath} = file
+							const location = path.relative(_config.basePath, originalPath)
 
 							try {
 								const parsed = path.parse(originalPath)
 								const fileOutput = path.join(parsed.dir, parsed.name + '.build' + parsed.ext)
 								await writeTextFile(fileOutput, original)
-								done(null, original)
+								return done(null, original)
 							} catch (error) {
 								log.error('Failed to process ./%s\n\n%s\n', location, error.stack)
-								done(error, null)
+								return done(error, null)
 							}
 						}
 					}),
@@ -305,7 +305,10 @@ function configDetectBrowsers(config) {
 			postDetection(availableBrowsers) {
 				const useBrowsers = {
 					E2E_ChromeLatest  : /Chrome/,
-					E2E_ChromiumLatest: /Chromium/
+					E2E_ChromiumLatest: /Chromium/,
+
+					// Exclude:
+					"": /\bIE\d*\b/,
 				}
 
 				return availableBrowsers
@@ -319,6 +322,7 @@ function configDetectBrowsers(config) {
 
 						return availableBrowser
 					})
+					.filter(o => o)
 					.concat('Electron')
 			}
 		},
@@ -419,27 +423,27 @@ module.exports.configBrowserStack = function (config, desktop = true, mobile = f
 			os             : 'OS X',
 			os_version     : 'Sierra',
 		},
-		IE11: {
-			base           : 'BrowserStack',
-			browser        : 'IE',
-			browser_version: '11',
-			os             : 'Windows',
-			os_version     : '10',
-		},
-		IE10: {
-			base           : 'BrowserStack',
-			browser        : 'IE',
-			browser_version: '10',
-			os             : 'Windows',
-			os_version     : '8',
-		},
-		IE9: {
-			base           : 'BrowserStack',
-			browser        : 'IE',
-			browser_version: '9',
-			os             : 'Windows',
-			os_version     : '7',
-		},
+		// IE11: {
+		// 	base           : 'BrowserStack',
+		// 	browser        : 'IE',
+		// 	browser_version: '11',
+		// 	os             : 'Windows',
+		// 	os_version     : '10',
+		// },
+		// IE10: {
+		// 	base           : 'BrowserStack',
+		// 	browser        : 'IE',
+		// 	browser_version: '10',
+		// 	os             : 'Windows',
+		// 	os_version     : '8',
+		// },
+		// IE9: {
+		// 	base           : 'BrowserStack',
+		// 	browser        : 'IE',
+		// 	browser_version: '9',
+		// 	os             : 'Windows',
+		// 	os_version     : '7',
+		// },
 		Edge: {
 			base           : 'BrowserStack',
 			browser        : 'Edge',
