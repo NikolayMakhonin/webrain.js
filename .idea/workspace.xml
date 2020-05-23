@@ -31,7 +31,6 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="69b2ee16-521b-4efd-b473-8e19e3df4d09" name="Default Changelist" comment="Fix Random">
-      <change beforePath="$PROJECT_DIR$/.eslintrc.js" beforeDir="false" afterPath="$PROJECT_DIR$/.eslintrc.js" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/dist/js/main/browser/helpers/touchMouse.js" beforeDir="false" />
       <change beforePath="$PROJECT_DIR$/dist/js/main/common/async/ThenableSync.js" beforeDir="false" afterPath="$PROJECT_DIR$/dist/js/main/common/async/ThenableSync.js" afterDir="false" />
@@ -322,6 +321,7 @@
       <change beforePath="$PROJECT_DIR$/dist/types/common/time/TimeLimit.d.ts" beforeDir="false" />
       <change beforePath="$PROJECT_DIR$/dist/types/common/time/TimeLimits.d.ts" beforeDir="false" />
       <change beforePath="$PROJECT_DIR$/dist/types/common/time/helpers.d.ts" beforeDir="false" afterPath="$PROJECT_DIR$/dist/types/common/time/helpers.d.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/test/tests/common/main/rx/object/observable-object-builder.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/test/tests/common/main/rx/object/observable-object-builder.ts" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -373,7 +373,7 @@
     <property name="WebServerToolWindowFactoryState" value="false" />
     <property name="auto.test.manager.delay" value="5000" />
     <property name="javascript.karma.karma_node_package_dir" value="" />
-    <property name="last_opened_file_path" value="$PROJECT_DIR$/tmp/coverage/merge" />
+    <property name="last_opened_file_path" value="$PROJECT_DIR$/src/test/tests/common/main/rx/depend/dependent-func/base.ts" />
     <property name="node.js.detected.package.eslint" value="true" />
     <property name="node.js.detected.package.standard" value="true" />
     <property name="node.js.detected.package.tslint" value="true" />
@@ -778,14 +778,7 @@
       <workItem from="1590135086386" duration="2390000" />
       <workItem from="1590149294582" duration="15706000" />
       <workItem from="1590207827975" duration="9740000" />
-      <workItem from="1590217587334" duration="18888000" />
-    </task>
-    <task id="LOCAL-00467" summary="Fix Lazy, now it will throw on error. Tests OK.">
-      <created>1588179824894</created>
-      <option name="number" value="00467" />
-      <option name="presentableId" value="LOCAL-00467" />
-      <option name="project" value="LOCAL" />
-      <updated>1588179824894</updated>
+      <workItem from="1590217587334" duration="19914000" />
     </task>
     <task id="LOCAL-00468" summary="depend: Fix error behavior. Tests OK.">
       <created>1588185825994</created>
@@ -1123,7 +1116,14 @@
       <option name="project" value="LOCAL" />
       <updated>1590239499160</updated>
     </task>
-    <option name="localTasksCounter" value="516" />
+    <task id="LOCAL-00516" summary="precommit is OK">
+      <created>1590243801241</created>
+      <option name="number" value="00516" />
+      <option name="presentableId" value="LOCAL-00516" />
+      <option name="project" value="LOCAL" />
+      <updated>1590243801241</updated>
+    </task>
+    <option name="localTasksCounter" value="517" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -1184,7 +1184,6 @@
   <component name="VcsManagerConfiguration">
     <option name="CHECK_CODE_SMELLS_BEFORE_PROJECT_COMMIT" value="false" />
     <option name="CHECK_NEW_TODO" value="false" />
-    <MESSAGE value="Prepare v2: deleted deep-subscriber. Tests OK." />
     <MESSAGE value="Prepare v2: deleting unnecessary lists... Tests OK." />
     <MESSAGE value="Prepare v2: deleted unnecessary lists. Tests OK." />
     <MESSAGE value="Prepare v2: deleted unnecessary autoConnect. Tests OK." />
@@ -1209,7 +1208,8 @@
     <MESSAGE value="karma: stop IE support" />
     <MESSAGE value="Fix coverage" />
     <MESSAGE value="Prepare release" />
-    <option name="LAST_COMMIT_MESSAGE" value="Prepare release" />
+    <MESSAGE value="precommit is OK" />
+    <option name="LAST_COMMIT_MESSAGE" value="precommit is OK" />
   </component>
   <component name="WindowStateProjectService">
     <state x="617" y="103" key="#ESLint" timestamp="1590218488709">
@@ -1244,10 +1244,10 @@
       <screen x="0" y="0" width="1920" height="882" />
     </state>
     <state x="651" y="254" key="ANALYSIS_DLG_com.intellij.analysis.BaseAnalysisAction$1/0.0.1920.882@0.0.1920.882" timestamp="1588413930131" />
-    <state x="-2" y="0" width="1918" height="882" key="CommitChangelistDialog2" timestamp="1590239496989">
+    <state x="-2" y="0" width="1918" height="882" key="CommitChangelistDialog2" timestamp="1590243799059">
       <screen x="0" y="0" width="1920" height="882" />
     </state>
-    <state x="-2" y="0" width="1918" height="882" key="CommitChangelistDialog2/0.0.1920.882@0.0.1920.882" timestamp="1590239496989" />
+    <state x="-2" y="0" width="1918" height="882" key="CommitChangelistDialog2/0.0.1920.882@0.0.1920.882" timestamp="1590243799059" />
     <state width="884" height="550" key="DebuggerActiveHint" timestamp="1590162335145">
       <screen x="0" y="0" width="1920" height="882" />
     </state>
@@ -1256,10 +1256,10 @@
       <screen x="0" y="0" width="1920" height="882" />
     </state>
     <state x="0" y="4" width="1920" height="875" key="DiffContextDialog/0.0.1920.882@0.0.1920.882" timestamp="1590239426525" />
-    <state x="1059" y="106" key="FileChooserDialogImpl" timestamp="1590069094529">
+    <state x="1059" y="106" key="FileChooserDialogImpl" timestamp="1590245638441">
       <screen x="0" y="0" width="1920" height="882" />
     </state>
-    <state x="1059" y="106" key="FileChooserDialogImpl/0.0.1920.882@0.0.1920.882" timestamp="1590069094529" />
+    <state x="1059" y="106" key="FileChooserDialogImpl/0.0.1920.882@0.0.1920.882" timestamp="1590245638441" />
     <state width="810" height="192" key="GridCell.Tab.0.bottom" timestamp="1590239602132">
       <screen x="0" y="0" width="1920" height="882" />
     </state>

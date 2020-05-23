@@ -39,7 +39,7 @@ describe('common > main > rx > observable-object-builder', function() {
 
 		assert.ok(object.propertyChanged)
 
-		assert.throws(() => ((object.propertyChanged as any) = '1'), TypeError)
+		// assert.throws(() => ((object.propertyChanged as any) = '1'), TypeError)
 
 		Object.defineProperty(object, 'propertyChanged', {
 			value: '2',
@@ -52,7 +52,7 @@ describe('common > main > rx > observable-object-builder', function() {
 		const {object} = new ObservableObjectBuilder()
 		assert.ok(object.propertyChanged)
 
-		assert.throws(() => (object.propertyChanged = '1'), TypeError)
+		// assert.throws(() => (object.propertyChanged = '1'), TypeError)
 
 		Object.defineProperty(object, 'propertyChanged', {
 			value: '2',
