@@ -162,6 +162,10 @@ module.exports.configCommon = function (config) {
 
 		// optionally, configure the reporter
 		coverageReporter: {
+			// Prevent to disable coverage by IntelliJ
+			// see: https://github.com/karma-runner/karma-coverage/issues/183#issuecomment-167880660
+			instrumenter: null,
+
 			type: 'json',
 			dir : 'tmp/coverage/karma/json',
 			// subDir: () => 'browser'
@@ -308,7 +312,7 @@ function configDetectBrowsers(config) {
 					E2E_ChromiumLatest: /Chromium/,
 
 					// Exclude:
-					"": /\bIE\d*\b/,
+					'': /\bIE\d*\b/,
 				}
 
 				return availableBrowsers
