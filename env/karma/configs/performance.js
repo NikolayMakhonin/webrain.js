@@ -3,8 +3,15 @@
 const helpers = require('../helpers')
 const {fileExtensions} = require('../../common/helpers')
 
-module.exports = function (config) {
+module.exports = async function (config) {
 	helpers.configCommon(config)
+
+	const concatFile = await helpers.concatJsFiles(
+		'tmp/karma/tests.js',
+		{dev: false, legacy: true, coverage: false},
+		`src/test/performance/{common,browser}/**/*{${[...fileExtensions.js, ...fileExtensions.ts].join(',')}}`,
+		`!*/**/{src,assets,js}/**/*{${[...fileExtensions.js, ...fileExtensions.ts].join(',')}}`
+	)
 
 	config.set({
 		browsers: [
@@ -22,11 +29,7 @@ module.exports = function (config) {
 		files: [
 			helpers.servedPattern(require.resolve('chai/chai')),
 			helpers.servedPattern(helpers.writeTextFile('tmp/karma/chai.js', '"use strict"; var assert = chai.assert, expect = chai.expect, should = chai.should;')),
-			helpers.concatJsFiles(
-				'tmp/karma/performance.js',
-				`src/test/performance/{common,browser}/**/*{${[...fileExtensions.js, ...fileExtensions.ts].join(',')}}`,
-				`!*/**/{src,assets,js}/**/*{${[...fileExtensions.js, ...fileExtensions.ts].join(',')}}`
-			)
+			concatFile,
 		],
 
 		// list of files / patterns to exclude
@@ -35,16 +38,16 @@ module.exports = function (config) {
 		// preprocess matching files before serving them to the browser
 		// available preprocessors: https://npmjs.org/browse/keyword/karma-preprocessor
 		preprocessors: {
-			'tmp/karma/performance.js': ['rollup']
+			// 'tmp/karma/performance.js': ['rollup']
 		},
 
-		rollupPreprocessor: {
-			plugins: helpers.rollup.plugins.karma({dev: false, legacy: true, coverage: false}),
-			output : {
-				format   : 'iife',
-				sourcemap: true // 'inline'
-			}
-		},
+		// rollupPreprocessor: {
+		// 	plugins: helpers.rollup.plugins.karma({dev: false, legacy: true, coverage: false}),
+		// 	output : {
+		// 		format   : 'iife',
+		// 		sourcemap: true // 'inline'
+		// 	}
+		// },
 
 		// test results reporter to use
 		// possible values: 'dots', 'progress'
