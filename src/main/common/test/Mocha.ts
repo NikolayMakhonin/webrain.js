@@ -28,8 +28,6 @@ export function it(name, func: (this: {
 	return globalScope.it.call(this, name, isFuncWithoutParameters(func)
 		? function() {
 			try {
-				unScheduleAfterAll()
-
 				const result = func.call(this)
 
 				if (result && typeof result.then === 'function') {
@@ -47,19 +45,16 @@ export function it(name, func: (this: {
 				assert.assertNotHandledErrors()
 				return result
 			} finally {
-				scheduleAfterAll()
 				assert.assertNotHandledErrors()
 			}
 		}
 		: function(done) {
 			try {
-				unScheduleAfterAll()
 				return func.call(this, err => {
 					assert.assertNotHandledErrors()
 					done(err)
 				})
 			} finally {
-				scheduleAfterAll()
 				assert.assertNotHandledErrors()
 			}
 		})
