@@ -31,8 +31,7 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="69b2ee16-521b-4efd-b473-8e19e3df4d09" name="Default Changelist" comment="">
-      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/package.json" beforeDir="false" afterPath="$PROJECT_DIR$/package.json" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/HISTORY.md" beforeDir="false" afterPath="$PROJECT_DIR$/HISTORY.md" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -496,14 +495,7 @@
       <workItem from="1590207827975" duration="9740000" />
       <workItem from="1590217587334" duration="35272000" />
       <workItem from="1590299663864" duration="2207000" />
-      <workItem from="1590301884117" duration="328000" />
-    </task>
-    <task id="LOCAL-00476" summary="Replace console.log -&gt; console.debug">
-      <created>1588344676984</created>
-      <option name="number" value="00476" />
-      <option name="presentableId" value="LOCAL-00476" />
-      <option name="project" value="LOCAL" />
-      <updated>1588344676984</updated>
+      <workItem from="1590301884117" duration="686000" />
     </task>
     <task id="LOCAL-00477" summary="webrain v1">
       <created>1588403082873</created>
@@ -841,7 +833,14 @@
       <option name="project" value="LOCAL" />
       <updated>1590301122191</updated>
     </task>
-    <option name="localTasksCounter" value="525" />
+    <task id="LOCAL-00525" summary="v1.0.0a">
+      <created>1590302366573</created>
+      <option name="number" value="00525" />
+      <option name="presentableId" value="LOCAL-00525" />
+      <option name="project" value="LOCAL" />
+      <updated>1590302366573</updated>
+    </task>
+    <option name="localTasksCounter" value="526" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -902,7 +901,6 @@
   <component name="VcsManagerConfiguration">
     <option name="CHECK_CODE_SMELLS_BEFORE_PROJECT_COMMIT" value="false" />
     <option name="CHECK_NEW_TODO" value="false" />
-    <MESSAGE value="Prepare v2... Tests OK." />
     <MESSAGE value="Prepare v2. Deleted commented files. Lint fixes. Tests OK." />
     <MESSAGE value="Prepare v2. Deleted unused dependencies. Tests OK." />
     <MESSAGE value="Prepare v2. Deleted getTupleId/getTupleIdMap" />
@@ -927,7 +925,8 @@
     <MESSAGE value="precommit is OK. travis is OK." />
     <MESSAGE value="Rename external interface refactoring." />
     <MESSAGE value="precommit is OK" />
-    <option name="LAST_COMMIT_MESSAGE" value="precommit is OK" />
+    <MESSAGE value="v1.0.0a" />
+    <option name="LAST_COMMIT_MESSAGE" value="v1.0.0a" />
   </component>
   <component name="WindowStateProjectService">
     <state x="617" y="103" key="#ESLint" timestamp="1590218488709">
@@ -962,10 +961,10 @@
       <screen x="0" y="0" width="1920" height="882" />
     </state>
     <state x="651" y="254" key="ANALYSIS_DLG_com.intellij.analysis.BaseAnalysisAction$1/0.0.1920.882@0.0.1920.882" timestamp="1588413930131" />
-    <state x="-2" y="0" width="1918" height="882" key="CommitChangelistDialog2" timestamp="1590301120914">
+    <state x="-2" y="0" width="1918" height="882" key="CommitChangelistDialog2" timestamp="1590302365687">
       <screen x="0" y="0" width="1920" height="882" />
     </state>
-    <state x="-2" y="0" width="1918" height="882" key="CommitChangelistDialog2/0.0.1920.882@0.0.1920.882" timestamp="1590301120914" />
+    <state x="-2" y="0" width="1918" height="882" key="CommitChangelistDialog2/0.0.1920.882@0.0.1920.882" timestamp="1590302365687" />
     <state width="884" height="550" key="DebuggerActiveHint" timestamp="1590162335145">
       <screen x="0" y="0" width="1920" height="882" />
     </state>
