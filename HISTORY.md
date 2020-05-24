@@ -1,7 +1,7 @@
-1.0.0a / 2020-05-24
+1.0.0-a / 2020-05-24
 ===================
 
-  * Implement autosubscribed dependent func wrapper like MobX but more universal
+  * Implemented autosubscribed dependent func wrapper like MobX but more universal
   * Removed deprecated `deepSubscribe`
   * `depend` / `dependX` functions is fundamental functions now instead `deepSubscribe` 
   * Big refactoring
