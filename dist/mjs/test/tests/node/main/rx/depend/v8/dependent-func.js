@@ -13,7 +13,7 @@ import { OptimizationStatus } from '../../../../v8/src/helpers/contracts';
 import { assertIsOptimized, checkIsOptimized } from '../../../../v8/src/helpers/helpers';
 import { clearCallStates } from '../../../../../common/main/rx/depend/src/helpers';
 import { createPerceptron } from '../../../../../common/main/rx/depend/src/perceptron';
-describe('node > main > rx > depend > dependent-func', function () {
+describe('node > main > rx > depend > v8', function () {
   async function v8Test(countIterations, iterate) {
     const objects = {
       ObjectPool,

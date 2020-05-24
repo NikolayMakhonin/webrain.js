@@ -26,7 +26,7 @@ var _CallState = require("../../../../../../../../main/common/rx/depend/core/Cal
 
 var _depend = require("../../../../../../../../main/common/rx/depend/core/depend");
 
-var _dependDeepSubscriber = require("../../../../../../../../main/common/rx/object/properties/path/dependDeepSubscriber");
+var _deepSubscriber = require("../../../../../../../../main/common/rx/object/properties/path/deepSubscriber");
 
 var _Assert = require("../../../../../../../../main/common/test/Assert");
 
@@ -37,7 +37,7 @@ var _helpers = require("../../../../../../../../main/common/time/helpers");
 /* tslint:disable:no-duplicate-string new-parens */
 
 /* eslint-disable guard-for-in */
-(0, _Mocha.describe)('common > main > rx > properties > dependDeepSubscribe', function () {
+(0, _Mocha.describe)('common > main > rx > properties > deepSubscribe', function () {
   (0, _Mocha.it)('base', /*#__PURE__*/(0, _asyncToGenerator2.default)( /*#__PURE__*/_regenerator.default.mark(function _callee2() {
     var visits, InnerClass, value, getValue, innerObject, invalidate, object, values, unsubscribe;
     return _regenerator.default.wrap(function _callee2$(_context2) {
@@ -138,7 +138,7 @@ var _helpers = require("../../../../../../../../main/common/time/helpers");
 
             _Assert.assert.deepStrictEqual(visits, []);
 
-            unsubscribe = (0, _dependDeepSubscriber.dependDeepSubscriber)({
+            unsubscribe = (0, _deepSubscriber.deepSubscriber)({
               build: function build(b) {
                 return b.v('a').collection().p('b').collection().p('c').any(function (b2) {
                   return b2.collection();

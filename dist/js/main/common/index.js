@@ -1,7 +1,7 @@
 "use strict";
 
 exports.__esModule = true;
-exports.createConnector = exports.dependWrapThis = exports.dependWait = exports.autoCalc = exports.autoCalcConnect = exports.Path = exports.dependDeepSubscriber = exports.noSubscribe = exports.dependConnectorFactory = exports.dependCalcPropertyFactoryX = exports.dependCalcPropertyFactory = exports.DependSet = exports.DependMap = exports.dependX = exports.depend = exports.CallStatus = exports.subscribeCallState = exports.invalidateCallState = exports.getOrCreateCallState = exports.getCallState = exports.NO_CHANGE_VALUE = exports.ALWAYS_CHANGE_VALUE = exports.Random = exports.performanceNow = exports.delay = exports.DeferredCalc = exports.VALUE_PROPERTY_DEFAULT = exports.CalcStat = exports.resolveAsyncAny = exports.resolveAsyncAll = exports.resolveAsyncFunc = exports.resolveAsync = exports.ConnectorState = exports.webrainEquals = exports.webrainOptions = exports.equals = exports.isIterator = exports.isIterable = exports.ObjectSerializer = exports.registerSerializer = exports.registerSerializable = exports.registerMerger = exports.registerMergeable = exports.BehaviorSubject = exports.Subject = exports.Connector = exports.PropertyChangedObject = exports.ObjectMerger = exports.resolvePath = exports.getObjectUniqueId = exports.createFunction = exports.DependCalcObjectBuilder = exports.ObservableObjectBuilder = exports.ClassBuilder = exports.ObjectBuilder = exports.ObservableObject = exports.ObservableClass = exports.ThenableSync = void 0;
+exports.dependWrapThis = exports.dependWait = exports.autoCalc = exports.autoCalcConnect = exports.Path = exports.deepSubscriber = exports.noSubscribe = exports.connectorFactory = exports.calcPropertyFactoryX = exports.calcPropertyFactory = exports.DependSet = exports.DependMap = exports.dependX = exports.depend = exports.CallStatus = exports.subscribeCallState = exports.invalidateCallState = exports.getOrCreateCallState = exports.getCallState = exports.NO_CHANGE_VALUE = exports.ALWAYS_CHANGE_VALUE = exports.Random = exports.performanceNow = exports.delay = exports.DeferredCalc = exports.VALUE_PROPERTY_DEFAULT = exports.CalcStat = exports.resolveAsyncAny = exports.resolveAsyncAll = exports.resolveAsyncFunc = exports.resolveAsync = exports.webrainEquals = exports.webrainOptions = exports.equals = exports.isIterator = exports.isIterable = exports.ObjectSerializer = exports.registerSerializer = exports.registerSerializable = exports.registerMerger = exports.registerMergeable = exports.BehaviorSubject = exports.Subject = exports.Connector = exports.PropertyChangedObject = exports.ObjectMerger = exports.resolvePath = exports.CalcObjectBuilder = exports.ObservableObjectBuilder = exports.ClassBuilder = exports.ObjectBuilder = exports.ObservableObject = exports.ObservableClass = exports.ThenableSync = void 0;
 
 var _ThenableSync = require("./async/ThenableSync");
 
@@ -31,22 +31,11 @@ var _ObservableObjectBuilder = require("./rx/object/ObservableObjectBuilder");
 
 exports.ObservableObjectBuilder = _ObservableObjectBuilder.ObservableObjectBuilder;
 
-var _DependCalcObjectBuilder = require("./rx/object/properties/DependCalcObjectBuilder");
+var _CalcObjectBuilder = require("./rx/object/properties/CalcObjectBuilder");
 
-exports.DependCalcObjectBuilder = _DependCalcObjectBuilder.DependCalcObjectBuilder;
-exports.dependCalcPropertyFactory = _DependCalcObjectBuilder.dependCalcPropertyFactory;
-exports.dependCalcPropertyFactoryX = _DependCalcObjectBuilder.dependCalcPropertyFactoryX;
-
-var _helpers = require("./helpers/helpers");
-
-exports.createFunction = _helpers.createFunction;
-exports.isIterable = _helpers.isIterable;
-exports.isIterator = _helpers.isIterator;
-exports.equals = _helpers.equals;
-
-var _objectUniqueId = require("./helpers/object-unique-id");
-
-exports.getObjectUniqueId = _objectUniqueId.getObjectUniqueId;
+exports.CalcObjectBuilder = _CalcObjectBuilder.CalcObjectBuilder;
+exports.calcPropertyFactory = _CalcObjectBuilder.calcPropertyFactory;
+exports.calcPropertyFactoryX = _CalcObjectBuilder.calcPropertyFactoryX;
 
 var _resolve = require("./rx/object/properties/path/resolve");
 
@@ -65,7 +54,6 @@ exports.PropertyChangedObject = _PropertyChangedObject.PropertyChangedObject;
 var _Connector = require("./rx/object/properties/Connector");
 
 exports.Connector = _Connector.Connector;
-exports.ConnectorState = _Connector.ConnectorState;
 
 var _subject = require("./rx/subjects/subject");
 
@@ -80,6 +68,12 @@ var _serializers = require("./extensions/serialization/serializers");
 exports.registerSerializable = _serializers.registerSerializable;
 exports.registerSerializer = _serializers.registerSerializer;
 exports.ObjectSerializer = _serializers.ObjectSerializer;
+
+var _helpers = require("./helpers/helpers");
+
+exports.isIterable = _helpers.isIterable;
+exports.isIterator = _helpers.isIterator;
+exports.equals = _helpers.equals;
 
 var _webrainOptions = require("./helpers/webrainOptions");
 
@@ -133,17 +127,17 @@ var _DependSet = require("./rx/depend/lists/DependSet");
 
 exports.DependSet = _DependSet.DependSet;
 
-var _DependConnectorBuilder = require("./rx/object/properties/DependConnectorBuilder");
+var _ConnectorBuilder = require("./rx/object/properties/ConnectorBuilder");
 
-exports.dependConnectorFactory = _DependConnectorBuilder.dependConnectorFactory;
+exports.connectorFactory = _ConnectorBuilder.connectorFactory;
 
 var _currentState = require("./rx/depend/core/current-state");
 
 exports.noSubscribe = _currentState.noSubscribe;
 
-var _dependDeepSubscriber = require("./rx/object/properties/path/dependDeepSubscriber");
+var _deepSubscriber = require("./rx/object/properties/path/deepSubscriber");
 
-exports.dependDeepSubscriber = _dependDeepSubscriber.dependDeepSubscriber;
+exports.deepSubscriber = _deepSubscriber.deepSubscriber;
 
 var _builder = require("./rx/object/properties/path/builder");
 
@@ -155,7 +149,3 @@ exports.autoCalcConnect = _helpers3.autoCalcConnect;
 exports.autoCalc = _helpers3.autoCalc;
 exports.dependWait = _helpers3.dependWait;
 exports.dependWrapThis = _helpers3.dependWrapThis;
-
-var _helpers4 = require("./rx/object/properties/helpers");
-
-exports.createConnector = _helpers4.createConnector;

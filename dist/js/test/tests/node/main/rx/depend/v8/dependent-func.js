@@ -41,7 +41,7 @@ var _helpers4 = require("../../../../../common/main/rx/depend/src/helpers");
 var _perceptron = require("../../../../../common/main/rx/depend/src/perceptron");
 
 /* tslint:disable:no-identical-functions no-shadowed-variable no-var-requires ordered-imports */
-(0, _Mocha.describe)('node > main > rx > depend > dependent-func', function () {
+(0, _Mocha.describe)('node > main > rx > depend > v8', function () {
   function v8Test(_x, _x2) {
     return _v8Test.apply(this, arguments);
   }

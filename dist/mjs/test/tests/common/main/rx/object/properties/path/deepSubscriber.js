@@ -3,13 +3,13 @@ import { resolveAsync } from '../../../../../../../../main/common/async/Thenable
 import { VALUE_PROPERTY_DEFAULT } from '../../../../../../../../main/common/helpers/value-property';
 import { ALWAYS_CHANGE_VALUE, getCallState, invalidateCallState } from '../../../../../../../../main/common/rx/depend/core/CallState';
 import { depend } from '../../../../../../../../main/common/rx/depend/core/depend';
-import { dependDeepSubscriber } from '../../../../../../../../main/common/rx/object/properties/path/dependDeepSubscriber';
+import { deepSubscriber } from '../../../../../../../../main/common/rx/object/properties/path/deepSubscriber';
 /* eslint-disable guard-for-in */
 
 import { assert } from '../../../../../../../../main/common/test/Assert';
 import { describe, it } from '../../../../../../../../main/common/test/Mocha';
 import { delay } from '../../../../../../../../main/common/time/helpers';
-describe('common > main > rx > properties > dependDeepSubscribe', function () {
+describe('common > main > rx > properties > deepSubscribe', function () {
   it('base', async function () {
     let visits = [];
 
@@ -78,7 +78,7 @@ describe('common > main > rx > properties > dependDeepSubscribe', function () {
     }();
     let values = [];
     assert.deepStrictEqual(visits, []);
-    const unsubscribe = dependDeepSubscriber({
+    const unsubscribe = deepSubscriber({
       build: b => b.v('a').collection().p('b').collection().p('c').any(b2 => b2.collection(), b2 => b2.mapAny()),
 
       subscriber(state) {

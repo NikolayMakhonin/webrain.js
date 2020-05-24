@@ -6,9 +6,9 @@ exports.__esModule = true;
 exports.propertyClass = propertyClass;
 exports.calcPropertyClassX = calcPropertyClassX;
 exports.calcPropertyClass = calcPropertyClass;
-exports.dependCalcPropertyFactory = dependCalcPropertyFactory;
-exports.dependCalcPropertyFactoryX = dependCalcPropertyFactoryX;
-exports.CalcPropertyClass = exports.PropertyClass = exports.DependCalcObjectBuilder = void 0;
+exports.calcPropertyFactory = calcPropertyFactory;
+exports.calcPropertyFactoryX = calcPropertyFactoryX;
+exports.CalcPropertyClass = exports.PropertyClass = exports.CalcObjectBuilder = void 0;
 
 var _construct = _interopRequireDefault(require("@babel/runtime-corejs3/core-js-stable/reflect/construct"));
 
@@ -36,7 +36,7 @@ var _ObservableClass3 = require("../ObservableClass");
 
 var _ObservableObjectBuilder = require("../ObservableObjectBuilder");
 
-var _DependConnectorBuilder = require("./DependConnectorBuilder");
+var _ConnectorBuilder2 = require("./ConnectorBuilder");
 
 var _helpers2 = require("./helpers");
 
@@ -59,56 +59,56 @@ function createGetValue(calcSourcePath, getValue) {
   }
 }
 
-var DependCalcObjectBuilder = /*#__PURE__*/function (_DependConnectorBuild) {
-  (0, _inherits2.default)(DependCalcObjectBuilder, _DependConnectorBuild);
+var CalcObjectBuilder = /*#__PURE__*/function (_ConnectorBuilder) {
+  (0, _inherits2.default)(CalcObjectBuilder, _ConnectorBuilder);
 
-  var _super = _createSuper(DependCalcObjectBuilder);
+  var _super = _createSuper(CalcObjectBuilder);
 
-  function DependCalcObjectBuilder(object, connectorSourcePath, calcSourcePath) {
+  function CalcObjectBuilder(object, connectorSourcePath, calcSourcePath) {
     var _this;
 
-    (0, _classCallCheck2.default)(this, DependCalcObjectBuilder);
+    (0, _classCallCheck2.default)(this, CalcObjectBuilder);
     _this = _super.call(this, object, connectorSourcePath);
     _this.calcSourcePath = calcSourcePath;
     return _this;
   } // @ts-ignore
 
 
-  (0, _createClass2.default)(DependCalcObjectBuilder, [{
+  (0, _createClass2.default)(CalcObjectBuilder, [{
     key: "func",
     value: function func(name, _func) {
-      return (0, _get2.default)((0, _getPrototypeOf2.default)(DependCalcObjectBuilder.prototype), "func", this).call(this, name, _func);
+      return (0, _get2.default)((0, _getPrototypeOf2.default)(CalcObjectBuilder.prototype), "func", this).call(this, name, _func);
     } // @ts-ignore
 
   }, {
     key: "writable",
     value: function writable(name, options, initValue) {
-      return (0, _get2.default)((0, _getPrototypeOf2.default)(DependCalcObjectBuilder.prototype), "writable", this).call(this, name, options, initValue);
+      return (0, _get2.default)((0, _getPrototypeOf2.default)(CalcObjectBuilder.prototype), "writable", this).call(this, name, options, initValue);
     } // @ts-ignore
 
   }, {
     key: "readable",
     value: function readable(name, options, initValue) {
-      return (0, _get2.default)((0, _getPrototypeOf2.default)(DependCalcObjectBuilder.prototype), "readable", this).call(this, name, options, initValue);
+      return (0, _get2.default)((0, _getPrototypeOf2.default)(CalcObjectBuilder.prototype), "readable", this).call(this, name, options, initValue);
     }
   }, {
-    key: "simpleCalc",
-    value: function simpleCalc(name, func) {
-      return (0, _get2.default)((0, _getPrototypeOf2.default)(DependCalcObjectBuilder.prototype), "readable", this).call(this, name, {
+    key: "calcSimple",
+    value: function calcSimple(name, func) {
+      return (0, _get2.default)((0, _getPrototypeOf2.default)(CalcObjectBuilder.prototype), "readable", this).call(this, name, {
         getValue: createGetValue(this.calcSourcePath, func)
       });
     }
   }, {
-    key: "dependCalc",
-    value: function dependCalc(name, func, deferredOptions) {
-      return (0, _get2.default)((0, _getPrototypeOf2.default)(DependCalcObjectBuilder.prototype), "readable", this).call(this, name, {
+    key: "calc",
+    value: function calc(name, func, deferredOptions) {
+      return (0, _get2.default)((0, _getPrototypeOf2.default)(CalcObjectBuilder.prototype), "readable", this).call(this, name, {
         getValue: (0, _depend.depend)(createGetValue(this.calcSourcePath, func), deferredOptions, (0, _helpers.makeDependPropertySubscriber)(name))
       });
     }
   }, {
-    key: "dependCalcX",
-    value: function dependCalcX(name, func, deferredOptions) {
-      return (0, _get2.default)((0, _getPrototypeOf2.default)(DependCalcObjectBuilder.prototype), "readable", this).call(this, name, {
+    key: "calcX",
+    value: function calcX(name, func, deferredOptions) {
+      return (0, _get2.default)((0, _getPrototypeOf2.default)(CalcObjectBuilder.prototype), "readable", this).call(this, name, {
         getValue: (0, _depend.dependX)(func, deferredOptions, (0, _helpers.makeDependPropertySubscriber)(name))
       });
     }
@@ -116,7 +116,7 @@ var DependCalcObjectBuilder = /*#__PURE__*/function (_DependConnectorBuild) {
     key: "nested",
     value: function nested(name, build) {
       var propClass = propertyClass(build);
-      return (0, _get2.default)((0, _getPrototypeOf2.default)(DependCalcObjectBuilder.prototype), "readable", this).call(this, name, {
+      return (0, _get2.default)((0, _getPrototypeOf2.default)(CalcObjectBuilder.prototype), "readable", this).call(this, name, {
         factory: function factory() {
           return new propClass(this);
         }
@@ -178,11 +178,11 @@ var DependCalcObjectBuilder = /*#__PURE__*/function (_DependConnectorBuild) {
     // }
 
   }]);
-  return DependCalcObjectBuilder;
-}(_DependConnectorBuilder.DependConnectorBuilder); // region PropertyClass
+  return CalcObjectBuilder;
+}(_ConnectorBuilder2.ConnectorBuilder); // region PropertyClass
 
 
-exports.DependCalcObjectBuilder = DependCalcObjectBuilder;
+exports.CalcObjectBuilder = CalcObjectBuilder;
 
 var PropertyClass = /*#__PURE__*/function (_ObservableClass) {
   (0, _inherits2.default)(PropertyClass, _ObservableClass);
@@ -212,7 +212,7 @@ function propertyClass(build, baseClass) {
     return o.$object;
   }).init();
   return (0, _helpers2.observableClass)(function (object) {
-    return build(new DependCalcObjectBuilder(object, objectPath)).object;
+    return build(new CalcObjectBuilder(object, objectPath)).object;
   }, baseClass != null ? baseClass : PropertyClass);
 } // endregion
 // region CalcPropertyClass
@@ -242,8 +242,8 @@ new _ObservableObjectBuilder.ObservableObjectBuilder(CalcPropertyClass.prototype
 function calcPropertyClassX(func, deferredOptions, baseClass) {
   // const inputPath = Path.build<TBaseClass>()(o => o.input)()
   return (0, _helpers2.observableClass)(function (object) {
-    return new DependCalcObjectBuilder(object) // , inputPath, inputPath)
-    .dependCalcX(_valueProperty.VALUE_PROPERTY_DEFAULT, func, deferredOptions).object;
+    return new CalcObjectBuilder(object) // , inputPath, inputPath)
+    .calcX(_valueProperty.VALUE_PROPERTY_DEFAULT, func, deferredOptions).object;
   }, baseClass != null ? baseClass : CalcPropertyClass);
 }
 
@@ -252,11 +252,11 @@ function calcPropertyClass(func, deferredOptions, baseClass) {
     return o.input;
   }).init();
   return (0, _helpers2.observableClass)(function (object) {
-    return new DependCalcObjectBuilder(object, inputPath, inputPath).dependCalc(_valueProperty.VALUE_PROPERTY_DEFAULT, func, deferredOptions).object;
+    return new CalcObjectBuilder(object, inputPath, inputPath).calc(_valueProperty.VALUE_PROPERTY_DEFAULT, func, deferredOptions).object;
   }, baseClass != null ? baseClass : CalcPropertyClass);
 }
 
-function dependCalcPropertyFactory(_ref) {
+function calcPropertyFactory(_ref) {
   var name = _ref.name,
       calcFunc = _ref.calcFunc,
       deferredOptions = _ref.deferredOptions;
@@ -267,7 +267,7 @@ function dependCalcPropertyFactory(_ref) {
   };
 }
 
-function dependCalcPropertyFactoryX(_ref2) {
+function calcPropertyFactoryX(_ref2) {
   var name = _ref2.name,
       calcFunc = _ref2.calcFunc,
       deferredOptions = _ref2.deferredOptions;

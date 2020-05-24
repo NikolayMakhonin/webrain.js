@@ -7,7 +7,7 @@ import { ObservableObjectBuilder } from '../ObservableObjectBuilder';
 import { Connector } from './Connector';
 import { observableClass } from './helpers';
 import { Path, PathGetSet } from './path/builder';
-export class DependConnectorBuilder extends ObservableObjectBuilder {
+export class ConnectorBuilder extends ObservableObjectBuilder {
   constructor(object, sourcePath) {
     super(object);
     this.sourcePath = sourcePath;
@@ -15,13 +15,13 @@ export class DependConnectorBuilder extends ObservableObjectBuilder {
 
 
   connectSimple(name, common, getSet, options) {
-    return this._connectPath(name, common, getSet, options);
+    return this._connect(name, common, getSet, options);
   } // endregion
-  // region connectPath
+  // region connect
 
 
-  connectPath(name, common, getSet, options) {
-    return this._connectPath(name, common, getSet, options ? { ...options,
+  connect(name, common, getSet, options) {
+    return this._connect(name, common, getSet, options ? { ...options,
       isDepend: true
     } : {
       isDepend: true
@@ -31,7 +31,7 @@ export class DependConnectorBuilder extends ObservableObjectBuilder {
 
 
   connectLazy(name, common, getSet, options) {
-    return this._connectPath(name, common, getSet, options ? { ...options,
+    return this._connect(name, common, getSet, options ? { ...options,
       isDepend: true,
       isLazy: true
     } : {
@@ -43,7 +43,7 @@ export class DependConnectorBuilder extends ObservableObjectBuilder {
 
 
   connectWait(name, common, getSet, options) {
-    return this._connectPath(name, common, getSet, options ? { ...options,
+    return this._connect(name, common, getSet, options ? { ...options,
       isDepend: true,
       isWait: true
     } : {
@@ -55,7 +55,7 @@ export class DependConnectorBuilder extends ObservableObjectBuilder {
 
 
   connectWaitLazy(name, common, getSet, options) {
-    return this._connectPath(name, common, getSet, options ? { ...options,
+    return this._connect(name, common, getSet, options ? { ...options,
       isDepend: true,
       isLazy: true,
       isWait: true
@@ -65,10 +65,10 @@ export class DependConnectorBuilder extends ObservableObjectBuilder {
       isWait: true
     });
   } // endregion
-  // region _connectPath
+  // region _connect
 
 
-  _connectPath(name, common, getSet, options) {
+  _connect(name, common, getSet, options) {
     let path = PathGetSet.build(common, getSet);
     const {
       sourcePath
@@ -128,9 +128,9 @@ export class DependConnectorBuilder extends ObservableObjectBuilder {
 }
 export function dependConnectorClass(build, baseClass) {
   const sourcePath = new Path().f(o => o.connectorState).f(o => o.source).init();
-  return observableClass(object => build(new DependConnectorBuilder(object, sourcePath)).object, baseClass != null ? baseClass : Connector);
+  return observableClass(object => build(new ConnectorBuilder(object, sourcePath)).object, baseClass != null ? baseClass : Connector);
 }
-export function dependConnectorFactory({
+export function connectorFactory({
   name,
   build,
   baseClass

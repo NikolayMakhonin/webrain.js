@@ -3,7 +3,7 @@ import { depend, dependX } from '../../../rx/depend/core/depend';
 import { makeDependPropertySubscriber } from '../helpers';
 import { ObservableClass } from '../ObservableClass';
 import { ObservableObjectBuilder } from '../ObservableObjectBuilder';
-import { DependConnectorBuilder } from './DependConnectorBuilder';
+import { ConnectorBuilder } from './ConnectorBuilder';
 import { observableClass } from './helpers';
 import { Path } from './path/builder';
 
@@ -18,7 +18,7 @@ function createGetValue(calcSourcePath, getValue) {
   }
 }
 
-export class DependCalcObjectBuilder extends DependConnectorBuilder {
+export class CalcObjectBuilder extends ConnectorBuilder {
   constructor(object, connectorSourcePath, calcSourcePath) {
     super(object, connectorSourcePath);
     this.calcSourcePath = calcSourcePath;
@@ -39,19 +39,19 @@ export class DependCalcObjectBuilder extends DependConnectorBuilder {
     return super.readable(name, options, initValue);
   }
 
-  simpleCalc(name, func) {
+  calcSimple(name, func) {
     return super.readable(name, {
       getValue: createGetValue(this.calcSourcePath, func)
     });
   }
 
-  dependCalc(name, func, deferredOptions) {
+  calc(name, func, deferredOptions) {
     return super.readable(name, {
       getValue: depend(createGetValue(this.calcSourcePath, func), deferredOptions, makeDependPropertySubscriber(name))
     });
   }
 
-  dependCalcX(name, func, deferredOptions) {
+  calcX(name, func, deferredOptions) {
     return super.readable(name, {
       getValue: dependX(func, deferredOptions, makeDependPropertySubscriber(name))
     });
@@ -137,7 +137,7 @@ new ObservableObjectBuilder(PropertyClass.prototype).writable('$object', {
 });
 export function propertyClass(build, baseClass) {
   const objectPath = new Path().f(o => o.$object).init();
-  return observableClass(object => build(new DependCalcObjectBuilder(object, objectPath)).object, baseClass != null ? baseClass : PropertyClass);
+  return observableClass(object => build(new CalcObjectBuilder(object, objectPath)).object, baseClass != null ? baseClass : PropertyClass);
 } // endregion
 // region CalcPropertyClass
 
@@ -152,14 +152,14 @@ export class CalcPropertyClass extends ObservableClass {
 new ObservableObjectBuilder(CalcPropertyClass.prototype).writable('input');
 export function calcPropertyClassX(func, deferredOptions, baseClass) {
   // const inputPath = Path.build<TBaseClass>()(o => o.input)()
-  return observableClass(object => new DependCalcObjectBuilder(object) // , inputPath, inputPath)
-  .dependCalcX(VALUE_PROPERTY_DEFAULT, func, deferredOptions).object, baseClass != null ? baseClass : CalcPropertyClass);
+  return observableClass(object => new CalcObjectBuilder(object) // , inputPath, inputPath)
+  .calcX(VALUE_PROPERTY_DEFAULT, func, deferredOptions).object, baseClass != null ? baseClass : CalcPropertyClass);
 }
 export function calcPropertyClass(func, deferredOptions, baseClass) {
   const inputPath = new Path().fv(o => o.input).init();
-  return observableClass(object => new DependCalcObjectBuilder(object, inputPath, inputPath).dependCalc(VALUE_PROPERTY_DEFAULT, func, deferredOptions).object, baseClass != null ? baseClass : CalcPropertyClass);
+  return observableClass(object => new CalcObjectBuilder(object, inputPath, inputPath).calc(VALUE_PROPERTY_DEFAULT, func, deferredOptions).object, baseClass != null ? baseClass : CalcPropertyClass);
 }
-export function dependCalcPropertyFactory({
+export function calcPropertyFactory({
   name,
   calcFunc,
   deferredOptions // baseClass,
@@ -169,7 +169,7 @@ export function dependCalcPropertyFactory({
   );
   return (input, _name) => new NewProperty(input, _name != null ? _name : name);
 }
-export function dependCalcPropertyFactoryX({
+export function calcPropertyFactoryX({
   name,
   calcFunc,
   deferredOptions // baseClass,

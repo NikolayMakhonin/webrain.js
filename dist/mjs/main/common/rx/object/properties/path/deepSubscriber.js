@@ -54,7 +54,7 @@ const dependForEachRule = depend(function (rule, emitLastValue) {
     }
   }), emitLastValue ? null : () => ALWAYS_CHANGE_VALUE, null, null, resolveValueProperty);
 });
-export function dependDeepSubscriber({
+export function deepSubscriber({
   object,
   rule,
   build,

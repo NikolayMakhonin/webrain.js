@@ -13,18 +13,14 @@ var _Mocha = require("../../../../../../../main/common/test/Mocha");
 var _stressTest = require("../src/stress-test");
 
 /* tslint:disable:no-identical-functions no-shadowed-variable */
-(0, _Mocha.describe)('common > main > rx > depend > dependent-func / stress', function () {
+(0, _Mocha.describe)('common > main > rx > depend > stress', function () {
   this.timeout(60 * 60 * 1000);
   beforeEach(function () {
     _webrainOptions.webrainOptions.callState.garbageCollect.disabled = false;
     _webrainOptions.webrainOptions.callState.garbageCollect.bulkSize = 100;
     _webrainOptions.webrainOptions.callState.garbageCollect.interval = 1000;
     _webrainOptions.webrainOptions.callState.garbageCollect.minLifeTime = 500;
-  }); // 'test number: 0'
-  // 'seed = 649781656'
-  // 'actual: ', Number{}
-  // 'expected: ', 1
-
+  });
   (0, _Mocha.it)('all', /*#__PURE__*/(0, _asyncToGenerator2.default)( /*#__PURE__*/_regenerator.default.mark(function _callee() {
     return _regenerator.default.wrap(function _callee$(_context) {
       while (1) {

@@ -4,8 +4,8 @@ var _interopRequireDefault = require("@babel/runtime-corejs3/helpers/interopRequ
 
 exports.__esModule = true;
 exports.dependConnectorClass = dependConnectorClass;
-exports.dependConnectorFactory = dependConnectorFactory;
-exports.DependConnectorBuilder = void 0;
+exports.connectorFactory = connectorFactory;
+exports.ConnectorBuilder = void 0;
 
 var _construct = _interopRequireDefault(require("@babel/runtime-corejs3/core-js-stable/reflect/construct"));
 
@@ -47,32 +47,32 @@ function _createSuper(Derived) { var hasNativeReflectConstruct = _isNativeReflec
 
 function _isNativeReflectConstruct() { if (typeof Reflect === "undefined" || !_construct.default) return false; if (_construct.default.sham) return false; if (typeof Proxy === "function") return true; try { Date.prototype.toString.call((0, _construct.default)(Date, [], function () {})); return true; } catch (e) { return false; } }
 
-var DependConnectorBuilder = /*#__PURE__*/function (_ObservableObjectBuil) {
-  (0, _inherits2.default)(DependConnectorBuilder, _ObservableObjectBuil);
+var ConnectorBuilder = /*#__PURE__*/function (_ObservableObjectBuil) {
+  (0, _inherits2.default)(ConnectorBuilder, _ObservableObjectBuil);
 
-  var _super = _createSuper(DependConnectorBuilder);
+  var _super = _createSuper(ConnectorBuilder);
 
-  function DependConnectorBuilder(object, sourcePath) {
+  function ConnectorBuilder(object, sourcePath) {
     var _this;
 
-    (0, _classCallCheck2.default)(this, DependConnectorBuilder);
+    (0, _classCallCheck2.default)(this, ConnectorBuilder);
     _this = _super.call(this, object);
     _this.sourcePath = sourcePath;
     return _this;
   } // region connectSimple
 
 
-  (0, _createClass2.default)(DependConnectorBuilder, [{
+  (0, _createClass2.default)(ConnectorBuilder, [{
     key: "connectSimple",
     value: function connectSimple(name, common, getSet, options) {
-      return this._connectPath(name, common, getSet, options);
+      return this._connect(name, common, getSet, options);
     } // endregion
-    // region connectPath
+    // region connect
 
   }, {
-    key: "connectPath",
-    value: function connectPath(name, common, getSet, options) {
-      return this._connectPath(name, common, getSet, options ? (0, _extends2.default)((0, _extends2.default)({}, options), {}, {
+    key: "connect",
+    value: function connect(name, common, getSet, options) {
+      return this._connect(name, common, getSet, options ? (0, _extends2.default)((0, _extends2.default)({}, options), {}, {
         isDepend: true
       }) : {
         isDepend: true
@@ -83,7 +83,7 @@ var DependConnectorBuilder = /*#__PURE__*/function (_ObservableObjectBuil) {
   }, {
     key: "connectLazy",
     value: function connectLazy(name, common, getSet, options) {
-      return this._connectPath(name, common, getSet, options ? (0, _extends2.default)((0, _extends2.default)({}, options), {}, {
+      return this._connect(name, common, getSet, options ? (0, _extends2.default)((0, _extends2.default)({}, options), {}, {
         isDepend: true,
         isLazy: true
       }) : {
@@ -96,7 +96,7 @@ var DependConnectorBuilder = /*#__PURE__*/function (_ObservableObjectBuil) {
   }, {
     key: "connectWait",
     value: function connectWait(name, common, getSet, options) {
-      return this._connectPath(name, common, getSet, options ? (0, _extends2.default)((0, _extends2.default)({}, options), {}, {
+      return this._connect(name, common, getSet, options ? (0, _extends2.default)((0, _extends2.default)({}, options), {}, {
         isDepend: true,
         isWait: true
       }) : {
@@ -109,7 +109,7 @@ var DependConnectorBuilder = /*#__PURE__*/function (_ObservableObjectBuil) {
   }, {
     key: "connectWaitLazy",
     value: function connectWaitLazy(name, common, getSet, options) {
-      return this._connectPath(name, common, getSet, options ? (0, _extends2.default)((0, _extends2.default)({}, options), {}, {
+      return this._connect(name, common, getSet, options ? (0, _extends2.default)((0, _extends2.default)({}, options), {}, {
         isDepend: true,
         isLazy: true,
         isWait: true
@@ -119,11 +119,11 @@ var DependConnectorBuilder = /*#__PURE__*/function (_ObservableObjectBuil) {
         isWait: true
       });
     } // endregion
-    // region _connectPath
+    // region _connect
 
   }, {
-    key: "_connectPath",
-    value: function _connectPath(name, common, getSet, options) {
+    key: "_connect",
+    value: function _connect(name, common, getSet, options) {
       var path = _builder.PathGetSet.build(common, getSet);
 
       var sourcePath = this.sourcePath;
@@ -177,10 +177,10 @@ var DependConnectorBuilder = /*#__PURE__*/function (_ObservableObjectBuil) {
     } // endregion
 
   }]);
-  return DependConnectorBuilder;
+  return ConnectorBuilder;
 }(_ObservableObjectBuilder.ObservableObjectBuilder);
 
-exports.DependConnectorBuilder = DependConnectorBuilder;
+exports.ConnectorBuilder = ConnectorBuilder;
 
 function dependConnectorClass(build, baseClass) {
   var sourcePath = new _builder.Path().f(function (o) {
@@ -189,11 +189,11 @@ function dependConnectorClass(build, baseClass) {
     return o.source;
   }).init();
   return (0, _helpers4.observableClass)(function (object) {
-    return build(new DependConnectorBuilder(object, sourcePath)).object;
+    return build(new ConnectorBuilder(object, sourcePath)).object;
   }, baseClass != null ? baseClass : _Connector.Connector);
 }
 
-function dependConnectorFactory(_ref2) {
+function connectorFactory(_ref2) {
   var name = _ref2.name,
       build = _ref2.build,
       baseClass = _ref2.baseClass;

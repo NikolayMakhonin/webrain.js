@@ -1,7 +1,7 @@
 "use strict";
 
 exports.__esModule = true;
-exports.dependDeepSubscriber = dependDeepSubscriber;
+exports.deepSubscriber = deepSubscriber;
 
 var _ThenableSync = require("../../../../async/ThenableSync");
 
@@ -72,7 +72,7 @@ var dependForEachRule = (0, _depend.depend)(function (rule, emitLastValue) {
   }, null, null, _resolve.resolveValueProperty);
 });
 
-function dependDeepSubscriber(_ref) {
+function deepSubscriber(_ref) {
   var object = _ref.object,
       rule = _ref.rule,
       build = _ref.build,

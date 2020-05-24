@@ -17,7 +17,7 @@ var _helpers = require("../src/helpers");
 var _perceptron = require("../src/perceptron");
 
 /* tslint:disable:no-identical-functions no-shadowed-variable */
-(0, _Mocha.describe)('common > main > rx > depend > dependent-func / base', function () {
+(0, _Mocha.describe)('common > main > rx > depend > base', function () {
   beforeEach(function () {
     _webrainOptions.webrainOptions.callState.garbageCollect.disabled = true;
   });

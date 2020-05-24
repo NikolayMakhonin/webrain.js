@@ -2,18 +2,14 @@
 import { webrainOptions } from '../../../../../../../main/common/helpers/webrainOptions';
 import { describe, it, xit } from '../../../../../../../main/common/test/Mocha';
 import { stressTest } from '../src/stress-test';
-describe('common > main > rx > depend > dependent-func / stress', function () {
+describe('common > main > rx > depend > stress', function () {
   this.timeout(60 * 60 * 1000);
   beforeEach(function () {
     webrainOptions.callState.garbageCollect.disabled = false;
     webrainOptions.callState.garbageCollect.bulkSize = 100;
     webrainOptions.callState.garbageCollect.interval = 1000;
     webrainOptions.callState.garbageCollect.minLifeTime = 500;
-  }); // 'test number: 0'
-  // 'seed = 649781656'
-  // 'actual: ', Number{}
-  // 'expected: ', 1
-
+  });
   it('all', async function () {
     await stressTest({
       // seed: 649781656,

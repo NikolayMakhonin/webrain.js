@@ -4,7 +4,7 @@ import { describe, it } from '../../../../../../../main/common/test/Mocha';
 import { baseTest, lazyTest } from '../src/base-tests';
 import { clearCallStates } from '../src/helpers';
 import { createPerceptron } from '../src/perceptron';
-describe('common > main > rx > depend > dependent-func / base', function () {
+describe('common > main > rx > depend > base', function () {
   beforeEach(function () {
     webrainOptions.callState.garbageCollect.disabled = true;
   });

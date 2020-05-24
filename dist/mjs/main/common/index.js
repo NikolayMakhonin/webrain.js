@@ -7,9 +7,9 @@ export { ObservableObject } from './rx/object/ObservableObject';
 export { ObjectBuilder } from './rx/object/ObjectBuilder';
 export { ClassBuilder } from './rx/object/ClassBuilder';
 export { ObservableObjectBuilder } from './rx/object/ObservableObjectBuilder';
-export { DependCalcObjectBuilder } from './rx/object/properties/DependCalcObjectBuilder';
-export { createFunction } from './helpers/helpers';
-export { getObjectUniqueId } from './helpers/object-unique-id';
+export { CalcObjectBuilder } from './rx/object/properties/CalcObjectBuilder'; // export {createFunction} from './helpers/helpers'
+// export {getObjectUniqueId} from './helpers/object-unique-id'
+
 export { resolvePath } from './rx/object/properties/path/resolve';
 export { ObjectMerger } from './extensions/merge/mergers';
 export { PropertyChangedObject } from './rx/object/PropertyChangedObject';
@@ -19,8 +19,8 @@ export { BehaviorSubject } from './rx/subjects/behavior';
 export { registerMergeable, registerMerger } from './extensions/merge/mergers';
 export { registerSerializable, registerSerializer, ObjectSerializer } from './extensions/serialization/serializers';
 export { isIterable, isIterator, equals } from './helpers/helpers';
-export { webrainOptions, webrainEquals } from './helpers/webrainOptions';
-export { ConnectorState } from './rx/object/properties/Connector';
+export { webrainOptions, webrainEquals } from './helpers/webrainOptions'; // export {ConnectorState} from './rx/object/properties/Connector'
+
 export { resolveAsync, resolveAsyncFunc, resolveAsyncAll, resolveAsyncAny } from './async/ThenableSync';
 export { CalcStat } from './helpers/CalcStat';
 export { VALUE_PROPERTY_DEFAULT } from './helpers/value-property';
@@ -33,13 +33,13 @@ export { CallStatus } from './rx/depend/core/contracts';
 export { depend, dependX } from './rx/depend/core/depend';
 export { DependMap } from './rx/depend/lists/DependMap';
 export { DependSet } from './rx/depend/lists/DependSet';
-export { dependCalcPropertyFactory, dependCalcPropertyFactoryX } from './rx/object/properties/DependCalcObjectBuilder';
-export { dependConnectorFactory } from './rx/object/properties/DependConnectorBuilder';
+export { calcPropertyFactory, calcPropertyFactoryX } from './rx/object/properties/CalcObjectBuilder';
+export { connectorFactory } from './rx/object/properties/ConnectorBuilder';
 export { noSubscribe } from './rx/depend/core/current-state';
-export { dependDeepSubscriber } from './rx/object/properties/path/dependDeepSubscriber';
+export { deepSubscriber } from './rx/object/properties/path/deepSubscriber';
 export { Path } from './rx/object/properties/path/builder';
-export { autoCalcConnect, autoCalc, dependWait, dependWrapThis } from './rx/depend/helpers';
-export { createConnector } from './rx/object/properties/helpers'; // region Interfaces
+export { autoCalcConnect, autoCalc, dependWait, dependWrapThis } from './rx/depend/helpers'; // export {createConnector} from './rx/object/properties/helpers'
+// region Interfaces
 // endregion
 // endregion
 // region test
