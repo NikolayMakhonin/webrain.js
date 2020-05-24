@@ -16,9 +16,14 @@ describe('common > main > rx > depend > dependent-func / stress', function() {
 		webrainOptions.callState.garbageCollect.minLifeTime = 500
 	})
 
+	// 'test number: 0'
+	// 'seed = 649781656'
+	// 'actual: ', Number{}
+	// 'expected: ', 1
+
 	it('all', async function() {
 		await stressTest({
-			// seed: 624649026,
+			// seed: 649781656,
 			testsCount: 10,
 			iterationsPerCall: 500,
 			maxLevelsCount: [1, 10],

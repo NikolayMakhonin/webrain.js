@@ -20,7 +20,11 @@ var _stressTest = require("../src/stress-test");
     _webrainOptions.webrainOptions.callState.garbageCollect.bulkSize = 100;
     _webrainOptions.webrainOptions.callState.garbageCollect.interval = 1000;
     _webrainOptions.webrainOptions.callState.garbageCollect.minLifeTime = 500;
-  });
+  }); // 'test number: 0'
+  // 'seed = 649781656'
+  // 'actual: ', Number{}
+  // 'expected: ', 1
+
   (0, _Mocha.it)('all', /*#__PURE__*/(0, _asyncToGenerator2.default)( /*#__PURE__*/_regenerator.default.mark(function _callee() {
     return _regenerator.default.wrap(function _callee$(_context) {
       while (1) {
@@ -28,7 +32,7 @@ var _stressTest = require("../src/stress-test");
           case 0:
             _context.next = 2;
             return (0, _stressTest.stressTest)({
-              // seed: 624649026,
+              // seed: 649781656,
               testsCount: 10,
               iterationsPerCall: 500,
               maxLevelsCount: [1, 10],
