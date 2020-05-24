@@ -7,13 +7,13 @@ import {
 	invalidateCallState,
 } from '../../../../../../../../main/common/rx/depend/core/CallState'
 import {depend} from '../../../../../../../../main/common/rx/depend/core/depend'
-import {dependDeepSubscriber} from '../../../../../../../../main/common/rx/object/properties/path/dependDeepSubscriber'
+import {deepSubscriber} from '../../../../../../../../main/common/rx/object/properties/path/deepSubscriber'
 /* eslint-disable guard-for-in */
 import {assert} from '../../../../../../../../main/common/test/Assert'
 import {describe, it} from '../../../../../../../../main/common/test/Mocha'
 import {delay} from '../../../../../../../../main/common/time/helpers'
 
-describe('common > main > rx > properties > dependDeepSubscribe', function() {
+describe('common > main > rx > properties > deepSubscribe', function() {
 	it('base', async function() {
 		let visits: string[] = []
 
@@ -82,7 +82,7 @@ describe('common > main > rx > properties > dependDeepSubscribe', function() {
 
 		assert.deepStrictEqual(visits, [])
 
-		const unsubscribe = dependDeepSubscriber({
+		const unsubscribe = deepSubscriber({
 			build: b => b
 				.v('a')
 				.collection()

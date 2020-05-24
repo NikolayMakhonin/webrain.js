@@ -8,7 +8,7 @@ import {makeDependPropertySubscriber} from '../helpers'
 import {ObservableClass} from '../ObservableClass'
 import {IReadableFieldOptions, IWritableFieldOptions, ObservableObjectBuilder} from '../ObservableObjectBuilder'
 import {ValueKeys} from './contracts'
-import {DependConnectorBuilder} from './DependConnectorBuilder'
+import {ConnectorBuilder} from './ConnectorBuilder'
 import {observableClass} from './helpers'
 import {Path} from './path/builder'
 
@@ -30,13 +30,13 @@ function createGetValue<TObject, TCalcSource, TValue>(
 	}
 }
 
-export class DependCalcObjectBuilder<
+export class CalcObjectBuilder<
 	TObject extends ObservableClass,
 	TConnectorSource = TObject,
 	TCalcSource = TObject,
 	TValueKeys extends string | number = ValueKeys,
 >
-	extends DependConnectorBuilder<TObject, TConnectorSource>
+	extends ConnectorBuilder<TObject, TConnectorSource>
 {
 	public readonly calcSourcePath?: Path<TObject, TCalcSource>
 
@@ -82,7 +82,7 @@ export class DependCalcObjectBuilder<
 		return super.readable(name as any, options, initValue)
 	}
 
-	public simpleCalc<
+	public calcSimple<
 		Name extends keyof TObject,
 	>(
 		name: Name,
@@ -94,7 +94,7 @@ export class DependCalcObjectBuilder<
 		}) as any
 	}
 
-	public dependCalc<
+	public calc<
 		Name extends keyof TObject,
 	>(
 		name: Name,
@@ -111,7 +111,7 @@ export class DependCalcObjectBuilder<
 		}) as any
 	}
 
-	public dependCalcX<
+	public calcX<
 		Name extends keyof TObject,
 	>(
 		name: Name,
@@ -133,7 +133,7 @@ export class DependCalcObjectBuilder<
 		TPropertyClass extends PropertyClass<TObject>,
 	>(
 		name: Name,
-		build: (builder: DependCalcObjectBuilder<PropertyClass<TObject>, TObject>)
+		build: (builder: CalcObjectBuilder<PropertyClass<TObject>, TObject>)
 			=> { object: TPropertyClass },
 	): this & { object: { readonly [newProp in Name]: TObject[Name] } } {
 		const propClass = propertyClass(build)
@@ -234,7 +234,7 @@ export function propertyClass<
 	TPropertyClass extends TBaseClass,
 	TBaseClass extends PropertyClass<TObject> = PropertyClass<TObject>,
 >(
-	build: (builder: DependCalcObjectBuilder<TBaseClass, TObject>) => { object: TPropertyClass },
+	build: (builder: CalcObjectBuilder<TBaseClass, TObject>) => { object: TPropertyClass },
 	baseClass?: TClass<[TObject], TBaseClass>,
 ) {
 	const objectPath = new Path<TBaseClass>().f(o => o.$object).init()
@@ -244,7 +244,7 @@ export function propertyClass<
 		TBaseClass,
 		TPropertyClass
 	>(
-		object => build(new DependCalcObjectBuilder<TBaseClass, TObject>(object, objectPath as any)).object,
+		object => build(new CalcObjectBuilder<TBaseClass, TObject>(object, objectPath as any)).object,
 		baseClass != null ? baseClass : PropertyClass as any,
 	)
 }
@@ -288,8 +288,8 @@ export function calcPropertyClassX<
 		TBaseClass,
 		TCalcPropertyClass
 	>(
-		object => new DependCalcObjectBuilder<TBaseClass>(object) // , inputPath, inputPath)
-			.dependCalcX(VALUE_PROPERTY_DEFAULT, func, deferredOptions)
+		object => new CalcObjectBuilder<TBaseClass>(object) // , inputPath, inputPath)
+			.calcX(VALUE_PROPERTY_DEFAULT, func, deferredOptions)
 			.object as any,
 		baseClass != null ? baseClass : CalcPropertyClass as any,
 	)
@@ -313,14 +313,14 @@ export function calcPropertyClass<
 		TBaseClass,
 		TCalcPropertyClass
 	>(
-		object => new DependCalcObjectBuilder<TBaseClass, TInput, TInput>(object, inputPath as any, inputPath as any)
-			.dependCalc(VALUE_PROPERTY_DEFAULT, func, deferredOptions)
+		object => new CalcObjectBuilder<TBaseClass, TInput, TInput>(object, inputPath as any, inputPath as any)
+			.calc(VALUE_PROPERTY_DEFAULT, func, deferredOptions)
 			.object as any,
 		baseClass != null ? baseClass : CalcPropertyClass as any,
 	)
 }
 
-export function dependCalcPropertyFactory<
+export function calcPropertyFactory<
 	TInput,
 	TValue,
 	// TCalcPropertyClass extends TBaseClass,
@@ -345,7 +345,7 @@ export function dependCalcPropertyFactory<
 	return (input: TInput, _name?: string) => new NewProperty(input, _name != null ? _name : name)
 }
 
-export function dependCalcPropertyFactoryX<
+export function calcPropertyFactoryX<
 	TInput,
 	TValue,
 	// TCalcPropertyClass extends TBaseClass,

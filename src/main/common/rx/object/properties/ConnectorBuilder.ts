@@ -19,7 +19,7 @@ export interface IConnectFieldOptions<TObject, TValue> extends IReadableFieldOpt
 	waitTimeout?: number,
 }
 
-export class DependConnectorBuilder<
+export class ConnectorBuilder<
 	TObject extends Connector<TSource> | ObservableClass,
 	TSource = TObject,
 	TValueKeys extends string | number = ValueKeys
@@ -67,14 +67,14 @@ export class DependConnectorBuilder<
 		getSet?: INextPathGetSet<TSource, TCommonValue, TValue>,
 		options?: IReadableFieldOptions<TSource, TValue>,
 	): this & { object: { [newProp in Name]: TValue } } {
-		return this._connectPath(name, common, getSet, options)
+		return this._connect(name, common, getSet, options)
 	}
 
 	// endregion
 
-	// region connectPath
+	// region connect
 	
-	public connectPath<
+	public connect<
 		Name extends string | number = Extract<keyof TObject, string|number>,
 		TValue = Name extends keyof TObject ? TObject[Name] : TSource,
 	>(
@@ -83,7 +83,7 @@ export class DependConnectorBuilder<
 		getSet?: null|undefined,
 		options?: IConnectFieldOptions<TSource, TValue>,
 	): this & { object: { [newProp in Name]: TValue } }
-	public connectPath<
+	public connect<
 		Name extends string | number = Extract<keyof TObject, string|number>,
 		TCommonValue = TSource,
 		TValue = Name extends keyof TObject ? TObject[Name] : TCommonValue,
@@ -93,7 +93,7 @@ export class DependConnectorBuilder<
 		getSet: INextPathGetSet<TSource, TCommonValue, TValue>,
 		options?: IConnectFieldOptions<TSource, TValue>,
 	): this & { object: { [newProp in Name]: TValue } }
-	public connectPath<
+	public connect<
 		Name extends string | number = Extract<keyof TObject, string|number>,
 		TCommonValue = TSource,
 		TValue = Name extends keyof TObject ? TObject[Name] : TCommonValue,
@@ -103,7 +103,7 @@ export class DependConnectorBuilder<
 		getSet?: INextPathGetSet<TSource, TCommonValue, TValue>,
 		options?: IConnectFieldOptions<TSource, TValue>,
 	): this & { object: { [newProp in Name]: TValue } } {
-		return this._connectPath(name, common, getSet,
+		return this._connect(name, common, getSet,
 			options	? {
 				...options,
 				isDepend: true,
@@ -145,7 +145,7 @@ export class DependConnectorBuilder<
 		getSet?: INextPathGetSet<TSource, TCommonValue, TValue>,
 		options?: IConnectFieldOptions<TSource, TValue>,
 	): this & { object: { [newProp in Name]: TValue } } {
-		return this._connectPath(name, common, getSet,
+		return this._connect(name, common, getSet,
 			options	? {
 				...options,
 				isDepend: true,
@@ -189,7 +189,7 @@ export class DependConnectorBuilder<
 		getSet?: INextPathGetSet<TSource, TCommonValue, TValue>,
 		options?: IConnectFieldOptions<TSource, TValue>,
 	): this & { object: { [newProp in Name]: TValue } } {
-		return this._connectPath(name, common, getSet,
+		return this._connect(name, common, getSet,
 			options	? {
 				...options,
 				isDepend: true,
@@ -233,7 +233,7 @@ export class DependConnectorBuilder<
 		getSet?: INextPathGetSet<TSource, TCommonValue, TValue>,
 		options?: IConnectFieldOptions<TSource, TValue>,
 	): this & { object: { [newProp in Name]: TValue } } {
-		return this._connectPath(name, common, getSet,
+		return this._connect(name, common, getSet,
 			options	? {
 				...options,
 				isDepend: true,
@@ -248,9 +248,9 @@ export class DependConnectorBuilder<
 
 	// endregion
 
-	// region _connectPath
+	// region _connect
 
-	private _connectPath<
+	private _connect<
 		Name extends string | number = Extract<keyof TObject, string|number>,
 		TCommonValue = TSource,
 		TValue = Name extends keyof TObject ? TObject[Name] : TCommonValue,
@@ -318,7 +318,7 @@ export function dependConnectorClass<
 	TBaseClass extends Connector<TSource>
 		= Connector<TSource>,
 >(
-	build: (connectorBuilder: DependConnectorBuilder<TBaseClass, TSource>) => { object: TConnectorClass },
+	build: (connectorBuilder: ConnectorBuilder<TBaseClass, TSource>) => { object: TConnectorClass },
 	baseClass?: TClass<[TSource, string?], TBaseClass>,
 ) {
 	const sourcePath = new Path<TBaseClass>().f(o => o.connectorState).f(o => o.source).init()
@@ -328,12 +328,12 @@ export function dependConnectorClass<
 		TBaseClass,
 		TConnectorClass
 	>(
-		object => build(new DependConnectorBuilder<TBaseClass, TSource>(object, sourcePath as any)).object,
+		object => build(new ConnectorBuilder<TBaseClass, TSource>(object, sourcePath as any)).object,
 		baseClass != null ? baseClass : Connector as any,
 	)
 }
 
-export function dependConnectorFactory<
+export function connectorFactory<
 	TSource extends ObservableClass,
 	TConnectorClass extends TBaseClass,
 	TBaseClass extends Connector<TSource>
@@ -344,7 +344,7 @@ export function dependConnectorFactory<
 	baseClass,
 }: {
 	name?: string,
-	build: (connectorBuilder: DependConnectorBuilder<TBaseClass, TSource>) => { object: TConnectorClass },
+	build: (connectorBuilder: ConnectorBuilder<TBaseClass, TSource>) => { object: TConnectorClass },
 	baseClass?: new (source: TSource, name?: string) => TBaseClass,
 }): (source: TSource, name?: string) => TConnectorClass {
 	const NewConnector = dependConnectorClass(build as any, baseClass as any)

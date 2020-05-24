@@ -6,7 +6,7 @@ import {stressTest} from '../src/stress-test'
 
 declare const beforeEach: any
 
-describe('common > main > rx > depend > dependent-func / stress', function() {
+describe('common > main > rx > depend > stress', function() {
 	this.timeout(60 * 60 * 1000)
 
 	beforeEach(function() {

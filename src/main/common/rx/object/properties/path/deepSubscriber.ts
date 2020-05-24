@@ -77,7 +77,7 @@ export type TSubscribeFunc<TObject, TValue> = (
 	subscriber?: ISubscriber<ICallState<TObject, [IRule], TValue>>,
 ) => IUnsubscribe
 
-export function dependDeepSubscriber<TObject, TValue>({
+export function deepSubscriber<TObject, TValue>({
 	object,
 	rule,
 	build,

@@ -8,7 +8,7 @@ import {createPerceptron} from '../src/perceptron'
 
 declare const beforeEach: any
 
-describe('common > main > rx > depend > dependent-func / base', function() {
+describe('common > main > rx > depend > base', function() {
 	beforeEach(function() {
 		webrainOptions.callState.garbageCollect.disabled = true
 	})
