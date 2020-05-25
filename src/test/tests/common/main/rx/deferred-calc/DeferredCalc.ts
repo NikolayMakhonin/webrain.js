@@ -683,7 +683,7 @@ describe('common > main > rx > deferred-calc > DeferredCalc', function() {
 		})
 	})
 
-	it('real timing', async function() {
+	async function realTiming() {
 		let events: IEvent[] = []
 		const timeCoef = 2
 		const startTestTime = timingDefault.now()
@@ -719,7 +719,7 @@ describe('common > main > rx > deferred-calc > DeferredCalc', function() {
 
 		await new Promise(resolve => setTimeout(resolve, 100 * timeCoef))
 		deferredCalc.autoInvalidateInterval = null
-		await new Promise(resolve => setTimeout(resolve, 10 * timeCoef))
+		await new Promise(resolve => setTimeout(resolve, 20 * timeCoef))
 
 		assert.strictEqual(events.length % 3, 0)
 		assert.ok(events.length / 3 > 2)
@@ -732,15 +732,22 @@ describe('common > main > rx > deferred-calc > DeferredCalc', function() {
 
 		for (let i = 0; i < events.length; i++) {
 			const event = events[i]
-			assert.ok(event.time < 100 * timeCoef, event.time + '')
+			assert.ok(event.time < (100 + 20) * timeCoef, event.time + '')
 			assert.strictEqual(event.type, checkEventTypes[i % 3])
 		}
 
 		events = []
 
-		await new Promise(resolve => setTimeout(resolve, 100 * timeCoef))
+		await new Promise(resolve => setTimeout(resolve, (100 + 20) * timeCoef))
 
 		assert.deepStrictEqual(events, [])
+	}
+
+	it('real timing', async function() {
+		// this.timeout(600000)
+		for (let i = 0; i < 1; i++) {
+			await realTiming()
+		}
 	})
 
 	it('properties', async function() {
