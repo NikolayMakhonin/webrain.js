@@ -7,7 +7,11 @@
 		"target": "ESNext",
 		"lib": ["dom", "esnext"],
 		"skipLibCheck": true,
-		"stripInternal": true
+		"stripInternal": true,
+		"allowSyntheticDefaultImports": true,
+		"paths": {
+		  "*" : ["node_modules/*"]
+		}
 	},
 	"include": [
 		"src/main/**/*.ts"

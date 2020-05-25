@@ -5,7 +5,7 @@
 	},
 	"rules": {
 		"no-empty-function": ["off"],
-	  	"no-unused-vars": ["off"],
+		"no-unused-vars": ["off"],
 		"no-new-wrappers": ["off"],
 		"no-sync": ["off"],
 		"no-undefined": ["off"],
@@ -13,8 +13,6 @@
 		"no-process-env" : "off"
 	},
 	"globals": {
-		"xdescribe": true,
-		"xit": true,
 		"console": true
 	}
 }

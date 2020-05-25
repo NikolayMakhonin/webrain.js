@@ -42,7 +42,12 @@ docker pull nikolaymakhonin/selenoid-chromium:44.0
             },
 
 # Start selenoid:
-./cm selenoid start
+./cm selenoid start --args "-limit 8 -timeout 3m -service-startup-timeout 3m -session-attempt-timeout 3m -retry-count 1"
+
+# Load Average (LA)
+watch -n 1 tail -n 1 /proc/loadavg
+The first value should not be more than count of processor cores. Change -limit for reduce LA
+Related Error: New session attempts retry count exceeded
 
 # Install selenoid-ui:
 # Docs: https://github.com/aerokube/selenoid-ui

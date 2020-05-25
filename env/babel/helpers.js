@@ -1,12 +1,8 @@
 const path = require('path')
 const registerBabel = require('@babel/register')
-const {fileExtensions} = require('../common/helpers')
+const {fileExtensions, normalizePath} = require('../common/helpers')
 require('core-js/stable')
 require('@babel/runtime-corejs3/regenerator')
-
-function normalizePath(filepath) {
-	return path.relative(process.cwd(), filepath).replace(/\\/g, '/')
-}
 
 function testDir(filepath, dirPath) {
 	return new RegExp(`^${dirPath}/`).test(normalizePath(filepath))
@@ -23,6 +19,7 @@ module.exports = {
 			],
 			extensions  : [...fileExtensions.js, ...fileExtensions.ts],
 			babelrcRoots: true,
+			cache       : true,
 			...options
 		})
 	}

@@ -1,0 +1,16 @@
+Manual:
+https://www.chromium.org/getting-involved/download-chromium
+
+1) Find your versions here:
+https://chromium.googlesource.com/chromium/src.git/+refs
+
+2) Use this tool to find branch position number:
+https://omahaproxy.appspot.com/
+
+3) Download snapshot here:
+https://commondatastorage.googleapis.com/chromium-browser-snapshots/index.html
+
+-------------
+Chromium 49 latest is 49.0.2623.112
+Branch position: 369907
+Download: https://commondatastorage.googleapis.com/chromium-browser-snapshots/index.html?prefix=Win/369898/

@@ -1,56 +1,59 @@
 /* eslint-disable */
 
 module.exports = {
-	"extends": ["pro"],
-	"rules": {
+	extends: ['pro'],
+	rules    : {
 		// Temporary disable: TypeError: Cannot read property 'value' of null (waiting for update babel-eslint)
-		"template-curly-spacing" : "off",
+		'template-curly-spacing': 'off',
 		"indent": "off",
 		"prefer-destructuring": "off",
+		"no-sync": "off",
 	},
 
-	"env": {
-		"node": true,
-		"es6": true
+	env: {
+		node: true,
+		es6 : true
 	},
 
-	"parser": "babel-eslint",
-	"parserOptions": {
-		"ecmaVersion": 6,
-		"sourceType": "module",
-		"allowImportExportEverywhere": false,
-		"codeFrame": true,
-		"babelOptions": {
-			"configFile": "./env/babel/configs/minimal.js"
+	parser       : 'babel-eslint',
+	parserOptions: {
+		ecmaVersion                : 6,
+		sourceType                 : 'module',
+		allowImportExportEverywhere: false,
+		codeFrame                  : true,
+		babelOptions               : {
+			configFile: './env/babel/configs/minimal.js'
 		},
 	},
 
-	"plugins": [
-		"sonarjs",
-		"html",
+	plugins: [
+		'sonarjs',
+		'html'
 	],
-	"settings": {
-		"html/indent": "+tab",
-		"html/report-bad-indent": "error",
-		"html/html-extensions": [".html", ".svelte"]
+	settings: {
+		'html/indent'           : '+tab',
+		'html/report-bad-indent': 'error',
+		'html/html-extensions'  : ['.html', '.svelte']
 	},
 
-	"overrides": [
+	overrides: [
 		{
-			"files": [ "src/*.html" ],
-			"rules": {
-				"semi": [ "error", "always" ],
-				"semi-style": ["error", "last"],
-				"no-var": "off"
+			files: ['src/*.html'],
+			rules: {
+				semi                : ['error', 'always'],
+				'semi-style'        : ['error', 'last'],
+				'prefer-rest-params': 'off',
+				'no-var'            : 'off',
+				'vars-on-top'       : 'off'
 			},
-			"env": {
-				"browser": true,
-				"es6": false,
-				"node": false
+			env: {
+				browser: true,
+				es6    : false,
+				node   : false
 			},
-			"parser": "espree",
-			"parserOptions": {
-				"ecmaVersion": 5
+			parser       : 'espree',
+			parserOptions: {
+				ecmaVersion: 5
 			}
 		}
 	]

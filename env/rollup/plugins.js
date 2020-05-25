@@ -6,8 +6,8 @@ const istanbul = require('rollup-plugin-istanbul')
 const resolve  = require('rollup-plugin-node-resolve')
 const replace = require('@rollup/plugin-replace')
 const commonjs  = require('rollup-plugin-commonjs')
-const nycrc  = require('../../.nycrc.json')
-const {fileExtensions, writeTextFile} = require('../common/helpers')
+const nycrc  = require('../../nyc.config.js')
+const {fileExtensions} = require('../common/helpers')
 const babel = require('./babel')
 
 const dedupe = importee => /^(@babel|core-js[^\\/]*|regenerator-runtime)([\\/]|$)/.test(importee)
@@ -40,7 +40,7 @@ const plugins = {
 	}),
 	terser: (options = {}) => terser({
 		mangle: false,
-		module: true,
+		module: false,
 		ecma  : 5,
 		output: {
 			max_line_len: 50,
@@ -65,9 +65,7 @@ module.exports = {
 			}),
 			plugins.commonjs(),
 			legacy && plugins.babel.browser(),
-			!dev && plugins.terser({
-				module: false,
-			}),
+			!dev && plugins.terser(),
 		]
 	},
 	watch({dev = false, legacy = true, coverage = false, getFileCodePlugins = []}) {
@@ -80,9 +78,7 @@ module.exports = {
 			plugins.commonjs(),
 			legacy && plugins.babel.browser(),
 			...getFileCodePlugins,
-			!dev && plugins.terser({
-				module: false,
-			}),
+			!dev && plugins.terser(),
 		]
 	},
 	libs({dev = false, legacy = true}) {
@@ -97,9 +93,7 @@ module.exports = {
 			legacy && plugins.babel.v8Trace({
 				// compact: true,
 			}),
-			// !dev && plugins.terser({
-			// 	module: false,
-			// }),
+			// !dev && plugins.terser(),
 		]
 	},
 }

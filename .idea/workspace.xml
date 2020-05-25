@@ -30,9 +30,26 @@
     <select />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="69b2ee16-521b-4efd-b473-8e19e3df4d09" name="Default Changelist" comment="">
+    <list default="true" id="69b2ee16-521b-4efd-b473-8e19e3df4d09" name="Default Changelist" comment="v1.0.0-a published">
+      <change beforePath="$PROJECT_DIR$/.eslintrc.js" beforeDir="false" afterPath="$PROJECT_DIR$/.eslintrc.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/scopes/env.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/scopes/env.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/scopes/src_main.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/scopes/src_main.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/HISTORY.md" beforeDir="false" afterPath="$PROJECT_DIR$/HISTORY.md" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.nycrc.json" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/dist/js/test/.eslintrc" beforeDir="false" afterPath="$PROJECT_DIR$/dist/js/test/.eslintrc" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/dist/js/test/tests/common/main/rx/deferred-calc/DeferredCalc.js" beforeDir="false" afterPath="$PROJECT_DIR$/dist/js/test/tests/common/main/rx/deferred-calc/DeferredCalc.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/dist/mjs/test/.eslintrc" beforeDir="false" afterPath="$PROJECT_DIR$/dist/mjs/test/.eslintrc" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/dist/mjs/test/tests/common/main/rx/deferred-calc/DeferredCalc.js" beforeDir="false" afterPath="$PROJECT_DIR$/dist/mjs/test/tests/common/main/rx/deferred-calc/DeferredCalc.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/docs/Services.txt" beforeDir="false" afterPath="$PROJECT_DIR$/docs/Services.txt" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/docs/selenoid/install.txt" beforeDir="false" afterPath="$PROJECT_DIR$/docs/selenoid/install.txt" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/env/babel/configs/minimal.js" beforeDir="false" afterPath="$PROJECT_DIR$/env/babel/configs/minimal.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/env/babel/configs/mocha.js" beforeDir="false" afterPath="$PROJECT_DIR$/env/babel/configs/mocha.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/env/babel/helpers.js" beforeDir="false" afterPath="$PROJECT_DIR$/env/babel/helpers.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/env/karma/helpers.js" beforeDir="false" afterPath="$PROJECT_DIR$/env/karma/helpers.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/env/rollup/plugins.js" beforeDir="false" afterPath="$PROJECT_DIR$/env/rollup/plugins.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/test/.eslintrc" beforeDir="false" afterPath="$PROJECT_DIR$/src/test/.eslintrc" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/test/tests/common/main/rx/deferred-calc/DeferredCalc.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/test/tests/common/main/rx/deferred-calc/DeferredCalc.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/tsconfig.json" beforeDir="false" afterPath="$PROJECT_DIR$/tsconfig.json" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -125,7 +142,7 @@
       <recent name="L:\Work\_GIT\GitHub\NodeJs\modules\webrain\src\test\tests\common\main\rx\object\properties\path" />
     </key>
   </component>
-  <component name="RunManager" selected="Mocha.Watch">
+  <component name="RunManager" selected="Mocha.common &gt; main &gt; rx &gt; deferred-calc &gt; DeferredCalc.real timing">
     <configuration default="true" type="JavaScriptTestRunnerKarma" activateToolWindowBeforeRun="false">
       <config-file value="$PROJECT_DIR$/env/karma/configs/dev.js" />
       <karma-package-dir value="$PROJECT_DIR$/node_modules/karma" />
@@ -247,19 +264,19 @@
       <test-pattern>./src/test/tests/{common,node}/**/*.*</test-pattern>
       <method v="2" />
     </configuration>
-    <configuration name="common &gt; main &gt; index.base" type="mocha-javascript-test-runner" temporary="true">
+    <configuration name="common &gt; main &gt; rx &gt; deferred-calc &gt; DeferredCalc.real timing" type="mocha-javascript-test-runner" temporary="true" nameIsGenerated="true">
       <node-interpreter>node</node-interpreter>
       <node-options>--max-old-space-size=4096 --allow-natives-syntax</node-options>
       <mocha-package>$PROJECT_DIR$/node_modules/mocha</mocha-package>
       <working-directory>$PROJECT_DIR$</working-directory>
       <pass-parent-env>true</pass-parent-env>
       <ui>bdd</ui>
-      <extra-mocha-options>--opts ./env/mocha/configs/babel/mocha.opts</extra-mocha-options>
+      <extra-mocha-options>--opts ./env/mocha/configs/babel/mocha.opts --watch</extra-mocha-options>
       <test-kind>TEST</test-kind>
-      <test-file>$PROJECT_DIR$/src/test/tests/common/main/index.ts</test-file>
+      <test-file>$PROJECT_DIR$/src/test/tests/common/main/rx/deferred-calc/DeferredCalc.ts</test-file>
       <test-names>
-        <name value="node &gt; main &gt; index" />
-        <name value="base" />
+        <name value="common &gt; main &gt; rx &gt; deferred-calc &gt; DeferredCalc" />
+        <name value="real timing" />
       </test-names>
       <method v="2" />
     </configuration>
@@ -433,7 +450,6 @@
       <item itemvalue="Mocha.dependent-func" />
       <item itemvalue="Mocha.dependent-func.perceptron perf (Compiled)" />
       <item itemvalue="Mocha.node &gt; v8 &gt; parser" />
-      <item itemvalue="Mocha.common &gt; main &gt; index.base" />
       <item itemvalue="Mocha.fastNow perf" />
       <item itemvalue="Mocha.common &gt; main &gt; rx &gt; depend &gt; dependent-func / base" />
       <item itemvalue="Mocha.common &gt; main &gt; rx &gt; depend &gt; dependent-func / base.perceptron" />
@@ -441,14 +457,15 @@
       <item itemvalue="Node.js.dependent-func.js" />
       <item itemvalue="Node.js.tests.build.js" />
       <item itemvalue="npm.Coverage Mocha Report" />
+      <item itemvalue="Mocha.common &gt; main &gt; rx &gt; deferred-calc &gt; DeferredCalc.real timing" />
     </list>
     <recent_temporary>
       <list>
+        <item itemvalue="Mocha.common &gt; main &gt; rx &gt; deferred-calc &gt; DeferredCalc.real timing" />
         <item itemvalue="Node.js.tests.build.js" />
         <item itemvalue="Mocha.common &gt; main &gt; rx &gt; depend &gt; dependent-func / base.perceptron" />
         <item itemvalue="Mocha.common &gt; main &gt; rx &gt; depend &gt; dependent-func / base" />
         <item itemvalue="Mocha.fastNow perf" />
-        <item itemvalue="Mocha.common &gt; main &gt; index.base" />
       </list>
     </recent_temporary>
   </component>
@@ -496,21 +513,8 @@
       <workItem from="1590207827975" duration="9740000" />
       <workItem from="1590217587334" duration="35272000" />
       <workItem from="1590299663864" duration="2207000" />
-      <workItem from="1590301884117" duration="2324000" />
-    </task>
-    <task id="LOCAL-00478" summary="Prepare v2: delete _trash">
-      <created>1588403724859</created>
-      <option name="number" value="00478" />
-      <option name="presentableId" value="LOCAL-00478" />
-      <option name="project" value="LOCAL" />
-      <updated>1588403724859</updated>
-    </task>
-    <task id="LOCAL-00479" summary="Prepare v2: delete _trash">
-      <created>1588403787512</created>
-      <option name="number" value="00479" />
-      <option name="presentableId" value="LOCAL-00479" />
-      <option name="project" value="LOCAL" />
-      <updated>1588403787512</updated>
+      <workItem from="1590301884117" duration="2511000" />
+      <workItem from="1590316000534" duration="8249000" />
     </task>
     <task id="LOCAL-00480" summary="Prepare v2: deleted old calc / connect properties. Tests OK.">
       <created>1588405584982</created>
@@ -841,7 +845,21 @@
       <option name="project" value="LOCAL" />
       <updated>1590302690486</updated>
     </task>
-    <option name="localTasksCounter" value="527" />
+    <task id="LOCAL-00527" summary="v1.0.0-a published">
+      <created>1590305209751</created>
+      <option name="number" value="00527" />
+      <option name="presentableId" value="LOCAL-00527" />
+      <option name="project" value="LOCAL" />
+      <updated>1590305209751</updated>
+    </task>
+    <task id="LOCAL-00528" summary="Fix DeferredCalc real timing test">
+      <created>1590383126766</created>
+      <option name="number" value="00528" />
+      <option name="presentableId" value="LOCAL-00528" />
+      <option name="project" value="LOCAL" />
+      <updated>1590383126767</updated>
+    </task>
+    <option name="localTasksCounter" value="529" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -902,8 +920,6 @@
   <component name="VcsManagerConfiguration">
     <option name="CHECK_CODE_SMELLS_BEFORE_PROJECT_COMMIT" value="false" />
     <option name="CHECK_NEW_TODO" value="false" />
-    <MESSAGE value="Prepare v2. Deleted commented files. Lint fixes. Tests OK." />
-    <MESSAGE value="Prepare v2. Deleted unused dependencies. Tests OK." />
     <MESSAGE value="Prepare v2. Deleted getTupleId/getTupleIdMap" />
     <MESSAGE value="Prepare v2: deleted unnecessary TimeLimits. Tests OK." />
     <MESSAGE value="Prepare v2: deleted unnecessary BinaryTree. Tests OK." />
@@ -927,7 +943,9 @@
     <MESSAGE value="Rename external interface refactoring." />
     <MESSAGE value="precommit is OK" />
     <MESSAGE value="v1.0.0a" />
-    <option name="LAST_COMMIT_MESSAGE" value="v1.0.0a" />
+    <MESSAGE value="v1.0.0-a published" />
+    <MESSAGE value="Fix DeferredCalc real timing test" />
+    <option name="LAST_COMMIT_MESSAGE" value="Fix DeferredCalc real timing test" />
   </component>
   <component name="WindowStateProjectService">
     <state x="617" y="103" key="#ESLint" timestamp="1590218488709">
@@ -938,10 +956,10 @@
       <screen x="0" y="0" width="1920" height="882" />
     </state>
     <state x="38" y="39" width="1718" height="786" key="#com.intellij.execution.impl.EditConfigurationsDialog/0.0.1920.882@0.0.1920.882" timestamp="1590297800600" />
-    <state x="91" y="91" width="1738" height="700" key="#com.intellij.execution.junit2.states.ComparisonFailureState$DiffDialog" timestamp="1588308999883">
+    <state x="91" y="91" width="1738" height="700" key="#com.intellij.execution.junit2.states.ComparisonFailureState$DiffDialog" timestamp="1590382318108">
       <screen x="0" y="0" width="1920" height="882" />
     </state>
-    <state x="91" y="91" width="1738" height="700" key="#com.intellij.execution.junit2.states.ComparisonFailureState$DiffDialog/0.0.1920.882@0.0.1920.882" timestamp="1588308999883" />
+    <state x="91" y="91" width="1738" height="700" key="#com.intellij.execution.junit2.states.ComparisonFailureState$DiffDialog/0.0.1920.882@0.0.1920.882" timestamp="1590382318108" />
     <state x="680" y="218" key="#com.intellij.fileTypes.FileTypeChooser" timestamp="1590233722639">
       <screen x="0" y="0" width="1920" height="882" />
     </state>
@@ -962,38 +980,38 @@
       <screen x="0" y="0" width="1920" height="882" />
     </state>
     <state x="651" y="254" key="ANALYSIS_DLG_com.intellij.analysis.BaseAnalysisAction$1/0.0.1920.882@0.0.1920.882" timestamp="1588413930131" />
-    <state x="-2" y="0" width="1918" height="882" key="CommitChangelistDialog2" timestamp="1590302689583">
+    <state x="-2" y="0" width="1918" height="882" key="CommitChangelistDialog2" timestamp="1590383125055">
       <screen x="0" y="0" width="1920" height="882" />
     </state>
-    <state x="-2" y="0" width="1918" height="882" key="CommitChangelistDialog2/0.0.1920.882@0.0.1920.882" timestamp="1590302689583" />
+    <state x="-2" y="0" width="1918" height="882" key="CommitChangelistDialog2/0.0.1920.882@0.0.1920.882" timestamp="1590383125055" />
     <state width="884" height="550" key="DebuggerActiveHint" timestamp="1590162335145">
       <screen x="0" y="0" width="1920" height="882" />
     </state>
     <state width="884" height="550" key="DebuggerActiveHint/0.0.1920.882@0.0.1920.882" timestamp="1590162335145" />
-    <state x="0" y="4" width="1920" height="875" key="DiffContextDialog" timestamp="1590239426525">
+    <state x="0" y="4" width="1920" height="875" key="DiffContextDialog" timestamp="1590305204893">
       <screen x="0" y="0" width="1920" height="882" />
     </state>
-    <state x="0" y="4" width="1920" height="875" key="DiffContextDialog/0.0.1920.882@0.0.1920.882" timestamp="1590239426525" />
+    <state x="0" y="4" width="1920" height="875" key="DiffContextDialog/0.0.1920.882@0.0.1920.882" timestamp="1590305204893" />
     <state x="1059" y="106" key="FileChooserDialogImpl" timestamp="1590245638441">
       <screen x="0" y="0" width="1920" height="882" />
     </state>
     <state x="1059" y="106" key="FileChooserDialogImpl/0.0.1920.882@0.0.1920.882" timestamp="1590245638441" />
-    <state width="531" height="192" key="GridCell.Tab.0.bottom" timestamp="1590301876853">
+    <state width="545" height="356" key="GridCell.Tab.0.bottom" timestamp="1590387748480">
       <screen x="0" y="0" width="1920" height="882" />
     </state>
-    <state width="531" height="192" key="GridCell.Tab.0.bottom/0.0.1920.882@0.0.1920.882" timestamp="1590301876853" />
-    <state width="531" height="192" key="GridCell.Tab.0.center" timestamp="1590301876853">
+    <state width="545" height="356" key="GridCell.Tab.0.bottom/0.0.1920.882@0.0.1920.882" timestamp="1590387748480" />
+    <state width="545" height="356" key="GridCell.Tab.0.center" timestamp="1590387748480">
       <screen x="0" y="0" width="1920" height="882" />
     </state>
-    <state width="531" height="192" key="GridCell.Tab.0.center/0.0.1920.882@0.0.1920.882" timestamp="1590301876853" />
-    <state width="531" height="192" key="GridCell.Tab.0.left" timestamp="1590301876853">
+    <state width="545" height="356" key="GridCell.Tab.0.center/0.0.1920.882@0.0.1920.882" timestamp="1590387748480" />
+    <state width="545" height="356" key="GridCell.Tab.0.left" timestamp="1590387748480">
       <screen x="0" y="0" width="1920" height="882" />
     </state>
-    <state width="531" height="192" key="GridCell.Tab.0.left/0.0.1920.882@0.0.1920.882" timestamp="1590301876853" />
-    <state width="531" height="192" key="GridCell.Tab.0.right" timestamp="1590301876853">
+    <state width="545" height="356" key="GridCell.Tab.0.left/0.0.1920.882@0.0.1920.882" timestamp="1590387748480" />
+    <state width="545" height="356" key="GridCell.Tab.0.right" timestamp="1590387748480">
       <screen x="0" y="0" width="1920" height="882" />
     </state>
-    <state width="531" height="192" key="GridCell.Tab.0.right/0.0.1920.882@0.0.1920.882" timestamp="1590301876853" />
+    <state width="545" height="356" key="GridCell.Tab.0.right/0.0.1920.882@0.0.1920.882" timestamp="1590387748480" />
     <state width="574" height="452" key="GridCell.Tab.1.bottom" timestamp="1590299596166">
       <screen x="0" y="0" width="1920" height="882" />
     </state>
@@ -1078,10 +1096,10 @@
       <screen x="0" y="0" width="1920" height="882" />
     </state>
     <state x="121" y="111" key="com.intellij.xdebugger.impl.breakpoints.ui.BreakpointsDialogFactory$2/0.0.1920.882@0.0.1920.882" timestamp="1587884348340" />
-    <state x="2" y="1" width="1908" height="878" key="find.popup" timestamp="1590301034854">
+    <state x="2" y="1" width="1908" height="878" key="find.popup" timestamp="1590387736376">
       <screen x="0" y="0" width="1920" height="882" />
     </state>
-    <state x="2" y="1" width="1908" height="878" key="find.popup/0.0.1920.882@0.0.1920.882" timestamp="1590301034854" />
+    <state x="2" y="1" width="1908" height="878" key="find.popup/0.0.1920.882@0.0.1920.882" timestamp="1590387736376" />
     <state x="732" y="169" key="refactoring.ChangeSignatureDialog" timestamp="1587872020169">
       <screen x="0" y="0" width="1920" height="882" />
     </state>

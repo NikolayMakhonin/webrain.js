@@ -3,7 +3,7 @@
 
 const globby = require('globby')
 const path = require('path')
-const fs = require('fs')
+// const fs = require('fs')
 const thisPackage = require('../../package')
 const rollupPlugins  = require('../rollup/plugins.js')
 const {writeTextFile, writeTextFileSync} = require('../common/helpers')
@@ -108,6 +108,12 @@ module.exports.configCommon = function (config) {
 				))
 			]
 		],
+
+		client: {
+			mocha: {
+				opts: path.resolve(__dirname, '../mocha.opts'),
+			}
+		},
 
 		logReporter: {
 			outputPath: 'reports/', // default name is current directory
@@ -310,12 +316,10 @@ function configDetectBrowsers(config) {
 				const useBrowsers = {
 					E2E_ChromeLatest  : /Chrome/,
 					E2E_ChromiumLatest: /Chromium/,
-
-					// Exclude:
-					'': /\bIE\d*\b/,
 				}
 
 				return availableBrowsers
+					.filter(o => !o.startsWith('IE'))
 					.map(availableBrowser => {
 						for (const key in useBrowsers) {
 							if (availableBrowser.match(useBrowsers[key])) {
@@ -326,7 +330,6 @@ function configDetectBrowsers(config) {
 
 						return availableBrowser
 					})
-					.filter(o => o)
 					.concat('Electron')
 			}
 		},

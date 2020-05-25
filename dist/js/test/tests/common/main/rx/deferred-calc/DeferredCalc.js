@@ -2,11 +2,11 @@
 
 var _interopRequireDefault = require("@babel/runtime-corejs3/helpers/interopRequireDefault");
 
-var _regenerator = _interopRequireDefault(require("@babel/runtime-corejs3/regenerator"));
-
 var _setTimeout2 = _interopRequireDefault(require("@babel/runtime-corejs3/core-js-stable/set-timeout"));
 
 var _promise = _interopRequireDefault(require("@babel/runtime-corejs3/core-js-stable/promise"));
+
+var _regenerator = _interopRequireDefault(require("@babel/runtime-corejs3/regenerator"));
 
 var _asyncToGenerator2 = _interopRequireDefault(require("@babel/runtime-corejs3/helpers/asyncToGenerator"));
 
@@ -635,80 +635,118 @@ var _TestDeferred = require("./src/TestDeferred");
       }]
     });
   });
+
+  function realTiming() {
+    return _realTiming.apply(this, arguments);
+  }
+
+  function _realTiming() {
+    _realTiming = (0, _asyncToGenerator2.default)( /*#__PURE__*/_regenerator.default.mark(function _callee3() {
+      var events, timeCoef, startTestTime, deferredCalc, checkEventTypes, i, event;
+      return _regenerator.default.wrap(function _callee3$(_context3) {
+        while (1) {
+          switch (_context3.prev = _context3.next) {
+            case 0:
+              events = [];
+              timeCoef = 4;
+              startTestTime = _timing.timingDefault.now();
+              deferredCalc = new _DeferredCalc.DeferredCalc({
+                canBeCalcCallback: function canBeCalcCallback() {
+                  events.push({
+                    time: _timing.timingDefault.now() - startTestTime,
+                    type: _TestDeferred.EventType.CanBeCalc
+                  });
+                  this.calc();
+                },
+                calcFunc: function calcFunc() {
+                  events.push({
+                    time: _timing.timingDefault.now() - startTestTime,
+                    type: _TestDeferred.EventType.Calc
+                  });
+                  this.done();
+                },
+                calcCompletedCallback: function calcCompletedCallback() {
+                  events.push({
+                    time: _timing.timingDefault.now() - startTestTime,
+                    type: _TestDeferred.EventType.Completed
+                  });
+                },
+                options: {
+                  autoInvalidateInterval: 9 * timeCoef,
+                  throttleTime: 10 * timeCoef,
+                  maxThrottleTime: 100 * timeCoef,
+                  minTimeBetweenCalc: 5 * timeCoef
+                }
+              });
+              _context3.next = 6;
+              return new _promise.default(function (resolve) {
+                return (0, _setTimeout2.default)(resolve, 100 * timeCoef);
+              });
+
+            case 6:
+              deferredCalc.autoInvalidateInterval = null;
+              _context3.next = 9;
+              return new _promise.default(function (resolve) {
+                return (0, _setTimeout2.default)(resolve, 20 * timeCoef);
+              });
+
+            case 9:
+              _Assert.assert.strictEqual(events.length % 3, 0);
+
+              _Assert.assert.ok(events.length / 3 > 2);
+
+              checkEventTypes = [_TestDeferred.EventType.CanBeCalc, _TestDeferred.EventType.Calc, _TestDeferred.EventType.Completed];
+
+              for (i = 0; i < events.length; i++) {
+                event = events[i];
+
+                _Assert.assert.ok(event.time < (100 + 20) * timeCoef, event.time + '');
+
+                _Assert.assert.strictEqual(event.type, checkEventTypes[i % 3]);
+              }
+
+              events = [];
+              _context3.next = 16;
+              return new _promise.default(function (resolve) {
+                return (0, _setTimeout2.default)(resolve, (100 + 20) * timeCoef);
+              });
+
+            case 16:
+              _Assert.assert.deepStrictEqual(events, []);
+
+            case 17:
+            case "end":
+              return _context3.stop();
+          }
+        }
+      }, _callee3);
+    }));
+    return _realTiming.apply(this, arguments);
+  }
+
   (0, _Mocha.it)('real timing', /*#__PURE__*/(0, _asyncToGenerator2.default)( /*#__PURE__*/_regenerator.default.mark(function _callee() {
-    var events, timeCoef, startTestTime, deferredCalc, checkEventTypes, i, event;
+    var i;
     return _regenerator.default.wrap(function _callee$(_context) {
       while (1) {
         switch (_context.prev = _context.next) {
           case 0:
-            events = [];
-            timeCoef = 2;
-            startTestTime = _timing.timingDefault.now();
-            deferredCalc = new _DeferredCalc.DeferredCalc({
-              canBeCalcCallback: function canBeCalcCallback() {
-                events.push({
-                  time: _timing.timingDefault.now() - startTestTime,
-                  type: _TestDeferred.EventType.CanBeCalc
-                });
-                this.calc();
-              },
-              calcFunc: function calcFunc() {
-                events.push({
-                  time: _timing.timingDefault.now() - startTestTime,
-                  type: _TestDeferred.EventType.Calc
-                });
-                this.done();
-              },
-              calcCompletedCallback: function calcCompletedCallback() {
-                events.push({
-                  time: _timing.timingDefault.now() - startTestTime,
-                  type: _TestDeferred.EventType.Completed
-                });
-              },
-              options: {
-                autoInvalidateInterval: 9 * timeCoef,
-                throttleTime: 10 * timeCoef,
-                maxThrottleTime: 100 * timeCoef,
-                minTimeBetweenCalc: 5 * timeCoef
-              }
-            });
-            _context.next = 6;
-            return new _promise.default(function (resolve) {
-              return (0, _setTimeout2.default)(resolve, 100 * timeCoef);
-            });
+            i = 0;
 
-          case 6:
-            deferredCalc.autoInvalidateInterval = null;
-            _context.next = 9;
-            return new _promise.default(function (resolve) {
-              return (0, _setTimeout2.default)(resolve, 10 * timeCoef);
-            });
-
-          case 9:
-            _Assert.assert.strictEqual(events.length % 3, 0);
-
-            _Assert.assert.ok(events.length / 3 > 2);
-
-            checkEventTypes = [_TestDeferred.EventType.CanBeCalc, _TestDeferred.EventType.Calc, _TestDeferred.EventType.Completed];
-
-            for (i = 0; i < events.length; i++) {
-              event = events[i];
-
-              _Assert.assert.ok(event.time < 100 * timeCoef, event.time + '');
-
-              _Assert.assert.strictEqual(event.type, checkEventTypes[i % 3]);
+          case 1:
+            if (!(i < 1)) {
+              _context.next = 7;
+              break;
             }
 
-            events = [];
-            _context.next = 16;
-            return new _promise.default(function (resolve) {
-              return (0, _setTimeout2.default)(resolve, 100 * timeCoef);
-            });
+            _context.next = 4;
+            return realTiming();
 
-          case 16:
-            _Assert.assert.deepStrictEqual(events, []);
+          case 4:
+            i++;
+            _context.next = 1;
+            break;
 
-          case 17:
+          case 7:
           case "end":
             return _context.stop();
         }
