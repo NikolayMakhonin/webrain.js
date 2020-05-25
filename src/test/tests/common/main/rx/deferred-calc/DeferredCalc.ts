@@ -685,7 +685,7 @@ describe('common > main > rx > deferred-calc > DeferredCalc', function() {
 
 	async function realTiming() {
 		let events: IEvent[] = []
-		const timeCoef = 2
+		const timeCoef = 4
 		const startTestTime = timingDefault.now()
 
 		const deferredCalc = new DeferredCalc({
