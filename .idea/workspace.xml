@@ -30,11 +30,9 @@
     <select />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="69b2ee16-521b-4efd-b473-8e19e3df4d09" name="Default Changelist" comment="Improver package.json">
+    <list default="true" id="69b2ee16-521b-4efd-b473-8e19e3df4d09" name="Default Changelist" comment="Fix index.ts">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/HISTORY.md" beforeDir="false" afterPath="$PROJECT_DIR$/HISTORY.md" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/package.json" beforeDir="false" afterPath="$PROJECT_DIR$/package.json" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/common/index.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/common/index.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/dist/types/common/index.d.ts" beforeDir="false" afterPath="$PROJECT_DIR$/dist/types/common/index.d.ts" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -507,21 +505,7 @@
       <workItem from="1590640061885" duration="5062000" />
       <workItem from="1590671601413" duration="41000" />
       <workItem from="1590835633665" duration="3559000" />
-      <workItem from="1590853664135" duration="668000" />
-    </task>
-    <task id="LOCAL-00484" summary="Prepare v2: deleting unnecessary lists... Tests OK.">
-      <created>1588407914081</created>
-      <option name="number" value="00484" />
-      <option name="presentableId" value="LOCAL-00484" />
-      <option name="project" value="LOCAL" />
-      <updated>1588407914081</updated>
-    </task>
-    <task id="LOCAL-00485" summary="Prepare v2: deleted unnecessary lists. Tests OK.">
-      <created>1588408029180</created>
-      <option name="number" value="00485" />
-      <option name="presentableId" value="LOCAL-00485" />
-      <option name="project" value="LOCAL" />
-      <updated>1588408029180</updated>
+      <workItem from="1590853664135" duration="2474000" />
     </task>
     <task id="LOCAL-00486" summary="Prepare v2: deleted unnecessary TimeLimits. Tests OK.">
       <created>1588408124958</created>
@@ -852,7 +836,21 @@
       <option name="project" value="LOCAL" />
       <updated>1590852970098</updated>
     </task>
-    <option name="localTasksCounter" value="533" />
+    <task id="LOCAL-00533" summary="Improver package.json">
+      <created>1590854349917</created>
+      <option name="number" value="00533" />
+      <option name="presentableId" value="LOCAL-00533" />
+      <option name="project" value="LOCAL" />
+      <updated>1590854349917</updated>
+    </task>
+    <task id="LOCAL-00534" summary="Fix index.ts">
+      <created>1590854378274</created>
+      <option name="number" value="00534" />
+      <option name="presentableId" value="LOCAL-00534" />
+      <option name="project" value="LOCAL" />
+      <updated>1590854378274</updated>
+    </task>
+    <option name="localTasksCounter" value="535" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -913,7 +911,6 @@
   <component name="VcsManagerConfiguration">
     <option name="CHECK_CODE_SMELLS_BEFORE_PROJECT_COMMIT" value="false" />
     <option name="CHECK_NEW_TODO" value="false" />
-    <MESSAGE value="Prepare v2: deleted unused code. Tests OK." />
     <MESSAGE value="Develop" />
     <MESSAGE value="Replace bad supported Int32Array.slice(0, count) to fori" />
     <MESSAGE value="Fix array merger. Tests OK." />
@@ -938,7 +935,8 @@
     <MESSAGE value="Merged with app template. Precommit is OK." />
     <MESSAGE value="v1.0.1-a Added test/register" />
     <MESSAGE value="Improver package.json" />
-    <option name="LAST_COMMIT_MESSAGE" value="Improver package.json" />
+    <MESSAGE value="Fix index.ts" />
+    <option name="LAST_COMMIT_MESSAGE" value="Fix index.ts" />
   </component>
   <component name="WindowStateProjectService">
     <state x="617" y="103" key="#ESLint" timestamp="1590218488709">
@@ -973,10 +971,10 @@
       <screen x="0" y="0" width="1920" height="882" />
     </state>
     <state x="651" y="254" key="ANALYSIS_DLG_com.intellij.analysis.BaseAnalysisAction$1/0.0.1920.882@0.0.1920.882" timestamp="1588413930131" />
-    <state x="-2" y="0" width="1918" height="882" key="CommitChangelistDialog2" timestamp="1590852968600">
+    <state x="-2" y="0" width="1918" height="882" key="CommitChangelistDialog2" timestamp="1590860964101">
       <screen x="0" y="0" width="1920" height="882" />
     </state>
-    <state x="-2" y="0" width="1918" height="882" key="CommitChangelistDialog2/0.0.1920.882@0.0.1920.882" timestamp="1590852968600" />
+    <state x="-2" y="0" width="1918" height="882" key="CommitChangelistDialog2/0.0.1920.882@0.0.1920.882" timestamp="1590860964101" />
     <state width="884" height="550" key="DebuggerActiveHint" timestamp="1590162335145">
       <screen x="0" y="0" width="1920" height="882" />
     </state>

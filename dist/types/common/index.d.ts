@@ -47,6 +47,7 @@ import { IWritableFieldOptions as _IWritableFieldOptions, IReadableFieldOptions 
 import { IConnectFieldOptions as _IConnectFieldOptions } from './rx/object/properties/ConnectorBuilder';
 import { TSubscribeFunc as _TSubscribeFunc } from './rx/object/properties/path/deepSubscriber';
 import { Func as _Func, FuncAny as _FuncAny, ArgsOf as _ArgsOf, ResultOf as _ResultOf, AsyncResultOf as _AsyncResultOf, KeysOf as _KeysOf, OptionalNested as _OptionalNested } from './helpers/typescript';
+import { IRuleBuilder as _IRuleBuilder } from './rx/object/properties/path/builder/contracts/IRuleBuilder';
 export declare type ISubscriber<T> = _ISubscriber<T>;
 export declare type IUnsubscribe = _IUnsubscribe;
 export declare type IUnsubscribeOrVoid = _IUnsubscribeOrVoid;
@@ -81,3 +82,4 @@ export declare type ResultOf<TFunc> = _ResultOf<TFunc>;
 export declare type AsyncResultOf<TFunc> = _AsyncResultOf<TFunc>;
 export declare type KeysOf<TObject, TValue> = _KeysOf<TObject, TValue>;
 export declare type OptionalNested<TObject> = _OptionalNested<TObject>;
+export declare type IRuleBuilder<TObject = any, TValueKeys extends string | number = never> = _IRuleBuilder<TObject, TValueKeys>;
