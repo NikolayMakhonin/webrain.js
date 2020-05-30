@@ -100,6 +100,7 @@ import {
 	KeysOf as _KeysOf,
 	OptionalNested as _OptionalNested,
 } from './helpers/typescript'
+import {IRuleBuilder as _IRuleBuilder} from './rx/object/properties/path/builder/contracts/IRuleBuilder'
 
 export type ISubscriber<T> = _ISubscriber<T>
 export type IUnsubscribe = _IUnsubscribe
@@ -136,6 +137,7 @@ export type ResultOf<TFunc> = _ResultOf<TFunc>
 export type AsyncResultOf<TFunc> = _AsyncResultOf<TFunc>
 export type KeysOf<TObject, TValue> = _KeysOf<TObject, TValue>
 export type OptionalNested<TObject> = _OptionalNested<TObject>
+export type IRuleBuilder<TObject = any, TValueKeys extends string | number = never> = _IRuleBuilder<TObject, TValueKeys>
 
 // endregion
 

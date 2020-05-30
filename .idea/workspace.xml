@@ -30,11 +30,11 @@
     <select />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="69b2ee16-521b-4efd-b473-8e19e3df4d09" name="Default Changelist" comment="Merged with app template. Precommit is OK.">
-      <change afterPath="$PROJECT_DIR$/src/main/common/test/register.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/codeStyles/codeStyleConfig.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/codeStyles/codeStyleConfig.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/inspectionProfiles/Project_Default.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/inspectionProfiles/Project_Default.xml" afterDir="false" />
+    <list default="true" id="69b2ee16-521b-4efd-b473-8e19e3df4d09" name="Default Changelist" comment="Improver package.json">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/HISTORY.md" beforeDir="false" afterPath="$PROJECT_DIR$/HISTORY.md" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/package.json" beforeDir="false" afterPath="$PROJECT_DIR$/package.json" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/common/index.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/common/index.ts" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -438,11 +438,11 @@
       <item itemvalue="Mocha.fastNow perf" />
       <item itemvalue="Mocha.common &gt; main &gt; rx &gt; depend &gt; dependent-func / base" />
       <item itemvalue="Mocha.common &gt; main &gt; rx &gt; depend &gt; dependent-func / base.perceptron" />
+      <item itemvalue="Mocha.common &gt; main &gt; rx &gt; deferred-calc &gt; DeferredCalc.real timing" />
       <item itemvalue="Node.js.mocha" />
       <item itemvalue="Node.js.dependent-func.js" />
       <item itemvalue="Node.js.tests.build.js" />
       <item itemvalue="npm.Coverage Mocha Report" />
-      <item itemvalue="Mocha.common &gt; main &gt; rx &gt; deferred-calc &gt; DeferredCalc.real timing" />
     </list>
     <recent_temporary>
       <list>
@@ -499,21 +499,15 @@
       <workItem from="1590217587334" duration="35272000" />
       <workItem from="1590299663864" duration="2207000" />
       <workItem from="1590301884117" duration="2511000" />
-      <workItem from="1590316000534" duration="12320000" />
-    </task>
-    <task id="LOCAL-00482" summary="Prepare v2: deleting unnecessary lists... Tests OK.">
-      <created>1588406916348</created>
-      <option name="number" value="00482" />
-      <option name="presentableId" value="LOCAL-00482" />
-      <option name="project" value="LOCAL" />
-      <updated>1588406916348</updated>
-    </task>
-    <task id="LOCAL-00483" summary="Prepare v2: deleting unnecessary lists... Tests OK.">
-      <created>1588407188347</created>
-      <option name="number" value="00483" />
-      <option name="presentableId" value="LOCAL-00483" />
-      <option name="project" value="LOCAL" />
-      <updated>1588407188347</updated>
+      <workItem from="1590316000534" duration="13612000" />
+      <workItem from="1590459220910" duration="14000" />
+      <workItem from="1590492787369" duration="1251000" />
+      <workItem from="1590557471231" duration="601000" />
+      <workItem from="1590579056675" duration="761000" />
+      <workItem from="1590640061885" duration="5062000" />
+      <workItem from="1590671601413" duration="41000" />
+      <workItem from="1590835633665" duration="3559000" />
+      <workItem from="1590853664135" duration="668000" />
     </task>
     <task id="LOCAL-00484" summary="Prepare v2: deleting unnecessary lists... Tests OK.">
       <created>1588407914081</created>
@@ -844,7 +838,21 @@
       <option name="project" value="LOCAL" />
       <updated>1590391530047</updated>
     </task>
-    <option name="localTasksCounter" value="531" />
+    <task id="LOCAL-00531" summary="v1.0.1-a Added test/register">
+      <created>1590431869746</created>
+      <option name="number" value="00531" />
+      <option name="presentableId" value="LOCAL-00531" />
+      <option name="project" value="LOCAL" />
+      <updated>1590431869746</updated>
+    </task>
+    <task id="LOCAL-00532" summary="Improver package.json">
+      <created>1590852970095</created>
+      <option name="number" value="00532" />
+      <option name="presentableId" value="LOCAL-00532" />
+      <option name="project" value="LOCAL" />
+      <updated>1590852970098</updated>
+    </task>
+    <option name="localTasksCounter" value="533" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -905,8 +913,6 @@
   <component name="VcsManagerConfiguration">
     <option name="CHECK_CODE_SMELLS_BEFORE_PROJECT_COMMIT" value="false" />
     <option name="CHECK_NEW_TODO" value="false" />
-    <MESSAGE value="Prepare v2: deleted unnecessary TimeLimits. Tests OK." />
-    <MESSAGE value="Prepare v2: deleted unnecessary BinaryTree. Tests OK." />
     <MESSAGE value="Prepare v2: deleted unused code. Tests OK." />
     <MESSAGE value="Develop" />
     <MESSAGE value="Replace bad supported Int32Array.slice(0, count) to fori" />
@@ -930,7 +936,9 @@
     <MESSAGE value="v1.0.0-a published" />
     <MESSAGE value="Fix DeferredCalc real timing test" />
     <MESSAGE value="Merged with app template. Precommit is OK." />
-    <option name="LAST_COMMIT_MESSAGE" value="Merged with app template. Precommit is OK." />
+    <MESSAGE value="v1.0.1-a Added test/register" />
+    <MESSAGE value="Improver package.json" />
+    <option name="LAST_COMMIT_MESSAGE" value="Improver package.json" />
   </component>
   <component name="WindowStateProjectService">
     <state x="617" y="103" key="#ESLint" timestamp="1590218488709">
@@ -965,38 +973,38 @@
       <screen x="0" y="0" width="1920" height="882" />
     </state>
     <state x="651" y="254" key="ANALYSIS_DLG_com.intellij.analysis.BaseAnalysisAction$1/0.0.1920.882@0.0.1920.882" timestamp="1588413930131" />
-    <state x="-2" y="0" width="1918" height="882" key="CommitChangelistDialog2" timestamp="1590396470089">
+    <state x="-2" y="0" width="1918" height="882" key="CommitChangelistDialog2" timestamp="1590852968600">
       <screen x="0" y="0" width="1920" height="882" />
     </state>
-    <state x="-2" y="0" width="1918" height="882" key="CommitChangelistDialog2/0.0.1920.882@0.0.1920.882" timestamp="1590396470089" />
+    <state x="-2" y="0" width="1918" height="882" key="CommitChangelistDialog2/0.0.1920.882@0.0.1920.882" timestamp="1590852968600" />
     <state width="884" height="550" key="DebuggerActiveHint" timestamp="1590162335145">
       <screen x="0" y="0" width="1920" height="882" />
     </state>
     <state width="884" height="550" key="DebuggerActiveHint/0.0.1920.882@0.0.1920.882" timestamp="1590162335145" />
-    <state x="0" y="4" width="1920" height="875" key="DiffContextDialog" timestamp="1590391492794">
+    <state x="0" y="4" width="1920" height="875" key="DiffContextDialog" timestamp="1590852906101">
       <screen x="0" y="0" width="1920" height="882" />
     </state>
-    <state x="0" y="4" width="1920" height="875" key="DiffContextDialog/0.0.1920.882@0.0.1920.882" timestamp="1590391492794" />
+    <state x="0" y="4" width="1920" height="875" key="DiffContextDialog/0.0.1920.882@0.0.1920.882" timestamp="1590852906101" />
     <state x="1059" y="106" key="FileChooserDialogImpl" timestamp="1590245638441">
       <screen x="0" y="0" width="1920" height="882" />
     </state>
     <state x="1059" y="106" key="FileChooserDialogImpl/0.0.1920.882@0.0.1920.882" timestamp="1590245638441" />
-    <state width="545" height="259" key="GridCell.Tab.0.bottom" timestamp="1590417995701">
+    <state width="545" height="259" key="GridCell.Tab.0.bottom" timestamp="1590433711304">
       <screen x="0" y="0" width="1920" height="882" />
     </state>
-    <state width="545" height="259" key="GridCell.Tab.0.bottom/0.0.1920.882@0.0.1920.882" timestamp="1590417995701" />
-    <state width="545" height="259" key="GridCell.Tab.0.center" timestamp="1590417995701">
+    <state width="545" height="259" key="GridCell.Tab.0.bottom/0.0.1920.882@0.0.1920.882" timestamp="1590433711304" />
+    <state width="545" height="259" key="GridCell.Tab.0.center" timestamp="1590433711304">
       <screen x="0" y="0" width="1920" height="882" />
     </state>
-    <state width="545" height="259" key="GridCell.Tab.0.center/0.0.1920.882@0.0.1920.882" timestamp="1590417995701" />
-    <state width="545" height="259" key="GridCell.Tab.0.left" timestamp="1590417995701">
+    <state width="545" height="259" key="GridCell.Tab.0.center/0.0.1920.882@0.0.1920.882" timestamp="1590433711304" />
+    <state width="545" height="259" key="GridCell.Tab.0.left" timestamp="1590433711304">
       <screen x="0" y="0" width="1920" height="882" />
     </state>
-    <state width="545" height="259" key="GridCell.Tab.0.left/0.0.1920.882@0.0.1920.882" timestamp="1590417995701" />
-    <state width="545" height="259" key="GridCell.Tab.0.right" timestamp="1590417995701">
+    <state width="545" height="259" key="GridCell.Tab.0.left/0.0.1920.882@0.0.1920.882" timestamp="1590433711304" />
+    <state width="545" height="259" key="GridCell.Tab.0.right" timestamp="1590433711304">
       <screen x="0" y="0" width="1920" height="882" />
     </state>
-    <state width="545" height="259" key="GridCell.Tab.0.right/0.0.1920.882@0.0.1920.882" timestamp="1590417995701" />
+    <state width="545" height="259" key="GridCell.Tab.0.right/0.0.1920.882@0.0.1920.882" timestamp="1590433711304" />
     <state width="574" height="452" key="GridCell.Tab.1.bottom" timestamp="1590299596166">
       <screen x="0" y="0" width="1920" height="882" />
     </state>
@@ -1081,10 +1089,10 @@
       <screen x="0" y="0" width="1920" height="882" />
     </state>
     <state x="121" y="111" key="com.intellij.xdebugger.impl.breakpoints.ui.BreakpointsDialogFactory$2/0.0.1920.882@0.0.1920.882" timestamp="1587884348340" />
-    <state x="2" y="1" width="1908" height="878" key="find.popup" timestamp="1590387736376">
+    <state x="2" y="1" width="1908" height="878" key="find.popup" timestamp="1590835727957">
       <screen x="0" y="0" width="1920" height="882" />
     </state>
-    <state x="2" y="1" width="1908" height="878" key="find.popup/0.0.1920.882@0.0.1920.882" timestamp="1590387736376" />
+    <state x="2" y="1" width="1908" height="878" key="find.popup/0.0.1920.882@0.0.1920.882" timestamp="1590835727957" />
     <state x="732" y="169" key="refactoring.ChangeSignatureDialog" timestamp="1587872020169">
       <screen x="0" y="0" width="1920" height="882" />
     </state>
