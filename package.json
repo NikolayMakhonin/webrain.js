@@ -18,13 +18,6 @@
   "jsnext:main": "dist/mjs/main/browser/index.js",
   "module": "dist/mjs/main/browser/index.js",
   "browser": "dist/mjs/main/browser/index.js",
-  "exports": {
-    ".": {
-      "require": "./dist/js/main/browser/index.js",
-      "import": "./dist/mjs/main/browser/index.js",
-      "default": "./dist/js/main/browser/index.js"
-    }
-  },
   "engines": {
     "node": ">= 8.6.0"
   },
