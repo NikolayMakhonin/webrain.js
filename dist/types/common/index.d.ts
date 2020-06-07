@@ -33,6 +33,7 @@ export { noSubscribe } from './rx/depend/core/current-state';
 export { deepSubscriber } from './rx/object/properties/path/deepSubscriber';
 export { Path } from './rx/object/properties/path/builder';
 export { autoCalcConnect, autoCalc, dependWait, dependWrapThis } from './rx/depend/helpers';
+export { ObjectPool } from './lists/ObjectPool';
 import { ThenableOrIteratorOrValue as _ThenableOrIteratorOrValue, ThenableOrValue as _ThenableOrValue, ThenableIterator as _ThenableIterator } from './async/async';
 import { IMergeable as _IMergeable, IMergeOptions as _IMergeOptions, IMergeValue as _IMergeValue } from './extensions/merge/contracts';
 import { IDeSerializeValue as _IDeSerializeValue, ISerializable as _ISerializable, ISerializedObject as _ISerializedObject, ISerializeValue as _ISerializeValue } from './extensions/serialization/contracts';

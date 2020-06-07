@@ -39,7 +39,8 @@ export { noSubscribe } from './rx/depend/core/current-state';
 export { deepSubscriber } from './rx/object/properties/path/deepSubscriber';
 export { Path } from './rx/object/properties/path/builder';
 export { autoCalcConnect, autoCalc, dependWait, dependWrapThis } from './rx/depend/helpers'; // export {createConnector} from './rx/object/properties/helpers'
-// region Interfaces
+
+export { ObjectPool } from './lists/ObjectPool'; // region Interfaces
 // endregion
 // endregion
 // region test
