@@ -1047,6 +1047,10 @@ var CallState = /*#__PURE__*/function () {
       this._subscribersCalculating = null;
     } // endregion
     // region 5: invalidate self and dependent
+    // public invalidate(forceValueChanged?: boolean): void {
+    // 	this._updateInvalidate(Update_Invalidating, forceValueChanged || false)
+    // 	this._updateInvalidate(Update_Invalidated_Recalc, forceValueChanged || false)
+    // }
 
   }, {
     key: "invalidate",
@@ -1463,9 +1467,11 @@ function createCallStateProvider(func, funcCall, initCallState) {
 
 var callStateProviderMap = new _weakMap.default(); // region getCallState / getOrCreateCallState
 
-function invalidateCallState(state) {
+function invalidateCallState(state) // forceValueChanged?: boolean,
+{
   if (state != null) {
-    state.invalidate();
+    state.invalidate(); // (forceValueChanged || false)
+
     return true;
   }
 

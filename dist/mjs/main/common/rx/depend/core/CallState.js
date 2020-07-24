@@ -921,6 +921,10 @@ export class CallState {
     this._subscribersCalculating = null;
   } // endregion
   // region 5: invalidate self and dependent
+  // public invalidate(forceValueChanged?: boolean): void {
+  // 	this._updateInvalidate(Update_Invalidating, forceValueChanged || false)
+  // 	this._updateInvalidate(Update_Invalidated_Recalc, forceValueChanged || false)
+  // }
 
 
   invalidate() {
@@ -1284,9 +1288,11 @@ export function createCallStateProvider(func, funcCall, initCallState) {
 
 const callStateProviderMap = new WeakMap(); // region getCallState / getOrCreateCallState
 
-export function invalidateCallState(state) {
+export function invalidateCallState(state) // forceValueChanged?: boolean,
+{
   if (state != null) {
-    state.invalidate();
+    state.invalidate(); // (forceValueChanged || false)
+
     return true;
   }
 

@@ -1,9 +1,14 @@
-1.0.5-a / 2020-05-30
+1.0.7-a / 2020-05-30
 ===================
 
-  * Improved CallState.invalidate() method
+  ? Improved CallState.invalidate() method
 
-1.0.2-a - 1.0.4-a / 2020-05-30
+1.0.6-a / 2020-07-24
+===================
+
+  * Fix index.ts
+
+1.0.2-a - 1.0.5-a / 2020-05-30
 ===================
 
   * Fix index.ts

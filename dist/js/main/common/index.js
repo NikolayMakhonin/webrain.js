@@ -1,7 +1,7 @@
 "use strict";
 
 exports.__esModule = true;
-exports.ObjectPool = exports.dependWrapThis = exports.dependWait = exports.autoCalc = exports.autoCalcConnect = exports.Path = exports.deepSubscriber = exports.noSubscribe = exports.connectorFactory = exports.calcPropertyFactoryX = exports.calcPropertyFactory = exports.DependSet = exports.DependMap = exports.dependX = exports.depend = exports.CallStatus = exports.subscribeCallState = exports.invalidateCallState = exports.getOrCreateCallState = exports.getCallState = exports.NO_CHANGE_VALUE = exports.ALWAYS_CHANGE_VALUE = exports.Random = exports.performanceNow = exports.delay = exports.DeferredCalc = exports.VALUE_PROPERTY_DEFAULT = exports.CalcStat = exports.resolveAsyncAny = exports.resolveAsyncAll = exports.resolveAsyncFunc = exports.resolveAsync = exports.webrainEquals = exports.webrainOptions = exports.equals = exports.isIterator = exports.isIterable = exports.ObjectSerializer = exports.registerSerializer = exports.registerSerializable = exports.registerMerger = exports.registerMergeable = exports.BehaviorSubject = exports.Subject = exports.Connector = exports.PropertyChangedObject = exports.ObjectMerger = exports.resolvePath = exports.CalcObjectBuilder = exports.ObservableObjectBuilder = exports.ClassBuilder = exports.ObjectBuilder = exports.ObservableObject = exports.ObservableClass = exports.ThenableSync = void 0;
+exports.CallStatusShort = exports.ObjectPool = exports.dependWrapThis = exports.dependWait = exports.autoCalc = exports.autoCalcConnect = exports.Path = exports.deepSubscriber = exports.noSubscribe = exports.connectorFactory = exports.calcPropertyFactoryX = exports.calcPropertyFactory = exports.DependSet = exports.DependMap = exports.dependX = exports.depend = exports.CallStatus = exports.subscribeCallState = exports.invalidateCallState = exports.getOrCreateCallState = exports.getCallState = exports.NO_CHANGE_VALUE = exports.ALWAYS_CHANGE_VALUE = exports.Random = exports.performanceNow = exports.delay = exports.DeferredCalc = exports.VALUE_PROPERTY_DEFAULT = exports.CalcStat = exports.resolveAsyncAny = exports.resolveAsyncAll = exports.resolveAsyncFunc = exports.resolveAsync = exports.webrainEquals = exports.webrainOptions = exports.equals = exports.isIterator = exports.isIterable = exports.ObjectSerializer = exports.registerSerializer = exports.registerSerializable = exports.registerMerger = exports.registerMergeable = exports.BehaviorSubject = exports.Subject = exports.Connector = exports.PropertyChangedObject = exports.ObjectMerger = exports.resolvePath = exports.CalcObjectBuilder = exports.ObservableObjectBuilder = exports.ClassBuilder = exports.ObjectBuilder = exports.ObservableObject = exports.ObservableClass = exports.ThenableSync = void 0;
 
 var _ThenableSync = require("./async/ThenableSync");
 
@@ -113,6 +113,7 @@ exports.subscribeCallState = _CallState.subscribeCallState;
 var _contracts = require("./rx/depend/core/contracts");
 
 exports.CallStatus = _contracts.CallStatus;
+exports.CallStatusShort = _contracts.CallStatusShort;
 
 var _depend = require("./rx/depend/core/depend");
 

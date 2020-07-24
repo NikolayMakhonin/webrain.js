@@ -62,7 +62,7 @@ export interface ICallState<TThisOuter, TArgs extends any[], TResultInner> {
     readonly hasSubscribers: boolean;
     readonly statusShort: CallStatusShort;
     getValue(isLazy?: boolean, dontThrowOnError?: boolean): TResultOuter<TResultInner>;
-    invalidate(): void;
+    invalidate(): any;
     /**
      * Subscribe "on invalidated" or "on calculated"
      * @param subscriber The first argument is {@link ICallState};

@@ -103,7 +103,7 @@ export interface ICallState<
 		dontThrowOnError?: boolean,
 	): TResultOuter<TResultInner>
 
-	invalidate(forceValueChanged?: boolean): void
+	invalidate() // forceValueChanged?: boolean): void
 
 	/**
 	 * Subscribe "on invalidated" or "on calculated"

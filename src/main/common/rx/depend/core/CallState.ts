@@ -1155,9 +1155,14 @@ export class CallState<
 
 	// region 5: invalidate self and dependent
 
-	public invalidate(forceValueChanged?: boolean): void {
-		this._updateInvalidate(Update_Invalidating, forceValueChanged || false)
-		this._updateInvalidate(Update_Invalidated_Recalc, forceValueChanged || false)
+	// public invalidate(forceValueChanged?: boolean): void {
+	// 	this._updateInvalidate(Update_Invalidating, forceValueChanged || false)
+	// 	this._updateInvalidate(Update_Invalidated_Recalc, forceValueChanged || false)
+	// }
+
+	public invalidate(): void {
+		this._updateInvalidate(Update_Invalidating, false)
+		this._updateInvalidate(Update_Invalidated_Recalc, false)
 	}
 
 	/** @internal */
@@ -1589,9 +1594,10 @@ export function invalidateCallState<
 	TResultInner,
 	>(
 	state: ICallState<TThisOuter, TArgs, TResultInner>,
+	// forceValueChanged?: boolean,
 ) {
 	if (state != null) {
-		state.invalidate()
+		state.invalidate() // (forceValueChanged || false)
 		return true
 	}
 	return false
