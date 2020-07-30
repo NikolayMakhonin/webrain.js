@@ -7,6 +7,7 @@ var _mergers = require("../../../main/common/extensions/merge/mergers");
 var _Mocha = require("../../../main/common/test/Mocha");
 
 /* tslint:disable:no-empty no-identical-functions max-line-length no-construct use-primitive-type */
+// @ts-ignore
 (0, _Mocha.describe)('common > extensions > merge > ObjectMerger', function () {
   this.timeout(300000);
   var merger = new _mergers.ObjectMerger();
@@ -70,7 +71,7 @@ var _Mocha = require("../../../main/common/test/Mocha");
           b: 8
         },
         d: 9
-      }, function (o) {}, true, true);
+      }, function (o) {}, null, true, true);
     });
     console.log(result);
   });

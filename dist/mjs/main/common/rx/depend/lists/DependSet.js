@@ -137,9 +137,9 @@ export class DependSet {
     return source.constructor === Object || source[Symbol.toStringTag] === 'Set' || Array.isArray(source) || isIterable(source);
   }
 
-  _merge(merge, older, newer, preferCloneOlder, preferCloneNewer, options) {
+  _merge(merge, older, newer, preferCloneBase, preferCloneOlder, preferCloneNewer, options) {
     this.dependAnyValue();
-    return mergeMaps((target, source) => createMergeSetWrapper(target, source, arrayOrIterable => fillSet(new this._set.constructor(), arrayOrIterable)), merge, this, older, newer, preferCloneOlder, preferCloneNewer, options);
+    return mergeMaps((target, source) => createMergeSetWrapper(target, source, arrayOrIterable => fillSet(new this._set.constructor(), arrayOrIterable)), merge, this, older, newer, preferCloneBase, preferCloneOlder, preferCloneNewer, options);
   } // endregion
   // region ISerializable
   // noinspection SpellCheckingInspection

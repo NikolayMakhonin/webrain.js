@@ -30,7 +30,7 @@ export class Property extends ObservableClass {
 
   // region set / fill / merge
   set(value, clone, options) {
-    const result = this.mergeValue(void 0, value, value, clone, clone, options);
+    const result = this.mergeValue(void 0, value, value, null, clone, clone, options);
 
     if (!result) {
       this.value = void 0;
@@ -40,20 +40,20 @@ export class Property extends ObservableClass {
   }
 
   fill(value, preferClone, options) {
-    return this.mergeValue(this.value, value, value, preferClone, preferClone, options);
+    return this.mergeValue(this.value, value, value, null, preferClone, preferClone, options);
   }
 
-  merge(older, newer, preferCloneOlder, preferCloneNewer, options) {
-    return this.mergeValue(this.value, older, newer, preferCloneOlder, preferCloneNewer, options);
+  merge(older, newer, preferCloneBase, preferCloneOlder, preferCloneNewer, options) {
+    return this.mergeValue(this.value, older, newer, preferCloneBase, preferCloneOlder, preferCloneNewer, options);
   } // endregion
   // region merge helpers
 
 
-  mergeValue(base, older, newer, preferCloneOlder, preferCloneNewer, options) {
-    return this._mergeValue((this.merger || ObjectMerger.default).merge, base, older, newer, preferCloneOlder, preferCloneNewer, options);
+  mergeValue(base, older, newer, preferCloneBase, preferCloneOlder, preferCloneNewer, options) {
+    return this._mergeValue((this.merger || ObjectMerger.default).merge, base, older, newer, preferCloneBase, preferCloneOlder, preferCloneNewer, options);
   }
 
-  _mergeValue(merge, base, older, newer, preferCloneOlder, preferCloneNewer, options) {
+  _mergeValue(merge, base, older, newer, preferCloneBase, preferCloneOlder, preferCloneNewer, options) {
     if (older instanceof Property) {
       older = older.value;
     } else {
@@ -74,7 +74,7 @@ export class Property extends ObservableClass {
 
     return merge(base, older, newer, o => {
       this.value = o;
-    }, preferCloneOlder, preferCloneNewer, { ...this.mergeOptions,
+    }, preferCloneBase, preferCloneOlder, preferCloneNewer, { ...this.mergeOptions,
       ...options,
       selfAsValueOlder: !(older instanceof Property),
       selfAsValueNewer: !(newer instanceof Property)
@@ -91,8 +91,8 @@ export class Property extends ObservableClass {
     return true;
   }
 
-  _merge(merge, older, newer, preferCloneOlder, preferCloneNewer) {
-    return this._mergeValue(merge, this.value, older, newer, preferCloneOlder, preferCloneNewer);
+  _merge(merge, older, newer, preferCloneBase, preferCloneOlder, preferCloneNewer) {
+    return this._mergeValue(merge, this.value, older, newer, preferCloneBase, preferCloneOlder, preferCloneNewer);
   } // endregion
   // region ISerializable
   // noinspection SpellCheckingInspection

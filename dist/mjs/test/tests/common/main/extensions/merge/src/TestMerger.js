@@ -77,7 +77,7 @@ function isPreferClone(options, initialValue) {
         return true;
       }
 
-      return options.preferCloneMeta == null ? options.preferCloneOlderParam && options.base === options.older || options.preferCloneNewerParam && options.base === options.newer : options.preferCloneMeta;
+      return options.preferCloneMeta == null ? options.preferCloneBaseParam || options.preferCloneOlderParam && options.base === options.older || options.preferCloneNewerParam && options.base === options.newer : options.preferCloneMeta;
 
     case NONE:
       return false;
@@ -185,6 +185,7 @@ export class TestMerger extends TestVariants {
       base: [],
       older: [],
       newer: [],
+      preferCloneBaseParam: [null, false, true],
       preferCloneOlderParam: [null, false, true],
       preferCloneNewerParam: [null, false, true],
       preferCloneMeta: [null, false, true],
@@ -258,7 +259,7 @@ export class TestMerger extends TestVariants {
           returnValue = merger.merge(options.base, options.older, options.newer, options.setFunc && (o => {
             setValue = o;
             setCount++;
-          }), options.preferCloneOlderParam, options.preferCloneNewerParam, options.valueType || options.valueFactory ? {
+          }), options.preferCloneBaseParam, options.preferCloneOlderParam, options.preferCloneNewerParam, options.valueType || options.valueFactory ? {
             valueType: options.valueType,
             valueFactory: options.valueFactory
           } : void 0);

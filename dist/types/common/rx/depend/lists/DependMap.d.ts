@@ -21,7 +21,7 @@ export declare class DependMap<K, V> implements Map<K, V>, IMergeable<DependMap<
     delete(key: K): boolean;
     clear(): void;
     _canMerge(source: DependMap<K, V>): boolean;
-    _merge(merge: IMergeValue, older: DependMap<K, V> | object, newer: DependMap<K, V> | object, preferCloneOlder?: boolean, preferCloneNewer?: boolean, options?: IMergeOptions): boolean;
+    _merge(merge: IMergeValue, older: DependMap<K, V> | object, newer: DependMap<K, V> | object, preferCloneBase?: boolean, preferCloneOlder?: boolean, preferCloneNewer?: boolean, options?: IMergeOptions): boolean;
     static uuid: string;
     serialize(serialize: ISerializeValue): ISerializedObject;
     deSerialize(): void;

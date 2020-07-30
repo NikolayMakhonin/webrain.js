@@ -6,7 +6,7 @@ export interface IMergeMapWrapper<K, V> {
     delete(key: K): void;
     forEachKeys(callbackfn: (key: K) => void): void;
 }
-export declare function mergeMapWrappers<K, V>(merge: IMergeValue, base: IMergeMapWrapper<K, V>, older: IMergeMapWrapper<K, V>, newer: IMergeMapWrapper<K, V>, preferCloneOlder?: boolean, preferCloneNewer?: boolean, options?: IMergeOptions): boolean;
+export declare function mergeMapWrappers<K, V>(merge: IMergeValue, base: IMergeMapWrapper<K, V>, older: IMergeMapWrapper<K, V>, newer: IMergeMapWrapper<K, V>, preferCloneBase?: boolean, preferCloneOlder?: boolean, preferCloneNewer?: boolean, options?: IMergeOptions): boolean;
 export declare class MergeObjectWrapper implements IMergeMapWrapper<string, any> {
     private readonly _object;
     private readonly _keyAsValue;
@@ -29,4 +29,4 @@ export declare class MergeMapWrapper<K, V> implements IMergeMapWrapper<K, V> {
     set(key: K, value: V): void;
 }
 export declare function createMergeMapWrapper<K, V>(target: object | V[] | Map<K, V>, source: object | V[] | Map<K, V>, arrayOrIterableToMap?: (array: any) => object | Map<K, V>): any;
-export declare function mergeMaps<TObject extends object>(createSourceMapWrapper: (target: any, source: any) => IMergeMapWrapper<any, any>, merge: IMergeValue, base: TObject, older: TObject, newer: TObject, preferCloneOlder?: boolean, preferCloneNewer?: boolean, options?: IMergeOptions): boolean;
+export declare function mergeMaps<TObject extends object>(createSourceMapWrapper: (target: any, source: any) => IMergeMapWrapper<any, any>, merge: IMergeValue, base: TObject, older: TObject, newer: TObject, preferCloneBase?: boolean, preferCloneOlder?: boolean, preferCloneNewer?: boolean, options?: IMergeOptions): boolean;

@@ -18,7 +18,7 @@ export declare class DependSet<V> implements Set<V>, IMergeable<DependSet<V>, ob
     delete(value: V): boolean;
     clear(): void;
     _canMerge(source: DependSet<V>): boolean;
-    _merge(merge: IMergeValue, older: DependSet<V> | V[] | Iterable<V>, newer: DependSet<V> | V[] | Iterable<V>, preferCloneOlder?: boolean, preferCloneNewer?: boolean, options?: IMergeOptions): boolean;
+    _merge(merge: IMergeValue, older: DependSet<V> | V[] | Iterable<V>, newer: DependSet<V> | V[] | Iterable<V>, preferCloneBase?: boolean, preferCloneOlder?: boolean, preferCloneNewer?: boolean, options?: IMergeOptions): boolean;
     static uuid: string;
     serialize(serialize: ISerializeValue): ISerializedObject;
     deSerialize(): void;

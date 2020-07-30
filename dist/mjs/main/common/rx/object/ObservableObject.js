@@ -9,8 +9,8 @@ registerMerger(ObservableObject, {
       return source instanceof Object;
     },
 
-    merge(merge, base, older, newer, set, preferCloneOlder, preferCloneNewer, options) {
-      return mergeMaps((target, source) => new MergeObjectWrapper(source), merge, base, older, newer, preferCloneOlder, preferCloneNewer, options);
+    merge(merge, base, older, newer, set, preferCloneBase, preferCloneOlder, preferCloneNewer, options) {
+      return mergeMaps((target, source) => new MergeObjectWrapper(source), merge, base, older, newer, preferCloneBase, preferCloneOlder, preferCloneNewer, options);
     }
 
   },

@@ -68,11 +68,11 @@ describe('common > extensions > merge > ObjectMerger', function () {
       return true;
     }
 
-    _merge(merge, older, newer, preferCloneOlder, preferCloneNewer, options) {
+    _merge(merge, older, newer, preferCloneBase, preferCloneOlder, preferCloneNewer, options) {
       let changed = false;
       changed = merge(this.value, older instanceof Class ? older.value : older, newer instanceof Class ? newer.value : newer, o => {
         this.value = o;
-      }, null, null, {
+      }, null, null, null, {
         selfAsValueOlder: !(older instanceof Class),
         selfAsValueNewer: !(newer instanceof Class)
       }) || changed;
@@ -84,6 +84,7 @@ describe('common > extensions > merge > ObjectMerger', function () {
   registerMergeable(Class);
   describe('combinations', function () {
     const options = {
+      preferCloneBaseParam: [null, false, true],
       preferCloneOlderParam: [null, false, true],
       preferCloneNewerParam: [null, false, true],
       preferCloneMeta: [null, false, true],
@@ -214,6 +215,7 @@ describe('common > extensions > merge > ObjectMerger', function () {
       // 	base: [OLDER],
       // 	older: createValues(),
       // 	newer: createValues(),
+      // 	preferCloneBaseParam: [null],
       // 	preferCloneOlderParam: [true],
       // 	preferCloneNewerParam: [null],
       // 	preferCloneMeta: [null],
@@ -414,6 +416,7 @@ describe('common > extensions > merge > ObjectMerger', function () {
           },
           d: 9
         }],
+        preferCloneBaseParam: [null],
         preferCloneOlderParam: [null],
         preferCloneNewerParam: [null],
         preferCloneMeta: [null],
@@ -443,6 +446,7 @@ describe('common > extensions > merge > ObjectMerger', function () {
         base: ['', '1', '2', new String('1')],
         older: ['2', new String('2')],
         newer: ['3', new String('3')],
+        preferCloneBaseParam: [null],
         preferCloneOlderParam: [null],
         preferCloneNewerParam: [null],
         preferCloneMeta: [null],
@@ -465,6 +469,7 @@ describe('common > extensions > merge > ObjectMerger', function () {
         base: [new Number(1)],
         older: [2, new Number(2)],
         newer: [3, new Number(3)],
+        preferCloneBaseParam: [null],
         preferCloneOlderParam: [null],
         preferCloneNewerParam: [null],
         preferCloneMeta: [null],
@@ -485,6 +490,7 @@ describe('common > extensions > merge > ObjectMerger', function () {
         base: [new Boolean(false)],
         older: [true, false, new Boolean(true), new Boolean(false)],
         newer: [true, new Boolean(true)],
+        preferCloneBaseParam: [null],
         preferCloneOlderParam: [null],
         preferCloneNewerParam: [null],
         preferCloneMeta: [null],
@@ -525,6 +531,7 @@ describe('common > extensions > merge > ObjectMerger', function () {
           },
           d: 9
         }],
+        preferCloneBaseParam: [null],
         preferCloneOlderParam: [null],
         preferCloneNewerParam: [null],
         preferCloneMeta: [null],
@@ -554,6 +561,7 @@ describe('common > extensions > merge > ObjectMerger', function () {
         base: [[], [1], [2]],
         older: [[], [1], [2]],
         newer: [[3]],
+        preferCloneBaseParam: [null],
         preferCloneOlderParam: [null],
         preferCloneNewerParam: [null],
         preferCloneMeta: [null],
@@ -594,6 +602,7 @@ describe('common > extensions > merge > ObjectMerger', function () {
           },
           d: 9
         }],
+        preferCloneBaseParam: [null],
         preferCloneOlderParam: [null],
         preferCloneNewerParam: [null],
         preferCloneMeta: [null],
@@ -633,6 +642,7 @@ describe('common > extensions > merge > ObjectMerger', function () {
           },
           d: 9
         }],
+        preferCloneBaseParam: [null],
         preferCloneOlderParam: [null],
         preferCloneNewerParam: [null],
         preferCloneMeta: [null],
@@ -681,6 +691,7 @@ describe('common > extensions > merge > ObjectMerger', function () {
     };
 
     const options = {
+      preferCloneBaseParam: [null],
       preferCloneOlderParam: [null],
       preferCloneNewerParam: [null],
       preferCloneMeta: [null],
@@ -831,6 +842,7 @@ describe('common > extensions > merge > ObjectMerger', function () {
           c: 6
         }],
         newer: [newer],
+        preferCloneBaseParam: [null],
         preferCloneOlderParam: [null],
         preferCloneNewerParam: [null],
         preferCloneMeta: [null],
@@ -880,6 +892,7 @@ describe('common > extensions > merge > ObjectMerger', function () {
           base: [...targetFactories.map(o => o(base))],
           older: [...sourceFactories.map(o => o(older)), older, createIterable(older)],
           newer: [...sourceFactories.map(o => o(newer)), newer, createIterable(newer)],
+          preferCloneBaseParam: [null],
           preferCloneOlderParam: [null],
           preferCloneNewerParam: [null],
           preferCloneMeta: [true],
@@ -933,6 +946,7 @@ describe('common > extensions > merge > ObjectMerger', function () {
           base: [...targetFactories.map(o => o(base))],
           older: [...sourceFactories.map(o => o(older)), older, createIterable(older)],
           newer: [...sourceFactories.map(o => o(newer)), newer, createIterable(newer)],
+          preferCloneBaseParam: [null],
           preferCloneOlderParam: [null],
           preferCloneNewerParam: [null],
           preferCloneMeta: [true],

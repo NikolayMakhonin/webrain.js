@@ -157,9 +157,9 @@ export class DependMap {
     return source.constructor === Object || source[Symbol.toStringTag] === 'Map' || Array.isArray(source) || isIterable(source);
   }
 
-  _merge(merge, older, newer, preferCloneOlder, preferCloneNewer, options) {
+  _merge(merge, older, newer, preferCloneBase, preferCloneOlder, preferCloneNewer, options) {
     this.dependAnyValue();
-    return mergeMaps((target, source) => createMergeMapWrapper(target, source, arrayOrIterable => fillMap(new this._map.constructor(), arrayOrIterable)), merge, this, older, newer, preferCloneOlder, preferCloneNewer, options);
+    return mergeMaps((target, source) => createMergeMapWrapper(target, source, arrayOrIterable => fillMap(new this._map.constructor(), arrayOrIterable)), merge, this, older, newer, preferCloneBase, preferCloneOlder, preferCloneNewer, options);
   } // endregion
   // region ISerializable
   // noinspection SpellCheckingInspection

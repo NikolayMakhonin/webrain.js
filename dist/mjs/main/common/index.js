@@ -41,7 +41,8 @@ export { Path } from './rx/object/properties/path/builder';
 export { autoCalcConnect, autoCalc, dependWait, dependWrapThis } from './rx/depend/helpers'; // export {createConnector} from './rx/object/properties/helpers'
 
 export { ObjectPool } from './lists/ObjectPool';
-export { CallStatusShort } from './rx/depend/core/contracts'; // region Interfaces
+export { CallStatusShort } from './rx/depend/core/contracts';
+export { TypeMetaMergerCollection } from './extensions/merge/mergers'; // region Interfaces
 // endregion
 // endregion
 // region test

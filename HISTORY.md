@@ -1,7 +1,12 @@
-1.0.7-a / 2020-05-30
+1.1.1-a / 2020-05-30
 ===================
 
   ? Improved CallState.invalidate() method
+
+1.1.0-a / 2020-07-30
+===================
+
+  * Changed the merge interface: added preferCloneBase
 
 1.0.6-a / 2020-07-24
 ===================

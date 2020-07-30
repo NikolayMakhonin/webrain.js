@@ -106,7 +106,7 @@ var CircularClass = /*#__PURE__*/function (_ObservableClass) {
     }
   }, {
     key: "_merge",
-    value: function _merge(merge, older, newer, preferCloneOlder, preferCloneNewer, options) {
+    value: function _merge(merge, older, newer, preferCloneBase, preferCloneOlder, preferCloneNewer, options) {
       var _this2 = this;
 
       var changed = false;

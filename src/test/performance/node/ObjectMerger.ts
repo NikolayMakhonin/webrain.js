@@ -1,4 +1,5 @@
 /* tslint:disable:no-empty no-identical-functions max-line-length no-construct use-primitive-type */
+// @ts-ignore
 import {calcPerformance} from 'rdtsc'
 import {ObjectMerger} from '../../../main/common/extensions/merge/mergers'
 import {assert} from '../../../main/common/test/Assert'
@@ -64,6 +65,7 @@ describe('common > extensions > merge > ObjectMerger', function() {
 				{ a: {b: 4, c: 5}, c: 6 },
 				{ a: {a: 7, b: 8}, d: 9 },
 				o => {},
+				null,
 				true,
 				true,
 			),

@@ -108,13 +108,13 @@ var assert = new _Assert.Assert(_TestMerger.deepCloneEqual);
       }
     }, {
       key: "_merge",
-      value: function _merge(merge, older, newer, preferCloneOlder, preferCloneNewer, options) {
+      value: function _merge(merge, older, newer, preferCloneBase, preferCloneOlder, preferCloneNewer, options) {
         var _this = this;
 
         var changed = false;
         changed = merge(this.value, older instanceof Class ? older.value : older, newer instanceof Class ? newer.value : newer, function (o) {
           _this.value = o;
-        }, null, null, {
+        }, null, null, null, {
           selfAsValueOlder: !(older instanceof Class),
           selfAsValueNewer: !(newer instanceof Class)
         }) || changed;
@@ -127,6 +127,7 @@ var assert = new _Assert.Assert(_TestMerger.deepCloneEqual);
   (0, _mergers.registerMergeable)(Class);
   (0, _Mocha.describe)('combinations', function () {
     var options = {
+      preferCloneBaseParam: [null, false, true],
       preferCloneOlderParam: [null, false, true],
       preferCloneNewerParam: [null, false, true],
       preferCloneMeta: [null, false, true],
@@ -261,6 +262,7 @@ var assert = new _Assert.Assert(_TestMerger.deepCloneEqual);
       // 	base: [OLDER],
       // 	older: createValues(),
       // 	newer: createValues(),
+      // 	preferCloneBaseParam: [null],
       // 	preferCloneOlderParam: [true],
       // 	preferCloneNewerParam: [null],
       // 	preferCloneMeta: [null],
@@ -475,6 +477,7 @@ var assert = new _Assert.Assert(_TestMerger.deepCloneEqual);
           },
           d: 9
         }],
+        preferCloneBaseParam: [null],
         preferCloneOlderParam: [null],
         preferCloneNewerParam: [null],
         preferCloneMeta: [null],
@@ -504,6 +507,7 @@ var assert = new _Assert.Assert(_TestMerger.deepCloneEqual);
         base: ['', '1', '2', new String('1')],
         older: ['2', new String('2')],
         newer: ['3', new String('3')],
+        preferCloneBaseParam: [null],
         preferCloneOlderParam: [null],
         preferCloneNewerParam: [null],
         preferCloneMeta: [null],
@@ -526,6 +530,7 @@ var assert = new _Assert.Assert(_TestMerger.deepCloneEqual);
         base: [new Number(1)],
         older: [2, new Number(2)],
         newer: [3, new Number(3)],
+        preferCloneBaseParam: [null],
         preferCloneOlderParam: [null],
         preferCloneNewerParam: [null],
         preferCloneMeta: [null],
@@ -546,6 +551,7 @@ var assert = new _Assert.Assert(_TestMerger.deepCloneEqual);
         base: [new Boolean(false)],
         older: [true, false, new Boolean(true), new Boolean(false)],
         newer: [true, new Boolean(true)],
+        preferCloneBaseParam: [null],
         preferCloneOlderParam: [null],
         preferCloneNewerParam: [null],
         preferCloneMeta: [null],
@@ -586,6 +592,7 @@ var assert = new _Assert.Assert(_TestMerger.deepCloneEqual);
           },
           d: 9
         }],
+        preferCloneBaseParam: [null],
         preferCloneOlderParam: [null],
         preferCloneNewerParam: [null],
         preferCloneMeta: [null],
@@ -615,6 +622,7 @@ var assert = new _Assert.Assert(_TestMerger.deepCloneEqual);
         base: [[], [1], [2]],
         older: [[], [1], [2]],
         newer: [[3]],
+        preferCloneBaseParam: [null],
         preferCloneOlderParam: [null],
         preferCloneNewerParam: [null],
         preferCloneMeta: [null],
@@ -655,6 +663,7 @@ var assert = new _Assert.Assert(_TestMerger.deepCloneEqual);
           },
           d: 9
         }],
+        preferCloneBaseParam: [null],
         preferCloneOlderParam: [null],
         preferCloneNewerParam: [null],
         preferCloneMeta: [null],
@@ -694,6 +703,7 @@ var assert = new _Assert.Assert(_TestMerger.deepCloneEqual);
           },
           d: 9
         }],
+        preferCloneBaseParam: [null],
         preferCloneOlderParam: [null],
         preferCloneNewerParam: [null],
         preferCloneMeta: [null],
@@ -742,6 +752,7 @@ var assert = new _Assert.Assert(_TestMerger.deepCloneEqual);
     };
 
     var options = {
+      preferCloneBaseParam: [null],
       preferCloneOlderParam: [null],
       preferCloneNewerParam: [null],
       preferCloneMeta: [null],
@@ -895,6 +906,7 @@ var assert = new _Assert.Assert(_TestMerger.deepCloneEqual);
           c: 6
         }],
         newer: [newer],
+        preferCloneBaseParam: [null],
         preferCloneOlderParam: [null],
         preferCloneNewerParam: [null],
         preferCloneMeta: [null],
@@ -960,6 +972,7 @@ var assert = new _Assert.Assert(_TestMerger.deepCloneEqual);
           newer: (0, _concat.default)(_context4 = []).call(_context4, (0, _map2.default)(sourceFactories).call(sourceFactories, function (o) {
             return o(newer);
           }), [newer, (0, _helpers.createIterable)(newer)]),
+          preferCloneBaseParam: [null],
           preferCloneOlderParam: [null],
           preferCloneNewerParam: [null],
           preferCloneMeta: [true],
@@ -1029,6 +1042,7 @@ var assert = new _Assert.Assert(_TestMerger.deepCloneEqual);
           newer: (0, _concat.default)(_context7 = []).call(_context7, (0, _map2.default)(sourceFactories).call(sourceFactories, function (o) {
             return o(newer);
           }), [newer, (0, _helpers.createIterable)(newer)]),
+          preferCloneBaseParam: [null],
           preferCloneOlderParam: [null],
           preferCloneNewerParam: [null],
           preferCloneMeta: [true],

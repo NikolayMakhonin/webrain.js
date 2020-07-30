@@ -887,7 +887,7 @@ function _stressTest(_ref4) {
 
             case 5:
               if (!(_i6 < iterations)) {
-                _context4.next = 31;
+                _context4.next = 32;
                 break;
               }
 
@@ -906,7 +906,7 @@ function _stressTest(_ref4) {
               step = rnd.next();
 
               if (!(step < thenables.length / 100)) {
-                _context4.next = 17;
+                _context4.next = 18;
                 break;
               }
 
@@ -914,12 +914,13 @@ function _stressTest(_ref4) {
               return _promise.default.all(thenables);
 
             case 15:
-              _context4.next = 28;
+              thenables.length = 0;
+              _context4.next = 29;
               break;
 
-            case 17:
+            case 18:
               if (!(step < thenables.length / 20)) {
-                _context4.next = 26;
+                _context4.next = 27;
                 break;
               }
 
@@ -927,14 +928,14 @@ function _stressTest(_ref4) {
               thenable = thenables[index];
               thenables[index] = thenables[thenables.length - 1];
               thenables.length--;
-              _context4.next = 24;
+              _context4.next = 25;
               return thenable;
 
-            case 24:
-              _context4.next = 28;
+            case 25:
+              _context4.next = 29;
               break;
 
-            case 26:
+            case 27:
               if (step < _i6 % 100 / 100) {
                 func = calc;
               } else {
@@ -947,20 +948,20 @@ function _stressTest(_ref4) {
                 (0, _setTimeout2.default)(func, rnd.nextBoolean() ? 0 : rnd.nextInt(100));
               }
 
-            case 28:
+            case 29:
               _i6++;
               _context4.next = 5;
               break;
 
-            case 31:
-              _context4.next = 33;
+            case 32:
+              _context4.next = 34;
               return _promise.default.all(thenables);
 
-            case 33:
-              _context4.next = 35;
+            case 34:
+              _context4.next = 36;
               return waitAll();
 
-            case 35:
+            case 36:
             case "end":
               return _context4.stop();
           }

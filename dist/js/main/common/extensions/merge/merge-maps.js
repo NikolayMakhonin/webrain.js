@@ -38,7 +38,7 @@ function _unsupportedIterableToArray(o, minLen) { var _context2; if (!o) return;
 
 function _arrayLikeToArray(arr, len) { if (len == null || len > arr.length) len = arr.length; for (var i = 0, arr2 = new Array(len); i < len; i++) { arr2[i] = arr[i]; } return arr2; }
 
-function mergeMapWrappers(merge, base, older, newer, preferCloneOlder, preferCloneNewer, options) {
+function mergeMapWrappers(merge, base, older, newer, preferCloneBase, preferCloneOlder, preferCloneNewer, options) {
   var changed = false;
   var addItems = [];
 
@@ -46,7 +46,7 @@ function mergeMapWrappers(merge, base, older, newer, preferCloneOlder, preferClo
     var setItem = _helpers.EMPTY;
     merge(_helpers.EMPTY, olderItem, newerItem, function (o) {
       setItem = o;
-    }, preferCloneOlder, preferCloneNewer, options);
+    }, preferCloneBase, preferCloneOlder, preferCloneNewer, options);
 
     if (setItem === _helpers.EMPTY) {
       throw new Error('setItem === NONE');
@@ -90,7 +90,7 @@ function mergeMapWrappers(merge, base, older, newer, preferCloneOlder, preferClo
       } else {
         base.set(key, o);
       }
-    }, preferCloneOlder, preferCloneNewer, options) || changed;
+    }, preferCloneBase, preferCloneOlder, preferCloneNewer, options) || changed;
   });
   var len = deleteItems.length;
 
@@ -221,9 +221,9 @@ function createMergeMapWrapper(target, source, arrayOrIterableToMap) {
 } // 10039 cycles
 
 
-function mergeMaps(createSourceMapWrapper, merge, base, older, newer, preferCloneOlder, preferCloneNewer, options) {
+function mergeMaps(createSourceMapWrapper, merge, base, older, newer, preferCloneBase, preferCloneOlder, preferCloneNewer, options) {
   var baseWrapper = createSourceMapWrapper(base, base);
   var olderWrapper = older === base ? baseWrapper : createSourceMapWrapper(base, older);
   var newerWrapper = newer === base ? baseWrapper : newer === older ? olderWrapper : createSourceMapWrapper(base, newer);
-  return mergeMapWrappers(merge, baseWrapper, olderWrapper, newerWrapper, preferCloneOlder, preferCloneNewer, options);
+  return mergeMapWrappers(merge, baseWrapper, olderWrapper, newerWrapper, preferCloneBase, preferCloneOlder, preferCloneNewer, options);
 }

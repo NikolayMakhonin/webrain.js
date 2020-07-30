@@ -239,7 +239,7 @@ class ValueState {
               preferClone,
               refs
             } = this;
-            this.merge(mergerVisitor.getNextMerge(preferClone, preferClone, refs, refs, refs, options), _clone, target, target, () => {
+            this.merge(mergerVisitor.getNextMerge(false, preferClone, preferClone, refs, refs, refs, options), _clone, target, target, () => {
               throw new Error(`Class (${this.type.name}) cannot be merged with clone`);
             }, preferClone, preferClone // options,
             );
@@ -358,7 +358,7 @@ class MergeState {
       refsNewer
     } = this;
     let isSet;
-    const result = olderState.merge(this.mergerVisitor.getNextMerge(preferCloneNewer, preferCloneNewer, refsOlder, refsNewer, refsNewer, options), older, newerState.target, newerState.target, set ? o => {
+    const result = olderState.merge(this.mergerVisitor.getNextMerge(false, preferCloneNewer, preferCloneNewer, refsOlder, refsNewer, refsNewer, options), older, newerState.target, newerState.target, set ? o => {
       // if (idNewer != null) {
       // 	refsNewer[idNewer] = o
       // }
@@ -394,6 +394,7 @@ class MergeState {
       set
     } = this;
     const {
+      preferClone: preferCloneBase,
       refs: refsBase
     } = baseState;
     const {
@@ -405,7 +406,7 @@ class MergeState {
       refs: refsNewer
     } = newerState;
     let isSet;
-    const result = baseState.merge(this.mergerVisitor.getNextMerge(preferCloneOlder, preferCloneNewer, refsBase, refsOlder, refsNewer, options), base, olderState.target, newerState.target, // for String() etc., that cannot be changed
+    const result = baseState.merge(this.mergerVisitor.getNextMerge(preferCloneBase, preferCloneOlder, preferCloneNewer, refsBase, refsOlder, refsNewer, options), base, olderState.target, newerState.target, // for String() etc., that cannot be changed
     set ? o => {
       baseState.setRef(o);
       olderState.setRef(o);
@@ -418,7 +419,7 @@ class MergeState {
       } else {
         isSet = true;
       }
-    }, preferCloneOlder, preferCloneNewer // options,
+    }, preferCloneBase, preferCloneOlder, preferCloneNewer // options,
     );
 
     if (isSet) {
@@ -497,8 +498,8 @@ export class MergerVisitor {
   } // noinspection JSUnusedLocalSymbols
 
 
-  getNextMerge(preferCloneOlder, preferCloneNewer, refsBase, refsOlder, refsNewer, options) {
-    return (next_base, next_older, next_newer, next_set, next_preferCloneOlder, next_preferCloneNewer, next_options) => this.merge(next_base, next_older, next_newer, next_set, next_preferCloneOlder == null ? preferCloneOlder : next_preferCloneOlder, next_preferCloneNewer == null ? preferCloneNewer : next_preferCloneNewer, next_options, // next_options == null || next_options === options
+  getNextMerge(preferCloneBase, preferCloneOlder, preferCloneNewer, refsBase, refsOlder, refsNewer, options) {
+    return (next_base, next_older, next_newer, next_set, next_preferCloneBase, next_preferCloneOlder, next_preferCloneNewer, next_options) => this.merge(next_base, next_older, next_newer, next_set, next_preferCloneBase == null ? preferCloneBase : next_preferCloneBase, next_preferCloneOlder == null ? preferCloneOlder : next_preferCloneOlder, next_preferCloneNewer == null ? preferCloneNewer : next_preferCloneNewer, next_options, // next_options == null || next_options === options
     // 	? options
     // 	: (options == null ? next_options : {
     // 		...options,
@@ -507,15 +508,13 @@ export class MergerVisitor {
     refsBase, refsOlder, refsNewer);
   }
 
-  merge(base, older, newer, set, preferCloneOlder, preferCloneNewer, options, refsBase, refsOlder, refsNewer) {
-    let preferCloneBase = null;
-
+  merge(base, older, newer, set, preferCloneBase, preferCloneOlder, preferCloneNewer, options, refsBase, refsOlder, refsNewer) {
     if (webrainEquals(base, newer)) {
       if (webrainEquals(base, older)) {
         return false;
       }
 
-      preferCloneBase = preferCloneNewer;
+      preferCloneBase = mergePreferClone(preferCloneBase, preferCloneNewer);
       preferCloneNewer = preferCloneOlder;
       newer = older;
     }
@@ -745,8 +744,8 @@ export class TypeMetaMergerCollection extends TypeMetaCollection {
           return target._canMerge ? target._canMerge(source) : target.constructor === source.constructor;
         },
 
-        merge(merge, base, older, newer, set, preferCloneOlder, preferCloneNewer, options) {
-          return base._merge(merge, older, newer, preferCloneOlder, preferCloneNewer, options);
+        merge(merge, base, older, newer, set, preferCloneBase, preferCloneOlder, preferCloneNewer, options) {
+          return base._merge(merge, older, newer, preferCloneBase, preferCloneOlder, preferCloneNewer, options);
         },
 
         ...(meta ? meta.merger : {})
@@ -797,9 +796,9 @@ export class ObjectMerger {
     this.merge = this.merge.bind(this);
   }
 
-  merge(base, older, newer, set, preferCloneOlder, preferCloneNewer, options) {
+  merge(base, older, newer, set, preferCloneBase, preferCloneOlder, preferCloneNewer, options) {
     const merger = new MergerVisitor(type => this.typeMeta.getMeta(type));
-    const mergedValue = merger.merge(base, older, newer, set, preferCloneOlder, preferCloneNewer, options);
+    const mergedValue = merger.merge(base, older, newer, set, preferCloneBase, preferCloneOlder, preferCloneNewer, options);
     return mergedValue;
   }
 
@@ -927,7 +926,7 @@ registerMerger(Array, {
       return deepEqualsPrimitive(target, source) ? null : true;
     },
 
-    merge(merge, base, older, newer, set, preferCloneOlder, preferCloneNewer, options) {
+    merge(merge, base, older, newer, set, preferCloneBase, preferCloneOlder, preferCloneNewer, options) {
       if (!base || Object.isFrozen(base)) {
         set(newer && preferCloneNewer ? newer.slice() : newer);
         return true;
@@ -957,6 +956,7 @@ registerMerger(Array, {
 // 			older: any[],
 // 			newer: any[],
 // 			set?: (value: any[]) => void,
+// 			preferCloneBase?: boolean,
 // 			preferCloneOlder?: boolean,
 // 			preferCloneNewer?: boolean,
 // 			options?: IMergeOptions,
@@ -968,17 +968,21 @@ registerMerger(Array, {
 // 			for (let i = 0; i < lenNewer; i++) {
 // 				if (i < lenBase) {
 // 					if (i < lenOlder) {
-// 						changed = merge(base[i], older[i], newer[i], o => base[i] = o, preferCloneOlder, preferCloneNewer)
+// 						changed = merge(base[i], older[i], newer[i], o => base[i] = o,
+// 							preferCloneBase, preferCloneOlder, preferCloneNewer)
 // 							|| changed
 // 					} else {
-// 						changed = merge(base[i], newer[i], newer[i], o => base[i] = o, preferCloneNewer, preferCloneNewer)
+// 						changed = merge(base[i], newer[i], newer[i], o => base[i] = o,
+// 							preferCloneBase, preferCloneNewer, preferCloneNewer)
 // 							|| changed
 // 					}
 // 				} else if (i < lenOlder) {
-// 					changed = merge(EMPTY, older[i], newer[i], o => base[i] = o, preferCloneOlder, preferCloneNewer)
+// 					changed = merge(EMPTY, older[i], newer[i], o => base[i] = o,
+// 						preferCloneBase, preferCloneOlder, preferCloneNewer)
 // 						|| changed
 // 				} else {
-// 					changed = merge(EMPTY, newer[i], newer[i], o => base[i] = o, preferCloneNewer, preferCloneNewer)
+// 					changed = merge(EMPTY, newer[i], newer[i], o => base[i] = o,
+// 						preferCloneBase, preferCloneNewer, preferCloneNewer)
 // 						|| changed
 // 				}
 // 			}
@@ -995,8 +999,8 @@ registerMerger(Object, {
       return source.constructor === Object;
     },
 
-    merge(merge, base, older, newer, set, preferCloneOlder, preferCloneNewer, options) {
-      return mergeMaps(createMergeMapWrapper, merge, base, older, newer, preferCloneOlder, preferCloneNewer, options);
+    merge(merge, base, older, newer, set, preferCloneBase, preferCloneOlder, preferCloneNewer, options) {
+      return mergeMaps(createMergeMapWrapper, merge, base, older, newer, preferCloneBase, preferCloneOlder, preferCloneNewer, options);
     }
 
   },
@@ -1025,8 +1029,8 @@ registerMerger(Set, {
       return source.constructor === Object || source[Symbol.toStringTag] === 'Set' || Array.isArray(source) || isIterable(source);
     },
 
-    merge(merge, base, older, newer, set, preferCloneOlder, preferCloneNewer, options) {
-      return mergeMaps((target, source) => createMergeSetWrapper(target, source, arrayOrIterable => fillSet(new Set(), arrayOrIterable)), merge, base, older, newer, preferCloneOlder, preferCloneNewer, options);
+    merge(merge, base, older, newer, set, preferCloneBase, preferCloneOlder, preferCloneNewer, options) {
+      return mergeMaps((target, source) => createMergeSetWrapper(target, source, arrayOrIterable => fillSet(new Set(), arrayOrIterable)), merge, base, older, newer, preferCloneBase, preferCloneOlder, preferCloneNewer, options);
     }
 
   } // valueFactory: (source: Set<any>) => new Set(source),
@@ -1041,8 +1045,8 @@ registerMerger(Map, {
       return source.constructor === Object || source[Symbol.toStringTag] === 'Map' || Array.isArray(source) || isIterable(source);
     },
 
-    merge(merge, base, older, newer, set, preferCloneOlder, preferCloneNewer, options) {
-      return mergeMaps((target, source) => createMergeMapWrapper(target, source, arrayOrIterable => fillMap(new Map(), arrayOrIterable)), merge, base, older, newer, preferCloneOlder, preferCloneNewer, options);
+    merge(merge, base, older, newer, set, preferCloneBase, preferCloneOlder, preferCloneNewer, options) {
+      return mergeMaps((target, source) => createMergeMapWrapper(target, source, arrayOrIterable => fillMap(new Map(), arrayOrIterable)), merge, base, older, newer, preferCloneBase, preferCloneOlder, preferCloneNewer, options);
     }
 
   } // valueFactory: (source: Map<any, any>) => new Map(source),

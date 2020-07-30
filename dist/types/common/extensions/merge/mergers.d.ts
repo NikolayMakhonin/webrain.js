@@ -11,8 +11,8 @@ export declare class MergerVisitor implements IMergerVisitor {
     constructor(getMeta: (type: TClass<any>) => ITypeMetaMerger);
     getStatus(object: any): ObjectStatus;
     setStatus(object: any, status: ObjectStatus): any;
-    getNextMerge(preferCloneOlder: boolean, preferCloneNewer: boolean, refsBase: any[], refsOlder: any[], refsNewer: any[], options: IMergeVisitorOptions<any, any>): IMergeValue;
-    merge<TTarget = any, TSource = any>(base: TTarget, older: TTarget | TSource, newer: TTarget | TSource, set?: (value: TTarget) => void, preferCloneOlder?: boolean, preferCloneNewer?: boolean, options?: IMergeVisitorOptions<TTarget, TSource>, refsBase?: any[], refsOlder?: any[], refsNewer?: any[]): boolean;
+    getNextMerge(preferCloneBase: boolean, preferCloneOlder: boolean, preferCloneNewer: boolean, refsBase: any[], refsOlder: any[], refsNewer: any[], options: IMergeVisitorOptions<any, any>): IMergeValue;
+    merge<TTarget = any, TSource = any>(base: TTarget, older: TTarget | TSource, newer: TTarget | TSource, set?: (value: TTarget) => void, preferCloneBase?: boolean, preferCloneOlder?: boolean, preferCloneNewer?: boolean, options?: IMergeVisitorOptions<TTarget, TSource>, refsBase?: any[], refsOlder?: any[], refsNewer?: any[]): boolean;
 }
 export declare class TypeMetaMergerCollection extends TypeMetaCollection<ITypeMetaMerger> implements ITypeMetaMergerCollection {
     customMeta: (type: any) => ITypeMetaMerger;
@@ -33,6 +33,6 @@ export declare class ObjectMerger implements IObjectMerger {
     constructor(typeMeta?: ITypeMetaMergerCollection);
     static default: ObjectMerger;
     static observableOnly: ObjectMerger;
-    merge<TTarget = any, TSource = any>(base: TTarget, older: TTarget | TSource, newer: TTarget | TSource, set?: (value: TTarget) => void, preferCloneOlder?: boolean, preferCloneNewer?: boolean, options?: IMergeVisitorOptions<TTarget, TSource>): boolean;
+    merge<TTarget = any, TSource = any>(base: TTarget, older: TTarget | TSource, newer: TTarget | TSource, set?: (value: TTarget) => void, preferCloneBase?: boolean, preferCloneOlder?: boolean, preferCloneNewer?: boolean, options?: IMergeVisitorOptions<TTarget, TSource>): boolean;
 }
 export {};

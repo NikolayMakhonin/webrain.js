@@ -708,6 +708,7 @@ function _stressTest({
 
       if (step < thenables.length / 100) {
         await Promise.all(thenables);
+        thenables.length = 0;
       } else if (step < thenables.length / 20) {
         const index = rnd.nextInt(thenables.length);
         const thenable = thenables[index];

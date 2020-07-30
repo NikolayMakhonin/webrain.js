@@ -190,7 +190,7 @@ var DependSet = /*#__PURE__*/function () {
     }
   }, {
     key: "_merge",
-    value: function _merge(merge, older, newer, preferCloneOlder, preferCloneNewer, options) {
+    value: function _merge(merge, older, newer, preferCloneBase, preferCloneOlder, preferCloneNewer, options) {
       var _this2 = this;
 
       this.dependAnyValue();
@@ -198,7 +198,7 @@ var DependSet = /*#__PURE__*/function () {
         return (0, _mergeSets.createMergeSetWrapper)(target, source, function (arrayOrIterable) {
           return (0, _set3.fillSet)(new _this2._set.constructor(), arrayOrIterable);
         });
-      }, merge, this, older, newer, preferCloneOlder, preferCloneNewer, options);
+      }, merge, this, older, newer, preferCloneBase, preferCloneOlder, preferCloneNewer, options);
     } // endregion
     // region ISerializable
     // noinspection SpellCheckingInspection

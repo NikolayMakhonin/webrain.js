@@ -74,7 +74,7 @@ var Property = /*#__PURE__*/function (_ObservableClass) {
     key: "set",
     // region set / fill / merge
     value: function set(value, clone, options) {
-      var result = this.mergeValue(void 0, value, value, clone, clone, options);
+      var result = this.mergeValue(void 0, value, value, null, clone, clone, options);
 
       if (!result) {
         this.value = void 0;
@@ -85,23 +85,23 @@ var Property = /*#__PURE__*/function (_ObservableClass) {
   }, {
     key: "fill",
     value: function fill(value, preferClone, options) {
-      return this.mergeValue(this.value, value, value, preferClone, preferClone, options);
+      return this.mergeValue(this.value, value, value, null, preferClone, preferClone, options);
     }
   }, {
     key: "merge",
-    value: function merge(older, newer, preferCloneOlder, preferCloneNewer, options) {
-      return this.mergeValue(this.value, older, newer, preferCloneOlder, preferCloneNewer, options);
+    value: function merge(older, newer, preferCloneBase, preferCloneOlder, preferCloneNewer, options) {
+      return this.mergeValue(this.value, older, newer, preferCloneBase, preferCloneOlder, preferCloneNewer, options);
     } // endregion
     // region merge helpers
 
   }, {
     key: "mergeValue",
-    value: function mergeValue(base, older, newer, preferCloneOlder, preferCloneNewer, options) {
-      return this._mergeValue((this.merger || _mergers.ObjectMerger.default).merge, base, older, newer, preferCloneOlder, preferCloneNewer, options);
+    value: function mergeValue(base, older, newer, preferCloneBase, preferCloneOlder, preferCloneNewer, options) {
+      return this._mergeValue((this.merger || _mergers.ObjectMerger.default).merge, base, older, newer, preferCloneBase, preferCloneOlder, preferCloneNewer, options);
     }
   }, {
     key: "_mergeValue",
-    value: function _mergeValue(merge, base, older, newer, preferCloneOlder, preferCloneNewer, options) {
+    value: function _mergeValue(merge, base, older, newer, preferCloneBase, preferCloneOlder, preferCloneNewer, options) {
       var _this2 = this;
 
       if (older instanceof Property) {
@@ -124,7 +124,7 @@ var Property = /*#__PURE__*/function (_ObservableClass) {
 
       return merge(base, older, newer, function (o) {
         _this2.value = o;
-      }, preferCloneOlder, preferCloneNewer, (0, _extends2.default)((0, _extends2.default)((0, _extends2.default)({}, this.mergeOptions), options), {}, {
+      }, preferCloneBase, preferCloneOlder, preferCloneNewer, (0, _extends2.default)((0, _extends2.default)((0, _extends2.default)({}, this.mergeOptions), options), {}, {
         selfAsValueOlder: !(older instanceof Property),
         selfAsValueNewer: !(newer instanceof Property)
       }));
@@ -142,8 +142,8 @@ var Property = /*#__PURE__*/function (_ObservableClass) {
     }
   }, {
     key: "_merge",
-    value: function _merge(merge, older, newer, preferCloneOlder, preferCloneNewer) {
-      return this._mergeValue(merge, this.value, older, newer, preferCloneOlder, preferCloneNewer);
+    value: function _merge(merge, older, newer, preferCloneBase, preferCloneOlder, preferCloneNewer) {
+      return this._mergeValue(merge, this.value, older, newer, preferCloneBase, preferCloneOlder, preferCloneNewer);
     } // endregion
     // region ISerializable
     // noinspection SpellCheckingInspection

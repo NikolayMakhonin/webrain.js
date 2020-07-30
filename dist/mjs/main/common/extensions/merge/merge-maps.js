@@ -1,6 +1,6 @@
 /* tslint:disable:no-identical-functions */
 import { EMPTY, isIterable } from '../../helpers/helpers';
-export function mergeMapWrappers(merge, base, older, newer, preferCloneOlder, preferCloneNewer, options) {
+export function mergeMapWrappers(merge, base, older, newer, preferCloneBase, preferCloneOlder, preferCloneNewer, options) {
   let changed = false;
   const addItems = [];
 
@@ -8,7 +8,7 @@ export function mergeMapWrappers(merge, base, older, newer, preferCloneOlder, pr
     let setItem = EMPTY;
     merge(EMPTY, olderItem, newerItem, o => {
       setItem = o;
-    }, preferCloneOlder, preferCloneNewer, options);
+    }, preferCloneBase, preferCloneOlder, preferCloneNewer, options);
 
     if (setItem === EMPTY) {
       throw new Error('setItem === NONE');
@@ -52,7 +52,7 @@ export function mergeMapWrappers(merge, base, older, newer, preferCloneOlder, pr
       } else {
         base.set(key, o);
       }
-    }, preferCloneOlder, preferCloneNewer, options) || changed;
+    }, preferCloneBase, preferCloneOlder, preferCloneNewer, options) || changed;
   });
   let len = deleteItems.length;
 
@@ -158,9 +158,9 @@ export function createMergeMapWrapper(target, source, arrayOrIterableToMap) {
   throw new Error(`${target.constructor.name} cannot be merge with ${source.constructor.name}`);
 } // 10039 cycles
 
-export function mergeMaps(createSourceMapWrapper, merge, base, older, newer, preferCloneOlder, preferCloneNewer, options) {
+export function mergeMaps(createSourceMapWrapper, merge, base, older, newer, preferCloneBase, preferCloneOlder, preferCloneNewer, options) {
   const baseWrapper = createSourceMapWrapper(base, base);
   const olderWrapper = older === base ? baseWrapper : createSourceMapWrapper(base, older);
   const newerWrapper = newer === base ? baseWrapper : newer === older ? olderWrapper : createSourceMapWrapper(base, newer);
-  return mergeMapWrappers(merge, baseWrapper, olderWrapper, newerWrapper, preferCloneOlder, preferCloneNewer, options);
+  return mergeMapWrappers(merge, baseWrapper, olderWrapper, newerWrapper, preferCloneBase, preferCloneOlder, preferCloneNewer, options);
 }

@@ -222,7 +222,7 @@ class ValueState<TTarget, TSource> {
 						const { preferClone, refs } = this
 
 						this.merge(
-							mergerVisitor.getNextMerge(preferClone, preferClone, refs, refs, refs, options),
+							mergerVisitor.getNextMerge(false, preferClone, preferClone, refs, refs, refs, options),
 							_clone,
 							target,
 							target,
@@ -257,9 +257,9 @@ class MergeState<TTarget, TSource> {
 	public older: TTarget|TSource
 	public newer: TTarget|TSource
 	public set: (value: TTarget) => void
+	public preferCloneBase: boolean
 	public preferCloneOlder: boolean
 	public preferCloneNewer: boolean
-	public preferCloneBase: boolean
 	public refsBase: any[]
 	public refsOlder: any[]
 	public refsNewer: any[]
@@ -371,7 +371,7 @@ class MergeState<TTarget, TSource> {
 		let isSet
 		const result = olderState.merge(
 			this.mergerVisitor.getNextMerge(
-				preferCloneNewer, preferCloneNewer, refsOlder, refsNewer, refsNewer, options,
+				false, preferCloneNewer, preferCloneNewer, refsOlder, refsNewer, refsNewer, options,
 			),
 			older,
 			newerState.target,
@@ -414,13 +414,16 @@ class MergeState<TTarget, TSource> {
 		newerState.setRef(base)
 
 		const { options, set } = this
-		const { refs: refsBase } = baseState
+		const { preferClone: preferCloneBase, refs: refsBase } = baseState
 		const { preferClone: preferCloneOlder, refs: refsOlder } = olderState
 		const { preferClone: preferCloneNewer, refs: refsNewer } = newerState
 
 		let isSet
 		const result = baseState.merge(
-			this.mergerVisitor.getNextMerge(preferCloneOlder, preferCloneNewer, refsBase, refsOlder, refsNewer, options),
+			this.mergerVisitor.getNextMerge(
+				preferCloneBase, preferCloneOlder, preferCloneNewer,
+				refsBase, refsOlder, refsNewer, options,
+			),
 
 			base,
 			olderState.target,
@@ -444,6 +447,7 @@ class MergeState<TTarget, TSource> {
 						isSet = true
 					}
 				},
+			preferCloneBase,
 			preferCloneOlder,
 			preferCloneNewer,
 			// options,
@@ -515,6 +519,7 @@ export class MergerVisitor implements IMergerVisitor {
 
 	// noinspection JSUnusedLocalSymbols
 	public getNextMerge(
+		preferCloneBase: boolean,
 		preferCloneOlder: boolean,
 		preferCloneNewer: boolean,
 		refsBase: any[],
@@ -527,6 +532,7 @@ export class MergerVisitor implements IMergerVisitor {
 			next_older: TNextSource,
 			next_newer: TNextSource,
 			next_set?: (value: TNextTarget) => void,
+			next_preferCloneBase?: boolean,
 			next_preferCloneOlder?: boolean,
 			next_preferCloneNewer?: boolean,
 			next_options?: IMergeVisitorOptions<TNextTarget, TNextSource>,
@@ -535,6 +541,7 @@ export class MergerVisitor implements IMergerVisitor {
 			next_older,
 			next_newer,
 			next_set,
+			next_preferCloneBase == null ? preferCloneBase : next_preferCloneBase,
 			next_preferCloneOlder == null ? preferCloneOlder : next_preferCloneOlder,
 			next_preferCloneNewer == null ? preferCloneNewer : next_preferCloneNewer,
 			next_options,
@@ -555,6 +562,7 @@ export class MergerVisitor implements IMergerVisitor {
 		older: TTarget|TSource,
 		newer: TTarget|TSource,
 		set?: (value: TTarget) => void,
+		preferCloneBase?: boolean,
 		preferCloneOlder?: boolean,
 		preferCloneNewer?: boolean,
 		options?: IMergeVisitorOptions<TTarget, TSource>,
@@ -562,12 +570,11 @@ export class MergerVisitor implements IMergerVisitor {
 		refsOlder?: any[],
 		refsNewer?: any[],
 	): boolean {
-		let preferCloneBase = null
 		if (webrainEquals(base, newer)) {
 			if (webrainEquals(base, older)) {
 				return false
 			}
-			preferCloneBase = preferCloneNewer
+			preferCloneBase = mergePreferClone(preferCloneBase, preferCloneNewer)
 			preferCloneNewer = preferCloneOlder
 			newer = older
 		}
@@ -820,6 +827,7 @@ export class TypeMetaMergerCollection
 					older: TTarget|TSource,
 					newer: TTarget|TSource,
 					set?: (value: TTarget) => void,
+					preferCloneBase?: boolean,
 					preferCloneOlder?: boolean,
 					preferCloneNewer?: boolean,
 					options?: IMergeOptions,
@@ -828,6 +836,7 @@ export class TypeMetaMergerCollection
 						merge,
 						older,
 						newer,
+						preferCloneBase,
 					 	preferCloneOlder,
 						preferCloneNewer,
 						options,
@@ -919,6 +928,7 @@ export class ObjectMerger implements IObjectMerger {
 		older: TTarget|TSource,
 		newer: TTarget|TSource,
 		set?: (value: TTarget) => void,
+		preferCloneBase?: boolean,
 		preferCloneOlder?: boolean,
 		preferCloneNewer?: boolean,
 		options?: IMergeVisitorOptions<TTarget, TSource>,
@@ -929,6 +939,7 @@ export class ObjectMerger implements IObjectMerger {
 			older,
 			newer,
 			set,
+			preferCloneBase,
 			preferCloneOlder,
 			preferCloneNewer,
 			options,
@@ -972,6 +983,7 @@ registerMerger<string, string>(String as any, {
 			older: string,
 			newer: string,
 			set?: (value: string) => void,
+			// preferCloneBase?: boolean,
 			// preferCloneOlder?: boolean,
 			// preferCloneNewer?: boolean,
 			// options?: IMergeOptions,
@@ -1065,6 +1077,7 @@ registerMerger<any[], any[]>(Array, {
 			older: any[],
 			newer: any[],
 			set?: (value: any[]) => void,
+			preferCloneBase?: boolean,
 			preferCloneOlder?: boolean,
 			preferCloneNewer?: boolean,
 			options?: IMergeOptions,
@@ -1100,6 +1113,7 @@ registerMerger<any[], any[]>(Array, {
 // 			older: any[],
 // 			newer: any[],
 // 			set?: (value: any[]) => void,
+// 			preferCloneBase?: boolean,
 // 			preferCloneOlder?: boolean,
 // 			preferCloneNewer?: boolean,
 // 			options?: IMergeOptions,
@@ -1111,17 +1125,21 @@ registerMerger<any[], any[]>(Array, {
 // 			for (let i = 0; i < lenNewer; i++) {
 // 				if (i < lenBase) {
 // 					if (i < lenOlder) {
-// 						changed = merge(base[i], older[i], newer[i], o => base[i] = o, preferCloneOlder, preferCloneNewer)
+// 						changed = merge(base[i], older[i], newer[i], o => base[i] = o,
+// 							preferCloneBase, preferCloneOlder, preferCloneNewer)
 // 							|| changed
 // 					} else {
-// 						changed = merge(base[i], newer[i], newer[i], o => base[i] = o, preferCloneNewer, preferCloneNewer)
+// 						changed = merge(base[i], newer[i], newer[i], o => base[i] = o,
+// 							preferCloneBase, preferCloneNewer, preferCloneNewer)
 // 							|| changed
 // 					}
 // 				} else if (i < lenOlder) {
-// 					changed = merge(EMPTY, older[i], newer[i], o => base[i] = o, preferCloneOlder, preferCloneNewer)
+// 					changed = merge(EMPTY, older[i], newer[i], o => base[i] = o,
+// 						preferCloneBase, preferCloneOlder, preferCloneNewer)
 // 						|| changed
 // 				} else {
-// 					changed = merge(EMPTY, newer[i], newer[i], o => base[i] = o, preferCloneNewer, preferCloneNewer)
+// 					changed = merge(EMPTY, newer[i], newer[i], o => base[i] = o,
+// 						preferCloneBase, preferCloneNewer, preferCloneNewer)
 // 						|| changed
 // 				}
 // 			}
@@ -1145,6 +1163,7 @@ registerMerger<object, object>(Object, {
 			older: object,
 			newer: object,
 			set?: (value: object) => void,
+			preferCloneBase?: boolean,
 			preferCloneOlder?: boolean,
 			preferCloneNewer?: boolean,
 			options?: IMergeOptions,
@@ -1155,6 +1174,7 @@ registerMerger<object, object>(Object, {
 				base,
 				older,
 				newer,
+				preferCloneBase,
 				preferCloneOlder,
 				preferCloneNewer,
 				options,
@@ -1200,6 +1220,7 @@ registerMerger<Set<any>, Set<any>>(Set, {
 			older: Set<T> | T[] | Iterable<T>,
 			newer: Set<T> | T[] | Iterable<T>,
 			set?: (value: Set<T>) => void,
+			preferCloneBase?: boolean,
 			preferCloneOlder?: boolean,
 			preferCloneNewer?: boolean,
 			options?: IMergeOptions,
@@ -1213,6 +1234,7 @@ registerMerger<Set<any>, Set<any>>(Set, {
 				base,
 				older,
 				newer,
+				preferCloneBase,
 				preferCloneOlder,
 				preferCloneNewer,
 				options,
@@ -1241,6 +1263,7 @@ registerMerger<Map<any, any>, Map<any, any>>(Map, {
 			older: Map<K, V> | Array<[K, V]> | Iterable<[K, V]>,
 			newer: Map<K, V> | Array<[K, V]> | Iterable<[K, V]>,
 			set?: (value: Map<K, V>) => void,
+			preferCloneBase?: boolean,
 			preferCloneOlder?: boolean,
 			preferCloneNewer?: boolean,
 			options?: IMergeOptions,
@@ -1254,6 +1277,7 @@ registerMerger<Map<any, any>, Map<any, any>>(Map, {
 				base,
 				older,
 				newer,
+				preferCloneBase,
 				preferCloneOlder,
 				preferCloneNewer,
 				options,

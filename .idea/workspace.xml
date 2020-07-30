@@ -30,19 +30,53 @@
     <select />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="69b2ee16-521b-4efd-b473-8e19e3df4d09" name="Default Changelist" comment="v1.0.5-a">
+    <list default="true" id="69b2ee16-521b-4efd-b473-8e19e3df4d09" name="Default Changelist" comment="">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/HISTORY.md" beforeDir="false" afterPath="$PROJECT_DIR$/HISTORY.md" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/dist/js/main/common/extensions/merge/merge-maps.js" beforeDir="false" afterPath="$PROJECT_DIR$/dist/js/main/common/extensions/merge/merge-maps.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/dist/js/main/common/extensions/merge/mergers.js" beforeDir="false" afterPath="$PROJECT_DIR$/dist/js/main/common/extensions/merge/mergers.js" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/dist/js/main/common/index.js" beforeDir="false" afterPath="$PROJECT_DIR$/dist/js/main/common/index.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/dist/js/main/common/rx/depend/core/CallState.js" beforeDir="false" afterPath="$PROJECT_DIR$/dist/js/main/common/rx/depend/core/CallState.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/dist/js/main/common/rx/depend/lists/DependMap.js" beforeDir="false" afterPath="$PROJECT_DIR$/dist/js/main/common/rx/depend/lists/DependMap.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/dist/js/main/common/rx/depend/lists/DependSet.js" beforeDir="false" afterPath="$PROJECT_DIR$/dist/js/main/common/rx/depend/lists/DependSet.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/dist/js/main/common/rx/object/ObservableObject.js" beforeDir="false" afterPath="$PROJECT_DIR$/dist/js/main/common/rx/object/ObservableObject.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/dist/js/main/common/rx/object/properties/property.js" beforeDir="false" afterPath="$PROJECT_DIR$/dist/js/main/common/rx/object/properties/property.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/dist/js/test/performance/node/ObjectMerger.js" beforeDir="false" afterPath="$PROJECT_DIR$/dist/js/test/performance/node/ObjectMerger.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/dist/js/test/tests/common/main/extensions/merge/ObjectMerger.js" beforeDir="false" afterPath="$PROJECT_DIR$/dist/js/test/tests/common/main/extensions/merge/ObjectMerger.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/dist/js/test/tests/common/main/extensions/merge/src/TestMerger.js" beforeDir="false" afterPath="$PROJECT_DIR$/dist/js/test/tests/common/main/extensions/merge/src/TestMerger.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/dist/js/test/tests/common/main/rx/depend/src/stress-test.js" beforeDir="false" afterPath="$PROJECT_DIR$/dist/js/test/tests/common/main/rx/depend/src/stress-test.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/dist/js/test/tests/common/main/src/helpers/helpers.js" beforeDir="false" afterPath="$PROJECT_DIR$/dist/js/test/tests/common/main/src/helpers/helpers.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/dist/mjs/main/common/extensions/merge/merge-maps.js" beforeDir="false" afterPath="$PROJECT_DIR$/dist/mjs/main/common/extensions/merge/merge-maps.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/dist/mjs/main/common/extensions/merge/mergers.js" beforeDir="false" afterPath="$PROJECT_DIR$/dist/mjs/main/common/extensions/merge/mergers.js" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/dist/mjs/main/common/index.js" beforeDir="false" afterPath="$PROJECT_DIR$/dist/mjs/main/common/index.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/dist/mjs/main/common/rx/depend/core/CallState.js" beforeDir="false" afterPath="$PROJECT_DIR$/dist/mjs/main/common/rx/depend/core/CallState.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/dist/mjs/main/common/rx/depend/lists/DependMap.js" beforeDir="false" afterPath="$PROJECT_DIR$/dist/mjs/main/common/rx/depend/lists/DependMap.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/dist/mjs/main/common/rx/depend/lists/DependSet.js" beforeDir="false" afterPath="$PROJECT_DIR$/dist/mjs/main/common/rx/depend/lists/DependSet.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/dist/mjs/main/common/rx/object/ObservableObject.js" beforeDir="false" afterPath="$PROJECT_DIR$/dist/mjs/main/common/rx/object/ObservableObject.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/dist/mjs/main/common/rx/object/properties/property.js" beforeDir="false" afterPath="$PROJECT_DIR$/dist/mjs/main/common/rx/object/properties/property.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/dist/mjs/test/performance/node/ObjectMerger.js" beforeDir="false" afterPath="$PROJECT_DIR$/dist/mjs/test/performance/node/ObjectMerger.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/dist/mjs/test/tests/common/main/extensions/merge/ObjectMerger.js" beforeDir="false" afterPath="$PROJECT_DIR$/dist/mjs/test/tests/common/main/extensions/merge/ObjectMerger.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/dist/mjs/test/tests/common/main/extensions/merge/src/TestMerger.js" beforeDir="false" afterPath="$PROJECT_DIR$/dist/mjs/test/tests/common/main/extensions/merge/src/TestMerger.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/dist/mjs/test/tests/common/main/rx/depend/src/stress-test.js" beforeDir="false" afterPath="$PROJECT_DIR$/dist/mjs/test/tests/common/main/rx/depend/src/stress-test.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/dist/mjs/test/tests/common/main/src/helpers/helpers.js" beforeDir="false" afterPath="$PROJECT_DIR$/dist/mjs/test/tests/common/main/src/helpers/helpers.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/dist/types/common/extensions/merge/contracts.d.ts" beforeDir="false" afterPath="$PROJECT_DIR$/dist/types/common/extensions/merge/contracts.d.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/dist/types/common/extensions/merge/merge-maps.d.ts" beforeDir="false" afterPath="$PROJECT_DIR$/dist/types/common/extensions/merge/merge-maps.d.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/dist/types/common/extensions/merge/mergers.d.ts" beforeDir="false" afterPath="$PROJECT_DIR$/dist/types/common/extensions/merge/mergers.d.ts" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/dist/types/common/index.d.ts" beforeDir="false" afterPath="$PROJECT_DIR$/dist/types/common/index.d.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/dist/types/common/rx/depend/core/contracts.d.ts" beforeDir="false" afterPath="$PROJECT_DIR$/dist/types/common/rx/depend/core/contracts.d.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/common/index.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/common/index.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/common/rx/depend/core/CallState.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/common/rx/depend/core/CallState.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/common/rx/depend/core/contracts.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/common/rx/depend/core/contracts.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/common/rx/object/properties/CalcObjectBuilder.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/common/rx/object/properties/CalcObjectBuilder.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/dist/types/common/rx/depend/lists/DependMap.d.ts" beforeDir="false" afterPath="$PROJECT_DIR$/dist/types/common/rx/depend/lists/DependMap.d.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/dist/types/common/rx/depend/lists/DependSet.d.ts" beforeDir="false" afterPath="$PROJECT_DIR$/dist/types/common/rx/depend/lists/DependSet.d.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/dist/types/common/rx/object/properties/Property.d.ts" beforeDir="false" afterPath="$PROJECT_DIR$/dist/types/common/rx/object/properties/Property.d.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/package.json" beforeDir="false" afterPath="$PROJECT_DIR$/package.json" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/common/extensions/merge/contracts.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/common/extensions/merge/contracts.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/common/extensions/merge/merge-maps.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/common/extensions/merge/merge-maps.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/common/extensions/merge/mergers.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/common/extensions/merge/mergers.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/common/rx/depend/lists/DependMap.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/common/rx/depend/lists/DependMap.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/common/rx/depend/lists/DependSet.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/common/rx/depend/lists/DependSet.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/common/rx/object/ObservableObject.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/common/rx/object/ObservableObject.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/common/rx/object/properties/Property.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/common/rx/object/properties/Property.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/test/performance/node/ObjectMerger.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/test/performance/node/ObjectMerger.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/test/tests/common/main/extensions/merge/ObjectMerger.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/test/tests/common/main/extensions/merge/ObjectMerger.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/test/tests/common/main/extensions/merge/src/TestMerger.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/test/tests/common/main/extensions/merge/src/TestMerger.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/test/tests/common/main/rx/depend/src/stress-test.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/test/tests/common/main/rx/depend/src/stress-test.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/test/tests/common/main/src/helpers/helpers.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/test/tests/common/main/src/helpers/helpers.ts" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -94,7 +128,7 @@
     <property name="WebServerToolWindowFactoryState" value="false" />
     <property name="auto.test.manager.delay" value="5000" />
     <property name="javascript.karma.karma_node_package_dir" value="" />
-    <property name="last_opened_file_path" value="$PROJECT_DIR$/src/test/tests/common/main/rx/depend/dependent-func/base.ts" />
+    <property name="last_opened_file_path" value="$PROJECT_DIR$/src/test/tests/common/main/rx/depend/dependent-func/stress.ts" />
     <property name="node.js.detected.package.eslint" value="true" />
     <property name="node.js.detected.package.standard" value="true" />
     <property name="node.js.detected.package.tslint" value="true" />
@@ -135,7 +169,7 @@
       <recent name="L:\Work\_GIT\GitHub\NodeJs\modules\webrain\src\test\tests\common\main\rx\object\properties\path" />
     </key>
   </component>
-  <component name="RunManager" selected="Mocha.common &gt; main &gt; rx &gt; depend &gt; stress">
+  <component name="RunManager" selected="Mocha.Watch">
     <configuration default="true" type="JavaScriptTestRunnerKarma" activateToolWindowBeforeRun="false">
       <config-file value="$PROJECT_DIR$/env/karma/configs/dev.js" />
       <karma-package-dir value="$PROJECT_DIR$/node_modules/karma" />
@@ -446,11 +480,11 @@
       <item itemvalue="Mocha.common &gt; main &gt; rx &gt; depend &gt; dependent-func / base" />
       <item itemvalue="Mocha.common &gt; main &gt; rx &gt; depend &gt; dependent-func / base.perceptron" />
       <item itemvalue="Mocha.common &gt; main &gt; rx &gt; deferred-calc &gt; DeferredCalc.real timing" />
+      <item itemvalue="Mocha.common &gt; main &gt; rx &gt; depend &gt; stress" />
       <item itemvalue="Node.js.mocha" />
       <item itemvalue="Node.js.dependent-func.js" />
       <item itemvalue="Node.js.tests.build.js" />
       <item itemvalue="npm.Coverage Mocha Report" />
-      <item itemvalue="Mocha.common &gt; main &gt; rx &gt; depend &gt; stress" />
     </list>
     <recent_temporary>
       <list>
@@ -521,14 +555,8 @@
       <workItem from="1592803116115" duration="6000" />
       <workItem from="1593050732007" duration="743000" />
       <workItem from="1593242357391" duration="28000" />
-      <workItem from="1595250343662" duration="10333000" />
-    </task>
-    <task id="LOCAL-00491" summary="Prepare v2. Deleted getTupleId/getTupleIdMap">
-      <created>1588413030410</created>
-      <option name="number" value="00491" />
-      <option name="presentableId" value="LOCAL-00491" />
-      <option name="project" value="LOCAL" />
-      <updated>1588413030411</updated>
+      <workItem from="1595250343662" duration="16465000" />
+      <workItem from="1596080289198" duration="3594000" />
     </task>
     <task id="LOCAL-00492" summary="Prepare v2: deleted unnecessary TimeLimits. Tests OK.">
       <created>1588413292838</created>
@@ -866,7 +894,14 @@
       <option name="project" value="LOCAL" />
       <updated>1595260543127</updated>
     </task>
-    <option name="localTasksCounter" value="540" />
+    <task id="LOCAL-00540" summary="v1.0.6-a">
+      <created>1595573752249</created>
+      <option name="number" value="00540" />
+      <option name="presentableId" value="LOCAL-00540" />
+      <option name="project" value="LOCAL" />
+      <updated>1595573752249</updated>
+    </task>
+    <option name="localTasksCounter" value="541" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -927,7 +962,6 @@
   <component name="VcsManagerConfiguration">
     <option name="CHECK_CODE_SMELLS_BEFORE_PROJECT_COMMIT" value="false" />
     <option name="CHECK_NEW_TODO" value="false" />
-    <MESSAGE value="Fix Random" />
     <MESSAGE value="Stop timers after all tests" />
     <MESSAGE value="Fix Mocha" />
     <MESSAGE value="Auto stop timers" />
@@ -952,17 +986,18 @@
     <MESSAGE value="v1.0.3-a" />
     <MESSAGE value="v1.0.4-a" />
     <MESSAGE value="v1.0.5-a" />
-    <option name="LAST_COMMIT_MESSAGE" value="v1.0.5-a" />
+    <MESSAGE value="v1.0.6-a" />
+    <option name="LAST_COMMIT_MESSAGE" value="v1.0.6-a" />
   </component>
   <component name="WindowStateProjectService">
     <state x="617" y="103" key="#ESLint" timestamp="1590218488709">
       <screen x="0" y="0" width="1920" height="882" />
     </state>
     <state x="617" y="103" key="#ESLint/0.0.1920.882@0.0.1920.882" timestamp="1590218488709" />
-    <state x="38" y="39" width="1718" height="786" key="#com.intellij.execution.impl.EditConfigurationsDialog" timestamp="1590297800600">
+    <state x="38" y="39" width="1718" height="786" key="#com.intellij.execution.impl.EditConfigurationsDialog" timestamp="1595574841345">
       <screen x="0" y="0" width="1920" height="882" />
     </state>
-    <state x="38" y="39" width="1718" height="786" key="#com.intellij.execution.impl.EditConfigurationsDialog/0.0.1920.882@0.0.1920.882" timestamp="1590297800600" />
+    <state x="38" y="39" width="1718" height="786" key="#com.intellij.execution.impl.EditConfigurationsDialog/0.0.1920.882@0.0.1920.882" timestamp="1595574841345" />
     <state x="91" y="91" width="1738" height="700" key="#com.intellij.execution.junit2.states.ComparisonFailureState$DiffDialog" timestamp="1590382318108">
       <screen x="0" y="0" width="1920" height="882" />
     </state>
@@ -987,38 +1022,38 @@
       <screen x="0" y="0" width="1920" height="882" />
     </state>
     <state x="651" y="254" key="ANALYSIS_DLG_com.intellij.analysis.BaseAnalysisAction$1/0.0.1920.882@0.0.1920.882" timestamp="1588413930131" />
-    <state x="-2" y="0" width="1918" height="882" key="CommitChangelistDialog2" timestamp="1595260729932">
+    <state x="-2" y="0" width="1918" height="882" key="CommitChangelistDialog2" timestamp="1595573751326">
       <screen x="0" y="0" width="1920" height="882" />
     </state>
-    <state x="-2" y="0" width="1918" height="882" key="CommitChangelistDialog2/0.0.1920.882@0.0.1920.882" timestamp="1595260729932" />
+    <state x="-2" y="0" width="1918" height="882" key="CommitChangelistDialog2/0.0.1920.882@0.0.1920.882" timestamp="1595573751326" />
     <state width="884" height="550" key="DebuggerActiveHint" timestamp="1590162335145">
       <screen x="0" y="0" width="1920" height="882" />
     </state>
     <state width="884" height="550" key="DebuggerActiveHint/0.0.1920.882@0.0.1920.882" timestamp="1590162335145" />
-    <state x="0" y="4" width="1920" height="875" key="DiffContextDialog" timestamp="1590852906101">
+    <state x="0" y="4" width="1920" height="875" key="DiffContextDialog" timestamp="1595573737028">
       <screen x="0" y="0" width="1920" height="882" />
     </state>
-    <state x="0" y="4" width="1920" height="875" key="DiffContextDialog/0.0.1920.882@0.0.1920.882" timestamp="1590852906101" />
-    <state x="1059" y="106" key="FileChooserDialogImpl" timestamp="1590245638441">
+    <state x="0" y="4" width="1920" height="875" key="DiffContextDialog/0.0.1920.882@0.0.1920.882" timestamp="1595573737028" />
+    <state x="1059" y="106" key="FileChooserDialogImpl" timestamp="1595574844421">
       <screen x="0" y="0" width="1920" height="882" />
     </state>
-    <state x="1059" y="106" key="FileChooserDialogImpl/0.0.1920.882@0.0.1920.882" timestamp="1590245638441" />
-    <state width="574" height="243" key="GridCell.Tab.0.bottom" timestamp="1595491239776">
+    <state x="1059" y="106" key="FileChooserDialogImpl/0.0.1920.882@0.0.1920.882" timestamp="1595574844421" />
+    <state width="574" height="381" key="GridCell.Tab.0.bottom" timestamp="1595824401679">
       <screen x="0" y="0" width="1920" height="882" />
     </state>
-    <state width="574" height="243" key="GridCell.Tab.0.bottom/0.0.1920.882@0.0.1920.882" timestamp="1595491239776" />
-    <state width="574" height="243" key="GridCell.Tab.0.center" timestamp="1595491239776">
+    <state width="574" height="381" key="GridCell.Tab.0.bottom/0.0.1920.882@0.0.1920.882" timestamp="1595824401679" />
+    <state width="574" height="381" key="GridCell.Tab.0.center" timestamp="1595824401678">
       <screen x="0" y="0" width="1920" height="882" />
     </state>
-    <state width="574" height="243" key="GridCell.Tab.0.center/0.0.1920.882@0.0.1920.882" timestamp="1595491239776" />
-    <state width="574" height="243" key="GridCell.Tab.0.left" timestamp="1595491239775">
+    <state width="574" height="381" key="GridCell.Tab.0.center/0.0.1920.882@0.0.1920.882" timestamp="1595824401678" />
+    <state width="574" height="381" key="GridCell.Tab.0.left" timestamp="1595824401678">
       <screen x="0" y="0" width="1920" height="882" />
     </state>
-    <state width="574" height="243" key="GridCell.Tab.0.left/0.0.1920.882@0.0.1920.882" timestamp="1595491239775" />
-    <state width="574" height="243" key="GridCell.Tab.0.right" timestamp="1595491239776">
+    <state width="574" height="381" key="GridCell.Tab.0.left/0.0.1920.882@0.0.1920.882" timestamp="1595824401678" />
+    <state width="574" height="381" key="GridCell.Tab.0.right" timestamp="1595824401679">
       <screen x="0" y="0" width="1920" height="882" />
     </state>
-    <state width="574" height="243" key="GridCell.Tab.0.right/0.0.1920.882@0.0.1920.882" timestamp="1595491239776" />
+    <state width="574" height="381" key="GridCell.Tab.0.right/0.0.1920.882@0.0.1920.882" timestamp="1595824401679" />
     <state width="574" height="452" key="GridCell.Tab.1.bottom" timestamp="1590299596166">
       <screen x="0" y="0" width="1920" height="882" />
     </state>
@@ -1103,10 +1138,10 @@
       <screen x="0" y="0" width="1920" height="882" />
     </state>
     <state x="121" y="111" key="com.intellij.xdebugger.impl.breakpoints.ui.BreakpointsDialogFactory$2/0.0.1920.882@0.0.1920.882" timestamp="1587884348340" />
-    <state x="2" y="1" width="1908" height="878" key="find.popup" timestamp="1595302560148">
+    <state x="2" y="1" width="1908" height="878" key="find.popup" timestamp="1596083240514">
       <screen x="0" y="0" width="1920" height="882" />
     </state>
-    <state x="2" y="1" width="1908" height="878" key="find.popup/0.0.1920.882@0.0.1920.882" timestamp="1595302560148" />
+    <state x="2" y="1" width="1908" height="878" key="find.popup/0.0.1920.882@0.0.1920.882" timestamp="1596083240514" />
     <state x="732" y="169" key="refactoring.ChangeSignatureDialog" timestamp="1587872020169">
       <screen x="0" y="0" width="1920" height="882" />
     </state>
@@ -1205,7 +1240,7 @@
         </line-breakpoint>
         <line-breakpoint enabled="true" type="javascript">
           <url>file://$PROJECT_DIR$/src/main/common/extensions/merge/mergers.ts</url>
-          <line>1072</line>
+          <line>1085</line>
           <option name="timeStamp" value="1592" />
         </line-breakpoint>
         <line-breakpoint enabled="true" type="javascript">

@@ -1,4 +1,5 @@
 /* tslint:disable:no-empty no-identical-functions max-line-length no-construct use-primitive-type */
+// @ts-ignore
 import { calcPerformance } from 'rdtsc';
 import { ObjectMerger } from '../../../main/common/extensions/merge/mergers';
 import { describe, it } from '../../../main/common/test/Mocha';
@@ -64,7 +65,7 @@ describe('common > extensions > merge > ObjectMerger', function () {
         b: 8
       },
       d: 9
-    }, o => {}, true, true));
+    }, o => {}, null, true, true));
     console.log(result);
   });
 });

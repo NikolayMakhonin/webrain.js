@@ -15,6 +15,7 @@ export function mergeMapWrappers<K, V>(
 	base: IMergeMapWrapper<K, V>,
 	older: IMergeMapWrapper<K, V>,
 	newer: IMergeMapWrapper<K, V>,
+	preferCloneBase?: boolean,
 	preferCloneOlder?: boolean,
 	preferCloneNewer?: boolean,
 	options?: IMergeOptions,
@@ -31,7 +32,7 @@ export function mergeMapWrappers<K, V>(
 
 		merge(EMPTY, olderItem, newerItem, o => {
 			setItem = o
-		}, preferCloneOlder, preferCloneNewer, options)
+		}, preferCloneBase, preferCloneOlder, preferCloneNewer, options)
 
 		if (setItem === EMPTY) {
 			throw new Error('setItem === NONE')
@@ -81,7 +82,7 @@ export function mergeMapWrappers<K, V>(
 				} else {
 					base.set(key, o)
 				}
-			}, preferCloneOlder, preferCloneNewer, options) || changed
+			}, preferCloneBase, preferCloneOlder, preferCloneNewer, options) || changed
 	})
 
 	let len = deleteItems.length
@@ -197,6 +198,7 @@ export function mergeMaps<TObject extends object>(
 	base: TObject,
 	older: TObject,
 	newer: TObject,
+	preferCloneBase?: boolean,
 	preferCloneOlder?: boolean,
 	preferCloneNewer?: boolean,
 	options?: IMergeOptions,
@@ -212,6 +214,7 @@ export function mergeMaps<TObject extends object>(
 		baseWrapper,
 		olderWrapper,
 		newerWrapper,
+		preferCloneBase,
 		preferCloneOlder,
 		preferCloneNewer,
 		options,

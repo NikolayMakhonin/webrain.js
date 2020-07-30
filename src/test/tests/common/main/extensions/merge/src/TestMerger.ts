@@ -48,6 +48,7 @@ export interface IMergerOptionsVariant {
 	older?: any
 	newer?: any
 
+	preferCloneBaseParam?: boolean
 	preferCloneOlderParam?: boolean
 	preferCloneNewerParam?: boolean
 	preferCloneMeta?: boolean
@@ -82,6 +83,7 @@ interface IMergerOptionsVariants extends IOptionsVariants {
 	base: any[]
 	older: any[]
 	newer: any[]
+	preferCloneBaseParam?: boolean[]
 	preferCloneOlderParam?: boolean[]
 	preferCloneNewerParam?: boolean[]
 	preferCloneMeta?: boolean[]
@@ -130,7 +132,8 @@ function isPreferClone(options, initialValue): boolean {
 				return true
 			}
 			return options.preferCloneMeta == null
-				? options.preferCloneOlderParam && options.base === options.older
+				? options.preferCloneBaseParam
+					|| options.preferCloneOlderParam && options.base === options.older
 					|| options.preferCloneNewerParam && options.base === options.newer
 				: options.preferCloneMeta
 		case NONE:
@@ -252,6 +255,7 @@ export class TestMerger extends TestVariants<
 		base: [],
 		older: [],
 		newer: [],
+		preferCloneBaseParam: [null, false, true],
 		preferCloneOlderParam: [null, false, true],
 		preferCloneNewerParam: [null, false, true],
 		preferCloneMeta: [null, false, true],
@@ -334,6 +338,7 @@ export class TestMerger extends TestVariants<
 							setValue = o
 							setCount++
 						}),
+						options.preferCloneBaseParam,
 						options.preferCloneOlderParam,
 						options.preferCloneNewerParam,
 						options.valueType || options.valueFactory

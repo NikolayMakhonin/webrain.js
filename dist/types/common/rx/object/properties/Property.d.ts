@@ -14,11 +14,11 @@ export declare class Property<TValue, TMergeSource = TValue> extends ObservableC
     readonly [Symbol.toStringTag]: string;
     set(value: Property<TValue | TMergeSource, any> | TValue | TMergeSource, clone?: boolean, options?: IMergeVisitorOptions<TValue, TMergeSource>): boolean;
     fill(value: Property<TValue | TMergeSource, any> | TValue | TMergeSource, preferClone?: boolean, options?: IMergeVisitorOptions<TValue, TMergeSource>): boolean;
-    merge(older: Property<TValue | TMergeSource, any> | TValue | TMergeSource, newer: Property<TValue | TMergeSource, any> | TValue | TMergeSource, preferCloneOlder?: boolean, preferCloneNewer?: boolean, options?: IMergeVisitorOptions<TValue, TMergeSource>): boolean;
+    merge(older: Property<TValue | TMergeSource, any> | TValue | TMergeSource, newer: Property<TValue | TMergeSource, any> | TValue | TMergeSource, preferCloneBase?: boolean, preferCloneOlder?: boolean, preferCloneNewer?: boolean, options?: IMergeVisitorOptions<TValue, TMergeSource>): boolean;
     private mergeValue;
     private _mergeValue;
     _canMerge(source: Property<TValue, TMergeSource> | TValue | TMergeSource): boolean;
-    _merge(merge: IMergeValue, older: Property<TValue | TMergeSource, any> | TValue | TMergeSource, newer: Property<TValue | TMergeSource, any> | TValue | TMergeSource, preferCloneOlder?: boolean, preferCloneNewer?: boolean): boolean;
+    _merge(merge: IMergeValue, older: Property<TValue | TMergeSource, any> | TValue | TMergeSource, newer: Property<TValue | TMergeSource, any> | TValue | TMergeSource, preferCloneBase?: boolean, preferCloneOlder?: boolean, preferCloneNewer?: boolean): boolean;
     static uuid: string;
     serialize(serialize: ISerializeValue): ISerializedObject;
     deSerialize(deSerialize: IDeSerializeValue, serializedValue: ISerializedObject): void;

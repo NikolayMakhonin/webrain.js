@@ -22,7 +22,7 @@ export class CircularClass extends ObservableClass {
     // || isIterable(source)
   }
 
-  _merge(merge, older, newer, preferCloneOlder, preferCloneNewer, options) {
+  _merge(merge, older, newer, preferCloneBase, preferCloneOlder, preferCloneNewer, options) {
     let changed = false;
     changed = merge(this.array, older.array, newer.array, o => {
       this.array = o;

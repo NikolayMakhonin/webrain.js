@@ -42,6 +42,7 @@ export class CircularClass extends ObservableClass
 		merge: IMergeValue,
 		older: CircularClass | any,
 		newer: CircularClass | any,
+		preferCloneBase?: boolean,
 		preferCloneOlder?: boolean,
 		preferCloneNewer?: boolean,
 		options?: IMergeOptions,

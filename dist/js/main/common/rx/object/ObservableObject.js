@@ -48,10 +48,10 @@ exports.ObservableObject = ObservableObject;
     canMerge: function canMerge(target, source) {
       return source instanceof Object;
     },
-    merge: function merge(_merge, base, older, newer, set, preferCloneOlder, preferCloneNewer, options) {
+    merge: function merge(_merge, base, older, newer, set, preferCloneBase, preferCloneOlder, preferCloneNewer, options) {
       return (0, _mergeMaps.mergeMaps)(function (target, source) {
         return new _mergeMaps.MergeObjectWrapper(source);
-      }, _merge, base, older, newer, preferCloneOlder, preferCloneNewer, options);
+      }, _merge, base, older, newer, preferCloneBase, preferCloneOlder, preferCloneNewer, options);
     }
   },
   preferClone: function preferClone(o) {
