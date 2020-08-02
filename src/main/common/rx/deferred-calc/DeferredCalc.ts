@@ -237,7 +237,7 @@ export class DeferredCalc {
 		// region Auto invalidate
 
 		const {autoInvalidateInterval} = this._options
-		if (autoInvalidateInterval
+		if (autoInvalidateInterval != null
 			&& this._timeInvalidateLast === 0
 			&& !(timeNextPulse > now && timeNextPulse !== this._timeNextPulse)
 		) {

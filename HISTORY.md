@@ -1,7 +1,17 @@
-1.1.1-a / 2020-05-30
+1.1.3-a / 2020-05-30
 ===================
 
   ? Improved CallState.invalidate() method
+
+1.1.2-a / 2020-08-02
+===================
+
+  * Fix merge strings
+
+1.1.1-a / 2020-07-30
+===================
+
+  * Changed DeferredCalc logic: allow autoInvalidateInterval == 0
 
 1.1.0-a / 2020-07-30
 ===================

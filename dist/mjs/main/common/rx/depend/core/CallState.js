@@ -487,7 +487,7 @@ export class CallState {
       if (!isAsync(value)) {
         this._updateCalculatedValue(value);
 
-        return value;
+        return this.value;
       }
 
       if (isThenable(value) && !(value instanceof ThenableSync)) {
@@ -507,7 +507,7 @@ export class CallState {
 
         this._updateCalculatedValue(val);
 
-        return val;
+        return this.value;
       }, error => {
         if ((this.status & Flag_Async) !== 0) {
           this._parentCallState = null;

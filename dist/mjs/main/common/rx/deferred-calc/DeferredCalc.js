@@ -230,7 +230,7 @@ export class DeferredCalc {
       autoInvalidateInterval
     } = this._options;
 
-    if (autoInvalidateInterval && this._timeInvalidateLast === 0 && !(timeNextPulse > now && timeNextPulse !== this._timeNextPulse)) {
+    if (autoInvalidateInterval != null && this._timeInvalidateLast === 0 && !(timeNextPulse > now && timeNextPulse !== this._timeNextPulse)) {
       const autoInvalidateTime = Math.max(this._timeCalcStart + autoInvalidateInterval, now);
 
       if (autoInvalidateTime <= now) {

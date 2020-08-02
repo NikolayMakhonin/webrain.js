@@ -822,7 +822,7 @@ ObjectMerger.observableOnly = new ObjectMerger(new TypeMetaMergerCollection({
 }));
 
 function isPrimitive(value) {
-  return !canHaveUniqueId(value) || typeof value === 'function'; // value == null
+  return typeof value !== 'string' && (!canHaveUniqueId(value) || typeof value === 'function'); // value == null
   // || typeof value === 'number'
   // || typeof value === 'boolean'
 }

@@ -579,7 +579,7 @@ var CallState = /*#__PURE__*/function () {
         if (!(0, _async.isAsync)(value)) {
           this._updateCalculatedValue(value);
 
-          return value;
+          return this.value;
         }
 
         if ((0, _async.isThenable)(value) && !(value instanceof _ThenableSync.ThenableSync)) {
@@ -599,7 +599,7 @@ var CallState = /*#__PURE__*/function () {
 
           _this3._updateCalculatedValue(val);
 
-          return val;
+          return _this3.value;
         }, function (error) {
           if ((_this3.status & Flag_Async) !== 0) {
             _this3._parentCallState = null;

@@ -955,7 +955,8 @@ export class ObjectMerger implements IObjectMerger {
 // Handled in MergerVisitor:
 
 function isPrimitive(value) {
-	return !canHaveUniqueId(value) || typeof value === 'function'
+	return typeof value !== 'string'
+		&& (!canHaveUniqueId(value) || typeof value === 'function')
 		// value == null
 		// || typeof value === 'number'
 		// || typeof value === 'boolean'
