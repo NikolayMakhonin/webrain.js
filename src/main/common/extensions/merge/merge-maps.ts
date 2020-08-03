@@ -108,11 +108,12 @@ export class MergeObjectWrapper implements IMergeMapWrapper<string, any> {
 	private readonly _object: { [key: string]: any }
 	private readonly _keyAsValue: boolean
 
-	constructor(object: { [key: string]: any }, keyAsValue?: boolean) {
+	constructor(
+		object: { [key: string]: any },
+		keyAsValue?: boolean,
+	) {
 		this._object = object
-		if (keyAsValue) {
-			this._keyAsValue = true
-		}
+		this._keyAsValue = !!keyAsValue
 	}
 
 	public delete(key: string): void {
