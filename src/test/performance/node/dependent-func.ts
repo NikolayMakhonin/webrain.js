@@ -6,6 +6,7 @@ import {CalcType} from '../../../main/common/test/calc'
 import {calcMemAllocate} from '../../../main/common/test/calc-mem-allocate'
 import {describe, it, xit} from '../../../main/common/test/Mocha'
 import {createPerceptron, createPerceptronNaked} from '../../tests/common/main/rx/depend/src/perceptron'
+import {getCallState, invalidateCallState} from "../../../main/common";
 
 describe('dependent-func perf', function() {
 	it('perceptron recalc', function() {
@@ -25,6 +26,12 @@ describe('dependent-func perf', function() {
 		map2.set(2, 3)
 		map1.set(1, map2)
 
+		let i = 0
+
+		for (let j = 0; j < 100; j++) {
+			output.call(2, 5, j)
+		}
+
 		const result = calcPerformance(
 			10000,
 			() => {
@@ -32,6 +39,7 @@ describe('dependent-func perf', function() {
 			}, () => {
 				inputState.invalidate()
 			}, () => {
+				// invalidateCallState(getCallState(output).call(2, 5, (i++)%100))
 				output.call(2, 5, 10)
 			}, () => {
 				return map1.get(1).get(2)
