@@ -102,7 +102,7 @@ export interface IRuleBuilder<TObject = any, TValueKeys extends string | number 
 	 */
 	f<TValue>(
 		subscribe: ISubscribeObject<TObject, TValue>,
-		subType: SubscribeObjectType,
+		subType?: SubscribeObjectType,
 		description?: string,
 	): IRuleBuilder<TValue, TValueKeys>
 

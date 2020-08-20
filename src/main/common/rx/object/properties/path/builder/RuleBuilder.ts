@@ -123,14 +123,14 @@ export class RuleBuilder<TObject = any, TValueKeys extends string | number = nev
 	 */
 	public func<TValue>(
 		subscribe: ISubscribeObject<TObject, TValue>,
-		subType: SubscribeObjectType,
+		subType?: SubscribeObjectType,
 		description?: string,
 	): RuleBuilder<TValue, TValueKeys> {
 		return (this.autoInsertValuePropertyDefault
 			? this.valuePropertyDefault()
 			: this)
 			.ruleSubscribe<TValue>(
-				new RuleSubscribe(subscribe, subType, description),
+				new RuleSubscribe(subscribe, subType || SubscribeObjectType.Property, description),
 			)
 	}
 
@@ -139,7 +139,7 @@ export class RuleBuilder<TObject = any, TValueKeys extends string | number = nev
 	 */
 	public f<TValue>(
 		subscribe: ISubscribeObject<TObject, TValue>,
-		subType: SubscribeObjectType,
+		subType?: SubscribeObjectType,
 		description?: string,
 	): RuleBuilder<TValue, TValueKeys> {
 		return this.func(subscribe, subType, description)
