@@ -7,7 +7,7 @@ import { PairingHeap } from '../../../lists/PairingHeap';
 import { fastNow } from '../../../time/helpers';
 import { Subject } from '../../subjects/subject';
 import { CallStatusShort } from './contracts';
-import { getCurrentState, setCurrentState } from './current-state';
+import { getCurrentState, getForceLazy, setCurrentState } from './current-state';
 import { InternalError } from './helpers'; // region CallStatus
 // region Types
 
@@ -381,6 +381,12 @@ export class CallState {
 
 
   getValue(isLazy, dontThrowOnError) {
+    const forceLazy = getForceLazy();
+
+    if (forceLazy) {
+      isLazy = forceLazy;
+    }
+
     const currentState = getCurrentState();
 
     if (currentState != null && (currentState.status & Flag_Check) === 0) {

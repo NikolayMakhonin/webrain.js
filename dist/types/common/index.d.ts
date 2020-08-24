@@ -16,6 +16,7 @@ export { registerSerializable, registerSerializer, ObjectSerializer } from './ex
 export { isIterable, isIterator, equals } from './helpers/helpers';
 export { webrainOptions, webrainEquals } from './helpers/webrainOptions';
 export { resolveAsync, resolveAsyncFunc, resolveAsyncAll, resolveAsyncAny } from './async/ThenableSync';
+export { isAsync, isThenable } from './async/async';
 export { CalcStat } from './helpers/CalcStat';
 export { VALUE_PROPERTY_DEFAULT } from './helpers/value-property';
 export { DeferredCalc } from './rx/deferred-calc/DeferredCalc';
@@ -29,7 +30,7 @@ export { DependMap } from './rx/depend/lists/DependMap';
 export { DependSet } from './rx/depend/lists/DependSet';
 export { calcPropertyFactory, calcPropertyFactoryX } from './rx/object/properties/CalcObjectBuilder';
 export { connectorFactory } from './rx/object/properties/ConnectorBuilder';
-export { noSubscribe } from './rx/depend/core/current-state';
+export { noSubscribe, forceLazy, withMode } from './rx/depend/core/current-state';
 export { deepSubscriber } from './rx/object/properties/path/deepSubscriber';
 export { Path } from './rx/object/properties/path/builder';
 export { autoCalcConnect, autoCalc, dependWait, dependWrapThis } from './rx/depend/helpers';

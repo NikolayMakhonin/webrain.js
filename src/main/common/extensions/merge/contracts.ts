@@ -12,6 +12,8 @@ export interface IMergeOptions {
 export interface IMergeVisitorOptions<TTarget, TSource> extends IMergeOptions {
 	valueType?: TClass<TTarget>
 	valueFactory?: (source: TTarget|TSource) => TTarget
+	canMerge?: (target: TTarget, source: TTarget|TSource) => boolean
+	merge?: IValueMerge<TTarget, TSource>
 }
 
 export type IMergeValue = <TTarget = any, TSource = any>(

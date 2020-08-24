@@ -120,7 +120,7 @@ var RuleBuilder = /*#__PURE__*/function () {
   }, {
     key: "func",
     value: function func(subscribe, subType, description) {
-      return (this.autoInsertValuePropertyDefault ? this.valuePropertyDefault() : this).ruleSubscribe(new _rulesSubscribe.RuleSubscribe(subscribe, subType, description));
+      return (this.autoInsertValuePropertyDefault ? this.valuePropertyDefault() : this).ruleSubscribe(new _rulesSubscribe.RuleSubscribe(subscribe, subType || _rulesSubscribe.SubscribeObjectType.Property, description));
     }
     /**
      * Custom func

@@ -75,7 +75,7 @@ export class RuleBuilder {
 
 
   func(subscribe, subType, description) {
-    return (this.autoInsertValuePropertyDefault ? this.valuePropertyDefault() : this).ruleSubscribe(new RuleSubscribe(subscribe, subType, description));
+    return (this.autoInsertValuePropertyDefault ? this.valuePropertyDefault() : this).ruleSubscribe(new RuleSubscribe(subscribe, subType || SubscribeObjectType.Property, description));
   }
   /**
    * Custom func

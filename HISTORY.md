@@ -1,7 +1,23 @@
+1.1.6-a / 2020-08-23
+===================
+
+  * Fix withMode()
+
+1.1.5-a / 2020-05-30
+===================
+
+  * Fix facade
+
+1.1.4-a / 2020-05-30
+===================
+
+  * depend funcs: Added forceLazy, withMode
+
+
 1.1.3-a / 2020-05-30
 ===================
 
-  ? Improved CallState.invalidate() method
+  * Added IMergeVisitorOptions.merge/canMerge  for use custom merger
 
 1.1.2-a / 2020-08-02
 ===================

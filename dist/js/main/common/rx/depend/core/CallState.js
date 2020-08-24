@@ -470,6 +470,12 @@ var CallState = /*#__PURE__*/function () {
     value: function getValue(isLazy, dontThrowOnError) {
       var _this2 = this;
 
+      var forceLazy = (0, _currentState.getForceLazy)();
+
+      if (forceLazy) {
+        isLazy = forceLazy;
+      }
+
       var currentState = (0, _currentState.getCurrentState)();
 
       if (currentState != null && (currentState.status & Flag_Check) === 0) {

@@ -119,10 +119,7 @@ var MergeObjectWrapper = /*#__PURE__*/function () {
   function MergeObjectWrapper(object, keyAsValue) {
     (0, _classCallCheck2.default)(this, MergeObjectWrapper);
     this._object = object;
-
-    if (keyAsValue) {
-      this._keyAsValue = true;
-    }
+    this._keyAsValue = !!keyAsValue;
   }
 
   (0, _createClass2.default)(MergeObjectWrapper, [{

@@ -79,10 +79,7 @@ export function mergeMapWrappers(merge, base, older, newer, preferCloneBase, pre
 export class MergeObjectWrapper {
   constructor(object, keyAsValue) {
     this._object = object;
-
-    if (keyAsValue) {
-      this._keyAsValue = true;
-    }
+    this._keyAsValue = !!keyAsValue;
   }
 
   delete(key) {

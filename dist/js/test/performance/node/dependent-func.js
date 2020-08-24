@@ -43,11 +43,18 @@ var _perceptron = require("../../tests/common/main/rx/depend/src/perceptron");
     var map2 = new _map2.default();
     map2.set(2, 3);
     map1.set(1, map2);
+    var i = 0;
+
+    for (var j = 0; j < 100; j++) {
+      output.call(2, 5, j);
+    }
+
     var result = (0, _rdtsc.calcPerformance)(10000, function () {
       naked.call(2, 5, 10);
     }, function () {
       inputState.invalidate();
     }, function () {
+      // invalidateCallState(getCallState(output).call(2, 5, (i++)%100))
       output.call(2, 5, 10);
     }, function () {
       return map1.get(1).get(2);

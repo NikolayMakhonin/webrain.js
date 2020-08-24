@@ -21,11 +21,18 @@ describe('dependent-func perf', function () {
     const map2 = new Map();
     map2.set(2, 3);
     map1.set(1, map2);
+    let i = 0;
+
+    for (let j = 0; j < 100; j++) {
+      output.call(2, 5, j);
+    }
+
     const result = calcPerformance(10000, () => {
       naked.call(2, 5, 10);
     }, () => {
       inputState.invalidate();
     }, () => {
+      // invalidateCallState(getCallState(output).call(2, 5, (i++)%100))
       output.call(2, 5, 10);
     }, () => {
       return map1.get(1).get(2);

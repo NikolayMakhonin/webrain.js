@@ -28,7 +28,7 @@ import {
 	TInnerValue,
 	TResultOuter,
 } from './contracts'
-import {getCurrentState, setCurrentState} from './current-state'
+import {getCurrentState, getForceLazy, setCurrentState} from './current-state'
 import {InternalError} from './helpers'
 
 // region CallStatus
@@ -603,6 +603,11 @@ export class CallState<
 		isLazy?: boolean,
 		dontThrowOnError?: boolean,
 	): TResultOuter<TResultInner> {
+		const forceLazy = getForceLazy()
+		if (forceLazy) {
+			isLazy = forceLazy
+		}
+
 		const currentState = getCurrentState()
 		if (currentState != null && (currentState.status & Flag_Check) === 0) {
 			currentState._subscribeDependency.call(currentState, this, !!isLazy)

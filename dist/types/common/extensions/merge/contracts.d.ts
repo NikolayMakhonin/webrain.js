@@ -8,6 +8,8 @@ export interface IMergeOptions {
 export interface IMergeVisitorOptions<TTarget, TSource> extends IMergeOptions {
     valueType?: TClass<TTarget>;
     valueFactory?: (source: TTarget | TSource) => TTarget;
+    canMerge?: (target: TTarget, source: TTarget | TSource) => boolean;
+    merge?: IValueMerge<TTarget, TSource>;
 }
 export declare type IMergeValue = <TTarget = any, TSource = any>(base: TTarget, older: TTarget | TSource, newer: TTarget | TSource, set?: (value: TTarget) => void, preferCloneBase?: boolean, preferCloneOlder?: boolean, preferCloneNewer?: boolean, options?: IMergeVisitorOptions<TTarget, TSource>) => boolean;
 export interface IMergerVisitor {

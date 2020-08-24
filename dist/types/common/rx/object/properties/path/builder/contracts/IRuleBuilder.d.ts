@@ -52,7 +52,7 @@ export interface IRuleBuilder<TObject = any, TValueKeys extends string | number 
     /**
      * Custom func
      */
-    f<TValue>(subscribe: ISubscribeObject<TObject, TValue>, subType: SubscribeObjectType, description?: string): IRuleBuilder<TValue, TValueKeys>;
+    f<TValue>(subscribe: ISubscribeObject<TObject, TValue>, subType?: SubscribeObjectType, description?: string): IRuleBuilder<TValue, TValueKeys>;
     /**
      * Object property, Array index
      */

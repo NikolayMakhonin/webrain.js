@@ -24,11 +24,11 @@ export declare class RuleBuilder<TObject = any, TValueKeys extends string | numb
     /**
      * Custom func
      */
-    func<TValue>(subscribe: ISubscribeObject<TObject, TValue>, subType: SubscribeObjectType, description?: string): RuleBuilder<TValue, TValueKeys>;
+    func<TValue>(subscribe: ISubscribeObject<TObject, TValue>, subType?: SubscribeObjectType, description?: string): RuleBuilder<TValue, TValueKeys>;
     /**
      * Custom func
      */
-    f<TValue>(subscribe: ISubscribeObject<TObject, TValue>, subType: SubscribeObjectType, description?: string): RuleBuilder<TValue, TValueKeys>;
+    f<TValue>(subscribe: ISubscribeObject<TObject, TValue>, subType?: SubscribeObjectType, description?: string): RuleBuilder<TValue, TValueKeys>;
     /**
      * Object property, Array index
      */

@@ -121,7 +121,8 @@ var ValueState = /*#__PURE__*/function () {
   }, {
     key: "canMerge",
     value: function canMerge(source, target) {
-      var canMerge = this.merger.canMerge;
+      var options = this.mergerState.options;
+      var canMerge = options && options.canMerge || this.merger.canMerge;
 
       if (canMerge) {
         if (target == null) {
@@ -176,8 +177,7 @@ var ValueState = /*#__PURE__*/function () {
       var _merger = this._merger;
 
       if (!_merger) {
-        var meta = this.meta;
-        _merger = meta.merger;
+        _merger = this.meta.merger;
 
         if (!_merger) {
           throw new Error("Class (" + (this.type && this.type.name) + ") type meta have no merger");
@@ -191,6 +191,12 @@ var ValueState = /*#__PURE__*/function () {
   }, {
     key: "merge",
     get: function get() {
+      var options = this.mergerState.options;
+
+      if (options && options.merge) {
+        return options.merge;
+      }
+
       var merger = this.merger;
 
       if (!merger.merge) {
@@ -284,7 +290,7 @@ var ValueState = /*#__PURE__*/function () {
               break;
 
             case false:
-              if (this.merger.merge) {
+              if (this.merge) {
                 throw new Error("Class (" + this.type.name + ") cannot be merged with clone");
               }
 

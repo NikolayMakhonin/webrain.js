@@ -30,10 +30,34 @@
     <select />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="69b2ee16-521b-4efd-b473-8e19e3df4d09" name="Default Changelist" comment="">
+    <list default="true" id="69b2ee16-521b-4efd-b473-8e19e3df4d09" name="Default Changelist" comment="Fix RuleBuilder interface">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/common/rx/object/properties/path/builder/RuleBuilder.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/common/rx/object/properties/path/builder/RuleBuilder.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/common/rx/object/properties/path/builder/contracts/IRuleBuilder.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/common/rx/object/properties/path/builder/contracts/IRuleBuilder.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/HISTORY.md" beforeDir="false" afterPath="$PROJECT_DIR$/HISTORY.md" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/dist/js/main/common/extensions/merge/merge-maps.js" beforeDir="false" afterPath="$PROJECT_DIR$/dist/js/main/common/extensions/merge/merge-maps.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/dist/js/main/common/extensions/merge/mergers.js" beforeDir="false" afterPath="$PROJECT_DIR$/dist/js/main/common/extensions/merge/mergers.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/dist/js/main/common/index.js" beforeDir="false" afterPath="$PROJECT_DIR$/dist/js/main/common/index.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/dist/js/main/common/rx/depend/core/CallState.js" beforeDir="false" afterPath="$PROJECT_DIR$/dist/js/main/common/rx/depend/core/CallState.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/dist/js/main/common/rx/depend/core/current-state.js" beforeDir="false" afterPath="$PROJECT_DIR$/dist/js/main/common/rx/depend/core/current-state.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/dist/js/main/common/rx/object/properties/path/builder/RuleBuilder.js" beforeDir="false" afterPath="$PROJECT_DIR$/dist/js/main/common/rx/object/properties/path/builder/RuleBuilder.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/dist/js/test/performance/node/dependent-func.js" beforeDir="false" afterPath="$PROJECT_DIR$/dist/js/test/performance/node/dependent-func.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/dist/mjs/main/common/extensions/merge/merge-maps.js" beforeDir="false" afterPath="$PROJECT_DIR$/dist/mjs/main/common/extensions/merge/merge-maps.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/dist/mjs/main/common/extensions/merge/mergers.js" beforeDir="false" afterPath="$PROJECT_DIR$/dist/mjs/main/common/extensions/merge/mergers.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/dist/mjs/main/common/index.js" beforeDir="false" afterPath="$PROJECT_DIR$/dist/mjs/main/common/index.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/dist/mjs/main/common/rx/depend/core/CallState.js" beforeDir="false" afterPath="$PROJECT_DIR$/dist/mjs/main/common/rx/depend/core/CallState.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/dist/mjs/main/common/rx/depend/core/current-state.js" beforeDir="false" afterPath="$PROJECT_DIR$/dist/mjs/main/common/rx/depend/core/current-state.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/dist/mjs/main/common/rx/object/properties/path/builder/RuleBuilder.js" beforeDir="false" afterPath="$PROJECT_DIR$/dist/mjs/main/common/rx/object/properties/path/builder/RuleBuilder.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/dist/mjs/test/performance/node/dependent-func.js" beforeDir="false" afterPath="$PROJECT_DIR$/dist/mjs/test/performance/node/dependent-func.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/dist/types/common/extensions/merge/contracts.d.ts" beforeDir="false" afterPath="$PROJECT_DIR$/dist/types/common/extensions/merge/contracts.d.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/dist/types/common/index.d.ts" beforeDir="false" afterPath="$PROJECT_DIR$/dist/types/common/index.d.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/dist/types/common/rx/depend/core/current-state.d.ts" beforeDir="false" afterPath="$PROJECT_DIR$/dist/types/common/rx/depend/core/current-state.d.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/dist/types/common/rx/object/properties/path/builder/RuleBuilder.d.ts" beforeDir="false" afterPath="$PROJECT_DIR$/dist/types/common/rx/object/properties/path/builder/RuleBuilder.d.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/dist/types/common/rx/object/properties/path/builder/contracts/IRuleBuilder.d.ts" beforeDir="false" afterPath="$PROJECT_DIR$/dist/types/common/rx/object/properties/path/builder/contracts/IRuleBuilder.d.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/package.json" beforeDir="false" afterPath="$PROJECT_DIR$/package.json" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/common/extensions/merge/contracts.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/common/extensions/merge/contracts.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/common/extensions/merge/mergers.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/common/extensions/merge/mergers.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/common/index.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/common/index.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/common/rx/depend/core/CallState.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/common/rx/depend/core/CallState.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/common/rx/depend/core/current-state.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/common/rx/depend/core/current-state.ts" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -85,7 +109,7 @@
     <property name="WebServerToolWindowFactoryState" value="false" />
     <property name="auto.test.manager.delay" value="5000" />
     <property name="javascript.karma.karma_node_package_dir" value="" />
-    <property name="last_opened_file_path" value="$PROJECT_DIR$/src/test/performance/node" />
+    <property name="last_opened_file_path" value="$PROJECT_DIR$/src/main/common/rx/depend/core" />
     <property name="node.js.detected.package.eslint" value="true" />
     <property name="node.js.detected.package.standard" value="true" />
     <property name="node.js.detected.package.tslint" value="true" />
@@ -104,12 +128,12 @@
     <property name="ts.external.directory.path" value="L:\Work\_GIT\GitHub\NodeJs\modules\webrain\node_modules\typescript\lib" />
   </component>
   <component name="RecentsManager">
-    <key name="MoveFile.RECENT_KEYS">
-      <recent name="L:\Work\_GIT\GitHub\NodeJs\modules\webrain\src\test\tests\common\src" />
+    <key name="CopyFile.RECENT_KEYS">
+      <recent name="L:\Work\_GIT\GitHub\NodeJs\modules\webrain\src\main\common\rx\depend\core" />
+      <recent name="L:\Work\_GIT\GitHub\NodeJs\modules\webrain\src\test\performance\node" />
+      <recent name="L:\Work\_GIT\GitHub\NodeJs\modules\webrain\tmp\coverage\merge" />
+      <recent name="L:\Work\_GIT\GitHub\NodeJs\modules\webrain\src\main\common\rx\object" />
       <recent name="L:\Work\_GIT\GitHub\NodeJs\modules\webrain\docs\depend" />
-      <recent name="L:\Work\_GIT\GitHub\NodeJs\modules\webrain\src\main\common\rx\depend" />
-      <recent name="L:\Work\_GIT\GitHub\NodeJs\modules\webrain\src\main\common\rx\object\properties\path" />
-      <recent name="L:\Work\_GIT\GitHub\NodeJs\modules\webrain\src\test\tests\common\main\rx\object\properties\path" />
     </key>
     <key name="es6.move.members.recent.items">
       <recent name="L:\Work\_GIT\GitHub\NodeJs\modules\webrain\src\main\common\rx\depend\core\contracts.ts" />
@@ -118,15 +142,15 @@
       <recent name="L:\Work\_GIT\GitHub\NodeJs\modules\webrain\src\main\common\rx\depend\core\helpers.ts" />
       <recent name="L:\Work\_GIT\GitHub\NodeJs\modules\webrain\src\test\tests\common\main\rx\depend\src\perceptron.ts" />
     </key>
-    <key name="CopyFile.RECENT_KEYS">
-      <recent name="L:\Work\_GIT\GitHub\NodeJs\modules\webrain\src\test\performance\node" />
-      <recent name="L:\Work\_GIT\GitHub\NodeJs\modules\webrain\tmp\coverage\merge" />
-      <recent name="L:\Work\_GIT\GitHub\NodeJs\modules\webrain\src\main\common\rx\object" />
+    <key name="MoveFile.RECENT_KEYS">
+      <recent name="L:\Work\_GIT\GitHub\NodeJs\modules\webrain\src\test\tests\common\src" />
       <recent name="L:\Work\_GIT\GitHub\NodeJs\modules\webrain\docs\depend" />
+      <recent name="L:\Work\_GIT\GitHub\NodeJs\modules\webrain\src\main\common\rx\depend" />
+      <recent name="L:\Work\_GIT\GitHub\NodeJs\modules\webrain\src\main\common\rx\object\properties\path" />
       <recent name="L:\Work\_GIT\GitHub\NodeJs\modules\webrain\src\test\tests\common\main\rx\object\properties\path" />
     </key>
   </component>
-  <component name="RunManager" selected="Mocha.dependent-func perf.perceptron recalc">
+  <component name="RunManager" selected="Mocha.Watch">
     <configuration default="true" type="JavaScriptTestRunnerKarma" activateToolWindowBeforeRun="false">
       <config-file value="$PROJECT_DIR$/env/karma/configs/dev.js" />
       <karma-package-dir value="$PROJECT_DIR$/node_modules/karma" />
@@ -243,6 +267,21 @@
       <extra-mocha-options>--opts ./env/mocha/configs/babel/mocha.opts --watch</extra-mocha-options>
       <test-kind>PATTERN</test-kind>
       <test-pattern>./src/test/tests/{common,node}/**/*.*</test-pattern>
+      <method v="2" />
+    </configuration>
+    <configuration name="common &gt; extensions &gt; merge &gt; ObjectMerger" type="mocha-javascript-test-runner" temporary="true" nameIsGenerated="true">
+      <node-interpreter>node</node-interpreter>
+      <node-options>--max-old-space-size=4096 --allow-natives-syntax</node-options>
+      <mocha-package>$PROJECT_DIR$/node_modules/mocha</mocha-package>
+      <working-directory>$PROJECT_DIR$</working-directory>
+      <pass-parent-env>true</pass-parent-env>
+      <ui>bdd</ui>
+      <extra-mocha-options>--opts ./env/mocha/configs/babel/mocha.opts --watch</extra-mocha-options>
+      <test-kind>SUITE</test-kind>
+      <test-file>$PROJECT_DIR$/src/test/tests/common/main/extensions/merge/ObjectMerger.ts</test-file>
+      <test-names>
+        <name value="common &gt; extensions &gt; merge &gt; ObjectMerger" />
+      </test-names>
       <method v="2" />
     </configuration>
     <configuration name="deep-subscribe (Coverage)" type="mocha-javascript-test-runner">
@@ -367,22 +406,6 @@
       </test-names>
       <method v="2" />
     </configuration>
-    <configuration name="memoize.base" type="mocha-javascript-test-runner" temporary="true" nameIsGenerated="true">
-      <node-interpreter>node</node-interpreter>
-      <node-options>--max-old-space-size=4096</node-options>
-      <mocha-package>$PROJECT_DIR$/node_modules/mocha</mocha-package>
-      <working-directory>$PROJECT_DIR$</working-directory>
-      <pass-parent-env>true</pass-parent-env>
-      <ui>bdd</ui>
-      <extra-mocha-options>--opts ./env/mocha/configs/babel/mocha.opts</extra-mocha-options>
-      <test-kind>TEST</test-kind>
-      <test-file>$PROJECT_DIR$/src/test/performance/node/memoize.ts</test-file>
-      <test-names>
-        <name value="memoize" />
-        <name value="base" />
-      </test-names>
-      <method v="2" />
-    </configuration>
     <configuration name="memoize.memory" type="mocha-javascript-test-runner" temporary="true" nameIsGenerated="true">
       <node-interpreter>node</node-interpreter>
       <node-options>--max-old-space-size=4096</node-options>
@@ -448,22 +471,22 @@
       <item itemvalue="Mocha.dependent-func" />
       <item itemvalue="Mocha.dependent-func.perceptron perf (Compiled)" />
       <item itemvalue="Mocha.node &gt; v8 &gt; parser" />
-      <item itemvalue="Mocha.memoize.base" />
       <item itemvalue="Mocha.memoize" />
       <item itemvalue="Mocha.memoize.stress" />
       <item itemvalue="Mocha.memoize.memory" />
       <item itemvalue="Mocha.dependent-func perf.perceptron recalc" />
+      <item itemvalue="Mocha.common &gt; extensions &gt; merge &gt; ObjectMerger" />
       <item itemvalue="Node.js.mocha" />
       <item itemvalue="Node.js.dependent-func.js" />
       <item itemvalue="npm.Coverage Mocha Report" />
     </list>
     <recent_temporary>
       <list>
+        <item itemvalue="Mocha.common &gt; extensions &gt; merge &gt; ObjectMerger" />
         <item itemvalue="Mocha.dependent-func perf.perceptron recalc" />
         <item itemvalue="Mocha.memoize" />
         <item itemvalue="Mocha.memoize.memory" />
         <item itemvalue="Mocha.memoize.stress" />
-        <item itemvalue="Mocha.memoize.base" />
       </list>
     </recent_temporary>
   </component>
@@ -538,14 +561,14 @@
       <workItem from="1597815307304" duration="593000" />
       <workItem from="1597816301663" duration="1150000" />
       <workItem from="1597822795444" duration="698000" />
-      <workItem from="1597842301119" duration="1001000" />
-    </task>
-    <task id="LOCAL-00496" summary="Replace bad supported Int32Array.slice(0, count) to fori">
-      <created>1588915472263</created>
-      <option name="number" value="00496" />
-      <option name="presentableId" value="LOCAL-00496" />
-      <option name="project" value="LOCAL" />
-      <updated>1588915472263</updated>
+      <workItem from="1597842301119" duration="1627000" />
+      <workItem from="1598021685599" duration="2796000" />
+      <workItem from="1598025466015" duration="42000" />
+      <workItem from="1598026516080" duration="271000" />
+      <workItem from="1598026794970" duration="636000" />
+      <workItem from="1598066460192" duration="8000" />
+      <workItem from="1598067179007" duration="742000" />
+      <workItem from="1598075424263" duration="13658000" />
     </task>
     <task id="LOCAL-00497" summary="Fix array merger. Tests OK.">
       <created>1589363920421</created>
@@ -883,7 +906,14 @@
       <option name="project" value="LOCAL" />
       <updated>1596700006246</updated>
     </task>
-    <option name="localTasksCounter" value="545" />
+    <task id="LOCAL-00545" summary="Fix RuleBuilder interface">
+      <created>1597907377221</created>
+      <option name="number" value="00545" />
+      <option name="presentableId" value="LOCAL-00545" />
+      <option name="project" value="LOCAL" />
+      <updated>1597907377221</updated>
+    </task>
+    <option name="localTasksCounter" value="546" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -944,7 +974,6 @@
   <component name="VcsManagerConfiguration">
     <option name="CHECK_CODE_SMELLS_BEFORE_PROJECT_COMMIT" value="false" />
     <option name="CHECK_NEW_TODO" value="false" />
-    <MESSAGE value="Deleted: Stop timers after all tests" />
     <MESSAGE value="Rollback karma rollup preprocessor" />
     <MESSAGE value="Improve karma rollup preprocessor" />
     <MESSAGE value="karma: stop IE support" />
@@ -969,7 +998,8 @@
     <MESSAGE value="v1.1.0-a Changed the merge interface: added preferCloneBase" />
     <MESSAGE value="v1.1.2-a Fix merge strings" />
     <MESSAGE value="Perf test: 150000 invalidates per sec in chrome" />
-    <option name="LAST_COMMIT_MESSAGE" value="Perf test: 150000 invalidates per sec in chrome" />
+    <MESSAGE value="Fix RuleBuilder interface" />
+    <option name="LAST_COMMIT_MESSAGE" value="Fix RuleBuilder interface" />
   </component>
   <component name="WindowStateProjectService">
     <state x="617" y="103" key="#ESLint" timestamp="1590218488709">
@@ -992,38 +1022,38 @@
       <screen x="0" y="0" width="1920" height="882" />
     </state>
     <state x="608" y="31" key="#mocha/0.0.1920.882@0.0.1920.882" timestamp="1590162078137" />
-    <state x="-2" y="0" width="1918" height="882" key="CommitChangelistDialog2" timestamp="1596700005408">
+    <state x="-2" y="0" width="1918" height="882" key="CommitChangelistDialog2" timestamp="1598195457036">
       <screen x="0" y="0" width="1920" height="882" />
     </state>
-    <state x="-2" y="0" width="1918" height="882" key="CommitChangelistDialog2/0.0.1920.882@0.0.1920.882" timestamp="1596700005408" />
+    <state x="-2" y="0" width="1918" height="882" key="CommitChangelistDialog2/0.0.1920.882@0.0.1920.882" timestamp="1598195457036" />
     <state width="884" height="550" key="DebuggerActiveHint" timestamp="1590162335145">
       <screen x="0" y="0" width="1920" height="882" />
     </state>
     <state width="884" height="550" key="DebuggerActiveHint/0.0.1920.882@0.0.1920.882" timestamp="1590162335145" />
-    <state x="0" y="4" width="1920" height="875" key="DiffContextDialog" timestamp="1595573737028">
+    <state x="0" y="4" width="1920" height="875" key="DiffContextDialog" timestamp="1598195455772">
       <screen x="0" y="0" width="1920" height="882" />
     </state>
-    <state x="0" y="4" width="1920" height="875" key="DiffContextDialog/0.0.1920.882@0.0.1920.882" timestamp="1595573737028" />
+    <state x="0" y="4" width="1920" height="875" key="DiffContextDialog/0.0.1920.882@0.0.1920.882" timestamp="1598195455772" />
     <state x="1059" y="106" key="FileChooserDialogImpl" timestamp="1595574844421">
       <screen x="0" y="0" width="1920" height="882" />
     </state>
     <state x="1059" y="106" key="FileChooserDialogImpl/0.0.1920.882@0.0.1920.882" timestamp="1595574844421" />
-    <state width="643" height="352" key="GridCell.Tab.0.bottom" timestamp="1596700036598">
+    <state width="633" height="221" key="GridCell.Tab.0.bottom" timestamp="1598077895490">
       <screen x="0" y="0" width="1920" height="882" />
     </state>
-    <state width="643" height="352" key="GridCell.Tab.0.bottom/0.0.1920.882@0.0.1920.882" timestamp="1596700036598" />
-    <state width="643" height="352" key="GridCell.Tab.0.center" timestamp="1596700036598">
+    <state width="633" height="221" key="GridCell.Tab.0.bottom/0.0.1920.882@0.0.1920.882" timestamp="1598077895490" />
+    <state width="633" height="221" key="GridCell.Tab.0.center" timestamp="1598077895489">
       <screen x="0" y="0" width="1920" height="882" />
     </state>
-    <state width="643" height="352" key="GridCell.Tab.0.center/0.0.1920.882@0.0.1920.882" timestamp="1596700036598" />
-    <state width="643" height="352" key="GridCell.Tab.0.left" timestamp="1596700036598">
+    <state width="633" height="221" key="GridCell.Tab.0.center/0.0.1920.882@0.0.1920.882" timestamp="1598077895489" />
+    <state width="633" height="221" key="GridCell.Tab.0.left" timestamp="1598077895489">
       <screen x="0" y="0" width="1920" height="882" />
     </state>
-    <state width="643" height="352" key="GridCell.Tab.0.left/0.0.1920.882@0.0.1920.882" timestamp="1596700036598" />
-    <state width="643" height="352" key="GridCell.Tab.0.right" timestamp="1596700036598">
+    <state width="633" height="221" key="GridCell.Tab.0.left/0.0.1920.882@0.0.1920.882" timestamp="1598077895489" />
+    <state width="633" height="221" key="GridCell.Tab.0.right" timestamp="1598077895489">
       <screen x="0" y="0" width="1920" height="882" />
     </state>
-    <state width="643" height="352" key="GridCell.Tab.0.right/0.0.1920.882@0.0.1920.882" timestamp="1596700036598" />
+    <state width="633" height="221" key="GridCell.Tab.0.right/0.0.1920.882@0.0.1920.882" timestamp="1598077895489" />
     <state width="643" height="352" key="GridCell.Tab.1.bottom" timestamp="1596700036599">
       <screen x="0" y="0" width="1920" height="882" />
     </state>
@@ -1104,10 +1134,10 @@
       <screen x="0" y="0" width="1920" height="882" />
     </state>
     <state width="969" height="450" key="XDebugger.FullValuePopup/0.0.1920.882@0.0.1920.882" timestamp="1590162225930" />
-    <state x="2" y="1" width="1908" height="878" key="find.popup" timestamp="1597842649544">
+    <state x="2" y="1" width="1908" height="878" key="find.popup" timestamp="1598179014679">
       <screen x="0" y="0" width="1920" height="882" />
     </state>
-    <state x="2" y="1" width="1908" height="878" key="find.popup/0.0.1920.882@0.0.1920.882" timestamp="1597842649544" />
+    <state x="2" y="1" width="1908" height="878" key="find.popup/0.0.1920.882@0.0.1920.882" timestamp="1598179014679" />
   </component>
   <component name="XDebuggerManager">
     <breakpoint-manager>
@@ -1194,7 +1224,7 @@
         </line-breakpoint>
         <line-breakpoint enabled="true" type="javascript">
           <url>file://$PROJECT_DIR$/src/main/common/extensions/merge/mergers.ts</url>
-          <line>1086</line>
+          <line>1090</line>
           <option name="timeStamp" value="1592" />
         </line-breakpoint>
         <line-breakpoint enabled="true" type="javascript">
@@ -1239,7 +1269,7 @@
         </line-breakpoint>
         <line-breakpoint enabled="true" type="javascript">
           <url>file://$PROJECT_DIR$/src/main/common/rx/depend/core/CallState.ts</url>
-          <line>1860</line>
+          <line>1865</line>
           <option name="timeStamp" value="1627" />
         </line-breakpoint>
         <line-breakpoint enabled="true" type="javascript">

@@ -108,8 +108,7 @@ class ValueState<TTarget, TSource> {
 	public get merger(): IValueMerger<TTarget, TSource> {
 		let { _merger } = this
 		if (!_merger) {
-			const { meta } = this
-			_merger = meta.merger
+			_merger = this.meta.merger
 			if (!_merger) {
 				throw new Error(`Class (${this.type && this.type.name}) type meta have no merger`)
 			}
@@ -119,6 +118,10 @@ class ValueState<TTarget, TSource> {
 	}
 
 	public get merge(): IValueMerge<TTarget, TSource> {
+		const {options} = this.mergerState
+		if (options && options.merge) {
+			return options.merge
+		}
 		const {merger} = this
 		if (!merger.merge) {
 			throw new Error(`Class (${this.type && this.type.name}) merger have no merge method`)
@@ -177,7 +180,8 @@ class ValueState<TTarget, TSource> {
 	}
 
 	public canMerge(source: ValueState<TTarget, TSource>, target?: TTarget): boolean {
-		const canMerge = this.merger.canMerge
+		const {options} = this.mergerState
+		const canMerge = options && options.canMerge || this.merger.canMerge
 		if (canMerge) {
 			if (target == null) {
 				target = this.target
@@ -235,7 +239,7 @@ class ValueState<TTarget, TSource> {
 						)
 						break
 					case false:
-						if (this.merger.merge) {
+						if (this.merge) {
 							throw new Error(`Class (${this.type.name}) cannot be merged with clone`)
 						}
 						break
