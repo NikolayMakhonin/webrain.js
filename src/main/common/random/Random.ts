@@ -58,6 +58,14 @@ export class Random {
 		this._rnd = getRandomFunc(seed)
 	}
 
+	public nextSeed(): number {
+		return this.nextInt(2 << 29)
+	}
+
+	public nextRandom(): Random {
+		return new Random(this.nextSeed())
+	}
+
 	public next(): number {
 		return this._rnd()
 	}
@@ -133,9 +141,24 @@ export class Random {
 
 	public static arrayShuffle = arrayShuffle
 
-	public nextArrayItems<T>(array: T[], minCount: number, relativeMaxCount: number): T[] {
+	public nextArrayItems<T>(array: T[], minCount: number, maxCount: number, maxCountRelative?: boolean): T[] {
+		if (maxCountRelative) {
+			maxCount = array.length * maxCount
+		}
+		const count = this.nextInt(minCount, maxCount)
+		const result = []
+		for (let i = 0; i < count; i++) {
+			result.push(this.nextArrayItem(array))
+		}
+		return result
+	}
+
+	public nextArrayItemsUnique<T>(array: T[], minCount: number, maxCount: number, maxCountRelative?: boolean): T[] {
 		arrayShuffle(array, () => this.next())
-		const count = this.nextInt(minCount, Math.round(array.length * relativeMaxCount))
+		if (maxCountRelative) {
+			maxCount = array.length * maxCount
+		}
+		const count = this.nextInt(minCount, maxCount)
 		return array.slice(0, count)
 	}
 

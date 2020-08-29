@@ -76,6 +76,16 @@ var Random = /*#__PURE__*/function () {
   }
 
   (0, _createClass2.default)(Random, [{
+    key: "nextSeed",
+    value: function nextSeed() {
+      return this.nextInt(2 << 29);
+    }
+  }, {
+    key: "nextRandom",
+    value: function nextRandom() {
+      return new Random(this.nextSeed());
+    }
+  }, {
     key: "next",
     value: function next() {
       return this._rnd();
@@ -178,13 +188,34 @@ var Random = /*#__PURE__*/function () {
     }
   }, {
     key: "nextArrayItems",
-    value: function nextArrayItems(array, minCount, relativeMaxCount) {
+    value: function nextArrayItems(array, minCount, maxCount, maxCountRelative) {
+      if (maxCountRelative) {
+        maxCount = array.length * maxCount;
+      }
+
+      var count = this.nextInt(minCount, maxCount);
+      var result = [];
+
+      for (var i = 0; i < count; i++) {
+        result.push(this.nextArrayItem(array));
+      }
+
+      return result;
+    }
+  }, {
+    key: "nextArrayItemsUnique",
+    value: function nextArrayItemsUnique(array, minCount, maxCount, maxCountRelative) {
       var _this = this;
 
       arrayShuffle(array, function () {
         return _this.next();
       });
-      var count = this.nextInt(minCount, Math.round(array.length * relativeMaxCount));
+
+      if (maxCountRelative) {
+        maxCount = array.length * maxCount;
+      }
+
+      var count = this.nextInt(minCount, maxCount);
       return (0, _slice.default)(array).call(array, 0, count);
     }
   }, {

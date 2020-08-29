@@ -9,6 +9,8 @@ export declare function getRandomFunc(seed?: number): () => number;
 export declare class Random {
     private readonly _rnd;
     constructor(seed?: number);
+    nextSeed(): number;
+    nextRandom(): Random;
     next(): number;
     nextRange(from: number, to: number): number;
     nextInt(toExclusive: number): number;
@@ -20,7 +22,8 @@ export declare class Random {
     pullArrayItem<T>(array: T[]): T;
     nextArrayItem<T>(array: T[]): T;
     static arrayShuffle: typeof arrayShuffle;
-    nextArrayItems<T>(array: T[], minCount: number, relativeMaxCount: number): T[];
+    nextArrayItems<T>(array: T[], minCount: number, maxCount: number, maxCountRelative?: boolean): T[];
+    nextArrayItemsUnique<T>(array: T[], minCount: number, maxCount: number, maxCountRelative?: boolean): T[];
     nextColor(): string;
     nextEnum<TValue extends string, TEnum extends {
         [key: string]: TValue;

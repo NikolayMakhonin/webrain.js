@@ -49,6 +49,14 @@ export class Random {
     this._rnd = getRandomFunc(seed);
   }
 
+  nextSeed() {
+    return this.nextInt(2 << 29);
+  }
+
+  nextRandom() {
+    return new Random(this.nextSeed());
+  }
+
   next() {
     return this._rnd();
   }
@@ -125,9 +133,29 @@ export class Random {
     return array[this.nextInt(array.length)];
   }
 
-  nextArrayItems(array, minCount, relativeMaxCount) {
+  nextArrayItems(array, minCount, maxCount, maxCountRelative) {
+    if (maxCountRelative) {
+      maxCount = array.length * maxCount;
+    }
+
+    const count = this.nextInt(minCount, maxCount);
+    const result = [];
+
+    for (let i = 0; i < count; i++) {
+      result.push(this.nextArrayItem(array));
+    }
+
+    return result;
+  }
+
+  nextArrayItemsUnique(array, minCount, maxCount, maxCountRelative) {
     arrayShuffle(array, () => this.next());
-    const count = this.nextInt(minCount, Math.round(array.length * relativeMaxCount));
+
+    if (maxCountRelative) {
+      maxCount = array.length * maxCount;
+    }
+
+    const count = this.nextInt(minCount, maxCount);
     return array.slice(0, count);
   }
 

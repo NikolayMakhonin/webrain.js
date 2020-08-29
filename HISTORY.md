@@ -1,3 +1,19 @@
+1.2.1-a / 2020-08-27
+===================
+
+  * Change Random.nextArrayItems() signature
+  * Added Random.nextArrayItemsUnique()
+
+1.2.0-a / 2020-08-27
+===================
+
+  * Change Random.nextArrayItems() signature
+
+1.1.7-a / 2020-08-27
+===================
+
+  * Added Random.nextSeed,  Random.nextRandom
+
 1.1.6-a / 2020-08-23
 ===================
 
