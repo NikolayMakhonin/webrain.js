@@ -13,7 +13,7 @@
 
 # Description
 
-**Status:** integration and debugging on real production project (90% completed)
+**Status:** (95% completed), documenting and split to separate modules
 
 This is the first and open-source framework for internal application logic. It is a new architecture that will allow you to implement application logic in a brain-like structure and solve many architectural problems and development difficulties.
 
