@@ -2,6 +2,7 @@ import {isThenable, IThenable} from '../../../../../../../main/common/async/asyn
 import {Func} from '../../../../../../../main/common/helpers/typescript'
 import {Random} from '../../../../../../../main/common/random/Random'
 import {
+	ALWAYS_CHANGE_VALUE,
 	getCallState,
 	getOrCreateCallState,
 	invalidateCallState,
@@ -158,9 +159,15 @@ function _getCallState<TThis, TArgs extends any[], TResult>(
 
 function calcSumArgs(this: number): number
 function calcSumArgs(this: number, ...args: number[]): number {
-	let sum = this
+	let sum = 0
+	if (this as any !== ALWAYS_CHANGE_VALUE) {
+		sum += this
+	}
 	for (let i = 0, len = arguments.length; i < len; i++) {
-		sum += arguments[i]
+		const arg = arguments[i]
+		if (arg !== ALWAYS_CHANGE_VALUE) {
+			sum += arg
+		}
 	}
 	return sum
 }
@@ -233,13 +240,18 @@ function calcCheckResult(call: TCall) {
 	const dependencies: TCall[] = state.data.dependencies
 	assert.ok(Array.isArray(dependencies))
 
-	let sum = sumArgs
-	for (let i = 0, len = dependencies.length; i < len; i++) {
-		const dependency = dependencies[i]
-		const dependencyState = dependency.getCallState()
-		assert.ok(dependencyState)
-		if (typeof dependencyState.value !== 'undefined') {
-			sum += dependencyState.value
+	let sum: number
+	if (state._this as any === ALWAYS_CHANGE_VALUE) {
+		sum = ALWAYS_CHANGE_VALUE as any
+	} else {
+		sum = sumArgs
+		for (let i = 0, len = dependencies.length; i < len; i++) {
+			const dependency = dependencies[i]
+			const dependencyState = dependency.getCallState()
+			assert.ok(dependencyState)
+			if (typeof dependencyState.value !== 'undefined' && dependencyState.value as any !== ALWAYS_CHANGE_VALUE) {
+				sum += dependencyState.value
+			}
 		}
 	}
 
@@ -254,7 +266,7 @@ function checkCallResult(call: TCall, result: number, isLazy: boolean) {
 	if (typeof result === 'undefined') {
 		assert.ok(isLazy)
 	} else {
-		assert.ok(Number.isFinite(result))
+		assert.ok(result as any === ALWAYS_CHANGE_VALUE || Number.isFinite(result))
 	}
 
 	const checkResult = calcCheckResult(call)
@@ -356,13 +368,17 @@ function runLazy(
 			dependencies.push(dependency)
 			checkDependencies(state)
 		}
-		if (typeof result !== 'undefined') {
+		if (typeof result !== 'undefined' && result !== ALWAYS_CHANGE_VALUE) {
 			sum += result
 		}
 	}
 
 	assert.ok(Number.isFinite(sum))
 	checkDependencies(state)
+
+	if (state._this as any === ALWAYS_CHANGE_VALUE) {
+		return ALWAYS_CHANGE_VALUE
+	}
 
 	return sum
 }
@@ -407,13 +423,17 @@ function *runAsIterator(
 			dependencies.push(dependency)
 			checkDependencies(state)
 		}
-		if (typeof result !== 'undefined') {
+		if (typeof result !== 'undefined' && result !== ALWAYS_CHANGE_VALUE) {
 			sum += result
 		}
 	}
 
 	assert.ok(Number.isFinite(sum))
 	checkDependencies(state)
+
+	if (state._this as any === ALWAYS_CHANGE_VALUE) {
+		return ALWAYS_CHANGE_VALUE
+	}
 
 	return sum
 }
@@ -612,10 +632,10 @@ function _stressTest({
 
 			checkDependenciesIsEmpty(state)
 
-			let sumArgs = _this
-			for (let i = 0, len = arguments.length; i < len; i++) {
-				sumArgs += arguments[i]
-			}
+			const sumArgs = calcSumArgs.apply(_this, arguments)
+			// for (let i = 0, len = arguments.length; i < len; i++) {
+			// 	sumArgs += arguments[i]
+			// }
 
 			assert.ok(state.data.call.level < maxLevelsCount)
 
@@ -729,7 +749,9 @@ function _stressTest({
 			? rnd.nextInt(3)
 			: 0
 
-		const _this = rnd.nextInt(1, 4)
+		const _this = rnd.nextBoolean(0.05)
+			? ALWAYS_CHANGE_VALUE
+			: rnd.nextInt(1, 4)
 
 		const args = []
 		for (let i = 0; i < countArgs; i++) {

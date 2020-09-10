@@ -7,7 +7,7 @@ import {stressTest} from '../src/stress-test'
 declare const beforeEach: any
 
 describe('common > main > rx > depend > stress', function() {
-	this.timeout(60 * 60 * 1000)
+	this.timeout(24 * 60 * 60 * 1000)
 
 	beforeEach(function() {
 		webrainOptions.callState.garbageCollect.disabled = false
@@ -19,7 +19,7 @@ describe('common > main > rx > depend > stress', function() {
 	it('all', async function() {
 		await stressTest({
 			// seed: 649781656,
-			testsCount: 10,
+			testsCount: 100000,
 			iterationsPerCall: 500,
 			maxLevelsCount: [1, 10],
 			maxFuncsCount: [1, 10],
