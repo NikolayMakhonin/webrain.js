@@ -5,9 +5,11 @@ export interface IBinder {
 }
 
 export interface ISource<TValue> {
-	getOneWayBinder(dest: IDest<TValue>|((value: TValue) => void)): IBinder
+	getOneWayBinder(dest: TDest<TValue>): IBinder
 }
 
+export type TDestFunc<TValue> = (value: TValue) => void
+export type TDest<TValue> = IDest<TValue>|TDestFunc<TValue>
 export interface IDest<TValue> {
 	set(value: TValue): void
 }
@@ -21,7 +23,7 @@ export interface ISourceBuilder<TObject, TValue> {
 }
 
 export interface IDestBuilder<TObject, TValue> {
-	get(object: TObject): IDest<TValue>
+	get(object: TObject): TDestFunc<TValue>
 }
 
 export interface ISourceDestBuilder<TObject, TValue> {
