@@ -1,6 +1,32 @@
 import path from 'path'
 import {Random} from '../../common/random/Random'
 import {ThenableOrIteratorOrValue} from "../../common/async/async";
+import {searchBestErrorBuilder, TSearchBestError} from "../../common/test/RandomTest";
+
+// region searchBestErrorBuilder
+
+export function searchBestErrorBuilderNode<TMetrics = any>({
+	compareMetrics,
+	onFound,
+	consoleOnlyBestErrors,
+}: {
+	compareMetrics: (metrics1, metrics2) => boolean,
+	onFound?: (reportMin: string) => void,
+	consoleOnlyBestErrors?: boolean,
+}): TSearchBestError<TMetrics> {
+	return searchBestErrorBuilder({
+		compareMetrics,
+		consoleOnlyBestErrors,
+		onFound(reportMin) {
+
+			if (onFound) {
+				onFound(reportMin)
+			}
+		},
+	})
+}
+
+// endregion
 
 // region searchBestError
 

@@ -85,9 +85,10 @@ function objectToString(o) {
 }
 
 let lastConsoleError = null
-function *throwOnConsoleError<TValue>(
+export function *throwOnConsoleError<TContext, TValue>(
+	_this: TContext,
 	throwPredicate: (this: TConsoleType, ...args: any[]) => boolean,
-	func: () => TValue,
+	func: (this: TContext) => TValue,
 ): ThenableIterator<AsyncValueOf<TValue>> {
 	lastConsoleError = null
 	const dispose = interceptConsole(function() {
@@ -101,7 +102,7 @@ function *throwOnConsoleError<TValue>(
 	})
 
 	try {
-		const result = yield func()
+		const result = yield func.call(_this)
 
 		if (lastConsoleError) {
 			throw lastConsoleError

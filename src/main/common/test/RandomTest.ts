@@ -1,13 +1,7 @@
-// export class RandomTest<TOptions, TMetrics> {
-// 	constructor(options) {
-//
-// 	}
-// }
-
-import {isAsync, ThenableIterator, ThenableOrIteratorOrValue} from '../async/async'
+import {isAsync, ThenableIterator, ThenableOrIteratorOrValue, ThenableOrValue} from '../async/async'
 import {resolveAsync, resolveAsyncAll} from '../async/ThenableSync'
 import {Random} from '../random/Random'
-import {interceptConsole} from "./interceptConsole";
+import {interceptConsole, TConsoleType, throwOnConsoleError} from './interceptConsole'
 
 export type TTestIteration<TState> = (rnd: Random, state: TState) => ThenableOrIteratorOrValue<any>
 
@@ -42,7 +36,6 @@ export function iterationBuilder<TState>({
 		+ (waitAsyncAll != null ? waitAsyncAll.weight : 0)
 		+ (waitAsyncRandom != null ? waitAsyncRandom.weight : 0)
 
-	const actionWeight = action.weight / sumWeights
 	const waitAsyncRandomWeight = waitAsyncRandom != null ? waitAsyncRandom.weight / sumWeights : 0
 	const waitAsyncAllWeight = waitAsyncAll != null ? waitAsyncAll.weight / sumWeights : 0
 
@@ -190,27 +183,60 @@ export async function *test<
 
 // endregion
 
+export type TTestRunnerStopPredicate = (
+	iterationNumber: number, timeElapsed: number,
+) => ThenableOrIteratorOrValue<boolean>
+
+// region testRunner
+
+function *testRunner<TContext>(_this: TContext, {
+	stopPredicate,
+	func,
+}: {
+	stopPredicate: TTestRunnerStopPredicate,
+	func: (this: TContext) => ThenableOrIteratorOrValue<any>,
+}) {
+	let iterationNumber = 0
+	const timeStart = Date.now()
+
+	while (true) {
+		const doStop = yield stopPredicate(iterationNumber, Date.now() - timeStart)
+		if (doStop) {
+			break
+		}
+
+		yield func.call(_this)
+
+		iterationNumber++
+	}
+}
+
+// endregion
+
+export interface ISearchBestErrorParams<TMetrics> {
+	customSeed?: number,
+	metricsMin?: TMetrics,
+	stopPredicate: (
+		iterationNumber: number, timeElapsed: number,
+	) => ThenableOrIteratorOrValue<boolean>
+}
+
 export type TSearchBestError<TMetrics> = ({
 	customSeed,
 	metricsMin,
-	testFunc,
-}: {
-	customSeed?: number,
-	metricsMin?: TMetrics,
-	testFunc: (seed: number, metrics: TMetrics, metricsMin: TMetrics) => void | Promise<void>,
+	stopPredicate,
+	func,
+}: ISearchBestErrorParams<TMetrics> & {
+	func: (seed: number, metrics: TMetrics, metricsMin: TMetrics) => void | Promise<void>,
 }) => ThenableOrIteratorOrValue<any>
 
 // region searchBestErrorBuilder
 
-function searchBestErrorBuilder<TMetrics = any>({
-	stopPredicate,
+export function searchBestErrorBuilder<TMetrics = any>({
 	compareMetrics,
 	onFound,
 	consoleOnlyBestErrors,
 }: {
-	stopPredicate: (
-		iterationNumber: number, timeElapsed: number,
-	) => ThenableOrIteratorOrValue<boolean>
 	compareMetrics: (metrics1, metrics2) => boolean,
 	onFound?: (reportMin: string) => void,
 	consoleOnlyBestErrors?: boolean,
@@ -218,11 +244,10 @@ function searchBestErrorBuilder<TMetrics = any>({
 	return function*({
 		customSeed,
 		metricsMin,
-		testFunc,
-	}: {
-		customSeed?: number,
-		metricsMin?: TMetrics,
-		testFunc: (seed: number, metrics: TMetrics, metricsMin: TMetrics) => void | Promise<void>,
+		stopPredicate,
+		func,
+	}: ISearchBestErrorParams<TMetrics> & {
+		func: (seed: number, metrics: TMetrics, metricsMin: TMetrics) => void | Promise<void>,
 	}) {
 		let interceptConsoleDisabled
 		const interceptConsoleDispose = customSeed == null
@@ -231,65 +256,61 @@ function searchBestErrorBuilder<TMetrics = any>({
 				return interceptConsoleDisabled
 			})
 
-		function interceptConsoleDisable(func: () => any) {
+		function interceptConsoleDisable(_func: () => any) {
 			interceptConsoleDisabled = true
 			try {
-				return func()
+				return _func()
 			} finally {
 				interceptConsoleDisabled = false
 			}
 		}
 
 		try {
-			let iterationNumber = 0
-			const timeStart = Date.now()
-
 			let seedMin = null
 			let errorMin = null
 			let reportMin = null
-			while (true) {
-				const doStop = yield stopPredicate(iterationNumber, Date.now() - timeStart)
-				if (doStop) {
-					break
-				}
 
-				const seed = customSeed != null ? customSeed : new Random().nextInt(2 << 29)
-				const metrics = {} as TMetrics
+			yield testRunner(this, {
+				stopPredicate,
+				*func() {
+					const seed = customSeed != null ? customSeed : new Random().nextInt(2 << 29)
+					const metrics = {} as TMetrics
 
-				try {
-					yield testFunc(seed, metrics, metricsMin || {} as any)
-				} catch (error) {
-					if (customSeed != null) {
-						interceptConsoleDisable(() => console.log(`customSeed: ${customSeed}`, metrics))
-						throw error
-					} else if (errorMin == null || compareMetrics(metrics, metricsMin)) {
-						metricsMin = {...metrics}
-						seedMin = seed
-						errorMin = error
-						reportMin = `\r\n\r\ncustomSeed: ${
-							seedMin
-						},\r\nmetricsMin: ${
-							JSON.stringify(metricsMin)
-						},\r\n${
-							errorMin.stack || errorMin
-						}`
-						interceptConsoleDisable(() => console.error(reportMin))
-						if (onFound) {
-							onFound(reportMin)
+					try {
+						yield func(seed, metrics, metricsMin || {} as any)
+					} catch (error) {
+						if (customSeed != null) {
+							interceptConsoleDisable(() => console.log(`customSeed: ${customSeed}`, metrics))
+							throw error
+						} else if (errorMin == null || compareMetrics(metrics, metricsMin)) {
+							metricsMin = {...metrics}
+							seedMin = seed
+							errorMin = error
+							reportMin = `\r\n\r\ncustomSeed: ${
+								seedMin
+							},\r\nmetricsMin: ${
+								JSON.stringify(metricsMin)
+							},\r\n${
+								errorMin.stack || errorMin
+							}`
+							interceptConsoleDisable(() => console.error(reportMin))
+							if (onFound) {
+								onFound(reportMin)
+							}
 						}
 					}
-				}
 
-				iterationNumber++
-				if (customSeed != null || iterationNumber >= iterations) {
-					if (errorMin) {
-						interceptConsoleDisable(() => console.error(reportMin))
-						throw errorMin
-					} else {
-						return
+					iterationNumber++
+					if (customSeed != null || iterationNumber >= iterations) {
+						if (errorMin) {
+							interceptConsoleDisable(() => console.error(reportMin))
+							throw errorMin
+						} else {
+							return
+						}
 					}
-				}
-			}
+				},
+			})
 		} finally {
 			if (interceptConsoleDispose) {
 				interceptConsoleDispose()
@@ -308,16 +329,20 @@ export interface ITestOptions<TMetrics> {
 	metricsMin: TMetrics
 }
 
+// region RandomTest
+
 export class RandomTest<
 	TMetrics,
 	TOptionsPattern extends IOptionsPatternBase & ITestOptions<TMetrics>,
 	TOptions extends ITestOptions<TMetrics>,
 > {
-	private _optionsPatternBuilder: TOptionsPatternBuilder<TMetrics, TOptionsPattern>
-	private _optionsPattern: TOptionsPattern
-	private _optionsGenerator: TOptionsGenerator<TOptionsPattern, TOptions>
-	private _testIterator: TTestIterator<TOptions>
-	private _searchBestError: TSearchBestError<TMetrics>
+	private readonly _optionsPatternBuilder: TOptionsPatternBuilder<TMetrics, TOptionsPattern>
+	private readonly _optionsPattern: TOptionsPattern
+	private readonly _optionsGenerator: TOptionsGenerator<TOptionsPattern, TOptions>
+	private readonly _testIterator: TTestIterator<TOptions>
+	private readonly _searchBestError: TSearchBestError<TMetrics>
+	private readonly _consoleThrowPredicate: (this: TConsoleType, ...args: any[]) => boolean
+	private readonly _initMetrics: (matrics: TMetrics) => ThenableOrIteratorOrValue<any>
 
 	constructor({
 		optionsPatternBuilder,
@@ -325,26 +350,58 @@ export class RandomTest<
 		optionsGenerator,
 		testIterator,
 		searchBestError,
+		consoleThrowPredicate,
+		initMetrics,
 	}: {
 		optionsPatternBuilder: TOptionsPatternBuilder<TMetrics, TOptionsPattern>,
 		optionsPattern: TOptionsPattern,
 		optionsGenerator: TOptionsGenerator<TOptionsPattern, TOptions>,
 		testIterator: TTestIterator<TOptions>,
 		searchBestError: TSearchBestError<TMetrics>,
+		consoleThrowPredicate: (this: TConsoleType, ...args: any[]) => boolean,
+		initMetrics: (matrics: TMetrics) => ThenableOrIteratorOrValue<any>,
 	}) {
 		this._optionsPatternBuilder = optionsPatternBuilder
 		this._optionsPattern = optionsPattern
 		this._optionsGenerator = optionsGenerator
 		this._testIterator = testIterator
 		this._searchBestError = searchBestError
+		this._consoleThrowPredicate = consoleThrowPredicate
+		this._initMetrics = initMetrics
 	}
 
 	public run({
+		stopPredicate,
 		searchBestError,
-	}: {
+		customSeed,
+		metricsMin,
+	}: ISearchBestErrorParams<TMetrics> & {
 		searchBestError?: boolean,
-	} = {}) {
+	}): ThenableOrValue<any> {
+		function *func(this: this, seed: number|null, metrics, _metricsMin) {
+			yield this._initMetrics(metrics)
+			const optionsPattern = this._optionsPatternBuilder(metrics, _metricsMin)
+			return test(optionsPattern, this._optionsGenerator, this._testIterator)
+		}
 
+		return resolveAsync(throwOnConsoleError(this, this._consoleThrowPredicate, function(this: this) {
+			if (searchBestError) {
+				return this._searchBestError({
+					customSeed,
+					metricsMin,
+					stopPredicate,
+					func,
+				})
+			} else {
+				return testRunner(this, {
+					stopPredicate,
+					func() {
+						return func.call(this, customSeed, {}, metricsMin)
+					},
+				})
+			}
+		}))
 	}
 }
 
+// endregion
