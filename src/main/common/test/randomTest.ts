@@ -14,7 +14,7 @@ interface IBeforeAfter<TState> {
 	after?: TTestAction<TState>
 }
 
-interface IIterationAction<TState> extends IBeforeAfter<TState> {
+interface ITestIterationAction<TState> extends IBeforeAfter<TState> {
 	/** Probability weight */
 	weight: number
 }
@@ -26,11 +26,11 @@ export function testIterationBuilder<TState>({
 	waitAsyncAll,
 	after,
 }: IBeforeAfter<TState> & {
-	action: IIterationAction<TState> & {
+	action: ITestIterationAction<TState> & {
 		func: TTestAction<TState>,
 	},
-	waitAsyncRandom?: IIterationAction<TState>,
-	waitAsyncAll?: IIterationAction<TState>,
+	waitAsyncRandom?: ITestIterationAction<TState>,
+	waitAsyncAll?: ITestIterationAction<TState>,
 }): TTestIteration<TState> {
 	const sumWeights = action.weight
 		+ (waitAsyncAll != null ? waitAsyncAll.weight : 0)
@@ -328,7 +328,7 @@ export function searchBestErrorBuilder<TMetrics>({
 export type TTestOptionsPatternBuilder<TMetrics, TOptionsPattern>
 	= (metrics: TMetrics, metricsMin: TMetrics) => ThenableOrIteratorOrValue<TOptionsPattern>
 
-export interface ITestOptions<TMetrics> {
+export interface ITestOptionsBase<TMetrics> {
 	metrics: TMetrics
 	metricsMin: TMetrics
 }
@@ -346,8 +346,8 @@ export type TRandomTest<TMetrics> = ({
 
 export function randomTestBuilder<
 	TMetrics,
-	TOptionsPattern extends ITestOptions<TMetrics>,
-	TOptions extends ITestOptions<TMetrics>,
+	TOptionsPattern extends ITestOptionsBase<TMetrics>,
+	TOptions extends ITestOptionsBase<TMetrics>,
 >(
 	createMetrics: () => ThenableOrIteratorOrValue<TMetrics>,
 	optionsPatternBuilder: TTestOptionsPatternBuilder<TMetrics, TOptionsPattern>,
