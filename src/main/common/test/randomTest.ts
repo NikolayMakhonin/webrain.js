@@ -153,26 +153,23 @@ export function testIteratorBuilder<
 
 // endregion
 
-export interface ITestOptionsPatternBase {
-	seed?: number
-}
-
 export type TTestOptionsGenerator<TOptionsPattern, TOptions>
 	= (rnd: Random, pattern: TOptionsPattern) => ThenableOrIteratorOrValue<TOptions>
 
 // region test
 
 export function *test<
-	TOptionsPattern extends ITestOptionsPatternBase,
+	TOptionsPattern,
 	TOptions,
 >(
+	seed: number|null,
 	optionsPattern: TOptionsPattern,
 	optionsGenerator: TTestOptionsGenerator<TOptionsPattern, TOptions>,
 	testIterator: TTestIterator<TOptions>,
 ): ThenableIterator<any> {
-	const seed = optionsPattern.seed != null
-		? optionsPattern.seed
-		: new Random().nextSeed()
+	if (seed == null) {
+		seed = new Random().nextSeed()
+	}
 
 	console.log(`\r\nseed = ${seed}`)
 	const rnd = new Random(seed)
@@ -349,7 +346,7 @@ export type TRandomTest<TMetrics> = ({
 
 export function randomTestBuilder<
 	TMetrics,
-	TOptionsPattern extends ITestOptionsPatternBase & ITestOptions<TMetrics>,
+	TOptionsPattern extends ITestOptions<TMetrics>,
 	TOptions extends ITestOptions<TMetrics>,
 >(
 	createMetrics: () => ThenableOrIteratorOrValue<TMetrics>,
@@ -378,7 +375,7 @@ export function randomTestBuilder<
 		const _this = this
 		function *func(this: typeof _this, seed: number|null, metrics, _metricsMin) {
 			const optionsPattern = yield optionsPatternBuilder(metrics, _metricsMin)
-			return test(optionsPattern, optionsGenerator, testIterator)
+			return test(seed, optionsPattern, optionsGenerator, testIterator)
 		}
 
 		return resolveAsync(throwOnConsoleError(

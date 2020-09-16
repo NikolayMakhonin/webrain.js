@@ -4,10 +4,10 @@ import {webrainOptions} from '../../../../../../../main/common/helpers/webrainOp
 import {Random} from '../../../../../../../main/common/random/Random'
 import {describe, it, xdescribe, xit} from '../../../../../../../main/common/test/Mocha'
 import {
-	testIterationBuilder,
-	testIteratorBuilder,
 	randomTestBuilder,
 	searchBestErrorBuilder,
+	testIterationBuilder,
+	testIteratorBuilder,
 } from '../../../../../../../main/common/test/randomTest'
 
 declare const beforeEach: any
