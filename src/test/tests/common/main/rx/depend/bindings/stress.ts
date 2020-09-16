@@ -8,7 +8,7 @@ import {
 	iteratorBuilder,
 	RandomTest, randomTestBuilder,
 	searchBestErrorBuilder,
-} from '../../../../../../../main/common/test/RandomTest'
+} from '../../../../../../../main/common/test/randomTest'
 
 declare const beforeEach: any
 

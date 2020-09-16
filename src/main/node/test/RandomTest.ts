@@ -1,6 +1,6 @@
 import path from 'path'
 import {ThenableOrIteratorOrValue} from '../../common/async/async'
-import {ISearchBestErrorParams, searchBestErrorBuilder, TSearchBestError} from '../../common/test/RandomTest'
+import {ISearchBestErrorParams, searchBestErrorBuilder, TSearchBestError} from '../../common/test/randomTest'
 // tslint:disable-next-line:no-var-requires
 const fse = require('fs-extra')
 
