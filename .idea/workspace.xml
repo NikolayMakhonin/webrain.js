@@ -30,10 +30,12 @@
     <select />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="69b2ee16-521b-4efd-b473-8e19e3df4d09" name="Default Changelist" comment="Develop rendom test helpers">
-      <change beforePath="$PROJECT_DIR$/.idea/dictionaries/Mika.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/dictionaries/Mika.xml" afterDir="false" />
+    <list default="true" id="69b2ee16-521b-4efd-b473-8e19e3df4d09" name="Default Changelist" comment="">
+      <change afterPath="$PROJECT_DIR$/src/main/common/test/interceptConsole.ts" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/node/test/stress-test-helpers.ts" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/common/test/RandomTest.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/common/test/RandomTest.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/common/test/stress-test-helpers.ts" beforeDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -105,12 +107,12 @@
     <property name="ts.external.directory.path" value="L:\Work\_GIT\GitHub\NodeJs\modules\webrain\node_modules\typescript\lib" />
   </component>
   <component name="RecentsManager">
-    <key name="MoveFile.RECENT_KEYS">
-      <recent name="L:\Work\_GIT\GitHub\NodeJs\modules\webrain\src\test\tests\common\src" />
-      <recent name="L:\Work\_GIT\GitHub\NodeJs\modules\webrain\docs\depend" />
-      <recent name="L:\Work\_GIT\GitHub\NodeJs\modules\webrain\src\main\common\rx\depend" />
-      <recent name="L:\Work\_GIT\GitHub\NodeJs\modules\webrain\src\main\common\rx\object\properties\path" />
-      <recent name="L:\Work\_GIT\GitHub\NodeJs\modules\webrain\src\test\tests\common\main\rx\object\properties\path" />
+    <key name="CopyFile.RECENT_KEYS">
+      <recent name="L:\Work\_GIT\GitHub\NodeJs\modules\webrain\src\test\tests\common\main\rx\depend\bindings" />
+      <recent name="L:\Work\_GIT\GitHub\NodeJs\modules\webrain\src\main\common\rx\depend\core" />
+      <recent name="L:\Work\_GIT\GitHub\NodeJs\modules\webrain\src\test\performance\node" />
+      <recent name="L:\Work\_GIT\GitHub\NodeJs\modules\webrain\tmp\coverage\merge" />
+      <recent name="L:\Work\_GIT\GitHub\NodeJs\modules\webrain\src\main\common\rx\object" />
     </key>
     <key name="es6.move.members.recent.items">
       <recent name="L:\Work\_GIT\GitHub\NodeJs\modules\webrain\src\main\common\rx\depend\core\contracts.ts" />
@@ -119,12 +121,12 @@
       <recent name="L:\Work\_GIT\GitHub\NodeJs\modules\webrain\src\main\common\rx\depend\core\helpers.ts" />
       <recent name="L:\Work\_GIT\GitHub\NodeJs\modules\webrain\src\test\tests\common\main\rx\depend\src\perceptron.ts" />
     </key>
-    <key name="CopyFile.RECENT_KEYS">
-      <recent name="L:\Work\_GIT\GitHub\NodeJs\modules\webrain\src\test\tests\common\main\rx\depend\bindings" />
-      <recent name="L:\Work\_GIT\GitHub\NodeJs\modules\webrain\src\main\common\rx\depend\core" />
-      <recent name="L:\Work\_GIT\GitHub\NodeJs\modules\webrain\src\test\performance\node" />
-      <recent name="L:\Work\_GIT\GitHub\NodeJs\modules\webrain\tmp\coverage\merge" />
-      <recent name="L:\Work\_GIT\GitHub\NodeJs\modules\webrain\src\main\common\rx\object" />
+    <key name="MoveFile.RECENT_KEYS">
+      <recent name="L:\Work\_GIT\GitHub\NodeJs\modules\webrain\src\main\node\test" />
+      <recent name="L:\Work\_GIT\GitHub\NodeJs\modules\webrain\src\test\tests\common\src" />
+      <recent name="L:\Work\_GIT\GitHub\NodeJs\modules\webrain\docs\depend" />
+      <recent name="L:\Work\_GIT\GitHub\NodeJs\modules\webrain\src\main\common\rx\depend" />
+      <recent name="L:\Work\_GIT\GitHub\NodeJs\modules\webrain\src\main\common\rx\object\properties\path" />
     </key>
   </component>
   <component name="RunManager" selected="Mocha.common &gt; main &gt; rx &gt; depend &gt; bindings &gt; Binder">
@@ -545,14 +547,7 @@
       <workItem from="1600070906075" duration="618000" />
       <workItem from="1600103066500" duration="1166000" />
       <workItem from="1600140928280" duration="11000" />
-      <workItem from="1600148726171" duration="4981000" />
-    </task>
-    <task id="LOCAL-00503" summary="Fix Mocha">
-      <created>1590162596455</created>
-      <option name="number" value="00503" />
-      <option name="presentableId" value="LOCAL-00503" />
-      <option name="project" value="LOCAL" />
-      <updated>1590162596455</updated>
+      <workItem from="1600148726171" duration="13054000" />
     </task>
     <task id="LOCAL-00504" summary="Auto stop timers">
       <created>1590209894542</created>
@@ -890,7 +885,14 @@
       <option name="project" value="LOCAL" />
       <updated>1599988548470</updated>
     </task>
-    <option name="localTasksCounter" value="552" />
+    <task id="LOCAL-00552" summary="Develop random test helpers">
+      <created>1600166582302</created>
+      <option name="number" value="00552" />
+      <option name="presentableId" value="LOCAL-00552" />
+      <option name="project" value="LOCAL" />
+      <updated>1600166582303</updated>
+    </task>
+    <option name="localTasksCounter" value="553" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -951,7 +953,6 @@
   <component name="VcsManagerConfiguration">
     <option name="CHECK_CODE_SMELLS_BEFORE_PROJECT_COMMIT" value="false" />
     <option name="CHECK_NEW_TODO" value="false" />
-    <MESSAGE value="Fix travis tests" />
     <MESSAGE value="precommit is OK. travis is OK." />
     <MESSAGE value="Rename external interface refactoring." />
     <MESSAGE value="precommit is OK" />
@@ -976,7 +977,8 @@
     <MESSAGE value="Improved depend stress test" />
     <MESSAGE value="Develop two way binding" />
     <MESSAGE value="Develop rendom test helpers" />
-    <option name="LAST_COMMIT_MESSAGE" value="Develop rendom test helpers" />
+    <MESSAGE value="Develop random test helpers" />
+    <option name="LAST_COMMIT_MESSAGE" value="Develop random test helpers" />
   </component>
   <component name="WindowStateProjectService">
     <state x="612" y="18" key="#TypeScript" timestamp="1599721259508">
@@ -987,10 +989,10 @@
       <screen x="0" y="0" width="1920" height="882" />
     </state>
     <state x="38" y="39" width="1718" height="786" key="#com.intellij.execution.impl.EditConfigurationsDialog/0.0.1920.882@0.0.1920.882" timestamp="1595574841345" />
-    <state x="-2" y="0" width="1918" height="882" key="CommitChangelistDialog2" timestamp="1600140931082">
+    <state x="-2" y="0" width="1918" height="882" key="CommitChangelistDialog2" timestamp="1600166581360">
       <screen x="0" y="0" width="1920" height="882" />
     </state>
-    <state x="-2" y="0" width="1918" height="882" key="CommitChangelistDialog2/0.0.1920.882@0.0.1920.882" timestamp="1600140931082" />
+    <state x="-2" y="0" width="1918" height="882" key="CommitChangelistDialog2/0.0.1920.882@0.0.1920.882" timestamp="1600166581360" />
     <state x="0" y="4" width="1920" height="875" key="DiffContextDialog" timestamp="1598195455772">
       <screen x="0" y="0" width="1920" height="882" />
     </state>
