@@ -5,13 +5,13 @@ import {interceptConsole, TConsoleType, throwOnConsoleError} from './interceptCo
 
 export type TTestIteration<TState> = (rnd: Random, state: TState) => ThenableOrIteratorOrValue<any>
 
-// region iterationBuilder
+// region testIterationBuilder
 
-export type TAction<TState> = (rnd: Random, state: TState) => ThenableOrIteratorOrValue<any>
+export type TTestAction<TState> = (rnd: Random, state: TState) => ThenableOrIteratorOrValue<any>
 
 interface IBeforeAfter<TState> {
-	before?: TAction<TState>
-	after?: TAction<TState>
+	before?: TTestAction<TState>
+	after?: TTestAction<TState>
 }
 
 interface IIterationAction<TState> extends IBeforeAfter<TState> {
@@ -19,7 +19,7 @@ interface IIterationAction<TState> extends IBeforeAfter<TState> {
 	weight: number
 }
 
-export function iterationBuilder<TState>({
+export function testIterationBuilder<TState>({
 	before,
 	action,
 	waitAsyncRandom,
@@ -27,7 +27,7 @@ export function iterationBuilder<TState>({
 	after,
 }: IBeforeAfter<TState> & {
 	action: IIterationAction<TState> & {
-		func: TAction<TState>,
+		func: TTestAction<TState>,
 	},
 	waitAsyncRandom?: IIterationAction<TState>,
 	waitAsyncAll?: IIterationAction<TState>,
@@ -104,9 +104,9 @@ export function iterationBuilder<TState>({
 
 export type TTestIterator<TOptions> = (rnd: Random, options: TOptions) => ThenableOrIteratorOrValue<any>
 
-// region iteratorBuilder
+// region testIteratorBuilder
 
-export function iteratorBuilder<
+export function testIteratorBuilder<
 	TOptions,
 	TState
 >(
@@ -153,21 +153,21 @@ export function iteratorBuilder<
 
 // endregion
 
-export interface IOptionsPatternBase {
+export interface ITestOptionsPatternBase {
 	seed?: number
 }
 
-export type TOptionsGenerator<TOptionsPattern, TOptions>
+export type TTestOptionsGenerator<TOptionsPattern, TOptions>
 	= (rnd: Random, pattern: TOptionsPattern) => ThenableOrIteratorOrValue<TOptions>
 
 // region test
 
 export function *test<
-	TOptionsPattern extends IOptionsPatternBase,
+	TOptionsPattern extends ITestOptionsPatternBase,
 	TOptions,
 >(
 	optionsPattern: TOptionsPattern,
-	optionsGenerator: TOptionsGenerator<TOptionsPattern, TOptions>,
+	optionsGenerator: TTestOptionsGenerator<TOptionsPattern, TOptions>,
 	testIterator: TTestIterator<TOptions>,
 ): ThenableIterator<any> {
 	const seed = optionsPattern.seed != null
@@ -328,7 +328,7 @@ export function searchBestErrorBuilder<TMetrics>({
 
 // endregion
 
-export type TOptionsPatternBuilder<TMetrics, TOptionsPattern>
+export type TTestOptionsPatternBuilder<TMetrics, TOptionsPattern>
 	= (metrics: TMetrics, metricsMin: TMetrics) => ThenableOrIteratorOrValue<TOptionsPattern>
 
 export interface ITestOptions<TMetrics> {
@@ -336,16 +336,25 @@ export interface ITestOptions<TMetrics> {
 	metricsMin: TMetrics
 }
 
+export type TRandomTest<TMetrics> = ({
+	stopPredicate,
+	searchBestError,
+	customSeed,
+	metricsMin,
+}: ISearchBestErrorParams<TMetrics> & {
+	searchBestError?: boolean,
+}) => ThenableOrValue<any>
+
 // region randomTestBuilder
 
 export function randomTestBuilder<
 	TMetrics,
-	TOptionsPattern extends IOptionsPatternBase & ITestOptions<TMetrics>,
+	TOptionsPattern extends ITestOptionsPatternBase & ITestOptions<TMetrics>,
 	TOptions extends ITestOptions<TMetrics>,
 >(
 	createMetrics: () => ThenableOrIteratorOrValue<TMetrics>,
-	optionsPatternBuilder: TOptionsPatternBuilder<TMetrics, TOptionsPattern>,
-	optionsGenerator: TOptionsGenerator<TOptionsPattern, TOptions>,
+	optionsPatternBuilder: TTestOptionsPatternBuilder<TMetrics, TOptionsPattern>,
+	optionsGenerator: TTestOptionsGenerator<TOptionsPattern, TOptions>,
 	{
 		compareMetrics,
 		consoleThrowPredicate,
@@ -357,7 +366,7 @@ export function randomTestBuilder<
 		searchBestError?: TSearchBestError<TMetrics>,
 		testIterator: TTestIterator<TOptions>,
 	},
-) {
+): TRandomTest<TMetrics> {
 	return function randomTest({
 		stopPredicate,
 		searchBestError,

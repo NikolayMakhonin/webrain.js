@@ -4,8 +4,8 @@ import {webrainOptions} from '../../../../../../../main/common/helpers/webrainOp
 import {Random} from '../../../../../../../main/common/random/Random'
 import {describe, it, xdescribe, xit} from '../../../../../../../main/common/test/Mocha'
 import {
-	iterationBuilder,
-	iteratorBuilder,
+	testIterationBuilder,
+	testIteratorBuilder,
 	randomTestBuilder,
 	searchBestErrorBuilder,
 } from '../../../../../../../main/common/test/randomTest'
@@ -84,13 +84,13 @@ describe('common > main > rx > depend > bindings > stress', function() {
 			searchBestError: searchBestErrorBuilder({
 				consoleOnlyBestErrors: true,
 			}),
-			testIterator: iteratorBuilder(
+			testIterator: testIteratorBuilder(
 				createState,
 				{
 					stopPredicate(iterationNumber, timeStart, state) {
 						return iterationNumber >= 100
 					},
-					iteration: iterationBuilder({
+					iteration: testIterationBuilder({
 						action: {
 							weight: 1,
 							func: action,
