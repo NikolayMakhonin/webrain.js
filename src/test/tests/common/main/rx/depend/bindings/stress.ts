@@ -3,8 +3,12 @@ import {AsyncValueOf} from '../../../../../../../main/common/async/async'
 import {webrainOptions} from '../../../../../../../main/common/helpers/webrainOptions'
 import {Random} from '../../../../../../../main/common/random/Random'
 import {describe, it, xdescribe, xit} from '../../../../../../../main/common/test/Mocha'
-import {iterationBuilder, iteratorBuilder, RandomTest} from '../../../../../../../main/common/test/RandomTest'
-import {searchBestErrorBuilderNode} from '../../../../../../../main/node/test/RandomTest'
+import {
+	iterationBuilder,
+	iteratorBuilder,
+	RandomTest,
+	searchBestErrorBuilder,
+} from '../../../../../../../main/common/test/RandomTest'
 
 declare const beforeEach: any
 
@@ -73,8 +77,11 @@ describe('common > main > rx > depend > bindings > stress', function() {
 			consoleThrowPredicate() {
 				return this === 'error' || this === 'warn'
 			},
-			searchBestError: searchBestErrorBuilderNode({
-				reportFilePath: './tmp/test-cases/depend/bindings/base.txt',
+			// searchBestError: searchBestErrorBuilderNode({
+			// 	reportFilePath: './tmp/test-cases/depend/bindings/base.txt',
+			// 	consoleOnlyBestErrors: true,
+			// }),
+			searchBestError: searchBestErrorBuilder({
 				consoleOnlyBestErrors: true,
 			}),
 			testIterator: iteratorBuilder(
