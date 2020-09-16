@@ -251,7 +251,7 @@ export function searchBestErrorBuilder<TMetrics>({
 			compareMetrics,
 			func,
 		}: ISearchBestErrorParams<TMetrics> & {
-			createMetrics: () => ThenableOrIteratorOrValue<TMetrics>,
+			createMetrics: (successCount: number) => ThenableOrIteratorOrValue<TMetrics>,
 			compareMetrics: (metrics1, metrics2) => boolean,
 			func: (seed: number, metrics: TMetrics, metricsMin: TMetrics) => void | Promise<void>,
 		},
@@ -349,7 +349,7 @@ export function randomTestBuilder<
 	TOptionsPattern extends ITestOptionsBase<TMetrics>,
 	TOptions extends ITestOptionsBase<TMetrics>,
 >(
-	createMetrics: () => ThenableOrIteratorOrValue<TMetrics>,
+	createMetrics: (successCount: number) => ThenableOrIteratorOrValue<TMetrics>,
 	optionsPatternBuilder: TTestOptionsPatternBuilder<TMetrics, TOptionsPattern>,
 	optionsGenerator: TTestOptionsGenerator<TOptionsPattern, TOptions>,
 	{

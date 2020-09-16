@@ -22,7 +22,7 @@ describe('common > main > rx > depend > bindings > stress', function() {
 		webrainOptions.callState.garbageCollect.minLifeTime = 500
 	})
 
-	function createMetrics() {
+	function createMetrics(successCount: number) {
 		return {
 			count: 0,
 		}
