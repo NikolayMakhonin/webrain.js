@@ -1,12 +1,12 @@
 /* tslint:disable:no-identical-functions no-shadowed-variable */
 import {webrainOptions} from '../../../../../../../main/common/helpers/webrainOptions'
-import {assert} from '../../../../../../../main/common/test/Assert'
 import {describe, it, xdescribe, xit} from '../../../../../../../main/common/test/Mocha'
-import {stressTest} from '../src/stress-test'
+import {iterationBuilder, iteratorBuilder, RandomTest} from '../../../../../../../main/common/test/RandomTest'
+import {searchBestErrorBuilderNode} from "../../../../../../../main/node/test/RandomTest";
 
 declare const beforeEach: any
 
-describe('common > main > rx > bindings > stress', function() {
+describe('common > main > rx > depend > bindings > stress', function() {
 	this.timeout(24 * 60 * 60 * 1000)
 
 	beforeEach(function() {
@@ -16,18 +16,75 @@ describe('common > main > rx > bindings > stress', function() {
 		webrainOptions.callState.garbageCollect.minLifeTime = 500
 	})
 
-	it('all', async function() {
-		await stressTest({
-			// seed: 649781656,
-			testsCount: 100000,
-			iterationsPerCall: 500,
-			maxLevelsCount: [1, 10],
-			maxFuncsCount: [1, 10],
-			maxCallsCount: [1, 100],
-			countRootCalls: [1, 5],
-			disableAsync: null,
-			disableDeferred: null,
-			disableLazy: null,
+	const randomTest = new RandomTest(
+		// createMetrics
+		() => {
+			return {
+				count: 0,
+			}
+		},
+		// optionsPatternBuilder
+		(metrics, metricsMin) => {
+			return {
+				metrics,
+				metricsMin,
+			}
+		},
+		// optionsGenerator
+		(rnd, {
+			metrics,
+			metricsMin,
+		}) => {
+			return {
+				metrics,
+				metricsMin,
+			}
+		},
+		{
+			compareMetrics(metrics, metricsMin) {
+				if (metrics.count !== metricsMin.count) {
+					return metrics.count < metricsMin.count
+				}
+				return true
+			},
+			consoleThrowPredicate() {
+				return this === 'error' || this === 'warn'
+			},
+			searchBestError: searchBestErrorBuilderNode({
+				reportFilePath: './tmp/test-cases/depend/bindings/base.txt',
+				consoleOnlyBestErrors: true,
+			}),
+			testIterator: iteratorBuilder(
+				(rnd, options) => {
+					return {
+						options,
+					}
+				},
+				{
+					stopPredicate(iterationNumber, timeStart, state) {
+						return iterationNumber >= 100
+					},
+					iteration: iterationBuilder({
+						action: {
+							weight: 1,
+							func(rnd, state) {
+								// TODO
+							},
+						},
+					}),
+				},
+			),
+		},
+	)
+
+	it('base', async function() {
+		await randomTest.run({
+			stopPredicate: (iterationNumber, timeElapsed) => {
+				return timeElapsed >= 5000
+			},
+			customSeed: null,
+			metricsMin: null,
+			searchBestError: true,
 		})
 	})
 })
