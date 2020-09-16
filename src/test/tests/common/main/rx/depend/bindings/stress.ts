@@ -6,7 +6,7 @@ import {describe, it, xdescribe, xit} from '../../../../../../../main/common/tes
 import {
 	iterationBuilder,
 	iteratorBuilder,
-	RandomTest,
+	RandomTest, randomTestBuilder,
 	searchBestErrorBuilder,
 } from '../../../../../../../main/common/test/RandomTest'
 
@@ -66,9 +66,9 @@ describe('common > main > rx > depend > bindings > stress', function() {
 		// TODO
 	}
 
-	// region new RandomTest
+	// region randomTest
 
-	const randomTest = new RandomTest(
+	const randomTest = randomTestBuilder(
 		createMetrics,
 		optionsPatternBuilder,
 		optionsGenerator,
@@ -104,7 +104,7 @@ describe('common > main > rx > depend > bindings > stress', function() {
 	// endregion
 
 	it('base', async function() {
-		await randomTest.run({
+		await randomTest({
 			stopPredicate: (iterationNumber, timeElapsed) => {
 				return iterationNumber >= 50
 			},

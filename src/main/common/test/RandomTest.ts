@@ -336,49 +336,29 @@ export interface ITestOptions<TMetrics> {
 	metricsMin: TMetrics
 }
 
-// region RandomTest
+// region randomTestBuilder
 
-export class RandomTest<
+export function randomTestBuilder<
 	TMetrics,
 	TOptionsPattern extends IOptionsPatternBase & ITestOptions<TMetrics>,
 	TOptions extends ITestOptions<TMetrics>,
-> {
-	private readonly _optionsPatternBuilder: TOptionsPatternBuilder<TMetrics, TOptionsPattern>
-	private readonly _optionsGenerator: TOptionsGenerator<TOptionsPattern, TOptions>
-	private readonly _testIterator: TTestIterator<TOptions>
-	private readonly _searchBestError: TSearchBestError<TMetrics>
-	private readonly _consoleThrowPredicate: (this: TConsoleType, ...args: any[]) => boolean
-	private readonly _createMetrics: () => ThenableOrIteratorOrValue<TMetrics>
-	private readonly _compareMetrics: (metrics1, metrics2) => boolean
-
-	constructor(
-		createMetrics: () => ThenableOrIteratorOrValue<TMetrics>,
-		optionsPatternBuilder: TOptionsPatternBuilder<TMetrics, TOptionsPattern>,
-		optionsGenerator: TOptionsGenerator<TOptionsPattern, TOptions>,
-		{
-			compareMetrics,
-			consoleThrowPredicate,
-			searchBestError,
-			testIterator,
-		}: {
-			compareMetrics?: (metrics: TMetrics, metricsMin: TMetrics) => boolean,
-			consoleThrowPredicate?: (this: TConsoleType, ...args: any[]) => boolean,
-			searchBestError?: TSearchBestError<TMetrics>,
-			testIterator: TTestIterator<TOptions>,
-		},
-	) {
-		this._createMetrics = createMetrics
-		this._optionsPatternBuilder = optionsPatternBuilder
-		this._optionsGenerator = optionsGenerator
-
-		this._compareMetrics = compareMetrics
-		this._consoleThrowPredicate = consoleThrowPredicate
-		this._searchBestError = searchBestError
-
-		this._testIterator = testIterator
-	}
-
-	public run({
+>(
+	createMetrics: () => ThenableOrIteratorOrValue<TMetrics>,
+	optionsPatternBuilder: TOptionsPatternBuilder<TMetrics, TOptionsPattern>,
+	optionsGenerator: TOptionsGenerator<TOptionsPattern, TOptions>,
+	{
+		compareMetrics,
+		consoleThrowPredicate,
+		searchBestError: _searchBestError,
+		testIterator,
+	}: {
+		compareMetrics?: (metrics: TMetrics, metricsMin: TMetrics) => boolean,
+		consoleThrowPredicate?: (this: TConsoleType, ...args: any[]) => boolean,
+		searchBestError?: TSearchBestError<TMetrics>,
+		testIterator: TTestIterator<TOptions>,
+	},
+) {
+	return function randomTest({
 		stopPredicate,
 		searchBestError,
 		customSeed,
@@ -388,33 +368,37 @@ export class RandomTest<
 	}): ThenableOrValue<any> {
 		const _this = this
 		function *func(this: typeof _this, seed: number|null, metrics, _metricsMin) {
-			const optionsPattern = yield this._optionsPatternBuilder(metrics, _metricsMin)
-			return test(optionsPattern, this._optionsGenerator, this._testIterator)
+			const optionsPattern = yield optionsPatternBuilder(metrics, _metricsMin)
+			return test(optionsPattern, optionsGenerator, testIterator)
 		}
 
-		return resolveAsync(throwOnConsoleError(_this, this._consoleThrowPredicate, function(this: typeof _this) {
-			if (searchBestError) {
-				return this._searchBestError(
-					this,
-					{
-						customSeed,
-						metricsMin,
+		return resolveAsync(throwOnConsoleError(
+			_this,
+			consoleThrowPredicate,
+			function(this: typeof _this) {
+				if (searchBestError) {
+					return _searchBestError(
+						this,
+						{
+							customSeed,
+							metricsMin,
+							stopPredicate,
+							createMetrics,
+							compareMetrics,
+							func,
+						},
+					)
+				} else {
+					const metrics = createMetrics()
+					return testRunner(this, {
 						stopPredicate,
-						createMetrics: this._createMetrics,
-						compareMetrics: this._compareMetrics,
-						func,
-					},
-				)
-			} else {
-				const metrics = this._createMetrics()
-				return testRunner(this, {
-					stopPredicate,
-					func() {
-						return func.call(this, customSeed, metrics, metricsMin)
-					},
-				})
-			}
-		}))
+						func() {
+							return func.call(this, customSeed, metrics, metricsMin)
+						},
+					})
+				}
+			},
+		))
 	}
 }
 
