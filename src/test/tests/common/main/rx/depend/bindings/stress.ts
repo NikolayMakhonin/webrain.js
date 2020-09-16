@@ -6,7 +6,7 @@ import {describe, it, xdescribe, xit} from '../../../../../../../main/common/tes
 import {
 	iterationBuilder,
 	iteratorBuilder,
-	RandomTest, randomTestBuilder,
+	randomTestBuilder,
 	searchBestErrorBuilder,
 } from '../../../../../../../main/common/test/randomTest'
 
