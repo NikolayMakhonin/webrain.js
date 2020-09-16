@@ -137,7 +137,7 @@
     "tslint-eslint-rules": "^5.4.0",
     "tslint-no-circular-imports": "^0.7.0",
     "tslint-sonarts": "^1.9.0",
-    "typescript": "^3.9.3"
+    "typescript": "^3.9.7"
   },
   "peerDependencies": {
     "@babel/runtime-corejs3": "^7.5.5",

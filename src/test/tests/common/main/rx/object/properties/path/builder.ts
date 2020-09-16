@@ -1,6 +1,6 @@
 /* tslint:disable:no-duplicate-string new-parens */
 import {ThenableIterator} from '../../../../../../../../main/common/async/async'
-import {resolveAsync, ThenableSync} from '../../../../../../../../main/common/async/ThenableSync'
+import {resolveAsync} from '../../../../../../../../main/common/async/ThenableSync'
 import {VALUE_PROPERTY_DEFAULT} from '../../../../../../../../main/common/helpers/value-property'
 import {getOrCreateCallState, invalidateCallState} from '../../../../../../../../main/common/rx/depend/core/CallState'
 import {getCurrentState} from '../../../../../../../../main/common/rx/depend/core/current-state'

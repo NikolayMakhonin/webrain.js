@@ -2,9 +2,6 @@
 import {
 	AsyncPropertyValueOf,
 	IPathNode,
-	TGetPropertyPathGet,
-	TGetPropertyPathGetSet,
-	TGetPropertyPathSet,
 	TGetPropertyValue,
 	TGetPropertyValueResult3,
 	TGetValue1,

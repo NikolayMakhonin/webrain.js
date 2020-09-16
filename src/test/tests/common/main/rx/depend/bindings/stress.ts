@@ -1,8 +1,10 @@
 /* tslint:disable:no-identical-functions no-shadowed-variable */
+import {AsyncValueOf} from '../../../../../../../main/common/async/async'
 import {webrainOptions} from '../../../../../../../main/common/helpers/webrainOptions'
+import {Random} from '../../../../../../../main/common/random/Random'
 import {describe, it, xdescribe, xit} from '../../../../../../../main/common/test/Mocha'
 import {iterationBuilder, iteratorBuilder, RandomTest} from '../../../../../../../main/common/test/RandomTest'
-import {searchBestErrorBuilderNode} from "../../../../../../../main/node/test/RandomTest";
+import {searchBestErrorBuilderNode} from '../../../../../../../main/node/test/RandomTest'
 
 declare const beforeEach: any
 
@@ -16,37 +18,58 @@ describe('common > main > rx > depend > bindings > stress', function() {
 		webrainOptions.callState.garbageCollect.minLifeTime = 500
 	})
 
-	const randomTest = new RandomTest(
-		// createMetrics
-		() => {
-			return {
-				count: 0,
-			}
-		},
-		// optionsPatternBuilder
-		(metrics, metricsMin) => {
-			return {
-				metrics,
-				metricsMin,
-			}
-		},
-		// optionsGenerator
-		(rnd, {
+	function createMetrics() {
+		return {
+			count: 0,
+		}
+	}
+	type IMetrics = AsyncValueOf<ReturnType<typeof createMetrics>>
+
+	function optionsPatternBuilder(metrics: IMetrics, metricsMin: IMetrics) {
+		return {
 			metrics,
 			metricsMin,
-		}) => {
-			return {
-				metrics,
-				metricsMin,
-			}
-		},
+		}
+	}
+	type IOptionsPattern = AsyncValueOf<ReturnType<typeof optionsPatternBuilder>>
+
+	function optionsGenerator(rnd: Random, {
+		metrics,
+		metricsMin,
+	}: IOptionsPattern) {
+		return {
+			metrics,
+			metricsMin,
+		}
+	}
+	type IOptions = AsyncValueOf<ReturnType<typeof optionsGenerator>>
+
+	function compareMetrics(metrics: IMetrics, metricsMin: IMetrics) {
+		if (metrics.count !== metricsMin.count) {
+			return metrics.count < metricsMin.count
+		}
+		return true
+	}
+
+	function createState(rnd: Random, options: IOptions) {
+		return {
+			options,
+		}
+	}
+	type IState = AsyncValueOf<ReturnType<typeof createState>>
+
+	function action(rnd: Random, state: IState) {
+		// TODO
+	}
+
+	// region new RandomTest
+
+	const randomTest = new RandomTest(
+		createMetrics,
+		optionsPatternBuilder,
+		optionsGenerator,
 		{
-			compareMetrics(metrics, metricsMin) {
-				if (metrics.count !== metricsMin.count) {
-					return metrics.count < metricsMin.count
-				}
-				return true
-			},
+			compareMetrics,
 			consoleThrowPredicate() {
 				return this === 'error' || this === 'warn'
 			},
@@ -55,11 +78,7 @@ describe('common > main > rx > depend > bindings > stress', function() {
 				consoleOnlyBestErrors: true,
 			}),
 			testIterator: iteratorBuilder(
-				(rnd, options) => {
-					return {
-						options,
-					}
-				},
+				createState,
 				{
 					stopPredicate(iterationNumber, timeStart, state) {
 						return iterationNumber >= 100
@@ -67,15 +86,15 @@ describe('common > main > rx > depend > bindings > stress', function() {
 					iteration: iterationBuilder({
 						action: {
 							weight: 1,
-							func(rnd, state) {
-								// TODO
-							},
+							func: action,
 						},
 					}),
 				},
 			),
 		},
 	)
+
+	// endregion
 
 	it('base', async function() {
 		await randomTest.run({

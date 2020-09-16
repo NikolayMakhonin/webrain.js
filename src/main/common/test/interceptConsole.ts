@@ -1,4 +1,4 @@
-import {AsyncValueOf, ThenableIterator, ThenableOrIteratorOrValue} from '../async/async'
+import {AsyncValueOf, ThenableIterator} from '../async/async'
 
 export type TConsoleType = 'debug' | 'info' | 'trace' | 'log' | 'warn' | 'error'
 

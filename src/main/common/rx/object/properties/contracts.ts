@@ -1,4 +1,4 @@
-import {ThenableOrIteratorOrValue, ThenableOrValue} from '../../../async/async'
+import {ThenableOrValue} from '../../../async/async'
 import {VALUE_PROPERTY_DEFAULT} from '../../../helpers/value-property'
 import {IDeferredCalcOptions} from '../../deferred-calc/DeferredCalc'
 

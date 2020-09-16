@@ -19,7 +19,7 @@ describe('common > main > rx > depend > stress', function() {
 	it('all', async function() {
 		await stressTest({
 			// seed: 649781656,
-			testsCount: 100000,
+			testsCount: 20,
 			iterationsPerCall: 500,
 			maxLevelsCount: [1, 10],
 			maxFuncsCount: [1, 10],

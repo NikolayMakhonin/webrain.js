@@ -6,7 +6,7 @@ const fse = require('fs-extra')
 
 // region searchBestErrorBuilder
 
-export function searchBestErrorBuilderNode<TContext, TMetrics>({
+export function searchBestErrorBuilderNode<TMetrics>({
 	reportFilePath,
 	onFound,
 	consoleOnlyBestErrors,
@@ -14,11 +14,11 @@ export function searchBestErrorBuilderNode<TContext, TMetrics>({
 	reportFilePath: string,
 	onFound?: (reportMin: string) => ThenableOrIteratorOrValue<any>,
 	consoleOnlyBestErrors?: boolean,
-}): TSearchBestError<TContext, TMetrics> {
+}): TSearchBestError<TMetrics> {
 	const testCasesFile = path.resolve(reportFilePath)
 	const testCasesDir = path.dirname(testCasesFile)
 
-	const searchBestError = searchBestErrorBuilder<TContext>({
+	const searchBestError = searchBestErrorBuilder<TMetrics>({
 		consoleOnlyBestErrors,
 		*onFound(reportMin) {
 			yield fse.appendFile(
@@ -32,7 +32,7 @@ export function searchBestErrorBuilderNode<TContext, TMetrics>({
 		},
 	})
 
-	return function*(
+	return function*<TContext>(
 		_this: TContext,
 		{
 			customSeed,

@@ -3,7 +3,6 @@
 import {assert, AssertionError} from '../../../../main/common/test/Assert'
 import {describe, it, xit} from '../../../../main/common/test/Mocha'
 import {v8} from './src/helpers/common/helpers'
-import {OptimizationStatus} from './src/helpers/contracts'
 import {
 	assertIsNotOptimized,
 	assertIsOptimized,

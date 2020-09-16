@@ -1,5 +1,6 @@
 // tslint:disable-next-line:no-shadowed-variable
 import {ThenableOrValue} from '../../../../../../../main/common/async/async'
+import {Func} from '../../../../../../../main/common/helpers/typescript'
 import {
 	callStateHashTable,
 	reduceCallStates,
@@ -9,7 +10,6 @@ import {
 import {ICallState} from '../../../../../../../main/common/rx/depend/core/contracts'
 import {depend} from '../../../../../../../main/common/rx/depend/core/depend'
 import {assert} from '../../../../../../../main/common/test/Assert'
-import {Func} from "../../../../../../../main/common/helpers/typescript";
 
 // region makeDependentFunc
 

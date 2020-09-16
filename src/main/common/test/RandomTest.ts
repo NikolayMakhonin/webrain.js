@@ -162,7 +162,7 @@ export type TOptionsGenerator<TOptionsPattern, TOptions>
 
 // region test
 
-export async function *test<
+export function *test<
 	TOptionsPattern extends IOptionsPatternBase,
 	TOptions,
 >(
@@ -222,7 +222,7 @@ export interface ISearchBestErrorParams<TMetrics> {
 	) => ThenableOrIteratorOrValue<boolean>
 }
 
-export type TSearchBestError<TContext, TMetrics> = (_this: TContext, {
+export type TSearchBestError<TMetrics> = <TContext>(_this: TContext, {
 	customSeed,
 	metricsMin,
 	stopPredicate,
@@ -232,19 +232,19 @@ export type TSearchBestError<TContext, TMetrics> = (_this: TContext, {
 }: ISearchBestErrorParams<TMetrics> & {
 	createMetrics: () => ThenableOrIteratorOrValue<TMetrics>,
 	compareMetrics: (metrics1, metrics2) => boolean,
-	func: (this: TContext, seed: number, metrics: TMetrics, metricsMin: TMetrics) => void | Promise<void>,
+	func: (this: TContext, seed: number, metrics: TMetrics, metricsMin: TMetrics) => ThenableOrIteratorOrValue<any>,
 }) => ThenableOrIteratorOrValue<any>
 
 // region searchBestErrorBuilder
 
-export function searchBestErrorBuilder<TMetrics = any>({
+export function searchBestErrorBuilder<TMetrics>({
 	onFound,
 	consoleOnlyBestErrors,
 }: {
 	onFound?: (reportMin: string) => ThenableOrIteratorOrValue<any>,
 	consoleOnlyBestErrors?: boolean,
 }): TSearchBestError<TMetrics> {
-	return function*(
+	return function*<TContext>(
 		_this: TContext,
 		{
 			customSeed,
@@ -286,7 +286,7 @@ export function searchBestErrorBuilder<TMetrics = any>({
 				},
 				*func() {
 					const seed = customSeed != null ? customSeed : new Random().nextInt(2 << 29)
-					const metrics = createMetrics()
+					const metrics: TMetrics = yield createMetrics()
 
 					try {
 						yield func.call(this, seed, metrics, metricsMin || {} as any)
@@ -352,7 +352,7 @@ export class RandomTest<
 	private readonly _compareMetrics: (metrics1, metrics2) => boolean
 
 	constructor(
-		createMetrics?: () => ThenableOrIteratorOrValue<TMetrics>,
+		createMetrics: () => ThenableOrIteratorOrValue<TMetrics>,
 		optionsPatternBuilder: TOptionsPatternBuilder<TMetrics, TOptionsPattern>,
 		optionsGenerator: TOptionsGenerator<TOptionsPattern, TOptions>,
 		{
@@ -386,12 +386,13 @@ export class RandomTest<
 	}: ISearchBestErrorParams<TMetrics> & {
 		searchBestError?: boolean,
 	}): ThenableOrValue<any> {
-		function func(this: this, seed: number|null, metrics, _metricsMin) {
-			const optionsPattern = this._optionsPatternBuilder(metrics, _metricsMin)
+		const _this = this
+		function *func(this: typeof _this, seed: number|null, metrics, _metricsMin) {
+			const optionsPattern = yield this._optionsPatternBuilder(metrics, _metricsMin)
 			return test(optionsPattern, this._optionsGenerator, this._testIterator)
 		}
 
-		return resolveAsync(throwOnConsoleError(this, this._consoleThrowPredicate, function(this: this) {
+		return resolveAsync(throwOnConsoleError(_this, this._consoleThrowPredicate, function(this: typeof _this) {
 			if (searchBestError) {
 				return this._searchBestError(
 					this,
