@@ -106,7 +106,7 @@ describe('common > main > rx > depend > bindings > stress', function() {
 	it('base', async function() {
 		await randomTest.run({
 			stopPredicate: (iterationNumber, timeElapsed) => {
-				return timeElapsed >= 5000
+				return iterationNumber >= 50
 			},
 			customSeed: null,
 			metricsMin: null,
