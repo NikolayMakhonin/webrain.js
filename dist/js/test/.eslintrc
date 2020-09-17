@@ -1,0 +1,18 @@
+{
+	"env": {
+		"browser": false,
+		"node": false
+	},
+	"rules": {
+		"no-empty-function": ["off"],
+		"no-unused-vars": ["off"],
+		"no-new-wrappers": ["off"],
+		"no-sync": ["off"],
+		"no-undefined": ["off"],
+		"dot-notation": ["off"],
+		"no-process-env" : "off"
+	},
+	"globals": {
+		"console": true
+	}
+}
