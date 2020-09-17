@@ -1,6 +1,6 @@
 {
   "name": "webrain",
-  "version": "1.2.1-a",
+  "version": "1.2.2-a",
   "description": "NodeJS cross-platform and cross-browser business logic framework - Brain of your web applications.",
   "author": "Nikolay Makhonin",
   "homepage": "https://github.com/NikolayMakhonin/webrain.js",
@@ -10,8 +10,9 @@
   "license": "CC0-1.0",
   "keywords": [],
   "files": [
-    "dist/**",
-    "env/mocha/*"
+    "dist/js/main/**",
+    "dist/mjs/main/**",
+    "dist/types/**"
   ],
   "types": "dist/types/browser/index.d.ts",
   "main": "dist/js/main/browser/index.js",
@@ -26,7 +27,6 @@
     "npm:dep": "depcheck --ignores=\"@types/*,@babel/*,@metahub/karma-rollup-preprocessor,karma-*,eslint-plugin-markdown,tslint-eslint-rules,electron\" --ignore-dirs=_trash,dist,docs,tmp",
     "npm:check": "npm run npm:dep",
     "precommit": "npm run npm:check && npm update && npm run test:all:coverage",
-    "prepare": "npm run build",
     "prepublishOnly": "npm run test:all",
     "build:types": "shx rm -rf dist/types/ && shx mkdir -p dist/types/ && tsc --outDir dist/types",
     "build:mjs": "shx rm -rf dist/mjs/ && shx mkdir -p dist/mjs/ && shx cp -rf src/test dist/mjs/ && shx rm -rf dist/mjs/**/*.ts && babel src --extensions \".es6,.es,.js,.mjs,.ts\" --out-dir dist/mjs/ --no-babelrc --config-file ./env/babel/configs/dist-mjs.js",

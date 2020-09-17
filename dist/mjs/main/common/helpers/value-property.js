@@ -1,1 +1,0 @@
-export const VALUE_PROPERTY_DEFAULT = '';

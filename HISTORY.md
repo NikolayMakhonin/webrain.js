@@ -1,9 +1,14 @@
+1.2.2-a / 2020-09-17
+===================
+
+  * Fix package.json. Removed unnecessary files from package.
+  
 1.2.1-a / 2020-08-27
 ===================
 
   * Change Random.nextArrayItems() signature
   * Added Random.nextArrayItemsUnique()
-
+  
 1.2.0-a / 2020-08-27
 ===================
 
