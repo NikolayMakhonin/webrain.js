@@ -31,10 +31,7 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="69b2ee16-521b-4efd-b473-8e19e3df4d09" name="Default Changelist" comment="">
-      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/package.json" beforeDir="false" afterPath="$PROJECT_DIR$/package.json" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/common/test/randomTest.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/common/test/randomTest.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/test/tests/common/main/rx/depend/bindings/stress.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/test/tests/common/main/rx/depend/bindings/stress.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/node/test/randomTest.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/node/test/randomTest.ts" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -546,14 +543,7 @@
       <workItem from="1600070906075" duration="618000" />
       <workItem from="1600103066500" duration="1166000" />
       <workItem from="1600140928280" duration="11000" />
-      <workItem from="1600148726171" duration="37277000" />
-    </task>
-    <task id="LOCAL-00512" summary="Prepare release">
-      <created>1590218514641</created>
-      <option name="number" value="00512" />
-      <option name="presentableId" value="LOCAL-00512" />
-      <option name="project" value="LOCAL" />
-      <updated>1590218514641</updated>
+      <workItem from="1600148726171" duration="38280000" />
     </task>
     <task id="LOCAL-00513" summary="karma: stop IE support">
       <created>1590227895595</created>
@@ -891,7 +881,14 @@
       <option name="project" value="LOCAL" />
       <updated>1600321634282</updated>
     </task>
-    <option name="localTasksCounter" value="561" />
+    <task id="LOCAL-00561" summary="Develop random test helpers">
+      <created>1600325437742</created>
+      <option name="number" value="00561" />
+      <option name="presentableId" value="LOCAL-00561" />
+      <option name="project" value="LOCAL" />
+      <updated>1600325437742</updated>
+    </task>
+    <option name="localTasksCounter" value="562" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -992,10 +989,10 @@
       <screen x="0" y="0" width="1920" height="882" />
     </state>
     <state x="651" y="254" key="ANALYSIS_DLG_com.intellij.analysis.BaseAnalysisAction$1/0.0.1920.882@0.0.1920.882" timestamp="1600249459130" />
-    <state x="-2" y="0" width="1918" height="882" key="CommitChangelistDialog2" timestamp="1600321633506">
+    <state x="-2" y="0" width="1918" height="882" key="CommitChangelistDialog2" timestamp="1600325436790">
       <screen x="0" y="0" width="1920" height="882" />
     </state>
-    <state x="-2" y="0" width="1918" height="882" key="CommitChangelistDialog2/0.0.1920.882@0.0.1920.882" timestamp="1600321633506" />
+    <state x="-2" y="0" width="1918" height="882" key="CommitChangelistDialog2/0.0.1920.882@0.0.1920.882" timestamp="1600325436790" />
     <state x="0" y="4" width="1920" height="875" key="DiffContextDialog" timestamp="1598195455772">
       <screen x="0" y="0" width="1920" height="882" />
     </state>

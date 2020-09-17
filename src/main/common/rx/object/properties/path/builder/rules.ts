@@ -33,7 +33,7 @@ function ruleToString(
 	nestedRulesStr?: string,
 ): string {
 	const description = customDescription || this.description || ruleTypeToString(this.type)
-	
+
 	return `${
 		description
 	}${
@@ -87,6 +87,7 @@ export class RuleNever extends Rule {
 		this.description = 'never'
 	}
 
+	// @ts-ignore
 	public get next(): IRule {
 		return null
 	}

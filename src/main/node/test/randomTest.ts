@@ -1,6 +1,11 @@
 import path from 'path'
 import {ThenableOrIteratorOrValue} from '../../common/async/async'
-import {ISearchBestErrorParams, searchBestErrorBuilder, TSearchBestError} from '../../common/test/randomTest'
+import {
+	ISearchBestErrorMetrics,
+	ISearchBestErrorParams,
+	searchBestErrorBuilder,
+	TSearchBestError,
+} from '../../common/test/randomTest'
 // tslint:disable-next-line:no-var-requires
 const fse = require('fs-extra')
 
@@ -42,8 +47,8 @@ export function searchBestErrorBuilderNode<TMetrics>({
 			compareMetrics,
 			func,
 		}: ISearchBestErrorParams<TMetrics> & {
-			createMetrics: () => ThenableOrIteratorOrValue<TMetrics>,
-			compareMetrics: (metrics1, metrics2) => boolean,
+			createMetrics: (metrics: ISearchBestErrorMetrics) => ThenableOrIteratorOrValue<TMetrics>,
+			compareMetrics: (metrics1, metrics2) => number,
 			func: (seed: number, metrics: TMetrics, metricsMin: TMetrics) => void | Promise<void>,
 		},
 	) {
