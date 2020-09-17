@@ -4,6 +4,7 @@ import {webrainOptions} from '../../../../../../../main/common/helpers/webrainOp
 import {Random} from '../../../../../../../main/common/random/Random'
 import {describe, it, xdescribe, xit} from '../../../../../../../main/common/test/Mocha'
 import {
+	ISearchBestErrorMetrics,
 	randomTestBuilder,
 	searchBestErrorBuilder,
 	testIterationBuilder,
@@ -22,7 +23,7 @@ describe('common > main > rx > depend > bindings > stress', function() {
 		webrainOptions.callState.garbageCollect.minLifeTime = 500
 	})
 
-	function createMetrics(successCount: number) {
+	function createMetrics(testRunnerMetrics: ISearchBestErrorMetrics) {
 		return {
 			count: 0,
 		}
@@ -105,8 +106,8 @@ describe('common > main > rx > depend > bindings > stress', function() {
 
 	it('base', async function() {
 		await randomTest({
-			stopPredicate: (iterationNumber, timeElapsed) => {
-				return iterationNumber >= 50
+			stopPredicate: testRunnerMetrics => {
+				return testRunnerMetrics.iterationNumber >= 50
 			},
 			customSeed: null,
 			metricsMin: null,
