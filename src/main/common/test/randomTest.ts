@@ -234,6 +234,10 @@ function *testRunner<
 export interface ISearchBestErrorMetrics extends ITestRunnerMetrics {
 	iterationsFromLastError?: number
 	timeFromLastError?: number
+	iterationsFromMinError?: number
+	timeFromMinError?: number
+	iterationsFromEqualError?: number
+	timeFromEqualError?: number
 }
 
 export interface ISearchBestErrorParams<TMetrics> {
@@ -252,7 +256,7 @@ export type TSearchBestError<TMetrics> = <TContext>(_this: TContext, {
 	func,
 }: ISearchBestErrorParams<TMetrics> & {
 	createMetrics: (metrics: ISearchBestErrorMetrics) => ThenableOrIteratorOrValue<TMetrics>,
-	compareMetrics: (metrics1, metrics2) => boolean,
+	compareMetrics: (metrics1, metrics2) => number,
 	func: (this: TContext, seed: number, metrics: TMetrics, metricsMin: TMetrics) => ThenableOrIteratorOrValue<any>,
 }) => ThenableOrIteratorOrValue<any>
 
@@ -276,7 +280,7 @@ export function searchBestErrorBuilder<TMetrics>({
 			func,
 		}: ISearchBestErrorParams<TMetrics> & {
 			createMetrics: (metrics: ISearchBestErrorMetrics) => ThenableOrIteratorOrValue<TMetrics>,
-			compareMetrics: (metrics1, metrics2) => boolean,
+			compareMetrics: (metrics1, metrics2) => number,
 			func: (seed: number, metrics: TMetrics, metricsMin: TMetrics) => void | Promise<void>,
 		},
 	) {
@@ -303,16 +307,33 @@ export function searchBestErrorBuilder<TMetrics>({
 
 			let lastErrorIteration: number
 			let lastErrorTime: number
+			let minErrorIteration: number
+			let minErrorTime: number
+			let equalErrorIteration: number
+			let equalErrorTime: number
 			const searchBestErrorMetrics: ISearchBestErrorMetrics = {} as any
 
 			yield testRunner(_this,
 				{
 					stopPredicate: testRunnerMetrics => {
+						const now = Date.now()
 						if (lastErrorIteration != null) {
 							testRunnerMetrics.iterationsFromLastError = testRunnerMetrics.iterationNumber - lastErrorIteration
 						}
 						if (lastErrorTime != null) {
-							testRunnerMetrics.iterationsFromLastError = Date.now() - lastErrorTime
+							testRunnerMetrics.iterationsFromLastError = now - lastErrorTime
+						}
+						if (minErrorIteration != null) {
+							testRunnerMetrics.iterationsFromMinError = testRunnerMetrics.iterationNumber - minErrorIteration
+						}
+						if (minErrorTime != null) {
+							testRunnerMetrics.iterationsFromMinError = now - minErrorTime
+						}
+						if (equalErrorIteration != null) {
+							testRunnerMetrics.iterationsFromEqualError = testRunnerMetrics.iterationNumber - equalErrorIteration
+						}
+						if (equalErrorTime != null) {
+							testRunnerMetrics.iterationsFromEqualError = now - equalErrorTime
 						}
 
 						return customSeed != null || stopPredicate(testRunnerMetrics)
@@ -325,26 +346,39 @@ export function searchBestErrorBuilder<TMetrics>({
 						try {
 							yield func.call(this, seed, metrics, metricsMin || {} as any)
 						} catch (error) {
-							lastErrorTime = Date.now()
 							lastErrorIteration = testRunnerMetrics.iterationNumber
+							lastErrorTime = Date.now()
 
 							if (customSeed != null) {
 								interceptConsoleDisable(() => console.log(`customSeed: ${customSeed}`, metrics))
 								throw error
-							} else if (errorMin == null || compareMetrics(metrics, metricsMin)) {
-								metricsMin = {...metrics}
-								seedMin = seed
-								errorMin = error
-								reportMin = `\r\n\r\ncustomSeed: ${
-									seedMin
-								},\r\nmetricsMin: ${
-									JSON.stringify(metricsMin)
-								},\r\n${
-									errorMin.stack || errorMin
-								}`
-								interceptConsoleDisable(() => console.error(reportMin))
-								if (onFound) {
-									yield onFound(reportMin)
+							} else {
+								const compareMetricsResult = errorMin == null
+									? null
+									: compareMetrics(metrics, metricsMin)
+
+								if (compareMetricsResult == null || compareMetricsResult <= 0) {
+									equalErrorIteration = testRunnerMetrics.iterationNumber
+									equalErrorTime = Date.now()
+									if (compareMetricsResult !== 0) {
+										minErrorIteration = testRunnerMetrics.iterationNumber
+										minErrorTime = Date.now()
+									}
+
+									metricsMin = {...metrics}
+									seedMin = seed
+									errorMin = error
+									reportMin = `\r\n\r\ncustomSeed: ${
+										seedMin
+									},\r\nmetricsMin: ${
+										JSON.stringify(metricsMin)
+									},\r\n${
+										errorMin.stack || errorMin
+									}`
+									interceptConsoleDisable(() => console.error(reportMin))
+									if (onFound) {
+										yield onFound(reportMin)
+									}
 								}
 							}
 						}
@@ -400,7 +434,7 @@ export function randomTestBuilder<
 		searchBestError: _searchBestError,
 		testIterator,
 	}: {
-		compareMetrics?: (metrics: TMetrics, metricsMin: TMetrics) => boolean,
+		compareMetrics?: (metrics: TMetrics, metricsMin: TMetrics) => number,
 		consoleThrowPredicate?: (this: TConsoleType, ...args: any[]) => boolean,
 		searchBestError?: TSearchBestError<TMetrics>,
 		testIterator: TTestIterator<TOptions>,

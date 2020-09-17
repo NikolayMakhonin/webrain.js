@@ -30,8 +30,9 @@
     <select />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="69b2ee16-521b-4efd-b473-8e19e3df4d09" name="Default Changelist" comment="Develop random test helpers">
+    <list default="true" id="69b2ee16-521b-4efd-b473-8e19e3df4d09" name="Default Changelist" comment="">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/package.json" beforeDir="false" afterPath="$PROJECT_DIR$/package.json" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/common/test/randomTest.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/common/test/randomTest.ts" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/test/tests/common/main/rx/depend/bindings/stress.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/test/tests/common/main/rx/depend/bindings/stress.ts" afterDir="false" />
     </list>
@@ -127,7 +128,7 @@
       <recent name="L:\Work\_GIT\GitHub\NodeJs\modules\webrain\src\main\common\rx\object\properties\path" />
     </key>
   </component>
-  <component name="RunManager" selected="Mocha.Watch">
+  <component name="RunManager" selected="Mocha.common &gt; main &gt; rx &gt; depend &gt; bindings &gt; stress">
     <configuration name="Binder.ts" type="JavaScriptTestRunnerKarma" activateToolWindowBeforeRun="false" temporary="true" nameIsGenerated="true">
       <config-file value="$PROJECT_DIR$/env/karma/configs/dev.js" />
       <karma-package-dir value="$PROJECT_DIR$/node_modules/karma" />
@@ -545,14 +546,7 @@
       <workItem from="1600070906075" duration="618000" />
       <workItem from="1600103066500" duration="1166000" />
       <workItem from="1600140928280" duration="11000" />
-      <workItem from="1600148726171" duration="33439000" />
-    </task>
-    <task id="LOCAL-00511" summary="Improve karma rollup preprocessor">
-      <created>1590218428999</created>
-      <option name="number" value="00511" />
-      <option name="presentableId" value="LOCAL-00511" />
-      <option name="project" value="LOCAL" />
-      <updated>1590218429000</updated>
+      <workItem from="1600148726171" duration="37277000" />
     </task>
     <task id="LOCAL-00512" summary="Prepare release">
       <created>1590218514641</created>
@@ -890,7 +884,14 @@
       <option name="project" value="LOCAL" />
       <updated>1600317196690</updated>
     </task>
-    <option name="localTasksCounter" value="560" />
+    <task id="LOCAL-00560" summary="Develop random test helpers">
+      <created>1600321634282</created>
+      <option name="number" value="00560" />
+      <option name="presentableId" value="LOCAL-00560" />
+      <option name="project" value="LOCAL" />
+      <updated>1600321634282</updated>
+    </task>
+    <option name="localTasksCounter" value="561" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -991,10 +992,10 @@
       <screen x="0" y="0" width="1920" height="882" />
     </state>
     <state x="651" y="254" key="ANALYSIS_DLG_com.intellij.analysis.BaseAnalysisAction$1/0.0.1920.882@0.0.1920.882" timestamp="1600249459130" />
-    <state x="-2" y="0" width="1918" height="882" key="CommitChangelistDialog2" timestamp="1600317195829">
+    <state x="-2" y="0" width="1918" height="882" key="CommitChangelistDialog2" timestamp="1600321633506">
       <screen x="0" y="0" width="1920" height="882" />
     </state>
-    <state x="-2" y="0" width="1918" height="882" key="CommitChangelistDialog2/0.0.1920.882@0.0.1920.882" timestamp="1600317195829" />
+    <state x="-2" y="0" width="1918" height="882" key="CommitChangelistDialog2/0.0.1920.882@0.0.1920.882" timestamp="1600321633506" />
     <state x="0" y="4" width="1920" height="875" key="DiffContextDialog" timestamp="1598195455772">
       <screen x="0" y="0" width="1920" height="882" />
     </state>
@@ -1003,22 +1004,22 @@
       <screen x="0" y="0" width="1920" height="882" />
     </state>
     <state x="1059" y="106" key="FileChooserDialogImpl/0.0.1920.882@0.0.1920.882" timestamp="1595574844421" />
-    <state width="704" height="192" key="GridCell.Tab.0.bottom" timestamp="1600321528298">
+    <state width="704" height="263" key="GridCell.Tab.0.bottom" timestamp="1600323969333">
       <screen x="0" y="0" width="1920" height="882" />
     </state>
-    <state width="704" height="192" key="GridCell.Tab.0.bottom/0.0.1920.882@0.0.1920.882" timestamp="1600321528298" />
-    <state width="704" height="192" key="GridCell.Tab.0.center" timestamp="1600321528297">
+    <state width="704" height="263" key="GridCell.Tab.0.bottom/0.0.1920.882@0.0.1920.882" timestamp="1600323969333" />
+    <state width="704" height="263" key="GridCell.Tab.0.center" timestamp="1600323969332">
       <screen x="0" y="0" width="1920" height="882" />
     </state>
-    <state width="704" height="192" key="GridCell.Tab.0.center/0.0.1920.882@0.0.1920.882" timestamp="1600321528297" />
-    <state width="704" height="192" key="GridCell.Tab.0.left" timestamp="1600321528297">
+    <state width="704" height="263" key="GridCell.Tab.0.center/0.0.1920.882@0.0.1920.882" timestamp="1600323969332" />
+    <state width="704" height="263" key="GridCell.Tab.0.left" timestamp="1600323969332">
       <screen x="0" y="0" width="1920" height="882" />
     </state>
-    <state width="704" height="192" key="GridCell.Tab.0.left/0.0.1920.882@0.0.1920.882" timestamp="1600321528297" />
-    <state width="704" height="192" key="GridCell.Tab.0.right" timestamp="1600321528297">
+    <state width="704" height="263" key="GridCell.Tab.0.left/0.0.1920.882@0.0.1920.882" timestamp="1600323969332" />
+    <state width="704" height="263" key="GridCell.Tab.0.right" timestamp="1600323969332">
       <screen x="0" y="0" width="1920" height="882" />
     </state>
-    <state width="704" height="192" key="GridCell.Tab.0.right/0.0.1920.882@0.0.1920.882" timestamp="1600321528297" />
+    <state width="704" height="263" key="GridCell.Tab.0.right/0.0.1920.882@0.0.1920.882" timestamp="1600323969332" />
     <state width="704" height="430" key="GridCell.Tab.1.bottom" timestamp="1600246286100">
       <screen x="0" y="0" width="1920" height="882" />
     </state>

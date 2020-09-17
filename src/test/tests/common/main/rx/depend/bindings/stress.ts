@@ -59,6 +59,7 @@ describe('common > main > rx > depend > bindings > stress', function() {
 	function createState(rnd: Random, options: IOptions) {
 		return {
 			options,
+			x: 'qwe',
 		}
 	}
 	type IState = AsyncValueOf<ReturnType<typeof createState>>
