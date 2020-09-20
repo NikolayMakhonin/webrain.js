@@ -32,16 +32,7 @@
   <component name="ChangeListManager">
     <list default="true" id="69b2ee16-521b-4efd-b473-8e19e3df4d09" name="Default Changelist" comment="">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/common/helpers/CalcStat.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/common/helpers/CalcStat.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/common/rx/depend/core/CallState.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/common/rx/depend/core/CallState.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/common/test/calc.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/common/test/calc.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/common/test/randomTest.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/common/test/randomTest.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/test/performance/node/src/MapPolyfill.js" beforeDir="false" afterPath="$PROJECT_DIR$/src/test/performance/node/src/MapPolyfill.js" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/test/tests/common/main/rx/depend/bindings/stress.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/test/tests/common/main/rx/depend/bindings/stress.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/test/tests/common/main/rx/depend/src/base-tests.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/test/tests/common/main/rx/depend/src/base-tests.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/test/tests/common/main/rx/depend/src/stress-test.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/test/tests/common/main/rx/depend/src/stress-test.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/test/tests/common/main/test/randomTest.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/test/tests/common/main/test/randomTest.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/test/tests/node/main/rx/depend/v8/dependent-func.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/test/tests/node/main/rx/depend/v8/dependent-func.ts" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -558,21 +549,7 @@
       <workItem from="1600348116854" duration="802000" />
       <workItem from="1600362618380" duration="1372000" />
       <workItem from="1600412097392" duration="47000" />
-      <workItem from="1600572910230" duration="16826000" />
-    </task>
-    <task id="LOCAL-00517" summary="Fix travis tests">
-      <created>1590245924311</created>
-      <option name="number" value="00517" />
-      <option name="presentableId" value="LOCAL-00517" />
-      <option name="project" value="LOCAL" />
-      <updated>1590245924311</updated>
-    </task>
-    <task id="LOCAL-00518" summary="Fix travis tests">
-      <created>1590246269130</created>
-      <option name="number" value="00518" />
-      <option name="presentableId" value="LOCAL-00518" />
-      <option name="project" value="LOCAL" />
-      <updated>1590246269130</updated>
+      <workItem from="1600572910230" duration="17574000" />
     </task>
     <task id="LOCAL-00519" summary="Fix travis tests">
       <created>1590253174567</created>
@@ -903,7 +880,21 @@
       <option name="project" value="LOCAL" />
       <updated>1600588454392</updated>
     </task>
-    <option name="localTasksCounter" value="566" />
+    <task id="LOCAL-00566" summary="Develop random test helpers">
+      <created>1600602194636</created>
+      <option name="number" value="00566" />
+      <option name="presentableId" value="LOCAL-00566" />
+      <option name="project" value="LOCAL" />
+      <updated>1600602194636</updated>
+    </task>
+    <task id="LOCAL-00567" summary="Develop two way binding tests...">
+      <created>1600602211153</created>
+      <option name="number" value="00567" />
+      <option name="presentableId" value="LOCAL-00567" />
+      <option name="project" value="LOCAL" />
+      <updated>1600602211153</updated>
+    </task>
+    <option name="localTasksCounter" value="568" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -964,7 +955,6 @@
   <component name="VcsManagerConfiguration">
     <option name="CHECK_CODE_SMELLS_BEFORE_PROJECT_COMMIT" value="false" />
     <option name="CHECK_NEW_TODO" value="false" />
-    <MESSAGE value="Rename external interface refactoring." />
     <MESSAGE value="precommit is OK" />
     <MESSAGE value="v1.0.0a" />
     <MESSAGE value="v1.0.0-a published" />
@@ -989,7 +979,8 @@
     <MESSAGE value="Develop rendom test helpers" />
     <MESSAGE value="1.2.2-a - Fix package.json. Removed unnecessary files from package." />
     <MESSAGE value="Develop random test helpers" />
-    <option name="LAST_COMMIT_MESSAGE" value="Develop random test helpers" />
+    <MESSAGE value="Develop two way binding tests..." />
+    <option name="LAST_COMMIT_MESSAGE" value="Develop two way binding tests..." />
   </component>
   <component name="WindowStateProjectService">
     <state x="612" y="18" key="#TypeScript" timestamp="1599721259508">
@@ -1012,14 +1003,14 @@
       <screen x="0" y="0" width="1920" height="882" />
     </state>
     <state x="651" y="254" key="ANALYSIS_DLG_com.intellij.analysis.BaseAnalysisAction$1/0.0.1920.882@0.0.1920.882" timestamp="1600249459130" />
-    <state x="-2" y="0" width="1918" height="882" key="CommitChangelistDialog2" timestamp="1600588453653">
+    <state x="-2" y="0" width="1918" height="882" key="CommitChangelistDialog2" timestamp="1600602210521">
       <screen x="0" y="0" width="1920" height="882" />
     </state>
-    <state x="-2" y="0" width="1918" height="882" key="CommitChangelistDialog2/0.0.1920.882@0.0.1920.882" timestamp="1600588453653" />
-    <state x="0" y="4" width="1920" height="875" key="DiffContextDialog" timestamp="1598195455772">
+    <state x="-2" y="0" width="1918" height="882" key="CommitChangelistDialog2/0.0.1920.882@0.0.1920.882" timestamp="1600602210521" />
+    <state x="0" y="4" width="1917" height="875" key="DiffContextDialog" timestamp="1600602166160">
       <screen x="0" y="0" width="1920" height="882" />
     </state>
-    <state x="0" y="4" width="1920" height="875" key="DiffContextDialog/0.0.1920.882@0.0.1920.882" timestamp="1598195455772" />
+    <state x="0" y="4" width="1917" height="875" key="DiffContextDialog/0.0.1920.882@0.0.1920.882" timestamp="1600602166160" />
     <state x="1059" y="106" key="FileChooserDialogImpl" timestamp="1600600925638">
       <screen x="0" y="0" width="1920" height="882" />
     </state>
@@ -1092,6 +1083,10 @@
       <screen x="0" y="0" width="1920" height="882" />
     </state>
     <state x="183" y="66" key="MergeDialog/0.0.1920.882@0.0.1920.882" timestamp="1600279004399" />
+    <state x="691" y="68" key="RollbackChangesDialog" timestamp="1600602173374">
+      <screen x="0" y="0" width="1920" height="882" />
+    </state>
+    <state x="691" y="68" key="RollbackChangesDialog/0.0.1920.882@0.0.1920.882" timestamp="1600602173374" />
     <state x="722" y="331" key="com.intellij.openapi.vcs.update.UpdateOrStatusOptionsDialogupdate-v2" timestamp="1600076722588">
       <screen x="0" y="0" width="1920" height="882" />
     </state>

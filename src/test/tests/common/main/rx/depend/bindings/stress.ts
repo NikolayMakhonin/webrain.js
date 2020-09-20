@@ -2,6 +2,7 @@
 import {AsyncValueOf} from '../../../../../../../main/common/async/async'
 import {webrainOptions} from '../../../../../../../main/common/helpers/webrainOptions'
 import {Random} from '../../../../../../../main/common/random/Random'
+import {IUnbind} from '../../../../../../../main/common/rx/depend/bindings/contracts'
 import {ObservableClass} from '../../../../../../../main/common/rx/object/ObservableClass'
 import {ObservableObjectBuilder} from '../../../../../../../main/common/rx/object/ObservableObjectBuilder'
 import {assert} from '../../../../../../../main/common/test/Assert'
@@ -25,6 +26,8 @@ describe('common > main > rx > depend > bindings > stress', function() {
 		webrainOptions.callState.garbageCollect.interval = 1000
 		webrainOptions.callState.garbageCollect.minLifeTime = 500
 	})
+
+	const propNames = ['prop1', 'prop2', 'prop3']
 
 	interface IObject {
 		prop1?: number
@@ -91,14 +94,52 @@ describe('common > main > rx > depend > bindings > stress', function() {
 	}
 
 	class CheckObjects extends ObjectsBase<IObject> {
-		private onChange(objectNumber: number, propName: string, value: number) {
-			// TODO
-		}
-
 		public setValue(objectNumber: number, propName: string, value: number) {
 			if (this.objects[objectNumber][propName] !== value) {
 				this.objects[objectNumber][propName] = value
 				this.onChange(objectNumber, propName, value)
+			}
+		}
+
+		private onChange(objectNumber: number, propName: string, value: number) {
+			// TODO
+		}
+
+		private _bindings: {
+			[key in string]: number
+		}
+
+		public bindOneWay(
+			objectNumberFrom: number, propNameFrom: string,
+			objectNumberTo: number, propNameTo: string,
+		): IUnbind {
+			const key = objectNumberFrom + '_' + propNameFrom + ' > '
+				+ objectNumberTo + '_' + propNameTo
+
+			this._bindings[key] = (this._bindings[key] || 0) + 1
+
+			let unBinded
+			return () => {
+				if (unBinded) {
+					return
+				}
+				unBinded = true
+
+				assert.ok(this._bindings[key] >= 1)
+				this._bindings[key]--
+			}
+		}
+
+		public bindTwoWay(
+			objectNumber1: number, propName1: string,
+			objectNumber2: number, propName2: string,
+		): IUnbind {
+			const unbind1 = this.bindOneWay(objectNumber1, propName1, objectNumber2, propName2)
+			const unbind2 = this.bindOneWay(objectNumber2, propName2, objectNumber1, propName1)
+
+			return () => {
+				unbind1()
+				unbind2()
 			}
 		}
 	}
@@ -185,8 +226,6 @@ describe('common > main > rx > depend > bindings > stress', function() {
 
 	// region action
 
-	const propNames = ['prop1', 'prop2', 'prop3']
-
 	function action(rnd: Random, state: IState) {
 		const objectNumber = rnd.nextInt(state.objects.objects.length)
 		const propName = rnd.nextArrayItem(propNames)
@@ -196,10 +235,6 @@ describe('common > main > rx > depend > bindings > stress', function() {
 		state.checkObjects.setValue(objectNumber, propName, value)
 
 		assertObjects(state.objects.objects, state.checkObjects.objects)
-
-		// assert.ok(['state_value1', 'state_value2'].indexOf(state.value) >= 0)
-		// assert.ok(['value1', 'value2'].indexOf(state.options.option) >= 0)
-		// assert.ok(typeof state.options.metrics.metric === 'number')
 	}
 
 	// endregion
