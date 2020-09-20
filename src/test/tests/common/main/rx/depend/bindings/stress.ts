@@ -85,11 +85,33 @@ describe('common > main > rx > depend > bindings > stress', function() {
 		}
 
 		public abstract setValue(objectNumber: number, propName: string, value: number)
+		public abstract bindOneWay(
+			objectNumberFrom: number, propNameFrom: string,
+			objectNumberTo: number, propNameTo: string,
+		): IUnbind
+		public abstract bindTwoWay(
+			objectNumber1: number, propName1: string,
+			objectNumber2: number, propName2: string,
+		): IUnbind
 	}
 
 	class Objects extends ObjectsBase<ObjectClass> {
 		public setValue(objectNumber: number, propName: string, value: number) {
 			this.objects[objectNumber][propName] = value
+		}
+
+		public bindOneWay(
+			objectNumberFrom: number, propNameFrom: string,
+			objectNumberTo: number, propNameTo: string,
+		): IUnbind {
+
+		}
+
+		public bindTwoWay(
+			objectNumber1: number, propName1: string,
+			objectNumber2: number, propName2: string,
+		): IUnbind {
+
 		}
 	}
 
@@ -97,7 +119,7 @@ describe('common > main > rx > depend > bindings > stress', function() {
 		public setValue(objectNumber: number, propName: string, value: number) {
 			if (this.objects[objectNumber][propName] !== value) {
 				this.objects[objectNumber][propName] = value
-				this.onChange(objectNumber, propName, value)
+				this.onChange(objectNumber, propName)
 			}
 		}
 
