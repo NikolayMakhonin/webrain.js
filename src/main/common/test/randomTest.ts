@@ -40,7 +40,7 @@ export function testIterationBuilder<TState>({
 	const waitAsyncAllWeight = waitAsyncAll != null ? waitAsyncAll.weight / sumWeights : 0
 
 	const asyncs = []
-	function *iteration(rnd: Random, state: TState): ThenableIterator<void> {
+	function *testIteration(rnd: Random, state: TState): ThenableIterator<void> {
 		if (before != null) {
 			yield before(rnd, state)
 		}
@@ -97,7 +97,7 @@ export function testIterationBuilder<TState>({
 		}
 	}
 
-	return iteration
+	return testIteration
 }
 
 // endregion
@@ -116,13 +116,13 @@ export function testIteratorBuilder<
 	{
 		before,
 		stopPredicate,
-		iteration,
+		testIteration,
 		after,
 	}: IBeforeAfter<TState> & {
 		stopPredicate: (
 			iterationNumber: number, timeStart: number, state: TState,
 		) => ThenableOrIteratorOrValue<boolean>,
-		iteration: TTestIteration<TState>,
+		testIteration: TTestIteration<TState>,
 	},
 ): TTestIterator<TOptions> {
 	function *iterator(rnd: Random, options: TOptions): ThenableIterator<void> {
@@ -140,7 +140,7 @@ export function testIteratorBuilder<
 				break
 			}
 
-			yield iteration(rnd, state)
+			yield testIteration(rnd, state)
 
 			iterationNumber++
 		}
@@ -511,17 +511,18 @@ export type IRandomTestFactory<
 	HasOptionsPatternBuilder = false,
 	HasOptionsGenerator = false,
 	HasCreateState = false,
+	HasAction = false,
 > = {}
 & If<HasCreateMetrics, {}, {
 	createMetrics<_TMetrics>(value: TCreateMetrics<_TMetrics>): IRandomTestFactory<
 		_TMetrics, TOptionsPattern, TOptions, TState,
-		true, HasCompareMetrics, HasOptionsPatternBuilder, HasOptionsGenerator, HasCreateState
+		true, HasCompareMetrics, HasOptionsPatternBuilder, HasOptionsGenerator, HasCreateState, HasAction
 	>,
 }>
 & If<HasCompareMetrics | IsNever<TMetrics>, {}, {
 	compareMetrics(value: TCompareMetrics<TMetrics>): IRandomTestFactory<
 		TMetrics, TOptionsPattern, TOptions, TState,
-		HasCreateMetrics, true, HasOptionsPatternBuilder, HasOptionsGenerator, HasCreateState
+		HasCreateMetrics, true, HasOptionsPatternBuilder, HasOptionsGenerator, HasCreateState, HasAction
 	>,
 }>
 & If<HasOptionsPatternBuilder | IsNever<TMetrics>, {}, {
@@ -529,19 +530,25 @@ export type IRandomTestFactory<
 		value: TTestOptionsPatternBuilder<TMetrics, _TOptionsPattern>,
 	): IRandomTestFactory<
 		TMetrics, _TOptionsPattern, TOptions, TState,
-		HasCreateMetrics, HasCompareMetrics, true, HasOptionsGenerator, HasCreateState
+		HasCreateMetrics, HasCompareMetrics, true, HasOptionsGenerator, HasCreateState, HasAction
 	>,
 }>
 & If<HasOptionsGenerator | IsNever<TOptionsPattern>, {}, {
 	optionsGenerator<_TOptions>(value: TTestOptionsGenerator<TOptionsPattern, _TOptions>): IRandomTestFactory<
 		TMetrics, TOptionsPattern, _TOptions, TState,
-		HasCreateMetrics, HasCompareMetrics, HasOptionsPatternBuilder, true, HasCreateState
+		HasCreateMetrics, HasCompareMetrics, HasOptionsPatternBuilder, true, HasCreateState, HasAction
 	>,
 }>
 & If<HasCreateState | IsNever<TOptions>, {}, {
 	createState<_TState>(value: TCreateState<TOptions, _TState>): IRandomTestFactory<
 		TMetrics, TOptionsPattern, TOptions, _TState,
-		HasCreateMetrics, HasCompareMetrics, HasOptionsPatternBuilder, HasOptionsGenerator, true
+		HasCreateMetrics, HasCompareMetrics, HasOptionsPatternBuilder, HasOptionsGenerator, true, HasAction
+	>,
+}>
+& If<HasAction | IsNever<TState>, {}, {
+	action(value: TTestAction<TState>): IRandomTestFactory<
+		TMetrics, TOptionsPattern, TOptions, TState,
+		HasCreateMetrics, HasCompareMetrics, HasOptionsPatternBuilder, HasOptionsGenerator, HasCreateState, true
 	>,
 }>
 
@@ -558,6 +565,7 @@ class RandomTestFactory<
 	private _optionsPatternBuilder: TTestOptionsPatternBuilder<TMetrics, TOptionsPattern>
 	private _optionsGenerator: TTestOptionsGenerator<TOptionsPattern, TOptions>
 	private _createState: TCreateState<TOptions, TState>
+	private _action: TTestAction<TState>
 
 	public createMetrics<_TMetrics>(value: TCreateMetrics<_TMetrics>) {
 		this._createMetrics = value
@@ -583,6 +591,13 @@ class RandomTestFactory<
 		this._createState = value
 		return this
 	}
+
+	public action(value: TTestAction<TState>) {
+		this._action = value
+		return this
+	}
+
+	public testIterationBuilder
 }
 
 export function randomTestFactory(): IRandomTestFactory {

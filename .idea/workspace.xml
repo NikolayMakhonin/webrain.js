@@ -30,7 +30,19 @@
     <select />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="69b2ee16-521b-4efd-b473-8e19e3df4d09" name="Default Changelist" comment="" />
+    <list default="true" id="69b2ee16-521b-4efd-b473-8e19e3df4d09" name="Default Changelist" comment="">
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/common/helpers/CalcStat.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/common/helpers/CalcStat.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/common/rx/depend/core/CallState.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/common/rx/depend/core/CallState.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/common/test/calc.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/common/test/calc.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/common/test/randomTest.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/common/test/randomTest.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/test/performance/node/src/MapPolyfill.js" beforeDir="false" afterPath="$PROJECT_DIR$/src/test/performance/node/src/MapPolyfill.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/test/tests/common/main/rx/depend/bindings/stress.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/test/tests/common/main/rx/depend/bindings/stress.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/test/tests/common/main/rx/depend/src/base-tests.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/test/tests/common/main/rx/depend/src/base-tests.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/test/tests/common/main/rx/depend/src/stress-test.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/test/tests/common/main/rx/depend/src/stress-test.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/test/tests/common/main/test/randomTest.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/test/tests/common/main/test/randomTest.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/test/tests/node/main/rx/depend/v8/dependent-func.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/test/tests/node/main/rx/depend/v8/dependent-func.ts" afterDir="false" />
+    </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
     <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
@@ -82,7 +94,7 @@
     <property name="WebServerToolWindowFactoryState" value="false" />
     <property name="auto.test.manager.delay" value="5000" />
     <property name="javascript.karma.karma_node_package_dir" value="" />
-    <property name="last_opened_file_path" value="$PROJECT_DIR$/src/test/tests/common/main/rx/depend/bindings" />
+    <property name="last_opened_file_path" value="$PROJECT_DIR$/src/test/tests/common/main/test" />
     <property name="node.js.detected.package.eslint" value="true" />
     <property name="node.js.detected.package.standard" value="true" />
     <property name="node.js.detected.package.tslint" value="true" />
@@ -101,12 +113,12 @@
     <property name="ts.external.directory.path" value="L:\Work\_GIT\GitHub\NodeJs\modules\webrain\node_modules\typescript\lib" />
   </component>
   <component name="RecentsManager">
-    <key name="MoveFile.RECENT_KEYS">
-      <recent name="L:\Work\_GIT\GitHub\NodeJs\modules\webrain\src\main\node\test" />
-      <recent name="L:\Work\_GIT\GitHub\NodeJs\modules\webrain\src\test\tests\common\src" />
-      <recent name="L:\Work\_GIT\GitHub\NodeJs\modules\webrain\docs\depend" />
-      <recent name="L:\Work\_GIT\GitHub\NodeJs\modules\webrain\src\main\common\rx\depend" />
-      <recent name="L:\Work\_GIT\GitHub\NodeJs\modules\webrain\src\main\common\rx\object\properties\path" />
+    <key name="CopyFile.RECENT_KEYS">
+      <recent name="L:\Work\_GIT\GitHub\NodeJs\modules\webrain\src\test\tests\common\main\test" />
+      <recent name="L:\Work\_GIT\GitHub\NodeJs\modules\webrain\src\test\tests\common\main\rx\depend\bindings" />
+      <recent name="L:\Work\_GIT\GitHub\NodeJs\modules\webrain\src\main\common\rx\depend\core" />
+      <recent name="L:\Work\_GIT\GitHub\NodeJs\modules\webrain\src\test\performance\node" />
+      <recent name="L:\Work\_GIT\GitHub\NodeJs\modules\webrain\tmp\coverage\merge" />
     </key>
     <key name="es6.move.members.recent.items">
       <recent name="L:\Work\_GIT\GitHub\NodeJs\modules\webrain\src\main\common\rx\depend\core\contracts.ts" />
@@ -115,12 +127,12 @@
       <recent name="L:\Work\_GIT\GitHub\NodeJs\modules\webrain\src\main\common\rx\depend\core\helpers.ts" />
       <recent name="L:\Work\_GIT\GitHub\NodeJs\modules\webrain\src\test\tests\common\main\rx\depend\src\perceptron.ts" />
     </key>
-    <key name="CopyFile.RECENT_KEYS">
-      <recent name="L:\Work\_GIT\GitHub\NodeJs\modules\webrain\src\test\tests\common\main\rx\depend\bindings" />
-      <recent name="L:\Work\_GIT\GitHub\NodeJs\modules\webrain\src\main\common\rx\depend\core" />
-      <recent name="L:\Work\_GIT\GitHub\NodeJs\modules\webrain\src\test\performance\node" />
-      <recent name="L:\Work\_GIT\GitHub\NodeJs\modules\webrain\tmp\coverage\merge" />
-      <recent name="L:\Work\_GIT\GitHub\NodeJs\modules\webrain\src\main\common\rx\object" />
+    <key name="MoveFile.RECENT_KEYS">
+      <recent name="L:\Work\_GIT\GitHub\NodeJs\modules\webrain\src\main\node\test" />
+      <recent name="L:\Work\_GIT\GitHub\NodeJs\modules\webrain\src\test\tests\common\src" />
+      <recent name="L:\Work\_GIT\GitHub\NodeJs\modules\webrain\docs\depend" />
+      <recent name="L:\Work\_GIT\GitHub\NodeJs\modules\webrain\src\main\common\rx\depend" />
+      <recent name="L:\Work\_GIT\GitHub\NodeJs\modules\webrain\src\main\common\rx\object\properties\path" />
     </key>
   </component>
   <component name="RunManager" selected="Mocha.common &gt; main &gt; rx &gt; depend &gt; bindings &gt; stress">
@@ -282,21 +294,6 @@
       </test-names>
       <method v="2" />
     </configuration>
-    <configuration name="common &gt; main &gt; rx &gt; depend &gt; stress" type="mocha-javascript-test-runner" temporary="true" nameIsGenerated="true">
-      <node-interpreter>node</node-interpreter>
-      <node-options>--max-old-space-size=4096 --allow-natives-syntax</node-options>
-      <mocha-package>$PROJECT_DIR$/node_modules/mocha</mocha-package>
-      <working-directory>$PROJECT_DIR$</working-directory>
-      <pass-parent-env>true</pass-parent-env>
-      <ui>bdd</ui>
-      <extra-mocha-options>--opts ./env/mocha/configs/babel/mocha.opts --watch</extra-mocha-options>
-      <test-kind>SUITE</test-kind>
-      <test-file>$PROJECT_DIR$/src/test/tests/common/main/rx/depend/dependent-func/stress.ts</test-file>
-      <test-names>
-        <name value="common &gt; main &gt; rx &gt; depend &gt; stress" />
-      </test-names>
-      <method v="2" />
-    </configuration>
     <configuration name="common &gt; main &gt; rx &gt; depend &gt; stress.all" type="mocha-javascript-test-runner" temporary="true" nameIsGenerated="true">
       <node-interpreter>node</node-interpreter>
       <node-options>--max-old-space-size=4096 --allow-natives-syntax</node-options>
@@ -310,6 +307,21 @@
       <test-names>
         <name value="common &gt; main &gt; rx &gt; depend &gt; stress" />
         <name value="all" />
+      </test-names>
+      <method v="2" />
+    </configuration>
+    <configuration name="common &gt; main &gt; test &gt; randomTest" type="mocha-javascript-test-runner" temporary="true" nameIsGenerated="true">
+      <node-interpreter>node</node-interpreter>
+      <node-options>--max-old-space-size=4096 --allow-natives-syntax</node-options>
+      <mocha-package>$PROJECT_DIR$/node_modules/mocha</mocha-package>
+      <working-directory>$PROJECT_DIR$</working-directory>
+      <pass-parent-env>true</pass-parent-env>
+      <ui>bdd</ui>
+      <extra-mocha-options>--opts ./env/mocha/configs/babel/mocha.opts --watch</extra-mocha-options>
+      <test-kind>SUITE</test-kind>
+      <test-file>$PROJECT_DIR$/src/test/tests/common/main/test/randomTest.ts</test-file>
+      <test-names>
+        <name value="common &gt; main &gt; test &gt; randomTest" />
       </test-names>
       <method v="2" />
     </configuration>
@@ -438,21 +450,21 @@
       <item itemvalue="Mocha.dependent-func" />
       <item itemvalue="Mocha.dependent-func.perceptron perf (Compiled)" />
       <item itemvalue="Mocha.node &gt; v8 &gt; parser" />
-      <item itemvalue="Mocha.common &gt; main &gt; rx &gt; depend &gt; stress" />
       <item itemvalue="Mocha.common &gt; main &gt; rx &gt; depend &gt; bindings &gt; Binder" />
       <item itemvalue="Mocha.common &gt; main &gt; rx &gt; depend &gt; bindings &gt; stress" />
       <item itemvalue="Mocha.common &gt; main &gt; rx &gt; depend &gt; stress.all" />
       <item itemvalue="Node.js.mocha" />
       <item itemvalue="Node.js.dependent-func.js" />
       <item itemvalue="npm.Coverage Mocha Report" />
+      <item itemvalue="Mocha.common &gt; main &gt; test &gt; randomTest" />
     </list>
     <recent_temporary>
       <list>
         <item itemvalue="Mocha.common &gt; main &gt; rx &gt; depend &gt; bindings &gt; stress" />
+        <item itemvalue="Mocha.common &gt; main &gt; test &gt; randomTest" />
         <item itemvalue="Mocha.common &gt; main &gt; rx &gt; depend &gt; stress.all" />
         <item itemvalue="Mocha.common &gt; main &gt; rx &gt; depend &gt; bindings &gt; Binder" />
         <item itemvalue="Karma.Binder.ts" />
-        <item itemvalue="Mocha.common &gt; main &gt; rx &gt; depend &gt; stress" />
       </list>
     </recent_temporary>
   </component>
@@ -544,21 +556,9 @@
       <workItem from="1600148726171" duration="38981000" />
       <workItem from="1600338794470" duration="492000" />
       <workItem from="1600348116854" duration="802000" />
-      <workItem from="1600362618380" duration="782000" />
-    </task>
-    <task id="LOCAL-00515" summary="Prepare release">
-      <created>1590239499160</created>
-      <option name="number" value="00515" />
-      <option name="presentableId" value="LOCAL-00515" />
-      <option name="project" value="LOCAL" />
-      <updated>1590239499160</updated>
-    </task>
-    <task id="LOCAL-00516" summary="precommit is OK">
-      <created>1590243801241</created>
-      <option name="number" value="00516" />
-      <option name="presentableId" value="LOCAL-00516" />
-      <option name="project" value="LOCAL" />
-      <updated>1590243801241</updated>
+      <workItem from="1600362618380" duration="1372000" />
+      <workItem from="1600412097392" duration="47000" />
+      <workItem from="1600572910230" duration="16826000" />
     </task>
     <task id="LOCAL-00517" summary="Fix travis tests">
       <created>1590245924311</created>
@@ -889,7 +889,21 @@
       <option name="project" value="LOCAL" />
       <updated>1600363156414</updated>
     </task>
-    <option name="localTasksCounter" value="564" />
+    <task id="LOCAL-00564" summary="1.2.2-a - Fix package.json. Removed unnecessary files from package.">
+      <created>1600363588343</created>
+      <option name="number" value="00564" />
+      <option name="presentableId" value="LOCAL-00564" />
+      <option name="project" value="LOCAL" />
+      <updated>1600363588343</updated>
+    </task>
+    <task id="LOCAL-00565" summary="Develop random test helpers">
+      <created>1600588454392</created>
+      <option name="number" value="00565" />
+      <option name="presentableId" value="LOCAL-00565" />
+      <option name="project" value="LOCAL" />
+      <updated>1600588454392</updated>
+    </task>
+    <option name="localTasksCounter" value="566" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -973,9 +987,9 @@
     <MESSAGE value="Improved depend stress test" />
     <MESSAGE value="Develop two way binding" />
     <MESSAGE value="Develop rendom test helpers" />
-    <MESSAGE value="Develop random test helpers" />
     <MESSAGE value="1.2.2-a - Fix package.json. Removed unnecessary files from package." />
-    <option name="LAST_COMMIT_MESSAGE" value="1.2.2-a - Fix package.json. Removed unnecessary files from package." />
+    <MESSAGE value="Develop random test helpers" />
+    <option name="LAST_COMMIT_MESSAGE" value="Develop random test helpers" />
   </component>
   <component name="WindowStateProjectService">
     <state x="612" y="18" key="#TypeScript" timestamp="1599721259508">
@@ -986,38 +1000,46 @@
       <screen x="0" y="0" width="1920" height="882" />
     </state>
     <state x="38" y="39" width="1718" height="786" key="#com.intellij.execution.impl.EditConfigurationsDialog/0.0.1920.882@0.0.1920.882" timestamp="1595574841345" />
+    <state x="717" y="85" key="#com.intellij.ide.util.MemberChooser" timestamp="1600585428185">
+      <screen x="0" y="0" width="1920" height="882" />
+    </state>
+    <state x="717" y="85" key="#com.intellij.ide.util.MemberChooser/0.0.1920.882@0.0.1920.882" timestamp="1600585428185" />
+    <state x="318" y="0" key="#com.intellij.refactoring.rename.AutomaticRenamingDialog" timestamp="1600596853908">
+      <screen x="0" y="0" width="1920" height="882" />
+    </state>
+    <state x="318" y="0" key="#com.intellij.refactoring.rename.AutomaticRenamingDialog/0.0.1920.882@0.0.1920.882" timestamp="1600596853908" />
     <state x="651" y="254" key="ANALYSIS_DLG_com.intellij.analysis.BaseAnalysisAction$1" timestamp="1600249459130">
       <screen x="0" y="0" width="1920" height="882" />
     </state>
     <state x="651" y="254" key="ANALYSIS_DLG_com.intellij.analysis.BaseAnalysisAction$1/0.0.1920.882@0.0.1920.882" timestamp="1600249459130" />
-    <state x="-2" y="0" width="1918" height="882" key="CommitChangelistDialog2" timestamp="1600363155207">
+    <state x="-2" y="0" width="1918" height="882" key="CommitChangelistDialog2" timestamp="1600588453653">
       <screen x="0" y="0" width="1920" height="882" />
     </state>
-    <state x="-2" y="0" width="1918" height="882" key="CommitChangelistDialog2/0.0.1920.882@0.0.1920.882" timestamp="1600363155207" />
+    <state x="-2" y="0" width="1918" height="882" key="CommitChangelistDialog2/0.0.1920.882@0.0.1920.882" timestamp="1600588453653" />
     <state x="0" y="4" width="1920" height="875" key="DiffContextDialog" timestamp="1598195455772">
       <screen x="0" y="0" width="1920" height="882" />
     </state>
     <state x="0" y="4" width="1920" height="875" key="DiffContextDialog/0.0.1920.882@0.0.1920.882" timestamp="1598195455772" />
-    <state x="1059" y="106" key="FileChooserDialogImpl" timestamp="1595574844421">
+    <state x="1059" y="106" key="FileChooserDialogImpl" timestamp="1600600925638">
       <screen x="0" y="0" width="1920" height="882" />
     </state>
-    <state x="1059" y="106" key="FileChooserDialogImpl/0.0.1920.882@0.0.1920.882" timestamp="1595574844421" />
-    <state width="381" height="240" key="GridCell.Tab.0.bottom" timestamp="1600335284278">
+    <state x="1059" y="106" key="FileChooserDialogImpl/0.0.1920.882@0.0.1920.882" timestamp="1600600925638" />
+    <state width="570" height="334" key="GridCell.Tab.0.bottom" timestamp="1600601334754">
       <screen x="0" y="0" width="1920" height="882" />
     </state>
-    <state width="381" height="240" key="GridCell.Tab.0.bottom/0.0.1920.882@0.0.1920.882" timestamp="1600335284278" />
-    <state width="381" height="240" key="GridCell.Tab.0.center" timestamp="1600335284278">
+    <state width="570" height="334" key="GridCell.Tab.0.bottom/0.0.1920.882@0.0.1920.882" timestamp="1600601334754" />
+    <state width="570" height="334" key="GridCell.Tab.0.center" timestamp="1600601334754">
       <screen x="0" y="0" width="1920" height="882" />
     </state>
-    <state width="381" height="240" key="GridCell.Tab.0.center/0.0.1920.882@0.0.1920.882" timestamp="1600335284278" />
-    <state width="381" height="240" key="GridCell.Tab.0.left" timestamp="1600335284278">
+    <state width="570" height="334" key="GridCell.Tab.0.center/0.0.1920.882@0.0.1920.882" timestamp="1600601334754" />
+    <state width="570" height="334" key="GridCell.Tab.0.left" timestamp="1600601334754">
       <screen x="0" y="0" width="1920" height="882" />
     </state>
-    <state width="381" height="240" key="GridCell.Tab.0.left/0.0.1920.882@0.0.1920.882" timestamp="1600335284278" />
-    <state width="381" height="240" key="GridCell.Tab.0.right" timestamp="1600335284278">
+    <state width="570" height="334" key="GridCell.Tab.0.left/0.0.1920.882@0.0.1920.882" timestamp="1600601334754" />
+    <state width="570" height="334" key="GridCell.Tab.0.right" timestamp="1600601334754">
       <screen x="0" y="0" width="1920" height="882" />
     </state>
-    <state width="381" height="240" key="GridCell.Tab.0.right/0.0.1920.882@0.0.1920.882" timestamp="1600335284278" />
+    <state width="570" height="334" key="GridCell.Tab.0.right/0.0.1920.882@0.0.1920.882" timestamp="1600601334754" />
     <state width="704" height="430" key="GridCell.Tab.1.bottom" timestamp="1600335283687">
       <screen x="0" y="0" width="1920" height="882" />
     </state>
@@ -1074,10 +1096,10 @@
       <screen x="0" y="0" width="1920" height="882" />
     </state>
     <state x="722" y="331" key="com.intellij.openapi.vcs.update.UpdateOrStatusOptionsDialogupdate-v2/0.0.1920.882@0.0.1920.882" timestamp="1600076722588" />
-    <state x="2" y="1" width="1908" height="878" key="find.popup" timestamp="1600248749316">
+    <state x="2" y="1" width="1908" height="878" key="find.popup" timestamp="1600599655574">
       <screen x="0" y="0" width="1920" height="882" />
     </state>
-    <state x="2" y="1" width="1908" height="878" key="find.popup/0.0.1920.882@0.0.1920.882" timestamp="1600248749316" />
+    <state x="2" y="1" width="1908" height="878" key="find.popup/0.0.1920.882@0.0.1920.882" timestamp="1600599655574" />
   </component>
   <component name="XDebuggerManager">
     <breakpoint-manager>
@@ -1244,7 +1266,7 @@
         </line-breakpoint>
         <line-breakpoint enabled="true" type="javascript">
           <url>file://$PROJECT_DIR$/src/main/common/test/randomTest.ts</url>
-          <line>390</line>
+          <line>396</line>
           <option name="timeStamp" value="1640" />
         </line-breakpoint>
       </breakpoints>
