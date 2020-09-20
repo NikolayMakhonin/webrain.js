@@ -101,22 +101,55 @@ describe('common > main > rx > depend > bindings > stress', function() {
 			}
 		}
 
-		private onChange(objectNumber: number, propName: string, value: number) {
-			// TODO
+		private onChange(objectNumber: number, propName: string) {
+			const keyFrom = objectNumber + '_' + propName
+			const from = this._bindings[keyFrom]
+			if (!from) {
+				return
+			}
+
+			const value = this.objects[objectNumber][propName]
+
+			for (const keyTo in from) {
+				if (Object.prototype.hasOwnProperty.call(from, keyTo)) {
+					const to = from[keyTo]
+					this.setValue(to.objectNumber, to.propName, value)
+				}
+			}
 		}
 
 		private _bindings: {
-			[key in string]: number
+			[key in string]: {
+				[key in string]: {
+					objectNumber: number,
+					propName: string,
+					count: number,
+				}
+			}
 		}
 
 		public bindOneWay(
 			objectNumberFrom: number, propNameFrom: string,
 			objectNumberTo: number, propNameTo: string,
 		): IUnbind {
-			const key = objectNumberFrom + '_' + propNameFrom + ' > '
-				+ objectNumberTo + '_' + propNameTo
+			const keyFrom = objectNumberFrom + '_' + propNameFrom
+			const keyTo = objectNumberTo + '_' + propNameTo
 
-			this._bindings[key] = (this._bindings[key] || 0) + 1
+			let from = this._bindings[keyFrom]
+			if (!from) {
+				this._bindings[keyFrom] = from = {}
+			}
+
+			let to = from[keyTo]
+			if (!to) {
+				from[keyTo] = to = {
+					objectNumber: objectNumberTo,
+					propName: propNameTo,
+					count: 0,
+				}
+			}
+
+			to.count++
 
 			let unBinded
 			return () => {
@@ -125,8 +158,8 @@ describe('common > main > rx > depend > bindings > stress', function() {
 				}
 				unBinded = true
 
-				assert.ok(this._bindings[key] >= 1)
-				this._bindings[key]--
+				assert.ok(to.count >= 0)
+				to.count++
 			}
 		}
 
