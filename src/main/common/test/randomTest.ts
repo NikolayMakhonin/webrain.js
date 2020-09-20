@@ -552,8 +552,6 @@ export type IRandomTestFactory<
 	>,
 }>
 
-const x: IRandomTestFactory
-
 class RandomTestFactory<
 	TMetrics = any,
 	TOptionsPattern = any,
