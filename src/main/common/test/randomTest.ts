@@ -104,13 +104,15 @@ export function testIterationBuilder<TState>({
 
 export type TTestIterator<TOptions> = (rnd: Random, options: TOptions) => ThenableOrIteratorOrValue<any>
 
+export type TCreateState<TOptions, TState> = (rnd: Random, options: TOptions) => ThenableOrIteratorOrValue<TState>
+
 // region testIteratorBuilder
 
 export function testIteratorBuilder<
 	TOptions,
 	TState
 >(
-	createState: (rnd: Random, options: TOptions) => ThenableOrIteratorOrValue<TState>,
+	createState: TCreateState<TOptions, TState>,
 	{
 		before,
 		stopPredicate,
@@ -247,6 +249,10 @@ export interface ISearchBestErrorParams<TMetrics> {
 		=> ThenableOrIteratorOrValue<boolean>
 }
 
+export type TCreateMetrics<TMetrics> = (metrics: ISearchBestErrorMetrics) => ThenableOrIteratorOrValue<TMetrics>
+
+export type TCompareMetrics<TMetrics> = (metrics1: TMetrics, metrics2: TMetrics) => number
+
 export type TSearchBestError<TMetrics> = <TContext>(_this: TContext, {
 	customSeed,
 	metricsMin,
@@ -255,8 +261,8 @@ export type TSearchBestError<TMetrics> = <TContext>(_this: TContext, {
 	compareMetrics,
 	func,
 }: ISearchBestErrorParams<TMetrics> & {
-	createMetrics: (metrics: ISearchBestErrorMetrics) => ThenableOrIteratorOrValue<TMetrics>,
-	compareMetrics: (metrics1, metrics2) => number,
+	createMetrics: TCreateMetrics<TMetrics>,
+	compareMetrics: TCompareMetrics<TMetrics>,
 	func: (this: TContext, seed: number, metrics: TMetrics, metricsMin: TMetrics) => ThenableOrIteratorOrValue<any>,
 }) => ThenableOrIteratorOrValue<any>
 
@@ -279,8 +285,8 @@ export function searchBestErrorBuilder<TMetrics>({
 			compareMetrics,
 			func,
 		}: ISearchBestErrorParams<TMetrics> & {
-			createMetrics: (metrics: ISearchBestErrorMetrics) => ThenableOrIteratorOrValue<TMetrics>,
-			compareMetrics: (metrics1, metrics2) => number,
+			createMetrics: TCreateMetrics<TMetrics>,
+			compareMetrics: TCompareMetrics<TMetrics>,
 			func: (seed: number, metrics: TMetrics, metricsMin: TMetrics) => void | Promise<void>,
 		},
 	) {
@@ -482,6 +488,105 @@ export function randomTestBuilder<
 			},
 		))
 	}
+}
+
+// endregion
+
+// region
+
+// type IfAny<T, Y, N> = 0 extends (1 & T) ? Y : N
+type If<T, Y, N> = T extends boolean ? (T extends false ? N : Y) : N
+type Not<T> = T extends true ? false : true
+type IfNever<T, Y, N> = [T] extends [never] ? Y : N
+type IsNever<T> = IfNever<T, true, false>
+type NotNever<T> = IfNever<T, false, true>
+
+export type IRandomTestFactory<
+	TMetrics = never,
+	TOptionsPattern = never,
+	TOptions = never,
+	TState = never,
+	HasCreateMetrics = false,
+	HasCompareMetrics = false,
+	HasOptionsPatternBuilder = false,
+	HasOptionsGenerator = false,
+	HasCreateState = false,
+> = {}
+& If<HasCreateMetrics, {}, {
+	createMetrics<_TMetrics>(value: TCreateMetrics<_TMetrics>): IRandomTestFactory<
+		_TMetrics, TOptionsPattern, TOptions, TState,
+		true, HasCompareMetrics, HasOptionsPatternBuilder, HasOptionsGenerator, HasCreateState
+	>,
+}>
+& If<HasCompareMetrics | IsNever<TMetrics>, {}, {
+	compareMetrics(value: TCompareMetrics<TMetrics>): IRandomTestFactory<
+		TMetrics, TOptionsPattern, TOptions, TState,
+		HasCreateMetrics, true, HasOptionsPatternBuilder, HasOptionsGenerator, HasCreateState
+	>,
+}>
+& If<HasOptionsPatternBuilder | IsNever<TMetrics>, {}, {
+	optionsPatternBuilder<_TOptionsPattern>(
+		value: TTestOptionsPatternBuilder<TMetrics, _TOptionsPattern>,
+	): IRandomTestFactory<
+		TMetrics, _TOptionsPattern, TOptions, TState,
+		HasCreateMetrics, HasCompareMetrics, true, HasOptionsGenerator, HasCreateState
+	>,
+}>
+& If<HasOptionsGenerator | IsNever<TOptionsPattern>, {}, {
+	optionsGenerator<_TOptions>(value: TTestOptionsGenerator<TOptionsPattern, _TOptions>): IRandomTestFactory<
+		TMetrics, TOptionsPattern, _TOptions, TState,
+		HasCreateMetrics, HasCompareMetrics, HasOptionsPatternBuilder, true, HasCreateState
+	>,
+}>
+& If<HasCreateState | IsNever<TOptions>, {}, {
+	createState<_TState>(value: TCreateState<TOptions, _TState>): IRandomTestFactory<
+		TMetrics, TOptionsPattern, TOptions, _TState,
+		HasCreateMetrics, HasCompareMetrics, HasOptionsPatternBuilder, HasOptionsGenerator, true
+	>,
+}>
+
+const x: IRandomTestFactory
+
+class RandomTestFactory<
+	TMetrics = any,
+	TOptionsPattern = any,
+	TOptions = any,
+	TState = any,
+> {
+	private _createMetrics: TCreateMetrics<any>
+	private _compareMetrics: TCompareMetrics<any>
+	private _optionsPatternBuilder: TTestOptionsPatternBuilder<TMetrics, TOptionsPattern>
+	private _optionsGenerator: TTestOptionsGenerator<TOptionsPattern, TOptions>
+	private _createState: TCreateState<TOptions, TState>
+
+	public createMetrics<_TMetrics>(value: TCreateMetrics<_TMetrics>) {
+		this._createMetrics = value
+		return this
+	}
+
+	public compareMetrics(value: TCompareMetrics<TMetrics>) {
+		this._compareMetrics = value
+		return this
+	}
+
+	public optionsPatternBuilder(value: TTestOptionsPatternBuilder<TMetrics, TOptionsPattern>) {
+		this._optionsPatternBuilder = value
+		return this
+	}
+
+	public optionsGenerator(value: TTestOptionsGenerator<TOptionsPattern, TOptions>) {
+		this._optionsGenerator = value
+		return this
+	}
+
+	public createState(value: TCreateState<TOptions, TState>) {
+		this._createState = value
+		return this
+	}
+}
+
+export function randomTestFactory(): IRandomTestFactory {
+	return new RandomTestFactory() as any
 }
 
 // endregion
