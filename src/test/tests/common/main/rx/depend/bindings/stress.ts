@@ -14,6 +14,10 @@ import {
 	testIterationBuilder,
 	testIteratorBuilder,
 } from '../../../../../../../main/common/test/randomTest'
+import {
+	DestPathBuilder,
+	SourcePathBuilder
+} from "../../../../../../../main/common/rx/depend/bindings/SourceDestPathBuilder";
 
 declare const beforeEach: any
 
@@ -93,6 +97,30 @@ describe('common > main > rx > depend > bindings > stress', function() {
 			objectNumber1: number, propName1: string,
 			objectNumber2: number, propName2: string,
 		): IUnbind
+	}
+
+	const sources = {
+		prop1: new SourcePathBuilder<ObjectClass, number>(
+			b => b.f(o => o.prop1),
+		),
+		prop2: new SourcePathBuilder<ObjectClass, number>(
+			b => b.f(o => o.prop2),
+		),
+		prop3: new SourcePathBuilder<ObjectClass, number>(
+			b => b.f(o => o.prop3),
+		),
+	}
+
+	const dests = {
+		prop1: new DestPathBuilder<ObjectClass, number>(
+			b => b.f(null, (o, v) => { o.prop1 = v }),
+		),
+		prop2: new DestPathBuilder<ObjectClass, number>(
+			b => b.f(null, (o, v) => { o.prop2 = v }),
+		),
+		prop3: new DestPathBuilder<ObjectClass, number>(
+			b => b.f(null, (o, v) => { o.prop3 = v }),
+		),
 	}
 
 	class Objects extends ObjectsBase<ObjectClass> {
