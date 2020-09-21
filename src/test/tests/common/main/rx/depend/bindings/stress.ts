@@ -2,7 +2,16 @@
 import {AsyncValueOf} from '../../../../../../../main/common/async/async'
 import {webrainOptions} from '../../../../../../../main/common/helpers/webrainOptions'
 import {Random} from '../../../../../../../main/common/random/Random'
-import {IUnbind} from '../../../../../../../main/common/rx/depend/bindings/contracts'
+import {
+	IDestBuilder,
+	ISourceBuilder,
+	ISourceDestBuilder,
+	IUnbind
+} from '../../../../../../../main/common/rx/depend/bindings/contracts'
+import {
+	DestPathBuilder,
+	SourcePathBuilder,
+} from '../../../../../../../main/common/rx/depend/bindings/SourceDestPathBuilder'
 import {ObservableClass} from '../../../../../../../main/common/rx/object/ObservableClass'
 import {ObservableObjectBuilder} from '../../../../../../../main/common/rx/object/ObservableObjectBuilder'
 import {assert} from '../../../../../../../main/common/test/Assert'
@@ -15,9 +24,12 @@ import {
 	testIteratorBuilder,
 } from '../../../../../../../main/common/test/randomTest'
 import {
-	DestPathBuilder,
-	SourcePathBuilder
-} from "../../../../../../../main/common/rx/depend/bindings/SourceDestPathBuilder";
+	destPathBuilder,
+	sourceDestBuilder,
+	sourceDestPathBuilder,
+	sourcePathBuilder
+} from "../../../../../../../main/common/rx/depend/bindings/builders";
+import {pathGetSetBuild} from "../../../../../../../main/common/rx/object/properties/path/builder";
 
 declare const beforeEach: any
 
@@ -33,6 +45,9 @@ describe('common > main > rx > depend > bindings > stress', function() {
 
 	const propNames = ['prop1', 'prop2', 'prop3']
 
+	type TObject = IObject | {
+		[key in string]?: number
+	}
 	interface IObject {
 		prop1?: number
 		prop2?: number
@@ -53,7 +68,7 @@ describe('common > main > rx > depend > bindings > stress', function() {
 		.writable('prop2')
 		.writable('prop3')
 
-	function fillObject(rnd: Random, obj: IObject) {
+	function fillObject(rnd: Random, obj: TObject) {
 		obj.prop1 = rnd.nextInt(1000)
 		obj.prop2 = rnd.nextInt(1000)
 		obj.prop3 = rnd.nextInt(1000)
@@ -61,7 +76,7 @@ describe('common > main > rx > depend > bindings > stress', function() {
 	}
 
 	function generateObject(rnd: Random) {
-		return fillObject(rnd, new ObjectClass())
+		return fillObject(rnd, new ObjectClass() as any)
 	}
 
 	function generateCheckObject(rnd: Random) {
@@ -82,45 +97,97 @@ describe('common > main > rx > depend > bindings > stress', function() {
 			: pattern
 	}
 
-	abstract class ObjectsBase<TObject extends IObject> {
-		public readonly objects: TObject[]
-		public constructor(objects: TObject[]) {
+	abstract class ObjectsBase<TObj extends TObject> {
+		public readonly objects: TObj[]
+		public constructor(objects: TObj[]) {
 			this.objects = objects
 		}
 
 		public abstract setValue(objectNumber: number, propName: string, value: number)
 		public abstract bindOneWay(
+			rnd: Random,
 			objectNumberFrom: number, propNameFrom: string,
 			objectNumberTo: number, propNameTo: string,
 		): IUnbind
 		public abstract bindTwoWay(
+			rnd: Random,
 			objectNumber1: number, propName1: string,
 			objectNumber2: number, propName2: string,
 		): IUnbind
 	}
 
-	const sources = {
-		prop1: new SourcePathBuilder<ObjectClass, number>(
-			b => b.f(o => o.prop1),
-		),
-		prop2: new SourcePathBuilder<ObjectClass, number>(
-			b => b.f(o => o.prop2),
-		),
-		prop3: new SourcePathBuilder<ObjectClass, number>(
-			b => b.f(o => o.prop3),
-		),
-	}
+	const sources: {
+		[key in string]: Array<ISourceBuilder<TObject, number>>
+	} = {}
+	const dests: {
+		[key in string]: Array<IDestBuilder<TObject, number>>
+	} = {}
+	const sourceDests: {
+		[key in string]: Array<ISourceDestBuilder<TObject, number>>
+	} = {}
 
-	const dests = {
-		prop1: new DestPathBuilder<ObjectClass, number>(
-			b => b.f(null, (o, v) => { o.prop1 = v }),
-		),
-		prop2: new DestPathBuilder<ObjectClass, number>(
-			b => b.f(null, (o, v) => { o.prop2 = v }),
-		),
-		prop3: new DestPathBuilder<ObjectClass, number>(
-			b => b.f(null, (o, v) => { o.prop3 = v }),
-		),
+	for (let i = 0; i < propNames.length; i++) {
+		const propName = propNames[i]
+
+		sourceDests[propName] = [
+			sourceDestPathBuilder<TObject>()(
+				b => b.f(o => o[propName], (o, v) => { o[propName] = v }),
+			),
+			sourceDestPathBuilder<TObject>()(
+				pathGetSetBuild(b => b.f(o => o[propName], (o, v) => { o[propName] = v })),
+			),
+			sourceDestPathBuilder<TObject>()(
+				pathGetSetBuild(b => b.f(o => o[propName], (o, v) => { o[propName] = v })).pathGet,
+				pathGetSetBuild(b => b.f(o => o[propName], (o, v) => { o[propName] = v })).pathSet,
+			),
+			sourceDestPathBuilder<TObject>()(
+				b => b.f(o => o), {
+					get: b => b.f(o => o[propName]),
+					set: b => b.f(null, (o, v: number) => { o[propName] = v }),
+				},
+			),
+			sourceDestPathBuilder<TObject, number>(
+				b => b.f(o => o[propName], (o, v) => { o[propName] = v }),
+			),
+			sourceDestPathBuilder<TObject, number>(
+				pathGetSetBuild(b => b.f(o => o[propName], (o, v) => { o[propName] = v })),
+			),
+			sourceDestPathBuilder<TObject, number>(
+				pathGetSetBuild(b => b.f(o => o[propName])).pathGet,
+				pathGetSetBuild(b => b.f(null, (o, v: number) => { o[propName] = v })).pathSet,
+			),
+			sourceDestPathBuilder<TObject, TObject, number>(
+				b => b.f(o => o),
+				{
+					get: b => b.f(o => o[propName]),
+					set: b => b.f(null, (o, v) => { o[propName] = v }),
+				},
+			),
+		]
+
+		sources[propName] = [
+			...sourceDests[propName],
+			sourcePathBuilder<TObject>()(b => b.f(o => o[propName])),
+			sourcePathBuilder<TObject>()(
+				pathGetSetBuild(b => b.f(o => o[propName])).pathGet,
+			),
+			sourcePathBuilder<TObject, number>(b => b.f(o => o[propName])),
+			sourcePathBuilder<TObject, number>(
+				pathGetSetBuild(b => b.f(o => o[propName])).pathGet,
+			),
+		]
+
+		dests[propName] = [
+			...sourceDests[propName],
+			destPathBuilder<TObject>()(b => b.f(null, (o, v) => { o[propName] = v })),
+			destPathBuilder<TObject>()(
+				pathGetSetBuild(b => b.f(null, (o, v) => { o[propName] = v })).pathSet,
+			),
+			destPathBuilder<TObject, number>(b => b.f(null, (o, v) => { o[propName] = v })),
+			destPathBuilder<TObject, number>(
+				pathGetSetBuild(b => b.f(null, (o, v: number) => { o[propName] = v })).pathSet,
+			),
+		]
 	}
 
 	class Objects extends ObjectsBase<ObjectClass> {
@@ -129,21 +196,47 @@ describe('common > main > rx > depend > bindings > stress', function() {
 		}
 
 		public bindOneWay(
+			rnd: Random,
 			objectNumberFrom: number, propNameFrom: string,
 			objectNumberTo: number, propNameTo: string,
 		): IUnbind {
+			const sourceBuilder = rnd.nextArrayItem(sources[propNameFrom])
+			const destBuilder = rnd.nextArrayItem(dests[propNameTo])
 
+			const sourceObject = this.objects[objectNumberFrom]
+			const destObject = this.objects[objectNumberTo]
+
+			const source = sourceBuilder.get(sourceObject)
+			const dest = destBuilder.get(destObject)
+
+			const binder = source.getOneWayBinder(dest)
+
+			return binder.bind()
 		}
 
 		public bindTwoWay(
+			rnd: Random,
 			objectNumber1: number, propName1: string,
 			objectNumber2: number, propName2: string,
 		): IUnbind {
+			const builder1 = rnd.nextArrayItem(sourceDests[propName1])
+			const builder2 = rnd.nextArrayItem(sourceDests[propName2])
 
+			const object1 = this.objects[objectNumber1]
+			const object2 = this.objects[objectNumber2]
+
+			const sourceDest1 = builder1.get(object1)
+			const sourceDest2 = builder2.get(object2)
+
+			const binder = rnd.nextBoolean()
+				? sourceDest1.getTwoWayBinder(sourceDest2)
+				: sourceDest2.getTwoWayBinder(sourceDest1)
+
+			return binder.bind()
 		}
 	}
 
-	class CheckObjects extends ObjectsBase<IObject> {
+	class CheckObjects extends ObjectsBase<TObject> {
 		public setValue(objectNumber: number, propName: string, value: number) {
 			if (this.objects[objectNumber][propName] !== value) {
 				this.objects[objectNumber][propName] = value
@@ -153,6 +246,7 @@ describe('common > main > rx > depend > bindings > stress', function() {
 
 		private onChange(objectNumber: number, propName: string) {
 			const keyFrom = objectNumber + '_' + propName
+
 			const from = this._bindings[keyFrom]
 			if (!from) {
 				return
@@ -176,9 +270,10 @@ describe('common > main > rx > depend > bindings > stress', function() {
 					count: number,
 				}
 			}
-		}
+		} = {}
 
 		public bindOneWay(
+			rnd: Random,
 			objectNumberFrom: number, propNameFrom: string,
 			objectNumberTo: number, propNameTo: string,
 		): IUnbind {
@@ -214,11 +309,12 @@ describe('common > main > rx > depend > bindings > stress', function() {
 		}
 
 		public bindTwoWay(
+			rnd: Random,
 			objectNumber1: number, propName1: string,
 			objectNumber2: number, propName2: string,
 		): IUnbind {
-			const unbind1 = this.bindOneWay(objectNumber1, propName1, objectNumber2, propName2)
-			const unbind2 = this.bindOneWay(objectNumber2, propName2, objectNumber1, propName1)
+			const unbind1 = this.bindOneWay(rnd, objectNumber1, propName1, objectNumber2, propName2)
+			const unbind2 = this.bindOneWay(rnd, objectNumber2, propName2, objectNumber1, propName1)
 
 			return () => {
 				unbind1()
@@ -227,7 +323,7 @@ describe('common > main > rx > depend > bindings > stress', function() {
 		}
 	}
 
-	function simplifyObject(obj: IObject) {
+	function simplifyObject(obj: TObject) {
 		if (obj.constructor === Object) {
 			return obj
 		}
@@ -239,11 +335,11 @@ describe('common > main > rx > depend > bindings > stress', function() {
 		return simplify
 	}
 
-	function simplifyObjects(items: IObject[]) {
+	function simplifyObjects(items: TObject[]) {
 		return items.map(simplifyObject)
 	}
 
-	function assertObjects(actual: IObject[], expected: IObject[]) {
+	function assertObjects(actual: TObject[], expected: TObject[]) {
 		assert.deepStrictEqual(simplifyObjects(actual), simplifyObjects(expected))
 	}
 
@@ -316,8 +412,6 @@ describe('common > main > rx > depend > bindings > stress', function() {
 
 		state.objects.setValue(objectNumber, propName, value)
 		state.checkObjects.setValue(objectNumber, propName, value)
-
-		assertObjects(state.objects.objects, state.checkObjects.objects)
 	}
 
 	// endregion
@@ -325,6 +419,15 @@ describe('common > main > rx > depend > bindings > stress', function() {
 	// region testIteration
 
 	const testIteration = testIterationBuilder({
+		waitAsyncAll: {
+			weight: 0.05,
+			after(rnd, state) {
+				assertObjects(state.objects.objects, state.checkObjects.objects)
+			},
+		},
+		waitAsyncRandom: {
+			weight: 0.2,
+		},
 		action: {
 			weight: 1,
 			func: action,
@@ -374,7 +477,7 @@ describe('common > main > rx > depend > bindings > stress', function() {
 	it('base', async function() {
 		await randomTest({
 			stopPredicate: testRunnerMetrics => {
-				return testRunnerMetrics.iterationNumber >= 50
+				return testRunnerMetrics.iterationNumber >= 50000
 			},
 			customSeed: null,
 			metricsMin: null,

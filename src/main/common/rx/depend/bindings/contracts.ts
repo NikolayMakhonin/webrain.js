@@ -23,9 +23,12 @@ export interface ISourceBuilder<TObject, TValue> {
 }
 
 export interface IDestBuilder<TObject, TValue> {
-	get(object: TObject): TDestFunc<TValue>
+	get(object: TObject): IDest<TValue> | TDestFunc<TValue>
 }
 
-export interface ISourceDestBuilder<TObject, TValue> {
+export interface ISourceDestBuilder<TObject, TValue>
+	extends ISourceBuilder<TObject, TValue>,
+		IDestBuilder<TObject, TValue>
+{
 	get(object: TObject): ISourceDest<TValue>
 }

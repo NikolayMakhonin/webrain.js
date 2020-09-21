@@ -33,10 +33,24 @@ export class SourcePath<TValue> implements ISource<TValue> {
 
 SourcePath.prototype.getOneWayBinder = depend(SourcePath.prototype.getOneWayBinder)
 
+function resolvePathOrBuilder<TObject, TValue>(
+	pathOrBuilder: Path<TObject, TValue> | TNextPath<TObject, TObject, ThenableOrIteratorOrValue<TValue>>,
+) {
+	return typeof pathOrBuilder === 'function'
+		? pathOrBuilder(new Path()).init() as any
+		: pathOrBuilder
+}
+
 export class SourcePathBuilder<TObject, TValue> implements ISourceBuilder<TObject, TValue> {
 	private readonly _path: Path<TObject, TValue>
-	constructor(pathBuilder: TNextPath<TObject, TObject, ThenableOrIteratorOrValue<TValue>>) {
-		this._path = pathBuilder(new Path()).init() as any
+	constructor(pathOrBuilder: Path<TObject, TValue> | TNextPath<TObject, TObject, ThenableOrIteratorOrValue<TValue>>) {
+		this._path = resolvePathOrBuilder(pathOrBuilder)
+		if (this._path == null) {
+			throw new Error('path == null')
+		}
+		if (!this._path.canGet) {
+			throw new Error('path.canGet is false')
+		}
 	}
 
 	public get(object: TObject): ISource<TValue> {
@@ -50,8 +64,14 @@ SourcePathBuilder.prototype.get = depend(SourcePathBuilder.prototype.get)
 
 export class DestPathBuilder<TObject, TValue> implements IDestBuilder<TObject, TValue> {
 	private readonly _path: Path<TObject, TValue>
-	constructor(pathBuilder: TNextPath<TObject, TObject, ThenableOrIteratorOrValue<TValue>>) {
-		this._path = pathBuilder(new Path()).init() as any
+	constructor(pathOrBuilder: Path<TObject, TValue> | TNextPath<TObject, TObject, ThenableOrIteratorOrValue<TValue>>) {
+		this._path = resolvePathOrBuilder(pathOrBuilder)
+		if (this._path == null) {
+			throw new Error('path == null')
+		}
+		if (!this._path.canSet) {
+			throw new Error('path.canSet is false')
+		}
 	}
 
 	public get(object: TObject): TDestFunc<TValue> {

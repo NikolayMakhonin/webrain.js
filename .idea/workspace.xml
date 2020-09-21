@@ -31,6 +31,11 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="69b2ee16-521b-4efd-b473-8e19e3df4d09" name="Default Changelist" comment="">
+      <change afterPath="$PROJECT_DIR$/src/main/common/rx/depend/bindings/builders.ts" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/common/rx/object/properties/path/builder/test.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/common/rx/depend/bindings/SourceDestPathBuilder.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/common/rx/depend/bindings/SourceDestPathBuilder.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/common/rx/depend/bindings/contracts.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/common/rx/depend/bindings/contracts.ts" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/test/tests/common/main/rx/depend/bindings/stress.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/test/tests/common/main/rx/depend/bindings/stress.ts" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
@@ -100,7 +105,7 @@
     <property name="restartRequiresConfirmation" value="false" />
     <property name="run.code.analysis.last.selected.profile" value="pProject Default" />
     <property name="settings.editor.selected.configurable" value="coverage" />
-    <property name="ts.external.directory.path" value="D:\Work\NodeJs\modules\webrain\node_modules\typescript\lib" />
+    <property name="ts.external.directory.path" value="L:\Work\_GIT\GitHub\NodeJs\modules\webrain\node_modules\typescript\lib" />
   </component>
   <component name="RecentsManager">
     <key name="CopyFile.RECENT_KEYS">
@@ -548,22 +553,7 @@
       <workItem from="1600348116854" duration="802000" />
       <workItem from="1600362618380" duration="1372000" />
       <workItem from="1600412097392" duration="47000" />
-      <workItem from="1600572910230" duration="17574000" />
-      <workItem from="1600603276037" duration="1202000" />
-    </task>
-    <task id="LOCAL-00519" summary="Fix travis tests">
-      <created>1590253174567</created>
-      <option name="number" value="00519" />
-      <option name="presentableId" value="LOCAL-00519" />
-      <option name="project" value="LOCAL" />
-      <updated>1590253174567</updated>
-    </task>
-    <task id="LOCAL-00520" summary="Fix travis tests">
-      <created>1590295746204</created>
-      <option name="number" value="00520" />
-      <option name="presentableId" value="LOCAL-00520" />
-      <option name="project" value="LOCAL" />
-      <updated>1590295746205</updated>
+      <workItem from="1600572910230" duration="30696000" />
     </task>
     <task id="LOCAL-00521" summary="precommit is OK. travis is OK.">
       <created>1590296472547</created>
@@ -894,7 +884,21 @@
       <option name="project" value="LOCAL" />
       <updated>1600602211153</updated>
     </task>
-    <option name="localTasksCounter" value="568" />
+    <task id="LOCAL-00568" summary="Develop random test helpers">
+      <created>1600602857122</created>
+      <option name="number" value="00568" />
+      <option name="presentableId" value="LOCAL-00568" />
+      <option name="project" value="LOCAL" />
+      <updated>1600602857122</updated>
+    </task>
+    <task id="LOCAL-00569" summary="Develop two way binding tests...">
+      <created>1600602880598</created>
+      <option name="number" value="00569" />
+      <option name="presentableId" value="LOCAL-00569" />
+      <option name="project" value="LOCAL" />
+      <updated>1600602880598</updated>
+    </task>
+    <option name="localTasksCounter" value="570" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -991,10 +995,10 @@
       <screen x="0" y="0" width="1920" height="882" />
     </state>
     <state x="38" y="39" width="1718" height="786" key="#com.intellij.execution.impl.EditConfigurationsDialog/0.0.1920.882@0.0.1920.882" timestamp="1595574841345" />
-    <state x="717" y="85" key="#com.intellij.ide.util.MemberChooser" timestamp="1600585428185">
+    <state x="717" y="85" key="#com.intellij.ide.util.MemberChooser" timestamp="1600666256445">
       <screen x="0" y="0" width="1920" height="882" />
     </state>
-    <state x="717" y="85" key="#com.intellij.ide.util.MemberChooser/0.0.1920.882@0.0.1920.882" timestamp="1600585428185" />
+    <state x="717" y="85" key="#com.intellij.ide.util.MemberChooser/0.0.1920.882@0.0.1920.882" timestamp="1600666256445" />
     <state x="318" y="0" key="#com.intellij.refactoring.rename.AutomaticRenamingDialog" timestamp="1600596853908">
       <screen x="0" y="0" width="1920" height="882" />
     </state>
@@ -1003,10 +1007,10 @@
       <screen x="0" y="0" width="1920" height="882" />
     </state>
     <state x="651" y="254" key="ANALYSIS_DLG_com.intellij.analysis.BaseAnalysisAction$1/0.0.1920.882@0.0.1920.882" timestamp="1600249459130" />
-    <state x="-2" y="0" width="1918" height="882" key="CommitChangelistDialog2" timestamp="1600602210521">
+    <state x="-2" y="0" width="1918" height="882" key="CommitChangelistDialog2" timestamp="1600602879792">
       <screen x="0" y="0" width="1920" height="882" />
     </state>
-    <state x="-2" y="0" width="1918" height="882" key="CommitChangelistDialog2/0.0.1920.882@0.0.1920.882" timestamp="1600602210521" />
+    <state x="-2" y="0" width="1918" height="882" key="CommitChangelistDialog2/0.0.1920.882@0.0.1920.882" timestamp="1600602879792" />
     <state x="0" y="4" width="1917" height="875" key="DiffContextDialog" timestamp="1600602166160">
       <screen x="0" y="0" width="1920" height="882" />
     </state>
@@ -1015,22 +1019,22 @@
       <screen x="0" y="0" width="1920" height="882" />
     </state>
     <state x="1059" y="106" key="FileChooserDialogImpl/0.0.1920.882@0.0.1920.882" timestamp="1600600925638" />
-    <state width="570" height="334" key="GridCell.Tab.0.bottom" timestamp="1600601334754">
+    <state width="644" height="370" key="GridCell.Tab.0.bottom" timestamp="1600669462119">
       <screen x="0" y="0" width="1920" height="882" />
     </state>
-    <state width="570" height="334" key="GridCell.Tab.0.bottom/0.0.1920.882@0.0.1920.882" timestamp="1600601334754" />
-    <state width="570" height="334" key="GridCell.Tab.0.center" timestamp="1600601334754">
+    <state width="644" height="370" key="GridCell.Tab.0.bottom/0.0.1920.882@0.0.1920.882" timestamp="1600669462119" />
+    <state width="644" height="370" key="GridCell.Tab.0.center" timestamp="1600669462118">
       <screen x="0" y="0" width="1920" height="882" />
     </state>
-    <state width="570" height="334" key="GridCell.Tab.0.center/0.0.1920.882@0.0.1920.882" timestamp="1600601334754" />
-    <state width="570" height="334" key="GridCell.Tab.0.left" timestamp="1600601334754">
+    <state width="644" height="370" key="GridCell.Tab.0.center/0.0.1920.882@0.0.1920.882" timestamp="1600669462118" />
+    <state width="644" height="370" key="GridCell.Tab.0.left" timestamp="1600669462117">
       <screen x="0" y="0" width="1920" height="882" />
     </state>
-    <state width="570" height="334" key="GridCell.Tab.0.left/0.0.1920.882@0.0.1920.882" timestamp="1600601334754" />
-    <state width="570" height="334" key="GridCell.Tab.0.right" timestamp="1600601334754">
+    <state width="644" height="370" key="GridCell.Tab.0.left/0.0.1920.882@0.0.1920.882" timestamp="1600669462117" />
+    <state width="644" height="370" key="GridCell.Tab.0.right" timestamp="1600669462118">
       <screen x="0" y="0" width="1920" height="882" />
     </state>
-    <state width="570" height="334" key="GridCell.Tab.0.right/0.0.1920.882@0.0.1920.882" timestamp="1600601334754" />
+    <state width="644" height="370" key="GridCell.Tab.0.right/0.0.1920.882@0.0.1920.882" timestamp="1600669462118" />
     <state width="704" height="430" key="GridCell.Tab.1.bottom" timestamp="1600335283687">
       <screen x="0" y="0" width="1920" height="882" />
     </state>
@@ -1079,10 +1083,10 @@
       <screen x="0" y="0" width="1920" height="882" />
     </state>
     <state width="704" height="430" key="GridCell.Tab.3.right/0.0.1920.882@0.0.1920.882" timestamp="1600335283687" />
-    <state x="183" y="66" key="MergeDialog" timestamp="1600279004399">
+    <state x="183" y="66" key="MergeDialog" timestamp="1600625796829">
       <screen x="0" y="0" width="1920" height="882" />
     </state>
-    <state x="183" y="66" key="MergeDialog/0.0.1920.882@0.0.1920.882" timestamp="1600279004399" />
+    <state x="183" y="66" key="MergeDialog/0.0.1920.882@0.0.1920.882" timestamp="1600625796829" />
     <state x="691" y="68" key="RollbackChangesDialog" timestamp="1600602173374">
       <screen x="0" y="0" width="1920" height="882" />
     </state>
@@ -1091,10 +1095,14 @@
       <screen x="0" y="0" width="1920" height="882" />
     </state>
     <state x="722" y="331" key="com.intellij.openapi.vcs.update.UpdateOrStatusOptionsDialogupdate-v2/0.0.1920.882@0.0.1920.882" timestamp="1600076722588" />
-    <state x="2" y="1" width="1908" height="878" key="find.popup" timestamp="1600599655574">
+    <state x="2" y="1" width="1908" height="878" key="find.popup" timestamp="1600666235808">
       <screen x="0" y="0" width="1920" height="882" />
     </state>
-    <state x="2" y="1" width="1908" height="878" key="find.popup/0.0.1920.882@0.0.1920.882" timestamp="1600599655574" />
+    <state x="2" y="1" width="1908" height="878" key="find.popup/0.0.1920.882@0.0.1920.882" timestamp="1600666235808" />
+    <state x="531" y="190" key="run.anything.popup" timestamp="1600668501151">
+      <screen x="0" y="0" width="1920" height="882" />
+    </state>
+    <state x="531" y="190" key="run.anything.popup/0.0.1920.882@0.0.1920.882" timestamp="1600668501151" />
   </component>
   <component name="XDebuggerManager">
     <breakpoint-manager>
@@ -1282,35 +1290,35 @@
     </watches-manager>
   </component>
   <component name="com.intellij.coverage.CoverageDataManagerImpl">
-    <SUITE FILE_PATH="coverage/webrain$ObservableObject_deepSubscribe.dat" NAME="ObservableObject.deepSubscribe Coverage Results" MODIFIED="1567141941071" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="MochaJavaScriptTestRunnerCoverage" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" />
-    <SUITE FILE_PATH="coverage/webrain$common___async.dat" NAME="common &gt; async Coverage Results" MODIFIED="1585555580717" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="MochaJavaScriptTestRunnerCoverage" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" />
-    <SUITE FILE_PATH="coverage/webrain$common___main___rx___deep_subscribe.dat" NAME="common &gt; main &gt; rx &gt; deep-subscribe Coverage Results" MODIFIED="1569314944753" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="MochaJavaScriptTestRunnerCoverage" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" />
-    <SUITE FILE_PATH="coverage/webrain$common___main___rx___deep_subscribe___deep_subscribe_promises.dat" NAME="common &gt; main &gt; rx &gt; deep-subscribe &gt; deep-subscribe.promises Coverage Results" MODIFIED="1569061851443" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="MochaJavaScriptTestRunnerCoverage" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" />
-    <SUITE FILE_PATH="coverage/webrain$common___main___rx___properties___CalcObjectBuilder.dat" NAME="common &gt; main &gt; rx &gt; properties &gt; CalcObjectBuilder Coverage Results" MODIFIED="1573363080433" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="MochaJavaScriptTestRunnerCoverage" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" />
-    <SUITE FILE_PATH="coverage/webrain$common___main___rx___deep_subscribe___iterate_rule_repeat.dat" NAME="common &gt; main &gt; rx &gt; deep-subscribe &gt; iterate-rule.repeat Coverage Results" MODIFIED="1573581674782" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="MochaJavaScriptTestRunnerCoverage" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" />
-    <SUITE FILE_PATH="coverage/webrain$L__Work__GIT_GitHub_NodeJs_modules_tree_state_manager_src_test_tests_common_main_rx_deep_subscribe______ts__Coverage_.dat" NAME="L:\Work\_GIT\GitHub\NodeJs\modules\tree-state-manager\src\test\tests\common\main\rx\deep-subscribe\**\*.ts (Coverage) Coverage Results" MODIFIED="1567218889155" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="MochaJavaScriptTestRunnerCoverage" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" />
-    <SUITE FILE_PATH="coverage/tree_state_manager$L__Work__GIT_GitHub_NodeJs_modules_tree_state_manager_src_test_tests_common_main_rx_deep_subscribe______ts__Coverage_.dat" NAME="L:\Work\_GIT\GitHub\NodeJs\modules\tree-state-manager\src\test\tests\common\main\rx\deep-subscribe\**\*.ts (Coverage) Coverage Results" MODIFIED="1566748268430" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="MochaJavaScriptTestRunnerCoverage" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" />
-    <SUITE FILE_PATH="coverage/webrain$common___main___rx___observable_object_builder.dat" NAME="common &gt; main &gt; rx &gt; observable-object-builder Coverage Results" MODIFIED="1568990406438" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="MochaJavaScriptTestRunnerCoverage" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" />
-    <SUITE FILE_PATH="coverage/webrain$deep_subscribe__Coverage_.dat" NAME="deep-subscribe (Coverage) Coverage Results" MODIFIED="1573492101098" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="MochaJavaScriptTestRunnerCoverage" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" />
-    <SUITE FILE_PATH="coverage/webrain$common___main___rx___deep_subscribe___deep_subscribe_lists.dat" NAME="common &gt; main &gt; rx &gt; deep-subscribe &gt; deep-subscribe.lists Coverage Results" MODIFIED="1569217506032" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="MochaJavaScriptTestRunnerCoverage" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" />
-    <SUITE FILE_PATH="coverage/webrain$common___main___rx___deep_subscribe___deep_subscribe_new.dat" NAME="common &gt; main &gt; rx &gt; deep-subscribe &gt; deep-subscribe new Coverage Results" MODIFIED="1569488678829" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="MochaJavaScriptTestRunnerCoverage" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" />
-    <SUITE FILE_PATH="coverage/webrain$common___main___rx___properties___ConnectorBuilder.dat" NAME="common &gt; main &gt; rx &gt; properties &gt; ConnectorBuilder Coverage Results" MODIFIED="1569042769612" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="MochaJavaScriptTestRunnerCoverage" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" />
-    <SUITE FILE_PATH="coverage/webrain$common___main___rx___deep_subscribe___deep_subscribe_unsubscribe_leaf.dat" NAME="common &gt; main &gt; rx &gt; deep-subscribe &gt; deep-subscribe.unsubscribe leaf Coverage Results" MODIFIED="1569219462512" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="MochaJavaScriptTestRunnerCoverage" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" />
-    <SUITE FILE_PATH="coverage/webrain$common___main___rx___deep_subscribe___iterate_rule.dat" NAME="common &gt; main &gt; rx &gt; deep-subscribe &gt; iterate-rule Coverage Results" MODIFIED="1573626384354" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="MochaJavaScriptTestRunnerCoverage" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" />
-    <SUITE FILE_PATH="coverage/webrain$common___main___rx___depend___dependent_func_base.dat" NAME="common &gt; main &gt; rx &gt; depend &gt; dependent-func.base Coverage Results" MODIFIED="1585495890156" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="MochaJavaScriptTestRunnerCoverage" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" />
     <SUITE FILE_PATH="coverage/webrain$common___main___rx___deep_subscribe___deep_subscribe_repeat_with_condition.dat" NAME="common &gt; main &gt; rx &gt; deep-subscribe &gt; deep-subscribe.repeat with condition Coverage Results" MODIFIED="1569420644304" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="MochaJavaScriptTestRunnerCoverage" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" />
-    <SUITE FILE_PATH="coverage/webrain$ObservableObject_deepSubscribe_memory.dat" NAME="ObservableObject.deepSubscribe memory Coverage Results" MODIFIED="1567250223332" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="MochaJavaScriptTestRunnerCoverage" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" />
-    <SUITE FILE_PATH="coverage/webrain$ObservableObject_propertyChanged_memory.dat" NAME="ObservableObject.propertyChanged memory Coverage Results" MODIFIED="1567179257245" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="MochaJavaScriptTestRunnerCoverage" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" />
-    <SUITE FILE_PATH="coverage/webrain$common___main___rx___depend___dependent_func.dat" NAME="common &gt; main &gt; rx &gt; depend &gt; dependent-func Coverage Results" MODIFIED="1585549563751" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="MochaJavaScriptTestRunnerCoverage" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" />
-    <SUITE FILE_PATH="coverage/webrain$Watch.dat" NAME="Watch Coverage Results" MODIFIED="1569642521533" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="MochaJavaScriptTestRunnerCoverage" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" />
-    <SUITE FILE_PATH="coverage/webrain$common___main___rx___depend___dependent_func_lazy.dat" NAME="common &gt; main &gt; rx &gt; depend &gt; dependent-func.lazy Coverage Results" MODIFIED="1587220490039" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="MochaJavaScriptTestRunnerCoverage" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" />
-    <SUITE FILE_PATH="coverage/webrain$resolvePath.dat" NAME="resolvePath Coverage Results" MODIFIED="1567168357204" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="MochaJavaScriptTestRunnerCoverage" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" />
-    <SUITE FILE_PATH="coverage/webrain$common___main___rx___deep_subscribe___deep_subscribe_new_ruleFactoriesVariants_self_sync.dat" NAME="common &gt; main &gt; rx &gt; deep-subscribe &gt; deep-subscribe new.ruleFactoriesVariants self sync Coverage Results" MODIFIED="1569993384239" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="MochaJavaScriptTestRunnerCoverage" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" />
-    <SUITE FILE_PATH="coverage/webrain$Path_Builder.dat" NAME="Path Builder Coverage Results" MODIFIED="1587795136301" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="MochaJavaScriptTestRunnerCoverage" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" />
-    <SUITE FILE_PATH="coverage/webrain$fundamental_operations_ObservableObject.dat" NAME="fundamental-operations.ObservableObject Coverage Results" MODIFIED="1567092876402" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="MochaJavaScriptTestRunnerCoverage" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" />
-    <SUITE FILE_PATH="coverage/webrain$common___main___rx___properties___CalcObjectBuilder_deepSubscribe_calc_async.dat" NAME="common &gt; main &gt; rx &gt; properties &gt; CalcObjectBuilder.deepSubscribe calc async Coverage Results" MODIFIED="1569993498116" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="MochaJavaScriptTestRunnerCoverage" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" />
-    <SUITE FILE_PATH="coverage/webrain$common___main___rx___deep_subscribe___deep_subscribe_value_properties.dat" NAME="common &gt; main &gt; rx &gt; deep-subscribe &gt; deep-subscribe.value properties Coverage Results" MODIFIED="1569992657999" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="MochaJavaScriptTestRunnerCoverage" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" />
+    <SUITE FILE_PATH="coverage/webrain$common___main___rx___properties___CalcObjectBuilder.dat" NAME="common &gt; main &gt; rx &gt; properties &gt; CalcObjectBuilder Coverage Results" MODIFIED="1573363080433" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="MochaJavaScriptTestRunnerCoverage" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" />
     <SUITE FILE_PATH="coverage/webrain$DeferredCalc.dat" NAME="DeferredCalc Coverage Results" MODIFIED="1585495401890" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="MochaJavaScriptTestRunnerCoverage" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" />
     <SUITE FILE_PATH="coverage/webrain$dependent_func_perceptron_memory_recalc.dat" NAME="dependent-func.perceptron memory recalc Coverage Results" MODIFIED="1581086091701" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="MochaJavaScriptTestRunnerCoverage" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" />
+    <SUITE FILE_PATH="coverage/webrain$common___main___rx___properties___ConnectorBuilder.dat" NAME="common &gt; main &gt; rx &gt; properties &gt; ConnectorBuilder Coverage Results" MODIFIED="1569042769612" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="MochaJavaScriptTestRunnerCoverage" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" />
+    <SUITE FILE_PATH="coverage/webrain$common___main___rx___deep_subscribe___deep_subscribe_new_ruleFactoriesVariants_self_sync.dat" NAME="common &gt; main &gt; rx &gt; deep-subscribe &gt; deep-subscribe new.ruleFactoriesVariants self sync Coverage Results" MODIFIED="1569993384239" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="MochaJavaScriptTestRunnerCoverage" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" />
+    <SUITE FILE_PATH="coverage/webrain$ObservableObject_deepSubscribe_memory.dat" NAME="ObservableObject.deepSubscribe memory Coverage Results" MODIFIED="1567250223332" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="MochaJavaScriptTestRunnerCoverage" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" />
+    <SUITE FILE_PATH="coverage/tree_state_manager$L__Work__GIT_GitHub_NodeJs_modules_tree_state_manager_src_test_tests_common_main_rx_deep_subscribe______ts__Coverage_.dat" NAME="L:\Work\_GIT\GitHub\NodeJs\modules\tree-state-manager\src\test\tests\common\main\rx\deep-subscribe\**\*.ts (Coverage) Coverage Results" MODIFIED="1566748268430" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="MochaJavaScriptTestRunnerCoverage" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" />
+    <SUITE FILE_PATH="coverage/webrain$common___main___rx___depend___dependent_func.dat" NAME="common &gt; main &gt; rx &gt; depend &gt; dependent-func Coverage Results" MODIFIED="1585549563751" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="MochaJavaScriptTestRunnerCoverage" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" />
+    <SUITE FILE_PATH="coverage/webrain$L__Work__GIT_GitHub_NodeJs_modules_tree_state_manager_src_test_tests_common_main_rx_deep_subscribe______ts__Coverage_.dat" NAME="L:\Work\_GIT\GitHub\NodeJs\modules\tree-state-manager\src\test\tests\common\main\rx\deep-subscribe\**\*.ts (Coverage) Coverage Results" MODIFIED="1567218889155" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="MochaJavaScriptTestRunnerCoverage" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" />
+    <SUITE FILE_PATH="coverage/webrain$common___main___rx___deep_subscribe___deep_subscribe_lists.dat" NAME="common &gt; main &gt; rx &gt; deep-subscribe &gt; deep-subscribe.lists Coverage Results" MODIFIED="1569217506032" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="MochaJavaScriptTestRunnerCoverage" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" />
+    <SUITE FILE_PATH="coverage/webrain$common___main___rx___deep_subscribe___deep_subscribe_new.dat" NAME="common &gt; main &gt; rx &gt; deep-subscribe &gt; deep-subscribe new Coverage Results" MODIFIED="1569488678829" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="MochaJavaScriptTestRunnerCoverage" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" />
+    <SUITE FILE_PATH="coverage/webrain$common___main___rx___deep_subscribe___iterate_rule_repeat.dat" NAME="common &gt; main &gt; rx &gt; deep-subscribe &gt; iterate-rule.repeat Coverage Results" MODIFIED="1573581674782" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="MochaJavaScriptTestRunnerCoverage" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" />
+    <SUITE FILE_PATH="coverage/webrain$Path_Builder.dat" NAME="Path Builder Coverage Results" MODIFIED="1587795136301" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="MochaJavaScriptTestRunnerCoverage" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" />
+    <SUITE FILE_PATH="coverage/webrain$Watch.dat" NAME="Watch Coverage Results" MODIFIED="1569642521533" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="MochaJavaScriptTestRunnerCoverage" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" />
+    <SUITE FILE_PATH="coverage/webrain$fundamental_operations_ObservableObject.dat" NAME="fundamental-operations.ObservableObject Coverage Results" MODIFIED="1567092876402" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="MochaJavaScriptTestRunnerCoverage" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" />
+    <SUITE FILE_PATH="coverage/webrain$common___main___rx___observable_object_builder.dat" NAME="common &gt; main &gt; rx &gt; observable-object-builder Coverage Results" MODIFIED="1568990406438" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="MochaJavaScriptTestRunnerCoverage" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" />
+    <SUITE FILE_PATH="coverage/webrain$common___main___rx___deep_subscribe___iterate_rule.dat" NAME="common &gt; main &gt; rx &gt; deep-subscribe &gt; iterate-rule Coverage Results" MODIFIED="1573626384354" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="MochaJavaScriptTestRunnerCoverage" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" />
+    <SUITE FILE_PATH="coverage/webrain$deep_subscribe__Coverage_.dat" NAME="deep-subscribe (Coverage) Coverage Results" MODIFIED="1573492101098" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="MochaJavaScriptTestRunnerCoverage" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" />
+    <SUITE FILE_PATH="coverage/webrain$common___main___rx___depend___dependent_func_lazy.dat" NAME="common &gt; main &gt; rx &gt; depend &gt; dependent-func.lazy Coverage Results" MODIFIED="1587220490039" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="MochaJavaScriptTestRunnerCoverage" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" />
+    <SUITE FILE_PATH="coverage/webrain$resolvePath.dat" NAME="resolvePath Coverage Results" MODIFIED="1567168357204" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="MochaJavaScriptTestRunnerCoverage" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" />
+    <SUITE FILE_PATH="coverage/webrain$common___main___rx___properties___CalcObjectBuilder_deepSubscribe_calc_async.dat" NAME="common &gt; main &gt; rx &gt; properties &gt; CalcObjectBuilder.deepSubscribe calc async Coverage Results" MODIFIED="1569993498116" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="MochaJavaScriptTestRunnerCoverage" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" />
+    <SUITE FILE_PATH="coverage/webrain$ObservableObject_propertyChanged_memory.dat" NAME="ObservableObject.propertyChanged memory Coverage Results" MODIFIED="1567179257245" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="MochaJavaScriptTestRunnerCoverage" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" />
+    <SUITE FILE_PATH="coverage/webrain$common___async.dat" NAME="common &gt; async Coverage Results" MODIFIED="1585555580717" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="MochaJavaScriptTestRunnerCoverage" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" />
+    <SUITE FILE_PATH="coverage/webrain$common___main___rx___deep_subscribe___deep_subscribe_unsubscribe_leaf.dat" NAME="common &gt; main &gt; rx &gt; deep-subscribe &gt; deep-subscribe.unsubscribe leaf Coverage Results" MODIFIED="1569219462512" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="MochaJavaScriptTestRunnerCoverage" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" />
+    <SUITE FILE_PATH="coverage/webrain$ObservableObject_deepSubscribe.dat" NAME="ObservableObject.deepSubscribe Coverage Results" MODIFIED="1567141941071" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="MochaJavaScriptTestRunnerCoverage" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" />
+    <SUITE FILE_PATH="coverage/webrain$common___main___rx___deep_subscribe___deep_subscribe_promises.dat" NAME="common &gt; main &gt; rx &gt; deep-subscribe &gt; deep-subscribe.promises Coverage Results" MODIFIED="1569061851443" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="MochaJavaScriptTestRunnerCoverage" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" />
+    <SUITE FILE_PATH="coverage/webrain$common___main___rx___deep_subscribe___deep_subscribe_value_properties.dat" NAME="common &gt; main &gt; rx &gt; deep-subscribe &gt; deep-subscribe.value properties Coverage Results" MODIFIED="1569992657999" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="MochaJavaScriptTestRunnerCoverage" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" />
+    <SUITE FILE_PATH="coverage/webrain$common___main___rx___deep_subscribe.dat" NAME="common &gt; main &gt; rx &gt; deep-subscribe Coverage Results" MODIFIED="1569314944753" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="MochaJavaScriptTestRunnerCoverage" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" />
+    <SUITE FILE_PATH="coverage/webrain$common___main___rx___depend___dependent_func_base.dat" NAME="common &gt; main &gt; rx &gt; depend &gt; dependent-func.base Coverage Results" MODIFIED="1585495890156" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="MochaJavaScriptTestRunnerCoverage" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" />
   </component>
 </project>
