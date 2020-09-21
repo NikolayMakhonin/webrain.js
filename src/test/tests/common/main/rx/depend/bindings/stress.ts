@@ -36,10 +36,10 @@ describe('common > main > rx > depend > bindings > stress', function() {
 	this.timeout(24 * 60 * 60 * 1000)
 
 	beforeEach(function() {
-		webrainOptions.callState.garbageCollect.disabled = false
+		webrainOptions.callState.garbageCollect.disabled = true
 		webrainOptions.callState.garbageCollect.bulkSize = 100
 		webrainOptions.callState.garbageCollect.interval = 1000
-		webrainOptions.callState.garbageCollect.minLifeTime = 500
+		webrainOptions.callState.garbageCollect.minLifeTime = 100
 	})
 
 	// region helpers
@@ -510,7 +510,7 @@ describe('common > main > rx > depend > bindings > stress', function() {
 
 	function optionsPatternBuilder(metrics: IMetrics, metricsMin: IMetrics) {
 		return {
-			countObjects: [1, 2],
+			countObjects: [1, 1],
 			countValues: [1, 5],
 			metrics,
 			metricsMin,
@@ -607,14 +607,14 @@ describe('common > main > rx > depend > bindings > stress', function() {
 
 		assert.strictEqual(state.objects.unbinds.length, state.checkObjects.unbinds.length)
 
-		if (shouldWait) {
-			for (let i = 0, len = 1 + (state.checkObjects as any).countBindings * 3; i < len; i++) {
-				await delay(1)
-				// if (equalObjects(state.objects.objects, state.checkObjects.objects)) {
-				// 	return
-				// }
-			}
+		// if (shouldWait) {
+		for (let i = 0, len = 1 + (state.checkObjects as any).countBindings * 3; i < len; i++) {
+			await delay(1)
+			// if (equalObjects(state.objects.objects, state.checkObjects.objects)) {
+			// 	return
+			// }
 		}
+		// }
 
 		assertObjects(state.objects.objects, state.checkObjects.objects)
 	}
@@ -721,14 +721,12 @@ describe('common > main > rx > depend > bindings > stress', function() {
 				return false
 				// return testRunnerMetrics.iterationNumber >= 50
 			},
-			// customSeed: 620183515,
-			// metricsMin: {"iterations":16,"countUnBinds":1,"countBinds":3,"countSetsLast":0,"countChecksLast":0,"countSets":11,"countChecks":0},
-			// customSeed: 282744972,
-			// metricsMin: {"iterations":7,"countUnBinds":0,"countBinds":2,"countSetsLast":0,"countChecksLast":0,"countSets":5,"countChecks":0},
-			// customSeed: 2692608,
-			// metricsMin: {"iterations":3,"countUnBinds":0,"countBinds":2,"countSetsLast":0,"countChecksLast":0,"countSets":1,"countChecks":0},
-			// customSeed: 965914310,
-			// metricsMin: {"countObjects":1,"iterations":4,"countUnBinds":0,"countBinds":3,"countSetsLast":0,"countChecksLast":0,"countSets":2,"countChecks":0},
+			// customSeed: 483882272,
+			// metricsMin: {"countObjects":1,"iterations":11,"countUnBinds":1,"countBinds":5,"countSetsLast":0,"countChecksLast":0,"countSets":7,"countChecks":0},
+			// customSeed: 1036614010,
+			// metricsMin: {"countObjects":1,"iterations":10,"countUnBinds":1,"countBinds":4,"countSetsLast":0,"countChecksLast":0,"countSets":7,"countChecks":0},
+			// customSeed: 185088415,
+			// metricsMin: {"countObjects":1,"iterations":9,"countUnBinds":1,"countBinds":3,"countSetsLast":0,"countChecksLast":0,"countSets":6,"countChecks":0},
 			searchBestError: true,
 		})
 
