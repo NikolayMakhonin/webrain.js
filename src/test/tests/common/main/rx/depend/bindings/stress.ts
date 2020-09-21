@@ -655,6 +655,12 @@ describe('common > main > rx > depend > bindings > stress', function() {
 			before(rnd, state) {
 				state.options.metrics.countObjects = state.objects.objects.length
 			},
+			after(rnd, state) {
+				for (let i = 0, len = state.objects.unbinds.length; i < len; i++) {
+					state.objects.unbinds[i]()
+					state.checkObjects.unbinds[i]()
+				}
+			},
 			stopPredicate(iterationNumber, timeStart, state) {
 				const metrics = state.options.metrics
 				const metricsMin = state.options.metricsMin

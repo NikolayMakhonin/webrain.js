@@ -31,6 +31,7 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="69b2ee16-521b-4efd-b473-8e19e3df4d09" name="Default Changelist" comment="">
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/test/tests/common/main/rx/depend/bindings/stress.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/test/tests/common/main/rx/depend/bindings/stress.ts" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
@@ -125,7 +126,7 @@
       <recent name="L:\Work\_GIT\GitHub\NodeJs\modules\webrain\src\main\common\rx\object\properties\path" />
     </key>
   </component>
-  <component name="RunManager" selected="Mocha.common &gt; main &gt; rx &gt; depend &gt; bindings &gt; stress">
+  <component name="RunManager" selected="Mocha.Watch">
     <configuration default="true" type="JavaScriptTestRunnerKarma" activateToolWindowBeforeRun="false">
       <config-file value="$PROJECT_DIR$/env/karma/configs/dev.js" />
       <karma-package-dir value="$PROJECT_DIR$/node_modules/karma" />
@@ -553,14 +554,7 @@
       <workItem from="1600348116854" duration="802000" />
       <workItem from="1600362618380" duration="1372000" />
       <workItem from="1600412097392" duration="47000" />
-      <workItem from="1600572910230" duration="61986000" />
-    </task>
-    <task id="LOCAL-00530" summary="Merged with app template. Precommit is OK.">
-      <created>1590391530046</created>
-      <option name="number" value="00530" />
-      <option name="presentableId" value="LOCAL-00530" />
-      <option name="project" value="LOCAL" />
-      <updated>1590391530047</updated>
+      <workItem from="1600572910230" duration="62738000" />
     </task>
     <task id="LOCAL-00531" summary="v1.0.1-a Added test/register">
       <created>1590431869746</created>
@@ -898,7 +892,14 @@
       <option name="project" value="LOCAL" />
       <updated>1600700668035</updated>
     </task>
-    <option name="localTasksCounter" value="579" />
+    <task id="LOCAL-00579" summary="Develop two way binding tests...">
+      <created>1600701075336</created>
+      <option name="number" value="00579" />
+      <option name="presentableId" value="LOCAL-00579" />
+      <option name="project" value="LOCAL" />
+      <updated>1600701075337</updated>
+    </task>
+    <option name="localTasksCounter" value="580" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -1011,10 +1012,10 @@
       <screen x="0" y="0" width="1920" height="882" />
     </state>
     <state x="651" y="254" key="ANALYSIS_DLG_com.intellij.analysis.BaseAnalysisAction$1/0.0.1920.882@0.0.1920.882" timestamp="1600249459130" />
-    <state x="-2" y="0" width="1918" height="882" key="CommitChangelistDialog2" timestamp="1600700667310">
+    <state x="-2" y="0" width="1918" height="882" key="CommitChangelistDialog2" timestamp="1600701074648">
       <screen x="0" y="0" width="1920" height="882" />
     </state>
-    <state x="-2" y="0" width="1918" height="882" key="CommitChangelistDialog2/0.0.1920.882@0.0.1920.882" timestamp="1600700667310" />
+    <state x="-2" y="0" width="1918" height="882" key="CommitChangelistDialog2/0.0.1920.882@0.0.1920.882" timestamp="1600701074648" />
     <state width="898" height="582" key="DebuggerActiveHint" timestamp="1600699436253">
       <screen x="0" y="0" width="1920" height="882" />
     </state>
@@ -1027,22 +1028,22 @@
       <screen x="0" y="0" width="1920" height="882" />
     </state>
     <state x="1059" y="106" key="FileChooserDialogImpl/0.0.1920.882@0.0.1920.882" timestamp="1600600925638" />
-    <state width="767" height="539" key="GridCell.Tab.0.bottom" timestamp="1600701036397">
+    <state width="767" height="539" key="GridCell.Tab.0.bottom" timestamp="1600701794468">
       <screen x="0" y="0" width="1920" height="882" />
     </state>
-    <state width="767" height="539" key="GridCell.Tab.0.bottom/0.0.1920.882@0.0.1920.882" timestamp="1600701036397" />
-    <state width="767" height="539" key="GridCell.Tab.0.center" timestamp="1600701036397">
+    <state width="767" height="539" key="GridCell.Tab.0.bottom/0.0.1920.882@0.0.1920.882" timestamp="1600701794468" />
+    <state width="767" height="539" key="GridCell.Tab.0.center" timestamp="1600701794467">
       <screen x="0" y="0" width="1920" height="882" />
     </state>
-    <state width="767" height="539" key="GridCell.Tab.0.center/0.0.1920.882@0.0.1920.882" timestamp="1600701036397" />
-    <state width="767" height="539" key="GridCell.Tab.0.left" timestamp="1600701036397">
+    <state width="767" height="539" key="GridCell.Tab.0.center/0.0.1920.882@0.0.1920.882" timestamp="1600701794467" />
+    <state width="767" height="539" key="GridCell.Tab.0.left" timestamp="1600701794467">
       <screen x="0" y="0" width="1920" height="882" />
     </state>
-    <state width="767" height="539" key="GridCell.Tab.0.left/0.0.1920.882@0.0.1920.882" timestamp="1600701036397" />
-    <state width="767" height="539" key="GridCell.Tab.0.right" timestamp="1600701036397">
+    <state width="767" height="539" key="GridCell.Tab.0.left/0.0.1920.882@0.0.1920.882" timestamp="1600701794467" />
+    <state width="767" height="539" key="GridCell.Tab.0.right" timestamp="1600701794468">
       <screen x="0" y="0" width="1920" height="882" />
     </state>
-    <state width="767" height="539" key="GridCell.Tab.0.right/0.0.1920.882@0.0.1920.882" timestamp="1600701036397" />
+    <state width="767" height="539" key="GridCell.Tab.0.right/0.0.1920.882@0.0.1920.882" timestamp="1600701794468" />
     <state width="767" height="488" key="GridCell.Tab.1.bottom" timestamp="1600700605220">
       <screen x="0" y="0" width="1920" height="882" />
     </state>
