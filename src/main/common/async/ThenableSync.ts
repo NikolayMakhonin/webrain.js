@@ -190,7 +190,7 @@ export class ThenableSync<TValue = any> implements IThenable<TValue> {
 				if (lastExpression) {
 					throw error
 				}
-				return ThenableSync.createRejected(error, customResolveValue)
+				return createRejected(error, customResolveValue)
 			}
 
 			let isError
@@ -201,24 +201,9 @@ export class ThenableSync<TValue = any> implements IThenable<TValue> {
 				error = err
 			}
 
-			const result = resolveAsync(error, null, null, !lastExpression, customResolveValue)
+			const result = resolveAsync(error, null, null, !lastExpression, customResolveValue, isError)
 
-			if (isThenable(result)) {
-				return isError
-					? result.then(o => createRejected(o, customResolveValue))
-					: result
-			}
-
-			if (lastExpression) {
-				if (!isError) {
-					return result
-				}
-				throw result
-			}
-
-			return isError
-				? createRejected(result, customResolveValue)
-				: createResolved(result, customResolveValue)
+			return result
 		}
 
 		switch (this._status) {
@@ -367,7 +352,7 @@ export class ThenableSync<TValue = any> implements IThenable<TValue> {
 	public static isThenable = isThenable
 
 	public static resolve = resolveAsync
-	
+
 	// endregion
 }
 
@@ -377,9 +362,10 @@ export function resolveAsync<TValue = any, TResult1 = TValue, TResult2 = never>(
 	onrejected?: TOnRejected<TResult2>,
 	dontThrowOnImmediateError?: boolean,
 	customResolveValue?: TResolveAsyncValue,
+	isError?: boolean,
 ): ThenableOrValue<TResult1> {
 	// Optimization
-	if (!onfulfilled && !isAsync(input)) {
+	if (!isError && !onfulfilled && !isAsync(input)) {
 		if (input != null && customResolveValue) {
 			const newInput = customResolveValue(input)
 			if (input === newInput) {
@@ -391,7 +377,7 @@ export function resolveAsync<TValue = any, TResult1 = TValue, TResult2 = never>(
 		}
 	}
 
-	return _resolveAsync(input, onfulfilled, onrejected, dontThrowOnImmediateError, customResolveValue)
+	return _resolveAsync(input, onfulfilled, onrejected, dontThrowOnImmediateError, customResolveValue, isError)
 }
 
 function _resolveAsync<TValue = any, TResult1 = TValue, TResult2 = never>(
@@ -400,12 +386,12 @@ function _resolveAsync<TValue = any, TResult1 = TValue, TResult2 = never>(
 	onrejected?: TOnRejected<TResult2>,
 	dontThrowOnImmediateError?: boolean,
 	customResolveValue?: TResolveAsyncValue,
+	isError?: boolean,
 ): ThenableOrValue<TResult1> {
 	let result: ThenableOrValue<TResult1>
-	let isError: boolean
 	let onResult = (o: ThenableOrValue<TValue|TResult1>, e) => {
 		result = o as TResult1
-		isError = e
+		isError = isError || e
 	}
 
 	let thenable
@@ -413,7 +399,7 @@ function _resolveAsync<TValue = any, TResult1 = TValue, TResult2 = never>(
 		if (!thenable) {
 			thenable = new ThenableSync((resolve, reject) => {
 				onResult = (o, e) => {
-					if (e) {
+					if (isError || e) {
 						reject(o)
 					} else {
 						resolve(o as TResult1)
@@ -441,18 +427,20 @@ function _resolveAsync<TValue = any, TResult1 = TValue, TResult2 = never>(
 		}
 	}
 
-	if ((resolveValue(
+	const res = resolveValue(
 		input,
 		resolveOnResult,
 		resolveOnResult,
 		customResolveValue,
-	) & ResolveResult.Deferred) !== 0) {
+	)
+
+	if ((res & ResolveResult.Deferred) !== 0) {
 		return createThenable()
 	}
 
 	if (isError) {
 		if (dontThrowOnImmediateError) {
-			return ThenableSync.createRejected(result, customResolveValue)
+			return createRejected(result, customResolveValue)
 		}
 		throw result
 	}
@@ -470,7 +458,7 @@ export function resolveAsyncFunc<TValue = any, TResult1 = TValue, TResult2 = nev
 	try {
 		return resolveAsync(func(), onfulfilled, onrejected, dontThrowOnImmediateReject, customResolveValue)
 	} catch (err) {
-		return resolveAsync(err, onrejected as any, onrejected, dontThrowOnImmediateReject, customResolveValue)
+		return resolveAsync(err, onrejected as any, onrejected, dontThrowOnImmediateReject, customResolveValue, true)
 	}
 }
 
