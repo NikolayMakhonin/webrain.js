@@ -1,5 +1,5 @@
 import {isAsync, ThenableIterator, ThenableOrIteratorOrValue, ThenableOrValue} from '../async/async'
-import {resolveAsync, resolveAsyncAll, resolveAsyncFunc} from '../async/ThenableSync'
+import {resolveAsyncAll, resolveAsyncFunc} from '../async/ThenableSync'
 import {Random} from '../random/Random'
 import {interceptConsole, TConsoleType, throwOnConsoleError} from './interceptConsole'
 
@@ -354,7 +354,8 @@ export function searchBestErrorBuilder<TMetrics>({
 							testRunnerMetrics.iterationsFromEqualError = now - equalErrorTime
 						}
 
-						return customSeed != null || stopPredicate(testRunnerMetrics)
+						return customSeed != null && testRunnerMetrics.iterationNumber >= 1
+							|| stopPredicate(testRunnerMetrics)
 					},
 					*func(testRunnerMetrics) {
 						const metrics: TMetrics = yield createMetrics(testRunnerMetrics)
@@ -488,7 +489,7 @@ export function randomTestBuilder<
 					stopPredicate,
 					*func(testRunnerMetrics) {
 						const metrics = yield createMetrics(testRunnerMetrics)
-						return func.call(this, customSeed, metrics, metricsMin)
+						return func.call(this, customSeed, metrics, metricsMin || {})
 					},
 				})
 			}

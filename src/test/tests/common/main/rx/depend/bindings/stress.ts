@@ -229,9 +229,7 @@ describe('common > main > rx > depend > bindings > stress', function() {
 			const sourceDest1 = builder1.get(object1)
 			const sourceDest2 = builder2.get(object2)
 
-			const binder = rnd.nextBoolean()
-				? sourceDest1.getTwoWayBinder(sourceDest2)
-				: sourceDest2.getTwoWayBinder(sourceDest1)
+			const binder = sourceDest1.getTwoWayBinder(sourceDest2)
 
 			return binder.bind()
 		}
@@ -262,6 +260,8 @@ describe('common > main > rx > depend > bindings > stress', function() {
 				}
 			}
 		}
+
+		public countBindings: number = 0
 
 		private _bindings: {
 			[key in string]: {
@@ -296,6 +296,10 @@ describe('common > main > rx > depend > bindings > stress', function() {
 			}
 
 			to.count++
+			this.countBindings++
+
+			const value = this.objects[objectNumberFrom][propNameFrom]
+			this.setValue(to.objectNumber, to.propName, value)
 
 			let unBinded
 			return () => {
@@ -305,7 +309,8 @@ describe('common > main > rx > depend > bindings > stress', function() {
 				unBinded = true
 
 				assert.ok(to.count >= 0)
-				to.count++
+				to.count--
+				this.countBindings--
 			}
 		}
 
@@ -341,7 +346,32 @@ describe('common > main > rx > depend > bindings > stress', function() {
 	}
 
 	function assertObjects(actual: TObject[], expected: TObject[]) {
-		assert.deepStrictEqual(simplifyObjects(actual), simplifyObjects(expected))
+		actual = simplifyObjects(actual)
+		expected = simplifyObjects(expected)
+		assert.deepStrictEqual(actual, expected)
+	}
+
+	function equalObject(actual: TObject, expected: TObject) {
+		for (let i = 0, len = propNames.length; i < len; i++) {
+			const propName = propNames[i]
+			if (actual[propName] !== expected[propName]) {
+				return false
+			}
+		}
+		return true
+	}
+
+	function equalObjects(actual: TObject[], expected: TObject[]) {
+		const len = actual.length
+		if (len !== expected.length) {
+			return false
+		}
+		for (let i = 0; i < len; i++) {
+			if (!equalObject(actual[i], expected[i])) {
+				return false
+			}
+		}
+		return true
 	}
 
 	// endregion
@@ -351,6 +381,8 @@ describe('common > main > rx > depend > bindings > stress', function() {
 	function createMetrics(testRunnerMetrics: ISearchBestErrorMetrics) {
 		return {
 			countBinds: 0,
+			countSetsLast: 0,
+			countChecksLast: 0,
 			countSets: 0,
 			countChecks: 0,
 		}
@@ -360,6 +392,12 @@ describe('common > main > rx > depend > bindings > stress', function() {
 	function compareMetrics(metrics: IMetrics, metricsMin: IMetrics): number {
 		if (metrics.countBinds !== metricsMin.countBinds) {
 			return metrics.countBinds < metricsMin.countBinds ? -1 : 1
+		}
+		if (metrics.countSetsLast !== metricsMin.countSetsLast) {
+			return metrics.countSetsLast < metricsMin.countSetsLast ? -1 : 1
+		}
+		if (metrics.countChecksLast !== metricsMin.countChecksLast) {
+			return metrics.countChecksLast < metricsMin.countChecksLast ? -1 : 1
 		}
 		if (metrics.countSets !== metricsMin.countSets) {
 			return metrics.countSets < metricsMin.countSets ? -1 : 1
@@ -416,18 +454,22 @@ describe('common > main > rx > depend > bindings > stress', function() {
 
 	// region action
 
-	function action(rnd: Random, state: IState) {
+	async function action(rnd: Random, state: IState) {
 		const objectNumber = rnd.nextInt(state.objects.objects.length)
 		const propName = rnd.nextArrayItem(propNames)
 
 		if (rnd.nextBoolean(0.8)) {
 			const value = rnd.nextInt(state.options.countValues)
 			state.options.metrics.countSets++
+			state.options.metrics.countSetsLast++
+			state.options.metrics.countChecksLast = 0
 			state.objects.setValue(objectNumber, propName, value)
 			state.checkObjects.setValue(objectNumber, propName, value)
 		} else {
 			const objectNumberTo = rnd.nextInt(state.objects.objects.length)
 			const propNameTo = rnd.nextArrayItem(propNames)
+			state.options.metrics.countSetsLast = 0
+			state.options.metrics.countChecksLast = 0
 			if (rnd.nextBoolean()) {
 				state.options.metrics.countBinds++
 				state.objects.bindOneWay(rnd,
@@ -450,6 +492,15 @@ describe('common > main > rx > depend > bindings > stress', function() {
 				)
 			}
 		}
+
+		for (let i = 0, len = (state.checkObjects as any).countBindings * 2; i < len; i++) {
+			await delay(1)
+			// if (equalObjects(state.objects.objects, state.checkObjects.objects)) {
+			// 	return
+			// }
+		}
+
+		assertObjects(state.objects.objects, state.checkObjects.objects)
 	}
 
 	// endregion
@@ -457,17 +508,21 @@ describe('common > main > rx > depend > bindings > stress', function() {
 	// region testIteration
 
 	const testIteration = testIterationBuilder({
-		waitAsyncAll: {
-			weight: 0.05,
-			async after(rnd, state) {
-				await delay(1000)
-				state.options.metrics.countChecks++
-				assertObjects(state.objects.objects, state.checkObjects.objects)
-			},
-		},
-		waitAsyncRandom: {
-			weight: 0.2,
-		},
+		// waitAsyncAll: {
+		// 	weight: 0.05,
+		// 	async after(rnd, state) {
+		// 		for (let i = 0; i < 50; i++) {
+		// 			await delay(1)
+		// 		}
+		// 		// await delay(1000)
+		// 		state.options.metrics.countChecks++
+		// 		state.options.metrics.countChecksLast++
+		// 		assertObjects(state.objects.objects, state.checkObjects.objects)
+		// 	},
+		// },
+		// waitAsyncRandom: {
+		// 	weight: 0.2,
+		// },
 		action: {
 			weight: 1,
 			func: action,
@@ -482,6 +537,22 @@ describe('common > main > rx > depend > bindings > stress', function() {
 		createState,
 		{
 			stopPredicate(iterationNumber, timeStart, state) {
+				const metrics = state.options.metrics
+				const metricsMin = state.options.metricsMin
+				if (metrics.countBinds > metricsMin.countBinds) {
+					return true
+				} else if (metrics.countBinds === metricsMin.countBinds) {
+					if (metrics.countSetsLast > metricsMin.countSetsLast) {
+						return true
+					} else if (metrics.countSetsLast === metricsMin.countSetsLast) {
+						if (metrics.countChecksLast > metricsMin.countChecksLast) {
+							return true
+						} else if (metrics.countChecksLast === metricsMin.countChecksLast) {
+							return true
+						}
+					}
+				}
+
 				return iterationNumber >= 100
 			},
 			testIteration,
@@ -520,8 +591,8 @@ describe('common > main > rx > depend > bindings > stress', function() {
 				return false
 				// return testRunnerMetrics.iterationNumber >= 50
 			},
-			// customSeed: 788965929,
-			// metricsMin: {"countSets":1,"countBinds":1,"countChecks":1},
+			// customSeed: 808469468,
+			// metricsMin: {"countBinds":2,"countSetsLast":0,"countChecksLast":0,"countSets":0,"countChecks":0},
 			searchBestError: true,
 		})
 

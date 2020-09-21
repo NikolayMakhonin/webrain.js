@@ -1630,7 +1630,17 @@ export function subscribeCallState<
 		}
 	})
 
-	callState.getValue(false, true)
+	switch (callState.statusShort) {
+		case CallStatusShort.CalculatedValue:
+		case CallStatusShort.CalculatedError:
+			if (subscriber != null) {
+				subscriber(callState)
+			}
+			break
+		default:
+			callState.getValue(false, true)
+			break
+	}
 
 	return unsubscribe
 }
