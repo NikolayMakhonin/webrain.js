@@ -17,8 +17,6 @@ var _now = _interopRequireDefault(require("@babel/runtime-corejs3/core-js-stable
 
 var _regenerator = _interopRequireDefault(require("@babel/runtime-corejs3/regenerator"));
 
-var _async2 = require("../async/async");
-
 var _ThenableSync = require("../async/ThenableSync");
 
 var _Random = require("../random/Random");
@@ -29,7 +27,7 @@ var _marked3 = /*#__PURE__*/_regenerator.default.mark(test),
     _marked4 = /*#__PURE__*/_regenerator.default.mark(testRunner);
 
 function testIterationBuilder(_ref) {
-  var _marked = /*#__PURE__*/_regenerator.default.mark(iteration);
+  var _marked = /*#__PURE__*/_regenerator.default.mark(testIteration);
 
   var before = _ref.before,
       action = _ref.action,
@@ -41,10 +39,10 @@ function testIterationBuilder(_ref) {
   var waitAsyncAllWeight = waitAsyncAll != null ? waitAsyncAll.weight / sumWeights : 0;
   var asyncs = [];
 
-  function iteration(rnd, state) {
+  function testIteration(rnd, state) {
     var step, index, async, _async;
 
-    return _regenerator.default.wrap(function iteration$(_context) {
+    return _regenerator.default.wrap(function testIteration$(_context) {
       while (1) {
         switch (_context.prev = _context.next) {
           case 0:
@@ -151,9 +149,8 @@ function testIterationBuilder(_ref) {
             break;
 
           case 40:
-            if ((0, _async2.isAsync)(_async)) {
-              _async.push(_async);
-            }
+            // if (isAsync(async)) {
+            asyncs.push(_async);
 
           case 41:
             if (!(action.after != null)) {
@@ -181,22 +178,23 @@ function testIterationBuilder(_ref) {
     }, _marked);
   }
 
-  return iteration;
+  return testIteration;
 } // endregion
 
 
 // region testIteratorBuilder
 function testIteratorBuilder(createState, _ref2) {
-  var _marked2 = /*#__PURE__*/_regenerator.default.mark(iterator);
+  var _marked2 = /*#__PURE__*/_regenerator.default.mark(_iterator);
 
   var before = _ref2.before,
       stopPredicate = _ref2.stopPredicate,
-      iteration = _ref2.iteration,
-      after = _ref2.after;
+      testIteration = _ref2.testIteration,
+      after = _ref2.after,
+      consoleThrowPredicate = _ref2.consoleThrowPredicate;
 
-  function iterator(rnd, options) {
+  function _iterator(rnd, options) {
     var state, timeStart, iterationNumber, doStop;
-    return _regenerator.default.wrap(function iterator$(_context2) {
+    return _regenerator.default.wrap(function _iterator$(_context2) {
       while (1) {
         switch (_context2.prev = _context2.next) {
           case 0:
@@ -239,7 +237,7 @@ function testIteratorBuilder(createState, _ref2) {
 
           case 14:
             _context2.next = 16;
-            return iteration(rnd, state);
+            return testIteration(rnd, state);
 
           case 16:
             iterationNumber++;
@@ -261,6 +259,12 @@ function testIteratorBuilder(createState, _ref2) {
         }
       }
     }, _marked2);
+  }
+
+  function iterator(rnd, options) {
+    return (0, _interceptConsole.throwOnConsoleError)(this, consoleThrowPredicate, function () {
+      return _iterator(rnd, options);
+    });
   }
 
   return iterator;
@@ -375,7 +379,7 @@ function searchBestErrorBuilder(_ref4) {
 
             customSeed = _ref5.customSeed, metricsMin = _ref5.metricsMin, _stopPredicate = _ref5.stopPredicate, createMetrics = _ref5.createMetrics, compareMetrics = _ref5.compareMetrics, _func2 = _ref5.func;
             interceptConsoleDispose = customSeed == null && consoleOnlyBestErrors && (0, _interceptConsole.interceptConsole)(function () {
-              return interceptConsoleDisabled;
+              return !interceptConsoleDisabled;
             });
             _context6.prev = 3;
             seedMin = null;
@@ -411,7 +415,7 @@ function searchBestErrorBuilder(_ref4) {
                   testRunnerMetrics.iterationsFromEqualError = now - equalErrorTime;
                 }
 
-                return customSeed != null || _stopPredicate(testRunnerMetrics);
+                return customSeed != null && testRunnerMetrics.iterationNumber >= 1 || _stopPredicate(testRunnerMetrics);
               },
               func: /*#__PURE__*/_regenerator.default.mark(function func(testRunnerMetrics) {
                 var metrics, seed, compareMetricsResult;
@@ -524,10 +528,11 @@ function searchBestErrorBuilder(_ref4) {
 // region randomTestBuilder
 function randomTestBuilder(createMetrics, optionsPatternBuilder, optionsGenerator, _ref6) {
   var compareMetrics = _ref6.compareMetrics,
-      consoleThrowPredicate = _ref6.consoleThrowPredicate,
       _searchBestError = _ref6.searchBestError,
       testIterator = _ref6.testIterator;
   return function randomTest(_ref7) {
+    var _this2 = this;
+
     var _marked5 = /*#__PURE__*/_regenerator.default.mark(func);
 
     var stopPredicate = _ref7.stopPredicate,
@@ -558,9 +563,9 @@ function randomTestBuilder(createMetrics, optionsPatternBuilder, optionsGenerato
       }, _marked5);
     }
 
-    return (0, _ThenableSync.resolveAsync)((0, _interceptConsole.throwOnConsoleError)(_this, consoleThrowPredicate, function () {
+    return (0, _ThenableSync.resolveAsyncFunc)(function () {
       if (searchBestError) {
-        return _searchBestError(this, {
+        return _searchBestError(_this2, {
           customSeed: customSeed,
           metricsMin: metricsMin,
           stopPredicate: stopPredicate,
@@ -569,7 +574,7 @@ function randomTestBuilder(createMetrics, optionsPatternBuilder, optionsGenerato
           func: func
         });
       } else {
-        return testRunner(this, {
+        return testRunner(_this2, {
           stopPredicate: stopPredicate,
           func: function (_func3) {
             var _marked6 = /*#__PURE__*/_regenerator.default.mark(func);
@@ -609,7 +614,7 @@ function randomTestBuilder(createMetrics, optionsPatternBuilder, optionsGenerato
 
                   case 2:
                     metrics = _context9.sent;
-                    return _context9.abrupt("return", func.call(this, customSeed, metrics, metricsMin));
+                    return _context9.abrupt("return", func.call(this, customSeed, metrics, metricsMin || {}));
 
                   case 4:
                   case "end":
@@ -620,6 +625,117 @@ function randomTestBuilder(createMetrics, optionsPatternBuilder, optionsGenerato
           }))
         });
       }
-    }));
+    });
   };
 } // endregion
+// // region builder
+//
+// // type IfAny<T, Y, N> = 0 extends (1 & T) ? Y : N
+// type If<T, Y, N> = T extends boolean ? (T extends false ? N : Y) : N
+// type Not<T> = T extends true ? false : true
+// type IfNever<T, Y, N> = [T] extends [never] ? Y : N
+// type IsNever<T> = IfNever<T, true, false>
+// type NotNever<T> = IfNever<T, false, true>
+//
+// export type IRandomTestFactory<
+// 	TMetrics = never,
+// 	TOptionsPattern = never,
+// 	TOptions = never,
+// 	TState = never,
+// 	HasCreateMetrics = false,
+// 	HasCompareMetrics = false,
+// 	HasOptionsPatternBuilder = false,
+// 	HasOptionsGenerator = false,
+// 	HasCreateState = false,
+// 	HasAction = false,
+// > = {}
+// & If<HasCreateMetrics, {}, {
+// 	createMetrics<_TMetrics>(value: TCreateMetrics<_TMetrics>): IRandomTestFactory<
+// 		_TMetrics, TOptionsPattern, TOptions, TState,
+// 		true, HasCompareMetrics, HasOptionsPatternBuilder, HasOptionsGenerator, HasCreateState, HasAction
+// 	>,
+// }>
+// & If<HasCompareMetrics | IsNever<TMetrics>, {}, {
+// 	compareMetrics(value: TCompareMetrics<TMetrics>): IRandomTestFactory<
+// 		TMetrics, TOptionsPattern, TOptions, TState,
+// 		HasCreateMetrics, true, HasOptionsPatternBuilder, HasOptionsGenerator, HasCreateState, HasAction
+// 	>,
+// }>
+// & If<HasOptionsPatternBuilder | IsNever<TMetrics>, {}, {
+// 	optionsPatternBuilder<_TOptionsPattern>(
+// 		value: TTestOptionsPatternBuilder<TMetrics, _TOptionsPattern>,
+// 	): IRandomTestFactory<
+// 		TMetrics, _TOptionsPattern, TOptions, TState,
+// 		HasCreateMetrics, HasCompareMetrics, true, HasOptionsGenerator, HasCreateState, HasAction
+// 	>,
+// }>
+// & If<HasOptionsGenerator | IsNever<TOptionsPattern>, {}, {
+// 	optionsGenerator<_TOptions>(value: TTestOptionsGenerator<TOptionsPattern, _TOptions>): IRandomTestFactory<
+// 		TMetrics, TOptionsPattern, _TOptions, TState,
+// 		HasCreateMetrics, HasCompareMetrics, HasOptionsPatternBuilder, true, HasCreateState, HasAction
+// 	>,
+// }>
+// & If<HasCreateState | IsNever<TOptions>, {}, {
+// 	createState<_TState>(value: TCreateState<TOptions, _TState>): IRandomTestFactory<
+// 		TMetrics, TOptionsPattern, TOptions, _TState,
+// 		HasCreateMetrics, HasCompareMetrics, HasOptionsPatternBuilder, HasOptionsGenerator, true, HasAction
+// 	>,
+// }>
+// & If<HasAction | IsNever<TState>, {}, {
+// 	action(value: TTestAction<TState>): IRandomTestFactory<
+// 		TMetrics, TOptionsPattern, TOptions, TState,
+// 		HasCreateMetrics, HasCompareMetrics, HasOptionsPatternBuilder, HasOptionsGenerator, HasCreateState, true
+// 	>,
+// }>
+//
+// class RandomTestFactory<
+// 	TMetrics = any,
+// 	TOptionsPattern = any,
+// 	TOptions = any,
+// 	TState = any,
+// > {
+// 	private _createMetrics: TCreateMetrics<any>
+// 	private _compareMetrics: TCompareMetrics<any>
+// 	private _optionsPatternBuilder: TTestOptionsPatternBuilder<TMetrics, TOptionsPattern>
+// 	private _optionsGenerator: TTestOptionsGenerator<TOptionsPattern, TOptions>
+// 	private _createState: TCreateState<TOptions, TState>
+// 	private _action: TTestAction<TState>
+//
+// 	public createMetrics<_TMetrics>(value: TCreateMetrics<_TMetrics>) {
+// 		this._createMetrics = value
+// 		return this
+// 	}
+//
+// 	public compareMetrics(value: TCompareMetrics<TMetrics>) {
+// 		this._compareMetrics = value
+// 		return this
+// 	}
+//
+// 	public optionsPatternBuilder(value: TTestOptionsPatternBuilder<TMetrics, TOptionsPattern>) {
+// 		this._optionsPatternBuilder = value
+// 		return this
+// 	}
+//
+// 	public optionsGenerator(value: TTestOptionsGenerator<TOptionsPattern, TOptions>) {
+// 		this._optionsGenerator = value
+// 		return this
+// 	}
+//
+// 	public createState(value: TCreateState<TOptions, TState>) {
+// 		this._createState = value
+// 		return this
+// 	}
+//
+// 	public action(value: TTestAction<TState>) {
+// 		this._action = value
+// 		return this
+// 	}
+//
+// 	public testIterationBuilder
+// }
+//
+// export function randomTestFactory(): IRandomTestFactory {
+// 	return new RandomTestFactory() as any
+// }
+//
+// // endregion

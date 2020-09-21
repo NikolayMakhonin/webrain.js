@@ -38,7 +38,7 @@ var _Mocha = require("../../../../../../main/common/test/Mocha");
 
 var _helpers = require("../../src/helpers/helpers");
 
-function _createSuper(Derived) { var hasNativeReflectConstruct = _isNativeReflectConstruct(); return function () { var Super = (0, _getPrototypeOf2.default)(Derived), result; if (hasNativeReflectConstruct) { var NewTarget = (0, _getPrototypeOf2.default)(this).constructor; result = (0, _construct.default)(Super, arguments, NewTarget); } else { result = Super.apply(this, arguments); } return (0, _possibleConstructorReturn2.default)(this, result); }; }
+function _createSuper(Derived) { var hasNativeReflectConstruct = _isNativeReflectConstruct(); return function _createSuperInternal() { var Super = (0, _getPrototypeOf2.default)(Derived), result; if (hasNativeReflectConstruct) { var NewTarget = (0, _getPrototypeOf2.default)(this).constructor; result = (0, _construct.default)(Super, arguments, NewTarget); } else { result = Super.apply(this, arguments); } return (0, _possibleConstructorReturn2.default)(this, result); }; }
 
 function _isNativeReflectConstruct() { if (typeof Reflect === "undefined" || !_construct.default) return false; if (_construct.default.sham) return false; if (typeof Proxy === "function") return true; try { Date.prototype.toString.call((0, _construct.default)(Date, [], function () {})); return true; } catch (e) { return false; } }
 
@@ -129,9 +129,9 @@ var assertDeepEqualExt = function assertDeepEqualExt(o1, o2) {
       array: true,
       undefined: true
     }, options));
-    var checkObject = (0, _helpers.createComplexObject)((0, _extends2.default)((0, _extends2.default)({
+    var checkObject = (0, _helpers.createComplexObject)((0, _extends2.default)({
       array: true
-    }, options), {}, {
+    }, options, {
       undefined: false
     }));
 
@@ -339,7 +339,7 @@ var assertDeepEqualExt = function assertDeepEqualExt(o1, o2) {
     (0, _createClass2.default)(Class3, [{
       key: "serialize",
       value: function serialize(_serialize2) {
-        return (0, _extends2.default)((0, _extends2.default)({}, (0, _get2.default)((0, _getPrototypeOf2.default)(Class3.prototype), "serialize", this).call(this, _serialize2)), {}, {
+        return (0, _extends2.default)({}, (0, _get2.default)((0, _getPrototypeOf2.default)(Class3.prototype), "serialize", this).call(this, _serialize2), {
           prop4: _serialize2(this.prop4)
         });
       }

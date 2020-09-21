@@ -1,19 +1,20 @@
 import { depend } from '../../../rx/depend/core/depend';
 import { Binder } from './Binder';
-export class SourceDest {
+
+class SourceDest {
   constructor(source, dest) {
-    this._source = source;
-    this._dest = typeof dest === 'function' ? dest : value => dest.set(value);
+    this.source = source;
+    this.dest = typeof dest === 'function' ? dest : value => dest.set(value);
   }
 
   getOneWayBinder(dest) {
-    return this._source.getOneWayBinder(dest);
-  }
+    return this.source.getOneWayBinder(dest);
+  } // tslint:disable-next-line:no-shadowed-variable
+
 
   getTwoWayBinder(sourceDest) {
-    const binder1 = this._source.getOneWayBinder(sourceDest);
-
-    const binder2 = sourceDest.getOneWayBinder(this);
+    const binder1 = this.source.getOneWayBinder(sourceDest.dest);
+    const binder2 = sourceDest.source.getOneWayBinder(this.dest);
 
     const bind = () => {
       const unbind1 = binder1.bind();
@@ -27,26 +28,45 @@ export class SourceDest {
     return new Binder(bind);
   }
 
-  set(value) {
-    this._dest(value);
-  }
-
 }
+
 SourceDest.prototype.getOneWayBinder = depend(SourceDest.prototype.getOneWayBinder);
-SourceDest.prototype.getTwoWayBinder = depend(SourceDest.prototype.getTwoWayBinder);
-export class SourceDestBuilder {
+SourceDest.prototype.getTwoWayBinder = depend(SourceDest.prototype.getTwoWayBinder); // tslint:disable-next-line:no-shadowed-variable
+
+export const sourceDest = depend(function sourceDest(source, dest) {
+  return new SourceDest(source, dest);
+});
+
+class SourceDestBuilder {
   constructor(sourceBuilder, destBuilder) {
     this._sourceBuilder = sourceBuilder;
     this._destBuilder = destBuilder;
   }
 
-  get(object) {
-    const source = this._sourceBuilder.get(object);
-
-    const dest = this._destBuilder.get(object);
-
-    return new SourceDest(source, dest);
+  getSource(object) {
+    return this._sourceBuilder.getSource(object);
   }
 
-}
-SourceDestBuilder.prototype.get = depend(SourceDestBuilder.prototype.get);
+  getDest(object) {
+    return this._destBuilder.getDest(object);
+  }
+
+  getSourceDest(object) {
+    const source = this._sourceBuilder.getSource(object);
+
+    const dest = this._destBuilder.getDest(object);
+
+    return sourceDest(source, dest);
+  }
+
+} // region sourceDestBuilder
+// tslint:disable-next-line:no-shadowed-variable
+
+
+const _sourceDestBuilder = depend(function _sourceDestBuilder(sourceBuilder, destBuilder) {
+  return new SourceDestBuilder(sourceBuilder, destBuilder);
+});
+
+export function sourceDestBuilder(sourceBuilder, destBuilder) {
+  return sourceBuilder == null && destBuilder == null ? _sourceDestBuilder : _sourceDestBuilder(sourceBuilder, destBuilder);
+} // endregion

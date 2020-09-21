@@ -43,7 +43,7 @@ var _helpers4 = require("./helpers");
 
 var _builder = require("./path/builder");
 
-function _createSuper(Derived) { var hasNativeReflectConstruct = _isNativeReflectConstruct(); return function () { var Super = (0, _getPrototypeOf2.default)(Derived), result; if (hasNativeReflectConstruct) { var NewTarget = (0, _getPrototypeOf2.default)(this).constructor; result = (0, _construct.default)(Super, arguments, NewTarget); } else { result = Super.apply(this, arguments); } return (0, _possibleConstructorReturn2.default)(this, result); }; }
+function _createSuper(Derived) { var hasNativeReflectConstruct = _isNativeReflectConstruct(); return function _createSuperInternal() { var Super = (0, _getPrototypeOf2.default)(Derived), result; if (hasNativeReflectConstruct) { var NewTarget = (0, _getPrototypeOf2.default)(this).constructor; result = (0, _construct.default)(Super, arguments, NewTarget); } else { result = Super.apply(this, arguments); } return (0, _possibleConstructorReturn2.default)(this, result); }; }
 
 function _isNativeReflectConstruct() { if (typeof Reflect === "undefined" || !_construct.default) return false; if (_construct.default.sham) return false; if (typeof Proxy === "function") return true; try { Date.prototype.toString.call((0, _construct.default)(Date, [], function () {})); return true; } catch (e) { return false; } }
 
@@ -72,7 +72,7 @@ var ConnectorBuilder = /*#__PURE__*/function (_ObservableObjectBuil) {
   }, {
     key: "connect",
     value: function connect(name, common, getSet, options) {
-      return this._connect(name, common, getSet, options ? (0, _extends2.default)((0, _extends2.default)({}, options), {}, {
+      return this._connect(name, common, getSet, options ? (0, _extends2.default)({}, options, {
         isDepend: true
       }) : {
         isDepend: true
@@ -83,7 +83,7 @@ var ConnectorBuilder = /*#__PURE__*/function (_ObservableObjectBuil) {
   }, {
     key: "connectLazy",
     value: function connectLazy(name, common, getSet, options) {
-      return this._connect(name, common, getSet, options ? (0, _extends2.default)((0, _extends2.default)({}, options), {}, {
+      return this._connect(name, common, getSet, options ? (0, _extends2.default)({}, options, {
         isDepend: true,
         isLazy: true
       }) : {
@@ -96,7 +96,7 @@ var ConnectorBuilder = /*#__PURE__*/function (_ObservableObjectBuil) {
   }, {
     key: "connectWait",
     value: function connectWait(name, common, getSet, options) {
-      return this._connect(name, common, getSet, options ? (0, _extends2.default)((0, _extends2.default)({}, options), {}, {
+      return this._connect(name, common, getSet, options ? (0, _extends2.default)({}, options, {
         isDepend: true,
         isWait: true
       }) : {
@@ -109,7 +109,7 @@ var ConnectorBuilder = /*#__PURE__*/function (_ObservableObjectBuil) {
   }, {
     key: "connectWaitLazy",
     value: function connectWaitLazy(name, common, getSet, options) {
-      return this._connect(name, common, getSet, options ? (0, _extends2.default)((0, _extends2.default)({}, options), {}, {
+      return this._connect(name, common, getSet, options ? (0, _extends2.default)({}, options, {
         isDepend: true,
         isLazy: true,
         isWait: true

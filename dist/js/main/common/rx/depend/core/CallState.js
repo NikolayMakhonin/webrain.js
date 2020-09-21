@@ -1500,6 +1500,13 @@ function subscribeCallState(callState, subscriber) {
         break;
     }
   });
+
+  if (subscriber != null && (callState.status & (Flag_HasValue | Flag_HasError)) !== 0) {
+    (0, _setTimeout2.default)(function () {
+      subscriber(callState);
+    });
+  }
+
   callState.getValue(false, true);
   return unsubscribe;
 }

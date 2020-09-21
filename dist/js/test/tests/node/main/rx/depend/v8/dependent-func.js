@@ -74,7 +74,7 @@ var _perceptron = require("../../../../../common/main/rx/depend/src/perceptron")
               objects = {
                 ObjectPool: ObjectPool,
                 PairingHeap: PairingHeap,
-                CallState: (0, _extends2.default)((0, _extends2.default)({}, CallState), {}, {
+                CallState: (0, _extends2.default)({}, CallState, {
                   reduceCallStates: null
                 }),
                 depend: depend,

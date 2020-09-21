@@ -282,7 +282,7 @@ var assert = new _Assert.Assert(_TestMerger.deepCloneEqual);
       // })
 
 
-      testMerger((0, _extends2.default)((0, _extends2.default)({}, options), {}, {
+      testMerger((0, _extends2.default)({}, options, {
         base: createValues(),
         older: createValues(),
         newer: createValues()
@@ -293,7 +293,7 @@ var assert = new _Assert.Assert(_TestMerger.deepCloneEqual);
         return [_TestMerger.BASE, _TestMerger.OLDER, _TestMerger.NEWER, null, void 0, 0, 1, false, true];
       };
 
-      testMerger((0, _extends2.default)((0, _extends2.default)({}, options), {}, {
+      testMerger((0, _extends2.default)({}, options, {
         base: createValues(),
         older: createValues(),
         newer: createValues()
@@ -304,7 +304,7 @@ var assert = new _Assert.Assert(_TestMerger.deepCloneEqual);
         return [_TestMerger.BASE, _TestMerger.OLDER, _TestMerger.NEWER, void 0, 1, '', '1', '2'];
       };
 
-      testMerger((0, _extends2.default)((0, _extends2.default)({}, options), {}, {
+      testMerger((0, _extends2.default)({}, options, {
         base: createValues(),
         older: createValues(),
         newer: createValues()
@@ -315,7 +315,7 @@ var assert = new _Assert.Assert(_TestMerger.deepCloneEqual);
         return [_TestMerger.BASE, _TestMerger.OLDER, _TestMerger.NEWER, void 0, 1, new String(''), new String('1'), new String('2')];
       };
 
-      testMerger((0, _extends2.default)((0, _extends2.default)({}, options), {}, {
+      testMerger((0, _extends2.default)({}, options, {
         base: createValues(),
         older: createValues(),
         newer: createValues()
@@ -326,7 +326,7 @@ var assert = new _Assert.Assert(_TestMerger.deepCloneEqual);
         return [_TestMerger.BASE, _TestMerger.OLDER, _TestMerger.NEWER, void 0, '', {}, new Date(1), new Date(2), new Date(3)];
       };
 
-      testMerger((0, _extends2.default)((0, _extends2.default)({}, options), {}, {
+      testMerger((0, _extends2.default)({}, options, {
         base: createValues(),
         older: createValues(),
         newer: createValues()
@@ -361,7 +361,7 @@ var assert = new _Assert.Assert(_TestMerger.deepCloneEqual);
         })];
       };
 
-      testMerger((0, _extends2.default)((0, _extends2.default)({}, options), {}, {
+      testMerger((0, _extends2.default)({}, options, {
         base: createValues(),
         older: createValues(),
         newer: createValues()
@@ -398,7 +398,7 @@ var assert = new _Assert.Assert(_TestMerger.deepCloneEqual);
         }), new Date(1), new Date(2)];
       };
 
-      testMerger((0, _extends2.default)((0, _extends2.default)({}, options), {}, {
+      testMerger((0, _extends2.default)({}, options, {
         base: createValues(),
         older: createValues(),
         newer: createValues()
@@ -861,14 +861,14 @@ var assert = new _Assert.Assert(_TestMerger.deepCloneEqual);
       }
     });
     (0, _Mocha.it)('simple circular', function () {
-      testMerger((0, _extends2.default)((0, _extends2.default)({}, options), {}, {
+      testMerger((0, _extends2.default)({}, options, {
         base: [createValue(1, true)],
         older: [createValue(1, true)],
         newer: [createValue(1, true)]
       }));
     });
     (0, _Mocha.it)('not circular', function () {
-      testMerger((0, _extends2.default)((0, _extends2.default)({}, options), {}, {
+      testMerger((0, _extends2.default)({}, options, {
         base: [createValue(1, false), createValue(2, false), createValue(3, false), null],
         older: [createValue(1, false), createValue(2, false), createValue(3, false), null],
         newer: [createValue(1, false), createValue(2, false), createValue(3, false), null]

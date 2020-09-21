@@ -238,8 +238,8 @@ var DependMap = /*#__PURE__*/function () {
     }
   }, {
     key: "deSerialize",
-    value: function deSerialize() {} // empty
-    // endregion
+    value: function deSerialize() {// empty
+    } // endregion
 
   }, {
     key: "size",

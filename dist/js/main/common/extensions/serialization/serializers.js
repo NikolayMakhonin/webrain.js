@@ -68,13 +68,13 @@ var _TypeMeta = require("../TypeMeta");
 
 var _marked = /*#__PURE__*/_regenerator.default.mark(deSerializeIterableOrdered);
 
-function _createForOfIteratorHelperLoose(o) { var _context12; var i = 0; if (typeof _symbol.default === "undefined" || (0, _getIteratorMethod2.default)(o) == null) { if ((0, _isArray.default)(o) || (o = _unsupportedIterableToArray(o))) return function () { if (i >= o.length) return { done: true }; return { done: false, value: o[i++] }; }; throw new TypeError("Invalid attempt to iterate non-iterable instance.\nIn order to be iterable, non-array objects must have a [Symbol.iterator]() method."); } i = (0, _getIterator2.default)(o); return (0, _bind.default)(_context12 = i.next).call(_context12, i); }
+function _createForOfIteratorHelperLoose(o, allowArrayLike) { var _context12; var it; if (typeof _symbol.default === "undefined" || (0, _getIteratorMethod2.default)(o) == null) { if ((0, _isArray.default)(o) || (it = _unsupportedIterableToArray(o)) || allowArrayLike && o && typeof o.length === "number") { if (it) o = it; var i = 0; return function () { if (i >= o.length) return { done: true }; return { done: false, value: o[i++] }; }; } throw new TypeError("Invalid attempt to iterate non-iterable instance.\nIn order to be iterable, non-array objects must have a [Symbol.iterator]() method."); } it = (0, _getIterator2.default)(o); return (0, _bind.default)(_context12 = it.next).call(_context12, it); }
 
 function _unsupportedIterableToArray(o, minLen) { var _context11; if (!o) return; if (typeof o === "string") return _arrayLikeToArray(o, minLen); var n = (0, _slice.default)(_context11 = Object.prototype.toString.call(o)).call(_context11, 8, -1); if (n === "Object" && o.constructor) n = o.constructor.name; if (n === "Map" || n === "Set") return (0, _from.default)(o); if (n === "Arguments" || /^(?:Ui|I)nt(?:8|16|32)(?:Clamped)?Array$/.test(n)) return _arrayLikeToArray(o, minLen); }
 
 function _arrayLikeToArray(arr, len) { if (len == null || len > arr.length) len = arr.length; for (var i = 0, arr2 = new Array(len); i < len; i++) { arr2[i] = arr[i]; } return arr2; }
 
-function _createSuper(Derived) { var hasNativeReflectConstruct = _isNativeReflectConstruct(); return function () { var Super = (0, _getPrototypeOf2.default)(Derived), result; if (hasNativeReflectConstruct) { var NewTarget = (0, _getPrototypeOf2.default)(this).constructor; result = (0, _construct2.default)(Super, arguments, NewTarget); } else { result = Super.apply(this, arguments); } return (0, _possibleConstructorReturn2.default)(this, result); }; }
+function _createSuper(Derived) { var hasNativeReflectConstruct = _isNativeReflectConstruct(); return function _createSuperInternal() { var Super = (0, _getPrototypeOf2.default)(Derived), result; if (hasNativeReflectConstruct) { var NewTarget = (0, _getPrototypeOf2.default)(this).constructor; result = (0, _construct2.default)(Super, arguments, NewTarget); } else { result = Super.apply(this, arguments); } return (0, _possibleConstructorReturn2.default)(this, result); }; }
 
 function _isNativeReflectConstruct() { if (typeof Reflect === "undefined" || !_construct2.default) return false; if (_construct2.default.sham) return false; if (typeof Proxy === "function") return true; try { Date.prototype.toString.call((0, _construct2.default)(Date, [], function () {})); return true; } catch (e) { return false; } }
 
@@ -449,9 +449,9 @@ var TypeMetaSerializerCollection = /*#__PURE__*/function (_TypeMetaCollectionWi)
   }], [{
     key: "makeTypeMetaSerializer",
     value: function makeTypeMetaSerializer(type, meta) {
-      return (0, _extends2.default)((0, _extends2.default)({
+      return (0, _extends2.default)({
         uuid: type.uuid
-      }, meta), {}, {
+      }, meta, {
         serializer: (0, _extends2.default)({
           serialize: function serialize(_serialize, value, options) {
             return value.serialize(_serialize, options);

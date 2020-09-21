@@ -19,9 +19,11 @@ export declare function testIterationBuilder<TState>({ before, action, waitAsync
     waitAsyncAll?: ITestIterationAction<TState>;
 }): TTestIteration<TState>;
 export declare type TTestIterator<TOptions> = (rnd: Random, options: TOptions) => ThenableOrIteratorOrValue<any>;
-export declare function testIteratorBuilder<TOptions, TState>(createState: (rnd: Random, options: TOptions) => ThenableOrIteratorOrValue<TState>, { before, stopPredicate, iteration, after, }: IBeforeAfter<TState> & {
+export declare type TCreateState<TOptions, TState> = (rnd: Random, options: TOptions) => ThenableOrIteratorOrValue<TState>;
+export declare function testIteratorBuilder<TOptions, TState>(createState: TCreateState<TOptions, TState>, { before, stopPredicate, testIteration, after, consoleThrowPredicate, }: IBeforeAfter<TState> & {
     stopPredicate: (iterationNumber: number, timeStart: number, state: TState) => ThenableOrIteratorOrValue<boolean>;
-    iteration: TTestIteration<TState>;
+    testIteration: TTestIteration<TState>;
+    consoleThrowPredicate?: (this: TConsoleType, ...args: any[]) => boolean;
 }): TTestIterator<TOptions>;
 export declare type TTestOptionsGenerator<TOptionsPattern, TOptions> = (rnd: Random, pattern: TOptionsPattern) => ThenableOrIteratorOrValue<TOptions>;
 export declare function test<TOptionsPattern, TOptions>(seed: number | null, optionsPattern: TOptionsPattern, optionsGenerator: TTestOptionsGenerator<TOptionsPattern, TOptions>, testIterator: TTestIterator<TOptions>): ThenableIterator<any>;
@@ -43,9 +45,11 @@ export interface ISearchBestErrorParams<TMetrics> {
     metricsMin?: TMetrics;
     stopPredicate: (searchBestErrorMetrics: ISearchBestErrorMetrics) => ThenableOrIteratorOrValue<boolean>;
 }
+export declare type TCreateMetrics<TMetrics> = (metrics: ISearchBestErrorMetrics) => ThenableOrIteratorOrValue<TMetrics>;
+export declare type TCompareMetrics<TMetrics> = (metrics1: TMetrics, metrics2: TMetrics) => number;
 export declare type TSearchBestError<TMetrics> = <TContext>(_this: TContext, { customSeed, metricsMin, stopPredicate, createMetrics, compareMetrics, func, }: ISearchBestErrorParams<TMetrics> & {
-    createMetrics: (metrics: ISearchBestErrorMetrics) => ThenableOrIteratorOrValue<TMetrics>;
-    compareMetrics: (metrics1: any, metrics2: any) => number;
+    createMetrics: TCreateMetrics<TMetrics>;
+    compareMetrics: TCompareMetrics<TMetrics>;
     func: (this: TContext, seed: number, metrics: TMetrics, metricsMin: TMetrics) => ThenableOrIteratorOrValue<any>;
 }) => ThenableOrIteratorOrValue<any>;
 export declare function searchBestErrorBuilder<TMetrics>({ onFound, consoleOnlyBestErrors, }: {
@@ -60,9 +64,8 @@ export interface ITestOptionsBase<TMetrics> {
 export declare type TRandomTest<TMetrics> = ({ stopPredicate, searchBestError, customSeed, metricsMin, }: ISearchBestErrorParams<TMetrics> & {
     searchBestError?: boolean;
 }) => ThenableOrValue<any>;
-export declare function randomTestBuilder<TMetrics, TOptionsPattern extends ITestOptionsBase<TMetrics>, TOptions extends ITestOptionsBase<TMetrics>>(createMetrics: (metrics: ISearchBestErrorMetrics) => ThenableOrIteratorOrValue<TMetrics>, optionsPatternBuilder: TTestOptionsPatternBuilder<TMetrics, TOptionsPattern>, optionsGenerator: TTestOptionsGenerator<TOptionsPattern, TOptions>, { compareMetrics, consoleThrowPredicate, searchBestError: _searchBestError, testIterator, }: {
+export declare function randomTestBuilder<TMetrics, TOptionsPattern extends ITestOptionsBase<TMetrics>, TOptions extends ITestOptionsBase<TMetrics>>(createMetrics: (metrics: ISearchBestErrorMetrics) => ThenableOrIteratorOrValue<TMetrics>, optionsPatternBuilder: TTestOptionsPatternBuilder<TMetrics, TOptionsPattern>, optionsGenerator: TTestOptionsGenerator<TOptionsPattern, TOptions>, { compareMetrics, searchBestError: _searchBestError, testIterator, }: {
     compareMetrics?: (metrics: TMetrics, metricsMin: TMetrics) => number;
-    consoleThrowPredicate?: (this: TConsoleType, ...args: any[]) => boolean;
     searchBestError?: TSearchBestError<TMetrics>;
     testIterator: TTestIterator<TOptions>;
 }): TRandomTest<TMetrics>;

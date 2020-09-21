@@ -29,6 +29,7 @@ import {
 	testIteratorBuilder,
 } from '../../../../../../../main/common/test/randomTest'
 import {delay} from '../../../../../../../main/common/time/helpers'
+import {clearCallStates} from "../src/helpers";
 
 declare const beforeEach: any
 
@@ -737,6 +738,10 @@ describe('common > main > rx > depend > bindings > stress', function() {
 			// metricsMin: {"countObjects":1,"iterations":9,"countUnBinds":1,"countBinds":3,"countSetsLast":0,"countChecksLast":0,"countSets":6,"countChecks":0},
 			searchBestError: false,
 		})
+
+		await delay(1000)
+
+		clearCallStates()
 
 		// process.exit(1)
 

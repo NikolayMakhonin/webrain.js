@@ -32,7 +32,7 @@ var _isArray = _interopRequireDefault(require("@babel/runtime-corejs3/core-js-st
 
 var _marked = /*#__PURE__*/_regenerator.default.mark(generateOptions);
 
-function _createForOfIteratorHelperLoose(o) { var _context3; var i = 0; if (typeof _symbol.default === "undefined" || (0, _getIteratorMethod2.default)(o) == null) { if ((0, _isArray.default)(o) || (o = _unsupportedIterableToArray(o))) return function () { if (i >= o.length) return { done: true }; return { done: false, value: o[i++] }; }; throw new TypeError("Invalid attempt to iterate non-iterable instance.\nIn order to be iterable, non-array objects must have a [Symbol.iterator]() method."); } i = (0, _getIterator2.default)(o); return (0, _bind.default)(_context3 = i.next).call(_context3, i); }
+function _createForOfIteratorHelperLoose(o, allowArrayLike) { var _context3; var it; if (typeof _symbol.default === "undefined" || (0, _getIteratorMethod2.default)(o) == null) { if ((0, _isArray.default)(o) || (it = _unsupportedIterableToArray(o)) || allowArrayLike && o && typeof o.length === "number") { if (it) o = it; var i = 0; return function () { if (i >= o.length) return { done: true }; return { done: false, value: o[i++] }; }; } throw new TypeError("Invalid attempt to iterate non-iterable instance.\nIn order to be iterable, non-array objects must have a [Symbol.iterator]() method."); } it = (0, _getIterator2.default)(o); return (0, _bind.default)(_context3 = it.next).call(_context3, it); }
 
 function _unsupportedIterableToArray(o, minLen) { var _context2; if (!o) return; if (typeof o === "string") return _arrayLikeToArray(o, minLen); var n = (0, _slice.default)(_context2 = Object.prototype.toString.call(o)).call(_context2, 8, -1); if (n === "Object" && o.constructor) n = o.constructor.name; if (n === "Map" || n === "Set") return (0, _from.default)(o); if (n === "Arguments" || /^(?:Ui|I)nt(?:8|16|32)(?:Clamped)?Array$/.test(n)) return _arrayLikeToArray(o, minLen); }
 
@@ -97,7 +97,7 @@ function generateOptions(base, optionsVariants, exclude) {
           }
 
           optionVariant = _step2.value;
-          _variant = (0, _extends3.default)((0, _extends3.default)({}, base), {}, (_extends2 = {}, _extends2[_key] = optionVariant, _extends2));
+          _variant = (0, _extends3.default)({}, base, (_extends2 = {}, _extends2[_key] = optionVariant, _extends2));
           newOptionsVariants = (0, _extends3.default)({}, optionsVariants);
           newOptionsVariants[_key] = null;
           hasChilds = true;
@@ -140,7 +140,7 @@ var TestVariants = /*#__PURE__*/function () {
   (0, _createClass2.default)(TestVariants, [{
     key: "test",
     value: function test(testCases) {
-      var optionsVariants = (0, _extends3.default)((0, _extends3.default)({}, this.baseOptionsVariants), testCases);
+      var optionsVariants = (0, _extends3.default)({}, this.baseOptionsVariants, testCases);
       var expected = testCases.expected;
       var exclude = testCases.exclude;
       delete optionsVariants.expected;
@@ -165,7 +165,7 @@ var TestVariants = /*#__PURE__*/function () {
 
           for (var _iterator5 = _createForOfIteratorHelperLoose(variants), _step5; !(_step5 = _iterator5()).done;) {
             var _variant2 = _step5.value;
-            this.testVariant((0, _extends3.default)((0, _extends3.default)({}, _variant2), {}, {
+            this.testVariant((0, _extends3.default)({}, _variant2, {
               action: action,
               description: description,
               expected: expected

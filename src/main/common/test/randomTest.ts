@@ -499,114 +499,114 @@ export function randomTestBuilder<
 
 // endregion
 
-// region
-
-// type IfAny<T, Y, N> = 0 extends (1 & T) ? Y : N
-type If<T, Y, N> = T extends boolean ? (T extends false ? N : Y) : N
-type Not<T> = T extends true ? false : true
-type IfNever<T, Y, N> = [T] extends [never] ? Y : N
-type IsNever<T> = IfNever<T, true, false>
-type NotNever<T> = IfNever<T, false, true>
-
-export type IRandomTestFactory<
-	TMetrics = never,
-	TOptionsPattern = never,
-	TOptions = never,
-	TState = never,
-	HasCreateMetrics = false,
-	HasCompareMetrics = false,
-	HasOptionsPatternBuilder = false,
-	HasOptionsGenerator = false,
-	HasCreateState = false,
-	HasAction = false,
-> = {}
-& If<HasCreateMetrics, {}, {
-	createMetrics<_TMetrics>(value: TCreateMetrics<_TMetrics>): IRandomTestFactory<
-		_TMetrics, TOptionsPattern, TOptions, TState,
-		true, HasCompareMetrics, HasOptionsPatternBuilder, HasOptionsGenerator, HasCreateState, HasAction
-	>,
-}>
-& If<HasCompareMetrics | IsNever<TMetrics>, {}, {
-	compareMetrics(value: TCompareMetrics<TMetrics>): IRandomTestFactory<
-		TMetrics, TOptionsPattern, TOptions, TState,
-		HasCreateMetrics, true, HasOptionsPatternBuilder, HasOptionsGenerator, HasCreateState, HasAction
-	>,
-}>
-& If<HasOptionsPatternBuilder | IsNever<TMetrics>, {}, {
-	optionsPatternBuilder<_TOptionsPattern>(
-		value: TTestOptionsPatternBuilder<TMetrics, _TOptionsPattern>,
-	): IRandomTestFactory<
-		TMetrics, _TOptionsPattern, TOptions, TState,
-		HasCreateMetrics, HasCompareMetrics, true, HasOptionsGenerator, HasCreateState, HasAction
-	>,
-}>
-& If<HasOptionsGenerator | IsNever<TOptionsPattern>, {}, {
-	optionsGenerator<_TOptions>(value: TTestOptionsGenerator<TOptionsPattern, _TOptions>): IRandomTestFactory<
-		TMetrics, TOptionsPattern, _TOptions, TState,
-		HasCreateMetrics, HasCompareMetrics, HasOptionsPatternBuilder, true, HasCreateState, HasAction
-	>,
-}>
-& If<HasCreateState | IsNever<TOptions>, {}, {
-	createState<_TState>(value: TCreateState<TOptions, _TState>): IRandomTestFactory<
-		TMetrics, TOptionsPattern, TOptions, _TState,
-		HasCreateMetrics, HasCompareMetrics, HasOptionsPatternBuilder, HasOptionsGenerator, true, HasAction
-	>,
-}>
-& If<HasAction | IsNever<TState>, {}, {
-	action(value: TTestAction<TState>): IRandomTestFactory<
-		TMetrics, TOptionsPattern, TOptions, TState,
-		HasCreateMetrics, HasCompareMetrics, HasOptionsPatternBuilder, HasOptionsGenerator, HasCreateState, true
-	>,
-}>
-
-class RandomTestFactory<
-	TMetrics = any,
-	TOptionsPattern = any,
-	TOptions = any,
-	TState = any,
-> {
-	private _createMetrics: TCreateMetrics<any>
-	private _compareMetrics: TCompareMetrics<any>
-	private _optionsPatternBuilder: TTestOptionsPatternBuilder<TMetrics, TOptionsPattern>
-	private _optionsGenerator: TTestOptionsGenerator<TOptionsPattern, TOptions>
-	private _createState: TCreateState<TOptions, TState>
-	private _action: TTestAction<TState>
-
-	public createMetrics<_TMetrics>(value: TCreateMetrics<_TMetrics>) {
-		this._createMetrics = value
-		return this
-	}
-
-	public compareMetrics(value: TCompareMetrics<TMetrics>) {
-		this._compareMetrics = value
-		return this
-	}
-
-	public optionsPatternBuilder(value: TTestOptionsPatternBuilder<TMetrics, TOptionsPattern>) {
-		this._optionsPatternBuilder = value
-		return this
-	}
-
-	public optionsGenerator(value: TTestOptionsGenerator<TOptionsPattern, TOptions>) {
-		this._optionsGenerator = value
-		return this
-	}
-
-	public createState(value: TCreateState<TOptions, TState>) {
-		this._createState = value
-		return this
-	}
-
-	public action(value: TTestAction<TState>) {
-		this._action = value
-		return this
-	}
-
-	public testIterationBuilder
-}
-
-export function randomTestFactory(): IRandomTestFactory {
-	return new RandomTestFactory() as any
-}
-
-// endregion
+// // region builder
+//
+// // type IfAny<T, Y, N> = 0 extends (1 & T) ? Y : N
+// type If<T, Y, N> = T extends boolean ? (T extends false ? N : Y) : N
+// type Not<T> = T extends true ? false : true
+// type IfNever<T, Y, N> = [T] extends [never] ? Y : N
+// type IsNever<T> = IfNever<T, true, false>
+// type NotNever<T> = IfNever<T, false, true>
+//
+// export type IRandomTestFactory<
+// 	TMetrics = never,
+// 	TOptionsPattern = never,
+// 	TOptions = never,
+// 	TState = never,
+// 	HasCreateMetrics = false,
+// 	HasCompareMetrics = false,
+// 	HasOptionsPatternBuilder = false,
+// 	HasOptionsGenerator = false,
+// 	HasCreateState = false,
+// 	HasAction = false,
+// > = {}
+// & If<HasCreateMetrics, {}, {
+// 	createMetrics<_TMetrics>(value: TCreateMetrics<_TMetrics>): IRandomTestFactory<
+// 		_TMetrics, TOptionsPattern, TOptions, TState,
+// 		true, HasCompareMetrics, HasOptionsPatternBuilder, HasOptionsGenerator, HasCreateState, HasAction
+// 	>,
+// }>
+// & If<HasCompareMetrics | IsNever<TMetrics>, {}, {
+// 	compareMetrics(value: TCompareMetrics<TMetrics>): IRandomTestFactory<
+// 		TMetrics, TOptionsPattern, TOptions, TState,
+// 		HasCreateMetrics, true, HasOptionsPatternBuilder, HasOptionsGenerator, HasCreateState, HasAction
+// 	>,
+// }>
+// & If<HasOptionsPatternBuilder | IsNever<TMetrics>, {}, {
+// 	optionsPatternBuilder<_TOptionsPattern>(
+// 		value: TTestOptionsPatternBuilder<TMetrics, _TOptionsPattern>,
+// 	): IRandomTestFactory<
+// 		TMetrics, _TOptionsPattern, TOptions, TState,
+// 		HasCreateMetrics, HasCompareMetrics, true, HasOptionsGenerator, HasCreateState, HasAction
+// 	>,
+// }>
+// & If<HasOptionsGenerator | IsNever<TOptionsPattern>, {}, {
+// 	optionsGenerator<_TOptions>(value: TTestOptionsGenerator<TOptionsPattern, _TOptions>): IRandomTestFactory<
+// 		TMetrics, TOptionsPattern, _TOptions, TState,
+// 		HasCreateMetrics, HasCompareMetrics, HasOptionsPatternBuilder, true, HasCreateState, HasAction
+// 	>,
+// }>
+// & If<HasCreateState | IsNever<TOptions>, {}, {
+// 	createState<_TState>(value: TCreateState<TOptions, _TState>): IRandomTestFactory<
+// 		TMetrics, TOptionsPattern, TOptions, _TState,
+// 		HasCreateMetrics, HasCompareMetrics, HasOptionsPatternBuilder, HasOptionsGenerator, true, HasAction
+// 	>,
+// }>
+// & If<HasAction | IsNever<TState>, {}, {
+// 	action(value: TTestAction<TState>): IRandomTestFactory<
+// 		TMetrics, TOptionsPattern, TOptions, TState,
+// 		HasCreateMetrics, HasCompareMetrics, HasOptionsPatternBuilder, HasOptionsGenerator, HasCreateState, true
+// 	>,
+// }>
+//
+// class RandomTestFactory<
+// 	TMetrics = any,
+// 	TOptionsPattern = any,
+// 	TOptions = any,
+// 	TState = any,
+// > {
+// 	private _createMetrics: TCreateMetrics<any>
+// 	private _compareMetrics: TCompareMetrics<any>
+// 	private _optionsPatternBuilder: TTestOptionsPatternBuilder<TMetrics, TOptionsPattern>
+// 	private _optionsGenerator: TTestOptionsGenerator<TOptionsPattern, TOptions>
+// 	private _createState: TCreateState<TOptions, TState>
+// 	private _action: TTestAction<TState>
+//
+// 	public createMetrics<_TMetrics>(value: TCreateMetrics<_TMetrics>) {
+// 		this._createMetrics = value
+// 		return this
+// 	}
+//
+// 	public compareMetrics(value: TCompareMetrics<TMetrics>) {
+// 		this._compareMetrics = value
+// 		return this
+// 	}
+//
+// 	public optionsPatternBuilder(value: TTestOptionsPatternBuilder<TMetrics, TOptionsPattern>) {
+// 		this._optionsPatternBuilder = value
+// 		return this
+// 	}
+//
+// 	public optionsGenerator(value: TTestOptionsGenerator<TOptionsPattern, TOptions>) {
+// 		this._optionsGenerator = value
+// 		return this
+// 	}
+//
+// 	public createState(value: TCreateState<TOptions, TState>) {
+// 		this._createState = value
+// 		return this
+// 	}
+//
+// 	public action(value: TTestAction<TState>) {
+// 		this._action = value
+// 		return this
+// 	}
+//
+// 	public testIterationBuilder
+// }
+//
+// export function randomTestFactory(): IRandomTestFactory {
+// 	return new RandomTestFactory() as any
+// }
+//
+// // endregion

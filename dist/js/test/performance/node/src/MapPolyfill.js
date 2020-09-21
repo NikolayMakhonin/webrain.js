@@ -947,10 +947,10 @@ var MapPolyfill = function (exports) {
   var IE_PROTO = sharedKey('IE_PROTO');
   var PROTOTYPE = 'prototype';
 
-  var Empty = function Empty() {}
-  /* empty */
-  // Create object with fake `null` prototype: use iframe Object with cleared prototype
-  ;
+  var Empty = function Empty() {
+    /* empty */
+  }; // Create object with fake `null` prototype: use iframe Object with cleared prototype
+
 
   var _createDict = function createDict() {
     // Thrash, waste and sodomy: IE GC bug

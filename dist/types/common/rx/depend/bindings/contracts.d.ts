@@ -10,15 +10,17 @@ export declare type TDest<TValue> = IDest<TValue> | TDestFunc<TValue>;
 export interface IDest<TValue> {
     set(value: TValue): void;
 }
-export interface ISourceDest<TValue> extends ISource<TValue>, IDest<TValue> {
+export interface ISourceDest<TValue> {
+    readonly source: ISource<TValue>;
+    readonly dest: IDest<TValue> | TDestFunc<TValue>;
     getTwoWayBinder(sourceDest: ISourceDest<TValue>): IBinder;
 }
 export interface ISourceBuilder<TObject, TValue> {
-    get(object: TObject): ISource<TValue>;
+    getSource(object: TObject): ISource<TValue>;
 }
 export interface IDestBuilder<TObject, TValue> {
-    get(object: TObject): TDestFunc<TValue>;
+    getDest(object: TObject): IDest<TValue> | TDestFunc<TValue>;
 }
-export interface ISourceDestBuilder<TObject, TValue> {
-    get(object: TObject): ISourceDest<TValue>;
+export interface ISourceDestBuilder<TObject, TValue> extends ISourceBuilder<TObject, TValue>, IDestBuilder<TObject, TValue> {
+    getSourceDest(object: TObject): ISourceDest<TValue>;
 }

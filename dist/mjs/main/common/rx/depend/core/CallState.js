@@ -1320,6 +1320,13 @@ export function subscribeCallState(callState, subscriber) {
         break;
     }
   });
+
+  if (subscriber != null && (callState.status & (Flag_HasValue | Flag_HasError)) !== 0) {
+    setTimeout(() => {
+      subscriber(callState);
+    });
+  }
+
   callState.getValue(false, true);
   return unsubscribe;
 }

@@ -1,5 +1,4 @@
-import { isAsync } from '../async/async';
-import { resolveAsync, resolveAsyncAll } from '../async/ThenableSync';
+import { resolveAsyncAll, resolveAsyncFunc } from '../async/ThenableSync';
 import { Random } from '../random/Random';
 import { interceptConsole, throwOnConsoleError } from './interceptConsole';
 export function testIterationBuilder({
@@ -14,7 +13,7 @@ export function testIterationBuilder({
   const waitAsyncAllWeight = waitAsyncAll != null ? waitAsyncAll.weight / sumWeights : 0;
   const asyncs = [];
 
-  function* iteration(rnd, state) {
+  function* testIteration(rnd, state) {
     if (before != null) {
       yield before(rnd, state);
     }
@@ -58,8 +57,9 @@ export function testIterationBuilder({
 
       if (waitAsyncRandomWeight === 0 && waitAsyncAllWeight === 0) {
         yield async;
-      } else if (isAsync(async)) {
-        async.push(async);
+      } else {
+        // if (isAsync(async)) {
+        asyncs.push(async);
       }
 
       if (action.after != null) {
@@ -72,17 +72,18 @@ export function testIterationBuilder({
     }
   }
 
-  return iteration;
+  return testIteration;
 } // endregion
 
 // region testIteratorBuilder
 export function testIteratorBuilder(createState, {
   before,
   stopPredicate,
-  iteration,
-  after
+  testIteration,
+  after,
+  consoleThrowPredicate
 }) {
-  function* iterator(rnd, options) {
+  function* _iterator(rnd, options) {
     const state = yield createState(rnd, options);
 
     if (before != null) {
@@ -99,13 +100,19 @@ export function testIteratorBuilder(createState, {
         break;
       }
 
-      yield iteration(rnd, state);
+      yield testIteration(rnd, state);
       iterationNumber++;
     }
 
     if (after != null) {
       yield after(rnd, state);
     }
+  }
+
+  function iterator(rnd, options) {
+    return throwOnConsoleError(this, consoleThrowPredicate, () => {
+      return _iterator(rnd, options);
+    });
   }
 
   return iterator;
@@ -167,7 +174,7 @@ export function searchBestErrorBuilder({
   }) {
     let interceptConsoleDisabled;
     const interceptConsoleDispose = customSeed == null && consoleOnlyBestErrors && interceptConsole(function () {
-      return interceptConsoleDisabled;
+      return !interceptConsoleDisabled;
     });
 
     function interceptConsoleDisable(_func) {
@@ -219,7 +226,7 @@ export function searchBestErrorBuilder({
             testRunnerMetrics.iterationsFromEqualError = now - equalErrorTime;
           }
 
-          return customSeed != null || stopPredicate(testRunnerMetrics);
+          return customSeed != null && testRunnerMetrics.iterationNumber >= 1 || stopPredicate(testRunnerMetrics);
         },
 
         *func(testRunnerMetrics) {
@@ -280,7 +287,6 @@ export function searchBestErrorBuilder({
 // region randomTestBuilder
 export function randomTestBuilder(createMetrics, optionsPatternBuilder, optionsGenerator, {
   compareMetrics,
-  consoleThrowPredicate,
   searchBestError: _searchBestError,
   testIterator
 }) {
@@ -297,7 +303,7 @@ export function randomTestBuilder(createMetrics, optionsPatternBuilder, optionsG
       return test(seed, optionsPattern, optionsGenerator, testIterator);
     }
 
-    return resolveAsync(throwOnConsoleError(_this, consoleThrowPredicate, function () {
+    return resolveAsyncFunc(() => {
       if (searchBestError) {
         return _searchBestError(this, {
           customSeed,
@@ -313,11 +319,122 @@ export function randomTestBuilder(createMetrics, optionsPatternBuilder, optionsG
 
           *func(testRunnerMetrics) {
             const metrics = yield createMetrics(testRunnerMetrics);
-            return func.call(this, customSeed, metrics, metricsMin);
+            return func.call(this, customSeed, metrics, metricsMin || {});
           }
 
         });
       }
-    }));
+    });
   };
 } // endregion
+// // region builder
+//
+// // type IfAny<T, Y, N> = 0 extends (1 & T) ? Y : N
+// type If<T, Y, N> = T extends boolean ? (T extends false ? N : Y) : N
+// type Not<T> = T extends true ? false : true
+// type IfNever<T, Y, N> = [T] extends [never] ? Y : N
+// type IsNever<T> = IfNever<T, true, false>
+// type NotNever<T> = IfNever<T, false, true>
+//
+// export type IRandomTestFactory<
+// 	TMetrics = never,
+// 	TOptionsPattern = never,
+// 	TOptions = never,
+// 	TState = never,
+// 	HasCreateMetrics = false,
+// 	HasCompareMetrics = false,
+// 	HasOptionsPatternBuilder = false,
+// 	HasOptionsGenerator = false,
+// 	HasCreateState = false,
+// 	HasAction = false,
+// > = {}
+// & If<HasCreateMetrics, {}, {
+// 	createMetrics<_TMetrics>(value: TCreateMetrics<_TMetrics>): IRandomTestFactory<
+// 		_TMetrics, TOptionsPattern, TOptions, TState,
+// 		true, HasCompareMetrics, HasOptionsPatternBuilder, HasOptionsGenerator, HasCreateState, HasAction
+// 	>,
+// }>
+// & If<HasCompareMetrics | IsNever<TMetrics>, {}, {
+// 	compareMetrics(value: TCompareMetrics<TMetrics>): IRandomTestFactory<
+// 		TMetrics, TOptionsPattern, TOptions, TState,
+// 		HasCreateMetrics, true, HasOptionsPatternBuilder, HasOptionsGenerator, HasCreateState, HasAction
+// 	>,
+// }>
+// & If<HasOptionsPatternBuilder | IsNever<TMetrics>, {}, {
+// 	optionsPatternBuilder<_TOptionsPattern>(
+// 		value: TTestOptionsPatternBuilder<TMetrics, _TOptionsPattern>,
+// 	): IRandomTestFactory<
+// 		TMetrics, _TOptionsPattern, TOptions, TState,
+// 		HasCreateMetrics, HasCompareMetrics, true, HasOptionsGenerator, HasCreateState, HasAction
+// 	>,
+// }>
+// & If<HasOptionsGenerator | IsNever<TOptionsPattern>, {}, {
+// 	optionsGenerator<_TOptions>(value: TTestOptionsGenerator<TOptionsPattern, _TOptions>): IRandomTestFactory<
+// 		TMetrics, TOptionsPattern, _TOptions, TState,
+// 		HasCreateMetrics, HasCompareMetrics, HasOptionsPatternBuilder, true, HasCreateState, HasAction
+// 	>,
+// }>
+// & If<HasCreateState | IsNever<TOptions>, {}, {
+// 	createState<_TState>(value: TCreateState<TOptions, _TState>): IRandomTestFactory<
+// 		TMetrics, TOptionsPattern, TOptions, _TState,
+// 		HasCreateMetrics, HasCompareMetrics, HasOptionsPatternBuilder, HasOptionsGenerator, true, HasAction
+// 	>,
+// }>
+// & If<HasAction | IsNever<TState>, {}, {
+// 	action(value: TTestAction<TState>): IRandomTestFactory<
+// 		TMetrics, TOptionsPattern, TOptions, TState,
+// 		HasCreateMetrics, HasCompareMetrics, HasOptionsPatternBuilder, HasOptionsGenerator, HasCreateState, true
+// 	>,
+// }>
+//
+// class RandomTestFactory<
+// 	TMetrics = any,
+// 	TOptionsPattern = any,
+// 	TOptions = any,
+// 	TState = any,
+// > {
+// 	private _createMetrics: TCreateMetrics<any>
+// 	private _compareMetrics: TCompareMetrics<any>
+// 	private _optionsPatternBuilder: TTestOptionsPatternBuilder<TMetrics, TOptionsPattern>
+// 	private _optionsGenerator: TTestOptionsGenerator<TOptionsPattern, TOptions>
+// 	private _createState: TCreateState<TOptions, TState>
+// 	private _action: TTestAction<TState>
+//
+// 	public createMetrics<_TMetrics>(value: TCreateMetrics<_TMetrics>) {
+// 		this._createMetrics = value
+// 		return this
+// 	}
+//
+// 	public compareMetrics(value: TCompareMetrics<TMetrics>) {
+// 		this._compareMetrics = value
+// 		return this
+// 	}
+//
+// 	public optionsPatternBuilder(value: TTestOptionsPatternBuilder<TMetrics, TOptionsPattern>) {
+// 		this._optionsPatternBuilder = value
+// 		return this
+// 	}
+//
+// 	public optionsGenerator(value: TTestOptionsGenerator<TOptionsPattern, TOptions>) {
+// 		this._optionsGenerator = value
+// 		return this
+// 	}
+//
+// 	public createState(value: TCreateState<TOptions, TState>) {
+// 		this._createState = value
+// 		return this
+// 	}
+//
+// 	public action(value: TTestAction<TState>) {
+// 		this._action = value
+// 		return this
+// 	}
+//
+// 	public testIterationBuilder
+// }
+//
+// export function randomTestFactory(): IRandomTestFactory {
+// 	return new RandomTestFactory() as any
+// }
+//
+// // endregion

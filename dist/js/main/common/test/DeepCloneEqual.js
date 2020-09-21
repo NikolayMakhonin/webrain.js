@@ -38,7 +38,7 @@ var _objectUniqueId = require("../helpers/object-unique-id");
 
 var _marked = /*#__PURE__*/_regenerator.default.mark(toIterableIterator);
 
-function _createForOfIteratorHelperLoose(o) { var _context3; var i = 0; if (typeof _symbol.default === "undefined" || (0, _getIteratorMethod2.default)(o) == null) { if ((0, _isArray.default)(o) || (o = _unsupportedIterableToArray(o))) return function () { if (i >= o.length) return { done: true }; return { done: false, value: o[i++] }; }; throw new TypeError("Invalid attempt to iterate non-iterable instance.\nIn order to be iterable, non-array objects must have a [Symbol.iterator]() method."); } i = (0, _getIterator2.default)(o); return (0, _bind.default)(_context3 = i.next).call(_context3, i); }
+function _createForOfIteratorHelperLoose(o, allowArrayLike) { var _context3; var it; if (typeof _symbol.default === "undefined" || (0, _getIteratorMethod2.default)(o) == null) { if ((0, _isArray.default)(o) || (it = _unsupportedIterableToArray(o)) || allowArrayLike && o && typeof o.length === "number") { if (it) o = it; var i = 0; return function () { if (i >= o.length) return { done: true }; return { done: false, value: o[i++] }; }; } throw new TypeError("Invalid attempt to iterate non-iterable instance.\nIn order to be iterable, non-array objects must have a [Symbol.iterator]() method."); } it = (0, _getIterator2.default)(o); return (0, _bind.default)(_context3 = it.next).call(_context3, it); }
 
 function _unsupportedIterableToArray(o, minLen) { var _context2; if (!o) return; if (typeof o === "string") return _arrayLikeToArray(o, minLen); var n = (0, _slice.default)(_context2 = Object.prototype.toString.call(o)).call(_context2, 8, -1); if (n === "Object" && o.constructor) n = o.constructor.name; if (n === "Map" || n === "Set") return (0, _from.default)(o); if (n === "Arguments" || /^(?:Ui|I)nt(?:8|16|32)(?:Clamped)?Array$/.test(n)) return _arrayLikeToArray(o, minLen); }
 
@@ -117,7 +117,7 @@ var DeepCloneEqual = /*#__PURE__*/function () {
   }, {
     key: "clone",
     value: function clone(value, options, cache) {
-      options = (0, _extends2.default)((0, _extends2.default)((0, _extends2.default)({}, this.commonOptions), this.cloneOptions), options);
+      options = (0, _extends2.default)({}, this.commonOptions, this.cloneOptions, options);
       var customClone = options && options.customClone;
       var isPrimitive = options && options.customIsPrimitive || isPrimitiveDefault;
 
@@ -233,7 +233,7 @@ var DeepCloneEqual = /*#__PURE__*/function () {
   }, {
     key: "equal",
     value: function equal(obj1, obj2, options) {
-      options = (0, _extends2.default)((0, _extends2.default)((0, _extends2.default)({}, this.commonOptions), this.equalOptions), options);
+      options = (0, _extends2.default)({}, this.commonOptions, this.equalOptions, options);
       var customEqual = options && options.customEqual;
       var isPrimitive = options && options.customIsPrimitive || isPrimitiveDefault;
       var cache1;

@@ -152,8 +152,8 @@ export class DependSet {
     };
   }
 
-  deSerialize() {} // empty
-  // endregion
+  deSerialize() {// empty
+  } // endregion
 
 
 }
