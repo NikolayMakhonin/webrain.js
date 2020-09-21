@@ -301,8 +301,10 @@ describe('common > main > rx > depend > bindings > stress', function() {
 			to.count++
 			this.countBindings++
 
-			const value = this.objects[objectNumberFrom][propNameFrom]
-			this.setValue(to.objectNumber, to.propName, value)
+			if (to.count === 1) {
+				const value = this.objects[objectNumberFrom][propNameFrom]
+				this.setValue(to.objectNumber, to.propName, value)
+			}
 
 			let unBinded
 			return () => {
@@ -393,6 +395,8 @@ describe('common > main > rx > depend > bindings > stress', function() {
 
 	function createMetrics(testRunnerMetrics: ISearchBestErrorMetrics) {
 		return {
+			iterations: 0,
+			countUnBinds: 0,
 			countBinds: 0,
 			countSetsLast: 0,
 			countChecksLast: 0,
@@ -403,6 +407,12 @@ describe('common > main > rx > depend > bindings > stress', function() {
 	type IMetrics = AsyncValueOf<ReturnType<typeof createMetrics>>
 
 	function compareMetrics(metrics: IMetrics, metricsMin: IMetrics): number {
+		if (metrics.iterations !== metricsMin.iterations) {
+			return metrics.iterations < metricsMin.iterations ? -1 : 1
+		}
+		if (metrics.countUnBinds !== metricsMin.countUnBinds) {
+			return metrics.countUnBinds < metricsMin.countUnBinds ? -1 : 1
+		}
 		if (metrics.countBinds !== metricsMin.countBinds) {
 			return metrics.countBinds < metricsMin.countBinds ? -1 : 1
 		}
@@ -469,10 +479,14 @@ describe('common > main > rx > depend > bindings > stress', function() {
 	// region action
 
 	async function action(rnd: Random, state: IState) {
+		state.options.metrics.iterations++
+
 		const objectNumber = rnd.nextInt(state.objects.objects.length)
 		const propName = rnd.nextArrayItem(propNames)
+		let shouldWait = false
 
 		if (rnd.nextBoolean(0.8)) {
+			shouldWait = true
 			const value = rnd.nextInt(state.options.countValues)
 			state.options.metrics.countSets++
 			state.options.metrics.countSetsLast++
@@ -480,6 +494,7 @@ describe('common > main > rx > depend > bindings > stress', function() {
 			state.objects.setValue(objectNumber, propName, value)
 			state.checkObjects.setValue(objectNumber, propName, value)
 		} else if (rnd.nextBoolean()) {
+			shouldWait = true
 			const objectNumberTo = rnd.nextInt(state.objects.objects.length)
 			const propNameTo = rnd.nextArrayItem(propNames)
 			state.options.metrics.countSetsLast = 0
@@ -508,6 +523,7 @@ describe('common > main > rx > depend > bindings > stress', function() {
 		} else {
 			const len = state.checkObjects.unbinds.length
 			if (len > 0) {
+				state.options.metrics.countUnBinds++
 				const seed = rnd.nextSeed()
 				const unbind = new Random(seed).pullArrayItem(state.objects.unbinds)
 				const checkUnbind = new Random(seed).pullArrayItem(state.checkObjects.unbinds)
@@ -518,11 +534,13 @@ describe('common > main > rx > depend > bindings > stress', function() {
 
 		assert.strictEqual(state.objects.unbinds.length, state.checkObjects.unbinds.length)
 
-		for (let i = 0, len = 1 + (state.checkObjects as any).countBindings * 3; i < len; i++) {
-			await delay(1)
-			// if (equalObjects(state.objects.objects, state.checkObjects.objects)) {
-			// 	return
-			// }
+		if (shouldWait) {
+			for (let i = 0, len = 1 + (state.checkObjects as any).countBindings * 3; i < len; i++) {
+				await delay(1)
+				// if (equalObjects(state.objects.objects, state.checkObjects.objects)) {
+				// 	return
+				// }
+			}
 		}
 
 		assertObjects(state.objects.objects, state.checkObjects.objects)
@@ -564,15 +582,26 @@ describe('common > main > rx > depend > bindings > stress', function() {
 			stopPredicate(iterationNumber, timeStart, state) {
 				const metrics = state.options.metrics
 				const metricsMin = state.options.metricsMin
+
+				if (metrics.iterations > metricsMin.iterations) {
+					return true
+				}
+
 				if (metrics.countBinds > metricsMin.countBinds) {
 					return true
-				} else if (metrics.countBinds === metricsMin.countBinds) {
+				}
+
+				if (metrics.countBinds === metricsMin.countBinds) {
 					if (metrics.countSetsLast > metricsMin.countSetsLast) {
 						return true
-					} else if (metrics.countSetsLast === metricsMin.countSetsLast) {
+					}
+
+					if (metrics.countSetsLast === metricsMin.countSetsLast) {
 						if (metrics.countChecksLast > metricsMin.countChecksLast) {
 							return true
-						} else if (metrics.countChecksLast === metricsMin.countChecksLast) {
+						}
+
+						if (metrics.countChecksLast === metricsMin.countChecksLast) {
 							return true
 						}
 					}
@@ -616,8 +645,14 @@ describe('common > main > rx > depend > bindings > stress', function() {
 				return false
 				// return testRunnerMetrics.iterationNumber >= 50
 			},
-			// customSeed: 590350597,
-			// metricsMin: {"countBinds":21,"countSetsLast":0,"countChecksLast":0,"countSets":66,"countChecks":0},
+			// customSeed: 795175781,
+			// metricsMin: {"iterations":15,"countUnBinds":1,"countBinds":6,"countSetsLast":0,"countChecksLast":0,"countSets":10,"countChecks":0},
+			// customSeed: 960345673,
+			// metricsMin: {"iterations":13,"countUnBinds":1,"countBinds":5,"countSetsLast":0,"countChecksLast":0,"countSets":7,"countChecks":0},
+			// customSeed: 28669278,
+			// metricsMin: {"iterations":7,"countUnBinds":0,"countBinds":4,"countSetsLast":0,"countChecksLast":0,"countSets":4,"countChecks":0},
+			// customSeed: 620183515,
+			// metricsMin: {"iterations":16,"countUnBinds":1,"countBinds":3,"countSetsLast":0,"countChecksLast":0,"countSets":11,"countChecks":0},
 			searchBestError: true,
 		})
 
