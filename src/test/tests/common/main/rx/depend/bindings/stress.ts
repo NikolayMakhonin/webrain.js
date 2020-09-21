@@ -715,7 +715,7 @@ describe('common > main > rx > depend > bindings > stress', function() {
 
 	// endregion
 
-	it('base', async function() {
+	xit('base', async function() {
 		await randomTest({
 			stopPredicate: testRunnerMetrics => {
 				return false
