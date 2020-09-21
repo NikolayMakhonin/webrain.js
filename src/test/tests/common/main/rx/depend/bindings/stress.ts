@@ -6,14 +6,19 @@ import {
 	IDestBuilder,
 	ISourceBuilder,
 	ISourceDestBuilder,
-	IUnbind
+	IUnbind,
 } from '../../../../../../../main/common/rx/depend/bindings/contracts'
 import {
-	DestPathBuilder,
-	SourcePathBuilder,
+	sourceDestBuilder,
+} from '../../../../../../../main/common/rx/depend/bindings/SourceDestBuilder'
+import {
+	destPathBuilder,
+	sourceDestPathBuilder,
+	sourcePathBuilder,
 } from '../../../../../../../main/common/rx/depend/bindings/SourceDestPathBuilder'
 import {ObservableClass} from '../../../../../../../main/common/rx/object/ObservableClass'
 import {ObservableObjectBuilder} from '../../../../../../../main/common/rx/object/ObservableObjectBuilder'
+import {pathGetSetBuild} from '../../../../../../../main/common/rx/object/properties/path/builder'
 import {assert} from '../../../../../../../main/common/test/Assert'
 import {describe, it} from '../../../../../../../main/common/test/Mocha'
 import {
@@ -23,13 +28,7 @@ import {
 	testIterationBuilder,
 	testIteratorBuilder,
 } from '../../../../../../../main/common/test/randomTest'
-import {
-	destPathBuilder,
-	sourceDestBuilder,
-	sourceDestPathBuilder,
-	sourcePathBuilder
-} from "../../../../../../../main/common/rx/depend/bindings/builders";
-import {pathGetSetBuild} from "../../../../../../../main/common/rx/object/properties/path/builder";
+import {delay} from '../../../../../../../main/common/time/helpers'
 
 declare const beforeEach: any
 
@@ -42,6 +41,8 @@ describe('common > main > rx > depend > bindings > stress', function() {
 		webrainOptions.callState.garbageCollect.interval = 1000
 		webrainOptions.callState.garbageCollect.minLifeTime = 500
 	})
+
+	// region helpers
 
 	const propNames = ['prop1', 'prop2', 'prop3']
 
@@ -343,18 +344,28 @@ describe('common > main > rx > depend > bindings > stress', function() {
 		assert.deepStrictEqual(simplifyObjects(actual), simplifyObjects(expected))
 	}
 
+	// endregion
+
 	// region metrics
 
 	function createMetrics(testRunnerMetrics: ISearchBestErrorMetrics) {
 		return {
-			metric: 0,
+			countBinds: 0,
+			countSets: 0,
+			countChecks: 0,
 		}
 	}
 	type IMetrics = AsyncValueOf<ReturnType<typeof createMetrics>>
 
 	function compareMetrics(metrics: IMetrics, metricsMin: IMetrics): number {
-		if (metrics.metric !== metricsMin.metric) {
-			return metrics.metric < metricsMin.metric ? -1 : 0
+		if (metrics.countBinds !== metricsMin.countBinds) {
+			return metrics.countBinds < metricsMin.countBinds ? -1 : 1
+		}
+		if (metrics.countSets !== metricsMin.countSets) {
+			return metrics.countSets < metricsMin.countSets ? -1 : 1
+		}
+		if (metrics.countChecks !== metricsMin.countChecks) {
+			return metrics.countChecks < metricsMin.countChecks ? -1 : 1
 		}
 		return 0
 	}
@@ -408,10 +419,37 @@ describe('common > main > rx > depend > bindings > stress', function() {
 	function action(rnd: Random, state: IState) {
 		const objectNumber = rnd.nextInt(state.objects.objects.length)
 		const propName = rnd.nextArrayItem(propNames)
-		const value = rnd.nextInt(state.options.countValues)
 
-		state.objects.setValue(objectNumber, propName, value)
-		state.checkObjects.setValue(objectNumber, propName, value)
+		if (rnd.nextBoolean(0.8)) {
+			const value = rnd.nextInt(state.options.countValues)
+			state.options.metrics.countSets++
+			state.objects.setValue(objectNumber, propName, value)
+			state.checkObjects.setValue(objectNumber, propName, value)
+		} else {
+			const objectNumberTo = rnd.nextInt(state.objects.objects.length)
+			const propNameTo = rnd.nextArrayItem(propNames)
+			if (rnd.nextBoolean()) {
+				state.options.metrics.countBinds++
+				state.objects.bindOneWay(rnd,
+					objectNumber, propName,
+					objectNumberTo, propNameTo,
+				)
+				state.checkObjects.bindOneWay(rnd,
+					objectNumber, propName,
+					objectNumberTo, propNameTo,
+				)
+			} else {
+				state.options.metrics.countBinds += 2
+				state.objects.bindTwoWay(rnd,
+					objectNumber, propName,
+					objectNumberTo, propNameTo,
+				)
+				state.checkObjects.bindTwoWay(rnd,
+					objectNumber, propName,
+					objectNumberTo, propNameTo,
+				)
+			}
+		}
 	}
 
 	// endregion
@@ -421,7 +459,9 @@ describe('common > main > rx > depend > bindings > stress', function() {
 	const testIteration = testIterationBuilder({
 		waitAsyncAll: {
 			weight: 0.05,
-			after(rnd, state) {
+			async after(rnd, state) {
+				await delay(1000)
+				state.options.metrics.countChecks++
 				assertObjects(state.objects.objects, state.checkObjects.objects)
 			},
 		},
@@ -445,6 +485,9 @@ describe('common > main > rx > depend > bindings > stress', function() {
 				return iterationNumber >= 100
 			},
 			testIteration,
+			consoleThrowPredicate() {
+				return this === 'error' || this === 'warn'
+			},
 		},
 	)
 
@@ -458,9 +501,6 @@ describe('common > main > rx > depend > bindings > stress', function() {
 		optionsGenerator,
 		{
 			compareMetrics,
-			consoleThrowPredicate() {
-				return this === 'error' || this === 'warn'
-			},
 			// searchBestError: searchBestErrorBuilderNode({
 			// 	reportFilePath: './tmp/test-cases/depend/bindings/base.txt',
 			// 	consoleOnlyBestErrors: true,
@@ -477,11 +517,14 @@ describe('common > main > rx > depend > bindings > stress', function() {
 	it('base', async function() {
 		await randomTest({
 			stopPredicate: testRunnerMetrics => {
-				return testRunnerMetrics.iterationNumber >= 50000
+				return false
+				// return testRunnerMetrics.iterationNumber >= 50
 			},
-			customSeed: null,
-			metricsMin: null,
-			searchBestError: false,
+			// customSeed: 788965929,
+			// metricsMin: {"countSets":1,"countBinds":1,"countChecks":1},
+			searchBestError: true,
 		})
+
+		// process.exit(1)
 	})
 })

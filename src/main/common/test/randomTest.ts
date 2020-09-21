@@ -1,5 +1,5 @@
 import {isAsync, ThenableIterator, ThenableOrIteratorOrValue, ThenableOrValue} from '../async/async'
-import {resolveAsync, resolveAsyncAll} from '../async/ThenableSync'
+import {resolveAsync, resolveAsyncAll, resolveAsyncFunc} from '../async/ThenableSync'
 import {Random} from '../random/Random'
 import {interceptConsole, TConsoleType, throwOnConsoleError} from './interceptConsole'
 
@@ -83,8 +83,8 @@ export function testIterationBuilder<TState>({
 
 			if (waitAsyncRandomWeight === 0 && waitAsyncAllWeight === 0) {
 				yield async
-			} else if (isAsync(async)) {
-				async.push(async)
+			} else { // if (isAsync(async)) {
+				asyncs.push(async)
 			}
 
 			if (action.after != null) {
@@ -118,14 +118,16 @@ export function testIteratorBuilder<
 		stopPredicate,
 		testIteration,
 		after,
+		consoleThrowPredicate,
 	}: IBeforeAfter<TState> & {
 		stopPredicate: (
 			iterationNumber: number, timeStart: number, state: TState,
 		) => ThenableOrIteratorOrValue<boolean>,
 		testIteration: TTestIteration<TState>,
+		consoleThrowPredicate?: (this: TConsoleType, ...args: any[]) => boolean,
 	},
 ): TTestIterator<TOptions> {
-	function *iterator(rnd: Random, options: TOptions): ThenableIterator<void> {
+	function *_iterator(rnd: Random, options: TOptions): ThenableIterator<void> {
 		const state = yield createState(rnd, options)
 
 		if (before != null) {
@@ -148,6 +150,16 @@ export function testIteratorBuilder<
 		if (after != null) {
 			yield after(rnd, state)
 		}
+	}
+
+	function iterator(rnd: Random, options: TOptions): ThenableIterator<void> {
+		return throwOnConsoleError(
+			this,
+			consoleThrowPredicate,
+			() => {
+				return _iterator(rnd, options)
+			},
+		)
 	}
 
 	return iterator
@@ -294,7 +306,7 @@ export function searchBestErrorBuilder<TMetrics>({
 		const interceptConsoleDispose = customSeed == null
 			&& consoleOnlyBestErrors
 			&& interceptConsole(function() {
-				return interceptConsoleDisabled
+				return !interceptConsoleDisabled
 			})
 
 		function interceptConsoleDisable(_func: () => any) {
@@ -436,12 +448,10 @@ export function randomTestBuilder<
 	optionsGenerator: TTestOptionsGenerator<TOptionsPattern, TOptions>,
 	{
 		compareMetrics,
-		consoleThrowPredicate,
 		searchBestError: _searchBestError,
 		testIterator,
 	}: {
 		compareMetrics?: (metrics: TMetrics, metricsMin: TMetrics) => number,
-		consoleThrowPredicate?: (this: TConsoleType, ...args: any[]) => boolean,
 		searchBestError?: TSearchBestError<TMetrics>,
 		testIterator: TTestIterator<TOptions>,
 	},
@@ -460,33 +470,29 @@ export function randomTestBuilder<
 			return test(seed, optionsPattern, optionsGenerator, testIterator)
 		}
 
-		return resolveAsync(throwOnConsoleError(
-			_this,
-			consoleThrowPredicate,
-			function(this: typeof _this) {
-				if (searchBestError) {
-					return _searchBestError(
-						this,
-						{
-							customSeed,
-							metricsMin,
-							stopPredicate,
-							createMetrics,
-							compareMetrics,
-							func,
-						},
-					)
-				} else {
-					return testRunner(this, {
+		return resolveAsyncFunc(() => {
+			if (searchBestError) {
+				return _searchBestError(
+					this,
+					{
+						customSeed,
+						metricsMin,
 						stopPredicate,
-						*func(testRunnerMetrics) {
-							const metrics = yield createMetrics(testRunnerMetrics)
-							return func.call(this, customSeed, metrics, metricsMin)
-						},
-					})
-				}
-			},
-		))
+						createMetrics,
+						compareMetrics,
+						func,
+					},
+				)
+			} else {
+				return testRunner(this, {
+					stopPredicate,
+					*func(testRunnerMetrics) {
+						const metrics = yield createMetrics(testRunnerMetrics)
+						return func.call(this, customSeed, metrics, metricsMin)
+					},
+				})
+			}
+		})
 	}
 }
 

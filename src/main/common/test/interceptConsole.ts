@@ -1,4 +1,4 @@
-import {AsyncValueOf, ThenableIterator} from '../async/async'
+import {AsyncValueOf, ThenableIterator, ThenableOrIteratorOrValue} from '../async/async'
 
 export type TConsoleType = 'debug' | 'info' | 'trace' | 'log' | 'warn' | 'error'
 
@@ -88,8 +88,8 @@ let lastConsoleError = null
 export function *throwOnConsoleError<TContext, TValue>(
 	_this: TContext,
 	throwPredicate: (this: TConsoleType, ...args: any[]) => boolean,
-	func: (this: TContext) => TValue,
-): ThenableIterator<AsyncValueOf<TValue>> {
+	func: (this: TContext) => ThenableOrIteratorOrValue<TValue>,
+): ThenableIterator<TValue> {
 	lastConsoleError = null
 	const dispose = interceptConsole(function() {
 		if (throwPredicate.apply(this.type, arguments)) {
@@ -102,7 +102,7 @@ export function *throwOnConsoleError<TContext, TValue>(
 	})
 
 	try {
-		const result = yield func.call(_this)
+		const result: TValue = yield func.call(_this)
 
 		if (lastConsoleError) {
 			throw lastConsoleError
