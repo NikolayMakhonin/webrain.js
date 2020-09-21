@@ -1634,7 +1634,9 @@ export function subscribeCallState<
 		case CallStatusShort.CalculatedValue:
 		case CallStatusShort.CalculatedError:
 			if (subscriber != null) {
-				subscriber(callState)
+				setTimeout(() => {
+					subscriber(callState)
+				})
 			}
 			break
 		default:

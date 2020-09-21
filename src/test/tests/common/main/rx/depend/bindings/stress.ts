@@ -100,6 +100,7 @@ describe('common > main > rx > depend > bindings > stress', function() {
 
 	abstract class ObjectsBase<TObj extends TObject> {
 		public readonly objects: TObj[]
+		public readonly unbinds: IUnbind[] = []
 		public constructor(objects: TObj[]) {
 			this.objects = objects
 		}
@@ -109,12 +110,12 @@ describe('common > main > rx > depend > bindings > stress', function() {
 			rnd: Random,
 			objectNumberFrom: number, propNameFrom: string,
 			objectNumberTo: number, propNameTo: string,
-		): IUnbind
+		): void
 		public abstract bindTwoWay(
 			rnd: Random,
 			objectNumber1: number, propName1: string,
 			objectNumber2: number, propName2: string,
-		): IUnbind
+		): void
 	}
 
 	const sources: {
@@ -200,7 +201,7 @@ describe('common > main > rx > depend > bindings > stress', function() {
 			rnd: Random,
 			objectNumberFrom: number, propNameFrom: string,
 			objectNumberTo: number, propNameTo: string,
-		): IUnbind {
+		): void {
 			const sourceBuilder = rnd.nextArrayItem(sources[propNameFrom])
 			const destBuilder = rnd.nextArrayItem(dests[propNameTo])
 
@@ -212,14 +213,14 @@ describe('common > main > rx > depend > bindings > stress', function() {
 
 			const binder = source.getOneWayBinder(dest)
 
-			return binder.bind()
+			this.unbinds.push(binder.bind())
 		}
 
 		public bindTwoWay(
 			rnd: Random,
 			objectNumber1: number, propName1: string,
 			objectNumber2: number, propName2: string,
-		): IUnbind {
+		): void {
 			const builder1 = rnd.nextArrayItem(sourceDests[propName1])
 			const builder2 = rnd.nextArrayItem(sourceDests[propName2])
 
@@ -231,7 +232,7 @@ describe('common > main > rx > depend > bindings > stress', function() {
 
 			const binder = sourceDest1.getTwoWayBinder(sourceDest2)
 
-			return binder.bind()
+			this.unbinds.push(binder.bind())
 		}
 	}
 
@@ -256,7 +257,9 @@ describe('common > main > rx > depend > bindings > stress', function() {
 			for (const keyTo in from) {
 				if (Object.prototype.hasOwnProperty.call(from, keyTo)) {
 					const to = from[keyTo]
-					this.setValue(to.objectNumber, to.propName, value)
+					if (to.count > 0) {
+						this.setValue(to.objectNumber, to.propName, value)
+					}
 				}
 			}
 		}
@@ -273,7 +276,7 @@ describe('common > main > rx > depend > bindings > stress', function() {
 			}
 		} = {}
 
-		public bindOneWay(
+		private _bindOneWay(
 			rnd: Random,
 			objectNumberFrom: number, propNameFrom: string,
 			objectNumberTo: number, propNameTo: string,
@@ -314,18 +317,28 @@ describe('common > main > rx > depend > bindings > stress', function() {
 			}
 		}
 
+		public bindOneWay(
+			rnd: Random,
+			objectNumberFrom: number, propNameFrom: string,
+			objectNumberTo: number, propNameTo: string,
+		): void {
+			this.unbinds.push(this._bindOneWay(
+				rnd, objectNumberFrom, propNameFrom, objectNumberTo, propNameTo,
+			))
+		}
+
 		public bindTwoWay(
 			rnd: Random,
 			objectNumber1: number, propName1: string,
 			objectNumber2: number, propName2: string,
-		): IUnbind {
-			const unbind1 = this.bindOneWay(rnd, objectNumber1, propName1, objectNumber2, propName2)
-			const unbind2 = this.bindOneWay(rnd, objectNumber2, propName2, objectNumber1, propName1)
+		): void {
+			const unbind1 = this._bindOneWay(rnd, objectNumber1, propName1, objectNumber2, propName2)
+			const unbind2 = this._bindOneWay(rnd, objectNumber2, propName2, objectNumber1, propName1)
 
-			return () => {
+			this.unbinds.push(() => {
 				unbind1()
 				unbind2()
-			}
+			})
 		}
 	}
 
@@ -444,6 +457,7 @@ describe('common > main > rx > depend > bindings > stress', function() {
 
 		return {
 			objects: new Objects(objects),
+			unbinds: [] as IUnbind[],
 			checkObjects: new CheckObjects(checkObjects),
 			options,
 		}
@@ -465,7 +479,7 @@ describe('common > main > rx > depend > bindings > stress', function() {
 			state.options.metrics.countChecksLast = 0
 			state.objects.setValue(objectNumber, propName, value)
 			state.checkObjects.setValue(objectNumber, propName, value)
-		} else {
+		} else if (rnd.nextBoolean()) {
 			const objectNumberTo = rnd.nextInt(state.objects.objects.length)
 			const propNameTo = rnd.nextArrayItem(propNames)
 			state.options.metrics.countSetsLast = 0
@@ -491,9 +505,20 @@ describe('common > main > rx > depend > bindings > stress', function() {
 					objectNumberTo, propNameTo,
 				)
 			}
+		} else {
+			const len = state.checkObjects.unbinds.length
+			if (len > 0) {
+				const seed = rnd.nextSeed()
+				const unbind = new Random(seed).pullArrayItem(state.objects.unbinds)
+				const checkUnbind = new Random(seed).pullArrayItem(state.checkObjects.unbinds)
+				unbind()
+				checkUnbind()
+			}
 		}
 
-		for (let i = 0, len = (state.checkObjects as any).countBindings * 2; i < len; i++) {
+		assert.strictEqual(state.objects.unbinds.length, state.checkObjects.unbinds.length)
+
+		for (let i = 0, len = 1 + (state.checkObjects as any).countBindings * 3; i < len; i++) {
 			await delay(1)
 			// if (equalObjects(state.objects.objects, state.checkObjects.objects)) {
 			// 	return
@@ -591,8 +616,8 @@ describe('common > main > rx > depend > bindings > stress', function() {
 				return false
 				// return testRunnerMetrics.iterationNumber >= 50
 			},
-			// customSeed: 808469468,
-			// metricsMin: {"countBinds":2,"countSetsLast":0,"countChecksLast":0,"countSets":0,"countChecks":0},
+			// customSeed: 590350597,
+			// metricsMin: {"countBinds":21,"countSetsLast":0,"countChecksLast":0,"countSets":66,"countChecks":0},
 			searchBestError: true,
 		})
 
