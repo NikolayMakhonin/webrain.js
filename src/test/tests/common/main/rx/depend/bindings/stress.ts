@@ -36,10 +36,10 @@ describe('common > main > rx > depend > bindings > stress', function() {
 	this.timeout(24 * 60 * 60 * 1000)
 
 	beforeEach(function() {
-		webrainOptions.callState.garbageCollect.disabled = true
+		webrainOptions.callState.garbageCollect.disabled = false
 		webrainOptions.callState.garbageCollect.bulkSize = 100
 		webrainOptions.callState.garbageCollect.interval = 1000
-		webrainOptions.callState.garbageCollect.minLifeTime = 100
+		webrainOptions.callState.garbageCollect.minLifeTime = 50
 	})
 
 	// region helpers
@@ -510,8 +510,8 @@ describe('common > main > rx > depend > bindings > stress', function() {
 
 	function optionsPatternBuilder(metrics: IMetrics, metricsMin: IMetrics) {
 		return {
-			countObjects: [1, 1],
-			countValues: [1, 5],
+			countObjects: [1, 3],
+			countValues: [1, 10],
 			metrics,
 			metricsMin,
 		}
@@ -715,11 +715,13 @@ describe('common > main > rx > depend > bindings > stress', function() {
 
 	// endregion
 
-	xit('base', async function() {
+	it('base', async function() {
+		/* tslint:disable:max-line-length */
+
 		await randomTest({
 			stopPredicate: testRunnerMetrics => {
-				return false
-				// return testRunnerMetrics.iterationNumber >= 50
+				// return false
+				return testRunnerMetrics.timeFromStart >= 30000
 			},
 			// customSeed: 483882272,
 			// metricsMin: {"countObjects":1,"iterations":11,"countUnBinds":1,"countBinds":5,"countSetsLast":0,"countChecksLast":0,"countSets":7,"countChecks":0},
@@ -727,9 +729,11 @@ describe('common > main > rx > depend > bindings > stress', function() {
 			// metricsMin: {"countObjects":1,"iterations":10,"countUnBinds":1,"countBinds":4,"countSetsLast":0,"countChecksLast":0,"countSets":7,"countChecks":0},
 			// customSeed: 185088415,
 			// metricsMin: {"countObjects":1,"iterations":9,"countUnBinds":1,"countBinds":3,"countSetsLast":0,"countChecksLast":0,"countSets":6,"countChecks":0},
-			searchBestError: true,
+			searchBestError: false,
 		})
 
 		// process.exit(1)
+
+		/* tslint:enable:max-line-length */
 	})
 })
