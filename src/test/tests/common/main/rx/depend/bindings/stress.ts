@@ -133,36 +133,54 @@ describe('common > main > rx > depend > bindings > stress', function() {
 
 		sourceDests[propName] = [
 			sourceDestPathBuilder<TObject>()(
-				b => b.f(o => o[propName], (o, v) => { o[propName] = v }),
+				b => b.f(o => o[propName], (o, v) => {
+					o[propName] = v
+				}),
 			),
 			sourceDestPathBuilder<TObject>()(
-				pathGetSetBuild(b => b.f(o => o[propName], (o, v) => { o[propName] = v })),
+				pathGetSetBuild(b => b.f(o => o[propName], (o, v) => {
+					o[propName] = v
+				})),
 			),
 			sourceDestPathBuilder<TObject>()(
-				pathGetSetBuild(b => b.f(o => o[propName], (o, v) => { o[propName] = v })).pathGet,
-				pathGetSetBuild(b => b.f(o => o[propName], (o, v) => { o[propName] = v })).pathSet,
+				pathGetSetBuild(b => b.f(o => o[propName], (o, v) => {
+					o[propName] = v
+				})).pathGet,
+				pathGetSetBuild(b => b.f(o => o[propName], (o, v) => {
+					o[propName] = v
+				})).pathSet,
 			),
 			sourceDestPathBuilder<TObject>()(
 				b => b.f(o => o), {
 					get: b => b.f(o => o[propName]),
-					set: b => b.f(null, (o, v: number) => { o[propName] = v }),
+					set: b => b.f(null, (o, v: number) => {
+						o[propName] = v
+					}),
 				},
 			),
 			sourceDestPathBuilder<TObject, number>(
-				b => b.f(o => o[propName], (o, v) => { o[propName] = v }),
+				b => b.f(o => o[propName], (o, v) => {
+					o[propName] = v
+				}),
 			),
 			sourceDestPathBuilder<TObject, number>(
-				pathGetSetBuild(b => b.f(o => o[propName], (o, v) => { o[propName] = v })),
+				pathGetSetBuild(b => b.f(o => o[propName], (o, v) => {
+					o[propName] = v
+				})),
 			),
 			sourceDestPathBuilder<TObject, number>(
 				pathGetSetBuild(b => b.f(o => o[propName])).pathGet,
-				pathGetSetBuild(b => b.f(null, (o, v: number) => { o[propName] = v })).pathSet,
+				pathGetSetBuild(b => b.f(null, (o, v: number) => {
+					o[propName] = v
+				})).pathSet,
 			),
 			sourceDestPathBuilder<TObject, TObject, number>(
 				b => b.f(o => o),
 				{
 					get: b => b.f(o => o[propName]),
-					set: b => b.f(null, (o, v) => { o[propName] = v }),
+					set: b => b.f(null, (o, v) => {
+						o[propName] = v
+					}),
 				},
 			),
 		]
@@ -181,19 +199,70 @@ describe('common > main > rx > depend > bindings > stress', function() {
 
 		dests[propName] = [
 			...sourceDests[propName],
-			destPathBuilder<TObject>()(b => b.f(null, (o, v) => { o[propName] = v })),
+			destPathBuilder<TObject>()(b => b.f(null, (o, v) => {
+				o[propName] = v
+			})),
 			destPathBuilder<TObject>()(
-				pathGetSetBuild(b => b.f(null, (o, v) => { o[propName] = v })).pathSet,
+				pathGetSetBuild(b => b.f(null, (o, v) => {
+					o[propName] = v
+				})).pathSet,
 			),
-			destPathBuilder<TObject, number>(b => b.f(null, (o, v) => { o[propName] = v })),
+			destPathBuilder<TObject, number>(b => b.f(null, (o, v) => {
+				o[propName] = v
+			})),
 			destPathBuilder<TObject, number>(
-				pathGetSetBuild(b => b.f(null, (o, v: number) => { o[propName] = v })).pathSet,
+				pathGetSetBuild(b => b.f(null, (o, v: number) => {
+					o[propName] = v
+				})).pathSet,
 			),
 		]
+}
+
+	interface ISourcesDests {
+		sources: {
+			[key in string]: ISourceBuilder<TObject, number>
+		},
+		dests: {
+			[key in string]: IDestBuilder<TObject, number>
+		},
+		sourceDests: {
+			[key in string]: ISourceDestBuilder<TObject, number>
+		},
+	}
+
+	function generateSourceDests(rnd: Random): ISourcesDests {
+		const result: ISourcesDests = {
+			sources: {},
+			dests: {},
+			sourceDests: {},
+		}
+
+		for (let i = 0; i < propNames.length; i++) {
+			const propName = propNames[i]
+			result.sources[propName] = rnd.nextArrayItem(sources[propName])
+			result.dests[propName] = rnd.nextArrayItem(dests[propName])
+			result.sourceDests[propName] = sourceDestBuilder(
+				result.sources[propName],
+				result.dests[propName],
+			)
+		}
+
+		return result
 	}
 
 	class Objects extends ObjectsBase<ObjectClass> {
-		public setValue(objectNumber: number, propName: string, value: number) {
+		private _sourcesDests: ISourcesDests
+
+		constructor(objects: ObjectClass[], sourcesDests: ISourcesDests) {
+			super(objects)
+			this._sourcesDests = sourcesDests
+		}
+
+		public setValue(
+			objectNumber: number,
+			propName: string,
+			value: number,
+		) {
 			this.objects[objectNumber][propName] = value
 		}
 
@@ -202,14 +271,14 @@ describe('common > main > rx > depend > bindings > stress', function() {
 			objectNumberFrom: number, propNameFrom: string,
 			objectNumberTo: number, propNameTo: string,
 		): void {
-			const sourceBuilder = rnd.nextArrayItem(sources[propNameFrom])
-			const destBuilder = rnd.nextArrayItem(dests[propNameTo])
+			const sourceBuilder = this._sourcesDests.sources[propNameFrom]
+			const destBuilder = this._sourcesDests.dests[propNameTo]
 
 			const sourceObject = this.objects[objectNumberFrom]
 			const destObject = this.objects[objectNumberTo]
 
-			const source = sourceBuilder.get(sourceObject)
-			const dest = destBuilder.get(destObject)
+			const source = sourceBuilder.getSource(sourceObject)
+			const dest = destBuilder.getDest(destObject)
 
 			const binder = source.getOneWayBinder(dest)
 
@@ -221,14 +290,14 @@ describe('common > main > rx > depend > bindings > stress', function() {
 			objectNumber1: number, propName1: string,
 			objectNumber2: number, propName2: string,
 		): void {
-			const builder1 = rnd.nextArrayItem(sourceDests[propName1])
-			const builder2 = rnd.nextArrayItem(sourceDests[propName2])
+			const builder1 = this._sourcesDests.sourceDests[propName1]
+			const builder2 = this._sourcesDests.sourceDests[propName2]
 
 			const object1 = this.objects[objectNumber1]
 			const object2 = this.objects[objectNumber2]
 
-			const sourceDest1 = builder1.get(object1)
-			const sourceDest2 = builder2.get(object2)
+			const sourceDest1 = builder1.getSourceDest(object1)
+			const sourceDest2 = builder2.getSourceDest(object2)
 
 			const binder = sourceDest1.getTwoWayBinder(sourceDest2)
 
@@ -395,6 +464,7 @@ describe('common > main > rx > depend > bindings > stress', function() {
 
 	function createMetrics(testRunnerMetrics: ISearchBestErrorMetrics) {
 		return {
+			countObjects: 0,
 			iterations: 0,
 			countUnBinds: 0,
 			countBinds: 0,
@@ -407,6 +477,9 @@ describe('common > main > rx > depend > bindings > stress', function() {
 	type IMetrics = AsyncValueOf<ReturnType<typeof createMetrics>>
 
 	function compareMetrics(metrics: IMetrics, metricsMin: IMetrics): number {
+		if (metrics.countObjects !== metricsMin.countObjects) {
+			return metrics.countObjects < metricsMin.countObjects ? -1 : 1
+		}
 		if (metrics.iterations !== metricsMin.iterations) {
 			return metrics.iterations < metricsMin.iterations ? -1 : 1
 		}
@@ -466,9 +539,9 @@ describe('common > main > rx > depend > bindings > stress', function() {
 		assertObjects(objects, checkObjects)
 
 		return {
-			objects: new Objects(objects),
-			unbinds: [] as IUnbind[],
+			objects: new Objects(objects, generateSourceDests(rnd)),
 			checkObjects: new CheckObjects(checkObjects),
+			unbinds: [] as IUnbind[],
 			options,
 		}
 	}
@@ -579,6 +652,9 @@ describe('common > main > rx > depend > bindings > stress', function() {
 	const testIterator = testIteratorBuilder(
 		createState,
 		{
+			before(rnd, state) {
+				state.options.metrics.countObjects = state.objects.objects.length
+			},
 			stopPredicate(iterationNumber, timeStart, state) {
 				const metrics = state.options.metrics
 				const metricsMin = state.options.metricsMin
@@ -645,14 +721,14 @@ describe('common > main > rx > depend > bindings > stress', function() {
 				return false
 				// return testRunnerMetrics.iterationNumber >= 50
 			},
-			// customSeed: 795175781,
-			// metricsMin: {"iterations":15,"countUnBinds":1,"countBinds":6,"countSetsLast":0,"countChecksLast":0,"countSets":10,"countChecks":0},
-			// customSeed: 960345673,
-			// metricsMin: {"iterations":13,"countUnBinds":1,"countBinds":5,"countSetsLast":0,"countChecksLast":0,"countSets":7,"countChecks":0},
-			// customSeed: 28669278,
-			// metricsMin: {"iterations":7,"countUnBinds":0,"countBinds":4,"countSetsLast":0,"countChecksLast":0,"countSets":4,"countChecks":0},
 			// customSeed: 620183515,
 			// metricsMin: {"iterations":16,"countUnBinds":1,"countBinds":3,"countSetsLast":0,"countChecksLast":0,"countSets":11,"countChecks":0},
+			// customSeed: 282744972,
+			// metricsMin: {"iterations":7,"countUnBinds":0,"countBinds":2,"countSetsLast":0,"countChecksLast":0,"countSets":5,"countChecks":0},
+			// customSeed: 2692608,
+			// metricsMin: {"iterations":3,"countUnBinds":0,"countBinds":2,"countSetsLast":0,"countChecksLast":0,"countSets":1,"countChecks":0},
+			// customSeed: 965914310,
+			// metricsMin: {"countObjects":1,"iterations":4,"countUnBinds":0,"countBinds":3,"countSetsLast":0,"countChecksLast":0,"countSets":2,"countChecks":0},
 			searchBestError: true,
 		})
 

@@ -1,7 +1,7 @@
 import {depend} from '../../../rx/depend/core/depend'
 import {Binder} from './Binder'
 import {
-	IBinder,
+	IBinder, IDest,
 	IDestBuilder,
 	ISource,
 	ISourceBuilder,
@@ -12,27 +12,27 @@ import {
 } from './contracts'
 
 class SourceDest<TValue> implements ISourceDest<TValue> {
-	private readonly _source: ISource<TValue>
-	private readonly _dest: TDestFunc<TValue>
+	public readonly source: ISource<TValue>
+	public readonly dest: IDest<TValue> | TDestFunc<TValue>
 
 	constructor(
 		source: ISource<TValue>,
 		dest: TDest<TValue>,
 	) {
-		this._source = source
-		this._dest = typeof dest === 'function'
+		this.source = source
+		this.dest = typeof dest === 'function'
 			? dest
 			: value => dest.set(value)
 	}
 
 	public getOneWayBinder(dest: TDest<TValue>): IBinder {
-		return this._source.getOneWayBinder(dest)
+		return this.source.getOneWayBinder(dest)
 	}
 
 	// tslint:disable-next-line:no-shadowed-variable
 	public getTwoWayBinder(sourceDest: ISourceDest<TValue>): IBinder {
-		const binder1 = this._source.getOneWayBinder(sourceDest)
-		const binder2 = sourceDest.getOneWayBinder(this)
+		const binder1 = this.source.getOneWayBinder(sourceDest.dest)
+		const binder2 = sourceDest.source.getOneWayBinder(this.dest)
 		const bind = () => {
 			const unbind1 = binder1.bind()
 			const unbind2 = binder2.bind()
@@ -42,10 +42,6 @@ class SourceDest<TValue> implements ISourceDest<TValue> {
 			}
 		}
 		return new Binder(bind)
-	}
-
-	public set(value: TValue): void {
-		this._dest(value)
 	}
 }
 
@@ -72,14 +68,20 @@ class SourceDestBuilder<TObject, TValue> implements ISourceDestBuilder<TObject, 
 		this._destBuilder = destBuilder
 	}
 
-	public get(object: TObject): ISourceDest<TValue> {
-		const source = this._sourceBuilder.get(object)
-		const dest = this._destBuilder.get(object)
+	public getSource(object: TObject): ISource<TValue> {
+		return this._sourceBuilder.getSource(object)
+	}
+
+	public getDest(object: TObject): IDest<TValue> | TDestFunc<TValue> {
+		return this._destBuilder.getDest(object)
+	}
+
+	public getSourceDest(object: TObject): ISourceDest<TValue> {
+		const source = this._sourceBuilder.getSource(object)
+		const dest = this._destBuilder.getDest(object)
 		return sourceDest(source, dest)
 	}
 }
-
-SourceDestBuilder.prototype.get = depend(SourceDestBuilder.prototype.get)
 
 // region sourceDestBuilder
 

@@ -59,14 +59,14 @@ class SourcePathBuilder<TObject, TValue> implements ISourceBuilder<TObject, TVal
 		}
 	}
 
-	public get(object: TObject): ISource<TValue> {
+	public getSource(object: TObject): ISource<TValue> {
 		const path = this._path
 		const getValue = () => path.get(object) as TValue
 		return sourcePath(getValue)
 	}
 }
 
-SourcePathBuilder.prototype.get = depend(SourcePathBuilder.prototype.get)
+SourcePathBuilder.prototype.getSource = depend(SourcePathBuilder.prototype.getSource)
 
 // region sourcePathBuilder
 
@@ -107,13 +107,13 @@ class DestPathBuilder<TObject, TValue> implements IDestBuilder<TObject, TValue> 
 		}
 	}
 
-	public get(object: TObject): TDestFunc<TValue> {
+	public getDest(object: TObject): TDestFunc<TValue> {
 		const path = this._path
 		return value => path.set(object, value)
 	}
 }
 
-DestPathBuilder.prototype.get = depend(DestPathBuilder.prototype.get)
+DestPathBuilder.prototype.getDest = depend(DestPathBuilder.prototype.getDest)
 
 // region destPathBuilder
 
