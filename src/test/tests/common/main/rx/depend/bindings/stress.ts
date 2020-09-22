@@ -29,7 +29,8 @@ import {
 	testIteratorBuilder,
 } from '../../../../../../../main/common/test/randomTest'
 import {delay} from '../../../../../../../main/common/time/helpers'
-import {clearCallStates} from "../src/helpers";
+import {clearCallStates} from '../src/helpers'
+import {garbageCollect, reduceCallStates} from "../../../../../../../main/common/rx/depend/core/CallState";
 
 declare const beforeEach: any
 
@@ -39,8 +40,8 @@ describe('common > main > rx > depend > bindings > stress', function() {
 	beforeEach(function() {
 		webrainOptions.callState.garbageCollect.disabled = false
 		webrainOptions.callState.garbageCollect.bulkSize = 100
-		webrainOptions.callState.garbageCollect.interval = 1000
-		webrainOptions.callState.garbageCollect.minLifeTime = 50
+		webrainOptions.callState.garbageCollect.interval = 0
+		webrainOptions.callState.garbageCollect.minLifeTime = 0
 	})
 
 	// region helpers
@@ -465,7 +466,8 @@ describe('common > main > rx > depend > bindings > stress', function() {
 
 	function createMetrics(testRunnerMetrics: ISearchBestErrorMetrics) {
 		return {
-			countObjects: 0,
+			garbageCollectMode: null,
+			countObjects: null,
 			iterations: 0,
 			countUnBinds: 0,
 			countBinds: 0,
@@ -473,11 +475,15 @@ describe('common > main > rx > depend > bindings > stress', function() {
 			countChecksLast: 0,
 			countSets: 0,
 			countChecks: 0,
+			countValues: null,
 		}
 	}
 	type IMetrics = AsyncValueOf<ReturnType<typeof createMetrics>>
 
 	function compareMetrics(metrics: IMetrics, metricsMin: IMetrics): number {
+		if (metrics.garbageCollectMode !== metricsMin.garbageCollectMode) {
+			return metrics.garbageCollectMode < metricsMin.garbageCollectMode ? -1 : 1
+		}
 		if (metrics.countObjects !== metricsMin.countObjects) {
 			return metrics.countObjects < metricsMin.countObjects ? -1 : 1
 		}
@@ -502,6 +508,9 @@ describe('common > main > rx > depend > bindings > stress', function() {
 		if (metrics.countChecks !== metricsMin.countChecks) {
 			return metrics.countChecks < metricsMin.countChecks ? -1 : 1
 		}
+		if (metrics.countValues !== metricsMin.countValues) {
+			return metrics.countValues < metricsMin.countValues ? -1 : 1
+		}
 		return 0
 	}
 
@@ -509,10 +518,20 @@ describe('common > main > rx > depend > bindings > stress', function() {
 
 	// region options
 
+	enum GarbageCollectMode {
+		deleteImmediate,
+		disabled,
+		normal,
+	}
+
 	function optionsPatternBuilder(metrics: IMetrics, metricsMin: IMetrics) {
 		return {
-			countObjects: [1, 3],
-			countValues: [1, 10],
+			countObjects: [1, metricsMin.countObjects ?? 3],
+			countValues: [1, metricsMin.countValues ?? 10],
+			garbageCollectMode: [
+				GarbageCollectMode.deleteImmediate,
+				metricsMin.garbageCollectMode ?? GarbageCollectMode.normal,
+			],
 			metrics,
 			metricsMin,
 		}
@@ -523,6 +542,7 @@ describe('common > main > rx > depend > bindings > stress', function() {
 		return {
 			countObjects: generateNumber(rnd, options.countObjects),
 			countValues: generateNumber(rnd, options.countValues),
+			garbageCollectMode: generateNumber(rnd, options.garbageCollectMode) as GarbageCollectMode,
 			metrics: options.metrics,
 			metricsMin: options.metricsMin,
 		}
@@ -534,6 +554,30 @@ describe('common > main > rx > depend > bindings > stress', function() {
 	// region state
 
 	function createState(rnd: Random, options: IOptions) {
+		switch (options.garbageCollectMode) {
+			case GarbageCollectMode.deleteImmediate:
+				webrainOptions.callState.garbageCollect.disabled = false
+				webrainOptions.callState.garbageCollect.bulkSize = 1000
+				webrainOptions.callState.garbageCollect.interval = 0
+				webrainOptions.callState.garbageCollect.minLifeTime = 0
+				break
+			case GarbageCollectMode.disabled:
+				webrainOptions.callState.garbageCollect.disabled = true
+				break
+			case GarbageCollectMode.normal:
+				webrainOptions.callState.garbageCollect.disabled = false
+				webrainOptions.callState.garbageCollect.bulkSize = 100
+				webrainOptions.callState.garbageCollect.interval = 100
+				webrainOptions.callState.garbageCollect.minLifeTime = 50
+				break
+			default:
+				throw new Error('Unknown GarbageCollectMode:' + options.garbageCollectMode)
+		}
+
+		options.metrics.countObjects = options.countObjects
+		options.metrics.garbageCollectMode = options.garbageCollectMode
+		options.metrics.countValues = options.countValues
+
 		const seed = rnd.nextSeed()
 		const objects = generateItems(new Random(seed), options.countObjects, generateObject)
 		const checkObjects = generateItems(new Random(seed), options.countObjects, generateCheckObject)
@@ -653,8 +697,8 @@ describe('common > main > rx > depend > bindings > stress', function() {
 	const testIterator = testIteratorBuilder(
 		createState,
 		{
-			before(rnd, state) {
-				state.options.metrics.countObjects = state.objects.objects.length
+			before(rns, state) {
+				reduceCallStates(2000000000, 0)
 			},
 			after(rnd, state) {
 				for (let i = 0, len = state.objects.unbinds.length; i < len; i++) {
@@ -725,18 +769,30 @@ describe('common > main > rx > depend > bindings > stress', function() {
 	it('base', async function() {
 		/* tslint:disable:max-line-length */
 
+		clearCallStates()
+
 		await randomTest({
 			stopPredicate: testRunnerMetrics => {
-				// return false
-				return testRunnerMetrics.timeFromStart >= 30000
+				return false
+				// return testRunnerMetrics.timeFromStart >= 30000
 			},
-			// customSeed: 483882272,
-			// metricsMin: {"countObjects":1,"iterations":11,"countUnBinds":1,"countBinds":5,"countSetsLast":0,"countChecksLast":0,"countSets":7,"countChecks":0},
-			// customSeed: 1036614010,
-			// metricsMin: {"countObjects":1,"iterations":10,"countUnBinds":1,"countBinds":4,"countSetsLast":0,"countChecksLast":0,"countSets":7,"countChecks":0},
-			// customSeed: 185088415,
-			// metricsMin: {"countObjects":1,"iterations":9,"countUnBinds":1,"countBinds":3,"countSetsLast":0,"countChecksLast":0,"countSets":6,"countChecks":0},
-			searchBestError: false,
+			// customSeed: 584765156,
+			// metricsMin: {"countObjects":1,"iterations":3,"countUnBinds":0,"countBinds":2,"countSetsLast":0,"countChecksLast":0,"countSets":1,"countChecks":0},
+			// customSeed: 503049265,
+			// metricsMin: {"countObjects":1,"iterations":3,"countUnBinds":0,"countBinds":2,"countSetsLast":0,"countChecksLast":0,"countSets":1,"countChecks":0},
+			// customSeed: 783167148,
+			// metricsMin: {"countObjects":1,"iterations":3,"countUnBinds":0,"countBinds":2,"countSetsLast":0,"countChecksLast":0,"countSets":1,"countChecks":0},
+			// customSeed: 622515043,
+			// metricsMin: {"garbageCollectMode":0,"countObjects":1,"countValues":1,"iterations":5,"countUnBinds":0,"countBinds":2,"countSetsLast":0,"countChecksLast":0,"countSets":3,"countChecks":0},
+			// customSeed: 485614596,
+			// metricsMin: {"garbageCollectMode":0,"countObjects":1,"iterations":3,"countUnBinds":0,"countBinds":2,"countSetsLast":0,"countChecksLast":0,"countSets":1,"countChecks":0,"countValues":1},
+			// customSeed: 828925130,
+			// metricsMin: {"garbageCollectMode":0,"countObjects":1,"iterations":3,"countUnBinds":0,"countBinds":2,"countSetsLast":0,"countChecksLast":0,"countSets":1,"countChecks":0,"countValues":1},
+			// customSeed: 580113113,
+			// metricsMin: {"garbageCollectMode":0,"countObjects":1,"iterations":3,"countUnBinds":0,"countBinds":2,"countSetsLast":0,"countChecksLast":0,"countSets":1,"countChecks":0,"countValues":1},
+			customSeed: 756600112,
+			metricsMin: {"garbageCollectMode":0,"countObjects":1,"iterations":3,"countUnBinds":0,"countBinds":2,"countSetsLast":0,"countChecksLast":0,"countSets":1,"countChecks":0,"countValues":1},
+			searchBestError: true,
 		})
 
 		await delay(1000)

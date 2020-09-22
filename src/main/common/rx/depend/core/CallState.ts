@@ -1859,7 +1859,10 @@ export function reduceCallStates(deleteSize: number, _minCallStateLifeTime: numb
 // Garbage collector
 function garbageCollect() {
 	try {
-		garbageCollectTimer = null
+		if (garbageCollectTimer != null) {
+			clearTimeout(garbageCollectTimer)
+			garbageCollectTimer = null
+		}
 
 		const {bulkSize, minLifeTime, interval, disabled} = webrainOptions.callState.garbageCollect
 
