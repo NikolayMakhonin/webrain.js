@@ -30,15 +30,7 @@
     <select />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="69b2ee16-521b-4efd-b473-8e19e3df4d09" name="Default Changelist" comment="Develop two way binding tests...">
-      <change afterPath="$PROJECT_DIR$/src/main/common/rx/depend/bindings2/bind.ts" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/common/rx/depend/bindings2/contracts.ts" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/common/rx/depend/bindings2/path.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/package.json" beforeDir="false" afterPath="$PROJECT_DIR$/package.json" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/common/rx/object/properties/path/builder.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/common/rx/object/properties/path/builder.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/test/tests/common/main/rx/depend/bindings/stress.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/test/tests/common/main/rx/depend/bindings/stress.ts" afterDir="false" />
-    </list>
+    <list default="true" id="69b2ee16-521b-4efd-b473-8e19e3df4d09" name="Default Changelist" comment="" />
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
     <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
@@ -90,7 +82,7 @@
     <property name="WebServerToolWindowFactoryState" value="false" />
     <property name="auto.test.manager.delay" value="5000" />
     <property name="javascript.karma.karma_node_package_dir" value="" />
-    <property name="last_opened_file_path" value="$PROJECT_DIR$/src/main/common/rx/depend/bindings2" />
+    <property name="last_opened_file_path" value="$PROJECT_DIR$/src/main/common/rx/object/properties/path/builder/rules.ts" />
     <property name="node.js.detected.package.eslint" value="true" />
     <property name="node.js.detected.package.standard" value="true" />
     <property name="node.js.detected.package.tslint" value="true" />
@@ -131,7 +123,7 @@
       <recent name="L:\Work\_GIT\GitHub\NodeJs\modules\webrain\src\main\common\rx\object\properties\path" />
     </key>
   </component>
-  <component name="RunManager" selected="Mocha.common &gt; main &gt; rx &gt; depend &gt; bindings &gt; stress">
+  <component name="RunManager" selected="Mocha.Watch">
     <configuration default="true" type="JavaScriptTestRunnerKarma" activateToolWindowBeforeRun="false">
       <config-file value="$PROJECT_DIR$/env/karma/configs/dev.js" />
       <karma-package-dir value="$PROJECT_DIR$/node_modules/karma" />
@@ -562,21 +554,7 @@
       <workItem from="1600572910230" duration="83574000" />
       <workItem from="1600780483633" duration="5000" />
       <workItem from="1600794898039" duration="684000" />
-      <workItem from="1601358400434" duration="439000" />
-    </task>
-    <task id="LOCAL-00535" summary="v1.0.2-a">
-      <created>1590860994784</created>
-      <option name="number" value="00535" />
-      <option name="presentableId" value="LOCAL-00535" />
-      <option name="project" value="LOCAL" />
-      <updated>1590860994784</updated>
-    </task>
-    <task id="LOCAL-00536" summary="v1.0.3-a">
-      <created>1590864234792</created>
-      <option name="number" value="00536" />
-      <option name="presentableId" value="LOCAL-00536" />
-      <option name="project" value="LOCAL" />
-      <updated>1590864234793</updated>
+      <workItem from="1601358400434" duration="885000" />
     </task>
     <task id="LOCAL-00537" summary="v1.0.3-a">
       <created>1590864282875</created>
@@ -907,7 +885,21 @@
       <option name="project" value="LOCAL" />
       <updated>1600752501307</updated>
     </task>
-    <option name="localTasksCounter" value="584" />
+    <task id="LOCAL-00584" summary="Develop two way binding tests stopped. May be it is bad idea. I see no way to resolve circular update in async two way bindings.">
+      <created>1601359098421</created>
+      <option name="number" value="00584" />
+      <option name="presentableId" value="LOCAL-00584" />
+      <option name="project" value="LOCAL" />
+      <updated>1601359098422</updated>
+    </task>
+    <task id="LOCAL-00585" summary="Update eslint, tslint">
+      <created>1601359117884</created>
+      <option name="number" value="00585" />
+      <option name="presentableId" value="LOCAL-00585" />
+      <option name="project" value="LOCAL" />
+      <updated>1601359117884</updated>
+    </task>
+    <option name="localTasksCounter" value="586" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -968,8 +960,6 @@
   <component name="VcsManagerConfiguration">
     <option name="CHECK_CODE_SMELLS_BEFORE_PROJECT_COMMIT" value="false" />
     <option name="CHECK_NEW_TODO" value="false" />
-    <MESSAGE value="Fix DeferredCalc real timing test" />
-    <MESSAGE value="Merged with app template. Precommit is OK." />
     <MESSAGE value="v1.0.1-a Added test/register" />
     <MESSAGE value="Improver package.json" />
     <MESSAGE value="Fix index.ts" />
@@ -993,7 +983,9 @@
     <MESSAGE value="Two way binding completed. Tests OK." />
     <MESSAGE value="v1.3.0-a - Added two way binding" />
     <MESSAGE value="Develop two way binding tests..." />
-    <option name="LAST_COMMIT_MESSAGE" value="Develop two way binding tests..." />
+    <MESSAGE value="Develop two way binding tests stopped. May be it is bad idea. I see no way to resolve circular update in async two way bindings." />
+    <MESSAGE value="Update eslint, tslint" />
+    <option name="LAST_COMMIT_MESSAGE" value="Update eslint, tslint" />
   </component>
   <component name="WindowStateProjectService">
     <state x="612" y="18" key="#TypeScript" timestamp="1599721259508">
@@ -1020,10 +1012,10 @@
       <screen x="0" y="0" width="1920" height="882" />
     </state>
     <state x="651" y="254" key="ANALYSIS_DLG_com.intellij.analysis.BaseAnalysisAction$1/0.0.1920.882@0.0.1920.882" timestamp="1600249459130" />
-    <state x="-2" y="0" width="1918" height="882" key="CommitChangelistDialog2" timestamp="1600753040067">
+    <state x="-2" y="0" width="1918" height="882" key="CommitChangelistDialog2" timestamp="1601359117187">
       <screen x="0" y="0" width="1920" height="882" />
     </state>
-    <state x="-2" y="0" width="1918" height="882" key="CommitChangelistDialog2/0.0.1920.882@0.0.1920.882" timestamp="1600753040067" />
+    <state x="-2" y="0" width="1918" height="882" key="CommitChangelistDialog2/0.0.1920.882@0.0.1920.882" timestamp="1601359117187" />
     <state width="920" height="582" key="DebuggerActiveHint" timestamp="1600757402396">
       <screen x="0" y="0" width="1920" height="882" />
     </state>
@@ -1032,10 +1024,10 @@
       <screen x="0" y="0" width="1920" height="882" />
     </state>
     <state x="0" y="4" width="1917" height="875" key="DiffContextDialog/0.0.1920.882@0.0.1920.882" timestamp="1600753036865" />
-    <state x="1059" y="106" key="FileChooserDialogImpl" timestamp="1600600925638">
+    <state x="1059" y="106" key="FileChooserDialogImpl" timestamp="1601359247052">
       <screen x="0" y="0" width="1920" height="882" />
     </state>
-    <state x="1059" y="106" key="FileChooserDialogImpl/0.0.1920.882@0.0.1920.882" timestamp="1600600925638" />
+    <state x="1059" y="106" key="FileChooserDialogImpl/0.0.1920.882@0.0.1920.882" timestamp="1601359247052" />
     <state width="750" height="522" key="GridCell.Tab.0.bottom" timestamp="1600760265202">
       <screen x="0" y="0" width="1920" height="882" />
     </state>
