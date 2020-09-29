@@ -765,7 +765,7 @@ describe('common > main > rx > depend > bindings > stress', function() {
 
 	// endregion
 
-	it('base', async function() {
+	xit('base', async function() {
 		/* tslint:disable:max-line-length */
 
 		clearCallStates()
