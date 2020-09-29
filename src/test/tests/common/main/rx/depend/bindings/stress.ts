@@ -19,7 +19,7 @@ import {ObservableClass} from '../../../../../../../main/common/rx/object/Observ
 import {ObservableObjectBuilder} from '../../../../../../../main/common/rx/object/ObservableObjectBuilder'
 import {pathGetSetBuild} from '../../../../../../../main/common/rx/object/properties/path/builder'
 import {assert} from '../../../../../../../main/common/test/Assert'
-import {describe, it} from '../../../../../../../main/common/test/Mocha'
+import {describe, it, xit} from '../../../../../../../main/common/test/Mocha'
 import {
 	ISearchBestErrorMetrics,
 	randomTestBuilder,
