@@ -1,4 +1,5 @@
 /* tslint:disable:no-circular-imports */
+import {ThenableOrValue} from '../../../../async/async'
 import {
 	AsyncPropertyValueOf,
 	IPathNode,
@@ -302,7 +303,7 @@ export class Path<TObject, TValue = TObject> {
 		this.canSet = canSet
 	}
 
-	public get(object: TObject): TGetPropertyValueResult3<TValue> {
+	public get(object: TObject): ThenableOrValue<TValue> {
 		if (!this.canGet) {
 			throw new Error('this.canGet == false')
 		}
@@ -438,7 +439,7 @@ export class PathGetSet<TObject, TValue> {
 		return this.pathSet != null
 	}
 
-	public get(object: TObject): TGetPropertyValueResult3<TValue> {
+	public get(object: TObject): ThenableOrValue<TValue> {
 		return this.pathGet.get(object)
 	}
 

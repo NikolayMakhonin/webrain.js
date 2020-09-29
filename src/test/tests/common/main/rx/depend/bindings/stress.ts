@@ -2,20 +2,19 @@
 import {AsyncValueOf} from '../../../../../../../main/common/async/async'
 import {webrainOptions} from '../../../../../../../main/common/helpers/webrainOptions'
 import {Random} from '../../../../../../../main/common/random/Random'
+import {getOneWayBinder, getTwoWayBinder} from '../../../../../../../main/common/rx/depend/bindings2/bind'
 import {
-	IDestBuilder,
-	ISourceBuilder,
-	ISourceDestBuilder,
-	IUnbind,
-} from '../../../../../../../main/common/rx/depend/bindings/contracts'
+	IGetSetValue,
+	IUnBind,
+	TGetValue,
+	TSetValue,
+} from '../../../../../../../main/common/rx/depend/bindings2/contracts'
 import {
-	sourceDestBuilder,
-} from '../../../../../../../main/common/rx/depend/bindings/SourceDestBuilder'
-import {
-	destPathBuilder,
-	sourceDestPathBuilder,
-	sourcePathBuilder,
-} from '../../../../../../../main/common/rx/depend/bindings/SourceDestPathBuilder'
+	createPathGetSetValue,
+	createPathGetValue,
+	createPathSetValue,
+} from '../../../../../../../main/common/rx/depend/bindings2/path'
+import {reduceCallStates} from '../../../../../../../main/common/rx/depend/core/CallState'
 import {ObservableClass} from '../../../../../../../main/common/rx/object/ObservableClass'
 import {ObservableObjectBuilder} from '../../../../../../../main/common/rx/object/ObservableObjectBuilder'
 import {pathGetSetBuild} from '../../../../../../../main/common/rx/object/properties/path/builder'
@@ -30,7 +29,6 @@ import {
 } from '../../../../../../../main/common/test/randomTest'
 import {delay} from '../../../../../../../main/common/time/helpers'
 import {clearCallStates} from '../src/helpers'
-import {garbageCollect, reduceCallStates} from "../../../../../../../main/common/rx/depend/core/CallState";
 
 declare const beforeEach: any
 
@@ -102,7 +100,7 @@ describe('common > main > rx > depend > bindings > stress', function() {
 
 	abstract class ObjectsBase<TObj extends TObject> {
 		public readonly objects: TObj[]
-		public readonly unbinds: IUnbind[] = []
+		public readonly unbinds: IUnBind[] = []
 		public constructor(objects: TObj[]) {
 			this.objects = objects
 		}
@@ -120,31 +118,31 @@ describe('common > main > rx > depend > bindings > stress', function() {
 		): void
 	}
 
-	const sources: {
-		[key in string]: Array<ISourceBuilder<TObject, number>>
+	const getValues: {
+		[key in string]: Array<TGetValue<TObject, number>>
 	} = {}
-	const dests: {
-		[key in string]: Array<IDestBuilder<TObject, number>>
+	const setValues: {
+		[key in string]: Array<TSetValue<TObject, number>>
 	} = {}
-	const sourceDests: {
-		[key in string]: Array<ISourceDestBuilder<TObject, number>>
+	const getSetValues: {
+		[key in string]: Array<IGetSetValue<TObject, number>>
 	} = {}
 
 	for (let i = 0; i < propNames.length; i++) {
 		const propName = propNames[i]
 
-		sourceDests[propName] = [
-			sourceDestPathBuilder<TObject>()(
+		getSetValues[propName] = [
+			createPathGetSetValue<TObject>()(
 				b => b.f(o => o[propName], (o, v) => {
 					o[propName] = v
 				}),
 			),
-			sourceDestPathBuilder<TObject>()(
+			createPathGetSetValue<TObject>()(
 				pathGetSetBuild(b => b.f(o => o[propName], (o, v) => {
 					o[propName] = v
 				})),
 			),
-			sourceDestPathBuilder<TObject>()(
+			createPathGetSetValue<TObject>()(
 				pathGetSetBuild(b => b.f(o => o[propName], (o, v) => {
 					o[propName] = v
 				})).pathGet,
@@ -152,7 +150,7 @@ describe('common > main > rx > depend > bindings > stress', function() {
 					o[propName] = v
 				})).pathSet,
 			),
-			sourceDestPathBuilder<TObject>()(
+			createPathGetSetValue<TObject>()(
 				b => b.f(o => o), {
 					get: b => b.f(o => o[propName]),
 					set: b => b.f(null, (o, v: number) => {
@@ -160,23 +158,23 @@ describe('common > main > rx > depend > bindings > stress', function() {
 					}),
 				},
 			),
-			sourceDestPathBuilder<TObject, number>(
+			createPathGetSetValue<TObject, number>(
 				b => b.f(o => o[propName], (o, v) => {
 					o[propName] = v
 				}),
 			),
-			sourceDestPathBuilder<TObject, number>(
+			createPathGetSetValue<TObject, number>(
 				pathGetSetBuild(b => b.f(o => o[propName], (o, v) => {
 					o[propName] = v
 				})),
 			),
-			sourceDestPathBuilder<TObject, number>(
+			createPathGetSetValue<TObject, number>(
 				pathGetSetBuild(b => b.f(o => o[propName])).pathGet,
 				pathGetSetBuild(b => b.f(null, (o, v: number) => {
 					o[propName] = v
 				})).pathSet,
 			),
-			sourceDestPathBuilder<TObject, TObject, number>(
+			createPathGetSetValue<TObject, TObject, number>(
 				b => b.f(o => o),
 				{
 					get: b => b.f(o => o[propName]),
@@ -187,77 +185,77 @@ describe('common > main > rx > depend > bindings > stress', function() {
 			),
 		]
 
-		sources[propName] = [
-			...sourceDests[propName],
-			sourcePathBuilder<TObject>()(b => b.f(o => o[propName])),
-			sourcePathBuilder<TObject>()(
+		getValues[propName] = [
+			...getSetValues[propName].map(o => o.getValue),
+			createPathGetValue<TObject>()(b => b.f(o => o[propName])),
+			createPathGetValue<TObject>()(
 				pathGetSetBuild(b => b.f(o => o[propName])).pathGet,
 			),
-			sourcePathBuilder<TObject, number>(b => b.f(o => o[propName])),
-			sourcePathBuilder<TObject, number>(
+			createPathGetValue<TObject, number>(b => b.f(o => o[propName])),
+			createPathGetValue<TObject, number>(
 				pathGetSetBuild(b => b.f(o => o[propName])).pathGet,
 			),
 		]
 
-		dests[propName] = [
-			...sourceDests[propName],
-			destPathBuilder<TObject>()(b => b.f(null, (o, v) => {
+		setValues[propName] = [
+			...getSetValues[propName].map(o => o.setValue),
+			createPathSetValue<TObject>()(b => b.f(null, (o, v) => {
 				o[propName] = v
 			})),
-			destPathBuilder<TObject>()(
+			createPathSetValue<TObject>()(
 				pathGetSetBuild(b => b.f(null, (o, v) => {
 					o[propName] = v
 				})).pathSet,
 			),
-			destPathBuilder<TObject, number>(b => b.f(null, (o, v) => {
+			createPathSetValue<TObject, number>(b => b.f(null, (o, v) => {
 				o[propName] = v
 			})),
-			destPathBuilder<TObject, number>(
+			createPathSetValue<TObject, number>(
 				pathGetSetBuild(b => b.f(null, (o, v: number) => {
 					o[propName] = v
 				})).pathSet,
 			),
 		]
-}
+	}
 
 	interface ISourcesDests {
-		sources: {
-			[key in string]: ISourceBuilder<TObject, number>
+		getValues: {
+			[key in string]: TGetValue<TObject, number>
 		},
-		dests: {
-			[key in string]: IDestBuilder<TObject, number>
+		setValues: {
+			[key in string]: TSetValue<TObject, number>
 		},
-		sourceDests: {
-			[key in string]: ISourceDestBuilder<TObject, number>
+		getSetValues: {
+			[key in string]: IGetSetValue<TObject, number>
 		},
 	}
 
 	function generateSourceDests(rnd: Random): ISourcesDests {
 		const result: ISourcesDests = {
-			sources: {},
-			dests: {},
-			sourceDests: {},
+			getValues: {},
+			setValues: {},
+			getSetValues: {},
 		}
 
 		for (let i = 0; i < propNames.length; i++) {
 			const propName = propNames[i]
-			result.sources[propName] = rnd.nextArrayItem(sources[propName])
-			result.dests[propName] = rnd.nextArrayItem(dests[propName])
-			result.sourceDests[propName] = sourceDestBuilder(
-				result.sources[propName],
-				result.dests[propName],
-			)
+			result.getValues[propName] = rnd.nextArrayItem(getValues[propName])
+			result.setValues[propName] = rnd.nextArrayItem(setValues[propName])
+			result.getSetValues[propName] = {
+				getValue: result.getValues[propName],
+				setValue: result.setValues[propName],
+			}
 		}
 
 		return result
 	}
 
 	class Objects extends ObjectsBase<ObjectClass> {
-		private _sourcesDests: ISourcesDests
+		private _getSetValues: ISourcesDests
 
 		constructor(objects: ObjectClass[], sourcesDests: ISourcesDests) {
 			super(objects)
-			this._sourcesDests = sourcesDests
+			this._getSetValues = sourcesDests
 		}
 
 		public setValue(
@@ -273,16 +271,16 @@ describe('common > main > rx > depend > bindings > stress', function() {
 			objectNumberFrom: number, propNameFrom: string,
 			objectNumberTo: number, propNameTo: string,
 		): void {
-			const sourceBuilder = this._sourcesDests.sources[propNameFrom]
-			const destBuilder = this._sourcesDests.dests[propNameTo]
+			const getValue = this._getSetValues.getValues[propNameFrom]
+			const setValue = this._getSetValues.setValues[propNameTo]
 
 			const sourceObject = this.objects[objectNumberFrom]
 			const destObject = this.objects[objectNumberTo]
 
-			const source = sourceBuilder.getSource(sourceObject)
-			const dest = destBuilder.getDest(destObject)
-
-			const binder = source.getOneWayBinder(dest)
+			const binder = getOneWayBinder(
+				sourceObject, getValue,
+				destObject, setValue,
+			)
 
 			this.unbinds.push(binder.bind())
 		}
@@ -292,16 +290,16 @@ describe('common > main > rx > depend > bindings > stress', function() {
 			objectNumber1: number, propName1: string,
 			objectNumber2: number, propName2: string,
 		): void {
-			const builder1 = this._sourcesDests.sourceDests[propName1]
-			const builder2 = this._sourcesDests.sourceDests[propName2]
+			const getSetValue1 = this._getSetValues.getSetValues[propName1]
+			const getSetValue2 = this._getSetValues.getSetValues[propName2]
 
 			const object1 = this.objects[objectNumber1]
 			const object2 = this.objects[objectNumber2]
 
-			const sourceDest1 = builder1.getSourceDest(object1)
-			const sourceDest2 = builder2.getSourceDest(object2)
-
-			const binder = sourceDest1.getTwoWayBinder(sourceDest2)
+			const binder = getTwoWayBinder(
+				object1, getSetValue1,
+				object2, getSetValue2,
+			)
 
 			this.unbinds.push(binder.bind())
 		}
@@ -351,7 +349,7 @@ describe('common > main > rx > depend > bindings > stress', function() {
 			rnd: Random,
 			objectNumberFrom: number, propNameFrom: string,
 			objectNumberTo: number, propNameTo: string,
-		): IUnbind {
+		): IUnBind {
 			const keyFrom = objectNumberFrom + '_' + propNameFrom
 			const keyTo = objectNumberTo + '_' + propNameTo
 
@@ -528,10 +526,11 @@ describe('common > main > rx > depend > bindings > stress', function() {
 		return {
 			countObjects: [1, metricsMin.countObjects ?? 3],
 			countValues: [1, metricsMin.countValues ?? 10],
-			garbageCollectMode: [
-				GarbageCollectMode.deleteImmediate,
-				metricsMin.garbageCollectMode ?? GarbageCollectMode.normal,
-			],
+			garbageCollectMode: GarbageCollectMode.disabled, // TODO
+			// [
+			// 	GarbageCollectMode.deleteImmediate,
+			// 	metricsMin.garbageCollectMode ?? GarbageCollectMode.normal,
+			// ],
 			metrics,
 			metricsMin,
 		}
@@ -586,7 +585,7 @@ describe('common > main > rx > depend > bindings > stress', function() {
 		return {
 			objects: new Objects(objects, generateSourceDests(rnd)),
 			checkObjects: new CheckObjects(checkObjects),
-			unbinds: [] as IUnbind[],
+			unbinds: [] as IUnBind[],
 			options,
 		}
 	}
@@ -790,8 +789,15 @@ describe('common > main > rx > depend > bindings > stress', function() {
 			// metricsMin: {"garbageCollectMode":0,"countObjects":1,"iterations":3,"countUnBinds":0,"countBinds":2,"countSetsLast":0,"countChecksLast":0,"countSets":1,"countChecks":0,"countValues":1},
 			// customSeed: 580113113,
 			// metricsMin: {"garbageCollectMode":0,"countObjects":1,"iterations":3,"countUnBinds":0,"countBinds":2,"countSetsLast":0,"countChecksLast":0,"countSets":1,"countChecks":0,"countValues":1},
-			customSeed: 756600112,
-			metricsMin: {"garbageCollectMode":0,"countObjects":1,"iterations":3,"countUnBinds":0,"countBinds":2,"countSetsLast":0,"countChecksLast":0,"countSets":1,"countChecks":0,"countValues":1},
+			// customSeed: 756600112,
+			// metricsMin: {garbageCollectMode: 0, countObjects: 1, iterations: 3, countUnBinds: 0, countBinds: 2, countSetsLast: 0, countChecksLast: 0, countSets: 1, countChecks: 0, countValues: 1},
+
+			// customSeed: 746205876,
+			// metricsMin: {"garbageCollectMode":1,"countObjects":3,"iterations":55,"countUnBinds":4,"countBinds":13,"countSetsLast":0,"countChecksLast":0,"countSets":43,"countChecks":0,"countValues":4},
+			// customSeed: 47784214,
+			// metricsMin: {"garbageCollectMode":1,"countObjects":3,"iterations":28,"countUnBinds":2,"countBinds":6,"countSetsLast":0,"countChecksLast":0,"countSets":22,"countChecks":0,"countValues":4},
+			customSeed: 454986460,
+			metricsMin: {"garbageCollectMode":1,"countObjects":1,"iterations":5,"countUnBinds":1,"countBinds":2,"countSetsLast":0,"countChecksLast":0,"countSets":2,"countChecks":0,"countValues":2},
 			searchBestError: true,
 		})
 
