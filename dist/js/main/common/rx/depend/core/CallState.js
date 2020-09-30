@@ -1688,7 +1688,11 @@ function reduceCallStates(deleteSize, _minCallStateLifeTime) {
 
 function garbageCollect() {
   try {
-    garbageCollectTimer = null;
+    if (garbageCollectTimer != null) {
+      clearTimeout(garbageCollectTimer);
+      garbageCollectTimer = null;
+    }
+
     var _webrainOptions$callS = _webrainOptions.webrainOptions.callState.garbageCollect,
         bulkSize = _webrainOptions$callS.bulkSize,
         minLifeTime = _webrainOptions$callS.minLifeTime,

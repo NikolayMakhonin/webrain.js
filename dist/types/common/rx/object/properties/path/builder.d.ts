@@ -1,3 +1,4 @@
+import { ThenableOrValue } from '../../../../async/async';
 import { AsyncPropertyValueOf, IPathNode, TGetPropertyValueResult3, TGetValue1, TGetValue2, TPathNodes, TSetValue1, TSetValue2 } from './constracts';
 declare type TPathOrArrayOrNode<TValue, TNextValue> = Path<TValue, TNextValue> | Array<IPathNode<TValue, TNextValue>> | IPathNode<TValue, TNextValue>;
 export declare function pathsConcat<V1, V2, V3>(...paths: [
@@ -21,7 +22,7 @@ export declare class Path<TObject, TValue = TObject> {
     readonly canGet: boolean;
     readonly canSet: boolean;
     constructor(nodes?: TPathNodes<any, any>, canGet?: boolean, canSet?: boolean);
-    get(object: TObject): TGetPropertyValueResult3<TValue>;
+    get(object: TObject): ThenableOrValue<TValue>;
     set(object: TObject, newValue: TValue): TGetPropertyValueResult3<void>;
     init(): Path<TObject, AsyncPropertyValueOf<TValue>>;
     fv<TNextValue>(getValue: TGetValue1<TValue, TNextValue>, setValue?: TSetValue1<TValue, TNextValue>): Path<TObject, TNextValue>;
@@ -38,7 +39,7 @@ export declare class PathGetSet<TObject, TValue> {
     constructor(pathGet?: Path<TObject, TValue>, pathSet?: Path<TObject, TValue>);
     get canGet(): boolean;
     get canSet(): boolean;
-    get(object: TObject): TGetPropertyValueResult3<TValue>;
+    get(object: TObject): ThenableOrValue<TValue>;
     set(object: TObject, newValue: TValue): TGetPropertyValueResult3<void>;
     static concat<V1, V2, V3>(path: TPathOrArrayOrNode<V1, V2>, pathGetSet: PathGetSet<V2, V3>): PathGetSet<V1, V3>;
     static readonly build: typeof pathGetSetBuild;

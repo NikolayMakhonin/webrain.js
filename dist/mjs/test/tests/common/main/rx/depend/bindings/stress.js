@@ -1,23 +1,24 @@
 /* tslint:disable:no-identical-functions no-shadowed-variable */
 import { webrainOptions } from '../../../../../../../main/common/helpers/webrainOptions';
 import { Random } from '../../../../../../../main/common/random/Random';
-import { sourceDestBuilder } from '../../../../../../../main/common/rx/depend/bindings/SourceDestBuilder';
-import { destPathBuilder, sourceDestPathBuilder, sourcePathBuilder } from '../../../../../../../main/common/rx/depend/bindings/SourceDestPathBuilder';
+import { getOneWayBinder, getTwoWayBinder } from '../../../../../../../main/common/rx/depend/bindings2/bind';
+import { createPathGetSetValue, createPathGetValue, createPathSetValue } from '../../../../../../../main/common/rx/depend/bindings2/path';
+import { reduceCallStates } from '../../../../../../../main/common/rx/depend/core/CallState';
 import { ObservableClass } from '../../../../../../../main/common/rx/object/ObservableClass';
 import { ObservableObjectBuilder } from '../../../../../../../main/common/rx/object/ObservableObjectBuilder';
 import { pathGetSetBuild } from '../../../../../../../main/common/rx/object/properties/path/builder';
 import { assert } from '../../../../../../../main/common/test/Assert';
-import { describe, it } from '../../../../../../../main/common/test/Mocha';
+import { describe, xit } from '../../../../../../../main/common/test/Mocha';
 import { randomTestBuilder, searchBestErrorBuilder, testIterationBuilder, testIteratorBuilder } from '../../../../../../../main/common/test/randomTest';
 import { delay } from '../../../../../../../main/common/time/helpers';
-import { clearCallStates } from "../src/helpers";
+import { clearCallStates } from '../src/helpers';
 describe('common > main > rx > depend > bindings > stress', function () {
   this.timeout(24 * 60 * 60 * 1000);
   beforeEach(function () {
     webrainOptions.callState.garbageCollect.disabled = false;
     webrainOptions.callState.garbageCollect.bulkSize = 100;
-    webrainOptions.callState.garbageCollect.interval = 1000;
-    webrainOptions.callState.garbageCollect.minLifeTime = 50;
+    webrainOptions.callState.garbageCollect.interval = 0;
+    webrainOptions.callState.garbageCollect.minLifeTime = 0;
   }); // region helpers
 
   const propNames = ['prop1', 'prop2', 'prop3'];
@@ -63,61 +64,64 @@ describe('common > main > rx > depend > bindings > stress', function () {
 
   }
 
-  const sources = {};
-  const dests = {};
-  const sourceDests = {};
+  const getValues = {};
+  const setValues = {};
+  const getSetValues = {};
 
   for (let i = 0; i < propNames.length; i++) {
     const propName = propNames[i];
-    sourceDests[propName] = [sourceDestPathBuilder()(b => b.f(o => o[propName], (o, v) => {
+    getSetValues[propName] = [createPathGetSetValue()(b => b.f(o => o[propName], (o, v) => {
       o[propName] = v;
-    })), sourceDestPathBuilder()(pathGetSetBuild(b => b.f(o => o[propName], (o, v) => {
+    })), createPathGetSetValue()(pathGetSetBuild(b => b.f(o => o[propName], (o, v) => {
       o[propName] = v;
-    }))), sourceDestPathBuilder()(pathGetSetBuild(b => b.f(o => o[propName], (o, v) => {
+    }))), createPathGetSetValue()(pathGetSetBuild(b => b.f(o => o[propName], (o, v) => {
       o[propName] = v;
     })).pathGet, pathGetSetBuild(b => b.f(o => o[propName], (o, v) => {
       o[propName] = v;
-    })).pathSet), sourceDestPathBuilder()(b => b.f(o => o), {
+    })).pathSet), createPathGetSetValue()(b => b.f(o => o), {
       get: b => b.f(o => o[propName]),
       set: b => b.f(null, (o, v) => {
         o[propName] = v;
       })
-    }), sourceDestPathBuilder(b => b.f(o => o[propName], (o, v) => {
+    }), createPathGetSetValue(b => b.f(o => o[propName], (o, v) => {
       o[propName] = v;
-    })), sourceDestPathBuilder(pathGetSetBuild(b => b.f(o => o[propName], (o, v) => {
+    })), createPathGetSetValue(pathGetSetBuild(b => b.f(o => o[propName], (o, v) => {
       o[propName] = v;
-    }))), sourceDestPathBuilder(pathGetSetBuild(b => b.f(o => o[propName])).pathGet, pathGetSetBuild(b => b.f(null, (o, v) => {
+    }))), createPathGetSetValue(pathGetSetBuild(b => b.f(o => o[propName])).pathGet, pathGetSetBuild(b => b.f(null, (o, v) => {
       o[propName] = v;
-    })).pathSet), sourceDestPathBuilder(b => b.f(o => o), {
+    })).pathSet), createPathGetSetValue(b => b.f(o => o), {
       get: b => b.f(o => o[propName]),
       set: b => b.f(null, (o, v) => {
         o[propName] = v;
       })
     })];
-    sources[propName] = [...sourceDests[propName], sourcePathBuilder()(b => b.f(o => o[propName])), sourcePathBuilder()(pathGetSetBuild(b => b.f(o => o[propName])).pathGet), sourcePathBuilder(b => b.f(o => o[propName])), sourcePathBuilder(pathGetSetBuild(b => b.f(o => o[propName])).pathGet)];
-    dests[propName] = [...sourceDests[propName], destPathBuilder()(b => b.f(null, (o, v) => {
+    getValues[propName] = [...getSetValues[propName].map(o => o.getValue), createPathGetValue()(b => b.f(o => o[propName])), createPathGetValue()(pathGetSetBuild(b => b.f(o => o[propName])).pathGet), createPathGetValue(b => b.f(o => o[propName])), createPathGetValue(pathGetSetBuild(b => b.f(o => o[propName])).pathGet)];
+    setValues[propName] = [...getSetValues[propName].map(o => o.setValue), createPathSetValue()(b => b.f(null, (o, v) => {
       o[propName] = v;
-    })), destPathBuilder()(pathGetSetBuild(b => b.f(null, (o, v) => {
+    })), createPathSetValue()(pathGetSetBuild(b => b.f(null, (o, v) => {
       o[propName] = v;
-    })).pathSet), destPathBuilder(b => b.f(null, (o, v) => {
+    })).pathSet), createPathSetValue(b => b.f(null, (o, v) => {
       o[propName] = v;
-    })), destPathBuilder(pathGetSetBuild(b => b.f(null, (o, v) => {
+    })), createPathSetValue(pathGetSetBuild(b => b.f(null, (o, v) => {
       o[propName] = v;
     })).pathSet)];
   }
 
   function generateSourceDests(rnd) {
     const result = {
-      sources: {},
-      dests: {},
-      sourceDests: {}
+      getValues: {},
+      setValues: {},
+      getSetValues: {}
     };
 
     for (let i = 0; i < propNames.length; i++) {
       const propName = propNames[i];
-      result.sources[propName] = rnd.nextArrayItem(sources[propName]);
-      result.dests[propName] = rnd.nextArrayItem(dests[propName]);
-      result.sourceDests[propName] = sourceDestBuilder(result.sources[propName], result.dests[propName]);
+      result.getValues[propName] = rnd.nextArrayItem(getValues[propName]);
+      result.setValues[propName] = rnd.nextArrayItem(setValues[propName]);
+      result.getSetValues[propName] = {
+        getValue: result.getValues[propName],
+        setValue: result.setValues[propName]
+      };
     }
 
     return result;
@@ -126,7 +130,7 @@ describe('common > main > rx > depend > bindings > stress', function () {
   class Objects extends ObjectsBase {
     constructor(objects, sourcesDests) {
       super(objects);
-      this._sourcesDests = sourcesDests;
+      this._getSetValues = sourcesDests;
     }
 
     setValue(objectNumber, propName, value) {
@@ -134,24 +138,20 @@ describe('common > main > rx > depend > bindings > stress', function () {
     }
 
     bindOneWay(rnd, objectNumberFrom, propNameFrom, objectNumberTo, propNameTo) {
-      const sourceBuilder = this._sourcesDests.sources[propNameFrom];
-      const destBuilder = this._sourcesDests.dests[propNameTo];
+      const getValue = this._getSetValues.getValues[propNameFrom];
+      const setValue = this._getSetValues.setValues[propNameTo];
       const sourceObject = this.objects[objectNumberFrom];
       const destObject = this.objects[objectNumberTo];
-      const source = sourceBuilder.getSource(sourceObject);
-      const dest = destBuilder.getDest(destObject);
-      const binder = source.getOneWayBinder(dest);
+      const binder = getOneWayBinder(sourceObject, getValue, destObject, setValue);
       this.unbinds.push(binder.bind());
     }
 
     bindTwoWay(rnd, objectNumber1, propName1, objectNumber2, propName2) {
-      const builder1 = this._sourcesDests.sourceDests[propName1];
-      const builder2 = this._sourcesDests.sourceDests[propName2];
+      const getSetValue1 = this._getSetValues.getSetValues[propName1];
+      const getSetValue2 = this._getSetValues.getSetValues[propName2];
       const object1 = this.objects[objectNumber1];
       const object2 = this.objects[objectNumber2];
-      const sourceDest1 = builder1.getSourceDest(object1);
-      const sourceDest2 = builder2.getSourceDest(object2);
-      const binder = sourceDest1.getTwoWayBinder(sourceDest2);
+      const binder = getTwoWayBinder(object1, getSetValue1, object2, getSetValue2);
       this.unbinds.push(binder.bind());
     }
 
@@ -306,18 +306,24 @@ describe('common > main > rx > depend > bindings > stress', function () {
 
   function createMetrics(testRunnerMetrics) {
     return {
-      countObjects: 0,
+      garbageCollectMode: null,
+      countObjects: null,
       iterations: 0,
       countUnBinds: 0,
       countBinds: 0,
       countSetsLast: 0,
       countChecksLast: 0,
       countSets: 0,
-      countChecks: 0
+      countChecks: 0,
+      countValues: null
     };
   }
 
   function compareMetrics(metrics, metricsMin) {
+    if (metrics.garbageCollectMode !== metricsMin.garbageCollectMode) {
+      return metrics.garbageCollectMode < metricsMin.garbageCollectMode ? -1 : 1;
+    }
+
     if (metrics.countObjects !== metricsMin.countObjects) {
       return metrics.countObjects < metricsMin.countObjects ? -1 : 1;
     }
@@ -350,15 +356,33 @@ describe('common > main > rx > depend > bindings > stress', function () {
       return metrics.countChecks < metricsMin.countChecks ? -1 : 1;
     }
 
+    if (metrics.countValues !== metricsMin.countValues) {
+      return metrics.countValues < metricsMin.countValues ? -1 : 1;
+    }
+
     return 0;
   } // endregion
   // region options
 
 
+  let GarbageCollectMode;
+
+  (function (GarbageCollectMode) {
+    GarbageCollectMode[GarbageCollectMode["deleteImmediate"] = 0] = "deleteImmediate";
+    GarbageCollectMode[GarbageCollectMode["disabled"] = 1] = "disabled";
+    GarbageCollectMode[GarbageCollectMode["normal"] = 2] = "normal";
+  })(GarbageCollectMode || (GarbageCollectMode = {}));
+
   function optionsPatternBuilder(metrics, metricsMin) {
     return {
-      countObjects: [1, 3],
-      countValues: [1, 10],
+      countObjects: [1, metricsMin.countObjects ?? 3],
+      countValues: [1, metricsMin.countValues ?? 10],
+      garbageCollectMode: GarbageCollectMode.disabled,
+      // TODO
+      // [
+      // 	GarbageCollectMode.deleteImmediate,
+      // 	metricsMin.garbageCollectMode ?? GarbageCollectMode.normal,
+      // ],
       metrics,
       metricsMin
     };
@@ -368,6 +392,7 @@ describe('common > main > rx > depend > bindings > stress', function () {
     return {
       countObjects: generateNumber(rnd, options.countObjects),
       countValues: generateNumber(rnd, options.countValues),
+      garbageCollectMode: generateNumber(rnd, options.garbageCollectMode),
       metrics: options.metrics,
       metricsMin: options.metricsMin
     };
@@ -376,6 +401,32 @@ describe('common > main > rx > depend > bindings > stress', function () {
   // endregion
   // region state
   function createState(rnd, options) {
+    switch (options.garbageCollectMode) {
+      case GarbageCollectMode.deleteImmediate:
+        webrainOptions.callState.garbageCollect.disabled = false;
+        webrainOptions.callState.garbageCollect.bulkSize = 1000;
+        webrainOptions.callState.garbageCollect.interval = 0;
+        webrainOptions.callState.garbageCollect.minLifeTime = 0;
+        break;
+
+      case GarbageCollectMode.disabled:
+        webrainOptions.callState.garbageCollect.disabled = true;
+        break;
+
+      case GarbageCollectMode.normal:
+        webrainOptions.callState.garbageCollect.disabled = false;
+        webrainOptions.callState.garbageCollect.bulkSize = 100;
+        webrainOptions.callState.garbageCollect.interval = 100;
+        webrainOptions.callState.garbageCollect.minLifeTime = 50;
+        break;
+
+      default:
+        throw new Error('Unknown GarbageCollectMode:' + options.garbageCollectMode);
+    }
+
+    options.metrics.countObjects = options.countObjects;
+    options.metrics.garbageCollectMode = options.garbageCollectMode;
+    options.metrics.countValues = options.countValues;
     const seed = rnd.nextSeed();
     const objects = generateItems(new Random(seed), options.countObjects, generateObject);
     const checkObjects = generateItems(new Random(seed), options.countObjects, generateCheckObject);
@@ -471,8 +522,8 @@ describe('common > main > rx > depend > bindings > stress', function () {
   // region testIterator
 
   const testIterator = testIteratorBuilder(createState, {
-    before(rnd, state) {
-      state.options.metrics.countObjects = state.objects.objects.length;
+    before(rns, state) {
+      reduceCallStates(2000000000, 0);
     },
 
     after(rnd, state) {
@@ -534,20 +585,47 @@ describe('common > main > rx > depend > bindings > stress', function () {
     testIterator
   }); // endregion
 
-  it('base', async function () {
+  xit('base', async function () {
     /* tslint:disable:max-line-length */
+    clearCallStates();
     await randomTest({
       stopPredicate: testRunnerMetrics => {
-        // return false
-        return testRunnerMetrics.timeFromStart >= 30000;
+        return false; // return testRunnerMetrics.timeFromStart >= 30000
       },
-      // customSeed: 483882272,
-      // metricsMin: {"countObjects":1,"iterations":11,"countUnBinds":1,"countBinds":5,"countSetsLast":0,"countChecksLast":0,"countSets":7,"countChecks":0},
-      // customSeed: 1036614010,
-      // metricsMin: {"countObjects":1,"iterations":10,"countUnBinds":1,"countBinds":4,"countSetsLast":0,"countChecksLast":0,"countSets":7,"countChecks":0},
-      // customSeed: 185088415,
-      // metricsMin: {"countObjects":1,"iterations":9,"countUnBinds":1,"countBinds":3,"countSetsLast":0,"countChecksLast":0,"countSets":6,"countChecks":0},
-      searchBestError: false
+      // customSeed: 584765156,
+      // metricsMin: {"countObjects":1,"iterations":3,"countUnBinds":0,"countBinds":2,"countSetsLast":0,"countChecksLast":0,"countSets":1,"countChecks":0},
+      // customSeed: 503049265,
+      // metricsMin: {"countObjects":1,"iterations":3,"countUnBinds":0,"countBinds":2,"countSetsLast":0,"countChecksLast":0,"countSets":1,"countChecks":0},
+      // customSeed: 783167148,
+      // metricsMin: {"countObjects":1,"iterations":3,"countUnBinds":0,"countBinds":2,"countSetsLast":0,"countChecksLast":0,"countSets":1,"countChecks":0},
+      // customSeed: 622515043,
+      // metricsMin: {"garbageCollectMode":0,"countObjects":1,"countValues":1,"iterations":5,"countUnBinds":0,"countBinds":2,"countSetsLast":0,"countChecksLast":0,"countSets":3,"countChecks":0},
+      // customSeed: 485614596,
+      // metricsMin: {"garbageCollectMode":0,"countObjects":1,"iterations":3,"countUnBinds":0,"countBinds":2,"countSetsLast":0,"countChecksLast":0,"countSets":1,"countChecks":0,"countValues":1},
+      // customSeed: 828925130,
+      // metricsMin: {"garbageCollectMode":0,"countObjects":1,"iterations":3,"countUnBinds":0,"countBinds":2,"countSetsLast":0,"countChecksLast":0,"countSets":1,"countChecks":0,"countValues":1},
+      // customSeed: 580113113,
+      // metricsMin: {"garbageCollectMode":0,"countObjects":1,"iterations":3,"countUnBinds":0,"countBinds":2,"countSetsLast":0,"countChecksLast":0,"countSets":1,"countChecks":0,"countValues":1},
+      // customSeed: 756600112,
+      // metricsMin: {garbageCollectMode: 0, countObjects: 1, iterations: 3, countUnBinds: 0, countBinds: 2, countSetsLast: 0, countChecksLast: 0, countSets: 1, countChecks: 0, countValues: 1},
+      // customSeed: 746205876,
+      // metricsMin: {"garbageCollectMode":1,"countObjects":3,"iterations":55,"countUnBinds":4,"countBinds":13,"countSetsLast":0,"countChecksLast":0,"countSets":43,"countChecks":0,"countValues":4},
+      // customSeed: 47784214,
+      // metricsMin: {"garbageCollectMode":1,"countObjects":3,"iterations":28,"countUnBinds":2,"countBinds":6,"countSetsLast":0,"countChecksLast":0,"countSets":22,"countChecks":0,"countValues":4},
+      customSeed: 454986460,
+      metricsMin: {
+        'garbageCollectMode': 1,
+        'countObjects': 1,
+        'iterations': 5,
+        'countUnBinds': 1,
+        'countBinds': 2,
+        'countSetsLast': 0,
+        'countChecksLast': 0,
+        'countSets': 2,
+        'countChecks': 0,
+        'countValues': 2
+      },
+      searchBestError: true
     });
     await delay(1000);
     clearCallStates(); // process.exit(1)

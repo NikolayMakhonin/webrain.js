@@ -30,9 +30,11 @@ var _webrainOptions = require("../../../../../../../main/common/helpers/webrainO
 
 var _Random = require("../../../../../../../main/common/random/Random");
 
-var _SourceDestBuilder = require("../../../../../../../main/common/rx/depend/bindings/SourceDestBuilder");
+var _bind2 = require("../../../../../../../main/common/rx/depend/bindings2/bind");
 
-var _SourceDestPathBuilder = require("../../../../../../../main/common/rx/depend/bindings/SourceDestPathBuilder");
+var _path = require("../../../../../../../main/common/rx/depend/bindings2/path");
+
+var _CallState = require("../../../../../../../main/common/rx/depend/core/CallState");
 
 var _ObservableClass2 = require("../../../../../../../main/common/rx/object/ObservableClass");
 
@@ -59,8 +61,8 @@ function _isNativeReflectConstruct() { if (typeof Reflect === "undefined" || !_c
   beforeEach(function () {
     _webrainOptions.webrainOptions.callState.garbageCollect.disabled = false;
     _webrainOptions.webrainOptions.callState.garbageCollect.bulkSize = 100;
-    _webrainOptions.webrainOptions.callState.garbageCollect.interval = 1000;
-    _webrainOptions.webrainOptions.callState.garbageCollect.minLifeTime = 50;
+    _webrainOptions.webrainOptions.callState.garbageCollect.interval = 0;
+    _webrainOptions.webrainOptions.callState.garbageCollect.minLifeTime = 0;
   }); // region helpers
 
   var propNames = ['prop1', 'prop2', 'prop3'];
@@ -115,27 +117,27 @@ function _isNativeReflectConstruct() { if (typeof Reflect === "undefined" || !_c
     this.objects = objects;
   };
 
-  var sources = {};
-  var dests = {};
-  var sourceDests = {};
+  var getValues = {};
+  var setValues = {};
+  var getSetValues = {};
 
   var _loop = function _loop(i) {
-    var _context3, _context4;
+    var _context3, _context4, _context5, _context6;
 
     var propName = propNames[i];
-    sourceDests[propName] = [(0, _SourceDestPathBuilder.sourceDestPathBuilder)()(function (b) {
+    getSetValues[propName] = [(0, _path.createPathGetSetValue)()(function (b) {
       return b.f(function (o) {
         return o[propName];
       }, function (o, v) {
         o[propName] = v;
       });
-    }), (0, _SourceDestPathBuilder.sourceDestPathBuilder)()((0, _builder.pathGetSetBuild)(function (b) {
+    }), (0, _path.createPathGetSetValue)()((0, _builder.pathGetSetBuild)(function (b) {
       return b.f(function (o) {
         return o[propName];
       }, function (o, v) {
         o[propName] = v;
       });
-    })), (0, _SourceDestPathBuilder.sourceDestPathBuilder)()((0, _builder.pathGetSetBuild)(function (b) {
+    })), (0, _path.createPathGetSetValue)()((0, _builder.pathGetSetBuild)(function (b) {
       return b.f(function (o) {
         return o[propName];
       }, function (o, v) {
@@ -147,7 +149,7 @@ function _isNativeReflectConstruct() { if (typeof Reflect === "undefined" || !_c
       }, function (o, v) {
         o[propName] = v;
       });
-    }).pathSet), (0, _SourceDestPathBuilder.sourceDestPathBuilder)()(function (b) {
+    }).pathSet), (0, _path.createPathGetSetValue)()(function (b) {
       return b.f(function (o) {
         return o;
       });
@@ -162,19 +164,19 @@ function _isNativeReflectConstruct() { if (typeof Reflect === "undefined" || !_c
           o[propName] = v;
         });
       }
-    }), (0, _SourceDestPathBuilder.sourceDestPathBuilder)(function (b) {
+    }), (0, _path.createPathGetSetValue)(function (b) {
       return b.f(function (o) {
         return o[propName];
       }, function (o, v) {
         o[propName] = v;
       });
-    }), (0, _SourceDestPathBuilder.sourceDestPathBuilder)((0, _builder.pathGetSetBuild)(function (b) {
+    }), (0, _path.createPathGetSetValue)((0, _builder.pathGetSetBuild)(function (b) {
       return b.f(function (o) {
         return o[propName];
       }, function (o, v) {
         o[propName] = v;
       });
-    })), (0, _SourceDestPathBuilder.sourceDestPathBuilder)((0, _builder.pathGetSetBuild)(function (b) {
+    })), (0, _path.createPathGetSetValue)((0, _builder.pathGetSetBuild)(function (b) {
       return b.f(function (o) {
         return o[propName];
       });
@@ -182,7 +184,7 @@ function _isNativeReflectConstruct() { if (typeof Reflect === "undefined" || !_c
       return b.f(null, function (o, v) {
         o[propName] = v;
       });
-    }).pathSet), (0, _SourceDestPathBuilder.sourceDestPathBuilder)(function (b) {
+    }).pathSet), (0, _path.createPathGetSetValue)(function (b) {
       return b.f(function (o) {
         return o;
       });
@@ -198,36 +200,40 @@ function _isNativeReflectConstruct() { if (typeof Reflect === "undefined" || !_c
         });
       }
     })];
-    sources[propName] = (0, _concat.default)(_context3 = []).call(_context3, sourceDests[propName], [(0, _SourceDestPathBuilder.sourcePathBuilder)()(function (b) {
+    getValues[propName] = (0, _concat.default)(_context3 = []).call(_context3, (0, _map.default)(_context4 = getSetValues[propName]).call(_context4, function (o) {
+      return o.getValue;
+    }), [(0, _path.createPathGetValue)()(function (b) {
       return b.f(function (o) {
         return o[propName];
       });
-    }), (0, _SourceDestPathBuilder.sourcePathBuilder)()((0, _builder.pathGetSetBuild)(function (b) {
+    }), (0, _path.createPathGetValue)()((0, _builder.pathGetSetBuild)(function (b) {
       return b.f(function (o) {
         return o[propName];
       });
-    }).pathGet), (0, _SourceDestPathBuilder.sourcePathBuilder)(function (b) {
+    }).pathGet), (0, _path.createPathGetValue)(function (b) {
       return b.f(function (o) {
         return o[propName];
       });
-    }), (0, _SourceDestPathBuilder.sourcePathBuilder)((0, _builder.pathGetSetBuild)(function (b) {
+    }), (0, _path.createPathGetValue)((0, _builder.pathGetSetBuild)(function (b) {
       return b.f(function (o) {
         return o[propName];
       });
     }).pathGet)]);
-    dests[propName] = (0, _concat.default)(_context4 = []).call(_context4, sourceDests[propName], [(0, _SourceDestPathBuilder.destPathBuilder)()(function (b) {
+    setValues[propName] = (0, _concat.default)(_context5 = []).call(_context5, (0, _map.default)(_context6 = getSetValues[propName]).call(_context6, function (o) {
+      return o.setValue;
+    }), [(0, _path.createPathSetValue)()(function (b) {
       return b.f(null, function (o, v) {
         o[propName] = v;
       });
-    }), (0, _SourceDestPathBuilder.destPathBuilder)()((0, _builder.pathGetSetBuild)(function (b) {
+    }), (0, _path.createPathSetValue)()((0, _builder.pathGetSetBuild)(function (b) {
       return b.f(null, function (o, v) {
         o[propName] = v;
       });
-    }).pathSet), (0, _SourceDestPathBuilder.destPathBuilder)(function (b) {
+    }).pathSet), (0, _path.createPathSetValue)(function (b) {
       return b.f(null, function (o, v) {
         o[propName] = v;
       });
-    }), (0, _SourceDestPathBuilder.destPathBuilder)((0, _builder.pathGetSetBuild)(function (b) {
+    }), (0, _path.createPathSetValue)((0, _builder.pathGetSetBuild)(function (b) {
       return b.f(null, function (o, v) {
         o[propName] = v;
       });
@@ -240,16 +246,19 @@ function _isNativeReflectConstruct() { if (typeof Reflect === "undefined" || !_c
 
   function generateSourceDests(rnd) {
     var result = {
-      sources: {},
-      dests: {},
-      sourceDests: {}
+      getValues: {},
+      setValues: {},
+      getSetValues: {}
     };
 
     for (var _i = 0; _i < propNames.length; _i++) {
       var _propName = propNames[_i];
-      result.sources[_propName] = rnd.nextArrayItem(sources[_propName]);
-      result.dests[_propName] = rnd.nextArrayItem(dests[_propName]);
-      result.sourceDests[_propName] = (0, _SourceDestBuilder.sourceDestBuilder)(result.sources[_propName], result.dests[_propName]);
+      result.getValues[_propName] = rnd.nextArrayItem(getValues[_propName]);
+      result.setValues[_propName] = rnd.nextArrayItem(setValues[_propName]);
+      result.getSetValues[_propName] = {
+        getValue: result.getValues[_propName],
+        setValue: result.setValues[_propName]
+      };
     }
 
     return result;
@@ -265,7 +274,7 @@ function _isNativeReflectConstruct() { if (typeof Reflect === "undefined" || !_c
 
       (0, _classCallCheck2.default)(this, Objects);
       _this = _super2.call(this, objects);
-      _this._sourcesDests = sourcesDests;
+      _this._getSetValues = sourcesDests;
       return _this;
     }
 
@@ -277,25 +286,21 @@ function _isNativeReflectConstruct() { if (typeof Reflect === "undefined" || !_c
     }, {
       key: "bindOneWay",
       value: function bindOneWay(rnd, objectNumberFrom, propNameFrom, objectNumberTo, propNameTo) {
-        var sourceBuilder = this._sourcesDests.sources[propNameFrom];
-        var destBuilder = this._sourcesDests.dests[propNameTo];
+        var getValue = this._getSetValues.getValues[propNameFrom];
+        var setValue = this._getSetValues.setValues[propNameTo];
         var sourceObject = this.objects[objectNumberFrom];
         var destObject = this.objects[objectNumberTo];
-        var source = sourceBuilder.getSource(sourceObject);
-        var dest = destBuilder.getDest(destObject);
-        var binder = source.getOneWayBinder(dest);
+        var binder = (0, _bind2.getOneWayBinder)(sourceObject, getValue, destObject, setValue);
         this.unbinds.push((0, _bind.default)(binder).call(binder));
       }
     }, {
       key: "bindTwoWay",
       value: function bindTwoWay(rnd, objectNumber1, propName1, objectNumber2, propName2) {
-        var builder1 = this._sourcesDests.sourceDests[propName1];
-        var builder2 = this._sourcesDests.sourceDests[propName2];
+        var getSetValue1 = this._getSetValues.getSetValues[propName1];
+        var getSetValue2 = this._getSetValues.getSetValues[propName2];
         var object1 = this.objects[objectNumber1];
         var object2 = this.objects[objectNumber2];
-        var sourceDest1 = builder1.getSourceDest(object1);
-        var sourceDest2 = builder2.getSourceDest(object2);
-        var binder = sourceDest1.getTwoWayBinder(sourceDest2);
+        var binder = (0, _bind2.getTwoWayBinder)(object1, getSetValue1, object2, getSetValue2);
         this.unbinds.push((0, _bind.default)(binder).call(binder));
       }
     }]);
@@ -478,18 +483,24 @@ function _isNativeReflectConstruct() { if (typeof Reflect === "undefined" || !_c
 
   function createMetrics(testRunnerMetrics) {
     return {
-      countObjects: 0,
+      garbageCollectMode: null,
+      countObjects: null,
       iterations: 0,
       countUnBinds: 0,
       countBinds: 0,
       countSetsLast: 0,
       countChecksLast: 0,
       countSets: 0,
-      countChecks: 0
+      countChecks: 0,
+      countValues: null
     };
   }
 
   function compareMetrics(metrics, metricsMin) {
+    if (metrics.garbageCollectMode !== metricsMin.garbageCollectMode) {
+      return metrics.garbageCollectMode < metricsMin.garbageCollectMode ? -1 : 1;
+    }
+
     if (metrics.countObjects !== metricsMin.countObjects) {
       return metrics.countObjects < metricsMin.countObjects ? -1 : 1;
     }
@@ -522,15 +533,35 @@ function _isNativeReflectConstruct() { if (typeof Reflect === "undefined" || !_c
       return metrics.countChecks < metricsMin.countChecks ? -1 : 1;
     }
 
+    if (metrics.countValues !== metricsMin.countValues) {
+      return metrics.countValues < metricsMin.countValues ? -1 : 1;
+    }
+
     return 0;
   } // endregion
   // region options
 
 
+  var GarbageCollectMode;
+
+  (function (GarbageCollectMode) {
+    GarbageCollectMode[GarbageCollectMode["deleteImmediate"] = 0] = "deleteImmediate";
+    GarbageCollectMode[GarbageCollectMode["disabled"] = 1] = "disabled";
+    GarbageCollectMode[GarbageCollectMode["normal"] = 2] = "normal";
+  })(GarbageCollectMode || (GarbageCollectMode = {}));
+
   function optionsPatternBuilder(metrics, metricsMin) {
+    var _metricsMin$countObje, _metricsMin$countValu;
+
     return {
-      countObjects: [1, 3],
-      countValues: [1, 10],
+      countObjects: [1, (_metricsMin$countObje = metricsMin.countObjects) != null ? _metricsMin$countObje : 3],
+      countValues: [1, (_metricsMin$countValu = metricsMin.countValues) != null ? _metricsMin$countValu : 10],
+      garbageCollectMode: GarbageCollectMode.disabled,
+      // TODO
+      // [
+      // 	GarbageCollectMode.deleteImmediate,
+      // 	metricsMin.garbageCollectMode ?? GarbageCollectMode.normal,
+      // ],
       metrics: metrics,
       metricsMin: metricsMin
     };
@@ -540,6 +571,7 @@ function _isNativeReflectConstruct() { if (typeof Reflect === "undefined" || !_c
     return {
       countObjects: generateNumber(rnd, options.countObjects),
       countValues: generateNumber(rnd, options.countValues),
+      garbageCollectMode: generateNumber(rnd, options.garbageCollectMode),
       metrics: options.metrics,
       metricsMin: options.metricsMin
     };
@@ -548,6 +580,32 @@ function _isNativeReflectConstruct() { if (typeof Reflect === "undefined" || !_c
   // endregion
   // region state
   function createState(rnd, options) {
+    switch (options.garbageCollectMode) {
+      case GarbageCollectMode.deleteImmediate:
+        _webrainOptions.webrainOptions.callState.garbageCollect.disabled = false;
+        _webrainOptions.webrainOptions.callState.garbageCollect.bulkSize = 1000;
+        _webrainOptions.webrainOptions.callState.garbageCollect.interval = 0;
+        _webrainOptions.webrainOptions.callState.garbageCollect.minLifeTime = 0;
+        break;
+
+      case GarbageCollectMode.disabled:
+        _webrainOptions.webrainOptions.callState.garbageCollect.disabled = true;
+        break;
+
+      case GarbageCollectMode.normal:
+        _webrainOptions.webrainOptions.callState.garbageCollect.disabled = false;
+        _webrainOptions.webrainOptions.callState.garbageCollect.bulkSize = 100;
+        _webrainOptions.webrainOptions.callState.garbageCollect.interval = 100;
+        _webrainOptions.webrainOptions.callState.garbageCollect.minLifeTime = 50;
+        break;
+
+      default:
+        throw new Error('Unknown GarbageCollectMode:' + options.garbageCollectMode);
+    }
+
+    options.metrics.countObjects = options.countObjects;
+    options.metrics.garbageCollectMode = options.garbageCollectMode;
+    options.metrics.countValues = options.countValues;
     var seed = rnd.nextSeed();
     var objects = generateItems(new _Random.Random(seed), options.countObjects, generateObject);
     var checkObjects = generateItems(new _Random.Random(seed), options.countObjects, generateCheckObject);
@@ -572,9 +630,9 @@ function _isNativeReflectConstruct() { if (typeof Reflect === "undefined" || !_c
     _action = (0, _asyncToGenerator2.default)( /*#__PURE__*/_regenerator.default.mark(function _callee2(rnd, state) {
       var objectNumber, propName, shouldWait, _value2, _objectNumberTo, _propNameTo, len, seed, unbind, checkUnbind, _i6, _len3;
 
-      return _regenerator.default.wrap(function _callee2$(_context5) {
+      return _regenerator.default.wrap(function _callee2$(_context7) {
         while (1) {
-          switch (_context5.prev = _context5.next) {
+          switch (_context7.prev = _context7.next) {
             case 0:
               state.options.metrics.iterations++;
               objectNumber = rnd.nextInt(state.objects.objects.length);
@@ -625,16 +683,16 @@ function _isNativeReflectConstruct() { if (typeof Reflect === "undefined" || !_c
 
             case 7:
               if (!(_i6 < _len3)) {
-                _context5.next = 13;
+                _context7.next = 13;
                 break;
               }
 
-              _context5.next = 10;
+              _context7.next = 10;
               return (0, _helpers.delay)(1);
 
             case 10:
               _i6++;
-              _context5.next = 7;
+              _context7.next = 7;
               break;
 
             case 13:
@@ -643,7 +701,7 @@ function _isNativeReflectConstruct() { if (typeof Reflect === "undefined" || !_c
 
             case 14:
             case "end":
-              return _context5.stop();
+              return _context7.stop();
           }
         }
       }, _callee2);
@@ -675,8 +733,8 @@ function _isNativeReflectConstruct() { if (typeof Reflect === "undefined" || !_c
   // region testIterator
 
   var testIterator = (0, _randomTest.testIteratorBuilder)(createState, {
-    before: function before(rnd, state) {
-      state.options.metrics.countObjects = state.objects.objects.length;
+    before: function before(rns, state) {
+      (0, _CallState.reduceCallStates)(2000000000, 0);
     },
     after: function after(rnd, state) {
       for (var _i5 = 0, len = state.objects.unbinds.length; _i5 < len; _i5++) {
@@ -734,36 +792,64 @@ function _isNativeReflectConstruct() { if (typeof Reflect === "undefined" || !_c
     testIterator: testIterator
   }); // endregion
 
-  (0, _Mocha.it)('base', /*#__PURE__*/(0, _asyncToGenerator2.default)( /*#__PURE__*/_regenerator.default.mark(function _callee() {
+  (0, _Mocha.xit)('base', /*#__PURE__*/(0, _asyncToGenerator2.default)( /*#__PURE__*/_regenerator.default.mark(function _callee() {
     return _regenerator.default.wrap(function _callee$(_context2) {
       while (1) {
         switch (_context2.prev = _context2.next) {
           case 0:
-            _context2.next = 2;
+            /* tslint:disable:max-line-length */
+            (0, _helpers2.clearCallStates)();
+            _context2.next = 3;
             return randomTest({
               stopPredicate: function stopPredicate(testRunnerMetrics) {
-                // return false
-                return testRunnerMetrics.timeFromStart >= 30000;
+                return false; // return testRunnerMetrics.timeFromStart >= 30000
               },
-              // customSeed: 483882272,
-              // metricsMin: {"countObjects":1,"iterations":11,"countUnBinds":1,"countBinds":5,"countSetsLast":0,"countChecksLast":0,"countSets":7,"countChecks":0},
-              // customSeed: 1036614010,
-              // metricsMin: {"countObjects":1,"iterations":10,"countUnBinds":1,"countBinds":4,"countSetsLast":0,"countChecksLast":0,"countSets":7,"countChecks":0},
-              // customSeed: 185088415,
-              // metricsMin: {"countObjects":1,"iterations":9,"countUnBinds":1,"countBinds":3,"countSetsLast":0,"countChecksLast":0,"countSets":6,"countChecks":0},
-              searchBestError: false
+              // customSeed: 584765156,
+              // metricsMin: {"countObjects":1,"iterations":3,"countUnBinds":0,"countBinds":2,"countSetsLast":0,"countChecksLast":0,"countSets":1,"countChecks":0},
+              // customSeed: 503049265,
+              // metricsMin: {"countObjects":1,"iterations":3,"countUnBinds":0,"countBinds":2,"countSetsLast":0,"countChecksLast":0,"countSets":1,"countChecks":0},
+              // customSeed: 783167148,
+              // metricsMin: {"countObjects":1,"iterations":3,"countUnBinds":0,"countBinds":2,"countSetsLast":0,"countChecksLast":0,"countSets":1,"countChecks":0},
+              // customSeed: 622515043,
+              // metricsMin: {"garbageCollectMode":0,"countObjects":1,"countValues":1,"iterations":5,"countUnBinds":0,"countBinds":2,"countSetsLast":0,"countChecksLast":0,"countSets":3,"countChecks":0},
+              // customSeed: 485614596,
+              // metricsMin: {"garbageCollectMode":0,"countObjects":1,"iterations":3,"countUnBinds":0,"countBinds":2,"countSetsLast":0,"countChecksLast":0,"countSets":1,"countChecks":0,"countValues":1},
+              // customSeed: 828925130,
+              // metricsMin: {"garbageCollectMode":0,"countObjects":1,"iterations":3,"countUnBinds":0,"countBinds":2,"countSetsLast":0,"countChecksLast":0,"countSets":1,"countChecks":0,"countValues":1},
+              // customSeed: 580113113,
+              // metricsMin: {"garbageCollectMode":0,"countObjects":1,"iterations":3,"countUnBinds":0,"countBinds":2,"countSetsLast":0,"countChecksLast":0,"countSets":1,"countChecks":0,"countValues":1},
+              // customSeed: 756600112,
+              // metricsMin: {garbageCollectMode: 0, countObjects: 1, iterations: 3, countUnBinds: 0, countBinds: 2, countSetsLast: 0, countChecksLast: 0, countSets: 1, countChecks: 0, countValues: 1},
+              // customSeed: 746205876,
+              // metricsMin: {"garbageCollectMode":1,"countObjects":3,"iterations":55,"countUnBinds":4,"countBinds":13,"countSetsLast":0,"countChecksLast":0,"countSets":43,"countChecks":0,"countValues":4},
+              // customSeed: 47784214,
+              // metricsMin: {"garbageCollectMode":1,"countObjects":3,"iterations":28,"countUnBinds":2,"countBinds":6,"countSetsLast":0,"countChecksLast":0,"countSets":22,"countChecks":0,"countValues":4},
+              customSeed: 454986460,
+              metricsMin: {
+                'garbageCollectMode': 1,
+                'countObjects': 1,
+                'iterations': 5,
+                'countUnBinds': 1,
+                'countBinds': 2,
+                'countSetsLast': 0,
+                'countChecksLast': 0,
+                'countSets': 2,
+                'countChecks': 0,
+                'countValues': 2
+              },
+              searchBestError: true
             });
 
-          case 2:
-            _context2.next = 4;
+          case 3:
+            _context2.next = 5;
             return (0, _helpers.delay)(1000);
 
-          case 4:
+          case 5:
             (0, _helpers2.clearCallStates)(); // process.exit(1)
 
             /* tslint:enable:max-line-length */
 
-          case 5:
+          case 6:
           case "end":
             return _context2.stop();
         }

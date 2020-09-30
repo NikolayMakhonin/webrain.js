@@ -797,7 +797,7 @@ describe('common > main > rx > depend > bindings > stress', function() {
 			// customSeed: 47784214,
 			// metricsMin: {"garbageCollectMode":1,"countObjects":3,"iterations":28,"countUnBinds":2,"countBinds":6,"countSetsLast":0,"countChecksLast":0,"countSets":22,"countChecks":0,"countValues":4},
 			customSeed: 454986460,
-			metricsMin: {"garbageCollectMode":1,"countObjects":1,"iterations":5,"countUnBinds":1,"countBinds":2,"countSetsLast":0,"countChecksLast":0,"countSets":2,"countChecks":0,"countValues":2},
+			metricsMin: {'garbageCollectMode':1,'countObjects':1,'iterations':5,'countUnBinds':1,'countBinds':2,'countSetsLast':0,'countChecksLast':0,'countSets':2,'countChecks':0,'countValues':2},
 			searchBestError: true,
 		})
 

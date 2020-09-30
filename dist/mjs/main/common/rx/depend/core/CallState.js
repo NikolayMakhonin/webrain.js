@@ -1509,7 +1509,11 @@ export function reduceCallStates(deleteSize, _minCallStateLifeTime) {
 
 function garbageCollect() {
   try {
-    garbageCollectTimer = null;
+    if (garbageCollectTimer != null) {
+      clearTimeout(garbageCollectTimer);
+      garbageCollectTimer = null;
+    }
+
     const {
       bulkSize,
       minLifeTime,
