@@ -59,10 +59,10 @@ export function _initDeferredCallState<
 	deferredOptions: IDeferredOptions,
 ) {
 	const options: IDeferredCalcOptions = {
-		delayBeforeCalc: deferredOptions.delayBeforeCalc,
-		minTimeBetweenCalc: deferredOptions.minTimeBetweenCalc,
+		delayBeforeCalc       : deferredOptions.delayBeforeCalc,
+		minTimeBetweenCalc    : deferredOptions.minTimeBetweenCalc,
 		autoInvalidateInterval: deferredOptions.autoInvalidateInterval,
-		timing: null,
+		timing                : null,
 	}
 	state.deferredOptions = options
 
@@ -82,7 +82,7 @@ export function _initDeferredCallState<
 
 	const iteratorResult = {
 		value: thenable as any,
-		done: false,
+		done : false,
 	}
 
 	let stage = 2

@@ -514,14 +514,14 @@ export async function stressTest({
 
 		await _stressTest({
 			rnd,
-			iterations: _iterationsPerTest,
-			maxLevelsCount: _maxLevelsCount,
-			maxFuncsCount: _maxFuncsCount,
-			maxCallsCount: _maxCallsCount,
-			countRootCalls: _countRootCalls,
-			disableAsync: _disableAsync,
+			iterations     : _iterationsPerTest,
+			maxLevelsCount : _maxLevelsCount,
+			maxFuncsCount  : _maxFuncsCount,
+			maxCallsCount  : _maxCallsCount,
+			countRootCalls : _countRootCalls,
+			disableAsync   : _disableAsync,
 			disableDeferred: _disableDeferred,
-			disableLazy: _disableLazy,
+			disableLazy    : _disableLazy,
 		})
 
 		clearCallStates()

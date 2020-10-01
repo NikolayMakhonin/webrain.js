@@ -144,39 +144,39 @@ export function createComplexObject(options: IComplexObjectOptions = {}) {
 	circularClass.value = object
 
 	Object.assign(object, {
-		_undefined: void 0,
-		_null: null,
-		_false: false,
+		_undefined  : void 0,
+		_null       : null,
+		_false      : false,
 		_stringEmpty: '',
-		_zero: 0,
+		_zero       : 0,
 
-		true: true,
-		string: 'string',
-		date: new Date(12345),
-		number: 123.45,
-		'nan': NaN,
-		'infinity': Infinity,
+		true       : true,
+		string     : 'string',
+		date       : new Date(12345),
+		number     : 123.45,
+		'nan'      : NaN,
+		'infinity' : Infinity,
 		'-infinity': -Infinity,
 
 		StringEmpty: new String(''),
-		String: new String('String'),
-		Number: new Number(123),
-		NaN: new Number(NaN),
-		Infinity: new Number(Infinity),
+		String     : new String('String'),
+		Number     : new Number(123),
+		NaN        : new Number(NaN),
+		Infinity   : new Number(Infinity),
 		'-Infinity': new Number(-Infinity),
-		Boolean: new Boolean(true),
+		Boolean    : new Boolean(true),
 
 		circularClass: options.circular && options.circularClass && circularClass,
-		object: options.circular && object,
-		array: options.array && array,
+		object       : options.circular && object,
+		array        : options.array && array,
 
 		set: options.set && new Set() as any,
 
 		map: options.map && new Map() as any,
 
-		iterable: options.function && createIterable(array),
+		iterable    : options.function && createIterable(array),
 		// iterator: options.function && toIterableIterator(array),
-		promiseSync: options.function && { then: resolve => resolve(object) },
+		promiseSync : options.function && { then: resolve => resolve(object) },
 		promiseAsync: options.function && { then: resolve => setTimeout(() => resolve(object), 0) },
 
 		property: new Property(null, object),

@@ -20,7 +20,7 @@ const assert = new Assert(new DeepCloneEqual({
 
 	},
 	equalOptions: {
-		noCrossReferences: true,
+		noCrossReferences   : true,
 		equalInnerReferences: true,
 	},
 }))
@@ -35,7 +35,7 @@ const assertDeepEqualExt = (o1, o2) => {
 	})
 	assert.circularDeepStrictEqual(o1, o2, null, {
 		equalMapSetOrder: true,
-		equalTypes: true,
+		equalTypes      : true,
 	})
 }
 
@@ -102,12 +102,12 @@ describe('common > extensions > serialization > serializers', function() {
 
 	function testComplexObject(options: IComplexObjectOptions, prepare?: (object) => any, log?: boolean) {
 		let object = createComplexObject({
-			array: true,
+			array    : true,
 			undefined: true,
 			...options,
 		})
 		let checkObject = createComplexObject({
-			array: true,
+			array    : true,
 			...options,
 			undefined: false,
 		})
@@ -232,7 +232,7 @@ describe('common > extensions > serialization > serializers', function() {
 		assert.throws(() => serializer.serialize(obj1), Error)
 
 		serializer.typeMeta.putType(Class1, {
-			uuid: 'Class1 uuid',
+			uuid      : 'Class1 uuid',
 			serializer: TypeMetaSerializerCollection.default.getMeta(Object).serializer,
 			// valueFactory: () => new Class1(),
 		})
@@ -339,14 +339,14 @@ describe('common > extensions > serialization > serializers', function() {
 
 			sortedList: true,
 
-			set: true,
-			arraySet: true,
-			objectSet: true,
+			set          : true,
+			arraySet     : true,
+			objectSet    : true,
 			observableSet: true,
 
-			map: true,
-			arrayMap: true,
-			objectMap: true,
+			map          : true,
+			arrayMap     : true,
+			objectMap    : true,
 			observableMap: true,
 		}, null, false)
 	})

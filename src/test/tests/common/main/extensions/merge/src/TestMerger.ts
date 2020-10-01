@@ -10,7 +10,7 @@ import {IOptionsVariant, IOptionsVariants, ITestCase, TestVariants} from '../../
 
 export const deepCloneEqual = new DeepCloneEqual({
 	commonOptions: {
-		circular: true,
+		circular         : true,
 		customIsPrimitive: o => {
 			if (isPrimitiveDefault(o)) {
 				return true
@@ -35,7 +35,7 @@ export const deepCloneEqual = new DeepCloneEqual({
 	equalOptions: {
 		equalInnerReferences: true,
 		strictEqualFunctions: true,
-		customEqual: (o1, o2, equal) => {
+		customEqual         : (o1, o2, equal) => {
 			return null
 		},
 	},
@@ -252,16 +252,16 @@ export class TestMerger extends TestVariants<
 	public static totalTests: number = 0
 
 	protected baseOptionsVariants: IMergerOptionsVariants = {
-		base: [],
-		older: [],
-		newer: [],
-		preferCloneBaseParam: [null, false, true],
+		base                 : [],
+		older                : [],
+		newer                : [],
+		preferCloneBaseParam : [null, false, true],
 		preferCloneOlderParam: [null, false, true],
 		preferCloneNewerParam: [null, false, true],
-		preferCloneMeta: [null, false, true],
-		valueType: [null],
-		valueFactory: [null],
-		setFunc: [false, true],
+		preferCloneMeta      : [null, false, true],
+		valueType            : [null],
+		valueFactory         : [null],
+		setFunc              : [false, true],
 	}
 
 	protected testVariant(
@@ -343,7 +343,7 @@ export class TestMerger extends TestVariants<
 						options.preferCloneNewerParam,
 						options.valueType || options.valueFactory
 							? {
-								valueType: options.valueType,
+								valueType   : options.valueType,
 								valueFactory: options.valueFactory,
 							}
 							: void 0,

@@ -1574,11 +1574,11 @@ export function createCallStateProvider<
 	}
 
 	const state: ICallStateProvider<TThisOuter, TArgs, TResultInner> = {
-		get: _getCallState,
+		get        : _getCallState,
 		getOrCreate: _getOrCreateCallState,
 		func,
-		dependFunc: null,
-		isBindThis: false,
+		dependFunc : null,
+		isBindThis : false,
 	}
 
 	return state

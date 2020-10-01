@@ -149,10 +149,10 @@ export class ConnectorBuilder<
 			options	? {
 				...options,
 				isDepend: true,
-				isLazy: true,
+				isLazy  : true,
 			} : {
 				isDepend: true,
-				isLazy: true,
+				isLazy  : true,
 			})
 	}
 
@@ -193,10 +193,10 @@ export class ConnectorBuilder<
 			options	? {
 				...options,
 				isDepend: true,
-				isWait: true,
+				isWait  : true,
 			} : {
 				isDepend: true,
-				isWait: true,
+				isWait  : true,
 			})
 	}
 
@@ -237,12 +237,12 @@ export class ConnectorBuilder<
 			options	? {
 				...options,
 				isDepend: true,
-				isLazy: true,
-				isWait: true,
+				isLazy  : true,
+				isWait  : true,
 			} : {
 				isDepend: true,
-				isLazy: true,
-				isWait: true,
+				isLazy  : true,
+				isWait  : true,
 			})
 	}
 
@@ -300,8 +300,8 @@ export class ConnectorBuilder<
 		Object.defineProperty(object, name, {
 			configurable: true,
 			enumerable  : !hidden,
-			get: getValue,
-			set: !path.canSet ? missingSetter : function(value: TValue) {
+			get         : getValue,
+			set         : !path.canSet ? missingSetter : function(value: TValue) {
 				return path.set(this, value)
 			},
 		})

@@ -48,7 +48,7 @@ registerMerger<ObservableObject, object>(ObservableObject, {
 })
 
 registerSerializer<ObservableObject>(ObservableObject, {
-	uuid: '1380d053394748e58406c1c0e62a2be9',
+	uuid      : '1380d053394748e58406c1c0e62a2be9',
 	serializer: {
 		serialize(
 			serialize: ISerializeValue,

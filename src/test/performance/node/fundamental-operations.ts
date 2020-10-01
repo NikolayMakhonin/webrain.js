@@ -1846,14 +1846,14 @@ describe('fundamental-operations', function() {
 				if (withOptimization) {
 					Object.defineProperty(ObservableObjectTest.prototype, name, {
 						configurable: true,
-						enumerable: true,
+						enumerable  : true,
 						get() { return getValue(this) },
 						set(this: ObservableObjectTest, newValue) { setValue(this, newValue) },
 					})
 				} else {
 					Object.defineProperty(ObservableObjectTest.prototype, name, {
 						configurable: true,
-						enumerable: true,
+						enumerable  : true,
 						get(this: ObservableObjectTest) {
 							return this.__fields[name]
 						},

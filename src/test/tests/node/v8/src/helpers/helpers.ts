@@ -53,7 +53,7 @@ function _checkIsOptimized(obj: TAnyFunc|object, optimized: Set<any> = null, sca
 
 		if (hasError) {
 			return {
-				actual: actualFunc,
+				actual  : actualFunc,
 				expected: expectedFunc,
 			}
 		}
@@ -97,7 +97,7 @@ function _checkIsOptimized(obj: TAnyFunc|object, optimized: Set<any> = null, sca
 		}
 		if (hasError) {
 			return {
-				actual: actualInfo,
+				actual  : actualInfo,
 				expected: expectedInfo,
 			}
 		} else {
@@ -117,7 +117,7 @@ function _checkIsOptimized(obj: TAnyFunc|object, optimized: Set<any> = null, sca
 				}
 				if (hasError) {
 					return {
-						actual: actualArr,
+						actual  : actualArr,
 						expected: expectedArr,
 					}
 				}
@@ -138,7 +138,7 @@ function _checkIsOptimized(obj: TAnyFunc|object, optimized: Set<any> = null, sca
 				}
 				if (hasError) {
 					return {
-						actual: actualObj,
+						actual  : actualObj,
 						expected: expectedObj,
 					}
 				}

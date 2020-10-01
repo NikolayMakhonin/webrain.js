@@ -76,7 +76,7 @@ export function calcMin(
 	}
 
 	return new CalcStatReport({
-		averageValue: min,
+		averageValue     : min,
 		standardDeviation: min.map(() => 0),
 		count,
 	})

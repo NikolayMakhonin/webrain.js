@@ -34,7 +34,7 @@ describe('common > main > rx > properties > deepSubscribe', function() {
 		Object.defineProperty(InnerClass.prototype, VALUE_PROPERTY_DEFAULT, {
 			configurable: true,
 			enumerable  : true,
-			get: getValue,
+			get         : getValue,
 		})
 
 		const innerObject = new InnerClass()

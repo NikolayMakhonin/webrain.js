@@ -12,9 +12,9 @@ export const webrainOptions = {
 	callState: {
 		garbageCollect: {
 			minLifeTime: 60000,
-			bulkSize: 1000,
-			interval: 1000,
-			disabled: false,
+			bulkSize   : 1000,
+			interval   : 1000,
+			disabled   : false,
 		},
 		logCaughtErrors: false,
 	},

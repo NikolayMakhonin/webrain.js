@@ -86,11 +86,11 @@ export class TestDeepEqual extends TestVariants<
 	}
 
 	protected baseOptionsVariants: IDeepEqualOptionsVariants = {
-		circular: [false, true],
-		noCrossReferences: [false, true],
-		equalTypes: [false, true],
+		circular            : [false, true],
+		noCrossReferences   : [false, true],
+		equalTypes          : [false, true],
 		equalInnerReferences: [false, true],
-		equalMapSetOrder: [false, true],
+		equalMapSetOrder    : [false, true],
 		strictEqualFunctions: [false, true],
 	}
 
@@ -106,11 +106,11 @@ export class TestDeepEqual extends TestVariants<
 
 				const action = () => {
 					const result = deepCloneEqual.equal(options.value1, options.value2, {
-						circular: options.circular,
-						equalTypes: options.equalTypes,
-						noCrossReferences: options.noCrossReferences,
+						circular            : options.circular,
+						equalTypes          : options.equalTypes,
+						noCrossReferences   : options.noCrossReferences,
 						equalInnerReferences: options.equalInnerReferences,
-						equalMapSetOrder: options.equalMapSetOrder,
+						equalMapSetOrder    : options.equalMapSetOrder,
 						strictEqualFunctions: options.strictEqualFunctions,
 					})
 

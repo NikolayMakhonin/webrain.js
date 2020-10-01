@@ -67,9 +67,9 @@ export class TypeMetaCollection<TMeta extends ITypeMeta> implements ITypeMetaCol
 
 		Object.defineProperty(type, _typeMetaPropertyName, {
 			configurable: true,
-			enumerable: false,
-			writable: false,
-			value: meta,
+			enumerable  : false,
+			writable    : false,
+			value       : meta,
 		})
 
 		return prevMeta

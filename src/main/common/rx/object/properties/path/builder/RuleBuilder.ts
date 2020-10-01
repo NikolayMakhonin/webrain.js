@@ -457,7 +457,7 @@ export class RuleBuilder<TObject = any, TValueKeys extends string | number = nev
 			rule: optionsOnly || !this.ruleFirst
 				? null
 				: this.ruleFirst.clone(),
-			valuePropertyDefaultName: this.valuePropertyDefaultName,
+			valuePropertyDefaultName      : this.valuePropertyDefaultName,
 			autoInsertValuePropertyDefault: this.autoInsertValuePropertyDefault,
 		})
 	}

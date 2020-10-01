@@ -68,7 +68,7 @@ export class ObservableObjectBuilder<TObject extends ObservableClass> extends Ob
 		Object.defineProperty(object, name, {
 			configurable: true,
 			enumerable  : !hidden,
-			get: depend(getValue, null, null, true),
+			get         : depend(getValue, null, null, true),
 			// get: getValue,
 			set,
 		})
@@ -156,10 +156,10 @@ export class ObservableObjectBuilder<TObject extends ObservableClass> extends Ob
 		const createInstanceProperty = instance => {
 			const attributes: any = {
 				configurable: true,
-				enumerable: !hidden,
+				enumerable  : !hidden,
 				// get: depend(getValue, null, true),
-				get: getValue,
-				set: update
+				get         : getValue,
+				set         : update
 					? function(value) {
 						const newValue = update.call(this, value)
 						if (typeof newValue !== 'undefined') {
@@ -185,7 +185,7 @@ export class ObservableObjectBuilder<TObject extends ObservableClass> extends Ob
 
 			const initAttributes: any = {
 				configurable: true,
-				enumerable: !hidden,
+				enumerable  : !hidden,
 				get(this: TObject) {
 					const factoryValue = init.call(this)
 					if (typeof factoryValue !== 'undefined') {

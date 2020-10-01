@@ -86,8 +86,8 @@ export class PairingHeap<TItem> {
 		if (node == null) {
 			node = {
 				child: null,
-				next: null,
-				prev: null,
+				next : null,
+				prev : null,
 				item,
 			}
 		} else {

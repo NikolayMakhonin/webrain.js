@@ -8,7 +8,7 @@ import {describe, it} from '../../../../../../main/common/test/Mocha'
 describe('common > main > rx > observable-object-builder-prototype', function() {
 	function assertEvents(events: IPropertyChangedEvent[], check: IPropertyChangedEvent[]) {
 		events = events && events.map(o => ({
-			name: o.name,
+			name    : o.name,
 			oldValue: o.oldValue,
 			newValue: o.newValue,
 		}))

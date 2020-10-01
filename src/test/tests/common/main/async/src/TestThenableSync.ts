@@ -427,16 +427,16 @@ export class TestThenableSync extends TestVariants<
 	}
 
 	protected baseOptionsVariants: IThenableSyncOptionsVariants = {
-		value: ['v'], // , void 0, ITERABLE, ITERATOR_GENERATOR],
+		value       : ['v'], // , void 0, ITERABLE, ITERATOR_GENERATOR],
 		createValue0: Object.values(ValueType),
-		thenValue0: Object.values(ValueType),
-		thenThrow0: [false, true],
-		thenType0: Object.values(ThenType),
+		thenValue0  : Object.values(ValueType),
+		thenThrow0  : [false, true],
+		thenType0   : Object.values(ThenType),
 
 		createValue1: Object.values(ValueType),
-		thenValue1: Object.values(ValueType),
-		thenThrow1: [false, true],
-		thenType1: Object.values(ThenType),
+		thenValue1  : Object.values(ValueType),
+		thenThrow1  : [false, true],
+		thenType1   : Object.values(ThenType),
 
 		// createValue2: Object.values(ValueType),
 		// thenValue2: Object.values(ValueType),

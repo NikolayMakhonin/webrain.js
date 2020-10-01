@@ -143,13 +143,13 @@ export class TestDeferredCalc extends TestVariants<
 	public static totalTests: number = 0
 
 	protected baseOptionsVariants: IDeferredCalcOptionsVariants = {
-		calcTime: [0],
-		throttleTime: [null],
-		maxThrottleTime: [null],
-		minTimeBetweenCalc: [null],
+		calcTime              : [0],
+		throttleTime          : [null],
+		maxThrottleTime       : [null],
+		minTimeBetweenCalc    : [null],
 		autoInvalidateInterval: [null],
-		reuseInstance: [false, true],
-		autoCalc: [false],
+		reuseInstance         : [false, true],
+		autoCalc              : [false],
 	}
 
 	protected testVariant(
@@ -235,9 +235,9 @@ export class TestDeferredCalc extends TestVariants<
 						},
 						options: {
 							timing,
-							minTimeBetweenCalc: options.minTimeBetweenCalc,
-							throttleTime: options.throttleTime,
-							maxThrottleTime: options.maxThrottleTime,
+							minTimeBetweenCalc    : options.minTimeBetweenCalc,
+							throttleTime          : options.throttleTime,
+							maxThrottleTime       : options.maxThrottleTime,
 							autoInvalidateInterval: options.autoInvalidateInterval,
 						},
 					})

@@ -173,8 +173,8 @@ export class DeSerializerVisitor implements IDeSerializerVisitor {
 			const type = _typeMeta.getType(uuid)
 			// noinspection HtmlUnknownTag
 			return {
-				type: type == null ? `<Type not found: ${uuid}>` : type.name,
-				data: object.data,
+				type        : type == null ? `<Type not found: ${uuid}>` : type.name,
+				data        : object.data,
 				deserialized: deserialized == null
 					? deserialized
 					: deserialized.constructor.name,
@@ -383,7 +383,7 @@ export class TypeMetaSerializerCollection
 		meta?: ITypeMetaSerializerOverride<TObject>,
 	): ITypeMetaSerializer<TObject> {
 		return {
-			uuid: type.uuid,
+			uuid      : type.uuid,
 			// valueFactory: (...args) => new (type as new (...args: any[]) => TObject)(...args),
 			...meta,
 			serializer: {
@@ -611,7 +611,7 @@ export function deSerializeObject<T extends object>(
 
 // noinspection SpellCheckingInspection
 registerSerializer<object>(Object, {
-	uuid: '88968a59178c4e73a99f801e8cdfc37d',
+	uuid      : '88968a59178c4e73a99f801e8cdfc37d',
 	serializer: {
 		serialize(
 			serialize: ISerializeValue,
@@ -666,26 +666,26 @@ export function deSerializePrimitiveAsObject<T extends object>(
 }
 
 const primitiveAsObjectSerializer = {
-	serialize: serializePrimitiveAsObject,
+	serialize  : serializePrimitiveAsObject,
 	deSerialize: deSerializePrimitiveAsObject,
 }
 
 // @ts-ignore
 // noinspection SpellCheckingInspection
 registerSerializer<string>(String, {
-	uuid: '96104fd7d6f84a32b8f2feaa4f3666d8',
+	uuid      : '96104fd7d6f84a32b8f2feaa4f3666d8',
 	serializer: primitiveAsObjectSerializer,
 })
 
 // @ts-ignore
 registerSerializer<number>(Number, {
-	uuid: 'dea0de4018014025b6a4b6f6c7a4fa11',
+	uuid      : 'dea0de4018014025b6a4b6f6c7a4fa11',
 	serializer: primitiveAsObjectSerializer,
 })
 
 // @ts-ignore
 registerSerializer<boolean>(Boolean, {
-	uuid: 'e8d1ac82a0fa4431a23e3d8f954f736f',
+	uuid      : 'e8d1ac82a0fa4431a23e3d8f954f736f',
 	serializer: primitiveAsObjectSerializer,
 })
 
@@ -694,7 +694,7 @@ registerSerializer<boolean>(Boolean, {
 // region Array
 
 registerSerializer<any[]>(Array, {
-	uuid: 'f8c84ed084634f45b14a228967dfb0de',
+	uuid      : 'f8c84ed084634f45b14a228967dfb0de',
 	serializer: {
 		serialize(
 			serialize: ISerializeValue,
@@ -727,7 +727,7 @@ registerSerializer<any[]>(Array, {
 // region Set
 
 registerSerializer<Set<any>>(Set, {
-	uuid: '17b11d99ce034349969e4f9291d0778c',
+	uuid      : '17b11d99ce034349969e4f9291d0778c',
 	serializer: {
 		serialize(
 			serialize: ISerializeValue,
@@ -755,7 +755,7 @@ registerSerializer<Set<any>>(Set, {
 // region Map
 
 registerSerializer<Map<any, any>>(Map, {
-	uuid: 'fdf40f2159b74cb2804f3d18ebb19b57',
+	uuid      : 'fdf40f2159b74cb2804f3d18ebb19b57',
 	serializer: {
 		serialize(
 			serialize: ISerializeValue,
@@ -793,7 +793,7 @@ registerSerializer<Map<any, any>>(Map, {
 // region Date
 
 registerSerializer<Date>(Date, {
-	uuid: '7a6c01dba6b84822a9a586e4d3a4460b',
+	uuid      : '7a6c01dba6b84822a9a586e4d3a4460b',
 	serializer: {
 		serialize(
 			serialize: ISerializeValue,

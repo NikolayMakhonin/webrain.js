@@ -75,9 +75,9 @@ export class PropertyChangedObject implements IPropertyChangedObject {
 	constructor() {
 		Object.defineProperty(this, '__meta', {
 			configurable: false,
-			enumerable: false,
-			writable: false,
-			value: {},
+			enumerable  : false,
+			writable    : false,
+			value       : {},
 		})
 	}
 

@@ -78,7 +78,7 @@ function callIdToResult(callId: string) {
 function getDeferredOptions(async: boolean): IDeferredOptions {
 	return async
 		? {
-			delayBeforeCalc: 1,
+			delayBeforeCalc   : 1,
 			minTimeBetweenCalc: 10,
 		}
 		: {}

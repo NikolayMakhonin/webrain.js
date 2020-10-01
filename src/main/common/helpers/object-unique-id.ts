@@ -32,10 +32,10 @@ export function getObjectUniqueId(object: object): number {
 
 	const uniqueId = getNextObjectId()
 	Object.defineProperty(object, UNIQUE_ID_PROPERTY_NAME, {
-		enumerable: false,
+		enumerable  : false,
 		configurable: false,
-		writable: false,
-		value: uniqueId,
+		writable    : false,
+		value       : uniqueId,
 	})
 	return uniqueId
 }

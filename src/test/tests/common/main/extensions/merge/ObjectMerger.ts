@@ -126,14 +126,14 @@ describe('common > extensions > merge > ObjectMerger', function() {
 
 	describe('combinations', function() {
 		const options = {
-			preferCloneBaseParam: [null, false, true],
+			preferCloneBaseParam : [null, false, true],
 			preferCloneOlderParam: [null, false, true],
 			preferCloneNewerParam: [null, false, true],
-			preferCloneMeta: [null, false, true],
-			valueType: [null],
-			valueFactory: [null],
-			setFunc: [false, true],
-			exclude: o => {
+			preferCloneMeta      : [null, false, true],
+			valueType            : [null],
+			valueFactory         : [null],
+			setFunc              : [false, true],
+			exclude              : o => {
 				// if (o.older.constructor === Object && o.newer.constructor === Object) {
 				// 	return true
 				// }
@@ -171,9 +171,9 @@ describe('common > extensions > merge > ObjectMerger', function() {
 				return false
 			},
 			expected: {
-				error: null,
+				error      : null,
 				returnValue: o => mustBeSet(o) || mustBeFilled(o),
-				setValue: o => {
+				setValue   : o => {
 					if (!mustBeSet(o)) {
 						return NONE
 					}
@@ -283,7 +283,7 @@ describe('common > extensions > merge > ObjectMerger', function() {
 						? NEWER
 						: OLDER
 				},
-				base: BASE,
+				base : BASE,
 				older: OLDER,
 				newer: NEWER,
 			},
@@ -292,20 +292,20 @@ describe('common > extensions > merge > ObjectMerger', function() {
 
 		it('complex objects', function() {
 			const complexObjectOptions: IComplexObjectOptions = {
-				undefined: true,
-				function: true,
-				array: true,
-				circular: true,
+				undefined    : true,
+				function     : true,
+				array        : true,
+				circular     : true,
 				circularClass: true,
 
-				set: true,
-				arraySet: true,
-				objectSet: true,
+				set          : true,
+				arraySet     : true,
+				objectSet    : true,
 				observableSet: true,
 
-				map: true,
-				arrayMap: true,
-				objectMap: true,
+				map          : true,
+				arrayMap     : true,
+				objectMap    : true,
 				observableMap: true,
 
 				sortedList: true,
@@ -341,7 +341,7 @@ describe('common > extensions > merge > ObjectMerger', function() {
 
 			testMerger({
 				...options,
-				base: createValues(),
+				base : createValues(),
 				older: createValues(),
 				newer: createValues(),
 			})
@@ -355,7 +355,7 @@ describe('common > extensions > merge > ObjectMerger', function() {
 
 			testMerger({
 				...options,
-				base: createValues(),
+				base : createValues(),
 				older: createValues(),
 				newer: createValues(),
 			})
@@ -369,7 +369,7 @@ describe('common > extensions > merge > ObjectMerger', function() {
 
 			testMerger({
 				...options,
-				base: createValues(),
+				base : createValues(),
 				older: createValues(),
 				newer: createValues(),
 			})
@@ -383,7 +383,7 @@ describe('common > extensions > merge > ObjectMerger', function() {
 
 			testMerger({
 				...options,
-				base: createValues(),
+				base : createValues(),
 				older: createValues(),
 				newer: createValues(),
 			})
@@ -397,7 +397,7 @@ describe('common > extensions > merge > ObjectMerger', function() {
 
 			testMerger({
 				...options,
-				base: createValues(),
+				base : createValues(),
 				older: createValues(),
 				newer: createValues(),
 			})
@@ -413,7 +413,7 @@ describe('common > extensions > merge > ObjectMerger', function() {
 
 			testMerger({
 				...options,
-				base: createValues(),
+				base : createValues(),
 				older: createValues(),
 				newer: createValues(),
 			})
@@ -432,7 +432,7 @@ describe('common > extensions > merge > ObjectMerger', function() {
 
 			testMerger({
 				...options,
-				base: createValues(),
+				base : createValues(),
 				older: createValues(),
 				newer: createValues(),
 			})
@@ -459,23 +459,23 @@ describe('common > extensions > merge > ObjectMerger', function() {
 
 		it('custom class', function() {
 			testMerger({
-				base: [new Class({ a: {a: 1, b: 2}, b: 3 })],
-				older: [new Class({ a: {a: 4, b: 5}, c: 6 }), { a: {a: 4, b: 5}, c: 6 }],
-				newer: [new Class({ a: {a: 7, b: 2}, d: 9 }), { a: {a: 7, b: 2}, d: 9 }],
-				preferCloneBaseParam: [null],
+				base                 : [new Class({ a: {a: 1, b: 2}, b: 3 })],
+				older                : [new Class({ a: {a: 4, b: 5}, c: 6 }), { a: {a: 4, b: 5}, c: 6 }],
+				newer                : [new Class({ a: {a: 7, b: 2}, d: 9 }), { a: {a: 7, b: 2}, d: 9 }],
+				preferCloneBaseParam : [null],
 				preferCloneOlderParam: [null],
 				preferCloneNewerParam: [null],
-				preferCloneMeta: [null],
-				valueType: [null],
-				valueFactory: [null],
-				setFunc: [true],
-				expected: {
-					error: null,
+				preferCloneMeta      : [null],
+				valueType            : [null],
+				valueFactory         : [null],
+				setFunc              : [true],
+				expected             : {
+					error      : null,
 					returnValue: true,
-					setValue: NONE,
-					base: new Class({ a: {a: 7, b: 5}, c: 6, d: 9 }),
-					older: OLDER,
-					newer: NEWER,
+					setValue   : NONE,
+					base       : new Class({ a: {a: 7, b: 5}, c: 6, d: 9 }),
+					older      : OLDER,
+					newer      : NEWER,
 				},
 				actions: null,
 			})
@@ -483,23 +483,23 @@ describe('common > extensions > merge > ObjectMerger', function() {
 
 		it('strings', function() {
 			testMerger({
-				base: ['', '1', '2', new String('1')],
-				older: ['2', new String('2')],
-				newer: ['3', new String('3')],
-				preferCloneBaseParam: [null],
+				base                 : ['', '1', '2', new String('1')],
+				older                : ['2', new String('2')],
+				newer                : ['3', new String('3')],
+				preferCloneBaseParam : [null],
 				preferCloneOlderParam: [null],
 				preferCloneNewerParam: [null],
-				preferCloneMeta: [null],
-				valueType: [null],
-				valueFactory: [null],
-				setFunc: [true],
-				expected: {
-					error: null,
+				preferCloneMeta      : [null],
+				valueType            : [null],
+				valueFactory         : [null],
+				setFunc              : [true],
+				expected             : {
+					error      : null,
 					returnValue: true,
-					setValue: '3',
-					base: BASE,
-					older: OLDER,
-					newer: NEWER,
+					setValue   : '3',
+					base       : BASE,
+					older      : OLDER,
+					newer      : NEWER,
 				},
 				actions: null,
 			})
@@ -507,45 +507,45 @@ describe('common > extensions > merge > ObjectMerger', function() {
 
 		it('number / boolean', function() {
 			testMerger({
-				base: [new Number(1)],
-				older: [2, new Number(2)],
-				newer: [3, new Number(3)],
-				preferCloneBaseParam: [null],
+				base                 : [new Number(1)],
+				older                : [2, new Number(2)],
+				newer                : [3, new Number(3)],
+				preferCloneBaseParam : [null],
 				preferCloneOlderParam: [null],
 				preferCloneNewerParam: [null],
-				preferCloneMeta: [null],
-				valueType: [null],
-				valueFactory: [null],
-				setFunc: [true],
-				expected: {
-					error: null,
+				preferCloneMeta      : [null],
+				valueType            : [null],
+				valueFactory         : [null],
+				setFunc              : [true],
+				expected             : {
+					error      : null,
 					returnValue: true,
-					setValue: 3,
-					base: BASE,
-					older: OLDER,
-					newer: NEWER,
+					setValue   : 3,
+					base       : BASE,
+					older      : OLDER,
+					newer      : NEWER,
 				},
 				actions: null,
 			})
 
 			testMerger({
-				base: [new Boolean(false)],
-				older: [true, false, new Boolean(true), new Boolean(false)],
-				newer: [true, new Boolean(true)],
-				preferCloneBaseParam: [null],
+				base                 : [new Boolean(false)],
+				older                : [true, false, new Boolean(true), new Boolean(false)],
+				newer                : [true, new Boolean(true)],
+				preferCloneBaseParam : [null],
 				preferCloneOlderParam: [null],
 				preferCloneNewerParam: [null],
-				preferCloneMeta: [null],
-				valueType: [null],
-				valueFactory: [null],
-				setFunc: [true],
-				expected: {
-					error: null,
+				preferCloneMeta      : [null],
+				valueType            : [null],
+				valueFactory         : [null],
+				setFunc              : [true],
+				expected             : {
+					error      : null,
 					returnValue: true,
-					setValue: true,
-					base: BASE,
-					older: OLDER,
-					newer: NEWER,
+					setValue   : true,
+					base       : BASE,
+					older      : OLDER,
+					newer      : NEWER,
 				},
 				actions: null,
 			})
@@ -553,23 +553,23 @@ describe('common > extensions > merge > ObjectMerger', function() {
 
 		it('merge 3 objects', function() {
 			testMerger({
-				base: [{ a: {a: 1, b: 2}, b: 3 }],
-				older: [{ a: {a: 4, b: 5}, c: 6 }],
-				newer: [{ a: {a: 7, b: 2}, d: 9 }],
-				preferCloneBaseParam: [null],
+				base                 : [{ a: {a: 1, b: 2}, b: 3 }],
+				older                : [{ a: {a: 4, b: 5}, c: 6 }],
+				newer                : [{ a: {a: 7, b: 2}, d: 9 }],
+				preferCloneBaseParam : [null],
 				preferCloneOlderParam: [null],
 				preferCloneNewerParam: [null],
-				preferCloneMeta: [null],
-				valueType: [null],
-				valueFactory: [null],
-				setFunc: [false, true],
-				expected: {
-					error: null,
+				preferCloneMeta      : [null],
+				valueType            : [null],
+				valueFactory         : [null],
+				setFunc              : [false, true],
+				expected             : {
+					error      : null,
 					returnValue: true,
-					setValue: NONE,
-					base: { a: {a: 7, b: 5}, c: 6, d: 9 },
-					older: OLDER,
-					newer: NEWER,
+					setValue   : NONE,
+					base       : { a: {a: 7, b: 5}, c: 6, d: 9 },
+					older      : OLDER,
+					newer      : NEWER,
 				},
 				actions: null,
 			})
@@ -577,23 +577,23 @@ describe('common > extensions > merge > ObjectMerger', function() {
 
 		it('array as primitive', function() {
 		testMerger({
-			base: [[], [1], [2]],
-			older: [[], [1], [2]],
-			newer: [[3]],
-			preferCloneBaseParam: [null],
+			base                 : [[], [1], [2]],
+			older                : [[], [1], [2]],
+			newer                : [[3]],
+			preferCloneBaseParam : [null],
 			preferCloneOlderParam: [null],
 			preferCloneNewerParam: [null],
-			preferCloneMeta: [null],
-			valueType: [null],
-			valueFactory: [null],
-			setFunc: [true],
-			expected: {
-				error: null,
+			preferCloneMeta      : [null],
+			valueType            : [null],
+			valueFactory         : [null],
+			setFunc              : [true],
+			expected             : {
+				error      : null,
 				returnValue: true,
-				setValue: NONE,
-				base: [3],
-				older: OLDER,
-				newer: NEWER,
+				setValue   : NONE,
+				base       : [3],
+				older      : OLDER,
+				newer      : NEWER,
 			},
 			actions: null,
 		})
@@ -601,53 +601,53 @@ describe('common > extensions > merge > ObjectMerger', function() {
 
 		it('value type', function() {
 			testMerger({
-				base: [{ a: {a: 1, b: 2}, b: 3 }],
-				older: [{ a: {a: 4, b: 5}, c: 6 }],
-				newer: [{ a: {a: 7, b: 2}, d: 9 }],
-				preferCloneBaseParam: [null],
+				base                 : [{ a: {a: 1, b: 2}, b: 3 }],
+				older                : [{ a: {a: 4, b: 5}, c: 6 }],
+				newer                : [{ a: {a: 7, b: 2}, d: 9 }],
+				preferCloneBaseParam : [null],
 				preferCloneOlderParam: [null],
 				preferCloneNewerParam: [null],
-				preferCloneMeta: [null],
-				valueType: [Class],
-				valueFactory: [null],
-				setFunc: [true],
-				expected: {
-					error: null,
+				preferCloneMeta      : [null],
+				valueType            : [Class],
+				valueFactory         : [null],
+				setFunc              : [true],
+				expected             : {
+					error      : null,
 					returnValue: true,
-					setValue: new Class({ a: {a: 7, b: 5}, c: 6, d: 9 }),
-					base: BASE,
-					older: OLDER,
-					newer: NEWER,
+					setValue   : new Class({ a: {a: 7, b: 5}, c: 6, d: 9 }),
+					base       : BASE,
+					older      : OLDER,
+					newer      : NEWER,
 				},
 				actions: null,
 			})
 
 			testMerger({
-				base: [null, void 0, 0, 1, false, true, '', '1'],
-				older: [{ a: {a: 4, b: 5}, c: 6 }],
-				newer: [{ a: {a: 7, b: 2}, d: 9 }],
-				preferCloneBaseParam: [null],
+				base                 : [null, void 0, 0, 1, false, true, '', '1'],
+				older                : [{ a: {a: 4, b: 5}, c: 6 }],
+				newer                : [{ a: {a: 7, b: 2}, d: 9 }],
+				preferCloneBaseParam : [null],
 				preferCloneOlderParam: [null],
 				preferCloneNewerParam: [null],
-				preferCloneMeta: [null],
-				valueType: [Class],
-				valueFactory: [null, () => {
+				preferCloneMeta      : [null],
+				valueType            : [Class],
+				valueFactory         : [null, () => {
 					const instance = new Class(null);
 					(instance as any).custom = true
 					return instance
 				}],
-				setFunc: [true],
+				setFunc : [true],
 				expected: {
-					error: null,
+					error      : null,
 					returnValue: true,
-					setValue: o => {
+					setValue   : o => {
 						const value = new Class({ a: {a: 7, b: 2}, d: 9 })
 						if (o.valueFactory) {
 							(value as any).custom = true
 						}
 						return value
 					},
-					base: BASE,
+					base : BASE,
 					older: OLDER,
 					newer: NEWER,
 				},
@@ -664,15 +664,15 @@ describe('common > extensions > merge > ObjectMerger', function() {
 		}
 
 		const options = {
-			preferCloneBaseParam: [null],
+			preferCloneBaseParam : [null],
 			preferCloneOlderParam: [null],
 			preferCloneNewerParam: [null],
-			preferCloneMeta: [null],
-			valueType: [null],
-			valueFactory: [null],
-			setFunc: [true],
-			expected: {
-				error: null,
+			preferCloneMeta      : [null],
+			valueType            : [null],
+			valueFactory         : [null],
+			setFunc              : [true],
+			expected             : {
+				error      : null,
 				returnValue: o => {
 					return !deepCloneEqual.equal(o.base, o.newer) || !deepCloneEqual.equal(o.base, o.older)
 				},
@@ -731,12 +731,12 @@ describe('common > extensions > merge > ObjectMerger', function() {
 
 			const obj: any = {
 				undefined: void 0,
-				null: null,
-				String: new String('String'),
-				Number: new Number(1),
-				Boolean: new Boolean(true),
-				error: new Error('test error'),
-				func: () => 'func',
+				null     : null,
+				String   : new String('String'),
+				Number   : new Number(1),
+				Boolean  : new Boolean(true),
+				error    : new Error('test error'),
+				func     : () => 'func',
 			}
 			obj.circular = obj
 			obj.class = new TestClass(obj)
@@ -769,7 +769,7 @@ describe('common > extensions > merge > ObjectMerger', function() {
 		it('simple circular', function() {
 			testMerger({
 				...options,
-				base: [createValue(1, true)],
+				base : [createValue(1, true)],
 				older: [createValue(1, true)],
 				newer: [createValue(1, true)],
 			})
@@ -778,7 +778,7 @@ describe('common > extensions > merge > ObjectMerger', function() {
 		it('not circular', function() {
 			testMerger({
 				...options,
-				base: [createValue(1, false), createValue(2, false), createValue(3, false), null],
+				base : [createValue(1, false), createValue(2, false), createValue(3, false), null],
 				older: [createValue(1, false), createValue(2, false), createValue(3, false), null],
 				newer: [createValue(1, false), createValue(2, false), createValue(3, false), null],
 			})
@@ -790,23 +790,23 @@ describe('common > extensions > merge > ObjectMerger', function() {
 			const newer = { a: {a: 1, b: 2}, b: 3 }
 
 			testMerger({
-				base: [base, OLDER, { a: older.a, b: 3 }],
-				older: [older, { a: newer.a, c: 6 }],
-				newer: [newer],
-				preferCloneBaseParam: [null],
+				base                 : [base, OLDER, { a: older.a, b: 3 }],
+				older                : [older, { a: newer.a, c: 6 }],
+				newer                : [newer],
+				preferCloneBaseParam : [null],
 				preferCloneOlderParam: [null],
 				preferCloneNewerParam: [null],
-				preferCloneMeta: [null],
-				valueType: [Property],
-				valueFactory: [null],
-				setFunc: [true],
-				expected: {
-					error: null,
+				preferCloneMeta      : [null],
+				valueType            : [Property],
+				valueFactory         : [null],
+				setFunc              : [true],
+				expected             : {
+					error      : null,
 					returnValue: true,
-					setValue: new Property(null, { a: {a: 7, b: 5}, c: 6, d: 9 }),
-					base: BASE,
-					older: OLDER,
-					newer: NEWER,
+					setValue   : new Property(null, { a: {a: 7, b: 5}, c: 6, d: 9 }),
+					base       : BASE,
+					older      : OLDER,
+					newer      : NEWER,
 				},
 				actions: null,
 			})
@@ -846,20 +846,20 @@ describe('common > extensions > merge > ObjectMerger', function() {
 						newer,
 						createIterable(newer),
 					],
-					preferCloneBaseParam: [null],
+					preferCloneBaseParam : [null],
 					preferCloneOlderParam: [null],
 					preferCloneNewerParam: [null],
-					preferCloneMeta: [true],
-					valueType: [null],
-					valueFactory: [null],
-					setFunc: [true],
-					expected: {
-						error: null,
+					preferCloneMeta      : [true],
+					valueType            : [null],
+					valueFactory         : [null],
+					setFunc              : [true],
+					expected             : {
+						error      : null,
 						returnValue: true,
-						setValue: fillMap(new Map(), result),
-						base: BASE,
-						older: OLDER,
-						newer: NEWER,
+						setValue   : fillMap(new Map(), result),
+						base       : BASE,
+						older      : OLDER,
+						newer      : NEWER,
 					},
 					actions: null,
 				})
@@ -893,20 +893,20 @@ describe('common > extensions > merge > ObjectMerger', function() {
 						newer,
 						createIterable(newer),
 					],
-					preferCloneBaseParam: [null],
+					preferCloneBaseParam : [null],
 					preferCloneOlderParam: [null],
 					preferCloneNewerParam: [null],
-					preferCloneMeta: [true],
-					valueType: [null],
-					valueFactory: [null],
-					setFunc: [true],
-					expected: {
-						error: null,
+					preferCloneMeta      : [true],
+					valueType            : [null],
+					valueFactory         : [null],
+					setFunc              : [true],
+					expected             : {
+						error      : null,
 						returnValue: true,
-						setValue: fillSet(new Set(), result),
-						base: BASE,
-						older: OLDER,
-						newer: NEWER,
+						setValue   : fillSet(new Set(), result),
+						base       : BASE,
+						older      : OLDER,
+						newer      : NEWER,
 					},
 					actions: null,
 				})

@@ -18,12 +18,12 @@ describe('common > main > rx > deferred-calc > DeferredCalc', function() {
 
 	it('init', function() {
 		testDeferredCalc({
-			calcTime: [0, 1, 10],
-			throttleTime: [null, 0],
-			maxThrottleTime: [null, 0, 1, 10],
-			minTimeBetweenCalc: [null, 0, 1, 10],
+			calcTime              : [0, 1, 10],
+			throttleTime          : [null, 0],
+			maxThrottleTime       : [null, 0, 1, 10],
+			minTimeBetweenCalc    : [null, 0, 1, 10],
 			autoInvalidateInterval: [null, 0, 1, 10],
-			expected: {
+			expected              : {
 				events: [
 					{
 						time: 0,
@@ -50,12 +50,12 @@ describe('common > main > rx > deferred-calc > DeferredCalc', function() {
 
 	it('calc only after invalidate', function() {
 		testDeferredCalc({
-			calcTime: [5],
-			throttleTime: [null, 0],
-			maxThrottleTime: [null, 0, 10],
-			minTimeBetweenCalc: [null, 0],
+			calcTime              : [5],
+			throttleTime          : [null, 0],
+			maxThrottleTime       : [null, 0, 10],
+			minTimeBetweenCalc    : [null, 0],
 			autoInvalidateInterval: [null],
-			expected: {
+			expected              : {
 				events: [
 					{
 						time: 0,
@@ -148,12 +148,12 @@ describe('common > main > rx > deferred-calc > DeferredCalc', function() {
 
 	it('throttleTime', function() {
 		testDeferredCalc({
-			calcTime: [0],
-			throttleTime: [null, 0],
-			maxThrottleTime: [null, 0, 1, 10],
-			minTimeBetweenCalc: [null, 0, 1, 10],
+			calcTime              : [0],
+			throttleTime          : [null, 0],
+			maxThrottleTime       : [null, 0, 1, 10],
+			minTimeBetweenCalc    : [null, 0, 1, 10],
 			autoInvalidateInterval: [null],
-			expected: {
+			expected              : {
 				events: [
 					{
 						time: 0,
@@ -181,12 +181,12 @@ describe('common > main > rx > deferred-calc > DeferredCalc', function() {
 		})
 
 		testDeferredCalc({
-			calcTime: [5],
-			throttleTime: [10],
-			maxThrottleTime: [null, 100],
-			minTimeBetweenCalc: [null, 0, 1, 5],
+			calcTime              : [5],
+			throttleTime          : [10],
+			maxThrottleTime       : [null, 100],
+			minTimeBetweenCalc    : [null, 0, 1, 5],
 			autoInvalidateInterval: [null],
-			expected: {
+			expected              : {
 				events: [
 					{
 						time: 28,
@@ -262,12 +262,12 @@ describe('common > main > rx > deferred-calc > DeferredCalc', function() {
 
 	it('maxThrottleTime', function() {
 		testDeferredCalc({
-			calcTime: [0],
-			throttleTime: [10],
-			maxThrottleTime: [0],
-			minTimeBetweenCalc: [null, 0, 1, 10],
+			calcTime              : [0],
+			throttleTime          : [10],
+			maxThrottleTime       : [0],
+			minTimeBetweenCalc    : [null, 0, 1, 10],
 			autoInvalidateInterval: [null],
-			expected: {
+			expected              : {
 				events: [
 					{
 						time: 0,
@@ -295,12 +295,12 @@ describe('common > main > rx > deferred-calc > DeferredCalc', function() {
 		})
 
 		testDeferredCalc({
-			calcTime: [5],
-			throttleTime: [5],
-			maxThrottleTime: [10],
-			minTimeBetweenCalc: [null, 0, 1, 5],
+			calcTime              : [5],
+			throttleTime          : [5],
+			maxThrottleTime       : [10],
+			minTimeBetweenCalc    : [null, 0, 1, 5],
 			autoInvalidateInterval: [null],
-			expected: {
+			expected              : {
 				events: [
 					{
 						time: 10,
@@ -371,12 +371,12 @@ describe('common > main > rx > deferred-calc > DeferredCalc', function() {
 
 	it('minTimeBetweenCalc', function() {
 		testDeferredCalc({
-			calcTime: [0],
-			throttleTime: [0],
-			maxThrottleTime: [0],
-			minTimeBetweenCalc: [5],
+			calcTime              : [0],
+			throttleTime          : [0],
+			maxThrottleTime       : [0],
+			minTimeBetweenCalc    : [5],
 			autoInvalidateInterval: [null],
-			expected: {
+			expected              : {
 				events: [
 					{
 						time: 0,
@@ -430,13 +430,13 @@ describe('common > main > rx > deferred-calc > DeferredCalc', function() {
 
 	it('autoInvalidateInterval', function() {
 		testDeferredCalc({
-			calcTime: [5],
-			throttleTime: [10],
-			maxThrottleTime: [20],
-			minTimeBetweenCalc: [40],
+			calcTime              : [5],
+			throttleTime          : [10],
+			maxThrottleTime       : [20],
+			minTimeBetweenCalc    : [40],
 			autoInvalidateInterval: [100],
-			autoCalc: [true],
-			expected: {
+			autoCalc              : [true],
+			expected              : {
 				events: [
 					{
 						time: 10,
@@ -528,13 +528,13 @@ describe('common > main > rx > deferred-calc > DeferredCalc', function() {
 		})
 
 		testDeferredCalc({
-			calcTime: [5],
-			throttleTime: [0],
-			maxThrottleTime: [0],
-			minTimeBetweenCalc: [20],
+			calcTime              : [5],
+			throttleTime          : [0],
+			maxThrottleTime       : [0],
+			minTimeBetweenCalc    : [20],
 			autoInvalidateInterval: [15],
-			autoCalc: [true],
-			expected: {
+			autoCalc              : [true],
+			expected              : {
 				events: [
 					{
 						time: 0,
@@ -612,13 +612,13 @@ describe('common > main > rx > deferred-calc > DeferredCalc', function() {
 		})
 
 		testDeferredCalc({
-			calcTime: [10],
-			throttleTime: [0],
-			maxThrottleTime: [0],
-			minTimeBetweenCalc: [20],
+			calcTime              : [10],
+			throttleTime          : [0],
+			maxThrottleTime       : [0],
+			minTimeBetweenCalc    : [20],
 			autoInvalidateInterval: [5],
-			autoCalc: [true],
-			expected: {
+			autoCalc              : [true],
+			expected              : {
 				events: [
 					{
 						time: 0,
@@ -711,9 +711,9 @@ describe('common > main > rx > deferred-calc > DeferredCalc', function() {
 			},
 			options: {
 				autoInvalidateInterval: 9 * timeCoef,
-				throttleTime: 10 * timeCoef,
-				maxThrottleTime: 100 * timeCoef,
-				minTimeBetweenCalc: 5 * timeCoef,
+				throttleTime          : 10 * timeCoef,
+				maxThrottleTime       : 100 * timeCoef,
+				minTimeBetweenCalc    : 5 * timeCoef,
 			},
 		})
 
@@ -761,10 +761,10 @@ describe('common > main > rx > deferred-calc > DeferredCalc', function() {
 			calcCompletedCallback() {},
 			options: {
 				autoInvalidateInterval: 1,
-				throttleTime: 2,
-				maxThrottleTime: 3,
-				minTimeBetweenCalc: 4,
-				timing: new TestTimingForDeferredCalc(),
+				throttleTime          : 2,
+				maxThrottleTime       : 3,
+				minTimeBetweenCalc    : 4,
+				timing                : new TestTimingForDeferredCalc(),
 			},
 		})
 

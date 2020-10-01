@@ -5,7 +5,7 @@ export interface ITiming {
 }
 
 export const timingDefault: ITiming = {
-	now: Date.now,
+	now       : Date.now,
 	setTimeout: typeof window === 'undefined'
 		? setTimeout
 		: setTimeout.bind(window),

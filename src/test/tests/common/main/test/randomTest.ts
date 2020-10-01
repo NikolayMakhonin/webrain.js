@@ -88,7 +88,7 @@ describe('common > main > test > randomTest', function() {
 	const testIteration = testIterationBuilder({
 		action: {
 			weight: 1,
-			func: action,
+			func  : action,
 		},
 	})
 
@@ -176,8 +176,8 @@ describe('common > main > test > randomTest', function() {
 			stopPredicate: testRunnerMetrics => {
 				return testRunnerMetrics.iterationNumber >= 50
 			},
-			customSeed: null,
-			metricsMin: null,
+			customSeed     : null,
+			metricsMin     : null,
 			searchBestError: true,
 		})
 	})

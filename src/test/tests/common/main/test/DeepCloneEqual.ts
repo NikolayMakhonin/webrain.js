@@ -18,28 +18,28 @@ describe('common > test > DeepCloneEqual', function() {
 
 	const objectOptions: IComplexObjectOptions = {
 		undefined: true,
-		array: true,
+		array    : true,
 
 		function: true,
 
-		map: true,
-		arrayMap: true,
-		objectMap: true,
+		map          : true,
+		arrayMap     : true,
+		objectMap    : true,
 		observableMap: true,
 
-		set: true,
-		arraySet: true,
-		objectSet: true,
+		set          : true,
+		arraySet     : true,
+		objectSet    : true,
 		observableSet: true,
 
-		sortedList: true,
+		sortedList   : true,
 		circularClass: true,
 	}
 
 	const testDeepEqual = (actual: any[], expected: any[], options: IDeepEqualOptions) => {
 		_testDeepEqual({
-			value1: actual,
-			value2: expected,
+			value1 : actual,
+			value2 : expected,
 			// equalInnerReferences: [false],
 			// equalMapSetOrder: [options.equalMapSetOrder],
 			exclude: o => {
@@ -79,17 +79,17 @@ describe('common > test > DeepCloneEqual', function() {
 	const notCircularTest = (equalMapSetOrder: boolean) => {
 		const obj = createComplexObject({
 			...objectOptions,
-			arraySet: objectOptions.arraySet && !equalMapSetOrder,
+			arraySet : objectOptions.arraySet && !equalMapSetOrder,
 			objectSet: objectOptions.objectSet && !equalMapSetOrder,
-			arrayMap: objectOptions.arrayMap && !equalMapSetOrder,
+			arrayMap : objectOptions.arrayMap && !equalMapSetOrder,
 			objectMap: objectOptions.objectMap && !equalMapSetOrder,
 		})
 
 		let clone = deepCloneWrapper(obj)
 		testDeepEqual([clone], [obj], {
-			circular: false,
+			circular         : false,
 			equalMapSetOrder,
-			equalTypes: true,
+			equalTypes       : true,
 			noCrossReferences: true,
 			// equalInnerReferences: true,
 		})
@@ -98,9 +98,9 @@ describe('common > test > DeepCloneEqual', function() {
 			circular: false,
 		})
 		testDeepEqual([clone], [obj], {
-			circular: true,
+			circular         : true,
 			equalMapSetOrder,
-			equalTypes: true,
+			equalTypes       : true,
 			noCrossReferences: true,
 			// equalInnerReferences: true,
 		})
@@ -109,10 +109,10 @@ describe('common > test > DeepCloneEqual', function() {
 	const circularTest = (equalMapSetOrder: boolean) => {
 		const obj = createComplexObject({
 			...objectOptions,
-			circular: true,
-			arraySet: objectOptions.arraySet && !equalMapSetOrder,
+			circular : true,
+			arraySet : objectOptions.arraySet && !equalMapSetOrder,
 			objectSet: objectOptions.objectSet && !equalMapSetOrder,
-			arrayMap: objectOptions.arrayMap && !equalMapSetOrder,
+			arrayMap : objectOptions.arrayMap && !equalMapSetOrder,
 			objectMap: objectOptions.objectMap && !equalMapSetOrder,
 		})
 
@@ -147,28 +147,28 @@ describe('common > test > DeepCloneEqual', function() {
 		}
 
 		testDeepEqual([clone], [obj], {
-			circular: true,
+			circular            : true,
 			equalMapSetOrder,
-			equalTypes: true,
-			noCrossReferences: true,
+			equalTypes          : true,
+			noCrossReferences   : true,
 			equalInnerReferences: true,
 		})
 
 		clone.cross = {}
 		obj.cross = clone.cross
 		testDeepEqual([clone], [obj], {
-			circular: true,
+			circular            : true,
 			equalMapSetOrder,
-			equalTypes: true,
+			equalTypes          : true,
 			equalInnerReferences: true,
 		})
 
 		obj.cross = {}
 		testDeepEqual([clone], [obj], {
-			circular: true,
+			circular            : true,
 			equalMapSetOrder,
-			equalTypes: true,
-			noCrossReferences: true,
+			equalTypes          : true,
+			noCrossReferences   : true,
 			equalInnerReferences: true,
 		})
 
@@ -176,18 +176,18 @@ describe('common > test > DeepCloneEqual', function() {
 			clone.array.push(clone)
 			obj.array.push(clone)
 			testDeepEqual([clone], [obj], {
-				circular: true,
+				circular            : true,
 				equalMapSetOrder,
-				equalTypes: true,
+				equalTypes          : true,
 				equalInnerReferences: true,
 			})
 
 			obj.array[obj.array.length - 1] = obj
 			testDeepEqual([clone], [obj], {
-				circular: true,
+				circular            : true,
 				equalMapSetOrder,
-				equalTypes: true,
-				noCrossReferences: true,
+				equalTypes          : true,
+				noCrossReferences   : true,
 				equalInnerReferences: true,
 			})
 
@@ -196,16 +196,16 @@ describe('common > test > DeepCloneEqual', function() {
 
 			obj.object = {...obj.object}
 			testDeepEqual([clone], [obj], {
-				circular: true,
+				circular         : true,
 				equalMapSetOrder,
-				equalTypes: true,
+				equalTypes       : true,
 				noCrossReferences: true,
 				// equalInnerReferences: true,
 			})
 
 			obj.array = new Set(obj.array)
 			testDeepEqual([clone], [obj], {
-				circular: true,
+				circular         : true,
 				equalMapSetOrder,
 				// equalTypes: true,
 				noCrossReferences: true,
@@ -232,24 +232,24 @@ describe('common > test > DeepCloneEqual', function() {
 		const obj = { a: {} }
 		const obj2 = { a: {} }
 		testDeepEqual([obj], [obj], {
-			circular: false,
-			equalTypes: true,
-			noCrossReferences: false,
+			circular            : false,
+			equalTypes          : true,
+			noCrossReferences   : false,
 			equalInnerReferences: true,
 		})
 
 		testDeepEqual([obj], [obj2], {
-			circular: false,
-			equalTypes: true,
-			noCrossReferences: true,
+			circular            : false,
+			equalTypes          : true,
+			noCrossReferences   : true,
 			equalInnerReferences: true,
 		})
 
 		obj2.a = obj.a
 		testDeepEqual([obj], [obj2], {
-			circular: false,
-			equalTypes: true,
-			noCrossReferences: false,
+			circular            : false,
+			equalTypes          : true,
+			noCrossReferences   : false,
 			equalInnerReferences: true,
 		})
 	})

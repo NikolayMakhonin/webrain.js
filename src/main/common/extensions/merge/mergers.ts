@@ -819,7 +819,7 @@ export class TypeMetaMergerCollection
 		return {
 			valueFactory: () => new (type as new () => TTarget)(),
 			...meta,
-			merger: {
+			merger      : {
 				canMerge(target: TTarget, source: TTarget|TSource): boolean {
 					return target._canMerge
 						? target._canMerge(source)
@@ -879,7 +879,7 @@ function createPrimitiveTypeMetaMerger<TTarget = any, TSource = any>(
 	return {
 		preferClone: false,
 		...meta,
-		merger: {
+		merger     : {
 			canMerge(target: TTarget, source: TSource): boolean {
 				return deepEqualsPrimitive(target, source) ? null : false
 			},
