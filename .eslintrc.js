@@ -101,7 +101,7 @@ module.exports = {
 
 		'no-extra-parens'                   : 'off',
 		'@typescript-eslint/no-extra-parens': [
-			'error',
+			'off',
 			'all',
 			{
 				returnAssign                      : false,

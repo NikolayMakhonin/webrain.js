@@ -30,32 +30,10 @@
     <select />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="69b2ee16-521b-4efd-b473-8e19e3df4d09" name="Default Changelist" comment="">
+    <list default="true" id="69b2ee16-521b-4efd-b473-8e19e3df4d09" name="Default Changelist" comment="Lint autofix: @typescript-eslint/no-extra-parens">
+      <change beforePath="$PROJECT_DIR$/.eslintrc.js" beforeDir="false" afterPath="$PROJECT_DIR$/.eslintrc.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/eslintrc.fix.js" beforeDir="false" afterPath="$PROJECT_DIR$/eslintrc.fix.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/common/extensions/merge/mergers.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/common/extensions/merge/mergers.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/common/extensions/serialization/serializers.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/common/extensions/serialization/serializers.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/common/random/uuid.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/common/random/uuid.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/common/rx/depend/core/CallState.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/common/rx/depend/core/CallState.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/common/rx/object/properties/CalcObjectBuilder.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/common/rx/object/properties/CalcObjectBuilder.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/common/rx/object/properties/path/builder.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/common/rx/object/properties/path/builder.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/common/rx/subjects/behavior.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/common/rx/subjects/behavior.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/common/rx/subjects/hasSubscribers.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/common/rx/subjects/hasSubscribers.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/common/rx/subjects/subject.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/common/rx/subjects/subject.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/common/test/register.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/common/test/register.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/test/performance/node/map.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/test/performance/node/map.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/test/tests/common/main/async/src/TestThenableSync.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/test/tests/common/main/async/src/TestThenableSync.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/test/tests/common/main/extensions/merge/ObjectMerger.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/test/tests/common/main/extensions/merge/ObjectMerger.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/test/tests/common/main/extensions/merge/src/TestMerger.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/test/tests/common/main/extensions/merge/src/TestMerger.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/test/tests/common/main/rx/depend/src/base-tests.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/test/tests/common/main/rx/depend/src/base-tests.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/test/tests/common/main/rx/object/observable-object-builder.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/test/tests/common/main/rx/object/observable-object-builder.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/test/tests/common/main/rx/object/properties/path/builder/helpers/src/RuleBuildersBuilder.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/test/tests/common/main/rx/object/properties/path/builder/helpers/src/RuleBuildersBuilder.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/test/tests/common/main/rx/object/properties/path/iterate-rule.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/test/tests/common/main/rx/object/properties/path/iterate-rule.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/test/tests/common/main/rx/subjects/hasSubscribers.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/test/tests/common/main/rx/subjects/hasSubscribers.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/test/tests/common/main/src/helpers/TestVariants.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/test/tests/common/main/src/helpers/TestVariants.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/test/tests/common/main/test/Variants.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/test/tests/common/main/test/Variants.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/test/tests/common/main/test/src/TestDeepEqual.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/test/tests/common/main/test/src/TestDeepEqual.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/test/tests/common/main/time/async-behavior.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/test/tests/common/main/time/async-behavior.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/test/tests/node/v8/src/helpers/helpers.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/test/tests/node/v8/src/helpers/helpers.ts" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -596,14 +574,7 @@
       <workItem from="1601366123016" duration="15953000" />
       <workItem from="1601492736938" duration="63000" />
       <workItem from="1601521921362" duration="7482000" />
-      <workItem from="1601530450424" duration="15078000" />
-    </task>
-    <task id="LOCAL-00549" summary="Develop two way binding">
-      <created>1599725875431</created>
-      <option name="number" value="00549" />
-      <option name="presentableId" value="LOCAL-00549" />
-      <option name="project" value="LOCAL" />
-      <updated>1599725875431</updated>
+      <workItem from="1601530450424" duration="19363000" />
     </task>
     <task id="LOCAL-00550" summary="Develop two way binding">
       <created>1599728478181</created>
@@ -941,7 +912,14 @@
       <option name="project" value="LOCAL" />
       <updated>1601545345106</updated>
     </task>
-    <option name="localTasksCounter" value="598" />
+    <task id="LOCAL-00598" summary="Lint autofix: semi-style &amp; semi &amp; operator-linebreak &amp; no-mixed-spaces-and-tabs">
+      <created>1601545807659</created>
+      <option name="number" value="00598" />
+      <option name="presentableId" value="LOCAL-00598" />
+      <option name="project" value="LOCAL" />
+      <updated>1601545807659</updated>
+    </task>
+    <option name="localTasksCounter" value="599" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -1002,7 +980,6 @@
   <component name="VcsManagerConfiguration">
     <option name="CHECK_CODE_SMELLS_BEFORE_PROJECT_COMMIT" value="false" />
     <option name="CHECK_NEW_TODO" value="false" />
-    <MESSAGE value="v1.0.4-a" />
     <MESSAGE value="v1.0.5-a" />
     <MESSAGE value="v1.0.6-a" />
     <MESSAGE value="v1.1.0-a Changed the merge interface: added preferCloneBase" />
@@ -1027,7 +1004,8 @@
     <MESSAGE value="Added separated lint fix config" />
     <MESSAGE value="Lint autofix: space-before-function-paren &amp; generator-star-spacing" />
     <MESSAGE value="Lint fixes" />
-    <option name="LAST_COMMIT_MESSAGE" value="Lint fixes" />
+    <MESSAGE value="Lint autofix: semi-style &amp; semi &amp; operator-linebreak &amp; no-mixed-spaces-and-tabs" />
+    <option name="LAST_COMMIT_MESSAGE" value="Lint autofix: semi-style &amp; semi &amp; operator-linebreak &amp; no-mixed-spaces-and-tabs" />
   </component>
   <component name="WindowStateProjectService">
     <state x="612" y="18" key="#TypeScript" timestamp="1599721259508">
@@ -1050,42 +1028,42 @@
       <screen x="0" y="0" width="1920" height="882" />
     </state>
     <state x="318" y="0" key="#com.intellij.refactoring.rename.AutomaticRenamingDialog/0.0.1920.882@0.0.1920.882" timestamp="1600596853908" />
-    <state x="651" y="254" key="ANALYSIS_DLG_com.intellij.analysis.BaseAnalysisAction$1" timestamp="1601535409371">
+    <state x="651" y="254" key="ANALYSIS_DLG_com.intellij.analysis.BaseAnalysisAction$1" timestamp="1601547982586">
       <screen x="0" y="0" width="1920" height="882" />
     </state>
-    <state x="651" y="254" key="ANALYSIS_DLG_com.intellij.analysis.BaseAnalysisAction$1/0.0.1920.882@0.0.1920.882" timestamp="1601535409371" />
-    <state x="-2" y="0" width="1918" height="882" key="CommitChangelistDialog2" timestamp="1601545344325">
+    <state x="651" y="254" key="ANALYSIS_DLG_com.intellij.analysis.BaseAnalysisAction$1/0.0.1920.882@0.0.1920.882" timestamp="1601547982586" />
+    <state x="-2" y="0" width="1918" height="882" key="CommitChangelistDialog2" timestamp="1601547356700">
       <screen x="0" y="0" width="1920" height="882" />
     </state>
-    <state x="-2" y="0" width="1918" height="882" key="CommitChangelistDialog2/0.0.1920.882@0.0.1920.882" timestamp="1601545344325" />
+    <state x="-2" y="0" width="1918" height="882" key="CommitChangelistDialog2/0.0.1920.882@0.0.1920.882" timestamp="1601547356700" />
     <state width="1009" height="582" key="DebuggerActiveHint" timestamp="1601537988332">
       <screen x="0" y="0" width="1920" height="882" />
     </state>
     <state width="1009" height="582" key="DebuggerActiveHint/0.0.1920.882@0.0.1920.882" timestamp="1601537988332" />
-    <state x="0" y="4" width="1917" height="875" key="DiffContextDialog" timestamp="1601539276611">
+    <state x="0" y="4" width="1917" height="875" key="DiffContextDialog" timestamp="1601547066579">
       <screen x="0" y="0" width="1920" height="882" />
     </state>
-    <state x="0" y="4" width="1917" height="875" key="DiffContextDialog/0.0.1920.882@0.0.1920.882" timestamp="1601539276611" />
+    <state x="0" y="4" width="1917" height="875" key="DiffContextDialog/0.0.1920.882@0.0.1920.882" timestamp="1601547066579" />
     <state x="1059" y="106" key="FileChooserDialogImpl" timestamp="1601545486158">
       <screen x="0" y="0" width="1920" height="882" />
     </state>
     <state x="1059" y="106" key="FileChooserDialogImpl/0.0.1920.882@0.0.1920.882" timestamp="1601545486158" />
-    <state width="502" height="228" key="GridCell.Tab.0.bottom" timestamp="1601543623875">
+    <state width="502" height="279" key="GridCell.Tab.0.bottom" timestamp="1601545808395">
       <screen x="0" y="0" width="1920" height="882" />
     </state>
-    <state width="502" height="228" key="GridCell.Tab.0.bottom/0.0.1920.882@0.0.1920.882" timestamp="1601543623875" />
-    <state width="502" height="228" key="GridCell.Tab.0.center" timestamp="1601543623875">
+    <state width="502" height="279" key="GridCell.Tab.0.bottom/0.0.1920.882@0.0.1920.882" timestamp="1601545808394" />
+    <state width="502" height="279" key="GridCell.Tab.0.center" timestamp="1601545808394">
       <screen x="0" y="0" width="1920" height="882" />
     </state>
-    <state width="502" height="228" key="GridCell.Tab.0.center/0.0.1920.882@0.0.1920.882" timestamp="1601543623875" />
-    <state width="502" height="228" key="GridCell.Tab.0.left" timestamp="1601543623875">
+    <state width="502" height="279" key="GridCell.Tab.0.center/0.0.1920.882@0.0.1920.882" timestamp="1601545808394" />
+    <state width="502" height="279" key="GridCell.Tab.0.left" timestamp="1601545808394">
       <screen x="0" y="0" width="1920" height="882" />
     </state>
-    <state width="502" height="228" key="GridCell.Tab.0.left/0.0.1920.882@0.0.1920.882" timestamp="1601543623875" />
-    <state width="502" height="228" key="GridCell.Tab.0.right" timestamp="1601543623875">
+    <state width="502" height="279" key="GridCell.Tab.0.left/0.0.1920.882@0.0.1920.882" timestamp="1601545808394" />
+    <state width="502" height="279" key="GridCell.Tab.0.right" timestamp="1601545808394">
       <screen x="0" y="0" width="1920" height="882" />
     </state>
-    <state width="502" height="228" key="GridCell.Tab.0.right/0.0.1920.882@0.0.1920.882" timestamp="1601543623875" />
+    <state width="502" height="279" key="GridCell.Tab.0.right/0.0.1920.882@0.0.1920.882" timestamp="1601545808394" />
     <state width="514" height="292" key="GridCell.Tab.1.bottom" timestamp="1601538037818">
       <screen x="0" y="0" width="1920" height="882" />
     </state>
@@ -1138,10 +1116,10 @@
       <screen x="0" y="0" width="1920" height="882" />
     </state>
     <state x="183" y="66" key="MergeDialog/0.0.1920.882@0.0.1920.882" timestamp="1600625796829" />
-    <state x="691" y="68" key="RollbackChangesDialog" timestamp="1600602173374">
+    <state x="691" y="68" key="RollbackChangesDialog" timestamp="1601547275856">
       <screen x="0" y="0" width="1920" height="882" />
     </state>
-    <state x="691" y="68" key="RollbackChangesDialog/0.0.1920.882@0.0.1920.882" timestamp="1600602173374" />
+    <state x="691" y="68" key="RollbackChangesDialog/0.0.1920.882@0.0.1920.882" timestamp="1601547275856" />
     <state x="343" y="0" key="SettingsEditor" timestamp="1601539209695">
       <screen x="0" y="0" width="1920" height="882" />
     </state>

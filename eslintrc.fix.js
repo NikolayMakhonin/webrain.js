@@ -46,17 +46,6 @@ const rules = {
 			overrides: {'=': 'after'},
 		},
 	],
-	// '@typescript-eslint/no-extra-parens': [
-	// 	'error',
-	// 	'all',
-	// 	{
-	// 		returnAssign                      : false,
-	// 		nestedBinaryExpressions           : false,
-	// 		enforceForArrowConditionals       : false,
-	// 		enforceForNewInMemberExpressions  : false,
-	// 		enforceForFunctionPrototypeMethods: true,
-	// 	},
-	// ],
 }
 
 const rulesOff = {}
