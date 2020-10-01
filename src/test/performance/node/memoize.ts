@@ -6,8 +6,8 @@ import {calcPerformance} from 'rdtsc'
 import {depend} from '../../../main/common/rx/depend/core/depend'
 import {assert} from '../../../main/common/test/Assert'
 import {describe, it} from '../../../main/common/test/Mocha'
-import {calcMemAllocate} from "../../../main/common/test/calc-mem-allocate";
-import {CalcType} from "../../../main/common/test/calc";
+import {calcMemAllocate} from '../../../main/common/test/calc-mem-allocate'
+import {CalcType} from '../../../main/common/test/calc'
 
 declare const after
 declare const babelGetFileCode

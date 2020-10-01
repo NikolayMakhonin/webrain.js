@@ -32,10 +32,10 @@ import {clearCallStates} from '../src/helpers'
 
 declare const beforeEach: any
 
-describe('common > main > rx > depend > bindings > stress', function() {
+describe('common > main > rx > depend > bindings > stress', function () {
 	this.timeout(24 * 60 * 60 * 1000)
 
-	beforeEach(function() {
+	beforeEach(function () {
 		webrainOptions.callState.garbageCollect.disabled = false
 		webrainOptions.callState.garbageCollect.bulkSize = 100
 		webrainOptions.callState.garbageCollect.interval = 0
@@ -232,8 +232,8 @@ describe('common > main > rx > depend > bindings > stress', function() {
 
 	function generateSourceDests(rnd: Random): ISourcesDests {
 		const result: ISourcesDests = {
-			getValues: {},
-			setValues: {},
+			getValues   : {},
+			setValues   : {},
 			getSetValues: {},
 		}
 
@@ -362,8 +362,8 @@ describe('common > main > rx > depend > bindings > stress', function() {
 			if (!to) {
 				from[keyTo] = to = {
 					objectNumber: objectNumberTo,
-					propName: propNameTo,
-					count: 0,
+					propName    : propNameTo,
+					count       : 0,
 				}
 			}
 
@@ -465,15 +465,15 @@ describe('common > main > rx > depend > bindings > stress', function() {
 	function createMetrics(testRunnerMetrics: ISearchBestErrorMetrics) {
 		return {
 			garbageCollectMode: null,
-			countObjects: null,
-			iterations: 0,
-			countUnBinds: 0,
-			countBinds: 0,
-			countSetsLast: 0,
-			countChecksLast: 0,
-			countSets: 0,
-			countChecks: 0,
-			countValues: null,
+			countObjects      : null,
+			iterations        : 0,
+			countUnBinds      : 0,
+			countBinds        : 0,
+			countSetsLast     : 0,
+			countChecksLast   : 0,
+			countSets         : 0,
+			countChecks       : 0,
+			countValues       : null,
 		}
 	}
 	type IMetrics = AsyncValueOf<ReturnType<typeof createMetrics>>
@@ -524,8 +524,8 @@ describe('common > main > rx > depend > bindings > stress', function() {
 
 	function optionsPatternBuilder(metrics: IMetrics, metricsMin: IMetrics) {
 		return {
-			countObjects: [1, metricsMin.countObjects == null ? 3 : metricsMin.countObjects],
-			countValues: [1, metricsMin.countValues == null ? 10 : metricsMin.countValues],
+			countObjects      : [1, metricsMin.countObjects == null ? 3 : metricsMin.countObjects],
+			countValues       : [1, metricsMin.countValues == null ? 10 : metricsMin.countValues],
 			garbageCollectMode: GarbageCollectMode.disabled, // TODO
 			// [
 			// 	GarbageCollectMode.deleteImmediate,
@@ -539,11 +539,11 @@ describe('common > main > rx > depend > bindings > stress', function() {
 
 	function optionsGenerator(rnd: Random, options: IOptionsPattern) {
 		return {
-			countObjects: generateNumber(rnd, options.countObjects),
-			countValues: generateNumber(rnd, options.countValues),
+			countObjects      : generateNumber(rnd, options.countObjects),
+			countValues       : generateNumber(rnd, options.countValues),
 			garbageCollectMode: generateNumber(rnd, options.garbageCollectMode) as GarbageCollectMode,
-			metrics: options.metrics,
-			metricsMin: options.metricsMin,
+			metrics           : options.metrics,
+			metricsMin        : options.metricsMin,
 		}
 	}
 	type IOptions = AsyncValueOf<ReturnType<typeof optionsGenerator>>
@@ -583,9 +583,9 @@ describe('common > main > rx > depend > bindings > stress', function() {
 		assertObjects(objects, checkObjects)
 
 		return {
-			objects: new Objects(objects, generateSourceDests(rnd)),
+			objects     : new Objects(objects, generateSourceDests(rnd)),
 			checkObjects: new CheckObjects(checkObjects),
-			unbinds: [] as IUnBind[],
+			unbinds     : [] as IUnBind[],
 			options,
 		}
 	}
@@ -685,7 +685,7 @@ describe('common > main > rx > depend > bindings > stress', function() {
 		// },
 		action: {
 			weight: 1,
-			func: action,
+			func  : action,
 		},
 	})
 
@@ -765,7 +765,7 @@ describe('common > main > rx > depend > bindings > stress', function() {
 
 	// endregion
 
-	xit('base', async function() {
+	xit('base', async function () {
 		/* tslint:disable:max-line-length */
 
 		clearCallStates()
@@ -796,8 +796,8 @@ describe('common > main > rx > depend > bindings > stress', function() {
 			// metricsMin: {"garbageCollectMode":1,"countObjects":3,"iterations":55,"countUnBinds":4,"countBinds":13,"countSetsLast":0,"countChecksLast":0,"countSets":43,"countChecks":0,"countValues":4},
 			// customSeed: 47784214,
 			// metricsMin: {"garbageCollectMode":1,"countObjects":3,"iterations":28,"countUnBinds":2,"countBinds":6,"countSetsLast":0,"countChecksLast":0,"countSets":22,"countChecks":0,"countValues":4},
-			customSeed: 454986460,
-			metricsMin: {'garbageCollectMode':1,'countObjects':1,'iterations':5,'countUnBinds':1,'countBinds':2,'countSetsLast':0,'countChecksLast':0,'countSets':2,'countChecks':0,'countValues':2},
+			customSeed     : 454986460,
+			metricsMin     : {garbageCollectMode: 1, countObjects: 1, iterations: 5, countUnBinds: 1, countBinds: 2, countSetsLast: 0, countChecksLast: 0, countSets: 2, countChecks: 0, countValues: 2},
 			searchBestError: true,
 		})
 

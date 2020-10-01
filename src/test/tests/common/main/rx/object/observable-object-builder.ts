@@ -145,7 +145,7 @@ describe('common > main > rx > observable-object-builder', function() {
 	})
 
 	it('readable simple', function() {
-		const {object} = new ObservableObjectBuilder()
+		const {object} = new ObservableObjectBuilder<any>()
 		assert.ok(object instanceof ObservableClass)
 
 		const builder = new ObservableObjectBuilder(object)
@@ -176,7 +176,7 @@ describe('common > main > rx > observable-object-builder', function() {
 		const {object} = new ObservableObjectBuilder()
 		assert.ok(object instanceof ObservableClass)
 
-		const builder = new ObservableObjectBuilder(object)
+		const builder = new ObservableObjectBuilder<any>(object)
 		assert.strictEqual(builder.object, object)
 
 		assert.strictEqual(builder.readable('prop'), builder)

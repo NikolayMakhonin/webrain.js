@@ -57,6 +57,7 @@ export class Rule implements IRule {
 	}
 
 	public clone(): IRule {
+		// eslint-disable-next-line no-shadow
 		const {type, subType, description, next, toString} = this
 		const clone = {type, subType, description, toString} as IRule
 
@@ -91,8 +92,10 @@ export class RuleNever extends Rule {
 	public get next(): IRule {
 		return null
 	}
-	// tslint:disable-next-line:no-empty
-	public set next(value: IRule) {	}
+
+	public set next(value: IRule) {
+		// empty
+	}
 
 	public clone() {
 		return this
@@ -110,9 +113,9 @@ export class RuleIf<TValue> extends Rule implements IRuleIf<TValue> {
 
 	public clone(): IRuleIf<TValue> {
 		const clone = super.clone() as IRuleIf<TValue>
-		(clone as any).conditionRules = this.conditionRules
+		;(clone as any).conditionRules = this.conditionRules
 			.map(o => Array.isArray(o)
-				? [ o[0], o[1].clone() ]
+				? [o[0], o[1].clone()]
 				: o.clone())
 		return clone
 	}
@@ -156,10 +159,10 @@ export class RuleRepeat<TValue = any> extends Rule implements IRuleRepeat {
 
 	public clone(): IRuleAny {
 		const clone = super.clone() as IRuleAny
-		(clone as any).rule = this.rule.clone();
-		(clone as any).countMin = this.countMin;
-		(clone as any).countMax = this.countMax;
-		(clone as any).condition = this.condition
+		;(clone as any).rule = this.rule.clone()
+		;(clone as any).countMin = this.countMin
+		;(clone as any).countMax = this.countMax
+		;(clone as any).condition = this.condition
 		return clone
 	}
 }

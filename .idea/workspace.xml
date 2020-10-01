@@ -5,6 +5,7 @@
     <option name="GROUP_BY_SEVERITY" value="true" />
     <option name="SCOPE_TYPE" value="8" />
     <option name="CUSTOM_SCOPE_NAME" value="src+env ts" />
+    <option name="SHOW_STRUCTURE" value="true" />
   </component>
   <component name="BranchesTreeState">
     <expand>
@@ -30,15 +31,21 @@
     <select />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="69b2ee16-521b-4efd-b473-8e19e3df4d09" name="Default Changelist" comment="">
-      <change afterPath="$PROJECT_DIR$/tsconfig.eslint.json" afterDir="false" />
+    <list default="true" id="69b2ee16-521b-4efd-b473-8e19e3df4d09" name="Default Changelist" comment="Fix lint configs">
+      <change beforePath="$PROJECT_DIR$/.eslintignore" beforeDir="false" afterPath="$PROJECT_DIR$/.eslintignore" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.eslintrc.js" beforeDir="false" afterPath="$PROJECT_DIR$/.eslintrc.js" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/env/.eslintrc" beforeDir="false" afterPath="$PROJECT_DIR$/env/.eslintrc.js" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/package.json" beforeDir="false" afterPath="$PROJECT_DIR$/package.json" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/test/.eslintrc" beforeDir="false" afterPath="$PROJECT_DIR$/src/test/.eslintrc.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/tsconfig.json" beforeDir="false" afterPath="$PROJECT_DIR$/tsconfig.json" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/tslint.json" beforeDir="false" afterPath="$PROJECT_DIR$/tslint.json" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/common/rx/object/ClassBuilder.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/common/rx/object/ClassBuilder.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/common/rx/object/ObjectBuilder.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/common/rx/object/ObjectBuilder.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/common/rx/object/properties/path/builder/rules.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/common/rx/object/properties/path/builder/rules.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/test/.eslintrc.js" beforeDir="false" afterPath="$PROJECT_DIR$/src/test/.eslintrc.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/test/performance/node/memoize.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/test/performance/node/memoize.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/test/tests/common/main/rx/depend/bindings/stress.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/test/tests/common/main/rx/depend/bindings/stress.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/test/tests/common/main/rx/object/observable-object-builder.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/test/tests/common/main/rx/object/observable-object-builder.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/test/tests/common/main/time/async-behavior.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/test/tests/common/main/time/async-behavior.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/test/tests/node/v8/src/helpers/node_4_9_1/runtime.d.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/test/tests/node/v8/src/helpers/node_4_9_1/runtime.d.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/test/tests/node/v8/src/helpers/node_latest/runtime.d.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/test/tests/node/v8/src/helpers/node_latest/runtime.d.ts" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -92,7 +99,7 @@
     <property name="auto.test.manager.delay" value="5000" />
     <property name="javascript.karma.karma_node_package_dir" value="" />
     <property name="js.linters.configure.manually.selectedtslint" value="true" />
-    <property name="last_opened_file_path" value="$PROJECT_DIR$/node_modules/after" />
+    <property name="last_opened_file_path" value="$PROJECT_DIR$/src/test/tests/node/v8/src/helpers/node_latest/runtime.d.ts" />
     <property name="node.js.detected.package.eslint" value="true" />
     <property name="node.js.detected.package.standard" value="true" />
     <property name="node.js.detected.package.tslint" value="true" />
@@ -567,14 +574,8 @@
       <workItem from="1601358400434" duration="1183000" />
       <workItem from="1601366123016" duration="15953000" />
       <workItem from="1601492736938" duration="63000" />
-      <workItem from="1601521921362" duration="4042000" />
-    </task>
-    <task id="LOCAL-00542" summary="v1.1.2-a Fix merge strings">
-      <created>1596386771800</created>
-      <option name="number" value="00542" />
-      <option name="presentableId" value="LOCAL-00542" />
-      <option name="project" value="LOCAL" />
-      <updated>1596386771800</updated>
+      <workItem from="1601521921362" duration="7482000" />
+      <workItem from="1601530450424" duration="4475000" />
     </task>
     <task id="LOCAL-00543" summary="v1.1.2-a Fix merge strings">
       <created>1596454779597</created>
@@ -912,7 +913,14 @@
       <option name="project" value="LOCAL" />
       <updated>1601525968997</updated>
     </task>
-    <option name="localTasksCounter" value="591" />
+    <task id="LOCAL-00591" summary="Fix lint configs">
+      <created>1601526065311</created>
+      <option name="number" value="00591" />
+      <option name="presentableId" value="LOCAL-00591" />
+      <option name="project" value="LOCAL" />
+      <updated>1601526065311</updated>
+    </task>
+    <option name="localTasksCounter" value="592" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -973,7 +981,6 @@
   <component name="VcsManagerConfiguration">
     <option name="CHECK_CODE_SMELLS_BEFORE_PROJECT_COMMIT" value="false" />
     <option name="CHECK_NEW_TODO" value="false" />
-    <MESSAGE value="v1.0.1-a Added test/register" />
     <MESSAGE value="Improver package.json" />
     <MESSAGE value="Fix index.ts" />
     <MESSAGE value="v1.0.2-a" />
@@ -998,7 +1005,8 @@
     <MESSAGE value="Develop two way binding tests..." />
     <MESSAGE value="Update eslint, tslint" />
     <MESSAGE value="Develop two way binding tests stopped. May be it is bad idea. I see no way to resolve circular update in async two way bindings." />
-    <option name="LAST_COMMIT_MESSAGE" value="Develop two way binding tests stopped. May be it is bad idea. I see no way to resolve circular update in async two way bindings." />
+    <MESSAGE value="Fix lint configs" />
+    <option name="LAST_COMMIT_MESSAGE" value="Fix lint configs" />
   </component>
   <component name="WindowStateProjectService">
     <state x="612" y="18" key="#TypeScript" timestamp="1599721259508">
@@ -1025,22 +1033,22 @@
       <screen x="0" y="0" width="1920" height="882" />
     </state>
     <state x="651" y="254" key="ANALYSIS_DLG_com.intellij.analysis.BaseAnalysisAction$1/0.0.1920.882@0.0.1920.882" timestamp="1601525780295" />
-    <state x="-2" y="0" width="1918" height="882" key="CommitChangelistDialog2" timestamp="1601525966724">
+    <state x="-2" y="0" width="1918" height="882" key="CommitChangelistDialog2" timestamp="1601534300750">
       <screen x="0" y="0" width="1920" height="882" />
     </state>
-    <state x="-2" y="0" width="1918" height="882" key="CommitChangelistDialog2/0.0.1920.882@0.0.1920.882" timestamp="1601525966724" />
+    <state x="-2" y="0" width="1918" height="882" key="CommitChangelistDialog2/0.0.1920.882@0.0.1920.882" timestamp="1601534300750" />
     <state width="920" height="582" key="DebuggerActiveHint" timestamp="1600757402396">
       <screen x="0" y="0" width="1920" height="882" />
     </state>
     <state width="920" height="582" key="DebuggerActiveHint/0.0.1920.882@0.0.1920.882" timestamp="1600757402396" />
-    <state x="0" y="4" width="1917" height="875" key="DiffContextDialog" timestamp="1601525909875">
+    <state x="0" y="4" width="1917" height="875" key="DiffContextDialog" timestamp="1601534298291">
       <screen x="0" y="0" width="1920" height="882" />
     </state>
-    <state x="0" y="4" width="1917" height="875" key="DiffContextDialog/0.0.1920.882@0.0.1920.882" timestamp="1601525909875" />
-    <state x="1059" y="106" key="FileChooserDialogImpl" timestamp="1601434393604">
+    <state x="0" y="4" width="1917" height="875" key="DiffContextDialog/0.0.1920.882@0.0.1920.882" timestamp="1601534298291" />
+    <state x="1059" y="106" key="FileChooserDialogImpl" timestamp="1601534897692">
       <screen x="0" y="0" width="1920" height="882" />
     </state>
-    <state x="1059" y="106" key="FileChooserDialogImpl/0.0.1920.882@0.0.1920.882" timestamp="1601434393604" />
+    <state x="1059" y="106" key="FileChooserDialogImpl/0.0.1920.882@0.0.1920.882" timestamp="1601534897692" />
     <state width="795" height="243" key="GridCell.Tab.0.bottom" timestamp="1601490933799">
       <screen x="0" y="0" width="1920" height="882" />
     </state>
@@ -1113,14 +1121,18 @@
       <screen x="0" y="0" width="1920" height="882" />
     </state>
     <state x="691" y="68" key="RollbackChangesDialog/0.0.1920.882@0.0.1920.882" timestamp="1600602173374" />
-    <state x="343" y="0" key="SettingsEditor" timestamp="1601523289041">
+    <state x="343" y="0" key="SettingsEditor" timestamp="1601530089414">
       <screen x="0" y="0" width="1920" height="882" />
     </state>
-    <state x="343" y="0" key="SettingsEditor/0.0.1920.882@0.0.1920.882" timestamp="1601523289041" />
+    <state x="343" y="0" key="SettingsEditor/0.0.1920.882@0.0.1920.882" timestamp="1601530089414" />
     <state x="612" y="105" width="675" height="655" key="StructurePopup" timestamp="1600748683634">
       <screen x="0" y="0" width="1920" height="882" />
     </state>
     <state x="612" y="105" width="675" height="655" key="StructurePopup/0.0.1920.882@0.0.1920.882" timestamp="1600748683634" />
+    <state x="451" y="106" key="Vcs.Push.Dialog.v2" timestamp="1601526003518">
+      <screen x="0" y="0" width="1920" height="882" />
+    </state>
+    <state x="451" y="106" key="Vcs.Push.Dialog.v2/0.0.1920.882@0.0.1920.882" timestamp="1601526003518" />
     <state x="194" y="8" width="1596" height="865" key="VcsDiffUtil.ChangesDialog" timestamp="1601434860792">
       <screen x="0" y="0" width="1920" height="882" />
     </state>

@@ -24,7 +24,49 @@ module.exports = {
 		'@typescript-eslint/no-this-alias'                 : 'off',
 		'@typescript-eslint/explicit-module-boundary-types': 'off',
 		'arrow-body-style'                                 : 'off',
-		'object-shorthand'                                 : 'off'
+		'object-shorthand'                                 : 'off',
+
+		// new
+
+		'no-shadow': [
+			'error',
+			{
+				builtinGlobals: true ,
+				hoist         : 'all',
+				allow         : [],
+			},
+		],
+		'prefer-template'       : 'off',
+		'class-methods-use-this': 'off',
+
+		'space-before-function-paren': [
+			'warn', {
+				anonymous : 'always',
+				named     : 'never',
+				asyncArrow: 'always',
+			},
+		],
+		'brace-style'       : 'off',
+		'no-confusing-arrow': 'off',
+
+		// typescript
+
+		'no-use-before-define'                   : 'off',
+		'@typescript-eslint/no-use-before-define': ['error', {
+			functions           : true,
+			classes             : true,
+			variables           : true,
+			enums               : true,
+			typedefs            : false,
+			ignoreTypeReferences: true,
+		}],
+
+		'@typescript-eslint/no-inferrable-types': 'off',
+
+		'no-extra-parens'                   : 'off',
+		'@typescript-eslint/no-extra-parens': 'error',
+
+		'@typescript-eslint/no-explicit-any': 'off',
 	},
 
 	env: {
@@ -32,8 +74,8 @@ module.exports = {
 		es6 : true
 	},
 
-	parser       : 'babel-eslint',
-	// parser       : '@typescript-eslint/parser', // incorrect fix ";(value as any)" and many other problems (v3.0.1)
+	// parser       : 'babel-eslint',
+	parser       : '@typescript-eslint/parser', // incorrect fix ";(value as any)" and many other problems (v3.0.1)
 	parserOptions: {
 		ecmaVersion                : 6,
 		sourceType                 : 'module',
@@ -47,7 +89,7 @@ module.exports = {
 
 	plugins: [
 		'@typescript-eslint',
-		// '@typescript-eslint/tslint',
+		'@typescript-eslint/tslint',
 		'sonarjs',
 		'html'
 	],
