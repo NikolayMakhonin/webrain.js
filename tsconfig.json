@@ -4,13 +4,20 @@
 		"emitDeclarationOnly": true,
 		"outDir": "dist/types",
 		"baseUrl": ".",
-		"target": "ES2019", // for convert option chainings: .? ??
+		"target": "ESNext",
 		"lib": ["dom", "esnext"],
 		"skipLibCheck": true,
 		"stripInternal": true,
 		"allowSyntheticDefaultImports": true,
+		"moduleResolution": "node",
+		"typeRoots": [
+			"node_modules/@types",
+			"@types"
+		],
 		"paths": {
-		  "*" : ["node_modules/*"]
+			"*" : [
+				"node_modules/*"
+			]
 		}
 	},
 	"include": [

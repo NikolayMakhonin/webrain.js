@@ -1,0 +1,17 @@
+{
+	"extends": "./tsconfig.json",
+	"include": [
+		"**/*.js",
+		"**/*.ts",
+		"**/.eslintrc.js"
+	],
+	"exclude": [
+		"node_modules",
+		"tmp",
+		"dist",
+		"_trash",
+		"docs",
+		"**/polyfill*/**",
+		"docs/**/*"
+	]
+}
