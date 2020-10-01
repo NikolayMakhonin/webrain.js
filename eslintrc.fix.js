@@ -30,6 +30,34 @@ const rules = {
 			after : false,
 		},
 	],
+	'array-bracket-spacing': [
+		'warn',
+		'never',
+		{
+			singleValue    : false,
+			arraysInArrays : false,
+			objectsInArrays: false,
+		},
+	],
+	'semi-style'        : ['error', 'first'],
+	semi                : ['error', 'never', {beforeStatementContinuationChars: 'never'}],
+	'operator-linebreak': [
+		'error', 'before', {
+			overrides: {'=': 'after'},
+		},
+	],
+	'no-mixed-spaces-and-tabs': 'error',
+	// '@typescript-eslint/no-extra-parens': [
+	// 	'error',
+	// 	'all',
+	// 	{
+	// 		returnAssign                      : false,
+	// 		nestedBinaryExpressions           : false,
+	// 		enforceForArrowConditionals       : false,
+	// 		enforceForNewInMemberExpressions  : false,
+	// 		enforceForFunctionPrototypeMethods: true,
+	// 	},
+	// ],
 }
 
 const rulesOff = {}

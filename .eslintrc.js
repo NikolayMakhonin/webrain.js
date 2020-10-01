@@ -27,6 +27,30 @@ module.exports = {
 
 		// new
 
+		'operator-linebreak': [
+			'error', 'before', {
+				overrides: {'=': 'after'},
+			},
+		],
+
+		'prefer-rest-params': 'off',
+
+		'no-mixed-operators': [
+			'error',
+			{
+				groups: [
+					// [ '&&', '||' ],
+					['%', '**'],
+					['*', '**'],
+					['/', '**'],
+					['&', '^', '~', '<<', '>>', '>>>', '==', '!=', '===', '!==', '>', '>=', '<', '<='],
+					['|', '~', '<<', '>>', '>>>', '==', '!=', '===', '!==', '>', '>=', '<', '<='],
+					['in', 'instanceof'],
+				],
+				allowSamePrecedence: true,
+			},
+		],
+
 		'array-element-newline': ['off', 'consistent'],
 
 		'arrow-parens': 'off',
@@ -52,8 +76,7 @@ module.exports = {
 		'class-methods-use-this': 'off',
 
 		'space-before-function-paren': [
-			'warn',
-{
+			'warn', {
 				anonymous : 'always',
 				named     : 'never',
 				asyncArrow: 'always',
@@ -66,7 +89,7 @@ module.exports = {
 
 		'no-use-before-define'                   : 'off',
 		'@typescript-eslint/no-use-before-define': ['error', {
-			functions           : true,
+			functions           : false,
 			classes             : true,
 			variables           : true,
 			enums               : true,
@@ -90,6 +113,14 @@ module.exports = {
 		],
 
 		'@typescript-eslint/no-explicit-any': 'off',
+
+		'@typescript-eslint/ban-types': [
+			'error', {
+				types: {
+					object: false,
+				}
+			}
+		],
 	},
 
 	env: {

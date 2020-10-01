@@ -34,9 +34,14 @@
       <change beforePath="$PROJECT_DIR$/.eslintrc.js" beforeDir="false" afterPath="$PROJECT_DIR$/.eslintrc.js" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/eslintrc.fix.js" beforeDir="false" afterPath="$PROJECT_DIR$/eslintrc.fix.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/common/rx/object/properties/ConnectorBuilder.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/common/rx/object/properties/ConnectorBuilder.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/common/extensions/merge/mergers.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/common/extensions/merge/mergers.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/common/index.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/common/index.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/common/random/Random.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/common/random/Random.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/common/random/uuid.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/common/random/uuid.ts" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/test/.eslintrc.js" beforeDir="false" afterPath="$PROJECT_DIR$/src/test/.eslintrc.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/test/tests/common/main/rx/depend/src/base-tests.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/test/tests/common/main/rx/depend/src/base-tests.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/test/performance/node/Variants.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/test/performance/node/Variants.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/test/performance/node/fundamental-operations.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/test/performance/node/fundamental-operations.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/test/tests/common/main/rx/object/properties/path/builder/helpers/src/RuleBuildersBuilder.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/test/tests/common/main/rx/object/properties/path/builder/helpers/src/RuleBuildersBuilder.ts" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -90,7 +95,7 @@
     <property name="auto.test.manager.delay" value="5000" />
     <property name="javascript.karma.karma_node_package_dir" value="" />
     <property name="js.linters.configure.manually.selectedtslint" value="true" />
-    <property name="last_opened_file_path" value="$PROJECT_DIR$/src/main/common/rx/object/properties/ConnectorBuilder.ts" />
+    <property name="last_opened_file_path" value="$PROJECT_DIR$/src/main/common/extensions/merge/mergers.ts" />
     <property name="node.js.detected.package.eslint" value="true" />
     <property name="node.js.detected.package.standard" value="true" />
     <property name="node.js.detected.package.tslint" value="true" />
@@ -131,7 +136,7 @@
       <recent name="L:\Work\_GIT\GitHub\NodeJs\modules\webrain\src\main\common\rx\object\properties\path" />
     </key>
   </component>
-  <component name="RunManager" selected="npm.lint:es:fix">
+  <component name="RunManager" selected="Mocha.Watch">
     <configuration default="true" type="JavaScriptTestRunnerKarma" activateToolWindowBeforeRun="false">
       <config-file value="$PROJECT_DIR$/env/karma/configs/dev.js" />
       <karma-package-dir value="$PROJECT_DIR$/node_modules/karma" />
@@ -577,21 +582,7 @@
       <workItem from="1601366123016" duration="15953000" />
       <workItem from="1601492736938" duration="63000" />
       <workItem from="1601521921362" duration="7482000" />
-      <workItem from="1601530450424" duration="11224000" />
-    </task>
-    <task id="LOCAL-00546" summary="v1.1.6-a">
-      <created>1598268201062</created>
-      <option name="number" value="00546" />
-      <option name="presentableId" value="LOCAL-00546" />
-      <option name="project" value="LOCAL" />
-      <updated>1598268201062</updated>
-    </task>
-    <task id="LOCAL-00547" summary="1.2.1-a&#10;* Change Random.nextArrayItems() signature&#10;* Added Random.nextArrayItemsUnique()">
-      <created>1598678605930</created>
-      <option name="number" value="00547" />
-      <option name="presentableId" value="LOCAL-00547" />
-      <option name="project" value="LOCAL" />
-      <updated>1598678605930</updated>
+      <workItem from="1601530450424" duration="14634000" />
     </task>
     <task id="LOCAL-00548" summary="Improved depend stress test">
       <created>1599725854683</created>
@@ -922,7 +913,21 @@
       <option name="project" value="LOCAL" />
       <updated>1601539293830</updated>
     </task>
-    <option name="localTasksCounter" value="595" />
+    <task id="LOCAL-00595" summary="Lint fixes">
+      <created>1601541866114</created>
+      <option name="number" value="00595" />
+      <option name="presentableId" value="LOCAL-00595" />
+      <option name="project" value="LOCAL" />
+      <updated>1601541866114</updated>
+    </task>
+    <task id="LOCAL-00596" summary="Lint autofix: space-before-function-paren &amp; generator-star-spacing">
+      <created>1601541959916</created>
+      <option name="number" value="00596" />
+      <option name="presentableId" value="LOCAL-00596" />
+      <option name="project" value="LOCAL" />
+      <updated>1601541959916</updated>
+    </task>
+    <option name="localTasksCounter" value="597" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -983,7 +988,6 @@
   <component name="VcsManagerConfiguration">
     <option name="CHECK_CODE_SMELLS_BEFORE_PROJECT_COMMIT" value="false" />
     <option name="CHECK_NEW_TODO" value="false" />
-    <MESSAGE value="v1.0.3-a" />
     <MESSAGE value="v1.0.4-a" />
     <MESSAGE value="v1.0.5-a" />
     <MESSAGE value="v1.0.6-a" />
@@ -1005,10 +1009,11 @@
     <MESSAGE value="Update eslint, tslint" />
     <MESSAGE value="Develop two way binding tests stopped. May be it is bad idea. I see no way to resolve circular update in async two way bindings." />
     <MESSAGE value="Fix lint configs" />
-    <MESSAGE value="Lint fixes" />
     <MESSAGE value="Lint fix: key-spacing" />
     <MESSAGE value="Added separated lint fix config" />
-    <option name="LAST_COMMIT_MESSAGE" value="Added separated lint fix config" />
+    <MESSAGE value="Lint fixes" />
+    <MESSAGE value="Lint autofix: space-before-function-paren &amp; generator-star-spacing" />
+    <option name="LAST_COMMIT_MESSAGE" value="Lint autofix: space-before-function-paren &amp; generator-star-spacing" />
   </component>
   <component name="WindowStateProjectService">
     <state x="612" y="18" key="#TypeScript" timestamp="1599721259508">
@@ -1035,10 +1040,10 @@
       <screen x="0" y="0" width="1920" height="882" />
     </state>
     <state x="651" y="254" key="ANALYSIS_DLG_com.intellij.analysis.BaseAnalysisAction$1/0.0.1920.882@0.0.1920.882" timestamp="1601535409371" />
-    <state x="-2" y="0" width="1918" height="882" key="CommitChangelistDialog2" timestamp="1601539292978">
+    <state x="-2" y="0" width="1918" height="882" key="CommitChangelistDialog2" timestamp="1601541959070">
       <screen x="0" y="0" width="1920" height="882" />
     </state>
-    <state x="-2" y="0" width="1918" height="882" key="CommitChangelistDialog2/0.0.1920.882@0.0.1920.882" timestamp="1601539292978" />
+    <state x="-2" y="0" width="1918" height="882" key="CommitChangelistDialog2/0.0.1920.882@0.0.1920.882" timestamp="1601541959070" />
     <state width="1009" height="582" key="DebuggerActiveHint" timestamp="1601537988332">
       <screen x="0" y="0" width="1920" height="882" />
     </state>
@@ -1047,26 +1052,26 @@
       <screen x="0" y="0" width="1920" height="882" />
     </state>
     <state x="0" y="4" width="1917" height="875" key="DiffContextDialog/0.0.1920.882@0.0.1920.882" timestamp="1601539276611" />
-    <state x="1059" y="106" key="FileChooserDialogImpl" timestamp="1601541598759">
+    <state x="1059" y="106" key="FileChooserDialogImpl" timestamp="1601544388453">
       <screen x="0" y="0" width="1920" height="882" />
     </state>
-    <state x="1059" y="106" key="FileChooserDialogImpl/0.0.1920.882@0.0.1920.882" timestamp="1601541598759" />
-    <state width="502" height="228" key="GridCell.Tab.0.bottom" timestamp="1601538716675">
+    <state x="1059" y="106" key="FileChooserDialogImpl/0.0.1920.882@0.0.1920.882" timestamp="1601544388453" />
+    <state width="502" height="228" key="GridCell.Tab.0.bottom" timestamp="1601543623875">
       <screen x="0" y="0" width="1920" height="882" />
     </state>
-    <state width="502" height="228" key="GridCell.Tab.0.bottom/0.0.1920.882@0.0.1920.882" timestamp="1601538716675" />
-    <state width="502" height="228" key="GridCell.Tab.0.center" timestamp="1601538716674">
+    <state width="502" height="228" key="GridCell.Tab.0.bottom/0.0.1920.882@0.0.1920.882" timestamp="1601543623875" />
+    <state width="502" height="228" key="GridCell.Tab.0.center" timestamp="1601543623875">
       <screen x="0" y="0" width="1920" height="882" />
     </state>
-    <state width="502" height="228" key="GridCell.Tab.0.center/0.0.1920.882@0.0.1920.882" timestamp="1601538716674" />
-    <state width="502" height="228" key="GridCell.Tab.0.left" timestamp="1601538716674">
+    <state width="502" height="228" key="GridCell.Tab.0.center/0.0.1920.882@0.0.1920.882" timestamp="1601543623875" />
+    <state width="502" height="228" key="GridCell.Tab.0.left" timestamp="1601543623875">
       <screen x="0" y="0" width="1920" height="882" />
     </state>
-    <state width="502" height="228" key="GridCell.Tab.0.left/0.0.1920.882@0.0.1920.882" timestamp="1601538716674" />
-    <state width="502" height="228" key="GridCell.Tab.0.right" timestamp="1601538716675">
+    <state width="502" height="228" key="GridCell.Tab.0.left/0.0.1920.882@0.0.1920.882" timestamp="1601543623875" />
+    <state width="502" height="228" key="GridCell.Tab.0.right" timestamp="1601543623875">
       <screen x="0" y="0" width="1920" height="882" />
     </state>
-    <state width="502" height="228" key="GridCell.Tab.0.right/0.0.1920.882@0.0.1920.882" timestamp="1601538716674" />
+    <state width="502" height="228" key="GridCell.Tab.0.right/0.0.1920.882@0.0.1920.882" timestamp="1601543623875" />
     <state width="514" height="292" key="GridCell.Tab.1.bottom" timestamp="1601538037818">
       <screen x="0" y="0" width="1920" height="882" />
     </state>
@@ -1236,7 +1241,7 @@
         </line-breakpoint>
         <line-breakpoint enabled="true" type="javascript">
           <url>file://$PROJECT_DIR$/src/main/common/extensions/merge/mergers.ts</url>
-          <line>1090</line>
+          <line>1111</line>
           <option name="timeStamp" value="1592" />
         </line-breakpoint>
         <line-breakpoint enabled="true" type="javascript">

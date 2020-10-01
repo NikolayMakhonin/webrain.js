@@ -107,7 +107,7 @@ export class RuleBuildersBuilder<TObject = any, TValueKeys extends string | numb
 			index++
 			const args = []
 			for (let i = 0; i < len; i++) {
-				const [ ruleFactory, indexNext ] = this[index](index)
+				const [ruleFactory, indexNext] = this[index](index)
 				index = indexNext
 				args.push(ruleFactory)
 			}

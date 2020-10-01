@@ -17,22 +17,15 @@ module.exports = {
 
 		'no-shadow'       : 'off',
 		'no-await-in-loop': 'off',
+		'func-style'      : 'off',
+		'prefer-const'    : 'off',
 
-		'@typescript-eslint/no-unused-vars'   : 'off',
-		'@typescript-eslint/no-empty-function': 'off',
-
-		'@typescript-eslint/no-use-before-define': ['error', {
-			functions           : false,
-			classes             : true,
-			variables           : true,
-			enums               : true,
-			typedefs            : false,
-			ignoreTypeReferences: true,
-		}],
+		'@typescript-eslint/no-unused-vars'    : 'off',
+		'@typescript-eslint/no-empty-function' : 'off',
+		'@typescript-eslint/no-empty-interface': 'off',
 
 		// '@typescript-eslint/no-unused-array'             : 'off',
 		// '@typescript-eslint/no-dead-store'               : 'off',
-		// '@typescript-eslint/prefer-const'                : 'off',
 		// '@typescript-eslint/no-invalid-await'            : 'off',
 		// '@typescript-eslint/no-array-delete'             : 'off',
 		// '@typescript-eslint/no-misleading-array-reverse' : 'off',

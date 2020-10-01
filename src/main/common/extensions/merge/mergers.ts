@@ -217,13 +217,13 @@ class ValueState<TTarget, TSource> {
 				switch (canMergeResult) {
 					case null:
 						break
-					case true:
+					case true: {
 						const {mergerVisitor, options} = this.mergerState
 
 						this.setRef(_clone)
 						// mergerVisitor.setStatus(_clone, ObjectStatus.Cloned)
 
-						const { preferClone, refs } = this
+						const {preferClone, refs} = this
 
 						this.merge(
 							mergerVisitor.getNextMerge(false, preferClone, preferClone, refs, refs, refs, options),
@@ -237,12 +237,16 @@ class ValueState<TTarget, TSource> {
 							preferClone,
 							// options,
 						)
+
 						break
+					}
 					case false:
 						if (this.merge) {
 							throw new Error(`Class (${this.type.name}) cannot be merged with clone`)
 						}
 						break
+					default:
+						throw new Error('Unknown mergeResult: ' + canMergeResult)
 				}
 			} else {
 				_clone = target
@@ -653,11 +657,11 @@ export class MergerVisitor implements IMergerVisitor {
 			if ((mergeState.olderState.isRef || mergeState.newerState.isRef)
 				&& mergeState.olderState.target === mergeState.newerState.target
 			) {
-				mergeState.newerState.preferClone
-					= mergePreferClone(
-					mergeState.olderState.preferClone,
-					mergeState.newerState.preferClone,
-				)
+				mergeState.newerState.preferClone =
+					mergePreferClone(
+						mergeState.olderState.preferClone,
+						mergeState.newerState.preferClone,
+					)
 				mergeState.olderState = mergeState.newerState
 			}
 
@@ -668,16 +672,16 @@ export class MergerVisitor implements IMergerVisitor {
 		// endregion
 
 		const fillOlderNewer = () => {
-			switch (mergeState.olderState.canMerge(mergeState.newerState)) {
+			// eslint-disable-next-line no-shadow
+			const mergeResult = mergeState.olderState.canMerge(mergeState.newerState)
+			switch (mergeResult) {
 				case null:
 					if (mergeState.olderState.mustBeCloned) {
 						set(mergeState.newerState.clone)
+					} else if (mergeState.newerState.mustBeCloned) {
+						set(mergeState.olderState.target)
 					} else {
-						if (mergeState.newerState.mustBeCloned) {
-							set(mergeState.olderState.target)
-						} else {
-							set(mergeState.newerState.target)
-						}
+						set(mergeState.newerState.target)
 					}
 					break
 				case false:
@@ -686,6 +690,8 @@ export class MergerVisitor implements IMergerVisitor {
 				case true:
 					mergeState.fillOlderNewer()
 					return true
+				default:
+					throw new Error('Unknown mergeResult: ' + mergeResult)
 			}
 		}
 
@@ -707,8 +713,10 @@ export class MergerVisitor implements IMergerVisitor {
 			return false
 		}
 
+		let mergeResult: boolean|null
 		if (isPrimitive(older)) {
-			switch (mergeState.baseState.canMerge(mergeState.newerState)) {
+			mergeResult = mergeState.baseState.canMerge(mergeState.newerState)
+			switch (mergeResult) {
 				case null:
 					if (set) {
 						set(older as any)
@@ -730,12 +738,17 @@ export class MergerVisitor implements IMergerVisitor {
 						return false
 					}
 					return true
+				default:
+					throw new Error('Unknown mergeResult: ' + mergeResult)
 			}
 
 			return false
 		}
 
-		switch (mergeState.baseState.canMerge(mergeState.newerState)) {
+		mergeResult = mergeState.baseState.canMerge(mergeState.newerState)
+		switch (mergeResult) {
+			case true:
+				break
 			case false:
 				if (set) {
 					fillOlderNewer()
@@ -743,7 +756,8 @@ export class MergerVisitor implements IMergerVisitor {
 				}
 				return false
 			case null:
-				switch (mergeState.baseState.canMerge(mergeState.olderState)) {
+				mergeResult = mergeState.baseState.canMerge(mergeState.olderState)
+				switch (mergeResult) {
 					case null:
 						return false
 					case false:
@@ -754,20 +768,25 @@ export class MergerVisitor implements IMergerVisitor {
 						return false
 					case true:
 						return mergeState.mergeWithBase(mergeState.olderState, mergeState.olderState)
+					default:
+						throw new Error('Unknown mergeResult: ' + mergeResult)
 				}
 				throw new Error('Unreachable code')
+			default:
+				throw new Error('Unknown mergeResult: ' + mergeResult)
 		}
 
-		switch (mergeState.baseState.canMerge(mergeState.olderState)) {
+		mergeResult = mergeState.baseState.canMerge(mergeState.olderState)
+		switch (mergeResult) {
 			case null:
 				return mergeState.mergeWithBase(mergeState.newerState, mergeState.newerState)
-				// if (!mergeState.mergeWithBase(mergeState.newerState, mergeState.newerState)) {
-				// 	if (set) {
-				// 		throw new Error('base != newer; base == older; base == newer')
-				// 	}
-				// 	return false
-				// }
-				// return true
+			// if (!mergeState.mergeWithBase(mergeState.newerState, mergeState.newerState)) {
+			// 	if (set) {
+			// 		throw new Error('base != newer; base == older; base == newer')
+			// 	}
+			// 	return false
+			// }
+			// return true
 			case false:
 				if (!mergeState.mergeWithBase(mergeState.newerState, mergeState.newerState)) {
 					if (set) {
@@ -779,6 +798,8 @@ export class MergerVisitor implements IMergerVisitor {
 				return true
 			case true:
 				return mergeState.mergeWithBase(mergeState.olderState, mergeState.newerState)
+			default:
+				throw new Error('Unknown mergeResult: ' + mergeResult)
 		}
 
 		throw new Error('Unreachable code')

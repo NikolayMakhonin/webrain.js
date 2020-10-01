@@ -723,7 +723,7 @@ describe('fundamental-operations', function () {
 		const objects = []
 		const clones = []
 		for (let i = 0; i < countObject; i++) {
-			objects[i] = [ { value: 'text text text text text text' }, 10, { value: i } ]
+			objects[i] = [{ value: 'text text text text text text' }, 10, { value: i }]
 			clones[i] = objects[i].slice()
 			getObjectUniqueId(objects[i])
 			getObjectUniqueId(clones[i])
