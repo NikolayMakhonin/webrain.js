@@ -551,16 +551,14 @@ function _isNativeReflectConstruct() { if (typeof Reflect === "undefined" || !_c
   })(GarbageCollectMode || (GarbageCollectMode = {}));
 
   function optionsPatternBuilder(metrics, metricsMin) {
-    var _metricsMin$countObje, _metricsMin$countValu;
-
     return {
-      countObjects: [1, (_metricsMin$countObje = metricsMin.countObjects) != null ? _metricsMin$countObje : 3],
-      countValues: [1, (_metricsMin$countValu = metricsMin.countValues) != null ? _metricsMin$countValu : 10],
+      countObjects: [1, metricsMin.countObjects == null ? 3 : metricsMin.countObjects],
+      countValues: [1, metricsMin.countValues == null ? 10 : metricsMin.countValues],
       garbageCollectMode: GarbageCollectMode.disabled,
       // TODO
       // [
       // 	GarbageCollectMode.deleteImmediate,
-      // 	metricsMin.garbageCollectMode ?? GarbageCollectMode.normal,
+      // 	metricsMin.garbageCollectMode == null ? GarbageCollectMode.normal : metricsMin.garbageCollectMode,
       // ],
       metrics: metrics,
       metricsMin: metricsMin

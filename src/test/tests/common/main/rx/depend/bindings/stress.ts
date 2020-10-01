@@ -524,12 +524,12 @@ describe('common > main > rx > depend > bindings > stress', function() {
 
 	function optionsPatternBuilder(metrics: IMetrics, metricsMin: IMetrics) {
 		return {
-			countObjects: [1, metricsMin.countObjects ?? 3],
-			countValues: [1, metricsMin.countValues ?? 10],
+			countObjects: [1, metricsMin.countObjects == null ? 3 : metricsMin.countObjects],
+			countValues: [1, metricsMin.countValues == null ? 10 : metricsMin.countValues],
 			garbageCollectMode: GarbageCollectMode.disabled, // TODO
 			// [
 			// 	GarbageCollectMode.deleteImmediate,
-			// 	metricsMin.garbageCollectMode ?? GarbageCollectMode.normal,
+			// 	metricsMin.garbageCollectMode == null ? GarbageCollectMode.normal : metricsMin.garbageCollectMode,
 			// ],
 			metrics,
 			metricsMin,
