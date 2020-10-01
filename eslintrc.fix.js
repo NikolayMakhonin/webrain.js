@@ -46,7 +46,6 @@ const rules = {
 			overrides: {'=': 'after'},
 		},
 	],
-	'no-mixed-spaces-and-tabs': 'error',
 	// '@typescript-eslint/no-extra-parens': [
 	// 	'error',
 	// 	'all',

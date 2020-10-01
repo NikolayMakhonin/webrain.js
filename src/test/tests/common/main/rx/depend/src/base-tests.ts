@@ -251,8 +251,8 @@ function _funcCall(func: IDependencyFunc, callId: string, _this?: any, ...rest: 
 	result.id = callId
 	result.state = getOrCreateCallState(func).apply(_this, rest)
 	assert.ok(result.state)
-	assert.strictEqual(result.state.status, CallStatus.Flag_Invalidated | CallStatus.Flag_Recalc);
-	(result.state as any).id = callId
+	assert.strictEqual(result.state.status, CallStatus.Flag_Invalidated | CallStatus.Flag_Recalc)
+	;(result.state as any).id = callId
 
 	return result
 }
@@ -279,9 +279,8 @@ function clearState(call: IDependencyCall) {
 		newArgs = Array.from(arguments)
 	})
 
-	assert.deepStrictEqual(newArgs, oldArgs);
-
-	(newState as any).id = callId
+	assert.deepStrictEqual(newArgs, oldArgs)
+	;(newState as any).id = callId
 
 	call.state = newState
 }

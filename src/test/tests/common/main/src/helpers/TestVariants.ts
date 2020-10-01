@@ -108,8 +108,8 @@ export abstract class TestVariants<
 		delete optionsVariants.expected
 		delete optionsVariants.exclude
 
-		const actionsWithDescriptions: Array<ITestActionsWithDescription<TAction>>
-			= expandArray(optionsVariants.actions)
+		const actionsWithDescriptions: Array<ITestActionsWithDescription<TAction>> =
+			expandArray(optionsVariants.actions)
 		delete optionsVariants.actions
 
 		// tslint:disable-next-line:prefer-const

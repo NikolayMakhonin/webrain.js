@@ -318,9 +318,9 @@ export class Path<TObject, TValue = TObject> {
 	}
 
 	public init(): Path<TObject, AsyncPropertyValueOf<TValue>> {
-		const canGetSet = pathCanGetSet(this.nodes);
-		(this as any).canGet = canGetSet && (this.nodes)[this.nodes.length - 1].getValue != null;
-		(this as any).canSet = canGetSet && (this.nodes)[this.nodes.length - 1].setValue != null
+		const canGetSet = pathCanGetSet(this.nodes)
+		;(this as any).canGet = canGetSet && (this.nodes)[this.nodes.length - 1].getValue != null
+		;(this as any).canSet = canGetSet && (this.nodes)[this.nodes.length - 1].setValue != null
 		return this as any
 	}
 

@@ -182,8 +182,8 @@ export class DeSerializerVisitor implements IDeSerializerVisitor {
 		}
 
 		if (this._countDeserialized !== _instances.length) {
-			throw new Error(`${_instances.length - this._countDeserialized} instances is not deserialized\r\n` +
-				JSON.stringify(_instances
+			throw new Error(`${_instances.length - this._countDeserialized} instances is not deserialized\r\n`
+				+ JSON.stringify(_instances
 					.map((o, i) => [o, i])
 					.filter(o => !o[0] || o[0] === LOCKED || ThenableSync.isThenable(o[0]))
 					.map(o => getDebugObject(o[0], o[1]))))

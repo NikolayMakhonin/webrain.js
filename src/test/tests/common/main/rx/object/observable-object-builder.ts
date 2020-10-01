@@ -238,8 +238,8 @@ describe('common > main > rx > observable-object-builder', function () {
 		}
 
 		const hasSubscribersUnsubscribe = []
-		assert.strictEqual(typeof (hasSubscribersUnsubscribe[0]
-			= object.propertyChanged.hasSubscribersObservable.subscribe(hasSubscribersSubscriber)), 'function')
+		assert.strictEqual(typeof (hasSubscribersUnsubscribe[0] =
+			object.propertyChanged.hasSubscribersObservable.subscribe(hasSubscribersSubscriber)), 'function')
 		assert.deepStrictEqual(hasSubscribers, [false])
 		hasSubscribers = []
 
@@ -342,8 +342,8 @@ describe('common > main > rx > observable-object-builder', function () {
 		}
 
 		const hasSubscribersUnsubscribe = []
-		assert.strictEqual(typeof (hasSubscribersUnsubscribe[0]
-			= object.propertyChanged.hasSubscribersObservable.subscribe(hasSubscribersSubscriber)), 'function')
+		assert.strictEqual(typeof (hasSubscribersUnsubscribe[0] =
+			object.propertyChanged.hasSubscribersObservable.subscribe(hasSubscribersSubscriber)), 'function')
 		assert.deepStrictEqual(hasSubscribers, [false])
 		hasSubscribers = []
 
@@ -449,8 +449,8 @@ describe('common > main > rx > observable-object-builder', function () {
 		}
 
 		const hasSubscribersUnsubscribe = []
-		assert.strictEqual(typeof (hasSubscribersUnsubscribe[0]
-			= object.propertyChanged.hasSubscribersObservable.subscribe(hasSubscribersSubscriber)), 'function')
+		assert.strictEqual(typeof (hasSubscribersUnsubscribe[0] =
+			object.propertyChanged.hasSubscribersObservable.subscribe(hasSubscribersSubscriber)), 'function')
 		assert.deepStrictEqual(hasSubscribers, [false])
 		hasSubscribers = []
 

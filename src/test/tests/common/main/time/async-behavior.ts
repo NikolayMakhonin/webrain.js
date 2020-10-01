@@ -130,9 +130,8 @@ xdescribe('async behavior', function () {
 					new Promise(resolve => resolve())
 						.then(() => {
 							assert.strictEqual(call, 1)
-						});
-
-					(async () => { })()
+						})
+					;(async () => { })()
 						.then(() => {
 							assert.strictEqual(call, 1)
 						})

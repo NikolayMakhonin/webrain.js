@@ -393,8 +393,8 @@ class MergeState<TTarget, TSource> {
 					isSet = true
 				}
 				: () => {
-					throw new Error(`Class ${olderState.type.name} does not need cloning.` +
-						'You should use "preferClone: false" in merger options for this class')
+					throw new Error(`Class ${olderState.type.name} does not need cloning.`
+						+ 'You should use "preferClone: false" in merger options for this class')
 				},
 			preferCloneNewer,
 			preferCloneNewer,
@@ -449,8 +449,8 @@ class MergeState<TTarget, TSource> {
 				}
 				: () => {
 					if (baseState.mustBeCloned) {
-						throw new Error(`Class ${baseState.type.name} does not need cloning.` +
-							'You should use "preferClone: false" in merger options for this class')
+						throw new Error(`Class ${baseState.type.name} does not need cloning.`
+							+ 'You should use "preferClone: false" in merger options for this class')
 					} else {
 						isSet = true
 					}
@@ -637,11 +637,11 @@ export class MergerVisitor implements IMergerVisitor {
 			if (!isPrimitive(older)) {
 				mergeState.olderState.resolveRef()
 				if (mergeState.baseState.target === mergeState.olderState.target) {
-					mergeState.olderState.preferClone
-						= mergePreferClone(
-						mergeState.baseState.preferClone,
-						mergeState.olderState.preferClone,
-					)
+					mergeState.olderState.preferClone =
+						mergePreferClone(
+							mergeState.baseState.preferClone,
+							mergeState.olderState.preferClone,
+						)
 					mergeState.baseState = mergeState.olderState
 				}
 				older = mergeState.olderState.target

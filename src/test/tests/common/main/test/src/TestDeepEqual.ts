@@ -53,8 +53,8 @@ function resolveOptions(
 	optionsParams: IDeepEqualOptionsVariant & IOptionsVariant<IDeepEqualAction, IDeepEqualExpected>,
 ): IDeepEqualOptionsVariant & IOptionsVariant<IDeepEqualAction, IDeepEqualExpected> {
 
-	const resolvedOptions: IDeepEqualOptionsVariant & IOptionsVariant<IDeepEqualAction, IDeepEqualExpected>
-		= {...optionsSource} as any
+	const resolvedOptions: IDeepEqualOptionsVariant & IOptionsVariant<IDeepEqualAction, IDeepEqualExpected> =
+		{...optionsSource} as any
 
 	for (const key in resolvedOptions) {
 		if (Object.prototype.hasOwnProperty.call(resolvedOptions, key)) {

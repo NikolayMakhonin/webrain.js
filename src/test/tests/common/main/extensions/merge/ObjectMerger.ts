@@ -632,8 +632,8 @@ describe('common > extensions > merge > ObjectMerger', function () {
 				preferCloneMeta      : [null],
 				valueType            : [Class],
 				valueFactory         : [null, () => {
-					const instance = new Class(null);
-					(instance as any).custom = true
+					const instance = new Class(null)
+					;(instance as any).custom = true
 					return instance
 				}],
 				setFunc : [true],

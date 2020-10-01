@@ -27,8 +27,8 @@ describe('common > main > rx > subjects > hasSubscribers', function () {
 		}
 
 		const hasSubscribersUnsubscribe = []
-		assert.strictEqual(typeof (hasSubscribersUnsubscribe[0]
-			= subject.hasSubscribersObservable.subscribe(hasSubscribersSubscriber)), 'function')
+		assert.strictEqual(typeof (hasSubscribersUnsubscribe[0] =
+			subject.hasSubscribersObservable.subscribe(hasSubscribersSubscriber)), 'function')
 		assert.deepStrictEqual(hasSubscribers, [false])
 		hasSubscribers = []
 
@@ -56,8 +56,8 @@ describe('common > main > rx > subjects > hasSubscribers', function () {
 		assert.deepStrictEqual(results, ['2'])
 		results = []
 
-		assert.strictEqual(typeof (hasSubscribersUnsubscribe[0]
-			= subject.hasSubscribersObservable.subscribe(hasSubscribersSubscriber)), 'function')
+		assert.strictEqual(typeof (hasSubscribersUnsubscribe[0] =
+			subject.hasSubscribersObservable.subscribe(hasSubscribersSubscriber)), 'function')
 		assert.deepStrictEqual(hasSubscribers, [true])
 		hasSubscribers = []
 

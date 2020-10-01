@@ -86,8 +86,8 @@ function resolveOptions(
 	optionsParams: IThenableSyncOptionsVariant & IOptionsVariant<IThenableSyncAction, IThenableSyncExpected>,
 ): IThenableSyncOptionsVariant & IOptionsVariant<IThenableSyncAction, IThenableSyncExpected> {
 
-	const resolvedOptions: IThenableSyncOptionsVariant & IOptionsVariant<IThenableSyncAction, IThenableSyncExpected>
-		= {...optionsSource} as any
+	const resolvedOptions: IThenableSyncOptionsVariant & IOptionsVariant<IThenableSyncAction, IThenableSyncExpected> =
+		{...optionsSource} as any
 
 	for (const key in resolvedOptions) {
 		if (Object.prototype.hasOwnProperty.call(resolvedOptions, key)) {

@@ -67,13 +67,13 @@ export interface IHasSubscribersSubject<T> extends ISubject<T>, IHasSubscribers<
 }
 
 export const HasSubscribersSubject:
-	new<T>() => IHasSubscribersSubject<T>
-	= hasSubscribers(Subject)
+	new<T>() => IHasSubscribersSubject<T> =
+	hasSubscribers(Subject)
 
 export interface IHasSubscribersBehaviorSubject<T> extends ISubject<T>, IBehavior<T>, IHasSubscribers<T> {
 
 }
 
 export const HasSubscribersBehaviorSubject:
-	new<T>() => IHasSubscribersBehaviorSubject<T>
-	= hasSubscribers(BehaviorSubject)
+	new<T>() => IHasSubscribersBehaviorSubject<T> =
+	hasSubscribers(BehaviorSubject)

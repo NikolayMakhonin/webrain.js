@@ -172,8 +172,8 @@ describe('common > main > rx > properties > builder > iterate-rule', function ()
 		assert.deepStrictEqual(paths.sort(), expectedPaths.sort(), JSON.stringify(paths, null, 4))
 
 		if (expectedPaths.length) {
-			assert.ok(unsubscribe);
-			(unsubscribe as IUnsubscribe)()
+			assert.ok(unsubscribe)
+			;(unsubscribe as IUnsubscribe)()
 		} else {
 			assert.notOk(unsubscribe)
 		}

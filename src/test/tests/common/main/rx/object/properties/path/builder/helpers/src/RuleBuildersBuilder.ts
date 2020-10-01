@@ -144,7 +144,7 @@ export class RuleBuildersBuilder<TObject = any, TValueKeys extends string | numb
 			const args = []
 			for (let i = 0; i < len; i++) {
 				const conditionRule = exclusiveConditionRules[i]
-				const [ ruleFactory, indexNext ] = this[index](index)
+				const [ruleFactory, indexNext] = this[index](index)
 				index = indexNext
 				args.push(Array.isArray(conditionRule)
 					? [conditionRule[0], ruleFactory]
@@ -191,7 +191,7 @@ export class RuleBuildersBuilder<TObject = any, TValueKeys extends string | numb
 			: [IRuleFactory<TObject, TValue, TValueKeys>, number]
 		{
 			index++
-			const [ ruleFactory, indexNext ] = this[index](index)
+			const [ruleFactory, indexNext] = this[index](index)
 			index = indexNext
 
 			return [b => b.repeat(countMin, countMax, condition, ruleFactory), index]
@@ -410,7 +410,7 @@ export function applyRuleFactories<TObject, TValue, TValueKeys extends string | 
 	const len = ruleFactories.length
 	let index = 0
 	while (index < len) {
-		const [ ruleFactory, indexNext ] = ruleFactories[index](index)
+		const [ruleFactory, indexNext] = ruleFactories[index](index)
 		builder = ruleFactory(builder)
 		index = indexNext
 	}

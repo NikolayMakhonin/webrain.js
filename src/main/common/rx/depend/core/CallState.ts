@@ -1921,8 +1921,8 @@ export function createDependentFunc<
 			? callStateProvider.get
 			: callStateProvider.getOrCreate
 
-		const state: CallState<TThisOuter, TArgs, TResultInner>
-			= getState.apply(this, arguments)
+		const state: CallState<TThisOuter, TArgs, TResultInner> =
+			getState.apply(this, arguments)
 
 		return state != null
 			? state.getValue() as any

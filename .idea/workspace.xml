@@ -31,17 +31,31 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="69b2ee16-521b-4efd-b473-8e19e3df4d09" name="Default Changelist" comment="">
-      <change beforePath="$PROJECT_DIR$/.eslintrc.js" beforeDir="false" afterPath="$PROJECT_DIR$/.eslintrc.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/eslintrc.fix.js" beforeDir="false" afterPath="$PROJECT_DIR$/eslintrc.fix.js" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/common/extensions/merge/mergers.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/common/extensions/merge/mergers.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/common/index.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/common/index.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/common/random/Random.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/common/random/Random.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/common/extensions/serialization/serializers.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/common/extensions/serialization/serializers.ts" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/common/random/uuid.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/common/random/uuid.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/test/.eslintrc.js" beforeDir="false" afterPath="$PROJECT_DIR$/src/test/.eslintrc.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/test/performance/node/Variants.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/test/performance/node/Variants.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/test/performance/node/fundamental-operations.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/test/performance/node/fundamental-operations.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/common/rx/depend/core/CallState.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/common/rx/depend/core/CallState.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/common/rx/object/properties/CalcObjectBuilder.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/common/rx/object/properties/CalcObjectBuilder.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/common/rx/object/properties/path/builder.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/common/rx/object/properties/path/builder.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/common/rx/subjects/behavior.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/common/rx/subjects/behavior.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/common/rx/subjects/hasSubscribers.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/common/rx/subjects/hasSubscribers.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/common/rx/subjects/subject.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/common/rx/subjects/subject.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/common/test/register.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/common/test/register.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/test/performance/node/map.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/test/performance/node/map.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/test/tests/common/main/async/src/TestThenableSync.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/test/tests/common/main/async/src/TestThenableSync.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/test/tests/common/main/extensions/merge/ObjectMerger.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/test/tests/common/main/extensions/merge/ObjectMerger.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/test/tests/common/main/extensions/merge/src/TestMerger.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/test/tests/common/main/extensions/merge/src/TestMerger.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/test/tests/common/main/rx/depend/src/base-tests.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/test/tests/common/main/rx/depend/src/base-tests.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/test/tests/common/main/rx/object/observable-object-builder.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/test/tests/common/main/rx/object/observable-object-builder.ts" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/test/tests/common/main/rx/object/properties/path/builder/helpers/src/RuleBuildersBuilder.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/test/tests/common/main/rx/object/properties/path/builder/helpers/src/RuleBuildersBuilder.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/test/tests/common/main/rx/object/properties/path/iterate-rule.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/test/tests/common/main/rx/object/properties/path/iterate-rule.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/test/tests/common/main/rx/subjects/hasSubscribers.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/test/tests/common/main/rx/subjects/hasSubscribers.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/test/tests/common/main/src/helpers/TestVariants.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/test/tests/common/main/src/helpers/TestVariants.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/test/tests/common/main/test/Variants.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/test/tests/common/main/test/Variants.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/test/tests/common/main/test/src/TestDeepEqual.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/test/tests/common/main/test/src/TestDeepEqual.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/test/tests/common/main/time/async-behavior.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/test/tests/common/main/time/async-behavior.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/test/tests/node/v8/src/helpers/helpers.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/test/tests/node/v8/src/helpers/helpers.ts" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -582,14 +596,7 @@
       <workItem from="1601366123016" duration="15953000" />
       <workItem from="1601492736938" duration="63000" />
       <workItem from="1601521921362" duration="7482000" />
-      <workItem from="1601530450424" duration="14634000" />
-    </task>
-    <task id="LOCAL-00548" summary="Improved depend stress test">
-      <created>1599725854683</created>
-      <option name="number" value="00548" />
-      <option name="presentableId" value="LOCAL-00548" />
-      <option name="project" value="LOCAL" />
-      <updated>1599725854684</updated>
+      <workItem from="1601530450424" duration="15078000" />
     </task>
     <task id="LOCAL-00549" summary="Develop two way binding">
       <created>1599725875431</created>
@@ -927,7 +934,14 @@
       <option name="project" value="LOCAL" />
       <updated>1601541959916</updated>
     </task>
-    <option name="localTasksCounter" value="597" />
+    <task id="LOCAL-00597" summary="Lint fixes">
+      <created>1601545345106</created>
+      <option name="number" value="00597" />
+      <option name="presentableId" value="LOCAL-00597" />
+      <option name="project" value="LOCAL" />
+      <updated>1601545345106</updated>
+    </task>
+    <option name="localTasksCounter" value="598" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -1011,9 +1025,9 @@
     <MESSAGE value="Fix lint configs" />
     <MESSAGE value="Lint fix: key-spacing" />
     <MESSAGE value="Added separated lint fix config" />
-    <MESSAGE value="Lint fixes" />
     <MESSAGE value="Lint autofix: space-before-function-paren &amp; generator-star-spacing" />
-    <option name="LAST_COMMIT_MESSAGE" value="Lint autofix: space-before-function-paren &amp; generator-star-spacing" />
+    <MESSAGE value="Lint fixes" />
+    <option name="LAST_COMMIT_MESSAGE" value="Lint fixes" />
   </component>
   <component name="WindowStateProjectService">
     <state x="612" y="18" key="#TypeScript" timestamp="1599721259508">
@@ -1040,10 +1054,10 @@
       <screen x="0" y="0" width="1920" height="882" />
     </state>
     <state x="651" y="254" key="ANALYSIS_DLG_com.intellij.analysis.BaseAnalysisAction$1/0.0.1920.882@0.0.1920.882" timestamp="1601535409371" />
-    <state x="-2" y="0" width="1918" height="882" key="CommitChangelistDialog2" timestamp="1601541959070">
+    <state x="-2" y="0" width="1918" height="882" key="CommitChangelistDialog2" timestamp="1601545344325">
       <screen x="0" y="0" width="1920" height="882" />
     </state>
-    <state x="-2" y="0" width="1918" height="882" key="CommitChangelistDialog2/0.0.1920.882@0.0.1920.882" timestamp="1601541959070" />
+    <state x="-2" y="0" width="1918" height="882" key="CommitChangelistDialog2/0.0.1920.882@0.0.1920.882" timestamp="1601545344325" />
     <state width="1009" height="582" key="DebuggerActiveHint" timestamp="1601537988332">
       <screen x="0" y="0" width="1920" height="882" />
     </state>
@@ -1052,10 +1066,10 @@
       <screen x="0" y="0" width="1920" height="882" />
     </state>
     <state x="0" y="4" width="1917" height="875" key="DiffContextDialog/0.0.1920.882@0.0.1920.882" timestamp="1601539276611" />
-    <state x="1059" y="106" key="FileChooserDialogImpl" timestamp="1601544388453">
+    <state x="1059" y="106" key="FileChooserDialogImpl" timestamp="1601545486158">
       <screen x="0" y="0" width="1920" height="882" />
     </state>
-    <state x="1059" y="106" key="FileChooserDialogImpl/0.0.1920.882@0.0.1920.882" timestamp="1601544388453" />
+    <state x="1059" y="106" key="FileChooserDialogImpl/0.0.1920.882@0.0.1920.882" timestamp="1601545486158" />
     <state width="502" height="228" key="GridCell.Tab.0.bottom" timestamp="1601543623875">
       <screen x="0" y="0" width="1920" height="882" />
     </state>

@@ -197,8 +197,8 @@ function resolveOptions(
 	clone: boolean,
 ): IMergerOptionsVariant & IOptionsVariant<IMergerAction, IMergerExpected> {
 
-	const resolvedOptions: IMergerOptionsVariant & IOptionsVariant<IMergerAction, IMergerExpected>
-		= {...optionsSource} as any
+	const resolvedOptions: IMergerOptionsVariant & IOptionsVariant<IMergerAction, IMergerExpected> =
+		{...optionsSource} as any
 
 	if (clone) {
 		if (!Object.isFrozen(resolvedOptions.base) && !isRefer(resolvedOptions.base)) {

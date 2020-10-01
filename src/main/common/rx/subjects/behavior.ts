@@ -70,5 +70,5 @@ export interface IBehaviorSubject<T> extends ISubject<T>, IBehavior<T> {
 }
 
 export const BehaviorSubject:
-	new<T>(value?: T) => IBehaviorSubject<T>
-	= behavior(Subject)
+	new<T>(value?: T) => IBehaviorSubject<T> =
+	behavior(Subject)
