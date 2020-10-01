@@ -35,6 +35,7 @@
     "build:libs": "node env/libs/dependent-func/build.js",
     "build": "npm run build:types && npm run build:mjs && npm run build:js",
     "lint:es": "eslint --plugin markdown --ext js,ts,md .",
+    "lint:es:fix": "eslint --plugin markdown --ext js,ts,md . --no-eslintrc -c eslintrc.fix.js --fix",
     "lint:ts": "tslint --project tsconfig.eslint.json --config tslint.json --exclude {node_modules,dist,tmp,_trash,docs}/** **/*.ts",
     "lint": "npm run lint:es && npm run lint:ts",
     "test:mocha:src": "mocha --opts ./env/mocha/configs/babel/mocha.opts \"./src/test/tests/{node,common}/**/*.*\"",
