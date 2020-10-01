@@ -7,10 +7,10 @@ import {describe, it} from '../../../main/common/test/Mocha'
 declare const after
 declare const babelGetFileCode
 
-describe('common > async', function() {
+describe('common > async', function () {
 	this.timeout(300000)
 
-	it('ThenableSync then resolve', function() {
+	it('ThenableSync then resolve', function () {
 		let _resolve
 		function executor(resolve) {
 			_resolve = resolve

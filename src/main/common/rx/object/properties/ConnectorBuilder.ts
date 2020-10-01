@@ -289,7 +289,7 @@ export class ConnectorBuilder<
 			throw new Error('path.canGet == false')
 		}
 
-		let getValue = function(this: typeof object) {
+		let getValue = function (this: typeof object) {
 			return path.get(this)
 		}
 		if (isDepend) {
@@ -298,7 +298,7 @@ export class ConnectorBuilder<
 				getValue = dependWait(getValue, waitCondition as any, waitTimeout, isLazy)
 			} else if (isLazy) {
 				const _getValue = getValue
-				getValue = function() {
+				getValue = function () {
 					const state = getOrCreateCallState(_getValue).apply(this, arguments)
 					return state.getValue(true)
 				}
@@ -311,7 +311,7 @@ export class ConnectorBuilder<
 			get         : getValue,
 			set         : !path.canSet
 				? missingSetter
-				: function(value: TValue) {
+				: function (value: TValue) {
 					return path.set(this, value)
 				},
 		})

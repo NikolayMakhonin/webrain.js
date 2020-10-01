@@ -14,7 +14,7 @@ import {
 
 declare const beforeEach: any
 
-describe('common > main > test > randomTest', function() {
+describe('common > main > test > randomTest', function () {
 	this.timeout(24 * 60 * 60 * 1000)
 
 	// region metrics
@@ -171,7 +171,7 @@ describe('common > main > test > randomTest', function() {
 	// 		})
 	// })
 
-	it('base', async function() {
+	it('base', async function () {
 		await randomTest({
 			stopPredicate: testRunnerMetrics => {
 				return testRunnerMetrics.iterationNumber >= 50

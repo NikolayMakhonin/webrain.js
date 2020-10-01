@@ -7,8 +7,8 @@ import {calcMemAllocate} from '../../../main/common/test/calc-mem-allocate'
 import {describe, it, xit} from '../../../main/common/test/Mocha'
 import {createPerceptron, createPerceptronNaked} from '../../tests/common/main/rx/depend/src/perceptron'
 
-describe('dependent-func perf', function() {
-	it('perceptron recalc', function() {
+describe('dependent-func perf', function () {
+	it('perceptron recalc', function () {
 		this.timeout(300000)
 
 		const {
@@ -60,7 +60,7 @@ describe('dependent-func perf', function() {
 		assert.ok(chromeFuncsPerFrame >= 150, chromeFuncsPerFrame + '')
 	})
 
-	xit('set memory', function() {
+	xit('set memory', function () {
 		this.timeout(300000)
 
 		const set = new Set()
@@ -81,7 +81,7 @@ describe('dependent-func perf', function() {
 		}).toString())
 	})
 
-	it('perceptron memory create', function() {
+	it('perceptron memory create', function () {
 		this.timeout(300000)
 
 		let countFuncs
@@ -95,7 +95,7 @@ describe('dependent-func perf', function() {
 		result.averageValue.forEach(o => assert.ok(o <= 750))
 	})
 
-	it('perceptron create', function() {
+	it('perceptron create', function () {
 		this.timeout(300000)
 
 		const {
@@ -131,7 +131,7 @@ describe('dependent-func perf', function() {
 		assert.ok(result.absoluteDiff[0] < 15000, result.absoluteDiff[1] + '')
 	})
 
-	it('perceptron memory recalc', function() {
+	it('perceptron memory recalc', function () {
 		this.timeout(300000)
 
 		const {

@@ -3,8 +3,8 @@ import {calcPerformance} from 'rdtsc'
 import {describe, it, xit} from '../../../main/common/test/Mocha'
 import {fastNow} from '../../../main/common/time/helpers'
 
-describe('fastNow perf', function() {
-	it('base', function() {
+describe('fastNow perf', function () {
+	it('base', function () {
 		this.timeout(300000)
 
 		let value = 0

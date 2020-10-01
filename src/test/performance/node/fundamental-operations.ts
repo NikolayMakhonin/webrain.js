@@ -28,18 +28,18 @@ export function compareDefault(o1, o2) {
 	return 0
 }
 
-describe('fundamental-operations', function() {
+describe('fundamental-operations', function () {
 	function Path(value) {
 		this.value = value
 	}
 
-	Path.prototype.unshift = function(value) {
+	Path.prototype.unshift = function (value) {
 		const item = new Path(value)
 		item.next = this
 		return item
 	}
 
-	xit('array add item', function() {
+	xit('array add item', function () {
 		this.timeout(300000)
 
 		const item = 'qweqweqweqweqwe'
@@ -74,7 +74,7 @@ describe('fundamental-operations', function() {
 		console.log(str, result)
 	})
 
-	xit('pass arguments', function() {
+	xit('pass arguments', function () {
 		this.timeout(300000)
 
 		function f1(args) {
@@ -105,7 +105,7 @@ describe('fundamental-operations', function() {
 		console.log(result)
 	})
 
-	xit('lambda vs function', function() {
+	xit('lambda vs function', function () {
 		this.timeout(300000)
 
 		// noinspection JSUnusedLocalSymbols
@@ -185,7 +185,7 @@ describe('fundamental-operations', function() {
 		console.log(result)
 	})
 
-	xit('lazy function parameters', function() {
+	xit('lazy function parameters', function () {
 		this.timeout(300000)
 
 		function f(arg1, arg2) {
@@ -239,7 +239,7 @@ describe('fundamental-operations', function() {
 		return arr
 	}
 
-	xit('array decrease length', function() {
+	xit('array decrease length', function () {
 		this.timeout(300000)
 
 		const arr = generateArray(10000)
@@ -273,7 +273,7 @@ describe('fundamental-operations', function() {
 		console.log(result)
 	})
 
-	xit('array decrease length 100', function() {
+	xit('array decrease length 100', function () {
 		this.timeout(300000)
 
 		const arr = generateArray(10000)
@@ -301,7 +301,7 @@ describe('fundamental-operations', function() {
 		console.log(result)
 	})
 
-	xit('array increase length', function() {
+	xit('array increase length', function () {
 		this.timeout(300000)
 
 		const arr = generateArray(10000)
@@ -349,7 +349,7 @@ describe('fundamental-operations', function() {
 		console.log(result)
 	})
 
-	xit('array increase length 100', function() {
+	xit('array increase length 100', function () {
 		this.timeout(300000)
 
 		const arr = generateArray(10000)
@@ -395,7 +395,7 @@ describe('fundamental-operations', function() {
 		console.log(result)
 	})
 
-	xit('array default value', function() {
+	xit('array default value', function () {
 		this.timeout(300000)
 
 		const arrNumbers = generateArray(10)
@@ -520,7 +520,7 @@ describe('fundamental-operations', function() {
 		console.log(result)
 	})
 
-	xit('array last index', function() {
+	xit('array last index', function () {
 		this.timeout(300000)
 
 		function defaultCompare(o1, o2) {
@@ -628,7 +628,7 @@ describe('fundamental-operations', function() {
 		console.log(`${sortCount}\t${binarySearchCount}\t${JSON.stringify(array)}\t${JSON.stringify(addArray)}`)
 	}
 
-	xit('sorted array add items', function() {
+	xit('sorted array add items', function () {
 		this.timeout(300000)
 
 		const array = []
@@ -657,7 +657,7 @@ describe('fundamental-operations', function() {
 		console.log(result)
 	})
 
-	xit('regexp', function() {
+	xit('regexp', function () {
 		this.timeout(300000)
 
 		const regexp = /qwe\/wer\/ert\/rty\/tyu/
@@ -681,7 +681,7 @@ describe('fundamental-operations', function() {
 		console.log(result)
 	})
 
-	xit('operations inside compare func', function() {
+	xit('operations inside compare func', function () {
 		this.timeout(300000)
 
 		const obj = () => {}
@@ -712,7 +712,7 @@ describe('fundamental-operations', function() {
 		console.log(result)
 	})
 
-	xit('Set', function() {
+	xit('Set', function () {
 		this.timeout(300000)
 
 		assert.strictEqual(SetNative, Set)
@@ -970,7 +970,7 @@ describe('fundamental-operations', function() {
 		console.log(result)
 	})
 
-	xit('Number toString', function() {
+	xit('Number toString', function () {
 		this.timeout(300000)
 		const numInt = 123456789
 		const numFloat = 1234.56789
@@ -993,7 +993,7 @@ describe('fundamental-operations', function() {
 		console.log(result)
 	})
 
-	xit('hasOwnProperty', function() {
+	xit('hasOwnProperty', function () {
 		this.timeout(300000)
 		const object = {property: true}
 		const child = Object.create(object)
@@ -1012,7 +1012,7 @@ describe('fundamental-operations', function() {
 		console.log(result)
 	})
 
-	xit('setTimeout', function() {
+	xit('setTimeout', function () {
 		this.timeout(300000)
 		const func = () => {}
 		let timerId
@@ -1029,7 +1029,7 @@ describe('fundamental-operations', function() {
 		console.log(result)
 	})
 
-	xit('Math.max()', function() {
+	xit('Math.max()', function () {
 		this.timeout(300000)
 		const func = () => {}
 		let timerId
@@ -1052,7 +1052,7 @@ describe('fundamental-operations', function() {
 		console.log(result)
 	})
 
-	xit('"out" vs "set func" params', function() {
+	xit('"out" vs "set func" params', function () {
 		this.timeout(300000)
 
 		const funcOut = (a, out) => {
@@ -1095,7 +1095,7 @@ describe('fundamental-operations', function() {
 		console.log(result)
 	})
 
-	xit('func params as object', function() {
+	xit('func params as object', function () {
 		this.timeout(300000)
 
 		const funcSimple = (
@@ -1158,7 +1158,7 @@ describe('fundamental-operations', function() {
 		console.log(result)
 	})
 
-	xit('new Array(size)', function() {
+	xit('new Array(size)', function () {
 		this.timeout(300000)
 
 		const size = 1000
@@ -1217,7 +1217,7 @@ describe('fundamental-operations', function() {
 		})
 	}
 
-	xit('delete property', function() {
+	xit('delete property', function () {
 		this.timeout(300000)
 
 		const hashTable = {}
@@ -1276,7 +1276,7 @@ describe('fundamental-operations', function() {
 		console.log(result)
 	})
 
-	xit('Promise sync', function() {
+	xit('Promise sync', function () {
 		this.timeout(300000)
 
 		const result = calcPerformance(
@@ -1310,12 +1310,12 @@ describe('fundamental-operations', function() {
 		console.log(result)
 	})
 
-	xit('is iterable', function() {
+	xit('is iterable', function () {
 		this.timeout(300000)
 
 		const iterable = true
 		const iterable2 = {
-			* [Symbol.iterator]() {
+			*[Symbol.iterator]() {
 				for (let i = 0; i < 100; i++) {
 					if (Math.random() > 1) {
 						return 2
@@ -1357,7 +1357,7 @@ describe('fundamental-operations', function() {
 		console.log(result)
 	})
 
-	xit('array is associative', function() {
+	xit('array is associative', function () {
 		this.timeout(300000)
 
 		const arr = []
@@ -1378,7 +1378,7 @@ describe('fundamental-operations', function() {
 		console.log(result)
 	})
 
-	xit('Object.freeze', function() {
+	xit('Object.freeze', function () {
 		this.timeout(300000)
 
 		const result = calcPerformance(
@@ -1408,7 +1408,7 @@ describe('fundamental-operations', function() {
 		console.log(result)
 	})
 
-	xit('defineProperty', function() {
+	xit('defineProperty', function () {
 		this.timeout(300000)
 
 		const hashTable = {}
@@ -1474,7 +1474,7 @@ describe('fundamental-operations', function() {
 		console.log(result)
 	})
 
-	it('try catch', function() {
+	it('try catch', function () {
 		this.timeout(300000)
 
 		function tryCatch<T>(func: () => T|void, onValue: (value: T) => void, onError: (error) => void): boolean {
@@ -1546,7 +1546,7 @@ describe('fundamental-operations', function() {
 		console.log(result)
 	})
 
-	xit('ThenableSync', function() {
+	xit('ThenableSync', function () {
 		this.timeout(300000)
 
 		const rejected = ThenableSync.createRejected(1)
@@ -1620,7 +1620,7 @@ describe('fundamental-operations', function() {
 		return count / (time / 1000)
 	}
 
-	xit('ThenableSync 2', async function() {
+	xit('ThenableSync 2', async function () {
 		this.timeout(300000)
 
 		async function nestedPromise() {
@@ -1711,7 +1711,7 @@ describe('fundamental-operations', function() {
 	// 	console.log(result)
 	// })
 
-	xit('Resolve properties path', function() {
+	xit('Resolve properties path', function () {
 		this.timeout(300000)
 
 		class ResolvePropertiesPath<TValue> {
@@ -1772,7 +1772,7 @@ describe('fundamental-operations', function() {
 		console.log(result)
 	})
 
-	xit('ObservableObjectTest', function() {
+	xit('ObservableObjectTest', function () {
 		this.timeout(300000)
 
 		const withOptimization = true
@@ -1805,7 +1805,7 @@ describe('fundamental-operations', function() {
 				return this.__fields[propertyName]
 			}
 
-			return function() { return func.call(this) }
+			return function () { return func.call(this) }
 		}
 
 		function createSetFunction<Name extends string | number>(propertyName: Name)
@@ -1838,8 +1838,8 @@ describe('fundamental-operations', function() {
 				// getValue: (o: { [newProp in Name]: T }) => T,
 				// setValue: (o: { [newProp in Name]: T }, v: T) => void,
 			): this & { object: { [newProp in Name]: T } } {
-				const getValue = createFunction(() => (function() { return this.__fields[name] }), 'o', `return o.__fields["${name}"]`)
-				const setValue = createFunction(() => (function(v) { this.__fields[name] = v }), 'o', 'v', `o.__fields["${name}"] = v`)
+				const getValue = createFunction(() => (function () { return this.__fields[name] }), 'o', `return o.__fields["${name}"]`)
+				const setValue = createFunction(() => (function (v) { this.__fields[name] = v }), 'o', 'v', `o.__fields["${name}"] = v`)
 				// let getValue = createGetFunction(name, o => { getValue = o as any }) as (o: { [newProp in Name]: T }) => T
 				// const getValue = getValueBase.bind(null, name)
 				// const setValue = createSetFunction(name) as (o: { [newProp in Name]: T }, v: T) => void
@@ -1916,7 +1916,7 @@ describe('fundamental-operations', function() {
 		console.log(result)
 	})
 
-	xit('pass arguments', function() {
+	xit('pass arguments', function () {
 		this.timeout(300000)
 
 		function _x(a, b, c, d) {
@@ -1959,7 +1959,7 @@ describe('fundamental-operations', function() {
 		console.log(result)
 	})
 
-	it('new Array', function() {
+	it('new Array', function () {
 		this.timeout(300000)
 
 		const arr1 = []

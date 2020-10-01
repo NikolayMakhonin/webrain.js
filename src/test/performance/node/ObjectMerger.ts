@@ -8,7 +8,7 @@ import {describe, it} from '../../../main/common/test/Mocha'
 declare const after
 declare const babelGetFileCode
 
-describe('common > extensions > merge > ObjectMerger', function() {
+describe('common > extensions > merge > ObjectMerger', function () {
 	this.timeout(300000)
 
 	const merger = new ObjectMerger()
@@ -48,7 +48,7 @@ describe('common > extensions > merge > ObjectMerger', function() {
 	// 	])
 	// })
 
-	it('objects', function() {
+	it('objects', function () {
 		// perfTest('objects', [
 		// 	{}, { a: {a: 1, b: 2}, b: 3 }, { a: {b: 4, c: 5}, c: 6 }, { a: {a: 7, b: 8}, d: 9 },
 		// 	{}, { a: {a: 1, b: 2}, b: 3 }, { a: {b: 4, c: 5}, c: 6 }, { a: {a: 7, b: 8}, d: 9 },

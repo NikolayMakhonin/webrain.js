@@ -4,16 +4,16 @@ import {TestThenableSync, ValueType} from './src/TestThenableSync'
 
 declare const after
 
-describe('common > main > helpers > ThenableSync', function() {
+describe('common > main > helpers > ThenableSync', function () {
 	this.timeout(120000)
 
 	const testThenableSync = TestThenableSync.test
 
-	after(function() {
+	after(function () {
 		console.log('Total ThenableSync tests >= ' + TestThenableSync.totalTests)
 	})
 
-	it('variants', function() {
+	it('variants', function () {
 		testThenableSync({
 			exclude: o => {
 				if (o.thenValue0 === ValueType.IteratorThrow && o.thenValue1 === ValueType.IteratorThrow) {

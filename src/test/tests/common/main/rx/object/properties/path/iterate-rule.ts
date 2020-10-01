@@ -14,7 +14,7 @@ import {IUnsubscribe, IUnsubscribeOrVoid} from '../../../../../../../../main/com
 import {assert} from '../../../../../../../../main/common/test/Assert'
 import {describe, it, xit} from '../../../../../../../../main/common/test/Mocha'
 
-describe('common > main > rx > properties > builder > iterate-rule', function() {
+describe('common > main > rx > properties > builder > iterate-rule', function () {
 	// function ruleToString(rule: IRule) {
 	// 	if (!rule) {
 	// 		return rule + ''
@@ -185,7 +185,7 @@ describe('common > main > rx > properties > builder > iterate-rule', function() 
 		testForEachRules(buildRule, ...expectedPaths)
 	}
 
-	it('never', function() {
+	it('never', function () {
 		testIterateRule(
 			b => b
 				.any(
@@ -243,7 +243,7 @@ describe('common > main > rx > properties > builder > iterate-rule', function() 
 		)
 	})
 
-	it('nothing', function() {
+	it('nothing', function () {
 		testIterateRule(
 			b => b
 				.any(
@@ -342,7 +342,7 @@ describe('common > main > rx > properties > builder > iterate-rule', function() 
 		)
 	})
 
-	it('any', function() {
+	it('any', function () {
 		testIterateRule(
 			b => b
 				.any(
@@ -419,7 +419,7 @@ describe('common > main > rx > properties > builder > iterate-rule', function() 
 		)
 	})
 
-	xit('path any', function() {
+	xit('path any', function () {
 		testIterateRule(
 			b => b.p('a', 'b').p<any>('c'),
 			'a|b.c',
@@ -433,7 +433,7 @@ describe('common > main > rx > properties > builder > iterate-rule', function() 
 		)
 	})
 
-	it('repeat', function() {
+	it('repeat', function () {
 		testIterateRule(
 			b => b
 				.repeat(1, 1, null,
@@ -543,7 +543,7 @@ describe('common > main > rx > properties > builder > iterate-rule', function() 
 		)
 	})
 
-	it('throws', function() {
+	it('throws', function () {
 		Array.from(iterateRule(testObject, new Rule(0 as RuleType)))
 
 		assert.throws(() => Array.from(iterateRule(testObject, new Rule(-1 as RuleType)), Error))
@@ -557,7 +557,7 @@ describe('common > main > rx > properties > builder > iterate-rule', function() 
 		}).any<any>(), Error)
 	})
 
-	it('specific', function() {
+	it('specific', function () {
 		testIterateRule(
 			b => b
 				.any(

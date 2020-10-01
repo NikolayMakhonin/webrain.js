@@ -2,8 +2,8 @@ import {ISubscriber, IUnsubscribe, Observable} from '../../../../../../main/comm
 import {assert} from '../../../../../../main/common/test/Assert'
 import {describe, it} from '../../../../../../main/common/test/Mocha'
 
-describe('common > main > rx > subjects > observable', function() {
-	it('Observable', function() {
+describe('common > main > rx > subjects > observable', function () {
+	it('Observable', function () {
 		class CustomObservable<T = any> extends Observable<T> {
 			public subscribe(subscriber: ISubscriber<T>): IUnsubscribe {
 				throw new Error('Not implemented')

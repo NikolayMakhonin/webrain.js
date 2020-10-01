@@ -7,7 +7,7 @@ import {calcMemAllocate} from '../../../main/common/test/calc-mem-allocate'
 import {describe, it, xit} from '../../../main/common/test/Mocha'
 import {MapPolyfill} from './src/MapPolyfill.js'
 
-describe('map perf', function() {
+describe('map perf', function () {
 	/* tslint:disable */
 
 	// see: https://github.com/garycourt/murmurhash-js
@@ -131,7 +131,7 @@ describe('map perf', function() {
 		}
 	}
 
-	it('base', function() {
+	it('base', function () {
 		this.timeout(300000)
 
 		const map = new Map()
@@ -180,7 +180,7 @@ describe('map perf', function() {
 		console.log(result)
 	})
 
-	xit('memory', function() {
+	xit('memory', function () {
 		this.timeout(300000)
 
 		const set = new Set()

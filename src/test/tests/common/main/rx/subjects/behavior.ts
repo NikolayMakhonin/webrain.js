@@ -4,8 +4,8 @@ import {assert} from '../../../../../../main/common/test/Assert'
 import {describe, it} from '../../../../../../main/common/test/Mocha'
 import {TestSubject} from '../src/TestSubject'
 
-describe('common > main > rx > subjects > behavior', function() {
-	it('behavior', function() {
+describe('common > main > rx > subjects > behavior', function () {
+	it('behavior', function () {
 		let subject = new (behavior(TestSubject))()
 
 		assert.strictEqual(subject.subscribe(null), null)

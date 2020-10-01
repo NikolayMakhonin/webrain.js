@@ -2,8 +2,8 @@
 import {assert} from '../../../../../main/common/test/Assert'
 import {describe, it, xdescribe, xit} from '../../../../../main/common/test/Mocha'
 
-xdescribe('async behavior', function() {
-	it('base', async function() {
+xdescribe('async behavior', function () {
+	it('base', async function () {
 		this.timeout(10000)
 
 		const asyncImmediate = async (func?) => {

@@ -5,7 +5,7 @@ import {ObservableObjectBuilder} from '../../../../../../main/common/rx/object/O
 import {assert} from '../../../../../../main/common/test/Assert'
 import {describe, it} from '../../../../../../main/common/test/Mocha'
 
-describe('common > main > rx > observable-object-builder-prototype', function() {
+describe('common > main > rx > observable-object-builder-prototype', function () {
 	function assertEvents(events: IPropertyChangedEvent[], check: IPropertyChangedEvent[]) {
 		events = events && events.map(o => ({
 			name    : o.name,
@@ -16,7 +16,7 @@ describe('common > main > rx > observable-object-builder-prototype', function() 
 		assert.deepStrictEqual(events, check)
 	}
 
-	it('writable', function() {
+	it('writable', function () {
 		class BaseClass1 extends ObservableClass {
 			public baseProp1: any
 		}
@@ -206,7 +206,7 @@ describe('common > main > rx > observable-object-builder-prototype', function() 
 		assert.deepStrictEqual(object2.baseProp1, '7')
 	})
 
-	it('readable', function() {
+	it('readable', function () {
 		class BaseClass1 extends ObservableClass {
 			public baseProp1: any
 		}

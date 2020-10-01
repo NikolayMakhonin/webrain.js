@@ -4,7 +4,7 @@ import {assert} from '../../../../../../main/common/test/Assert'
 import {describe, it} from '../../../../../../main/common/test/Mocha'
 import {TestSubject} from '../src/TestSubject'
 
-describe('common > main > rx > subjects > hasSubscribers', function() {
+describe('common > main > rx > subjects > hasSubscribers', function () {
 	function deleteFromArray(array, item) {
 		const index = array.indexOf(item)
 		if (index > -1) {
@@ -12,7 +12,7 @@ describe('common > main > rx > subjects > hasSubscribers', function() {
 		}
 	}
 
-	it('hasSubscribers', function() {
+	it('hasSubscribers', function () {
 		const subscribers = []
 		const subject = new (toHasSubscribers(TestSubject))()
 

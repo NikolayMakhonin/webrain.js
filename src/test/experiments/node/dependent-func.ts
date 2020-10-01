@@ -13,8 +13,8 @@ import {IUnsubscribeOrVoid} from '../../../main/common/rx/subjects/observable'
 import {assert} from '../../../main/common/test/Assert'
 import {describe, it, xit} from '../../../main/common/test/Mocha'
 
-describe('dependent-func', function() {
-	xit('perf', function() {
+describe('dependent-func', function () {
+	xit('perf', function () {
 		this.timeout(300000)
 
 		let arr1 = []
@@ -34,7 +34,7 @@ describe('dependent-func', function() {
 		console.log(result)
 	})
 
-	it('base', function() {
+	it('base', function () {
 		this.timeout(300000)
 
 		let func1
@@ -45,13 +45,13 @@ describe('dependent-func', function() {
 			return (a || 0) + (b || 0)
 		}
 
-		function* func2Body() {
+		function *func2Body() {
 			yield func1(1)
 			yield func1(2, 3)
 			return func1(2, 3) + 10
 		}
 
-		function* func3Body() {
+		function *func3Body() {
 			const val = yield* func2()
 			return val + 100
 		}

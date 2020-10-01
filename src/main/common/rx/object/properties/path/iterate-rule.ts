@@ -215,7 +215,7 @@ function *_iterateRule(
 				break
 			}
 
-			const repeatNext = function*(nextObject: any, index: number): IRuleIterable {
+			const repeatNext = function *(nextObject: any, index: number): IRuleIterable {
 				let repeatAction = condition ? condition(nextObject, index) : RuleRepeatAction.All
 				if (index < countMin) {
 					repeatAction = repeatAction & ~RuleRepeatAction.Fork

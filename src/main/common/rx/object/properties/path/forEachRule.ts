@@ -8,7 +8,7 @@ export type INextRuleIterable = (object: any) => IRuleIterable
 export type IRuleOrIterable = IRuleAction | IRuleIterable | INextRuleIterable
 export interface IRuleIterable extends Iterable<IRuleOrIterable> {}
 
-const repeatNext = function<TObject, TValue>(
+const repeatNext = function<TObject, TValue> (
 	object: TObject,
 	index: number,
 	repeatRule: IRuleRepeat,

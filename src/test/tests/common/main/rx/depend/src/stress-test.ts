@@ -105,7 +105,7 @@ function getCallId<
 	TArgs,
 	TCallId
 > {
-	return function() {
+	return function () {
 		const buffer = [funcId, this]
 		for (let i = 0, len = arguments.length; i < len; i++) {
 			buffer.push(arguments[i])
@@ -128,7 +128,7 @@ function checkCallState<TThis, TArgs extends any[], TResult>(
 	assert.strictEqual(state._this, call._this)
 
 	let args
-	state.callWithArgs(null, function() {
+	state.callWithArgs(null, function () {
 		args = Array.from(arguments)
 	})
 
@@ -622,7 +622,7 @@ function _stressTest({
 	function createDependFunc() {
 		const isDependX = rnd.nextBoolean()
 
-		const func: TFunc = function() {
+		const func: TFunc = function () {
 			const state: TCallState = isDependX
 				? this
 				: getCallState(func).apply(this, arguments)
@@ -666,7 +666,7 @@ function _stressTest({
 			}
 
 			if (!disableAsync && rnd.nextBoolean(0.1)) {
-				return (function*() {
+				return (function *() {
 					let currentState = getCurrentState()
 					assert.strictEqual(currentState, state)
 
@@ -764,7 +764,7 @@ function _stressTest({
 			return null
 		}
 
-		const call: TCall = function() {
+		const call: TCall = function () {
 			return dependFunc.apply(_this, args)
 		}
 

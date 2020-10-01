@@ -12,10 +12,10 @@ import {CalcType} from '../../../main/common/test/calc'
 declare const after
 declare const babelGetFileCode
 
-describe('memoize', function() {
+describe('memoize', function () {
 	this.timeout(300000)
 
-	const fn = function(one, two?, three?) {
+	const fn = function (one, two?, three?) {
 		for (let i = 0; i < 1000; i++) {
 			Date.now()
 		}
@@ -26,7 +26,7 @@ describe('memoize', function() {
 
 	const dependMemoize = depend(fn)
 
-	it('primitives', function() {
+	it('primitives', function () {
 		const result = calcPerformance(
 			10000,
 			() => {
@@ -43,7 +43,7 @@ describe('memoize', function() {
 		console.log(result)
 	})
 
-	it('objects', function() {
+	it('objects', function () {
 		const obj = {
 			property1: {
 				property2: {
@@ -73,7 +73,7 @@ describe('memoize', function() {
 		console.log(result)
 	})
 
-	it('stress', function() {
+	it('stress', function () {
 		const result = calcPerformance(
 			10000,
 			() => {
@@ -90,7 +90,7 @@ describe('memoize', function() {
 		console.log(result)
 	})
 
-	it('memory', function() {
+	it('memory', function () {
 		console.log(calcMemAllocate(CalcType.Min, 100000, () => {
 			fastMemoize(Math.random())
 		}).toString())

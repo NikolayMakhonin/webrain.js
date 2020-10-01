@@ -11,8 +11,8 @@ import {assert} from '../../../../../../../../main/common/test/Assert'
 import {describe, it} from '../../../../../../../../main/common/test/Mocha'
 import {delay} from '../../../../../../../../main/common/time/helpers'
 
-describe('common > main > rx > properties > builder', function() {
-	it('base', async function() {
+describe('common > main > rx > properties > builder', function () {
+	it('base', async function () {
 		let currentState = null
 		function checkCurrentState() {
 			const _currentState = getCurrentState()
@@ -41,7 +41,7 @@ describe('common > main > rx > properties > builder', function() {
 							return {
 								get c() {
 									checkCurrentState()
-									const iterator: ThenableIterator<typeof innerObject> = (function*() {
+									const iterator: ThenableIterator<typeof innerObject> = (function *() {
 										checkCurrentState()
 										yield delay(0)
 										checkCurrentState()
@@ -85,7 +85,7 @@ describe('common > main > rx > properties > builder', function() {
 				console.log('path: ' + i)
 
 				const path = paths[i]
-				const getValue = dependX(function() {
+				const getValue = dependX(function () {
 					assert.strictEqual(this, currentState, currentState.func + '')
 					checkCurrentState()
 					const val = path.get(object)

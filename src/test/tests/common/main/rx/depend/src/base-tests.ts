@@ -86,7 +86,7 @@ function getDeferredOptions(async: boolean): IDeferredOptions {
 }
 
 function funcSync(id: string, deferred: boolean) {
-	const result: IDependencyFunc = depend(function() {
+	const result: IDependencyFunc = depend(function () {
 		const callId = getCallId(id, this, ...arguments)
 		const isLazy = lazyCalls.indexOf(callId) >= 0
 		_callHistory.push(callId)
@@ -123,7 +123,7 @@ function funcSync(id: string, deferred: boolean) {
 }
 
 function funcSyncIterator(id: string, deferred: boolean) {
-	const nested = function*(dependencies: IDependencyCall[], currentState, isLazy?: boolean) {
+	const nested = function *(dependencies: IDependencyCall[], currentState, isLazy?: boolean) {
 		assert.strictEqual(getCurrentState(), currentState)
 		yield 1
 		assert.strictEqual(getCurrentState(), currentState)
@@ -152,7 +152,7 @@ function funcSyncIterator(id: string, deferred: boolean) {
 		}
 		return 1
 	}
-	const run = function*(callId: string, dependencies: IDependencyCall[], currentState) {
+	const run = function *(callId: string, dependencies: IDependencyCall[], currentState) {
 		assert.strictEqual(getCurrentState(), currentState)
 		yield 1
 		assert.strictEqual(getCurrentState(), currentState)
@@ -161,7 +161,7 @@ function funcSyncIterator(id: string, deferred: boolean) {
 		return callIdToResult(callId)
 	}
 
-	const result: IDependencyFunc = depend(function() {
+	const result: IDependencyFunc = depend(function () {
 		const callId = getCallId(id, this, ...arguments)
 		_callHistory.push(callId)
 		const currentState = getCurrentState()
@@ -177,11 +177,11 @@ function funcSyncIterator(id: string, deferred: boolean) {
 }
 
 function funcAsync(id: string, deferred: boolean) {
-	const nested = function*() {
+	const nested = function *() {
 		yield 1
 		return 1
 	}
-	const nestedAsync = function*(dependencies: IDependencyCall[], currentState, isLazy?: boolean) {
+	const nestedAsync = function *(dependencies: IDependencyCall[], currentState, isLazy?: boolean) {
 		assert.strictEqual(getCurrentState(), currentState)
 		yield 1
 		assert.strictEqual(getCurrentState(), currentState)
@@ -212,7 +212,7 @@ function funcAsync(id: string, deferred: boolean) {
 		assert.strictEqual(getCurrentState(), currentState)
 		return 1
 	}
-	const run = function*(callId: string, dependencies: IDependencyCall[], currentState) {
+	const run = function *(callId: string, dependencies: IDependencyCall[], currentState) {
 		assert.strictEqual(getCurrentState(), currentState)
 		yield 1
 		assert.strictEqual(getCurrentState(), currentState)
@@ -225,7 +225,7 @@ function funcAsync(id: string, deferred: boolean) {
 		return callIdToResult(callId)
 	}
 
-	const result: IDependencyFunc = depend(function() {
+	const result: IDependencyFunc = depend(function () {
 		const callId = getCallId(id, this, ...arguments)
 		_callHistory.push(callId)
 		const currentState = getCurrentState()
@@ -262,7 +262,7 @@ function clearState(call: IDependencyCall) {
 	const callId = (oldState as any).id
 
 	let oldArgs
-	oldState.callWithArgs(null, function() {
+	oldState.callWithArgs(null, function () {
 		oldArgs = Array.from(arguments)
 	})
 
@@ -275,7 +275,7 @@ function clearState(call: IDependencyCall) {
 	assert.strictEqual(newState.func, oldState.func)
 
 	let newArgs
-	newState.callWithArgs(null, function() {
+	newState.callWithArgs(null, function () {
 		newArgs = Array.from(arguments)
 	})
 
@@ -518,7 +518,7 @@ function statusToShortString(status: CallStatus) {
 }
 
 function checkStatuses(...funcCalls: IDependencyCall[]) {
-	return function(...statusesShort: string[]) {
+	return function (...statusesShort: string[]) {
 		assert.deepStrictEqual(
 			funcCalls.map(o => statusToShortString(o.state.status)),
 			statusesShort,

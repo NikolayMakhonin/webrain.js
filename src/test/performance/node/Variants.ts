@@ -10,7 +10,7 @@ import {treeToSequenceVariants} from '../../../main/common/test/Variants'
 declare const after
 declare const babelGetFileCode
 
-describe('common > performance > Variants', function() {
+describe('common > performance > Variants', function () {
 	this.timeout(300000)
 
 	const tree = [
@@ -27,13 +27,13 @@ describe('common > performance > Variants', function() {
 		}
 	}
 
-	it('mem', function() {
+	it('mem', function () {
 		console.log(calcMemAllocate(CalcType.Min, 10000, () => {
 			iterateIterables(treeToSequenceVariants(tree))
 		}).toString())
 	})
 
-	it('perf', function() {
+	it('perf', function () {
 		const result = calcPerformance(
 			10000,
 			() => {

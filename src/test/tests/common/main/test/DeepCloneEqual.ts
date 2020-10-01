@@ -7,12 +7,12 @@ import {deepCloneEqual, TestDeepEqual} from './src/TestDeepEqual'
 
 declare const after
 
-describe('common > test > DeepCloneEqual', function() {
+describe('common > test > DeepCloneEqual', function () {
 	this.timeout(60000)
 
 	const _testDeepEqual = TestDeepEqual.test
 
-	after(function() {
+	after(function () {
 		console.log('Total DeepCloneEqual tests >= ' + TestDeepEqual.totalTests)
 	})
 
@@ -228,7 +228,7 @@ describe('common > test > DeepCloneEqual', function() {
 		}
 	}
 
-	it('noCrossReferences', function() {
+	it('noCrossReferences', function () {
 		const obj = { a: {} }
 		const obj2 = { a: {} }
 		testDeepEqual([obj], [obj], {
@@ -254,19 +254,19 @@ describe('common > test > DeepCloneEqual', function() {
 		})
 	})
 
-	it('not circular', function() {
+	it('not circular', function () {
 		notCircularTest(true)
 	})
 
-	it('not circular not equalMapSetOrder', function() {
+	it('not circular not equalMapSetOrder', function () {
 		notCircularTest(false)
 	})
 
-	it('circular', function() {
+	it('circular', function () {
 		circularTest(true)
 	})
 
-	it('circular not equalMapSetOrder', function() {
+	it('circular not equalMapSetOrder', function () {
 		circularTest(false)
 	})
 })

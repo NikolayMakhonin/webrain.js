@@ -13,8 +13,8 @@ import {assert} from '../../../../../../../../main/common/test/Assert'
 import {describe, it} from '../../../../../../../../main/common/test/Mocha'
 import {delay} from '../../../../../../../../main/common/time/helpers'
 
-describe('common > main > rx > properties > deepSubscribe', function() {
-	it('base', async function() {
+describe('common > main > rx > properties > deepSubscribe', function () {
+	it('base', async function () {
 		let visits: string[] = []
 
 		class InnerClass {
@@ -26,7 +26,7 @@ describe('common > main > rx > properties > deepSubscribe', function() {
 		}
 
 		let value = 'value'
-		const getValue = depend(function() {
+		const getValue = depend(function () {
 			visits.push(value)
 			return value
 		}, null, null, true)
@@ -64,7 +64,7 @@ describe('common > main > rx > properties > deepSubscribe', function() {
 								return new Set([{
 									get c() {
 										visits.push('c')
-										const iterator = (function*() {
+										const iterator = (function *() {
 											yield delay(0)
 											return new Map([['key', innerObject]])
 										})()

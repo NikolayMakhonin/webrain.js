@@ -9,7 +9,7 @@ class NextVariantItem<T> {
 		this.baseVariant = baseVariant
 		this.nextItem = nextItem
 	}
-	public * [Symbol.iterator]() {
+	public *[Symbol.iterator]() {
 		yield* this.baseVariant
 		yield this.nextItem
 	}
@@ -22,7 +22,7 @@ class NextVariantItems<T> {
 		this.baseVariant = baseVariant
 		this.nextItems = nextItems
 	}
-	public * [Symbol.iterator]() {
+	public *[Symbol.iterator]() {
 		yield* this.baseVariant
 		yield* this.nextItems
 	}
@@ -43,7 +43,7 @@ export class TreeToSequenceVariants<T> {
 		this.variant = variant
 	}
 
-	public * [Symbol.iterator]() {
+	public *[Symbol.iterator]() {
 		if (this.startIndex >= this.tree.length) {
 			yield this.variant
 			return

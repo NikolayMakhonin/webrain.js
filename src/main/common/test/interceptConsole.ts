@@ -46,7 +46,7 @@ export function interceptConsole(handler: (
 			console: orig_console,
 		}
 
-		return function() {
+		return function () {
 			const result = handler.apply(_this, arguments)
 
 			if (result) {
@@ -91,7 +91,7 @@ export function *throwOnConsoleError<TContext, TValue>(
 	func: (this: TContext) => ThenableOrIteratorOrValue<TValue>,
 ): ThenableIterator<TValue> {
 	lastConsoleError = null
-	const dispose = interceptConsole(function() {
+	const dispose = interceptConsole(function () {
 		if (throwPredicate.apply(this.type, arguments)) {
 			const error = new Error(`console.${this.type}(${
 				Array.from(arguments).map(o => objectToString(o)).join('\r\n')

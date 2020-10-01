@@ -14,7 +14,7 @@ import {SubscribeObjectType} from '../../../../../../../../../main/common/rx/obj
 import {assert} from '../../../../../../../../../main/common/test/Assert'
 import {describe, it} from '../../../../../../../../../main/common/test/Mocha'
 
-describe('common > main > rx > properties > builder > RuleBuilder', function() {
+describe('common > main > rx > properties > builder > RuleBuilder', function () {
 	interface IObject {
 		prop1: {
 			"prop '2'": {
@@ -38,7 +38,7 @@ describe('common > main > rx > properties > builder > RuleBuilder', function() {
 		return true
 	}
 
-	it('constructor', function() {
+	it('constructor', function () {
 		const builder = new RuleBuilder({
 			autoInsertValuePropertyDefault: false,
 		})
@@ -477,7 +477,7 @@ describe('common > main > rx > properties > builder > RuleBuilder', function() {
 		}
 	}
 
-	it('property', function() {
+	it('property', function () {
 		const builder = new RuleBuilder<IObject>({
 			autoInsertValuePropertyDefault: false,
 		})
@@ -557,7 +557,7 @@ describe('common > main > rx > properties > builder > RuleBuilder', function() {
 		const rule3 = builder3.result().next.next as IRuleSubscribe
 	})
 
-	it('value property', function() {
+	it('value property', function () {
 		const builder = new RuleBuilder<IObject>({
 			autoInsertValuePropertyDefault: false,
 		})
@@ -641,7 +641,7 @@ describe('common > main > rx > properties > builder > RuleBuilder', function() {
 		const rule3 = builder3.result().next.next as IRuleSubscribe
 	})
 
-	it('propertyAny', function() {
+	it('propertyAny', function () {
 		const builder = new RuleBuilder<IObject>({
 			autoInsertValuePropertyDefault: false,
 		})
@@ -710,7 +710,7 @@ describe('common > main > rx > properties > builder > RuleBuilder', function() {
 		const rule3 = builder3.result().next.next as IRuleSubscribe
 	})
 
-	it('propertyNames', function() {
+	it('propertyNames', function () {
 		const builder = new RuleBuilder<IObject>({
 			autoInsertValuePropertyDefault: false,
 		})
@@ -781,7 +781,7 @@ describe('common > main > rx > properties > builder > RuleBuilder', function() {
 		const rule3 = builder3.result().next.next as IRuleSubscribe
 	})
 
-	it('map', function() {
+	it('map', function () {
 		const builder = new RuleBuilder<IObject>({
 			autoInsertValuePropertyDefault: false,
 		})
@@ -861,7 +861,7 @@ describe('common > main > rx > properties > builder > RuleBuilder', function() {
 		const rule3 = builder3.result().next.next as IRuleSubscribe
 	})
 
-	it('mapAny', function() {
+	it('mapAny', function () {
 		const builder = new RuleBuilder<IObject>({
 			autoInsertValuePropertyDefault: false,
 		})
@@ -961,7 +961,7 @@ describe('common > main > rx > properties > builder > RuleBuilder', function() {
 		})
 	})
 
-	it('mapKeys', function() {
+	it('mapKeys', function () {
 		const builder = new RuleBuilder<IObject>({
 			autoInsertValuePropertyDefault: false,
 		})
@@ -1032,7 +1032,7 @@ describe('common > main > rx > properties > builder > RuleBuilder', function() {
 		const rule3 = builder3.result().next.next as IRuleSubscribe
 	})
 
-	it('collection', function() {
+	it('collection', function () {
 		const builder = new RuleBuilder<IObject>({
 			autoInsertValuePropertyDefault: false,
 		})
@@ -1101,7 +1101,7 @@ describe('common > main > rx > properties > builder > RuleBuilder', function() {
 		const rule3 = builder3.result().next.next as IRuleSubscribe
 	})
 
-	it('repeat', function() {
+	it('repeat', function () {
 		const builder = new RuleBuilder<IObject>({
 			autoInsertValuePropertyDefault: false,
 		})
@@ -1204,7 +1204,7 @@ describe('common > main > rx > properties > builder > RuleBuilder', function() {
 		})
 	})
 
-	it('any', function() {
+	it('any', function () {
 		const builder = new RuleBuilder<IObject>({
 			autoInsertValuePropertyDefault: false,
 		})

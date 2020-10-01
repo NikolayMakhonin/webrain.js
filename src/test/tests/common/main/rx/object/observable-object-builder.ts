@@ -5,7 +5,7 @@ import {ObservableObjectBuilder} from '../../../../../../main/common/rx/object/O
 import {assert} from '../../../../../../main/common/test/Assert'
 import {describe, it} from '../../../../../../main/common/test/Mocha'
 
-describe('common > main > rx > observable-object-builder', function() {
+describe('common > main > rx > observable-object-builder', function () {
 	function assertEvents(events: IPropertyChangedEvent[], check: IPropertyChangedEvent[]) {
 		events = events && events.map(o => {
 			const result: any = {}
@@ -25,7 +25,7 @@ describe('common > main > rx > observable-object-builder', function() {
 		assert.deepStrictEqual(events, check)
 	}
 
-	it('enumerate properties', function() {
+	it('enumerate properties', function () {
 		const {object} = new ObservableObjectBuilder()
 			.writable('writable')
 			.readable('readable', null, '1')
@@ -48,7 +48,7 @@ describe('common > main > rx > observable-object-builder', function() {
 		assert.strictEqual(object.propertyChanged, '2')
 	})
 
-	it('propertyChanged property', function() {
+	it('propertyChanged property', function () {
 		const {object} = new ObservableObjectBuilder()
 		assert.ok(object.propertyChanged)
 
@@ -61,7 +61,7 @@ describe('common > main > rx > observable-object-builder', function() {
 		assert.strictEqual(object.propertyChanged, '2')
 	})
 
-	it('onPropertyChanged', function() {
+	it('onPropertyChanged', function () {
 		const {object} = new ObservableObjectBuilder()
 
 		let results = []
@@ -144,7 +144,7 @@ describe('common > main > rx > observable-object-builder', function() {
 		results = []
 	})
 
-	it('readable simple', function() {
+	it('readable simple', function () {
 		const {object} = new ObservableObjectBuilder<any>()
 		assert.ok(object instanceof ObservableClass)
 
@@ -172,7 +172,7 @@ describe('common > main > rx > observable-object-builder', function() {
 		assert.strictEqual(builder.object, object)
 	})
 
-	it('readable factory', function() {
+	it('readable factory', function () {
 		const {object} = new ObservableObjectBuilder()
 		assert.ok(object instanceof ObservableClass)
 
@@ -195,7 +195,7 @@ describe('common > main > rx > observable-object-builder', function() {
 		assert.strictEqual(valueCreated, true)
 	})
 
-	it('writable simple', function() {
+	it('writable simple', function () {
 		const {object} = new ObservableObjectBuilder()
 		assert.ok(object instanceof ObservableClass)
 
@@ -223,7 +223,7 @@ describe('common > main > rx > observable-object-builder', function() {
 		assert.strictEqual(builder.object, object)
 	})
 
-	it('readable simple changed', function() {
+	it('readable simple changed', function () {
 		const builder = new ObservableObjectBuilder<any>()
 		const {object} = builder
 
@@ -327,7 +327,7 @@ describe('common > main > rx > observable-object-builder', function() {
 		assert.strictEqual(object.prop, 1)
 	})
 
-	it('writable simple changed', function() {
+	it('writable simple changed', function () {
 		const builder = new ObservableObjectBuilder<any>()
 		const {object} = builder
 
@@ -434,7 +434,7 @@ describe('common > main > rx > observable-object-builder', function() {
 		assert.strictEqual(object.prop, 2)
 	})
 
-	it('updatable simple changed', function() {
+	it('updatable simple changed', function () {
 		const builder = new ObservableObjectBuilder<any>()
 		const {object} = builder
 

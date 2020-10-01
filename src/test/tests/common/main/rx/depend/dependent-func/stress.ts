@@ -6,17 +6,17 @@ import {stressTest} from '../src/stress-test'
 
 declare const beforeEach: any
 
-describe('common > main > rx > depend > stress', function() {
+describe('common > main > rx > depend > stress', function () {
 	this.timeout(24 * 60 * 60 * 1000)
 
-	beforeEach(function() {
+	beforeEach(function () {
 		webrainOptions.callState.garbageCollect.disabled = false
 		webrainOptions.callState.garbageCollect.bulkSize = 100
 		webrainOptions.callState.garbageCollect.interval = 1000
 		webrainOptions.callState.garbageCollect.minLifeTime = 500
 	})
 
-	it('all', async function() {
+	it('all', async function () {
 		await stressTest({
 			// seed: 649781656,
 			testsCount       : 20,
@@ -31,7 +31,7 @@ describe('common > main > rx > depend > stress', function() {
 		})
 	})
 
-	xit('async + deferred + sync + lazy', async function() {
+	xit('async + deferred + sync + lazy', async function () {
 		await stressTest({
 			// seed: 1,
 			testsCount       : 1000,
@@ -46,7 +46,7 @@ describe('common > main > rx > depend > stress', function() {
 		})
 	})
 
-	xit('async + deferred + sync', async function() {
+	xit('async + deferred + sync', async function () {
 		await stressTest({
 			// seed: 1,
 			testsCount       : 100,
@@ -61,7 +61,7 @@ describe('common > main > rx > depend > stress', function() {
 		})
 	})
 
-	xit('deferred + sync', async function() {
+	xit('deferred + sync', async function () {
 		await stressTest({
 			// seed: 843622927,
 			testsCount       : 100,
@@ -76,7 +76,7 @@ describe('common > main > rx > depend > stress', function() {
 		})
 	})
 
-	xit('async + sync + lazy', async function() {
+	xit('async + sync + lazy', async function () {
 		await stressTest({
 			// seed: 593595214,
 			testsCount       : 100,
@@ -91,7 +91,7 @@ describe('common > main > rx > depend > stress', function() {
 		})
 	})
 
-	xit('async + sync', async function() {
+	xit('async + sync', async function () {
 		await stressTest({
 			// seed: 788871949,
 			testsCount       : 100,
@@ -106,7 +106,7 @@ describe('common > main > rx > depend > stress', function() {
 		})
 	})
 
-	xit('sync + lazy', async function() {
+	xit('sync + lazy', async function () {
 		await stressTest({
 			// seed: 92684389,
 			testsCount       : 100,
@@ -121,7 +121,7 @@ describe('common > main > rx > depend > stress', function() {
 		})
 	})
 
-	xit('sync', async function() {
+	xit('sync', async function () {
 		await stressTest({
 			// seed: 1,
 			testsCount       : 100,

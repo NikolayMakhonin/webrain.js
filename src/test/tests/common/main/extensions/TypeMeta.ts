@@ -2,8 +2,8 @@ import {TypeMetaCollectionWithId} from '../../../../../main/common/extensions/Ty
 import {assert} from '../../../../../main/common/test/Assert'
 import {describe, it} from '../../../../../main/common/test/Mocha'
 
-describe('common > extensions > TypeMeta', function() {
-	it('base', function() {
+describe('common > extensions > TypeMeta', function () {
+	it('base', function () {
 		class Class1 {}
 		class Class2 extends Class1 {}
 

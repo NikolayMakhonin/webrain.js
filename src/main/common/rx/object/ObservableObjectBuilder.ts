@@ -54,14 +54,14 @@ export class ObservableObjectBuilder<TObject extends ObservableClass> extends Ob
 
 		// optimization
 		const getValue = options && options.getValue
-			|| createFunction(() => (function() { return this.__fields[name] }), `return this.__fields["${name}"]`) as any
+			|| createFunction(() => (function () { return this.__fields[name] }), `return this.__fields["${name}"]`) as any
 		const setValue = options && options.setValue
-			|| createFunction(() => (function(v) { this.__fields[name] = v }), 'v', `this.__fields["${name}"] = v`) as any
+			|| createFunction(() => (function (v) { this.__fields[name] = v }), 'v', `this.__fields["${name}"] = v`) as any
 		const set = setOptions
-			? function(this: TObject, newValue: TValue) {
+			? function (this: TObject, newValue: TValue) {
 				return _setExt.call(this, name, getValue, setValue, setOptions, newValue)
 			}
-			: function(this: TObject, newValue: TValue) {
+			: function (this: TObject, newValue: TValue) {
 				return _set.call(this, name, getValue, setValue, newValue)
 			}
 
@@ -118,11 +118,11 @@ export class ObservableObjectBuilder<TObject extends ObservableClass> extends Ob
 
 		// optimization
 		const getValue = options && options.getValue
-			|| createFunction(() => (function() { return this.__fields[name] }), `return this.__fields["${name}"]`) as any
+			|| createFunction(() => (function () { return this.__fields[name] }), `return this.__fields["${name}"]`) as any
 		let setValue
 		if (update || factory) {
 			setValue = options && options.setValue
-				|| createFunction(() => (function(v) { this.__fields[name] = v }), 'v', `this.__fields["${name}"] = v`) as any
+				|| createFunction(() => (function (v) { this.__fields[name] = v }), 'v', `this.__fields["${name}"] = v`) as any
 		}
 
 		let setOnUpdate
@@ -130,10 +130,10 @@ export class ObservableObjectBuilder<TObject extends ObservableClass> extends Ob
 			// tslint:disable-next-line
 			const setOptions = options && options.setOptions
 			setOnUpdate = setOptions
-				? function(this: TObject, newValue: TValue) {
+				? function (this: TObject, newValue: TValue) {
 					return _setExt.call(this, name, getValue, setValue, setOptions, newValue)
 				}
-				: function(this: TObject, newValue: TValue) {
+				: function (this: TObject, newValue: TValue) {
 					return _set.call(this, name, getValue, setValue, newValue)
 				}
 		}
@@ -145,10 +145,10 @@ export class ObservableObjectBuilder<TObject extends ObservableClass> extends Ob
 				suppressPropertyChanged: true,
 			}
 			setOnInit = setOptions
-				? function(this: TObject, newValue: TValue) {
+				? function (this: TObject, newValue: TValue) {
 					return _setExt.call(this, name, getValue, setValue, setOptions, newValue)
 				}
-				: function(this: TObject, newValue: TValue) {
+				: function (this: TObject, newValue: TValue) {
 					return _set.call(this, name, getValue, setValue, newValue)
 				}
 		}
@@ -160,7 +160,7 @@ export class ObservableObjectBuilder<TObject extends ObservableClass> extends Ob
 				// get: depend(getValue, null, true),
 				get         : getValue,
 				set         : update
-					? function(value) {
+					? function (value) {
 						const newValue = update.call(this, value)
 						if (typeof newValue !== 'undefined') {
 							setOnUpdate.call(this, newValue)
@@ -174,7 +174,7 @@ export class ObservableObjectBuilder<TObject extends ObservableClass> extends Ob
 
 		const initializeValue = options && options.init
 		if (factory) {
-			const init = function(this: TObject) {
+			const init = function (this: TObject) {
 				const factoryValue = factory.call(this, initValue)
 				createInstanceProperty(this)
 				if (initializeValue) {
@@ -197,7 +197,7 @@ export class ObservableObjectBuilder<TObject extends ObservableClass> extends Ob
 					return factoryValue
 				},
 				set: update
-					? function(this: TObject, value) {
+					? function (this: TObject, value) {
 						// tslint:disable:no-dead-store
 						const factoryValue = init.call(this)
 						const newValue = update.call(this, value)

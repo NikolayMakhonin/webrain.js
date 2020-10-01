@@ -7,10 +7,10 @@ import {CalcType} from '../../../main/common/test/calc'
 import {calcMemAllocate} from '../../../main/common/test/calc-mem-allocate'
 import {describe, it, xit} from '../../../main/common/test/Mocha'
 
-describe('PairingHeap perf', function() {
+describe('PairingHeap perf', function () {
 	const objectPool = new ObjectPool<PairingNode<any>>(1000000)
 
-	it('add / delete', function() {
+	it('add / delete', function () {
 		this.timeout(300000)
 
 		const pairingHeap = new PairingHeap<{id: number}>({
@@ -153,7 +153,7 @@ describe('PairingHeap perf', function() {
 		 */
 	})
 
-	it('add / delete memory', function() {
+	it('add / delete memory', function () {
 		this.timeout(300000)
 
 		const binaryTree = new PairingHeap<number>({objectPool})

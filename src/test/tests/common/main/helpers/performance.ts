@@ -4,8 +4,8 @@ import {assert} from '../../../../../main/common/test/Assert'
 import {describe, it} from '../../../../../main/common/test/Mocha'
 import {delay} from '../../../../../main/common/time/helpers'
 
-describe('common > helpers > performance', async function() {
-	it('now', async function() {
+describe('common > helpers > performance', async function () {
+	it('now', async function () {
 		const interval = 200
 		await delay(interval)
 		const start = now()

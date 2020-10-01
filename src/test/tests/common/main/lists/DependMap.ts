@@ -7,10 +7,10 @@ import {clearCallStates} from '../rx/depend/src/helpers'
 
 declare const after
 
-describe('common > main > lists > DependMap', function() {
+describe('common > main > lists > DependMap', function () {
 	this.timeout(20000)
 
-	it('base', function() {
+	it('base', function () {
 		const map = new DependMap()
 
 		assert.notOk(getCallState(map.dependAll).call(map))

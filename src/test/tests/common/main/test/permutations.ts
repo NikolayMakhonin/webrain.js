@@ -2,8 +2,8 @@ import {assert} from '../../../../../main/common/test/Assert'
 import {describe, it} from '../../../../../main/common/test/Mocha'
 import {forEachPermutation} from '../../../../../main/common/test/permutations'
 
-describe('common > test > permutations', function() {
-	it('base', function() {
+describe('common > test > permutations', function () {
+	it('base', function () {
 		// 1
 
 		let index = 0

@@ -6,14 +6,14 @@ import {__makeDependentFunc, __outputCall} from './helpers'
 export function createPerceptronNaked(layerSize, layersCount, check = true) {
 	const countFuncs = layersCount * layerSize + 2
 
-	const input = function() {
+	const input = function () {
 		return 1
 	}
 
 	// first layer
 	let layer
 	for (let i = 0; i < layerSize; i++) {
-		const func = function(a, b) {
+		const func = function (a, b) {
 			return i * a * b * input() * (this as any)
 		}
 		if (i === 0) {
@@ -28,7 +28,7 @@ export function createPerceptronNaked(layerSize, layersCount, check = true) {
 		let nextLayer
 		for (let j = 0; j < layerSize; j++) {
 			const prevLayer = layer
-			const func = function(a, b) {
+			const func = function (a, b) {
 				let sum = 0
 				for (let k = 0; k < layerSize; k++) {
 					sum += prevLayer[k].call(this, a, b)
@@ -48,7 +48,7 @@ export function createPerceptronNaked(layerSize, layersCount, check = true) {
 	let output
 	{
 		const prevLayer = layer
-		output = function(a, b) {
+		output = function (a, b) {
 			let sum = 0
 			for (let i = 0; i < layerSize; i++) {
 				sum += prevLayer[i].call(this, a, b)
@@ -68,7 +68,7 @@ export function createPerceptronNaked(layerSize, layersCount, check = true) {
 }
 
 function createNextLayer(prevLayer, layerSize) {
-	return __makeDependentFunc(function(a, b) {
+	return __makeDependentFunc(function (a, b) {
 		let sum = 0
 		for (let k = 0; k < layerSize; k++) {
 			sum += prevLayer[k].call(this, a, b)
@@ -78,7 +78,7 @@ function createNextLayer(prevLayer, layerSize) {
 }
 
 function createFirstLayer(i, input) {
-	return __makeDependentFunc(function(a, b) {
+	return __makeDependentFunc(function (a, b) {
 		return i * a * b * input() * (this as any)
 	})
 }
@@ -113,7 +113,7 @@ export function createPerceptron(
 	// endregion
 
 	let callId = 0
-	const input = __makeDependentFunc(function() {
+	const input = __makeDependentFunc(function () {
 		return ++callId
 	})
 
@@ -150,7 +150,7 @@ export function createPerceptron(
 	let output
 	{
 		const prevLayer = layer
-		output = __makeDependentFunc(function(a, b) {
+		output = __makeDependentFunc(function (a, b) {
 			let sum = 0
 			for (let i = 0; i < layerSize; i++) {
 				sum += prevLayer[i].call(this, a, b)

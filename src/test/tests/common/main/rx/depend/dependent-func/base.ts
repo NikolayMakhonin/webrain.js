@@ -8,12 +8,12 @@ import {createPerceptron} from '../src/perceptron'
 
 declare const beforeEach: any
 
-describe('common > main > rx > depend > base', function() {
-	beforeEach(function() {
+describe('common > main > rx > depend > base', function () {
+	beforeEach(function () {
 		webrainOptions.callState.garbageCollect.disabled = true
 	})
 
-	it('base', async function() {
+	it('base', async function () {
 		this.timeout(20000)
 
 		await baseTest()
@@ -21,7 +21,7 @@ describe('common > main > rx > depend > base', function() {
 		clearCallStates()
 	})
 
-	it('lazy', async function() {
+	it('lazy', async function () {
 		this.timeout(20000)
 
 		await lazyTest()
@@ -29,7 +29,7 @@ describe('common > main > rx > depend > base', function() {
 		clearCallStates()
 	})
 
-	it('perceptron', function() {
+	it('perceptron', function () {
 		this.timeout(20000)
 
 		const {

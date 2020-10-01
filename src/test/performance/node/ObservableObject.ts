@@ -8,7 +8,7 @@ import {CalcType} from '../../../main/common/test/calc'
 import {calcMemAllocate} from '../../../main/common/test/calc-mem-allocate'
 import {describe, it} from '../../../main/common/test/Mocha'
 
-describe('ObservableClass', function() {
+describe('ObservableClass', function () {
 	this.timeout(300000)
 
 	interface IClass {
@@ -107,17 +107,17 @@ describe('ObservableClass', function() {
 		// })
 	}
 
-	it('simple', function() { // 173n | 184n
+	it('simple', function () { // 173n | 184n
 		testPerformance(createObject())
 	})
 
-	it('propertyChanged', function() { // 721n | 682n
+	it('propertyChanged', function () { // 721n | 682n
 		testPerformance(createObject(observableObject => {
 			observableObject.propertyChanged.subscribe(v => { })
 		}))
 	})
 
-	it('propertyChanged memory', function() { // 48 | 0
+	it('propertyChanged memory', function () { // 48 | 0
 		const object = createObject(observableObject => {
 			observableObject.propertyChanged.subscribe(v => { })
 		}).observableObject1
@@ -128,7 +128,7 @@ describe('ObservableClass', function() {
 		}).toString())
 	})
 
-	it('test memory', function() {
+	it('test memory', function () {
 		console.log(calcMemAllocate(CalcType.Min, 10000, () => {
 			let value
 			function calcValue() {
@@ -139,7 +139,7 @@ describe('ObservableClass', function() {
 		}).toString())
 	})
 
-	it('test event as object or arguments', function() {
+	it('test event as object or arguments', function () {
 		let value1
 		let value2
 

@@ -287,7 +287,7 @@ export function searchBestErrorBuilder<TMetrics>({
 	onFound?: (reportMin: string) => ThenableOrIteratorOrValue<any>,
 	consoleOnlyBestErrors?: boolean,
 }): TSearchBestError<TMetrics> {
-	return function*<TContext>(
+	return function *<TContext>(
 		_this: TContext,
 		{
 			customSeed,
@@ -305,7 +305,7 @@ export function searchBestErrorBuilder<TMetrics>({
 		let interceptConsoleDisabled
 		const interceptConsoleDispose = customSeed == null
 			&& consoleOnlyBestErrors
-			&& interceptConsole(function() {
+			&& interceptConsole(function () {
 				return !interceptConsoleDisabled
 			})
 

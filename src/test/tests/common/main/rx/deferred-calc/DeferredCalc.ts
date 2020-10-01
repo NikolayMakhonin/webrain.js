@@ -7,16 +7,16 @@ import {assertEvents, EventType, IEvent, TestDeferredCalc, TestTimingForDeferred
 
 declare const after
 
-describe('common > main > rx > deferred-calc > DeferredCalc', function() {
+describe('common > main > rx > deferred-calc > DeferredCalc', function () {
 	this.timeout(20000)
 
 	const testDeferredCalc = TestDeferredCalc.test
 
-	after(function() {
+	after(function () {
 		console.log('Total DeferredCalc tests >= ' + TestDeferredCalc.totalTests)
 	})
 
-	it('init', function() {
+	it('init', function () {
 		testDeferredCalc({
 			calcTime              : [0, 1, 10],
 			throttleTime          : [null, 0],
@@ -48,7 +48,7 @@ describe('common > main > rx > deferred-calc > DeferredCalc', function() {
 		})
 	})
 
-	it('calc only after invalidate', function() {
+	it('calc only after invalidate', function () {
 		testDeferredCalc({
 			calcTime              : [5],
 			throttleTime          : [null, 0],
@@ -146,7 +146,7 @@ describe('common > main > rx > deferred-calc > DeferredCalc', function() {
 		})
 	})
 
-	it('throttleTime', function() {
+	it('throttleTime', function () {
 		testDeferredCalc({
 			calcTime              : [0],
 			throttleTime          : [null, 0],
@@ -260,7 +260,7 @@ describe('common > main > rx > deferred-calc > DeferredCalc', function() {
 		})
 	})
 
-	it('maxThrottleTime', function() {
+	it('maxThrottleTime', function () {
 		testDeferredCalc({
 			calcTime              : [0],
 			throttleTime          : [10],
@@ -369,7 +369,7 @@ describe('common > main > rx > deferred-calc > DeferredCalc', function() {
 		})
 	})
 
-	it('minTimeBetweenCalc', function() {
+	it('minTimeBetweenCalc', function () {
 		testDeferredCalc({
 			calcTime              : [0],
 			throttleTime          : [0],
@@ -428,7 +428,7 @@ describe('common > main > rx > deferred-calc > DeferredCalc', function() {
 		})
 	})
 
-	it('autoInvalidateInterval', function() {
+	it('autoInvalidateInterval', function () {
 		testDeferredCalc({
 			calcTime              : [5],
 			throttleTime          : [10],
@@ -743,14 +743,14 @@ describe('common > main > rx > deferred-calc > DeferredCalc', function() {
 		assert.deepStrictEqual(events, [])
 	}
 
-	it('real timing', async function() {
+	it('real timing', async function () {
 		// this.timeout(600000)
 		for (let i = 0; i < 1; i++) {
 			await realTiming()
 		}
 	})
 
-	it('properties', async function() {
+	it('properties', async function () {
 		const canBeCalcCallback = () => {}
 		const calcFunc = () => {}
 		const calcCompletedCallback = () => {}

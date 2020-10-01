@@ -5,7 +5,7 @@ import {IArrayTree, iterablesToArrays, treeToSequenceVariants} from '../../../..
 
 declare const after
 
-describe('common > test > Variants', function() {
+describe('common > test > Variants', function () {
 	function iterablesToString<T>(iterables: Iterable<Iterable<T>>): string {
 		const iterablesArray = Array.from(iterables)
 		const str = iterablesArray
@@ -24,7 +24,7 @@ describe('common > test > Variants', function() {
 		assert.deepStrictEqual(arrays, resultArrays)
 	}
 
-	it('simple', function() {
+	it('simple', function () {
 		testTree(
 			[ 1 ],
 			[ [ 1 ] ],
@@ -51,7 +51,7 @@ describe('common > test > Variants', function() {
 		)
 	})
 
-	it('base', function() {
+	it('base', function () {
 		testTree(
 			[
 				1,

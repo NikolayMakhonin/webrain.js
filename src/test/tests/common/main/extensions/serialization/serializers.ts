@@ -39,7 +39,7 @@ const assertDeepEqualExt = (o1, o2) => {
 	})
 }
 
-describe('common > extensions > serialization > serializers', function() {
+describe('common > extensions > serialization > serializers', function () {
 	// function testSerializer(
 	// 	type: TClass,
 	// 	constructorProps: string[],
@@ -128,7 +128,7 @@ describe('common > extensions > serialization > serializers', function() {
 		assertDeepEqualExt(result, checkObject)
 	}
 
-	it('primitives', function() {
+	it('primitives', function () {
 		function testPrimitive(value: any) {
 			assert.strictEqual(deSerializeValue(serializeValue(value)), value)
 		}
@@ -162,7 +162,7 @@ describe('common > extensions > serialization > serializers', function() {
 	// // obj.p9 = obj
 	// obj.p10 = Object.values(obj)
 
-	it('simple circular', function() {
+	it('simple circular', function () {
 		const array = []
 		const object = new CircularClass(array)
 		array[0] = object
@@ -174,15 +174,15 @@ describe('common > extensions > serialization > serializers', function() {
 		assertDeepEqualExt(result, object)
 	})
 
-	it('Object', function() {
+	it('Object', function () {
 		testComplexObject({})
 	})
 
-	it('Array', function() {
+	it('Array', function () {
 		testComplexObject({}, o => o.array)
 	})
 
-	it('Map', function() {
+	it('Map', function () {
 		const map = new Map()
 		const arr = createComplexObject({ array: true }).array
 		for (let i = 1; i < arr.length; i++) {
@@ -196,7 +196,7 @@ describe('common > extensions > serialization > serializers', function() {
 		assertDeepEqualExt(result, map)
 	})
 
-	it('Set', function() {
+	it('Set', function () {
 		const arr = createComplexObject({ array: true }).array
 		const set = new Set(arr)
 
@@ -207,7 +207,7 @@ describe('common > extensions > serialization > serializers', function() {
 		assertDeepEqualExt(result, set)
 	})
 
-	it('Date', function() {
+	it('Date', function () {
 		const date = new Date()
 
 		const serialized = serializeValue(date)
@@ -221,7 +221,7 @@ describe('common > extensions > serialization > serializers', function() {
 		public prop1: string
 	}
 
-	it('Class: Simple', function() {
+	it('Class: Simple', function () {
 		const obj1 = new Class1()
 		obj1.prop1 = 'p1'
 
@@ -269,7 +269,7 @@ describe('common > extensions > serialization > serializers', function() {
 		}
 	}
 
-	it('Class: Serializable', function() {
+	it('Class: Serializable', function () {
 		const obj2 = new Class2('p_2')
 		obj2.prop1 = 'p1'
 		obj2.prop2 = 'p2'
@@ -310,7 +310,7 @@ describe('common > extensions > serialization > serializers', function() {
 		}
 	}
 
-	it('Class: Serializable inherit', function() {
+	it('Class: Serializable inherit', function () {
 		const obj3 = new Class3('prop2')
 		obj3.prop1 = 'p1'
 		obj3.prop2 = 'p2'
@@ -331,7 +331,7 @@ describe('common > extensions > serialization > serializers', function() {
 		assertDeepEqualExt(result, obj3)
 	})
 
-	it('complex object', function() {
+	it('complex object', function () {
 		testComplexObject({
 			circular: true,
 

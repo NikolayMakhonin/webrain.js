@@ -19,7 +19,7 @@ import {
 import {clearCallStates} from '../../../../../common/main/rx/depend/src/helpers'
 import {createPerceptron} from '../../../../../common/main/rx/depend/src/perceptron'
 
-describe('node > main > rx > depend > v8', function() {
+describe('node > main > rx > depend > v8', function () {
 	async function v8Test(
 		countIterations: number,
 		iterate: (
@@ -103,7 +103,7 @@ describe('node > main > rx > depend > v8', function() {
 		clearCallStates()
 	}
 
-	it('v8 perceptron', async function() {
+	it('v8 perceptron', async function () {
 		this.timeout(120000)
 
 		await v8Test(10, async (iteration, checkOptimization, _assertIsOptimized) => {
@@ -132,7 +132,7 @@ describe('node > main > rx > depend > v8', function() {
 		})
 	})
 
-	it('v8 baseTest', async function() {
+	it('v8 baseTest', async function () {
 		this.timeout(120000)
 
 		await v8Test(10, async (iteration, checkOptimization, _assertIsOptimized) => {

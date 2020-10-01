@@ -87,12 +87,12 @@ class PairingHeapTester<TItem> {
 	}
 }
 
-describe('common > main > PairingHeap', function() {
+describe('common > main > PairingHeap', function () {
 	this.timeout(6000000)
 
 	let totalTests = 0
 
-	after(function() {
+	after(function () {
 		console.log('Total PairingHeap tests >= ' + totalTests)
 	})
 
@@ -125,7 +125,7 @@ describe('common > main > PairingHeap', function() {
 		totalTests++
 	}
 
-	it('add / delete', function() {
+	it('add / delete', function () {
 		const heap = new PairingHeapTester<number>()
 
 		testVariant(
@@ -135,7 +135,7 @@ describe('common > main > PairingHeap', function() {
 		)
 	})
 
-	it('add / delete random', function() {
+	it('add / delete random', function () {
 		const heap = new PairingHeapTester<number>()
 		const variants = [0, 1, 2, 3, 4, 5, 6]
 		for (let i = 0; i < 10000; i++) {

@@ -6,8 +6,8 @@ import {describe, it} from '../../../../../../../main/common/test/Mocha'
 
 declare const beforeEach: any
 
-describe('common > main > rx > depend > bindings > Binder', function() {
-	it('base', async function() {
+describe('common > main > rx > depend > bindings > Binder', function () {
+	it('base', async function () {
 		let isBind = false
 		function bind() {
 			assert.notOk(isBind)

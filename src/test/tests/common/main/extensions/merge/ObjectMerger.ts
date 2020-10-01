@@ -30,12 +30,12 @@ declare const after
 // declare function circularDeepStrictEqual(a, b): boolean
 // declare function deepCloneEqual.clone<T = any>(o: T): T
 
-describe('common > extensions > merge > ObjectMerger', function() {
+describe('common > extensions > merge > ObjectMerger', function () {
 	this.timeout(60000)
 
 	const testMerger = TestMerger.test
 
-	after(function() {
+	after(function () {
 		console.log('Total ObjectMerger tests >= ' + TestMerger.totalTests)
 	})
 
@@ -124,7 +124,7 @@ describe('common > extensions > merge > ObjectMerger', function() {
 
 	registerMergeable(Class)
 
-	describe('combinations', function() {
+	describe('combinations', function () {
 		const options = {
 			preferCloneBaseParam : [null, false, true],
 			preferCloneOlderParam: [null, false, true],
@@ -290,7 +290,7 @@ describe('common > extensions > merge > ObjectMerger', function() {
 			actions: null,
 		}
 
-		it('complex objects', function() {
+		it('complex objects', function () {
 			const complexObjectOptions: IComplexObjectOptions = {
 				undefined    : true,
 				function     : true,
@@ -347,7 +347,7 @@ describe('common > extensions > merge > ObjectMerger', function() {
 			})
 		})
 
-		it('primitives', function() {
+		it('primitives', function () {
 			const createValues = () => [
 				BASE, OLDER, NEWER,
 				null, void 0, 0, 1, false, true,
@@ -361,7 +361,7 @@ describe('common > extensions > merge > ObjectMerger', function() {
 			})
 		})
 
-		it('strings', function() {
+		it('strings', function () {
 			const createValues = () => [
 				BASE, OLDER, NEWER,
 				void 0, 1, '', '1', '2',
@@ -375,7 +375,7 @@ describe('common > extensions > merge > ObjectMerger', function() {
 			})
 		})
 
-		it('Strings', function() {
+		it('Strings', function () {
 			const createValues = () => [
 				BASE, OLDER, NEWER,
 				void 0, 1, new String(''), new String('1'), new String('2'),
@@ -389,7 +389,7 @@ describe('common > extensions > merge > ObjectMerger', function() {
 			})
 		})
 
-		it('date', function() {
+		it('date', function () {
 			const createValues = () => [
 				BASE, OLDER, NEWER,
 				void 0, '', {}, new Date(1), new Date(2), new Date(3),
@@ -403,7 +403,7 @@ describe('common > extensions > merge > ObjectMerger', function() {
 			})
 		})
 
-		it('objects', function() {
+		it('objects', function () {
 			const createValues = () => [
 				BASE, OLDER, NEWER,
 				null, {}, new Date(1),
@@ -419,7 +419,7 @@ describe('common > extensions > merge > ObjectMerger', function() {
 			})
 		})
 
-		xit('full', function() {
+		xit('full', function () {
 			this.timeout(180000)
 
 			const createValues = () => [
@@ -439,8 +439,8 @@ describe('common > extensions > merge > ObjectMerger', function() {
 		})
 	})
 
-	describe('base', function() {
-		it('base', function() {
+	describe('base', function () {
+		it('base', function () {
 			assert.ok(deepCloneEqual.equal(
 				new Class({a: {a: 1, b: 2}, b: 3}),
 				new Class({a: {a: 1, b: 2}, b: 3}),
@@ -457,7 +457,7 @@ describe('common > extensions > merge > ObjectMerger', function() {
 			assert.ok(deepCloneEqual.equal(symbol, symbolClone))
 		})
 
-		it('custom class', function() {
+		it('custom class', function () {
 			testMerger({
 				base                 : [new Class({ a: {a: 1, b: 2}, b: 3 })],
 				older                : [new Class({ a: {a: 4, b: 5}, c: 6 }), { a: {a: 4, b: 5}, c: 6 }],
@@ -481,7 +481,7 @@ describe('common > extensions > merge > ObjectMerger', function() {
 			})
 		})
 
-		it('strings', function() {
+		it('strings', function () {
 			testMerger({
 				base                 : ['', '1', '2', new String('1')],
 				older                : ['2', new String('2')],
@@ -505,7 +505,7 @@ describe('common > extensions > merge > ObjectMerger', function() {
 			})
 		})
 
-		it('number / boolean', function() {
+		it('number / boolean', function () {
 			testMerger({
 				base                 : [new Number(1)],
 				older                : [2, new Number(2)],
@@ -551,7 +551,7 @@ describe('common > extensions > merge > ObjectMerger', function() {
 			})
 		})
 
-		it('merge 3 objects', function() {
+		it('merge 3 objects', function () {
 			testMerger({
 				base                 : [{ a: {a: 1, b: 2}, b: 3 }],
 				older                : [{ a: {a: 4, b: 5}, c: 6 }],
@@ -575,7 +575,7 @@ describe('common > extensions > merge > ObjectMerger', function() {
 			})
 		})
 
-		it('array as primitive', function() {
+		it('array as primitive', function () {
 		testMerger({
 			base                 : [[], [1], [2]],
 			older                : [[], [1], [2]],
@@ -599,7 +599,7 @@ describe('common > extensions > merge > ObjectMerger', function() {
 		})
 	})
 
-		it('value type', function() {
+		it('value type', function () {
 			testMerger({
 				base                 : [{ a: {a: 1, b: 2}, b: 3 }],
 				older                : [{ a: {a: 4, b: 5}, c: 6 }],
@@ -656,7 +656,7 @@ describe('common > extensions > merge > ObjectMerger', function() {
 		})
 	})
 
-	describe('circular', function() {
+	describe('circular', function () {
 		const createValue = (value: any, circular: boolean) => {
 			const obj: any = { value }
 			obj.obj = circular ? obj : { value }
@@ -721,7 +721,7 @@ describe('common > extensions > merge > ObjectMerger', function() {
 			actions: null,
 		}
 
-		it('deepCloneEqual.clone circular', function() {
+		it('deepCloneEqual.clone circular', function () {
 			class TestClass {
 				private value
 				constructor(value) {
@@ -766,7 +766,7 @@ describe('common > extensions > merge > ObjectMerger', function() {
 			}
 		})
 
-		it('simple circular', function() {
+		it('simple circular', function () {
 			testMerger({
 				...options,
 				base : [createValue(1, true)],
@@ -775,7 +775,7 @@ describe('common > extensions > merge > ObjectMerger', function() {
 			})
 		})
 
-		it('not circular', function() {
+		it('not circular', function () {
 			testMerger({
 				...options,
 				base : [createValue(1, false), createValue(2, false), createValue(3, false), null],
@@ -784,7 +784,7 @@ describe('common > extensions > merge > ObjectMerger', function() {
 			})
 		})
 
-		it('value type circular', function() {
+		it('value type circular', function () {
 			const base = { a: {a: 1, b: 2}, b: 3 }
 			const older = { a: {a: 1, b: 2}, b: 3 }
 			const newer = { a: {a: 1, b: 2}, b: 3 }
@@ -813,7 +813,7 @@ describe('common > extensions > merge > ObjectMerger', function() {
 		})
 	})
 
-	describe('collections', function() {
+	describe('collections', function () {
 		const func = () => 'func'
 		const func2 = () => 'func2'
 		const func3 = () => 'func3'
@@ -821,7 +821,7 @@ describe('common > extensions > merge > ObjectMerger', function() {
 
 		const object = new Error('test error')
 
-		it('helpers', function() {
+		it('helpers', function () {
 			assert.strictEqual(deepCloneEqual.clone(func), func)
 			// assert.strictEqual(deepCloneEqual.clone(object), object)
 			const iterable = createIterable([1, 2, 3])
@@ -830,7 +830,7 @@ describe('common > extensions > merge > ObjectMerger', function() {
 			assert.deepStrictEqual(Array.from(iterable), [1, 2, 3])
 		})
 
-		describe('maps', function() {
+		describe('maps', function () {
 			const testMergeMaps = (targetFactories, sourceFactories, base, older, newer, result) => {
 				testMerger({
 					base: [
@@ -865,7 +865,7 @@ describe('common > extensions > merge > ObjectMerger', function() {
 				})
 			}
 
-			it('Map', function() {
+			it('Map', function () {
 				testMergeMaps(
 					[o => fillMap(new Map(), o), o => fillMap(new Map(), o)],
 					[o => fillMap(new Map(), o), o => fillMap(new Map(), o)],
@@ -877,7 +877,7 @@ describe('common > extensions > merge > ObjectMerger', function() {
 			})
 		})
 
-		describe('sets', function() {
+		describe('sets', function () {
 			const testMergeSets = (targetFactories, sourceFactories, base, older, newer, result) => {
 				testMerger({
 					base: [
@@ -912,7 +912,7 @@ describe('common > extensions > merge > ObjectMerger', function() {
 				})
 			}
 
-			it('Set', function() {
+			it('Set', function () {
 				testMergeSets(
 					[o => fillSet(new Set(), o), o => fillSet(new Set(), o)],
 					[o => fillSet(new Set(), o), o => fillSet(new Set(), o)],
