@@ -1,7 +1,6 @@
 module.exports = {
 	'extends': [
-		'pro',
-		'plugin:@typescript-eslint/recommended',
+		'pro', 'plugin:@typescript-eslint/recommended',
 		// 'plugin:@typescript-eslint/recommended-requiring-type-checking',
 	],
 	rules: {
@@ -28,10 +27,23 @@ module.exports = {
 
 		// new
 
+		'array-element-newline': ['off', 'consistent'],
+
+		'arrow-parens': 'off',
+
+		'new-cap': [
+			'error',
+			{
+				newIsCap  : true,
+				capIsNew  : true,
+				properties: false,
+			},
+		],
+
 		'no-shadow': [
 			'error',
 			{
-				builtinGlobals: true ,
+				builtinGlobals: true,
 				hoist         : 'all',
 				allow         : [],
 			},
@@ -40,7 +52,8 @@ module.exports = {
 		'class-methods-use-this': 'off',
 
 		'space-before-function-paren': [
-			'warn', {
+			'warn',
+{
 				anonymous : 'always',
 				named     : 'never',
 				asyncArrow: 'always',
@@ -64,7 +77,17 @@ module.exports = {
 		'@typescript-eslint/no-inferrable-types': 'off',
 
 		'no-extra-parens'                   : 'off',
-		'@typescript-eslint/no-extra-parens': 'error',
+		'@typescript-eslint/no-extra-parens': [
+			'error',
+			'all',
+			{
+				returnAssign                      : false,
+				nestedBinaryExpressions           : false,
+				enforceForArrowConditionals       : false,
+				enforceForNewInMemberExpressions  : false,
+				enforceForFunctionPrototypeMethods: true,
+			},
+		],
 
 		'@typescript-eslint/no-explicit-any': 'off',
 	},
@@ -88,10 +111,7 @@ module.exports = {
 	},
 
 	plugins: [
-		'@typescript-eslint',
-		'@typescript-eslint/tslint',
-		'sonarjs',
-		'html'
+		'@typescript-eslint', '@typescript-eslint/tslint', 'sonarjs', 'html'
 	],
 	settings: {
 		'html/indent'           : '+tab',

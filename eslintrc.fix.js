@@ -16,6 +16,20 @@ const rules = {
 			},
 		},
 	],
+	'space-before-function-paren': [
+		'warn', {
+			anonymous : 'always',
+			named     : 'never',
+			asyncArrow: 'always',
+		},
+	],
+	'generator-star-spacing': [
+		'warn',
+		{
+			before: true,
+			after : false,
+		},
+	],
 }
 
 const rulesOff = {}
@@ -26,7 +40,7 @@ for (const key in rules) {
 }
 
 module.exports = {
-	// 'extends': base.extends && base.extends.filter(o => /@typescript-eslint/.test(o)),
+	root: true,
 
 	rules,
 

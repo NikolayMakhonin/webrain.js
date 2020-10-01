@@ -21,6 +21,15 @@ module.exports = {
 		'@typescript-eslint/no-unused-vars'   : 'off',
 		'@typescript-eslint/no-empty-function': 'off',
 
+		'@typescript-eslint/no-use-before-define': ['error', {
+			functions           : false,
+			classes             : true,
+			variables           : true,
+			enums               : true,
+			typedefs            : false,
+			ignoreTypeReferences: true,
+		}],
+
 		// '@typescript-eslint/no-unused-array'             : 'off',
 		// '@typescript-eslint/no-dead-store'               : 'off',
 		// '@typescript-eslint/prefer-const'                : 'off',

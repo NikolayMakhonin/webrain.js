@@ -73,7 +73,7 @@ export class ConnectorBuilder<
 	// endregion
 
 	// region connect
-	
+
 	public connect<
 		Name extends string | number = Extract<keyof TObject, string|number>,
 		TValue = Name extends keyof TObject ? TObject[Name] : TSource,
@@ -104,18 +104,20 @@ export class ConnectorBuilder<
 		options?: IConnectFieldOptions<TSource, TValue>,
 	): this & { object: { [newProp in Name]: TValue } } {
 		return this._connect(name, common, getSet,
-			options	? {
-				...options,
-				isDepend: true,
-			} : {
-				isDepend: true,
-			})
+			options
+				? {
+					...options,
+					isDepend: true,
+				}
+				: {
+					isDepend: true,
+				})
 	}
 
 	// endregion
 
 	// region connectLazy
-	
+
 	public connectLazy<
 		Name extends string | number = Extract<keyof TObject, string|number>,
 		TValue = Name extends keyof TObject ? TObject[Name] : TSource,
@@ -146,14 +148,16 @@ export class ConnectorBuilder<
 		options?: IConnectFieldOptions<TSource, TValue>,
 	): this & { object: { [newProp in Name]: TValue } } {
 		return this._connect(name, common, getSet,
-			options	? {
-				...options,
-				isDepend: true,
-				isLazy  : true,
-			} : {
-				isDepend: true,
-				isLazy  : true,
-			})
+			options
+				? {
+					...options,
+					isDepend: true,
+					isLazy  : true,
+				}
+				: {
+					isDepend: true,
+					isLazy  : true,
+				})
 	}
 
 	// endregion
@@ -190,14 +194,16 @@ export class ConnectorBuilder<
 		options?: IConnectFieldOptions<TSource, TValue>,
 	): this & { object: { [newProp in Name]: TValue } } {
 		return this._connect(name, common, getSet,
-			options	? {
-				...options,
-				isDepend: true,
-				isWait  : true,
-			} : {
-				isDepend: true,
-				isWait  : true,
-			})
+			options
+				? {
+					...options,
+					isDepend: true,
+					isWait  : true,
+				}
+				: {
+					isDepend: true,
+					isWait  : true,
+				})
 	}
 
 	// endregion
@@ -234,16 +240,18 @@ export class ConnectorBuilder<
 		options?: IConnectFieldOptions<TSource, TValue>,
 	): this & { object: { [newProp in Name]: TValue } } {
 		return this._connect(name, common, getSet,
-			options	? {
-				...options,
-				isDepend: true,
-				isLazy  : true,
-				isWait  : true,
-			} : {
-				isDepend: true,
-				isLazy  : true,
-				isWait  : true,
-			})
+			options
+				? {
+					...options,
+					isDepend: true,
+					isLazy  : true,
+					isWait  : true,
+				}
+				: {
+					isDepend: true,
+					isLazy  : true,
+					isWait  : true,
+				})
 	}
 
 	// endregion
@@ -301,9 +309,11 @@ export class ConnectorBuilder<
 			configurable: true,
 			enumerable  : !hidden,
 			get         : getValue,
-			set         : !path.canSet ? missingSetter : function(value: TValue) {
-				return path.set(this, value)
-			},
+			set         : !path.canSet
+				? missingSetter
+				: function(value: TValue) {
+					return path.set(this, value)
+				},
 		})
 
 		return this as any
