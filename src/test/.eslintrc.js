@@ -19,10 +19,12 @@ module.exports = {
 		'no-await-in-loop': 'off',
 		'func-style'      : 'off',
 		'prefer-const'    : 'off',
+		'require-await'   : 'off',
 
 		'@typescript-eslint/no-unused-vars'    : 'off',
 		'@typescript-eslint/no-empty-function' : 'off',
 		'@typescript-eslint/no-empty-interface': 'off',
+		'@typescript-eslint/no-shadow'         : 'off',
 
 		// '@typescript-eslint/no-unused-array'             : 'off',
 		// '@typescript-eslint/no-dead-store'               : 'off',

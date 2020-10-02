@@ -23,6 +23,8 @@ export function makeDependPropertySubscriber(name: string | number) {
 						case CallStatusShort.CalculatedError:
 							console.error(state.error)
 							break
+						default:
+							break
 					}
 
 					dependUnsubscribe = state
@@ -45,6 +47,8 @@ export function makeDependPropertySubscriber(name: string | number) {
 									break
 								case CallStatusShort.CalculatedError:
 									console.error(state.error)
+									break
+								default:
 									break
 							}
 						})

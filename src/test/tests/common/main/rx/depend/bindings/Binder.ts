@@ -59,6 +59,8 @@ describe('common > main > rx > depend > bindings > Binder', function () {
 						unbind()
 					}
 					break
+				default:
+					throw new Error('Unexpected behavior')
 			}
 		}
 	})

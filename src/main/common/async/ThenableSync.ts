@@ -230,13 +230,13 @@ export class ThenableSync<TValue = any> implements IThenable<TValue> {
 						return result.then(reject, onrejected)
 					}
 					return reject(result)
-				} else {
-					const result = resolveAsync(_value as any, null, onrejected, !lastExpression,
-						customResolveValue)
-					return lastExpression || isThenable(result)
-						? result
-						: createResolved(result as TResult1, customResolveValue)
 				}
+
+				const result = resolveAsync(_value as any, null, onrejected, !lastExpression,
+					customResolveValue)
+				return lastExpression || isThenable(result)
+					? result
+					: createResolved(result as TResult1, customResolveValue)
 			}
 			case ThenableSyncStatus.Rejected:
 				if (!onrejected && !lastExpression && (!customResolveValue || customResolveValue === this._customResolveValue)) {
@@ -401,9 +401,10 @@ function _resolveAsync<TValue = any, TResult1 = TValue, TResult2 = never>(
 				onResult = (o, e) => {
 					if (isError || e) {
 						reject(o)
-					} else {
-						resolve(o as TResult1)
+						return
 					}
+
+					resolve(o as TResult1)
 				}
 			}, customResolveValue)
 		}

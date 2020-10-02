@@ -109,10 +109,7 @@ function resolveIterator<T>(
 				}
 
 				if (_onImmediate == null) {
-					_onImmediate = (o, nextIsError) => {
-						nextValue = o
-						isThrow = nextIsError
-					}
+					_onImmediate = __onImmediate
 				}
 
 				if (_onDeferred == null) {
@@ -136,6 +133,11 @@ function resolveIterator<T>(
 		} catch (err) {
 			nextOnImmediate(err, true)
 			return ResolveResult.ImmediateError
+		}
+
+		function __onImmediate(o, nextIsError) {
+			nextValue = o
+			isThrow = nextIsError
 		}
 	}
 

@@ -442,8 +442,10 @@ export function subscriberLinkDelete<TState extends TCallStateAny>(
 
 // region helpers
 
-// tslint:disable-next-line:no-empty
-function EMPTY_FUNC(this: any, ...args: any[]): any { }
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
+function EMPTY_FUNC(this: any, ...args: any[]): any {
+	// empty
+}
 
 export function invalidateParent<
 	TState extends TCallStateAny,
@@ -536,21 +538,27 @@ export class CallState<
 	}
 
 	public deferredOptions: IDeferredCalcOptions = null
+
 	/** @internal */
 	public _deferredCalc: DeferredCalc = null
 
 	// for detect recursive async loop
 	private _parentCallState: TCallStateAny = null
+
 	/** @internal */
 	public _subscribersFirst: ISubscriberLink<this, any> = null
+
 	/** @internal */
 	public _subscribersLast: ISubscriberLink<this, any> = null
+
 	/** @internal */
 	public _subscribersCalculating: ISubscriberLink<this, any> = null
 	// for prevent multiple subscribe equal dependencies
 	private _callId: number = 0
+
 	/** @internal */
 	public _unsubscribers: Array<ISubscriberLink<any, this>> = null
+
 	/** @internal */
 	public _unsubscribersLength: number = 0
 
@@ -610,7 +618,7 @@ export class CallState<
 
 		const currentState = getCurrentState()
 		if (currentState != null && (currentState.status & Flag_Check) === 0) {
-			currentState._subscribeDependency.call(currentState, this, !!isLazy)
+			currentState._subscribeDependency(this, !!isLazy)
 		}
 		// TODO: delete line and test
 		this._callId = nextCallId++
@@ -622,7 +630,9 @@ export class CallState<
 			return dontThrowOnError
 				? this.value as any
 				: this.valueOrThrow as any
-		} else if (getCalculate(this.status) !== 0) {
+		}
+
+		if (getCalculate(this.status) !== 0) {
 			if ((this.status & Flag_Async) !== 0) {
 				let parentCallState = currentState
 				while (parentCallState) {
@@ -639,7 +649,9 @@ export class CallState<
 				}
 
 				return this.valueAsync as any
-			} else if ((this.status & (Flag_Check | Flag_Calculating)) !== 0) {
+			}
+
+			if ((this.status & (Flag_Check | Flag_Calculating)) !== 0) {
 				this._internalError('Recursive sync loop detected')
 			} else {
 				this._internalError(`Unknown CallStatus: ${statusToString(this.status)}`)
@@ -767,6 +779,8 @@ export class CallState<
 			if (dontThrowOnError !== true || error instanceof InternalError) {
 				throw error
 			}
+
+			return void 0
 		} finally {
 			setCurrentState(this._parentCallState)
 			if (!_isAsync) {
@@ -1185,27 +1199,25 @@ export class CallState<
 				this._internalError(`Set status ${statusToString(Update_Recalc)} called when current status is ${statusToString(prevStatus)}`)
 			}
 			this.status = prevStatus | status
-		} else {
-			if (isInvalidated(prevStatus)) {
-				if (!isRecalc(prevStatus) && isRecalc(status)) {
-					this.status = prevStatus | Flag_Recalc
-				}
-				if (parentRecalc) {
-					statusBefore = Update_Invalidated_Recalc
-				}
-			} else if (status === Update_Invalidating || status === Update_Invalidating_Recalc) {
-				this.status = (prevStatus & ~(Mask_Invalidate | Flag_Calculated)) | status
-
-				statusBefore = parentRecalc ? Update_Invalidating_Recalc : Update_Invalidating
-				statusAfter = Update_Invalidating
-			} else if (status === Update_Invalidated || status === Update_Invalidated_Recalc) {
-				this.status = (prevStatus & ~(Mask_Invalidate | Flag_Calculated)) | status
-
-				statusBefore = parentRecalc ? Update_Invalidated_Recalc : Update_Invalidated
-				statusAfter = Update_Invalidated
-			} else {
-				this._internalError(`Unknown status: ${statusToString(status)}`)
+		} else if (isInvalidated(prevStatus)) {
+			if (!isRecalc(prevStatus) && isRecalc(status)) {
+				this.status = prevStatus | Flag_Recalc
 			}
+			if (parentRecalc) {
+				statusBefore = Update_Invalidated_Recalc
+			}
+		} else if (status === Update_Invalidating || status === Update_Invalidating_Recalc) {
+			this.status = (prevStatus & ~(Mask_Invalidate | Flag_Calculated)) | status
+
+			statusBefore = parentRecalc ? Update_Invalidating_Recalc : Update_Invalidating
+			statusAfter = Update_Invalidating
+		} else if (status === Update_Invalidated || status === Update_Invalidated_Recalc) {
+			this.status = (prevStatus & ~(Mask_Invalidate | Flag_Calculated)) | status
+
+			statusBefore = parentRecalc ? Update_Invalidated_Recalc : Update_Invalidated
+			statusAfter = Update_Invalidated
+		} else {
+			this._internalError(`Unknown status: ${statusToString(status)}`)
 		}
 
 		// TODO
@@ -1430,6 +1442,9 @@ function findCallState<
 	return null
 }
 
+export const callStateHashTable = new Map<number, TCallStateAny[]>()
+let callStatesCount = 0
+
 // tslint:disable-next-line:no-shadowed-variable
 export function createCallStateProvider<
 	TThisOuter,
@@ -1627,6 +1642,8 @@ export function subscribeCallState<
 					subscriber(state)
 				}
 				break
+			default:
+				break
 		}
 	})
 
@@ -1655,9 +1672,9 @@ export function getCallState<
 	const callStateProvider = callStateProviderMap.get(func)
 	if (callStateProvider == null) {
 		return EMPTY_FUNC
-	} else {
-		return callStateProvider.get
 	}
+
+	return callStateProvider.get
 }
 
 export function getOrCreateCallState<
@@ -1674,11 +1691,11 @@ export function getOrCreateCallState<
 	const callStateProviderState = callStateProviderMap.get(func)
 	if (callStateProviderState == null) {
 		return EMPTY_FUNC
-	} else {
-		// currentCallStateProviderState = callStateProviderState
-		return callStateProviderState.getOrCreate
-		// return _getOrCreateCallState
 	}
+
+	// currentCallStateProviderState = callStateProviderState
+	return callStateProviderState.getOrCreate
+	// return _getOrCreateCallState
 }
 
 export function dependBindThis<
@@ -1733,9 +1750,6 @@ export function dependBindThis<
 // endregion
 
 // region get/create/delete/reduce CallStates
-
-export const callStateHashTable = new Map<number, TCallStateAny[]>()
-let callStatesCount = 0
 
 // region deleteCallState
 
@@ -1856,7 +1870,11 @@ export function reduceCallStates(deleteSize: number, _minCallStateLifeTime: numb
 	return countDeleted
 }
 
-// Garbage collector
+// endregion
+
+// region Garbage collector
+
+let garbageCollectTimer = null
 function garbageCollect() {
 	try {
 		if (garbageCollectTimer != null) {
@@ -1864,7 +1882,7 @@ function garbageCollect() {
 			garbageCollectTimer = null
 		}
 
-		const {bulkSize, minLifeTime, interval, disabled} = webrainOptions.callState.garbageCollect
+		const {bulkSize, minLifeTime, disabled} = webrainOptions.callState.garbageCollect
 
 		if (!disabled) {
 			const time = fastNow()
@@ -1886,7 +1904,6 @@ function garbageCollect() {
 	}
 }
 
-let garbageCollectTimer = null
 function garbageCollectSchedule() {
 	if (callStatesCount > 0 && garbageCollectTimer === null) {
 		const {interval, disabled} = webrainOptions.callState.garbageCollect

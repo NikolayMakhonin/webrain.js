@@ -156,6 +156,8 @@ export class DeepCloneEqual {
 						)
 					}
 					return cloned
+				default:
+					break
 			}
 
 			if (isIterable(source) && !isIterable(cloned)) {

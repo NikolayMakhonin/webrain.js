@@ -27,6 +27,9 @@ module.exports = {
 
 		// new
 
+		'prefer-spread'  : 'off',
+		'callback-return': 'off',
+
 		'operator-linebreak': [
 			'error', 'before', {
 				overrides: {'=': 'after'},
@@ -64,14 +67,6 @@ module.exports = {
 			},
 		],
 
-		'no-shadow': [
-			'error',
-			{
-				builtinGlobals: true,
-				hoist         : 'all',
-				allow         : [],
-			},
-		],
 		'prefer-template'       : 'off',
 		'class-methods-use-this': 'off',
 
@@ -87,10 +82,22 @@ module.exports = {
 
 		// typescript
 
+		'no-shadow'                   : 'off',
+		'@typescript-eslint/no-shadow': [
+			'error',
+			{
+				builtinGlobals                            : false,
+				hoist                                     : 'functions',
+				allow                                     : [],
+				ignoreTypeValueShadow                     : false,
+				ignoreFunctionTypeParameterNameValueShadow: true,
+			},
+		],
+
 		'no-use-before-define'                   : 'off',
 		'@typescript-eslint/no-use-before-define': ['error', {
 			functions           : false,
-			classes             : true,
+			classes             : false,
 			variables           : true,
 			enums               : true,
 			typedefs            : false,
@@ -98,6 +105,7 @@ module.exports = {
 		}],
 
 		'@typescript-eslint/no-inferrable-types': 'off',
+		'@typescript-eslint/no-empty-interface' : 'off',
 
 		'no-extra-parens'                   : 'off',
 		'@typescript-eslint/no-extra-parens': [

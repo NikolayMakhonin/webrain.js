@@ -62,6 +62,8 @@ export function dependWait<
 					case CallStatusShort.Invalidated:
 						funcState.getValue(false, true)
 						break
+					default:
+						break
 				}
 			})
 
