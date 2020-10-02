@@ -1,4 +1,5 @@
 import path from 'path'
+import fse from 'fs-extra'
 import {ThenableOrIteratorOrValue} from '../../common/async/async'
 import {
 	ISearchBestErrorMetrics,
@@ -7,7 +8,6 @@ import {
 	TSearchBestError,
 } from '../../common/test/randomTest'
 // tslint:disable-next-line:no-var-requires
-const fse = require('fs-extra')
 
 // region searchBestErrorBuilder
 

@@ -5,27 +5,36 @@ module.exports = {
 	],
 	rules: {
 		// Temporary disable: TypeError: Cannot read property 'value' of null (waiting for update babel-eslint)
-		'template-curly-spacing': 'off',
-		// 'object-curly-spacing'                             : 'off',
+		'template-curly-spacing'                           : 'off',
+		'object-curly-spacing'                             : 'off',
 		// indent                                             : 'off',
-		// 'prefer-destructuring'                             : 'off',
+		'prefer-destructuring'                             : 'off',
 		// 'no-sync'                                          : 'off',
-		// 'no-warning-comments'                              : 'warn',
-		// 'array-bracket-newline'                            : 'off',
-		// 'require-atomic-updates'                           : 'off',
-		// 'sort-imports'                                     : 'off',
-		// 'lines-between-class-members'                      : 'off',
-		// 'no-new-wrappers'                                  : 'off',
-		// 'generator-star-spacing'                           : ['error', {before: true, after: false}],
-		// 'object-property-newline'                          : 'off',
-		// '@typescript-eslint/ban-ts-comment'                : 'off',
-		// '@typescript-eslint/no-var-requires'               : 'off',
-		// '@typescript-eslint/no-this-alias'                 : 'off',
+		'no-warning-comments'                              : 'warn',
+		'array-bracket-newline'                            : 'off',
+		'require-atomic-updates'                           : 'off',
+		'sort-imports'                                     : 'off',
+		'lines-between-class-members'                      : 'off',
+		'no-new-wrappers'                                  : 'off',
+		'@typescript-eslint/ban-ts-comment'                : 'off',
+		'@typescript-eslint/no-this-alias'                 : 'off',
 		'@typescript-eslint/explicit-module-boundary-types': 'off',
-		// 'arrow-body-style'                                 : 'off',
-		// 'object-shorthand'                                 : 'off',
+		'arrow-body-style'                                 : 'off',
+		'object-shorthand'                                 : 'off',
 
 		// new
+
+		'object-property-newline': ['warn', {
+			allowAllPropertiesOnSameLine: true,
+		}],
+
+		'generator-star-spacing': [
+			'warn',
+			{
+				before: true,
+				after : false,
+			},
+		],
 
 		'padded-blocks': 'off',
 
@@ -115,6 +124,33 @@ module.exports = {
 		'multiline-comment-style' : 'off',
 
 		// typescript
+
+		indent                     : 'off',
+		'@typescript-eslint/indent': [
+			'off',
+			'tab',
+			{
+				SwitchCase         : 1,
+				VariableDeclarator : 1,
+				outerIIFEBody      : 1,
+				MemberExpression   : 1,
+				FunctionDeclaration: {
+					body      : 1,
+					parameters: 1,
+				},
+				FunctionExpression: {
+					body      : 1,
+					parameters: 1,
+				},
+				CallExpression          : {arguments: 1},
+				ArrayExpression         : 1,
+				ObjectExpression        : 1,
+				ImportDeclaration       : 1,
+				flatTernaryExpressions  : false,
+				offsetTernaryExpressions: false,
+				ignoreComments          : false,
+			},
+		],
 
 		'no-useless-constructor'                   : 'off',
 		'@typescript-eslint/no-useless-constructor': 'off',

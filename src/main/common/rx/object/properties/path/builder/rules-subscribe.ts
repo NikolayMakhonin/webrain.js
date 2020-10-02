@@ -341,8 +341,7 @@ function createKeyPredicate<TKey>(keys: TKey[]) {
 	if (keys.length === 1) {
 		const key = keys[0]
 
-		// @ts-ignore
-		if (key === ANY) {
+		if (key === ANY as any) {
 			return null
 		}
 
@@ -353,8 +352,7 @@ function createKeyPredicate<TKey>(keys: TKey[]) {
 
 	for (let i = 0, len = keys.length; i < len; i++) {
 		const key = keys[i]
-		// @ts-ignore
-		if (key === ANY) {
+		if (key === ANY as any) {
 			return null
 		}
 	}

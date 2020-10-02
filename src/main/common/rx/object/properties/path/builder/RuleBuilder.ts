@@ -87,7 +87,7 @@ export class RuleBuilder<TObject = any, TValueKeys extends string | number = nev
 						SubscribeObjectType.ValueProperty,
 						VALUE_PROPERTY_PREFIX + this.valuePropertyDefaultName,
 					),
-				)
+			)
 	}
 
 	public rule<TValue>(rule: IRule): RuleBuilder<TValue, TValueKeys> {
