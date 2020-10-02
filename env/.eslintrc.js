@@ -5,5 +5,5 @@ module.exports = {
 		'@typescript-eslint/no-var-requires': 'off',
 		'no-sync'                           : 'off',
 		'@typescript-eslint/ban-ts-comment' : 'off',
-	}
+	},
 }

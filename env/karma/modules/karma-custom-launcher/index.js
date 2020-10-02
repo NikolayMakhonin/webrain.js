@@ -6,7 +6,7 @@ function factory(injector, args) {
 	delete args.parent
 
 	const locals = {
-		args: ['value', args]
+		args: ['value', args],
 	}
 
 	const plugin = injector.createChild([locals], [token]).get(token)
@@ -17,5 +17,5 @@ function factory(injector, args) {
 }
 
 module.exports = {
-	'launcher:Custom': ['factory', factory]
+	'launcher:Custom': ['factory', factory],
 }

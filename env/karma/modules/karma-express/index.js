@@ -16,7 +16,7 @@ function serveStatic(app, port, relativeUrl, dirPath, config, configGlobal) {
 	app.use(relativeUrl, express.static(staticPath, {
 		setHeaders(res) {
 			setCrossOriginHeaders(res, config, configGlobal)
-		}
+		},
 	}))
 	log.info(`Serve static files: ${configGlobal.hostname}:${port}${relativeUrl} => ${staticPath}`)
 }
@@ -109,6 +109,6 @@ function karmaExpress(karma, config, configGlobal) {
 karmaExpress.$inject = ['server', 'config.karmaExpress', 'config']
 
 module.exports = {
-	'framework:karma-express': ['factory', karmaExpress]
+	'framework:karma-express': ['factory', karmaExpress],
 }
 

@@ -20,7 +20,7 @@ function addHeaderFooterPlugin(options = {}) {
 			return options.header
 				+ code
 				+ options.footer
-		}
+		},
 	}
 }
 
@@ -33,9 +33,9 @@ function getCodeBetweenHeaderFooterPlugin(options = {}) {
 
 			return {
 				code: generatedCode,
-				map : null
+				map : null,
 			}
-		}
+		},
 	}
 }
 
@@ -59,20 +59,20 @@ async function doRollup(file) {
 				addHeaderFooterPlugin({
 					include: file,
 					header : markStartEnd,
-					footer : markStartEnd
+					footer : markStartEnd,
 				}),
 				getCodeBetweenHeaderFooterPlugin({
 					header: markStartEnd,
-					footer: markStartEnd
+					footer: markStartEnd,
 				}),
-			]
+			],
 		}),
 	})
 
 	const {code} = (await bundle.generate({
 		format   : 'cjs',
 		sourcemap: false,
-		exports  : 'named'
+		exports  : 'named',
 	})).output[0]
 
 	return code
@@ -93,7 +93,7 @@ function removeEqualStart(s1, s2) {
 	const len = getEqualStartLength(s1, s2)
 	return {
 		s1: s1.substr(len),
-		s2: s2.substr(len)
+		s2: s2.substr(len),
 	}
 }
 

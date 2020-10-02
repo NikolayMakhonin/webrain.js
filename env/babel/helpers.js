@@ -20,7 +20,7 @@ module.exports = {
 			extensions  : [...fileExtensions.js, ...fileExtensions.ts],
 			babelrcRoots: true,
 			cache       : true,
-			...options
+			...options,
 		})
-	}
+	},
 }

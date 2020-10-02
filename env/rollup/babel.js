@@ -15,23 +15,23 @@ const babelRollup = {
 			...babelCommon,
 			extensions: [...fileExtensions.js, ...fileExtensions.ts],
 			...babelConfigMinimal,
-			...options
+			...options,
 		}),
 		browser: (options = {}) => babel({
 			...babelCommon,
 			runtimeHelpers: true,
 			extensions    : [...fileExtensions.js, ...fileExtensions.ts],
 			...babelConfigBrowser,
-			...options
+			...options,
 		}),
 		v8Trace: (options = {}) => babel({
 			...babelCommon,
 			runtimeHelpers: true,
 			extensions    : [...fileExtensions.js, ...fileExtensions.ts],
 			...babelConfigV8Trace,
-			...options
+			...options,
 		}),
-	}
+	},
 }
 
 module.exports = babelRollup

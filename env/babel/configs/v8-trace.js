@@ -10,13 +10,13 @@ module.exports = {
 				modules: false,
 				targets: {
 					chrome: '37',
-				}
+				},
 				// Use browsersList if targets is not set
-			}
-		]
+			},
+		],
 	],
 	plugins: [
 		// preset/env no loose:
-		['@babel/plugin-transform-classes', {loose: false}]
-	]
+		['@babel/plugin-transform-classes', {loose: false}],
+	],
 }

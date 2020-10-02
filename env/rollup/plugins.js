@@ -16,7 +16,7 @@ const plugins = {
 	babel   : babel.rollup,
 	istanbul: (options = {}) => istanbul({
 		...nycrc,
-		...options
+		...options,
 	}),
 	// globals    : (options = {}) =>globals(options),
 	// builtins   : (options = {}) =>builtins(options),
@@ -28,7 +28,7 @@ const plugins = {
 		// 	moduleDirectory: 'node_modules',
 		// 	paths          : [path.resolve(process.cwd(), 'node_modules')],
 		// },
-		...options
+		...options,
 	}),
 	commonjs: (options = {}) => commonjs({
 		extensions: [...fileExtensions.js, ...fileExtensions.ts],
@@ -36,7 +36,7 @@ const plugins = {
 		// 	'node_modules/chai/index.js': ['assert', 'expect']
 		// }
 		include   : 'node_modules/**',
-		...options
+		...options,
 	}),
 	terser: (options = {}) => terser({
 		mangle: false,
@@ -47,9 +47,9 @@ const plugins = {
 		},
 		sourcemap: {
 			content: 'inline',
-			url    : 'inline'
+			url    : 'inline',
 		},
-		...options
+		...options,
 	}),
 }
 

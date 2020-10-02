@@ -2,7 +2,7 @@
 module.exports = {
 	env: {
 		browser: false,
-		node   : false
+		node   : false,
 	},
 	rules: {
 		'func-names'     : 'off',
@@ -42,6 +42,6 @@ module.exports = {
 		'@typescript-eslint/no-shadow': 'off',
 	},
 	globals: {
-		console: true
-	}
+		console: true,
+	},
 }

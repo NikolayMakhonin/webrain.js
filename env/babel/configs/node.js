@@ -6,10 +6,10 @@ module.exports = {
 				loose  : true, // simple set property instead readonly defineProperty; +support named export for rollup-plugin-commonjs
 				modules: false,
 				targets: {
-					node: '8.6.0'
+					node: '8.6.0',
 				},
-			}
-		]
+			},
+		],
 	],
-	plugins: []
+	plugins: [],
 }

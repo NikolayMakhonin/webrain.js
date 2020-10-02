@@ -97,7 +97,7 @@ describe('common > main > rx > properties > builder', function () {
 						? {
 							delayBeforeCalc: 10,
 						}
-						: null
+						: null,
 				)
 
 				const callState = getOrCreateCallState(getValue)()

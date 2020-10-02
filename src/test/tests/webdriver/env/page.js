@@ -29,5 +29,5 @@ registerSuite('env > page', {
 				.then(value => {
 					assert.strictEqual(value, '')
 				}))
-	}
+	},
 })

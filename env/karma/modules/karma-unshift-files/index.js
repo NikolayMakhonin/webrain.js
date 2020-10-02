@@ -4,6 +4,6 @@ function factory(files, unshiftFiles) {
 factory.$inject = ['config.files', 'config.unshiftFiles']
 
 module.exports = {
-	'framework:unshiftFiles': ['factory', factory]
+	'framework:unshiftFiles': ['factory', factory],
 }
 

@@ -4,5 +4,5 @@ module.exports = {
 	exclude     : ['**/v8/**/*'],
 	reporter    : ['json'],
 	'temp-dir'  : './tmp/coverage/nyc/tmp',
-	'report-dir': './tmp/coverage/nyc/json'
+	'report-dir': './tmp/coverage/nyc/json',
 }

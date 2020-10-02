@@ -57,7 +57,7 @@ describe('common > main > lists > helpers > compare', function () {
 				[],
 				{},
 				null,
-				undefined
+				undefined,
 			])
 		}
 	})

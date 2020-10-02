@@ -16,8 +16,8 @@ function buildLib({fileInput, fileOutput, name}) {
 				format   : 'iife',
 				sourcemap: false,
 				exports  : 'named',
-			}
-		}
+			},
+		},
 	)
 }
 

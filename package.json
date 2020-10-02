@@ -93,7 +93,7 @@
     "depcheck": "^0.8.4",
     "electron": "^9.3.1",
     "eslint": "^7.10.0",
-    "eslint-config-pro": "^1.0.2",
+    "eslint-config-pro": "^2.0.1",
     "eslint-plugin-html": "^6.1.0",
     "eslint-plugin-markdown": "^1.0.2",
     "eslint-plugin-node": "^11.1.0",

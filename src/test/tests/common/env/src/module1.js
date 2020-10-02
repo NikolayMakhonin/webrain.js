@@ -8,5 +8,5 @@ export var var1 = 'var1'
 export default {
 	func1,
 	'var_1_1': var1,
-	var_1_2  : var1
+	var_1_2  : var1,
 }

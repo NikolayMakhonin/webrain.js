@@ -9,18 +9,18 @@ module.exports = {
 				// shippedProposals: true,
 				modules: false,
 				// Use browsersList if targets is not set
-			}
-		]
+			},
+		],
 	],
 	plugins: [
 		[
 			'@babel/plugin-transform-runtime', {
 				corejs      : 3,
 				useESModules: true,
-			}
+			},
 		],
 
 		// preset/env no loose:
-		['@babel/plugin-transform-classes', {loose: false}]
-	]
+		['@babel/plugin-transform-classes', {loose: false}],
+	],
 }

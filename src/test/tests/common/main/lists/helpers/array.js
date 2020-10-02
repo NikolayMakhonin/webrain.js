@@ -1,6 +1,6 @@
 import {
 	binarySearch,
-	move
+	move,
 } from '../../../../../../main/common/lists/helpers/array'
 import {assert} from '../../../../../../main/common/test/Assert'
 import {describe, it} from '../../../../../../main/common/test/Mocha'
@@ -23,14 +23,14 @@ describe('common > main > lists > helpers > array', function () {
 							end >= arr.length ? null : end,
 							// eslint-disable-next-line no-nested-ternary
 							index % 3 ? (o1, o2) => (o1 > o2 ? 1 : o1 < o2 ? -1 : 0) : null,
-							bound
+							bound,
 						)
 
 						const log = JSON.stringify({
 							index,
 							start,
 							end,
-							bound
+							bound,
 						})
 
 						if (index < 0) {
@@ -75,31 +75,31 @@ describe('common > main > lists > helpers > array', function () {
 		testMove(
 			[0, 1],
 			1, 2, 0,
-			[1, 0]
+			[1, 0],
 		)
 
 		testMove(
 			[0, 1, 2],
 			1, 2, 0,
-			[1, 0, 2]
+			[1, 0, 2],
 		)
 
 		testMove(
 			[0, 1, 2],
 			2, 3, 0,
-			[2, 0, 1]
+			[2, 0, 1],
 		)
 
 		testMove(
 			[0, 1, 2, 3, 4, 5, 6, 7, 8],
 			1, 5, 3,
-			[0, 5, 6, 1, 2, 3, 4, 7, 8]
+			[0, 5, 6, 1, 2, 3, 4, 7, 8],
 		)
 
 		testMove(
 			[0, 5, 6, 1, 2, 3, 4, 7, 8],
 			3, 7, 1,
-			[0, 1, 2, 3, 4, 5, 6, 7, 8]
+			[0, 1, 2, 3, 4, 5, 6, 7, 8],
 		)
 	})
 })
