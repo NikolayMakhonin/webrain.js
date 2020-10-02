@@ -1,6 +1,7 @@
 module.exports = {
 	'extends': [
-		'pro', 'plugin:@typescript-eslint/recommended',
+		'pro',
+		'plugin:@typescript-eslint/recommended',
 		// 'plugin:@typescript-eslint/recommended-requiring-type-checking',
 	],
 	rules: {
@@ -14,7 +15,7 @@ module.exports = {
 		'array-bracket-newline'                            : 'off',
 		'require-atomic-updates'                           : 'off',
 		'sort-imports'                                     : 'off',
-		'lines-between-class-members'                      : 'off',
+		'lines-between-class-members'                      : ['off', 'always', { exceptAfterSingleLine: true }],
 		'no-new-wrappers'                                  : 'off',
 		'@typescript-eslint/ban-ts-comment'                : 'off',
 		'@typescript-eslint/no-this-alias'                 : 'off',
@@ -38,7 +39,7 @@ module.exports = {
 
 		'padded-blocks': 'off',
 
-		'no-extra-semi': 'off',
+		'no-extra-semi': 'error',
 		semi           : ['error', 'never', {beforeStatementContinuationChars: 'always'}],
 		'semi-style'   : ['error', 'first'],
 

@@ -2,8 +2,8 @@
 import {assert} from '../../../../main/common/test/Assert'
 import {describe, it, xit} from '../../../../main/common/test/Mocha'
 import {v8_runtime_h_to_js_functions} from './src/helpers/parser'
-const fs = require('fs')
-const path = require('path')
+import fs from 'fs'
+import path from 'path'
 
 describe('node > v8 > parser', function () {
 	it('parser', function () {

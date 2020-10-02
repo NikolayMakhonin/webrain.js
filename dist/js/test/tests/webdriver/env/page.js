@@ -1,13 +1,11 @@
 "use strict";
 
+// docs: https://theintern.io/docs.html#Leadfoot/2/api/Command/command-1
 var _intern$getInterface = intern.getInterface('object'),
     registerSuite = _intern$getInterface.registerSuite;
 
 var _intern$getPlugin = intern.getPlugin('chai'),
-    assert = _intern$getPlugin.assert; // docs: https://theintern.io/docs.html#Leadfoot/2/api/Command/command-1
-
-
-var keys = require('@theintern/leadfoot/keys');
+    assert = _intern$getPlugin.assert;
 
 registerSuite('env > page', {
   'load local': function loadLocal() {

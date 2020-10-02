@@ -32,14 +32,20 @@
   <component name="ChangeListManager">
     <list default="true" id="69b2ee16-521b-4efd-b473-8e19e3df4d09" name="Default Changelist" comment="">
       <change beforePath="$PROJECT_DIR$/.eslintrc.js" beforeDir="false" afterPath="$PROJECT_DIR$/.eslintrc.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/inspectionProfiles/Project_Default.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/inspectionProfiles/Project_Default.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/env/.eslintrc.js" beforeDir="false" afterPath="$PROJECT_DIR$/env/.eslintrc.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/common/rx/object/properties/path/builder/RuleBuilder.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/common/rx/object/properties/path/builder/RuleBuilder.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/common/rx/object/properties/path/builder/rules-subscribe.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/common/rx/object/properties/path/builder/rules-subscribe.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/node/test/randomTest.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/node/test/randomTest.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/dist/js/main/common/rx/object/properties/path/builder/rules-subscribe.js" beforeDir="false" afterPath="$PROJECT_DIR$/dist/js/main/common/rx/object/properties/path/builder/rules-subscribe.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/dist/js/main/node/test/randomTest.js" beforeDir="false" afterPath="$PROJECT_DIR$/dist/js/main/node/test/randomTest.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/dist/js/test/.eslintrc.js" beforeDir="false" afterPath="$PROJECT_DIR$/dist/js/test/.eslintrc.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/dist/js/test/tests/node/v8/parser.js" beforeDir="false" afterPath="$PROJECT_DIR$/dist/js/test/tests/node/v8/parser.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/dist/js/test/tests/webdriver/env/page.js" beforeDir="false" afterPath="$PROJECT_DIR$/dist/js/test/tests/webdriver/env/page.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/dist/mjs/main/common/rx/object/properties/path/builder/rules-subscribe.js" beforeDir="false" afterPath="$PROJECT_DIR$/dist/mjs/main/common/rx/object/properties/path/builder/rules-subscribe.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/dist/mjs/main/node/test/randomTest.js" beforeDir="false" afterPath="$PROJECT_DIR$/dist/mjs/main/node/test/randomTest.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/dist/mjs/test/.eslintrc.js" beforeDir="false" afterPath="$PROJECT_DIR$/dist/mjs/test/.eslintrc.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/dist/mjs/test/tests/node/v8/parser.js" beforeDir="false" afterPath="$PROJECT_DIR$/dist/mjs/test/tests/node/v8/parser.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/dist/mjs/test/tests/webdriver/env/page.js" beforeDir="false" afterPath="$PROJECT_DIR$/dist/mjs/test/tests/webdriver/env/page.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/eslintrc.fix.js" beforeDir="false" afterPath="$PROJECT_DIR$/eslintrc.fix.js" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/test/.eslintrc.js" beforeDir="false" afterPath="$PROJECT_DIR$/src/test/.eslintrc.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/test/tests/webdriver/env/page.js" beforeDir="false" afterPath="$PROJECT_DIR$/src/test/tests/webdriver/env/page.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/test/tests/node/v8/parser.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/test/tests/node/v8/parser.ts" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -92,7 +98,7 @@
     <property name="WebServerToolWindowFactoryState" value="false" />
     <property name="auto.test.manager.delay" value="5000" />
     <property name="javascript.karma.karma_node_package_dir" value="" />
-    <property name="last_opened_file_path" value="$PROJECT_DIR$/src/test/tests/common/main/rx/object/properties/path/builder/helpers/src/RuleBuildersBuilder.ts" />
+    <property name="last_opened_file_path" value="$PROJECT_DIR$/src/test/tests/node/v8/parser.ts" />
     <property name="node.js.detected.package.eslint" value="true" />
     <property name="node.js.detected.package.standard" value="true" />
     <property name="node.js.detected.package.tslint" value="true" />
@@ -107,7 +113,7 @@
     <property name="prettierjs.PrettierConfiguration.Package" value="L:\Work\_GIT\GitHub\NodeJs\modules\webrain\node_modules\prettier" />
     <property name="restartRequiresConfirmation" value="false" />
     <property name="run.code.analysis.last.selected.profile" value="pProject Default" />
-    <property name="settings.editor.selected.configurable" value="settings.javascript.linters.tslint" />
+    <property name="settings.editor.selected.configurable" value="settings.typescriptcompiler" />
     <property name="ts.external.directory.path" value="L:\Work\_GIT\GitHub\NodeJs\modules\webrain\node_modules\typescript\lib" />
   </component>
   <component name="RecentsManager">
@@ -581,14 +587,7 @@
       <workItem from="1601521921362" duration="7482000" />
       <workItem from="1601530450424" duration="20969000" />
       <workItem from="1601561783134" duration="3234000" />
-      <workItem from="1601609589612" duration="16265000" />
-    </task>
-    <task id="LOCAL-00556" summary="Develop random test helpers">
-      <created>1600251112330</created>
-      <option name="number" value="00556" />
-      <option name="presentableId" value="LOCAL-00556" />
-      <option name="project" value="LOCAL" />
-      <updated>1600251112330</updated>
+      <workItem from="1601609589612" duration="21848000" />
     </task>
     <task id="LOCAL-00557" summary="Develop random test helpers">
       <created>1600252162255</created>
@@ -926,7 +925,14 @@
       <option name="project" value="LOCAL" />
       <updated>1601625605743</updated>
     </task>
-    <option name="localTasksCounter" value="605" />
+    <task id="LOCAL-00605" summary="Lint fixes">
+      <created>1601632330932</created>
+      <option name="number" value="00605" />
+      <option name="presentableId" value="LOCAL-00605" />
+      <option name="project" value="LOCAL" />
+      <updated>1601632330932</updated>
+    </task>
+    <option name="localTasksCounter" value="606" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -1007,12 +1013,12 @@
     <MESSAGE value="Added separated lint fix config" />
     <MESSAGE value="Lint autofix: space-before-function-paren &amp; generator-star-spacing" />
     <MESSAGE value="Lint autofix: semi-style &amp; semi &amp; operator-linebreak &amp; no-mixed-spaces-and-tabs" />
-    <MESSAGE value="Lint fixes" />
     <MESSAGE value="Lint fixes. Mocha tests OK." />
     <MESSAGE value="&#10;Removed tslint from project" />
     <MESSAGE value="Removed tslint from project" />
     <MESSAGE value="Precommit almost OK" />
-    <option name="LAST_COMMIT_MESSAGE" value="Precommit almost OK" />
+    <MESSAGE value="Lint fixes" />
+    <option name="LAST_COMMIT_MESSAGE" value="Lint fixes" />
   </component>
   <component name="WindowStateProjectService">
     <state x="612" y="18" key="#TypeScript" timestamp="1599721259508">
@@ -1039,10 +1045,10 @@
       <screen x="0" y="0" width="1920" height="882" />
     </state>
     <state x="651" y="254" key="ANALYSIS_DLG_com.intellij.analysis.BaseAnalysisAction$1/0.0.1920.882@0.0.1920.882" timestamp="1601631917439" />
-    <state x="-2" y="0" width="1918" height="882" key="CommitChangelistDialog2" timestamp="1601625601053">
+    <state x="-2" y="0" width="1918" height="882" key="CommitChangelistDialog2" timestamp="1601632330064">
       <screen x="0" y="0" width="1920" height="882" />
     </state>
-    <state x="-2" y="0" width="1918" height="882" key="CommitChangelistDialog2/0.0.1920.882@0.0.1920.882" timestamp="1601625601053" />
+    <state x="-2" y="0" width="1918" height="882" key="CommitChangelistDialog2/0.0.1920.882@0.0.1920.882" timestamp="1601632330064" />
     <state width="1009" height="582" key="DebuggerActiveHint" timestamp="1601537988332">
       <screen x="0" y="0" width="1920" height="882" />
     </state>
@@ -1051,10 +1057,10 @@
       <screen x="0" y="0" width="1920" height="882" />
     </state>
     <state x="0" y="4" width="1917" height="875" key="DiffContextDialog/0.0.1920.882@0.0.1920.882" timestamp="1601621763510" />
-    <state x="1059" y="106" key="FileChooserDialogImpl" timestamp="1601620469473">
+    <state x="1059" y="106" key="FileChooserDialogImpl" timestamp="1601633074752">
       <screen x="0" y="0" width="1920" height="882" />
     </state>
-    <state x="1059" y="106" key="FileChooserDialogImpl/0.0.1920.882@0.0.1920.882" timestamp="1601620469473" />
+    <state x="1059" y="106" key="FileChooserDialogImpl/0.0.1920.882@0.0.1920.882" timestamp="1601633074752" />
     <state width="519" height="192" key="GridCell.Tab.0.bottom" timestamp="1601622131458">
       <screen x="0" y="0" width="1920" height="882" />
     </state>
@@ -1127,10 +1133,10 @@
       <screen x="0" y="0" width="1920" height="882" />
     </state>
     <state x="691" y="68" key="RollbackChangesDialog/0.0.1920.882@0.0.1920.882" timestamp="1601547275856" />
-    <state x="343" y="0" key="SettingsEditor" timestamp="1601626548666">
+    <state x="343" y="0" key="SettingsEditor" timestamp="1601636913921">
       <screen x="0" y="0" width="1920" height="882" />
     </state>
-    <state x="343" y="0" key="SettingsEditor/0.0.1920.882@0.0.1920.882" timestamp="1601626548666" />
+    <state x="343" y="0" key="SettingsEditor/0.0.1920.882@0.0.1920.882" timestamp="1601636913921" />
     <state x="612" y="105" width="675" height="655" key="StructurePopup" timestamp="1600748683634">
       <screen x="0" y="0" width="1920" height="882" />
     </state>

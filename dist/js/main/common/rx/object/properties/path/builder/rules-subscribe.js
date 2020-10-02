@@ -355,7 +355,7 @@ function createKeyPredicate(keys) {
   }
 
   if (keys.length === 1) {
-    var _key3 = keys[0]; // @ts-ignore
+    var _key3 = keys[0];
 
     if (_key3 === _constants.ANY) {
       return null;
@@ -367,7 +367,7 @@ function createKeyPredicate(keys) {
   }
 
   for (var i = 0, len = keys.length; i < len; i++) {
-    var _key4 = keys[i]; // @ts-ignore
+    var _key4 = keys[i];
 
     if (_key4 === _constants.ANY) {
       return null;

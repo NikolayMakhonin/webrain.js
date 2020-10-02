@@ -263,7 +263,7 @@ function createKeyPredicate(keys) {
   }
 
   if (keys.length === 1) {
-    const key = keys[0]; // @ts-ignore
+    const key = keys[0];
 
     if (key === ANY) {
       return null;
@@ -275,7 +275,7 @@ function createKeyPredicate(keys) {
   }
 
   for (let i = 0, len = keys.length; i < len; i++) {
-    const key = keys[i]; // @ts-ignore
+    const key = keys[i];
 
     if (key === ANY) {
       return null;

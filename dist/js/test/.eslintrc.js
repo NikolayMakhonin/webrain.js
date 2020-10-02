@@ -27,6 +27,7 @@ module.exports = {
 		'consistent-return'           : 'off',
 		'no-lonely-if'                : 'off',
 		'no-else-return'              : 'off',
+		'object-property-newline'     : 'off',
 
 		'no-array-constructor'                   : 'off',
 		'@typescript-eslint/no-array-constructor': 'off',
@@ -34,6 +35,7 @@ module.exports = {
 		'@typescript-eslint/no-unused-vars'    : 'off',
 		'@typescript-eslint/no-empty-function' : 'off',
 		'@typescript-eslint/no-empty-interface': 'off',
+		'@typescript-eslint/ban-ts-comment'    : 'off',
 
 		'no-shadow'                   : 'off',
 		'@typescript-eslint/no-shadow': 'off',

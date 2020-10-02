@@ -5,6 +5,9 @@ module.exports = {
 		node   : false
 	},
 	rules: {
+		'func-names'     : 'off',
+		'no-process-exit': 'off',
+
 		'no-empty-function': 'off',
 		'no-unused-vars'   : 'off',
 		'no-new-wrappers'  : 'off',
@@ -12,8 +15,6 @@ module.exports = {
 		'no-undefined'     : 'off',
 		'dot-notation'     : 'off',
 		'no-process-env'   : 'off',
-
-		// new
 
 		'no-await-in-loop'            : 'off',
 		'func-style'                  : 'off',
@@ -39,15 +40,6 @@ module.exports = {
 
 		'no-shadow'                   : 'off',
 		'@typescript-eslint/no-shadow': 'off',
-
-		// '@typescript-eslint/no-unused-array'             : 'off',
-		// '@typescript-eslint/no-dead-store'               : 'off',
-		// '@typescript-eslint/no-invalid-await'            : 'off',
-		// '@typescript-eslint/no-array-delete'             : 'off',
-		// '@typescript-eslint/no-misleading-array-reverse' : 'off',
-		// '@typescript-eslint/no-useless-cast'             : 'off',
-		// '@typescript-eslint/no-identical-functions'      : 'off',
-		// '@typescript-eslint/no-use-of-empty-return-value': 'off',
 	},
 	globals: {
 		console: true

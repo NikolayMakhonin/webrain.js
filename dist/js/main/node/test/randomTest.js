@@ -9,12 +9,12 @@ var _regenerator = _interopRequireDefault(require("@babel/runtime-corejs3/regene
 
 var _path = _interopRequireDefault(require("path"));
 
+var _fsExtra = _interopRequireDefault(require("fs-extra"));
+
 var _randomTest = require("../../common/test/randomTest");
 
 // tslint:disable-next-line:no-var-requires
-var fse = require('fs-extra'); // region searchBestErrorBuilder
-
-
+// region searchBestErrorBuilder
 function searchBestErrorBuilderNode(_ref) {
   var reportFilePath = _ref.reportFilePath,
       _onFound = _ref.onFound,
@@ -32,7 +32,7 @@ function searchBestErrorBuilderNode(_ref) {
           switch (_context.prev = _context.next) {
             case 0:
               _context.next = 2;
-              return fse.appendFile(testCasesFile, reportMin);
+              return _fsExtra.default.appendFile(testCasesFile, reportMin);
 
             case 2:
               if (_onFound) {
@@ -55,7 +55,7 @@ function searchBestErrorBuilderNode(_ref) {
           case 0:
             customSeed = _ref2.customSeed, metricsMin = _ref2.metricsMin, stopPredicate = _ref2.stopPredicate, createMetrics = _ref2.createMetrics, compareMetrics = _ref2.compareMetrics, func = _ref2.func;
             _context2.next = 3;
-            return fse.pathExists(testCasesDir);
+            return _fsExtra.default.pathExists(testCasesDir);
 
           case 3:
             if (_context2.sent) {
@@ -64,11 +64,11 @@ function searchBestErrorBuilderNode(_ref) {
             }
 
             _context2.next = 6;
-            return fse.mkdirp(testCasesDir);
+            return _fsExtra.default.mkdirp(testCasesDir);
 
           case 6:
             _context2.next = 8;
-            return fse.writeFile(testCasesFile, '');
+            return _fsExtra.default.writeFile(testCasesFile, '');
 
           case 8:
             _context2.next = 10;

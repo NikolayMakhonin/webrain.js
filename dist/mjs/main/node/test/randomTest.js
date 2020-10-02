@@ -1,8 +1,7 @@
 import path from 'path';
+import fse from 'fs-extra';
 import { searchBestErrorBuilder } from '../../common/test/randomTest'; // tslint:disable-next-line:no-var-requires
-
-const fse = require('fs-extra'); // region searchBestErrorBuilder
-
+// region searchBestErrorBuilder
 
 export function searchBestErrorBuilderNode({
   reportFilePath,
