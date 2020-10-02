@@ -35,7 +35,7 @@ export class DependSet<V>
 		return ALWAYS_CHANGE_VALUE
 	}
 
-	// noinspection JSUnusedLocalSymbols
+	// eslint-disable-next-line @typescript-eslint/no-unused-vars
 	public dependValue(value: V) {
 		this.dependAll()
 		return ALWAYS_CHANGE_VALUE

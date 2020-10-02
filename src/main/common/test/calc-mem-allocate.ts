@@ -24,7 +24,8 @@ export function calcMemAllocate(
 ) {
 	return runInRealtimePriority(() => {
 		// tslint:disable-next-line:no-empty
-		const zero = _calcMemAllocate(calcType, countTests, (...args) => {
+		const zero = _calcMemAllocate(calcType, countTests, () => {
+			// empty
 		}, ...testFuncArgs)
 		const value = _calcMemAllocate(calcType, countTests, testFunc, ...testFuncArgs)
 		return value.subtract(zero)

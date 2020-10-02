@@ -27,6 +27,12 @@ module.exports = {
 
 		// new
 
+		'padded-blocks': 'off',
+
+		'no-extra-semi': 'off',
+		semi           : ['error', 'never', {beforeStatementContinuationChars: 'always'}],
+		'semi-style'   : ['error', 'first'],
+
 		'prefer-spread'  : 'off',
 		'callback-return': 'off',
 
@@ -61,9 +67,10 @@ module.exports = {
 		'new-cap': [
 			'error',
 			{
-				newIsCap  : true,
-				capIsNew  : true,
-				properties: false,
+				newIsCap                : true,
+				capIsNew                : true,
+				properties              : false,
+				newIsCapExceptionPattern: '^type$',
 			},
 		],
 
@@ -77,10 +84,40 @@ module.exports = {
 				asyncArrow: 'always',
 			},
 		],
-		'brace-style'       : 'off',
-		'no-confusing-arrow': 'off',
+		'brace-style'         : 'off',
+		'no-confusing-arrow'  : 'off',
+		'no-duplicate-imports': ['error', { includeExports: false }],
+
+		'lines-around-comment': [
+			'off',
+			{
+				beforeLineComment: false,
+				afterLineComment : false,
+
+				beforeBlockComment: true,
+				afterBlockComment : false,
+
+				allowBlockStart : true,
+				allowBlockEnd   : true,
+				allowClassStart : true,
+				allowClassEnd   : true,
+				allowObjectStart: true,
+				allowObjectEnd  : true,
+				allowArrayStart : true,
+				allowArrayEnd   : true,
+
+				applyDefaultIgnorePatterns: true,
+			},
+		],
+
+		'no-nested-ternary'       : 'off',
+		'implicit-arrow-linebreak': 'off',
+		'multiline-comment-style' : 'off',
 
 		// typescript
+
+		'no-useless-constructor'                   : 'off',
+		'@typescript-eslint/no-useless-constructor': 'off',
 
 		'no-shadow'                   : 'off',
 		'@typescript-eslint/no-shadow': [
@@ -126,6 +163,7 @@ module.exports = {
 			'error', {
 				types: {
 					object: false,
+					'{}'  : false,
 				}
 			}
 		],

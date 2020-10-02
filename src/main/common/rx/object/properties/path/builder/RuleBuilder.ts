@@ -161,7 +161,6 @@ export class RuleBuilder<TObject = any, TValueKeys extends string | number = nev
 					VALUE_PROPERTY_PREFIX + propertyName,
 				),
 			])
-
 	}
 
 	/**
@@ -388,9 +387,9 @@ export class RuleBuilder<TObject = any, TValueKeys extends string | number = nev
 		const rule = new RuleIf<TValue>(exclusiveConditionRules.map(o => {
 			if (Array.isArray(o)) {
 				return [o[0], o[1](this.clone(true)).ruleFirst]
-			} else {
-				return o(this.clone(true)).ruleFirst
 			}
+
+			return o(this.clone(true)).ruleFirst
 		}))
 
 		return this.rule<TValue>(rule)

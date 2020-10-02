@@ -49,6 +49,7 @@ export enum CalcType {
 
 export function calcMin(
 	countTests: number,
+	// eslint-disable-next-line @typescript-eslint/no-shadow
 	testFunc: (...args: any[]) => Array<number | BigInt> | null,
 	...args: any[]
 ): CalcStatReport {
@@ -84,6 +85,7 @@ export function calcMin(
 
 export function calcStat(
 	countTests: number,
+	// eslint-disable-next-line @typescript-eslint/no-shadow
 	testFunc: (...args: any[]) => Array<number | BigInt> | null,
 	...args: any[]
 ): CalcStatReport {
@@ -129,6 +131,7 @@ export function calcStat(
 export function calc(
 	calcType: CalcType,
 	countTests: number,
+	// eslint-disable-next-line @typescript-eslint/no-shadow
 	testFunc: (...args: any[]) => Array<number | BigInt> | null,
 	...args: any[]
 ) {

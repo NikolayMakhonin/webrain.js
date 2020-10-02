@@ -35,6 +35,7 @@ import {AsyncValueOf} from '../async/async'
 
 /** Remove types from T that are assignable to U */
 export type Diff<T, U> = T extends U ? never : T
+
 /** Remove types from T that are not assignable to U */
 export type Filter<T, U> = T extends U ? T : never
 
@@ -43,7 +44,7 @@ export type Filter<T, U> = T extends U ? T : never
 
 export type Func<TThis, TArgs extends any[], TValue = void> = (this: TThis, ...args: TArgs) => TValue
 export type FuncAny = Func<any, any[], any>
-export type NotFunc<T> = T extends Function ? never : T
+export type NotFunc<T> = T extends FuncAny ? never : T
 export type ArgsOf<TFunc> = TFunc extends (...args: infer TArgs) => any
 	? TArgs
 	: never
@@ -56,6 +57,7 @@ export type KeysOf<TObject, TValue> = {
 }[keyof TObject]
 
 export type TPrimitiveNotNullable = boolean | number | string | null | undefined | symbol | bigint | void
+// eslint-disable-next-line @typescript-eslint/ban-types
 export type TPrimitiveNullable = Boolean | Number | String | Symbol | BigInt | Date
 export type TPrimitive = TPrimitiveNotNullable | TPrimitiveNullable
 

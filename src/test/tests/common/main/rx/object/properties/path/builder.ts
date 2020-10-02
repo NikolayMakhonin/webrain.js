@@ -24,7 +24,7 @@ describe('common > main > rx > properties > builder', function () {
 		const innerObject = new class {
 			public [VALUE_PROPERTY_DEFAULT] = 100
 			public d = '1'
-		}
+		}()
 
 		const object = new class {
 			public [VALUE_PROPERTY_DEFAULT] = 101
@@ -54,7 +54,7 @@ describe('common > main > rx > properties > builder', function () {
 						})
 				},
 			}
-		}
+		}()
 
 		// const x: HasDefaultValueOf<typeof object> = null
 		// const p1: TGetNextPath<typeof object, typeof object, typeof object.a> = null
@@ -85,15 +85,20 @@ describe('common > main > rx > properties > builder', function () {
 				console.log('path: ' + i)
 
 				const path = paths[i]
-				const getValue = dependX(function () {
-					assert.strictEqual(this, currentState, currentState.func + '')
-					checkCurrentState()
-					const val = path.get(object)
-					checkCurrentState()
-					return val
-				}, isDeferred ? {
-					delayBeforeCalc: 10,
-				} : null)
+				const getValue = dependX(
+					function () {
+						assert.strictEqual(this, currentState, currentState.func + '')
+						checkCurrentState()
+						const val = path.get(object)
+						checkCurrentState()
+						return val
+					},
+					isDeferred
+						? {
+							delayBeforeCalc: 10,
+						}
+						: null
+				)
 
 				const callState = getOrCreateCallState(getValue)()
 

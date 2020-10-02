@@ -16,6 +16,8 @@ export function delay(timeMilliseconds): Thenable {
 
 let _fastNow = Date.now()
 let lastAccessTime = 0
+let fastNowTimer = null
+
 function fastNowUpdate() {
 	_fastNow = Date.now()
 	if (_fastNow - lastAccessTime > 5000) {
@@ -24,7 +26,6 @@ function fastNowUpdate() {
 	}
 }
 
-let fastNowTimer = null
 function fastNowSchedule() {
 	lastAccessTime = _fastNow
 	if (fastNowTimer === null) {

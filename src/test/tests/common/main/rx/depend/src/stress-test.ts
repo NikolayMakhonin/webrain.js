@@ -120,7 +120,7 @@ function checkCallState<TThis, TArgs extends any[], TResult>(
 	canBeNull: boolean,
 ) {
 	if (state == null && canBeNull) {
-		return
+		return null
 	}
 
 	assert.ok(state)
@@ -438,7 +438,7 @@ function *runAsIterator(
 	return sum
 }
 
-//endregion
+// endregion
 
 let nextObjectId = 1
 

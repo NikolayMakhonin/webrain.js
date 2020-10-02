@@ -41,7 +41,7 @@ export function subject(base): any {
 					return
 				}
 
-				// tslint:disable-next-line:no-shadowed-variable
+				// eslint-disable-next-line @typescript-eslint/no-shadow
 				const {_subscribers} = this
 				const len = _subscribers.length
 				const index = _subscribers.indexOf(subscriber)

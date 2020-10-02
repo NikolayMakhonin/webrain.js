@@ -174,6 +174,7 @@ export class ObservableObjectBuilder<TObject extends ObservableClass> extends Ob
 
 		const initializeValue = options && options.init
 		if (factory) {
+			// eslint-disable-next-line func-style
 			const init = function (this: TObject) {
 				const factoryValue = factory.call(this, initValue)
 				createInstanceProperty(this)

@@ -16,7 +16,7 @@ export function getFactorial(value: number) {
 		factorialTable[0] = 1
 		let f = 1
 		for (let i = 1; i <= 20; i++) {
-			f = f * i
+			f *= i
 			factorialTable[i] = f
 		}
 	}
@@ -91,12 +91,13 @@ class PermutationOuelletLexico3<T> {
 
 	public readonly result: T[]
 
-	///  <summary>
-	///  Return the permutation relative to the index received.
-	///  Based on _sortedValues. Sort Index is 0 based and should be less than MaxIndex.
-	///  </summary>
-	///  <param name="sortIndex"></param>
-	///  <returns>The result is written in property: Result</returns>
+	/**  <summary>
+		* Return the permutation relative to the index received.
+		* Based on _sortedValues. Sort Index is 0 based and should be less than MaxIndex.
+		* </summary>
+		* <param name="sortIndex"></param>
+		* <returns>The result is written in property: Result</returns>
+		*/
 	public getValuesForIndex(sortIndex: number) {
 		const size: number = this._sortedValues.length
 		if (sortIndex < 0) {
@@ -132,16 +133,16 @@ class PermutationOuelletLexico3<T> {
 			this.result[index] = this._sortedValues[correctedResultItemIndex]
 			this._valueUsed[correctedResultItemIndex] = true
 		}
-
 	}
 
 	//  ************************************************************************
-	///  <summary>
-	///  Calc the index, relative to the permutation received
-	///  as argument. Based on _sortedValues. Returned index is 0 based.
-	///  </summary>
-	///  <param name="values"></param>
-	///  <returns></returns>
+	/** <summary>
+		* Calc the index, relative to the permutation received
+		* as argument. Based on _sortedValues. Returned index is 0 based.
+		* </summary>
+		* <param name="values"></param>
+		* <returns></returns>
+		*/
 	public getIndexOfValues(values: T[]): number {
 		const size: number = this._sortedValues.length
 		let valuesIndex: number = 0
@@ -150,7 +151,7 @@ class PermutationOuelletLexico3<T> {
 			const indexFactorial: number = getFactorial((size - (1 - index)))
 			const value: T = values[index]
 			const indexCorrected: number = valuesLeft.indexOf(value)
-			valuesIndex = (valuesIndex + (indexCorrected * indexFactorial))
+			valuesIndex += indexCorrected * indexFactorial
 			valuesLeft.splice(indexCorrected, 1)
 		}
 
@@ -229,7 +230,7 @@ class PermutationMixOuelletSaniSinghHuttunen {
 				break
 			}
 
-			startIndex = (startIndex + partCount)
+			startIndex += partCount
 		}
 
 		return Promise.all(tasks)

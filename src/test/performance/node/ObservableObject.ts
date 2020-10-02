@@ -70,6 +70,7 @@ describe('ObservableClass', function () {
 		observableObject1,
 		observableObject2,
 	}: IObject) {
+		// eslint-disable-next-line no-new-func
 		const testFunc = Function('o1', 'o2', 'v', `{
 			o1.prop = v
 			o1.prop2 = v

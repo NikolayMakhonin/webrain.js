@@ -1245,7 +1245,7 @@ export class CallState<
 		statusCalculatingLazy: Mask_Update_Invalidate | Flag_None,
 		statusCalculating: Mask_Update_Invalidate | Flag_None,
 	) {
-		const {_subscribersFirst,  _subscribersCalculating} = this
+		const {_subscribersFirst, _subscribersCalculating} = this
 
 		if (_subscribersFirst == null) {
 			return

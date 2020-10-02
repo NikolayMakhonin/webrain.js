@@ -21,7 +21,7 @@ export function resolveValueProperty(value: any, getValue?: (value: any) => any)
 }
 
 export function resolvePath<TValue>(value: ThenableOrIteratorOrValue<TValue>): TGetPropertyValue<TValue> {
-	const get: any = <TNextValue>(getValue, isValueProperty, newValue, next) => {
+	const get: any = <TNextValue>(getValue, isValueProperty, newValue: TNextValue, next) => {
 		const _getValue = getValue && (val =>
 			val != null && typeof val === 'object' || typeof val === 'string'
 				? getValue(val, newValue, next)

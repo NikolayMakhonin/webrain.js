@@ -13,7 +13,6 @@ export interface ISetOptions<TObject, TValue> {
 }
 
 export class ObservableClass extends PropertyChangedObject {
-
 	/** @internal */
 	public readonly __fields?: {
 		[key: string]: any;

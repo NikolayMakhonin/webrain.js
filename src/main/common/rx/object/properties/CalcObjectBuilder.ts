@@ -18,15 +18,15 @@ function createGetValue<TObject, TCalcSource, TValue>(
 ): (this: TObject) => TValue {
 	if (calcSourcePath == null) {
 		return getValue as any
-	} else {
-		const path = calcSourcePath
-			.clone()
-			.append(o => getValue.call(o) as TValue)
-			.init()
+	}
 
-		return function (this: TObject) {
-			return path.get(this) as TValue
-		}
+	const path = calcSourcePath
+		.clone()
+		.append(o => getValue.call(o) as TValue)
+		.init()
+
+	return function (this: TObject) {
+		return path.get(this) as TValue
 	}
 }
 
@@ -36,7 +36,7 @@ export class CalcObjectBuilder<
 	TCalcSource = TObject,
 	TValueKeys extends string | number = ValueKeys,
 >
-	extends ConnectorBuilder<TObject, TConnectorSource>
+	extends ConnectorBuilder<TObject, TConnectorSource, TValueKeys>
 {
 	public readonly calcSourcePath?: Path<TObject, TCalcSource>
 
@@ -139,6 +139,7 @@ export class CalcObjectBuilder<
 		const propClass = propertyClass(build)
 		return super.readable(name as any, {
 			factory() {
+				// eslint-disable-next-line new-cap
 				return new propClass(this)
 			},
 		}) as any

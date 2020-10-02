@@ -1,7 +1,7 @@
 import {ObservableClass} from '../ObservableClass'
 import {ObservableObjectBuilder} from '../ObservableObjectBuilder'
 
-export class ConnectorState<TSource>  extends ObservableClass {
+export class ConnectorState<TSource> extends ObservableClass {
 	public source: TSource
 	public name: string
 }

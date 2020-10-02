@@ -35,23 +35,21 @@ function forkToArray(ruleIterable: IRuleIterable): IRuleOrIterable {
 			} else {
 				array.push(itemArray)
 			}
+		} else if ((item as IRule).type === RuleType.Never) {
+			never = true
 		} else {
-			if ((item as IRule).type === RuleType.Never) {
-				never = true
-			} else {
-				throw new Error('Unexpected rule type: ' + RuleType[(item as IRule).type])
-			}
+			throw new Error('Unexpected rule type: ' + RuleType[(item as IRule).type])
 		}
 	}
 
 	if (array) {
 		return array
-	} else {
-		if (never) {
-			return RuleNever.instance
-		}
-		return ARRAY_EMPTY
 	}
+
+	if (never) {
+		return RuleNever.instance
+	}
+	return ARRAY_EMPTY
 }
 
 const COMPRESS_FORKS_DISABLED = false
@@ -67,12 +65,10 @@ function *iterateFork(fork: Iterable<IRuleOrIterable>): Iterable<IRuleOrIterable
 				if (!iteration.done) {
 					if (isIterable(iteration.value)) {
 						yield* iterateFork(iteration.value)
+					} else if ((iteration.value as IRule).type === RuleType.Never) {
+						yield iteration.value
 					} else {
-						if ((iteration.value as IRule).type === RuleType.Never) {
-							yield iteration.value
-						} else {
-							yield compressForks(ruleIterable as Iterable<IRuleOrIterable>, iterator, iteration)
-						}
+						yield compressForks(ruleIterable as Iterable<IRuleOrIterable>, iterator, iteration)
 					}
 				} else {
 					yield ARRAY_EMPTY
@@ -106,9 +102,9 @@ export function *compressForks(
 		const array = forkToArray(fork) // TODO optimize this array
 		yield array
 		return
-	} else {
-		yield ruleOrFork as IRule
 	}
+
+	yield ruleOrFork as IRule
 
 	iteration = iterator.next()
 	const nextIterable = iteration.value as INextRuleIterable
@@ -176,7 +172,7 @@ function *_iterateRule(
 			}
 			break
 		}
-		case RuleType.Any:
+		case RuleType.Any: {
 			const {rules} = (rule as IRuleAny)
 			if (!rules.length) {
 				yield RuleNever.instance
@@ -187,6 +183,7 @@ function *_iterateRule(
 				yield [_iterateRule(object, rules[0], ruleNext)]
 			}
 
+			// eslint-disable-next-line func-style
 			const any = function *() {
 				for (let i = 0, len = rules.length; i < len; i++) {
 					const subRule = rules[i]
@@ -198,6 +195,7 @@ function *_iterateRule(
 			}
 			yield any()
 			break
+		}
 		case RuleType.Repeat: {
 			const {countMin, countMax, condition, rule: subRule} = rule as IRuleRepeat
 
@@ -215,13 +213,14 @@ function *_iterateRule(
 				break
 			}
 
+			// eslint-disable-next-line func-style
 			const repeatNext = function *(nextObject: any, index: number): IRuleIterable {
 				let repeatAction = condition ? condition(nextObject, index) : RuleRepeatAction.All
 				if (index < countMin) {
-					repeatAction = repeatAction & ~RuleRepeatAction.Fork
+					repeatAction &= ~RuleRepeatAction.Fork
 				}
 				if (index >= countMax) {
-					repeatAction = repeatAction & ~RuleRepeatAction.Next
+					repeatAction &= ~RuleRepeatAction.Next
 				}
 
 				if ((repeatAction & RuleRepeatAction.Fork) === 0) {

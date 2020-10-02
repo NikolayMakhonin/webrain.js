@@ -1,4 +1,4 @@
-import {equals} from '../../helpers/helpers'
+import {equals, TClass} from '../../helpers/helpers'
 import {ISubscriber, IUnsubscribe} from './observable'
 import {ISubject, Subject} from './subject'
 
@@ -9,8 +9,8 @@ export interface IBehavior<T> {
 	emit(value: T): this
 }
 
-export function behavior<TBase>(base): any {
-	return class Behavior<T> extends base implements IBehavior<T> {
+export function behavior<TBase>(base: TClass<TBase>): any {
+	return class Behavior<T> extends (base as any) implements IBehavior<T> {
 		public value: T
 		public unsubscribeValue: T
 
@@ -45,8 +45,7 @@ export function behavior<TBase>(base): any {
 				unsubscribe = null
 
 				try {
-					// eslint-disable-next-line no-shadow
-					// tslint:disable-next-line:no-shadowed-variable
+					// eslint-disable-next-line @typescript-eslint/no-shadow
 					const {value, unsubscribeValue} = this
 					if (typeof unsubscribeValue !== 'undefined' && !equals(unsubscribeValue, value)) {
 						subscriber(unsubscribeValue)

@@ -15,16 +15,28 @@ module.exports = {
 
 		// new
 
-		'no-shadow'       : 'off',
-		'no-await-in-loop': 'off',
-		'func-style'      : 'off',
-		'prefer-const'    : 'off',
-		'require-await'   : 'off',
+		'no-await-in-loop'            : 'off',
+		'func-style'                  : 'off',
+		'prefer-const'                : 'off',
+		'require-await'               : 'off',
+		'no-unmodified-loop-condition': 'off',
+		'no-return-await'             : 'off',
+		'new-cap'                     : 'off',
+		'no-loop-func'                : 'off',
+		'no-empty'                    : 'off',
+		'consistent-return'           : 'off',
+		'no-lonely-if'                : 'off',
+		'no-else-return'              : 'off',
+
+		'no-array-constructor'                   : 'off',
+		'@typescript-eslint/no-array-constructor': 'off',
 
 		'@typescript-eslint/no-unused-vars'    : 'off',
 		'@typescript-eslint/no-empty-function' : 'off',
 		'@typescript-eslint/no-empty-interface': 'off',
-		'@typescript-eslint/no-shadow'         : 'off',
+
+		'no-shadow'                   : 'off',
+		'@typescript-eslint/no-shadow': 'off',
 
 		// '@typescript-eslint/no-unused-array'             : 'off',
 		// '@typescript-eslint/no-dead-store'               : 'off',

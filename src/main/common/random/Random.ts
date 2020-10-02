@@ -14,7 +14,6 @@ function mulberry32(seed: number): () => number {
 	* 1) arrayShuffle(array, () => Math.random())
 	* 2) arrayShuffle(array, () => rnd.next())
 	*/
-
 export function randomWithoutSeed() {
 	return Math.random()
 }
@@ -143,7 +142,7 @@ export class Random {
 
 	public nextArrayItems<T>(array: T[], minCount: number, maxCount: number, maxCountRelative?: boolean): T[] {
 		if (maxCountRelative) {
-			maxCount = array.length * maxCount
+			maxCount *= array.length
 		}
 		const count = this.nextInt(minCount, maxCount)
 		const result = []
@@ -156,7 +155,7 @@ export class Random {
 	public nextArrayItemsUnique<T>(array: T[], minCount: number, maxCount: number, maxCountRelative?: boolean): T[] {
 		arrayShuffle(array, () => this.next())
 		if (maxCountRelative) {
-			maxCount = array.length * maxCount
+			maxCount *= array.length
 		}
 		const count = this.nextInt(minCount, maxCount)
 		return array.slice(0, count)

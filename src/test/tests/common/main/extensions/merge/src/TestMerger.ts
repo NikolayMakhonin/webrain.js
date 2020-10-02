@@ -180,6 +180,8 @@ function resolveValue(opts, value, functions: boolean, refers: boolean) {
 				case NEWER:
 					value = opts.newer
 					continue
+				default:
+					break
 			}
 
 			break

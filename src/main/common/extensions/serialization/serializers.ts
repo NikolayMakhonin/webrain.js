@@ -135,8 +135,9 @@ export class SerializerVisitor implements ISerializerVisitor {
 	}
 }
 
-// tslint:disable-next-line:no-shadowed-variable no-empty
-const LOCKED = function LOCKED() {}
+function LOCKED() {
+	// empty
+}
 
 export class DeSerializerVisitor implements IDeSerializerVisitor {
 	private readonly _types: string[]
@@ -295,6 +296,7 @@ export class DeSerializerVisitor implements IDeSerializerVisitor {
 			throw new Error(`Class (${typeToDebugString(type)}) serializer have no deSerialize method`)
 		}
 
+		// eslint-disable-next-line new-cap
 		let factory = options && options.valueFactory || meta.valueFactory || ((...args) => new type(...args))
 		if (id != null && !factory) {
 			throw new Error(`valueFactory not found for ${typeToDebugString(type)}. `
@@ -370,8 +372,8 @@ export type TSerializableClass<TObject extends ISerializable>
 
 export class TypeMetaSerializerCollection
 	extends TypeMetaCollectionWithId<ITypeMetaSerializer>
-	implements ITypeMetaSerializerCollection {
-	
+	implements ITypeMetaSerializerCollection
+{
 	constructor(proto?: ITypeMetaSerializerCollection) {
 		super(proto || TypeMetaSerializerCollection.default)
 	}

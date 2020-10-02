@@ -1,14 +1,12 @@
 import {ValueKeyType} from './builder/contracts/common'
 import {IChangeItem, IRuleSubscribe} from './builder/contracts/rule-subscribe'
-import {IRuleAction} from './builder/contracts/rules'
-import {IRuleAny, IRuleIf, IRuleRepeat, RuleRepeatAction} from './builder/contracts/rules'
-import {IRule, RuleType} from './builder/contracts/rules'
+import {IRuleAction, IRuleAny, IRuleIf, IRuleRepeat, RuleRepeatAction, IRule, RuleType} from './builder/contracts/rules'
 
 export type INextRuleIterable = (object: any) => IRuleIterable
 export type IRuleOrIterable = IRuleAction | IRuleIterable | INextRuleIterable
 export interface IRuleIterable extends Iterable<IRuleOrIterable> {}
 
-const repeatNext = function<TObject, TValue> (
+function repeatNext<TObject, TValue>(
 	object: TObject,
 	index: number,
 	repeatRule: IRuleRepeat,
@@ -23,10 +21,10 @@ const repeatNext = function<TObject, TValue> (
 		: RuleRepeatAction.All
 
 	if (index < repeatRule.countMin) {
-		repeatAction = repeatAction & ~RuleRepeatAction.Fork
+		repeatAction &= ~RuleRepeatAction.Fork
 	}
 	if (index >= repeatRule.countMax) {
-		repeatAction = repeatAction & ~RuleRepeatAction.Next
+		repeatAction &= ~RuleRepeatAction.Next
 	}
 
 	if ((repeatAction & RuleRepeatAction.Fork) === 0) {
@@ -108,14 +106,7 @@ export function forEachRule<TObject, TValue>(
 		}
 
 		const ruleNext = rule.next || next
-			? (
-				nextObject: any,
-				nextParent: any,
-				nextKey: any,
-				nextKeyType: ValueKeyType,
-			) => {
-				forEachRule(rule.next, nextObject, next, nextParent, nextKey, nextKeyType, resolveRuleSubscribe)
-			}
+			? _ruleNext
 			: null
 
 		switch (rule.type) {
@@ -158,7 +149,7 @@ export function forEachRule<TObject, TValue>(
 				rule = rule.next
 				break
 			}
-			case RuleType.Any:
+			case RuleType.Any: {
 				const {rules} = (rule as IRuleAny)
 				if (!rules.length) {
 					return
@@ -176,6 +167,7 @@ export function forEachRule<TObject, TValue>(
 				}
 
 				return
+			}
 			case RuleType.Repeat: {
 				const {countMin, countMax} = rule as IRuleRepeat
 
@@ -190,5 +182,14 @@ export function forEachRule<TObject, TValue>(
 			default:
 				throw new Error('Unknown RuleType: ' + rule.type)
 		}
+	}
+
+	function _ruleNext(
+		nextObject: any,
+		nextParent: any,
+		nextKey: any,
+		nextKeyType: ValueKeyType,
+	) {
+		forEachRule(rule.next, nextObject, next, nextParent, nextKey, nextKeyType, resolveRuleSubscribe)
 	}
 }

@@ -33,7 +33,7 @@ export function makeDependPropertySubscriber(name: string | number) {
 								case CallStatusShort.Invalidated:
 									state.getValue(false, true)
 									break
-								case CallStatusShort.CalculatedValue:
+								case CallStatusShort.CalculatedValue: {
 									const oldValue = value
 									const newValue = state.value
 									value = newValue
@@ -45,6 +45,7 @@ export function makeDependPropertySubscriber(name: string | number) {
 										})
 									}
 									break
+								}
 								case CallStatusShort.CalculatedError:
 									console.error(state.error)
 									break

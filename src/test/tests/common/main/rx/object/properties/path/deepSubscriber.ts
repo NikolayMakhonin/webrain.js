@@ -76,7 +76,7 @@ describe('common > main > rx > properties > deepSubscribe', function () {
 					},
 				}]
 			}
-		}
+		}()
 
 		let values = []
 

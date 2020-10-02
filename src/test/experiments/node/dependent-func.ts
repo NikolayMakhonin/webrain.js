@@ -124,6 +124,5 @@ describe('dependent-func', function () {
 		assert.deepStrictEqual(Array.from(meta3.values.values()), [115])
 
 		console.log(new Date())
-
 	})
 })

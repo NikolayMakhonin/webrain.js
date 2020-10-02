@@ -1,4 +1,4 @@
-import {isAsync, ThenableIterator, ThenableOrIteratorOrValue, ThenableOrValue} from '../async/async'
+import {ThenableIterator, ThenableOrIteratorOrValue, ThenableOrValue} from '../async/async'
 import {resolveAsyncAll, resolveAsyncFunc} from '../async/ThenableSync'
 import {Random} from '../random/Random'
 import {interceptConsole, TConsoleType, throwOnConsoleError} from './interceptConsole'
@@ -484,15 +484,15 @@ export function randomTestBuilder<
 						func,
 					},
 				)
-			} else {
-				return testRunner(this, {
-					stopPredicate,
-					*func(testRunnerMetrics) {
-						const metrics = yield createMetrics(testRunnerMetrics)
-						return func.call(this, customSeed, metrics, metricsMin || {})
-					},
-				})
 			}
+
+			return testRunner(this, {
+				stopPredicate,
+				*func(testRunnerMetrics) {
+					const metrics = yield createMetrics(testRunnerMetrics)
+					return func.call(this, customSeed, metrics, metricsMin || {})
+				},
+			})
 		})
 	}
 }

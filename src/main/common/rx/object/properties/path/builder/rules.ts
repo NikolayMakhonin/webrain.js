@@ -132,7 +132,7 @@ export class RuleAny extends Rule implements IRuleAny {
 
 	public clone(): IRuleAny {
 		const clone = super.clone() as IRuleAny
-		(clone as any).rules = this.rules.map(o => o.clone())
+		;(clone as any).rules = this.rules.map(o => o.clone())
 		return clone
 	}
 }

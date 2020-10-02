@@ -34,12 +34,12 @@ export function fillObject<V = any>(
 	object: object,
 	arrayOrIterable: Array<[string, V]> | Iterable<[string, V]>,
 ): object {
-	return fillCollection(object, arrayOrIterable, (c, o) => c[o[0]] = o[1])
+	return fillCollection(object, arrayOrIterable, (c, o) => { c[o[0]] = o[1] })
 }
 
 export function fillObjectKeys(
 	object: object,
 	arrayOrIterable: string[] | Iterable<string>,
 ): object {
-	return fillCollection(object, arrayOrIterable, (c, o) => c[o] = true)
+	return fillCollection(object, arrayOrIterable, (c, o) => { c[o] = true })
 }

@@ -1430,8 +1430,8 @@ describe('fundamental-operations', function () {
 		Object.defineProperty(obj, 'manual', {
 			configurable: true,
 			enumerable  : true,
-			get() { return this._manual},
-			set(value) { this._manual = value},
+			get() { return this._manual },
+			set(value) { this._manual = value },
 		})
 		Object.defineProperty(obj, 'hidden', {
 			configurable: true,
@@ -1900,7 +1900,7 @@ describe('fundamental-operations', function () {
 				object2.prop2 = value++
 			},
 			() => { // 11
- 				return object1.prop && object1.prop2 && object2.prop && object2.prop2
+				return object1.prop && object1.prop2 && object2.prop && object2.prop2
 			},
 			() => { // 27
 				observableObject1.prop = value++
@@ -1920,11 +1920,11 @@ describe('fundamental-operations', function () {
 		this.timeout(300000)
 
 		function _x(a, b, c, d) {
-			return  a + b + c
+			return a + b + c
 		}
 
 		function x() {
-		  return _x.apply(null, arguments)
+			return _x.apply(null, arguments)
 		}
 
 		const args = []

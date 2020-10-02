@@ -289,6 +289,7 @@ export class ConnectorBuilder<
 			throw new Error('path.canGet == false')
 		}
 
+		// eslint-disable-next-line func-style
 		let getValue = function (this: typeof object) {
 			return path.get(this)
 		}

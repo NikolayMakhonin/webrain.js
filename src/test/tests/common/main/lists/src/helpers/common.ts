@@ -38,10 +38,13 @@ export const allValues = [
 export function indexOfNaN(array) {
 	for (let i = 0, len = array.length; i < len; i++) {
 		const item = array[i]
+		// eslint-disable-next-line no-self-compare
 		if (item !== item) {
 			return i
 		}
 	}
+
+	return -1
 }
 
 const valueToObjectMap = new Map()

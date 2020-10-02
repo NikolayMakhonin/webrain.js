@@ -2,6 +2,7 @@
 import * as ObjectPool from '../../../../../../../main/common/lists/ObjectPool'
 import * as PairingHeap from '../../../../../../../main/common/lists/PairingHeap'
 import * as CallState from '../../../../../../../main/common/rx/depend/core/CallState'
+// eslint-disable-next-line no-duplicate-imports
 import {getOrCreateCallState} from '../../../../../../../main/common/rx/depend/core/CallState'
 import * as depend from '../../../../../../../main/common/rx/depend/core/depend'
 import * as facade from '../../../../../../../main/common/rx/depend/core/facade'

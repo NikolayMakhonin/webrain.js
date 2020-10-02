@@ -223,9 +223,13 @@ export function merge<TItem>(
 
 	if (a == null) {
 		return b
-	} else if (b == null) {
+	}
+
+	if (b == null) {
 		return a
-	} else if (a === b) {
+	}
+
+	if (a === b) {
 		return a
 	}
 

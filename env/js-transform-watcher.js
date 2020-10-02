@@ -104,6 +104,7 @@ if (!relativeOutput.match(/^tmp[\\/]/)) {
 
 console.log(`js watcher transform: ${relativeInput} => ${relativeOutput}`)
 
+// eslint-disable-next-line @typescript-eslint/no-shadow
 async function transform(fileInput, fileOutput) {
 	const content = await doRollup(fileInput)
 

@@ -1,6 +1,9 @@
+import {FuncAny} from './typescript'
+
 export function equals(v1, v2) {
 	return v1 === v2
 		// is NaN
+		// eslint-disable-next-line no-self-compare
 		|| v1 !== v1 && v2 !== v2
 }
 
@@ -25,13 +28,15 @@ export function typeToDebugString(type) {
 		: (type && type.name || type.toString())
 }
 
-// tslint:disable-next-line:no-empty no-shadowed-variable
-export const EMPTY: any = function EMPTY() {}
+export function EMPTY(): any {
+	// empty
+}
 
 export type TClass<T> = new (...args: any[]) => T
 
 const allowCreateFunction = (() => {
 	try {
+		// eslint-disable-next-line no-new-func
 		const func = new Function('a', 'b', 'return a + b')
 		return !!func
 	} catch (err) {
@@ -41,11 +46,12 @@ const allowCreateFunction = (() => {
 
 const createFunctionCache = {}
 // tslint:disable-next-line:ban-types
-export function createFunction(alternativeFuncFactory, ...args: string[]): Function {
+export function createFunction(alternativeFuncFactory, ...args: string[]): FuncAny {
 	const id = args[args.length - 1] + ''
 	let func = createFunctionCache[id]
 	if (!func) {
 		createFunctionCache[id] = func = allowCreateFunction
+			// eslint-disable-next-line no-new-func
 			? Function(...args)
 			: alternativeFuncFactory()
 	}

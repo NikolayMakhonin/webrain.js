@@ -3,6 +3,7 @@ import {TClass} from '../helpers/helpers'
 import {DeepCloneEqual, IDeepEqualOptions} from './DeepCloneEqual'
 
 export const AssertionError = typeof require === 'function'
+	// eslint-disable-next-line global-require
 	? require('assertion-error')
 	: class extends Error { }
 
@@ -63,14 +64,14 @@ export class Assert {
 	}
 
 	public equal(actual, expected, message?: string) {
-		// noinspection EqualityComparisonWithCoercionJS
+		// eslint-disable-next-line eqeqeq
 		if (actual != expected) {
 			this.throwAssertionError(actual, expected, message)
 		}
 	}
 
 	public notEqual(actual, expected, message?: string) {
-		// noinspection EqualityComparisonWithCoercionJS
+		// eslint-disable-next-line eqeqeq
 		if (actual == expected) {
 			this.throwAssertionError(actual, expected, message)
 		}
@@ -99,13 +100,11 @@ export class Assert {
 						errType.map(o => o && o.name),
 						err ? (message || '') + '\r\n' + err + '\r\n' + err.stack : message)
 				}
-			} else {
-				if (actualErrType !== errType) {
-					this.throwAssertionError(
-						actualErrType.name,
-						errType.name,
-						err ? (message || '') + '\r\n' + err + '\r\n' + err.stack : message)
-				}
+			} else if (actualErrType !== errType) {
+				this.throwAssertionError(
+					actualErrType.name,
+					errType.name,
+					err ? (message || '') + '\r\n' + err + '\r\n' + err.stack : message)
 			}
 		}
 

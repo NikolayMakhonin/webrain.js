@@ -7,8 +7,7 @@ export interface IHasSubscribers<T> {
 	subscribe(subscriber: ISubscriber<T>, description?: any): IUnsubscribe
 }
 
-// eslint-disable-next-line no-shadow
-// tslint:disable-next-line:no-shadowed-variable
+// eslint-disable-next-line @typescript-eslint/no-shadow
 function createHasSubscribersSubjectDefault(hasSubscribers: boolean): ISubject<boolean> {
 	const subject = new BehaviorSubject(hasSubscribers)
 	subject.unsubscribeValue = null
@@ -26,8 +25,7 @@ export function hasSubscribers(base, createHasSubscribersSubject = createHasSubs
 				(subscriber as any).description = description
 			}
 
-			// eslint-disable-next-line no-shadow
-			// tslint:disable-next-line:no-shadowed-variable
+			// eslint-disable-next-line @typescript-eslint/no-shadow
 			const {hasSubscribers} = this
 
 			const unsubscribe = super.subscribe(subscriber)
@@ -37,8 +35,7 @@ export function hasSubscribers(base, createHasSubscribersSubject = createHasSubs
 			}
 
 			return () => {
-				// eslint-disable-next-line no-shadow
-				// tslint:disable-next-line:no-shadowed-variable
+				// eslint-disable-next-line @typescript-eslint/no-shadow
 				const {hasSubscribers} = this
 
 				unsubscribe()

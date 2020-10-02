@@ -159,6 +159,7 @@ class ValueState<TTarget, TSource> {
 			_cloneInstance = (options && options.valueFactory
 				|| this.meta.valueFactory
 				|| (() => (!options || !options.valueType
+					// eslint-disable-next-line new-cap
 					|| this.target.constructor === (options && options.valueType)) && new type())
 			)(target)
 
@@ -683,10 +684,10 @@ export class MergerVisitor implements IMergerVisitor {
 					} else {
 						set(mergeState.newerState.target)
 					}
-					break
+					return null
 				case false:
 					set(mergeState.newerState.clone)
-					break
+					return false
 				case true:
 					mergeState.fillOlderNewer()
 					return true
@@ -862,7 +863,7 @@ export class TypeMetaMergerCollection
 						older,
 						newer,
 						preferCloneBase,
-					 	preferCloneOlder,
+						preferCloneOlder,
 						preferCloneNewer,
 						options,
 					)
@@ -1106,7 +1107,7 @@ registerMerger<any[], any[]>(Array, {
 			preferCloneBase?: boolean,
 			preferCloneOlder?: boolean,
 			preferCloneNewer?: boolean,
-			options?: IMergeOptions,
+			// options?: IMergeOptions,
 		): boolean {
 			if (!base || Object.isFrozen(base)) {
 				set(newer && preferCloneNewer

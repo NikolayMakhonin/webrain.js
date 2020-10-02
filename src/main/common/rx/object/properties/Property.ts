@@ -234,7 +234,7 @@ export class Property<TValue, TMergeSource = TValue>
 		deSerialize: IDeSerializeValue,
 		serializedValue: ISerializedObject,
 	) {
-		deSerialize(serializedValue.value, o => this.value = o)
+		deSerialize(serializedValue.value, o => { this.value = o })
 	}
 
 	// endregion

@@ -47,8 +47,6 @@ export {ObjectPool} from './lists/ObjectPool'
 
 // region Interfaces
 
-/* eslint-disable no-duplicate-imports */
-
 import {
 	ThenableOrIteratorOrValue as _ThenableOrIteratorOrValue,
 	ThenableOrValue as _ThenableOrValue,

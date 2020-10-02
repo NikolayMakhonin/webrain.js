@@ -185,14 +185,14 @@ describe('common > extensions > merge > ObjectMerger', function () {
 									return o.preferCloneBase
 										? deepCloneEqual.clone(o.older)
 										: NONE
-								} else {
-									return OLDER
 								}
-							} else {
-								return o.preferCloneBase
-									? deepCloneEqual.clone(o.newer)
-									: NONE
+
+								return OLDER
 							}
+
+							return o.preferCloneBase
+								? deepCloneEqual.clone(o.newer)
+								: NONE
 						}
 					} else if (
 						isObject(o.older)
@@ -202,11 +202,11 @@ describe('common > extensions > merge > ObjectMerger', function () {
 							return !o.preferCloneNewer
 								? NEWER
 								: (o.preferCloneOlder ? deepCloneEqual.clone(o.newer) : OLDER)
-						} else {
+						}
 							return o.preferCloneOlder
 								? deepCloneEqual.clone(o.newer)
 								: OLDER
-						}
+
 					}
 
 					if (isObject(o.base)
@@ -293,7 +293,7 @@ describe('common > extensions > merge > ObjectMerger', function () {
 		it('complex objects', function () {
 			const complexObjectOptions: IComplexObjectOptions = {
 				undefined    : true,
-				function     : true,
+				'function'   : true,
 				array        : true,
 				circular     : true,
 				circularClass: true,
@@ -701,17 +701,17 @@ describe('common > extensions > merge > ObjectMerger', function () {
 
 					if (deepCloneEqual.equal(o.older, o.newer)) {
 						return NEWER
-					} else {
-						return OLDER
 					}
+						return OLDER
+
 				},
 				base: o => {
 					if (o.base && o.older && o.newer) {
 						if (deepCloneEqual.equal(o.base, o.newer)) {
 							return OLDER
-						} else {
-							return NEWER
 						}
+							return NEWER
+
 					}
 					return BASE
 				},
@@ -731,7 +731,7 @@ describe('common > extensions > merge > ObjectMerger', function () {
 
 			const obj: any = {
 				undefined: void 0,
-				null     : null,
+				'null'   : null,
 				String   : new String('String'),
 				Number   : new Number(1),
 				Boolean  : new Boolean(true),

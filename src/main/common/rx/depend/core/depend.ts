@@ -168,7 +168,6 @@ export function depend<
 	TThisOuter,
 	TArgs extends any[],
 	TResultInner,
-	TResultWrapper = TResultInner,
 >(
 	func: Func<TThisOuter, TArgs, TResultInner>,
 	deferredOptions?: IDeferredOptions,

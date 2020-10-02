@@ -350,5 +350,4 @@ describe('common > extensions > serialization > serializers', function () {
 			observableMap: true,
 		}, null, false)
 	})
-
 })

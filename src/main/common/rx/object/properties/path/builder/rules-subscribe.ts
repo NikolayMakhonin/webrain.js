@@ -19,6 +19,8 @@ function forEachCollection<TObject extends Iterable<TValue>, TValue>(
 
 // region subscribeObjectValue
 
+const allowSubscribePrototype = true
+
 function getFirstExistProperty(object: object, propertyNames: string[]) {
 	for (let i = 0, len = propertyNames.length; i < len; i++) {
 		const propertyName = propertyNames[i]
@@ -66,13 +68,13 @@ export function subscribeObjectValue<TObject extends object, TValue>(
 			changeItem(value, object, propertyName, ValueKeyType.ValueProperty)
 		}
 	}
+
+	return null
 }
 
 // endregion
 
 // region subscribeObject
-
-const allowSubscribePrototype = true
 
 export function hasDefaultProperty(object: object) {
 	return object instanceof Object
@@ -103,33 +105,31 @@ export function subscribeObject<TObject extends object, TValue>(
 				changeItem(object[propertyName] as any, object, propertyName, ValueKeyType.Property)
 			}
 		}
-	} else {
-		if (Array.isArray(propertyNames)) {
-			for (let i = 0, len = propertyNames.length; i < len; i++) {
-				const propertyName = propertyNames[i]
+	} else if (Array.isArray(propertyNames)) {
+		for (let i = 0, len = propertyNames.length; i < len; i++) {
+			const propertyName = propertyNames[i]
 
-				if ((allowSubscribePrototype
-					? propertyName in object
-					: Object.prototype.hasOwnProperty.call(object, propertyName))
-				) {
-					const value = object[propertyName]
-					if (typeof value !== 'undefined') {
-						changeItem(value, object, propertyName, ValueKeyType.Property)
-					}
-				}
-			}
-		} else {
 			if ((allowSubscribePrototype
-				? propertyNames in object
-				: Object.prototype.hasOwnProperty.call(object, propertyNames))
+				? propertyName in object
+				: Object.prototype.hasOwnProperty.call(object, propertyName))
 			) {
-				const value = object[propertyNames]
+				const value = object[propertyName]
 				if (typeof value !== 'undefined') {
-					changeItem(value, object, propertyNames, ValueKeyType.Property)
+					changeItem(value, object, propertyName, ValueKeyType.Property)
 				}
 			}
 		}
+	} else if ((allowSubscribePrototype
+		? propertyNames in object
+		: Object.prototype.hasOwnProperty.call(object, propertyNames))
+	) {
+		const value = object[propertyNames]
+		if (typeof value !== 'undefined') {
+			changeItem(value, object, propertyNames, ValueKeyType.Property)
+		}
 	}
+
+	return null
 }
 
 // endregion
@@ -161,6 +161,8 @@ export function subscribeMap<TObject extends Map<K, V>, K, V>(
 			}
 		}
 	}
+
+	return null
 }
 
 // endregion
@@ -201,6 +203,8 @@ export function subscribeChange<TObject extends Iterable<TValue>, TValue>(
 	}
 
 	object[Symbol.iterator]()
+
+	return null
 }
 
 // endregion
@@ -225,21 +229,21 @@ function createPropertyPredicate(propertyNames: string[]) {
 			// PROF: 226 - 0.5%
 			return propName === propertyName
 		}
-	} else {
-		const propertyNamesMap = {}
-		for (let i = 0, len = propertyNames.length; i < len; i++) {
-			const propertyName = propertyNames[i] + ''
+	}
 
-			if (propertyName === ANY) {
-				return null
-			}
+	const propertyNamesMap = {}
+	for (let i = 0, len = propertyNames.length; i < len; i++) {
+		const propertyName = propertyNames[i] + ''
 
-			propertyNamesMap[propertyName] = true
+		if (propertyName === ANY) {
+			return null
 		}
 
-		return (propName: string) => {
-			return !!propertyNamesMap[propName]
-		}
+		propertyNamesMap[propertyName] = true
+	}
+
+	return (propName: string) => {
+		return !!propertyNamesMap[propName]
 	}
 }
 
@@ -345,23 +349,23 @@ function createKeyPredicate<TKey>(keys: TKey[]) {
 		return (k: TKey) => {
 			return k === key
 		}
-	} else {
-		for (let i = 0, len = keys.length; i < len; i++) {
-			const key = keys[i]
-			// @ts-ignore
-			if (key === ANY) {
-				return null
-			}
-		}
+	}
 
-		return (k: TKey) => {
-			return keys.indexOf(k) >= 0
+	for (let i = 0, len = keys.length; i < len; i++) {
+		const key = keys[i]
+		// @ts-ignore
+		if (key === ANY) {
+			return null
 		}
+	}
+
+	return (k: TKey) => {
+		return keys.indexOf(k) >= 0
 	}
 }
 
 export function createSubscribeMap<TObject extends Map<K, V>, K, V>(
-	keyPredicate: (key: K, object) => boolean,
+	keyPredicate: (key: K, object: TObject) => boolean,
 	...keys: K[]
 ) {
 	if (keys && !keys.length) {

@@ -166,10 +166,10 @@ function createThenable<TValue>(useExecutor: boolean): [ThenableSync<TValue>, TR
 		assert.ok(resultResolve)
 		assert.ok(resultReject)
 		return [thenable, resultResolve, resultReject]
-	} else {
-		const thenable = new ThenableSync()
-		return [thenable, thenable.resolve.bind(thenable), thenable.reject.bind(thenable)]
 	}
+
+	const thenable = new ThenableSync()
+	return [thenable, thenable.resolve.bind(thenable), thenable.reject.bind(thenable)]
 }
 
 interface IValueInfo {
@@ -246,6 +246,8 @@ function createValue(
 				value = createIterator(value, true)
 				break
 			}
+			default:
+				throw new Error('Unexpected behavior')
 		}
 	}
 
@@ -273,9 +275,9 @@ function createThen(
 		const onResult = (o, e) => {
 			if (e) {
 				return onrejected(o)
-			} else {
-				return onfulfilled(o)
 			}
+
+			return onfulfilled(o)
 		}
 		const result = resolveValue(value, onResult, onResult)
 		switch (result) {
@@ -310,15 +312,13 @@ function createThen(
 							calcValueInfo(valueInfo)
 							thenable = thenable.then(o => { throw createThenValue(o) }, null)
 						}
+					} else if (valueInfo.useReject) {
+						valueInfo.useReject = false
+						calcValueInfo(valueInfo)
+						thenable = thenable.then(null, o => createThenValue(o))
 					} else {
-						if (valueInfo.useReject) {
-							valueInfo.useReject = false
-							calcValueInfo(valueInfo)
-							thenable = thenable.then(null, o => createThenValue(o))
-						} else {
-							calcValueInfo(valueInfo)
-							thenable = thenable.then(o => createThenValue(o), null)
-						}
+						calcValueInfo(valueInfo)
+						thenable = thenable.then(o => createThenValue(o), null)
 					}
 				}
 				break
@@ -334,8 +334,7 @@ function createThen(
 								calcValueInfo(valueInfo)
 								thenable = thenable.thenLast(o => { throw createThenValue(o) }, null)
 							}
-						} else {
-							if (valueInfo.useReject) {
+						} else if (valueInfo.useReject) {
 								valueInfo.useReject = false
 								calcValueInfo(valueInfo)
 								thenable = thenable.thenLast(null, o => createThenValue(o))
@@ -343,7 +342,6 @@ function createThen(
 								calcValueInfo(valueInfo)
 								thenable = thenable.thenLast(o => createThenValue(o), null)
 							}
-						}
 					}
 				} catch (err) {
 					if (err instanceof Error) {

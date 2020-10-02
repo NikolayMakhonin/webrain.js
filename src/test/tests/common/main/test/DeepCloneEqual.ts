@@ -20,7 +20,7 @@ describe('common > test > DeepCloneEqual', function () {
 		undefined: true,
 		array    : true,
 
-		function: true,
+		'function': true,
 
 		map          : true,
 		arrayMap     : true,

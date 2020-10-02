@@ -150,12 +150,12 @@ export function createComplexObject(options: IComplexObjectOptions = {}) {
 		_stringEmpty: '',
 		_zero       : 0,
 
-		true       : true,
+		'true'     : true,
 		string     : 'string',
 		date       : new Date(12345),
 		number     : 123.45,
-		'nan'      : NaN,
-		'infinity' : Infinity,
+		nan        : NaN,
+		infinity   : Infinity,
 		'-infinity': -Infinity,
 
 		StringEmpty: new String(''),
