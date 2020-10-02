@@ -32,69 +32,8 @@
   <component name="ChangeListManager">
     <list default="true" id="69b2ee16-521b-4efd-b473-8e19e3df4d09" name="Default Changelist" comment="">
       <change beforePath="$PROJECT_DIR$/.eslintrc.js" beforeDir="false" afterPath="$PROJECT_DIR$/.eslintrc.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/env/common/helpers.js" beforeDir="false" afterPath="$PROJECT_DIR$/env/common/helpers.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/env/js-transform-watcher.js" beforeDir="false" afterPath="$PROJECT_DIR$/env/js-transform-watcher.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/common/extensions/merge/mergers.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/common/extensions/merge/mergers.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/common/extensions/serialization/serializers.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/common/extensions/serialization/serializers.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/common/helpers/CalcStat.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/common/helpers/CalcStat.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/common/helpers/helpers.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/common/helpers/helpers.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/common/helpers/performance.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/common/helpers/performance.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/common/helpers/typescript.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/common/helpers/typescript.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/common/index.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/common/index.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/common/lists/PairingHeap.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/common/lists/PairingHeap.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/common/lists/helpers/compare.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/common/lists/helpers/compare.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/common/lists/helpers/set.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/common/lists/helpers/set.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/common/random/Random.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/common/random/Random.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/common/rx/deferred-calc/DeferredCalc.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/common/rx/deferred-calc/DeferredCalc.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/common/rx/depend/core/CallState.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/common/rx/depend/core/CallState.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/common/rx/depend/core/depend.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/common/rx/depend/core/depend.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/common/rx/depend/lists/DependMap.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/common/rx/depend/lists/DependMap.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/common/rx/depend/lists/DependSet.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/common/rx/depend/lists/DependSet.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/common/rx/object/ObservableClass.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/common/rx/object/ObservableClass.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/common/rx/object/ObservableObjectBuilder.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/common/rx/object/ObservableObjectBuilder.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/common/rx/object/helpers.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/common/rx/object/helpers.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/common/rx/object/properties/CalcObjectBuilder.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/common/rx/object/properties/CalcObjectBuilder.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/common/rx/object/properties/Connector.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/common/rx/object/properties/Connector.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/common/rx/object/properties/ConnectorBuilder.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/common/rx/object/properties/ConnectorBuilder.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/common/rx/object/properties/Property.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/common/rx/object/properties/Property.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/common/rx/object/properties/path/builder.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/common/rx/object/properties/path/builder.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/common/rx/object/properties/path/builder/RuleBuilder.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/common/rx/object/properties/path/builder/RuleBuilder.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/common/rx/object/properties/path/builder/rules-subscribe.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/common/rx/object/properties/path/builder/rules-subscribe.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/common/rx/object/properties/path/builder/rules.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/common/rx/object/properties/path/builder/rules.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/common/rx/object/properties/path/forEachRule.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/common/rx/object/properties/path/forEachRule.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/common/rx/object/properties/path/iterate-rule.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/common/rx/object/properties/path/iterate-rule.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/common/rx/object/properties/path/resolve.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/common/rx/object/properties/path/resolve.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/common/rx/subjects/behavior.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/common/rx/subjects/behavior.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/common/rx/subjects/hasSubscribers.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/common/rx/subjects/hasSubscribers.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/common/rx/subjects/subject.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/common/rx/subjects/subject.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/common/test/Assert.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/common/test/Assert.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/common/test/DeepCloneEqual.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/common/test/DeepCloneEqual.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/common/test/calc-mem-allocate.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/common/test/calc-mem-allocate.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/common/test/calc.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/common/test/calc.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/common/test/interceptConsole.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/common/test/interceptConsole.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/common/test/permutations.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/common/test/permutations.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/common/test/randomTest.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/common/test/randomTest.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/common/test/unhandledErrors.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/common/test/unhandledErrors.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/common/time/helpers.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/common/time/helpers.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/test/.eslintrc.js" beforeDir="false" afterPath="$PROJECT_DIR$/src/test/.eslintrc.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/test/experiments/node/dependent-func.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/test/experiments/node/dependent-func.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/test/performance/node/ObservableObject.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/test/performance/node/ObservableObject.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/test/performance/node/fundamental-operations.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/test/performance/node/fundamental-operations.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/test/tests/common/main/async/src/TestThenableSync.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/test/tests/common/main/async/src/TestThenableSync.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/test/tests/common/main/extensions/merge/ObjectMerger.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/test/tests/common/main/extensions/merge/ObjectMerger.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/test/tests/common/main/extensions/merge/src/TestMerger.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/test/tests/common/main/extensions/merge/src/TestMerger.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/test/tests/common/main/extensions/serialization/serializers.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/test/tests/common/main/extensions/serialization/serializers.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/test/tests/common/main/lists/src/helpers/common.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/test/tests/common/main/lists/src/helpers/common.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/test/tests/common/main/rx/depend/src/stress-test.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/test/tests/common/main/rx/depend/src/stress-test.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/test/tests/common/main/rx/object/properties/path/builder.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/test/tests/common/main/rx/object/properties/path/builder.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/test/tests/common/main/rx/object/properties/path/builder/RuleBuilder.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/test/tests/common/main/rx/object/properties/path/builder/RuleBuilder.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/test/tests/common/main/rx/object/properties/path/builder/helpers/src/RuleBuildersBuilder.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/test/tests/common/main/rx/object/properties/path/builder/helpers/src/RuleBuildersBuilder.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/test/tests/common/main/rx/object/properties/path/deepSubscriber.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/test/tests/common/main/rx/object/properties/path/deepSubscriber.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/test/tests/common/main/src/helpers/helpers.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/test/tests/common/main/src/helpers/helpers.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/test/tests/common/main/test/DeepCloneEqual.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/test/tests/common/main/test/DeepCloneEqual.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/test/tests/node/main/rx/depend/v8/dependent-func.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/test/tests/node/main/rx/depend/v8/dependent-func.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/test/tests/node/v8/src/helpers/helpers.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/test/tests/node/v8/src/helpers/helpers.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/package.json" beforeDir="false" afterPath="$PROJECT_DIR$/package.json" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/tslint.json" beforeDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -637,14 +576,7 @@
       <workItem from="1601521921362" duration="7482000" />
       <workItem from="1601530450424" duration="20969000" />
       <workItem from="1601561783134" duration="3234000" />
-      <workItem from="1601609589612" duration="9852000" />
-    </task>
-    <task id="LOCAL-00552" summary="Develop random test helpers">
-      <created>1600166582302</created>
-      <option name="number" value="00552" />
-      <option name="presentableId" value="LOCAL-00552" />
-      <option name="project" value="LOCAL" />
-      <updated>1600166582303</updated>
+      <workItem from="1601609589612" duration="10386000" />
     </task>
     <task id="LOCAL-00553" summary="Develop random test helpers">
       <created>1600237673646</created>
@@ -982,7 +914,14 @@
       <option name="project" value="LOCAL" />
       <updated>1601611046225</updated>
     </task>
-    <option name="localTasksCounter" value="601" />
+    <task id="LOCAL-00601" summary="Lint fixes. Mocha tests OK.">
+      <created>1601621237794</created>
+      <option name="number" value="00601" />
+      <option name="presentableId" value="LOCAL-00601" />
+      <option name="project" value="LOCAL" />
+      <updated>1601621237794</updated>
+    </task>
+    <option name="localTasksCounter" value="602" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -1043,7 +982,6 @@
   <component name="VcsManagerConfiguration">
     <option name="CHECK_CODE_SMELLS_BEFORE_PROJECT_COMMIT" value="false" />
     <option name="CHECK_NEW_TODO" value="false" />
-    <MESSAGE value="v1.0.5-a" />
     <MESSAGE value="v1.0.6-a" />
     <MESSAGE value="v1.1.0-a Changed the merge interface: added preferCloneBase" />
     <MESSAGE value="v1.1.2-a Fix merge strings" />
@@ -1068,7 +1006,8 @@
     <MESSAGE value="Lint autofix: space-before-function-paren &amp; generator-star-spacing" />
     <MESSAGE value="Lint autofix: semi-style &amp; semi &amp; operator-linebreak &amp; no-mixed-spaces-and-tabs" />
     <MESSAGE value="Lint fixes" />
-    <option name="LAST_COMMIT_MESSAGE" value="Lint fixes" />
+    <MESSAGE value="Lint fixes. Mocha tests OK." />
+    <option name="LAST_COMMIT_MESSAGE" value="Lint fixes. Mocha tests OK." />
   </component>
   <component name="WindowStateProjectService">
     <state x="612" y="18" key="#TypeScript" timestamp="1599721259508">
@@ -1095,10 +1034,10 @@
       <screen x="0" y="0" width="1920" height="882" />
     </state>
     <state x="651" y="254" key="ANALYSIS_DLG_com.intellij.analysis.BaseAnalysisAction$1/0.0.1920.882@0.0.1920.882" timestamp="1601609604071" />
-    <state x="-2" y="0" width="1918" height="882" key="CommitChangelistDialog2" timestamp="1601611045363">
+    <state x="-2" y="0" width="1918" height="882" key="CommitChangelistDialog2" timestamp="1601621234546">
       <screen x="0" y="0" width="1920" height="882" />
     </state>
-    <state x="-2" y="0" width="1918" height="882" key="CommitChangelistDialog2/0.0.1920.882@0.0.1920.882" timestamp="1601611045363" />
+    <state x="-2" y="0" width="1918" height="882" key="CommitChangelistDialog2/0.0.1920.882@0.0.1920.882" timestamp="1601621234546" />
     <state width="1009" height="582" key="DebuggerActiveHint" timestamp="1601537988332">
       <screen x="0" y="0" width="1920" height="882" />
     </state>
@@ -1203,10 +1142,10 @@
       <screen x="0" y="0" width="1920" height="882" />
     </state>
     <state x="722" y="331" key="com.intellij.openapi.vcs.update.UpdateOrStatusOptionsDialogupdate-v2/0.0.1920.882@0.0.1920.882" timestamp="1600076722588" />
-    <state x="2" y="1" width="1908" height="878" key="find.popup" timestamp="1601561513629">
+    <state x="2" y="1" width="1908" height="878" key="find.popup" timestamp="1601621728088">
       <screen x="0" y="0" width="1920" height="882" />
     </state>
-    <state x="2" y="1" width="1908" height="878" key="find.popup/0.0.1920.882@0.0.1920.882" timestamp="1601561513629" />
+    <state x="2" y="1" width="1908" height="878" key="find.popup/0.0.1920.882@0.0.1920.882" timestamp="1601621728088" />
     <state x="531" y="190" key="run.anything.popup" timestamp="1600668501151">
       <screen x="0" y="0" width="1920" height="882" />
     </state>

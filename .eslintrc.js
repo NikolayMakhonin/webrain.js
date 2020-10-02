@@ -188,7 +188,7 @@ module.exports = {
 	},
 
 	plugins: [
-		'@typescript-eslint', '@typescript-eslint/tslint', 'sonarjs', 'html'
+		'@typescript-eslint', 'sonarjs', 'html'
 	],
 	settings: {
 		'html/indent'           : '+tab',
